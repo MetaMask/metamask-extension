@@ -6,9 +6,16 @@ import {
   defaultGanacheOptions,
   WALLET_PASSWORD,
   Fixtures,
+  largeDelayMs,
+  tinyDelayMs,
+  locateAccountBalanceDOM,
+  importSRPOnboardingFlow,
 } from '../../helpers';
 import FixtureBuilder from '../../fixture-builder';
 import { Driver } from '../../webdriver/driver';
+
+// Implementation of toHex function
+const toHex = (num: number): string => `0x${num.toString(16)}`;
 
 class OnboardingPage {
   constructor(private driver: Driver) {}
@@ -40,6 +47,19 @@ class OnboardingPage {
       By.xpath(`//button[text()='${buttonText}']`)
     );
     await (await metametricsButton).click();
+  }
+
+  async importWallet(seedPhrase: string, password: string): Promise<void> {
+    await this.acceptTermsOfUse();
+    await this.clickImportWallet();
+    await this.chooseMetametricsOption('no-thanks');
+    const importSRPPage = new ImportSRPPage(this.driver);
+    await importSRPPage.fillSRP(seedPhrase);
+    await importSRPPage.confirmSRP();
+    const createPasswordPage = new CreatePasswordPage(this.driver);
+    await createPasswordPage.fillPassword(password);
+    await createPasswordPage.acceptTerms();
+    await createPasswordPage.submitForm();
   }
 }
 
@@ -180,10 +200,231 @@ class ImportSRPPage {
   }
 }
 
+class SettingsPage {
+  constructor(private driver: Driver) {}
+
+  async addCustomNetwork(): Promise<void> {
+    await this.driver.clickElement({
+      text: 'Manage default privacy settings',
+      tag: 'button',
+    });
+    await this.driver.clickElement({
+      text: 'General',
+    });
+    await this.driver.delay(largeDelayMs);
+    await this.driver.clickElement({ text: 'Add a network' });
+  }
+
+  async completeOnboarding(): Promise<void> {
+    await this.driver.clickElement('[data-testid="category-back-button"]');
+    await this.driver.waitForElementToStopMoving(
+      '[data-testid="privacy-settings-back-button"]'
+    );
+    await this.driver.clickElement(
+      '[data-testid="privacy-settings-back-button"]'
+    );
+    await this.driver.clickElementAndWaitToDisappear({
+      text: 'Done',
+      tag: 'button',
+    });
+    await this.driver.clickElement({
+      text: 'Next',
+      tag: 'button',
+    });
+    await this.driver.waitForElementToStopMoving({
+      text: 'Done',
+      tag: 'button',
+    });
+    await this.driver.clickElementAndWaitToDisappear({
+      text: 'Done',
+      tag: 'button',
+    });
+  }
+}
+
+class NetworkPage {
+  constructor(private driver: Driver) {}
+
+  async addNetwork(networkName: string, networkUrl: string, chainId: string, currencySymbol: string): Promise<void> {
+    await this.driver.waitForSelector(
+      '.multichain-network-list-menu-content-wrapper__dialog'
+    );
+    await this.driver.fill(
+      '[data-testid="network-form-network-name"]',
+      networkName
+    );
+    await this.driver.fill(
+      '[data-testid="network-form-chain-id"]',
+      chainId
+    );
+    await this.driver.fill(
+      '[data-testid="network-form-ticker-input"]',
+      currencySymbol
+    );
+    const rpcUrlInputDropDown = await this.driver.waitForSelector(
+      '[data-testid="test-add-rpc-drop-down"]'
+    );
+    await this.driver.delay(tinyDelayMs);
+    await rpcUrlInputDropDown.click();
+    await this.driver.delay(tinyDelayMs);
+    await this.driver.clickElement({
+      text: 'Add RPC URL',
+      tag: 'button',
+    });
+    const rpcUrlInput = await this.driver.waitForSelector(
+      '[data-testid="rpc-url-input-test"]'
+    );
+    await rpcUrlInput.clear();
+    await rpcUrlInput.sendKeys(networkUrl);
+    await this.driver.clickElement({
+      text: 'Add URL',
+      tag: 'button',
+    });
+    await this.driver.clickElementAndWaitToDisappear({
+      tag: 'button',
+      text: 'Save',
+    });
+  }
+}
+
 describe('MetaMask onboarding @no-mmi', function () {
   const wrongSeedPhrase =
     'test test test test test test test test test test test test';
   const wrongTestPassword = 'test test test test';
+
+  it('User can add custom network during onboarding', async function () {
+    const networkName: string = 'Localhost 8546';
+    const networkUrl: string = 'http://127.0.0.1:8546';
+    const currencySymbol: string = 'ETH';
+    const port: number = 8546;
+    const chainId: number = 1338;
+    await withFixtures(
+      {
+        fixtures: new FixtureBuilder({ onboarding: true }).build(),
+        ganacheOptions: {
+          ...defaultGanacheOptions,
+          concurrent: [{ port, chainId }],
+        },
+        title: this.test?.fullTitle()!,
+      },
+      async (fixtures: Fixtures) => {
+        const { driver, secondaryGanacheServer } = fixtures;
+        try {
+          await driver.navigate();
+          await importSRPOnboardingFlow(
+            driver,
+            TEST_SEED_PHRASE,
+            WALLET_PASSWORD,
+          );
+
+          await driver.clickElement({
+            text: 'Manage default privacy settings',
+            tag: 'button',
+          });
+
+          await driver.clickElement({
+            text: 'General',
+          });
+          await driver.delay(largeDelayMs);
+          await driver.clickElement({ text: 'Add a network' });
+
+          await driver.waitForSelector(
+            '.multichain-network-list-menu-content-wrapper__dialog',
+          );
+
+          await driver.fill(
+            '[data-testid="network-form-network-name"]',
+            networkName,
+          );
+          await driver.fill(
+            '[data-testid="network-form-chain-id"]',
+            chainId.toString(),
+          );
+          await driver.fill(
+            '[data-testid="network-form-ticker-input"]',
+            currencySymbol,
+          );
+
+          // Add rpc url
+          const rpcUrlInputDropDown = (await driver.waitForSelector(
+            '[data-testid="test-add-rpc-drop-down"]',
+          )) as WebElement;
+          await driver.delay(tinyDelayMs);
+          await rpcUrlInputDropDown.click();
+          await driver.delay(tinyDelayMs);
+          await driver.clickElement({
+            text: 'Add RPC URL',
+            tag: 'button',
+          });
+          const rpcUrlInput = (await driver.waitForSelector(
+            '[data-testid="rpc-url-input-test"]',
+          )) as WebElement;
+          await rpcUrlInput.clear();
+          await rpcUrlInput.sendKeys(networkUrl);
+          await driver.clickElement({
+            text: 'Add URL',
+            tag: 'button',
+          });
+
+          await driver.clickElementAndWaitToDisappear({
+            tag: 'button',
+            text: 'Save',
+          });
+
+          await driver.clickElement('[data-testid="category-back-button"]');
+
+          // Wait until the onboarding carousel has stopped moving
+          // otherwise the click has no effect.
+          await driver.waitForElementToStopMoving(
+            '[data-testid="privacy-settings-back-button"]',
+          );
+
+          await driver.clickElement(
+            '[data-testid="privacy-settings-back-button"]',
+          );
+
+          await driver.clickElementAndWaitToDisappear({
+            text: 'Done',
+            tag: 'button',
+          });
+
+          await driver.clickElement({
+            text: 'Next',
+            tag: 'button',
+          });
+
+          // Wait until the onboarding carousel has stopped moving
+          // otherwise the click has no effect.
+          await driver.waitForElementToStopMoving({
+            text: 'Done',
+            tag: 'button',
+          });
+
+          await driver.clickElementAndWaitToDisappear({
+            text: 'Done',
+            tag: 'button',
+          });
+
+          await driver.clickElement('.mm-picker-network');
+          await driver.clickElement(
+            `[data-rbd-draggable-id="${toHex(chainId)}"]`,
+          );
+          await driver.delay(largeDelayMs);
+          // Check localhost 8546 is selected and its balance value is correct
+          const networkDisplay = await driver.findElement({
+            css: '[data-testid="network-display"]',
+            text: networkName,
+          });
+          assert.ok(networkDisplay, 'Custom network should be selected and displayed');
+
+          await locateAccountBalanceDOM(driver, secondaryGanacheServer[0]);
+        } catch (error) {
+          console.error('Error in test:', error);
+          throw error;
+        }
+      },
+    );
+  });
 
   it('Creates a new wallet, sets up a secure password, and completes the onboarding process', async function () {
     await withFixtures(
@@ -244,7 +485,8 @@ describe('MetaMask onboarding @no-mmi', function () {
         ganacheOptions: defaultGanacheOptions,
         title: this.test?.fullTitle(),
       },
-      async ({ driver }: { driver: Driver }) => {
+      async (fixtures: Fixtures) => {
+        const { driver } = fixtures;
         try {
           const onboardingPage = new OnboardingPage(driver);
           const createPasswordPage = new CreatePasswordPage(driver);
@@ -294,7 +536,8 @@ describe('MetaMask onboarding @no-mmi', function () {
         ganacheOptions: defaultGanacheOptions,
         title: this.test?.fullTitle(),
       },
-      async ({ driver }: { driver: Driver }) => {
+      async (fixtures: Fixtures) => {
+        const { driver } = fixtures;
         try {
           const onboardingPage = new OnboardingPage(driver);
           const importSRPPage = new ImportSRPPage(driver);
@@ -336,7 +579,8 @@ describe('MetaMask onboarding @no-mmi', function () {
         ganacheOptions: defaultGanacheOptions,
         title: this.test?.fullTitle(),
       },
-      async ({ driver }: { driver: Driver }) => {
+      async (fixtures: Fixtures) => {
+        const { driver } = fixtures;
         try {
           const onboardingPage = new OnboardingPage(driver);
           const importSRPPage = new ImportSRPPage(driver);
@@ -394,7 +638,8 @@ describe('MetaMask onboarding @no-mmi', function () {
         ganacheOptions: defaultGanacheOptions,
         title: this.test?.fullTitle(),
       },
-      async ({ driver }: { driver: Driver }) => {
+      async (fixtures: Fixtures) => {
+        const { driver } = fixtures;
         try {
           const onboardingPage = new OnboardingPage(driver);
           const createPasswordPage = new CreatePasswordPage(driver);
@@ -450,7 +695,8 @@ describe('MetaMask onboarding @no-mmi', function () {
         ganacheOptions: defaultGanacheOptions,
         title: this.test?.fullTitle(),
       },
-      async ({ driver }: { driver: Driver }) => {
+      async (fixtures: Fixtures) => {
+        const { driver } = fixtures;
         try {
           const onboardingPage = new OnboardingPage(driver);
           const importSRPPage = new ImportSRPPage(driver);
