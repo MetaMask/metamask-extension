@@ -1,7 +1,7 @@
 import { StoryFn, Meta } from '@storybook/react';
 import React from 'react';
 import { SensitiveText } from '.';
-import { SensitiveLengths } from './sensitive-text.types';
+import { SensitiveTextLength } from './sensitive-text.types';
 import { Box } from '../box';
 import {
   Display,
@@ -14,7 +14,7 @@ export default {
   args: {
     children: 'Sensitive information',
     isHidden: false,
-    length: SensitiveLengths.Short,
+    length: SensitiveTextLength.Short,
   },
 } as Meta<typeof SensitiveText>;
 
@@ -35,14 +35,17 @@ HiddenText.args = {
 export const LengthVariants: StoryFn<typeof SensitiveText> = (args) => {
   return (
     <Box display={Display.Flex} flexDirection={FlexDirection.Column} gap={2}>
-      <SensitiveText {...args} length={SensitiveLengths.Short}>
-        Length "short" (4 characters)
+      <SensitiveText {...args} length={SensitiveTextLength.Short}>
+        Length "short" (6 characters)
       </SensitiveText>
-      <SensitiveText {...args} length={SensitiveLengths.Medium}>
-        Length "medium" (8 characters)
+      <SensitiveText {...args} length={SensitiveTextLength.Medium}>
+        Length "medium" (9 characters)
       </SensitiveText>
-      <SensitiveText {...args} length={SensitiveLengths.Long}>
+      <SensitiveText {...args} length={SensitiveTextLength.Long}>
         Length "long" (12 characters)
+      </SensitiveText>
+      <SensitiveText {...args} length={SensitiveTextLength.ExtraLong}>
+        Length "extra long" (20 characters)
       </SensitiveText>
     </Box>
   );

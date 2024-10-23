@@ -69,7 +69,7 @@ export { TagUrl } from './tag-url';
 export type { TagUrlProps } from './tag-url';
 export { Text, ValidTag, TextDirection, InvisibleCharacter } from './text';
 export type { TextProps } from './text';
-export { SensitiveText, SensitiveLengths } from './sensitive-text';
+export { SensitiveText, SensitiveTextLength } from './sensitive-text';
 export type { SensitiveTextProps } from './sensitive-text';
 export { Input, InputType } from './input';
 export type { InputProps } from './input';

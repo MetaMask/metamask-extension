@@ -112,7 +112,7 @@ export const AggregatedPercentageOverview = () => {
 
   let color = TextColor.textDefault;
 
-  if (isValidAmount(amountChange)) {
+  if (!privacyMode && isValidAmount(amountChange)) {
     if ((amountChange as number) === 0) {
       color = TextColor.textDefault;
     } else if ((amountChange as number) > 0) {
@@ -120,7 +120,10 @@ export const AggregatedPercentageOverview = () => {
     } else {
       color = TextColor.errorDefault;
     }
+  } else {
+    color = TextColor.textAlternative;
   }
+
   return (
     <Box display={Display.Flex}>
       <SensitiveText
@@ -130,6 +133,7 @@ export const AggregatedPercentageOverview = () => {
         style={{ whiteSpace: 'pre' }}
         isHidden={privacyMode}
         ellipsis
+        length="10"
       >
         {formattedAmountChange}
       </SensitiveText>
@@ -139,6 +143,7 @@ export const AggregatedPercentageOverview = () => {
         data-testid="aggregated-percentage-change"
         isHidden={privacyMode}
         ellipsis
+        length="10"
       >
         {formattedPercentChange}
       </SensitiveText>

@@ -35,6 +35,7 @@ import {
   ModalHeader,
   ModalOverlay,
   SensitiveText,
+  SensitiveTextLength,
   Text,
 } from '../../component-library';
 import {
@@ -384,6 +385,7 @@ export const TokenListItem = ({
                   variant={TextVariant.bodyMd}
                   textAlign={TextAlign.End}
                   isHidden={privacyMode}
+                  length={SensitiveTextLength.Short}
                 >
                   {primary}{' '}
                   {isNativeCurrency || isPrimaryTokenSymbolHidden
@@ -406,6 +408,7 @@ export const TokenListItem = ({
                   data-testid="multichain-token-list-item-secondary-value"
                   ellipsis={isStakeable}
                   isHidden={privacyMode}
+                  length={SensitiveTextLength.Medium}
                 >
                   {secondary}
                 </SensitiveText>
@@ -415,6 +418,7 @@ export const TokenListItem = ({
                   variant={TextVariant.bodySmMedium}
                   textAlign={TextAlign.End}
                   isHidden={privacyMode}
+                  length={SensitiveTextLength.Short}
                 >
                   {primary}{' '}
                   {isNativeCurrency || isPrimaryTokenSymbolHidden

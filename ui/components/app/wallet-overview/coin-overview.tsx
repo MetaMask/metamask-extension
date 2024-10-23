@@ -28,6 +28,7 @@ import {
   JustifyContent,
   TextAlign,
   TextVariant,
+  IconColor,
 } from '../../../helpers/constants/design-system';
 ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
 import { getPortfolioUrl } from '../../../helpers/utils/portfolio';
@@ -282,8 +283,9 @@ export const CoinOverview = ({
                     }
                   />
                   <ButtonIcon
+                    color={IconColor.iconAlternative}
                     marginLeft={2}
-                    size={ButtonIconSize.Lg}
+                    size={ButtonIconSize.Md}
                     onClick={handleSensitiveToggle}
                     iconName={privacyMode ? IconName.EyeSlash : IconName.Eye}
                     justifyContent={JustifyContent.center}

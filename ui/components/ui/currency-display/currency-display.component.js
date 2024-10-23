@@ -85,8 +85,12 @@ export default function CurrencyDisplay({
       {parts.suffix ? (
         <SensitiveText
           as="span"
-          className="currency-display-component__suffix"
-          marginInlineStart={1}
+          className={
+            privacyMode
+              ? 'currency-display-component__text'
+              : 'currency-display-component__suffix'
+          }
+          marginInlineStart={privacyMode ? 0 : 1}
           variant={TextVariant.inherit}
           isHidden={privacyMode}
           {...suffixProps}
