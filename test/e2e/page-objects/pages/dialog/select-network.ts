@@ -52,7 +52,9 @@ class SelectNetwork {
 
   async clickAddButton(): Promise<void> {
     console.log('Click Add Button');
-    await this.driver.clickElementAndWaitToDisappear('[data-testid="test-add-button"]');
+    await this.driver.clickElementAndWaitToDisappear(
+      '[data-testid="test-add-button"]',
+    );
   }
 }
 
