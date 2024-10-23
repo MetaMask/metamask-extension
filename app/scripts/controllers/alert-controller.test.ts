@@ -2,16 +2,15 @@
  * @jest-environment node
  */
 import { ControllerMessenger } from '@metamask/base-controller';
-import { KeyringControllerStateChangeEvent } from '@metamask/keyring-controller';
-import { SnapControllerStateChangeEvent } from '@metamask/snaps-controllers';
 import { EthAccountType } from '@metamask/keyring-api';
 import {
-  AlertControllerActions,
-  AlertControllerEvents,
   AlertController,
   AllowedActions,
   AllowedEvents,
   AlertControllerState,
+  AlertControllerMessenger,
+  AlertControllerGetStateAction,
+  AlertControllerStateChangeEvent,
 } from './alert-controller';
 
 const EMPTY_ACCOUNT = {
@@ -28,48 +27,54 @@ const EMPTY_ACCOUNT = {
     importTime: 0,
   },
 };
-describe('AlertController', () => {
-  let controllerMessenger: ControllerMessenger<
-    AlertControllerActions | AllowedActions,
-    | AlertControllerEvents
-    | KeyringControllerStateChangeEvent
-    | SnapControllerStateChangeEvent
-    | AllowedEvents
-  >;
-  let alertController: AlertController;
 
-  beforeEach(() => {
-    controllerMessenger = new ControllerMessenger<
-      AllowedActions,
-      AllowedEvents
-    >();
-    controllerMessenger.registerActionHandler(
-      'AccountsController:getSelectedAccount',
-      () => EMPTY_ACCOUNT,
-    );
-
-    const alertMessenger = controllerMessenger.getRestricted({
+const setupController = ({
+  state,
+}: {
+  state?: Partial<AlertControllerState>;
+}) => {
+  const controllerMessenger = new ControllerMessenger<
+    AllowedActions | AlertControllerGetStateAction,
+    AllowedEvents | AlertControllerStateChangeEvent
+  >();
+  const alertControllerMessenger: AlertControllerMessenger =
+    controllerMessenger.getRestricted({
       name: 'AlertController',
-      allowedActions: [`AccountsController:getSelectedAccount`],
-      allowedEvents: [`AccountsController:selectedAccountChange`],
+      allowedActions: ['AccountsController:getSelectedAccount'],
+      allowedEvents: ['AccountsController:selectedAccountChange'],
     });
 
-    alertController = new AlertController({
-      state: {
-        unconnectedAccountAlertShownOrigins: {
-          testUnconnectedOrigin: false,
-        },
-        web3ShimUsageOrigins: {
-          testWeb3ShimUsageOrigin: 0,
-        },
-      },
-      controllerMessenger: alertMessenger,
-    });
+  controllerMessenger.registerActionHandler(
+    'AccountsController:getSelectedAccount',
+    jest.fn().mockReturnValue(EMPTY_ACCOUNT),
+  );
+  const initialState = {
+    unconnectedAccountAlertShownOrigins: {
+      testUnconnectedOrigin: false,
+    },
+    web3ShimUsageOrigins: {
+      testWeb3ShimUsageOrigin: 0,
+    },
+  };
+  const controller = new AlertController({
+    messenger: alertControllerMessenger,
+    state: {
+      ...initialState,
+      ...state,
+    },
   });
 
+  return {
+    controller,
+    messenger: controllerMessenger,
+  };
+};
+
+describe('AlertController', () => {
   describe('default state', () => {
     it('should be same as AlertControllerState initialized', () => {
-      expect(alertController.store.getState()).toStrictEqual({
+      const { controller } = setupController({});
+      expect(controller.state).toStrictEqual({
         alertEnabledness: {
           unconnectedAccount: true,
           web3ShimUsage: true,
@@ -85,33 +90,35 @@ describe('AlertController', () => {
   });
 
   describe('alertEnabledness', () => {
+    const { controller, messenger } = setupController({});
     it('should default unconnectedAccount of alertEnabledness to true', () => {
       expect(
-        alertController.store.getState().alertEnabledness.unconnectedAccount,
+        controller.state.alertEnabledness.unconnectedAccount,
       ).toStrictEqual(true);
     });
 
     it('should set unconnectedAccount of alertEnabledness to false', () => {
-      alertController.setAlertEnabledness('unconnectedAccount', false);
+      controller.setAlertEnabledness('unconnectedAccount', false);
       expect(
-        alertController.store.getState().alertEnabledness.unconnectedAccount,
+        controller.state.alertEnabledness.unconnectedAccount,
       ).toStrictEqual(false);
       expect(
-        controllerMessenger.call('AlertController:getState').alertEnabledness
+        messenger.call('AlertController:getState').alertEnabledness
           .unconnectedAccount,
       ).toStrictEqual(false);
     });
   });
 
   describe('unconnectedAccountAlertShownOrigins', () => {
+    const { controller, messenger } = setupController({});
     it('should default unconnectedAccountAlertShownOrigins', () => {
       expect(
-        alertController.store.getState().unconnectedAccountAlertShownOrigins,
+        controller.state.unconnectedAccountAlertShownOrigins,
       ).toStrictEqual({
         testUnconnectedOrigin: false,
       });
       expect(
-        controllerMessenger.call('AlertController:getState')
+        messenger.call('AlertController:getState')
           .unconnectedAccountAlertShownOrigins,
       ).toStrictEqual({
         testUnconnectedOrigin: false,
@@ -119,14 +126,14 @@ describe('AlertController', () => {
     });
 
     it('should set unconnectedAccountAlertShownOrigins', () => {
-      alertController.setUnconnectedAccountAlertShown('testUnconnectedOrigin');
+      controller.setUnconnectedAccountAlertShown('testUnconnectedOrigin');
       expect(
-        alertController.store.getState().unconnectedAccountAlertShownOrigins,
+        controller.state.unconnectedAccountAlertShownOrigins,
       ).toStrictEqual({
         testUnconnectedOrigin: true,
       });
       expect(
-        controllerMessenger.call('AlertController:getState')
+        messenger.call('AlertController:getState')
           .unconnectedAccountAlertShownOrigins,
       ).toStrictEqual({
         testUnconnectedOrigin: true,
@@ -135,44 +142,36 @@ describe('AlertController', () => {
   });
 
   describe('web3ShimUsageOrigins', () => {
+    const { controller, messenger } = setupController({});
     it('should default web3ShimUsageOrigins', () => {
-      expect(
-        alertController.store.getState().web3ShimUsageOrigins,
-      ).toStrictEqual({
+      expect(controller.state.web3ShimUsageOrigins).toStrictEqual({
         testWeb3ShimUsageOrigin: 0,
       });
       expect(
-        controllerMessenger.call('AlertController:getState')
-          .web3ShimUsageOrigins,
+        messenger.call('AlertController:getState').web3ShimUsageOrigins,
       ).toStrictEqual({
         testWeb3ShimUsageOrigin: 0,
       });
     });
 
     it('should set origin of web3ShimUsageOrigins to recorded', () => {
-      alertController.setWeb3ShimUsageRecorded('testWeb3ShimUsageOrigin');
-      expect(
-        alertController.store.getState().web3ShimUsageOrigins,
-      ).toStrictEqual({
+      controller.setWeb3ShimUsageRecorded('testWeb3ShimUsageOrigin');
+      expect(controller.state.web3ShimUsageOrigins).toStrictEqual({
         testWeb3ShimUsageOrigin: 1,
       });
       expect(
-        controllerMessenger.call('AlertController:getState')
-          .web3ShimUsageOrigins,
+        messenger.call('AlertController:getState').web3ShimUsageOrigins,
       ).toStrictEqual({
         testWeb3ShimUsageOrigin: 1,
       });
     });
     it('should set origin of web3ShimUsageOrigins to dismissed', () => {
-      alertController.setWeb3ShimUsageAlertDismissed('testWeb3ShimUsageOrigin');
-      expect(
-        alertController.store.getState().web3ShimUsageOrigins,
-      ).toStrictEqual({
+      controller.setWeb3ShimUsageAlertDismissed('testWeb3ShimUsageOrigin');
+      expect(controller.state.web3ShimUsageOrigins).toStrictEqual({
         testWeb3ShimUsageOrigin: 2,
       });
       expect(
-        controllerMessenger.call('AlertController:getState')
-          .web3ShimUsageOrigins,
+        messenger.call('AlertController:getState').web3ShimUsageOrigins,
       ).toStrictEqual({
         testWeb3ShimUsageOrigin: 2,
       });
@@ -180,8 +179,9 @@ describe('AlertController', () => {
   });
 
   describe('selectedAccount change', () => {
+    const { controller, messenger } = setupController({});
     it('should set unconnectedAccountAlertShownOrigins to {}', () => {
-      controllerMessenger.publish('AccountsController:selectedAccountChange', {
+      messenger.publish('AccountsController:selectedAccountChange', {
         id: '',
         address: '0x1234567',
         options: {},
@@ -196,39 +196,38 @@ describe('AlertController', () => {
         },
       });
       expect(
-        alertController.store.getState().unconnectedAccountAlertShownOrigins,
+        controller.state.unconnectedAccountAlertShownOrigins,
       ).toStrictEqual({});
       expect(
-        controllerMessenger.call('AlertController:getState')
+        messenger.call('AlertController:getState')
           .unconnectedAccountAlertShownOrigins,
       ).toStrictEqual({});
     });
   });
 
   describe('AlertController:getState', () => {
+    const { controller, messenger } = setupController({});
     it('should return the current state of the property', () => {
       const defaultWeb3ShimUsageOrigins = {
         testWeb3ShimUsageOrigin: 0,
       };
+      expect(controller.state.web3ShimUsageOrigins).toStrictEqual(
+        defaultWeb3ShimUsageOrigins,
+      );
       expect(
-        alertController.store.getState().web3ShimUsageOrigins,
-      ).toStrictEqual(defaultWeb3ShimUsageOrigins);
-      expect(
-        controllerMessenger.call('AlertController:getState')
-          .web3ShimUsageOrigins,
+        messenger.call('AlertController:getState').web3ShimUsageOrigins,
       ).toStrictEqual(defaultWeb3ShimUsageOrigins);
     });
   });
 
   describe('AlertController:stateChange', () => {
+    const { controller, messenger } = setupController({});
     it('state will be published when there is state change', () => {
-      expect(
-        alertController.store.getState().web3ShimUsageOrigins,
-      ).toStrictEqual({
+      expect(controller.state.web3ShimUsageOrigins).toStrictEqual({
         testWeb3ShimUsageOrigin: 0,
       });
 
-      controllerMessenger.subscribe(
+      messenger.subscribe(
         'AlertController:stateChange',
         (state: Partial<AlertControllerState>) => {
           expect(state.web3ShimUsageOrigins).toStrictEqual({
@@ -237,19 +236,16 @@ describe('AlertController', () => {
         },
       );
 
-      alertController.setWeb3ShimUsageRecorded('testWeb3ShimUsageOrigin');
+      controller.setWeb3ShimUsageRecorded('testWeb3ShimUsageOrigin');
 
-      expect(
-        alertController.store.getState().web3ShimUsageOrigins,
-      ).toStrictEqual({
+      expect(controller.state.web3ShimUsageOrigins).toStrictEqual({
         testWeb3ShimUsageOrigin: 1,
       });
       expect(
-        alertController.getWeb3ShimUsageState('testWeb3ShimUsageOrigin'),
+        controller.getWeb3ShimUsageState('testWeb3ShimUsageOrigin'),
       ).toStrictEqual(1);
       expect(
-        controllerMessenger.call('AlertController:getState')
-          .web3ShimUsageOrigins,
+        messenger.call('AlertController:getState').web3ShimUsageOrigins,
       ).toStrictEqual({
         testWeb3ShimUsageOrigin: 1,
       });
