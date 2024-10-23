@@ -43,8 +43,16 @@ describe('Privacy Mode', function () {
         }
 
         async function togglePrivacy() {
+          const balanceElement = await driver.findElement(
+            '[data-testid="eth-overview__primary-currency"] .currency-display-component__text',
+          );
+          const initialText = await balanceElement.getText();
+
           await driver.clickElement('[data-testid="sensitive-toggle"]');
-          await new Promise((resolve) => setTimeout(resolve, 2e3));
+          await driver.wait(async () => {
+            const currentText = await balanceElement.getText();
+            return currentText !== initialText;
+          }, 2e3);
         }
 
         await unlockWallet(driver);
