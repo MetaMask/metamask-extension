@@ -4,6 +4,7 @@ import { Route, Switch, useHistory, useParams } from 'react-router-dom';
 import {
   ENVIRONMENT_TYPE_NOTIFICATION,
   ORIGIN_METAMASK,
+  TRACE_ENABLED_SIGN_METHODS,
 } from '../../../../shared/constants/app';
 import Loading from '../../../components/ui/loading-screen';
 import {
@@ -47,6 +48,8 @@ import ConfirmSignatureRequest from '../confirm-signature-request';
 import ConfirmTransactionSwitch from '../confirm-transaction-switch';
 import Confirm from '../confirm/confirm';
 import useCurrentConfirmation from '../hooks/useCurrentConfirmation';
+// TODO: Remove restricted import
+// eslint-disable-next-line import/no-restricted-paths
 import { getEnvironmentType } from '../../../../app/scripts/lib/util';
 import { useAsyncResult } from '../../../hooks/useAsyncResult';
 import { TraceName } from '../../../../shared/lib/trace';
@@ -103,11 +106,15 @@ const ConfirmTransaction = () => {
       return undefined;
     }
 
+    const traceId = TRACE_ENABLED_SIGN_METHODS.includes(type)
+      ? transaction.msgParams?.requestId?.toString()
+      : id;
+
     return await endBackgroundTrace({
       name: TraceName.NotificationDisplay,
-      id,
+      id: traceId,
     });
-  }, [id, isNotification]);
+  }, [id, isNotification, type, transaction.msgParams]);
 
   const transactionId = id;
   const isValidTokenMethod = isTokenMethodAction(type);

@@ -4,6 +4,9 @@ import configureStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import type { Meta, StoryObj } from '@storybook/react';
 import NftsItems from './nfts-items';
+import { mockNetworkState } from '../../../../../../test/stub/networks';
+import { CHAIN_IDS } from '../../../../../../shared/constants/network';
+
 
 // Custom middleware to ensure actions are plain objects
 const ensurePlainObjectMiddleware = () => (next) => (action) => {
@@ -73,30 +76,7 @@ const createMockState = () => ({
     network: '1',
     nftContracts: [],
     nfts: [],
-    providerConfig: {
-      type: 'mainnet',
-      chainId: '0x1',
-      nickname: 'Ethereum Mainnet',
-      ticker: 'ETH',
-      rpcUrl: 'https://mainnet.infura.io/v3/',
-      rpcPrefs: {
-        blockExplorerUrl: 'https://etherscan.io',
-      },
-    },
-    networksMetadata: {
-      '1': {
-        status: 'available',
-      },
-    },
-    selectedNetworkClientId: '1',
-    networkConfigurations: {
-      '1': {
-        chainId: '0x1',
-        nickname: 'Ethereum Mainnet',
-        ticker: 'ETH',
-        rpcUrl: 'https://mainnet.infura.io/v3/',
-      },
-    },
+    ...mockNetworkState({ chainId: CHAIN_IDS.MAINNET }),
     useRequestQueue: true,
   },
   appState: {

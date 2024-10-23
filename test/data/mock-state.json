@@ -14,6 +14,7 @@
     "importNftsModal": {
       "open": false
     },
+    "showPermittedNetworkToastOpen": false,
     "gasIsLoading": false,
     "isLoading": false,
     "modal": {
@@ -28,9 +29,6 @@
     },
     "warning": null,
     "customTokenAmount": "10"
-  },
-  "confirm": {
-    "isScrollToBottomCompleted": true
   },
   "confirmAlerts": {
     "alerts": [],
@@ -369,12 +367,17 @@
     "preferences": {
       "hideZeroBalanceTokens": false,
       "isRedesignedConfirmationsDeveloperEnabled": false,
+      "petnamesEnabled": false,
       "showExtensionInFullSizeView": false,
       "showFiatInTestnets": false,
+      "showNativeTokenAsMainBalance": true,
       "showTestNetworks": true,
       "smartTransactionsOptInStatus": false,
-      "useNativeCurrencyAsPrimaryCurrency": true,
-      "petnamesEnabled": false
+      "tokenSortConfig": {
+        "key": "tokenFiatAmount",
+        "order": "dsc",
+        "sortCallback": "stringNumeric"
+      }
     },
     "ensResolutionsByAddress": {},
     "isAccountMenuOpen": false,
@@ -383,20 +386,32 @@
       "unconnectedAccount": true
     },
     "featureFlags": {},
-    "networkConfigurations": {
-      "testNetworkConfigurationId": {
-        "rpcUrl": "https://testrpc.com",
+    "networkConfigurationsByChainId": {
+      "0x1": {
         "chainId": "0x1",
-        "nickname": "Custom Mainnet RPC",
-        "type": "rpc",
-        "id": "testNetworkConfigurationId"
+        "name": "Custom Mainnet RPC",
+        "nativeCurrency": "ETH",
+        "defaultRpcEndpointIndex": 0,
+        "rpcEndpoints": [
+          {
+            "type": "custom",
+            "url": "https://testrpc.com",
+            "networkClientId": "testNetworkConfigurationId"
+          }
+        ]
       },
-      "goerli": {
-        "type": "rpc",
+      "0x5": {
         "chainId": "0x5",
-        "ticker": "ETH",
-        "nickname": "Chain 5",
-        "id": "goerli"
+        "name": "Goerli",
+        "nativeCurrency": "ETH",
+        "defaultRpcEndpointIndex": 0,
+        "rpcEndpoints": [
+          {
+            "type": "custom",
+            "url": "https://goerli.com",
+            "networkClientId": "goerli"
+          }
+        ]
       }
     },
     "internalAccounts": {
@@ -606,8 +621,8 @@
         "developer": "Metamask",
         "website": "https://www.consensys.io/",
         "auditUrls": ["auditUrl1", "auditUrl2"],
-        "version": "1.0.0",
-        "lastUpdated": "April 20, 2023"
+        "version": "1.1.6",
+        "lastUpdated": "September 26, 2024"
       }
     },
     "notifications": {

@@ -45,13 +45,13 @@ import {
   getTokenList,
   getUseExternalServices,
 } from '../../../../../selectors';
+import useGetAssetImageUrl from '../../../../../hooks/useGetAssetImageUrl';
 ///: END:ONLY_INCLUDE_IF
 
 import type { Quote } from '../../../../../ducks/send/swap-and-send-utils';
 import { isEqualCaseInsensitive } from '../../../../../../shared/modules/string-utils';
 import { AssetPicker } from '../../../asset-picker-amount/asset-picker';
 import { TabName } from '../../../asset-picker-amount/asset-picker-modal/asset-picker-modal-tabs';
-import { getAssetImageURL } from '../../../../../helpers/utils/util';
 import { SendHexData, SendPageRow, QuoteCard } from '.';
 
 export const SendPageRecipientContent = ({
@@ -93,6 +93,11 @@ export const SendPageRecipientContent = ({
   const nativeCurrencyImageUrl = useSelector(getNativeCurrencyImage);
   const tokenList = useSelector(getTokenList) as TokenListMap;
   const ipfsGateway = useSelector(getIpfsGateway);
+
+  const nftImageURL = useGetAssetImageUrl(
+    sendAsset.details?.image ?? null,
+    ipfsGateway,
+  );
 
   isSwapAllowed =
     isSwapsChain &&
@@ -169,7 +174,7 @@ export const SendPageRecipientContent = ({
                   ? nativeCurrencyImageUrl
                   : tokenList &&
                     sendAsset.details &&
-                    (getAssetImageURL(sendAsset.details?.image, ipfsGateway) ||
+                    (nftImageURL ||
                       tokenList[sendAsset.details.address?.toLowerCase()]
                         ?.iconUrl),
               symbol: sendAsset?.details?.symbol || nativeCurrencySymbol,

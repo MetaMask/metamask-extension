@@ -84,10 +84,6 @@
   "failed": {
     "message": "mislukt"
   },
-  "fiat": {
-    "message": "FIAT",
-    "description": "Exchange type"
-  },
   "fileImportFail": {
     "message": "Bestandsimport werkt niet? Klik hier!",
     "description": "Helps user import their account from a JSON file"
@@ -140,9 +136,6 @@
   "invalidAddressRecipient": {
     "message": "Het adres van de ontvanger is ongeldig"
   },
-  "invalidBlockExplorerURL": {
-    "message": "Ongeldige Block Explorer URI"
-  },
   "invalidRPC": {
     "message": "Ongeldige RPC-URI"
   },
@@ -192,9 +185,6 @@
   },
   "next": {
     "message": "volgende"
-  },
-  "noAddressForName": {
-    "message": "Er is geen adres ingesteld voor deze naam."
   },
   "noTransactions": {
     "message": "Geen transacties"

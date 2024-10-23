@@ -16,6 +16,7 @@ import {
   showModal,
   updateCustomNonce,
 } from '../../../../../../../store/actions';
+import { selectConfirmationAdvancedDetailsOpen } from '../../../../../selectors/preferences';
 import { TransactionData } from '../transaction-data/transaction-data';
 
 const NonceDetails = () => {
@@ -58,13 +59,26 @@ const NonceDetails = () => {
             enableCustomNonce ? () => openEditNonceModal() : undefined
           }
           editIconClassName="edit-nonce-btn"
+          editIconDataTestId="edit-nonce-icon"
         />
       </ConfirmInfoRow>
     </ConfirmInfoSection>
   );
 };
 
-export const AdvancedDetails: React.FC = () => {
+export const AdvancedDetails = ({
+  overrideVisibility = false,
+}: {
+  overrideVisibility?: boolean;
+}) => {
+  const showAdvancedDetails = useSelector(
+    selectConfirmationAdvancedDetailsOpen,
+  );
+
+  if (!overrideVisibility && !showAdvancedDetails) {
+    return null;
+  }
+
   return (
     <>
       <NonceDetails />

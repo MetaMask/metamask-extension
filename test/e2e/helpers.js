@@ -16,6 +16,7 @@ const { PAGES } = require('./webdriver/driver');
 const GanacheSeeder = require('./seeder/ganache-seeder');
 const { Bundler } = require('./bundler');
 const { SMART_CONTRACTS } = require('./seeder/smart-contracts');
+const { setManifestFlags } = require('./set-manifest-flags');
 const {
   ERC_4337_ACCOUNT,
   DEFAULT_GANACHE_ETH_BALANCE_DEC,
@@ -48,6 +49,7 @@ const convertETHToHexGwei = (eth) => convertToHexValue(eth * 10 ** 18);
  * @property {mockttp.MockedEndpoint[]} mockedEndpoint - The mocked endpoint.
  * @property {Bundler} bundlerServer - The bundler server.
  * @property {mockttp.Mockttp} mockServer - The mock server.
+ * @property {object} manifestFlags - Flags to add to the manifest in order to change things at runtime.
  */
 
 /**
@@ -75,6 +77,7 @@ async function withFixtures(options, testSuite) {
     useBundler,
     usePaymaster,
     ethConversionInUsd,
+    manifestFlags,
   } = options;
 
   const fixtureServer = new FixtureServer();
@@ -179,6 +182,8 @@ async function withFixtures(options, testSuite) {
     }
     await mockServer.start(8000);
 
+    setManifestFlags(manifestFlags);
+
     driver = (await buildWebDriver(driverOptions)).driver;
     webDriver = driver.driver;
 
@@ -224,10 +229,6 @@ async function withFixtures(options, testSuite) {
       throw new Error(errorsAndExceptions);
     }
 
-    // At this point the suite has executed successfully, so we can log out a success message
-    // (Note: a Chrome browser error will unfortunately pop up after this success message)
-    console.log(`\nSuccess on testcase: '${title}'\n`);
-
     // Evaluate whether any new hosts received network requests during E2E test
     // suite execution. If so, fail the test unless the
     // --update-privacy-snapshot was specified. In that case, update the
@@ -266,6 +267,10 @@ async function withFixtures(options, testSuite) {
         );
       }
     }
+
+    // At this point the suite has executed successfully, so we can log out a success message
+    // (Note: a Chrome browser error will unfortunately pop up after this success message)
+    console.log(`\nSuccess on testcase: '${title}'\n`);
   } catch (error) {
     failed = true;
     if (webDriver) {
@@ -530,7 +535,10 @@ const onboardingRevealAndConfirmSRP = async (driver) => {
 
   await driver.clickElement('[data-testid="confirm-recovery-phrase"]');
 
-  await driver.clickElement({ text: 'Confirm', tag: 'button' });
+  await driver.clickElementAndWaitToDisappear({
+    tag: 'button',
+    text: 'Confirm',
+  });
 };
 
 /**
@@ -541,30 +549,8 @@ const onboardingRevealAndConfirmSRP = async (driver) => {
  */
 const onboardingCompleteWalletCreation = async (driver) => {
   // complete
-  await driver.findElement({ text: 'Wallet creation successful', tag: 'h2' });
+  await driver.findElement({ text: 'Congratulations', tag: 'h2' });
   await driver.clickElement('[data-testid="onboarding-complete-done"]');
-};
-
-const onboardingCompleteWalletCreationWithOptOut = async (driver) => {
-  // wait for h2 to appear
-  await driver.findElement({ text: 'Wallet creation successful', tag: 'h2' });
-  // opt-out from third party API
-  await driver.clickElement({ text: 'Advanced configuration', tag: 'a' });
-  await driver.clickElement(
-    '[data-testid="basic-functionality-toggle"] .toggle-button',
-  );
-  await driver.clickElement('[id="basic-configuration-checkbox"]');
-  await driver.clickElement({ text: 'Turn off', tag: 'button' });
-
-  await Promise.all(
-    (
-      await driver.findClickableElements(
-        '.toggle-button.toggle-button--on:not([data-testid="basic-functionality-toggle"] .toggle-button)',
-      )
-    ).map((toggle) => toggle.click()),
-  );
-  // complete onboarding
-  await driver.clickElement({ text: 'Done', tag: 'button' });
 };
 
 /**
@@ -576,6 +562,52 @@ const onboardingPinExtension = async (driver) => {
   // pin extension
   await driver.clickElement('[data-testid="pin-extension-next"]');
   await driver.clickElement('[data-testid="pin-extension-done"]');
+};
+
+const onboardingCompleteWalletCreationWithOptOut = async (driver) => {
+  // wait for h2 to appear
+  await driver.findElement({ text: 'Congratulations!', tag: 'h2' });
+
+  // opt-out from third party API on general section
+  await driver.clickElementAndWaitToDisappear({
+    text: 'Manage default privacy settings',
+    tag: 'button',
+  });
+  await driver.clickElement({ text: 'General', tag: 'p' });
+  await driver.clickElement(
+    '[data-testid="basic-functionality-toggle"] .toggle-button',
+  );
+  await driver.clickElement('[id="basic-configuration-checkbox"]');
+  await driver.clickElementAndWaitToDisappear({
+    tag: 'button',
+    text: 'Turn off',
+  });
+
+  // opt-out from third party API on assets section
+  await driver.clickElement('[data-testid="category-back-button"]');
+  await driver.clickElement({ text: 'Assets', tag: 'p' });
+  await Promise.all(
+    (
+      await driver.findClickableElements(
+        '.toggle-button.toggle-button--on:not([data-testid="basic-functionality-toggle"] .toggle-button)',
+      )
+    ).map((toggle) => toggle.click()),
+  );
+  await driver.clickElement('[data-testid="category-back-button"]');
+
+  // Wait until the onboarding carousel has stopped moving
+  // otherwise the click has no effect.
+  await driver.waitForElementToStopMoving(
+    '[data-testid="privacy-settings-back-button"]',
+  );
+  await driver.clickElement('[data-testid="privacy-settings-back-button"]');
+
+  // complete onboarding
+  await driver.clickElementAndWaitToDisappear({
+    tag: 'button',
+    text: 'Done',
+  });
+  await onboardingPinExtension(driver);
 };
 
 const completeCreateNewWalletOnboardingFlowWithOptOut = async (
@@ -750,12 +782,19 @@ const connectToDapp = async (driver) => {
   });
 
   await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
+
+  const editButtons = await driver.findElements('[data-testid="edit"]');
+  await editButtons[1].click();
+
   await driver.clickElement({
-    text: 'Next',
-    tag: 'button',
+    text: 'Localhost 8545',
+    tag: 'p',
   });
+
+  await driver.clickElement('[data-testid="connect-more-chains-button"]');
+
   await driver.clickElementAndWaitForWindowToClose({
-    text: 'Confirm',
+    text: 'Connect',
     tag: 'button',
   });
   await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
@@ -1184,10 +1223,7 @@ async function tempToggleSettingRedesignedConfirmations(driver) {
   await driver.switchToWindowWithTitle(WINDOW_TITLES.ExtensionInFullScreenView);
 
   // Open settings menu button
-  const accountOptionsMenuSelector =
-    '[data-testid="account-options-menu-button"]';
-  await driver.waitForSelector(accountOptionsMenuSelector);
-  await driver.clickElement(accountOptionsMenuSelector);
+  await driver.clickElement('[data-testid="account-options-menu-button"]');
 
   // fix race condition with mmi build
   if (process.env.MMI) {

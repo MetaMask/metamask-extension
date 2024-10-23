@@ -148,6 +148,14 @@ export default function ConfirmTokenTransactionSwitch({ transaction }) {
             decimals={decimals}
             image={tokenImage}
             tokenAddress={tokenAddress}
+            onEdit={async ({ txData }) => {
+              const { id } = txData;
+              await dispatch(
+                editExistingTransaction(AssetType.NFT, id.toString()),
+              );
+              dispatch(clearConfirmTransaction());
+              history.push(SEND_ROUTE);
+            }}
             toAddress={toAddress}
             tokenAmount={tokenAmount}
             tokenId={tokenId}

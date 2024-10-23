@@ -6,6 +6,8 @@ import { useSelector } from 'react-redux';
 import { EtherDenomination } from '../../../../../../../shared/constants/common';
 import {
   addHexes,
+  decGWEIToHexWEI,
+  decimalToHex,
   getEthConversionFromWeiHex,
   getValueFromWeiHex,
   multiplyHexes,
@@ -15,9 +17,9 @@ import { useFiatFormatter } from '../../../../../../hooks/useFiatFormatter';
 import { useGasFeeEstimates } from '../../../../../../hooks/useGasFeeEstimates';
 import { getCurrentCurrency } from '../../../../../../selectors';
 import { HEX_ZERO } from '../shared/constants';
-import { useTransactionGasFeeEstimate } from './useTransactionGasFeeEstimate';
 import { useEIP1559TxFees } from './useEIP1559TxFees';
 import { useSupportsEIP1559 } from './useSupportsEIP1559';
+import { useTransactionGasFeeEstimate } from './useTransactionGasFeeEstimate';
 
 const EMPTY_FEE = '';
 const EMPTY_FEES = {
@@ -94,7 +96,7 @@ export function useFeeCalculations(transactionMeta: TransactionMeta) {
 
   const maxFee = useMemo(() => {
     return multiplyHexes(
-      supportsEIP1559 ? (maxFeePerGas as Hex) : (gasPrice as Hex),
+      supportsEIP1559 ? (decimalToHex(maxFeePerGas) as Hex) : (gasPrice as Hex),
       gasLimit as Hex,
     );
   }, [supportsEIP1559, maxFeePerGas, gasLimit, gasPrice]);
@@ -113,8 +115,8 @@ export function useFeeCalculations(transactionMeta: TransactionMeta) {
 
     // Logic for any network without L1 and L2 fee components
     const minimumFeePerGas = addHexes(
-      estimatedBaseFee || HEX_ZERO,
-      maxPriorityFeePerGas,
+      decGWEIToHexWEI(estimatedBaseFee) || HEX_ZERO,
+      decimalToHex(maxPriorityFeePerGas),
     );
 
     const estimatedFee = multiplyHexes(

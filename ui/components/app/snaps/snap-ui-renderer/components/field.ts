@@ -1,7 +1,6 @@
 import {
   FieldElement,
   InputElement,
-  ButtonElement,
   JSXElement,
   DropdownElement,
   RadioGroupElement,
@@ -9,12 +8,13 @@ import {
   SelectorElement,
 } from '@metamask/snaps-sdk/jsx';
 import { getJsxChildren } from '@metamask/snaps-utils';
-import { button as buttonFn } from './button';
+import { getPrimaryChildElementIndex, mapToTemplate } from '../utils';
 import { dropdown as dropdownFn } from './dropdown';
 import { radioGroup as radioGroupFn } from './radioGroup';
 import { checkbox as checkboxFn } from './checkbox';
 import { selector as selectorFn } from './selector';
 import { UIComponentFactory, UIComponentParams } from './types';
+import { constructInputProps } from './input';
 
 export const field: UIComponentFactory<FieldElement> = ({
   element,
@@ -23,7 +23,10 @@ export const field: UIComponentFactory<FieldElement> = ({
 }) => {
   // For fields we don't render the Input itself, we just adapt SnapUIInput.
   const children = getJsxChildren(element);
-  const child = children[0] as JSXElement;
+  const primaryChildIndex = getPrimaryChildElementIndex(
+    children as JSXElement[],
+  );
+  const child = children[primaryChildIndex] as JSXElement;
 
   switch (child.type) {
     case 'FileInput': {
@@ -42,14 +45,34 @@ export const field: UIComponentFactory<FieldElement> = ({
     }
 
     case 'Input': {
-      const input = child as InputElement;
-      const button = children[1] as ButtonElement;
-      const buttonMapped =
-        button &&
-        buttonFn({
+      const getLeftAccessory = () => {
+        return mapToTemplate({
           ...params,
-          element: button,
-        } as UIComponentParams<ButtonElement>);
+          element: children[0] as JSXElement,
+        });
+      };
+
+      const getRightAccessory = (accessoryIndex: number) => {
+        return mapToTemplate({
+          ...params,
+          element: children[accessoryIndex] as JSXElement,
+        });
+      };
+
+      const input = child as InputElement;
+
+      const leftAccessoryMapped =
+        primaryChildIndex > 0 ? getLeftAccessory() : undefined;
+
+      let rightAccessoryIndex: number | undefined;
+      if (children[2]) {
+        rightAccessoryIndex = 2;
+      } else if (primaryChildIndex === 0 && children[1]) {
+        rightAccessoryIndex = 1;
+      }
+      const rightAccessoryMapped = rightAccessoryIndex
+        ? getRightAccessory(rightAccessoryIndex)
+        : undefined;
 
       return {
         element: 'SnapUIInput',
@@ -57,19 +80,24 @@ export const field: UIComponentFactory<FieldElement> = ({
           id: input.props.name,
           placeholder: input.props.placeholder,
           label: element.props.label,
-          textFieldProps: {
-            type: input.props.type,
-          },
+          ...constructInputProps(input.props),
           name: input.props.name,
           form,
           error: element.props.error !== undefined,
           helpText: element.props.error,
         },
         propComponents: {
-          endAccessory: buttonMapped && {
-            ...buttonMapped,
+          startAccessory: leftAccessoryMapped && {
+            ...leftAccessoryMapped,
             props: {
-              ...buttonMapped.props,
+              ...leftAccessoryMapped.props,
+              padding: 0,
+            },
+          },
+          endAccessory: rightAccessoryMapped && {
+            ...rightAccessoryMapped,
+            props: {
+              ...rightAccessoryMapped.props,
               padding: 0,
             },
           },

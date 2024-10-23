@@ -23,6 +23,8 @@ const PAGES = {
   POPUP: 'popup',
 };
 
+const artifactDir = (title) => `./test-artifacts/${this.browser}/${title}`;
+
 /**
  * Temporary workaround to patch selenium's element handle API with methods
  * that match the playwright API for Elements
@@ -61,6 +63,8 @@ function wrapElementWithAPI(element, driver) {
         return await driver.wait(until.stalenessOf(element), timeout);
       case 'visible':
         return await driver.wait(until.elementIsVisible(element), timeout);
+      case 'disabled':
+        return await driver.wait(until.elementIsDisabled(element), timeout);
       default:
         throw new Error(`Provided state: '${state}' is not supported`);
     }
@@ -315,8 +319,12 @@ class Driver {
    * Waits for an element that matches the given locator to reach the specified state within the timeout period.
    *
    * @param {string | object} rawLocator - Element locator
-   * @param {number} timeout - optional parameter that specifies the maximum amount of time (in milliseconds)
+   * @param {object} [options] - parameter object
+   * @param {number} [options.timeout] - specifies the maximum amount of time (in milliseconds)
    * to wait for the condition to be met and desired state of the element to wait for.
+   * It defaults to 'visible', indicating that the method will wait until the element is visible on the page.
+   * The other supported state is 'detached', which means waiting until the element is removed from the DOM.
+   * @param {string} [options.state] - specifies the state of the element to wait for.
    * It defaults to 'visible', indicating that the method will wait until the element is visible on the page.
    * The other supported state is 'detached', which means waiting until the element is removed from the DOM.
    * @returns {Promise<WebElement>} promise resolving when the element meets the state or timeout occurs.
@@ -590,6 +598,57 @@ class Driver {
   }
 
   /**
+   * Checks if an element is moving by comparing its position at two different times.
+   *
+   * @param {string | object} rawLocator - Element locator.
+   * @returns {Promise<boolean>} Promise that resolves to a boolean indicating if the element is moving.
+   */
+  async isElementMoving(rawLocator) {
+    const element = await this.findElement(rawLocator);
+    const initialPosition = await element.getRect();
+
+    await new Promise((resolve) => setTimeout(resolve, 500)); // Wait for a short period
+
+    const newPosition = await element.getRect();
+
+    return (
+      initialPosition.x !== newPosition.x || initialPosition.y !== newPosition.y
+    );
+  }
+
+  /**
+   * Waits until an element stops moving within a specified timeout period.
+   *
+   * @param {string | object} rawLocator - Element locator.
+   * @param {number} timeout - The maximum time to wait for the element to stop moving.
+   * @returns {Promise<void>} Promise that resolves when the element stops moving.
+   * @throws {Error} Throws an error if the element does not stop moving within the timeout period.
+   */
+  async waitForElementToStopMoving(rawLocator, timeout = 5000) {
+    const startTime = Date.now();
+
+    while (Date.now() - startTime < timeout) {
+      if (!(await this.isElementMoving(rawLocator))) {
+        return;
+      }
+      await new Promise((resolve) => setTimeout(resolve, 500)); // Check every 500ms
+    }
+
+    throw new Error('Element did not stop moving within the timeout period');
+  }
+
+  /** @param {string} title - The title of the window or tab the screenshot is being taken in */
+  async takeScreenshot(title) {
+    const filepathBase = `${artifactDir(title)}/test-screenshot`;
+    await fs.mkdir(artifactDir(title), { recursive: true });
+
+    const screenshot = await this.driver.takeScreenshot();
+    await fs.writeFile(`${filepathBase}-screenshot.png`, screenshot, {
+      encoding: 'base64',
+    });
+  }
+
+  /**
    * Clicks on an element identified by the provided locator and waits for it to disappear.
    * For scenarios where the clicked element, such as a notification or popup, needs to disappear afterward.
    * The wait ensures that subsequent interactions are not obscured by the initial notification or popup element.
@@ -764,12 +823,25 @@ class Driver {
     const response = await this.driver.get(`${this.extensionUrl}/${page}.html`);
     // Wait for asynchronous JavaScript to load
     if (waitForControllers) {
-      await this.driver.wait(
-        until.elementLocated(this.buildLocator('.controller-loaded')),
-        10 * 1000,
-      );
+      await this.waitForControllersLoaded();
     }
     return response;
+  }
+
+  /**
+   * Waits for the controllers to be loaded on the page.
+   *
+   * This function waits until an element with the class 'controller-loaded' is located,
+   * indicating that the controllers have finished loading.
+   *
+   * @returns {Promise<void>} A promise that resolves when the controllers are loaded.
+   * @throws {Error} Will throw an error if the element is not located within the timeout period.
+   */
+  async waitForControllersLoaded() {
+    await this.driver.wait(
+      until.elementLocated(this.buildLocator('.controller-loaded')),
+      10 * 1000,
+    );
   }
 
   /**
@@ -1087,9 +1159,8 @@ class Driver {
     );
     console.error(`${error}\n`);
 
-    const artifactDir = `./test-artifacts/${this.browser}/${title}`;
-    const filepathBase = `${artifactDir}/test-failure`;
-    await fs.mkdir(artifactDir, { recursive: true });
+    const filepathBase = `${artifactDir(title)}/test-failure`;
+    await fs.mkdir(artifactDir(title), { recursive: true });
     // On occasion there may be a bug in the offscreen document which does
     // not render visibly to the user and therefore no screenshot can be
     // taken. In this case we skip the screenshot and log the error.
@@ -1286,7 +1357,10 @@ function collectMetrics() {
       });
     });
 
-  return results;
+  return {
+    ...results,
+    ...window.stateHooks.getCustomTraces(),
+  };
 }
 
 module.exports = { Driver, PAGES };
