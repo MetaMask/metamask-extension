@@ -1527,9 +1527,6 @@
       }
     },
     "@metamask/multichain": {
-      "globals": {
-        "console.log": true
-      },
       "packages": {
         "@metamask/controller-utils": true,
         "@metamask/multichain>@metamask/api-specs": true,
