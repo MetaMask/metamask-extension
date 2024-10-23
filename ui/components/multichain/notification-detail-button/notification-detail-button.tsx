@@ -13,9 +13,8 @@ import {
 } from '../../component-library';
 import { BlockSize } from '../../../helpers/constants/design-system';
 
-type Notification = NotificationServicesController.Types.INotification;
-
 const { TRIGGER_TYPES } = NotificationServicesController.Constants;
+type Notification = NotificationServicesController.Types.INotification;
 
 type NotificationDetailButtonProps = {
   notification: Notification;

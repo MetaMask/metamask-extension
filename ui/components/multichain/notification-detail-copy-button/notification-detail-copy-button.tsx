@@ -25,8 +25,8 @@ import Tooltip from '../../ui/tooltip/tooltip';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { MINUTE } from '../../../../shared/constants/time';
 
-type Notification = NotificationServicesController.Types.INotification;
 const { TRIGGER_TYPES } = NotificationServicesController.Constants;
+type Notification = NotificationServicesController.Types.INotification;
 
 export type NotificationDetailCopyButtonProps = {
   notification?: Notification;

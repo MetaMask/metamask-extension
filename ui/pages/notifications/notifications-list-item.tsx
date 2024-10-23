@@ -19,8 +19,8 @@ import {
   hasNotificationComponents,
 } from './notification-components';
 
-type Notification = NotificationServicesController.Types.INotification;
 const { TRIGGER_TYPES } = NotificationServicesController.Constants;
+type Notification = NotificationServicesController.Types.INotification;
 
 export function NotificationsListItem({
   notification,
