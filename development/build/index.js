@@ -64,7 +64,6 @@ if (false) {
   require('eslint-plugin-react');
   require('eslint-plugin-react-hooks');
   require('eslint-plugin-jest');
-  require('eslint-plugin-rulesdir');
 }
 /* eslint-enable no-constant-condition, node/global-require */
 
