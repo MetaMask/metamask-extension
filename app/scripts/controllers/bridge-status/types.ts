@@ -2,7 +2,6 @@ import {
   ControllerStateChangeEvent,
   RestrictedControllerMessenger,
 } from '@metamask/base-controller';
-import { TransactionControllerTransactionConfirmedEvent } from '@metamask/transaction-controller';
 import { NetworkControllerFindNetworkClientIdByChainIdAction } from '@metamask/network-controller';
 import { AccountsControllerGetSelectedAccountAction } from '@metamask/accounts-controller';
 import { ChainId, Quote } from '../../../../ui/pages/bridge/types';
@@ -28,11 +27,17 @@ export type Asset = {
   icon?: string;
 };
 
-export type ChainStatus = {
+export type SrcChainStatus = {
   chainId: ChainId;
   txHash: string;
   amount?: string;
   token?: Asset;
+};
+
+export type DestChainStatus = SrcChainStatus & {
+  txHash?: string;
+  amount?: string;
+  token?: Record<string, never> | Asset;
 };
 
 export enum StatusTypes {
@@ -59,8 +64,8 @@ export enum BridgeId {
 
 export type StatusResponse = {
   status: StatusTypes;
-  srcChain: ChainStatus;
-  destChain?: ChainStatus;
+  srcChain: SrcChainStatus;
+  destChain?: DestChainStatus;
   bridge?: BridgeId;
   isExpectedToken?: boolean;
   isUnrecognizedRouterAddress?: boolean;
@@ -124,7 +129,7 @@ export type BridgeHistoryItem = {
 // o/w you get a type error
 type TxHash = string;
 export type BridgeStatusControllerState = {
-  txHistory: Record<TxHash, BridgeHistoryItem>;
+  txHistory: Record<TxHash, BridgeHistoryItem>; // txHash is from the source chain
 };
 
 export enum BridgeStatusAction {
@@ -150,7 +155,7 @@ type BridgeStatusControllerEvents = ControllerStateChangeEvent<
 type AllowedActions =
   | NetworkControllerFindNetworkClientIdByChainIdAction
   | AccountsControllerGetSelectedAccountAction;
-type AllowedEvents = TransactionControllerTransactionConfirmedEvent;
+type AllowedEvents = never;
 
 /**
  * The messenger for the BridgeStatusController.

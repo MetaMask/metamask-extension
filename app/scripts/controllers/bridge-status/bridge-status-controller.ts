@@ -73,30 +73,21 @@ export default class BridgeStatusController extends StaticIntervalPollingControl
   startPollingForBridgeTxStatus = async (
     fetchBridgeTxStatusArgs: FetchBridgeTxStatusArgs,
   ) => {
-    // Need to subscribe since if we try to fetch status too fast, API will fail with 500 error
-    // So fetch on tx confirmed
     const { statusRequest } = fetchBridgeTxStatusArgs;
 
-    this.messagingSystem.subscribe(
-      'TransactionController:transactionConfirmed',
-      async (txMeta) => {
-        if (txMeta.hash === statusRequest.srcTxHash) {
-          const hexSourceChainId = new Numeric(statusRequest.srcChainId, 10)
-            .toPrefixedHexString()
-            .toLowerCase() as `0x${string}`;
+    const hexSourceChainId = new Numeric(statusRequest.srcChainId, 10)
+      .toPrefixedHexString()
+      .toLowerCase() as `0x${string}`;
 
-          const networkClientId = this.messagingSystem.call(
-            'NetworkController:findNetworkClientIdByChainId',
-            hexSourceChainId,
-          );
-          this.#pollingTokensByTxHash[statusRequest.srcTxHash] =
-            this.startPollingByNetworkClientId(
-              networkClientId,
-              fetchBridgeTxStatusArgs,
-            );
-        }
-      },
+    const networkClientId = this.messagingSystem.call(
+      'NetworkController:findNetworkClientIdByChainId',
+      hexSourceChainId,
     );
+    this.#pollingTokensByTxHash[statusRequest.srcTxHash] =
+      this.startPollingByNetworkClientId(
+        networkClientId,
+        fetchBridgeTxStatusArgs,
+      );
   };
 
   // This will be called after you call this.startPollingByNetworkClientId()
@@ -123,6 +114,10 @@ export default class BridgeStatusController extends StaticIntervalPollingControl
   }: FetchBridgeTxStatusArgs) => {
     const { bridgeStatusState } = this.state;
     const status = await fetchBridgeTxStatus(statusRequest);
+    console.log('fetchBridgeTxStatus', {
+      statusRequest,
+      status,
+    });
 
     // No need to purge these on network change or account change, TransactionController does not purge either.
     // TODO In theory we can skip checking status if it's not the current account/network
