@@ -1,0 +1,357 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`BridgeQuoteCard should not render when there is a quote fetch error 1`] = `<div />`;
+
+exports[`BridgeQuoteCard should not render when there is no quote 1`] = `<div />`;
+
+exports[`BridgeQuoteCard should render the recommended quote 1`] = `
+<div>
+  <div
+    class="mm-box quote-card"
+  >
+    <div
+      class="mm-box bridge-box quote-card__timer"
+    >
+      <p
+        class="mm-box mm-text mm-text--body-md mm-box--color-text-default"
+      >
+        New quotes in 0:30
+      </p>
+    </div>
+    <div
+      class="mm-box bridge-box prepare-bridge-page__content quote-card__content"
+    >
+      <div
+        class="mm-box quote-card__info-row"
+      >
+        <div
+          class="mm-box quote-card__info-row__label"
+        >
+          <p
+            class="mm-box mm-text mm-text--body-md mm-box--color-text-default"
+          >
+            Estimated time
+          </p>
+          <div>
+            <div
+              aria-describedby="tippy-tooltip-1"
+              class="quote-card__info-row__label__tooltip"
+              data-original-title="This is the estimated time it will take for the bridging to be complete."
+              data-tooltipped=""
+              style="display: flex;"
+              tabindex="0"
+            >
+              <span
+                class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-icon-muted"
+                style="mask-image: url('./images/icons/question.svg');"
+              />
+            </div>
+          </div>
+        </div>
+        <div
+          class="mm-box quote-card__info-row__description"
+        >
+          <div
+            class="mm-box quote-card__info-row__description__secondary"
+          >
+            <p
+              class="mm-box mm-text mm-text--body-md mm-box--color-text-default"
+            />
+          </div>
+          <p
+            class="mm-box mm-text mm-text--body-md mm-box--color-text-default"
+          >
+            1 minutes
+          </p>
+        </div>
+      </div>
+      <div
+        class="mm-box quote-card__info-row"
+      >
+        <div
+          class="mm-box quote-card__info-row__label"
+        >
+          <p
+            class="mm-box mm-text mm-text--body-md mm-box--color-text-default"
+          >
+            Quote rate
+          </p>
+        </div>
+        <div
+          class="mm-box quote-card__info-row__description"
+        >
+          <div
+            class="mm-box quote-card__info-row__description__secondary"
+          >
+            <p
+              class="mm-box mm-text mm-text--body-md mm-box--color-text-default"
+            />
+          </div>
+          <p
+            class="mm-box mm-text mm-text--body-md mm-box--color-text-default"
+          >
+            1 USDC = 0.9989 USDC
+          </p>
+        </div>
+      </div>
+      <div
+        class="mm-box quote-card__info-row"
+      >
+        <div
+          class="mm-box quote-card__info-row__label"
+        >
+          <p
+            class="mm-box mm-text mm-text--body-md mm-box--color-text-default"
+          >
+            Total fees
+          </p>
+          <div>
+            <div
+              aria-describedby="tippy-tooltip-2"
+              class="quote-card__info-row__label__tooltip"
+              data-original-title="This includes gas fees (paid to crypto miners) and relayer fees (paid to power complex services like bridging).
+Fees are based on network traffic and transaction complexity. MetaMask does not profit from either fee."
+              data-tooltipped=""
+              style="display: flex;"
+              tabindex="0"
+            >
+              <span
+                class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-icon-muted"
+                style="mask-image: url('./images/icons/question.svg');"
+              />
+            </div>
+          </div>
+        </div>
+        <div
+          class="mm-box quote-card__info-row__description"
+        >
+          <div
+            class="mm-box quote-card__info-row__description__secondary"
+          >
+            <p
+              class="mm-box mm-text mm-text--body-md mm-box--color-text-default"
+            >
+              0.01 ETH
+            </p>
+          </div>
+          <p
+            class="mm-box mm-text mm-text--body-md mm-box--color-text-default"
+          >
+            $0.01
+          </p>
+        </div>
+      </div>
+    </div>
+    <div
+      class="mm-box bridge-box quote-card__footer"
+    >
+      <span>
+        <p
+          class="mm-box mm-text mm-text--body-md mm-box--color-text-default"
+        >
+          Includes a 0.875% MetaMask fee.
+        </p>
+        <button
+          class="mm-box mm-text mm-button-base mm-button-link mm-button-link--size-auto mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-0 mm-box--padding-left-0 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-default mm-box--background-color-transparent"
+        >
+          <span
+            class="mm-box mm-text mm-text--inherit mm-box--color-primary-default"
+          >
+            <p
+              class="mm-box mm-text mm-text--body-md mm-box--color-text-default"
+            >
+              view all quotes
+            </p>
+          </span>
+        </button>
+      </span>
+      <button
+        class="mm-box mm-text mm-button-base mm-button-link mm-button-link--size-auto mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-0 mm-box--padding-left-0 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-default mm-box--background-color-transparent"
+      >
+        <span
+          class="mm-box mm-text mm-text--inherit mm-box--color-primary-default"
+        >
+          <p
+            class="mm-box mm-text mm-text--body-md mm-box--color-text-default"
+          >
+            Terms of service
+          </p>
+        </span>
+      </button>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`BridgeQuoteCard should render the recommended quote while loading new quotes 1`] = `
+<div>
+  <div
+    class="mm-box quote-card"
+  >
+    <div
+      class="mm-box bridge-box quote-card__timer"
+    />
+    <div
+      class="mm-box bridge-box prepare-bridge-page__content quote-card__content"
+    >
+      <div
+        class="mm-box quote-card__info-row"
+      >
+        <div
+          class="mm-box quote-card__info-row__label"
+        >
+          <p
+            class="mm-box mm-text mm-text--body-md mm-box--color-text-default"
+          >
+            Estimated time
+          </p>
+          <div>
+            <div
+              aria-describedby="tippy-tooltip-3"
+              class="quote-card__info-row__label__tooltip"
+              data-original-title="This is the estimated time it will take for the bridging to be complete."
+              data-tooltipped=""
+              style="display: flex;"
+              tabindex="0"
+            >
+              <span
+                class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-icon-muted"
+                style="mask-image: url('./images/icons/question.svg');"
+              />
+            </div>
+          </div>
+        </div>
+        <div
+          class="mm-box quote-card__info-row__description"
+        >
+          <div
+            class="mm-box quote-card__info-row__description__secondary"
+          >
+            <p
+              class="mm-box mm-text mm-text--body-md mm-box--color-text-default"
+            />
+          </div>
+          <p
+            class="mm-box mm-text mm-text--body-md mm-box--color-text-default"
+          >
+            1 minutes
+          </p>
+        </div>
+      </div>
+      <div
+        class="mm-box quote-card__info-row"
+      >
+        <div
+          class="mm-box quote-card__info-row__label"
+        >
+          <p
+            class="mm-box mm-text mm-text--body-md mm-box--color-text-default"
+          >
+            Quote rate
+          </p>
+        </div>
+        <div
+          class="mm-box quote-card__info-row__description"
+        >
+          <div
+            class="mm-box quote-card__info-row__description__secondary"
+          >
+            <p
+              class="mm-box mm-text mm-text--body-md mm-box--color-text-default"
+            />
+          </div>
+          <p
+            class="mm-box mm-text mm-text--body-md mm-box--color-text-default"
+          >
+            1 ETH = 2465.4630 USDC
+          </p>
+        </div>
+      </div>
+      <div
+        class="mm-box quote-card__info-row"
+      >
+        <div
+          class="mm-box quote-card__info-row__label"
+        >
+          <p
+            class="mm-box mm-text mm-text--body-md mm-box--color-text-default"
+          >
+            Total fees
+          </p>
+          <div>
+            <div
+              aria-describedby="tippy-tooltip-4"
+              class="quote-card__info-row__label__tooltip"
+              data-original-title="This includes gas fees (paid to crypto miners) and relayer fees (paid to power complex services like bridging).
+Fees are based on network traffic and transaction complexity. MetaMask does not profit from either fee."
+              data-tooltipped=""
+              style="display: flex;"
+              tabindex="0"
+            >
+              <span
+                class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-icon-muted"
+                style="mask-image: url('./images/icons/question.svg');"
+              />
+            </div>
+          </div>
+        </div>
+        <div
+          class="mm-box quote-card__info-row__description"
+        >
+          <div
+            class="mm-box quote-card__info-row__description__secondary"
+          >
+            <p
+              class="mm-box mm-text mm-text--body-md mm-box--color-text-default"
+            >
+              0.01 ETH
+            </p>
+          </div>
+          <p
+            class="mm-box mm-text mm-text--body-md mm-box--color-text-default"
+          >
+            $0.01
+          </p>
+        </div>
+      </div>
+    </div>
+    <div
+      class="mm-box bridge-box quote-card__footer"
+    >
+      <span>
+        <p
+          class="mm-box mm-text mm-text--body-md mm-box--color-text-default"
+        >
+          Includes a 0.875% MetaMask fee.
+        </p>
+        <button
+          class="mm-box mm-text mm-button-base mm-button-link mm-button-link--size-auto mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-0 mm-box--padding-left-0 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-default mm-box--background-color-transparent"
+        >
+          <span
+            class="mm-box mm-text mm-text--inherit mm-box--color-primary-default"
+          >
+            <p
+              class="mm-box mm-text mm-text--body-md mm-box--color-text-default"
+            >
+              view all quotes
+            </p>
+          </span>
+        </button>
+      </span>
+      <button
+        class="mm-box mm-text mm-button-base mm-button-link mm-button-link--size-auto mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-0 mm-box--padding-left-0 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-default mm-box--background-color-transparent"
+      >
+        <span
+          class="mm-box mm-text mm-text--inherit mm-box--color-primary-default"
+        >
+          <p
+            class="mm-box mm-text mm-text--body-md mm-box--color-text-default"
+          >
+            Terms of service
+          </p>
+        </span>
+      </button>
+    </div>
+  </div>
+</div>
+`;
