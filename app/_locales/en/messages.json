@@ -853,8 +853,14 @@
   "bridgeEnterAmount": {
     "message": "Enter amount"
   },
+  "bridgeFastest": {
+    "message": "Fastest"
+  },
   "bridgeFrom": {
     "message": "Bridge from"
+  },
+  "bridgeLowest": {
+    "message": "Lowest"
   },
   "bridgeOverallCost": {
     "message": "Overall cost"
@@ -877,6 +883,9 @@
   },
   "bridgeTotalFeesTooltipText": {
     "message": "This includes gas fees (paid to crypto miners) and relayer fees (paid to power complex services like bridging).\nFees are based on network traffic and transaction complexity. MetaMask does not profit from either fee."
+  },
+  "bridgeUseQuote": {
+    "message": "Use this quote"
   },
   "browserNotSupported": {
     "message": "Your browser is not supported..."
