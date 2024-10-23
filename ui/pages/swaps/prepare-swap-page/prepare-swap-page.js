@@ -445,8 +445,7 @@ export default function PrepareSwapPage({
     null, // no networkId
     null, // no holderAddress
     {
-      blockExplorerUrl:
-        CHAINID_DEFAULT_BLOCK_EXPLORER_URL_MAP[chainId] ?? null,
+      blockExplorerUrl: CHAINID_DEFAULT_BLOCK_EXPLORER_URL_MAP[chainId] ?? null,
     },
   );
 
