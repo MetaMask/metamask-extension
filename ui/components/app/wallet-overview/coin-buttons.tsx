@@ -88,12 +88,12 @@ import {
   setDefaultHomeActiveTabName,
 } from '../../../store/actions';
 import { BITCOIN_WALLET_SNAP_ID } from '../../../../shared/lib/accounts/bitcoin-wallet-snap';
-import { useMultichainSelector } from '../../../hooks/useMultichainSelector';
+///: END:ONLY_INCLUDE_IF
 import {
   getMultichainIsEvm,
   getMultichainNativeCurrency,
 } from '../../../selectors/multichain';
-///: END:ONLY_INCLUDE_IF
+import { useMultichainSelector } from '../../../hooks/useMultichainSelector';
 
 type CoinButtonsProps = {
   account: InternalAccount;
