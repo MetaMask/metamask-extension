@@ -66,6 +66,7 @@ import { MetaMetricsContext } from '../../../contexts/metametrics';
 import { ActivityListItem } from '../../multichain';
 import { abortTransactionSigning } from '../../../store/actions';
 import { getIsSmartTransaction } from '../../../../shared/modules/selectors';
+import useSourceChainBridgeData from './useSourceChainBridgeData';
 
 function TransactionListItemInner({
   transactionGroup,
@@ -84,6 +85,11 @@ function TransactionListItemInner({
   const testNetworkBackgroundColor = useSelector(getTestNetworkBackgroundColor);
   const isSmartTransaction = useSelector(getIsSmartTransaction);
   const dispatch = useDispatch();
+
+  // Bridge transactions
+  const { bridgeTitleSuffix, switchToDestChain } = useSourceChainBridgeData({
+    transactionGroup,
+  });
 
   const {
     initialTransaction: { id },
@@ -288,7 +294,7 @@ function TransactionListItemInner({
         data-testid="activity-list-item"
         onClick={toggleShowDetails}
         className={className}
-        title={title}
+        title={`${title}${bridgeTitleSuffix}`}
         icon={
           ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
           isCustodian ? (
@@ -386,6 +392,16 @@ function TransactionListItemInner({
             />
           )}
           {speedUpButton}
+          {true && (
+            <Button
+              onClick={(e) => {
+                e.stopPropagation(); // Prevent opening transaction details modal
+                switchToDestChain();
+              }}
+            >
+              Switch to {bridgeTitleSuffix}
+            </Button>
+          )}
         </Box>
         {
           ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
