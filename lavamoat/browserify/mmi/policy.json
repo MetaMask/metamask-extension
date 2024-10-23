@@ -1773,10 +1773,10 @@
         "@metamask/base-controller": true,
         "@metamask/controller-utils": true,
         "@metamask/notification-services-controller>@contentful/rich-text-html-renderer": true,
+        "@metamask/notification-services-controller>bignumber.js": true,
         "@metamask/notification-services-controller>firebase": true,
         "@metamask/profile-sync-controller": true,
         "@metamask/utils": true,
-        "bignumber.js": true,
         "loglevel": true,
         "uuid": true
       }
@@ -1784,6 +1784,12 @@
     "@metamask/notification-services-controller>@contentful/rich-text-html-renderer": {
       "globals": {
         "SuppressedError": true
+      }
+    },
+    "@metamask/notification-services-controller>bignumber.js": {
+      "globals": {
+        "crypto": true,
+        "define": true
       }
     },
     "@metamask/notification-services-controller>firebase": {
