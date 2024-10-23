@@ -45,20 +45,9 @@ export const hasSufficientBalance = async (
     tokenAddress,
     chainId,
   );
-  const srcNativeBalance = await calcLatestSrcBalance(
-    provider as HttpProvider,
-    selectedAddress,
-    zeroAddress(),
-    chainId,
-  );
-
-  const isTokenBalanceGreaterThanRequestedAmount =
-    srcTokenBalance?.greaterThanOrEqualTo(Numeric.from(fromTokenAmount, 10)) ??
-    false;
-  const isNativeBalanceGreaterThanZero =
-    srcNativeBalance?.greaterThan(Numeric.from('0', 10)) ?? false;
 
   return (
-    isNativeBalanceGreaterThanZero && isTokenBalanceGreaterThanRequestedAmount
+    srcTokenBalance?.greaterThanOrEqualTo(Numeric.from(fromTokenAmount, 10)) ??
+    false
   );
 };
