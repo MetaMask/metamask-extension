@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 import classnames from 'classnames';
 import { useCurrencyDisplay } from '../../../hooks/useCurrencyDisplay';
 import { EtherDenomination } from '../../../../shared/constants/common';
-import { getPrivacyModeEnabled } from '../../../selectors';
+import { getPreferences } from '../../../selectors';
 import { SensitiveText, Box } from '../../component-library';
 import {
   AlignItems,
@@ -37,7 +37,7 @@ export default function CurrencyDisplay({
   isAggregatedFiatOverviewBalance = false,
   ...props
 }) {
-  const isPrivacyModeEnabled = useSelector(getPrivacyModeEnabled);
+  const { privacyMode } = useSelector(getPreferences);
   const [title, parts] = useCurrencyDisplay(value, {
     account,
     displayValue,
@@ -76,7 +76,7 @@ export default function CurrencyDisplay({
         className="currency-display-component__text"
         ellipsis
         variant={TextVariant.inherit}
-        isHidden={isPrivacyModeEnabled}
+        isHidden={privacyMode}
         {...textProps}
       >
         {parts.prefix}
@@ -88,7 +88,7 @@ export default function CurrencyDisplay({
           className="currency-display-component__suffix"
           marginInlineStart={1}
           variant={TextVariant.inherit}
-          isHidden={isPrivacyModeEnabled}
+          isHidden={privacyMode}
           {...suffixProps}
         >
           {parts.suffix}

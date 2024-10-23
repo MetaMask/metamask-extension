@@ -2392,10 +2392,6 @@ export function getIsWatchEthereumAccountEnabled(state) {
   return state.metamask.watchEthereumAccountEnabled;
 }
 
-export function getPrivacyModeEnabled(state) {
-  return state.metamask.privacyMode;
-}
-
 /**
  * Get the state of the `bitcoinSupportEnabled` flag.
  *

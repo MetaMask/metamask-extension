@@ -7,7 +7,7 @@ import {
   getSelectedAccount,
   getShouldHideZeroBalanceTokens,
   getTokensMarketData,
-  getPrivacyModeEnabled,
+  getPreferences,
 } from '../../../selectors';
 
 import { useAccountTotalFiatBalance } from '../../../hooks/useAccountTotalFiatBalance';
@@ -35,7 +35,7 @@ export const AggregatedPercentageOverview = () => {
     useSelector(getTokensMarketData);
   const locale = useSelector(getIntlLocale);
   const fiatCurrency = useSelector(getCurrentCurrency);
-  const isPrivacyModeEnabled = useSelector(getPrivacyModeEnabled);
+  const { privacyMode } = useSelector(getPreferences);
   const selectedAccount = useSelector(getSelectedAccount);
   const shouldHideZeroBalanceTokens = useSelector(
     getShouldHideZeroBalanceTokens,
@@ -128,7 +128,7 @@ export const AggregatedPercentageOverview = () => {
         color={color}
         data-testid="aggregated-value-change"
         style={{ whiteSpace: 'pre' }}
-        isHidden={isPrivacyModeEnabled}
+        isHidden={privacyMode}
         ellipsis
       >
         {formattedAmountChange}
@@ -137,7 +137,7 @@ export const AggregatedPercentageOverview = () => {
         variant={TextVariant.bodyMdMedium}
         color={color}
         data-testid="aggregated-percentage-change"
-        isHidden={isPrivacyModeEnabled}
+        isHidden={privacyMode}
         ellipsis
       >
         {formattedPercentChange}

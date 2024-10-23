@@ -54,7 +54,6 @@ import {
   getMetaMetricsId,
   getParticipateInMetaMetrics,
   SwapsEthToken,
-  getPrivacyModeEnabled,
   ///: END:ONLY_INCLUDE_IF
 } from '../../../selectors';
 import Spinner from '../../ui/spinner';
@@ -121,7 +120,6 @@ export const CoinOverview = ({
 
   ///: END:ONLY_INCLUDE_IF
 
-  const isPrivacyModeEnabled = useSelector(getPrivacyModeEnabled);
   const account = useSelector(getSelectedAccount);
   const showNativeTokenAsMainBalanceRoute = getSpecificSettingsRoute(
     t,
@@ -133,7 +131,7 @@ export const CoinOverview = ({
 
   const shouldShowPopover = useSelector(getShouldShowAggregatedBalancePopover);
   const isTestnet = useSelector(getIsTestnet);
-  const { showFiatInTestnets } = useSelector(getPreferences);
+  const { showFiatInTestnets, privacyMode } = useSelector(getPreferences);
 
   const selectedAccount = useSelector(getSelectedAccount);
   const shouldHideZeroBalanceTokens = useSelector(
@@ -169,7 +167,7 @@ export const CoinOverview = ({
   };
 
   const handleSensitiveToggle = () => {
-    dispatch(setPrivacyMode(!isPrivacyModeEnabled));
+    dispatch(setPrivacyMode(!privacyMode));
   };
 
   const [referenceElement, setReferenceElement] =
@@ -287,9 +285,7 @@ export const CoinOverview = ({
                     marginLeft={2}
                     size={ButtonIconSize.Lg}
                     onClick={handleSensitiveToggle}
-                    iconName={
-                      isPrivacyModeEnabled ? IconName.EyeSlash : IconName.Eye
-                    }
+                    iconName={privacyMode ? IconName.EyeSlash : IconName.Eye}
                     justifyContent={JustifyContent.center}
                     ariaLabel="Sensitive toggle"
                     data-testid="sensitive-toggle"

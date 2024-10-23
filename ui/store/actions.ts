@@ -3099,7 +3099,7 @@ export function setRedesignedConfirmationsEnabled(value: boolean) {
 }
 
 export function setPrivacyMode(value: boolean) {
-  return setPreference('setPrivacyMode', value, false);
+  return setPreference('privacyMode', value, false);
 }
 
 export function setRedesignedTransactionsEnabled(value: boolean) {

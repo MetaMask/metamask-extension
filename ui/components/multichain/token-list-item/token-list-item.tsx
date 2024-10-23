@@ -43,7 +43,7 @@ import {
   getTokensMarketData,
   getParticipateInMetaMetrics,
   getDataCollectionForMarketing,
-  getPrivacyModeEnabled,
+  getPreferences,
 } from '../../../selectors';
 import {
   getMultichainCurrentChainId,
@@ -107,7 +107,7 @@ export const TokenListItem = ({
   const trackEvent = useContext(MetaMetricsContext);
   const chainId = useSelector(getMultichainCurrentChainId);
   const metaMetricsId = useSelector(getMetaMetricsId);
-  const isPrivacyModeEnabled = useSelector(getPrivacyModeEnabled);
+  const { privacyMode } = useSelector(getPreferences);
   const isMetaMetricsEnabled = useSelector(getParticipateInMetaMetrics);
   const isMarketingEnabled = useSelector(getDataCollectionForMarketing);
   const { safeChains } = useSafeChains();
@@ -383,7 +383,7 @@ export const TokenListItem = ({
                   color={TextColor.textAlternative}
                   variant={TextVariant.bodyMd}
                   textAlign={TextAlign.End}
-                  isHidden={isPrivacyModeEnabled}
+                  isHidden={privacyMode}
                 >
                   {primary}{' '}
                   {isNativeCurrency || isPrimaryTokenSymbolHidden
@@ -405,7 +405,7 @@ export const TokenListItem = ({
                   textAlign={TextAlign.End}
                   data-testid="multichain-token-list-item-secondary-value"
                   ellipsis={isStakeable}
-                  isHidden={isPrivacyModeEnabled}
+                  isHidden={privacyMode}
                 >
                   {secondary}
                 </SensitiveText>
@@ -414,7 +414,7 @@ export const TokenListItem = ({
                   color={TextColor.textAlternative}
                   variant={TextVariant.bodySmMedium}
                   textAlign={TextAlign.End}
-                  isHidden={isPrivacyModeEnabled}
+                  isHidden={privacyMode}
                 >
                   {primary}{' '}
                   {isNativeCurrency || isPrimaryTokenSymbolHidden
