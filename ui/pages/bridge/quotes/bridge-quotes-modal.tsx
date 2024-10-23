@@ -1,10 +1,12 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { IconName } from '@metamask/snaps-sdk/jsx';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import {
   Box,
-  ButtonIcon,
-  ButtonIconSize,
+  Button,
+  ButtonVariant,
+  Icon,
+  IconSize,
   Modal,
   ModalContent,
   ModalHeader,
@@ -19,17 +21,19 @@ import { formatEtaInMinutes, formatFiatAmount } from '../utils/quote';
 import { getBridgeQuotes } from '../../../ducks/bridge/selectors';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { getCurrentCurrency } from '../../../selectors';
+import { setSortOrder } from '../../../ducks/bridge/actions';
+import { SortOrder } from '../types';
 
 export const BridgeQuotesModal = ({
   onClose,
   ...modalProps
 }: Omit<React.ComponentProps<typeof Modal>, 'children'>) => {
   const t = useI18nContext();
+  const dispatch = useDispatch();
 
   const { sortedQuotes } = useSelector(getBridgeQuotes);
   const currency = useSelector(getCurrentCurrency);
 
-  const [, setSortOrder] = useState(t('bridgeOverallCost'));
   return (
     <Modal className="quotes-modal" onClose={onClose} {...modalProps}>
       <ModalOverlay />
@@ -41,19 +45,22 @@ export const BridgeQuotesModal = ({
         </ModalHeader>
 
         <Box className="quotes-modal__column-header">
-          {[t('bridgeOverallCost'), t('time')].map((label) => {
-            return (
-              <>
-                <ButtonIcon
-                  iconName={IconName.Arrow2Down}
-                  size={ButtonIconSize.Sm}
-                  ariaLabel={t('back')}
-                  onClick={() => setSortOrder(label)}
-                />
-                <Text>{label}</Text>
-              </>
-            );
-          })}
+          <Button
+            variant={ButtonVariant.Link}
+            onClick={() =>
+              dispatch(setSortOrder(SortOrder.ADJUSTED_RETURN_DESC))
+            }
+          >
+            <Icon name={IconName.Arrow2Down} size={IconSize.Sm} />
+            <Text>{t('bridgeOverallCost')}</Text>
+          </Button>
+          <Button
+            variant={ButtonVariant.Link}
+            onClick={() => dispatch(setSortOrder(SortOrder.ETA_ASC))}
+          >
+            <Icon name={IconName.Arrow2Down} size={IconSize.Sm} />
+            <Text>{t('time')}</Text>
+          </Button>
         </Box>
         <Box className="quotes-modal__quotes">
           {sortedQuotes.map((quote, index) => {
