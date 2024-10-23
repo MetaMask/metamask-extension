@@ -1,27 +1,25 @@
 import {
-  withFixtures,
-  defaultGanacheOptions,
-  WALLET_PASSWORD,
   convertToHexValue,
-  Fixtures,
-  largeDelayMs,
-  tinyDelayMs,
-  locateAccountBalanceDOM,
-  importSRPOnboardingFlow,
+  WALLET_PASSWORD,
+  withFixtures,
 } from '../../helpers';
-import FixtureBuilder from '../../fixture-builder';
 import { Driver } from '../../webdriver/driver';
-import { completeCreateNewWalletOnboardingFlow, completeImportSRPOnboardingFlow, importSRPOnboardingFlow } from '../../page-objects/flows/onboarding.flow';
+import FixtureBuilder from '../../fixture-builder';
+import { FirstTimeFlowType } from '../../../../shared/constants/onboarding';
 import HomePage from '../../page-objects/pages/homepage';
+import OnboardingCompletePage from '../../page-objects/pages/onboarding/onboarding-complete-page';
 import OnboardingMetricsPage from '../../page-objects/pages/onboarding/onboarding-metrics-page';
 import OnboardingPasswordPage from '../../page-objects/pages/onboarding/onboarding-password-page';
-import OnboardingSrpPage from '../../page-objects/pages/onboarding/onboarding-srp-page';
-import StartOnboardingPage from '../../page-objects/pages/onboarding/start-onboarding-page';
-import SecureWalletPage from '../../page-objects/pages/onboarding/secure-wallet-page';
-import OnboardingCompletePage from '../../page-objects/pages/onboarding/onboarding-complete-page';
 import OnboardingPrivacySettingsPage from '../../page-objects/pages/onboarding/onboarding-privacy-settings-page';
-import { FirstTimeFlowType } from '../../../../shared/constants/onboarding';
+import OnboardingSrpPage from '../../page-objects/pages/onboarding/onboarding-srp-page';
+import SecureWalletPage from '../../page-objects/pages/onboarding/secure-wallet-page';
+import StartOnboardingPage from '../../page-objects/pages/onboarding/start-onboarding-page';
 import { loginWithoutBalanceValidation } from '../../page-objects/flows/login.flow';
+import {
+  completeCreateNewWalletOnboardingFlow,
+  completeImportSRPOnboardingFlow,
+  importSRPOnboardingFlow,
+} from '../../page-objects/flows/onboarding.flow';
 
 describe('MetaMask onboarding @no-mmi', function () {
   const ganacheOptions2 = {
@@ -40,8 +38,7 @@ describe('MetaMask onboarding @no-mmi', function () {
         fixtures: new FixtureBuilder({ onboarding: true }).build(),
         title: this.test?.fullTitle(),
       },
-      async (fixtures: Fixtures) => {
-        const { driver } = fixtures;
+      async ({ driver }: { driver: Driver }) => {
         await completeCreateNewWalletOnboardingFlow(driver);
         const homePage = new HomePage(driver);
         await homePage.check_pageIsLoaded();
@@ -65,7 +62,6 @@ describe('MetaMask onboarding @no-mmi', function () {
     );
   });
 
-
   it('Attempts to import a wallet with an incorrect Secret Recovery Phrase and verifies the error message', async function () {
     await withFixtures(
       {
@@ -73,7 +69,9 @@ describe('MetaMask onboarding @no-mmi', function () {
         title: this.test?.fullTitle(),
       },
       async ({ driver }: { driver: Driver }) => {
-        const wrongSeedPhrase = 'test test test test test test test test test test test test';
+        const wrongSeedPhrase =
+          'test test test test test test test test test test test test';
+        await driver.navigate();
         const startOnboardingPage = new StartOnboardingPage(driver);
         await startOnboardingPage.check_pageIsLoaded();
         await startOnboardingPage.checkTermsCheckbox();
@@ -86,6 +84,8 @@ describe('MetaMask onboarding @no-mmi', function () {
         const onboardingSrpPage = new OnboardingSrpPage(driver);
         await onboardingSrpPage.check_pageIsLoaded();
         await onboardingSrpPage.fillSrp(wrongSeedPhrase);
+
+        // check the wrong SRP warning message is displayed
         await onboardingSrpPage.check_wrongSrpWarningMessage();
         await onboardingSrpPage.check_confirmSrpButtonIsDisabled();
       },
@@ -99,6 +99,7 @@ describe('MetaMask onboarding @no-mmi', function () {
         title: this.test?.fullTitle(),
       },
       async ({ driver }: { driver: Driver }) => {
+        await driver.navigate();
         const startOnboardingPage = new StartOnboardingPage(driver);
         await startOnboardingPage.check_pageIsLoaded();
         await startOnboardingPage.checkTermsCheckbox();
@@ -123,6 +124,7 @@ describe('MetaMask onboarding @no-mmi', function () {
       },
       async ({ driver }: { driver: Driver }) => {
         const wrongTestPassword = 'test test test test';
+        await driver.navigate();
         const startOnboardingPage = new StartOnboardingPage(driver);
         await startOnboardingPage.check_pageIsLoaded();
         await startOnboardingPage.checkTermsCheckbox();
@@ -134,8 +136,12 @@ describe('MetaMask onboarding @no-mmi', function () {
 
         const onboardingPasswordPage = new OnboardingPasswordPage(driver);
         await onboardingPasswordPage.check_pageIsLoaded();
-        await onboardingPasswordPage.fillWalletPassword(WALLET_PASSWORD, wrongTestPassword);
+        await onboardingPasswordPage.fillWalletPassword(
+          WALLET_PASSWORD,
+          wrongTestPassword,
+        );
 
+        // check the incorrect password warning message is displayed
         await onboardingPasswordPage.check_incorrectPasswordWarningMessage();
         await onboardingPasswordPage.check_confirmPasswordButtonIsDisabled();
       },
@@ -152,12 +158,10 @@ describe('MetaMask onboarding @no-mmi', function () {
       {
         fixtures: new FixtureBuilder({ onboarding: true }).build(),
         ganacheOptions: {
-          ...defaultGanacheOptions,
           concurrent: [{ port, chainId, ganacheOptions2 }],
         },
         title: this.test?.fullTitle(),
       },
-
       async ({ driver, secondaryGanacheServer }) => {
         await importSRPOnboardingFlow(driver);
 
@@ -166,8 +170,15 @@ describe('MetaMask onboarding @no-mmi', function () {
         await onboardingCompletePage.check_walletReadyMessageIsDisplayed();
         await onboardingCompletePage.navigateToDefaultPrivacySettings();
 
-        const onboardingPrivacySettingsPage = new OnboardingPrivacySettingsPage(driver);
-        await onboardingPrivacySettingsPage.addCustomNetwork(networkName, chainId, currencySymbol, networkUrl);
+        const onboardingPrivacySettingsPage = new OnboardingPrivacySettingsPage(
+          driver,
+        );
+        await onboardingPrivacySettingsPage.addCustomNetwork(
+          networkName,
+          chainId,
+          currencySymbol,
+          networkUrl,
+        );
         await onboardingPrivacySettingsPage.navigateBackToOnboardingCompletePage();
 
         await onboardingCompletePage.check_pageIsLoaded();
@@ -176,7 +187,15 @@ describe('MetaMask onboarding @no-mmi', function () {
         const homePage = new HomePage(driver);
         await homePage.check_pageIsLoaded();
         await homePage.headerNavbar.switchToNetwork(networkName);
-        await homePage.check_ganacheBalanceIsDisplayed(secondaryGanacheServer[0]);
+
+        // Check the correct balance for the custom network is displayed
+        if (secondaryGanacheServer && Array.isArray(secondaryGanacheServer)) {
+          await homePage.check_ganacheBalanceIsDisplayed(
+            secondaryGanacheServer[0],
+          );
+        } else {
+          throw new Error('Custom network Ganache server not available');
+        }
       },
     );
   });
@@ -195,7 +214,9 @@ describe('MetaMask onboarding @no-mmi', function () {
         await onboardingCompletePage.check_walletReadyMessageIsDisplayed();
         await onboardingCompletePage.navigateToDefaultPrivacySettings();
 
-        const onboardingPrivacySettingsPage = new OnboardingPrivacySettingsPage(driver);
+        const onboardingPrivacySettingsPage = new OnboardingPrivacySettingsPage(
+          driver,
+        );
         await onboardingPrivacySettingsPage.toggleBasicFunctionalitySettings();
         await onboardingPrivacySettingsPage.navigateBackToOnboardingCompletePage();
 
@@ -204,7 +225,8 @@ describe('MetaMask onboarding @no-mmi', function () {
 
         const homePage = new HomePage(driver);
         await homePage.check_pageIsLoaded();
-        await homePage.check_basicFunctionalityOffWarnigMessage();
+        // check the basic functionality is off warning message is displayed
+        await homePage.check_basicFunctionalityOffWarnigMessageIsDisplayed();
       },
     );
   });

@@ -3,18 +3,18 @@ import { Driver } from '../../../webdriver/driver';
 class StartOnboardingPage {
   private driver: Driver;
 
+  private readonly createWalletButton =
+    '[data-testid="onboarding-create-wallet"]';
+
   private readonly importWalletButton =
     '[data-testid="onboarding-import-wallet"]';
 
   private readonly startMessage = {
-    tag: 'h2',
     text: "Let's get started",
+    tag: 'h2',
   };
 
   private readonly termsCheckbox = '[data-testid="onboarding-terms-checkbox"]';
-
-  private readonly createWalletButton =
-    '[data-testid="onboarding-create-wallet"]';
 
   constructor(driver: Driver) {
     this.driver = driver;
@@ -40,12 +40,12 @@ class StartOnboardingPage {
     await this.driver.clickElement(this.termsCheckbox);
   }
 
-  async clickImportWalletButton(): Promise<void> {
-    await this.driver.clickElementAndWaitToDisappear(this.importWalletButton);
-  }
-
   async clickCreateWalletButton(): Promise<void> {
     await this.driver.clickElementAndWaitToDisappear(this.createWalletButton);
+  }
+
+  async clickImportWalletButton(): Promise<void> {
+    await this.driver.clickElementAndWaitToDisappear(this.importWalletButton);
   }
 }
 

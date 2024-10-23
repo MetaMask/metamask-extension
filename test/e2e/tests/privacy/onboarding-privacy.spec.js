@@ -14,7 +14,6 @@ const {
 const FixtureBuilder = require('../../fixture-builder');
 
 describe('MetaMask onboarding @no-mmi', function () {
-
   it("doesn't make any network requests to infura before onboarding is completed", async function () {
     async function mockInfura(mockServer) {
       const infuraUrl =
@@ -281,5 +280,4 @@ describe('MetaMask onboarding @no-mmi', function () {
       },
     );
   });
-
 });

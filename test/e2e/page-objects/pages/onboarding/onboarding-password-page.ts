@@ -5,25 +5,28 @@ import { WALLET_PASSWORD } from '../../../helpers';
 class OnboardingPasswordPage {
   private driver: Driver;
 
+  private readonly confirmPasswordInput =
+    '[data-testid="create-password-confirm"]';
+
   private readonly createPasswordMessage = {
     text: 'Create password',
     tag: 'h2',
   };
 
-  private readonly newPasswordInput = '[data-testid="create-password-new"]';
-
-  private readonly confirmPasswordInput =
-    '[data-testid="create-password-confirm"]';
-
-  private readonly passwordTerms = '[data-testid="create-password-terms"]';
-
-  private readonly incorrectPasswordWarningMessage = { text: "Passwords don't match", tag: 'h6' };
+  private readonly createWalletButton =
+    '[data-testid="create-password-wallet"]';
 
   private readonly importWalletButton =
     '[data-testid="create-password-import"]';
 
-  private readonly createWalletButton =
-    '[data-testid="create-password-wallet"]';
+  private readonly incorrectPasswordWarningMessage = {
+    text: "Passwords don't match",
+    tag: 'h6',
+  };
+
+  private readonly newPasswordInput = '[data-testid="create-password-new"]';
+
+  private readonly passwordTerms = '[data-testid="create-password-terms"]';
 
   constructor(driver: Driver) {
     this.driver = driver;
@@ -46,6 +49,35 @@ class OnboardingPasswordPage {
     console.log('Onboarding password page is loaded');
   }
 
+  /**
+   * Create a password for new imported wallet
+   *
+   * @param newPassword - The new password to create. Defaults to WALLET_PASSWORD.
+   * @param confirmPassword - The confirm password to create. Defaults to WALLET_PASSWORD.
+   */
+  async createImportedWalletPassword(
+    newPassword: string = WALLET_PASSWORD,
+    confirmPassword: string = WALLET_PASSWORD,
+  ): Promise<void> {
+    console.log('Create password for new imported wallet');
+    await this.fillWalletPassword(newPassword, confirmPassword);
+    await this.driver.clickElementAndWaitToDisappear(this.importWalletButton);
+  }
+
+  /**
+   * Create a password for new created wallet
+   *
+   * @param newPassword - The new password to create. Defaults to WALLET_PASSWORD.
+   * @param confirmPassword - The confirm password to create. Defaults to WALLET_PASSWORD.
+   */
+  async createWalletPassword(
+    newPassword: string = WALLET_PASSWORD,
+    confirmPassword: string = WALLET_PASSWORD,
+  ): Promise<void> {
+    console.log('Create password for new created wallet');
+    await this.fillWalletPassword(newPassword, confirmPassword);
+    await this.driver.clickElementAndWaitToDisappear(this.createWalletButton);
+  }
 
   /**
    * Fill the wallet password fields
@@ -53,46 +85,27 @@ class OnboardingPasswordPage {
    * @param newPassword - The new password to fill.
    * @param confirmPassword - The confirm password to fill.
    */
-  async fillWalletPassword(newPassword: string, confirmPassword: string): Promise<void> {
+  async fillWalletPassword(
+    newPassword: string,
+    confirmPassword: string,
+  ): Promise<void> {
     console.log('Fill the wallet password fields');
     await this.driver.fill(this.newPasswordInput, newPassword);
     await this.driver.fill(this.confirmPasswordInput, confirmPassword);
     await this.driver.clickElement(this.passwordTerms);
   }
 
-  /**
-   * Create a new wallet password
-   *
-   * @param newPassword - The new password to create. Defaults to WALLET_PASSWORD.
-   * @param confirmPassword - The confirm password to create. Defaults to WALLET_PASSWORD.
-   */
-  async createWalletPassword(newPassword: string = WALLET_PASSWORD, confirmPassword: string = WALLET_PASSWORD): Promise<void> {
-    console.log('Create a new wallet password');
-    await this.fillWalletPassword(newPassword, confirmPassword);
-    await this.driver.clickElementAndWaitToDisappear(this.createWalletButton);
-  }
-
-  /**
-   * Create password for new imported wallet
-   *
-   * @param newPassword - The new password to create. Defaults to WALLET_PASSWORD.
-   * @param confirmPassword - The confirm password to create. Defaults to WALLET_PASSWORD.
-   */
-  async createImportedWalletPassword(newPassword: string = WALLET_PASSWORD, confirmPassword: string = WALLET_PASSWORD): Promise<void> {
-    console.log('Create password for new imported wallet');
-    await this.fillWalletPassword(newPassword, confirmPassword);
-    await this.driver.clickElementAndWaitToDisappear(this.importWalletButton);
+  async check_confirmPasswordButtonIsDisabled(): Promise<void> {
+    console.log('Check the confirm password button is disabled');
+    const confirmPasswordButton = await this.driver.findElement(
+      this.createWalletButton,
+    );
+    assert.equal(await confirmPasswordButton.isEnabled(), false);
   }
 
   async check_incorrectPasswordWarningMessage(): Promise<void> {
     console.log('Check the incorrect password warning message is displayed');
     await this.driver.waitForSelector(this.incorrectPasswordWarningMessage);
-  }
-
-  async check_confirmPasswordButtonIsDisabled(): Promise<void> {
-    console.log('Check the confirm password button is disabled');
-    const confirmPasswordButton = await this.driver.findElement(this.createWalletButton);
-    assert.equal(await confirmPasswordButton.isEnabled(), false);
   }
 }
 

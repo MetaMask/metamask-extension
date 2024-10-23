@@ -4,27 +4,8 @@ class OnboardingCompletePage {
   private driver: Driver;
 
   private readonly congratulationsMessage = {
-    tag: 'h2',
     text: 'Congratulations!',
-  };
-
-  private readonly walletReadyMessage = {
     tag: 'h2',
-    text: 'Your wallet is ready',
-  };
-
-  private readonly onboardingCompleteDoneButton =
-    '[data-testid="onboarding-complete-done"]';
-
-  private readonly pinExtensionNextButton =
-    '[data-testid="pin-extension-next"]';
-
-  private readonly pinExtensionDoneButton =
-    '[data-testid="pin-extension-done"]';
-
-  private readonly pinExtensionMessage = {
-    text: 'Click browser extension icon to access it instantly',
-    tag: 'p',
   };
 
   private readonly defaultPrivacySettingsButton = {
@@ -34,6 +15,25 @@ class OnboardingCompletePage {
 
   private readonly installCompleteMessage = {
     text: 'Your MetaMask install is complete!',
+    tag: 'h2',
+  };
+
+  private readonly onboardingCompleteDoneButton =
+    '[data-testid="onboarding-complete-done"]';
+
+  private readonly pinExtensionDoneButton =
+    '[data-testid="pin-extension-done"]';
+
+  private readonly pinExtensionMessage = {
+    text: 'Click browser extension icon to access it instantly',
+    tag: 'p',
+  };
+
+  private readonly pinExtensionNextButton =
+    '[data-testid="pin-extension-next"]';
+
+  private readonly walletReadyMessage = {
+    text: 'Your wallet is ready',
     tag: 'h2',
   };
 
@@ -63,12 +63,6 @@ class OnboardingCompletePage {
     );
   }
 
-  async navigateToDefaultPrivacySettings(): Promise<void> {
-    await this.driver.clickElementAndWaitToDisappear(
-      this.defaultPrivacySettingsButton,
-    );
-  }
-
   async completeOnboarding(): Promise<void> {
     await this.clickCreateWalletDoneButton();
     await this.driver.waitForSelector(this.installCompleteMessage);
@@ -79,6 +73,12 @@ class OnboardingCompletePage {
     await this.driver.waitForElementToStopMoving(this.pinExtensionDoneButton);
     await this.driver.clickElementAndWaitToDisappear(
       this.pinExtensionDoneButton,
+    );
+  }
+
+  async navigateToDefaultPrivacySettings(): Promise<void> {
+    await this.driver.clickElementAndWaitToDisappear(
+      this.defaultPrivacySettingsButton,
     );
   }
 

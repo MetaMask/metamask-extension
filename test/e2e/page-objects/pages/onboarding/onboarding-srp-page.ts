@@ -5,25 +5,26 @@ import { TEST_SEED_PHRASE } from '../../../helpers';
 class OnboardingSrpPage {
   private driver: Driver;
 
+  private readonly srpConfirmButton = '[data-testid="import-srp-confirm"]';
+
+  private readonly srpDropdown = '.import-srp__number-of-words-dropdown';
+
+  private readonly srpDropdownOptions =
+    '.import-srp__number-of-words-dropdown option';
+
   private readonly srpMessage = {
     text: 'Access your wallet with your Secret Recovery Phrase',
     tag: 'h2',
-  };
-
-  private readonly wrongSrpWarningMessage = {
-    text: 'Invalid Secret Recovery Phrase',
-    css: '.import-srp__banner-alert-text',
   };
 
   private readonly srpWord0 = '[data-testid="import-srp__srp-word-0"]';
 
   private readonly srpWords = '.import-srp__srp-word';
 
-  private readonly srpConfirmButton = '[data-testid="import-srp-confirm"]';
-
-  private readonly srpDropdown = '.import-srp__number-of-words-dropdown';
-
-  private readonly srpDropdownOptions = '.import-srp__number-of-words-dropdown option';
+  private readonly wrongSrpWarningMessage = {
+    text: 'Invalid Secret Recovery Phrase',
+    css: '.import-srp__banner-alert-text',
+  };
 
   constructor(driver: Driver) {
     this.driver = driver;
@@ -45,6 +46,10 @@ class OnboardingSrpPage {
     console.log('Onboarding srp page is loaded');
   }
 
+  async clickConfirmButton(): Promise<void> {
+    await this.driver.clickElementAndWaitToDisappear(this.srpConfirmButton);
+  }
+
   /**
    * Fill the SRP words with the provided seed phrase
    *
@@ -52,15 +57,6 @@ class OnboardingSrpPage {
    */
   async fillSrp(seedPhrase: string = TEST_SEED_PHRASE): Promise<void> {
     await this.driver.pasteIntoField(this.srpWord0, seedPhrase);
-  }
-
-  async clickConfirmButton(): Promise<void> {
-    await this.driver.clickElementAndWaitToDisappear(this.srpConfirmButton);
-  }
-
-  async check_wrongSrpWarningMessage(): Promise<void> {
-    console.log('Check that wrong SRP warning message is displayed');
-    await this.driver.waitForSelector(this.wrongSrpWarningMessage);
   }
 
   async check_confirmSrpButtonIsDisabled(): Promise<void> {
@@ -71,14 +67,15 @@ class OnboardingSrpPage {
     assert.equal(await confirmSeedPhrase.isEnabled(), false);
   }
 
-
   /**
    * Check the SRP dropdown iterates through each option
    *
    * @param numOptions - The number of options to check. Defaults to 5.
    */
   async check_srpDropdownIterations(numOptions: number = 5) {
-    console.log(`Check the SRP dropdown iterates through ${numOptions} options`);
+    console.log(
+      `Check the SRP dropdown iterates through ${numOptions} options`,
+    );
     await this.driver.clickElement(this.srpDropdown);
     await this.driver.wait(async () => {
       const options = await this.driver.findElements(this.srpDropdownOptions);
@@ -97,7 +94,12 @@ class OnboardingSrpPage {
         return expectedNumFields === srpWordsFields.length;
       }, this.driver.timeout);
     }
-  };
+  }
+
+  async check_wrongSrpWarningMessage(): Promise<void> {
+    console.log('Check that wrong SRP warning message is displayed');
+    await this.driver.waitForSelector(this.wrongSrpWarningMessage);
+  }
 }
 
 export default OnboardingSrpPage;

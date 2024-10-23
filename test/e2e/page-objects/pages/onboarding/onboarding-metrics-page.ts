@@ -4,8 +4,8 @@ class OnboardingMetricsPage {
   private driver: Driver;
 
   private readonly metametricsMessage = {
-    tag: 'h2',
     text: 'Help us improve MetaMask',
+    tag: 'h2',
   };
 
   private readonly noThanksButton = '[data-testid="metametrics-no-thanks"]';

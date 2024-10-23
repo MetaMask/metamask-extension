@@ -3,25 +3,23 @@ import { Driver } from '../../../webdriver/driver';
 class OnboardingPrivacySettingsPage {
   private driver: Driver;
 
-  private readonly generalSettings = '[data-testid="category-item-General"]';
-
   private readonly assetsSettings = '[data-testid="category-item-Assets"]';
 
-  private readonly securitySettings = '[data-testid="category-item-Security"]';
+  private readonly categoryBackButton = '[data-testid="category-back-button"]';
+
+  private readonly generalSettings = '[data-testid="category-item-General"]';
 
   private readonly privacySettingsBackButton =
     '[data-testid="privacy-settings-back-button"]';
 
-  private readonly categoryBackButton = '[data-testid="category-back-button"]';
+  private readonly securitySettings = '[data-testid="category-item-Security"]';
 
   // General settings
-  private readonly generalSettingsMessage = { text: 'General', tag: 'h2' };
+  private readonly basicFunctionalityCheckbox =
+    '[id="basic-configuration-checkbox"]';
 
   private readonly basicFunctionalityToggle =
     '[data-testid="basic-functionality-toggle"] .toggle-button';
-
-  private readonly basicFunctionalityCheckbox =
-    '[id="basic-configuration-checkbox"]';
 
   private readonly basicFunctionalityTurnOffButton = {
     text: 'Turn off',
@@ -32,6 +30,8 @@ class OnboardingPrivacySettingsPage {
     text: 'Turn off basic functionality',
     tag: 'h4',
   };
+
+  private readonly generalSettingsMessage = { text: 'General', tag: 'h2' };
 
   // General settings - add custom network section
   private readonly addCustomNetworkButton = {
@@ -44,36 +44,42 @@ class OnboardingPrivacySettingsPage {
     tag: 'h4',
   };
 
-  private readonly networkNameInput = '[data-testid="network-form-network-name"]';
-  private readonly chainIdInput = '[data-testid="network-form-chain-id"]';
-  private readonly currencySymbolInput = '[data-testid="network-form-ticker-input"]';
-  private readonly addRpcUrlDropDown = '[data-testid="test-add-rpc-drop-down"]';
   private readonly addRpcUrlButton = {
     text: 'Add RPC URL',
     tag: 'button',
   };
+
   private readonly addRpcUrlDialogMessage = {
     text: 'Add RPC URL',
     tag: 'h4',
   };
-  private readonly rpcUrlInput = '[data-testid="rpc-url-input-test"]';
-  private readonly confirmAddRpcUrlButton = {
-    text: 'Add URL',
-    tag: 'button',
-  };
-  private readonly confirmAddCustomNetworkButton =
-  {
+
+  private readonly addRpcUrlDropDown = '[data-testid="test-add-rpc-drop-down"]';
+
+  private readonly chainIdInput = '[data-testid="network-form-chain-id"]';
+
+  private readonly confirmAddCustomNetworkButton = {
     text: 'Save',
     tag: 'button',
   };
 
+  private readonly confirmAddRpcUrlButton = {
+    text: 'Add URL',
+    tag: 'button',
+  };
 
+  private readonly currencySymbolInput =
+    '[data-testid="network-form-ticker-input"]';
 
+  private readonly networkNameInput =
+    '[data-testid="network-form-network-name"]';
+
+  private readonly rpcUrlInput = '[data-testid="rpc-url-input-test"]';
 
   // Assets settings
-  private readonly assetsSettingsMessage = { text: 'Assets', tag: 'h2' };
-
   private readonly assetsPrivacyToggle = '.toggle-button.toggle-button--on';
+
+  private readonly assetsSettingsMessage = { text: 'Assets', tag: 'h2' };
 
   constructor(driver: Driver) {
     this.driver = driver;
@@ -96,22 +102,21 @@ class OnboardingPrivacySettingsPage {
     console.log('Onboarding privacy settings page is loaded');
   }
 
-  async navigateToGeneralSettings(): Promise<void> {
-    console.log('Navigating to general settings');
-    await this.check_pageIsLoaded();
-    await this.driver.clickElement(this.generalSettings);
-    await this.driver.waitForSelector(this.generalSettingsMessage);
-  }
-
   /**
    * Adds a custom network to MetaMask during the onboarding process.
+   *
    * @param networkName - The name of the custom network.
    * @param chainId - The chain ID of the custom network.
    * @param currencySymbol - The currency symbol for the custom network.
    * @param networkUrl - The RPC URL for the custom network.
    * @returns A promise that resolves when the custom network has been added.
    */
-  async addCustomNetwork(networkName: string, chainId: number, currencySymbol: string, networkUrl: string): Promise<void> {
+  async addCustomNetwork(
+    networkName: string,
+    chainId: number,
+    currencySymbol: string,
+    networkUrl: string,
+  ): Promise<void> {
     await this.navigateToGeneralSettings();
     console.log('Adding custom network');
     await this.driver.clickElement(this.addCustomNetworkButton);
@@ -125,27 +130,39 @@ class OnboardingPrivacySettingsPage {
     await this.driver.waitForSelector(this.addRpcUrlDialogMessage);
     await this.driver.fill(this.rpcUrlInput, networkUrl);
     await this.driver.clickElement(this.confirmAddRpcUrlButton);
-    await this.driver.clickElementAndWaitToDisappear(this.confirmAddCustomNetworkButton);
+    await this.driver.clickElementAndWaitToDisappear(
+      this.confirmAddCustomNetworkButton,
+    );
     // Navigate back to default privacy settings
     await this.driver.clickElement(this.categoryBackButton);
   }
 
   /**
-   * Go to general settings and toggle options, then navigate back.
+   * Navigate back to the onboarding complete page.
    */
-  async toggleBasicFunctionalitySettings(): Promise<void> {
-    await this.navigateToGeneralSettings();
-    await this.driver.clickElement(this.basicFunctionalityToggle);
-    await this.driver.waitForSelector(this.basicFunctionalityTurnOffMessage);
-    await this.driver.clickElement(this.basicFunctionalityCheckbox);
-    await this.driver.clickElement(this.basicFunctionalityTurnOffButton);
-    await this.driver.clickElement(this.categoryBackButton);
+  async navigateBackToOnboardingCompletePage(): Promise<void> {
+    console.log('Navigate back to onboarding complete page');
+    // Wait until the onboarding carousel has stopped moving otherwise the click has no effect.
+    await this.driver.waitForElementToStopMoving(
+      this.privacySettingsBackButton,
+    );
+    await this.driver.clickElementAndWaitToDisappear(
+      this.privacySettingsBackButton,
+    );
+  }
+
+  async navigateToGeneralSettings(): Promise<void> {
+    console.log('Navigate to general settings');
+    await this.check_pageIsLoaded();
+    await this.driver.clickElement(this.generalSettings);
+    await this.driver.waitForSelector(this.generalSettingsMessage);
   }
 
   /**
    * Go to assets settings and toggle options, then navigate back.
    */
   async toggleAssetsSettings(): Promise<void> {
+    console.log('Toggle advanced assets settings in privacy settings');
     await this.check_pageIsLoaded();
     await this.driver.clickElement(this.assetsSettings);
     await this.driver.waitForSelector(this.assetsSettingsMessage);
@@ -158,17 +175,16 @@ class OnboardingPrivacySettingsPage {
   }
 
   /**
-   * Navigate back to the onboarding complete page.
+   * Go to general settings and toggle options, then navigate back.
    */
-  async navigateBackToOnboardingCompletePage(): Promise<void> {
-    console.log('Navigating back to onboarding complete page');
-    // Wait until the onboarding carousel has stopped moving otherwise the click has no effect.
-    await this.driver.waitForElementToStopMoving(
-      this.privacySettingsBackButton,
-    );
-    await this.driver.clickElementAndWaitToDisappear(
-      this.privacySettingsBackButton,
-    );
+  async toggleBasicFunctionalitySettings(): Promise<void> {
+    console.log('Toggle basic functionality settings in privacy settings');
+    await this.navigateToGeneralSettings();
+    await this.driver.clickElement(this.basicFunctionalityToggle);
+    await this.driver.waitForSelector(this.basicFunctionalityTurnOffMessage);
+    await this.driver.clickElement(this.basicFunctionalityCheckbox);
+    await this.driver.clickElement(this.basicFunctionalityTurnOffButton);
+    await this.driver.clickElement(this.categoryBackButton);
   }
 }
 

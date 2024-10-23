@@ -52,8 +52,6 @@ export const completeCreateNewWalletOnboardingFlow = async (driver: Driver) => {
   await onboardingCompletePage.check_pageIsLoaded();
   await onboardingCompletePage.check_congratulationsMessageIsDisplayed();
   await onboardingCompletePage.completeOnboarding();
-
-
 };
 
 export const completeImportSRPOnboardingFlow = async (driver: Driver) => {
@@ -64,4 +62,3 @@ export const completeImportSRPOnboardingFlow = async (driver: Driver) => {
   await onboardingCompletePage.check_walletReadyMessageIsDisplayed();
   await onboardingCompletePage.completeOnboarding();
 };
-
