@@ -4,6 +4,7 @@ import {
 } from '@metamask/base-controller';
 import { Hex } from '@metamask/utils';
 import { AccountsControllerGetSelectedAccountAction } from '@metamask/accounts-controller';
+import { NetworkControllerGetSelectedNetworkClientAction } from '@metamask/network-controller';
 import { SwapsTokenObject } from '../../../../shared/constants/swaps';
 // TODO: Remove restricted import
 // eslint-disable-next-line import/no-restricted-paths
@@ -47,6 +48,7 @@ export enum BridgeUserAction {
 }
 export enum BridgeBackgroundAction {
   SET_FEATURE_FLAGS = 'setBridgeFeatureFlags',
+  RESET_STATE = 'resetState',
 }
 
 type BridgeControllerAction<FunctionName extends keyof BridgeController> = {
@@ -57,6 +59,7 @@ type BridgeControllerAction<FunctionName extends keyof BridgeController> = {
 // Maps to BridgeController function names
 type BridgeControllerActions =
   | BridgeControllerAction<BridgeBackgroundAction.SET_FEATURE_FLAGS>
+  | BridgeControllerAction<BridgeBackgroundAction.RESET_STATE>
   | BridgeControllerAction<BridgeUserAction.SELECT_SRC_NETWORK>
   | BridgeControllerAction<BridgeUserAction.SELECT_DEST_NETWORK>
   | BridgeControllerAction<BridgeUserAction.UPDATE_QUOTE_PARAMS>;
@@ -71,8 +74,11 @@ type BridgeControllerEvents = ControllerStateChangeEvent<
  */
 export type BridgeControllerMessenger = RestrictedControllerMessenger<
   typeof BRIDGE_CONTROLLER_NAME,
-  BridgeControllerActions | AccountsControllerGetSelectedAccountAction,
+  | BridgeControllerActions
+  | AccountsControllerGetSelectedAccountAction
+  | NetworkControllerGetSelectedNetworkClientAction,
   BridgeControllerEvents,
-  AccountsControllerGetSelectedAccountAction['type'],
+  | AccountsControllerGetSelectedAccountAction['type']
+  | NetworkControllerGetSelectedNetworkClientAction['type'],
   never
 >;

@@ -18,6 +18,10 @@ describe('PrepareBridgePage', () => {
     global.ethereumProvider = provider as any;
   });
 
+  beforeEach(() => {
+    jest.clearAllMocks();
+  });
+
   it('should render the component, with initial state', async () => {
     const mockStore = createBridgeMockStore(
       {
@@ -54,9 +58,17 @@ describe('PrepareBridgePage', () => {
       {
         srcNetworkAllowlist: [CHAIN_IDS.MAINNET, CHAIN_IDS.LINEA_MAINNET],
         destNetworkAllowlist: [CHAIN_IDS.LINEA_MAINNET],
+        destTokens: {
+          '0x1f9840a85d5af5bf1d1762f925bdaddc4201f984': {
+            iconUrl: 'http://url',
+            symbol: 'UNI',
+            address: '0x1f9840a85d5af5bf1d1762f925bdaddc4201f984',
+            decimals: 6,
+          },
+        },
       },
       {
-        fromTokenInputValue: 1,
+        fromTokenInputValue: '1',
         fromToken: { address: '0x3103910', decimals: 6 },
         toToken: {
           iconUrl: 'http://url',
@@ -90,6 +102,7 @@ describe('PrepareBridgePage', () => {
     expect(getByTestId('from-amount')).toBeInTheDocument();
     expect(getByTestId('from-amount').closest('input')).not.toBeDisabled();
     expect(getByTestId('from-amount').closest('input')).toHaveValue(1);
+
     await act(() => {
       fireEvent.change(getByTestId('from-amount'), { target: { value: '2' } });
     });

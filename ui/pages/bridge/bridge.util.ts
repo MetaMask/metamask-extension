@@ -180,13 +180,18 @@ export async function fetchBridgeTokens(
 // Returns a list of bridge tx quotes
 export async function fetchBridgeQuotes(
   request: QuoteRequest,
+  signal: AbortSignal,
 ): Promise<QuoteResponse[]> {
   const url = `${BRIDGE_API_BASE_URL}/getQuote?${Object.entries(request)
     .map(([k, v]) => `${k}=${v}`)
     .join('&')}`;
   const quotes = await fetchWithCache({
     url,
-    fetchOptions: { method: 'GET', headers: CLIENT_ID_HEADER },
+    fetchOptions: {
+      method: 'GET',
+      headers: CLIENT_ID_HEADER,
+      signal,
+    },
     cacheOptions: { cacheRefreshTime: 0 },
     functionName: 'fetchBridgeQuotes',
   });
