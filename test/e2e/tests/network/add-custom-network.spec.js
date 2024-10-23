@@ -454,30 +454,27 @@ describe('Custom network', function () {
             text: 'Add',
           });
 
-          const [currencySymbol, networkUrl] = await driver.findElements(
-            '.definition-list dd',
-          );
-          assert.equal(
-            await currencySymbol.getText(),
-            currencySYMBOL,
-            'Currency symbol is not correctly displayed',
-          );
-          assert.equal(
-            await networkUrl.getText(),
-            networkURL,
-            'Network Url is not correctly displayed',
-          );
+          await driver.waitForSelector({
+            tag: 'dd',
+            text: currencySYMBOL,
+          });
+
+          await driver.waitForSelector({
+            tag: 'dd',
+            text: networkURL,
+          });
 
           await driver.clickElement({ tag: 'a', text: 'See details' });
 
-          const networkDetailsLabels = await driver.findElements('dd');
-          assert.equal(
-            await networkDetailsLabels[4].getText(),
-            blockExplorerURL,
-            'Block Explorer URL is not correct',
-          );
+          await driver.waitForSelector({
+            tag: 'dd',
+            text: blockExplorerURL,
+          });
 
-          await driver.clickElement({ tag: 'button', text: 'Approve' });
+          await driver.clickElementAndWaitToDisappear({
+            tag: 'button',
+            text: 'Approve',
+          });
 
           // verify network switched
           await driver.waitForSelector(
@@ -526,16 +523,13 @@ describe('Custom network', function () {
           // ===========================================================>
 
           // Go to Edit Menu
-          const networkMenu = await driver.findElement(
+          await driver.clickElement(
             '[data-testid="network-list-item-options-button-0xa4b1"]',
           );
 
-          await networkMenu.click();
-
-          const deleteButton = await driver.findElement(
+          await driver.clickElement(
             '[data-testid="network-list-item-options-delete"]',
           );
-          deleteButton.click();
 
           await driver.clickElement({
             tag: 'button',
@@ -545,12 +539,9 @@ describe('Custom network', function () {
           await driver.clickElement('[data-testid="network-display"]');
 
           // check if arbitrum is on the list of popular network
-          const popularNetworkArbitrum = await driver.findElement(
+          await driver.waitForSelector(
             '[data-testid="popular-network-0xa4b1"]',
           );
-
-          const existNetwork = popularNetworkArbitrum !== undefined;
-          assert.equal(existNetwork, true, 'Network is not deleted');
         },
       );
     });
@@ -958,19 +949,10 @@ async function checkThatSafeChainsListValidationToggleIsOn(driver) {
   await driver.waitForSelector(securityAndPrivacyTabRawLocator);
   await driver.clickElement(securityAndPrivacyTabRawLocator);
 
-  const useSafeChainsListValidationToggleSelector =
-    '[data-testid="useSafeChainsListValidation"]';
-  const useSafeChainsListValidationToggleElement = await driver.waitForSelector(
-    useSafeChainsListValidationToggleSelector,
-  );
-  const useSafeChainsListValidationToggleState =
-    await useSafeChainsListValidationToggleElement.getText();
-
-  assert.equal(
-    useSafeChainsListValidationToggleState,
-    'ON',
-    'Safe chains list validation toggle is off',
-  );
+  await driver.findElement({
+    xpath:
+      "//div[@data-testid='useSafeChainsListValidation']//label[contains(@class, 'toggle-button') and contains(@class, 'toggle-button--on')]",
+  });
 
   // return to the home screen
   const appHeaderSelector = '[data-testid="app-header-logo"]';
@@ -1080,42 +1062,20 @@ async function toggleOffSafeChainsListValidation(driver) {
   await driver.waitForSelector(securityAndPrivacyTabRawLocator);
   await driver.clickElement(securityAndPrivacyTabRawLocator);
 
-  const useSafeChainsListValidationLabelSelector =
-    '[data-testid="useSafeChainsListValidation"]';
   const useSafeChainsListValidationToggleSelector =
     '[data-testid="useSafeChainsListValidation"] .toggle-button > div';
 
-  let useSafeChainsListValidationLabelElement = await driver.waitForSelector(
-    useSafeChainsListValidationLabelSelector,
-  );
-
-  let useSafeChainsListValidationToggleState =
-    await useSafeChainsListValidationLabelElement.getText();
-
-  assert.equal(
-    useSafeChainsListValidationToggleState,
-    'ON',
-    'Safe chains list validation toggle is OFF by default',
-  );
+  await driver.waitForSelector({
+    xpath:
+      "//div[@data-testid='useSafeChainsListValidation']//label[contains(@class, 'toggle-button') and contains(@class, 'toggle-button--on')]",
+  });
 
   await driver.clickElement(useSafeChainsListValidationToggleSelector);
 
-  await driver.delay(regularDelayMs);
-
-  useSafeChainsListValidationLabelElement = await driver.waitForSelector(
-    useSafeChainsListValidationLabelSelector,
-  );
-
-  useSafeChainsListValidationToggleState =
-    await useSafeChainsListValidationLabelElement.getText();
-
-  assert.equal(
-    useSafeChainsListValidationToggleState,
-    'OFF',
-    'Safe chains list validation toggle is ON',
-  );
-
-  driver.delay(regularDelayMs);
+  await driver.waitForSelector({
+    xpath:
+      "//div[@data-testid='useSafeChainsListValidation']//label[contains(@class, 'toggle-button') and contains(@class, 'toggle-button--off')]",
+  });
 
   // return to the home screen
   const appHeaderSelector = '[data-testid="app-header-logo"]';

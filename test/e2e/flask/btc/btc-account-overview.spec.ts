@@ -1,4 +1,3 @@
-import { strict as assert } from 'assert';
 import { Suite } from 'mocha';
 import { DEFAULT_BTC_BALANCE } from '../../constants';
 import { withBtcAccountSnap } from './common-btc';
@@ -47,16 +46,15 @@ describe('BTC Account - Overview', function (this: Suite) {
       { title: this.test?.fullTitle() },
       async (driver) => {
         // Wait for the balance to load up
-        await driver.delay(2000);
+        await driver.waitForSelector({
+          css: '.currency-display-component__text',
+          text: `${DEFAULT_BTC_BALANCE}`,
+        });
 
-        const balanceElement = await driver.findElement(
-          '.coin-overview__balance',
-        );
-        const balanceText = await balanceElement.getText();
-
-        const [balance, unit] = balanceText.split('\n');
-        assert(Number(balance) === DEFAULT_BTC_BALANCE);
-        assert(unit === 'BTC');
+        await driver.waitForSelector({
+          css: '.currency-display-component__suffix',
+          text: 'BTC',
+        });
       },
     );
   });
