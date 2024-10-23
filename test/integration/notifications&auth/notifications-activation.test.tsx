@@ -40,37 +40,24 @@ const trackNotificationsActivatedMetaMetricsEvent = async (
   actionType: string,
   profileSyncEnabled: boolean,
 ) => {
-  await waitFor(() => {
-    const action =
-      mockedBackgroundConnection.submitRequestToBackground.mock.calls?.find(
-        (call) =>
-          call[0] === 'trackMetaMetricsEvent' &&
-          call[1]?.[0].category ===
-            MetaMetricsEventCategory.NotificationsActivationFlow &&
-          call[1]?.[0].properties.action_type === actionType,
-      );
+  const expectedCall = [
+    'trackMetaMetricsEvent',
+    [
+      expect.objectContaining({
+        event: MetaMetricsEventName.NotificationsActivated,
+        category: MetaMetricsEventCategory.NotificationsActivationFlow,
+        properties: {
+          action_type: actionType,
+          is_profile_syncing_enabled: profileSyncEnabled,
+        },
+      }),
+    ],
+  ];
 
-    expect(action?.[0]).toBe('trackMetaMetricsEvent');
-
-    const [event] = action?.[1] as unknown as [
-      {
-        event: string;
-        category: string;
-        properties: Record<string, unknown>;
-      },
-    ];
-
-    expect(event?.event).toBe(MetaMetricsEventName.NotificationsActivated);
-    expect(event?.category).toBe(
-      MetaMetricsEventCategory.NotificationsActivationFlow,
-    );
-    expect(event?.properties).toMatchObject({
-      action_type: actionType,
-      is_profile_syncing_enabled: profileSyncEnabled,
-    });
-  });
+  expect(
+    mockedBackgroundConnection.submitRequestToBackground.mock.calls,
+  ).toStrictEqual(expect.arrayContaining([expectedCall]));
 };
-
 describe('Notifications Activation', () => {
   beforeEach(() => {
     jest.resetAllMocks();
