@@ -57,7 +57,7 @@ describe('Request Queuing SendTx -> SwitchChain (to already permitted, but diffe
         // Dapp Send Button
         await driver.clickElement('#sendButton');
 
-        await driver.delay(largeDelayMs)
+        await driver.delay(largeDelayMs);
 
         // Switch Ethereum Chain
         const switchEthereumChainRequest = JSON.stringify({
