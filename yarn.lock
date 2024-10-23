@@ -4172,20 +4172,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@keystonehq/metamask-airgapped-keyring@npm:^0.13.1":
-  version: 0.13.1
-  resolution: "@keystonehq/metamask-airgapped-keyring@npm:0.13.1"
-  dependencies:
-    "@ethereumjs/tx": "npm:^4.0.2"
-    "@keystonehq/base-eth-keyring": "npm:^0.14.1"
-    "@keystonehq/bc-ur-registry-eth": "npm:^0.19.1"
-    "@metamask/obs-store": "npm:^7.0.0"
-    rlp: "npm:^2.2.6"
-    uuid: "npm:^8.3.2"
-  checksum: 10/a12870b4527ae91cbad1995700f0710188c6fd9d2c6c2d9b398c25d96c4267fa4812e075a117c05c5edd9f6ada2c525562b5a6df3a0881c938900ff0c88791ee
-  languageName: node
-  linkType: hard
-
 "@keystonehq/metamask-airgapped-keyring@npm:^0.14.1":
   version: 0.14.1
   resolution: "@keystonehq/metamask-airgapped-keyring@npm:0.14.1"
@@ -4983,13 +4969,6 @@ __metadata:
     eth-ens-namehash: "npm:^2.0.8"
     fast-deep-equal: "npm:^3.1.3"
   checksum: 10/3200228d1f4ea5fa095228db4e5050529caf0470e072382eb8f7571bb9b07515516ca9e846b7751388399d9ae967e4985dafd6120902ef6c998e98f4eb36d964
-  languageName: node
-  linkType: hard
-
-"@metamask/design-tokens@npm:^1.12.0":
-  version: 1.13.0
-  resolution: "@metamask/design-tokens@npm:1.13.0"
-  checksum: 10/a76d10ad3ad6f1f30bf3b8e749e70c71587fd543fafd355b6185fb191994547acb63408c6d5ac4a53c4aa1f9e4022cd63ad83bd98cbac79f21f5bc7df15e63ab
   languageName: node
   linkType: hard
 
@@ -5838,16 +5817,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/obs-store@npm:^7.0.0":
-  version: 7.0.0
-  resolution: "@metamask/obs-store@npm:7.0.0"
-  dependencies:
-    "@metamask/safe-event-emitter": "npm:^2.0.0"
-    through2: "npm:^2.0.3"
-  checksum: 10/e1497140384de0ac689adbe7286df43e843c5d73fd8ba7080af2faab3de73e823b46b8214be1c839d9e9e5f86fb40df50a26e93bae936329daeaedae5e523323
-  languageName: node
-  linkType: hard
-
 "@metamask/obs-store@npm:^9.0.0":
   version: 9.0.0
   resolution: "@metamask/obs-store@npm:9.0.0"
@@ -5923,18 +5892,18 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/phishing-warning@npm:^4.0.0":
-  version: 4.0.0
-  resolution: "@metamask/phishing-warning@npm:4.0.0"
+"@metamask/phishing-warning@npm:^4.1.0":
+  version: 4.1.0
+  resolution: "@metamask/phishing-warning@npm:4.1.0"
   dependencies:
-    "@metamask/design-tokens": "npm:^1.12.0"
+    "@metamask/design-tokens": "npm:^4.0.0"
     "@metamask/object-multiplex": "npm:^2.0.0"
     "@metamask/post-message-stream": "npm:^8.0.0"
     eth-phishing-detect: "npm:^1.2.0"
     punycode: "npm:^2.3.1"
     readable-stream: "npm:^3.6.2"
     ses: "npm:^1.1.0"
-  checksum: 10/0f85b92880d47a5d9810605574231b5a4b4ab7ac4192d9799c1c95187efd4da3ca5ea7412aeb6aa00eb0aaac3aaad987d28868fdaad1347e24e0d72ce95c6524
+  checksum: 10/6bb1ef9dc2f9dcbcfd3472855dca579e6f7b155082e95bf16259ef734ca8baeb0cd5ab3f06b583c7fc73393e4b03e5ec3937130e19aa98e9a003378c0179a2ed
   languageName: node
   linkType: hard
 
@@ -6128,13 +6097,6 @@ __metadata:
     "@metamask/utils": "npm:^9.0.0"
     fast-safe-stringify: "npm:^2.0.6"
   checksum: 10/f25e2a5506d4d0d6193c88aef8f035ec189a1177f8aee8fa01c9a33d73b1536ca7b5eea2fb33a477768bbd2abaf16529e68f0b3cf714387e5d6c9178225354fd
-  languageName: node
-  linkType: hard
-
-"@metamask/safe-event-emitter@npm:^2.0.0":
-  version: 2.0.0
-  resolution: "@metamask/safe-event-emitter@npm:2.0.0"
-  checksum: 10/3e4f00c64aa1ddf9b9ae5c2337fb8cee359b6c481ded0ec21ef70610960c51cdcc4a9b569de334dcd7cb1fe445cafd298360907c1e211e244c5990b55246f350
   languageName: node
   linkType: hard
 
@@ -25916,7 +25878,7 @@ __metadata:
     "@fortawesome/fontawesome-free": "npm:^5.13.0"
     "@jest/globals": "npm:^29.7.0"
     "@keystonehq/bc-ur-registry-eth": "npm:^0.19.1"
-    "@keystonehq/metamask-airgapped-keyring": "npm:^0.13.1"
+    "@keystonehq/metamask-airgapped-keyring": "npm:^0.14.1"
     "@lavamoat/allow-scripts": "npm:^3.0.4"
     "@lavamoat/lavadome-core": "npm:0.0.10"
     "@lavamoat/lavadome-react": "npm:0.0.17"
@@ -25990,7 +25952,7 @@ __metadata:
     "@metamask/permission-controller": "npm:^10.0.0"
     "@metamask/permission-log-controller": "npm:^2.0.1"
     "@metamask/phishing-controller": "npm:^12.0.1"
-    "@metamask/phishing-warning": "npm:^4.0.0"
+    "@metamask/phishing-warning": "npm:^4.1.0"
     "@metamask/post-message-stream": "npm:^8.0.0"
     "@metamask/ppom-validator": "npm:0.35.1"
     "@metamask/preferences-controller": "npm:^13.0.2"
