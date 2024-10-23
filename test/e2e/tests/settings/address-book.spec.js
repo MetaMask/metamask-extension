@@ -89,13 +89,7 @@ describe('Address Book', function () {
 
         await driver.fill('#nickname','Test User');
 
-        const inputAddress = await driver.findElement(
-          'input[placeholder="Enter public address (0x) or domain name"]',
-        );
-        await inputAddress.fill(
-          '[data-testid="ens-input"]',
-          '0x56A355d3427bC2B1E22c78197AF091230919Cc2A',
-        );
+        await driver.fill('[data-testid="ens-input"]','0x56A355d3427bC2B1E22c78197AF091230919Cc2A');
 
         await driver.clickElement('[data-testid="page-container-footer-next"]');
 
