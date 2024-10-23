@@ -414,6 +414,7 @@ export const unrestrictedMethods = Object.freeze([
   'snap_getInterfaceState',
   'snap_resolveInterface',
   'snap_getCurrencyRate',
+  'snap_requestDevice',
   ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
   'metamaskinstitutional_authenticate',
   'metamaskinstitutional_reauthenticate',

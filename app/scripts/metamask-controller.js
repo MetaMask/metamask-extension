@@ -88,6 +88,7 @@ import {
   SnapInterfaceController,
   SnapInsightsController,
   OffscreenExecutionService,
+  DeviceController,
 } from '@metamask/snaps-controllers';
 import {
   createSnapsMethodMiddleware,
@@ -1405,6 +1406,15 @@ export default class MetamaskController extends EventEmitter {
       },
     });
 
+    this.deviceController = new DeviceController({
+      messenger: this.controllerMessenger.getRestricted({
+        name: 'DeviceController',
+        allowedEvents: [],
+        allowedActions: ["ApprovalController:addRequest"],
+      }),
+      state: initState.DeviceController,
+    })
+
     this.notificationController = new NotificationController({
       messenger: this.controllerMessenger.getRestricted({
         name: 'NotificationController',
@@ -2425,6 +2435,7 @@ export default class MetamaskController extends EventEmitter {
       NotificationController: this.notificationController,
       SnapInterfaceController: this.snapInterfaceController,
       SnapInsightsController: this.snapInsightsController,
+      DeviceController: this.deviceController,
       ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
       CustodyController: this.custodyController.store,
       InstitutionalFeaturesController:
@@ -2480,6 +2491,7 @@ export default class MetamaskController extends EventEmitter {
         NotificationController: this.notificationController,
         SnapInterfaceController: this.snapInterfaceController,
         SnapInsightsController: this.snapInsightsController,
+        DeviceController: this.deviceController,
         ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
         CustodyController: this.custodyController.store,
         InstitutionalFeaturesController:
@@ -3839,6 +3851,22 @@ export default class MetamaskController extends EventEmitter {
         this.controllerMessenger,
         'SnapController:disconnectOrigin',
       ),
+      resolveSnapDevicePairing: this.controllerMessenger.call.bind(
+        this.controllerMessenger,
+        'DeviceController:resolvePairing',
+      ),
+      rejectSnapDevicePairing: this.controllerMessenger.call.bind(
+        this.controllerMessenger,
+        'DeviceController:rejectPairing',
+      ),
+      triggerPopup: async () => {
+        const currentPopupId = this.appStateController.getCurrentPopupId();
+        await this.notificationManager.showPopup(
+          (newPopupId) =>
+            this.appStateController.setCurrentPopupId(newPopupId),
+          currentPopupId,
+        );
+      },
       updateNetworksList: this.updateNetworksList.bind(this),
       updateAccountsList: this.updateAccountsList.bind(this),
       updateHiddenAccountsList: this.updateHiddenAccountsList.bind(this),
@@ -6054,6 +6082,7 @@ export default class MetamaskController extends EventEmitter {
             currency: fiatCurrency,
           };
         },
+        requestDevices: () => this.deviceController.requestDevices(origin),
         ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
         hasPermission: this.permissionController.hasPermission.bind(
           this.permissionController,

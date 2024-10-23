@@ -6,6 +6,7 @@ import { Container } from '@metamask/snaps-sdk/jsx';
 import { isEqual } from 'lodash';
 import MetaMaskTemplateRenderer from '../../metamask-template-renderer/metamask-template-renderer';
 import { SnapDelineator } from '../snap-delineator';
+import { SnapDeviceModal } from '../snap-device-modal';
 import { getSnapMetadata, getMemoizedInterface } from '../../../../selectors';
 import { Box } from '../../../component-library';
 import { DelineatorType } from '../../../../helpers/constants/snaps';
@@ -110,6 +111,7 @@ const SnapUIRendererComponent = ({
       disablePadding
     >
       <Box className="snap-ui-renderer__content">
+        <SnapDeviceModal snapId={snapId} />
         <SnapInterfaceContextProvider
           snapId={snapId}
           interfaceId={interfaceId}
@@ -127,6 +129,7 @@ const SnapUIRendererComponent = ({
       initialState={initialState}
       context={context}
     >
+      <SnapDeviceModal snapId={snapId} />
       <Box
         className="snap-ui-renderer__content"
         height={BlockSize.Full}

@@ -154,6 +154,9 @@ PATH_NAME_MAP[SNAPS_ROUTE] = 'Snaps List Page';
 export const SNAPS_VIEW_ROUTE = '/snaps/view';
 PATH_NAME_MAP[`${SNAPS_VIEW_ROUTE}/:snapId`] = 'Snap View Page';
 
+export const SNAPS_DEVICE_ROUTE = '/snaps/device-pairing';
+PATH_NAME_MAP[SNAPS_DEVICE_ROUTE] = 'Snap Device Pairing';
+
 export const NOTIFICATIONS_ROUTE = '/notifications';
 PATH_NAME_MAP[NOTIFICATIONS_ROUTE] = 'Notifications Page';
 PATH_NAME_MAP[`${NOTIFICATIONS_ROUTE}/:uuid`] = 'Notification Detail Page';
