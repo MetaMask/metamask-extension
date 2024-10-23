@@ -36,7 +36,7 @@ import {
   getSelectedInternalAccount,
   getShouldShowFiat,
   getShowFiatInTestnets,
-} from '.';
+} from './selectors';
 
 export type RatesState = {
   metamask: RatesControllerState;
