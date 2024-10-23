@@ -179,7 +179,8 @@ export const getBridgeFeesPerGas = createSelector(
   }),
 );
 
-const _getBridgeSortOrder = (state: BridgeAppState) => state.bridge.sortOrder;
+export const getBridgeSortOrder = (state: BridgeAppState) =>
+  state.bridge.sortOrder;
 
 const _getQuotesWithMetadata = createDeepEqualSelector(
   (state) => state.metamask.bridgeState.quotes,
@@ -233,7 +234,7 @@ const _getQuotesWithMetadata = createDeepEqualSelector(
 
 const _getSortedQuotesWithMetadata = createDeepEqualSelector(
   _getQuotesWithMetadata,
-  _getBridgeSortOrder,
+  getBridgeSortOrder,
   (quotesWithMetadata, sortOrder) => {
     switch (sortOrder) {
       case SortOrder.ETA_ASC:
@@ -255,7 +256,7 @@ const _getSortedQuotesWithMetadata = createDeepEqualSelector(
 
 const _getRecommendedQuote = createDeepEqualSelector(
   _getSortedQuotesWithMetadata,
-  _getBridgeSortOrder,
+  getBridgeSortOrder,
   (sortedQuotesWithMetadata, sortOrder) => {
     if (!sortedQuotesWithMetadata.length) {
       return undefined;
