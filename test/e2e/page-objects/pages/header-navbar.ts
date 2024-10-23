@@ -77,6 +77,7 @@ class HeaderNavbar {
    * @param networkName - The name of the network to switch to.
    */
   async switchToNetwork(networkName: string): Promise<void> {
+    console.log(`Switch to network ${networkName} in header bar`);
     await this.driver.clickElement(this.switchNetworkDropDownButton);
     await this.driver.waitForSelector(this.selectNetworkMessage);
     await this.driver.clickElement(`[data-testid="${networkName}"]`);

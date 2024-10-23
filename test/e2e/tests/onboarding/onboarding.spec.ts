@@ -142,7 +142,7 @@ describe('MetaMask onboarding @no-mmi', function () {
         );
 
         // check the incorrect password warning message is displayed
-        await onboardingPasswordPage.check_incorrectPasswordWarningMessage();
+        await onboardingPasswordPage.check_incorrectPasswordWarningMessageIsDisplayed();
         await onboardingPasswordPage.check_confirmPasswordButtonIsDisabled();
       },
     );

@@ -103,7 +103,7 @@ class OnboardingPasswordPage {
     assert.equal(await confirmPasswordButton.isEnabled(), false);
   }
 
-  async check_incorrectPasswordWarningMessage(): Promise<void> {
+  async check_incorrectPasswordWarningMessageIsDisplayed(): Promise<void> {
     console.log('Check the incorrect password warning message is displayed');
     await this.driver.waitForSelector(this.incorrectPasswordWarningMessage);
   }

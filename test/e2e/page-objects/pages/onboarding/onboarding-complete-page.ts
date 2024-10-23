@@ -64,6 +64,7 @@ class OnboardingCompletePage {
   }
 
   async completeOnboarding(): Promise<void> {
+    console.log('Complete onboarding');
     await this.clickCreateWalletDoneButton();
     await this.driver.waitForSelector(this.installCompleteMessage);
     await this.driver.clickElement(this.pinExtensionNextButton);
