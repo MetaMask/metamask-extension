@@ -12,10 +12,11 @@ import {
   setShowExtensionInFullSizeView,
   setShowFiatConversionOnTestnetsPreference,
   setShowTestNetworks,
-  setSmartTransactionsOptInStatus,
+  setSmartTransactionsPreferenceEnabled,
   setUseNonceField,
   showModal,
 } from '../../../store/actions';
+import { getSmartTransactionsPreferenceEnabled } from '../../../../shared/modules/selectors';
 import AdvancedTab from './advanced-tab.component';
 
 export const mapStateToProps = (state) => {
@@ -32,7 +33,6 @@ export const mapStateToProps = (state) => {
     showFiatInTestnets,
     showTestNetworks,
     showExtensionInFullSizeView,
-    smartTransactionsOptInStatus,
     autoLockTimeLimit = DEFAULT_AUTO_LOCK_TIME_LIMIT,
   } = getPreferences(state);
 
@@ -42,7 +42,7 @@ export const mapStateToProps = (state) => {
     showFiatInTestnets,
     showTestNetworks,
     showExtensionInFullSizeView,
-    smartTransactionsOptInStatus,
+    smartTransactionsEnabled: getSmartTransactionsPreferenceEnabled(state),
     autoLockTimeLimit,
     useNonceField,
     dismissSeedBackUpReminder,
@@ -67,8 +67,8 @@ export const mapDispatchToProps = (dispatch) => {
     setShowExtensionInFullSizeView: (value) => {
       return dispatch(setShowExtensionInFullSizeView(value));
     },
-    setSmartTransactionsOptInStatus: (value) => {
-      return dispatch(setSmartTransactionsOptInStatus(value));
+    setSmartTransactionsEnabled: (value) => {
+      return dispatch(setSmartTransactionsPreferenceEnabled(value));
     },
     setAutoLockTimeLimit: (value) => {
       return dispatch(setAutoLockTimeLimit(value));
