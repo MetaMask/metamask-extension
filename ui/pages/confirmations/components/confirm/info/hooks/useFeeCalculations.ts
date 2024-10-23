@@ -12,6 +12,7 @@ import {
   getValueFromWeiHex,
   multiplyHexes,
 } from '../../../../../../../shared/modules/conversion.utils';
+import { Numeric } from '../../../../../../../shared/modules/Numeric';
 import { getConversionRate } from '../../../../../../ducks/metamask/metamask';
 import { useFiatFormatter } from '../../../../../../hooks/useFiatFormatter';
 import { useGasFeeEstimates } from '../../../../../../hooks/useGasFeeEstimates';
@@ -114,10 +115,20 @@ export function useFeeCalculations(transactionMeta: TransactionMeta) {
     }
 
     // Logic for any network without L1 and L2 fee components
-    const minimumFeePerGas = addHexes(
+    let minimumFeePerGas = addHexes(
       decGWEIToHexWEI(estimatedBaseFee) || HEX_ZERO,
       decimalToHex(maxPriorityFeePerGas),
     );
+
+    // `minimumFeePerGas` should never be higher than the `maxFeePerGas`
+    if (
+      new Numeric(minimumFeePerGas, 16).greaterThan(
+        decimalToHex(maxFeePerGas),
+        16,
+      )
+    ) {
+      minimumFeePerGas = decimalToHex(maxFeePerGas);
+    }
 
     const estimatedFee = multiplyHexes(
       supportsEIP1559 ? (minimumFeePerGas as Hex) : (gasPrice as Hex),
