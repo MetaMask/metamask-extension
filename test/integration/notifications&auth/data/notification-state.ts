@@ -52,5 +52,7 @@ export const getMockedNotificationsState = () => {
       ...mockMetaMaskState.preferences,
       showMultiRpcModal: false,
     },
+    pendingApprovalCount: 0,
+    pendingApprovals: {},
   };
 };
