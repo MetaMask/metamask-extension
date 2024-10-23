@@ -27,7 +27,7 @@ describe('MultiRpc:', function (this: Suite) {
             json: {
               id: '1694444405781',
               jsonrpc: '2.0',
-              result: '0xa4b1',
+              result: '0xa86a',
             },
           })),
       ];
@@ -37,7 +37,7 @@ describe('MultiRpc:', function (this: Suite) {
         fixtures: new FixtureBuilder({ onboarding: true })
           .withNetworkController({
             providerConfig: {
-              rpcPrefs: { blockExplorerUrl: 'https://etherscan.io/' },
+              rpcPrefs: { blockExplorerUrl: 'https://snowtrace.io/' },
             },
             networkConfigurations: {
               networkConfigurationId: {
@@ -48,20 +48,20 @@ describe('MultiRpc:', function (this: Suite) {
                 rpcPrefs: { blockExplorerUrl: 'https://etherscan.io/' },
               },
               '2ce66016-8aab-47df-b27f-318c80865eb0': {
-                chainId: '0xa4b1',
+                chainId: '0xa86a',
                 id: '2ce66016-8aab-47df-b27f-318c80865eb0',
-                nickname: 'Arbitrum mainnet',
+                nickname: 'Avalanche mainnet',
                 rpcPrefs: {},
-                rpcUrl: 'https://arbitrum-mainnet.infura.io',
-                ticker: 'ETH',
+                rpcUrl: 'https://avalanche-mainnet.infura.io',
+                ticker: 'AVAX',
               },
               '2ce66016-8aab-47df-b27f-318c80865eb1': {
-                chainId: '0xa4b1',
+                chainId: '0xa86a',
                 id: '2ce66016-8aab-47df-b27f-318c80865eb1',
-                nickname: 'Arbitrum mainnet 2',
+                nickname: 'Avalanche mainnet 2',
                 rpcPrefs: {},
                 rpcUrl: 'https://responsive-rpc.test/',
-                ticker: 'ETH',
+                ticker: 'AVAX',
               },
             },
             selectedNetworkClientId: 'networkConfigurationId',
@@ -81,7 +81,7 @@ describe('MultiRpc:', function (this: Suite) {
 
         await driver.delay(regularDelayMs);
 
-        // complete
+        // complete onboarding
         await driver.clickElement('[data-testid="onboarding-complete-done"]');
 
         // pin extension
@@ -96,7 +96,7 @@ describe('MultiRpc:', function (this: Suite) {
         await driver.clickElement('[data-testid="network-display"]');
 
         await driver.clickElement(
-          '[data-testid="network-rpc-name-button-0xa4b1"]',
+          '[data-testid="network-rpc-name-button-0xa86a"]',
         );
 
         const menuItems = await driver.findElements('.select-rpc-url__item');
@@ -341,7 +341,7 @@ describe('MultiRpc:', function (this: Suite) {
             json: {
               id: '1694444405781',
               jsonrpc: '2.0',
-              result: '0xa4b1',
+              result: '0xa86a',
             },
           })),
       ];
@@ -351,7 +351,7 @@ describe('MultiRpc:', function (this: Suite) {
         fixtures: new FixtureBuilder({ onboarding: true })
           .withNetworkController({
             providerConfig: {
-              rpcPrefs: { blockExplorerUrl: 'https://etherscan.io/' },
+              rpcPrefs: { blockExplorerUrl: 'https://snowtrace.io/' },
             },
             networkConfigurations: {
               networkConfigurationId: {
@@ -362,20 +362,20 @@ describe('MultiRpc:', function (this: Suite) {
                 rpcPrefs: { blockExplorerUrl: 'https://etherscan.io/' },
               },
               '2ce66016-8aab-47df-b27f-318c80865eb0': {
-                chainId: '0xa4b1',
+                chainId: '0xa86a',
                 id: '2ce66016-8aab-47df-b27f-318c80865eb0',
-                nickname: 'Arbitrum mainnet',
+                nickname: 'Avalanche mainnet',
                 rpcPrefs: {},
-                rpcUrl: 'https://arbitrum-mainnet.infura.io',
-                ticker: 'ETH',
+                rpcUrl: 'https://avalanche-mainnet.infura.io',
+                ticker: 'AVAX',
               },
               '2ce66016-8aab-47df-b27f-318c80865eb1': {
-                chainId: '0xa4b1',
+                chainId: '0xa86a',
                 id: '2ce66016-8aab-47df-b27f-318c80865eb1',
-                nickname: 'Arbitrum mainnet 2',
+                nickname: 'Avalanche mainnet 2',
                 rpcPrefs: {},
                 rpcUrl: 'https://responsive-rpc.test/',
-                ticker: 'ETH',
+                ticker: 'AVAX',
               },
             },
             selectedNetworkClientId: 'networkConfigurationId',
@@ -395,7 +395,7 @@ describe('MultiRpc:', function (this: Suite) {
 
         await driver.delay(regularDelayMs);
 
-        // go to advanced settigns
+        // go to advanced settings
         await driver.clickElementAndWaitToDisappear({
           text: 'Manage default privacy settings',
         });
@@ -406,7 +406,7 @@ describe('MultiRpc:', function (this: Suite) {
 
         // open edit modal
         await driver.clickElement({
-          text: 'arbitrum-mainnet.infura.io',
+          text: 'avalanche-mainnet.infura.io',
           tag: 'p',
         });
 
@@ -414,7 +414,7 @@ describe('MultiRpc:', function (this: Suite) {
 
         await driver.delay(regularDelayMs);
         await driver.clickElement({
-          text: 'Arbitrum mainnet 2',
+          text: 'Avalanche mainnet 2',
           tag: 'button',
         });
 
@@ -446,14 +446,14 @@ describe('MultiRpc:', function (this: Suite) {
 
         // Validate the network was edited
         const networkEdited = await driver.isElementPresent({
-          text: '“Arbitrum One” was successfully edited!',
+          text: '“Avalanche Network C-Chain” was successfully edited!',
         });
         assert.equal(
           networkEdited,
           true,
-          '“Arbitrum One” was successfully edited!',
+          '“Avalanche Network C-Chain” was successfully edited!',
         );
-        // Ensures popover backround doesn't kill test
+        // Ensures popover background doesn't kill test
         await driver.assertElementNotPresent('.popover-bg');
 
         // We need to use clickElementSafe + assertElementNotPresent as sometimes the network dialog doesn't appear, as per this issue (#27870)
@@ -467,12 +467,12 @@ describe('MultiRpc:', function (this: Suite) {
 
         await driver.clickElement('[data-testid="network-display"]');
 
-        const arbitrumRpcUsed = await driver.findElement({
-          text: 'Arbitrum mainnet 2',
+        const avalancheRpcUsed = await driver.findElement({
+          text: 'Avalanche mainnet 2',
           tag: 'button',
         });
 
-        const existRpcUsed = arbitrumRpcUsed !== undefined;
+        const existRpcUsed = avalancheRpcUsed !== undefined;
         assert.equal(existRpcUsed, true, 'Second Rpc is used');
       },
     );
