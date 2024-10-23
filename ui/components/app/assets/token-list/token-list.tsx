@@ -87,7 +87,8 @@ export default function TokenList({
         return (
           <TokenCell
             key={`${tokenData.symbol}-${tokenData.address}`}
-            {...{ ...tokenData, chainId }}
+            {...tokenData}
+            chainId={chainId}
             onClick={onTokenClick}
           />
         );
