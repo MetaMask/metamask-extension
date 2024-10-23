@@ -63,7 +63,7 @@ describe('BTC Account - Send', function (this: Suite) {
         await snapReviewButton.click();
 
         // TODO: There isn't any check for the fees and total amount. This requires calculating the vbytes used in a transaction dynamically.
-        // We already have unit tests for these calculations on the snap.
+        // We already have unit tests for these calculations on the Snap.
 
         // ------------------------------------------------------------------------------
         // From here, we have moved to the confirmation screen (second part of the flow).
@@ -97,7 +97,7 @@ describe('BTC Account - Send', function (this: Suite) {
     );
   });
 
-  it.only('can send the max amount', async function () {
+  it('can send the max amount', async function () {
     await withBtcAccountSnap(
       { title: this.test?.fullTitle() },
       async (driver, mockServer) => {
@@ -127,6 +127,7 @@ describe('BTC Account - Send', function (this: Suite) {
 
         await driver.delay(500);
 
+        // Use the max spendable amount of that account.
         await driver.clickElement({
           text: 'Max',
           tag: 'button',

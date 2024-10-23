@@ -50,9 +50,6 @@ export const DEFAULT_BTC_ACCOUNT = 'bc1qg6whd6pc0cguh6gpp3ewujm53hv32ta9hdp252';
 /* Default (mocked) BTC balance used by the Bitcoin RPC provider */
 export const DEFAULT_BTC_BALANCE = 1; // BTC
 
-/* Default asset to use in the rates call */
-export const DEFAULT_MULTICHAIN_ASSET = 'btc';
-
 /* Default BTC fees rate */
 export const DEFAULT_BTC_FEES_RATE = 0.00001; // BTC
 

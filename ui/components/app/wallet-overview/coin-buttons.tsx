@@ -286,6 +286,8 @@ const CoinButtons = ({
       ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
       case BtcAccountType.P2wpkh: {
         try {
+          // FIXME: We switch the tab before starting the send flow (we
+          // faced some inconsistencies when changing it after).
           await dispatch(setDefaultHomeActiveTabName('activity'));
           await sendMultichainTransaction(
             BITCOIN_WALLET_SNAP_ID,
@@ -293,6 +295,7 @@ const CoinButtons = ({
             chainId as CaipChainId,
           );
         } catch {
+          // Restore the previous tab in case of any error (see FIXME comment above).
           await dispatch(setDefaultHomeActiveTabName(currentActivityTabName));
         }
 
