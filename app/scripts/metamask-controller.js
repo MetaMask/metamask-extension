@@ -404,6 +404,12 @@ export const METAMASK_CONTROLLER_EVENTS = {
   NOTIFICATIONS_STATE_CHANGE: 'NotificationController:stateChange',
 };
 
+// Types of APIs
+const API_TYPE = {
+  EIP1193: 'eip-1193',
+  CAIP_MULTICHAIN: 'caip-multichain',
+};
+
 // stream channels
 const PHISHING_SAFELIST = 'metamask-phishing-safelist';
 
@@ -5699,7 +5705,11 @@ export default class MetamaskController extends EventEmitter {
     // setup connection
     const providerStream = createEngineStream({ engine });
 
-    const connectionId = this.addConnection(origin, { tabId, engine });
+    const connectionId = this.addConnection(origin, {
+      tabId,
+      apiType: API_TYPE.EIP1193,
+      engine,
+    });
 
     pipeline(
       outStream,
@@ -5763,7 +5773,11 @@ export default class MetamaskController extends EventEmitter {
     // setup connection
     const providerStream = createEngineStream({ engine });
 
-    const connectionId = this.addConnection(origin, { tabId, engine });
+    const connectionId = this.addConnection(origin, {
+      tabId,
+      apiType: API_TYPE.CAIP_MULTICHAIN,
+      engine,
+    });
 
     pipeline(
       outStream,
@@ -6530,10 +6544,11 @@ export default class MetamaskController extends EventEmitter {
    * @param {string} origin - The connection's origin string.
    * @param {object} options - Data associated with the connection
    * @param {object} options.engine - The connection's JSON Rpc Engine
-   * @param options.tabId
+   * @param {number} options.tabId - The tabId for the connection
+   * @param {API_TYPE} options.apiType - The API type for the connection
    * @returns {string} The connection's id (so that it can be deleted later)
    */
-  addConnection(origin, { tabId, engine }) {
+  addConnection(origin, { tabId, apiType, engine }) {
     if (origin === ORIGIN_METAMASK) {
       return null;
     }
@@ -6545,6 +6560,7 @@ export default class MetamaskController extends EventEmitter {
     const id = nanoid();
     this.connections[origin][id] = {
       tabId,
+      apiType,
       engine,
     };
 
@@ -6600,12 +6616,16 @@ export default class MetamaskController extends EventEmitter {
    *
    * @param {string} origin - The connection's origin string.
    * @param {unknown} payload - The event payload.
+   * @param apiType
    */
-  notifyConnections(origin, payload) {
+  notifyConnections(origin, payload, apiType) {
     const connections = this.connections[origin];
 
     if (connections) {
       Object.values(connections).forEach((conn) => {
+        if (apiType && conn.apiType !== apiType) {
+          return;
+        }
         if (conn.engine) {
           conn.engine.emit('notification', payload);
         }
@@ -6625,8 +6645,9 @@ export default class MetamaskController extends EventEmitter {
    * are sent.
    *
    * @param {unknown} payload - The event payload, or payload getter function.
+   * @param apiType
    */
-  notifyAllConnections(payload) {
+  notifyAllConnections(payload, apiType) {
     const getPayload =
       typeof payload === 'function'
         ? (origin) => payload(origin)
@@ -6634,6 +6655,9 @@ export default class MetamaskController extends EventEmitter {
 
     Object.keys(this.connections).forEach((origin) => {
       Object.values(this.connections[origin]).forEach(async (conn) => {
+        if (apiType && conn.apiType !== apiType) {
+          return;
+        }
         try {
           this.notifyConnection(conn, await getPayload(origin));
         } catch (err) {
@@ -6703,7 +6727,7 @@ export default class MetamaskController extends EventEmitter {
           accounts: await this.getPermittedAccountsSorted(origin),
         },
       };
-    });
+    }, API_TYPE.EIP1193);
 
     this.unMarkPasswordForgotten();
 
@@ -6718,12 +6742,15 @@ export default class MetamaskController extends EventEmitter {
    * Notifies all connections that the extension is locked.
    */
   _onLock() {
-    this.notifyAllConnections({
-      method: NOTIFICATION_NAMES.unlockStateChanged,
-      params: {
-        isUnlocked: false,
+    this.notifyAllConnections(
+      {
+        method: NOTIFICATION_NAMES.unlockStateChanged,
+        params: {
+          isUnlocked: false,
+        },
       },
-    });
+      API_TYPE.EIP1193,
+    );
 
     // In the current implementation, this handler is triggered by a
     // KeyringController event. Other controllers subscribe to the 'lock'
@@ -7259,19 +7286,23 @@ export default class MetamaskController extends EventEmitter {
 
   async _notifyAccountsChange(origin, newAccounts) {
     if (this.isUnlocked()) {
-      this.notifyConnections(origin, {
-        method: NOTIFICATION_NAMES.accountsChanged,
-        // This should be the same as the return value of `eth_accounts`,
-        // namely an array of the current / most recently selected Ethereum
-        // account.
-        params:
-          newAccounts.length < 2
-            ? // If the length is 1 or 0, the accounts are sorted by definition.
-              newAccounts
-            : // If the length is 2 or greater, we have to execute
-              // `eth_accounts` vi this method.
-              await this.getPermittedAccountsSorted(origin),
-      });
+      this.notifyConnections(
+        origin,
+        {
+          method: NOTIFICATION_NAMES.accountsChanged,
+          // This should be the same as the return value of `eth_accounts`,
+          // namely an array of the current / most recently selected Ethereum
+          // account.
+          params:
+            newAccounts.length < 2
+              ? // If the length is 1 or 0, the accounts are sorted by definition.
+                newAccounts
+              : // If the length is 2 or greater, we have to execute
+                // `eth_accounts` vi this method.
+                await this.getPermittedAccountsSorted(origin),
+        },
+        API_TYPE.EIP1193,
+      );
     }
 
     this.permissionLogController.updateAccountsHistory(origin, newAccounts);
@@ -7279,29 +7310,39 @@ export default class MetamaskController extends EventEmitter {
 
   async _notifyAuthorizationChange(origin, newAuthorization) {
     if (this.isUnlocked()) {
-      this.notifyConnections(origin, {
-        method: NOTIFICATION_NAMES.sessionChanged,
-        params: {
-          sessionScopes: mergeScopes(
-            newAuthorization.requiredScopes ?? {},
-            newAuthorization.optionalScopes ?? {},
-          ),
+      this.notifyConnections(
+        origin,
+        {
+          method: NOTIFICATION_NAMES.sessionChanged,
+          params: {
+            sessionScopes: mergeScopes(
+              newAuthorization.requiredScopes ?? {},
+              newAuthorization.optionalScopes ?? {},
+            ),
+          },
         },
-      });
+        API_TYPE.CAIP_MULTICHAIN,
+      );
     }
   }
 
   async _notifyChainChange() {
     if (this.preferencesController.getUseRequestQueue()) {
-      this.notifyAllConnections(async (origin) => ({
-        method: NOTIFICATION_NAMES.chainChanged,
-        params: await this.getProviderNetworkState(origin),
-      }));
+      this.notifyAllConnections(
+        async (origin) => ({
+          method: NOTIFICATION_NAMES.chainChanged,
+          params: await this.getProviderNetworkState(origin),
+        }),
+        API_TYPE.EIP1193,
+      );
     } else {
-      this.notifyAllConnections({
-        method: NOTIFICATION_NAMES.chainChanged,
-        params: await this.getProviderNetworkState(),
-      });
+      this.notifyAllConnections(
+        {
+          method: NOTIFICATION_NAMES.chainChanged,
+          params: await this.getProviderNetworkState(),
+        },
+        API_TYPE.EIP1193,
+      );
     }
   }
 
