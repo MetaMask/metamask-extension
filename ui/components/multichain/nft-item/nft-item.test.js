@@ -27,7 +27,7 @@ describe('NftItem component', () => {
       nft: {
         address: '0xAddress',
         chainId: '0xaa36a7',
-        image: 'test-src',
+        image: 'http://test-src',
         name: 'Test NFT',
         standard: TokenStandard.ERC721,
         tokenId: 'NFT ID',
@@ -41,7 +41,10 @@ describe('NftItem component', () => {
         expect(getByTestId('nft-item')).toBeInTheDocument();
         expect(getByTestId('nft-network-badge')).toBeInTheDocument();
         expect(getByTestId('nft-image')).toBeInTheDocument();
-        expect(getByTestId('nft-image')).toHaveAttribute('src', 'test-src');
+        expect(getByTestId('nft-image')).toHaveAttribute(
+          'src',
+          'http://test-src',
+        );
       });
     });
 
