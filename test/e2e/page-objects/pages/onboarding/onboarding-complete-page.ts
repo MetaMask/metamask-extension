@@ -3,6 +3,11 @@ import { Driver } from '../../../webdriver/driver';
 class OnboardingCompletePage {
   private driver: Driver;
 
+  private readonly congratulationsMessage = {
+    tag: 'h2',
+    text: 'Congratulations!',
+  };
+
   private readonly walletReadyMessage = {
     tag: 'h2',
     text: 'Your wallet is ready',
@@ -39,7 +44,7 @@ class OnboardingCompletePage {
   async check_pageIsLoaded(): Promise<void> {
     try {
       await this.driver.waitForMultipleSelectors([
-        this.walletReadyMessage,
+        this.defaultPrivacySettingsButton,
         this.onboardingCompleteDoneButton,
       ]);
     } catch (e) {
@@ -75,6 +80,14 @@ class OnboardingCompletePage {
     await this.driver.clickElementAndWaitToDisappear(
       this.pinExtensionDoneButton,
     );
+  }
+
+  async check_congratulationsMessageIsDisplayed(): Promise<void> {
+    await this.driver.waitForSelector(this.congratulationsMessage);
+  }
+
+  async check_walletReadyMessageIsDisplayed(): Promise<void> {
+    await this.driver.waitForSelector(this.walletReadyMessage);
   }
 }
 

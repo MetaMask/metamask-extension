@@ -33,6 +33,43 @@ class OnboardingPrivacySettingsPage {
     tag: 'h4',
   };
 
+  // General settings - add custom network section
+  private readonly addCustomNetworkButton = {
+    text: 'Add a network',
+    tag: 'p',
+  };
+
+  private readonly addCustomNetworkFormMessage = {
+    text: 'Add a custom network',
+    tag: 'h4',
+  };
+
+  private readonly networkNameInput = '[data-testid="network-form-network-name"]';
+  private readonly chainIdInput = '[data-testid="network-form-chain-id"]';
+  private readonly currencySymbolInput = '[data-testid="network-form-ticker-input"]';
+  private readonly addRpcUrlDropDown = '[data-testid="test-add-rpc-drop-down"]';
+  private readonly addRpcUrlButton = {
+    text: 'Add RPC URL',
+    tag: 'button',
+  };
+  private readonly addRpcUrlDialogMessage = {
+    text: 'Add RPC URL',
+    tag: 'h4',
+  };
+  private readonly rpcUrlInput = '[data-testid="rpc-url-input-test"]';
+  private readonly confirmAddRpcUrlButton = {
+    text: 'Add URL',
+    tag: 'button',
+  };
+  private readonly confirmAddCustomNetworkButton =
+  {
+    text: 'Save',
+    tag: 'button',
+  };
+
+
+
+
   // Assets settings
   private readonly assetsSettingsMessage = { text: 'Assets', tag: 'h2' };
 
@@ -59,13 +96,45 @@ class OnboardingPrivacySettingsPage {
     console.log('Onboarding privacy settings page is loaded');
   }
 
+  async navigateToGeneralSettings(): Promise<void> {
+    console.log('Navigating to general settings');
+    await this.check_pageIsLoaded();
+    await this.driver.clickElement(this.generalSettings);
+    await this.driver.waitForSelector(this.generalSettingsMessage);
+  }
+
+  /**
+   * Adds a custom network to MetaMask during the onboarding process.
+   * @param networkName - The name of the custom network.
+   * @param chainId - The chain ID of the custom network.
+   * @param currencySymbol - The currency symbol for the custom network.
+   * @param networkUrl - The RPC URL for the custom network.
+   * @returns A promise that resolves when the custom network has been added.
+   */
+  async addCustomNetwork(networkName: string, chainId: number, currencySymbol: string, networkUrl: string): Promise<void> {
+    await this.navigateToGeneralSettings();
+    console.log('Adding custom network');
+    await this.driver.clickElement(this.addCustomNetworkButton);
+    await this.driver.waitForSelector(this.addCustomNetworkFormMessage);
+    await this.driver.fill(this.networkNameInput, networkName);
+    await this.driver.fill(this.chainIdInput, chainId.toString());
+    await this.driver.fill(this.currencySymbolInput, currencySymbol);
+    // Add rpc url
+    await this.driver.clickElement(this.addRpcUrlDropDown);
+    await this.driver.clickElement(this.addRpcUrlButton);
+    await this.driver.waitForSelector(this.addRpcUrlDialogMessage);
+    await this.driver.fill(this.rpcUrlInput, networkUrl);
+    await this.driver.clickElement(this.confirmAddRpcUrlButton);
+    await this.driver.clickElementAndWaitToDisappear(this.confirmAddCustomNetworkButton);
+    // Navigate back to default privacy settings
+    await this.driver.clickElement(this.categoryBackButton);
+  }
+
   /**
    * Go to general settings and toggle options, then navigate back.
    */
   async toggleBasicFunctionalitySettings(): Promise<void> {
-    await this.check_pageIsLoaded();
-    await this.driver.clickElement(this.generalSettings);
-    await this.driver.waitForSelector(this.generalSettingsMessage);
+    await this.navigateToGeneralSettings();
     await this.driver.clickElement(this.basicFunctionalityToggle);
     await this.driver.waitForSelector(this.basicFunctionalityTurnOffMessage);
     await this.driver.clickElement(this.basicFunctionalityCheckbox);
@@ -92,6 +161,7 @@ class OnboardingPrivacySettingsPage {
    * Navigate back to the onboarding complete page.
    */
   async navigateBackToOnboardingCompletePage(): Promise<void> {
+    console.log('Navigating back to onboarding complete page');
     // Wait until the onboarding carousel has stopped moving otherwise the click has no effect.
     await this.driver.waitForElementToStopMoving(
       this.privacySettingsBackButton,

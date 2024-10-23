@@ -1,3 +1,4 @@
+import { strict as assert } from 'assert';
 import { Driver } from '../../../webdriver/driver';
 import { TEST_SEED_PHRASE } from '../../../helpers';
 
@@ -9,9 +10,20 @@ class OnboardingSrpPage {
     tag: 'h2',
   };
 
+  private readonly wrongSrpWarningMessage = {
+    text: 'Invalid Secret Recovery Phrase',
+    css: '.import-srp__banner-alert-text',
+  };
+
   private readonly srpWord0 = '[data-testid="import-srp__srp-word-0"]';
 
+  private readonly srpWords = '.import-srp__srp-word';
+
   private readonly srpConfirmButton = '[data-testid="import-srp-confirm"]';
+
+  private readonly srpDropdown = '.import-srp__number-of-words-dropdown';
+
+  private readonly srpDropdownOptions = '.import-srp__number-of-words-dropdown option';
 
   constructor(driver: Driver) {
     this.driver = driver;
@@ -45,6 +57,47 @@ class OnboardingSrpPage {
   async clickConfirmButton(): Promise<void> {
     await this.driver.clickElementAndWaitToDisappear(this.srpConfirmButton);
   }
+
+  async check_wrongSrpWarningMessage(): Promise<void> {
+    console.log('Check that wrong SRP warning message is displayed');
+    await this.driver.waitForSelector(this.wrongSrpWarningMessage);
+  }
+
+  async check_confirmSrpButtonIsDisabled(): Promise<void> {
+    console.log('Check that confirm SRP button is disabled');
+    const confirmSeedPhrase = await this.driver.findElement(
+      this.srpConfirmButton,
+    );
+    assert.equal(await confirmSeedPhrase.isEnabled(), false);
+  }
+
+
+  /**
+   * Check the SRP dropdown iterates through each option
+   *
+   * @param numOptions - The number of options to check. Defaults to 5.
+   */
+  async check_srpDropdownIterations(numOptions: number = 5) {
+    console.log(`Check the SRP dropdown iterates through ${numOptions} options`);
+    await this.driver.clickElement(this.srpDropdown);
+    await this.driver.wait(async () => {
+      const options = await this.driver.findElements(this.srpDropdownOptions);
+      return options.length === numOptions;
+    }, this.driver.timeout);
+
+    const options = await this.driver.findElements(this.srpDropdownOptions);
+    for (let i = 0; i < options.length; i++) {
+      if (i !== 0) {
+        await this.driver.clickElement(this.srpDropdown);
+      }
+      await options[i].click();
+      const expectedNumFields = 12 + i * 3;
+      await this.driver.wait(async () => {
+        const srpWordsFields = await this.driver.findElements(this.srpWords);
+        return expectedNumFields === srpWordsFields.length;
+      }, this.driver.timeout);
+    }
+  };
 }
 
 export default OnboardingSrpPage;

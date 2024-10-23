@@ -13,6 +13,9 @@ class StartOnboardingPage {
 
   private readonly termsCheckbox = '[data-testid="onboarding-terms-checkbox"]';
 
+  private readonly createWalletButton =
+    '[data-testid="onboarding-create-wallet"]';
+
   constructor(driver: Driver) {
     this.driver = driver;
   }
@@ -39,6 +42,10 @@ class StartOnboardingPage {
 
   async clickImportWalletButton(): Promise<void> {
     await this.driver.clickElementAndWaitToDisappear(this.importWalletButton);
+  }
+
+  async clickCreateWalletButton(): Promise<void> {
+    await this.driver.clickElementAndWaitToDisappear(this.createWalletButton);
   }
 }
 

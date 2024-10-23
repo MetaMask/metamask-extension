@@ -1,238 +1,48 @@
-import { strict as assert } from 'assert';
-import { By, WebElement } from 'selenium-webdriver';
 import {
-  TEST_SEED_PHRASE,
   withFixtures,
   defaultGanacheOptions,
   WALLET_PASSWORD,
+  convertToHexValue,
   Fixtures,
 } from '../../helpers';
 import FixtureBuilder from '../../fixture-builder';
 import { Driver } from '../../webdriver/driver';
+import { completeCreateNewWalletOnboardingFlow, completeImportSRPOnboardingFlow, importSRPOnboardingFlow } from '../../page-objects/flows/onboarding.flow';
+import HomePage from '../../page-objects/pages/homepage';
+import OnboardingMetricsPage from '../../page-objects/pages/onboarding/onboarding-metrics-page';
+import OnboardingPasswordPage from '../../page-objects/pages/onboarding/onboarding-password-page';
+import OnboardingSrpPage from '../../page-objects/pages/onboarding/onboarding-srp-page';
+import StartOnboardingPage from '../../page-objects/pages/onboarding/start-onboarding-page';
+import SecureWalletPage from '../../page-objects/pages/onboarding/secure-wallet-page';
+import OnboardingCompletePage from '../../page-objects/pages/onboarding/onboarding-complete-page';
+import OnboardingPrivacySettingsPage from '../../page-objects/pages/onboarding/onboarding-privacy-settings-page';
+import { FirstTimeFlowType } from '../../../../shared/constants/onboarding';
+import { loginWithoutBalanceValidation } from '../../page-objects/flows/login.flow';
 
-class OnboardingPage {
-  constructor(private driver: Driver) {}
-
-  async acceptTermsOfUse(): Promise<void> {
-    const agreeButton = await this.driver.findElement(
-      By.xpath(`//button[text()='I agree']`)
-    );
-    await (await agreeButton).click();
-  }
-
-  async clickCreateWallet(): Promise<void> {
-    const createWalletButton = await this.driver.findElement(
-      By.xpath(`//button[text()='Create a new wallet']`)
-    );
-    await (await createWalletButton).click();
-  }
-
-  async clickImportWallet(): Promise<void> {
-    const importWalletButton = await this.driver.findElement(
-      By.xpath(`//button[text()='Import an existing wallet']`)
-    );
-    await (await importWalletButton).click();
-  }
-
-  async chooseMetametricsOption(option: 'agree' | 'no-thanks'): Promise<void> {
-    const buttonText = option === 'agree' ? 'I agree' : 'No thanks';
-    const metametricsButton = await this.driver.findElement(
-      By.xpath(`//button[text()='${buttonText}']`)
-    );
-    await (await metametricsButton).click();
-  }
-}
-
-class CreatePasswordPage {
-  constructor(private driver: Driver) {}
-
-  async fillPassword(password: string): Promise<void> {
-    const newPasswordField = await this.driver.findElement(
-      By.css('[data-testid="create-password-new"]')
-    );
-    await (await newPasswordField).sendKeys(password);
-    const confirmPasswordField = await this.driver.findElement(
-      By.css('[data-testid="create-password-confirm"]')
-    );
-    await (await confirmPasswordField).sendKeys(password);
-  }
-
-  async acceptTerms(): Promise<void> {
-    const termsCheckbox = await this.driver.findElement(
-      By.css('[data-testid="create-password-terms"]')
-    );
-    await (await termsCheckbox).click();
-  }
-
-  async submitForm(): Promise<void> {
-    const submitButton = await this.driver.findElement(
-      By.css('[data-testid="create-password-wallet"]')
-    );
-    await (await submitButton).click();
-  }
-
-  async isConfirmButtonEnabled(): Promise<boolean> {
-    const confirmButton = await this.driver.findElement(
-      By.css('[data-testid="create-password-wallet"]')
-    );
-    return await confirmButton.isEnabled();
-  }
-
-  async getErrorMessage(): Promise<string> {
-    const errorElement = await this.driver.findElement(
-      By.css('.create-password__error')
-    );
-    return await errorElement.getText();
-  }
-}
-
-class SecureWalletPage {
-  constructor(private driver: Driver) {}
-
-  async clickSecureSRP(): Promise<void> {
-    const secureButton = await this.driver.findElement(
-      By.xpath(`//button[text()='Secure my wallet']`)
-    );
-    await (await secureButton).click();
-  }
-
-  async revealSRP(): Promise<void> {
-    const revealButton = await this.driver.findElement(
-      By.xpath(`//button[text()='Reveal Secret Recovery Phrase']`)
-    );
-    await (await revealButton).click();
-  }
-
-  async confirmSRP(): Promise<void> {
-    const nextButton = await this.driver.findElement(
-      By.xpath(`//button[text()='Next']`)
-    );
-    await (await nextButton).click();
-    // Implement the logic to confirm SRP here
-  }
-}
-
-class ImportSRPPage {
-  constructor(private driver: Driver) {}
-
-  async fillSRP(seedPhrase: string): Promise<void> {
-    const words = seedPhrase.split(' ');
-    for (let i = 0; i < words.length; i++) {
-      const wordInput = await this.driver.findElement(
-        By.css(`[data-testid="import-srp__srp-word-${i}"]`)
-      );
-      await (await wordInput).sendKeys(words[i]);
-    }
-  }
-
-  async confirmSRP(): Promise<void> {
-    const confirmButton = await this.driver.findElement(
-      By.xpath(`//button[text()='Confirm Secret Recovery Phrase']`)
-    );
-    await (await confirmButton).click();
-  }
-
-  async selectSRPWordCount(count: number): Promise<void> {
-    const dropdown = await this.driver.findElement(
-      By.css('.import-srp__number-of-words-dropdown')
-    );
-    await (await dropdown).click();
-    const option = await this.driver.findElement(
-      By.xpath(`//option[text()='${count}']`)
-    );
-    await (await option).click();
-  }
-
-  async getSRPFieldCount(): Promise<number> {
-    const fields = await this.driver.findElements(
-      By.css('.import-srp__srp-word-label')
-    );
-    return fields.length;
-  }
-
-  async getSRPDropdownOptions(): Promise<WebElement[]> {
-    const dropdownElement = await this.driver.findElement(
-      By.css('.import-srp__number-of-words-dropdown')
-    );
-    await (await dropdownElement).click();
-    return await dropdownElement.findElements(By.css('option'));
-  }
-
-  async isConfirmSRPButtonEnabled(): Promise<boolean> {
-    const confirmButton = await this.driver.findElement(
-      By.css('[data-testid="import-srp-confirm"]')
-    );
-    return await confirmButton.isEnabled();
-  }
-
-  async toggleSRPVisibility(): Promise<void> {
-    const toggleButton = await this.driver.findElement(
-      By.css('.import-srp__show-srp-button')
-    );
-    await (await toggleButton).click();
-  }
-
-  async isSRPVisible(): Promise<boolean> {
-    const srpElement = await this.driver.findElement(
-      By.css('.import-srp__srp-text')
-    );
-    return await srpElement.isDisplayed();
-  }
-}
 
 describe('MetaMask onboarding @no-mmi', function () {
-  const wrongSeedPhrase =
-    'test test test test test test test test test test test test';
-  const wrongTestPassword = 'test test test test';
+  const ganacheOptions2 = {
+    accounts: [
+      {
+        secretKey:
+          '0x53CB0AB5226EEBF4D872113D98332C1555DC304443BEE1CF759D15798D3C55A9',
+        balance: convertToHexValue(10000000000000000000),
+      },
+    ],
+  };
 
   it('Creates a new wallet, sets up a secure password, and completes the onboarding process', async function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilder({ onboarding: true }).build(),
-        ganacheOptions: defaultGanacheOptions,
         title: this.test?.fullTitle(),
       },
       async (fixtures: Fixtures) => {
         const { driver } = fixtures;
-        try {
-          const onboardingPage = new OnboardingPage(driver);
-          const createPasswordPage = new CreatePasswordPage(driver);
-          const secureWalletPage = new SecureWalletPage(driver);
-
-          // Step 1: Navigate to the onboarding page
-          await driver.navigate();
-
-          // Step 2: Accept terms of use
-          await onboardingPage.acceptTermsOfUse();
-
-          // Step 3: Choose to create a new wallet
-          await onboardingPage.clickCreateWallet();
-
-          // Step 4: Opt out of Metametrics
-          await onboardingPage.chooseMetametricsOption('no-thanks');
-
-          // Step 5: Set up a secure password
-          await createPasswordPage.fillPassword(WALLET_PASSWORD);
-          await createPasswordPage.acceptTerms();
-          await createPasswordPage.submitForm();
-
-          // Step 6: Secure the wallet
-          await secureWalletPage.clickSecureSRP();
-          await secureWalletPage.revealSRP();
-          await secureWalletPage.confirmSRP();
-
-          // Step 7: Verify that the home page is displayed
-          const homePage = await driver.findElement(By.css('.home__main-view'));
-          const homePageDisplayed = await homePage.isDisplayed();
-          assert.strictEqual(
-            homePageDisplayed,
-            true,
-            'Home page should be displayed after completing onboarding',
-          );
-        } catch (error) {
-          console.error('Error during wallet creation test:', error);
-          throw error;
-        }
+        await completeCreateNewWalletOnboardingFlow(driver);
+        const homePage = new HomePage(driver);
+        await homePage.check_pageIsLoaded();
+        await homePage.check_expectedBalanceIsDisplayed();
       },
     );
   });
@@ -241,90 +51,40 @@ describe('MetaMask onboarding @no-mmi', function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilder({ onboarding: true }).build(),
-        ganacheOptions: defaultGanacheOptions,
         title: this.test?.fullTitle(),
       },
       async ({ driver }: { driver: Driver }) => {
-        try {
-          const onboardingPage = new OnboardingPage(driver);
-          const createPasswordPage = new CreatePasswordPage(driver);
-          const importSRPPage = new ImportSRPPage(driver);
-
-          // Step 1: Navigate to the onboarding page
-          await driver.navigate();
-
-          // Step 2: Accept terms of use
-          await onboardingPage.acceptTermsOfUse();
-
-          // Step 3: Choose to import an existing wallet
-          await onboardingPage.clickImportWallet();
-
-          // Step 4: Opt out of Metametrics
-          await onboardingPage.chooseMetametricsOption('no-thanks');
-
-          // Step 5: Enter and confirm the Secret Recovery Phrase
-          await importSRPPage.fillSRP(TEST_SEED_PHRASE);
-          await importSRPPage.confirmSRP();
-
-          // Step 6: Set up a secure password
-          await createPasswordPage.fillPassword(WALLET_PASSWORD);
-          await createPasswordPage.acceptTerms();
-          await createPasswordPage.submitForm();
-
-          // Step 7: Verify that the home page is displayed
-          const homePage = await driver.findElement(By.css('.home__main-view'));
-          const homePageDisplayed = await homePage.isDisplayed();
-          assert.strictEqual(
-            homePageDisplayed,
-            true,
-            'Home page should be displayed after completing wallet import',
-          );
-        } catch (error) {
-          console.error('Error during wallet import test:', error);
-          throw error;
-        }
+        await completeImportSRPOnboardingFlow(driver);
+        const homePage = new HomePage(driver);
+        await homePage.check_pageIsLoaded();
+        await homePage.check_expectedBalanceIsDisplayed();
       },
     );
   });
 
-  it('Attempts to import a wallet with an incorrect Secret Recovery Phrase and verifies the error', async function () {
+
+  it('Attempts to import a wallet with an incorrect Secret Recovery Phrase and verifies the error message', async function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilder({ onboarding: true }).build(),
-        ganacheOptions: defaultGanacheOptions,
         title: this.test?.fullTitle(),
       },
       async ({ driver }: { driver: Driver }) => {
-        try {
-          const onboardingPage = new OnboardingPage(driver);
-          const importSRPPage = new ImportSRPPage(driver);
+        const wrongSeedPhrase = 'test test test test test test test test test test test test';
+        const startOnboardingPage = new StartOnboardingPage(driver);
+        await startOnboardingPage.check_pageIsLoaded();
+        await startOnboardingPage.checkTermsCheckbox();
+        await startOnboardingPage.clickImportWalletButton();
 
-          // Step 1: Navigate to the onboarding page
-          await driver.navigate();
+        const onboardingMetricsPage = new OnboardingMetricsPage(driver);
+        await onboardingMetricsPage.check_pageIsLoaded();
+        await onboardingMetricsPage.clickNoThanksButton();
 
-          // Step 2: Accept terms of use
-          await onboardingPage.acceptTermsOfUse();
-
-          // Step 3: Choose to import an existing wallet
-          await onboardingPage.clickImportWallet();
-
-          // Step 4: Enter an incorrect Secret Recovery Phrase
-          await importSRPPage.fillSRP(wrongSeedPhrase);
-
-          // Step 5: Verify that the Confirm button is disabled
-          const confirmSRPButtonEnabled =
-            await importSRPPage.isConfirmSRPButtonEnabled();
-          assert.strictEqual(
-            confirmSRPButtonEnabled,
-            false,
-            'Confirm button should be disabled for incorrect SRP',
-          );
-
-          // TODO: Add additional assertions to verify error messages or UI indicators of an invalid SRP
-        } catch (error) {
-          console.error('Error during incorrect SRP import test:', error);
-          throw error;
-        }
+        const onboardingSrpPage = new OnboardingSrpPage(driver);
+        await onboardingSrpPage.check_pageIsLoaded();
+        await onboardingSrpPage.fillSrp(wrongSeedPhrase);
+        await onboardingSrpPage.check_wrongSrpWarningMessage();
+        await onboardingSrpPage.check_confirmSrpButtonIsDisabled();
       },
     );
   });
@@ -333,56 +93,21 @@ describe('MetaMask onboarding @no-mmi', function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilder({ onboarding: true }).build(),
-        ganacheOptions: defaultGanacheOptions,
         title: this.test?.fullTitle(),
       },
       async ({ driver }: { driver: Driver }) => {
-        try {
-          const onboardingPage = new OnboardingPage(driver);
-          const importSRPPage = new ImportSRPPage(driver);
+        const startOnboardingPage = new StartOnboardingPage(driver);
+        await startOnboardingPage.check_pageIsLoaded();
+        await startOnboardingPage.checkTermsCheckbox();
+        await startOnboardingPage.clickImportWalletButton();
 
-          // Step 1: Navigate to the onboarding page
-          await driver.navigate();
+        const onboardingMetricsPage = new OnboardingMetricsPage(driver);
+        await onboardingMetricsPage.check_pageIsLoaded();
+        await onboardingMetricsPage.clickNoThanksButton();
 
-          // Step 2: Accept terms of use
-          await onboardingPage.acceptTermsOfUse();
-
-          // Step 3: Choose to import an existing wallet
-          await onboardingPage.clickImportWallet();
-
-          // Step 4: Opt out of Metametrics
-          await onboardingPage.chooseMetametricsOption('no-thanks');
-
-          // Step 5: Get SRP dropdown options
-          const options = await importSRPPage.getSRPDropdownOptions();
-          const iterations = options.length;
-
-          // Step 6: Iterate through each SRP word count option
-          for (let i = 0; i < iterations; i++) {
-            const wordCount = Number(await options[i].getText());
-            await importSRPPage.selectSRPWordCount(wordCount);
-            const fieldCount = await importSRPPage.getSRPFieldCount();
-            assert.strictEqual(
-              fieldCount,
-              wordCount,
-              `Field count should match selected word count of ${wordCount}`,
-            );
-          }
-
-          // Step 7: Verify the final form field count
-          const finalFormFields = await importSRPPage.getSRPFieldCount();
-          const expectedFinalNumFields = 24; // The last iteration should have 24 fields
-          assert.strictEqual(
-            finalFormFields,
-            expectedFinalNumFields,
-            'Final form should have 24 SRP fields',
-          );
-
-          // TODO: Add additional checks for UI updates or error handling when switching between word counts
-        } catch (error) {
-          console.error('Error during SRP word count selection test:', error);
-          throw error;
-        }
+        const onboardingSrpPage = new OnboardingSrpPage(driver);
+        await onboardingSrpPage.check_pageIsLoaded();
+        await onboardingSrpPage.check_srpDropdownIterations();
       },
     );
   });
@@ -391,102 +116,128 @@ describe('MetaMask onboarding @no-mmi', function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilder({ onboarding: true }).build(),
-        ganacheOptions: defaultGanacheOptions,
         title: this.test?.fullTitle(),
       },
       async ({ driver }: { driver: Driver }) => {
-        try {
-          const onboardingPage = new OnboardingPage(driver);
-          const createPasswordPage = new CreatePasswordPage(driver);
+        const wrongTestPassword = 'test test test test';
+        const startOnboardingPage = new StartOnboardingPage(driver);
+        await startOnboardingPage.check_pageIsLoaded();
+        await startOnboardingPage.checkTermsCheckbox();
+        await startOnboardingPage.clickCreateWalletButton();
 
-          // Step 1: Navigate to the onboarding page
-          await driver.navigate();
+        const onboardingMetricsPage = new OnboardingMetricsPage(driver);
+        await onboardingMetricsPage.check_pageIsLoaded();
+        await onboardingMetricsPage.clickNoThanksButton();
 
-          // Step 2: Accept terms of use
-          await onboardingPage.acceptTermsOfUse();
+        const onboardingPasswordPage = new OnboardingPasswordPage(driver);
+        await onboardingPasswordPage.check_pageIsLoaded();
+        await onboardingPasswordPage.fillWalletPassword(WALLET_PASSWORD, wrongTestPassword);
 
-          // Step 3: Choose to create a new wallet
-          await onboardingPage.clickCreateWallet();
-
-          // Step 4: Opt out of Metametrics
-          await onboardingPage.chooseMetametricsOption('no-thanks');
-
-          // Step 5: Enter an incorrect password
-          await createPasswordPage.fillPassword(wrongTestPassword);
-
-          // Step 6: Accept terms
-          await createPasswordPage.acceptTerms();
-
-          // Step 7: Verify that the confirm button is disabled
-          const confirmButtonEnabled =
-            await createPasswordPage.isConfirmButtonEnabled();
-          assert.strictEqual(
-            confirmButtonEnabled,
-            false,
-            'Confirm button should be disabled for incorrect password',
-          );
-
-          // Step 8: Verify the error message
-          const errorMessage = await createPasswordPage.getErrorMessage();
-          assert.strictEqual(
-            errorMessage,
-            "Password doesn't match",
-            'Correct error message should be displayed',
-          );
-
-          // TODO: Add additional checks for password strength indicators or other UI feedback
-        } catch (error) {
-          console.error('Error during incorrect password test:', error);
-          throw error;
-        }
+        await onboardingPasswordPage.check_incorrectPasswordWarningMessage();
+        await onboardingPasswordPage.check_confirmPasswordButtonIsDisabled();
       },
     );
   });
 
-  it('Verifies the functionality of toggling SRP visibility during wallet import', async function () {
+  it.only('User can add custom network during onboarding', async function () {
+    const networkName = 'Localhost 8546';
+    const networkUrl = 'http://127.0.0.1:8546';
+    const currencySymbol = 'ETH';
+    const port = 8546;
+    const chainId = 1338;
     await withFixtures(
       {
         fixtures: new FixtureBuilder({ onboarding: true }).build(),
-        ganacheOptions: defaultGanacheOptions,
+        ganacheOptions: {
+          ...defaultGanacheOptions,
+          concurrent: [{ port, chainId, ganacheOptions2 }],
+        },
         title: this.test?.fullTitle(),
       },
-      async ({ driver }: { driver: Driver }) => {
-        try {
-          const onboardingPage = new OnboardingPage(driver);
-          const importSRPPage = new ImportSRPPage(driver);
 
-          // Step 1: Navigate to the onboarding page
-          await driver.navigate();
+      async ({ driver, secondaryGanacheServer }) => {
+        await importSRPOnboardingFlow(driver);
 
-          // Step 2: Accept terms of use
-          await onboardingPage.acceptTermsOfUse();
+        const onboardingCompletePage = new OnboardingCompletePage(driver);
+        await onboardingCompletePage.check_pageIsLoaded();
+        await onboardingCompletePage.check_walletReadyMessageIsDisplayed();
+        await onboardingCompletePage.navigateToDefaultPrivacySettings();
 
-          // Step 3: Choose to import an existing wallet
-          await onboardingPage.clickImportWallet();
+        const onboardingPrivacySettingsPage = new OnboardingPrivacySettingsPage(driver);
+        await onboardingPrivacySettingsPage.addCustomNetwork(networkName, chainId, currencySymbol, networkUrl);
+        await onboardingPrivacySettingsPage.navigateBackToOnboardingCompletePage();
 
-          // Step 4: Toggle SRP visibility on
-          await importSRPPage.toggleSRPVisibility();
-          const isSRPVisible = await importSRPPage.isSRPVisible();
-          assert.strictEqual(
-            isSRPVisible,
-            true,
-            'SRP should be visible after toggling on',
-          );
+        await onboardingCompletePage.check_pageIsLoaded();
+        await onboardingCompletePage.completeOnboarding();
 
-          // Step 5: Toggle SRP visibility off
-          await importSRPPage.toggleSRPVisibility();
-          const isSRPHidden = await importSRPPage.isSRPVisible();
-          assert.strictEqual(
-            isSRPHidden,
-            false,
-            'SRP should be hidden after toggling off',
-          );
+        const homePage = new HomePage(driver);
+        await homePage.check_pageIsLoaded();
+        await homePage.headerNavbar.switchToNetwork(networkName);
+        await homePage.check_ganacheBalanceIsDisplayed(secondaryGanacheServer[0]);
+      },
+    );
+  });
 
-          // TODO: Add additional checks for UI updates when toggling SRP visibility
-        } catch (error) {
-          console.error('Error during SRP visibility toggle test:', error);
-          throw error;
-        }
+  it('User can turn off basic functionality in default settings', async function () {
+    await withFixtures(
+      {
+        fixtures: new FixtureBuilder({ onboarding: true }).build(),
+        title: this.test?.fullTitle(),
+      },
+      async ({ driver }) => {
+        await importSRPOnboardingFlow(driver);
+
+        const onboardingCompletePage = new OnboardingCompletePage(driver);
+        await onboardingCompletePage.check_pageIsLoaded();
+        await onboardingCompletePage.check_walletReadyMessageIsDisplayed();
+        await onboardingCompletePage.navigateToDefaultPrivacySettings();
+
+        const onboardingPrivacySettingsPage = new OnboardingPrivacySettingsPage(driver);
+        await onboardingPrivacySettingsPage.toggleBasicFunctionalitySettings();
+        await onboardingPrivacySettingsPage.navigateBackToOnboardingCompletePage();
+
+        await onboardingCompletePage.check_pageIsLoaded();
+        await onboardingCompletePage.completeOnboarding();
+
+        const homePage = new HomePage(driver);
+        await homePage.check_pageIsLoaded();
+        await homePage.check_basicFunctionalityOffWarnigMessage();
+      },
+    );
+  });
+
+  it('Provides an onboarding path for a user who has restored their account from state persistence failure', async function () {
+    // We don't use onboarding: true here because we want there to be a vault,
+    // simulating what will happen when a user eventually restores their vault
+    // during a state persistence failure. Instead, we set the
+    // firstTimeFlowType to 'restore' and completedOnboarding to false. as well
+    // as some other first time state options to get us into an onboarding
+    // state similar to a new state tree.
+    await withFixtures(
+      {
+        fixtures: new FixtureBuilder()
+          .withOnboardingController({
+            completedOnboarding: false,
+            firstTimeFlowType: FirstTimeFlowType.restore,
+            seedPhraseBackedUp: null,
+          })
+          .withMetaMetricsController({
+            participateInMetaMetrics: null,
+            metaMetricsId: null,
+          })
+          .build(),
+        title: this.test?.fullTitle(),
+      },
+      async ({ driver }) => {
+        await loginWithoutBalanceValidation(driver);
+        // First screen we should be on is MetaMetrics
+        const onboardingMetricsPage = new OnboardingMetricsPage(driver);
+        await onboardingMetricsPage.check_pageIsLoaded();
+        await onboardingMetricsPage.clickNoThanksButton();
+
+        // Next screen should be Secure your wallet screen
+        const secureWalletPage = new SecureWalletPage(driver);
+        await secureWalletPage.check_pageIsLoaded();
       },
     );
   });

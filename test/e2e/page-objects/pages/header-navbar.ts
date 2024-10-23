@@ -17,6 +17,13 @@ class HeaderNavbar {
 
   private readonly settingsButton = '[data-testid="global-menu-settings"]';
 
+  private readonly switchNetworkDropDown = '[data-testid="network-display"]';
+
+  private readonly selectNetworkMessage = {
+    text: 'Select a network',
+    tag: 'h4',
+  };
+
   constructor(driver: Driver) {
     this.driver = driver;
   }
@@ -61,6 +68,17 @@ class HeaderNavbar {
       await this.driver.waitForSelector(this.mmiPortfolioButton);
     }
     await this.driver.clickElement(this.settingsButton);
+  }
+
+  /**
+   * Switches to the specified network.
+   * @param networkName - The name of the network to switch to.
+   */
+  async switchToNetwork(networkName: string): Promise<void> {
+    await this.driver.clickElement(this.switchNetworkDropDown);
+    await this.driver.waitForSelector(this.selectNetworkMessage);
+    await this.driver.clickElement(`[data-testid="${networkName}"]`);
+    await this.driver.waitForSelector( `${this.switchNetworkDropDown}[aria-label="Network Menu ${networkName}"]`);
   }
 
   /**
