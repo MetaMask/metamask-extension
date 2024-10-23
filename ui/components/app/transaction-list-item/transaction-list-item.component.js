@@ -87,9 +87,10 @@ function TransactionListItemInner({
   const dispatch = useDispatch();
 
   // Bridge transactions
-  const { bridgeTitleSuffix, switchToDestChain } = useSourceChainBridgeData({
-    transactionGroup,
-  });
+  const { bridgeTitleSuffix, switchToDestChain, showSwitchToDestChain } =
+    useSourceChainBridgeData({
+      transactionGroup,
+    });
 
   const {
     initialTransaction: { id },
@@ -392,7 +393,7 @@ function TransactionListItemInner({
             />
           )}
           {speedUpButton}
-          {true && (
+          {showSwitchToDestChain && (
             <Button
               onClick={(e) => {
                 e.stopPropagation(); // Prevent opening transaction details modal

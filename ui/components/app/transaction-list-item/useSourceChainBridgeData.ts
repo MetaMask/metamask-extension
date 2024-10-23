@@ -15,6 +15,8 @@ import {
   updateCustomNonce,
 } from '../../../store/actions';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
+import { PENDING_STATUS_HASH } from '../../../helpers/constants/transactions';
+import { isPending } from '@reduxjs/toolkit';
 
 export default function useSourceChainBridgeData({
   transactionGroup,
@@ -42,11 +44,13 @@ export default function useSourceChainBridgeData({
   const txHash = transactionGroup.initialTransaction.hash;
   const bridgeTxHistoryItem = txHash ? bridgeTxHistory[txHash] : undefined;
 
-  const hexDestChainId = bridgeTxHistoryItem
-    ? (new Numeric(
-        bridgeTxHistoryItem.quote.destChainId,
-        10,
-      ).toPrefixedHexString() as Hex)
+  const status = transactionGroup.initialTransaction.status;
+  const isPending =
+    PENDING_STATUS_HASH[status as keyof typeof PENDING_STATUS_HASH];
+
+  const decDestChainId = bridgeTxHistoryItem?.quote.destChainId;
+  const hexDestChainId = decDestChainId
+    ? (new Numeric(decDestChainId, 10).toPrefixedHexString() as Hex)
     : undefined;
   const networkConfiguration = hexDestChainId
     ? networkConfigurationsByChainId[hexDestChainId]
@@ -55,7 +59,7 @@ export default function useSourceChainBridgeData({
   const bridgeTitleSuffix = bridgeTxHistoryItem ? ` to ${chainName}` : '';
 
   // Most logic from ui/components/multichain/network-list-menu/network-list-menu.tsx
-  const switchToDestChain = useCallback(() => {
+  const switchToDestChainCallback = useCallback(() => {
     if (!networkConfiguration) return;
 
     const { networkClientId } =
@@ -63,7 +67,6 @@ export default function useSourceChainBridgeData({
         networkConfiguration.defaultRpcEndpointIndex
       ];
     dispatch(setActiveNetwork(networkClientId));
-    // dispatch(toggleNetworkMenu());
     dispatch(updateCustomNonce(''));
     dispatch(setNextNonce(''));
 
@@ -92,5 +95,28 @@ export default function useSourceChainBridgeData({
     // });
   }, [hexDestChainId]);
 
-  return { bridgeTitleSuffix, switchToDestChain };
+  const switchToDestChain = networkConfiguration
+    ? switchToDestChainCallback
+    : undefined;
+
+  const showSwitchToDestChain = switchToDestChain && isPending;
+
+  // TODO there's a weird bug with OP src chain where it gets a 500 on the first status tx fetch
+  if (isPending) {
+    console.log('transactionGroup', {
+      transactionGroup,
+      bridgeTxHistory,
+      bridgeTxHistoryItem,
+      decDestChainId,
+      hexDestChainId,
+      networkConfigurationsByChainId,
+      networkConfiguration,
+    });
+  }
+
+  return {
+    bridgeTitleSuffix,
+    switchToDestChain,
+    showSwitchToDestChain,
+  };
 }
