@@ -5877,10 +5877,11 @@ export default class MetamaskController extends EventEmitter {
           return undefined;
         },
         // network configuration-related
-        setActiveNetwork: async (networkClientId) => {
-          // Skip setting the globally selected network if there are
-          // pending approvals otherwise they will get inadvertently cleared
-          if (this.approvalController.getTotalApprovalCount() === 0) {
+        setActiveNetwork: async (
+          networkClientId,
+          shouldUpdateGloballySelectedNetwork = true,
+        ) => {
+          if (shouldUpdateGloballySelectedNetwork) {
             await this.networkController.setActiveNetwork(networkClientId);
           }
           // if the origin has the eth_accounts permission
@@ -5916,7 +5917,10 @@ export default class MetamaskController extends EventEmitter {
             );
           return chainId;
         },
-
+        getTotalApprovalCount:
+          this.approvalController.getTotalApprovalCount.bind(
+            this.approvalController,
+          ),
         // Web3 shim-related
         getWeb3ShimUsageState: this.alertController.getWeb3ShimUsageState.bind(
           this.alertController,

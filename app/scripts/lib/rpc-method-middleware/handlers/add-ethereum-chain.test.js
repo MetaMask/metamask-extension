@@ -76,6 +76,7 @@ describe('addEthereumChainHandler', () => {
         defaultRpcEndpointIndex: 0,
         rpcEndpoints: [{ networkClientId: 123 }],
       }),
+      getTotalApprovalCount: jest.fn().mockReturnValue(0),
       ...overrides,
     };
   };
@@ -85,7 +86,7 @@ describe('addEthereumChainHandler', () => {
   });
 
   describe('with `endowment:permitted-chains` permissioning inactive', () => {
-    it('creates a new network configuration for the given chainid and switches to it if none exists', async () => {
+    it('creates a new network configuration for the given chainid and switches to it for the dapp and globally if none exists and there are no pending requests before switching', async () => {
       const mocks = makeMocks();
       await addEthereumChainHandler(
         {
@@ -128,7 +129,57 @@ describe('addEthereumChainHandler', () => {
         ],
       });
       expect(mocks.setActiveNetwork).toHaveBeenCalledTimes(1);
-      expect(mocks.setActiveNetwork).toHaveBeenCalledWith(123);
+      expect(mocks.setActiveNetwork).toHaveBeenCalledWith(123, true);
+    });
+
+    it('creates a new network configuration for the given chainid and switches to it for only the dapp if none exists and there are pending requests before switching', async () => {
+      const mocks = makeMocks({
+        overrides: {
+          getTotalApprovalCount: jest.fn().mockReturnValue(1),
+        },
+      });
+      await addEthereumChainHandler(
+        {
+          origin: 'example.com',
+          params: [
+            {
+              chainId: CHAIN_IDS.OPTIMISM,
+              chainName: 'Optimism Mainnet',
+              rpcUrls: ['https://optimism.llamarpc.com'],
+              nativeCurrency: {
+                symbol: 'ETH',
+                decimals: 18,
+              },
+              blockExplorerUrls: ['https://optimistic.etherscan.io'],
+              iconUrls: ['https://optimism.icon.com'],
+            },
+          ],
+        },
+        {},
+        jest.fn(),
+        jest.fn(),
+        mocks,
+      );
+
+      expect(mocks.requestUserApproval).toHaveBeenCalledTimes(1);
+      expect(mocks.addNetwork).toHaveBeenCalledTimes(1);
+      expect(mocks.addNetwork).toHaveBeenCalledWith({
+        blockExplorerUrls: ['https://optimistic.etherscan.io'],
+        defaultBlockExplorerUrlIndex: 0,
+        chainId: '0xa',
+        defaultRpcEndpointIndex: 0,
+        name: 'Optimism Mainnet',
+        nativeCurrency: 'ETH',
+        rpcEndpoints: [
+          {
+            name: 'Optimism Mainnet',
+            url: 'https://optimism.llamarpc.com',
+            type: 'custom',
+          },
+        ],
+      });
+      expect(mocks.setActiveNetwork).toHaveBeenCalledTimes(1);
+      expect(mocks.setActiveNetwork).toHaveBeenCalledWith(123, false);
     });
 
     it('creates a new networkConfiguration when called without "blockExplorerUrls" property', async () => {
@@ -331,7 +382,7 @@ describe('addEthereumChainHandler', () => {
 
         // User should be prompted to switch chains
         expect(mocks.setActiveNetwork).toHaveBeenCalledTimes(1);
-        expect(mocks.setActiveNetwork).toHaveBeenCalledWith('mainnet');
+        expect(mocks.setActiveNetwork).toHaveBeenCalledWith('mainnet', true);
       });
 
       it('should return error for invalid chainId', async () => {
@@ -402,7 +453,7 @@ describe('addEthereumChainHandler', () => {
         mocks.grantPermittedChainsPermissionIncremental,
       ).toHaveBeenCalledWith([createMockNonInfuraConfiguration().chainId]);
       expect(mocks.setActiveNetwork).toHaveBeenCalledTimes(1);
-      expect(mocks.setActiveNetwork).toHaveBeenCalledWith(123);
+      expect(mocks.setActiveNetwork).toHaveBeenCalledWith(123, true);
     });
 
     describe('if a networkConfiguration for the given chainId already exists', () => {
@@ -442,7 +493,7 @@ describe('addEthereumChainHandler', () => {
           expect(mocks.requestUserApproval).toHaveBeenCalledTimes(1);
           expect(mocks.requestPermittedChainsPermission).not.toHaveBeenCalled();
           expect(mocks.setActiveNetwork).toHaveBeenCalledTimes(1);
-          expect(mocks.setActiveNetwork).toHaveBeenCalledWith(123);
+          expect(mocks.setActiveNetwork).toHaveBeenCalledWith(123, true);
         });
 
         it('create a new networkConfiguration, requests permissions and switches to it, if the requested chainId does not have permittedChains permission granted for requesting origin', async () => {
@@ -536,6 +587,7 @@ describe('addEthereumChainHandler', () => {
         expect(mocks.setActiveNetwork).toHaveBeenCalledTimes(1);
         expect(mocks.setActiveNetwork).toHaveBeenCalledWith(
           createMockOptimismConfiguration().rpcEndpoints[0].networkClientId,
+          true,
         );
       });
     });

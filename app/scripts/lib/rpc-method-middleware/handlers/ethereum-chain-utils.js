@@ -165,8 +165,10 @@ export async function switchChain(
     getCaveat,
     requestPermittedChainsPermission,
     grantPermittedChainsPermissionIncremental,
+    getTotalApprovalCount,
   },
 ) {
+  const shouldUpdateGloballySelectedNetwork = getTotalApprovalCount() === 0;
   try {
     const { value: permissionedChainIds } =
       getCaveat({
@@ -185,7 +187,10 @@ export async function switchChain(
       }
     }
 
-    await setActiveNetwork(networkClientId);
+    await setActiveNetwork(
+      networkClientId,
+      shouldUpdateGloballySelectedNetwork,
+    );
     res.result = null;
   } catch (error) {
     // We don't want to return an error if user rejects the request
