@@ -359,7 +359,12 @@ class SettingsPage extends PureComponent {
           }
           return matchPath(currentPath, { exact: true, path: key });
         }}
-        onSelect={(key) => history.push(key)}
+        onSelect={(key) =>
+          history.push({
+            pathname: key,
+            state: { fromPage: currentPath },
+          })
+        }
       />
     );
   }
