@@ -69,8 +69,8 @@ class SettingsPage extends PureComponent {
     isPopup: PropTypes.bool,
     mostRecentOverviewPage: PropTypes.string.isRequired,
     pathnameI18nKey: PropTypes.string,
-    useExternalServices: PropTypes.bool,
     toggleNetworkMenu: PropTypes.func.isRequired,
+    useExternalServices: PropTypes.bool,
   };
 
   static contextTypes = {
