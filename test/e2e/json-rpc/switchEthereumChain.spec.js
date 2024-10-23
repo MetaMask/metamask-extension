@@ -158,7 +158,52 @@ describe('Switch Ethereum Chain for two dapps', function () {
         });
 
         await driver.switchToWindowWithUrl(DAPP_ONE_URL);
+        // Switch to Dapp One and connect it
+        await driver.switchToWindowWithUrl(DAPP_URL);
+        await driver.clickElement({ text: 'Connect', tag: 'button' });
 
+        await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
+
+        await driver.clickElementAndWaitForWindowToClose({
+          text: 'Connect',
+          tag: 'button',
+        });
+
+        // Switch to MM and disconnect localhost 8545 for Dapp One
+
+        await driver.switchToWindowWithTitle(
+          WINDOW_TITLES.ExtensionInFullScreenView,
+        );
+        await driver.clickElement(
+          '[data-testid ="account-options-menu-button"]',
+        );
+        await driver.clickElement({
+          text: 'All Permissions',
+          tag: 'div',
+        });
+        await driver.clickElementAndWaitToDisappear({
+          text: 'Got it',
+          tag: 'button',
+        });
+        await driver.clickElement({
+          text: '127.0.0.1:8080',
+          tag: 'p',
+        });
+        const editButtons = await driver.findElements('[data-testid="edit"]');
+
+        assert.ok(editButtons.length > 0, 'Edit buttons are available');
+
+        await editButtons[1].click();
+
+        // Disconnect Mainnet
+        await driver.clickElement({
+          text: 'Localhost 8546',
+          tag: 'p',
+        });
+
+        await driver.clickElement('[data-testid="connect-more-chains-button"]');
+        // Switch to Dapp Two
+        await driver.switchToWindowWithUrl(DAPP_ONE_URL);
         // Initiate send transaction on Dapp two
         await driver.clickElement('#sendButton');
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
@@ -174,25 +219,22 @@ describe('Switch Ethereum Chain for two dapps', function () {
         const switchEthereumChainRequest = JSON.stringify({
           jsonrpc: '2.0',
           method: 'wallet_switchEthereumChain',
-          params: [{ chainId: '0x539' }],
+          params: [{ chainId: '0x53a' }],
         });
 
         // Initiate switchEthereumChain on Dapp One
         await driver.executeScript(
           `window.ethereum.request(${switchEthereumChainRequest})`,
         );
-
-        // Switch to tx and confirm send tx.
         await switchToNotificationWindow(driver, 4);
         await driver.findClickableElements({
           text: 'Confirm',
           tag: 'button',
         });
-        await driver.clickElement({
+        await driver.clickElementAndWaitForWindowToClose({
           text: 'Confirm',
           tag: 'button',
         });
-
         // Delay here after notification for second notification popup for switchEthereumChain
         await driver.delay(1000);
 
@@ -203,7 +245,12 @@ describe('Switch Ethereum Chain for two dapps', function () {
           text: 'Confirm',
           tag: 'button',
         });
-        await driver.clickElement({ text: 'Confirm', tag: 'button' });
+        await driver.clickElementAndWaitForWindowToClose({
+          text: 'Confirm',
+          tag: 'button',
+        });
+        await driver.switchToWindowWithUrl(DAPP_URL);
+        await driver.findElement({ css: '#chainId', text: '0x53a' });
       },
     );
   });
@@ -278,7 +325,36 @@ describe('Switch Ethereum Chain for two dapps', function () {
           text: 'Connect',
           tag: 'button',
         });
+        await driver.switchToWindowWithTitle(
+          WINDOW_TITLES.ExtensionInFullScreenView,
+        );
+        await driver.clickElement(
+          '[data-testid ="account-options-menu-button"]',
+        );
+        await driver.clickElement({ text: 'All Permissions', tag: 'div' });
+        await driver.clickElementAndWaitToDisappear({
+          text: 'Got it',
+          tag: 'button',
+        });
+        await driver.clickElement({
+          text: '127.0.0.1:8081',
+          tag: 'p',
+        });
+        const editButtons = await driver.findElements('[data-testid="edit"]');
 
+        // Ensure there are edit buttons
+        assert.ok(editButtons.length > 0, 'Edit buttons are available');
+
+        // Click the first (0th) edit button
+        await editButtons[1].click();
+
+        // Disconnect Mainnet
+        await driver.clickElement({
+          text: 'Localhost 8545',
+          tag: 'p',
+        });
+
+        await driver.clickElement('[data-testid="connect-more-chains-button"]');
         await driver.switchToWindow(dappTwo);
         assert.equal(await driver.getCurrentUrl(), `${DAPP_ONE_URL}/`);
 
@@ -293,14 +369,11 @@ describe('Switch Ethereum Chain for two dapps', function () {
         await driver.executeScript(
           `window.ethereum.request(${switchEthereumChainRequest})`,
         );
-
-        // Switch to notification of switchEthereumChain
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
         await driver.findClickableElements({
           text: 'Confirm',
           tag: 'button',
         });
-
         // Switch back to dapp one
         await driver.switchToWindow(dappOne);
         assert.equal(await driver.getCurrentUrl(), `${DAPP_URL}/`);
@@ -401,7 +474,36 @@ describe('Switch Ethereum Chain for two dapps', function () {
           text: 'Connect',
           tag: 'button',
         });
+        await driver.switchToWindowWithTitle(
+          WINDOW_TITLES.ExtensionInFullScreenView,
+        );
+        await driver.clickElement(
+          '[data-testid ="account-options-menu-button"]',
+        );
+        await driver.clickElement({ text: 'All Permissions', tag: 'div' });
+        await driver.clickElementAndWaitToDisappear({
+          text: 'Got it',
+          tag: 'button',
+        });
+        await driver.clickElement({
+          text: '127.0.0.1:8081',
+          tag: 'p',
+        });
+        const editButtons = await driver.findElements('[data-testid="edit"]');
 
+        // Ensure there are edit buttons
+        assert.ok(editButtons.length > 0, 'Edit buttons are available');
+
+        // Click the first (0th) edit button
+        await editButtons[1].click();
+
+        // Disconnect Mainnet
+        await driver.clickElement({
+          text: 'Localhost 8545',
+          tag: 'p',
+        });
+
+        await driver.clickElement('[data-testid="connect-more-chains-button"]');
         await driver.switchToWindow(dappTwo);
         assert.equal(await driver.getCurrentUrl(), `${DAPP_ONE_URL}/`);
 
