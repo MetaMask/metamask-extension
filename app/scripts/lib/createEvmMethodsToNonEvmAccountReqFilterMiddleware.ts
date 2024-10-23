@@ -1,7 +1,8 @@
 import { isEvmAccountType } from '@metamask/keyring-api';
 import { RestrictedControllerMessenger } from '@metamask/base-controller';
 import { AccountsControllerGetSelectedAccountAction } from '@metamask/accounts-controller';
-import { JsonRpcMiddleware } from 'json-rpc-engine';
+import { JsonRpcMiddleware } from '@metamask/json-rpc-engine';
+import type { Json, JsonRpcParams } from '@metamask/utils';
 import { RestrictedEthMethods } from '../../../shared/constants/permissions';
 import { unrestrictedEthSigningMethods } from '../controllers/permissions';
 
@@ -32,7 +33,7 @@ export default function createEvmMethodsToNonEvmAccountReqFilterMiddleware({
   messenger,
 }: {
   messenger: EvmMethodsToNonEvmAccountFilterMessenger;
-}): JsonRpcMiddleware<unknown, void> {
+}): JsonRpcMiddleware<JsonRpcParams, Json> {
   return function filterEvmRequestToNonEvmAccountsMiddleware(
     req,
     _res,
@@ -74,7 +75,13 @@ export default function createEvmMethodsToNonEvmAccountReqFilterMiddleware({
     // TODO: Convert this to superstruct schema
     const isWalletRequestPermission =
       req.method === 'wallet_requestPermissions';
-    if (isWalletRequestPermission && req?.params && Array.isArray(req.params)) {
+    if (
+      isWalletRequestPermission &&
+      req?.params &&
+      Array.isArray(req.params) &&
+      req.params.length > 0 &&
+      req.params[0]
+    ) {
       const permissionsMethodRequest = Object.keys(req.params[0]);
 
       const isEvmPermissionRequest = METHODS_TO_CHECK.some((method) =>
