@@ -44,7 +44,7 @@ describe('Privacy Mode', function () {
 
         async function togglePrivacy() {
           await driver.clickElement('[data-testid="sensitive-toggle"]');
-          await new Promise((resolve) => setTimeout(resolve, 5000));
+          await new Promise((resolve) => setTimeout(resolve, 2e3));
         }
 
         await unlockWallet(driver);
