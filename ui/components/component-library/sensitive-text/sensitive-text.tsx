@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import { Text } from '../text';
 import { SensitiveTextProps, SensitiveLengths } from './sensitive-text.types';
 
@@ -9,14 +9,14 @@ export const SensitiveText = React.forwardRef<
   const {
     isHidden,
     length = SensitiveLengths.Short,
-    children,
+    children = '',
     ...restProps
   } = props;
-  const fallback = '*'.repeat(length);
+  const fallback = useMemo(() => '*'.repeat(Number(length)), [length]);
 
   return (
     <Text ref={ref} {...restProps}>
-      {isHidden && children ? fallback : children}
+      {isHidden ? fallback : children}
     </Text>
   );
 });
