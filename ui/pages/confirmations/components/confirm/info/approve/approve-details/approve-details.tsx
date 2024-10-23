@@ -45,6 +45,7 @@ const Spender = ({
   }
 
   const spender = value.data[0].params[0].value;
+  const { chainId } = transactionMeta;
 
   if (getIsRevokeSetApprovalForAll(value)) {
     return null;
@@ -59,7 +60,7 @@ const Spender = ({
         )}
         data-testid="confirmation__approve-spender"
       >
-        <ConfirmInfoRowAddress address={spender} />
+        <ConfirmInfoRowAddress address={spender} chainId={chainId} />
       </ConfirmInfoRow>
 
       <ConfirmInfoRowDivider />
