@@ -15,9 +15,10 @@ import {
   TextAlign,
   TextVariant,
 } from '../../../helpers/constants/design-system';
-import { useI18nContext } from '../../../hooks/useI18nContext';
+import { formatEtaInMinutes, formatFiatAmount } from '../utils/quote';
 import { getBridgeQuotes } from '../../../ducks/bridge/selectors';
-import { formatEtaInMinutes } from '../utils/quote';
+import { useI18nContext } from '../../../hooks/useI18nContext';
+import { getCurrentCurrency } from '../../../selectors';
 
 export const BridgeQuotesModal = ({
   onClose,
@@ -26,6 +27,7 @@ export const BridgeQuotesModal = ({
   const t = useI18nContext();
 
   const { sortedQuotes } = useSelector(getBridgeQuotes);
+  const currency = useSelector(getCurrentCurrency);
 
   const [, setSortOrder] = useState(t('bridgeOverallCost'));
   return (
@@ -60,15 +62,21 @@ export const BridgeQuotesModal = ({
               sentAmount,
               adjustedReturn,
               estimatedProcessingTimeInSeconds,
+              quote: { bridges },
             } = quote;
             return (
               <Box key={index} className="quotes-modal__quotes__row">
-                <Text>{totalNetworkFee.fiat?.toString()}</Text>
+                <Text>{formatFiatAmount(adjustedReturn.fiat, currency)}</Text>
+                <Text>{formatFiatAmount(totalNetworkFee?.fiat, currency)}</Text>
                 <Text>
                   {adjustedReturn.fiat && sentAmount.fiat
-                    ? adjustedReturn.fiat.minus(sentAmount.fiat).toFixed(2)
+                    ? `-${formatFiatAmount(
+                        sentAmount.fiat.minus(adjustedReturn.fiat),
+                        currency,
+                      )}`
                     : ''}
                 </Text>
+                <Text>{bridges[0]}</Text>
                 <Text>
                   {t('bridgeTimingMinutes', [
                     formatEtaInMinutes(estimatedProcessingTimeInSeconds),
