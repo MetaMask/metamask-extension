@@ -207,23 +207,6 @@
   "addCustomNetwork": {
     "message": "添加自定义网络"
   },
-  "addEthereumChainConfirmationDescription": {
-    "message": "这将允许在 MetaMask 中使用此网络。"
-  },
-  "addEthereumChainConfirmationRisks": {
-    "message": "MetaMask 不验证自定义网络。"
-  },
-  "addEthereumChainConfirmationRisksLearnMore": {
-    "message": "了解 $1。",
-    "description": "$1 is a link with text that is provided by the 'addEthereumChainConfirmationRisksLearnMoreLink' key"
-  },
-  "addEthereumChainConfirmationRisksLearnMoreLink": {
-    "message": "欺诈和网络安全风险",
-    "description": "Link text for the 'addEthereumChainConfirmationRisksLearnMore' translation key"
-  },
-  "addEthereumChainConfirmationTitle": {
-    "message": "允许此网站添加一个网络到MetaMask上？"
-  },
   "addEthereumChainWarningModalHeader": {
     "message": "仅当您确定可以信任此 RPC 提供商时才能添加它。$1",
     "description": "$1 is addEthereumChainWarningModalHeaderPartTwo passed separately so that it can be bolded"
@@ -4858,9 +4841,6 @@
     "message": "联系 $1 的创建者以获得进一步支持。",
     "description": "This is shown when the insight snap throws an error. $1 is the snap name"
   },
-  "someNetworksMayPoseSecurity": {
-    "message": "某些网络可能会带来安全和/或隐私风险。在添加和使用网络之前，请先了解风险。"
-  },
   "somethingDoesntLookRight": {
     "message": "有什么不对劲吗？$1",
     "description": "A false positive message for users to contact support. $1 is a link to the support page."
@@ -6006,9 +5986,6 @@
   },
   "viewActivity": {
     "message": "查看活动"
-  },
-  "viewAllDetails": {
-    "message": "查看所有详情"
   },
   "viewAllQuotes": {
     "message": "查看所有报价"
