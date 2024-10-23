@@ -34,6 +34,9 @@ const PersonalSignInfo: React.FC = () => {
 
   const { from } = currentConfirmation.msgParams;
   const isSIWE = isSIWESignatureRequest(currentConfirmation);
+  const messageText = sanitizeString(
+    hexToText(currentConfirmation.msgParams?.data),
+  );
 
   return (
     <>
@@ -74,12 +77,11 @@ const PersonalSignInfo: React.FC = () => {
             alertKey="message"
             ownerId={currentConfirmation.id}
             label={t('message')}
+            collapsible
+            copyEnabled
+            copyText={messageText}
           >
-            <ConfirmInfoRowText
-              text={sanitizeString(
-                hexToText(currentConfirmation.msgParams?.data),
-              )}
-            />
+            <ConfirmInfoRowText text={messageText} />
           </ConfirmInfoAlertRow>
         )}
       </ConfirmInfoSection>
