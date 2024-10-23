@@ -1,4 +1,3 @@
-import mockMetaMaskState from '../../data/integration-init-state.json';
 import {
   INotification,
   TRIGGER_TYPES,
@@ -8,6 +7,7 @@ import {
   createMockNotificationEthSent,
   createMockFeatureAnnouncementRaw,
 } from '@metamask/notification-services-controller/notification-services/mocks';
+import mockMetaMaskState from '../../data/integration-init-state.json';
 
 const notificationsAccountAddress =
   mockMetaMaskState.internalAccounts.accounts[

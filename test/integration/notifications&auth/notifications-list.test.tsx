@@ -1,5 +1,3 @@
-import { integrationTestRender } from '../../lib/render-helpers';
-import * as backgroundConnection from '../../../ui/store/background-connection';
 import {
   act,
   fireEvent,
@@ -7,17 +5,18 @@ import {
   within,
   screen,
 } from '@testing-library/react';
+import { integrationTestRender } from '../../lib/render-helpers';
+import * as backgroundConnection from '../../../ui/store/background-connection';
 import { createMockImplementation } from '../helpers';
+import {
+  MetaMetricsEventCategory,
+  MetaMetricsEventName,
+} from '../../../shared/constants/metametrics';
 import {
   ethSentNotification,
   featureNotification,
   getMockedNotificationsState,
 } from './data/notification-state';
-
-import {
-  MetaMetricsEventCategory,
-  MetaMetricsEventName,
-} from '../../../shared/constants/metametrics';
 
 jest.mock('../../../ui/store/background-connection', () => ({
   ...jest.requireActual('../../../ui/store/background-connection'),
