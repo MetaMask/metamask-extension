@@ -93,6 +93,10 @@ describe('MetaMask Responsive UI', function () {
         await driver.navigate();
 
         // Import Secret Recovery Phrase
+        await driver.waitForSelector({
+          tag: 'span',
+          text: 'Localhost 8545',
+        });
         await driver.clickElement({
           css: '.unlock-page__link',
           text: 'Forgot password?',
