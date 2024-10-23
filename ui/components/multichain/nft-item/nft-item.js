@@ -37,9 +37,8 @@ export const NftItem = ({ nft, onClick, clickable, badgeWrapperClassname }) => {
 
   const nftImageAlt = getNftImageAlt(nft);
   const nftSrcUrl = imageOriginal ?? image;
-  const isIpfsURL = nftSrcUrl ? new URL(nftSrcUrl).protocol === 'ipfs:' : false;
-  const isImageHosted = image ? new URL(image).protocol === 'https:' : false;
-
+  const isIpfsURL = nftSrcUrl?.startsWith('ipfs:');
+  const isImageHosted = image?.startsWith('https:');
   const src = isImageHosted ? image : nftImageURL;
   const alt = image ? nftImageAlt : '';
   const networkName = currentChain.nickname ?? '';
