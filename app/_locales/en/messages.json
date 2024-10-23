@@ -863,6 +863,9 @@
   "bridgeFrom": {
     "message": "Bridge from"
   },
+  "bridgeLowest": {
+    "message": "Lowest"
+  },
   "bridgeOverallCost": {
     "message": "Overall cost"
   },

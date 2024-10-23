@@ -177,7 +177,7 @@ export const calcCost = (
 ) => ({
   fiat:
     adjustedReturnInFiat && sentAmountInFiat
-      ? adjustedReturnInFiat.minus(sentAmountInFiat)
+      ? sentAmountInFiat.minus(adjustedReturnInFiat)
       : null,
 });
 

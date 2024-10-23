@@ -182,7 +182,8 @@ const _getBridgeFeesPerGas = createSelector(
   }),
 );
 
-const _getBridgeSortOrder = (state: BridgeAppState) => state.bridge.sortOrder;
+export const getBridgeSortOrder = (state: BridgeAppState) =>
+  state.bridge.sortOrder;
 
 // A dest network can be selected before it's imported
 // The cached exchange rate won't be available so the rate from the bridge state is used
@@ -248,7 +249,7 @@ const _getQuotesWithMetadata = createDeepEqualSelector(
 
 const _getSortedQuotesWithMetadata = createDeepEqualSelector(
   _getQuotesWithMetadata,
-  _getBridgeSortOrder,
+  getBridgeSortOrder,
   (quotesWithMetadata, sortOrder) => {
     switch (sortOrder) {
       case SortOrder.ETA_ASC:
@@ -266,7 +267,7 @@ const _getSortedQuotesWithMetadata = createDeepEqualSelector(
 
 const _getRecommendedQuote = createDeepEqualSelector(
   _getSortedQuotesWithMetadata,
-  _getBridgeSortOrder,
+  getBridgeSortOrder,
   (sortedQuotesWithMetadata, sortOrder) => {
     if (!sortedQuotesWithMetadata.length) {
       return undefined;
