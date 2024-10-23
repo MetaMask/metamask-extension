@@ -4,6 +4,10 @@ import {
   WALLET_PASSWORD,
   convertToHexValue,
   Fixtures,
+  largeDelayMs,
+  tinyDelayMs,
+  locateAccountBalanceDOM,
+  importSRPOnboardingFlow,
 } from '../../helpers';
 import FixtureBuilder from '../../fixture-builder';
 import { Driver } from '../../webdriver/driver';
@@ -18,7 +22,6 @@ import OnboardingCompletePage from '../../page-objects/pages/onboarding/onboardi
 import OnboardingPrivacySettingsPage from '../../page-objects/pages/onboarding/onboarding-privacy-settings-page';
 import { FirstTimeFlowType } from '../../../../shared/constants/onboarding';
 import { loginWithoutBalanceValidation } from '../../page-objects/flows/login.flow';
-
 
 describe('MetaMask onboarding @no-mmi', function () {
   const ganacheOptions2 = {
@@ -139,7 +142,7 @@ describe('MetaMask onboarding @no-mmi', function () {
     );
   });
 
-  it.only('User can add custom network during onboarding', async function () {
+  it('User can add custom network during onboarding', async function () {
     const networkName = 'Localhost 8546';
     const networkUrl = 'http://127.0.0.1:8546';
     const currencySymbol = 'ETH';
