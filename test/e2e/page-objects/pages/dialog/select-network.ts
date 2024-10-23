@@ -37,7 +37,7 @@ class SelectNetwork {
 
   async clickCloseButton(): Promise<void> {
     console.log('Click Close Button');
-    await this.driver.clickElement(this.closeButton);
+    await this.driver.clickElementAndWaitToDisappear(this.closeButton);
   }
 
   async clickToggleButton(): Promise<void> {
@@ -52,7 +52,7 @@ class SelectNetwork {
 
   async clickAddButton(): Promise<void> {
     console.log('Click Add Button');
-    await this.driver.clickElement('[data-testid="test-add-button"]');
+    await this.driver.clickElementAndWaitToDisappear('[data-testid="test-add-button"]');
   }
 }
 

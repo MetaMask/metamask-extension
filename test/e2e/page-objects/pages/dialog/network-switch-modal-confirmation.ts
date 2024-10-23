@@ -1,6 +1,6 @@
 import { Driver } from '../../../webdriver/driver';
 
-class Notification {
+class networkSwitchModalConfirmation {
   private driver: Driver;
 
   private submitButton: string;
@@ -12,8 +12,8 @@ class Notification {
 
   async clickApproveButton(): Promise<void> {
     console.log('Click Approve Button');
-    await this.driver.clickElement(this.submitButton);
+    await this.driver.clickElementAndWaitToDisappear(this.submitButton);
   }
 }
 
-export default Notification;
+export default networkSwitchModalConfirmation;

@@ -5,12 +5,12 @@ import FixtureBuilder from '../../fixture-builder';
 import { Ganache } from '../../seeder/ganache';
 import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
 import HomePage from '../../page-objects/pages/homepage';
-import Notification from '../../page-objects/pages/dialog/notification';
+import ModalConfirmation from '../../page-objects/pages/dialog/network-switch-modal-confirmation';
 import HeaderNavbar from '../../page-objects/pages/header-navbar';
 import SelectNetwork from '../../page-objects/pages/dialog/select-network';
 
 describe('Switch network - ', function (this: Suite) {
-  it('Ethereum Mainnet and Sepolia', async function () {
+  it('multiple networks', async function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilder().build(),
@@ -28,7 +28,7 @@ describe('Switch network - ', function (this: Suite) {
         const homePage = new HomePage(driver);
         const headerNavbar = new HeaderNavbar(driver);
         const selectNetwork = new SelectNetwork(driver);
-        const notification = new Notification(driver);
+        const networkSwitchConfirmation = new ModalConfirmation(driver);
 
         // Validate the default network is Localhost 8545
         await headerNavbar.check_currentSelectedNetwork('Localhost 8545');
@@ -45,11 +45,11 @@ describe('Switch network - ', function (this: Suite) {
         await homePage.check_expectedBalanceIsDisplayed('25');
         await headerNavbar.check_currentSelectedNetwork('Localhost 8545');
 
-        // Add Aribtrum network and perform the switch network functionality
+        // Add Arbitrum network and perform the switch network functionality
         await headerNavbar.clickSwitchNetworkDropDown();
         await selectNetwork.fillNetworkSearchInput('Arbitrum One');
         await selectNetwork.clickAddButton();
-        await notification.clickApproveButton();
+        await networkSwitchConfirmation.clickApproveButton();
         await headerNavbar.clickSwitchNetworkDropDown();
         await selectNetwork.clickNetworkName('Arbitrum One');
         await homePage.check_expectedBalanceIsDisplayed('25');
