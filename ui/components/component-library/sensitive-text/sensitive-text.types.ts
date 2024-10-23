@@ -26,12 +26,15 @@ export type SensitiveTextProps<C extends React.ElementType = 'p'> = Omit<
 > & {
   /**
    * Boolean to determine whether the text should be hidden or visible.
+   *
    * @default false
    */
   isHidden?: boolean;
+
   /**
    * Determines the length of the hidden text (number of asterisks).
    * Can be a predefined SensitiveTextLength or a custom string number.
+   *
    * @default SensitiveTextLength.Short
    */
   length?: SensitiveTextLengthType | CustomLength;
