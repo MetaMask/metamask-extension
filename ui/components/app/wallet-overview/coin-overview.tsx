@@ -117,6 +117,7 @@ export const CoinOverview = ({
 
   ///: END:ONLY_INCLUDE_IF
 
+  const account = useSelector(getSelectedAccount);
   const showNativeTokenAsMainBalanceRoute = getSpecificSettingsRoute(
     t,
     t('general'),
@@ -254,6 +255,7 @@ export const CoinOverview = ({
               {balanceToDisplay ? (
                 <UserPreferencedCurrencyDisplay
                   style={{ display: 'contents' }}
+                  account={account}
                   className={classnames(
                     `${classPrefix}-overview__primary-balance`,
                     {

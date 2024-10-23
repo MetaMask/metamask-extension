@@ -125,7 +125,7 @@ function getTracesSampleRate(sentryTarget) {
     // Report very frequently on develop branch, and never on other branches
     // (Unless you use a `flags = {"sentry": {"tracesSampleRate": x.xx}}` override)
     if (flags.circleci.branch === 'develop') {
-      return 0.03;
+      return 0.015;
     }
     return 0;
   }
@@ -238,8 +238,8 @@ function getSentryEnvironment() {
 
 function getSentryTarget() {
   if (
-    !getManifestFlags().sentry?.forceEnable ||
-    (process.env.IN_TEST && !SENTRY_DSN_DEV)
+    process.env.IN_TEST &&
+    (!SENTRY_DSN_DEV || !getManifestFlags().sentry?.forceEnable)
   ) {
     return SENTRY_DSN_FAKE;
   }

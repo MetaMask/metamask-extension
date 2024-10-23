@@ -2,7 +2,7 @@ import PropTypes from 'prop-types';
 import { InternalAccount, isEvmAccountType } from '@metamask/keyring-api';
 import type { RatesControllerState } from '@metamask/assets-controllers';
 import { CaipChainId, Hex, KnownCaipNamespace } from '@metamask/utils';
-import { createSelector } from '@reduxjs/toolkit';
+import { createSelector } from 'reselect';
 import { NetworkType } from '@metamask/controller-utils';
 import { Numeric } from '../../shared/modules/Numeric';
 import {
@@ -36,7 +36,7 @@ import {
   getSelectedInternalAccount,
   getShouldShowFiat,
   getShowFiatInTestnets,
-} from '.';
+} from './selectors';
 
 export type RatesState = {
   metamask: RatesControllerState;
@@ -231,8 +231,11 @@ export function getMultichainProviderConfig(
   return getMultichainNetwork(state, account).network;
 }
 
-export function getMultichainCurrentNetwork(state: MultichainState) {
-  return getMultichainProviderConfig(state);
+export function getMultichainCurrentNetwork(
+  state: MultichainState,
+  account?: InternalAccount,
+) {
+  return getMultichainProviderConfig(state, account);
 }
 
 export function getMultichainNativeCurrency(

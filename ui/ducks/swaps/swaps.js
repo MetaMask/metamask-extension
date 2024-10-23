@@ -6,6 +6,7 @@ import { captureMessage } from '@sentry/browser';
 
 import { TransactionType } from '@metamask/transaction-controller';
 import { createProjectLogger } from '@metamask/utils';
+import { CHAIN_IDS } from '../../../shared/constants/network';
 import {
   addToken,
   addTransactionAndWaitForPublish,
@@ -33,11 +34,11 @@ import {
 import {
   AWAITING_SIGNATURES_ROUTE,
   AWAITING_SWAP_ROUTE,
-  BUILD_QUOTE_ROUTE,
   LOADING_QUOTES_ROUTE,
   SWAPS_ERROR_ROUTE,
   SWAPS_MAINTENANCE_ROUTE,
   SMART_TRANSACTION_STATUS_ROUTE,
+  PREPARE_SWAP_ROUTE,
 } from '../../helpers/constants/routes';
 import {
   fetchSwapsFeatureFlags,
@@ -68,8 +69,9 @@ import {
   getSelectedInternalAccount,
 } from '../../selectors';
 import {
-  getSmartTransactionsOptInStatus,
   getSmartTransactionsEnabled,
+  getSmartTransactionsOptInStatusForMetrics,
+  getSmartTransactionsPreferenceEnabled,
 } from '../../../shared/modules/selectors';
 import {
   MetaMetricsEventCategory,
@@ -334,15 +336,6 @@ export const getCurrentSmartTransactionsEnabled = (state) => {
   return smartTransactionsEnabled && !currentSmartTransactionsError;
 };
 
-export const getSwapRedesignEnabled = (state) => {
-  const swapRedesign =
-    state.metamask.swapsState?.swapsFeatureFlags?.swapRedesign;
-  if (swapRedesign === undefined) {
-    return true; // By default show the redesign if we don't have feature flags returned yet.
-  }
-  return swapRedesign.extensionActive;
-};
-
 export const getSwapsQuoteRefreshTime = (state) =>
   state.metamask.swapsState.swapsQuoteRefreshTime;
 
@@ -525,12 +518,12 @@ export {
   slice as swapsSlice,
 };
 
-export const navigateBackToBuildQuote = (history) => {
+export const navigateBackToPrepareSwap = (history) => {
   return async (dispatch) => {
     // TODO: Ensure any fetch in progress is cancelled
     await dispatch(setBackgroundSwapRouteState(''));
     dispatch(navigatedBackToBuildQuote());
-    history.push(BUILD_QUOTE_ROUTE);
+    history.push(PREPARE_SWAP_ROUTE);
   };
 };
 
@@ -754,12 +747,11 @@ export const fetchQuotesAndSetQuoteState = (
     const hardwareWalletType = getHardwareWalletType(state);
     const networkAndAccountSupports1559 =
       checkNetworkAndAccountSupports1559(state);
-    const smartTransactionsOptInStatus = getSmartTransactionsOptInStatus(state);
     const smartTransactionsEnabled = getSmartTransactionsEnabled(state);
     const currentSmartTransactionsEnabled =
       getCurrentSmartTransactionsEnabled(state);
     trackEvent({
-      event: 'Quotes Requested',
+      event: MetaMetricsEventName.QuotesRequested,
       category: MetaMetricsEventCategory.Swaps,
       sensitiveProperties: {
         token_from: fromTokenSymbol,
@@ -772,7 +764,7 @@ export const fetchQuotesAndSetQuoteState = (
         hardware_wallet_type: hardwareWalletType,
         stx_enabled: smartTransactionsEnabled,
         current_stx_enabled: currentSmartTransactionsEnabled,
-        stx_user_opt_in: smartTransactionsOptInStatus,
+        stx_user_opt_in: getSmartTransactionsOptInStatusForMetrics(state),
         anonymizedData: true,
       },
     });
@@ -792,7 +784,8 @@ export const fetchQuotesAndSetQuoteState = (
             balanceError,
             sourceDecimals: fromTokenDecimals,
             enableGasIncludedQuotes:
-              currentSmartTransactionsEnabled && smartTransactionsOptInStatus,
+              currentSmartTransactionsEnabled &&
+              getSmartTransactionsPreferenceEnabled(state),
           },
           {
             sourceTokenInfo,
@@ -827,7 +820,7 @@ export const fetchQuotesAndSetQuoteState = (
             hardware_wallet_type: hardwareWalletType,
             stx_enabled: smartTransactionsEnabled,
             current_stx_enabled: currentSmartTransactionsEnabled,
-            stx_user_opt_in: smartTransactionsOptInStatus,
+            stx_user_opt_in: getSmartTransactionsOptInStatusForMetrics(state),
           },
         });
         dispatch(setSwapsErrorKey(QUOTES_NOT_AVAILABLE_ERROR));
@@ -847,7 +840,7 @@ export const fetchQuotesAndSetQuoteState = (
         const tokenToAmountToString = tokenToAmountBN.toString(10);
 
         trackEvent({
-          event: 'Quotes Received',
+          event: MetaMetricsEventName.QuotesReceived,
           category: MetaMetricsEventCategory.Swaps,
           sensitiveProperties: {
             token_from: fromTokenSymbol,
@@ -864,7 +857,7 @@ export const fetchQuotesAndSetQuoteState = (
             hardware_wallet_type: hardwareWalletType,
             stx_enabled: smartTransactionsEnabled,
             current_stx_enabled: currentSmartTransactionsEnabled,
-            stx_user_opt_in: smartTransactionsOptInStatus,
+            stx_user_opt_in: getSmartTransactionsOptInStatusForMetrics(state),
             anonymizedData: true,
           },
         });
@@ -918,7 +911,6 @@ export const signAndSendSwapsSmartTransaction = ({
       usedQuote.destinationAmount,
       destinationTokenInfo.decimals || 18,
     ).toPrecision(8);
-    const smartTransactionsOptInStatus = getSmartTransactionsOptInStatus(state);
     const smartTransactionsEnabled = getSmartTransactionsEnabled(state);
     const currentSmartTransactionsEnabled =
       getCurrentSmartTransactionsEnabled(state);
@@ -945,7 +937,7 @@ export const signAndSendSwapsSmartTransaction = ({
       hardware_wallet_type: hardwareWalletType,
       stx_enabled: smartTransactionsEnabled,
       current_stx_enabled: currentSmartTransactionsEnabled,
-      stx_user_opt_in: smartTransactionsOptInStatus,
+      stx_user_opt_in: getSmartTransactionsOptInStatusForMetrics(state),
       gas_included: usedQuote.isGasIncludedTrade,
       ...additionalTrackingParams,
     };
@@ -1188,7 +1180,6 @@ export const signAndSendTransactions = (
       numberOfDecimals: 6,
     });
 
-    const smartTransactionsOptInStatus = getSmartTransactionsOptInStatus(state);
     const smartTransactionsEnabled = getSmartTransactionsEnabled(state);
     const currentSmartTransactionsEnabled =
       getCurrentSmartTransactionsEnabled(state);
@@ -1220,7 +1211,7 @@ export const signAndSendTransactions = (
       hardware_wallet_type: getHardwareWalletType(state),
       stx_enabled: smartTransactionsEnabled,
       current_stx_enabled: currentSmartTransactionsEnabled,
-      stx_user_opt_in: smartTransactionsOptInStatus,
+      stx_user_opt_in: getSmartTransactionsOptInStatusForMetrics(state),
       ...additionalTrackingParams,
     };
 
@@ -1284,6 +1275,21 @@ export const signAndSendTransactions = (
             },
           },
         );
+        if (
+          [
+            CHAIN_IDS.LINEA_MAINNET,
+            CHAIN_IDS.LINEA_GOERLI,
+            CHAIN_IDS.LINEA_SEPOLIA,
+          ].includes(chainId)
+        ) {
+          debugLog(
+            'Delaying submitting trade tx to make Linea confirmation more likely',
+          );
+          const waitPromise = new Promise((resolve) =>
+            setTimeout(resolve, 5000),
+          );
+          await waitPromise;
+        }
       } catch (e) {
         debugLog('Approve transaction failed', e);
         await dispatch(setSwapsErrorKey(SWAP_FAILED_ERROR));

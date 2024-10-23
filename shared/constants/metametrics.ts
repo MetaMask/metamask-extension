@@ -562,6 +562,10 @@ export enum MetaMetricsEventName {
   NavConnectedSitesOpened = 'Connected Sites Opened',
   NavMainMenuOpened = 'Main Menu Opened',
   NavPermissionsOpened = 'Permissions Opened',
+  UpdatePermissionedNetworks = 'Update Permissioned Networks',
+  UpdatePermissionedAccounts = 'Update Permissioned Accounts',
+  ViewPermissionedNetworks = 'View Permissioned Networks',
+  ViewPermissionedAccounts = 'View Permissioned Accounts',
   NavNetworkMenuOpened = 'Network Menu Opened',
   NavSettingsOpened = 'Settings Opened',
   NavAccountSwitched = 'Account Switched',
@@ -597,6 +601,7 @@ export enum MetaMetricsEventName {
   PetnameModalOpened = 'Petname Modal Opened',
   PetnameUpdated = 'Petname Updated',
   PhishingPageDisplayed = 'Phishing Page Displayed',
+  ProceedAnywayClicked = 'Proceed Anyway Clicked',
   PortfolioLinkClicked = 'Portfolio Link Clicked',
   ProviderMethodCalled = 'Provider Method Called',
   PublicAddressCopied = 'Public Address Copied',
@@ -738,7 +743,8 @@ export enum MetaMetricsEventName {
   sendFlowExited = 'Send Flow Exited',
   sendRecipientSelected = 'Send Recipient Selected',
   sendSwapQuoteError = 'Send Swap Quote Error',
-  sendSwapQuoteFetched = 'Send Swap Quote Fetched',
+  sendSwapQuoteRequested = 'Send Swap Quote Requested',
+  sendSwapQuoteReceived = 'Send Swap Quote Received',
   sendTokenModalOpened = 'Send Token Modal Opened',
 }
 
@@ -782,6 +788,8 @@ export enum MetaMetricsEventCategory {
   NotificationsActivationFlow = 'Notifications Activation Flow',
   NotificationSettings = 'Notification Settings',
   Petnames = 'Petnames',
+  // eslint-disable-next-line @typescript-eslint/no-shadow
+  Permissions = 'Permissions',
   Phishing = 'Phishing',
   ProfileSyncing = 'Profile Syncing',
   PushNotifications = 'Notifications',

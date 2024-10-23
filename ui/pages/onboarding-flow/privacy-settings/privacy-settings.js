@@ -1,6 +1,7 @@
 import React, { useContext, useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
+import classnames from 'classnames';
 import { ButtonVariant } from '@metamask/snaps-sdk';
 // TODO: Remove restricted import
 // eslint-disable-next-line import/no-restricted-paths
@@ -57,7 +58,6 @@ import {
   setIpfsGateway,
   setUseCurrencyRateCheck,
   setUseMultiAccountBalanceChecker,
-  setUsePhishDetect,
   setUse4ByteResolution,
   setUseTokenDetection,
   setUseAddressBarEnsResolution,
@@ -78,6 +78,8 @@ import {
   TEST_CHAINS,
 } from '../../../../shared/constants/network';
 import { Setting } from './setting';
+
+const ANIMATION_TIME = 500;
 
 /**
  * Profile Syncing Setting props
@@ -132,7 +134,6 @@ export default function PrivacySettings() {
   } = defaultState;
   const petnamesEnabled = useSelector(getPetnamesEnabled);
 
-  const [usePhishingDetection, setUsePhishingDetection] = useState(null);
   const [turnOn4ByteResolution, setTurnOn4ByteResolution] =
     useState(use4ByteResolution);
   const [turnOnTokenDetection, setTurnOnTokenDetection] =
@@ -160,17 +161,11 @@ export default function PrivacySettings() {
     getExternalServicesOnboardingToggleState,
   );
 
-  const phishingToggleState =
-    usePhishingDetection === null
-      ? externalServicesOnboardingToggleState
-      : usePhishingDetection;
-
   const profileSyncingProps = useProfileSyncingProps(
     externalServicesOnboardingToggleState,
   );
 
   const handleSubmit = () => {
-    dispatch(setUsePhishDetect(phishingToggleState));
     dispatch(setUse4ByteResolution(turnOn4ByteResolution));
     dispatch(setUseTokenDetection(turnOnTokenDetection));
     dispatch(
@@ -199,7 +194,6 @@ export default function PrivacySettings() {
         is_profile_syncing_enabled: profileSyncingProps.isProfileSyncingEnabled,
         is_basic_functionality_enabled: externalServicesOnboardingToggleState,
         show_incoming_tx: incomingTransactionsPreferences,
-        use_phising_detection: usePhishingDetection,
         turnon_token_detection: turnOnTokenDetection,
       },
     });
@@ -241,14 +235,14 @@ export default function PrivacySettings() {
 
     setTimeout(() => {
       setHiddenClass(false);
-    }, 500);
+    }, ANIMATION_TIME);
   };
 
   const handleBack = () => {
     setShowDetail(false);
     setTimeout(() => {
       setHiddenClass(true);
-    }, 500);
+    }, ANIMATION_TIME);
   };
 
   const items = [
@@ -261,7 +255,10 @@ export default function PrivacySettings() {
     <>
       <div className="privacy-settings" data-testid="privacy-settings">
         <div
-          className={`container ${showDetail ? 'show-detail' : 'show-list'}`}
+          className={classnames('container', {
+            'show-detail': showDetail,
+            'show-list': !showDetail,
+          })}
         >
           <div className="list-view">
             <Box
@@ -366,9 +363,9 @@ export default function PrivacySettings() {
           </div>
 
           <div
-            className={`detail-view ${
-              !showDetail && hiddenClass ? 'hidden' : ''
-            }`}
+            className={classnames('detail-view', {
+              hidden: !showDetail && hiddenClass,
+            })}
           >
             <Box
               className="privacy-settings__header"
@@ -397,7 +394,7 @@ export default function PrivacySettings() {
                 width={BlockSize.Full}
               >
                 <Text variant={TextVariant.headingLg} as="h2">
-                  {selectedItem && selectedItem.title}
+                  {selectedItem?.title}
                 </Text>
               </Box>
             </Box>
@@ -406,7 +403,7 @@ export default function PrivacySettings() {
               className="privacy-settings__settings"
               data-testid="privacy-settings-settings"
             >
-              {selectedItem && selectedItem.id === 1 ? (
+              {selectedItem?.id === 1 ? (
                 <>
                   <Setting
                     dataTestId="basic-functionality-toggle"
@@ -581,7 +578,7 @@ export default function PrivacySettings() {
                   />
                 </>
               ) : null}
-              {selectedItem && selectedItem.id === 2 ? (
+              {selectedItem?.id === 2 ? (
                 <>
                   <Setting
                     value={turnOnTokenDetection}
@@ -718,14 +715,8 @@ export default function PrivacySettings() {
                   />
                 </>
               ) : null}
-              {selectedItem && selectedItem.id === 3 ? (
+              {selectedItem?.id === 3 ? (
                 <>
-                  <Setting
-                    value={phishingToggleState}
-                    setValue={setUsePhishingDetection}
-                    title={t('usePhishingDetection')}
-                    description={t('usePhishingDetectionDescription')}
-                  />
                   <Setting
                     value={turnOn4ByteResolution}
                     setValue={setTurnOn4ByteResolution}
