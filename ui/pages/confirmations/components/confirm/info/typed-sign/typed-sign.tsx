@@ -43,6 +43,7 @@ const TypedSignInfo: React.FC = () => {
 
   const isPermit = isPermitSignatureRequest(currentConfirmation);
   const isOrder = isOrderSignatureRequest(currentConfirmation);
+  const chainId = currentConfirmation.chainId as string;
 
   useEffect(() => {
     (async () => {
@@ -61,7 +62,7 @@ const TypedSignInfo: React.FC = () => {
         {isPermit && (
           <>
             <ConfirmInfoRow label={t('spender')}>
-              <ConfirmInfoRowAddress address={spender} />
+              <ConfirmInfoRowAddress address={spender} chainId={chainId} />
             </ConfirmInfoRow>
             <ConfirmInfoRowDivider />
           </>
@@ -76,7 +77,10 @@ const TypedSignInfo: React.FC = () => {
         </ConfirmInfoAlertRow>
         {isValidAddress(verifyingContract) && (
           <ConfirmInfoRow label={t('interactingWith')}>
-            <ConfirmInfoRowAddress address={verifyingContract} />
+            <ConfirmInfoRowAddress
+              address={verifyingContract}
+              chainId={chainId}
+            />
           </ConfirmInfoRow>
         )}
       </ConfirmInfoSection>
@@ -85,6 +89,7 @@ const TypedSignInfo: React.FC = () => {
           <ConfirmInfoRowTypedSignData
             data={currentConfirmation.msgParams?.data as string}
             tokenDecimals={decimals}
+            chainId={chainId}
           />
         </ConfirmInfoRow>
       </ConfirmInfoSection>
