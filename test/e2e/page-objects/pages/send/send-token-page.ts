@@ -1,6 +1,7 @@
 import { strict as assert } from 'assert';
 import { Driver } from '../../../webdriver/driver';
 import { RawLocator } from '../../common';
+import { fillENSInput } from '../../../helpers';
 
 class SendTokenPage {
   private driver: Driver;
@@ -61,7 +62,7 @@ class SendTokenPage {
     console.log(
       `Fill recipient input with ${recipientAddress} on send token screen`,
     );
-    await this.driver.pasteIntoField(this.inputRecipient, recipientAddress);
+    await fillENSInput(this.driver, recipientAddress);
   }
 
   async fillAmount(amount: string): Promise<void> {

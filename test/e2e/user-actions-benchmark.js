@@ -13,6 +13,7 @@ const {
   openActionMenuAndStartSendFlow,
   logInWithBalanceValidation,
   unlockWallet,
+  fillENSInput,
 } = require('./helpers');
 const FixtureBuilder = require('./fixture-builder');
 
@@ -72,10 +73,7 @@ async function confirmTx() {
 
       await openActionMenuAndStartSendFlow(driver);
 
-      await driver.fill(
-        'input[placeholder="Enter public address (0x) or domain name"]',
-        '0x2f318C334780961FB129D2a6c30D0763d9a5C970',
-      );
+      await fillENSInput(driver, '0x2f318C334780961FB129D2a6c30D0763d9a5C970');
 
       const inputAmount = await driver.findElement('.unit-input__input');
       await inputAmount.fill('1');

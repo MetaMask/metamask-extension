@@ -4,6 +4,7 @@ const {
   logInWithBalanceValidation,
   openActionMenuAndStartSendFlow,
   generateGanacheOptions,
+  fillENSInput,
 } = require('../../helpers');
 const FixtureBuilder = require('../../fixture-builder');
 const { GAS_API_BASE_URL } = require('../../../../shared/constants/swaps');
@@ -59,8 +60,8 @@ describe('Gas API fallback', function () {
         await logInWithBalanceValidation(driver, ganacheServer);
 
         await openActionMenuAndStartSendFlow(driver);
-        await driver.fill(
-          'input[placeholder="Enter public address (0x) or domain name"]',
+        await fillENSInput(
+          driver,
           '0x2f318C334780961FB129D2a6c30D0763d9a5C970',
         );
 

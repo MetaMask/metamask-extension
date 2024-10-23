@@ -9,6 +9,7 @@ const {
   editGasFeeForm,
   WINDOW_TITLES,
   defaultGanacheOptions,
+  fillENSInput,
 } = require('../../helpers');
 const FixtureBuilder = require('../../fixture-builder');
 
@@ -26,8 +27,8 @@ describe('Send ETH', function () {
 
           await openActionMenuAndStartSendFlow(driver);
 
-          await driver.fill(
-            'input[placeholder="Enter public address (0x) or domain name"]',
+          await fillENSInput(
+            driver,
             '0x2f318C334780961FB129D2a6c30D0763d9a5C970',
           );
 
@@ -109,8 +110,8 @@ describe('Send ETH', function () {
           await driver.delay(1000);
 
           await openActionMenuAndStartSendFlow(driver);
-          await driver.fill(
-            'input[placeholder="Enter public address (0x) or domain name"]',
+          await fillENSInput(
+            driver,
             '0x2f318C334780961FB129D2a6c30D0763d9a5C970',
           );
 
@@ -171,10 +172,7 @@ describe('Send ETH', function () {
           await driver.delay(500);
 
           await driver.clickElement('[data-testid="eth-overview-send"]');
-          await driver.fill(
-            'input[placeholder="Enter public address (0x) or domain name"]',
-            contractAddress,
-          );
+          await fillENSInput(driver, contractAddress);
 
           const inputAmount = await driver.findElement(
             'input[placeholder="0"]',
@@ -443,8 +441,9 @@ describe('Send ETH', function () {
 
             await openActionMenuAndStartSendFlow(driver);
 
-            await driver.fill(
-              'input[placeholder="Enter public address (0x) or domain name"]',
+            await fillENSInput(
+              driver,
+
               '0xc427D562164062a23a5cFf596A4a3208e72Acd28',
             );
 

@@ -6,6 +6,7 @@ const {
   logInWithBalanceValidation,
   openActionMenuAndStartSendFlow,
   withFixtures,
+  fillENSInput,
 } = require('../../helpers');
 const FixtureBuilder = require('../../fixture-builder');
 
@@ -129,8 +130,8 @@ describe('MetaMask Responsive UI', function () {
         // Send ETH from inside MetaMask
         // starts to send a transaction
         await openActionMenuAndStartSendFlow(driver);
-        await driver.fill(
-          'input[placeholder="Enter public address (0x) or domain name"]',
+        await fillENSInput(
+          driver,
           '0x2f318C334780961FB129D2a6c30D0763d9a5C970',
         );
 

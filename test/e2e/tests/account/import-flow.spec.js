@@ -13,6 +13,7 @@ const {
   logInWithBalanceValidation,
   locateAccountBalanceDOM,
   WALLET_PASSWORD,
+  fillENSInput,
 } = require('../../helpers');
 const FixtureBuilder = require('../../fixture-builder');
 const { emptyHtmlPage } = require('../../mock-e2e');
@@ -141,11 +142,11 @@ describe('Import flow @no-mmi', function () {
         // starts a send transaction
         await locateAccountBalanceDOM(driver, ganacheServer);
         await openActionMenuAndStartSendFlow(driver);
-        await driver.fill(
-          'input[placeholder="Enter public address (0x) or domain name"]',
+        await fillENSInput(
+          driver,
           '0x2f318C334780961FB129D2a6c30D0763d9a5C970',
         );
-        await driver.fill('input[placeholder="0"]', '1');
+        await driver.pasteIntoField('input[placeholder="0"]', '1');
         // Continue to next screen
         await driver.clickElement({ text: 'Continue', tag: 'button' });
 

@@ -3,6 +3,7 @@ const {
   defaultGanacheOptions,
   withFixtures,
   logInWithBalanceValidation,
+  fillENSInput,
 } = require('../../helpers');
 const FixtureBuilder = require('../../fixture-builder');
 
@@ -61,7 +62,7 @@ async function clickOnLogo(driver) {
 // Function to send a transaction and verify hex data text area appears.
 async function sendTransactionAndVerifyHexData(driver) {
   await driver.clickElement(selectors.ethOverviewSend);
-  await driver.fill(selectors.ensInput, inputData.recipientAddress);
+  await fillENSInput(driver, inputData.recipientAddress);
   await driver.fill(selectors.quantity, 1);
   await driver.fill(selectors.hexDataInput, inputData.hexDataText);
   await driver.clickElement(selectors.nextPageButton);

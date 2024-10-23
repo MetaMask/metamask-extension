@@ -3,6 +3,7 @@ const {
   defaultGanacheOptions,
   withFixtures,
   unlockWallet,
+  fillENSInput,
 } = require('../../helpers');
 const { SMART_CONTRACTS } = require('../../seeder/smart-contracts');
 const FixtureBuilder = require('../../fixture-builder');
@@ -35,10 +36,7 @@ describe('Send ERC20 token to contract address', function () {
         await driver.clickElement('[data-testid="coin-overview-send"]');
 
         // Type contract address
-        await driver.fill(
-          'input[placeholder="Enter public address (0x) or domain name"]',
-          contractAddress,
-        );
+        await fillENSInput(driver, contractAddress);
 
         // Verify warning
         const warningText =

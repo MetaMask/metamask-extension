@@ -4,6 +4,7 @@ const {
   logInWithBalanceValidation,
   unlockWallet,
   withFixtures,
+  fillENSInput,
 } = require('../../../helpers');
 const { SMART_CONTRACTS } = require('../../../seeder/smart-contracts');
 const FixtureBuilder = require('../../../fixture-builder');
@@ -29,8 +30,8 @@ describe('Send NFT', function () {
         await driver.clickElement('.nft-item__container');
         // TODO: Update Test when Multichain Send Flow is added
         await driver.clickElement({ text: 'Send', tag: 'button' });
-        await driver.fill(
-          'input[placeholder="Enter public address (0x) or domain name"]',
+        await fillENSInput(
+          driver,
           '0xc427D562164062a23a5cFf596A4a3208e72Acd28',
         );
         await driver.clickElement({
@@ -103,8 +104,8 @@ describe('Send NFT', function () {
         await driver.clickElement('[data-testid="nft-network-badge"]');
 
         await driver.clickElement({ text: 'Send', tag: 'button' });
-        await driver.fill(
-          'input[placeholder="Enter public address (0x) or domain name"]',
+        await fillENSInput(
+          driver,
           '0xc427D562164062a23a5cFf596A4a3208e72Acd28',
         );
 
@@ -163,8 +164,8 @@ describe('Send NFT', function () {
 
         await driver.clickElement({ text: 'Send', tag: 'button' });
 
-        await driver.fill(
-          'input[placeholder="Enter public address (0x) or domain name"]',
+        await fillENSInput(
+          driver,
           '0xc427D562164062a23a5cFf596A4a3208e72Acd28',
         );
 
