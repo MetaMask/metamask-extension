@@ -1,6 +1,6 @@
 # SensitiveText
 
-SensitiveText is a component that extends the Text component to handle sensitive information. It provides the ability to hide or show the text content, replacing it with asterisks when hidden.
+SensitiveText is a component that extends the Text component to handle sensitive information. It provides the ability to hide or show the text content, replacing it with dots when hidden.
 
 ## Props
 
@@ -16,7 +16,7 @@ Boolean to determine whether the text should be hidden or visible.
 
 ### `length`
 
-Determines the length of the hidden text (number of asterisks). Can be a predefined SensitiveTextLength or a custom string number.
+Determines the length of the hidden text (number of dots). Can be a predefined SensitiveTextLength or a custom string number.
 
 | <span style="color:gray;font-size:14px">TYPE</span> | <span style="color:gray;font-size:14px">REQUIRED</span> | <span style="color:gray;font-size:14px">DEFAULT</span> |
 | :-------------------------------------------------- | :------------------------------------------------------ | :----------------------------------------------------- |
@@ -48,12 +48,12 @@ Custom Length Hidden Text
 </SensitiveText>
 ```
 
-This will render a Text component with asterisks instead of the actual text when `isHidden` is true, and the original text when `isHidden` is false. The number of asterisks is determined by the `length` prop.
+This will render a Text component with dots instead of the actual text when `isHidden` is true, and the original text when `isHidden` is false. The number of dots is determined by the `length` prop.
 
 ## Behavior
 
-- When `isHidden` is `true`, the component will display asterisks instead of the actual text.
-- The number of asterisks displayed is determined by the `length` prop.
+- When `isHidden` is `true`, the component will display dots instead of the actual text.
+- The number of dots displayed is determined by the `length` prop.
 - If an invalid `length` is provided, the component will fall back to `SensitiveTextLength.Short` and log a warning.
 - Custom length values can be provided as strings, e.g., "15".
 - The component forwards refs to the underlying Text component.
