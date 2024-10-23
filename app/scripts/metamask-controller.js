@@ -5806,11 +5806,6 @@ export default class MetamaskController extends EventEmitter {
         }
       },
     );
-
-    // Used to show wallet liveliness to the provider
-    if (subjectType !== SubjectType.Internal) {
-      this._notifyChainChangeForConnection({ engine }, origin);
-    }
   }
 
   /**
