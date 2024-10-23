@@ -81,7 +81,7 @@ export default function NotificationsSettings() {
             ariaLabel="Back"
             iconName={IconName.ArrowLeft}
             size={ButtonIconSize.Sm}
-            onClick={() => history.go(-1)}
+            onClick={() => history.goBack()}
           />
         }
         endAccessory={null}
