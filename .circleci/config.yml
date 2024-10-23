@@ -1008,7 +1008,7 @@ jobs:
           command: ./development/shellcheck.sh
 
   test-lint-lockfile:
-    executor: node-browsers-medium
+    executor: node-browsers-medium-plus
     steps:
       - run: *shallow-git-clone-and-enable-vnc
       - run: sudo corepack enable
