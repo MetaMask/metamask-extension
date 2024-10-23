@@ -245,7 +245,7 @@ describe('Switch Ethereum Chain for two dapps', function () {
           text: 'Confirm',
           tag: 'button',
         });
-        await driver.clickElementAndWaitForWindowToClose({
+        await driver.clickElement({
           text: 'Confirm',
           tag: 'button',
         });
