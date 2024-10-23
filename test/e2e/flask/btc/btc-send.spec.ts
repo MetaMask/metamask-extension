@@ -1,42 +1,19 @@
 import { strict as assert } from 'assert';
 import { Suite } from 'mocha';
 import { DEFAULT_BTC_ACCOUNT, DEFAULT_BTC_BALANCE } from '../../constants';
-import { getQuickNodeSeenRequests, withBtcAccountSnap } from './common-btc';
-
-enum SendFlowPlaceHolders {
-  AMOUNT = 'Enter amount to send',
-  RECIPIENT = 'Enter receiving address',
-  LOADING = 'Preparing transaction',
-}
+import {
+  getTransactionRequest,
+  SendFlowPlaceHolders,
+  startSendFlow,
+  withBtcAccountSnap,
+} from './common-btc';
 
 describe('BTC Account - Send', function (this: Suite) {
   it('can send complete the send flow', async function () {
     await withBtcAccountSnap(
       { title: this.test?.fullTitle() },
       async (driver, mockServer) => {
-        // Wait a bit so the MultichainRatesController is able to fetch BTC -> USD rates.
-        await driver.delay(1000);
-
-        // Start the send flow.
-        const sendButton = await driver.waitForSelector({
-          text: 'Send',
-          tag: 'button',
-          css: '[data-testid="coin-overview-send"]',
-        });
-        await sendButton.click();
-
-        // See the review button is disabled by default.
-        await driver.waitForSelector({
-          text: 'Review',
-          tag: 'button',
-          css: '[disabled]',
-        });
-
-        // Set the recipient address (ourself in this case).
-        await driver.pasteIntoField(
-          `input[placeholder="${SendFlowPlaceHolders.RECIPIENT}"]`,
-          DEFAULT_BTC_ACCOUNT,
-        );
+        await startSendFlow(driver, DEFAULT_BTC_ACCOUNT);
 
         await driver.delay(500);
 
@@ -83,16 +60,7 @@ describe('BTC Account - Send', function (this: Suite) {
           text: 'Bitcoin activity is not supported',
         });
 
-        // NOTE: We wait to land on the "Activity tab" first before checking the transaction network call!
-        // Check that the transaction has been sent.
-        const transactionRequest = (
-          await getQuickNodeSeenRequests(mockServer)
-        ).find(async (request) => {
-          const body = (await request.body.getJson()) as { method: string };
-          return body.method === 'sendrawtransaction';
-        });
-        // TODO: check for the response as well.
-        assert(transactionRequest !== undefined);
+        await getTransactionRequest(mockServer);
       },
     );
   });
@@ -101,29 +69,7 @@ describe('BTC Account - Send', function (this: Suite) {
     await withBtcAccountSnap(
       { title: this.test?.fullTitle() },
       async (driver, mockServer) => {
-        // Wait a bit so the MultichainRatesController is able to fetch BTC -> USD rates.
-        await driver.delay(1000);
-
-        // Start the send flow.
-        const sendButton = await driver.waitForSelector({
-          text: 'Send',
-          tag: 'button',
-          css: '[data-testid="coin-overview-send"]',
-        });
-        await sendButton.click();
-
-        // See the review button is disabled by default.
-        await driver.waitForSelector({
-          text: 'Review',
-          tag: 'button',
-          css: '[disabled]',
-        });
-
-        // Set the recipient address (ourself in this case).
-        await driver.pasteIntoField(
-          `input[placeholder="${SendFlowPlaceHolders.RECIPIENT}"]`,
-          DEFAULT_BTC_ACCOUNT,
-        );
+        await startSendFlow(driver, DEFAULT_BTC_ACCOUNT);
 
         await driver.delay(500);
 
@@ -174,16 +120,7 @@ describe('BTC Account - Send', function (this: Suite) {
           text: 'Bitcoin activity is not supported',
         });
 
-        // NOTE: We wait to land on the "Activity tab" first before checking the transaction network call!
-        // Check that the transaction has been sent.
-        const transactionRequest = (
-          await getQuickNodeSeenRequests(mockServer)
-        ).find(async (request) => {
-          const body = (await request.body.getJson()) as { method: string };
-          return body.method === 'sendrawtransaction';
-        });
-        // TODO: check for the response as well.
-        assert(transactionRequest !== undefined);
+        await getTransactionRequest(mockServer);
       },
     );
   });

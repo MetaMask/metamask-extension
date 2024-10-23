@@ -11,9 +11,36 @@ import {
 } from '../../constants';
 import { MultichainNetworks } from '../../../../shared/constants/multichain/networks';
 import { Driver } from '../../webdriver/driver';
-import { createBtcAccount } from '../../accounts/common';
+import messages from '../../../../app/_locales/en/messages.json';
 
 const QUICKNODE_URL_REGEX = /^https:\/\/.*\.btc.*\.quiknode\.pro(\/|$)/u;
+
+export enum SendFlowPlaceHolders {
+  AMOUNT = 'Enter amount to send',
+  RECIPIENT = 'Enter receiving address',
+  LOADING = 'Preparing transaction',
+}
+
+export async function createBtcAccount(driver: Driver) {
+  await driver.clickElement('[data-testid="account-menu-icon"]');
+  await driver.clickElement(
+    '[data-testid="multichain-account-menu-popover-action-button"]',
+  );
+  await driver.clickElement({
+    text: messages.addNewBitcoinAccount.message,
+    tag: 'button',
+  });
+  await driver.clickElementAndWaitToDisappear(
+    {
+      text: 'Add account',
+      tag: 'button',
+    },
+    // Longer timeout than usual, this reduces the flakiness
+    // around Bitcoin account creation (mainly required for
+    // Firefox)
+    5000,
+  );
+}
 
 export function btcToSats(btc: number): number {
   // Watchout, we're not using BigNumber(s) here (but that's ok for test purposes)
@@ -220,4 +247,45 @@ export async function getQuickNodeSeenRequests(mockServer: Mockttp) {
   return seenRequests
     .flat()
     .filter((request) => request.url.match(QUICKNODE_URL_REGEX));
+}
+
+export async function startSendFlow(driver: Driver, recipient?: string) {
+  // Wait a bit so the MultichainRatesController is able to fetch BTC -> USD rates.
+  await driver.delay(1000);
+
+  // Start the send flow.
+  const sendButton = await driver.waitForSelector({
+    text: 'Send',
+    tag: 'button',
+    css: '[data-testid="coin-overview-send"]',
+  });
+  await sendButton.click();
+
+  // See the review button is disabled by default.
+  await driver.waitForSelector({
+    text: 'Review',
+    tag: 'button',
+    css: '[disabled]',
+  });
+
+  if (recipient) {
+    // Set the recipient address (if any).
+    await driver.pasteIntoField(
+      `input[placeholder="${SendFlowPlaceHolders.RECIPIENT}"]`,
+      recipient,
+    );
+  }
+}
+
+export async function getTransactionRequest(mockServer: Mockttp) {
+  // NOTE: We wait to land on the "Activity tab" first before checking the transaction network call!
+  // Check that the transaction has been sent.
+  const transactionRequest = (await getQuickNodeSeenRequests(mockServer)).find(
+    async (request) => {
+      const body = (await request.body.getJson()) as { method: string };
+      return body.method === 'sendrawtransaction';
+    },
+  );
+  // TODO: check for the response as well.
+  assert(transactionRequest !== undefined);
 }
