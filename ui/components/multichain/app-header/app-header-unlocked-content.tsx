@@ -25,7 +25,6 @@ import {
   ButtonIconSize,
   IconName,
   IconSize,
-  PickerNetwork,
   Text,
 } from '../../component-library';
 import Tooltip from '../../ui/tooltip';
@@ -40,7 +39,6 @@ import { AccountPicker } from '../account-picker';
 import { GlobalMenu } from '../global-menu';
 import {
   getSelectedInternalAccount,
-  getTestNetworkBackgroundColor,
   getOriginOfCurrentTab,
 } from '../../../selectors';
 // TODO: Remove restricted import
@@ -70,11 +68,7 @@ type AppHeaderUnlockedContentProps = {
 };
 
 export const AppHeaderUnlockedContent = ({
-  popupStatus,
   isEvmNetwork,
-  currentNetwork,
-  networkOpenCallback,
-  disableNetworkPicker,
   disableAccountPicker,
   menuRef,
 }: AppHeaderUnlockedContentProps) => {
@@ -84,7 +78,6 @@ export const AppHeaderUnlockedContent = ({
   const dispatch = useDispatch();
   const origin = useSelector(getOriginOfCurrentTab);
   const [accountOptionsMenuOpen, setAccountOptionsMenuOpen] = useState(false);
-  const testNetworkBackgroundColor = useSelector(getTestNetworkBackgroundColor);
 
   // Used for account picker
   const internalAccount = useSelector(getSelectedInternalAccount);
@@ -124,59 +117,6 @@ export const AppHeaderUnlockedContent = ({
 
   return (
     <>
-      {popupStatus ? (
-        <Box className="multichain-app-header__contents__container">
-          <Tooltip title={currentNetwork?.nickname} position="right">
-            <PickerNetwork
-              avatarNetworkProps={{
-                backgroundColor: testNetworkBackgroundColor,
-                role: 'img',
-                name: currentNetwork?.nickname ?? '',
-              }}
-              className="multichain-app-header__contents--avatar-network"
-              ref={menuRef}
-              as="button"
-              src={currentNetwork?.network?.rpcPrefs?.imageUrl ?? ''}
-              label={currentNetwork?.nickname ?? ''}
-              aria-label={`${t('networkMenu')} ${currentNetwork?.nickname}`}
-              labelProps={{
-                display: Display.None,
-              }}
-              onClick={(e: React.MouseEvent<HTMLElement>) => {
-                e.stopPropagation();
-                e.preventDefault();
-                networkOpenCallback();
-              }}
-              display={[Display.Flex, Display.None]} // show on popover hide on desktop
-              disabled={disableNetworkPicker}
-            />
-          </Tooltip>
-        </Box>
-      ) : (
-        <div>
-          <PickerNetwork
-            avatarNetworkProps={{
-              backgroundColor: testNetworkBackgroundColor,
-              role: 'img',
-              name: currentNetwork?.nickname ?? '',
-            }}
-            margin={2}
-            aria-label={`${t('networkMenu')} ${currentNetwork?.nickname}`}
-            label={currentNetwork?.nickname ?? ''}
-            src={currentNetwork?.network?.rpcPrefs?.imageUrl}
-            onClick={(e: React.MouseEvent<HTMLElement>) => {
-              e.stopPropagation();
-              e.preventDefault();
-              networkOpenCallback();
-            }}
-            display={[Display.None, Display.Flex]} // show on desktop hide on popover
-            className="multichain-app-header__contents__network-picker"
-            disabled={disableNetworkPicker}
-            data-testid="network-display"
-          />
-        </div>
-      )}
-
       {internalAccount && (
         <Text
           as="div"
