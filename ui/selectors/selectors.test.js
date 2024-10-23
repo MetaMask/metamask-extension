@@ -1,21 +1,20 @@
-import { deepClone } from '@metamask/snaps-utils';
 import { ApprovalType } from '@metamask/controller-utils';
 import {
   BtcAccountType,
   EthAccountType,
   EthMethod,
 } from '@metamask/keyring-api';
+import { deepClone } from '@metamask/snaps-utils';
 import { TransactionStatus } from '@metamask/transaction-controller';
-import mockState from '../../test/data/mock-state.json';
-import { KeyringType } from '../../shared/constants/keyring';
-import { CHAIN_IDS, NETWORK_TYPES } from '../../shared/constants/network';
-import { SURVEY_DATE, SURVEY_GMT } from '../helpers/constants/survey';
-import { PRIVACY_POLICY_DATE } from '../helpers/constants/privacy-policy';
-import { createMockInternalAccount } from '../../test/jest/mocks';
 import { ETH_EOA_METHODS } from '../../shared/constants/eth-methods';
-import { getProviderConfig } from '../ducks/metamask/metamask';
-import { mockNetworkState } from '../../test/stub/networks';
+import { KeyringType } from '../../shared/constants/keyring';
 import { DeleteRegulationStatus } from '../../shared/constants/metametrics';
+import { CHAIN_IDS, NETWORK_TYPES } from '../../shared/constants/network';
+import mockState from '../../test/data/mock-state.json';
+import { createMockInternalAccount } from '../../test/jest/mocks';
+import { mockNetworkState } from '../../test/stub/networks';
+import { selectSwitchedNetworkNeverShowMessage } from '../components/app/toast-master/selectors';
+import { getProviderConfig } from '../ducks/metamask/metamask';
 import * as selectors from './selectors';
 
 jest.mock('../../app/scripts/lib/util', () => ({
@@ -187,10 +186,10 @@ describe('Selectors', () => {
     });
   });
 
-  describe('#getNeverShowSwitchedNetworkMessage', () => {
+  describe('#selectSwitchedNetworkNeverShowMessage', () => {
     it('returns the correct value', () => {
       expect(
-        selectors.getNeverShowSwitchedNetworkMessage({
+        selectSwitchedNetworkNeverShowMessage({
           metamask: { switchedNetworkNeverShowMessage: true },
         }),
       ).toStrictEqual(true);
@@ -1403,194 +1402,6 @@ describe('Selectors', () => {
         subjectType: 'snap',
         version: '1.2.3',
       },
-    });
-  });
-
-  describe('#getShowSurveyToast', () => {
-    const realDateNow = Date.now;
-
-    afterEach(() => {
-      Date.now = realDateNow;
-    });
-
-    it('shows the survey link when not yet seen and within time bounds', () => {
-      Date.now = () =>
-        new Date(`${SURVEY_DATE} 12:25:00 ${SURVEY_GMT}`).getTime();
-      const result = selectors.getShowSurveyToast({
-        metamask: {
-          surveyLinkLastClickedOrClosed: null,
-        },
-      });
-      expect(result).toStrictEqual(true);
-    });
-
-    it('does not show the survey link when seen and within time bounds', () => {
-      Date.now = () =>
-        new Date(`${SURVEY_DATE} 12:25:00 ${SURVEY_GMT}`).getTime();
-      const result = selectors.getShowSurveyToast({
-        metamask: {
-          surveyLinkLastClickedOrClosed: 123456789,
-        },
-      });
-      expect(result).toStrictEqual(false);
-    });
-
-    it('does not show the survey link before time bounds', () => {
-      Date.now = () =>
-        new Date(`${SURVEY_DATE} 11:25:00 ${SURVEY_GMT}`).getTime();
-      const result = selectors.getShowSurveyToast({
-        metamask: {
-          surveyLinkLastClickedOrClosed: null,
-        },
-      });
-      expect(result).toStrictEqual(false);
-    });
-
-    it('does not show the survey link after time bounds', () => {
-      Date.now = () =>
-        new Date(`${SURVEY_DATE} 14:25:00 ${SURVEY_GMT}`).getTime();
-      const result = selectors.getShowSurveyToast({
-        metamask: {
-          surveyLinkLastClickedOrClosed: null,
-        },
-      });
-      expect(result).toStrictEqual(false);
-    });
-  });
-
-  describe('#getShowPrivacyPolicyToast', () => {
-    let dateNowSpy;
-
-    describe('mock one day after', () => {
-      beforeEach(() => {
-        const dayAfterPolicyDate = new Date(PRIVACY_POLICY_DATE);
-        dayAfterPolicyDate.setDate(dayAfterPolicyDate.getDate() + 1);
-
-        dateNowSpy = jest
-          .spyOn(Date, 'now')
-          .mockReturnValue(dayAfterPolicyDate.getTime());
-      });
-
-      afterEach(() => {
-        dateNowSpy.mockRestore();
-      });
-
-      it('shows the privacy policy toast when not yet seen, on or after the policy date, and onboardingDate is before the policy date', () => {
-        const result = selectors.getShowPrivacyPolicyToast({
-          metamask: {
-            newPrivacyPolicyToastClickedOrClosed: null,
-            onboardingDate: new Date(PRIVACY_POLICY_DATE).setDate(
-              new Date(PRIVACY_POLICY_DATE).getDate() - 2,
-            ),
-          },
-        });
-        expect(result).toBe(true);
-      });
-
-      it('does not show the privacy policy toast when seen, even if on or after the policy date and onboardingDate is before the policy date', () => {
-        const result = selectors.getShowPrivacyPolicyToast({
-          metamask: {
-            newPrivacyPolicyToastClickedOrClosed: true,
-            onboardingDate: new Date(PRIVACY_POLICY_DATE).setDate(
-              new Date(PRIVACY_POLICY_DATE).getDate() - 2,
-            ),
-          },
-        });
-        expect(result).toBe(false);
-      });
-
-      it('shows the privacy policy toast when not yet seen, on or after the policy date, and onboardingDate is not set', () => {
-        const result = selectors.getShowPrivacyPolicyToast({
-          metamask: {
-            newPrivacyPolicyToastClickedOrClosed: null,
-            onboardingDate: null,
-          },
-        });
-        expect(result).toBe(true);
-      });
-    });
-
-    describe('mock same day', () => {
-      beforeEach(() => {
-        dateNowSpy = jest
-          .spyOn(Date, 'now')
-          .mockReturnValue(new Date(PRIVACY_POLICY_DATE).getTime());
-      });
-
-      afterEach(() => {
-        dateNowSpy.mockRestore();
-      });
-
-      it('shows the privacy policy toast when not yet seen, on or after the policy date, and onboardingDate is before the policy date', () => {
-        const result = selectors.getShowPrivacyPolicyToast({
-          metamask: {
-            newPrivacyPolicyToastClickedOrClosed: null,
-            onboardingDate: new Date(PRIVACY_POLICY_DATE).setDate(
-              new Date(PRIVACY_POLICY_DATE).getDate() - 2,
-            ),
-          },
-        });
-        expect(result).toBe(true);
-      });
-
-      it('does not show the privacy policy toast when seen, even if on or after the policy date and onboardingDate is before the policy date', () => {
-        const result = selectors.getShowPrivacyPolicyToast({
-          metamask: {
-            newPrivacyPolicyToastClickedOrClosed: true,
-            onboardingDate: new Date(PRIVACY_POLICY_DATE).setDate(
-              new Date(PRIVACY_POLICY_DATE).getDate() - 2,
-            ),
-          },
-        });
-        expect(result).toBe(false);
-      });
-
-      it('shows the privacy policy toast when not yet seen, on or after the policy date, and onboardingDate is not set', () => {
-        const result = selectors.getShowPrivacyPolicyToast({
-          metamask: {
-            newPrivacyPolicyToastClickedOrClosed: null,
-            onboardingDate: null,
-          },
-        });
-        expect(result).toBe(true);
-      });
-    });
-
-    describe('mock day before', () => {
-      beforeEach(() => {
-        const dayBeforePolicyDate = new Date(PRIVACY_POLICY_DATE);
-        dayBeforePolicyDate.setDate(dayBeforePolicyDate.getDate() - 1);
-
-        dateNowSpy = jest
-          .spyOn(Date, 'now')
-          .mockReturnValue(dayBeforePolicyDate.getTime());
-      });
-
-      afterEach(() => {
-        dateNowSpy.mockRestore();
-      });
-
-      it('does not show the privacy policy toast before the policy date', () => {
-        const result = selectors.getShowPrivacyPolicyToast({
-          metamask: {
-            newPrivacyPolicyToastClickedOrClosed: null,
-            onboardingDate: new Date(PRIVACY_POLICY_DATE).setDate(
-              new Date(PRIVACY_POLICY_DATE).getDate() - 2,
-            ),
-          },
-        });
-        expect(result).toBe(false);
-      });
-
-      it('does not show the privacy policy toast before the policy date even if onboardingDate is not set', () => {
-        const result = selectors.getShowPrivacyPolicyToast({
-          metamask: {
-            newPrivacyPolicyToastClickedOrClosed: null,
-            onboardingDate: null,
-          },
-        });
-        expect(result).toBe(false);
-      });
     });
   });
 

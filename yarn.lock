@@ -4132,10 +4132,17 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@json-schema-tools/traverse@npm:^1.10.4, @json-schema-tools/traverse@npm:^1.7.5, @json-schema-tools/traverse@npm:^1.7.8":
+"@json-schema-tools/traverse@npm:^1.10.4":
   version: 1.10.4
   resolution: "@json-schema-tools/traverse@npm:1.10.4"
   checksum: 10/0027bc90df01c5eeee0833e722b7320b53be8b5ce3f4e0e4a6e45713a38e6f88f21aba31e3dd973093ef75cd21a40c07fe8f112da8f49a7919b1c0e44c904d20
+  languageName: node
+  linkType: hard
+
+"@json-schema-tools/traverse@npm:^1.7.5, @json-schema-tools/traverse@npm:^1.7.8":
+  version: 1.10.3
+  resolution: "@json-schema-tools/traverse@npm:1.10.3"
+  checksum: 10/690623740d223ea373d8e561dad5c70bf86461bcedc5fc45da01c87bcdf3284bbdbad3006d4a423f8d82e4b2d4580e45f92c0b272f006024fb597d7f01876215
   languageName: node
   linkType: hard
 
@@ -4187,20 +4194,6 @@ __metadata:
     bs58check: "npm:^2.1.2"
     tslib: "npm:^2.3.0"
   checksum: 10/d4cdbefc14f3305543340d509564e1a795eb458327d46aad8665927999150df7e282939dcb714b81fea386061019e3b9f41eedbbb09a59d404355711c33159b2
-  languageName: node
-  linkType: hard
-
-"@keystonehq/metamask-airgapped-keyring@npm:^0.13.1":
-  version: 0.13.1
-  resolution: "@keystonehq/metamask-airgapped-keyring@npm:0.13.1"
-  dependencies:
-    "@ethereumjs/tx": "npm:^4.0.2"
-    "@keystonehq/base-eth-keyring": "npm:^0.14.1"
-    "@keystonehq/bc-ur-registry-eth": "npm:^0.19.1"
-    "@metamask/obs-store": "npm:^7.0.0"
-    rlp: "npm:^2.2.6"
-    uuid: "npm:^8.3.2"
-  checksum: 10/a12870b4527ae91cbad1995700f0710188c6fd9d2c6c2d9b398c25d96c4267fa4812e075a117c05c5edd9f6ada2c525562b5a6df3a0881c938900ff0c88791ee
   languageName: node
   linkType: hard
 
@@ -4613,9 +4606,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask-institutional/custody-keyring@npm:^2.1.0":
-  version: 2.1.0
-  resolution: "@metamask-institutional/custody-keyring@npm:2.1.0"
+"@metamask-institutional/custody-keyring@npm:^2.1.0, @metamask-institutional/custody-keyring@npm:^2.1.1":
+  version: 2.1.1
+  resolution: "@metamask-institutional/custody-keyring@npm:2.1.1"
   dependencies:
     "@ethereumjs/tx": "npm:^4.1.1"
     "@ethereumjs/util": "npm:^8.0.5"
@@ -4625,7 +4618,7 @@ __metadata:
     "@metamask/obs-store": "npm:^9.0.0"
     crypto: "npm:^1.0.1"
     lodash.clonedeep: "npm:^4.5.0"
-  checksum: 10/78421e38fed4ad88412593a307fc13f220b0e5a83dee76de0032c835a7896bf23bb76030e4bb7d69bfa604db7a31faa6312ac64b05cc135d8afb723fb3660920
+  checksum: 10/c2c20c126ac41f9cf1bbed2f4059046c247352cd1afe68ed6a76ab28eece0eb5a1c30ce46eaf459e3c240dd39c529e458a0a91715ea4953f087bc335709201b6
   languageName: node
   linkType: hard
 
@@ -5004,13 +4997,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/design-tokens@npm:^1.12.0":
-  version: 1.13.0
-  resolution: "@metamask/design-tokens@npm:1.13.0"
-  checksum: 10/a76d10ad3ad6f1f30bf3b8e749e70c71587fd543fafd355b6185fb191994547acb63408c6d5ac4a53c4aa1f9e4022cd63ad83bd98cbac79f21f5bc7df15e63ab
-  languageName: node
-  linkType: hard
-
 "@metamask/design-tokens@npm:^4.0.0":
   version: 4.0.0
   resolution: "@metamask/design-tokens@npm:4.0.0"
@@ -5172,6 +5158,19 @@ __metadata:
     async-mutex: "npm:^0.2.6"
     pify: "npm:^5.0.0"
   checksum: 10/8ee6a6791f8e84d590192ade2c8b1ddaaa81fd4eb64b042facaafd8fbe69f29df3a3e2c79dfb0da0839f72e53832e73ac8b72dbedb94a919fe9afcdad51a2c2a
+  languageName: node
+  linkType: hard
+
+"@metamask/eth-json-rpc-filters@npm:^8.0.0":
+  version: 8.0.0
+  resolution: "@metamask/eth-json-rpc-filters@npm:8.0.0"
+  dependencies:
+    "@metamask/eth-query": "npm:^4.0.0"
+    "@metamask/json-rpc-engine": "npm:^9.0.0"
+    "@metamask/safe-event-emitter": "npm:^3.0.0"
+    async-mutex: "npm:^0.5.0"
+    pify: "npm:^5.0.0"
+  checksum: 10/2a0a081abe3ed152e4c74116a486dae49a37cdda1ea1d4739825fc888be40518623a69593034b7da2489204af968060670b00d1e2299ff721b554c615b09127b
   languageName: node
   linkType: hard
 
@@ -5847,13 +5846,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/notification-services-controller@npm:^0.7.0":
-  version: 0.7.0
-  resolution: "@metamask/notification-services-controller@npm:0.7.0"
+"@metamask/notification-services-controller@npm:^0.11.0":
+  version: 0.11.0
+  resolution: "@metamask/notification-services-controller@npm:0.11.0"
   dependencies:
     "@contentful/rich-text-html-renderer": "npm:^16.5.2"
     "@metamask/base-controller": "npm:^7.0.1"
     "@metamask/controller-utils": "npm:^11.3.0"
+    "@metamask/utils": "npm:^9.1.0"
     bignumber.js: "npm:^4.1.0"
     firebase: "npm:^10.11.0"
     loglevel: "npm:^1.8.1"
@@ -5861,7 +5861,7 @@ __metadata:
   peerDependencies:
     "@metamask/keyring-controller": ^17.0.0
     "@metamask/profile-sync-controller": ^0.0.0
-  checksum: 10/1fc72086686aeef4c72d9eb7726d086a147a4079c178a6de23269fa39a3d861c54fe6dfe79bd9b5c8bf9afa278371408092bd37f3e8f814e65c7aca3573655f5
+  checksum: 10/d6f7498d74794b7bd586700729b003dddcce2c19fdf0befcf4786fd9661e7ee960164112c3a347077a2a346e20fe94ec14afcdb76eaa49c58838de5a6985401c
   languageName: node
   linkType: hard
 
@@ -5882,16 +5882,6 @@ __metadata:
     once: "npm:^1.4.0"
     readable-stream: "npm:^3.6.2"
   checksum: 10/54baea752a3ac7c2742c376512e00d4902d383e9da8787574d3b21eb0081523309e24e3915a98f3ae0341d65712b6832d2eb7eeb862f4ef0da1ead52dcde5387
-  languageName: node
-  linkType: hard
-
-"@metamask/obs-store@npm:^7.0.0":
-  version: 7.0.0
-  resolution: "@metamask/obs-store@npm:7.0.0"
-  dependencies:
-    "@metamask/safe-event-emitter": "npm:^2.0.0"
-    through2: "npm:^2.0.3"
-  checksum: 10/e1497140384de0ac689adbe7286df43e843c5d73fd8ba7080af2faab3de73e823b46b8214be1c839d9e9e5f86fb40df50a26e93bae936329daeaedae5e523323
   languageName: node
   linkType: hard
 
@@ -5951,18 +5941,18 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/phishing-warning@npm:^4.0.0":
-  version: 4.0.0
-  resolution: "@metamask/phishing-warning@npm:4.0.0"
+"@metamask/phishing-warning@npm:^4.1.0":
+  version: 4.1.0
+  resolution: "@metamask/phishing-warning@npm:4.1.0"
   dependencies:
-    "@metamask/design-tokens": "npm:^1.12.0"
+    "@metamask/design-tokens": "npm:^4.0.0"
     "@metamask/object-multiplex": "npm:^2.0.0"
     "@metamask/post-message-stream": "npm:^8.0.0"
     eth-phishing-detect: "npm:^1.2.0"
     punycode: "npm:^2.3.1"
     readable-stream: "npm:^3.6.2"
     ses: "npm:^1.1.0"
-  checksum: 10/0f85b92880d47a5d9810605574231b5a4b4ab7ac4192d9799c1c95187efd4da3ca5ea7412aeb6aa00eb0aaac3aaad987d28868fdaad1347e24e0d72ce95c6524
+  checksum: 10/6bb1ef9dc2f9dcbcfd3472855dca579e6f7b155082e95bf16259ef734ca8baeb0cd5ab3f06b583c7fc73393e4b03e5ec3937130e19aa98e9a003378c0179a2ed
   languageName: node
   linkType: hard
 
@@ -6156,13 +6146,6 @@ __metadata:
     "@metamask/utils": "npm:^9.0.0"
     fast-safe-stringify: "npm:^2.0.6"
   checksum: 10/f25e2a5506d4d0d6193c88aef8f035ec189a1177f8aee8fa01c9a33d73b1536ca7b5eea2fb33a477768bbd2abaf16529e68f0b3cf714387e5d6c9178225354fd
-  languageName: node
-  linkType: hard
-
-"@metamask/safe-event-emitter@npm:^2.0.0":
-  version: 2.0.0
-  resolution: "@metamask/safe-event-emitter@npm:2.0.0"
-  checksum: 10/3e4f00c64aa1ddf9b9ae5c2337fb8cee359b6c481ded0ec21ef70610960c51cdcc4a9b569de334dcd7cb1fe445cafd298360907c1e211e244c5990b55246f350
   languageName: node
   linkType: hard
 
@@ -25965,7 +25948,7 @@ __metadata:
     "@fortawesome/fontawesome-free": "npm:^5.13.0"
     "@jest/globals": "npm:^29.7.0"
     "@keystonehq/bc-ur-registry-eth": "npm:^0.19.1"
-    "@keystonehq/metamask-airgapped-keyring": "npm:^0.13.1"
+    "@keystonehq/metamask-airgapped-keyring": "npm:^0.14.1"
     "@lavamoat/allow-scripts": "npm:^3.0.4"
     "@lavamoat/lavadome-core": "npm:0.0.10"
     "@lavamoat/lavadome-react": "npm:0.0.17"
@@ -25975,7 +25958,7 @@ __metadata:
     "@lydell/node-pty": "npm:^1.0.1"
     "@material-ui/core": "npm:^4.11.0"
     "@metamask-institutional/custody-controller": "npm:^0.3.0"
-    "@metamask-institutional/custody-keyring": "npm:^2.1.0"
+    "@metamask-institutional/custody-keyring": "npm:^2.1.1"
     "@metamask-institutional/extension": "npm:^0.3.28"
     "@metamask-institutional/institutional-features": "npm:^1.3.6"
     "@metamask-institutional/portfolio-dashboard": "npm:^1.4.1"
@@ -26007,7 +25990,7 @@ __metadata:
     "@metamask/eslint-config-nodejs": "npm:^9.0.0"
     "@metamask/eslint-config-typescript": "npm:^9.0.1"
     "@metamask/eslint-plugin-design-tokens": "npm:^1.1.0"
-    "@metamask/eth-json-rpc-filters": "npm:^7.0.0"
+    "@metamask/eth-json-rpc-filters": "npm:^8.0.0"
     "@metamask/eth-json-rpc-middleware": "patch:@metamask/eth-json-rpc-middleware@npm%3A14.0.1#~/.yarn/patches/@metamask-eth-json-rpc-middleware-npm-14.0.1-b6c2ccbe8c.patch"
     "@metamask/eth-ledger-bridge-keyring": "npm:^3.0.1"
     "@metamask/eth-query": "npm:^4.0.0"
@@ -26034,13 +26017,13 @@ __metadata:
     "@metamask/name-controller": "npm:^8.0.0"
     "@metamask/network-controller": "patch:@metamask/network-controller@npm%3A21.0.0#~/.yarn/patches/@metamask-network-controller-npm-21.0.0-559aa8e395.patch"
     "@metamask/notification-controller": "npm:^6.0.0"
-    "@metamask/notification-services-controller": "npm:^0.7.0"
+    "@metamask/notification-services-controller": "npm:^0.11.0"
     "@metamask/object-multiplex": "npm:^2.0.0"
     "@metamask/obs-store": "npm:^9.0.0"
     "@metamask/permission-controller": "npm:^11.0.0"
     "@metamask/permission-log-controller": "npm:^2.0.1"
     "@metamask/phishing-controller": "npm:^12.0.1"
-    "@metamask/phishing-warning": "npm:^4.0.0"
+    "@metamask/phishing-warning": "npm:^4.1.0"
     "@metamask/post-message-stream": "npm:^8.0.0"
     "@metamask/ppom-validator": "npm:0.35.1"
     "@metamask/preferences-controller": "npm:^13.0.2"
