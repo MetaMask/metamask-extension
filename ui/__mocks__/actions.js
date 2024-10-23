@@ -10,6 +10,7 @@ const {
 
 const ERC20_TOKEN_1_MOCK = '0x2260fac5e5542a773aa44fbcfedf7c193bc2c599'; // WBTC
 const ERC20_TOKEN_2_MOCK = '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48'; // USDC
+const ERC721_MOCK = '0xc0ffee254729296a45a3885639ac7e10f9d54979';
 
 const TOKEN_DETAILS_MOCK = {
   [ERC20_TOKEN_1_MOCK]: {
@@ -23,6 +24,10 @@ const TOKEN_DETAILS_MOCK = {
     standard: 'ERC20',
     decimals: 6,
     name: 'USD Coin',
+  },
+  [ERC721_MOCK]: {
+    address: ERC721_MOCK,
+    standard: 'ERC721',
   },
 };
 
@@ -58,5 +63,18 @@ module.exports = {
     }
 
     return undefined;
+  },
+
+  getNFTContractInfo: async (_address) => {
+    return {
+      collections: [
+        {
+          name: 'Everything I Own',
+          image:
+            'https://img.reservoir.tools/images/v2/mainnet/z9JRSpLYGu7%2BCZoKWtAuAN%2F%2FMfWcOGcwki5%2FxXYtCb4OfGsOPvxN1LZHZ5%2BcuQGwJciTvgr58ThRjooWLMWehc1nSTXtbfFJ1TNtL%2FeIjglkPKsEG%2Fbem0E%2B3yo7tAUqlZ1ou0SMzGOfq%2FG1BHwIpgHQ524PRAlaynVkDcp8y58kALOPTQSDN1tgaqkZD%2FZiNBEaYq6Bp9XH8Vm8tMXsaQ%3D%3D?width=250',
+          isSpam: false,
+        },
+      ],
+    };
   },
 };
