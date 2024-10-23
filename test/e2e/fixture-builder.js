@@ -57,6 +57,7 @@ function onboardingFixture() {
         }),
         providerConfig: { id: 'networkConfigurationId' },
       },
+      NotificationServicesController: {},
       PreferencesController: {
         advancedGasFee: {},
         currentLocale: 'en',
@@ -138,6 +139,7 @@ function onboardingFixture() {
           },
         },
       },
+      UserStorageController: {},
       TokensController: {
         allDetectedTokens: {},
         allIgnoredTokens: {},
