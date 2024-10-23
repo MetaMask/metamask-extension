@@ -87,8 +87,7 @@ describe('Address Book', function () {
 
         await driver.clickElement('.address-book__link');
 
-        const inputUsername = await driver.findElement('#nickname');
-        await inputUsername.fill('#nickname', 'Test User');
+        await driver.fill('#nickname','Test User');
 
         const inputAddress = await driver.findElement(
           'input[placeholder="Enter public address (0x) or domain name"]',
