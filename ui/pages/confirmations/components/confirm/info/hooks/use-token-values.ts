@@ -3,10 +3,13 @@ import { isHexString } from '@metamask/utils';
 import { BigNumber } from 'bignumber.js';
 import { isBoolean } from 'lodash';
 import { useMemo, useState } from 'react';
+import { useSelector } from 'react-redux';
 import { Numeric } from '../../../../../../../shared/modules/Numeric';
 import useTokenExchangeRate from '../../../../../../components/app/currency-input/hooks/useTokenExchangeRate';
+import { getIntlLocale } from '../../../../../../ducks/locale/locale';
 import { useFiatFormatter } from '../../../../../../hooks/useFiatFormatter';
 import { useAssetDetails } from '../../../../hooks/useAssetDetails';
+import { formatAmount } from '../../../simulation-details/formatAmount';
 import { useDecodedTransactionData } from './useDecodedTransactionData';
 
 export const useTokenValues = (transactionMeta: TransactionMeta) => {
@@ -56,7 +59,11 @@ export const useTokenValues = (transactionMeta: TransactionMeta) => {
   const fiatDisplayValue =
     fiatValue && fiatFormatter(fiatValue, { shorten: true });
 
-  const displayTransferValue = roundDisplayValue(decodedTransferValue);
+  const locale = useSelector(getIntlLocale);
+  const displayTransferValue = formatAmount(
+    locale,
+    new BigNumber(decodedTransferValue),
+  );
 
   return {
     decodedTransferValue: toNonScientificString(decodedTransferValue),
@@ -65,31 +72,6 @@ export const useTokenValues = (transactionMeta: TransactionMeta) => {
     pending,
   };
 };
-
-export function roundDisplayValue(decodedTransferValue: number): string {
-  switch (true) {
-    case decodedTransferValue === 0:
-      return '0';
-    case decodedTransferValue < 0.000001:
-      return '<0.000001';
-    case decodedTransferValue < 0.001:
-      return parseFloat(decodedTransferValue.toFixed(6)).toString();
-    case decodedTransferValue < 0.01:
-      return parseFloat(decodedTransferValue.toFixed(5)).toString();
-    case decodedTransferValue < 0.1:
-      return parseFloat(decodedTransferValue.toFixed(4)).toString();
-    case decodedTransferValue < 10:
-      return parseFloat(decodedTransferValue.toFixed(3)).toString();
-    case decodedTransferValue < 100:
-      return parseFloat(decodedTransferValue.toFixed(2)).toString();
-    case decodedTransferValue < 1000:
-      return parseFloat(decodedTransferValue.toFixed(1)).toString();
-    case decodedTransferValue < 10000:
-      return parseFloat(decodedTransferValue.toFixed(0)).toString();
-    default:
-      return parseFloat(decodedTransferValue.toFixed(0)).toString();
-  }
-}
 
 export function toNonScientificString(num: number): string {
   if (num >= 10e-18) {
