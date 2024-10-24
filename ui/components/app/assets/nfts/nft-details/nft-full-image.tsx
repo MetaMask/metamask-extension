@@ -20,7 +20,7 @@ import {
 } from '../../../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import { ASSET_ROUTE } from '../../../../../helpers/constants/routes';
-import { getCurrentChainId } from '../../../../../selectors';
+import { getMultichainCurrentChainId } from '../../../../../selectors/multichain';
 
 export default function NftFullImage() {
   const t = useI18nContext();
@@ -33,7 +33,7 @@ export default function NftFullImage() {
   );
 
   // TODO: Remove this when NFTs have a native chainId on their objects
-  const chainId = useSelector(getCurrentChainId);
+  const chainId = useSelector(getMultichainCurrentChainId);
 
   const history = useHistory();
 

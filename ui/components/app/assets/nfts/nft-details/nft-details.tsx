@@ -20,7 +20,6 @@ import {
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import { shortenAddress } from '../../../../../helpers/utils/util';
 import {
-  getCurrentChainId,
   getCurrentCurrency,
   getCurrentNetwork,
 } from '../../../../../selectors';
@@ -70,6 +69,7 @@ import { Numeric } from '../../../../../../shared/modules/Numeric';
 // TODO: Remove restricted import
 // eslint-disable-next-line import/no-restricted-paths
 import { addUrlProtocolPrefix } from '../../../../../../app/scripts/lib/util';
+import { getMultichainCurrentChainId } from '../../../../../selectors/multichain';
 import NftDetailInformationRow from './nft-detail-information-row';
 import NftDetailInformationFrame from './nft-detail-information-frame';
 import NftDetailDescription from './nft-detail-description';
@@ -94,7 +94,7 @@ export default function NftDetails({ nft }: { nft: Nft }) {
   const t = useI18nContext();
   const history = useHistory();
   const dispatch = useDispatch();
-  const chainId = useSelector(getCurrentChainId);
+  const chainId = useSelector(getMultichainCurrentChainId);
   const currentNetwork = useSelector(getCurrentNetwork);
   const trackEvent = useContext(MetaMetricsContext);
   const currency = useSelector(getCurrentCurrency);

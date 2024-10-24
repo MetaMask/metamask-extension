@@ -8,8 +8,8 @@ import {
   getNfts,
   getTokens,
 } from '../../ducks/metamask/metamask';
-import { getCurrentChainId } from '../../selectors';
 import { DEFAULT_ROUTE } from '../../helpers/constants/routes';
+import { getMultichainCurrentChainId } from '../../selectors/multichain';
 
 import NativeAsset from './components/native-asset';
 import TokenAsset from './components/token-asset';
@@ -21,7 +21,7 @@ const Asset = () => {
   const nfts = useSelector(getNfts);
 
   // TODO: Remove this when NFTs have a native chainId on their objects
-  const chainId = useSelector(getCurrentChainId);
+  const chainId = useSelector(getMultichainCurrentChainId);
 
   const { asset, id } = useParams<{ asset: string; id: string }>();
 
