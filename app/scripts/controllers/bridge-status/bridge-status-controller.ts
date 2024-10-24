@@ -73,11 +73,45 @@ export default class BridgeStatusController extends StaticIntervalPollingControl
   startPollingForBridgeTxStatus = async (
     fetchBridgeTxStatusArgs: FetchBridgeTxStatusArgs,
   ) => {
-    const { statusRequest } = fetchBridgeTxStatusArgs;
-
+    const {
+      statusRequest,
+      quoteResponse,
+      startTime,
+      slippagePercentage,
+      completionTime,
+      pricingData,
+      initialDestAssetBalance,
+      targetContractAddress,
+    } = fetchBridgeTxStatusArgs;
     const hexSourceChainId = new Numeric(statusRequest.srcChainId, 10)
       .toPrefixedHexString()
       .toLowerCase() as `0x${string}`;
+
+    const { bridgeStatusState } = this.state;
+    const { address: account } = this.#getSelectedAccount();
+
+    // Write all non-status fields to state so we can reference the quote in Activity list without the Bridge API
+    // We know it's in progress but not the exact status yet
+    this.update((_state) => {
+      _state.bridgeStatusState = {
+        ...bridgeStatusState,
+        txHistory: {
+          ...bridgeStatusState.txHistory,
+          [statusRequest.srcTxHash]: {
+            quote: quoteResponse.quote,
+            startTime,
+            estimatedProcessingTimeInSeconds:
+              quoteResponse.estimatedProcessingTimeInSeconds,
+            slippagePercentage,
+            completionTime,
+            pricingData,
+            initialDestAssetBalance,
+            targetContractAddress,
+            account,
+          },
+        },
+      };
+    });
 
     const networkClientId = this.messagingSystem.call(
       'NetworkController:findNetworkClientIdByChainId',
@@ -115,32 +149,6 @@ export default class BridgeStatusController extends StaticIntervalPollingControl
     const { bridgeStatusState } = this.state;
     const { address: account } = this.#getSelectedAccount();
 
-    const commonFields = {
-      quote: quoteResponse.quote,
-      startTime,
-      estimatedProcessingTimeInSeconds:
-        quoteResponse.estimatedProcessingTimeInSeconds,
-      slippagePercentage,
-      completionTime,
-      pricingData,
-      initialDestAssetBalance,
-      targetContractAddress,
-      account,
-    };
-
-    // Write all non-status fields to state so we can reference the quote in Activity list
-    // We know it's in progress but not the exact status without talking to Bridge API
-    this.update((_state) => {
-      _state.bridgeStatusState = {
-        ...bridgeStatusState,
-        txHistory: {
-          ...bridgeStatusState.txHistory,
-          [statusRequest.srcTxHash]: {
-            ...commonFields,
-          },
-        },
-      };
-    });
     try {
       // We try here because we receive 500 errors from Bridge API if we try to fetch immediately after submitting the source tx
       // Oddly mostly happens on Optimism, never on Arbitrum. By the 2nd fetch, the Bridge API responds properly.
@@ -156,12 +164,15 @@ export default class BridgeStatusController extends StaticIntervalPollingControl
       // First stab at this will not stop polling when you are on a different account
 
       this.update((_state) => {
+        const txHistoryItem =
+          _state.bridgeStatusState.txHistory[statusRequest.srcTxHash];
+
         _state.bridgeStatusState = {
           ...bridgeStatusState,
           txHistory: {
             ...bridgeStatusState.txHistory,
             [statusRequest.srcTxHash]: {
-              ...commonFields,
+              ...txHistoryItem,
               status,
             },
           },
