@@ -1,4 +1,4 @@
-import React, { createContext } from 'react';
+import React, { createContext, useState } from 'react';
 import Tooltip from '../../../../ui/tooltip/tooltip';
 import {
   Box,
@@ -40,6 +40,7 @@ export type ConfirmInfoRowProps = {
   copyEnabled?: boolean;
   copyText?: string;
   'data-testid'?: string;
+  collapsed?: boolean;
 };
 
 const BACKGROUND_COLORS = {
@@ -79,71 +80,100 @@ export const ConfirmInfoRow: React.FC<ConfirmInfoRowProps> = ({
   labelChildren,
   color,
   copyEnabled = false,
-  copyText = undefined,
+  copyText,
   'data-testid': dataTestId,
-}) => (
-  <ConfirmInfoRowContext.Provider value={{ variant }}>
-    <Box
-      data-testid={dataTestId}
-      className="confirm-info-row"
-      display={Display.Flex}
-      flexDirection={FlexDirection.Row}
-      justifyContent={JustifyContent.spaceBetween}
-      flexWrap={FlexWrap.Wrap}
-      alignItems={AlignItems.center}
-      backgroundColor={BACKGROUND_COLORS[variant]}
-      borderRadius={BorderRadius.LG}
-      marginTop={2}
-      marginBottom={2}
-      paddingLeft={2}
-      paddingRight={copyEnabled ? 5 : 2}
-      color={TEXT_COLORS[variant] as TextColor}
-      style={{
-        overflowWrap: OverflowWrap.Anywhere,
-        minHeight: '24px',
-        position: 'relative',
-        ...style,
-      }}
-    >
-      {copyEnabled && <CopyIcon copyText={copyText ?? ''} />}
+  collapsed,
+}) => {
+  const [expanded, setExpanded] = useState(!collapsed);
+
+  const isCollapsible = collapsed !== undefined;
+
+  return (
+    <ConfirmInfoRowContext.Provider value={{ variant }}>
       <Box
+        data-testid={dataTestId}
+        className="confirm-info-row"
         display={Display.Flex}
-        flexDirection={FlexDirection.Row}
-        justifyContent={JustifyContent.center}
-        alignItems={AlignItems.flexStart}
-        color={color}
+        flexDirection={isCollapsible ? FlexDirection.Column : FlexDirection.Row}
+        justifyContent={JustifyContent.spaceBetween}
+        flexWrap={FlexWrap.Wrap}
+        alignItems={isCollapsible ? AlignItems.flexStart : AlignItems.center}
+        backgroundColor={BACKGROUND_COLORS[variant]}
+        borderRadius={BorderRadius.LG}
+        marginTop={2}
+        marginBottom={2}
+        paddingLeft={2}
+        paddingRight={copyEnabled ? 5 : 2}
+        color={TEXT_COLORS[variant] as TextColor}
+        style={{
+          overflowWrap: OverflowWrap.Anywhere,
+          minHeight: '24px',
+          position: 'relative',
+          ...style,
+        }}
       >
-        <Box display={Display.Flex} alignItems={AlignItems.center}>
-          <Text variant={TextVariant.bodyMdMedium} color={TextColor.inherit}>
-            {label}
-          </Text>
-          {labelChildren}
-          {!labelChildren && tooltip?.length && (
-            <Tooltip
-              position="bottom"
-              title={tooltip}
-              style={{ display: 'flex' }}
-            >
-              <Icon
-                name={TOOLTIP_ICONS[variant]}
-                marginLeft={1}
-                color={TOOLTIP_ICON_COLORS[variant] as unknown as IconColor}
-                size={IconSize.Sm}
-                {...(dataTestId
-                  ? { 'data-testid': `${dataTestId}-tooltip` }
-                  : {})}
-              />
-            </Tooltip>
-          )}
+        {copyEnabled && (
+          <CopyIcon
+            copyText={copyText ?? ''}
+            style={{ right: isCollapsible ? 32 : 0, top: 4 }}
+            color={IconColor.iconMuted}
+          />
+        )}
+        {isCollapsible && (
+          <Icon
+            color={IconColor.iconMuted}
+            name={expanded ? IconName.Collapse : IconName.Expand}
+            size={IconSize.Sm}
+            style={{
+              cursor: 'pointer',
+              position: 'absolute',
+              right: 8,
+              top: 4,
+            }}
+            onClick={() => setExpanded(!expanded)}
+            data-testid="sectionCollapseButton"
+          />
+        )}
+        <Box
+          display={Display.Flex}
+          flexDirection={FlexDirection.Row}
+          justifyContent={JustifyContent.center}
+          alignItems={AlignItems.flexStart}
+          color={color}
+        >
+          <Box display={Display.Flex} alignItems={AlignItems.center}>
+            <Text variant={TextVariant.bodyMdMedium} color={TextColor.inherit}>
+              {label}
+            </Text>
+            {labelChildren}
+            {!labelChildren && tooltip?.length && (
+              <Tooltip
+                position="bottom"
+                title={tooltip}
+                style={{ display: 'flex' }}
+              >
+                <Icon
+                  name={TOOLTIP_ICONS[variant]}
+                  marginLeft={1}
+                  color={TOOLTIP_ICON_COLORS[variant] as unknown as IconColor}
+                  size={IconSize.Sm}
+                  {...(dataTestId
+                    ? { 'data-testid': `${dataTestId}-tooltip` }
+                    : {})}
+                />
+              </Tooltip>
+            )}
+          </Box>
         </Box>
+        {expanded &&
+          (typeof children === 'string' ? (
+            <Text marginRight={copyEnabled ? 3 : 0} color={TextColor.inherit}>
+              {children}
+            </Text>
+          ) : (
+            children
+          ))}
       </Box>
-      {typeof children === 'string' ? (
-        <Text marginRight={copyEnabled ? 3 : 0} color={TextColor.inherit}>
-          {children}
-        </Text>
-      ) : (
-        children
-      )}
-    </Box>
-  </ConfirmInfoRowContext.Provider>
-);
+    </ConfirmInfoRowContext.Provider>
+  );
+};

@@ -16,12 +16,12 @@ import AccountListPage from '../../../page-objects/pages/account-list-page';
 import { accountsSyncMockResponse } from './mockData';
 import { IS_ACCOUNT_SYNCING_ENABLED } from './helpers';
 
-describe('Account syncing - Onboarding @no-mmi', function () {
+describe('Account syncing - Rename Accounts @no-mmi', function () {
   if (!IS_ACCOUNT_SYNCING_ENABLED) {
     return;
   }
   describe('from inside MetaMask', function () {
-    it('retrieves all previously synced accounts', async function () {
+    it('syncs renamed account names', async function () {
       const userStorageMockttpController = new UserStorageMockttpController();
 
       await withFixtures(
@@ -33,6 +33,7 @@ describe('Account syncing - Onboarding @no-mmi', function () {
             userStorageMockttpController.setupPath('accounts', server, {
               getResponse: accountsSyncMockResponse,
             });
+
             return mockNotificationServices(
               server,
               userStorageMockttpController,
@@ -58,6 +59,50 @@ describe('Account syncing - Onboarding @no-mmi', function () {
           );
           await accountListPage.check_accountDisplayedInAccountList(
             'My First Synced Account',
+          );
+          await accountListPage.check_accountDisplayedInAccountList(
+            'My Second Synced Account',
+          );
+          await accountListPage.openAccountOptionsMenu();
+          await accountListPage.changeAccountLabel('My Renamed First Account');
+        },
+      );
+
+      await withFixtures(
+        {
+          fixtures: new FixtureBuilder({ onboarding: true }).build(),
+          ganacheOptions: defaultGanacheOptions,
+          title: this.test?.fullTitle(),
+          testSpecificMock: (server: Mockttp) => {
+            userStorageMockttpController.setupPath('accounts', server);
+            return mockNotificationServices(
+              server,
+              userStorageMockttpController,
+            );
+          },
+        },
+        async ({ driver }) => {
+          await driver.navigate();
+          await completeImportSRPOnboardingFlow(
+            driver,
+            NOTIFICATIONS_TEAM_SEED_PHRASE,
+            NOTIFICATIONS_TEAM_PASSWORD,
+          );
+
+          const header = new HeaderNavbar(driver);
+          await header.check_pageIsLoaded();
+          await header.openAccountMenu();
+
+          const accountListPage = new AccountListPage(driver);
+          await accountListPage.check_pageIsLoaded();
+          await accountListPage.check_numberOfAvailableAccounts(
+            accountsSyncMockResponse.length,
+          );
+          await accountListPage.check_accountIsNotDisplayedInAccountList(
+            'My First Synced Account',
+          );
+          await accountListPage.check_accountDisplayedInAccountList(
+            'My Renamed First Account',
           );
           await accountListPage.check_accountDisplayedInAccountList(
             'My Second Synced Account',
