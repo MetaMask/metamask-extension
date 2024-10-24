@@ -949,13 +949,21 @@ const clickNestedButton = async (driver, tabName) => {
   }
 };
 
+const fillENSInput = async (driver, recipientAddress) => {
+  await driver.waitForSelector('[data-testid="ens-input"]');
+  await driver.typeCharacterByCharacter(
+    '[data-testid="ens-input"]',
+    recipientAddress,
+  );
+};
+
 const sendScreenToConfirmScreen = async (
   driver,
   recipientAddress,
   quantity,
 ) => {
   await openActionMenuAndStartSendFlow(driver);
-  await driver.fill('[data-testid="ens-input"]', recipientAddress);
+  await fillENSInput(driver, recipientAddress);
   await driver.fill('.unit-input__input', quantity);
 
   // check if element exists and click it
@@ -974,7 +982,7 @@ const sendTransaction = async (
   isAsyncFlow = false,
 ) => {
   await openActionMenuAndStartSendFlow(driver);
-  await driver.fill('[data-testid="ens-input"]', recipientAddress);
+  await fillENSInput(driver, recipientAddress);
   await driver.fill('.unit-input__input', quantity);
 
   await driver.clickElement({
@@ -1368,6 +1376,7 @@ module.exports = {
   multipleGanacheOptionsForType2Transactions,
   sendTransaction,
   sendScreenToConfirmScreen,
+  fillENSInput,
   findAnotherAccountFromAccountList,
   unlockWallet,
   logInWithBalanceValidation,

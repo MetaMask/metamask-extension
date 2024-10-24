@@ -4,6 +4,7 @@ const {
   unlockWallet,
   switchToNotificationWindow,
   WINDOW_TITLES,
+  fillENSInput,
 } = require('../helpers');
 const FixtureBuilder = require('../fixture-builder');
 const { TEST_SNAPS_WEBSITE_URL } = require('./enums');
@@ -78,11 +79,7 @@ describe('Test Snap Name Lookup', function () {
         await driver.clickElement('[data-testid="eth-overview-send"]');
 
         // wait for input field and enter name to lookup
-        await driver.waitForSelector('[data-testid="ens-input"]');
-        await driver.pasteIntoField(
-          '[data-testid="ens-input"]',
-          'metamask.domain',
-        );
+        await fillENSInput(driver, 'metamask.domain');
 
         // verify name output from snap
         await driver.waitForSelector({

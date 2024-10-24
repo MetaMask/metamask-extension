@@ -720,6 +720,29 @@ class Driver {
   }
 
   /**
+   * Types the given input into the specified element, character by character.
+   *
+   * @param {string | object} rawLocator - Element locator
+   * @param {string} input - The value to type into the element.
+   * @returns {Promise<WebElement>} Promise resolving to the filled element
+   */
+  async typeCharacterByCharacter(rawLocator, input) {
+    const element = await this.findElement(rawLocator);
+    await this.driver.wait(until.elementIsVisible(element));
+
+    // Clear the input field first
+    await element.sendKeys(
+      Key.chord(this.Key.MODIFIER, 'a', this.Key.BACK_SPACE),
+    );
+
+    for (let i = 0; i < input.length; i++) {
+      await element.sendKeys(input[i]);
+    }
+
+    return element;
+  }
+
+  /**
    * Simulates holding the mouse button down on the given web element.
    *
    * @param {string | object} rawLocator - Element locator

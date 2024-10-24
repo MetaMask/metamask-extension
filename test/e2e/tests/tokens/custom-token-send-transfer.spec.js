@@ -8,6 +8,7 @@ const {
   editGasFeeForm,
   WINDOW_TITLES,
   clickNestedButton,
+  fillENSInput,
 } = require('../../helpers');
 const FixtureBuilder = require('../../fixture-builder');
 const { SMART_CONTRACTS } = require('../../seeder/smart-contracts');
@@ -35,10 +36,7 @@ describe('Transfer custom tokens @no-mmi', function () {
         });
         await driver.delay(500);
         await driver.clickElement('[data-testid="eth-overview-send"]');
-        await driver.fill(
-          'input[placeholder="Enter public address (0x) or domain name"]',
-          recipientAddress,
-        );
+        await fillENSInput(driver, recipientAddress);
         await driver.waitForSelector({
           css: '.ens-input__selected-input__title',
           text: '0x2f318...5C970',
