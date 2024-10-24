@@ -110,20 +110,36 @@ export default function OnboardingWelcome() {
           chainIdsToAdd.includes(network.chainId),
         );
 
-        for (const network of selectedNetworks) {
-          await dispatch(
-            addNetwork({
-              chainId: network.chainId,
-              blockExplorerUrls: network.blockExplorerUrls,
-              defaultRpcEndpointIndex: network.defaultRpcEndpointIndex,
-              defaultBlockExplorerUrlIndex:
-                network.defaultBlockExplorerUrlIndex,
-              name: network.name,
-              nativeCurrency: network.nativeCurrency,
-              rpcEndpoints: network.rpcEndpoints,
+        try {
+          await Promise.all(
+            selectedNetworks.map(async (network) => {
+              const {
+                chainId,
+                blockExplorerUrls,
+                defaultRpcEndpointIndex,
+                defaultBlockExplorerUrlIndex,
+                name,
+                nativeCurrency,
+                rpcEndpoints,
+              } = network;
+
+              await dispatch(
+                addNetwork({
+                  chainId,
+                  blockExplorerUrls,
+                  defaultRpcEndpointIndex,
+                  defaultBlockExplorerUrlIndex,
+                  name,
+                  nativeCurrency,
+                  rpcEndpoints,
+                }),
+              );
+
+              console.info(`Successfully added network: ${name}`);
             }),
           );
-          console.log(`Successfully added network: ${network.name}`);
+        } catch (error) {
+          console.error('Error adding networks:', error);
         }
 
         await dispatch(updateNetworksList(networkOrder));
