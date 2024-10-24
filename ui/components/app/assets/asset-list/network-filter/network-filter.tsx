@@ -43,9 +43,6 @@ const NetworkFilter = ({ handleClose }: SortControlProps) => {
     getShouldHideZeroBalanceTokens,
   );
 
-  const chainIdImgMappingKey =
-    chainId as keyof typeof CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP;
-
   const { totalFiatBalance: selectedAccountBalance } =
     useAccountTotalFiatBalance(selectedAccount, shouldHideZeroBalanceTokens);
 
@@ -87,14 +84,16 @@ const NetworkFilter = ({ handleClose }: SortControlProps) => {
           <Box display={Display.Flex}>
             {Object.values(allNetworks)
               .slice(0, 5) // only show a max of 5 icons overlapping
-              .map((_, index) => {
+              .map((network, index) => {
                 const networkImageUrl =
-                  CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP[chainIdImgMappingKey] ??
-                  undefined;
+                  CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP[
+                    network.chainId as keyof typeof CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP
+                  ];
                 return (
                   <AvatarNetwork
+                    key={network.chainId}
                     name="All"
-                    src={networkImageUrl}
+                    src={networkImageUrl ?? undefined}
                     // overlap the icons
                     style={{
                       marginLeft: index === 0 ? 0 : '-20px',
