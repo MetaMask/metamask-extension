@@ -51,7 +51,7 @@ async function request(endpoint: string, options?: RequestInit) {
     );
   }
 
-  return response.json();
+  return await response.json();
 }
 
 function getUrl(endpoint: string) {

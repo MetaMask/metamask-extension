@@ -13,6 +13,7 @@ const {
   SWAPS_API_V2_BASE_URL,
   TOKEN_API_BASE_URL,
 } = require('../../shared/constants/swaps');
+const { SECURITY_ALERTS_PROD_API_BASE_URL } = require('./tests/ppom/constants');
 const {
   DEFAULT_FEATURE_FLAGS_RESPONSE: BRIDGE_DEFAULT_FEATURE_FLAGS_RESPONSE,
 } = require('./tests/bridge/constants');
@@ -166,6 +167,16 @@ async function setupMocking(
           id: '1675864782845',
           result: '0xa4b1',
         },
+      };
+    });
+
+  await server
+    .forGet(`${SECURITY_ALERTS_PROD_API_BASE_URL}/supportedChains`)
+    .thenCallback(() => {
+      console.log('>>>>> calling mock');
+      return {
+        statusCode: 200,
+        json: ['0x1'],
       };
     });
 
