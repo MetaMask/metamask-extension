@@ -327,7 +327,7 @@ function maybeDetectPhishing(theController) {
       return {};
     },
     {
-      urls: ['<all_urls>'],
+      urls: ['http://*/*', 'https://*/*'],
     },
     isManifestV2 ? ['blocking'] : [],
   );
