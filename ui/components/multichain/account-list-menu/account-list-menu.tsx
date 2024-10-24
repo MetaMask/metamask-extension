@@ -99,7 +99,7 @@ import {
   AccountConnections,
   MergedInternalAccount,
 } from '../../../selectors/selectors.types';
-import { endTrace, TraceName } from '../../../../shared/lib/trace';
+import { trace, endTrace, TraceName } from '../../../../shared/lib/trace';
 import {
   ACCOUNT_WATCHER_NAME,
   ACCOUNT_WATCHER_SNAP_ID,
@@ -313,6 +313,7 @@ export const AccountListMenu = ({
             location: 'Main Menu',
           },
         });
+        trace({ name: TraceName.AccountListItem });
         dispatch(setSelectedAccount(account.address));
       };
     },
