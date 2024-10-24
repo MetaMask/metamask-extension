@@ -122,6 +122,8 @@ const PrepareBridgePage = () => {
     ],
   );
 
+  // TODO if input fields are empty reset bridge state and controller quotes
+
   const debouncedUpdateQuoteRequestInController = useCallback(
     debounce((p: Partial<QuoteRequest>) => {
       dispatch(updateQuoteRequestParams(p));
