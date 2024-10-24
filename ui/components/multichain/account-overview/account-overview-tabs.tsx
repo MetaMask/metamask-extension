@@ -1,4 +1,4 @@
-import React, { useCallback, useContext, useMemo } from 'react';
+import React, { useCallback, useContext, useEffect, useMemo } from 'react';
 import { useHistory } from 'react-router-dom';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { ASSET_ROUTE } from '../../../helpers/constants/routes';
@@ -37,6 +37,7 @@ import {
 ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
 import InstitutionalHomeFooter from '../../../pages/home/institutional/institutional-home-footer';
 ///: END:ONLY_INCLUDE_IF
+import { endTrace, trace, TraceName } from '../../../../shared/lib/trace';
 import { AccountOverviewCommonProps } from './common';
 
 export type AccountOverviewTabsProps = AccountOverviewCommonProps & {
@@ -60,6 +61,10 @@ export const AccountOverviewTabs = ({
   const history = useHistory();
   const t = useI18nContext();
   const trackEvent = useContext(MetaMetricsContext);
+
+  useEffect(() => {
+    endTrace({ name: TraceName.AccountOverviewTab });
+  }, []);
 
   const tabProps = useMemo(
     () => ({
@@ -87,6 +92,7 @@ export const AccountOverviewTabs = ({
         category: MetaMetricsEventCategory.Home,
         event: getEventFromTabName(tabName),
       });
+      trace({ name: TraceName.AccountOverviewTab });
     },
     [onTabClick],
   );
