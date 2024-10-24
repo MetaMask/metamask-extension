@@ -2,11 +2,17 @@ import {
   BlockaidReason,
   BlockaidResultType,
 } from '../../../../shared/constants/security-provider';
+import fetchWithCache from '../../../../shared/lib/fetch-with-cache';
 import {
   getSecurityAlertsAPISupportedChainIds,
   isSecurityAlertsAPIEnabled,
   validateWithSecurityAlertsAPI,
 } from './security-alerts-api';
+
+jest.mock('../../../../shared/lib/fetch-with-cache', () => ({
+  __esModule: true,
+  default: jest.fn(),
+}));
 
 const CHAIN_ID_MOCK = '0x1';
 
@@ -27,6 +33,8 @@ const RESPONSE_MOCK = {
   description: 'Test Description',
 };
 
+const BASE_URL = 'https://example.com';
+
 describe('Security Alerts API', () => {
   const fetchMock = jest.fn();
 
@@ -40,7 +48,7 @@ describe('Security Alerts API', () => {
       json: async () => RESPONSE_MOCK,
     });
 
-    process.env.SECURITY_ALERTS_API_URL = 'https://example.com';
+    process.env.SECURITY_ALERTS_API_URL = BASE_URL;
   });
 
   describe('validateWithSecurityAlertsAPI', () => {
@@ -54,8 +62,14 @@ describe('Security Alerts API', () => {
 
       expect(fetchMock).toHaveBeenCalledTimes(1);
       expect(fetchMock).toHaveBeenCalledWith(
-        `https://example.com/validate/${CHAIN_ID_MOCK}`,
-        expect.any(Object),
+        `${BASE_URL}/validate/${CHAIN_ID_MOCK}`,
+        expect.objectContaining({
+          method: 'POST',
+          body: JSON.stringify(REQUEST_MOCK),
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        }),
       );
     });
 
@@ -89,28 +103,28 @@ describe('Security Alerts API', () => {
   });
 
   describe('getSecurityAlertsAPISupportedChainIds', () => {
-    it('sends GET request', async () => {
+    it('sends GET request with cache', async () => {
       const SUPPORTED_CHAIN_IDS_MOCK = ['0x1', '0x2'];
-      fetchMock.mockResolvedValue({
-        ok: true,
-        json: async () => SUPPORTED_CHAIN_IDS_MOCK,
-      });
+      (fetchWithCache as jest.Mock).mockResolvedValue(SUPPORTED_CHAIN_IDS_MOCK);
+
       const response = await getSecurityAlertsAPISupportedChainIds();
 
       expect(response).toEqual(SUPPORTED_CHAIN_IDS_MOCK);
 
-      expect(fetchMock).toHaveBeenCalledTimes(1);
-      expect(fetchMock).toHaveBeenCalledWith(
-        `https://example.com/supportedChains`,
-        undefined,
-      );
+      expect(fetchWithCache).toHaveBeenCalledTimes(1);
+      expect(fetchWithCache).toHaveBeenCalledWith({
+        cacheOptions: { cacheRefreshTime: 300000 },
+        fetchOptions: { method: 'GET' },
+        functionName: 'getSecurityAlertsAPISupportedChainIds',
+        url: `${BASE_URL}/supportedChains`,
+      });
     });
 
     it('throws an error if response is not ok', async () => {
-      fetchMock.mockResolvedValue({ ok: false, status: 404 });
+      (fetchWithCache as jest.Mock).mockResolvedValue(null);
 
       await expect(getSecurityAlertsAPISupportedChainIds()).rejects.toThrow(
-        'Security alerts API request failed with status: 404',
+        'Security alerts API request failed: No response received',
       );
     });
   });
