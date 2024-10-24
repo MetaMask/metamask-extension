@@ -449,9 +449,9 @@ export const SCROLL_IMAGE_URL = './images/scroll.svg';
 export const NUMBERS_MAINNET_IMAGE_URL = './images/numbers-mainnet.svg';
 export const NUMBERS_TOKEN_IMAGE_URL = './images/numbers-token.png';
 export const SEI_IMAGE_URL = './images/sei.svg';
+export const MINT_IMAGE_URL = './images/mint.svg';
 export const NEAR_IMAGE_URL = './images/near.svg';
 export const APE_TESTNET_IMAGE_URL = './images/ape.svg';
-export const MINT_IMAGE_URL = './images/mint.svg';
 
 export const INFURA_PROVIDER_TYPES = [
   NETWORK_TYPES.MAINNET,
