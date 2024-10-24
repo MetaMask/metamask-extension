@@ -83,9 +83,14 @@ class HeaderNavbar {
     await this.driver.clickElementAndWaitToDisappear(
       `[data-testid="${networkName}"]`,
     );
+    // check the network is correctly selected and the toaster message is displayed
     await this.driver.waitForSelector(
       `${this.switchNetworkDropDownButton}[aria-label="Network Menu ${networkName}"]`,
     );
+    await this.driver.waitForSelector({
+      tag: 'h6',
+      text: `“${networkName}” was successfully added!`,
+    });
   }
 
   /**
