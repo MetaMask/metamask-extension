@@ -313,6 +313,7 @@ const SignatureRequest = ({ txData, warnings }) => {
           messageRootRef={messageRootRef}
           messageIsScrollable={messageIsScrollable}
           primaryType={primaryType}
+          chainId={chainId}
         />
         <Footer
           cancelAction={onCancel}
