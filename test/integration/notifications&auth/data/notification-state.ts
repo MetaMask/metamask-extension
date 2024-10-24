@@ -17,9 +17,9 @@ const notificationsAccountAddress =
 
 export const ethSentNotification = processNotification(
   createMockNotificationEthSent(),
-) as Extract<INotification, { type: TRIGGER_TYPES.ERC20_SENT }>;
+) as Extract<INotification, { type: TRIGGER_TYPES.ETH_SENT }>;
 
-if (ethSentNotification.type === TRIGGER_TYPES.ERC20_SENT) {
+if (ethSentNotification.type === TRIGGER_TYPES.ETH_SENT) {
   ethSentNotification.address = notificationsAccountAddress;
   ethSentNotification.data.from = notificationsAccountAddress;
   ethSentNotification.isRead = true;
@@ -42,16 +42,12 @@ export const getMockedNotificationsState = () => {
     isNotificationServicesEnabled: true,
     isFeatureAnnouncementsEnabled: true,
     notifications: {},
-    metamaskNotificationsReadList: [],
+    metamaskNotificationsReadList: [featureNotification.id],
     metamaskNotificationsList: [featureNotification, ethSentNotification],
     isUpdatingMetamaskNotifications: false,
     isFetchingMetamaskNotifications: false,
     isUpdatingMetamaskNotificationsAccount: [],
     useExternalServices: true,
-    preferences: {
-      ...mockMetaMaskState.preferences,
-      showMultiRpcModal: false,
-    },
     pendingApprovalCount: 0,
     pendingApprovals: {},
   };

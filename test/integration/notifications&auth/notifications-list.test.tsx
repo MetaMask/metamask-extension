@@ -123,7 +123,7 @@ describe('Notifications List', () => {
       expect(sentToElement).toBeInTheDocument();
 
       const addressElement = sentToElement.nextElementSibling;
-      expect(addressElement).toHaveTextContent('0x998c0...2190d');
+      expect(addressElement).toHaveTextContent('0x881D4...D300D');
 
       // Read all button
       expect(
@@ -163,9 +163,8 @@ describe('Notifications List', () => {
       );
 
       expect(metricsEvent.properties).toMatchObject({
-        category: 'Notification Interaction',
-        event: 'Notifications Menu Opened',
-        properties: { unread_count: 2, read_count: 0 },
+        unread_count: 2,
+        read_count: 0,
       });
     });
   });
@@ -178,25 +177,28 @@ describe('Notifications List', () => {
         preloadedState: mockedState,
         backgroundConnection: backgroundConnectionMocked,
       });
-    });
 
-    fireEvent.click(screen.getByTestId('account-options-menu-button'));
+      fireEvent.click(screen.getByTestId('account-options-menu-button'));
 
-    await waitFor(() => {
-      expect(screen.getByTestId('notifications-menu-item')).toBeInTheDocument();
-      fireEvent.click(screen.getByTestId('notifications-menu-item'));
-    });
+      await waitFor(() => {
+        expect(
+          screen.getByTestId('notifications-menu-item'),
+        ).toBeInTheDocument();
+        fireEvent.click(screen.getByTestId('notifications-menu-item'));
+      });
 
-    await waitFor(() => {
-      const notificationsList = screen.getByTestId('notifications-list');
-      expect(notificationsList).toBeInTheDocument();
-      expect(notificationsList.childElementCount).toBe(2);
+      await waitFor(() => {
+        const notificationsList = screen.getByTestId('notifications-list');
+        expect(notificationsList).toBeInTheDocument();
 
-      expect(
-        screen.queryByTestId('notifications-list-read-all-button'),
-      ).not.toBeInTheDocument();
+        expect(notificationsList.childElementCount).toBe(2);
 
-      expect(screen.queryAllByTestId('unread-dot')).toHaveLength(0);
+        expect(
+          screen.queryByTestId('notifications-list-read-all-button'),
+        ).not.toBeInTheDocument();
+
+        expect(screen.queryAllByTestId('unread-dot')).toHaveLength(0);
+      });
     });
   });
 

@@ -158,7 +158,7 @@ describe('Notifications Activation', () => {
     });
   });
 
-  it.only('should successfully send correct metrics when notifications modal is dismissed', async () => {
+  it('should successfully send correct metrics when notifications modal is dismissed', async () => {
     const mockedState = getMockedNotificationsState();
     await act(async () => {
       await integrationTestRender({
