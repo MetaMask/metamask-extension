@@ -43,6 +43,9 @@ const NetworkFilter = ({ handleClose }: SortControlProps) => {
     getShouldHideZeroBalanceTokens,
   );
 
+  const chainIdImgMappingKey =
+    chainId as keyof typeof CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP;
+
   const { totalFiatBalance: selectedAccountBalance } =
     useAccountTotalFiatBalance(selectedAccount, shouldHideZeroBalanceTokens);
 
@@ -77,31 +80,29 @@ const NetworkFilter = ({ handleClose }: SortControlProps) => {
               variant={TextVariant.bodyMdMedium}
               color={TextColor.textDefault}
             >
+              {/* TODO: Should query cross chain account balance */}
               $1,000.00
             </Text>
           </Box>
           <Box display={Display.Flex}>
-            {Object.values(allNetworks).map((network, index) => {
-              if (index >= 5) {
-                return null; // only show a max of 5 icons overlapping
-              }
-              const networkChainId =
-                network.chainId as keyof typeof CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP;
-              return (
-                <AvatarNetwork
-                  name="All"
-                  src={
-                    CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP[networkChainId] ??
-                    undefined
-                  }
-                  // overlap the icons
-                  style={{
-                    marginLeft: index === 0 ? 0 : '-20px',
-                    zIndex: Object.values(allNetworks).length - index,
-                  }}
-                />
-              );
-            })}
+            {Object.values(allNetworks)
+              .slice(0, 5) // only show a max of 5 icons overlapping
+              .map((_, index) => {
+                const networkImageUrl =
+                  CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP[chainIdImgMappingKey] ??
+                  undefined;
+                return (
+                  <AvatarNetwork
+                    name="All"
+                    src={networkImageUrl}
+                    // overlap the icons
+                    style={{
+                      marginLeft: index === 0 ? 0 : '-20px',
+                      zIndex: 5 - index,
+                    }}
+                  />
+                );
+              })}
           </Box>
         </Box>
       </SelectableListItem>
