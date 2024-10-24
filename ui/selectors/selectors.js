@@ -606,11 +606,9 @@ export const getMemoizedFullAddressBook = createDeepEqualSelector(
   (addressBook) => addressBook,
 );
 
-export const getAddressBookByNetwork = createSelector(
+export const getAddressBookByNetwork = createDeepEqualSelector(
   [getMemoizedFullAddressBook, (_state, chainId) => chainId],
   (addressBook, chainId) => {
-    console.log(addressBook);
-    console.log('chainId', chainId);
     if (!addressBook[chainId]) {
       return [];
     }
@@ -618,29 +616,16 @@ export const getAddressBookByNetwork = createSelector(
   },
 );
 
-export const getMemoizedAddressBookByNetwork = createDeepEqualSelector(
-  [getAddressBookByNetwork],
-  (addressBook) => addressBook,
-);
-
-export const getAddressBookEntryByNetwork = createSelector(
+export const getAddressBookEntryByNetwork = createDeepEqualSelector(
   [
-    (state, _address, chainId) =>
-      getMemoizedAddressBookByNetwork(state, chainId),
+    (state, _address, chainId) => getAddressBookByNetwork(state, chainId),
     (_state, address) => address,
   ],
   (addressBook, address) => {
-    console.log(addressBook);
-    console.log(address);
     return addressBook.find((contact) =>
       isEqualCaseInsensitive(contact.address, address),
     );
   },
-);
-
-export const getMemoizedAddressBookEntryByNetwork = createDeepEqualSelector(
-  [getAddressBookEntryByNetwork],
-  (addressBookEntry) => addressBookEntry,
 );
 
 export function getEnsResolutionByAddress(state, address) {

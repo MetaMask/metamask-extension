@@ -3,7 +3,7 @@ import { CaipChainId, KnownCaipNamespace } from '@metamask/utils';
 import { useSelector } from 'react-redux';
 import {
   getMemoizedAccountName,
-  getMemoizedAddressBookEntryByNetwork,
+  getAddressBookEntryByNetwork,
 } from '../../selectors';
 import { toChecksumHexAddress } from '../../../shared/modules/hexstring-utils';
 import { decimalToHex } from '../../../shared/modules/conversion.utils';
@@ -39,16 +39,14 @@ export const useDisplayName = (params: UseDisplayNameParams): string => {
     getMemoizedAccountName(state, parsedAddress),
   );
 
-  const addressBookEntry =
-    isEip155 &&
-    useSelector((state) =>
-      getMemoizedAddressBookEntryByNetwork(
-        state,
-        // @ts-expect-error type issue
-        parsedAddress,
-        `0x${decimalToHex(reference)}`,
-      ),
-    );
+  const addressBookEntry = useSelector((state) =>
+    getAddressBookEntryByNetwork(
+      state,
+      // @ts-expect-error type issue
+      parsedAddress,
+      `0x${decimalToHex(isEip155 ? reference : `0`)}`,
+    ),
+  );
 
-  return accountName || addressBookEntry?.name || undefined;
+  return accountName || (isEip155 && addressBookEntry?.name) || undefined;
 };

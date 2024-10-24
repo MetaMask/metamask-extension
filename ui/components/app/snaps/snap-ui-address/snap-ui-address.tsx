@@ -36,6 +36,8 @@ export const SnapUIAddress: React.FunctionComponent<SnapUIAddressProps> = ({
     return address;
   }, [address]);
 
+  console.log('rerender');
+
   const parsed = useMemo(
     () => parseCaipAccountId(caipIdentifier as CaipAccountId),
     [caipIdentifier],
