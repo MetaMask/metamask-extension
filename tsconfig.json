@@ -22,7 +22,10 @@
     "resolveJsonModule": true,
     // sets output file location for the `incremental` setting
     "tsBuildInfoFile": "node_modules/.cache/typescript/tsconfig.tsbuildinfo",
-    "useUnknownInCatchVariables": true
+    "useUnknownInCatchVariables": true,
+    "esModuleInterop": true,
+    "moduleResolution": "node",
+    "module": "commonjs"
   },
   "exclude": [
     // don't typecheck stories, as they don't yet pass the type checker.

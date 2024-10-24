@@ -9843,6 +9843,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@types/assert@npm:^1.5.11":
+  version: 1.5.11
+  resolution: "@types/assert@npm:1.5.11"
+  checksum: 10/847365f27f46144957a800756c9a4fb96154fcd8467d581192f6c162a655c31ed7d4d8cae4f5cb23d52fa3e3a94fbd6236643ff963380be18fd5b8739be2af8f
+  languageName: node
+  linkType: hard
+
 "@types/babel-core@npm:*":
   version: 6.25.7
   resolution: "@types/babel-core@npm:6.25.7"
@@ -10559,10 +10566,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/mocha@npm:^10.0.3":
-  version: 10.0.3
-  resolution: "@types/mocha@npm:10.0.3"
-  checksum: 10/31d44b6a45e20dba3f349a62b0f6fc23b054155e7b7e558e1be76b1bc5e91a6902062fdd7b9167beeed7b0083d351bd2b94352a677bf1a03b4d42c767497213f
+"@types/mocha@npm:^10.0.9":
+  version: 10.0.9
+  resolution: "@types/mocha@npm:10.0.9"
+  checksum: 10/aa34e61e6373c5a9e8f904302fc736c04d6757f079d8500689c589b610e8b8e28bdefc2da398569e6328c6b1e6dc5a59fb485211b2bacb465c2aad04d822c28c
   languageName: node
   linkType: hard
 
@@ -10601,7 +10608,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/node@npm:*, @types/node@npm:>=12.12.47, @types/node@npm:>=13.7.0, @types/node@npm:^20, @types/node@npm:^20.14.9":
+"@types/node@npm:*, @types/node@npm:>=12.12.47, @types/node@npm:>=13.7.0, @types/node@npm:^20.14.9":
   version: 20.16.11
   resolution: "@types/node@npm:20.16.11"
   dependencies:
@@ -10637,6 +10644,15 @@ __metadata:
   dependencies:
     undici-types: "npm:~5.26.4"
   checksum: 10/ebd98b117c868edc597807cd0dab214b6110b9cd5ee406632641d0cf5b8bd7cb199caaac657a046d9203c441dbcfb3c71154ffa2d615ec89f80e6972143e6ec8
+  languageName: node
+  linkType: hard
+
+"@types/node@npm:^22.7.9":
+  version: 22.7.9
+  resolution: "@types/node@npm:22.7.9"
+  dependencies:
+    undici-types: "npm:~6.19.2"
+  checksum: 10/c68650a1ca3c65cc02e16166fa7daca9958ecea54bd52b0af31009011c44a33f8d559bf467c681b1f06935a10cafb932cc30e5454ecfc89351d361ab669bdba6
   languageName: node
   linkType: hard
 
@@ -26057,6 +26073,7 @@ __metadata:
     "@testing-library/user-event": "npm:^14.4.3"
     "@trezor/connect-web": "npm:^9.4.0"
     "@tsconfig/node20": "npm:^20.1.2"
+    "@types/assert": "npm:^1.5.11"
     "@types/babelify": "npm:^7.3.7"
     "@types/browserify": "npm:^12.0.37"
     "@types/chrome": "npm:^0.0.268"
@@ -26069,8 +26086,8 @@ __metadata:
     "@types/he": "npm:^1"
     "@types/jest": "npm:^29.5.12"
     "@types/luxon": "npm:^3.4.2"
-    "@types/mocha": "npm:^10.0.3"
-    "@types/node": "npm:^20"
+    "@types/mocha": "npm:^10.0.9"
+    "@types/node": "npm:^22.7.9"
     "@types/path-browserify": "npm:^1.0.2"
     "@types/pify": "npm:^5.0.1"
     "@types/react": "npm:^16.9.53"
