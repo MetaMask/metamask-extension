@@ -949,7 +949,7 @@ async function checkThatSafeChainsListValidationToggleIsOn(driver) {
   await driver.waitForSelector(securityAndPrivacyTabRawLocator);
   await driver.clickElement(securityAndPrivacyTabRawLocator);
 
-  await driver.findElement({
+  await driver.waitForSelector({
     xpath:
       "//div[@data-testid='useSafeChainsListValidation']//label[contains(@class, 'toggle-button') and contains(@class, 'toggle-button--on')]",
   });
