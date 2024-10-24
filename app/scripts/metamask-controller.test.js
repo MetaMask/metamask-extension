@@ -64,7 +64,6 @@ const browserPolyfillMock = {
       addListener: jest.fn(),
     },
     getPlatformInfo: jest.fn().mockResolvedValue('mac'),
-    setUninstallURL: () => undefined,
   },
   storage: {
     session: {
