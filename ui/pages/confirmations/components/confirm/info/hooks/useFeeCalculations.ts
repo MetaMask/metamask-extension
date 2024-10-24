@@ -8,7 +8,6 @@ import {
   addHexes,
   decGWEIToHexWEI,
   decimalToHex,
-  getEthConversionFromWeiHex,
   getValueFromWeiHex,
   multiplyHexes,
 } from '../../../../../../../shared/modules/conversion.utils';
@@ -17,6 +16,7 @@ import { getConversionRate } from '../../../../../../ducks/metamask/metamask';
 import { useFiatFormatter } from '../../../../../../hooks/useFiatFormatter';
 import { useGasFeeEstimates } from '../../../../../../hooks/useGasFeeEstimates';
 import { getCurrentCurrency } from '../../../../../../selectors';
+import { getMultichainNetwork } from '../../../../../../selectors/multichain';
 import { HEX_ZERO } from '../shared/constants';
 import { useEIP1559TxFees } from './useEIP1559TxFees';
 import { useSupportsEIP1559 } from './useSupportsEIP1559';
@@ -33,14 +33,18 @@ export function useFeeCalculations(transactionMeta: TransactionMeta) {
   const conversionRate = useSelector(getConversionRate);
   const fiatFormatter = useFiatFormatter();
 
+  const multichainNetwork = useSelector(getMultichainNetwork);
+  const ticker = multichainNetwork?.network?.ticker;
+
   const getFeesFromHex = useCallback(
     (hexFee: string) => {
-      const nativeCurrencyFee =
-        getEthConversionFromWeiHex({
+      const nativeCurrencyFee = `${
+        getValueFromWeiHex({
           value: hexFee,
           fromCurrency: EtherDenomination.GWEI,
           numberOfDecimals: 4,
-        }) || `0 ${EtherDenomination.ETH}`;
+        }) || 0
+      } ${ticker}`;
 
       const currentCurrencyFee = fiatFormatter(
         Number(
