@@ -39,12 +39,11 @@ describe('Address Book', function () {
 
         await driver.clickElement({ css: 'button', text: 'Contacts' });
 
-        const recipientTitle = await driver.findElement(
-          '.address-list-item__label',
-        );
+        await driver.waitForSelector({
+          css: '.address-list-item__label',
+          text: 'Test Name 1',
+        });
 
-        const recipientRowTitleString = await recipientTitle.getText();
-        assert.equal(recipientRowTitleString, 'Test Name 1');
         await driver.clickElement('.address-list-item__label');
 
         await driver.fill('input[placeholder="0"]', '2');
@@ -111,25 +110,15 @@ describe('Address Book', function () {
 
         await driver.clickElement('[data-testid="page-container-footer-next"]');
 
-        const recipientUsername = await driver.findElement({
+        await driver.waitForSelector({
           text: 'Test Name Edit',
           css: '.address-list-item__label',
         });
 
-        assert.equal(
-          await recipientUsername.getText(),
-          'Test Name Edit',
-          'Username is not edited correctly',
-        );
-
-        const recipientAddress = await driver.findElement(
-          '[data-testid="address-list-item-address"]',
-        );
-        assert.equal(
-          await recipientAddress.getText(),
-          shortenAddress('0x74cE91B75935D6Bedc27eE002DeFa566c5946f74'),
-          'Recipient address is not edited correctly',
-        );
+        await driver.waitForSelector({
+          css: '[data-testid="address-list-item-address"]',
+          text: shortenAddress('0x74cE91B75935D6Bedc27eE002DeFa566c5946f74'),
+        });
       },
     );
   });

@@ -15,11 +15,11 @@ import OnboardingSrpPage from '../../page-objects/pages/onboarding/onboarding-sr
 import SecureWalletPage from '../../page-objects/pages/onboarding/secure-wallet-page';
 import StartOnboardingPage from '../../page-objects/pages/onboarding/start-onboarding-page';
 import { loginWithoutBalanceValidation } from '../../page-objects/flows/login.flow';
-const {
+import {
   completeCreateNewWalletOnboardingFlow,
   completeImportSRPOnboardingFlow,
   importSRPOnboardingFlow,
-} = require('../../helpers');
+} from '../../page-objects/flows/onboarding.flow';
 
 describe('MetaMask onboarding @no-mmi', function () {
   const ganacheOptions2 = {

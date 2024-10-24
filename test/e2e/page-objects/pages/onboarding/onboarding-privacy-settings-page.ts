@@ -135,6 +135,7 @@ class OnboardingPrivacySettingsPage {
     );
     // Navigate back to default privacy settings
     await this.driver.clickElement(this.categoryBackButton);
+    await this.driver.waitForElementToStopMoving(this.categoryBackButton);
   }
 
   /**
@@ -172,6 +173,7 @@ class OnboardingPrivacySettingsPage {
       ).map((toggle) => toggle.click()),
     );
     await this.driver.clickElement(this.categoryBackButton);
+    await this.driver.waitForElementToStopMoving(this.categoryBackButton);
   }
 
   /**
@@ -185,6 +187,7 @@ class OnboardingPrivacySettingsPage {
     await this.driver.clickElement(this.basicFunctionalityCheckbox);
     await this.driver.clickElement(this.basicFunctionalityTurnOffButton);
     await this.driver.clickElement(this.categoryBackButton);
+    await this.driver.waitForElementToStopMoving(this.categoryBackButton);
   }
 }
 
