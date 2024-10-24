@@ -188,6 +188,7 @@ describe('useBalanceChanges', () => {
       expect(changes).toEqual([
         {
           asset: {
+            chainId: CHAIN_ID_MOCK,
             address: ERC20_TOKEN_ADDRESS_1_MOCK,
             standard: TokenStandard.ERC20,
             tokenId: undefined,
@@ -244,6 +245,7 @@ describe('useBalanceChanges', () => {
       expect(result.current.value).toEqual([
         {
           asset: {
+            chainId: CHAIN_ID_MOCK,
             address: NFT_TOKEN_ADDRESS_MOCK,
             standard: TokenStandard.ERC721,
             tokenId: TOKEN_ID_1_MOCK,
@@ -332,6 +334,7 @@ describe('useBalanceChanges', () => {
       expect(changes).toEqual([
         {
           asset: {
+            chainId: CHAIN_ID_MOCK,
             standard: TokenStandard.none,
           },
           amount: new BigNumber('-5373.003641998677469065'),
@@ -399,6 +402,7 @@ describe('useBalanceChanges', () => {
     const changes = result.current.value;
     expect(changes).toHaveLength(2);
     expect(changes[0].asset).toEqual({
+      chainId: CHAIN_ID_MOCK,
       standard: TokenStandard.none,
     });
     expect(changes[0].amount).toEqual(
@@ -406,6 +410,7 @@ describe('useBalanceChanges', () => {
     );
     expect(changes[0].fiatAmount).toBe(Number('-16119.010925996032'));
     expect(changes[1].asset).toEqual({
+      chainId: CHAIN_ID_MOCK,
       address: ERC20_TOKEN_ADDRESS_1_MOCK,
       standard: TokenStandard.ERC20,
     });
