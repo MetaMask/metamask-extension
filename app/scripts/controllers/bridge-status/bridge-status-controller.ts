@@ -136,18 +136,8 @@ export default class BridgeStatusController extends StaticIntervalPollingControl
     return this.messagingSystem.call('AccountsController:getSelectedAccount');
   }
 
-  #fetchBridgeTxStatus = async ({
-    statusRequest,
-    quoteResponse,
-    startTime,
-    slippagePercentage,
-    completionTime,
-    pricingData,
-    initialDestAssetBalance,
-    targetContractAddress,
-  }: FetchBridgeTxStatusArgs) => {
+  #fetchBridgeTxStatus = async ({ statusRequest }: FetchBridgeTxStatusArgs) => {
     const { bridgeStatusState } = this.state;
-    const { address: account } = this.#getSelectedAccount();
 
     try {
       // We try here because we receive 500 errors from Bridge API if we try to fetch immediately after submitting the source tx
