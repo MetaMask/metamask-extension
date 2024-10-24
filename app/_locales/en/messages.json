@@ -1813,6 +1813,9 @@
   "editSpendingCapError": {
     "message": "The spending cap can’t exceed $1 decimal digits. Remove decimal digits to continue."
   },
+  "ellipal": {
+    "message": "ellipal"
+  },
   "enable": {
     "message": "Enable"
   },
