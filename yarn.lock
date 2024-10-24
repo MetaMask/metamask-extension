@@ -6063,9 +6063,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/queued-request-controller@npm:@metamask-previews/queued-request-controller@5.1.0-preview-e9ee650e":
-  version: 5.1.0-preview-e9ee650e
-  resolution: "@metamask-previews/queued-request-controller@npm:5.1.0-preview-e9ee650e"
+"@metamask/queued-request-controller@npm:@metamask-previews/queued-request-controller@5.1.0-preview-49199726":
+  version: 5.1.0-preview-49199726
+  resolution: "@metamask-previews/queued-request-controller@npm:5.1.0-preview-49199726"
   dependencies:
     "@metamask/base-controller": "npm:^7.0.1"
     "@metamask/controller-utils": "npm:^11.4.0"
@@ -6076,7 +6076,7 @@ __metadata:
   peerDependencies:
     "@metamask/network-controller": ^22.0.0
     "@metamask/selected-network-controller": ^18.0.0
-  checksum: 10/39ff153fc714a5cdeec0ae0e765bb917ca038905581199449592f926401373b773fbd6d094a3b128be0e9dc4adfb098ae5e6271bb545ca55e8948bfb83a880cd
+  checksum: 10/999ecd41ab0873509adf0b226661f8668087fae4a56ba12fde07f18fbde2a79d5a06b7c745dacaf5cbfb0507e06aa0dedfb1b288cd81b7163e019fbfe94b9869
   languageName: node
   linkType: hard
 
@@ -26010,7 +26010,7 @@ __metadata:
     "@metamask/preinstalled-example-snap": "npm:^0.2.0"
     "@metamask/profile-sync-controller": "npm:^0.9.7"
     "@metamask/providers": "npm:^14.0.2"
-    "@metamask/queued-request-controller": "npm:@metamask-previews/queued-request-controller@5.1.0-preview-e9ee650e"
+    "@metamask/queued-request-controller": "npm:@metamask-previews/queued-request-controller@5.1.0-preview-49199726"
     "@metamask/rate-limit-controller": "npm:^6.0.0"
     "@metamask/rpc-errors": "npm:^7.0.0"
     "@metamask/safe-event-emitter": "npm:^3.1.1"
