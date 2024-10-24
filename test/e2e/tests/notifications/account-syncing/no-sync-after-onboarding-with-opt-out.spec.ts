@@ -3,6 +3,9 @@ import {
   withFixtures,
   defaultGanacheOptions,
   completeImportSRPOnboardingFlow,
+  importSRPOnboardingFlow,
+  onboardingCompleteWalletCreationWithOptOut,
+  completeCreateNewWalletOnboardingFlowWithOptOut,
 } from '../../../helpers';
 import FixtureBuilder from '../../../fixture-builder';
 import { mockNotificationServices } from '../mocks';
@@ -12,7 +15,7 @@ import {
 } from '../constants';
 import { UserStorageMockttpController } from '../../../helpers/user-storage/userStorageMockttpController';
 import { accountsSyncMockResponse } from './mockData';
-import { IS_ACCOUNT_SYNCING_ENABLED } from './helpers';
+import { getSRP, IS_ACCOUNT_SYNCING_ENABLED } from './helpers';
 import HeaderNavbar from '../../../page-objects/pages/header-navbar';
 import AccountListPage from '../../../page-objects/pages/account-list-page';
 
@@ -21,7 +24,8 @@ describe('Account syncing', function () {
     return;
   }
   describe('from inside MetaMask', function () {
-    it('syncs newly added accounts', async function () {
+    let walletSrp: string;
+    it('does not sync when profile sync is turned off - previously synced account', async function () {
       const userStorageMockttpController = new UserStorageMockttpController();
 
       await withFixtures(
@@ -30,10 +34,10 @@ describe('Account syncing', function () {
           ganacheOptions: defaultGanacheOptions,
           title: this.test?.fullTitle(),
           testSpecificMock: (server: Mockttp) => {
+            // Mocks are still set up to ensure that requests are not matched
             userStorageMockttpController.setupPath('accounts', server, {
               getResponse: accountsSyncMockResponse,
             });
-
             return mockNotificationServices(
               server,
               userStorageMockttpController,
@@ -42,10 +46,67 @@ describe('Account syncing', function () {
         },
         async ({ driver }) => {
           await driver.navigate();
-          await completeImportSRPOnboardingFlow(
+          await importSRPOnboardingFlow(
             driver,
             NOTIFICATIONS_TEAM_SEED_PHRASE,
             NOTIFICATIONS_TEAM_PASSWORD,
+          );
+
+          await onboardingCompleteWalletCreationWithOptOut(driver, {
+            isNewWallet: false,
+            basicFunctionality: false,
+            profileSync: true,
+            assets: false,
+          });
+
+          const header = new HeaderNavbar(driver);
+          await header.check_pageIsLoaded();
+          await header.openAccountMenu();
+
+          const accountListPage = new AccountListPage(driver);
+          await accountListPage.check_pageIsLoaded();
+          await accountListPage.check_numberOfAvailableAccounts(1);
+          await accountListPage.check_accountIsNotDisplayedInAccountList(
+            'My First Synced Account',
+          );
+          await accountListPage.check_accountIsNotDisplayedInAccountList(
+            'My Second Synced Account',
+          );
+          await accountListPage.check_accountDisplayedInAccountList(
+            'Account 1',
+          );
+        },
+      );
+    });
+
+    it('does not sync when profile sync is turned off - new user', async function () {
+      const userStorageMockttpController = new UserStorageMockttpController();
+
+      await withFixtures(
+        {
+          fixtures: new FixtureBuilder({ onboarding: true }).build(),
+          ganacheOptions: defaultGanacheOptions,
+          title: this.test?.fullTitle(),
+          testSpecificMock: (server: Mockttp) => {
+            // Mocks are still set up to ensure that requests are not matched
+            userStorageMockttpController.setupPath('accounts', server);
+            return mockNotificationServices(
+              server,
+              userStorageMockttpController,
+            );
+          },
+        },
+        async ({ driver }) => {
+          await driver.navigate();
+          await completeCreateNewWalletOnboardingFlowWithOptOut(
+            driver,
+            NOTIFICATIONS_TEAM_PASSWORD,
+            {
+              isNewWallet: true,
+              basicFunctionality: false,
+              profileSync: true,
+              assets: false,
+            },
           );
 
           const header = new HeaderNavbar(driver);
@@ -54,18 +115,17 @@ describe('Account syncing', function () {
 
           const accountListPage = new AccountListPage(driver);
           await accountListPage.check_pageIsLoaded();
-          await accountListPage.check_numberOfAvailableAccounts(
-            accountsSyncMockResponse.length,
-          );
+          await accountListPage.check_numberOfAvailableAccounts(1);
           await accountListPage.check_accountDisplayedInAccountList(
-            'My First Synced Account',
+            'Account 1',
           );
-          await accountListPage.check_accountDisplayedInAccountList(
-            'My Second Synced Account',
-          );
-          await accountListPage.addNewAccountWithCustomLabel(
-            'My third account',
-          );
+          await accountListPage.addNewAccountWithCustomLabel('New Account');
+
+          // Set SRP to use for retreival
+          walletSrp = await getSRP(driver, NOTIFICATIONS_TEAM_PASSWORD);
+          if (!walletSrp) {
+            throw new Error('Wallet SRP was not set');
+          }
         },
       );
 
@@ -75,6 +135,7 @@ describe('Account syncing', function () {
           ganacheOptions: defaultGanacheOptions,
           title: this.test?.fullTitle(),
           testSpecificMock: (server: Mockttp) => {
+            // Mocks are still set up to ensure that requests are not matched
             userStorageMockttpController.setupPath('accounts', server);
             return mockNotificationServices(
               server,
@@ -86,7 +147,7 @@ describe('Account syncing', function () {
           await driver.navigate();
           await completeImportSRPOnboardingFlow(
             driver,
-            NOTIFICATIONS_TEAM_SEED_PHRASE,
+            walletSrp,
             NOTIFICATIONS_TEAM_PASSWORD,
           );
 
@@ -96,21 +157,9 @@ describe('Account syncing', function () {
 
           const accountListPage = new AccountListPage(driver);
           await accountListPage.check_pageIsLoaded();
-
-          const accountSyncResponse =
-            userStorageMockttpController.paths.get('accounts')?.response;
-
-          await accountListPage.check_numberOfAvailableAccounts(
-            accountSyncResponse?.length as number,
-          );
+          await accountListPage.check_numberOfAvailableAccounts(1);
           await accountListPage.check_accountDisplayedInAccountList(
-            'My First Synced Account',
-          );
-          await accountListPage.check_accountDisplayedInAccountList(
-            'My Second Synced Account',
-          );
-          await accountListPage.check_accountDisplayedInAccountList(
-            'My third account',
+            'Account 1',
           );
         },
       );

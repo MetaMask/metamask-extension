@@ -227,6 +227,25 @@ class AccountListPage {
     console.log(`Check that hidden accounts list is displayed in account list`);
     await this.driver.waitForSelector(this.hiddenAccountsList);
   }
+
+  /**
+   * Verifies number of accounts currently showing in the accounts menu.
+   *
+   * @param expectedNumberOfAccounts - The expected number of accounts showing.
+   */
+  async check_numberOfAvailableAccounts(
+    expectedNumberOfAccounts: number,
+  ): Promise<void> {
+    console.log(
+      `Verify the number of accounts in the account menu is: ${expectedNumberOfAccounts}`,
+    );
+    await this.driver.wait(async () => {
+      const internalAccounts = await this.driver.findElements(
+        this.accountListItem,
+      );
+      return internalAccounts.length === expectedNumberOfAccounts;
+    }, 20000);
+  }
 }
 
 export default AccountListPage;

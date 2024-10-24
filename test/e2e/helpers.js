@@ -25,6 +25,8 @@ const {
   getServerMochaToBackground,
 } = require('./background-socket/server-mocha-to-background');
 
+const { isMMI } = require('../../ui/helpers/utils/build-types');
+
 const tinyDelayMs = 200;
 const regularDelayMs = tinyDelayMs * 2;
 const largeDelayMs = regularDelayMs * 2;
@@ -435,7 +437,9 @@ const completeImportSRPOnboardingFlowWordByWord = async (
   await driver.clickElement('[data-testid="onboarding-import-wallet"]');
 
   // metrics
-  await driver.clickElement('[data-testid="metametrics-no-thanks"]');
+
+  if (!isMMI())
+    await driver.clickElement('[data-testid="metametrics-no-thanks"]');
 
   // import with recovery phrase, word by word
   const words = seedPhrase.split(' ');
@@ -564,9 +568,40 @@ const onboardingPinExtension = async (driver) => {
   await driver.clickElement('[data-testid="pin-extension-done"]');
 };
 
-const onboardingCompleteWalletCreationWithOptOut = async (driver) => {
+/**
+ * Completes the onboarding flow with optional opt-out settings for wallet creation.
+ *
+ * This function navigates through the onboarding process, allowing for opt-out of certain features.
+ * It waits for the appropriate heading to appear, then proceeds to opt-out of third-party API
+ * integration for general and assets sections if specified in the optOutOptions.
+ *
+ * @param {WebDriver} driver - The Selenium WebDriver instance.
+ * @param {Object} optOutOptions - Optional. An object specifying which features to opt-out of.
+ * @param {boolean} optOutOptions.basicFunctionality - Optional. Defaults to true. Opt-out of basic functionality.
+ * @param {boolean} optOutOptions.profileSync - Optional. Defaults to true. Opt-out of profile sync.
+ * @param {boolean} optOutOptions.assets - Optional. Defaults to true. Opt-out of assets options.
+ * @param {boolean} optOutOptions.isNewWallet - Optional. Defaults to true. Indicates if this is a new wallet creation.
+ */
+const onboardingCompleteWalletCreationWithOptOut = async (
+  driver,
+  optOutOptions = {},
+) => {
+  const defaultOptOutOptions = {
+    basicFunctionality: true,
+    profileSync: true,
+    assets: true,
+    isNewWallet: true,
+  };
+
+  const optOutOptionsToUse = { ...defaultOptOutOptions, ...optOutOptions };
+
   // wait for h2 to appear
-  await driver.findElement({ text: 'Congratulations!', tag: 'h2' });
+  await driver.findElement({
+    text: optOutOptionsToUse.isNewWallet
+      ? 'Congratulations'
+      : 'Your wallet is ready',
+    tag: 'h2',
+  });
 
   // opt-out from third party API on general section
   await driver.clickElementAndWaitToDisappear({
@@ -574,26 +609,43 @@ const onboardingCompleteWalletCreationWithOptOut = async (driver) => {
     tag: 'button',
   });
   await driver.clickElement({ text: 'General', tag: 'p' });
-  await driver.clickElement(
-    '[data-testid="basic-functionality-toggle"] .toggle-button',
-  );
-  await driver.clickElement('[id="basic-configuration-checkbox"]');
-  await driver.clickElementAndWaitToDisappear({
-    tag: 'button',
-    text: 'Turn off',
-  });
 
-  // opt-out from third party API on assets section
+  if (optOutOptionsToUse.basicFunctionality) {
+    await driver.clickElement(
+      '[data-testid="basic-functionality-toggle"] .toggle-button',
+    );
+    await driver.clickElement('[id="basic-configuration-checkbox"]');
+    await driver.clickElementAndWaitToDisappear({
+      tag: 'button',
+      text: 'Turn off',
+    });
+  }
+
+  if (optOutOptionsToUse.profileSync) {
+    await driver.clickElement(
+      '[data-testid="profile-sync-toggle"] .toggle-button',
+    );
+    await driver.clickElementAndWaitToDisappear({
+      tag: 'button',
+      text: 'Turn off',
+    });
+  }
+
   await driver.clickElement('[data-testid="category-back-button"]');
-  await driver.clickElement({ text: 'Assets', tag: 'p' });
-  await Promise.all(
-    (
-      await driver.findClickableElements(
-        '.toggle-button.toggle-button--on:not([data-testid="basic-functionality-toggle"] .toggle-button)',
-      )
-    ).map((toggle) => toggle.click()),
-  );
-  await driver.clickElement('[data-testid="category-back-button"]');
+
+  if (optOutOptionsToUse.assets) {
+    // opt-out from third party API on assets section
+    await driver.clickElement({ text: 'Assets', tag: 'p' });
+    await Promise.all(
+      (
+        await driver.findClickableElements(
+          '.toggle-button.toggle-button--on:not([data-testid="basic-functionality-toggle"] .toggle-button)',
+        )
+      ).map((toggle) => toggle.click()),
+    );
+
+    await driver.clickElement('[data-testid="category-back-button"]');
+  }
 
   // Wait until the onboarding carousel has stopped moving
   // otherwise the click has no effect.
@@ -610,15 +662,30 @@ const onboardingCompleteWalletCreationWithOptOut = async (driver) => {
   await onboardingPinExtension(driver);
 };
 
+/**
+ * Completes the onboarding flow for creating a new wallet with opt-out options.
+ *
+ * This function guides the user through the onboarding process of creating a new wallet,
+ * including opting out of certain features as specified by the `optOutOptions` parameter.
+ *
+ * @param {Object} driver - The Selenium driver instance.
+ * @param {String} password - The password to use for the new wallet.
+ * @param {Object} optOutOptions - An object specifying the features to opt out of.
+ * @param {Boolean} optOutOptions.isNewWallet - Indicates if this is a new wallet creation.
+ * @param {Boolean} optOutOptions.basicFunctionality - Indicates if basic functionality should be opted out.
+ * @param {Boolean} optOutOptions.profileSync - Indicates if profile sync should be opted out.
+ * @param {Boolean} optOutOptions.assets - Indicates if assets should be opted out.
+ */
 const completeCreateNewWalletOnboardingFlowWithOptOut = async (
   driver,
   password,
+  optOutOptions
 ) => {
   await onboardingBeginCreateNewWallet(driver);
   await onboardingChooseMetametricsOption(driver, false);
   await onboardingCreatePassword(driver, password);
   await onboardingRevealAndConfirmSRP(driver);
-  await onboardingCompleteWalletCreationWithOptOut(driver);
+  await onboardingCompleteWalletCreationWithOptOut(driver, optOutOptions);
 };
 
 const completeCreateNewWalletOnboardingFlow = async (driver, password) => {
@@ -1323,6 +1390,7 @@ module.exports = {
   onboardingCreatePassword,
   onboardingRevealAndConfirmSRP,
   onboardingCompleteWalletCreation,
+  onboardingCompleteWalletCreationWithOptOut,
   onboardingPinExtension,
   assertInAnyOrder,
   genRandInitBal,

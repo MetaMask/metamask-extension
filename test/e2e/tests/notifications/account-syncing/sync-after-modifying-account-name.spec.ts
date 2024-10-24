@@ -21,7 +21,7 @@ describe('Account syncing', function () {
     return;
   }
   describe('from inside MetaMask', function () {
-    it('syncs newly added accounts', async function () {
+    it('syncs renamed account names', async function () {
       const userStorageMockttpController = new UserStorageMockttpController();
 
       await withFixtures(
@@ -63,9 +63,8 @@ describe('Account syncing', function () {
           await accountListPage.check_accountDisplayedInAccountList(
             'My Second Synced Account',
           );
-          await accountListPage.addNewAccountWithCustomLabel(
-            'My third account',
-          );
+          await accountListPage.openAccountOptionsMenu()
+          await accountListPage.changeAccountLabel('My Renamed First Account')
         },
       );
 
@@ -96,21 +95,15 @@ describe('Account syncing', function () {
 
           const accountListPage = new AccountListPage(driver);
           await accountListPage.check_pageIsLoaded();
-
-          const accountSyncResponse =
-            userStorageMockttpController.paths.get('accounts')?.response;
-
           await accountListPage.check_numberOfAvailableAccounts(
-            accountSyncResponse?.length as number,
+            accountsSyncMockResponse.length,
           );
+          await accountListPage.check_accountIsNotDisplayedInAccountList('My First Synced Account')
           await accountListPage.check_accountDisplayedInAccountList(
-            'My First Synced Account',
+            'My Renamed First Account',
           );
           await accountListPage.check_accountDisplayedInAccountList(
             'My Second Synced Account',
-          );
-          await accountListPage.check_accountDisplayedInAccountList(
-            'My third account',
           );
         },
       );
