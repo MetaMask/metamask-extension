@@ -486,22 +486,6 @@ export default class MetamaskController extends EventEmitter {
       this.approvalController.clear(providerErrors.userRejectedRequest());
     };
 
-    this.queuedRequestController = new QueuedRequestController({
-      messenger: this.controllerMessenger.getRestricted({
-        name: 'QueuedRequestController',
-        allowedActions: [
-          'NetworkController:getState',
-          'NetworkController:setActiveNetwork',
-          'SelectedNetworkController:getNetworkClientIdForDomain',
-        ],
-        allowedEvents: ['SelectedNetworkController:stateChange'],
-      }),
-      shouldRequestSwitchNetwork: ({ method }) =>
-        methodsRequiringNetworkSwitch.includes(method),
-      clearPendingConfirmations,
-      showApprovalRequest: opts.showUserConfirmation,
-    });
-
     this.approvalController = new ApprovalController({
       messenger: this.controllerMessenger.getRestricted({
         name: 'ApprovalController',
@@ -516,6 +500,29 @@ export default class MetamaskController extends EventEmitter {
         ApprovalType.EthDecrypt,
       ],
     });
+
+    this.queuedRequestController = new QueuedRequestController({
+      messenger: this.controllerMessenger.getRestricted({
+        name: 'QueuedRequestController',
+        allowedActions: [
+          'NetworkController:getState',
+          'NetworkController:setActiveNetwork',
+          'SelectedNetworkController:getNetworkClientIdForDomain',
+        ],
+        allowedEvents: ['SelectedNetworkController:stateChange'],
+      }),
+      shouldRequestSwitchNetwork: ({ method }) =>
+        methodsRequiringNetworkSwitch.includes(method),
+      clearPendingConfirmations,
+      showApprovalRequest: () => {
+        // perhaps this can be handled in QueuedRequestController by adding
+        // a this.#processingRequestCount > 0 guard to this.#showApprovalRequest()?
+        if (this.approvalController.getTotalApprovalCount() > 0) {
+          opts.showUserConfirmation()
+        }
+      },
+    });
+
 
     ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
     this.mmiConfigurationController = new MmiConfigurationController({

@@ -185,6 +185,8 @@ export async function switchChain(
       }
     }
 
+    // await new Promise((resolve) => setTimeout(resolve, 1000))
+
     await setActiveNetwork(networkClientId);
     res.result = null;
   } catch (error) {
