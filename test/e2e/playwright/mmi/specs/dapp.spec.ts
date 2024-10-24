@@ -18,6 +18,7 @@ const dappsTest = async (
   await mainPage.bringToFront();
   await mainPage.openActivityTab();
   await mainPage.checkLastTransactionStatus(/created/iu);
+  await page.waitForTimeout(2000);
   const custodianTxId = await mainPage.getCustodianTXId();
 
   // Sign and submit
