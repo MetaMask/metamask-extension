@@ -42,36 +42,31 @@ const {
   createMockFeatureAnnouncementRaw,
 } = NotificationServicesController.Mocks;
 
-const ethSentNotification: Notification = processNotification(
-  createMockNotificationEthSent(),
-);
+// Mock data
+const mockNotifications = {
+  ethSent: createMockNotificationEthSent,
+  ethReceived: createMockNotificationEthReceived,
+  erc20Sent: createMockNotificationERC20Sent,
+  erc20Received: createMockNotificationERC20Received,
+  erc721Sent: createMockNotificationERC721Sent,
+  erc721Received: createMockNotificationERC721Received,
+  erc1155Sent: createMockNotificationERC1155Sent,
+  erc1155Received: createMockNotificationERC1155Received,
+  lidoReadyToBeWithdrawn: createMockNotificationLidoReadyToBeWithdrawn,
+  lidoStakeCompleted: createMockNotificationLidoStakeCompleted,
+  lidoWithdrawalCompleted: createMockNotificationLidoWithdrawalCompleted,
+  lidoWithdrawalRequested: createMockNotificationLidoWithdrawalRequested,
+  metaMaskSwapsCompleted: createMockNotificationMetaMaskSwapsCompleted,
+  rocketPoolStakeCompleted: createMockNotificationRocketPoolStakeCompleted,
+  rocketPoolUnStakeCompleted: createMockNotificationRocketPoolUnStakeCompleted,
+  featureAnnouncement: createMockFeatureAnnouncementRaw,
+};
 
-const ethReceivedNotification: Notification = processNotification(
-  createMockNotificationEthReceived(),
-);
-
-const erc20SentNotification: Notification = processNotification(
-  createMockNotificationERC20Sent(),
-);
-
-const erc20ReceivedNotification: Notification = processNotification(
-  createMockNotificationERC20Received(),
-);
-
-const erc721SentNotification: Notification = processNotification(
-  createMockNotificationERC721Sent(),
-);
-
-const erc721ReceivedNotification: Notification = processNotification(
-  createMockNotificationERC721Received(),
-);
-
-const erc1155SentNotification: Notification = processNotification(
-  createMockNotificationERC1155Sent(),
-);
-
-const erc1155ReceivedNotification: Notification = processNotification(
-  createMockNotificationERC1155Received(),
+const processedNotifications = Object.fromEntries(
+  Object.entries(mockNotifications).map(([key, createMock]) => [
+    key,
+    processNotification(createMock()),
+  ]),
 );
 
 const store = configureStore({
@@ -127,40 +122,80 @@ const Template = ({ notification }) => {
 
 export const EthSent = Template.bind({});
 EthSent.args = {
-  notification: ethSentNotification,
+  notification: processedNotifications.ethSent,
 };
 
 export const EthReceived = Template.bind({});
 EthReceived.args = {
-  notification: ethReceivedNotification,
+  notification: processedNotifications.ethReceived,
 };
 
 export const ERC20Sent = Template.bind({});
 ERC20Sent.args = {
-  notification: erc20SentNotification,
+  notification: processedNotifications.erc20Sent,
 };
 
 export const ERC20Received = Template.bind({});
 ERC20Received.args = {
-  notification: erc20ReceivedNotification,
+  notification: processedNotifications.erc20Received,
 };
 
 export const ERC721Sent = Template.bind({});
 ERC721Sent.args = {
-  notification: erc721SentNotification,
+  notification: processedNotifications.erc721Sent,
 };
 
 export const ERC721Received = Template.bind({});
 ERC721Received.args = {
-  notification: erc721ReceivedNotification,
+  notification: processedNotifications.erc721Received,
 };
 
 export const ERC1155Sent = Template.bind({});
 ERC1155Sent.args = {
-  notification: erc1155SentNotification,
+  notification: processedNotifications.erc1155Sent,
 };
 
 export const ERC1155Received = Template.bind({});
 ERC1155Received.args = {
-  notification: erc1155ReceivedNotification,
+  notification: processedNotifications.erc1155Received,
+};
+
+export const LidoReadyToBeWithdrawn = Template.bind({});
+LidoReadyToBeWithdrawn.args = {
+  notification: processedNotifications.lidoReadyToBeWithdrawn,
+};
+
+export const lidoStakeCompleted = Template.bind({});
+lidoStakeCompleted.args = {
+  notification: processedNotifications.lidoStakeCompleted,
+};
+
+export const lidoWithdrawalCompleted = Template.bind({});
+lidoWithdrawalCompleted.args = {
+  notification: processedNotifications.lidoWithdrawalCompleted,
+};
+
+export const lidoWithdrawalRequested = Template.bind({});
+lidoWithdrawalRequested.args = {
+  notification: processedNotifications.lidoWithdrawalRequested,
+};
+
+export const metaMaskSwapsCompleted = Template.bind({});
+metaMaskSwapsCompleted.args = {
+  notification: processedNotifications.metaMaskSwapsCompleted,
+};
+
+export const rocketPoolStakeCompleted = Template.bind({});
+rocketPoolStakeCompleted.args = {
+  notification: processedNotifications.rocketPoolStakeCompleted,
+};
+
+export const rocketPoolUnStakeCompleted = Template.bind({});
+rocketPoolUnStakeCompleted.args = {
+  notification: processedNotifications.rocketPoolUnStakeCompleted,
+};
+
+export const featureAnnouncement = Template.bind({});
+featureAnnouncement.args = {
+  notification: processedNotifications.featureAnnouncement,
 };
