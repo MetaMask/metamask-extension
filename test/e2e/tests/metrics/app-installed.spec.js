@@ -59,7 +59,7 @@ describe('App Installed Events @no-mmi', function () {
         assert.deepStrictEqual(events[0].properties, {
           category: 'App',
           locale: 'en',
-          chain_id: '0x539',
+          chain_id: '1337',
           environment_type: 'background',
         });
       },
