@@ -72,6 +72,10 @@ export function useSimulationMetrics({
     setLoadingComplete();
   }
 
+  if (!simulationData) {
+    return;
+  }
+
   const displayNameRequests: UseDisplayNameRequest[] = balanceChanges
     // Filter out changes with no address (e.g. ETH)
     .filter(({ asset }) => Boolean(asset.address))
@@ -94,7 +98,9 @@ export function useSimulationMetrics({
 
   const { updateTransactionEventFragment } = useTransactionEventFragment();
 
-  useIncompleteAssetEvent(balanceChanges, displayNamesByAddress);
+  useIncompleteAssetEvent(balanceChanges, displayNamesByAddress, {
+    enableMetrics,
+  });
 
   const receivingAssets = balanceChanges.filter(
     (change) => !change.amount.isNegative(),
@@ -155,9 +161,18 @@ function useIncompleteAssetEvent(
   displayNamesByAddress: {
     [address: string]: UseDisplayNameResponse | undefined;
   },
+  {
+    enableMetrics,
+  }: {
+    enableMetrics: boolean;
+  },
 ) {
   const trackEvent = useContext(MetaMetricsContext);
   const [processedAssets, setProcessedAssets] = useState<string[]>([]);
+
+  if (!enableMetrics) {
+    return;
+  }
 
   for (const change of balanceChanges) {
     const assetAddress = change.asset.address ?? '';
