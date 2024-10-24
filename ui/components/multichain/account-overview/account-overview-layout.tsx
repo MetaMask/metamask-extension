@@ -1,4 +1,5 @@
-import React from 'react';
+import React, { useEffect } from 'react';
+import { endTrace, TraceName } from '../../../../shared/lib/trace';
 import {
   AccountOverviewTabsProps,
   AccountOverviewTabs,
@@ -12,6 +13,10 @@ export const AccountOverviewLayout = ({
   children,
   ...tabsProps
 }: AccountOverviewLayoutProps) => {
+  useEffect(() => {
+    endTrace({ name: TraceName.AccountListItem });
+  }, []);
+
   return (
     <>
       <div className="account-overview__balance-wrapper">{children}</div>
