@@ -69,7 +69,6 @@ export default function TokenList({
   const t = useI18nContext();
   const { tokenSortConfig, tokenNetworkFilter } = useSelector(getPreferences);
   const selectedAccount = useSelector(getSelectedAccount);
-  const currentChain = useSelector(getCurrentChainId);
   const conversionRate = useSelector(getConversionRate);
   const nativeTokenWithBalance = useNativeTokenBalance();
   const shouldHideZeroBalanceTokens = useSelector(
@@ -81,11 +80,12 @@ export default function TokenList({
   );
 
   const allTokens = useSelector(getAllTokens);
-
-  const selectedAccountAddress = selectedAccount.address;
-
-  const foo = aggregateTokensByAccount(allTokens);
-  console.log('foo', foo);
+  const aggregatedCrossChainTokensByAccount =
+    aggregateTokensByAccount(allTokens);
+  console.log(
+    'aggregatedCrossChainTokensByAccount',
+    aggregatedCrossChainTokensByAccount,
+  );
 
   const { tokensWithBalances, loading } = useAccountTotalFiatBalance(
     selectedAccount,
@@ -96,8 +96,6 @@ export default function TokenList({
     mergedRates: any;
     loading: boolean;
   };
-
-  console.log('tokensWithBalances', tokensWithBalances);
 
   const sortedTokens = useMemo(() => {
     // TODO filter assets by networkTokenFilter before sorting
