@@ -125,7 +125,7 @@ describe('Notifications Activation', () => {
   it('should successfully send correct metrics when notifications modal is dismissed', async () => {
     const mockedState = getMockedNotificationsState();
     await act(async () => {
-      const { container } = await integrationTestRender({
+      await integrationTestRender({
         preloadedState: {
           ...mockedState,
           isProfileSyncingEnabled: false,
@@ -161,7 +161,7 @@ describe('Notifications Activation', () => {
   it.only('should successfully send correct metrics when notifications modal is dismissed', async () => {
     const mockedState = getMockedNotificationsState();
     await act(async () => {
-      const { container } = await integrationTestRender({
+      await integrationTestRender({
         preloadedState: {
           ...mockedState,
           isProfileSyncingEnabled: false,

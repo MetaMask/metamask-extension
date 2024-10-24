@@ -141,7 +141,7 @@ describe('Notifications Toggle', () => {
   it('enabling product announcments from settings', async () => {
     const mockedState = getMockedNotificationsState();
     await act(async () => {
-      const { container } = await integrationTestRender({
+      await integrationTestRender({
         preloadedState: {
           ...mockedState,
           isProfileSyncingEnabled: false,
