@@ -327,8 +327,7 @@ function maybeDetectPhishing(theController) {
       return {};
     },
     {
-      types: ['main_frame', 'sub_frame', 'xmlhttprequest'],
-      urls: ['http://*/*', 'https://*/*'],
+      urls: ['<all_urls>'],
     },
     isManifestV2 ? ['blocking'] : [],
   );
