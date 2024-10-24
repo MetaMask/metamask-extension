@@ -21,7 +21,6 @@ describe('Privacy Mode', function () {
             '[data-testid="eth-overview__primary-currency"] .currency-display-component__text',
           );
           const surveyText = await balanceElement.getText();
-          console.log('header value is', value);
           assert.equal(
             surveyText,
             value,
@@ -34,7 +33,6 @@ describe('Privacy Mode', function () {
             '[data-testid="multichain-token-list-item-secondary-value"]',
           );
           const surveyText = await balanceElement.getText();
-          console.log('token value is', value);
           assert.equal(surveyText, value, `Token balance should be "${value}"`);
         }
 
