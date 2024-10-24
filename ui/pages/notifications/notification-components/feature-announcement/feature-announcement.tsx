@@ -123,7 +123,7 @@ export const components: NotificationComponent<FeatureAnnouncementNotification> 
             notification={notification}
             variant={ButtonVariant.Secondary}
             text={notification.data.externalLink.externalLinkText}
-            href={`/${notification.data.externalLink.externalLinkUrl}`}
+            href={`${notification.data.externalLink.externalLinkUrl}`}
             id={notification.id}
             endIconName={false}
             isExternal={true}
