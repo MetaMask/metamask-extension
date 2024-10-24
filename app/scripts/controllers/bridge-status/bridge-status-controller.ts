@@ -113,44 +113,67 @@ export default class BridgeStatusController extends StaticIntervalPollingControl
     targetContractAddress,
   }: FetchBridgeTxStatusArgs) => {
     const { bridgeStatusState } = this.state;
-    const status = await fetchBridgeTxStatus(statusRequest);
-    console.log('fetchBridgeTxStatus', {
-      statusRequest,
-      status,
-    });
-
-    // No need to purge these on network change or account change, TransactionController does not purge either.
-    // TODO In theory we can skip checking status if it's not the current account/network
-    // we need to keep track of the account that this is associated with as well so that we don't show it in Activity list for other accounts
-    // First stab at this will not stop polling when you are on a different account
-
     const { address: account } = this.#getSelectedAccount();
 
+    const commonFields = {
+      quote: quoteResponse.quote,
+      startTime,
+      estimatedProcessingTimeInSeconds:
+        quoteResponse.estimatedProcessingTimeInSeconds,
+      slippagePercentage,
+      completionTime,
+      pricingData,
+      initialDestAssetBalance,
+      targetContractAddress,
+      account,
+    };
+
+    // Write all non-status fields to state so we can reference the quote in Activity list
+    // We know it's in progress but not the exact status without talking to Bridge API
     this.update((_state) => {
       _state.bridgeStatusState = {
         ...bridgeStatusState,
         txHistory: {
           ...bridgeStatusState.txHistory,
           [statusRequest.srcTxHash]: {
-            quote: quoteResponse.quote,
-            status,
-            startTime,
-            estimatedProcessingTimeInSeconds:
-              quoteResponse.estimatedProcessingTimeInSeconds,
-            slippagePercentage,
-            completionTime,
-            pricingData,
-            initialDestAssetBalance,
-            targetContractAddress,
-            account,
+            ...commonFields,
           },
         },
       };
     });
+    try {
+      // We try here because we receive 500 errors from Bridge API if we try to fetch immediately after submitting the source tx
+      // Oddly mostly happens on Optimism, never on Arbitrum. By the 2nd fetch, the Bridge API responds properly.
+      const status = await fetchBridgeTxStatus(statusRequest);
+      console.log('fetchBridgeTxStatus', {
+        statusRequest,
+        status,
+      });
 
-    const pollingToken = this.#pollingTokensByTxHash[statusRequest.srcTxHash];
-    if (status.status === StatusTypes.COMPLETE && pollingToken) {
-      this.stopPollingByPollingToken(pollingToken);
+      // No need to purge these on network change or account change, TransactionController does not purge either.
+      // TODO In theory we can skip checking status if it's not the current account/network
+      // we need to keep track of the account that this is associated with as well so that we don't show it in Activity list for other accounts
+      // First stab at this will not stop polling when you are on a different account
+
+      this.update((_state) => {
+        _state.bridgeStatusState = {
+          ...bridgeStatusState,
+          txHistory: {
+            ...bridgeStatusState.txHistory,
+            [statusRequest.srcTxHash]: {
+              ...commonFields,
+              status,
+            },
+          },
+        };
+      });
+
+      const pollingToken = this.#pollingTokensByTxHash[statusRequest.srcTxHash];
+      if (status.status === StatusTypes.COMPLETE && pollingToken) {
+        this.stopPollingByPollingToken(pollingToken);
+      }
+    } catch (e) {
+      console.error(e);
     }
   };
 }

@@ -11,8 +11,6 @@ const CLIENT_ID_HEADER = { 'X-Client-Id': BRIDGE_CLIENT_ID };
 export const BRIDGE_STATUS_BASE_URL = `${BRIDGE_API_BASE_URL}/getTxStatus`;
 
 export const fetchBridgeTxStatus = async (statusRequest: StatusRequest) => {
-  console.log('fetchBridgeTxStatus', { statusRequest });
-
   // Assemble params
   const { quote, ...statusRequestNoQuote } = statusRequest;
   const statusRequestNoQuoteFormatted = Object.fromEntries(
@@ -43,9 +41,6 @@ export const fetchBridgeTxStatus = async (statusRequest: StatusRequest) => {
     throw new Error('Invalid response from bridge');
   }
 
-  // Convert to Extension format
-
   // Return
-  console.log('fetchBridgeTxStatus', { rawTxStatus });
   return rawTxStatus;
 };

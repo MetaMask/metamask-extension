@@ -16,7 +16,6 @@ import {
 } from '../../../store/actions';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import { PENDING_STATUS_HASH } from '../../../helpers/constants/transactions';
-import { isPending } from '@reduxjs/toolkit';
 
 export default function useSourceChainBridgeData({
   transactionGroup,
