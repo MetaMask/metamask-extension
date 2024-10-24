@@ -2,7 +2,7 @@ import React, { useContext, useEffect, useState, useCallback } from 'react';
 import BigNumber from 'bignumber.js';
 import PropTypes from 'prop-types';
 import { shallowEqual, useDispatch, useSelector } from 'react-redux';
-import { uniqBy, isEqual } from 'lodash';
+import { uniqBy, isEqual, isEmpty } from 'lodash';
 import { useHistory } from 'react-router-dom';
 import { getTokenTrackerLink } from '@metamask/etherscan-link';
 import classnames from 'classnames';
@@ -83,23 +83,23 @@ import { usePrevious } from '../../../hooks/usePrevious';
 import { useTokenTracker } from '../../../hooks/useTokenTracker';
 import { useTokenFiatAmount } from '../../../hooks/useTokenFiatAmount';
 import { useEthFiatAmount } from '../../../hooks/useEthFiatAmount';
-import {
-  isSwapsDefaultTokenAddress,
-  isSwapsDefaultTokenSymbol,
-} from '../../../../shared/modules/swaps.utils';
+import { isSwapsDefaultTokenAddress } from '../../../../shared/modules/swaps.utils';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventLinkType,
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
 import {
-  SWAPS_CHAINID_DEFAULT_BLOCK_EXPLORER_URL_MAP,
   TokenBucketPriority,
   ERROR_FETCHING_QUOTES,
   QUOTES_NOT_AVAILABLE_ERROR,
   QUOTES_EXPIRED_ERROR,
   MAX_ALLOWED_SLIPPAGE,
 } from '../../../../shared/constants/swaps';
+import {
+  CHAINID_DEFAULT_BLOCK_EXPLORER_URL_MAP,
+  CHAINID_DEFAULT_BLOCK_EXPLORER_HUMAN_READABLE_URL_MAP,
+} from '../../../../shared/constants/common';
 import {
   resetSwapsPostFetchState,
   ignoreTokens,
@@ -228,8 +228,8 @@ export default function PrepareSwapPage({
   const isMetaMetricsEnabled = useSelector(getParticipateInMetaMetrics);
   const isMarketingEnabled = useSelector(getDataCollectionForMarketing);
 
-  const fetchParamsFromToken = isSwapsDefaultTokenSymbol(
-    sourceTokenInfo?.symbol,
+  const fetchParamsFromToken = isSwapsDefaultTokenAddress(
+    sourceTokenInfo?.address,
     chainId,
   )
     ? defaultSwapsToken
@@ -241,7 +241,8 @@ export default function PrepareSwapPage({
   // but is not in tokensWithBalances or tokens, then we want to add it to the usersTokens array so that
   // the balance of the token can appear in the from token selection dropdown
   const fromTokenArray =
-    !isSwapsDefaultTokenSymbol(fromToken?.symbol, chainId) && fromToken?.balance
+    !isSwapsDefaultTokenAddress(fromToken?.address, chainId) &&
+    fromToken?.balance
       ? [fromToken]
       : [];
   const usersTokens = uniqBy(
@@ -310,7 +311,10 @@ export default function PrepareSwapPage({
     { showFiat: true },
     true,
   );
-  const swapFromFiatValue = isSwapsDefaultTokenSymbol(fromTokenSymbol, chainId)
+  const swapFromFiatValue = isSwapsDefaultTokenAddress(
+    fromTokenAddress,
+    chainId,
+  )
     ? swapFromEthFiatValue
     : swapFromTokenFiatValue;
 
@@ -441,13 +445,13 @@ export default function PrepareSwapPage({
     null, // no networkId
     null, // no holderAddress
     {
-      blockExplorerUrl:
-        SWAPS_CHAINID_DEFAULT_BLOCK_EXPLORER_URL_MAP[chainId] ?? null,
+      blockExplorerUrl: CHAINID_DEFAULT_BLOCK_EXPLORER_URL_MAP[chainId] ?? null,
     },
   );
 
   const blockExplorerLabel = rpcPrefs.blockExplorerUrl
-    ? getURLHostName(blockExplorerTokenLink)
+    ? CHAINID_DEFAULT_BLOCK_EXPLORER_HUMAN_READABLE_URL_MAP[chainId] ??
+      t('etherscan')
     : t('etherscan');
 
   const { address: toAddress } = toToken || {};
@@ -786,17 +790,22 @@ export default function PrepareSwapPage({
     );
   }
 
-  const isNonDefaultToken = !isSwapsDefaultTokenSymbol(
-    fromTokenSymbol,
+  const isNonDefaultFromToken = !isSwapsDefaultTokenAddress(
+    fromTokenAddress,
     chainId,
   );
   const hasPositiveFromTokenBalance = rawFromTokenBalance > 0;
   const isTokenEligibleForMaxBalance =
-    isSmartTransaction || (!isSmartTransaction && isNonDefaultToken);
+    isSmartTransaction || (!isSmartTransaction && isNonDefaultFromToken);
   const showMaxBalanceLink =
     fromTokenSymbol &&
     isTokenEligibleForMaxBalance &&
     hasPositiveFromTokenBalance;
+
+  const isNonDefaultToToken = !isSwapsDefaultTokenAddress(
+    selectedToToken.address,
+    chainId,
+  );
 
   return (
     <div className="prepare-swap-page">
@@ -1022,6 +1031,21 @@ export default function PrepareSwapPage({
           >
             <div className="prepare-swap-page__balance-message">
               {selectedToToken?.string && yourTokenToBalance}
+            </div>
+          </Box>
+          <Box
+            display={DISPLAY.FLEX}
+            justifyContent={JustifyContent.spaceBetween}
+            alignItems={AlignItems.stretch}
+          >
+            <div className="prepare-swap-page__balance-message">
+              {selectedToToken &&
+                !isEmpty(selectedToToken) &&
+                isNonDefaultToToken &&
+                t('swapTokenVerifiedSources', [
+                  occurrences,
+                  <BlockExplorerLink key="block-explorer-link" />,
+                ])}
             </div>
           </Box>
         </div>
