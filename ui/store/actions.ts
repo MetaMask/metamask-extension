@@ -41,7 +41,7 @@ import {
 } from '@metamask/network-controller';
 import { InterfaceState } from '@metamask/snaps-sdk';
 import { KeyringTypes } from '@metamask/keyring-controller';
-import type { NotificationServicesController } from '@metamask/notification-services-controller';
+import { NotificationServicesController } from '@metamask/notification-services-controller';
 import { Patch } from 'immer';
 import { HandlerType } from '@metamask/snaps-utils';
 import switchDirection from '../../shared/lib/switch-direction';
@@ -60,7 +60,6 @@ import {
   getApprovalFlows,
   getCurrentNetworkTransactions,
   getIsSigningQRHardwareTransaction,
-  getNotifications,
   ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
   getPermissionSubjects,
   getFirstSnapInstallOrUpdateRequest,
@@ -128,6 +127,7 @@ import {
   CaveatTypes,
   EndowmentTypes,
 } from '../../shared/constants/permissions';
+import { getMetamaskNotifications } from '../selectors/metamask-notifications/metamask-notifications';
 import * as actionConstants from './actionConstants';
 ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
 import { updateCustodyState } from './institutional/institution-actions';
@@ -1255,55 +1255,6 @@ export async function handleSnapRequest<
   request: JsonRpcRequest<Params>;
 }): Promise<unknown> {
   return submitRequestToBackground('handleSnapRequest', [args]);
-}
-
-export function dismissNotifications(
-  ids: string[],
-): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
-  return async (dispatch: MetaMaskReduxDispatch) => {
-    await submitRequestToBackground('dismissNotifications', [ids]);
-    await forceUpdateMetamaskState(dispatch);
-  };
-}
-
-export function deleteExpiredNotifications(): ThunkAction<
-  void,
-  MetaMaskReduxState,
-  unknown,
-  AnyAction
-> {
-  return async (dispatch, getState) => {
-    const state = getState();
-    const notifications = getNotifications(state);
-
-    const notificationIdsToDelete = notifications
-      .filter((notification) => {
-        const expirationTime = new Date(
-          Date.now() - NOTIFICATIONS_EXPIRATION_DELAY,
-        );
-
-        return Boolean(
-          notification.readDate &&
-            new Date(notification.readDate) < expirationTime,
-        );
-      })
-      .map(({ id }) => id);
-    if (notificationIdsToDelete.length) {
-      await submitRequestToBackground('dismissNotifications', [
-        notificationIdsToDelete,
-      ]);
-      await forceUpdateMetamaskState(dispatch);
-    }
-  };
-}
-
-export function markNotificationsAsRead(
-  ids: string[],
-): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
-  return async (dispatch: MetaMaskReduxDispatch) => {
-    await submitRequestToBackground('markNotificationsAsRead', [ids]);
-    await forceUpdateMetamaskState(dispatch);
-  };
 }
 
 export function revokeDynamicSnapPermissions(
@@ -5437,6 +5388,32 @@ export function fetchAndUpdateMetamaskNotifications(
       const response = await submitRequestToBackground(
         'fetchAndUpdateMetamaskNotifications',
         [previewToken],
+      );
+      return response;
+    } catch (error) {
+      logErrorWithMessage(error);
+      throw error;
+    }
+  };
+}
+
+/**
+ * Deletes notifications by their id.
+ *
+ * This function sends a request to the background script to delete notifications by the passed in ids and updates the state accordingly.
+ * If the operation encounters an error, it logs the error message and rethrows the error to ensure it is handled appropriately.
+ *
+ * @param ids - The ids of the notifications to delete.
+ * @returns A thunk action that, when dispatched, attempts to delete a notification by its id.
+ */
+export function deleteNotificationsById(
+  ids: string[],
+): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
+  return async () => {
+    try {
+      const response = await submitRequestToBackground(
+        'deleteNotificationsById',
+        [ids],
       );
       return response;
     } catch (error) {
