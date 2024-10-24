@@ -10,7 +10,7 @@ import HeaderNavbar from '../../page-objects/pages/header-navbar';
 import SelectNetwork from '../../page-objects/pages/dialog/select-network';
 
 describe('Switch network - ', function (this: Suite) {
-  it('multiple networks', async function () {
+  it('Switch networks to existing and new networks', async function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilder().build(),
