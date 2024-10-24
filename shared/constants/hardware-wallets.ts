@@ -16,7 +16,7 @@ export enum HardwareKeyringNames {
 }
 
 export enum HardwareDeviceNames {
-  ledger = 'ledger',
+  ledger = 'Ledger',
   trezor = 'trezor',
   oneKeyViaTrezor = 'OneKey via Trezor',
   lattice = 'lattice',
