@@ -1,4 +1,4 @@
-import { FeatureFlagResponse } from '../../../../ui/pages/bridge/bridge.util';
+import { FeatureFlagResponse } from '../../../../ui/pages/bridge/types';
 
 export const DEFAULT_FEATURE_FLAGS_RESPONSE: FeatureFlagResponse = {
   'extension-support': false,
