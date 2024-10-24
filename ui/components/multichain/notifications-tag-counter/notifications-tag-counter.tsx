@@ -48,6 +48,7 @@ export const NotificationsTagCounter = ({
           color={TextColor.errorInverse}
           variant={TextVariant.bodyXs}
           className="notifications-tag-counter__unread-dot"
+          data-testid="notifications-tag-counter__unread-dot"
           textAlign={TextAlign.Center}
         >
           {notificationsUnreadCount > 10 ? '9+' : notificationsUnreadCount}

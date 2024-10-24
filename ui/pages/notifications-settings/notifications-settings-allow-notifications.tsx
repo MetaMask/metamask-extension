@@ -74,7 +74,7 @@ export function NotificationsSettingsAllowNotifications({
   }, [isMetamaskNotificationsEnabled]);
 
   useEffect(() => {
-    if (isMetamaskNotificationsEnabled && !error) {
+    if (!error) {
       listNotifications();
     }
   }, [isMetamaskNotificationsEnabled, error, listNotifications]);
@@ -82,7 +82,6 @@ export function NotificationsSettingsAllowNotifications({
   const toggleNotifications = useCallback(async () => {
     setLoading(true);
     if (isMetamaskNotificationsEnabled) {
-      await disableNotifications();
       trackEvent({
         category: MetaMetricsEventCategory.NotificationSettings,
         event: MetaMetricsEventName.NotificationsSettingsUpdated,
@@ -93,8 +92,8 @@ export function NotificationsSettingsAllowNotifications({
           new_value: false,
         },
       });
+      await disableNotifications();
     } else {
-      await enableNotifications();
       trackEvent({
         category: MetaMetricsEventCategory.NotificationSettings,
         event: MetaMetricsEventName.NotificationsSettingsUpdated,
@@ -105,6 +104,7 @@ export function NotificationsSettingsAllowNotifications({
           new_value: true,
         },
       });
+      await enableNotifications();
     }
     setLoading(false);
     setToggleValue(!toggleValue);
