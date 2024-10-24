@@ -103,7 +103,6 @@ describe('Confirmation Signature - Sign Typed Data @no-mmi', function (this: Sui
 
 async function assertInfoValues(driver: Driver) {
   await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
-
   const origin = driver.findElement({ text: DAPP_HOST_ADDRESS });
   const message = driver.findElement({ text: 'Hi, Alice!' });
 
