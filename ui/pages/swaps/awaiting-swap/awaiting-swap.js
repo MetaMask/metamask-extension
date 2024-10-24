@@ -23,8 +23,8 @@ import {
   getFullTxData,
 } from '../../../selectors';
 import {
-  getSmartTransactionsOptInStatus,
   getSmartTransactionsEnabled,
+  getSmartTransactionsOptInStatusForMetrics,
 } from '../../../../shared/modules/selectors';
 
 import {
@@ -33,7 +33,7 @@ import {
   getApproveTxParams,
   getUsedSwapsGasPrice,
   fetchQuotesAndSetQuoteState,
-  navigateBackToBuildQuote,
+  navigateBackToPrepareSwap,
   prepareForRetryGetQuotes,
   prepareToLeaveSwaps,
   getCurrentSmartTransactionsEnabled,
@@ -120,7 +120,7 @@ export default function AwaitingSwap({
   const hardwareWalletUsed = useSelector(isHardwareWallet);
   const hardwareWalletType = useSelector(getHardwareWalletType);
   const smartTransactionsOptInStatus = useSelector(
-    getSmartTransactionsOptInStatus,
+    getSmartTransactionsOptInStatusForMetrics,
   );
   const smartTransactionsEnabled = useSelector(getSmartTransactionsEnabled);
   const currentSmartTransactionsEnabled = useSelector(
@@ -318,7 +318,7 @@ export default function AwaitingSwap({
               ),
             );
           } else if (errorKey) {
-            await dispatch(navigateBackToBuildQuote(history));
+            await dispatch(navigateBackToPrepareSwap(history));
           } else if (
             isSwapsDefaultTokenSymbol(destinationTokenSymbol, chainId) ||
             swapComplete
@@ -329,7 +329,9 @@ export default function AwaitingSwap({
             history.push(DEFAULT_ROUTE);
           }
         }}
-        onCancel={async () => await dispatch(navigateBackToBuildQuote(history))}
+        onCancel={async () =>
+          await dispatch(navigateBackToPrepareSwap(history))
+        }
         submitText={submitText}
         disabled={submittingSwap}
         hideCancel={errorKey !== QUOTES_EXPIRED_ERROR}

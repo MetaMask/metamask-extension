@@ -2,7 +2,7 @@
 import { TransactionEnvelopeType } from '@metamask/transaction-controller';
 import { DAPP_URL, unlockWallet, WINDOW_TITLES } from '../../../helpers';
 import { Mockttp } from '../../../mock-e2e';
-import SetApprovalForAllTransactionConfirmation from '../../../page-objects/pages/set-approval-for-all-transaction-confirmation';
+import SetApprovalForAllTransactionConfirmation from '../../../page-objects/pages/confirmations/redesign/set-approval-for-all-transaction-confirmation';
 import TestDapp from '../../../page-objects/pages/test-dapp';
 import GanacheContractAddressRegistry from '../../../seeder/ganache-contract-address-registry';
 import { Driver } from '../../../webdriver/driver';
@@ -85,7 +85,7 @@ async function createTransactionAssertDetailsAndConfirm(
 
   const testDapp = new TestDapp(driver);
 
-  await testDapp.open({ contractAddress, url: DAPP_URL });
+  await testDapp.openTestDappPage({ contractAddress, url: DAPP_URL });
   await testDapp.clickERC721SetApprovalForAllButton();
 
   await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);

@@ -19,11 +19,11 @@ const BTC_OVERVIEW_BUY = 'coin-overview-buy';
 const BTC_OVERVIEW_BRIDGE = 'coin-overview-bridge';
 const BTC_OVERVIEW_RECEIVE = 'coin-overview-receive';
 const BTC_OVERVIEW_SWAP = 'token-overview-button-swap';
-const BTC_OVERVIEW_SEND = 'coin-overview-send';
 const BTC_OVERVIEW_PRIMARY_CURRENCY = 'coin-overview__primary-currency';
 
 const mockMetaMetricsId = 'deadbeef';
 const mockNonEvmBalance = '1';
+const mockNonEvmBalanceUsd = '1.00';
 const mockNonEvmAccount = {
   address: 'bc1qwl8399fz829uqvqly9tcatgrgtwp3udnhxfq4k',
   id: '542490c8-d178-433b-9f31-f680b11f45a5',
@@ -112,17 +112,31 @@ describe('BtcOverview', () => {
     setBackgroundConnection({ setBridgeFeatureFlags: jest.fn() } as never);
   });
 
-  it('shows the primary balance', async () => {
-    const { queryByTestId, queryByText } = renderWithProvider(
-      <BtcOverview />,
-      getStore(),
-    );
+  it('shows the primary balance as BTC when showNativeTokenAsMainBalance if true', async () => {
+    const { queryByTestId } = renderWithProvider(<BtcOverview />, getStore());
 
     const primaryBalance = queryByTestId(BTC_OVERVIEW_PRIMARY_CURRENCY);
     expect(primaryBalance).toBeInTheDocument();
     expect(primaryBalance).toHaveTextContent(`${mockNonEvmBalance}BTC`);
-    // For now we consider balance to be always cached
-    expect(queryByText('*')).toBeInTheDocument();
+  });
+
+  it('shows the primary balance as fiat when showNativeTokenAsMainBalance if false', async () => {
+    const { queryByTestId } = renderWithProvider(
+      <BtcOverview />,
+      getStore({
+        metamask: {
+          ...mockMetamaskStore,
+          // The balances won't be available
+          preferences: {
+            showNativeTokenAsMainBalance: false,
+          },
+        },
+      }),
+    );
+
+    const primaryBalance = queryByTestId(BTC_OVERVIEW_PRIMARY_CURRENCY);
+    expect(primaryBalance).toBeInTheDocument();
+    expect(primaryBalance).toHaveTextContent(`$${mockNonEvmBalanceUsd}USD`);
   });
 
   it('shows a spinner if balance is not available', async () => {
@@ -143,14 +157,10 @@ describe('BtcOverview', () => {
     expect(spinner).toBeInTheDocument();
   });
 
-  it('buttons Send/Swap/Bridge are disabled', () => {
+  it('buttons Swap/Bridge are disabled', () => {
     const { queryByTestId } = renderWithProvider(<BtcOverview />, getStore());
 
-    for (const buttonTestId of [
-      BTC_OVERVIEW_SEND,
-      BTC_OVERVIEW_SWAP,
-      BTC_OVERVIEW_BRIDGE,
-    ]) {
+    for (const buttonTestId of [BTC_OVERVIEW_SWAP, BTC_OVERVIEW_BRIDGE]) {
       const button = queryByTestId(buttonTestId);
       expect(button).toBeInTheDocument();
       expect(button).toBeDisabled();

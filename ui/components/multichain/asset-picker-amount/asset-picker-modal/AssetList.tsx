@@ -2,12 +2,10 @@ import React from 'react';
 import { useSelector } from 'react-redux';
 import classnames from 'classnames';
 import {
-  getPreferences,
+  getCurrentCurrency,
   getSelectedAccountCachedBalance,
 } from '../../../../selectors';
 import { getNativeCurrency } from '../../../../ducks/metamask/metamask';
-import { useUserPreferencedCurrency } from '../../../../hooks/useUserPreferencedCurrency';
-import { PRIMARY, SECONDARY } from '../../../../helpers/constants/common';
 import { useCurrencyDisplay } from '../../../../hooks/useCurrencyDisplay';
 import { AssetType } from '../../../../../shared/constants/transaction';
 import { Box } from '../../../component-library';
@@ -46,29 +44,16 @@ export default function AssetList({
 
   const nativeCurrency = useSelector(getNativeCurrency);
   const balanceValue = useSelector(getSelectedAccountCachedBalance);
-  const { useNativeCurrencyAsPrimaryCurrency } = useSelector(getPreferences);
+  const currentCurrency = useSelector(getCurrentCurrency);
 
-  const {
-    currency: primaryCurrency,
-    numberOfDecimals: primaryNumberOfDecimals,
-  } = useUserPreferencedCurrency(PRIMARY, { ethNumberOfDecimals: 4 });
-
-  const {
-    currency: secondaryCurrency,
-    numberOfDecimals: secondaryNumberOfDecimals,
-  } = useUserPreferencedCurrency(SECONDARY, { ethNumberOfDecimals: 4 });
-
-  const [, primaryCurrencyProperties] = useCurrencyDisplay(balanceValue, {
-    numberOfDecimals: primaryNumberOfDecimals,
-    currency: primaryCurrency,
+  const [primaryCurrencyValue] = useCurrencyDisplay(balanceValue, {
+    currency: currentCurrency,
+    hideLabel: true,
   });
 
-  const [secondaryCurrencyDisplay, secondaryCurrencyProperties] =
-    useCurrencyDisplay(balanceValue, {
-      numberOfDecimals: secondaryNumberOfDecimals,
-      currency: secondaryCurrency,
-      hideLabel: true,
-    });
+  const [secondaryCurrencyValue] = useCurrencyDisplay(balanceValue, {
+    currency: nativeCurrency,
+  });
 
   return (
     <Box className="tokens-main-view-modal">
@@ -76,6 +61,7 @@ export default function AssetList({
         const tokenAddress = token.address?.toLowerCase();
         const isSelected = tokenAddress === selectedToken?.toLowerCase();
         const isDisabled = isTokenDisabled?.(token) ?? false;
+
         return (
           <Box
             padding={0}
@@ -116,19 +102,13 @@ export default function AssetList({
               <Box marginInlineStart={2}>
                 {token.type === AssetType.native ? (
                   <TokenListItem
-                    title={nativeCurrency}
-                    primary={
-                      primaryCurrencyProperties.value ??
-                      secondaryCurrencyProperties.value
-                    }
-                    tokenSymbol={
-                      useNativeCurrencyAsPrimaryCurrency
-                        ? primaryCurrency
-                        : secondaryCurrency
-                    }
-                    secondary={secondaryCurrencyDisplay}
+                    title={token.symbol}
+                    primary={primaryCurrencyValue}
+                    tokenSymbol={token.symbol}
+                    secondary={secondaryCurrencyValue}
                     tokenImage={token.image}
-                    isOriginalTokenSymbol
+                    isOriginalTokenSymbol={token.symbol === nativeCurrency}
+                    isPrimaryTokenSymbolHidden
                   />
                 ) : (
                   <AssetComponent

@@ -420,7 +420,6 @@ const AccountListItem = ({
           anchorElement={accountListItemMenuElement}
           account={account}
           onClose={() => setAccountOptionsMenuOpen(false)}
-          closeMenu={closeMenu}
           disableAccountSwitcher={isSingleAccount && selected}
           isOpen={accountOptionsMenuOpen}
           onActionClick={onActionClick}

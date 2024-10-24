@@ -11,7 +11,6 @@ const store = configureStore({
   ...mockSendState,
   metamask: {
     ...mockSendState.metamask,
-    preferences: { useNativeCurrencyAsPrimaryCurrency: true },
   },
   appState: { ...mockSendState.appState, sendInputCurrencySwitched: false },
 });

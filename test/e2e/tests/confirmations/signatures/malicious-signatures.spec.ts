@@ -50,11 +50,10 @@ describe('Malicious Confirmation Signature - Bad Domain @no-mmi', function (this
       }: TestSuiteArguments) => {
         await openDappAndTriggerSignature(driver, SignatureType.SIWE_BadDomain);
 
-        await driver.clickElement(
+        await driver.clickElementAndWaitForWindowToClose(
           '[data-testid="confirm-footer-cancel-button"]',
         );
 
-        await driver.waitUntilXWindowHandles(2);
         await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
 
         const rejectionResult = await driver.waitForSelector({
@@ -99,6 +98,8 @@ describe('Malicious Confirmation Signature - Bad Domain @no-mmi', function (this
 
         await scrollAndConfirmAndAssertConfirm(driver);
 
+        await acknowledgeAlert(driver);
+
         await driver.clickElement(
           '[data-testid="confirm-alert-modal-cancel-button"]',
         );
@@ -122,8 +123,8 @@ describe('Malicious Confirmation Signature - Bad Domain @no-mmi', function (this
           expectedProps: {
             alert_action_clicked: [],
             alert_key_clicked: [],
-            alert_resolved: [],
-            alert_resolved_count: 0,
+            alert_resolved: ['requestFrom'],
+            alert_resolved_count: 1,
             alert_triggered: ['requestFrom'],
             alert_triggered_count: 1,
             alert_visualized: ['requestFrom'],
@@ -150,8 +151,10 @@ async function acknowledgeAlert(driver: Driver) {
 
 async function verifyAlertIsDisplayed(driver: Driver) {
   await driver.clickElementSafe('.confirm-scroll-to-bottom__button');
-  const alert = await driver.findElement('[data-testid="inline-alert"]');
-  assert.equal(await alert.getText(), 'Alert');
+  await driver.waitForSelector({
+    css: '[data-testid="inline-alert"]',
+    text: 'Alert',
+  });
   await driver.clickElement('[data-testid="inline-alert"]');
 }
 
@@ -159,6 +162,8 @@ async function assertVerifiedMessage(driver: Driver, message: string) {
   await driver.waitUntilXWindowHandles(2);
   await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
 
-  const verifySigUtil = await driver.findElement('#siweResult');
-  assert.equal(await verifySigUtil.getText(), message);
+  await driver.waitForSelector({
+    css: '#siweResult',
+    text: message,
+  });
 }

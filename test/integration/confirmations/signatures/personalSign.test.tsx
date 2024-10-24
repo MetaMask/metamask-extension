@@ -1,15 +1,15 @@
-import { fireEvent, waitFor } from '@testing-library/react';
 import { ApprovalType } from '@metamask/controller-utils';
-import mockMetaMaskState from '../../data/integration-init-state.json';
-import { integrationTestRender } from '../../../lib/render-helpers';
-import { shortenAddress } from '../../../../ui/helpers/utils/util';
-import * as backgroundConnection from '../../../../ui/store/background-connection';
+import { act, fireEvent, screen, waitFor } from '@testing-library/react';
+import { MESSAGE_TYPE } from '../../../../shared/constants/app';
 import {
   MetaMetricsEventCategory,
-  MetaMetricsEventName,
   MetaMetricsEventLocation,
+  MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
-import { MESSAGE_TYPE } from '../../../../shared/constants/app';
+import { shortenAddress } from '../../../../ui/helpers/utils/util';
+import * as backgroundConnection from '../../../../ui/store/background-connection';
+import { integrationTestRender } from '../../../lib/render-helpers';
+import mockMetaMaskState from '../../data/integration-init-state.json';
 
 jest.mock('../../../../ui/store/background-connection', () => ({
   ...jest.requireActual('../../../../ui/store/background-connection'),
@@ -156,14 +156,16 @@ describe('PersonalSign Confirmation', () => {
       account.address,
     );
 
-    const { getByText } = await integrationTestRender({
-      preloadedState: mockedMetaMaskState,
-      backgroundConnection: backgroundConnectionMocked,
+    await act(async () => {
+      await integrationTestRender({
+        preloadedState: mockedMetaMaskState,
+        backgroundConnection: backgroundConnectionMocked,
+      });
     });
 
-    expect(getByText('Signature request')).toBeInTheDocument();
+    expect(screen.getByText('Signature request')).toBeInTheDocument();
     expect(
-      getByText('Review request details before you confirm.'),
+      screen.getByText('Review request details before you confirm.'),
     ).toBeInTheDocument();
   });
 

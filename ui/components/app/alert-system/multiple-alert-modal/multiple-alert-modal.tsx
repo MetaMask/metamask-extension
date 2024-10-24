@@ -30,6 +30,10 @@ export type MultipleAlertModalProps = {
   onClose: (request?: { recursive?: boolean }) => void;
   /** The unique identifier of the entity that owns the alert. */
   ownerId: string;
+  /** Whether to show the close icon in the modal header. */
+  showCloseIcon?: boolean;
+  /** Whether to skip the unconfirmed alerts validation and close the modal directly. */
+  skipAlertNavigation?: boolean;
 };
 
 function PreviousButton({
@@ -145,8 +149,10 @@ export function MultipleAlertModal({
   onClose,
   onFinalAcknowledgeClick,
   ownerId,
+  showCloseIcon = true,
+  skipAlertNavigation = false,
 }: MultipleAlertModalProps) {
-  const { isAlertConfirmed, alerts } = useAlerts(ownerId);
+  const { isAlertConfirmed, fieldAlerts: alerts } = useAlerts(ownerId);
 
   const initialAlertIndex = alerts.findIndex(
     (alert: Alert) => alert.key === alertKey,
@@ -156,7 +162,9 @@ export function MultipleAlertModal({
     initialAlertIndex === -1 ? 0 : initialAlertIndex,
   );
 
-  const selectedAlert = alerts[selectedIndex];
+  // If the selected alert is not found, default to the first alert
+  const selectedAlert = alerts[selectedIndex] ?? alerts[0];
+
   const hasUnconfirmedAlerts = alerts.some(
     (alert: Alert) =>
       !isAlertConfirmed(alert.key) && alert.severity === Severity.Danger,
@@ -173,6 +181,11 @@ export function MultipleAlertModal({
   }, []);
 
   const handleAcknowledgeClick = useCallback(() => {
+    if (skipAlertNavigation) {
+      onFinalAcknowledgeClick();
+      return;
+    }
+
     if (selectedIndex + 1 === alerts.length) {
       if (!hasUnconfirmedAlerts) {
         onFinalAcknowledgeClick();
@@ -189,13 +202,14 @@ export function MultipleAlertModal({
     selectedIndex,
     alerts.length,
     hasUnconfirmedAlerts,
+    skipAlertNavigation,
   ]);
 
   return (
     <AlertModal
       ownerId={ownerId}
       onAcknowledgeClick={handleAcknowledgeClick}
-      alertKey={selectedAlert.key}
+      alertKey={selectedAlert?.key}
       onClose={onClose}
       headerStartAccessory={
         <PageNavigation
@@ -205,6 +219,7 @@ export function MultipleAlertModal({
           selectedIndex={selectedIndex}
         />
       }
+      showCloseIcon={showCloseIcon}
     />
   );
 }

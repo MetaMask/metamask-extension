@@ -33,6 +33,10 @@ export function useAssetDetails(tokenAddress, userAddress, transactionData) {
   const prevTokenBalance = usePrevious(tokensWithBalances);
 
   useEffect(() => {
+    if (!tokenAddress && !userAddress && !transactionData) {
+      return;
+    }
+
     async function getAndSetAssetDetails() {
       dispatch(showLoadingIndication());
       const assetDetails = await getAssetDetails(
@@ -64,6 +68,10 @@ export function useAssetDetails(tokenAddress, userAddress, transactionData) {
     tokensWithBalances,
     prevTokenBalance,
   ]);
+
+  if (!tokenAddress && !userAddress && !transactionData) {
+    return {};
+  }
 
   if (currentAsset) {
     const {

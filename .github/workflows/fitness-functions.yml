@@ -2,12 +2,14 @@ name: Fitness Functions CI
 
 on:
   pull_request:
-    types: [assigned, opened, synchronize, reopened]
+    types:
+      - opened
+      - reopened
+      - synchronize
 
 jobs:
   build:
     runs-on: ubuntu-latest
-
     steps:
       - name: Checkout code
         uses: actions/checkout@v4

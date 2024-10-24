@@ -87,6 +87,7 @@ describe('Swaps Utils', () => {
           sourceDecimals: TOKENS[0].decimals,
           sourceTokenInfo: { ...TOKENS[0] },
           destinationTokenInfo: { ...TOKENS[1] },
+          enableGasIncludedQuotes: false,
         },
         { chainId: CHAIN_IDS.MAINNET },
       );

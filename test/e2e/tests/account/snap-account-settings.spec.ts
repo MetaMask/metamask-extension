@@ -33,7 +33,7 @@ describe('Add snap account experimental settings @no-mmi', function (this: Suite
         await settingsPage.goToExperimentalSettings();
 
         const experimentalSettings = new ExperimentalSettings(driver);
-        await settingsPage.check_pageIsLoaded();
+        await experimentalSettings.check_pageIsLoaded();
         await experimentalSettings.toggleAddAccountSnap();
 
         // Make sure the "Add account Snap" button is visible.

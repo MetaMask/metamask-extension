@@ -135,6 +135,7 @@ export function useCurrencyDisplay(
     numberOfDecimals,
     denomination,
     currency,
+    isAggregatedFiatOverviewBalance,
     ...opts
   },
 ) {
@@ -151,6 +152,7 @@ export function useCurrencyDisplay(
     getMultichainConversionRate,
     account,
   );
+
   const isUserPreferredCurrency = currency === currentCurrency;
   const isNativeCurrency = currency === nativeCurrency;
 
@@ -170,6 +172,10 @@ export function useCurrencyDisplay(
         inputValue,
         conversionRate,
       });
+    }
+
+    if (isAggregatedFiatOverviewBalance) {
+      return formatCurrency(inputValue, currency);
     }
 
     return formatEthCurrencyDisplay({
@@ -194,6 +200,7 @@ export function useCurrencyDisplay(
     denomination,
     numberOfDecimals,
     currentCurrency,
+    isAggregatedFiatOverviewBalance,
   ]);
 
   let suffix;

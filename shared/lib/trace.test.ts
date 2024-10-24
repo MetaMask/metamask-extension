@@ -170,6 +170,27 @@ describe('Trace', () => {
       expect(setMeasurementMock).toHaveBeenCalledTimes(1);
       expect(setMeasurementMock).toHaveBeenCalledWith('tag3', 123, 'none');
     });
+
+    it('supports no global Sentry object', () => {
+      globalThis.sentry = undefined;
+
+      let callbackExecuted = false;
+
+      trace(
+        {
+          name: NAME_MOCK,
+          tags: TAGS_MOCK,
+          data: DATA_MOCK,
+          parentContext: PARENT_CONTEXT_MOCK,
+          startTime: 123,
+        },
+        () => {
+          callbackExecuted = true;
+        },
+      );
+
+      expect(callbackExecuted).toBe(true);
+    });
   });
 
   describe('endTrace', () => {
@@ -263,6 +284,22 @@ describe('Trace', () => {
       endTrace({ name: NAME_MOCK, id: 'invalidId' });
 
       expect(spanEndMock).toHaveBeenCalledTimes(0);
+    });
+
+    it('supports no global Sentry object', () => {
+      globalThis.sentry = undefined;
+
+      expect(() => {
+        trace({
+          name: NAME_MOCK,
+          id: ID_MOCK,
+          tags: TAGS_MOCK,
+          data: DATA_MOCK,
+          parentContext: PARENT_CONTEXT_MOCK,
+        });
+
+        endTrace({ name: NAME_MOCK, id: ID_MOCK });
+      }).not.toThrow();
     });
   });
 });

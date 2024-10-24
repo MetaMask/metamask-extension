@@ -210,7 +210,7 @@ export const createSwapsMockStore = () => {
         },
       ],
       useCurrencyRateCheck: true,
-      currentCurrency: 'ETH',
+      currentCurrency: 'usd',
       currencyRates: {
         ETH: {
           conversionRate: 1,
@@ -397,10 +397,6 @@ export const createSwapsMockStore = () => {
             mobileActive: true,
             extensionActive: true,
           },
-          swapRedesign: {
-            mobileActive: true,
-            extensionActive: true,
-          },
         },
         quotes: {
           TEST_AGG_1: {
@@ -469,6 +465,23 @@ export const createSwapsMockStore = () => {
               decimals: 18,
             },
             fee: 1,
+            isGasIncludedTrade: false,
+            approvalTxFees: {
+              feeEstimate: 42000000000000,
+              fees: [
+                { maxFeePerGas: 2310003200, maxPriorityFeePerGas: 513154852 },
+              ],
+              gasLimit: 21000,
+              gasUsed: 21000,
+            },
+            tradeTxFees: {
+              feeEstimate: 42000000000000,
+              fees: [
+                { maxFeePerGas: 2310003200, maxPriorityFeePerGas: 513154852 },
+              ],
+              gasLimit: 21000,
+              gasUsed: 21000,
+            },
           },
           TEST_AGG_2: {
             trade: {
@@ -503,6 +516,36 @@ export const createSwapsMockStore = () => {
               decimals: 18,
             },
             fee: 1,
+            isGasIncludedTrade: false,
+            approvalTxFees: {
+              feeEstimate: 42000000000000,
+              fees: [
+                { maxFeePerGas: 2310003200, maxPriorityFeePerGas: 513154852 },
+              ],
+              gasLimit: 21000,
+              gasUsed: 21000,
+            },
+            tradeTxFees: {
+              feeEstimate: 42000000000000,
+              fees: [
+                {
+                  maxFeePerGas: 2310003200,
+                  maxPriorityFeePerGas: 513154852,
+                  tokenFees: [
+                    {
+                      token: {
+                        address: '0x6b175474e89094c44da98b954eedeac495271d0f',
+                        symbol: 'DAI',
+                        decimals: 18,
+                      },
+                      balanceNeededToken: '0x426dc933c2e5a',
+                    },
+                  ],
+                },
+              ],
+              gasLimit: 21000,
+              gasUsed: 21000,
+            },
           },
         },
         fetchParams: {
@@ -658,16 +701,23 @@ export const createSwapsMockStore = () => {
 export const createBridgeMockStore = (
   featureFlagOverrides = {},
   bridgeSliceOverrides = {},
+  bridgeStateOverrides = {},
+  metamaskStateOverrides = {},
 ) => {
   const swapsStore = createSwapsMockStore();
   return {
     ...swapsStore,
     bridge: {
-      toChain: null,
+      toChainId: null,
       ...bridgeSliceOverrides,
     },
     metamask: {
       ...swapsStore.metamask,
+      ...mockNetworkState(
+        { chainId: CHAIN_IDS.MAINNET },
+        { chainId: CHAIN_IDS.LINEA_MAINNET },
+      ),
+      ...metamaskStateOverrides,
       bridgeState: {
         ...(swapsStore.metamask.bridgeState ?? {}),
         bridgeFeatureFlags: {
@@ -676,11 +726,8 @@ export const createBridgeMockStore = (
           destNetworkAllowlist: [],
           ...featureFlagOverrides,
         },
+        ...bridgeStateOverrides,
       },
-      ...mockNetworkState(
-        { chainId: CHAIN_IDS.MAINNET },
-        { chainId: CHAIN_IDS.LINEA_MAINNET },
-      ),
     },
   };
 };

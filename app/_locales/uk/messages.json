@@ -244,10 +244,6 @@
   "fast": {
     "message": "Швидка"
   },
-  "fiat": {
-    "message": "Вказівка",
-    "description": "Exchange type"
-  },
   "fileImportFail": {
     "message": "Не працює імпорт файлу? Натисніть тут!",
     "description": "Helps user import their account from a JSON file"
@@ -508,12 +504,6 @@
   "prev": {
     "message": "Попередній"
   },
-  "primaryCurrencySetting": {
-    "message": "Первісна валюта"
-  },
-  "primaryCurrencySettingDescription": {
-    "message": "Оберіть \"рідна\", щоб пріоритезувати показ сум у рідних валютах мережі (напр.ETH). \nОберіть \"фіатна\", щоб пріоритезувати показ сум у ваших обраних фіатних валютах."
-  },
   "privacyMsg": {
     "message": "Політика конфіденційності"
   },
@@ -764,9 +754,6 @@
   },
   "unlockMessage": {
     "message": "Децентралізована мережа очікує"
-  },
-  "updatedWithDate": {
-    "message": "Оновлено $1"
   },
   "urlErrorMsg": {
     "message": "URIs вимагають відповідного префікса HTTP/HTTPS."
