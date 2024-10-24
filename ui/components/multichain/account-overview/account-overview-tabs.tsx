@@ -93,6 +93,7 @@ export const AccountOverviewTabs = ({
         event: getEventFromTabName(tabName),
       });
       trace({ name: TraceName.AccountOverviewTab });
+      endTrace({ name: TraceName.AccountListItem });
     },
     [onTabClick],
   );
