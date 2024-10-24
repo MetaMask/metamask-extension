@@ -4,7 +4,6 @@ import {
 } from '@metamask/transaction-controller';
 import { useContext, useEffect, useState } from 'react';
 import { NameType } from '@metamask/name-controller';
-import { useSelector } from 'react-redux';
 import { useTransactionEventFragment } from '../../hooks/useTransactionEventFragment';
 import {
   UseDisplayNameRequest,
@@ -17,7 +16,6 @@ import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../../../../shared/constants/metametrics';
-import { getCurrentChainId } from '../../../../selectors';
 import { calculateTotalFiat } from './fiat-display';
 import { BalanceChange } from './types';
 import { useLoadingTime } from './useLoadingTime';
@@ -65,9 +63,6 @@ export function useSimulationMetrics({
 }: UseSimulationMetricsProps) {
   const { loadingTime, setLoadingComplete } = useLoadingTime();
 
-  // TODO: Temporary pending multi-chain support in simulations.
-  const chainId = useSelector(getCurrentChainId);
-
   if (!loading) {
     setLoadingComplete();
   }
@@ -79,7 +74,7 @@ export function useSimulationMetrics({
       value: asset.address as string,
       type: NameType.ETHEREUM_ADDRESS,
       preferContractSymbol: true,
-      variation: chainId,
+      variation: asset.chainId,
     }));
 
   const displayNames = useDisplayNames(displayNameRequests);

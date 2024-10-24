@@ -18,7 +18,7 @@ import { ERC20_DEFAULT_DECIMALS, fetchErc20Decimals } from '../../utils/token';
 import {
   BalanceChange,
   FIAT_UNAVAILABLE,
-  NATIVE_ASSET_IDENTIFIER,
+  NativeAssetIdentifier,
   TokenAssetIdentifier,
 } from './types';
 
@@ -94,17 +94,25 @@ async function fetchTokenFiatRates(
 function getNativeBalanceChange(
   nativeBalanceChange: SimulationBalanceChange | undefined,
   nativeFiatRate: number | undefined,
+  chainId: Hex,
 ): BalanceChange | undefined {
   if (!nativeBalanceChange) {
     return undefined;
   }
-  const asset = NATIVE_ASSET_IDENTIFIER;
+
+  const asset: NativeAssetIdentifier = {
+    chainId,
+    standard: TokenStandard.none,
+  };
+
   const amount = getAssetAmount(nativeBalanceChange, NATIVE_DECIMALS);
+
   const fiatAmount = nativeFiatRate
     ? amount
         .times(convertNumberToStringWithPrecisionWarning(nativeFiatRate))
         .toNumber()
     : FIAT_UNAVAILABLE;
+
   return { asset, amount, fiatAmount };
 }
 
@@ -113,9 +121,11 @@ function getTokenBalanceChanges(
   tokenBalanceChanges: SimulationTokenBalanceChange[],
   erc20Decimals: Record<Hex, number>,
   erc20FiatRates: Partial<Record<Hex, number>>,
+  chainId: Hex,
 ): BalanceChange[] {
   return tokenBalanceChanges.map((tokenBc) => {
     const asset: TokenAssetIdentifier = {
+      chainId,
       standard: convertStandard(tokenBc.standard),
       address: tokenBc.address.toLowerCase() as Hex,
       tokenId: tokenBc.id,
@@ -174,11 +184,14 @@ export const useBalanceChanges = ({
   const nativeChange = getNativeBalanceChange(
     nativeBalanceChange,
     nativeFiatRate,
+    chainId,
   );
+
   const tokenChanges = getTokenBalanceChanges(
     tokenBalanceChanges,
     erc20Decimals.value,
     erc20FiatRates.value,
+    chainId,
   );
 
   const balanceChanges: BalanceChange[] = [
