@@ -10,6 +10,7 @@ import { useI18nContext } from '../../hooks/useI18nContext';
 import { useMarkNotificationAsRead } from '../../hooks/metamask-notifications/useNotifications';
 import { Box, Button, ButtonVariant } from '../../components/component-library';
 import { BlockSize } from '../../helpers/constants/design-system';
+import { useSnapNotificationTimeouts } from '../../hooks/useNotificationTimeouts';
 
 type Notification = NotificationServicesController.Types.INotification;
 type MarkAsReadNotificationsParam =
@@ -17,16 +18,15 @@ type MarkAsReadNotificationsParam =
 
 export type NotificationsListReadAllButtonProps = {
   notifications: Notification[];
-  setNotificationTimeout: (id: string) => void;
 };
 
 export const NotificationsListReadAllButton = ({
   notifications,
-  setNotificationTimeout,
 }: NotificationsListReadAllButtonProps) => {
   const t = useI18nContext();
   const { markNotificationAsRead } = useMarkNotificationAsRead();
   const trackEvent = useContext(MetaMetricsContext);
+  const { setNotificationTimeout } = useSnapNotificationTimeouts();
 
   const handleOnClick = () => {
     let notificationsRead: MarkAsReadNotificationsParam = [];

@@ -16,10 +16,7 @@ describe('NotificationsListReadAllButton', () => {
   it('renders correctly and handles click', () => {
     const { getByTestId } = render(
       <Provider store={store}>
-        <NotificationsListReadAllButton
-          notifications={[]}
-          setNotificationTimeout={jest.fn()}
-        />
+        <NotificationsListReadAllButton notifications={[]} />
       </Provider>,
     );
 

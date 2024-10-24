@@ -12,7 +12,6 @@ import {
 import Preloader from '../../components/ui/icon/preloader/preloader-icon.component';
 import { selectIsMetamaskNotificationsEnabled } from '../../selectors/metamask-notifications/metamask-notifications';
 import { useI18nContext } from '../../hooks/useI18nContext';
-import { useSnapNotificationTimeouts } from '../../hooks/useNotificationTimeouts';
 import { SnapComponent } from './notification-components/snap/snap';
 import { NotificationsPlaceholder } from './notifications-list-placeholder';
 import { NotificationsListTurnOnNotifications } from './notifications-list-turn-on-notifications';
@@ -66,18 +65,10 @@ function ErrorContent() {
   );
 }
 
-function NotificationItem(props: {
-  notification: Notification;
-  setNotificationTimeout: (id: string) => void;
-}) {
-  const { notification, setNotificationTimeout } = props;
+function NotificationItem(props: { notification: Notification }) {
+  const { notification } = props;
   if (notification.type === TRIGGER_TYPES.SNAP) {
-    return (
-      <SnapComponent
-        snapNotification={notification}
-        setNotificationTimeout={setNotificationTimeout}
-      />
-    );
+    return <SnapComponent snapNotification={notification} />;
   }
 
   return <NotificationsListItem notification={notification} />;
@@ -88,8 +79,7 @@ function NotificationsListStates({
   notifications,
   isLoading,
   isError,
-  setNotificationTimeout,
-}: NotificationsListProps & { setNotificationTimeout: (id: string) => void }) {
+}: NotificationsListProps) {
   const isMetamaskNotificationsEnabled = useSelector(
     selectIsMetamaskNotificationsEnabled,
   );
@@ -116,21 +106,13 @@ function NotificationsListStates({
   return (
     <>
       {notifications.map((notification) => (
-        <NotificationItem
-          key={notification.id}
-          notification={notification}
-          setNotificationTimeout={setNotificationTimeout}
-        />
+        <NotificationItem key={notification.id} notification={notification} />
       ))}
     </>
   );
 }
 
 export function NotificationsList(props: NotificationsListProps) {
-  const { setNotificationTimeout } = useSnapNotificationTimeouts(
-    props.notifications,
-  );
-
   return (
     <Box
       data-testid="notifications-list"
@@ -139,17 +121,11 @@ export function NotificationsList(props: NotificationsListProps) {
       className="notifications__list"
     >
       {/* Actual list (handling all states) */}
-      <NotificationsListStates
-        {...props}
-        setNotificationTimeout={setNotificationTimeout}
-      />
+      <NotificationsListStates {...props} />
 
       {/* Read All Button */}
       {props.notifications.length > 0 && props.notificationsCount > 0 ? (
-        <NotificationsListReadAllButton
-          notifications={props.notifications}
-          setNotificationTimeout={setNotificationTimeout}
-        />
+        <NotificationsListReadAllButton notifications={props.notifications} />
       ) : null}
     </Box>
   );

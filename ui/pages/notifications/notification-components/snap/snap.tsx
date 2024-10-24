@@ -12,6 +12,7 @@ import { NotificationListItemSnap } from '../../../../components/multichain';
 import { getSnapsMetadata } from '../../../../selectors';
 import { getSnapRoute, getSnapName } from '../../../../helpers/utils/util';
 import { useMarkNotificationAsRead } from '../../../../hooks/metamask-notifications/useNotifications';
+import { useSnapNotificationTimeouts } from '../../../../hooks/useNotificationTimeouts';
 
 type SnapNotification = Extract<
   NotificationServicesController.Types.INotification,
@@ -20,16 +21,13 @@ type SnapNotification = Extract<
 
 type SnapComponentProps = {
   snapNotification: SnapNotification;
-  setNotificationTimeout: (id: string) => void;
 };
 
-export const SnapComponent = ({
-  snapNotification,
-  setNotificationTimeout,
-}: SnapComponentProps) => {
+export const SnapComponent = ({ snapNotification }: SnapComponentProps) => {
   const history = useHistory();
   const trackEvent = useContext(MetaMetricsContext);
   const { markNotificationAsRead } = useMarkNotificationAsRead();
+  const { setNotificationTimeout } = useSnapNotificationTimeouts();
 
   const snapsMetadata = useSelector(getSnapsMetadata);
 
