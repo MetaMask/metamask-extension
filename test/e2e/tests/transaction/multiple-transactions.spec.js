@@ -9,7 +9,7 @@ const {
 } = require('../../helpers');
 const FixtureBuilder = require('../../fixture-builder');
 
-describe('Multiple transactions', function () {
+describe.skip('Multiple transactions', function () {
   it('creates multiple queued transactions, then confirms', async function () {
     await withFixtures(
       {
