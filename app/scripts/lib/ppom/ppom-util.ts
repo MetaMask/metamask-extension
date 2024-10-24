@@ -123,11 +123,13 @@ export function handlePPOMError(
 }
 
 export async function isChainSupported(chainId: Hex): Promise<boolean> {
+  console.log('isChainSupported >>>>>>>>>>>>>>>>>>>>', chainId);
   let supportedChainIds = SECURITY_PROVIDER_SUPPORTED_CHAIN_IDS;
 
   try {
     if (isSecurityAlertsAPIEnabled()) {
       supportedChainIds = await getSecurityAlertsAPISupportedChainIds();
+      console.log('isChainSupported 2>>>>>>>>>>>>>>>>>>>>', supportedChainIds);
     }
   } catch (error: unknown) {
     handlePPOMError(
