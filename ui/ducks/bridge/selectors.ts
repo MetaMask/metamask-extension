@@ -34,6 +34,7 @@ import { getConversionRate, getGasFeeEstimates } from '../metamask/metamask';
 // eslint-disable-next-line import/no-restricted-paths
 import { RequestStatus } from '../../../app/scripts/controllers/bridge/constants';
 import {
+  L1GasFees,
   QuoteMetadata,
   QuoteResponse,
   SortOrder,
@@ -215,7 +216,7 @@ const _getQuotesWithMetadata = createDeepEqualSelector(
     nativeExchangeRate,
     { estimatedBaseFeeInDecGwei, maxPriorityFeePerGasInDecGwei },
   ): (QuoteResponse & QuoteMetadata)[] => {
-    return quotes.map((quote: QuoteResponse) => {
+    const newQuotes = quotes.map((quote: QuoteResponse) => {
       const toTokenAmount = calcToAmount(quote.quote, toTokenExchangeRate);
       const totalNetworkFee = calcTotalNetworkFee(
         quote,
@@ -244,6 +245,8 @@ const _getQuotesWithMetadata = createDeepEqualSelector(
         cost: calcCost(adjustedReturn.fiat, sentAmount.fiat),
       };
     });
+
+    return newQuotes;
   },
 );
 
@@ -304,9 +307,29 @@ const _getRecommendedQuote = createDeepEqualSelector(
   },
 );
 
+// Identifies each quote by aggregator, bridge, steps and value
+const getDedupeString = ({ quote }: QuoteResponse & L1GasFees) =>
+  `${quote.bridgeId}-${quote.bridges[0]}-${quote.steps.length}`;
+
+const _getSelectedQuote = createSelector(
+  (state: BridgeAppState) => state.metamask.bridgeState.quotesRefreshCount,
+  (state: BridgeAppState) => state.bridge.selectedQuote,
+  _getSortedQuotesWithMetadata,
+  (quotesRefreshCount, selectedQuote, sortedQuotesWithMetadata) =>
+    quotesRefreshCount <= 1
+      ? selectedQuote
+      : // Find match for selectedQuote in new quotes
+        sortedQuotesWithMetadata.find((quote) =>
+          selectedQuote
+            ? getDedupeString(quote) === getDedupeString(selectedQuote)
+            : false,
+        ),
+);
+
 export const getBridgeQuotes = createSelector(
   _getSortedQuotesWithMetadata,
   _getRecommendedQuote,
+  _getSelectedQuote,
   (state) => state.metamask.bridgeState.quotesLastFetched,
   (state) =>
     state.metamask.bridgeState.quotesLoadingStatus === RequestStatus.LOADING,
@@ -316,6 +339,7 @@ export const getBridgeQuotes = createSelector(
   (
     sortedQuotesWithMetadata,
     recommendedQuote,
+    selectedQuote,
     quotesLastFetchedMs,
     isLoading,
     quotesRefreshCount,
@@ -324,7 +348,7 @@ export const getBridgeQuotes = createSelector(
   ) => ({
     sortedQuotes: sortedQuotesWithMetadata,
     recommendedQuote,
-    activeQuote: recommendedQuote,
+    activeQuote: selectedQuote ?? recommendedQuote,
     quotesLastFetchedMs,
     isLoading,
     quotesRefreshCount,

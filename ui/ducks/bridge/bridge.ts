@@ -5,7 +5,11 @@ import { swapsSlice } from '../swaps/swaps';
 import { SwapsTokenObject } from '../../../shared/constants/swaps';
 import { SwapsEthToken } from '../../selectors';
 import { fetchTokenExchangeRates } from '../../helpers/utils/util';
-import { SortOrder } from '../../pages/bridge/types';
+import {
+  QuoteMetadata,
+  QuoteResponse,
+  SortOrder,
+} from '../../pages/bridge/types';
 
 export type BridgeState = {
   toChainId: Hex | null;
@@ -15,6 +19,7 @@ export type BridgeState = {
   fromTokenExchangeRate: number | null;
   toTokenExchangeRate: number | null;
   sortOrder: SortOrder;
+  selectedQuote: (QuoteResponse & QuoteMetadata) | null; // Alternate quote selected by user. When quotes refresh, the best match will be activated.
 };
 
 const initialState: BridgeState = {
@@ -25,6 +30,7 @@ const initialState: BridgeState = {
   fromTokenExchangeRate: null,
   toTokenExchangeRate: null,
   sortOrder: SortOrder.COST_ASC,
+  selectedQuote: null,
 };
 
 export const setSrcTokenExchangeRates = createAsyncThunk(
@@ -77,6 +83,9 @@ const bridgeSlice = createSlice({
     }),
     setSortOrder: (state, action) => {
       state.sortOrder = action.payload;
+    },
+    setSelectedQuote: (state, action) => {
+      state.selectedQuote = action.payload;
     },
   },
   extraReducers: (builder) => {
