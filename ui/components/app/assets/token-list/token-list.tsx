@@ -11,6 +11,8 @@ import {
 import { TokenWithBalance } from '../asset-list/asset-list';
 import { sortAssets } from '../util/sort';
 import {
+  getAllTokens,
+  getCurrentChainId,
   getPreferences,
   getSelectedAccount,
   getShouldHideZeroBalanceTokens,
@@ -25,6 +27,41 @@ type TokenListProps = {
   nativeToken: ReactNode;
 };
 
+function aggregateTokensByAccount(data: Record<string, any>) {
+  // Initialize an empty object to hold tokens by account
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const tokensByAccount: Record<string, any> = {};
+
+  // Loop through each chain (0x1, 0x89, etc.)
+  for (const chainId in data) {
+    // Ensure we're only iterating over data's own properties
+    if (data[chainId]) {
+      // Loop through each account in the chain
+      const chainData = data[chainId];
+      for (const accountId in chainData) {
+        if (chainData[accountId]) {
+          // If the accountId does not exist in the tokensByAccount object, initialize it with an empty array
+          if (!tokensByAccount[accountId]) {
+            tokensByAccount[accountId] = [];
+          }
+
+          // Loop through each token associated with the account
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          chainData[accountId].forEach((token: any) => {
+            // Add the chainId to each token object
+            const tokenWithChain = { ...token, chainId };
+
+            // Push the token to the respective account's token list
+            tokensByAccount[accountId].push(tokenWithChain);
+          });
+        }
+      }
+    }
+  }
+
+  return tokensByAccount;
+}
+
 export default function TokenList({
   onTokenClick,
   nativeToken,
@@ -32,6 +69,7 @@ export default function TokenList({
   const t = useI18nContext();
   const { tokenSortConfig, tokenNetworkFilter } = useSelector(getPreferences);
   const selectedAccount = useSelector(getSelectedAccount);
+  const currentChain = useSelector(getCurrentChainId);
   const conversionRate = useSelector(getConversionRate);
   const nativeTokenWithBalance = useNativeTokenBalance();
   const shouldHideZeroBalanceTokens = useSelector(
@@ -41,6 +79,14 @@ export default function TokenList({
     getTokenExchangeRates,
     shallowEqual,
   );
+
+  const allTokens = useSelector(getAllTokens);
+
+  const selectedAccountAddress = selectedAccount.address;
+
+  const foo = aggregateTokensByAccount(allTokens);
+  console.log('foo', foo);
+
   const { tokensWithBalances, loading } = useAccountTotalFiatBalance(
     selectedAccount,
     shouldHideZeroBalanceTokens,
@@ -50,6 +96,8 @@ export default function TokenList({
     mergedRates: any;
     loading: boolean;
   };
+
+  console.log('tokensWithBalances', tokensWithBalances);
 
   const sortedTokens = useMemo(() => {
     // TODO filter assets by networkTokenFilter before sorting
