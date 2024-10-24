@@ -1,5 +1,5 @@
-import React, { useState, useEffect, useMemo } from 'react';
-import { useSelector, useDispatch } from 'react-redux';
+import React, { useState, useMemo } from 'react';
+import { useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import { NotificationServicesController } from '@metamask/notification-services-controller';
 import { useI18nContext } from '../../hooks/useI18nContext';
@@ -24,7 +24,6 @@ import {
   selectIsMetamaskNotificationsEnabled,
   getMetamaskNotifications,
 } from '../../selectors/metamask-notifications/metamask-notifications';
-import { deleteExpiredSnapNotifications } from '../../store/actions';
 import {
   AlignItems,
   Display,
@@ -50,20 +49,9 @@ export const enum TAB_KEYS {
   WEB3 = 'notifications-other-tab',
 }
 
-// Cleanup method to ensure we aren't keeping really old notifications.
-// See internals to tweak expiry date
-const useEffectDeleteExpiredSnapNotifications = () => {
-  const dispatch = useDispatch();
-  useEffect(() => {
-    return () => {
-      dispatch(deleteExpiredSnapNotifications());
-    };
-  }, [dispatch]);
-};
-
 // NOTE - these 2 data sources are combined in our controller.
 // FUTURE - we could separate these data sources into separate methods.
-const useMetamaskNotifications = () => {
+const useMetaMaskNotifications = () => {
   const isFeatureAnnouncementsEnabled = useSelector(
     selectIsFeatureAnnouncementsEnabled,
   );
@@ -110,7 +98,7 @@ const useCombinedNotifications = () => {
     featureAnnouncementNotifications,
     walletNotifications,
     snapNotifications,
-  } = useMetamaskNotifications();
+  } = useMetaMaskNotifications();
 
   const combinedNotifications = useMemo(() => {
     const notifications = [
@@ -161,7 +149,6 @@ export default function Notifications() {
   const history = useHistory();
   const t = useI18nContext();
 
-  useEffectDeleteExpiredSnapNotifications();
   const { isLoading, error } = useMetamaskNotificationsContext();
 
   const [activeTab, setActiveTab] = useState<TAB_KEYS>(TAB_KEYS.ALL);

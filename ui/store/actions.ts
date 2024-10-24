@@ -1257,42 +1257,6 @@ export async function handleSnapRequest<
   return submitRequestToBackground('handleSnapRequest', [args]);
 }
 
-export function deleteExpiredSnapNotifications(): ThunkAction<
-  void,
-  MetaMaskReduxState,
-  unknown,
-  AnyAction
-> {
-  return async (dispatch, getState) => {
-    const state = getState();
-    const notifications = getMetamaskNotifications(state);
-    const snapNotifications = notifications.filter(
-      (notification) =>
-        notification.type ===
-        NotificationServicesController.Constants.TRIGGER_TYPES.SNAP,
-    );
-
-    const notificationIdsToDelete = snapNotifications
-      .filter((notification) => {
-        const expirationTime = new Date(
-          Date.now() - NOTIFICATIONS_EXPIRATION_DELAY,
-        );
-
-        return Boolean(
-          notification.readDate &&
-            new Date(notification.readDate) < expirationTime,
-        );
-      })
-      .map(({ id }) => id);
-    if (notificationIdsToDelete.length) {
-      await submitRequestToBackground('deleteNotificationsById', [
-        notificationIdsToDelete,
-      ]);
-      await forceUpdateMetamaskState(dispatch);
-    }
-  };
-}
-
 export function revokeDynamicSnapPermissions(
   snapId: string,
   permissionNames: string[],

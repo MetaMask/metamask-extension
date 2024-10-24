@@ -14,7 +14,7 @@ import { NOTIFICATIONS_EXPIRATION_DELAY } from '../helpers/constants/notificatio
  * and stores the timeout id.
  */
 export const useSnapNotificationTimeouts = (notifications: INotification[]) => {
-  const timerMap = new Map<string, NodeJS.Timeout>();
+  const timerMap = new Map<string, ReturnType<typeof setTimeout>>();
   const dispatch = useDispatch();
 
   const setNotificationTimeout = (id: string) => {
