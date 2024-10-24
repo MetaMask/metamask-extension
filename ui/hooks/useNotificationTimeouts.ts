@@ -7,7 +7,6 @@ import { NOTIFICATIONS_EXPIRATION_DELAY } from '../helpers/constants/notificatio
  * Upon dismount, the hook will clear timeouts for notifications
  * that don't exist anymore.
  *
- * @param notifications - The current list of notifications
  * @returns A function that creates a timeout to delete a notification
  * and stores the timeout id.
  */
