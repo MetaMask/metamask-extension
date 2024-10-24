@@ -61,7 +61,6 @@ const notifications: Notification[] = [
 export default {
   title: 'Pages/Notifications/NotificationsListItems',
   component: NotificationsListItem,
-  storyName: 'Default Matteo',
 } as Meta;
 
 const NotificationItemWrapper: React.FC<{
