@@ -34,6 +34,8 @@ class TestDapp {
     tag: 'button',
   };
 
+  private readonly simpleSendButton = '#sendButton';
+
   private readonly erc721MintButton = '#mintButton';
 
   private readonly erc721TransferFromButton = '#transferFromButton';
@@ -184,6 +186,10 @@ class TestDapp {
         params,
       )}`,
     });
+  }
+
+  async clickSimpleSendButton() {
+    await this.driver.clickElement(this.simpleSendButton);
   }
 
   async clickERC721MintButton() {

@@ -16,14 +16,16 @@ import {
   TextColor,
   TextVariant,
 } from '../../../../../../../helpers/constants/design-system';
+import { useI18nContext } from '../../../../../../../hooks/useI18nContext';
 import { getWatchedToken } from '../../../../../../../selectors';
 import { MultichainState } from '../../../../../../../selectors/multichain';
 import { useConfirmContext } from '../../../../../context/confirm';
-import { useTokenDetails } from '../../hooks/useTokenDetails';
 import { useTokenValues } from '../../hooks/use-token-values';
+import { useTokenDetails } from '../../hooks/useTokenDetails';
 import { ConfirmLoader } from '../confirm-loader/confirm-loader';
 
 const SendHeading = () => {
+  const t = useI18nContext();
   const { currentConfirmation: transactionMeta } =
     useConfirmContext<TransactionMeta>();
   const selectedToken = useSelector((state: MultichainState) =>
@@ -39,32 +41,33 @@ const SendHeading = () => {
   const TokenImage = (
     <AvatarToken
       src={tokenImage}
-      name={selectedToken?.symbol}
+      name={tokenSymbol}
       size={AvatarTokenSize.Xl}
       backgroundColor={
-        selectedToken?.symbol
-          ? BackgroundColor.backgroundDefault
-          : BackgroundColor.overlayDefault
+        tokenSymbol === t('unknown')
+          ? BackgroundColor.overlayDefault
+          : BackgroundColor.backgroundDefault
       }
       color={
-        selectedToken?.symbol ? TextColor.textDefault : TextColor.textMuted
+        tokenSymbol === t('unknown')
+          ? TextColor.textMuted
+          : TextColor.textDefault
       }
     />
   );
 
   const TokenValue = (
-    <>
-      <Text
-        variant={TextVariant.headingLg}
-        color={TextColor.inherit}
-        marginTop={3}
-      >{`${decodedTransferValue || ''} ${tokenSymbol}`}</Text>
-      {fiatDisplayValue && (
-        <Text variant={TextVariant.bodyMd} color={TextColor.textAlternative}>
-          {fiatDisplayValue}
-        </Text>
-      )}
-    </>
+    <Text
+      variant={TextVariant.headingLg}
+      color={TextColor.inherit}
+      marginTop={3}
+    >{`${decodedTransferValue} ${tokenSymbol}`}</Text>
+  );
+
+  const TokenFiatValue = fiatDisplayValue && (
+    <Text variant={TextVariant.bodyMd} color={TextColor.textAlternative}>
+      {fiatDisplayValue}
+    </Text>
   );
 
   if (pending) {
@@ -81,6 +84,7 @@ const SendHeading = () => {
     >
       {TokenImage}
       {TokenValue}
+      {TokenFiatValue}
     </Box>
   );
 };
