@@ -125,6 +125,12 @@ const CoinButtons = ({
   const account = useSelector(getSelectedAccount);
   const { address: selectedAddress } = account;
   const history = useHistory();
+  ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
+  const currentActivityTabName = useSelector(
+    // @ts-expect-error TODO: fix state type
+    (state) => state.metamask.defaultHomeActiveTabName,
+  );
+  ///: END:ONLY_INCLUDE_IF
   ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
   const location = useLocation();
   const keyring = useSelector(getCurrentKeyring);
@@ -279,14 +285,20 @@ const CoinButtons = ({
     switch (account.type) {
       ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
       case BtcAccountType.P2wpkh: {
-        await sendMultichainTransaction(
-          BITCOIN_WALLET_SNAP_ID,
-          account.id,
-          chainId as CaipChainId,
-        );
+        try {
+          // FIXME: We switch the tab before starting the send flow (we
+          // faced some inconsistencies when changing it after).
+          await dispatch(setDefaultHomeActiveTabName('activity'));
+          await sendMultichainTransaction(
+            BITCOIN_WALLET_SNAP_ID,
+            account.id,
+            chainId as CaipChainId,
+          );
+        } catch {
+          // Restore the previous tab in case of any error (see FIXME comment above).
+          await dispatch(setDefaultHomeActiveTabName(currentActivityTabName));
+        }
 
-        // We automatically switch to the activity tab once the transaction has been sent.
-        dispatch(setDefaultHomeActiveTabName('activity'));
         break;
       }
       ///: END:ONLY_INCLUDE_IF
