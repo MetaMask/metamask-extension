@@ -30,9 +30,14 @@ const schema = {
           default: false,
         },
         experimental: {
+          description: 'TODO',
           type: 'object',
           properties: {
             keepImportAttributes: {
+              type: 'boolean',
+              default: false,
+            },
+            emitAssertForImportAttributes: {
               type: 'boolean',
               default: false,
             },
@@ -158,20 +163,6 @@ const schema = {
               required: ['syntax'],
             },
           ],
-        },
-        experimental: {
-          description: 'TODO',
-          type: 'object',
-          properties: {
-            keepImportAttributes: {
-              type: 'boolean',
-              default: false,
-            },
-            emitAssertForImportAttributes: {
-              type: 'boolean',
-              default: false,
-            },
-          },
         },
       },
       additionalProperties: false,
