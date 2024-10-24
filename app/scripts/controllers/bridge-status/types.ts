@@ -127,9 +127,9 @@ export type BridgeHistoryItem = {
 
 // All fields need to be types not interfaces, same with their children fields
 // o/w you get a type error
-type TxHash = string;
+type SourceChainTxHash = string;
 export type BridgeStatusControllerState = {
-  txHistory: Record<TxHash, BridgeHistoryItem>; // txHash is from the source chain
+  txHistory: Record<SourceChainTxHash, BridgeHistoryItem>;
 };
 
 export enum BridgeStatusAction {
