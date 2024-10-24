@@ -106,9 +106,7 @@ const useCurrentConfirmation = () => {
     }
 
     const currentConfirmation =
-      transactionMetadata ??
-      (signatureMessage && { ...signatureMessage, chainId: globalChainId }) ??
-      undefined;
+      transactionMetadata ?? signatureMessage ?? undefined;
 
     return { currentConfirmation };
   }, [transactionMetadata, signatureMessage, shouldUseRedesign, globalChainId]);
