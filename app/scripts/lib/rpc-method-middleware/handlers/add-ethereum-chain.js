@@ -24,6 +24,7 @@ const addEthereumChain = {
     getCaveat: true,
     requestPermittedChainsPermission: true,
     grantPermittedChainsPermissionIncremental: true,
+    getTotalApprovalCount: true,
   },
 };
 
@@ -46,6 +47,7 @@ async function addEthereumChainHandler(
     getCaveat,
     requestPermittedChainsPermission,
     grantPermittedChainsPermissionIncremental,
+    getTotalApprovalCount,
   },
 ) {
   let validParams;
@@ -200,6 +202,7 @@ async function addEthereumChainHandler(
       getCaveat,
       requestPermittedChainsPermission,
       grantPermittedChainsPermissionIncremental,
+      getTotalApprovalCount,
     });
   } else if (approvalFlowId) {
     endApprovalFlow({ id: approvalFlowId });

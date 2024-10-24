@@ -15,6 +15,7 @@ const switchEthereumChain = {
     requestPermittedChainsPermission: true,
     getCurrentChainIdForDomain: true,
     grantPermittedChainsPermissionIncremental: true,
+    getTotalApprovalCount: true,
   },
 };
 
@@ -32,6 +33,7 @@ async function switchEthereumChainHandler(
     getCaveat,
     getCurrentChainIdForDomain,
     grantPermittedChainsPermissionIncremental,
+    getTotalApprovalCount,
   },
 ) {
   let chainId;
@@ -69,5 +71,6 @@ async function switchEthereumChainHandler(
     getCaveat,
     requestPermittedChainsPermission,
     grantPermittedChainsPermissionIncremental,
+    getTotalApprovalCount,
   });
 }

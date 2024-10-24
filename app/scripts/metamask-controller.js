@@ -5877,8 +5877,13 @@ export default class MetamaskController extends EventEmitter {
           return undefined;
         },
         // network configuration-related
-        setActiveNetwork: async (networkClientId) => {
-          await this.networkController.setActiveNetwork(networkClientId);
+        setActiveNetwork: async (
+          networkClientId,
+          shouldUpdateGloballySelectedNetwork = true,
+        ) => {
+          if (shouldUpdateGloballySelectedNetwork) {
+            await this.networkController.setActiveNetwork(networkClientId);
+          }
           // if the origin has the eth_accounts permission
           // we set per dapp network selection state
           if (
@@ -5912,7 +5917,10 @@ export default class MetamaskController extends EventEmitter {
             );
           return chainId;
         },
-
+        getTotalApprovalCount:
+          this.approvalController.getTotalApprovalCount.bind(
+            this.approvalController,
+          ),
         // Web3 shim-related
         getWeb3ShimUsageState: this.alertController.getWeb3ShimUsageState.bind(
           this.alertController,

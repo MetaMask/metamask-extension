@@ -47,6 +47,7 @@ describe('switchEthereumChainHandler', () => {
       getNetworkConfigurationByChainId: jest
         .fn()
         .mockReturnValue(mockedGetNetworkConfigurationByChainIdReturnValue),
+      getTotalApprovalCount: jest.fn().mockReturnValue(0),
       ...overrides,
     };
   };
@@ -56,7 +57,7 @@ describe('switchEthereumChainHandler', () => {
   });
 
   describe('with permittedChains permissioning inactive', () => {
-    it('should call setActiveNetwork when switching to a built-in infura network', async () => {
+    it('should switch the dapp and globally selected networks when switching to a built-in infura network and there are no pending approvals before switching', async () => {
       const mocks = makeMocks({
         overrides: {
           getNetworkConfigurationByChainId: jest
@@ -78,6 +79,34 @@ describe('switchEthereumChainHandler', () => {
       expect(mocks.setActiveNetwork).toHaveBeenCalledTimes(1);
       expect(mocks.setActiveNetwork).toHaveBeenCalledWith(
         createMockMainnetConfiguration().rpcEndpoints[0].networkClientId,
+        true,
+      );
+    });
+
+    it('should switch only the dapp selected network when switching to a built-in infura network and there are pending approvals before switching', async () => {
+      const mocks = makeMocks({
+        overrides: {
+          getNetworkConfigurationByChainId: jest
+            .fn()
+            .mockReturnValue(createMockMainnetConfiguration()),
+          getTotalApprovalCount: jest.fn().mockReturnValue(1),
+        },
+      });
+      const switchEthereumChainHandler = switchEthereumChain.implementation;
+      await switchEthereumChainHandler(
+        {
+          origin: 'example.com',
+          params: [{ chainId: CHAIN_IDS.MAINNET }],
+        },
+        {},
+        jest.fn(),
+        jest.fn(),
+        mocks,
+      );
+      expect(mocks.setActiveNetwork).toHaveBeenCalledTimes(1);
+      expect(mocks.setActiveNetwork).toHaveBeenCalledWith(
+        createMockMainnetConfiguration().rpcEndpoints[0].networkClientId,
+        false,
       );
     });
 
@@ -103,6 +132,7 @@ describe('switchEthereumChainHandler', () => {
       expect(mocks.setActiveNetwork).toHaveBeenCalledTimes(1);
       expect(mocks.setActiveNetwork).toHaveBeenCalledWith(
         createMockLineaMainnetConfiguration().rpcEndpoints[0].networkClientId,
+        true,
       );
     });
 
@@ -128,6 +158,7 @@ describe('switchEthereumChainHandler', () => {
       expect(mocks.setActiveNetwork).toHaveBeenCalledTimes(1);
       expect(mocks.setActiveNetwork).toHaveBeenCalledWith(
         createMockLineaMainnetConfiguration().rpcEndpoints[0].networkClientId,
+        true,
       );
     });
 
@@ -153,6 +184,7 @@ describe('switchEthereumChainHandler', () => {
       expect(mocks.setActiveNetwork).toHaveBeenCalledTimes(1);
       expect(mocks.setActiveNetwork).toHaveBeenCalledWith(
         createMockMainnetConfiguration().rpcEndpoints[0].networkClientId,
+        true,
       );
     });
 
@@ -223,6 +255,7 @@ describe('switchEthereumChainHandler', () => {
       expect(mocks.setActiveNetwork).toHaveBeenCalledTimes(1);
       expect(mocks.setActiveNetwork).toHaveBeenCalledWith(
         createMockMainnetConfiguration().rpcEndpoints[0].networkClientId,
+        true,
       );
     });
 
@@ -246,6 +279,7 @@ describe('switchEthereumChainHandler', () => {
       expect(mocks.setActiveNetwork).toHaveBeenCalledTimes(1);
       expect(mocks.setActiveNetwork).toHaveBeenCalledWith(
         createMockMainnetConfiguration().rpcEndpoints[0].networkClientId,
+        true,
       );
     });
 
