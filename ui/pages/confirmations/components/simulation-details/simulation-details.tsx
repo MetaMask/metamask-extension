@@ -1,5 +1,4 @@
 import {
-  SimulationData,
   SimulationError,
   SimulationErrorCode,
   TransactionMeta,
@@ -33,7 +32,6 @@ import { useSimulationMetrics } from './useSimulationMetrics';
 export type SimulationDetailsProps = {
   enableMetrics?: boolean;
   isTransactionsRedesign?: boolean;
-  simulationData?: SimulationData;
   transaction: TransactionMeta;
 };
 
