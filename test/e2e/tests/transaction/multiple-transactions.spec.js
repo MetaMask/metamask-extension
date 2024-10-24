@@ -9,6 +9,8 @@ const {
 } = require('../../helpers');
 const FixtureBuilder = require('../../fixture-builder');
 
+// todo: reenable this test https://github.com/MetaMask/test-dapp/issues/366
+// eslint-disable-next-line mocha/no-skipped-tests
 describe.skip('Multiple transactions', function () {
   it('creates multiple queued transactions, then confirms', async function () {
     await withFixtures(
