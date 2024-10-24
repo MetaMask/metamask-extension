@@ -95,6 +95,7 @@ export const components: NotificationComponent<FeatureAnnouncementNotification> 
           <Box paddingLeft={4} paddingRight={4}>
             <Text
               variant={TextVariant.bodyMd}
+              as="div"
               dangerouslySetInnerHTML={{
                 __html: notification.data.longDescription,
               }}
