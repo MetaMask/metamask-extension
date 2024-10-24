@@ -19,7 +19,7 @@ const DUMMY_BALANCE_CHANGE = {
   newBalance: '0xIGNORED' as Hex,
 };
 
-const CHAIN_ID_MOCK = '0x1';
+const CHAIN_ID_MOCK = CHAIN_IDS.MAINNET;
 const ERC20_TOKEN_1_MOCK = '0x2260fac5e5542a773aa44fbcfedf7c193bc2c599'; // WBTC
 const ERC20_TOKEN_2_MOCK = '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48'; // USDC
 const ERC721_TOKEN_MOCK = '0x06012c8cf97bead5deae237070f9587f8e7a266d'; // CryptoKitties
@@ -28,36 +28,44 @@ const ERC1155_TOKEN_MOCK = '0x60e4d786628fea6478f785a6d7e704777c86a7c6'; // MAYC
 const storeMock = configureStore({
   metamask: {
     ...mockState.metamask,
+    ...mockNetworkState(
+      { chainId: CHAIN_IDS.MAINNET },
+      { chainId: CHAIN_IDS.POLYGON },
+      { chainId: CHAIN_IDS.ARBITRUM },
+    ),
     preferences: {
       ...mockState.metamask.preferences,
       showNativeTokenAsMainBalance: false,
     },
-    ...mockNetworkState({ chainId: CHAIN_ID_MOCK }),
     useTokenDetection: true,
-    tokenList: {
-      [ERC20_TOKEN_1_MOCK]: {
-        address: ERC20_TOKEN_1_MOCK,
-        symbol: 'WBTC',
-        name: 'Wrapped Bitcoin',
-        iconUrl: `https://static.cx.metamask.io/api/v1/tokenIcons/1/${ERC20_TOKEN_1_MOCK}.png`,
-      },
-      [ERC20_TOKEN_2_MOCK]: {
-        address: ERC20_TOKEN_2_MOCK,
-        symbol: 'USDC',
-        name: 'USD Coin',
-        iconUrl: `https://static.cx.metamask.io/api/v1/tokenIcons/1/${ERC20_TOKEN_2_MOCK}.png`,
-      },
-      [ERC721_TOKEN_MOCK]: {
-        address: ERC721_TOKEN_MOCK,
-        symbol: 'CK',
-        name: 'CryptoKitties',
-        iconUrl: `https://static.cx.metamask.io/api/v1/tokenIcons/1/${ERC721_TOKEN_MOCK}.png`,
-      },
-      [ERC1155_TOKEN_MOCK]: {
-        address: ERC1155_TOKEN_MOCK,
-        symbol: 'MAYC',
-        name: 'Mutant Ape Yacht Club',
-        iconUrl: `https://static.cx.metamask.io/api/v1/tokenIcons/1/${ERC1155_TOKEN_MOCK}.png `,
+    tokensChainsCache: {
+      [CHAIN_ID_MOCK]: {
+        data: {
+          [ERC20_TOKEN_1_MOCK]: {
+            address: ERC20_TOKEN_1_MOCK,
+            symbol: 'WBTC',
+            name: 'Wrapped Bitcoin',
+            iconUrl: `https://static.cx.metamask.io/api/v1/tokenIcons/1/${ERC20_TOKEN_1_MOCK}.png`,
+          },
+          [ERC20_TOKEN_2_MOCK]: {
+            address: ERC20_TOKEN_2_MOCK,
+            symbol: 'USDC',
+            name: 'USD Coin',
+            iconUrl: `https://static.cx.metamask.io/api/v1/tokenIcons/1/${ERC20_TOKEN_2_MOCK}.png`,
+          },
+          [ERC721_TOKEN_MOCK]: {
+            address: ERC721_TOKEN_MOCK,
+            symbol: 'CK',
+            name: 'CryptoKitties',
+            iconUrl: `https://static.cx.metamask.io/api/v1/tokenIcons/1/${ERC721_TOKEN_MOCK}.png`,
+          },
+          [ERC1155_TOKEN_MOCK]: {
+            address: ERC1155_TOKEN_MOCK,
+            symbol: 'MAYC',
+            name: 'Mutant Ape Yacht Club',
+            iconUrl: `https://static.cx.metamask.io/api/v1/tokenIcons/1/${ERC1155_TOKEN_MOCK}.png `,
+          },
+        },
       },
     },
     names: {
@@ -137,6 +145,7 @@ export const MultipleTokens: Story = {
 export const SendSmallAmount: Story = {
   args: {
     transaction: createTransactionMeta({
+      chainId: CHAIN_ID_MOCK,
       simulationData: {
         nativeBalanceChange: {
           ...DUMMY_BALANCE_CHANGE,

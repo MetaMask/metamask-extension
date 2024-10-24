@@ -64,7 +64,7 @@ describe('AssetPill', () => {
         });
 
         const asset: NativeAssetIdentifier = {
-          chainId: CHAIN_ID_MOCK,
+          chainId,
           standard: TokenStandard.none,
         };
 
