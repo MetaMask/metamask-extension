@@ -114,6 +114,8 @@ export const components: NotificationComponent<FeatureAnnouncementNotification> 
             href={`/${notification.data.extensionLink.extensionLinkRoute}`}
             id={notification.id}
             endIconName={false}
+            // Even if the link is not external, it will open in a new tab
+            // to avoid breaking the popup
             isExternal={true}
           />
         ) : null,
