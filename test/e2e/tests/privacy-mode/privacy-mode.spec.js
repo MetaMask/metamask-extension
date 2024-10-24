@@ -21,7 +21,12 @@ describe('Privacy Mode', function () {
             '[data-testid="eth-overview__primary-currency"] .currency-display-component__text',
           );
           const surveyText = await balanceElement.getText();
-          assert.equal(surveyText, value, `Balance should be "${value}"`);
+          console.log('header value is', value);
+          assert.equal(
+            surveyText,
+            value,
+            `Header balance should be "${value}"`,
+          );
         }
 
         async function checkForTokenValue(value) {
@@ -29,12 +34,13 @@ describe('Privacy Mode', function () {
             '[data-testid="multichain-token-list-item-secondary-value"]',
           );
           const surveyText = await balanceElement.getText();
-          assert.equal(surveyText, value, `Balance should be "${value}"`);
+          console.log('token value is', value);
+          assert.equal(surveyText, value, `Token balance should be "${value}"`);
         }
 
         async function checkForPrivacy() {
-          await checkForHeaderValue('*****');
-          await checkForTokenValue('*****');
+          await checkForHeaderValue('••••••');
+          await checkForTokenValue('•••••••••');
         }
 
         async function checkForNoPrivacy() {
