@@ -13,6 +13,11 @@ class HomePage {
 
   private readonly balance = '[data-testid="eth-overview__primary-currency"]';
 
+  private readonly basicFunctionalityOffWarningMessage = {
+    text: 'Basic functionality is off',
+    css: '.mm-banner-alert',
+  };
+
   private readonly completedTransactions = '[data-testid="activity-list-item"]';
 
   private readonly confirmedTransactions = {
@@ -58,6 +63,13 @@ class HomePage {
   async goToActivityList(): Promise<void> {
     console.log(`Open activity tab on homepage`);
     await this.driver.clickElement(this.activityTab);
+  }
+
+  async check_basicFunctionalityOffWarnigMessageIsDisplayed(): Promise<void> {
+    console.log(
+      'Check if basic functionality off warning message is displayed on homepage',
+    );
+    await this.driver.waitForSelector(this.basicFunctionalityOffWarningMessage);
   }
 
   /**
