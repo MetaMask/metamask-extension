@@ -351,11 +351,25 @@ function TransactionListItemInner({
           ///: END:ONLY_INCLUDE_IF
         }
         subtitle={
-          isBridgeTx && !isBridgeComplete ? (
+          isBridgeTx && isBridgeComplete === false ? (
             <div>
               <div>status: {bridgeTxHistoryItem?.status?.status}</div>
-              <div>tx 1: {bridgeTxHistoryItem?.status?.srcChain.txHash}</div>
-              <div>tx 2: {bridgeTxHistoryItem?.status?.destChain.txHash}</div>
+              <div>
+                tx 1:{' '}
+                {`${transactionGroup.initialTransaction.hash.substring(
+                  0,
+                  6,
+                )}...`}
+                , {transactionGroup.initialTransaction.status}
+              </div>
+              <div>
+                tx 2:{' '}
+                {`${bridgeTxHistoryItem?.status?.destChain.txHash?.substring(
+                  0,
+                  6,
+                )}...`}
+                ...
+              </div>
             </div>
           ) : (
             <TransactionStatusLabel
