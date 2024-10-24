@@ -14,10 +14,10 @@ import {
   NOTIFICATIONS_TEAM_SEED_PHRASE,
 } from '../constants';
 import { UserStorageMockttpController } from '../../../helpers/user-storage/userStorageMockttpController';
-import { accountsSyncMockResponse } from './mockData';
-import { getSRP, IS_ACCOUNT_SYNCING_ENABLED } from './helpers';
 import HeaderNavbar from '../../../page-objects/pages/header-navbar';
 import AccountListPage from '../../../page-objects/pages/account-list-page';
+import { accountsSyncMockResponse } from './mockData';
+import { getSRP, IS_ACCOUNT_SYNCING_ENABLED } from './helpers';
 
 describe('Account syncing', function () {
   if (!IS_ACCOUNT_SYNCING_ENABLED) {

@@ -12,10 +12,10 @@ import {
   NOTIFICATIONS_TEAM_SEED_PHRASE,
 } from '../constants';
 import { UserStorageMockttpController } from '../../../helpers/user-storage/userStorageMockttpController';
-import { accountsSyncMockResponse } from './mockData';
-import { IS_ACCOUNT_SYNCING_ENABLED } from './helpers';
 import HeaderNavbar from '../../../page-objects/pages/header-navbar';
 import AccountListPage from '../../../page-objects/pages/account-list-page';
+import { accountsSyncMockResponse } from './mockData';
+import { IS_ACCOUNT_SYNCING_ENABLED } from './helpers';
 
 describe('Account syncing', function () {
   if (!IS_ACCOUNT_SYNCING_ENABLED) {
@@ -98,9 +98,7 @@ describe('Account syncing', function () {
 
           const accountListPage = new AccountListPage(driver);
           await accountListPage.check_pageIsLoaded();
-          await accountListPage.check_numberOfAvailableAccounts(
-            2,
-          );
+          await accountListPage.check_numberOfAvailableAccounts(2);
           await accountListPage.check_accountDisplayedInAccountList(
             'My First Synced Account',
           );

@@ -110,7 +110,7 @@ class AccountListPage {
   /**
    * Adds a new account with a custom label.
    *
-   * @param customLabel - The custom label for the new account.
+   * @param privateKey - Private key of the account
    */
   async addNewImportedAccount(privateKey: string): Promise<void> {
     console.log(`Adding new imported account`);

@@ -7,6 +7,7 @@ const detectPort = require('detect-port');
 const { difference } = require('lodash');
 const createStaticServer = require('../../development/create-static-server');
 const { tEn } = require('../lib/i18n-helpers');
+const { isMMI } = require('../../ui/helpers/utils/build-types');
 const { setupMocking } = require('./mock-e2e');
 const { Ganache } = require('./seeder/ganache');
 const FixtureServer = require('./fixture-server');
@@ -24,8 +25,6 @@ const {
 const {
   getServerMochaToBackground,
 } = require('./background-socket/server-mocha-to-background');
-
-const { isMMI } = require('../../ui/helpers/utils/build-types');
 
 const tinyDelayMs = 200;
 const regularDelayMs = tinyDelayMs * 2;
@@ -438,8 +437,9 @@ const completeImportSRPOnboardingFlowWordByWord = async (
 
   // metrics
 
-  if (!isMMI())
+  if (!isMMI()) {
     await driver.clickElement('[data-testid="metametrics-no-thanks"]');
+  }
 
   // import with recovery phrase, word by word
   const words = seedPhrase.split(' ');
@@ -576,7 +576,7 @@ const onboardingPinExtension = async (driver) => {
  * integration for general and assets sections if specified in the optOutOptions.
  *
  * @param {WebDriver} driver - The Selenium WebDriver instance.
- * @param {Object} optOutOptions - Optional. An object specifying which features to opt-out of.
+ * @param {object} optOutOptions - Optional. An object specifying which features to opt-out of.
  * @param {boolean} optOutOptions.basicFunctionality - Optional. Defaults to true. Opt-out of basic functionality.
  * @param {boolean} optOutOptions.profileSync - Optional. Defaults to true. Opt-out of profile sync.
  * @param {boolean} optOutOptions.assets - Optional. Defaults to true. Opt-out of assets options.
@@ -668,18 +668,18 @@ const onboardingCompleteWalletCreationWithOptOut = async (
  * This function guides the user through the onboarding process of creating a new wallet,
  * including opting out of certain features as specified by the `optOutOptions` parameter.
  *
- * @param {Object} driver - The Selenium driver instance.
- * @param {String} password - The password to use for the new wallet.
- * @param {Object} optOutOptions - An object specifying the features to opt out of.
- * @param {Boolean} optOutOptions.isNewWallet - Indicates if this is a new wallet creation.
- * @param {Boolean} optOutOptions.basicFunctionality - Indicates if basic functionality should be opted out.
- * @param {Boolean} optOutOptions.profileSync - Indicates if profile sync should be opted out.
- * @param {Boolean} optOutOptions.assets - Indicates if assets should be opted out.
+ * @param {object} driver - The Selenium driver instance.
+ * @param {string} password - The password to use for the new wallet.
+ * @param {object} optOutOptions - An object specifying the features to opt out of.
+ * @param {boolean} optOutOptions.isNewWallet - Indicates if this is a new wallet creation.
+ * @param {boolean} optOutOptions.basicFunctionality - Indicates if basic functionality should be opted out.
+ * @param {boolean} optOutOptions.profileSync - Indicates if profile sync should be opted out.
+ * @param {boolean} optOutOptions.assets - Indicates if assets should be opted out.
  */
 const completeCreateNewWalletOnboardingFlowWithOptOut = async (
   driver,
   password,
-  optOutOptions
+  optOutOptions,
 ) => {
   await onboardingBeginCreateNewWallet(driver);
   await onboardingChooseMetametricsOption(driver, false);

@@ -9,9 +9,9 @@ import FixtureBuilder from '../../../fixture-builder';
 import { mockNotificationServices } from '../mocks';
 import { NOTIFICATIONS_TEAM_PASSWORD } from '../constants';
 import { UserStorageMockttpController } from '../../../helpers/user-storage/userStorageMockttpController';
-import { getSRP, IS_ACCOUNT_SYNCING_ENABLED } from './helpers';
 import HeaderNavbar from '../../../page-objects/pages/header-navbar';
 import AccountListPage from '../../../page-objects/pages/account-list-page';
+import { getSRP, IS_ACCOUNT_SYNCING_ENABLED } from './helpers';
 
 describe('Account syncing', function () {
   if (!IS_ACCOUNT_SYNCING_ENABLED) {
