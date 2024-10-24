@@ -391,9 +391,7 @@ const importSRPOnboardingFlow = async (driver, seedPhrase, password) => {
   await driver.clickElement('[data-testid="onboarding-import-wallet"]');
 
   // metrics
-
-  if (!isMMI())
-    await driver.clickElement('[data-testid="metametrics-no-thanks"]');
+  await driver.clickElement('[data-testid="metametrics-no-thanks"]');
 
   await driver.waitForSelector('.import-srp__actions');
   // import with recovery phrase
@@ -439,8 +437,7 @@ const completeImportSRPOnboardingFlowWordByWord = async (
 
   // metrics
 
-  if (!isMMI())
-    await driver.clickElement('[data-testid="metametrics-no-thanks"]');
+  await driver.clickElement('[data-testid="metametrics-no-thanks"]');
 
   // import with recovery phrase, word by word
   const words = seedPhrase.split(' ');
@@ -706,8 +703,7 @@ const importWrongSRPOnboardingFlow = async (driver, seedPhrase) => {
   await driver.clickElement('[data-testid="onboarding-import-wallet"]');
 
   // metrics
-  if (!isMMI())
-    await driver.clickElement('[data-testid="metametrics-no-thanks"]');
+  await driver.clickElement('[data-testid="metametrics-no-thanks"]');
 
   // import with recovery phrase
   await driver.pasteIntoField(

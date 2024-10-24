@@ -13,7 +13,7 @@ import HeaderNavbar from '../../../page-objects/pages/header-navbar';
 import AccountListPage from '../../../page-objects/pages/account-list-page';
 import { getSRP, IS_ACCOUNT_SYNCING_ENABLED } from './helpers';
 
-describe('Account syncing', function () {
+describe('Account syncing - New User @no-mmi', function () {
   if (!IS_ACCOUNT_SYNCING_ENABLED) {
     return;
   }

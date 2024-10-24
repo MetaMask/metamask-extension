@@ -19,7 +19,7 @@ import AccountListPage from '../../../page-objects/pages/account-list-page';
 import { accountsSyncMockResponse } from './mockData';
 import { getSRP, IS_ACCOUNT_SYNCING_ENABLED } from './helpers';
 
-describe('Account syncing', function () {
+describe('Account syncing - Opt-out Profile Sync @no-mmi', function () {
   if (!IS_ACCOUNT_SYNCING_ENABLED) {
     return;
   }

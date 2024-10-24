@@ -16,7 +16,7 @@ import AccountListPage from '../../../page-objects/pages/account-list-page';
 import { accountsSyncMockResponse } from './mockData';
 import { IS_ACCOUNT_SYNCING_ENABLED } from './helpers';
 
-describe('Account syncing', function () {
+describe('Account syncing - Add Account @no-mmi', function () {
   if (!IS_ACCOUNT_SYNCING_ENABLED) {
     return;
   }
