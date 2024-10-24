@@ -100,23 +100,6 @@
   "addContact": {
     "message": "Adicionar contato"
   },
-  "addEthereumChainConfirmationDescription": {
-    "message": "Isso permitirá que essa rede seja usada dentro da MetaMask."
-  },
-  "addEthereumChainConfirmationRisks": {
-    "message": "A MetaMask não verifica redes personalizadas."
-  },
-  "addEthereumChainConfirmationRisksLearnMore": {
-    "message": "Saiba mais sobre $1.",
-    "description": "$1 is a link with text that is provided by the 'addEthereumChainConfirmationRisksLearnMoreLink' key"
-  },
-  "addEthereumChainConfirmationRisksLearnMoreLink": {
-    "message": "fraudes e riscos de segurança da rede",
-    "description": "Link text for the 'addEthereumChainConfirmationRisksLearnMore' translation key"
-  },
-  "addEthereumChainConfirmationTitle": {
-    "message": "Permitir que esse site adicione uma rede?"
-  },
   "addFriendsAndAddresses": {
     "message": "Adicionar amigos e endereços confiáveis"
   },
@@ -2334,9 +2317,6 @@
   },
   "userName": {
     "message": "Nome de usuário"
-  },
-  "viewAllDetails": {
-    "message": "Ver todos os detalhes"
   },
   "viewContact": {
     "message": "Ver contato"

@@ -38,6 +38,12 @@ export type NameProps = {
 
   /** The raw value to display the name of. */
   value: string;
+
+  /**
+   * The variation of the value.
+   * Such as the chain ID if the `type` is an Ethereum address.
+   */
+  variation: string;
 };
 
 function formatValue(value: string, type: NameType): string {
@@ -61,15 +67,17 @@ const Name = memo(
     disableEdit,
     internal,
     preferContractSymbol = false,
+    variation,
   }: NameProps) => {
     const [modalOpen, setModalOpen] = useState(false);
     const trackEvent = useContext(MetaMetricsContext);
 
-    const { name, hasPetname, image } = useDisplayName(
+    const { name, hasPetname, image } = useDisplayName({
       value,
       type,
       preferContractSymbol,
-    );
+      variation,
+    });
 
     useEffect(() => {
       if (internal) {
@@ -100,7 +108,12 @@ const Name = memo(
     return (
       <Box display={Display.Flex}>
         {!disableEdit && modalOpen && (
-          <NameDetails value={value} type={type} onClose={handleModalClose} />
+          <NameDetails
+            value={value}
+            type={type}
+            variation={variation}
+            onClose={handleModalClose}
+          />
         )}
         <div
           className={classnames({

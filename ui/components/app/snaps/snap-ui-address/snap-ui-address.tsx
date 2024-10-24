@@ -48,7 +48,12 @@ export const SnapUIAddress: React.FunctionComponent<SnapUIAddressProps> = ({
   const shortenedAddress = shortenAddress(transformedAddress);
 
   return (
-    <Box display={Display.Flex} alignItems={AlignItems.center} gap={2}>
+    <Box
+      className="snap-ui-renderer__address"
+      display={Display.Flex}
+      alignItems={AlignItems.center}
+      gap={2}
+    >
       <SnapUIAvatar address={caipIdentifier} size={avatarSize} />
       <Text color={TextColor.inherit}>{shortenedAddress}</Text>
     </Box>

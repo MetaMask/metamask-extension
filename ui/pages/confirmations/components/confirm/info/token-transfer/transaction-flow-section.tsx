@@ -34,6 +34,8 @@ export const TransactionFlowSection = () => {
     return <ConfirmLoader />;
   }
 
+  const { chainId } = transactionMeta;
+
   return (
     <ConfirmInfoSection data-testid="confirmation__transaction-flow">
       <Box
@@ -46,6 +48,7 @@ export const TransactionFlowSection = () => {
         <Name
           value={transactionMeta.txParams.from}
           type={NameType.ETHEREUM_ADDRESS}
+          variation={chainId}
         />
         <Icon
           name={IconName.ArrowRight}
@@ -53,7 +56,11 @@ export const TransactionFlowSection = () => {
           color={IconColor.iconMuted}
         />
         {recipientAddress && (
-          <Name value={recipientAddress} type={NameType.ETHEREUM_ADDRESS} />
+          <Name
+            value={recipientAddress}
+            type={NameType.ETHEREUM_ADDRESS}
+            variation={chainId}
+          />
         )}
       </Box>
     </ConfirmInfoSection>

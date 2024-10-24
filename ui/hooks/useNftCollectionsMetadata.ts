@@ -1,9 +1,5 @@
-import { useMemo } from 'react';
-import { useSelector } from 'react-redux';
 import { Collection } from '@metamask/assets-controllers';
-import type { Hex } from '@metamask/utils';
 import { TokenStandard } from '../../shared/constants/transaction';
-import { getCurrentChainId } from '../selectors';
 import {
   getNFTContractInfo,
   getTokenStandardAndDetails,
@@ -11,28 +7,62 @@ import {
 import { useAsyncResult } from './useAsyncResult';
 
 export type UseNftCollectionsMetadataRequest = {
-  value: string;
-  chainId?: string;
-};
-
-type CollectionsData = {
-  [key: string]: Collection;
+  chainId: string;
+  contractAddress: string;
 };
 
 // For now, we only support ERC721 tokens
 const SUPPORTED_NFT_TOKEN_STANDARDS = [TokenStandard.ERC721];
 
-async function fetchCollections(
-  memoisedContracts: string[],
+export function useNftCollectionsMetadata(
+  requests: UseNftCollectionsMetadataRequest[],
+): Record<string, Record<string, Collection>> {
+  const { value: collectionsMetadata } = useAsyncResult(
+    () => fetchCollections(requests),
+    [JSON.stringify(requests)],
+  );
+
+  return collectionsMetadata ?? {};
+}
+
+async function fetchCollections(requests: UseNftCollectionsMetadataRequest[]) {
+  const valuesByChainId = requests.reduce<Record<string, string[]>>(
+    (acc, { chainId, contractAddress }) => {
+      acc[chainId] = [...(acc[chainId] ?? []), contractAddress.toLowerCase()];
+      return acc;
+    },
+    {},
+  );
+
+  const chainIds = Object.keys(valuesByChainId);
+
+  const responses = await Promise.all(
+    chainIds.map((chainId) => {
+      const contractAddresses = valuesByChainId[chainId];
+      return fetchCollectionsForChain(contractAddresses, chainId);
+    }),
+  );
+
+  return chainIds.reduce<Record<string, Record<string, Collection>>>(
+    (acc, chainId, index) => {
+      acc[chainId] = responses[index];
+      return acc;
+    },
+    {},
+  );
+}
+
+async function fetchCollectionsForChain(
+  contractAddresses: string[],
   chainId: string,
-): Promise<CollectionsData> {
+) {
   const contractStandardsResponses = await Promise.all(
-    memoisedContracts.map((contractAddress) =>
+    contractAddresses.map((contractAddress) =>
       getTokenStandardAndDetails(contractAddress, chainId),
     ),
   );
 
-  const supportedNFTContracts = memoisedContracts.filter(
+  const supportedNFTContracts = contractAddresses.filter(
     (_contractAddress, index) =>
       SUPPORTED_NFT_TOKEN_STANDARDS.includes(
         contractStandardsResponses[index].standard as TokenStandard,
@@ -48,37 +78,16 @@ async function fetchCollections(
     chainId,
   );
 
-  const collectionsData: CollectionsData = collectionsResult.collections.reduce(
-    (acc: CollectionsData, collection, index) => {
-      acc[supportedNFTContracts[index]] = {
-        name: collection?.name,
-        image: collection?.image,
-        isSpam: collection?.isSpam,
-      };
-      return acc;
-    },
-    {},
-  );
+  const collectionsData = collectionsResult.collections.reduce<
+    Record<string, Collection>
+  >((acc, collection, index) => {
+    acc[supportedNFTContracts[index]] = {
+      name: collection?.name,
+      image: collection?.image,
+      isSpam: collection?.isSpam,
+    };
+    return acc;
+  }, {});
 
   return collectionsData;
-}
-
-export function useNftCollectionsMetadata(
-  requests: UseNftCollectionsMetadataRequest[],
-  providedChainId?: Hex,
-) {
-  const chainId = useSelector(getCurrentChainId) || providedChainId;
-
-  const memoisedContracts = useMemo(() => {
-    return requests
-      .filter(({ value }) => value)
-      .map(({ value }) => value.toLowerCase());
-  }, [requests]);
-
-  const { value: collectionsMetadata } = useAsyncResult(
-    () => fetchCollections(memoisedContracts, chainId),
-    [JSON.stringify(memoisedContracts), chainId],
-  );
-
-  return collectionsMetadata || {};
 }

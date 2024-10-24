@@ -109,6 +109,7 @@ export function RecipientWithAddress({
   recipientName,
   recipientMetadataName,
   recipientIsOwnedAccount,
+  chainId,
 }) {
   const t = useI18nContext();
   const [showNicknamePopovers, setShowNicknamePopovers] = useState(false);
@@ -169,6 +170,7 @@ export function RecipientWithAddress({
             <Name
               value={checksummedRecipientAddress}
               type={NameType.ETHEREUM_ADDRESS}
+              variation={chainId}
             />
           ) : (
             <div
@@ -199,6 +201,7 @@ RecipientWithAddress.propTypes = {
   addressOnly: PropTypes.bool,
   onRecipientClick: PropTypes.func,
   recipientIsOwnedAccount: PropTypes.bool,
+  chainId: PropTypes.string,
 };
 
 function Arrow({ variant }) {
@@ -233,6 +236,7 @@ export default function SenderToRecipient({
   variant,
   warnUserOnAccountMismatch,
   recipientIsOwnedAccount,
+  chainId,
 }) {
   const t = useI18nContext();
   const checksummedSenderAddress = toChecksumHexAddress(senderAddress);
@@ -262,6 +266,7 @@ export default function SenderToRecipient({
           recipientName={recipientName}
           recipientMetadataName={recipientMetadataName}
           recipientIsOwnedAccount={recipientIsOwnedAccount}
+          chainId={chainId}
         />
       ) : (
         <div className="sender-to-recipient__party sender-to-recipient__party--recipient">
@@ -292,4 +297,5 @@ SenderToRecipient.propTypes = {
   onSenderClick: PropTypes.func,
   warnUserOnAccountMismatch: PropTypes.bool,
   recipientIsOwnedAccount: PropTypes.bool,
+  chainId: PropTypes.string,
 };

@@ -263,7 +263,7 @@
   }
 
   &__exchange-rate-display {
-    color: var(--color-text-alternative);
+    width: auto !important;
   }
 }
 

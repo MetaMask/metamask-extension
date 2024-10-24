@@ -2,9 +2,9 @@ import { TransactionMeta } from '@metamask/transaction-controller';
 import { genUnapprovedTokenTransferConfirmation } from '../../../../../../../test/data/confirmations/token-transfer';
 import mockState from '../../../../../../../test/data/mock-state.json';
 import { renderHookWithProvider } from '../../../../../../../test/lib/render-helpers';
-import { useTokenImage } from './use-token-image';
+import { useTokenDetails } from './useTokenDetails';
 
-describe('useTokenImage', () => {
+describe('useTokenDetails', () => {
   it('returns iconUrl from selected token if it exists', () => {
     const transactionMeta = genUnapprovedTokenTransferConfirmation(
       {},
@@ -19,11 +19,14 @@ describe('useTokenImage', () => {
     };
 
     const { result } = renderHookWithProvider(
-      () => useTokenImage(transactionMeta, TEST_SELECTED_TOKEN),
+      () => useTokenDetails(transactionMeta, TEST_SELECTED_TOKEN),
       mockState,
     );
 
-    expect(result.current).toEqual({ tokenImage: 'iconUrl' });
+    expect(result.current).toEqual({
+      tokenImage: 'iconUrl',
+      tokenSymbol: 'symbol',
+    });
   });
 
   it('returns selected token image if no iconUrl is included', () => {
@@ -39,11 +42,14 @@ describe('useTokenImage', () => {
     };
 
     const { result } = renderHookWithProvider(
-      () => useTokenImage(transactionMeta, TEST_SELECTED_TOKEN),
+      () => useTokenDetails(transactionMeta, TEST_SELECTED_TOKEN),
       mockState,
     );
 
-    expect(result.current).toEqual({ tokenImage: 'image' });
+    expect(result.current).toEqual({
+      tokenImage: 'image',
+      tokenSymbol: 'symbol',
+    });
   });
 
   it('returns token list icon url if no image is included in the token', () => {
@@ -58,7 +64,7 @@ describe('useTokenImage', () => {
     };
 
     const { result } = renderHookWithProvider(
-      () => useTokenImage(transactionMeta, TEST_SELECTED_TOKEN),
+      () => useTokenDetails(transactionMeta, TEST_SELECTED_TOKEN),
       {
         ...mockState,
         metamask: {
@@ -72,7 +78,10 @@ describe('useTokenImage', () => {
       },
     );
 
-    expect(result.current).toEqual({ tokenImage: 'tokenListIconUrl' });
+    expect(result.current).toEqual({
+      tokenImage: 'tokenListIconUrl',
+      tokenSymbol: 'symbol',
+    });
   });
 
   it('returns undefined if no image is found', () => {
@@ -87,10 +96,13 @@ describe('useTokenImage', () => {
     };
 
     const { result } = renderHookWithProvider(
-      () => useTokenImage(transactionMeta, TEST_SELECTED_TOKEN),
+      () => useTokenDetails(transactionMeta, TEST_SELECTED_TOKEN),
       mockState,
     );
 
-    expect(result.current).toEqual({ tokenImage: undefined });
+    expect(result.current).toEqual({
+      tokenImage: undefined,
+      tokenSymbol: 'symbol',
+    });
   });
 });
