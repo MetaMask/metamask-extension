@@ -87,9 +87,12 @@ describe('Address Book', function () {
 
         await driver.clickElement('.address-book__link');
 
-        await driver.fill('#nickname','Test User');
+        await driver.fill('#nickname', 'Test User');
 
-        await driver.fill('[data-testid="ens-input"]','0x56A355d3427bC2B1E22c78197AF091230919Cc2A');
+        await driver.fill(
+          '[data-testid="ens-input"]',
+          '0x56A355d3427bC2B1E22c78197AF091230919Cc2A',
+        );
 
         await driver.clickElement('[data-testid="page-container-footer-next"]');
 
