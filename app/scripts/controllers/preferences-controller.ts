@@ -112,6 +112,7 @@ export type Preferences = {
   redesignedTransactionsEnabled: boolean;
   featureNotificationsEnabled: boolean;
   showMultiRpcModal: boolean;
+  privacyMode: boolean;
   isRedesignedConfirmationsDeveloperEnabled: boolean;
   showConfirmationAdvancedDetails: boolean;
   tokenSortConfig: {
@@ -214,6 +215,7 @@ export const getDefaultPreferencesControllerState =
       isRedesignedConfirmationsDeveloperEnabled: false,
       showConfirmationAdvancedDetails: false,
       showMultiRpcModal: false,
+      privacyMode: false,
       shouldShowAggregatedBalancePopover: true, // by default user should see popover;
       tokenSortConfig: {
         key: 'tokenFiatAmount',

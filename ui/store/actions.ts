@@ -3089,6 +3089,10 @@ export function setRedesignedConfirmationsEnabled(value: boolean) {
   return setPreference('redesignedConfirmationsEnabled', value);
 }
 
+export function setPrivacyMode(value: boolean) {
+  return setPreference('privacyMode', value, false);
+}
+
 export function setRedesignedTransactionsEnabled(value: boolean) {
   return setPreference('redesignedTransactionsEnabled', value);
 }
