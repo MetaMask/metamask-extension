@@ -110,12 +110,12 @@ describe('Address Book', function () {
 
         await driver.clickElement('[data-testid="page-container-footer-next"]');
 
-        await driver.findElement({
+        await driver.waitForSelector({
           text: 'Test Name Edit',
           css: '.address-list-item__label',
         });
 
-        await driver.findElement({
+        await driver.waitForSelector({
           css: '[data-testid="address-list-item-address"]',
           text: shortenAddress('0x74cE91B75935D6Bedc27eE002DeFa566c5946f74'),
         });
