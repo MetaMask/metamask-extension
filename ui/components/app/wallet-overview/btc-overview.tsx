@@ -1,5 +1,6 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
+import { isEqual } from 'lodash';
 import {
   getMultichainProviderConfig,
   getMultichainSelectedAccountCachedBalance,
@@ -7,6 +8,7 @@ import {
 ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
 import { getIsBitcoinBuyable } from '../../../ducks/ramps';
 ///: END:ONLY_INCLUDE_IF
+import { getSelectedInternalAccount } from '../../../selectors';
 import { CoinOverview } from './coin-overview';
 
 type BtcOverviewProps = {
@@ -20,8 +22,12 @@ const BtcOverview = ({ className }: BtcOverviewProps) => {
   const isBtcBuyable = useSelector(getIsBitcoinBuyable);
   ///: END:ONLY_INCLUDE_IF
 
+  // FIXME: This causes re-renders, so use isEqual to avoid this
+  const account = useSelector(getSelectedInternalAccount, isEqual);
+
   return (
     <CoinOverview
+      account={account}
       balance={balance}
       // We turn this off to avoid having that asterisk + the "Balance maybe be outdated" message for now
       balanceIsCached={false}
