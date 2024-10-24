@@ -108,7 +108,7 @@ export type RefuelData = {} & Step;
 
 export type BridgeHistoryItem = {
   quote: Quote;
-  status: StatusResponse;
+  status?: StatusResponse;
   startTime?: number;
   estimatedProcessingTimeInSeconds: number;
   slippagePercentage: number;

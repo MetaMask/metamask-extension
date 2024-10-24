@@ -21,10 +21,12 @@ export const selectBridgeTxHistory = createSelector(
   [getSelectedAddress, selectBridgeStatusState],
   (selectedAddress, bridgeStatusState) => {
     const { txHistory } = bridgeStatusState;
-    return Object.values(txHistory).reduce<Record<string, BridgeHistoryItem>>(
-      (acc, txHistoryItem) => {
+
+    return Object.keys(txHistory).reduce<Record<string, BridgeHistoryItem>>(
+      (acc, txHash) => {
+        const txHistoryItem = txHistory[txHash];
         if (txHistoryItem.account === selectedAddress) {
-          acc[txHistoryItem.status.srcChain.txHash] = txHistoryItem;
+          acc[txHash] = txHistoryItem;
         }
         return acc;
       },
