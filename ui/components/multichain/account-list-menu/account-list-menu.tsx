@@ -105,7 +105,7 @@ import {
   AccountConnections,
   MergedInternalAccount,
 } from '../../../selectors/selectors.types';
-import { endTrace, TraceName } from '../../../../shared/lib/trace';
+import { trace, endTrace, TraceName } from '../../../../shared/lib/trace';
 import { HiddenAccountList } from './hidden-account-list';
 
 const ACTION_MODES = {
@@ -314,6 +314,7 @@ export const AccountListMenu = ({
             location: 'Main Menu',
           },
         });
+        trace({ name: TraceName.AccountListItem });
         dispatch(setSelectedAccount(account.address));
       };
     },
