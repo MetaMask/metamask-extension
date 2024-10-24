@@ -6157,7 +6157,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/signature-controller@npm:^20.0.1":
+"@metamask/signature-controller@npm:^20.1.0":
   version: 20.1.0
   resolution: "@metamask/signature-controller@npm:20.1.0"
   dependencies:
@@ -26013,7 +26013,7 @@ __metadata:
     "@metamask/safe-event-emitter": "npm:^3.1.1"
     "@metamask/scure-bip39": "npm:^2.0.3"
     "@metamask/selected-network-controller": "npm:^18.0.2"
-    "@metamask/signature-controller": "npm:^20.0.1"
+    "@metamask/signature-controller": "npm:^20.1.0"
     "@metamask/smart-transactions-controller": "npm:^13.0.0"
     "@metamask/snaps-controllers": "npm:^9.11.1"
     "@metamask/snaps-execution-environments": "npm:^6.9.1"
