@@ -200,7 +200,7 @@ describe('Notifications List', () => {
     });
   });
 
-  it.only('should send request for marking notifications as read to the background with the correct params', async () => {
+  it('should send request for marking notifications as read to the background with the correct params', async () => {
     const mockedState = getStateWithTwoUnreadNotifications();
     await act(async () => {
       await integrationTestRender({
