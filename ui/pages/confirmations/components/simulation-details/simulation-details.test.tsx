@@ -4,6 +4,7 @@ import { screen } from '@testing-library/react';
 import {
   SimulationData,
   SimulationErrorCode,
+  TransactionMeta,
 } from '@metamask/transaction-controller';
 import { BigNumber } from 'bignumber.js';
 import { renderWithProvider } from '../../../../../test/lib/render-helpers';
@@ -28,8 +29,9 @@ jest.mock('./useSimulationMetrics');
 const renderSimulationDetails = (simulationData?: Partial<SimulationData>) =>
   renderWithProvider(
     <SimulationDetails
-      simulationData={simulationData as SimulationData}
-      transactionId="testTransactionId"
+      transaction={
+        { id: 'testTransactionId', simulationData } as TransactionMeta
+      }
     />,
     store,
   );
