@@ -313,7 +313,9 @@ class SmartTransactionHook {
       signedTransactions,
       signedCanceledTransactions: [],
       txParams: this.#txParams,
-      transactionMeta: this.#transactionMeta,
+      // TODO: Replace `any` with type - version mismatch between smart-transactions-controller and transaction-controller breaking type safety
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      transactionMeta: this.#transactionMeta as any,
     });
   }
 
