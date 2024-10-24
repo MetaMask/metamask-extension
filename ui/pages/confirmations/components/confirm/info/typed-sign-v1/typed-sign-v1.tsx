@@ -23,6 +23,8 @@ const TypedSignV1Info: React.FC = () => {
     return null;
   }
 
+  const chainId = currentConfirmation.chainId as string;
+
   return (
     <>
       <ConfirmInfoSection>
@@ -38,9 +40,15 @@ const TypedSignV1Info: React.FC = () => {
         </ConfirmInfoAlertRow>
       </ConfirmInfoSection>
       <ConfirmInfoSection>
-        <ConfirmInfoRow label={t('message')}>
+        <ConfirmInfoRow
+          label={t('message')}
+          collapsed={false}
+          copyEnabled
+          copyText={JSON.stringify(currentConfirmation.msgParams?.data ?? {})}
+        >
           <ConfirmInfoRowTypedSignDataV1
             data={currentConfirmation.msgParams?.data as TypedSignDataV1Type}
+            chainId={chainId}
           />
         </ConfirmInfoRow>
       </ConfirmInfoSection>

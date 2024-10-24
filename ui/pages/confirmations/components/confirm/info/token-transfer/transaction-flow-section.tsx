@@ -26,13 +26,17 @@ export const TransactionFlowSection = () => {
 
   const { value, pending } = useDecodedTransactionData();
 
-  const recipientAddress = value?.data[0].params.find(
+  const addresses = value?.data[0].params.filter(
     (param) => param.type === 'address',
-  )?.value;
+  );
+  // sometimes there's more than one address, in which case we want the last one
+  const recipientAddress = addresses?.[addresses.length - 1].value;
 
   if (pending) {
     return <ConfirmLoader />;
   }
+
+  const { chainId } = transactionMeta;
 
   return (
     <ConfirmInfoSection data-testid="confirmation__transaction-flow">
@@ -46,6 +50,7 @@ export const TransactionFlowSection = () => {
         <Name
           value={transactionMeta.txParams.from}
           type={NameType.ETHEREUM_ADDRESS}
+          variation={chainId}
         />
         <Icon
           name={IconName.ArrowRight}
@@ -53,7 +58,11 @@ export const TransactionFlowSection = () => {
           color={IconColor.iconMuted}
         />
         {recipientAddress && (
-          <Name value={recipientAddress} type={NameType.ETHEREUM_ADDRESS} />
+          <Name
+            value={recipientAddress}
+            type={NameType.ETHEREUM_ADDRESS}
+            variation={chainId}
+          />
         )}
       </Box>
     </ConfirmInfoSection>
