@@ -29,6 +29,34 @@ const BridgeTxStatusResponses = {
       token: {},
     },
   },
+  STATUS_PENDING_VALID_MISSING_FIELDS: {
+    status: 'PENDING',
+    srcChain: {
+      chainId: 42161,
+      txHash:
+        '0x5cbda572c686a5a57fe62735325e408f9164f77a4787df29ce13edef765adaa9',
+    },
+  },
+  STATUS_PENDING_VALID_MISSING_FIELDS_2: {
+    status: 'PENDING',
+    bridge: 'hop',
+    srcChain: {
+      chainId: 42161,
+      txHash:
+        '0x5cbda572c686a5a57fe62735325e408f9164f77a4787df29ce13edef765adaa9',
+      amount: '991250000000000',
+      token: {
+        chainId: 42161,
+        address: '0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee',
+        symbol: 'ETH',
+        name: 'Ethereum',
+        decimals: 18,
+        icon: 'https://media.socket.tech/tokens/all/ETH',
+        logoURI: 'https://media.socket.tech/tokens/all/ETH',
+        chainAgnosticId: null,
+      },
+    },
+  },
   STATUS_PENDING_INVALID_MISSING_FIELDS: {
     status: 'PENDING',
     bridge: 'across',
@@ -150,6 +178,16 @@ describe('validators', () => {
         input: BridgeTxStatusResponses.STATUS_PENDING_VALID,
         expected: true,
         description: 'valid pending bridge status',
+      },
+      {
+        input: BridgeTxStatusResponses.STATUS_PENDING_VALID_MISSING_FIELDS,
+        expected: true,
+        description: 'valid pending bridge status missing fields',
+      },
+      {
+        input: BridgeTxStatusResponses.STATUS_PENDING_VALID_MISSING_FIELDS_2,
+        expected: true,
+        description: 'valid pending bridge status missing fields 2',
       },
       {
         input: BridgeTxStatusResponses.STATUS_PENDING_INVALID_MISSING_FIELDS,
