@@ -650,8 +650,8 @@ exports[`<ApproveInfo /> renders component for approve request 1`] = `
       style="overflow-wrap: anywhere; min-height: 24px; position: relative;"
     >
       <span
-        class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-icon-alternative"
-        style="mask-image: url('./images/icons/copy.svg'); cursor: pointer; position: absolute; right: 0px; top: 2px;"
+        class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-icon-muted"
+        style="mask-image: url('./images/icons/copy.svg'); cursor: pointer; position: absolute; right: 0px; top: 4px;"
       />
       <div
         class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
