@@ -237,11 +237,11 @@ export function getSwcLoader(
           syntax,
           [syntax === 'typescript' ? 'tsx' : 'jsx']: enableJsx,
           importAssertions: true,
+          importAttributes: true,
         },
         experimental: {
           keepImportAttributes: true,
           emitAssertForImportAttributes: true,
-          importAttributes: true,
         },
       },
     } as const satisfies SwcLoaderOptions,
