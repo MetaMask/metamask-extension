@@ -12,11 +12,8 @@ import { AssetPicker } from '../../../components/multichain/asset-picker-amount/
 import { TabName } from '../../../components/multichain/asset-picker-amount/asset-picker-modal/asset-picker-modal-tabs';
 import CurrencyDisplay from '../../../components/ui/currency-display';
 import { useI18nContext } from '../../../hooks/useI18nContext';
-import { useTokenFiatAmount } from '../../../hooks/useTokenFiatAmount';
-import { useEthFiatAmount } from '../../../hooks/useEthFiatAmount';
-import { isSwapsDefaultTokenSymbol } from '../../../../shared/modules/swaps.utils';
 import Tooltip from '../../../components/ui/tooltip';
-import { SwapsEthToken } from '../../../selectors';
+import { getCurrentCurrency, SwapsEthToken } from '../../../selectors';
 import {
   ERC20Asset,
   NativeAsset,
@@ -28,7 +25,12 @@ import {
   CHAIN_ID_TOKEN_IMAGE_MAP,
 } from '../../../../shared/constants/network';
 import useLatestBalance from '../../../hooks/bridge/useLatestBalance';
-import { getBridgeQuotes } from '../../../ducks/bridge/selectors';
+import {
+  getBridgeQuotes,
+  getFromAmountInFiat,
+  getFromChain,
+} from '../../../ducks/bridge/selectors';
+import { formatFiatAmount } from '../utils/quote';
 
 const generateAssetFromToken = (
   chainId: Hex,
@@ -80,21 +82,9 @@ export const BridgeInputGroup = ({
   const t = useI18nContext();
 
   const { isLoading, activeQuote } = useSelector(getBridgeQuotes);
-
-  const tokenFiatValue = useTokenFiatAmount(
-    token?.address || undefined,
-    amountFieldProps?.value?.toString() || '0x0',
-    token?.symbol,
-    {
-      showFiat: true,
-    },
-    true,
-  );
-  const ethFiatValue = useEthFiatAmount(
-    amountFieldProps?.value?.toString() || '0x0',
-    { showFiat: true },
-    true,
-  );
+  const { chainId: fromChainId } = useSelector(getFromChain) ?? {};
+  const currency = useSelector(getCurrentCurrency);
+  const fromAmountInFiat = useSelector(getFromAmountInFiat);
 
   const { formattedBalance } = useLatestBalance(
     token,
@@ -143,20 +133,20 @@ export const BridgeInputGroup = ({
         <Text>
           {formattedBalance ? `${t('balance')}: ${formattedBalance}` : ' '}
         </Text>
-        <CurrencyDisplay
-          currency="usd"
-          displayValue={
-            token?.symbol &&
-            networkProps?.network?.chainId &&
-            isSwapsDefaultTokenSymbol(
-              token.symbol,
-              networkProps.network.chainId,
-            )
-              ? ethFiatValue
-              : tokenFiatValue
-          }
-          hideLabel
-        />
+        {networkProps?.network?.chainId &&
+        fromChainId === networkProps.network.chainId ? (
+          <CurrencyDisplay
+            currency={currency}
+            displayValue={formatFiatAmount(fromAmountInFiat, currency)}
+            hideLabel
+          />
+        ) : (
+          <>
+            {/* TODO use same style as src fiat value */}
+            {activeQuote?.toTokenAmount?.fiat &&
+              formatFiatAmount(activeQuote?.toTokenAmount?.fiat, currency)}
+          </>
+        )}
       </Box>
     </Box>
   );
