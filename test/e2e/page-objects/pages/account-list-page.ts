@@ -20,8 +20,14 @@ class AccountListPage {
   private readonly addAccountConfirmButton =
     '[data-testid="submit-add-account-with-name"]';
 
+  private readonly importAccountConfirmButton =
+    '[data-testid="import-account-confirm-button"]';
+
   private readonly addEthereumAccountButton =
     '[data-testid="multichain-account-menu-popover-add-account"]';
+
+  private readonly addImportedAccountButton =
+    '[data-testid="multichain-account-menu-popover-add-imported-account"]';
 
   private readonly addSnapAccountButton = {
     text: 'Add account Snap',
@@ -54,6 +60,8 @@ class AccountListPage {
   private readonly saveAccountLabelButton =
     '[data-testid="save-account-label-input"]';
 
+  private readonly importAccountPrivateKeyInput = '#private-key-box';
+
   constructor(driver: Driver) {
     this.driver = driver;
   }
@@ -83,6 +91,34 @@ class AccountListPage {
     await this.driver.fill(this.accountNameInput, customLabel);
     await this.driver.clickElementAndWaitToDisappear(
       this.addAccountConfirmButton,
+    );
+  }
+
+  /**
+   * Adds a new account with default next available name.
+   *
+   */
+  async addNewAccountWithDefaultName(): Promise<void> {
+    console.log(`Adding new account with next available name`);
+    await this.driver.clickElement(this.createAccountButton);
+    await this.driver.clickElement(this.addEthereumAccountButton);
+    await this.driver.clickElementAndWaitToDisappear(
+      this.addAccountConfirmButton,
+    );
+  }
+
+  /**
+   * Adds a new account with a custom label.
+   *
+   * @param customLabel - The custom label for the new account.
+   */
+  async addNewImportedAccount(privateKey: string): Promise<void> {
+    console.log(`Adding new imported account`);
+    await this.driver.clickElement(this.createAccountButton);
+    await this.driver.clickElement(this.addImportedAccountButton);
+    await this.driver.fill(this.importAccountPrivateKeyInput, privateKey);
+    await this.driver.clickElementAndWaitToDisappear(
+      this.importAccountConfirmButton,
     );
   }
 

@@ -7,6 +7,7 @@ import {
 import FixtureBuilder from '../../../fixture-builder';
 import { mockNotificationServices } from '../mocks';
 import {
+  NOTIFICATIONS_TEAM_IMPORTED_PRIVATE_KEY,
   NOTIFICATIONS_TEAM_PASSWORD,
   NOTIFICATIONS_TEAM_SEED_PHRASE,
 } from '../constants';
@@ -21,7 +22,7 @@ describe('Account syncing', function () {
     return;
   }
   describe('from inside MetaMask', function () {
-    it('syncs newly added accounts', async function () {
+    it('does not sync accounts imported with private keys', async function () {
       const userStorageMockttpController = new UserStorageMockttpController();
 
       await withFixtures(
@@ -63,8 +64,9 @@ describe('Account syncing', function () {
           await accountListPage.check_accountDisplayedInAccountList(
             'My Second Synced Account',
           );
-          await accountListPage.addNewAccountWithCustomLabel(
-            'My third account',
+          await accountListPage.openAccountOptionsMenu();
+          await accountListPage.addNewImportedAccount(
+            NOTIFICATIONS_TEAM_IMPORTED_PRIVATE_KEY,
           );
         },
       );
@@ -96,21 +98,14 @@ describe('Account syncing', function () {
 
           const accountListPage = new AccountListPage(driver);
           await accountListPage.check_pageIsLoaded();
-
-          const accountSyncResponse =
-            userStorageMockttpController.paths.get('accounts')?.response;
-
           await accountListPage.check_numberOfAvailableAccounts(
-            accountSyncResponse?.length as number,
+            2,
           );
           await accountListPage.check_accountDisplayedInAccountList(
             'My First Synced Account',
           );
           await accountListPage.check_accountDisplayedInAccountList(
             'My Second Synced Account',
-          );
-          await accountListPage.check_accountDisplayedInAccountList(
-            'My third account',
           );
         },
       );
