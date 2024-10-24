@@ -4,6 +4,7 @@ import {
   NotificationDetailNft,
   NotificationDetailNftProps,
 } from './notification-detail-nft';
+import { TokenStandard } from '../../../../shared/constants/transaction';
 
 export default {
   title:
@@ -17,11 +18,13 @@ const Template = (args: NotificationDetailNftProps) => (
 
 export const DefaultStory = Template.bind({});
 DefaultStory.args = {
-  tokenSrc:
-    'https://i.seadn.io/s/raw/files/a96f90ec8ebf55a2300c66a0c46d6a16.png?w=500&auto=format',
-  networkSrc:
-    'https://token.api.cx.metamask.io/assets/nativeCurrencyLogos/ethereum.svg',
-  tokenId: 'NFT ID',
-  tokenName: 'NFT Name',
-  networkName: 'Ethereum',
+  nft: {
+    address: '0xAddress',
+    chainId: '0x1',
+    image:
+      'https://i.seadn.io/s/raw/files/a96f90ec8ebf55a2300c66a0c46d6a16.png?w=500&auto=format',
+    name: 'NFT Name',
+    standard: TokenStandard.ERC1155,
+    tokenId: 'NFT ID',
+  },
 };
