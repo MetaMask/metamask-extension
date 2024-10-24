@@ -154,7 +154,7 @@ export default class BridgeStatusController extends StaticIntervalPollingControl
       // First stab at this will not stop polling when you are on a different account
 
       this.update((_state) => {
-        const txHistoryItem =
+        const bridgeHistoryItem =
           _state.bridgeStatusState.txHistory[statusRequest.srcTxHash];
 
         _state.bridgeStatusState = {
@@ -162,7 +162,7 @@ export default class BridgeStatusController extends StaticIntervalPollingControl
           txHistory: {
             ...bridgeStatusState.txHistory,
             [statusRequest.srcTxHash]: {
-              ...txHistoryItem,
+              ...bridgeHistoryItem,
               status,
             },
           },
