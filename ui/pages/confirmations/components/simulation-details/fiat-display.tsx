@@ -1,4 +1,5 @@
 import React from 'react';
+import { useSelector } from 'react-redux';
 import {
   TextAlign,
   TextColor,
@@ -9,7 +10,7 @@ import { Text } from '../../../../components/component-library';
 import { SizeNumber } from '../../../../components/component-library/box/box.types';
 import Tooltip from '../../../../components/ui/tooltip';
 import { useFiatFormatter } from '../../../../hooks/useFiatFormatter';
-import { useHideFiatForTestnet } from '../../../../hooks/useHideFiatForTestnet';
+import { getShouldShowFiat } from '../../../../selectors';
 import { FIAT_UNAVAILABLE, FiatAmount } from './types';
 
 const textStyle = {
@@ -41,10 +42,10 @@ export const IndividualFiatDisplay: React.FC<{
   fiatAmount: FiatAmount;
   shorten?: boolean;
 }> = ({ fiatAmount, shorten = false }) => {
-  const hideFiatForTestnet = useHideFiatForTestnet();
+  const shouldShowFiat = useSelector(getShouldShowFiat);
   const fiatFormatter = useFiatFormatter();
 
-  if (hideFiatForTestnet) {
+  if (!shouldShowFiat) {
     return null;
   }
 
@@ -76,12 +77,12 @@ export const IndividualFiatDisplay: React.FC<{
 export const TotalFiatDisplay: React.FC<{
   fiatAmounts: FiatAmount[];
 }> = ({ fiatAmounts }) => {
-  const hideFiatForTestnet = useHideFiatForTestnet();
+  const shouldShowFiat = useSelector(getShouldShowFiat);
   const t = useI18nContext();
   const fiatFormatter = useFiatFormatter();
   const totalFiat = calculateTotalFiat(fiatAmounts);
 
-  if (hideFiatForTestnet) {
+  if (!shouldShowFiat) {
     return null;
   }
 

@@ -1,27 +1,27 @@
-import { useSelector } from 'react-redux';
-import { useParams } from 'react-router-dom';
+import { ApprovalType } from '@metamask/controller-utils';
 import {
   TransactionMeta,
   TransactionType,
 } from '@metamask/transaction-controller';
-import { ApprovalType } from '@metamask/controller-utils';
 import { useMemo } from 'react';
+import { useSelector } from 'react-redux';
+import { useParams } from 'react-router-dom';
 import {
   ApprovalsMetaMaskState,
+  getCurrentChainId,
   getIsRedesignedConfirmationsDeveloperEnabled,
   getRedesignedConfirmationsEnabled,
   getRedesignedTransactionsEnabled,
   getUnapprovedTransaction,
-  latestPendingConfirmationSelector,
+  oldestPendingConfirmationSelector,
   selectPendingApproval,
 } from '../../../selectors';
+import { selectUnapprovedMessage } from '../../../selectors/signatures';
 import {
   REDESIGN_APPROVAL_TYPES,
   REDESIGN_DEV_TRANSACTION_TYPES,
   REDESIGN_USER_TRANSACTION_TYPES,
 } from '../utils';
-import { selectUnapprovedMessage } from '../../../selectors/signatures';
-import { isMMI } from '../../../helpers/utils/build-types';
 
 /**
  * Determine the current confirmation based on the pending approvals and controller state.
@@ -33,8 +33,11 @@ import { isMMI } from '../../../helpers/utils/build-types';
  */
 const useCurrentConfirmation = () => {
   const { id: paramsConfirmationId } = useParams<{ id: string }>();
-  const latestPendingApproval = useSelector(latestPendingConfirmationSelector);
-  const confirmationId = paramsConfirmationId ?? latestPendingApproval?.id;
+  const oldestPendingApproval = useSelector(oldestPendingConfirmationSelector);
+  const confirmationId = paramsConfirmationId ?? oldestPendingApproval?.id;
+
+  // TODO: Temporary pending chain ID persisted in signature requests.
+  const globalChainId = useSelector(getCurrentChainId);
 
   const isRedesignedSignaturesUserSettingEnabled = useSelector(
     getRedesignedConfirmationsEnabled,
@@ -95,8 +98,7 @@ const useCurrentConfirmation = () => {
   // `REDESIGN_USER_TRANSACTION_TYPES` or `REDESIGN_DEV_TRANSACTION_TYPES`
   // respectively).
   const shouldUseRedesign =
-    shouldUseRedesignForSignatures ||
-    (!isMMI() && shouldUseRedesignForTransactions);
+    shouldUseRedesignForSignatures || shouldUseRedesignForTransactions;
 
   return useMemo(() => {
     if (!shouldUseRedesign) {
@@ -104,10 +106,12 @@ const useCurrentConfirmation = () => {
     }
 
     const currentConfirmation =
-      transactionMetadata ?? signatureMessage ?? undefined;
+      transactionMetadata ??
+      (signatureMessage && { ...signatureMessage, chainId: globalChainId }) ??
+      undefined;
 
     return { currentConfirmation };
-  }, [transactionMetadata, signatureMessage, shouldUseRedesign]);
+  }, [transactionMetadata, signatureMessage, shouldUseRedesign, globalChainId]);
 };
 
 export default useCurrentConfirmation;

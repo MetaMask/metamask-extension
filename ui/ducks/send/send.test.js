@@ -765,7 +765,7 @@ describe('Send Slice', () => {
         expect(draftTransaction.recipient.warning).toBeNull();
       });
 
-      it('should error with an invalid address error when user input is not a valid hex string', () => {
+      it('should not error with an invalid address error when user input is not a valid hex string', () => {
         const tokenAssetTypeState = {
           ...INITIAL_SEND_STATE_FOR_EXISTING_DRAFT,
           recipientInput: '0xValidateError',
@@ -784,21 +784,18 @@ describe('Send Slice', () => {
 
         const draftTransaction = getTestUUIDTx(result);
 
-        expect(draftTransaction.recipient.error).toStrictEqual(
-          'invalidAddressRecipient',
-        );
+        expect(draftTransaction.recipient.error).toBeNull();
       });
 
-      // TODO: Expectation might change in the future
-      it('should error with an invalid network error when user input is not a valid hex string on a non default network', () => {
+      it('should error with an invalid address error when user input is not a valid checksum address', () => {
         const tokenAssetTypeState = {
           ...INITIAL_SEND_STATE_FOR_EXISTING_DRAFT,
-          recipientInput: '0xValidateError',
+          recipientInput: '0xAAAA6BF26964aF9D7eEd9e03E53415D37aA96045',
         };
         const action = {
           type: 'send/validateRecipientUserInput',
           payload: {
-            chainId: '0x55',
+            chainId: '',
             tokens: [],
             useTokenDetection: true,
             tokenAddressList: [],
@@ -810,7 +807,7 @@ describe('Send Slice', () => {
         const draftTransaction = getTestUUIDTx(result);
 
         expect(draftTransaction.recipient.error).toStrictEqual(
-          'invalidAddressRecipientNotEthNetwork',
+          'invalidAddressRecipient',
         );
       });
 

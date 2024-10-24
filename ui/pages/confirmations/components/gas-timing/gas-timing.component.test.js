@@ -44,3 +44,29 @@ describe('Gas timing', () => {
     });
   });
 });
+
+describe('will not render the emoji 🦊 when build type is mmi', () => {
+  beforeAll(() => {
+    jest.resetModules();
+    process.env.METAMASK_BUILD_TYPE = 'mmi';
+  });
+
+  afterAll(() => {
+    process.env.METAMASK_BUILD_TYPE = 'main';
+  });
+
+  it('renders gas timing time when high estimate is chosen', async () => {
+    const mockStore = configureMockStore()(mockState);
+
+    const props = {
+      maxPriorityFeePerGas: '1000000',
+    };
+
+    const screen = renderWithProvider(<GasTiming {...props} />, mockStore);
+
+    await waitFor(() => {
+      expect(screen.queryByText('Market')).toBeInTheDocument();
+      expect(screen.getByTestId('gas-timing-time')).toBeInTheDocument();
+    });
+  });
+});

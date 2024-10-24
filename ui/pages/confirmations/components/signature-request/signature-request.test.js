@@ -24,6 +24,7 @@ import {
   getMemoizedMetaMaskInternalAccounts,
   getSelectedInternalAccount,
   pendingApprovalsSortedSelector,
+  getNetworkConfigurationsByChainId,
 } from '../../../../selectors';
 import { ETH_EOA_METHODS } from '../../../../../shared/constants/eth-methods';
 import { mockNetworkState } from '../../../../../test/stub/networks';
@@ -44,9 +45,7 @@ const mockStore = {
       rpcUrl: 'http://localhost:8545',
       ticker: 'ETH',
     }),
-    preferences: {
-      useNativeCurrencyAsPrimaryCurrency: true,
-    },
+    preferences: {},
     accounts: {
       '0xd8f6a2ffb0fc5952d16c9768b71cfd35b6399aa5': {
         address: '0xd8f6a2ffb0fc5952d16c9768b71cfd35b6399aa5',
@@ -157,6 +156,8 @@ const generateUseSelectorRouter = (opts) => (selector) => {
       return {};
     case pendingApprovalsSortedSelector:
       return Object.values(opts.metamask.pendingApprovals);
+    case getNetworkConfigurationsByChainId:
+      return opts.metamask.networkConfigurationsByChainId;
     default:
       return undefined;
   }

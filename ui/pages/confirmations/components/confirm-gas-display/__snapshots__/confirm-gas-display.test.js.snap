@@ -37,16 +37,6 @@ exports[`ConfirmGasDisplay should match snapshot 1`] = `
                 class="mm-box mm-text mm-text--inherit mm-box--color-primary-default"
               />
             </button>
-            <div
-              class="mm-box currency-display-component mm-box--padding-inline-start-1 mm-box--display-flex mm-box--flex-wrap-wrap mm-box--align-items-center"
-              title="0.001197"
-            >
-              <span
-                class="mm-box mm-text currency-display-component__text mm-text--body-md-bold mm-text--ellipsis mm-box--color-text-default"
-              >
-                0.001197
-              </span>
-            </div>
           </div>
         </h6>
         <h6

@@ -7,6 +7,8 @@ import { ONBOARDING_CREATE_PASSWORD_ROUTE } from '../../../helpers/constants/rou
 import {
   onboardingMetametricsAgree,
   noThanks,
+  // TODO: Remove restricted import
+  // eslint-disable-next-line import/no-restricted-paths
 } from '../../../../app/_locales/en/messages.json';
 import {
   setParticipateInMetaMetrics,

@@ -10,8 +10,6 @@ import { MetaMetricsEventCategory } from '../../../shared/constants/metametrics'
 import SiteOrigin from '../../components/ui/site-origin';
 import { Numeric } from '../../../shared/modules/Numeric';
 import { EtherDenomination } from '../../../shared/constants/common';
-import { formatCurrency } from '../../helpers/utils/confirm-tx.util';
-import { getValueFromWeiHex } from '../../../shared/modules/conversion.utils';
 
 export default class ConfirmEncryptionPublicKey extends Component {
   static contextTypes = {
@@ -34,8 +32,6 @@ export default class ConfirmEncryptionPublicKey extends Component {
     subjectMetadata: PropTypes.object,
     mostRecentOverviewPage: PropTypes.string.isRequired,
     nativeCurrency: PropTypes.string.isRequired,
-    currentCurrency: PropTypes.string.isRequired,
-    conversionRate: PropTypes.number,
   };
 
   renderHeader = () => {
@@ -73,30 +69,20 @@ export default class ConfirmEncryptionPublicKey extends Component {
 
   renderBalance = () => {
     const {
-      conversionRate,
       nativeCurrency,
-      currentCurrency,
       fromAccount: { balance },
     } = this.props;
     const { t } = this.context;
 
-    const nativeCurrencyBalance = conversionRate
-      ? formatCurrency(
-          getValueFromWeiHex({
-            value: balance,
-            fromCurrency: nativeCurrency,
-            toCurrency: currentCurrency,
-            conversionRate,
-            numberOfDecimals: 6,
-            toDenomination: EtherDenomination.ETH,
-          }),
-          currentCurrency,
-        )
-      : new Numeric(balance, 16, EtherDenomination.WEI)
-          .toDenomination(EtherDenomination.ETH)
-          .round(6)
-          .toBase(10)
-          .toString();
+    const nativeCurrencyBalance = new Numeric(
+      balance,
+      16,
+      EtherDenomination.WEI,
+    )
+      .toDenomination(EtherDenomination.ETH)
+      .round(6)
+      .toBase(10)
+      .toString();
 
     return (
       <div className="request-encryption-public-key__balance">
@@ -104,9 +90,7 @@ export default class ConfirmEncryptionPublicKey extends Component {
           {`${t('balance')}:`}
         </div>
         <div className="request-encryption-public-key__balance-value">
-          {`${nativeCurrencyBalance} ${
-            conversionRate ? currentCurrency?.toUpperCase() : nativeCurrency
-          }`}
+          {`${nativeCurrencyBalance} ${nativeCurrency}`}
         </div>
       </div>
     );

@@ -16,7 +16,7 @@ import InfoTooltip from '../../../../../../components/ui/info-tooltip';
 import NicknamePopovers from '../../../../../../components/app/modals/nickname-popovers';
 import { ORIGIN_METAMASK } from '../../../../../../../shared/constants/app';
 import SiteOrigin from '../../../../../../components/ui/site-origin';
-import { getAssetImageURL } from '../../../../../../helpers/utils/util';
+import useGetAssetImageUrl from '../../../../../../hooks/useGetAssetImageUrl';
 
 const ConfirmPageContainerSummary = (props) => {
   const {
@@ -36,6 +36,7 @@ const ConfirmPageContainerSummary = (props) => {
   const ipfsGateway = useSelector(getIpfsGateway);
 
   const txData = useSelector(txDataSelector);
+  const nftImageURL = useGetAssetImageUrl(image, ipfsGateway);
   const { txParams = {} } = txData;
   const { to: txParamsToAddress } = txParams;
 
@@ -66,14 +67,12 @@ const ConfirmPageContainerSummary = (props) => {
   const checksummedAddress = toChecksumHexAddress(contractAddress);
 
   const renderImage = () => {
-    const imagePath = getAssetImageURL(image, ipfsGateway);
-
     if (image) {
       return (
         <img
           className="confirm-page-container-summary__icon"
           width={36}
-          src={imagePath}
+          src={nftImageURL}
         />
       );
     } else if (contractAddress) {

@@ -1,5 +1,5 @@
 import React, { useContext, useEffect } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import {
   Box,
   ButtonIcon,
@@ -8,7 +8,6 @@ import {
 } from '../../../../../components/component-library';
 import { I18nContext } from '../../../../../contexts/i18n';
 
-import { updateConfirm } from '../../../../../ducks/confirm/confirm';
 import {
   BackgroundColor,
   BlockSize,
@@ -31,8 +30,8 @@ type ContentProps = {
 
 const ScrollToBottom = ({ children }: ContentProps) => {
   const t = useContext(I18nContext);
-  const dispatch = useDispatch();
-  const { currentConfirmation } = useConfirmContext();
+  const { currentConfirmation, setIsScrollToBottomCompleted } =
+    useConfirmContext();
   const previousId = usePrevious(currentConfirmation?.id);
   const showAdvancedDetails = useSelector(
     selectConfirmationAdvancedDetailsOpen,
@@ -72,11 +71,7 @@ const ScrollToBottom = ({ children }: ContentProps) => {
   }, [currentConfirmation?.id, previousId, ref?.current]);
 
   useEffect(() => {
-    dispatch(
-      updateConfirm({
-        isScrollToBottomCompleted: !isScrollable || hasScrolledToBottom,
-      }),
-    );
+    setIsScrollToBottomCompleted(!isScrollable || hasScrolledToBottom);
   }, [isScrollable, hasScrolledToBottom]);
 
   return (

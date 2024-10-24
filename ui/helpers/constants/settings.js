@@ -1,7 +1,6 @@
 /* eslint-disable @metamask/design-tokens/color-no-hex*/
 import { IconName } from '../../components/component-library';
 import {
-  ALERTS_ROUTE,
   ADVANCED_ROUTE,
   SECURITY_ROUTE,
   GENERAL_ROUTE,
@@ -34,9 +33,9 @@ const SETTINGS_CONSTANTS = [
   },
   {
     tabMessage: (t) => t('general'),
-    sectionMessage: (t) => t('primaryCurrencySetting'),
-    descriptionMessage: (t) => t('primaryCurrencySettingDescription'),
-    route: `${GENERAL_ROUTE}#primary-currency`,
+    sectionMessage: (t) => t('showNativeTokenAsMainBalance'),
+    descriptionMessage: (t) => t('showNativeTokenAsMainBalance'),
+    route: `${GENERAL_ROUTE}#show-native-token-as-main-balance`,
     iconName: IconName.Setting,
   },
   {
@@ -325,18 +324,11 @@ const SETTINGS_CONSTANTS = [
     icon: 'fa fa-lock',
   },
   {
-    tabMessage: (t) => t('alerts'),
-    sectionMessage: (t) => t('alertSettingsUnconnectedAccount'),
-    descriptionMessage: (t) => t('alertSettingsUnconnectedAccount'),
-    route: `${ALERTS_ROUTE}#unconnected-account`,
-    iconName: IconName.Notification,
-  },
-  {
-    tabMessage: (t) => t('alerts'),
-    sectionMessage: (t) => t('alertSettingsWeb3ShimUsage'),
-    descriptionMessage: (t) => t('alertSettingsWeb3ShimUsage'),
-    route: `${ALERTS_ROUTE}#web3-shimusage`,
-    icon: 'fa fa-bell',
+    tabMessage: (t) => t('securityAndPrivacy'),
+    sectionMessage: (t) => t('deleteMetaMetricsData'),
+    descriptionMessage: (t) => t('deleteMetaMetricsDataDescription'),
+    route: `${SECURITY_ROUTE}#delete-metametrics-data`,
+    icon: 'fa fa-lock',
   },
   {
     tabMessage: (t) => t('networks'),

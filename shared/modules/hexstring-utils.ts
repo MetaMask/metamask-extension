@@ -66,6 +66,16 @@ export function isValidHexAddress(
   return isValidAddress(addressToCheck);
 }
 
+/**
+ * Determines if a string is a possible ethereum address
+ *
+ * @param candidate - the input to check
+ * @returns true if the input is a 40 char hex string with optional 0x prefix, false otherwise
+ */
+export function isPossibleAddress(candidate: string) {
+  return /^(0x)?[0-9a-fA-F]{40}$/iu.test(candidate);
+}
+
 export function toChecksumHexAddress(address: string) {
   if (!address) {
     // our internal checksumAddress function that this method replaces would

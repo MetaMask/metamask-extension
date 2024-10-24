@@ -4,6 +4,7 @@ import { TransactionType } from '@metamask/transaction-controller';
 import { createTestProviderTools } from '../../test/stub/provider';
 import {
   determineTransactionType,
+  hasTransactionData,
   isEIP1559Transaction,
   isLegacyTransaction,
   parseStandardTokenTransactionData,
@@ -416,5 +417,21 @@ describe('Transaction.utils', function () {
         }).toThrow(new Error('Unexpected end of JSON input'));
       });
     });
+  });
+
+  describe('hasTransactionData', () => {
+    it.each([
+      ['has prefix', '0x1234'],
+      ['has no prefix', '1234'],
+    ])('returns true if data %s', (_, data) => {
+      expect(hasTransactionData(data)).toBe(true);
+    });
+
+    it.each([undefined, null, '', '0x', '0X'])(
+      'returns false if data is %s',
+      (data) => {
+        expect(hasTransactionData(data)).toBe(false);
+      },
+    );
   });
 });

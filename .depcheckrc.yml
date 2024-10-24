@@ -28,6 +28,7 @@ ignores:
   - '@sentry/cli' # invoked as `sentry-cli`
   - 'chromedriver'
   - 'depcheck' # ooo meta
+  - 'ethers' # ethers @5.7.0 expected by @account-abstraction/contracts, but conflicts with transitive ethers@6.x
   - 'ganache-cli'
   - 'geckodriver'
   - 'jest'
@@ -79,6 +80,7 @@ ignores:
   - '@babel/plugin-transform-logical-assignment-operators'
   # trezor
   - 'ts-mixer'
+  - '@testing-library/dom'
 
 # files depcheck should not parse
 ignorePatterns:

@@ -1,15 +1,16 @@
+import { Hex } from '@metamask/utils';
 import React from 'react';
-
-import { Box } from '../../../../../../../components/component-library';
 import { PrimaryType } from '../../../../../../../../shared/constants/signatures';
 import { parseTypedDataMessage } from '../../../../../../../../shared/modules/transaction.utils';
+import { ConfirmInfoRow } from '../../../../../../../components/app/confirm/info/row';
+import { Box } from '../../../../../../../components/component-library';
 import {
   Display,
   FlexDirection,
 } from '../../../../../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../../../../../hooks/useI18nContext';
-import { SignatureRequestType } from '../../../../../types/confirm';
 import { useConfirmContext } from '../../../../../context/confirm';
+import { SignatureRequestType } from '../../../../../types/confirm';
 import StaticSimulation from '../../shared/static-simulation/static-simulation';
 import PermitSimulationValueDisplay from './value-display/value-display';
 
@@ -41,22 +42,41 @@ const PermitSimulation: React.FC<object> = () => {
   const t = useI18nContext();
   const { currentConfirmation } = useConfirmContext<SignatureRequestType>();
   const msgData = currentConfirmation.msgParams?.data;
+  const chainId = currentConfirmation.chainId as Hex;
   const {
     domain: { verifyingContract },
     message,
+    message: { tokenId },
     primaryType,
   } = parseTypedDataMessage(msgData as string);
+  const isNFT = tokenId !== undefined;
 
   const tokenDetails = extractTokenDetailsByPrimaryType(message, primaryType);
 
-  return (
-    <StaticSimulation
-      title={t('simulationDetailsTitle')}
-      titleTooltip={t('simulationDetailsTitleTooltip')}
-      description={t('permitSimulationDetailInfo')}
-      simulationHeading={t('spendingCap')}
-      simulationElements={
-        Array.isArray(tokenDetails) ? (
+  const TokenDetail = ({
+    token,
+    amount,
+    i,
+  }: {
+    token: Hex | string;
+    amount: number | string;
+    i: number;
+  }) => (
+    <PermitSimulationValueDisplay
+      key={`${token}-${i}`}
+      primaryType={primaryType}
+      tokenContract={token}
+      value={amount}
+      chainId={chainId}
+    />
+  );
+
+  const SpendingCapRow = (
+    <ConfirmInfoRow
+      label={t(isNFT ? 'simulationApproveHeading' : 'spendingCap')}
+    >
+      <Box style={{ marginLeft: 'auto', maxWidth: '100%' }}>
+        {Array.isArray(tokenDetails) ? (
           <Box
             display={Display.Flex}
             flexDirection={FlexDirection.Column}
@@ -67,12 +87,7 @@ const PermitSimulation: React.FC<object> = () => {
                 { token, amount }: { token: string; amount: string },
                 i: number,
               ) => (
-                <PermitSimulationValueDisplay
-                  key={`${token}-${i}`}
-                  primaryType={primaryType}
-                  tokenContract={token}
-                  value={amount}
-                />
+                <TokenDetail token={token} amount={amount} i={i} />
               ),
             )}
           </Box>
@@ -80,9 +95,22 @@ const PermitSimulation: React.FC<object> = () => {
           <PermitSimulationValueDisplay
             tokenContract={verifyingContract}
             value={message.value}
+            tokenId={message.tokenId}
+            chainId={chainId}
           />
-        )
-      }
+        )}
+      </Box>
+    </ConfirmInfoRow>
+  );
+
+  return (
+    <StaticSimulation
+      title={t('simulationDetailsTitle')}
+      titleTooltip={t('simulationDetailsTitleTooltip')}
+      description={t(
+        isNFT ? 'simulationDetailsApproveDesc' : 'permitSimulationDetailInfo',
+      )}
+      simulationElements={SpendingCapRow}
     />
   );
 };

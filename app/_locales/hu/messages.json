@@ -205,9 +205,6 @@
   "delete": {
     "message": "Törlés"
   },
-  "deleteNetwork": {
-    "message": "Törli a hálózatot?"
-  },
   "details": {
     "message": "Részletek"
   },
@@ -228,9 +225,6 @@
   },
   "editContact": {
     "message": "Kapcsolatok szerkesztése"
-  },
-  "ensRegistrationError": {
-    "message": "Hiba történt az ENS név regisztrációjakor"
   },
   "enterPasswordContinue": {
     "message": "A folytatáshoz adja meg a jelszót"
@@ -350,12 +344,6 @@
   "invalidAddressRecipient": {
     "message": "A címzett címe érvénytelen "
   },
-  "invalidAddressRecipientNotEthNetwork": {
-    "message": "Nem ETH hálózat, állítsa kisbetűre"
-  },
-  "invalidBlockExplorerURL": {
-    "message": "Helytelen Block Explorer URL"
-  },
   "invalidRPC": {
     "message": "Helytelen RPC URL"
   },
@@ -452,9 +440,6 @@
   "next": {
     "message": "Következő"
   },
-  "noAddressForName": {
-    "message": "Nem lett cím beállítva ehhez a névhez."
-  },
   "noConversionRateAvailable": {
     "message": "Nincs elérhető átváltási díj"
   },
@@ -516,12 +501,6 @@
   "prev": {
     "message": "Előző"
   },
-  "primaryCurrencySetting": {
-    "message": "Elsődleges pénznem"
-  },
-  "primaryCurrencySettingDescription": {
-    "message": "Válaszd a helyit, hogy az értékek elsősorban a helyi pénznemben jelenjenek meg (pl. ETH). Válaszd a Fiatot, hogy az értékek elsősorban a választott fiat pénznemben jelenjenek meg."
-  },
   "privacyMsg": {
     "message": "Adatvédelmi szabályzat"
   },
@@ -537,9 +516,6 @@
   },
   "readdToken": {
     "message": "Ezt a tokent a jövőben is hozzáadhatja, ha a fiókbeállítások menü „Token hozzáadása” elemére lép."
-  },
-  "recipientAddressPlaceholder": {
-    "message": "Keresés, nyilvános cím (0x) vagy ENS"
   },
   "reject": {
     "message": "Elutasítás"
@@ -772,9 +748,6 @@
   },
   "unlockMessage": {
     "message": "A decentralizált hálózat csak önre vár"
-  },
-  "updatedWithDate": {
-    "message": "$1 frissítve"
   },
   "urlErrorMsg": {
     "message": "Az URI-hez szükség van a megfelelő HTTP/HTTPS előtagra."
