@@ -2,6 +2,7 @@ import { useState, useCallback, useEffect, useMemo } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import type { InternalAccount } from '@metamask/keyring-api';
 import log from 'loglevel';
+import { useMetamaskNotificationsContext } from '../../contexts/metamask-notifications/metamask-notifications';
 import {
   disableProfileSyncing as disableProfileSyncingAction,
   enableProfileSyncing as enableProfileSyncingAction,
@@ -74,6 +75,7 @@ export function useDisableProfileSyncing(): {
   error: string | null;
 } {
   const dispatch = useDispatch();
+  const { listNotifications } = useMetamaskNotificationsContext();
 
   const [error, setError] = useState<string | null>(null);
 
@@ -83,6 +85,9 @@ export function useDisableProfileSyncing(): {
     try {
       // disable profile syncing
       await dispatch(disableProfileSyncingAction());
+
+      // list notifications to update the counter
+      await listNotifications();
     } catch (e) {
       const errorMessage =
         e instanceof Error ? e.message : JSON.stringify(e ?? '');
