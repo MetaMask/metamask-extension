@@ -8,6 +8,7 @@ import {
   setFromChain,
   setFromToken,
   setFromTokenInputValue,
+  setSelectedQuote,
   setToChain,
   setToChainId,
   setToToken,
@@ -106,10 +107,10 @@ const PrepareBridgePage = () => {
   );
 
   const debouncedUpdateQuoteRequestInController = useCallback(
-    debounce(
-      (p: Partial<QuoteRequest>) => dispatch(updateQuoteRequestParams(p)),
-      300,
-    ),
+    debounce((p: Partial<QuoteRequest>) => {
+      dispatch(updateQuoteRequestParams(p));
+      dispatch(setSelectedQuote(null));
+    }, 300),
     [],
   );
 

@@ -6,7 +6,11 @@ import { swapsSlice } from '../swaps/swaps';
 import { SwapsTokenObject } from '../../../shared/constants/swaps';
 import { SwapsEthToken } from '../../selectors';
 import { fetchTokenExchangeRates } from '../../helpers/utils/util';
-import { SortOrder } from '../../pages/bridge/types';
+import {
+  QuoteMetadata,
+  QuoteResponse,
+  SortOrder,
+} from '../../pages/bridge/types';
 
 export type BridgeState = {
   toChainId: Hex | null;
@@ -16,6 +20,7 @@ export type BridgeState = {
   toTokenExchangeRate: number | null;
   toNativeExchangeRate: number | null;
   sortOrder: SortOrder;
+  selectedQuote: (QuoteResponse & QuoteMetadata) | null;
 };
 
 const initialState: BridgeState = {
@@ -26,6 +31,7 @@ const initialState: BridgeState = {
   toNativeExchangeRate: null,
   toTokenExchangeRate: null,
   sortOrder: SortOrder.ADJUSTED_RETURN_DESC,
+  selectedQuote: null,
 };
 
 export const setDestTokenExchangeRates = createAsyncThunk(
@@ -69,6 +75,9 @@ const bridgeSlice = createSlice({
     }),
     setSortOrder: (state, action) => {
       state.sortOrder = action.payload;
+    },
+    setSelectedQuote: (state, action) => {
+      state.selectedQuote = action.payload;
     },
   },
   extraReducers: (builder) => {

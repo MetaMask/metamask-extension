@@ -23,7 +23,7 @@ import {
 } from '../utils/quote';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { getCurrentCurrency } from '../../../selectors';
-import { setSortOrder } from '../../../ducks/bridge/actions';
+import { setSelectedQuote, setSortOrder } from '../../../ducks/bridge/actions';
 import { SortOrder, QuoteMetadata, QuoteResponse } from '../types';
 import { Footer } from '../../../components/multichain/pages/page';
 import { useCountdownTimer } from '../../../hooks/bridge/useCountdownTimer';
@@ -69,7 +69,8 @@ export const BridgeQuotesModal = ({
             <Button
               data-testid="quotes-modal-use-quote-button"
               onClick={() => {
-                // TODO select quote
+                dispatch(setSelectedQuote(expandedQuote));
+                setExpandedQuote(undefined);
                 onClose();
               }}
               disabled={false}

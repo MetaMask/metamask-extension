@@ -182,8 +182,11 @@ export const getBridgeFeesPerGas = createSelector(
 export const getBridgeSortOrder = (state: BridgeAppState) =>
   state.bridge.sortOrder;
 
+const _getSelectedQuote = (state: BridgeAppState) => state.bridge.selectedQuote;
+
 const _getQuotesWithMetadata = createDeepEqualSelector(
   (state) => state.metamask.bridgeState.quotes,
+  _getSelectedQuote,
   (state: BridgeAppState) => state.bridge.toTokenExchangeRate,
   (state: BridgeAppState) => state.bridge.toNativeExchangeRate,
   (state) => getTokenExchangeRates(state),
@@ -191,13 +194,14 @@ const _getQuotesWithMetadata = createDeepEqualSelector(
   getBridgeFeesPerGas,
   (
     quotes,
+    selectedQuote,
     toTokenExchangeRate,
     toNativeExchangeRate,
     fromTokenExchangeRates,
     fromNativeExchangeRate,
     { maxFeePerGas, maxPriorityFeePerGas },
   ): (QuoteResponse & QuoteMetadata)[] => {
-    return quotes.map((quote: QuoteResponse) => {
+    const newQuotes = quotes.map((quote: QuoteResponse) => {
       const toTokenAmount = calcToAmount(
         quote.quote,
         toTokenExchangeRate,
@@ -229,6 +233,10 @@ const _getQuotesWithMetadata = createDeepEqualSelector(
         cost: calcCost(adjustedReturn.fiat, sentAmount.fiat),
       };
     });
+    // TODO if quote is exactly the same excluding requestId, dedupe it as well and replace with new one
+    return selectedQuote
+      ? uniqBy(newQuotes.concat(selectedQuote), 'quote.requestId')
+      : newQuotes;
   },
 );
 
@@ -296,18 +304,20 @@ const _getRecommendedQuote = createDeepEqualSelector(
 export const getBridgeQuotes = createSelector(
   _getSortedQuotesWithMetadata,
   _getRecommendedQuote,
+  _getSelectedQuote,
   (state) => state.metamask.bridgeState.quotesLastFetched,
   (state) =>
     state.metamask.bridgeState.quotesLoadingStatus === RequestStatus.LOADING,
   (
     sortedQuotesWithMetadata,
     recommendedQuote,
+    selectedQuote,
     quotesLastFetchedMs,
     isLoading,
   ) => ({
     sortedQuotes: sortedQuotesWithMetadata,
     recommendedQuote,
-    activeQuote: recommendedQuote,
+    activeQuote: selectedQuote ?? recommendedQuote,
     quotesLastFetchedMs,
     isLoading,
   }),
