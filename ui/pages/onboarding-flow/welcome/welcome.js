@@ -5,6 +5,7 @@ import { useHistory } from 'react-router-dom';
 ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
 import { Carousel } from 'react-responsive-carousel';
 ///: END:ONLY_INCLUDE_IF
+import { CHAIN_IDS } from '@metamask/transaction-controller';
 import Mascot from '../../../components/ui/mascot';
 import Button from '../../../components/ui/button';
 import { Text } from '../../../components/component-library';
@@ -25,6 +26,8 @@ import {
 import {
   setFirstTimeFlowType,
   setTermsOfUseLastAgreed,
+  addNetwork,
+  updateNetworksList,
   ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
   setParticipateInMetaMetrics,
   ///: END:ONLY_INCLUDE_IF
@@ -42,6 +45,8 @@ import {
 } from '../../../helpers/constants/routes';
 import { getFirstTimeFlowType, getCurrentKeyring } from '../../../selectors';
 import { FirstTimeFlowType } from '../../../../shared/constants/onboarding';
+import { FEATURED_RPCS } from '../../../../shared/constants/network';
+import { getCompletedOnboarding } from '../../../ducks/metamask/metamask';
 
 export default function OnboardingWelcome() {
   const t = useI18nContext();
@@ -53,6 +58,8 @@ export default function OnboardingWelcome() {
   const [termsChecked, setTermsChecked] = useState(false);
   const [newAccountCreationInProgress, setNewAccountCreationInProgress] =
     useState(false);
+
+  const completedOnboarding = useSelector(getCompletedOnboarding);
 
   // Don't allow users to come back to this screen after they
   // have already imported or created a wallet
@@ -72,7 +79,78 @@ export default function OnboardingWelcome() {
     history,
     firstTimeFlowType,
     newAccountCreationInProgress,
+    dispatch,
   ]);
+
+  useEffect(() => {
+    const addNetworks = async () => {
+      if (!completedOnboarding) {
+        // List of chainIds to add (as hex strings)
+        const chainIdsToAdd = [
+          CHAIN_IDS.ARBITRUM,
+          CHAIN_IDS.BASE,
+          CHAIN_IDS.BSC,
+          CHAIN_IDS.OPTIMISM,
+          CHAIN_IDS.POLYGON,
+        ];
+
+        // Define the desired order based on `networkId`
+        const networkOrder = [
+          CHAIN_IDS.MAINNET,
+          CHAIN_IDS.ARBITRUM,
+          CHAIN_IDS.BASE,
+          CHAIN_IDS.BSC,
+          CHAIN_IDS.LINEA_MAINNET,
+          CHAIN_IDS.OPTIMISM,
+          CHAIN_IDS.POLYGON,
+        ];
+
+        // Filter the FEATURED_RPCS based on the chainIdsToAdd array
+        const selectedNetworks = FEATURED_RPCS.filter((network) =>
+          chainIdsToAdd.includes(network.chainId),
+        );
+
+        try {
+          await Promise.all(
+            selectedNetworks.map(async (network) => {
+              const {
+                chainId,
+                blockExplorerUrls,
+                defaultRpcEndpointIndex,
+                defaultBlockExplorerUrlIndex,
+                name,
+                nativeCurrency,
+                rpcEndpoints,
+              } = network;
+
+              await dispatch(
+                addNetwork({
+                  chainId,
+                  blockExplorerUrls,
+                  defaultRpcEndpointIndex,
+                  defaultBlockExplorerUrlIndex,
+                  name,
+                  nativeCurrency,
+                  rpcEndpoints,
+                }),
+              );
+
+              console.info(`Successfully added network: ${name}`);
+            }),
+          );
+        } catch (error) {
+          console.error('Error adding networks:', error);
+        }
+
+        await dispatch(updateNetworksList(networkOrder));
+      }
+    };
+
+    addNetworks().catch((error) => {
+      console.error('Error adding networks:', error);
+    });
+  }, [dispatch, completedOnboarding]);
+
   const trackEvent = useContext(MetaMetricsContext);
 
   const onCreateClick = async () => {
