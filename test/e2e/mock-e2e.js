@@ -1,8 +1,8 @@
 const fs = require('fs');
 
-const {
-  SECURITY_PROVIDER_SUPPORTED_CHAIN_IDS,
-} = require('../../shared/constants/security-provider');
+// const {
+//   SECURITY_PROVIDER_SUPPORTED_CHAIN_IDS,
+// } = require('../../shared/constants/security-provider');
 const {
   BRIDGE_DEV_API_BASE_URL,
   BRIDGE_PROD_API_BASE_URL,
@@ -16,7 +16,7 @@ const {
   SWAPS_API_V2_BASE_URL,
   TOKEN_API_BASE_URL,
 } = require('../../shared/constants/swaps');
-const { SECURITY_ALERTS_PROD_API_BASE_URL } = require('./tests/ppom/constants');
+// const { SECURITY_ALERTS_PROD_API_BASE_URL } = require('./tests/ppom/constants');
 const {
   DEFAULT_FEATURE_FLAGS_RESPONSE: BRIDGE_DEFAULT_FEATURE_FLAGS_RESPONSE,
 } = require('./tests/bridge/constants');
@@ -687,14 +687,14 @@ async function setupMocking(
       };
     });
 
-  await server
-    .forGet(`${SECURITY_ALERTS_PROD_API_BASE_URL}/supportedChains`)
-    .thenCallback(() => {
-      return {
-        statusCode: 200,
-        json: SECURITY_PROVIDER_SUPPORTED_CHAIN_IDS,
-      };
-    });
+  // await server
+  //   .forGet(`${SECURITY_ALERTS_PROD_API_BASE_URL}/supportedChains`)
+  //   .thenCallback(() => {
+  //     return {
+  //       statusCode: 200,
+  //       json: SECURITY_PROVIDER_SUPPORTED_CHAIN_IDS,
+  //     };
+  //   });
 
   await mockLensNameProvider(server);
   await mockTokenNameProvider(server, chainId);
