@@ -36,7 +36,6 @@ describe('Personal sign', function () {
           WINDOW_TITLES.Dialog,
           windowHandles,
         );
-        await driver.clickElement('[data-testid="sectionCollapsibleButton"]');
 
         const personalMessageRow = await driver.findElement(
           '.request-signature__row-value',
@@ -84,7 +83,6 @@ describe('Personal sign', function () {
           WINDOW_TITLES.Dialog,
           windowHandles,
         );
-        await driver.clickElement('[data-testid="sectionCollapsibleButton"]');
 
         await driver.waitForSelector({
           text: 'Reject 2 requests',
