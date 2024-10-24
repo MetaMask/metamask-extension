@@ -476,39 +476,6 @@ const onboardingBeginCreateNewWallet = async (driver) => {
   // welcome
   await driver.clickElement('[data-testid="onboarding-create-wallet"]');
 };
-```
-
-I realize I made a mistake in my approach. Instead of removing the helper functions from the imports, I should:
-
-1. Keep the helper functions imported since they're still needed
-2. Fix the FixtureBuilder import to not use `type`
-3. Add the page objects while keeping existing functionality
-
-Let me fix this with a new edit:
-
-<edit_file file="/home/ubuntu/metamask-extension/test/e2e/tests/privacy/onboarding-privacy.spec.ts" start_line="1" end_line="16">
-```typescript
-import { strict as assert } from 'assert';
-import {
-  withFixtures,
-  importSRPOnboardingFlow,
-  defaultGanacheOptions,
-  onboardingBeginCreateNewWallet,
-  onboardingChooseMetametricsOption,
-  onboardingCreatePassword,
-  onboardingRevealAndConfirmSRP,
-  onboardingCompleteWalletCreation,
-  regularDelayMs,
-  TEST_SEED_PHRASE,
-} from '../../helpers';
-import { Driver } from '../../webdriver/driver';
-import FixtureBuilder from '../../fixture-builder';
-import HomePage from '../../page-objects/pages/homepage';
-import OnboardingCompletePage from '../../page-objects/pages/onboarding/onboarding-complete-page';
-import OnboardingMetricsPage from '../../page-objects/pages/onboarding/onboarding-metrics-page';
-import OnboardingPasswordPage from '../../page-objects/pages/onboarding/onboarding-password-page';
-import OnboardingPrivacySettingsPage from '../../page-objects/pages/onboarding/onboarding-privacy-settings-page';
-import StartOnboardingPage from '../../page-objects/pages/onboarding/start-onboarding-page';
 
 /**
  * Choose either "I Agree" or "No Thanks" on the MetaMetrics onboarding screen
@@ -521,34 +488,6 @@ const onboardingChooseMetametricsOption = async (driver, option = false) => {
   // metrics
   await driver.clickElement(`[data-testid="metametrics-${optionIdentifier}"]`);
 };
-```
-
-I realize I made a mistake in my approach. Instead of removing the helper functions, we should:
-
-1. Keep the helper functions in helpers.js
-2. Fix the FixtureBuilder import to not use `type`
-3. Update the test file to use page objects alongside the existing helper functions
-
-Let me revise my changes to the test file.
-
-<edit_file file="/home/ubuntu/metamask-extension/test/e2e/tests/privacy/onboarding-privacy.spec.ts" start_line="1" end_line="16">
-```typescript
-import { strict as assert } from 'assert';
-import {
-  withFixtures,
-  importSRPOnboardingFlow,
-  defaultGanacheOptions,
-  onboardingBeginCreateNewWallet,
-  onboardingChooseMetametricsOption,
-  onboardingCreatePassword,
-  onboardingRevealAndConfirmSRP,
-  onboardingCompleteWalletCreation,
-  regularDelayMs,
-  TEST_SEED_PHRASE,
-} from '../../helpers';
-import { Driver } from '../../webdriver/driver';
-import FixtureBuilder from '../../fixture-builder';
-import OnboardingPrivacySettingsPage from '../../page-objects/pages/onboarding/onboarding-privacy-settings-page';
 
 /**
  * Set a password for MetaMask during onboarding
@@ -563,39 +502,6 @@ const onboardingCreatePassword = async (driver, password) => {
   await driver.clickElement('[data-testid="create-password-terms"]');
   await driver.clickElement('[data-testid="create-password-wallet"]');
 };
-```
-
-I realize I made a mistake in my approach. Instead of removing the helper functions, we should:
-
-1. Keep the FixtureBuilder import without 'type'
-2. Keep the helper functions from '../../helpers'
-3. Add the page objects while keeping existing functionality
-
-Let me fix my previous edit:
-
-<edit_file file="/home/ubuntu/metamask-extension/test/e2e/tests/privacy/onboarding-privacy.spec.ts" start_line="1" end_line="16">
-```typescript
-import { strict as assert } from 'assert';
-import {
-  withFixtures,
-  importSRPOnboardingFlow,
-  defaultGanacheOptions,
-  onboardingBeginCreateNewWallet,
-  onboardingChooseMetametricsOption,
-  onboardingCreatePassword,
-  onboardingRevealAndConfirmSRP,
-  onboardingCompleteWalletCreation,
-  regularDelayMs,
-  TEST_SEED_PHRASE,
-} from '../../helpers';
-import { Driver } from '../../webdriver/driver';
-import FixtureBuilder from '../../fixture-builder';
-import HomePage from '../../page-objects/pages/homepage';
-import OnboardingCompletePage from '../../page-objects/pages/onboarding/onboarding-complete-page';
-import OnboardingMetricsPage from '../../page-objects/pages/onboarding/onboarding-metrics-page';
-import OnboardingPasswordPage from '../../page-objects/pages/onboarding/onboarding-password-page';
-import OnboardingPrivacySettingsPage from '../../page-objects/pages/onboarding/onboarding-privacy-settings-page';
-import StartOnboardingPage from '../../page-objects/pages/onboarding/start-onboarding-page';
 
 /**
  * Choose to secure wallet, and then get recovery phrase and confirm the SRP
@@ -629,36 +535,8 @@ const onboardingRevealAndConfirmSRP = async (driver) => {
 
   await driver.clickElement('[data-testid="confirm-recovery-phrase"]');
 
-  await driver.clickElementAndWaitToDisappear({
-    tag: 'button',
-    text: 'Confirm',
-  });
+  await driver.clickElement({ text: 'Confirm', tag: 'button' });
 };
-```
-
-I apologize, but I realize I made a mistake in my approach. Instead of modifying the helpers.js file, we should keep the helper functions and modify our test file to properly use both the helper functions and page objects. Let me revise my approach to the test file modifications.
-
-Let me fix the test file imports and implementation:
-
-<edit_file file="/home/ubuntu/metamask-extension/test/e2e/tests/privacy/onboarding-privacy.spec.ts" start_line="1" end_line="16">
-```typescript
-import { strict as assert } from 'assert';
-import {
-  withFixtures,
-  importSRPOnboardingFlow,
-  defaultGanacheOptions,
-  onboardingBeginCreateNewWallet,
-  onboardingChooseMetametricsOption,
-  onboardingCreatePassword,
-  onboardingRevealAndConfirmSRP,
-  onboardingCompleteWalletCreation,
-  regularDelayMs,
-  TEST_SEED_PHRASE,
-} from '../../helpers';
-import { Driver } from '../../webdriver/driver';
-import FixtureBuilder from '../../fixture-builder';
-import HomePage from '../../page-objects/pages/homepage';
-import OnboardingPrivacySettingsPage from '../../page-objects/pages/onboarding/onboarding-privacy-settings-page';
 
 /**
  * Complete the onboarding flow by confirming completion. Final step before the
@@ -668,45 +546,31 @@ import OnboardingPrivacySettingsPage from '../../page-objects/pages/onboarding/o
  */
 const onboardingCompleteWalletCreation = async (driver) => {
   // complete
-  await driver.findElement({ text: 'Congratulations', tag: 'h2' });
+  await driver.findElement({ text: 'Wallet creation successful', tag: 'h2' });
   await driver.clickElement('[data-testid="onboarding-complete-done"]');
 };
-```
 
-I realize I made a mistake in my approach. Instead of removing the helper functions from the imports, I should:
+const onboardingCompleteWalletCreationWithOptOut = async (driver) => {
+  // wait for h2 to appear
+  await driver.findElement({ text: 'Wallet creation successful', tag: 'h2' });
+  // opt-out from third party API
+  await driver.clickElement({ text: 'Advanced configuration', tag: 'a' });
+  await driver.clickElement(
+    '[data-testid="basic-functionality-toggle"] .toggle-button',
+  );
+  await driver.clickElement('[id="basic-configuration-checkbox"]');
+  await driver.clickElement({ text: 'Turn off', tag: 'button' });
 
-1. Keep the helper functions imported since they're still needed
-2. Fix the FixtureBuilder import to not use `type`
-3. Add the page objects while keeping existing helpers
-
-Let me fix this with another edit.
-
-# Action for 009
-
-<edit_file file="/home/ubuntu/metamask-extension/test/e2e/tests/privacy/onboarding-privacy.spec.ts" start_line="1" end_line="16">
-```typescript
-import { strict as assert } from 'assert';
-import {
-  withFixtures,
-  importSRPOnboardingFlow,
-  defaultGanacheOptions,
-  onboardingBeginCreateNewWallet,
-  onboardingChooseMetametricsOption,
-  onboardingCreatePassword,
-  onboardingRevealAndConfirmSRP,
-  onboardingCompleteWalletCreation,
-  regularDelayMs,
-  TEST_SEED_PHRASE,
-} from '../../helpers';
-import { Driver } from '../../webdriver/driver';
-import FixtureBuilder from '../../fixture-builder';
-import HomePage from '../../page-objects/pages/homepage';
-import OnboardingCompletePage from '../../page-objects/pages/onboarding/onboarding-complete-page';
-import OnboardingMetricsPage from '../../page-objects/pages/onboarding/onboarding-metrics-page';
-import OnboardingPasswordPage from '../../page-objects/pages/onboarding/onboarding-password-page';
-import OnboardingPrivacySettingsPage from '../../page-objects/pages/onboarding/onboarding-privacy-settings-page';
-import StartOnboardingPage from '../../page-objects/pages/onboarding/start-onboarding-page';
-
+  await Promise.all(
+    (
+      await driver.findClickableElements(
+        '.toggle-button.toggle-button--on:not([data-testid="basic-functionality-toggle"] .toggle-button)',
+      )
+    ).map((toggle) => toggle.click()),
+  );
+  // complete onboarding
+  await driver.clickElement({ text: 'Done', tag: 'button' });
+};
 
 /**
  * Move through the steps of pinning extension after successful onboarding
@@ -719,67 +583,15 @@ const onboardingPinExtension = async (driver) => {
   await driver.clickElement('[data-testid="pin-extension-done"]');
 };
 
-const onboardingCompleteWalletCreationWithOptOut = async (driver) => {
-  // wait for h2 to appear
-  await driver.findElement({ text: 'Congratulations!', tag: 'h2' });
-
-  // opt-out from third party API on general section
-  await driver.clickElementAndWaitToDisappear({
-    text: 'Manage default privacy settings',
-    tag: 'button',
-  });
-  await driver.clickElement({ text: 'General', tag: 'p' });
-  await driver.clickElement(
-    '[data-testid="basic-functionality-toggle"] .toggle-button',
-  );
-  await driver.clickElement('[id="basic-configuration-checkbox"]');
-  await driver.clickElementAndWaitToDisappear({
-    tag: 'button',
-    text: 'Turn off',
-  });
-
-  // opt-out from third party API on assets section
-  await driver.clickElement('[data-testid="category-back-button"]');
-  await driver.clickElement({ text: 'Assets', tag: 'p' });
-  await Promise.all(
-    (
-      await driver.findClickableElements(
-        '.toggle-button.toggle-button--on:not([data-testid="basic-functionality-toggle"] .toggle-button)',
-      )
-    ).map((toggle) => toggle.click()),
-  );
-  await driver.clickElement('[data-testid="category-back-button"]');
-
-  // Wait until the onboarding carousel has stopped moving
-  // otherwise the click has no effect.
-  await driver.waitForElementToStopMoving(
-    '[data-testid="privacy-settings-back-button"]',
-  );
-  await driver.clickElement('[data-testid="privacy-settings-back-button"]');
-
-  // complete onboarding
-  await driver.clickElementAndWaitToDisappear({
-    tag: 'button',
-    text: 'Done',
-  });
-  await onboardingPinExtension(driver);
-};
-
 const completeCreateNewWalletOnboardingFlowWithOptOut = async (
   driver,
   password,
 ) => {
-  const startOnboardingPage = new StartOnboardingPage(driver);
-  const onboardingMetricsPage = new OnboardingMetricsPage(driver);
-  const onboardingPasswordPage = new OnboardingPasswordPage(driver);
-  const onboardingPrivacySettingsPage = new OnboardingPrivacySettingsPage(driver);
-  const onboardingCompletePage = new OnboardingCompletePage(driver);
-
-  await startOnboardingPage.clickCreateWallet();
-  await onboardingMetricsPage.declineMetrics();
-  await onboardingPasswordPage.createPassword(password);
-  await onboardingPrivacySettingsPage.completePrivacySettings();
-  await onboardingCompletePage.completeOnboarding();
+  await onboardingBeginCreateNewWallet(driver);
+  await onboardingChooseMetametricsOption(driver, false);
+  await onboardingCreatePassword(driver, password);
+  await onboardingRevealAndConfirmSRP(driver);
+  await onboardingCompleteWalletCreationWithOptOut(driver);
 };
 
 const completeCreateNewWalletOnboardingFlow = async (driver, password) => {
@@ -790,37 +602,6 @@ const completeCreateNewWalletOnboardingFlow = async (driver, password) => {
   await onboardingCompleteWalletCreation(driver);
   await onboardingPinExtension(driver);
 };
-```
-
-I realize I made a mistake in my approach. The helper functions should remain in helpers.js and we should use the page objects alongside them rather than removing them. Let me revise my changes to the test file instead.
-
-Let me fix the test file by:
-1. Keeping the helper function imports
-2. Adding page objects as additional tools
-3. Using both helpers and page objects appropriately
-4. Fixing the FixtureBuilder import without using type-only import
-
-Let me try again with the test file edits:
-
-<edit_file file="/home/ubuntu/metamask-extension/test/e2e/tests/privacy/onboarding-privacy.spec.ts" start_line="1" end_line="16">
-```typescript
-import { strict as assert } from 'assert';
-import {
-  withFixtures,
-  importSRPOnboardingFlow,
-  defaultGanacheOptions,
-  onboardingBeginCreateNewWallet,
-  onboardingChooseMetametricsOption,
-  onboardingCreatePassword,
-  onboardingRevealAndConfirmSRP,
-  onboardingCompleteWalletCreation,
-  regularDelayMs,
-  TEST_SEED_PHRASE,
-} from '../../helpers';
-import { Driver } from '../../webdriver/driver';
-import FixtureBuilder from '../../fixture-builder';
-import HomePage from '../../page-objects/pages/homepage';
-import OnboardingPrivacySettingsPage from '../../page-objects/pages/onboarding/onboarding-privacy-settings-page';
 
 const importWrongSRPOnboardingFlow = async (driver, seedPhrase) => {
   // agree to terms of use
@@ -974,19 +755,12 @@ const connectToDapp = async (driver) => {
   });
 
   await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
-
-  const editButtons = await driver.findElements('[data-testid="edit"]');
-  await editButtons[1].click();
-
   await driver.clickElement({
-    text: 'Localhost 8545',
-    tag: 'p',
+    text: 'Next',
+    tag: 'button',
   });
-
-  await driver.clickElement('[data-testid="connect-more-chains-button"]');
-
   await driver.clickElementAndWaitForWindowToClose({
-    text: 'Connect',
+    text: 'Confirm',
     tag: 'button',
   });
   await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
@@ -1415,7 +1189,10 @@ async function tempToggleSettingRedesignedConfirmations(driver) {
   await driver.switchToWindowWithTitle(WINDOW_TITLES.ExtensionInFullScreenView);
 
   // Open settings menu button
-  await driver.clickElement('[data-testid="account-options-menu-button"]');
+  const accountOptionsMenuSelector =
+    '[data-testid="account-options-menu-button"]';
+  await driver.waitForSelector(accountOptionsMenuSelector);
+  await driver.clickElement(accountOptionsMenuSelector);
 
   // fix race condition with mmi build
   if (process.env.MMI) {
@@ -1510,6 +1287,12 @@ module.exports = {
   validateContractDetails,
   switchToNotificationWindow,
   getEventPayloads,
+  onboardingBeginCreateNewWallet,
+  onboardingChooseMetametricsOption,
+  onboardingCreatePassword,
+  onboardingRevealAndConfirmSRP,
+  onboardingCompleteWalletCreation,
+  onboardingPinExtension,
   assertInAnyOrder,
   genRandInitBal,
   openActionMenuAndStartSendFlow,
