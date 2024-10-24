@@ -28,8 +28,9 @@ function readChangedFiles() {
 
 /**
  * Filters the list of changed files to include only E2E test files within the 'test/e2e/' directory.
+ * Also checks if all changed files have either .md or .csv extensions.
  *
- * @returns {<string[]>} An array of filtered E2E test file paths.
+ * @returns {Promise<{ e2eChangedFiles: string[], hasOnlyMdOrCsvFiles: boolean }>} An object containing the filtered E2E test file paths and a boolean indicating if all files have .md or .csv extensions.
  */
 function filterE2eChangedFiles() {
   const changedFiles = readChangedFiles();
@@ -40,7 +41,12 @@ function filterE2eChangedFiles() {
         (file.endsWith('.spec.js') || file.endsWith('.spec.ts')),
     )
     .map((file) => `${BASE_PATH}/${file}`);
-  return e2eChangedFiles;
+
+  const hasOnlyMdOrCsvFiles = changedFiles.every(
+    (file) => file.endsWith('.md') || file.endsWith('.csv'),
+  );
+
+  return { e2eChangedFiles, hasOnlyMdOrCsvFiles };
 }
 
 module.exports = { filterE2eChangedFiles, readChangedFiles };
