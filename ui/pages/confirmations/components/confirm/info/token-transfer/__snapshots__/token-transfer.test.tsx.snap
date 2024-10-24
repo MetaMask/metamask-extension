@@ -13,7 +13,7 @@ exports[`TokenTransferInfo renders correctly 1`] = `
     <h2
       class="mm-box mm-text mm-text--heading-lg mm-box--margin-top-3 mm-box--color-inherit"
     >
-      0 Unknown
+       Unknown
     </h2>
   </div>
   <div
