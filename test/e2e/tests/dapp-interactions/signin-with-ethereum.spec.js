@@ -49,7 +49,7 @@ describe('Sign in with ethereum', function () {
           css: '.permissions-connect-header__subtitle',
           text: expectedSigninMessageTitle,
         });
-        await driver.findElement({
+        await driver.waitForSelector({
           css: '.account-list-item__account-name',
           text: 'Account 1',
         });
