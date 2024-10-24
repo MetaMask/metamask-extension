@@ -40,7 +40,7 @@ export type ConfirmInfoRowProps = {
   copyEnabled?: boolean;
   copyText?: string;
   'data-testid'?: string;
-  collapsible?: boolean;
+  collapsed?: boolean;
 };
 
 const BACKGROUND_COLORS = {
@@ -80,11 +80,13 @@ export const ConfirmInfoRow: React.FC<ConfirmInfoRowProps> = ({
   labelChildren,
   color,
   copyEnabled = false,
-  copyText = undefined,
+  copyText,
   'data-testid': dataTestId,
-  collapsible,
+  collapsed,
 }) => {
-  const [expanded, setExpanded] = useState(!collapsible);
+  const [expanded, setExpanded] = useState(!collapsed);
+
+  const isCollapsible = collapsed !== undefined;
 
   return (
     <ConfirmInfoRowContext.Provider value={{ variant }}>
@@ -92,10 +94,10 @@ export const ConfirmInfoRow: React.FC<ConfirmInfoRowProps> = ({
         data-testid={dataTestId}
         className="confirm-info-row"
         display={Display.Flex}
-        flexDirection={collapsible ? FlexDirection.Column : FlexDirection.Row}
+        flexDirection={isCollapsible ? FlexDirection.Column : FlexDirection.Row}
         justifyContent={JustifyContent.spaceBetween}
         flexWrap={FlexWrap.Wrap}
-        alignItems={collapsible ? AlignItems.flexStart : AlignItems.center}
+        alignItems={isCollapsible ? AlignItems.flexStart : AlignItems.center}
         backgroundColor={BACKGROUND_COLORS[variant]}
         borderRadius={BorderRadius.LG}
         marginTop={2}
@@ -113,11 +115,11 @@ export const ConfirmInfoRow: React.FC<ConfirmInfoRowProps> = ({
         {copyEnabled && (
           <CopyIcon
             copyText={copyText ?? ''}
-            style={{ right: collapsible ? 32 : 0, top: 4 }}
+            style={{ right: isCollapsible ? 32 : 0, top: 4 }}
             color={IconColor.iconMuted}
           />
         )}
-        {collapsible && (
+        {isCollapsible && (
           <Icon
             color={IconColor.iconMuted}
             name={expanded ? IconName.Collapse : IconName.Expand}
@@ -129,7 +131,7 @@ export const ConfirmInfoRow: React.FC<ConfirmInfoRowProps> = ({
               top: 4,
             }}
             onClick={() => setExpanded(!expanded)}
-            data-testid="sectionCollapsibleButton"
+            data-testid="sectionCollapseButton"
           />
         )}
         <Box

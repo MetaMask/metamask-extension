@@ -113,10 +113,8 @@ describe('Navigation Signature - Different signature types', function (this: Sui
 });
 
 async function verifySignTypedData(driver: Driver) {
-  await driver.clickElement('[data-testid="sectionCollapsibleButton"]');
   await driver.waitForSelector({ text: DAPP_HOST_ADDRESS });
   await driver.waitForSelector({ text: 'Hi, Alice!' });
-  await driver.clickElement('[data-testid="sectionCollapsibleButton"]');
 }
 
 async function verifyRejectionResults(driver: Driver, verifyResultId: string) {
@@ -127,7 +125,6 @@ async function verifyRejectionResults(driver: Driver, verifyResultId: string) {
 }
 
 async function verifySignedTypeV3Confirmation(driver: Driver) {
-  await driver.clickElement('[data-testid="sectionCollapsibleButton"]');
   await driver.waitForSelector({ text: DAPP_HOST_ADDRESS });
   await driver.waitForSelector({
     css: '.name__value',
@@ -138,7 +135,6 @@ async function verifySignedTypeV3Confirmation(driver: Driver) {
     text: '0xbBbBB...bBBbB',
   });
   await driver.waitForSelector({ text: 'Hello, Bob!' });
-  await driver.clickElement('[data-testid="sectionCollapsibleButton"]');
 }
 
 async function verifySignedTypeV4Confirmation(driver: Driver) {
@@ -152,9 +148,7 @@ async function queueSignatures(driver: Driver) {
   await driver.clickElement('#signTypedData');
 
   await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
-  await driver.clickElement('[data-testid="sectionCollapsibleButton"]');
   await driver.findElement({ text: 'Hi, Alice!' });
-  await driver.clickElement('[data-testid="sectionCollapsibleButton"]');
   await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
   await driver.clickElement('#signTypedDataV3');
   await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
@@ -169,12 +163,10 @@ async function queueSignatures(driver: Driver) {
 async function queueSignaturesAndTransactions(driver: Driver) {
   await driver.clickElement('#signTypedData');
   await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
-  await driver.clickElement('[data-testid="sectionCollapsibleButton"]');
   await driver.waitForSelector({
     tag: 'p',
     text: 'Hi, Alice!',
   });
-  await driver.clickElement('[data-testid="sectionCollapsibleButton"]');
   await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
 
   await driver.clickElement('#sendButton');

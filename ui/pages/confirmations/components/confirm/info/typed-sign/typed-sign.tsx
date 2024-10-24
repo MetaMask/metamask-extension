@@ -89,7 +89,7 @@ const TypedSignInfo: React.FC = () => {
       <ConfirmInfoSection>
         <ConfirmInfoRow
           label={t('message')}
-          collapsible
+          collapsed={isPermit && useTransactionSimulations}
           copyEnabled
           copyText={JSON.stringify(parseTypedDataMessage(msgData ?? {}))}
         >

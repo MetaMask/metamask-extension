@@ -42,7 +42,7 @@ const TypedSignV1Info: React.FC = () => {
       <ConfirmInfoSection>
         <ConfirmInfoRow
           label={t('message')}
-          collapsible
+          collapsed={false}
           copyEnabled
           copyText={JSON.stringify(currentConfirmation.msgParams?.data ?? {})}
         >

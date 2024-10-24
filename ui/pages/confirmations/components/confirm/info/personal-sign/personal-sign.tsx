@@ -78,7 +78,7 @@ const PersonalSignInfo: React.FC = () => {
             alertKey="message"
             ownerId={currentConfirmation.id}
             label={t('message')}
-            collapsible
+            collapsed={false}
             copyEnabled
             copyText={messageText}
           >

@@ -98,7 +98,6 @@ describe('Confirmation Signature - Personal Sign @no-mmi', function (this: Suite
 });
 
 async function assertInfoValues(driver: Driver) {
-  await driver.clickElement('[data-testid="sectionCollapsibleButton"]');
   const origin = driver.findElement({ text: DAPP_HOST_ADDRESS });
   const message = driver.findElement({
     text: 'Example `personal_sign` message',
