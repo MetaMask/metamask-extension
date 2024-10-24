@@ -175,7 +175,7 @@ const SETTINGS_CONSTANTS = [
     sectionMessage: (t) => t('revealSeedWords'),
     descriptionMessage: (t) => t('revealSeedWords'),
     route: `${SECURITY_ROUTE}#reveal-secretrecovery`,
-    icon: 'fa fa-lock',
+    iconName: IconName.Lock,
   },
   // securityAndPrivacy settingsRefs[2]
   {
@@ -183,7 +183,7 @@ const SETTINGS_CONSTANTS = [
     sectionMessage: (t) => t('showIncomingTransactions'),
     descriptionMessage: (t) => t('showIncomingTransactionsDescription'),
     route: `${SECURITY_ROUTE}#incoming-transaction`,
-    icon: 'fa fa-lock',
+    iconName: IconName.Lock,
   },
   // securityAndPrivacy settingsRefs[3]
   {
@@ -191,7 +191,7 @@ const SETTINGS_CONSTANTS = [
     sectionMessage: (t) => t('usePhishingDetection'),
     descriptionMessage: (t) => t('usePhishingDetectionDescription'),
     route: `${SECURITY_ROUTE}#phishing-detection`,
-    icon: 'fa fa-lock',
+    iconName: IconName.Lock,
   },
   // securityAndPrivacy settingsRefs[4]
   {
@@ -199,7 +199,7 @@ const SETTINGS_CONSTANTS = [
     sectionMessage: (t) => t('use4ByteResolution'),
     descriptionMessage: (t) => t('use4ByteResolutionDescription'),
     route: `${SECURITY_ROUTE}#decode-smart-contracts`,
-    icon: 'fa fa-lock',
+    iconName: IconName.Lock,
   },
   // securityAndPrivacy settingsRefs[5]
   {
@@ -207,7 +207,7 @@ const SETTINGS_CONSTANTS = [
     sectionMessage: (t) => t('participateInMetaMetrics'),
     descriptionMessage: (t) => t('participateInMetaMetricsDescription'),
     route: `${SECURITY_ROUTE}#metametrics`,
-    icon: 'fa fa-lock',
+    iconName: IconName.Lock,
   },
   // securityAndPrivacy settingsRefs[6]
   {
@@ -216,7 +216,7 @@ const SETTINGS_CONSTANTS = [
     descriptionMessage: (t) =>
       `${t('chooseYourNetwork')} ${t('chooseYourNetworkDescription')}`,
     route: `${SECURITY_ROUTE}#network-provider`,
-    icon: 'fa fa-lock',
+    iconName: IconName.Lock,
   },
   // securityAndPrivacy settingsRefs[7]
   {
@@ -224,7 +224,7 @@ const SETTINGS_CONSTANTS = [
     sectionMessage: (t) => t('ipfsGateway'),
     descriptionMessage: (t) => t('ipfsGatewayDescription'),
     route: `${SECURITY_ROUTE}#add-custom-ipfs-gateway`,
-    icon: 'fa fa-lock',
+    iconName: IconName.Lock,
   },
   // securityAndPrivacy settingsRefs[8]
   {
@@ -232,7 +232,7 @@ const SETTINGS_CONSTANTS = [
     sectionMessage: (t) => t('autoDetectTokens'),
     descriptionMessage: (t) => t('autoDetectTokensDescription'),
     route: `${SECURITY_ROUTE}#auto-detect-tokens`,
-    icon: 'fa fa-lock',
+    iconName: IconName.Lock,
   },
   // securityAndPrivacy settingsRefs[9]
   {
@@ -241,7 +241,7 @@ const SETTINGS_CONSTANTS = [
     descriptionMessage: (t) =>
       t('useMultiAccountBalanceCheckerSettingDescription'),
     route: `${SECURITY_ROUTE}#batch-account-balance-requests`,
-    icon: 'fa fa-lock',
+    iconName: IconName.Lock,
   },
   // securityAndPrivacy settingsRefs[10]
   {
@@ -249,7 +249,7 @@ const SETTINGS_CONSTANTS = [
     sectionMessage: (t) => t('currencyRateCheckToggle'),
     descriptionMessage: (t) => t('currencyRateCheckToggleDescription'),
     route: `${SECURITY_ROUTE}#price-checker`,
-    icon: 'fa fa-lock',
+    iconName: IconName.Lock,
   },
   // securityAndPrivacy settingsRefs[11]
   {
@@ -257,7 +257,7 @@ const SETTINGS_CONSTANTS = [
     sectionMessage: (t) => t('ensDomainsSettingTitle'),
     descriptionMessage: (t) => t('ensDomainsSettingDescriptionIntroduction'),
     route: `${SECURITY_ROUTE}#ens-domains`,
-    icon: 'fa fa-lock',
+    iconName: IconName.Lock,
   },
   // securityAndPrivacy settingsRefs[12]
   {
@@ -265,7 +265,7 @@ const SETTINGS_CONSTANTS = [
     sectionMessage: (t) => t('displayNftMedia'),
     descriptionMessage: (t) => t('displayNftMediaDescription'),
     route: `${SECURITY_ROUTE}#display-nft-media`,
-    icon: 'fa fa-lock',
+    iconName: IconName.Lock,
   },
   // securityAndPrivacy settingsRefs[13]
   {
@@ -273,7 +273,7 @@ const SETTINGS_CONSTANTS = [
     sectionMessage: (t) => t('useNftDetection'),
     descriptionMessage: (t) => t('useNftDetectionDescriptionText'),
     route: `${SECURITY_ROUTE}#autodetect-nfts`,
-    icon: 'fa fa-lock',
+    iconName: IconName.Lock,
   },
   // securityAndPrivacy settingsRefs[14]
   {
@@ -281,7 +281,7 @@ const SETTINGS_CONSTANTS = [
     sectionMessage: (t) => t('useSafeChainsListValidation'),
     descriptionMessage: (t) => t('useSafeChainsListValidationDescription'),
     route: `${SECURITY_ROUTE}#network-details-check`,
-    icon: 'fa fa-lock',
+    iconName: IconName.Lock,
   },
   // securityAndPrivacy settingsRefs[15]
   {
@@ -289,7 +289,7 @@ const SETTINGS_CONSTANTS = [
     sectionMessage: (t) => t('externalNameSourcesSetting'),
     descriptionMessage: (t) => t('externalNameSourcesSettingDescription'),
     route: `${SECURITY_ROUTE}#proposed-nicknames`,
-    icon: 'fa fa-lock',
+    iconName: IconName.Lock,
   },
   // securityAndPrivacy settingsRefs[16]
   {
@@ -297,7 +297,7 @@ const SETTINGS_CONSTANTS = [
     sectionMessage: (t) => t('securityAlerts'),
     descriptionMessage: (t) => t('securityAlertsDescription'),
     route: `${SECURITY_ROUTE}#security-alerts`,
-    icon: 'fa fa-lock',
+    iconName: IconName.Lock,
   },
   // securityAndPrivacy settingsRefs[17]
   {
@@ -305,7 +305,7 @@ const SETTINGS_CONSTANTS = [
     sectionMessage: (t) => t('blockaid'),
     descriptionMessage: (t) => t('blockaidMessage'),
     route: `${SECURITY_ROUTE}#security-alerts-blockaid`,
-    icon: 'fa fa-lock',
+    iconName: IconName.Lock,
   },
   // securityAndPrivacy settingsRefs[18]
   {
@@ -313,7 +313,7 @@ const SETTINGS_CONSTANTS = [
     sectionMessage: (t) => t('simulationsSettingSubHeader'),
     descriptionMessage: (t) => t('simulationsSettingDescription'),
     route: `${SECURITY_ROUTE}#transaction-simulations`,
-    icon: 'fa fa-lock',
+    iconName: IconName.Lock,
   },
   // securityAndPrivacy settingsRefs[19]
   {
