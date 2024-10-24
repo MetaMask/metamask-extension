@@ -56,7 +56,7 @@ const assetValidators = [
     property: 'icon',
     type: 'string|undefined',
     validator: (v: unknown): v is string | undefined =>
-      typeof v === 'string' || v === undefined,
+      v === undefined || typeof v === 'string',
   },
 ];
 
@@ -80,12 +80,13 @@ const srcChainStatusValidators = [
     property: 'amount',
     type: 'string|undefined',
     validator: (v: unknown): v is string | undefined =>
-      typeof v === 'string' || v === undefined,
+      v === undefined || typeof v === 'string',
   },
   {
     property: 'token',
     type: 'object|undefined',
-    validator: assetValidator,
+    validator: (v: unknown): v is object | undefined =>
+      v === undefined || assetValidator(v),
   },
 ];
 
@@ -108,13 +109,13 @@ const destChainStatusValidators = [
     property: 'amount',
     type: 'string|undefined',
     validator: (v: unknown): v is string | undefined =>
-      typeof v === 'string' || v === undefined,
+      v === undefined || typeof v === 'string',
   },
   {
     property: 'txHash',
     type: 'string|undefined',
     validator: (v: unknown): v is string | undefined =>
-      typeof v === 'string' || v === undefined,
+      v === undefined || typeof v === 'string',
   },
   {
     property: 'token',
@@ -147,26 +148,27 @@ export const validators = [
   },
   {
     property: 'destChain',
-    type: 'object',
-    validator: destChainStatusValidator,
+    type: 'object|undefined',
+    validator: (v: unknown): v is object | unknown =>
+      v === undefined || destChainStatusValidator(v),
   },
   {
     property: 'bridge',
-    type: 'string',
-    validator: (v: unknown): v is BridgeId =>
-      Object.values(BridgeId).includes(v as BridgeId),
+    type: 'string|undefined',
+    validator: (v: unknown): v is BridgeId | undefined =>
+      v === undefined || Object.values(BridgeId).includes(v as BridgeId),
   },
   {
     property: 'isExpectedToken',
     type: 'boolean|undefined',
     validator: (v: unknown): v is boolean | undefined =>
-      typeof v === 'boolean' || v === undefined,
+      v === undefined || typeof v === 'boolean',
   },
   {
     property: 'isUnrecognizedRouterAddress',
     type: 'boolean|undefined',
     validator: (v: unknown): v is boolean | undefined =>
-      typeof v === 'boolean' || v === undefined,
+      v === undefined || typeof v === 'boolean',
   },
   // TODO: add refuel validator
   // {
