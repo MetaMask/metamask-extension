@@ -39,15 +39,13 @@ export default function useSourceChainBridgeData({
     getNetworkConfigurationsByChainId,
   );
 
-  const bridgeTxHistory = useSelector(selectBridgeTxHistory);
+  const bridgeHistory = useSelector(selectBridgeTxHistory);
   const txHash = transactionGroup.initialTransaction.hash;
-  const bridgeTxHistoryItem = txHash ? bridgeTxHistory[txHash] : undefined;
 
-  const status = transactionGroup.initialTransaction.status;
-  const isPending =
-    PENDING_STATUS_HASH[status as keyof typeof PENDING_STATUS_HASH];
+  // If this tx is a bridge tx, it will have a bridgeHistoryItem
+  const bridgeHistoryItem = txHash ? bridgeHistory[txHash] : undefined;
 
-  const decDestChainId = bridgeTxHistoryItem?.quote.destChainId;
+  const decDestChainId = bridgeHistoryItem?.quote.destChainId;
   const hexDestChainId = decDestChainId
     ? (new Numeric(decDestChainId, 10).toPrefixedHexString() as Hex)
     : undefined;
@@ -55,7 +53,7 @@ export default function useSourceChainBridgeData({
     ? networkConfigurationsByChainId[hexDestChainId]
     : undefined;
   const chainName = networkConfiguration?.name || 'Unknown';
-  const bridgeTitleSuffix = bridgeTxHistoryItem ? ` to ${chainName}` : '';
+  const bridgeTitleSuffix = bridgeHistoryItem ? ` to ${chainName}` : '';
 
   // Most logic from ui/components/multichain/network-list-menu/network-list-menu.tsx
   const switchToDestChainCallback = useCallback(() => {
@@ -98,14 +96,17 @@ export default function useSourceChainBridgeData({
     ? switchToDestChainCallback
     : undefined;
 
-  const showSwitchToDestChain = switchToDestChain && isPending;
-
-  // TODO there's a weird bug with OP src chain where it gets a 500 on the first status tx fetch
-  if (isPending) {
-    console.log('transactionGroup', {
+  if (bridgeHistoryItem) {
+    let logTitle;
+    if (bridgeHistoryItem?.status) {
+      logTitle = 'transactionGroup BRIDGE STATUS';
+    } else {
+      logTitle = 'transactionGroup';
+    }
+    console.log(logTitle, {
       transactionGroup,
-      bridgeTxHistory,
-      bridgeTxHistoryItem,
+      bridgeTxHistory: bridgeHistory,
+      bridgeTxHistoryItem: bridgeHistoryItem,
       decDestChainId,
       hexDestChainId,
       networkConfigurationsByChainId,
@@ -113,9 +114,20 @@ export default function useSourceChainBridgeData({
     });
   }
 
+  // By complete, this means BOTH source and dest tx are confirmed
+  const isBridgeComplete =
+    bridgeHistoryItem &&
+    bridgeHistoryItem.status &&
+    bridgeHistoryItem.status.srcChain.txHash &&
+    bridgeHistoryItem.status.destChain?.txHash;
+
+  const showSwitchToDestChain = switchToDestChain && !isBridgeComplete;
+
   return {
     bridgeTitleSuffix,
     switchToDestChain,
     showSwitchToDestChain,
+    bridgeTxHistoryItem: bridgeHistoryItem,
+    isBridgeComplete,
   };
 }

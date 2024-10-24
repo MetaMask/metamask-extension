@@ -5,7 +5,10 @@ import classnames from 'classnames';
 import { useHistory } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 
-import { TransactionStatus } from '@metamask/transaction-controller';
+import {
+  TransactionStatus,
+  TransactionType,
+} from '@metamask/transaction-controller';
 import { useTransactionDisplayData } from '../../../hooks/useTransactionDisplayData';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 
@@ -87,10 +90,17 @@ function TransactionListItemInner({
   const dispatch = useDispatch();
 
   // Bridge transactions
-  const { bridgeTitleSuffix, switchToDestChain, showSwitchToDestChain } =
-    useSourceChainBridgeData({
-      transactionGroup,
-    });
+  const isBridgeTx =
+    transactionGroup.initialTransaction.type === TransactionType.bridge;
+  const {
+    bridgeTitleSuffix,
+    switchToDestChain,
+    showSwitchToDestChain,
+    bridgeTxHistoryItem,
+    isBridgeComplete,
+  } = useSourceChainBridgeData({
+    transactionGroup,
+  });
 
   const {
     initialTransaction: { id },
@@ -341,20 +351,28 @@ function TransactionListItemInner({
           ///: END:ONLY_INCLUDE_IF
         }
         subtitle={
-          <TransactionStatusLabel
-            statusOnly
-            isPending={isPending}
-            isEarliestNonce={isEarliestNonce}
-            error={error}
-            date={date}
-            status={displayedStatusKey}
-            ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-            custodyStatus={transactionGroup.primaryTransaction.custodyStatus}
-            custodyStatusDisplayText={
-              transactionGroup.primaryTransaction.custodyStatusDisplayText
-            }
-            ///: END:ONLY_INCLUDE_IF
-          />
+          isBridgeTx && !isBridgeComplete ? (
+            <div>
+              <div>status: {bridgeTxHistoryItem?.status?.status}</div>
+              <div>tx 1: {bridgeTxHistoryItem?.status?.srcChain.txHash}</div>
+              <div>tx 2: {bridgeTxHistoryItem?.status?.destChain.txHash}</div>
+            </div>
+          ) : (
+            <TransactionStatusLabel
+              statusOnly
+              isPending={isPending}
+              isEarliestNonce={isEarliestNonce}
+              error={error}
+              date={date}
+              status={displayedStatusKey}
+              ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
+              custodyStatus={transactionGroup.primaryTransaction.custodyStatus}
+              custodyStatusDisplayText={
+                transactionGroup.primaryTransaction.custodyStatusDisplayText
+              }
+              ///: END:ONLY_INCLUDE_IF
+            />
+          )
         }
         rightContent={
           !isSignatureReq &&
