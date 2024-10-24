@@ -749,6 +749,7 @@ describe('preferences controller', () => {
           order: 'dsc',
           sortCallback: 'stringNumeric',
         },
+        tokenNetworkFilter: {},
       });
     });
 
@@ -777,6 +778,7 @@ describe('preferences controller', () => {
           order: 'dsc',
           sortCallback: 'stringNumeric',
         },
+        tokenNetworkFilter: {},
       });
     });
   });
