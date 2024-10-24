@@ -1341,6 +1341,50 @@ export function disconnectOriginFromSnap(
   };
 }
 
+export function resolveSnapDevicePairing(
+  device: unknown,
+): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
+  return async (dispatch: MetaMaskReduxDispatch) => {
+    await submitRequestToBackground('resolveSnapDevicePairing', [device]);
+    await forceUpdateMetamaskState(dispatch);
+  };
+}
+
+export function rejectSnapDevicePairing(): ThunkAction<
+  void,
+  MetaMaskReduxState,
+  unknown,
+  AnyAction
+> {
+  return async (dispatch: MetaMaskReduxDispatch) => {
+    await submitRequestToBackground('rejectSnapDevicePairing', []);
+    await forceUpdateMetamaskState(dispatch);
+  };
+}
+
+export function transitionFromPopupToFullscreen(
+  path: string,
+): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
+  return async (dispatch: MetaMaskReduxDispatch) => {
+    await submitRequestToBackground(
+      'markNotificationPopupAsAutomaticallyClosed',
+    );
+    global.platform.openExtensionInBrowser(path);
+  };
+}
+
+export function transitionFromFullscreenToPopup(): ThunkAction<
+  void,
+  MetaMaskReduxState,
+  unknown,
+  AnyAction
+> {
+  return async (dispatch: MetaMaskReduxDispatch) => {
+    await submitRequestToBackground('triggerPopup', []);
+    window.close();
+  };
+}
+
 export function cancelDecryptMsg(
   msgData: TemporaryMessageDataType,
 ): ThunkAction<

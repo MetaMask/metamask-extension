@@ -43,6 +43,7 @@ import NotificationsSettings from '../notifications-settings';
 import NotificationDetails from '../notification-details';
 import SnapList from '../snaps/snaps-list';
 import SnapView from '../snaps/snap-view';
+import { SnapDevicePairing } from '../snaps/snap-device-pairing';
 ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
 import InstitutionalEntityDonePage from '../institutional/institutional-entity-done-page';
 import InteractiveReplacementTokenNotification from '../../components/institutional/interactive-replacement-token-notification';
@@ -71,6 +72,7 @@ import {
   CONNECTIONS,
   PERMISSIONS,
   REVIEW_PERMISSIONS,
+  SNAPS_DEVICE_ROUTE,
   ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
   INSTITUTIONAL_FEATURES_DONE_ROUTE,
   CUSTODY_ACCOUNT_DONE_ROUTE,
@@ -365,6 +367,11 @@ export default class Routes extends Component {
         <Authenticated
           path={`${REVIEW_PERMISSIONS}/:origin`}
           component={ReviewPermissions}
+          exact
+        />
+        <Authenticated
+          path={SNAPS_DEVICE_ROUTE}
+          component={SnapDevicePairing}
           exact
         />
         <Authenticated path={DEFAULT_ROUTE} component={Home} />
