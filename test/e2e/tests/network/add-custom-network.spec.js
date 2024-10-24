@@ -455,19 +455,19 @@ describe('Custom network', function () {
           });
 
           await driver.waitForSelector({
-            tag: 'dd',
+            css: '[data-testid="currency-symbol"]',
             text: currencySYMBOL,
           });
 
           await driver.waitForSelector({
-            tag: 'dd',
+            css: '[data-testid="network-url"]',
             text: networkURL,
           });
 
           await driver.clickElement({ tag: 'a', text: 'See details' });
 
           await driver.waitForSelector({
-            tag: 'dd',
+            css: '[data-testid="block-explorer-url"]',
             text: blockExplorerURL,
           });
 

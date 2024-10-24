@@ -64,6 +64,7 @@ export default function DefinitionList({
             className="definition-list__definition"
             overflowWrap={OverflowWrap.BreakWord}
             as="dd"
+            data-testid={term.toLowerCase().replace(/\s+/gu, '-')}
           >
             {definition}
           </Text>

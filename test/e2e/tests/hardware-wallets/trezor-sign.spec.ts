@@ -11,13 +11,15 @@ import {
 import { KNOWN_PUBLIC_KEY_ADDRESSES } from '../../../stub/keyring-bridge';
 
 describe('Trezor Hardware Signatures', function (this: Suite) {
+  const TREZOR_ADDRESS = KNOWN_PUBLIC_KEY_ADDRESSES[0].address;
+
   it('sign typed v4', async function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilder()
           .withTrezorAccount()
           .withPermissionControllerConnectedToTestDapp({
-            account: KNOWN_PUBLIC_KEY_ADDRESSES[0].address,
+            account: TREZOR_ADDRESS,
           })
           .build(),
         ganacheOptions: defaultGanacheOptions,
@@ -42,7 +44,7 @@ describe('Trezor Hardware Signatures', function (this: Suite) {
 
         await driver.waitForSelector({
           css: '#signTypedDataV4VerifyResult',
-          text: KNOWN_PUBLIC_KEY_ADDRESSES[0].address.toLocaleLowerCase(),
+          text: TREZOR_ADDRESS.toLocaleLowerCase(),
         });
       },
     );
