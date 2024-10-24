@@ -1995,7 +1995,7 @@
         "Buffer.isBuffer": true
       },
       "packages": {
-        "eth-rpc-errors>fast-safe-stringify": true
+        "@metamask/rpc-errors>fast-safe-stringify": true
       }
     },
     "browserify>string_decoder": {
