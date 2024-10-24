@@ -1,6 +1,6 @@
 # SensitiveText
 
-SensitiveText is a component that extends the Text component to handle sensitive information. It provides the ability to hide or show the text content, replacing it with dots when hidden.
+SensitiveText is a component that extends the Text component to handle sensitive information. It provides the ability to hide or show the text content, replacing it with asterisks when hidden.
 
 ## Props
 
