@@ -11,13 +11,34 @@ import {
 import { ObservableStore } from '@metamask/obs-store';
 import { bufferToHex, keccak } from 'ethereumjs-util';
 import { v4 as uuidv4 } from 'uuid';
-import { NameType } from '@metamask/name-controller';
+import { NameControllerState, NameType } from '@metamask/name-controller';
+import { AccountsControllerState } from '@metamask/accounts-controller';
+import { Hex } from '@metamask/utils';
+import { NetworkState } from '@metamask/network-controller';
+import { Browser } from 'webextension-polyfill';
+import {
+  Nft,
+  NftControllerState,
+  TokensControllerState,
+} from '@metamask/assets-controllers';
+import { captureException as sentryCaptureException } from '@sentry/browser';
+import { AddressBookControllerState } from '@metamask/address-book-controller';
 import { ENVIRONMENT_TYPE_BACKGROUND } from '../../../shared/constants/app';
 import {
   METAMETRICS_ANONYMOUS_ID,
   METAMETRICS_BACKGROUND_PAGE_OBJECT,
   MetaMetricsEventName,
+  MetaMetricsEventFragment,
   MetaMetricsUserTrait,
+  MetaMetricsUserTraits,
+  SegmentEventPayload,
+  MetaMetricsContext,
+  MetaMetricsEventPayload,
+  MetaMetricsEventOptions,
+  MetaMetricsPagePayload,
+  MetaMetricsPageOptions,
+  MetaMetricsPageObject,
+  MetaMetricsReferrerObject,
 } from '../../../shared/constants/metametrics';
 import { SECOND } from '../../../shared/constants/time';
 import { isManifestV3 } from '../../../shared/modules/mv3.utils';
@@ -27,14 +48,18 @@ import {
   AnonymousTransactionMetaMetricsEvent,
   TransactionMetaMetricsEvent,
 } from '../../../shared/constants/transaction';
+import { LedgerTransportTypes } from '../../../shared/constants/hardware-wallets';
+import Analytics from '../lib/segment/analytics';
 
 ///: BEGIN:ONLY_INCLUDE_IF(build-main)
 import { ENVIRONMENT } from '../../../development/build/constants';
 ///: END:ONLY_INCLUDE_IF
 
+import type { PreferencesControllerState } from './preferences-controller';
+
 const EXTENSION_UNINSTALL_URL = 'https://metamask.io/uninstalled';
 
-export const overrideAnonymousEventNames = {
+export const overrideAnonymousEventNames: Record<string, string> = {
   [TransactionMetaMetricsEvent.added]:
     AnonymousTransactionMetaMetricsEvent.added,
   [TransactionMetaMetricsEvent.approved]:
@@ -53,7 +78,7 @@ export const overrideAnonymousEventNames = {
     MetaMetricsEventName.SignatureRejectedAnon,
 };
 
-const defaultCaptureException = (err) => {
+const defaultCaptureException = (err: unknown) => {
   // throw error on clean stack so its captured by platform integrations (eg sentry)
   // but does not interrupt the call stack
   setTimeout(() => {
@@ -63,7 +88,11 @@ const defaultCaptureException = (err) => {
 
 // The function is used to build a unique messageId for segment messages
 // It uses actionId and uniqueIdentifier from event if present
-const buildUniqueMessageId = (args) => {
+const buildUniqueMessageId = (args: {
+  uniqueIdentifier?: string;
+  actionId?: string;
+  isDuplicateAnonymizedEvent?: boolean;
+}): string => {
   const messageIdParts = [];
   if (args.uniqueIdentifier) {
     messageIdParts.push(args.uniqueIdentifier);
@@ -80,55 +109,129 @@ const buildUniqueMessageId = (args) => {
   return generateRandomId();
 };
 
-const exceptionsToFilter = {
+const exceptionsToFilter: Record<string, boolean> = {
   [`You must pass either an "anonymousId" or a "userId".`]: true,
 };
 
-/**
- * @typedef {import('../../../shared/constants/metametrics').MetaMetricsContext} MetaMetricsContext
- * @typedef {import('../../../shared/constants/metametrics').MetaMetricsEventPayload} MetaMetricsEventPayload
- * @typedef {import('../../../shared/constants/metametrics').MetaMetricsEventOptions} MetaMetricsEventOptions
- * @typedef {import('../../../shared/constants/metametrics').SegmentEventPayload} SegmentEventPayload
- * @typedef {import('../../../shared/constants/metametrics').SegmentInterface} SegmentInterface
- * @typedef {import('../../../shared/constants/metametrics').MetaMetricsPagePayload} MetaMetricsPagePayload
- * @typedef {import('../../../shared/constants/metametrics').MetaMetricsPageOptions} MetaMetricsPageOptions
- * @typedef {import('../../../shared/constants/metametrics').MetaMetricsEventFragment} MetaMetricsEventFragment
- * @typedef {import('../../../shared/constants/metametrics').MetaMetricsTraits} MetaMetricsTraits
- */
+type SegmentEventType = 'identify' | 'track' | 'page';
+
+// TODO: Complete MetaMaskState by adding the full state definition and relocate it after the background is converted to TypeScript.
+export type MetaMaskState = {
+  ledgerTransportType: LedgerTransportTypes;
+  networkConfigurationsByChainId: NetworkState['networkConfigurationsByChainId'];
+  internalAccounts: AccountsControllerState['internalAccounts'];
+  allNfts: NftControllerState['allNfts'];
+  allTokens: TokensControllerState['allTokens'];
+  theme: string;
+  participateInMetaMetrics: boolean;
+  dataCollectionForMarketing: boolean;
+  ShowNativeTokenAsMainBalance: boolean;
+  useNftDetection: PreferencesControllerState['useNftDetection'];
+  openSeaEnabled: PreferencesControllerState['openSeaEnabled'];
+  securityAlertsEnabled: PreferencesControllerState['securityAlertsEnabled'];
+  useTokenDetection: PreferencesControllerState['useTokenDetection'];
+  tokenSortConfig: PreferencesControllerState['preferences']['tokenSortConfig'];
+  names: NameControllerState['names'];
+  security_providers: string[];
+  addressBook: AddressBookControllerState['addressBook'];
+  currentCurrency: string;
+  ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
+  custodyAccountDetails: {
+    [address: string]: {
+      custodianName: string;
+    };
+  };
+  ///: END:ONLY_INCLUDE_IF
+};
 
 /**
- * @typedef {object} MetaMetricsControllerState
- * @property {string} [metaMetricsId] - The user's metaMetricsId that will be
- *  attached to all non-anonymized event payloads
- * @property {boolean} [participateInMetaMetrics] - The user's preference for
- *  participating in the MetaMetrics analytics program. This setting controls
- *  whether or not events are tracked
- *  @property {boolean} [latestNonAnonymousEventTimestamp] - The timestamp at which last non anonymous event is tracked.
- * @property {{[string]: MetaMetricsEventFragment}} [fragments] - Object keyed
- *  by UUID with stored fragments as values.
- * @property {Array} [eventsBeforeMetricsOptIn] - Array of queued events added before
- *  a user opts into metrics.
- * @property {object} [traits] - Traits that are not derived from other state keys.
- * @property {Record<string any>} [previousUserTraits] - The user traits the last
- *  time they were computed.
+ * MetaMetricsControllerState
+ *
+ * @property metaMetricsId - The user's metaMetricsId that will be attached to all non-anonymized event payloads
+ * @property participateInMetaMetrics - The user's preference for participating in the MetaMetrics analytics program.
+ * This setting controls whether or not events are tracked
+ * @property latestNonAnonymousEventTimestamp - The timestamp at which last non anonymous event is tracked.
+ * @property fragments - Object keyed by UUID with stored fragments as values.
+ * @property eventsBeforeMetricsOptIn - Array of queued events added before a user opts into metrics.
+ * @property traits - Traits that are not derived from other state keys.
+ * @property previousUserTraits - The user traits the last time they were computed.
+ * @property dataCollectionForMarketing - Flag to determine if data collection for marketing is enabled.
+ * @property marketingCampaignCookieId - The marketing campaign cookie id.
+ * @property segmentApiCalls - Object keyed by messageId with segment event type and payload as values.
  */
+export type MetaMetricsControllerState = {
+  metaMetricsId: string | null;
+  participateInMetaMetrics: boolean | null;
+  latestNonAnonymousEventTimestamp: number;
+  fragments: Record<string, MetaMetricsEventFragment>;
+  eventsBeforeMetricsOptIn: MetaMetricsEventPayload[];
+  traits: MetaMetricsUserTraits;
+  previousUserTraits?: MetaMetricsUserTraits;
+  dataCollectionForMarketing: boolean | null;
+  marketingCampaignCookieId: string | null;
+  segmentApiCalls: Record<
+    string,
+    {
+      eventType: SegmentEventType;
+      payload: SegmentEventPayload;
+    }
+  >;
+};
+
+type CaptureException =
+  | typeof sentryCaptureException
+  | ((err: unknown) => void);
+
+export type MetaMetricsControllerOptions = {
+  initState: Partial<MetaMetricsControllerState>;
+  segment: Analytics;
+  preferencesControllerState: PreferencesControllerState;
+  onPreferencesStateChange: (
+    listener: (state: PreferencesControllerState) => void,
+  ) => void;
+  onNetworkDidChange: (listener: (networkState: NetworkState) => void) => void;
+  getCurrentChainId: () => Hex;
+  version: string;
+  environment: string;
+  extension: Browser;
+  captureException?: CaptureException;
+};
 
 export default class MetaMetricsController {
+  store: ObservableStore<MetaMetricsControllerState>;
+
+  #captureException: CaptureException;
+
+  chainId: Hex;
+
+  locale: string;
+
+  version: MetaMetricsControllerOptions['version'];
+
+  #extension: MetaMetricsControllerOptions['extension'];
+
+  #environment: MetaMetricsControllerOptions['environment'];
+
+  ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
+  #selectedAddress: PreferencesControllerState['selectedAddress'];
+  ///: END:ONLY_INCLUDE_IF
+
+  #segment: MetaMetricsControllerOptions['segment'];
+
   /**
-   * @param {object} options
-   * @param {object} options.segment - an instance of analytics for tracking
-   *  events that conform to the new MetaMetrics tracking plan.
-   * @param {object} options.preferencesControllerState - The state of preferences controller
-   * @param {Function} options.onPreferencesStateChange - Used to attach a listener to the
-   *  stateChange event emitted by the PreferencesController
-   * @param {Function} options.onNetworkDidChange - Used to attach a listener to the
-   *  networkDidChange event emitted by the networkController
-   * @param {Function} options.getCurrentChainId - Gets the current chain id from the
-   *  network controller
-   * @param {string} options.version - The version of the extension
-   * @param {string} options.environment - The environment the extension is running in
-   * @param {string} options.extension - webextension-polyfill
-   * @param {MetaMetricsControllerState} options.initState - State to initialized with
+   * @param options
+   * @param options.segment - an instance of analytics for tracking
+   * events that conform to the new MetaMetrics tracking plan.
+   * @param options.preferencesControllerState - The state of preferences controller
+   * @param options.onPreferencesStateChange - Used to attach a listener to the
+   * stateChange event emitted by the PreferencesController
+   * @param options.onNetworkDidChange - Used to attach a listener to the
+   * networkDidChange event emitted by the networkController
+   * @param options.getCurrentChainId - Gets the current chain id from the network controller.
+   * @param options.version - The version of the extension
+   * @param options.environment - The environment the extension is running in
+   * @param options.extension - webextension-polyfill
+   * @param options.initState - State to initialized with
    * @param options.captureException
    */
   constructor({
@@ -142,8 +245,9 @@ export default class MetaMetricsController {
     initState,
     extension,
     captureException = defaultCaptureException,
-  }) {
-    this._captureException = (err) => {
+  }: MetaMetricsControllerOptions) {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    this.#captureException = (err: any) => {
       // This is a temporary measure. Currently there are errors flooding sentry due to a problem in how we are tracking anonymousId
       // We intend on removing this as soon as we understand how to correctly solve that problem.
       if (!exceptionsToFilter[err.message]) {
@@ -154,11 +258,11 @@ export default class MetaMetricsController {
     this.locale = preferencesControllerState.currentLocale.replace('_', '-');
     this.version =
       environment === 'production' ? version : `${version}-${environment}`;
-    this.extension = extension;
-    this.environment = environment;
+    this.#extension = extension;
+    this.#environment = environment;
 
     ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-    this.selectedAddress = preferencesControllerState.selectedAddress;
+    this.#selectedAddress = preferencesControllerState.selectedAddress;
     ///: END:ONLY_INCLUDE_IF
 
     const abandonedFragments = omitBy(initState?.fragments, 'persist');
@@ -189,7 +293,7 @@ export default class MetaMetricsController {
     onNetworkDidChange(() => {
       this.chainId = getCurrentChainId();
     });
-    this.segment = segment;
+    this.#segment = segment;
 
     // Track abandoned fragments that weren't properly cleaned up.
     // Abandoned fragments are those that were stored in persistent memory
@@ -198,16 +302,16 @@ export default class MetaMetricsController {
     // fragments that are not marked as persistent will be purged and the
     // failure event will be emitted.
     Object.values(abandonedFragments).forEach((fragment) => {
-      this.finalizeEventFragment(fragment.id, { abandoned: true });
+      this.finalizeEventFragment(fragment.id as string, { abandoned: true });
     });
 
     // Code below submits any pending segmentApiCalls to Segment if/when the controller is re-instantiated
     if (isManifestV3) {
       Object.values(segmentApiCalls).forEach(({ eventType, payload }) => {
         try {
-          this._submitSegmentAPICall(eventType, payload);
+          this.#submitSegmentAPICall(eventType, payload);
         } catch (error) {
-          this._captureException(error);
+          this.#captureException(error);
         }
       });
     }
@@ -219,14 +323,14 @@ export default class MetaMetricsController {
     // tracked if the event isn't progressed within that amount of time.
     if (isManifestV3) {
       /* eslint-disable no-undef */
-      this.extension.alarms.getAll().then((alarms) => {
+      this.#extension.alarms.getAll().then((alarms) => {
         const hasAlarm = checkAlarmExists(
           alarms,
           METAMETRICS_FINALIZE_EVENT_FRAGMENT_ALARM,
         );
 
         if (!hasAlarm) {
-          this.extension.alarms.create(
+          this.#extension.alarms.create(
             METAMETRICS_FINALIZE_EVENT_FRAGMENT_ALARM,
             {
               delayInMinutes: 1,
@@ -235,7 +339,7 @@ export default class MetaMetricsController {
           );
         }
       });
-      this.extension.alarms.onAlarm.addListener((alarmInfo) => {
+      this.#extension.alarms.onAlarm.addListener((alarmInfo) => {
         if (alarmInfo.name === METAMETRICS_FINALIZE_EVENT_FRAGMENT_ALARM) {
           this.finalizeAbandonedFragments();
         }
@@ -247,18 +351,19 @@ export default class MetaMetricsController {
     }
   }
 
-  finalizeAbandonedFragments() {
+  finalizeAbandonedFragments(): void {
     Object.values(this.store.getState().fragments).forEach((fragment) => {
       if (
         fragment.timeout &&
+        fragment.lastUpdated &&
         Date.now() - fragment.lastUpdated / 1000 > fragment.timeout
       ) {
-        this.finalizeEventFragment(fragment.id, { abandoned: true });
+        this.finalizeEventFragment(fragment.id as string, { abandoned: true });
       }
     });
   }
 
-  generateMetaMetricsId() {
+  generateMetaMetricsId(): string {
     return bufferToHex(
       keccak(
         Buffer.from(
@@ -272,11 +377,11 @@ export default class MetaMetricsController {
   /**
    * Create an event fragment in state and returns the event fragment object.
    *
-   * @param {MetaMetricsEventFragment} options - Fragment settings and properties
-   *  to initiate the fragment with.
-   * @returns {MetaMetricsEventFragment}
+   * @param options - Fragment settings and properties to initiate the fragment with.
    */
-  createEventFragment(options) {
+  createEventFragment(
+    options: MetaMetricsEventFragment,
+  ): MetaMetricsEventFragment {
     if (!options.successEvent || !options.category) {
       throw new Error(
         `Must specify success event and category. Success event was: ${
@@ -306,7 +411,7 @@ export default class MetaMetricsController {
       },
     });
 
-    if (options.initialEvent) {
+    if (fragment.initialEvent) {
       this.trackEvent({
         event: fragment.initialEvent,
         category: fragment.category,
@@ -330,10 +435,9 @@ export default class MetaMetricsController {
    * Returns the fragment stored in memory with provided id or undefined if it
    * does not exist.
    *
-   * @param {string} id - id of fragment to retrieve
-   * @returns {[MetaMetricsEventFragment]}
+   * @param id - id of fragment to retrieve
    */
-  getEventFragmentById(id) {
+  getEventFragmentById(id: string): MetaMetricsEventFragment {
     const { fragments } = this.store.getState();
 
     const fragment = fragments[id];
@@ -344,11 +448,13 @@ export default class MetaMetricsController {
   /**
    * Updates an event fragment in state
    *
-   * @param {string} id - The fragment id to update
-   * @param {Partial<MetaMetricsEventFragment>} payload - Fragment settings and
-   *  properties to initiate the fragment with.
+   * @param id - The fragment id to update
+   * @param payload - Fragment settings and properties to initiate the fragment with.
    */
-  updateEventFragment(id, payload) {
+  updateEventFragment(
+    id: string,
+    payload: Partial<MetaMetricsEventFragment>,
+  ): void {
     const { fragments } = this.store.getState();
 
     const fragment = fragments[id];
@@ -369,24 +475,28 @@ export default class MetaMetricsController {
   }
 
   /**
-   * @typedef {object} MetaMetricsFinalizeEventFragmentOptions
-   * @property {boolean} [abandoned = false] - if true track the failure
-   * event instead of the success event
-   * @property {MetaMetricsContext.page} [page] - page the final event
-   * occurred on. This will override whatever is set on the fragment
-   * @property {MetaMetricsContext.referrer} [referrer] - Dapp that
-   * originated the fragment. This is for fallback only, the fragment referrer
-   * property will take precedence.
-   */
-
-  /**
    * Finalizes a fragment, tracking either a success event or failure Event
    * and then removes the fragment from state.
    *
-   * @param {string} id - UUID of the event fragment to be closed
-   * @param {MetaMetricsFinalizeEventFragmentOptions} options
+   * @param id - UUID of the event fragment to be closed
+   * @param options
+   * @param options.abandoned - if true track the failure event instead of the success event
+   * @param options.page - page the final event occurred on. This will override whatever is set on the fragment
+   * @param options.referrer - Dapp that originated the fragment. This is for fallback only, the fragment referrer
+   * property will take precedence.
    */
-  finalizeEventFragment(id, { abandoned = false, page, referrer } = {}) {
+  finalizeEventFragment(
+    id: string,
+    {
+      abandoned = false,
+      page,
+      referrer,
+    }: {
+      abandoned?: boolean;
+      page?: MetaMetricsPageObject;
+      referrer?: MetaMetricsReferrerObject;
+    } = {},
+  ): void {
     const fragment = this.store.getState().fragments[id];
     if (!fragment) {
       throw new Error(`Funnel with id ${id} does not exist.`);
@@ -395,7 +505,7 @@ export default class MetaMetricsController {
     const eventName = abandoned ? fragment.failureEvent : fragment.successEvent;
 
     this.trackEvent({
-      event: eventName,
+      event: eventName ?? '',
       category: fragment.category,
       properties: fragment.properties,
       sensitiveProperties: fragment.sensitiveProperties,
@@ -424,9 +534,9 @@ export default class MetaMetricsController {
    * Calls this._identify with validated metaMetricsId and user traits if user is participating
    * in the MetaMetrics analytics program
    *
-   * @param {object} userTraits
+   * @param userTraits
    */
-  identify(userTraits) {
+  identify(userTraits: Partial<MetaMetricsUserTraits>): void {
     const { metaMetricsId, participateInMetaMetrics } = this.state;
 
     if (!participateInMetaMetrics || !metaMetricsId || !userTraits) {
@@ -439,26 +549,33 @@ export default class MetaMetricsController {
       return;
     }
 
-    const allValidTraits = this._buildValidTraits(userTraits);
+    const allValidTraits = this.#buildValidTraits(userTraits);
 
-    this._identify(allValidTraits);
+    this.#identify(allValidTraits);
   }
 
   // It sets an uninstall URL ("Sorry to see you go!" page),
   // which is opened if a user uninstalls the extension.
-  updateExtensionUninstallUrl(participateInMetaMetrics, metaMetricsId) {
-    const query = {};
+  updateExtensionUninstallUrl(
+    participateInMetaMetrics: boolean,
+    metaMetricsId: string,
+  ): void {
+    const query: {
+      mmi?: string;
+      env?: string;
+      av?: string;
+    } = {};
     if (participateInMetaMetrics) {
       // We only want to track these things if a user opted into metrics.
       query.mmi = Buffer.from(metaMetricsId).toString('base64');
-      query.env = this.environment;
+      query.env = this.#environment;
       query.av = this.version;
     }
     const queryString = new URLSearchParams(query);
 
     // this.extension not currently defined in tests
-    if (this.extension && this.extension.runtime) {
-      this.extension.runtime.setUninstallURL(
+    if (this.#extension && this.#extension.runtime) {
+      this.#extension.runtime.setUninstallURL(
         `${EXTENSION_UNINSTALL_URL}?${queryString}`,
       );
     }
@@ -467,18 +584,17 @@ export default class MetaMetricsController {
   /**
    * Setter for the `participateInMetaMetrics` property
    *
-   * @param {boolean} participateInMetaMetrics - Whether or not the user wants
-   *  to participate in MetaMetrics
-   * @returns {Promise<string|null>} the string of the new metametrics id, or null
-   *  if not set
+   * @param participateInMetaMetrics - Whether or not the user wants to participate in MetaMetrics if not set
    */
-  async setParticipateInMetaMetrics(participateInMetaMetrics) {
+  async setParticipateInMetaMetrics(
+    participateInMetaMetrics: boolean,
+  ): Promise<string> {
     const { metaMetricsId: existingMetaMetricsId } = this.state;
 
     const metaMetricsId =
       participateInMetaMetrics && !existingMetaMetricsId
         ? this.generateMetaMetricsId()
-        : existingMetaMetricsId;
+        : (existingMetaMetricsId as string);
 
     this.store.updateState({ participateInMetaMetrics, metaMetricsId });
 
@@ -490,7 +606,7 @@ export default class MetaMetricsController {
     }
 
     ///: BEGIN:ONLY_INCLUDE_IF(build-main)
-    if (this.environment !== ENVIRONMENT.DEVELOPMENT) {
+    if (this.#environment !== ENVIRONMENT.DEVELOPMENT) {
       this.updateExtensionUninstallUrl(participateInMetaMetrics, metaMetricsId);
     }
     ///: END:ONLY_INCLUDE_IF
@@ -498,7 +614,9 @@ export default class MetaMetricsController {
     return metaMetricsId;
   }
 
-  setDataCollectionForMarketing(dataCollectionForMarketing) {
+  setDataCollectionForMarketing(
+    dataCollectionForMarketing: boolean,
+  ): MetaMetricsControllerState['metaMetricsId'] {
     const { metaMetricsId } = this.state;
 
     this.store.updateState({ dataCollectionForMarketing });
@@ -510,25 +628,24 @@ export default class MetaMetricsController {
     return metaMetricsId;
   }
 
-  setMarketingCampaignCookieId(marketingCampaignCookieId) {
+  setMarketingCampaignCookieId(marketingCampaignCookieId: string | null): void {
     this.store.updateState({ marketingCampaignCookieId });
   }
 
-  get state() {
+  get state(): MetaMetricsControllerState {
     return this.store.getState();
   }
 
   /**
    * track a page view with Segment
    *
-   * @param {MetaMetricsPagePayload} payload - details of the page viewed
-   * @param {MetaMetricsPageOptions} [options] - options for handling the page
-   *  view
+   * @param payload - details of the page viewed.
+   * @param options - options for handling the page view.
    */
   trackPage(
-    { name, params, environmentType, page, referrer, actionId },
-    options,
-  ) {
+    payload: MetaMetricsPagePayload,
+    options?: MetaMetricsPageOptions,
+  ): void {
     try {
       if (this.state.participateInMetaMetrics === false) {
         return;
@@ -540,10 +657,13 @@ export default class MetaMetricsController {
       ) {
         return;
       }
+
+      const { name, params, environmentType, page, referrer, actionId } =
+        payload;
       const { metaMetricsId } = this.state;
       const idTrait = metaMetricsId ? 'userId' : 'anonymousId';
       const idValue = metaMetricsId ?? METAMETRICS_ANONYMOUS_ID;
-      this._submitSegmentAPICall('page', {
+      this.#submitSegmentAPICall('page', {
         messageId: buildUniqueMessageId({ actionId }),
         [idTrait]: idValue,
         name,
@@ -553,24 +673,27 @@ export default class MetaMetricsController {
           chain_id: this.chainId,
           environment_type: environmentType,
         },
-        context: this._buildContext(referrer, page),
+        context: this.#buildContext(referrer, page),
       });
     } catch (err) {
-      this._captureException(err);
+      this.#captureException(err);
     }
   }
 
   /**
    * submits a metametrics event, not waiting for it to complete or allowing its error to bubble up
    *
-   * @param {MetaMetricsEventPayload} payload - details of the event
-   * @param {MetaMetricsEventOptions} [options] - options for handling/routing the event
+   * @param payload - details of the event
+   * @param options - options for handling/routing the event
    */
-  trackEvent(payload, options) {
+  trackEvent(
+    payload: MetaMetricsEventPayload,
+    options?: MetaMetricsEventOptions,
+  ): void {
     // validation is not caught and handled
     this.validatePayload(payload);
     this.submitEvent(payload, options).catch((err) =>
-      this._captureException(err),
+      this.#captureException(err),
     );
   }
 
@@ -580,11 +703,13 @@ export default class MetaMetricsController {
    * with sensitiveProperties into two events, tracking the sensitiveProperties
    * with the anonymousId only.
    *
-   * @param {MetaMetricsEventPayload} payload - details of the event
-   * @param {MetaMetricsEventOptions} [options] - options for handling/routing the event
-   * @returns {Promise<void>}
+   * @param payload - details of the event
+   * @param options - options for handling/routing the event
    */
-  async submitEvent(payload, options) {
+  async submitEvent(
+    payload: MetaMetricsEventPayload,
+    options?: MetaMetricsEventOptions,
+  ): Promise<void> {
     this.validatePayload(payload);
 
     if (!this.state.participateInMetaMetrics && !options?.isOptIn) {
@@ -619,8 +744,8 @@ export default class MetaMetricsController {
       );
 
       events.push(
-        this._track(
-          this._buildEventPayload({
+        this.#track(
+          this.#buildEventPayload({
             ...anonymousPayload,
             properties: combinedProperties,
             isDuplicateAnonymizedEvent: true,
@@ -630,7 +755,7 @@ export default class MetaMetricsController {
       );
     }
 
-    events.push(this._track(this._buildEventPayload(payload), options));
+    events.push(this.#track(this.#buildEventPayload(payload), options));
 
     await Promise.all(events);
   }
@@ -638,9 +763,9 @@ export default class MetaMetricsController {
   /**
    * validates a metametrics event
    *
-   * @param {MetaMetricsEventPayload} payload - details of the event
+   * @param payload - details of the event
    */
-  validatePayload(payload) {
+  validatePayload(payload: MetaMetricsEventPayload): void {
     // event and category are required fields for all payloads
     if (!payload.event || !payload.category) {
       throw new Error(
@@ -657,7 +782,7 @@ export default class MetaMetricsController {
     }
   }
 
-  handleMetaMaskStateUpdate(newState) {
+  handleMetaMaskStateUpdate(newState: MetaMaskState): void {
     const userTraits = this._buildUserTraitsObject(newState);
     if (userTraits) {
       this.identify(userTraits);
@@ -665,7 +790,7 @@ export default class MetaMetricsController {
   }
 
   // Track all queued events after a user opted into metrics.
-  trackEventsAfterMetricsOptIn() {
+  trackEventsAfterMetricsOptIn(): void {
     const { eventsBeforeMetricsOptIn } = this.store.getState();
     eventsBeforeMetricsOptIn.forEach((eventBeforeMetricsOptIn) => {
       this.trackEvent(eventBeforeMetricsOptIn);
@@ -673,14 +798,14 @@ export default class MetaMetricsController {
   }
 
   // Once we track queued events after a user opts into metrics, we want to clear the event queue.
-  clearEventsAfterMetricsOptIn() {
+  clearEventsAfterMetricsOptIn(): void {
     this.store.updateState({
       eventsBeforeMetricsOptIn: [],
     });
   }
 
   // It adds an event into a queue, which is only tracked if a user opts into metrics.
-  addEventBeforeMetricsOptIn(event) {
+  addEventBeforeMetricsOptIn(event: MetaMetricsEventPayload): void {
     const prevState = this.store.getState().eventsBeforeMetricsOptIn;
     this.store.updateState({
       eventsBeforeMetricsOptIn: [...prevState, event],
@@ -688,7 +813,7 @@ export default class MetaMetricsController {
   }
 
   // Add or update traits for tracking.
-  updateTraits(newTraits) {
+  updateTraits(newTraits: Record<string, MetaMetricsUserTraits>): void {
     const { traits } = this.store.getState();
     this.store.updateState({
       traits: { ...traits, ...newTraits },
@@ -696,7 +821,7 @@ export default class MetaMetricsController {
   }
 
   // Retrieve (or generate if doesn't exist) the client metametrics id
-  getMetaMetricsId() {
+  getMetaMetricsId(): string {
     let { metaMetricsId } = this.state;
     if (!metaMetricsId) {
       metaMetricsId = this.generateMetaMetricsId();
@@ -711,18 +836,22 @@ export default class MetaMetricsController {
    * Build the context object to attach to page and track events.
    *
    * @private
-   * @param {Pick<MetaMetricsContext, 'referrer'>} [referrer] - dapp origin that initialized
-   *  the notification window.
-   * @param {Pick<MetaMetricsContext, 'page'>} [page] - page object describing the current
-   *  view of the extension. Defaults to the background-process object.
-   * @returns {MetaMetricsContext}
+   * @param referrer - dapp origin that initialized
+   * the notification window.
+   * @param page - page object describing the current
+   * view of the extension. Defaults to the background-process object.
    */
-  _buildContext(referrer, page = METAMETRICS_BACKGROUND_PAGE_OBJECT) {
+  #buildContext(
+    referrer: MetaMetricsContext['referrer'],
+    page: MetaMetricsContext['page'] = METAMETRICS_BACKGROUND_PAGE_OBJECT,
+  ): MetaMetricsContext {
     ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-    const mmiProps = {};
+    const mmiProps: {
+      extensionId?: string;
+    } = {};
 
-    if (this.extension?.runtime?.id) {
-      mmiProps.extensionId = this.extension.runtime.id;
+    if (this.#extension?.runtime?.id) {
+      mmiProps.extensionId = this.#extension.runtime.id;
     }
     ///: END:ONLY_INCLUDE_IF
 
@@ -746,12 +875,11 @@ export default class MetaMetricsController {
    * fed to Segment's track method
    *
    * @private
-   * @param {
-   *  Omit<MetaMetricsEventPayload, 'sensitiveProperties'>
-   * } rawPayload - raw payload provided to trackEvent
-   * @returns {SegmentEventPayload} formatted event payload for segment
+   * @param rawPayload - raw payload provided to trackEvent
    */
-  _buildEventPayload(rawPayload) {
+  #buildEventPayload(
+    rawPayload: Omit<MetaMetricsEventPayload, 'sensitiveProperties'>,
+  ): SegmentEventPayload {
     const {
       event,
       properties,
@@ -765,14 +893,17 @@ export default class MetaMetricsController {
     } = rawPayload;
 
     ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-    const mmiProps = {};
+    const mmiProps: {
+      extensionId?: string;
+      accountAddress?: string;
+    } = {};
 
-    if (this.extension?.runtime?.id) {
-      mmiProps.extensionId = this.extension.runtime.id;
+    if (this.#extension?.runtime?.id) {
+      mmiProps.extensionId = this.#extension.runtime.id;
     }
 
-    if (this.selectedAddress) {
-      mmiProps.accountAddress = this.selectedAddress;
+    if (this.#selectedAddress) {
+      mmiProps.accountAddress = this.#selectedAddress;
     }
     ///: END:ONLY_INCLUDE_IF
 
@@ -792,13 +923,18 @@ export default class MetaMetricsController {
         currency,
         category,
         locale: this.locale,
-        chain_id: properties?.chain_id ?? this.chainId,
+        chain_id:
+          properties &&
+          'chain_id' in properties &&
+          typeof properties.chain_id === 'string'
+            ? properties?.chain_id
+            : this.chainId,
         environment_type: environmentType,
         ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
         ...mmiProps,
         ///: END:ONLY_INCLUDE_IF
       },
-      context: this._buildContext(referrer, page),
+      context: this.#buildContext(referrer, page),
     };
   }
 
@@ -806,10 +942,13 @@ export default class MetaMetricsController {
    * This method generates the MetaMetrics user traits object, omitting any
    * traits that have not changed since the last invocation of this method.
    *
-   * @param {object} metamaskState - Full metamask state object.
-   * @returns {MetaMetricsTraits | null} traits that have changed since last update
+   * @param metamaskState - Full metamask state object.
+   * @returns traits that have changed since last update
    */
-  _buildUserTraitsObject(metamaskState) {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  _buildUserTraitsObject(
+    metamaskState: MetaMaskState,
+  ): Partial<MetaMetricsUserTraits> | null {
     ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
     const mmiAccountAddress =
       metamaskState.custodyAccountDetails &&
@@ -819,10 +958,11 @@ export default class MetaMetricsController {
     ///: END:ONLY_INCLUDE_IF
     const { traits, previousUserTraits } = this.store.getState();
 
-    /** @type {MetaMetricsTraits} */
-    const currentTraits = {
+    const currentTraits: MetaMetricsUserTraits = {
       [MetaMetricsUserTrait.AddressBookEntries]: sum(
-        Object.values(metamaskState.addressBook).map(size),
+        Object.values(metamaskState.addressBook).map((v) =>
+          size(v as object | string | null | undefined),
+        ),
       ),
       [MetaMetricsUserTrait.InstallDateExt]:
         traits[MetaMetricsUserTrait.InstallDateExt] || '',
@@ -842,29 +982,30 @@ export default class MetaMetricsController {
         metamaskState.internalAccounts.accounts,
       ).length,
       [MetaMetricsUserTrait.NumberOfNftCollections]:
-        this._getAllUniqueNFTAddressesLength(metamaskState.allNfts),
-      [MetaMetricsUserTrait.NumberOfNfts]: this._getAllNFTsFlattened(
+        this.#getAllUniqueNFTAddressesLength(metamaskState.allNfts),
+      [MetaMetricsUserTrait.NumberOfNfts]: this.#getAllNFTsFlattened(
         metamaskState.allNfts,
       ).length,
-      [MetaMetricsUserTrait.NumberOfTokens]:
-        this._getNumberOfTokens(metamaskState),
-      [MetaMetricsUserTrait.OpenseaApiEnabled]: metamaskState.openSeaEnabled,
+      [MetaMetricsUserTrait.NumberOfTokens]: this.#getNumberOfTokens(
+        metamaskState.allTokens,
+      ),
+      [MetaMetricsUserTrait.OpenSeaApiEnabled]: metamaskState.openSeaEnabled,
       [MetaMetricsUserTrait.ThreeBoxEnabled]: false, // deprecated, hard-coded as false
       [MetaMetricsUserTrait.Theme]: metamaskState.theme || 'default',
       [MetaMetricsUserTrait.TokenDetectionEnabled]:
         metamaskState.useTokenDetection,
       [MetaMetricsUserTrait.ShowNativeTokenAsMainBalance]:
-        metamaskState.showNativeTokenAsMainBalance,
+        metamaskState.ShowNativeTokenAsMainBalance,
       [MetaMetricsUserTrait.CurrentCurrency]: metamaskState.currentCurrency,
       ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-      [MetaMetricsUserTrait.MmiExtensionId]: this.extension?.runtime?.id,
-      [MetaMetricsUserTrait.MmiAccountAddress]: mmiAccountAddress,
+      [MetaMetricsUserTrait.MmiExtensionId]: this.#extension?.runtime?.id,
+      [MetaMetricsUserTrait.MmiAccountAddress]: mmiAccountAddress ?? null,
       [MetaMetricsUserTrait.MmiIsCustodian]: Boolean(mmiAccountAddress),
       ///: END:ONLY_INCLUDE_IF
       [MetaMetricsUserTrait.SecurityProviders]:
         metamaskState.securityAlertsEnabled ? ['blockaid'] : [],
       [MetaMetricsUserTrait.PetnameAddressCount]:
-        this._getPetnameAddressCount(metamaskState),
+        this.#getPetnameAddressCount(metamaskState),
       [MetaMetricsUserTrait.IsMetricsOptedIn]:
         metamaskState.participateInMetaMetrics,
       [MetaMetricsUserTrait.HasMarketingConsent]:
@@ -874,15 +1015,17 @@ export default class MetaMetricsController {
     };
 
     if (!previousUserTraits) {
-      this.store.updateState({ previousUserTraits: currentTraits });
+      this.store.updateState({
+        previousUserTraits: currentTraits,
+      });
       return currentTraits;
     }
 
     if (previousUserTraits && !isEqual(previousUserTraits, currentTraits)) {
-      const updates = pickBy(
-        currentTraits,
-        (v, k) => !isEqual(previousUserTraits[k], v),
-      );
+      const updates = pickBy(currentTraits, (v, k) => {
+        const previous = previousUserTraits[k as keyof MetaMetricsUserTraits];
+        return !isEqual(previous, v);
+      });
       this.store.updateState({ previousUserTraits: currentTraits });
       return updates;
     }
@@ -894,46 +1037,58 @@ export default class MetaMetricsController {
    * Returns a new object of all valid user traits. For dates, we transform them into ISO-8601 timestamp strings.
    *
    * @see {@link https://segment.com/docs/connections/spec/common/#timestamps}
-   * @param {object} userTraits
-   * @returns {object}
+   * @param userTraits
    */
-  _buildValidTraits(userTraits) {
-    return Object.entries(userTraits).reduce((validTraits, [key, value]) => {
-      if (this._isValidTraitDate(value)) {
-        validTraits[key] = value.toISOString();
-      } else if (this._isValidTrait(value)) {
-        validTraits[key] = value;
-      } else {
+  #buildValidTraits(
+    userTraits: Partial<MetaMetricsUserTraits>,
+  ): MetaMetricsUserTraits {
+    return Object.entries(userTraits).reduce(
+      (validTraits: MetaMetricsUserTraits, [key, value]) => {
+        if (this.#isValidTraitDate(value)) {
+          return {
+            ...validTraits,
+            [key]: value.toISOString(),
+          };
+        } else if (this.#isValidTrait(value)) {
+          return {
+            ...validTraits,
+            [key]: value,
+          };
+        }
+
         console.warn(
           `MetaMetricsController: "${key}" value is not a valid trait type`,
         );
-      }
-      return validTraits;
-    }, {});
+        return validTraits;
+      },
+      {},
+    );
   }
 
   /**
    * Returns an array of all of the NFTs the user
    * possesses across all networks and accounts.
    *
-   * @param {object} allNfts
-   * @returns {[]}
+   * @param allNfts
    */
-  _getAllNFTsFlattened = memoize((allNfts = {}) => {
-    return Object.values(allNfts).reduce((result, chainNFTs) => {
-      return result.concat(...Object.values(chainNFTs));
-    }, []);
-  });
+  #getAllNFTsFlattened = memoize(
+    (allNfts: NftControllerState['allNfts'] = {}) => {
+      return Object.values(allNfts).reduce((result: Nft[], chainNFTs) => {
+        return result.concat(...Object.values(chainNFTs));
+      }, []);
+    },
+  );
 
   /**
    * Returns the number of unique NFT addresses the user
    * possesses across all networks and accounts.
    *
-   * @param {object} allNfts
-   * @returns {number}
+   * @param allNfts
    */
-  _getAllUniqueNFTAddressesLength(allNfts = {}) {
-    const allNFTAddresses = this._getAllNFTsFlattened(allNfts).map(
+  #getAllUniqueNFTAddressesLength(
+    allNfts: NftControllerState['allNfts'] = {},
+  ): number {
+    const allNFTAddresses = this.#getAllNFTsFlattened(allNfts).map(
       (nft) => nft.address,
     );
     const uniqueAddresses = new Set(allNFTAddresses);
@@ -941,26 +1096,22 @@ export default class MetaMetricsController {
   }
 
   /**
-   * @param {object} metamaskState
+   * @param allTokens
    * @returns number of unique token addresses
    */
-  _getNumberOfTokens(metamaskState) {
-    return Object.values(metamaskState.allTokens).reduce(
-      (result, accountsByChain) => {
-        return result + sum(Object.values(accountsByChain).map(size));
-      },
-      0,
-    );
+  #getNumberOfTokens(allTokens: TokensControllerState['allTokens']): number {
+    return Object.values(allTokens).reduce((result, accountsByChain) => {
+      return result + sum(Object.values(accountsByChain).map(size));
+    }, 0);
   }
 
   /**
    * Calls segment.identify with given user traits
    *
    * @see {@link https://segment.com/docs/connections/sources/catalog/libraries/server/node/#identify}
-   * @private
-   * @param {object} userTraits
+   * @param userTraits
    */
-  _identify(userTraits) {
+  #identify(userTraits: MetaMetricsUserTraits): void {
     const { metaMetricsId } = this.state;
 
     if (!userTraits || Object.keys(userTraits).length === 0) {
@@ -969,12 +1120,12 @@ export default class MetaMetricsController {
     }
 
     try {
-      this._submitSegmentAPICall('identify', {
-        userId: metaMetricsId,
+      this.#submitSegmentAPICall('identify', {
+        userId: metaMetricsId ?? undefined,
         traits: userTraits,
       });
     } catch (err) {
-      this._captureException(err);
+      this.#captureException(err);
     }
   }
 
@@ -982,28 +1133,26 @@ export default class MetaMetricsController {
    * Validates the trait value. Segment accepts any data type. We are adding validation here to
    * support data types for our Segment destination(s) e.g. MixPanel
    *
-   * @param {*} value
-   * @returns {boolean}
+   * @param value
    */
-  _isValidTrait(value) {
+  #isValidTrait(value: unknown): boolean {
     const type = typeof value;
 
     return (
       type === 'string' ||
       type === 'boolean' ||
       type === 'number' ||
-      this._isValidTraitArray(value) ||
-      this._isValidTraitDate(value)
+      this.#isValidTraitArray(value) ||
+      this.#isValidTraitDate(value)
     );
   }
 
   /**
    * Segment accepts any data type value. We have special logic to validate arrays.
    *
-   * @param {*} value
-   * @returns {boolean}
+   * @param value
    */
-  _isValidTraitArray = (value) => {
+  #isValidTraitArray(value: unknown): boolean {
     return (
       Array.isArray(value) &&
       (value.every((element) => {
@@ -1016,17 +1165,16 @@ export default class MetaMetricsController {
           return typeof element === 'number';
         }))
     );
-  };
+  }
 
   /**
    * Returns true if the value is an accepted date type
    *
-   * @param {*} value
-   * @returns {boolean}
+   * @param value
    */
-  _isValidTraitDate = (value) => {
+  #isValidTraitDate(value: unknown): value is Date {
     return Object.prototype.toString.call(value) === '[object Date]';
-  };
+  }
 
   /**
    * Perform validation on the payload and update the id type to use before
@@ -1034,19 +1182,20 @@ export default class MetaMetricsController {
    * event appropriately.
    *
    * @private
-   * @param {SegmentEventPayload} payload - properties to attach to event
-   * @param {MetaMetricsEventOptions} [options] - options for routing and
-   *  handling the event
-   * @returns {Promise<void>}
+   * @param payload - properties to attach to event
+   * @param options - options for routing and handling the event
    */
-  _track(payload, options) {
+  #track(
+    payload: SegmentEventPayload,
+    options?: MetaMetricsEventOptions,
+  ): Promise<void> {
     const {
       isOptIn,
       metaMetricsId: metaMetricsIdOverride,
       matomoEvent,
       flushImmediately,
     } = options || {};
-    let idType = 'userId';
+    let idType: 'userId' | 'anonymousId' = 'userId';
     let idValue = this.state.metaMetricsId;
     let excludeMetaMetricsId = options?.excludeMetaMetricsId ?? false;
     // This is carried over from the old implementation, and will likely need
@@ -1073,7 +1222,7 @@ export default class MetaMetricsController {
     } else if (isOptIn && metaMetricsIdOverride) {
       idValue = metaMetricsIdOverride;
     }
-    payload[idType] = idValue;
+    payload[idType] = idValue ?? undefined;
 
     // If this is an event on the old matomo schema, add a key to the payload
     // to designate it as such
@@ -1085,8 +1234,9 @@ export default class MetaMetricsController {
     // event that relies on this promise being fulfilled before performing UI
     // updates, or otherwise delaying user interaction, supply the
     // 'flushImmediately' flag to the trackEvent method.
-    return new Promise((resolve, reject) => {
-      const callback = (err) => {
+    return new Promise<void>((resolve, reject) => {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const callback = (err: any) => {
         if (err) {
           // The error that segment gives us has some manipulation done to it
           // that seemingly breaks with lockdown enabled. Creating a new error
@@ -1099,19 +1249,26 @@ export default class MetaMetricsController {
         return resolve();
       };
 
-      this._submitSegmentAPICall('track', payload, callback);
+      this.#submitSegmentAPICall('track', payload, callback);
       if (flushImmediately) {
-        this.segment.flush();
+        this.#segment.flush();
       }
     });
   }
 
-  // Method below submits the request to analytics SDK.
-  // It will also add event to controller store
-  // and pass a callback to remove it from store once request is submitted to segment
-  // Saving segmentApiCalls in controller store in MV3 ensures that events are tracked
-  // even if service worker terminates before events are submiteed to segment.
-  _submitSegmentAPICall(eventType, payload, callback) {
+  /*
+   * Method below submits the request to analytics SDK.
+   * It will also add event to controller store
+   * and pass a callback to remove it from store once request is submitted to segment
+   * Saving segmentApiCalls in controller store in MV3 ensures that events are tracked
+   * even if service worker terminates before events are submitted to segment.
+   */
+  #submitSegmentAPICall(
+    eventType: SegmentEventType,
+    payload: Partial<SegmentEventPayload>,
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    callback?: (result: any) => any,
+  ): void {
     const {
       metaMetricsId,
       participateInMetaMetrics,
@@ -1129,7 +1286,11 @@ export default class MetaMetricsController {
         timestamp = payloadDate;
       }
     }
-    const modifiedPayload = { ...payload, messageId, timestamp };
+    const modifiedPayload = {
+      ...payload,
+      messageId,
+      timestamp,
+    };
     this.store.updateState({
       ...this.store.getState(),
       latestNonAnonymousEventTimestamp:
@@ -1143,11 +1304,12 @@ export default class MetaMetricsController {
           payload: {
             ...modifiedPayload,
             timestamp: modifiedPayload.timestamp.toString(),
-          },
+          } as SegmentEventPayload,
         },
       },
     });
-    const modifiedCallback = (result) => {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const modifiedCallback = (result: any) => {
       const { segmentApiCalls } = this.store.getState();
       delete segmentApiCalls[messageId];
       this.store.updateState({
@@ -1155,17 +1317,16 @@ export default class MetaMetricsController {
       });
       return callback?.(result);
     };
-    this.segment[eventType](modifiedPayload, modifiedCallback);
+    this.#segment[eventType](modifiedPayload, modifiedCallback);
   }
 
   /**
    * Returns the total number of Ethereum addresses with saved petnames,
    * including all chain ID variations.
    *
-   * @param {object} metamaskState
-   * @returns {number}
+   * @param metamaskState
    */
-  _getPetnameAddressCount(metamaskState) {
+  #getPetnameAddressCount(metamaskState: MetaMaskState): number {
     const addressNames = metamaskState.names?.[NameType.ETHEREUM_ADDRESS] ?? {};
 
     return Object.keys(addressNames).reduce((totalCount, address) => {
