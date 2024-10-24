@@ -4,11 +4,12 @@ import { MockedEndpoint } from 'mockttp';
 import FixtureBuilder from '../../fixture-builder';
 import {
   defaultGanacheOptions,
-  unlockWallet,
   veryLargeDelayMs,
   withFixtures,
 } from '../../helpers';
 import { Mockttp } from '../../mock-e2e';
+import HomePage from '../../page-objects/pages/homepage';
+import { loginWithoutBalanceValidation } from '../../page-objects/flows/login.flow';
 
 async function mockInfura(mockServer: Mockttp): Promise<MockedEndpoint[]> {
   const blockNumber = { value: 0 };
@@ -101,7 +102,7 @@ describe('Account Tracker API Usage', function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilder().withNetworkControllerOnMainnet().build(),
-        ganacheOptions: defaultGanacheOptions,
+        defaultGanacheOptions,
         title: this.test?.fullTitle(),
         testSpecificMock: mockInfura,
       },
@@ -122,7 +123,9 @@ describe('Account Tracker API Usage', function () {
           )} request has been made to infura before opening the UI`,
         );
 
-        await unlockWallet(driver);
+        await loginWithoutBalanceValidation(driver);
+        const homepage = new HomePage(driver);
+        await homepage.check_pageIsLoaded();
         await driver.delay(veryLargeDelayMs);
 
         allInfuraJsonRpcRequests = await getAllInfuraJsonRpcRequests(
@@ -153,12 +156,13 @@ describe('Account Tracker API Usage', function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilder().withNetworkControllerOnMainnet().build(),
-        ganacheOptions: defaultGanacheOptions,
         title: this.test?.fullTitle(),
         testSpecificMock: mockInfura,
       },
       async ({ driver, mockedEndpoint }) => {
-        await unlockWallet(driver);
+        await loginWithoutBalanceValidation(driver);
+        const homepage = new HomePage(driver);
+        await homepage.check_pageIsLoaded();
         await driver.delay(veryLargeDelayMs);
         const initialInfuraJsonRpcRequests = await getAllInfuraJsonRpcRequests(
           mockedEndpoint,
