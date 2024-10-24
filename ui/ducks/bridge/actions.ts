@@ -2,10 +2,13 @@
 // eslint-disable-next-line import/no-restricted-paths
 import { Hex } from '@metamask/utils';
 import { zeroAddress } from 'ethereumjs-util';
+import {
+  TransactionType,
+  TransactionMeta,
+} from '@metamask/transaction-controller';
 import { useHistory } from 'react-router-dom';
 import { BigNumber } from 'bignumber.js';
 import { NetworkConfiguration } from '@metamask/network-controller';
-import { TransactionMeta } from '@metamask/transaction-controller';
 import {
   BridgeBackgroundAction,
   BridgeUserAction,
@@ -41,6 +44,7 @@ import { FEATURED_RPCS } from '../../../shared/constants/network';
 import { getEthUsdtResetData, isEthUsdt } from '../../pages/bridge/bridge.util';
 import { ETH_USDT_ADDRESS } from '../../../shared/constants/bridge';
 import BridgeController from '../../../app/scripts/controllers/bridge/bridge-controller';
+import { startPollingForBridgeTxStatus } from '../bridge-status/actions';
 import { bridgeSlice } from './bridge';
 import { BridgeAppState } from './selectors';
 
@@ -262,8 +266,7 @@ export const submitBridgeTransaction = (
           maxFeePerGas,
           maxPriorityFeePerGas,
           meta: {
-            // @ts-expect-error Need TransactionController v37+, TODO add this type
-            type: 'bridgeApproval', // TransactionType.bridgeApproval,
+            type: TransactionType.bridgeApproval,
           },
         });
       }
@@ -300,13 +303,12 @@ export const submitBridgeTransaction = (
         maxFeePerGas,
         maxPriorityFeePerGas,
         meta: {
-          // @ts-expect-error Need TransactionController v37+, TODO add this type
-          type: 'bridgeApproval', // TransactionType.bridgeApproval,
+          type: TransactionType.bridgeApproval,
           sourceTokenSymbol: quoteResponse.quote.srcAsset.symbol,
         },
       });
 
-      return txMeta.id;
+      return txMeta;
     };
 
     const handleBridgeTx = async ({
@@ -333,8 +335,7 @@ export const submitBridgeTransaction = (
         meta: {
           // estimatedBaseFee: decEstimatedBaseFee,
           // swapMetaData,
-          // @ts-expect-error Need TransactionController v37+, TODO add this type
-          type: 'bridge', // TransactionType.bridge,
+          type: TransactionType.bridge,
           sourceTokenSymbol: quoteResponse.quote.srcAsset.symbol,
           destinationTokenSymbol: quoteResponse.quote.destAsset.symbol,
           destinationTokenDecimals: quoteResponse.quote.destAsset.decimals,
@@ -345,7 +346,7 @@ export const submitBridgeTransaction = (
         },
       });
 
-      return txMeta.id;
+      return txMeta;
     };
 
     const addSourceToken = () => {
@@ -419,20 +420,41 @@ export const submitBridgeTransaction = (
       const { maxFeePerGas, maxPriorityFeePerGas } = calcFeePerGas();
 
       // Execute transaction(s)
-      let approvalTxId: string | undefined;
+      let approvalTxMeta: TransactionMeta | undefined;
       if (quoteResponse?.approval) {
-        approvalTxId = await handleApprovalTx({
+        approvalTxMeta = await handleApprovalTx({
           approval: quoteResponse.approval,
           maxFeePerGas,
           maxPriorityFeePerGas,
         });
       }
 
-      await handleBridgeTx({
-        approvalTxId,
+      const bridgeTxMeta = await handleBridgeTx({
+        approvalTxId: approvalTxMeta?.id,
         maxFeePerGas,
         maxPriorityFeePerGas,
       });
+
+      // Get bridge tx status
+      if (bridgeTxMeta.hash) {
+        const statusRequest = {
+          bridgeId: quoteResponse.quote.bridgeId,
+          srcTxHash: bridgeTxMeta.hash,
+          bridge: quoteResponse.quote.bridges[0],
+          srcChainId: quoteResponse.quote.srcChainId,
+          destChainId: quoteResponse.quote.destChainId,
+          quote: quoteResponse.quote,
+          refuel: Boolean(quoteResponse.quote.refuel),
+        };
+        dispatch(
+          startPollingForBridgeTxStatus({
+            statusRequest,
+            quoteResponse,
+            slippagePercentage: 0, // TODO pull this from redux/bridgecontroller once it's implemented. currently hardcoded in quoteRequest.slippage right now
+            startTime: bridgeTxMeta.time,
+          }),
+        );
+      }
 
       // Add tokens if not the native gas token
       if (quoteResponse.quote.srcAsset.address !== zeroAddress()) {
