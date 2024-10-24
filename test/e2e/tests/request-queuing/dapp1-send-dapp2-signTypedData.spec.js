@@ -137,7 +137,6 @@ describe('Request Queuing Dapp 1, Switch Tx -> Dapp 2 Send Tx', function () {
           text: 'Localhost 7777',
         });
 
-        await driver.waitForSelector({ text: 'Confirm' });
         await driver.clickElement({ text: 'Confirm', tag: 'button' });
 
         await driver.waitUntilXWindowHandles(4);
