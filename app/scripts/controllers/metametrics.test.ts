@@ -1,18 +1,37 @@
 import { toHex } from '@metamask/controller-utils';
-import { NameType } from '@metamask/name-controller';
+import { NetworkState } from '@metamask/network-controller';
+import { NameEntry, NameType } from '@metamask/name-controller';
+import { AddressBookEntry } from '@metamask/address-book-controller';
+import {
+  Nft,
+  Token,
+  TokensControllerState,
+} from '@metamask/assets-controllers';
+import { InternalAccount } from '@metamask/keyring-api';
+import { Browser } from 'webextension-polyfill';
+import { Hex } from '@metamask/utils';
 import { ENVIRONMENT_TYPE_BACKGROUND } from '../../../shared/constants/app';
 import { createSegmentMock } from '../lib/segment';
 import {
   METAMETRICS_ANONYMOUS_ID,
   METAMETRICS_BACKGROUND_PAGE_OBJECT,
   MetaMetricsUserTrait,
+  MetaMetricsUserTraits,
 } from '../../../shared/constants/metametrics';
 import { CHAIN_IDS } from '../../../shared/constants/network';
+import { LedgerTransportTypes } from '../../../shared/constants/hardware-wallets';
 import * as Utils from '../lib/util';
 import { mockNetworkState } from '../../../test/stub/networks';
-import MetaMetricsController from './metametrics';
+import MetaMetricsController, {
+  MetaMetricsControllerOptions,
+  MetaMetricsControllerState,
+} from './metametrics';
+import {
+  getDefaultPreferencesControllerState,
+  PreferencesControllerState,
+} from './preferences-controller';
 
-const segment = createSegmentMock(2, 10000);
+const segmentMock = createSegmentMock(2);
 
 const VERSION = '0.0.1-test';
 const FAKE_CHAIN_ID = '0x1338';
@@ -27,7 +46,7 @@ const MOCK_EXTENSION = {
     id: MOCK_EXTENSION_ID,
     setUninstallURL: () => undefined,
   },
-};
+} as unknown as Browser;
 
 const MOCK_TRAITS = {
   test_boolean: true,
@@ -36,12 +55,12 @@ const MOCK_TRAITS = {
   test_bool_array: [true, true, false],
   test_string_array: ['test', 'test', 'test'],
   test_boolean_array: [1, 2, 3],
-};
+} as MetaMetricsUserTraits;
 
 const MOCK_INVALID_TRAITS = {
   test_null: null,
   test_array_multi_types: [true, 'a', 1],
-};
+} as MetaMetricsUserTraits;
 
 const DEFAULT_TEST_CONTEXT = {
   app: {
@@ -101,7 +120,7 @@ function getMetaMetricsController({
   participateInMetaMetrics = true,
   metaMetricsId = TEST_META_METRICS_ID,
   marketingCampaignCookieId = null,
-  preferencesControllerState = { currentLocale: LOCALE },
+  currentLocale = LOCALE,
   onPreferencesStateChange = () => {
     // do nothing
   },
@@ -109,13 +128,26 @@ function getMetaMetricsController({
   onNetworkDidChange = () => {
     // do nothing
   },
-  segmentInstance,
+  segment = segmentMock,
+}: {
+  currentLocale?: string;
+  participateInMetaMetrics?: MetaMetricsControllerState['participateInMetaMetrics'];
+  metaMetricsId?: MetaMetricsControllerState['metaMetricsId'];
+  dataCollectionForMarketing?: MetaMetricsControllerState['dataCollectionForMarketing'];
+  marketingCampaignCookieId?: MetaMetricsControllerState['marketingCampaignCookieId'];
+  onPreferencesStateChange?: MetaMetricsControllerOptions['onPreferencesStateChange'];
+  getCurrentChainId?: MetaMetricsControllerOptions['getCurrentChainId'];
+  onNetworkDidChange?: MetaMetricsControllerOptions['onNetworkDidChange'];
+  segment?: MetaMetricsControllerOptions['segment'];
 } = {}) {
   return new MetaMetricsController({
-    segment: segmentInstance || segment,
+    segment,
     getCurrentChainId,
     onNetworkDidChange,
-    preferencesControllerState,
+    preferencesControllerState: {
+      ...getDefaultPreferencesControllerState(),
+      currentLocale,
+    },
     onPreferencesStateChange,
     version: '0.0.1',
     environment: 'test',
@@ -127,7 +159,6 @@ function getMetaMetricsController({
         testid: SAMPLE_PERSISTED_EVENT,
         testid2: SAMPLE_NON_PERSISTED_EVENT,
       },
-      events: {},
     },
     extension: MOCK_EXTENSION,
   });
@@ -143,7 +174,7 @@ describe('MetaMetricsController', function () {
 
   describe('constructor', function () {
     it('should properly initialize', function () {
-      const spy = jest.spyOn(segment, 'track');
+      const spy = jest.spyOn(segmentMock, 'track');
       const metaMetricsController = getMetaMetricsController();
       expect(metaMetricsController.version).toStrictEqual(VERSION);
       expect(metaMetricsController.chainId).toStrictEqual(FAKE_CHAIN_ID);
@@ -180,9 +211,13 @@ describe('MetaMetricsController', function () {
     });
 
     it('should update when network changes', function () {
-      let chainId = '0x111';
-      let networkDidChangeListener;
-      const onNetworkDidChange = (listener) => {
+      let chainId: Hex = '0x111';
+      let networkDidChangeListener: (state: NetworkState) => void = () => {
+        // do nothing
+      };
+      const onNetworkDidChange: (
+        listener: (state: NetworkState) => void,
+      ) => void = (listener) => {
         networkDidChangeListener = listener;
       };
       const metaMetricsController = getMetaMetricsController({
@@ -191,22 +226,31 @@ describe('MetaMetricsController', function () {
       });
 
       chainId = '0x222';
-      networkDidChangeListener();
+
+      networkDidChangeListener({} as NetworkState);
 
       expect(metaMetricsController.chainId).toStrictEqual('0x222');
     });
 
     it('should update when preferences changes', function () {
-      let subscribeListener;
-      const onPreferencesStateChange = (listener) => {
-        subscribeListener = listener;
+      let subscribeListener: (
+        state: PreferencesControllerState,
+      ) => void = () => {
+        // do nothing
       };
+      const onPreferencesStateChange: MetaMetricsControllerOptions['onPreferencesStateChange'] =
+        (listener) => {
+          subscribeListener = listener;
+        };
       const metaMetricsController = getMetaMetricsController({
-        preferencesControllerState: { currentLocale: LOCALE },
+        currentLocale: LOCALE,
         onPreferencesStateChange,
       });
 
-      subscribeListener({ currentLocale: 'en_UK' });
+      subscribeListener({
+        ...getDefaultPreferencesControllerState(),
+        currentLocale: 'en_UK',
+      });
       expect(metaMetricsController.locale).toStrictEqual('en-UK');
     });
   });
@@ -242,7 +286,7 @@ describe('MetaMetricsController', function () {
 
   describe('identify', function () {
     it('should call segment.identify for valid traits if user is participating in metametrics', function () {
-      const spy = jest.spyOn(segment, 'identify');
+      const spy = jest.spyOn(segmentMock, 'identify');
       const metaMetricsController = getMetaMetricsController({
         participateInMetaMetrics: true,
         metaMetricsId: TEST_META_METRICS_ID,
@@ -264,12 +308,14 @@ describe('MetaMetricsController', function () {
     });
 
     it('should transform date type traits into ISO-8601 timestamp strings', function () {
-      const spy = jest.spyOn(segment, 'identify');
+      const spy = jest.spyOn(segmentMock, 'identify');
       const metaMetricsController = getMetaMetricsController({
         participateInMetaMetrics: true,
         metaMetricsId: TEST_META_METRICS_ID,
       });
-      metaMetricsController.identify({ test_date: new Date().toISOString() });
+      metaMetricsController.identify({
+        test_date: new Date().toISOString(),
+      } as MetaMetricsUserTraits);
       expect(spy).toHaveBeenCalledTimes(1);
       expect(spy).toHaveBeenCalledWith(
         {
@@ -285,7 +331,7 @@ describe('MetaMetricsController', function () {
     });
 
     it('should not call segment.identify if user is not participating in metametrics', function () {
-      const spy = jest.spyOn(segment, 'identify');
+      const spy = jest.spyOn(segmentMock, 'identify');
       const metaMetricsController = getMetaMetricsController({
         participateInMetaMetrics: false,
       });
@@ -294,7 +340,7 @@ describe('MetaMetricsController', function () {
     });
 
     it('should not call segment.identify if there are no valid traits to identify', function () {
-      const spy = jest.spyOn(segment, 'identify');
+      const spy = jest.spyOn(segmentMock, 'identify');
       const metaMetricsController = getMetaMetricsController({
         participateInMetaMetrics: true,
         metaMetricsId: TEST_META_METRICS_ID,
@@ -359,7 +405,7 @@ describe('MetaMetricsController', function () {
 
   describe('submitEvent', function () {
     it('should not track an event if user is not participating in metametrics', function () {
-      const spy = jest.spyOn(segment, 'track');
+      const spy = jest.spyOn(segmentMock, 'track');
       const metaMetricsController = getMetaMetricsController({
         participateInMetaMetrics: false,
       });
@@ -367,7 +413,7 @@ describe('MetaMetricsController', function () {
         event: 'Fake Event',
         category: 'Unit Test',
         properties: {
-          test: 1,
+          chain_id: '1',
         },
       });
       expect(spy).toHaveBeenCalledTimes(0);
@@ -377,13 +423,13 @@ describe('MetaMetricsController', function () {
       const metaMetricsController = getMetaMetricsController({
         participateInMetaMetrics: true,
       });
-      const spy = jest.spyOn(segment, 'track');
+      const spy = jest.spyOn(segmentMock, 'track');
       metaMetricsController.submitEvent(
         {
           event: 'Fake Event',
           category: 'Unit Test',
           properties: {
-            test: 1,
+            chain_id: '1',
           },
         },
         { isOptIn: true },
@@ -395,8 +441,8 @@ describe('MetaMetricsController', function () {
           anonymousId: METAMETRICS_ANONYMOUS_ID,
           context: DEFAULT_TEST_CONTEXT,
           properties: {
-            test: 1,
             ...DEFAULT_EVENT_PROPERTIES,
+            chain_id: '1',
           },
           messageId: Utils.generateRandomId(),
           timestamp: new Date(),
@@ -409,13 +455,13 @@ describe('MetaMetricsController', function () {
       const metaMetricsController = getMetaMetricsController({
         participateInMetaMetrics: true,
       });
-      const spy = jest.spyOn(segment, 'track');
+      const spy = jest.spyOn(segmentMock, 'track');
       metaMetricsController.submitEvent(
         {
           event: 'Fake Event',
           category: 'Unit Test',
           properties: {
-            test: 1,
+            chain_id: '1',
           },
         },
         { isOptIn: true, metaMetricsId: 'TESTID' },
@@ -427,8 +473,8 @@ describe('MetaMetricsController', function () {
           userId: 'TESTID',
           context: DEFAULT_TEST_CONTEXT,
           properties: {
-            test: 1,
             ...DEFAULT_EVENT_PROPERTIES,
+            chain_id: '1',
           },
           messageId: Utils.generateRandomId(),
           timestamp: new Date(),
@@ -439,13 +485,13 @@ describe('MetaMetricsController', function () {
 
     it('should track a legacy event', function () {
       const metaMetricsController = getMetaMetricsController();
-      const spy = jest.spyOn(segment, 'track');
+      const spy = jest.spyOn(segmentMock, 'track');
       metaMetricsController.submitEvent(
         {
           event: 'Fake Event',
           category: 'Unit Test',
           properties: {
-            test: 1,
+            chain_id: '1',
           },
         },
         { matomoEvent: true },
@@ -457,9 +503,9 @@ describe('MetaMetricsController', function () {
           userId: TEST_META_METRICS_ID,
           context: DEFAULT_TEST_CONTEXT,
           properties: {
-            test: 1,
-            legacy_event: true,
             ...DEFAULT_EVENT_PROPERTIES,
+            legacy_event: true,
+            chain_id: '1',
           },
           messageId: Utils.generateRandomId(),
           timestamp: new Date(),
@@ -470,12 +516,12 @@ describe('MetaMetricsController', function () {
 
     it('should track a non legacy event', function () {
       const metaMetricsController = getMetaMetricsController();
-      const spy = jest.spyOn(segment, 'track');
+      const spy = jest.spyOn(segmentMock, 'track');
       metaMetricsController.submitEvent({
         event: 'Fake Event',
         category: 'Unit Test',
         properties: {
-          test: 1,
+          chain_id: '1',
         },
       });
       expect(spy).toHaveBeenCalledTimes(1);
@@ -483,8 +529,8 @@ describe('MetaMetricsController', function () {
         {
           event: 'Fake Event',
           properties: {
-            test: 1,
             ...DEFAULT_EVENT_PROPERTIES,
+            chain_id: '1',
           },
           context: DEFAULT_TEST_CONTEXT,
           userId: TEST_META_METRICS_ID,
@@ -497,7 +543,7 @@ describe('MetaMetricsController', function () {
 
     it('should immediately flush queue if flushImmediately set to true', function () {
       const metaMetricsController = getMetaMetricsController();
-      const spy = jest.spyOn(segment, 'flush');
+      const spy = jest.spyOn(segmentMock, 'flush');
       metaMetricsController.submitEvent(
         {
           event: 'Fake Event',
@@ -512,10 +558,14 @@ describe('MetaMetricsController', function () {
       const metaMetricsController = getMetaMetricsController();
 
       await expect(
+        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+        // @ts-ignore because we are testing the error case
         metaMetricsController.submitEvent({ event: 'test' }),
       ).rejects.toThrow(/Must specify event and category\./u);
 
       await expect(
+        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+        // @ts-ignore because we are testing the error case
         metaMetricsController.submitEvent({ category: 'test' }),
       ).rejects.toThrow(/Must specify event and category\./u);
     });
@@ -538,7 +588,7 @@ describe('MetaMetricsController', function () {
 
     it('should track sensitiveProperties in a separate, anonymous event', function () {
       const metaMetricsController = getMetaMetricsController();
-      const spy = jest.spyOn(segment, 'track');
+      const spy = jest.spyOn(segmentMock, 'track');
       metaMetricsController.submitEvent({
         event: 'Fake Event',
         category: 'Unit Test',
@@ -574,15 +624,16 @@ describe('MetaMetricsController', function () {
   });
 
   describe('Change Signature XXX anonymous event names', function () {
+    // @ts-expect-error This function is missing from the Mocha type definitions
     it.each([
       ['Signature Requested', 'Signature Requested Anon'],
       ['Signature Rejected', 'Signature Rejected Anon'],
       ['Signature Approved', 'Signature Approved Anon'],
     ])(
       'should change "%s" anonymous event names to "%s"',
-      (eventType, anonEventType) => {
+      (eventType: string, anonEventType: string) => {
         const metaMetricsController = getMetaMetricsController();
-        const spy = jest.spyOn(segment, 'track');
+        const spy = jest.spyOn(segmentMock, 'track');
         metaMetricsController.submitEvent({
           event: eventType,
           category: 'Unit Test',
@@ -608,7 +659,7 @@ describe('MetaMetricsController', function () {
   describe('Change Transaction XXX anonymous event namnes', function () {
     it('should change "Transaction Added" anonymous event names to "Transaction Added Anon"', function () {
       const metaMetricsController = getMetaMetricsController();
-      const spy = jest.spyOn(segment, 'track');
+      const spy = jest.spyOn(segmentMock, 'track');
       metaMetricsController.submitEvent({
         event: 'Transaction Added',
         category: 'Unit Test',
@@ -633,7 +684,7 @@ describe('MetaMetricsController', function () {
 
     it('should change "Transaction Submitted" anonymous event names to "Transaction Added Anon"', function () {
       const metaMetricsController = getMetaMetricsController();
-      const spy = jest.spyOn(segment, 'track');
+      const spy = jest.spyOn(segmentMock, 'track');
       metaMetricsController.submitEvent({
         event: 'Transaction Submitted',
         category: 'Unit Test',
@@ -658,7 +709,7 @@ describe('MetaMetricsController', function () {
 
     it('should change "Transaction Finalized" anonymous event names to "Transaction Added Anon"', function () {
       const metaMetricsController = getMetaMetricsController();
-      const spy = jest.spyOn(segment, 'track');
+      const spy = jest.spyOn(segmentMock, 'track');
       metaMetricsController.submitEvent({
         event: 'Transaction Finalized',
         category: 'Unit Test',
@@ -685,10 +736,9 @@ describe('MetaMetricsController', function () {
   describe('trackPage', function () {
     it('should track a page view', function () {
       const metaMetricsController = getMetaMetricsController();
-      const spy = jest.spyOn(segment, 'page');
+      const spy = jest.spyOn(segmentMock, 'page');
       metaMetricsController.trackPage({
         name: 'home',
-        params: null,
         environmentType: ENVIRONMENT_TYPE_BACKGROUND,
         page: METAMETRICS_BACKGROUND_PAGE_OBJECT,
       });
@@ -699,7 +749,7 @@ describe('MetaMetricsController', function () {
           userId: TEST_META_METRICS_ID,
           context: DEFAULT_TEST_CONTEXT,
           properties: {
-            params: null,
+            params: undefined,
             ...DEFAULT_PAGE_PROPERTIES,
           },
           messageId: Utils.generateRandomId(),
@@ -713,10 +763,9 @@ describe('MetaMetricsController', function () {
       const metaMetricsController = getMetaMetricsController({
         participateInMetaMetrics: false,
       });
-      const spy = jest.spyOn(segment, 'page');
+      const spy = jest.spyOn(segmentMock, 'page');
       metaMetricsController.trackPage({
         name: 'home',
-        params: null,
         environmentType: ENVIRONMENT_TYPE_BACKGROUND,
         page: METAMETRICS_BACKGROUND_PAGE_OBJECT,
       });
@@ -725,17 +774,14 @@ describe('MetaMetricsController', function () {
 
     it('should track a page view if isOptInPath is true and user not yet opted in', function () {
       const metaMetricsController = getMetaMetricsController({
-        preferencesControllerState: {
-          currentLocale: LOCALE,
-          participateInMetaMetrics: null,
-        },
+        currentLocale: LOCALE,
+        participateInMetaMetrics: true,
         onPreferencesStateChange: jest.fn(),
       });
-      const spy = jest.spyOn(segment, 'page');
+      const spy = jest.spyOn(segmentMock, 'page');
       metaMetricsController.trackPage(
         {
           name: 'home',
-          params: null,
           environmentType: ENVIRONMENT_TYPE_BACKGROUND,
           page: METAMETRICS_BACKGROUND_PAGE_OBJECT,
         },
@@ -749,7 +795,6 @@ describe('MetaMetricsController', function () {
           userId: TEST_META_METRICS_ID,
           context: DEFAULT_TEST_CONTEXT,
           properties: {
-            params: null,
             ...DEFAULT_PAGE_PROPERTIES,
           },
           messageId: Utils.generateRandomId(),
@@ -761,17 +806,14 @@ describe('MetaMetricsController', function () {
 
     it('multiple trackPage call with same actionId should result in same messageId being sent to segment', function () {
       const metaMetricsController = getMetaMetricsController({
-        preferencesControllerState: {
-          currentLocale: LOCALE,
-          participateInMetaMetrics: null,
-        },
+        currentLocale: LOCALE,
+        participateInMetaMetrics: true,
         onPreferencesStateChange: jest.fn(),
       });
-      const spy = jest.spyOn(segment, 'page');
+      const spy = jest.spyOn(segmentMock, 'page');
       metaMetricsController.trackPage(
         {
           name: 'home',
-          params: null,
           actionId: DUMMY_ACTION_ID,
           environmentType: ENVIRONMENT_TYPE_BACKGROUND,
           page: METAMETRICS_BACKGROUND_PAGE_OBJECT,
@@ -781,7 +823,6 @@ describe('MetaMetricsController', function () {
       metaMetricsController.trackPage(
         {
           name: 'home',
-          params: null,
           actionId: DUMMY_ACTION_ID,
           environmentType: ENVIRONMENT_TYPE_BACKGROUND,
           page: METAMETRICS_BACKGROUND_PAGE_OBJECT,
@@ -795,10 +836,7 @@ describe('MetaMetricsController', function () {
           name: 'home',
           userId: TEST_META_METRICS_ID,
           context: DEFAULT_TEST_CONTEXT,
-          properties: {
-            params: null,
-            ...DEFAULT_PAGE_PROPERTIES,
-          },
+          properties: DEFAULT_PAGE_PROPERTIES,
           messageId: DUMMY_ACTION_ID,
           timestamp: new Date(),
         },
@@ -810,11 +848,13 @@ describe('MetaMetricsController', function () {
   describe('deterministic messageId', function () {
     it('should use the actionId as messageId when provided', function () {
       const metaMetricsController = getMetaMetricsController();
-      const spy = jest.spyOn(segment, 'track');
+      const spy = jest.spyOn(segmentMock, 'track');
       metaMetricsController.submitEvent({
         event: 'Fake Event',
         category: 'Unit Test',
-        properties: { foo: 'bar' },
+        properties: {
+          chain_id: 'bar',
+        },
         actionId: '0x001',
       });
       expect(spy).toHaveBeenCalledTimes(1);
@@ -824,8 +864,8 @@ describe('MetaMetricsController', function () {
           userId: TEST_META_METRICS_ID,
           context: DEFAULT_TEST_CONTEXT,
           properties: {
-            foo: 'bar',
             ...DEFAULT_EVENT_PROPERTIES,
+            chain_id: 'bar',
           },
           messageId: '0x001',
           timestamp: new Date(),
@@ -836,7 +876,7 @@ describe('MetaMetricsController', function () {
 
     it('should append 0x000 to the actionId of anonymized event when tracking sensitiveProperties', function () {
       const metaMetricsController = getMetaMetricsController();
-      const spy = jest.spyOn(segment, 'track');
+      const spy = jest.spyOn(segmentMock, 'track');
       metaMetricsController.submitEvent({
         event: 'Fake Event',
         category: 'Unit Test',
@@ -863,9 +903,7 @@ describe('MetaMetricsController', function () {
           event: 'Fake Event',
           userId: TEST_META_METRICS_ID,
           context: DEFAULT_TEST_CONTEXT,
-          properties: {
-            ...DEFAULT_EVENT_PROPERTIES,
-          },
+          properties: DEFAULT_EVENT_PROPERTIES,
           messageId: '0x001',
           timestamp: new Date(),
         },
@@ -875,11 +913,13 @@ describe('MetaMetricsController', function () {
 
     it('should use the uniqueIdentifier as messageId when provided', function () {
       const metaMetricsController = getMetaMetricsController();
-      const spy = jest.spyOn(segment, 'track');
+      const spy = jest.spyOn(segmentMock, 'track');
       metaMetricsController.submitEvent({
         event: 'Fake Event',
         category: 'Unit Test',
-        properties: { foo: 'bar' },
+        properties: {
+          chain_id: 'bar',
+        },
         uniqueIdentifier: 'transaction-submitted-0000',
       });
       expect(spy).toHaveBeenCalledTimes(1);
@@ -889,8 +929,8 @@ describe('MetaMetricsController', function () {
           userId: TEST_META_METRICS_ID,
           context: DEFAULT_TEST_CONTEXT,
           properties: {
-            foo: 'bar',
             ...DEFAULT_EVENT_PROPERTIES,
+            chain_id: 'bar',
           },
           messageId: 'transaction-submitted-0000',
           timestamp: new Date(),
@@ -901,7 +941,7 @@ describe('MetaMetricsController', function () {
 
     it('should append 0x000 to the uniqueIdentifier of anonymized event when tracking sensitiveProperties', function () {
       const metaMetricsController = getMetaMetricsController();
-      const spy = jest.spyOn(segment, 'track');
+      const spy = jest.spyOn(segmentMock, 'track');
       metaMetricsController.submitEvent({
         event: 'Fake Event',
         category: 'Unit Test',
@@ -940,11 +980,11 @@ describe('MetaMetricsController', function () {
 
     it('should combine the uniqueIdentifier and actionId as messageId when both provided', function () {
       const metaMetricsController = getMetaMetricsController();
-      const spy = jest.spyOn(segment, 'track');
+      const spy = jest.spyOn(segmentMock, 'track');
       metaMetricsController.submitEvent({
         event: 'Fake Event',
         category: 'Unit Test',
-        properties: { foo: 'bar' },
+        properties: { chain_id: 'bar' },
         actionId: '0x001',
         uniqueIdentifier: 'transaction-submitted-0000',
       });
@@ -955,8 +995,8 @@ describe('MetaMetricsController', function () {
           userId: TEST_META_METRICS_ID,
           context: DEFAULT_TEST_CONTEXT,
           properties: {
-            foo: 'bar',
             ...DEFAULT_EVENT_PROPERTIES,
+            chain_id: 'bar',
           },
           messageId: 'transaction-submitted-0000-0x001',
           timestamp: new Date(),
@@ -967,7 +1007,7 @@ describe('MetaMetricsController', function () {
 
     it('should append 0x000 to the combined uniqueIdentifier and actionId of anonymized event when tracking sensitiveProperties', function () {
       const metaMetricsController = getMetaMetricsController();
-      const spy = jest.spyOn(segment, 'track');
+      const spy = jest.spyOn(segmentMock, 'track');
       metaMetricsController.submitEvent({
         event: 'Fake Event',
         category: 'Unit Test',
@@ -1008,7 +1048,7 @@ describe('MetaMetricsController', function () {
 
   describe('_buildUserTraitsObject', function () {
     it('should return full user traits object on first call', function () {
-      const MOCK_ALL_TOKENS = {
+      const MOCK_ALL_TOKENS: TokensControllerState['allTokens'] = {
         [toHex(1)]: {
           '0x1235ce91d74254f29d4609f25932fe6d97bf4842': [
             {
@@ -1017,12 +1057,12 @@ describe('MetaMetricsController', function () {
             {
               address: '0xabc66500c84A76Ad7e9c93437bFc5Ac33E2DDaE9',
             },
-          ],
+          ] as Token[],
           '0xe364b0f9d1879e53e8183055c9d7dd2b7375d86b': [
             {
               address: '0xd2cea331e5f5d8ee9fb1055c297795937645de91',
             },
-          ],
+          ] as Token[],
         },
         [toHex(4)]: {
           '0x1235ce91d74254f29d4609f25932fe6d97bf4842': [
@@ -1032,15 +1072,26 @@ describe('MetaMetricsController', function () {
             {
               address: '0x12317F958D2ee523a2206206994597C13D831ec7',
             },
-          ],
+          ] as Token[],
         },
       };
 
       const metaMetricsController = getMetaMetricsController();
       const traits = metaMetricsController._buildUserTraitsObject({
         addressBook: {
-          [CHAIN_IDS.MAINNET]: [{ address: '0x' }],
-          [CHAIN_IDS.GOERLI]: [{ address: '0x' }, { address: '0x0' }],
+          [CHAIN_IDS.MAINNET]: {
+            '0x': {
+              address: '0x',
+            } as AddressBookEntry,
+          },
+          [CHAIN_IDS.GOERLI]: {
+            '0x': {
+              address: '0x',
+            } as AddressBookEntry,
+            '0x0': {
+              address: '0x0',
+            } as AddressBookEntry,
+          },
         },
         allNfts: {
           '0xac706cE8A9BF27Afecf080fB298d0ee13cfb978A': {
@@ -1057,7 +1108,7 @@ describe('MetaMetricsController', function () {
                 address: '0x7488d2ce5deb26db021285b50b661d655eb3d3d9',
                 tokenId: '99',
               },
-            ],
+            ] as Nft[],
           },
           '0xe04AB39684A24D8D4124b114F3bd6FBEB779cacA': {
             [toHex(59)]: [
@@ -1065,7 +1116,7 @@ describe('MetaMetricsController', function () {
                 address: '0x63d646bc7380562376d5de205123a57b1718184d',
                 tokenId: '14',
               },
-            ],
+            ] as Nft[],
           },
         },
         allTokens: MOCK_ALL_TOKENS,
@@ -1076,48 +1127,41 @@ describe('MetaMetricsController', function () {
         ),
         internalAccounts: {
           accounts: {
-            mock1: {},
-            mock2: {},
+            mock1: {} as InternalAccount,
+            mock2: {} as InternalAccount,
           },
+          selectedAccount: 'mock1',
         },
-        identities: [{}, {}],
-        ledgerTransportType: 'web-hid',
+        ledgerTransportType: LedgerTransportTypes.webhid,
         openSeaEnabled: true,
         useNftDetection: false,
         securityAlertsEnabled: true,
         theme: 'default',
         useTokenDetection: true,
-        showNativeTokenAsMainBalance: true,
+        ShowNativeTokenAsMainBalance: true,
         security_providers: [],
         names: {
           [NameType.ETHEREUM_ADDRESS]: {
             '0x123': {
               '0x1': {
                 name: 'Test 1',
-              },
+              } as NameEntry,
               '0x2': {
                 name: 'Test 2',
-              },
+              } as NameEntry,
               '0x3': {
                 name: null,
-              },
+              } as NameEntry,
             },
             '0x456': {
               '0x1': {
                 name: 'Test 3',
-              },
+              } as NameEntry,
             },
             '0x789': {
               '0x1': {
                 name: null,
-              },
-            },
-          },
-          otherType: {
-            otherValue: {
-              otherVariation: {
-                name: 'Test 4',
-              },
+              } as NameEntry,
             },
           },
         },
@@ -1126,12 +1170,19 @@ describe('MetaMetricsController', function () {
           order: 'dsc',
           sortCallback: 'stringNumeric',
         },
+        participateInMetaMetrics: true,
+        currentCurrency: 'usd',
+        dataCollectionForMarketing: false,
+        ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
+        custodyAccountDetails: {},
+        ///: END:ONLY_INCLUDE_IF
       });
 
       expect(traits).toStrictEqual({
         [MetaMetricsUserTrait.AddressBookEntries]: 3,
         [MetaMetricsUserTrait.InstallDateExt]: '',
-        [MetaMetricsUserTrait.LedgerConnectionType]: 'web-hid',
+        [MetaMetricsUserTrait.LedgerConnectionType]:
+          LedgerTransportTypes.webhid,
         [MetaMetricsUserTrait.NetworksAdded]: [
           CHAIN_IDS.MAINNET,
           CHAIN_IDS.GOERLI,
@@ -1143,12 +1194,15 @@ describe('MetaMetricsController', function () {
         [MetaMetricsUserTrait.NumberOfNftCollections]: 3,
         [MetaMetricsUserTrait.NumberOfNfts]: 4,
         [MetaMetricsUserTrait.NumberOfTokens]: 5,
-        [MetaMetricsUserTrait.OpenseaApiEnabled]: true,
+        [MetaMetricsUserTrait.OpenSeaApiEnabled]: true,
         [MetaMetricsUserTrait.ThreeBoxEnabled]: false,
         [MetaMetricsUserTrait.Theme]: 'default',
         [MetaMetricsUserTrait.TokenDetectionEnabled]: true,
         [MetaMetricsUserTrait.ShowNativeTokenAsMainBalance]: true,
+        [MetaMetricsUserTrait.CurrentCurrency]: 'usd',
+        [MetaMetricsUserTrait.HasMarketingConsent]: false,
         [MetaMetricsUserTrait.SecurityProviders]: ['blockaid'],
+        [MetaMetricsUserTrait.IsMetricsOptedIn]: true,
         ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
         [MetaMetricsUserTrait.MmiExtensionId]: 'testid',
         [MetaMetricsUserTrait.MmiAccountAddress]: null,
@@ -1169,20 +1223,31 @@ describe('MetaMetricsController', function () {
       );
       metaMetricsController._buildUserTraitsObject({
         addressBook: {
-          [CHAIN_IDS.MAINNET]: [{ address: '0x' }],
-          [CHAIN_IDS.GOERLI]: [{ address: '0x' }, { address: '0x0' }],
+          [CHAIN_IDS.MAINNET]: {
+            '0x': {
+              address: '0x',
+            } as AddressBookEntry,
+          },
+          [CHAIN_IDS.GOERLI]: {
+            '0x': {
+              address: '0x',
+            } as AddressBookEntry,
+            '0x0': {
+              address: '0x0',
+            } as AddressBookEntry,
+          },
         },
         allTokens: {},
         ...networkState,
-        ledgerTransportType: 'web-hid',
+        ledgerTransportType: LedgerTransportTypes.webhid,
         openSeaEnabled: true,
         internalAccounts: {
           accounts: {
-            mock1: {},
-            mock2: {},
+            mock1: {} as InternalAccount,
+            mock2: {} as InternalAccount,
           },
+          selectedAccount: 'mock1',
         },
-        identities: [{}, {}],
         useNftDetection: false,
         theme: 'default',
         useTokenDetection: true,
@@ -1191,30 +1256,56 @@ describe('MetaMetricsController', function () {
           order: 'dsc',
           sortCallback: 'stringNumeric',
         },
-        showNativeTokenAsMainBalance: true,
+        ShowNativeTokenAsMainBalance: true,
+        allNfts: {},
+        participateInMetaMetrics: true,
+        dataCollectionForMarketing: false,
+        securityAlertsEnabled: true,
+        names: {
+          ethereumAddress: {},
+        },
+        security_providers: ['blockaid'],
+        currentCurrency: 'usd',
+        ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
+        custodyAccountDetails: {},
+        ///: END:ONLY_INCLUDE_IF
       });
 
       const updatedTraits = metaMetricsController._buildUserTraitsObject({
         addressBook: {
-          [CHAIN_IDS.MAINNET]: [{ address: '0x' }, { address: '0x1' }],
-          [CHAIN_IDS.GOERLI]: [{ address: '0x' }, { address: '0x0' }],
+          [CHAIN_IDS.MAINNET]: {
+            '0x': {
+              address: '0x',
+            } as AddressBookEntry,
+            '0x1': {
+              address: '0x1',
+            } as AddressBookEntry,
+          },
+          [CHAIN_IDS.GOERLI]: {
+            '0x': {
+              address: '0x',
+            } as AddressBookEntry,
+            '0x0': {
+              address: '0x0',
+            } as AddressBookEntry,
+          },
         },
         allTokens: {
           [toHex(1)]: {
-            '0xabcde': [{ '0x12345': { address: '0xtestAddress' } }],
+            '0xabcde': [{ address: '0xtestAddress' } as Token],
           },
         },
         ...networkState,
-        ledgerTransportType: 'web-hid',
+        ledgerTransportType: LedgerTransportTypes.webhid,
         openSeaEnabled: false,
         internalAccounts: {
           accounts: {
-            mock1: {},
-            mock2: {},
-            mock3: {},
+            mock1: {} as InternalAccount,
+            mock2: {} as InternalAccount,
+            mock3: {} as InternalAccount,
           },
+          selectedAccount: 'mock1',
         },
-        identities: [{}, {}, {}],
         useNftDetection: false,
         theme: 'default',
         useTokenDetection: true,
@@ -1223,14 +1314,26 @@ describe('MetaMetricsController', function () {
           order: 'dsc',
           sortCallback: 'stringNumeric',
         },
-        showNativeTokenAsMainBalance: false,
+        ShowNativeTokenAsMainBalance: false,
+        names: {
+          ethereumAddress: {},
+        },
+        security_providers: ['blockaid'],
+        currentCurrency: 'usd',
+        allNfts: {},
+        participateInMetaMetrics: true,
+        dataCollectionForMarketing: false,
+        securityAlertsEnabled: true,
+        ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
+        custodyAccountDetails: {},
+        ///: END:ONLY_INCLUDE_IF
       });
 
       expect(updatedTraits).toStrictEqual({
         [MetaMetricsUserTrait.AddressBookEntries]: 4,
         [MetaMetricsUserTrait.NumberOfAccounts]: 3,
         [MetaMetricsUserTrait.NumberOfTokens]: 1,
-        [MetaMetricsUserTrait.OpenseaApiEnabled]: false,
+        [MetaMetricsUserTrait.OpenSeaApiEnabled]: false,
         [MetaMetricsUserTrait.ShowNativeTokenAsMainBalance]: false,
       });
     });
@@ -1243,20 +1346,31 @@ describe('MetaMetricsController', function () {
       );
       metaMetricsController._buildUserTraitsObject({
         addressBook: {
-          [CHAIN_IDS.MAINNET]: [{ address: '0x' }],
-          [CHAIN_IDS.GOERLI]: [{ address: '0x' }, { address: '0x0' }],
+          [CHAIN_IDS.MAINNET]: {
+            '0x': {
+              address: '0x',
+            } as AddressBookEntry,
+          },
+          [CHAIN_IDS.GOERLI]: {
+            '0x': {
+              address: '0x',
+            } as AddressBookEntry,
+            '0x0': {
+              address: '0x0',
+            } as AddressBookEntry,
+          },
         },
         allTokens: {},
         ...networkState,
-        ledgerTransportType: 'web-hid',
+        ledgerTransportType: LedgerTransportTypes.webhid,
         openSeaEnabled: true,
         internalAccounts: {
           accounts: {
-            mock1: {},
-            mock2: {},
+            mock1: {} as InternalAccount,
+            mock2: {} as InternalAccount,
           },
+          selectedAccount: 'mock1',
         },
-        identities: [{}, {}],
         useNftDetection: true,
         theme: 'default',
         useTokenDetection: true,
@@ -1265,25 +1379,46 @@ describe('MetaMetricsController', function () {
           order: 'dsc',
           sortCallback: 'stringNumeric',
         },
-        showNativeTokenAsMainBalance: true,
+        ShowNativeTokenAsMainBalance: true,
+        allNfts: {},
+        names: {
+          ethereumAddress: {},
+        },
+        participateInMetaMetrics: true,
+        dataCollectionForMarketing: false,
+        securityAlertsEnabled: true,
+        security_providers: ['blockaid'],
+        currentCurrency: 'usd',
+        ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
+        custodyAccountDetails: {},
+        ///: END:ONLY_INCLUDE_IF
       });
 
       const updatedTraits = metaMetricsController._buildUserTraitsObject({
         addressBook: {
-          [CHAIN_IDS.MAINNET]: [{ address: '0x' }],
-          [CHAIN_IDS.GOERLI]: [{ address: '0x' }, { address: '0x0' }],
+          [CHAIN_IDS.MAINNET]: {
+            '0x': {
+              address: '0x',
+            } as AddressBookEntry,
+          },
+          [CHAIN_IDS.GOERLI]: {
+            '0x': {
+              address: '0x',
+            } as AddressBookEntry,
+            '0x0': { address: '0x0' } as AddressBookEntry,
+          },
         },
         allTokens: {},
         ...networkState,
-        ledgerTransportType: 'web-hid',
+        ledgerTransportType: LedgerTransportTypes.webhid,
         openSeaEnabled: true,
         internalAccounts: {
           accounts: {
-            mock1: {},
-            mock2: {},
+            mock1: {} as InternalAccount,
+            mock2: {} as InternalAccount,
           },
+          selectedAccount: 'mock1',
         },
-        identities: [{}, {}],
         useNftDetection: true,
         theme: 'default',
         useTokenDetection: true,
@@ -1292,7 +1427,19 @@ describe('MetaMetricsController', function () {
           order: 'dsc',
           sortCallback: 'stringNumeric',
         },
-        showNativeTokenAsMainBalance: true,
+        ShowNativeTokenAsMainBalance: true,
+        allNfts: {},
+        participateInMetaMetrics: true,
+        dataCollectionForMarketing: false,
+        names: {
+          ethereumAddress: {},
+        },
+        securityAlertsEnabled: true,
+        security_providers: ['blockaid'],
+        currentCurrency: 'usd',
+        ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
+        custodyAccountDetails: {},
+        ///: END:ONLY_INCLUDE_IF
       });
       expect(updatedTraits).toStrictEqual(null);
     });
@@ -1301,23 +1448,24 @@ describe('MetaMetricsController', function () {
   describe('submitting segmentApiCalls to segment SDK', function () {
     it('should add event to store when submitting to SDK', function () {
       const metaMetricsController = getMetaMetricsController({});
-      metaMetricsController.trackPage({}, { isOptIn: true });
+      metaMetricsController.trackPage({}, { isOptInPath: true });
       const { segmentApiCalls } = metaMetricsController.store.getState();
       expect(Object.keys(segmentApiCalls).length > 0).toStrictEqual(true);
     });
 
     it('should remove event from store when callback is invoked', function () {
-      const segmentInstance = createSegmentMock(2, 10000);
-      const stubFn = (_, cb) => {
+      const segmentInstance = createSegmentMock(2);
+      const stubFn = (...args: unknown[]) => {
+        const cb = args[1] as () => void;
         cb();
       };
       jest.spyOn(segmentInstance, 'track').mockImplementation(stubFn);
       jest.spyOn(segmentInstance, 'page').mockImplementation(stubFn);
 
       const metaMetricsController = getMetaMetricsController({
-        segmentInstance,
+        segment: segmentInstance,
       });
-      metaMetricsController.trackPage({}, { isOptIn: true });
+      metaMetricsController.trackPage({}, { isOptInPath: true });
       const { segmentApiCalls } = metaMetricsController.store.getState();
       expect(Object.keys(segmentApiCalls).length === 0).toStrictEqual(true);
     });
@@ -1333,13 +1481,13 @@ describe('MetaMetricsController', function () {
       expect(
         metaMetricsController.state.marketingCampaignCookieId,
       ).toStrictEqual(TEST_GA_COOKIE_ID);
-      const spy = jest.spyOn(segment, 'track');
+      const spy = jest.spyOn(segmentMock, 'track');
       metaMetricsController.submitEvent(
         {
           event: 'Fake Event',
           category: 'Unit Test',
           properties: {
-            test: 1,
+            chain_id: '1',
           },
         },
         { isOptIn: true },
@@ -1354,8 +1502,8 @@ describe('MetaMetricsController', function () {
             marketingCampaignCookieId: TEST_GA_COOKIE_ID,
           },
           properties: {
-            test: 1,
             ...DEFAULT_EVENT_PROPERTIES,
+            chain_id: '1',
           },
           messageId: Utils.generateRandomId(),
           timestamp: new Date(),
@@ -1383,7 +1531,7 @@ describe('MetaMetricsController', function () {
   });
   afterEach(function () {
     // flush the queues manually after each test
-    segment.flush();
+    segmentMock.flush();
     jest.useRealTimers();
     jest.restoreAllMocks();
   });
