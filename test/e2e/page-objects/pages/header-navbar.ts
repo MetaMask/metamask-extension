@@ -80,7 +80,14 @@ class HeaderNavbar {
     console.log(`Switch to network ${networkName} in header bar`);
     await this.driver.clickElement(this.switchNetworkDropDownButton);
     await this.driver.waitForSelector(this.selectNetworkMessage);
-    await this.driver.clickElement(`[data-testid="${networkName}"]`);
+    await this.driver.clickElementAndWaitToDisappear(
+      `[data-testid="${networkName}"]`,
+    );
+    // check the toaster message is displayed and the network is correctly selected
+    await this.driver.waitForSelector({
+      tag: 'h6',
+      text: `“${networkName}” was successfully added!`,
+    });
     await this.driver.waitForSelector(
       `${this.switchNetworkDropDownButton}[aria-label="Network Menu ${networkName}"]`,
     );
