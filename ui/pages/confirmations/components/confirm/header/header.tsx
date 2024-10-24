@@ -3,6 +3,7 @@ import {
   TransactionType,
 } from '@metamask/transaction-controller';
 import React from 'react';
+import { ORIGIN_METAMASK } from '../../../../../../shared/constants/app';
 import {
   AvatarNetwork,
   AvatarNetworkSize,
@@ -88,7 +89,7 @@ const Header = () => {
     currentConfirmation?.type &&
     CONFIRMATIONS_WITH_NEW_HEADER.includes(currentConfirmation.type);
   const isWalletInitiated =
-    (currentConfirmation as TransactionMeta)?.origin === 'metamask';
+    (currentConfirmation as TransactionMeta)?.origin === ORIGIN_METAMASK;
   if (isConfirmationWithNewHeader && isWalletInitiated) {
     return <WalletInitiatedHeader />;
   } else if (isConfirmationWithNewHeader && !isWalletInitiated) {
