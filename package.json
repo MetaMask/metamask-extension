@@ -269,6 +269,7 @@
     "@metamask/network-controller@npm:^17.0.0": "patch:@metamask/network-controller@npm%3A21.0.0#~/.yarn/patches/@metamask-network-controller-npm-21.0.0-559aa8e395.patch",
     "@metamask/network-controller@npm:^19.0.0": "patch:@metamask/network-controller@npm%3A21.0.0#~/.yarn/patches/@metamask-network-controller-npm-21.0.0-559aa8e395.patch",
     "@metamask/network-controller@npm:^20.0.0": "patch:@metamask/network-controller@npm%3A21.0.0#~/.yarn/patches/@metamask-network-controller-npm-21.0.0-559aa8e395.patch",
+    "@metamask/assets-controllers": "file:../core/packages/assets-controllers",
     "path-to-regexp": "1.9.0"
   },
   "dependencies": {
