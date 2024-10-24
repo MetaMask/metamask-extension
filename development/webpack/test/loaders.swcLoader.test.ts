@@ -122,6 +122,7 @@ describe('swcLoader', () => {
           syntax,
           [syntax === 'typescript' ? 'tsx' : 'jsx']: enableJsx,
           importAssertions: true,
+          importAttributes: true,
         });
         assert.deepStrictEqual(loader.options.jsc.transform.react, {
           development: isDevelopment,
