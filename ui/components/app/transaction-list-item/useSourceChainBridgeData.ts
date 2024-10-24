@@ -97,20 +97,25 @@ export default function useSourceChainBridgeData({
     : undefined;
 
   // By complete, this means BOTH source and dest tx are confirmed
-  const isBridgeComplete =
-    bridgeHistoryItem &&
-    bridgeHistoryItem.status &&
-    bridgeHistoryItem.status.srcChain.txHash &&
-    bridgeHistoryItem.status.destChain?.txHash;
+  const isBridgeComplete = bridgeHistoryItem
+    ? Boolean(
+        bridgeHistoryItem &&
+          bridgeHistoryItem.status &&
+          bridgeHistoryItem.status.srcChain.txHash &&
+          bridgeHistoryItem.status.destChain?.txHash,
+      )
+    : null;
 
   const showSwitchToDestChain = switchToDestChain && !isBridgeComplete;
 
-  if (bridgeHistoryItem && !isBridgeComplete) {
+  if (bridgeHistoryItem && isBridgeComplete === false) {
     let logTitle;
     if (bridgeHistoryItem?.status) {
-      logTitle = 'transactionGroup BRIDGE STATUS';
+      logTitle =
+        'transactionGroup BRIDGE STATUS' +
+        transactionGroup.initialTransaction.hash;
     } else {
-      logTitle = 'transactionGroup';
+      logTitle = 'transactionGroup' + transactionGroup.initialTransaction.hash;
     }
     console.log(logTitle, {
       transactionGroup,
@@ -120,6 +125,7 @@ export default function useSourceChainBridgeData({
       hexDestChainId,
       networkConfigurationsByChainId,
       networkConfiguration,
+      isBridgeComplete,
     });
   }
 
