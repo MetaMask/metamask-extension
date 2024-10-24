@@ -45,7 +45,7 @@ import { getEthUsdtResetData, isEthUsdt } from '../../pages/bridge/bridge.util';
 import { ETH_USDT_ADDRESS } from '../../../shared/constants/bridge';
 import BridgeController from '../../../app/scripts/controllers/bridge/bridge-controller';
 import { startPollingForBridgeTxStatus } from '../bridge-status/actions';
-import { bridgeSlice } from './bridge';
+import { bridgeSlice,setDestTokenExchangeRates } from './bridge';
 import { BridgeAppState } from './selectors';
 
 const {
@@ -62,6 +62,7 @@ export {
   setToToken,
   setFromToken,
   setFromTokenInputValue,
+  setDestTokenExchangeRates,
 };
 
 const callBridgeControllerMethod = <T>(

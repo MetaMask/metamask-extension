@@ -2,7 +2,9 @@ import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import classnames from 'classnames';
 import { debounce } from 'lodash';
+import { Hex } from '@metamask/utils';
 import {
+  setDestTokenExchangeRates,
   setFromChain,
   setFromToken,
   setFromTokenInputValue,
@@ -42,12 +44,16 @@ import { calcTokenValue } from '../../../../shared/lib/swaps-utils';
 import { BridgeQuoteCard } from '../quotes/bridge-quote-card';
 import { isValidQuoteRequest } from '../utils/quote';
 import { getProviderConfig } from '../../../ducks/metamask/metamask';
+import { getCurrentCurrency } from '../../../selectors';
+import { SECOND } from '../../../../shared/constants/time';
 import { BridgeInputGroup } from './bridge-input-group';
 
 const PrepareBridgePage = () => {
   const dispatch = useDispatch();
 
   const t = useI18nContext();
+
+  const currentCurrency = useSelector(getCurrentCurrency);
 
   const fromToken = useSelector(getFromToken);
   const fromTokens = useSelector(getFromTokens);
@@ -122,6 +128,18 @@ const PrepareBridgePage = () => {
     debouncedUpdateQuoteRequestInController(quoteParams);
   }, Object.values(quoteParams));
 
+  const debouncedFetchToExchangeRate = debounce(
+    async (toChainId: Hex, toTokenAddress: string) =>
+      dispatch(
+        setDestTokenExchangeRates({
+          chainId: toChainId,
+          tokenAddress: toTokenAddress,
+          currency: currentCurrency,
+        }),
+      ),
+    SECOND,
+  );
+
   return (
     <div className="prepare-bridge-page">
       <Box className="prepare-bridge-page__content">
@@ -189,6 +207,12 @@ const PrepareBridgePage = () => {
               fromChain?.chainId && dispatch(setToChain(fromChain.chainId));
               fromChain?.chainId && dispatch(setToChainId(fromChain.chainId));
               dispatch(setToToken(fromToken));
+              fromChain?.chainId &&
+                fromToken?.address &&
+                debouncedFetchToExchangeRate(
+                  fromChain.chainId,
+                  fromToken.address,
+                );
             }}
           />
         </Box>
@@ -197,7 +221,12 @@ const PrepareBridgePage = () => {
           className="bridge-box"
           header={t('bridgeTo')}
           token={toToken}
-          onAssetChange={(token) => dispatch(setToToken(token))}
+          onAssetChange={(token) => {
+            dispatch(setToToken(token));
+            toChain?.chainId &&
+              token?.address &&
+              debouncedFetchToExchangeRate(toChain.chainId, token.address);
+          }}
           networkProps={{
             network: toChain,
             networks: toChains,
