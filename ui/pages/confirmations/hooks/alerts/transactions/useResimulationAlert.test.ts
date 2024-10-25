@@ -29,7 +29,7 @@ const TRANSACTION_META_MOCK = {
   },
   time: new Date().getTime() - 10000,
   simulationData: {
-    isReSimulatedDueToSecurity: true,
+    isUpdatedAfterSecurityCheck: true,
   },
 } as TransactionMeta;
 
@@ -82,11 +82,11 @@ describe('useResimulationAlert', () => {
     ).toEqual([]);
   });
 
-  it('returns no alerts if isReSimulatedDueToSecurity is false', () => {
+  it('returns no alerts if isUpdatedAfterSecurityCheck is false', () => {
     const notResimulatedConfirmation = {
       ...TRANSACTION_META_MOCK,
       simulationData: {
-        isReSimulatedDueToSecurity: false,
+        isUpdatedAfterSecurityCheck: false,
       },
     };
     expect(
@@ -96,11 +96,11 @@ describe('useResimulationAlert', () => {
     ).toEqual([]);
   });
 
-  it('returns alert if isReSimulatedDueToSecurity is true', () => {
+  it('returns alert if isUpdatedAfterSecurityCheck is true', () => {
     const resimulatedConfirmation = {
       ...CONFIRMATION_MOCK,
       simulationData: {
-        isReSimulatedDueToSecurity: true,
+        isUpdatedAfterSecurityCheck: true,
       },
     };
     const alerts = runHook({

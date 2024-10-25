@@ -15,10 +15,10 @@ export function useResimulationAlert(): Alert[] {
   }
 
   const { simulationData } = currentConfirmation;
-  const { isReSimulatedDueToSecurity } = simulationData;
+  const { isUpdatedAfterSecurityCheck } = simulationData;
 
   return useMemo(() => {
-    if (!isReSimulatedDueToSecurity) {
+    if (!isUpdatedAfterSecurityCheck) {
       return [];
     }
 
@@ -33,5 +33,5 @@ export function useResimulationAlert(): Alert[] {
         severity: Severity.Danger,
       },
     ];
-  }, [isReSimulatedDueToSecurity]);
+  }, [isUpdatedAfterSecurityCheck]);
 }
