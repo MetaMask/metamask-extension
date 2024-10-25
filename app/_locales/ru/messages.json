@@ -4543,17 +4543,11 @@
   "signingInWith": {
     "message": "Вход с помощью"
   },
-  "simulationDetailsFailed": {
-    "message": "Не удалось загрузить прогноз."
-  },
   "simulationDetailsFiatNotAvailable": {
     "message": "Недоступно"
   },
   "simulationDetailsIncomingHeading": {
     "message": "Вы получаете"
-  },
-  "simulationDetailsNoBalanceChanges": {
-    "message": "Никаких изменений в вашем кошельке не прогнозируется"
   },
   "simulationDetailsOutgoingHeading": {
     "message": "Вы отправляете"
@@ -4591,9 +4585,6 @@
   },
   "siweResources": {
     "message": "Ресурсы"
-  },
-  "siweSignatureSimulationDetailInfo": {
-    "message": "Вы входите на сайт, и в вашем счете не происходит никаких прогнозируемых изменений."
   },
   "siweURI": {
     "message": "URL-адрес"

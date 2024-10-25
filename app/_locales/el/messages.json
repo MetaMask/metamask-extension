@@ -4543,17 +4543,11 @@
   "signingInWith": {
     "message": "Σύνδεση με"
   },
-  "simulationDetailsFailed": {
-    "message": "Υπήρξε σφάλμα στη φόρτωση της εκτίμησής σας."
-  },
   "simulationDetailsFiatNotAvailable": {
     "message": "Μη διαθέσιμο"
   },
   "simulationDetailsIncomingHeading": {
     "message": "Λαμβάνετε"
-  },
-  "simulationDetailsNoBalanceChanges": {
-    "message": "Δεν προβλέπονται αλλαγές για το πορτοφόλι σας"
   },
   "simulationDetailsOutgoingHeading": {
     "message": "Στέλνετε"
@@ -4591,9 +4585,6 @@
   },
   "siweResources": {
     "message": "Πόροι"
-  },
-  "siweSignatureSimulationDetailInfo": {
-    "message": "Συνδέεστε σε έναν ιστότοπο και δεν προβλέπονται αλλαγές στον λογαριασμό σας."
   },
   "siweURI": {
     "message": "Διεύθυνση URL"

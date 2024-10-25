@@ -4543,17 +4543,11 @@
   "signingInWith": {
     "message": "Đăng nhập bằng"
   },
-  "simulationDetailsFailed": {
-    "message": "Đã xảy ra lỗi khi tải kết quả ước tính."
-  },
   "simulationDetailsFiatNotAvailable": {
     "message": "Không có sẵn"
   },
   "simulationDetailsIncomingHeading": {
     "message": "Bạn nhận được"
-  },
-  "simulationDetailsNoBalanceChanges": {
-    "message": "Ví của bạn dự kiến không có thay đổi nào"
   },
   "simulationDetailsOutgoingHeading": {
     "message": "Bạn gửi"
@@ -4591,9 +4585,6 @@
   },
   "siweResources": {
     "message": "Tài nguyên"
-  },
-  "siweSignatureSimulationDetailInfo": {
-    "message": "Bạn đang đăng nhập vào một trang web và dự kiến không có thay đổi nào đối với tài khoản của bạn."
   },
   "siweURI": {
     "message": "URL"

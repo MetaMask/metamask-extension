@@ -4543,17 +4543,11 @@
   "signingInWith": {
     "message": "サインイン方法:"
   },
-  "simulationDetailsFailed": {
-    "message": "予測結果の読み込み中にエラーが発生しました。"
-  },
   "simulationDetailsFiatNotAvailable": {
     "message": "利用できません"
   },
   "simulationDetailsIncomingHeading": {
     "message": "受取額"
-  },
-  "simulationDetailsNoBalanceChanges": {
-    "message": "ウォレット残高の増減は予測されていません"
   },
   "simulationDetailsOutgoingHeading": {
     "message": "送金額"
@@ -4591,9 +4585,6 @@
   },
   "siweResources": {
     "message": "リソース"
-  },
-  "siweSignatureSimulationDetailInfo": {
-    "message": "サイトにサインインしようとしていて、予想されるアカウントの変更はありません。"
   },
   "siweURI": {
     "message": "URL"

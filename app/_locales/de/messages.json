@@ -4543,17 +4543,11 @@
   "signingInWith": {
     "message": "Anmelden mit"
   },
-  "simulationDetailsFailed": {
-    "message": "Es ist ein Fehler beim Laden Ihrer Schätzung aufgetreten."
-  },
   "simulationDetailsFiatNotAvailable": {
     "message": "Nicht verfügbar"
   },
   "simulationDetailsIncomingHeading": {
     "message": "Sie erhalten"
-  },
-  "simulationDetailsNoBalanceChanges": {
-    "message": "Keine Änderungen für Ihre Wallet prognostiziert."
   },
   "simulationDetailsOutgoingHeading": {
     "message": "Sie senden"
@@ -4591,9 +4585,6 @@
   },
   "siweResources": {
     "message": "Ressourcen"
-  },
-  "siweSignatureSimulationDetailInfo": {
-    "message": "Sie melden sich bei einer Website an und es sind keine Änderungen an Ihrem Konto vorgesehen."
   },
   "siweURI": {
     "message": "URL"

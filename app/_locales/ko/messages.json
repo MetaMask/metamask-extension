@@ -4543,17 +4543,11 @@
   "signingInWith": {
     "message": "다음으로 로그인:"
   },
-  "simulationDetailsFailed": {
-    "message": "추정치를 불러오는 동안 오류가 발생했습니다."
-  },
   "simulationDetailsFiatNotAvailable": {
     "message": "이용할 수 없음"
   },
   "simulationDetailsIncomingHeading": {
     "message": "받음:"
-  },
-  "simulationDetailsNoBalanceChanges": {
-    "message": "지갑에 예상 변동 사항 없음"
   },
   "simulationDetailsOutgoingHeading": {
     "message": "보냄:"
@@ -4591,9 +4585,6 @@
   },
   "siweResources": {
     "message": "리소스"
-  },
-  "siweSignatureSimulationDetailInfo": {
-    "message": "사이트에 로그인 중이며 계정에 예상되는 변경 사항이 없습니다."
   },
   "siweURI": {
     "message": "URL"
