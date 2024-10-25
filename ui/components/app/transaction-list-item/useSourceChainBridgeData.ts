@@ -1,14 +1,14 @@
 import { useSelector, useDispatch } from 'react-redux';
+import { Hex } from '@metamask/utils';
+import { TransactionMeta } from '@metamask/transaction-controller';
+import { useCallback, useContext } from 'react';
 import { Numeric } from '../../../../shared/modules/Numeric';
-import { selectBridgeTxHistory } from '../../../ducks/bridge-status/selectors';
+import { selectBridgeHistoryForAccount } from '../../../ducks/bridge-status/selectors';
 import {
   getNetworkConfigurationsByChainId,
   getOriginOfCurrentTab,
   getPermittedAccountsForSelectedTab,
 } from '../../../selectors';
-import { Hex } from '@metamask/utils';
-import { TransactionMeta } from '@metamask/transaction-controller';
-import { useCallback, useContext } from 'react';
 import {
   setActiveNetwork,
   setNextNonce,
@@ -39,7 +39,7 @@ export default function useSourceChainBridgeData({
     getNetworkConfigurationsByChainId,
   );
 
-  const bridgeHistory = useSelector(selectBridgeTxHistory);
+  const bridgeHistory = useSelector(selectBridgeHistoryForAccount);
   const txHash = transactionGroup.initialTransaction.hash;
 
   // If this tx is a bridge tx, it will have a bridgeHistoryItem
@@ -57,7 +57,9 @@ export default function useSourceChainBridgeData({
 
   // Most logic from ui/components/multichain/network-list-menu/network-list-menu.tsx
   const switchToDestChainCallback = useCallback(() => {
-    if (!networkConfiguration) return;
+    if (!networkConfiguration) {
+      return;
+    }
 
     const { networkClientId } =
       networkConfiguration.rpcEndpoints[
@@ -99,9 +101,7 @@ export default function useSourceChainBridgeData({
   // By complete, this means BOTH source and dest tx are confirmed
   const isBridgeComplete = bridgeHistoryItem
     ? Boolean(
-        bridgeHistoryItem &&
-          bridgeHistoryItem.status &&
-          bridgeHistoryItem.status.srcChain.txHash &&
+        bridgeHistoryItem?.status?.srcChain.txHash &&
           bridgeHistoryItem.status.destChain?.txHash,
       )
     : null;
@@ -111,11 +111,9 @@ export default function useSourceChainBridgeData({
   if (bridgeHistoryItem && isBridgeComplete === false) {
     let logTitle;
     if (bridgeHistoryItem?.status) {
-      logTitle =
-        'transactionGroup BRIDGE STATUS' +
-        transactionGroup.initialTransaction.hash;
+      logTitle = `transactionGroup BRIDGE STATUS${transactionGroup.initialTransaction.hash}`;
     } else {
-      logTitle = 'transactionGroup' + transactionGroup.initialTransaction.hash;
+      logTitle = `transactionGroup${transactionGroup.initialTransaction.hash}`;
     }
     console.log(logTitle, {
       transactionGroup,
