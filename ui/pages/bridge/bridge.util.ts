@@ -159,9 +159,18 @@ export async function fetchBridgeTokens(
 export async function fetchBridgeQuotes(
   request: QuoteRequest,
 ): Promise<QuoteResponse[]> {
-  const url = `${BRIDGE_API_BASE_URL}/getQuote?${Object.entries(request)
-    .map(([k, v]) => `${k}=${v}`)
-    .join('&')}`;
+  const queryParams = new URLSearchParams({
+    walletAddress: request.walletAddress,
+    srcChainId: request.srcChainId.toString(),
+    destChainId: request.destChainId.toString(),
+    srcTokenAddress: request.srcTokenAddress,
+    destTokenAddress: request.destTokenAddress,
+    srcTokenAmount: request.srcTokenAmount,
+    slippage: request.slippage.toString(),
+    insufficientBal: request.insufficientBal ? 'true' : 'false',
+    resetApproval: request.resetApproval ? 'true' : 'false',
+  });
+  const url = `${BRIDGE_API_BASE_URL}/getQuote?${queryParams}`;
   const quotes = await fetchWithCache({
     url,
     fetchOptions: { method: 'GET', headers: CLIENT_ID_HEADER },
