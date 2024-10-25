@@ -119,6 +119,7 @@ describe('Confirmation Signature - NFT Permit @no-mmi', function (this: Suite) {
 });
 
 async function assertInfoValues(driver: Driver) {
+  await driver.clickElement('[data-testid="sectionCollapseButton"]');
   const origin = driver.findElement({ text: DAPP_HOST_ADDRESS });
   const contractPetName = driver.findElement({
     css: '.name__value',
