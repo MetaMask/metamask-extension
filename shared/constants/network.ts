@@ -940,6 +940,20 @@ export const IPFS_DEFAULT_GATEWAY_URL = 'dweb.link';
 
 export const FEATURED_RPCS: AddNetworkFields[] = [
   {
+    chainId: CHAIN_IDS.LINEA_MAINNET,
+    name: LINEA_MAINNET_DISPLAY_NAME,
+    nativeCurrency: CURRENCY_SYMBOLS.ETH,
+    rpcEndpoints: [
+      {
+        url: `https://linea-mainnet.infura.io/v3/${infuraProjectId}`,
+        type: RpcEndpointType.Custom,
+      },
+    ],
+    defaultRpcEndpointIndex: 0,
+    blockExplorerUrls: ['https://lineascan.build/'],
+    defaultBlockExplorerUrlIndex: 0,
+  },
+  {
     chainId: CHAIN_IDS.ARBITRUM,
     name: ARBITRUM_DISPLAY_NAME,
     nativeCurrency: CURRENCY_SYMBOLS.ARBITRUM,
