@@ -104,7 +104,6 @@ import {
 import { parseSmartTransactionsError } from '../pages/swaps/swaps.util';
 import { isEqualCaseInsensitive } from '../../shared/modules/string-utils';
 import { getSmartTransactionsOptInStatusInternal } from '../../shared/modules/selectors';
-import { NOTIFICATIONS_EXPIRATION_DELAY } from '../helpers/constants/notifications';
 import {
   fetchLocale,
   loadRelativeTimeFormatLocaleData,
@@ -127,7 +126,6 @@ import {
   CaveatTypes,
   EndowmentTypes,
 } from '../../shared/constants/permissions';
-import { getMetamaskNotifications } from '../selectors/metamask-notifications/metamask-notifications';
 import * as actionConstants from './actionConstants';
 ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
 import { updateCustodyState } from './institutional/institution-actions';
