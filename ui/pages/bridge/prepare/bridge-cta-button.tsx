@@ -5,7 +5,6 @@ import {
   getFromAmount,
   getFromChain,
   getFromToken,
-  getToAmount,
   getToChain,
   getToToken,
   getBridgeQuotes,
@@ -24,20 +23,13 @@ export const BridgeCTAButton = () => {
   const toChain = useSelector(getToChain);
 
   const fromAmount = useSelector(getFromAmount);
-  const toAmount = useSelector(getToAmount);
 
   const { isLoading, activeQuote } = useSelector(getBridgeQuotes);
 
   const { submitBridgeTransaction } = useSubmitBridgeTransaction();
 
   const isTxSubmittable =
-    fromToken &&
-    toToken &&
-    fromChain &&
-    toChain &&
-    fromAmount &&
-    toAmount &&
-    activeQuote;
+    fromToken && toToken && fromChain && toChain && fromAmount && activeQuote;
 
   const label = useMemo(() => {
     if (isLoading && !isTxSubmittable) {

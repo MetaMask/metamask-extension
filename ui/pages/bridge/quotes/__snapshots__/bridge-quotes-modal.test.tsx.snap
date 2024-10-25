@@ -107,6 +107,9 @@ exports[`BridgeQuotesModal should render the modal 1`] = `
               </p>
               <p
                 class="mm-box mm-text mm-text--body-md mm-box--color-text-default"
+              />
+              <p
+                class="mm-box mm-text mm-text--body-md mm-box--color-text-default"
               >
                 1 minutes
               </p>
@@ -119,6 +122,9 @@ exports[`BridgeQuotesModal should render the modal 1`] = `
               >
                 2.52445909711870752
               </p>
+              <p
+                class="mm-box mm-text mm-text--body-md mm-box--color-text-default"
+              />
               <p
                 class="mm-box mm-text mm-text--body-md mm-box--color-text-default"
               >
