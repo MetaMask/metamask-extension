@@ -114,8 +114,8 @@ describe('useResimulationAlert', () => {
         isBlocking: false,
         key: 'simulationDetailsTitle',
         message:
-          'Simulation results have changed and reflect loss of assets. Please review the changes before you proceed.',
-        reason: 'Update in estimated changes',
+          'Estimated changes for this transaction have been updated. Review them closely before proceeding.',
+        reason: 'Results have changed',
         severity: Severity.Danger,
       },
     ]);
