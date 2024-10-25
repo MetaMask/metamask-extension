@@ -5,19 +5,23 @@ import {
   TransactionMeta,
 } from '@metamask/transaction-controller';
 import React from 'react';
+import { useSelector } from 'react-redux';
 import {
   Box,
   Icon,
   IconName,
+  IconSize,
   Text,
 } from '../../../../components/component-library';
 import Preloader from '../../../../components/ui/icon/preloader/preloader-icon.component';
+import Tooltip from '../../../../components/ui/tooltip';
 import {
   AlignItems,
   BorderColor,
   BorderRadius,
   Display,
   FlexDirection,
+  IconColor,
   JustifyContent,
   TextColor,
   TextVariant,
@@ -26,6 +30,7 @@ import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { useConfirmContext } from '../../context/confirm';
 import { ConfirmInfoAlertRow } from '../../../../components/app/confirm/info/row/alert-row/alert-row';
 import { RowAlertKey } from '../../../../components/app/confirm/info/row/constants';
+import { getRedesignedConfirmationsEnabled } from '../../../../selectors';
 import { BalanceChangeList } from './balance-change-list';
 import { useBalanceChanges } from './useBalanceChanges';
 import { useSimulationMetrics } from './useSimulationMetrics';
@@ -98,8 +103,9 @@ const EmptyContent: React.FC = () => {
  */
 const HeaderLayout: React.FC = ({ children }) => {
   const t = useI18nContext();
-  const { currentConfirmation: transactionMeta } =
-    useConfirmContext<TransactionMeta>();
+  const isRedesignedConfirmationsEnabled = useSelector(
+    getRedesignedConfirmationsEnabled,
+  );
 
   return (
     <Box
@@ -108,21 +114,60 @@ const HeaderLayout: React.FC = ({ children }) => {
       alignItems={AlignItems.center}
       justifyContent={JustifyContent.spaceBetween}
     >
-      <ConfirmInfoAlertRow
-        alertKey={RowAlertKey.Resimulation}
-        data-testid="gas-fee-details-speed"
-        label={t('simulationDetailsTitle')}
-        ownerId={transactionMeta.id}
-        tooltip={t('simulationDetailsTitleTooltip')}
-        style={{
-          paddingLeft: 0,
-          paddingRight: 0,
-        }}
-      >
-        <div />
-      </ConfirmInfoAlertRow>
+      {isRedesignedConfirmationsEnabled ? (
+        <HeaderContentWithAlert />
+      ) : (
+        <Box
+          display={Display.Flex}
+          flexDirection={FlexDirection.Row}
+          alignItems={AlignItems.center}
+          gap={1}
+        >
+          <Text variant={TextVariant.bodyMdMedium}>
+            {t('simulationDetailsTitle')}
+          </Text>
+          <Tooltip
+            interactive
+            position="top"
+            containerClassName="info-tooltip__tooltip-container"
+            tooltipInnerClassName="info-tooltip__tooltip-content"
+            tooltipArrowClassName="info-tooltip__top-tooltip-arrow"
+            html={t('simulationDetailsTitleTooltip')}
+            theme="tippy-tooltip-info"
+            style={{ display: Display.Flex }}
+          >
+            <Icon
+              name={IconName.Question}
+              marginLeft={1}
+              color={IconColor.iconMuted}
+              size={IconSize.Sm}
+            />
+          </Tooltip>
+        </Box>
+      )}
       {children}
     </Box>
+  );
+};
+
+const HeaderContentWithAlert = () => {
+  const { currentConfirmation: transactionMeta } =
+    useConfirmContext<TransactionMeta>();
+
+  return (
+    <ConfirmInfoAlertRow
+      alertKey={RowAlertKey.Resimulation}
+      data-testid="gas-fee-details-speed"
+      label={t('simulationDetailsTitle')}
+      ownerId={transactionMeta.id}
+      tooltip={t('simulationDetailsTitleTooltip')}
+      style={{
+        paddingLeft: 0,
+        paddingRight: 0,
+      }}
+    >
+      <div />
+    </ConfirmInfoAlertRow>
   );
 };
 
