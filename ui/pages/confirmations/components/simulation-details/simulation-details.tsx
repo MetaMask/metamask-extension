@@ -9,18 +9,15 @@ import {
   Box,
   Icon,
   IconName,
-  IconSize,
   Text,
 } from '../../../../components/component-library';
 import Preloader from '../../../../components/ui/icon/preloader/preloader-icon.component';
-import Tooltip from '../../../../components/ui/tooltip';
 import {
   AlignItems,
   BorderColor,
   BorderRadius,
   Display,
   FlexDirection,
-  IconColor,
   JustifyContent,
   TextColor,
   TextVariant,
