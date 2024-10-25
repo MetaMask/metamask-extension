@@ -57,6 +57,7 @@ import {
 // eslint-disable-next-line import/no-restricted-paths
 import { getCurrentChainId } from '../../ui/selectors';
 import { addNonceToCsp } from '../../shared/modules/add-nonce-to-csp';
+import { checkURLForProviderInjection } from '../../shared/modules/provider-injection';
 import migrations from './migrations';
 import Migrator from './lib/migrator';
 import ExtensionPlatform from './platforms/extension';
@@ -343,10 +344,14 @@ function overrideContentSecurityPolicyHeader() {
   // The extension url is unique per install on Firefox, so we can safely add it as a nonce to the CSP header
   const nonce = btoa(browser.runtime.getURL('/'));
   browser.webRequest.onHeadersReceived.addListener(
-    ({ responseHeaders }) => {
-      for (const header of responseHeaders) {
-        if (header.name.toLowerCase() === 'content-security-policy') {
-          header.value = addNonceToCsp(header.value, nonce);
+    ({ responseHeaders, url }) => {
+      // Check whether inpage.js is going to be injected into the page or not.
+      // There is no reason to modify the headers if we are not injecting inpage.js.
+      if (checkURLForProviderInjection(new URL(url))) {
+        for (const header of responseHeaders) {
+          if (header.name.toLowerCase() === 'content-security-policy') {
+            header.value = addNonceToCsp(header.value, nonce);
+          }
         }
       }
       return { responseHeaders };
