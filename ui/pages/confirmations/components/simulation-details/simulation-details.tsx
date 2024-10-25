@@ -3,6 +3,7 @@ import {
   SimulationError,
   SimulationErrorCode,
 } from '@metamask/transaction-controller';
+import { TransactionMeta } from '@metamask/transaction-controller';
 import React from 'react';
 import {
   Box,
@@ -28,6 +29,9 @@ import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { BalanceChangeList } from './balance-change-list';
 import { useBalanceChanges } from './useBalanceChanges';
 import { useSimulationMetrics } from './useSimulationMetrics';
+import { useConfirmContext } from '../../context/confirm';
+import { ConfirmInfoAlertRow } from '../../../../components/app/confirm/info/row/alert-row/alert-row';
+import { RowAlertKey } from '../../../../components/app/confirm/info/row/constants';
 
 export type SimulationDetailsProps = {
   simulationData?: SimulationData;
@@ -97,6 +101,9 @@ const EmptyContent: React.FC = () => {
  */
 const HeaderLayout: React.FC = ({ children }) => {
   const t = useI18nContext();
+  const { currentConfirmation: transactionMeta } =
+    useConfirmContext<TransactionMeta>();
+
   return (
     <Box
       display={Display.Flex}
@@ -104,33 +111,19 @@ const HeaderLayout: React.FC = ({ children }) => {
       alignItems={AlignItems.center}
       justifyContent={JustifyContent.spaceBetween}
     >
-      <Box
-        display={Display.Flex}
-        flexDirection={FlexDirection.Row}
-        alignItems={AlignItems.center}
-        gap={1}
+      <ConfirmInfoAlertRow
+        alertKey={RowAlertKey.Resimulation}
+        data-testid="gas-fee-details-speed"
+        label={t('simulationDetailsTitle')}
+        ownerId={transactionMeta.id}
+        tooltip={t('simulationDetailsTitleTooltip')}
+        style={{
+          paddingLeft: 0,
+          paddingRight: 0,
+        }}
       >
-        <Text variant={TextVariant.bodyMdMedium}>
-          {t('simulationDetailsTitle')}
-        </Text>
-        <Tooltip
-          interactive
-          position="top"
-          containerClassName="info-tooltip__tooltip-container"
-          tooltipInnerClassName="info-tooltip__tooltip-content"
-          tooltipArrowClassName="info-tooltip__top-tooltip-arrow"
-          html={t('simulationDetailsTitleTooltip')}
-          theme="tippy-tooltip-info"
-          style={{ display: Display.Flex }}
-        >
-          <Icon
-            name={IconName.Question}
-            marginLeft={1}
-            color={IconColor.iconMuted}
-            size={IconSize.Sm}
-          />
-        </Tooltip>
-      </Box>
+        <div />
+      </ConfirmInfoAlertRow>
       {children}
     </Box>
   );
