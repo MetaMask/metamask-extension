@@ -1,6 +1,6 @@
 import React from 'react';
-import { useSelector } from 'react-redux';
 import { IconName } from '@metamask/snaps-sdk/jsx';
+import { useDispatch, useSelector } from 'react-redux';
 import {
   Box,
   Button,
@@ -21,12 +21,15 @@ import { formatEtaInMinutes, formatFiatAmount } from '../utils/quote';
 import { getBridgeQuotes } from '../../../ducks/bridge/selectors';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { getCurrentCurrency } from '../../../selectors';
+import { setSortOrder } from '../../../ducks/bridge/actions';
+import { SortOrder } from '../types';
 
 export const BridgeQuotesModal = ({
   onClose,
   ...modalProps
 }: Omit<React.ComponentProps<typeof Modal>, 'children'>) => {
   const t = useI18nContext();
+  const dispatch = useDispatch();
 
   const { sortedQuotes } = useSelector(getBridgeQuotes);
   const currency = useSelector(getCurrentCurrency);
@@ -42,14 +45,22 @@ export const BridgeQuotesModal = ({
         </ModalHeader>
 
         <Box className="quotes-modal__column-header">
-          {[t('bridgeOverallCost'), t('time')].map((label) => {
-            return (
-              <Button key={label} variant={ButtonVariant.Link}>
-                <Icon name={IconName.Arrow2Down} size={IconSize.Sm} />
-                <Text>{label}</Text>
-              </Button>
-            );
-          })}
+          <Button
+            variant={ButtonVariant.Link}
+            onClick={() =>
+              dispatch(setSortOrder(SortOrder.ADJUSTED_RETURN_DESC))
+            }
+          >
+            <Icon name={IconName.Arrow2Down} size={IconSize.Sm} />
+            <Text>{t('bridgeOverallCost')}</Text>
+          </Button>
+          <Button
+            variant={ButtonVariant.Link}
+            onClick={() => dispatch(setSortOrder(SortOrder.ETA_ASC))}
+          >
+            <Icon name={IconName.Arrow2Down} size={IconSize.Sm} />
+            <Text>{t('time')}</Text>
+          </Button>
         </Box>
         <Box className="quotes-modal__quotes">
           {sortedQuotes.map((quote, index) => {
