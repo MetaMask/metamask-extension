@@ -24,7 +24,6 @@ import {
   getFromTokens,
   getFromTopAssets,
   getIsBridgeTx,
-  getToAmount,
   getToChain,
   getToChains,
   getToToken,
@@ -396,15 +395,6 @@ describe('Bridge selectors', () => {
       const result = getFromAmount(state as never);
 
       expect(result).toStrictEqual('');
-    });
-  });
-
-  describe('getToAmount', () => {
-    it('returns hardcoded 0', () => {
-      const state = createBridgeMockStore();
-      const result = getToAmount(state as never);
-
-      expect(result).toStrictEqual(undefined);
     });
   });
 

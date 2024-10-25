@@ -51,10 +51,12 @@ export const BridgeQuotesModal = ({
         </Box>
         <Box className="quotes-modal__quotes">
           {sortedQuotes.map((quote, index) => {
-            const { totalNetworkFee, estimatedProcessingTimeInSeconds } = quote;
+            const { totalNetworkFee, estimatedProcessingTimeInSeconds, cost } =
+              quote;
             return (
               <Box key={index} className="quotes-modal__quotes__row">
-                <Text>{totalNetworkFee?.fiat?.toString()}</Text>
+                <Text>{totalNetworkFee.fiat?.toString()}</Text>
+                <Text>{cost.fiat ? cost.fiat.toFixed(2) : ''}</Text>
                 <Text>
                   {t('bridgeTimingMinutes', [
                     formatEtaInMinutes(estimatedProcessingTimeInSeconds),

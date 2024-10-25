@@ -27,7 +27,6 @@ import {
 import { createDeepEqualSelector } from '../../selectors/util';
 import { SwapsTokenObject } from '../../../shared/constants/swaps';
 import { getGasFeeEstimates, getProviderConfig } from '../metamask/metamask';
-import { calcTokenAmount } from '../../../shared/lib/transactions-controller-utils';
 // TODO: Remove restricted import
 // eslint-disable-next-line import/no-restricted-paths
 import { RequestStatus } from '../../../app/scripts/controllers/bridge/constants';
@@ -173,7 +172,6 @@ export const getBridgeQuotesConfig = (state: BridgeAppState) =>
     BridgeFeatureFlagsKey.EXTENSION_CONFIG
   ] ?? {};
 
-// TODO reuse in bridge cta
 const _getBridgeFeesPerGas = createSelector(
   getGasFeeEstimates,
   (gasFeeEstimates) => ({
@@ -327,15 +325,6 @@ export const getBridgeQuotes = createSelector(
       ? false
       : quotesRefreshCount < maxRefreshCount,
   }),
-);
-
-export const getToAmount = createSelector(getBridgeQuotes, ({ activeQuote }) =>
-  activeQuote
-    ? calcTokenAmount(
-        activeQuote.quote.destTokenAmount,
-        activeQuote.quote.destAsset.decimals,
-      )
-    : undefined,
 );
 
 export const getIsBridgeTx = createDeepEqualSelector(
