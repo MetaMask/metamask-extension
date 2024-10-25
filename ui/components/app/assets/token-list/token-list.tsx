@@ -21,6 +21,7 @@ import {
 import { useAccountTotalFiatBalance } from '../../../../hooks/useAccountTotalFiatBalance';
 import { getConversionRate } from '../../../../ducks/metamask/metamask';
 import { useNativeTokenBalance } from '../asset-list/native-token/use-native-token-balance';
+import { useTokenTracker } from '../../../../hooks/useTokenTracker';
 
 type TokenListProps = {
   onTokenClick: (arg: string) => void;
@@ -82,10 +83,16 @@ export default function TokenList({
   const allTokens = useSelector(getAllTokens);
   const aggregatedCrossChainTokensByAccount =
     aggregateTokensByAccount(allTokens);
-  console.log(
-    'aggregatedCrossChainTokensByAccount',
-    aggregatedCrossChainTokensByAccount,
-  );
+
+  console.log(aggregatedCrossChainTokensByAccount[selectedAccount.address]);
+
+  const { tokensWithBalances: crossChainTokensWithBalances } = useTokenTracker({
+    tokens: aggregatedCrossChainTokensByAccount[selectedAccount.address],
+    address: selectedAccount?.address,
+    includeFailedTokens: true,
+    hideZeroBalanceTokens: shouldHideZeroBalanceTokens,
+  });
+  console.log('crossChainTokensWithBalances: ', crossChainTokensWithBalances);
 
   const { tokensWithBalances, loading } = useAccountTotalFiatBalance(
     selectedAccount,
