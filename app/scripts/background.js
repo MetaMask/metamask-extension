@@ -340,14 +340,13 @@ function maybeDetectPhishing(theController) {
  * which involves overriding the page CSP for inline script nodes injected by extension content scripts.
  */
 function overrideContentSecurityPolicyHeader() {
+  // The extension url is unique per install on Firefox, so we can safely add it as a nonce to the CSP header
+  const nonce = btoa(browser.runtime.getURL('/'));
   browser.webRequest.onHeadersReceived.addListener(
     ({ responseHeaders }) => {
       for (const header of responseHeaders) {
         if (header.name.toLowerCase() === 'content-security-policy') {
-          header.value = addNonceToCsp(
-            header.value,
-            btoa(browser.runtime.getURL('/')),
-          );
+          header.value = addNonceToCsp(header.value, nonce);
         }
       }
       return { responseHeaders };
