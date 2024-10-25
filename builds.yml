@@ -176,7 +176,7 @@ env:
   ###
   # Storybook
   ###
-  - STORYBOOK_ENV: false
+  - STORYBOOK: false
   - INFURA_STORYBOOK_PROJECT_ID
 
   ###

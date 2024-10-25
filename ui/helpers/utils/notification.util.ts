@@ -420,7 +420,7 @@ export const getNetworkFees = async (notification: OnChainRawNotification) => {
   const rpcUrl = getRpcUrlByChainId(`0x${chainId}` as HexChainId);
   const connection = {
     url: rpcUrl,
-    headers: process.env.STORYBOOK_ENV
+    headers: process.env.STORYBOOK
       ? undefined
       : {
           'Infura-Source': 'metamask/metamask',
