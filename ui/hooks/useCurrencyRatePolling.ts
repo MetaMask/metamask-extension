@@ -4,22 +4,25 @@ import {
   getUseCurrencyRateCheck,
 } from '../selectors';
 import {
-  currencyRateStartPollingByNetworkClientId,
+  currencyRateStartPolling,
   currencyRateStopPollingByPollingToken,
 } from '../store/actions';
-import { getCompletedOnboarding } from '../ducks/metamask/metamask';
+import {
+  getCompletedOnboarding,
+  getNativeCurrency,
+} from '../ducks/metamask/metamask';
 import usePolling from './usePolling';
 
 const useCurrencyRatePolling = (networkClientId?: string) => {
   const useCurrencyRateCheck = useSelector(getUseCurrencyRateCheck);
   const completedOnboarding = useSelector(getCompletedOnboarding);
   const selectedNetworkClientId = useSelector(getSelectedNetworkClientId);
+  const nativeCurrency = useSelector(getNativeCurrency);
 
   usePolling({
-    startPolling: (input) =>
-      currencyRateStartPollingByNetworkClientId(input.networkClientId),
+    startPolling: currencyRateStartPolling,
     stopPollingByPollingToken: currencyRateStopPollingByPollingToken,
-    input: { networkClientId: networkClientId ?? selectedNetworkClientId },
+    input: nativeCurrency,
     enabled: useCurrencyRateCheck && completedOnboarding,
   });
 };
