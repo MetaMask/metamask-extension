@@ -66,6 +66,9 @@ type BridgeControllerEvents = ControllerStateChangeEvent<
   BridgeControllerState
 >;
 
+type AllowedActions = AccountsControllerGetSelectedAccountAction['type'];
+type AllowedEvents = never;
+
 /**
  * The messenger for the BridgeController.
  */
@@ -73,6 +76,6 @@ export type BridgeControllerMessenger = RestrictedControllerMessenger<
   typeof BRIDGE_CONTROLLER_NAME,
   BridgeControllerActions | AccountsControllerGetSelectedAccountAction,
   BridgeControllerEvents,
-  AccountsControllerGetSelectedAccountAction['type'],
-  never
+  AllowedActions,
+  AllowedEvents
 >;
