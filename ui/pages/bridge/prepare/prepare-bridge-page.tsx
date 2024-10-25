@@ -35,9 +35,9 @@ import { useI18nContext } from '../../../hooks/useI18nContext';
 import { TokenBucketPriority } from '../../../../shared/constants/swaps';
 import { useTokensWithFiltering } from '../../../hooks/useTokensWithFiltering';
 import { setActiveNetwork } from '../../../store/actions';
-import { Numeric } from '../../../../shared/modules/Numeric';
 import { hexToDecimal } from '../../../../shared/modules/conversion.utils';
 import { QuoteRequest } from '../types';
+import { calcTokenValue } from '../../../../shared/lib/swaps-utils';
 import { BridgeInputGroup } from './bridge-input-group';
 
 const PrepareBridgePage = () => {
@@ -82,9 +82,7 @@ const PrepareBridgePage = () => {
       destTokenAddress: toToken?.address || undefined,
       srcTokenAmount:
         fromAmount && fromAmount !== '' && fromToken?.decimals
-          ? Numeric.from(fromAmount, 10)
-              .shiftedBy(-1 * Number(fromToken.decimals))
-              .toString()
+          ? calcTokenValue(fromAmount, fromToken.decimals).toString()
           : undefined,
       srcChainId: fromChain?.chainId
         ? Number(hexToDecimal(fromChain.chainId))
