@@ -356,10 +356,10 @@ function TransactionListItemInner({
               <div>status: {bridgeTxHistoryItem?.status?.status}</div>
               <div>
                 tx 1:{' '}
-                {`${transactionGroup.initialTransaction.hash.substring(
-                  0,
-                  6,
-                )}...`}
+                {`${(
+                  bridgeTxHistoryItem?.status?.srcChain.txHash ||
+                  transactionGroup.initialTransaction.hash
+                ).substring(0, 6)}...`}
                 , {transactionGroup.initialTransaction.status}
               </div>
               <div>
