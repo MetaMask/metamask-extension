@@ -618,7 +618,10 @@ const onboardingCompleteWalletCreationWithOptOut = async (
     });
   }
 
-  if (optOutOptionsToUse.profileSync) {
+  if (
+    optOutOptionsToUse.profileSync &&
+    !optOutOptionsToUse.basicFunctionality
+  ) {
     await driver.clickElement(
       '[data-testid="profile-sync-toggle"] .toggle-button',
     );
