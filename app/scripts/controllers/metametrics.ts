@@ -1313,6 +1313,8 @@ export default class MetaMetricsController {
         modifiedPayload.anonymousId === METAMETRICS_ANONYMOUS_ID
           ? latestNonAnonymousEventTimestamp
           : timestamp.valueOf(),
+      // @ts-expect-error The reason this is needed is that the event property in the payload can be missing,
+      // whereas the state expects it to be present. It's unclear how best to handle this discrepancy.
       segmentApiCalls: {
         ...this.store.getState().segmentApiCalls,
         [messageId]: {
@@ -1320,7 +1322,7 @@ export default class MetaMetricsController {
           payload: {
             ...modifiedPayload,
             timestamp: modifiedPayload.timestamp.toString(),
-          } as SegmentEventPayload,
+          },
         },
       },
     });
