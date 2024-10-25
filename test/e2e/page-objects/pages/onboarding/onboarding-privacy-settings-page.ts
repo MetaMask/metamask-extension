@@ -162,7 +162,7 @@ class OnboardingPrivacySettingsPage {
   /**
    * Go to assets settings and toggle options, then navigate back.
    */
-  async toggleAssetsSettings(): Promise<void> {
+  async toggleAdvancedAssetsSettings(): Promise<void> {
     console.log('Toggle advanced assets settings in privacy settings');
     await this.check_pageIsLoaded();
     await this.driver.clickElement(this.assetsSettings);

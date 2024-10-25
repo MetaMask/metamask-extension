@@ -34,6 +34,9 @@ class HomePage {
     css: '.transaction-status-label--failed',
   };
 
+  private readonly refreshTokenListButton =
+    '[data-testid="refresh-list-button"]';
+
   private readonly sendButton = '[data-testid="eth-overview-send"]';
 
   private readonly tokensTab = '[data-testid="account-overview__asset-tab"]';
@@ -60,8 +63,8 @@ class HomePage {
     console.log('Home page is loaded');
   }
 
-  async startSendFlow(): Promise<void> {
-    await this.driver.clickElement(this.sendButton);
+  async clickNFTIconOnActivityList() {
+    await this.driver.clickElement(this.nftIconOnActivityList);
   }
 
   async goToActivityList(): Promise<void> {
@@ -69,20 +72,25 @@ class HomePage {
     await this.driver.clickElement(this.activityTab);
   }
 
-  async check_basicFunctionalityOffWarnigMessageIsDisplayed(): Promise<void> {
-    console.log(
-      'Check if basic functionality off warning message is displayed on homepage',
-    );
-    await this.driver.waitForSelector(this.basicFunctionalityOffWarningMessage);
-  }
-
   async goToNFTList(): Promise<void> {
     console.log(`Open NFT tab on homepage`);
     await this.driver.clickElement(this.nftTab);
   }
 
-  async clickNFTIconOnActivityList() {
-    await this.driver.clickElement(this.nftIconOnActivityList);
+  async refreshTokenList(): Promise<void> {
+    console.log('Refresh token list on homepage');
+    await this.driver.clickElement(this.refreshTokenListButton);
+  }
+
+  async startSendFlow(): Promise<void> {
+    await this.driver.clickElement(this.sendButton);
+  }
+
+  async check_basicFunctionalityOffWarnigMessageIsDisplayed(): Promise<void> {
+    console.log(
+      'Check if basic functionality off warning message is displayed on homepage',
+    );
+    await this.driver.waitForSelector(this.basicFunctionalityOffWarningMessage);
   }
 
   /**
