@@ -172,7 +172,7 @@ export const getBridgeQuotesConfig = (state: BridgeAppState) =>
     BridgeFeatureFlagsKey.EXTENSION_CONFIG
   ] ?? {};
 
-const _getBridgeFeesPerGas = createSelector(
+export const getBridgeFeesPerGas = createSelector(
   getGasFeeEstimates,
   (gasFeeEstimates) => ({
     maxFeePerGas: decGWEIToHexWEI(
@@ -192,7 +192,7 @@ const _getQuotesWithMetadata = createDeepEqualSelector(
   (state: BridgeAppState) => state.bridge.toNativeExchangeRate,
   (state: BridgeAppState) => state.bridge.fromTokenExchangeRate,
   (state: BridgeAppState) => state.bridge.fromNativeExchangeRate,
-  _getBridgeFeesPerGas,
+  getBridgeFeesPerGas,
   (
     quotes,
     toTokenExchangeRate,

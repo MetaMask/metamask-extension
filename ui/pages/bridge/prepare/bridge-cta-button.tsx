@@ -9,6 +9,7 @@ import {
   getToChain,
   getToToken,
   getBridgeQuotes,
+  getBridgeFeesPerGas,
 } from '../../../ducks/bridge/selectors';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { submitBridgeTransaction } from '../../../ducks/bridge/actions';
@@ -26,6 +27,8 @@ export const BridgeCTAButton = () => {
   const fromAmount = useSelector(getFromAmount);
 
   const { isLoading, activeQuote } = useSelector(getBridgeQuotes);
+  const { maxFeePerGas, maxPriorityFeePerGas } =
+    useSelector(getBridgeFeesPerGas);
 
   const isTxSubmittable =
     fromToken && toToken && fromChain && toChain && fromAmount && activeQuote;
@@ -54,7 +57,14 @@ export const BridgeCTAButton = () => {
       data-testid="bridge-cta-button"
       onClick={() => {
         if (isTxSubmittable) {
-          dispatch(submitBridgeTransaction(activeQuote, history));
+          dispatch(
+            submitBridgeTransaction(
+              activeQuote,
+              history,
+              maxFeePerGas,
+              maxPriorityFeePerGas,
+            ),
+          );
         }
       }}
       disabled={!isTxSubmittable}
