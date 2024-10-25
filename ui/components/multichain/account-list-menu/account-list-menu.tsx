@@ -313,6 +313,7 @@ export const AccountListMenu = ({
             location: 'Main Menu',
           },
         });
+        endTrace({ name: TraceName.AccountOverviewTab });
         trace({ name: TraceName.AccountListItem });
         dispatch(setSelectedAccount(account.address));
       };
