@@ -86,12 +86,10 @@ export function createPPOMMiddleware<
         return;
       }
 
-      const isSupportedChain = await isChainSupported(chainId);
-
       if (
         !securityAlertsEnabled ||
         !CONFIRMATION_METHODS.includes(req.method) ||
-        !isSupportedChain
+        !(await isChainSupported(chainId))
       ) {
         return;
       }
