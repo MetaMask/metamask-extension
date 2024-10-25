@@ -167,7 +167,7 @@ export const getToToken = (
 export const getFromAmount = (state: BridgeAppState): string | null =>
   state.bridge.fromTokenInputValue;
 
-const _getBridgeFeesPerGas = createSelector(
+export const getBridgeFeesPerGas = createSelector(
   getGasFeeEstimates,
   (gasFeeEstimates) => ({
     maxFeePerGas: decGWEIToHexWEI(
@@ -187,7 +187,7 @@ const _getQuotesWithMetadata = createDeepEqualSelector(
   (state: BridgeAppState) => state.bridge.toNativeExchangeRate,
   (state) => getTokenExchangeRates(state),
   getConversionRate,
-  _getBridgeFeesPerGas,
+  getBridgeFeesPerGas,
   (
     quotes,
     toTokenExchangeRate,
