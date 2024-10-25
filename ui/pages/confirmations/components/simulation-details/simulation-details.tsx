@@ -5,7 +5,6 @@ import {
   TransactionMeta,
 } from '@metamask/transaction-controller';
 import React from 'react';
-import { useSelector } from 'react-redux';
 import {
   Box,
   Icon,
@@ -30,7 +29,6 @@ import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { useConfirmContext } from '../../context/confirm';
 import { ConfirmInfoAlertRow } from '../../../../components/app/confirm/info/row/alert-row/alert-row';
 import { RowAlertKey } from '../../../../components/app/confirm/info/row/constants';
-import { getRedesignedConfirmationsEnabled } from '../../../../selectors';
 import { BalanceChangeList } from './balance-change-list';
 import { useBalanceChanges } from './useBalanceChanges';
 import { useSimulationMetrics } from './useSimulationMetrics';
@@ -104,9 +102,6 @@ const EmptyContent: React.FC = () => {
  */
 const HeaderLayout: React.FC = ({ children, isTransactionsRedesign }) => {
   const t = useI18nContext();
-  const isRedesignedConfirmationsEnabled = useSelector(
-    getRedesignedConfirmationsEnabled,
-  );
 
   return (
     <Box
@@ -115,7 +110,7 @@ const HeaderLayout: React.FC = ({ children, isTransactionsRedesign }) => {
       alignItems={AlignItems.center}
       justifyContent={JustifyContent.spaceBetween}
     >
-      {isRedesignedConfirmationsEnabled && isTransactionsRedesign ? (
+      {isTransactionsRedesign ? (
         <HeaderWithAlert />
       ) : (
         <Box
