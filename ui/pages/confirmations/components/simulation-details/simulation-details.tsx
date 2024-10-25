@@ -153,6 +153,7 @@ const HeaderLayout: React.FC = ({ children }) => {
 const HeaderWithAlert = () => {
   const { currentConfirmation: transactionMeta } =
     useConfirmContext<TransactionMeta>();
+  const t = useI18nContext();
 
   return (
     <ConfirmInfoAlertRow
