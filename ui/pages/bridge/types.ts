@@ -1,3 +1,21 @@
+import { BigNumber } from 'bignumber.js';
+
+// Values derived from the quote response
+export type QuoteMetadata = {
+  totalNetworkFee: { raw: BigNumber; fiat: BigNumber | null }; // gasFees + relayerFees
+  toTokenAmount: { raw: BigNumber; fiat: BigNumber | null };
+  adjustedReturn: { fiat: BigNumber | null }; // destTokenAmount - totalNetworkFee
+  sentAmount: { raw: BigNumber; fiat: BigNumber | null }; // srcTokenAmount + metabridgeFee
+  swapRate: BigNumber; // destTokenAmount / sentAmount
+  cost: { fiat: BigNumber | null }; // sentAmount - adjustedReturn
+};
+
+// Sort order set by the user
+export enum SortOrder {
+  COST_ASC,
+  ETA_ASC,
+}
+
 // Types copied from Metabridge API
 export enum BridgeFlag {
   EXTENSION_CONFIG = 'extension-config',

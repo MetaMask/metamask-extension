@@ -5,6 +5,7 @@ import { swapsSlice } from '../swaps/swaps';
 import { SwapsTokenObject } from '../../../shared/constants/swaps';
 import { SwapsEthToken } from '../../selectors';
 import { fetchTokenExchangeRates } from '../../helpers/utils/util';
+import { SortOrder } from '../../pages/bridge/types';
 
 export type BridgeState = {
   toChainId: Hex | null;
@@ -13,6 +14,7 @@ export type BridgeState = {
   fromTokenInputValue: string | null;
   fromTokenExchangeRate: number | null;
   toTokenExchangeRate: number | null;
+  sortOrder: SortOrder;
 };
 
 const initialState: BridgeState = {
@@ -22,6 +24,7 @@ const initialState: BridgeState = {
   fromTokenInputValue: null,
   fromTokenExchangeRate: null,
   toTokenExchangeRate: null,
+  sortOrder: SortOrder.COST_ASC,
 };
 
 export const setSrcTokenExchangeRates = createAsyncThunk(
@@ -72,6 +75,9 @@ const bridgeSlice = createSlice({
     resetInputFields: () => ({
       ...initialState,
     }),
+    setSortOrder: (state, action) => {
+      state.sortOrder = action.payload;
+    },
   },
   extraReducers: (builder) => {
     builder.addCase(setDestTokenExchangeRates.fulfilled, (state, action) => {

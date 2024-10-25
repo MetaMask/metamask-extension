@@ -6,30 +6,24 @@ import {
   ButtonVariant,
   Text,
 } from '../../../components/component-library';
-import {
-  getBridgeQuotes,
-  getRecommendedQuote,
-} from '../../../ducks/bridge/selectors';
+import { getBridgeQuotes } from '../../../ducks/bridge/selectors';
 import { useI18nContext } from '../../../hooks/useI18nContext';
-import { getQuoteDisplayData } from '../utils/quote';
 import { useCountdownTimer } from '../../../hooks/bridge/useCountdownTimer';
 import MascotBackgroundAnimation from '../../swaps/mascot-background-animation/mascot-background-animation';
+import { formatEtaInMinutes } from '../utils/quote';
 import { QuoteInfoRow } from './quote-info-row';
 import { BridgeQuotesModal } from './bridge-quotes-modal';
 
 export const BridgeQuoteCard = () => {
   const t = useI18nContext();
-  const recommendedQuote = useSelector(getRecommendedQuote);
-  const { isLoading, isQuoteGoingToRefresh } = useSelector(getBridgeQuotes);
-
-  const { etaInMinutes, totalFees, quoteRate } =
-    getQuoteDisplayData(recommendedQuote);
+  const { isLoading, isQuoteGoingToRefresh, activeQuote } =
+    useSelector(getBridgeQuotes);
 
   const secondsUntilNextRefresh = useCountdownTimer();
 
   const [showAllQuotes, setShowAllQuotes] = useState(false);
 
-  if (isLoading && !recommendedQuote) {
+  if (isLoading && !activeQuote) {
     return (
       <Box>
         <MascotBackgroundAnimation />
@@ -37,7 +31,7 @@ export const BridgeQuoteCard = () => {
     );
   }
 
-  return etaInMinutes && totalFees && quoteRate ? (
+  return activeQuote ? (
     <Box className="quote-card">
       <BridgeQuotesModal
         isOpen={showAllQuotes}
@@ -53,14 +47,19 @@ export const BridgeQuoteCard = () => {
         <QuoteInfoRow
           label={t('estimatedTime')}
           tooltipText={t('bridgeTimingTooltipText')}
-          description={t('bridgeTimingMinutes', [etaInMinutes])}
+          description={t('bridgeTimingMinutes', [
+            formatEtaInMinutes(activeQuote.estimatedProcessingTimeInSeconds),
+          ])}
         />
-        <QuoteInfoRow label={t('quoteRate')} description={quoteRate} />
+        <QuoteInfoRow
+          label={t('quoteRate')}
+          description={activeQuote.swapRate.toString()}
+        />
         <QuoteInfoRow
           label={t('totalFees')}
           tooltipText={t('bridgeTotalFeesTooltipText')}
-          description={totalFees.fiat}
-          secondaryDescription={totalFees?.amount}
+          description={activeQuote.totalNetworkFee?.fiat?.toString() ?? ''}
+          secondaryDescription={activeQuote.totalNetworkFee?.raw?.toString()}
         />
       </Box>
 

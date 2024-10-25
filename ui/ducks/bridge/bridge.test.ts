@@ -149,6 +149,7 @@ describe('Ducks - Bridge', () => {
         fromToken: null,
         toToken: null,
         fromTokenInputValue: null,
+        sortOrder: 0,
         toTokenExchangeRate: null,
         fromTokenExchangeRate: null,
       });

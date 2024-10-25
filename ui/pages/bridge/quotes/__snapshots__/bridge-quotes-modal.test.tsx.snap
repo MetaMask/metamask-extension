@@ -103,7 +103,7 @@ exports[`BridgeQuotesModal should render the modal 1`] = `
               <p
                 class="mm-box mm-text mm-text--body-md mm-box--color-text-default"
               >
-                $0.01
+                2.52443025734759336
               </p>
               <p
                 class="mm-box mm-text mm-text--body-md mm-box--color-text-default"
@@ -117,7 +117,7 @@ exports[`BridgeQuotesModal should render the modal 1`] = `
               <p
                 class="mm-box mm-text mm-text--body-md mm-box--color-text-default"
               >
-                $0.01
+                2.52445909711870752
               </p>
               <p
                 class="mm-box mm-text mm-text--body-md mm-box--color-text-default"
