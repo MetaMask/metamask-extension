@@ -8,9 +8,15 @@ import {
 } from '../../../components/component-library';
 import { getBridgeQuotes } from '../../../ducks/bridge/selectors';
 import { useI18nContext } from '../../../hooks/useI18nContext';
+import {
+  formatFiatAmount,
+  formatTokenAmount,
+  formatEtaInMinutes,
+} from '../utils/quote';
 import { useCountdownTimer } from '../../../hooks/bridge/useCountdownTimer';
 import MascotBackgroundAnimation from '../../swaps/mascot-background-animation/mascot-background-animation';
-import { formatEtaInMinutes } from '../utils/quote';
+import { getCurrentCurrency } from '../../../selectors';
+import { getNativeCurrency } from '../../../ducks/metamask/metamask';
 import { QuoteInfoRow } from './quote-info-row';
 import { BridgeQuotesModal } from './bridge-quotes-modal';
 
@@ -18,6 +24,8 @@ export const BridgeQuoteCard = () => {
   const t = useI18nContext();
   const { isLoading, isQuoteGoingToRefresh, activeQuote } =
     useSelector(getBridgeQuotes);
+  const currency = useSelector(getCurrentCurrency);
+  const ticker = useSelector(getNativeCurrency);
 
   const secondsUntilNextRefresh = useCountdownTimer();
 
@@ -56,15 +64,25 @@ export const BridgeQuoteCard = () => {
             label={t('quoteRate')}
             description={`1 ${
               activeQuote.quote.srcAsset.symbol
-            } = ${activeQuote.swapRate.toFixed(2)}`}
+            } = ${formatTokenAmount(
+              activeQuote.swapRate,
+              activeQuote.quote.destAsset.symbol,
+            )}`}
           />
         )}
         {activeQuote.totalNetworkFee && (
           <QuoteInfoRow
             label={t('totalFees')}
             tooltipText={t('bridgeTotalFeesTooltipText')}
-            description={activeQuote.totalNetworkFee?.fiat?.toFixed(2) ?? ''}
-            secondaryDescription={activeQuote.totalNetworkFee?.raw?.toFixed(6)}
+            description={
+              formatFiatAmount(activeQuote.totalNetworkFee?.fiat, currency) ??
+              formatTokenAmount(activeQuote.totalNetworkFee?.raw, ticker, 6)
+            }
+            secondaryDescription={
+              activeQuote.totalNetworkFee?.fiat
+                ? formatTokenAmount(activeQuote.totalNetworkFee?.raw, ticker, 6)
+                : undefined
+            }
           />
         )}
       </Box>

@@ -17,9 +17,10 @@ import {
   TextAlign,
   TextVariant,
 } from '../../../helpers/constants/design-system';
-import { useI18nContext } from '../../../hooks/useI18nContext';
+import { formatEtaInMinutes, formatFiatAmount } from '../utils/quote';
 import { getBridgeQuotes } from '../../../ducks/bridge/selectors';
-import { formatEtaInMinutes } from '../utils/quote';
+import { useI18nContext } from '../../../hooks/useI18nContext';
+import { getCurrentCurrency } from '../../../selectors';
 
 export const BridgeQuotesModal = ({
   onClose,
@@ -28,6 +29,7 @@ export const BridgeQuotesModal = ({
   const t = useI18nContext();
 
   const { sortedQuotes } = useSelector(getBridgeQuotes);
+  const currency = useSelector(getCurrentCurrency);
 
   return (
     <Modal className="quotes-modal" onClose={onClose} {...modalProps}>
@@ -51,12 +53,26 @@ export const BridgeQuotesModal = ({
         </Box>
         <Box className="quotes-modal__quotes">
           {sortedQuotes.map((quote, index) => {
-            const { totalNetworkFee, estimatedProcessingTimeInSeconds, cost } =
-              quote;
+            const {
+              totalNetworkFee,
+              sentAmount,
+              adjustedReturn,
+              estimatedProcessingTimeInSeconds,
+              quote: { bridges },
+            } = quote;
             return (
               <Box key={index} className="quotes-modal__quotes__row">
-                <Text>{totalNetworkFee.fiat?.toString()}</Text>
-                <Text>{cost.fiat ? cost.fiat.toFixed(2) : ''}</Text>
+                <Text>{formatFiatAmount(adjustedReturn.fiat, currency)}</Text>
+                <Text>{formatFiatAmount(totalNetworkFee?.fiat, currency)}</Text>
+                <Text>
+                  {adjustedReturn.fiat && sentAmount.fiat
+                    ? `-${formatFiatAmount(
+                        sentAmount.fiat.minus(adjustedReturn.fiat),
+                        currency,
+                      )}`
+                    : ''}
+                </Text>
+                <Text>{bridges[0]}</Text>
                 <Text>
                   {t('bridgeTimingMinutes', [
                     formatEtaInMinutes(estimatedProcessingTimeInSeconds),

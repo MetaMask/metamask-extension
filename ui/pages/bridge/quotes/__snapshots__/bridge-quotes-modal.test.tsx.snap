@@ -102,8 +102,11 @@ exports[`BridgeQuotesModal should render the modal 1`] = `
             >
               <p
                 class="mm-box mm-text mm-text--body-md mm-box--color-text-default"
+              />
+              <p
+                class="mm-box mm-text mm-text--body-md mm-box--color-text-default"
               >
-                2.52443025734759336
+                $2.52
               </p>
               <p
                 class="mm-box mm-text mm-text--body-md mm-box--color-text-default"
@@ -111,7 +114,12 @@ exports[`BridgeQuotesModal should render the modal 1`] = `
               <p
                 class="mm-box mm-text mm-text--body-md mm-box--color-text-default"
               >
-                1 minutes
+                across
+              </p>
+              <p
+                class="mm-box mm-text mm-text--body-md mm-box--color-text-default"
+              >
+                1 min
               </p>
             </div>
             <div
@@ -119,8 +127,11 @@ exports[`BridgeQuotesModal should render the modal 1`] = `
             >
               <p
                 class="mm-box mm-text mm-text--body-md mm-box--color-text-default"
+              />
+              <p
+                class="mm-box mm-text mm-text--body-md mm-box--color-text-default"
               >
-                2.52445909711870752
+                $2.52
               </p>
               <p
                 class="mm-box mm-text mm-text--body-md mm-box--color-text-default"
@@ -128,7 +139,12 @@ exports[`BridgeQuotesModal should render the modal 1`] = `
               <p
                 class="mm-box mm-text mm-text--body-md mm-box--color-text-default"
               >
-                26 minutes
+                celercircle
+              </p>
+              <p
+                class="mm-box mm-text mm-text--body-md mm-box--color-text-default"
+              >
+                26 min
               </p>
             </div>
           </div>

@@ -6,13 +6,9 @@ import {
   hexToDecimal,
   sumDecimals,
 } from '../../../../shared/modules/conversion.utils';
-<<<<<<< HEAD
-=======
 import { formatCurrency } from '../../../helpers/utils/confirm-tx.util';
-import { DEFAULT_PRECISION } from '../../../hooks/useCurrencyDisplay';
 import { Numeric } from '../../../../shared/modules/Numeric';
 import { EtherDenomination } from '../../../../shared/constants/common';
->>>>>>> 61f029ee7a (chore: add L1 fees for Base and Optimism)
 
 export const isNativeAddress = (address?: string) => address === zeroAddress();
 
@@ -187,3 +183,12 @@ export const calcCost = (
 
 export const formatEtaInMinutes = (estimatedProcessingTimeInSeconds: number) =>
   (estimatedProcessingTimeInSeconds / 60).toFixed();
+
+export const formatTokenAmount = (
+  amount: BigNumber,
+  symbol: string,
+  precision: number = 2,
+) => `${amount.toFixed(precision)} ${symbol}`;
+
+export const formatFiatAmount = (amount: BigNumber | null, currency: string) =>
+  amount ? formatCurrency(amount.toString(), currency) : undefined;
