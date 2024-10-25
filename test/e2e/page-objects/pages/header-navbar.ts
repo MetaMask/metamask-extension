@@ -22,8 +22,7 @@ class HeaderNavbar {
 
   private readonly settingsButton = '[data-testid="global-menu-settings"]';
 
-  private readonly switchNetworkDropDownButton =
-    '[data-testid="network-display"]';
+  private readonly switchNetworkDropDown = '[data-testid="network-display"]';
 
   constructor(driver: Driver) {
     this.driver = driver;
@@ -72,6 +71,18 @@ class HeaderNavbar {
     await this.driver.clickElement(this.settingsButton);
   }
 
+  async clickSwitchNetworkDropDown(): Promise<void> {
+    console.log(`Click switch network menu`);
+    await this.driver.clickElement(this.switchNetworkDropDown);
+  }
+
+  async check_currentSelectedNetwork(networkName: string): Promise<void> {
+    console.log(`Validate the Switch network to ${networkName}`);
+    await this.driver.waitForSelector(
+      `button[data-testid="network-display"][aria-label="Network Menu ${networkName}"]`,
+    );
+  }
+
   /**
    * Switches to the specified network.
    *
@@ -79,7 +90,7 @@ class HeaderNavbar {
    */
   async switchToNetwork(networkName: string): Promise<void> {
     console.log(`Switch to network ${networkName} in header bar`);
-    await this.driver.clickElement(this.switchNetworkDropDownButton);
+    await this.driver.clickElement(this.switchNetworkDropDown);
     await this.driver.waitForSelector(this.selectNetworkMessage);
     await this.driver.clickElementAndWaitToDisappear(
       `[data-testid="${networkName}"]`,
@@ -90,7 +101,7 @@ class HeaderNavbar {
       text: `“${networkName}” was successfully added!`,
     });
     await this.driver.waitForSelector(
-      `${this.switchNetworkDropDownButton}[aria-label="Network Menu ${networkName}"]`,
+      `${this.switchNetworkDropDown}[aria-label="Network Menu ${networkName}"]`,
     );
   }
 
