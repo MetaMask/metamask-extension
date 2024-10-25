@@ -56,11 +56,19 @@ const NetworkFilter = ({ handleClose }: SortControlProps) => {
     handleClose();
   };
 
+  const allOpts: Record<string, boolean> = {};
+  Object.keys(allNetworks).forEach((chainId) => {
+    allOpts[chainId] = true;
+  });
+
   return (
     <>
       <SelectableListItem
-        isSelected={!Object.keys(tokenNetworkFilter).length}
-        onClick={() => handleFilter({})}
+        isSelected={
+          Object.keys(tokenNetworkFilter).length ===
+          Object.keys(allNetworks).length
+        }
+        onClick={() => handleFilter(allOpts)}
       >
         <Box
           display={Display.Flex}
@@ -106,7 +114,10 @@ const NetworkFilter = ({ handleClose }: SortControlProps) => {
         </Box>
       </SelectableListItem>
       <SelectableListItem
-        isSelected={tokenNetworkFilter[chainId]}
+        isSelected={
+          tokenNetworkFilter[chainId] &&
+          Object.keys(tokenNetworkFilter).length === 1
+        }
         onClick={() => handleFilter({ [chainId]: true })}
       >
         <Box

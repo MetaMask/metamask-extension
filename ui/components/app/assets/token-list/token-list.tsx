@@ -21,6 +21,7 @@ import {
 } from '../../../../selectors';
 import { getConversionRate } from '../../../../ducks/metamask/metamask';
 import { useNativeTokenBalance } from '../asset-list/native-token/use-native-token-balance';
+import { filterAssets } from '../util/filter';
 
 type TokenListProps = {
   onTokenClick: (arg: string) => void;
@@ -92,9 +93,16 @@ export default function TokenList({
   };
 
   const sortedTokens = useMemo(() => {
-    const consolidatedTokensWithBalances = consolidatedBalances(); // TODO include nativeTokens in this list
-    // .filter() // TODO filter assets by networkTokenFilter before sorting
-    return sortAssets(consolidatedTokensWithBalances, tokenSortConfig);
+    const consolidatedTokensWithBalances = consolidatedBalances();
+    const filteredAssets = filterAssets(consolidatedTokensWithBalances, [
+      {
+        key: 'chainId',
+        opts: tokenNetworkFilter,
+        filterCallback: 'inclusive',
+      },
+    ]);
+    const filteredSortedAssets = sortAssets(filteredAssets, tokenSortConfig);
+    return filteredSortedAssets;
   }, [
     tokenSortConfig,
     tokenNetworkFilter,
