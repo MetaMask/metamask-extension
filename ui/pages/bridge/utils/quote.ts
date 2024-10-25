@@ -3,6 +3,7 @@ import { BigNumber } from 'bignumber.js';
 import { getAddress } from 'ethers/lib/utils';
 import { calcTokenAmount } from '../../../../shared/lib/transactions-controller-utils';
 import { QuoteResponse, QuoteRequest, Quote } from '../types';
+import { formatCurrency } from '../../../helpers/utils/confirm-tx.util';
 
 export const isValidQuoteRequest = (
   partialRequest: Partial<QuoteRequest>,
@@ -180,3 +181,12 @@ export const calcCost = (
 
 export const formatEtaInMinutes = (estimatedProcessingTimeInSeconds: number) =>
   (estimatedProcessingTimeInSeconds / 60).toFixed();
+
+export const formatTokenAmount = (
+  amount: BigNumber,
+  symbol: string,
+  precision: number = 2,
+) => `${amount.toFixed(precision)} ${symbol}`;
+
+export const formatFiatAmount = (amount: BigNumber | null, currency: string) =>
+  amount ? formatCurrency(amount.toString(), currency) : undefined;
