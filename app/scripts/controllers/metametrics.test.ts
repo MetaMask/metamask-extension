@@ -559,13 +559,13 @@ describe('MetaMetricsController', function () {
 
       await expect(
         // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-        // @ts-ignore because we are testing the error case
+        // @ts-expect-error because we are testing the error case
         metaMetricsController.submitEvent({ event: 'test' }),
       ).rejects.toThrow(/Must specify event and category\./u);
 
       await expect(
         // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-        // @ts-ignore because we are testing the error case
+        // @ts-expect-error because we are testing the error case
         metaMetricsController.submitEvent({ category: 'test' }),
       ).rejects.toThrow(/Must specify event and category\./u);
     });

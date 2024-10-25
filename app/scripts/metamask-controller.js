@@ -6311,7 +6311,6 @@ export default class MetamaskController extends EventEmitter {
    * @private
    */
   privateSendUpdate() {
-    console.log('salah', this.getState());
     this.emit('update', this.getState());
   }
 

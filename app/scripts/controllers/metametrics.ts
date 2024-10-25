@@ -13,7 +13,12 @@ import { bufferToHex, keccak } from 'ethereumjs-util';
 import { v4 as uuidv4 } from 'uuid';
 import { NameControllerState, NameType } from '@metamask/name-controller';
 import { AccountsControllerState } from '@metamask/accounts-controller';
-import { Hex } from '@metamask/utils';
+import {
+  getErrorMessage,
+  Hex,
+  isErrorWithMessage,
+  isErrorWithStack,
+} from '@metamask/utils';
 import { NetworkState } from '@metamask/network-controller';
 import { Browser } from 'webextension-polyfill';
 import {
@@ -59,7 +64,7 @@ import type { PreferencesControllerState } from './preferences-controller';
 
 const EXTENSION_UNINSTALL_URL = 'https://metamask.io/uninstalled';
 
-export const overrideAnonymousEventNames: Record<string, string> = {
+export const overrideAnonymousEventNames = {
   [TransactionMetaMetricsEvent.added]:
     AnonymousTransactionMetaMetricsEvent.added,
   [TransactionMetaMetricsEvent.approved]:
@@ -76,7 +81,7 @@ export const overrideAnonymousEventNames: Record<string, string> = {
     MetaMetricsEventName.SignatureApprovedAnon,
   [MetaMetricsEventName.SignatureRejected]:
     MetaMetricsEventName.SignatureRejectedAnon,
-};
+} as const;
 
 const defaultCaptureException = (err: unknown) => {
   // throw error on clean stack so its captured by platform integrations (eg sentry)
@@ -113,6 +118,11 @@ const exceptionsToFilter: Record<string, boolean> = {
   [`You must pass either an "anonymousId" or a "userId".`]: true,
 };
 
+/**
+ * The type of a Segment event to create.
+ *
+ * Must correspond to the name of a method in {@link Analytics}.
+ */
 type SegmentEventType = 'identify' | 'track' | 'page';
 
 // TODO: Complete MetaMaskState by adding the full state definition and relocate it after the background is converted to TypeScript.
@@ -145,7 +155,7 @@ export type MetaMaskState = {
 };
 
 /**
- * MetaMetricsControllerState
+ * The state that MetaMetricsController stores.
  *
  * @property metaMetricsId - The user's metaMetricsId that will be attached to all non-anonymized event payloads
  * @property participateInMetaMetrics - The user's preference for participating in the MetaMetrics analytics program.
@@ -246,11 +256,11 @@ export default class MetaMetricsController {
     extension,
     captureException = defaultCaptureException,
   }: MetaMetricsControllerOptions) {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    this.#captureException = (err: any) => {
+    this.#captureException = (err: unknown) => {
+      const message = getErrorMessage(err);
       // This is a temporary measure. Currently there are errors flooding sentry due to a problem in how we are tracking anonymousId
       // We intend on removing this as soon as we understand how to correctly solve that problem.
-      if (!exceptionsToFilter[err.message]) {
+      if (!exceptionsToFilter[message]) {
         captureException(err);
       }
     };
@@ -585,16 +595,17 @@ export default class MetaMetricsController {
    * Setter for the `participateInMetaMetrics` property
    *
    * @param participateInMetaMetrics - Whether or not the user wants to participate in MetaMetrics if not set
+   * @returns The string of the new metametrics id, or null
    */
   async setParticipateInMetaMetrics(
     participateInMetaMetrics: boolean,
-  ): Promise<string> {
+  ): Promise<string | null> {
     const { metaMetricsId: existingMetaMetricsId } = this.state;
 
     const metaMetricsId =
       participateInMetaMetrics && !existingMetaMetricsId
         ? this.generateMetaMetricsId()
-        : (existingMetaMetricsId as string);
+        : existingMetaMetricsId;
 
     this.store.updateState({ participateInMetaMetrics, metaMetricsId });
 
@@ -606,7 +617,10 @@ export default class MetaMetricsController {
     }
 
     ///: BEGIN:ONLY_INCLUDE_IF(build-main)
-    if (this.#environment !== ENVIRONMENT.DEVELOPMENT) {
+    if (
+      this.#environment !== ENVIRONMENT.DEVELOPMENT &&
+      metaMetricsId !== null
+    ) {
       this.updateExtensionUninstallUrl(participateInMetaMetrics, metaMetricsId);
     }
     ///: END:ONLY_INCLUDE_IF
@@ -732,6 +746,7 @@ export default class MetaMetricsController {
 
       // change anonymous event names
       const anonymousEventName =
+        // @ts-expect-error This property may not exist. We check for it below.
         overrideAnonymousEventNames[`${payload.event}`];
       const anonymousPayload = {
         ...payload,
@@ -813,7 +828,7 @@ export default class MetaMetricsController {
   }
 
   // Add or update traits for tracking.
-  updateTraits(newTraits: Record<string, MetaMetricsUserTraits>): void {
+  updateTraits(newTraits: MetaMetricsUserTraits): void {
     const { traits } = this.store.getState();
     this.store.updateState({
       traits: { ...traits, ...newTraits },
@@ -876,6 +891,7 @@ export default class MetaMetricsController {
    *
    * @private
    * @param rawPayload - raw payload provided to trackEvent
+   * @returns formatted event payload for segment
    */
   #buildEventPayload(
     rawPayload: Omit<MetaMetricsEventPayload, 'sensitiveProperties'>,
@@ -927,7 +943,7 @@ export default class MetaMetricsController {
           properties &&
           'chain_id' in properties &&
           typeof properties.chain_id === 'string'
-            ? properties?.chain_id
+            ? properties.chain_id
             : this.chainId,
         environment_type: environmentType,
         ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
@@ -945,7 +961,6 @@ export default class MetaMetricsController {
    * @param metamaskState - Full metamask state object.
    * @returns traits that have changed since last update
    */
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   _buildUserTraitsObject(
     metamaskState: MetaMaskState,
   ): Partial<MetaMetricsUserTraits> | null {
@@ -958,7 +973,7 @@ export default class MetaMetricsController {
     ///: END:ONLY_INCLUDE_IF
     const { traits, previousUserTraits } = this.store.getState();
 
-    const currentTraits: MetaMetricsUserTraits = {
+    const currentTraits = {
       [MetaMetricsUserTrait.AddressBookEntries]: sum(
         Object.values(metamaskState.addressBook).map((v) =>
           size(v as object | string | null | undefined),
@@ -1023,7 +1038,8 @@ export default class MetaMetricsController {
 
     if (previousUserTraits && !isEqual(previousUserTraits, currentTraits)) {
       const updates = pickBy(currentTraits, (v, k) => {
-        const previous = previousUserTraits[k as keyof MetaMetricsUserTraits];
+        // @ts-expect-error It's okay that `k` may not be a key of `previousUserTraits`, because we assume `isEqual` can handle it
+        const previous = previousUserTraits[k];
         return !isEqual(previous, v);
       });
       this.store.updateState({ previousUserTraits: currentTraits });
@@ -1071,13 +1087,11 @@ export default class MetaMetricsController {
    *
    * @param allNfts
    */
-  #getAllNFTsFlattened = memoize(
-    (allNfts: NftControllerState['allNfts'] = {}) => {
-      return Object.values(allNfts).reduce((result: Nft[], chainNFTs) => {
-        return result.concat(...Object.values(chainNFTs));
-      }, []);
-    },
-  );
+  #getAllNFTsFlattened = memoize((allNfts: MetaMaskState['allNfts'] = {}) => {
+    return Object.values(allNfts).reduce((result: Nft[], chainNFTs) => {
+      return result.concat(...Object.values(chainNFTs));
+    }, []);
+  });
 
   /**
    * Returns the number of unique NFT addresses the user
@@ -1086,7 +1100,7 @@ export default class MetaMetricsController {
    * @param allNfts
    */
   #getAllUniqueNFTAddressesLength(
-    allNfts: NftControllerState['allNfts'] = {},
+    allNfts: MetaMaskState['allNfts'] = {},
   ): number {
     const allNFTAddresses = this.#getAllNFTsFlattened(allNfts).map(
       (nft) => nft.address,
@@ -1099,7 +1113,7 @@ export default class MetaMetricsController {
    * @param allTokens
    * @returns number of unique token addresses
    */
-  #getNumberOfTokens(allTokens: TokensControllerState['allTokens']): number {
+  #getNumberOfTokens(allTokens: MetaMaskState['allTokens']): number {
     return Object.values(allTokens).reduce((result, accountsByChain) => {
       return result + sum(Object.values(accountsByChain).map(size));
     }, 0);
@@ -1235,15 +1249,18 @@ export default class MetaMetricsController {
     // updates, or otherwise delaying user interaction, supply the
     // 'flushImmediately' flag to the trackEvent method.
     return new Promise<void>((resolve, reject) => {
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      const callback = (err: any) => {
+      const callback = (err: unknown) => {
         if (err) {
+          const message = isErrorWithMessage(err) ? err.message : '';
+          const stack = isErrorWithStack(err) ? err.stack : undefined;
           // The error that segment gives us has some manipulation done to it
           // that seemingly breaks with lockdown enabled. Creating a new error
           // here prevents the system from freezing when the network request to
           // segment fails for any reason.
-          const safeError = new Error(err.message);
-          safeError.stack = err.stack;
+          const safeError = new Error(message);
+          if (stack) {
+            safeError.stack = stack;
+          }
           return reject(safeError);
         }
         return resolve();
@@ -1266,8 +1283,7 @@ export default class MetaMetricsController {
   #submitSegmentAPICall(
     eventType: SegmentEventType,
     payload: Partial<SegmentEventPayload>,
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    callback?: (result: any) => any,
+    callback?: (result: unknown) => unknown,
   ): void {
     const {
       metaMetricsId,
@@ -1308,8 +1324,7 @@ export default class MetaMetricsController {
         },
       },
     });
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const modifiedCallback = (result: any) => {
+    const modifiedCallback = (result: unknown) => {
       const { segmentApiCalls } = this.store.getState();
       delete segmentApiCalls[messageId];
       this.store.updateState({
