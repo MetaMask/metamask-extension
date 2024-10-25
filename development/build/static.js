@@ -12,12 +12,7 @@ const { getPathInsideNodeModules } = require('./utils');
 
 const EMPTY_JS_FILE = './development/empty.js';
 
-module.exports = createStaticAssetTasks;
-// Exposed for UI Integration tests preview
-module.exports.getCopyTargets = getCopyTargets;
-module.exports.copyGlob = copyGlob;
-
-function createStaticAssetTasks({
+module.exports = function createStaticAssetTasks({
   livereload,
   browserPlatforms,
   shouldIncludeLockdown = true,
@@ -101,17 +96,17 @@ function createStaticAssetTasks({
       );
     }
   }
-}
 
-async function copyGlob(baseDir, srcGlob, dest) {
-  const sources = await glob(srcGlob, { onlyFiles: false });
-  await Promise.all(
-    sources.map(async (src) => {
-      const relativePath = path.relative(baseDir, src);
-      await fs.copy(src, `${dest}${relativePath}`, { overwrite: true });
-    }),
-  );
-}
+  async function copyGlob(baseDir, srcGlob, dest) {
+    const sources = await glob(srcGlob, { onlyFiles: false });
+    await Promise.all(
+      sources.map(async (src) => {
+        const relativePath = path.relative(baseDir, src);
+        await fs.copy(src, `${dest}${relativePath}`, { overwrite: true });
+      }),
+    );
+  }
+};
 
 function getCopyTargets(shouldIncludeLockdown, shouldIncludeSnow) {
   const allCopyTargets = [
