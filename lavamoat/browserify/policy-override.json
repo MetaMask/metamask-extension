@@ -7,16 +7,6 @@
         "@metamask/utils": true
       }
     },
-    "@metamask/controllers>web3-provider-engine>eth-json-rpc-middleware>node-fetch": {
-      "globals": {
-        "fetch": true
-      }
-    },
-    "@metamask/controllers>web3-provider-engine>cross-fetch>node-fetch": {
-      "globals": {
-        "fetch": true
-      }
-    },
     "lodash": {
       "globals": {
         "setTimeout": true,
@@ -68,11 +58,6 @@
       }
     },
     "web3": {
-      "globals": {
-        "XMLHttpRequest": true
-      }
-    },
-    "@metamask/controllers>web3": {
       "globals": {
         "XMLHttpRequest": true
       }
@@ -137,11 +122,6 @@
       }
     },
     "@metamask/rpc-methods-flask>nanoid": {
-      "globals": {
-        "crypto.getRandomValues": true
-      }
-    },
-    "@metamask/smart-transactions-controller>@metamask/controllers>nanoid": {
       "globals": {
         "crypto.getRandomValues": true
       }
