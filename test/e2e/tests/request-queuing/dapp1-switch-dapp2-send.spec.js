@@ -104,7 +104,7 @@ describe('Request Queuing Dapp 1, Switch Tx -> Dapp 2 Send Tx', function () {
           params: [{ chainId: '0x539' }],
         });
 
-        // Initiate switchEthereumChain on Dapp Two
+        // Initiate switchEthereumChain on Dapp One
         await driver.executeScript(
           `window.ethereum.request(${switchEthereumChainRequest})`,
         );
@@ -256,7 +256,7 @@ describe('Request Queuing Dapp 1, Switch Tx -> Dapp 2 Send Tx', function () {
           params: [{ chainId: '0x539' }],
         });
 
-        // Initiate switchEthereumChain on Dapp Two
+        // Initiate switchEthereumChain on Dapp One
         await driver.executeScript(
           `window.ethereum.request(${switchEthereumChainRequest})`,
         );
