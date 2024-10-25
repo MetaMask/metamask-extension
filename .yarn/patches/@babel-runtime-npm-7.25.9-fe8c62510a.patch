@@ -1,10 +1,10 @@
 diff --git a/helpers/construct.js b/helpers/construct.js
-index 771e1d7952e80f11619424fbabb3744b959ffa49..5fe152bc1129bd8c8b7bb217ca1972ac4e089051 100644
+index aee8e70448824f509d6605e2dfa4455167442f21..00a69eba8d4c15a1f9aa318a50abb96c2ec447d9 100644
 --- a/helpers/construct.js
 +++ b/helpers/construct.js
-@@ -1,10 +1,21 @@
+@@ -1,10 +1,22 @@
+ var isNativeReflectConstruct = require("./isNativeReflectConstruct.js");
 -var setPrototypeOf = require("./setPrototypeOf.js");
--var isNativeReflectConstruct = require("./isNativeReflectConstruct.js");
 -function _construct(t, e, r) {
 -  if (isNativeReflectConstruct()) return Reflect.construct.apply(null, arguments);
 -  var o = [null];

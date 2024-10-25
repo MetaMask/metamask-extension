@@ -1,0 +1,12 @@
+diff --git a/lib/index.js b/lib/index.js
+index 55b58e10eef589ff80ae33ebd1f1efe488b01153..e919c190d33ab9563f1364667fb4f5894bb6435d 100644
+--- a/lib/index.js
++++ b/lib/index.js
+@@ -211,7 +211,6 @@ var _transform = require("./transform.js");
+ var _transformFile = require("./transform-file.js");
+ var _transformAst = require("./transform-ast.js");
+ var _parse = require("./parse.js");
+-var thisFile = require("./index.js");
+ ;
+ const version = exports.version = "7.25.9";
+ const resolvePlugin = (name, dirname) => resolvers.resolvePlugin(name, dirname, false).filepath;
