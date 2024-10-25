@@ -15,6 +15,11 @@ export function useResimulationAlert(): Alert[] {
   }
 
   const { simulationData } = currentConfirmation;
+
+  if (!simulationData) {
+    return [];
+  }
+
   const { isUpdatedAfterSecurityCheck } = simulationData;
 
   return useMemo(() => {
