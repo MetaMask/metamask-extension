@@ -1326,6 +1326,9 @@ async function openMenuSafe(driver) {
   }
 }
 
+// https://sentry.io/api/0000000/envelope/?sentry_key=fake&sentry_version=7&sentry_client=sentry.javascript.browser%2F8.33.1
+const sentryRegEx = /^https:\/\/sentry\.io\/api\/\d+\/envelope/gu;
+
 module.exports = {
   DAPP_HOST_ADDRESS,
   DAPP_URL,
@@ -1399,4 +1402,5 @@ module.exports = {
   getSelectedAccountAddress,
   tempToggleSettingRedesignedConfirmations,
   openMenuSafe,
+  sentryRegEx,
 };
