@@ -1,7 +1,6 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
-import { getTokenList } from '../../../../selectors';
-import { useTokenFiatAmount } from '../../../../hooks/useTokenFiatAmount';
+import { getCurrentCurrency, getTokenList } from '../../../../selectors';
 import { TokenListItem } from '../../../multichain';
 import { isEqualCaseInsensitive } from '../../../../../shared/modules/string-utils';
 import { useIsOriginalTokenSymbol } from '../../../../hooks/useIsOriginalTokenSymbol';
@@ -11,6 +10,7 @@ type TokenCellProps = {
   address: string;
   symbol: string;
   string?: string;
+  tokenFiatAmount: number;
   image: string;
   onClick?: (arg: string) => void;
 };
@@ -20,8 +20,10 @@ export default function TokenCell({
   image,
   symbol,
   string,
+  tokenFiatAmount,
   onClick,
 }: TokenCellProps) {
+  const currentCurrency = useSelector(getCurrentCurrency);
   const tokenList = useSelector(getTokenList);
   const tokenData = Object.values(tokenList).find(
     (token) =>
@@ -30,13 +32,11 @@ export default function TokenCell({
   );
   const title = tokenData?.name || symbol;
   const tokenImage = tokenData?.iconUrl || image;
-  const formattedFiat = useTokenFiatAmount(address, string, symbol, {}, false);
   const locale = useSelector(getIntlLocale);
-  const primary = new Intl.NumberFormat(locale, {
-    minimumSignificantDigits: 1,
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    // @ts-ignore
-  }).format(string.toString());
+  const formattedFiatBalance = new Intl.NumberFormat(locale, {
+    currency: currentCurrency.toUpperCase(),
+    style: 'currency',
+  }).format(tokenFiatAmount);
 
   const isOriginalTokenSymbol = useIsOriginalTokenSymbol(address, symbol);
 
@@ -45,8 +45,8 @@ export default function TokenCell({
       onClick={onClick ? () => onClick(address) : undefined}
       tokenSymbol={symbol}
       tokenImage={tokenImage}
-      primary={`${primary || 0}`}
-      secondary={isOriginalTokenSymbol ? formattedFiat : null}
+      primary={string}
+      secondary={formattedFiatBalance}
       title={title}
       isOriginalTokenSymbol={isOriginalTokenSymbol}
       address={address}

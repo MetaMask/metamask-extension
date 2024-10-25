@@ -458,6 +458,95 @@ export function getMetaMaskCachedBalances(state) {
 }
 
 /**
+ * Based on the current account address, return the balance for the native token of all chain networks on that account
+ *
+ * @param {object} state - Redux state
+ * @returns {object} An object of tokens with balances for the given account. Data relationship will be chainId => balance
+ */
+export function getSelectedAccountNativeTokenCachedBalanceByChainId(state) {
+  const { accountsByChainId } = state.metamask;
+  const { address: selectedAddress } = getSelectedInternalAccount(state);
+
+  const balancesByChainId = {};
+  for (const [chainId, accounts] of Object.entries(accountsByChainId || {})) {
+    if (accounts[selectedAddress]) {
+      balancesByChainId[chainId] = accounts[selectedAddress].balance;
+    }
+  }
+  return balancesByChainId;
+}
+
+/**
+ * Based on the current account address, query for all tokens across all chain networks on that account.
+ * This will eventually be exposed in a new piece of state called `tokenBalances`, which will including the new polling mechanism to stay up to date
+ *
+ * @param {object} state - Redux state
+ * @returns {object} An array of tokens with balances for the given account. Data relationship will be chainId => balance
+ */
+export function getSelectedAccountTokensAcrossChains(state) {
+  const { allTokens } = state.metamask;
+  const { address: selectedAddress } = getSelectedInternalAccount(state);
+
+  // Initialize an empty object to hold tokens by chainId for the selected account
+  const tokensByChain = {};
+
+  // Loop through each chain (0x1, 0x89, etc.)
+  for (const chainId in allTokens) {
+    if (allTokens[chainId]) {
+      const chainData = allTokens[chainId];
+
+      // Check if the selected account exists within this chain
+      if (chainData[selectedAddress]) {
+        // Ensure the chainId key exists in tokensByChain
+        if (!tokensByChain[chainId]) {
+          tokensByChain[chainId] = [];
+        }
+
+        // Add each token to the array under its chainId
+        chainData[selectedAddress].forEach((token) => {
+          const tokenWithChain = { ...token, chainId };
+          tokensByChain[chainId].push(tokenWithChain);
+        });
+      }
+    }
+  }
+
+  return tokensByChain;
+}
+
+/**
+ * Based on the current account address, query for all tokens across all chain networks on that account.
+ * This will eventually be exposed in a new piece of state called `tokenBalances`, which will including the new polling mechanism to stay up to date
+ *
+ * @param {object} state - Redux state
+ * @returns {object} An array of tokens with balances for the given account. Data relationship will be chainId => balance
+ */
+export function getSelectedAccountTokenBalancesAcrossChains(state) {
+  const accountTokens = getSelectedAccountTokensAcrossChains(state);
+
+  // TODO: read this from tokenBalances state
+  function generateRandomBalance(min = 10, max = 20) {
+    const factor = 100000; // 10^5 to get 5 decimal places
+    const randomValue = Math.random() * (max - min) + min;
+    return Math.floor(randomValue * factor) / factor;
+  }
+
+  const tokenBalancesByChain = {};
+
+  Object.keys(accountTokens).forEach((chainId) => {
+    tokenBalancesByChain[chainId] = {};
+
+    accountTokens[chainId].forEach((token) => {
+      const { address } = token;
+
+      tokenBalancesByChain[chainId][address] = generateRandomBalance();
+    });
+  });
+
+  return tokenBalancesByChain;
+}
+
+/**
  *  @typedef {import('./selectors.types').InternalAccountWithBalance} InternalAccountWithBalance
  */
 
@@ -589,6 +678,10 @@ export const getTokenExchangeRates = (state) => {
 export const getTokensMarketData = (state) => {
   const chainId = getCurrentChainId(state);
   return state.metamask.marketData?.[chainId];
+};
+
+export const getTokensMarketDataAcrossChains = (state) => {
+  return state.metamask.marketData;
 };
 
 export function getAddressBook(state) {
@@ -1242,6 +1335,10 @@ export function getInfuraBlocked(state) {
 export function getUSDConversionRate(state) {
   return state.metamask.currencyRates[getProviderConfig(state).ticker]
     ?.usdConversionRate;
+}
+
+export function getCurrencyRates(state) {
+  return state.metamask.currencyRates;
 }
 
 export function getWeb3ShimUsageStateForOrigin(state, origin) {
