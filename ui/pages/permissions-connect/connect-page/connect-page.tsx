@@ -99,7 +99,7 @@ export const ConnectPage: React.FC<ConnectPageProps> = ({
   const currentlySelectedNetworkChainId =
     currentlySelectedNetwork.network.chainId;
   // If globally selected network is a test network, include that in the default selcted networks for connection request
-  const selectedTestNetwork = testNetworks.filter(
+  const selectedTestNetwork = testNetworks.find(
     (network: { chainId: string }) =>
       network.chainId === currentlySelectedNetworkChainId,
   );
@@ -107,7 +107,7 @@ export const ConnectPage: React.FC<ConnectPageProps> = ({
   const selectedNetworksList =
     selectedTestNetwork === undefined
       ? nonTestNetworks
-      : [...nonTestNetworks, ...selectedTestNetwork];
+      : [...nonTestNetworks, ...[selectedTestNetwork]];
   const defaultSelectedChainIds =
     requestedChainIds.length > 0
       ? requestedChainIds
