@@ -2,17 +2,11 @@ import {
   BlockaidReason,
   BlockaidResultType,
 } from '../../../../shared/constants/security-provider';
-import fetchWithCache from '../../../../shared/lib/fetch-with-cache';
 import {
   getSecurityAlertsAPISupportedChainIds,
   isSecurityAlertsAPIEnabled,
   validateWithSecurityAlertsAPI,
 } from './security-alerts-api';
-
-jest.mock('../../../../shared/lib/fetch-with-cache', () => ({
-  __esModule: true,
-  default: jest.fn(),
-}));
 
 const CHAIN_ID_MOCK = '0x1';
 
@@ -103,28 +97,28 @@ describe('Security Alerts API', () => {
   });
 
   describe('getSecurityAlertsAPISupportedChainIds', () => {
-    it('sends GET request with cache', async () => {
+    it('sends GET request', async () => {
       const SUPPORTED_CHAIN_IDS_MOCK = ['0x1', '0x2'];
-      (fetchWithCache as jest.Mock).mockResolvedValue(SUPPORTED_CHAIN_IDS_MOCK);
-
+      fetchMock.mockResolvedValue({
+        ok: true,
+        json: async () => SUPPORTED_CHAIN_IDS_MOCK,
+      });
       const response = await getSecurityAlertsAPISupportedChainIds();
 
       expect(response).toEqual(SUPPORTED_CHAIN_IDS_MOCK);
 
-      expect(fetchWithCache).toHaveBeenCalledTimes(1);
-      expect(fetchWithCache).toHaveBeenCalledWith({
-        cacheOptions: { cacheRefreshTime: 300000 },
-        fetchOptions: { method: 'GET' },
-        functionName: 'getSecurityAlertsAPISupportedChainIds',
-        url: `${BASE_URL}/supportedChains`,
-      });
+      expect(fetchMock).toHaveBeenCalledTimes(1);
+      expect(fetchMock).toHaveBeenCalledWith(
+        `${BASE_URL}/supportedChains`,
+        undefined,
+      );
     });
 
     it('throws an error if response is not ok', async () => {
-      (fetchWithCache as jest.Mock).mockResolvedValue(null);
+      fetchMock.mockResolvedValue({ ok: false, status: 404 });
 
       await expect(getSecurityAlertsAPISupportedChainIds()).rejects.toThrow(
-        'Security alerts API request failed: No response received',
+        'Security alerts API request failed with status: 404',
       );
     });
   });

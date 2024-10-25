@@ -1,11 +1,8 @@
 import { Hex, JsonRpcRequest } from '@metamask/utils';
-import fetchWithCache from '../../../../shared/lib/fetch-with-cache';
-import { MINUTE } from '../../../../shared/constants/time';
 import { SecurityAlertResponse } from './types';
 
 const ENDPOINT_VALIDATE = 'validate';
 const ENDPOINT_SUPPORTED_CHAINS = 'supportedChains';
-const CACHE_REFRESH_FIVE_MINUTES = MINUTE * 5;
 
 type SecurityAlertsAPIRequestBody = {
   method: string;
@@ -18,13 +15,7 @@ export type SecurityAlertsAPIRequest = Omit<
 > &
   SecurityAlertsAPIRequestBody;
 
-type RequestOptions = {
-  useCache?: boolean;
-  functionName?: string;
-  cacheOptions?: Record<string, unknown>;
-};
-
-export function isSecurityAlertsAPIEnabled(): boolean {
+export function isSecurityAlertsAPIEnabled() {
   const isEnabled = process.env.SECURITY_ALERTS_API_ENABLED;
   return isEnabled?.toString() === 'true';
 }
@@ -46,55 +37,24 @@ export async function validateWithSecurityAlertsAPI(
 }
 
 export async function getSecurityAlertsAPISupportedChainIds(): Promise<Hex[]> {
-  return request(
-    ENDPOINT_SUPPORTED_CHAINS,
-    { method: 'GET' },
-    {
-      useCache: true,
-      functionName: 'getSecurityAlertsAPISupportedChainIds',
-      cacheOptions: { cacheRefreshTime: CACHE_REFRESH_FIVE_MINUTES },
-    },
-  );
+  return request(ENDPOINT_SUPPORTED_CHAINS);
 }
 
-async function request(
-  endpoint: string,
-  options?: RequestInit,
-  requestOptions?: RequestOptions,
-) {
-  const {
-    useCache = false,
-    functionName = 'SecurityAlertsAPI',
-    cacheOptions,
-  } = requestOptions ?? {};
+async function request(endpoint: string, options?: RequestInit) {
   const url = getUrl(endpoint);
 
-  let response;
-  if (useCache) {
-    response = await fetchWithCache({
-      url,
-      fetchOptions: options,
-      cacheOptions,
-      functionName,
-    });
-    if (!response) {
-      throw new Error(
-        'Security alerts API request failed: No response received',
-      );
-    }
-    return response;
-  }
+  const response = await fetch(url, options);
 
-  response = await fetch(url, options);
   if (!response.ok) {
     throw new Error(
       `Security alerts API request failed with status: ${response.status}`,
     );
   }
-  return await response.json();
+
+  return response.json();
 }
 
-function getUrl(endpoint: string): string {
+function getUrl(endpoint: string) {
   const host = process.env.SECURITY_ALERTS_API_URL;
 
   if (!host) {
