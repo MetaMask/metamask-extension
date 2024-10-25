@@ -2,8 +2,8 @@ import {
   SimulationData,
   SimulationError,
   SimulationErrorCode,
+  TransactionMeta,
 } from '@metamask/transaction-controller';
-import { TransactionMeta } from '@metamask/transaction-controller';
 import React from 'react';
 import {
   Box,
@@ -23,12 +23,12 @@ import {
   TextVariant,
 } from '../../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
-import { BalanceChangeList } from './balance-change-list';
-import { useBalanceChanges } from './useBalanceChanges';
-import { useSimulationMetrics } from './useSimulationMetrics';
 import { useConfirmContext } from '../../context/confirm';
 import { ConfirmInfoAlertRow } from '../../../../components/app/confirm/info/row/alert-row/alert-row';
 import { RowAlertKey } from '../../../../components/app/confirm/info/row/constants';
+import { BalanceChangeList } from './balance-change-list';
+import { useBalanceChanges } from './useBalanceChanges';
+import { useSimulationMetrics } from './useSimulationMetrics';
 
 export type SimulationDetailsProps = {
   simulationData?: SimulationData;
