@@ -37,7 +37,7 @@ class HeaderNavbar {
   }
 
   async lockMetaMask(): Promise<void> {
-    await this.openAccounOptionMenu();
+    await this.openAccountOptionMenu();
     await this.driver.clickElement(this.lockMetaMaskButton);
   }
 
@@ -45,7 +45,7 @@ class HeaderNavbar {
     await this.driver.clickElement(this.accountMenuButton);
   }
 
-  async openAccounOptionMenu(): Promise<void> {
+  async openAccountOptionMenu(): Promise<void> {
     console.log('Open account options menu');
     await this.driver.clickElement(this.accountOptionMenu);
     // fix race condition with mmi build
@@ -56,13 +56,13 @@ class HeaderNavbar {
 
   async openSnapListPage(): Promise<void> {
     console.log('Open account snap page');
-    await this.openAccounOptionMenu();
+    await this.openAccountOptionMenu();
     await this.driver.clickElement(this.accountSnapButton);
   }
 
   async openSettingsPage(): Promise<void> {
     console.log('Open settings page');
-    await this.openAccounOptionMenu();
+    await this.openAccountOptionMenu();
     await this.driver.clickElement(this.settingsButton);
   }
 
