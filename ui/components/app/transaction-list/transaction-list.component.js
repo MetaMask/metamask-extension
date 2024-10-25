@@ -55,6 +55,7 @@ import { MetaMetricsContext } from '../../../contexts/metametrics';
 import { useMultichainSelector } from '../../../hooks/useMultichainSelector';
 import { getMultichainNetwork } from '../../../selectors/multichain';
 import { endTrace, TraceName } from '../../../../shared/lib/trace';
+import { selectIncomingBridgeHistory } from '../../../ducks/bridge-status/selectors';
 
 const PAGE_INCREMENT = 10;
 
@@ -150,6 +151,8 @@ export default function TransactionList({
   const unfilteredCompletedTransactions = useSelector(
     nonceSortedCompletedTransactionsSelector,
   );
+  const incomingBridgeHistoryItems = useSelector(selectIncomingBridgeHistory);
+
   const chainId = useSelector(getCurrentChainId);
   const selectedAccount = useSelector(getSelectedAccount);
 
@@ -308,6 +311,27 @@ export default function TransactionList({
       }
       <Box className="transaction-list" {...boxProps}>
         <Box className="transaction-list__transactions">
+          {incomingBridgeHistoryItems.map((bridgeTxHistoryItem) => (
+            <div key={bridgeTxHistoryItem.startTime}>
+              <div>status: {bridgeTxHistoryItem?.status?.status}</div>
+              <div>
+                tx 1:{' '}
+                {`${bridgeTxHistoryItem?.status?.srcChain.txHash?.substring(
+                  0,
+                  6,
+                )}...`}
+                ,
+              </div>
+              <div>
+                tx 2:{' '}
+                {`${bridgeTxHistoryItem?.status?.destChain.txHash?.substring(
+                  0,
+                  6,
+                )}...`}
+                ...
+              </div>
+            </div>
+          ))}
           {pendingTransactions.length > 0 && (
             <Box className="transaction-list__pending-transactions">
               {pendingTransactions.map((dateGroup) => {
