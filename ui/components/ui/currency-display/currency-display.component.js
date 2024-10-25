@@ -77,6 +77,7 @@ export default function CurrencyDisplay({
         ellipsis
         variant={TextVariant.inherit}
         isHidden={privacyMode}
+        data-testid="account-value-and-suffix"
         {...textProps}
       >
         {parts.prefix}

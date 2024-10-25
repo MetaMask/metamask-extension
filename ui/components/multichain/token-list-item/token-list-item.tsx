@@ -44,7 +44,6 @@ import {
   getTokensMarketData,
   getParticipateInMetaMetrics,
   getDataCollectionForMarketing,
-  getPreferences,
 } from '../../../selectors';
 import {
   getMultichainCurrentChainId,
@@ -85,6 +84,7 @@ type TokenListItemProps = {
   address?: string | null;
   showPercentage?: boolean;
   isPrimaryTokenSymbolHidden?: boolean;
+  privacyMode?: boolean;
 };
 
 export const TokenListItem = ({
@@ -102,13 +102,13 @@ export const TokenListItem = ({
   isStakeable = false,
   address = null,
   showPercentage = false,
+  privacyMode = false,
 }: TokenListItemProps) => {
   const t = useI18nContext();
   const isEvm = useSelector(getMultichainIsEvm);
   const trackEvent = useContext(MetaMetricsContext);
   const chainId = useSelector(getMultichainCurrentChainId);
   const metaMetricsId = useSelector(getMetaMetricsId);
-  const { privacyMode } = useSelector(getPreferences);
   const isMetaMetricsEnabled = useSelector(getParticipateInMetaMetrics);
   const isMarketingEnabled = useSelector(getDataCollectionForMarketing);
   const { safeChains } = useSafeChains();

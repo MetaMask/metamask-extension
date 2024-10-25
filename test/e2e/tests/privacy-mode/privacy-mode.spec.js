@@ -68,4 +68,39 @@ describe('Privacy Mode', function () {
       },
     );
   });
+
+  it('should hide fiat balance and token balance when privacy mode is activated', async function () {
+    await withFixtures(
+      {
+        fixtures: new FixtureBuilder().withPreferencesController().build(),
+        ganacheOptions: defaultGanacheOptions,
+        title: this.test.fullTitle(),
+      },
+      async ({ driver }) => {
+        await unlockWallet(driver);
+
+        async function togglePrivacy() {
+          const balanceElement = await driver.findElement(
+            '[data-testid="eth-overview__primary-currency"] .currency-display-component__text',
+          );
+          const initialText = await balanceElement.getText();
+
+          await driver.clickElement('[data-testid="sensitive-toggle"]');
+          await driver.wait(async () => {
+            const currentText = await balanceElement.getText();
+            return currentText !== initialText;
+          }, 2e3);
+        }
+
+        await togglePrivacy();
+        await driver.clickElement('[data-testid="account-menu-icon"]');
+        const valueText = await driver.findElement(
+          '[data-testid="account-value-and-suffix"]',
+        );
+        const valueTextContent = await valueText.getText();
+        console.log('VALUE TEXT CONTENT', valueTextContent);
+        assert.equal(valueTextContent, '••••••');
+      },
+    );
+  });
 });
