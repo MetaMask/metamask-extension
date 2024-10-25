@@ -37,6 +37,7 @@ import { useTokensWithFiltering } from '../../../hooks/useTokensWithFiltering';
 import { setActiveNetwork } from '../../../store/actions';
 import { Numeric } from '../../../../shared/modules/Numeric';
 import { hexToDecimal } from '../../../../shared/modules/conversion.utils';
+import { QuoteRequest } from '../types';
 import { BridgeInputGroup } from './bridge-input-group';
 
 const PrepareBridgePage = () => {
@@ -96,7 +97,10 @@ const PrepareBridgePage = () => {
   );
 
   const debouncedUpdateQuoteRequestInController = useCallback(
-    debounce((p) => dispatch(updateQuoteRequestParams(p)), 300),
+    debounce(
+      (p: Partial<QuoteRequest>) => dispatch(updateQuoteRequestParams(p)),
+      300,
+    ),
     [],
   );
 

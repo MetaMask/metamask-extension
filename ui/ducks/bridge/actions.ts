@@ -30,12 +30,12 @@ export {
   setFromTokenInputValue,
 };
 
-const callBridgeControllerMethod = <T extends string | Partial<QuoteRequest>>(
+const callBridgeControllerMethod = <T>(
   bridgeAction: BridgeUserAction | BridgeBackgroundAction,
-  args?: T[],
+  args?: T,
 ) => {
   return async (dispatch: MetaMaskReduxDispatch) => {
-    await submitRequestToBackground(bridgeAction, args);
+    await submitRequestToBackground(bridgeAction, [args]);
     await forceUpdateMetamaskState(dispatch);
   };
 };
@@ -53,9 +53,10 @@ export const setBridgeFeatureFlags = () => {
 export const setFromChain = (chainId: Hex) => {
   return async (dispatch: MetaMaskReduxDispatch) => {
     dispatch(
-      callBridgeControllerMethod<Hex>(BridgeUserAction.SELECT_SRC_NETWORK, [
+      callBridgeControllerMethod<Hex>(
+        BridgeUserAction.SELECT_SRC_NETWORK,
         chainId,
-      ]),
+      ),
     );
   };
 };
@@ -63,22 +64,18 @@ export const setFromChain = (chainId: Hex) => {
 export const setToChain = (chainId: Hex) => {
   return async (dispatch: MetaMaskReduxDispatch) => {
     dispatch(
-      callBridgeControllerMethod<Hex>(BridgeUserAction.SELECT_DEST_NETWORK, [
+      callBridgeControllerMethod<Hex>(
+        BridgeUserAction.SELECT_DEST_NETWORK,
         chainId,
-      ]),
+      ),
     );
   };
 };
 
-export const updateQuoteRequestParams = <T extends Partial<QuoteRequest>>(
-  params: T,
-) => {
+export const updateQuoteRequestParams = (params: Partial<QuoteRequest>) => {
   return async (dispatch: MetaMaskReduxDispatch) => {
     await dispatch(
-      callBridgeControllerMethod<Partial<QuoteRequest>>(
-        BridgeUserAction.UPDATE_QUOTE_PARAMS,
-        [params],
-      ),
+      callBridgeControllerMethod(BridgeUserAction.UPDATE_QUOTE_PARAMS, params),
     );
   };
 };
