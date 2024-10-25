@@ -115,7 +115,7 @@ const HeaderLayout: React.FC = ({ children }) => {
       justifyContent={JustifyContent.spaceBetween}
     >
       {isRedesignedConfirmationsEnabled ? (
-        <HeaderContentWithAlert />
+        <HeaderWithAlert />
       ) : (
         <Box
           display={Display.Flex}
@@ -150,7 +150,7 @@ const HeaderLayout: React.FC = ({ children }) => {
   );
 };
 
-const HeaderContentWithAlert = () => {
+const HeaderWithAlert = () => {
   const { currentConfirmation: transactionMeta } =
     useConfirmContext<TransactionMeta>();
 
@@ -166,7 +166,8 @@ const HeaderContentWithAlert = () => {
         paddingRight: 0,
       }}
     >
-      <div />
+      {/* Intentional fragment */}
+      <></>
     </ConfirmInfoAlertRow>
   );
 };
