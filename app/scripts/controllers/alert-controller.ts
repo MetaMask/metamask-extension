@@ -80,11 +80,14 @@ export type AlertControllerState = {
  * @property state - The initial controller state
  * @property controllerMessenger - The controller messenger
  */
-type AlertControllerOptions = {
+export type AlertControllerOptions = {
   state: Partial<AlertControllerState>;
   messenger: AlertControllerMessenger;
 };
 
+/**
+ * Function to get default state of the {@link AlertController}.
+ */
 export const getDefaultAlertControllerState = (): AlertControllerState => ({
   alertEnabledness: TOGGLEABLE_ALERT_TYPES.reduce(
     (alertEnabledness: Record<string, boolean>, alertType: string) => {
