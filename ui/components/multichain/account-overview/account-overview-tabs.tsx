@@ -92,6 +92,7 @@ export const AccountOverviewTabs = ({
         category: MetaMetricsEventCategory.Home,
         event: getEventFromTabName(tabName),
       });
+      endTrace({ name: TraceName.AccountOverviewTab });
       trace({ name: TraceName.AccountOverviewTab });
       endTrace({ name: TraceName.AccountListItem });
     },
