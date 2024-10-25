@@ -456,7 +456,7 @@
     "message": "Review all alerts"
   },
   "alertReasonChangeInSimulationResults": {
-    "message": "Change in Simulation results"
+    "message": "Update in estimated changes"
   },
   "alertReasonGasEstimateFailed": {
     "message": "Inaccurate fee"

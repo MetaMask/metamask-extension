@@ -115,7 +115,7 @@ describe('useResimulationAlert', () => {
         key: 'simulationDetailsTitle',
         message:
           'Simulation results have changed and reflect loss of assets. Please review the changes before you proceed.',
-        reason: 'Change in Simulation results',
+        reason: 'Update in estimated changes',
         severity: Severity.Danger,
       },
     ]);
