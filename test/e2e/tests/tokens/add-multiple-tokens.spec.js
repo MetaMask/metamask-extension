@@ -28,15 +28,9 @@ describe('Multiple ERC20 Watch Asset', function () {
         await openDapp(driver, undefined, DAPP_URL);
 
         // Create Token 1
-        const createToken = await driver.waitForSelector({
-          text: 'Create Token',
-          tag: 'button',
-        });
-        await driver.scrollToElement(createToken);
-        await driver.clickElement(createToken);
-        await switchToNotificationWindow(driver);
-        await driver.findClickableElement({ text: 'Confirm', tag: 'button' });
-        await driver.clickElement({ text: 'Confirm', tag: 'button' });
+        await driver.clickElement({ text: 'Create Token', tag: 'button' });
+        await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
+        await driver.clickElementAndWaitToDisappear({ text: 'Confirm', tag: 'button' });
 
         // Wait for token 1 address to populate in dapp
         await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
@@ -49,10 +43,13 @@ describe('Multiple ERC20 Watch Asset', function () {
         }, 10000);
 
         // Create Token 2
+        await driver.clickElementUsingMouseMove({
+          text: 'Create Token',
+          tag: 'button',
+        });
         await driver.clickElement({ text: 'Create Token', tag: 'button' });
-        await switchToNotificationWindow(driver);
-        await driver.findClickableElement({ text: 'Confirm', tag: 'button' });
-        await driver.clickElement({ text: 'Confirm', tag: 'button' });
+        await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
+        await driver.clickElementAndWaitToDisappear({ text: 'Confirm', tag: 'button' });
 
         // Wait for token 2 address to populate in dapp
         await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
@@ -66,9 +63,8 @@ describe('Multiple ERC20 Watch Asset', function () {
 
         // Create Token 3
         await driver.clickElement({ text: 'Create Token', tag: 'button' });
-        await switchToNotificationWindow(driver);
-        await driver.findClickableElement({ text: 'Confirm', tag: 'button' });
-        await driver.clickElement({ text: 'Confirm', tag: 'button' });
+        await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
+        await driver.clickElementAndWaitToDisappear({ text: 'Confirm', tag: 'button' });
 
         // Wait for token 3 address to populate in dapp
         await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
@@ -87,7 +83,7 @@ describe('Multiple ERC20 Watch Asset', function () {
         });
 
         // Switch to watchAsset notification
-        await switchToNotificationWindow(driver);
+        await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
         const multipleSuggestedtokens = await driver.findElements(
           '.confirm-add-suggested-token__token-list-item',
         );
