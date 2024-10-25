@@ -11,7 +11,6 @@ import {
 } from '../../../shared/constants/bridge';
 import { MINUTE } from '../../../shared/constants/time';
 import fetchWithCache from '../../../shared/lib/fetch-with-cache';
-import { validateData } from '../../../shared/lib/swaps-utils';
 import {
   decimalToHex,
   hexToDecimal,
@@ -26,31 +25,19 @@ import {
   isSwapsDefaultTokenSymbol,
 } from '../../../shared/modules/swaps.utils';
 import {
-  BridgeAsset,
   BridgeFlag,
   FeatureFlagResponse,
-  Quote,
   QuoteRequest,
   QuoteResponse,
-  TxData,
 } from './types';
+import {
+  FEATURE_FLAG_VALIDATORS,
+  QUOTE_VALIDATORS,
+  validateResponse,
+} from './utils/validators';
 
 const CLIENT_ID_HEADER = { 'X-Client-Id': BRIDGE_CLIENT_ID };
 const CACHE_REFRESH_TEN_MINUTES = 10 * MINUTE;
-
-type Validator<ExpectedResponse, DataToValidate> = {
-  property: keyof ExpectedResponse | string;
-  type: string;
-  validator: (value: DataToValidate) => boolean;
-};
-
-const validateResponse = <ExpectedResponse, DataToValidate>(
-  validators: Validator<ExpectedResponse, DataToValidate>[],
-  data: unknown,
-  urlUsed: string,
-): data is ExpectedResponse => {
-  return validateData(validators, data, urlUsed);
-};
 
 export async function fetchBridgeFeatureFlags(): Promise<BridgeFeatureFlags> {
   const url = `${BRIDGE_API_BASE_URL}/getAllFeatureFlags`;
@@ -62,30 +49,8 @@ export async function fetchBridgeFeatureFlags(): Promise<BridgeFeatureFlags> {
   });
 
   if (
-    validateResponse<FeatureFlagResponse, unknown>(
-      [
-        {
-          property: BridgeFlag.EXTENSION_SUPPORT,
-          type: 'boolean',
-          validator: (v) => typeof v === 'boolean',
-        },
-        {
-          property: BridgeFlag.NETWORK_SRC_ALLOWLIST,
-          type: 'object',
-          validator: (v): v is number[] =>
-            Object.values(v as { [s: string]: unknown }).every(
-              (i) => typeof i === 'number',
-            ),
-        },
-        {
-          property: BridgeFlag.NETWORK_DEST_ALLOWLIST,
-          type: 'object',
-          validator: (v): v is number[] =>
-            Object.values(v as { [s: string]: unknown }).every(
-              (i) => typeof i === 'number',
-            ),
-        },
-      ],
+    validateResponse<FeatureFlagResponse>(
+      FEATURE_FLAG_VALIDATORS,
       rawFeatureFlags,
       url,
     )
@@ -179,89 +144,7 @@ export async function fetchBridgeQuotes(
   });
 
   const filteredQuotes = quotes.filter((quote: QuoteResponse) =>
-    validateResponse<QuoteResponse, unknown>(
-      [
-        {
-          property: 'quote',
-          type: 'object',
-          validator: (v): v is Quote =>
-            typeof v === 'object' &&
-            v !== null &&
-            v !== undefined &&
-            [
-              'requestId',
-              'srcTokenAmount',
-              'destTokenAmount',
-              'bridgeId',
-            ].every(
-              (k) => k in v && typeof v[k as keyof typeof v] === 'string',
-            ) &&
-            ['srcTokenAmount', 'destTokenAmount'].every(
-              (k) =>
-                k in v &&
-                typeof v[k as keyof typeof v] === 'string' &&
-                /^\d+$/u.test(v[k as keyof typeof v] as string),
-            ) &&
-            ['srcAsset', 'destAsset'].every(
-              (k) =>
-                k in v &&
-                typeof v[k as keyof typeof v] === 'object' &&
-                'address' in v[k as keyof typeof v] &&
-                typeof (v[k as keyof typeof v] as BridgeAsset).address ===
-                  'string' &&
-                'decimals' in v[k as keyof typeof v] &&
-                typeof (v[k as keyof typeof v] as BridgeAsset).decimals ===
-                  'number',
-            ),
-        },
-        {
-          property: 'approval',
-          type: 'object|undefined',
-          validator: (v): v is TxData | undefined =>
-            v === undefined ||
-            (v
-              ? typeof v === 'object' &&
-                'gasLimit' in v &&
-                typeof v.gasLimit === 'number' &&
-                'to' in v &&
-                typeof v.to === 'string' &&
-                'from' in v &&
-                typeof v.from === 'string' &&
-                'data' in v &&
-                typeof v.data === 'string'
-              : false),
-        },
-        {
-          property: 'trade',
-          type: 'object',
-          validator: (v): v is TxData =>
-            v
-              ? typeof v === 'object' &&
-                'gasLimit' in v &&
-                typeof v.gasLimit === 'number' &&
-                'to' in v &&
-                typeof v.to === 'string' &&
-                'from' in v &&
-                typeof v.from === 'string' &&
-                'data' in v &&
-                typeof v.data === 'string' &&
-                'value' in v &&
-                typeof v.value === 'string' &&
-                v.value.startsWith('0x')
-              : false,
-        },
-        {
-          property: 'estimatedProcessingTimeInSeconds',
-          type: 'number',
-          validator: (v): v is number[] =>
-            Object.values(v as { [s: string]: unknown }).every(
-              (i) => typeof i === 'number',
-            ),
-        },
-      ],
-      quote,
-      url,
-    ),
+    validateResponse<QuoteResponse, object>(QUOTE_VALIDATORS, quote, url),
   );
   return filteredQuotes;
 }
