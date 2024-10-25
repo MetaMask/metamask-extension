@@ -145,8 +145,9 @@ describe('Request Queuing Dapp 1, Switch Tx -> Dapp 2 Send Tx', function () {
 
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
+        await driver.delay(regularDelayMs);
         // Check correct network on the signTypedData confirmation.
-        await driver.waitForSelector({
+        await driver.findElement({
           css: '[data-testid="signature-request-network-display"]',
           text: 'Localhost 8546',
         });
