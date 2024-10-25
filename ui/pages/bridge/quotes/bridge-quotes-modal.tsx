@@ -17,16 +17,17 @@ import {
   TextAlign,
   TextVariant,
 } from '../../../helpers/constants/design-system';
-import { getBridgeQuotes } from '../../../ducks/bridge/selectors';
-import { getQuoteDisplayData } from '../utils/quote';
 import { useI18nContext } from '../../../hooks/useI18nContext';
+import { getBridgeQuotes } from '../../../ducks/bridge/selectors';
+import { formatEtaInMinutes } from '../utils/quote';
 
 export const BridgeQuotesModal = ({
   onClose,
   ...modalProps
 }: Omit<React.ComponentProps<typeof Modal>, 'children'>) => {
-  const { quotes } = useSelector(getBridgeQuotes);
   const t = useI18nContext();
+
+  const { sortedQuotes } = useSelector(getBridgeQuotes);
 
   return (
     <Modal className="quotes-modal" onClose={onClose} {...modalProps}>
@@ -49,12 +50,16 @@ export const BridgeQuotesModal = ({
           })}
         </Box>
         <Box className="quotes-modal__quotes">
-          {quotes.map((quote, index) => {
-            const { totalFees, etaInMinutes } = getQuoteDisplayData(quote);
+          {sortedQuotes.map((quote, index) => {
+            const { totalNetworkFee, estimatedProcessingTimeInSeconds } = quote;
             return (
               <Box key={index} className="quotes-modal__quotes__row">
-                <Text>{totalFees?.fiat}</Text>
-                <Text>{t('bridgeTimingMinutes', [etaInMinutes])}</Text>
+                <Text>{totalNetworkFee?.fiat?.toString()}</Text>
+                <Text>
+                  {t('bridgeTimingMinutes', [
+                    formatEtaInMinutes(estimatedProcessingTimeInSeconds),
+                  ])}
+                </Text>
               </Box>
             );
           })}

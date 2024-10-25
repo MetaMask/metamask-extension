@@ -718,6 +718,15 @@ export const createBridgeMockStore = (
         { chainId: CHAIN_IDS.MAINNET },
         { chainId: CHAIN_IDS.LINEA_MAINNET },
       ),
+      gasFeeEstimates: {
+        high: {
+          suggestedMaxFeePerGas: '0.00010456',
+          suggestedMaxPriorityFeePerGas: '0.0001',
+        },
+      },
+      currencyRates: {
+        ETH: { conversionRate: 2524.25 },
+      },
       ...metamaskStateOverrides,
       bridgeState: {
         ...(swapsStore.metamask.bridgeState ?? {}),

@@ -26,6 +26,7 @@ import { submitRequestToBackground } from '../../store/background-connection';
 import {
   ChainId,
   FeeType,
+  QuoteMetadata,
   QuoteRequest,
   QuoteResponse,
   TxData,
@@ -138,7 +139,7 @@ export const getBridgeERC20Allowance = async (
 };
 
 export const submitBridgeTransaction = (
-  quoteResponse: QuoteResponse,
+  quoteResponse: QuoteResponse & QuoteMetadata,
   history: ReturnType<typeof useHistory>,
 ) => {
   return async (
