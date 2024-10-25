@@ -34,7 +34,7 @@ cleanContextForImports();
 import log from 'loglevel';
 import { v4 as uuid } from 'uuid';
 import { WindowPostMessageStream } from '@metamask/post-message-stream';
-import { initializeProvider } from '@metamask/providers/dist/initializeInpageProvider';
+import { initializeProvider } from '../../node_modules/@metamask/providers/dist/initializeInpageProvider.cjs';
 import shouldInjectProvider from '../../shared/modules/provider-injection';
 
 // contexts
