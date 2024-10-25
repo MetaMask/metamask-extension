@@ -375,7 +375,7 @@ export const SendPage = () => {
         {t('send')}
       </Header>
       <Content>
-        <SendPageAccountPicker />
+        <SendPageAccountPicker sendStage={sendStage} />
         {isSendFormShown && (
           <AssetPickerAmount
             error={error}

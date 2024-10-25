@@ -186,8 +186,7 @@ export const AppHeaderUnlockedContent = ({
           ellipsis
         >
           <AccountPicker
-            address={internalAccount.address}
-            name={internalAccount.metadata.name}
+            account={internalAccount}
             onClick={() => {
               dispatch(toggleAccountMenu());
 

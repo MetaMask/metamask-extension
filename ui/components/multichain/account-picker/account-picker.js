@@ -2,7 +2,6 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
 import { useSelector } from 'react-redux';
-import { toChecksumHexAddress } from '../../../../shared/modules/hexstring-utils';
 import {
   AvatarAccount,
   AvatarAccountVariant,
@@ -21,21 +20,18 @@ import {
   TextColor,
   TextVariant,
 } from '../../../helpers/constants/design-system';
-import {
-  getUseBlockie,
-  ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-  getSelectedAddress,
-  ///: END:ONLY_INCLUDE_IF
-} from '../../../selectors';
+import { getUseBlockie } from '../../../selectors';
 import { shortenAddress } from '../../../helpers/utils/util';
 ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
 import { getCustodianIconForAddress } from '../../../selectors/institutional/selectors';
 ///: END:ONLY_INCLUDE_IF
 import { trace, TraceName } from '../../../../shared/lib/trace';
+// eslint-disable-next-line import/no-restricted-paths
+import { normalizeSafeAddress } from '../../../../app/scripts/lib/multichain/address';
+import { InternalAccountPropType } from '../../../selectors/multichain';
 
 export const AccountPicker = ({
-  address,
-  name,
+  account,
   onClick,
   disabled = false,
   showAddress = false,
@@ -46,10 +42,12 @@ export const AccountPicker = ({
   ...props
 }) => {
   const useBlockie = useSelector(getUseBlockie);
-  const shortenedAddress = shortenAddress(toChecksumHexAddress(address));
+  const shortenedAddress = shortenAddress(
+    normalizeSafeAddress(account.address),
+  );
 
   ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-  const selectedAddress = useSelector(getSelectedAddress);
+  const selectedAddress = account.address;
   const custodianIcon = useSelector((state) =>
     getCustodianIconForAddress(state, selectedAddress),
   );
@@ -90,7 +88,7 @@ export const AccountPicker = ({
               ? AvatarAccountVariant.Blockies
               : AvatarAccountVariant.Jazzicon
           }
-          address={address}
+          address={account.address}
           size={showAddress ? Size.MD : Size.XS}
           borderColor={BackgroundColor.backgroundDefault} // we currently don't have white color for border hence using backgroundDefault as the border
         />
@@ -113,7 +111,7 @@ export const AccountPicker = ({
                 ? AvatarAccountVariant.Blockies
                 : AvatarAccountVariant.Jazzicon
             }
-            address={address}
+            address={account.address}
             size={showAddress ? Size.MD : Size.XS}
             borderColor={BackgroundColor.backgroundDefault}
           />
@@ -130,7 +128,7 @@ export const AccountPicker = ({
           labelProps.className ?? '',
         )}
       >
-        {name}
+        {account.metadata.name}
         {showAddress ? (
           <Text
             color={TextColor.textAlternative}
@@ -148,13 +146,9 @@ export const AccountPicker = ({
 
 AccountPicker.propTypes = {
   /**
-   * Account name
+   * Internal Account
    */
-  name: PropTypes.string.isRequired,
-  /**
-   * Account address, used for blockie or jazzicon
-   */
-  address: PropTypes.string.isRequired,
+  account: InternalAccountPropType,
   /**
    * Represents if the account address should display
    */
