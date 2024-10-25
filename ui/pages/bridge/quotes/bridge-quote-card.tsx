@@ -16,6 +16,7 @@ import { BridgeQuotesModal } from './bridge-quotes-modal';
 
 export const BridgeQuoteCard = () => {
   const t = useI18nContext();
+
   const { isLoading, activeQuote } = useSelector(getBridgeQuotes);
 
   const secondsUntilNextRefresh = useCountdownTimer();
@@ -50,16 +51,22 @@ export const BridgeQuoteCard = () => {
             formatEtaInMinutes(activeQuote.estimatedProcessingTimeInSeconds),
           ])}
         />
-        <QuoteInfoRow
-          label={t('quoteRate')}
-          description={activeQuote.swapRate.toString()}
-        />
-        <QuoteInfoRow
-          label={t('totalFees')}
-          tooltipText={t('bridgeTotalFeesTooltipText')}
-          description={activeQuote.totalNetworkFee?.fiat?.toString() ?? ''}
-          secondaryDescription={activeQuote.totalNetworkFee?.raw?.toString()}
-        />
+        {activeQuote.swapRate && (
+          <QuoteInfoRow
+            label={t('quoteRate')}
+            description={`1 ${
+              activeQuote.quote.srcAsset.symbol
+            } = ${activeQuote.swapRate.toFixed(2)}`}
+          />
+        )}
+        {activeQuote.totalNetworkFee && (
+          <QuoteInfoRow
+            label={t('totalFees')}
+            tooltipText={t('bridgeTotalFeesTooltipText')}
+            description={activeQuote.totalNetworkFee?.fiat?.toFixed(2) ?? ''}
+            secondaryDescription={activeQuote.totalNetworkFee?.raw?.toFixed(6)}
+          />
+        )}
       </Box>
 
       <Box className="bridge-box quote-card__footer">

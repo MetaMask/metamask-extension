@@ -90,7 +90,7 @@ exports[`BridgeQuoteCard should render the recommended quote 1`] = `
           <p
             class="mm-box mm-text mm-text--body-md mm-box--color-text-default"
           >
-            0.998877142857142857142857142857142857
+            1 USDC = 1.00
           </p>
         </div>
       </div>
@@ -131,13 +131,13 @@ Fees are based on network traffic and transaction complexity. MetaMask does not 
             <p
               class="mm-box mm-text mm-text--body-md mm-box--color-text-default"
             >
-              0.00100007141025952
+              0.001000
             </p>
           </div>
           <p
             class="mm-box mm-text mm-text--body-md mm-box--color-text-default"
           >
-            2.52443025734759336
+            2.52
           </p>
         </div>
       </div>
@@ -263,7 +263,7 @@ exports[`BridgeQuoteCard should render the recommended quote while loading new q
           <p
             class="mm-box mm-text mm-text--body-md mm-box--color-text-default"
           >
-            2443.8902
+            1 ETH = 2443.89
           </p>
         </div>
       </div>
@@ -304,13 +304,13 @@ Fees are based on network traffic and transaction complexity. MetaMask does not 
             <p
               class="mm-box mm-text mm-text--body-md mm-box--color-text-default"
             >
-              0.00100012486628784
+              0.001000
             </p>
           </div>
           <p
             class="mm-box mm-text mm-text--body-md mm-box--color-text-default"
           >
-            2.52456519372708012
+            2.52
           </p>
         </div>
       </div>

@@ -32,7 +32,6 @@ import {
   getGasFeeEstimates,
   getProviderConfig,
 } from '../metamask/metamask';
-import { calcTokenAmount } from '../../../shared/lib/transactions-controller-utils';
 // TODO: Remove restricted import
 // eslint-disable-next-line import/no-restricted-paths
 import { RequestStatus } from '../../../app/scripts/controllers/bridge/constants';
@@ -168,7 +167,6 @@ export const getToToken = (
 export const getFromAmount = (state: BridgeAppState): string | null =>
   state.bridge.fromTokenInputValue;
 
-// TODO reuse in bridge cta
 const _getBridgeFeesPerGas = createSelector(
   getGasFeeEstimates,
   (gasFeeEstimates) => ({
@@ -318,15 +316,6 @@ export const getQuoteRequest = (state: BridgeAppState) => {
   const { quoteRequest } = state.metamask.bridgeState;
   return quoteRequest;
 };
-
-export const getToAmount = createSelector(getBridgeQuotes, ({ activeQuote }) =>
-  activeQuote
-    ? calcTokenAmount(
-        activeQuote.quote.destTokenAmount,
-        activeQuote.quote.destAsset.decimals,
-      )
-    : undefined,
-);
 
 export const getIsBridgeTx = createDeepEqualSelector(
   getFromChain,
