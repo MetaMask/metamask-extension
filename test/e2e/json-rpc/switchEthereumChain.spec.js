@@ -160,48 +160,29 @@ describe('Switch Ethereum Chain for two dapps', function () {
         await driver.switchToWindowWithUrl(DAPP_ONE_URL);
         // Switch to Dapp One and connect it
         await driver.switchToWindowWithUrl(DAPP_URL);
-        await driver.clickElement({ text: 'Connect', tag: 'button' });
-
-        await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
-
-        await driver.clickElementAndWaitForWindowToClose({
+        await driver.findClickableElement({
           text: 'Connect',
           tag: 'button',
         });
+        await driver.clickElement('#connectButton');
 
-        // Switch to MM and disconnect localhost 8545 for Dapp One
-
-        await driver.switchToWindowWithTitle(
-          WINDOW_TITLES.ExtensionInFullScreenView,
-        );
-        await driver.clickElement(
-          '[data-testid ="account-options-menu-button"]',
-        );
-        await driver.clickElement({
-          text: 'All Permissions',
-          tag: 'div',
-        });
-        await driver.clickElementAndWaitToDisappear({
-          text: 'Got it',
-          tag: 'button',
-        });
-        await driver.clickElement({
-          text: '127.0.0.1:8080',
-          tag: 'p',
-        });
+        await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
         const editButtons = await driver.findElements('[data-testid="edit"]');
 
         assert.ok(editButtons.length > 0, 'Edit buttons are available');
 
         await editButtons[1].click();
 
-        // Disconnect Mainnet
+        // Disconnect Localhost 8545
         await driver.clickElement({
-          text: 'Localhost 8546',
+          text: 'Localhost 8545',
           tag: 'p',
         });
 
         await driver.clickElement('[data-testid="connect-more-chains-button"]');
+
+        await driver.clickElement({ text: 'Connect', tag: 'button' });
+
         // Switch to Dapp Two
         await driver.switchToWindowWithUrl(DAPP_ONE_URL);
         // Initiate send transaction on Dapp two
@@ -219,7 +200,7 @@ describe('Switch Ethereum Chain for two dapps', function () {
         const switchEthereumChainRequest = JSON.stringify({
           jsonrpc: '2.0',
           method: 'wallet_switchEthereumChain',
-          params: [{ chainId: '0x53a' }],
+          params: [{ chainId: '0x539' }],
         });
 
         // Initiate switchEthereumChain on Dapp One
@@ -251,7 +232,7 @@ describe('Switch Ethereum Chain for two dapps', function () {
         });
         await driver.delay(1000);
         await driver.switchToWindowWithUrl(DAPP_URL);
-        await driver.findElement({ css: '#chainId', text: '0x53a' });
+        await driver.findElement({ css: '#chainId', text: '0x539' });
       },
     );
   });
@@ -321,26 +302,6 @@ describe('Switch Ethereum Chain for two dapps', function () {
         await driver.clickElement('#connectButton');
 
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
-
-        await driver.clickElementAndWaitForWindowToClose({
-          text: 'Connect',
-          tag: 'button',
-        });
-        await driver.switchToWindowWithTitle(
-          WINDOW_TITLES.ExtensionInFullScreenView,
-        );
-        await driver.clickElement(
-          '[data-testid ="account-options-menu-button"]',
-        );
-        await driver.clickElement({ text: 'All Permissions', tag: 'div' });
-        await driver.clickElementAndWaitToDisappear({
-          text: 'Got it',
-          tag: 'button',
-        });
-        await driver.clickElement({
-          text: '127.0.0.1:8081',
-          tag: 'p',
-        });
         const editButtons = await driver.findElements('[data-testid="edit"]');
 
         // Ensure there are edit buttons
@@ -356,6 +317,11 @@ describe('Switch Ethereum Chain for two dapps', function () {
         });
 
         await driver.clickElement('[data-testid="connect-more-chains-button"]');
+        await driver.clickElementAndWaitForWindowToClose({
+          text: 'Connect',
+          tag: 'button',
+        });
+
         await driver.switchToWindow(dappTwo);
         assert.equal(await driver.getCurrentUrl(), `${DAPP_ONE_URL}/`);
 
@@ -471,25 +437,6 @@ describe('Switch Ethereum Chain for two dapps', function () {
 
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
-        await driver.clickElementAndWaitForWindowToClose({
-          text: 'Connect',
-          tag: 'button',
-        });
-        await driver.switchToWindowWithTitle(
-          WINDOW_TITLES.ExtensionInFullScreenView,
-        );
-        await driver.clickElement(
-          '[data-testid ="account-options-menu-button"]',
-        );
-        await driver.clickElement({ text: 'All Permissions', tag: 'div' });
-        await driver.clickElementAndWaitToDisappear({
-          text: 'Got it',
-          tag: 'button',
-        });
-        await driver.clickElement({
-          text: '127.0.0.1:8081',
-          tag: 'p',
-        });
         const editButtons = await driver.findElements('[data-testid="edit"]');
 
         // Ensure there are edit buttons
@@ -505,6 +452,10 @@ describe('Switch Ethereum Chain for two dapps', function () {
         });
 
         await driver.clickElement('[data-testid="connect-more-chains-button"]');
+        await driver.clickElementAndWaitForWindowToClose({
+          text: 'Connect',
+          tag: 'button',
+        });
         await driver.switchToWindow(dappTwo);
         assert.equal(await driver.getCurrentUrl(), `${DAPP_ONE_URL}/`);
 
