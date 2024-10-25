@@ -30,9 +30,14 @@ const schema = {
           default: false,
         },
         experimental: {
+          description: 'TODO',
           type: 'object',
           properties: {
             keepImportAttributes: {
+              type: 'boolean',
+              default: false,
+            },
+            emitAssertForImportAttributes: {
               type: 'boolean',
               default: false,
             },
@@ -120,6 +125,10 @@ const schema = {
                   default: false,
                   type: 'boolean',
                 },
+                importAssertions: {
+                  default: false,
+                  type: 'boolean',
+                },
                 importAttributes: {
                   description:
                     'Enable parsing of import attributes. Defaults to `false`.',
@@ -136,6 +145,10 @@ const schema = {
                   const: 'ecmascript',
                 },
                 jsx: {
+                  default: false,
+                  type: 'boolean',
+                },
+                importAssertions: {
                   default: false,
                   type: 'boolean',
                 },
@@ -223,7 +236,12 @@ export function getSwcLoader(
         parser: {
           syntax,
           [syntax === 'typescript' ? 'tsx' : 'jsx']: enableJsx,
+          importAssertions: true,
           importAttributes: true,
+        },
+        experimental: {
+          keepImportAttributes: true,
+          emitAssertForImportAttributes: true,
         },
       },
     } as const satisfies SwcLoaderOptions,

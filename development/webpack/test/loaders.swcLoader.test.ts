@@ -121,6 +121,7 @@ describe('swcLoader', () => {
         assert.deepStrictEqual(loader.options.jsc.parser, {
           syntax,
           [syntax === 'typescript' ? 'tsx' : 'jsx']: enableJsx,
+          importAssertions: true,
           importAttributes: true,
         });
         assert.deepStrictEqual(loader.options.jsc.transform.react, {
