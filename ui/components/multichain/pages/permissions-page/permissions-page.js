@@ -36,7 +36,7 @@ import { hidePermissionsTour } from '../../../../store/actions';
 import { isSnapId } from '../../../../helpers/utils/snaps';
 import { ConnectionListItem } from './connection-list-item';
 
-export const PermissionsPage = () => {
+export default function PermissionsPage() {
   const t = useI18nContext();
   const history = useHistory();
   const headerRef = useRef();
@@ -142,4 +142,4 @@ export const PermissionsPage = () => {
       </Content>
     </Page>
   );
-};
+}

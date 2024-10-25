@@ -1,1 +1,1 @@
-export { Connections } from './connections';
+export { Connections as default } from './connections';
