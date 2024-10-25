@@ -2,6 +2,24 @@ import React, { useState } from 'react';
 import { Meta } from '@storybook/react';
 import { processSnapNotifications } from './snap/utils/utils';
 import { Box } from '../../components/component-library';
+import {
+  createMockNotificationEthSent,
+  createMockNotificationEthReceived,
+  createMockNotificationERC20Sent,
+  createMockNotificationERC20Received,
+  createMockNotificationERC721Sent,
+  createMockNotificationERC721Received,
+  createMockNotificationERC1155Sent,
+  createMockNotificationERC1155Received,
+  createMockNotificationLidoReadyToBeWithdrawn,
+  createMockNotificationLidoStakeCompleted,
+  createMockNotificationLidoWithdrawalCompleted,
+  createMockNotificationLidoWithdrawalRequested,
+  createMockNotificationMetaMaskSwapsCompleted,
+  createMockNotificationRocketPoolStakeCompleted,
+  createMockNotificationRocketPoolUnStakeCompleted,
+  createMockFeatureAnnouncementRaw,
+} from '@metamask/notification-services-controller/notification-services/mocks';
 import type { SnapNotification } from './snap/types/types';
 import { SnapComponent } from './notification-components/snap/snap';
 import { NotificationsListItem } from './notifications-list-item';
@@ -20,43 +38,28 @@ const snapNotifications = processSnapNotifications([
   },
 ]);
 
-const {
-  createMockNotificationERC1155Received,
-  createMockNotificationERC1155Sent,
-  createMockNotificationERC20Received,
-  createMockNotificationERC20Sent,
-  createMockNotificationERC721Received,
-  createMockNotificationERC721Sent,
-  createMockNotificationEthReceived,
-  createMockNotificationEthSent,
-  createMockNotificationLidoReadyToBeWithdrawn,
-  createMockNotificationLidoStakeCompleted,
-  createMockNotificationLidoWithdrawalCompleted,
-  createMockNotificationLidoWithdrawalRequested,
-  createMockNotificationMetaMaskSwapsCompleted,
-  createMockNotificationRocketPoolStakeCompleted,
-  createMockNotificationRocketPoolUnStakeCompleted,
-  createMockFeatureAnnouncementRaw,
-} = NotificationServicesController.Mocks;
+const notificationMocks = {
+  EthSent: createMockNotificationEthSent,
+  EthReceived: createMockNotificationEthReceived,
+  ERC20Sent: createMockNotificationERC20Sent,
+  ERC20Received: createMockNotificationERC20Received,
+  ERC721Sent: createMockNotificationERC721Sent,
+  ERC721Received: createMockNotificationERC721Received,
+  ERC1155Sent: createMockNotificationERC1155Sent,
+  ERC1155Received: createMockNotificationERC1155Received,
+  LidoReadyToBeWithdrawn: createMockNotificationLidoReadyToBeWithdrawn,
+  LidoStakeCompleted: createMockNotificationLidoStakeCompleted,
+  LidoWithdrawalCompleted: createMockNotificationLidoWithdrawalCompleted,
+  LidoWithdrawalRequested: createMockNotificationLidoWithdrawalRequested,
+  MetaMaskSwapsCompleted: createMockNotificationMetaMaskSwapsCompleted,
+  RocketPoolStakeCompleted: createMockNotificationRocketPoolStakeCompleted,
+  RocketPoolUnStakeCompleted: createMockNotificationRocketPoolUnStakeCompleted,
+  FeatureAnnouncement: createMockFeatureAnnouncementRaw,
+} as const;
 
-const notifications: Notification[] = [
-  processNotification(createMockNotificationEthSent()),
-  processNotification(createMockNotificationEthReceived()),
-  processNotification(createMockNotificationERC20Sent()),
-  processNotification(createMockNotificationERC20Received()),
-  processNotification(createMockNotificationERC721Sent()),
-  processNotification(createMockNotificationERC721Received()),
-  processNotification(createMockNotificationERC1155Sent()),
-  processNotification(createMockNotificationERC1155Received()),
-  processNotification(createMockNotificationMetaMaskSwapsCompleted()),
-  processNotification(createMockNotificationRocketPoolStakeCompleted()),
-  processNotification(createMockNotificationRocketPoolUnStakeCompleted()),
-  processNotification(createMockNotificationLidoStakeCompleted()),
-  processNotification(createMockNotificationLidoWithdrawalRequested()),
-  processNotification(createMockNotificationLidoReadyToBeWithdrawn()),
-  processNotification(createMockNotificationLidoWithdrawalCompleted()),
-  processNotification(createMockFeatureAnnouncementRaw()),
-];
+const notifications: Notification[] = Object.values(notificationMocks).map(
+  (createMock) => processNotification(createMock()),
+);
 
 export default {
   title: 'Pages/Notifications/NotificationsListItems',
