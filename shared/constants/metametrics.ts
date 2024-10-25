@@ -238,7 +238,7 @@ export type MetaMetricsEventFragment = {
   /*
    * The event id.
    */
-  id?: string;
+  id: string;
   /*
    * The environment type.
    */

@@ -312,7 +312,7 @@ export default class MetaMetricsController {
     // fragments that are not marked as persistent will be purged and the
     // failure event will be emitted.
     Object.values(abandonedFragments).forEach((fragment) => {
-      this.finalizeEventFragment(fragment.id as string, { abandoned: true });
+      this.finalizeEventFragment(fragment.id, { abandoned: true });
     });
 
     // Code below submits any pending segmentApiCalls to Segment if/when the controller is re-instantiated
@@ -368,7 +368,7 @@ export default class MetaMetricsController {
         fragment.lastUpdated &&
         Date.now() - fragment.lastUpdated / 1000 > fragment.timeout
       ) {
-        this.finalizeEventFragment(fragment.id as string, { abandoned: true });
+        this.finalizeEventFragment(fragment.id, { abandoned: true });
       }
     });
   }
@@ -390,7 +390,7 @@ export default class MetaMetricsController {
    * @param options - Fragment settings and properties to initiate the fragment with.
    */
   createEventFragment(
-    options: MetaMetricsEventFragment,
+    options: Omit<MetaMetricsEventFragment, 'id'>,
   ): MetaMetricsEventFragment {
     if (!options.successEvent || !options.category) {
       throw new Error(
