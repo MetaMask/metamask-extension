@@ -100,8 +100,9 @@ const EmptyContent: React.FC = () => {
  *
  * @param props
  * @param props.children
+ * @param props.isTransactionsRedesign
  */
-const HeaderLayout: React.FC = ({ children }) => {
+const HeaderLayout: React.FC = ({ children, isTransactionsRedesign }) => {
   const t = useI18nContext();
   const isRedesignedConfirmationsEnabled = useSelector(
     getRedesignedConfirmationsEnabled,
@@ -114,7 +115,7 @@ const HeaderLayout: React.FC = ({ children }) => {
       alignItems={AlignItems.center}
       justifyContent={JustifyContent.spaceBetween}
     >
-      {isRedesignedConfirmationsEnabled ? (
+      {isRedesignedConfirmationsEnabled && isTransactionsRedesign ? (
         <HeaderWithAlert />
       ) : (
         <Box
@@ -200,7 +201,9 @@ const SimulationDetailsLayout: React.FC<{
     margin={isTransactionsRedesign ? null : 4}
     gap={3}
   >
-    <HeaderLayout>{inHeader}</HeaderLayout>
+    <HeaderLayout isTransactionsRedesign={isTransactionsRedesign}>
+      {inHeader}
+    </HeaderLayout>
     {children}
   </Box>
 );
