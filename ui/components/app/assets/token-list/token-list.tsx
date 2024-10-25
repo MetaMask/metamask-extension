@@ -11,6 +11,8 @@ import {
 import { TokenWithBalance } from '../asset-list/asset-list';
 import { sortAssets } from '../util/sort';
 import {
+  getAllTokens,
+  getCurrentChainId,
   getPreferences,
   getSelectedAccount,
   getShouldHideZeroBalanceTokens,
@@ -19,11 +21,47 @@ import {
 import { useAccountTotalFiatBalance } from '../../../../hooks/useAccountTotalFiatBalance';
 import { getConversionRate } from '../../../../ducks/metamask/metamask';
 import { useNativeTokenBalance } from '../asset-list/native-token/use-native-token-balance';
+import { useTokenTracker } from '../../../../hooks/useTokenTracker';
 
 type TokenListProps = {
   onTokenClick: (arg: string) => void;
   nativeToken: ReactNode;
 };
+
+function aggregateTokensByAccount(data: Record<string, any>) {
+  // Initialize an empty object to hold tokens by account
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const tokensByAccount: Record<string, any> = {};
+
+  // Loop through each chain (0x1, 0x89, etc.)
+  for (const chainId in data) {
+    // Ensure we're only iterating over data's own properties
+    if (data[chainId]) {
+      // Loop through each account in the chain
+      const chainData = data[chainId];
+      for (const accountId in chainData) {
+        if (chainData[accountId]) {
+          // If the accountId does not exist in the tokensByAccount object, initialize it with an empty array
+          if (!tokensByAccount[accountId]) {
+            tokensByAccount[accountId] = [];
+          }
+
+          // Loop through each token associated with the account
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          chainData[accountId].forEach((token: any) => {
+            // Add the chainId to each token object
+            const tokenWithChain = { ...token, chainId };
+
+            // Push the token to the respective account's token list
+            tokensByAccount[accountId].push(tokenWithChain);
+          });
+        }
+      }
+    }
+  }
+
+  return tokensByAccount;
+}
 
 export default function TokenList({
   onTokenClick,
@@ -41,6 +79,21 @@ export default function TokenList({
     getTokenExchangeRates,
     shallowEqual,
   );
+
+  const allTokens = useSelector(getAllTokens);
+  const aggregatedCrossChainTokensByAccount =
+    aggregateTokensByAccount(allTokens);
+
+  console.log(aggregatedCrossChainTokensByAccount[selectedAccount.address]);
+
+  const { tokensWithBalances: crossChainTokensWithBalances } = useTokenTracker({
+    tokens: aggregatedCrossChainTokensByAccount[selectedAccount.address],
+    address: selectedAccount?.address,
+    includeFailedTokens: true,
+    hideZeroBalanceTokens: shouldHideZeroBalanceTokens,
+  });
+  console.log('crossChainTokensWithBalances: ', crossChainTokensWithBalances);
+
   const { tokensWithBalances, loading } = useAccountTotalFiatBalance(
     selectedAccount,
     shouldHideZeroBalanceTokens,
