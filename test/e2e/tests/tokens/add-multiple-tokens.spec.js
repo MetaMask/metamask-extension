@@ -28,7 +28,12 @@ describe('Multiple ERC20 Watch Asset', function () {
         await openDapp(driver, undefined, DAPP_URL);
 
         // Create Token 1
-        await driver.clickElement({ text: 'Create Token', tag: 'button' });
+        const createToken = await driver.waitForSelector({
+          text: 'Create Token',
+          tag: 'button',
+        });
+        await driver.scrollToElement(createToken);
+        await driver.clickElement(createToken);
         await switchToNotificationWindow(driver);
         await driver.findClickableElement({ text: 'Confirm', tag: 'button' });
         await driver.clickElement({ text: 'Confirm', tag: 'button' });
