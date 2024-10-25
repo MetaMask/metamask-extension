@@ -1276,6 +1276,17 @@
         "@metamask/utils": true
       }
     },
+    "@metamask/json-rpc-middleware-stream": {
+      "globals": {
+        "console.warn": true,
+        "setTimeout": true
+      },
+      "packages": {
+        "@metamask/safe-event-emitter": true,
+        "@metamask/utils": true,
+        "readable-stream": true
+      }
+    },
     "@metamask/keyring-api": {
       "globals": {
         "URL": true
@@ -2481,11 +2492,11 @@
         "setTimeout": true
       },
       "packages": {
+        "@metamask/json-rpc-middleware-stream": true,
         "@metamask/object-multiplex": true,
         "@metamask/post-message-stream": true,
         "@metamask/snaps-controllers>@metamask/base-controller": true,
         "@metamask/snaps-controllers>@metamask/json-rpc-engine": true,
-        "@metamask/snaps-controllers>@metamask/json-rpc-middleware-stream": true,
         "@metamask/snaps-controllers>@metamask/permission-controller": true,
         "@metamask/snaps-controllers>@metamask/rpc-errors": true,
         "@metamask/snaps-controllers>@xstate/fsm": true,
@@ -2523,17 +2534,6 @@
         "@metamask/safe-event-emitter": true,
         "@metamask/snaps-controllers>@metamask/rpc-errors": true,
         "@metamask/utils": true
-      }
-    },
-    "@metamask/snaps-controllers>@metamask/json-rpc-middleware-stream": {
-      "globals": {
-        "console.warn": true,
-        "setTimeout": true
-      },
-      "packages": {
-        "@metamask/safe-event-emitter": true,
-        "@metamask/utils": true,
-        "readable-stream": true
       }
     },
     "@metamask/snaps-controllers>@metamask/permission-controller": {
@@ -4523,16 +4523,6 @@
       "packages": {
         "browserify>url": true,
         "stream-http": true
-      }
-    },
-    "json-rpc-middleware-stream": {
-      "globals": {
-        "console.warn": true,
-        "setTimeout": true
-      },
-      "packages": {
-        "@metamask/safe-event-emitter": true,
-        "readable-stream": true
       }
     },
     "koa>content-disposition>safe-buffer": {
