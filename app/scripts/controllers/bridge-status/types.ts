@@ -2,7 +2,11 @@ import {
   ControllerStateChangeEvent,
   RestrictedControllerMessenger,
 } from '@metamask/base-controller';
-import { NetworkControllerFindNetworkClientIdByChainIdAction } from '@metamask/network-controller';
+import {
+  NetworkControllerFindNetworkClientIdByChainIdAction,
+  NetworkControllerGetNetworkClientByIdAction,
+  NetworkControllerGetStateAction,
+} from '@metamask/network-controller';
 import { AccountsControllerGetSelectedAccountAction } from '@metamask/accounts-controller';
 import { ChainId, Quote } from '../../../../ui/pages/bridge/types';
 import { BRIDGE_STATUS_CONTROLLER_NAME } from './constants';
@@ -134,6 +138,7 @@ export type BridgeStatusControllerState = {
 
 export enum BridgeStatusAction {
   START_POLLING_FOR_BRIDGE_TX_STATUS = 'startPollingForBridgeTxStatus',
+  WIPE_BRIDGE_STATUS = 'wipeBridgeStatus',
 }
 
 type BridgeStatusControllerAction<
@@ -145,7 +150,8 @@ type BridgeStatusControllerAction<
 
 // Maps to BridgeController function names
 type BridgeStatusControllerActions =
-  BridgeStatusControllerAction<BridgeStatusAction.START_POLLING_FOR_BRIDGE_TX_STATUS>;
+  | BridgeStatusControllerAction<BridgeStatusAction.START_POLLING_FOR_BRIDGE_TX_STATUS>
+  | BridgeStatusControllerAction<BridgeStatusAction.WIPE_BRIDGE_STATUS>;
 
 type BridgeStatusControllerEvents = ControllerStateChangeEvent<
   typeof BRIDGE_STATUS_CONTROLLER_NAME,
@@ -154,6 +160,8 @@ type BridgeStatusControllerEvents = ControllerStateChangeEvent<
 
 type AllowedActions =
   | NetworkControllerFindNetworkClientIdByChainIdAction
+  | NetworkControllerGetStateAction
+  | NetworkControllerGetNetworkClientByIdAction
   | AccountsControllerGetSelectedAccountAction;
 type AllowedEvents = never;
 
