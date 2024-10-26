@@ -2138,8 +2138,9 @@ export default class MetamaskController extends EventEmitter {
         name: BRIDGE_STATUS_CONTROLLER_NAME,
         allowedActions: [
           'AccountsController:getSelectedAccount',
-          'NetworkController:getSelectedNetworkClient',
+          'NetworkController:getNetworkClientById',
           'NetworkController:findNetworkClientIdByChainId',
+          'NetworkController:getState',
         ],
         allowedEvents: [],
       });
@@ -4930,6 +4931,10 @@ export default class MetamaskController extends EventEmitter {
       this.accountsController.getSelectedAccount().address;
     this.txController.wipeTransactions(false, selectedAddress);
     this.smartTransactionsController.wipeSmartTransactions({
+      address: selectedAddress,
+      ignoreNetwork: false,
+    });
+    this.bridgeStatusController.wipeBridgeStatus({
       address: selectedAddress,
       ignoreNetwork: false,
     });

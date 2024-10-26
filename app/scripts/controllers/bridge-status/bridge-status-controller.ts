@@ -1,5 +1,6 @@
 import { StateMetadata } from '@metamask/base-controller';
 import { StaticIntervalPollingController } from '@metamask/polling-controller';
+import { Hex } from '@metamask/utils';
 import { Numeric } from '../../../../shared/modules/Numeric';
 import { QuoteResponse } from '../../../../ui/pages/bridge/types';
 import {
@@ -25,7 +26,7 @@ const metadata: StateMetadata<{
   },
 };
 
-type TxHash = string;
+type SrcTxHash = string;
 export type FetchBridgeTxStatusArgs = {
   statusRequest: StatusRequest;
   quoteResponse: QuoteResponse;
@@ -42,7 +43,7 @@ export default class BridgeStatusController extends StaticIntervalPollingControl
   { bridgeStatusState: BridgeStatusControllerState },
   BridgeStatusControllerMessenger
 > {
-  #pollingTokensByTxHash: Record<TxHash, string> = {};
+  #pollingTokensBySrcTxHash: Record<SrcTxHash, string> = {};
 
   constructor({ messenger }: { messenger: BridgeStatusControllerMessenger }) {
     super({
@@ -57,6 +58,10 @@ export default class BridgeStatusController extends StaticIntervalPollingControl
       `${BRIDGE_STATUS_CONTROLLER_NAME}:startPollingForBridgeTxStatus`,
       this.startPollingForBridgeTxStatus.bind(this),
     );
+    this.messagingSystem.registerActionHandler(
+      `${BRIDGE_STATUS_CONTROLLER_NAME}:wipeBridgeStatus`,
+      this.wipeBridgeStatus.bind(this),
+    );
 
     // Set interval
     this.setIntervalLength(REFRESH_INTERVAL_MS);
@@ -68,6 +73,34 @@ export default class BridgeStatusController extends StaticIntervalPollingControl
         ...DEFAULT_BRIDGE_STATUS_CONTROLLER_STATE,
       };
     });
+  };
+
+  wipeBridgeStatus = ({
+    address,
+    ignoreNetwork,
+  }: {
+    address: string;
+    ignoreNetwork: boolean;
+  }) => {
+    // Wipe all networks for this address
+    if (ignoreNetwork) {
+      this.update((_state) => {
+        _state.bridgeStatusState = {
+          ...DEFAULT_BRIDGE_STATUS_CONTROLLER_STATE,
+        };
+      });
+    } else {
+      const { selectedNetworkClientId } = this.messagingSystem.call(
+        'NetworkController:getState',
+      );
+      const selectedNetworkClient = this.messagingSystem.call(
+        'NetworkController:getNetworkClientById',
+        selectedNetworkClientId,
+      );
+      const selectedChainId = selectedNetworkClient.configuration.chainId;
+
+      this.#wipeBridgeStatusByChainId(address, selectedChainId);
+    }
   };
 
   startPollingForBridgeTxStatus = async (
@@ -117,7 +150,7 @@ export default class BridgeStatusController extends StaticIntervalPollingControl
       'NetworkController:findNetworkClientIdByChainId',
       hexSourceChainId,
     );
-    this.#pollingTokensByTxHash[statusRequest.srcTxHash] =
+    this.#pollingTokensBySrcTxHash[statusRequest.srcTxHash] =
       this.startPollingByNetworkClientId(
         networkClientId,
         fetchBridgeTxStatusArgs,
@@ -169,12 +202,53 @@ export default class BridgeStatusController extends StaticIntervalPollingControl
         };
       });
 
-      const pollingToken = this.#pollingTokensByTxHash[statusRequest.srcTxHash];
+      const pollingToken =
+        this.#pollingTokensBySrcTxHash[statusRequest.srcTxHash];
       if (status.status === StatusTypes.COMPLETE && pollingToken) {
         this.stopPollingByPollingToken(pollingToken);
       }
     } catch (e) {
       console.error(e);
     }
+  };
+
+  #wipeBridgeStatusByChainId = (address: string, selectedChainId: Hex) => {
+    const sourceTxHashesToDelete = Object.keys(
+      this.state.bridgeStatusState.txHistory,
+    ).filter((sourceTxHash) => {
+      const bridgeHistoryItem =
+        this.state.bridgeStatusState.txHistory[sourceTxHash];
+
+      const hexSourceChainId = new Numeric(
+        bridgeHistoryItem.quote.srcChainId,
+        10,
+      ).toPrefixedHexString() as `0x${string}`;
+      const hexDestChainId = new Numeric(
+        bridgeHistoryItem.quote.destChainId,
+        10,
+      ).toPrefixedHexString() as `0x${string}`;
+
+      return (
+        bridgeHistoryItem.account === address &&
+        (hexSourceChainId === selectedChainId ||
+          hexDestChainId === selectedChainId)
+      );
+    });
+
+    sourceTxHashesToDelete.forEach((sourceTxHash) => {
+      this.stopPollingByPollingToken(
+        this.#pollingTokensBySrcTxHash[sourceTxHash],
+      );
+    });
+
+    this.update((_state) => {
+      _state.bridgeStatusState.txHistory = sourceTxHashesToDelete.reduce(
+        (acc, sourceTxHash) => {
+          delete acc[sourceTxHash];
+          return acc;
+        },
+        _state.bridgeStatusState.txHistory,
+      );
+    });
   };
 }
