@@ -239,10 +239,6 @@ const MockTxHistory = {
   },
 };
 
-nock(bridgeStatusUtils.BRIDGE_STATUS_BASE_URL)
-  .get('/getTxStatus')
-  .reply(200, MockStatusResponse.Pending);
-
 const messengerMock = {
   call: jest.fn((method: string) => {
     if (method === 'AccountsController:getSelectedAccount') {
