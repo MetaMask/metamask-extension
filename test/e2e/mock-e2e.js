@@ -165,6 +165,21 @@ async function setupMocking(
     });
 
   await server
+    .forPost(`${SECURITY_ALERTS_PROD_API_BASE_URL}/validate/${chainId}`)
+    .thenCallback(() => {
+      return {
+        statusCode: 200,
+        json: {
+          block: 20733513,
+          result_type: 'Benign',
+          reason: '',
+          description: '',
+          features: [],
+        },
+      };
+    });
+
+  await server
     .forPost(
       'https://arbitrum-mainnet.infura.io/v3/00000000000000000000000000000000',
     )
