@@ -21,7 +21,7 @@ const metadata: StateMetadata<{
   bridgeStatusState: BridgeStatusControllerState;
 }> = {
   bridgeStatusState: {
-    persist: false, // TODO should we persist this? TxController does, but StxController does not
+    persist: true,
     anonymous: false,
   },
 };
