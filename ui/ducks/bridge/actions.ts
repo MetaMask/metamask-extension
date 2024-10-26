@@ -445,8 +445,11 @@ export const submitBridgeTransaction = (
           startPollingForBridgeTxStatus({
             statusRequest,
             quoteResponse,
-            slippagePercentage: 0, // TODO pull this from redux/bridgecontroller once it's implemented. currently hardcoded in quoteRequest.slippage right now
             startTime: bridgeTxMeta.time,
+            slippagePercentage: 0, // TODO pull this from redux/bridgecontroller once it's implemented. currently hardcoded in quoteRequest.slippage right now
+            pricingData: undefined, // TODO
+            initialDestAssetBalance: undefined, // TODO
+            targetContractAddress: bridgeTxMeta.txParams.to,
           }),
         );
       }

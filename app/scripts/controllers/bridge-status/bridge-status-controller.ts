@@ -32,7 +32,6 @@ export type FetchBridgeTxStatusArgs = {
   quoteResponse: QuoteResponse;
   startTime?: BridgeHistoryItem['startTime'];
   slippagePercentage: BridgeHistoryItem['slippagePercentage'];
-  completionTime?: BridgeHistoryItem['completionTime'];
   pricingData?: BridgeHistoryItem['pricingData'];
   initialDestAssetBalance?: BridgeHistoryItem['initialDestAssetBalance'];
   targetContractAddress?: BridgeHistoryItem['targetContractAddress'];
@@ -104,14 +103,14 @@ export default class BridgeStatusController extends StaticIntervalPollingControl
   };
 
   startPollingForBridgeTxStatus = async (
-    fetchBridgeTxStatusArgs: FetchBridgeTxStatusArgs,
+    fetchBridgeTxStatusArgs: Omit<FetchBridgeTxStatusArgs, 'completionTime'>,
   ) => {
+    console.log('startPollingForBridgeTxStatus', { fetchBridgeTxStatusArgs });
     const {
       statusRequest,
       quoteResponse,
       startTime,
       slippagePercentage,
-      completionTime,
       pricingData,
       initialDestAssetBalance,
       targetContractAddress,
@@ -136,7 +135,6 @@ export default class BridgeStatusController extends StaticIntervalPollingControl
             estimatedProcessingTimeInSeconds:
               quoteResponse.estimatedProcessingTimeInSeconds,
             slippagePercentage,
-            completionTime,
             pricingData,
             initialDestAssetBalance,
             targetContractAddress,
@@ -185,7 +183,6 @@ export default class BridgeStatusController extends StaticIntervalPollingControl
       // TODO In theory we can skip checking status if it's not the current account/network
       // we need to keep track of the account that this is associated with as well so that we don't show it in Activity list for other accounts
       // First stab at this will not stop polling when you are on a different account
-
       this.update((_state) => {
         const bridgeHistoryItem =
           _state.bridgeStatusState.txHistory[statusRequest.srcTxHash];

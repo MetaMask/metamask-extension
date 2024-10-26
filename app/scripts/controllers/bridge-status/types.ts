@@ -38,7 +38,8 @@ export type SrcChainStatus = {
   token?: Asset;
 };
 
-export type DestChainStatus = SrcChainStatus & {
+export type DestChainStatus = {
+  chainId: ChainId;
   txHash?: string;
   amount?: string;
   token?: Record<string, never> | Asset;
