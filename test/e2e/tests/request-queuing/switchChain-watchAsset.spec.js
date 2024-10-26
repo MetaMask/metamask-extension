@@ -3,9 +3,9 @@ const {
   defaultGanacheOptions,
   logInWithBalanceValidation,
   openDapp,
+  switchToNotificationWindow,
   WINDOW_TITLES,
   withFixtures,
-  regularDelayMs,
 } = require('../../helpers');
 const { SMART_CONTRACTS } = require('../../seeder/smart-contracts');
 const { DAPP_URL } = require('../../constants');
@@ -82,10 +82,13 @@ describe('Request Queue SwitchChain -> WatchAsset', function () {
           tag: 'button',
         });
 
-        await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
+        await switchToNotificationWindow(driver);
 
         // Confirm Switch Network
-        await driver.delay(regularDelayMs);
+        await driver.findClickableElement({
+          text: 'Confirm',
+          tag: 'button',
+        });
         await driver.clickElement({ text: 'Confirm', tag: 'button' });
 
         await driver.waitUntilXWindowHandles(2);
