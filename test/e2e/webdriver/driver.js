@@ -184,8 +184,8 @@ class Driver {
    *
    * To target an element based on its attribute using a CSS selector,
    * use square brackets ([]) to specify the attribute name and its value.
-   * @example <caption>Example to locate the ‘Buy & Sell’ button using its unique attribute data-testid and its value on the overview screen</caption>
-   *        await driver.findElement('[data-testid="eth-overview-buy"]');
+   * @example <caption>Example to locate the ‘Buy & Sell’ button using its unique attribute testId and its value on the overview screen</caption>
+   *        await driver.findElement({testId: 'eth-overview-buy'});
    *
    * To locate an element by XPath locator strategy
    * @example <caption>Example to locate 'Confirm' button on the send transaction page</caption>
@@ -204,6 +204,11 @@ class Driver {
       // xpath locator.
       return By.xpath(locator.xpath);
     } else if (locator.text) {
+      // If a testId prop was provided along with text, convert that to a css prop and continue
+      if (locator.testId) {
+        locator.css = `[data-testid="${locator.testId}"]`;
+      }
+
       // Providing a text prop, and optionally a tag or css prop, will use
       // xpath to look for an element with the tag that has matching text.
       if (locator.css) {
@@ -232,7 +237,12 @@ class Driver {
       const quoted = quoteXPathText(locator.text);
       // The tag prop is optional and further refines which elements match
       return By.xpath(`//${locator.tag ?? '*'}[contains(text(), ${quoted})]`);
+    } else if (locator.testId) {
+      // Providing a testId prop will use css to look for an element with the
+      // data-testid attribute that matches the testId provided.
+      return By.css(`[data-testid="${locator.testId}"]`);
     }
+
     throw new Error(
       `The locator '${locator}' is not supported by the E2E test driver`,
     );
@@ -595,6 +605,46 @@ class Driver {
         }
       }
     }
+  }
+
+  /**
+   * Checks if an element is moving by comparing its position at two different times.
+   *
+   * @param {string | object} rawLocator - Element locator.
+   * @returns {Promise<boolean>} Promise that resolves to a boolean indicating if the element is moving.
+   */
+  async isElementMoving(rawLocator) {
+    const element = await this.findElement(rawLocator);
+    const initialPosition = await element.getRect();
+
+    await new Promise((resolve) => setTimeout(resolve, 500)); // Wait for a short period
+
+    const newPosition = await element.getRect();
+
+    return (
+      initialPosition.x !== newPosition.x || initialPosition.y !== newPosition.y
+    );
+  }
+
+  /**
+   * Waits until an element stops moving within a specified timeout period.
+   *
+   * @param {string | object} rawLocator - Element locator.
+   * @param {number} timeout - The maximum time to wait for the element to stop moving.
+   * @returns {Promise<void>} Promise that resolves when the element stops moving.
+   * @throws {Error} Throws an error if the element does not stop moving within the timeout period.
+   */
+  async waitForElementToStopMoving(rawLocator, timeout = 5000) {
+    const startTime = Date.now();
+
+    while (Date.now() - startTime < timeout) {
+      if (!(await this.isElementMoving(rawLocator))) {
+        return;
+      }
+      await new Promise((resolve) => setTimeout(resolve, 500)); // Check every 500ms
+    }
+
+    throw new Error('Element did not stop moving within the timeout period');
   }
 
   /** @param {string} title - The title of the window or tab the screenshot is being taken in */

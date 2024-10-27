@@ -18,7 +18,7 @@ import { isObject } from '@metamask/utils';
 import { ApprovalType } from '@metamask/controller-utils';
 import PortStream from 'extension-port-stream';
 
-import { ethErrors } from 'eth-rpc-errors';
+import { providerErrors } from '@metamask/rpc-errors';
 import { DIALOG_APPROVAL_TYPES } from '@metamask/snaps-rpc-methods';
 import { NotificationServicesController } from '@metamask/notification-services-controller';
 
@@ -298,6 +298,9 @@ function maybeDetectPhishing(theController) {
         category: MetaMetricsEventCategory.Phishing,
         properties: {
           url: hostname,
+          referrer: {
+            url: hostname,
+          },
           reason: blockReason,
         },
       });
@@ -324,7 +327,6 @@ function maybeDetectPhishing(theController) {
       return {};
     },
     {
-      types: ['main_frame', 'sub_frame', 'xmlhttprequest'],
       urls: ['http://*/*', 'https://*/*'],
     },
     isManifestV2 ? ['blocking'] : [],
@@ -1159,7 +1161,7 @@ export function setupController(
           default:
             controller.approvalController.reject(
               id,
-              ethErrors.provider.userRejectedRequest(),
+              providerErrors.userRejectedRequest(),
             );
             break;
         }

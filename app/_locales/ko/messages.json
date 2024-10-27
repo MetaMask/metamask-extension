@@ -207,23 +207,6 @@
   "addCustomNetwork": {
     "message": "맞춤 네트워크 추가"
   },
-  "addEthereumChainConfirmationDescription": {
-    "message": "이렇게 하면 MetaMask 내에서 이 네트워크를 사용할 수 있습니다."
-  },
-  "addEthereumChainConfirmationRisks": {
-    "message": "MetaMask는 맞춤 네트워크를 검증하지 않습니다."
-  },
-  "addEthereumChainConfirmationRisksLearnMore": {
-    "message": "$1에 대해 알아보기",
-    "description": "$1 is a link with text that is provided by the 'addEthereumChainConfirmationRisksLearnMoreLink' key"
-  },
-  "addEthereumChainConfirmationRisksLearnMoreLink": {
-    "message": "사기 및 네트워크 보안 위험",
-    "description": "Link text for the 'addEthereumChainConfirmationRisksLearnMore' translation key"
-  },
-  "addEthereumChainConfirmationTitle": {
-    "message": "이 사이트에서 네트워크를 추가하도록 허용하시겠습니까?"
-  },
   "addEthereumChainWarningModalHeader": {
     "message": "신뢰할 수 있는 경우에만 이 RPC 공급입체를 추가하세요. $1",
     "description": "$1 is addEthereumChainWarningModalHeaderPartTwo passed separately so that it can be bolded"
@@ -4858,9 +4841,6 @@
     "message": "$1 작성자에게 연락하여 향후 지원을 요청하세요.",
     "description": "This is shown when the insight snap throws an error. $1 is the snap name"
   },
-  "someNetworksMayPoseSecurity": {
-    "message": "네트워크에 따라 보안이나 개인 정보 유출의 위험이 있을 수 있습니다. 네트워크 추가 및 사용 이전에 위험 요소를 파악하세요."
-  },
   "somethingDoesntLookRight": {
     "message": "무언가 잘못되었나요? $1",
     "description": "A false positive message for users to contact support. $1 is a link to the support page."
@@ -6006,9 +5986,6 @@
   },
   "viewActivity": {
     "message": "활동 보기"
-  },
-  "viewAllDetails": {
-    "message": "모든 세부 정보 보기"
   },
   "viewAllQuotes": {
     "message": "모든 견적 보기"

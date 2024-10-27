@@ -1596,6 +1596,7 @@ const state = {
         },
       },
     },
+    openSeaEnabled: true,
   },
   appState: {
     shouldClose: false,
