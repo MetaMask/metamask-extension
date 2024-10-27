@@ -3,6 +3,9 @@ import { Driver } from '../../webdriver/driver';
 class AccountListPage {
   private readonly driver: Driver;
 
+  private readonly accountListBalance =
+    '[data-testid="second-currency-display"]';
+
   private readonly accountListItem =
     '.multichain-account-menu-popover__list--menu-item';
 
@@ -17,8 +20,14 @@ class AccountListPage {
   private readonly addAccountConfirmButton =
     '[data-testid="submit-add-account-with-name"]';
 
+  private readonly importAccountConfirmButton =
+    '[data-testid="import-account-confirm-button"]';
+
   private readonly addEthereumAccountButton =
     '[data-testid="multichain-account-menu-popover-add-account"]';
+
+  private readonly addImportedAccountButton =
+    '[data-testid="multichain-account-menu-popover-add-imported-account"]';
 
   private readonly addSnapAccountButton = {
     text: 'Add account Snap',
@@ -51,6 +60,8 @@ class AccountListPage {
   private readonly saveAccountLabelButton =
     '[data-testid="save-account-label-input"]';
 
+  private readonly importAccountPrivateKeyInput = '#private-key-box';
+
   constructor(driver: Driver) {
     this.driver = driver;
   }
@@ -80,6 +91,34 @@ class AccountListPage {
     await this.driver.fill(this.accountNameInput, customLabel);
     await this.driver.clickElementAndWaitToDisappear(
       this.addAccountConfirmButton,
+    );
+  }
+
+  /**
+   * Adds a new account with default next available name.
+   *
+   */
+  async addNewAccountWithDefaultName(): Promise<void> {
+    console.log(`Adding new account with next available name`);
+    await this.driver.clickElement(this.createAccountButton);
+    await this.driver.clickElement(this.addEthereumAccountButton);
+    await this.driver.clickElementAndWaitToDisappear(
+      this.addAccountConfirmButton,
+    );
+  }
+
+  /**
+   * Adds a new account with a custom label.
+   *
+   * @param privateKey - Private key of the account
+   */
+  async addNewImportedAccount(privateKey: string): Promise<void> {
+    console.log(`Adding new imported account`);
+    await this.driver.clickElement(this.createAccountButton);
+    await this.driver.clickElement(this.addImportedAccountButton);
+    await this.driver.fill(this.importAccountPrivateKeyInput, privateKey);
+    await this.driver.clickElementAndWaitToDisappear(
+      this.importAccountConfirmButton,
     );
   }
 
@@ -156,6 +195,21 @@ class AccountListPage {
     await this.driver.clickElement(this.pinUnpinAccountButton);
   }
 
+  /**
+   * Checks that the account balance is displayed in the account list.
+   *
+   * @param expectedBalance - The expected balance to check.
+   */
+  async check_accountBalanceDisplayed(expectedBalance: string): Promise<void> {
+    console.log(
+      `Check that account balance ${expectedBalance} is displayed in account list`,
+    );
+    await this.driver.waitForSelector({
+      css: this.accountListBalance,
+      text: expectedBalance,
+    });
+  }
+
   async check_accountDisplayedInAccountList(
     expectedLabel: string = 'Account',
   ): Promise<void> {
@@ -208,6 +262,25 @@ class AccountListPage {
   async check_hiddenAccountsListExists(): Promise<void> {
     console.log(`Check that hidden accounts list is displayed in account list`);
     await this.driver.waitForSelector(this.hiddenAccountsList);
+  }
+
+  /**
+   * Verifies number of accounts currently showing in the accounts menu.
+   *
+   * @param expectedNumberOfAccounts - The expected number of accounts showing.
+   */
+  async check_numberOfAvailableAccounts(
+    expectedNumberOfAccounts: number,
+  ): Promise<void> {
+    console.log(
+      `Verify the number of accounts in the account menu is: ${expectedNumberOfAccounts}`,
+    );
+    await this.driver.wait(async () => {
+      const internalAccounts = await this.driver.findElements(
+        this.accountListItem,
+      );
+      return internalAccounts.length === expectedNumberOfAccounts;
+    }, 20000);
   }
 }
 

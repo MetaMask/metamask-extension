@@ -11,7 +11,10 @@ import {
   getMockTypedSignConfirmStateForRequest,
 } from '../../../../../../test/data/confirmations/helper';
 import { unapprovedPersonalSignMsg } from '../../../../../../test/data/confirmations/personal_sign';
-import { permitSignatureMsg } from '../../../../../../test/data/confirmations/typed_sign';
+import {
+  permitNFTSignatureMsg,
+  permitSignatureMsg,
+} from '../../../../../../test/data/confirmations/typed_sign';
 import { renderWithConfirmContextProvider } from '../../../../../../test/lib/confirmations/render-helpers';
 import { tEn } from '../../../../../../test/lib/i18n-helpers';
 import {
@@ -68,6 +71,21 @@ describe('ConfirmTitle', () => {
     expect(getByText('Spending cap request')).toBeInTheDocument();
     expect(
       getByText('This site wants permission to spend your tokens.'),
+    ).toBeInTheDocument();
+  });
+
+  it('should render the title and description for a NFT permit signature', () => {
+    const mockStore = configureMockStore([])(
+      getMockTypedSignConfirmStateForRequest(permitNFTSignatureMsg),
+    );
+    const { getByText } = renderWithConfirmContextProvider(
+      <ConfirmTitle />,
+      mockStore,
+    );
+
+    expect(getByText('Withdrawal request')).toBeInTheDocument();
+    expect(
+      getByText('This site wants permission to withdraw your NFTs'),
     ).toBeInTheDocument();
   });
 
@@ -162,16 +180,23 @@ describe('ConfirmTitle', () => {
       reason: 'mock reason',
       key: 'mock key',
     };
+
+    const alertMock2 = {
+      ...alertMock,
+      key: 'mock key 2',
+      reason: 'mock reason 2',
+    };
     const mockAlertState = (state: Partial<ConfirmAlertsState> = {}) =>
       getMockPersonalSignConfirmStateForRequest(unapprovedPersonalSignMsg, {
         metamask: {},
         confirmAlerts: {
           alerts: {
-            [unapprovedPersonalSignMsg.id]: [alertMock, alertMock, alertMock],
+            [unapprovedPersonalSignMsg.id]: [alertMock, alertMock2],
           },
           confirmed: {
             [unapprovedPersonalSignMsg.id]: {
               [alertMock.key]: false,
+              [alertMock2.key]: false,
             },
           },
           ...state,
@@ -194,7 +219,7 @@ describe('ConfirmTitle', () => {
       expect(queryByText(alertMock.message)).toBeInTheDocument();
     });
 
-    it('renders alert banner when there are multiple alerts', () => {
+    it('renders multiple alert banner when there are multiple alerts', () => {
       const mockStore = configureMockStore([])(mockAlertState());
 
       const { getByText } = renderWithConfirmContextProvider(
@@ -202,7 +227,8 @@ describe('ConfirmTitle', () => {
         mockStore,
       );
 
-      expect(getByText('Multiple alerts!')).toBeInTheDocument();
+      expect(getByText(alertMock.reason)).toBeInTheDocument();
+      expect(getByText(alertMock2.reason)).toBeInTheDocument();
     });
   });
 });

@@ -50,7 +50,6 @@ describe('Confirmation Signature - Sign Typed Data V4 @no-mmi', function (this: 
 
         await assertInfoValues(driver);
         await scrollAndConfirmAndAssertConfirm(driver);
-        await driver.delay(1000);
 
         await assertAccountDetailsMetrics(
           driver,
@@ -87,10 +86,9 @@ describe('Confirmation Signature - Sign Typed Data V4 @no-mmi', function (this: 
           SignatureType.SignTypedDataV4,
         );
 
-        await driver.clickElement(
+        await driver.clickElementAndWaitForWindowToClose(
           '[data-testid="confirm-footer-cancel-button"]',
         );
-        await driver.delay(1000);
 
         await assertSignatureRejectedMetrics({
           driver,

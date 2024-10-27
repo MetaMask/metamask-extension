@@ -18,7 +18,7 @@ import { isObject } from '@metamask/utils';
 import { ApprovalType } from '@metamask/controller-utils';
 import PortStream from 'extension-port-stream';
 
-import { ethErrors } from 'eth-rpc-errors';
+import { providerErrors } from '@metamask/rpc-errors';
 import { DIALOG_APPROVAL_TYPES } from '@metamask/snaps-rpc-methods';
 import { NotificationServicesController } from '@metamask/notification-services-controller';
 
@@ -235,7 +235,7 @@ function maybeDetectPhishing(theController) {
         return {};
       }
 
-      const prefState = theController.preferencesController.store.getState();
+      const prefState = theController.preferencesController.state;
       if (!prefState.usePhishDetect) {
         return {};
       }
@@ -266,12 +266,16 @@ function maybeDetectPhishing(theController) {
       }
 
       theController.phishingController.maybeUpdateState();
-      const phishingTestResponse = theController.phishingController.test(
-        details.url,
-      );
 
       const blockedRequestResponse =
         theController.phishingController.isBlockedRequest(details.url);
+
+      let phishingTestResponse;
+      if (details.type === 'main_frame' || details.type === 'sub_frame') {
+        phishingTestResponse = theController.phishingController.test(
+          details.url,
+        );
+      }
 
       // if the request is not blocked, and the phishing test is not blocked, return and don't show the phishing screen
       if (!phishingTestResponse?.result && !blockedRequestResponse.result) {
@@ -294,6 +298,9 @@ function maybeDetectPhishing(theController) {
         category: MetaMetricsEventCategory.Phishing,
         properties: {
           url: hostname,
+          referrer: {
+            url: hostname,
+          },
           reason: blockReason,
         },
       });
@@ -320,7 +327,6 @@ function maybeDetectPhishing(theController) {
       return {};
     },
     {
-      types: ['main_frame', 'sub_frame', 'xmlhttprequest'],
       urls: ['http://*/*', 'https://*/*'],
     },
     isManifestV2 ? ['blocking'] : [],
@@ -758,8 +764,7 @@ export function setupController(
       controller.preferencesController,
     ),
     getUseAddressBarEnsResolution: () =>
-      controller.preferencesController.store.getState()
-        .useAddressBarEnsResolution,
+      controller.preferencesController.state.useAddressBarEnsResolution,
     provider: controller.provider,
   });
 
@@ -1156,7 +1161,7 @@ export function setupController(
           default:
             controller.approvalController.reject(
               id,
-              ethErrors.provider.userRejectedRequest(),
+              providerErrors.userRejectedRequest(),
             );
             break;
         }

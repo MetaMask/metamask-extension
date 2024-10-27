@@ -50,11 +50,10 @@ describe('Malicious Confirmation Signature - Bad Domain @no-mmi', function (this
       }: TestSuiteArguments) => {
         await openDappAndTriggerSignature(driver, SignatureType.SIWE_BadDomain);
 
-        await driver.clickElement(
+        await driver.clickElementAndWaitForWindowToClose(
           '[data-testid="confirm-footer-cancel-button"]',
         );
 
-        await driver.waitUntilXWindowHandles(2);
         await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
 
         const rejectionResult = await driver.waitForSelector({
