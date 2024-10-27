@@ -1,15 +1,12 @@
 import { Mockttp, RequestRuleBuilder } from 'mockttp';
-import {
-  AuthenticationController,
-  UserStorageController,
-} from '@metamask/profile-sync-controller';
+import { AuthenticationController } from '@metamask/profile-sync-controller';
 import {
   NotificationServicesController,
   NotificationServicesPushController,
 } from '@metamask/notification-services-controller';
+import { UserStorageMockttpController } from '../../helpers/user-storage/userStorageMockttpController';
 
 const AuthMocks = AuthenticationController.Mocks;
-const StorageMocks = UserStorageController.Mocks;
 const NotificationMocks = NotificationServicesController.Mocks;
 const PushMocks = NotificationServicesPushController.Mocks;
 
@@ -20,32 +17,30 @@ type MockResponse = {
 };
 
 /**
- * E2E mock setup for notification APIs (Auth, Storage, Notifications, Push Notifications, Profile syncing)
+ * E2E mock setup for notification APIs (Auth, UserStorage, Notifications, Push Notifications, Profile syncing)
  *
  * @param server - server obj used to mock our endpoints
+ * @param userStorageMockttpController - optional controller to mock user storage endpoints
  */
-export async function mockNotificationServices(server: Mockttp) {
+export async function mockNotificationServices(
+  server: Mockttp,
+  userStorageMockttpController?: UserStorageMockttpController,
+) {
   // Auth
   mockAPICall(server, AuthMocks.getMockAuthNonceResponse());
   mockAPICall(server, AuthMocks.getMockAuthLoginResponse());
   mockAPICall(server, AuthMocks.getMockAuthAccessTokenResponse());
 
   // Storage
-  mockAPICall(server, await StorageMocks.getMockUserStorageGetResponse());
-  mockAPICall(server, await StorageMocks.getMockUserStoragePutResponse());
-
-  // TODO - add better mock responses for other Profile Sync features
-  // (Account Sync, Network Sync, ...)
-  server
-    .forGet(/https:\/\/user-storage\.api\.cx\.metamask\.io\/.*/gu)
-    ?.thenCallback(() => ({
-      statusCode: 404,
-    }));
-  server
-    .forPut(/https:\/\/user-storage\.api\.cx\.metamask\.io\/.*/gu)
-    ?.thenCallback(() => ({
-      statusCode: 204,
-    }));
+  if (!userStorageMockttpController?.paths.get('accounts')) {
+    new UserStorageMockttpController().setupPath('accounts', server);
+  }
+  if (!userStorageMockttpController?.paths.get('networks')) {
+    new UserStorageMockttpController().setupPath('networks', server);
+  }
+  if (!userStorageMockttpController?.paths.get('notifications')) {
+    new UserStorageMockttpController().setupPath('notifications', server);
+  }
 
   // Notifications
   mockAPICall(server, NotificationMocks.getMockFeatureAnnouncementResponse());
