@@ -42,6 +42,8 @@ const AssetListControlBar = ({ showTokensLinks }: AssetListControlBarProps) => {
   const [isNetworkFilterPopoverOpen, setIsNetworkFilterPopoverOpen] =
     useState(false);
 
+  const allNetworksFilterShown = Object.keys(tokenNetworkFilter ?? {}).length;
+
   const windowType = getEnvironmentType();
   const isFullScreen =
     windowType !== ENVIRONMENT_TYPE_NOTIFICATION &&
@@ -94,7 +96,7 @@ const AssetListControlBar = ({ showTokensLinks }: AssetListControlBarProps) => {
             marginRight={isFullScreen ? 2 : null}
             ellipsis
           >
-            {Object.keys(tokenNetworkFilter)?.length
+            {allNetworksFilterShown
               ? currentNetwork?.nickname ?? t('currentNetwork')
               : t('allNetworks')}
           </ButtonBase>
