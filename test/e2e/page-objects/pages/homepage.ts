@@ -109,21 +109,6 @@ class HomePage {
   }
 
   /**
-   * Checks if the toaster message for adding a network is displayed on the homepage.
-   *
-   * @param networkName - The name of the network that was added.
-   */
-  async check_addNetworkMessageIsDisplayed(networkName: string): Promise<void> {
-    console.log(
-      `Check the toaster message for adding network ${networkName} is displayed on homepage`,
-    );
-    await this.driver.waitForSelector({
-      tag: 'h6',
-      text: `“${networkName}” was successfully added!`,
-    });
-  }
-
-  /**
    * This function checks if the specified number of confirmed transactions are displayed in the activity list on homepage.
    * It waits up to 10 seconds for the expected number of confirmed transactions to be visible.
    *
