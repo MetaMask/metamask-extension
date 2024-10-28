@@ -19,7 +19,6 @@ import SelectQuotePopover from '../select-quote-popover';
 import { useEthFiatAmount } from '../../../hooks/useEthFiatAmount';
 import { useEqualityCheck } from '../../../hooks/useEqualityCheck';
 import { usePrevious } from '../../../hooks/usePrevious';
-import { useGasFeeInputs } from '../../confirmations/hooks/useGasFeeInputs';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import {
   getQuotes,
@@ -29,9 +28,6 @@ import {
   getQuotesLastFetched,
   getBalanceError,
   getCustomSwapsGas, // Gas limit.
-  getCustomMaxFeePerGas,
-  getCustomMaxPriorityFeePerGas,
-  getSwapsUserFeeLevel,
   getDestinationTokenInfo,
   getUsedSwapsGasPrice,
   getTopQuote,
@@ -62,8 +58,9 @@ import {
   getUSDConversionRate,
 } from '../../../selectors';
 import {
-  getSmartTransactionsOptInStatus,
+  getSmartTransactionsOptInStatusForMetrics,
   getSmartTransactionsEnabled,
+  getSmartTransactionsPreferenceEnabled,
 } from '../../../../shared/modules/selectors';
 import { getNativeCurrency, getTokens } from '../../../ducks/metamask/metamask';
 import {
@@ -79,8 +76,6 @@ import {
   PREPARE_SWAP_ROUTE,
 } from '../../../helpers/constants/routes';
 import {
-  addHexes,
-  decGWEIToHexWEI,
   decimalToHex,
   decWEIToDecETH,
   sumHexes,
@@ -92,6 +87,7 @@ import {
   getRenderableNetworkFeesForQuote,
   getFeeForSmartTransaction,
   formatSwapsValueForDisplay,
+  getSwap1559GasFeeEstimates,
 } from '../swaps.util';
 import { useTokenTracker } from '../../../hooks/useTokenTracker';
 import {
@@ -147,6 +143,8 @@ import InfoTooltip from '../../../components/ui/info-tooltip';
 import useRamps from '../../../hooks/ramps/useRamps/useRamps';
 import { getTokenFiatAmount } from '../../../helpers/utils/token-util';
 import { toChecksumHexAddress } from '../../../../shared/modules/hexstring-utils';
+import { useAsyncResult } from '../../../hooks/useAsyncResult';
+import { useGasFeeEstimates } from '../../../hooks/useGasFeeEstimates';
 import ViewQuotePriceDifference from './view-quote-price-difference';
 import SlippageNotificationModal from './slippage-notification-modal';
 
@@ -222,9 +220,6 @@ export default function ReviewQuote({ setReceiveToAmount }) {
   // Select necessary data
   const gasPrice = useSelector(getUsedSwapsGasPrice);
   const customMaxGas = useSelector(getCustomSwapsGas);
-  const customMaxFeePerGas = useSelector(getCustomMaxFeePerGas);
-  const customMaxPriorityFeePerGas = useSelector(getCustomMaxPriorityFeePerGas);
-  const swapsUserFeeLevel = useSelector(getSwapsUserFeeLevel);
   const tokenConversionRates = useSelector(getTokenExchangeRates, isEqual);
   const memoizedTokenConversionRates = useEqualityCheck(tokenConversionRates);
   const { balance: ethBalance } = useSelector(getSelectedAccount, shallowEqual);
@@ -237,7 +232,7 @@ export default function ReviewQuote({ setReceiveToAmount }) {
   );
   const balanceError = useSelector(getBalanceError);
   const fetchParams = useSelector(getFetchParams, isEqual);
-  const approveTxParams = useSelector(getApproveTxParams, shallowEqual);
+  const approveTxParams = useSelector(getApproveTxParams, isEqual);
   const topQuote = useSelector(getTopQuote, isEqual);
   const usedQuote = useSelector(getUsedQuote, isEqual);
   const tradeValue = usedQuote?.trade?.value ?? '0x0';
@@ -246,7 +241,10 @@ export default function ReviewQuote({ setReceiveToAmount }) {
   const nativeCurrencySymbol = useSelector(getNativeCurrency);
   const reviewSwapClickedTimestamp = useSelector(getReviewSwapClickedTimestamp);
   const smartTransactionsOptInStatus = useSelector(
-    getSmartTransactionsOptInStatus,
+    getSmartTransactionsOptInStatusForMetrics,
+  );
+  const smartTransactionsPreferenceEnabled = useSelector(
+    getSmartTransactionsPreferenceEnabled,
   );
   const smartTransactionsEnabled = useSelector(getSmartTransactionsEnabled);
   const swapsSTXLoading = useSelector(getSwapsSTXLoading);
@@ -259,10 +257,35 @@ export default function ReviewQuote({ setReceiveToAmount }) {
   );
   const smartTransactionFees = useSelector(getSmartTransactionFees, isEqual);
   const swapsNetworkConfig = useSelector(getSwapsNetworkConfig, shallowEqual);
+  const { estimatedBaseFee = '0' } = useGasFeeEstimates();
+
+  const gasFeeEstimates = useAsyncResult(async () => {
+    if (!networkAndAccountSupports1559) {
+      return undefined;
+    }
+
+    return await getSwap1559GasFeeEstimates(
+      usedQuote.trade,
+      approveTxParams,
+      estimatedBaseFee,
+      chainId,
+    );
+  }, [
+    usedQuote.trade,
+    approveTxParams,
+    estimatedBaseFee,
+    chainId,
+    networkAndAccountSupports1559,
+  ]);
+
+  const gasFeeEstimatesTrade = gasFeeEstimates.value?.tradeGasFeeEstimates;
+  const gasFeeEstimatesApprove = gasFeeEstimates.value?.approveGasFeeEstimates;
+
   const unsignedTransaction = usedQuote.trade;
   const { isGasIncludedTrade } = usedQuote;
   const isSmartTransaction =
-    currentSmartTransactionsEnabled && smartTransactionsOptInStatus;
+    useSelector(getSmartTransactionsPreferenceEnabled) &&
+    currentSmartTransactionsEnabled;
 
   const [slippageErrorKey] = useState(() => {
     const slippage = Number(fetchParams?.slippage);
@@ -273,15 +296,6 @@ export default function ReviewQuote({ setReceiveToAmount }) {
     }
     return '';
   });
-
-  let gasFeeInputs;
-  if (networkAndAccountSupports1559) {
-    // For Swaps we want to get 'high' estimations by default.
-    // eslint-disable-next-line react-hooks/rules-of-hooks
-    gasFeeInputs = useGasFeeInputs(GasRecommendations.high, {
-      userFeeLevel: swapsUserFeeLevel || GasRecommendations.high,
-    });
-  }
 
   const fetchParamsSourceToken = fetchParams?.sourceToken;
 
@@ -307,27 +321,11 @@ export default function ReviewQuote({ setReceiveToAmount }) {
     customMaxGas,
   );
 
-  let maxFeePerGas;
-  let maxPriorityFeePerGas;
-  let baseAndPriorityFeePerGas;
+  let gasTotalInWeiHex = calcGasTotal(
+    maxGasLimit,
+    gasFeeEstimatesTrade?.maxFeePerGas || gasPrice,
+  );
 
-  // EIP-1559 gas fees.
-  if (networkAndAccountSupports1559) {
-    const {
-      maxFeePerGas: suggestedMaxFeePerGas,
-      maxPriorityFeePerGas: suggestedMaxPriorityFeePerGas,
-      gasFeeEstimates: { estimatedBaseFee = '0' } = {},
-    } = gasFeeInputs;
-    maxFeePerGas = customMaxFeePerGas || decGWEIToHexWEI(suggestedMaxFeePerGas);
-    maxPriorityFeePerGas =
-      customMaxPriorityFeePerGas ||
-      decGWEIToHexWEI(suggestedMaxPriorityFeePerGas);
-    baseAndPriorityFeePerGas = addHexes(
-      decGWEIToHexWEI(estimatedBaseFee),
-      maxPriorityFeePerGas,
-    );
-  }
-  let gasTotalInWeiHex = calcGasTotal(maxGasLimit, maxFeePerGas || gasPrice);
   if (multiLayerL1FeeTotal !== null) {
     gasTotalInWeiHex = sumHexes(
       gasTotalInWeiHex || '0x0',
@@ -364,12 +362,19 @@ export default function ReviewQuote({ setReceiveToAmount }) {
     calcTokenAmount(approveValue, selectedFromToken.decimals).toFixed(9);
   const approveGas = approveTxParams?.gas;
 
+  const gasPriceTrade = networkAndAccountSupports1559
+    ? gasFeeEstimatesTrade?.baseAndPriorityFeePerGas
+    : gasPrice;
+
+  const gasPriceApprove = networkAndAccountSupports1559
+    ? gasFeeEstimatesApprove?.baseAndPriorityFeePerGas
+    : gasPrice;
+
   const renderablePopoverData = useMemo(() => {
     return quotesToRenderableData({
       quotes,
-      gasPrice: networkAndAccountSupports1559
-        ? baseAndPriorityFeePerGas
-        : gasPrice,
+      gasPriceTrade,
+      gasPriceApprove,
       conversionRate,
       currentCurrency,
       approveGas,
@@ -377,16 +382,15 @@ export default function ReviewQuote({ setReceiveToAmount }) {
       chainId,
       smartTransactionEstimatedGas:
         smartTransactionsEnabled &&
-        smartTransactionsOptInStatus &&
+        smartTransactionsPreferenceEnabled &&
         smartTransactionFees?.tradeTxFees,
       nativeCurrencySymbol,
       multiLayerL1ApprovalFeeTotal,
     });
   }, [
     quotes,
-    gasPrice,
-    baseAndPriorityFeePerGas,
-    networkAndAccountSupports1559,
+    gasPriceTrade,
+    gasPriceApprove,
     conversionRate,
     currentCurrency,
     approveGas,
@@ -395,7 +399,7 @@ export default function ReviewQuote({ setReceiveToAmount }) {
     smartTransactionFees?.tradeTxFees,
     nativeCurrencySymbol,
     smartTransactionsEnabled,
-    smartTransactionsOptInStatus,
+    smartTransactionsPreferenceEnabled,
     multiLayerL1ApprovalFeeTotal,
   ]);
 
@@ -417,9 +421,8 @@ export default function ReviewQuote({ setReceiveToAmount }) {
     getRenderableNetworkFeesForQuote({
       tradeGas: usedGasLimit,
       approveGas,
-      gasPrice: networkAndAccountSupports1559
-        ? baseAndPriorityFeePerGas
-        : gasPrice,
+      gasPriceTrade,
+      gasPriceApprove,
       currentCurrency,
       conversionRate,
       USDConversionRate,
@@ -436,7 +439,8 @@ export default function ReviewQuote({ setReceiveToAmount }) {
   const renderableMaxFees = getRenderableNetworkFeesForQuote({
     tradeGas: maxGasLimit,
     approveGas,
-    gasPrice: maxFeePerGas || gasPrice,
+    gasPriceTrade,
+    gasPriceApprove,
     currentCurrency,
     conversionRate,
     USDConversionRate,
@@ -882,13 +886,13 @@ export default function ReviewQuote({ setReceiveToAmount }) {
       tokenBalanceUnavailable ||
       disableSubmissionDueToPriceWarning ||
       (networkAndAccountSupports1559 &&
-        baseAndPriorityFeePerGas === undefined) ||
+        gasFeeEstimatesTrade?.baseAndPriorityFeePerGas === undefined) ||
       (!networkAndAccountSupports1559 &&
         (gasPrice === null || gasPrice === undefined)) ||
       (currentSmartTransactionsEnabled &&
         (currentSmartTransactionsError || smartTransactionsError)) ||
       (currentSmartTransactionsEnabled &&
-        smartTransactionsOptInStatus &&
+        smartTransactionsPreferenceEnabled &&
         !smartTransactionFees?.tradeTxFees),
   );
 
@@ -1137,7 +1141,7 @@ export default function ReviewQuote({ setReceiveToAmount }) {
               initialAggId={usedQuote.aggregator}
               onQuoteDetailsIsOpened={trackQuoteDetailsOpened}
               hideEstimatedGasFee={
-                smartTransactionsEnabled && smartTransactionsOptInStatus
+                smartTransactionsEnabled && smartTransactionsPreferenceEnabled
               }
             />
           )
@@ -1206,7 +1210,7 @@ export default function ReviewQuote({ setReceiveToAmount }) {
               secondaryTokenDecimals={destinationTokenDecimals}
               secondaryTokenSymbol={destinationTokenSymbol}
               boldSymbols={false}
-              className="main-quote-summary__exchange-rate-display"
+              className="review-quote__exchange-rate-display"
               showIconForSwappingTokens={false}
             />
           </Box>

@@ -27,6 +27,7 @@ const TypedSignV1Info: React.FC = () => {
   const toolTipMessage = isSnapId(currentConfirmation.msgParams?.origin)
     ? t('requestFromInfoSnap')
     : t('requestFromInfo');
+  const chainId = currentConfirmation.chainId as string;
 
   return (
     <>
@@ -43,9 +44,15 @@ const TypedSignV1Info: React.FC = () => {
         </ConfirmInfoAlertRow>
       </ConfirmInfoSection>
       <ConfirmInfoSection>
-        <ConfirmInfoRow label={t('message')}>
+        <ConfirmInfoRow
+          label={t('message')}
+          collapsed={false}
+          copyEnabled
+          copyText={JSON.stringify(currentConfirmation.msgParams?.data ?? {})}
+        >
           <ConfirmInfoRowTypedSignDataV1
             data={currentConfirmation.msgParams?.data as TypedSignDataV1Type}
+            chainId={chainId}
           />
         </ConfirmInfoRow>
       </ConfirmInfoSection>

@@ -33,9 +33,11 @@
       "smartTransactionsOptInStatus": false,
       "showNativeTokenAsMainBalance": true,
       "petnamesEnabled": true,
+      "showMultiRpcModal": "boolean",
       "isRedesignedConfirmationsDeveloperEnabled": "boolean",
       "redesignedConfirmationsEnabled": true,
       "redesignedTransactionsEnabled": "boolean",
+      "tokenSortConfig": "object",
       "showMultiRpcModal": "boolean",
       "shouldShowAggregatedBalancePopover": "boolean"
     },
@@ -43,6 +45,7 @@
     "completedOnboarding": true,
     "knownMethodData": "object",
     "use4ByteResolution": true,
+    "showIncomingTransactions": "object",
     "participateInMetaMetrics": true,
     "dataCollectionForMarketing": "boolean",
     "nextNonce": null,
@@ -121,6 +124,7 @@
     "forgottenPassword": false,
     "ipfsGateway": "string",
     "isIpfsGatewayEnabled": "boolean",
+    "isMultiAccountBalancesEnabled": "boolean",
     "useAddressBarEnsResolution": true,
     "ledgerTransportType": "webhid",
     "snapRegistryList": "object",
@@ -169,7 +173,9 @@
     "allDetectedTokens": {},
     "smartTransactionsState": {
       "fees": {},
+      "feesByChainId": "object",
       "liveness": true,
+      "livenessByChainId": "object",
       "smartTransactions": "object"
     },
     "allNftContracts": "object",
@@ -179,6 +185,7 @@
     "logs": "object",
     "methodData": "object",
     "lastFetchedBlockNumbers": "object",
+    "submitHistory": "object",
     "fiatCurrency": "usd",
     "rates": { "btc": { "conversionDate": 0, "conversionRate": "0" } },
     "cryptocurrencies": ["btc"],
@@ -211,6 +218,7 @@
     "accounts": "object",
     "accountsByChainId": "object",
     "marketData": "object",
+    "signatureRequests": "object",
     "unapprovedDecryptMsgs": "object",
     "unapprovedDecryptMsgCount": 0,
     "unapprovedEncryptionPublicKeyMsgs": "object",
@@ -252,7 +260,11 @@
         "extensionSupport": "boolean",
         "srcNetworkAllowlist": { "0": "string", "1": "string", "2": "string" },
         "destNetworkAllowlist": { "0": "string", "1": "string", "2": "string" }
-      }
+      },
+      "destTokens": {},
+      "destTopAssets": {},
+      "srcTokens": {},
+      "srcTopAssets": {}
     },
     "ensEntries": "object",
     "ensResolutionsByAddress": "object",

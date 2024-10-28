@@ -1,14 +1,17 @@
-import React from 'react';
+import React, { ReactNode } from 'react';
 import { Provider } from 'react-redux';
+import { Store } from 'redux';
 import { renderHook, act } from '@testing-library/react-hooks';
 import configureStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import { waitFor } from '@testing-library/react';
+import { MetamaskNotificationsProvider } from '../../contexts/metamask-notifications';
 import * as actions from '../../store/actions';
 import {
   useEnableProfileSyncing,
   useDisableProfileSyncing,
   useAccountSyncingEffect,
+  useDeleteAccountSyncingDataFromUserStorage,
 } from './useProfileSyncing';
 
 const middlewares = [thunk];
@@ -22,6 +25,7 @@ jest.mock('../../store/actions', () => ({
   showLoadingIndication: jest.fn(),
   hideLoadingIndication: jest.fn(),
   syncInternalAccountsWithUserStorage: jest.fn(),
+  deleteAccountSyncingDataFromUserStorage: jest.fn(),
 }));
 
 type ArrangeMocksMetamaskStateOverrides = {
@@ -75,12 +79,26 @@ const arrangeMocks = (
   return { store };
 };
 
+const RenderWithProviders = ({
+  store,
+  children,
+}: {
+  store: Store;
+  children: ReactNode;
+}) => (
+  <Provider store={store}>
+    <MetamaskNotificationsProvider>{children}</MetamaskNotificationsProvider>
+  </Provider>
+);
+
 describe('useProfileSyncing', () => {
   it('should enable profile syncing', async () => {
     const { store } = arrangeMocks();
 
     const { result } = renderHook(() => useEnableProfileSyncing(), {
-      wrapper: ({ children }) => <Provider store={store}>{children}</Provider>,
+      wrapper: ({ children }) => (
+        <RenderWithProviders store={store}>{children}</RenderWithProviders>
+      ),
     });
 
     act(() => {
@@ -94,7 +112,9 @@ describe('useProfileSyncing', () => {
     const { store } = arrangeMocks();
 
     const { result } = renderHook(() => useDisableProfileSyncing(), {
-      wrapper: ({ children }) => <Provider store={store}>{children}</Provider>,
+      wrapper: ({ children }) => (
+        <RenderWithProviders store={store}>{children}</RenderWithProviders>
+      ),
     });
 
     act(() => {
@@ -111,7 +131,9 @@ describe('useProfileSyncing', () => {
     });
 
     renderHook(() => useAccountSyncingEffect(), {
-      wrapper: ({ children }) => <Provider store={store}>{children}</Provider>,
+      wrapper: ({ children }) => (
+        <RenderWithProviders store={store}>{children}</RenderWithProviders>
+      ),
     });
 
     await waitFor(() => {
@@ -123,7 +145,9 @@ describe('useProfileSyncing', () => {
     const { store } = arrangeMocks();
 
     renderHook(() => useAccountSyncingEffect(), {
-      wrapper: ({ children }) => <Provider store={store}>{children}</Provider>,
+      wrapper: ({ children }) => (
+        <RenderWithProviders store={store}>{children}</RenderWithProviders>
+      ),
     });
 
     await waitFor(() => {
@@ -131,5 +155,24 @@ describe('useProfileSyncing', () => {
         actions.syncInternalAccountsWithUserStorage,
       ).not.toHaveBeenCalled();
     });
+  });
+
+  it('should dispatch account sync data deletion', async () => {
+    const { store } = arrangeMocks();
+
+    const { result } = renderHook(
+      () => useDeleteAccountSyncingDataFromUserStorage(),
+      {
+        wrapper: ({ children }) => (
+          <RenderWithProviders store={store}>{children}</RenderWithProviders>
+        ),
+      },
+    );
+
+    act(() => {
+      result.current.dispatchDeleteAccountSyncingDataFromUserStorage();
+    });
+
+    expect(actions.deleteAccountSyncingDataFromUserStorage).toHaveBeenCalled();
   });
 });

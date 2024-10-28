@@ -6,7 +6,10 @@ import { useSelector } from 'react-redux';
 import { renderWithProvider } from '../../../../../test/lib/render-helpers';
 import { useTokenFiatAmount } from '../../../../hooks/useTokenFiatAmount';
 import { getTokenList } from '../../../../selectors';
-import { getMultichainCurrentChainId } from '../../../../selectors/multichain';
+import {
+  getMultichainCurrentChainId,
+  getMultichainIsEvm,
+} from '../../../../selectors/multichain';
 
 import { useIsOriginalTokenSymbol } from '../../../../hooks/useIsOriginalTokenSymbol';
 import { getIntlLocale } from '../../../../ducks/locale/locale';
@@ -100,6 +103,9 @@ describe('Token Cell', () => {
     }
     if (selector === getMultichainCurrentChainId) {
       return '0x89';
+    }
+    if (selector === getMultichainIsEvm) {
+      return true;
     }
     if (selector === getIntlLocale) {
       return 'en-US';

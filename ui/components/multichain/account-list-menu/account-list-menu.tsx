@@ -1,4 +1,10 @@
-import React, { useContext, useState, useMemo, useCallback } from 'react';
+import React, {
+  useContext,
+  useState,
+  useMemo,
+  useCallback,
+  useEffect,
+} from 'react';
 import PropTypes from 'prop-types';
 import { useHistory } from 'react-router-dom';
 import Fuse from 'fuse.js';
@@ -9,18 +15,13 @@ import {
   ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
   InternalAccount,
   KeyringAccountType,
-  KeyringClient,
   ///: END:ONLY_INCLUDE_IF
 } from '@metamask/keyring-api';
 ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
-import { CaipChainId } from '@metamask/utils';
 import {
   BITCOIN_WALLET_NAME,
   BITCOIN_WALLET_SNAP_ID,
-  BitcoinWalletSnapSender,
-  // TODO: Remove restricted import
-  // eslint-disable-next-line import/no-restricted-paths
-} from '../../../../app/scripts/lib/snap-keyring/bitcoin-wallet-snap';
+} from '../../../../shared/lib/accounts/bitcoin-wallet-snap';
 ///: END:ONLY_INCLUDE_IF
 import {
   Box,
@@ -97,12 +98,14 @@ import {
   hasCreatedBtcTestnetAccount,
 } from '../../../selectors/accounts';
 import { MultichainNetworks } from '../../../../shared/constants/multichain/networks';
+import { useBitcoinWalletSnapClient } from '../../../hooks/accounts/useBitcoinWalletSnapClient';
 ///: END:ONLY_INCLUDE_IF
 import {
   InternalAccountWithBalance,
   AccountConnections,
   MergedInternalAccount,
 } from '../../../selectors/selectors.types';
+import { endTrace, TraceName } from '../../../../shared/lib/trace';
 import { HiddenAccountList } from './hidden-account-list';
 
 const ACTION_MODES = {
@@ -202,6 +205,9 @@ export const AccountListMenu = ({
 }: AccountListMenuProps) => {
   const t = useI18nContext();
   const trackEvent = useContext(MetaMetricsContext);
+  useEffect(() => {
+    endTrace({ name: TraceName.AccountList });
+  }, []);
   const accounts: InternalAccountWithBalance[] = useSelector(
     getMetaMaskAccountsOrdered,
   );
@@ -261,15 +267,7 @@ export const AccountListMenu = ({
     hasCreatedBtcTestnetAccount,
   );
 
-  const createBitcoinAccount = async (scope: CaipChainId) => {
-    // Client to create the account using the Bitcoin Snap
-    const client = new KeyringClient(new BitcoinWalletSnapSender());
-
-    // This will trigger the Snap account creation flow (+ account renaming)
-    await client.createAccount({
-      scope,
-    });
-  };
+  const bitcoinWalletSnapClient = useBitcoinWalletSnapClient();
   ///: END:ONLY_INCLUDE_IF
 
   const [searchQuery, setSearchQuery] = useState('');
@@ -413,10 +411,12 @@ export const AccountListMenu = ({
 
                       // The account creation + renaming is handled by the
                       // Snap account bridge, so we need to close the current
-                      // model
+                      // modal
                       onClose();
 
-                      await createBitcoinAccount(MultichainNetworks.BITCOIN);
+                      await bitcoinWalletSnapClient.createAccount(
+                        MultichainNetworks.BITCOIN,
+                      );
                     }}
                     data-testid="multichain-account-menu-popover-add-btc-account"
                   >
@@ -436,10 +436,10 @@ export const AccountListMenu = ({
                     startIconName={IconName.Add}
                     onClick={async () => {
                       // The account creation + renaming is handled by the Snap account bridge, so
-                      // we need to close the current model
+                      // we need to close the current modal
                       onClose();
 
-                      await createBitcoinAccount(
+                      await bitcoinWalletSnapClient.createAccount(
                         MultichainNetworks.BITCOIN_TESTNET,
                       );
                     }}
@@ -455,6 +455,7 @@ export const AccountListMenu = ({
               <ButtonLink
                 size={ButtonLinkSize.Sm}
                 startIconName={IconName.Import}
+                data-testid="multichain-account-menu-popover-add-imported-account"
                 onClick={() => {
                   trackEvent({
                     category: MetaMetricsEventCategory.Navigation,

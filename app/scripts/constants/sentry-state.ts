@@ -102,6 +102,10 @@ export const SENTRY_BACKGROUND_STATE = {
         destNetworkAllowlist: [],
         srcNetworkAllowlist: [],
       },
+      destTokens: {},
+      destTopAssets: [],
+      srcTokens: {},
+      srcTopAssets: [],
     },
   },
   CronjobController: {
