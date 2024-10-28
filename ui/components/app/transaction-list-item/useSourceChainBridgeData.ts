@@ -1,21 +1,9 @@
-import { useSelector, useDispatch } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { Hex } from '@metamask/utils';
 import { TransactionMeta } from '@metamask/transaction-controller';
-import { useCallback, useContext } from 'react';
 import { Numeric } from '../../../../shared/modules/Numeric';
 import { selectBridgeHistoryForAccount } from '../../../ducks/bridge-status/selectors';
-import {
-  getNetworkConfigurationsByChainId,
-  getOriginOfCurrentTab,
-  getPermittedAccountsForSelectedTab,
-} from '../../../selectors';
-import {
-  setActiveNetwork,
-  setNextNonce,
-  updateCustomNonce,
-} from '../../../store/actions';
-import { MetaMetricsContext } from '../../../contexts/metametrics';
-import { PENDING_STATUS_HASH } from '../../../helpers/constants/transactions';
+import { getNetworkConfigurationsByChainId } from '../../../selectors';
 
 export default function useSourceChainBridgeData({
   transactionGroup,
@@ -29,12 +17,6 @@ export default function useSourceChainBridgeData({
     transactions: TransactionMeta[];
   };
 }) {
-  const dispatch = useDispatch();
-  const trackEvent = useContext(MetaMetricsContext);
-  const selectedTabOrigin = useSelector(getOriginOfCurrentTab);
-  const permittedAccountAddresses = useSelector((state) =>
-    getPermittedAccountsForSelectedTab(state, selectedTabOrigin),
-  );
   const networkConfigurationsByChainId = useSelector(
     getNetworkConfigurationsByChainId,
   );
@@ -55,49 +37,6 @@ export default function useSourceChainBridgeData({
   const chainName = networkConfiguration?.name || 'Unknown';
   const bridgeTitleSuffix = bridgeHistoryItem ? ` to ${chainName}` : '';
 
-  // Most logic from ui/components/multichain/network-list-menu/network-list-menu.tsx
-  const switchToDestChainCallback = useCallback(() => {
-    if (!networkConfiguration) {
-      return;
-    }
-
-    const { networkClientId } =
-      networkConfiguration.rpcEndpoints[
-        networkConfiguration.defaultRpcEndpointIndex
-      ];
-    dispatch(setActiveNetwork(networkClientId));
-    dispatch(updateCustomNonce(''));
-    dispatch(setNextNonce(''));
-
-    // if (permittedAccountAddresses.length > 0) {
-    //   grantPermittedChain(selectedTabOrigin, network.chainId);
-    //   if (!permittedChainIds.includes(network.chainId)) {
-    //     dispatch(showPermittedNetworkToast());
-    //   }
-    // }
-    // If presently on a dapp, communicate a change to
-    // the dapp via silent switchEthereumChain that the
-    // network has changed due to user action
-    // if (useRequestQueue && selectedTabOrigin && domains[selectedTabOrigin]) {
-    //   setNetworkClientIdForDomain(selectedTabOrigin, networkClientId);
-    // }
-
-    // trackEvent({
-    //   event: MetaMetricsEventName.NavNetworkSwitched,
-    //   category: MetaMetricsEventCategory.Network,
-    //   properties: {
-    //     location: 'Network Menu',
-    //     chain_id: currentChainId,
-    //     from_network: currentChainId,
-    //     to_network: network.chainId,
-    //   },
-    // });
-  }, [hexDestChainId]);
-
-  const switchToDestChain = networkConfiguration
-    ? switchToDestChainCallback
-    : undefined;
-
   // By complete, this means BOTH source and dest tx are confirmed
   const isBridgeComplete = bridgeHistoryItem
     ? Boolean(
@@ -105,8 +44,6 @@ export default function useSourceChainBridgeData({
           bridgeHistoryItem.status.destChain?.txHash,
       )
     : null;
-
-  const showSwitchToDestChain = switchToDestChain && !isBridgeComplete;
 
   if (bridgeHistoryItem && isBridgeComplete === false) {
     let logTitle;
@@ -129,8 +66,6 @@ export default function useSourceChainBridgeData({
 
   return {
     bridgeTitleSuffix,
-    switchToDestChain,
-    showSwitchToDestChain,
     bridgeTxHistoryItem: bridgeHistoryItem,
     isBridgeComplete,
   };
