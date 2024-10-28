@@ -92,15 +92,10 @@ function TransactionListItemInner({
   // Bridge transactions
   const isBridgeTx =
     transactionGroup.initialTransaction.type === TransactionType.bridge;
-  const {
-    bridgeTitleSuffix,
-    switchToDestChain,
-    showSwitchToDestChain,
-    bridgeTxHistoryItem,
-    isBridgeComplete,
-  } = useSourceChainBridgeData({
-    transactionGroup,
-  });
+  const { bridgeTitleSuffix, bridgeTxHistoryItem, isBridgeComplete } =
+    useSourceChainBridgeData({
+      transactionGroup,
+    });
 
   const {
     initialTransaction: { id },
@@ -425,16 +420,6 @@ function TransactionListItemInner({
             />
           )}
           {speedUpButton}
-          {showSwitchToDestChain && (
-            <Button
-              onClick={(e) => {
-                e.stopPropagation(); // Prevent opening transaction details modal
-                switchToDestChain();
-              }}
-            >
-              Switch to {bridgeTitleSuffix}
-            </Button>
-          )}
         </Box>
         {
           ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
