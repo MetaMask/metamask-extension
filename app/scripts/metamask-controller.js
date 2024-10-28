@@ -157,7 +157,7 @@ import {
   NotificationServicesController,
 } from '@metamask/notification-services-controller';
 import { isProduction } from '../../shared/modules/environment';
-import { methodsRequiringNetworkSwitch } from '../../shared/constants/methods-tags';
+import { methodsRequiringNetworkSwitch, methodsThatCanSwitchNetworkWithoutApproval } from '../../shared/constants/methods-tags';
 
 ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
 import { toChecksumHexAddress } from '../../shared/modules/hexstring-utils';
@@ -513,6 +513,8 @@ export default class MetamaskController extends EventEmitter {
       }),
       shouldRequestSwitchNetwork: ({ method }) =>
         methodsRequiringNetworkSwitch.includes(method),
+      canRequestSwitchNetworkWithoutApproval: ({ method }) =>
+        methodsThatCanSwitchNetworkWithoutApproval.includes(method),
       clearPendingConfirmations,
       showApprovalRequest: () => {
         if (this.approvalController.getTotalApprovalCount() > 0) {

@@ -16,3 +16,13 @@ export const methodsRequiringNetworkSwitch = [
   'eth_signTypedData_v4',
   'personal_sign',
 ] as const;
+
+/**
+ * This is a list of methods that may change the globally selected network
+ * without prompting for user approval.  For UI/UX reasons these type of
+ * requests must be treated specially in the QueuedRequestController.
+ */
+export const methodsThatCanSwitchNetworkWithoutApproval = [
+  'wallet_addEthereumChain',
+  'wallet_switchEthereumChain',
+]
