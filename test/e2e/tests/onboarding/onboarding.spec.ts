@@ -20,6 +20,7 @@ import {
   completeImportSRPOnboardingFlow,
   importSRPOnboardingFlow,
 } from '../../page-objects/flows/onboarding.flow';
+import { switchToNetworkFlow } from '../../page-objects/flows/network.flow';
 
 describe('MetaMask onboarding @no-mmi', function () {
   const ganacheOptions2 = {
@@ -186,7 +187,8 @@ describe('MetaMask onboarding @no-mmi', function () {
 
         const homePage = new HomePage(driver);
         await homePage.check_pageIsLoaded();
-        await homePage.headerNavbar.switchToNetwork(networkName);
+        await switchToNetworkFlow(driver, networkName);
+        await homePage.check_addNetworkMessageIsDisplayed(networkName);
 
         // Check the correct balance for the custom network is displayed
         if (secondaryGanacheServer && Array.isArray(secondaryGanacheServer)) {
