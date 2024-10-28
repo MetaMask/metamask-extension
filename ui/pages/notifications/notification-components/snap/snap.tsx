@@ -14,7 +14,7 @@ import { getSnapRoute, getSnapName } from '../../../../helpers/utils/util';
 import { useMarkNotificationAsRead } from '../../../../hooks/metamask-notifications/useNotifications';
 import { useSnapNotificationTimeouts } from '../../../../hooks/useNotificationTimeouts';
 
-type SnapNotification = Extract<
+export type SnapNotification = Extract<
   NotificationServicesController.Types.INotification,
   { type: TRIGGER_TYPES.SNAP }
 >;
