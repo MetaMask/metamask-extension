@@ -3,9 +3,10 @@ const FixtureBuilder = require('../../fixture-builder');
 
 const {
   defaultGanacheOptions,
-  withFixtures,
-  sendScreenToConfirmScreen,
   logInWithBalanceValidation,
+  sendScreenToConfirmScreen,
+  WINDOW_TITLES,
+  withFixtures,
 } = require('../../helpers');
 const { mockServerJsonRpc } = require('./mocks/mock-server-json-rpc');
 
@@ -106,11 +107,9 @@ async function mockInfuraWithFailedResponses(mockServer) {
   await mockInfura(mockServer);
 
   await mockServer
-    .forPost()
-    .withJsonBodyIncluding({
-      method: 'debug_traceCall',
-      params: [{ accessList: [], data: '0x00000000' }],
-    })
+    .forGet(
+      'https://static.cx.metamask.io/api/v1/confirmations/ppom/ppom_version.json',
+    )
     .thenCallback(() => {
       return {
         statusCode: 500,
@@ -163,6 +162,9 @@ describe('Simple Send Security Alert - Blockaid @no-mmi', function () {
         dapp: true,
         fixtures: new FixtureBuilder()
           .withNetworkControllerOnMainnet()
+          .withPermissionControllerConnectedToTestDapp({
+            useLocalhostHostname: true, // we need to use localhost instead of the ip, so ppom flags malicious interactions
+          })
           .withPreferencesController({
             securityAlertsEnabled: true,
           })
@@ -175,29 +177,25 @@ describe('Simple Send Security Alert - Blockaid @no-mmi', function () {
       async ({ driver }) => {
         await logInWithBalanceValidation(driver);
 
-        await sendScreenToConfirmScreen(driver, mockMaliciousAddress, '1');
+        await driver.openNewPage('http://localhost:8080');
 
-        // Find element by title
-        const bannerAlertFoundByTitle = await driver.findElement({
-          css: bannerAlertSelector,
+        await driver.clickElement('#maliciousRawEthButton');
+        await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
+
+        await driver.waitForSelector({
+          css: '.mm-text--body-lg-medium',
           text: expectedMaliciousTitle,
         });
-        const bannerAlertText = await bannerAlertFoundByTitle.getText();
 
-        assert(
-          bannerAlertFoundByTitle,
-          `Banner alert not found. Expected Title: ${expectedMaliciousTitle}`,
-        );
-        assert(
-          bannerAlertText.includes(expectedMaliciousDescription),
-          `Unexpected banner alert description. Expected: ${expectedMaliciousDescription}`,
-        );
+        await driver.waitForSelector({
+          css: '.mm-text--body-md',
+          text: expectedMaliciousDescription,
+        });
       },
     );
   });
 
-  // eslint-disable-next-line mocha/no-skipped-tests
-  it.skip('should show "Request may not be safe" if the PPOM request fails to check transaction', async function () {
+  it('should show "Be careful" if the PPOM request fails to check transaction', async function () {
     await withFixtures(
       {
         dapp: true,
@@ -220,8 +218,7 @@ describe('Simple Send Security Alert - Blockaid @no-mmi', function () {
           '0xB8c77482e45F1F44dE1745F52C74426C631bDD52',
           '1.1',
         );
-        // await driver.delay(100000)
-        const expectedTitle = 'Request may not be safe';
+        const expectedTitle = 'Be careful';
 
         const bannerAlert = await driver.findElement({
           css: bannerAlertSelector,
