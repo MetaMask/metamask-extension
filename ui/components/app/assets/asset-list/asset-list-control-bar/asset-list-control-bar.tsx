@@ -3,6 +3,7 @@ import { useSelector } from 'react-redux';
 import {
   getCurrentChainId,
   getCurrentNetwork,
+  getNetworkConfigurationsByChainId,
   getPreferences,
 } from '../../../../../selectors';
 import {
@@ -40,7 +41,7 @@ type AssetListControlBarProps = {
 const AssetListControlBar = ({ showTokensLinks }: AssetListControlBarProps) => {
   const t = useI18nContext();
   const popoverRef = useRef<HTMLDivElement>(null);
-  const chainId = useSelector(getCurrentChainId);
+  const allNetworks = useSelector(getNetworkConfigurationsByChainId);
   const currentNetwork = useSelector(getCurrentNetwork);
   const { tokenNetworkFilter } = useSelector(getPreferences);
   const [isTokenSortPopoverOpen, setIsTokenSortPopoverOpen] = useState(false);
@@ -99,9 +100,10 @@ const AssetListControlBar = ({ showTokensLinks }: AssetListControlBarProps) => {
             marginRight={isFullScreen ? 2 : null}
             ellipsis
           >
-            {tokenNetworkFilter[chainId]
-              ? currentNetwork?.nickname ?? t('currentNetwork')
-              : t('allNetworks')}
+            {Object.keys(tokenNetworkFilter).length ===
+            Object.keys(allNetworks).length
+              ? t('allNetworks')
+              : currentNetwork?.nickname ?? t('currentNetwork')}
           </ButtonBase>
         )}
 

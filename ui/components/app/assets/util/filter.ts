@@ -15,7 +15,10 @@ export type FilterCallbacksT = {
 };
 
 const filterCallbacks: FilterCallbacksT = {
-  inclusive: (value: string, opts: Record<string, boolean>) => opts[value],
+  inclusive: (value: string, opts: Record<string, boolean>) => {
+    if (Object.entries(opts).length === 0) return false;
+    return opts[value];
+  },
   range: (value: number, opts: Record<string, number>) =>
     value >= opts.min && value <= opts.max,
 };
