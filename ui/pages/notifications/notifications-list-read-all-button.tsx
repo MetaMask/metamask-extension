@@ -64,6 +64,7 @@ export const NotificationsListReadAllButton = ({
       paddingLeft={4}
       paddingRight={4}
       paddingTop={4}
+      paddingBottom={4}
       className="notifications__list__read__all__button"
     >
       <Button
