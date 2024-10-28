@@ -8,12 +8,12 @@ import NetworkSwitchModalConfirmation from '../pages/dialog/network-switch-modal
  *
  * @param driver
  * @param networkName - The name of the network to switch to.
- * @param toogleShowTestNetwork - A boolean indicating whether to toggle the display of test networks. Defaults to false.
+ * @param toggleShowTestNetwork - A boolean indicating whether to toggle the display of test networks. Defaults to false.
  */
 export const switchToNetworkFlow = async (
   driver: Driver,
   networkName: string,
-  toogleShowTestNetwork: boolean = false,
+  toggleShowTestNetwork: boolean = false,
 ) => {
   console.log(`Switch to network ${networkName} in header bar`);
   const headerNavbar = new HeaderNavbar(driver);
@@ -22,7 +22,7 @@ export const switchToNetworkFlow = async (
 
   const selectNetworkDialog = new SelectNetwork(driver);
   await selectNetworkDialog.check_pageIsLoaded();
-  if (toogleShowTestNetwork) {
+  if (toggleShowTestNetwork) {
     await selectNetworkDialog.toggleShowTestNetwork();
   }
   await selectNetworkDialog.selectNetworkName(networkName);

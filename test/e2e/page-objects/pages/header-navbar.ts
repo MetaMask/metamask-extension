@@ -5,7 +5,7 @@ class HeaderNavbar {
 
   private readonly accountMenuButton = '[data-testid="account-menu-icon"]';
 
-  private readonly accountOptionMenu =
+  private readonly threeDotMenuButton =
     '[data-testid="account-options-menu-button"]';
 
   private readonly accountSnapButton = { text: 'Snaps', tag: 'div' };
@@ -27,7 +27,7 @@ class HeaderNavbar {
     try {
       await this.driver.waitForMultipleSelectors([
         this.accountMenuButton,
-        this.accountOptionMenu,
+        this.threeDotMenuButton,
       ]);
     } catch (e) {
       console.log('Timeout while waiting for header navbar to be loaded', e);
@@ -37,7 +37,7 @@ class HeaderNavbar {
   }
 
   async lockMetaMask(): Promise<void> {
-    await this.openAccountOptionMenu();
+    await this.openThreeDotMenu();
     await this.driver.clickElement(this.lockMetaMaskButton);
   }
 
@@ -45,9 +45,9 @@ class HeaderNavbar {
     await this.driver.clickElement(this.accountMenuButton);
   }
 
-  async openAccountOptionMenu(): Promise<void> {
+  async openThreeDotMenu(): Promise<void> {
     console.log('Open account options menu');
-    await this.driver.clickElement(this.accountOptionMenu);
+    await this.driver.clickElement(this.threeDotMenuButton);
     // fix race condition with mmi build
     if (process.env.MMI) {
       await this.driver.waitForSelector(this.mmiPortfolioButton);
@@ -56,13 +56,13 @@ class HeaderNavbar {
 
   async openSnapListPage(): Promise<void> {
     console.log('Open account snap page');
-    await this.openAccountOptionMenu();
+    await this.openThreeDotMenu();
     await this.driver.clickElement(this.accountSnapButton);
   }
 
   async openSettingsPage(): Promise<void> {
     console.log('Open settings page');
-    await this.openAccountOptionMenu();
+    await this.openThreeDotMenu();
     await this.driver.clickElement(this.settingsButton);
   }
 
