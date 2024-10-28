@@ -11,10 +11,12 @@ import {
   NOTIFICATIONS_TEAM_SEED_PHRASE,
 } from '../constants';
 import { UserStorageMockttpController } from '../../../helpers/user-storage/userStorageMockttpController';
+import HeaderNavbar from '../../../page-objects/pages/header-navbar';
+import AccountListPage from '../../../page-objects/pages/account-list-page';
 import { accountsSyncMockResponse } from './mockData';
 import { IS_ACCOUNT_SYNCING_ENABLED } from './helpers';
 
-describe('Account syncing @no-mmi', function () {
+describe('Account syncing - Onboarding @no-mmi', function () {
   if (!IS_ACCOUNT_SYNCING_ENABLED) {
     return;
   }
@@ -45,14 +47,21 @@ describe('Account syncing @no-mmi', function () {
             NOTIFICATIONS_TEAM_PASSWORD,
           );
 
-          await driver.clickElement('[data-testid="account-menu-icon"]');
+          const header = new HeaderNavbar(driver);
+          await header.check_pageIsLoaded();
+          await header.openAccountMenu();
 
-          await driver.wait(async () => {
-            const internalAccounts = await driver.findElements(
-              '.multichain-account-list-item',
-            );
-            return internalAccounts.length === accountsSyncMockResponse.length;
-          }, 20000);
+          const accountListPage = new AccountListPage(driver);
+          await accountListPage.check_pageIsLoaded();
+          await accountListPage.check_numberOfAvailableAccounts(
+            accountsSyncMockResponse.length,
+          );
+          await accountListPage.check_accountDisplayedInAccountList(
+            'My First Synced Account',
+          );
+          await accountListPage.check_accountDisplayedInAccountList(
+            'My Second Synced Account',
+          );
         },
       );
     });

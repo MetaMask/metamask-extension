@@ -11,6 +11,7 @@ import {
   ConfirmInfoRowDivider,
   ConfirmInfoRowUrl,
 } from '../../../../../../components/app/confirm/info/row';
+import { ConfirmInfoSection } from '../../../../../../components/app/confirm/info/row/section';
 import { useI18nContext } from '../../../../../../hooks/useI18nContext';
 import { SignatureRequestType } from '../../../../types/confirm';
 import {
@@ -21,7 +22,6 @@ import { fetchErc20Decimals } from '../../../../utils/token';
 import { useConfirmContext } from '../../../../context/confirm';
 import { selectUseTransactionSimulations } from '../../../../selectors/preferences';
 import { ConfirmInfoRowTypedSignData } from '../../row/typed-sign-data/typedSignData';
-import { ConfirmInfoSection } from '../../../../../../components/app/confirm/info/row/section';
 import { PermitSimulation } from './permit-simulation';
 
 const TypedSignInfo: React.FC = () => {
@@ -55,6 +55,8 @@ const TypedSignInfo: React.FC = () => {
     })();
   }, [verifyingContract]);
 
+  const msgData = currentConfirmation.msgParams?.data as string;
+
   return (
     <>
       {isPermit && useTransactionSimulations && <PermitSimulation />}
@@ -85,9 +87,14 @@ const TypedSignInfo: React.FC = () => {
         )}
       </ConfirmInfoSection>
       <ConfirmInfoSection>
-        <ConfirmInfoRow label={t('message')}>
+        <ConfirmInfoRow
+          label={t('message')}
+          collapsed={isPermit && useTransactionSimulations}
+          copyEnabled
+          copyText={JSON.stringify(parseTypedDataMessage(msgData ?? {}))}
+        >
           <ConfirmInfoRowTypedSignData
-            data={currentConfirmation.msgParams?.data as string}
+            data={msgData}
             tokenDecimals={decimals}
             chainId={chainId}
           />
