@@ -25,4 +25,4 @@ export const methodsRequiringNetworkSwitch = [
 export const methodsThatCanSwitchNetworkWithoutApproval = [
   'wallet_addEthereumChain',
   'wallet_switchEthereumChain',
-]
+];

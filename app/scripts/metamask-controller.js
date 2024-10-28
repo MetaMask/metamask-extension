@@ -157,7 +157,10 @@ import {
   NotificationServicesController,
 } from '@metamask/notification-services-controller';
 import { isProduction } from '../../shared/modules/environment';
-import { methodsRequiringNetworkSwitch, methodsThatCanSwitchNetworkWithoutApproval } from '../../shared/constants/methods-tags';
+import {
+  methodsRequiringNetworkSwitch,
+  methodsThatCanSwitchNetworkWithoutApproval,
+} from '../../shared/constants/methods-tags';
 
 ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
 import { toChecksumHexAddress } from '../../shared/modules/hexstring-utils';
