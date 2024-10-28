@@ -1,19 +1,12 @@
-import React, { ReactNode } from 'react';
-import { Provider } from 'react-redux';
-import { Store } from 'redux';
-import { renderHook, act } from '@testing-library/react-hooks';
-import configureStore from 'redux-mock-store';
-import thunk from 'redux-thunk';
+import { act } from '@testing-library/react-hooks';
+import { renderHookWithProviderTyped } from '../../../../test/lib/render-helpers';
 import { MetamaskNotificationsProvider } from '../../../contexts/metamask-notifications';
 import * as actions from '../../../store/actions';
 import {
-  useEnableProfileSyncing,
   useDisableProfileSyncing,
+  useEnableProfileSyncing,
   useShouldDispatchProfileSyncing,
 } from './profileSyncing';
-
-const middlewares = [thunk];
-const mockStore = configureStore(middlewares);
 
 type ArrangeMocksMetamaskStateOverrides = {
   isSignedIn?: boolean;
@@ -31,37 +24,18 @@ const initialMetamaskState: ArrangeMocksMetamaskStateOverrides = {
   completedOnboarding: true,
 };
 
-const arrangeMockStore = (
+const arrangeMockState = (
   metamaskStateOverrides?: ArrangeMocksMetamaskStateOverrides,
 ) => {
-  const store = mockStore({
+  const state = {
     metamask: {
       ...initialMetamaskState,
       ...metamaskStateOverrides,
     },
-  });
+  };
 
-  store.dispatch = jest.fn().mockImplementation((action) => {
-    if (typeof action === 'function') {
-      return action(store.dispatch, store.getState);
-    }
-    return Promise.resolve();
-  });
-
-  return { store };
+  return { state };
 };
-
-const RenderWithProviders = ({
-  store,
-  children,
-}: {
-  store: Store;
-  children: ReactNode;
-}) => (
-  <Provider store={store}>
-    <MetamaskNotificationsProvider>{children}</MetamaskNotificationsProvider>
-  </Provider>
-);
 
 describe('useEnableProfileSyncing()', () => {
   it('should enable profile syncing', async () => {
@@ -70,14 +44,11 @@ describe('useEnableProfileSyncing()', () => {
       'enableProfileSyncing',
     );
 
-    const { store } = arrangeMockStore();
-
-    const { result } = renderHook(() => useEnableProfileSyncing(), {
-      wrapper: ({ children }) => (
-        <RenderWithProviders store={store}>{children}</RenderWithProviders>
-      ),
-    });
-
+    const { state } = arrangeMockState();
+    const { result } = renderHookWithProviderTyped(
+      () => useEnableProfileSyncing(),
+      state,
+    );
     await act(async () => {
       await result.current.enableProfileSyncing();
     });
@@ -93,13 +64,14 @@ describe('useDisableProfileSyncing()', () => {
       'disableProfileSyncing',
     );
 
-    const { store } = arrangeMockStore();
+    const { state } = arrangeMockState();
 
-    const { result } = renderHook(() => useDisableProfileSyncing(), {
-      wrapper: ({ children }) => (
-        <RenderWithProviders store={store}>{children}</RenderWithProviders>
-      ),
-    });
+    const { result } = renderHookWithProviderTyped(
+      () => useDisableProfileSyncing(),
+      state,
+      undefined,
+      MetamaskNotificationsProvider,
+    );
 
     await act(async () => {
       await result.current.disableProfileSyncing();
@@ -143,23 +115,21 @@ describe('useShouldDispatchProfileSyncing()', () => {
   })();
 
   it('should return true if all conditions are met', () => {
-    const { store } = arrangeMockStore(testCases.successTestCase.state);
-    const hook = renderHook(() => useShouldDispatchProfileSyncing(), {
-      wrapper: ({ children }) => (
-        <RenderWithProviders store={store}>{children}</RenderWithProviders>
-      ),
-    });
+    const { state } = arrangeMockState(testCases.successTestCase.state);
+    const hook = renderHookWithProviderTyped(
+      () => useShouldDispatchProfileSyncing(),
+      state,
+    );
     expect(hook.result.current).toBe(true);
   });
 
   testCases.failureStateCases.forEach(({ state, failingField }) => {
     it(`should return false if not all conditions are met [${failingField} = false]`, () => {
-      const { store } = arrangeMockStore(state);
-      const hook = renderHook(() => useShouldDispatchProfileSyncing(), {
-        wrapper: ({ children }) => (
-          <RenderWithProviders store={store}>{children}</RenderWithProviders>
-        ),
-      });
+      const { state: newState } = arrangeMockState(state);
+      const hook = renderHookWithProviderTyped(
+        () => useShouldDispatchProfileSyncing(),
+        newState,
+      );
       expect(hook.result.current).toBe(false);
     });
   });

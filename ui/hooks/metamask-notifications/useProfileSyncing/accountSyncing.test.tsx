@@ -1,42 +1,12 @@
 import { waitFor } from '@testing-library/react';
-import { act, renderHook } from '@testing-library/react-hooks';
-import React, { ReactNode } from 'react';
-import { Provider } from 'react-redux';
-import { Store } from 'redux';
-import configureStore from 'redux-mock-store';
-import thunk from 'redux-thunk';
+import { act } from '@testing-library/react-hooks';
+import { renderHookWithProviderTyped } from '../../../../test/lib/render-helpers';
 import * as actions from '../../../store/actions';
 import {
   useAccountSyncingEffect,
   useDeleteAccountSyncingDataFromUserStorage,
 } from './accountSyncing';
 import * as ProfileSyncModule from './profileSyncing';
-
-const middlewares = [thunk];
-const mockStore = configureStore(middlewares);
-
-const arrangeMockStore = () => {
-  const store = mockStore();
-
-  store.dispatch = jest.fn().mockImplementation((action) => {
-    if (typeof action === 'function') {
-      return action(store.dispatch, store.getState);
-    }
-    return Promise.resolve();
-  });
-
-  jest.clearAllMocks();
-
-  return { store };
-};
-
-const RenderWithProviders = ({
-  store,
-  children,
-}: {
-  store: Store;
-  children: ReactNode;
-}) => <Provider store={store}>{children}</Provider>;
 
 describe('useDeleteAccountSyncingDataFromUserStorage()', () => {
   it('should dispatch account sync data deletion', async () => {
@@ -45,19 +15,13 @@ describe('useDeleteAccountSyncingDataFromUserStorage()', () => {
       'deleteAccountSyncingDataFromUserStorage',
     );
 
-    const { store } = arrangeMockStore();
-
-    const { result } = renderHook(
+    const { result } = renderHookWithProviderTyped(
       () => useDeleteAccountSyncingDataFromUserStorage(),
-      {
-        wrapper: ({ children }) => (
-          <RenderWithProviders store={store}>{children}</RenderWithProviders>
-        ),
-      },
+      {},
     );
 
-    act(() => {
-      result.current.dispatchDeleteAccountData();
+    await act(async () => {
+      await result.current.dispatchDeleteAccountData();
     });
 
     expect(mockDeleteAccountSyncAction).toHaveBeenCalled();
@@ -86,13 +50,7 @@ describe('useAccountSyncingEffect', () => {
       props.profileSyncConditionsMet,
     );
 
-    const { store } = arrangeMockStore();
-    renderHook(() => useAccountSyncingEffect(), {
-      wrapper: ({ children }) => (
-        <RenderWithProviders store={store}>{children}</RenderWithProviders>
-      ),
-    });
-
+    renderHookWithProviderTyped(() => useAccountSyncingEffect(), {});
     return mocks;
   };
 
