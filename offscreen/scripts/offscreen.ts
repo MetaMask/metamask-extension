@@ -10,6 +10,7 @@ import {
 import initLedger from './ledger';
 import initTrezor from './trezor';
 import initLattice from './lattice';
+import setupLocalStorageMessageListeners from './localStorage';
 
 /**
  * Initialize a post message stream with the parent window that is initialized
@@ -34,6 +35,7 @@ async function init(): Promise<void> {
   initializePostMessageStream();
   initTrezor();
   initLattice();
+  setupLocalStorageMessageListeners();
 
   try {
     const ledgerInitTimeout = new Promise((_, reject) => {

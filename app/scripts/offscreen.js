@@ -26,6 +26,16 @@ async function hasOffscreenDocument() {
   return matchedClients.some((client) => client.url === url);
 }
 
+export async function awaitOffscreenDocumentCreation () {
+  const offscreenExists = await hasOffscreenDocument();
+  if (offscreenExists) {
+    return;
+  } else if () {
+    await new Promise((resolve) => setTimeout(resolve, 10));
+    return await awaitOffscreenDocumentCreation();
+  }
+}
+
 /**
  * Creates an offscreen document that can be used to load additional scripts
  * and iframes that can communicate with the extension through the chrome

@@ -1,6 +1,7 @@
 import type Migrator from '../migrator';
 import firstTimeState from '../../first-time-state';
 import { generateWalletState } from '../../fixtures/generate-wallet-state';
+import localStorageWithOffscreen from './localStorageWithOffscreen';
 
 /**
  * This type is a temporary type that is used to represent the state tree of
@@ -162,7 +163,7 @@ export abstract class BaseStore {
    * does not require instantiation of the class to set that value.
    */
   static optIntoRestoreOnRestart() {
-    global.localStorage.setItem('USER_OPTED_IN_TO_RESTORE', 'true');
+    localStorageWithOffscreen.setItem('USER_OPTED_IN_TO_RESTORE', 'true');
   }
 
   /**
@@ -170,8 +171,8 @@ export abstract class BaseStore {
    * has opted into restoring either their vault, or the extension to its
    * default state if the vault was not backed up.
    */
-  get hasUserOptedIntoRestart(): boolean  {
-    return global.localStorage.getItem('USER_OPTED_IN_TO_RESTORE') === 'true';
+  get hasUserOptedIntoRestart(): boolean {
+    return localStorageWithOffscreen.getItem('USER_OPTED_IN_TO_RESTORE') === 'true';
   }
 
   /**
@@ -182,9 +183,9 @@ export abstract class BaseStore {
    */
   set hasUserOptedIntoRestart(value: boolean) {
     if (value === true) {
-      global.localStorage.setItem('USER_OPTED_IN_TO_RESTORE', 'true');
+      localStorageWithOffscreen.setItem('USER_OPTED_IN_TO_RESTORE', 'true');
     } else {
-      global.localStorage.removeItem('USER_OPTED_IN_TO_RESTORE');
+      localStorageWithOffscreen.removeItem('USER_OPTED_IN_TO_RESTORE');
     }
   }
 
@@ -194,12 +195,12 @@ export abstract class BaseStore {
    * This is useful in detecting
    */
   set lastGoodMigrationVersion(version: number) {
-    global.localStorage.setItem('lastGoodMigrationVersion', version.toString());
+    localStorageWithOffscreen.setItem('lastGoodMigrationVersion', version.toString());
   }
 
   get lastGoodMigrationVersion() {
     return parseInt(
-      global.localStorage.getItem('lastGoodMigrationVersion') ?? '0',
+      localStorageWithOffscreen.getItem('lastGoodMigrationVersion') ?? '0',
       10,
     );
   }
@@ -217,7 +218,7 @@ export abstract class BaseStore {
    * current one.
    */
   doesMigrationNumberHaveMismatch(currentMigrationNumber: number) {
-    if (global.localStorage.getItem('lastGoodMigrationVersion') === null) {
+    if (localStorageWithOffscreen.getItem('lastGoodMigrationVersion') === null) {
       return false;
     }
     return this.lastGoodMigrationVersion !== currentMigrationNumber;
@@ -230,7 +231,7 @@ export abstract class BaseStore {
    * corruption has occurred.
    */
   recordStateExistence() {
-    global.localStorage.setItem('MMStateExisted', Date.now().toString());
+    localStorageWithOffscreen.setItem('MMStateExisted', Date.now().toString());
   }
 
   /**
@@ -240,7 +241,7 @@ export abstract class BaseStore {
    * determining if corruption has occurred.
    */
   get hasStateExisted() {
-    return global.localStorage.getItem('MMStateExisted') !== null;
+    return localStorageWithOffscreen.getItem('MMStateExisted') !== null;
   }
 
   /**
