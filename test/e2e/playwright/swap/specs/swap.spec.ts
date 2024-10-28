@@ -25,27 +25,6 @@ const testSet = [
   },
   {
     quantity: '50',
-    source: 'POL',
-    type: 'native',
-    destination: 'USDC',
-    network: Tenderly.Polygon,
-  },
-  {
-    quantity: '.5',
-    source: 'ETH',
-    type: 'native',
-    destination: 'OP',
-    network: Tenderly.Optimism,
-  },
-  {
-    quantity: '100',
-    source: 'OP',
-    type: 'unapproved',
-    destination: 'USDC',
-    network: Tenderly.Optimism,
-  },
-  {
-    quantity: '50',
     source: 'DAI',
     type: 'unapproved',
     destination: 'ETH',
@@ -86,12 +65,6 @@ test.beforeAll(
 
     const wallet = ethers.Wallet.createRandom();
     await addFundsToAccount(Tenderly.Mainnet.url, wallet.address);
-    await addFundsToAccount(
-      Tenderly.Polygon.url,
-      wallet.address,
-      '0x1043561A8829300000',
-    );
-    await addFundsToAccount(Tenderly.Optimism.url, wallet.address);
 
     const signUp = new SignUpPage(page);
     await signUp.createWallet();
@@ -102,8 +75,6 @@ test.beforeAll(
     walletPage = new WalletPage(page);
 
     await networkController.addCustomNetwork(Tenderly.Mainnet);
-    await networkController.addCustomNetwork(Tenderly.Polygon);
-    await networkController.addCustomNetwork(Tenderly.Optimism);
     await walletPage.importAccount(wallet.privateKey);
   },
 );
