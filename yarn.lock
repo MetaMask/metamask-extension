@@ -6021,9 +6021,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/queued-request-controller@npm:@metamask-previews/queued-request-controller@5.1.0-preview-f504f91d":
-  version: 5.1.0-preview-f504f91d
-  resolution: "@metamask-previews/queued-request-controller@npm:5.1.0-preview-f504f91d"
+"@metamask/queued-request-controller@npm:@metamask-previews/queued-request-controller@5.1.0-preview-6bb6f553":
+  version: 5.1.0-preview-6bb6f553
+  resolution: "@metamask-previews/queued-request-controller@npm:5.1.0-preview-6bb6f553"
   dependencies:
     "@metamask/base-controller": "npm:^7.0.1"
     "@metamask/controller-utils": "npm:^11.4.0"
@@ -6034,7 +6034,7 @@ __metadata:
   peerDependencies:
     "@metamask/network-controller": ^22.0.0
     "@metamask/selected-network-controller": ^18.0.0
-  checksum: 10/3f0b3c4911f6b2b7a385c061a22e4a873c3162e40e6e33b96f5f0e1ea720df6e83ab8245f4f81b087e132a7162539de7e64dc6c6c763aed358380c05614cf0dc
+  checksum: 10/da2221201d7da9f840217309e62bb6173ef6324f4263d9b4b64a9e6eccc9b1d0aa9324e4bdf139f675ae483f3c4f7a281fb1c82f4a723662a4fa6e898642f71d
   languageName: node
   linkType: hard
 
@@ -25960,7 +25960,7 @@ __metadata:
     "@metamask/preinstalled-example-snap": "npm:^0.2.0"
     "@metamask/profile-sync-controller": "npm:^0.9.7"
     "@metamask/providers": "npm:^14.0.2"
-    "@metamask/queued-request-controller": "npm:@metamask-previews/queued-request-controller@5.1.0-preview-f504f91d"
+    "@metamask/queued-request-controller": "npm:@metamask-previews/queued-request-controller@5.1.0-preview-6bb6f553"
     "@metamask/rate-limit-controller": "npm:^6.0.0"
     "@metamask/rpc-errors": "npm:^7.0.0"
     "@metamask/safe-event-emitter": "npm:^3.1.1"
