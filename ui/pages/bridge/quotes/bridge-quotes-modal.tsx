@@ -3,7 +3,6 @@ import { IconName } from '@metamask/snaps-sdk/jsx';
 import { useDispatch, useSelector } from 'react-redux';
 import {
   Box,
-  Button,
   Icon,
   IconSize,
   Modal,
@@ -25,12 +24,12 @@ import { useI18nContext } from '../../../hooks/useI18nContext';
 import { getCurrentCurrency } from '../../../selectors';
 import { setSelectedQuote, setSortOrder } from '../../../ducks/bridge/actions';
 import { SortOrder, QuoteMetadata, QuoteResponse } from '../types';
-import { Footer } from '../../../components/multichain/pages/page';
 import { useCountdownTimer } from '../../../hooks/bridge/useCountdownTimer';
 import {
   getBridgeQuotes,
   getBridgeSortOrder,
 } from '../../../ducks/bridge/selectors';
+import { BridgeQuoteDetailsModal } from './bridge-quote-details-modal';
 
 export const BridgeQuotesModal = ({
   onClose,
@@ -56,30 +55,39 @@ export const BridgeQuotesModal = ({
       <ModalOverlay />
 
       {expandedQuote ? (
-        <ModalContent modalDialogProps={{ padding: 0 }}>
-          <ModalHeader onBack={() => setExpandedQuote(undefined)}>
-            <Text variant={TextVariant.headingSm} textAlign={TextAlign.Center}>
-              {t('swapQuoteDetails')}
-            </Text>
-          </ModalHeader>
-          <Box className="quotes-modal__quote-details">
-            <Text>{JSON.stringify(expandedQuote)}</Text>
-          </Box>
-          <Footer>
-            <Button
-              data-testid="quotes-modal-use-quote-button"
-              onClick={() => {
-                dispatch(setSelectedQuote(expandedQuote));
-                setExpandedQuote(undefined);
-                onClose();
-              }}
-              disabled={false}
-            >
-              {t('bridgeUseQuote')}
-            </Button>
-          </Footer>
-        </ModalContent>
+        <BridgeQuoteDetailsModal
+          onBack={() => setExpandedQuote(undefined)}
+          onSelect={() => {
+            dispatch(setSelectedQuote(expandedQuote));
+            setExpandedQuote(undefined);
+            onClose();
+          }}
+          expandedQuote={expandedQuote}
+        />
       ) : (
+        // <ModalContent modalDialogProps={{ padding: 0 }}>
+        //   <ModalHeader onBack={() => setExpandedQuote(undefined)}>
+        //     <Text variant={TextVariant.headingSm} textAlign={TextAlign.Center}>
+        //       {t('swapQuoteDetails')}
+        //     </Text>
+        //   </ModalHeader>
+        //   <Box className="quotes-modal__quote-details">
+        //     <Text>{JSON.stringify(expandedQuote)}</Text>
+        //   </Box>
+        //   <Footer>
+        //     <Button
+        //       data-testid="quotes-modal-use-quote-button"
+        //       onClick={() => {
+        //         dispatch(setSelectedQuote(expandedQuote));
+        //         setExpandedQuote(undefined);
+        //         onClose();
+        //       }}
+        //       disabled={false}
+        //     >
+        //       {t('bridgeUseQuote')}
+        //     </Button>
+        //   </Footer>
+        // </ModalContent>
         <ModalContent
           className="quotes-modal__container"
           modalDialogProps={{ padding: 0 }}

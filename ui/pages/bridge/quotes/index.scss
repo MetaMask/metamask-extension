@@ -31,7 +31,7 @@
     }
   }
 
-  &__info-row {
+  .info-row {
     display: flex;
     flex-direction: row;
     justify-content: space-between;
@@ -160,5 +160,59 @@
     left: 4px;
     bottom: 4px;
     color: var(--text-alternative-soft);
+  }
+
+  &__quote-details {
+    position: relative;
+
+    .quote-detail-group {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      padding: 16px;
+      align-items: flex-start;
+
+      .info-row {
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+        width: 100%;
+
+        &__label {
+          display: inline-flex;
+          gap: 4px;
+
+          p {
+            font-weight: var(--font-weight-medium);
+            font-size: 14px;
+            white-space: nowrap;
+          }
+
+          &__tooltip {
+            align-items: center;
+            height: 100%;
+          }
+        }
+
+        &__description {
+          display: inline-flex;
+          gap: 4px;
+
+          &__secondary {
+            color: var(--color-text-alternative);
+          }
+        }
+      }
+
+      hr {
+        border-top: 0.25px solid var(--color-primary-muted);
+      }
+    }
+
+    &__use-quote-button{
+      position: absolute;
+      bottom: 10px;
+      width: 100%
+    }
   }
 }
