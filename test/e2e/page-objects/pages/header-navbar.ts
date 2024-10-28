@@ -27,7 +27,7 @@ class HeaderNavbar {
     try {
       await this.driver.waitForMultipleSelectors([
         this.accountMenuButton,
-        this.accountOptionMenu,
+        this.threeDotMenuButton,
       ]);
     } catch (e) {
       console.log('Timeout while waiting for header navbar to be loaded', e);
