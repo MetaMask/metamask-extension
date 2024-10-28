@@ -298,6 +298,9 @@ function maybeDetectPhishing(theController) {
         category: MetaMetricsEventCategory.Phishing,
         properties: {
           url: hostname,
+          referrer: {
+            url: hostname,
+          },
           reason: blockReason,
         },
       });
@@ -324,7 +327,6 @@ function maybeDetectPhishing(theController) {
       return {};
     },
     {
-      types: ['main_frame', 'sub_frame', 'xmlhttprequest'],
       urls: ['http://*/*', 'https://*/*'],
     },
     isManifestV2 ? ['blocking'] : [],
