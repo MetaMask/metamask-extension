@@ -10,10 +10,7 @@ const {
   openDapp,
   WINDOW_TITLES,
 } = require('../../../helpers');
-const {
-  scrollAndConfirmAndAssertConfirm,
-  confirmAndAssertConfirm,
-} = require('../helpers');
+const { confirmAndAssertConfirm } = require('../helpers');
 
 export type TestSuiteArguments = {
   driver: Driver;
@@ -50,7 +47,7 @@ export async function confirmContractDeploymentTransaction(driver: Driver) {
     text: 'Deploy a contract',
   });
 
-  await scrollAndConfirmAndAssertConfirm(driver);
+  await confirmAndAssertConfirm(driver);
 
   await driver.delay(2000);
   await driver.waitUntilXWindowHandles(2);
@@ -78,7 +75,7 @@ export async function confirmRedesignedContractDeploymentTransaction(
     text: 'This site wants you to deploy a contract',
   });
 
-  await scrollAndConfirmAndAssertConfirm(driver);
+  await confirmAndAssertConfirm(driver);
 
   await driver.delay(2000);
   await driver.waitUntilXWindowHandles(2);
@@ -143,7 +140,7 @@ export async function confirmDepositTransactionWithCustomNonce(
     tag: 'button',
   });
   await driver.delay(veryLargeDelayMs);
-  await scrollAndConfirmAndAssertConfirm(driver);
+  await confirmAndAssertConfirm(driver);
 
   // Confirm tx was submitted with the higher nonce
   await driver.switchToWindowWithTitle(WINDOW_TITLES.ExtensionInFullScreenView);

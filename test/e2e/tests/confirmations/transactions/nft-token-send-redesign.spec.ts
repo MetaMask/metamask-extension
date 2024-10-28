@@ -225,7 +225,6 @@ async function createERC721WalletInitiatedTransactionAndAssertDetails(
   await tokenTransferTransactionConfirmation.check_interactingWithParagraph();
   await tokenTransferTransactionConfirmation.check_networkFeeParagraph();
 
-  await tokenTransferTransactionConfirmation.clickScrollToBottomButton();
   await tokenTransferTransactionConfirmation.clickFooterConfirmButton();
 }
 
@@ -260,7 +259,6 @@ async function createERC721DAppInitiatedTransactionAndAssertDetails(
   await tokenTransferTransactionConfirmation.check_interactingWithParagraph();
   await tokenTransferTransactionConfirmation.check_networkFeeParagraph();
 
-  await tokenTransferTransactionConfirmation.clickScrollToBottomButton();
   await tokenTransferTransactionConfirmation.clickFooterConfirmButton();
 }
 
@@ -315,6 +313,5 @@ async function createERC1155WalletInitiatedTransactionAndAssertDetails(
   await tokenTransferTransactionConfirmation.check_interactingWithParagraph();
   await tokenTransferTransactionConfirmation.check_networkFeeParagraph();
 
-  await tokenTransferTransactionConfirmation.clickScrollToBottomButton();
   await tokenTransferTransactionConfirmation.clickFooterConfirmButton();
 }

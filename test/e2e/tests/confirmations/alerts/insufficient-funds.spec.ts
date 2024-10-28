@@ -55,7 +55,6 @@ async function verifyAlertForInsufficientBalance(driver: Driver) {
     css: '[data-testid="inline-alert"]',
     text: 'Alert',
   });
-  await driver.clickElementSafe('.confirm-scroll-to-bottom__button');
   await driver.clickElement('[data-testid="inline-alert"]');
 
   await displayAlertForInsufficientBalance(driver);
