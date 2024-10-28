@@ -516,11 +516,10 @@ export default class MetamaskController extends EventEmitter {
       clearPendingConfirmations,
       showApprovalRequest: () => {
         if (this.approvalController.getTotalApprovalCount() > 0) {
-          opts.showUserConfirmation()
+          opts.showUserConfirmation();
         }
       },
     });
-
 
     ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
     this.mmiConfigurationController = new MmiConfigurationController({
