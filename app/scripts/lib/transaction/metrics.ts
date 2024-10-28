@@ -56,7 +56,7 @@ import {
 
 export type TransactionMetricsRequest = {
   createEventFragment: (
-    options: MetaMetricsEventFragment,
+    options: Omit<MetaMetricsEventFragment, 'id'>,
   ) => MetaMetricsEventFragment;
   finalizeEventFragment: (
     fragmentId: string,
