@@ -697,45 +697,6 @@ const completeCreateNewWalletOnboardingFlow = async (driver, password) => {
   await onboardingPinExtension(driver);
 };
 
-const importWrongSRPOnboardingFlow = async (driver, seedPhrase) => {
-  // agree to terms of use
-  await driver.clickElement('[data-testid="onboarding-terms-checkbox"]');
-
-  // welcome
-  await driver.clickElement('[data-testid="onboarding-import-wallet"]');
-
-  // metrics
-  await driver.clickElement('[data-testid="metametrics-no-thanks"]');
-
-  // import with recovery phrase
-  await driver.pasteIntoField(
-    '[data-testid="import-srp__srp-word-0"]',
-    seedPhrase,
-  );
-
-  const warningText = 'Invalid Secret Recovery Phrase';
-  const warnings = await driver.findElements('.import-srp__banner-alert-text');
-  const warning = warnings[1];
-
-  assert.equal(await warning.getText(), warningText);
-};
-
-const selectDropdownByNum = async (elements, index) => {
-  await elements[index].click();
-};
-
-const testSRPDropdownIterations = async (options, driver, iterations) => {
-  for (let i = 0; i < iterations; i++) {
-    await selectDropdownByNum(options, i);
-    await new Promise((resolve) => setTimeout(resolve, 1000));
-
-    const formFields = await driver.findElements('.import-srp__srp-word-label');
-    const expectedNumFields = 12 + i * 3;
-    const actualNumFields = formFields.length;
-    assert.equal(actualNumFields, expectedNumFields);
-  }
-};
-
 const openSRPRevealQuiz = async (driver) => {
   // navigate settings to reveal SRP
   await driver.clickElement('[data-testid="account-options-menu-button"]');
@@ -1358,8 +1319,6 @@ module.exports = {
   closeSRPReveal,
   tapAndHoldToRevealSRP,
   createDownloadFolder,
-  importWrongSRPOnboardingFlow,
-  testSRPDropdownIterations,
   openDapp,
   openDappConnectionsPage,
   createDappTransaction,
