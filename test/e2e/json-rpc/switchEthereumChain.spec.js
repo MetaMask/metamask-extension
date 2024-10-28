@@ -233,7 +233,6 @@ describe('Switch Ethereum Chain for two dapps', function () {
           text: 'Confirm',
           tag: 'button',
         });
-        await driver.delay(1000);
         await driver.switchToWindowWithUrl(DAPP_URL);
         await driver.findElement({ css: '#chainId', text: '0x539' });
       },
