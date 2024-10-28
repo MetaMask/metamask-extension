@@ -22,7 +22,7 @@ export const switchToNetworkFlow = async (
 
   const selectNetworkDialog = new SelectNetwork(driver);
   await selectNetworkDialog.check_pageIsLoaded();
-  if (toogleShowTestNetwork) {
+  if (toggleShowTestNetwork) {
     await selectNetworkDialog.toggleShowTestNetwork();
   }
   await selectNetworkDialog.selectNetworkName(networkName);
