@@ -1,5 +1,6 @@
 import { strict as assert } from 'assert';
 import { Driver } from '../../../webdriver/driver';
+import { RawLocator } from '../../common';
 
 class SendTokenPage {
   private driver: Driver;
@@ -7,6 +8,8 @@ class SendTokenPage {
   private inputRecipient: string;
 
   private inputAmount: string;
+
+  private inputNFTAmount: string;
 
   private scanButton: string;
 
@@ -18,9 +21,14 @@ class SendTokenPage {
 
   private ensResolvedAddress: string;
 
+  private assetPickerButton: RawLocator;
+
+  private tokenListButton: RawLocator;
+
   constructor(driver: Driver) {
     this.driver = driver;
     this.inputAmount = '[data-testid="currency-input"]';
+    this.inputNFTAmount = '[data-testid="nft-input"]';
     this.inputRecipient = '[data-testid="ens-input"]';
     this.scanButton = '[data-testid="ens-qr-scan-button"]';
     this.ensResolvedName =
@@ -32,6 +40,8 @@ class SendTokenPage {
       text: 'Continue',
       tag: 'button',
     };
+    this.assetPickerButton = '[data-testid="asset-picker-button"]';
+    this.tokenListButton = '[data-testid="multichain-token-list-button"]';
   }
 
   async check_pageIsLoaded(): Promise<void> {
@@ -70,6 +80,10 @@ class SendTokenPage {
       amount,
       `Error when filling amount field on send token screen: the value entered is ${inputValue} instead of expected ${amount}.`,
     );
+  }
+
+  async fillNFTAmount(amount: string) {
+    await this.driver.pasteIntoField(this.inputNFTAmount, amount);
   }
 
   async goToNextScreen(): Promise<void> {
@@ -124,6 +138,15 @@ class SendTokenPage {
     console.log(
       `ENS domain '${ensDomain}' resolved to address '${address}' and can be used as recipient on send token screen.`,
     );
+  }
+
+  async click_assetPickerButton() {
+    await this.driver.clickElement(this.assetPickerButton);
+  }
+
+  async click_secondTokenListButton() {
+    const elements = await this.driver.findElements(this.tokenListButton);
+    await elements[1].click();
   }
 }
 

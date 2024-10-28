@@ -49,7 +49,7 @@ export const PermissionCellStatus = ({
 
   const renderAccountsGroup = () => (
     <>
-      {process.env.CHAIN_PERMISSIONS ? (
+      {networks.length > 0 ? (
         <Box
           as="span"
           className="permission-cell__status__accounts-group-box"

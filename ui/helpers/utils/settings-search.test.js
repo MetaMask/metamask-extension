@@ -86,10 +86,6 @@ const t = (key) => {
       return 'Participate in MetaMetrics to help us make MetaMask better';
     case 'alerts':
       return 'Alerts';
-    case 'alertSettingsUnconnectedAccount':
-      return 'Browsing a website with an unconnected account selected';
-    case 'alertSettingsWeb3ShimUsage':
-      return 'When a website tries to use the removed window.web3 API';
     case 'networks':
       return 'Networks';
     case 'mainnet':
@@ -175,10 +171,6 @@ describe('Settings Search Utils', () => {
       expect(
         getNumberOfSettingRoutesInTab(t, t('securityAndPrivacy')),
       ).toStrictEqual(21);
-    });
-
-    it('returns "Alerts" section count', () => {
-      expect(getNumberOfSettingRoutesInTab(t, t('alerts'))).toStrictEqual(2);
     });
 
     it('returns "Network" section count', () => {

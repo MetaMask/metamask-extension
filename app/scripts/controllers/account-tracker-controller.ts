@@ -45,7 +45,7 @@ import type {
   OnboardingControllerGetStateAction,
   OnboardingControllerStateChangeEvent,
 } from './onboarding';
-import PreferencesController from './preferences-controller';
+import { PreferencesControllerGetStateAction } from './preferences-controller';
 
 // Unique name for the controller
 const controllerName = 'AccountTrackerController';
@@ -143,7 +143,8 @@ export type AllowedActions =
   | OnboardingControllerGetStateAction
   | AccountsControllerGetSelectedAccountAction
   | NetworkControllerGetStateAction
-  | NetworkControllerGetNetworkClientByIdAction;
+  | NetworkControllerGetNetworkClientByIdAction
+  | PreferencesControllerGetStateAction;
 
 /**
  * Events that this controller is allowed to subscribe.
@@ -170,7 +171,6 @@ export type AccountTrackerControllerOptions = {
   provider: Provider;
   blockTracker: BlockTracker;
   getNetworkIdentifier: (config?: NetworkClientConfiguration) => string;
-  preferencesController: PreferencesController;
 };
 
 /**
@@ -198,8 +198,6 @@ export default class AccountTrackerController extends BaseController<
 
   #getNetworkIdentifier: AccountTrackerControllerOptions['getNetworkIdentifier'];
 
-  #preferencesController: AccountTrackerControllerOptions['preferencesController'];
-
   #selectedAccount: InternalAccount;
 
   /**
@@ -209,7 +207,7 @@ export default class AccountTrackerController extends BaseController<
    * @param options.provider - An EIP-1193 provider instance that uses the current global network
    * @param options.blockTracker - A block tracker, which emits events for each new block
    * @param options.getNetworkIdentifier - A function that returns the current network or passed network configuration
-   * @param options.preferencesController - The preferences controller
+   * @param options.preferencesControllerState - The state of preferences controller
    */
   constructor(options: AccountTrackerControllerOptions) {
     super({
@@ -226,7 +224,6 @@ export default class AccountTrackerController extends BaseController<
     this.#blockTracker = options.blockTracker;
 
     this.#getNetworkIdentifier = options.getNetworkIdentifier;
-    this.#preferencesController = options.preferencesController;
 
     // subscribe to account removal
     this.messagingSystem.subscribe(
@@ -256,8 +253,9 @@ export default class AccountTrackerController extends BaseController<
     this.messagingSystem.subscribe(
       'AccountsController:selectedEvmAccountChange',
       (newAccount) => {
-        const { useMultiAccountBalanceChecker } =
-          this.#preferencesController.store.getState();
+        const { useMultiAccountBalanceChecker } = this.messagingSystem.call(
+          'PreferencesController:getState',
+        );
 
         if (
           this.#selectedAccount.id !== newAccount.id &&
@@ -433,10 +431,8 @@ export default class AccountTrackerController extends BaseController<
       return;
     }
     const { blockTracker } = this.#getCorrectNetworkClient(networkClientId);
-    const updateForBlock = this.#updateForBlockByNetworkClientId.bind(
-      this,
-      networkClientId,
-    );
+    const updateForBlock = (blockNumber: string) =>
+      this.#updateForBlockByNetworkClientId(networkClientId, blockNumber);
     blockTracker.addListener('latest', updateForBlock);
 
     this.#listeners[networkClientId] = updateForBlock;
@@ -672,8 +668,9 @@ export default class AccountTrackerController extends BaseController<
 
     const { chainId, provider, identifier } =
       this.#getCorrectNetworkClient(networkClientId);
-    const { useMultiAccountBalanceChecker } =
-      this.#preferencesController.store.getState();
+    const { useMultiAccountBalanceChecker } = this.messagingSystem.call(
+      'PreferencesController:getState',
+    );
 
     let addresses = [];
     if (useMultiAccountBalanceChecker) {
@@ -724,8 +721,9 @@ export default class AccountTrackerController extends BaseController<
     provider: Provider,
     chainId: Hex,
   ): Promise<void> {
-    const { useMultiAccountBalanceChecker } =
-      this.#preferencesController.store.getState();
+    const { useMultiAccountBalanceChecker } = this.messagingSystem.call(
+      'PreferencesController:getState',
+    );
 
     let balance = '0x0';
 

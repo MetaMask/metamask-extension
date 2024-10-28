@@ -118,8 +118,9 @@ export default class MetaMetricsController {
    * @param {object} options
    * @param {object} options.segment - an instance of analytics for tracking
    *  events that conform to the new MetaMetrics tracking plan.
-   * @param {object} options.preferencesStore - The preferences controller store, used
-   *  to access and subscribe to preferences that will be attached to events
+   * @param {object} options.preferencesControllerState - The state of preferences controller
+   * @param {Function} options.onPreferencesStateChange - Used to attach a listener to the
+   *  stateChange event emitted by the PreferencesController
    * @param {Function} options.onNetworkDidChange - Used to attach a listener to the
    *  networkDidChange event emitted by the networkController
    * @param {Function} options.getCurrentChainId - Gets the current chain id from the
@@ -132,7 +133,8 @@ export default class MetaMetricsController {
    */
   constructor({
     segment,
-    preferencesStore,
+    preferencesControllerState,
+    onPreferencesStateChange,
     onNetworkDidChange,
     getCurrentChainId,
     version,
@@ -148,16 +150,15 @@ export default class MetaMetricsController {
         captureException(err);
       }
     };
-    const prefState = preferencesStore.getState();
     this.chainId = getCurrentChainId();
-    this.locale = prefState.currentLocale.replace('_', '-');
+    this.locale = preferencesControllerState.currentLocale.replace('_', '-');
     this.version =
       environment === 'production' ? version : `${version}-${environment}`;
     this.extension = extension;
     this.environment = environment;
 
     ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-    this.selectedAddress = prefState.selectedAddress;
+    this.selectedAddress = preferencesControllerState.selectedAddress;
     ///: END:ONLY_INCLUDE_IF
 
     const abandonedFragments = omitBy(initState?.fragments, 'persist');
@@ -181,8 +182,8 @@ export default class MetaMetricsController {
       },
     });
 
-    preferencesStore.subscribe(({ currentLocale }) => {
-      this.locale = currentLocale.replace('_', '-');
+    onPreferencesStateChange(({ currentLocale }) => {
+      this.locale = currentLocale?.replace('_', '-');
     });
 
     onNetworkDidChange(() => {

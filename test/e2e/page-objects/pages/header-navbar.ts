@@ -3,26 +3,42 @@ import { Driver } from '../../webdriver/driver';
 class HeaderNavbar {
   private driver: Driver;
 
-  private accountMenuButton: string;
+  private readonly accountMenuButton = '[data-testid="account-menu-icon"]';
 
-  private accountOptionMenu: string;
+  private readonly accountOptionMenu =
+    '[data-testid="account-options-menu-button"]';
 
-  private lockMetaMaskButton: string;
+  private readonly accountSnapButton = { text: 'Snaps', tag: 'div' };
 
-  private mmiPortfolioButton: string;
+  private readonly lockMetaMaskButton = '[data-testid="global-menu-lock"]';
 
-  private settingsButton: string;
+  private readonly mmiPortfolioButton =
+    '[data-testid="global-menu-mmi-portfolio"]';
 
-  private accountSnapButton: object;
+  private readonly selectNetworkMessage = {
+    text: 'Select a network',
+    tag: 'h4',
+  };
+
+  private readonly settingsButton = '[data-testid="global-menu-settings"]';
+
+  private readonly switchNetworkDropDown = '[data-testid="network-display"]';
 
   constructor(driver: Driver) {
     this.driver = driver;
-    this.accountMenuButton = '[data-testid="account-menu-icon"]';
-    this.accountOptionMenu = '[data-testid="account-options-menu-button"]';
-    this.lockMetaMaskButton = '[data-testid="global-menu-lock"]';
-    this.mmiPortfolioButton = '[data-testid="global-menu-mmi-portfolio"]';
-    this.settingsButton = '[data-testid="global-menu-settings"]';
-    this.accountSnapButton = { text: 'Snaps', tag: 'div' };
+  }
+
+  async check_pageIsLoaded(): Promise<void> {
+    try {
+      await this.driver.waitForMultipleSelectors([
+        this.accountMenuButton,
+        this.accountOptionMenu,
+      ]);
+    } catch (e) {
+      console.log('Timeout while waiting for header navbar to be loaded', e);
+      throw e;
+    }
+    console.log('Header navbar is loaded');
   }
 
   async lockMetaMask(): Promise<void> {
@@ -52,6 +68,40 @@ class HeaderNavbar {
       await this.driver.waitForSelector(this.mmiPortfolioButton);
     }
     await this.driver.clickElement(this.settingsButton);
+  }
+
+  async clickSwitchNetworkDropDown(): Promise<void> {
+    console.log(`Click switch network menu`);
+    await this.driver.clickElement(this.switchNetworkDropDown);
+  }
+
+  async check_currentSelectedNetwork(networkName: string): Promise<void> {
+    console.log(`Validate the Switch network to ${networkName}`);
+    await this.driver.waitForSelector(
+      `button[data-testid="network-display"][aria-label="Network Menu ${networkName}"]`,
+    );
+  }
+
+  /**
+   * Switches to the specified network.
+   *
+   * @param networkName - The name of the network to switch to.
+   */
+  async switchToNetwork(networkName: string): Promise<void> {
+    console.log(`Switch to network ${networkName} in header bar`);
+    await this.driver.clickElement(this.switchNetworkDropDown);
+    await this.driver.waitForSelector(this.selectNetworkMessage);
+    await this.driver.clickElementAndWaitToDisappear(
+      `[data-testid="${networkName}"]`,
+    );
+    // check the toaster message is displayed and the network is correctly selected
+    await this.driver.waitForSelector({
+      tag: 'h6',
+      text: `“${networkName}” was successfully added!`,
+    });
+    await this.driver.waitForSelector(
+      `${this.switchNetworkDropDown}[aria-label="Network Menu ${networkName}"]`,
+    );
   }
 
   /**

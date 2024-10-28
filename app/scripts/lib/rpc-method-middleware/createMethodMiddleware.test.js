@@ -1,4 +1,4 @@
-import { JsonRpcEngine } from 'json-rpc-engine';
+import { JsonRpcEngine } from '@metamask/json-rpc-engine';
 import {
   assertIsJsonRpcFailure,
   assertIsJsonRpcSuccess,
@@ -140,6 +140,7 @@ describe.each([
     assertIsJsonRpcFailure(response);
 
     expect(response.error.message).toBe('test error');
+    expect(response.error.data.cause.message).toBe('test error');
   });
 
   it('should handle errors thrown by the implementation', async () => {
@@ -156,6 +157,7 @@ describe.each([
     assertIsJsonRpcFailure(response);
 
     expect(response.error.message).toBe('test error');
+    expect(response.error.data.cause.message).toBe('test error');
   });
 
   it('should handle non-errors thrown by the implementation', async () => {
