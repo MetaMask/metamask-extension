@@ -17,6 +17,7 @@ const bannerAlertSelector = '[data-testid="security-provider-banner-alert"]';
 async function mockInfura(mockServer) {
   await mockServerJsonRpc(mockServer, [
     ['eth_blockNumber'],
+    ['eth_estimateGas'],
     [
       'eth_call',
       {
@@ -231,18 +232,6 @@ async function mockInfura(mockServer) {
           maxPriorityFeePerGas: '0x0',
           to: '0x00008f1149168c1d2fa1eba1ad3e9cd644510000',
           type: '0x02',
-        },
-        {
-          stateOverrides: {
-            selectedAddress: {
-              balance: '0x38cd152447f6a00',
-            },
-          },
-          tracer: 'callTracer',
-          tracerConfig: {
-            onlyTopCall: false,
-            withLog: true,
-          },
         },
       ],
     })

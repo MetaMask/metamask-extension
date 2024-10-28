@@ -66,6 +66,7 @@ export async function mockServerJsonRpc(
 
     await mockServer
       .forPost(/infura/u)
+      .always()
       .withJsonBodyIncluding(params ? { method, params } : { method })
       // TODO: Replace `any` with type
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
