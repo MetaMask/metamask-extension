@@ -172,6 +172,23 @@ describe('Onboarding Welcome Component', () => {
           expect(updateNetworksList).not.toHaveBeenCalled();
         });
       });
+
+      it('should log an error when addNetwork fails', async () => {
+        addNetwork.mockImplementation(
+          () => new Error('Network addition failed'),
+        );
+
+        const consoleErrorSpy = jest
+          .spyOn(console, 'error')
+          .mockImplementation(() => undefined);
+
+        renderWithProvider(<OnboardingWelcome />, mockStore);
+
+        await waitFor(() => {
+          expect(addNetwork).toHaveBeenCalled();
+          expect(consoleErrorSpy).toHaveBeenCalled();
+        });
+      });
     });
   });
 });
