@@ -8,7 +8,7 @@ import NetworkSwitchModalConfirmation from '../pages/dialog/network-switch-modal
  *
  * @param driver
  * @param networkName - The name of the network to switch to.
- * @param toogleShowTestNetwork - A boolean indicating whether to toggle the display of test networks. Defaults to false.
+ * @param toggleShowTestNetwork - A boolean indicating whether to toggle the display of test networks. Defaults to false.
  */
 export const switchToNetworkFlow = async (
   driver: Driver,
