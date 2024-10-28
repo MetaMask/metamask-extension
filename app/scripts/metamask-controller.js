@@ -755,31 +755,25 @@ export default class MetamaskController extends EventEmitter {
     });
 
     this.metaMetricsController = new MetaMetricsController({
+      initState: initState.MetaMetricsController,
       segment,
-      onPreferencesStateChange: preferencesMessenger.subscribe.bind(
-        preferencesMessenger,
-        'PreferencesController:stateChange',
-      ),
       preferencesControllerState: {
         currentLocale: this.preferencesController.state.currentLocale,
         selectedAddress: this.preferencesController.state.selectedAddress,
       },
+      onPreferencesStateChange: preferencesMessenger.subscribe.bind(
+        preferencesMessenger,
+        'PreferencesController:stateChange',
+      ),
       onNetworkDidChange: networkControllerMessenger.subscribe.bind(
         networkControllerMessenger,
         'NetworkController:networkDidChange',
       ),
-      getNetworkIdentifier: () => {
-        const { type, rpcUrl } = getProviderConfig({
-          metamask: this.networkController.state,
-        });
-        return type === NETWORK_TYPES.RPC ? rpcUrl : type;
-      },
       getCurrentChainId: () =>
         getCurrentChainId({ metamask: this.networkController.state }),
       version: process.env.METAMASK_VERSION,
       environment: process.env.METAMASK_ENVIRONMENT,
       extension: this.extension,
-      initState: initState.MetaMetricsController,
       captureException,
     });
 
