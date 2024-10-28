@@ -4,6 +4,8 @@ import { fireEvent, screen } from '@testing-library/react';
 import { detectTokens } from '../../../store/actions';
 import { renderWithProvider } from '../../../../test/lib/render-helpers';
 import { CHAIN_IDS } from '../../../../shared/constants/network';
+import { mockNetworkState } from '../../../../test/stub/networks';
+import ImportControl from '../../app/assets/asset-list/import-control';
 import { ImportTokenLink } from '.';
 
 const mockPushHistory = jest.fn();
@@ -30,9 +32,7 @@ describe('Import Token Link', () => {
   it('should match snapshot for goerli chainId', () => {
     const mockState = {
       metamask: {
-        providerConfig: {
-          chainId: '0x5',
-        },
+        ...mockNetworkState({ chainId: CHAIN_IDS.GOERLI }),
       },
     };
 
@@ -46,9 +46,7 @@ describe('Import Token Link', () => {
   it('should match snapshot for mainnet chainId', () => {
     const mockState = {
       metamask: {
-        providerConfig: {
-          chainId: CHAIN_IDS.MAINNET,
-        },
+        ...mockNetworkState({ chainId: CHAIN_IDS.MAINNET }),
       },
     };
 
@@ -62,15 +60,13 @@ describe('Import Token Link', () => {
   it('should detectTokens when clicking refresh', () => {
     const mockState = {
       metamask: {
-        providerConfig: {
-          chainId: '0x5',
-        },
+        ...mockNetworkState({ chainId: CHAIN_IDS.GOERLI }),
       },
     };
 
     const store = configureMockStore()(mockState);
 
-    renderWithProvider(<ImportTokenLink />, store);
+    renderWithProvider(<ImportTokenLink />, store); // should this be RefreshTokenLink?
 
     const refreshList = screen.getByTestId('refresh-list-button');
     fireEvent.click(refreshList);
@@ -81,19 +77,17 @@ describe('Import Token Link', () => {
   it('should push import token route', () => {
     const mockState = {
       metamask: {
-        providerConfig: {
-          chainId: '0x5',
-        },
+        ...mockNetworkState({ chainId: CHAIN_IDS.GOERLI }),
       },
     };
 
     const store = configureMockStore()(mockState);
 
-    renderWithProvider(<ImportTokenLink />, store);
+    renderWithProvider(<ImportControl />, store);
 
     const importToken = screen.getByTestId('import-token-button');
     fireEvent.click(importToken);
 
-    expect(screen.getByText('Import tokens')).toBeInTheDocument();
+    expect(screen.getByText('Import')).toBeInTheDocument();
   });
 });

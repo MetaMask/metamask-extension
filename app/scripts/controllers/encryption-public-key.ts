@@ -3,15 +3,13 @@ import log from 'loglevel';
 import {
   EncryptionPublicKeyManager,
   EncryptionPublicKeyParamsMetamask,
-} from '@metamask/message-manager';
-import {
   AbstractMessageManager,
   AbstractMessage,
   MessageManagerState,
   AbstractMessageParams,
   AbstractMessageParamsMetamask,
   OriginalRequest,
-} from '@metamask/message-manager/dist/AbstractMessageManager';
+} from '@metamask/message-manager';
 import {
   BaseController,
   RestrictedControllerMessenger,

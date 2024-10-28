@@ -6,7 +6,7 @@ const watch = require('gulp-watch');
 const sourcemaps = require('gulp-sourcemaps');
 const rtlcss = require('postcss-rtlcss');
 const postcss = require('gulp-postcss');
-const pump = pify(require('pump'));
+const pipeline = pify(require('readable-stream').pipeline);
 const sass = require('sass-embedded');
 const gulpSass = require('gulp-sass')(sass);
 const { TASKS } = require('./constants');
@@ -64,7 +64,7 @@ function createStyleTasks({ livereload }) {
 }
 
 async function buildScssPipeline(src, dest, devMode) {
-  await pump(
+  await pipeline(
     ...[
       // pre-process
       gulp.src(src),

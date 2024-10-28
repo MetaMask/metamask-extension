@@ -4,7 +4,7 @@ const sort = require('gulp-sort');
 const gulpZip = require('gulp-zip');
 const del = require('del');
 const pify = require('pify');
-const pump = pify(require('pump'));
+const pipeline = pify(require('readable-stream').pipeline);
 
 const { loadBuildTypesConfig } = require('../lib/build-type');
 const { TASKS } = require('./constants');
@@ -45,7 +45,7 @@ function createZipTask(platform, buildType, version) {
       buildType === loadBuildTypesConfig().default
         ? `metamask-${platform}-${version}`
         : `metamask-${buildType}-${platform}-${version}`;
-    await pump(
+    await pipeline(
       gulp.src(`dist/${platform}/**`),
       // sort files and set `mtime` to epoch to ensure zip build is deterministic
       sort(),

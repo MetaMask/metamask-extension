@@ -46,6 +46,9 @@ export const TransactionModalContextProvider = ({ children }) => {
   );
 };
 
+/**
+ * @returns {{openModal: (modalName: string) => void}}
+ */
 export function useTransactionModalContext() {
   return useContext(TransactionModalContext);
 }

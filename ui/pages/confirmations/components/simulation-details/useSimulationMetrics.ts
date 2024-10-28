@@ -4,6 +4,7 @@ import {
 } from '@metamask/transaction-controller';
 import { useContext, useEffect, useState } from 'react';
 import { NameType } from '@metamask/name-controller';
+import { useSelector } from 'react-redux';
 import { useTransactionEventFragment } from '../../hooks/useTransactionEventFragment';
 import {
   UseDisplayNameRequest,
@@ -16,14 +17,17 @@ import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../../../../shared/constants/metametrics';
+import { getCurrentChainId } from '../../../../selectors';
 import { calculateTotalFiat } from './fiat-display';
 import { BalanceChange } from './types';
+import { useLoadingTime } from './useLoadingTime';
 
 export type UseSimulationMetricsProps = {
   balanceChanges: BalanceChange[];
-  loadingTime?: number;
+  loading: boolean;
   simulationData?: SimulationData;
   transactionId: string;
+  enableMetrics: boolean;
 };
 
 export enum SimulationResponseType {
@@ -54,17 +58,29 @@ export enum PetnameType {
 
 export function useSimulationMetrics({
   balanceChanges,
-  loadingTime,
+  loading,
   simulationData,
   transactionId,
+  enableMetrics,
 }: UseSimulationMetricsProps) {
-  const displayNameRequests: UseDisplayNameRequest[] = balanceChanges.map(
-    ({ asset }) => ({
-      value: asset.address ?? '',
+  const { loadingTime, setLoadingComplete } = useLoadingTime();
+
+  // TODO: Temporary pending multi-chain support in simulations.
+  const chainId = useSelector(getCurrentChainId);
+
+  if (!loading) {
+    setLoadingComplete();
+  }
+
+  const displayNameRequests: UseDisplayNameRequest[] = balanceChanges
+    // Filter out changes with no address (e.g. ETH)
+    .filter(({ asset }) => Boolean(asset.address))
+    .map(({ asset }) => ({
+      value: asset.address as string,
       type: NameType.ETHEREUM_ADDRESS,
       preferContractSymbol: true,
-    }),
-  );
+      variation: chainId,
+    }));
 
   const displayNames = useDisplayNames(displayNameRequests);
 
@@ -81,11 +97,11 @@ export function useSimulationMetrics({
   useIncompleteAssetEvent(balanceChanges, displayNamesByAddress);
 
   const receivingAssets = balanceChanges.filter(
-    (change) => !change.amount.isNegative,
+    (change) => !change.amount.isNegative(),
   );
 
-  const sendingAssets = balanceChanges.filter(
-    (change) => change.amount.isNegative,
+  const sendingAssets = balanceChanges.filter((change) =>
+    change.amount.isNegative(),
   );
 
   const simulationResponse = getSimulationResponseType(simulationData);
@@ -113,10 +129,12 @@ export function useSimulationMetrics({
 
   const params = { properties, sensitiveProperties };
 
-  const shouldSkipMetrics = [
-    SimulationErrorCode.ChainNotSupported,
-    SimulationErrorCode.Disabled,
-  ].includes(simulationData?.error?.code as SimulationErrorCode);
+  const shouldSkipMetrics =
+    !enableMetrics ||
+    [
+      SimulationErrorCode.ChainNotSupported,
+      SimulationErrorCode.Disabled,
+    ].includes(simulationData?.error?.code as SimulationErrorCode);
 
   useEffect(() => {
     if (shouldSkipMetrics) {
@@ -134,7 +152,9 @@ export function useSimulationMetrics({
 
 function useIncompleteAssetEvent(
   balanceChanges: BalanceChange[],
-  displayNamesByAddress: { [address: string]: UseDisplayNameResponse },
+  displayNamesByAddress: {
+    [address: string]: UseDisplayNameResponse | undefined;
+  },
 ) {
   const trackEvent = useContext(MetaMetricsContext);
   const [processedAssets, setProcessedAssets] = useState<string[]>([]);
@@ -159,7 +179,7 @@ function useIncompleteAssetEvent(
       properties: {
         asset_address: change.asset.address,
         asset_petname: getPetnameType(change, displayName),
-        asset_symbol: displayName.contractDisplayName,
+        asset_symbol: displayName?.contractDisplayName,
         asset_type: getAssetType(change.asset.standard),
         fiat_conversion_available: change.fiatAmount
           ? FiatType.Available
@@ -233,7 +253,7 @@ function getAssetType(standard: TokenStandard) {
 
 function getPetnameType(
   balanceChange: BalanceChange,
-  displayName: UseDisplayNameResponse,
+  displayName: UseDisplayNameResponse = { name: '', hasPetname: false },
 ) {
   if (balanceChange.asset.standard === TokenStandard.none) {
     return PetnameType.Default;

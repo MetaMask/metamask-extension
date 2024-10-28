@@ -3,6 +3,7 @@ const {
   withFixtures,
   switchToNotificationWindow,
   unlockWallet,
+  WINDOW_TITLES,
 } = require('../helpers');
 const FixtureBuilder = require('../fixture-builder');
 const { TEST_SNAPS_WEBSITE_URL } = require('./enums');
@@ -40,23 +41,26 @@ describe('Test Snap RPC', function () {
           tag: 'button',
         });
 
-        await driver.waitForSelector({ text: 'Install' });
+        await driver.waitForSelector({ text: 'Confirm' });
 
         await driver.clickElementSafe('[data-testid="snap-install-scroll"]');
 
         await driver.clickElement({
-          text: 'Install',
+          text: 'Confirm',
           tag: 'button',
         });
 
         // wait for permissions popover, click checkboxes and confirm
         await driver.waitForSelector('.mm-checkbox__input');
         await driver.clickElement('.mm-checkbox__input');
-        await driver.clickElement({
-          text: 'Confirm',
-          tag: 'button',
-        });
+        await driver.waitForSelector(
+          '[data-testid="snap-install-warning-modal-confirm"]',
+        );
+        await driver.clickElement(
+          '[data-testid="snap-install-warning-modal-confirm"]',
+        );
 
+        // deal with OK button
         await driver.waitForSelector({ text: 'OK' });
 
         await driver.clickElement({
@@ -65,7 +69,7 @@ describe('Test Snap RPC', function () {
         });
 
         // switch back to test-snaps window
-        await driver.switchToWindowWithTitle('Test Snaps');
+        await driver.switchToWindowWithTitle(WINDOW_TITLES.TestSnaps);
 
         const snapButton2 = await driver.findElement('#connectjson-rpc');
         await driver.scrollToElement(snapButton2);
@@ -78,10 +82,10 @@ describe('Test Snap RPC', function () {
           tag: 'button',
         });
 
-        await driver.waitForSelector({ text: 'Install' });
+        await driver.waitForSelector({ text: 'Confirm' });
 
         await driver.clickElement({
-          text: 'Install',
+          text: 'Confirm',
           tag: 'button',
         });
 
@@ -92,7 +96,7 @@ describe('Test Snap RPC', function () {
           tag: 'button',
         });
 
-        await driver.switchToWindowWithTitle('Test Snaps');
+        await driver.switchToWindowWithTitle(WINDOW_TITLES.TestSnaps);
 
         // wait for npm installation success
         await driver.waitForSelector({

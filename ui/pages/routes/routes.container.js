@@ -17,11 +17,11 @@ import {
   ///: END:ONLY_INCLUDE_IF
   getShowExtensionInFullSizeView,
   getSelectedAccount,
-  getPermittedAccountsForCurrentTab,
   getSwitchedNetworkDetails,
-  getNeverShowSwitchedNetworkMessage,
   getNetworkToAutomaticallySwitchTo,
   getNumberOfAllUnapprovedTransactionsAndMessages,
+  getUseRequestQueue,
+  getCurrentNetwork,
 } from '../../selectors';
 import {
   lockMetamask,
@@ -36,10 +36,10 @@ import {
   addPermittedAccount,
   automaticallySwitchNetwork,
   clearSwitchedNetworkDetails,
-  neverShowSwitchedNetworkMessage,
   ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
   hideKeyringRemovalResultModal,
   ///: END:ONLY_INCLUDE_IF
+  setEditedNetwork,
 } from '../../store/actions';
 import { pageChanged } from '../../ducks/history/history';
 import { prepareToLeaveSwaps } from '../../ducks/swaps/swaps';
@@ -49,6 +49,7 @@ import {
   getProviderConfig,
 } from '../../ducks/metamask/metamask';
 import { DEFAULT_AUTO_LOCK_TIME_LIMIT } from '../../../shared/constants/preferences';
+import { selectSwitchedNetworkNeverShowMessage } from '../../components/app/toast-master/selectors';
 import Routes from './routes.component';
 
 function mapStateToProps(state) {
@@ -62,14 +63,7 @@ function mapStateToProps(state) {
   // *BUT* the current account is not one of them, show the banner
   const account = getSelectedAccount(state);
   const activeTabOrigin = activeTab?.origin;
-  const connectedAccounts = getPermittedAccountsForCurrentTab(state);
-  const showConnectAccountToast = Boolean(
-    process.env.MULTICHAIN &&
-      account &&
-      activeTabOrigin &&
-      connectedAccounts.length > 0 &&
-      !connectedAccounts.find((address) => address === account.address),
-  );
+  const currentNetwork = getCurrentNetwork(state);
 
   const networkToAutomaticallySwitchTo =
     getNetworkToAutomaticallySwitchTo(state);
@@ -79,7 +73,6 @@ function mapStateToProps(state) {
     alertOpen,
     alertMessage,
     account,
-    showConnectAccountToast,
     activeTabOrigin,
     textDirection: state.metamask.textDirection,
     isLoading,
@@ -106,15 +99,20 @@ function mapStateToProps(state) {
     isAccountMenuOpen: state.metamask.isAccountMenuOpen,
     isNetworkMenuOpen: state.metamask.isNetworkMenuOpen,
     isImportTokensModalOpen: state.appState.importTokensModalOpen,
+    isBasicConfigurationModalOpen: state.appState.showBasicFunctionalityModal,
     isDeprecatedNetworkModalOpen: state.appState.deprecatedNetworkModalOpen,
     accountDetailsAddress: state.appState.accountDetailsAddress,
     isImportNftsModalOpen: state.appState.importNftsModal.open,
     isIpfsModalOpen: state.appState.showIpfsModalOpen,
     switchedNetworkDetails,
     networkToAutomaticallySwitchTo,
-    unapprovedTransactions:
+    currentNetwork,
+    totalUnapprovedConfirmationCount:
       getNumberOfAllUnapprovedTransactionsAndMessages(state),
-    neverShowSwitchedNetworkMessage: getNeverShowSwitchedNetworkMessage(state),
+    switchedNetworkNeverShowMessage:
+      selectSwitchedNetworkNeverShowMessage(state),
+    currentExtensionPopupId: state.metamask.currentExtensionPopupId,
+    useRequestQueue: getUseRequestQueue(state),
     ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
     isShowKeyringSnapRemovalResultModal:
       state.appState.showKeyringRemovalSnapModal,
@@ -139,10 +137,9 @@ function mapDispatchToProps(dispatch) {
     addPermittedAccount: (activeTabOrigin, address) =>
       dispatch(addPermittedAccount(activeTabOrigin, address)),
     clearSwitchedNetworkDetails: () => dispatch(clearSwitchedNetworkDetails()),
-    setSwitchedNetworkNeverShowMessage: () =>
-      dispatch(neverShowSwitchedNetworkMessage()),
     automaticallySwitchNetwork: (networkId, selectedTabOrigin) =>
       dispatch(automaticallySwitchNetwork(networkId, selectedTabOrigin)),
+    clearEditedNetwork: () => dispatch(setEditedNetwork()),
     ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
     hideShowKeyringSnapRemovalResultModal: () =>
       dispatch(hideKeyringRemovalResultModal()),

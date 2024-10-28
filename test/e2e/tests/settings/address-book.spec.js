@@ -1,9 +1,11 @@
 const { strict: assert } = require('assert');
+const { By } = require('selenium-webdriver');
 const {
   defaultGanacheOptions,
   withFixtures,
   logInWithBalanceValidation,
   openActionMenuAndStartSendFlow,
+  openMenuSafe,
   unlockWallet,
 } = require('../../helpers');
 const { shortenAddress } = require('../../../../ui/helpers/utils/util');
@@ -11,10 +13,6 @@ const FixtureBuilder = require('../../fixture-builder');
 
 describe('Address Book', function () {
   it('Sends to an address book entry', async function () {
-    // TODO: Update Test when Multichain Send Flow is added
-    if (process.env.MULTICHAIN) {
-      return;
-    }
     await withFixtures(
       {
         fixtures: new FixtureBuilder()
@@ -37,25 +35,26 @@ describe('Address Book', function () {
       },
       async ({ driver, ganacheServer }) => {
         await logInWithBalanceValidation(driver, ganacheServer);
-
         await openActionMenuAndStartSendFlow(driver);
-        const recipientRowTitle = await driver.findElement(
-          '.send__select-recipient-wrapper__group-item__title',
-        );
 
-        const recipientRowTitleString = await recipientRowTitle.getText();
-        assert.equal(recipientRowTitleString, 'Test Name 1');
-        await driver.clickElement(
-          '.send__select-recipient-wrapper__group-item',
-        );
+        await driver.clickElement({ css: 'button', text: 'Contacts' });
 
-        await driver.fill('.unit-input__input', '2');
+        await driver.waitForSelector({
+          css: '.address-list-item__label',
+          text: 'Test Name 1',
+        });
 
-        await driver.clickElement({ text: 'Next', tag: 'button' });
+        await driver.clickElement('.address-list-item__label');
+
+        await driver.fill('input[placeholder="0"]', '2');
+
+        await driver.clickElement({ text: 'Continue', tag: 'button' });
 
         await driver.clickElement({ text: 'Confirm', tag: 'button' });
 
-        await driver.clickElement('[data-testid="home__activity-tab"]');
+        await driver.clickElement(
+          '[data-testid="account-overview__activity-tab"]',
+        );
         await driver.wait(async () => {
           const confirmedTxes = await driver.findElements(
             '.transaction-list__completed-transactions .activity-list-item',
@@ -70,6 +69,44 @@ describe('Address Book', function () {
       },
     );
   });
+
+  it('Adds a new contact to the address book', async function () {
+    await withFixtures(
+      {
+        fixtures: new FixtureBuilder().build(),
+        ganacheOptions: defaultGanacheOptions,
+        title: this.test.fullTitle(),
+      },
+      async ({ driver }) => {
+        await unlockWallet(driver);
+        await openMenuSafe(driver);
+
+        await driver.clickElement({ text: 'Settings', tag: 'div' });
+        await driver.clickElement({ text: 'Contacts', tag: 'div' });
+
+        await driver.clickElement('.address-book__link');
+
+        await driver.fill('#nickname', 'Test User');
+
+        await driver.fill(
+          '[data-testid="ens-input"]',
+          '0x56A355d3427bC2B1E22c78197AF091230919Cc2A',
+        );
+
+        await driver.clickElement('[data-testid="page-container-footer-next"]');
+
+        await driver.waitForSelector({
+          text: 'Test User',
+          css: '.address-list-item__label',
+        });
+        await driver.waitForSelector({
+          css: '[data-testid="address-list-item-address"]',
+          text: '0x56A35...9Cc2A',
+        });
+      },
+    );
+  });
+
   it('Edit entry in address book', async function () {
     await withFixtures(
       {
@@ -93,20 +130,14 @@ describe('Address Book', function () {
       },
       async ({ driver }) => {
         await unlockWallet(driver);
+        await openMenuSafe(driver);
 
-        await driver.clickElement(
-          '[data-testid="account-options-menu-button"]',
-        );
         await driver.clickElement({ text: 'Settings', tag: 'div' });
         await driver.clickElement({ text: 'Contacts', tag: 'div' });
-        if (process.env.MULTICHAIN) {
-          await driver.clickElement({
-            text: 'Test Name 1',
-            css: '.address-list-item__label',
-          });
-        } else {
-          await driver.clickElement({ text: 'Test Name 1', tag: 'p' });
-        }
+        await driver.clickElement({
+          text: 'Test Name 1',
+          css: '.address-list-item__label',
+        });
 
         await driver.clickElement({ text: 'Edit', tag: 'button' });
         const inputUsername = await driver.findElement('#nickname');
@@ -117,52 +148,20 @@ describe('Address Book', function () {
 
         await driver.clickElement('[data-testid="page-container-footer-next"]');
 
-        let recipientUsername;
-        if (process.env.MULTICHAIN) {
-          recipientUsername = await driver.findElement({
-            text: 'Test Name Edit',
-            css: '.address-list-item__label',
-          });
-        } else {
-          recipientUsername = await driver.findElement({
-            text: 'Test Name Edit',
-            tag: 'p',
-          });
-        }
+        await driver.waitForSelector({
+          text: 'Test Name Edit',
+          css: '.address-list-item__label',
+        });
 
-        assert.equal(
-          await recipientUsername.getText(),
-          'Test Name Edit',
-          'Username is not edited correctly',
-        );
-
-        if (process.env.MULTICHAIN) {
-          const recipientAddress = await driver.findElement(
-            '[data-testid="address-list-item-address"]',
-          );
-          assert.equal(
-            await recipientAddress.getText(),
-            shortenAddress('0x74cE91B75935D6Bedc27eE002DeFa566c5946f74'),
-            'Recipient address is not edited correctly',
-          );
-        } else {
-          const recipientAddress = await driver.findElement(
-            '.send__select-recipient-wrapper__group-item__subtitle',
-          );
-          assert.equal(
-            await recipientAddress.getText(),
-            '0x74cE...6f74',
-            'Recipient address is not edited correctly',
-          );
-        }
+        await driver.waitForSelector({
+          css: '[data-testid="address-list-item-address"]',
+          text: shortenAddress('0x74cE91B75935D6Bedc27eE002DeFa566c5946f74'),
+        });
       },
     );
   });
 
   it('Deletes existing entry from address book', async function () {
-    if (process.env.MULTICHAIN) {
-      return;
-    }
     await withFixtures(
       {
         fixtures: new FixtureBuilder()
@@ -186,22 +185,19 @@ describe('Address Book', function () {
       async ({ driver }) => {
         await unlockWallet(driver);
 
-        await driver.clickElement(
-          '[data-testid="account-options-menu-button"]',
-        );
+        await openMenuSafe(driver);
+
         await driver.clickElement({ text: 'Settings', tag: 'div' });
         await driver.clickElement({ text: 'Contacts', tag: 'div' });
 
-        await driver.clickElement({ text: 'Test Name 1', tag: 'p' });
+        await driver.clickElement({ text: '0x2f318...5C970', tag: 'div' });
         await driver.clickElement({ text: 'Edit', tag: 'button' });
-        await driver.clickElement({ text: 'Delete contact', tag: 'a' });
-
-        const contact = await driver.findElement(
-          '.send__select-recipient-wrapper__group-item',
-        );
+        await driver.clickElement('.settings-page__address-book-button');
 
         // it checks if account is deleted
-        const exists = await driver.isElementPresent(contact);
+        const exists = await driver.isElementPresent(
+          By.css('.address-list-item__label'),
+        );
         assert.equal(exists, false, 'Contact is not deleted');
       },
     );

@@ -1,10 +1,8 @@
 import React from 'react';
 import thunk from 'redux-thunk';
 import configureMockStore from 'redux-mock-store';
-import { NetworkType } from '@metamask/controller-utils';
-import { EthAccountType, EthMethod } from '@metamask/keyring-api';
+import { EthAccountType } from '@metamask/keyring-api';
 import { act } from '@testing-library/react';
-import mockState from '../../../../../test/data/mock-state.json';
 import {
   renderWithProvider,
   waitFor,
@@ -15,14 +13,12 @@ import { INITIAL_SEND_STATE_FOR_EXISTING_DRAFT } from '../../../../../test/jest/
 import { GasEstimateTypes } from '../../../../../shared/constants/gas';
 import { SEND_STAGES, startNewDraftTransaction } from '../../../../ducks/send';
 import { AssetType } from '../../../../../shared/constants/transaction';
-import {
-  CHAIN_IDS,
-  GOERLI_DISPLAY_NAME,
-  NETWORK_TYPES,
-} from '../../../../../shared/constants/network';
+import { CHAIN_IDS } from '../../../../../shared/constants/network';
 import mockSendState from '../../../../../test/data/mock-send-state.json';
 import { useIsOriginalNativeTokenSymbol } from '../../../../hooks/useIsOriginalNativeTokenSymbol';
 import { KeyringType } from '../../../../../shared/constants/keyring';
+import { ETH_EOA_METHODS } from '../../../../../shared/constants/eth-methods';
+import { mockNetworkState } from '../../../../../test/stub/networks';
 import { SendPage } from '.';
 
 jest.mock('@ethersproject/providers', () => {
@@ -126,7 +122,6 @@ const baseStore = {
         gasEstimateType: GasEstimateTypes.legacy,
       },
     },
-    selectedAddress: '0x0',
     internalAccounts: {
       accounts: {
         'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3': {
@@ -139,7 +134,7 @@ const baseStore = {
             },
           },
           options: {},
-          methods: [...Object.values(EthMethod)],
+          methods: ETH_EOA_METHODS,
           type: EthAccountType.Eoa,
         },
         permissionHistory: {
@@ -166,22 +161,15 @@ const baseStore = {
         accounts: ['0x0'],
       },
     ],
-    selectedNetworkClientId: NetworkType.goerli,
-    networksMetadata: {
-      [NetworkType.goerli]: {
-        EIPS: {},
-        status: 'available',
-      },
-    },
+    ...mockNetworkState({
+      chainId: CHAIN_IDS.GOERLI,
+      ticker: 'ETH',
+    }),
     tokens: [],
     preferences: {
-      useNativeCurrencyAsPrimaryCurrency: false,
+      showFiatInTestnets: true,
     },
     currentCurrency: 'USD',
-    providerConfig: {
-      chainId: CHAIN_IDS.GOERLI,
-      nickname: GOERLI_DISPLAY_NAME,
-    },
     nativeCurrency: 'ETH',
     featureFlags: {
       sendHexData: false,
@@ -195,7 +183,6 @@ const baseStore = {
     accounts: {
       '0x0': { balance: '0x0', address: '0x0', name: 'Account 1' },
     },
-    identities: { '0x0': { address: '0x0' } },
     tokenAddress: '0x32e6c34cd57087abbd59b5a4aecc4cb495924356',
     tokenList: {
       '0x32e6c34cd57087abbd59b5a4aecc4cb495924356': {
@@ -215,6 +202,9 @@ const baseStore = {
         occurrences: null,
       },
     },
+    completedOnboarding: true,
+    useCurrencyRateCheck: true,
+    ticker: 'ETH',
   },
   activeTab: {
     origin: 'https://uniswap.org/',
@@ -283,7 +273,7 @@ describe('SendPage', () => {
       // Ensure that the send flow renders on the add recipient screen when
       // there is no draft transaction.
       expect(
-        getByPlaceholderText('Enter public address (0x) or ENS name'),
+        getByPlaceholderText('Enter public address (0x) or domain name'),
       ).toBeTruthy();
 
       expect(container).toMatchSnapshot();
@@ -299,7 +289,7 @@ describe('SendPage', () => {
       it('should call reset send state and route to recent page without cancelling tx', async () => {
         const {
           result: { queryByText },
-        } = await render(mockState);
+        } = await render(mockSendState);
 
         const cancelText = queryByText('Cancel');
         await act(async () => {
@@ -312,7 +302,7 @@ describe('SendPage', () => {
 
       it('should reject/cancel tx when coming from tx editing and route to index', async () => {
         const sendDataState = {
-          ...mockState,
+          ...mockSendState,
           send: {
             currentTransactionUUID: '01',
             draftTransactions: {
@@ -321,11 +311,17 @@ describe('SendPage', () => {
                 amount: {
                   value: '0x1',
                 },
-                asset: {
+                sendAsset: {
                   type: AssetType.token,
                   balance: '0xaf',
                   details: {},
                 },
+                receiveAsset: {
+                  type: AssetType.token,
+                  balance: '0xaf',
+                  details: {},
+                },
+                gas: {},
               },
             },
             stage: SEND_STAGES.EDIT,
@@ -369,11 +365,7 @@ describe('SendPage', () => {
         metamask: {
           ...mockSendState.metamask,
           gasEstimateType: 'none',
-          providerConfig: {
-            chainId: CHAIN_IDS.GOERLI,
-            nickname: GOERLI_DISPLAY_NAME,
-            type: NETWORK_TYPES.GOERLI,
-          },
+          ...mockNetworkState({ chainId: CHAIN_IDS.GOERLI }),
         },
       };
 

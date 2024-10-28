@@ -1,4 +1,3 @@
-const { strict: assert } = require('assert');
 const {
   defaultGanacheOptions,
   withFixtures,
@@ -8,23 +7,20 @@ const FixtureBuilder = require('../../fixture-builder');
 
 const selectors = {
   accountOptionsMenu: '[data-testid="account-options-menu-button"]',
-  settingsDiv: { text: 'Settings', tag: 'div' },
+  settingsDiv: '[data-testid="global-menu-settings"]',
+  portfolioMenuOption: '[data-testid="global-menu-mmi-portfolio"]',
   advancedDiv: { text: 'Advanced', tag: 'div' },
   hexDataToggle: '[data-testid="advanced-setting-hex-data"] .toggle-button',
   appHeaderLogo: '[data-testid="app-header-logo"]',
   ethOverviewSend: '[data-testid="eth-overview-send"]',
   ensInput: '[data-testid="ens-input"]',
-  quantity: '.unit-input__input',
-  hexDataInput: '.send-v2__hex-data__input',
-  nextPageButton: '[data-testid="page-container-footer-next"]',
+  quantity: 'input[placeholder="0"]',
+  hexDataInput: '[data-testid="send-hex-textarea"]',
+  nextPageButton: { text: 'Continue', tag: 'button' },
   hexButton: { text: 'Hex', tag: 'button' },
   detailsTab: { text: 'Details', tag: 'button' },
   containerContent: '.confirm-page-container-content',
-  confirmButton: {
-    text: 'Confirm',
-    tag: 'button',
-    css: '[data-testid="page-container-footer-next"]',
-  },
+  confirmButton: { text: 'Confirm', tag: 'button' },
 };
 
 const inputData = {
@@ -35,7 +31,11 @@ const inputData = {
 // Function to click elements in sequence
 async function clickElementsInSequence(driver, clickSelectors) {
   for (const selector of clickSelectors) {
-    await driver.waitForSelector(selector);
+    if (process.env.MMI && selector === selectors.settingsDiv) {
+      await driver.waitForSelector(selectors.portfolioMenuOption);
+    } else {
+      await driver.waitForSelector(selector);
+    }
     await driver.clickElement(selector);
   }
 }
@@ -70,9 +70,6 @@ async function sendTransactionAndVerifyHexData(driver) {
 // Main test suite
 describe('Check the toggle for hex data', function () {
   it('Setting the hex data toggle and verify that the textbox appears', async function () {
-    if (process.env.MULTICHAIN) {
-      return;
-    }
     await withFixtures(
       {
         fixtures: new FixtureBuilder().build(),
@@ -86,15 +83,10 @@ describe('Check the toggle for hex data', function () {
         await sendTransactionAndVerifyHexData(driver);
 
         // Verify hex data in the container content
-        const pageContentContainer = await driver.findElement(
-          selectors.containerContent,
-        );
-        const pageContentContainerText = await pageContentContainer.getText();
-        assert.equal(
-          pageContentContainerText.includes(inputData.hexDataText),
-          true,
-          'Hex data is incorrect',
-        );
+        await driver.waitForSelector({
+          tag: 'p',
+          text: '0x0abc',
+        });
       },
     );
   });

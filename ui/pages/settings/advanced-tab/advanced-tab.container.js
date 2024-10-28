@@ -6,17 +6,17 @@ import { getPreferences } from '../../../selectors';
 import {
   backupUserData,
   displayWarning,
-  restoreUserData,
   setAutoLockTimeLimit,
-  setDisabledRpcMethodPreference,
   setDismissSeedBackUpReminder,
   setFeatureFlag,
   setShowExtensionInFullSizeView,
   setShowFiatConversionOnTestnetsPreference,
   setShowTestNetworks,
+  setSmartTransactionsPreferenceEnabled,
   setUseNonceField,
   showModal,
 } from '../../../store/actions';
+import { getSmartTransactionsPreferenceEnabled } from '../../../../shared/modules/selectors';
 import AdvancedTab from './advanced-tab.component';
 
 export const mapStateToProps = (state) => {
@@ -26,7 +26,6 @@ export const mapStateToProps = (state) => {
   } = state;
   const {
     featureFlags: { sendHexData } = {},
-    disabledRpcMethodPreferences,
     useNonceField,
     dismissSeedBackUpReminder,
   } = metamask;
@@ -43,23 +42,21 @@ export const mapStateToProps = (state) => {
     showFiatInTestnets,
     showTestNetworks,
     showExtensionInFullSizeView,
+    smartTransactionsEnabled: getSmartTransactionsPreferenceEnabled(state),
     autoLockTimeLimit,
     useNonceField,
     dismissSeedBackUpReminder,
-    disabledRpcMethodPreferences,
   };
 };
 
 export const mapDispatchToProps = (dispatch) => {
   return {
     backupUserData: () => backupUserData(),
-    restoreUserData: (jsonString) => restoreUserData(jsonString),
     setHexDataFeatureFlag: (shouldShow) =>
       dispatch(setFeatureFlag('sendHexData', shouldShow)),
     displayWarning: (warning) => dispatch(displayWarning(warning)),
     showResetAccountConfirmationModal: () =>
       dispatch(showModal({ name: 'CONFIRM_RESET_ACCOUNT' })),
-    showEthSignModal: () => dispatch(showModal({ name: 'ETH_SIGN' })),
     setUseNonceField: (value) => dispatch(setUseNonceField(value)),
     setShowFiatConversionOnTestnetsPreference: (value) => {
       return dispatch(setShowFiatConversionOnTestnetsPreference(value));
@@ -70,14 +67,14 @@ export const mapDispatchToProps = (dispatch) => {
     setShowExtensionInFullSizeView: (value) => {
       return dispatch(setShowExtensionInFullSizeView(value));
     },
+    setSmartTransactionsEnabled: (value) => {
+      return dispatch(setSmartTransactionsPreferenceEnabled(value));
+    },
     setAutoLockTimeLimit: (value) => {
       return dispatch(setAutoLockTimeLimit(value));
     },
     setDismissSeedBackUpReminder: (value) => {
       return dispatch(setDismissSeedBackUpReminder(value));
-    },
-    setDisabledRpcMethodPreference: (methodName, isEnabled) => {
-      return dispatch(setDisabledRpcMethodPreference(methodName, isEnabled));
     },
   };
 };

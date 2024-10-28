@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import React, { useContext, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
+import { getErrorMessage } from '../../../../shared/modules/error';
 import {
   MetaMetricsEventName,
   MetaMetricsTokenEventSource,
@@ -34,7 +35,7 @@ import {
   setNewNftAddedMessage,
   updateNftDropDownState,
 } from '../../../store/actions';
-import NftsDetectionNoticeImportNFTs from '../../app/nfts-detection-notice-import-nfts/nfts-detection-notice-import-nfts';
+import NftsDetectionNoticeImportNFTs from '../../app/assets/nfts/nfts-detection-notice-import-nfts/nfts-detection-notice-import-nfts';
 import {
   BannerAlert,
   Box,
@@ -95,7 +96,7 @@ export const ImportNftsModal = ({ onClose }) => {
 
       dispatch(updateNftDropDownState(newNftDropdownState));
     } catch (error) {
-      const { message } = error;
+      const message = getErrorMessage(error);
       dispatch(setNewNftAddedMessage(message));
       setNftAddFailed(true);
       return;
@@ -114,7 +115,7 @@ export const ImportNftsModal = ({ onClose }) => {
       nftAddress,
       null,
       tokenId.toString(),
-    );
+    ).catch(() => ({}));
 
     trackEvent({
       event: MetaMetricsEventName.TokenAdded,

@@ -1,0 +1,26 @@
+.mm-smart-transactions-opt-in-modal {
+  &__benefit {
+    flex: 1;
+  }
+
+  &__icon {
+    --size: 40px;
+  }
+
+  &__no-thanks-link {
+    opacity: 75%;
+
+    &:hover {
+      color: var(--color-text-alternative) !important;
+      text-decoration: none !important;
+    }
+  }
+
+  .mm-modal-content {
+    &__dialog {
+      background-image: url('/images/smart-transactions/smart-transactions-opt-in-background.svg');
+      background-position: -80px 16px;
+      background-repeat: no-repeat;
+    }
+  }
+}

@@ -14,6 +14,7 @@ import configureStore from '../../../../../../store/store';
 import { AdvancedGasFeePopoverContextProvider } from '../../context';
 import AdvancedGasFeeGasLimit from '../../advanced-gas-fee-gas-limit';
 import { CHAIN_IDS } from '../../../../../../../shared/constants/network';
+import { getSelectedInternalAccountFromMockState } from '../../../../../../../test/jest/mocks';
 import PriorityfeeInput from './priority-fee-input';
 
 const LOW_PRIORITY_FEE = 0.000000001;
@@ -28,13 +29,16 @@ jest.mock('../../../../../../store/actions', () => ({
     .mockResolvedValue({ chainId: '0x5' }),
 }));
 
+const mockSelectedInternalAccount =
+  getSelectedInternalAccountFromMockState(mockState);
+
 const render = async (txProps, contextProps) => {
   const store = configureStore({
     metamask: {
       ...mockState.metamask,
       accounts: {
-        [mockState.metamask.selectedAddress]: {
-          address: mockState.metamask.selectedAddress,
+        [mockSelectedInternalAccount.address]: {
+          address: mockSelectedInternalAccount.address,
           balance: '0x1F4',
         },
       },

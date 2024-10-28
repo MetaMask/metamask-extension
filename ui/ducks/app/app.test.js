@@ -5,15 +5,7 @@ import reduceApp from './app';
 const actions = actionConstants;
 
 describe('App State', () => {
-  const metamaskState = {
-    selectedAddress: '0xAddress',
-    identities: {
-      '0xAddress': {
-        name: 'account 1',
-        address: '0xAddress',
-      },
-    },
-  };
+  const metamaskState = {};
 
   it('app init state', () => {
     const initState = reduceApp(metamaskState, {});
@@ -308,5 +300,43 @@ describe('App State', () => {
       payload: 'Server Side Error',
     });
     expect(state.smartTransactionsError).toStrictEqual('Server Side Error');
+  });
+  it('shows delete metametrics modal', () => {
+    const state = reduceApp(metamaskState, {
+      type: actions.DELETE_METAMETRICS_DATA_MODAL_OPEN,
+    });
+
+    expect(state.showDeleteMetaMetricsDataModal).toStrictEqual(true);
+  });
+  it('hides delete metametrics modal', () => {
+    const deleteMetaMetricsDataModalState = {
+      showDeleteMetaMetricsDataModal: true,
+    };
+    const oldState = { ...metamaskState, ...deleteMetaMetricsDataModalState };
+
+    const state = reduceApp(oldState, {
+      type: actions.DELETE_METAMETRICS_DATA_MODAL_CLOSE,
+    });
+
+    expect(state.showDeleteMetaMetricsDataModal).toStrictEqual(false);
+  });
+  it('shows delete metametrics error modal', () => {
+    const state = reduceApp(metamaskState, {
+      type: actions.DATA_DELETION_ERROR_MODAL_OPEN,
+    });
+
+    expect(state.showDataDeletionErrorModal).toStrictEqual(true);
+  });
+  it('hides delete metametrics error modal', () => {
+    const deleteMetaMetricsErrorModalState = {
+      showDataDeletionErrorModal: true,
+    };
+    const oldState = { ...metamaskState, ...deleteMetaMetricsErrorModalState };
+
+    const state = reduceApp(oldState, {
+      type: actions.DATA_DELETION_ERROR_MODAL_CLOSE,
+    });
+
+    expect(state.showDataDeletionErrorModal).toStrictEqual(false);
   });
 });

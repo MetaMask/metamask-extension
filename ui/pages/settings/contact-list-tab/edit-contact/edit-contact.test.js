@@ -9,12 +9,7 @@ import EditContact from './edit-contact.component';
 describe('AddContact component', () => {
   const middleware = [thunk];
   const state = {
-    metamask: {
-      providerConfig: {
-        type: 'mainnet',
-        nickname: '',
-      },
-    },
+    metamask: {},
   };
   const props = {
     addToAddressBook: jest.fn(),

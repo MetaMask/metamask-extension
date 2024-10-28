@@ -1,10 +1,14 @@
 const { strict: assert } = require('assert');
 const {
-  getWindowHandles,
+  createInternalTransaction,
+} = require('../../page-objects/flows/transaction');
+
+const {
   withFixtures,
   openDapp,
   unlockWallet,
   generateGanacheOptions,
+  WINDOW_TITLES,
 } = require('../../helpers');
 const FixtureBuilder = require('../../fixture-builder');
 
@@ -12,20 +16,18 @@ describe('Editing Confirm Transaction', function () {
   it('allows selecting high, medium, low gas estimates on edit gas fee popover @no-mmi', async function () {
     await withFixtures(
       {
-        fixtures: new FixtureBuilder()
-          .withTransactionControllerTypeTwoTransaction()
-          .build(),
+        fixtures: new FixtureBuilder().build(),
         ganacheOptions: generateGanacheOptions({ hardfork: 'london' }),
         title: this.test.fullTitle(),
       },
       async ({ driver }) => {
         await unlockWallet(driver);
+        await createInternalTransaction(driver);
 
-        const transactionAmounts = await driver.findElements(
-          '.currency-display-component__text',
-        );
-        const transactionAmount = transactionAmounts[0];
-        assert.equal(await transactionAmount.getText(), '1');
+        await driver.findElement({
+          css: '.currency-display-component__text',
+          text: '1',
+        });
 
         // update estimates to high
         await driver.clickElement('[data-testid="edit-gas-fee-icon"]');
@@ -65,7 +67,9 @@ describe('Editing Confirm Transaction', function () {
         // confirms the transaction
         await driver.clickElement({ text: 'Confirm', tag: 'button' });
 
-        await driver.clickElement('[data-testid="home__activity-tab"]');
+        await driver.clickElement(
+          '[data-testid="account-overview__activity-tab"]',
+        );
         await driver.wait(async () => {
           const confirmedTxes = await driver.findElements(
             '.transaction-list__completed-transactions .activity-list-item',
@@ -85,20 +89,18 @@ describe('Editing Confirm Transaction', function () {
   it('allows accessing advance gas fee popover from edit gas fee popover', async function () {
     await withFixtures(
       {
-        fixtures: new FixtureBuilder()
-          .withTransactionControllerTypeTwoTransaction()
-          .build(),
+        fixtures: new FixtureBuilder().build(),
         ganacheOptions: generateGanacheOptions({ hardfork: 'london' }),
         title: this.test.fullTitle(),
       },
       async ({ driver }) => {
         await unlockWallet(driver);
+        await createInternalTransaction(driver);
 
-        const transactionAmounts = await driver.findElements(
-          '.currency-display-component__text',
-        );
-        const transactionAmount = transactionAmounts[0];
-        assert.equal(await transactionAmount.getText(), '1');
+        await driver.findElement({
+          css: '.currency-display-component__text',
+          text: '1',
+        });
 
         // update estimates to high
         await driver.clickElement('[data-testid="edit-gas-fee-icon"]');
@@ -137,7 +139,9 @@ describe('Editing Confirm Transaction', function () {
         // confirms the transaction
         await driver.clickElement({ text: 'Confirm', tag: 'button' });
 
-        await driver.clickElement('[data-testid="home__activity-tab"]');
+        await driver.clickElement(
+          '[data-testid="account-overview__activity-tab"]',
+        );
         await driver.wait(async () => {
           const confirmedTxes = await driver.findElements(
             '.transaction-list__completed-transactions .activity-list-item',
@@ -176,17 +180,16 @@ describe('Editing Confirm Transaction', function () {
         });
 
         // check transaction in extension popup
-        const windowHandles = await getWindowHandles(driver, 3);
-        await driver.switchToWindow(windowHandles.popup);
+        await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
         await driver.waitForSelector({
           text: 'Site suggested',
         });
 
         await driver.clickElement('[data-testid="edit-gas-fee-icon"]');
-        await driver.waitForSelector({
-          text: 'sec',
-          tag: 'span',
-        });
+        // -- should render the popover with no error
+        // this is to test in MV3 a racing issue when request for suggestedGasFees is not fetched properly
+        // some data would not be defined yet
+        await driver.waitForSelector('.edit-gas-fee-popover');
         await driver.clickElement(
           '[data-testid="edit-gas-fee-item-dappSuggested"]',
         );
@@ -207,8 +210,12 @@ describe('Editing Confirm Transaction', function () {
         await driver.clickElement({ text: 'Confirm', tag: 'button' });
 
         // transaction should correct values in activity tab
-        await driver.switchToWindow(windowHandles.extension);
-        await driver.clickElement('[data-testid="home__activity-tab"]');
+        await driver.switchToWindowWithTitle(
+          WINDOW_TITLES.ExtensionInFullScreenView,
+        );
+        await driver.clickElement(
+          '[data-testid="account-overview__activity-tab"]',
+        );
         await driver.wait(async () => {
           const confirmedTxes = await driver.findElements(
             '.transaction-list__completed-transactions .activity-list-item',

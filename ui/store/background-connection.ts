@@ -41,6 +41,7 @@ type CallbackMethod<R = unknown> = (error?: unknown, result?: R) => void;
  * [Deprecated] Callback-style call to background method
  * invokes promisifiedBackground method directly.
  *
+ * @deprecated Use async `submitRequestToBackground` function instead.
  * @param method - name of the background method
  * @param [args] - arguments to that method, if any
  * @param callback - Node style (error, result) callback for finishing the operation

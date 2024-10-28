@@ -19,7 +19,6 @@ const defaultArgs = {
   ethTransactionTotal: '0.0012',
   fiatTransactionTotal: '1.6',
   hexTransactionTotal: '0x44364c5bb0000',
-  isMultiLayerFeeNetwork: false,
   supportsEIP1559: false,
   userAddress: '0x9d0ba4ddac06032527b140912ec808ab9451b788',
   tokenAddress: '0x55797717b9947b31306f4aac7ad1365c6e3923bd',
@@ -160,9 +159,6 @@ export default {
     },
     hexTransactionTotal: {
       control: 'text',
-    },
-    isMultiLayerFeeNetwork: {
-      control: 'boolean',
     },
     supportsEIP1559: {
       control: 'boolean',

@@ -1,5 +1,9 @@
-const { buildWebDriver } = require('../../webdriver');
-const { withFixtures, tinyDelayMs, unlockWallet } = require('../../helpers');
+const {
+  openMenuSafe,
+  tinyDelayMs,
+  unlockWallet,
+  withFixtures,
+} = require('../../helpers');
 const FixtureBuilder = require('../../fixture-builder');
 
 describe('Settings', function () {
@@ -8,27 +12,46 @@ describe('Settings', function () {
   const ENS_DESTINATION_URL = `https://app.ens.domains/name/${ENS_NAME}`;
 
   it('Redirects to ENS domains when user inputs ENS into address bar', async function () {
-    // Using proxy port that doesn't resolve so that the browser can error out properly
-    // on the ".eth" hostname.  The proxy does too much interference with 8000.
-    const { driver } = await buildWebDriver({ proxyUrl: '127.0.0.1:8001' });
-    await driver.navigate();
-
-    // The setting defaults to "on" so we can simply enter an ENS address
-    // into the address bar and listen for address change
-    try {
-      await driver.openNewPage(ENS_NAME_URL);
-    } catch (e) {
-      // Ignore ERR_PROXY_CONNECTION_FAILED error
-      // since all we care about is getting to the correct URL
+    async function mockMetaMaskDotEth(mockServer) {
+      return await mockServer.forGet(ENS_NAME_URL).thenResetConnection();
     }
+    async function mockEnsDotDomains(mockServer) {
+      return await mockServer
+        .forGet(ENS_DESTINATION_URL)
+        .thenReply(200, 'mocked ENS domain');
+    }
+    async function mockEns(mockServer) {
+      return [
+        await mockMetaMaskDotEth(mockServer),
+        await mockEnsDotDomains(mockServer),
+      ];
+    }
+    // Using proxy port that doesn't resolve so that the browser can error out properly
+    // on the ".eth" hostname. The proxy does too much interference with 8000.
+    await withFixtures(
+      {
+        title: this.test.fullTitle(),
+        testSpecificMock: mockEns,
+        driverOptions: {
+          proxyPort: '8001',
+        },
+      },
+      async ({ driver }) => {
+        await driver.navigate();
 
-    // Ensure that the redirect to ENS Domains has happened
-    await driver.wait(async () => {
-      const currentUrl = await driver.getCurrentUrl();
-      return currentUrl === ENS_DESTINATION_URL;
-    }, tinyDelayMs);
+        // The setting defaults to "on" so we can simply enter an ENS address
+        // into the address bar and listen for address change
+        try {
+          await driver.openNewPage(ENS_NAME_URL);
+        } catch (e) {
+          // Ignore ERR_PROXY_CONNECTION_FAILED error
+          // since all we care about is getting to the correct URL
+        }
 
-    await driver.quit();
+        // Ensure that the redirect to ENS Domains has happened
+        await driver.waitForUrl({ url: ENS_DESTINATION_URL });
+      },
+    );
   });
 
   it('Does not fetch ENS data for ENS Domain when ENS and IPFS switched off', async function () {
@@ -46,9 +69,8 @@ describe('Settings', function () {
         await unlockWallet(driver);
 
         // goes to the settings screen
-        await driver.clickElement(
-          '[data-testid="account-options-menu-button"]',
-        );
+        await openMenuSafe(driver);
+
         await driver.clickElement({ text: 'Settings', tag: 'div' });
         await driver.clickElement({ text: 'Security & privacy', tag: 'div' });
 

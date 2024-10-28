@@ -6,7 +6,6 @@ const {
   DAPP_URL,
   regularDelayMs,
   WINDOW_TITLES,
-  switchToNotificationWindow,
   defaultGanacheOptions,
 } = require('../../helpers');
 const { PAGES } = require('../../webdriver/driver');
@@ -20,15 +19,18 @@ describe('Request Queuing Switch Network on Dapp Send Tx while on different netw
         dapp: true,
         fixtures: new FixtureBuilder()
           .withNetworkControllerDoubleGanache()
+          .withPermissionControllerConnectedToTestDapp()
           .withPreferencesControllerUseRequestQueueEnabled()
           .build(),
         ganacheOptions: {
           ...defaultGanacheOptions,
-          concurrent: {
-            port,
-            chainId,
-            ganacheOptions2: defaultGanacheOptions,
-          },
+          concurrent: [
+            {
+              port,
+              chainId,
+              ganacheOptions2: defaultGanacheOptions,
+            },
+          ],
         },
         title: this.test.fullTitle(),
       },
@@ -37,31 +39,6 @@ describe('Request Queuing Switch Network on Dapp Send Tx while on different netw
 
         // Open dapp
         await openDapp(driver, undefined, DAPP_URL);
-
-        // Connect to dapp
-        await driver.clickElement('#connectButton');
-
-        await driver.delay(regularDelayMs);
-
-        await driver.waitUntilXWindowHandles(3);
-
-        // Connect to Dapp
-        await switchToNotificationWindow(driver);
-
-        await driver.clickElement({
-          text: 'Next',
-          tag: 'button',
-          css: '[data-testid="page-container-footer-next"]',
-        });
-
-        await driver.clickElement({
-          text: 'Connect',
-          tag: 'button',
-          css: '[data-testid="page-container-footer-next"]',
-        });
-
-        // Wait for Connecting notification to close.
-        await driver.waitUntilXWindowHandles(2);
 
         await driver.switchToWindowWithTitle(
           WINDOW_TITLES.ExtensionInFullScreenView,

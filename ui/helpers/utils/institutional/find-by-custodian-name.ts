@@ -11,11 +11,13 @@ type Custodian = {
   websocketApiUrl: string;
   isNoteToTraderSupported: boolean;
   version: number;
+  isManualTokenInputSupported?: boolean;
+  isQRCodeSupported: boolean;
 };
 
 export function findCustodianByEnvName(
   envName: string,
-  custodians: Custodian[],
+  custodians: Custodian[] | undefined,
 ): Custodian | null {
   const formatedEnvName = envName.toLowerCase();
 

@@ -129,13 +129,4 @@ describe('WhatsNewPopup', () => {
     render();
     expect(screen.getByTestId('popover-close')).toBeInTheDocument();
   });
-  it('renders WhatsNewPopup component and shows blockaid messages', () => {
-    render();
-    expect(
-      screen.getByTestId('whats-new-description-item-0'),
-    ).toBeInTheDocument();
-    expect(
-      screen.getByTestId('whats-new-description-item-1'),
-    ).toBeInTheDocument();
-  });
 });

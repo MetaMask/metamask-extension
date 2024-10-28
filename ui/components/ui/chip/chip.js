@@ -2,13 +2,13 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
 import { omit } from 'lodash';
-import Typography from '../typography';
+import { Text } from '../../component-library';
 import UrlIcon from '../url-icon';
 import {
   BackgroundColor,
   BorderColor,
   TextColor,
-  TypographyVariant,
+  TextVariant,
 } from '../../../helpers/constants/design-system';
 
 /**
@@ -66,15 +66,15 @@ export default function Chip({
         <UrlIcon className="chip__left-url-icon" url={leftIconUrl} />
       ) : null}
       {children ?? (
-        <Typography
+        <Text
           className="chip__label"
-          variant={TypographyVariant.H6}
+          variant={TextVariant.bodySm}
           as="span"
           color={TextColor.textAlternative}
           {...labelProps}
         >
           {label}
-        </Typography>
+        </Text>
       )}
       {rightIcon ? <div className="chip__right-icon">{rightIcon}</div> : null}
     </div>
@@ -102,7 +102,7 @@ Chip.propTypes = {
    * The label props of the component. Most Typography props can be used
    */
   labelProps: PropTypes.shape({
-    ...omit(TypographyVariant.propTypes, ['children', 'className']),
+    ...omit(TextVariant.propTypes, ['children', 'className']),
   }),
   /**
    * Children will replace the label of the Chip component.

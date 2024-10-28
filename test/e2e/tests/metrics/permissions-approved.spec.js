@@ -50,7 +50,7 @@ describe('Permissions Approved Event', function () {
         dapp: true,
         fixtures: new FixtureBuilder()
           .withMetaMetricsController({
-            metaMetricsId: 'fake-metrics-id',
+            metaMetricsId: 'fake-metrics-fd20',
             participateInMetaMetrics: true,
           })
           .build(),

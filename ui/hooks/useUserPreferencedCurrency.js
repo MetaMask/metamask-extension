@@ -1,13 +1,15 @@
 import { shallowEqual, useSelector } from 'react-redux';
+import { getPreferences, getSelectedInternalAccount } from '../selectors';
 import {
-  getPreferences,
-  getShouldShowFiat,
-  getCurrentCurrency,
-} from '../selectors';
-import { getNativeCurrency } from '../ducks/metamask/metamask';
+  getMultichainNativeCurrency,
+  getMultichainCurrentCurrency,
+  getMultichainShouldShowFiat,
+} from '../selectors/multichain';
 
-import { PRIMARY, SECONDARY } from '../helpers/constants/common';
+import { PRIMARY } from '../helpers/constants/common';
 import { EtherDenomination } from '../../shared/constants/common';
+import { ETH_DEFAULT_DECIMALS } from '../constants';
+import { useMultichainSelector } from './useMultichainSelector';
 
 /**
  * Defines the shape of the options parameter for useUserPreferencedCurrency
@@ -18,6 +20,8 @@ import { EtherDenomination } from '../../shared/constants/common';
  *                                             when using ETH
  * @property {number} [fiatNumberOfDecimals] - Number of significant decimals to display
  *                                            when using fiat
+ * @property {boolean} [shouldCheckShowNativeToken] - Boolean to know if checking the setting
+ *                                                  show native token as main balance is needed
  */
 
 /**
@@ -32,21 +36,31 @@ import { EtherDenomination } from '../../shared/constants/common';
  * useUserPreferencedCurrency
  *
  * returns an object that contains what currency to use for displaying values based
- * on the user's preference settings, as well as the significant number of decimals
+ * on whether the user needs to check showNativeTokenAsMainBalance setting, as well as the significant number of decimals
  * to display based on the currency
+ *
  *
  * @param {"PRIMARY" | "SECONDARY"} type - what display type is being rendered
  * @param {UseUserPreferencedCurrencyOptions} opts - options to override default values
  * @returns {UserPreferredCurrency}
  */
 export function useUserPreferencedCurrency(type, opts = {}) {
-  const nativeCurrency = useSelector(getNativeCurrency);
-  const { useNativeCurrencyAsPrimaryCurrency } = useSelector(
+  const selectedAccount = useSelector(getSelectedInternalAccount);
+  const account = opts.account ?? selectedAccount;
+  const nativeCurrency = useMultichainSelector(
+    getMultichainNativeCurrency,
+    account,
+  );
+
+  const { showNativeTokenAsMainBalance } = useSelector(
     getPreferences,
     shallowEqual,
   );
-  const showFiat = useSelector(getShouldShowFiat);
-  const currentCurrency = useSelector(getCurrentCurrency);
+  const showFiat = useMultichainSelector(getMultichainShouldShowFiat, account);
+  const currentCurrency = useMultichainSelector(
+    getMultichainCurrentCurrency,
+    account,
+  );
 
   const fiatReturn = {
     currency: currentCurrency,
@@ -55,19 +69,21 @@ export function useUserPreferencedCurrency(type, opts = {}) {
 
   const nativeReturn = {
     currency: nativeCurrency || EtherDenomination.ETH,
-    numberOfDecimals: opts.numberOfDecimals || opts.ethNumberOfDecimals || 8,
+    numberOfDecimals:
+      opts.numberOfDecimals || opts.ethNumberOfDecimals || ETH_DEFAULT_DECIMALS,
   };
 
   if (opts.showNativeOverride) {
     return nativeReturn;
   } else if (opts.showFiatOverride) {
     return fiatReturn;
-  } else if (
-    !showFiat ||
-    (type === PRIMARY && useNativeCurrencyAsPrimaryCurrency) ||
-    (type === SECONDARY && !useNativeCurrencyAsPrimaryCurrency)
-  ) {
+  } else if (!showFiat) {
     return nativeReturn;
+  } else if (
+    (opts.shouldCheckShowNativeToken && showNativeTokenAsMainBalance) ||
+    !opts.shouldCheckShowNativeToken
+  ) {
+    return type === PRIMARY ? nativeReturn : fiatReturn;
   }
-  return fiatReturn;
+  return type === PRIMARY ? fiatReturn : nativeReturn;
 }

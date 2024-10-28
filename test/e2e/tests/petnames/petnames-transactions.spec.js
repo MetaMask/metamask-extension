@@ -22,12 +22,12 @@ async function createDappSendTransaction(driver) {
 async function createWalletSendTransaction(driver, recipientAddress) {
   await openActionMenuAndStartSendFlow(driver);
   await driver.fill(
-    'input[placeholder="Enter public address (0x) or ENS name"]',
+    'input[placeholder="Enter public address (0x) or domain name"]',
     recipientAddress,
   );
 
-  await driver.findClickableElement({ text: 'Next', tag: 'button' });
-  await driver.clickElement({ text: 'Next', tag: 'button' });
+  await driver.findClickableElement({ text: 'Continue', tag: 'button' });
+  await driver.clickElement({ text: 'Continue', tag: 'button' });
 }
 
 const ADDRESS_MOCK = '0x0c54fccd2e384b4bb6f2e405bf5cbc15a017aafb';
@@ -79,10 +79,6 @@ describe('Petnames - Transactions', function () {
   });
 
   it('can save petnames for addresses in wallet send transactions', async function () {
-    // TODO: Update Test when Multichain Send Flow is added.
-    if (process.env.MULTICHAIN) {
-      return;
-    }
     await withFixtures(
       {
         fixtures: new FixtureBuilder()

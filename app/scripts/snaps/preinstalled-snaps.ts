@@ -1,55 +1,21 @@
 import type { PreinstalledSnap } from '@metamask/snaps-controllers';
-
-// Preinstalled snaps requires fs and require to read and use any installed snaps.
-// We can switch `require` to `import`, but then this file gets transpiled to ESM & won't have access to `require.resolve`.
-// Work is needed to create the require object in ESM - specifically the import url. See snippet
-// import { createRequire } from 'node:module'
-// const require = createRequire(import.meta.url)
-//                                ^ The 'import.meta' meta-property is not allowed in files which will build into CommonJS output
-/* eslint-disable-next-line @typescript-eslint/no-require-imports,@typescript-eslint/no-var-requires */
-const fs = require('fs');
-
-const PREINSTALLED_SNAPS: PreinstalledSnap[] = [];
-
-///: BEGIN:ONLY_INCLUDE_IF(snaps)
-PREINSTALLED_SNAPS.push(
-  getPreinstalledSnap(
-    '@metamask/message-signing-snap',
-    fs.readFileSync(
-      require.resolve('@metamask/message-signing-snap/snap.manifest.json'),
-      'utf-8',
-    ),
-    [
-      {
-        path: 'images/icon.svg',
-        value: fs.readFileSync(
-          require.resolve('@metamask/message-signing-snap/images/icon.svg'),
-        ),
-      },
-      {
-        path: 'dist/bundle.js',
-        value: fs.readFileSync(
-          require.resolve('@metamask/message-signing-snap/dist/bundle.js'),
-        ),
-      },
-    ],
-  ),
-);
-
-function getPreinstalledSnap(
-  npmPackage: string,
-  manifest: PreinstalledSnap['manifest'],
-  files: PreinstalledSnap['files'],
-): PreinstalledSnap {
-  return {
-    snapId: `npm:${npmPackage}` as PreinstalledSnap['snapId'],
-    manifest: JSON.parse(manifest),
-    files,
-    removable: false,
-  };
-}
+import MessageSigningSnap from '@metamask/message-signing-snap/dist/preinstalled-snap.json';
+import EnsResolverSnap from '@metamask/ens-resolver-snap/dist/preinstalled-snap.json';
+///: BEGIN:ONLY_INCLUDE_IF(build-flask)
+import AccountWatcherSnap from '@metamask/account-watcher/dist/preinstalled-snap.json';
+import BitcoinWalletSnap from '@metamask/bitcoin-wallet-snap/dist/preinstalled-snap.json';
+import PreinstalledExampleSnap from '@metamask/preinstalled-example-snap/dist/preinstalled-snap.json';
 ///: END:ONLY_INCLUDE_IF
 
-Object.freeze(PREINSTALLED_SNAPS);
+// The casts here are less than ideal but we expect the SnapController to validate the inputs.
+const PREINSTALLED_SNAPS = Object.freeze<PreinstalledSnap[]>([
+  MessageSigningSnap as unknown as PreinstalledSnap,
+  EnsResolverSnap as PreinstalledSnap,
+  ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
+  AccountWatcherSnap as PreinstalledSnap,
+  BitcoinWalletSnap as unknown as PreinstalledSnap,
+  PreinstalledExampleSnap as unknown as PreinstalledSnap,
+  ///: END:ONLY_INCLUDE_IF
+]);
 
 export default PREINSTALLED_SNAPS;

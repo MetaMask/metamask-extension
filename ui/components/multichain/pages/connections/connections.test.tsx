@@ -1,11 +1,12 @@
 import React from 'react';
+import { MemoryRouter, Route } from 'react-router-dom';
+import mockState from '../../../../../test/data/mock-state.json';
 import {
   fireEvent,
   renderWithProvider,
   waitFor,
 } from '../../../../../test/jest';
 import configureStore from '../../../../store/store';
-import mockState from '../../../../../test/data/mock-state.json';
 import { Connections } from './connections';
 
 describe('Connections Content', () => {
@@ -87,25 +88,42 @@ describe('Connections Content', () => {
 
   it('should render correctly', () => {
     const { container, getByTestId } = renderWithProvider(
-      <Connections />,
+      <MemoryRouter
+        initialEntries={['/connect/https%3A%2F%2Fmetamask.github.io']}
+      >
+        <Route path="/connect/:origin">
+          <Connections />
+        </Route>
+      </MemoryRouter>,
       connectedStore,
     );
     expect(container).toMatchSnapshot();
     expect(getByTestId('connections-page')).toBeInTheDocument();
   });
 
-  it('it should render title of the dapp correctly', () => {
-    const { getByText } = renderWithProvider(<Connections />, connectedStore);
-    expect(getByText('metamask.github.io')).toBeInTheDocument();
-  });
-
   it('it should render Disconnect all Account button of the page', () => {
-    const { getByText } = renderWithProvider(<Connections />, connectedStore);
+    const { getByText } = renderWithProvider(
+      <MemoryRouter
+        initialEntries={['/connect/https%3A%2F%2Fmetamask.github.io']}
+      >
+        <Route path="/connect/:origin">
+          <Connections />
+        </Route>
+      </MemoryRouter>,
+      connectedStore,
+    );
     expect(getByText('Disconnect all accounts')).toBeInTheDocument();
   });
+
   it('it should trigger disconnect all accounts modal flow when disconnect all accounts button is clicked', async () => {
     const { getByText, getByTestId } = renderWithProvider(
-      <Connections />,
+      <MemoryRouter
+        initialEntries={['/connect/https%3A%2F%2Fmetamask.github.io']}
+      >
+        <Route path="/connect/:origin">
+          <Connections />
+        </Route>
+      </MemoryRouter>,
       connectedStore,
     );
 

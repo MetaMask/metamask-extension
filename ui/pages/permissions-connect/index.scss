@@ -5,7 +5,6 @@
 @import 'snaps/snap-update/index';
 @import 'snaps/snap-result/index';
 @import 'snaps/snaps-connect/index';
-@import 'redirect/index';
 
 .permissions-connect {
   width: 100%;
@@ -44,5 +43,9 @@
     grid-column: 2;
     justify-self: flex-end;
     font-weight: bold;
+  }
+
+  .connect-page {
+    background-color: var(--color-background-alternative); // main-container adds the width but overrides the boxProps. So, we need extra class to apply css
   }
 }

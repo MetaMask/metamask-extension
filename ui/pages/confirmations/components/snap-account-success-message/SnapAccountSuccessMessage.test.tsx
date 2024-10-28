@@ -5,11 +5,7 @@ import mockState from '../../../../../test/data/mock-send-state.json';
 import { renderWithProvider } from '../../../../../test/jest';
 import SnapAccountSuccessMessage from './SnapAccountSuccessMessage';
 
-const store = configureStore({
-  metamask: {
-    ...mockState.metamask,
-  },
-});
+const store = configureStore(mockState);
 
 // If you're using some kind of global variable (like `global.platform` in your component), you might want to mock it.
 global.platform = {

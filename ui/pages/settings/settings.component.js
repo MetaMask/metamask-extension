@@ -1,11 +1,10 @@
 import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
-import { Switch, Route, matchPath } from 'react-router-dom';
+import { Switch, Route, matchPath, Redirect } from 'react-router-dom';
 import classnames from 'classnames';
 import TabBar from '../../components/app/tab-bar';
 
 import {
-  ALERTS_ROUTE,
   ADVANCED_ROUTE,
   SECURITY_ROUTE,
   GENERAL_ROUTE,
@@ -16,14 +15,15 @@ import {
   CONTACT_ADD_ROUTE,
   CONTACT_EDIT_ROUTE,
   CONTACT_VIEW_ROUTE,
+  DEVELOPER_OPTIONS_ROUTE,
   EXPERIMENTAL_ROUTE,
   ADD_NETWORK_ROUTE,
   ADD_POPULAR_CUSTOM_NETWORK,
   DEFAULT_ROUTE,
+  NOTIFICATIONS_SETTINGS_ROUTE,
 } from '../../helpers/constants/routes';
 
 import { getSettingsRoutes } from '../../helpers/utils/settings-search';
-import AddNetwork from '../../components/app/add-network/add-network';
 import {
   ButtonIcon,
   ButtonIconSize,
@@ -40,15 +40,16 @@ import {
   TextVariant,
 } from '../../helpers/constants/design-system';
 import MetafoxLogo from '../../components/ui/metafox-logo';
+// TODO: Remove restricted import
+// eslint-disable-next-line import/no-restricted-paths
 import { getEnvironmentType } from '../../../app/scripts/lib/util';
 import { ENVIRONMENT_TYPE_POPUP } from '../../../shared/constants/app';
 import SettingsTab from './settings-tab';
-import AlertsTab from './alerts-tab';
-import NetworksTab from './networks-tab';
 import AdvancedTab from './advanced-tab';
 import InfoTab from './info-tab';
 import SecurityTab from './security-tab';
 import ContactListTab from './contact-list-tab';
+import DeveloperOptionsTab from './developer-options-tab';
 import ExperimentalTab from './experimental-tab';
 import SettingsSearch from './settings-search';
 import SettingsSearchList from './settings-search-list';
@@ -68,6 +69,8 @@ class SettingsPage extends PureComponent {
     isPopup: PropTypes.bool,
     mostRecentOverviewPage: PropTypes.string.isRequired,
     pathnameI18nKey: PropTypes.string,
+    toggleNetworkMenu: PropTypes.func.isRequired,
+    useExternalServices: PropTypes.bool,
   };
 
   static contextTypes = {
@@ -289,8 +292,9 @@ class SettingsPage extends PureComponent {
   }
 
   renderTabs() {
-    const { history, currentPath } = this.props;
+    const { history, currentPath, useExternalServices } = this.props;
     const { t } = this.context;
+
     const tabs = [
       {
         content: t('general'),
@@ -313,16 +317,6 @@ class SettingsPage extends PureComponent {
         key: SECURITY_ROUTE,
       },
       {
-        content: t('alerts'),
-        icon: <Icon name={IconName.Notification} />,
-        key: ALERTS_ROUTE,
-      },
-      {
-        content: t('networks'),
-        icon: <Icon name={IconName.Plug} />,
-        key: NETWORKS_ROUTE,
-      },
-      {
         content: t('experimental'),
         icon: <Icon name={IconName.Flask} />,
         key: EXPERIMENTAL_ROUTE,
@@ -333,6 +327,22 @@ class SettingsPage extends PureComponent {
         key: ABOUT_US_ROUTE,
       },
     ];
+
+    if (useExternalServices) {
+      tabs.splice(4, 0, {
+        content: t('notifications'),
+        icon: <Icon name={IconName.Notification} />,
+        key: NOTIFICATIONS_SETTINGS_ROUTE,
+      });
+    }
+
+    if (process.env.ENABLE_SETTINGS_PAGE_DEV_OPTIONS) {
+      tabs.splice(-1, 0, {
+        content: t('developerOptions'),
+        icon: <Icon name={IconName.CodeCircle} />,
+        key: DEVELOPER_OPTIONS_ROUTE,
+      });
+    }
 
     return (
       <TabBar
@@ -349,7 +359,12 @@ class SettingsPage extends PureComponent {
           }
           return matchPath(currentPath, { exact: true, path: key });
         }}
-        onSelect={(key) => history.push(key)}
+        onSelect={(key) =>
+          history.push({
+            pathname: key,
+            state: { fromPage: currentPath },
+          })
+        }
       />
     );
   }
@@ -369,24 +384,39 @@ class SettingsPage extends PureComponent {
         />
         <Route exact path={ABOUT_US_ROUTE} component={InfoTab} />
         <Route exact path={ADVANCED_ROUTE} component={AdvancedTab} />
-        <Route exact path={ALERTS_ROUTE} component={AlertsTab} />
         <Route
           exact
           path={ADD_NETWORK_ROUTE}
-          render={() => <NetworksTab addNewNetwork />}
+          render={() => {
+            this.props.toggleNetworkMenu({ isAddingNewNetwork: true });
+            return <Redirect to={{ pathname: DEFAULT_ROUTE }} />;
+          }}
         />
         <Route
           exact
           path={NETWORKS_ROUTE}
-          render={() => <NetworksTab addNewNetwork={false} />}
+          render={() => {
+            this.props.toggleNetworkMenu();
+            return <Redirect to={{ pathname: DEFAULT_ROUTE }} />;
+          }}
         />
         <Route
           exact
           path={ADD_POPULAR_CUSTOM_NETWORK}
-          render={() => <AddNetwork />}
+          render={() => {
+            this.props.toggleNetworkMenu();
+            return <Redirect to={{ pathname: DEFAULT_ROUTE }} />;
+          }}
         />
         <Route exact path={SECURITY_ROUTE} component={SecurityTab} />
         <Route exact path={EXPERIMENTAL_ROUTE} component={ExperimentalTab} />
+        {process.env.ENABLE_SETTINGS_PAGE_DEV_OPTIONS && (
+          <Route
+            exact
+            path={DEVELOPER_OPTIONS_ROUTE}
+            component={DeveloperOptionsTab}
+          />
+        )}
         <Route exact path={CONTACT_LIST_ROUTE} component={ContactListTab} />
         <Route exact path={CONTACT_ADD_ROUTE} component={ContactListTab} />
         <Route

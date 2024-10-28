@@ -1,0 +1,12 @@
+diff --git a/package.json b/package.json
+index 0f83178c00d4168f35241589d2e77c8a874ed4bd..f0ff8911f5366f9cb05c64e73fe38c4b3e9a74a7 100644
+--- a/package.json
++++ b/package.json
+@@ -4,7 +4,6 @@
+   "description": "A very small TypeScript library that provides tolerable Mixin functionality.",
+   "main": "dist/cjs/index.js",
+   "module": "dist/esm/index.js",
+-  "browser": "dist/esm/index.js",
+   "unpkg": "dist/esm/index.min.js",
+   "types": "dist/types/index.d.ts",
+   "files": [

@@ -4,18 +4,19 @@ import { useSelector } from 'react-redux';
 import { PageContainerFooter } from '../../../../components/ui/page-container';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import SnapInstallWarning from '../../../../components/app/snaps/snap-install-warning';
-import Box from '../../../../components/ui/box/box';
 import {
   AlignItems,
   BackgroundColor,
-  BLOCK_SIZES,
   BorderStyle,
-  FLEX_DIRECTION,
   FontWeight,
   JustifyContent,
   TextVariant,
-  TEXT_ALIGN,
   IconColor,
+  Display,
+  BorderRadius,
+  BlockSize,
+  FlexDirection,
+  TextAlign,
 } from '../../../../helpers/constants/design-system';
 
 import UpdateSnapPermissionList from '../../../../components/app/snaps/update-snap-permission-list';
@@ -25,8 +26,8 @@ import InstallError from '../../../../components/app/snaps/install-error/install
 import SnapAuthorshipHeader from '../../../../components/app/snaps/snap-authorship-header';
 import {
   AvatarIcon,
+  Box,
   IconName,
-  ValidTag,
   Text,
 } from '../../../../components/component-library';
 import { useScrollRequired } from '../../../../hooks/useScrollRequired';
@@ -44,7 +45,9 @@ export default function SnapUpdate({
 
   const [isShowingWarning, setIsShowingWarning] = useState(false);
 
-  const { isScrollable, isScrolledToBottom, scrollToBottom, ref, onScroll } =
+  const [showAllPermissions, setShowAllPermissions] = useState(false);
+
+  const { isScrollable, hasScrolledToBottom, scrollToBottom, ref, onScroll } =
     useScrollRequired([requestState]);
   const snapsMetadata = useSelector(getSnapsMetadata);
 
@@ -65,6 +68,9 @@ export default function SnapUpdate({
   const approvedPermissions = requestState.approvedPermissions ?? {};
   const revokedPermissions = requestState.unusedPermissions ?? {};
   const newPermissions = requestState.newPermissions ?? {};
+  const approvedConnections = requestState.approvedConnections ?? {};
+  const revokedConnections = requestState.unusedConnections ?? {};
+  const newConnections = requestState.newConnections ?? {};
   const { newVersion } = requestState;
 
   const isLoading = requestState.loading;
@@ -89,15 +95,24 @@ export default function SnapUpdate({
     }
   };
 
+  const onShowAllPermissions = () => {
+    setShowAllPermissions(true);
+  };
+
   return (
     <Box
-      className="page-container snap-update"
+      className="snap-update"
+      display={Display.Flex}
       justifyContent={JustifyContent.spaceBetween}
-      height={BLOCK_SIZES.FULL}
+      height={BlockSize.Full}
       borderStyle={BorderStyle.none}
-      flexDirection={FLEX_DIRECTION.COLUMN}
+      flexDirection={FlexDirection.Column}
+      backgroundColor={BackgroundColor.backgroundAlternative}
     >
-      <SnapAuthorshipHeader snapId={targetSubjectMetadata.origin} />
+      <SnapAuthorshipHeader
+        snapId={targetSubjectMetadata.origin}
+        onCancel={onCancel}
+      />
       <Box
         ref={ref}
         onScroll={onScroll}
@@ -106,12 +121,14 @@ export default function SnapUpdate({
           overflowY: 'auto',
           flex: !isLoading && '1',
         }}
+        paddingLeft={4}
+        paddingRight={4}
       >
         {!isLoading && !hasError && (
           <Text
-            paddingBottom={4}
             paddingTop={4}
-            variant={TextVariant.headingLg}
+            paddingBottom={2}
+            variant={TextVariant.headingMd}
             textAlign="center"
           >
             {t('updateRequest')}
@@ -120,7 +137,8 @@ export default function SnapUpdate({
         {isLoading && (
           <Box
             className="snap-update__content__loader-container"
-            flexDirection={FLEX_DIRECTION.COLUMN}
+            display={Display.Flex}
+            flexDirection={FlexDirection.Column}
             alignItems={AlignItems.center}
             justifyContent={JustifyContent.center}
           >
@@ -133,7 +151,7 @@ export default function SnapUpdate({
             error={requestState.error}
             title={t('snapUpdateErrorTitle')}
             description={t('snapUpdateErrorDescription', [
-              <Text as={ValidTag.Span} key="1" fontWeight={FontWeight.Medium}>
+              <Text as="span" key="1" fontWeight={FontWeight.Medium}>
                 {snapName}
               </Text>,
             ])}
@@ -146,11 +164,11 @@ export default function SnapUpdate({
               paddingBottom={4}
               paddingLeft={4}
               paddingRight={4}
-              textAlign={TEXT_ALIGN.CENTER}
+              textAlign={TextAlign.Center}
             >
               {t('snapUpdateRequest', [
                 <Text
-                  as={ValidTag.Span}
+                  as="span"
                   key="2"
                   variant={TextVariant.bodyMd}
                   fontWeight={FontWeight.Medium}
@@ -158,7 +176,7 @@ export default function SnapUpdate({
                   {snapName}
                 </Text>,
                 <Text
-                  as={ValidTag.Span}
+                  as="span"
                   key="3"
                   variant={TextVariant.bodyMd}
                   fontWeight={FontWeight.Medium}
@@ -167,46 +185,59 @@ export default function SnapUpdate({
                 </Text>,
               ])}
             </Text>
-            <Box marginLeft={4} marginRight={4}>
+            <Box
+              display={Display.Flex}
+              backgroundColor={BackgroundColor.backgroundDefault}
+              paddingLeft={4}
+              paddingRight={4}
+              paddingTop={2}
+              paddingBottom={2}
+              borderRadius={BorderRadius.XL}
+            >
               <UpdateSnapPermissionList
                 approvedPermissions={approvedPermissions}
                 revokedPermissions={revokedPermissions}
                 newPermissions={newPermissions}
+                approvedConnections={approvedConnections}
+                revokedConnections={revokedConnections}
+                newConnections={newConnections}
                 targetSubjectMetadata={targetSubjectMetadata}
+                showAllPermissions={onShowAllPermissions}
               />
             </Box>
-            {isScrollable && !isScrolledToBottom ? (
-              <AvatarIcon
-                className="snap-install__scroll-button"
-                data-testid="snap-update-scroll"
-                iconName={IconName.Arrow2Down}
-                backgroundColor={BackgroundColor.infoDefault}
-                color={IconColor.primaryInverse}
-                onClick={scrollToBottom}
-                style={{ cursor: 'pointer' }}
-              />
-            ) : null}
+            <Box className="snap-update__scroll-button-area">
+              {isScrollable && !hasScrolledToBottom && !showAllPermissions ? (
+                <AvatarIcon
+                  className="snap-install__scroll-button"
+                  data-testid="snap-update-scroll"
+                  iconName={IconName.Arrow2Down}
+                  backgroundColor={BackgroundColor.infoDefault}
+                  color={IconColor.primaryInverse}
+                  onClick={scrollToBottom}
+                  style={{ cursor: 'pointer' }}
+                />
+              ) : null}
+            </Box>
           </>
         )}
       </Box>
       <Box
         className="snap-update__footer"
+        display={Display.Flex}
         alignItems={AlignItems.center}
-        flexDirection={FLEX_DIRECTION.COLUMN}
-        style={{
-          boxShadow: 'var(--shadow-size-lg) var(--color-shadow-default)',
-        }}
+        flexDirection={FlexDirection.Column}
+        backgroundColor={BackgroundColor.backgroundAlternative}
       >
         <PageContainerFooter
           cancelButtonType="default"
           hideCancel={hasError}
           disabled={
-            isLoading || (!hasError && isScrollable && !isScrolledToBottom)
+            isLoading || (!hasError && isScrollable && !hasScrolledToBottom)
           }
           onCancel={onCancel}
           cancelText={t('cancel')}
           onSubmit={handleSubmit}
-          submitText={t(hasError ? 'ok' : 'update')}
+          submitText={t(hasError ? 'ok' : 'confirm')}
         />
       </Box>
       {isShowingWarning && (

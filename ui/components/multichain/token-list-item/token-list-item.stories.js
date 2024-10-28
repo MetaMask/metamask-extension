@@ -6,6 +6,7 @@ import {
   CHAIN_IDS,
   CURRENCY_SYMBOLS,
 } from '../../../../shared/constants/network';
+import { mockNetworkState } from '../../../../test/stub/networks';
 import { TokenListItem } from '.';
 
 export default {
@@ -45,9 +46,7 @@ const customNetworkData = {
   ...testData,
   metamask: {
     ...testData.metamask,
-    providerConfig: {
-      chainId: CHAIN_IDS.MAINNET,
-    },
+    ...mockNetworkState({ chainId: CHAIN_IDS.MAINNET }),
   },
 };
 const customNetworkStore = configureStore(customNetworkData);

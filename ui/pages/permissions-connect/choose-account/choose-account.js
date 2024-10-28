@@ -1,11 +1,21 @@
 import PropTypes from 'prop-types';
 import React, { useState } from 'react';
 import { SubjectType } from '@metamask/permission-controller';
+import { isEvmAccountType } from '@metamask/keyring-api';
 import { useI18nContext } from '../../../hooks/useI18nContext';
-import PermissionsConnectHeader from '../../../components/app/permissions-connect-header';
 import PermissionsConnectFooter from '../../../components/app/permissions-connect-footer';
 import AccountList from '../../../components/ui/account-list';
 import { PageContainerFooter } from '../../../components/ui/page-container';
+import {
+  AlignItems,
+  BackgroundColor,
+  BlockSize,
+  Display,
+  FlexDirection,
+  JustifyContent,
+  TextVariant,
+} from '../../../helpers/constants/design-system';
+import { Box, Text } from '../../../components/component-library';
 
 const ChooseAccount = ({
   selectedAccountAddresses,
@@ -21,6 +31,9 @@ const ChooseAccount = ({
   const [selectedAccounts, setSelectedAccounts] = useState(
     selectedAccountAddresses,
   );
+  const evmAccounts = accounts.filter((account) =>
+    isEvmAccountType(account.type),
+  );
   const t = useI18nContext();
 
   const handleAccountClick = (address) => {
@@ -35,7 +48,7 @@ const ChooseAccount = ({
 
   const selectAll = () => {
     const newSelectedAccounts = new Set(
-      accounts.map((account) => account.address),
+      evmAccounts.map((account) => account.address),
     );
     setSelectedAccounts(newSelectedAccounts);
   };
@@ -45,18 +58,21 @@ const ChooseAccount = ({
   };
 
   const allAreSelected = () => {
-    return accounts.length === selectedAccounts.size;
+    return evmAccounts.length === selectedAccounts.size;
   };
+
+  // If lengths are different, this means `accounts` holds some non-EVM accounts
+  const hasNonEvmAccounts =
+    Object.keys(selectedAccountAddresses).length > evmAccounts.length;
 
   const getHeaderText = () => {
     if (accounts.length === 0) {
       return t('connectAccountOrCreate');
     }
-    ///: BEGIN:ONLY_INCLUDE_IF(snaps)
+
     if (targetSubjectMetadata?.subjectType === SubjectType.Snap) {
       return t('selectAccountsForSnap');
     }
-    ///: END:ONLY_INCLUDE_IF
 
     return t('selectAccounts');
   };
@@ -65,15 +81,29 @@ const ChooseAccount = ({
 
   return (
     <>
-      <div className="permissions-connect-choose-account__content">
-        <PermissionsConnectHeader
-          iconUrl={targetSubjectMetadata?.iconUrl}
-          iconName={targetSubjectMetadata?.name}
-          headerTitle={t('connectWithMetaMask')}
-          headerText={headerText}
-          siteOrigin={targetSubjectMetadata?.origin}
-          subjectType={targetSubjectMetadata?.subjectType}
-        />
+      <Box
+        className="permissions-connect-choose-account__content"
+        display={Display.Flex}
+        flexDirection={FlexDirection.Column}
+        backgroundColor={BackgroundColor.backgroundAlternative}
+        width={BlockSize.Full}
+        height={BlockSize.Full}
+        paddingLeft={6}
+        paddingRight={6}
+      >
+        <Box
+          display={Display.Flex}
+          flexDirection={FlexDirection.Column}
+          justifyContent={JustifyContent.center}
+          alignItems={AlignItems.center}
+          paddingTop={4}
+          paddingBottom={4}
+        >
+          <Text variant={TextVariant.headingMd}>
+            {t('connectWithMetaMask')}
+          </Text>
+          <Text variant={TextVariant.bodyMd}>{headerText}</Text>
+        </Box>
         <AccountList
           accounts={accounts}
           selectNewAccountViaModal={selectNewAccountViaModal}
@@ -85,8 +115,12 @@ const ChooseAccount = ({
           selectAll={selectAll}
           handleAccountClick={handleAccountClick}
         />
-      </div>
-      <div className="permissions-connect-choose-account__footer-container">
+      </Box>
+      <Box
+        backgroundColor={BackgroundColor.backgroundAlternative}
+        className="permissions-connect-choose-account__footer"
+        paddingTop={4}
+      >
         {targetSubjectMetadata?.subjectType !== SubjectType.Snap && (
           <PermissionsConnectFooter />
         )}
@@ -96,9 +130,9 @@ const ChooseAccount = ({
           cancelText={t('cancel')}
           onSubmit={() => selectAccounts(selectedAccounts)}
           submitText={t('next')}
-          disabled={selectedAccounts.size === 0}
+          disabled={hasNonEvmAccounts || selectedAccounts.size === 0}
         />
-      </div>
+      </Box>
     </>
   );
 };

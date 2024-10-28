@@ -17,6 +17,7 @@ import {
   ONBOARDING_COMPLETION_ROUTE,
   ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
   MMI_ONBOARDING_COMPLETION_ROUTE,
+  SRP_REMINDER,
   ///: END:ONLY_INCLUDE_IF
   ONBOARDING_IMPORT_WITH_SRP_ROUTE,
   ONBOARDING_PIN_EXTENSION_ROUTE,
@@ -42,7 +43,9 @@ import ExperimentalArea from '../../components/app/flask/experimental-area';
 ///: END:ONLY_INCLUDE_IF
 ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
 import OnboardingSuccessful from '../institutional/onboarding-successful/onboarding-successful';
+import { RemindSRP } from '../institutional/remind-srp/remind-srp';
 ///: END:ONLY_INCLUDE_IF
+import { submitRequestToBackgroundAndCatch } from '../../components/app/toast-master/utils';
 import OnboardingFlowSwitch from './onboarding-flow-switch/onboarding-flow-switch';
 import CreatePassword from './create-password/create-password';
 import ReviewRecoveryPhrase from './recovery-phrase/review-recovery-phrase';
@@ -67,6 +70,10 @@ export default function OnboardingFlow() {
   const nextRoute = useSelector(getFirstTimeFlowTypeRouteAfterUnlock);
   const isFromReminder = new URLSearchParams(search).get('isFromReminder');
   const trackEvent = useContext(MetaMetricsContext);
+
+  useEffect(() => {
+    setOnboardingDate();
+  }, []);
 
   useEffect(() => {
     if (completedOnboarding && !isFromReminder) {
@@ -169,6 +176,12 @@ export default function OnboardingFlow() {
             path={MMI_ONBOARDING_COMPLETION_ROUTE}
             component={OnboardingSuccessful}
           />
+          <Route
+            path={SRP_REMINDER}
+            render={() => (
+              <RemindSRP secretRecoveryPhrase={secretRecoveryPhrase} />
+            )}
+          />
           {
             ///: END:ONLY_INCLUDE_IF
           }
@@ -226,4 +239,8 @@ export default function OnboardingFlow() {
       )}
     </div>
   );
+}
+
+function setOnboardingDate() {
+  submitRequestToBackgroundAndCatch('setOnboardingDate');
 }

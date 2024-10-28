@@ -1,5 +1,5 @@
 import React from 'react';
-import { render, screen } from '@testing-library/react';
+import { screen } from '@testing-library/react';
 import { NameType } from '@metamask/name-controller';
 import { TokenStandard } from '../../../../../shared/constants/transaction';
 import Name from '../../../../components/app/name';
@@ -7,6 +7,8 @@ import { renderWithProvider } from '../../../../../test/lib/render-helpers';
 import configureStore from '../../../../store/store';
 import { CHAIN_IDS } from '../../../../../shared/constants/network';
 import { AvatarNetwork } from '../../../../components/component-library/avatar-network';
+import { mockNetworkState } from '../../../../../test/stub/networks';
+import mockState from '../../../../../test/data/mock-state.json';
 import { AssetPill } from './asset-pill';
 import { NATIVE_ASSET_IDENTIFIER, TokenAssetIdentifier } from './types';
 
@@ -21,7 +23,7 @@ jest.mock('../../../../components/app/name', () => ({
 }));
 
 describe('AssetPill', () => {
-  afterEach(() => {
+  beforeEach(() => {
     jest.clearAllMocks();
   });
 
@@ -37,29 +39,44 @@ describe('AssetPill', () => {
       {
         chainId: CHAIN_IDS.POLYGON,
         expected: {
-          ticker: 'MATIC',
-          imgSrc: './images/matic-token.svg',
+          ticker: 'POL',
+          imgSrc: './images/pol-token.svg',
         },
       },
     ];
 
-    it.each(cases)('renders chain $chainId', ({ chainId, expected }) => {
-      const store = configureStore({
-        metamask: { providerConfig: { chainId, ticker: expected.ticker } },
-      });
+    // @ts-expect-error This is missing from the Mocha type definitions
+    it.each(cases)(
+      'renders chain $chainId',
+      ({
+        chainId,
+        expected,
+      }: {
+        chainId: (typeof CHAIN_IDS)[keyof typeof CHAIN_IDS];
+        expected: { ticker: string; imgSrc: string };
+      }) => {
+        const store = configureStore({
+          metamask: {
+            ...mockNetworkState({ chainId }),
+          },
+        });
 
-      renderWithProvider(<AssetPill asset={NATIVE_ASSET_IDENTIFIER} />, store);
+        renderWithProvider(
+          <AssetPill asset={NATIVE_ASSET_IDENTIFIER} />,
+          store,
+        );
 
-      expect(screen.getByText(expected.ticker)).toBeInTheDocument();
+        expect(screen.getByText(expected.ticker)).toBeInTheDocument();
 
-      expect(AvatarNetwork).toHaveBeenCalledWith(
-        expect.objectContaining({
-          name: expected.ticker,
-          src: expected.imgSrc,
-        }),
-        {},
-      );
-    });
+        expect(AvatarNetwork).toHaveBeenCalledWith(
+          expect.objectContaining({
+            name: expected.ticker,
+            src: expected.imgSrc,
+          }),
+          {},
+        );
+      },
+    );
   });
 
   it('renders Name component with correct props when asset standard is not none', () => {
@@ -68,7 +85,7 @@ describe('AssetPill', () => {
       address: '0x1234567890123456789012345678901234567890',
     };
 
-    render(<AssetPill asset={asset} />);
+    renderWithProvider(<AssetPill asset={asset} />, configureStore(mockState));
 
     expect(Name).toHaveBeenCalledWith(
       expect.objectContaining({

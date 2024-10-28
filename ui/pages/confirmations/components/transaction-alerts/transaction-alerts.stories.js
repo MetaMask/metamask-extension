@@ -2,12 +2,16 @@ import React from 'react';
 import { Provider } from 'react-redux';
 import { keccak } from 'ethereumjs-util';
 import { cloneDeep } from 'lodash';
-import { NetworkType } from '@metamask/controller-utils';
-import { NetworkStatus } from '@metamask/network-controller';
 import { GasFeeContextProvider } from '../../../../contexts/gasFee';
 import configureStore from '../../../../store/store';
 import testData from '../../../../../.storybook/test-data';
+import { getSelectedInternalAccountFromMockState } from '../../../../../test/jest/mocks';
+import { CHAIN_IDS } from '../../../../../shared/constants/network';
+import { mockNetworkState } from '../../../../../test/stub/networks';
 import TransactionAlerts from '.';
+
+const mockSelectedInternalAccount =
+  getSelectedInternalAccountFromMockState(testData);
 
 const customTransaction = ({
   estimateUsed,
@@ -20,7 +24,7 @@ const customTransaction = ({
     userFeeLevel: estimateUsed ? 'low' : 'medium',
     blockNumber: `${10902987 + i}`,
     id: 4678200543090545 + i,
-    chainId: testData?.metamask?.providerConfig?.chainId,
+    chainId: '0x1',
     status: 'confirmed',
     time: 1600654021000,
     txParams: {
@@ -28,7 +32,7 @@ const customTransaction = ({
       gas: '0x5208',
       gasPrice: '0x147d357000',
       nonce: '0xf',
-      to: testData?.metamask?.selectedAddress,
+      to: mockSelectedInternalAccount.address,
       value: '0x63eb89da4ed00000',
       ...props?.txParams,
     },
@@ -59,17 +63,14 @@ const customStore = ({
         networkCongestion: isNetworkBusy ? 1 : 0.1,
       },
       // supportsEIP1559
-      selectedNetworkClientId: NetworkType.mainnet,
-      networksMetadata: {
-        ...testData?.metamask?.networksMetadata,
-        [NetworkType.mainnet]: {
+      ...mockNetworkState({
+        chainId: CHAIN_IDS.MAINNET,
+        metadata: {
           EIPS: {
-            ...testData?.metamask?.networksMetadata?.EIPS,
             1559: Boolean(supportsEIP1559),
           },
-          status: NetworkStatus.Available,
         },
-      },
+      }),
       // pendingTransactions
       featureFlags: {
         ...testData?.metamask?.featureFlags,

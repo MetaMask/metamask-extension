@@ -4,13 +4,13 @@ import { render } from '@testing-library/react';
 import { AssetType } from '../../../../../shared/constants/transaction';
 import mockSendState from '../../../../../test/data/mock-send-state.json';
 import configureStore from '../../../../store/store';
+import { TextColor } from '../../../../helpers/constants/design-system';
 import { AssetBalanceText } from './asset-balance-text';
 
 const store = configureStore({
   ...mockSendState,
   metamask: {
     ...mockSendState.metamask,
-    preferences: { useNativeCurrencyAsPrimaryCurrency: true },
   },
   appState: { ...mockSendState.appState, sendInputCurrencySwitched: false },
 });
@@ -66,9 +66,10 @@ describe('AssetBalanceText', () => {
     };
     const { asFragment } = render(
       <Provider store={store}>
-        {/* Replace `any` with type */}
-        {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
-        <AssetBalanceText asset={asset} balanceColor={'textColor' as any} />
+        <AssetBalanceText
+          asset={asset}
+          balanceColor={'textColor' as TextColor}
+        />
       </Provider>,
     );
     expect(asFragment()).toMatchSnapshot();
@@ -127,5 +128,36 @@ describe('AssetBalanceText', () => {
     );
 
     expect(getByText('test_balance')).toBeInTheDocument();
+  });
+
+  it('renders error correctly', () => {
+    mockUseTokenTracker.mockReturnValue({
+      tokensWithBalances: [{ string: '100', address: '0x01' }],
+    });
+    mockUseCurrencyDisplay.mockReturnValue([
+      'title',
+      { value: 'test_balance' },
+    ]);
+    mockUseTokenFiatAmount.mockReturnValue('$1.00');
+    mockUseIsOriginalTokenSymbol.mockReturnValue(false);
+    mockGetIsFiatPrimary.mockReturnValue(false);
+
+    const asset = {
+      type: AssetType.native,
+      balance: '10000',
+    };
+
+    const { getByText } = render(
+      <Provider store={store}>
+        <AssetBalanceText
+          asset={asset}
+          balanceColor={'textColor' as TextColor}
+          error="errorText"
+        />
+      </Provider>,
+    );
+
+    expect(getByText('test_balance')).toBeInTheDocument();
+    expect(getByText('. [errorText]')).toBeInTheDocument();
   });
 });

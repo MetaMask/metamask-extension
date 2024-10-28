@@ -1,0 +1,57 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Interactive Replacement Token Page should reject if there are errors 1`] = `
+<div>
+  <div
+    class="mm-box page-container"
+    data-testid="interactive-replacement-token"
+  >
+    <div
+      class="mm-box page-container__header false"
+    >
+      <div
+        class="mm-box page-container__title"
+      >
+        Replace custodian token
+         
+        
+      </div>
+      <div
+        class="mm-box page-container__subtitle"
+      >
+        This is will replace the custodian token for the following address:
+      </div>
+    </div>
+    <div
+      class="mm-box page-container__content"
+    >
+      <div
+        class="mm-box interactive-replacement-token-page mm-box--margin-right-7 mm-box--margin-left-7 mm-box--display-flex mm-box--color-text-alternative"
+      >
+        <div
+          class="mm-box mm-box--display-flex mm-box--flex-direction-column mm-box--width-full"
+          data-testid="interactive-replacement-token-page"
+        />
+      </div>
+    </div>
+    <footer
+      class="mm-box page-container__footer mm-box--padding-4"
+    >
+      <div
+        class="pulse-loader"
+        data-testid="pulse-loader"
+      >
+        <div
+          class="pulse-loader__loading-dot-one"
+        />
+        <div
+          class="pulse-loader__loading-dot-two"
+        />
+        <div
+          class="pulse-loader__loading-dot-three"
+        />
+      </div>
+    </footer>
+  </div>
+</div>
+`;

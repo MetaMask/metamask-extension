@@ -11,6 +11,8 @@ import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../../../../shared/constants/metametrics';
+import { CHAIN_IDS } from '../../../../../shared/constants/network';
+import { mockNetworkState } from '../../../../../test/stub/networks';
 import NameDetails from './name-details';
 
 jest.mock('../../../../store/actions', () => ({
@@ -35,12 +37,11 @@ const SOURCE_ID_MOCK = 'ens';
 const SOURCE_ID_2_MOCK = 'some_snap';
 const PROPOSED_NAME_MOCK = 'TestProposedName';
 const PROPOSED_NAME_2_MOCK = 'TestProposedName2';
+const VARIATION_MOCK = CHAIN_ID_MOCK;
 
 const STATE_MOCK = {
   metamask: {
-    providerConfig: {
-      chainId: CHAIN_ID_MOCK,
-    },
+    ...mockNetworkState({ chainId: CHAIN_IDS.MAINNET }),
     nameSources: {
       [SOURCE_ID_2_MOCK]: { label: 'Super Name Resolution Snap' },
     },
@@ -84,13 +85,17 @@ const STATE_MOCK = {
       },
     },
     useTokenDetection: true,
-    tokenList: {
-      '0x0a3bb08b3a15a19b4de82f8acfc862606fb69a2d': {
-        address: '0x0a3bb08b3a15a19b4de82f8acfc862606fb69a2d',
-        symbol: 'IUSD',
-        name: 'iZUMi Bond USD',
-        iconUrl:
-          'https://static.metafi.codefi.network/api/v1/tokenIcons/1/0x0a3bb08b3a15a19b4de82f8acfc862606fb69a2d.png',
+    tokensChainsCache: {
+      [VARIATION_MOCK]: {
+        data: {
+          '0x0a3bb08b3a15a19b4de82f8acfc862606fb69a2d': {
+            address: '0x0a3bb08b3a15a19b4de82f8acfc862606fb69a2d',
+            symbol: 'IUSD',
+            name: 'iZUMi Bond USD',
+            iconUrl:
+              'https://static.cx.metamask.io/api/v1/tokenIcons/1/0x0a3bb08b3a15a19b4de82f8acfc862606fb69a2d.png',
+          },
+        },
       },
     },
   },
@@ -151,11 +156,26 @@ describe('NameDetails', () => {
     useDispatchMock.mockReturnValue(jest.fn());
   });
 
+  it('renders when no address value is passed', () => {
+    const { baseElement } = renderWithProvider(
+      <NameDetails
+        type={NameType.ETHEREUM_ADDRESS}
+        value={''}
+        variation={VARIATION_MOCK}
+        onClose={() => undefined}
+      />,
+      store,
+    );
+
+    expect(baseElement).toMatchSnapshot();
+  });
+
   it('renders with no saved name', () => {
     const { baseElement } = renderWithProvider(
       <NameDetails
         type={NameType.ETHEREUM_ADDRESS}
         value={ADDRESS_NO_NAME_MOCK}
+        variation={VARIATION_MOCK}
         onClose={() => undefined}
       />,
       store,
@@ -169,6 +189,7 @@ describe('NameDetails', () => {
       <NameDetails
         type={NameType.ETHEREUM_ADDRESS}
         value={ADDRESS_SAVED_NAME_MOCK}
+        variation={VARIATION_MOCK}
         onClose={() => undefined}
       />,
       store,
@@ -182,6 +203,7 @@ describe('NameDetails', () => {
       <NameDetails
         type={NameType.ETHEREUM_ADDRESS}
         value={ADDRESS_RECOGNIZED_MOCK}
+        variation={VARIATION_MOCK}
         onClose={() => undefined}
       />,
       store,
@@ -195,6 +217,7 @@ describe('NameDetails', () => {
       <NameDetails
         type={NameType.ETHEREUM_ADDRESS}
         value={ADDRESS_SAVED_NAME_MOCK}
+        variation={VARIATION_MOCK}
         onClose={() => undefined}
       />,
       store,
@@ -215,6 +238,7 @@ describe('NameDetails', () => {
       <NameDetails
         type={NameType.ETHEREUM_ADDRESS}
         value={ADDRESS_NO_NAME_MOCK}
+        variation={VARIATION_MOCK}
         onClose={() => undefined}
       />,
       store,
@@ -237,6 +261,7 @@ describe('NameDetails', () => {
       <NameDetails
         type={NameType.ETHEREUM_ADDRESS}
         value={ADDRESS_NO_NAME_MOCK}
+        variation={VARIATION_MOCK}
         onClose={() => undefined}
       />,
       store,
@@ -259,6 +284,7 @@ describe('NameDetails', () => {
       <NameDetails
         type={NameType.ETHEREUM_ADDRESS}
         value={ADDRESS_SAVED_NAME_MOCK}
+        variation={VARIATION_MOCK}
         onClose={() => undefined}
       />,
       store,
@@ -281,6 +307,7 @@ describe('NameDetails', () => {
       <NameDetails
         type={NameType.ETHEREUM_ADDRESS}
         value={ADDRESS_SAVED_NAME_MOCK}
+        variation={VARIATION_MOCK}
         onClose={() => undefined}
       />,
       store,
@@ -303,6 +330,7 @@ describe('NameDetails', () => {
       <NameDetails
         type={NameType.ETHEREUM_ADDRESS}
         value={ADDRESS_NO_NAME_MOCK}
+        variation={VARIATION_MOCK}
         onClose={() => undefined}
       />,
       store,
@@ -322,6 +350,7 @@ describe('NameDetails', () => {
       <NameDetails
         type={NameType.ETHEREUM_ADDRESS}
         value={ADDRESS_NO_NAME_MOCK}
+        variation={VARIATION_MOCK}
         onClose={() => undefined}
       />,
       store,
@@ -359,6 +388,7 @@ describe('NameDetails', () => {
             <NameDetails
               type={NameType.ETHEREUM_ADDRESS}
               value={ADDRESS_SAVED_NAME_MOCK}
+              variation={VARIATION_MOCK}
               onClose={() => undefined}
             />
           </MetaMetricsContext.Provider>,
@@ -385,6 +415,7 @@ describe('NameDetails', () => {
           <NameDetails
             type={NameType.ETHEREUM_ADDRESS}
             value={ADDRESS_NO_NAME_MOCK}
+            variation={VARIATION_MOCK}
             onClose={() => undefined}
           />
         </MetaMetricsContext.Provider>,
@@ -412,6 +443,7 @@ describe('NameDetails', () => {
           <NameDetails
             type={NameType.ETHEREUM_ADDRESS}
             value={ADDRESS_SAVED_NAME_MOCK}
+            variation={VARIATION_MOCK}
             onClose={() => undefined}
           />
         </MetaMetricsContext.Provider>,
@@ -440,6 +472,7 @@ describe('NameDetails', () => {
           <NameDetails
             type={NameType.ETHEREUM_ADDRESS}
             value={ADDRESS_SAVED_NAME_MOCK}
+            variation={VARIATION_MOCK}
             onClose={() => undefined}
           />
         </MetaMetricsContext.Provider>,

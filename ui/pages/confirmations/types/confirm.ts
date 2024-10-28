@@ -1,5 +1,11 @@
 import { ApprovalControllerState } from '@metamask/approval-controller';
-import { TransactionType } from '@metamask/transaction-controller';
+import { SIWEMessage } from '@metamask/controller-utils';
+import {
+  TransactionMeta,
+  TransactionType,
+} from '@metamask/transaction-controller';
+
+import { SecurityAlertSource } from '../../../../shared/constants/security-provider';
 
 export type TypedSignDataV1Type = {
   name: string;
@@ -8,11 +14,13 @@ export type TypedSignDataV1Type = {
 }[];
 
 export type SecurityAlertResponse = {
+  block?: number;
   reason: string;
   features?: string[];
   result_type: string;
   providerRequestsCount?: Record<string, number>;
   securityAlertId?: string;
+  source?: SecurityAlertSource;
 };
 
 export type SignatureRequestType = {
@@ -23,21 +31,21 @@ export type SignatureRequestType = {
     origin: string;
     data: string | TypedSignDataV1Type;
     version?: string;
+    requestId?: number;
+    signatureMethod?: string;
+    siwe?: SIWEMessage;
   };
   type: TransactionType;
   custodyId?: string;
   securityAlertResponse?: SecurityAlertResponse;
 };
 
-export type Confirmation = SignatureRequestType;
+export type Confirmation = SignatureRequestType | TransactionMeta;
 
 export type ConfirmMetamaskState = {
-  confirm: {
-    currentConfirmation?: Confirmation;
-    isScrollToBottomNeeded?: boolean;
-  };
   metamask: {
     pendingApprovals: ApprovalControllerState['pendingApprovals'];
     approvalFlows: ApprovalControllerState['approvalFlows'];
+    signatureSecurityAlertResponses?: Record<string, SecurityAlertResponse>;
   };
 };

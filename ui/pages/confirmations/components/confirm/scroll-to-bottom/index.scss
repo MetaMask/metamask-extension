@@ -12,11 +12,11 @@
   z-index: 201;
 
   /**
-    override design-system defaults. current bug exists that sets background-color to #00000005,
-    there's a problem that the color may not match the #000000 background-color
+    override design-system defaults.
     */
   &:hover {
-    background-color: var(--color-background-default);
+    background-color: var(--color-primary-default);
+    color: var(--color-primary-inverse);
     opacity: 0.95;
   }
 }

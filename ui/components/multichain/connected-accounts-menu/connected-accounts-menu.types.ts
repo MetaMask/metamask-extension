@@ -1,15 +1,11 @@
+import { InternalAccount } from '@metamask/keyring-api';
+
 export type KeyringMetadata = {
   type: string;
 };
 
-export type Identity = {
-  id: string;
-  address: string;
+export type Identity = InternalAccount & {
   balance: string;
-  metadata: {
-    name: string;
-    keyring: KeyringMetadata;
-  };
   label?: string;
 };
 

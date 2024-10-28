@@ -5,6 +5,7 @@ import { useGasFeeContext } from '../../../../../../contexts/gasFee';
 import { useI18nContext } from '../../../../../../hooks/useI18nContext';
 import { NetworkStabilityTooltip } from '../tooltips';
 
+/* eslint-disable @metamask/design-tokens/color-no-hex */
 const GRADIENT_COLORS = [
   '#037DD6',
   '#1876C8',
@@ -18,6 +19,7 @@ const GRADIENT_COLORS = [
   '#C54055',
   '#D73A49',
 ];
+/* eslint-enable @metamask/design-tokens/color-no-hex */
 
 const determineStatusInfo = (givenNetworkCongestion) => {
   const networkCongestion = givenNetworkCongestion ?? 0.5;

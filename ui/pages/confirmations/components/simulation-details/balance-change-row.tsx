@@ -3,6 +3,7 @@ import {
   AlignItems,
   Display,
   FlexDirection,
+  FlexWrap,
   TextVariant,
 } from '../../../../helpers/constants/design-system';
 import { Box, Text } from '../../../../components/component-library';
@@ -31,14 +32,20 @@ export const BalanceChangeRow: React.FC<{
       display={Display.Flex}
       flexDirection={FlexDirection.Row}
       alignItems={AlignItems.flexStart}
+      gap={1}
+      flexWrap={FlexWrap.Wrap}
     >
-      {label && <Text variant={TextVariant.bodyMd}>{label}</Text>}
+      {label && (
+        <Text style={{ whiteSpace: 'nowrap' }} variant={TextVariant.bodyMd}>
+          {label}
+        </Text>
+      )}
       <Box
         display={Display.Flex}
         flexDirection={FlexDirection.Column}
-        alignItems={AlignItems.flexEnd}
         gap={1}
         marginLeft={'auto'}
+        style={{ minWidth: 0 }}
       >
         <Box display={Display.Flex} flexDirection={FlexDirection.Row} gap={1}>
           <AmountPill asset={asset} amount={amount} />

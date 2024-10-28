@@ -11,6 +11,7 @@ import {
 } from '@metamask/transaction-controller';
 import { NameType } from '@metamask/name-controller';
 import { CHAIN_IDS } from '../../../../../shared/constants/network';
+import { mockNetworkState } from '../../../../../test/stub/networks';
 
 const DUMMY_BALANCE_CHANGE = {
   previousBalance: '0xIGNORED' as Hex,
@@ -28,37 +29,34 @@ const storeMock = configureStore({
     ...mockState.metamask,
     preferences: {
       ...mockState.metamask.preferences,
-      useNativeCurrencyAsPrimaryCurrency: false,
+      showNativeTokenAsMainBalance: false,
     },
-    providerConfig: {
-      ...mockState.metamask.providerConfig,
-      chainId: CHAIN_ID_MOCK,
-    },
+    ...mockNetworkState({ chainId: CHAIN_ID_MOCK }),
     useTokenDetection: true,
     tokenList: {
       [ERC20_TOKEN_1_MOCK]: {
         address: ERC20_TOKEN_1_MOCK,
         symbol: 'WBTC',
         name: 'Wrapped Bitcoin',
-        iconUrl: `https://static.metafi.codefi.network/api/v1/tokenIcons/1/${ERC20_TOKEN_1_MOCK}.png`,
+        iconUrl: `https://static.cx.metamask.io/api/v1/tokenIcons/1/${ERC20_TOKEN_1_MOCK}.png`,
       },
       [ERC20_TOKEN_2_MOCK]: {
         address: ERC20_TOKEN_2_MOCK,
         symbol: 'USDC',
         name: 'USD Coin',
-        iconUrl: `https://static.metafi.codefi.network/api/v1/tokenIcons/1/${ERC20_TOKEN_2_MOCK}.png`,
+        iconUrl: `https://static.cx.metamask.io/api/v1/tokenIcons/1/${ERC20_TOKEN_2_MOCK}.png`,
       },
       [ERC721_TOKEN_MOCK]: {
         address: ERC721_TOKEN_MOCK,
         symbol: 'CK',
         name: 'CryptoKitties',
-        iconUrl: `https://static.metafi.codefi.network/api/v1/tokenIcons/1/${ERC721_TOKEN_MOCK}.png`,
+        iconUrl: `https://static.cx.metamask.io/api/v1/tokenIcons/1/${ERC721_TOKEN_MOCK}.png`,
       },
       [ERC1155_TOKEN_MOCK]: {
         address: ERC1155_TOKEN_MOCK,
         symbol: 'MAYC',
         name: 'Mutant Ape Yacht Club',
-        iconUrl: `https://static.metafi.codefi.network/api/v1/tokenIcons/1/${ERC1155_TOKEN_MOCK}.png `,
+        iconUrl: `https://static.cx.metamask.io/api/v1/tokenIcons/1/${ERC1155_TOKEN_MOCK}.png `,
       },
     },
     names: {
@@ -76,22 +74,14 @@ const storeMock = configureStore({
 const storeMockPolygon = configureStore({
   metamask: {
     ...mockState.metamask,
-    providerConfig: {
-      ...mockState.metamask.providerConfig,
-      chainId: CHAIN_IDS.POLYGON,
-      ticker: 'MATIC',
-    },
+    ...mockNetworkState({ chainId: CHAIN_IDS.POLYGON }),
   },
 });
 
 const storeMockArbitrum = configureStore({
   metamask: {
     ...mockState.metamask,
-    providerConfig: {
-      ...mockState.metamask.providerConfig,
-      chainId: CHAIN_IDS.ARBITRUM,
-      ticker: 'ETH',
-    },
+    ...mockNetworkState({ chainId: CHAIN_IDS.ARBITRUM }),
   },
 });
 
@@ -112,33 +102,38 @@ export const MultipleTokens: Story = {
         difference: '0x12345678912345678',
         isDecrease: true,
       },
-      tokenBalanceChanges: [{
-        ...DUMMY_BALANCE_CHANGE,
-        address: ERC20_TOKEN_1_MOCK,
-        difference: '0x123456',
-        isDecrease: false,
-        standard: SimulationTokenStandard.erc20,
-      }, {
-        ...DUMMY_BALANCE_CHANGE,
-        address: ERC20_TOKEN_2_MOCK,
-        difference: '0x123456901',
-        isDecrease: false,
-        standard: SimulationTokenStandard.erc20,
-      }, {
-        ...DUMMY_BALANCE_CHANGE,
-        address: ERC721_TOKEN_MOCK,
-        difference: '0x1',
-        isDecrease: false,
-        id: '0x721',
-        standard: SimulationTokenStandard.erc721,
-      }, {
-        ...DUMMY_BALANCE_CHANGE,
-        address: ERC1155_TOKEN_MOCK,
-        difference: '0x13',
-        isDecrease: false,
-        id: '0x1155',
-        standard: SimulationTokenStandard.erc1155,
-      }],
+      tokenBalanceChanges: [
+        {
+          ...DUMMY_BALANCE_CHANGE,
+          address: ERC20_TOKEN_1_MOCK,
+          difference: '0x123456',
+          isDecrease: false,
+          standard: SimulationTokenStandard.erc20,
+        },
+        {
+          ...DUMMY_BALANCE_CHANGE,
+          address: ERC20_TOKEN_2_MOCK,
+          difference: '0x123456901',
+          isDecrease: false,
+          standard: SimulationTokenStandard.erc20,
+        },
+        {
+          ...DUMMY_BALANCE_CHANGE,
+          address: ERC721_TOKEN_MOCK,
+          difference: '0x1',
+          isDecrease: false,
+          id: '0x721',
+          standard: SimulationTokenStandard.erc721,
+        },
+        {
+          ...DUMMY_BALANCE_CHANGE,
+          address: ERC1155_TOKEN_MOCK,
+          difference: '0x13',
+          isDecrease: false,
+          id: '0x1155',
+          standard: SimulationTokenStandard.erc1155,
+        },
+      ],
     },
   },
 };
@@ -152,6 +147,34 @@ export const SendSmallAmount: Story = {
         isDecrease: true,
       },
       tokenBalanceChanges: [],
+    },
+  },
+};
+
+export const LongValuesAndNames: Story = {
+  args: {
+    simulationData: {
+      nativeBalanceChange: {
+        ...DUMMY_BALANCE_CHANGE,
+        difference: '0x12345678912345678',
+        isDecrease: true,
+      },
+      tokenBalanceChanges: [
+        {
+          ...DUMMY_BALANCE_CHANGE,
+          address: ERC20_TOKEN_1_MOCK,
+          difference: '0x42345909',
+          isDecrease: false,
+          standard: SimulationTokenStandard.erc20,
+        },
+        {
+          ...DUMMY_BALANCE_CHANGE,
+          address: ERC20_TOKEN_2_MOCK,
+          difference: '0x123456901',
+          isDecrease: false,
+          standard: SimulationTokenStandard.erc20,
+        },
+      ],
     },
   },
 };

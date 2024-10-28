@@ -20,6 +20,9 @@ import {
   getIsBridgeChain,
   getMetaMetricsId,
   getUseTokenDetection,
+  getUseExternalServices,
+  getParticipateInMetaMetrics,
+  getDataCollectionForMarketing,
 } from '../../../selectors';
 import { setFirstTimeUsedNetwork } from '../../../store/actions';
 import {
@@ -43,10 +46,13 @@ export default function NewNetworkInfo() {
   const [showPopup, setShowPopup] = useState(true);
   const [isLoading, setIsLoading] = useState(true);
   const autoDetectToken = useSelector(getUseTokenDetection);
+  const areExternalServicesEnabled = useSelector(getUseExternalServices);
   const providerConfig = useSelector(getProviderConfig);
   const currentNetwork = useSelector(getCurrentNetwork);
   const metaMetricsId = useSelector(getMetaMetricsId);
   const isBridgeChain = useSelector(getIsBridgeChain);
+  const isMetaMetricsEnabled = useSelector(getParticipateInMetaMetrics);
+  const isMarketingEnabled = useSelector(getDataCollectionForMarketing);
 
   const onCloseClick = () => {
     setShowPopup(false);
@@ -56,7 +62,7 @@ export default function NewNetworkInfo() {
   const checkTokenDetection = useCallback(async () => {
     setIsLoading(true);
     const fetchedTokenData = await fetchWithCache({
-      url: `${TOKEN_API_METASWAP_CODEFI_URL}${providerConfig.chainId}`,
+      url: `${TOKEN_API_METASWAP_CODEFI_URL}${providerConfig.chainId}?occurrenceFloor=100&includeNativeAssets=false`,
       functionName: 'getIsTokenDetectionSupported',
     });
     const isTokenDetectionSupported = !fetchedTokenData?.error;
@@ -65,6 +71,9 @@ export default function NewNetworkInfo() {
   }, [providerConfig.chainId]);
 
   useEffect(() => {
+    if (!areExternalServicesEnabled) {
+      return;
+    }
     checkTokenDetection();
     // we want to only fetch once
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -99,11 +108,7 @@ export default function NewNetworkInfo() {
               size={ButtonPrimarySize.Md}
               className="footer__button"
             >
-              <Text
-                variant={TextVariant.bodySm}
-                as="h6"
-                color={TextColor.textDefault}
-              >
+              <Text variant={TextVariant.bodySm} as="h6" color={Color.inherit}>
                 {t('recoveryPhraseReminderConfirm')}
               </Text>
             </Button>
@@ -202,6 +207,8 @@ export default function NewNetworkInfo() {
                             'bridge',
                             'ext_bridge_new_network_info_link',
                             metaMetricsId,
+                            isMetaMetricsEnabled,
+                            isMarketingEnabled,
                           )}&destChain=${currentNetwork?.chainId}`}
                           target="_blank"
                           rel="noreferrer"

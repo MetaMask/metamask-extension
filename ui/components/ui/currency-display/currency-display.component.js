@@ -15,6 +15,7 @@ import {
 // eslint-disable-next-line jsdoc/require-param
 /** @param {PropTypes.InferProps<typeof CurrencyDisplayPropTypes>>} */
 export default function CurrencyDisplay({
+  account,
   value,
   displayValue,
   'data-testid': dataTestId,
@@ -31,9 +32,11 @@ export default function CurrencyDisplay({
   prefixComponentWrapperProps = {},
   textProps = {},
   suffixProps = {},
+  isAggregatedFiatOverviewBalance = false,
   ...props
 }) {
   const [title, parts] = useCurrencyDisplay(value, {
+    account,
     displayValue,
     prefix,
     numberOfDecimals,
@@ -41,6 +44,7 @@ export default function CurrencyDisplay({
     denomination,
     currency,
     suffix,
+    isAggregatedFiatOverviewBalance,
   });
 
   return (
@@ -91,6 +95,7 @@ export default function CurrencyDisplay({
 
 const CurrencyDisplayPropTypes = {
   className: PropTypes.string,
+  account: PropTypes.object,
   currency: PropTypes.string,
   'data-testid': PropTypes.string,
   denomination: PropTypes.oneOf([
@@ -109,6 +114,7 @@ const CurrencyDisplayPropTypes = {
   prefixComponentWrapperProps: PropTypes.object,
   textProps: PropTypes.object,
   suffixProps: PropTypes.object,
+  isAggregatedFiatOverviewBalance: PropTypes.bool,
 };
 
 CurrencyDisplay.propTypes = CurrencyDisplayPropTypes;

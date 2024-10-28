@@ -1,16 +1,20 @@
-import { deepClone } from '@metamask/snaps-utils';
-import { ApprovalType, NetworkType } from '@metamask/controller-utils';
-import { EthAccountType, EthMethod } from '@metamask/keyring-api';
-import { TransactionStatus } from '@metamask/transaction-controller';
-import mockState from '../../test/data/mock-state.json';
-import { KeyringType } from '../../shared/constants/keyring';
+import { ApprovalType } from '@metamask/controller-utils';
 import {
-  CHAIN_IDS,
-  LOCALHOST_DISPLAY_NAME,
-  NETWORK_TYPES,
-  OPTIMISM_DISPLAY_NAME,
-} from '../../shared/constants/network';
-import { SURVEY_DATE, SURVEY_GMT } from '../helpers/constants/survey';
+  BtcAccountType,
+  EthAccountType,
+  EthMethod,
+} from '@metamask/keyring-api';
+import { deepClone } from '@metamask/snaps-utils';
+import { TransactionStatus } from '@metamask/transaction-controller';
+import { ETH_EOA_METHODS } from '../../shared/constants/eth-methods';
+import { KeyringType } from '../../shared/constants/keyring';
+import { DeleteRegulationStatus } from '../../shared/constants/metametrics';
+import { CHAIN_IDS, NETWORK_TYPES } from '../../shared/constants/network';
+import mockState from '../../test/data/mock-state.json';
+import { createMockInternalAccount } from '../../test/jest/mocks';
+import { mockNetworkState } from '../../test/stub/networks';
+import { selectSwitchedNetworkNeverShowMessage } from '../components/app/toast-master/selectors';
+import { getProviderConfig } from '../ducks/metamask/metamask';
 import * as selectors from './selectors';
 
 jest.mock('../../app/scripts/lib/util', () => ({
@@ -35,17 +39,43 @@ const modifyStateWithHWKeyring = (keyring) => {
   return modifiedState;
 };
 
+const mockAccountsState = (accounts) => {
+  const accountsMap = accounts.reduce((map, account) => {
+    map[account.id] = account;
+    return map;
+  }, {});
+
+  return {
+    metamask: {
+      internalAccounts: {
+        accounts: accountsMap,
+      },
+    },
+  };
+};
+
 describe('Selectors', () => {
   describe('#getSelectedAddress', () => {
     it('returns undefined if selectedAddress is undefined', () => {
-      expect(selectors.getSelectedAddress({ metamask: {} })).toBeUndefined();
+      expect(
+        selectors.getSelectedAddress({
+          metamask: { internalAccounts: { accounts: {}, selectedAccount: '' } },
+        }),
+      ).toBeUndefined();
     });
 
     it('returns selectedAddress', () => {
-      const selectedAddress = '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc';
+      const mockInternalAccount = createMockInternalAccount();
+      const internalAccounts = {
+        accounts: {
+          [mockInternalAccount.id]: mockInternalAccount,
+        },
+        selectedAccount: mockInternalAccount.id,
+      };
+
       expect(
-        selectors.getSelectedAddress({ metamask: { selectedAddress } }),
-      ).toStrictEqual(selectedAddress);
+        selectors.getSelectedAddress({ metamask: { internalAccounts } }),
+      ).toStrictEqual(mockInternalAccount.address);
     });
   });
 
@@ -74,7 +104,7 @@ describe('Selectors', () => {
           },
         },
         options: {},
-        methods: [...Object.values(EthMethod)],
+        methods: ETH_EOA_METHODS,
         type: EthAccountType.Eoa,
       };
       expect(
@@ -156,10 +186,10 @@ describe('Selectors', () => {
     });
   });
 
-  describe('#getNeverShowSwitchedNetworkMessage', () => {
+  describe('#selectSwitchedNetworkNeverShowMessage', () => {
     it('returns the correct value', () => {
       expect(
-        selectors.getNeverShowSwitchedNetworkMessage({
+        selectSwitchedNetworkNeverShowMessage({
           metamask: { switchedNetworkNeverShowMessage: true },
         }),
       ).toStrictEqual(true);
@@ -170,7 +200,10 @@ describe('Selectors', () => {
     it('returns no details when switchedNetworkDetails is empty', () => {
       expect(
         selectors.getSwitchedNetworkDetails({
-          metamask: { switchedNetworkDetails: undefined },
+          metamask: {
+            ...mockState.metamask,
+            switchedNetworkDetails: undefined,
+          },
         }),
       ).toStrictEqual(null);
     });
@@ -178,24 +211,37 @@ describe('Selectors', () => {
     it('returns network information when valid switchedNetworkDetails are present', () => {
       const origin = 'portfolio.metamask.io';
 
-      expect(
-        selectors.getSwitchedNetworkDetails({
-          ...mockState,
-          metamask: {
-            ...mockState.metamask,
-            switchedNetworkDetails: {
-              networkClientId:
-                mockState.metamask.networkConfigurations
-                  .testNetworkConfigurationId.id,
-              origin,
+      const state = {
+        ...mockState,
+        metamask: {
+          ...mockState.metamask,
+          selectedNetworkClientId: 'testNetworkConfigurationId',
+
+          networkConfigurationsByChainId: {
+            '0x1': {
+              chainId: '0x1',
+              name: 'Custom Mainnet RPC',
+              nativeCurrency: 'ETH',
+              defaultRpcEndpointIndex: 0,
+              rpcEndpoints: [
+                {
+                  url: 'https://testrpc.com',
+                  networkClientId: 'testNetworkConfigurationId',
+                  type: 'custom',
+                },
+              ],
             },
           },
-        }),
-      ).toStrictEqual({
+          switchedNetworkDetails: {
+            networkClientId: 'testNetworkConfigurationId',
+            origin,
+          },
+        },
+      };
+
+      expect(selectors.getSwitchedNetworkDetails(state)).toStrictEqual({
         imageUrl: './images/eth_logo.svg',
-        nickname:
-          mockState.metamask.networkConfigurations.testNetworkConfigurationId
-            .nickname,
+        nickname: getProviderConfig(state).nickname,
         origin,
       });
     });
@@ -207,21 +253,65 @@ describe('Selectors', () => {
         selectors.getNumberOfAllUnapprovedTransactionsAndMessages({
           metamask: {
             transactions: [],
-            unapprovedMsgs: {},
           },
         }),
       ).toStrictEqual(0);
+    });
+
+    it('returns correct number of unapproved transactions and queued requests', () => {
+      expect(
+        selectors.getNumberOfAllUnapprovedTransactionsAndMessages({
+          metamask: {
+            queuedRequestCount: 5,
+            transactions: [
+              {
+                id: 0,
+                chainId: CHAIN_IDS.MAINNET,
+                time: 0,
+                txParams: {
+                  from: '0xAddress',
+                  to: '0xRecipient',
+                },
+                status: TransactionStatus.unapproved,
+              },
+              {
+                id: 1,
+                chainId: CHAIN_IDS.MAINNET,
+                time: 0,
+                txParams: {
+                  from: '0xAddress',
+                  to: '0xRecipient',
+                },
+                status: TransactionStatus.unapproved,
+              },
+            ],
+            unapprovedPersonalMsgs: {
+              2: {
+                id: 2,
+                msgParams: {
+                  from: '0xAddress',
+                  data: '0xData',
+                  origin: 'origin',
+                },
+                time: 1,
+                status: TransactionStatus.unapproved,
+                type: 'personal_sign',
+              },
+            },
+          },
+        }),
+      ).toStrictEqual(8);
     });
 
     it('returns correct number of unapproved transactions and messages', () => {
       expect(
         selectors.getNumberOfAllUnapprovedTransactionsAndMessages({
           metamask: {
-            providerConfig: {
-              ...mockState.metamask.networkConfigurations
-                .testNetworkConfigurationId,
-              chainId: '0x1',
-              type: 'rpc',
+            networkConfigurationsByChainId: {
+              [CHAIN_IDS.MAINNET]: {
+                chainId: CHAIN_IDS.MAINNET,
+                rpcEndpoints: [{}],
+              },
             },
             transactions: [
               {
@@ -235,7 +325,7 @@ describe('Selectors', () => {
                 status: TransactionStatus.unapproved,
               },
             ],
-            unapprovedMsgs: {
+            unapprovedTypedMessages: {
               1: {
                 id: 1,
                 msgParams: {
@@ -245,7 +335,7 @@ describe('Selectors', () => {
                 },
                 time: 1,
                 status: TransactionStatus.unapproved,
-                type: 'eth_sign',
+                type: 'eth_signTypedData',
               },
             },
           },
@@ -256,7 +346,7 @@ describe('Selectors', () => {
 
   describe('#getNetworkToAutomaticallySwitchTo', () => {
     const SELECTED_ORIGIN = 'https://portfolio.metamask.io';
-    const SELECTED_ORIGIN_NETWORK_ID = 'linea-goerli';
+    const SELECTED_ORIGIN_NETWORK_ID = NETWORK_TYPES.LINEA_SEPOLIA;
     const state = {
       activeTab: {
         origin: SELECTED_ORIGIN,
@@ -265,7 +355,6 @@ describe('Selectors', () => {
         isUnlocked: true,
         useRequestQueue: true,
         selectedTabOrigin: SELECTED_ORIGIN,
-        unapprovedMsgs: [],
         unapprovedDecryptMsgs: [],
         unapprovedPersonalMsgs: [],
         unapprovedEncryptionPublicKeyMsgs: [],
@@ -273,38 +362,97 @@ describe('Selectors', () => {
         domains: {
           [SELECTED_ORIGIN]: SELECTED_ORIGIN_NETWORK_ID,
         },
-        providerConfig: {
-          ...mockState.metamask.networkConfigurations
-            .testNetworkConfigurationId,
-          chainId: '0x1',
-          type: 'rpc',
-          id: 'mainnet',
+        networkConfigurationsByChainId: {
+          [CHAIN_IDS.MAINNET]: {
+            chainId: CHAIN_IDS.MAINNET,
+            defaultRpcEndpointIndex: 0,
+            rpcEndpoints: [
+              {
+                url: 'https://testrpc.com',
+                networkClientId: mockState.metamask.selectedNetworkClientId,
+              },
+            ],
+          },
         },
+        queuedRequestCount: 0,
+        transactions: [],
+        selectedNetworkClientId: mockState.metamask.selectedNetworkClientId,
+        // networkConfigurations:
+        //   mockState.metamask.networkConfigurationsByChainId,
       },
     };
 
     it('should return the network to switch to', () => {
-      process.env.MULTICHAIN = 1;
       const networkToSwitchTo =
         selectors.getNetworkToAutomaticallySwitchTo(state);
       expect(networkToSwitchTo).toBe(SELECTED_ORIGIN_NETWORK_ID);
-      delete process.env.MULTICHAIN;
     });
 
     it('should return no network to switch to because we are already on it', () => {
-      process.env.MULTICHAIN = 1;
       const networkToSwitchTo = selectors.getNetworkToAutomaticallySwitchTo({
         ...state,
         metamask: {
           ...state.metamask,
-          providerConfig: {
-            ...state.metamask.providerConfig,
-            id: 'linea-goerli',
+          selectedNetworkClientId: 'linea-sepolia',
+          networkConfigurationsByChainId: {
+            [CHAIN_IDS.LINEA_SEPOLIA]: {
+              chainId: CHAIN_IDS.LINEA_SEPOLIA,
+              defaultRpcEndpointIndex: 0,
+              rpcEndpoints: [
+                {
+                  url: 'https://testrpc.com',
+                  networkClientId: 'linea-sepolia',
+                  type: 'custom',
+                },
+              ],
+            },
           },
         },
       });
       expect(networkToSwitchTo).toBe(null);
-      delete process.env.MULTICHAIN;
+    });
+
+    it('should return no network to switch to because there are pending transactions', () => {
+      const networkToSwitchTo = selectors.getNetworkToAutomaticallySwitchTo({
+        ...state,
+        metamask: {
+          ...state.metamask,
+          selectedNetworkClientId: NETWORK_TYPES.LINEA_SEPOLIA,
+          networkConfigurationsByChainId: {
+            [CHAIN_IDS.LINEA_SEPOLIA]: {
+              chainId: CHAIN_IDS.LINEA_SEPOLIA,
+              defaultRpcEndpointIndex: 0,
+              rpcEndpoints: [
+                {
+                  url: 'https://testrpc.com',
+                  networkClientId: 'linea-sepolia',
+                  type: 'custom',
+                },
+              ],
+            },
+          },
+          transactions: [
+            {
+              id: 0,
+              chainId: CHAIN_IDS.MAINNET,
+              status: TransactionStatus.approved,
+            },
+          ],
+        },
+      });
+      expect(networkToSwitchTo).toBe(null);
+    });
+
+    it('should return no network to switch to because there are queued requests', () => {
+      const networkToSwitchTo = selectors.getNetworkToAutomaticallySwitchTo({
+        ...state,
+        metamask: {
+          ...state.metamask,
+          ...mockNetworkState({ chainId: CHAIN_IDS.SEPOLIA }),
+          queuedRequestCount: 1,
+        },
+      });
+      expect(networkToSwitchTo).toBe(null);
     });
   });
 
@@ -500,21 +648,30 @@ describe('Selectors', () => {
     });
   });
 
-  describe('#getRpcPrefsForCurrentProvider', () => {
-    it('returns an empty object if state.metamask.providerConfig is empty', () => {
-      expect(
-        selectors.getRpcPrefsForCurrentProvider({
-          metamask: { providerConfig: {} },
-        }),
-      ).toStrictEqual({});
+  describe('#getEditedNetwork', () => {
+    it('returns undefined if getEditedNetwork is undefined', () => {
+      expect(selectors.getNewNetworkAdded({ appState: {} })).toBeUndefined();
     });
+
+    it('returns getEditedNetwork', () => {
+      expect(
+        selectors.getEditedNetwork({
+          appState: { editedNetwork: 'test-chain' },
+        }),
+      ).toStrictEqual('test-chain');
+    });
+  });
+
+  // todo
+  describe('#getRpcPrefsForCurrentProvider', () => {
     it('returns rpcPrefs from the providerConfig', () => {
       expect(
         selectors.getRpcPrefsForCurrentProvider({
           metamask: {
-            providerConfig: {
-              rpcPrefs: { blockExplorerUrl: 'https://test-block-explorer' },
-            },
+            ...mockNetworkState({
+              chainId: '0x1',
+              blockExplorerUrl: 'https://test-block-explorer',
+            }),
           },
         }),
       ).toStrictEqual({ blockExplorerUrl: 'https://test-block-explorer' });
@@ -541,122 +698,128 @@ describe('Selectors', () => {
     });
   });
 
-  describe('#getNetworkConfigurations', () => {
-    it('returns undefined if state.metamask.networkConfigurations is undefined', () => {
-      expect(
-        selectors.getNetworkConfigurations({
-          metamask: {},
-        }),
-      ).toBeUndefined();
-    });
-
-    it('returns networkConfigurations', () => {
-      const networkConfigurations = {
-        testNetworkConfigurationId1: {
-          rpcUrl: 'https://mock-rpc-url-1',
+  describe('#getNetworkConfigurationsByChainId', () => {
+    it('returns networkConfigurationsByChainId', () => {
+      const networkConfigurationsByChainId = {
+        '0xtest': {
           chainId: '0xtest',
-          ticker: 'TEST',
-          id: 'testNetworkConfigurationId1',
+          nativeCurrency: 'TEST',
+          defaultRpcEndpointUrl: 'https://mock-rpc-url-1',
+          defaultRpcEndpointIndex: 0,
+          rpcEndpoints: [
+            {
+              networkClientId: 'testNetworkConfigurationId1',
+              url: 'https://mock-rpc-url-1',
+            },
+          ],
         },
-        testNetworkConfigurationId2: {
-          rpcUrl: 'https://mock-rpc-url-2',
+        '0x1337': {
           chainId: '0x1337',
-          ticker: 'RPC',
-          id: 'testNetworkConfigurationId2',
+          nativeCurrency: 'RPC',
+          defaultRpcEndpointUrl: 'https://mock-rpc-url-2',
+          defaultRpcEndpointIndex: 0,
+          rpcEndpoints: [
+            {
+              networkClientId: 'testNetworkConfigurationId2',
+              url: 'https://mock-rpc-url-2',
+            },
+          ],
         },
       };
+
       expect(
-        selectors.getNetworkConfigurations({
+        selectors.getNetworkConfigurationsByChainId({
           metamask: {
-            networkConfigurations,
+            networkConfigurationsByChainId,
           },
         }),
-      ).toStrictEqual(networkConfigurations);
-    });
-  });
-
-  describe('#getAllNetworks', () => {
-    it('sorts Localhost to the bottom of the test lists', () => {
-      const networks = selectors.getAllNetworks({
-        metamask: {
-          preferences: {
-            showTestNetworks: true,
-          },
-          networkConfigurations: {
-            'some-config-name': {
-              chainId: CHAIN_IDS.LOCALHOST,
-              nickname: LOCALHOST_DISPLAY_NAME,
-            },
-          },
-        },
-      });
-      const lastItem = networks.pop();
-      expect(lastItem.nickname.toLowerCase()).toContain('localhost');
-    });
-
-    it('properly assigns a network as removable', () => {
-      const networks = selectors.getAllNetworks({
-        metamask: {
-          preferences: {
-            showTestNetworks: true,
-          },
-          networkConfigurations: {
-            'some-config-name': {
-              chainId: CHAIN_IDS.LOCALHOST,
-              nickname: LOCALHOST_DISPLAY_NAME,
-              id: 'some-config-name',
-            },
-          },
-        },
-      });
-
-      const mainnet = networks.find(
-        (network) => network.id === NETWORK_TYPES.MAINNET,
-      );
-      expect(mainnet.removable).toBe(false);
-
-      const customNetwork = networks.find(
-        (network) => network.id === 'some-config-name',
-      );
-      expect(customNetwork.removable).toBe(true);
-    });
-
-    it('properly proposes a known network image when not provided by adding function', () => {
-      const networks = selectors.getAllNetworks({
-        metamask: {
-          preferences: {
-            showTestNetworks: true,
-          },
-          networkConfigurations: {
-            'some-config-name': {
-              chainId: CHAIN_IDS.OPTIMISM,
-              nickname: OPTIMISM_DISPLAY_NAME,
-              id: 'some-config-name',
-            },
-          },
-        },
-      });
-
-      const optimismConfig = networks.find(
-        ({ chainId }) => chainId === CHAIN_IDS.OPTIMISM,
-      );
-      expect(optimismConfig.rpcPrefs.imageUrl).toBe('./images/optimism.svg');
+      ).toStrictEqual(networkConfigurationsByChainId);
     });
   });
 
   describe('#getCurrentNetwork', () => {
+    it('returns built-in network configuration', () => {
+      const modifiedMockState = {
+        ...mockState,
+        metamask: {
+          ...mockState.metamask,
+          selectedNetworkClientId: NETWORK_TYPES.SEPOLIA,
+          blockExplorerUrls: [],
+          ...mockNetworkState({ chainId: CHAIN_IDS.SEPOLIA, id: 'sepolia' }),
+        },
+      };
+      const currentNetwork = selectors.getCurrentNetwork(modifiedMockState);
+
+      expect(currentNetwork).toMatchInlineSnapshot(`
+        {
+          "blockExplorerUrl": "https://localhost/blockExplorer/0xaa36a7",
+          "chainId": "0xaa36a7",
+          "id": "sepolia",
+          "nickname": "Sepolia",
+          "rpcPrefs": {
+            "blockExplorerUrl": "https://localhost/blockExplorer/0xaa36a7",
+            "imageUrl": undefined,
+          },
+          "rpcUrl": "https://localhost/rpc/0xaa36a7",
+          "ticker": "SepoliaETH",
+        }
+      `);
+    });
+
+    it('returns custom network configuration', () => {
+      const mockNetworkConfigurationId = 'mock-network-config-id';
+      const modifiedMockState = {
+        ...mockState,
+        metamask: {
+          ...mockState.metamask,
+          ...mockNetworkState({
+            rpcUrl: 'https://mock-rpc-endpoint.test',
+            chainId: '0x9999',
+            ticker: 'TST',
+            id: mockNetworkConfigurationId,
+            blockExplorerUrl: undefined,
+          }),
+        },
+      };
+
+      const currentNetwork = selectors.getCurrentNetwork(modifiedMockState);
+
+      expect(currentNetwork).toMatchInlineSnapshot(`
+        {
+          "blockExplorerUrl": undefined,
+          "chainId": "0x9999",
+          "id": "mock-network-config-id",
+          "nickname": undefined,
+          "rpcPrefs": {
+            "blockExplorerUrl": undefined,
+            "imageUrl": undefined,
+          },
+          "rpcUrl": "https://mock-rpc-endpoint.test",
+          "ticker": "TST",
+        }
+      `);
+    });
+
     it('returns the correct custom network when there is a chainId collision', () => {
       const modifiedMockState = {
         ...mockState,
         metamask: {
           ...mockState.metamask,
-          providerConfig: {
-            ...mockState.metamask.networkConfigurations
-              .testNetworkConfigurationId,
-            // 0x1 would collide with Ethereum Mainnet
-            chainId: '0x1',
-            // type of "rpc" signals custom network
-            type: 'rpc',
+          selectedNetworkClientId: 'testNetworkConfigurationId',
+          networkConfigurationsByChainId: {
+            '0x1': {
+              chainId: '0x1',
+              name: 'Custom Mainnet RPC',
+              nativeCurrency: 'ETH',
+              defaultRpcEndpointIndex: 0,
+              rpcEndpoints: [
+                {
+                  url: 'https://testrpc.com',
+                  networkClientId: 'testNetworkConfigurationId',
+                  type: 'custom',
+                },
+              ],
+            },
           },
         },
       };
@@ -671,12 +834,7 @@ describe('Selectors', () => {
         ...mockState,
         metamask: {
           ...mockState.metamask,
-          providerConfig: {
-            ...mockState.metamask.providerConfig,
-            chainId: '0x1',
-            // Changing type to 'mainnet' represents Ethereum Mainnet
-            type: 'mainnet',
-          },
+          ...mockNetworkState({ chainId: CHAIN_IDS.MAINNET }),
         },
       };
       const currentNetwork = selectors.getCurrentNetwork(modifiedMockState);
@@ -684,50 +842,38 @@ describe('Selectors', () => {
     });
   });
 
-  describe('#getIsNetworkSupportedByBlockaid', () => {
-    it('returns true if current network is Linea', () => {
-      const modifiedMockState = {
-        ...mockState,
-        metamask: {
-          ...mockState.metamask,
-          providerConfig: {
-            ...mockState.metamask.providerConfig,
-            chainId: CHAIN_IDS.LINEA_MAINNET,
-          },
-        },
-      };
-      const isSupported =
-        selectors.getIsNetworkSupportedByBlockaid(modifiedMockState);
-      expect(isSupported).toBe(true);
-    });
-
-    it('returns false if current network is Goerli', () => {
-      const modifiedMockState = {
-        ...mockState,
-        metamask: {
-          ...mockState.metamask,
-          providerConfig: {
-            ...mockState.metamask.providerConfig,
-            chainId: CHAIN_IDS.GOERLI,
-          },
-        },
-      };
-      const isSupported =
-        selectors.getIsNetworkSupportedByBlockaid(modifiedMockState);
-      expect(isSupported).toBe(false);
-    });
-  });
-
   describe('#getAllEnabledNetworks', () => {
+    const networkConfigurationsByChainId = {
+      [CHAIN_IDS.MAINNET]: {
+        chainId: CHAIN_IDS.MAINNET,
+        defaultRpcEndpointIndex: 0,
+        rpcEndpoints: [{ networkClientId: 'mainnet' }],
+      },
+      [CHAIN_IDS.LINEA_MAINNET]: {
+        chainId: CHAIN_IDS.LINEA_MAINNET,
+        defaultRpcEndpointIndex: 0,
+        rpcEndpoints: [{ networkClientId: 'linea-mainnet' }],
+      },
+      [CHAIN_IDS.SEPOLIA]: {
+        chainId: CHAIN_IDS.SEPOLIA,
+        defaultRpcEndpointIndex: 0,
+        rpcEndpoints: [{ networkClientId: 'sepolia' }],
+      },
+      [CHAIN_IDS.LINEA_SEPOLIA]: {
+        chainId: CHAIN_IDS.LINEA_SEPOLIA,
+        defaultRpcEndpointIndex: 0,
+        rpcEndpoints: [{ networkClientId: 'linea-sepolia' }],
+      },
+    };
+
     it('returns only Mainnet and Linea with showTestNetworks off', () => {
       const networks = selectors.getAllEnabledNetworks({
         metamask: {
-          preferences: {
-            showTestNetworks: false,
-          },
+          preferences: { showTestNetworks: false },
+          networkConfigurationsByChainId,
         },
       });
-      expect(networks).toHaveLength(2);
+      expect(Object.values(networks)).toHaveLength(2);
     });
 
     it('returns networks with showTestNetworks on', () => {
@@ -736,9 +882,11 @@ describe('Selectors', () => {
           preferences: {
             showTestNetworks: true,
           },
+          networkConfigurationsByChainId,
         },
       });
-      expect(networks.length).toBeGreaterThan(2);
+
+      expect(Object.values(networks).length).toBeGreaterThan(2);
     });
   });
 
@@ -758,6 +906,46 @@ describe('Selectors', () => {
     it('returns true if it is a Trezor HW wallet', () => {
       const mockStateWithTrezor = modifyStateWithHWKeyring(KeyringType.trezor);
       expect(selectors.isHardwareWallet(mockStateWithTrezor)).toBe(true);
+    });
+
+    it('returns true if it is a Lattice HW wallet', () => {
+      const mockStateWithLattice = modifyStateWithHWKeyring(
+        KeyringType.lattice,
+      );
+      expect(selectors.isHardwareWallet(mockStateWithLattice)).toBe(true);
+    });
+
+    it('returns true if it is a QR HW wallet', () => {
+      const mockStateWithQr = modifyStateWithHWKeyring(KeyringType.qr);
+      expect(selectors.isHardwareWallet(mockStateWithQr)).toBe(true);
+    });
+  });
+
+  describe('#accountSupportsSmartTx', () => {
+    it('returns false if the account type is "snap"', () => {
+      const state = {
+        metamask: {
+          internalAccounts: {
+            accounts: {
+              'mock-id-1': {
+                address: '0x987654321',
+                metadata: {
+                  name: 'Account 1',
+                  keyring: {
+                    type: 'Snap Keyring',
+                  },
+                },
+              },
+            },
+            selectedAccount: 'mock-id-1',
+          },
+        },
+      };
+      expect(selectors.accountSupportsSmartTx(state)).toBe(false);
+    });
+
+    it('returns true if the account type is not "snap"', () => {
+      expect(selectors.accountSupportsSmartTx(mockState)).toBe(true);
     });
   });
 
@@ -786,10 +974,25 @@ describe('Selectors', () => {
     });
   });
 
-  it('returns selected identity', () => {
-    expect(selectors.getSelectedIdentity(mockState)).toStrictEqual({
+  it('returns selected internalAccount', () => {
+    expect(selectors.getSelectedInternalAccount(mockState)).toStrictEqual({
       address: '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc',
-      name: 'Test Account',
+      id: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
+      metadata: {
+        name: 'Test Account',
+        keyring: {
+          type: 'HD Key Tree',
+        },
+      },
+      options: {},
+      methods: [
+        'personal_sign',
+        'eth_signTransaction',
+        'eth_signTypedData_v1',
+        'eth_signTypedData_v3',
+        'eth_signTypedData_v4',
+      ],
+      type: 'eip155:eoa',
     });
   });
 
@@ -819,6 +1022,10 @@ describe('Selectors', () => {
         ...mockState,
         metamask: {
           ...mockState.metamask,
+          ...mockNetworkState({
+            chainId: CHAIN_IDS.GOERLI,
+            metadata: { EIPS: { 1559: true } },
+          }),
           keyrings: [
             {
               type: KeyringType.ledger,
@@ -831,27 +1038,14 @@ describe('Selectors', () => {
     });
 
     it('returns true if network does not support EIP-1559', () => {
-      let not1559Network = selectors.checkNetworkOrAccountNotSupports1559({
+      const not1559Network = selectors.checkNetworkOrAccountNotSupports1559({
         ...mockState,
         metamask: {
           ...mockState.metamask,
-          networksMetadata: {
-            [NetworkType.goerli]: {
-              EIPS: { 1559: false },
-            },
-          },
-        },
-      });
-      expect(not1559Network).toStrictEqual(true);
-      not1559Network = selectors.checkNetworkOrAccountNotSupports1559({
-        ...mockState,
-        metamask: {
-          ...mockState.metamask,
-          networksMetadata: {
-            [NetworkType.goerli]: {
-              EIPS: { 1559: false },
-            },
-          },
+          ...mockNetworkState({
+            chainId: CHAIN_IDS.GOERLI,
+            metadata: { EIPS: { 1559: false } },
+          }),
         },
       });
       expect(not1559Network).toStrictEqual(true);
@@ -990,6 +1184,11 @@ describe('Selectors', () => {
       mockState.metamask.notifications.test2,
     ]);
   });
+  it('#getReadNotificationsCount', () => {
+    const readNotificationsCount =
+      selectors.getReadNotificationsCount(mockState);
+    expect(readNotificationsCount).toStrictEqual(1);
+  });
   it('#getUnreadNotificationsCount', () => {
     const unreadNotificationCount =
       selectors.getUnreadNotificationsCount(mockState);
@@ -1036,11 +1235,6 @@ describe('Selectors', () => {
     expect(totalUnapprovedSignatureRequestCount).toStrictEqual(0);
   });
 
-  it('#getIsDesktopEnabled', () => {
-    const isDesktopEnabled = selectors.getIsDesktopEnabled(mockState);
-    expect(isDesktopEnabled).toBeFalsy();
-  });
-
   describe('#getPetnamesEnabled', () => {
     function createMockStateWithPetnamesEnabled(petnamesEnabled) {
       return { metamask: { preferences: { petnamesEnabled } } };
@@ -1077,12 +1271,18 @@ describe('Selectors', () => {
   });
 
   it('#getIsBridgeChain', () => {
-    mockState.metamask.providerConfig.chainId = '0xa';
-    const isOptimismSupported = selectors.getIsBridgeChain(mockState);
+    const isOptimismSupported = selectors.getIsBridgeChain({
+      metamask: {
+        ...mockNetworkState({ chainId: CHAIN_IDS.OPTIMISM }),
+      },
+    });
     expect(isOptimismSupported).toBeTruthy();
 
-    mockState.metamask.providerConfig.chainId = '0xfa';
-    const isFantomSupported = selectors.getIsBridgeChain(mockState);
+    const isFantomSupported = selectors.getIsBridgeChain({
+      metamask: {
+        ...mockNetworkState({ chainId: CHAIN_IDS.FANTOM }),
+      },
+    });
     expect(isFantomSupported).toBeFalsy();
   });
 
@@ -1108,12 +1308,10 @@ describe('Selectors', () => {
       ...mockState,
       metamask: {
         ...mockState.metamask,
-        networksMetadata: {
-          ...mockState.metamask.networksMetadata,
-          goerli: {
-            status: 'blocked',
-          },
-        },
+        ...mockNetworkState({
+          chainId: CHAIN_IDS.GOERLI,
+          metadata: { status: 'blocked' },
+        }),
       },
     };
     isInfuraBlocked = selectors.getInfuraBlocked(modifiedMockState);
@@ -1168,55 +1366,42 @@ describe('Selectors', () => {
     expect(selectors.getAnySnapUpdateAvailable(mockState)).toStrictEqual(true);
   });
 
-  describe('#getShowSurveyToast', () => {
-    const realDateNow = Date.now;
-
-    afterEach(() => {
-      Date.now = realDateNow;
+  it('#getTargetSubjectMetadata', () => {
+    const targetSubjectsMetadata = selectors.getTargetSubjectMetadata(
+      mockState,
+      'npm:@metamask/test-snap-bip44',
+    );
+    expect(targetSubjectsMetadata).toStrictEqual({
+      iconUrl: null,
+      name: '@metamask/test-snap-bip44',
+      subjectType: 'snap',
+      version: '1.2.3',
     });
+  });
 
-    it('shows the survey link when not yet seen and within time bounds', () => {
-      Date.now = () =>
-        new Date(`${SURVEY_DATE} 12:25:00 ${SURVEY_GMT}`).getTime();
-      const result = selectors.getShowSurveyToast({
-        metamask: {
-          surveyLinkLastClickedOrClosed: null,
-        },
-      });
-      expect(result).toStrictEqual(true);
-    });
-
-    it('does not show the survey link when seen and within time bounds', () => {
-      Date.now = () =>
-        new Date(`${SURVEY_DATE} 12:25:00 ${SURVEY_GMT}`).getTime();
-      const result = selectors.getShowSurveyToast({
-        metamask: {
-          surveyLinkLastClickedOrClosed: 123456789,
-        },
-      });
-      expect(result).toStrictEqual(false);
-    });
-
-    it('does not show the survey link before time bounds', () => {
-      Date.now = () =>
-        new Date(`${SURVEY_DATE} 11:25:00 ${SURVEY_GMT}`).getTime();
-      const result = selectors.getShowSurveyToast({
-        metamask: {
-          surveyLinkLastClickedOrClosed: null,
-        },
-      });
-      expect(result).toStrictEqual(false);
-    });
-
-    it('does not show the survey link after time bounds', () => {
-      Date.now = () =>
-        new Date(`${SURVEY_DATE} 14:25:00 ${SURVEY_GMT}`).getTime();
-      const result = selectors.getShowSurveyToast({
-        metamask: {
-          surveyLinkLastClickedOrClosed: null,
-        },
-      });
-      expect(result).toStrictEqual(false);
+  it('#getMultipleTargetsSubjectMetadata', () => {
+    const targetSubjectsMetadata = selectors.getMultipleTargetsSubjectMetadata(
+      mockState,
+      {
+        'npm:@metamask/test-snap-bip44': {},
+        'https://snaps.metamask.io': {},
+      },
+    );
+    expect(targetSubjectsMetadata).toStrictEqual({
+      'https://snaps.metamask.io': {
+        extensionId: null,
+        iconUrl:
+          'https://snaps.metamask.io/favicon-32x32.png?v=96e4834dade94988977ec34e50a62b84',
+        name: 'MetaMask Snaps Directory',
+        origin: 'https://snaps.metamask.io',
+        subjectType: 'website',
+      },
+      'npm:@metamask/test-snap-bip44': {
+        iconUrl: null,
+        name: '@metamask/test-snap-bip44',
+        subjectType: 'snap',
+        version: '1.2.3',
+      },
     });
   });
 
@@ -1298,7 +1483,6 @@ describe('Selectors', () => {
         options: {},
         methods: [
           'personal_sign',
-          'eth_sign',
           'eth_signTransaction',
           'eth_signTypedData_v1',
           'eth_signTypedData_v3',
@@ -1323,7 +1507,6 @@ describe('Selectors', () => {
         options: {},
         methods: [
           'personal_sign',
-          'eth_sign',
           'eth_signTransaction',
           'eth_signTypedData_v1',
           'eth_signTypedData_v3',
@@ -1347,7 +1530,6 @@ describe('Selectors', () => {
         options: {},
         methods: [
           'personal_sign',
-          'eth_sign',
           'eth_signTransaction',
           'eth_signTypedData_v1',
           'eth_signTypedData_v3',
@@ -1373,7 +1555,6 @@ describe('Selectors', () => {
         options: {},
         methods: [
           'personal_sign',
-          'eth_sign',
           'eth_signTransaction',
           'eth_signTypedData_v1',
           'eth_signTypedData_v3',
@@ -1401,7 +1582,6 @@ describe('Selectors', () => {
         },
         methods: [
           'personal_sign',
-          'eth_sign',
           'eth_signTransaction',
           'eth_signTypedData_v1',
           'eth_signTypedData_v3',
@@ -1424,7 +1604,6 @@ describe('Selectors', () => {
         options: {},
         methods: [
           'personal_sign',
-          'eth_sign',
           'eth_signTransaction',
           'eth_signTypedData_v1',
           'eth_signTypedData_v3',
@@ -1554,29 +1733,35 @@ describe('#getConnectedSitesListWithNetworkInfo', () => {
     const networks = [
       {
         id: 'network1',
-        rpcPrefs: {
-          imageUrl: 'network1-icon.png',
-        },
-        nickname: 'Network 1',
+        chainId: '0x1',
+        name: 'Network 1',
+        rpcEndpoints: [
+          {
+            networkClientId: 'network1',
+          },
+        ],
       },
       {
         id: 'network2',
-        rpcPrefs: {
-          imageUrl: 'network2-icon.png',
-        },
-        nickname: 'Network 2',
+        chainId: '0x38',
+        name: 'Network 2',
+        rpcEndpoints: [
+          {
+            networkClientId: 'network2',
+          },
+        ],
       },
     ];
 
     const expectedSitesList = {
       site1: {
         id: 'site1',
-        networkIconUrl: 'network1-icon.png',
+        networkIconUrl: './images/eth_logo.svg',
         networkName: 'Network 1',
       },
       site2: {
         id: 'site2',
-        networkIconUrl: 'network2-icon.png',
+        networkIconUrl: './images/bnb.svg',
         networkName: 'Network 2',
       },
     };
@@ -1593,12 +1778,12 @@ describe('#getConnectedSitesListWithNetworkInfo', () => {
 describe('#getConnectedSitesList', () => {
   it('returns an empty object if there are no connected addresses', () => {
     const connectedSubjectsForAllAddresses = {};
-    const identities = {};
+    const internalAccounts = [];
     const connectedAddresses = [];
 
     const result = selectors.getConnectedSitesList.resultFunc(
       connectedSubjectsForAllAddresses,
-      identities,
+      internalAccounts,
       connectedAddresses,
     );
 
@@ -1616,15 +1801,23 @@ describe('#getConnectedSitesList', () => {
         { origin: 'site3', name: 'Site 3' },
       ],
     };
-    const identities = {
-      '0x123': { name: 'John Doe' },
-      '0x456': { name: 'Jane Smith' },
-    };
+
+    const mockInternalAccount1 = createMockInternalAccount({
+      address: '0x123',
+      name: 'John Doe',
+    });
+    const mockInternalAccount2 = createMockInternalAccount({
+      address: '0x456',
+      name: 'Jane Smith',
+    });
+
+    const internalAccounts = [mockInternalAccount1, mockInternalAccount2];
+
     const connectedAddresses = ['0x123', '0x456'];
 
     const result = selectors.getConnectedSitesList.resultFunc(
       connectedSubjectsForAllAddresses,
-      identities,
+      internalAccounts,
       connectedAddresses,
     );
 
@@ -1654,6 +1847,162 @@ describe('#getConnectedSitesList', () => {
         },
         name: 'Site 3',
       },
+    });
+  });
+  describe('#getShowDeleteMetaMetricsDataModal', () => {
+    it('returns state of showDeleteMetaMetricsDataModal', () => {
+      expect(
+        selectors.getShowDeleteMetaMetricsDataModal({
+          appState: {
+            showDeleteMetaMetricsDataModal: true,
+          },
+        }),
+      ).toStrictEqual(true);
+    });
+  });
+  describe('#getShowDataDeletionErrorModal', () => {
+    it('returns state of showDataDeletionErrorModal', () => {
+      expect(
+        selectors.getShowDataDeletionErrorModal({
+          appState: {
+            showDataDeletionErrorModal: true,
+          },
+        }),
+      ).toStrictEqual(true);
+    });
+  });
+  describe('#getMetaMetricsDataDeletionId', () => {
+    it('returns metaMetricsDataDeletionId', () => {
+      expect(
+        selectors.getMetaMetricsDataDeletionId({
+          metamask: {
+            metaMetricsDataDeletionId: '123',
+            metaMetricsDataDeletionTimestamp: '123345',
+            metaMetricsDataDeletionStatus: DeleteRegulationStatus.Initialized,
+          },
+        }),
+      ).toStrictEqual('123');
+    });
+  });
+  describe('#getMetaMetricsDataDeletionTimestamp', () => {
+    it('returns metaMetricsDataDeletionTimestamp', () => {
+      expect(
+        selectors.getMetaMetricsDataDeletionTimestamp({
+          metamask: {
+            metaMetricsDataDeletionId: '123',
+            metaMetricsDataDeletionTimestamp: '123345',
+            metaMetricsDataDeletionStatus: DeleteRegulationStatus.Initialized,
+          },
+        }),
+      ).toStrictEqual('123345');
+    });
+  });
+  describe('#getMetaMetricsDataDeletionStatus', () => {
+    it('returns metaMetricsDataDeletionStatus', () => {
+      expect(
+        selectors.getMetaMetricsDataDeletionStatus({
+          metamask: {
+            metaMetricsDataDeletionId: '123',
+            metaMetricsDataDeletionTimestamp: '123345',
+            metaMetricsDataDeletionStatus: DeleteRegulationStatus.Initialized,
+          },
+        }),
+      ).toStrictEqual('INITIALIZED');
+    });
+  });
+
+  describe('getEvmInternalAccounts', () => {
+    const account1 = createMockInternalAccount({
+      keyringType: KeyringType.hd,
+    });
+    const account2 = createMockInternalAccount({
+      type: EthAccountType.Erc4337,
+      keyringType: KeyringType.snap,
+    });
+    const account3 = createMockInternalAccount({
+      keyringType: KeyringType.imported,
+    });
+    const account4 = createMockInternalAccount({
+      keyringType: KeyringType.ledger,
+    });
+    const account5 = createMockInternalAccount({
+      keyringType: KeyringType.trezor,
+    });
+    const nonEvmAccount1 = createMockInternalAccount({
+      type: BtcAccountType.P2wpkh,
+      keyringType: KeyringType.snap,
+    });
+    const nonEvmAccount2 = createMockInternalAccount({
+      type: BtcAccountType.P2wpkh,
+      keyringType: KeyringType.snap,
+    });
+
+    const evmAccounts = [account1, account2, account3, account4, account5];
+
+    it('returns all EVM accounts when only EVM accounts are present', () => {
+      const state = mockAccountsState(evmAccounts);
+      expect(selectors.getEvmInternalAccounts(state)).toStrictEqual(
+        evmAccounts,
+      );
+    });
+
+    it('only returns EVM accounts when there are non-EVM accounts', () => {
+      const state = mockAccountsState([
+        ...evmAccounts,
+        nonEvmAccount1,
+        nonEvmAccount2,
+      ]);
+      expect(selectors.getEvmInternalAccounts(state)).toStrictEqual(
+        evmAccounts,
+      );
+    });
+
+    it('returns an empty array when there are no EVM accounts', () => {
+      const state = mockAccountsState([nonEvmAccount1, nonEvmAccount2]);
+      expect(selectors.getEvmInternalAccounts(state)).toStrictEqual([]);
+    });
+  });
+
+  describe('getSelectedEvmInternalAccount', () => {
+    const account1 = createMockInternalAccount({
+      lastSelected: 1,
+    });
+    const account2 = createMockInternalAccount({
+      lastSelected: 2,
+    });
+    const account3 = createMockInternalAccount({
+      lastSelected: 3,
+    });
+    const nonEvmAccount1 = createMockInternalAccount({
+      type: BtcAccountType.P2wpkh,
+      keyringType: KeyringType.snap,
+      lastSelected: 4,
+    });
+    const nonEvmAccount2 = createMockInternalAccount({
+      type: BtcAccountType.P2wpkh,
+      keyringType: KeyringType.snap,
+      lastSelected: 5,
+    });
+
+    it('returns the last selected EVM account', () => {
+      const state = mockAccountsState([account1, account2, account3]);
+      expect(selectors.getSelectedEvmInternalAccount(state)).toBe(account3);
+    });
+
+    it('returns the last selected EVM account when there are non-EVM accounts', () => {
+      const state = mockAccountsState([
+        account1,
+        account2,
+        account3,
+        nonEvmAccount1,
+        nonEvmAccount2,
+      ]);
+      expect(selectors.getSelectedEvmInternalAccount(state)).toBe(account3);
+    });
+
+    it('returns `undefined` if there are no EVM accounts', () => {
+      const state = mockAccountsState([nonEvmAccount1, nonEvmAccount2]);
+      expect(selectors.getSelectedEvmInternalAccount(state)).toBe(undefined);
     });
   });
 });

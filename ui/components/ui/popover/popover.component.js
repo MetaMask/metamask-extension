@@ -75,6 +75,7 @@ const Popover = ({
   showScrollDown,
   onScrollDownButtonClick,
   centerTitle,
+  wrapTitle,
   headerProps = defaultHeaderProps,
   contentProps = defaultContentProps,
   footerProps = defaultFooterProps,
@@ -106,6 +107,7 @@ const Popover = ({
         ) : null}
         <Text
           textAlign={centerTitle ? TextAlign.Center : TextAlign.Start}
+          className={wrapTitle ? 'popover-header__title-wrap' : null}
           ellipsis
           variant={TextVariant.headingSm}
           as="h2"
@@ -184,6 +186,10 @@ const Popover = ({
 };
 
 Popover.propTypes = {
+  /**
+   * Avoid wrapping title
+   */
+  wrapTitle: PropTypes.bool,
   /**
    * Show title of the popover
    */

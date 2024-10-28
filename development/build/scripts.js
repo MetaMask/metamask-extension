@@ -1,5 +1,4 @@
 // TODO(ritave): Remove switches on hardcoded build types
-
 const { callbackify } = require('util');
 const path = require('path');
 const { writeFileSync, readFileSync, unlinkSync } = require('fs');
@@ -13,13 +12,13 @@ const log = require('fancy-log');
 const browserify = require('browserify');
 const watchify = require('watchify');
 const babelify = require('babelify');
-const brfs = require('brfs');
+
 const envify = require('loose-envify/custom');
 const sourcemaps = require('gulp-sourcemaps');
 const applySourceMap = require('vinyl-sourcemaps-apply');
 const pify = require('pify');
 const through = require('through2');
-const endOfStream = pify(require('end-of-stream'));
+const finished = pify(require('readable-stream').finished);
 const labeledStreamSplicer = require('labeled-stream-splicer').obj;
 const wrapInStream = require('pumpify').obj;
 const { Eta } = require('eta');
@@ -30,6 +29,7 @@ const terser = require('terser');
 const bifyModuleGroups = require('bify-module-groups');
 
 const { streamFlatMap } = require('../stream-flat-map');
+const { isManifestV3 } = require('../../shared/modules/mv3.utils');
 const { setEnvironmentVariables } = require('./set-environment-variables');
 const { BUILD_TARGETS } = require('./constants');
 const { getConfig } = require('./config');
@@ -76,6 +76,8 @@ const scuttlingConfigBase = {
     encodeURIComponent: '',
     console: '',
     crypto: '',
+    Map: '',
+    isFinite: '',
     // {clear/set}Timeout are "this sensitive"
     clearTimeout: 'window',
     setTimeout: 'window',
@@ -86,18 +88,17 @@ const scuttlingConfigBase = {
     appState: '',
     extra: '',
     stateHooks: '',
+    nw: '',
+    // Sentry Auto Session Tracking
+    document: '',
+    history: '',
+    isNaN: '',
+    parseInt: '',
   },
 };
 
 const mv3ScuttlingConfig = { ...scuttlingConfigBase };
-
-const standardScuttlingConfig = {
-  ...scuttlingConfigBase,
-  'scripts/sentry-install.js': {
-    ...scuttlingConfigBase['scripts/sentry-install.js'],
-    document: '',
-  },
-};
+const standardScuttlingConfig = { ...scuttlingConfigBase };
 
 const noopWriteStream = through.obj((_file, _fileEncoding, callback) =>
   callback(),
@@ -128,9 +129,12 @@ module.exports = createScriptTasks;
  * @param {boolean} options.shouldLintFenceFiles - Whether files with code
  * fences should be linted after fences have been removed.
  * @param {string} options.version - The current version of the extension.
+ * @param options.shouldIncludeSnow - Whether the build should use
+ * Snow at runtime or not.
  * @returns {object} A set of tasks, one for each build target.
  */
 function createScriptTasks({
+  shouldIncludeSnow,
   applyLavaMoat,
   browserPlatforms,
   buildType,
@@ -186,13 +190,14 @@ function createScriptTasks({
 
     // In MV3 we will need to build our offscreen entry point bundle and any
     // entry points for iframes that we want to lockdown with LavaMoat.
-    if (process.env.ENABLE_MV3 === 'true') {
+    if (isManifestV3) {
       standardEntryPoints.push('offscreen');
     }
 
     const standardSubtask = createTask(
       `${taskPrefix}:standardEntryPoints`,
       createFactoredBuild({
+        shouldIncludeSnow,
         applyLavaMoat,
         browserPlatforms,
         buildTarget,
@@ -257,6 +262,7 @@ function createScriptTasks({
       installSentrySubtask,
     ].map((subtask) =>
       runInChildProcess(subtask, {
+        shouldIncludeSnow,
         applyLavaMoat,
         buildType,
         isLavaMoat,
@@ -345,7 +351,7 @@ function createScriptTasks({
       () => {
         // MV3 injects inpage into the tab's main world, but in MV2 we need
         // to do it manually:
-        if (process.env.ENABLE_MV3) {
+        if (isManifestV3) {
           return;
         }
         // stringify scripts/inpage.js into itself, and then make it inject itself into the page
@@ -408,9 +414,12 @@ function createScriptTasks({
  * @param {boolean} options.shouldLintFenceFiles - Whether files with code
  * fences should be linted after fences have been removed.
  * @param {string} options.version - The current version of the extension.
+ * @param options.shouldIncludeSnow - Whether the build should use
+ * Snow at runtime or not.
  * @returns {Function} A function that creates the set of bundles.
  */
 async function createManifestV3AppInitializationBundle({
+  shouldIncludeSnow,
   applyLavaMoat,
   browserPlatforms,
   buildTarget,
@@ -436,6 +445,7 @@ async function createManifestV3AppInitializationBundle({
   }
 
   const extraEnvironmentVariables = {
+    USE_SNOW: shouldIncludeSnow,
     APPLY_LAVAMOAT: applyLavaMoat,
     FILE_NAMES: jsBundles.join(','),
   };
@@ -458,9 +468,12 @@ async function createManifestV3AppInitializationBundle({
   // Code below is used to set statsMode to true when testing in MV3
   // This is used to capture module initialisation stats using lavamoat.
   if (isTestBuild(buildTarget)) {
-    const content = readFileSync('./dist/chrome/runtime-lavamoat.js', 'utf8');
+    const content = readFileSync(
+      './dist/chrome/scripts/runtime-lavamoat.js',
+      'utf8',
+    );
     const fileOutput = content.replace('statsMode = false', 'statsMode = true');
-    writeFileSync('./dist/chrome/runtime-lavamoat.js', fileOutput);
+    writeFileSync('./dist/chrome/scripts/runtime-lavamoat.js', fileOutput);
   }
 
   console.log(`Bundle end: service worker app-init.js`);
@@ -494,9 +507,12 @@ async function createManifestV3AppInitializationBundle({
  * @param {boolean} options.shouldLintFenceFiles - Whether files with code
  * fences should be linted after fences have been removed.
  * @param {string} options.version - The current version of the extension.
+ * @param options.shouldIncludeSnow - Whether the build should use
+ * Snow at runtime or not.
  * @returns {Function} A function that creates the set of bundles.
  */
 function createFactoredBuild({
+  shouldIncludeSnow,
   applyLavaMoat,
   browserPlatforms,
   buildTarget,
@@ -559,12 +575,17 @@ function createFactoredBuild({
         __dirname,
         `../../lavamoat/browserify/${buildType}/policy.json`,
       ),
+      policyDebug: path.resolve(
+        __dirname,
+        `../../lavamoat/browserify/${buildType}/policy-debug.json`,
+      ),
       policyName: buildType,
       policyOverride: path.resolve(
         __dirname,
         `../../lavamoat/browserify/policy-override.json`,
       ),
       writeAutoPolicy: process.env.WRITE_AUTO_POLICY,
+      writeAutoPolicyDebug: process.env.WRITE_AUTO_POLICY_DEBUG,
     };
     Object.assign(bundlerOpts, lavamoatBrowserify.args);
     bundlerOpts.plugin.push([lavamoatBrowserify, lavamoatOpts]);
@@ -636,33 +657,53 @@ function createFactoredBuild({
         const isTest =
           buildTarget === BUILD_TARGETS.TEST ||
           buildTarget === BUILD_TARGETS.TEST_DEV;
+        const scripts = getScriptTags({
+          groupSet,
+          commonSet,
+          shouldIncludeSnow,
+          applyLavaMoat,
+        });
         switch (groupLabel) {
           case 'ui': {
             renderHtmlFile({
+              htmlName: 'loading',
+              browserPlatforms,
+              shouldIncludeSnow,
+              applyLavaMoat,
+              isMMI: buildType === 'mmi',
+              scripts,
+            });
+            renderHtmlFile({
               htmlName: 'popup',
               browserPlatforms,
+              shouldIncludeSnow,
               applyLavaMoat,
+              scripts,
+            });
+            renderHtmlFile({
+              htmlName: 'popup-init',
+              browserPlatforms,
+              shouldIncludeSnow,
+              applyLavaMoat,
+              scripts,
             });
             renderHtmlFile({
               htmlName: 'notification',
               browserPlatforms,
+              shouldIncludeSnow,
               applyLavaMoat,
               isMMI: buildType === 'mmi',
               isTest,
+              scripts,
             });
             renderHtmlFile({
               htmlName: 'home',
               browserPlatforms,
+              shouldIncludeSnow,
               applyLavaMoat,
               isMMI: buildType === 'mmi',
               isTest,
-            });
-            renderJavaScriptLoader({
-              groupSet,
-              commonSet,
-              browserPlatforms,
-              applyLavaMoat,
-              destinationFileName: 'load-app.js',
+              scripts,
             });
             break;
           }
@@ -672,21 +713,17 @@ function createFactoredBuild({
               groupSet,
               commonSet,
               browserPlatforms,
+              shouldIncludeSnow,
               applyLavaMoat,
+              scripts,
             });
-            renderJavaScriptLoader({
-              groupSet,
-              commonSet,
-              browserPlatforms,
-              applyLavaMoat,
-              destinationFileName: 'load-background.js',
-            });
-            if (process.env.ENABLE_MV3) {
+            if (isManifestV3) {
               const jsBundles = [
                 ...commonSet.values(),
                 ...groupSet.values(),
-              ].map((label) => `./${label}.js`);
+              ].map((label) => `../${label}.js`);
               await createManifestV3AppInitializationBundle({
+                shouldIncludeSnow,
                 applyLavaMoat,
                 browserPlatforms,
                 buildTarget,
@@ -706,17 +743,21 @@ function createFactoredBuild({
               groupSet,
               commonSet,
               browserPlatforms,
+              shouldIncludeSnow,
               applyLavaMoat: false,
+              scripts,
             });
             break;
           }
           case 'offscreen': {
-            renderJavaScriptLoader({
+            renderHtmlFile({
+              htmlName: 'offscreen',
               groupSet,
               commonSet,
               browserPlatforms,
+              shouldIncludeSnow,
               applyLavaMoat,
-              destinationFileName: 'load-offscreen.js',
+              scripts,
             });
             break;
           }
@@ -886,8 +927,18 @@ function setupBundlerDefaults(
           extensions,
         },
       ],
-      // Inline `fs.readFileSync` files
-      brfs,
+      // We are transpelling the firebase package to be compatible with the lavaMoat restrictions
+      [
+        babelify,
+        {
+          only: [
+            './**/node_modules/firebase',
+            './**/node_modules/@firebase',
+            './**/node_modules/marked',
+          ],
+          global: true,
+        },
+      ],
     ],
     // Look for TypeScript files when walking the dependency tree
     extensions,
@@ -929,7 +980,7 @@ function setupBundlerDefaults(
     // Setup source maps
     setupSourcemaps(buildConfiguration, { buildTarget });
     // Setup wrapping of code against scuttling (before sourcemaps generation)
-    setupScuttlingWrapping(buildConfiguration, applyLavaMoat, envVars);
+    setupScuttlingWrapping(buildConfiguration, applyLavaMoat);
   }
 }
 
@@ -983,11 +1034,10 @@ function setupMinification(buildConfiguration) {
   });
 }
 
-function setupScuttlingWrapping(buildConfiguration, applyLavaMoat, envVars) {
-  const scuttlingConfig =
-    envVars.ENABLE_MV3 === 'true'
-      ? mv3ScuttlingConfig
-      : standardScuttlingConfig;
+function setupScuttlingWrapping(buildConfiguration, applyLavaMoat) {
+  const scuttlingConfig = isManifestV3
+    ? mv3ScuttlingConfig
+    : standardScuttlingConfig;
   const { events } = buildConfiguration;
   events.on('configurePipeline', ({ pipeline }) => {
     pipeline.get('scuttle').push(
@@ -1084,19 +1134,18 @@ async function createBundle(buildConfiguration, { reloadOnChange }) {
     // nothing will consume pipeline, so let it flow
     pipeline.resume();
 
-    await endOfStream(pipeline);
+    await finished(pipeline);
 
     // call the completion event to handle any post-processing
     events.emit('bundleDone');
   }
 }
 
-function renderJavaScriptLoader({
+function getScriptTags({
   groupSet,
   commonSet,
-  browserPlatforms,
+  shouldIncludeSnow,
   applyLavaMoat,
-  destinationFileName,
 }) {
   if (applyLavaMoat === undefined) {
     throw new Error(
@@ -1122,44 +1171,61 @@ function renderJavaScriptLoader({
       ];
 
   const requiredScripts = [
-    './scripts/snow.js',
-    './scripts/use-snow.js',
+    ...(shouldIncludeSnow
+      ? ['./scripts/snow.js', './scripts/use-snow.js']
+      : []),
     './scripts/sentry-install.js',
     ...securityScripts,
     ...jsBundles,
   ];
 
-  browserPlatforms.forEach((platform) => {
-    const appLoadFilePath = './app/scripts/load-app.js';
-    const appLoadContents = readFileSync(appLoadFilePath, 'utf8');
-
-    const scriptDest = `./dist/${platform}/${destinationFileName}`;
-    const scriptOutput = appLoadContents.replace(
-      '/* SCRIPTS */',
-      `...${JSON.stringify(requiredScripts)}`,
-    );
-
-    writeFileSync(scriptDest, scriptOutput);
+  return requiredScripts.map((src) => {
+    return `<script src="${src}" defer></script>`;
   });
 }
 
 function renderHtmlFile({
   htmlName,
   browserPlatforms,
+  shouldIncludeSnow,
   applyLavaMoat,
   isMMI,
   isTest,
+  scripts = [],
 }) {
   if (applyLavaMoat === undefined) {
     throw new Error(
       'build/scripts/renderHtmlFile - must specify "applyLavaMoat" option',
     );
   }
-  const htmlFilePath = `./app/${htmlName}.html`;
+  if (shouldIncludeSnow === undefined) {
+    throw new Error(
+      'build/scripts/renderHtmlFile - must specify "shouldIncludeSnow" option',
+    );
+  }
+
+  const scriptTags = scripts.join('\n    ');
+
+  const htmlFilePath =
+    htmlName === 'offscreen'
+      ? `./offscreen/${htmlName}.html`
+      : `./app/${htmlName}.html`;
   const htmlTemplate = readFileSync(htmlFilePath, 'utf8');
 
   const eta = new Eta();
-  const htmlOutput = eta.renderString(htmlTemplate, { isMMI, isTest });
+  const htmlOutput = eta
+    .renderString(htmlTemplate, { isMMI, isTest, shouldIncludeSnow })
+    // these replacements are added to support the webpack build's automatic
+    // compilation of html files, which the gulp-based process doesn't support.
+    .replace('./scripts/load/background.ts', './load-background.js')
+    .replace(
+      '<script src="./load-background.js" defer></script>',
+      `${scriptTags}\n    <script src="./chromereload.js" async></script>`,
+    )
+    .replace('<script src="./scripts/load/ui.ts" defer></script>', scriptTags)
+    .replace('<script src="./load-offscreen.js" defer></script>', scriptTags)
+    .replace('../ui/css/index.scss', './index.css')
+    .replace('@lavamoat/snow/snow.prod.js', './scripts/snow.js');
   browserPlatforms.forEach((platform) => {
     const dest = `./dist/${platform}/${htmlName}.html`;
     // we dont have a way of creating async events atm

@@ -1,0 +1,10 @@
+.settings-page-developer-options {
+  &__icon-check {
+    transition: opacity 0.3s ease-in-out;
+    opacity: 0;
+
+    &:not([hidden]) {
+      opacity: 1;
+    }
+  }
+}

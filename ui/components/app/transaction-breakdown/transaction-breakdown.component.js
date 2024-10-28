@@ -4,8 +4,8 @@ import classnames from 'classnames';
 import CurrencyDisplay from '../../ui/currency-display';
 import UserPreferencedCurrencyDisplay from '../user-preferenced-currency-display';
 import HexToDecimal from '../../ui/hex-to-decimal';
-import { PRIMARY, SECONDARY } from '../../../helpers/constants/common';
 import { EtherDenomination } from '../../../../shared/constants/common';
+import { PRIMARY, SECONDARY } from '../../../helpers/constants/common';
 import TransactionBreakdownRow from './transaction-breakdown-row';
 
 export default class TransactionBreakdown extends PureComponent {
@@ -29,8 +29,9 @@ export default class TransactionBreakdown extends PureComponent {
     priorityFee: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
     hexGasTotal: PropTypes.string,
     isEIP1559Transaction: PropTypes.bool,
-    isMultiLayerFeeNetwork: PropTypes.bool,
     l1HexGasTotal: PropTypes.string,
+    sourceAmountFormatted: PropTypes.string,
+    destinationAmountFormatted: PropTypes.string,
   };
 
   static defaultProps = {
@@ -55,8 +56,9 @@ export default class TransactionBreakdown extends PureComponent {
       priorityFee,
       hexGasTotal,
       isEIP1559Transaction,
-      isMultiLayerFeeNetwork,
       l1HexGasTotal,
+      sourceAmountFormatted,
+      destinationAmountFormatted,
     } = this.props;
     return (
       <div className={classnames('transaction-breakdown', className)}>
@@ -69,19 +71,41 @@ export default class TransactionBreakdown extends PureComponent {
             />
           )}
         </TransactionBreakdownRow>
-        <TransactionBreakdownRow
-          title={isTokenApprove ? t('spendingCap') : t('amount')}
-        >
-          <span
-            className="transaction-breakdown__value transaction-breakdown__value--amount"
-            data-testid="transaction-breakdown-value-amount"
+        {sourceAmountFormatted && (
+          <TransactionBreakdownRow title={t('amountSent')}>
+            <span
+              className="transaction-breakdown__value transaction-breakdown__value--amount"
+              data-testid="transaction-breakdown-value-amount"
+            >
+              {sourceAmountFormatted}
+            </span>
+          </TransactionBreakdownRow>
+        )}
+        {destinationAmountFormatted && (
+          <TransactionBreakdownRow title={t('amountReceived')}>
+            <span
+              className="transaction-breakdown__value transaction-breakdown__value--amount"
+              data-testid="transaction-breakdown-value-amount"
+            >
+              {destinationAmountFormatted}
+            </span>
+          </TransactionBreakdownRow>
+        )}
+        {!sourceAmountFormatted && (
+          <TransactionBreakdownRow
+            title={isTokenApprove ? t('spendingCap') : t('amount')}
           >
-            {primaryCurrency}
-          </span>
-        </TransactionBreakdownRow>
+            <span
+              className="transaction-breakdown__value transaction-breakdown__value--amount"
+              data-testid="transaction-breakdown-value-amount"
+            >
+              {primaryCurrency}
+            </span>
+          </TransactionBreakdownRow>
+        )}
         <TransactionBreakdownRow
           title={
-            isMultiLayerFeeNetwork
+            l1HexGasTotal
               ? t('transactionHistoryL2GasLimitLabel')
               : `${t('gasLimit')} (${t('units')})`
           }
@@ -136,7 +160,7 @@ export default class TransactionBreakdown extends PureComponent {
         {!isEIP1559Transaction && (
           <TransactionBreakdownRow
             title={
-              isMultiLayerFeeNetwork
+              l1HexGasTotal
                 ? t('transactionHistoryL2GasPriceLabel')
                 : t('advancedGasPriceTitle')
             }
@@ -198,7 +222,7 @@ export default class TransactionBreakdown extends PureComponent {
             )}
           </TransactionBreakdownRow>
         )}
-        {isMultiLayerFeeNetwork && (
+        {l1HexGasTotal && (
           <TransactionBreakdownRow title={t('transactionHistoryL1GasLabel')}>
             <UserPreferencedCurrencyDisplay
               className="transaction-breakdown__value"
@@ -221,7 +245,7 @@ export default class TransactionBreakdown extends PureComponent {
             className="transaction-breakdown__value transaction-breakdown__value--eth-total"
             type={PRIMARY}
             value={totalInHex}
-            numberOfDecimals={isMultiLayerFeeNetwork ? 18 : null}
+            numberOfDecimals={l1HexGasTotal ? 18 : null}
           />
           {showFiat && (
             <UserPreferencedCurrencyDisplay

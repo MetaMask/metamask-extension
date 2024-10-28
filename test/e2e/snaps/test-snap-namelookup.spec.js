@@ -2,6 +2,7 @@ const {
   withFixtures,
   defaultGanacheOptions,
   unlockWallet,
+  switchToNotificationWindow,
   WINDOW_TITLES,
 } = require('../helpers');
 const FixtureBuilder = require('../fixture-builder');
@@ -16,7 +17,6 @@ describe('Test Snap Name Lookup', function () {
         title: this.test.fullTitle(),
       },
       async ({ driver }) => {
-        await driver.navigate();
         await unlockWallet(driver);
 
         // navigate to test snaps page and connect
@@ -35,30 +35,22 @@ describe('Test Snap Name Lookup', function () {
         await driver.clickElement('#connectname-lookup');
 
         // switch to metamask extension and click connect
-        const windowHandles = await driver.waitUntilXWindowHandles(
-          3,
-          1000,
-          10000,
-        );
-        await driver.switchToWindowWithTitle(
-          WINDOW_TITLES.Dialog,
-          windowHandles,
-        );
+        await switchToNotificationWindow(driver);
         await driver.clickElement({
           text: 'Connect',
           tag: 'button',
         });
 
-        await driver.waitForSelector({ text: 'Install' });
+        await driver.waitForSelector({ text: 'Confirm' });
 
         await driver.clickElement({
-          text: 'Install',
+          text: 'Confirm',
           tag: 'button',
         });
 
         await driver.waitForSelector({ text: 'OK' });
 
-        await driver.clickElement({
+        await driver.clickElementAndWaitForWindowToClose({
           text: 'OK',
           tag: 'button',
         });
@@ -66,7 +58,6 @@ describe('Test Snap Name Lookup', function () {
         // switch to fullscreen metamask tab
         await driver.switchToWindowWithTitle(
           WINDOW_TITLES.ExtensionInFullScreenView,
-          windowHandles,
         );
 
         // switch network to ethereum-mainnet for name lookup to work
@@ -80,12 +71,18 @@ describe('Test Snap Name Lookup', function () {
           tag: 'p',
         });
 
+        // ensure we are on Mainnet
+        await driver.waitForSelector('[data-testid="staking-entrypoint-0x1"]');
+
         // click send
         await driver.clickElement('[data-testid="eth-overview-send"]');
 
         // wait for input field and enter name to lookup
         await driver.waitForSelector('[data-testid="ens-input"]');
-        await driver.fill('[data-testid="ens-input"]', 'metamask.domain');
+        await driver.pasteIntoField(
+          '[data-testid="ens-input"]',
+          'metamask.domain',
+        );
 
         // verify name output from snap
         await driver.waitForSelector({

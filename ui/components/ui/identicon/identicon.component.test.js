@@ -19,9 +19,6 @@ const ADDRESS_MOCK = '0x0000000000000000000000000000000000000000';
 
 const mockState = {
   metamask: {
-    providerConfig: {
-      chainId: '0x99',
-    },
     useBlockie: false,
   },
 };

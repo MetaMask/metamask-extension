@@ -6,17 +6,17 @@ import mockSendState from '../../../../../test/data/mock-send-state.json';
 import configureStore from '../../../../store/store';
 import { SwappableCurrencyInput } from './swappable-currency-input';
 
-const createStore = ({
-  useNativeCurrencyAsPrimaryCurrency,
-  sendInputCurrencySwitched,
-}: Record<string, boolean>) =>
+const createStore = ({ sendInputCurrencySwitched }: Record<string, boolean>) =>
   configureStore({
     ...mockSendState,
     metamask: {
       ...mockSendState.metamask,
-      preferences: { useNativeCurrencyAsPrimaryCurrency },
-      contractExchangeRates: {
-        '0x0bc529c00c6401aef6d220be8c6ea1667f6ad93e': 2,
+      marketData: {
+        ...mockSendState.metamask.marketData,
+        '0x5': {
+          ...mockSendState.metamask.marketData['0x5'],
+          '0x0bc529c00c6401aef6d220be8c6ea1667f6ad93e': { price: 2 },
+        },
       },
     },
     appState: { ...mockSendState.appState, sendInputCurrencySwitched },
@@ -33,7 +33,6 @@ describe('SwappableCurrencyInput', () => {
     const { asFragment, getByText } = render(
       <Provider
         store={createStore({
-          useNativeCurrencyAsPrimaryCurrency: true,
           sendInputCurrencySwitched: true,
         })}
       >
@@ -64,7 +63,6 @@ describe('SwappableCurrencyInput', () => {
     const { asFragment, getByText } = render(
       <Provider
         store={createStore({
-          useNativeCurrencyAsPrimaryCurrency: true,
           sendInputCurrencySwitched: true,
         })}
       >
@@ -97,7 +95,6 @@ describe('SwappableCurrencyInput', () => {
     const { asFragment } = render(
       <Provider
         store={createStore({
-          useNativeCurrencyAsPrimaryCurrency: true,
           sendInputCurrencySwitched: true,
         })}
       >
@@ -130,7 +127,6 @@ describe('SwappableCurrencyInput', () => {
     const { asFragment } = render(
       <Provider
         store={createStore({
-          useNativeCurrencyAsPrimaryCurrency: true,
           sendInputCurrencySwitched: true,
         })}
       >

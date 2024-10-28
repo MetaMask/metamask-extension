@@ -51,12 +51,17 @@ export function getTransactionFee({
   return fee.round(numberOfDecimals).toString();
 }
 
-export function formatCurrency(value: string, currencyCode: string): string {
+export function formatCurrency(
+  value: string,
+  currencyCode: string,
+  precision?: number,
+): string {
   const upperCaseCurrencyCode = currencyCode.toUpperCase();
 
   return currencies.find((currency) => currency.code === upperCaseCurrencyCode)
     ? currencyFormatter.format(Number(value), {
         code: upperCaseCurrencyCode,
+        precision,
       })
     : value;
 }

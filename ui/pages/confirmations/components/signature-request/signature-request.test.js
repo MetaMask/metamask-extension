@@ -2,7 +2,7 @@ import React from 'react';
 import { useSelector } from 'react-redux';
 import { fireEvent } from '@testing-library/react';
 import configureMockStore from 'redux-mock-store';
-import { EthAccountType, EthMethod } from '@metamask/keyring-api';
+import { EthAccountType } from '@metamask/keyring-api';
 import mockState from '../../../../../test/data/mock-state.json';
 import { renderWithProvider } from '../../../../../test/lib/render-helpers';
 import { SECURITY_PROVIDER_MESSAGE_SEVERITY } from '../../../../../shared/constants/security-provider';
@@ -22,7 +22,12 @@ import {
   unconfirmedTransactionsHashSelector,
   getAccountType,
   getMemoizedMetaMaskInternalAccounts,
+  getSelectedInternalAccount,
+  pendingApprovalsSortedSelector,
+  getNetworkConfigurationsByChainId,
 } from '../../../../selectors';
+import { ETH_EOA_METHODS } from '../../../../../shared/constants/eth-methods';
+import { mockNetworkState } from '../../../../../test/stub/networks';
 import SignatureRequest from './signature-request';
 
 const baseProps = {
@@ -34,17 +39,13 @@ const baseProps = {
 };
 const mockStore = {
   metamask: {
-    providerConfig: {
+    ...mockNetworkState({
       chainId: '0x539',
       nickname: 'Localhost 8545',
-      rpcPrefs: {},
       rpcUrl: 'http://localhost:8545',
       ticker: 'ETH',
-      type: 'rpc',
-    },
-    preferences: {
-      useNativeCurrencyAsPrimaryCurrency: true,
-    },
+    }),
+    preferences: {},
     accounts: {
       '0xd8f6a2ffb0fc5952d16c9768b71cfd35b6399aa5': {
         address: '0xd8f6a2ffb0fc5952d16c9768b71cfd35b6399aa5',
@@ -52,7 +53,6 @@ const mockStore = {
         name: 'John Doe',
       },
     },
-    selectedAddress: '0xd8f6a2ffb0fc5952d16c9768b71cfd35b6399aa5',
     internalAccounts: {
       accounts: {
         'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3': {
@@ -65,7 +65,7 @@ const mockStore = {
             },
           },
           options: {},
-          methods: [...Object.values(EthMethod)],
+          methods: ETH_EOA_METHODS,
           type: EthAccountType.Eoa,
         },
       },
@@ -79,6 +79,19 @@ const mockStore = {
       },
     },
     unapprovedTypedMessagesCount: 2,
+    pendingApprovals: {
+      '741bad30-45b6-11ef-b6ec-870d18dd6c01': {
+        id: '741bad30-45b6-11ef-b6ec-870d18dd6c01',
+        origin: 'http://127.0.0.1:8080',
+        type: 'transaction',
+        time: 1721383540624,
+        requestData: {
+          txId: '741bad30-45b6-11ef-b6ec-870d18dd6c01',
+        },
+        requestState: null,
+        expectsResult: true,
+      },
+    },
   },
 };
 jest.mock('react-redux', () => {
@@ -102,22 +115,24 @@ jest.mock('../../../../hooks/useMMICustodySignMessage', () => ({
 jest.mock('@metamask-institutional/extension');
 
 const generateUseSelectorRouter = (opts) => (selector) => {
+  const mockSelectedInternalAccount = getSelectedInternalAccount(opts);
+
   switch (selector) {
     case getProviderConfig:
-      return opts.metamask.providerConfig;
+      return getProviderConfig(opts);
     case getCurrentCurrency:
       return opts.metamask.currentCurrency;
     case getNativeCurrency:
-      return opts.metamask.providerConfig.ticker;
+      return getProviderConfig(opts).ticker;
     case getTotalUnapprovedMessagesCount:
       return opts.metamask.unapprovedTypedMessagesCount;
     case getPreferences:
       return opts.metamask.preferences;
     case conversionRateSelector:
-      return opts.metamask.currencyRates[opts.metamask.providerConfig.ticker]
+      return opts.metamask.currencyRates[getProviderConfig(opts).ticker]
         ?.conversionRate;
     case getSelectedAccount:
-      return opts.metamask.accounts[opts.metamask.selectedAddress];
+      return mockSelectedInternalAccount;
     case getInternalAccounts:
       return Object.values(opts.metamask.internalAccounts.accounts);
     case getMemoizedMetaMaskInternalAccounts:
@@ -139,6 +154,10 @@ const generateUseSelectorRouter = (opts) => (selector) => {
       return 'custody';
     case unconfirmedTransactionsHashSelector:
       return {};
+    case pendingApprovalsSortedSelector:
+      return Object.values(opts.metamask.pendingApprovals);
+    case getNetworkConfigurationsByChainId:
+      return opts.metamask.networkConfigurationsByChainId;
     default:
       return undefined;
   }
@@ -473,7 +492,6 @@ describe('Signature Request Component', () => {
           ...mockStore,
           metamask: {
             ...mockStore.metamask,
-            selectedAddress: '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc',
             accounts: {
               ...mockStore.metamask.accounts,
               '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc': {
@@ -499,7 +517,7 @@ describe('Signature Request Component', () => {
                     },
                   },
                   options: {},
-                  methods: [...Object.values(EthMethod)],
+                  methods: ETH_EOA_METHODS,
                   type: EthAccountType.Eoa,
                 },
                 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3': {
@@ -512,7 +530,7 @@ describe('Signature Request Component', () => {
                     },
                   },
                   options: {},
-                  methods: [...Object.values(EthMethod)],
+                  methods: ETH_EOA_METHODS,
                   type: EthAccountType.Eoa,
                 },
               },

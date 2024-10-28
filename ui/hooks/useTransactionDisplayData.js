@@ -266,6 +266,33 @@ export function useTransactionDisplayData(transactionGroup) {
     } else {
       prefix = '-';
     }
+  } else if (type === TransactionType.swapAndSend) {
+    const isSenderTokenRecipient =
+      initialTransaction.swapAndSendRecipient === senderAddress;
+
+    recipientAddress = initialTransaction.swapAndSendRecipient;
+
+    category = TransactionGroupCategory.swapAndSend;
+    title = t('sendTokenAsToken', [
+      initialTransaction.sourceTokenSymbol,
+      initialTransaction.destinationTokenSymbol,
+    ]);
+    subtitle = origin;
+    subtitleContainsOrigin = true;
+    primarySuffix =
+      isViewingReceivedTokenFromSwap && isSenderTokenRecipient
+        ? currentAsset.symbol
+        : initialTransaction.sourceTokenSymbol;
+    primaryDisplayValue = swapTokenValue;
+    secondaryDisplayValue = swapTokenFiatAmount;
+
+    if (isNegative) {
+      prefix = '';
+    } else if (isViewingReceivedTokenFromSwap && isSenderTokenRecipient) {
+      prefix = '+';
+    } else {
+      prefix = '-';
+    }
   } else if (type === TransactionType.swapApproval) {
     category = TransactionGroupCategory.approval;
     title = t('swapApproval', [primaryTransaction.sourceTokenSymbol]);
@@ -367,7 +394,8 @@ export function useTransactionDisplayData(transactionGroup) {
     recipientAddress,
     secondaryCurrency:
       (isTokenCategory && !tokenFiatAmount) ||
-      (type === TransactionType.swap && !swapTokenFiatAmount)
+      ([TransactionType.swap, TransactionType.swapAndSend].includes(type) &&
+        !swapTokenFiatAmount)
         ? undefined
         : secondaryCurrency,
     displayedStatusKey,

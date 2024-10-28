@@ -33,9 +33,6 @@ export default {
     hexTransactionTotal: {
       control: 'text',
     },
-    isMultiLayerFeeNetwork: {
-      control: 'text',
-    },
     supportsEIP1559: {
       control: 'boolean',
     },
@@ -82,7 +79,6 @@ export default {
     ethTransactionTotal: '0.0012',
     fiatTransactionTotal: '1.6',
     hexTransactionTotal: '0x44364c5bb0000',
-    isMultiLayerFeeNetwork: false,
     supportsEIP1559: false,
     userAddress: '0xdd34b35ca1de17dfcdc07f79ff1f8f94868c40a1',
     tokenAddress: '0x55797717b9947b31306f4aac7ad1365c6e3923bd',

@@ -10,7 +10,7 @@ describe('NotificationDetailNft', () => {
     tokenSrc:
       'https://i.seadn.io/s/raw/files/a96f90ec8ebf55a2300c66a0c46d6a16.png?w=500&auto=format',
     networkSrc:
-      'https://token.metaswap.codefi.network/assets/nativeCurrencyLogos/ethereum.svg',
+      'https://token.api.cx.metamask.io/assets/nativeCurrencyLogos/ethereum.svg',
     tokenId: 'NFT ID',
     tokenName: 'NFT Name',
     networkName: 'Ethereum',

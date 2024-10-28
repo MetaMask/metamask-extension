@@ -25,10 +25,8 @@ import {
   getNextSuggestedNonce,
   getCurrentChainId,
   getRpcPrefsForCurrentProvider,
-  getIsMultiLayerFeeNetwork,
   checkNetworkAndAccountSupports1559,
   getUseCurrencyRateCheck,
-  getPreferences,
 } from '../../../selectors';
 import { useApproveTransaction } from '../hooks/useApproveTransaction';
 import { useSimulationFailureWarning } from '../hooks/useSimulationFailureWarning';
@@ -40,6 +38,7 @@ import { parseStandardTokenTransactionData } from '../../../../shared/modules/tr
 import { TokenStandard } from '../../../../shared/constants/transaction';
 import { calcTokenAmount } from '../../../../shared/lib/transactions-controller-utils';
 import TokenAllowance from '../token-allowance/token-allowance';
+import { NetworkChangeToastLegacy } from '../components/confirm/network-change-toast';
 import { getCustomTxParamsData } from './confirm-approve.util';
 import ConfirmApproveContent from './confirm-approve-content';
 
@@ -77,7 +76,6 @@ export default function ConfirmApprove({
   const customNonceValue = useSelector(getCustomNonceValue);
   const chainId = useSelector(getCurrentChainId);
   const rpcPrefs = useSelector(getRpcPrefsForCurrentProvider);
-  const isMultiLayerFeeNetwork = useSelector(getIsMultiLayerFeeNetwork);
   const networkAndAccountSupports1559 = useSelector(
     checkNetworkAndAccountSupports1559,
   );
@@ -85,7 +83,6 @@ export default function ConfirmApprove({
     isAddressLedgerByFromAddress(userAddress),
   );
   const useCurrencyRateCheck = useSelector(getUseCurrencyRateCheck);
-  const { useNativeCurrencyAsPrimaryCurrency } = useSelector(getPreferences);
   const [customPermissionAmount, setCustomPermissionAmount] = useState('');
   const [submitWarning, setSubmitWarning] = useState('');
   const [isContract, setIsContract] = useState(false);
@@ -142,7 +139,7 @@ export default function ConfirmApprove({
     checkIfContract();
   }, [checkIfContract]);
 
-  const { origin } = transaction;
+  const { origin, layer1GasFee } = transaction;
   const formattedOrigin = origin || '';
 
   const { iconUrl: siteImage = '' } = subjectMetadata[origin] || {};
@@ -177,17 +174,7 @@ export default function ConfirmApprove({
     return <ConfirmContractInteraction />;
   }
 
-  let tokenAllowanceImprovements = true;
-
-  ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-  tokenAllowanceImprovements = false;
-  ///: END:ONLY_INCLUDE_IF
-
-  if (
-    tokenAllowanceImprovements &&
-    assetStandard === TokenStandard.ERC20 &&
-    !isSetApproveForAll
-  ) {
+  if (assetStandard === TokenStandard.ERC20 && !isSetApproveForAll) {
     return (
       <GasFeeContextProvider transaction={transaction}>
         <TransactionModalContextProvider>
@@ -203,7 +190,6 @@ export default function ConfirmApprove({
             hexTransactionTotal={hexTransactionTotal}
             hexMinimumTransactionFee={hexMinimumTransactionFee}
             txData={transaction}
-            isMultiLayerFeeNetwork={isMultiLayerFeeNetwork}
             supportsEIP1559={supportsEIP1559}
             userAddress={userAddress}
             tokenAddress={tokenAddress}
@@ -232,6 +218,7 @@ export default function ConfirmApprove({
             </>
           )}
         </TransactionModalContextProvider>
+        <NetworkChangeToastLegacy confirmation={transaction} />
       </GasFeeContextProvider>
     );
   }
@@ -306,12 +293,9 @@ export default function ConfirmApprove({
               chainId={chainId}
               rpcPrefs={rpcPrefs}
               isContract={isContract}
-              isMultiLayerFeeNetwork={isMultiLayerFeeNetwork}
+              hasLayer1GasFee={layer1GasFee !== undefined}
               supportsEIP1559={supportsEIP1559}
               useCurrencyRateCheck={useCurrencyRateCheck}
-              useNativeCurrencyAsPrimaryCurrency={
-                useNativeCurrencyAsPrimaryCurrency
-              }
             />
             {showCustomizeGasPopover && !supportsEIP1559 && (
               <EditGasPopover
@@ -350,6 +334,7 @@ ConfirmApprove.propTypes = {
   userAddress: PropTypes.string,
   toAddress: PropTypes.string,
   transaction: PropTypes.shape({
+    layer1GasFee: PropTypes.string,
     origin: PropTypes.string,
     txParams: PropTypes.shape({
       data: PropTypes.string,

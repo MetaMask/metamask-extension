@@ -68,7 +68,6 @@ jest.mock('../../../hooks/useGasFeeEstimates', () => ({
 
 setBackgroundConnection({
   getGasFeeTimeEstimate: jest.fn(),
-  getGasFeeEstimatesAndStartPolling: jest.fn(),
 });
 
 jest.mock('react', () => {
@@ -106,11 +105,7 @@ const generateUseSelectorRouter = (opts) => (selector) => {
   } else if (selector === getCurrentNetwork) {
     return { nickname: 'Ethereum Mainnet' };
   } else if (selector === getPreferences) {
-    return (
-      opts.preferences ?? {
-        useNativeCurrencyAsPrimaryCurrency: true,
-      }
-    );
+    return opts.preferences ?? {};
   } else if (selector === getShouldShowFiat) {
     return opts.shouldShowFiat ?? false;
   } else if (selector === getTokens) {

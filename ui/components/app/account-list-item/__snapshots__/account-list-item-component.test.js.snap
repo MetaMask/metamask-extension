@@ -17,7 +17,7 @@ exports[`AccountListItem Component render should match snapshot 1`] = `
           style="height: 18px; width: 18px; border-radius: 9px;"
         >
           <div
-            style="border-radius: 50px; overflow: hidden; padding: 0px; margin: 0px; width: 18px; height: 18px; display: inline-block; background: rgb(24, 191, 242);"
+            style="border-radius: 50px; overflow: hidden; padding: 0px; margin: 0px; width: 18px; height: 18px; display: inline-block; background: rgb(24, 151, 242);"
           >
             <svg
               height="18"
@@ -26,25 +26,25 @@ exports[`AccountListItem Component render should match snapshot 1`] = `
               y="0"
             >
               <rect
-                fill="#F59B00"
+                fill="#2362E1"
                 height="18"
-                transform="translate(1.1057728692647846 -1.1284144293741016) rotate(330.0 9 9)"
+                transform="translate(2.018998228945791 -3.0005497255688565) rotate(458.4 9 9)"
                 width="18"
                 x="0"
                 y="0"
               />
               <rect
-                fill="#F27602"
+                fill="#F94301"
                 height="18"
-                transform="translate(8.068916496038273 0.7410013085075559) rotate(170.6 9 9)"
+                transform="translate(-8.641945850428243 4.495697794961231) rotate(268.8 9 9)"
                 width="18"
                 x="0"
                 y="0"
               />
               <rect
-                fill="#C8146B"
+                fill="#FA7900"
                 height="18"
-                transform="translate(-3.4359831020777025 11.706703966498809) rotate(121.2 9 9)"
+                transform="translate(-5.10539291960705 16.582508932884398) rotate(117.3 9 9)"
                 width="18"
                 x="0"
                 y="0"

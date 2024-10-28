@@ -1,18 +1,12 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { Switch, Route, useHistory, useParams } from 'react-router-dom';
-
+import { Route, Switch, useHistory, useParams } from 'react-router-dom';
+import {
+  ENVIRONMENT_TYPE_NOTIFICATION,
+  ORIGIN_METAMASK,
+  TRACE_ENABLED_SIGN_METHODS,
+} from '../../../../shared/constants/app';
 import Loading from '../../../components/ui/loading-screen';
-import ConfirmContractInteraction from '../confirm-contract-interaction';
-import ConfirmDeployContract from '../confirm-deploy-contract';
-import ConfirmDecryptMessage from '../../confirm-decrypt-message';
-import ConfirmEncryptionPublicKey from '../../confirm-encryption-public-key';
-import ConfirmSendEther from '../confirm-send-ether';
-import ConfirmTransactionSwitch from '../confirm-transaction-switch';
-
-import { ORIGIN_METAMASK } from '../../../../shared/constants/app';
-
-import useCurrentConfirmation from '../hooks/useCurrentConfirmation';
 import {
   clearConfirmTransaction,
   setTransactionToConfirm,
@@ -30,22 +24,35 @@ import {
   SIGNATURE_REQUEST_PATH,
 } from '../../../helpers/constants/routes';
 import { isTokenMethodAction } from '../../../helpers/utils/transactions.util';
+import usePolling from '../../../hooks/usePolling';
 import { usePrevious } from '../../../hooks/usePrevious';
 import {
-  unconfirmedTransactionsListSelector,
-  unconfirmedTransactionsHashSelector,
-  use4ByteResolutionSelector,
   getSelectedNetworkClientId,
+  unconfirmedTransactionsHashSelector,
+  unconfirmedTransactionsListSelector,
+  use4ByteResolutionSelector,
 } from '../../../selectors';
 import {
-  getContractMethodData,
-  setDefaultHomeActiveTabName,
+  endBackgroundTrace,
   gasFeeStartPollingByNetworkClientId,
   gasFeeStopPollingByPollingToken,
+  getContractMethodData,
+  setDefaultHomeActiveTabName,
 } from '../../../store/actions';
+import ConfirmDecryptMessage from '../../confirm-decrypt-message';
+import ConfirmEncryptionPublicKey from '../../confirm-encryption-public-key';
+import ConfirmContractInteraction from '../confirm-contract-interaction';
+import ConfirmDeployContract from '../confirm-deploy-contract';
+import ConfirmSendEther from '../confirm-send-ether';
 import ConfirmSignatureRequest from '../confirm-signature-request';
+import ConfirmTransactionSwitch from '../confirm-transaction-switch';
 import Confirm from '../confirm/confirm';
-import usePolling from '../../../hooks/usePolling';
+import useCurrentConfirmation from '../hooks/useCurrentConfirmation';
+// TODO: Remove restricted import
+// eslint-disable-next-line import/no-restricted-paths
+import { getEnvironmentType } from '../../../../app/scripts/lib/util';
+import { useAsyncResult } from '../../../hooks/useAsyncResult';
+import { TraceName } from '../../../../shared/lib/trace';
 import ConfirmTokenTransactionSwitch from './confirm-token-transaction-switch';
 
 const ConfirmTransaction = () => {
@@ -91,6 +98,24 @@ const ConfirmTransaction = () => {
   ]);
 
   const { id, type } = transaction;
+
+  const isNotification = getEnvironmentType() === ENVIRONMENT_TYPE_NOTIFICATION;
+
+  useAsyncResult(async () => {
+    if (!isNotification) {
+      return undefined;
+    }
+
+    const traceId = TRACE_ENABLED_SIGN_METHODS.includes(type)
+      ? transaction.msgParams?.requestId?.toString()
+      : id;
+
+    return await endBackgroundTrace({
+      name: TraceName.NotificationDisplay,
+      id: traceId,
+    });
+  }, [id, isNotification, type, transaction.msgParams]);
+
   const transactionId = id;
   const isValidTokenMethod = isTokenMethodAction(type);
   const isValidTransactionId =

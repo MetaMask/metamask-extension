@@ -1,4 +1,3 @@
-import assert from 'assert';
 import AppMetadataController from './app-metadata';
 
 const EXPECTED_DEFAULT_STATE = {
@@ -22,15 +21,14 @@ describe('AppMetadataController', () => {
         currentMigrationVersion: 1,
         currentAppVersion: '1',
       });
-      assert.deepStrictEqual(appMetadataController.store.getState(), initState);
+      expect(appMetadataController.store.getState()).toStrictEqual(initState);
     });
 
     it('sets default state and does not modify it', async () => {
       const appMetadataController = new AppMetadataController({
         state: {},
       });
-      assert.deepStrictEqual(
-        appMetadataController.store.getState(),
+      expect(appMetadataController.store.getState()).toStrictEqual(
         EXPECTED_DEFAULT_STATE,
       );
     });
@@ -41,8 +39,7 @@ describe('AppMetadataController', () => {
         currentMigrationVersion: 0,
         currentAppVersion: '',
       });
-      assert.deepStrictEqual(
-        appMetadataController.store.getState(),
+      expect(appMetadataController.store.getState()).toStrictEqual(
         EXPECTED_DEFAULT_STATE,
       );
     });
@@ -53,7 +50,7 @@ describe('AppMetadataController', () => {
         currentMigrationVersion: 0,
         currentAppVersion: '1',
       });
-      assert.deepStrictEqual(appMetadataController.store.getState(), {
+      expect(appMetadataController.store.getState()).toStrictEqual({
         ...EXPECTED_DEFAULT_STATE,
         currentAppVersion: '1',
       });
@@ -68,7 +65,7 @@ describe('AppMetadataController', () => {
         currentAppVersion: '3',
         currentMigrationVersion: 0,
       });
-      assert.deepStrictEqual(appMetadataController.store.getState(), {
+      expect(appMetadataController.store.getState()).toStrictEqual({
         ...EXPECTED_DEFAULT_STATE,
         currentAppVersion: '3',
         previousAppVersion: '2',
@@ -80,7 +77,7 @@ describe('AppMetadataController', () => {
         state: {},
         currentMigrationVersion: 1,
       });
-      assert.deepStrictEqual(appMetadataController.store.getState(), {
+      expect(appMetadataController.store.getState()).toStrictEqual({
         ...EXPECTED_DEFAULT_STATE,
         currentMigrationVersion: 1,
       });
@@ -94,7 +91,7 @@ describe('AppMetadataController', () => {
         },
         currentMigrationVersion: 3,
       });
-      assert.deepStrictEqual(appMetadataController.store.getState(), {
+      expect(appMetadataController.store.getState()).toStrictEqual({
         ...EXPECTED_DEFAULT_STATE,
         currentMigrationVersion: 3,
         previousMigrationVersion: 2,

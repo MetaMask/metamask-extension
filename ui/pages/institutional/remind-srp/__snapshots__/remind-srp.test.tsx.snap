@@ -1,0 +1,252 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`RemindSRP should match snapshot 1`] = `
+<div>
+  <div
+    class="mm-box"
+  >
+    <div
+      class="mm-box mm-box--margin-bottom-4 mm-box--justify-content-center mm-box--text-align-center"
+    >
+      <h2
+        class="mm-box mm-text mm-text--heading-lg mm-text--font-weight-bold mm-box--margin-bottom-4 mm-box--color-text-default"
+      >
+        Secret Recovery Phrase
+      </h2>
+      <h4
+        class="mm-box mm-text mm-text--heading-sm mm-text--font-weight-normal mm-text--text-align-center mm-box--color-text-default"
+      >
+        MetaMask Institutional allows you to use non-custodial accounts, if you plan to use these accounts backup the Secret Recovery Phrase.
+      </h4>
+    </div>
+    <div
+      class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-space-between mm-box--width-full"
+    >
+      <button
+        class="mm-box mm-text mm-button-base mm-button-base--size-sm mm-button-link mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-0 mm-box--padding-left-0 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--width-full mm-box--color-primary-default mm-box--background-color-transparent"
+      >
+        <span
+          class="mm-box mm-icon mm-icon--size-sm mm-box--margin-inline-end-1 mm-box--display-inline-block mm-box--color-inherit"
+          style="mask-image: url('./images/icons/eye.svg');"
+        />
+        Reveal seed phrase
+      </button>
+      <button
+        class="mm-box mm-text mm-button-base mm-button-base--size-sm mm-button-link mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-0 mm-box--padding-left-0 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--width-full mm-box--color-primary-default mm-box--background-color-transparent"
+      >
+        <span
+          class="mm-box mm-icon mm-icon--size-sm mm-box--margin-inline-end-1 mm-box--display-inline-block mm-box--color-inherit"
+          style="mask-image: url('./images/icons/copy.svg');"
+        />
+        Copy to clipboard
+      </button>
+    </div>
+    <div
+      class="mm-box mm-box--display-flex mm-box--flex-direction-row"
+    >
+      <div
+        class="box recovery-phrase__secret box--margin-bottom-4 box--padding-4 box--display-grid box--flex-direction-row box--rounded-md box--border-style-solid box--border-color-border-muted box--border-width-1"
+      >
+        <div
+          class="recovery-phrase__chips recovery-phrase__chips--hidden"
+          data-testid="recovery-phrase-chips"
+        >
+          <div
+            class="recovery-phrase__chip-item"
+          >
+            <div
+              class="recovery-phrase__chip-item__number"
+            >
+              1.
+            </div>
+            <div
+              class="recovery-phrase__chip chip chip--border-color-border-default chip--background-color-undefined chip--max-content"
+              data-testid="recovery-phrase-chip-0"
+            >
+              debris
+            </div>
+          </div>
+          <div
+            class="recovery-phrase__chip-item"
+          >
+            <div
+              class="recovery-phrase__chip-item__number"
+            >
+              2.
+            </div>
+            <div
+              class="recovery-phrase__chip chip chip--border-color-border-default chip--background-color-undefined chip--max-content"
+              data-testid="recovery-phrase-chip-1"
+            >
+              dizzy
+            </div>
+          </div>
+          <div
+            class="recovery-phrase__chip-item"
+          >
+            <div
+              class="recovery-phrase__chip-item__number"
+            >
+              3.
+            </div>
+            <div
+              class="recovery-phrase__chip chip chip--border-color-border-default chip--background-color-undefined chip--max-content"
+              data-testid="recovery-phrase-chip-2"
+            >
+              just
+            </div>
+          </div>
+          <div
+            class="recovery-phrase__chip-item"
+          >
+            <div
+              class="recovery-phrase__chip-item__number"
+            >
+              4.
+            </div>
+            <div
+              class="recovery-phrase__chip chip chip--border-color-border-default chip--background-color-undefined chip--max-content"
+              data-testid="recovery-phrase-chip-3"
+            >
+              program
+            </div>
+          </div>
+          <div
+            class="recovery-phrase__chip-item"
+          >
+            <div
+              class="recovery-phrase__chip-item__number"
+            >
+              5.
+            </div>
+            <div
+              class="recovery-phrase__chip chip chip--border-color-border-default chip--background-color-undefined chip--max-content"
+              data-testid="recovery-phrase-chip-4"
+            >
+              just
+            </div>
+          </div>
+          <div
+            class="recovery-phrase__chip-item"
+          >
+            <div
+              class="recovery-phrase__chip-item__number"
+            >
+              6.
+            </div>
+            <div
+              class="recovery-phrase__chip chip chip--border-color-border-default chip--background-color-undefined chip--max-content"
+              data-testid="recovery-phrase-chip-5"
+            >
+              float
+            </div>
+          </div>
+          <div
+            class="recovery-phrase__chip-item"
+          >
+            <div
+              class="recovery-phrase__chip-item__number"
+            >
+              7.
+            </div>
+            <div
+              class="recovery-phrase__chip chip chip--border-color-border-default chip--background-color-undefined chip--max-content"
+              data-testid="recovery-phrase-chip-6"
+            >
+              decrease
+            </div>
+          </div>
+          <div
+            class="recovery-phrase__chip-item"
+          >
+            <div
+              class="recovery-phrase__chip-item__number"
+            >
+              8.
+            </div>
+            <div
+              class="recovery-phrase__chip chip chip--border-color-border-default chip--background-color-undefined chip--max-content"
+              data-testid="recovery-phrase-chip-7"
+            >
+              vacant
+            </div>
+          </div>
+          <div
+            class="recovery-phrase__chip-item"
+          >
+            <div
+              class="recovery-phrase__chip-item__number"
+            >
+              9.
+            </div>
+            <div
+              class="recovery-phrase__chip chip chip--border-color-border-default chip--background-color-undefined chip--max-content"
+              data-testid="recovery-phrase-chip-8"
+            >
+              alarm
+            </div>
+          </div>
+          <div
+            class="recovery-phrase__chip-item"
+          >
+            <div
+              class="recovery-phrase__chip-item__number"
+            >
+              10.
+            </div>
+            <div
+              class="recovery-phrase__chip chip chip--border-color-border-default chip--background-color-undefined chip--max-content"
+              data-testid="recovery-phrase-chip-9"
+            >
+              reduce
+            </div>
+          </div>
+          <div
+            class="recovery-phrase__chip-item"
+          >
+            <div
+              class="recovery-phrase__chip-item__number"
+            >
+              11.
+            </div>
+            <div
+              class="recovery-phrase__chip chip chip--border-color-border-default chip--background-color-undefined chip--max-content"
+              data-testid="recovery-phrase-chip-10"
+            >
+              speak
+            </div>
+          </div>
+          <div
+            class="recovery-phrase__chip-item"
+          >
+            <div
+              class="recovery-phrase__chip-item__number"
+            >
+              12.
+            </div>
+            <div
+              class="recovery-phrase__chip chip chip--border-color-border-default chip--background-color-undefined chip--max-content"
+              data-testid="recovery-phrase-chip-11"
+            >
+              stadium
+            </div>
+          </div>
+        </div>
+        <div
+          class="recovery-phrase__secret-blocker"
+        />
+      </div>
+    </div>
+    <div
+      class="mm-box mm-box--display-flex mm-box--flex-direction-column mm-box--align-items-center"
+    >
+      <button
+        class="button btn--rounded btn-primary btn--large recovery-phrase-continue"
+        data-testid="recovery-phrase-continue"
+      >
+        Continue
+      </button>
+    </div>
+  </div>
+</div>
+`;

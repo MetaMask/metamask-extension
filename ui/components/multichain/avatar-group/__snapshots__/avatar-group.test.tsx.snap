@@ -47,7 +47,7 @@ exports[`AvatarGroup should render AvatarGroup component 1`] = `
           <img
             alt="MATIC logo"
             class="mm-avatar-token__token-image"
-            src="./images/matic-token.svg"
+            src="./images/pol-token.svg"
           />
         </div>
       </div>

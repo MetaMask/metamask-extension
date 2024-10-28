@@ -18,7 +18,10 @@ import {
 } from '../../../../helpers/constants/design-system';
 import Name from '../../../../components/app/name';
 import { TokenStandard } from '../../../../../shared/constants/transaction';
-import { getNativeCurrencyImage } from '../../../../selectors';
+import {
+  getCurrentChainId,
+  getNativeCurrencyImage,
+} from '../../../../selectors';
 import { getNativeCurrency } from '../../../../ducks/metamask/metamask';
 import { AssetIdentifier } from './types';
 
@@ -58,14 +61,28 @@ const NativeAssetPill: React.FC = () => {
  * @param props.asset
  */
 export const AssetPill: React.FC<{ asset: AssetIdentifier }> = ({ asset }) => {
-  if (asset.standard === TokenStandard.none) {
-    return <NativeAssetPill />;
-  }
+  // TODO: Temporary pending multi-chain support in simulations;
+  const chainId = useSelector(getCurrentChainId);
+
   return (
-    <Name
-      type={NameType.ETHEREUM_ADDRESS}
-      value={asset.address}
-      preferContractSymbol
-    />
+    <Box
+      data-testid="simulation-details-asset-pill"
+      style={{
+        flexShrink: 1,
+        flexBasis: 'auto',
+        minWidth: 0,
+      }}
+    >
+      {asset.standard === TokenStandard.none ? (
+        <NativeAssetPill />
+      ) : (
+        <Name
+          preferContractSymbol
+          type={NameType.ETHEREUM_ADDRESS}
+          value={asset.address}
+          variation={chainId}
+        />
+      )}
+    </Box>
   );
 };

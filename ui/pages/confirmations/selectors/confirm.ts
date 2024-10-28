@@ -1,10 +1,12 @@
 import { ApprovalType } from '@metamask/controller-utils';
 
+import { createSelector } from 'reselect';
 import { getPendingApprovals } from '../../../selectors/approvals';
+import { getPreferences } from '../../../selectors/selectors';
+import { createDeepEqualSelector } from '../../../selectors/util';
 import { ConfirmMetamaskState } from '../types/confirm';
 
 const ConfirmationApprovalTypes = [
-  ApprovalType.EthSign,
   ApprovalType.PersonalSign,
   ApprovalType.EthSignTypedData,
   ApprovalType.Transaction,
@@ -26,12 +28,17 @@ export function pendingConfirmationsSortedSelector(
     .sort((a1, a2) => a1.time - a2.time);
 }
 
-export function latestPendingConfirmationSelector(state: ConfirmMetamaskState) {
-  const pendingConfirmations = pendingConfirmationsSelector(state);
-  return pendingConfirmations.sort((a1, a2) => a2.time - a1.time)[0];
+const firstPendingConfirmationSelector = createSelector(
+  pendingConfirmationsSortedSelector,
+  (pendingConfirmations) => pendingConfirmations[0],
+);
+
+export const oldestPendingConfirmationSelector = createDeepEqualSelector(
+  firstPendingConfirmationSelector,
+  (firstPendingConfirmation) => firstPendingConfirmation,
+);
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export function getIsRedesignedConfirmationsDeveloperEnabled(state: any) {
+  return getPreferences(state).isRedesignedConfirmationsDeveloperEnabled;
 }
-
-export const confirmSelector = (state: ConfirmMetamaskState) => state.confirm;
-
-export const currentConfirmationSelector = (state: ConfirmMetamaskState) =>
-  state.confirm.currentConfirmation;

@@ -22,6 +22,8 @@ global.chrome = {
   },
 };
 
+global.indexedDB = {};
+
 nock.disableNetConnect();
 nock.enableNetConnect('localhost');
 if (typeof beforeEach === 'function') {
@@ -113,7 +115,7 @@ if (!window.crypto) {
 }
 if (!window.crypto.getRandomValues) {
   // eslint-disable-next-line node/global-require
-  window.crypto.getRandomValues = require('polyfill-crypto.getrandomvalues');
+  window.crypto.getRandomValues = require('crypto').webcrypto.getRandomValues;
 }
 
 // TextEncoder/TextDecoder
@@ -127,3 +129,8 @@ if (!window.navigator.clipboard) {
 if (!window.navigator.clipboard.writeText) {
   window.navigator.clipboard.writeText = () => undefined;
 }
+
+window.SVGPathElement = window.SVGPathElement || { prototype: {} };
+
+// scrollIntoView is not available in JSDOM
+window.HTMLElement.prototype.scrollIntoView = () => undefined;

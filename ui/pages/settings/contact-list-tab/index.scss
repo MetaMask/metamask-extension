@@ -159,6 +159,35 @@
         max-width: 100%;
         width: 100%;
       }
+
+      &__resolution-list,
+      &__single-resolution-list {
+        background: var(--color-background-default);
+        box-sizing: border-box;
+        box-shadow: var(--shadow-size-sm) var(--color-shadow-default);
+        border-radius: 6px;
+        position: absolute;
+        width: 309px;
+        z-index: 10;
+        top: 338px;
+        max-height: 96px;
+        overflow-y: auto;
+      }
+
+      &__resolution-list > *,
+      &__single-resolution-list > * {
+        padding: 8px;
+      }
+
+      &__resolution-list > * {
+        padding-bottom: 0;
+      }
+
+      &__resolution-list {
+        .multichain-send-page__recipient__item:last-child {
+          padding-bottom: 8px;
+        }
+      }
     }
   }
 
@@ -179,8 +208,9 @@
 
   &__add-contact {
     display: flex;
-    flex-flow: column nowrap;
+    flex-flow: column nowrap !important;
     padding-bottom: 0 !important;
+    width: 100%;
     height: 100%;
     padding-top: 0;
 

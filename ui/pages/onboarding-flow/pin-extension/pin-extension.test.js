@@ -11,6 +11,13 @@ const completeOnboardingStub = jest
   .fn()
   .mockImplementation(() => Promise.resolve());
 
+const toggleExternalServicesStub = jest.fn();
+
+jest.mock('react-router-dom', () => ({
+  ...jest.requireActual('react-router-dom'),
+  useHistory: jest.fn(() => []),
+}));
+
 describe('Creation Successful Onboarding View', () => {
   const mockStore = {
     metamask: {
@@ -18,9 +25,15 @@ describe('Creation Successful Onboarding View', () => {
         type: 'test',
       },
     },
+    appState: {
+      externalServicesOnboardingToggleState: true,
+    },
   };
   const store = configureMockStore([thunk])(mockStore);
-  setBackgroundConnection({ completeOnboarding: completeOnboardingStub });
+  setBackgroundConnection({
+    completeOnboarding: completeOnboardingStub,
+    toggleExternalServices: toggleExternalServicesStub,
+  });
 
   const pushMock = jest.fn();
   beforeAll(() => {

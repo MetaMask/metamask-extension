@@ -17,9 +17,6 @@ const render = (props = {}, state = {}) => {
   const store = configureStore({
     metamask: {
       ...mockState.metamask,
-      providerConfig: {
-        chainId: '0x99',
-      },
       ...state,
     },
   });
@@ -45,6 +42,11 @@ describe('AccountPicker', () => {
   it('displays a jazzicon per the setting', () => {
     const { container } = render({}, { useBlockie: false });
     expect(container.querySelector('svg')).toBeDefined();
+  });
+
+  it('should show the address in the account button for multichain', () => {
+    const { getByText } = render({ showAddress: true });
+    expect(getByText('0x0DCD5...3E7bc')).toBeInTheDocument();
   });
 
   it('should allow for an additional class name via className prop', () => {

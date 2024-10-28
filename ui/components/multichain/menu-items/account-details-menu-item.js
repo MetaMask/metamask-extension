@@ -30,7 +30,7 @@ export const AccountDetailsMenuItem = ({
       onClick={() => {
         dispatch(setAccountDetailsAddress(address));
         trackEvent({
-          event: MetaMetricsEventName.NavAccountDetailsOpened,
+          event: MetaMetricsEventName.AccountDetailsOpened,
           category: MetaMetricsEventCategory.Navigation,
           properties: {
             location: metricsLocation,

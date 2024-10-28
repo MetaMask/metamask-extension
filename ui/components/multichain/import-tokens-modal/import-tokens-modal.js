@@ -26,7 +26,7 @@ import {
   getTokenList,
   getCurrentNetwork,
   getTestNetworkBackgroundColor,
-  contractExchangeRateSelector,
+  getTokenExchangeRates,
 } from '../../../selectors';
 import {
   addImportedTokens,
@@ -73,6 +73,8 @@ import {
   isValidHexAddress,
   toChecksumHexAddress,
 } from '../../../../shared/modules/hexstring-utils';
+// TODO: Remove restricted import
+// eslint-disable-next-line import/no-restricted-paths
 import { addHexPrefix } from '../../../../app/scripts/lib/util';
 import { STATIC_MAINNET_TOKEN_LIST } from '../../../../shared/constants/tokens';
 import {
@@ -137,7 +139,7 @@ export const ImportTokensModal = ({ onClose }) => {
   const accounts = useSelector(getInternalAccounts);
   const tokens = useSelector((state) => state.metamask.tokens);
   const rpcPrefs = useSelector(getRpcPrefsForCurrentProvider);
-  const contractExchangeRates = useSelector(contractExchangeRateSelector);
+  const contractExchangeRates = useSelector(getTokenExchangeRates);
 
   const [customAddress, setCustomAddress] = useState('');
   const [customAddressError, setCustomAddressError] = useState(null);
