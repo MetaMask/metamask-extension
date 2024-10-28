@@ -48,6 +48,12 @@ module.exports = {
             from: './ui',
             message: 'Should not import from UI in shared',
           },
+          {
+            target: './ui',
+            from: './ui/ducks/send',
+            except: ['./ui/hooks/sendFlow'],
+            message: 'Should not be used outside of useSendFlow',
+          },
         ],
       },
     ],
