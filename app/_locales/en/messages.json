@@ -2464,6 +2464,9 @@
   "included": {
     "message": "included"
   },
+  "includedFees": {
+    "message": "Included fees"
+  },
   "infuraBlockedNotification": {
     "message": "MetaMask is unable to connect to the blockchain host. Review possible reasons $1.",
     "description": "$1 is a clickable link with with text defined by the 'here' key"
@@ -5567,6 +5570,9 @@
     "message": "Allow swapping of $1",
     "description": "Shows a user that they need to allow a token for swapping on their hardware wallet"
   },
+  "swapAmount": {
+    "message": "Swap amount"
+  },
   "swapAmountReceived": {
     "message": "Guaranteed amount"
   },
@@ -6124,6 +6130,12 @@
   },
   "totalFees": {
     "message": "Total fees"
+  },
+  "totalPaid": {
+    "message": "Total paid"
+  },
+  "totalReceived": {
+    "message": "Total received"
   },
   "totalVolume": {
     "message": "Total volume"

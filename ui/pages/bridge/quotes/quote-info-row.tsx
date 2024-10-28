@@ -21,14 +21,14 @@ export const QuoteInfoRow = ({
   secondaryDescription?: string;
 }) => {
   return (
-    <Box className="quote-card__info-row">
-      <Box className="quote-card__info-row__label">
+    <Box className="info-row">
+      <Box className="info-row__label">
         <Text>{label}</Text>
         {tooltipText && (
           <Tooltip
             position="top"
             title={tooltipText}
-            containerClassName="quote-card__info-row__label__tooltip"
+            containerClassName="info-row__label__tooltip"
             style={{ display: 'flex' }}
           >
             <Icon
@@ -40,8 +40,8 @@ export const QuoteInfoRow = ({
         )}
       </Box>
 
-      <Box className="quote-card__info-row__description">
-        <Box className="quote-card__info-row__description__secondary">
+      <Box className="info-row__description">
+        <Box className="info-row__description__secondary">
           <Text>{secondaryDescription}</Text>
         </Box>
         <Text>{description}</Text>
