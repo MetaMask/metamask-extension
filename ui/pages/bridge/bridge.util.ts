@@ -19,21 +19,29 @@ import {
   SWAPS_CHAINID_DEFAULT_TOKEN_MAP,
   SwapsTokenObject,
 } from '../../../shared/constants/swaps';
-import { TOKEN_VALIDATORS } from '../swaps/swaps.util';
 import {
   isSwapsDefaultTokenAddress,
   isSwapsDefaultTokenSymbol,
 } from '../../../shared/modules/swaps.utils';
 import {
+  BridgeAsset,
   BridgeFlag,
   FeatureFlagResponse,
+  FeeData,
+  FeeType,
+  Quote,
   QuoteRequest,
   QuoteResponse,
+  TxData,
 } from './types';
 import {
   FEATURE_FLAG_VALIDATORS,
   QUOTE_VALIDATORS,
+  TX_DATA_VALIDATORS,
+  TOKEN_VALIDATORS,
   validateResponse,
+  QUOTE_RESPONSE_VALIDATORS,
+  FEE_DATA_VALIDATORS,
 } from './utils/validators';
 
 const CLIENT_ID_HEADER = { 'X-Client-Id': BRIDGE_CLIENT_ID };
@@ -102,13 +110,9 @@ export async function fetchBridgeTokens(
     transformedTokens[nativeToken.address] = nativeToken;
   }
 
-  tokens.forEach((token: SwapsTokenObject) => {
+  tokens.forEach((token: unknown) => {
     if (
-      validateResponse<SwapsTokenObject, string>(
-        TOKEN_VALIDATORS,
-        token,
-        url,
-      ) &&
+      validateResponse<SwapsTokenObject>(TOKEN_VALIDATORS, token, url) &&
       !(
         isSwapsDefaultTokenSymbol(token.symbol, chainId) ||
         isSwapsDefaultTokenAddress(token.address, chainId)
@@ -143,8 +147,27 @@ export async function fetchBridgeQuotes(
     functionName: 'fetchBridgeQuotes',
   });
 
-  const filteredQuotes = quotes.filter((quote: QuoteResponse) =>
-    validateResponse<QuoteResponse, object>(QUOTE_VALIDATORS, quote, url),
-  );
+  const filteredQuotes = quotes.filter((quoteResponse: QuoteResponse) => {
+    const { quote, approval, trade } = quoteResponse;
+    return (
+      validateResponse<QuoteResponse>(
+        QUOTE_RESPONSE_VALIDATORS,
+        quoteResponse,
+        url,
+      ) &&
+      validateResponse<Quote>(QUOTE_VALIDATORS, quote, url) &&
+      validateResponse<BridgeAsset>(TOKEN_VALIDATORS, quote.srcAsset, url) &&
+      validateResponse<BridgeAsset>(TOKEN_VALIDATORS, quote.destAsset, url) &&
+      validateResponse<TxData>(TX_DATA_VALIDATORS, trade, url) &&
+      validateResponse<FeeData>(
+        FEE_DATA_VALIDATORS,
+        quote.feeData[FeeType.METABRIDGE],
+        url,
+      ) &&
+      (approval
+        ? validateResponse<TxData>(TX_DATA_VALIDATORS, approval, url)
+        : true)
+    );
+  });
   return filteredQuotes;
 }

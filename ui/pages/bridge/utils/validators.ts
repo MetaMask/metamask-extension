@@ -1,113 +1,93 @@
-import { validateData } from '../../../../shared/lib/swaps-utils';
-import { BridgeAsset, BridgeFlag, Quote, TxData } from '../types';
+import { isStrictHexString } from '@metamask/utils';
+import { isValidHexAddress as isValidHexAddress_ } from '@metamask/controller-utils';
+import {
+  truthyDigitString,
+  validateData,
+} from '../../../../shared/lib/swaps-utils';
+import { BridgeFlag } from '../types';
 
-type Validator<ExpectedResponse, ResponseDataType> = {
+type Validator<ExpectedResponse> = {
   property: keyof ExpectedResponse | string;
   type: string;
-  validator: (value: ResponseDataType) => boolean;
+  validator?: (value: unknown) => boolean;
 };
 
-export const validateResponse = <ExpectedResponse, ResponseDataType = unknown>(
-  validators: Validator<ExpectedResponse, ResponseDataType>[],
+export const validateResponse = <ExpectedResponse>(
+  validators: Validator<ExpectedResponse>[],
   data: unknown,
   urlUsed: string,
 ): data is ExpectedResponse => {
   return validateData(validators, data, urlUsed);
 };
 
-export const QUOTE_VALIDATORS = [
-  {
-    property: 'quote',
-    type: 'object',
-    validator: (v: unknown): v is Quote =>
-      typeof v === 'object' &&
-      v !== null &&
-      v !== undefined &&
-      ['requestId', 'srcTokenAmount', 'destTokenAmount', 'bridgeId'].every(
-        (k) => k in v && typeof v[k as keyof typeof v] === 'string',
-      ) &&
-      ['srcTokenAmount', 'destTokenAmount'].every(
-        (k) =>
-          k in v &&
-          typeof v[k as keyof typeof v] === 'string' &&
-          /^\d+$/u.test(v[k as keyof typeof v] as string),
-      ) &&
-      ['srcAsset', 'destAsset'].every(
-        (k) =>
-          k in v &&
-          typeof v[k as keyof typeof v] === 'object' &&
-          'address' in v[k as keyof typeof v] &&
-          typeof (v[k as keyof typeof v] as BridgeAsset).address === 'string' &&
-          'decimals' in v[k as keyof typeof v] &&
-          typeof (v[k as keyof typeof v] as BridgeAsset).decimals === 'number',
-      ),
-  },
-  {
-    property: 'approval',
-    type: 'object|undefined',
-    validator: (v: unknown): v is TxData | undefined =>
-      v === undefined ||
-      (v
-        ? typeof v === 'object' &&
-          'gasLimit' in v &&
-          typeof v.gasLimit === 'number' &&
-          'to' in v &&
-          typeof v.to === 'string' &&
-          'from' in v &&
-          typeof v.from === 'string' &&
-          'data' in v &&
-          typeof v.data === 'string'
-        : false),
-  },
-  {
-    property: 'trade',
-    type: 'object',
-    validator: (v: unknown): v is TxData =>
-      v
-        ? typeof v === 'object' &&
-          'gasLimit' in v &&
-          typeof v.gasLimit === 'number' &&
-          'to' in v &&
-          typeof v.to === 'string' &&
-          'from' in v &&
-          typeof v.from === 'string' &&
-          'data' in v &&
-          typeof v.data === 'string' &&
-          'value' in v &&
-          typeof v.value === 'string' &&
-          v.value.startsWith('0x')
-        : false,
-  },
-  {
-    property: 'estimatedProcessingTimeInSeconds',
-    type: 'number',
-    validator: (v: unknown): v is number[] =>
-      Object.values(v as { [s: string]: unknown }).every(
-        (i) => typeof i === 'number',
-      ),
-  },
-];
+export const isValidNumber = (v: unknown): v is number => typeof v === 'number';
+const isValidObject = (v: unknown): v is object =>
+  typeof v === 'object' && v !== null;
+const isValidString = (v: unknown): v is string =>
+  typeof v === 'string' && v.length > 0;
+const isValidHexAddress = (v: unknown) =>
+  isValidString(v) && isValidHexAddress_(v, { allowNonPrefixed: false });
 
 export const FEATURE_FLAG_VALIDATORS = [
-  {
-    property: BridgeFlag.EXTENSION_SUPPORT,
-    type: 'boolean',
-    validator: (v: unknown) => typeof v === 'boolean',
-  },
+  { property: BridgeFlag.EXTENSION_SUPPORT, type: 'boolean' },
   {
     property: BridgeFlag.NETWORK_SRC_ALLOWLIST,
     type: 'object',
     validator: (v: unknown): v is number[] =>
-      Object.values(v as { [s: string]: unknown }).every(
-        (i) => typeof i === 'number',
-      ),
+      isValidObject(v) && Object.values(v).every(isValidNumber),
   },
   {
     property: BridgeFlag.NETWORK_DEST_ALLOWLIST,
     type: 'object',
     validator: (v: unknown): v is number[] =>
-      Object.values(v as { [s: string]: unknown }).every(
-        (i) => typeof i === 'number',
-      ),
+      isValidObject(v) && Object.values(v).every(isValidNumber),
   },
+];
+
+export const TOKEN_VALIDATORS = [
+  { property: 'decimals', type: 'number' },
+  { property: 'address', type: 'string', validator: isValidHexAddress },
+  {
+    property: 'symbol',
+    type: 'string',
+    validator: (v: unknown) => isValidString(v) && v.length <= 12,
+  },
+];
+
+export const QUOTE_RESPONSE_VALIDATORS = [
+  { property: 'quote', type: 'object', validator: isValidObject },
+  { property: 'estimatedProcessingTimeInSeconds', type: 'number' },
+  {
+    property: 'approval',
+    type: 'object|undefined',
+    validator: (v: unknown) => v === undefined || isValidObject(v),
+  },
+  { property: 'trade', type: 'object', validator: isValidObject },
+];
+
+export const QUOTE_VALIDATORS = [
+  { property: 'requestId', type: 'string' },
+  { property: 'srcTokenAmount', type: 'string' },
+  { property: 'destTokenAmount', type: 'string' },
+  { property: 'bridgeId', type: 'string' },
+  { property: 'bridges', type: 'object', validator: isValidObject },
+  { property: 'srcChainId', type: 'number' },
+  { property: 'destChainId', type: 'number' },
+  { property: 'srcAsset', type: 'object', validator: isValidObject },
+  { property: 'destAsset', type: 'object', validator: isValidObject },
+  { property: 'feeData', type: 'object', validator: isValidObject },
+];
+
+export const FEE_DATA_VALIDATORS = [
+  { property: 'amount', type: 'string', validator: truthyDigitString },
+  { property: 'asset', type: 'object', validator: isValidObject },
+];
+
+export const TX_DATA_VALIDATORS = [
+  { property: 'chainId', type: 'number' },
+  { property: 'value', type: 'string', validator: isStrictHexString },
+  { property: 'gasLimit', type: 'number' },
+  { property: 'to', type: 'string', validator: isValidHexAddress },
+  { property: 'from', type: 'string', validator: isValidHexAddress },
+  { property: 'data', type: 'string', validator: isStrictHexString },
 ];

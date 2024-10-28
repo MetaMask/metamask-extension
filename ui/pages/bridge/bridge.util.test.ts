@@ -57,8 +57,10 @@ describe('Bridge utils', () => {
 
     it('should use fallback bridge feature flags if response is unexpected', async () => {
       const mockResponse = {
-        flag1: true,
-        flag2: false,
+        'extension-support': 25,
+        'src-network-allowlist': ['a', 'b', 1],
+        a: 'b',
+        'dest-network-allowlist': [1, 137, 59144, 11111],
       };
 
       (fetchWithCache as jest.Mock).mockResolvedValue(mockResponse);
@@ -183,9 +185,11 @@ describe('Bridge utils', () => {
     });
 
     it('should fetch bridge quotes successfully, with approvals', async () => {
-      (fetchWithCache as jest.Mock).mockResolvedValue(
-        mockBridgeQuotesErc20Erc20,
-      );
+      (fetchWithCache as jest.Mock).mockResolvedValue([
+        ...mockBridgeQuotesErc20Erc20,
+        { ...mockBridgeQuotesErc20Erc20[0], approval: null },
+        { ...mockBridgeQuotesErc20Erc20[0], trade: null },
+      ]);
 
       const result = await fetchBridgeQuotes({
         walletAddress: '0x123',
@@ -211,11 +215,30 @@ describe('Bridge utils', () => {
     });
 
     it('should filter out malformed bridge quotes', async () => {
-      (fetchWithCache as jest.Mock).mockResolvedValue(
-        mockBridgeQuotesErc20Erc20.map(
+      (fetchWithCache as jest.Mock).mockResolvedValue([
+        ...mockBridgeQuotesErc20Erc20,
+        ...mockBridgeQuotesErc20Erc20.map(
           ({ quote, ...restOfQuote }) => restOfQuote,
         ),
-      );
+        {
+          ...mockBridgeQuotesErc20Erc20[0],
+          quote: {
+            srcAsset: {
+              ...mockBridgeQuotesErc20Erc20[0].quote.srcAsset,
+              decimals: undefined,
+            },
+          },
+        },
+        {
+          ...mockBridgeQuotesErc20Erc20[1],
+          quote: {
+            srcAsset: {
+              ...mockBridgeQuotesErc20Erc20[1].quote.destAsset,
+              address: undefined,
+            },
+          },
+        },
+      ]);
 
       const result = await fetchBridgeQuotes({
         walletAddress: '0x123',
@@ -237,7 +260,7 @@ describe('Bridge utils', () => {
         functionName: 'fetchBridgeQuotes',
       });
 
-      expect(result).toStrictEqual([]);
+      expect(result).toStrictEqual(mockBridgeQuotesErc20Erc20);
     });
   });
 });
