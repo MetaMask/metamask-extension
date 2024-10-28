@@ -157,7 +157,6 @@ describe('Switch Ethereum Chain for two dapps', function () {
           tag: 'button',
         });
 
-        await driver.switchToWindowWithUrl(DAPP_ONE_URL);
         // Switch to Dapp One and connect it
         await driver.switchToWindowWithUrl(DAPP_URL);
         await driver.findClickableElement({
@@ -168,8 +167,6 @@ describe('Switch Ethereum Chain for two dapps', function () {
 
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
         const editButtons = await driver.findElements('[data-testid="edit"]');
-
-        assert.ok(editButtons.length > 0, 'Edit buttons are available');
 
         await editButtons[1].click();
 
@@ -306,10 +303,7 @@ describe('Switch Ethereum Chain for two dapps', function () {
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
         const editButtons = await driver.findElements('[data-testid="edit"]');
 
-        // Ensure there are edit buttons
-        assert.ok(editButtons.length > 0, 'Edit buttons are available');
-
-        // Click the first (0th) edit button
+        // Click the edit button for networks
         await editButtons[1].click();
 
         // Disconnect Mainnet
@@ -441,10 +435,7 @@ describe('Switch Ethereum Chain for two dapps', function () {
 
         const editButtons = await driver.findElements('[data-testid="edit"]');
 
-        // Ensure there are edit buttons
-        assert.ok(editButtons.length > 0, 'Edit buttons are available');
-
-        // Click the first (0th) edit button
+        // Click the edit button for networks
         await editButtons[1].click();
 
         // Disconnect Mainnet
