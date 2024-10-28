@@ -87,13 +87,15 @@ async function mockInfura(mockServer) {
 
 describe('PPOM Blockaid Alert - Set Trade farming order @no-mmi', function () {
   it('should show banner alert', async function () {
+    // we need to use localhost instead of the ip
+    // see issue: https://github.com/MetaMask/MetaMask-planning/issues/3560
     await withFixtures(
       {
         dapp: true,
         fixtures: new FixtureBuilder()
           .withNetworkControllerOnMainnet()
           .withPermissionControllerConnectedToTestDapp({
-            useLocalhostHostname: true, // we need to use localhost instead of the ip, so ppom flags malicious interactions
+            useLocalhostHostname: true,
           })
           .withPreferencesController({
             securityAlertsEnabled: true,

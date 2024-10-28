@@ -158,12 +158,14 @@ describe('Simple Send Security Alert - Blockaid @no-mmi', function () {
    */
   it('should show security alerts for malicious requests', async function () {
     await withFixtures(
+      // we need to use localhost instead of the ip
+      // see issue: https://github.com/MetaMask/MetaMask-planning/issues/3560
       {
         dapp: true,
         fixtures: new FixtureBuilder()
           .withNetworkControllerOnMainnet()
           .withPermissionControllerConnectedToTestDapp({
-            useLocalhostHostname: true, // we need to use localhost instead of the ip, so ppom flags malicious interactions
+            useLocalhostHostname: true,
           })
           .withPreferencesController({
             securityAlertsEnabled: true,
