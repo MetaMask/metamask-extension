@@ -102,7 +102,7 @@ export default class BridgeStatusController extends StaticIntervalPollingControl
     }
   };
 
-  startPollingForBridgeTxStatus = async (
+  startPollingForBridgeTxStatus = (
     fetchBridgeTxStatusArgs: Omit<FetchBridgeTxStatusArgs, 'completionTime'>,
   ) => {
     console.log('startPollingForBridgeTxStatus', { fetchBridgeTxStatusArgs });
@@ -209,6 +209,8 @@ export default class BridgeStatusController extends StaticIntervalPollingControl
     }
   };
 
+  // Wipes the bridge status for the given address and chainId
+  // Will match either source or destination chainId to the selectedChainId
   #wipeBridgeStatusByChainId = (address: string, selectedChainId: Hex) => {
     const sourceTxHashesToDelete = Object.keys(
       this.state.bridgeStatusState.txHistory,
