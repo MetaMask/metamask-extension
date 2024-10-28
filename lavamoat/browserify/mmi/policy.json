@@ -2071,6 +2071,7 @@
       "globals": {
         "TextEncoder": true,
         "URL": true,
+        "console.error": true,
         "fetch": true
       },
       "packages": {
