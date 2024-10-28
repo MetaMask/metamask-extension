@@ -98,7 +98,7 @@ describe('Privacy Mode', function () {
           '[data-testid="account-value-and-suffix"]',
         );
         const valueTextContent = await valueText.getText();
-        console.log('VALUE TEXT CONTENT', valueTextContent);
+
         assert.equal(valueTextContent, '••••••');
       },
     );
