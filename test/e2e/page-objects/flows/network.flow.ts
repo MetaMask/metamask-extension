@@ -13,7 +13,7 @@ import NetworkSwitchModalConfirmation from '../pages/dialog/network-switch-modal
 export const switchToNetworkFlow = async (
   driver: Driver,
   networkName: string,
-  toogleShowTestNetwork: boolean = false,
+  toggleShowTestNetwork: boolean = false,
 ) => {
   console.log(`Switch to network ${networkName} in header bar`);
   const headerNavbar = new HeaderNavbar(driver);
