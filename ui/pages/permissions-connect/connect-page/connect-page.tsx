@@ -107,7 +107,7 @@ export const ConnectPage: React.FC<ConnectPageProps> = ({
   const selectedNetworksList =
     selectedTestNetwork === undefined
       ? nonTestNetworks
-      : [...nonTestNetworks, ...[selectedTestNetwork]];
+      : [...nonTestNetworks, selectedTestNetwork];
   const defaultSelectedChainIds =
     requestedChainIds.length > 0
       ? requestedChainIds

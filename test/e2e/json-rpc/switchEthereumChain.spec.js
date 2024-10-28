@@ -181,7 +181,10 @@ describe('Switch Ethereum Chain for two dapps', function () {
 
         await driver.clickElement('[data-testid="connect-more-chains-button"]');
 
-        await driver.clickElement({ text: 'Connect', tag: 'button' });
+        await driver.clickElementAndWaitForWindowToClose({
+          text: 'Connect',
+          tag: 'button',
+        });
 
         // Switch to Dapp Two
         await driver.switchToWindowWithUrl(DAPP_ONE_URL);
