@@ -515,8 +515,6 @@ export default class MetamaskController extends EventEmitter {
         methodsRequiringNetworkSwitch.includes(method),
       clearPendingConfirmations,
       showApprovalRequest: () => {
-        // perhaps this can be handled in QueuedRequestController by adding
-        // a this.#processingRequestCount > 0 guard to this.#showApprovalRequest()?
         if (this.approvalController.getTotalApprovalCount() > 0) {
           opts.showUserConfirmation()
         }
