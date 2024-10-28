@@ -1167,6 +1167,14 @@
     "message": "Connected with $1",
     "description": "$1 represents account name"
   },
+  "connectedWithNetwork": {
+    "message": "$1 networks connected",
+    "description": "$1 represents network length"
+  },
+  "connectedWithNetworkName": {
+    "message": "Connected with $1",
+    "description": "$1 represents network name"
+  },
   "connectedWithNetworks": {
     "message": "$1 networks connected",
     "description": "$1 represents network length"
@@ -4463,6 +4471,10 @@
   "requestingForAccount": {
     "message": "Requesting for $1",
     "description": "Name of Account"
+  },
+  "requestingForNetwork": {
+    "message": "Requesting for $1",
+    "description": "Name of Network"
   },
   "requestsAwaitingAcknowledgement": {
     "message": "requests waiting to be acknowledged"
