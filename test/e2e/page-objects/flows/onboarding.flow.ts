@@ -28,7 +28,7 @@ export const createNewWalletOnboardingFlow = async (driver: Driver) => {
 };
 
 export const importSRPOnboardingFlow = async (driver: Driver) => {
-  console.log('start import srp onboarding flow ');
+  console.log("Starting the import of SRP onboarding flow");
   await driver.navigate();
   const startOnboardingPage = new StartOnboardingPage(driver);
   await startOnboardingPage.check_pageIsLoaded();
