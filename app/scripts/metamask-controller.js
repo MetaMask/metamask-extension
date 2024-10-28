@@ -5812,7 +5812,7 @@ export default class MetamaskController extends EventEmitter {
               },
             },
           ),
-        grantPermittedChainsPermissionIncremental: (chainIds) =>
+        grantPermittedChainsPermissionIncremental: (chainIds) => {
           this.permissionController.grantPermissionsIncremental({
             subject: { origin },
             approvedPermissions: {
@@ -5824,7 +5824,19 @@ export default class MetamaskController extends EventEmitter {
                 ],
               },
             },
-          }),
+          });
+          this.metaMetricsController.trackEvent({
+            category: MetaMetricsEventCategory.Network,
+            event: MetaMetricsEventName.NavNetworkSwitched,
+            properties: {
+              location: 'Switch Network From Dapp',
+              referrer: {
+                url: window.location.origin,
+              },
+            },
+          });
+        },
+
         requestPermissionsForOrigin: (requestedPermissions) =>
           this.permissionController.requestPermissions(
             { origin },
