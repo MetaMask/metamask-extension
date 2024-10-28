@@ -7,7 +7,7 @@ import SecureWalletPage from '../pages/onboarding/secure-wallet-page';
 import OnboardingCompletePage from '../pages/onboarding/onboarding-complete-page';
 
 export const createNewWalletOnboardingFlow = async (driver: Driver) => {
-  console.log('start creat new wallet onboarding flow ');
+  console.log("Starting the creation of a new wallet onboarding flow");
   await driver.navigate();
   const startOnboardingPage = new StartOnboardingPage(driver);
   await startOnboardingPage.check_pageIsLoaded();
