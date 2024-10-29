@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import { useSelector } from 'react-redux';
 import { isValidAddress } from 'ethereumjs-util';
 
@@ -14,11 +14,11 @@ import {
 import { ConfirmInfoSection } from '../../../../../../components/app/confirm/info/row/section';
 import { useI18nContext } from '../../../../../../hooks/useI18nContext';
 import { SignatureRequestType } from '../../../../types/confirm';
+import { useGetTokenStandardAndDetails } from '../../../../hooks/useGetTokenStandardAndDetails';
 import {
   isOrderSignatureRequest,
   isPermitSignatureRequest,
 } from '../../../../utils';
-import { fetchErc20Decimals } from '../../../../utils/token';
 import { useConfirmContext } from '../../../../context/confirm';
 import { selectUseTransactionSimulations } from '../../../../selectors/preferences';
 import { ConfirmInfoRowTypedSignData } from '../../row/typed-sign-data/typedSignData';
@@ -30,7 +30,6 @@ const TypedSignInfo: React.FC = () => {
   const useTransactionSimulations = useSelector(
     selectUseTransactionSimulations,
   );
-  const [decimals, setDecimals] = useState<number>(0);
 
   if (!currentConfirmation?.msgParams) {
     return null;
@@ -43,18 +42,10 @@ const TypedSignInfo: React.FC = () => {
 
   const isPermit = isPermitSignatureRequest(currentConfirmation);
   const isOrder = isOrderSignatureRequest(currentConfirmation);
+  const tokenContract = isPermit || isOrder ? verifyingContract : undefined;
+  const { decimalsNumber } = useGetTokenStandardAndDetails(tokenContract);
+
   const chainId = currentConfirmation.chainId as string;
-
-  useEffect(() => {
-    (async () => {
-      if (!isPermit && !isOrder) {
-        return;
-      }
-      const tokenDecimals = await fetchErc20Decimals(verifyingContract);
-      setDecimals(tokenDecimals);
-    })();
-  }, [verifyingContract]);
-
   const msgData = currentConfirmation.msgParams?.data as string;
 
   return (
@@ -95,7 +86,7 @@ const TypedSignInfo: React.FC = () => {
         >
           <ConfirmInfoRowTypedSignData
             data={msgData}
-            tokenDecimals={decimals}
+            tokenDecimals={decimalsNumber}
             chainId={chainId}
           />
         </ConfirmInfoRow>
