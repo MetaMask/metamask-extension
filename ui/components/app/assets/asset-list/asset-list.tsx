@@ -122,7 +122,7 @@ const AssetList = ({ onClickAsset, showTokensLinks }: AssetListProps) => {
             event: MetaMetricsEventName.TokenScreenOpened,
             category: MetaMetricsEventCategory.Navigation,
             properties: {
-              token_symbol: primaryCurrencyProperties.suffix,
+              token_symbol: primaryCurrencyProperties.suffix ?? null,
               location: 'Home',
             },
           });

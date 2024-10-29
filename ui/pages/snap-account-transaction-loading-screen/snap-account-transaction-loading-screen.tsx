@@ -21,8 +21,8 @@ const SnapAccountTransactionLoadingScreen = ({
       event: MetaMetricsEventName.SnapAccountTransactionLoadingViewed,
       category: MetaMetricsEventCategory.Transactions,
       properties: {
-        snap_id: internalAccount?.metadata.snap?.id,
-        snap_name: internalAccount?.metadata.snap?.name,
+        snap_id: internalAccount?.metadata.snap?.id ?? null,
+        snap_name: internalAccount?.metadata.snap?.name ?? null,
         account_type: MetaMetricsEventAccountType.Snap,
       },
     });

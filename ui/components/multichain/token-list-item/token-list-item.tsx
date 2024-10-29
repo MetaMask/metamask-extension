@@ -185,7 +185,7 @@ export const TokenListItem = ({
             text: 'Stake',
             // FIXME: This might not be a number for non-EVM accounts
             chain_id: chainId,
-            token_symbol: tokenSymbol,
+            token_symbol: tokenSymbol ?? null,
           },
         });
       }}
@@ -250,7 +250,7 @@ export const TokenListItem = ({
                 location: 'Home',
                 // FIXME: This might not be a number for non-EVM accounts
                 chain_id: chainId,
-                token_symbol: tokenSymbol,
+                token_symbol: tokenSymbol ?? null,
               },
             });
           },

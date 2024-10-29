@@ -65,15 +65,18 @@ const HeaderInfo = () => {
 
   const isSignature = isSignatureTransactionType(currentConfirmation);
 
-  const eventProps = isSignature
+  const eventProps:
+    | { location: string; signature_type: string | null }
+    | { location: string; transaction_type: string | null } = isSignature
     ? {
         location: MetaMetricsEventLocation.SignatureConfirmation,
-        signature_type: (currentConfirmation as SignatureRequestType)?.msgParams
-          ?.signatureMethod,
+        signature_type:
+          (currentConfirmation as SignatureRequestType)?.msgParams
+            ?.signatureMethod ?? null,
       }
     : {
         location: MetaMetricsEventLocation.Transaction,
-        transaction_type: currentConfirmation?.type,
+        transaction_type: currentConfirmation?.type ?? null,
       };
 
   function trackAccountModalOpened() {

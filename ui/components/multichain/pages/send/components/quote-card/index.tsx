@@ -90,7 +90,7 @@ export function QuoteCard({ scrollRef }: QuoteCardProps) {
           event: MetaMetricsEventName.sendSwapQuoteReceived,
           category: MetaMetricsEventCategory.Send,
           properties: {
-            is_first_fetch: isQuoteJustLoaded,
+            is_first_fetch: isQuoteJustLoaded ?? false,
           },
           sensitiveProperties: {
             ...sendAnalytics,

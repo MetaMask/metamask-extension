@@ -169,9 +169,9 @@ function useIncompleteAssetEvent(
       event: MetaMetricsEventName.SimulationIncompleteAssetDisplayed,
       category: MetaMetricsEventCategory.Transactions,
       properties: {
-        asset_address: change.asset.address,
+        asset_address: change.asset.address ?? null,
         asset_petname: getPetnameType(change, displayName),
-        asset_symbol: displayName?.contractDisplayName,
+        asset_symbol: displayName?.contractDisplayName ?? null,
         asset_type: getAssetType(change.asset.standard),
         fiat_conversion_available: change.fiatAmount
           ? FiatType.Available
