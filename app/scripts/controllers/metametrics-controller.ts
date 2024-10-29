@@ -319,6 +319,23 @@ export type MetaMetricsControllerOptions = {
   captureException?: CaptureException;
 };
 
+/**
+ * Function to get default state of the {@link MetaMetricsController}.
+ */
+export const getDefaultMetaMetricsControllerState =
+  (): MetaMetricsControllerState => ({
+    participateInMetaMetrics: null,
+    metaMetricsId: null,
+    dataCollectionForMarketing: null,
+    marketingCampaignCookieId: null,
+    latestNonAnonymousEventTimestamp: 0,
+    eventsBeforeMetricsOptIn: [],
+    traits: {},
+    previousUserTraits: {},
+    fragments: {},
+    segmentApiCalls: {},
+  });
+
 export default class MetaMetricsController extends BaseController<
   typeof controllerName,
   MetaMetricsControllerState,
@@ -362,20 +379,12 @@ export default class MetaMetricsController extends BaseController<
     extension,
     captureException = defaultCaptureException,
   }: MetaMetricsControllerOptions) {
-    const segmentApiCalls = state.segmentApiCalls || {};
+    const segmentApiCalls = state?.segmentApiCalls || {};
     super({
       name: controllerName,
       metadata: controllerMetadata,
       state: {
-        participateInMetaMetrics: null,
-        metaMetricsId: null,
-        dataCollectionForMarketing: null,
-        marketingCampaignCookieId: null,
-        latestNonAnonymousEventTimestamp: 0,
-        eventsBeforeMetricsOptIn: [],
-        traits: {},
-        previousUserTraits: {},
-        fragments: {},
+        ...getDefaultMetaMetricsControllerState(),
         ...state,
         segmentApiCalls: {
           ...segmentApiCalls,
