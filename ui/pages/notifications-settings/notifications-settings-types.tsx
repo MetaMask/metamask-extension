@@ -101,6 +101,7 @@ export function NotificationsSettingsTypes({
           onToggle={onToggleFeatureAnnouncements}
           error={errorFeatureAnnouncements}
           disabled={disabled}
+          data-testid="product-announcements-toggle"
         >
           <NotificationsSettingsType
             icon={IconName.Star}
