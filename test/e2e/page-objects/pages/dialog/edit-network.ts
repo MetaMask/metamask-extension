@@ -35,6 +35,11 @@ class EditNetworkModal {
     console.log('Select network dialog is loaded');
   }
 
+  /**
+   * Selects an RPC from the dropdown in the edit network modal.
+   *
+   * @param rpcName - The name of the RPC to select.
+   */
   async selectRPCInEditNetworkModal(rpcName: string): Promise<void> {
     console.log(`Select RPC ${rpcName} in edit network modal`);
     await this.driver.clickElement(this.editModalRpcDropDownButton);
