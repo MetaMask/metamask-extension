@@ -1,4 +1,5 @@
 import { useMemo } from 'react';
+import { TransactionMeta } from '@metamask/transaction-controller';
 
 import { Alert } from '../../../../../ducks/confirm-alerts/confirm-alerts';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
@@ -10,17 +11,8 @@ export function useResimulationAlert(): Alert[] {
   const t = useI18nContext();
   const { currentConfirmation } = useConfirmContext();
 
-  if (!currentConfirmation) {
-    return [];
-  }
-
-  const { simulationData } = currentConfirmation;
-
-  if (!simulationData) {
-    return [];
-  }
-
-  const { isUpdatedAfterSecurityCheck } = simulationData;
+  const isUpdatedAfterSecurityCheck = (currentConfirmation as TransactionMeta)
+    ?.simulationData?.isUpdatedAfterSecurityCheck;
 
   return useMemo(() => {
     if (!isUpdatedAfterSecurityCheck) {
@@ -38,5 +30,5 @@ export function useResimulationAlert(): Alert[] {
         severity: Severity.Danger,
       },
     ];
-  }, [isUpdatedAfterSecurityCheck]);
+  }, [isUpdatedAfterSecurityCheck, t]);
 }

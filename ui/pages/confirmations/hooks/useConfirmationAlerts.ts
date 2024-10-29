@@ -35,11 +35,11 @@ function useTransactionAlerts(): Alert[] {
   const networkBusyAlerts = useNetworkBusyAlerts();
   const noGasPriceAlerts = useNoGasPriceAlerts();
   const pendingTransactionAlerts = usePendingTransactionAlerts();
+  const resimulationAlert = useResimulationAlert();
   ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
   const signingOrSubmittingAlerts = useSigningOrSubmittingAlerts();
   ///: END:ONLY_INCLUDE_IF
   const queuedConfirmationsAlerts = useQueuedConfirmationsAlerts();
-  const resimulationAlert = useResimulationAlert();
   return useMemo(
     () => [
       ...gasEstimateFailedAlerts,
