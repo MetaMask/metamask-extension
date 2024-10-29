@@ -69,7 +69,8 @@ import { MetaMetricsContext } from '../../../contexts/metametrics';
 import { ActivityListItem } from '../../multichain';
 import { abortTransactionSigning } from '../../../store/actions';
 import { getIsSmartTransaction } from '../../../../shared/modules/selectors';
-import useSourceChainBridgeData from './useSourceChainBridgeData';
+import useBridgeData from './useBridgeData';
+import BridgeProcessSteps from './BridgeProcessSteps';
 
 function TransactionListItemInner({
   transactionGroup,
@@ -93,7 +94,7 @@ function TransactionListItemInner({
   const isBridgeTx =
     transactionGroup.initialTransaction.type === TransactionType.bridge;
   const { bridgeTitleSuffix, bridgeTxHistoryItem, isBridgeComplete } =
-    useSourceChainBridgeData({
+    useBridgeData({
       transactionGroup,
     });
 
@@ -347,25 +348,10 @@ function TransactionListItemInner({
         }
         subtitle={
           isBridgeTx && isBridgeComplete === false ? (
-            <div>
-              <div>status: {bridgeTxHistoryItem?.status?.status}</div>
-              <div>
-                tx 1:{' '}
-                {`${(
-                  bridgeTxHistoryItem?.status?.srcChain.txHash ||
-                  transactionGroup.initialTransaction.hash
-                ).substring(0, 6)}...`}
-                , {transactionGroup.initialTransaction.status}
-              </div>
-              <div>
-                tx 2:{' '}
-                {`${bridgeTxHistoryItem?.status?.destChain.txHash?.substring(
-                  0,
-                  6,
-                )}...`}
-                ...
-              </div>
-            </div>
+            <BridgeProcessSteps
+              bridgeTxHistoryItem={bridgeTxHistoryItem}
+              transactionGroup={transactionGroup}
+            />
           ) : (
             <TransactionStatusLabel
               statusOnly
