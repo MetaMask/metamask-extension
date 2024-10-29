@@ -350,6 +350,13 @@ workflows:
               only: develop
           requires:
             - prep-build-ts-migration-dashboard
+      - waiter
+      - rerun-workflow-from-failed:
+          requires:
+            - waiter
+          #filters:
+            #branches:
+              #only: develop
 
   locales_only:
     when:
@@ -925,6 +932,15 @@ jobs:
           paths:
             - development/ts-migration-dashboard/build/final
 
+  rerun-workflow-from-failed:
+    executor: node-browsers-small
+    steps:
+      - attach_workspace:
+          at: .
+      - run:
+          name: Rerun workflow from failed
+          command: npx tsx .circleci/scripts/rerun-ci-workflow.ts
+
   test-yarn-dedupe:
     executor: node-browsers-small
     steps:
@@ -1024,6 +1040,10 @@ jobs:
       - run:
           name: yarn audit
           command: yarn audit
+      - run:
+          name: Run on fail status
+          command: |
+              echo "I am result of above failed job"
 
   test-deps-depcheck:
     executor: node-browsers-small
@@ -1724,3 +1744,10 @@ jobs:
           root: .
           paths:
             - mmi_trigger.env
+
+  waiter:
+    executor: node-browsers-small
+    steps:
+      - run:
+          name: Wait for 1 hour
+          command: sleep 3600
