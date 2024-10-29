@@ -1,3 +1,4 @@
+import { Json } from '@metamask/utils';
 import type { EnvironmentType } from './app';
 import { LedgerTransportTypes } from './hardware-wallets';
 
@@ -92,13 +93,13 @@ export type MetaMetricsEventPayload = {
   /**
    * Custom values to track. Keys in this object must be `snake_case`.
    */
-  properties?: object;
+  properties?: Record<string, Json>;
   /**
    * Sensitive values to track. These properties will be sent in an additional
    * event that excludes the user's `metaMetricsId`. Keys in this object must be
    * in `snake_case`.
    */
-  sensitiveProperties?: object;
+  sensitiveProperties?: Record<string, Json>;
   /**
    * Amount of currency that the event creates in revenue for MetaMask.
    */
@@ -201,13 +202,13 @@ export type MetaMetricsEventFragment = {
   /**
    * Custom values to track. Keys in this object must be `snake_case`.
    */
-  properties?: object;
+  properties?: Record<string, Json>;
   /**
    * Sensitive values to track. These properties will be sent in an additional
    * event that excludes the user's `metaMetricsId`. Keys in this object must be
    * in `snake_case`.
    */
-  sensitiveProperties?: object;
+  sensitiveProperties?: Record<string, Json>;
   /**
    * Amount of currency that the event creates in revenue for MetaMask.
    */
@@ -846,6 +847,7 @@ export enum QueueType {
 }
 
 export enum MetaMetricsEventAccountImportType {
+  // eslint-disable-next-line @typescript-eslint/no-shadow
   Json = 'json',
   PrivateKey = 'private_key',
   Srp = 'srp',

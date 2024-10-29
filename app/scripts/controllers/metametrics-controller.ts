@@ -8,7 +8,6 @@ import {
   size,
   sum,
 } from 'lodash';
-import { ObservableStore } from '@metamask/obs-store';
 import { bufferToHex, keccak } from 'ethereumjs-util';
 import { v4 as uuidv4 } from 'uuid';
 import { NameControllerState, NameType } from '@metamask/name-controller';
@@ -19,7 +18,13 @@ import {
   isErrorWithMessage,
   isErrorWithStack,
 } from '@metamask/utils';
-import { NetworkState } from '@metamask/network-controller';
+import {
+  NetworkClientId,
+  NetworkControllerGetNetworkClientByIdAction,
+  NetworkControllerGetStateAction,
+  NetworkControllerNetworkDidChangeEvent,
+  NetworkState,
+} from '@metamask/network-controller';
 import { Browser } from 'webextension-polyfill';
 import {
   Nft,
@@ -27,6 +32,12 @@ import {
   TokensControllerState,
 } from '@metamask/assets-controllers';
 import { captureException as sentryCaptureException } from '@sentry/browser';
+import {
+  BaseController,
+  ControllerGetStateAction,
+  ControllerStateChangeEvent,
+  RestrictedControllerMessenger,
+} from '@metamask/base-controller';
 import { AddressBookControllerState } from '@metamask/address-book-controller';
 import { ENVIRONMENT_TYPE_BACKGROUND } from '../../../shared/constants/app';
 import {
@@ -60,7 +71,14 @@ import Analytics from '../lib/segment/analytics';
 import { ENVIRONMENT } from '../../../development/build/constants';
 ///: END:ONLY_INCLUDE_IF
 
-import type { PreferencesControllerState } from './preferences-controller';
+import type {
+  PreferencesControllerState,
+  PreferencesControllerGetStateAction,
+  PreferencesControllerStateChangeEvent,
+} from './preferences-controller';
+
+// Unique name for the controller
+const controllerName = 'MetaMetricsController';
 
 const EXTENSION_UNINSTALL_URL = 'https://metamask.io/uninstalled';
 
@@ -155,6 +173,56 @@ export type MetaMaskState = {
 };
 
 /**
+ * {@link MetaMetricsController}'s metadata.
+ *
+ * This allows us to choose if fields of the state should be persisted or not
+ * using the `persist` flag; and if they can be sent to Sentry or not, using
+ * the `anonymous` flag.
+ */
+const controllerMetadata = {
+  metaMetricsId: {
+    persist: true,
+    anonymous: true,
+  },
+  participateInMetaMetrics: {
+    persist: true,
+    anonymous: true,
+  },
+  latestNonAnonymousEventTimestamp: {
+    persist: true,
+    anonymous: true,
+  },
+  fragments: {
+    persist: true,
+    anonymous: false,
+  },
+  eventsBeforeMetricsOptIn: {
+    persist: true,
+    anonymous: false,
+  },
+  traits: {
+    persist: true,
+    anonymous: false,
+  },
+  previousUserTraits: {
+    persist: true,
+    anonymous: false,
+  },
+  dataCollectionForMarketing: {
+    persist: true,
+    anonymous: false,
+  },
+  marketingCampaignCookieId: {
+    persist: true,
+    anonymous: true,
+  },
+  segmentApiCalls: {
+    persist: true,
+    anonymous: false,
+  },
+};
+
+/**
  * The state that MetaMetricsController stores.
  *
  * @property metaMetricsId - The user's metaMetricsId that will be attached to all non-anonymized event payloads
@@ -188,28 +256,74 @@ export type MetaMetricsControllerState = {
   >;
 };
 
+/**
+ * Returns the state of the {@link MetaMetricsController}.
+ */
+export type MetaMetricsControllerGetStateAction = ControllerGetStateAction<
+  typeof controllerName,
+  MetaMetricsControllerState
+>;
+
+/**
+ * Actions exposed by the {@link MetaMetricsController}.
+ */
+export type MetaMetricsControllerActions = MetaMetricsControllerGetStateAction;
+
+/**
+ * Event emitted when the state of the {@link MetaMetricsController} changes.
+ */
+export type MetaMetricsControllerStateChangeEvent = ControllerStateChangeEvent<
+  typeof controllerName,
+  MetaMetricsControllerState
+>;
+
+export type MetaMetricsControllerEvents = MetaMetricsControllerStateChangeEvent;
+
+/**
+ * Actions that this controller is allowed to call.
+ */
+export type AllowedActions =
+  | PreferencesControllerGetStateAction
+  | NetworkControllerGetStateAction
+  | NetworkControllerGetNetworkClientByIdAction;
+
+/**
+ * Events that this controller is allowed to subscribe.
+ */
+export type AllowedEvents =
+  | PreferencesControllerStateChangeEvent
+  | NetworkControllerNetworkDidChangeEvent;
+
+/**
+ * Messenger type for the {@link MetaMetricsController}.
+ */
+export type MetaMetricsControllerMessenger = RestrictedControllerMessenger<
+  typeof controllerName,
+  MetaMetricsControllerActions | AllowedActions,
+  MetaMetricsControllerEvents | AllowedEvents,
+  AllowedActions['type'],
+  AllowedEvents['type']
+>;
+
 type CaptureException =
   | typeof sentryCaptureException
   | ((err: unknown) => void);
 
 export type MetaMetricsControllerOptions = {
-  initState: Partial<MetaMetricsControllerState>;
+  state: Partial<MetaMetricsControllerState>;
+  messenger: MetaMetricsControllerMessenger;
   segment: Analytics;
-  preferencesControllerState: PreferencesControllerState;
-  onPreferencesStateChange: (
-    listener: (state: PreferencesControllerState) => void,
-  ) => void;
-  onNetworkDidChange: (listener: (networkState: NetworkState) => void) => void;
-  getCurrentChainId: () => Hex;
   version: string;
   environment: string;
   extension: Browser;
   captureException?: CaptureException;
 };
 
-export default class MetaMetricsController {
-  store: ObservableStore<MetaMetricsControllerState>;
-
+export default class MetaMetricsController extends BaseController<
+  typeof controllerName,
+  MetaMetricsControllerState,
+  MetaMetricsControllerMessenger
+> {
   #captureException: CaptureException;
 
   chainId: Hex;
@@ -230,32 +344,48 @@ export default class MetaMetricsController {
 
   /**
    * @param options
+   * @param options.state - Initial controller state.
+   * @param options.messenger - Messenger used to communicate with BaseV2 controller.
    * @param options.segment - an instance of analytics for tracking
    * events that conform to the new MetaMetrics tracking plan.
-   * @param options.preferencesControllerState - The state of preferences controller
-   * @param options.onPreferencesStateChange - Used to attach a listener to the
-   * stateChange event emitted by the PreferencesController
-   * @param options.onNetworkDidChange - Used to attach a listener to the
-   * networkDidChange event emitted by the networkController
-   * @param options.getCurrentChainId - Gets the current chain id from the network controller.
    * @param options.version - The version of the extension
    * @param options.environment - The environment the extension is running in
    * @param options.extension - webextension-polyfill
-   * @param options.initState - State to initialized with
    * @param options.captureException
    */
   constructor({
+    state,
+    messenger,
     segment,
-    preferencesControllerState,
-    onPreferencesStateChange,
-    onNetworkDidChange,
-    getCurrentChainId,
     version,
     environment,
-    initState,
     extension,
     captureException = defaultCaptureException,
   }: MetaMetricsControllerOptions) {
+    const segmentApiCalls = state?.segmentApiCalls || {};
+    super({
+      name: controllerName,
+      metadata: controllerMetadata,
+      state: {
+        participateInMetaMetrics: null,
+        metaMetricsId: null,
+        dataCollectionForMarketing: null,
+        marketingCampaignCookieId: null,
+        latestNonAnonymousEventTimestamp: 0,
+        eventsBeforeMetricsOptIn: [],
+        traits: {},
+        previousUserTraits: {},
+        ...state,
+        fragments: {
+          ...state?.fragments,
+        },
+        segmentApiCalls: {
+          ...segmentApiCalls,
+        },
+      },
+      messenger,
+    });
+
     this.#captureException = (err: unknown) => {
       const message = getErrorMessage(err);
       // This is a temporary measure. Currently there are errors flooding sentry due to a problem in how we are tracking anonymousId
@@ -264,7 +394,10 @@ export default class MetaMetricsController {
         captureException(err);
       }
     };
-    this.chainId = getCurrentChainId();
+    this.chainId = this.#getCurrentChainId();
+    const preferencesControllerState = this.messagingSystem.call(
+      'PreferencesController:getState',
+    );
     this.locale = preferencesControllerState.currentLocale.replace('_', '-');
     this.version =
       environment === 'production' ? version : `${version}-${environment}`;
@@ -275,34 +408,21 @@ export default class MetaMetricsController {
     this.#selectedAddress = preferencesControllerState.selectedAddress;
     ///: END:ONLY_INCLUDE_IF
 
-    const abandonedFragments = omitBy(initState?.fragments, 'persist');
-    const segmentApiCalls = initState?.segmentApiCalls || {};
+    const abandonedFragments = omitBy(state?.fragments, 'persist');
 
-    this.store = new ObservableStore({
-      participateInMetaMetrics: null,
-      metaMetricsId: null,
-      dataCollectionForMarketing: null,
-      marketingCampaignCookieId: null,
-      latestNonAnonymousEventTimestamp: 0,
-      eventsBeforeMetricsOptIn: [],
-      traits: {},
-      previousUserTraits: {},
-      ...initState,
-      fragments: {
-        ...initState?.fragments,
+    this.messagingSystem.subscribe(
+      'PreferencesController:stateChange',
+      ({ currentLocale }) => {
+        this.locale = currentLocale?.replace('_', '-');
       },
-      segmentApiCalls: {
-        ...segmentApiCalls,
+    );
+
+    this.messagingSystem.subscribe(
+      'NetworkController:networkDidChange',
+      ({ selectedNetworkClientId }) => {
+        this.chainId = this.#getCurrentChainId(selectedNetworkClientId);
       },
-    });
-
-    onPreferencesStateChange(({ currentLocale }) => {
-      this.locale = currentLocale?.replace('_', '-');
-    });
-
-    onNetworkDidChange(() => {
-      this.chainId = getCurrentChainId();
-    });
+    );
     this.#segment = segment;
 
     // Track abandoned fragments that weren't properly cleaned up.
@@ -361,8 +481,27 @@ export default class MetaMetricsController {
     }
   }
 
+  /**
+   * Gets the current chain ID.
+   *
+   * @param "networkClientId" - The network client ID to get the chain ID for.
+   */
+  #getCurrentChainId(networkClientId?: NetworkClientId): Hex {
+    const selectedNetworkClientId =
+      networkClientId ||
+      this.messagingSystem.call('NetworkController:getState')
+        .selectedNetworkClientId;
+    const {
+      configuration: { chainId },
+    } = this.messagingSystem.call(
+      'NetworkController:getNetworkClientById',
+      selectedNetworkClientId,
+    );
+    return chainId;
+  }
+
   finalizeAbandonedFragments(): void {
-    Object.values(this.store.getState().fragments).forEach((fragment) => {
+    Object.values(this.state.fragments).forEach((fragment) => {
       if (
         fragment.timeout &&
         fragment.lastUpdated &&
@@ -406,19 +545,16 @@ export default class MetaMetricsController {
       );
     }
 
-    const { fragments } = this.store.getState();
-
     const id = options.uniqueIdentifier ?? uuidv4();
     const fragment = {
-      id,
       ...options,
+      id,
       lastUpdated: Date.now(),
     };
-    this.store.updateState({
-      fragments: {
-        ...fragments,
-        [id]: fragment,
-      },
+
+    this.update((state) => {
+      // @ts-expect-error this is caused by a bug in Immer, not being able to handle recursive types like Json
+      state.fragments[id] = fragment;
     });
 
     if (fragment.initialEvent) {
@@ -448,11 +584,7 @@ export default class MetaMetricsController {
    * @param id - id of fragment to retrieve
    */
   getEventFragmentById(id: string): MetaMetricsEventFragment {
-    const { fragments } = this.store.getState();
-
-    const fragment = fragments[id];
-
-    return fragment;
+    return this.state.fragments[id];
   }
 
   /**
@@ -465,22 +597,15 @@ export default class MetaMetricsController {
     id: string,
     payload: Partial<MetaMetricsEventFragment>,
   ): void {
-    const { fragments } = this.store.getState();
-
-    const fragment = fragments[id];
-
-    if (!fragment) {
+    if (!this.state.fragments[id]) {
       throw new Error(`Event fragment with id ${id} does not exist.`);
     }
 
-    this.store.updateState({
-      fragments: {
-        ...fragments,
-        [id]: merge(fragments[id], {
-          ...payload,
-          lastUpdated: Date.now(),
-        }),
-      },
+    this.update((state) => {
+      state.fragments[id] = merge(state.fragments[id], {
+        ...payload,
+        lastUpdated: Date.now(),
+      });
     });
   }
 
@@ -507,7 +632,7 @@ export default class MetaMetricsController {
       referrer?: MetaMetricsReferrerObject;
     } = {},
   ): void {
-    const fragment = this.store.getState().fragments[id];
+    const fragment = this.state.fragments[id];
     if (!fragment) {
       throw new Error(`Funnel with id ${id} does not exist.`);
     }
@@ -535,9 +660,9 @@ export default class MetaMetricsController {
         ? `${fragment.uniqueIdentifier}-${abandoned ? 'failure' : 'success'}`
         : undefined,
     });
-    const { fragments } = this.store.getState();
-    delete fragments[id];
-    this.store.updateState({ fragments });
+    this.update((state) => {
+      delete state.fragments[id];
+    });
   }
 
   /**
@@ -607,7 +732,10 @@ export default class MetaMetricsController {
         ? this.generateMetaMetricsId()
         : existingMetaMetricsId;
 
-    this.store.updateState({ participateInMetaMetrics, metaMetricsId });
+    this.update((state) => {
+      state.participateInMetaMetrics = participateInMetaMetrics;
+      state.metaMetricsId = metaMetricsId;
+    });
 
     if (participateInMetaMetrics) {
       this.trackEventsAfterMetricsOptIn();
@@ -633,7 +761,9 @@ export default class MetaMetricsController {
   ): MetaMetricsControllerState['metaMetricsId'] {
     const { metaMetricsId } = this.state;
 
-    this.store.updateState({ dataCollectionForMarketing });
+    this.update((state) => {
+      state.dataCollectionForMarketing = dataCollectionForMarketing;
+    });
 
     if (!dataCollectionForMarketing && this.state.marketingCampaignCookieId) {
       this.setMarketingCampaignCookieId(null);
@@ -643,11 +773,9 @@ export default class MetaMetricsController {
   }
 
   setMarketingCampaignCookieId(marketingCampaignCookieId: string | null): void {
-    this.store.updateState({ marketingCampaignCookieId });
-  }
-
-  get state(): MetaMetricsControllerState {
-    return this.store.getState();
+    this.update((state) => {
+      state.marketingCampaignCookieId = marketingCampaignCookieId;
+    });
   }
 
   /**
@@ -806,7 +934,7 @@ export default class MetaMetricsController {
 
   // Track all queued events after a user opted into metrics.
   trackEventsAfterMetricsOptIn(): void {
-    const { eventsBeforeMetricsOptIn } = this.store.getState();
+    const { eventsBeforeMetricsOptIn } = this.state;
     eventsBeforeMetricsOptIn.forEach((eventBeforeMetricsOptIn) => {
       this.trackEvent(eventBeforeMetricsOptIn);
     });
@@ -814,24 +942,23 @@ export default class MetaMetricsController {
 
   // Once we track queued events after a user opts into metrics, we want to clear the event queue.
   clearEventsAfterMetricsOptIn(): void {
-    this.store.updateState({
-      eventsBeforeMetricsOptIn: [],
+    this.update((state) => {
+      state.eventsBeforeMetricsOptIn = [];
     });
   }
 
   // It adds an event into a queue, which is only tracked if a user opts into metrics.
   addEventBeforeMetricsOptIn(event: MetaMetricsEventPayload): void {
-    const prevState = this.store.getState().eventsBeforeMetricsOptIn;
-    this.store.updateState({
-      eventsBeforeMetricsOptIn: [...prevState, event],
+    const prevState = this.state.eventsBeforeMetricsOptIn;
+    this.update((state) => {
+      state.eventsBeforeMetricsOptIn = [...prevState, event];
     });
   }
 
   // Add or update traits for tracking.
   updateTraits(newTraits: MetaMetricsUserTraits): void {
-    const { traits } = this.store.getState();
-    this.store.updateState({
-      traits: { ...traits, ...newTraits },
+    this.update((state) => {
+      state.traits = { ...state.traits, ...newTraits };
     });
   }
 
@@ -840,7 +967,9 @@ export default class MetaMetricsController {
     let { metaMetricsId } = this.state;
     if (!metaMetricsId) {
       metaMetricsId = this.generateMetaMetricsId();
-      this.store.updateState({ metaMetricsId });
+      this.update((state) => {
+        state.metaMetricsId = metaMetricsId;
+      });
     }
     return metaMetricsId;
   }
@@ -971,13 +1100,11 @@ export default class MetaMetricsController {
         ? Object.keys(metamaskState.custodyAccountDetails)[0]
         : null;
     ///: END:ONLY_INCLUDE_IF
-    const { traits, previousUserTraits } = this.store.getState();
+    const { traits, previousUserTraits } = this.state;
 
     const currentTraits = {
       [MetaMetricsUserTrait.AddressBookEntries]: sum(
-        Object.values(metamaskState.addressBook).map((v) =>
-          size(v as object | string | null | undefined),
-        ),
+        Object.values(metamaskState.addressBook).map(size),
       ),
       [MetaMetricsUserTrait.InstallDateExt]:
         traits[MetaMetricsUserTrait.InstallDateExt] || '',
@@ -1030,8 +1157,8 @@ export default class MetaMetricsController {
     };
 
     if (!previousUserTraits) {
-      this.store.updateState({
-        previousUserTraits: currentTraits,
+      this.update((state) => {
+        state.previousUserTraits = currentTraits;
       });
       return currentTraits;
     }
@@ -1042,7 +1169,9 @@ export default class MetaMetricsController {
         const previous = previousUserTraits[k];
         return !isEqual(previous, v);
       });
-      this.store.updateState({ previousUserTraits: currentTraits });
+      this.update((state) => {
+        state.previousUserTraits = currentTraits;
+      });
       return updates;
     }
 
@@ -1307,30 +1436,24 @@ export default class MetaMetricsController {
       messageId,
       timestamp,
     };
-    this.store.updateState({
-      ...this.store.getState(),
-      latestNonAnonymousEventTimestamp:
+    this.update((state) => {
+      state.latestNonAnonymousEventTimestamp =
         modifiedPayload.anonymousId === METAMETRICS_ANONYMOUS_ID
           ? latestNonAnonymousEventTimestamp
-          : timestamp.valueOf(),
-      // @ts-expect-error The reason this is needed is that the event property in the payload can be missing,
-      // whereas the state expects it to be present. It's unclear how best to handle this discrepancy.
-      segmentApiCalls: {
-        ...this.store.getState().segmentApiCalls,
-        [messageId]: {
-          eventType,
-          payload: {
-            ...modifiedPayload,
-            timestamp: modifiedPayload.timestamp.toString(),
-          },
+          : timestamp.valueOf();
+      state.segmentApiCalls[messageId] = {
+        eventType,
+        // @ts-expect-error The reason this is needed is that the event property in the payload can be missing,
+        // whereas the state expects it to be present. It's unclear how best to handle this discrepancy.
+        payload: {
+          ...modifiedPayload,
+          timestamp: modifiedPayload.timestamp.toString(),
         },
-      },
+      };
     });
     const modifiedCallback = (result: unknown) => {
-      const { segmentApiCalls } = this.store.getState();
-      delete segmentApiCalls[messageId];
-      this.store.updateState({
-        segmentApiCalls,
+      this.update((state) => {
+        delete state.segmentApiCalls[messageId];
       });
       return callback?.(result);
     };

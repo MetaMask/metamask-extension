@@ -258,7 +258,7 @@ export default function createRPCMethodTrackingMiddleware({
     // keys for the various events in the flow.
     const eventType = EVENT_NAME_MAP[method];
 
-    const eventProperties = {};
+    let eventProperties = {};
     let sensitiveEventProperties;
 
     // Boolean variable that reduces code duplication and increases legibility
@@ -433,7 +433,10 @@ export default function createRPCMethodTrackingMiddleware({
       ) {
         // The signature was approved in MetaMask but rejected in the snap
         event = eventType.REJECTED;
-        eventProperties.status = errorMessage;
+        eventProperties = {
+          ...eventProperties,
+          status: errorMessage,
+        };
       } else {
         event = eventType.APPROVED;
       }

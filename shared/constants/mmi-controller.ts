@@ -15,7 +15,7 @@ import { AppStateController } from '../../app/scripts/controllers/app-state-cont
 import AccountTrackerController from '../../app/scripts/controllers/account-tracker-controller';
 // TODO: Remove restricted import
 // eslint-disable-next-line import/no-restricted-paths
-import MetaMetricsController from '../../app/scripts/controllers/metametrics';
+import MetaMetricsController from '../../app/scripts/controllers/metametrics-controller';
 
 export type MMIControllerOptions = {
   mmiConfigurationController: MmiConfigurationController;

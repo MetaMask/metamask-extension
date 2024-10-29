@@ -1,7 +1,8 @@
 import { errorCodes } from '@metamask/rpc-errors';
 import { detectSIWE } from '@metamask/controller-utils';
+import { ControllerMessenger } from '@metamask/base-controller';
 
-import MetaMetricsController from '../controllers/metametrics';
+import MetaMetricsController from '../controllers/metametrics-controller';
 import { MESSAGE_TYPE } from '../../../shared/constants/app';
 import {
   MetaMetricsEventCategory,
@@ -17,6 +18,7 @@ import {
   permitSignatureMsg,
   orderSignatureMsg,
 } from '../../../test/data/confirmations/typed_sign';
+import { getDefaultPreferencesControllerState } from '../controllers/preferences-controller';
 import { createSegmentMock } from './segment';
 import createRPCMethodTrackingMiddleware from './createRPCMethodTrackingMiddleware';
 
@@ -54,23 +56,54 @@ const appStateController = {
   },
 };
 
-const metaMetricsController = new MetaMetricsController({
-  segment: createSegmentMock(2, 10000),
-  getCurrentChainId: () => '0x1338',
-  onNetworkDidChange: jest.fn(),
-  preferencesControllerState: {
+const controllerMessenger = new ControllerMessenger();
+
+controllerMessenger.registerActionHandler(
+  'PreferencesController:getState',
+  () => ({
+    ...getDefaultPreferencesControllerState(),
     currentLocale: 'en_US',
-    preferences: {},
-  },
-  onPreferencesStateChange: jest.fn(),
-  version: '0.0.1',
-  environment: 'test',
-  initState: {
+  }),
+);
+
+controllerMessenger.registerActionHandler(
+  'NetworkController:getState',
+  jest.fn().mockReturnValue({
+    selectedNetworkClientId: 'selectedNetworkClientId',
+  }),
+);
+
+controllerMessenger.registerActionHandler(
+  'NetworkController:getNetworkClientById',
+  jest.fn().mockReturnValue({
+    configuration: {
+      chainId: '0x1338',
+    },
+  }),
+);
+
+const metaMetricsController = new MetaMetricsController({
+  state: {
     participateInMetaMetrics: true,
     metaMetricsId: '0xabc',
     fragments: {},
     events: {},
   },
+  messenger: controllerMessenger.getRestricted({
+    name: 'MetaMetricsController',
+    allowedActions: [
+      'PreferencesController:getState',
+      'NetworkController:getState',
+      'NetworkController:getNetworkClientById',
+    ],
+    allowedEvents: [
+      'PreferencesController:stateChange',
+      'NetworkController:networkDidChange',
+    ],
+  }),
+  segment: createSegmentMock(2),
+  version: '0.0.1',
+  environment: 'test',
   extension: {
     runtime: {
       id: 'testid',

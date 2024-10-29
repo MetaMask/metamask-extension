@@ -45,7 +45,6 @@ import {
 // TODO: Remove restricted import
 // eslint-disable-next-line import/no-restricted-paths
 import { getCurrentChainId } from '../../../ui/selectors';
-import MetaMetricsController from './metametrics';
 import { getPermissionBackgroundApiMethods } from './permissions';
 import AccountTrackerController from './account-tracker-controller';
 import { AppStateController } from './app-state-controller';
@@ -90,8 +89,6 @@ export default class MMIController extends EventEmitter {
   private getPendingNonce: (address: string) => Promise<any>;
 
   private accountTrackerController: AccountTrackerController;
-
-  private metaMetricsController: MetaMetricsController;
 
   private networkController: NetworkController;
 
@@ -152,7 +149,6 @@ export default class MMIController extends EventEmitter {
     this.getState = opts.getState;
     this.getPendingNonce = opts.getPendingNonce;
     this.accountTrackerController = opts.accountTrackerController;
-    this.metaMetricsController = opts.metaMetricsController;
     this.networkController = opts.networkController;
     this.permissionController = opts.permissionController;
     this.signatureController = opts.signatureController;
@@ -769,7 +765,9 @@ export default class MMIController extends EventEmitter {
           name: internalAccount.metadata.name,
         };
       });
-    const { metaMetricsId } = this.metaMetricsController.store.getState();
+    const { metaMetricsId } = this.messenger.call(
+      'MetaMetricsController:getState',
+    );
     const getAccountDetails = (address: string) =>
       this.custodyController.getAccountDetails(address);
     const extensionId = this.extension.runtime.id;
