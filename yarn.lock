@@ -4892,10 +4892,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/bitcoin-wallet-snap@npm:^0.8.1":
-  version: 0.8.1
-  resolution: "@metamask/bitcoin-wallet-snap@npm:0.8.1"
-  checksum: 10/0fff706a98c6f798ae0ae78bf9a8913c0b056b18aff64f994e521c5005ab7e326fafe1d383b2b7c248456948eaa263df3b31a081d620d82ed7c266857c94a955
+"@metamask/bitcoin-wallet-snap@npm:^0.8.2":
+  version: 0.8.2
+  resolution: "@metamask/bitcoin-wallet-snap@npm:0.8.2"
+  checksum: 10/42da719ae59b12d7150e513f082351dab8f901587ca12897b43c0b5d9123bbf066a2666c48b81b25e594f97ef237e1d1d7e9ccea8bd9bfb54910c5cd8d43b420
   languageName: node
   linkType: hard
 
@@ -4925,9 +4925,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/controller-utils@npm:^11.0.0, @metamask/controller-utils@npm:^11.0.2, @metamask/controller-utils@npm:^11.1.0, @metamask/controller-utils@npm:^11.2.0, @metamask/controller-utils@npm:^11.3.0":
-  version: 11.3.0
-  resolution: "@metamask/controller-utils@npm:11.3.0"
+"@metamask/controller-utils@npm:^11.0.0, @metamask/controller-utils@npm:^11.0.2, @metamask/controller-utils@npm:^11.1.0, @metamask/controller-utils@npm:^11.2.0, @metamask/controller-utils@npm:^11.3.0, @metamask/controller-utils@npm:^11.4.0":
+  version: 11.4.0
+  resolution: "@metamask/controller-utils@npm:11.4.0"
   dependencies:
     "@ethereumjs/util": "npm:^8.1.0"
     "@metamask/eth-query": "npm:^4.0.0"
@@ -4938,7 +4938,7 @@ __metadata:
     bn.js: "npm:^5.2.1"
     eth-ens-namehash: "npm:^2.0.8"
     fast-deep-equal: "npm:^3.1.3"
-  checksum: 10/3200228d1f4ea5fa095228db4e5050529caf0470e072382eb8f7571bb9b07515516ca9e846b7751388399d9ae967e4985dafd6120902ef6c998e98f4eb36d964
+  checksum: 10/f34d24880eab264bddaa5bef21afaecb206db6978364565d0f7b7a54b1d411f129eb84175041df3be8a66394c2d49e83b6648b5cbde6f34662a60fc553c31458
   languageName: node
   linkType: hard
 
@@ -5846,19 +5846,18 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/phishing-controller@npm:^12.0.1, @metamask/phishing-controller@npm:^12.0.2":
-  version: 12.0.2
-  resolution: "@metamask/phishing-controller@npm:12.0.2"
+"@metamask/phishing-controller@npm:^12.0.2, @metamask/phishing-controller@npm:^12.3.0":
+  version: 12.3.0
+  resolution: "@metamask/phishing-controller@npm:12.3.0"
   dependencies:
-    "@metamask/base-controller": "npm:^7.0.0"
-    "@metamask/controller-utils": "npm:^11.2.0"
+    "@metamask/base-controller": "npm:^7.0.1"
+    "@metamask/controller-utils": "npm:^11.4.0"
     "@noble/hashes": "npm:^1.4.0"
     "@types/punycode": "npm:^2.1.0"
-    eth-phishing-detect: "npm:^1.2.0"
     ethereum-cryptography: "npm:^2.1.2"
     fastest-levenshtein: "npm:^1.0.16"
     punycode: "npm:^2.1.1"
-  checksum: 10/78781e1b781c838e303677157616fb3b5e581030fe8f0ed8913f6b75fbcb7ee2ba59a44831936cc68cca8b295ef6546761b40ea3277d810b68d8ed39a58d0e29
+  checksum: 10/15e64adff57996486c36d0c73747a76543e8f7ad79020fc2746726f81f3858251b2e256c04e8d9caf1daf71c41f7ddf575c901d2a46174a5884d2836c60a3b2d
   languageName: node
   linkType: hard
 
@@ -6399,8 +6398,8 @@ __metadata:
   linkType: hard
 
 "@metamask/transaction-controller@npm:^37.2.0":
-  version: 37.3.0
-  resolution: "@metamask/transaction-controller@npm:37.3.0"
+  version: 37.2.0
+  resolution: "@metamask/transaction-controller@npm:37.2.0"
   dependencies:
     "@ethereumjs/common": "npm:^3.2.0"
     "@ethereumjs/tx": "npm:^4.2.0"
@@ -6427,7 +6426,7 @@ __metadata:
     "@metamask/approval-controller": ^7.0.0
     "@metamask/gas-fee-controller": ^20.0.0
     "@metamask/network-controller": ^21.0.0
-  checksum: 10/314a46bdaf1a4c68fe232591d28f3f978d7ed17f19dbaa2e3cbcbc4d28d4f7fc4581d7f88446d31ced2176f4f2abf1022ae39a296cb884fd5a083181c562ee2c
+  checksum: 10/0850797efb2157de41eaec153d31f8f63d194d2290fa41a3d439a28f95a35436f47d56546b0fa64427294280476d11ab4a7ed6161a13ad6f8215a3bc052a41e2
   languageName: node
   linkType: hard
 
@@ -25890,7 +25889,7 @@ __metadata:
     "@metamask/assets-controllers": "patch:@metamask/assets-controllers@npm%3A38.3.0#~/.yarn/patches/@metamask-assets-controllers-npm-38.3.0-57b3d695bb.patch"
     "@metamask/auto-changelog": "npm:^2.1.0"
     "@metamask/base-controller": "npm:^7.0.0"
-    "@metamask/bitcoin-wallet-snap": "npm:^0.8.1"
+    "@metamask/bitcoin-wallet-snap": "npm:^0.8.2"
     "@metamask/browser-passworder": "npm:^4.3.0"
     "@metamask/build-utils": "npm:^3.0.0"
     "@metamask/contract-metadata": "npm:^2.5.0"
@@ -25936,7 +25935,7 @@ __metadata:
     "@metamask/obs-store": "npm:^9.0.0"
     "@metamask/permission-controller": "npm:^10.0.0"
     "@metamask/permission-log-controller": "npm:^2.0.1"
-    "@metamask/phishing-controller": "npm:^12.0.1"
+    "@metamask/phishing-controller": "npm:^12.3.0"
     "@metamask/phishing-warning": "npm:^4.1.0"
     "@metamask/post-message-stream": "npm:^8.0.0"
     "@metamask/ppom-validator": "npm:0.35.1"
