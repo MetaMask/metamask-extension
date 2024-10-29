@@ -250,8 +250,7 @@
     "@metamask/network-controller@npm:^17.0.0": "patch:@metamask/network-controller@npm%3A21.0.0#~/.yarn/patches/@metamask-network-controller-npm-21.0.0-559aa8e395.patch",
     "@metamask/network-controller@npm:^19.0.0": "patch:@metamask/network-controller@npm%3A21.0.0#~/.yarn/patches/@metamask-network-controller-npm-21.0.0-559aa8e395.patch",
     "@metamask/network-controller@npm:^20.0.0": "patch:@metamask/network-controller@npm%3A21.0.0#~/.yarn/patches/@metamask-network-controller-npm-21.0.0-559aa8e395.patch",
-    "path-to-regexp": "1.9.0",
-    "@metamask/transaction-controller@npm:^34.0.0": "patch:@metamask/transaction-controller@npm%3A37.2.0#~/.yarn/patches/@metamask-transaction-controller-npm-37.2.0-1cacf216d7.patch"
+    "path-to-regexp": "1.9.0"
   },
   "dependencies": {
     "@babel/runtime": "patch:@babel/runtime@npm%3A7.25.9#~/.yarn/patches/@babel-runtime-npm-7.25.9-fe8c62510a.patch",
@@ -346,7 +345,7 @@
     "@metamask/snaps-rpc-methods": "^11.5.0",
     "@metamask/snaps-sdk": "^6.9.0",
     "@metamask/snaps-utils": "^8.4.1",
-    "@metamask/transaction-controller": "patch:@metamask/transaction-controller@npm%3A37.2.0#~/.yarn/patches/@metamask-transaction-controller-npm-37.2.0-1cacf216d7.patch",
+    "@metamask/transaction-controller": "^38.1.0",
     "@metamask/user-operation-controller": "^13.0.0",
     "@metamask/utils": "^9.3.0",
     "@ngraveio/bc-ur": "^1.1.12",
@@ -744,5 +743,5 @@
       "level>classic-level": false
     }
   },
-  "packageManager": "yarn@4.5.1"
+  "packageManager": "yarn@4.4.1"
 }
