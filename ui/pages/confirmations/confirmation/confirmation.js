@@ -14,6 +14,7 @@ import { produce } from 'immer';
 import log from 'loglevel';
 import { ApprovalType } from '@metamask/controller-utils';
 import { DIALOG_APPROVAL_TYPES } from '@metamask/snaps-rpc-methods';
+import { CHAIN_SPEC_URL } from '../../../../shared/constants/network';
 import fetchWithCache from '../../../../shared/lib/fetch-with-cache';
 import {
   MetaMetricsEventCategory,
@@ -34,7 +35,6 @@ import {
   getNetworkConfigurationsByChainId,
   getHideSnapBranding,
 } from '../../../selectors';
-import NetworkDisplay from '../../../components/app/network-display/network-display';
 import Callout from '../../../components/ui/callout';
 import { Box, Icon, IconName } from '../../../components/component-library';
 import Loading from '../../../components/ui/loading-screen';
@@ -46,7 +46,6 @@ import { SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES } from '../../../../shared/cons
 import { DAY } from '../../../../shared/constants/time';
 import {
   BlockSize,
-  Display,
   BackgroundColor,
 } from '../../../helpers/constants/design-system';
 import ConfirmationFooter from './components/confirmation-footer';
@@ -372,7 +371,8 @@ export default function ConfirmationPage({
       try {
         if (useSafeChainsListValidation) {
           const response = await fetchWithCache({
-            url: 'https://chainid.network/chains.json',
+            url: CHAIN_SPEC_URL,
+            allowStale: true,
             cacheOptions: { cacheRefreshTime: DAY },
             functionName: 'getSafeChainsList',
           });
@@ -552,17 +552,12 @@ export default function ConfirmationPage({
       )}
       <Box
         className="confirmation-page__content"
-        padding={process.env.CHAIN_PERMISSIONS && !isSnapCustomUIDialog ? 4 : 0}
+        padding={isSnapCustomUIDialog ? 0 : 4}
         style={{
           marginTop: `${contentMargin}px`,
           overflowY: 'auto',
         }}
       >
-        {templatedValues.networkDisplay && !process.env.CHAIN_PERMISSIONS ? (
-          <Box justifyContent="center" marginTop={2} display={Display.Flex}>
-            <NetworkDisplay />
-          </Box>
-        ) : null}
         {isSnapCustomUIDialog ? (
           <SnapUIRenderer
             snapId={pendingConfirmation?.origin}
