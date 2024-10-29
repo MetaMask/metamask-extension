@@ -158,6 +158,7 @@ describe('Transaction metrics', () => {
       transaction_type: TransactionType.simpleSend,
       ui_customizations: null,
       transaction_advanced_view: null,
+      transaction_contract_method: undefined,
     };
 
     expectedSensitiveProperties = {
@@ -166,7 +167,6 @@ describe('Transaction metrics', () => {
       first_seen: 1624408066355,
       gas_limit: '0x7b0d',
       gas_price: '2',
-      transaction_contract_method: undefined,
       transaction_contract_address: undefined,
       transaction_envelope_type: TRANSACTION_ENVELOPE_TYPE_NAMES.LEGACY,
       transaction_replaced: undefined,
