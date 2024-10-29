@@ -350,10 +350,7 @@ workflows:
               only: develop
           requires:
             - prep-build-ts-migration-dashboard
-      - waiter
-      - rerun-workflow-from-failed:
-          requires:
-            - waiter
+      - rerun-workflow-from-failed
           #filters:
             #branches:
               #only: develop
@@ -939,6 +936,7 @@ jobs:
           at: .
       - run:
           name: Rerun workflow from failed
+          when: always
           command: npx tsx .circleci/scripts/rerun-ci-workflow.ts
 
   test-yarn-dedupe:
