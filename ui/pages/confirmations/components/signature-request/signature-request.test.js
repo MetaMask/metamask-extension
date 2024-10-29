@@ -155,7 +155,7 @@ describe('Signature Request Component', () => {
     });
 
     it('should match snapshot when we want to switch to fiat', () => {
-      const store2 = configureMockStore()({
+      const storeOverride = configureMockStore()({
         ...mockStore,
         metamask: {
           ...mockStore.metamask,
@@ -187,7 +187,7 @@ describe('Signature Request Component', () => {
             msgParams,
           }}
         />,
-        store2,
+        storeOverride,
       );
 
       expect(container).toMatchSnapshot();
