@@ -15,6 +15,7 @@ export async function scrollAndConfirmAndAssertConfirm(driver: Driver) {
 }
 
 export async function confirmAndAssertConfirm(driver: Driver) {
+  await driver.clickElementSafe('.confirm-scroll-to-bottom__button');
   await driver.clickElement('[data-testid="confirm-footer-button"]');
 }
 
