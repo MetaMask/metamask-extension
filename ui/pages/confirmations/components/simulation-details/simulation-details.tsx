@@ -91,33 +91,23 @@ const EmptyContent: React.FC = () => {
   );
 };
 
-/**
- * Header at the top of the simulation preview.
- *
- * @param props
- * @param props.children
- * @param props.isTransactionsRedesign
- */
-const HeaderLayout: React.FC<{
-  isTransactionsRedesign: boolean;
-  transactionId: string;
-}> = ({ children, isTransactionsRedesign, transactionId }) => {
+const HeaderWithAlert = ({ transactionId }: { transactionId: string }) => {
   const t = useI18nContext();
 
   return (
-    <Box
-      display={Display.Flex}
-      flexDirection={FlexDirection.Row}
-      alignItems={AlignItems.center}
-      justifyContent={JustifyContent.spaceBetween}
+    <ConfirmInfoAlertRow
+      alertKey={RowAlertKey.Resimulation}
+      label={t('simulationDetailsTitle')}
+      ownerId={transactionId}
+      tooltip={t('simulationDetailsTitleTooltip')}
+      style={{
+        paddingLeft: 0,
+        paddingRight: 0,
+      }}
     >
-      {isTransactionsRedesign ? (
-        <HeaderWithAlert transactionId={transactionId} />
-      ) : (
-        <LegacyHeader />
-      )}
-      {children}
-    </Box>
+      {/* Intentional fragment */}
+      <></>
+    </ConfirmInfoAlertRow>
   );
 };
 
@@ -154,23 +144,32 @@ const LegacyHeader = () => {
   );
 };
 
-const HeaderWithAlert = ({ transactionId }: { transactionId: string }) => {
-  const t = useI18nContext();
-
+/**
+ * Header at the top of the simulation preview.
+ *
+ * @param props
+ * @param props.children
+ * @param props.isTransactionsRedesign
+ * @param props.transactionId
+ */
+const HeaderLayout: React.FC<{
+  isTransactionsRedesign: boolean;
+  transactionId: string;
+}> = ({ children, isTransactionsRedesign, transactionId }) => {
   return (
-    <ConfirmInfoAlertRow
-      alertKey={RowAlertKey.Resimulation}
-      label={t('simulationDetailsTitle')}
-      ownerId={transactionId}
-      tooltip={t('simulationDetailsTitleTooltip')}
-      style={{
-        paddingLeft: 0,
-        paddingRight: 0,
-      }}
+    <Box
+      display={Display.Flex}
+      flexDirection={FlexDirection.Row}
+      alignItems={AlignItems.center}
+      justifyContent={JustifyContent.spaceBetween}
     >
-      {/* Intentional fragment */}
-      <></>
-    </ConfirmInfoAlertRow>
+      {isTransactionsRedesign ? (
+        <HeaderWithAlert transactionId={transactionId} />
+      ) : (
+        <LegacyHeader />
+      )}
+      {children}
+    </Box>
   );
 };
 
@@ -181,6 +180,7 @@ const HeaderWithAlert = ({ transactionId }: { transactionId: string }) => {
  * @param props.inHeader
  * @param props.isTransactionsRedesign
  * @param props.children
+ * @param props.transactionId
  */
 const SimulationDetailsLayout: React.FC<{
   inHeader?: React.ReactNode;
