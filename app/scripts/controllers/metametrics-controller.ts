@@ -310,7 +310,7 @@ type CaptureException =
   | ((err: unknown) => void);
 
 export type MetaMetricsControllerOptions = {
-  state: Partial<MetaMetricsControllerState>;
+  state?: Partial<MetaMetricsControllerState>;
   messenger: MetaMetricsControllerMessenger;
   segment: Analytics;
   version: string;
