@@ -747,6 +747,42 @@ function trackDappView(remotePort) {
     emitDappViewedMetricEvent(origin);
   }
 }
+/**
+ * Emit event of App opeened,
+ * which should only be tracked only after a user opts into metrics.
+ *
+ */
+function emitAppOpenedMetricEvent() {
+  const { metaMetricsId, participateInMetaMetrics } = controller.metaMetricsController.state;
+  if (metaMetricsId === null && !participateInMetaMetrics) {
+    return;
+  }
+  console.log('tracking app opened...')
+  controller.metaMetricsController.trackEvent({
+    event: MetaMetricsEventName.AppOpened,
+    category: MetaMetricsEventCategory.App,
+  });
+}
+/**
+ * Track every time the application is opened
+ *
+ * @param {string} environement - The environment in which the app is openeing on..
+ */
+function trackAppOpened(environement) {
+  const environmentTypeList = [
+    ENVIRONMENT_TYPE_POPUP,
+    ENVIRONMENT_TYPE_NOTIFICATION,
+    ENVIRONMENT_TYPE_FULLSCREEN,
+  ];
+  const isFullscreenOpen = Object.values(openMetamaskTabsIDs).every(
+    (value) => value === true,
+  );
+  const isAnyUiCurrentlyOpen =
+    isFullscreenOpen || notificationIsOpen || openPopupCount > 0;
+  if (!isAnyUiCurrentlyOpen && environmentTypeList.includes(environement)) {
+    emitAppOpenedMetricEvent();
+  }
+}
 
 /**
  * Initializes the MetaMask Controller with any initial state and default language.
@@ -890,6 +926,7 @@ export function setupController(
       // communication with popup
       controller.isClientOpen = true;
       controller.setupTrustedCommunication(portStream, remotePort.sender);
+      trackAppOpened(processName);
 
       initializeRemoteFeatureFlags();
 
