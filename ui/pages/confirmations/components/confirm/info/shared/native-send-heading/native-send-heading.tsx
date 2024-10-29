@@ -9,6 +9,8 @@ import {
   Box,
   Text,
 } from '../../../../../../../components/component-library';
+import Tooltip from '../../../../../../../components/ui/tooltip';
+import { getIntlLocale } from '../../../../../../../ducks/locale/locale';
 import { getConversionRate } from '../../../../../../../ducks/metamask/metamask';
 import {
   AlignItems,
@@ -18,19 +20,23 @@ import {
   TextColor,
   TextVariant,
 } from '../../../../../../../helpers/constants/design-system';
+import { MIN_AMOUNT } from '../../../../../../../hooks/useCurrencyDisplay';
 import { useFiatFormatter } from '../../../../../../../hooks/useFiatFormatter';
 import { getMultichainNetwork } from '../../../../../../../selectors/multichain';
 import { useConfirmContext } from '../../../../../context/confirm';
+import {
+  formatAmount,
+  formatAmountMaxPrecision,
+} from '../../../../simulation-details/formatAmount';
+import { toNonScientificString } from '../../hooks/use-token-values';
 
 const NativeSendHeading = () => {
   const { currentConfirmation: transactionMeta } =
     useConfirmContext<TransactionMeta>();
 
-  const nativeAssetTransferValue =
-    transactionMeta.txParams.value &&
-    new BigNumber(transactionMeta.txParams.value)
-      .dividedBy(new BigNumber(10).pow(18))
-      .toNumber();
+  const nativeAssetTransferValue = new BigNumber(
+    transactionMeta.txParams.value as string,
+  ).dividedBy(new BigNumber(10).pow(18));
 
   const conversionRate = useSelector(getConversionRate);
   const fiatValue =
@@ -46,6 +52,13 @@ const NativeSendHeading = () => {
   const multichainNetwork = useSelector(getMultichainNetwork);
   const ticker = multichainNetwork?.network?.ticker;
 
+  const locale = useSelector(getIntlLocale);
+  const roundedTransferValue = formatAmount(locale, nativeAssetTransferValue);
+
+  const transferValue = toNonScientificString(
+    nativeAssetTransferValue.toNumber(),
+  );
+
   const NetworkImage = (
     <AvatarToken
       src={
@@ -59,15 +72,27 @@ const NativeSendHeading = () => {
     />
   );
 
-  const NativeAssetAmount = (
-    <Text
-      variant={TextVariant.headingLg}
-      color={TextColor.inherit}
-      marginTop={3}
-    >
-      {`${nativeAssetTransferValue} ${ticker}`}
-    </Text>
-  );
+  const NativeAssetAmount =
+    roundedTransferValue ===
+    `<${formatAmountMaxPrecision(locale, MIN_AMOUNT)}` ? (
+      <Tooltip title={transferValue} position="right">
+        <Text
+          variant={TextVariant.headingLg}
+          color={TextColor.inherit}
+          marginTop={3}
+        >
+          {`${roundedTransferValue} ${ticker}`}
+        </Text>
+      </Tooltip>
+    ) : (
+      <Text
+        variant={TextVariant.headingLg}
+        color={TextColor.inherit}
+        marginTop={3}
+      >
+        {`${roundedTransferValue} ${ticker}`}
+      </Text>
+    );
 
   const NativeAssetFiatConversion = (
     <Text variant={TextVariant.bodyMd} color={TextColor.textAlternative}>
