@@ -865,12 +865,6 @@
     "message": "Buy $1",
     "description": "$1 is the ticker symbol of a an asset the user is being prompted to purchase"
   },
-  "buyCrypto": {
-    "message": "Buy crypto"
-  },
-  "buyFirstCrypto": {
-    "message": "Buy your first crypto with a debit or credit card."
-  },
   "buyMoreAsset": {
     "message": "Buy more $1",
     "description": "$1 is the ticker symbol of a an asset the user is being prompted to purchase"
@@ -1500,6 +1494,9 @@
   "dcent": {
     "message": "D'Cent"
   },
+  "debitCreditPurchaseOptions": {
+    "message": "Debit or credit card purchase options"
+  },
   "decimal": {
     "message": "Token decimal"
   },
@@ -2091,6 +2088,9 @@
   },
   "functionType": {
     "message": "Function type"
+  },
+  "fundingMethod": {
+    "message": "Funding method"
   },
   "gas": {
     "message": "Gas"
@@ -4720,9 +4720,6 @@
   },
   "selectEnableDisplayMediaPrivacyPreference": {
     "message": "Turn on Display NFT Media"
-  },
-  "selectFundingMethod": {
-    "message": "Select a funding method"
   },
   "selectHdPath": {
     "message": "Select HD path"
