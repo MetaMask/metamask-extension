@@ -183,6 +183,21 @@ export const permitSignatureMsg = {
   },
 } as SignatureRequestType;
 
+export const permitNFTSignatureMsg = {
+  id: 'c5067710-87cf-11ef-916c-71f266571322',
+  status: 'unapproved',
+  time: 1728651190529,
+  type: 'eth_signTypedData',
+  msgParams: {
+    data: '{"domain":{"name":"Uniswap V3 Positions NFT-V1","version":"1","chainId":1,"verifyingContract":"0xC36442b4a4522E871399CD717aBDD847Ab11FE88"},"types":{"Permit":[{"name":"spender","type":"address"},{"name":"tokenId","type":"uint256"},{"name":"nonce","type":"uint256"},{"name":"deadline","type":"uint256"}]},"primaryType":"Permit","message":{"spender":"0x00000000Ede6d8D217c60f93191C060747324bca","tokenId":"3606393","nonce":"0","deadline":"1734995006"}}',
+    from: '0x935e73edb9ff52e23bac7f7e043a1ecd06d05477',
+    version: 'V4',
+    signatureMethod: 'eth_signTypedData_v4',
+    requestId: 2874791875,
+    origin: 'https://metamask.github.io',
+  },
+} as SignatureRequestType;
+
 export const permitSignatureMsgWithNoDeadline = {
   id: '0b1787a0-1c44-11ef-b70d-e7064bd7b659',
   securityAlertResponse: {

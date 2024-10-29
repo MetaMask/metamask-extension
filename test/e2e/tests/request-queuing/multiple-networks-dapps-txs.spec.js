@@ -5,11 +5,9 @@ const {
   unlockWallet,
   DAPP_URL,
   DAPP_ONE_URL,
-  regularDelayMs,
   WINDOW_TITLES,
   defaultGanacheOptions,
   largeDelayMs,
-  switchToNotificationWindow,
 } = require('../../helpers');
 const { PAGES } = require('../../webdriver/driver');
 
@@ -48,23 +46,13 @@ describe('Request Queuing for Multiple Dapps and Txs on different networks.', fu
         await openDapp(driver, undefined, DAPP_URL);
 
         // Connect to dapp 1
-        await driver.findClickableElement({ text: 'Connect', tag: 'button' });
-        await driver.clickElement('#connectButton');
+        await driver.clickElement({ text: 'Connect', tag: 'button' });
 
-        await driver.delay(regularDelayMs);
+        await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
-        await switchToNotificationWindow(driver);
-
-        await driver.clickElement({
-          text: 'Next',
+        await driver.clickElementAndWaitForWindowToClose({
+          text: 'Connect',
           tag: 'button',
-          css: '[data-testid="page-container-footer-next"]',
-        });
-
-        await driver.clickElement({
-          text: 'Confirm',
-          tag: 'button',
-          css: '[data-testid="page-container-footer-next"]',
         });
 
         await driver.switchToWindowWithTitle(
@@ -80,31 +68,18 @@ describe('Request Queuing for Multiple Dapps and Txs on different networks.', fu
           css: 'p',
         });
 
-        // Wait for the first dapp's connect confirmation to disappear
-        await driver.waitUntilXWindowHandles(2);
-
         // TODO: Request Queuing bug when opening both dapps at the same time will have them stuck on the same network, with will be incorrect for one of them.
         // Open Dapp Two
         await openDapp(driver, undefined, DAPP_ONE_URL);
 
         // Connect to dapp 2
-        await driver.findClickableElement({ text: 'Connect', tag: 'button' });
-        await driver.clickElement('#connectButton');
+        await driver.clickElement({ text: 'Connect', tag: 'button' });
 
-        await driver.delay(regularDelayMs);
+        await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
-        await switchToNotificationWindow(driver, 4);
-
-        await driver.clickElement({
-          text: 'Next',
+        await driver.clickElementAndWaitForWindowToClose({
+          text: 'Connect',
           tag: 'button',
-          css: '[data-testid="page-container-footer-next"]',
-        });
-
-        await driver.clickElement({
-          text: 'Confirm',
-          tag: 'button',
-          css: '[data-testid="page-container-footer-next"]',
         });
 
         // Dapp one send tx
@@ -112,7 +87,7 @@ describe('Request Queuing for Multiple Dapps and Txs on different networks.', fu
         await driver.delay(largeDelayMs);
         await driver.clickElement('#sendButton');
 
-        await driver.delay(largeDelayMs);
+        await driver.waitUntilXWindowHandles(4);
 
         // Dapp two send tx
         await driver.switchToWindowWithUrl(DAPP_ONE_URL);
@@ -127,14 +102,6 @@ describe('Request Queuing for Multiple Dapps and Txs on different networks.', fu
 
         await driver.waitUntilXWindowHandles(4);
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
-
-        await driver.delay(largeDelayMs);
-
-        // Find correct network on confirm tx
-        await driver.findElement({
-          text: 'Localhost 8545',
-          tag: 'span',
-        });
 
         // Reject Transaction
         await driver.findClickableElement({ text: 'Reject', tag: 'button' });
@@ -160,6 +127,11 @@ describe('Request Queuing for Multiple Dapps and Txs on different networks.', fu
 
         // Click Unconfirmed Tx
         await driver.clickElement('.transaction-list-item--unconfirmed');
+
+        await driver.assertElementNotPresent({
+          tag: 'p',
+          text: 'Network switched to Localhost 8546',
+        });
 
         // Confirm Tx
         await driver.clickElement('[data-testid="page-container-footer-next"]');

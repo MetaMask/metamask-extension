@@ -115,5 +115,3 @@ exports[`ConfirmLegacyGasDisplay should match snapshot 1`] = `
   </div>
 </div>
 `;
-
-exports[`ConfirmLegacyGasDisplay should match snapshot 2`] = `<div />`;

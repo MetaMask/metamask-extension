@@ -51,7 +51,7 @@ export const AggregatedPercentageOverview = () => {
         // This is a regular ERC20 token
         // find the relevant pricePercentChange1d in tokensMarketData
         // Find the corresponding market data for the token by filtering the values of the tokensMarketData object
-        const found = tokensMarketData[toChecksumAddress(item.address)];
+        const found = tokensMarketData?.[toChecksumAddress(item.address)];
 
         const tokenFiat1dAgo = getCalculatedTokenAmount1dAgo(
           item.fiatBalance,
