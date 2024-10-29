@@ -1040,10 +1040,6 @@ jobs:
       - run:
           name: yarn audit
           command: yarn audit
-      - run:
-          name: Run on fail status
-          command: |
-              echo "I am result of above failed job"
 
   test-deps-depcheck:
     executor: node-browsers-small
