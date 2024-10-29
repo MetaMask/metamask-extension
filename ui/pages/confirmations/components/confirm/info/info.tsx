@@ -17,7 +17,10 @@ const Info = () => {
 
   const ConfirmationInfoComponentMap = useMemo(
     () => ({
+      [TransactionType.contractInteraction]: () => BaseTransactionInfo,
+      [TransactionType.deployContract]: () => BaseTransactionInfo,
       [TransactionType.personalSign]: () => PersonalSignInfo,
+      [TransactionType.simpleSend]: () => NativeTransferInfo,
       [TransactionType.signTypedData]: () => {
         const { version } =
           (currentConfirmation as SignatureRequestType)?.msgParams ?? {};
@@ -26,16 +29,13 @@ const Info = () => {
         }
         return TypedSignInfo;
       },
-      [TransactionType.contractInteraction]: () => BaseTransactionInfo,
-      [TransactionType.deployContract]: () => BaseTransactionInfo,
       [TransactionType.tokenMethodApprove]: () => ApproveInfo,
       [TransactionType.tokenMethodIncreaseAllowance]: () => ApproveInfo,
+      [TransactionType.tokenMethodSafeTransferFrom]: () => NFTTokenTransferInfo,
       [TransactionType.tokenMethodSetApprovalForAll]: () =>
         SetApprovalForAllInfo,
       [TransactionType.tokenMethodTransfer]: () => TokenTransferInfo,
       [TransactionType.tokenMethodTransferFrom]: () => NFTTokenTransferInfo,
-      [TransactionType.tokenMethodSafeTransferFrom]: () => NFTTokenTransferInfo,
-      [TransactionType.simpleSend]: () => NativeTransferInfo,
     }),
     [currentConfirmation],
   );
