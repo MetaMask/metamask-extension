@@ -7,12 +7,12 @@ import { join } from 'node:path';
 import {
   type Configuration,
   type WebpackPluginInstance,
+  ProgressPlugin,
 } from 'webpack';
 import MiniCssExtractPlugin from 'mini-css-extract-plugin';
 import CopyPlugin from 'copy-webpack-plugin';
 import rtlCss from 'postcss-rtlcss';
 import autoprefixer from 'autoprefixer';
-import { ProgressPlugin } from 'webpack';
 
 const context = join(__dirname, '../../app');
 const browsersListPath = join(context, '../.browserslistrc');
@@ -28,7 +28,7 @@ const plugins: WebpackPluginInstance[] = [
     ],
   }),
   new ProgressPlugin(),
-  new MiniCssExtractPlugin({ filename: "[name].css" }),
+  new MiniCssExtractPlugin({ filename: '[name].css' }),
 ];
 
 const config = {
@@ -50,7 +50,7 @@ const config = {
     rules: [
       // css, sass/scss
       {
-        test: /\.(sa|sc|c)ss$/,
+        test: /\.(css|sass|scss)$/u,
         use: [
           MiniCssExtractPlugin.loader,
           // Resolves CSS `@import` and `url()` paths and loads the files.
