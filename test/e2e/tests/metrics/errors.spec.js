@@ -873,6 +873,8 @@ describe('Sentry errors', function () {
           srcTokenAmount: true,
           walletAddress: false,
         },
+        quotesLastFetched: true,
+        quotesLoadingStatus: true,
       },
       currentPopupId: false, // Initialized as undefined
       // Part of transaction controller store, but missing from the initial
