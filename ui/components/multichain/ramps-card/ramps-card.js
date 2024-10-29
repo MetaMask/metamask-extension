@@ -40,8 +40,8 @@ export const RAMPS_CARD_VARIANTS = {
     gradient:
       // eslint-disable-next-line @metamask/design-tokens/color-no-hex
       'linear-gradient(90deg, #0189EC 0%, #4B7AED 35%, #6774EE 58%, #706AF4 80.5%, #7C5BFC 100%)',
-    title: 'fundYourWallet',
-    body: 'getStartedByFundingWallet',
+    title: 'tipsForUsingAWallet',
+    body: 'tipsForUsingAWalletDescription',
   },
   [RAMPS_CARD_VARIANT_TYPES.ACTIVITY]: {
     illustrationSrc: './images/ramps-card-activity-illustration.png',
@@ -49,16 +49,16 @@ export const RAMPS_CARD_VARIANTS = {
       // eslint-disable-next-line @metamask/design-tokens/color-no-hex
       'linear-gradient(90deg, #57C5DC 0%, #06BFDD 49.39%, #35A9C7 100%)',
 
-    title: 'startYourJourney',
-    body: 'startYourJourneyDescription',
+    title: 'tipsForUsingAWallet',
+    body: 'tipsForUsingAWalletDescription',
   },
   [RAMPS_CARD_VARIANT_TYPES.BTC]: {
     illustrationSrc: './images/ramps-card-btc-illustration.png',
     gradient:
       // eslint-disable-next-line @metamask/design-tokens/color-no-hex
       'linear-gradient(90deg, #017ED9 0%, #446FD9 35%, #5E6AD9 58%, #635ED9 80.5%, #6855D9 92.5%, #6A4FD9 100%)',
-    title: 'fundYourWallet',
-    body: 'fundYourWalletDescription',
+    title: 'tipsForUsingAWallet',
+    body: 'tipsForUsingAWalletDescription',
   },
 };
 
@@ -77,8 +77,6 @@ export const RampsCard = ({ variant, handleOnClick }) => {
   const currentLocale = useSelector(getCurrentLocale);
   const { chainId, nickname } = useSelector(getMultichainCurrentNetwork);
   const { symbol } = useSelector(getMultichainDefaultToken);
-
-  const isTokenVariant = variant === RAMPS_CARD_VARIANT_TYPES.TOKEN;
 
   useEffect(() => {
     trackEvent({
@@ -101,7 +99,7 @@ export const RampsCard = ({ variant, handleOnClick }) => {
       category: MetaMetricsEventCategory.Navigation,
       properties: {
         location: `${variant} tab`,
-        text: `Buy ${symbol}`,
+        text: `Token Marketplace`,
         // FIXME: This might not be a number for non-EVM networks
         chain_id: chainId,
         token_symbol: symbol,
@@ -123,14 +121,14 @@ export const RampsCard = ({ variant, handleOnClick }) => {
       }}
     >
       <Text className="ramps-card__title" variant={TextVariant.headingSm}>
-        {t(title, [symbol])}
+        {t(title)}
       </Text>
-      <Text className="ramps-card__body">{t(body, [symbol])}</Text>
+      <Text className="ramps-card__body">{t(body)}</Text>
       <ButtonBase
         className="ramps-card__cta-button"
         onClick={handleOnClick ?? onClick}
       >
-        {isTokenVariant ? t('getStarted') : t('buyToken', [symbol])}
+        {t('tokenMarketplace')}
       </ButtonBase>
     </Box>
   );
