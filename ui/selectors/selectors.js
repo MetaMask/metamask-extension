@@ -67,6 +67,7 @@ import {
   shortenAddress,
   getAccountByAddress,
   getURLHostName,
+  sortSelectedInternalAccounts,
 } from '../helpers/utils/util';
 
 import {
@@ -387,6 +388,23 @@ export function getInternalAccounts(state) {
 export function getInternalAccount(state, accountId) {
   return state.metamask.internalAccounts.accounts[accountId];
 }
+
+export const getEvmInternalAccounts = createSelector(
+  getInternalAccounts,
+  (accounts) => {
+    return accounts.filter((account) => isEvmAccountType(account.type));
+  },
+);
+
+export const getSelectedEvmInternalAccount = createSelector(
+  getEvmInternalAccounts,
+  (accounts) => {
+    // We should always have 1 EVM account (if not, it would be `undefined`, same
+    // as `getSelectedInternalAccount` selector.
+    const [evmAccountSelected] = sortSelectedInternalAccounts(accounts);
+    return evmAccountSelected;
+  },
+);
 
 /**
  * Returns an array of internal accounts sorted by keyring.
