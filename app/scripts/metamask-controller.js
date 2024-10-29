@@ -3995,10 +3995,9 @@ export default class MetamaskController extends EventEmitter {
       ),
 
       // CurrencyRateController
-      currencyRateStartPollingByNetworkClientId:
-        currencyRateController.startPollingByNetworkClientId.bind(
-          currencyRateController,
-        ),
+      currencyRateStartPolling: currencyRateController.startPolling.bind(
+        currencyRateController,
+      ),
       currencyRateStopPollingByPollingToken:
         currencyRateController.stopPollingByPollingToken.bind(
           currencyRateController,
