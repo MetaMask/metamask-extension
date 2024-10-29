@@ -5,6 +5,7 @@ import { CustodyController } from '@metamask-institutional/custody-controller';
 import { SignatureController } from '@metamask/signature-controller';
 import {
   NetworkController,
+  NetworkControllerGetNetworkClientByIdAction,
   NetworkControllerGetStateAction,
   NetworkControllerSetActiveNetworkAction,
 } from '@metamask/network-controller';
@@ -31,6 +32,11 @@ import MetaMetricsController from '../../app/scripts/controllers/metametrics';
 // Unique name for the controller
 const controllerName = 'MMIController';
 
+type NetworkControllerGetNetworkConfigurationByChainId = {
+  type: `NetworkController:getNetworkConfigurationByChainId`;
+  handler: NetworkController['getNetworkConfigurationByChainId'];
+};
+
 /**
  * Actions that this controller is allowed to call.
  */
@@ -41,7 +47,9 @@ export type AllowedActions =
   | AccountsControllerGetSelectedAccountAction
   | AccountsControllerSetSelectedAccountAction
   | NetworkControllerGetStateAction
-  | NetworkControllerSetActiveNetworkAction;
+  | NetworkControllerSetActiveNetworkAction
+  | NetworkControllerGetNetworkClientByIdAction
+  | NetworkControllerGetNetworkConfigurationByChainId;
 
 /**
  * Messenger type for the {@link MMIController}.

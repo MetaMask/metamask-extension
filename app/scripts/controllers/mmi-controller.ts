@@ -42,9 +42,6 @@ import {
   ConnectionRequest,
   MMIControllerMessenger,
 } from '../../../shared/constants/mmi-controller';
-// TODO: Remove restricted import
-// eslint-disable-next-line import/no-restricted-paths
-import { getCurrentChainId } from '../../../ui/selectors';
 import MetaMetricsController from './metametrics';
 import { getPermissionBackgroundApiMethods } from './permissions';
 import AccountTrackerController from './account-tracker-controller';
@@ -866,15 +863,21 @@ export class MMIController {
       }
     }
 
-    const selectedChainId = getCurrentChainId({
-      metamask: this.#networkControllerState,
-    });
+    const { selectedNetworkClientId } = this.messagingSystem.call(
+      'NetworkController:getState',
+    );
+    const {
+      configuration: { chainId: selectedChainId },
+    } = this.messagingSystem.call(
+      'NetworkController:getNetworkClientById',
+      selectedNetworkClientId,
+    );
 
     if (selectedChainId !== toHex(chainId)) {
-      const networkConfiguration =
-        this.#networkControllerState.networkConfigurationsByChainId[
-          toHex(chainId)
-        ];
+      const networkConfiguration = this.messagingSystem.call(
+        'NetworkController:getNetworkConfigurationByChainId',
+        toHex(chainId),
+      );
 
       const { networkClientId } =
         networkConfiguration?.rpcEndpoints?.[

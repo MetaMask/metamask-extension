@@ -40,6 +40,21 @@ jest.mock('./permissions', () => ({
   }),
 }));
 
+export const createMockNetworkConfiguration = (
+  override?: Partial<NetworkConfiguration>,
+): NetworkConfiguration => {
+  return {
+    chainId: CHAIN_IDS.SEPOLIA,
+    blockExplorerUrls: [],
+    defaultRpcEndpointIndex: 0,
+    name: 'Mock Network',
+    nativeCurrency: 'MOCK TOKEN',
+    rpcEndpoints: [],
+    defaultBlockExplorerUrlIndex: 0,
+    ...override,
+  };
+};
+
 const mockAccount = {
   address: '0x758b8178a9A4B7206d1f648c4a77C515Cbac7001',
   id: 'mock-id',
@@ -210,6 +225,20 @@ describe('MMIController', function () {
       InfuraNetworkType['sepolia'],
     );
 
+    controllerMessenger.registerActionHandler(
+      'NetworkController:getNetworkClientById',
+      jest.fn().mockReturnValue({
+        configuration: {
+          chainId: CHAIN_IDS.SEPOLIA,
+        }
+      }),
+    );
+
+    controllerMessenger.registerActionHandler(
+      'NetworkController:getNetworkConfigurationByChainId',
+      jest.fn().mockReturnValue(createMockNetworkConfiguration()),
+    );
+
     const mmiControllerMessenger = controllerMessenger.getRestricted({
       name: 'MMIController',
       allowedActions: [
@@ -219,7 +248,9 @@ describe('MMIController', function () {
         'AccountsController:getSelectedAccount',
         'AccountsController:setSelectedAccount',
         'NetworkController:getState',
-        'NetworkController:setActiveNetwork'
+        'NetworkController:setActiveNetwork',
+        'NetworkController:getNetworkClientById',
+        'NetworkController:getNetworkConfigurationByChainId'
       ],
     });
 
@@ -508,9 +539,7 @@ describe('MMIController', function () {
       CUSTODIAN_TYPES['CUSTODIAN-TYPE'] = {
         keyringClass: { type: 'mock-keyring-class' },
       };
-      mmiController.messagingSystem.call = jest
-        .fn()
-        .mockReturnValue({ address: '0x1' });
+      jest.spyOn(ControllerMessenger.prototype, 'call').mockReturnValue({ address: '0x1' });
       mmiController.custodyController.getCustodyTypeByAddress = jest
         .fn()
         .mockReturnValue('custodian-type');
@@ -837,7 +866,7 @@ describe('MMIController', function () {
         '0x1',
       );
 
-      expect(selectedAccountSpy).toHaveBeenCalledTimes(1);
+      expect(selectedAccountSpy).toHaveBeenCalledTimes(4);
       const selectedAccount = accountsController.getSelectedAccount();
       expect(selectedAccount.id).toBe(mockAccount.id);
     });
