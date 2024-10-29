@@ -51,19 +51,17 @@ describe('ERC721 NFTs testdapp interaction', function () {
         await driver.clickElement(
           '[data-testid="account-overview__activity-tab"]',
         );
-        const transactionItem = await driver.waitForSelector({
+        await driver.waitForSelector({
           css: '[data-testid="activity-list-item-action"]',
           text: 'Deposit',
         });
-        assert.equal(await transactionItem.isDisplayed(), true);
 
         // verify the mint transaction has finished
         await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
-        const nftsMintStatus = await driver.findElement({
+        await driver.waitForSelector({
           css: '#nftsStatus',
           text: 'Mint completed',
         });
-        assert.equal(await nftsMintStatus.isDisplayed(), true);
 
         await driver.switchToWindowWithTitle(
           WINDOW_TITLES.ExtensionInFullScreenView,
@@ -116,11 +114,10 @@ describe('ERC721 NFTs testdapp interaction', function () {
         await driver.clickElement(
           '[data-testid="account-overview__activity-tab"]',
         );
-        const transactionItem = await driver.waitForSelector({
+        await driver.waitForSelector({
           css: '[data-testid="activity-list-item-action"]',
           text: 'Deposit',
         });
-        assert.equal(await transactionItem.isDisplayed(), true);
 
         // verify the mint transaction has finished
         await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
@@ -138,7 +135,6 @@ describe('ERC721 NFTs testdapp interaction', function () {
         await driver.fill('#watchNFTInput', '3');
         await driver.clickElement({ text: 'Watch NFT', tag: 'button' });
 
-        await driver.waitUntilXWindowHandles(3);
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
         // avoid race condition
@@ -225,37 +221,40 @@ describe('ERC721 NFTs testdapp interaction', function () {
         await driver.clickElement({ text: 'Mint', tag: 'button' });
 
         // Notification
-        await driver.waitUntilXWindowHandles(3);
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
         await driver.waitForSelector({
           css: '.confirm-page-container-summary__action__name',
           text: 'Deposit',
         });
-        await driver.clickElement({ text: 'Confirm', tag: 'button' });
-        await driver.waitUntilXWindowHandles(2);
+        await driver.clickElementAndWaitForWindowToClose({
+          text: 'Confirm',
+          tag: 'button',
+        });
         await driver.switchToWindowWithTitle(
           WINDOW_TITLES.ExtensionInFullScreenView,
         );
         await driver.clickElement(
           '[data-testid="account-overview__activity-tab"]',
         );
-        const transactionItem = await driver.waitForSelector({
+
+        // We need to wait until the transaction is confirmed before looking for the tx
+        // otherwise the element becomes stale, as it updates from 'pending' to 'confirmed'
+        await driver.waitForSelector('.transaction-status-label--confirmed');
+
+        await driver.waitForSelector({
           css: '[data-testid="activity-list-item-action"]',
           text: 'Deposit',
         });
-        assert.equal(await transactionItem.isDisplayed(), true);
         // verify the mint transaction has finished
         await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
-        const nftsMintStatus = await driver.findElement({
+        await driver.waitForSelector({
           css: '#nftsStatus',
           text: 'Mint completed',
         });
-        assert.equal(await nftsMintStatus.isDisplayed(), true);
 
         // watch all nfts
         await driver.clickElement({ text: 'Watch all NFTs', tag: 'button' });
 
-        await driver.waitUntilXWindowHandles(3);
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
         // confirm watchNFT
@@ -277,8 +276,10 @@ describe('ERC721 NFTs testdapp interaction', function () {
         );
         await removeButtons[0].click();
 
-        await driver.clickElement({ text: 'Add NFTs', tag: 'button' });
-        await driver.waitUntilXWindowHandles(2);
+        await driver.clickElementAndWaitForWindowToClose({
+          text: 'Add NFTs',
+          tag: 'button',
+        });
 
         await driver.switchToWindowWithTitle(
           WINDOW_TITLES.ExtensionInFullScreenView,
@@ -316,7 +317,6 @@ describe('ERC721 NFTs testdapp interaction', function () {
         // Click Transfer
         await driver.fill('#transferTokenInput', '1');
         await driver.clickElement('#transferFromButton');
-        await driver.waitUntilXWindowHandles(3);
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
         // Confirm transfer
@@ -401,11 +401,10 @@ describe('ERC721 NFTs testdapp interaction', function () {
         );
 
         // Verify transaction
-        const completedTx = await driver.waitForSelector({
+        await driver.waitForSelector({
           css: '[data-testid="activity-list-item-action"]',
           text: 'Approve TDN spending cap',
         });
-        assert.equal(await completedTx.isDisplayed(), true);
       },
     );
   });
@@ -468,11 +467,10 @@ describe('ERC721 NFTs testdapp interaction', function () {
         );
 
         // Verify transaction
-        const completedTx = await driver.waitForSelector({
+        await driver.waitForSelector({
           css: '[data-testid="activity-list-item-action"]',
           text: 'Approve TDN with no spend limit',
         });
-        assert.equal(await completedTx.isDisplayed(), true);
       },
     );
   });
@@ -538,11 +536,10 @@ describe('ERC721 NFTs testdapp interaction', function () {
         );
 
         // Verify transaction
-        const completedTx = await driver.waitForSelector({
+        await driver.waitForSelector({
           css: '[data-testid="activity-list-item-action"]',
           text: 'Approve TDN with no spend limit',
         });
-        assert.equal(await completedTx.isDisplayed(), true);
       },
     );
   });

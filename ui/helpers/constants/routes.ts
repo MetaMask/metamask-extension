@@ -36,9 +36,6 @@ PATH_NAME_MAP[SECURITY_ROUTE] = 'Security Settings Page';
 export const ABOUT_US_ROUTE = '/settings/about-us';
 PATH_NAME_MAP[ABOUT_US_ROUTE] = 'About Us Page';
 
-export const ALERTS_ROUTE = '/settings/alerts';
-PATH_NAME_MAP[ALERTS_ROUTE] = 'Alerts Settings Page';
-
 export const NETWORKS_ROUTE = '/settings/networks';
 PATH_NAME_MAP[NETWORKS_ROUTE] = 'Network Settings Page';
 
@@ -127,9 +124,6 @@ export const PERMISSIONS = '/permissions';
 PATH_NAME_MAP[PERMISSIONS] = 'Permissions';
 
 export const REVIEW_PERMISSIONS = '/review-permissions';
-
-export const TOKEN_DETAILS = '/token-details';
-PATH_NAME_MAP[`${TOKEN_DETAILS}/:address`] = 'Token Details Page';
 
 export const CONNECT_ROUTE = '/connect';
 PATH_NAME_MAP[`${CONNECT_ROUTE}/:id`] = 'Connect To Site Confirmation Page';
@@ -246,12 +240,6 @@ PATH_NAME_MAP[PREPARE_SWAP_ROUTE] = 'Prepare Swap Page';
 
 export const SWAPS_NOTIFICATION_ROUTE = '/swaps/notification-page';
 PATH_NAME_MAP[SWAPS_NOTIFICATION_ROUTE] = 'Swaps Notification Page';
-
-export const BUILD_QUOTE_ROUTE = '/swaps/build-quote';
-PATH_NAME_MAP[BUILD_QUOTE_ROUTE] = 'Swaps Build Quote Page';
-
-export const VIEW_QUOTE_ROUTE = '/swaps/view-quote';
-PATH_NAME_MAP[VIEW_QUOTE_ROUTE] = 'Swaps View Quotes Page';
 
 export const LOADING_QUOTES_ROUTE = '/swaps/loading-quotes';
 PATH_NAME_MAP[LOADING_QUOTES_ROUTE] = 'Swaps Loading Quotes Page';

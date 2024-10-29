@@ -7,7 +7,6 @@ import { getSnapsMetadata } from '../../../selectors';
 import { getSnapName } from '../../../helpers/utils/util';
 import PermissionCell from '../permission-cell';
 import { Box } from '../../component-library';
-import { CaveatTypes } from '../../../../shared/constants/permissions';
 
 /**
  * Get one or more permission descriptions for a permission name.
@@ -18,10 +17,6 @@ import { CaveatTypes } from '../../../../shared/constants/permissions';
  * @returns {JSX.Element} A permission description node.
  */
 function getDescriptionNode(permission, index, accounts) {
-  const permissionValue = permission?.permissionValue?.caveats?.find(
-    (caveat) => caveat.type === CaveatTypes.restrictNetworkSwitching,
-  )?.value;
-
   return (
     <PermissionCell
       permissionName={permission.name}
@@ -31,7 +26,7 @@ function getDescriptionNode(permission, index, accounts) {
       avatarIcon={permission.leftIcon}
       key={`${permission.permissionName}-${index}`}
       accounts={accounts}
-      permissionValue={permissionValue}
+      permissionValue={permission.permissionValue.restrictNetworkSwitching}
     />
   );
 }

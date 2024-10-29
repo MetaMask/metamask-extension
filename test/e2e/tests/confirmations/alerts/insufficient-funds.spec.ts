@@ -73,6 +73,6 @@ async function mintNft(driver: Driver) {
 async function displayAlertForInsufficientBalance(driver: Driver) {
   await driver.waitForSelector({
     css: '[data-testid="alert-modal__selected-alert"]',
-    text: 'You do not have enough ETH in your account to pay for transaction fees.',
+    text: 'You do not have enough ETH in your account to pay for network fees.',
   });
 }

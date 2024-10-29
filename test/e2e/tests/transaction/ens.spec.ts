@@ -112,6 +112,7 @@ describe('ENS', function (this: Suite) {
 
         // click send button on homepage to start send flow
         const homepage = new HomePage(driver);
+        await homepage.check_pageIsLoaded();
         await homepage.check_expectedBalanceIsDisplayed('<0.000001');
         await homepage.startSendFlow();
 

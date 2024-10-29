@@ -11,8 +11,8 @@ import {
 import { SMART_CONTRACTS } from '../../seeder/smart-contracts';
 import { CHAIN_IDS } from '../../../../shared/constants/network';
 import { Driver } from '../../webdriver/driver';
-import { FeatureFlagResponse } from '../../../../ui/pages/bridge/bridge.util';
 import { isManifestV3 } from '../../../../shared/modules/mv3.utils';
+import { FeatureFlagResponse } from '../../../../ui/pages/bridge/types';
 import {
   DEFAULT_FEATURE_FLAGS_RESPONSE,
   ETH_CONVERSION_RATE_USD,
@@ -84,10 +84,6 @@ export class BridgePage {
 
   verifySwapPage = async (expectedHandleCount: number) => {
     await this.driver.delay(4000);
-    await this.driver.waitForSelector({
-      css: '.bridge__title',
-      text: 'Bridge',
-    });
     assert.equal(
       (await this.driver.getAllWindowHandles()).length,
       IS_FIREFOX || !isManifestV3

@@ -9,6 +9,7 @@ import { log as sentryLogger } from '../../app/scripts/lib/setupSentry';
  * The supported trace names.
  */
 export enum TraceName {
+  AccountList = 'Account List',
   BackgroundConnect = 'Background Connect',
   DeveloperTest = 'Developer Test',
   FirstRender = 'First Render',
@@ -32,6 +33,11 @@ const ID_DEFAULT = 'default';
 const OP_DEFAULT = 'custom';
 
 const tracesByKey: Map<string, PendingTrace> = new Map();
+const durationsByName: { [name: string]: number } = {};
+
+if (process.env.IN_TEST && globalThis.stateHooks) {
+  globalThis.stateHooks.getCustomTraces = () => durationsByName;
+}
 
 type PendingTrace = {
   end: (timestamp?: number) => void;
@@ -155,9 +161,8 @@ export function endTrace(request: EndTraceRequest) {
 
   const { request: pendingRequest, startTime } = pendingTrace;
   const endTime = timestamp ?? getPerformanceTimestamp();
-  const duration = endTime - startTime;
 
-  log('Finished trace', name, id, duration, { request: pendingRequest });
+  logTrace(pendingRequest, startTime, endTime);
 }
 
 function traceCallback<T>(request: TraceRequest, fn: TraceCallback<T>): T {
@@ -181,9 +186,7 @@ function traceCallback<T>(request: TraceRequest, fn: TraceCallback<T>): T {
       },
       () => {
         const end = Date.now();
-        const duration = end - start;
-
-        log('Finished trace', name, duration, { error, request });
+        logTrace(request, start, end, error);
       },
     ) as T;
   };
@@ -240,6 +243,22 @@ function startSpan<T>(
     initScope(scope, request);
     return callback(spanOptions);
   });
+}
+
+function logTrace(
+  request: TraceRequest,
+  startTime: number,
+  endTime: number,
+  error?: unknown,
+) {
+  const duration = endTime - startTime;
+  const { name } = request;
+
+  if (process.env.IN_TEST) {
+    durationsByName[name] = duration;
+  }
+
+  log('Finished trace', name, duration, { request, error });
 }
 
 function getTraceId(request: TraceRequest) {
@@ -352,7 +371,7 @@ function sentryWithIsolationScope<T>(callback: (scope: Sentry.Scope) => T): T {
   if (!actual) {
     const scope = {
       // eslint-disable-next-line no-empty-function
-      setTags: () => {},
+      setTag: () => {},
     } as unknown as Sentry.Scope;
 
     return callback(scope);
