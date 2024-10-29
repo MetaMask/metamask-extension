@@ -1,16 +1,12 @@
-const { strict: assert } = require('assert');
 const FixtureBuilder = require('../../fixture-builder');
 
 const {
   WINDOW_TITLES,
   defaultGanacheOptions,
-  openDapp,
   unlockWallet,
   withFixtures,
 } = require('../../helpers');
 const { mockServerJsonRpc } = require('./mocks/mock-server-json-rpc');
-
-const bannerAlertSelector = '[data-testid="security-provider-banner-alert"]';
 
 const CONTRACT_ADDRESS = {
   WrappedEther: 'c02aaa39b223fe8d0a0e5c4f27ead9083c756cc2',
@@ -90,14 +86,17 @@ async function mockInfura(mockServer) {
 }
 
 describe('PPOM Blockaid Alert - Set Trade farming order @no-mmi', function () {
-  // eslint-disable-next-line mocha/no-skipped-tests
-  it.skip('should show banner alert', async function () {
+  it('should show banner alert', async function () {
+    // we need to use localhost instead of the ip
+    // see issue: https://github.com/MetaMask/MetaMask-planning/issues/3560
     await withFixtures(
       {
         dapp: true,
         fixtures: new FixtureBuilder()
           .withNetworkControllerOnMainnet()
-          .withPermissionControllerConnectedToTestDapp()
+          .withPermissionControllerConnectedToTestDapp({
+            useLocalhostHostname: true,
+          })
           .withPreferencesController({
             securityAlertsEnabled: true,
           })
@@ -109,7 +108,7 @@ describe('PPOM Blockaid Alert - Set Trade farming order @no-mmi', function () {
 
       async ({ driver }) => {
         await unlockWallet(driver);
-        await openDapp(driver);
+        await driver.openNewPage('http://localhost:8080');
 
         const expectedTitle = 'This is a deceptive request';
         const expectedDescription =
@@ -117,27 +116,19 @@ describe('PPOM Blockaid Alert - Set Trade farming order @no-mmi', function () {
 
         // Click TestDapp button to send JSON-RPC request
         await driver.clickElement('#maliciousTradeOrder');
-
-        // Wait for confirmation pop-up
-        await driver.waitUntilXWindowHandles(3);
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
         await driver.assertElementNotPresent('.loading-indicator');
 
-        const bannerAlertFoundByTitle = await driver.findElement({
-          css: bannerAlertSelector,
+        await driver.waitForSelector({
+          css: '.mm-text--body-lg-medium',
           text: expectedTitle,
         });
-        const bannerAlertText = await bannerAlertFoundByTitle.getText();
 
-        assert(
-          bannerAlertFoundByTitle,
-          `Banner alert not found. Expected Title: ${expectedTitle} \nExpected reason: approval_farming\n`,
-        );
-        assert(
-          bannerAlertText.includes(expectedDescription),
-          `Unexpected banner alert description. Expected: ${expectedDescription} \nExpected reason: approval_farming\n`,
-        );
+        await driver.waitForSelector({
+          css: '.mm-text--body-md',
+          text: expectedDescription,
+        });
       },
     );
   });
