@@ -4,6 +4,7 @@ on:
   pull_request:
     types:
       - opened
+      - synchronize
 
 jobs:
   add-team-label:
