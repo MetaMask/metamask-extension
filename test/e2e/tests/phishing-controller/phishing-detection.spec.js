@@ -59,7 +59,7 @@ describe('Phishing Detection', function () {
         await openDapp(driver);
         await driver.switchToWindowWithTitle('MetaMask Phishing Detection');
         await driver.clickElement({
-          text: 'continue to the site.',
+          text: 'Proceed anyway',
         });
         await driver.wait(until.titleIs(WINDOW_TITLES.TestDApp), 10000);
       },
@@ -104,7 +104,7 @@ describe('Phishing Detection', function () {
 
         await driver.switchToWindowWithTitle('MetaMask Phishing Detection');
         await driver.clickElement({
-          text: 'continue to the site.',
+          text: 'Proceed anyway',
         });
 
         await driver.wait(until.titleIs(WINDOW_TITLES.TestDApp), 10000);
@@ -170,7 +170,7 @@ describe('Phishing Detection', function () {
         });
         await driver.switchToWindowWithTitle('MetaMask Phishing Detection');
         await driver.clickElement({
-          text: 'continue to the site.',
+          text: 'Proceed anyway',
         });
 
         // We don't really know what we're going to see at this blocked site, so a waitAtLeast guard of 1000ms is the best choice
@@ -253,7 +253,7 @@ describe('Phishing Detection', function () {
     );
   });
 
-  it('should open a new extension expanded view when clicking back to safety button', async function () {
+  it('should open MetaMask Portfolio when clicking back to safety button', async function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilder().build(),
@@ -290,11 +290,10 @@ describe('Phishing Detection', function () {
           text: 'Back to safety',
         });
 
-        // Ensure we're redirected to wallet home page
-        const homePage = await driver.findElement('.home__main-view');
-        const homePageDisplayed = await homePage.isDisplayed();
+        const currentUrl = await driver.getCurrentUrl();
+        const expectedPortfolioUrl = `https://portfolio.metamask.io/?metamaskEntry=phishing_page_portfolio_button`;
 
-        assert.equal(homePageDisplayed, true);
+        assert.equal(currentUrl, expectedPortfolioUrl);
       },
     );
   });

@@ -56,7 +56,7 @@ import {
 
 export type TransactionMetricsRequest = {
   createEventFragment: (
-    options: MetaMetricsEventFragment,
+    options: Omit<MetaMetricsEventFragment, 'id'>,
   ) => MetaMetricsEventFragment;
   finalizeEventFragment: (
     fragmentId: string,
@@ -1060,6 +1060,7 @@ async function buildEventFragmentProperties({
     // ui_customizations must come after ...blockaidProperties
     ui_customizations: uiCustomizations.length > 0 ? uiCustomizations : null,
     transaction_advanced_view: isAdvancedDetailsOpen,
+    transaction_contract_method: transactionContractMethod,
     ...smartTransactionMetricsProperties,
     ...swapAndSendMetricsProperties,
     // TODO: Replace `any` with type
@@ -1086,7 +1087,6 @@ async function buildEventFragmentProperties({
       : TRANSACTION_ENVELOPE_TYPE_NAMES.LEGACY,
     first_seen: time,
     gas_limit: gasLimit,
-    transaction_contract_method: transactionContractMethod,
     transaction_replaced: transactionReplaced,
     ...extraParams,
     ...gasParamsInGwei,

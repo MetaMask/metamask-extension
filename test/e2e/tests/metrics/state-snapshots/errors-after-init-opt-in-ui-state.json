@@ -173,7 +173,9 @@
     "allDetectedTokens": {},
     "smartTransactionsState": {
       "fees": {},
+      "feesByChainId": "object",
       "liveness": true,
+      "livenessByChainId": "object",
       "smartTransactions": "object"
     },
     "allNftContracts": "object",
@@ -201,7 +203,6 @@
     "isSignedIn": "boolean",
     "isProfileSyncingEnabled": null,
     "isProfileSyncingUpdateLoading": "boolean",
-    "submitHistory": "object",
     "subscriptionAccountsSeen": "object",
     "isMetamaskNotificationsFeatureSeen": "boolean",
     "isNotificationServicesEnabled": "boolean",
@@ -217,6 +218,7 @@
     "accounts": "object",
     "accountsByChainId": "object",
     "marketData": "object",
+    "signatureRequests": "object",
     "unapprovedDecryptMsgs": "object",
     "unapprovedDecryptMsgCount": 0,
     "unapprovedEncryptionPublicKeyMsgs": "object",
@@ -255,12 +257,17 @@
     },
     "bridgeState": {
       "bridgeFeatureFlags": {
+        "extensionConfig": "object",
         "extensionSupport": "boolean",
         "srcNetworkAllowlist": { "0": "string", "1": "string", "2": "string" },
         "destNetworkAllowlist": { "0": "string", "1": "string", "2": "string" }
       },
       "destTokens": {},
       "destTopAssets": {},
+      "quoteRequest": {
+        "slippage": 0.5,
+        "srcTokenAddress": "0x0000000000000000000000000000000000000000"
+      },
       "srcTokens": {},
       "srcTopAssets": {}
     },

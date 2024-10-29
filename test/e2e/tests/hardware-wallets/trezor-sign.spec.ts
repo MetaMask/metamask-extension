@@ -31,9 +31,11 @@ describe('Trezor Hardware Signatures', function (this: Suite) {
         await openDapp(driver);
         await driver.clickElement('#signTypedDataV4');
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
+        await driver.delay(1000);
 
-        await driver.clickElement('.confirm-scroll-to-bottom__button');
+        await driver.clickElementSafe('.confirm-scroll-to-bottom__button');
         await driver.clickElement({ text: 'Confirm', tag: 'button' });
+        await driver.delay(1000);
 
         await driver.waitUntilXWindowHandles(2);
         await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);

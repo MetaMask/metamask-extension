@@ -27,32 +27,48 @@ describe('Test Snap Signature Insights', function () {
 
         // navigate to test snaps page and connect
         await driver.openNewPage(TEST_SNAPS_WEBSITE_URL);
-        await driver.delay(1000);
 
-        // find and scroll to the transaction-insights test and connect
+        // wait for page to load
+        await driver.waitForSelector({
+          text: 'Installed Snaps',
+          tag: 'h2',
+        });
+
+        // find and scroll to the transaction-insights snap
         const snapButton1 = await driver.findElement(
           '#connectsignature-insights',
         );
         await driver.scrollToElement(snapButton1);
-        await driver.delay(1000);
+
+        // added delay for firefox (deflake)
+        await driver.delayFirefox(1000);
+
+        // wait for and click connect
+        await driver.waitForSelector('#connectsignature-insights');
         await driver.clickElement('#connectsignature-insights');
 
-        // switch to metamask extension and click connect
+        // switch to metamask extension
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
+
+        // wait for and click connect
+        await driver.waitForSelector({
+          text: 'Connect',
+          tag: 'button',
+        });
         await driver.clickElement({
           text: 'Connect',
           tag: 'button',
         });
 
+        // wait for and click confirm
         await driver.waitForSelector({ text: 'Confirm' });
-
         await driver.clickElement({
           text: 'Confirm',
           tag: 'button',
         });
 
+        // wait for and click ok and wait for window to close
         await driver.waitForSelector({ text: 'OK' });
-
         await driver.clickElementAndWaitForWindowToClose({
           text: 'OK',
           tag: 'button',
@@ -79,21 +95,14 @@ describe('Test Snap Signature Insights', function () {
           tag: 'p',
         });
 
-        // click down arrow
-        await driver.waitForSelector({
-          text: 'Signature Insights Example Snap',
-          tag: 'span',
-        });
-        await driver.clickElement({
-          text: 'Signature Insights Example Snap',
-          tag: 'span',
-        });
-
         // look for returned signature insights data
         await driver.waitForSelector({
           text: '0x4578616d706c652060706572736f6e616c5f7369676e60206d657373616765',
           tag: 'p',
         });
+
+        // Click down arrow
+        await driver.clickElementSafe('[aria-label="Scroll down"]');
 
         // click sign button
         await driver.clickElementAndWaitForWindowToClose(
@@ -125,21 +134,10 @@ describe('Test Snap Signature Insights', function () {
         });
 
         // click down arrow
-        // await driver.waitForSelector('[aria-label="Scroll down"]');
         await driver.clickElementSafe('[aria-label="Scroll down"]');
 
         // required: delay for scroll to render
         await driver.delay(500);
-
-        // click down arrow
-        await driver.waitForSelector({
-          text: 'Signature Insights Example Snap',
-          tag: 'span',
-        });
-        await driver.clickElement({
-          text: 'Signature Insights Example Snap',
-          tag: 'span',
-        });
 
         // look for returned signature insights data
         await driver.waitForSelector({
@@ -147,7 +145,7 @@ describe('Test Snap Signature Insights', function () {
           tag: 'p',
         });
 
-        // click sign button
+        // click sign button and wait for window to close
         await driver.clickElementAndWaitForWindowToClose(
           '[data-testid="confirm-footer-button"]',
         );
@@ -187,16 +185,6 @@ describe('Test Snap Signature Insights', function () {
 
         // required: delay for scroll to render
         await driver.delay(500);
-
-        // click signature insights
-        await driver.waitForSelector({
-          text: 'Signature Insights Example Snap',
-          tag: 'span',
-        });
-        await driver.clickElement({
-          text: 'Signature Insights Example Snap',
-          tag: 'span',
-        });
 
         // look for returned signature insights data
         await driver.waitForSelector({
@@ -245,23 +233,13 @@ describe('Test Snap Signature Insights', function () {
         // required: delay for scroll to render
         await driver.delay(500);
 
-        // click signature insights
-        await driver.waitForSelector({
-          text: 'Signature Insights Example Snap',
-          tag: 'span',
-        });
-        await driver.clickElement({
-          text: 'Signature Insights Example Snap',
-          tag: 'span',
-        });
-
         // look for returned signature insights data
         await driver.waitForSelector({
           text: '0xCcCCccccCCCCcCCCCCCcCcCccCcCCCcCcccccccC has been identified as a malicious verifying contract.',
           tag: 'p',
         });
 
-        // click sign button
+        // click sign button and wait for window to close
         await driver.clickElementAndWaitForWindowToClose(
           '[data-testid="confirm-footer-button"]',
         );
@@ -295,32 +273,45 @@ describe('Test Snap Signature Insights', function () {
 
         // navigate to test snaps page and connect
         await driver.openNewPage(TEST_SNAPS_WEBSITE_URL);
+
+        // delay added for page render (deflake)
         await driver.delay(1000);
 
-        // find and scroll to the transaction-insights test and connect
+        // find and scroll to the transaction-insights test snap
         const snapButton1 = await driver.findElement(
           '#connectsignature-insights',
         );
         await driver.scrollToElement(snapButton1);
-        await driver.delay(1000);
+
+        // added delay for firefox (deflake)
+        await driver.delayFirefox(1000);
+
+        // wait for and click connect
+        await driver.waitForSelector('#connectsignature-insights');
         await driver.clickElement('#connectsignature-insights');
 
-        // switch to metamask extension and click connect
+        // switch to metamask extension
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
+
+        // wait for and click connect
+        await driver.waitForSelector({
+          text: 'Connect',
+          tag: 'button',
+        });
         await driver.clickElement({
           text: 'Connect',
           tag: 'button',
         });
 
+        // wait for and click confirm
         await driver.waitForSelector({ text: 'Confirm' });
-
         await driver.clickElement({
           text: 'Confirm',
           tag: 'button',
         });
 
+        // wait for and click ok and wait for window to close
         await driver.waitForSelector({ text: 'OK' });
-
         await driver.clickElementAndWaitForWindowToClose({
           text: 'OK',
           tag: 'button',
@@ -358,10 +349,9 @@ describe('Test Snap Signature Insights', function () {
           text: '127.0.0.1:8080',
           tag: 'span',
         });
-
         await driver.clickElement('.mm-checkbox__input-wrapper');
 
-        // click sign button
+        // click sign button and wait for window to close
         await driver.clickElementAndWaitForWindowToClose(
           '[data-testid="snapInsightsButtonConfirm"]',
         );
@@ -401,10 +391,9 @@ describe('Test Snap Signature Insights', function () {
           text: '127.0.0.1:8080',
           tag: 'span',
         });
-
         await driver.clickElement('.mm-checkbox__input-wrapper');
 
-        // click sign button
+        // click sign button and wait for window to close
         await driver.clickElementAndWaitForWindowToClose(
           '[data-testid="snapInsightsButtonConfirm"]',
         );
@@ -448,10 +437,9 @@ describe('Test Snap Signature Insights', function () {
           text: '127.0.0.1:8080',
           tag: 'span',
         });
-
         await driver.clickElement('.mm-checkbox__input-wrapper');
 
-        // click sign button
+        // click sign button and wait for window to close
         await driver.clickElementAndWaitForWindowToClose(
           '[data-testid="snapInsightsButtonConfirm"]',
         );
@@ -495,10 +483,9 @@ describe('Test Snap Signature Insights', function () {
           text: '127.0.0.1:8080',
           tag: 'span',
         });
-
         await driver.clickElement('.mm-checkbox__input-wrapper');
 
-        // click sign button
+        // click sign button and wait for window to close
         await driver.clickElementAndWaitForWindowToClose(
           '[data-testid="snapInsightsButtonConfirm"]',
         );

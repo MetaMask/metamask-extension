@@ -19,6 +19,7 @@ import {
 import CurrencyInput from '../../../app/currency-input';
 import { getIsFiatPrimary } from '../utils';
 import { NFTInput } from '../nft-input/nft-input';
+import useTokenExchangeRate from '../../../app/currency-input/hooks/useTokenExchangeRate';
 import SwapIcon from './swap-icon';
 
 type BaseProps = {
@@ -81,12 +82,17 @@ export function SwappableCurrencyInput({
   const t = useI18nContext();
 
   const isFiatPrimary = useSelector(getIsFiatPrimary);
+  const tokenToFiatConversionRate = useTokenExchangeRate(
+    asset?.details?.address,
+  );
   const isSetToMax = useSelector(getSendMaxModeState);
 
   const TokenComponent = (
     <CurrencyInput
       className="asset-picker-amount__input"
-      isFiatPreferred={isFiatPrimary}
+      isFiatPreferred={
+        isFiatPrimary && Boolean(tokenToFiatConversionRate?.toNumber())
+      }
       onChange={onAmountChange} // onChange controls disabled state, disabled if undefined
       hexValue={value}
       swapIcon={(onClick: React.MouseEventHandler) => (

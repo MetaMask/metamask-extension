@@ -36,6 +36,9 @@ const bridgeSlice = createSlice({
     setFromTokenInputValue: (state, action) => {
       state.fromTokenInputValue = action.payload;
     },
+    resetInputFields: () => ({
+      ...initialState,
+    }),
   },
 });
 

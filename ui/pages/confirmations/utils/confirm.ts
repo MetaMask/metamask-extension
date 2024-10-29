@@ -22,11 +22,13 @@ export const REDESIGN_USER_TRANSACTION_TYPES = [
   TransactionType.tokenMethodApprove,
   TransactionType.tokenMethodIncreaseAllowance,
   TransactionType.tokenMethodSetApprovalForAll,
+  TransactionType.tokenMethodTransfer,
+  TransactionType.tokenMethodTransferFrom,
+  TransactionType.tokenMethodSafeTransferFrom,
 ];
 
 export const REDESIGN_DEV_TRANSACTION_TYPES = [
   ...REDESIGN_USER_TRANSACTION_TYPES,
-  TransactionType.tokenMethodTransfer,
 ];
 
 const SIGNATURE_APPROVAL_TYPES = [
