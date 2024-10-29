@@ -1175,10 +1175,6 @@
     "message": "Connected with $1",
     "description": "$1 represents network name"
   },
-  "connectedWithNetworks": {
-    "message": "$1 networks connected",
-    "description": "$1 represents network length"
-  },
   "connecting": {
     "message": "Connecting"
   },
