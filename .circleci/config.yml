@@ -350,7 +350,9 @@ workflows:
               only: develop
           requires:
             - prep-build-ts-migration-dashboard
-      - rerun-workflow-from-failed
+      - rerun-workflow-from-failed:
+          requires:
+            - job-publish-release: completed or canceled
           #filters:
             #branches:
               #only: develop
@@ -932,6 +934,8 @@ jobs:
   rerun-workflow-from-failed:
     executor: node-browsers-small
     steps:
+      - run: *shallow-git-clone-and-enable-vnc
+      - run: sudo corepack enable
       - attach_workspace:
           at: .
       - run:
