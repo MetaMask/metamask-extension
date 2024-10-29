@@ -5,9 +5,7 @@ import { Numeric } from '../../../../shared/modules/Numeric';
 import { selectBridgeHistoryForAccount } from '../../../ducks/bridge-status/selectors';
 import { getNetworkConfigurationsByChainId } from '../../../selectors';
 
-export default function useSourceChainBridgeData({
-  transactionGroup,
-}: {
+export type UseBridgeDataProps = {
   transactionGroup: {
     hasCancelled: boolean;
     hasRetried: boolean;
@@ -16,7 +14,11 @@ export default function useSourceChainBridgeData({
     primaryTransaction: TransactionMeta;
     transactions: TransactionMeta[];
   };
-}) {
+};
+
+export default function useBridgeData({
+  transactionGroup,
+}: UseBridgeDataProps) {
   const networkConfigurationsByChainId = useSelector(
     getNetworkConfigurationsByChainId,
   );
