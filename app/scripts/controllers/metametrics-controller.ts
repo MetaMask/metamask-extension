@@ -371,7 +371,7 @@ export default class MetaMetricsController extends BaseController<
    * @param options.captureException
    */
   constructor({
-    state,
+    state = {},
     messenger,
     segment,
     version,
@@ -411,7 +411,7 @@ export default class MetaMetricsController extends BaseController<
     this.#selectedAddress = preferencesControllerState.selectedAddress;
     ///: END:ONLY_INCLUDE_IF
 
-    const abandonedFragments = omitBy(state?.fragments, 'persist');
+    const abandonedFragments = omitBy(state.fragments, 'persist');
 
     this.messagingSystem.subscribe(
       'PreferencesController:stateChange',
@@ -440,7 +440,7 @@ export default class MetaMetricsController extends BaseController<
 
     // Code below submits any pending segmentApiCalls to Segment if/when the controller is re-instantiated
     if (isManifestV3) {
-      Object.values(state?.segmentApiCalls || {}).forEach(
+      Object.values(state.segmentApiCalls || {}).forEach(
         ({ eventType, payload }) => {
           try {
             this.#submitSegmentAPICall(eventType, payload);
