@@ -2,7 +2,7 @@
 import { MockttpServer } from 'mockttp';
 import { tinyDelayMs, veryLargeDelayMs, WINDOW_TITLES } from '../../../helpers';
 import { Driver } from '../../../webdriver/driver';
-import { scrollAndConfirmAndAssertConfirm } from '../helpers';
+import { confirmAndAssertConfirm } from '../helpers';
 import {
   openDAppWithContract,
   TestSuiteArguments,
@@ -216,7 +216,7 @@ async function assertApproveDetails(driver: Driver) {
 
 export async function confirmApproveTransaction(driver: Driver) {
   await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
-  await scrollAndConfirmAndAssertConfirm(driver);
+  await confirmAndAssertConfirm(driver);
 
   await driver.delay(veryLargeDelayMs);
   await driver.waitUntilXWindowHandles(2);

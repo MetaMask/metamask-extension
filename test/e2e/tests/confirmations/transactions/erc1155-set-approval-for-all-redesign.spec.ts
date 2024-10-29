@@ -95,6 +95,5 @@ async function createTransactionAssertDetailsAndConfirm(
   await setApprovalForAllConfirmation.check_setApprovalForAllTitle();
   await setApprovalForAllConfirmation.check_setApprovalForAllSubHeading();
 
-  await setApprovalForAllConfirmation.clickScrollToBottomButton();
   await setApprovalForAllConfirmation.clickFooterConfirmButton();
 }

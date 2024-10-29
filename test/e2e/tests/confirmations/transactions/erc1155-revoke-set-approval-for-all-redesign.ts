@@ -68,6 +68,5 @@ async function createTransactionAndAssertDetails(
 
   await setApprovalForAllConfirmation.check_revokeSetApprovalForAllTitle();
 
-  await setApprovalForAllConfirmation.clickScrollToBottomButton();
   await setApprovalForAllConfirmation.clickFooterConfirmButton();
 }
