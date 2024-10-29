@@ -31,11 +31,6 @@ import {
   getSendErrors,
   getSendStage,
   isSendFormInvalid,
-  resetSendState,
-  signTransaction,
-  startNewDraftTransaction,
-  updateSendAmount,
-  updateSendAsset,
 } from '../../../../ducks/send';
 import {
   TokenStandard,
@@ -60,6 +55,7 @@ import { getIsDraftSwapAndSend } from '../../../../ducks/send/helpers';
 import { smartTransactionsListSelector } from '../../../../selectors';
 import { TextVariant } from '../../../../helpers/constants/design-system';
 import { TRANSACTION_ERRORED_EVENT } from '../../../app/transaction-activity-log/transaction-activity-log.constants';
+import { useSendFlow } from '../../../../hooks/sendFlow/useSendFlow';
 import {
   SendPageAccountPicker,
   SendPageRecipientContent,
@@ -69,7 +65,23 @@ import {
 
 export const SendPage = () => {
   const t = useContext(I18nContext);
+  const {
+    actions: {
+      resetSendState,
+      startNewDraftTransaction,
+      signTransaction,
+      updateSendAsset,
+      updateSendAmount,
+    },
+  } = useSendFlow();
   const dispatch = useDispatch();
+  const history = useHistory();
+  const location = useLocation();
+  const trackEvent = useContext(MetaMetricsContext);
+  const sendAnalytics = useSelector(getSendAnalyticProperties);
+
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [error, setError] = useState(undefined);
 
   const startedNewDraftTransaction = useRef(false);
   const draftTransactionExists = useSelector(getDraftTransactionExists);
@@ -86,14 +98,6 @@ export const SendPage = () => {
   const mostRecentOverviewPage = useSelector(getMostRecentOverviewPage);
   const sendStage = useSelector(getSendStage);
   const isSwapAndSend = getIsDraftSwapAndSend(draftTransaction);
-
-  const history = useHistory();
-  const location = useLocation();
-  const trackEvent = useContext(MetaMetricsContext);
-  const sendAnalytics = useSelector(getSendAnalyticProperties);
-
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const [error, setError] = useState(undefined);
 
   const handleSelectToken = useCallback(
     (token, isReceived) => {

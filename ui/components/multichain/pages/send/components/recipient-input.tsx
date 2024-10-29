@@ -19,7 +19,8 @@ import {
   MetaMetricsEventName,
 } from '../../../../../../shared/constants/metametrics';
 import { shortenAddress } from '../../../../../helpers/utils/util';
-import { toChecksumHexAddress } from '../../../../../../shared/modules/hexstring-utils';
+// eslint-disable-next-line import/no-restricted-paths
+import { normalizeSafeAddress } from '../../../../../../app/scripts/lib/multichain/address';
 import { SendPageRow } from '.';
 
 export const SendPageRecipientInput = () => {
@@ -63,7 +64,7 @@ export const SendPageRecipientInput = () => {
         selectedAddress={recipient.address}
         selectedName={
           recipient.nickname === recipient.address
-            ? shortenAddress(toChecksumHexAddress(recipient.address))
+            ? shortenAddress(normalizeSafeAddress(recipient.address))
             : recipient.nickname
         }
         onPaste={(text: string) => {

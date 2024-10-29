@@ -49,9 +49,12 @@ module.exports = {
             message: 'Should not import from UI in shared',
           },
           {
-            target: './ui',
+            // This is a special case where we allow importing from the `send` duck
+            // we also allow importing from the send duck in tests
+            target:
+              '^(?!./ui/hooks/sendFlow)(?!.*.(test|spec).)(?!.*__tests__).*$',
             from: './ui/ducks/send',
-            except: ['./ui/hooks/sendFlow'],
+            except: [path.join(__dirname, 'ui', 'ducks', 'send')],
             message: 'Should not be used outside of useSendFlow',
           },
         ],
