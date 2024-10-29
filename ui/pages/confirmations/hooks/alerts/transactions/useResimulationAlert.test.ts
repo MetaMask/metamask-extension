@@ -30,6 +30,7 @@ const TRANSACTION_META_MOCK = {
   time: new Date().getTime() - 10000,
   simulationData: {
     isUpdatedAfterSecurityCheck: true,
+    tokenBalanceChanges: [],
   },
 } as TransactionMeta;
 
@@ -87,6 +88,7 @@ describe('useResimulationAlert', () => {
       ...TRANSACTION_META_MOCK,
       simulationData: {
         isUpdatedAfterSecurityCheck: false,
+        tokenBalanceChanges: [],
       },
     };
     expect(
@@ -102,7 +104,6 @@ describe('useResimulationAlert', () => {
       simulationData: {
         isUpdatedAfterSecurityCheck: true,
         tokenBalanceChanges: [],
-        nativeBalanceChange: null,
       },
     };
     const alerts = runHook({
