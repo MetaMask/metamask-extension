@@ -51,6 +51,17 @@ describe('Request Queuing Dapp 1, Switch Tx -> Dapp 2 Send Tx', function () {
 
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
+        const editButtons = await driver.findElements('[data-testid="edit"]');
+
+        await editButtons[1].click();
+
+        // Disconnect Localhost 8545
+        await driver.clickElement({
+          text: 'Localhost 8545',
+          tag: 'p',
+        });
+
+        await driver.clickElement('[data-testid="connect-more-chains-button"]');
         await driver.clickElementAndWaitForWindowToClose({
           text: 'Connect',
           tag: 'button',
@@ -93,7 +104,7 @@ describe('Request Queuing Dapp 1, Switch Tx -> Dapp 2 Send Tx', function () {
           params: [{ chainId: '0x539' }],
         });
 
-        // Initiate switchEthereumChain on Dapp Two
+        // Initiate switchEthereumChain on Dapp One
         await driver.executeScript(
           `window.ethereum.request(${switchEthereumChainRequest})`,
         );
@@ -192,7 +203,17 @@ describe('Request Queuing Dapp 1, Switch Tx -> Dapp 2 Send Tx', function () {
         await driver.clickElement('#connectButton');
 
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
+        const editButtons = await driver.findElements('[data-testid="edit"]');
 
+        await editButtons[1].click();
+
+        // Disconnect Localhost 8545
+        await driver.clickElement({
+          text: 'Localhost 8545',
+          tag: 'p',
+        });
+
+        await driver.clickElement('[data-testid="connect-more-chains-button"]');
         await driver.clickElementAndWaitForWindowToClose({
           text: 'Connect',
           tag: 'button',
@@ -235,16 +256,10 @@ describe('Request Queuing Dapp 1, Switch Tx -> Dapp 2 Send Tx', function () {
           params: [{ chainId: '0x539' }],
         });
 
-        // Initiate switchEthereumChain on Dapp Two
+        // Initiate switchEthereumChain on Dapp One
         await driver.executeScript(
           `window.ethereum.request(${switchEthereumChainRequest})`,
         );
-
-        await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
-        await driver.findElement({
-          text: 'Use your enabled networks',
-          tag: 'p',
-        });
 
         await driver.switchToWindowWithUrl(DAPP_ONE_URL);
 
@@ -259,6 +274,7 @@ describe('Request Queuing Dapp 1, Switch Tx -> Dapp 2 Send Tx', function () {
         // There is an extra window appearing and disappearing
         // so we leave this delay until the issue is fixed (#27360)
         await driver.delay(5000);
+
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
         // Check correct network on the send confirmation.

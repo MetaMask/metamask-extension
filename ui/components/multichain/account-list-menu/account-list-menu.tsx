@@ -455,6 +455,7 @@ export const AccountListMenu = ({
               <ButtonLink
                 size={ButtonLinkSize.Sm}
                 startIconName={IconName.Import}
+                data-testid="multichain-account-menu-popover-add-imported-account"
                 onClick={() => {
                   trackEvent({
                     category: MetaMetricsEventCategory.Navigation,
