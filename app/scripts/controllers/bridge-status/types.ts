@@ -1,4 +1,5 @@
 import {
+  ControllerGetStateAction,
   ControllerStateChangeEvent,
   RestrictedControllerMessenger,
 } from '@metamask/base-controller';
@@ -140,6 +141,7 @@ export type BridgeStatusControllerState = {
 export enum BridgeStatusAction {
   START_POLLING_FOR_BRIDGE_TX_STATUS = 'startPollingForBridgeTxStatus',
   WIPE_BRIDGE_STATUS = 'wipeBridgeStatus',
+  GET_STATE = 'getState',
 }
 
 type BridgeStatusControllerAction<
@@ -152,7 +154,11 @@ type BridgeStatusControllerAction<
 // Maps to BridgeController function names
 type BridgeStatusControllerActions =
   | BridgeStatusControllerAction<BridgeStatusAction.START_POLLING_FOR_BRIDGE_TX_STATUS>
-  | BridgeStatusControllerAction<BridgeStatusAction.WIPE_BRIDGE_STATUS>;
+  | BridgeStatusControllerAction<BridgeStatusAction.WIPE_BRIDGE_STATUS>
+  | ControllerGetStateAction<
+      typeof BRIDGE_STATUS_CONTROLLER_NAME,
+      BridgeStatusControllerState
+    >;
 
 type BridgeStatusControllerEvents = ControllerStateChangeEvent<
   typeof BRIDGE_STATUS_CONTROLLER_NAME,
