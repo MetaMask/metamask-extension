@@ -3,10 +3,10 @@ const FixtureBuilder = require('../../fixture-builder');
 
 const {
   defaultGanacheOptions,
-  logInWithBalanceValidation,
-  sendScreenToConfirmScreen,
-  WINDOW_TITLES,
   withFixtures,
+  sendScreenToConfirmScreen,
+  logInWithBalanceValidation,
+  WINDOW_TITLES,
 } = require('../../helpers');
 const { SECURITY_ALERTS_PROD_API_BASE_URL } = require('./constants');
 const { mockServerJsonRpc } = require('./mocks/mock-server-json-rpc');
@@ -25,7 +25,7 @@ const SEND_REQUEST_BASE_MOCK = {
     {
       from: '0x5cfe73b6021e818b776b421b1c4db2474086a7e1',
       data: '0x',
-      to: '0x5fbdb2315678afecb367f032d93f642f64180aa3',
+      to: mockMaliciousAddress,
       value: '0xde0b6b3a7640000',
     },
   ],
@@ -49,7 +49,7 @@ async function mockRequest(server, request, response) {
   await server
     .forPost(`${SECURITY_ALERTS_PROD_API_BASE_URL}/validate/0x1`)
     .withJsonBodyIncluding(request)
-    .thenJson(201, response);
+    .thenJson(response.statusCode ?? 201, response);
 }
 
 async function mockInfuraWithBenignResponses(mockServer) {
@@ -94,6 +94,18 @@ async function mockInfuraWithFailedResponses(mockServer) {
     },
     { statusCode: 500, message: 'Internal server error' },
   );
+
+  // Retained this mock to support fallback to the local PPOM
+  await mockServer
+    .forGet(
+      'https://static.cx.metamask.io/api/v1/confirmations/ppom/ppom_version.json',
+    )
+    .thenCallback(() => {
+      console.log('mocked ppom_version.json');
+      return {
+        statusCode: 500,
+      };
+    });
 }
 
 /**
@@ -123,7 +135,7 @@ describe('Simple Send Security Alert - Blockaid @no-mmi', function () {
         await logInWithBalanceValidation(driver);
 
         await sendScreenToConfirmScreen(driver, mockBenignAddress, '1');
-        // await driver.delay(100000)
+
         const isPresent = await driver.isElementPresent(bannerAlertSelector);
         assert.equal(isPresent, false, `Banner alert unexpectedly found.`);
       },
