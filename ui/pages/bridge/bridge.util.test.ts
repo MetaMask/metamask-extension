@@ -19,6 +19,10 @@ describe('Bridge utils', () => {
   describe('fetchBridgeFeatureFlags', () => {
     it('should fetch bridge feature flags successfully', async () => {
       const mockResponse = {
+        'extension-config': {
+          refreshRate: 3,
+          maxRefreshCount: 1,
+        },
         'extension-support': true,
         'src-network-allowlist': [1, 10, 59144, 120],
         'dest-network-allowlist': [1, 137, 59144, 11111],
@@ -39,6 +43,10 @@ describe('Bridge utils', () => {
       });
 
       expect(result).toStrictEqual({
+        extensionConfig: {
+          maxRefreshCount: 1,
+          refreshRate: 3,
+        },
         extensionSupport: true,
         srcNetworkAllowlist: [
           CHAIN_IDS.MAINNET,
@@ -78,6 +86,10 @@ describe('Bridge utils', () => {
       });
 
       expect(result).toStrictEqual({
+        extensionConfig: {
+          maxRefreshCount: 5,
+          refreshRate: 30000,
+        },
         extensionSupport: false,
         srcNetworkAllowlist: [],
         destNetworkAllowlist: [],
