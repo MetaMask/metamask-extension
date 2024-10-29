@@ -6461,15 +6461,9 @@ __metadata:
     "@babel/runtime": ^7.23.9
     "@metamask/accounts-controller": ^18.0.0
     "@metamask/approval-controller": ^7.0.0
-    "@metamask/gas-fee-controller": ^22.0.0
-    "@metamask/network-controller": ^22.0.0
-  checksum: 10/c1bdca52bbbce42a76ec9c640197534ec6c223b0f5d5815acfa53490dc1175850ea9aeeb6ae3c5ec34218f0bdbbbeb3e8731e2552aa9411e3ed7798a5dea8ab5
+    "@metamask/gas-fee-controller": ^20.0.0
+  checksum: 10/314a46bdaf1a4c68fe232591d28f3f978d7ed17f19dbaa2e3cbcbc4d28d4f7fc4581d7f88446d31ced2176f4f2abf1022ae39a296cb884fd5a083181c562ee2c
   languageName: node
-  linkType: hard
-
-"@metamask/user-operation-controller@npm:^13.0.0":
-  version: 13.0.0
-  resolution: "@metamask/user-operation-controller@npm:13.0.0"
   dependencies:
     "@metamask/approval-controller": "npm:^7.0.0"
     "@metamask/base-controller": "npm:^6.0.0"
