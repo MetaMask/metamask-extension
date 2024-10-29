@@ -88,22 +88,6 @@ async function mockInfura(mockServer) {
       },
     ],
     [
-      'eth_call',
-      {
-        params: [
-          {
-            to: '0x00008f1149168c1d2fa1eba1ad3e9cd644510000',
-            data: '0x01ffc9a780ac58cd00000000000000000000000000000000000000000000000000000000',
-          },
-          '0x1',
-        ],
-        error: {
-          code: -32000,
-          message: 'execution reverted',
-        },
-      },
-    ],
-    [
       'eth_getStorageAt',
       {
         params: [
@@ -125,51 +109,6 @@ async function mockInfura(mockServer) {
           '0x0000000000000000000000000000000000000000000000000000000000000000',
       },
     ],
-    [
-      'eth_call',
-      {
-        params: [
-          {
-            to: '0x00008f1149168c1d2fa1eba1ad3e9cd644510000',
-            data: '0x01ffc9a7d9b67a2600000000000000000000000000000000000000000000000000000000',
-          },
-        ],
-        error: {
-          code: -32000,
-          message: 'execution reverted',
-        },
-      },
-    ],
-    [
-      'eth_call',
-      {
-        params: [
-          {
-            to: '0x00008f1149168c1d2fa1eba1ad3e9cd644510000',
-            data: '0x95d89b41',
-          },
-        ],
-        error: {
-          code: -32000,
-          message: 'execution reverted',
-        },
-      },
-    ],
-    [
-      'eth_call',
-      {
-        params: [
-          {
-            to: '0x00008f1149168c1d2fa1eba1ad3e9cd644510000',
-            data: '0x313ce567',
-          },
-        ],
-        error: {
-          code: -32000,
-          message: 'execution reverted',
-        },
-      },
-    ],
     ['eth_getBlockByNumber'],
     ['eth_getBalance'],
     [
@@ -185,27 +124,6 @@ async function mockInfura(mockServer) {
       {
         params: ['0x5cfe73b6021e818b776b421b1c4db2474086a7e1'],
         result: '0x0',
-      },
-    ],
-    [
-      'eth_getTransactionCount',
-      {
-        params: ['0x4838b106fce9647bdf1e7877bf73ce8b0bad5f97'],
-        result: '0xcdfeb',
-      },
-    ],
-    [
-      'eth_getBalance',
-      {
-        params: ['0x4838b106fce9647bdf1e7877bf73ce8b0bad5f97'],
-        result: '0x4e991b6164c212a4',
-      },
-    ],
-    [
-      'eth_getCode',
-      {
-        params: ['0x4838b106fce9647bdf1e7877bf73ce8b0bad5f97'],
-        result: '0x',
       },
     ],
   ]);
@@ -266,7 +184,6 @@ async function mockInfura(mockServer) {
 }
 
 describe('PPOM Blockaid Alert - Malicious Contract interaction @no-mmi', function () {
-  // eslint-disable-next-line mocha/no-skipped-tests
   it('should show banner alert', async function () {
     await withFixtures(
       {
@@ -308,7 +225,7 @@ describe('PPOM Blockaid Alert - Malicious Contract interaction @no-mmi', functio
         await driver.assertElementNotPresent('.loading-indicator');
 
         const bannerAlert = await driver.findElement(
-          '[data-testid="security-provider-banner-alert"]',
+          '[data-testid="confirm-banner-alert"]',
         );
 
         const bannerAlertText = await bannerAlert.getText();
@@ -321,8 +238,6 @@ describe('PPOM Blockaid Alert - Malicious Contract interaction @no-mmi', functio
           bannerAlertText.includes(expectedDescription),
           `Expected text "${expectedDescription}" not found on the alert`,
         );
-
-        await driver.delay(200000);
       },
     );
   });
