@@ -101,6 +101,8 @@ describe('useResimulationAlert', () => {
       ...CONFIRMATION_MOCK,
       simulationData: {
         isUpdatedAfterSecurityCheck: true,
+        tokenBalanceChanges: [],
+        nativeBalanceChange: null,
       },
     };
     const alerts = runHook({
