@@ -1,20 +1,27 @@
 import { TokenListMap } from '@metamask/assets-controllers';
 import { TransactionMeta } from '@metamask/transaction-controller';
 import { useSelector } from 'react-redux';
+import { useI18nContext } from '../../../../../../hooks/useI18nContext';
 import { getTokenList } from '../../../../../../selectors';
 import { SelectedToken } from '../shared/selected-token';
 
-export const useTokenImage = (
+export const useTokenDetails = (
   transactionMeta: TransactionMeta,
   selectedToken: SelectedToken,
 ) => {
+  const t = useI18nContext();
+
   const tokenList = useSelector(getTokenList) as TokenListMap;
 
-  // TODO: Add support for NFT images in one of the following tasks
   const tokenImage =
     selectedToken?.iconUrl ||
     selectedToken?.image ||
     tokenList[transactionMeta?.txParams?.to as string]?.iconUrl;
 
-  return { tokenImage };
+  const tokenSymbol =
+    selectedToken?.symbol ||
+    tokenList[transactionMeta?.txParams?.to as string]?.symbol ||
+    t('unknown');
+
+  return { tokenImage, tokenSymbol };
 };
