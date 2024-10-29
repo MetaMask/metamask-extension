@@ -73,7 +73,8 @@ export function QuoteCard({ scrollRef }: QuoteCardProps) {
   const prevBestQuote = useRef(bestQuote);
 
   useEffect(() => {
-    const isQuoteJustLoaded = bestQuote && prevBestQuote.current === undefined;
+    const isQuoteJustLoaded =
+      (bestQuote && prevBestQuote.current === undefined) || false;
 
     prevBestQuote.current = bestQuote;
     // scroll to quote on initial load
@@ -90,7 +91,7 @@ export function QuoteCard({ scrollRef }: QuoteCardProps) {
           event: MetaMetricsEventName.sendSwapQuoteReceived,
           category: MetaMetricsEventCategory.Send,
           properties: {
-            is_first_fetch: isQuoteJustLoaded ?? false,
+            is_first_fetch: isQuoteJustLoaded,
           },
           sensitiveProperties: {
             ...sendAnalytics,

@@ -362,7 +362,7 @@ export default class MetaMetricsController extends BaseController<
     extension,
     captureException = defaultCaptureException,
   }: MetaMetricsControllerOptions) {
-    const segmentApiCalls = state?.segmentApiCalls || {};
+    const segmentApiCalls = state.segmentApiCalls || {};
     super({
       name: controllerName,
       metadata: controllerMetadata,
@@ -375,10 +375,8 @@ export default class MetaMetricsController extends BaseController<
         eventsBeforeMetricsOptIn: [],
         traits: {},
         previousUserTraits: {},
+        fragments: {},
         ...state,
-        fragments: {
-          ...state?.fragments,
-        },
         segmentApiCalls: {
           ...segmentApiCalls,
         },
@@ -408,7 +406,7 @@ export default class MetaMetricsController extends BaseController<
     this.#selectedAddress = preferencesControllerState.selectedAddress;
     ///: END:ONLY_INCLUDE_IF
 
-    const abandonedFragments = omitBy(state?.fragments, 'persist');
+    const abandonedFragments = omitBy(state.fragments, 'persist');
 
     this.messagingSystem.subscribe(
       'PreferencesController:stateChange',
@@ -484,7 +482,7 @@ export default class MetaMetricsController extends BaseController<
   /**
    * Gets the current chain ID.
    *
-   * @param "networkClientId" - The network client ID to get the chain ID for.
+   * @param networkClientId - The network client ID to get the chain ID for.
    */
   #getCurrentChainId(networkClientId?: NetworkClientId): Hex {
     const selectedNetworkClientId =
@@ -949,9 +947,8 @@ export default class MetaMetricsController extends BaseController<
 
   // It adds an event into a queue, which is only tracked if a user opts into metrics.
   addEventBeforeMetricsOptIn(event: MetaMetricsEventPayload): void {
-    const prevState = this.state.eventsBeforeMetricsOptIn;
     this.update((state) => {
-      state.eventsBeforeMetricsOptIn = [...prevState, event];
+      state.eventsBeforeMetricsOptIn.push(event);
     });
   }
 

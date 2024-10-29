@@ -1,5 +1,8 @@
 import { toHex } from '@metamask/controller-utils';
-import { NetworkState } from '@metamask/network-controller';
+import type {
+  NetworkClientId,
+  NetworkState,
+} from '@metamask/network-controller';
 import { NameEntry, NameType } from '@metamask/name-controller';
 import { AddressBookEntry } from '@metamask/address-book-controller';
 import {
@@ -36,8 +39,7 @@ import {
 const segmentMock = createSegmentMock(2);
 
 const VERSION = '0.0.1-test';
-const NETWORK_CLIENT_ID_1_CHAIN_ID = '0x1338';
-const NETWORK_CLIENT_ID_2_CHAIN_ID = '0x222';
+const DEFAULT_CHAIN_ID = '0x1338';
 const LOCALE = 'en_US';
 const TEST_META_METRICS_ID = '0xabc';
 const TEST_GA_COOKIE_ID = '123456.123455';
@@ -78,7 +80,7 @@ const DEFAULT_TEST_CONTEXT = {
 };
 
 const DEFAULT_SHARED_PROPERTIES = {
-  chain_id: NETWORK_CLIENT_ID_1_CHAIN_ID,
+  chain_id: DEFAULT_CHAIN_ID,
   locale: LOCALE.replace('_', '-'),
   environment_type: 'background',
 };
@@ -122,7 +124,7 @@ describe('MetaMetricsController', function () {
       const spy = jest.spyOn(segmentMock, 'track');
       await withController(({ controller }) => {
         expect(controller.version).toStrictEqual(VERSION);
-        expect(controller.chainId).toStrictEqual(NETWORK_CLIENT_ID_1_CHAIN_ID);
+        expect(controller.chainId).toStrictEqual(DEFAULT_CHAIN_ID);
         expect(controller.state.participateInMetaMetrics).toStrictEqual(true);
         expect(controller.state.metaMetricsId).toStrictEqual(
           TEST_META_METRICS_ID,
@@ -151,15 +153,26 @@ describe('MetaMetricsController', function () {
     });
 
     it('should update when network changes', async function () {
-      await withController(({ controller, triggerNetworkDidChange }) => {
-        triggerNetworkDidChange({
-          networkConfigurationsByChainId: {},
-          selectedNetworkClientId: 'selectedNetworkClientId2',
-          networksMetadata: {},
-        });
+      const selectedNetworkClientId = 'selectedNetworkClientId2';
+      const selectedChainId = '0x222';
+      await withController(
+        {
+          mockNetworkClientConfigurationsByNetworkClientId: {
+            [selectedNetworkClientId]: {
+              chainId: selectedChainId,
+            },
+          },
+        },
+        ({ controller, triggerNetworkDidChange }) => {
+          triggerNetworkDidChange({
+            networkConfigurationsByChainId: {},
+            selectedNetworkClientId: 'selectedNetworkClientId2',
+            networksMetadata: {},
+          });
 
-        expect(controller.chainId).toStrictEqual(NETWORK_CLIENT_ID_2_CHAIN_ID);
-      });
+          expect(controller.chainId).toStrictEqual(selectedChainId);
+        },
+      );
     });
 
     it('should update when preferences changes', async function () {
@@ -1542,6 +1555,12 @@ type WithControllerOptions = {
   dataCollectionForMarketing?: MetaMetricsControllerState['dataCollectionForMarketing'];
   marketingCampaignCookieId?: MetaMetricsControllerState['marketingCampaignCookieId'];
   segment?: MetaMetricsControllerOptions['segment'];
+  mockNetworkClientConfigurationsByNetworkClientId?: Record<
+    NetworkClientId,
+    {
+      chainId: string;
+    }
+  >;
 };
 
 type WithControllerCallback<ReturnValue> = ({
@@ -1575,6 +1594,11 @@ async function withController<ReturnValue>(
       marketingCampaignCookieId = null,
       currentLocale = LOCALE,
       segment = segmentMock,
+      mockNetworkClientConfigurationsByNetworkClientId = {
+        selectedNetworkClientId: {
+          chainId: DEFAULT_CHAIN_ID,
+        },
+      },
     } = rest;
     const controllerMessenger = new ControllerMessenger<
       AllowedActions,
@@ -1591,26 +1615,18 @@ async function withController<ReturnValue>(
     controllerMessenger.registerActionHandler(
       'NetworkController:getState',
       jest.fn().mockReturnValue({
-        selectedNetworkClientId: 'selectedNetworkClientId',
+        selectedNetworkClientId: Object.keys(
+          mockNetworkClientConfigurationsByNetworkClientId,
+        )[0],
       }),
     );
 
     controllerMessenger.registerActionHandler(
       'NetworkController:getNetworkClientById',
-      jest.fn().mockImplementation((selectedNetworkClientId) => {
-        if (selectedNetworkClientId === 'selectedNetworkClientId2') {
-          return {
-            configuration: {
-              chainId: NETWORK_CLIENT_ID_2_CHAIN_ID,
-            },
-          };
-        }
-
-        return {
-          configuration: {
-            chainId: NETWORK_CLIENT_ID_1_CHAIN_ID,
-          },
-        };
+      jest.fn().mockReturnValue({
+        configuration: Object.values(
+          mockNetworkClientConfigurationsByNetworkClientId,
+        )[0],
       }),
     );
 
