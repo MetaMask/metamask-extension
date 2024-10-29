@@ -11,6 +11,7 @@ import {
 } from '../contexts/metametrics';
 import { MetamaskNotificationsProvider } from '../contexts/metamask-notifications';
 import { CurrencyRateProvider } from '../contexts/currencyRate';
+import { TokenRatesProvider } from '../contexts/tokenRates';
 import ErrorPage from './error';
 import Routes from './routes';
 
@@ -51,7 +52,9 @@ class Index extends PureComponent {
                   <LegacyI18nProvider>
                     <CurrencyRateProvider>
                       <MetamaskNotificationsProvider>
-                        <Routes />
+                        <TokenRatesProvider>
+                          <Routes />
+                        </TokenRatesProvider>
                       </MetamaskNotificationsProvider>
                     </CurrencyRateProvider>
                   </LegacyI18nProvider>

@@ -874,13 +874,13 @@ export default class MetamaskController extends EventEmitter {
       messenger: currencyRateMessenger,
       state: initState.CurrencyController,
     });
-    const initialFetchExchangeRate =
-      this.currencyRateController.fetchExchangeRate.bind(
+    const initialFetchMultiExchangeRate =
+      this.currencyRateController.fetchMultiExchangeRate.bind(
         this.currencyRateController,
       );
-    this.currencyRateController.fetchExchangeRate = (...args) => {
+    this.currencyRateController.fetchMultiExchangeRate = (...args) => {
       if (this.preferencesController.state.useCurrencyRateCheck) {
-        return initialFetchExchangeRate(...args);
+        return initialFetchMultiExchangeRate(...args);
       }
       return {
         conversionRate: null,
@@ -1004,6 +1004,7 @@ export default class MetamaskController extends EventEmitter {
       state: initState.TokenRatesController,
       messenger: tokenRatesMessenger,
       tokenPricesService: new CodefiTokenPricesServiceV2(),
+      disabled: !this.preferencesController.state.useCurrencyRateCheck,
     });
 
     this.controllerMessenger.subscribe(
@@ -1012,9 +1013,9 @@ export default class MetamaskController extends EventEmitter {
         const { useCurrencyRateCheck: prevUseCurrencyRateCheck } = prevState;
         const { useCurrencyRateCheck: currUseCurrencyRateCheck } = currState;
         if (currUseCurrencyRateCheck && !prevUseCurrencyRateCheck) {
-          this.tokenRatesController.start();
+          this.tokenRatesController.enable();
         } else if (!currUseCurrencyRateCheck && prevUseCurrencyRateCheck) {
-          this.tokenRatesController.stop();
+          this.tokenRatesController.disable();
         }
       }, this.preferencesController.state),
     );
@@ -2589,12 +2590,6 @@ export default class MetamaskController extends EventEmitter {
 
     const preferencesControllerState = this.preferencesController.state;
 
-    const { useCurrencyRateCheck } = preferencesControllerState;
-
-    if (useCurrencyRateCheck) {
-      this.tokenRatesController.start();
-    }
-
     if (this.#isTokenListPollingRequired(preferencesControllerState)) {
       this.tokenListController.start();
     }
@@ -2606,12 +2601,6 @@ export default class MetamaskController extends EventEmitter {
     this.tokenDetectionController.disable();
 
     const preferencesControllerState = this.preferencesController.state;
-
-    const { useCurrencyRateCheck } = preferencesControllerState;
-
-    if (useCurrencyRateCheck) {
-      this.tokenRatesController.stop();
-    }
 
     if (this.#isTokenListPollingRequired(preferencesControllerState)) {
       this.tokenListController.stop();
@@ -3249,6 +3238,7 @@ export default class MetamaskController extends EventEmitter {
       backup,
       approvalController,
       phishingController,
+      tokenRatesController,
       // Notification Controllers
       authenticationController,
       userStorageController,
@@ -4008,6 +3998,13 @@ export default class MetamaskController extends EventEmitter {
       currencyRateStopPollingByPollingToken:
         currencyRateController.stopPollingByPollingToken.bind(
           currencyRateController,
+        ),
+
+      tokenRatesStartPolling:
+        tokenRatesController.startPolling.bind(tokenRatesController),
+      tokenRatesStopPollingByPollingToken:
+        tokenRatesController.stopPollingByPollingToken.bind(
+          tokenRatesController,
         ),
 
       // GasFeeController

@@ -4517,15 +4517,15 @@ export async function removePollingTokenFromAppState(pollingToken: string) {
 /**
  * Informs the CurrencyRateController that the UI requires currency rate polling
  *
- * @param networkClientId - unique identifier for the network client
+ * @param nativeCurrencies
  * @returns polling token that can be used to stop polling
  */
-export async function currencyRateStartPollingByNetworkClientId(
-  networkClientId: string,
+export async function currencyRateStartPolling(
+  nativeCurrencies: string[],
 ): Promise<string> {
   const pollingToken = await submitRequestToBackground(
     'currencyRateStartPolling',
-    [{ networkClientId }],
+    [{ nativeCurrencies }],
   );
   await addPollingTokenToAppState(pollingToken);
   return pollingToken;
@@ -4544,6 +4544,37 @@ export async function currencyRateStopPollingByPollingToken(
   await submitRequestToBackground('currencyRateStopPollingByPollingToken', [
     pollingToken,
   ]);
+  await removePollingTokenFromAppState(pollingToken);
+}
+
+/**
+ * Informs the TokenRatesController that the UI requires token rate polling
+ *
+ * @param networkClientId
+ * @returns polling token that can be used to stop polling
+ */
+export async function tokenRatesStartPolling(
+  networkClientId: string,
+): Promise<string> {
+  const pollingToken = await submitRequestToBackground(
+    'tokenRatesStartPolling',
+    [{ networkClientId }],
+  );
+  // todo needed?
+  await addPollingTokenToAppState(pollingToken);
+  return pollingToken;
+}
+/**
+ *
+ * @param pollingToken -
+ */
+export async function tokenRatesStopPollingByPollingToken(
+  pollingToken: string,
+) {
+  await submitRequestToBackground('tokenRatesStopPollingByPollingToken', [
+    pollingToken,
+  ]);
+  // todo needed?
   await removePollingTokenFromAppState(pollingToken);
 }
 
