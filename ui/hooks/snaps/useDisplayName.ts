@@ -4,7 +4,9 @@ import { useSelector } from 'react-redux';
 import {
   getMemoizedAccountName,
   getAddressBookEntryByNetwork,
-} from '../../selectors';
+  AddressBookMetaMaskState,
+  AccountsMetaMaskState,
+} from '../../selectors/snaps';
 import { toChecksumHexAddress } from '../../../shared/modules/hexstring-utils';
 import { decimalToHex } from '../../../shared/modules/conversion.utils';
 
@@ -24,7 +26,9 @@ export type UseDisplayNameParams = {
  * @param params - The parsed CAIP-10 ID.
  * @returns The display name for the address.
  */
-export const useDisplayName = (params: UseDisplayNameParams): string => {
+export const useDisplayName = (
+  params: UseDisplayNameParams,
+): string | undefined => {
   const {
     address,
     chain: { namespace, reference },
@@ -34,15 +38,13 @@ export const useDisplayName = (params: UseDisplayNameParams): string => {
 
   const parsedAddress = isEip155 ? toChecksumHexAddress(address) : address;
 
-  const accountName = useSelector((state) =>
-    // @ts-expect-error type issue
+  const accountName = useSelector((state: AccountsMetaMaskState) =>
     getMemoizedAccountName(state, parsedAddress),
   );
 
-  const addressBookEntry = useSelector((state) =>
+  const addressBookEntry = useSelector((state: AddressBookMetaMaskState) =>
     getAddressBookEntryByNetwork(
       state,
-      // @ts-expect-error type issue
       parsedAddress,
       `0x${decimalToHex(isEip155 ? reference : `0`)}`,
     ),

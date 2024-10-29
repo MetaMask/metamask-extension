@@ -599,35 +599,6 @@ export function getAddressBook(state) {
   return Object.values(state.metamask.addressBook[chainId]);
 }
 
-export const getFullAddressBook = (state) => state.metamask.addressBook;
-
-export const getMemoizedFullAddressBook = createDeepEqualSelector(
-  [getFullAddressBook],
-  (addressBook) => addressBook,
-);
-
-export const getAddressBookByNetwork = createDeepEqualSelector(
-  [getMemoizedFullAddressBook, (_state, chainId) => chainId],
-  (addressBook, chainId) => {
-    if (!addressBook[chainId]) {
-      return [];
-    }
-    return Object.values(addressBook[chainId]);
-  },
-);
-
-export const getAddressBookEntryByNetwork = createDeepEqualSelector(
-  [
-    (state, _address, chainId) => getAddressBookByNetwork(state, chainId),
-    (_state, address) => address,
-  ],
-  (addressBook, address) => {
-    return addressBook.find((contact) =>
-      isEqualCaseInsensitive(contact.address, address),
-    );
-  },
-);
-
 export function getEnsResolutionByAddress(state, address) {
   if (state.metamask.ensResolutionsByAddress[address]) {
     return state.metamask.ensResolutionsByAddress[address];
@@ -667,16 +638,6 @@ export function getAccountName(accounts, accountAddress) {
   );
   return account && account.metadata.name !== '' ? account.metadata.name : '';
 }
-
-export const getAccountNameFromState = createSelector(
-  [getInternalAccounts, (_state, address) => address],
-  getAccountName,
-);
-
-export const getMemoizedAccountName = createDeepEqualSelector(
-  [getAccountNameFromState],
-  (accountName) => accountName,
-);
 
 export function accountsWithSendEtherInfoSelector(state) {
   const accounts = getMetaMaskAccounts(state);
