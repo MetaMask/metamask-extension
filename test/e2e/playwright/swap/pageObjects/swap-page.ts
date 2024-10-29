@@ -77,7 +77,7 @@ export class SwapPage {
       .textContent();
     if (balanceString) {
       if (parseFloat(balanceString.split(' ')[1]) <= parseFloat(options.qty)) {
-        await this.gotBack();
+        await this.goBack();
         // not enough balance so cancel out
         return false;
       }
@@ -105,7 +105,7 @@ export class SwapPage {
       // No quotes available
       const noQuotes = await this.page.$('text=/No quotes available/');
       if (noQuotes) {
-        await this.gotBack();
+        await this.goBack();
         break;
       }
 
@@ -131,7 +131,7 @@ export class SwapPage {
     await this.waitForCountDown();
   }
 
-  async gotBack() {
+  async goBack() {
     await this.backButton.click();
   }
 
@@ -141,10 +141,10 @@ export class SwapPage {
 
   async waitForTransactionToComplete(options: { seconds: number }) {
     let countSecond = options.seconds;
-    let trasnsactionCompleted;
+    let transactionCompleted;
     do {
-      trasnsactionCompleted = await this.page.$('text=/Transaction complete/');
-      if (trasnsactionCompleted) {
+      transactionCompleted = await this.page.$('text=/Transaction complete/');
+      if (transactionCompleted) {
         await this.closeButton.click();
         break;
       }
@@ -153,7 +153,7 @@ export class SwapPage {
       countSecond -= 1;
     } while (countSecond);
 
-    if (!trasnsactionCompleted && !countSecond) {
+    if (!transactionCompleted && !countSecond) {
       await this.viewInActivityBtn.click();
       return false;
     }
@@ -166,31 +166,10 @@ export class SwapPage {
   }
 
   async selectTokenFromList(symbol: string) {
-    let count;
-    // wait for the list to populate
-    do {
-      count = await this.tokenList.count();
-      await this.page.waitForTimeout(500);
-    } while (count !== (await this.tokenList.count()));
-
+    await this.tokenSearch.waitFor();
     await this.tokenSearch.fill(symbol);
     const regex = new RegExp(`^${symbol}$`, 'u');
     const searchItem = await this.tokenList.filter({ hasText: regex });
     await searchItem.click({ timeout: 5000 });
-  }
-
-  async waitForSearchListToPopulate(symbol: string): Promise<void> {
-    let searchItem;
-    do {
-      searchItem = await this.tokenList.first().textContent();
-      const listCount = await this.tokenList.count();
-
-      if (listCount > 1 && searchItem !== symbol) {
-        await this.tokenQty.fill('');
-        await this.tokenQty.fill(symbol);
-      }
-    } while (searchItem !== symbol);
-
-    return await this.tokenList.first().click();
   }
 }

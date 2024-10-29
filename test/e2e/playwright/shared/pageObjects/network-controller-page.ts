@@ -115,8 +115,6 @@ export class NetworkController {
       } else {
         await this.page.getByTestId(options.name).click();
       }
-      await this.waitForNetworkToSwitch(options.name);
-      await this.page.waitForTimeout(5000);
     }
   }
 
