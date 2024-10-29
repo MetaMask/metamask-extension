@@ -1,3 +1,4 @@
+import React from 'react';
 import { BridgeHistoryItem } from '../../../../app/scripts/controllers/bridge-status/types';
 import { UseBridgeDataProps } from './useBridgeData';
 
