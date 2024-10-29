@@ -1,7 +1,7 @@
 import EthQuery, { Provider } from '@metamask/eth-query';
 import { FetchGasFeeEstimateOptions } from '@metamask/gas-fee-controller';
 import { BigNumber } from 'bignumber.js';
-import { isHexString } from 'ethereumjs-util';
+import { isHexString } from '@ethereumjs/util';
 
 import { SmartTransaction } from '@metamask/smart-transactions-controller/dist/types';
 import {

@@ -1,5 +1,5 @@
 import { useMemo, useState } from 'react';
-import { toChecksumAddress } from 'ethereumjs-util';
+import { toChecksumAddress } from '@ethereumjs/util';
 import { shallowEqual, useSelector } from 'react-redux';
 import { getCurrentChainId } from '../../../../../shared/modules/selectors/networks';
 import { getTokenExchangeRates } from '../../../../selectors';

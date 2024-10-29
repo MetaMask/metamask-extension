@@ -7,7 +7,7 @@ import React, {
 } from 'react';
 import { NameType } from '@metamask/name-controller';
 import classnames from 'classnames';
-import { toChecksumAddress } from 'ethereumjs-util';
+import { toChecksumAddress } from '@ethereumjs/util';
 import { Box, Icon, IconName, IconSize, Text } from '../../component-library';
 import { shortenAddress, shortenString } from '../../../helpers/utils/util';
 import { MetaMetricsContext } from '../../../contexts/metametrics';

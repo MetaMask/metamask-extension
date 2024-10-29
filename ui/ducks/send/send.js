@@ -4,7 +4,7 @@ import {
   createSlice,
 } from '@reduxjs/toolkit';
 import BigNumber from 'bignumber.js';
-import { addHexPrefix, zeroAddress } from 'ethereumjs-util';
+import { addHexPrefix, zeroAddress } from '@ethereumjs/util';
 import { cloneDeep, debounce } from 'lodash';
 import { v4 as uuidv4 } from 'uuid';
 import { providerErrors } from '@metamask/rpc-errors';

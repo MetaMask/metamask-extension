@@ -6,7 +6,7 @@ import {
   toChecksumAddress,
   zeroAddress,
   isHexPrefixed,
-} from 'ethereumjs-util';
+} from '@ethereumjs/util';
 
 export const BURN_ADDRESS = zeroAddress();
 
@@ -26,7 +26,7 @@ export function isEmptyHexString(value: string): boolean {
 
 /**
  * Validates that the input is a hex address. This utility method is a thin
- * wrapper around ethereumjs-util.isValidAddress, with the exception that it
+ * wrapper around @ethereumjs/util.isValidAddress, with the exception that it
  * does not throw an error when provided values that are not hex strings. In
  * addition, and by default, this method will return true for hex strings that
  * meet the length requirement of a hex address, but are not prefixed with `0x`
@@ -80,13 +80,13 @@ export function toChecksumHexAddress(address: string) {
   if (!address) {
     // our internal checksumAddress function that this method replaces would
     // return an empty string for nullish input. If any direct usages of
-    // ethereumjs-util.toChecksumAddress were called with nullish input it
+    // @ethereumjs/util.toChecksumAddress were called with nullish input it
     // would have resulted in an error on version 5.1.
     return '';
   }
   const hexPrefixed = addHexPrefix(address);
   if (!isHexString(hexPrefixed)) {
-    // Version 5.1 of ethereumjs-utils would have returned '0xY' for input 'y'
+    // Version 5.1 of @ethereumjs/utils would have returned '0xY' for input 'y'
     // but we shouldn't waste effort trying to change case on a clearly invalid
     // string. Instead just return the hex prefixed original string which most
     // closely mimics the original behavior.

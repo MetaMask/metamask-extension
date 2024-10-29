@@ -1,5 +1,5 @@
+import { isValidAddress } from '@ethereumjs/util';
 import { TransactionMeta } from '@metamask/transaction-controller';
-import { isValidAddress } from 'ethereumjs-util';
 import React, { useMemo } from 'react';
 import { useSelector } from 'react-redux';
 import {

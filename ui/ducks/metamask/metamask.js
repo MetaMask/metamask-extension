@@ -1,4 +1,4 @@
-import { addHexPrefix, isHexString } from 'ethereumjs-util';
+import { addHexPrefix, isHexString } from '@ethereumjs/util';
 import { createSelector } from 'reselect';
 import { mergeGasFeeEstimates } from '@metamask/transaction-controller';
 import { AlertTypes } from '../../../shared/constants/alerts';

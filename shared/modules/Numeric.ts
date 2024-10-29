@@ -1,7 +1,7 @@
 import { BigNumber } from 'bignumber.js';
 import BN from 'bn.js';
 import { isHexString, isNullOrUndefined } from '@metamask/utils';
-import { addHexPrefix } from 'ethereumjs-util';
+import { addHexPrefix } from '@ethereumjs/util';
 import { EtherDenomination } from '../constants/common';
 import { stripHexPrefix } from './hexstring-utils';
 
@@ -11,7 +11,7 @@ export type NumericValue = string | number | BN | BigNumber;
 export type NumericBase = 10 | 16;
 
 /**
- * All variations of isHexString from our own utilities and ethereumjs-utils
+ * All variations of isHexString from our own utilities and @ethereumjs/utils
  * return false for a '-' prefixed hex string. This utility method strips the
  * possible '-' from the string before testing its validity so that negative
  * hex values can be properly handled.

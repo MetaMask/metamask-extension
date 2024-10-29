@@ -1,5 +1,5 @@
 import { BigNumber } from 'bignumber.js';
-import { zeroAddress } from 'ethereumjs-util';
+import { zeroAddress } from '@ethereumjs/util';
 import {
   calcAdjustedReturn,
   calcSentAmount,

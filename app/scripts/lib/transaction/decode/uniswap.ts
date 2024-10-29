@@ -1,6 +1,6 @@
 import { Interface, TransactionDescription } from '@ethersproject/abi';
 import { Hex } from '@metamask/utils';
-import { addHexPrefix, stripHexPrefix } from 'ethereumjs-util';
+import { addHexPrefix, stripHexPrefix } from '@ethereumjs/util';
 import { CHAIN_IDS } from '../../../../../shared/constants/network';
 import { UNISWAP_ROUTER_COMMANDS } from './uniswap-commands';
 

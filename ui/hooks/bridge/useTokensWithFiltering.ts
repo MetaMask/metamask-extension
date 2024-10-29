@@ -4,7 +4,7 @@ import { isEqual } from 'lodash';
 import { ChainId } from '@metamask/controller-utils';
 import { Hex } from '@metamask/utils';
 import { useParams } from 'react-router-dom';
-import { zeroAddress } from 'ethereumjs-util';
+import { zeroAddress } from '@ethereumjs/util';
 import {
   getAllDetectedTokensForSelectedAddress,
   getSelectedInternalAccountWithBalance,

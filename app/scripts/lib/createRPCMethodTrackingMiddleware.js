@@ -1,6 +1,6 @@
 import { ApprovalType, detectSIWE } from '@metamask/controller-utils';
 import { errorCodes } from '@metamask/rpc-errors';
-import { isValidAddress } from 'ethereumjs-util';
+import { isValidAddress } from '@ethereumjs/util';
 import { MESSAGE_TYPE, ORIGIN_METAMASK } from '../../../shared/constants/app';
 import {
   MetaMetricsEventCategory,

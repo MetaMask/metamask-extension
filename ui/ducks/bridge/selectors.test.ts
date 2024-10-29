@@ -1,5 +1,5 @@
+import { zeroAddress } from '@ethereumjs/util';
 import { BigNumber } from 'bignumber.js';
-import { zeroAddress } from 'ethereumjs-util';
 import { createBridgeMockStore } from '../../../test/jest/mock-store';
 import {
   BUILT_IN_NETWORKS,

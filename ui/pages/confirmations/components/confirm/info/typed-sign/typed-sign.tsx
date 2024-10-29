@@ -1,5 +1,5 @@
 import React from 'react';
-import { isValidAddress } from 'ethereumjs-util';
+import { isValidAddress } from '@ethereumjs/util';
 
 import { ConfirmInfoAlertRow } from '../../../../../../components/app/confirm/info/row/alert-row/alert-row';
 import { parseTypedDataMessage } from '../../../../../../../shared/modules/transaction.utils';

@@ -1,7 +1,7 @@
 import React, { useMemo } from 'react';
 import { useSelector } from 'react-redux';
 import { BigNumber } from 'bignumber.js';
-import { isHexString } from 'ethereumjs-util';
+import { isHexString } from '@ethereumjs/util';
 import { getNativeTokenAddress } from '@metamask/assets-controllers';
 import { Text, Box } from '../../../../component-library';
 import {
