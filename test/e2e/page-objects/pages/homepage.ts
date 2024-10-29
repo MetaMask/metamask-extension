@@ -22,6 +22,11 @@ class HomePage {
     css: '.mm-banner-alert',
   };
 
+  private readonly closeUseNetworkNotificationModalButton = {
+    text: 'Got it',
+    tag: 'h6',
+  };
+
   private readonly completedTransactions = '[data-testid="activity-list-item"]';
 
   private readonly confirmedTransactions = {
@@ -60,20 +65,20 @@ class HomePage {
     console.log('Home page is loaded');
   }
 
-  async startSendFlow(): Promise<void> {
-    await this.driver.clickElement(this.sendButton);
+  async closeUseNetworkNotificationModal(): Promise<void> {
+    // We need to use clickElementSafe + assertElementNotPresent as sometimes the network dialog doesn't appear, as per this issue (#25788)
+    // TODO: change the 2 actions for clickElementAndWaitToDisappear, once the issue is fixed
+    await this.driver.clickElementSafe(
+      this.closeUseNetworkNotificationModalButton,
+    );
+    await this.driver.assertElementNotPresent(
+      this.closeUseNetworkNotificationModalButton,
+    );
   }
 
   async goToActivityList(): Promise<void> {
     console.log(`Open activity tab on homepage`);
     await this.driver.clickElement(this.activityTab);
-  }
-
-  async check_basicFunctionalityOffWarnigMessageIsDisplayed(): Promise<void> {
-    console.log(
-      'Check if basic functionality off warning message is displayed on homepage',
-    );
-    await this.driver.waitForSelector(this.basicFunctionalityOffWarningMessage);
   }
 
   async goToNFTList(): Promise<void> {
@@ -83,6 +88,10 @@ class HomePage {
 
   async clickNFTIconOnActivityList() {
     await this.driver.clickElement(this.nftIconOnActivityList);
+  }
+
+  async startSendFlow(): Promise<void> {
+    await this.driver.clickElement(this.sendButton);
   }
 
   /**
@@ -100,28 +109,11 @@ class HomePage {
     });
   }
 
-  /**
-   * This function checks if the specified number of confirmed transactions are displayed in the activity list on homepage.
-   * It waits up to 10 seconds for the expected number of confirmed transactions to be visible.
-   *
-   * @param expectedNumber - The number of confirmed transactions expected to be displayed in activity list. Defaults to 1.
-   * @returns A promise that resolves if the expected number of confirmed transactions is displayed within the timeout period.
-   */
-  async check_confirmedTxNumberDisplayedInActivity(
-    expectedNumber: number = 1,
-  ): Promise<void> {
+  async check_basicFunctionalityOffWarnigMessageIsDisplayed(): Promise<void> {
     console.log(
-      `Wait for ${expectedNumber} confirmed transactions to be displayed in activity list`,
+      'Check if basic functionality off warning message is displayed on homepage',
     );
-    await this.driver.wait(async () => {
-      const confirmedTxs = await this.driver.findElements(
-        this.confirmedTransactions,
-      );
-      return confirmedTxs.length === expectedNumber;
-    }, 10000);
-    console.log(
-      `${expectedNumber} confirmed transactions found in activity list on homepage`,
-    );
+    await this.driver.waitForSelector(this.basicFunctionalityOffWarningMessage);
   }
 
   /**
@@ -145,6 +137,30 @@ class HomePage {
     }, 10000);
     console.log(
       `${expectedNumber} completed transactions found in activity list on homepage`,
+    );
+  }
+
+  /**
+   * This function checks if the specified number of confirmed transactions are displayed in the activity list on homepage.
+   * It waits up to 10 seconds for the expected number of confirmed transactions to be visible.
+   *
+   * @param expectedNumber - The number of confirmed transactions expected to be displayed in activity list. Defaults to 1.
+   * @returns A promise that resolves if the expected number of confirmed transactions is displayed within the timeout period.
+   */
+  async check_confirmedTxNumberDisplayedInActivity(
+    expectedNumber: number = 1,
+  ): Promise<void> {
+    console.log(
+      `Wait for ${expectedNumber} confirmed transactions to be displayed in activity list`,
+    );
+    await this.driver.wait(async () => {
+      const confirmedTxs = await this.driver.findElements(
+        this.confirmedTransactions,
+      );
+      return confirmedTxs.length === expectedNumber;
+    }, 10000);
+    console.log(
+      `${expectedNumber} confirmed transactions found in activity list on homepage`,
     );
   }
 

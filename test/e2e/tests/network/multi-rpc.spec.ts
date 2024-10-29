@@ -375,6 +375,7 @@ describe('MultiRpc:', function (this: Suite) {
         const homePage = new HomePage(driver);
         await homePage.check_pageIsLoaded();
         await homePage.check_editNetworkMessageIsDisplayed('Arbitrum One');
+        await homePage.closeUseNetworkNotificationModal();
 
         // check that the second rpc is selected in the network dialog
         await new HeaderNavbar(driver).clickSwitchNetworkDropDown();
