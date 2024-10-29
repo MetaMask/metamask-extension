@@ -1,10 +1,7 @@
 import { strict as assert } from 'assert';
 import { Suite } from 'mocha';
 import FixtureBuilder from '../../fixture-builder';
-import {
-  defaultGanacheOptions,
-  withFixtures,
-} from '../../helpers';
+import { defaultGanacheOptions, withFixtures } from '../../helpers';
 import { Driver } from '../../webdriver/driver';
 import { Mockttp } from '../../mock-e2e';
 import {
@@ -17,14 +14,17 @@ import HomePage from '../../page-objects/pages/homepage';
 import OnboardingCompletePage from '../../page-objects/pages/onboarding/onboarding-complete-page';
 import OnboardingPrivacySettingsPage from '../../page-objects/pages/onboarding/onboarding-privacy-settings-page';
 import SelectNetwork from '../../page-objects/pages/dialog/select-network';
-import { loginWithoutBalanceValidation, loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
+import {
+  loginWithoutBalanceValidation,
+  loginWithBalanceValidation,
+} from '../../page-objects/flows/login.flow';
 import {
   completeImportSRPOnboardingFlow,
   importSRPOnboardingFlow,
 } from '../../page-objects/flows/onboarding.flow';
 
 describe('MultiRpc:', function (this: Suite) {
-   it('should migrate to multi rpc @no-mmi', async function () {
+  it('should migrate to multi rpc @no-mmi', async function () {
     async function mockRPCURLAndChainId(mockServer: Mockttp) {
       return [
         await mockServer
@@ -89,14 +89,14 @@ describe('MultiRpc:', function (this: Suite) {
         const selectNetworkDialog = new SelectNetwork(driver);
         await selectNetworkDialog.check_pageIsLoaded();
 
-         // check rpc number
+        // check rpc number
         await selectNetworkDialog.openNetworkRPC('0xa4b1');
         await selectNetworkDialog.check_networkRPCNumber(2);
       },
     );
   });
 
-   it('should select rpc from modal', async function () {
+  it('should select rpc from modal', async function () {
     async function mockRPCURLAndChainId(mockServer: Mockttp) {
       return [
         await mockServer
@@ -274,7 +274,9 @@ describe('MultiRpc:', function (this: Suite) {
 
         const editNetworkModal = new EditNetworkModal(driver);
         await editNetworkModal.check_pageIsLoaded();
-        await editNetworkModal.selectRPCInEditNetworkModal('Arbitrum mainnet 2');
+        await editNetworkModal.selectRPCInEditNetworkModal(
+          'Arbitrum mainnet 2',
+        );
 
         // validate the network was successfully edited
         const homePage = new HomePage(driver);
@@ -289,7 +291,7 @@ describe('MultiRpc:', function (this: Suite) {
     );
   });
 
-    it('should select rpc from settings @no-mmi', async function () {
+  it('should select rpc from settings @no-mmi', async function () {
     async function mockRPCURLAndChainId(mockServer: Mockttp) {
       return [
         await mockServer
@@ -349,15 +351,21 @@ describe('MultiRpc:', function (this: Suite) {
         const onboardingCompletePage = new OnboardingCompletePage(driver);
         await onboardingCompletePage.check_pageIsLoaded();
         await onboardingCompletePage.navigateToDefaultPrivacySettings();
-        const onboardingPrivacySettingsPage = new OnboardingPrivacySettingsPage(driver);
+        const onboardingPrivacySettingsPage = new OnboardingPrivacySettingsPage(
+          driver,
+        );
         await onboardingPrivacySettingsPage.check_pageIsLoaded();
         await onboardingPrivacySettingsPage.navigateToGeneralSettings();
 
         // open edit network modal during onboarding and select the second rpc
-        await onboardingPrivacySettingsPage.openEditNetworkModal('Arbitrum One');
+        await onboardingPrivacySettingsPage.openEditNetworkModal(
+          'Arbitrum One',
+        );
         const editNetworkModal = new EditNetworkModal(driver);
         await editNetworkModal.check_pageIsLoaded();
-        await editNetworkModal.selectRPCInEditNetworkModal('Arbitrum mainnet 2');
+        await editNetworkModal.selectRPCInEditNetworkModal(
+          'Arbitrum mainnet 2',
+        );
         await onboardingPrivacySettingsPage.navigateBackToSettingsPage();
         await onboardingPrivacySettingsPage.check_pageIsLoaded();
         await onboardingPrivacySettingsPage.navigateBackToOnboardingCompletePage();

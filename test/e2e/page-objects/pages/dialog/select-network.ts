@@ -49,9 +49,7 @@ class SelectNetwork {
 
   async clickAddButton(): Promise<void> {
     console.log('Click Add Button');
-    await this.driver.clickElementAndWaitToDisappear(
-      this.addNetworkButton,
-    );
+    await this.driver.clickElementAndWaitToDisappear(this.addNetworkButton);
   }
 
   async clickCloseButton(): Promise<void> {
@@ -112,9 +110,7 @@ class SelectNetwork {
       const rpcNumber = await this.driver.findElements(this.rpcUrlItem);
       return rpcNumber.length === expectedNumber;
     }, 10000);
-    console.log(
-      `${expectedNumber} RPC URLs found in select network dialog`,
-    );
+    console.log(`${expectedNumber} RPC URLs found in select network dialog`);
   }
 
   async check_rpcIsSelected(rpcName: string): Promise<void> {

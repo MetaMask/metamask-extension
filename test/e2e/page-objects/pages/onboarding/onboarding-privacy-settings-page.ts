@@ -170,6 +170,7 @@ class OnboardingPrivacySettingsPage {
 
   /**
    * Open the edit network modal for a given network name.
+   *
    * @param networkName - The name of the network to open the edit modal for.
    */
   async openEditNetworkModal(networkName: string): Promise<void> {

@@ -153,7 +153,9 @@ class HomePage {
    *
    * @param networkName - The name of the network that was edited.
    */
-  async check_editNetworkMessageIsDisplayed(networkName: string): Promise<void> {
+  async check_editNetworkMessageIsDisplayed(
+    networkName: string,
+  ): Promise<void> {
     console.log(
       `Check the toaster message for editing network ${networkName} is displayed on homepage`,
     );
