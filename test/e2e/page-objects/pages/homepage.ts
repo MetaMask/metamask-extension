@@ -149,6 +149,21 @@ class HomePage {
   }
 
   /**
+   * Checks if the toaster message for editing a network is displayed on the homepage.
+   *
+   * @param networkName - The name of the network that was edited.
+   */
+  async check_editNetworkMessageIsDisplayed(networkName: string): Promise<void> {
+    console.log(
+      `Check the toaster message for editing network ${networkName} is displayed on homepage`,
+    );
+    await this.driver.waitForSelector({
+      tag: 'h6',
+      text: `“${networkName}” was successfully edited!`,
+    });
+  }
+
+  /**
    * Checks if the expected balance is displayed on homepage.
    *
    * @param expectedBalance - The expected balance to be displayed. Defaults to '0'.
