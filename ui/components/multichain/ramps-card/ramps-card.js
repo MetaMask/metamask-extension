@@ -30,7 +30,6 @@ const darkenGradient =
 
 export const RAMPS_CARD_VARIANT_TYPES = {
   TOKEN: 'token',
-  NFT: 'nft',
   ACTIVITY: 'activity',
   BTC: 'btc',
 };
@@ -43,13 +42,6 @@ export const RAMPS_CARD_VARIANTS = {
       'linear-gradient(90deg, #0189EC 0%, #4B7AED 35%, #6774EE 58%, #706AF4 80.5%, #7C5BFC 100%)',
     title: 'fundYourWallet',
     body: 'getStartedByFundingWallet',
-  },
-  [RAMPS_CARD_VARIANT_TYPES.NFT]: {
-    illustrationSrc: './images/ramps-card-nft-illustration.png',
-    // eslint-disable-next-line @metamask/design-tokens/color-no-hex
-    gradient: 'linear-gradient(90deg, #F6822D 0%, #F894A7 52%, #ED94FB 92.5%)',
-    title: 'getStartedWithNFTs',
-    body: 'getStartedWithNFTsDescription',
   },
   [RAMPS_CARD_VARIANT_TYPES.ACTIVITY]: {
     illustrationSrc: './images/ramps-card-activity-illustration.png',
@@ -72,7 +64,6 @@ export const RAMPS_CARD_VARIANTS = {
 
 const metamaskEntryMap = {
   [RAMPS_CARD_VARIANT_TYPES.TOKEN]: RampsMetaMaskEntry.TokensBanner,
-  [RAMPS_CARD_VARIANT_TYPES.NFT]: RampsMetaMaskEntry.NftBanner,
   [RAMPS_CARD_VARIANT_TYPES.ACTIVITY]: RampsMetaMaskEntry.ActivityBanner,
   [RAMPS_CARD_VARIANT_TYPES.BTC]: RampsMetaMaskEntry.BtcBanner,
 };

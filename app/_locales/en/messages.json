@@ -2198,14 +2198,6 @@
   "getStartedByFundingWallet": {
     "message": "Get started by adding some crypto to your wallet."
   },
-  "getStartedWithNFTs": {
-    "message": "Get $1 to buy NFTs",
-    "description": "$1 is the token symbol"
-  },
-  "getStartedWithNFTsDescription": {
-    "message": "Get started with NFTs by adding some $1 to your wallet.",
-    "description": "$1 is the token symbol"
-  },
   "goBack": {
     "message": "Go back"
   },
