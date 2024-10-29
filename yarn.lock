@@ -4772,9 +4772,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/assets-controllers@npm:38.3.0":
-  version: 38.3.0
-  resolution: "@metamask/assets-controllers@npm:38.3.0"
+"@metamask/assets-controllers@npm:39.0.0":
+  version: 39.0.0
+  resolution: "@metamask/assets-controllers@npm:39.0.0"
   dependencies:
     "@ethereumjs/util": "npm:^8.1.0"
     "@ethersproject/address": "npm:^5.7.0"
@@ -4787,8 +4787,8 @@ __metadata:
     "@metamask/controller-utils": "npm:^11.3.0"
     "@metamask/eth-query": "npm:^4.0.0"
     "@metamask/metamask-eth-abis": "npm:^3.1.1"
-    "@metamask/polling-controller": "npm:^10.0.1"
-    "@metamask/rpc-errors": "npm:^6.3.1"
+    "@metamask/polling-controller": "npm:^11.0.0"
+    "@metamask/rpc-errors": "npm:^7.0.0"
     "@metamask/utils": "npm:^9.1.0"
     "@types/bn.js": "npm:^5.1.5"
     "@types/uuid": "npm:^8.3.0"
@@ -4806,13 +4806,13 @@ __metadata:
     "@metamask/keyring-controller": ^17.0.0
     "@metamask/network-controller": ^21.0.0
     "@metamask/preferences-controller": ^13.0.0
-  checksum: 10/b6e69c9925c50f351b9de1e31cc5d9a4c0ab7cf1abf116c0669611ecb58b3890dd0de53d36bcaaea4f8c45d6ddc2c53eef80c42f93f8f303f1ee9d8df088872b
+  checksum: 10/1fcfbe98fc1d2cf2b3dfef94d4a3c0752cfd9b5e7208196ebc58c34e34cbb47480eaa608979cdcf41abb7f8ce3c4a8ee2f6031793a5b584ce377f2fff3ec6ade
   languageName: node
   linkType: hard
 
-"@metamask/assets-controllers@patch:@metamask/assets-controllers@npm%3A38.3.0#~/.yarn/patches/@metamask-assets-controllers-npm-38.3.0-57b3d695bb.patch":
-  version: 38.3.0
-  resolution: "@metamask/assets-controllers@patch:@metamask/assets-controllers@npm%3A38.3.0#~/.yarn/patches/@metamask-assets-controllers-npm-38.3.0-57b3d695bb.patch::version=38.3.0&hash=e14ff8"
+"@metamask/assets-controllers@patch:@metamask/assets-controllers@npm%3A39.0.0#~/.yarn/patches/@metamask-assets-controllers-npm-39.0.0-57b3d695bb.patch":
+  version: 39.0.0
+  resolution: "@metamask/assets-controllers@patch:@metamask/assets-controllers@npm%3A39.0.0#~/.yarn/patches/@metamask-assets-controllers-npm-39.0.0-57b3d695bb.patch::version=39.0.0&hash=e14ff8"
   dependencies:
     "@ethereumjs/util": "npm:^8.1.0"
     "@ethersproject/address": "npm:^5.7.0"
@@ -4825,8 +4825,8 @@ __metadata:
     "@metamask/controller-utils": "npm:^11.3.0"
     "@metamask/eth-query": "npm:^4.0.0"
     "@metamask/metamask-eth-abis": "npm:^3.1.1"
-    "@metamask/polling-controller": "npm:^10.0.1"
-    "@metamask/rpc-errors": "npm:^6.3.1"
+    "@metamask/polling-controller": "npm:^11.0.0"
+    "@metamask/rpc-errors": "npm:^7.0.0"
     "@metamask/utils": "npm:^9.1.0"
     "@types/bn.js": "npm:^5.1.5"
     "@types/uuid": "npm:^8.3.0"
@@ -4844,7 +4844,7 @@ __metadata:
     "@metamask/keyring-controller": ^17.0.0
     "@metamask/network-controller": ^21.0.0
     "@metamask/preferences-controller": ^13.0.0
-  checksum: 10/1f57289a3a2a88f1f16e00a138b30b9a8e4ac894086732a463e6b47d5e984e0a7e05ef2ec345f0e1cd69857669253260d53d4c37b2b3d9b970999602fc01a21c
+  checksum: 10/95cbdcf80e46a601118c806ba41113ac2feb18f2518265c4084c0b37d04e7a02ea6fb4ca2ff480905b9f9f4c13e2daaa6ae6bd4d375986396c5ef26ce0d2bed3
   languageName: node
   linkType: hard
 
@@ -5890,9 +5890,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/polling-controller@npm:^10.0.1":
-  version: 10.0.1
-  resolution: "@metamask/polling-controller@npm:10.0.1"
+"@metamask/polling-controller@npm:^11.0.0":
+  version: 11.0.0
+  resolution: "@metamask/polling-controller@npm:11.0.0"
   dependencies:
     "@metamask/base-controller": "npm:^7.0.1"
     "@metamask/controller-utils": "npm:^11.3.0"
@@ -5902,7 +5902,7 @@ __metadata:
     uuid: "npm:^8.3.2"
   peerDependencies:
     "@metamask/network-controller": ^21.0.0
-  checksum: 10/25c11e65eeccb08a2b4b7dec21ccabb4b797907edb03a1534ebacb87d0754a3ade52aad061aad8b3ac23bfc39917c0d61b9734e32bc748c210b2997410ae45a9
+  checksum: 10/67b563a5d1ce02dc9c2db25ad4ad1fb9f75d5578cf380cce85176ff2cd136addce612c3982653254647b9d8c535374e93d96abb6e500e42076bf3a524a72e75f
   languageName: node
   linkType: hard
 
@@ -6412,9 +6412,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/transaction-controller@npm:^37.2.0":
-  version: 37.2.0
-  resolution: "@metamask/transaction-controller@npm:37.2.0"
+"@metamask/transaction-controller@npm:^37.3.0":
+  version: 37.3.0
+  resolution: "@metamask/transaction-controller@npm:37.3.0"
   dependencies:
     "@ethereumjs/common": "npm:^3.2.0"
     "@ethereumjs/tx": "npm:^4.2.0"
@@ -6441,7 +6441,7 @@ __metadata:
     "@metamask/approval-controller": ^7.0.0
     "@metamask/gas-fee-controller": ^20.0.0
     "@metamask/network-controller": ^21.0.0
-  checksum: 10/0850797efb2157de41eaec153d31f8f63d194d2290fa41a3d439a28f95a35436f47d56546b0fa64427294280476d11ab4a7ed6161a13ad6f8215a3bc052a41e2
+  checksum: 10/314a46bdaf1a4c68fe232591d28f3f978d7ed17f19dbaa2e3cbcbc4d28d4f7fc4581d7f88446d31ced2176f4f2abf1022ae39a296cb884fd5a083181c562ee2c
   languageName: node
   linkType: hard
 
@@ -25918,14 +25918,14 @@ __metadata:
     "@metamask/announcement-controller": "npm:^7.0.0"
     "@metamask/api-specs": "npm:^0.9.3"
     "@metamask/approval-controller": "npm:^7.0.0"
-    "@metamask/assets-controllers": "patch:@metamask/assets-controllers@npm%3A38.3.0#~/.yarn/patches/@metamask-assets-controllers-npm-38.3.0-57b3d695bb.patch"
+    "@metamask/assets-controllers": "patch:@metamask/assets-controllers@npm%3A39.0.0#~/.yarn/patches/@metamask-assets-controllers-npm-39.0.0-57b3d695bb.patch"
     "@metamask/auto-changelog": "npm:^2.1.0"
     "@metamask/base-controller": "npm:^7.0.0"
     "@metamask/bitcoin-wallet-snap": "npm:^0.8.2"
     "@metamask/browser-passworder": "npm:^4.3.0"
     "@metamask/build-utils": "npm:^3.0.0"
     "@metamask/contract-metadata": "npm:^2.5.0"
-    "@metamask/controller-utils": "npm:^11.2.0"
+    "@metamask/controller-utils": "npm:^11.4.0"
     "@metamask/design-tokens": "npm:^4.0.0"
     "@metamask/ens-controller": "npm:^13.0.0"
     "@metamask/ens-resolver-snap": "npm:^0.1.2"
@@ -25990,7 +25990,7 @@ __metadata:
     "@metamask/snaps-utils": "npm:^8.4.1"
     "@metamask/test-bundler": "npm:^1.0.0"
     "@metamask/test-dapp": "npm:8.7.0"
-    "@metamask/transaction-controller": "npm:^37.2.0"
+    "@metamask/transaction-controller": "npm:^37.3.0"
     "@metamask/user-operation-controller": "npm:^13.0.0"
     "@metamask/utils": "npm:^9.3.0"
     "@ngraveio/bc-ur": "npm:^1.1.12"
