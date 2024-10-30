@@ -8,10 +8,11 @@ import {
   size,
   sum,
 } from 'lodash';
-import { bufferToHex, keccak } from 'ethereumjs-util';
+import { keccak256 } from 'ethereum-cryptography/keccak';
 import { v4 as uuidv4 } from 'uuid';
 import { NameType } from '@metamask/name-controller';
 import {
+  add0x,
   getErrorMessage,
   type Hex,
   isErrorWithMessage,
@@ -627,13 +628,15 @@ export default class MetaMetricsController extends BaseController<
   }
 
   generateMetaMetricsId(): string {
-    return bufferToHex(
-      keccak(
-        Buffer.from(
-          String(Date.now()) +
-            String(Math.round(Math.random() * Number.MAX_SAFE_INTEGER)),
+    return add0x(
+      Buffer.from(
+        keccak256(
+          Buffer.from(
+            String(Date.now()) +
+              String(Math.round(Math.random() * Number.MAX_SAFE_INTEGER)),
+          ),
         ),
-      ),
+      ).toString('hex'),
     );
   }
 

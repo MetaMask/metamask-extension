@@ -430,6 +430,7 @@
     "eth-ens-namehash": "^2.0.8",
     "eth-lattice-keyring": "patch:eth-lattice-keyring@npm%3A0.12.4#~/.yarn/patches/eth-lattice-keyring-npm-0.12.4-c5fb3fcf54.patch",
     "eth-method-registry": "^4.0.0",
+    "ethereum-cryptography": "^2.2.1",
     "ethereumjs-util": "^7.0.10",
     "extension-port-stream": "^5.0.2",
     "fast-json-patch": "^3.1.1",
