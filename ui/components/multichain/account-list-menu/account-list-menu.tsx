@@ -314,9 +314,6 @@ export const AccountListMenu = ({
             location: 'Main Menu',
           },
         });
-        endTrace({ name: TraceName.AccountOverviewTab });
-        endTrace({ name: TraceName.AccountListItem });
-        trace({ name: TraceName.AccountListItem });
         dispatch(setSelectedAccount(account.address));
       };
     },
