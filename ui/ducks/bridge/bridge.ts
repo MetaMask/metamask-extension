@@ -11,6 +11,9 @@ import {
   QuoteResponse,
   SortOrder,
 } from '../../pages/bridge/types';
+// TODO: Remove restricted import
+// eslint-disable-next-line import/no-restricted-paths
+import { DEFAULT_SLIPPAGE } from '../../../app/scripts/controllers/bridge/constants';
 
 export type BridgeState = {
   toChainId: Hex | null;
@@ -21,6 +24,7 @@ export type BridgeState = {
   toNativeExchangeRate: number | null;
   sortOrder: SortOrder;
   selectedQuote: (QuoteResponse & QuoteMetadata) | null;
+  slippage: number;
 };
 
 const initialState: BridgeState = {
@@ -32,6 +36,7 @@ const initialState: BridgeState = {
   toTokenExchangeRate: null,
   sortOrder: SortOrder.ADJUSTED_RETURN_DESC,
   selectedQuote: null,
+  slippage: DEFAULT_SLIPPAGE,
 };
 
 export const setDestTokenExchangeRates = createAsyncThunk(
@@ -78,6 +83,9 @@ const bridgeSlice = createSlice({
     },
     setSelectedQuote: (state, action) => {
       state.selectedQuote = action.payload;
+    },
+    setSlippage: (state, action) => {
+      state.slippage = action.payload;
     },
   },
   extraReducers: (builder) => {

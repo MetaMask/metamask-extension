@@ -23,6 +23,7 @@ import {
   getFromTokens,
   getFromTopAssets,
   getQuoteRequest,
+  getSlippage,
   getToChain,
   getToChains,
   getToToken,
@@ -70,6 +71,8 @@ const PrepareBridgePage = () => {
 
   const fromAmount = useSelector(getFromAmount);
 
+  const slippage = useSelector(getSlippage);
+
   const quoteRequest = useSelector(getQuoteRequest);
   const { activeQuote } = useSelector(getBridgeQuotes);
 
@@ -102,8 +105,16 @@ const PrepareBridgePage = () => {
       destChainId: toChain?.chainId
         ? Number(hexToDecimal(toChain.chainId))
         : undefined,
+      slippage,
     }),
-    [fromToken, toToken, fromChain?.chainId, toChain?.chainId, fromAmount],
+    [
+      fromToken,
+      toToken,
+      fromChain?.chainId,
+      toChain?.chainId,
+      fromAmount,
+      slippage,
+    ],
   );
 
   const debouncedUpdateQuoteRequestInController = useCallback(
