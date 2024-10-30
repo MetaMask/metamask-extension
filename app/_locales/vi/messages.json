@@ -805,10 +805,6 @@
   "buyNow": {
     "message": "Mua ngay"
   },
-  "buyToken": {
-    "message": "Mua $1",
-    "description": "$1 is the token symbol"
-  },
   "bytes": {
     "message": "Byte"
   },
@@ -1883,13 +1879,6 @@
   "functionType": {
     "message": "Loại chức năng"
   },
-  "fundYourWallet": {
-    "message": "Nạp tiền vào ví của bạn"
-  },
-  "fundYourWalletDescription": {
-    "message": "Hãy bắt đầu bằng cách nạp một ít $1 vào ví của bạn.",
-    "description": "$1 is the token symbol"
-  },
   "gas": {
     "message": "Gas"
   },
@@ -1972,14 +1961,6 @@
   },
   "genericExplorerView": {
     "message": "Xem tài khoản trên $1"
-  },
-  "getStartedWithNFTs": {
-    "message": "Nhận $1 để mua NFT",
-    "description": "$1 is the token symbol"
-  },
-  "getStartedWithNFTsDescription": {
-    "message": "Hãy bắt đầu với NFT bằng cách nạp một ít $1 vào ví của bạn.",
-    "description": "$1 is the token symbol"
   },
   "goBack": {
     "message": "Quay Lại"
@@ -4993,14 +4974,6 @@
   },
   "stake": {
     "message": "Stake"
-  },
-  "startYourJourney": {
-    "message": "Bắt đầu hành trình của bạn với $1",
-    "description": "$1 is the token symbol"
-  },
-  "startYourJourneyDescription": {
-    "message": "Hãy bắt đầu với Web3 bằng cách nạp một ít $1 vào ví của bạn.",
-    "description": "$1 is the token symbol"
   },
   "stateLogError": {
     "message": "Lỗi khi truy xuất nhật ký trạng thái."
