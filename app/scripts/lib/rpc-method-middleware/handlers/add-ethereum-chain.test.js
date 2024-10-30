@@ -66,8 +66,6 @@ describe('addEthereumChainHandler', () => {
       requestPermittedChainsPermission: jest.fn(),
       grantPermittedChainsPermissionIncremental: jest.fn(),
       getCaveat: jest.fn().mockReturnValue({ value: permissionedChainIds }),
-      startApprovalFlow: () => ({ id: 'approvalFlowId' }),
-      endApprovalFlow: jest.fn(),
       addNetwork: jest.fn().mockResolvedValue({
         defaultRpcEndpointIndex: 0,
         rpcEndpoints: [{ networkClientId: 123 }],
