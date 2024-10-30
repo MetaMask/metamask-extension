@@ -11,7 +11,7 @@ import { Mockttp } from '../../../mock-e2e';
 import GanacheContractAddressRegistry from '../../../seeder/ganache-contract-address-registry';
 import { SMART_CONTRACTS } from '../../../seeder/smart-contracts';
 import { Driver } from '../../../webdriver/driver';
-import { confirmAndAssertConfirm } from '../helpers';
+import { scrollAndConfirmAndAssertConfirm } from '../helpers';
 import { openDAppWithContract, TestSuiteArguments } from './shared';
 
 describe('Confirmation Redesign ERC20 Increase Allowance', function () {
@@ -119,7 +119,7 @@ async function createAndAssertIncreaseAllowanceSubmission(
 
   await editSpendingCap(driver, newSpendingCap);
 
-  await confirmAndAssertConfirm(driver);
+  await scrollAndConfirmAndAssertConfirm(driver);
 
   await assertChangedSpendingCap(driver, newSpendingCap);
 }

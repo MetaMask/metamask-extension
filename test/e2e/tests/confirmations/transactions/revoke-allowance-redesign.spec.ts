@@ -2,7 +2,7 @@
 import { MockttpServer } from 'mockttp';
 import { WINDOW_TITLES } from '../../../helpers';
 import { Driver } from '../../../webdriver/driver';
-import { confirmAndAssertConfirm } from '../helpers';
+import { scrollAndConfirmAndAssertConfirm } from '../helpers';
 import { mocked4BytesApprove } from './erc20-approve-redesign.spec';
 import {
   assertChangedSpendingCap,
@@ -53,7 +53,7 @@ describe('Confirmation Redesign ERC20 Revoke Allowance', function () {
             text: 'Remove permission',
           });
 
-          await confirmAndAssertConfirm(driver);
+          await scrollAndConfirmAndAssertConfirm(driver);
 
           await assertChangedSpendingCap(driver, NEW_SPENDING_CAP);
         },
@@ -91,7 +91,7 @@ describe('Confirmation Redesign ERC20 Revoke Allowance', function () {
             text: 'Remove permission',
           });
 
-          await confirmAndAssertConfirm(driver);
+          await scrollAndConfirmAndAssertConfirm(driver);
 
           await assertChangedSpendingCap(driver, NEW_SPENDING_CAP);
         },

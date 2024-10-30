@@ -14,11 +14,6 @@ export async function scrollAndConfirmAndAssertConfirm(driver: Driver) {
   await driver.clickElement('[data-testid="confirm-footer-button"]');
 }
 
-export async function confirmAndAssertConfirm(driver: Driver) {
-  await driver.clickElementSafe('.confirm-scroll-to-bottom__button');
-  await driver.clickElement('[data-testid="confirm-footer-button"]');
-}
-
 export function withRedesignConfirmationFixtures(
   // Default params first is discouraged because it makes it hard to call the function without the
   // optional parameters. But it doesn't apply here because we're always passing in a variable for
