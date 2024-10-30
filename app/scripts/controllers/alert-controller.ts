@@ -216,12 +216,10 @@ export class AlertController extends BaseController<
    * @param value - The state value to set.
    */
   #setWeb3ShimUsageState(origin: string, value: number): void {
-    const { web3ShimUsageOrigins } = this.state;
-    if (web3ShimUsageOrigins) {
-      this.update((state) => {
-        state.web3ShimUsageOrigins = state.web3ShimUsageOrigins || {};
+    this.update((state) => {
+      if (state.web3ShimUsageOrigins) {
         state.web3ShimUsageOrigins[origin] = value;
-      });
-    }
+      }
+    });
   }
 }
