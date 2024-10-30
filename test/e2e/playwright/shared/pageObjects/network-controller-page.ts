@@ -117,15 +117,4 @@ export class NetworkController {
       }
     }
   }
-
-  async waitForNetworkToSwitch(networkName: string) {
-    let currentNetwork;
-    do {
-      currentNetwork = await this.networkDisplay.textContent();
-      if (currentNetwork === networkName) {
-        break;
-      }
-      await this.page.waitForTimeout(1000);
-    } while (currentNetwork);
-  }
 }
