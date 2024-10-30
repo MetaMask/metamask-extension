@@ -20,6 +20,8 @@ import { fetchBridgeTxStatus } from './utils';
 const metadata: StateMetadata<{
   bridgeStatusState: BridgeStatusControllerState;
 }> = {
+  // We want to persist the bridge status state so that we can show the proper data for the Activity list
+  // basically match the behavior of TransactionController
   bridgeStatusState: {
     persist: true,
     anonymous: false,
@@ -44,12 +46,27 @@ export default class BridgeStatusController extends StaticIntervalPollingControl
 > {
   #pollingTokensBySrcTxHash: Record<SrcTxHash, string> = {};
 
-  constructor({ messenger }: { messenger: BridgeStatusControllerMessenger }) {
+  constructor({
+    messenger,
+    state,
+  }: {
+    messenger: BridgeStatusControllerMessenger;
+    state: Partial<{
+      bridgeStatusState: BridgeStatusControllerState;
+    }>;
+  }) {
     super({
       name: BRIDGE_STATUS_CONTROLLER_NAME,
       metadata,
       messenger,
-      state: { bridgeStatusState: DEFAULT_BRIDGE_STATUS_CONTROLLER_STATE },
+      // Restore the persisted state
+      state: {
+        ...state,
+        bridgeStatusState: {
+          ...DEFAULT_BRIDGE_STATUS_CONTROLLER_STATE,
+          ...state?.bridgeStatusState,
+        },
+      },
     });
 
     // Register action handlers
