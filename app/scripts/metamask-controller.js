@@ -635,7 +635,6 @@ export default class MetamaskController extends EventEmitter {
     });
 
     this.tokenListController = new TokenListController({
-      chainId: getCurrentChainId({ metamask: this.networkController.state }),
       preventPollingOnNetworkRestart: !this.#isTokenListPollingRequired(
         this.preferencesController.state,
       ),
