@@ -1,5 +1,5 @@
 import { ethers } from 'ethers';
-import { Page, test } from '@playwright/test';
+import { test } from '@playwright/test';
 import log from 'loglevel';
 
 import { ChromeExtensionPage } from '../../shared/pageObjects/extension-page';
