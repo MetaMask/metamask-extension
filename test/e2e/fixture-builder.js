@@ -13,6 +13,7 @@ const { CHAIN_IDS } = require('../../shared/constants/network');
 const { SMART_CONTRACTS } = require('./seeder/smart-contracts');
 const {
   DAPP_URL,
+  DAPP_URL_LOCALHOST,
   DAPP_ONE_URL,
   DEFAULT_FIXTURE_ACCOUNT,
   ERC_4337_ACCOUNT,
@@ -74,6 +75,7 @@ function onboardingFixture() {
           hideZeroBalanceTokens: false,
           showExtensionInFullSizeView: false,
           showFiatInTestnets: false,
+          privacyMode: false,
           showTestNetworks: false,
           smartTransactionsOptInStatus: false,
           showNativeTokenAsMainBalance: true,
@@ -444,11 +446,11 @@ class FixtureBuilder {
     return this;
   }
 
-  withPermissionControllerConnectedToTestDapp({ account = '' } = {}) {
+  withPermissionControllerConnectedToTestDapp({ account = '', useLocalhostHostname = false } = {}) {
     const selectedAccount = account || DEFAULT_FIXTURE_ACCOUNT;
     const subjects = {
-      [DAPP_URL]: {
-        origin: DAPP_URL,
+      [useLocalhostHostname ? DAPP_URL_LOCALHOST : DAPP_URL]: {
+        origin: useLocalhostHostname ? DAPP_URL_LOCALHOST : DAPP_URL,
         permissions: {
           'endowment:caip25': {
             caveats: [

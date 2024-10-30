@@ -783,7 +783,8 @@
     "showTestNetworks": true,
     "smartTransactionsOptInStatus": false,
     "petnamesEnabled": false,
-    "showConfirmationAdvancedDetails": false
+    "showConfirmationAdvancedDetails": false,
+    "showMultiRpcModal": false
   },
   "preventPollingOnNetworkRestart": true,
   "previousAppVersion": "11.14.4",

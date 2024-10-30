@@ -73,20 +73,6 @@ export class ConfirmationsRejectRule implements Rule {
                 tag: 'button',
               });
 
-              const editButtons = await this.driver.findElements(
-                '[data-testid="edit"]',
-              );
-              await editButtons[1].click();
-
-              await this.driver.clickElement({
-                text: 'Localhost 8545',
-                tag: 'p',
-              });
-
-              await this.driver.clickElement(
-                '[data-testid="connect-more-chains-button"]',
-              );
-
               const screenshotTwo = await this.driver.driver.takeScreenshot();
               call.attachments.push({
                 type: 'image',
