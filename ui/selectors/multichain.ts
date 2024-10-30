@@ -32,6 +32,7 @@ import {
   getMaybeSelectedInternalAccount,
   getNativeCurrencyImage,
   getNetworkConfigurationsByChainId,
+  getSelectedAccountCachedBalance,
   getSelectedAccountNativeTokenCachedBalanceByChainId,
   getSelectedInternalAccount,
   getShouldShowFiat,
@@ -376,7 +377,7 @@ export function getMultichainSelectedAccountCachedBalance(
   state: MultichainState,
 ) {
   return getMultichainIsEvm(state)
-    ? getSelectedAccountNativeTokenCachedBalanceByChainId(state)
+    ? getSelectedAccountCachedBalance(state)
     : getBtcCachedBalance(state);
 }
 
