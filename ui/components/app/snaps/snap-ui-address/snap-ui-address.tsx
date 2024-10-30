@@ -13,6 +13,7 @@ import {
 import { shortenAddress } from '../../../../helpers/utils/util';
 import { toChecksumHexAddress } from '../../../../../shared/modules/hexstring-utils';
 import { SnapUIAvatar } from '../snap-ui-avatar';
+import { useDisplayName } from '../../../../hooks/snaps/useDisplayName';
 
 export type SnapUIAddressProps = {
   // The address must be a CAIP-10 string.
@@ -40,12 +41,15 @@ export const SnapUIAddress: React.FunctionComponent<SnapUIAddressProps> = ({
     [caipIdentifier],
   );
 
-  // For EVM addresses, we make sure they are checksummed.
-  const transformedAddress =
-    parsed.chain.namespace === 'eip155'
-      ? toChecksumHexAddress(parsed.address)
-      : parsed.address;
-  const shortenedAddress = shortenAddress(transformedAddress);
+  const displayName = useDisplayName(parsed);
+
+  const value =
+    displayName ??
+    shortenAddress(
+      parsed.chain.namespace === 'eip155'
+        ? toChecksumHexAddress(parsed.address)
+        : parsed.address,
+    );
 
   return (
     <Box
@@ -55,7 +59,7 @@ export const SnapUIAddress: React.FunctionComponent<SnapUIAddressProps> = ({
       gap={2}
     >
       <SnapUIAvatar address={caipIdentifier} size={avatarSize} />
-      <Text color={TextColor.inherit}>{shortenedAddress}</Text>
+      <Text color={TextColor.inherit}>{value}</Text>
     </Box>
   );
 };
