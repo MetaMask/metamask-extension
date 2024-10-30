@@ -1,4 +1,3 @@
-import { strict as assert } from 'assert';
 import { Suite } from 'mocha';
 import { DEFAULT_BTC_BALANCE } from '../../constants';
 import { withBtcAccountSnap } from './common-btc';
@@ -48,7 +47,7 @@ describe('BTC Account - Overview', function (this: Suite) {
       async (driver) => {
         await driver.waitForSelector({
           testId: 'account-value-and-suffix',
-          text: '1',
+          text: `${DEFAULT_BTC_BALANCE}`,
         });
         await driver.waitForSelector({
           css: '.currency-display-component__suffix',
@@ -57,7 +56,7 @@ describe('BTC Account - Overview', function (this: Suite) {
 
         await driver.waitForSelector({
           tag: 'p',
-          text: '1 BTC',
+          text: `${DEFAULT_BTC_BALANCE} BTC`,
         });
       },
     );
