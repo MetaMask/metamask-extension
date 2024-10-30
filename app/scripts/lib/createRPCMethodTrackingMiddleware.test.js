@@ -25,9 +25,6 @@ import createRPCMethodTrackingMiddleware from './createRPCMethodTrackingMiddlewa
 const MOCK_ID = '123';
 const expectedUniqueIdentifier = `signature-${MOCK_ID}`;
 
-const metricsState = { participateInMetaMetrics: null };
-const getMetricsState = () => metricsState;
-
 const expectedMetametricsEventUndefinedProps = {
   actionId: undefined,
   currency: undefined,
@@ -84,7 +81,7 @@ controllerMessenger.registerActionHandler(
 
 const metaMetricsController = new MetaMetricsController({
   state: {
-    participateInMetaMetrics: true,
+    participateInMetaMetrics: null,
     metaMetricsId: '0xabc',
     fragments: {},
     events: {},
@@ -114,7 +111,6 @@ const metaMetricsController = new MetaMetricsController({
 
 const createHandler = (opts) =>
   createRPCMethodTrackingMiddleware({
-    getMetricsState,
     rateLimitTimeout: 1000,
     rateLimitSamplePercent: 0.1,
     globalRateLimitTimeout: 0,
@@ -175,7 +171,7 @@ describe('createRPCMethodTrackingMiddleware', () => {
   });
   afterEach(() => {
     jest.resetAllMocks();
-    metricsState.participateInMetaMetrics = null;
+    metaMetricsController.setParticipateInMetaMetrics(null);
   });
 
   describe('before participateInMetaMetrics is set', () => {
@@ -199,7 +195,7 @@ describe('createRPCMethodTrackingMiddleware', () => {
 
   describe('participateInMetaMetrics is set to false', () => {
     beforeEach(() => {
-      metricsState.participateInMetaMetrics = false;
+      metaMetricsController.setParticipateInMetaMetrics(false);
     });
 
     it('should not track an event for a signature request', async () => {
@@ -222,7 +218,7 @@ describe('createRPCMethodTrackingMiddleware', () => {
 
   describe('participateInMetaMetrics is set to true', () => {
     beforeEach(() => {
-      metricsState.participateInMetaMetrics = true;
+      metaMetricsController.setParticipateInMetaMetrics(true);
     });
 
     it(`should immediately track a ${MetaMetricsEventName.SignatureRequested} event`, async () => {

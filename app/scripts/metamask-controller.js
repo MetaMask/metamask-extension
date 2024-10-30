@@ -5691,7 +5691,6 @@ export default class MetamaskController extends EventEmitter {
 
     engine.push(
       createRPCMethodTrackingMiddleware({
-        getMetricsState: () => this.metaMetricsController.state,
         getAccountType: this.getAccountType.bind(this),
         getDeviceModel: this.getDeviceModel.bind(this),
         isConfirmationRedesignEnabled,
