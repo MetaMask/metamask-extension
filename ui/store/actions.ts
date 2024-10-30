@@ -4579,6 +4579,40 @@ export async function tokenRatesStopPollingByPollingToken(
 }
 
 /**
+ * Informs the TokenListController that the UI requires tokenlist polling
+ *
+ * @param chainId
+ * @returns polling token that can be used to stop polling
+ */
+export async function tokenListStartPolling(
+  chainId: string[],
+): Promise<string> {
+  const pollingToken = await submitRequestToBackground(
+    'tokenListStartPolling',
+    [{ chainId }],
+  );
+  await addPollingTokenToAppState(pollingToken);
+  return pollingToken;
+}
+
+/**
+ * Informs the TokenListController that the UI requires tokenlist to stop polling given a specific polling token
+ *
+ * @param pollingToken
+ * @returns polling token that can be used to stop polling
+ */
+export async function tokenListStopPollingByPollingToken(
+  pollingToken: string,
+): Promise<string> {
+  const pollingToken = await submitRequestToBackground(
+    'tokenListStopPollingByPollingToken',
+    [pollingToken],
+  );
+  await addPollingTokenToAppState(pollingToken);
+  return pollingToken;
+}
+
+/**
  * Informs the GasFeeController that the UI requires gas fee polling
  *
  * @param networkClientId - unique identifier for the network client
