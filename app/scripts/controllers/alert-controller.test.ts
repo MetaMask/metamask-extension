@@ -70,7 +70,6 @@ async function withController<ReturnValue>(
 
   const controller = new AlertController({
     messenger: alertControllerMessenger,
-    state: getDefaultAlertControllerState(),
     ...alertControllerOptions,
   });
 
@@ -101,14 +100,10 @@ describe('AlertController', () => {
     });
 
     it('should set unconnectedAccount of alertEnabledness to false', async () => {
-      await withController(({ controller, messenger }) => {
+      await withController(({ controller }) => {
         controller.setAlertEnabledness('unconnectedAccount', false);
         expect(
           controller.state.alertEnabledness.unconnectedAccount,
-        ).toStrictEqual(false);
-        expect(
-          messenger.call('AlertController:getState').alertEnabledness
-            .unconnectedAccount,
         ).toStrictEqual(false);
       });
     });
@@ -116,28 +111,18 @@ describe('AlertController', () => {
 
   describe('unconnectedAccountAlertShownOrigins', () => {
     it('should default unconnectedAccountAlertShownOrigins', async () => {
-      await withController(({ controller, messenger }) => {
+      await withController(({ controller }) => {
         expect(
           controller.state.unconnectedAccountAlertShownOrigins,
-        ).toStrictEqual({});
-        expect(
-          messenger.call('AlertController:getState')
-            .unconnectedAccountAlertShownOrigins,
         ).toStrictEqual({});
       });
     });
 
     it('should set unconnectedAccountAlertShownOrigins', async () => {
-      await withController(({ controller, messenger }) => {
+      await withController(({ controller }) => {
         controller.setUnconnectedAccountAlertShown('testUnconnectedOrigin');
         expect(
           controller.state.unconnectedAccountAlertShownOrigins,
-        ).toStrictEqual({
-          testUnconnectedOrigin: true,
-        });
-        expect(
-          messenger.call('AlertController:getState')
-            .unconnectedAccountAlertShownOrigins,
         ).toStrictEqual({
           testUnconnectedOrigin: true,
         });
@@ -147,36 +132,23 @@ describe('AlertController', () => {
 
   describe('web3ShimUsageOrigins', () => {
     it('should default web3ShimUsageOrigins', async () => {
-      await withController(({ controller, messenger }) => {
+      await withController(({ controller }) => {
         expect(controller.state.web3ShimUsageOrigins).toStrictEqual({});
-        expect(
-          messenger.call('AlertController:getState').web3ShimUsageOrigins,
-        ).toStrictEqual({});
       });
     });
 
     it('should set origin of web3ShimUsageOrigins to recorded', async () => {
-      await withController(({ controller, messenger }) => {
+      await withController(({ controller }) => {
         controller.setWeb3ShimUsageRecorded('testWeb3ShimUsageOrigin');
         expect(controller.state.web3ShimUsageOrigins).toStrictEqual({
-          testWeb3ShimUsageOrigin: 1,
-        });
-        expect(
-          messenger.call('AlertController:getState').web3ShimUsageOrigins,
-        ).toStrictEqual({
           testWeb3ShimUsageOrigin: 1,
         });
       });
     });
     it('should set origin of web3ShimUsageOrigins to dismissed', async () => {
-      await withController(({ controller, messenger }) => {
+      await withController(({ controller }) => {
         controller.setWeb3ShimUsageAlertDismissed('testWeb3ShimUsageOrigin');
         expect(controller.state.web3ShimUsageOrigins).toStrictEqual({
-          testWeb3ShimUsageOrigin: 2,
-        });
-        expect(
-          messenger.call('AlertController:getState').web3ShimUsageOrigins,
-        ).toStrictEqual({
           testWeb3ShimUsageOrigin: 2,
         });
       });
@@ -202,21 +174,6 @@ describe('AlertController', () => {
         });
         expect(
           controller.state.unconnectedAccountAlertShownOrigins,
-        ).toStrictEqual({});
-        expect(
-          messenger.call('AlertController:getState')
-            .unconnectedAccountAlertShownOrigins,
-        ).toStrictEqual({});
-      });
-    });
-  });
-
-  describe('AlertController:getState', () => {
-    it('should return the current state of the property', async () => {
-      await withController(({ controller, messenger }) => {
-        expect(controller.state.web3ShimUsageOrigins).toStrictEqual({});
-        expect(
-          messenger.call('AlertController:getState').web3ShimUsageOrigins,
         ).toStrictEqual({});
       });
     });

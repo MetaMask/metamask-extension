@@ -81,7 +81,7 @@ export type AlertControllerState = {
  * @property controllerMessenger - The controller messenger
  */
 export type AlertControllerOptions = {
-  state: Partial<AlertControllerState>;
+  state?: Partial<AlertControllerState>;
   messenger: AlertControllerMessenger;
 };
 
