@@ -34,10 +34,8 @@ describe('BTC Account - Overview', function (this: Suite) {
         // buy sell button
         await driver.findClickableElement('[data-testid="coin-overview-buy"]');
 
-        // receive button
-        await driver.findClickableElement(
-          '[data-testid="coin-overview-receive"]',
-        );
+        // portfolio button
+        await driver.findClickableElement('[data-testid="portfolio-link"]');
       },
     );
   });

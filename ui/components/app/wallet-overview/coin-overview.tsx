@@ -193,49 +193,33 @@ export const CoinOverview = ({
   ///: END:ONLY_INCLUDE_IF
 
   const renderPercentageAndAmountChange = () => {
-    if (isEvm) {
-      if (showNativeTokenAsMainBalance) {
-        return (
-          <Box className="wallet-overview__currency-wrapper">
-            <PercentageAndAmountChange
-              value={tokensMarketData?.[zeroAddress()]?.pricePercentChange1d}
-            />
-            {
-              ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
-              <ButtonLink
-                endIconName={IconName.Export}
-                onClick={handlePortfolioOnClick}
-                as="a"
-                data-testid="portfolio-link"
-                textProps={{ variant: TextVariant.bodyMdMedium }}
-              >
-                {t('portfolio')}
-              </ButtonLink>
-              ///: END:ONLY_INCLUDE_IF
-            }
-          </Box>
-        );
-      }
-      return (
-        <Box className="wallet-overview__currency-wrapper">
-          <AggregatedPercentageOverview />
-          {
-            ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
-            <ButtonLink
-              endIconName={IconName.Export}
-              onClick={handlePortfolioOnClick}
-              as="a"
-              data-testid="portfolio-link"
-              textProps={{ variant: TextVariant.bodyMdMedium }}
-            >
-              {t('portfolio')}
-            </ButtonLink>
-            ///: END:ONLY_INCLUDE_IF
-          }
-        </Box>
+    const ContentComponent =
+      isEvm && showNativeTokenAsMainBalance ? (
+        <PercentageAndAmountChange
+          value={tokensMarketData?.[zeroAddress()]?.pricePercentChange1d}
+        />
+      ) : (
+        <AggregatedPercentageOverview />
       );
-    }
-    return null;
+
+    return (
+      <Box className="wallet-overview__currency-wrapper">
+        {ContentComponent}
+        {
+          ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
+          <ButtonLink
+            endIconName={IconName.Export}
+            onClick={handlePortfolioOnClick}
+            as="a"
+            data-testid="portfolio-link"
+            textProps={{ variant: TextVariant.bodyMdMedium }}
+          >
+            {t('portfolio')}
+          </ButtonLink>
+          ///: END:ONLY_INCLUDE_IF
+        }
+      </Box>
+    );
   };
 
   return (
