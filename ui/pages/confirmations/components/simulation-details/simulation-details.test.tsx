@@ -26,6 +26,21 @@ jest.mock('./balance-change-list', () => ({
 
 jest.mock('./useSimulationMetrics');
 
+jest.mock(
+  '../../../../components/app/confirm/info/row/alert-row/alert-row',
+  () => ({
+    ConfirmInfoAlertRow: jest.fn(({ label }) => <>{label}</>),
+  }),
+);
+
+jest.mock('../../context/confirm', () => ({
+  useConfirmContext: jest.fn(() => ({
+    currentConfirmation: {
+      id: 'testTransactionId',
+    },
+  })),
+}));
+
 const renderSimulationDetails = (simulationData?: Partial<SimulationData>) =>
   renderWithProvider(
     <SimulationDetails

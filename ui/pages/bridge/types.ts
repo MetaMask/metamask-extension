@@ -7,6 +7,10 @@ export enum BridgeFlag {
 }
 
 export type FeatureFlagResponse = {
+  [BridgeFlag.EXTENSION_CONFIG]: {
+    refreshRate: number;
+    maxRefreshCount: number;
+  };
   [BridgeFlag.EXTENSION_SUPPORT]: boolean;
   [BridgeFlag.NETWORK_SRC_ALLOWLIST]: number[];
   [BridgeFlag.NETWORK_DEST_ALLOWLIST]: number[];
