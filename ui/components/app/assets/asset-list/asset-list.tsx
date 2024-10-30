@@ -62,6 +62,8 @@ const AssetList = ({ onClickAsset, showTokensLinks }: AssetListProps) => {
   const trackEvent = useContext(MetaMetricsContext);
   const balance = useSelector(getMultichainSelectedAccountCachedBalance);
 
+  console.log({ balance });
+
   const {
     currency: primaryCurrency,
     numberOfDecimals: primaryNumberOfDecimals,

@@ -28,6 +28,7 @@ export const useNativeTokenBalance = () => {
     rpcUrl,
   );
   const balance = useSelector(getMultichainSelectedAccountCachedBalance);
+  debugger;
   const currentCurrency = useSelector(getCurrentCurrency);
   const {
     currency: primaryCurrency,
