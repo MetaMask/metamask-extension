@@ -4,6 +4,9 @@ import { TransactionMeta } from '@metamask/transaction-controller';
 import { Numeric } from '../../../../shared/modules/Numeric';
 import { selectBridgeHistoryForAccount } from '../../../ducks/bridge-status/selectors';
 import { getNetworkConfigurationsByChainId } from '../../../selectors';
+import { useHistory } from 'react-router-dom';
+import { CROSS_CHAIN_SWAP_TX_DETAILS_ROUTE } from '../../../helpers/constants/routes';
+import useBridgeChainInfo from './useBridgeChainInfo';
 
 export type UseBridgeDataProps = {
   transactionGroup: {
@@ -19,25 +22,23 @@ export type UseBridgeDataProps = {
 export default function useBridgeData({
   transactionGroup,
 }: UseBridgeDataProps) {
+  const history = useHistory();
   const networkConfigurationsByChainId = useSelector(
     getNetworkConfigurationsByChainId,
   );
 
   const bridgeHistory = useSelector(selectBridgeHistoryForAccount);
-  const txHash = transactionGroup.initialTransaction.hash;
+  const srcTxHash = transactionGroup.initialTransaction.hash;
 
   // If this tx is a bridge tx, it will have a bridgeHistoryItem
-  const bridgeHistoryItem = txHash ? bridgeHistory[txHash] : undefined;
+  const bridgeHistoryItem = srcTxHash ? bridgeHistory[srcTxHash] : undefined;
 
-  const decDestChainId = bridgeHistoryItem?.quote.destChainId;
-  const hexDestChainId = decDestChainId
-    ? (new Numeric(decDestChainId, 10).toPrefixedHexString() as Hex)
-    : undefined;
-  const networkConfiguration = hexDestChainId
-    ? networkConfigurationsByChainId[hexDestChainId]
-    : undefined;
-  const chainName = networkConfiguration?.name || 'Unknown';
-  const bridgeTitleSuffix = bridgeHistoryItem ? ` to ${chainName}` : '';
+  const { destNetworkConfiguration } = useBridgeChainInfo({
+    bridgeHistoryItem,
+  });
+
+  const destChainName = destNetworkConfiguration?.name || 'Unknown';
+  const bridgeTitleSuffix = bridgeHistoryItem ? ` to ${destChainName}` : '';
 
   // By complete, this means BOTH source and dest tx are confirmed
   const isBridgeComplete = bridgeHistoryItem
@@ -58,17 +59,22 @@ export default function useBridgeData({
       transactionGroup,
       bridgeTxHistory: bridgeHistory,
       bridgeTxHistoryItem: bridgeHistoryItem,
-      decDestChainId,
-      hexDestChainId,
       networkConfigurationsByChainId,
-      networkConfiguration,
+      destNetworkConfiguration,
       isBridgeComplete,
     });
   }
+
+  const showBridgeTxDetails = srcTxHash
+    ? () => {
+        history.push(`${CROSS_CHAIN_SWAP_TX_DETAILS_ROUTE}/${srcTxHash}`);
+      }
+    : null;
 
   return {
     bridgeTitleSuffix,
     bridgeTxHistoryItem: bridgeHistoryItem,
     isBridgeComplete,
+    showBridgeTxDetails,
   };
 }

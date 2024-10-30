@@ -17,7 +17,7 @@ export const selectBridgeStatusState = (state: BridgeStatusAppState) =>
   state.metamask.bridgeStatusState;
 
 /**
- * Returns a mapping of txHash to txHistoryItem for the selected address
+ * Returns a mapping of srctxHash to txHistoryItem for the selected address
  */
 export const selectBridgeHistoryForAccount = createSelector(
   [getSelectedAddress, selectBridgeStatusState],
