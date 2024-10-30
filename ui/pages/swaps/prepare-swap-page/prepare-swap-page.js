@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 import { shallowEqual, useDispatch, useSelector } from 'react-redux';
 import { uniqBy, isEqual, isEmpty } from 'lodash';
 import { useHistory } from 'react-router-dom';
-import { getTokenTrackerLink } from '@metamask/etherscan-link';
+import { getAccountLink, getTokenTrackerLink } from '@metamask/etherscan-link';
 import classnames from 'classnames';
 
 import { MetaMetricsContext } from '../../../contexts/metametrics';
@@ -142,6 +142,7 @@ import SwapsBannerAlert from '../swaps-banner-alert/swaps-banner-alert';
 import SwapsFooter from '../swaps-footer';
 import SelectedToken from '../selected-token/selected-token';
 import ListWithSearch from '../list-with-search/list-with-search';
+import { CHAIN_IDS } from '../../../../shared/constants/network';
 import QuotesLoadingAnimation from './quotes-loading-animation';
 import ReviewQuote from './review-quote';
 
@@ -439,15 +440,23 @@ export default function PrepareSwapPage({
     onInputChange(fromTokenInputValue, token.string, token.decimals);
   };
 
-  const blockExplorerTokenLink = getTokenTrackerLink(
-    selectedToToken.address,
-    chainId,
-    null, // no networkId
-    null, // no holderAddress
-    {
-      blockExplorerUrl: CHAINID_DEFAULT_BLOCK_EXPLORER_URL_MAP[chainId] ?? null,
-    },
-  );
+  const blockExplorerTokenLink =
+    chainId === CHAIN_IDS.ZKSYNC_ERA
+      ? // Use getAccountLink because zksync explorer uses a /address URL scheme instead of /token
+        getAccountLink(selectedToToken.address, chainId, {
+          blockExplorerUrl:
+            CHAINID_DEFAULT_BLOCK_EXPLORER_URL_MAP[chainId] ?? null,
+        })
+      : getTokenTrackerLink(
+          selectedToToken.address,
+          chainId,
+          null, // no networkId
+          null, // no holderAddress
+          {
+            blockExplorerUrl:
+              CHAINID_DEFAULT_BLOCK_EXPLORER_URL_MAP[chainId] ?? null,
+          },
+        );
 
   const blockExplorerLabel = rpcPrefs.blockExplorerUrl
     ? CHAINID_DEFAULT_BLOCK_EXPLORER_HUMAN_READABLE_URL_MAP[chainId] ??
