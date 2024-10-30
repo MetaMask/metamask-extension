@@ -1979,11 +1979,9 @@ export default class MetamaskController extends EventEmitter {
           `${this.keyringController.name}:signPersonalMessage`,
           `${this.keyringController.name}:signTypedMessage`,
           `${this.loggingController.name}:add`,
+          `${this.networkController.name}:getNetworkClientById`,
         ],
       }),
-      getAllState: this.getState.bind(this),
-      getCurrentChainId: () =>
-        getCurrentChainId({ metamask: this.networkController.state }),
       trace,
     });
 
@@ -2111,7 +2109,7 @@ export default class MetamaskController extends EventEmitter {
 
     const bridgeControllerMessenger = this.controllerMessenger.getRestricted({
       name: BRIDGE_CONTROLLER_NAME,
-      allowedActions: [],
+      allowedActions: ['AccountsController:getSelectedAccount'],
       allowedEvents: [],
     });
     this.bridgeController = new BridgeController({

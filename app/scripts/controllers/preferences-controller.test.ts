@@ -730,6 +730,7 @@ describe('preferences controller', () => {
       expect(controller.state.preferences).toStrictEqual({
         autoLockTimeLimit: undefined,
         showExtensionInFullSizeView: false,
+        privacyMode: false,
         showFiatInTestnets: false,
         showTestNetworks: false,
         smartTransactionsOptInStatus: null,
@@ -749,6 +750,7 @@ describe('preferences controller', () => {
           order: 'dsc',
           sortCallback: 'stringNumeric',
         },
+        tokenNetworkFilter: {},
       });
     });
 
@@ -764,6 +766,7 @@ describe('preferences controller', () => {
         useNativeCurrencyAsPrimaryCurrency: true,
         hideZeroBalanceTokens: false,
         petnamesEnabled: true,
+        privacyMode: false,
         redesignedConfirmationsEnabled: true,
         redesignedTransactionsEnabled: true,
         shouldShowAggregatedBalancePopover: true,
@@ -777,6 +780,7 @@ describe('preferences controller', () => {
           order: 'dsc',
           sortCallback: 'stringNumeric',
         },
+        tokenNetworkFilter: {},
       });
     });
   });
