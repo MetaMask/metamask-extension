@@ -158,8 +158,6 @@ export const getToAmount = createSelector(getRecommendedQuote, (quote) =>
         quote.quote.destTokenAmount,
         quote.quote.destAsset.decimals,
       )
-        .toFixed(3)
-        .toString()
     : undefined,
 );
 

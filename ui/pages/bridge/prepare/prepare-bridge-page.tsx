@@ -204,7 +204,7 @@ const PrepareBridgePage = () => {
             testId: 'to-amount',
             readOnly: true,
             disabled: true,
-            value: toAmount ?? '0',
+            value: toAmount?.toString() ?? '0',
             className: toAmount ? 'amount-input defined' : 'amount-input',
           }}
         />
