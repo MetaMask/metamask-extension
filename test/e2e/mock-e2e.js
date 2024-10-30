@@ -107,7 +107,7 @@ const privateHostMatchers = [
 async function setupMocking(
   server,
   testSpecificMock,
-  { chainId, ethConversionInUsd = '1700' },
+  { chainId, ethConversionInUsd = 1700 },
 ) {
   const privacyReport = new Set();
   await server.forAnyRequest().thenPassThrough({
