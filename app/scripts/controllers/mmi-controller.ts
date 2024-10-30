@@ -132,7 +132,7 @@ export class MMIController {
 
   constructor(opts: MMIControllerOptions) {
     this.opts = opts;
-    this.messagingSystem = opts.messagingSystem;
+    this.messagingSystem = opts.messenger;
     this.mmiConfigurationController = opts.mmiConfigurationController;
     this.keyringController = opts.keyringController;
     this.appStateController = opts.appStateController;

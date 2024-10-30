@@ -70,7 +70,7 @@ export type MMIControllerOptions = {
   appStateController: AppStateController;
   transactionUpdateController: TransactionUpdateController;
   custodyController: CustodyController;
-  messagingSystem: MMIControllerMessenger;
+  messenger: MMIControllerMessenger;
   // TODO: Replace `any` with type
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   getState: () => any;

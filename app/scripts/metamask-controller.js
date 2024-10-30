@@ -2025,7 +2025,7 @@ export default class MetamaskController extends EventEmitter {
     });
 
     this.mmiController = new MMIController({
-      messagingSystem: mmiControllerMessenger,
+      messenger: mmiControllerMessenger,
       mmiConfigurationController: this.mmiConfigurationController,
       keyringController: this.keyringController,
       appStateController: this.appStateController,

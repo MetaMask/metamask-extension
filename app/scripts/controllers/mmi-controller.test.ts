@@ -91,7 +91,8 @@ describe('MMIController', function () {
     accountsController,
     keyringController,
     metaMetricsController,
-    custodyController;
+    custodyController,
+    mmiControllerMessenger;
 
   beforeEach(async function () {
     const mockMessenger = {
@@ -239,7 +240,7 @@ describe('MMIController', function () {
       jest.fn().mockReturnValue(createMockNetworkConfiguration()),
     );
 
-    const mmiControllerMessenger = controllerMessenger.getRestricted({
+    mmiControllerMessenger = controllerMessenger.getRestricted({
       name: 'MMIController',
       allowedActions: [
         'AccountsController:getAccountByAddress',
@@ -255,7 +256,7 @@ describe('MMIController', function () {
     });
 
     mmiController = new MMIController({
-      messagingSystem: mmiControllerMessenger,
+      messenger: mmiControllerMessenger,
       mmiConfigurationController,
       keyringController,
       transactionUpdateController: new TransactionUpdateController({
@@ -539,7 +540,7 @@ describe('MMIController', function () {
       CUSTODIAN_TYPES['CUSTODIAN-TYPE'] = {
         keyringClass: { type: 'mock-keyring-class' },
       };
-      jest.spyOn(ControllerMessenger.prototype, 'call').mockReturnValue({ address: '0x1' });
+      jest.spyOn(mmiControllerMessenger, 'call').mockReturnValue({ address: '0x1' });
       mmiController.custodyController.getCustodyTypeByAddress = jest
         .fn()
         .mockReturnValue('custodian-type');
@@ -763,7 +764,7 @@ describe('MMIController', function () {
 
   describe('handleMmiDashboardData', () => {
     it('should return internalAccounts as identities', async () => {
-      const controllerMessengerSpy = jest.spyOn(ControllerMessenger.prototype, 'call');
+      const controllerMessengerSpy = jest.spyOn(mmiControllerMessenger, 'call');
       await mmiController.handleMmiDashboardData();
 
       expect(controllerMessengerSpy).toHaveBeenCalledWith(
@@ -841,7 +842,7 @@ describe('MMIController', function () {
 
   describe('setAccountAndNetwork', () => {
     it('should set a new selected account if the selectedAddress and the address from the arguments is different', async () => {
-      const selectedAccountSpy = jest.spyOn(ControllerMessenger.prototype, 'call');
+      const selectedAccountSpy = jest.spyOn(mmiControllerMessenger, 'call');
       await mmiController.setAccountAndNetwork(
         'mock-origin',
         mockAccount2.address,
@@ -859,7 +860,7 @@ describe('MMIController', function () {
     });
 
     it('should not set a new selected account the accounts are the same', async () => {
-      const selectedAccountSpy = jest.spyOn(ControllerMessenger.prototype, 'call');
+      const selectedAccountSpy = jest.spyOn(mmiControllerMessenger, 'call');
       await mmiController.setAccountAndNetwork(
         'mock-origin',
         mockAccount.address,
