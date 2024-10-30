@@ -1,10 +1,12 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { useSelector } from 'react-redux';
 import { IconName } from '@metamask/snaps-sdk/jsx';
 import {
   Box,
-  ButtonIcon,
-  ButtonIconSize,
+  Button,
+  ButtonVariant,
+  Icon,
+  IconSize,
   Modal,
   ModalContent,
   ModalHeader,
@@ -26,7 +28,6 @@ export const BridgeQuotesModal = ({
   const { quotes } = useSelector(getBridgeQuotes);
   const t = useI18nContext();
 
-  const [, setSortOrder] = useState(t('bridgeOverallCost'));
   return (
     <Modal className="quotes-modal" onClose={onClose} {...modalProps}>
       <ModalOverlay />
@@ -40,15 +41,10 @@ export const BridgeQuotesModal = ({
         <Box className="quotes-modal__column-header">
           {[t('bridgeOverallCost'), t('time')].map((label) => {
             return (
-              <>
-                <ButtonIcon
-                  iconName={IconName.Arrow2Down}
-                  size={ButtonIconSize.Sm}
-                  ariaLabel={t('back')}
-                  onClick={() => setSortOrder(label)}
-                />
+              <Button key={label} variant={ButtonVariant.Link}>
+                <Icon name={IconName.Arrow2Down} size={IconSize.Sm} />
                 <Text>{label}</Text>
-              </>
+              </Button>
             );
           })}
         </Box>
