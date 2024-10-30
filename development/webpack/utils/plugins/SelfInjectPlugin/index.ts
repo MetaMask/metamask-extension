@@ -1,7 +1,7 @@
 import { dirname, relative } from 'node:path';
 import { ModuleFilenameHelpers, Compilation, sources } from 'webpack';
 import { validate } from 'schema-utils';
-import { getRuntimeURLExpression } from '../../helpers';
+import { getRuntimeURLExpression } from './helpers';
 import { schema } from './schema';
 import type { SelfInjectPluginOptions, Source, Compiler } from './types';
 
