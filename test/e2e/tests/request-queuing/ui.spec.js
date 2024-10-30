@@ -93,11 +93,11 @@ async function openDappAndSwitchChain(driver, dappUrl, chainId) {
   }
 }
 
-async function selectDappClickSend(driver, dappUrl, chainId) {
+async function selectDappClickSend(driver, dappUrl, expectedChainId) {
   await driver.switchToWindowWithUrl(dappUrl);
   await driver.waitForSelector({
     css: '#chainId',
-    text: chainId,
+    text: expectedChainId,
   });
 
   await driver.clickElement('#sendButton');
@@ -453,7 +453,7 @@ describe('Request-queue UI changes', function () {
 
         // Go back to first dapp, try an action, ensure deleted network doesn't block UI
         // The current globally selected network, Ethereum Mainnet, should be used
-        await selectDappClickSend(driver, DAPP_URL, '0x539');
+        await selectDappClickSend(driver, DAPP_URL, '0x1');
         await driver.delay(veryLargeDelayMs);
         await switchToDialogPopoverValidateDetails(driver, {
           chainId: '0x1',
