@@ -51,6 +51,7 @@ import { useAccountTotalFiatBalance } from '../../../../../hooks/useAccountTotal
 import { getIsNativeTokenBuyable } from '../../../../../ducks/ramps';
 ///: END:ONLY_INCLUDE_IF
 import Spinner from '../../../../ui/spinner';
+import { endTrace, TraceName } from '../../../../../../shared/lib/trace';
 
 export default function NftsTab() {
   const useNftDetection = useSelector(getUseNftDetection);
@@ -59,6 +60,11 @@ export default function NftsTab() {
   const t = useI18nContext();
   const dispatch = useDispatch();
   const trackEvent = useContext(MetaMetricsContext);
+
+  useEffect(() => {
+    endTrace({ name: TraceName.AccountOverviewNftsTab });
+  }, []);
+
   const nftsStillFetchingIndication = useSelector(
     getNftIsStillFetchingIndication,
   );
