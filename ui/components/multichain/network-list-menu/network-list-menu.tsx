@@ -24,10 +24,10 @@ import {
   updateNetworksList,
   setNetworkClientIdForDomain,
   setEditedNetwork,
-  grantPermittedChain,
   showPermittedNetworkToast,
   updateCustomNonce,
   setNextNonce,
+  addPermittedChain,
 } from '../../../store/actions';
 import {
   CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP,
@@ -280,7 +280,7 @@ export const NetworkListMenu = ({ onClose }: { onClose: () => void }) => {
           dispatch(setNextNonce(''));
 
           if (permittedAccountAddresses.length > 0) {
-            grantPermittedChain(selectedTabOrigin, network.chainId);
+            addPermittedChain(selectedTabOrigin, network.chainId);
             if (!permittedChainIds.includes(network.chainId)) {
               dispatch(showPermittedNetworkToast());
             }
