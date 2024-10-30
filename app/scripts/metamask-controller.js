@@ -867,13 +867,13 @@ export default class MetamaskController extends EventEmitter {
       messenger: currencyRateMessenger,
       state: initState.CurrencyController,
     });
-    const initialFetchExchangeRate =
-      this.currencyRateController.fetchExchangeRate.bind(
+    const initialFetchMultiExchangeRate =
+      this.currencyRateController.fetchMultiExchangeRate.bind(
         this.currencyRateController,
       );
-    this.currencyRateController.fetchExchangeRate = (...args) => {
+    this.currencyRateController.fetchMultiExchangeRate = (...args) => {
       if (this.preferencesController.state.useCurrencyRateCheck) {
-        return initialFetchExchangeRate(...args);
+        return initialFetchMultiExchangeRate(...args);
       }
       return {
         conversionRate: null,
