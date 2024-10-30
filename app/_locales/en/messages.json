@@ -413,6 +413,9 @@
   "alertMessageAddressMismatchWarning": {
     "message": "Attackers sometimes mimic sites by making small changes to the site address. Make sure you're interacting with the intended site before you continue."
   },
+  "alertMessageChangeInSimulationResults": {
+    "message": "Estimated changes for this transaction have been updated. Review them closely before proceeding."
+  },
   "alertMessageGasEstimateFailed": {
     "message": "We’re unable to provide an accurate fee and this estimate might be high. We suggest you to input a custom gas limit, but there’s a risk the transaction will still fail."
   },
@@ -451,6 +454,9 @@
   },
   "alertModalReviewAllAlerts": {
     "message": "Review all alerts"
+  },
+  "alertReasonChangeInSimulationResults": {
+    "message": "Results have changed"
   },
   "alertReasonGasEstimateFailed": {
     "message": "Inaccurate fee"
@@ -1167,9 +1173,13 @@
     "message": "Connected with $1",
     "description": "$1 represents account name"
   },
-  "connectedWithNetworks": {
+  "connectedWithNetwork": {
     "message": "$1 networks connected",
     "description": "$1 represents network length"
+  },
+  "connectedWithNetworkName": {
+    "message": "Connected with $1",
+    "description": "$1 represents network name"
   },
   "connecting": {
     "message": "Connecting"
@@ -4463,6 +4473,10 @@
   "requestingForAccount": {
     "message": "Requesting for $1",
     "description": "Name of Account"
+  },
+  "requestingForNetwork": {
+    "message": "Requesting for $1",
+    "description": "Name of Network"
   },
   "requestsAwaitingAcknowledgement": {
     "message": "requests waiting to be acknowledged"
