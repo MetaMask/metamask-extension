@@ -1980,11 +1980,9 @@ export default class MetamaskController extends EventEmitter {
           `${this.keyringController.name}:signPersonalMessage`,
           `${this.keyringController.name}:signTypedMessage`,
           `${this.loggingController.name}:add`,
+          `${this.networkController.name}:getNetworkClientById`,
         ],
       }),
-      getAllState: this.getState.bind(this),
-      getCurrentChainId: () =>
-        getCurrentChainId({ metamask: this.networkController.state }),
       trace,
     });
 

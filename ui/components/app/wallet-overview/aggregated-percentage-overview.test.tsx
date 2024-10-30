@@ -7,6 +7,7 @@ import {
   getSelectedAccount,
   getShouldHideZeroBalanceTokens,
   getTokensMarketData,
+  getPreferences,
 } from '../../../selectors';
 import { useAccountTotalFiatBalance } from '../../../hooks/useAccountTotalFiatBalance';
 import { AggregatedPercentageOverview } from './aggregated-percentage-overview';
@@ -22,6 +23,7 @@ jest.mock('../../../ducks/locale/locale', () => ({
 jest.mock('../../../selectors', () => ({
   getCurrentCurrency: jest.fn(),
   getSelectedAccount: jest.fn(),
+  getPreferences: jest.fn(),
   getShouldHideZeroBalanceTokens: jest.fn(),
   getTokensMarketData: jest.fn(),
 }));
@@ -32,6 +34,7 @@ jest.mock('../../../hooks/useAccountTotalFiatBalance', () => ({
 
 const mockGetIntlLocale = getIntlLocale as unknown as jest.Mock;
 const mockGetCurrentCurrency = getCurrentCurrency as jest.Mock;
+const mockGetPreferences = getPreferences as jest.Mock;
 const mockGetSelectedAccount = getSelectedAccount as unknown as jest.Mock;
 const mockGetShouldHideZeroBalanceTokens =
   getShouldHideZeroBalanceTokens as jest.Mock;
@@ -159,6 +162,7 @@ describe('AggregatedPercentageOverview', () => {
   beforeEach(() => {
     mockGetIntlLocale.mockReturnValue('en-US');
     mockGetCurrentCurrency.mockReturnValue('USD');
+    mockGetPreferences.mockReturnValue({ privacyMode: false });
     mockGetSelectedAccount.mockReturnValue(selectedAccountMock);
     mockGetShouldHideZeroBalanceTokens.mockReturnValue(false);
     mockGetTokensMarketData.mockReturnValue(marketDataMock);
