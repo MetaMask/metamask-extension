@@ -446,7 +446,10 @@ class FixtureBuilder {
     return this;
   }
 
-  withPermissionControllerConnectedToTestDapp({ account = '', useLocalhostHostname = false } = {}) {
+  withPermissionControllerConnectedToTestDapp({
+    account = '',
+    useLocalhostHostname = false,
+  } = {}) {
     const selectedAccount = account || DEFAULT_FIXTURE_ACCOUNT;
     const subjects = {
       [useLocalhostHostname ? DAPP_URL_LOCALHOST : DAPP_URL]: {

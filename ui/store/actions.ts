@@ -124,10 +124,6 @@ import { DecodedTransactionDataResponse } from '../../shared/types/transaction-d
 import { LastInteractedConfirmationInfo } from '../pages/confirmations/types/confirm';
 import { EndTraceRequest } from '../../shared/lib/trace';
 import { SortCriteria } from '../components/app/assets/util/sort';
-import {
-  CaveatTypes,
-  EndowmentTypes,
-} from '../../shared/constants/permissions';
 import * as actionConstants from './actionConstants';
 ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
 import { updateCustodyState } from './institutional/institution-actions';
@@ -5689,48 +5685,6 @@ export async function getNextAvailableAccountName(
     'getNextAvailableAccountName',
     [keyring],
   );
-}
-
-export async function grantPermittedChain(
-  selectedTabOrigin: string,
-  chainId?: string,
-): Promise<string> {
-  return await submitRequestToBackground<void>('grantPermissionsIncremental', [
-    {
-      subject: { origin: selectedTabOrigin },
-      approvedPermissions: {
-        [EndowmentTypes.permittedChains]: {
-          caveats: [
-            {
-              type: CaveatTypes.restrictNetworkSwitching,
-              value: [chainId],
-            },
-          ],
-        },
-      },
-    },
-  ]);
-}
-
-export async function grantPermittedChains(
-  selectedTabOrigin: string,
-  chainIds: string[],
-): Promise<string> {
-  return await submitRequestToBackground<void>('grantPermissions', [
-    {
-      subject: { origin: selectedTabOrigin },
-      approvedPermissions: {
-        [EndowmentTypes.permittedChains]: {
-          caveats: [
-            {
-              type: CaveatTypes.restrictNetworkSwitching,
-              value: chainIds,
-            },
-          ],
-        },
-      },
-    },
-  ]);
 }
 
 export async function decodeTransactionData({
