@@ -5890,6 +5890,22 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@metamask/polling-controller@npm:^10.0.1":
+  version: 10.0.1
+  resolution: "@metamask/polling-controller@npm:10.0.1"
+  dependencies:
+    "@metamask/base-controller": "npm:^7.0.1"
+    "@metamask/controller-utils": "npm:^11.3.0"
+    "@metamask/utils": "npm:^9.1.0"
+    "@types/uuid": "npm:^8.3.0"
+    fast-json-stable-stringify: "npm:^2.1.0"
+    uuid: "npm:^8.3.2"
+  peerDependencies:
+    "@metamask/network-controller": ^21.0.0
+  checksum: 10/25c11e65eeccb08a2b4b7dec21ccabb4b797907edb03a1534ebacb87d0754a3ade52aad061aad8b3ac23bfc39917c0d61b9734e32bc748c210b2997410ae45a9
+  languageName: node
+  linkType: hard
+
 "@metamask/polling-controller@npm:^11.0.0":
   version: 11.0.0
   resolution: "@metamask/polling-controller@npm:11.0.0"
@@ -25969,6 +25985,7 @@ __metadata:
     "@metamask/permission-log-controller": "npm:^2.0.1"
     "@metamask/phishing-controller": "npm:^12.3.0"
     "@metamask/phishing-warning": "npm:^4.1.0"
+    "@metamask/polling-controller": "npm:^10.0.1"
     "@metamask/post-message-stream": "npm:^8.0.0"
     "@metamask/ppom-validator": "npm:0.35.1"
     "@metamask/preferences-controller": "npm:^13.0.2"
