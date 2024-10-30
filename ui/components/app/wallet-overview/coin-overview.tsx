@@ -193,18 +193,15 @@ export const CoinOverview = ({
   ///: END:ONLY_INCLUDE_IF
 
   const renderPercentageAndAmountChange = () => {
-    const ContentComponent =
-      isEvm && showNativeTokenAsMainBalance ? (
-        <PercentageAndAmountChange
-          value={tokensMarketData?.[zeroAddress()]?.pricePercentChange1d}
-        />
-      ) : (
-        <AggregatedPercentageOverview />
-      );
-
     return (
       <Box className="wallet-overview__currency-wrapper">
-        {ContentComponent}
+        {isEvm && showNativeTokenAsMainBalance ? (
+          <PercentageAndAmountChange
+            value={tokensMarketData?.[zeroAddress()]?.pricePercentChange1d}
+          />
+        ) : (
+          <AggregatedPercentageOverview />
+        )}
         {
           ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
           <ButtonLink
