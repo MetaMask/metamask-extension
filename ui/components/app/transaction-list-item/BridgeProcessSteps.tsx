@@ -1,6 +1,6 @@
 import React from 'react';
 import { BridgeHistoryItem } from '../../../../app/scripts/controllers/bridge-status/types';
-import { UseBridgeDataProps } from './useBridgeData';
+import { UseBridgeDataProps } from '../../../pages/bridge/utils/useBridgeData';
 
 const getTxIndex = (
   srcChainTxHash: string | undefined,
