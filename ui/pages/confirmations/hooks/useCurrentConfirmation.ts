@@ -8,7 +8,6 @@ import { useSelector } from 'react-redux';
 import { useParams } from 'react-router-dom';
 import {
   ApprovalsMetaMaskState,
-  getCurrentChainId,
   getIsRedesignedConfirmationsDeveloperEnabled,
   getRedesignedConfirmationsEnabled,
   getRedesignedTransactionsEnabled,
@@ -35,9 +34,6 @@ const useCurrentConfirmation = () => {
   const { id: paramsConfirmationId } = useParams<{ id: string }>();
   const oldestPendingApproval = useSelector(oldestPendingConfirmationSelector);
   const confirmationId = paramsConfirmationId ?? oldestPendingApproval?.id;
-
-  // TODO: Temporary pending chain ID persisted in signature requests.
-  const globalChainId = useSelector(getCurrentChainId);
 
   const isRedesignedSignaturesUserSettingEnabled = useSelector(
     getRedesignedConfirmationsEnabled,
@@ -109,7 +105,7 @@ const useCurrentConfirmation = () => {
       transactionMetadata ?? signatureMessage ?? undefined;
 
     return { currentConfirmation };
-  }, [transactionMetadata, signatureMessage, shouldUseRedesign, globalChainId]);
+  }, [transactionMetadata, signatureMessage, shouldUseRedesign]);
 };
 
 export default useCurrentConfirmation;
