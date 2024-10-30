@@ -1,7 +1,6 @@
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useContext, useState } from 'react';
 import { useSelector } from 'react-redux';
 import TokenList from '../token-list';
-import { endTrace, TraceName } from '../../../../../shared/lib/trace';
 import { PRIMARY } from '../../../../helpers/constants/common';
 import { useUserPreferencedCurrency } from '../../../../hooks/useUserPreferencedCurrency';
 import {
@@ -61,11 +60,6 @@ const AssetList = ({ onClickAsset, showTokensLinks }: AssetListProps) => {
   const selectedAccount = useSelector(getSelectedAccount);
   const t = useI18nContext();
   const trackEvent = useContext(MetaMetricsContext);
-
-  useEffect(() => {
-    endTrace({ name: TraceName.AccountOverviewAssetListTab });
-  }, []);
-
   const balance = useSelector(getMultichainSelectedAccountCachedBalance);
 
   const {

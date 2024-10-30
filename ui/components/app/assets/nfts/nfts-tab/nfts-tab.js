@@ -61,10 +61,6 @@ export default function NftsTab() {
   const dispatch = useDispatch();
   const trackEvent = useContext(MetaMetricsContext);
 
-  useEffect(() => {
-    endTrace({ name: TraceName.AccountOverviewNftsTab });
-  }, []);
-
   const nftsStillFetchingIndication = useSelector(
     getNftIsStillFetchingIndication,
   );
@@ -124,6 +120,12 @@ export default function NftsTab() {
     nickname,
     currentLocale,
   ]);
+
+  useEffect(() => {
+    if (!nftsLoading) {
+      endTrace({ name: TraceName.AccountOverviewNftsTab });
+    }
+  }, [nftsLoading]);
 
   if (!hasAnyNfts && nftsStillFetchingIndication) {
     return (
