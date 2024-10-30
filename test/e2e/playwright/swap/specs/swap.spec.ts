@@ -54,14 +54,12 @@ const testSet = [
   },
 ];
 
-let a: Page;
 test.beforeAll(
   'Initialize extension, import wallet and add custom networks',
   async () => {
     const extension = new ChromeExtensionPage();
     const page = await extension.initExtension();
     page.setDefaultTimeout(15000);
-    a = page;
 
     const wallet = ethers.Wallet.createRandom();
     await addFundsToAccount(Tenderly.Mainnet.url, wallet.address);
@@ -78,6 +76,7 @@ test.beforeAll(
     await walletPage.importAccount(wallet.privateKey);
   },
 );
+
 testSet.forEach((options) => {
   test(`should swap ${options.type} token ${options.source} to ${options.destination} on ${options.network.name}'`, async () => {
     await walletPage.selectTokenWallet();
@@ -102,17 +101,14 @@ testSet.forEach((options) => {
           });
         } else {
           log.error(`\tERROR: Transaction did not complete. Skipping test`);
-          await a.waitForTimeout(100000);
           test.skip();
         }
       } else {
         log.error(`\tERROR: No quotes found on. Skipping test`);
-        await a.waitForTimeout(100000);
         test.skip();
       }
     } else {
       log.error(`\tERROR: Error while entering the quote. Skipping test`);
-      await a.waitForTimeout(100000);
       test.skip();
     }
   });
