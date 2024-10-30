@@ -40,6 +40,11 @@ export default function TokenList({
   const shouldHideZeroBalanceTokens = useSelector(
     getShouldHideZeroBalanceTokens,
   );
+  console.log('native values', {
+    nativeTokenWithBalance,
+    selectedAccount,
+    shouldHideZeroBalanceTokens,
+  });
   const contractExchangeRates = useSelector(
     getTokenExchangeRates,
     shallowEqual,
@@ -124,7 +129,9 @@ export default function TokenList({
   ) : (
     <div>
       {sortedTokens.map((tokenData) => {
+        console.log('here', { tokenData });
         if (tokenData?.isNative) {
+          console.log('is native:', { tokenData });
           // we need cloneElement so that we can pass the unique key
           return React.cloneElement(nativeToken as React.ReactElement, {
             key: `${tokenData.symbol}-${tokenData.address}`,
