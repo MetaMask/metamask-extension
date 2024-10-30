@@ -83,6 +83,7 @@ import {
   NOTIFICATIONS_ROUTE,
   NOTIFICATIONS_SETTINGS_ROUTE,
   CROSS_CHAIN_SWAP_ROUTE,
+  CROSS_CHAIN_SWAP_TX_DETAILS_ROUTE,
 } from '../../helpers/constants/routes';
 
 import {
@@ -114,6 +115,7 @@ import NetworkConfirmationPopover from '../../components/multichain/network-list
 import NftFullImage from '../../components/app/assets/nfts/nft-details/nft-full-image';
 import CrossChainSwap from '../bridge';
 import { ToastMaster } from '../../components/app/toast-master/toast-master';
+import CrossChainSwapTxDetails from '../bridge/transaction-details/transaction-details';
 import {
   getConnectingLabel,
   hideAppHeader,
@@ -292,6 +294,11 @@ export default class Routes extends Component {
         />
         <Authenticated path={SEND_ROUTE} component={SendPage} exact />
         <Authenticated path={SWAPS_ROUTE} component={Swaps} />
+        <Authenticated
+          path={`${CROSS_CHAIN_SWAP_TX_DETAILS_ROUTE}/:srcTxHash`}
+          component={CrossChainSwapTxDetails}
+          exact
+        />
         <Authenticated
           path={CROSS_CHAIN_SWAP_ROUTE}
           component={CrossChainSwap}

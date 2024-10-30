@@ -69,7 +69,7 @@ import { MetaMetricsContext } from '../../../contexts/metametrics';
 import { ActivityListItem } from '../../multichain';
 import { abortTransactionSigning } from '../../../store/actions';
 import { getIsSmartTransaction } from '../../../../shared/modules/selectors';
-import useBridgeData from './useBridgeData';
+import useBridgeData from '../../../pages/bridge/utils/useBridgeData';
 import BridgeProcessSteps from './BridgeProcessSteps';
 
 function TransactionListItemInner({
@@ -93,10 +93,14 @@ function TransactionListItemInner({
   // Bridge transactions
   const isBridgeTx =
     transactionGroup.initialTransaction.type === TransactionType.bridge;
-  const { bridgeTitleSuffix, bridgeTxHistoryItem, isBridgeComplete } =
-    useBridgeData({
-      transactionGroup,
-    });
+  const {
+    bridgeTitleSuffix,
+    bridgeTxHistoryItem,
+    isBridgeComplete,
+    showBridgeTxDetails,
+  } = useBridgeData({
+    transactionGroup,
+  });
 
   const {
     initialTransaction: { id },
@@ -299,7 +303,11 @@ function TransactionListItemInner({
     <>
       <ActivityListItem
         data-testid="activity-list-item"
-        onClick={toggleShowDetails}
+        onClick={
+          isBridgeTx && showBridgeTxDetails
+            ? showBridgeTxDetails
+            : toggleShowDetails
+        }
         className={className}
         title={`${title}${bridgeTitleSuffix}`}
         icon={
