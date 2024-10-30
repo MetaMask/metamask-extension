@@ -3089,6 +3089,10 @@ export function setRedesignedConfirmationsEnabled(value: boolean) {
   return setPreference('redesignedConfirmationsEnabled', value);
 }
 
+export function setPrivacyMode(value: boolean) {
+  return setPreference('privacyMode', value, false);
+}
+
 export function setRedesignedTransactionsEnabled(value: boolean) {
   return setPreference('redesignedTransactionsEnabled', value);
 }
@@ -4524,8 +4528,8 @@ export async function currencyRateStartPollingByNetworkClientId(
   networkClientId: string,
 ): Promise<string> {
   const pollingToken = await submitRequestToBackground(
-    'currencyRateStartPollingByNetworkClientId',
-    [networkClientId],
+    'currencyRateStartPolling',
+    [{ networkClientId }],
   );
   await addPollingTokenToAppState(pollingToken);
   return pollingToken;
