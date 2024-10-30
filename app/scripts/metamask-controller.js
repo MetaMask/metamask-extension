@@ -3317,6 +3317,10 @@ export default class MetamaskController extends EventEmitter {
         preferencesController.setWatchEthereumAccountEnabled.bind(
           preferencesController,
         ),
+      setSolanaSupportEnabled:
+        preferencesController.setSolanaSupportEnabled.bind(
+          preferencesController,
+        ),
       ///: END:ONLY_INCLUDE_IF
       setBitcoinSupportEnabled:
         preferencesController.setBitcoinSupportEnabled.bind(
