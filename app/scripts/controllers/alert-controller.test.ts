@@ -7,7 +7,6 @@ import {
   AlertController,
   AllowedActions,
   AllowedEvents,
-  AlertControllerState,
   AlertControllerMessenger,
   AlertControllerGetStateAction,
   AlertControllerStateChangeEvent,
