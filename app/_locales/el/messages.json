@@ -805,10 +805,6 @@
   "buyNow": {
     "message": "Αγοράστε Τώρα"
   },
-  "buyToken": {
-    "message": "Αγορά $1",
-    "description": "$1 is the token symbol"
-  },
   "bytes": {
     "message": "Bytes"
   },
@@ -1883,13 +1879,6 @@
   "functionType": {
     "message": "Τύπος λειτουργίας"
   },
-  "fundYourWallet": {
-    "message": "Χρηματοδοτήστε το πορτοφόλι σας"
-  },
-  "fundYourWalletDescription": {
-    "message": "Ξεκινήστε προσθέτοντας περίπου $1 στο πορτοφόλι σας.",
-    "description": "$1 is the token symbol"
-  },
   "gas": {
     "message": "Τέλος συναλλαγής"
   },
@@ -1972,14 +1961,6 @@
   },
   "genericExplorerView": {
     "message": "Προβολή λογαριασμού σε $1"
-  },
-  "getStartedWithNFTs": {
-    "message": "Λάβετε $1 για να αγοράσετε NFT",
-    "description": "$1 is the token symbol"
-  },
-  "getStartedWithNFTsDescription": {
-    "message": "Ξεκινήστε με NFT προσθέτοντας περίπου $1 στο πορτοφόλι σας.",
-    "description": "$1 is the token symbol"
   },
   "goBack": {
     "message": "Πηγαίνετε πίσω"
@@ -4993,14 +4974,6 @@
   },
   "stake": {
     "message": "Stake"
-  },
-  "startYourJourney": {
-    "message": "Ξεκινήστε το ταξίδι σας με $1",
-    "description": "$1 is the token symbol"
-  },
-  "startYourJourneyDescription": {
-    "message": "Ξεκινήστε με Web3 προσθέτοντας περίπου $1 στο πορτοφόλι σας.",
-    "description": "$1 is the token symbol"
   },
   "stateLogError": {
     "message": "Σφάλμα κατά την ανάκτηση αρχείων καταγραφής κατάστασης."

@@ -875,22 +875,12 @@
     "message": "Buy $1",
     "description": "$1 is the ticker symbol of a an asset the user is being prompted to purchase"
   },
-  "buyCrypto": {
-    "message": "Buy crypto"
-  },
-  "buyFirstCrypto": {
-    "message": "Buy your first crypto with a debit or credit card."
-  },
   "buyMoreAsset": {
     "message": "Buy more $1",
     "description": "$1 is the ticker symbol of a an asset the user is being prompted to purchase"
   },
   "buyNow": {
     "message": "Buy Now"
-  },
-  "buyToken": {
-    "message": "Buy $1",
-    "description": "$1 is the token symbol"
   },
   "bytes": {
     "message": "Bytes"
@@ -1522,6 +1512,9 @@
   "dcent": {
     "message": "D'Cent"
   },
+  "debitCreditPurchaseOptions": {
+    "message": "Debit or credit card purchase options"
+  },
   "decimal": {
     "message": "Token decimal"
   },
@@ -2114,12 +2107,8 @@
   "functionType": {
     "message": "Function type"
   },
-  "fundYourWallet": {
-    "message": "Fund your wallet"
-  },
-  "fundYourWalletDescription": {
-    "message": "Get started by adding some $1 to your wallet.",
-    "description": "$1 is the token symbol"
+  "fundingMethod": {
+    "message": "Funding method"
   },
   "gas": {
     "message": "Gas"
@@ -2209,20 +2198,6 @@
   },
   "genericExplorerView": {
     "message": "View account on $1"
-  },
-  "getStarted": {
-    "message": "Get Started"
-  },
-  "getStartedByFundingWallet": {
-    "message": "Get started by adding some crypto to your wallet."
-  },
-  "getStartedWithNFTs": {
-    "message": "Get $1 to buy NFTs",
-    "description": "$1 is the token symbol"
-  },
-  "getStartedWithNFTsDescription": {
-    "message": "Get started with NFTs by adding some $1 to your wallet.",
-    "description": "$1 is the token symbol"
   },
   "goBack": {
     "message": "Go back"
@@ -4768,9 +4743,6 @@
   "selectEnableDisplayMediaPrivacyPreference": {
     "message": "Turn on Display NFT Media"
   },
-  "selectFundingMethod": {
-    "message": "Select a funding method"
-  },
   "selectHdPath": {
     "message": "Select HD path"
   },
@@ -5418,14 +5390,6 @@
   "stake": {
     "message": "Stake"
   },
-  "startYourJourney": {
-    "message": "Start your journey with $1",
-    "description": "$1 is the token symbol"
-  },
-  "startYourJourneyDescription": {
-    "message": "Get started with web3 by adding some $1 to your wallet.",
-    "description": "$1 is the token symbol"
-  },
   "stateLogError": {
     "message": "Error in retrieving state logs."
   },
@@ -6029,6 +5993,12 @@
   "tips": {
     "message": "Tips"
   },
+  "tipsForUsingAWallet": {
+    "message": "Tips for using a wallet"
+  },
+  "tipsForUsingAWalletDescription": {
+    "message": "Adding tokens unlocks more ways to use web3."
+  },
   "to": {
     "message": "To"
   },
@@ -6080,6 +6050,9 @@
   },
   "tokenList": {
     "message": "Token lists"
+  },
+  "tokenMarketplace": {
+    "message": "Token marketplace"
   },
   "tokenScamSecurityRisk": {
     "message": "token scams and security risks"

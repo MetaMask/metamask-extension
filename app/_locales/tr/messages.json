@@ -805,10 +805,6 @@
   "buyNow": {
     "message": "Şimdi Satın Al"
   },
-  "buyToken": {
-    "message": "$1 Al",
-    "description": "$1 is the token symbol"
-  },
   "bytes": {
     "message": "Bayt"
   },
@@ -1883,13 +1879,6 @@
   "functionType": {
     "message": "İşlev türü"
   },
-  "fundYourWallet": {
-    "message": "Cüzdanınıza para ekleyin"
-  },
-  "fundYourWalletDescription": {
-    "message": "Cüzdanınıza biraz $1 ekleyerek başlayın.",
-    "description": "$1 is the token symbol"
-  },
   "gas": {
     "message": "Gaz"
   },
@@ -1972,14 +1961,6 @@
   },
   "genericExplorerView": {
     "message": "Hesabı $1 üzerinde görüntüleyin"
-  },
-  "getStartedWithNFTs": {
-    "message": "NFT satın almak için $1 edinin",
-    "description": "$1 is the token symbol"
-  },
-  "getStartedWithNFTsDescription": {
-    "message": "Cüzdanınıza biraz $1 ekleyerek NFT'lere başlayın.",
-    "description": "$1 is the token symbol"
   },
   "goBack": {
     "message": "Geri git"
@@ -4993,14 +4974,6 @@
   },
   "stake": {
     "message": "Pay"
-  },
-  "startYourJourney": {
-    "message": "$1 ile yolculuğunuza başlayın",
-    "description": "$1 is the token symbol"
-  },
-  "startYourJourneyDescription": {
-    "message": "Cüzdanınıza biraz $1 ekleyerek web3'e başlayın.",
-    "description": "$1 is the token symbol"
   },
   "stateLogError": {
     "message": "Durum günlükleri alınırken hata."
