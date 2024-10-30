@@ -82,12 +82,16 @@ describe('PersonalSign Confirmation', () => {
       account.address,
     );
 
-    const { getByTestId, queryByTestId } = await integrationTestRender({
-      preloadedState: mockedMetaMaskState,
-      backgroundConnection: backgroundConnectionMocked,
-    });
+    const { getByTestId, findByTestId, queryByTestId } =
+      await integrationTestRender({
+        preloadedState: mockedMetaMaskState,
+        backgroundConnection: backgroundConnectionMocked,
+      });
 
-    expect(getByTestId('header-account-name')).toHaveTextContent(accountName);
+    // This has to be an `await findByTestId` to wait for the `React.lazy` component to load
+    expect(await findByTestId('header-account-name')).toHaveTextContent(
+      accountName,
+    );
     expect(getByTestId('header-network-display-name')).toHaveTextContent(
       'Sepolia',
     );

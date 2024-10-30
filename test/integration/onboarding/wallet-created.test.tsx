@@ -31,12 +31,13 @@ describe('Wallet Created Events', () => {
   });
 
   it('are sent when onboarding user who chooses to opt in metrics', async () => {
-    const { getByTestId, getByText } = await integrationTestRender({
+    const { getByTestId, getByText, findByText } = await integrationTestRender({
       preloadedState: mockMetaMaskState,
       backgroundConnection: backgroundConnectionMocked,
     });
 
-    expect(getByText('Congratulations!')).toBeInTheDocument();
+    // This has to be an `await findByText` to wait for the `React.lazy` component to load
+    expect(await findByText('Congratulations!')).toBeInTheDocument();
 
     fireEvent.click(getByTestId('onboarding-complete-done'));
 

@@ -20,7 +20,7 @@ import {
   ENCRYPTION_PUBLIC_KEY_REQUEST_PATH,
 } from '../../../helpers/constants/routes';
 
-import ConfirmTransaction from '.';
+import ConfirmTransaction from './confirm-transaction';
 
 const mockUnapprovedTx = _mockState.metamask.transactions[0];
 

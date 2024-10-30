@@ -11,7 +11,7 @@ import {
   CONFIRM_TRANSACTION_ROUTE,
 } from '../../../helpers/constants/routes';
 
-import ConfirmTransaction from './confirm-transaction.component';
+import ConfirmTransaction from './confirm-transaction';
 
 jest.mock('../components/simulation-details/useSimulationMetrics');
 
