@@ -360,7 +360,7 @@
     "@metamask/snaps-rpc-methods": "^11.1.1",
     "@metamask/snaps-sdk": "^6.5.1",
     "@metamask/snaps-utils": "patch:@metamask/snaps-utils@npm%3A8.1.1#~/.yarn/patches/@metamask-snaps-utils-npm-8.1.1-7d5dd6a26a.patch",
-    "@metamask/transaction-controller": "^37.0.0",
+    "@metamask/transaction-controller": "^38.1.0",
     "@metamask/user-operation-controller": "^13.0.0",
     "@metamask/utils": "^9.1.0",
     "@ngraveio/bc-ur": "^1.1.12",
