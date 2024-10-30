@@ -2388,14 +2388,55 @@
       "packages": {
         "@metamask/base-controller": true,
         "@metamask/controller-utils": true,
-        "@metamask/eth-sig-util": true,
         "@metamask/keyring-controller": true,
         "@metamask/logging-controller": true,
         "@metamask/message-manager>jsonschema": true,
-        "@metamask/utils": true,
+        "@metamask/signature-controller>@metamask/eth-sig-util": true,
+        "@metamask/signature-controller>@metamask/utils": true,
         "browserify>buffer": true,
         "uuid": true,
         "webpack>events": true
+      }
+    },
+    "@metamask/signature-controller>@metamask/eth-sig-util": {
+      "packages": {
+        "@ethereumjs/tx>@ethereumjs/util": true,
+        "@ethereumjs/tx>ethereum-cryptography": true,
+        "@metamask/abi-utils": true,
+        "@metamask/eth-sig-util>tweetnacl": true,
+        "@metamask/signature-controller>@metamask/eth-sig-util>@metamask/utils": true,
+        "@metamask/utils>@scure/base": true,
+        "browserify>buffer": true
+      }
+    },
+    "@metamask/signature-controller>@metamask/eth-sig-util>@metamask/utils": {
+      "globals": {
+        "TextDecoder": true,
+        "TextEncoder": true
+      },
+      "packages": {
+        "@metamask/utils>@metamask/superstruct": true,
+        "@metamask/utils>@scure/base": true,
+        "@metamask/utils>pony-cause": true,
+        "@noble/hashes": true,
+        "browserify>buffer": true,
+        "nock>debug": true,
+        "semver": true
+      }
+    },
+    "@metamask/signature-controller>@metamask/utils": {
+      "globals": {
+        "TextDecoder": true,
+        "TextEncoder": true
+      },
+      "packages": {
+        "@metamask/utils>@metamask/superstruct": true,
+        "@metamask/utils>@scure/base": true,
+        "@metamask/utils>pony-cause": true,
+        "@noble/hashes": true,
+        "browserify>buffer": true,
+        "nock>debug": true,
+        "semver": true
       }
     },
     "@metamask/smart-transactions-controller": {
@@ -2919,9 +2960,9 @@
         "@metamask/metamask-eth-abis": true,
         "@metamask/name-controller>async-mutex": true,
         "@metamask/network-controller": true,
+        "@metamask/rpc-errors": true,
         "@metamask/transaction-controller>@metamask/nonce-tracker": true,
-        "@metamask/transaction-controller>@metamask/rpc-errors": true,
-        "@metamask/utils": true,
+        "@metamask/transaction-controller>@metamask/utils": true,
         "bn.js": true,
         "browserify>buffer": true,
         "eth-method-registry": true,
@@ -2947,10 +2988,19 @@
         "@swc/helpers>tslib": true
       }
     },
-    "@metamask/transaction-controller>@metamask/rpc-errors": {
+    "@metamask/transaction-controller>@metamask/utils": {
+      "globals": {
+        "TextDecoder": true,
+        "TextEncoder": true
+      },
       "packages": {
-        "@metamask/rpc-errors>fast-safe-stringify": true,
-        "@metamask/utils": true
+        "@metamask/utils>@metamask/superstruct": true,
+        "@metamask/utils>@scure/base": true,
+        "@metamask/utils>pony-cause": true,
+        "@noble/hashes": true,
+        "browserify>buffer": true,
+        "nock>debug": true,
+        "semver": true
       }
     },
     "@metamask/user-operation-controller": {
