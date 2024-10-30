@@ -415,9 +415,6 @@ export const SENTRY_UI_STATE = {
     switchedNetworkNeverShowMessage: false,
     newPrivacyPolicyToastClickedOrClosed: false,
     newPrivacyPolicyToastShownDate: false,
-    ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
-    solanaSupportEnabled: false,
-    ///: END:ONLY_INCLUDE_IF
   },
   unconnectedAccount: true,
 };

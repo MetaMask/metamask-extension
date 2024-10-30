@@ -18,9 +18,9 @@ import {
   ///: END:ONLY_INCLUDE_IF
 } from '../../../store/actions';
 import {
-    ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
-    getIsSolanaSupportEnabled,
-    ///: END:ONLY_INCLUDE_IF
+  ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
+  getIsSolanaSupportEnabled,
+  ///: END:ONLY_INCLUDE_IF
   getIsBitcoinSupportEnabled,
   getIsBitcoinTestnetSupportEnabled,
   ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
@@ -64,9 +64,8 @@ const mapDispatchToProps = (dispatch: MetaMaskReduxDispatch) => {
   return {
     setWatchAccountEnabled: (value: boolean) =>
       setWatchEthereumAccountEnabled(value),
-      ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
-      setSolanaSupportEnabled: (value: boolean) =>
-        setSolanaSupportEnabled(value),
+    ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
+    setSolanaSupportEnabled: (value: boolean) => setSolanaSupportEnabled(value),
     ///: END:ONLY_INCLUDE_IF
     setBitcoinSupportEnabled: (value: boolean) =>
       setBitcoinSupportEnabled(value),

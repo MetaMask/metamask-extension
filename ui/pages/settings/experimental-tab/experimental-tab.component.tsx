@@ -376,10 +376,7 @@ export default class ExperimentalTab extends PureComponent<ExperimentalTabProps>
 
   renderSolanaSupport() {
     const { t, trackEvent } = this.context;
-    const {
-      solanaSupportEnabled,
-      setSolanaSupportEnabled,
-    } = this.props;
+    const { solanaSupportEnabled, setSolanaSupportEnabled } = this.props;
 
     return (
       <>
