@@ -164,7 +164,7 @@ const AssetList = ({ onClickAsset, showTokensLinks }: AssetListProps) => {
         <FundingMethodModal
           isOpen={showFundingMethodModal}
           onClose={() => setShowFundingMethodModal(false)}
-          title={t('selectFundingMethod')}
+          title={t('fundingMethod')}
           onClickReceive={onClickReceive}
         />
       )}
