@@ -1,6 +1,6 @@
 import React from 'react';
 import { Provider } from 'react-redux';
-import { keccak } from 'ethereumjs-util';
+import { keccak256 } from 'ethereum-cryptography/keccak';
 import { cloneDeep } from 'lodash';
 import { GasFeeContextProvider } from '../../../../contexts/gasFee';
 import configureStore from '../../../../store/store';
@@ -44,7 +44,9 @@ const customTransaction = ({
   };
   // just simulate hash if not provided
   if (!props?.hash) {
-    tx.hash = `0x${keccak(Buffer.from(JSON.stringify(tx))).toString('hex')}`;
+    tx.hash = `0x${Buffer.from(
+      keccak256(Buffer.from(JSON.stringify(tx))),
+    ).toString('hex')}`;
   }
   return tx;
 };
