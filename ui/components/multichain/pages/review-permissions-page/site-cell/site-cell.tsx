@@ -82,6 +82,15 @@ export const SiteCell: React.FC<SiteCellProps> = ({
         ])
       : t('requestingFor');
 
+  const networkMessageConnectedState =
+    selectedChainIdsLength === 1
+      ? t('connectedWithNetworkName', [selectedNetworks[0].name])
+      : t('connectedWithNetwork', [selectedChainIdsLength]);
+  const networkMessageNotConnectedState =
+    selectedChainIdsLength === 1
+      ? t('requestingForNetwork', [selectedNetworks[0].name])
+      : t('requestingFor');
+
   return (
     <>
       <Box
@@ -124,10 +133,8 @@ export const SiteCell: React.FC<SiteCellProps> = ({
         <SiteCellConnectionListItem
           title={t('permission_walletSwitchEthereumChain')}
           iconName={IconName.Data}
-          connectedMessage={t('connectedWithNetworks', [
-            selectedChainIdsLength,
-          ])}
-          unconnectedMessage={t('requestingFor')}
+          connectedMessage={networkMessageConnectedState}
+          unconnectedMessage={networkMessageNotConnectedState}
           isConnectFlow={isConnectFlow}
           onClick={() => {
             setShowEditNetworksModal(true);

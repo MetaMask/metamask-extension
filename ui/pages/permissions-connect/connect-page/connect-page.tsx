@@ -39,6 +39,7 @@ import {
   RestrictedMethods,
 } from '../../../../shared/constants/permissions';
 import PermissionsConnectFooter from '../../../components/app/permissions-connect-footer';
+import { getMultichainNetwork } from '../../../selectors/multichain';
 
 export type ConnectPageRequest = {
   id: string;
@@ -92,10 +93,24 @@ export const ConnectPage: React.FC<ConnectPageProps> = ({
       ),
     [networkConfigurations],
   );
+
+  // By default, if a non test network is the globally selected network. We will only show non test networks as default selected.
+  const currentlySelectedNetwork = useSelector(getMultichainNetwork);
+  const currentlySelectedNetworkChainId =
+    currentlySelectedNetwork.network.chainId;
+  // If globally selected network is a test network, include that in the default selcted networks for connection request
+  const selectedTestNetwork = testNetworks.find(
+    (network: { chainId: string }) =>
+      network.chainId === currentlySelectedNetworkChainId,
+  );
+
+  const selectedNetworksList = selectedTestNetwork
+    ? [...nonTestNetworks, selectedTestNetwork]
+    : nonTestNetworks;
   const defaultSelectedChainIds =
     requestedChainIds.length > 0
       ? requestedChainIds
-      : nonTestNetworks.map(({ chainId }) => chainId);
+      : selectedNetworksList.map(({ chainId }) => chainId);
   const [selectedChainIds, setSelectedChainIds] = useState(
     defaultSelectedChainIds,
   );
