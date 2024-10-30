@@ -68,6 +68,7 @@ import {
   getOriginOfCurrentTab,
   getSelectedInternalAccount,
   getUpdatedAndSortedAccounts,
+  getDefaultHomeActiveTabName,
 } from '../../../selectors';
 import { setSelectedAccount } from '../../../store/actions';
 import {
@@ -234,6 +235,7 @@ export const AccountListMenu = ({
       ),
     [updatedAccountsList, allowedAccountTypes],
   );
+  const defaultHomeActiveTabName = useSelector(getDefaultHomeActiveTabName);
   ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
   const addSnapAccountEnabled = useSelector(getIsAddSnapAccountEnabled);
   ///: END:ONLY_INCLUDE_IF
@@ -303,6 +305,22 @@ export const AccountListMenu = ({
     }
   }
 
+  const handleTraceFromTabName = (tabName: string) => {
+    switch (tabName) {
+      case 'nfts':
+        endTrace({ name: TraceName.AccountOverviewNftsTab });
+        trace({ name: TraceName.AccountOverviewNftsTab });
+        break;
+      case 'activity':
+        endTrace({ name: TraceName.AccountOverviewActivityTab });
+        trace({ name: TraceName.AccountOverviewActivityTab });
+        break;
+      default:
+        endTrace({ name: TraceName.AccountOverviewAssetListTab });
+        trace({ name: TraceName.AccountOverviewAssetListTab });
+    }
+  };
+
   const onAccountListItemItemClicked = useCallback(
     (account) => {
       return () => {
@@ -314,6 +332,7 @@ export const AccountListMenu = ({
             location: 'Main Menu',
           },
         });
+        handleTraceFromTabName(defaultHomeActiveTabName);
         dispatch(setSelectedAccount(account.address));
       };
     },

@@ -1,5 +1,6 @@
-import React, { useCallback, useContext, useEffect, useMemo } from 'react';
+import React, { useCallback, useContext, useMemo } from 'react';
 import { useHistory } from 'react-router-dom';
+import { endTraces, trace, TraceName } from '../../../../shared/lib/trace';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { ASSET_ROUTE } from '../../../helpers/constants/routes';
 import {
@@ -37,7 +38,6 @@ import {
 ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
 import InstitutionalHomeFooter from '../../../pages/home/institutional/institutional-home-footer';
 ///: END:ONLY_INCLUDE_IF
-import { endTrace, trace, TraceName } from '../../../../shared/lib/trace';
 import { AccountOverviewCommonProps } from './common';
 
 export type AccountOverviewTabsProps = AccountOverviewCommonProps & {
@@ -62,10 +62,6 @@ export const AccountOverviewTabs = ({
   const t = useI18nContext();
   const trackEvent = useContext(MetaMetricsContext);
 
-  useEffect(() => {
-    endTrace({ name: TraceName.AccountOverviewTab });
-  }, []);
-
   const tabProps = useMemo(
     () => ({
       activeClassName: 'account-overview__tab--active',
@@ -85,6 +81,24 @@ export const AccountOverviewTabs = ({
     }
   };
 
+  const handleTraceFromTabName = (tabName: string) => {
+    endTraces(
+      { name: TraceName.AccountOverviewAssetListTab },
+      { name: TraceName.AccountOverviewNftsTab },
+      { name: TraceName.AccountOverviewActivityTab },
+    );
+    switch (tabName) {
+      case 'nfts':
+        trace({ name: TraceName.AccountOverviewNftsTab });
+        break;
+      case 'activity':
+        trace({ name: TraceName.AccountOverviewActivityTab });
+        break;
+      default:
+        trace({ name: TraceName.AccountOverviewAssetListTab });
+    }
+  };
+
   const handleTabClick = useCallback(
     (tabName: string) => {
       onTabClick(tabName);
@@ -92,6 +106,7 @@ export const AccountOverviewTabs = ({
         category: MetaMetricsEventCategory.Home,
         event: getEventFromTabName(tabName),
       });
+      handleTraceFromTabName(tabName);
     },
     [onTabClick],
   );
