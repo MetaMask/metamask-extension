@@ -3239,6 +3239,7 @@ export default class MetamaskController extends EventEmitter {
       approvalController,
       phishingController,
       tokenRatesController,
+      tokenListController,
       // Notification Controllers
       authenticationController,
       userStorageController,
@@ -4006,6 +4007,14 @@ export default class MetamaskController extends EventEmitter {
         tokenRatesController.stopPollingByPollingToken.bind(
           tokenRatesController,
         ),
+
+      // TokeListController
+      tokenListControllerStartPolling:
+        tokenListController.startPolling.bind(tokenListController),
+      tokenListStopPollingByPollingToken:
+        tokenListController.stopPollingByPollingToken.bind(tokenListController),
+
+      // tokenListStopPollingByPollingToken: this.
 
       // GasFeeController
       gasFeeStartPollingByNetworkClientId:
