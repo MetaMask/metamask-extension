@@ -65,6 +65,7 @@ async function withFixtures(options, testSuite) {
     smartContract,
     driverOptions,
     dappOptions,
+    staticServerOptions,
     title,
     ignoredConsoleErrors = [],
     dappPath = undefined,
@@ -159,7 +160,9 @@ async function withFixtures(options, testSuite) {
             'dist',
           );
         }
-        dappServer.push(createStaticServer(dappDirectory));
+        dappServer.push(
+          createStaticServer({ public: dappDirectory, ...staticServerOptions }),
+        );
         dappServer[i].listen(`${dappBasePort + i}`);
         await new Promise((resolve, reject) => {
           dappServer[i].on('listening', resolve);
