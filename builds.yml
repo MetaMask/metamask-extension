@@ -276,9 +276,9 @@ env:
   # Enables use of test gas fee flow to debug gas fee estimation
   - TEST_GAS_FEE_FLOWS: false
   # Temporary mechanism to enable security alerts API prior to release
-  - SECURITY_ALERTS_API_ENABLED: ''
+  - SECURITY_ALERTS_API_ENABLED: 'true'
   # URL of security alerts API used to validate dApp requests
-  - SECURITY_ALERTS_API_URL: 'http://localhost:3000'
+  - SECURITY_ALERTS_API_URL: 'https://security-alerts.api.cx.metamask.io'
   # API key to authenticate Etherscan requests to avoid rate limiting
   - ETHERSCAN_API_KEY: ''
 
