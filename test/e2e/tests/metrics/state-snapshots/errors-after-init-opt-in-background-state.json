@@ -87,7 +87,7 @@
         "usdConversionRate": 1700
       },
       "LineaETH": {
-          "conversionDate": "number",
+        "conversionDate": "number",
         "conversionRate": 1700,
         "usdConversionRate": 1700
       },
