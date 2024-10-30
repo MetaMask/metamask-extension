@@ -619,6 +619,14 @@
   "asset": {
     "message": "Asset"
   },
+  "assetListControlBarNetworksModalNotice": {
+    "message": "Note: Currently, we only retrieve your balances for the $1 networks with the highest values.",
+    "description": "$1 represents a number of networks"
+  },
+  "assetListControlBarNetworksModalTitle": {
+    "message": "$1 networks",
+    "description": "$1 represents a number of networks"
+  },
   "assetOptions": {
     "message": "Asset options"
   },
