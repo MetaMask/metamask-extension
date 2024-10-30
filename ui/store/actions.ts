@@ -2789,15 +2789,6 @@ export function showNftStillFetchingIndication(): Action {
   };
 }
 
-export function setShowNftDetectionEnablementToast(
-  value: boolean,
-): PayloadAction<string | ReactFragment | undefined> {
-  return {
-    type: actionConstants.SHOW_NFT_DETECTION_ENABLEMENT_TOAST,
-    payload: value,
-  };
-}
-
 export function setHardwareWalletDefaultHdPath({
   device,
   path,
@@ -4279,35 +4270,9 @@ export function setTermsOfUseLastAgreed(lastAgreed: number) {
   };
 }
 
-export function setSurveyLinkLastClickedOrClosed(time: number) {
-  return async () => {
-    await submitRequestToBackground('setSurveyLinkLastClickedOrClosed', [time]);
-  };
-}
-
-export function setNewPrivacyPolicyToastClickedOrClosed() {
-  return async () => {
-    await submitRequestToBackground('setNewPrivacyPolicyToastClickedOrClosed');
-  };
-}
-
 export function setLastViewedUserSurvey(id: number) {
   return async () => {
     await submitRequestToBackground('setLastViewedUserSurvey', [id]);
-  };
-}
-
-export function setOnboardingDate() {
-  return async () => {
-    await submitRequestToBackground('setOnboardingDate');
-  };
-}
-
-export function setNewPrivacyPolicyToastShownDate(time: number) {
-  return async () => {
-    await submitRequestToBackground('setNewPrivacyPolicyToastShownDate', [
-      time,
-    ]);
   };
 }
 
@@ -4559,8 +4524,8 @@ export async function currencyRateStartPollingByNetworkClientId(
   networkClientId: string,
 ): Promise<string> {
   const pollingToken = await submitRequestToBackground(
-    'currencyRateStartPollingByNetworkClientId',
-    [networkClientId],
+    'currencyRateStartPolling',
+    [{ networkClientId }],
   );
   await addPollingTokenToAppState(pollingToken);
   return pollingToken;
@@ -4948,12 +4913,6 @@ export function hideAccountBanner() {
 
 export function hideNetworkBanner() {
   return submitRequestToBackground('setShowNetworkBanner', [false]);
-}
-
-export function neverShowSwitchedNetworkMessage() {
-  return submitRequestToBackground('setSwitchedNetworkNeverShowMessage', [
-    true,
-  ]);
 }
 
 /**
@@ -5464,22 +5423,20 @@ export function updateOnChainTriggersByAccount(
 /**
  * Fetches and updates MetaMask notifications.
  *
- * This function sends a request to the background script to fetch the latest notifications and update the state accordingly.
- * Upon success, it dispatches an action with type `FETCH_AND_UPDATE_METAMASK_NOTIFICATIONS` to update the Redux state.
+ * This function sends a request to the background script to fetch the latest notifications.
  * If the operation encounters an error, it logs the error message and rethrows the error to ensure it is handled appropriately.
  *
+ * @param previewToken - Optional preview token for fetching draft feature announcements.
  * @returns A thunk action that, when dispatched, attempts to fetch and update MetaMask notifications.
  */
-export function fetchAndUpdateMetamaskNotifications(): ThunkAction<
-  void,
-  MetaMaskReduxState,
-  unknown,
-  AnyAction
-> {
+export function fetchAndUpdateMetamaskNotifications(
+  previewToken?: string,
+): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
   return async () => {
     try {
       const response = await submitRequestToBackground(
         'fetchAndUpdateMetamaskNotifications',
+        [previewToken],
       );
       return response;
     } catch (error) {
