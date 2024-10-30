@@ -3,17 +3,18 @@ const { Browser } = require('selenium-webdriver');
 const { CHAIN_IDS } = require('../../../../shared/constants/network');
 const FixtureBuilder = require('../../fixture-builder');
 const {
-  withFixtures,
-  openDapp,
-  unlockWallet,
-  DAPP_URL,
   DAPP_ONE_URL,
-  regularDelayMs,
-  WINDOW_TITLES,
-  defaultGanacheOptions,
-  tempToggleSettingRedesignedConfirmations,
-  veryLargeDelayMs,
   DAPP_TWO_URL,
+  DAPP_URL,
+  defaultGanacheOptions,
+  logInWithBalanceValidation,
+  openDapp,
+  regularDelayMs,
+  tempToggleSettingRedesignedConfirmations,
+  unlockWallet,
+  veryLargeDelayMs,
+  WINDOW_TITLES,
+  withFixtures,
 } = require('../../helpers');
 const { PAGES } = require('../../webdriver/driver');
 const {
@@ -92,8 +93,13 @@ async function openDappAndSwitchChain(driver, dappUrl, chainId) {
   }
 }
 
-async function selectDappClickSend(driver, dappUrl) {
+async function selectDappClickSend(driver, dappUrl, chainId) {
   await driver.switchToWindowWithUrl(dappUrl);
+  await driver.waitForSelector({
+    css: '#chainId',
+    text: chainId,
+  });
+
   await driver.clickElement('#sendButton');
 }
 
@@ -235,7 +241,7 @@ describe('Request-queue UI changes', function () {
         });
 
         // Go to the first dapp, ensure it uses localhost
-        await selectDappClickSend(driver, DAPP_URL);
+        await selectDappClickSend(driver, DAPP_URL, '0x539');
         await switchToDialogPopoverValidateDetails(driver, {
           chainId: '0x539',
           networkText: 'Localhost 8545',
@@ -244,7 +250,7 @@ describe('Request-queue UI changes', function () {
         await rejectTransaction(driver);
 
         // Go to the second dapp, ensure it uses Ethereum Mainnet
-        await selectDappClickSend(driver, DAPP_ONE_URL);
+        await selectDappClickSend(driver, DAPP_ONE_URL, '0x53a');
         await switchToDialogPopoverValidateDetails(driver, {
           chainId: '0x53a',
           networkText: 'Localhost 8546',
@@ -303,14 +309,14 @@ describe('Request-queue UI changes', function () {
         }
 
         // Trigger a send confirmation on the first dapp, do not confirm or reject
-        await selectDappClickSend(driver, DAPP_URL);
+        await selectDappClickSend(driver, DAPP_URL, '0x539');
 
         // Trigger a send confirmation on the second dapp, do not confirm or reject
-        await selectDappClickSend(driver, DAPP_ONE_URL);
+        await selectDappClickSend(driver, DAPP_ONE_URL, '0x53a');
 
         if (!IS_FIREFOX) {
           // Trigger a send confirmation on the third dapp, do not confirm or reject
-          await selectDappClickSend(driver, DAPP_TWO_URL);
+          await selectDappClickSend(driver, DAPP_TWO_URL, '0x3e8');
         }
 
         // Switch to the Notification window, ensure first transaction still showing
@@ -447,7 +453,7 @@ describe('Request-queue UI changes', function () {
 
         // Go back to first dapp, try an action, ensure deleted network doesn't block UI
         // The current globally selected network, Ethereum Mainnet, should be used
-        await selectDappClickSend(driver, DAPP_URL);
+        await selectDappClickSend(driver, DAPP_URL, '0x539');
         await driver.delay(veryLargeDelayMs);
         await switchToDialogPopoverValidateDetails(driver, {
           chainId: '0x1',
@@ -650,7 +656,7 @@ describe('Request-queue UI changes', function () {
         title: this.test.fullTitle(),
       },
       async ({ driver, ganacheServer, secondaryGanacheServer }) => {
-        await unlockWallet(driver);
+        await logInWithBalanceValidation(driver, ganacheServer);
         await tempToggleSettingRedesignedConfirmations(driver);
 
         // Navigate to extension home screen
@@ -720,7 +726,7 @@ describe('Request-queue UI changes', function () {
         title: this.test.fullTitle(),
       },
       async ({ driver, ganacheServer, secondaryGanacheServer }) => {
-        await unlockWallet(driver);
+        await logInWithBalanceValidation(driver, ganacheServer);
 
         // Navigate to extension home screen
         await driver.navigate(PAGES.HOME);
@@ -745,7 +751,7 @@ describe('Request-queue UI changes', function () {
         await secondaryGanacheServer[0].quit();
 
         // Go back to first dapp, try an action, ensure network connection failure doesn't block UI
-        await selectDappClickSend(driver, DAPP_URL);
+        await selectDappClickSend(driver, DAPP_URL, '0x539');
 
         // When the network is down, there is a performance degradation that causes the
         // popup to take a few seconds to open in MV3 (issue #25690)
