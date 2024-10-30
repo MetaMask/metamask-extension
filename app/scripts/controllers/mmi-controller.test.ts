@@ -269,8 +269,6 @@ describe('MMIController', function () {
           messenger: mockMessenger,
         }),
         isEthSignEnabled: jest.fn(),
-        getAllState: jest.fn(),
-        getCurrentChainId: jest.fn(),
       }),
       appStateController: new AppStateController({
         addUnlockListener: jest.fn(),
