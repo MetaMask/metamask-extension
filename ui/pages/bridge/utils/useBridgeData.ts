@@ -26,8 +26,8 @@ export default function useBridgeData({
   const networkConfigurationsByChainId = useSelector(
     getNetworkConfigurationsByChainId,
   );
-
   const bridgeHistory = useSelector(selectBridgeHistoryForAccount);
+
   const srcTxHash = transactionGroup.initialTransaction.hash;
 
   // If this tx is a bridge tx, it will have a bridgeHistoryItem
