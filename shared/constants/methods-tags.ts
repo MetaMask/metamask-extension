@@ -26,3 +26,12 @@ export const methodsThatCanSwitchNetworkWithoutApproval = [
   'wallet_addEthereumChain',
   'wallet_switchEthereumChain',
 ];
+
+/**
+ * This is a list of methods that require special handling and must
+ * be enqueued and processed by the QueuedRequestController.
+ */
+export const methodsThatShouldBeEnqueued = [
+  ...methodsRequiringNetworkSwitch,
+  ...methodsThatCanSwitchNetworkWithoutApproval,
+];

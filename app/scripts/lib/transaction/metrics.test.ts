@@ -147,6 +147,7 @@ describe('Transaction metrics', () => {
       eip_1559_version: '0',
       gas_edit_attempted: 'none',
       gas_estimation_failed: false,
+      is_smart_transaction: undefined,
       gas_edit_type: 'none',
       network: mockNetworkId,
       referrer: ORIGIN_METAMASK,
@@ -155,8 +156,8 @@ describe('Transaction metrics', () => {
       token_standard: TokenStandard.none,
       transaction_speed_up: false,
       transaction_type: TransactionType.simpleSend,
-      ui_customizations: null,
-      transaction_advanced_view: null,
+      ui_customizations: ['redesigned_confirmation'],
+      transaction_advanced_view: undefined,
       transaction_contract_method: undefined,
     };
 
@@ -233,7 +234,10 @@ describe('Transaction metrics', () => {
         persist: true,
         properties: {
           ...expectedProperties,
-          ui_customizations: ['gas_estimation_failed'],
+          ui_customizations: [
+            'gas_estimation_failed',
+            'redesigned_confirmation',
+          ],
           gas_estimation_failed: true,
         },
         sensitiveProperties: expectedSensitiveProperties,
@@ -263,7 +267,10 @@ describe('Transaction metrics', () => {
           ...expectedProperties,
           security_alert_reason: BlockaidReason.maliciousDomain,
           security_alert_response: 'Malicious',
-          ui_customizations: ['flagged_as_malicious'],
+          ui_customizations: [
+            'flagged_as_malicious',
+            'redesigned_confirmation',
+          ],
           ppom_eth_call_count: 5,
           ppom_eth_getCode_count: 3,
         },
@@ -353,7 +360,10 @@ describe('Transaction metrics', () => {
         persist: true,
         properties: {
           ...expectedProperties,
-          ui_customizations: ['flagged_as_malicious'],
+          ui_customizations: [
+            'flagged_as_malicious',
+            'redesigned_confirmation',
+          ],
           security_alert_reason: BlockaidReason.maliciousDomain,
           security_alert_response: 'Malicious',
           ppom_eth_call_count: 5,
@@ -370,7 +380,10 @@ describe('Transaction metrics', () => {
         {
           properties: {
             ...expectedProperties,
-            ui_customizations: ['flagged_as_malicious'],
+            ui_customizations: [
+              'flagged_as_malicious',
+              'redesigned_confirmation',
+            ],
             security_alert_reason: BlockaidReason.maliciousDomain,
             security_alert_response: 'Malicious',
             ppom_eth_call_count: 5,
@@ -490,7 +503,10 @@ describe('Transaction metrics', () => {
         persist: true,
         properties: {
           ...expectedProperties,
-          ui_customizations: ['flagged_as_malicious'],
+          ui_customizations: [
+            'flagged_as_malicious',
+            'redesigned_confirmation',
+          ],
           security_alert_reason: BlockaidReason.maliciousDomain,
           security_alert_response: 'Malicious',
           ppom_eth_call_count: 5,
@@ -510,7 +526,10 @@ describe('Transaction metrics', () => {
         {
           properties: {
             ...expectedProperties,
-            ui_customizations: ['flagged_as_malicious'],
+            ui_customizations: [
+              'flagged_as_malicious',
+              'redesigned_confirmation',
+            ],
             security_alert_reason: BlockaidReason.maliciousDomain,
             security_alert_response: 'Malicious',
             ppom_eth_call_count: 5,
@@ -687,7 +706,10 @@ describe('Transaction metrics', () => {
         persist: true,
         properties: {
           ...expectedProperties,
-          ui_customizations: ['flagged_as_malicious'],
+          ui_customizations: [
+            'flagged_as_malicious',
+            'redesigned_confirmation',
+          ],
           security_alert_reason: BlockaidReason.maliciousDomain,
           security_alert_response: 'Malicious',
           ppom_eth_call_count: 5,
@@ -709,7 +731,10 @@ describe('Transaction metrics', () => {
         {
           properties: {
             ...expectedProperties,
-            ui_customizations: ['flagged_as_malicious'],
+            ui_customizations: [
+              'flagged_as_malicious',
+              'redesigned_confirmation',
+            ],
             security_alert_reason: BlockaidReason.maliciousDomain,
             security_alert_response: 'Malicious',
             ppom_eth_call_count: 5,
@@ -820,7 +845,10 @@ describe('Transaction metrics', () => {
         persist: true,
         properties: {
           ...expectedProperties,
-          ui_customizations: ['flagged_as_malicious'],
+          ui_customizations: [
+            'flagged_as_malicious',
+            'redesigned_confirmation',
+          ],
           security_alert_reason: BlockaidReason.maliciousDomain,
           security_alert_response: 'Malicious',
           ppom_eth_call_count: 5,
@@ -841,7 +869,10 @@ describe('Transaction metrics', () => {
         {
           properties: {
             ...expectedProperties,
-            ui_customizations: ['flagged_as_malicious'],
+            ui_customizations: [
+              'flagged_as_malicious',
+              'redesigned_confirmation',
+            ],
             security_alert_reason: BlockaidReason.maliciousDomain,
             security_alert_response: 'Malicious',
             ppom_eth_call_count: 5,
@@ -947,7 +978,10 @@ describe('Transaction metrics', () => {
         persist: true,
         properties: {
           ...expectedProperties,
-          ui_customizations: ['flagged_as_malicious'],
+          ui_customizations: [
+            'flagged_as_malicious',
+            'redesigned_confirmation',
+          ],
           security_alert_reason: BlockaidReason.maliciousDomain,
           security_alert_response: 'Malicious',
           ppom_eth_call_count: 5,
@@ -964,7 +998,10 @@ describe('Transaction metrics', () => {
         {
           properties: {
             ...expectedProperties,
-            ui_customizations: ['flagged_as_malicious'],
+            ui_customizations: [
+              'flagged_as_malicious',
+              'redesigned_confirmation',
+            ],
             security_alert_reason: BlockaidReason.maliciousDomain,
             security_alert_response: 'Malicious',
             ppom_eth_call_count: 5,
