@@ -191,6 +191,17 @@ export function endTrace(request: EndTraceRequest) {
   logTrace(pendingRequest, startTime, endTime);
 }
 
+/**
+ * End multiple pending traces.
+ *
+ * @param requests - The data necessary to identify and end the pending traces.
+ */
+export function endTraces(...requests: EndTraceRequest[]) {
+  for (const request of requests) {
+    endTrace(request);
+  }
+}
+
 function traceCallback<T>(request: TraceRequest, fn: TraceCallback<T>): T {
   const { name } = request;
 
@@ -248,6 +259,17 @@ function startTrace(request: TraceRequest): TraceContext {
   return startSpan(request, (spanOptions) =>
     sentryStartSpanManual(spanOptions, callback),
   );
+}
+
+/**
+ * Start multiple traces.
+ *
+ * @param requests - The data necessary to identify and start the pending traces.
+ */
+export function startTraces(...requests: EndTraceRequest[]) {
+  for (const request of requests) {
+    startTrace(request);
+  }
 }
 
 function startSpan<T>(
