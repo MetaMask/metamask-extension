@@ -9,8 +9,6 @@ import {
   NetworkControllerGetStateAction,
   NetworkControllerSetActiveNetworkAction,
 } from '@metamask/network-controller';
-// TODO: Remove restricted import
-// eslint-disable-next-line import/no-restricted-paths
 import {
   AccountsControllerGetAccountByAddressAction,
   AccountsControllerSetAccountNameAction,
