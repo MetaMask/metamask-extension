@@ -15,6 +15,9 @@ import {
 import { selectBridgeHistoryForAccount } from '../../../ducks/bridge-status/selectors';
 import useBridgeChainInfo from '../utils/useBridgeChainInfo';
 import { NetworkConfiguration } from '@metamask/network-controller';
+import { selectedAddressTxListSelector } from '../../../selectors';
+import { TransactionMeta } from '@metamask/transaction-controller';
+import { Numeric } from '../../../../shared/modules/Numeric';
 
 const getBlockExplorerUrl = (
   networkConfiguration: NetworkConfiguration | undefined,
@@ -31,10 +34,10 @@ const CrossChainSwapTxDetails = () => {
   const history = useHistory();
   const { srcTxHash } = useParams<{ srcTxHash: string }>();
   const bridgeHistory = useSelector(selectBridgeHistoryForAccount);
-
+  const selectedAddressTxList = useSelector(
+    selectedAddressTxListSelector,
+  ) as TransactionMeta[];
   const bridgeHistoryItem = srcTxHash ? bridgeHistory[srcTxHash] : undefined;
-  const destTxHash = bridgeHistoryItem?.status?.destChain?.txHash;
-
   const { srcNetworkConfiguration, destNetworkConfiguration } =
     useBridgeChainInfo({
       bridgeHistoryItem,
@@ -44,10 +47,17 @@ const CrossChainSwapTxDetails = () => {
     srcNetworkConfiguration,
     srcTxHash,
   );
+
+  const destTxHash = bridgeHistoryItem?.status?.destChain?.txHash;
   const destBlockExplorerUrl = getBlockExplorerUrl(
     destNetworkConfiguration,
     destTxHash,
   );
+
+  const txMeta = selectedAddressTxList.find((tx) => tx.hash === srcTxHash);
+  const nonce = txMeta?.txParams?.nonce
+    ? new Numeric(txMeta?.txParams?.nonce, 16).toBase(10).toString()
+    : undefined;
 
   return (
     <div className="bridge">
@@ -77,7 +87,7 @@ const CrossChainSwapTxDetails = () => {
           <div>Status: {bridgeHistoryItem?.status?.status}</div>
           <div>Bridge type: From {srcNetworkConfiguration?.name}</div>
           <div>Timestamp: {bridgeHistoryItem?.startTime}</div>
-          <div>Nonce</div>
+          <div>Nonce: {nonce}</div>
           <div>Bridge amount {bridgeHistoryItem?.quote.srcTokenAmount}</div>
           <div>Gas limit (units)</div>
           <div>Gas used (units)</div>
