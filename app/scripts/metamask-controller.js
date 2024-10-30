@@ -784,13 +784,14 @@ export default class MetamaskController extends EventEmitter {
     const metaMetricsDataDeletionMessenger =
       this.controllerMessenger.getRestricted({
         name: 'MetaMetricsDataDeletionController',
+        allowedActions: ['MetaMetricsController:getState'],
+        allowedEvents: [],
       });
     this.metaMetricsDataDeletionController =
       new MetaMetricsDataDeletionController({
         dataDeletionService,
         messenger: metaMetricsDataDeletionMessenger,
         state: initState.metaMetricsDataDeletionController,
-        getMetaMetricsId: () => this.metaMetricsController.state.metaMetricsId,
       });
 
     const gasFeeMessenger = this.controllerMessenger.getRestricted({
