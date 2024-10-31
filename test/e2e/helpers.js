@@ -409,7 +409,9 @@ const importSRPOnboardingFlow = async (driver, seedPhrase, password) => {
   await driver.assertElementNotPresent('.loading-overlay');
 };
 
-// This function will be deprecated, please use page object functions in onboarding.flow.ts and in pages/onboarding/*
+/**
+ * @deprecated Please use page object functions in `onboarding.flow.ts` and in `pages/onboarding/*`.
+ */
 const completeImportSRPOnboardingFlow = async (
   driver,
   seedPhrase,
