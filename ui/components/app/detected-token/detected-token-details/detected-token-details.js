@@ -5,6 +5,7 @@ import {
   AvatarNetwork,
   AvatarNetworkSize,
   AvatarToken,
+  AvatarTokenSize,
   BadgeWrapper,
   Box,
 } from '../../../component-library';
@@ -43,10 +44,14 @@ const DetectedTokenDetails = ({
             backgroundColor={testNetworkBackgroundColor}
           />
         }
-        marginRight={4}
+        marginRight={2}
         className="detected-token-details__identicon"
       >
-        <AvatarToken name={token.symbol} src={token.image} />
+        <AvatarToken
+          name={token.symbol}
+          src={token.image}
+          size={AvatarTokenSize.Md}
+        />
       </BadgeWrapper>
 
       <Box
