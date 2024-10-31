@@ -18,16 +18,12 @@ import {
 } from '../../components/component-library';
 import { getIsBridgeChain, getIsBridgeEnabled } from '../../selectors';
 import useBridging from '../../hooks/bridge/useBridging';
-import {
-  Content,
-  Footer,
-  Header,
-} from '../../components/multichain/pages/page';
+import { Content, Header, Page } from '../../components/multichain/pages/page';
 import { getProviderConfig } from '../../ducks/metamask/metamask';
 import { resetBridgeState, setFromChain } from '../../ducks/bridge/actions';
 import { useSwapsFeatureFlags } from '../swaps/hooks/useSwapsFeatureFlags';
+import { TextVariant } from '../../helpers/constants/design-system';
 import PrepareBridgePage from './prepare/prepare-bridge-page';
-import { BridgeCTAButton } from './prepare/bridge-cta-button';
 import { BridgeTransactionSettingsModal } from './prepare/bridge-transaction-settings-modal';
 
 const CrossChainSwap = () => {
@@ -80,54 +76,50 @@ const CrossChainSwap = () => {
   const [isSettingsModalOpen, setIsSettingsModalOpen] = useState(false);
 
   return (
-    <div className="bridge">
-      <div className="bridge__container">
-        <Header
-          className="bridge__header"
-          startAccessory={
-            <ButtonIcon
-              iconName={IconName.ArrowLeft}
-              size={ButtonIconSize.Sm}
-              ariaLabel={t('back')}
-              onClick={redirectToDefaultRoute}
-            />
-          }
-          endAccessory={
-            <ButtonIcon
-              iconName={IconName.Setting}
-              size={ButtonIconSize.Sm}
-              ariaLabel={t('settings')}
-              onClick={() => setIsSettingsModalOpen(true)}
-            />
-          }
-        >
-          {t('bridge')}
-        </Header>
-        <Content className="bridge__content">
-          <Switch>
-            <FeatureToggledRoute
-              redirectRoute={SWAPS_MAINTENANCE_ROUTE}
-              flag={isBridgeEnabled}
-              path={CROSS_CHAIN_SWAP_ROUTE + PREPARE_SWAP_ROUTE}
-              render={() => {
-                return (
-                  <>
-                    <BridgeTransactionSettingsModal
-                      isOpen={isSettingsModalOpen}
-                      onClose={() => setIsSettingsModalOpen(false)}
-                    />
-                    <PrepareBridgePage />
-                  </>
-                );
-              }}
-            />
-          </Switch>
-        </Content>
-        <Footer>
-          <BridgeCTAButton />
-        </Footer>
-      </div>
-    </div>
+    <Page className="bridge__container">
+      <Header
+        textProps={{ variant: TextVariant.headingSm }}
+        className="bridge__header"
+        startAccessory={
+          <ButtonIcon
+            iconName={IconName.ArrowLeft}
+            size={ButtonIconSize.Sm}
+            ariaLabel={t('back')}
+            onClick={redirectToDefaultRoute}
+          />
+        }
+        endAccessory={
+          <ButtonIcon
+            iconName={IconName.Setting}
+            size={ButtonIconSize.Sm}
+            ariaLabel={t('settings')}
+            onClick={() => setIsSettingsModalOpen(true)}
+          />
+        }
+      >
+        {t('bridge')}
+      </Header>
+      <Content className="bridge__content" paddingTop={0}>
+        <Switch>
+          <FeatureToggledRoute
+            redirectRoute={SWAPS_MAINTENANCE_ROUTE}
+            flag={isBridgeEnabled}
+            path={CROSS_CHAIN_SWAP_ROUTE + PREPARE_SWAP_ROUTE}
+            render={() => {
+              return (
+                <>
+                  <BridgeTransactionSettingsModal
+                    isOpen={isSettingsModalOpen}
+                    onClose={() => setIsSettingsModalOpen(false)}
+                  />
+                  <PrepareBridgePage />
+                </>
+              );
+            }}
+          />
+        </Switch>
+      </Content>
+    </Page>
   );
 };
 

@@ -51,7 +51,10 @@ import { isValidQuoteRequest } from '../utils/quote';
 import { getProviderConfig } from '../../../ducks/metamask/metamask';
 import { getCurrentCurrency } from '../../../selectors';
 import { SECOND } from '../../../../shared/constants/time';
+import { Footer } from '../../../components/multichain/pages/page';
+import MascotBackgroundAnimation from '../../swaps/mascot-background-animation/mascot-background-animation';
 import { BridgeInputGroup } from './bridge-input-group';
+import { BridgeCTAButton } from './bridge-cta-button';
 
 const PrepareBridgePage = () => {
   const dispatch = useDispatch();
@@ -79,7 +82,7 @@ const PrepareBridgePage = () => {
   const slippage = useSelector(getSlippage);
 
   const quoteRequest = useSelector(getQuoteRequest);
-  const { activeQuote } = useSelector(getBridgeQuotes);
+  const { activeQuote, isLoading } = useSelector(getBridgeQuotes);
 
   const [searchParams, setSearchParams] = useSearchParams();
 
@@ -181,7 +184,7 @@ const PrepareBridgePage = () => {
   }, [fromChain, fromToken, fromTokens, searchParams]);
 
   return (
-    <div className="prepare-bridge-page">
+    <Box className="prepare-bridge-page">
       <Box className="prepare-bridge-page__content">
         <BridgeInputGroup
           className="bridge-box"
@@ -300,8 +303,24 @@ const PrepareBridgePage = () => {
           }}
         />
       </Box>
-      <BridgeQuoteCard />
-    </div>
+
+      <Box className="spacer">
+        {isLoading && !activeQuote ? (
+          <>
+            <Box className="spacer" />
+            <MascotBackgroundAnimation />
+            <Box className="spacer" />
+          </>
+        ) : null}
+      </Box>
+
+      <Box className={`quote-info ${activeQuote ? 'highlight' : ''}`}>
+        <BridgeQuoteCard />
+        <Footer paddingInline={0}>
+          <BridgeCTAButton />
+        </Footer>
+      </Box>
+    </Box>
   );
 };
 

@@ -14,7 +14,6 @@ import {
   formatEtaInMinutes,
 } from '../utils/quote';
 import { useCountdownTimer } from '../../../hooks/bridge/useCountdownTimer';
-import MascotBackgroundAnimation from '../../swaps/mascot-background-animation/mascot-background-animation';
 import { getCurrentCurrency } from '../../../selectors';
 import { getNativeCurrency } from '../../../ducks/metamask/metamask';
 import { QuoteInfoRow } from './quote-info-row';
@@ -31,16 +30,10 @@ export const BridgeQuoteCard = () => {
 
   const [showAllQuotes, setShowAllQuotes] = useState(false);
 
-  if (isLoading && !activeQuote) {
     return (
-      <Box>
-        <MascotBackgroundAnimation />
-      </Box>
-    );
-  }
-
-  return activeQuote ? (
     <Box className="quote-card">
+      {activeQuote ? (
+        <Box>
       <BridgeQuotesModal
         isOpen={showAllQuotes}
         onClose={() => setShowAllQuotes(false)}
@@ -56,7 +49,9 @@ export const BridgeQuoteCard = () => {
           label={t('estimatedTime')}
           tooltipText={t('bridgeTimingTooltipText')}
           description={t('bridgeTimingMinutes', [
-            formatEtaInMinutes(activeQuote.estimatedProcessingTimeInSeconds),
+                formatEtaInMinutes(
+                  activeQuote.estimatedProcessingTimeInSeconds,
+                ),
           ])}
         />
         {activeQuote.swapRate && (
@@ -75,12 +70,19 @@ export const BridgeQuoteCard = () => {
             label={t('totalFees')}
             tooltipText={t('bridgeTotalFeesTooltipText')}
             description={
-              formatFiatAmount(activeQuote.totalNetworkFee?.fiat, currency) ??
+                  formatFiatAmount(
+                    activeQuote.totalNetworkFee?.fiat,
+                    currency,
+                  ) ??
               formatTokenAmount(activeQuote.totalNetworkFee?.raw, ticker, 6)
             }
             secondaryDescription={
               activeQuote.totalNetworkFee?.fiat
-                ? formatTokenAmount(activeQuote.totalNetworkFee?.raw, ticker, 6)
+                    ? formatTokenAmount(
+                        activeQuote.totalNetworkFee?.raw,
+                        ticker,
+                        6,
+                      )
                 : undefined
             }
           />
@@ -104,5 +106,7 @@ export const BridgeQuoteCard = () => {
         </Button>
       </Box>
     </Box>
-  ) : null;
+      ) : null}
+    </Box>
+  );
 };

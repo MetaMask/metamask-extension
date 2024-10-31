@@ -1,14 +1,15 @@
 @use "design-system";
 
 .quote-card {
-  flex-direction: column;
   display: flex;
+  flex-direction: column;
+  flex: 1;
   text-align: center;
+  position: relative;
 
   p {
     font-size: 12px;
   }
-
 
   &__content {
     padding: 16px;
