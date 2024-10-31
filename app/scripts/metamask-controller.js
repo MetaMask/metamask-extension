@@ -4013,8 +4013,6 @@ export default class MetamaskController extends EventEmitter {
       tokenListStopPollingByPollingToken:
         tokenListController.stopPollingByPollingToken.bind(tokenListController),
 
-      // tokenListStopPollingByPollingToken: this.
-
       // GasFeeController
       gasFeeStartPollingByNetworkClientId:
         gasFeeController.startPollingByNetworkClientId.bind(gasFeeController),
