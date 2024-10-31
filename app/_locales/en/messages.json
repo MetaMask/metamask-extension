@@ -3357,6 +3357,15 @@
   "noNetworksFound": {
     "message": "No networks found for the given search query"
   },
+  "noOptionsAvailable": {
+    "message": "No options available"
+  },
+  "noOptionsAvailableLessThan30Message": {
+    "message": "We didn’t find any options for this route. Try bridging at least $30, or try again with a different network or token."
+  },
+  "noOptionsAvailableMessage": {
+    "message": "We didn’t find any options for this route. Try again with a different amount, network, or token."
+  },
   "noSnaps": {
     "message": "You don't have any snaps installed."
   },
