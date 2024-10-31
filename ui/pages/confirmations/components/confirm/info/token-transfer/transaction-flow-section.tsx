@@ -1,5 +1,8 @@
 import { NameType } from '@metamask/name-controller';
-import { TransactionMeta } from '@metamask/transaction-controller';
+import {
+  TransactionMeta,
+  TransactionType,
+} from '@metamask/transaction-controller';
 import React from 'react';
 import { ConfirmInfoSection } from '../../../../../../components/app/confirm/info/row/section';
 import Name from '../../../../../../components/app/name';
@@ -29,8 +32,11 @@ export const TransactionFlowSection = () => {
   const addresses = value?.data[0].params.filter(
     (param) => param.type === 'address',
   );
-  // sometimes there's more than one address, in which case we want the last one
-  const recipientAddress = addresses?.[addresses.length - 1].value;
+  const recipientAddress =
+    transactionMeta.type === TransactionType.simpleSend
+      ? transactionMeta.txParams.to
+      : // sometimes there's more than one address, in which case we want the last one
+        addresses?.[addresses.length - 1].value;
 
   if (pending) {
     return <ConfirmLoader />;

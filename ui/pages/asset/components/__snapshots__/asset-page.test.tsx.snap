@@ -268,17 +268,17 @@ exports[`AssetPage should render a native asset 1`] = `
             <h4
               class="mm-box mm-text ramps-card__title mm-text--heading-sm mm-box--color-text-default"
             >
-              Start your journey with ETH
+              Tips for using a wallet
             </h4>
             <p
               class="mm-box mm-text ramps-card__body mm-text--body-md mm-box--color-text-default"
             >
-              Get started with web3 by adding some ETH to your wallet.
+              Adding tokens unlocks more ways to use web3.
             </p>
             <button
               class="mm-box mm-text mm-button-base mm-button-base--size-md ramps-card__cta-button mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-pill"
             >
-              Buy ETH
+              Token marketplace
             </button>
           </div>
           <div
@@ -625,17 +625,17 @@ exports[`AssetPage should render an ERC20 asset without prices 1`] = `
             <h4
               class="mm-box mm-text ramps-card__title mm-text--heading-sm mm-box--color-text-default"
             >
-              Start your journey with ETH
+              Tips for using a wallet
             </h4>
             <p
               class="mm-box mm-text ramps-card__body mm-text--body-md mm-box--color-text-default"
             >
-              Get started with web3 by adding some ETH to your wallet.
+              Adding tokens unlocks more ways to use web3.
             </p>
             <button
               class="mm-box mm-text mm-button-base mm-button-base--size-md ramps-card__cta-button mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-pill"
             >
-              Buy ETH
+              Token marketplace
             </button>
           </div>
           <div
@@ -1136,17 +1136,17 @@ exports[`AssetPage should render an ERC20 token with prices 1`] = `
             <h4
               class="mm-box mm-text ramps-card__title mm-text--heading-sm mm-box--color-text-default"
             >
-              Start your journey with ETH
+              Tips for using a wallet
             </h4>
             <p
               class="mm-box mm-text ramps-card__body mm-text--body-md mm-box--color-text-default"
             >
-              Get started with web3 by adding some ETH to your wallet.
+              Adding tokens unlocks more ways to use web3.
             </p>
             <button
               class="mm-box mm-text mm-button-base mm-button-base--size-md ramps-card__cta-button mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-pill"
             >
-              Buy ETH
+              Token marketplace
             </button>
           </div>
           <div
