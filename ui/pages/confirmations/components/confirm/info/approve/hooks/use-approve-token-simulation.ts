@@ -15,6 +15,15 @@ function isSpendingCapUnlimited(decodedSpendingCap: number) {
   return decodedSpendingCap >= UNLIMITED_THRESHOLD;
 }
 
+function toNonScientificString(num: number): string {
+  if (num >= 10e-18) {
+    return num.toFixed(18).replace(/\.?0+$/u, '');
+  }
+
+  // keep in scientific notation
+  return num.toString();
+}
+
 export const useApproveTokenSimulation = (
   transactionMeta: TransactionMeta,
   decimals: string,
@@ -46,8 +55,9 @@ export const useApproveTokenSimulation = (
   }, [value, decimals]);
 
   const formattedSpendingCap = useMemo(() => {
-    return isNFT
-      ? decodedSpendingCap
+    // formatting coerces small numbers to 0
+    return isNFT || decodedSpendingCap < 1
+      ? toNonScientificString(decodedSpendingCap)
       : new Intl.NumberFormat(locale).format(decodedSpendingCap);
   }, [decodedSpendingCap, isNFT, locale]);
 
