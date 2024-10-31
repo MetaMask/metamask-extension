@@ -722,23 +722,9 @@
         "console.info": true
       },
       "packages": {
-        "@metamask/approval-controller>@metamask/base-controller": true,
-        "@metamask/approval-controller>@metamask/rpc-errors": true,
-        "@metamask/approval-controller>nanoid": true
-      }
-    },
-    "@metamask/approval-controller>@metamask/base-controller": {
-      "globals": {
-        "setTimeout": true
-      },
-      "packages": {
-        "immer": true
-      }
-    },
-    "@metamask/approval-controller>@metamask/rpc-errors": {
-      "packages": {
-        "@metamask/rpc-errors>fast-safe-stringify": true,
-        "@metamask/utils": true
+        "@metamask/approval-controller>nanoid": true,
+        "@metamask/base-controller": true,
+        "@metamask/rpc-errors": true
       }
     },
     "@metamask/approval-controller>nanoid": {
@@ -1413,9 +1399,24 @@
         "setTimeout": true
       },
       "packages": {
+        "@metamask/json-rpc-middleware-stream>@metamask/utils": true,
         "@metamask/safe-event-emitter": true,
-        "@metamask/utils": true,
         "readable-stream": true
+      }
+    },
+    "@metamask/json-rpc-middleware-stream>@metamask/utils": {
+      "globals": {
+        "TextDecoder": true,
+        "TextEncoder": true
+      },
+      "packages": {
+        "@metamask/utils>@metamask/superstruct": true,
+        "@metamask/utils>@scure/base": true,
+        "@metamask/utils>pony-cause": true,
+        "@noble/hashes": true,
+        "browserify>buffer": true,
+        "nock>debug": true,
+        "semver": true
       }
     },
     "@metamask/keyring-api": {
@@ -2619,7 +2620,22 @@
     "@metamask/smart-transactions-controller>@metamask/transaction-controller>@metamask/rpc-errors": {
       "packages": {
         "@metamask/rpc-errors>fast-safe-stringify": true,
-        "@metamask/utils": true
+        "@metamask/smart-transactions-controller>@metamask/transaction-controller>@metamask/rpc-errors>@metamask/utils": true
+      }
+    },
+    "@metamask/smart-transactions-controller>@metamask/transaction-controller>@metamask/rpc-errors>@metamask/utils": {
+      "globals": {
+        "TextDecoder": true,
+        "TextEncoder": true
+      },
+      "packages": {
+        "@metamask/utils>@metamask/superstruct": true,
+        "@metamask/utils>@scure/base": true,
+        "@metamask/utils>pony-cause": true,
+        "@noble/hashes": true,
+        "browserify>buffer": true,
+        "nock>debug": true,
+        "semver": true
       }
     },
     "@metamask/smart-transactions-controller>@metamask/transaction-controller>@metamask/utils": {
@@ -2653,13 +2669,14 @@
         "setTimeout": true
       },
       "packages": {
+        "@metamask/base-controller": true,
+        "@metamask/json-rpc-engine": true,
         "@metamask/json-rpc-middleware-stream": true,
         "@metamask/object-multiplex": true,
         "@metamask/post-message-stream": true,
-        "@metamask/snaps-controllers>@metamask/base-controller": true,
-        "@metamask/snaps-controllers>@metamask/json-rpc-engine": true,
+        "@metamask/rpc-errors": true,
         "@metamask/snaps-controllers>@metamask/permission-controller": true,
-        "@metamask/snaps-controllers>@metamask/rpc-errors": true,
+        "@metamask/snaps-controllers>@metamask/utils": true,
         "@metamask/snaps-controllers>@xstate/fsm": true,
         "@metamask/snaps-controllers>concat-stream": true,
         "@metamask/snaps-controllers>get-npm-tarball-url": true,
@@ -2670,11 +2687,11 @@
         "@metamask/snaps-sdk": true,
         "@metamask/snaps-utils": true,
         "@metamask/snaps-utils>@metamask/snaps-registry": true,
-        "@metamask/utils": true,
         "browserify>browserify-zlib": true,
         "eslint>fast-deep-equal": true,
         "immer": true,
-        "readable-stream": true
+        "readable-stream": true,
+        "semver": true
       }
     },
     "@metamask/snaps-controllers-flask>nanoid": {
@@ -2682,40 +2699,34 @@
         "crypto.getRandomValues": true
       }
     },
-    "@metamask/snaps-controllers>@metamask/base-controller": {
-      "globals": {
-        "setTimeout": true
-      },
-      "packages": {
-        "immer": true
-      }
-    },
-    "@metamask/snaps-controllers>@metamask/json-rpc-engine": {
-      "packages": {
-        "@metamask/safe-event-emitter": true,
-        "@metamask/snaps-controllers>@metamask/rpc-errors": true,
-        "@metamask/utils": true
-      }
-    },
     "@metamask/snaps-controllers>@metamask/permission-controller": {
       "globals": {
         "console.error": true
       },
       "packages": {
+        "@metamask/base-controller": true,
         "@metamask/controller-utils": true,
-        "@metamask/snaps-controllers>@metamask/base-controller": true,
-        "@metamask/snaps-controllers>@metamask/json-rpc-engine": true,
-        "@metamask/snaps-controllers>@metamask/rpc-errors": true,
+        "@metamask/json-rpc-engine": true,
+        "@metamask/rpc-errors": true,
+        "@metamask/snaps-controllers>@metamask/utils": true,
         "@metamask/snaps-controllers>nanoid": true,
-        "@metamask/utils": true,
         "deep-freeze-strict": true,
         "immer": true
       }
     },
-    "@metamask/snaps-controllers>@metamask/rpc-errors": {
+    "@metamask/snaps-controllers>@metamask/utils": {
+      "globals": {
+        "TextDecoder": true,
+        "TextEncoder": true
+      },
       "packages": {
-        "@metamask/rpc-errors>fast-safe-stringify": true,
-        "@metamask/utils": true
+        "@metamask/utils>@metamask/superstruct": true,
+        "@metamask/utils>@scure/base": true,
+        "@metamask/utils>pony-cause": true,
+        "@noble/hashes": true,
+        "browserify>buffer": true,
+        "nock>debug": true,
+        "semver": true
       }
     },
     "@metamask/snaps-controllers>concat-stream": {
@@ -2769,18 +2780,34 @@
       },
       "packages": {
         "@metamask/post-message-stream": true,
+        "@metamask/snaps-execution-environments>@metamask/utils": true,
         "@metamask/snaps-utils": true,
         "@metamask/utils": true
       }
     },
+    "@metamask/snaps-execution-environments>@metamask/utils": {
+      "globals": {
+        "TextDecoder": true,
+        "TextEncoder": true
+      },
+      "packages": {
+        "@metamask/utils>@metamask/superstruct": true,
+        "@metamask/utils>@scure/base": true,
+        "@metamask/utils>pony-cause": true,
+        "@noble/hashes": true,
+        "browserify>buffer": true,
+        "nock>debug": true,
+        "semver": true
+      }
+    },
     "@metamask/snaps-rpc-methods": {
       "packages": {
+        "@metamask/rpc-errors": true,
         "@metamask/snaps-rpc-methods>@metamask/permission-controller": true,
-        "@metamask/snaps-rpc-methods>@metamask/rpc-errors": true,
+        "@metamask/snaps-rpc-methods>@metamask/utils": true,
         "@metamask/snaps-sdk": true,
         "@metamask/snaps-sdk>@metamask/key-tree": true,
         "@metamask/snaps-utils": true,
-        "@metamask/utils": true,
         "@metamask/utils>@metamask/superstruct": true,
         "@noble/hashes": true
       }
@@ -2790,29 +2817,14 @@
         "console.error": true
       },
       "packages": {
+        "@metamask/base-controller": true,
         "@metamask/controller-utils": true,
-        "@metamask/snaps-rpc-methods>@metamask/permission-controller>@metamask/base-controller": true,
-        "@metamask/snaps-rpc-methods>@metamask/permission-controller>@metamask/json-rpc-engine": true,
+        "@metamask/json-rpc-engine": true,
+        "@metamask/rpc-errors": true,
         "@metamask/snaps-rpc-methods>@metamask/permission-controller>nanoid": true,
-        "@metamask/snaps-rpc-methods>@metamask/rpc-errors": true,
-        "@metamask/utils": true,
+        "@metamask/snaps-rpc-methods>@metamask/utils": true,
         "deep-freeze-strict": true,
         "immer": true
-      }
-    },
-    "@metamask/snaps-rpc-methods>@metamask/permission-controller>@metamask/base-controller": {
-      "globals": {
-        "setTimeout": true
-      },
-      "packages": {
-        "immer": true
-      }
-    },
-    "@metamask/snaps-rpc-methods>@metamask/permission-controller>@metamask/json-rpc-engine": {
-      "packages": {
-        "@metamask/safe-event-emitter": true,
-        "@metamask/snaps-rpc-methods>@metamask/rpc-errors": true,
-        "@metamask/utils": true
       }
     },
     "@metamask/snaps-rpc-methods>@metamask/permission-controller>nanoid": {
@@ -2820,10 +2832,19 @@
         "crypto.getRandomValues": true
       }
     },
-    "@metamask/snaps-rpc-methods>@metamask/rpc-errors": {
+    "@metamask/snaps-rpc-methods>@metamask/utils": {
+      "globals": {
+        "TextDecoder": true,
+        "TextEncoder": true
+      },
       "packages": {
-        "@metamask/rpc-errors>fast-safe-stringify": true,
-        "@metamask/utils": true
+        "@metamask/utils>@metamask/superstruct": true,
+        "@metamask/utils>@scure/base": true,
+        "@metamask/utils>pony-cause": true,
+        "@noble/hashes": true,
+        "browserify>buffer": true,
+        "nock>debug": true,
+        "semver": true
       }
     },
     "@metamask/snaps-sdk": {
@@ -2867,18 +2888,18 @@
         "fetch": true
       },
       "packages": {
+        "@metamask/rpc-errors": true,
         "@metamask/snaps-sdk": true,
         "@metamask/snaps-sdk>@metamask/key-tree": true,
         "@metamask/snaps-utils>@metamask/permission-controller": true,
-        "@metamask/snaps-utils>@metamask/rpc-errors": true,
         "@metamask/snaps-utils>@metamask/slip44": true,
+        "@metamask/snaps-utils>@metamask/utils": true,
         "@metamask/snaps-utils>cron-parser": true,
         "@metamask/snaps-utils>fast-json-stable-stringify": true,
         "@metamask/snaps-utils>fast-xml-parser": true,
         "@metamask/snaps-utils>marked": true,
         "@metamask/snaps-utils>rfdc": true,
         "@metamask/snaps-utils>validate-npm-package-name": true,
-        "@metamask/utils": true,
         "@metamask/utils>@metamask/superstruct": true,
         "@metamask/utils>@scure/base": true,
         "@noble/hashes": true,
@@ -2886,34 +2907,19 @@
         "semver": true
       }
     },
-    "@metamask/snaps-utils>@metamask/base-controller": {
-      "globals": {
-        "setTimeout": true
-      },
-      "packages": {
-        "immer": true
-      }
-    },
     "@metamask/snaps-utils>@metamask/permission-controller": {
       "globals": {
         "console.error": true
       },
       "packages": {
+        "@metamask/base-controller": true,
         "@metamask/controller-utils": true,
-        "@metamask/snaps-utils>@metamask/base-controller": true,
-        "@metamask/snaps-utils>@metamask/permission-controller>@metamask/json-rpc-engine": true,
+        "@metamask/json-rpc-engine": true,
+        "@metamask/rpc-errors": true,
         "@metamask/snaps-utils>@metamask/permission-controller>nanoid": true,
-        "@metamask/snaps-utils>@metamask/rpc-errors": true,
-        "@metamask/utils": true,
+        "@metamask/snaps-utils>@metamask/utils": true,
         "deep-freeze-strict": true,
         "immer": true
-      }
-    },
-    "@metamask/snaps-utils>@metamask/permission-controller>@metamask/json-rpc-engine": {
-      "packages": {
-        "@metamask/safe-event-emitter": true,
-        "@metamask/snaps-utils>@metamask/rpc-errors": true,
-        "@metamask/utils": true
       }
     },
     "@metamask/snaps-utils>@metamask/permission-controller>nanoid": {
@@ -2921,18 +2927,42 @@
         "crypto.getRandomValues": true
       }
     },
-    "@metamask/snaps-utils>@metamask/rpc-errors": {
-      "packages": {
-        "@metamask/rpc-errors>fast-safe-stringify": true,
-        "@metamask/utils": true
-      }
-    },
     "@metamask/snaps-utils>@metamask/snaps-registry": {
       "packages": {
         "@metamask/message-signing-snap>@noble/curves": true,
-        "@metamask/utils": true,
+        "@metamask/snaps-utils>@metamask/snaps-registry>@metamask/utils": true,
         "@metamask/utils>@metamask/superstruct": true,
         "@noble/hashes": true
+      }
+    },
+    "@metamask/snaps-utils>@metamask/snaps-registry>@metamask/utils": {
+      "globals": {
+        "TextDecoder": true,
+        "TextEncoder": true
+      },
+      "packages": {
+        "@metamask/utils>@metamask/superstruct": true,
+        "@metamask/utils>@scure/base": true,
+        "@metamask/utils>pony-cause": true,
+        "@noble/hashes": true,
+        "browserify>buffer": true,
+        "nock>debug": true,
+        "semver": true
+      }
+    },
+    "@metamask/snaps-utils>@metamask/utils": {
+      "globals": {
+        "TextDecoder": true,
+        "TextEncoder": true
+      },
+      "packages": {
+        "@metamask/utils>@metamask/superstruct": true,
+        "@metamask/utils>@scure/base": true,
+        "@metamask/utils>pony-cause": true,
+        "@noble/hashes": true,
+        "browserify>buffer": true,
+        "nock>debug": true,
+        "semver": true
       }
     },
     "@metamask/snaps-utils>cron-parser": {
