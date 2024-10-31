@@ -62,10 +62,16 @@ export default function TokenList({ onTokenClick }: TokenListProps) {
           const tokenExchangeRate =
             currencyRates[baseCurrency]?.conversionRate || '0';
 
+          let tokenFiatAmount = tokenMarketPrice * tokenExchangeRate * balance;
+          if (token.isNative && currencyRates) {
+            tokenFiatAmount =
+              currencyRates[token.symbol].conversionRate * balance;
+          }
+
           tokensWithBalance.push({
             ...token,
             balance,
-            tokenFiatAmount: tokenMarketPrice * tokenExchangeRate * balance,
+            tokenFiatAmount,
             string: balance.toString(),
           });
         });
