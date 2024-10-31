@@ -635,6 +635,7 @@ export default class MetamaskController extends EventEmitter {
     });
 
     this.tokenListController = new TokenListController({
+      chainId: getCurrentChainId({ metamask: this.networkController.state }),
       preventPollingOnNetworkRestart: !this.#isTokenListPollingRequired(
         this.preferencesController.state,
       ),
@@ -2587,11 +2588,11 @@ export default class MetamaskController extends EventEmitter {
     this.txController.startIncomingTransactionPolling();
     this.tokenDetectionController.enable();
 
-    const preferencesControllerState = this.preferencesController.state;
+    // const preferencesControllerState = this.preferencesController.state;
 
-    if (this.#isTokenListPollingRequired(preferencesControllerState)) {
-      this.tokenListController.start();
-    }
+    // if (this.#isTokenListPollingRequired(preferencesControllerState)) {
+    //   this.tokenListController.start();
+    // }
   }
 
   stopNetworkRequests() {
@@ -2599,11 +2600,11 @@ export default class MetamaskController extends EventEmitter {
     this.txController.stopIncomingTransactionPolling();
     this.tokenDetectionController.disable();
 
-    const preferencesControllerState = this.preferencesController.state;
+    // const preferencesControllerState = this.preferencesController.state;
 
-    if (this.#isTokenListPollingRequired(preferencesControllerState)) {
-      this.tokenListController.stop();
-    }
+    // if (this.#isTokenListPollingRequired(preferencesControllerState)) {
+    //   this.tokenListController.stop();
+    // }
   }
 
   resetStates(resetMethods) {
