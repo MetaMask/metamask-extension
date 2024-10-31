@@ -8,19 +8,20 @@ import {
   tokenListStopPollingByPollingToken,
 } from '../store/actions';
 import useMultiPolling from './useMultiPolling';
+import { Hex } from '@metamask/utils';
 
 const useTokenListPolling = () => {
   const networkConfigurations = useSelector(getNetworkConfigurationsByChainId);
   const { petnamesEnabled, useTokenDetection, useTransactionSimulations } =
     useSelector(getPreferences);
 
-  const chainIds = Object.keys(networkConfigurations);
+  const chainIds = Object.keys(networkConfigurations) as Hex[];
 
   if (useTokenDetection || petnamesEnabled || useTransactionSimulations) {
     useMultiPolling({
       startPolling: tokenListStartPolling,
       stopPollingByPollingToken: tokenListStopPollingByPollingToken,
-      input: [chainIds],
+      input: chainIds,
     });
   }
 
