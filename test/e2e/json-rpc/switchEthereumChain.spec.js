@@ -287,8 +287,6 @@ describe('Switch Ethereum Chain for two dapps', function () {
 
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
-        console.log('##############################I am here');
-
         await driver.clickElementAndWaitForWindowToClose({
           text: 'Connect',
           tag: 'button',
@@ -320,7 +318,6 @@ describe('Switch Ethereum Chain for two dapps', function () {
           tag: 'button',
         });
 
-        console.log('##############################switching to dapp one');
         await driver.switchToWindow(dappTwo);
         assert.equal(await driver.getCurrentUrl(), `${DAPP_ONE_URL}/`);
 
