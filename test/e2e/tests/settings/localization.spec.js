@@ -7,14 +7,16 @@ const FixtureBuilder = require('../../fixture-builder');
 
 async function mockPhpConversion(mockServer) {
   return await mockServer
-    .forGet('https://min-api.cryptocompare.com/data/price')
-    .withQuery({ fsym: 'ETH', tsyms: 'PHP,USD' })
+    .forGet('https://min-api.cryptocompare.com/data/pricemulti')
+    .withQuery({ fsyms: 'ETH', tsyms: 'php,USD' })
     .thenCallback(() => {
       return {
         statusCode: 200,
         json: {
-          PHP: '100000',
-          USD: '2500',
+          ETH: {
+            PHP: '100000',
+            USD: '2500',
+          },
         },
       };
     });
