@@ -13,6 +13,7 @@ import {
   getToToken,
   getBridgeQuotes,
   getBridgeFeesPerGas,
+  getValidationErrors,
 } from '../../../ducks/bridge/selectors';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { submitBridgeTransaction } from '../../../ducks/bridge/actions';
@@ -37,12 +38,18 @@ export const BridgeCTAButton = () => {
   const { maxFeePerGas, maxPriorityFeePerGas } =
     useSelector(getBridgeFeesPerGas);
 
+  const { isNoQuotesAvailable } = useSelector(getValidationErrors);
+
   const isTxSubmittable =
     fromToken && toToken && fromChain && toChain && fromAmount && activeQuote;
 
   const label = useMemo(() => {
     if (isLoading && !isTxSubmittable) {
       return t('swapFetchingQuotes');
+    }
+
+    if (isNoQuotesAvailable) {
+      return t('swapQuotesNotAvailableErrorTitle');
     }
 
     if (!fromAmount) {

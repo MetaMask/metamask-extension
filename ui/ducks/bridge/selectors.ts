@@ -343,6 +343,16 @@ export const getBridgeQuotes = createSelector(
   }),
 );
 
+export const getValidationErrors = createDeepEqualSelector(
+  getBridgeQuotes,
+  ({ activeQuote, quotesLastFetchedMs, isLoading }) => {
+    return {
+      isNoQuotesAvailable: !activeQuote && quotesLastFetchedMs && !isLoading,
+      isSrcAmountLessThan30: activeQuote?.sentAmount.fiat?.lt(30),
+    };
+  },
+);
+
 export const getIsBridgeTx = createDeepEqualSelector(
   getFromChain,
   getToChain,
