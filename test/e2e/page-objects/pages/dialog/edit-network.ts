@@ -32,7 +32,7 @@ class EditNetworkModal {
       );
       throw e;
     }
-    console.log('Select network dialog is loaded');
+    console.log('Edit network dialog is loaded');
   }
 
   /**
