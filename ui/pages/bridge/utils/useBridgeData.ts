@@ -1,10 +1,9 @@
 import { useSelector } from 'react-redux';
 import { Hex } from '@metamask/utils';
 import { TransactionMeta } from '@metamask/transaction-controller';
-import { Numeric } from '../../../../shared/modules/Numeric';
+import { useHistory } from 'react-router-dom';
 import { selectBridgeHistoryForAccount } from '../../../ducks/bridge-status/selectors';
 import { getNetworkConfigurationsByChainId } from '../../../selectors';
-import { useHistory } from 'react-router-dom';
 import { CROSS_CHAIN_SWAP_TX_DETAILS_ROUTE } from '../../../helpers/constants/routes';
 import useBridgeChainInfo from './useBridgeChainInfo';
 

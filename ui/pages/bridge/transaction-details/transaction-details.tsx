@@ -1,36 +1,62 @@
 import React, { useContext } from 'react';
 import { useSelector } from 'react-redux';
 import { useHistory, useParams } from 'react-router-dom';
-import { I18nContext } from '../../../contexts/i18n';
+import { NetworkConfiguration } from '@metamask/network-controller';
 import {
+  TransactionMeta,
+  TransactionType,
+} from '@metamask/transaction-controller';
+import {
+  Box,
   ButtonIcon,
   ButtonIconSize,
   IconName,
+  Text,
 } from '../../../components/component-library';
-import {
-  Content,
-  Footer,
-  Header,
-} from '../../../components/multichain/pages/page';
+import { Content, Header } from '../../../components/multichain/pages/page';
 import { selectBridgeHistoryForAccount } from '../../../ducks/bridge-status/selectors';
 import useBridgeChainInfo from '../utils/useBridgeChainInfo';
-import { NetworkConfiguration } from '@metamask/network-controller';
 import { selectedAddressTxListSelector } from '../../../selectors';
-import { TransactionMeta } from '@metamask/transaction-controller';
-import { Numeric } from '../../../../shared/modules/Numeric';
+import { I18nContext } from '../../../contexts/i18n';
+import { getTransactionBreakdownData } from '../../../components/app/transaction-breakdown/transaction-breakdown-utils';
+import { MetaMaskReduxState } from '../../../store/store';
+import { hexToDecimal } from '../../../../shared/modules/conversion.utils';
+import UserPreferencedCurrencyDisplay from '../../../components/app/user-preferenced-currency-display/user-preferenced-currency-display.component';
+import { EtherDenomination } from '../../../../shared/constants/common';
+import { PRIMARY, SECONDARY } from '../../../helpers/constants/common';
+import CurrencyDisplay from '../../../components/ui/currency-display/currency-display.component';
+import { StatusTypes } from '../../../../app/scripts/controllers/bridge-status/types';
+import {
+  Display,
+  JustifyContent,
+} from '../../../helpers/constants/design-system';
+import { formatDate } from '../../../helpers/utils/util';
+import TransactionDetailRow from './transaction-detail-row';
+import BridgeExplorerLinks from './bridge-explorer-links';
+import BridgeStepList from './bridge-step-list';
 
 const getBlockExplorerUrl = (
   networkConfiguration: NetworkConfiguration | undefined,
   txHash: string | undefined,
-) =>
-  networkConfiguration?.defaultBlockExplorerUrlIndex !== undefined && txHash
-    ? networkConfiguration.blockExplorerUrls[
-        networkConfiguration.defaultBlockExplorerUrlIndex
-      ]?.replace(/\/$/, '') + txHash
-    : undefined;
+) => {
+  if (!networkConfiguration || !txHash) {
+    return undefined;
+  }
+  const index = networkConfiguration.defaultBlockExplorerUrlIndex;
+  if (index === undefined) {
+    return undefined;
+  }
+
+  const rootUrl = networkConfiguration.blockExplorerUrls[index]?.replace(
+    /\/$/u,
+    '',
+  );
+  return `${rootUrl}/tx/${txHash}`;
+};
 
 const CrossChainSwapTxDetails = () => {
   const t = useContext(I18nContext);
+  const rootState = useSelector((state) => state);
   const history = useHistory();
   const { srcTxHash } = useParams<{ srcTxHash: string }>();
   const bridgeHistory = useSelector(selectBridgeHistoryForAccount);
@@ -55,8 +81,19 @@ const CrossChainSwapTxDetails = () => {
   );
 
   const txMeta = selectedAddressTxList.find((tx) => tx.hash === srcTxHash);
-  const nonce = txMeta?.txParams?.nonce
-    ? new Numeric(txMeta?.txParams?.nonce, 16).toBase(10).toString()
+
+  const status = bridgeHistoryItem?.status?.status;
+  const bridgeTypeTitle =
+    txMeta?.type === TransactionType.incoming
+      ? `From ${srcNetworkConfiguration?.name}`
+      : `To ${destNetworkConfiguration?.name}`;
+
+  const data = txMeta
+    ? getTransactionBreakdownData({
+        state: rootState as MetaMaskReduxState,
+        transaction: txMeta,
+        isTokenApprove: false,
+      })
     : undefined;
 
   return (
@@ -76,23 +113,132 @@ const CrossChainSwapTxDetails = () => {
           {t('bridge')} details
         </Header>
         <Content className="bridge__content">
-          <div>
-            <div>tx 1</div>
-            <div>{srcBlockExplorerUrl}</div>
-          </div>
-          <div>
-            <div>tx 2</div>
-            <div>{destBlockExplorerUrl}</div>
-          </div>
-          <div>Status: {bridgeHistoryItem?.status?.status}</div>
-          <div>Bridge type: From {srcNetworkConfiguration?.name}</div>
-          <div>Timestamp: {bridgeHistoryItem?.startTime}</div>
-          <div>Nonce: {nonce}</div>
-          <div>Bridge amount {bridgeHistoryItem?.quote.srcTokenAmount}</div>
-          <div>Gas limit (units)</div>
-          <div>Gas used (units)</div>
-          <div>Base fee (GWEI)</div>
-          <div>Priority fee (GWEI)</div>
+          {/* {status !== StatusTypes.COMPLETE && bridgeHistoryItem && (
+            <BridgeSteps bridgeHistoryItem={bridgeHistoryItem} />
+          )} */}
+          {bridgeHistoryItem && (
+            <BridgeStepList bridgeHistoryItem={bridgeHistoryItem} />
+          )}
+
+          {/* Links to block explorers */}
+          <BridgeExplorerLinks
+            srcBlockExplorerUrl={srcBlockExplorerUrl}
+            destBlockExplorerUrl={destBlockExplorerUrl}
+          />
+
+          {/* General tx details */}
+          <TransactionDetailRow title="Status" value={status} />
+          <TransactionDetailRow title="Bridge type" value={bridgeTypeTitle} />
+          <TransactionDetailRow
+            title="Time stamp"
+            value={formatDate(txMeta?.time, "M/d/y 'at' hh:mm a")}
+          />
+          <TransactionDetailRow
+            title="Nonce"
+            value={
+              txMeta?.txParams.nonce
+                ? hexToDecimal(txMeta?.txParams.nonce)
+                : undefined
+            }
+          />
+          <TransactionDetailRow title="Bridge amount" value={'TODO'} />
+          <TransactionDetailRow
+            title="Gas limit (units)"
+            value={data?.gas ? hexToDecimal(data?.gas) : undefined}
+          />
+          <TransactionDetailRow
+            title="Gas used (units)"
+            value={data?.gasUsed ? hexToDecimal(data?.gasUsed) : undefined}
+          />
+          {data?.isEIP1559Transaction &&
+            typeof data?.baseFee !== 'undefined' && (
+              <TransactionDetailRow
+                title="Base fee (GWEI)"
+                value={
+                  <CurrencyDisplay
+                    currency={data?.nativeCurrency}
+                    denomination={EtherDenomination.GWEI}
+                    value={data?.baseFee}
+                    numberOfDecimals={10}
+                    hideLabel
+                  />
+                }
+              />
+            )}
+          {data?.isEIP1559Transaction &&
+            typeof data?.priorityFee !== 'undefined' && (
+              <TransactionDetailRow
+                title="Priority fee (GWEI)"
+                value={
+                  <CurrencyDisplay
+                    currency={data?.nativeCurrency}
+                    denomination={EtherDenomination.GWEI}
+                    value={data?.priorityFee}
+                    numberOfDecimals={10}
+                    hideLabel
+                  />
+                }
+              />
+            )}
+
+          <TransactionDetailRow
+            title="Total gas fee"
+            value={
+              <>
+                <UserPreferencedCurrencyDisplay
+                  currency={data?.nativeCurrency}
+                  denomination={EtherDenomination.ETH}
+                  numberOfDecimals={6}
+                  value={data?.hexGasTotal}
+                  type={PRIMARY}
+                />
+                {data?.showFiat && (
+                  <Box
+                    display={Display.Flex}
+                    justifyContent={JustifyContent.flexEnd}
+                  >
+                    <UserPreferencedCurrencyDisplay
+                      type={SECONDARY}
+                      value={data?.hexGasTotal}
+                    />
+                  </Box>
+                )}
+              </>
+            }
+          />
+          <TransactionDetailRow
+            title="Max fee per gas"
+            value={
+              <>
+                <UserPreferencedCurrencyDisplay
+                  // className=""
+                  currency={data?.nativeCurrency}
+                  denomination={EtherDenomination.ETH}
+                  numberOfDecimals={9}
+                  value={data?.maxFeePerGas}
+                  type={PRIMARY}
+                />
+                {data?.showFiat && (
+                  <Box
+                    display={Display.Flex}
+                    justifyContent={JustifyContent.flexEnd}
+                  >
+                    <UserPreferencedCurrencyDisplay
+                      currency={data?.nativeCurrency}
+                      type={SECONDARY}
+                      value={data?.maxFeePerGas}
+                    />
+                  </Box>
+                )}
+              </>
+            }
+          />
+          <TransactionDetailRow
+            title="Total"
+            value={
+              data?.totalInHex ? hexToDecimal(data?.totalInHex) : undefined
+            }
+          />
         </Content>
       </div>
     </div>
