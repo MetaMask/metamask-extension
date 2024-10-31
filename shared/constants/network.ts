@@ -457,7 +457,6 @@ export const NUMBERS_TOKEN_IMAGE_URL = './images/numbers-token.png';
 export const SEI_IMAGE_URL = './images/sei.svg';
 export const NEAR_IMAGE_URL = './images/near.svg';
 export const MATCHAIN_IMAGE_URL = './images/matchain.svg';
-export const APE_TESTNET_IMAGE_URL = './images/ape.svg';
 export const APE_IMAGE_URL = './images/ape.svg';
 
 export const INFURA_PROVIDER_TYPES = [
