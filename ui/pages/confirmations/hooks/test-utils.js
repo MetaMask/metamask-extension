@@ -3,10 +3,7 @@ import { useSelector } from 'react-redux';
 import { useMultichainSelector } from '../../../hooks/useMultichainSelector';
 
 import { GasEstimateTypes } from '../../../../shared/constants/gas';
-import {
-  getConversionRate,
-  getNativeCurrency,
-} from '../../../ducks/metamask/metamask';
+import { getConversionRate } from '../../../ducks/metamask/metamask';
 import {
   getCurrentCurrency,
   getShouldShowFiat,
@@ -110,10 +107,7 @@ export const generateUseSelectorRouter =
     if (selector === getConversionRate) {
       return MOCK_ETH_USD_CONVERSION_RATE;
     }
-    if (
-      selector === getMultichainNativeCurrency ||
-      selector === getNativeCurrency
-    ) {
+    if (selector === getMultichainNativeCurrency) {
       return EtherDenomination.ETH;
     }
     if (selector === getPreferences) {

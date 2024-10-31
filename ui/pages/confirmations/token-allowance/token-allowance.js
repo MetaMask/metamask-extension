@@ -32,7 +32,6 @@ import {
   getNetworkIdentifier,
   transactionFeeSelector,
   getKnownMethodData,
-  getRpcPrefsForCurrentProvider,
   getUnapprovedTxCount,
   getUnapprovedTransactions,
   getUseCurrencyRateCheck,
@@ -78,7 +77,10 @@ import { BlockaidResultType } from '../../../../shared/constants/security-provid
 import { QueuedRequestsBannerAlert } from '../confirmation/components/queued-requests-banner-alert/queued-requests-banner-alert';
 
 ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-import { getAccountType } from '../../../selectors/selectors';
+import {
+  getAccountType,
+  selectNetworkConfigurationByChainId,
+} from '../../../selectors/selectors';
 import { mmiActionsFactory } from '../../../store/institutional/institution-background';
 import { showCustodyConfirmLink } from '../../../store/institutional/institution-actions';
 import {
@@ -143,7 +145,13 @@ export default function TokenAllowance({
     getTargetAccountWithSendEtherInfo(state, userAddress),
   );
   const networkIdentifier = useSelector(getNetworkIdentifier);
-  const rpcPrefs = useSelector(getRpcPrefsForCurrentProvider);
+  const { chainId } = txData;
+
+  const { blockExplorerUrls } = useSelector((state) =>
+    selectNetworkConfigurationByChainId(state, chainId),
+  );
+
+  const blockExplorerUrl = blockExplorerUrls?.[0];
   const unapprovedTxCount = useSelector(getUnapprovedTxCount);
   const unapprovedTxs = useSelector(getUnapprovedTransactions);
   const useCurrencyRateCheck = useSelector(getUseCurrencyRateCheck);
@@ -387,7 +395,7 @@ export default function TokenAllowance({
         tokenName={tokenSymbol}
         address={tokenAddress}
         chainId={fullTxData.chainId}
-        rpcPrefs={rpcPrefs}
+        blockExplorerUrl={blockExplorerUrl}
       />
     </Box>
   );
@@ -710,7 +718,7 @@ export default function TokenAllowance({
           tokenAddress={tokenAddress}
           toAddress={toAddress}
           chainId={fullTxData.chainId}
-          rpcPrefs={rpcPrefs}
+          blockExplorerUrl={blockExplorerUrl}
         />
       )}
     </Box>

@@ -69,9 +69,7 @@ import {
   isAddressLedger,
   updateGasFees,
   getIsGasEstimatesLoading,
-  getNativeCurrency,
   getSendToAccounts,
-  getProviderConfig,
   findKeyringForAddress,
   getConversionRate,
 } from '../../../ducks/metamask/metamask';
@@ -97,10 +95,14 @@ import { CUSTOM_GAS_ESTIMATE } from '../../../../shared/constants/gas';
 // eslint-disable-next-line import/no-duplicates
 import { getIsUsingPaymaster } from '../../../selectors/account-abstraction';
 
+import {
+  getAccountType,
+  selectDefaultRpcEndpointByChainId,
+  selectNetworkConfigurationByChainId,
+} from '../../../selectors/selectors';
+
 ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
 // eslint-disable-next-line import/no-duplicates
-import { getAccountType } from '../../../selectors/selectors';
-
 import { ENVIRONMENT_TYPE_NOTIFICATION } from '../../../../shared/constants/app';
 import {
   getIsNoteToTraderSupported,
@@ -172,11 +174,12 @@ const mapStateToProps = (state, ownProps) => {
   const { addressBook, nextNonce } = metamask;
   const unapprovedTxs = getUnapprovedTransactions(state);
 
-  const { chainId } = getProviderConfig(state);
   const { tokenData, txData, tokenProps, nonce } = confirmTransaction;
   const { txParams = {}, id: transactionId, type } = txData;
   const txId = transactionId || paramsTransactionId;
   const transaction = getUnapprovedTransaction(state, txId) ?? {};
+  const { chainId } = txData;
+
   const {
     from: fromAddress,
     to: txParamsToAddress,
@@ -184,6 +187,7 @@ const mapStateToProps = (state, ownProps) => {
     gas: gasLimit,
     data,
   } = (transaction && transaction.txParams) || txParams;
+
   const accounts = getMetaMaskAccounts(state);
   const smartTransactionsPreferenceEnabled =
     getSmartTransactionsPreferenceEnabled(state);
@@ -270,7 +274,17 @@ const mapStateToProps = (state, ownProps) => {
     fullTxData.userFeeLevel === CUSTOM_GAS_ESTIMATE ||
     txParamsAreDappSuggested(fullTxData);
   const fromAddressIsLedger = isAddressLedger(state, fromAddress);
-  const nativeCurrency = getNativeCurrency(state);
+
+  const { nativeCurrency } = selectNetworkConfigurationByChainId(
+    state,
+    chainId,
+  );
+
+  const { url: customRpcUrl } = selectDefaultRpcEndpointByChainId(
+    state,
+    chainId,
+  );
+
   ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
   const accountType = getAccountType(state, fromAddress);
   const fromChecksumHexAddress = toChecksumHexAddress(fromAddress);
@@ -281,7 +295,6 @@ const mapStateToProps = (state, ownProps) => {
   const custodianPublishesTransaction =
     getIsCustodianPublishesTransactionSupported(state, fromChecksumHexAddress);
   const builtinRpcUrl = CHAIN_ID_TO_RPC_URL_MAP[chainId];
-  const { rpcUrl: customRpcUrl } = getProviderConfig(state);
 
   const rpcUrl = customRpcUrl || builtinRpcUrl;
 

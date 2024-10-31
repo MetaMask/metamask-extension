@@ -472,5 +472,18 @@ module.exports = {
         '@metamask/design-tokens/color-no-hex': 'off',
       },
     },
+    {
+      files: ['ui/pages/confirmations/**/*.{js,ts,tsx}'],
+      rules: {
+        'no-restricted-syntax': [
+          'error',
+          {
+            selector:
+              'ImportSpecifier[imported.name=/(getCurrentChainId)|(getNativeCurrency)|(getProviderConfig)|(getRpcPrefsForCurrentProvider)/]',
+            message: 'Avoid using global network selectors in confirmations',
+          },
+        ],
+      },
+    },
   ],
 };

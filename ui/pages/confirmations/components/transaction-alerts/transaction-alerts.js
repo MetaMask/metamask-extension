@@ -15,14 +15,16 @@ import {
 import SimulationErrorMessage from '../simulation-error-message';
 import { SEVERITIES } from '../../../../helpers/constants/design-system';
 ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
-import { submittedPendingTransactionsSelector } from '../../../../selectors';
+import {
+  selectNetworkConfigurationByChainId,
+  submittedPendingTransactionsSelector,
+} from '../../../../selectors';
 import ZENDESK_URLS from '../../../../helpers/constants/zendesk-url';
 ///: END:ONLY_INCLUDE_IF
 
 import { isSuspiciousResponse } from '../../../../../shared/modules/security-provider.utils';
 import BlockaidBannerAlert from '../security-provider-banner-alert/blockaid-banner-alert/blockaid-banner-alert';
 import SecurityProviderBannerMessage from '../security-provider-banner-message/security-provider-banner-message';
-import { getNativeCurrency } from '../../../../ducks/metamask/metamask';
 import { parseStandardTokenTransactionData } from '../../../../../shared/modules/transaction.utils';
 import { getTokenValueParam } from '../../../../../shared/lib/metamask-controller-utils';
 import { QueuedRequestsBannerAlert } from '../../confirmation/components/queued-requests-banner-alert';
@@ -47,7 +49,12 @@ const TransactionAlerts = ({
   ///: END:ONLY_INCLUDE_IF
 
   const t = useI18nContext();
-  const nativeCurrency = useSelector(getNativeCurrency);
+  const { chainId } = txData;
+
+  const { nativeCurrency } = useSelector((state) =>
+    selectNetworkConfigurationByChainId(state, chainId),
+  );
+
   const transactionData = txData.txParams.data;
   const currentTokenSymbol = tokenSymbol || nativeCurrency;
   let currentTokenAmount;

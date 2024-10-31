@@ -8,11 +8,9 @@ import { editExistingTransaction } from '../../../ducks/send';
 import {
   contractExchangeRateSelector,
   getCurrentCurrency,
+  selectNetworkConfigurationByChainId,
 } from '../../../selectors';
-import {
-  getConversionRate,
-  getNativeCurrency,
-} from '../../../ducks/metamask/metamask';
+import { getConversionRate } from '../../../ducks/metamask/metamask';
 import { clearConfirmTransaction } from '../../../ducks/confirm-transaction/confirm-transaction.duck';
 import { showSendTokenPage } from '../../../store/actions';
 import {
@@ -50,7 +48,12 @@ export default function ConfirmSendToken({
     });
   };
   const conversionRate = useSelector(getConversionRate);
-  const nativeCurrency = useSelector(getNativeCurrency);
+  const { chainId } = transaction;
+
+  const { nativeCurrency } = useSelector((state) =>
+    selectNetworkConfigurationByChainId(state, chainId),
+  );
+
   const currentCurrency = useSelector(getCurrentCurrency);
   const contractExchangeRate = useSelector(contractExchangeRateSelector);
 
@@ -98,6 +101,7 @@ ConfirmSendToken.propTypes = {
   toAddress: PropTypes.string,
   tokenAddress: PropTypes.string,
   transaction: PropTypes.shape({
+    chainId: PropTypes.string,
     origin: PropTypes.string,
     txParams: PropTypes.shape({
       data: PropTypes.string,
