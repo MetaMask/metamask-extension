@@ -805,10 +805,6 @@
   "buyNow": {
     "message": "今すぐ購入"
   },
-  "buyToken": {
-    "message": "$1を購入",
-    "description": "$1 is the token symbol"
-  },
   "bytes": {
     "message": "バイト"
   },
@@ -1883,13 +1879,6 @@
   "functionType": {
     "message": "機能の種類"
   },
-  "fundYourWallet": {
-    "message": "ウォレットへの入金"
-  },
-  "fundYourWalletDescription": {
-    "message": "ウォレットに$1を追加して開始します。",
-    "description": "$1 is the token symbol"
-  },
   "gas": {
     "message": "ガス"
   },
@@ -1972,14 +1961,6 @@
   },
   "genericExplorerView": {
     "message": "$1でアカウントを表示"
-  },
-  "getStartedWithNFTs": {
-    "message": "$1を入手してNFTを購入",
-    "description": "$1 is the token symbol"
-  },
-  "getStartedWithNFTsDescription": {
-    "message": "ウォレットに$1を追加してNFTの利用を開始します。",
-    "description": "$1 is the token symbol"
   },
   "goBack": {
     "message": "戻る"
@@ -4993,14 +4974,6 @@
   },
   "stake": {
     "message": "ステーク"
-  },
-  "startYourJourney": {
-    "message": "$1で利用開始",
-    "description": "$1 is the token symbol"
-  },
-  "startYourJourneyDescription": {
-    "message": "ウォレットに$1を追加してWeb3の利用を開始します。",
-    "description": "$1 is the token symbol"
   },
   "stateLogError": {
     "message": "ステートログの取得中にエラーが発生しました。"

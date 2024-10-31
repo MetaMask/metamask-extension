@@ -110,7 +110,7 @@ export const getToTokens = (state: BridgeAppState) => {
 
 export const getFromToken = (
   state: BridgeAppState,
-): SwapsTokenObject | SwapsEthToken => {
+): SwapsTokenObject | SwapsEthToken | null => {
   return state.bridge.fromToken?.address
     ? state.bridge.fromToken
     : getSwapsDefaultToken(state);

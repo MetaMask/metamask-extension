@@ -805,10 +805,6 @@
   "buyNow": {
     "message": "Купить сейчас"
   },
-  "buyToken": {
-    "message": "Купить $1",
-    "description": "$1 is the token symbol"
-  },
   "bytes": {
     "message": "Байты"
   },
@@ -1883,13 +1879,6 @@
   "functionType": {
     "message": "Тип функции"
   },
-  "fundYourWallet": {
-    "message": "Пополните свой кошелек"
-  },
-  "fundYourWalletDescription": {
-    "message": "Начните с добавления $1 в свой кошелек.",
-    "description": "$1 is the token symbol"
-  },
   "gas": {
     "message": "Газ"
   },
@@ -1972,14 +1961,6 @@
   },
   "genericExplorerView": {
     "message": "Посмотреть счет на $1"
-  },
-  "getStartedWithNFTs": {
-    "message": "Получите $1 для покупки NFT",
-    "description": "$1 is the token symbol"
-  },
-  "getStartedWithNFTsDescription": {
-    "message": "Начните использовать NFT, добавив $1 в свой кошелек.",
-    "description": "$1 is the token symbol"
   },
   "goBack": {
     "message": "Назад"
@@ -4993,14 +4974,6 @@
   },
   "stake": {
     "message": "Выполнить стейкинг"
-  },
-  "startYourJourney": {
-    "message": "Начните свое путешествие с $1",
-    "description": "$1 is the token symbol"
-  },
-  "startYourJourneyDescription": {
-    "message": "Начните использовать Web3, добавив $1 в свой кошелек.",
-    "description": "$1 is the token symbol"
   },
   "stateLogError": {
     "message": "Ошибка при получении журналов состояния."
