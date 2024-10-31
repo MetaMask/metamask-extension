@@ -48,7 +48,7 @@ export type SelfInjectPluginOptions = {
   sourceUrlExpression?: (filename: string) => string;
   /**
    * A function that returns a JavaScript expression escaped as a string which
-   * will be injected into matched file to provide a nonceExpression for the self
+   * will be injected into matched file to set a nonce for the self
    * injected script.
    *
    * Defaults to `(path: string) => btoa((globalThis.browser||chrome).runtime.getURL("${path}"))`
