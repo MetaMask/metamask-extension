@@ -1,7 +1,10 @@
 import React, { useMemo } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
-import { Button } from '../../../components/component-library';
+import {
+  ButtonPrimary,
+  ButtonPrimarySize,
+} from '../../../components/component-library';
 import {
   getFromAmount,
   getFromChain,
@@ -13,6 +16,10 @@ import {
 } from '../../../ducks/bridge/selectors';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { submitBridgeTransaction } from '../../../ducks/bridge/actions';
+import {
+  BlockSize,
+  TextVariant,
+} from '../../../helpers/constants/design-system';
 
 export const BridgeCTAButton = () => {
   const dispatch = useDispatch();
@@ -53,7 +60,11 @@ export const BridgeCTAButton = () => {
   }, [isLoading, fromAmount, toToken, isTxSubmittable]);
 
   return (
-    <Button
+    <ButtonPrimary
+      width={BlockSize.Full}
+      style={{ flex: 1 }}
+      size={activeQuote ? ButtonPrimarySize.Md : ButtonPrimarySize.Lg}
+      variant={TextVariant.bodyMd}
       data-testid="bridge-cta-button"
       onClick={() => {
         if (isTxSubmittable) {
@@ -70,6 +81,6 @@ export const BridgeCTAButton = () => {
       disabled={!isTxSubmittable}
     >
       {label}
-    </Button>
+    </ButtonPrimary>
   );
 };
