@@ -6,6 +6,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [12.5.1]
+### Changed
+- Improve accuracy of transaction simulation warnings in some scenarios ([#26845](https://github.com/MetaMask/metamask-extension/pull/26845))
+
+### Fixed
+- Fix bug that could cause token balances to appear as zero, and a balance error to be displayed, on the send screen ([#28136](https://github.com/MetaMask/metamask-extension/pull/28136))
+
 ## [12.5.0]
 ### Added
 - New UI and functionality for adding and managing networks ([#26433](https://github.com/MetaMask/metamask-extension/pull/26433)), ([#27085](https://github.com/MetaMask/metamask-extension/pull/27085))
@@ -5223,7 +5230,8 @@ Update styles and spacing on the critical error page  ([#20350](https://github.c
 - Added the ability to restore accounts from seed words.
 
 
-[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v12.5.0...HEAD
+[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v12.5.1...HEAD
+[12.5.1]: https://github.com/MetaMask/metamask-extension/compare/v12.5.0...v12.5.1
 [12.5.0]: https://github.com/MetaMask/metamask-extension/compare/v12.4.2...v12.5.0
 [12.4.2]: https://github.com/MetaMask/metamask-extension/compare/v12.4.1...v12.4.2
 [12.4.1]: https://github.com/MetaMask/metamask-extension/compare/v12.4.0...v12.4.1
