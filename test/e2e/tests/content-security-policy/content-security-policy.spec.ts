@@ -1,6 +1,11 @@
 import { strict as assert } from 'assert';
 import { Suite } from 'mocha';
-import { defaultGanacheOptions, openDapp, withFixtures } from '../../helpers';
+import {
+  defaultGanacheOptions,
+  openDapp,
+  unlockWallet,
+  withFixtures,
+} from '../../helpers';
 import FixtureBuilder from '../../fixture-builder';
 
 describe('Content-Security-Policy', function (this: Suite) {
@@ -29,6 +34,7 @@ describe('Content-Security-Policy', function (this: Suite) {
         title: this.test?.fullTitle(),
       },
       async ({ driver }) => {
+        await unlockWallet(driver);
         await openDapp(driver);
         const isExtensionLoaded: boolean = await driver.executeScript(
           'return typeof window.ethereum !== "undefined"',
