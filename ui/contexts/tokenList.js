@@ -2,11 +2,11 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import useTokenListPolling from '../hooks/useTokenListPolling';
 
-export const TokenRatesProvider = ({ children }) => {
+export const TokenListProvider = ({ children }) => {
   useTokenListPolling();
 
   return <>{children}</>;
 };
-TokenRatesProvider.propTypes = {
+TokenListProvider.propTypes = {
   children: PropTypes.node,
 };

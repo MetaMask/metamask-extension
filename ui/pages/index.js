@@ -12,6 +12,7 @@ import {
 import { MetamaskNotificationsProvider } from '../contexts/metamask-notifications';
 import { CurrencyRateProvider } from '../contexts/currencyRate';
 import { TokenRatesProvider } from '../contexts/tokenRates';
+import { TokenListProvider } from '../contexts/tokenList';
 import ErrorPage from './error';
 import Routes from './routes';
 
