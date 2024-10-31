@@ -8,6 +8,8 @@ class TransactionConfirmation extends Confirmation {
 
   private dappInitiatedHeadingTitle: RawLocator;
 
+  private advancedDetailsButton: RawLocator;
+
   constructor(driver: Driver) {
     super(driver);
 
@@ -21,6 +23,8 @@ class TransactionConfirmation extends Confirmation {
       css: 'h3',
       text: tEn('transferRequest') as string,
     };
+
+    this.advancedDetailsButton = `[data-testid="header-advanced-details-button"]`;
   }
 
   async check_walletInitiatedHeadingTitle() {
@@ -29,6 +33,10 @@ class TransactionConfirmation extends Confirmation {
 
   async check_dappInitiatedHeadingTitle() {
     await this.driver.waitForSelector(this.dappInitiatedHeadingTitle);
+  }
+
+  async clickAdvancedDetailsButton() {
+    await this.driver.clickElement(this.advancedDetailsButton);
   }
 }
 
