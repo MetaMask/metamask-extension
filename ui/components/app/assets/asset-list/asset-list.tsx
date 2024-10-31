@@ -38,7 +38,6 @@ import {
 import { getIsNativeTokenBuyable } from '../../../../ducks/ramps';
 ///: END:ONLY_INCLUDE_IF
 import AssetListControlBar from './asset-list-control-bar';
-import NativeToken from './native-token';
 
 export type TokenWithBalance = {
   address: string;
@@ -61,8 +60,6 @@ const AssetList = ({ onClickAsset, showTokensLinks }: AssetListProps) => {
   const t = useI18nContext();
   const trackEvent = useContext(MetaMetricsContext);
   const balance = useSelector(getMultichainSelectedAccountCachedBalance);
-
-  console.log({ balance });
 
   const {
     currency: primaryCurrency,
@@ -117,7 +114,6 @@ const AssetList = ({ onClickAsset, showTokensLinks }: AssetListProps) => {
         )}
       <AssetListControlBar showTokensLinks={showTokensLinks} />
       <TokenList
-        nativeToken={<NativeToken onClickAsset={onClickAsset} />}
         onTokenClick={(tokenAddress: string) => {
           onClickAsset(tokenAddress);
           trackEvent({

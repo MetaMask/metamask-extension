@@ -512,9 +512,9 @@ export function getSelectedAccountTokensAcrossChains(state) {
     const nativeBalance = nativeTokenBalancesByChainId[chainId];
     if (nativeBalance) {
       const nativeTokenInfo = getNativeTokenInfo(state, chainId);
-
       tokensByChain[chainId].push({
         ...nativeTokenInfo,
+        // TODO: infer this value to map to marketData
         address: '',
         balance: nativeBalance,
         chainId,
@@ -639,36 +639,6 @@ export function getSelectedAccountCachedBalance(state) {
   const { address: selectedAddress } = getSelectedInternalAccount(state);
 
   return cachedBalances?.[selectedAddress];
-}
-
-/**
- * Combines native and non-native token balances into a single object,
- * extending the structure returned by getMetaMaskCachedBalances.
- *
- * @param {object} state - Redux state
- * @returns {object} An object mapping token addresses to their balances
- */
-export function getAllCachedBalances(state) {
-  const chainId = getCurrentChainId(state);
-  // const selectedAddress = getSelectedInternalAccount(state).address;
-
-  // Start with the existing balances from getMetaMaskCachedBalances
-  const balances = { ...getMetaMaskCachedBalances(state) };
-
-  // Get the native token balance for the selected account and chainId
-  const nativeBalancesByChainId =
-    getSelectedAccountNativeTokenCachedBalanceByChainId(state);
-  const nativeBalance = nativeBalancesByChainId[chainId];
-
-  if (nativeBalance) {
-    // Use a consistent key for the native token, such as 'NATIVE' or a zero address
-    const NATIVE_TOKEN_ADDRESS = 'NATIVE'; // Alternatively, use '0x0000000000000000000000000000000000000000'
-
-    // Include the native token balance in the balances object
-    balances[NATIVE_TOKEN_ADDRESS] = nativeBalance;
-  }
-
-  return balances;
 }
 
 export function getAllTokens(state) {

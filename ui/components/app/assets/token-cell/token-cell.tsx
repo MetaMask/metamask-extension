@@ -1,6 +1,10 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
 import { getCurrentCurrency, getTokenList } from '../../../../selectors';
+import {
+  getMultichainIsEvm,
+  getMultichainIsMainnet,
+} from '../../../../selectors/multichain';
 import { TokenListItem } from '../../../multichain';
 import { isEqualCaseInsensitive } from '../../../../../shared/modules/string-utils';
 import { useIsOriginalTokenSymbol } from '../../../../hooks/useIsOriginalTokenSymbol';
@@ -12,6 +16,7 @@ type TokenCellProps = {
   string?: string;
   tokenFiatAmount: number;
   image: string;
+  isNative?: boolean;
   onClick?: (arg: string) => void;
 };
 
@@ -21,10 +26,13 @@ export default function TokenCell({
   symbol,
   string,
   tokenFiatAmount,
+  isNative,
   onClick,
 }: TokenCellProps) {
   const currentCurrency = useSelector(getCurrentCurrency);
   const tokenList = useSelector(getTokenList);
+  const isMainnet = useSelector(getMultichainIsMainnet);
+  const isEvm = useSelector(getMultichainIsEvm);
   const tokenData = Object.values(tokenList).find(
     (token) =>
       isEqualCaseInsensitive(token.symbol, symbol) &&
@@ -40,6 +48,11 @@ export default function TokenCell({
 
   const isOriginalTokenSymbol = useIsOriginalTokenSymbol(address, symbol);
 
+  let isStakeable = isMainnet && isEvm && isNative;
+  ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
+  isStakeable = false;
+  ///: END:ONLY_INCLUDE_IF
+
   return (
     <TokenListItem
       onClick={onClick ? () => onClick(address) : undefined}
@@ -50,6 +63,7 @@ export default function TokenCell({
       title={title}
       isOriginalTokenSymbol={isOriginalTokenSymbol}
       address={address}
+      isStakeable={isStakeable}
       showPercentage
     />
   );
