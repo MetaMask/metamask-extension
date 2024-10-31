@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useState } from 'react';
 
 type UseMultiPollingOptions<PollingInput> = {
   startPolling: (input: PollingInput) => Promise<string>;
