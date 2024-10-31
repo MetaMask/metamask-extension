@@ -805,10 +805,6 @@
   "buyNow": {
     "message": "지금 구매"
   },
-  "buyToken": {
-    "message": "$1 구매",
-    "description": "$1 is the token symbol"
-  },
   "bytes": {
     "message": "바이트"
   },
@@ -1883,13 +1879,6 @@
   "functionType": {
     "message": "기능 유형"
   },
-  "fundYourWallet": {
-    "message": "지갑에 자금 추가"
-  },
-  "fundYourWalletDescription": {
-    "message": "지갑에 $1의 자금을 추가하여 시작하세요.",
-    "description": "$1 is the token symbol"
-  },
   "gas": {
     "message": "가스"
   },
@@ -1972,14 +1961,6 @@
   },
   "genericExplorerView": {
     "message": "$1에서 계정 보기"
-  },
-  "getStartedWithNFTs": {
-    "message": "$1 받고 NFT 구매하기",
-    "description": "$1 is the token symbol"
-  },
-  "getStartedWithNFTsDescription": {
-    "message": "지갑에 $1의 자금을 추가하여 시작하세요.",
-    "description": "$1 is the token symbol"
   },
   "goBack": {
     "message": "뒤로 가기"
@@ -4993,14 +4974,6 @@
   },
   "stake": {
     "message": "스테이크"
-  },
-  "startYourJourney": {
-    "message": "$1 토큰으로 여정을 시작하세요",
-    "description": "$1 is the token symbol"
-  },
-  "startYourJourneyDescription": {
-    "message": "지갑에 $1 토큰을 추가하여 웹3를 시작하세요.",
-    "description": "$1 is the token symbol"
   },
   "stateLogError": {
     "message": "상태 로그를 가져오는 도중 오류가 발생했습니다."
