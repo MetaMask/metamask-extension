@@ -17,7 +17,7 @@ import {
 } from '../../../../app/scripts/controllers/bridge-status/types';
 import { useSelector } from 'react-redux';
 import { getNetworkConfigurationsByChainId } from '../../../selectors';
-import BridgeStepBridge from './bridge-step-bridge';
+import BridgeStep from './bridge-step';
 
 type BridgeStepsProps = {
   bridgeHistoryItem: BridgeHistoryItem;
@@ -34,20 +34,10 @@ export default function BridgeStepList({
   return (
     <Box display={Display.Flex} flexDirection={FlexDirection.Column} gap={4}>
       {steps.map((step, i) => (
-        <Box>
-          <Icon name={IconName.FullCircle} />
-          {step.action === ActionTypes.SWAP && (
-            <Text>
-              Swapping {step.srcAsset.symbol} for {step.destAsset.symbol}
-            </Text>
-          )}
-          {step.action === ActionTypes.BRIDGE && (
-            <BridgeStepBridge
-              step={step}
-              networkConfigurationsByChainId={networkConfigurationsByChainId}
-            />
-          )}
-        </Box>
+        <BridgeStep
+          step={step}
+          networkConfigurationsByChainId={networkConfigurationsByChainId}
+        />
       ))}
     </Box>
   );
