@@ -18,7 +18,7 @@ const useTokenListPolling = () => {
   });
 
   return {
-    // TODO: Eventually return currency rates here. UI elements will
+    // TODO: Eventually return token list here. UI elements will
     // consume them from this hook instead of a selector directly.
   };
 };
