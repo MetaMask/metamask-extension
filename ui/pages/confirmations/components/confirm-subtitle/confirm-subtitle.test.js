@@ -59,6 +59,7 @@ describe('ConfirmSubTitle', () => {
     const { findByText } = renderWithProvider(
       <ConfirmSubTitle
         txData={{
+          chainId: CHAIN_IDS.GOERLI,
           txParams: {
             to: '0x9',
           },
