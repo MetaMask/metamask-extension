@@ -29,6 +29,7 @@ import { StatusTypes } from '../../../../app/scripts/controllers/bridge-status/t
 import {
   Display,
   JustifyContent,
+  TextTransform,
 } from '../../../helpers/constants/design-system';
 import { formatDate } from '../../../helpers/utils/util';
 import TransactionDetailRow from './transaction-detail-row';
@@ -127,7 +128,14 @@ const CrossChainSwapTxDetails = () => {
           />
 
           {/* General tx details */}
-          <TransactionDetailRow title="Status" value={status} />
+          <TransactionDetailRow
+            title="Status"
+            value={
+              <Text textTransform={TextTransform.Capitalize}>
+                {status?.toLowerCase()}
+              </Text>
+            }
+          />
           <TransactionDetailRow title="Bridge type" value={bridgeTypeTitle} />
           <TransactionDetailRow
             title="Time stamp"
