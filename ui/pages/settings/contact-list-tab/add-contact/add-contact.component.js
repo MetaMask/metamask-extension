@@ -118,15 +118,14 @@ export default class AddContact extends PureComponent {
     return !nameExistsInAddressBook && !nameExistsInAccountList;
   };
 
-  handleNameChange = (e) => {
-    const name = e.target.value;
-    const isValidName = this.validateName(name);
+  handleNameChange = (newName) => {
+    const isValidName = this.validateName(newName);
 
     this.setState({
       nameInputError: isValidName ? null : this.context.t('nameAlreadyInUse'),
     });
 
-    this.setState({ newName: name });
+    this.setState({ newName });
   };
 
   render() {
@@ -151,7 +150,7 @@ export default class AddContact extends PureComponent {
               type="text"
               id="nickname"
               value={this.state.newName}
-              onChange={this.handleNameChange}
+              onChange={(e) => this.handleNameChange(e.target.value)}
               fullWidth
               margin="dense"
               error={this.state.nameInputError}
@@ -182,9 +181,9 @@ export default class AddContact extends PureComponent {
                     address={resolvedAddress}
                     domainName={addressBookEntryName ?? domainName}
                     onClick={() => {
+                      this.handleNameChange(domainName);
                       this.setState({
                         input: resolvedAddress,
-                        newName: this.state.newName || domainName,
                       });
                       this.props.resetDomainResolution();
                     }}
