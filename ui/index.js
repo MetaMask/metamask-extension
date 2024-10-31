@@ -297,9 +297,6 @@ function setupStateHooks(store) {
     // for more info)
     state.version = global.platform.getVersion();
     state.browser = window.navigator.userAgent;
-    state.completeTxList = await actions.getTransactions({
-      filterToCurrentNetwork: false,
-    });
     return state;
   };
   window.stateHooks.getSentryAppState = function () {
