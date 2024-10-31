@@ -2025,9 +2025,9 @@
         "@ethereumjs/tx>ethereum-cryptography": true,
         "@metamask/base-controller": true,
         "@metamask/controller-utils": true,
-        "@metamask/phishing-controller>fastest-levenshtein": true,
         "@noble/hashes": true,
-        "punycode": true
+        "punycode": true,
+        "webpack-cli>fastest-levenshtein": true
       }
     },
     "@metamask/polling-controller": {
