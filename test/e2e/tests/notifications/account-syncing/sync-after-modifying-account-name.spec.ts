@@ -1,5 +1,5 @@
 import { Mockttp } from 'mockttp';
-import { withFixtures, defaultGanacheOptions } from '../../../helpers';
+import { withFixtures } from '../../../helpers';
 import FixtureBuilder from '../../../fixture-builder';
 import { mockNotificationServices } from '../mocks';
 import {
@@ -25,7 +25,6 @@ describe('Account syncing - Rename Accounts @no-mmi', function () {
       await withFixtures(
         {
           fixtures: new FixtureBuilder({ onboarding: true }).build(),
-          ganacheOptions: defaultGanacheOptions,
           title: this.test?.fullTitle(),
           testSpecificMock: (server: Mockttp) => {
             userStorageMockttpController.setupPath('accounts', server, {
@@ -71,7 +70,6 @@ describe('Account syncing - Rename Accounts @no-mmi', function () {
       await withFixtures(
         {
           fixtures: new FixtureBuilder({ onboarding: true }).build(),
-          ganacheOptions: defaultGanacheOptions,
           title: this.test?.fullTitle(),
           testSpecificMock: (server: Mockttp) => {
             userStorageMockttpController.setupPath('accounts', server);
