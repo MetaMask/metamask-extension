@@ -70,7 +70,6 @@ export const BridgeCTAButton = () => {
   return (
     <ButtonPrimary
       width={BlockSize.Full}
-      style={{ flex: 1 }}
       size={activeQuote ? ButtonPrimarySize.Md : ButtonPrimarySize.Lg}
       variant={TextVariant.bodyMd}
       data-testid="bridge-cta-button"

@@ -29,3 +29,4 @@ export const BRIDGE_QUOTE_MAX_ETA_SECONDS = 60 * 60; // 1 hour
 export const BRIDGE_QUOTE_MAXRETURN_VALUE_DIFFERENCE_PERCENTAGE = 0.8; // if a quote returns in x times less return than the best quote, ignore it
 
 export const BRIDGE_MIN_FIAT_SRC_AMOUNT = 10;
+export const BRIDGE_MM_FEE_RATE = 0.875;

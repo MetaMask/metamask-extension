@@ -35,8 +35,16 @@ import {
   Box,
   ButtonIcon,
   IconName,
+  Text,
 } from '../../../components/component-library';
-import { BlockSize } from '../../../helpers/constants/design-system';
+import {
+  BlockSize,
+  FlexDirection,
+  JustifyContent,
+  TextAlign,
+  TextColor,
+  TextVariant,
+} from '../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { TokenBucketPriority } from '../../../../shared/constants/swaps';
 import { useTokensWithFiltering } from '../../../hooks/useTokensWithFiltering';
@@ -51,6 +59,7 @@ import { SECOND } from '../../../../shared/constants/time';
 import { Footer } from '../../../components/multichain/pages/page';
 import MascotBackgroundAnimation from '../../swaps/mascot-background-animation/mascot-background-animation';
 import { getProviderConfig } from '../../../ducks/metamask/metamask';
+import { Column, Row, SpacerBox, Tooltip } from '../layout';
 import { BridgeInputGroup } from './bridge-input-group';
 import { BridgeCTAButton } from './bridge-cta-button';
 
@@ -263,22 +272,39 @@ const PrepareBridgePage = () => {
         />
       </Box>
 
-      <Box className="spacer">
+      <SpacerBox>
         {isLoading && !activeQuote ? (
           <>
-            <Box className="spacer" />
+            <SpacerBox />
             <MascotBackgroundAnimation />
-            <Box className="spacer" />
+            <SpacerBox />
           </>
         ) : null}
-      </Box>
+      </SpacerBox>
 
-      <Box className={`quote-info ${activeQuote ? 'highlight' : ''}`}>
+      <Column gap={3} className={activeQuote ? 'highlight' : ''}>
         <BridgeQuoteCard />
-        <Footer paddingInline={0}>
+        <Footer padding={0} flexDirection={FlexDirection.Column} gap={2}>
           <BridgeCTAButton />
+          {activeQuote?.approval ? (
+            <Row justifyContent={JustifyContent.center} gap={1}>
+              <Text
+                color={TextColor.textMuted}
+                variant={TextVariant.bodyXs}
+                textAlign={TextAlign.Center}
+              >
+                {t('willApproveAmountForBridging', [
+                  fromAmount,
+                  fromToken?.symbol,
+                ])}
+              </Text>
+              <Tooltip title={t('grantExactAccess')}>
+                {t('bridgeApprovalWarning', [fromAmount, fromToken?.symbol])}
+              </Tooltip>
+            </Row>
+          ) : null}
         </Footer>
-      </Box>
+      </Column>
     </Box>
   );
 };
