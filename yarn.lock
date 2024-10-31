@@ -4810,9 +4810,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/assets-controllers@patch:@metamask-previews/assets-controllers@40.0.0-preview-fa7d96bb#~/.yarn/patches/@metamask-assets-controllers-npm-39.0.0-57b3d695bb.patch":
+"@metamask/assets-controllers@patch:@metamask-previews/assets-controllers@40.0.0-preview-fa7d96bb#~/.yarn/patches/@metamask-assets-controllers-npm-41.0.0-57b3d695bb.patch":
   version: 40.0.0-preview-fa7d96bb
-  resolution: "@metamask/assets-controllers@patch:@metamask-previews/assets-controllers@npm%3A40.0.0-preview-fa7d96bb#~/.yarn/patches/@metamask-assets-controllers-npm-39.0.0-57b3d695bb.patch::version=40.0.0-preview-fa7d96bb&hash=e14ff8"
+  resolution: "@metamask/assets-controllers@patch:@metamask-previews/assets-controllers@npm%3A40.0.0-preview-fa7d96bb#~/.yarn/patches/@metamask-assets-controllers-npm-41.0.0-57b3d695bb.patch::version=40.0.0-preview-fa7d96bb&hash=e14ff8"
   dependencies:
     "@ethereumjs/util": "npm:^8.1.0"
     "@ethersproject/address": "npm:^5.7.0"
