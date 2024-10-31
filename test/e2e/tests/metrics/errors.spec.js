@@ -46,6 +46,8 @@ const maskedBackgroundFields = [
   'AppStateController.notificationGasPollTokens',
   'AppStateController.popupGasPollTokens',
   'CurrencyController.currencyRates.ETH.conversionDate',
+  'CurrencyController.currencyRates.LineaETH.conversionDate',
+  'CurrencyController.currencyRates.SepoliaETH.conversionDate',
 ];
 const maskedUiFields = maskedBackgroundFields.map(backgroundToUiField);
 
