@@ -9,6 +9,7 @@ import {
   AlignItems,
   Display,
   TextColor,
+  TextVariant,
 } from '../../../../helpers/constants/design-system';
 import { shortenAddress } from '../../../../helpers/utils/util';
 import { toChecksumHexAddress } from '../../../../../shared/modules/hexstring-utils';
@@ -29,7 +30,7 @@ export type SnapUIAddressProps = {
 export const SnapUIAddress: React.FunctionComponent<SnapUIAddressProps> = ({
   address,
   avatarSize = 'md',
-  diameter = 32,
+
   truncate = true,
   displayName = false,
   avatar = true,
@@ -51,57 +52,26 @@ export const SnapUIAddress: React.FunctionComponent<SnapUIAddressProps> = ({
 
   const name = useDisplayName(parsed);
 
-  const value =
-    name ??
-    shortenAddress(
-      parsed.chain.namespace === 'eip155'
-        ? toChecksumHexAddress(parsed.address)
-        : parsed.address,
-    );
-
   // For EVM addresses, we make sure they are checksummed.
   const transformedAddress =
     parsed.chain.namespace === 'eip155'
       ? toChecksumHexAddress(parsed.address)
       : parsed.address;
+
   const formattedAddress = truncate
     ? shortenAddress(transformedAddress)
     : address;
 
   return (
     <Box display={Display.Flex} alignItems={AlignItems.center} gap={2}>
-      {avatar &&
-        (useBlockie ? (
-          <BlockieIdenticon
-            address={parsed.address}
-            diameter={diameter}
-            borderRadius="50%"
-          />
-        ) : (
-          <Jazzicon
-            namespace={parsed.chain.namespace}
-            address={parsed.address}
-            diameter={diameter}
-            style={{ display: 'flex' }}
-          />
-        ))}
-      {showAddressName ? (
-        <Text
-          variant={TextVariant.bodyMd}
-          color={TextColor.inherit}
-          style={{ lineBreak: 'anywhere' }}
-        >
-          {addressName}
-        </Text>
-      ) : (
-        <Text
-          variant={TextVariant.bodyMd}
-          color={TextColor.inherit}
-          style={{ lineBreak: 'anywhere' }}
-        >
-          {formattedAddress}
-        </Text>
-      )}
+      {avatar && <SnapUIAvatar address={parsed.address} size={avatarSize} />}
+      <Text
+        variant={TextVariant.bodyMd}
+        color={TextColor.inherit}
+        style={{ lineBreak: 'anywhere' }}
+      >
+        {displayName && name ? name : formattedAddress}
+      </Text>
     </Box>
   );
 };
