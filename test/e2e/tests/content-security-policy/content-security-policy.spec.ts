@@ -18,7 +18,7 @@ describe('Content-Security-Policy', function (this: Suite) {
               headers: [
                 {
                   key: 'Content-Security-Policy',
-                  value: `default-src: 'none'`,
+                  value: `default-src 'none'`,
                 },
               ],
             },
