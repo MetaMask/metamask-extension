@@ -5,19 +5,7 @@
 @import 'transaction-details/index';
 
 
-.bridge {
-  &__container {
+.bridge__container {
     height: 100%;
     width: 360px;
-    .spacer {
-      display: flex;
-      flex-direction: column;
-      height: 100%
-    }
-  }
-
-  &__content {
-    padding-top: 0;
-    padding-bottom: 0;
-  }
 }

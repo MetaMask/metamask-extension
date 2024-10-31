@@ -22,6 +22,7 @@ import { Content, Header, Page } from '../../components/multichain/pages/page';
 import { getProviderConfig } from '../../ducks/metamask/metamask';
 import { resetBridgeState, setFromChain } from '../../ducks/bridge/actions';
 import { useSwapsFeatureFlags } from '../swaps/hooks/useSwapsFeatureFlags';
+import { TextVariant } from '../../helpers/constants/design-system';
 import PrepareBridgePage from './prepare/prepare-bridge-page';
 import { BridgeTransactionSettingsModal } from './prepare/bridge-transaction-settings-modal';
 
@@ -77,6 +78,8 @@ const CrossChainSwap = () => {
   return (
     <Page className="bridge__container">
       <Header
+        textProps={{ variant: TextVariant.headingSm }}
+        className="bridge__header"
         startAccessory={
           <ButtonIcon
             iconName={IconName.ArrowLeft}
@@ -96,7 +99,7 @@ const CrossChainSwap = () => {
       >
         {t('bridge')}
       </Header>
-      <Content className="bridge__content">
+      <Content className="bridge__content" paddingTop={0}>
         <Switch>
           <FeatureToggledRoute
             redirectRoute={SWAPS_MAINTENANCE_ROUTE}
