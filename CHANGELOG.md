@@ -33,6 +33,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Released Chain Permissions by removing feature flags ([#27561](https://github.com/MetaMask/metamask-extension/pull/27561))
 - Added support for power users survey with toast notifications ([#27361](https://github.com/MetaMask/metamask-extension/pull/27361))
 - Added editing flow for switching networks via dapp ([#26635](https://github.com/MetaMask/metamask-extension/pull/26635))
+- [FLASK] Added the ability to send Bitcoin from Bitcoin accounts ([#27964](https://github.com/MetaMask/metamask-extension/pull/27964))
 
 ### Changed
 - Bumped snap-keyring to version 4.4.0 to sanitize redirect URLs passed by a Snap ([#27864](https://github.com/MetaMask/metamask-extension/pull/27864))
