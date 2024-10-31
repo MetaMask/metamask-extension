@@ -384,6 +384,9 @@ const getWindowHandles = async (driver, handlesCount) => {
 
 /**
  * @deprecated Please use page object functions in `onboarding.flow.ts` and in `pages/onboarding/*`.
+ * @param driver
+ * @param seedPhrase
+ * @param password
  */
 const importSRPOnboardingFlow = async (driver, seedPhrase, password) => {
   // agree to terms of use
@@ -413,6 +416,9 @@ const importSRPOnboardingFlow = async (driver, seedPhrase, password) => {
 
 /**
  * @deprecated Please use page object functions in `onboarding.flow.ts` and in `pages/onboarding/*`.
+ * @param driver
+ * @param seedPhrase
+ * @param password
  */
 const completeImportSRPOnboardingFlow = async (
   driver,
@@ -431,6 +437,9 @@ const completeImportSRPOnboardingFlow = async (
 
 /**
  * @deprecated Please use page object functions in `onboarding.flow.ts` and in `pages/onboarding/*`.
+ * @param driver
+ * @param seedPhrase
+ * @param password
  */
 const completeImportSRPOnboardingFlowWordByWord = async (
   driver,
@@ -477,7 +486,6 @@ const completeImportSRPOnboardingFlowWordByWord = async (
 /**
  * @deprecated Please use page object functions in `onboarding.flow.ts` and in `pages/onboarding/*`.
  * Begin the create new wallet flow on onboarding screen.
- *
  * @param {WebDriver} driver
  */
 const onboardingBeginCreateNewWallet = async (driver) => {
@@ -491,7 +499,6 @@ const onboardingBeginCreateNewWallet = async (driver) => {
 /**
  * @deprecated Please use page object functions in `onboarding.flow.ts` and in `pages/onboarding/*`.
  * Choose either "I Agree" or "No Thanks" on the MetaMetrics onboarding screen
- *
  * @param {WebDriver} driver
  * @param {boolean} option - true to opt into metrics, default is false
  */
@@ -504,7 +511,6 @@ const onboardingChooseMetametricsOption = async (driver, option = false) => {
 /**
  * @deprecated Please use page object functions in `onboarding.flow.ts` and in `pages/onboarding/*`.
  * Set a password for MetaMask during onboarding
- *
  * @param {WebDriver} driver
  * @param {string} password - Password to set
  */
@@ -520,7 +526,6 @@ const onboardingCreatePassword = async (driver, password) => {
  * @deprecated Please use page object functions in `onboarding.flow.ts` and in `pages/onboarding/*`.
  * Choose to secure wallet, and then get recovery phrase and confirm the SRP
  * during onboarding flow.
- *
  * @param {WebDriver} driver
  */
 const onboardingRevealAndConfirmSRP = async (driver) => {
@@ -559,7 +564,6 @@ const onboardingRevealAndConfirmSRP = async (driver) => {
  * @deprecated Please use page object functions in `onboarding.flow.ts` and in `pages/onboarding/*`.
  * Complete the onboarding flow by confirming completion. Final step before the
  * reminder to pin the extension.
- *
  * @param {WebDriver} driver
  */
 const onboardingCompleteWalletCreation = async (driver) => {
@@ -571,7 +575,6 @@ const onboardingCompleteWalletCreation = async (driver) => {
 /**
  * @deprecated Please use page object functions in `onboarding.flow.ts` and in `pages/onboarding/*`.
  * Move through the steps of pinning extension after successful onboarding
- *
  * @param {WebDriver} driver
  */
 const onboardingPinExtension = async (driver) => {
@@ -587,7 +590,6 @@ const onboardingPinExtension = async (driver) => {
  * This function navigates through the onboarding process, allowing for opt-out of certain features.
  * It waits for the appropriate heading to appear, then proceeds to opt-out of third-party API
  * integration for general and assets sections if specified in the optOutOptions.
- *
  * @param {WebDriver} driver - The Selenium WebDriver instance.
  * @param {object} optOutOptions - Optional. An object specifying which features to opt-out of.
  * @param {boolean} optOutOptions.basicFunctionality - Optional. Defaults to true. Opt-out of basic functionality.
@@ -684,7 +686,6 @@ const onboardingCompleteWalletCreationWithOptOut = async (
  *
  * This function guides the user through the onboarding process of creating a new wallet,
  * including opting out of certain features as specified by the `optOutOptions` parameter.
- *
  * @param {object} driver - The Selenium driver instance.
  * @param {string} password - The password to use for the new wallet.
  * @param {object} optOutOptions - An object specifying the features to opt out of.
@@ -707,6 +708,8 @@ const completeCreateNewWalletOnboardingFlowWithOptOut = async (
 
 /**
  * @deprecated Please use page object functions in `onboarding.flow.ts` and in `pages/onboarding/*`.
+ * @param driver
+ * @param password
  */
 const completeCreateNewWalletOnboardingFlow = async (driver, password) => {
   await onboardingBeginCreateNewWallet(driver);
