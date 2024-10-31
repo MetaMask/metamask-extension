@@ -1,5 +1,8 @@
 import { useSelector } from 'react-redux';
-import { getNetworkConfigurationsByChainId } from '../selectors';
+import {
+  getNetworkConfigurationsByChainId,
+  getPreferences,
+} from '../selectors';
 import {
   tokenListStartPolling,
   tokenListStopPollingByPollingToken,
@@ -8,14 +11,18 @@ import useMultiPolling from './useMultiPolling';
 
 const useTokenListPolling = () => {
   const networkConfigurations = useSelector(getNetworkConfigurationsByChainId);
+  const { petnamesEnabled, useTokenDetection, useTransactionSimulations } =
+    useSelector(getPreferences);
 
   const chainIds = Object.keys(networkConfigurations);
 
-  useMultiPolling({
-    startPolling: tokenListStartPolling,
-    stopPollingByPollingToken: tokenListStopPollingByPollingToken,
-    input: [chainIds],
-  });
+  if (useTokenDetection || petnamesEnabled || useTransactionSimulations) {
+    useMultiPolling({
+      startPolling: tokenListStartPolling,
+      stopPollingByPollingToken: tokenListStopPollingByPollingToken,
+      input: [chainIds],
+    });
+  }
 
   return {
     // TODO: Eventually return token list here. UI elements will
