@@ -267,7 +267,11 @@
     "@metamask/network-controller@npm:^19.0.0": "patch:@metamask/network-controller@npm%3A21.0.0#~/.yarn/patches/@metamask-network-controller-npm-21.0.0-559aa8e395.patch",
     "@metamask/network-controller@npm:^20.0.0": "patch:@metamask/network-controller@npm%3A21.0.0#~/.yarn/patches/@metamask-network-controller-npm-21.0.0-559aa8e395.patch",
     "path-to-regexp": "1.9.0",
-    "@metamask/snaps-utils@npm:^8.1.1": "patch:@metamask/snaps-utils@npm%3A8.1.1#~/.yarn/patches/@metamask-snaps-utils-npm-8.1.1-7d5dd6a26a.patch"
+    "@metamask/snaps-utils@npm:^8.1.1": "patch:@metamask/snaps-utils@npm%3A8.1.1#~/.yarn/patches/@metamask-snaps-utils-npm-8.1.1-7d5dd6a26a.patch",
+    "secp256k1@npm:^4.0.0": "4.0.4",
+    "secp256k1@npm:^4.0.1": "4.0.4",
+    "secp256k1@npm:4.0.2": "4.0.4",
+    "secp256k1@npm:4.0.3": "4.0.4"
   },
   "dependencies": {
     "@babel/runtime": "patch:@babel/runtime@npm%3A7.24.0#~/.yarn/patches/@babel-runtime-npm-7.24.0-7eb1dd11a2.patch",
