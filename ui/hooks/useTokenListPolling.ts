@@ -2,6 +2,7 @@ import { useSelector } from 'react-redux';
 import {
   getNetworkConfigurationsByChainId,
   getPreferences,
+  selectERC20TokensByChain,
 } from '../selectors';
 import {
   tokenListStartPolling,
@@ -14,6 +15,7 @@ const useTokenListPolling = () => {
   const networkConfigurations = useSelector(getNetworkConfigurationsByChainId);
   const { petnamesEnabled, useTokenDetection, useTransactionSimulations } =
     useSelector(getPreferences);
+  const tokensChainsCache = useSelector(selectERC20TokensByChain);
 
   const chainIds = Object.keys(networkConfigurations) as Hex[];
 
@@ -26,8 +28,7 @@ const useTokenListPolling = () => {
   }
 
   return {
-    // TODO: Eventually return token list here. UI elements will
-    // consume them from this hook instead of a selector directly.
+    tokensChainsCache,
   };
 };
 export default useTokenListPolling;
