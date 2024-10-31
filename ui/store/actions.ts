@@ -4581,15 +4581,15 @@ export async function tokenRatesStopPollingByPollingToken(
 /**
  * Informs the TokenListController that the UI requires tokenlist polling
  *
- * @param chainId
+ * @param chainIds
  * @returns polling token that can be used to stop polling
  */
 export async function tokenListStartPolling(
-  chainId: string[],
+  chainIds: string[],
 ): Promise<string> {
   const pollingToken = await submitRequestToBackground(
     'tokenListStartPolling',
-    [{ chainId }],
+    [{ chainIds }],
   );
   await addPollingTokenToAppState(pollingToken);
   return pollingToken;
