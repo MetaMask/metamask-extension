@@ -8,13 +8,17 @@ import { getEnvironmentType } from '../../../../app/scripts/lib/util';
 import { ENVIRONMENT_TYPE_FULLSCREEN } from '../../../../shared/constants/app';
 
 const WalletOverview = ({ balance, buttons, className }) => {
-  const overviewClasses = ['wallet-overview'];
-  if (getEnvironmentType() === ENVIRONMENT_TYPE_FULLSCREEN) {
-    overviewClasses.push('wallet-overview-fullscreen');
-  }
-
   return (
-    <div className={classnames(...overviewClasses, className)}>
+    <div
+      className={classnames(
+        'wallet-overview',
+        {
+          'wallet-overview-fullscreen':
+            getEnvironmentType() === ENVIRONMENT_TYPE_FULLSCREEN,
+        },
+        className,
+      )}
+    >
       <div className="wallet-overview__balance">{balance}</div>
       <div className="wallet-overview__buttons">{buttons}</div>
     </div>
