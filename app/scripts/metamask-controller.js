@@ -5054,18 +5054,27 @@ export default class MetamaskController extends EventEmitter {
   /**
    * Set account name that checks for identical label
    *
-   * @param account
-   * @param index
-   * @param hwDeviceName
-   * @param hdPathDescription
+   * @param {string} accountId - Account ID
+   * @param {number} index - Index of the account in the accounts list
+   * @param {string} hardwareDeviceName - Name of the hardware device (Onekey, Ledger, etc)
+   * @param {string} hdPathDescription - HD path description
    */
-  setAccountName(account, index, hwDeviceName, hdPathDescription) {
-    const label = this.getAccountLabel(hwDeviceName, index, hdPathDescription);
+  setAccountName(accountId, index, hardwareDeviceName, hdPathDescription) {
+    const label = this.getAccountLabel(
+      hardwareDeviceName,
+      index,
+      hdPathDescription,
+    );
     try {
-      this.accountsController.setAccountName(account.id, label);
+      this.accountsController.setAccountName(accountId, label);
     } catch {
       const newIndex = index + 1;
-      this.setAccountName(account, newIndex, hwDeviceName, hdPathDescription);
+      this.setAccountName(
+        accountId,
+        newIndex,
+        hardwareDeviceName,
+        hdPathDescription,
+      );
     }
   }
 
@@ -5084,7 +5093,7 @@ export default class MetamaskController extends EventEmitter {
     hdPath,
     hdPathDescription,
   ) {
-    const { address: unlockedAccount, label } =
+    const { address: unlockedAccount, hardwareDeviceName } =
       await this.#withKeyringForDevice(
         { name: deviceName, hdPath },
         async (keyring) => {
@@ -5092,27 +5101,35 @@ export default class MetamaskController extends EventEmitter {
           const [address] = await keyring.addAccounts(1);
           return {
             address: normalize(address),
-            label: this.getAccountLabel(
+            hardwareDeviceName:
               deviceName === HardwareDeviceNames.qr
                 ? keyring.getName()
                 : deviceName,
-              index,
-              hdPathDescription,
-            ),
           };
         },
       );
 
-    // Set the account label to Trezor 1 / Ledger 1 / QR Hardware 1, etc
-    this.preferencesController.setAccountLabel(unlockedAccount, label);
-    // Select the account
-    this.preferencesController.setSelectedAddress(unlockedAccount);
+    // // Set the account label to Trezor 1 / Ledger 1 / QR Hardware 1, etc
+    // this.preferencesController.setAccountLabel(unlockedAccount, label);
+    // // Select the account
+    // this.preferencesController.setSelectedAddress(unlockedAccount);
 
     // It is expected that the account also exist in the accounts-controller
     // in other case, an error shall be thrown
+    const keyring = await this.getKeyringForDevice(deviceName, hdPath);
+    keyring.setAccountToUnlock(index);
+    // const unlockedAccount =
+    //   await this.keyringController.addNewAccountForKeyring(keyring);
+    // const hardwareDeviceName =
+    //   deviceName === HardwareDeviceNames.qr ? keyring.getName() : deviceName;
     const account =
       this.accountsController.getAccountByAddress(unlockedAccount);
-    this.setAccountName(account, index, hwDeviceName, hdPathDescription);
+    this.setAccountName(
+      account?.id,
+      index,
+      hardwareDeviceName,
+      hdPathDescription,
+    );
 
     this.preferencesController.setSelectedAddress(unlockedAccount);
     const accounts = this.accountsController.listAccounts();
