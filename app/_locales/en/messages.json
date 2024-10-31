@@ -2972,6 +2972,9 @@
   "name": {
     "message": "Name"
   },
+  "nameAlreadyInUse": {
+    "message": "Name is already in use"
+  },
   "nameAddressLabel": {
     "message": "Address",
     "description": "Label above address field in name component modal."
