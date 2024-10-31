@@ -511,7 +511,7 @@ async function initialize() {
       // https://bugzilla.mozilla.org/show_bug.cgi?id=1446231
       const platformName = getPlatform();
       if (platformName === PLATFORM_FIREFOX) {
-        overrideContentSecurityPolicyHeader();
+        // overrideContentSecurityPolicyHeader();
       }
     }
     await sendReadyMessageToTabs();
