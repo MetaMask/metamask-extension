@@ -20,6 +20,7 @@ type PRInfo = {
     ref: string;
   };
   body: string;
+  labels: { name: string }[];
 };
 
 /**
@@ -139,6 +140,9 @@ async function storeGitDiffOutputAndPrBody() {
     } else if (baseRef !== MAIN_BRANCH) {
       console.log(`This is for a PR targeting '${baseRef}', skipping git diff`);
       writePrBodyToFile(prInfo.body);
+      return;
+    } else if (prInfo.labels.some(label => label.name === 'skip-e2e-quality-gate')) {
+      console.log('PR has the skip-e2e-quality-gate label, skipping git diff');
       return;
     }
 

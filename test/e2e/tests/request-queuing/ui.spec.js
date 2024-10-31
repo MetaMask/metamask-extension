@@ -99,6 +99,7 @@ async function selectDappClickSend(driver, dappUrl) {
 
 async function selectDappClickPersonalSign(driver, dappUrl) {
   await driver.switchToWindowWithUrl(dappUrl);
+  await driver.delay(5000);
   await driver.clickElement('#personalSign');
 }
 
