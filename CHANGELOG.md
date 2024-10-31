@@ -218,6 +218,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - fix: alert system and refine SIWE and contract interaction alerts ([#27205](https://github.com/MetaMask/metamask-extension/pull/27205))
 - fix(NOTIFY-1166): rename account sync event names ([#27413](https://github.com/MetaMask/metamask-extension/pull/27413))
 - feat: ERC20 Revoke Allowance ([#26906](https://github.com/MetaMask/metamask-extension/pull/26906))
+## [12.5.1]
+### Changed
+- Improve accuracy of transaction simulation warnings in some scenarios ([#26845](https://github.com/MetaMask/metamask-extension/pull/26845))
+
+### Fixed
+- Fix bug that could cause token balances to appear as zero, and a balance error to be displayed, on the send screen ([#28136](https://github.com/MetaMask/metamask-extension/pull/28136))
 
 ## [12.5.0]
 ### Added
@@ -5437,7 +5443,8 @@ Update styles and spacing on the critical error page  ([#20350](https://github.c
 
 
 [Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v12.6.0...HEAD
-[12.6.0]: https://github.com/MetaMask/metamask-extension/compare/v12.5.0...v12.6.0
+[12.6.0]: https://github.com/MetaMask/metamask-extension/compare/v12.5.1...v12.6.0
+[12.5.1]: https://github.com/MetaMask/metamask-extension/compare/v12.5.0...v12.5.1
 [12.5.0]: https://github.com/MetaMask/metamask-extension/compare/v12.4.2...v12.5.0
 [12.4.2]: https://github.com/MetaMask/metamask-extension/compare/v12.4.1...v12.4.2
 [12.4.1]: https://github.com/MetaMask/metamask-extension/compare/v12.4.0...v12.4.1
