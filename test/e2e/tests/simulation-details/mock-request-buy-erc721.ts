@@ -269,8 +269,7 @@ export const BUY_ERC721_REQUEST_2_MOCK: MockRequestResponse = {
     result: {
       transactions: [
         {
-          return:
-            '0x0000000000000000000000000000000000000000000000000000000000000000',
+          return: `0x0000000000000000000000000000000000000000000000000000000000000000`,
           status: '0x1',
           gasUsed: '0x5f66',
           gasLimit: '0x60b9',
@@ -388,7 +387,7 @@ export const BUY_ERC721_REQUEST_2_MOCK: MockRequestResponse = {
           baseFeePerGas: 42103363836,
         },
         {
-          return: `0x00000000000000000000000000000000${SENDER_ADDRESS_NO_0X_MOCK}`,
+          return: `0x000000000000000000000000${SENDER_ADDRESS_NO_0X_MOCK}`,
           status: '0x1',
           gasUsed: '0x5f66',
           gasLimit: '0x60b9',
