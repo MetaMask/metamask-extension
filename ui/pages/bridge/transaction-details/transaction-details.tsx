@@ -29,6 +29,7 @@ import { StatusTypes } from '../../../../app/scripts/controllers/bridge-status/t
 import {
   Display,
   JustifyContent,
+  TextColor,
   TextTransform,
 } from '../../../helpers/constants/design-system';
 import { formatDate } from '../../../helpers/utils/util';
@@ -53,6 +54,12 @@ const getBlockExplorerUrl = (
     '',
   );
   return `${rootUrl}/tx/${txHash}`;
+};
+
+const StatusToColorMap: Record<StatusTypes, TextColor> = {
+  [StatusTypes.PENDING]: TextColor.warningDefault,
+  [StatusTypes.COMPLETE]: TextColor.successDefault,
+  [StatusTypes.FAILED]: TextColor.errorDefault,
 };
 
 const CrossChainSwapTxDetails = () => {
@@ -131,7 +138,10 @@ const CrossChainSwapTxDetails = () => {
           <TransactionDetailRow
             title="Status"
             value={
-              <Text textTransform={TextTransform.Capitalize}>
+              <Text
+                textTransform={TextTransform.Capitalize}
+                color={status ? StatusToColorMap[status] : undefined}
+              >
                 {status?.toLowerCase()}
               </Text>
             }
@@ -219,7 +229,6 @@ const CrossChainSwapTxDetails = () => {
             value={
               <>
                 <UserPreferencedCurrencyDisplay
-                  // className=""
                   currency={data?.nativeCurrency}
                   denomination={EtherDenomination.ETH}
                   numberOfDecimals={9}
@@ -244,7 +253,19 @@ const CrossChainSwapTxDetails = () => {
           <TransactionDetailRow
             title="Total"
             value={
-              data?.totalInHex ? hexToDecimal(data?.totalInHex) : undefined
+              <>
+                <UserPreferencedCurrencyDisplay
+                  type={PRIMARY}
+                  value={data?.totalInHex}
+                  numberOfDecimals={data?.l1HexGasTotal ? 18 : undefined}
+                />
+                {data?.showFiat && (
+                  <UserPreferencedCurrencyDisplay
+                    type={SECONDARY}
+                    value={data?.totalInHex}
+                  />
+                )}
+              </>
             }
           />
         </Content>
