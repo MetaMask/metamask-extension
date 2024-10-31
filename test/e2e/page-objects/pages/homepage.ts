@@ -39,7 +39,7 @@ class HomePage {
     css: '.transaction-status-label--failed',
   };
 
-  private readonly popoverBackround = '.popover-bg';
+  private readonly popoverBackground = '.popover-bg';
 
   private readonly sendButton = '[data-testid="eth-overview-send"]';
 
@@ -70,7 +70,7 @@ class HomePage {
   async closeUseNetworkNotificationModal(): Promise<void> {
     // We need to use clickElementSafe + assertElementNotPresent as sometimes the network dialog doesn't appear, as per this issue (#25788)
     // TODO: change the 2 actions for clickElementAndWaitToDisappear, once the issue is fixed
-    await this.driver.assertElementNotPresent(this.popoverBackround);
+    await this.driver.assertElementNotPresent(this.popoverBackground);
     await this.driver.clickElementSafe(
       this.closeUseNetworkNotificationModalButton,
     );
