@@ -149,6 +149,7 @@ export default class AddContact extends PureComponent {
             <TextField
               type="text"
               id="nickname"
+              placeholder={this.context.t('addAlias')}
               value={this.state.newName}
               onChange={(e) => this.handleNameChange(e.target.value)}
               fullWidth
