@@ -25,6 +25,8 @@ import {
   TextVariant,
 } from '../../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
+import { ConfirmInfoAlertRow } from '../../../../components/app/confirm/info/row/alert-row/alert-row';
+import { RowAlertKey } from '../../../../components/app/confirm/info/row/constants';
 import { BalanceChangeList } from './balance-change-list';
 import { useBalanceChanges } from './useBalanceChanges';
 import { useSimulationMetrics } from './useSimulationMetrics';
@@ -88,14 +90,71 @@ const EmptyContent: React.FC = () => {
   );
 };
 
+const HeaderWithAlert = ({ transactionId }: { transactionId: string }) => {
+  const t = useI18nContext();
+
+  return (
+    <ConfirmInfoAlertRow
+      alertKey={RowAlertKey.Resimulation}
+      label={t('simulationDetailsTitle')}
+      ownerId={transactionId}
+      tooltip={t('simulationDetailsTitleTooltip')}
+      style={{
+        paddingLeft: 0,
+        paddingRight: 0,
+      }}
+    >
+      {/* Intentional fragment */}
+      <></>
+    </ConfirmInfoAlertRow>
+  );
+};
+
+const LegacyHeader = () => {
+  const t = useI18nContext();
+  return (
+    <Box
+      display={Display.Flex}
+      flexDirection={FlexDirection.Row}
+      alignItems={AlignItems.center}
+      gap={1}
+    >
+      <Text variant={TextVariant.bodyMdMedium}>
+        {t('simulationDetailsTitle')}
+      </Text>
+      <Tooltip
+        interactive
+        position="top"
+        containerClassName="info-tooltip__tooltip-container"
+        tooltipInnerClassName="info-tooltip__tooltip-content"
+        tooltipArrowClassName="info-tooltip__top-tooltip-arrow"
+        html={t('simulationDetailsTitleTooltip')}
+        theme="tippy-tooltip-info"
+        style={{ display: Display.Flex }}
+      >
+        <Icon
+          name={IconName.Question}
+          marginLeft={1}
+          color={IconColor.iconMuted}
+          size={IconSize.Sm}
+        />
+      </Tooltip>
+    </Box>
+  );
+};
+
 /**
  * Header at the top of the simulation preview.
  *
  * @param props
  * @param props.children
+ * @param props.isTransactionsRedesign
+ * @param props.transactionId
  */
-const HeaderLayout: React.FC = ({ children }) => {
-  const t = useI18nContext();
+const HeaderLayout: React.FC<{
+  isTransactionsRedesign: boolean;
+  transactionId: string;
+}> = ({ children, isTransactionsRedesign, transactionId }) => {
   return (
     <Box
       display={Display.Flex}
@@ -103,33 +162,11 @@ const HeaderLayout: React.FC = ({ children }) => {
       alignItems={AlignItems.center}
       justifyContent={JustifyContent.spaceBetween}
     >
-      <Box
-        display={Display.Flex}
-        flexDirection={FlexDirection.Row}
-        alignItems={AlignItems.center}
-        gap={1}
-      >
-        <Text variant={TextVariant.bodyMdMedium}>
-          {t('simulationDetailsTitle')}
-        </Text>
-        <Tooltip
-          interactive
-          position="top"
-          containerClassName="info-tooltip__tooltip-container"
-          tooltipInnerClassName="info-tooltip__tooltip-content"
-          tooltipArrowClassName="info-tooltip__top-tooltip-arrow"
-          html={t('simulationDetailsTitleTooltip')}
-          theme="tippy-tooltip-info"
-          style={{ display: Display.Flex }}
-        >
-          <Icon
-            name={IconName.Question}
-            marginLeft={1}
-            color={IconColor.iconMuted}
-            size={IconSize.Sm}
-          />
-        </Tooltip>
-      </Box>
+      {isTransactionsRedesign ? (
+        <HeaderWithAlert transactionId={transactionId} />
+      ) : (
+        <LegacyHeader />
+      )}
       {children}
     </Box>
   );
@@ -142,11 +179,13 @@ const HeaderLayout: React.FC = ({ children }) => {
  * @param props.inHeader
  * @param props.isTransactionsRedesign
  * @param props.children
+ * @param props.transactionId
  */
 const SimulationDetailsLayout: React.FC<{
   inHeader?: React.ReactNode;
   isTransactionsRedesign: boolean;
-}> = ({ inHeader, isTransactionsRedesign, children }) => (
+  transactionId: string;
+}> = ({ inHeader, isTransactionsRedesign, transactionId, children }) => (
   <Box
     data-testid="simulation-details-layout"
     className="simulation-details-layout"
@@ -162,7 +201,12 @@ const SimulationDetailsLayout: React.FC<{
     margin={isTransactionsRedesign ? null : 4}
     gap={3}
   >
-    <HeaderLayout>{inHeader}</HeaderLayout>
+    <HeaderLayout
+      isTransactionsRedesign={isTransactionsRedesign}
+      transactionId={transactionId}
+    >
+      {inHeader}
+    </HeaderLayout>
     {children}
   </Box>
 );
@@ -199,6 +243,7 @@ export const SimulationDetails: React.FC<SimulationDetailsProps> = ({
       <SimulationDetailsLayout
         inHeader={<LoadingIndicator />}
         isTransactionsRedesign={isTransactionsRedesign}
+        transactionId={transactionId}
       ></SimulationDetailsLayout>
     );
   }
@@ -216,7 +261,10 @@ export const SimulationDetails: React.FC<SimulationDetailsProps> = ({
 
   if (error) {
     return (
-      <SimulationDetailsLayout isTransactionsRedesign={isTransactionsRedesign}>
+      <SimulationDetailsLayout
+        isTransactionsRedesign={isTransactionsRedesign}
+        transactionId={transactionId}
+      >
         <ErrorContent error={error} />
       </SimulationDetailsLayout>
     );
@@ -226,7 +274,10 @@ export const SimulationDetails: React.FC<SimulationDetailsProps> = ({
   const empty = balanceChanges.length === 0;
   if (empty) {
     return (
-      <SimulationDetailsLayout isTransactionsRedesign={isTransactionsRedesign}>
+      <SimulationDetailsLayout
+        isTransactionsRedesign={isTransactionsRedesign}
+        transactionId={transactionId}
+      >
         <EmptyContent />
       </SimulationDetailsLayout>
     );
@@ -235,7 +286,10 @@ export const SimulationDetails: React.FC<SimulationDetailsProps> = ({
   const outgoing = balanceChanges.filter((bc) => bc.amount.isNegative());
   const incoming = balanceChanges.filter((bc) => !bc.amount.isNegative());
   return (
-    <SimulationDetailsLayout isTransactionsRedesign={isTransactionsRedesign}>
+    <SimulationDetailsLayout
+      isTransactionsRedesign={isTransactionsRedesign}
+      transactionId={transactionId}
+    >
       <Box display={Display.Flex} flexDirection={FlexDirection.Column} gap={3}>
         <BalanceChangeList
           heading={t('simulationDetailsOutgoingHeading')}

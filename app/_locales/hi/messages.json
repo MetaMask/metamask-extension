@@ -805,10 +805,6 @@
   "buyNow": {
     "message": "अभी खरीदें"
   },
-  "buyToken": {
-    "message": "$1 खरीदें",
-    "description": "$1 is the token symbol"
-  },
   "bytes": {
     "message": "बाइट"
   },
@@ -1883,13 +1879,6 @@
   "functionType": {
     "message": "फ़ंक्शन का प्रकार"
   },
-  "fundYourWallet": {
-    "message": "अपने वॉलेट को फंड करें"
-  },
-  "fundYourWalletDescription": {
-    "message": "अपने वॉलेट में कुछ $1 जोड़कर शुरुआत करें।",
-    "description": "$1 is the token symbol"
-  },
   "gas": {
     "message": "गैस"
   },
@@ -1972,14 +1961,6 @@
   },
   "genericExplorerView": {
     "message": "$1 पर अकाउंट देखें"
-  },
-  "getStartedWithNFTs": {
-    "message": "NFTs खरीदने के लिए $1 प्राप्त करें",
-    "description": "$1 is the token symbol"
-  },
-  "getStartedWithNFTsDescription": {
-    "message": "अपने वॉलेट में कुछ $1 जोड़कर NFTs से शुरुआत करें।",
-    "description": "$1 is the token symbol"
   },
   "goBack": {
     "message": "वापस जाएं"
@@ -4993,14 +4974,6 @@
   },
   "stake": {
     "message": "हिस्सेदारी"
-  },
-  "startYourJourney": {
-    "message": "$1 से अपनी यात्रा शुरू करें",
-    "description": "$1 is the token symbol"
-  },
-  "startYourJourneyDescription": {
-    "message": "अपने वॉलेट में कुछ $1 जोड़कर Web3 से शुरुआत करें।",
-    "description": "$1 is the token symbol"
   },
   "stateLogError": {
     "message": "स्टेट लॉग को पुनर्प्राप्त करने में गड़बड़ी।"
