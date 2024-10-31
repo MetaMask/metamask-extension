@@ -733,6 +733,9 @@
   "beCareful": {
     "message": "Be careful"
   },
+  "bestPrice": {
+    "message": "Best price"
+  },
   "beta": {
     "message": "Beta"
   },
@@ -845,6 +848,9 @@
   "bridge": {
     "message": "Bridge"
   },
+  "bridgeApprovalWarning": {
+    "message": "You are allowing access to the specified amount, $1 $2. The contract will not access any additional funds."
+  },
   "bridgeCalculatingAmount": {
     "message": "Calculating..."
   },
@@ -876,14 +882,8 @@
     "message": "$1 min",
     "description": "$1 is the ticker symbol of a an asset the user is being prompted to purchase"
   },
-  "bridgeTimingTooltipText": {
-    "message": "This is the estimated time it will take for the bridging to be complete."
-  },
   "bridgeTo": {
     "message": "Bridge to"
-  },
-  "bridgeTotalFeesTooltipText": {
-    "message": "This includes gas fees (paid to crypto miners) and relayer fees (paid to power complex services like bridging).\nFees are based on network traffic and transaction complexity. MetaMask does not profit from either fee."
   },
   "bridgeUseQuote": {
     "message": "Use this quote"
@@ -1352,6 +1352,9 @@
   },
   "creatorAddress": {
     "message": "Creator address"
+  },
+  "crossChainSwapRate": {
+    "message": "Swap rate"
   },
   "crossChainSwapsLink": {
     "message": "Swap across networks with MetaMask Portfolio"
@@ -2001,7 +2004,7 @@
     "message": "Amount paid to process the transaction on network."
   },
   "estimatedTime": {
-    "message": "Estimated time"
+    "message": "Est. time"
   },
   "ethGasPriceFetchWarning": {
     "message": "Backup gas price is provided as the main gas estimation service is unavailable right now."
@@ -2252,6 +2255,7 @@
   "gotIt": {
     "message": "Got it"
   },
+  "grantExactAccess": { "message": "Grant exact access" },
   "grantedToWithColon": {
     "message": "Granted to:"
   },
@@ -2379,6 +2383,12 @@
   },
   "holdToRevealUnlockedLabel": {
     "message": "hold to reveal circle unlocked"
+  },
+  "howQuotesWork": {
+    "message": "How quotes work"
+  },
+  "howQuotesWorkExplanation": {
+    "message": "This quote has the best return of the quotes we searched. This is based on the swap rate, which includes bridging fees and a $1% MetaMask fee, minus gas fees. Gas fees depend on how busy the network is and how complex the transaction is."
   },
   "id": {
     "message": "ID"
@@ -6493,7 +6503,7 @@
     "message": "View activity"
   },
   "viewAllQuotes": {
-    "message": "view all quotes"
+    "message": "View all quotes"
   },
   "viewContact": {
     "message": "View contact"
@@ -6623,6 +6633,9 @@
   },
   "whatsThis": {
     "message": "What's this?"
+  },
+  "willApproveAmountForBridging": {
+    "message": "This will approve $1 $2 for bridging."
   },
   "withdrawing": {
     "message": "Withdrawing"

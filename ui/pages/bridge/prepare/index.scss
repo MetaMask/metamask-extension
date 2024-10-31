@@ -175,17 +175,16 @@
     }
   }
 
+  .mascot-background-animation__animation {
+    margin-top: 24px;
+    margin-bottom: 16px;
+  }
+
   .highlight {
     padding: 16px;
     background: var(--color-background-alternative);
     border: none;
     border-radius: 8px;
-  }
-
-  .quote-info {
-    display: flex;
-    flex-direction: column;
-    flex: 1;
   }
 }
 
