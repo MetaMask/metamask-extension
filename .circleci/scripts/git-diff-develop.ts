@@ -124,7 +124,7 @@ async function storeGitDiffOutputAndPrBody() {
     fs.mkdirSync(CHANGED_FILES_DIR, { recursive: true });
 
     console.log(
-      `Determining whether this run is for a PR targeting ${MAIN_BRANCH}`,
+      `Determining whether to run git diff...`,
     );
     if (!PR_NUMBER) {
       console.log('Not a PR, skipping git diff');
