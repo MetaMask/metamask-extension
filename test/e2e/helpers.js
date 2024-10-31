@@ -382,7 +382,9 @@ const getWindowHandles = async (driver, handlesCount) => {
   return { extension, dapp, popup };
 };
 
-// This function will be deprecated, please use page object functions in onboarding.flow.ts and in pages/onboarding/*
+/**
+ * @deprecated Please use page object functions in `onboarding.flow.ts` and in `pages/onboarding/*`.
+ */
 const importSRPOnboardingFlow = async (driver, seedPhrase, password) => {
   // agree to terms of use
   await driver.clickElement('[data-testid="onboarding-terms-checkbox"]');
@@ -427,7 +429,9 @@ const completeImportSRPOnboardingFlow = async (
   await driver.clickElement('[data-testid="pin-extension-done"]');
 };
 
-// This function will be deprecated, please use page object functions in onboarding.flow.ts and in pages/onboarding/*
+/**
+ * @deprecated Please use page object functions in `onboarding.flow.ts` and in `pages/onboarding/*`.
+ */
 const completeImportSRPOnboardingFlowWordByWord = async (
   driver,
   seedPhrase,
@@ -470,8 +474,8 @@ const completeImportSRPOnboardingFlowWordByWord = async (
   await driver.clickElement('[data-testid="pin-extension-done"]');
 };
 
-// This function will be deprecated, please use page object functions in onboarding.flow.ts and in pages/onboarding/*
 /**
+ * @deprecated Please use page object functions in `onboarding.flow.ts` and in `pages/onboarding/*`.
  * Begin the create new wallet flow on onboarding screen.
  *
  * @param {WebDriver} driver
@@ -484,8 +488,8 @@ const onboardingBeginCreateNewWallet = async (driver) => {
   await driver.clickElement('[data-testid="onboarding-create-wallet"]');
 };
 
-// This function will be deprecated, please use page object functions in onboarding.flow.ts and in pages/onboarding/*
 /**
+ * @deprecated Please use page object functions in `onboarding.flow.ts` and in `pages/onboarding/*`.
  * Choose either "I Agree" or "No Thanks" on the MetaMetrics onboarding screen
  *
  * @param {WebDriver} driver
@@ -497,8 +501,8 @@ const onboardingChooseMetametricsOption = async (driver, option = false) => {
   await driver.clickElement(`[data-testid="metametrics-${optionIdentifier}"]`);
 };
 
-// This function will be deprecated, please use page object functions in onboarding.flow.ts and in pages/onboarding/*
 /**
+ * @deprecated Please use page object functions in `onboarding.flow.ts` and in `pages/onboarding/*`.
  * Set a password for MetaMask during onboarding
  *
  * @param {WebDriver} driver
@@ -512,8 +516,8 @@ const onboardingCreatePassword = async (driver, password) => {
   await driver.clickElement('[data-testid="create-password-wallet"]');
 };
 
-// This function will be deprecated, please use page object functions in onboarding.flow.ts and in pages/onboarding/*
 /**
+ * @deprecated Please use page object functions in `onboarding.flow.ts` and in `pages/onboarding/*`.
  * Choose to secure wallet, and then get recovery phrase and confirm the SRP
  * during onboarding flow.
  *
@@ -551,8 +555,8 @@ const onboardingRevealAndConfirmSRP = async (driver) => {
   });
 };
 
-// This function will be deprecated, please use page object functions in onboarding.flow.ts and in pages/onboarding/*
 /**
+ * @deprecated Please use page object functions in `onboarding.flow.ts` and in `pages/onboarding/*`.
  * Complete the onboarding flow by confirming completion. Final step before the
  * reminder to pin the extension.
  *
@@ -564,8 +568,8 @@ const onboardingCompleteWalletCreation = async (driver) => {
   await driver.clickElement('[data-testid="onboarding-complete-done"]');
 };
 
-// This function will be deprecated, please use page object functions in onboarding.flow.ts and in pages/onboarding/*
 /**
+ * @deprecated Please use page object functions in `onboarding.flow.ts` and in `pages/onboarding/*`.
  * Move through the steps of pinning extension after successful onboarding
  *
  * @param {WebDriver} driver
@@ -576,8 +580,8 @@ const onboardingPinExtension = async (driver) => {
   await driver.clickElement('[data-testid="pin-extension-done"]');
 };
 
-// This function will be deprecated, please use page object functions in onboarding.flow.ts and in pages/onboarding/*
 /**
+ * @deprecated Please use page object functions in `onboarding.flow.ts` and in `pages/onboarding/*`.
  * Completes the onboarding flow with optional opt-out settings for wallet creation.
  *
  * This function navigates through the onboarding process, allowing for opt-out of certain features.
@@ -674,8 +678,8 @@ const onboardingCompleteWalletCreationWithOptOut = async (
   await onboardingPinExtension(driver);
 };
 
-// This function will be deprecated, please use page object functions in onboarding.flow.ts and in pages/onboarding/*
 /**
+ * @deprecated Please use page object functions in `onboarding.flow.ts` and in `pages/onboarding/*`.
  * Completes the onboarding flow for creating a new wallet with opt-out options.
  *
  * This function guides the user through the onboarding process of creating a new wallet,
@@ -701,7 +705,9 @@ const completeCreateNewWalletOnboardingFlowWithOptOut = async (
   await onboardingCompleteWalletCreationWithOptOut(driver, optOutOptions);
 };
 
-// This function will be deprecated, please use page object functions in onboarding.flow.ts and in pages/onboarding/*
+/**
+ * @deprecated Please use page object functions in `onboarding.flow.ts` and in `pages/onboarding/*`.
+ */
 const completeCreateNewWalletOnboardingFlow = async (driver, password) => {
   await onboardingBeginCreateNewWallet(driver);
   await onboardingChooseMetametricsOption(driver, false);
