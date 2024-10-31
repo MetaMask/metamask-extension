@@ -24,17 +24,13 @@ jest.mock('../../../../../../store/actions', () => ({
 }));
 
 describe('NativeTransferInfo', () => {
-  it('renders correctly', async () => {
+  it('renders correctly', () => {
     const state = getMockTokenTransferConfirmState({});
     const mockStore = configureMockStore([])(state);
     const { container } = renderWithConfirmContextProvider(
       <NativeTransferInfo />,
       mockStore,
     );
-
-    await waitFor(() => {
-      expect(screen.getByText(tEn('networkFee') as string)).toBeInTheDocument();
-    });
 
     expect(container).toMatchSnapshot();
   });

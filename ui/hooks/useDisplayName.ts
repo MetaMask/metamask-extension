@@ -1,12 +1,13 @@
 import { NameType } from '@metamask/name-controller';
-import { useSelector } from 'react-redux';
 import { Hex } from '@metamask/utils';
-import { selectERC20TokensByChain } from '../selectors';
-import { getNftContractsByAddressByChain } from '../selectors/nft';
+import { useSelector } from 'react-redux';
 import {
   EXPERIENCES_TYPE,
   FIRST_PARTY_CONTRACT_NAMES,
 } from '../../shared/constants/first-party-contracts';
+import { getDomainResolutions } from '../ducks/domains';
+import { selectERC20TokensByChain } from '../selectors';
+import { getNftContractsByAddressByChain } from '../selectors/nft';
 import { useNames } from './useName';
 import { useNftCollectionsMetadata } from './useNftCollectionsMetadata';
 
@@ -32,6 +33,7 @@ export function useDisplayNames(
   const erc20Tokens = useERC20Tokens(requests);
   const watchedNFTNames = useWatchedNFTNames(requests);
   const nfts = useNFTs(requests);
+  const domainResolutions = useSelector(getDomainResolutions);
 
   return requests.map((_request, index) => {
     const nameEntry = nameEntries[index];
@@ -40,12 +42,25 @@ export function useDisplayNames(
     const watchedNftName = watchedNFTNames[index];
     const nft = nfts[index];
 
+    const matchedResolution = domainResolutions?.find(
+      (resolution: {
+        addressBookEntryName: string;
+        domainName: string;
+        protocol: string;
+        resolvedAddress: string;
+        resolvingSnap: string;
+      }) => resolution.resolvedAddress === _request.value,
+    );
+
+    const ensName = matchedResolution?.domainName;
+
     const name =
       nameEntry?.name ||
       firstPartyContractName ||
       nft?.name ||
       erc20Token?.name ||
       watchedNftName ||
+      ensName ||
       null;
 
     const image = nft?.image || erc20Token?.image;
