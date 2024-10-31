@@ -20,6 +20,7 @@ import {
 } from '../../../../../../../helpers/constants/design-system';
 import { MIN_AMOUNT } from '../../../../../../../hooks/useCurrencyDisplay';
 import { useI18nContext } from '../../../../../../../hooks/useI18nContext';
+import { getIsTestnet, getPreferences } from '../../../../../../../selectors';
 import { useConfirmContext } from '../../../../../context/confirm';
 import { formatAmountMaxPrecision } from '../../../../simulation-details/formatAmount';
 import { useTokenValues } from '../../hooks/use-token-values';
@@ -38,6 +39,8 @@ const SendHeading = () => {
     fiatDisplayValue,
     pending,
   } = useTokenValues(transactionMeta);
+  const isTestnet = useSelector(getIsTestnet);
+  const { showFiatInTestnets } = useSelector(getPreferences);
 
   const TokenImage = (
     <AvatarToken
@@ -75,11 +78,12 @@ const SendHeading = () => {
       >{`${displayTransferValue} ${tokenSymbol}`}</Text>
     );
 
-  const TokenFiatValue = fiatDisplayValue && (
-    <Text variant={TextVariant.bodyMd} color={TextColor.textAlternative}>
-      {fiatDisplayValue}
-    </Text>
-  );
+  const TokenFiatValue = Boolean(fiatDisplayValue) &&
+    (!isTestnet || showFiatInTestnets) && (
+      <Text variant={TextVariant.bodyMd} color={TextColor.textAlternative}>
+        {fiatDisplayValue}
+      </Text>
+    );
 
   if (pending) {
     return <ConfirmLoader />;

@@ -22,6 +22,7 @@ import {
 } from '../../../../../../../helpers/constants/design-system';
 import { MIN_AMOUNT } from '../../../../../../../hooks/useCurrencyDisplay';
 import { useFiatFormatter } from '../../../../../../../hooks/useFiatFormatter';
+import { getIsTestnet, getPreferences } from '../../../../../../../selectors';
 import { getMultichainNetwork } from '../../../../../../../selectors/multichain';
 import { useConfirmContext } from '../../../../../context/confirm';
 import {
@@ -59,6 +60,9 @@ const NativeSendHeading = () => {
     nativeAssetTransferValue.toNumber(),
   );
 
+  const isTestnet = useSelector(getIsTestnet);
+  const { showFiatInTestnets } = useSelector(getPreferences);
+
   const NetworkImage = (
     <AvatarToken
       src={
@@ -94,11 +98,12 @@ const NativeSendHeading = () => {
       </Text>
     );
 
-  const NativeAssetFiatConversion = (
-    <Text variant={TextVariant.bodyMd} color={TextColor.textAlternative}>
-      {fiatDisplayValue}
-    </Text>
-  );
+  const NativeAssetFiatConversion = Boolean(fiatDisplayValue) &&
+    (!isTestnet || showFiatInTestnets) && (
+      <Text variant={TextVariant.bodyMd} color={TextColor.textAlternative}>
+        {fiatDisplayValue}
+      </Text>
+    );
 
   return (
     <Box
