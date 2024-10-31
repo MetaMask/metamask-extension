@@ -53,7 +53,9 @@ class Index extends PureComponent {
                     <CurrencyRateProvider>
                       <MetamaskNotificationsProvider>
                         <TokenRatesProvider>
-                          <Routes />
+                          <TokenListProvider>
+                            <Routes />
+                          </TokenListProvider>
                         </TokenRatesProvider>
                       </MetamaskNotificationsProvider>
                     </CurrencyRateProvider>
