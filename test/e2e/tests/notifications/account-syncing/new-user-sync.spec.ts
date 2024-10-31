@@ -1,16 +1,16 @@
 import { Mockttp } from 'mockttp';
-import {
-  withFixtures,
-  defaultGanacheOptions,
-  completeImportSRPOnboardingFlow,
-  completeCreateNewWalletOnboardingFlow,
-} from '../../../helpers';
+import { withFixtures, defaultGanacheOptions } from '../../../helpers';
 import FixtureBuilder from '../../../fixture-builder';
 import { mockNotificationServices } from '../mocks';
 import { NOTIFICATIONS_TEAM_PASSWORD } from '../constants';
 import { UserStorageMockttpController } from '../../../helpers/user-storage/userStorageMockttpController';
 import HeaderNavbar from '../../../page-objects/pages/header-navbar';
 import AccountListPage from '../../../page-objects/pages/account-list-page';
+import HomePage from '../../../page-objects/pages/homepage';
+import {
+  completeCreateNewWalletOnboardingFlow,
+  completeImportSRPOnboardingFlow,
+} from '../../../page-objects/flows/onboarding.flow';
 import { getSRP, IS_ACCOUNT_SYNCING_ENABLED } from './helpers';
 
 describe('Account syncing - New User @no-mmi', function () {
@@ -38,13 +38,14 @@ describe('Account syncing - New User @no-mmi', function () {
           },
         },
         async ({ driver }) => {
-          await driver.navigate();
-
           // Create a new wallet
           await completeCreateNewWalletOnboardingFlow(
             driver,
             NOTIFICATIONS_TEAM_PASSWORD,
           );
+          const homePage = new HomePage(driver);
+          await homePage.check_pageIsLoaded();
+          await homePage.check_expectedBalanceIsDisplayed();
 
           // Open account menu and validate 1 account is shown
           const header = new HeaderNavbar(driver);
@@ -86,14 +87,15 @@ describe('Account syncing - New User @no-mmi', function () {
           },
         },
         async ({ driver }) => {
-          await driver.navigate();
-
           // Onboard with import flow using SRP from new account created above
           await completeImportSRPOnboardingFlow(
             driver,
             walletSrp,
             NOTIFICATIONS_TEAM_PASSWORD,
           );
+          const homePage = new HomePage(driver);
+          await homePage.check_pageIsLoaded();
+          await homePage.check_expectedBalanceIsDisplayed();
 
           // Open account menu and validate the 2 accounts have been retrieved
           const header = new HeaderNavbar(driver);

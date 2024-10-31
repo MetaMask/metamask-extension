@@ -1,9 +1,5 @@
 import { Mockttp } from 'mockttp';
-import {
-  withFixtures,
-  defaultGanacheOptions,
-  completeImportSRPOnboardingFlow,
-} from '../../../helpers';
+import { withFixtures, defaultGanacheOptions } from '../../../helpers';
 import FixtureBuilder from '../../../fixture-builder';
 import { mockNotificationServices } from '../mocks';
 import {
@@ -14,6 +10,8 @@ import {
 import { UserStorageMockttpController } from '../../../helpers/user-storage/userStorageMockttpController';
 import HeaderNavbar from '../../../page-objects/pages/header-navbar';
 import AccountListPage from '../../../page-objects/pages/account-list-page';
+import HomePage from '../../../page-objects/pages/homepage';
+import { completeImportSRPOnboardingFlow } from '../../../page-objects/flows/onboarding.flow';
 import { accountsSyncMockResponse } from './mockData';
 import { IS_ACCOUNT_SYNCING_ENABLED } from './helpers';
 
@@ -42,12 +40,14 @@ describe('Account syncing - Import With Private Key @no-mmi', function () {
           },
         },
         async ({ driver }) => {
-          await driver.navigate();
           await completeImportSRPOnboardingFlow(
             driver,
             NOTIFICATIONS_TEAM_SEED_PHRASE,
             NOTIFICATIONS_TEAM_PASSWORD,
           );
+          const homePage = new HomePage(driver);
+          await homePage.check_pageIsLoaded();
+          await homePage.check_expectedBalanceIsDisplayed();
 
           const header = new HeaderNavbar(driver);
           await header.check_pageIsLoaded();
@@ -85,12 +85,14 @@ describe('Account syncing - Import With Private Key @no-mmi', function () {
           },
         },
         async ({ driver }) => {
-          await driver.navigate();
           await completeImportSRPOnboardingFlow(
             driver,
             NOTIFICATIONS_TEAM_SEED_PHRASE,
             NOTIFICATIONS_TEAM_PASSWORD,
           );
+          const homePage = new HomePage(driver);
+          await homePage.check_pageIsLoaded();
+          await homePage.check_expectedBalanceIsDisplayed();
 
           const header = new HeaderNavbar(driver);
           await header.check_pageIsLoaded();
