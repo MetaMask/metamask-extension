@@ -1,6 +1,9 @@
 import { useSelector } from 'react-redux';
 import {
+  getMarketData,
   getNetworkConfigurationsByChainId,
+  getTokenExchangeRates,
+  getTokensMarketData,
   getUseCurrencyRateCheck,
 } from '../selectors';
 import {
@@ -9,20 +12,28 @@ import {
 } from '../store/actions';
 import useMultiPolling from './useMultiPolling';
 
-const useTokenRatesPolling = () => {
+const useTokenRatesPolling = (chainIds: string[] | undefined = undefined) => {
+  // Selectors to determine polling input
   const useCurrencyRateCheck = useSelector(getUseCurrencyRateCheck);
   const networkConfigurations = useSelector(getNetworkConfigurationsByChainId);
-  const chainIds = Object.keys(networkConfigurations);
+
+  // Selectors returning state updated by the polling
+  const tokenExchangeRates = useSelector(getTokenExchangeRates);
+  const tokensMarketData = useSelector(getTokensMarketData);
+  const marketData = useSelector(getMarketData);
 
   useMultiPolling({
     startPolling: tokenRatesStartPolling,
     stopPollingByPollingToken: tokenRatesStopPollingByPollingToken,
-    input: useCurrencyRateCheck ? chainIds : [],
+    input: useCurrencyRateCheck
+      ? chainIds ?? Object.keys(networkConfigurations)
+      : [],
   });
 
   return {
-    // TODO: Eventually return token rates here. UI elements will
-    // consume them from this hook instead of a selector directly.
+    tokenExchangeRates,
+    tokensMarketData,
+    marketData,
   };
 };
 
