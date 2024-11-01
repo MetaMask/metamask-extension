@@ -6,6 +6,11 @@ import { renderWithProvider } from '../../../../../test/lib/render-helpers';
 import '@testing-library/jest-dom/extend-expect';
 import { mockNetworkState } from '../../../../../test/stub/networks';
 import { CHAIN_IDS } from '../../../../../shared/constants/network';
+import { createMockInternalAccount } from '../../../../../test/jest/mocks';
+import {
+  MOCK_ADDRESS_BOOK,
+  MOCK_DOMAIN_RESOLUTION,
+} from '../../../../../test/data/mock-data';
 import AddContact from './add-contact.component';
 
 describe('AddContact component', () => {
@@ -16,12 +21,14 @@ describe('AddContact component', () => {
     },
   };
   const props = {
+    addressBook: MOCK_ADDRESS_BOOK,
+    internalAccounts: [createMockInternalAccount()],
     history: { push: jest.fn() },
     addToAddressBook: jest.fn(),
     scanQrCode: jest.fn(),
     qrCodeData: { type: 'address', values: { address: '0x123456789abcdef' } },
     qrCodeDetected: jest.fn(),
-    domainResolution: '',
+    domainResolutions: [MOCK_DOMAIN_RESOLUTION],
     domainError: '',
     resetDomainResolution: jest.fn(),
   };
@@ -101,5 +108,67 @@ describe('AddContact component', () => {
       target: { value: '0x1234bf0bba69C63E2657cF94693cC4A907085678' },
     });
     expect(getByText('Save')).toBeDisabled();
+  });
+
+  it('should disable the submit button when the name is already in use', () => {
+    const duplicateName = 'Account 1';
+
+    const store = configureMockStore(middleware)(state);
+    const { getByText, getByTestId } = renderWithProvider(
+      <AddContact {...props} />,
+      store,
+    );
+
+    const nameInput = document.getElementById('nickname');
+    fireEvent.change(nameInput, { target: { value: duplicateName } });
+
+    const addressInput = getByTestId('ens-input');
+
+    fireEvent.change(addressInput, {
+      target: { value: '0x43c9159B6251f3E205B9113A023C8256cDD40D91' },
+    });
+
+    const saveButton = getByText('Save');
+    expect(saveButton).toBeDisabled();
+  });
+
+  it('should display error message when name entered is already in use', () => {
+    const duplicateName = 'Account 1';
+
+    const store = configureMockStore(middleware)(state);
+
+    const { getByText } = renderWithProvider(<AddContact {...props} />, store);
+
+    const nameInput = document.getElementById('nickname');
+
+    fireEvent.change(nameInput, { target: { value: duplicateName } });
+
+    const saveButton = getByText('Save');
+
+    expect(getByText('Name is already in use')).toBeDefined();
+    expect(saveButton).toBeDisabled();
+  });
+
+  it('should display error when ENS inserts a name that is already in use', () => {
+    const store = configureMockStore(middleware)(state);
+
+    const { getByTestId, getByText } = renderWithProvider(
+      <AddContact {...props} />,
+      store,
+    );
+
+    const ensInput = getByTestId('ens-input');
+    fireEvent.change(ensInput, { target: { value: 'example.eth' } });
+
+    const domainResolutionCell = getByTestId(
+      'multichain-send-page__recipient__item',
+    );
+
+    fireEvent.click(domainResolutionCell);
+
+    const saveButton = getByText('Save');
+
+    expect(getByText('Name is already in use')).toBeDefined();
+    expect(saveButton).toBeDisabled();
   });
 });
