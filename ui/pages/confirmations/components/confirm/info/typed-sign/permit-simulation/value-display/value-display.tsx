@@ -2,8 +2,9 @@ import React, { useMemo } from 'react';
 import { NameType } from '@metamask/name-controller';
 import { Hex } from '@metamask/utils';
 import { captureException } from '@sentry/browser';
-import { shortenString } from '../../../../../../../../helpers/utils/util';
 
+import { MetaMetricsEventLocation } from '../../../../../../../../../shared/constants/metametrics';
+import { shortenString } from '../../../../../../../../helpers/utils/util';
 import { calcTokenAmount } from '../../../../../../../../../shared/lib/transactions-controller-utils';
 import useTokenExchangeRate from '../../../../../../../../components/app/currency-input/hooks/useTokenExchangeRate';
 import { IndividualFiatDisplay } from '../../../../../simulation-details/fiat-display';
@@ -11,7 +12,8 @@ import {
   formatAmount,
   formatAmountMaxPrecision,
 } from '../../../../../simulation-details/formatAmount';
-import { useAsyncResult } from '../../../../../../../../hooks/useAsyncResult';
+import { useGetTokenStandardAndDetails } from '../../../../../../hooks/useGetTokenStandardAndDetails';
+import useTrackERC20WithoutDecimalInformation from '../../../../../../hooks/useTrackERC20WithoutDecimalInformation';
 
 import {
   Box,
@@ -27,9 +29,12 @@ import {
   TextAlign,
 } from '../../../../../../../../helpers/constants/design-system';
 import Name from '../../../../../../../../components/app/name/name';
-import { fetchErc20Decimals } from '../../../../../../utils/token';
+import { TokenDetailsERC20 } from '../../../../../../utils/token';
 
 type PermitSimulationValueDisplayParams = {
+  /** ID of the associated chain. */
+  chainId: Hex;
+
   /** The primaryType of the typed sign message */
   primaryType?: string;
 
@@ -49,15 +54,16 @@ type PermitSimulationValueDisplayParams = {
 
 const PermitSimulationValueDisplay: React.FC<
   PermitSimulationValueDisplayParams
-> = ({ primaryType, tokenContract, value, tokenId }) => {
+> = ({ chainId, primaryType, tokenContract, tokenId, value }) => {
   const exchangeRate = useTokenExchangeRate(tokenContract);
 
-  const { value: tokenDecimals } = useAsyncResult(async () => {
-    if (tokenId) {
-      return undefined;
-    }
-    return await fetchErc20Decimals(tokenContract);
-  }, [tokenContract]);
+  const tokenDetails = useGetTokenStandardAndDetails(tokenContract);
+  useTrackERC20WithoutDecimalInformation(
+    tokenContract,
+    tokenDetails as TokenDetailsERC20,
+    MetaMetricsEventLocation.SignatureConfirmation,
+  );
+  const { decimalsNumber: tokenDecimals } = tokenDetails;
 
   const fiatValue = useMemo(() => {
     if (exchangeRate && value && !tokenId) {
@@ -126,6 +132,7 @@ const PermitSimulationValueDisplay: React.FC<
         <Name
           value={tokenContract}
           type={NameType.ETHEREUM_ADDRESS}
+          variation={chainId}
           preferContractSymbol
         />
       </Box>

@@ -18,7 +18,7 @@ import {
   TEST_NETWORK_TICKER_MAP,
 } from '../../../shared/constants/network';
 import MMIController from './mmi-controller';
-import AppStateController from './app-state';
+import { AppStateController } from './app-state-controller';
 import { ControllerMessenger } from '@metamask/base-controller';
 import { mmiKeyringBuilderFactory } from '../mmi-keyring-builder-factory';
 import MetaMetricsController from './metametrics';
@@ -237,8 +237,6 @@ describe('MMIController', function () {
           messenger: mockMessenger,
         }),
         isEthSignEnabled: jest.fn(),
-        getAllState: jest.fn(),
-        getCurrentChainId: jest.fn(),
       }),
       appStateController: new AppStateController({
         addUnlockListener: jest.fn(),
@@ -246,14 +244,14 @@ describe('MMIController', function () {
         initState: {},
         onInactiveTimeout: jest.fn(),
         showUnlockRequest: jest.fn(),
-        preferencesController: {
-          state: {
+        messenger: {
+          ...mockMessenger,
+          call: jest.fn().mockReturnValue({
             preferences: {
               autoLockTimeLimit: 0,
             },
-          },
-        },
-        messenger: mockMessenger,
+          })
+        }
       }),
       networkController,
       permissionController,
