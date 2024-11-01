@@ -1,6 +1,6 @@
 import React, { useCallback, useContext, useMemo } from 'react';
 import { useHistory } from 'react-router-dom';
-import { endTraces, trace, TraceName } from '../../../../shared/lib/trace';
+import { endTrace, trace } from '../../../../shared/lib/trace';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { ASSET_ROUTE } from '../../../helpers/constants/routes';
 import {
@@ -8,10 +8,7 @@ import {
   SUPPORT_LINK,
   ///: END:ONLY_INCLUDE_IF
 } from '../../../../shared/lib/ui-utils';
-import {
-  MetaMetricsEventCategory,
-  MetaMetricsEventName,
-} from '../../../../shared/constants/metametrics';
+import { MetaMetricsEventCategory } from '../../../../shared/constants/metametrics';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import NftsTab from '../../app/assets/nfts/nfts-tab';
 import AssetList from '../../app/assets/asset-list';
@@ -38,6 +35,11 @@ import {
 ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
 import InstitutionalHomeFooter from '../../../pages/home/institutional/institutional-home-footer';
 ///: END:ONLY_INCLUDE_IF
+import {
+  ACCOUNT_OVERVIEW_TAB_KEY_TO_METAMETRICS_EVENT_NAME_MAP,
+  ACCOUNT_OVERVIEW_TAB_KEY_TO_TRACE_NAME_MAP,
+  AccountOverviewTabKeys,
+} from '../../../../shared/constants/app-state';
 import { AccountOverviewCommonProps } from './common';
 
 export type AccountOverviewTabsProps = AccountOverviewCommonProps & {
@@ -70,43 +72,19 @@ export const AccountOverviewTabs = ({
     [],
   );
 
-  const getEventFromTabName = (tabName: string) => {
-    switch (tabName) {
-      case 'nfts':
-        return MetaMetricsEventName.NftScreenOpened;
-      case 'activity':
-        return MetaMetricsEventName.ActivityScreenOpened;
-      default:
-        return MetaMetricsEventName.TokenScreenOpened;
-    }
-  };
-
-  const handleTraceFromTabName = (tabName: string) => {
-    endTraces(
-      { name: TraceName.AccountOverviewAssetListTab },
-      { name: TraceName.AccountOverviewNftsTab },
-      { name: TraceName.AccountOverviewActivityTab },
-    );
-    switch (tabName) {
-      case 'nfts':
-        trace({ name: TraceName.AccountOverviewNftsTab });
-        break;
-      case 'activity':
-        trace({ name: TraceName.AccountOverviewActivityTab });
-        break;
-      default:
-        trace({ name: TraceName.AccountOverviewAssetListTab });
-    }
-  };
-
   const handleTabClick = useCallback(
-    (tabName: string) => {
+    (tabName: AccountOverviewTabKeys) => {
       onTabClick(tabName);
       trackEvent({
         category: MetaMetricsEventCategory.Home,
-        event: getEventFromTabName(tabName),
+        event: ACCOUNT_OVERVIEW_TAB_KEY_TO_METAMETRICS_EVENT_NAME_MAP[tabName],
       });
-      handleTraceFromTabName(tabName);
+      endTrace({
+        name: ACCOUNT_OVERVIEW_TAB_KEY_TO_TRACE_NAME_MAP[
+          defaultHomeActiveTabName
+        ],
+      });
+      trace({ name: ACCOUNT_OVERVIEW_TAB_KEY_TO_TRACE_NAME_MAP[tabName] });
     },
     [onTabClick],
   );

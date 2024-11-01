@@ -106,7 +106,11 @@ import {
   AccountConnections,
   MergedInternalAccount,
 } from '../../../selectors/selectors.types';
-import { trace, endTrace, TraceName } from '../../../../shared/lib/trace';
+import { endTrace, trace, TraceName } from '../../../../shared/lib/trace';
+import {
+  ACCOUNT_OVERVIEW_TAB_KEY_TO_TRACE_NAME_MAP,
+  AccountOverviewTabKeys,
+} from '../../../../shared/constants/app-state';
 import { HiddenAccountList } from './hidden-account-list';
 
 const ACTION_MODES = {
@@ -235,7 +239,9 @@ export const AccountListMenu = ({
       ),
     [updatedAccountsList, allowedAccountTypes],
   );
-  const defaultHomeActiveTabName = useSelector(getDefaultHomeActiveTabName);
+  const defaultHomeActiveTabName: AccountOverviewTabKeys = useSelector(
+    getDefaultHomeActiveTabName,
+  );
   ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
   const addSnapAccountEnabled = useSelector(getIsAddSnapAccountEnabled);
   ///: END:ONLY_INCLUDE_IF
@@ -305,22 +311,6 @@ export const AccountListMenu = ({
     }
   }
 
-  const handleTraceFromTabName = (tabName: string) => {
-    switch (tabName) {
-      case 'nfts':
-        endTrace({ name: TraceName.AccountOverviewNftsTab });
-        trace({ name: TraceName.AccountOverviewNftsTab });
-        break;
-      case 'activity':
-        endTrace({ name: TraceName.AccountOverviewActivityTab });
-        trace({ name: TraceName.AccountOverviewActivityTab });
-        break;
-      default:
-        endTrace({ name: TraceName.AccountOverviewAssetListTab });
-        trace({ name: TraceName.AccountOverviewAssetListTab });
-    }
-  };
-
   const onAccountListItemItemClicked = useCallback(
     (account) => {
       return () => {
@@ -332,7 +322,16 @@ export const AccountListMenu = ({
             location: 'Main Menu',
           },
         });
-        handleTraceFromTabName(defaultHomeActiveTabName);
+        endTrace({
+          name: ACCOUNT_OVERVIEW_TAB_KEY_TO_TRACE_NAME_MAP[
+            defaultHomeActiveTabName
+          ],
+        });
+        trace({
+          name: ACCOUNT_OVERVIEW_TAB_KEY_TO_TRACE_NAME_MAP[
+            defaultHomeActiveTabName
+          ],
+        });
         dispatch(setSelectedAccount(account.address));
       };
     },
