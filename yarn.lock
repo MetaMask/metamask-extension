@@ -4941,7 +4941,11 @@ __metadata:
     fast-deep-equal: "npm:^3.1.3"
   checksum: 10/fdae49ee97e7a2a1bb6414011ca59932f8712a768a9c4c43673a2504c9fa9e61d83df53a21ff0506ef6a8cf774704f2df58a6d71385c8786ec5cab4359c051e1
   languageName: node
+  linkType: hard
+
+"@metamask/design-tokens@npm:^4.0.0":
   version: 4.0.0
+  resolution: "@metamask/design-tokens@npm:4.0.0"
   checksum: 10/337968d86bf963ccdf7ab416cc8f87ec1d35d9fb56f686dea954964edd6f5cb0067a920cb2c1f9008150d3decac51cb1b392b3e67dc1d46ca308b503ffe7eabd
   languageName: node
   linkType: hard
