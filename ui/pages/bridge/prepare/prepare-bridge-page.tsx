@@ -41,6 +41,7 @@ import { QuoteRequest } from '../types';
 import { calcTokenValue } from '../../../../shared/lib/swaps-utils';
 import { BridgeQuoteCard } from '../quotes/bridge-quote-card';
 import { isValidQuoteRequest } from '../utils/quote';
+import { getProviderConfig } from '../../../ducks/metamask/metamask';
 import { BridgeInputGroup } from './bridge-input-group';
 
 const PrepareBridgePage = () => {
@@ -63,6 +64,8 @@ const PrepareBridgePage = () => {
 
   const fromAmount = useSelector(getFromAmount);
   const toAmount = useSelector(getToAmount);
+
+  const providerConfig = useSelector(getProviderConfig);
 
   const quoteRequest = useSelector(getQuoteRequest);
 
@@ -95,8 +98,16 @@ const PrepareBridgePage = () => {
       destChainId: toChain?.chainId
         ? Number(hexToDecimal(toChain.chainId))
         : undefined,
+      insufficientBal: Boolean(providerConfig?.rpcUrl?.includes('tenderly')),
     }),
-    [fromToken, toToken, fromChain?.chainId, toChain?.chainId, fromAmount],
+    [
+      fromToken,
+      toToken,
+      fromChain?.chainId,
+      toChain?.chainId,
+      fromAmount,
+      providerConfig,
+    ],
   );
 
   const debouncedUpdateQuoteRequestInController = useCallback(

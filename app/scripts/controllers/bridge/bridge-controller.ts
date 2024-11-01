@@ -118,9 +118,9 @@ export default class BridgeController extends StaticIntervalPollingController<
         decimalToHex(updatedQuoteRequest.srcChainId),
       );
 
-      const insufficientBal = !(await this.#hasSufficientBalance(
-        updatedQuoteRequest,
-      ));
+      const insufficientBal =
+        paramsToUpdate.insufficientBal ||
+        !(await this.#hasSufficientBalance(updatedQuoteRequest));
 
       this.startPollingByNetworkClientId(srcChainIdInHex, {
         ...updatedQuoteRequest,
