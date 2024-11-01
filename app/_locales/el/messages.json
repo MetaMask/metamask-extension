@@ -207,23 +207,6 @@
   "addCustomNetwork": {
     "message": "Προσθήκη προσαρμοσμένου δικτύου"
   },
-  "addEthereumChainConfirmationDescription": {
-    "message": "Αυτό θα επιτρέψει σε αυτό το δίκτυο να χρησιμοποιηθεί στο MetaMask."
-  },
-  "addEthereumChainConfirmationRisks": {
-    "message": "Το MetaMask δεν επαληθεύει τα προσαρμοσμένα δίκτυα."
-  },
-  "addEthereumChainConfirmationRisksLearnMore": {
-    "message": "Μάθετε για το $1.",
-    "description": "$1 is a link with text that is provided by the 'addEthereumChainConfirmationRisksLearnMoreLink' key"
-  },
-  "addEthereumChainConfirmationRisksLearnMoreLink": {
-    "message": "απάτες και κίνδυνοι ασφάλειας δικτύου",
-    "description": "Link text for the 'addEthereumChainConfirmationRisksLearnMore' translation key"
-  },
-  "addEthereumChainConfirmationTitle": {
-    "message": "Επιτρέπετε σε αυτήν την ιστοσελίδα να προσθέσει ένα δίκτυο;"
-  },
   "addEthereumChainWarningModalHeader": {
     "message": "Προσθέστε αυτόν τον πάροχο RPC μόνο αν είστε σίγουροι ότι μπορείτε να τον εμπιστευτείτε. $1",
     "description": "$1 is addEthereumChainWarningModalHeaderPartTwo passed separately so that it can be bolded"
@@ -821,10 +804,6 @@
   },
   "buyNow": {
     "message": "Αγοράστε Τώρα"
-  },
-  "buyToken": {
-    "message": "Αγορά $1",
-    "description": "$1 is the token symbol"
   },
   "bytes": {
     "message": "Bytes"
@@ -1900,13 +1879,6 @@
   "functionType": {
     "message": "Τύπος λειτουργίας"
   },
-  "fundYourWallet": {
-    "message": "Χρηματοδοτήστε το πορτοφόλι σας"
-  },
-  "fundYourWalletDescription": {
-    "message": "Ξεκινήστε προσθέτοντας περίπου $1 στο πορτοφόλι σας.",
-    "description": "$1 is the token symbol"
-  },
   "gas": {
     "message": "Τέλος συναλλαγής"
   },
@@ -1989,14 +1961,6 @@
   },
   "genericExplorerView": {
     "message": "Προβολή λογαριασμού σε $1"
-  },
-  "getStartedWithNFTs": {
-    "message": "Λάβετε $1 για να αγοράσετε NFT",
-    "description": "$1 is the token symbol"
-  },
-  "getStartedWithNFTsDescription": {
-    "message": "Ξεκινήστε με NFT προσθέτοντας περίπου $1 στο πορτοφόλι σας.",
-    "description": "$1 is the token symbol"
   },
   "goBack": {
     "message": "Πηγαίνετε πίσω"
@@ -4858,9 +4822,6 @@
     "message": "Επικοινωνήστε με τους διαχειριστές του $1 για περαιτέρω υποστήριξη.",
     "description": "This is shown when the insight snap throws an error. $1 is the snap name"
   },
-  "someNetworksMayPoseSecurity": {
-    "message": "Ορισμένα δίκτυα ενδέχεται να ενέχουν κινδύνους για την ασφάλεια ή/και το απόρρητο. Ενημερωθείτε για τους κινδύνους πριν προσθέσετε και χρησιμοποιήσετε ένα δίκτυο."
-  },
   "somethingDoesntLookRight": {
     "message": "Κάτι δεν φαίνεται σωστό; $1",
     "description": "A false positive message for users to contact support. $1 is a link to the support page."
@@ -5013,14 +4974,6 @@
   },
   "stake": {
     "message": "Stake"
-  },
-  "startYourJourney": {
-    "message": "Ξεκινήστε το ταξίδι σας με $1",
-    "description": "$1 is the token symbol"
-  },
-  "startYourJourneyDescription": {
-    "message": "Ξεκινήστε με Web3 προσθέτοντας περίπου $1 στο πορτοφόλι σας.",
-    "description": "$1 is the token symbol"
   },
   "stateLogError": {
     "message": "Σφάλμα κατά την ανάκτηση αρχείων καταγραφής κατάστασης."
@@ -6006,9 +5959,6 @@
   },
   "viewActivity": {
     "message": "Προβολή δραστηριότητας"
-  },
-  "viewAllDetails": {
-    "message": "Προβολή όλων των λεπτομερειών"
   },
   "viewAllQuotes": {
     "message": "προβολή όλων των προσφορών"
