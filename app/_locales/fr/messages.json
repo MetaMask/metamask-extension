@@ -805,10 +805,6 @@
   "buyNow": {
     "message": "Achetez maintenant"
   },
-  "buyToken": {
-    "message": "Acheter des $1",
-    "description": "$1 is the token symbol"
-  },
   "bytes": {
     "message": "Octets"
   },
@@ -1883,13 +1879,6 @@
   "functionType": {
     "message": "Type de fonction"
   },
-  "fundYourWallet": {
-    "message": "Approvisionnez votre portefeuille"
-  },
-  "fundYourWalletDescription": {
-    "message": "Commencez par ajouter quelques $1 à votre portefeuille.",
-    "description": "$1 is the token symbol"
-  },
   "gas": {
     "message": "Carburant"
   },
@@ -1972,14 +1961,6 @@
   },
   "genericExplorerView": {
     "message": "Voir le compte sur $1"
-  },
-  "getStartedWithNFTs": {
-    "message": "Obtenez des $1 pour acheter des NFT",
-    "description": "$1 is the token symbol"
-  },
-  "getStartedWithNFTsDescription": {
-    "message": "Débutez avec les NFT en ajoutant quelques $1 à votre portefeuille.",
-    "description": "$1 is the token symbol"
   },
   "goBack": {
     "message": "Retour"
@@ -4993,14 +4974,6 @@
   },
   "stake": {
     "message": "Staker"
-  },
-  "startYourJourney": {
-    "message": "Lancez-vous dans les $1",
-    "description": "$1 is the token symbol"
-  },
-  "startYourJourneyDescription": {
-    "message": "Lancez-vous dans le Web3 en ajoutant quelques $1 à votre portefeuille.",
-    "description": "$1 is the token symbol"
   },
   "stateLogError": {
     "message": "Erreur lors du chargement des journaux d’état."
