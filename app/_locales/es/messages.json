@@ -802,10 +802,6 @@
   "buyNow": {
     "message": "Comprar ahora"
   },
-  "buyToken": {
-    "message": "Comprar $1",
-    "description": "$1 is the token symbol"
-  },
   "bytes": {
     "message": "Bytes"
   },
@@ -1880,13 +1876,6 @@
   "functionType": {
     "message": "Tipo de función"
   },
-  "fundYourWallet": {
-    "message": "Agregar fondos a su monedero"
-  },
-  "fundYourWalletDescription": {
-    "message": "Comience agregando $1 a su monedero.",
-    "description": "$1 is the token symbol"
-  },
   "gas": {
     "message": "Gas"
   },
@@ -1969,14 +1958,6 @@
   },
   "genericExplorerView": {
     "message": "Ver cuenta en $1"
-  },
-  "getStartedWithNFTs": {
-    "message": "Obtenga $1 para comprar NFT",
-    "description": "$1 is the token symbol"
-  },
-  "getStartedWithNFTsDescription": {
-    "message": "Comience con los NFT agregando $1 a su monedero.",
-    "description": "$1 is the token symbol"
   },
   "goBack": {
     "message": "Volver"
@@ -4990,14 +4971,6 @@
   },
   "stake": {
     "message": "Staking"
-  },
-  "startYourJourney": {
-    "message": "Comience su recorrido con $1",
-    "description": "$1 is the token symbol"
-  },
-  "startYourJourneyDescription": {
-    "message": "Comience con la web3 agregando $1 a su monedero.",
-    "description": "$1 is the token symbol"
   },
   "stateLogError": {
     "message": "Error al recuperar los registros de estado."

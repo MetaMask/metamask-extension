@@ -8,31 +8,25 @@ import {
   currencyRateStopPollingByPollingToken,
 } from '../store/actions';
 import { getCompletedOnboarding } from '../ducks/metamask/metamask';
-import useMultiPolling from './useMultiPolling';
+import usePolling from './usePolling';
 
 const useCurrencyRatePolling = () => {
   const useCurrencyRateCheck = useSelector(getUseCurrencyRateCheck);
   const completedOnboarding = useSelector(getCompletedOnboarding);
   const networkConfigurations = useSelector(getNetworkConfigurationsByChainId);
 
-  const nativeCurrencies =
-    useCurrencyRateCheck && completedOnboarding
-      ? [
-          ...new Set(
-            Object.values(networkConfigurations).map((n) => n.nativeCurrency),
-          ),
-        ]
-      : [];
+  const nativeCurrencies = [
+    ...new Set(
+      Object.values(networkConfigurations).map((n) => n.nativeCurrency),
+    ),
+  ];
 
-  useMultiPolling({
+  usePolling({
     startPolling: currencyRateStartPolling,
     stopPollingByPollingToken: currencyRateStopPollingByPollingToken,
-    input: [nativeCurrencies],
+    input: nativeCurrencies,
+    enabled: useCurrencyRateCheck && completedOnboarding,
   });
-
-  return {
-    // TODO: Eventually return currency rates here. UI elements will
-    // consume them from this hook instead of a selector directly.
-  };
 };
+
 export default useCurrencyRatePolling;

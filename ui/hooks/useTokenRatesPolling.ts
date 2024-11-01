@@ -12,13 +12,12 @@ import useMultiPolling from './useMultiPolling';
 const useTokenRatesPolling = () => {
   const useCurrencyRateCheck = useSelector(getUseCurrencyRateCheck);
   const networkConfigurations = useSelector(getNetworkConfigurationsByChainId);
-  const networkClientIds = Object.values(networkConfigurations).map(
-    (n) => n.rpcEndpoints[n.defaultRpcEndpointIndex].networkClientId,
-  );
+  const chainIds = Object.keys(networkConfigurations);
+
   useMultiPolling({
     startPolling: tokenRatesStartPolling,
     stopPollingByPollingToken: tokenRatesStopPollingByPollingToken,
-    input: useCurrencyRateCheck ? networkClientIds : [],
+    input: useCurrencyRateCheck ? chainIds : [],
   });
 
   return {

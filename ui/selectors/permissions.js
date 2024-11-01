@@ -10,9 +10,9 @@ import {
   getInternalAccount,
   getMetaMaskAccountsOrdered,
   getOriginOfCurrentTab,
-  getSelectedInternalAccount,
   getTargetSubjectMetadata,
 } from './selectors';
+import { getSelectedInternalAccount } from './accounts';
 
 // selectors
 

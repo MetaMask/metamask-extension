@@ -3089,6 +3089,10 @@ export function setRedesignedConfirmationsEnabled(value: boolean) {
   return setPreference('redesignedConfirmationsEnabled', value);
 }
 
+export function setPrivacyMode(value: boolean) {
+  return setPreference('privacyMode', value, false);
+}
+
 export function setRedesignedTransactionsEnabled(value: boolean) {
   return setPreference('redesignedTransactionsEnabled', value);
 }
@@ -3107,6 +3111,10 @@ export function setRedesignedConfirmationsDeveloperEnabled(value: boolean) {
 
 export function setTokenSortConfig(value: SortCriteria) {
   return setPreference('tokenSortConfig', value, false);
+}
+
+export function setTokenNetworkFilter(value: Record<string, boolean>) {
+  return setPreference('tokenNetworkFilter', value, false);
 }
 
 export function setSmartTransactionsPreferenceEnabled(
@@ -4517,7 +4525,7 @@ export async function removePollingTokenFromAppState(pollingToken: string) {
 /**
  * Informs the CurrencyRateController that the UI requires currency rate polling
  *
- * @param nativeCurrencies
+ * @param nativeCurrencies - An array of native currency symbols
  * @returns polling token that can be used to stop polling
  */
 export async function currencyRateStartPolling(
@@ -4550,15 +4558,13 @@ export async function currencyRateStopPollingByPollingToken(
 /**
  * Informs the TokenRatesController that the UI requires token rate polling
  *
- * @param networkClientId
+ * @param chainId - The chain id to poll token rates on.
  * @returns polling token that can be used to stop polling
  */
-export async function tokenRatesStartPolling(
-  networkClientId: string,
-): Promise<string> {
+export async function tokenRatesStartPolling(chainId: string): Promise<string> {
   const pollingToken = await submitRequestToBackground(
     'tokenRatesStartPolling',
-    [{ networkClientId }],
+    [{ chainId }],
   );
   // todo needed?
   await addPollingTokenToAppState(pollingToken);
