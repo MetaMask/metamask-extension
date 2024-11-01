@@ -6451,6 +6451,9 @@
   "viewFullTransactionDetails": {
     "message": "View full transaction details"
   },
+  "viewInPortfolio": {
+    "message": "View in portfolio"
+  },
   "viewMore": {
     "message": "View more"
   },
