@@ -233,6 +233,35 @@ export const GlobalMenu = ({ closeMenu, anchorElement, isOpen }) => {
             closeMenu={closeMenu}
             account={account}
           />
+          <MenuItem
+            iconName={IconName.Wallet}
+            onClick={() => {
+              const portfolioUrl = getPortfolioUrl(
+                '',
+                'global_menu',
+                metaMetricsId,
+                isMetaMetricsEnabled,
+                isMarketingEnabled,
+                account.address,
+                '',
+              );
+
+              global.platform.openTab({ url: portfolioUrl });
+
+              trackEvent({
+                category: MetaMetricsEventCategory.Home,
+                event: MetaMetricsEventName.PortfolioLinkClicked,
+                properties: {
+                  url: portfolioUrl,
+                  location: METRICS_LOCATION,
+                },
+              });
+
+              closeMenu();
+            }}
+          >
+            {t('viewInPortfolio')}
+          </MenuItem>
         </>
       )}
       <Box
