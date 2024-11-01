@@ -5,6 +5,7 @@ import {
   ORIGIN_METAMASK,
   POLLING_TOKEN_ENVIRONMENT_TYPES,
 } from '../../../shared/constants/app';
+import { AccountOverviewTabKey } from '../../../shared/constants/app-state';
 import { AppStateController } from './app-state-controller';
 import type {
   AllowedActions,
@@ -14,7 +15,6 @@ import type {
   AppStateControllerState,
 } from './app-state-controller';
 import { PreferencesControllerState } from './preferences-controller';
-import { AccountOverviewTabKey } from '../../../shared/constants/app-state';
 
 jest.mock('webextension-polyfill');
 
