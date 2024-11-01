@@ -100,7 +100,9 @@ class AdvancedDetailsTransactionConfirmation extends TransactionConfirmation {
   }
 
   async verifyUniswapDecodedTransactionAdvancedDetails() {
-    const dataSections = await this.driver.findElements(this.advancedDetailsDataFunction);
+    const dataSections = await this.driver.findElements(
+      this.advancedDetailsDataFunction,
+    );
 
     const expectedData = [
       {
@@ -135,7 +137,7 @@ class AdvancedDetailsTransactionConfirmation extends TransactionConfirmation {
     assert.strictEqual(
       dataSections.length,
       expectedData.length,
-      'Mismatch between data sections and expected data count.'
+      'Mismatch between data sections and expected data count.',
     );
 
     await Promise.all(
@@ -147,7 +149,7 @@ class AdvancedDetailsTransactionConfirmation extends TransactionConfirmation {
         const functionText = await dataSection.getText();
         assert.ok(
           functionText.includes(data.functionName),
-          `Expected function name '${data.functionName}' in advanced details.`
+          `Expected function name '${data.functionName}' in advanced details.`,
         );
 
         const params = `[data-testid="advanced-details-${functionText}-params"]`;
@@ -156,15 +158,16 @@ class AdvancedDetailsTransactionConfirmation extends TransactionConfirmation {
         const paramText = await paramsData.getText();
 
         for (const [key, expectedValue] of Object.entries(data)) {
-          if (key === 'functionName') continue;
+          if (key === 'functionName') {
+            continue;
+          }
           assert.ok(
             paramText.includes(expectedValue),
-            `Expected ${key} '${expectedValue}' in data section ${functionText}.`
+            `Expected ${key} '${expectedValue}' in data section ${functionText}.`,
           );
         }
-      })
+      }),
     );
-
   }
 }
 
