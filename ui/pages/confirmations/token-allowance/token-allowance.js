@@ -76,11 +76,12 @@ import FeeDetailsComponent from '../components/fee-details-component/fee-details
 import { BlockaidResultType } from '../../../../shared/constants/security-provider';
 import { QueuedRequestsBannerAlert } from '../confirmation/components/queued-requests-banner-alert/queued-requests-banner-alert';
 
+// eslint-disable-next-line import/no-duplicates
+import { selectNetworkConfigurationByChainId } from '../../../selectors/selectors';
+
 ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-import {
-  getAccountType,
-  selectNetworkConfigurationByChainId,
-} from '../../../selectors/selectors';
+// eslint-disable-next-line import/no-duplicates
+import { getAccountType } from '../../../selectors/selectors';
 import { mmiActionsFactory } from '../../../store/institutional/institution-background';
 import { showCustodyConfirmLink } from '../../../store/institutional/institution-actions';
 import {

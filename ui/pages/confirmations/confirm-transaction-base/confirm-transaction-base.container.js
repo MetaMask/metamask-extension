@@ -96,12 +96,16 @@ import { CUSTOM_GAS_ESTIMATE } from '../../../../shared/constants/gas';
 import { getIsUsingPaymaster } from '../../../selectors/account-abstraction';
 
 import {
-  getAccountType,
-  selectDefaultRpcEndpointByChainId,
   selectNetworkConfigurationByChainId,
+  // eslint-disable-next-line import/no-duplicates
 } from '../../../selectors/selectors';
 
 ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
+import {
+  getAccountType,
+  selectDefaultRpcEndpointByChainId,
+  // eslint-disable-next-line import/no-duplicates
+} from '../../../selectors/selectors';
 // eslint-disable-next-line import/no-duplicates
 import { ENVIRONMENT_TYPE_NOTIFICATION } from '../../../../shared/constants/app';
 import {
@@ -280,11 +284,6 @@ const mapStateToProps = (state, ownProps) => {
     chainId,
   );
 
-  const { url: customRpcUrl } = selectDefaultRpcEndpointByChainId(
-    state,
-    chainId,
-  );
-
   ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
   const accountType = getAccountType(state, fromAddress);
   const fromChecksumHexAddress = toChecksumHexAddress(fromAddress);
@@ -295,6 +294,11 @@ const mapStateToProps = (state, ownProps) => {
   const custodianPublishesTransaction =
     getIsCustodianPublishesTransactionSupported(state, fromChecksumHexAddress);
   const builtinRpcUrl = CHAIN_ID_TO_RPC_URL_MAP[chainId];
+
+  const { url: customRpcUrl } = selectDefaultRpcEndpointByChainId(
+    state,
+    chainId,
+  );
 
   const rpcUrl = customRpcUrl || builtinRpcUrl;
 
