@@ -805,10 +805,6 @@
   "buyNow": {
     "message": "Bilhin Ngayon"
   },
-  "buyToken": {
-    "message": "Bumili ng $1",
-    "description": "$1 is the token symbol"
-  },
   "bytes": {
     "message": "Bytes"
   },
@@ -1883,13 +1879,6 @@
   "functionType": {
     "message": "Uri ng Function"
   },
-  "fundYourWallet": {
-    "message": "Pondohan ang iyong wallet"
-  },
-  "fundYourWalletDescription": {
-    "message": "Magsimula sa pamamagitan ng pagdagdag ng $1 sa iyong wallet.",
-    "description": "$1 is the token symbol"
-  },
   "gas": {
     "message": "Gas"
   },
@@ -1972,14 +1961,6 @@
   },
   "genericExplorerView": {
     "message": "Tingnan ang account sa $1"
-  },
-  "getStartedWithNFTs": {
-    "message": "Kumuha ng $1 para bumili ng mga NFT",
-    "description": "$1 is the token symbol"
-  },
-  "getStartedWithNFTsDescription": {
-    "message": "Magsimula sa mga NFT sa pamamagitan ng pagdagdag ng $1 sa iyong wallet.",
-    "description": "$1 is the token symbol"
   },
   "goBack": {
     "message": "Bumalik"
@@ -4993,14 +4974,6 @@
   },
   "stake": {
     "message": "Mag-stake"
-  },
-  "startYourJourney": {
-    "message": "Simulan ang iyong paglalakbay sa $1",
-    "description": "$1 is the token symbol"
-  },
-  "startYourJourneyDescription": {
-    "message": "Magsimula sa web3 sa pamamagitan ng pagdagdag ng $1 sa iyong wallet.",
-    "description": "$1 is the token symbol"
   },
   "stateLogError": {
     "message": "Error sa pagkuha ng mga log ng estado."

@@ -7,19 +7,22 @@ import {
 import FixtureBuilder from '../../../fixture-builder';
 import { mockNotificationServices } from '../mocks';
 import {
+  NOTIFICATIONS_TEAM_IMPORTED_PRIVATE_KEY,
   NOTIFICATIONS_TEAM_PASSWORD,
   NOTIFICATIONS_TEAM_SEED_PHRASE,
 } from '../constants';
 import { UserStorageMockttpController } from '../../../helpers/user-storage/userStorageMockttpController';
+import HeaderNavbar from '../../../page-objects/pages/header-navbar';
+import AccountListPage from '../../../page-objects/pages/account-list-page';
 import { accountsSyncMockResponse } from './mockData';
 import { IS_ACCOUNT_SYNCING_ENABLED } from './helpers';
 
-describe('Account syncing @no-mmi', function () {
+describe('Account syncing - Import With Private Key @no-mmi', function () {
   if (!IS_ACCOUNT_SYNCING_ENABLED) {
     return;
   }
   describe('from inside MetaMask', function () {
-    it('syncs newly added accounts', async function () {
+    it('does not sync accounts imported with private keys', async function () {
       const userStorageMockttpController = new UserStorageMockttpController();
 
       await withFixtures(
@@ -46,25 +49,24 @@ describe('Account syncing @no-mmi', function () {
             NOTIFICATIONS_TEAM_PASSWORD,
           );
 
-          await driver.clickElement('[data-testid="account-menu-icon"]');
+          const header = new HeaderNavbar(driver);
+          await header.check_pageIsLoaded();
+          await header.openAccountMenu();
 
-          await driver.wait(async () => {
-            const internalAccounts = await driver.findElements(
-              '.multichain-account-list-item',
-            );
-            return internalAccounts.length === accountsSyncMockResponse.length;
-          }, 20000);
-
-          await driver.clickElement(
-            '[data-testid="multichain-account-menu-popover-action-button"]',
+          const accountListPage = new AccountListPage(driver);
+          await accountListPage.check_pageIsLoaded();
+          await accountListPage.check_numberOfAvailableAccounts(
+            accountsSyncMockResponse.length,
           );
-          await driver.clickElement(
-            '[data-testid="multichain-account-menu-popover-add-account"]',
+          await accountListPage.check_accountDisplayedInAccountList(
+            'My First Synced Account',
           );
-          await driver.fill('#account-name', 'My third account');
-
-          await driver.clickElementAndWaitToDisappear(
-            '[data-testid="submit-add-account-with-name"]',
+          await accountListPage.check_accountDisplayedInAccountList(
+            'My Second Synced Account',
+          );
+          await accountListPage.openAccountOptionsMenu();
+          await accountListPage.addNewImportedAccount(
+            NOTIFICATIONS_TEAM_IMPORTED_PRIVATE_KEY,
           );
         },
       );
@@ -90,29 +92,19 @@ describe('Account syncing @no-mmi', function () {
             NOTIFICATIONS_TEAM_PASSWORD,
           );
 
-          await driver.clickElement('[data-testid="account-menu-icon"]');
+          const header = new HeaderNavbar(driver);
+          await header.check_pageIsLoaded();
+          await header.openAccountMenu();
 
-          await driver.wait(async () => {
-            const internalAccounts = await driver.findElements(
-              '.multichain-account-list-item',
-            );
-            return (
-              internalAccounts.length ===
-              userStorageMockttpController.paths.get('accounts')?.response
-                .length
-            );
-          }, 20000);
-
-          await driver.wait(async () => {
-            const internalAccounts = await driver.findElements(
-              '.multichain-account-list-item .multichain-account-list-item__account-name',
-            );
-            const lastAccountName = await internalAccounts[
-              internalAccounts.length - 1
-            ].getText();
-
-            return lastAccountName === 'My third account';
-          }, 20000);
+          const accountListPage = new AccountListPage(driver);
+          await accountListPage.check_pageIsLoaded();
+          await accountListPage.check_numberOfAvailableAccounts(2);
+          await accountListPage.check_accountDisplayedInAccountList(
+            'My First Synced Account',
+          );
+          await accountListPage.check_accountDisplayedInAccountList(
+            'My Second Synced Account',
+          );
         },
       );
     });
