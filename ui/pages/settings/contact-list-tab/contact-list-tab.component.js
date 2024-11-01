@@ -66,6 +66,7 @@ export default class ContactListTab extends Component {
       return (
         <div>
           <ContactList
+            addressBook={addressBook}
             searchForContacts={() => contacts}
             searchForRecents={() => nonContacts}
             selectRecipient={(address) => {

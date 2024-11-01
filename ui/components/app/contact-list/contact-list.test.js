@@ -1,11 +1,25 @@
 import React from 'react';
 import configureMockStore from 'redux-mock-store';
 import { renderWithProvider } from '../../../../test/jest/rendering';
+import { MOCK_ADDRESS_BOOK } from '../../../../test/data/mock-data';
 import ContactList from '.';
 
 describe('Contact List', () => {
   const store = configureMockStore([])({
     metamask: {},
+  });
+
+  const mockAddressBook = [...MOCK_ADDRESS_BOOK, MOCK_ADDRESS_BOOK[0]]; // Adding duplicate contact
+
+  it('displays the warning banner when multiple contacts have the same name', () => {
+    const { getByText } = renderWithProvider(
+      <ContactList addressBook={mockAddressBook} />,
+      store,
+    );
+
+    const duplicateContactBanner = getByText('You have duplicate contacts');
+
+    expect(duplicateContactBanner).toBeVisible();
   });
 
   describe('given searchForContacts', () => {

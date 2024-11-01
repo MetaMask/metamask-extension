@@ -1054,7 +1054,7 @@ const MOCK_ADDRESS_BOOK = [
     chainId: '0x1',
     isEns: false,
     memo: '',
-    name: '',
+    name: 'Contact 1',
   },
   {
     address: '0x43c9159B6251f3E205B9113A023C8256cDD40D91',
