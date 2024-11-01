@@ -1,0 +1,10 @@
+.bridge-transaction-details {
+  &__icon-loading {
+    animation: spinner 1.2s linear infinite;
+  }
+}
+
+@keyframes spinner {
+  to { transform: rotate(360deg); }
+}
+
