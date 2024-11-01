@@ -1,6 +1,5 @@
 import { BigNumber } from '@ethersproject/bignumber';
-import { ExternalProvider, JsonRpcFetchFunc } from '@ethersproject/providers';
-import { ChainId } from '@metamask/controller-utils';
+import { ChainId, InfuraNetworkType } from '@metamask/controller-utils';
 import BigNumberjs from 'bignumber.js';
 import { mapValues } from 'lodash';
 import { GasEstimateTypes } from '../../../../shared/constants/gas';
@@ -38,7 +37,12 @@ const TEST_AGG_ID_6 = 'TEST_AGG_6';
 const TEST_AGG_ID_BEST = 'TEST_AGG_BEST';
 const TEST_AGG_ID_APPROVAL = 'TEST_AGG_APPROVAL';
 
-// const POLLING_TIMEOUT = SECOND * 1000;
+const MOCK_PROVIDER_RESULT_STUB = {
+  // 1 gwei
+  eth_gasPrice: '0x0de0b6b3a7640000',
+  // by default, all accounts are external accounts (not contracts)
+  eth_getCode: '0x',
+};
 
 const MOCK_APPROVAL_NEEDED = {
   data: '0x095ea7b300000000000000000000000095e6f48254609a6ee006f7d493c8e5fb97094cef0000000000000000000000000000000000000000004a817c7ffffffdabf41c00',
@@ -87,7 +91,7 @@ const MOCK_FETCH_METADATA: FetchTradesInfoParamsMetadata = {
     decimals: 18,
     address: '0xSomeOtherAddress',
   },
-  chainId: CHAIN_IDS.MAINNET,
+  networkClientId: InfuraNetworkType.mainnet,
 };
 
 const MOCK_GET_BUFFERED_GAS_LIMIT = async () => ({
@@ -117,13 +121,15 @@ const networkControllerGetStateCallbackMock = jest
   .fn()
   .mockReturnValue({ selectedNetworkClientId: 'metamask' });
 
-const networkControllerGetNetworkClientByIdCallbackMock = jest
-  .fn()
-  .mockReturnValue({ configuration: { chainId: CHAIN_IDS.MAINNET } });
+const networkControllerGetNetworkClientByIdCallbackMock = jest.fn();
 
 const tokenRatesControllerGetStateCallbackMock = jest.fn().mockReturnValue({
   marketData: {
-    '0x1': {
+    [CHAIN_IDS.MAINNET]: {
+      '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48': { price: 2 },
+      '0x1111111111111111111111111111111111111111': { price: 0.1 },
+    },
+    [CHAIN_IDS.OPTIMISM]: {
       '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48': { price: 2 },
       '0x1111111111111111111111111111111111111111': { price: 0.1 },
     },
@@ -144,14 +150,10 @@ messengerMock.call.mockImplementation((actionName, ..._rest) => {
 });
 
 describe('SwapsController', function () {
-  let provider: ExternalProvider | JsonRpcFetchFunc;
-  const getSwapsController = (
-    _provider: ExternalProvider | JsonRpcFetchFunc = provider,
-  ) => {
+  const getSwapsController = () => {
     return new SwapsController(
       {
         getBufferedGasLimit: MOCK_GET_BUFFERED_GAS_LIMIT,
-        provider: _provider,
         fetchTradesInfo: fetchTradesInfoStub,
         getEIP1559GasFeeEstimates: getEIP1559GasFeeEstimatesStub,
         getLayer1GasFee: getLayer1GasFeeStub,
@@ -163,17 +165,15 @@ describe('SwapsController', function () {
   };
 
   beforeEach(function () {
-    const providerResultStub = {
-      // 1 gwei
-      eth_gasPrice: '0x0de0b6b3a7640000',
-      // by default, all accounts are external accounts (not contracts)
-      eth_getCode: '0x',
-    };
-    provider = createTestProviderTools({
-      scaffold: providerResultStub,
+    const { provider } = createTestProviderTools({
+      scaffold: MOCK_PROVIDER_RESULT_STUB,
       networkId: 1,
       chainId: CHAIN_IDS.MAINNET as ChainId,
-    }).provider;
+    });
+    networkControllerGetNetworkClientByIdCallbackMock.mockReturnValue({
+      provider,
+      configuration: { chainId: CHAIN_IDS.MAINNET },
+    });
     jest.useFakeTimers();
   });
 
@@ -317,21 +317,21 @@ describe('SwapsController', function () {
         });
       });
 
-      it('returns empty object if passed undefined or empty object', async function () {
+      it('returns an empty object if passed an empty set of quotes', async function () {
         expect(
-          await swapsController.getTopQuoteWithCalculatedSavings(),
-        ).toStrictEqual({});
-
-        expect(
-          await swapsController.getTopQuoteWithCalculatedSavings({}),
+          await swapsController.getTopQuoteWithCalculatedSavings({
+            quotes: {},
+            chainId: CHAIN_IDS.MAINNET,
+          }),
         ).toStrictEqual({});
       });
 
       it('returns the top aggId and quotes with savings and fee values if passed necessary data and an even number of quotes', async function () {
         const topQuoteAndSavings =
-          await swapsController.getTopQuoteWithCalculatedSavings(
-            getTopQuoteAndSavingsMockQuotes(),
-          );
+          await swapsController.getTopQuoteWithCalculatedSavings({
+            quotes: getTopQuoteAndSavingsMockQuotes(),
+            chainId: CHAIN_IDS.MAINNET,
+          });
 
         const topAggId = topQuoteAndSavings[0];
         const resultQuotes = topQuoteAndSavings[1];
@@ -370,9 +370,10 @@ describe('SwapsController', function () {
         };
 
         const topQuoteAndSavings =
-          await swapsController.getTopQuoteWithCalculatedSavings(
-            partialTestInput,
-          );
+          await swapsController.getTopQuoteWithCalculatedSavings({
+            quotes: partialTestInput,
+            chainId: CHAIN_IDS.MAINNET,
+          });
         const topAggId = topQuoteAndSavings[0];
         const resultQuotes = topQuoteAndSavings[1];
 
@@ -416,7 +417,10 @@ describe('SwapsController', function () {
         };
 
         const topQuoteAndSavings =
-          await swapsController.getTopQuoteWithCalculatedSavings(testInput);
+          await swapsController.getTopQuoteWithCalculatedSavings({
+            quotes: testInput,
+            chainId: CHAIN_IDS.MAINNET,
+          });
         const topAggId = topQuoteAndSavings[0];
         const resultQuotes = topQuoteAndSavings[1];
         expect(topAggId).toStrictEqual(TEST_AGG_ID_1);
@@ -483,9 +487,10 @@ describe('SwapsController', function () {
         };
 
         const topQuoteAndSavings =
-          await swapsController.getTopQuoteWithCalculatedSavings(
-            testInput as Record<string, Quote>,
-          );
+          await swapsController.getTopQuoteWithCalculatedSavings({
+            quotes: testInput as Record<string, Quote>,
+            chainId: CHAIN_IDS.MAINNET,
+          });
         const topAggId = topQuoteAndSavings[0];
         const resultQuotes = topQuoteAndSavings[1];
         expect(topAggId).toStrictEqual(TEST_AGG_ID_1);
@@ -567,9 +572,10 @@ describe('SwapsController', function () {
         delete expectedResultQuotes[TEST_AGG_ID_1].savings;
 
         const topQuoteAndSavings =
-          await swapsController.getTopQuoteWithCalculatedSavings(
-            testInput as Record<string, Quote>,
-          );
+          await swapsController.getTopQuoteWithCalculatedSavings({
+            quotes: testInput as Record<string, Quote>,
+            chainId: CHAIN_IDS.MAINNET,
+          });
         const topAggId = topQuoteAndSavings[0];
         const resultQuotes = topQuoteAndSavings[1];
 
@@ -610,7 +616,10 @@ describe('SwapsController', function () {
         delete expectedResultQuotes[TEST_AGG_ID_1].savings;
 
         const topQuoteAndSavings =
-          await swapsController.getTopQuoteWithCalculatedSavings(testInput);
+          await swapsController.getTopQuoteWithCalculatedSavings({
+            quotes: testInput,
+            chainId: CHAIN_IDS.MAINNET,
+          });
         const topAggId = topQuoteAndSavings[0];
         const resultQuotes = topQuoteAndSavings[1];
 
@@ -640,7 +649,14 @@ describe('SwapsController', function () {
           chainId: CHAIN_IDS.MAINNET as ChainId,
         }).provider;
 
-        swapsController = getSwapsController(mainnetProvider);
+        networkControllerGetNetworkClientByIdCallbackMock.mockReturnValue({
+          provider: mainnetProvider,
+          configuration: {
+            chainId: CHAIN_IDS.MAINNET,
+          },
+        });
+
+        swapsController = getSwapsController();
 
         const fetchTradesInfoSpy = jest
           // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -701,15 +717,15 @@ describe('SwapsController', function () {
 
         expect(fetchTradesInfoSpy).toHaveBeenCalledTimes(1);
         expect(fetchTradesInfoSpy).toHaveBeenCalledWith(MOCK_FETCH_PARAMS, {
-          ...MOCK_FETCH_METADATA,
+          chainId: CHAIN_IDS.MAINNET,
         });
       });
 
       it('calls returns the correct quotes on the optimism chain', async function () {
         fetchTradesInfoStub.mockReset();
-        const OPTIMISM_MOCK_FETCH_METADATA = {
+        const optimismMockFetchMetadata = {
           ...MOCK_FETCH_METADATA,
-          chainId: CHAIN_IDS.OPTIMISM as ChainId,
+          networkClientId: 'AAAA-BBBB-CCCC-DDDD',
         };
         const optimismProviderResultStub = {
           // 1 gwei
@@ -725,7 +741,14 @@ describe('SwapsController', function () {
           chainId: CHAIN_IDS.OPTIMISM as ChainId,
         }).provider;
 
-        swapsController = getSwapsController(optimismProvider);
+        networkControllerGetNetworkClientByIdCallbackMock.mockReturnValue({
+          provider: optimismProvider,
+          configuration: {
+            chainId: CHAIN_IDS.OPTIMISM,
+          },
+        });
+
+        swapsController = getSwapsController();
 
         const fetchTradesInfoSpy = jest
           // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -746,7 +769,7 @@ describe('SwapsController', function () {
 
         const fetchResponse = await swapsController.fetchAndSetQuotes(
           MOCK_FETCH_PARAMS,
-          OPTIMISM_MOCK_FETCH_METADATA,
+          optimismMockFetchMetadata,
         );
 
         if (!fetchResponse?.[0]) {
@@ -787,11 +810,22 @@ describe('SwapsController', function () {
 
         expect(fetchTradesInfoSpy).toHaveBeenCalledTimes(1);
         expect(fetchTradesInfoSpy).toHaveBeenCalledWith(MOCK_FETCH_PARAMS, {
-          ...OPTIMISM_MOCK_FETCH_METADATA,
+          chainId: CHAIN_IDS.OPTIMISM,
         });
       });
 
       it('performs the allowance check', async function () {
+        const { provider } = createTestProviderTools({
+          scaffold: MOCK_PROVIDER_RESULT_STUB,
+          networkId: 1,
+          chainId: CHAIN_IDS.MAINNET as ChainId,
+        });
+        const networkConfiguration = { chainId: CHAIN_IDS.MAINNET };
+        networkControllerGetNetworkClientByIdCallbackMock.mockReturnValue({
+          provider,
+          configuration: networkConfiguration,
+        });
+
         // Make it so approval is not required
         const getERC20AllowanceSpy = jest
           // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -813,7 +847,7 @@ describe('SwapsController', function () {
         expect(getERC20AllowanceSpy).toHaveBeenCalledWith(
           MOCK_FETCH_PARAMS.sourceToken,
           MOCK_FETCH_PARAMS.fromAddress,
-          CHAIN_IDS.MAINNET,
+          { provider, configuration: networkConfiguration },
         );
       });
 

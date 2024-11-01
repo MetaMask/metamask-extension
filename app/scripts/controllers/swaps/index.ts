@@ -1,17 +1,14 @@
 import { Contract } from '@ethersproject/contracts';
-import {
-  ExternalProvider,
-  JsonRpcFetchFunc,
-  Web3Provider,
-} from '@ethersproject/providers';
+import { Web3Provider } from '@ethersproject/providers';
 import { BaseController, StateMetadata } from '@metamask/base-controller';
-import type { ChainId } from '@metamask/controller-utils';
 import { GasFeeState } from '@metamask/gas-fee-controller';
 import { TransactionParams } from '@metamask/transaction-controller';
 import { captureException } from '@sentry/browser';
 import { BigNumber } from 'bignumber.js';
 import abi from 'human-standard-token-abi';
 import { cloneDeep, mapValues } from 'lodash';
+import { NetworkClient, NetworkClientId } from '@metamask/network-controller';
+import { Hex } from '@metamask/utils';
 import { EtherDenomination } from '../../../../shared/constants/common';
 import { GasEstimateTypes } from '../../../../shared/constants/gas';
 import {
@@ -103,28 +100,22 @@ export default class SwapsController extends BaseController<
     properties: Record<string, string | boolean | number | null>;
   }) => void;
 
-  #ethersProvider: Web3Provider;
-
-  #ethersProviderChainId: ChainId;
-
   #indexOfNewestCallInFlight: number;
 
   #pollCount: number;
 
   #pollingTimeout: ReturnType<typeof setTimeout> | null = null;
 
-  #provider: ExternalProvider | JsonRpcFetchFunc;
-
   #getEIP1559GasFeeEstimates: () => Promise<GasFeeState>;
 
   #getLayer1GasFee: (params: {
     transactionParams: TransactionParams;
-    chainId: ChainId;
+    networkClientId: NetworkClientId;
   }) => Promise<string>;
 
   private _fetchTradesInfo: (
     fetchParams: FetchTradesInfoParams,
-    fetchMetadata: { chainId: ChainId },
+    fetchMetadata: { chainId: Hex },
   ) => Promise<{
     [aggId: string]: Quote;
   }> = defaultFetchTradesInfo;
@@ -267,11 +258,8 @@ export default class SwapsController extends BaseController<
 
     this.#getEIP1559GasFeeEstimates = opts.getEIP1559GasFeeEstimates;
     this.#getLayer1GasFee = opts.getLayer1GasFee;
-    this.#ethersProvider = new Web3Provider(opts.provider);
-    this.#ethersProviderChainId = this._getCurrentChainId();
     this.#indexOfNewestCallInFlight = 0;
     this.#pollCount = 0;
-    this.#provider = opts.provider;
 
     // TODO: this should be private, but since a lot of tests depends on spying on it
     // we cannot enforce privacy 100%
@@ -295,12 +283,12 @@ export default class SwapsController extends BaseController<
       return null;
     }
 
-    const { chainId } = fetchParamsMetaData;
-
-    if (chainId !== this.#ethersProviderChainId) {
-      this.#ethersProvider = new Web3Provider(this.#provider);
-      this.#ethersProviderChainId = chainId;
-    }
+    const { networkClientId } = fetchParamsMetaData;
+    const networkClient = this.messagingSystem.call(
+      'NetworkController:getNetworkClientById',
+      networkClientId,
+    );
+    const { chainId } = networkClient.configuration;
 
     const { quotesPollingLimitEnabled, saveFetchedQuotes } =
       this.state.swapsState;
@@ -327,8 +315,8 @@ export default class SwapsController extends BaseController<
     }
 
     let [newQuotes] = await Promise.all([
-      this._fetchTradesInfo(fetchParams, { ...fetchParamsMetaData }),
-      this._setSwapsNetworkConfig(),
+      this._fetchTradesInfo(fetchParams, { chainId }),
+      this._setSwapsNetworkConfig({ chainId }),
     ]);
 
     const { saveFetchedQuotes: saveFetchedQuotesAfterResponse } =
@@ -358,7 +346,7 @@ export default class SwapsController extends BaseController<
           if (quote.trade) {
             const multiLayerL1TradeFeeTotal = await this.#getLayer1GasFee({
               transactionParams: quote.trade,
-              chainId,
+              networkClientId,
             });
 
             quote.multiLayerL1TradeFeeTotal = multiLayerL1TradeFeeTotal;
@@ -378,7 +366,7 @@ export default class SwapsController extends BaseController<
       const allowance = await this._getERC20Allowance(
         fetchParams.sourceToken,
         fetchParams.fromAddress,
-        chainId,
+        networkClient,
       );
       const [firstQuote] = Object.values(newQuotes);
 
@@ -428,9 +416,10 @@ export default class SwapsController extends BaseController<
     if (Object.values(newQuotes).length === 0) {
       this.setSwapsErrorKey(QUOTES_NOT_AVAILABLE_ERROR);
     } else {
-      const topQuoteAndSavings = await this.getTopQuoteWithCalculatedSavings(
-        newQuotes,
-      );
+      const topQuoteAndSavings = await this.getTopQuoteWithCalculatedSavings({
+        quotes: newQuotes,
+        chainId,
+      });
       if (Array.isArray(topQuoteAndSavings)) {
         topAggId = topQuoteAndSavings[0];
         newQuotes = topQuoteAndSavings[1];
@@ -476,11 +465,14 @@ export default class SwapsController extends BaseController<
     return [newQuotes, topAggId];
   }
 
-  public async getTopQuoteWithCalculatedSavings(
-    quotes: Record<string, Quote> = {},
-  ): Promise<[string | null, Record<string, Quote>] | Record<string, never>> {
+  public async getTopQuoteWithCalculatedSavings({
+    quotes,
+    chainId,
+  }: {
+    quotes: Record<string, Quote>;
+    chainId: Hex;
+  }): Promise<[string | null, Record<string, Quote>] | Record<string, never>> {
     const { marketData } = this._getTokenRatesState();
-    const chainId = this._getCurrentChainId();
     const tokenConversionRates = marketData?.[chainId] ?? {};
 
     const { customGasPrice, customMaxPriorityFeePerGas } =
@@ -911,7 +903,7 @@ export default class SwapsController extends BaseController<
   };
 
   // Private Methods
-  private async _fetchSwapsNetworkConfig(chainId: ChainId) {
+  private async _fetchSwapsNetworkConfig(chainId: Hex) {
     const response = await fetchWithCache({
       url: getBaseApi('network', chainId),
       fetchOptions: { method: 'GET' },
@@ -983,29 +975,18 @@ export default class SwapsController extends BaseController<
     return newQuotes;
   }
 
-  private _getCurrentChainId(): ChainId {
-    const { selectedNetworkClientId } = this.messagingSystem.call(
-      'NetworkController:getState',
-    );
-    const {
-      configuration: { chainId },
-    } = this.messagingSystem.call(
-      'NetworkController:getNetworkClientById',
-      selectedNetworkClientId,
-    );
-    return chainId as ChainId;
-  }
-
   private async _getERC20Allowance(
     contractAddress: string,
     walletAddress: string,
-    chainId: ChainId,
+    networkClient: NetworkClient,
   ) {
-    const contract = new Contract(contractAddress, abi, this.#ethersProvider);
+    const ethersProvider = new Web3Provider(networkClient.provider);
+    const contract = new Contract(contractAddress, abi, ethersProvider);
     return await contract.allowance(
       walletAddress,
       SWAPS_CHAINID_CONTRACT_ADDRESS_MAP[
-        chainId as keyof typeof SWAPS_CHAINID_CONTRACT_ADDRESS_MAP
+        networkClient.configuration
+          .chainId as keyof typeof SWAPS_CHAINID_CONTRACT_ADDRESS_MAP
       ],
     );
   }
@@ -1053,8 +1034,7 @@ export default class SwapsController extends BaseController<
   }
 
   // Sets the network config from the MetaSwap API.
-  private async _setSwapsNetworkConfig() {
-    const chainId = this._getCurrentChainId();
+  private async _setSwapsNetworkConfig({ chainId }: { chainId: Hex }) {
     let swapsNetworkConfig: {
       quotes: number;
       quotesPrefetching: number;
