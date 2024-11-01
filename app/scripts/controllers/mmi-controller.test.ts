@@ -657,9 +657,7 @@ describe('MMIController', function () {
       mmiController.custodyController.getAccountDetails = jest
         .fn()
         .mockReturnValue({});
-      mmiController.messagingSystem.call = jest
-        .fn()
-        .mockReturnValue([mockAccount, mockAccount2]);
+        jest.spyOn(mmiControllerMessenger, 'call').mockReturnValue([mockAccount, mockAccount2]);
       mmiController.mmiConfigurationController.store.getState = jest
         .fn()
         .mockReturnValue({

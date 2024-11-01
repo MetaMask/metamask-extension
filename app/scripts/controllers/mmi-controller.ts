@@ -772,9 +772,10 @@ export class MMIController {
       this.custodyController.getAccountDetails(address);
     const extensionId = this.extension.runtime.id;
 
-    const networks = Object.values(
-      this.#networkControllerState.networkConfigurationsByChainId,
+    const { networkConfigurationsByChainId } = this.messagingSystem.call(
+      'NetworkController:getState',
     );
+    const networks = Object.values(networkConfigurationsByChainId);
 
     return handleMmiPortfolio({
       keyringAccounts,
