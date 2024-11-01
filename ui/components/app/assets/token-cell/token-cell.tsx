@@ -2,6 +2,7 @@ import React from 'react';
 import { useSelector } from 'react-redux';
 import { getCurrentCurrency, getTokenList } from '../../../../selectors';
 import {
+  getImageForChainId,
   getMultichainIsEvm,
   getMultichainIsMainnet,
 } from '../../../../selectors/multichain';
@@ -14,6 +15,7 @@ type TokenCellProps = {
   address: string;
   symbol: string;
   string?: string;
+  chainId?: string;
   tokenFiatAmount: number;
   image: string;
   isNative?: boolean;
@@ -24,6 +26,7 @@ export default function TokenCell({
   address,
   image,
   symbol,
+  chainId,
   string,
   tokenFiatAmount,
   isNative,
@@ -58,6 +61,7 @@ export default function TokenCell({
       onClick={onClick ? () => onClick(address) : undefined}
       tokenSymbol={symbol}
       tokenImage={tokenImage}
+      tokenChainImage={chainId ? getImageForChainId(chainId) : undefined}
       primary={string}
       secondary={formattedFiatBalance}
       title={title}
