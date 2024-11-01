@@ -7,7 +7,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ## [12.7.0]
-### Uncategorized
+### Fixed
 - chore: Master sync ([#28222](https://github.com/MetaMask/metamask-extension/pull/28222))
 - Merge origin/develop into master-sync
 - Version v12.6.0 ([#27996](https://github.com/MetaMask/metamask-extension/pull/27996))
