@@ -99,9 +99,7 @@ describe('CustodyPage', function () {
           },
         ],
       },
-      preferences: {
-        useNativeCurrencyAsPrimaryCurrency: true,
-      },
+      preferences: {},
       appState: {
         isLoading: false,
       },

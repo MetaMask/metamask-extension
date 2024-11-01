@@ -157,7 +157,7 @@ export default function NftsItems({
 
   const updateNftDropDownStateKey = (key, isExpanded) => {
     const newCurrentAccountState = {
-      ...nftsDropdownState[selectedAddress][chainId],
+      ...nftsDropdownState?.[selectedAddress]?.[chainId],
       [key]: !isExpanded,
     };
 

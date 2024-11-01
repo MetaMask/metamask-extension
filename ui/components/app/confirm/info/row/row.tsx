@@ -90,6 +90,7 @@ export const ConfirmInfoRow: React.FC<ConfirmInfoRowProps> = ({
       flexDirection={FlexDirection.Row}
       justifyContent={JustifyContent.spaceBetween}
       flexWrap={FlexWrap.Wrap}
+      alignItems={AlignItems.center}
       backgroundColor={BACKGROUND_COLORS[variant]}
       borderRadius={BorderRadius.LG}
       marginTop={2}
@@ -117,7 +118,7 @@ export const ConfirmInfoRow: React.FC<ConfirmInfoRowProps> = ({
             {label}
           </Text>
           {labelChildren}
-          {tooltip && tooltip.length > 0 && (
+          {!labelChildren && tooltip?.length && (
             <Tooltip
               position="bottom"
               title={tooltip}

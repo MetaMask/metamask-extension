@@ -44,4 +44,8 @@
     justify-self: flex-end;
     font-weight: bold;
   }
+
+  .connect-page {
+    background-color: var(--color-background-alternative); // main-container adds the width but overrides the boxProps. So, we need extra class to apply css
+  }
 }

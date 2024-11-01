@@ -23,8 +23,8 @@ import {
   TextVariant,
 } from '../../../../helpers/constants/design-system';
 import {
-  CONNECTIONS,
   DEFAULT_ROUTE,
+  REVIEW_PERMISSIONS,
 } from '../../../../helpers/constants/routes';
 import {
   getOnboardedInThisUISession,
@@ -33,6 +33,7 @@ import {
 } from '../../../../selectors';
 import { ProductTour } from '../../product-tour-popover';
 import { hidePermissionsTour } from '../../../../store/actions';
+import { isSnapId } from '../../../../helpers/utils/snaps';
 import { ConnectionListItem } from './connection-list-item';
 
 export const PermissionsPage = () => {
@@ -53,12 +54,14 @@ export const PermissionsPage = () => {
   const handleConnectionClick = (connection) => {
     const hostName = connection.origin;
     const safeEncodedHost = encodeURIComponent(hostName);
-    history.push(`${CONNECTIONS}/${safeEncodedHost}`);
+
+    history.push(`${REVIEW_PERMISSIONS}/${safeEncodedHost}`);
   };
 
   const renderConnectionsList = (connectionList) =>
     Object.entries(connectionList).map(([itemKey, connection]) => {
-      return (
+      const isSnap = isSnapId(connection.origin);
+      return isSnap ? null : (
         <ConnectionListItem
           data-testid="connection-list-item"
           key={itemKey}
@@ -117,6 +120,7 @@ export const PermissionsPage = () => {
             justifyContent={JustifyContent.center}
             height={BlockSize.Full}
             gap={2}
+            padding={4}
           >
             <Text
               variant={TextVariant.bodyMdMedium}

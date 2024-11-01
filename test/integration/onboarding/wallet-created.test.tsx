@@ -10,6 +10,7 @@ import {
 jest.mock('../../../ui/store/background-connection', () => ({
   ...jest.requireActual('../../../ui/store/background-connection'),
   submitRequestToBackground: jest.fn(),
+  callBackgroundMethod: jest.fn(),
 }));
 
 jest.mock('../../../ui/ducks/bridge/actions', () => ({
@@ -21,6 +22,7 @@ const mockedBackgroundConnection = jest.mocked(backgroundConnection);
 
 const backgroundConnectionMocked = {
   onNotification: jest.fn(),
+  callBackgroundMethod: jest.fn(),
 };
 
 describe('Wallet Created Events', () => {
@@ -34,7 +36,7 @@ describe('Wallet Created Events', () => {
       backgroundConnection: backgroundConnectionMocked,
     });
 
-    expect(getByText('Wallet creation successful')).toBeInTheDocument();
+    expect(getByText('Congratulations!')).toBeInTheDocument();
 
     fireEvent.click(getByTestId('onboarding-complete-done'));
 
@@ -68,6 +70,18 @@ describe('Wallet Created Events', () => {
     );
 
     fireEvent.click(getByTestId('pin-extension-next'));
+
+    let onboardingPinExtensionMetricsEvent;
+
+    await waitFor(() => {
+      onboardingPinExtensionMetricsEvent =
+        mockedBackgroundConnection.submitRequestToBackground.mock.calls?.find(
+          (call) => call[0] === 'trackMetaMetricsEvent',
+        );
+      expect(onboardingPinExtensionMetricsEvent?.[0]).toBe(
+        'trackMetaMetricsEvent',
+      );
+    });
 
     await waitFor(() => {
       expect(

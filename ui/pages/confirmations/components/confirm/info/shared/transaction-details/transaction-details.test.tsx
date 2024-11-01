@@ -7,9 +7,9 @@ import {
   getMockConfirmStateForTransaction,
   getMockContractInteractionConfirmState,
 } from '../../../../../../../../test/data/confirmations/helper';
-import { genUnapprovedContractInteractionConfirmation } from '../../../../../../../../test/data/confirmations/contract-interaction';
-import { CHAIN_IDS } from '../../../../../../../../shared/constants/network';
 import { renderWithConfirmContextProvider } from '../../../../../../../../test/lib/confirmations/render-helpers';
+import { CHAIN_IDS } from '../../../../../../../../shared/constants/network';
+import { genUnapprovedContractInteractionConfirmation } from '../../../../../../../../test/data/confirmations/contract-interaction';
 import { TransactionDetails } from './transaction-details';
 
 jest.mock(

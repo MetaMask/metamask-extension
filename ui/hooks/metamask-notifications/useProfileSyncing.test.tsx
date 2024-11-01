@@ -9,6 +9,7 @@ import {
   useEnableProfileSyncing,
   useDisableProfileSyncing,
   useAccountSyncingEffect,
+  useDeleteAccountSyncingDataFromUserStorage,
 } from './useProfileSyncing';
 
 const middlewares = [thunk];
@@ -22,6 +23,7 @@ jest.mock('../../store/actions', () => ({
   showLoadingIndication: jest.fn(),
   hideLoadingIndication: jest.fn(),
   syncInternalAccountsWithUserStorage: jest.fn(),
+  deleteAccountSyncingDataFromUserStorage: jest.fn(),
 }));
 
 type ArrangeMocksMetamaskStateOverrides = {
@@ -131,5 +133,24 @@ describe('useProfileSyncing', () => {
         actions.syncInternalAccountsWithUserStorage,
       ).not.toHaveBeenCalled();
     });
+  });
+
+  it('should dispatch account sync data deletion', async () => {
+    const { store } = arrangeMocks();
+
+    const { result } = renderHook(
+      () => useDeleteAccountSyncingDataFromUserStorage(),
+      {
+        wrapper: ({ children }) => (
+          <Provider store={store}>{children}</Provider>
+        ),
+      },
+    );
+
+    act(() => {
+      result.current.dispatchDeleteAccountSyncingDataFromUserStorage();
+    });
+
+    expect(actions.deleteAccountSyncingDataFromUserStorage).toHaveBeenCalled();
   });
 });
