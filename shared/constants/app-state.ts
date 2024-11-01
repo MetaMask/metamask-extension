@@ -1,5 +1,5 @@
-import { TraceName } from "../lib/trace";
-import { MetaMetricsEventName } from "./metametrics";
+import { TraceName } from '../lib/trace';
+import { MetaMetricsEventName } from './metametrics';
 
 export enum AccountOverviewTabKey {
   Tokens = 'tokens',
