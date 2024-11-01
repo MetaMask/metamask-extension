@@ -3997,7 +3997,7 @@ export default class MetamaskController extends EventEmitter {
         ),
 
       // TokeListController
-      tokenListControllerStartPolling:
+      tokenListStartPolling:
         tokenListController.startPolling.bind(tokenListController),
       tokenListStopPollingByPollingToken:
         tokenListController.stopPollingByPollingToken.bind(tokenListController),
