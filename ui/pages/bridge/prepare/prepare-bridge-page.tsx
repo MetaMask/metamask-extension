@@ -1,13 +1,15 @@
-import React, { useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import classnames from 'classnames';
+import { debounce } from 'lodash';
 import {
   setFromChain,
   setFromToken,
   setFromTokenInputValue,
   setToChain,
+  setToChainId,
   setToToken,
-  switchToAndFromTokens,
+  updateQuoteRequestParams,
 } from '../../../ducks/bridge/actions';
 import {
   getFromAmount,
@@ -28,11 +30,14 @@ import {
   ButtonIcon,
   IconName,
 } from '../../../components/component-library';
+import { BlockSize } from '../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { TokenBucketPriority } from '../../../../shared/constants/swaps';
 import { useTokensWithFiltering } from '../../../hooks/useTokensWithFiltering';
 import { setActiveNetwork } from '../../../store/actions';
-import { BlockSize } from '../../../helpers/constants/design-system';
+import { hexToDecimal } from '../../../../shared/modules/conversion.utils';
+import { QuoteRequest } from '../types';
+import { calcTokenValue } from '../../../../shared/lib/swaps-utils';
 import { BridgeInputGroup } from './bridge-input-group';
 
 const PrepareBridgePage = () => {
@@ -71,6 +76,36 @@ const PrepareBridgePage = () => {
 
   const [rotateSwitchTokens, setRotateSwitchTokens] = useState(false);
 
+  const quoteParams = useMemo(
+    () => ({
+      srcTokenAddress: fromToken?.address,
+      destTokenAddress: toToken?.address || undefined,
+      srcTokenAmount:
+        fromAmount && fromAmount !== '' && fromToken?.decimals
+          ? calcTokenValue(fromAmount, fromToken.decimals).toString()
+          : undefined,
+      srcChainId: fromChain?.chainId
+        ? Number(hexToDecimal(fromChain.chainId))
+        : undefined,
+      destChainId: toChain?.chainId
+        ? Number(hexToDecimal(toChain.chainId))
+        : undefined,
+    }),
+    [fromToken, toToken, fromChain?.chainId, toChain?.chainId, fromAmount],
+  );
+
+  const debouncedUpdateQuoteRequestInController = useCallback(
+    debounce(
+      (p: Partial<QuoteRequest>) => dispatch(updateQuoteRequestParams(p)),
+      300,
+    ),
+    [],
+  );
+
+  useEffect(() => {
+    debouncedUpdateQuoteRequestInController(quoteParams);
+  }, Object.values(quoteParams));
+
   return (
     <div className="prepare-bridge-page">
       <Box className="prepare-bridge-page__content">
@@ -81,7 +116,10 @@ const PrepareBridgePage = () => {
           onAmountChange={(e) => {
             dispatch(setFromTokenInputValue(e));
           }}
-          onAssetChange={(token) => dispatch(setFromToken(token))}
+          onAssetChange={(token) => {
+            dispatch(setFromToken(token));
+            dispatch(setFromTokenInputValue(null));
+          }}
           networkProps={{
             network: fromChain,
             networks: fromChains,
@@ -94,6 +132,8 @@ const PrepareBridgePage = () => {
                 ),
               );
               dispatch(setFromChain(networkConfig.chainId));
+              dispatch(setFromToken(null));
+              dispatch(setFromTokenInputValue(null));
             },
           }}
           customTokenListGenerator={
@@ -121,12 +161,18 @@ const PrepareBridgePage = () => {
             onClick={() => {
               setRotateSwitchTokens(!rotateSwitchTokens);
               const toChainClientId =
-                toChain?.defaultRpcEndpointIndex && toChain?.rpcEndpoints
-                  ? toChain.rpcEndpoints?.[toChain.defaultRpcEndpointIndex]
+                toChain?.defaultRpcEndpointIndex !== undefined &&
+                toChain?.rpcEndpoints
+                  ? toChain.rpcEndpoints[toChain.defaultRpcEndpointIndex]
                       .networkClientId
                   : undefined;
               toChainClientId && dispatch(setActiveNetwork(toChainClientId));
-              dispatch(switchToAndFromTokens({ fromChain }));
+              toChain && dispatch(setFromChain(toChain.chainId));
+              dispatch(setFromToken(toToken));
+              dispatch(setFromTokenInputValue(null));
+              fromChain?.chainId && dispatch(setToChain(fromChain.chainId));
+              fromChain?.chainId && dispatch(setToChainId(fromChain.chainId));
+              dispatch(setToToken(fromToken));
             }}
           />
         </Box>
@@ -140,6 +186,7 @@ const PrepareBridgePage = () => {
             network: toChain,
             networks: toChains,
             onNetworkChange: (networkConfig) => {
+              dispatch(setToChainId(networkConfig.chainId));
               dispatch(setToChain(networkConfig.chainId));
             },
           }}

@@ -4,6 +4,7 @@ import { screen } from '@testing-library/react';
 import {
   SimulationData,
   SimulationErrorCode,
+  TransactionMeta,
 } from '@metamask/transaction-controller';
 import { BigNumber } from 'bignumber.js';
 import { renderWithProvider } from '../../../../../test/lib/render-helpers';
@@ -25,11 +26,27 @@ jest.mock('./balance-change-list', () => ({
 
 jest.mock('./useSimulationMetrics');
 
+jest.mock(
+  '../../../../components/app/confirm/info/row/alert-row/alert-row',
+  () => ({
+    ConfirmInfoAlertRow: jest.fn(({ label }) => <>{label}</>),
+  }),
+);
+
+jest.mock('../../context/confirm', () => ({
+  useConfirmContext: jest.fn(() => ({
+    currentConfirmation: {
+      id: 'testTransactionId',
+    },
+  })),
+}));
+
 const renderSimulationDetails = (simulationData?: Partial<SimulationData>) =>
   renderWithProvider(
     <SimulationDetails
-      simulationData={simulationData as SimulationData}
-      transactionId="testTransactionId"
+      transaction={
+        { id: 'testTransactionId', simulationData } as TransactionMeta
+      }
     />,
     store,
   );

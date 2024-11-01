@@ -12,7 +12,7 @@ import { detectSIWE } from '@metamask/controller-utils';
 import { MESSAGE_TYPE } from '../../../../shared/constants/app';
 import { SIGNING_METHODS } from '../../../../shared/constants/transaction';
 import { PreferencesController } from '../../controllers/preferences-controller';
-import { AppStateController } from '../../controllers/app-state';
+import { AppStateController } from '../../controllers/app-state-controller';
 import { LOADING_SECURITY_ALERT_RESPONSE } from '../../../../shared/constants/security-provider';
 // eslint-disable-next-line import/no-restricted-paths
 import { getProviderConfig } from '../../../../ui/ducks/metamask/metamask';
@@ -86,12 +86,11 @@ export function createPPOMMiddleware<
         return;
       }
 
-      const isSupportedChain = await isChainSupported(chainId);
-
       if (
         !securityAlertsEnabled ||
         !CONFIRMATION_METHODS.includes(req.method) ||
-        !isSupportedChain
+        // Do not move this call above this check because it will result in unnecessary calls
+        !(await isChainSupported(chainId))
       ) {
         return;
       }
