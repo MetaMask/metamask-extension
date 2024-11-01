@@ -17,9 +17,9 @@ import {
   checkNetworkAndAccountSupports1559,
   getAddressBook,
   getSelectedNetworkClientId,
-  getSelectedInternalAccount,
   getNetworkConfigurationsByChainId,
-} from '../../selectors';
+} from '../../selectors/selectors';
+import { getSelectedInternalAccount } from '../../selectors/accounts';
 import * as actionConstants from '../../store/actionConstants';
 import { updateTransactionGasFees } from '../../store/actions';
 import { setCustomGasLimit, setCustomGasPrice } from '../gas/gas.duck';
