@@ -7,6 +7,8 @@ import {
   Box,
   Text,
 } from '../../../../../../../components/component-library';
+import Tooltip from '../../../../../../../components/ui/tooltip';
+import { getIntlLocale } from '../../../../../../../ducks/locale/locale';
 import {
   AlignItems,
   BackgroundColor,
@@ -16,55 +18,67 @@ import {
   TextColor,
   TextVariant,
 } from '../../../../../../../helpers/constants/design-system';
-import { getWatchedToken } from '../../../../../../../selectors';
-import { MultichainState } from '../../../../../../../selectors/multichain';
+import { MIN_AMOUNT } from '../../../../../../../hooks/useCurrencyDisplay';
+import { useI18nContext } from '../../../../../../../hooks/useI18nContext';
 import { useConfirmContext } from '../../../../../context/confirm';
-import { useTokenDetails } from '../../hooks/useTokenDetails';
+import { formatAmountMaxPrecision } from '../../../../simulation-details/formatAmount';
 import { useTokenValues } from '../../hooks/use-token-values';
+import { useTokenDetails } from '../../hooks/useTokenDetails';
 import { ConfirmLoader } from '../confirm-loader/confirm-loader';
 
 const SendHeading = () => {
+  const t = useI18nContext();
   const { currentConfirmation: transactionMeta } =
     useConfirmContext<TransactionMeta>();
-  const selectedToken = useSelector((state: MultichainState) =>
-    getWatchedToken(transactionMeta)(state),
-  );
-  const { tokenImage, tokenSymbol } = useTokenDetails(
-    transactionMeta,
-    selectedToken,
-  );
-  const { decodedTransferValue, fiatDisplayValue, pending } =
-    useTokenValues(transactionMeta);
+  const locale = useSelector(getIntlLocale);
+  const { tokenImage, tokenSymbol } = useTokenDetails(transactionMeta);
+  const {
+    decodedTransferValue,
+    displayTransferValue,
+    fiatDisplayValue,
+    pending,
+  } = useTokenValues(transactionMeta);
 
   const TokenImage = (
     <AvatarToken
       src={tokenImage}
-      name={selectedToken?.symbol}
+      name={tokenSymbol !== t('unknown') && tokenSymbol}
       size={AvatarTokenSize.Xl}
       backgroundColor={
-        selectedToken?.symbol
-          ? BackgroundColor.backgroundDefault
-          : BackgroundColor.overlayDefault
+        tokenSymbol === t('unknown')
+          ? BackgroundColor.overlayDefault
+          : BackgroundColor.backgroundDefault
       }
       color={
-        selectedToken?.symbol ? TextColor.textDefault : TextColor.textMuted
+        tokenSymbol === t('unknown')
+          ? TextColor.textMuted
+          : TextColor.textDefault
       }
     />
   );
 
-  const TokenValue = (
-    <>
+  const TokenValue =
+    displayTransferValue ===
+    `<${formatAmountMaxPrecision(locale, MIN_AMOUNT)}` ? (
+      <Tooltip title={decodedTransferValue.toString()} position="right">
+        <Text
+          variant={TextVariant.headingLg}
+          color={TextColor.inherit}
+          marginTop={3}
+        >{`${displayTransferValue} ${tokenSymbol}`}</Text>
+      </Tooltip>
+    ) : (
       <Text
         variant={TextVariant.headingLg}
         color={TextColor.inherit}
         marginTop={3}
-      >{`${decodedTransferValue || ''} ${tokenSymbol}`}</Text>
-      {fiatDisplayValue && (
-        <Text variant={TextVariant.bodyMd} color={TextColor.textAlternative}>
-          {fiatDisplayValue}
-        </Text>
-      )}
-    </>
+      >{`${displayTransferValue} ${tokenSymbol}`}</Text>
+    );
+
+  const TokenFiatValue = fiatDisplayValue && (
+    <Text variant={TextVariant.bodyMd} color={TextColor.textAlternative}>
+      {fiatDisplayValue}
+    </Text>
   );
 
   if (pending) {
@@ -81,6 +95,7 @@ const SendHeading = () => {
     >
       {TokenImage}
       {TokenValue}
+      {TokenFiatValue}
     </Box>
   );
 };

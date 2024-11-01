@@ -227,7 +227,8 @@
     "hideZeroBalanceTokens": false,
     "petnamesEnabled": true,
     "redesignedConfirmationsEnabled": true,
-    "featureNotificationsEnabled": false
+    "featureNotificationsEnabled": false,
+    "privacyMode": false
   },
   "preventPollingOnNetworkRestart": false,
   "previousAppVersion": "",
