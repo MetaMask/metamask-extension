@@ -14,11 +14,11 @@ import {
 } from '../../../../components/component-library';
 import SimulationErrorMessage from '../simulation-error-message';
 import { SEVERITIES } from '../../../../helpers/constants/design-system';
+// eslint-disable-next-line import/no-duplicates
+import { selectNetworkConfigurationByChainId } from '../../../../selectors';
 ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
-import {
-  selectNetworkConfigurationByChainId,
-  submittedPendingTransactionsSelector,
-} from '../../../../selectors';
+// eslint-disable-next-line import/no-duplicates
+import { submittedPendingTransactionsSelector } from '../../../../selectors';
 import ZENDESK_URLS from '../../../../helpers/constants/zendesk-url';
 ///: END:ONLY_INCLUDE_IF
 
