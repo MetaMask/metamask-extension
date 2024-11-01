@@ -79,11 +79,13 @@ export const AccountOverviewTabs = ({
         category: MetaMetricsEventCategory.Home,
         event: ACCOUNT_OVERVIEW_TAB_KEY_TO_METAMETRICS_EVENT_NAME_MAP[tabName],
       });
-      endTrace({
-        name: ACCOUNT_OVERVIEW_TAB_KEY_TO_TRACE_NAME_MAP[
-          defaultHomeActiveTabName
-        ],
-      });
+      if (defaultHomeActiveTabName) {
+        endTrace({
+          name: ACCOUNT_OVERVIEW_TAB_KEY_TO_TRACE_NAME_MAP[
+            defaultHomeActiveTabName
+          ],
+        });
+      }
       trace({ name: ACCOUNT_OVERVIEW_TAB_KEY_TO_TRACE_NAME_MAP[tabName] });
     },
     [onTabClick],

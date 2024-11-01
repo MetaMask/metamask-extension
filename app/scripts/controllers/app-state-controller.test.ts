@@ -14,6 +14,7 @@ import type {
   AppStateControllerState,
 } from './app-state-controller';
 import { PreferencesControllerState } from './preferences-controller';
+import { AccountOverviewTabKey } from '../../../shared/constants/app-state';
 
 jest.mock('webextension-polyfill');
 
@@ -209,9 +210,11 @@ describe('AppStateController', () => {
 
   describe('setDefaultHomeActiveTabName', () => {
     it('sets the default home tab name', () => {
-      appStateController.setDefaultHomeActiveTabName('testTabName');
+      appStateController.setDefaultHomeActiveTabName(
+        AccountOverviewTabKey.Activity,
+      );
       expect(appStateController.store.getState().defaultHomeActiveTabName).toBe(
-        'testTabName',
+        AccountOverviewTabKey.Activity,
       );
     });
   });

@@ -6,5 +6,5 @@ export type AccountOverviewCommonProps = {
   ///: BEGIN:ONLY_INCLUDE_IF(build-main)
   onSupportLinkClick: () => void;
   ///: END:ONLY_INCLUDE_IF
-  defaultHomeActiveTabName: AccountOverviewTabKeys;
+  defaultHomeActiveTabName: AccountOverviewTabKeys | null;
 };

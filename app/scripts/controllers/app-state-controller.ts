@@ -327,7 +327,9 @@ export class AppStateController extends EventEmitter {
    *
    * @param defaultHomeActiveTabName - the tab name
    */
-  setDefaultHomeActiveTabName(defaultHomeActiveTabName: string | null): void {
+  setDefaultHomeActiveTabName(
+    defaultHomeActiveTabName: AccountOverviewTabKeys | null,
+  ): void {
     this.store.updateState({
       defaultHomeActiveTabName,
     });
