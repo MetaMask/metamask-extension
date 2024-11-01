@@ -49,6 +49,7 @@ import { getCurrentCurrency } from '../../../selectors';
 import { SECOND } from '../../../../shared/constants/time';
 import { Footer } from '../../../components/multichain/pages/page';
 import MascotBackgroundAnimation from '../../swaps/mascot-background-animation/mascot-background-animation';
+import { getProviderConfig } from '../../../ducks/metamask/metamask';
 import { BridgeInputGroup } from './bridge-input-group';
 import { BridgeCTAButton } from './bridge-cta-button';
 
@@ -75,6 +76,7 @@ const PrepareBridgePage = () => {
   const fromAmount = useSelector(getFromAmount);
 
   const slippage = useSelector(getSlippage);
+  const providerConfig = useSelector(getProviderConfig);
 
   const quoteRequest = useSelector(getQuoteRequest);
   const { activeQuote, isLoading } = useSelector(getBridgeQuotes);
@@ -109,6 +111,7 @@ const PrepareBridgePage = () => {
         ? Number(hexToDecimal(toChain.chainId))
         : undefined,
       slippage,
+      insufficientBal: Boolean(providerConfig?.rpcUrl?.includes('tenderly')),
     }),
     [
       fromToken,
@@ -117,6 +120,7 @@ const PrepareBridgePage = () => {
       toChain?.chainId,
       fromAmount,
       slippage,
+      providerConfig,
     ],
   );
 

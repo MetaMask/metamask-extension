@@ -130,15 +130,16 @@ export default class BridgeController extends StaticIntervalPollingController<
       );
       const provider = this.#getSelectedNetworkClient()?.provider;
 
-      const insufficientBal = provider
-        ? !(await hasSufficientBalance(
-            provider,
-            walletAddress,
-            updatedQuoteRequest.srcTokenAddress,
-            updatedQuoteRequest.srcTokenAmount,
-            srcChainIdInHex,
-          ))
-        : true;
+      const insufficientBal =
+        provider && !paramsToUpdate.insufficientBal
+          ? !(await hasSufficientBalance(
+              provider,
+              walletAddress,
+              updatedQuoteRequest.srcTokenAddress,
+              updatedQuoteRequest.srcTokenAmount,
+              srcChainIdInHex,
+            ))
+          : true;
 
       this.startPollingByNetworkClientId(srcChainIdInHex, {
         ...updatedQuoteRequest,
