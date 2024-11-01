@@ -6318,9 +6318,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/snaps-utils@npm:^8.1.1, @metamask/snaps-utils@npm:^8.3.0, @metamask/snaps-utils@npm:^8.5.0":
-  version: 8.5.0
-  resolution: "@metamask/snaps-utils@npm:8.5.0"
+"@metamask/snaps-utils@npm:^8.1.1, @metamask/snaps-utils@npm:^8.3.0, @metamask/snaps-utils@npm:^8.5.0, @metamask/snaps-utils@npm:^8.5.1":
+  version: 8.5.1
+  resolution: "@metamask/snaps-utils@npm:8.5.1"
   dependencies:
     "@babel/core": "npm:^7.23.2"
     "@babel/types": "npm:^7.23.0"
@@ -6345,7 +6345,7 @@ __metadata:
     semver: "npm:^7.5.4"
     ses: "npm:^1.1.0"
     validate-npm-package-name: "npm:^5.0.0"
-  checksum: 10/1cd528d70c7680b1d0dca06ca8c7481323d74dae71f909469d938fa4dbaff4b469e26bf92f37c6f21f28c1c28f726039fcb60b3737c2d9fd5c028d11dff904d6
+  checksum: 10/38c8098c7dfa82bf907d31f77e2d5ffe6a82dca9bf5d633d10ac024f153d94b8124d7ddfb2e3e35befb7af619ebff1900e81476f889011eebdd80b5e12328c30
   languageName: node
   linkType: hard
 
@@ -26468,7 +26468,7 @@ __metadata:
     "@metamask/snaps-execution-environments": "npm:^6.9.2"
     "@metamask/snaps-rpc-methods": "npm:^11.5.1"
     "@metamask/snaps-sdk": "npm:^6.10.0"
-    "@metamask/snaps-utils": "npm:^8.5.0"
+    "@metamask/snaps-utils": "npm:^8.5.1"
     "@metamask/test-bundler": "npm:^1.0.0"
     "@metamask/test-dapp": "npm:8.7.0"
     "@metamask/transaction-controller": "npm:^38.1.0"
