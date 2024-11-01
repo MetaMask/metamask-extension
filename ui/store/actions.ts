@@ -4605,8 +4605,7 @@ export async function tokenListStopPollingByPollingToken(
   await submitRequestToBackground('tokenListStopPollingByPollingToken', [
     pollingToken,
   ]);
-  await addPollingTokenToAppState(pollingToken);
-  return pollingToken;
+  await removePollingTokenFromAppState(pollingToken);
 }
 
 /**
