@@ -8,7 +8,7 @@ import {
   getIsBridgeEnabled,
   getSwapsDefaultToken,
   SwapsEthToken,
-} from '../../selectors';
+} from '../../selectors/selectors';
 import { ALLOWED_BRIDGE_CHAIN_IDS } from '../../../shared/constants/bridge';
 import {
   BridgeControllerState,
