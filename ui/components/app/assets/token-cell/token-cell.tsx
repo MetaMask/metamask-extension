@@ -1,6 +1,10 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
-import { getCurrentCurrency, getTokenList } from '../../../../selectors';
+import {
+  getCurrentCurrency,
+  getTokenList,
+  selectERC20TokensByChain,
+} from '../../../../selectors';
 import {
   getImageForChainId,
   getMultichainIsEvm,
@@ -36,13 +40,27 @@ export default function TokenCell({
   const tokenList = useSelector(getTokenList);
   const isMainnet = useSelector(getMultichainIsMainnet);
   const isEvm = useSelector(getMultichainIsEvm);
+  const erc20TokensByChain = useSelector(selectERC20TokensByChain);
   const tokenData = Object.values(tokenList).find(
     (token) =>
       isEqualCaseInsensitive(token.symbol, symbol) &&
       isEqualCaseInsensitive(token.address, address),
   );
-  const title = tokenData?.name || symbol;
-  const tokenImage = tokenData?.iconUrl || image;
+  const title =
+    tokenData?.name ||
+    (chainId &&
+      erc20TokensByChain?.[chainId]?.data?.[address.toLowerCase()]?.name) ||
+    symbol;
+  const tokenImage =
+    tokenData?.iconUrl ||
+    (chainId &&
+      erc20TokensByChain?.[chainId]?.data?.[address.toLowerCase()]?.iconUrl) ||
+    image;
+
+  if (chainId && erc20TokensByChain?.[chainId]?.data?.[address.toLowerCase()]) {
+    console.log(erc20TokensByChain?.[chainId]?.data?.[address.toLowerCase()]);
+  }
+
   const locale = useSelector(getIntlLocale);
   const formattedFiatBalance = new Intl.NumberFormat(locale, {
     currency: currentCurrency.toUpperCase(),

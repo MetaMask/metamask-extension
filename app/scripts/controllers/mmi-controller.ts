@@ -698,6 +698,7 @@ export default class MMIController extends EventEmitter {
 
         if (!tokenList.includes(token)) {
           tokenList.push(token);
+          console.log('populates tokenlist', token);
         }
       }
     }

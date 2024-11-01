@@ -1531,10 +1531,16 @@ export const selectERC20Tokens = createDeepEqualSelector(
 export const getTokenList = createSelector(
   selectERC20Tokens,
   getIsTokenDetectionInactiveOnMainnet,
-  (remoteTokenList, isTokenDetectionInactiveOnMainnet) =>
-    isTokenDetectionInactiveOnMainnet
+  (remoteTokenList, isTokenDetectionInactiveOnMainnet) => {
+    console.log('wbtc', {
+      isTokenDetectionInactiveOnMainnet,
+      STATIC_MAINNET_TOKEN_LIST,
+      remoteTokenList,
+    });
+    return isTokenDetectionInactiveOnMainnet
       ? STATIC_MAINNET_TOKEN_LIST
-      : remoteTokenList,
+      : remoteTokenList;
+  },
 );
 
 export const getMemoizedMetadataContract = createSelector(
