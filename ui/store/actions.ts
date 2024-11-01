@@ -4587,7 +4587,7 @@ export async function tokenRatesStopPollingByPollingToken(
 export async function tokenListStartPolling(chainId: Hex): Promise<string> {
   const pollingToken = await submitRequestToBackground(
     'tokenListStartPolling',
-    { chainId },
+    [{ chainId }],
   );
   await addPollingTokenToAppState(pollingToken);
   return pollingToken;
