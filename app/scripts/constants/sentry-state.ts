@@ -116,6 +116,9 @@ export const SENTRY_BACKGROUND_STATE = {
         destTokenAddress: true,
         srcTokenAmount: true,
       },
+      quotes: [],
+      quotesLastFetched: true,
+      quotesLoadingStatus: true,
     },
   },
   CronjobController: {
@@ -243,6 +246,7 @@ export const SENTRY_BACKGROUND_STATE = {
       showNativeTokenAsMainBalance: true,
       petnamesEnabled: true,
       showConfirmationAdvancedDetails: true,
+      privacyMode: false,
     },
     useExternalServices: false,
     selectedAddress: false,
