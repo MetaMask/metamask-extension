@@ -811,16 +811,6 @@ const connectToDapp = async (driver) => {
 
   await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
-  const editButtons = await driver.findElements('[data-testid="edit"]');
-  await editButtons[1].click();
-
-  await driver.clickElement({
-    text: 'Localhost 8545',
-    tag: 'p',
-  });
-
-  await driver.clickElement('[data-testid="connect-more-chains-button"]');
-
   await driver.clickElementAndWaitForWindowToClose({
     text: 'Connect',
     tag: 'button',
@@ -919,7 +909,8 @@ const sendScreenToConfirmScreen = async (
   quantity,
 ) => {
   await openActionMenuAndStartSendFlow(driver);
-  await driver.fill('[data-testid="ens-input"]', recipientAddress);
+  await driver.waitForSelector('[data-testid="ens-input"]');
+  await driver.pasteIntoField('[data-testid="ens-input"]', recipientAddress);
   await driver.fill('.unit-input__input', quantity);
 
   // check if element exists and click it
@@ -938,7 +929,8 @@ const sendTransaction = async (
   isAsyncFlow = false,
 ) => {
   await openActionMenuAndStartSendFlow(driver);
-  await driver.fill('[data-testid="ens-input"]', recipientAddress);
+  await driver.waitForSelector('[data-testid="ens-input"]');
+  await driver.pasteIntoField('[data-testid="ens-input"]', recipientAddress);
   await driver.fill('.unit-input__input', quantity);
 
   await driver.clickElement({

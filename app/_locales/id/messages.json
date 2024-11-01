@@ -805,10 +805,6 @@
   "buyNow": {
     "message": "Beli Sekarang"
   },
-  "buyToken": {
-    "message": "Beli $1",
-    "description": "$1 is the token symbol"
-  },
   "bytes": {
     "message": "Byte"
   },
@@ -1883,13 +1879,6 @@
   "functionType": {
     "message": "Jenis fungsi"
   },
-  "fundYourWallet": {
-    "message": "Danai dompet Anda"
-  },
-  "fundYourWalletDescription": {
-    "message": "Mulailah dengan menambahkan sejumlah $1 ke dompet Anda.",
-    "description": "$1 is the token symbol"
-  },
   "gas": {
     "message": "Gas"
   },
@@ -1972,14 +1961,6 @@
   },
   "genericExplorerView": {
     "message": "Lihat akun di $1"
-  },
-  "getStartedWithNFTs": {
-    "message": "Dapatkan $1 untuk membeli NFT",
-    "description": "$1 is the token symbol"
-  },
-  "getStartedWithNFTsDescription": {
-    "message": "Mulailah menggunakan NFT dengan menambahkan sejumlah $1 ke dompet Anda.",
-    "description": "$1 is the token symbol"
   },
   "goBack": {
     "message": "Kembali"
@@ -4993,14 +4974,6 @@
   },
   "stake": {
     "message": "Stake"
-  },
-  "startYourJourney": {
-    "message": "Mulailah perjalanan Anda dengan $1",
-    "description": "$1 is the token symbol"
-  },
-  "startYourJourneyDescription": {
-    "message": "Mulailah dengan web3 dengan menambahkan sejumlah $1 ke dompet Anda.",
-    "description": "$1 is the token symbol"
   },
   "stateLogError": {
     "message": "Terjadi kesalahan pada log status pengambilan."

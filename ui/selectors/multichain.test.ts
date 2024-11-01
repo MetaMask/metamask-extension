@@ -105,7 +105,7 @@ function getEvmState(chainId: Hex = CHAIN_IDS.MAINNET): TestState {
       rates: {
         btc: {
           conversionDate: 0,
-          conversionRate: '100000',
+          conversionRate: 100000,
         },
       },
     },
