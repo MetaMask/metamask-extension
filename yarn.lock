@@ -4663,9 +4663,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask-previews/assets-controllers@npm:41.0.0-preview-699c6b6a":
-  version: 41.0.0-preview-699c6b6a
-  resolution: "@metamask-previews/assets-controllers@npm:41.0.0-preview-699c6b6a"
+"@metamask-previews/assets-controllers@npm:41.0.0-preview-db2c53b":
+  version: 41.0.0-preview-db2c53b
+  resolution: "@metamask-previews/assets-controllers@npm:41.0.0-preview-db2c53b"
   dependencies:
     "@ethereumjs/util": "npm:^8.1.0"
     "@ethersproject/address": "npm:^5.7.0"
@@ -4697,7 +4697,7 @@ __metadata:
     "@metamask/keyring-controller": ^17.0.0
     "@metamask/network-controller": ^22.0.0
     "@metamask/preferences-controller": ^13.0.0
-  checksum: 10/f4f67269cb369faebf38fc5ed8318b65bfc4e4370506655c1da5f4b7353f99ecf04a33b4d06fc7d9743fc948c30101518206a6a0ed8bebcbe1fab4bf5d6c8dc9
+  checksum: 10/e2cd6586c1deb1c7f1f2afdd5e681b27126bc23e94da8fad936bcab97ec43a9dcea042d07851192f90ab9ca5283dd775808d19391ba5659564191267e52d5189
   languageName: node
   linkType: hard
 
@@ -4810,9 +4810,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/assets-controllers@patch:@metamask-previews/assets-controllers@41.0.0-preview-699c6b6a#~/.yarn/patches/@metamask-assets-controllers-npm-41.0.0-57b3d695bb.patch":
-  version: 41.0.0-preview-699c6b6a
-  resolution: "@metamask/assets-controllers@patch:@metamask-previews/assets-controllers@npm%3A41.0.0-preview-699c6b6a#~/.yarn/patches/@metamask-assets-controllers-npm-41.0.0-57b3d695bb.patch::version=41.0.0-preview-699c6b6a&hash=e14ff8"
+"@metamask/assets-controllers@patch:@metamask-previews/assets-controllers@41.0.0-preview-db2c53b#~/.yarn/patches/@metamask-assets-controllers-npm-41.0.0-57b3d695bb.patch":
+  version: 41.0.0-preview-db2c53b
+  resolution: "@metamask/assets-controllers@patch:@metamask-previews/assets-controllers@npm%3A41.0.0-preview-db2c53b#~/.yarn/patches/@metamask-assets-controllers-npm-41.0.0-57b3d695bb.patch::version=41.0.0-preview-db2c53b&hash=e14ff8"
   dependencies:
     "@ethereumjs/util": "npm:^8.1.0"
     "@ethersproject/address": "npm:^5.7.0"
@@ -4844,7 +4844,7 @@ __metadata:
     "@metamask/keyring-controller": ^17.0.0
     "@metamask/network-controller": ^22.0.0
     "@metamask/preferences-controller": ^13.0.0
-  checksum: 10/ace49a17c67c01371a9402db3891d1373a89eeab75e8c1c51cf5186b66c5271734749fa4c4b5ed308796defd104cd053cc75ea83e7c326d2de273a2638f735f0
+  checksum: 10/1b3d04626e1ff712daa47e135fa0533556c076803af0ad45f9bae62882120661068700dfcadc3aa17d90a37bbbac6ae2b856056ea01413d8d01956b1d3e01bcb
   languageName: node
   linkType: hard
 

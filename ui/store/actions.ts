@@ -4558,15 +4558,13 @@ export async function currencyRateStopPollingByPollingToken(
 /**
  * Informs the TokenRatesController that the UI requires token rate polling
  *
- * @param networkClientId
+ * @param chainId - The chain id to poll token rates on.
  * @returns polling token that can be used to stop polling
  */
-export async function tokenRatesStartPolling(
-  networkClientId: string,
-): Promise<string> {
+export async function tokenRatesStartPolling(chainId: string): Promise<string> {
   const pollingToken = await submitRequestToBackground(
     'tokenRatesStartPolling',
-    [{ networkClientId }],
+    [{ chainId }],
   );
   // todo needed?
   await addPollingTokenToAppState(pollingToken);
