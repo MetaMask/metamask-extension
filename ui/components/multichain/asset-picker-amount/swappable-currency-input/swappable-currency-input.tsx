@@ -105,6 +105,7 @@ export function SwappableCurrencyInput({
       asset={asset?.details}
       isSkeleton={isAmountLoading}
       isMatchingUpstream={isSetToMax}
+      privacyModeExempt
     />
   );
 
