@@ -2852,8 +2852,8 @@
         "fetch": true
       },
       "packages": {
-        "@metamask/snaps-sdk>@metamask/rpc-errors": true,
-        "@metamask/utils": true,
+        "@metamask/rpc-errors": true,
+        "@metamask/snaps-sdk>@metamask/utils": true,
         "@metamask/utils>@metamask/superstruct": true
       }
     },
@@ -2866,10 +2866,19 @@
         "@noble/hashes": true
       }
     },
-    "@metamask/snaps-sdk>@metamask/rpc-errors": {
+    "@metamask/snaps-sdk>@metamask/utils": {
+      "globals": {
+        "TextDecoder": true,
+        "TextEncoder": true
+      },
       "packages": {
-        "@metamask/rpc-errors>fast-safe-stringify": true,
-        "@metamask/utils": true
+        "@metamask/utils>@metamask/superstruct": true,
+        "@metamask/utils>@scure/base": true,
+        "@metamask/utils>pony-cause": true,
+        "@noble/hashes": true,
+        "browserify>buffer": true,
+        "nock>debug": true,
+        "semver": true
       }
     },
     "@metamask/snaps-utils": {
