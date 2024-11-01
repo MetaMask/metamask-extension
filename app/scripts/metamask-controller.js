@@ -155,8 +155,11 @@ import {
   NotificationServicesPushController,
   NotificationServicesController,
 } from '@metamask/notification-services-controller';
-import { isProduction } from '../../shared/modules/environment';
-import { methodsRequiringNetworkSwitch } from '../../shared/constants/methods-tags';
+import {
+  methodsRequiringNetworkSwitch,
+  methodsThatCanSwitchNetworkWithoutApproval,
+  methodsThatShouldBeEnqueued,
+} from '../../shared/constants/methods-tags';
 
 ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
 import { toChecksumHexAddress } from '../../shared/modules/hexstring-utils';
@@ -485,22 +488,6 @@ export default class MetamaskController extends EventEmitter {
       this.approvalController.clear(providerErrors.userRejectedRequest());
     };
 
-    this.queuedRequestController = new QueuedRequestController({
-      messenger: this.controllerMessenger.getRestricted({
-        name: 'QueuedRequestController',
-        allowedActions: [
-          'NetworkController:getState',
-          'NetworkController:setActiveNetwork',
-          'SelectedNetworkController:getNetworkClientIdForDomain',
-        ],
-        allowedEvents: ['SelectedNetworkController:stateChange'],
-      }),
-      shouldRequestSwitchNetwork: ({ method }) =>
-        methodsRequiringNetworkSwitch.includes(method),
-      clearPendingConfirmations,
-      showApprovalRequest: opts.showUserConfirmation,
-    });
-
     this.approvalController = new ApprovalController({
       messenger: this.controllerMessenger.getRestricted({
         name: 'ApprovalController',
@@ -514,6 +501,28 @@ export default class MetamaskController extends EventEmitter {
         ApprovalType.EthGetEncryptionPublicKey,
         ApprovalType.EthDecrypt,
       ],
+    });
+
+    this.queuedRequestController = new QueuedRequestController({
+      messenger: this.controllerMessenger.getRestricted({
+        name: 'QueuedRequestController',
+        allowedActions: [
+          'NetworkController:getState',
+          'NetworkController:setActiveNetwork',
+          'SelectedNetworkController:getNetworkClientIdForDomain',
+        ],
+        allowedEvents: ['SelectedNetworkController:stateChange'],
+      }),
+      shouldRequestSwitchNetwork: ({ method }) =>
+        methodsRequiringNetworkSwitch.includes(method),
+      canRequestSwitchNetworkWithoutApproval: ({ method }) =>
+        methodsThatCanSwitchNetworkWithoutApproval.includes(method),
+      clearPendingConfirmations,
+      showApprovalRequest: () => {
+        if (this.approvalController.getTotalApprovalCount() > 0) {
+          opts.showUserConfirmation();
+        }
+      },
     });
 
     ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
@@ -867,13 +876,13 @@ export default class MetamaskController extends EventEmitter {
       messenger: currencyRateMessenger,
       state: initState.CurrencyController,
     });
-    const initialFetchExchangeRate =
-      this.currencyRateController.fetchExchangeRate.bind(
+    const initialFetchMultiExchangeRate =
+      this.currencyRateController.fetchMultiExchangeRate.bind(
         this.currencyRateController,
       );
-    this.currencyRateController.fetchExchangeRate = (...args) => {
+    this.currencyRateController.fetchMultiExchangeRate = (...args) => {
       if (this.preferencesController.state.useCurrencyRateCheck) {
-        return initialFetchExchangeRate(...args);
+        return initialFetchMultiExchangeRate(...args);
       }
       return {
         conversionRate: null,
@@ -1569,7 +1578,7 @@ export default class MetamaskController extends EventEmitter {
         },
       },
       env: {
-        isAccountSyncingEnabled: !isProduction() && isManifestV3,
+        isAccountSyncingEnabled: isManifestV3,
       },
       messenger: this.controllerMessenger.getRestricted({
         name: 'UserStorageController',
@@ -1798,7 +1807,7 @@ export default class MetamaskController extends EventEmitter {
 
     this.alertController = new AlertController({
       state: initState.AlertController,
-      controllerMessenger: this.controllerMessenger.getRestricted({
+      messenger: this.controllerMessenger.getRestricted({
         name: 'AlertController',
         allowedEvents: ['AccountsController:selectedAccountChange'],
         allowedActions: ['AccountsController:getSelectedAccount'],
@@ -1990,11 +1999,9 @@ export default class MetamaskController extends EventEmitter {
           `${this.keyringController.name}:signPersonalMessage`,
           `${this.keyringController.name}:signTypedMessage`,
           `${this.loggingController.name}:add`,
+          `${this.networkController.name}:getNetworkClientById`,
         ],
       }),
-      getAllState: this.getState.bind(this),
-      getCurrentChainId: () =>
-        getCurrentChainId({ metamask: this.networkController.state }),
       trace,
     });
 
@@ -2122,7 +2129,7 @@ export default class MetamaskController extends EventEmitter {
 
     const bridgeControllerMessenger = this.controllerMessenger.getRestricted({
       name: BRIDGE_CONTROLLER_NAME,
-      allowedActions: [],
+      allowedActions: ['AccountsController:getSelectedAccount'],
       allowedEvents: [],
     });
     this.bridgeController = new BridgeController({
@@ -2386,7 +2393,7 @@ export default class MetamaskController extends EventEmitter {
       AddressBookController: this.addressBookController,
       CurrencyController: this.currencyRateController,
       NetworkController: this.networkController,
-      AlertController: this.alertController.store,
+      AlertController: this.alertController,
       OnboardingController: this.onboardingController,
       PermissionController: this.permissionController,
       PermissionLogController: this.permissionLogController,
@@ -2440,7 +2447,7 @@ export default class MetamaskController extends EventEmitter {
           this.metaMetricsDataDeletionController,
         AddressBookController: this.addressBookController,
         CurrencyController: this.currencyRateController,
-        AlertController: this.alertController.store,
+        AlertController: this.alertController,
         OnboardingController: this.onboardingController,
         PermissionController: this.permissionController,
         PermissionLogController: this.permissionLogController,
@@ -3924,6 +3931,11 @@ export default class MetamaskController extends EventEmitter {
           this.controllerMessenger,
           `${BRIDGE_CONTROLLER_NAME}:${BridgeUserAction.SELECT_DEST_NETWORK}`,
         ),
+      [BridgeUserAction.UPDATE_QUOTE_PARAMS]:
+        this.controllerMessenger.call.bind(
+          this.controllerMessenger,
+          `${BRIDGE_CONTROLLER_NAME}:${BridgeUserAction.UPDATE_QUOTE_PARAMS}`,
+        ),
 
       // Smart Transactions
       fetchSmartTransactionFees: smartTransactionsController.getFees.bind(
@@ -3984,10 +3996,9 @@ export default class MetamaskController extends EventEmitter {
       ),
 
       // CurrencyRateController
-      currencyRateStartPollingByNetworkClientId:
-        currencyRateController.startPollingByNetworkClientId.bind(
-          currencyRateController,
-        ),
+      currencyRateStartPolling: currencyRateController.startPolling.bind(
+        currencyRateController,
+      ),
       currencyRateStopPollingByPollingToken:
         currencyRateController.stopPollingByPollingToken.bind(
           currencyRateController,
@@ -5630,7 +5641,7 @@ export default class MetamaskController extends EventEmitter {
         this.preferencesController,
       ),
       shouldEnqueueRequest: (request) => {
-        return methodsRequiringNetworkSwitch.includes(request.method);
+        return methodsThatShouldBeEnqueued.includes(request.method);
       },
     });
     engine.push(requestQueueMiddleware);
