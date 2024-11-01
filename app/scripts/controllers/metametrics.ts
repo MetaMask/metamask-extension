@@ -32,6 +32,7 @@ import { ENVIRONMENT_TYPE_BACKGROUND } from '../../../shared/constants/app';
 import {
   METAMETRICS_ANONYMOUS_ID,
   METAMETRICS_BACKGROUND_PAGE_OBJECT,
+  MetaMetricsEventCategory,
   MetaMetricsEventName,
   MetaMetricsEventFragment,
   MetaMetricsUserTrait,
@@ -312,7 +313,11 @@ export default class MetaMetricsController {
     // fragments that are not marked as persistent will be purged and the
     // failure event will be emitted.
     Object.values(abandonedFragments).forEach((fragment) => {
-      this.finalizeEventFragment(fragment.id, { abandoned: true });
+      if (fragment.canThrowAwayIfAbandoned) {
+        this.deleteEventFragment(fragment.id);
+      } else {
+        this.finalizeEventFragment(fragment.id, { abandoned: true });
+      }
     });
 
     // Code below submits any pending segmentApiCalls to Segment if/when the controller is re-instantiated
@@ -368,7 +373,11 @@ export default class MetaMetricsController {
         fragment.lastUpdated &&
         Date.now() - fragment.lastUpdated / 1000 > fragment.timeout
       ) {
-        this.finalizeEventFragment(fragment.id, { abandoned: true });
+        if (fragment.canThrowAwayIfAbandoned) {
+          this.deleteEventFragment(fragment.id);
+        } else {
+          this.finalizeEventFragment(fragment.id, { abandoned: true });
+        }
       }
     });
   }
@@ -409,11 +418,30 @@ export default class MetaMetricsController {
     const { fragments } = this.store.getState();
 
     const id = options.uniqueIdentifier ?? uuidv4();
-    const fragment = {
+    let fragment = {
       id,
       ...options,
       lastUpdated: Date.now(),
     };
+
+    /**
+     * HACK: "transaction-submitted-<id>" fragment hack
+     * A "transaction-submitted-<id>" fragment may exist following the "Transaction Added"
+     * event to persist accumulated event fragment props to the "Transaction Submitted" event
+     * which fires after a user confirms a transaction. Rejecting a confirmation does not fire the
+     * "Transaction Submitted" event. In this case, these abandoned fragments will be deleted
+     * instead of finalized with canThrowAwayIfAbandoned set to true.
+     */
+    const hasExistingSubmittedFragment =
+      options.initialEvent === TransactionMetaMetricsEvent.submitted &&
+      fragments[id];
+
+    if (hasExistingSubmittedFragment) {
+      fragment = merge(fragments[id], fragment, {
+        canThrowAwayIfAbandoned: false,
+      });
+    }
+
     this.store.updateState({
       fragments: {
         ...fragments,
@@ -470,7 +498,22 @@ export default class MetaMetricsController {
     const fragment = fragments[id];
 
     if (!fragment) {
-      throw new Error(`Event fragment with id ${id} does not exist.`);
+      if (!id.includes('transaction-submitted-')) {
+        throw new Error(`Event fragment with id ${id} does not exist.`);
+      }
+
+      /**
+       * HACK: "transaction-submitted-<id>" fragment hack
+       * Creates a "transaction-submitted-<id>" fragment if it does not exist to persist
+       * accumulated event metrics. In the case it is unused, the abandoned fragment will
+       * eventually be deleted with canThrowAwayIfAbandoned set to true.
+       */
+      fragments[id] = {
+        canThrowAwayIfAbandoned: true,
+        category: MetaMetricsEventCategory.Transactions,
+        successEvent: TransactionMetaMetricsEvent.finalized,
+        id,
+      };
     }
 
     this.store.updateState({
@@ -482,6 +525,19 @@ export default class MetaMetricsController {
         }),
       },
     });
+  }
+
+  /**
+   * Deletes an event fragment from state
+   *
+   * @param id - The fragment id to delete
+   */
+  deleteEventFragment(id: string): void {
+    const { fragments } = this.store.getState();
+
+    if (!fragments[id]) {
+      delete fragments[id];
+    }
   }
 
   /**

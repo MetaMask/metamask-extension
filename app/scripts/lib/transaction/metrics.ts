@@ -528,7 +528,12 @@ function createTransactionEventFragment({
       transactionMetricsRequest.getEventFragmentById,
       eventName,
       transactionMeta,
-    )
+    ) &&
+    /**
+     * HACK: "transaction-submitted-<id>" fragment hack
+     * can continue to createEventFragment if "transaction-submitted-<id>"  submitted fragment exists
+     */
+    eventName !== TransactionMetaMetricsEvent.submitted
   ) {
     return;
   }

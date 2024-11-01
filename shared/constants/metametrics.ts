@@ -247,6 +247,13 @@ export type MetaMetricsEventFragment = {
    * The event name.
    */
   event?: string;
+
+  /**
+   * HACK: "transaction-submitted-<id>" fragment hack
+   * If this is true and the fragment is found as an abandoned fragment,
+   * then delete the fragment instead of finalizing it.
+   */
+  canThrowAwayIfAbandoned?: boolean;
 };
 
 /**
