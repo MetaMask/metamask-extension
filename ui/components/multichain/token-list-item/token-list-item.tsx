@@ -47,6 +47,8 @@ import {
   getMultichainCurrentChainId,
   getMultichainCurrentNetwork,
   getMultichainIsEvm,
+  getRpcPrefs,
+  MultichainState,
 } from '../../../selectors/multichain';
 import Tooltip from '../../ui/tooltip';
 import { useI18nContext } from '../../../hooks/useI18nContext';
@@ -104,6 +106,9 @@ export const TokenListItem = ({
   const isEvm = useSelector(getMultichainIsEvm);
   const trackEvent = useContext(MetaMetricsContext);
   const chainId = useSelector(getMultichainCurrentChainId);
+  const rpcPrefs = useSelector((state) =>
+    getRpcPrefs(state as MultichainState, chainId),
+  );
   const metaMetricsId = useSelector(getMetaMetricsId);
   const isMetaMetricsEnabled = useSelector(getParticipateInMetaMetrics);
   const isMarketingEnabled = useSelector(getDataCollectionForMarketing);
@@ -261,7 +266,7 @@ export const TokenListItem = ({
             <AvatarNetwork
               size={AvatarNetworkSize.Xs}
               name={currentNetwork?.nickname || ''}
-              src={currentNetwork?.rpcPrefs?.imageUrl}
+              src={rpcPrefs?.imageUrl}
               backgroundColor={testNetworkBackgroundColor}
               className="multichain-token-list-item__badge__avatar-network"
             />

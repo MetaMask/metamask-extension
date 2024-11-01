@@ -72,6 +72,7 @@ export default function TokenList({ onTokenClick }: TokenListProps) {
             ...token,
             balance,
             tokenFiatAmount,
+            chainId,
             string: balance.toString(),
           });
         });

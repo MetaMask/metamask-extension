@@ -371,6 +371,51 @@ function getBtcCachedBalance(state: MultichainState) {
   return balances?.[account.id]?.[asset]?.amount;
 }
 
+export function getRpcPrefs(state: MultichainState, chainId: string) {
+  const networkConfigurations = getNetworkConfigurationsByChainId(state);
+
+  let chainIdHex;
+  if (chainId.startsWith('0x')) {
+    chainIdHex = chainId.toLowerCase();
+  } else {
+    chainIdHex = `0x${parseInt(chainId, 10).toString(16)}`;
+  }
+
+  let matchingNetworkConfig = null;
+  for (const networkConfig of Object.values(networkConfigurations)) {
+    const isHex = networkConfig.chainId.startsWith('0x');
+    const networkChainIdHex = isHex
+      ? networkConfig.chainId.toLowerCase()
+      : `0x${parseInt(networkConfig.chainId, 10).toString(16)}`;
+
+    if (networkChainIdHex === chainIdHex) {
+      matchingNetworkConfig = networkConfig;
+      break;
+    }
+  }
+
+  if (!matchingNetworkConfig) {
+    return null;
+  }
+
+  let blockExplorerUrl;
+  if (
+    Array.isArray(matchingNetworkConfig.blockExplorerUrls) &&
+    matchingNetworkConfig.blockExplorerUrls.length > 0
+  ) {
+    const explorerIndex =
+      matchingNetworkConfig.defaultBlockExplorerUrlIndex ?? 0;
+    blockExplorerUrl = matchingNetworkConfig.blockExplorerUrls[explorerIndex];
+  }
+
+  const rpcPrefs = {};
+  if (blockExplorerUrl) {
+    rpcPrefs.blockExplorerUrl = blockExplorerUrl;
+  }
+
+  return rpcPrefs;
+}
+
 // This selector is not compatible with `useMultichainSelector` since it uses the selected
 // account implicitly!
 export function getMultichainSelectedAccountCachedBalance(
