@@ -313,7 +313,7 @@ export default class MetaMetricsController {
     // fragments that are not marked as persistent will be purged and the
     // failure event will be emitted.
     Object.values(abandonedFragments).forEach((fragment) => {
-      if (fragment.canThrowAwayIfAbandoned) {
+      if (fragment.canDeleteIfAbandoned) {
         this.deleteEventFragment(fragment.id);
       } else {
         this.finalizeEventFragment(fragment.id, { abandoned: true });
@@ -373,7 +373,7 @@ export default class MetaMetricsController {
         fragment.lastUpdated &&
         Date.now() - fragment.lastUpdated / 1000 > fragment.timeout
       ) {
-        if (fragment.canThrowAwayIfAbandoned) {
+        if (fragment.canDeleteIfAbandoned) {
           this.deleteEventFragment(fragment.id);
         } else {
           this.finalizeEventFragment(fragment.id, { abandoned: true });
@@ -430,7 +430,7 @@ export default class MetaMetricsController {
      * event to persist accumulated event fragment props to the "Transaction Submitted" event
      * which fires after a user confirms a transaction. Rejecting a confirmation does not fire the
      * "Transaction Submitted" event. In this case, these abandoned fragments will be deleted
-     * instead of finalized with canThrowAwayIfAbandoned set to true.
+     * instead of finalized with canDeleteIfAbandoned set to true.
      */
     const hasExistingSubmittedFragment =
       options.initialEvent === TransactionMetaMetricsEvent.submitted &&
@@ -438,7 +438,7 @@ export default class MetaMetricsController {
 
     if (hasExistingSubmittedFragment) {
       fragment = merge(fragments[id], fragment, {
-        canThrowAwayIfAbandoned: false,
+        canDeleteIfAbandoned: false,
       });
     }
 
@@ -506,10 +506,10 @@ export default class MetaMetricsController {
        * HACK: "transaction-submitted-<id>" fragment hack
        * Creates a "transaction-submitted-<id>" fragment if it does not exist to persist
        * accumulated event metrics. In the case it is unused, the abandoned fragment will
-       * eventually be deleted with canThrowAwayIfAbandoned set to true.
+       * eventually be deleted with canDeleteIfAbandoned set to true.
        */
       fragments[id] = {
-        canThrowAwayIfAbandoned: true,
+        canDeleteIfAbandoned: true,
         category: MetaMetricsEventCategory.Transactions,
         successEvent: TransactionMetaMetricsEvent.finalized,
         id,
