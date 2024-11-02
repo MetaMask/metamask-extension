@@ -6,9 +6,9 @@ import {
   selectERC20TokensByChain,
 } from '../../../../selectors';
 import {
+  isChainIdMainnet,
   getImageForChainId,
   getMultichainIsEvm,
-  getMultichainIsMainnet,
 } from '../../../../selectors/multichain';
 import { TokenListItem } from '../../../multichain';
 import { isEqualCaseInsensitive } from '../../../../../shared/modules/string-utils';
@@ -38,14 +38,15 @@ export default function TokenCell({
 }: TokenCellProps) {
   const currentCurrency = useSelector(getCurrentCurrency);
   const tokenList = useSelector(getTokenList);
-  const isMainnet = useSelector(getMultichainIsMainnet);
   const isEvm = useSelector(getMultichainIsEvm);
   const erc20TokensByChain = useSelector(selectERC20TokensByChain);
+  const isMainnet = chainId ? isChainIdMainnet(chainId) : false;
   const tokenData = Object.values(tokenList).find(
     (token) =>
       isEqualCaseInsensitive(token.symbol, symbol) &&
       isEqualCaseInsensitive(token.address, address),
   );
+
   const title =
     tokenData?.name ||
     (chainId &&
@@ -56,10 +57,6 @@ export default function TokenCell({
     (chainId &&
       erc20TokensByChain?.[chainId]?.data?.[address.toLowerCase()]?.iconUrl) ||
     image;
-
-  if (chainId && erc20TokensByChain?.[chainId]?.data?.[address.toLowerCase()]) {
-    console.log(erc20TokensByChain?.[chainId]?.data?.[address.toLowerCase()]);
-  }
 
   const locale = useSelector(getIntlLocale);
   const formattedFiatBalance = new Intl.NumberFormat(locale, {

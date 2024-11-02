@@ -23,6 +23,7 @@ import { MultichainNativeAssets } from '../../shared/constants/multichain/assets
 import {
   CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP,
   TEST_NETWORK_IDS,
+  CHAIN_IDS,
 } from '../../shared/constants/network';
 import { AccountsState } from './accounts';
 import {
@@ -315,6 +316,10 @@ export function getMultichainDefaultToken(
 export function getMultichainCurrentChainId(state: MultichainState) {
   const { chainId } = getMultichainProviderConfig(state);
   return chainId;
+}
+
+export function isChainIdMainnet(chainId: string) {
+  return chainId === CHAIN_IDS.MAINNET;
 }
 
 export function getMultichainIsMainnet(

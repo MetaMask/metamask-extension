@@ -514,7 +514,7 @@ export function getSelectedAccountTokensAcrossChains(state) {
       const nativeTokenInfo = getNativeTokenInfo(state, chainId);
       tokensByChain[chainId].push({
         ...nativeTokenInfo,
-        // TODO: infer this value to map to marketData
+        // TODO: infer this value
         address: '',
         balance: nativeBalance,
         chainId,
@@ -1532,11 +1532,6 @@ export const getTokenList = createSelector(
   selectERC20Tokens,
   getIsTokenDetectionInactiveOnMainnet,
   (remoteTokenList, isTokenDetectionInactiveOnMainnet) => {
-    console.log('wbtc', {
-      isTokenDetectionInactiveOnMainnet,
-      STATIC_MAINNET_TOKEN_LIST,
-      remoteTokenList,
-    });
     return isTokenDetectionInactiveOnMainnet
       ? STATIC_MAINNET_TOKEN_LIST
       : remoteTokenList;

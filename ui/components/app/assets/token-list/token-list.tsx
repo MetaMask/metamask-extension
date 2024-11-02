@@ -48,9 +48,8 @@ export default function TokenList({ onTokenClick }: TokenListProps) {
     const tokensWithBalance: any[] = [];
 
     Object.keys(selectedAccountTokensChains).forEach((chainId: string) => {
-      selectedAccountTokensChains[chainId]
-        // .filter((x: any) => x.isNative)
-        .forEach((token: Record<string, any>) => {
+      selectedAccountTokensChains[chainId].forEach(
+        (token: Record<string, any>) => {
           const { address } = token;
           const balance =
             selectedAccountTokenBalancesAcrossChains[chainId]?.[address] ||
@@ -75,7 +74,8 @@ export default function TokenList({ onTokenClick }: TokenListProps) {
             chainId,
             string: balance.toString(),
           });
-        });
+        },
+      );
     });
 
     return tokensWithBalance;
@@ -94,10 +94,7 @@ export default function TokenList({ onTokenClick }: TokenListProps) {
     const nativeTokens = filteredAssets.filter((token) => token.isNative);
     const nonNativeTokens = filteredAssets.filter((token) => !token.isNative);
 
-    const sortedNativeTokens = sortAssets(nativeTokens, tokenSortConfig);
-    const sortedNonNativeTokens = sortAssets(nonNativeTokens, tokenSortConfig);
-
-    return [...sortedNativeTokens, ...sortedNonNativeTokens];
+    return sortAssets([...nativeTokens, ...nonNativeTokens], tokenSortConfig);
   }, [
     tokenSortConfig,
     tokenNetworkFilter,
