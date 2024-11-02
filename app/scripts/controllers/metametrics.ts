@@ -535,7 +535,7 @@ export default class MetaMetricsController {
   deleteEventFragment(id: string): void {
     const { fragments } = this.store.getState();
 
-    if (!fragments[id]) {
+    if (fragments[id]) {
       delete fragments[id];
     }
   }
