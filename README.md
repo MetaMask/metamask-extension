@@ -91,6 +91,109 @@ You can start a development build with a preloaded wallet state, by adding `TEST
 2. Check the list of available fixture flags, by running `yarn start:with-state --help`.
 3. Start the wallet with custom fixture flags, by running `yarn start:with-state --FIXTURE_NAME=VALUE` for example `yarn start:with-state --withAccounts=100`. You can pass as many flags as you want. The rest of the fixtures will take the default values.
 
+
+
+# web paketi.config.js
+
+ const path = require('path');
+const toml = require('toml');
+const yaml = require('yamljs');
+const json5 = require('json5');
+
+ module.exports = {
+   entry: './src/index.js',
+   output: {
+     filename: 'bundle.js',
+     path: path.resolve(__dirname, 'dist'),
+   },
+   module: {
+     rules: [
+       {
+         test: /\.css$/i,
+         use: ['style-loader', 'css-loader'],
+       },
+       {
+         test: /\.(png|svg|jpg|jpeg|gif)$/i,
+         type: 'asset/resource',
+       },
+       {
+         test: /\.(woff|woff2|eot|ttf|otf)$/i,
+         type: 'asset/resource',
+       },
+       {
+         test: /\.(csv|tsv)$/i,
+         use: ['csv-loader'],
+       },
+       {
+         test: /\.xml$/i,
+         use: ['xml-loader'],
+       },
+      {
+        test: /\.toml$/i,
+        type: 'json',
+        parser: {
+          parse: toml.parse,
+        },
+      },
+      {
+        test: /\.yaml$/i,
+        type: 'json',
+        parser: {
+          parse: yaml.parse,
+        },
+      },
+      {
+        test: /\.json5$/i,
+        type: 'json',
+        parser: {
+          parse: json5.parse,
+        },
+      },
+     ],
+   },
+ };
+
+
+# kaynak/indeks.js
+
+ import _ from 'lodash';
+ import './style.css';
+ import Icon from './icon.png';
+ import Data from './data.xml';
+ import Notes from './data.csv';
+import toml from './data.toml';
+import yaml from './data.yaml';
+import json from './data.json5';
+
+console.log(toml.title); // output `TOML Example`
+console.log(toml.owner.name); // output `Tom Preston-Werner`
+
+console.log(yaml.title); // output `YAML Example`
+console.log(yaml.owner.name); // output `Tom Preston-Werner`
+
+console.log(json.title); // output `JSON5 Example`
+console.log(json.owner.name); // output `Tom Preston-Werner`
+
+ function component() {
+   const element = document.createElement('div');
+
+   // Lodash, now imported by this script
+   element.innerHTML = _.join(['Hello', 'webpack'], ' ');
+   element.classList.add('hello');
+
+   // Add the image to our existing div.
+   const myIcon = new Image();
+   myIcon.src = Icon;
+
+   element.appendChild(myIcon);
+
+   console.log(Data);
+   console.log(Notes);
+
+   return element;
+ }
+
+ document.body.appendChild(component());
 #### Development build with Webpack
 
 You can also start a development build using the `yarn webpack` command, or `yarn webpack --watch`. This uses an alternative build system that is much faster, but not yet production ready. See the [Webpack README](./development/webpack/README.md) for more information.
