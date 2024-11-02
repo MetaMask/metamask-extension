@@ -497,23 +497,23 @@ export default class MetaMetricsController {
 
     const fragment = fragments[id];
 
-    if (!fragment) {
-      if (!id.includes('transaction-submitted-')) {
-        throw new Error(`Event fragment with id ${id} does not exist.`);
-      }
+    /**
+     * HACK: "transaction-submitted-<id>" fragment hack
+     * Creates a "transaction-submitted-<id>" fragment if it does not exist to persist
+     * accumulated event metrics. In the case it is unused, the abandoned fragment will
+     * eventually be deleted with canDeleteIfAbandoned set to true.
+     */
+    const createIfNotFound = !fragment && id.includes('transaction-submitted-');
 
-      /**
-       * HACK: "transaction-submitted-<id>" fragment hack
-       * Creates a "transaction-submitted-<id>" fragment if it does not exist to persist
-       * accumulated event metrics. In the case it is unused, the abandoned fragment will
-       * eventually be deleted with canDeleteIfAbandoned set to true.
-       */
+    if (createIfNotFound) {
       fragments[id] = {
         canDeleteIfAbandoned: true,
         category: MetaMetricsEventCategory.Transactions,
         successEvent: TransactionMetaMetricsEvent.finalized,
         id,
       };
+    } else if (!fragment) {
+      throw new Error(`Event fragment with id ${id} does not exist.`);
     }
 
     this.store.updateState({
