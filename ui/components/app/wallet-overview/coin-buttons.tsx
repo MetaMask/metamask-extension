@@ -361,7 +361,7 @@ const CoinButtons = ({
         location: 'Home',
         text: 'Buy',
         chain_id: chainId,
-        token_symbol: defaultSwapsToken ?? null,
+        token_symbol: defaultSwapsToken,
       },
     });
   }, [chainId, defaultSwapsToken]);
