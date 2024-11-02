@@ -25,11 +25,11 @@ import { CHAIN_IDS } from '../../../shared/constants/network';
 import { LedgerTransportTypes } from '../../../shared/constants/hardware-wallets';
 import * as Utils from '../lib/util';
 import { mockNetworkState } from '../../../test/stub/networks';
+import { flushPromises } from '../../../test/lib/timer-helpers';
 import MetaMetricsController, {
   AllowedActions,
   AllowedEvents,
   MetaMetricsControllerOptions,
-  MetaMetricsControllerState,
 } from './metametrics-controller';
 import {
   getDefaultPreferencesControllerState,
@@ -205,8 +205,12 @@ describe('MetaMetricsController', function () {
     it('should generate or return the metametrics id', async function () {
       await withController(
         {
-          participateInMetaMetrics: true,
-          metaMetricsId: null,
+          options: {
+            state: {
+              participateInMetaMetrics: true,
+              metaMetricsId: null,
+            },
+          },
         },
         ({ controller }) => {
           // Starts off being empty.
@@ -229,8 +233,12 @@ describe('MetaMetricsController', function () {
       const spy = jest.spyOn(segmentMock, 'identify');
       await withController(
         {
-          participateInMetaMetrics: true,
-          metaMetricsId: TEST_META_METRICS_ID,
+          options: {
+            state: {
+              participateInMetaMetrics: true,
+              metaMetricsId: TEST_META_METRICS_ID,
+            },
+          },
         },
         ({ controller }) => {
           controller.identify({
@@ -255,8 +263,12 @@ describe('MetaMetricsController', function () {
       const spy = jest.spyOn(segmentMock, 'identify');
       await withController(
         {
-          participateInMetaMetrics: true,
-          metaMetricsId: TEST_META_METRICS_ID,
+          options: {
+            state: {
+              participateInMetaMetrics: true,
+              metaMetricsId: TEST_META_METRICS_ID,
+            },
+          },
         },
         ({ controller }) => {
           controller.identify({
@@ -282,7 +294,11 @@ describe('MetaMetricsController', function () {
       const spy = jest.spyOn(segmentMock, 'identify');
       await withController(
         {
-          participateInMetaMetrics: false,
+          options: {
+            state: {
+              participateInMetaMetrics: false,
+            },
+          },
         },
         ({ controller }) => {
           controller.identify(MOCK_TRAITS);
@@ -295,8 +311,12 @@ describe('MetaMetricsController', function () {
       const spy = jest.spyOn(segmentMock, 'identify');
       await withController(
         {
-          participateInMetaMetrics: true,
-          metaMetricsId: TEST_META_METRICS_ID,
+          options: {
+            state: {
+              participateInMetaMetrics: true,
+              metaMetricsId: TEST_META_METRICS_ID,
+            },
+          },
         },
         ({ controller }) => {
           controller.identify(MOCK_INVALID_TRAITS);
@@ -310,8 +330,12 @@ describe('MetaMetricsController', function () {
     it('should update the value of participateInMetaMetrics', async function () {
       await withController(
         {
-          participateInMetaMetrics: null,
-          metaMetricsId: null,
+          options: {
+            state: {
+              participateInMetaMetrics: null,
+              metaMetricsId: null,
+            },
+          },
         },
         async ({ controller }) => {
           expect(controller.state.participateInMetaMetrics).toStrictEqual(null);
@@ -327,8 +351,12 @@ describe('MetaMetricsController', function () {
     it('should generate and update the metaMetricsId when set to true', async function () {
       await withController(
         {
-          participateInMetaMetrics: null,
-          metaMetricsId: null,
+          options: {
+            state: {
+              participateInMetaMetrics: null,
+              metaMetricsId: null,
+            },
+          },
         },
         async ({ controller }) => {
           expect(controller.state.metaMetricsId).toStrictEqual(null);
@@ -348,10 +376,14 @@ describe('MetaMetricsController', function () {
     it('should nullify the marketingCampaignCookieId when participateInMetaMetrics is toggled off', async function () {
       await withController(
         {
-          participateInMetaMetrics: true,
-          metaMetricsId: TEST_META_METRICS_ID,
-          dataCollectionForMarketing: true,
-          marketingCampaignCookieId: TEST_GA_COOKIE_ID,
+          options: {
+            state: {
+              participateInMetaMetrics: true,
+              metaMetricsId: TEST_META_METRICS_ID,
+              dataCollectionForMarketing: true,
+              marketingCampaignCookieId: TEST_GA_COOKIE_ID,
+            },
+          },
         },
         async ({ controller }) => {
           expect(controller.state.marketingCampaignCookieId).toStrictEqual(
@@ -366,15 +398,19 @@ describe('MetaMetricsController', function () {
     });
   });
 
-  describe('submitEvent', function () {
+  describe('trackEvent', function () {
     it('should not track an event if user is not participating in metametrics', async function () {
       const spy = jest.spyOn(segmentMock, 'track');
       await withController(
         {
-          participateInMetaMetrics: false,
+          options: {
+            state: {
+              participateInMetaMetrics: false,
+            },
+          },
         },
         ({ controller }) => {
-          controller.submitEvent({
+          controller.trackEvent({
             event: 'Fake Event',
             category: 'Unit Test',
             properties: {
@@ -389,11 +425,15 @@ describe('MetaMetricsController', function () {
     it('should track an event if user has not opted in, but isOptIn is true', async function () {
       await withController(
         {
-          participateInMetaMetrics: true,
+          options: {
+            state: {
+              participateInMetaMetrics: true,
+            },
+          },
         },
         ({ controller }) => {
           const spy = jest.spyOn(segmentMock, 'track');
-          controller.submitEvent(
+          controller.trackEvent(
             {
               event: 'Fake Event',
               category: 'Unit Test',
@@ -425,11 +465,15 @@ describe('MetaMetricsController', function () {
     it('should track an event during optin and allow for metaMetricsId override', async function () {
       await withController(
         {
-          participateInMetaMetrics: true,
+          options: {
+            state: {
+              participateInMetaMetrics: true,
+            },
+          },
         },
         ({ controller }) => {
           const spy = jest.spyOn(segmentMock, 'track');
-          controller.submitEvent(
+          controller.trackEvent(
             {
               event: 'Fake Event',
               category: 'Unit Test',
@@ -461,7 +505,7 @@ describe('MetaMetricsController', function () {
     it('should track a legacy event', async function () {
       await withController(({ controller }) => {
         const spy = jest.spyOn(segmentMock, 'track');
-        controller.submitEvent(
+        controller.trackEvent(
           {
             event: 'Fake Event',
             category: 'Unit Test',
@@ -493,7 +537,7 @@ describe('MetaMetricsController', function () {
     it('should track a non legacy event', async function () {
       await withController(({ controller }) => {
         const spy = jest.spyOn(segmentMock, 'track');
-        controller.submitEvent({
+        controller.trackEvent({
           event: 'Fake Event',
           category: 'Unit Test',
           properties: {
@@ -521,7 +565,7 @@ describe('MetaMetricsController', function () {
     it('should immediately flush queue if flushImmediately set to true', async function () {
       await withController(({ controller }) => {
         const spy = jest.spyOn(segmentMock, 'flush');
-        controller.submitEvent(
+        controller.trackEvent(
           {
             event: 'Fake Event',
             category: 'Unit Test',
@@ -533,42 +577,52 @@ describe('MetaMetricsController', function () {
     });
 
     it('should throw if event or category not provided', async function () {
-      await withController(async ({ controller }) => {
-        await expect(
+      await withController(({ controller }) => {
+        expect(() => {
           // eslint-disable-next-line @typescript-eslint/ban-ts-comment
           // @ts-expect-error because we are testing the error case
-          controller.submitEvent({ event: 'test' }),
-        ).rejects.toThrow(/Must specify event and category\./u);
+          controller.trackEvent({ event: 'test' });
+        }).toThrow(/Must specify event and category\./u);
 
-        await expect(
+        expect(() => {
           // eslint-disable-next-line @typescript-eslint/ban-ts-comment
           // @ts-expect-error because we are testing the error case
-          controller.submitEvent({ category: 'test' }),
-        ).rejects.toThrow(/Must specify event and category\./u);
+          controller.trackEvent({ category: 'test' });
+        }).toThrow(/Must specify event and category\./u);
       });
     });
 
     it('should throw if provided sensitiveProperties, when excludeMetaMetricsId is true', async function () {
-      await withController(async ({ controller }) => {
-        await expect(
-          controller.submitEvent(
+      const captureExceptionMock = jest.fn();
+      await withController(
+        {
+          options: {
+            captureException: captureExceptionMock,
+          },
+        },
+        async ({ controller }) => {
+          controller.trackEvent(
             {
               event: 'Fake Event',
               category: 'Unit Test',
               sensitiveProperties: { foo: 'bar' },
             },
             { excludeMetaMetricsId: true },
-          ),
-        ).rejects.toThrow(
-          /sensitiveProperties was specified in an event payload that also set the excludeMetaMetricsId flag/u,
-        );
-      });
+          );
+          await flushPromises();
+          expect(captureExceptionMock).toHaveBeenCalledWith(
+            new Error(
+              'sensitiveProperties was specified in an event payload that also set the excludeMetaMetricsId flag',
+            ),
+          );
+        },
+      );
     });
 
     it('should track sensitiveProperties in a separate, anonymous event', async function () {
       await withController(({ controller }) => {
         const spy = jest.spyOn(segmentMock, 'track');
-        controller.submitEvent({
+        controller.trackEvent({
           event: 'Fake Event',
           category: 'Unit Test',
           sensitiveProperties: { foo: 'bar' },
@@ -614,7 +668,7 @@ describe('MetaMetricsController', function () {
       async (eventType: string, anonEventType: string) => {
         await withController(({ controller }) => {
           const spy = jest.spyOn(segmentMock, 'track');
-          controller.submitEvent({
+          controller.trackEvent({
             event: eventType,
             category: 'Unit Test',
             properties: DEFAULT_EVENT_PROPERTIES,
@@ -641,7 +695,7 @@ describe('MetaMetricsController', function () {
     it('should change "Transaction Added" anonymous event names to "Transaction Added Anon"', async function () {
       await withController(({ controller }) => {
         const spy = jest.spyOn(segmentMock, 'track');
-        controller.submitEvent({
+        controller.trackEvent({
           event: 'Transaction Added',
           category: 'Unit Test',
           sensitiveProperties: { foo: 'bar' },
@@ -667,7 +721,7 @@ describe('MetaMetricsController', function () {
     it('should change "Transaction Submitted" anonymous event names to "Transaction Added Anon"', async function () {
       await withController(({ controller }) => {
         const spy = jest.spyOn(segmentMock, 'track');
-        controller.submitEvent({
+        controller.trackEvent({
           event: 'Transaction Submitted',
           category: 'Unit Test',
           sensitiveProperties: { foo: 'bar' },
@@ -693,7 +747,7 @@ describe('MetaMetricsController', function () {
     it('should change "Transaction Finalized" anonymous event names to "Transaction Added Anon"', async function () {
       await withController(({ controller }) => {
         const spy = jest.spyOn(segmentMock, 'track');
-        controller.submitEvent({
+        controller.trackEvent({
           event: 'Transaction Finalized',
           category: 'Unit Test',
           sensitiveProperties: { foo: 'bar' },
@@ -747,7 +801,11 @@ describe('MetaMetricsController', function () {
     it('should not track a page view if user is not participating in metametrics', async function () {
       await withController(
         {
-          participateInMetaMetrics: false,
+          options: {
+            state: {
+              participateInMetaMetrics: false,
+            },
+          },
         },
         ({ controller }) => {
           const spy = jest.spyOn(segmentMock, 'page');
@@ -765,7 +823,11 @@ describe('MetaMetricsController', function () {
       await withController(
         {
           currentLocale: LOCALE,
-          participateInMetaMetrics: true,
+          options: {
+            state: {
+              participateInMetaMetrics: true,
+            },
+          },
         },
         ({ controller }) => {
           const spy = jest.spyOn(segmentMock, 'page');
@@ -800,7 +862,11 @@ describe('MetaMetricsController', function () {
       await withController(
         {
           currentLocale: LOCALE,
-          participateInMetaMetrics: true,
+          options: {
+            state: {
+              participateInMetaMetrics: true,
+            },
+          },
         },
         ({ controller }) => {
           const spy = jest.spyOn(segmentMock, 'page');
@@ -844,7 +910,7 @@ describe('MetaMetricsController', function () {
     it('should use the actionId as messageId when provided', async function () {
       await withController(({ controller }) => {
         const spy = jest.spyOn(segmentMock, 'track');
-        controller.submitEvent({
+        controller.trackEvent({
           event: 'Fake Event',
           category: 'Unit Test',
           properties: {
@@ -873,7 +939,7 @@ describe('MetaMetricsController', function () {
     it('should append 0x000 to the actionId of anonymized event when tracking sensitiveProperties', async function () {
       await withController(({ controller }) => {
         const spy = jest.spyOn(segmentMock, 'track');
-        controller.submitEvent({
+        controller.trackEvent({
           event: 'Fake Event',
           category: 'Unit Test',
           sensitiveProperties: { foo: 'bar' },
@@ -911,7 +977,7 @@ describe('MetaMetricsController', function () {
     it('should use the uniqueIdentifier as messageId when provided', async function () {
       await withController(({ controller }) => {
         const spy = jest.spyOn(segmentMock, 'track');
-        controller.submitEvent({
+        controller.trackEvent({
           event: 'Fake Event',
           category: 'Unit Test',
           properties: {
@@ -940,7 +1006,7 @@ describe('MetaMetricsController', function () {
     it('should append 0x000 to the uniqueIdentifier of anonymized event when tracking sensitiveProperties', async function () {
       await withController(({ controller }) => {
         const spy = jest.spyOn(segmentMock, 'track');
-        controller.submitEvent({
+        controller.trackEvent({
           event: 'Fake Event',
           category: 'Unit Test',
           sensitiveProperties: { foo: 'bar' },
@@ -980,7 +1046,7 @@ describe('MetaMetricsController', function () {
     it('should combine the uniqueIdentifier and actionId as messageId when both provided', async function () {
       await withController(({ controller }) => {
         const spy = jest.spyOn(segmentMock, 'track');
-        controller.submitEvent({
+        controller.trackEvent({
           event: 'Fake Event',
           category: 'Unit Test',
           properties: { chain_id: 'bar' },
@@ -1008,7 +1074,7 @@ describe('MetaMetricsController', function () {
     it('should append 0x000 to the combined uniqueIdentifier and actionId of anonymized event when tracking sensitiveProperties', async function () {
       await withController(({ controller }) => {
         const spy = jest.spyOn(segmentMock, 'track');
-        controller.submitEvent({
+        controller.trackEvent({
           event: 'Fake Event',
           category: 'Unit Test',
           sensitiveProperties: { foo: 'bar' },
@@ -1469,7 +1535,9 @@ describe('MetaMetricsController', function () {
 
       await withController(
         {
-          segment: segmentInstance,
+          options: {
+            segment: segmentInstance,
+          },
         },
         ({ controller }) => {
           controller.trackPage({}, { isOptInPath: true });
@@ -1483,9 +1551,13 @@ describe('MetaMetricsController', function () {
     it('should update marketingCampaignCookieId in the context when cookieId is available', async function () {
       await withController(
         {
-          participateInMetaMetrics: true,
-          metaMetricsId: TEST_META_METRICS_ID,
-          dataCollectionForMarketing: true,
+          options: {
+            state: {
+              participateInMetaMetrics: true,
+              metaMetricsId: TEST_META_METRICS_ID,
+              dataCollectionForMarketing: true,
+            },
+          },
         },
         ({ controller }) => {
           controller.setMarketingCampaignCookieId(TEST_GA_COOKIE_ID);
@@ -1493,7 +1565,7 @@ describe('MetaMetricsController', function () {
             TEST_GA_COOKIE_ID,
           );
           const spy = jest.spyOn(segmentMock, 'track');
-          controller.submitEvent(
+          controller.trackEvent(
             {
               event: 'Fake Event',
               category: 'Unit Test',
@@ -1529,10 +1601,13 @@ describe('MetaMetricsController', function () {
     it('should nullify the marketingCampaignCookieId when Data collection for marketing is toggled off', async function () {
       await withController(
         {
-          participateInMetaMetrics: true,
-          metaMetricsId: TEST_META_METRICS_ID,
-          dataCollectionForMarketing: true,
-          marketingCampaignCookieId: TEST_GA_COOKIE_ID,
+          options: {
+            state: {
+              metaMetricsId: TEST_META_METRICS_ID,
+              dataCollectionForMarketing: true,
+              marketingCampaignCookieId: TEST_GA_COOKIE_ID,
+            },
+          },
         },
         async ({ controller }) => {
           expect(controller.state.marketingCampaignCookieId).toStrictEqual(
@@ -1550,11 +1625,7 @@ describe('MetaMetricsController', function () {
 
 type WithControllerOptions = {
   currentLocale?: string;
-  participateInMetaMetrics?: MetaMetricsControllerState['participateInMetaMetrics'];
-  metaMetricsId?: MetaMetricsControllerState['metaMetricsId'];
-  dataCollectionForMarketing?: MetaMetricsControllerState['dataCollectionForMarketing'];
-  marketingCampaignCookieId?: MetaMetricsControllerState['marketingCampaignCookieId'];
-  segment?: MetaMetricsControllerOptions['segment'];
+  options?: Partial<MetaMetricsControllerOptions>;
   mockNetworkClientConfigurationsByNetworkClientId?: Record<
     NetworkClientId,
     {
@@ -1589,11 +1660,8 @@ async function withController<ReturnValue>(
 
     const [{ ...rest }, fn] = args.length === 2 ? args : [{}, args[0]];
     const {
-      participateInMetaMetrics = true,
-      metaMetricsId = TEST_META_METRICS_ID,
-      marketingCampaignCookieId = null,
+      options = {},
       currentLocale = LOCALE,
-      segment = segmentMock,
       mockNetworkClientConfigurationsByNetworkClientId = {
         selectedNetworkClientId: {
           chainId: DEFAULT_CHAIN_ID,
@@ -1632,7 +1700,7 @@ async function withController<ReturnValue>(
 
     return fn({
       controller: new MetaMetricsController({
-        segment,
+        segment: segmentMock,
         messenger: controllerMessenger.getRestricted({
           name: 'MetaMetricsController',
           allowedActions: [
@@ -1647,16 +1715,18 @@ async function withController<ReturnValue>(
         }),
         version: '0.0.1',
         environment: 'test',
+        extension: MOCK_EXTENSION,
+        ...options,
         state: {
-          participateInMetaMetrics,
-          metaMetricsId,
-          marketingCampaignCookieId,
+          participateInMetaMetrics: true,
+          metaMetricsId: TEST_META_METRICS_ID,
+          marketingCampaignCookieId: null,
           fragments: {
             testid: SAMPLE_PERSISTED_EVENT,
             testid2: SAMPLE_NON_PERSISTED_EVENT,
           },
+          ...options.state,
         },
-        extension: MOCK_EXTENSION,
       }),
       triggerPreferencesControllerStateChange: (state) =>
         controllerMessenger.publish(

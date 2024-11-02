@@ -518,7 +518,7 @@ describe('useSimulationMetrics', () => {
         properties: {
           asset_address: ADDRESS_MOCK,
           asset_petname: PetnameType.Unknown,
-          asset_symbol: null,
+          asset_symbol: undefined,
           asset_type: AssetType.ERC20,
           fiat_conversion_available: FiatType.Available,
           location: 'confirmation',

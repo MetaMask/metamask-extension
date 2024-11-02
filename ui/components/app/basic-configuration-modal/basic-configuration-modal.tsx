@@ -154,7 +154,6 @@ export function BasicConfigurationModal() {
                         settings_type: 'basic_functionality',
                         old_value: true,
                         new_value: false,
-                        was_notifications_on: null,
                         was_profile_syncing_on: isProfileSyncingEnabled,
                       },
                     }

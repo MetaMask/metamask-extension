@@ -73,8 +73,7 @@ export function QuoteCard({ scrollRef }: QuoteCardProps) {
   const prevBestQuote = useRef(bestQuote);
 
   useEffect(() => {
-    const isQuoteJustLoaded =
-      (bestQuote && prevBestQuote.current === undefined) || false;
+    const isQuoteJustLoaded = bestQuote && prevBestQuote.current === undefined;
 
     prevBestQuote.current = bestQuote;
     // scroll to quote on initial load

@@ -838,10 +838,10 @@ export default class MetaMetricsController extends BaseController<
     options?: MetaMetricsEventOptions,
   ): void {
     // validation is not caught and handled
-    this.validatePayload(payload);
-    this.submitEvent(payload, options).catch((err) =>
-      this.#captureException(err),
-    );
+    this.#validatePayload(payload);
+    this.#submitEvent(payload, options).catch((err) => {
+      this.#captureException(err);
+    });
   }
 
   /**
@@ -853,12 +853,10 @@ export default class MetaMetricsController extends BaseController<
    * @param payload - details of the event
    * @param options - options for handling/routing the event
    */
-  async submitEvent(
+  async #submitEvent(
     payload: MetaMetricsEventPayload,
     options?: MetaMetricsEventOptions,
   ): Promise<void> {
-    this.validatePayload(payload);
-
     if (!this.state.participateInMetaMetrics && !options?.isOptIn) {
       return;
     }
@@ -913,7 +911,7 @@ export default class MetaMetricsController extends BaseController<
    *
    * @param payload - details of the event
    */
-  validatePayload(payload: MetaMetricsEventPayload): void {
+  #validatePayload(payload: MetaMetricsEventPayload): void {
     // event and category are required fields for all payloads
     if (!payload.event || !payload.category) {
       throw new Error(

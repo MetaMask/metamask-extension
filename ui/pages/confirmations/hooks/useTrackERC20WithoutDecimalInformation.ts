@@ -41,7 +41,7 @@ const useTrackERC20WithoutDecimalInformation = (
           category: MetaMetricsEventCategory.Confirmations,
           properties: {
             token_decimals_available: false,
-            asset_address: tokenAddress ?? null,
+            asset_address: tokenAddress,
             asset_type: TokenStandard.ERC20,
             chain_id: chainId,
             location: metricLocation,
