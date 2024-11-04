@@ -6638,7 +6638,7 @@ export default class MetamaskController extends EventEmitter {
 
   /**
    * A method that is called by the background when all instances of metamask are closed.
-   * Currently used to stop polling.
+   * Currently used to stop controller polling.
    */
   onClientClosed() {
     try {
