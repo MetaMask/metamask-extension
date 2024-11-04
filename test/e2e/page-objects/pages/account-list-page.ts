@@ -155,6 +155,16 @@ class AccountListPage {
     await this.driver.clickElement(this.hideUnhideAccountButton);
   }
 
+  /**
+   * Opens the account options menu for the specified account.
+   *
+   * @param accountLabel - The label of the account to open the options menu for.
+   */
+  async openAccountOptionsInAccountList(accountLabel: string): Promise<void> {
+    console.log(`Open account options in account list for account ${accountLabel}`);
+    await this.driver.clickElement(`button[data-testid="account-list-item-menu-button"][aria-label="${accountLabel} Options"]`);
+  }
+
   async openAccountOptionsMenu(): Promise<void> {
     console.log(`Open account option menu`);
     await this.driver.waitForSelector(this.accountListItem);

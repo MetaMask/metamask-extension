@@ -117,6 +117,8 @@ describe('Add account', function () {
         await headerNavbar.check_accountLabel('Account 2');
         await homePage.check_expectedBalanceIsDisplayed();
 
+        await accountListPage.openAccountOptionsInAccountList('Account 1');
+        await driver.assertElementPresent('[data-testid="account-list-menu-remove"]');
 
 
 
