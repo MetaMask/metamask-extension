@@ -8,7 +8,6 @@ import {
   TokenDetectionController,
   TokenListController,
   TokenRatesController,
-  accountTrackerController,
   TokensController,
   CodefiTokenPricesServiceV2,
   RatesController,
