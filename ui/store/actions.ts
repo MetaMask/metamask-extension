@@ -4385,7 +4385,7 @@ export function getNextNonce(
     let nextNonce;
     try {
       nextNonce = await submitRequestToBackground<string>('getNextNonce', [
-        fromAddress ?? address,
+        address,
         networkClientId,
       ]);
     } catch (error) {

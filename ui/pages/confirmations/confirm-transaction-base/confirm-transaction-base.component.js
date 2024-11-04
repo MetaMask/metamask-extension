@@ -237,7 +237,6 @@ export default class ConfirmTransactionBase extends Component {
       transactionStatus === TransactionStatus.confirmed;
 
     if (txData.id !== prevTxData.id) {
-      console.log('--- 1 --- txData.fromAddress', fromAddress);
       getNextNonce(fromAddress);
     }
 
@@ -450,7 +449,6 @@ export default class ConfirmTransactionBase extends Component {
 
       updateCustomNonce(inputValue);
 
-      console.log('--- 2 --- txData.fromAddress', fromAddress);
       getNextNonce(fromAddress);
     };
 
@@ -1046,7 +1044,6 @@ export default class ConfirmTransactionBase extends Component {
       },
     });
 
-    console.log('--- 3 --- txData.fromAddress', fromAddress);
     getNextNonce(fromAddress);
     if (toAddress) {
       tryReverseResolveAddress(toAddress);
