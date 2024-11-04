@@ -347,13 +347,21 @@ function overrideContentSecurityPolicyHeader() {
     ({ responseHeaders, url }) => {
       // Check whether inpage.js is going to be injected into the page or not.
       // There is no reason to modify the headers if we are not injecting inpage.js.
-      if (checkURLForProviderInjection(new URL(url))) {
+      const isInjected = checkURLForProviderInjection(new URL(url));
+
+      // Check if the user has enabled the overrideContentSecurityPolicyHeader preference
+      const isEnabled =
+        controller.preferencesController.state
+          .overrideContentSecurityPolicyHeader;
+
+      if (isInjected && isEnabled) {
         for (const header of responseHeaders) {
           if (header.name.toLowerCase() === 'content-security-policy') {
             header.value = addNonceToCsp(header.value, nonce);
           }
         }
       }
+
       return { responseHeaders };
     },
     { types: ['main_frame', 'sub_frame'], urls: ['http://*/*', 'https://*/*'] },
@@ -510,11 +518,7 @@ async function initialize() {
       // Workaround for Bug #1446231 to override page CSP for inline script nodes injected by extension content scripts
       // https://bugzilla.mozilla.org/show_bug.cgi?id=1446231
       const platformName = getPlatform();
-      if (
-        platformName === PLATFORM_FIREFOX &&
-        controller.preferencesController.state
-          .overrideContentSecurityPolicyHeader
-      ) {
+      if (platformName === PLATFORM_FIREFOX) {
         overrideContentSecurityPolicyHeader();
       }
     }
