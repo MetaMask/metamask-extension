@@ -2583,30 +2583,67 @@ describe('Actions', () => {
     });
   });
 
+  describe('syncNetworks', () => {
+    afterEach(() => {
+      sinon.restore();
+    });
+
+    it('calls syncNetworks in the background', async () => {
+      const store = mockStore();
+
+      const syncNetworksStub = sinon.stub().callsFake((cb) => cb());
+
+      background.getApi.returns({
+        syncNetworks: syncNetworksStub,
+      });
+      setBackgroundConnection(background.getApi());
+
+      await store.dispatch(actions.syncNetworks());
+      expect(syncNetworksStub.calledOnceWith()).toBe(true);
+    });
+  });
+
   describe('deleteAccountSyncingDataFromUserStorage', () => {
     afterEach(() => {
       sinon.restore();
     });
 
-    it('calls deleteAccountSyncingDataFromUserStorage in the background', async () => {
+    it('calls deleteSyncingFeature in the background with `accounts`', async () => {
       const store = mockStore();
 
-      const deleteAccountSyncingDataFromUserStorageStub = sinon
-        .stub()
-        .callsFake((_, cb) => {
-          return cb();
-        });
+      const deleteSyncingFeatureStub = sinon.stub().callsFake((_, cb) => {
+        return cb();
+      });
 
       background.getApi.returns({
-        deleteAccountSyncingDataFromUserStorage:
-          deleteAccountSyncingDataFromUserStorageStub,
+        deleteSyncingFeature: deleteSyncingFeatureStub,
       });
       setBackgroundConnection(background.getApi());
 
       await store.dispatch(actions.deleteAccountSyncingDataFromUserStorage());
-      expect(
-        deleteAccountSyncingDataFromUserStorageStub.calledOnceWith('accounts'),
-      ).toBe(true);
+      expect(deleteSyncingFeatureStub.calledOnceWith('accounts')).toBe(true);
+    });
+  });
+
+  describe('deleteNetworkSyncingDataFromUserStorage', () => {
+    afterEach(() => {
+      sinon.restore();
+    });
+
+    it('calls deleteSyncingFeature in the background with `networks`', async () => {
+      const store = mockStore();
+
+      const deleteSyncingFeatureStub = sinon.stub().callsFake((_, cb) => {
+        return cb();
+      });
+
+      background.getApi.returns({
+        deleteSyncingFeature: deleteSyncingFeatureStub,
+      });
+      setBackgroundConnection(background.getApi());
+
+      await store.dispatch(actions.deleteNetworkSyncingDataFromUserStorage());
+      expect(deleteSyncingFeatureStub.calledOnceWith('networks')).toBe(true);
     });
   });
 

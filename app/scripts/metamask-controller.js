@@ -1566,9 +1566,42 @@ export default class MetamaskController extends EventEmitter {
             });
           },
         },
+        networkSyncing: {
+          onNetworkAdded: (profileId, chainId) => {
+            this.metaMetricsController.trackEvent({
+              category: MetaMetricsEventCategory.ProfileSyncing,
+              event: MetaMetricsEventName.NetworkSyncAdded,
+              properties: {
+                profile_id: profileId,
+                chain_id: chainId,
+              },
+            });
+          },
+          onNetworkUpdated: (profileId, chainId) => {
+            this.metaMetricsController.trackEvent({
+              category: MetaMetricsEventCategory.ProfileSyncing,
+              event: MetaMetricsEventName.NetworkSyncUpdated,
+              properties: {
+                profile_id: profileId,
+                chain_id: chainId,
+              },
+            });
+          },
+          onNetworkRemoved: (profileId, chainId) => {
+            this.metaMetricsController.trackEvent({
+              category: MetaMetricsEventCategory.ProfileSyncing,
+              event: MetaMetricsEventName.NetworkSyncRemoved,
+              properties: {
+                profile_id: profileId,
+                chain_id: chainId,
+              },
+            });
+          },
+        },
       },
       env: {
-        isAccountSyncingEnabled: isManifestV3,
+        isAccountSyncingEnabled: false, // temporarily pausing to test network syncing in isolation
+        isNetworkSyncingEnabled: isManifestV3,
       },
       messenger: this.controllerMessenger.getRestricted({
         name: 'UserStorageController',
@@ -4078,7 +4111,10 @@ export default class MetamaskController extends EventEmitter {
         userStorageController.syncInternalAccountsWithUserStorage.bind(
           userStorageController,
         ),
-      deleteAccountSyncingDataFromUserStorage:
+      syncNetworks: userStorageController.syncNetworks.bind(
+        userStorageController,
+      ),
+      deleteSyncingFeature:
         userStorageController.performDeleteStorageAllFeatureEntries.bind(
           userStorageController,
         ),
