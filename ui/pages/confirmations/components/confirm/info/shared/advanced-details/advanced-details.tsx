@@ -29,10 +29,13 @@ const NonceDetails = () => {
   const dispatch = useDispatch();
 
   useEffect(() => {
-    if (!isSignatureTransactionType(currentConfirmation)) {
+    if (
+      currentConfirmation &&
+      !isSignatureTransactionType(currentConfirmation)
+    ) {
       dispatch(getNextNonce(currentConfirmation.txParams.from));
     }
-  }, [dispatch]);
+  }, [currentConfirmation, dispatch]);
 
   const enableCustomNonce = useSelector(getUseNonceField);
   const nextNonce = useSelector(getNextSuggestedNonce);
