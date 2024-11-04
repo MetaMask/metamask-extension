@@ -1211,6 +1211,10 @@ async function initBundler(bundlerServer, ganacheServer, usePaymaster) {
   }
 }
 
+/**
+ * @deprecated Please use page object functions in `pages/account-list-page`.
+ * @param driver
+ */
 async function removeSelectedAccount(driver) {
   await driver.clickElement('[data-testid="account-menu-icon"]');
   await driver.clickElement(
@@ -1220,6 +1224,10 @@ async function removeSelectedAccount(driver) {
   await driver.clickElement({ text: 'Remove', tag: 'button' });
 }
 
+/**
+ * @deprecated Please use page object functions in `pages/account-list-page`.
+ * @param driver
+ */
 async function getSelectedAccountAddress(driver) {
   await driver.clickElement('[data-testid="account-options-menu-button"]');
   await driver.clickElement('[data-testid="account-list-menu-details"]');
