@@ -2588,30 +2588,12 @@ export default class MetamaskController extends EventEmitter {
     this.accountTrackerController.start();
     this.txController.startIncomingTransactionPolling();
     this.tokenDetectionController.enable();
-<<<<<<< HEAD
-=======
-
-    const preferencesControllerState = this.preferencesController.state;
-
-    if (this.#isTokenListPollingRequired(preferencesControllerState)) {
-      this.tokenListController.start();
-    }
->>>>>>> develop
   }
 
   stopNetworkRequests() {
     this.accountTrackerController.stop();
     this.txController.stopIncomingTransactionPolling();
     this.tokenDetectionController.disable();
-<<<<<<< HEAD
-=======
-
-    const preferencesControllerState = this.preferencesController.state;
-
-    if (this.#isTokenListPollingRequired(preferencesControllerState)) {
-      this.tokenListController.stop();
-    }
->>>>>>> develop
   }
 
   resetStates(resetMethods) {
@@ -3246,10 +3228,7 @@ export default class MetamaskController extends EventEmitter {
       approvalController,
       phishingController,
       tokenRatesController,
-<<<<<<< HEAD
       tokenListController,
-=======
->>>>>>> develop
       // Notification Controllers
       authenticationController,
       userStorageController,
