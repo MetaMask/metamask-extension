@@ -78,7 +78,7 @@ export const NetworkListItem = ({
   };
   const [networkOptionsMenuOpen, setNetworkOptionsMenuOpen] = useState(false);
 
-  const textDirection = useSelector((state) => state.metamask.textDirection);
+  const textDirection = useSelector(({ metamask }) => metamask.textDirection);
 
   const renderButton = () => {
     return onDeleteClick || onEditClick ? (

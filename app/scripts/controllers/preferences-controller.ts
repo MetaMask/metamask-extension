@@ -200,6 +200,7 @@ export const getDefaultPreferencesControllerState =
     identities: {},
     lostIdentities: {},
     forgottenPassword: false,
+    textDirection: 'auto',
     preferences: {
       autoLockTimeLimit: undefined,
       showExtensionInFullSizeView: false,
