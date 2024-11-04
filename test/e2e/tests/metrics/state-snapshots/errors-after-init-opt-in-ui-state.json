@@ -54,6 +54,16 @@
         "conversionDate": "number",
         "conversionRate": 1700,
         "usdConversionRate": 1700
+      },
+      "LineaETH": {
+        "conversionDate": "number",
+        "conversionRate": 1700,
+        "usdConversionRate": 1700
+      },
+      "SepoliaETH": {
+        "conversionDate": "number",
+        "conversionRate": 1700,
+        "usdConversionRate": 1700
       }
     },
     "connectedStatusPopoverHasBeenShown": true,
@@ -187,7 +197,7 @@
     "lastFetchedBlockNumbers": "object",
     "submitHistory": "object",
     "fiatCurrency": "usd",
-    "rates": { "btc": { "conversionDate": 0, "conversionRate": "0" } },
+    "rates": { "btc": { "conversionDate": 0, "conversionRate": 0 } },
     "cryptocurrencies": ["btc"],
     "snaps": "object",
     "jobs": "object",

@@ -4525,15 +4525,15 @@ export async function removePollingTokenFromAppState(pollingToken: string) {
 /**
  * Informs the CurrencyRateController that the UI requires currency rate polling
  *
- * @param networkClientId - unique identifier for the network client
+ * @param nativeCurrencies - An array of native currency symbols
  * @returns polling token that can be used to stop polling
  */
-export async function currencyRateStartPollingByNetworkClientId(
-  networkClientId: string,
+export async function currencyRateStartPolling(
+  nativeCurrencies: string[],
 ): Promise<string> {
   const pollingToken = await submitRequestToBackground(
     'currencyRateStartPolling',
-    [{ networkClientId }],
+    [{ nativeCurrencies }],
   );
   await addPollingTokenToAppState(pollingToken);
   return pollingToken;
