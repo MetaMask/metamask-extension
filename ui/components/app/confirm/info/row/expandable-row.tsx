@@ -47,7 +47,7 @@ export const ConfirmInfoExpandableRow = (
               expandIcon: true,
               expanded,
             })}
-            iconName={IconName.ArrowLeft}
+            iconName={IconName.ArrowUp}
             color={IconColor.primaryDefault}
             size={ButtonIconSize.Sm}
             onClick={handleClick}
