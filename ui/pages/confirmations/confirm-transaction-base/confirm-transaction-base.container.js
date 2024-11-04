@@ -182,7 +182,7 @@ const mapStateToProps = (state, ownProps) => {
   const { txParams = {}, id: transactionId, type } = txData;
   const txId = transactionId || paramsTransactionId;
   const transaction = getUnapprovedTransaction(state, txId) ?? {};
-  const { chainId } = txData;
+  const { chainId } = transaction;
 
   const {
     from: fromAddress,
@@ -279,10 +279,8 @@ const mapStateToProps = (state, ownProps) => {
     txParamsAreDappSuggested(fullTxData);
   const fromAddressIsLedger = isAddressLedger(state, fromAddress);
 
-  const { nativeCurrency } = selectNetworkConfigurationByChainId(
-    state,
-    chainId,
-  );
+  const { nativeCurrency } =
+    selectNetworkConfigurationByChainId(state, chainId) ?? {};
 
   ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
   const accountType = getAccountType(state, fromAddress);
@@ -295,10 +293,8 @@ const mapStateToProps = (state, ownProps) => {
     getIsCustodianPublishesTransactionSupported(state, fromChecksumHexAddress);
   const builtinRpcUrl = CHAIN_ID_TO_RPC_URL_MAP[chainId];
 
-  const { url: customRpcUrl } = selectDefaultRpcEndpointByChainId(
-    state,
-    chainId,
-  );
+  const { url: customRpcUrl } =
+    selectDefaultRpcEndpointByChainId(state, chainId) ?? {};
 
   const rpcUrl = customRpcUrl || builtinRpcUrl;
 
