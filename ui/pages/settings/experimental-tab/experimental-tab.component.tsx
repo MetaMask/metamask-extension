@@ -391,16 +391,7 @@ export default class ExperimentalTab extends PureComponent<ExperimentalTabProps>
         </Text>
         {this.renderToggleSection({
           title: t('solanaSupportToggleTitle'),
-          description: t('solanaSupportToggleDescription', [
-            <a
-              key="btc-account-feedback-form__link-text"
-              href={SurveyUrl.BtcSupport}
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              {t('form')}
-            </a>,
-          ]),
+          description: t('solanaSupportToggleDescription'),
           toggleValue: solanaSupportEnabled,
           toggleCallback: (value) => {
             trackEvent({
