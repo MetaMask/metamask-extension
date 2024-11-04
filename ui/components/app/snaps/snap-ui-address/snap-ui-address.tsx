@@ -21,7 +21,6 @@ export type SnapUIAddressProps = {
   address: string;
   // This is not currently exposed to Snaps.
   avatarSize?: 'xs' | 'sm' | 'md' | 'lg';
-  diameter?: number;
   truncate?: boolean;
   displayName?: boolean;
   avatar?: boolean;
