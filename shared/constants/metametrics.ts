@@ -594,8 +594,6 @@ export enum MetaMetricsEventName {
   AccountPasswordCreated = 'Account Password Created',
   AccountReset = 'Account Reset',
   AccountRenamed = 'Account Renamed',
-  AccountsSyncAdded = 'Accounts Sync Added',
-  AccountsSyncNameUpdated = 'Accounts Sync Name Updated',
   ActivityDetailsOpened = 'Activity Details Opened',
   ActivityDetailsClosed = 'Activity Details Closed',
   AnalyticsPreferenceSelected = 'Analytics Preference Selected',
@@ -829,6 +827,13 @@ export enum MetaMetricsEventName {
   sendSwapQuoteRequested = 'Send Swap Quote Requested',
   sendSwapQuoteReceived = 'Send Swap Quote Received',
   sendTokenModalOpened = 'Send Token Modal Opened',
+
+  // Profile-Sync
+  AccountsSyncAdded = 'Accounts Sync Added',
+  AccountsSyncNameUpdated = 'Accounts Sync Name Updated',
+  NetworkSyncAdded = 'Network Sync Added',
+  NetworkSyncUpdated = 'Network Sync Updated',
+  NetworkSyncRemoved = 'Network Sync Removed',
 }
 
 export enum MetaMetricsEventAccountType {
