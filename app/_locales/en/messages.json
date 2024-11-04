@@ -1824,6 +1824,9 @@
   "editSpendingCapError": {
     "message": "The spending cap can’t exceed $1 decimal digits. Remove decimal digits to continue."
   },
+  "editSpendingCapSpecialCharError": {
+    "message": "Enter numbers only"
+  },
   "enable": {
     "message": "Enable"
   },
@@ -5878,6 +5881,10 @@
   },
   "swapTokenVerifiedOn1SourceTitle": {
     "message": "Potentially inauthentic token"
+  },
+  "swapTokenVerifiedSources": {
+    "message": "Confirmed by $1 sources. Verify on $2.",
+    "description": "$1 the number of sources that have verified the token, $2 points the user to a block explorer as a place they can verify information about the token."
   },
   "swapTooManyDecimalsError": {
     "message": "$1 allows up to $2 decimals",
