@@ -578,9 +578,25 @@ export const getTokenExchangeRates = (state) => {
   );
 };
 
+/**
+ * Get market data for tokens on the current chain
+ *
+ * @param state
+ * @returns {Record<Hex, import('@metamask/assets-controllers').MarketDataDetails>}
+ */
 export const getTokensMarketData = (state) => {
   const chainId = getCurrentChainId(state);
   return state.metamask.marketData?.[chainId];
+};
+
+/**
+ * Get market data for tokens across all chains
+ *
+ * @param state
+ * @returns {Record<Hex, Record<Hex, import('@metamask/assets-controllers').MarketDataDetails>>}
+ */
+export const getMarketData = (state) => {
+  return state.metamask.marketData;
 };
 
 export function getAddressBook(state) {

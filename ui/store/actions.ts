@@ -4556,6 +4556,37 @@ export async function currencyRateStopPollingByPollingToken(
 }
 
 /**
+ * Informs the TokenRatesController that the UI requires
+ * token rate polling for the given chain id.
+ *
+ * @param chainId - The chain id to poll token rates on.
+ * @returns polling token that can be used to stop polling
+ */
+export async function tokenRatesStartPolling(chainId: string): Promise<string> {
+  const pollingToken = await submitRequestToBackground(
+    'tokenRatesStartPolling',
+    [{ chainId }],
+  );
+  await addPollingTokenToAppState(pollingToken);
+  return pollingToken;
+}
+
+/**
+ * Informs the TokenRatesController that the UI no longer
+ * requires token rate polling for the given chain id.
+ *
+ * @param pollingToken -
+ */
+export async function tokenRatesStopPollingByPollingToken(
+  pollingToken: string,
+) {
+  await submitRequestToBackground('tokenRatesStopPollingByPollingToken', [
+    pollingToken,
+  ]);
+  await removePollingTokenFromAppState(pollingToken);
+}
+
+/**
  * Informs the GasFeeController that the UI requires gas fee polling
  *
  * @param networkClientId - unique identifier for the network client
