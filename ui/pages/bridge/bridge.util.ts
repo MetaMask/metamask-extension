@@ -104,8 +104,6 @@ export async function fetchBridgeFeatureFlags(): Promise<BridgeFeatureFlags> {
       [BridgeFeatureFlagsKey.NETWORK_DEST_ALLOWLIST]: rawFeatureFlags[
         BridgeFlag.NETWORK_DEST_ALLOWLIST
       ].map((chainIdDec) => add0x(decimalToHex(chainIdDec))),
-      [BridgeFeatureFlagsKey.APPROVAL_GAS_MULTIPLIER]: approvalGasMultiplier,
-      [BridgeFeatureFlagsKey.BRIDGE_GAS_MULTIPLIER]: bridgeGasMultiplier,
     };
   }
 
@@ -120,8 +118,6 @@ export async function fetchBridgeFeatureFlags(): Promise<BridgeFeatureFlags> {
     [BridgeFeatureFlagsKey.NETWORK_SRC_ALLOWLIST]: [],
     // TODO set default to ALLOWED_BRIDGE_CHAIN_IDS once bridging is live
     [BridgeFeatureFlagsKey.NETWORK_DEST_ALLOWLIST]: [],
-    [BridgeFeatureFlagsKey.APPROVAL_GAS_MULTIPLIER]: {},
-    [BridgeFeatureFlagsKey.BRIDGE_GAS_MULTIPLIER]: {},
   };
 }
 
