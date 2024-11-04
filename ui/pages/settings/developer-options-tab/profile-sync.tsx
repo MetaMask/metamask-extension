@@ -17,21 +17,19 @@ import {
   JustifyContent,
   AlignItems,
 } from '../../../helpers/constants/design-system';
-import { useDeleteAccountSyncingDataFromUserStorage } from '../../../hooks/metamask-notifications/useProfileSyncing';
+import {
+  useDeleteAccountSyncingDataFromUserStorage,
+  useDeleteNetworkSyncingDataFromUserStorage,
+} from '../../../hooks/metamask-notifications/useProfileSyncing';
 
-const AccountSyncDeleteDataFromUserStorage = () => {
-  const [hasDeletedAccountSyncEntries, setHasDeletedAccountSyncEntries] =
-    useState(false);
+type DeleteSettingProps = {
+  onDelete: () => Promise<void>;
+  deleteSuccessful: boolean;
+  title: string;
+  description: string;
+};
 
-  const { dispatchDeleteAccountData } =
-    useDeleteAccountSyncingDataFromUserStorage();
-
-  const handleDeleteAccountSyncingDataFromUserStorage =
-    useCallback(async () => {
-      await dispatchDeleteAccountData();
-      setHasDeletedAccountSyncEntries(true);
-    }, [dispatchDeleteAccountData, setHasDeletedAccountSyncEntries]);
-
+const DeleteSetting = (props: DeleteSettingProps) => {
   return (
     <div className="settings-page__content-padded">
       <Box
@@ -42,22 +40,14 @@ const AccountSyncDeleteDataFromUserStorage = () => {
         gap={4}
       >
         <div className="settings-page__content-item">
-          <span>Account syncing</span>
+          <span>{props.title}</span>
           <div className="settings-page__content-description">
-            Deletes all user storage entries for the current SRP. This can help
-            if you tested Account Syncing early on and have corrupted data. This
-            will not remove internal accounts already created and renamed. If
-            you want to start from scratch with only the first account and
-            restart syncing from this point on, you will need to reinstall the
-            extension after this action.
+            {props.description}
           </div>
         </div>
 
         <div className="settings-page__content-item-col">
-          <Button
-            variant={ButtonVariant.Primary}
-            onClick={handleDeleteAccountSyncingDataFromUserStorage}
-          >
+          <Button variant={ButtonVariant.Primary} onClick={props.onDelete}>
             Reset
           </Button>
         </div>
@@ -74,7 +64,7 @@ const AccountSyncDeleteDataFromUserStorage = () => {
               name={IconName.Check}
               color={IconColor.successDefault}
               size={IconSize.Lg}
-              hidden={!hasDeletedAccountSyncEntries}
+              hidden={!props.deleteSuccessful}
             />
           </Box>
         </div>
@@ -83,13 +73,55 @@ const AccountSyncDeleteDataFromUserStorage = () => {
   );
 };
 
+const useDeleteAccountSyncProps = () => {
+  const [deleteSuccessful, setDeleteSuccessful] = useState(false);
+  const { dispatchDeleteAccountData } =
+    useDeleteAccountSyncingDataFromUserStorage();
+  const onDelete = useCallback(async () => {
+    await dispatchDeleteAccountData();
+    setDeleteSuccessful(true);
+  }, []);
+  return {
+    deleteSuccessful,
+    onDelete,
+    title: 'Account syncing',
+    description: `Deletes all user storage entries for the current SRP. This can help
+            if you tested Account Syncing early on and have corrupted data. This
+            will not remove internal accounts already created and renamed. If
+            you want to start from scratch with only the first account and
+            restart syncing from this point on, you will need to reinstall the
+            extension after this action.`,
+  };
+};
+
+const useDeleteNetworkSyncProps = () => {
+  const [deleteSuccessful, setDeleteSuccessful] = useState(false);
+  const { dispatchDeleteNetworkData } =
+    useDeleteNetworkSyncingDataFromUserStorage();
+  const onDelete = useCallback(async () => {
+    await dispatchDeleteNetworkData();
+    setDeleteSuccessful(true);
+  }, []);
+  return {
+    deleteSuccessful,
+    onDelete,
+    title: 'Network syncing',
+    description: `Deletes all user storage entries for the current SRP. This can help
+            if you tested Network Syncing early on and have corrupted data. This
+            will not remove any networks you currently have on your device. If
+            you want to start from scratch, you will need to reinstall the
+            extension after this action.`,
+  };
+};
+
 export const ProfileSyncDevSettings = () => {
   return (
     <>
       <Text className="settings-page__security-tab-sub-header__bold">
         Profile Sync
       </Text>
-      <AccountSyncDeleteDataFromUserStorage />
+      <DeleteSetting {...useDeleteAccountSyncProps()} />,
+      <DeleteSetting {...useDeleteNetworkSyncProps()} />
     </>
   );
 };
