@@ -72,6 +72,8 @@ describe('BTC Account - Send', function (this: Suite) {
       async (driver, mockServer) => {
         await startSendFlow(driver, DEFAULT_BTC_ACCOUNT);
 
+        // Wait a bit for the inputs to be properly filled on the Snap UI before
+        // hitting the "Max" button.
         await driver.delay(500);
 
         // Use the max spendable amount of that account.

@@ -57,7 +57,7 @@ export const DEFAULT_BTC_FEES_RATE = 0.00001; // BTC
 export const DEFAULT_BTC_CONVERSION_RATE = 62000; // USD
 
 /* Default BTC transaction ID */
-export const DEFAULT_BTC_TRANSACTION_ID = 'mock-transaction-id';
+export const DEFAULT_BTC_TRANSACTION_ID = 'e4111a707317da67d49a71af4cbcf6c0546f900ca32c3842d2254e315d1fca18';
 
 /* Number of sats in 1 BTC */
 export const SATS_IN_1_BTC = 100000000; // sats

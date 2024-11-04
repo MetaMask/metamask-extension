@@ -133,7 +133,7 @@ export async function mockGetUTXO(mockServer: Mockttp) {
         json: {
           result: [
             {
-              txid: 'e4111a707317da67d49a71af4cbcf6c0546f900ca32c3842d2254e315d1fca18',
+              txid: DEFAULT_BTC_TRANSACTION_ID,
               vout: 0,
               value: btcToSats(DEFAULT_BTC_BALANCE).toString(),
               height: 101100110,
