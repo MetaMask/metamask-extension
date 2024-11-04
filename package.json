@@ -1,6 +1,6 @@
 {
   "name": "metamask-crx",
-  "version": "12.5.0",
+  "version": "12.6.0",
   "private": true,
   "repository": {
     "type": "git",
@@ -48,8 +48,8 @@
     "test:unit:coverage": "jest --coverage",
     "test:unit:webpack": "tsx --test development/webpack/test/*.test.ts",
     "test:unit:webpack:coverage": "nyc --reporter=html --reporter=json --reporter=text --report-dir=./coverage/webpack tsx --test development/webpack/test/*.test.ts",
-    "test:integration": "jest --config jest.integration.config.js",
-    "test:integration:coverage": "jest --config jest.integration.config.js --coverage",
+    "test:integration": "npx webpack build --config ./development/webpack/webpack.integration.tests.config.ts && jest --config jest.integration.config.js",
+    "test:integration:coverage": "yarn test:integration --coverage",
     "test:e2e:chrome": "SELENIUM_BROWSER=chrome node test/e2e/run-all.js",
     "test:e2e:chrome:mmi": "SELENIUM_BROWSER=chrome node test/e2e/run-all.js --mmi",
     "test:e2e:chrome:flask": "SELENIUM_BROWSER=chrome node test/e2e/run-all.js --build-type flask",
@@ -286,7 +286,7 @@
     "@metamask/address-book-controller": "^6.0.0",
     "@metamask/announcement-controller": "^7.0.0",
     "@metamask/approval-controller": "^7.0.0",
-    "@metamask/assets-controllers": "patch:@metamask/assets-controllers@npm%3A39.0.0#~/.yarn/patches/@metamask-assets-controllers-npm-39.0.0-57b3d695bb.patch",
+    "@metamask/assets-controllers": "patch:@metamask/assets-controllers@npm%3A41.0.0#~/.yarn/patches/@metamask-assets-controllers-npm-41.0.0-57b3d695bb.patch",
     "@metamask/base-controller": "^7.0.0",
     "@metamask/bitcoin-wallet-snap": "^0.8.2",
     "@metamask/browser-passworder": "^4.3.0",
@@ -333,7 +333,7 @@
     "@metamask/preinstalled-example-snap": "^0.2.0",
     "@metamask/profile-sync-controller": "^0.9.7",
     "@metamask/providers": "^14.0.2",
-    "@metamask/queued-request-controller": "^2.0.0",
+    "@metamask/queued-request-controller": "^7.0.0",
     "@metamask/rate-limit-controller": "^6.0.0",
     "@metamask/rpc-errors": "^7.0.0",
     "@metamask/safe-event-emitter": "^3.1.1",
@@ -602,6 +602,7 @@
     "jest": "^29.7.0",
     "jest-canvas-mock": "^2.3.1",
     "jest-environment-jsdom": "patch:jest-environment-jsdom@npm%3A29.7.0#~/.yarn/patches/jest-environment-jsdom-npm-29.7.0-0b72dd0e0b.patch",
+    "jest-preview": "^0.3.1",
     "jsdom": "^16.7.0",
     "json-schema-to-ts": "^3.0.1",
     "koa": "^2.7.0",
@@ -611,6 +612,7 @@
     "level": "^8.0.1",
     "lockfile-lint": "^4.10.6",
     "loose-envify": "^1.4.0",
+    "mini-css-extract-plugin": "^2.9.1",
     "mocha": "^10.2.0",
     "mocha-junit-reporter": "^2.2.1",
     "mockttp": "^3.10.1",
@@ -668,6 +670,7 @@
     "watchify": "^4.0.0",
     "webextension-polyfill": "^0.8.0",
     "webpack": "^5.91.0",
+    "webpack-cli": "^5.1.4",
     "webpack-dev-server": "^5.0.3",
     "ws": "^8.17.1",
     "yaml": "^2.4.1",
@@ -741,7 +744,8 @@
       "core-js-pure": true,
       "resolve-url-loader>es6-iterator>d>es5-ext": false,
       "resolve-url-loader>es6-iterator>d>es5-ext>esniff>es5-ext": false,
-      "level>classic-level": false
+      "level>classic-level": false,
+      "jest-preview": false
     }
   },
   "packageManager": "yarn@4.4.1"
