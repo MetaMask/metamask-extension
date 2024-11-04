@@ -1798,7 +1798,7 @@ export default class MetamaskController extends EventEmitter {
 
     this.alertController = new AlertController({
       state: initState.AlertController,
-      controllerMessenger: this.controllerMessenger.getRestricted({
+      messenger: this.controllerMessenger.getRestricted({
         name: 'AlertController',
         allowedEvents: ['AccountsController:selectedAccountChange'],
         allowedActions: ['AccountsController:getSelectedAccount'],
@@ -2384,7 +2384,7 @@ export default class MetamaskController extends EventEmitter {
       AddressBookController: this.addressBookController,
       CurrencyController: this.currencyRateController,
       NetworkController: this.networkController,
-      AlertController: this.alertController.store,
+      AlertController: this.alertController,
       OnboardingController: this.onboardingController,
       PermissionController: this.permissionController,
       PermissionLogController: this.permissionLogController,
@@ -2439,7 +2439,7 @@ export default class MetamaskController extends EventEmitter {
           this.metaMetricsDataDeletionController,
         AddressBookController: this.addressBookController,
         CurrencyController: this.currencyRateController,
-        AlertController: this.alertController.store,
+        AlertController: this.alertController,
         OnboardingController: this.onboardingController,
         PermissionController: this.permissionController,
         PermissionLogController: this.permissionLogController,
@@ -2588,12 +2588,30 @@ export default class MetamaskController extends EventEmitter {
     this.accountTrackerController.start();
     this.txController.startIncomingTransactionPolling();
     this.tokenDetectionController.enable();
+<<<<<<< HEAD
+=======
+
+    const preferencesControllerState = this.preferencesController.state;
+
+    if (this.#isTokenListPollingRequired(preferencesControllerState)) {
+      this.tokenListController.start();
+    }
+>>>>>>> develop
   }
 
   stopNetworkRequests() {
     this.accountTrackerController.stop();
     this.txController.stopIncomingTransactionPolling();
     this.tokenDetectionController.disable();
+<<<<<<< HEAD
+=======
+
+    const preferencesControllerState = this.preferencesController.state;
+
+    if (this.#isTokenListPollingRequired(preferencesControllerState)) {
+      this.tokenListController.stop();
+    }
+>>>>>>> develop
   }
 
   resetStates(resetMethods) {
@@ -3228,7 +3246,10 @@ export default class MetamaskController extends EventEmitter {
       approvalController,
       phishingController,
       tokenRatesController,
+<<<<<<< HEAD
       tokenListController,
+=======
+>>>>>>> develop
       // Notification Controllers
       authenticationController,
       userStorageController,
@@ -4002,7 +4023,7 @@ export default class MetamaskController extends EventEmitter {
           tokenRatesController,
         ),
 
-      // TokeListController
+      // TokenListController
       tokenListStartPolling:
         tokenListController.startPolling.bind(tokenListController),
       tokenListStopPollingByPollingToken:
@@ -6633,12 +6654,13 @@ export default class MetamaskController extends EventEmitter {
 
   /**
    * A method that is called by the background when all instances of metamask are closed.
-   * Currently used to stop polling in the gasFeeController.
+   * Currently used to stop controller polling.
    */
   onClientClosed() {
     try {
       this.gasFeeController.stopAllPolling();
       this.currencyRateController.stopAllPolling();
+      this.tokenRatesController.stopAllPolling();
       this.appStateController.clearPollingTokens();
     } catch (error) {
       console.error(error);
