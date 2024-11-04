@@ -11,11 +11,7 @@ import * as backgroundConnection from '../../../../ui/store/background-connectio
 import { integrationTestRender } from '../../../lib/render-helpers';
 import mockMetaMaskState from '../../data/integration-init-state.json';
 import { createMockImplementation } from '../../helpers';
-import { tEn } from '../../../lib/i18n-helpers';
-import {
-  getMetaMaskStateWithUnapprovedPermitSign,
-  verifyDetails,
-} from './signature-helpers';
+import { getMetaMaskStateWithUnapprovedPermitSign } from './signature-helpers';
 
 jest.mock('../../../../ui/store/background-connection', () => ({
   ...jest.requireActual('../../../../ui/store/background-connection'),
