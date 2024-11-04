@@ -1,4 +1,5 @@
 import { useSelector } from 'react-redux';
+import { Hex } from '@metamask/utils';
 import {
   getNetworkConfigurationsByChainId,
   getPreferences,
@@ -10,7 +11,6 @@ import {
   tokenListStopPollingByPollingToken,
 } from '../store/actions';
 import useMultiPolling from './useMultiPolling';
-import { Hex } from '@metamask/utils';
 
 const useTokenListPolling = () => {
   const networkConfigurations = useSelector(getNetworkConfigurationsByChainId);
