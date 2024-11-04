@@ -1,4 +1,6 @@
 import { useDispatch, useSelector } from 'react-redux';
+import { useEffect } from 'react';
+import { TransactionMeta } from '@metamask/transaction-controller';
 import {
   getCurrentChainSupportsSmartTransactions,
   getSmartTransactionsPreferenceEnabled,
@@ -8,9 +10,7 @@ import {
   fetchSmartTransactionsLiveness,
   setSwapsFeatureFlags,
 } from '../../../store/actions';
-import { useEffect } from 'react';
 import { useConfirmContext } from '../context/confirm';
-import { TransactionMeta } from '@metamask/transaction-controller';
 
 export function useSmartTransactionFeatureFlags() {
   const dispatch = useDispatch();

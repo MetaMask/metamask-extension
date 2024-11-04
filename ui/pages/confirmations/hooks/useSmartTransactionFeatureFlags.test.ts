@@ -1,17 +1,17 @@
-import { useSmartTransactionFeatureFlags } from './useSmartTransactionFeatureFlags';
+import { act } from 'react-dom/test-utils';
+import { useDispatch } from 'react-redux';
+import { CHAIN_IDS, TransactionMeta } from '@metamask/transaction-controller';
+import { Hex } from '@metamask/utils';
 import {
   fetchSmartTransactionsLiveness,
   setSwapsFeatureFlags,
 } from '../../../store/actions';
-import { act } from 'react-dom/test-utils';
-import { useDispatch } from 'react-redux';
 import { renderHookWithConfirmContextProvider } from '../../../../test/lib/confirmations/render-helpers';
 import { genUnapprovedContractInteractionConfirmation } from '../../../../test/data/confirmations/contract-interaction';
 import { getMockConfirmStateForTransaction } from '../../../../test/data/confirmations/helper';
-import { CHAIN_IDS, TransactionMeta } from '@metamask/transaction-controller';
 import { mockNetworkState } from '../../../../test/stub/networks';
 import { fetchSwapsFeatureFlags } from '../../swaps/swaps.util';
-import { Hex } from '@metamask/utils';
+import { useSmartTransactionFeatureFlags } from './useSmartTransactionFeatureFlags';
 
 jest.mock('react-redux', () => ({
   ...jest.requireActual('react-redux'),
