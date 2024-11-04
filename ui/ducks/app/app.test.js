@@ -301,4 +301,61 @@ describe('App State', () => {
     });
     expect(state.smartTransactionsError).toStrictEqual('Server Side Error');
   });
+  it('shows delete metametrics modal', () => {
+    const state = reduceApp(metamaskState, {
+      type: actions.DELETE_METAMETRICS_DATA_MODAL_OPEN,
+    });
+
+    expect(state.showDeleteMetaMetricsDataModal).toStrictEqual(true);
+  });
+  it('hides delete metametrics modal', () => {
+    const deleteMetaMetricsDataModalState = {
+      showDeleteMetaMetricsDataModal: true,
+    };
+    const oldState = { ...metamaskState, ...deleteMetaMetricsDataModalState };
+
+    const state = reduceApp(oldState, {
+      type: actions.DELETE_METAMETRICS_DATA_MODAL_CLOSE,
+    });
+
+    expect(state.showDeleteMetaMetricsDataModal).toStrictEqual(false);
+  });
+  it('shows delete metametrics error modal', () => {
+    const state = reduceApp(metamaskState, {
+      type: actions.DATA_DELETION_ERROR_MODAL_OPEN,
+    });
+
+    expect(state.showDataDeletionErrorModal).toStrictEqual(true);
+  });
+  it('hides delete metametrics error modal', () => {
+    const deleteMetaMetricsErrorModalState = {
+      showDataDeletionErrorModal: true,
+    };
+    const oldState = { ...metamaskState, ...deleteMetaMetricsErrorModalState };
+
+    const state = reduceApp(oldState, {
+      type: actions.DATA_DELETION_ERROR_MODAL_CLOSE,
+    });
+
+    expect(state.showDataDeletionErrorModal).toStrictEqual(false);
+  });
+
+  it('displays error in settings', () => {
+    const state = reduceApp(metamaskState, {
+      type: actions.SHOW_SETTINGS_PAGE_ERROR,
+      payload: 'settings page error',
+    });
+
+    expect(state.errorInSettings).toStrictEqual('settings page error');
+  });
+
+  it('hides error in settings', () => {
+    const displayErrorInSettings = { errorInSettings: 'settings page error' };
+    const oldState = { ...metamaskState, ...displayErrorInSettings };
+    const state = reduceApp(oldState, {
+      type: actions.HIDE_SETTINGS_PAGE_ERROR,
+    });
+
+    expect(state.errorInSettings).toBeNull();
+  });
 });

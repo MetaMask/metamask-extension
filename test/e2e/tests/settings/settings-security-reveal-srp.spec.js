@@ -52,10 +52,10 @@ describe('Reveal SRP through settings', function () {
         await tapAndHoldToRevealSRP(driver);
 
         // confirm SRP text matches expected
-        const displayedSRP = await driver.findVisibleElement(
-          '[data-testid="srp_text"]',
-        );
-        assert.equal(await displayedSRP.getText(), E2E_SRP);
+        await driver.waitForSelector({
+          css: '[data-testid="srp_text"]',
+          text: E2E_SRP,
+        });
 
         // copy SRP text to clipboard
         await driver.clickElement({

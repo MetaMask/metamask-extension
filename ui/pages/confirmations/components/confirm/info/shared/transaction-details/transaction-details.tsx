@@ -16,6 +16,10 @@ import { selectPaymasterAddress } from '../../../../../../../selectors/account-a
 import { selectConfirmationAdvancedDetailsOpen } from '../../../../../selectors/preferences';
 import { useConfirmContext } from '../../../../../context/confirm';
 import { useFourByte } from '../../hooks/useFourByte';
+import { ConfirmInfoRowCurrency } from '../../../../../../../components/app/confirm/info/row/currency';
+import { PRIMARY } from '../../../../../../../helpers/constants/common';
+import { useUserPreferencedCurrency } from '../../../../../../../hooks/useUserPreferencedCurrency';
+import { HEX_ZERO } from '../constants';
 
 export const OriginRow = () => {
   const t = useI18nContext();
@@ -52,13 +56,18 @@ export const RecipientRow = () => {
     return null;
   }
 
+  const { chainId } = currentConfirmation;
+
   return (
     <ConfirmInfoRow
       data-testid="transaction-details-recipient-row"
       label={t('interactingWith')}
       tooltip={t('interactingWithTransactionDescription')}
     >
-      <ConfirmInfoRowAddress address={currentConfirmation.txParams.to} />
+      <ConfirmInfoRowAddress
+        address={currentConfirmation.txParams.to}
+        chainId={chainId}
+      />
     </ConfirmInfoRow>
   );
 };
@@ -83,11 +92,35 @@ export const MethodDataRow = () => {
   );
 };
 
+const AmountRow = () => {
+  const t = useI18nContext();
+  const { currentConfirmation } = useConfirmContext<TransactionMeta>();
+  const { currency } = useUserPreferencedCurrency(PRIMARY);
+
+  const value = currentConfirmation?.txParams?.value;
+  const simulationData = currentConfirmation?.simulationData;
+
+  if (!value || value === HEX_ZERO || !simulationData?.error) {
+    return null;
+  }
+
+  return (
+    <ConfirmInfoSection>
+      <ConfirmInfoRow
+        data-testid="transaction-details-amount-row"
+        label={t('amount')}
+      >
+        <ConfirmInfoRowCurrency value={value} currency={currency} />
+      </ConfirmInfoRow>
+    </ConfirmInfoSection>
+  );
+};
+
 const PaymasterRow = () => {
   const t = useI18nContext();
   const { currentConfirmation } = useConfirmContext<TransactionMeta>();
 
-  const { id: userOperationId } = currentConfirmation ?? {};
+  const { id: userOperationId, chainId } = currentConfirmation ?? {};
   const isUserOperation = Boolean(currentConfirmation?.isUserOperation);
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -106,7 +139,7 @@ const PaymasterRow = () => {
         label={t('confirmFieldPaymaster')}
         tooltip={t('confirmFieldTooltipPaymaster')}
       >
-        <ConfirmInfoRowAddress address={paymasterAddress} />
+        <ConfirmInfoRowAddress address={paymasterAddress} chainId={chainId} />
       </ConfirmInfoRow>
     </ConfirmInfoSection>
   );
@@ -124,6 +157,7 @@ export const TransactionDetails = () => {
         <RecipientRow />
         {showAdvancedDetails && <MethodDataRow />}
       </ConfirmInfoSection>
+      <AmountRow />
       <PaymasterRow />
     </>
   );

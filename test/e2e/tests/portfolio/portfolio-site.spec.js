@@ -1,4 +1,3 @@
-const { strict: assert } = require('assert');
 const {
   withFixtures,
   unlockWallet,
@@ -42,10 +41,9 @@ describe('Portfolio site', function () {
         await driver.switchToWindowWithTitle('E2E Test Page', windowHandles);
 
         // Verify site
-        const currentUrl = await driver.getCurrentUrl();
-        const expectedUrl =
-          'https://portfolio.metamask.io/?metamaskEntry=ext_portfolio_button&metametricsId=null&metricsEnabled=false&marketingEnabled=false';
-        assert.equal(currentUrl, expectedUrl);
+        await driver.waitForUrl({
+          url: 'https://portfolio.metamask.io/?metamaskEntry=ext_portfolio_button&metametricsId=null&metricsEnabled=false&marketingEnabled=false',
+        });
       },
     );
   });

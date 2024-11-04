@@ -40,18 +40,22 @@ export default function Asset({
     {},
     true,
   );
+  const formattedAmount = decimalTokenAmount
+    ? `${formatAmount(
+        locale,
+        new BigNumber(decimalTokenAmount || '0', 10),
+      )} ${symbol}`
+    : undefined;
 
   return (
     <TokenListItem
       tokenSymbol={symbol}
       tokenImage={tokenImage}
-      primary={formatAmount(
-        locale,
-        new BigNumber(decimalTokenAmount || '0', 10),
-      )}
-      secondary={formattedFiat}
+      secondary={formattedAmount}
+      primary={formattedFiat}
       title={title}
       tooltipText={tooltipText}
+      isPrimaryTokenSymbolHidden
     />
   );
 }

@@ -34,6 +34,8 @@ import {
   ModalFooter,
   ModalHeader,
   ModalOverlay,
+  SensitiveText,
+  SensitiveTextLength,
   Text,
 } from '../../component-library';
 import {
@@ -81,6 +83,8 @@ type TokenListItemProps = {
   isStakeable?: boolean;
   address?: string | null;
   showPercentage?: boolean;
+  isPrimaryTokenSymbolHidden?: boolean;
+  privacyMode?: boolean;
 };
 
 export const TokenListItem = ({
@@ -93,10 +97,12 @@ export const TokenListItem = ({
   title,
   tooltipText,
   isOriginalTokenSymbol,
+  isPrimaryTokenSymbolHidden = false,
   isNativeCurrency = false,
   isStakeable = false,
   address = null,
   showPercentage = false,
+  privacyMode = false,
 }: TokenListItemProps) => {
   const t = useI18nContext();
   const isEvm = useSelector(getMultichainIsEvm);
@@ -116,9 +122,13 @@ export const TokenListItem = ({
     return undefined;
   });
 
+  // We do not want to display any percentage with non-EVM since we don't have the data for this yet. So
+  // we only use this option for EVM here:
+  const shouldShowPercentage = isEvm && showPercentage;
+
   // Scam warning
   const showScamWarning =
-    isNativeCurrency && !isOriginalTokenSymbol && showPercentage;
+    isNativeCurrency && !isOriginalTokenSymbol && shouldShowPercentage;
 
   const dispatch = useDispatch();
   const [showScamWarningModal, setShowScamWarningModal] = useState(false);
@@ -146,7 +156,9 @@ export const TokenListItem = ({
     : null;
 
   const tokenTitle = getTokenTitle();
-  const tokenMainTitleToDisplay = showPercentage ? tokenTitle : tokenSymbol;
+  const tokenMainTitleToDisplay = shouldShowPercentage
+    ? tokenTitle
+    : tokenSymbol;
 
   const stakeableTitle = (
     <Box
@@ -319,16 +331,7 @@ export const TokenListItem = ({
                 </Text>
               )}
 
-              {isEvm && !showPercentage ? (
-                <Text
-                  variant={TextVariant.bodyMd}
-                  color={TextColor.textAlternative}
-                  data-testid="multichain-token-list-item-token-name"
-                  ellipsis
-                >
-                  {tokenTitle}
-                </Text>
-              ) : (
+              {shouldShowPercentage ? (
                 <PercentageChange
                   value={
                     isNativeCurrency
@@ -341,6 +344,15 @@ export const TokenListItem = ({
                       : (address as `0x${string}`)
                   }
                 />
+              ) : (
+                <Text
+                  variant={TextVariant.bodyMd}
+                  color={TextColor.textAlternative}
+                  data-testid="multichain-token-list-item-token-name"
+                  ellipsis
+                >
+                  {tokenTitle}
+                </Text>
               )}
             </Box>
 
@@ -367,14 +379,19 @@ export const TokenListItem = ({
                   ariaLabel={''}
                 />
 
-                <Text
+                <SensitiveText
                   data-testid="multichain-token-list-item-value"
                   color={TextColor.textAlternative}
                   variant={TextVariant.bodyMd}
                   textAlign={TextAlign.End}
+                  isHidden={privacyMode}
+                  length={SensitiveTextLength.Short}
                 >
-                  {primary} {isNativeCurrency ? '' : tokenSymbol}
-                </Text>
+                  {primary}{' '}
+                  {isNativeCurrency || isPrimaryTokenSymbolHidden
+                    ? ''
+                    : tokenSymbol}
+                </SensitiveText>
               </Box>
             ) : (
               <Box
@@ -383,24 +400,31 @@ export const TokenListItem = ({
                 width={isStakeable ? BlockSize.Half : BlockSize.TwoThirds}
                 alignItems={AlignItems.flexEnd}
               >
-                <Text
+                <SensitiveText
                   fontWeight={FontWeight.Medium}
                   variant={TextVariant.bodyMd}
                   width={isStakeable ? BlockSize.Half : BlockSize.TwoThirds}
                   textAlign={TextAlign.End}
                   data-testid="multichain-token-list-item-secondary-value"
                   ellipsis={isStakeable}
+                  isHidden={privacyMode}
+                  length={SensitiveTextLength.Medium}
                 >
                   {secondary}
-                </Text>
-                <Text
+                </SensitiveText>
+                <SensitiveText
                   data-testid="multichain-token-list-item-value"
                   color={TextColor.textAlternative}
                   variant={TextVariant.bodySmMedium}
                   textAlign={TextAlign.End}
+                  isHidden={privacyMode}
+                  length={SensitiveTextLength.Short}
                 >
-                  {primary} {isNativeCurrency ? '' : tokenSymbol}
-                </Text>
+                  {primary}{' '}
+                  {isNativeCurrency || isPrimaryTokenSymbolHidden
+                    ? ''
+                    : tokenSymbol}
+                </SensitiveText>
               </Box>
             )}
           </Box>

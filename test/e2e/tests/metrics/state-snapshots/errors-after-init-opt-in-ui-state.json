@@ -33,9 +33,11 @@
       "smartTransactionsOptInStatus": false,
       "showNativeTokenAsMainBalance": true,
       "petnamesEnabled": true,
+      "showMultiRpcModal": "boolean",
       "isRedesignedConfirmationsDeveloperEnabled": "boolean",
       "redesignedConfirmationsEnabled": true,
       "redesignedTransactionsEnabled": "boolean",
+      "tokenSortConfig": "object",
       "showMultiRpcModal": "boolean",
       "shouldShowAggregatedBalancePopover": "boolean"
     },
@@ -43,11 +45,22 @@
     "completedOnboarding": true,
     "knownMethodData": "object",
     "use4ByteResolution": true,
+    "showIncomingTransactions": "object",
     "participateInMetaMetrics": true,
     "dataCollectionForMarketing": "boolean",
     "nextNonce": null,
     "currencyRates": {
       "ETH": {
+        "conversionDate": "number",
+        "conversionRate": 1700,
+        "usdConversionRate": 1700
+      },
+      "LineaETH": {
+        "conversionDate": "number",
+        "conversionRate": 1700,
+        "usdConversionRate": 1700
+      },
+      "SepoliaETH": {
         "conversionDate": "number",
         "conversionRate": 1700,
         "usdConversionRate": 1700
@@ -121,6 +134,7 @@
     "forgottenPassword": false,
     "ipfsGateway": "string",
     "isIpfsGatewayEnabled": "boolean",
+    "isMultiAccountBalancesEnabled": "boolean",
     "useAddressBarEnsResolution": true,
     "ledgerTransportType": "webhid",
     "snapRegistryList": "object",
@@ -169,7 +183,9 @@
     "allDetectedTokens": {},
     "smartTransactionsState": {
       "fees": {},
+      "feesByChainId": "object",
       "liveness": true,
+      "livenessByChainId": "object",
       "smartTransactions": "object"
     },
     "allNftContracts": "object",
@@ -179,8 +195,9 @@
     "logs": "object",
     "methodData": "object",
     "lastFetchedBlockNumbers": "object",
+    "submitHistory": "object",
     "fiatCurrency": "usd",
-    "rates": { "btc": { "conversionDate": 0, "conversionRate": "0" } },
+    "rates": { "btc": { "conversionDate": 0, "conversionRate": 0 } },
     "cryptocurrencies": ["btc"],
     "snaps": "object",
     "jobs": "object",
@@ -211,6 +228,7 @@
     "accounts": "object",
     "accountsByChainId": "object",
     "marketData": "object",
+    "signatureRequests": "object",
     "unapprovedDecryptMsgs": "object",
     "unapprovedDecryptMsgCount": 0,
     "unapprovedEncryptionPublicKeyMsgs": "object",
@@ -249,10 +267,20 @@
     },
     "bridgeState": {
       "bridgeFeatureFlags": {
+        "extensionConfig": "object",
         "extensionSupport": "boolean",
         "srcNetworkAllowlist": { "0": "string", "1": "string", "2": "string" },
         "destNetworkAllowlist": { "0": "string", "1": "string", "2": "string" }
-      }
+      },
+      "destTokens": {},
+      "destTopAssets": {},
+      "quoteRequest": {
+        "slippage": 0.5,
+        "srcTokenAddress": "0x0000000000000000000000000000000000000000"
+      },
+      "quotes": {},
+      "srcTokens": {},
+      "srcTopAssets": {}
     },
     "ensEntries": "object",
     "ensResolutionsByAddress": "object",
