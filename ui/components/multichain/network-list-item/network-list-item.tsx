@@ -78,7 +78,7 @@ export const NetworkListItem = ({
   };
   const [networkOptionsMenuOpen, setNetworkOptionsMenuOpen] = useState(false);
 
-  const textDirection = useSelector(({ metamask }) => metamask.textDirection);
+  const textDirection = useSelector((state) => state.metamask.textDirection);
 
   const renderButton = () => {
     return onDeleteClick || onEditClick ? (
@@ -197,6 +197,7 @@ export const NetworkListItem = ({
               textAlign={
                 textDirection === 'rtl' ? TextAlign.Right : TextAlign.Left
               }
+              ellipsis
             >
               {rpcEndpoint.name ?? new URL(rpcEndpoint.url).host}
             </Text>
