@@ -5,7 +5,8 @@ import OnboardingSrpPage from '../pages/onboarding/onboarding-srp-page';
 import StartOnboardingPage from '../pages/onboarding/start-onboarding-page';
 import SecureWalletPage from '../pages/onboarding/secure-wallet-page';
 import OnboardingCompletePage from '../pages/onboarding/onboarding-complete-page';
-import { TEST_SEED_PHRASE, WALLET_PASSWORD } from '../../helpers';
+import { WALLET_PASSWORD } from '../../helpers';
+import { E2E_SRP } from '../../default-fixture';
 
 /**
  * Create new wallet onboarding flow
@@ -41,12 +42,12 @@ export const createNewWalletOnboardingFlow = async (
  * Import SRP onboarding flow
  *
  * @param driver - The WebDriver instance.
- * @param seedPhrase - The seed phrase to import. Defaults to TEST_SEED_PHRASE.
+ * @param seedPhrase - The seed phrase to import. Defaults to E2E_SRP.
  * @param password - The password to use. Defaults to WALLET_PASSWORD.
  */
 export const importSRPOnboardingFlow = async (
   driver: Driver,
-  seedPhrase: string = TEST_SEED_PHRASE,
+  seedPhrase: string = E2E_SRP,
   password: string = WALLET_PASSWORD,
 ) => {
   console.log('Starting the import of SRP onboarding flow');
@@ -92,12 +93,12 @@ export const completeCreateNewWalletOnboardingFlow = async (
  * Complete import SRP onboarding flow
  *
  * @param driver - The WebDriver instance.
- * @param seedPhrase - The seed phrase to import. Defaults to TEST_SEED_PHRASE.
+ * @param seedPhrase - The seed phrase to import. Defaults to E2E_SRP.
  * @param password - The password to use. Defaults to WALLET_PASSWORD.
  */
 export const completeImportSRPOnboardingFlow = async (
   driver: Driver,
-  seedPhrase: string = TEST_SEED_PHRASE,
+  seedPhrase: string = E2E_SRP,
   password: string = WALLET_PASSWORD,
 ) => {
   console.log('start to complete import srp onboarding flow ');
