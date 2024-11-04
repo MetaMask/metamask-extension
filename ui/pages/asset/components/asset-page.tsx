@@ -10,7 +10,9 @@ import {
   getIsSwapsChain,
   getSelectedInternalAccount,
   getSwapsDefaultToken,
-  getTokensMarketData,
+  getTokensMarketDataAcrossChains,
+  getCurrencyRates,
+  getSelectedAccountTokenBalancesAcrossChains,
 } from '../../../selectors';
 import {
   Display,
@@ -63,27 +65,13 @@ export type Asset = (
     }
 ) & {
   /** The hexadecimal chain id */
-  chainId: `0x${string}`;
+  chainId: string; // Changed from `0x${string}` to string
   /** The asset's symbol, e.g. 'ETH' */
   symbol: string;
   /** The asset's name, e.g. 'Ethereum' */
   name?: string;
   /** A URL to the asset's image */
   image: string;
-  balance: {
-    /**
-     * A decimal representation of the balance before applying
-     * decimals e.g. '12300000000000000' for 0.0123 ETH
-     */
-    value: string;
-    /**
-     * A displayable representation of the balance after applying
-     * decimals e.g. '0.0123' for 12300000000000000 WEI
-     */
-    display: string;
-    /** The balance's localized value in fiat e.g. '$12.34' or '56,78 €' */
-    fiat?: string;
-  };
   /** True if the asset implements ERC721 */
   isERC721?: boolean;
 };
@@ -100,7 +88,6 @@ const AssetPage = ({
   const history = useHistory();
   const currency = useSelector(getCurrentCurrency);
   const conversionRate = useSelector(getConversionRate);
-  const allMarketData = useSelector(getTokensMarketData);
   const isBridgeChain = useSelector(getIsBridgeChain);
   const isBuyableChain = useSelector(getIsNativeTokenBuyable);
   const defaultSwapsToken = useSelector(getSwapsDefaultToken, isEqual);
@@ -110,14 +97,32 @@ const AssetPage = ({
     account.methods.includes(EthMethod.SignTransaction) ||
     account.methods.includes(EthMethod.SignUserOperation);
 
-  const { chainId, type, symbol, name, image, balance } = asset;
+  const selectedAccountTokenBalancesAcrossChains: Record<string, any> =
+    useSelector(getSelectedAccountTokenBalancesAcrossChains);
+  const marketDataAcrossChains = useSelector(getTokensMarketDataAcrossChains);
+  const currencyRates = useSelector(getCurrencyRates);
+
+  const { chainId, type, symbol, name, image } = asset;
 
   const address =
     type === AssetType.token
       ? toChecksumHexAddress(asset.address)
       : '0x0000000000000000000000000000000000000000';
 
-  const marketData = allMarketData?.[address];
+  const balance =
+    selectedAccountTokenBalancesAcrossChains[chainId]?.[address] || '0.00000';
+
+  const marketData = marketDataAcrossChains[chainId]?.[address];
+
+  const baseCurrency = marketData?.currency;
+
+  const tokenMarketPrice = marketData?.price || 0;
+  const tokenExchangeRate = currencyRates[baseCurrency]?.conversionRate || 0;
+
+  let tokenFiatAmount = tokenMarketPrice * tokenExchangeRate * balance;
+  if (type === AssetType.native && currencyRates) {
+    tokenFiatAmount = currencyRates[symbol]?.conversionRate * balance || 0;
+  }
 
   const currentPrice =
     conversionRate !== undefined && marketData?.price !== undefined
@@ -191,18 +196,26 @@ const AssetPage = ({
           <TokenListItem
             title={symbol}
             tokenSymbol={symbol}
-            primary={`${balance.display} ${symbol}`}
-            secondary={balance.fiat}
+            primary={`${balance} ${symbol}`}
+            secondary={
+              tokenFiatAmount ? formatCurrency(tokenFiatAmount, currency) : ''
+            }
             tokenImage={image}
             isOriginalTokenSymbol={asset.isOriginalNativeSymbol}
             isNativeCurrency={true}
           />
         ) : (
           <TokenCell
+            key={`${symbol}-${address}`}
             address={address}
-            image={image}
+            chainId={chainId}
             symbol={symbol}
-            string={balance.display}
+            image={image}
+            balance={balance}
+            tokenFiatAmount={tokenFiatAmount}
+            string={balance.toString()}
+            decimals={asset.decimals}
+            onClick={() => {}}
           />
         )}
         <Box

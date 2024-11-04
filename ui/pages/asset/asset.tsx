@@ -20,7 +20,7 @@ function findAssetByAddress(data: any, address?: string) {
       const chainIdTokens = data[chainId];
       for (const token of chainIdTokens) {
         if (token.address === address) {
-          return token;
+          return { chainId, ...token };
         }
       }
     }
