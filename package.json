@@ -348,7 +348,7 @@
     "@metamask/snaps-utils": "^8.5.1",
     "@metamask/transaction-controller": "^38.1.0",
     "@metamask/user-operation-controller": "^13.0.0",
-    "@metamask/utils": "^9.3.0",
+    "@metamask/utils": "^10.0.1",
     "@ngraveio/bc-ur": "^1.1.12",
     "@noble/hashes": "^1.3.3",
     "@popperjs/core": "^2.4.0",
@@ -357,6 +357,7 @@
     "@sentry/browser": "^8.33.1",
     "@sentry/types": "^8.33.1",
     "@sentry/utils": "^8.33.1",
+    "@solana/web3.js": "^2.0.0-rc.4",
     "@swc/core": "1.4.11",
     "@trezor/connect-web": "^9.4.0",
     "@zxing/browser": "^0.1.4",
@@ -745,7 +746,8 @@
       "resolve-url-loader>es6-iterator>d>es5-ext": false,
       "resolve-url-loader>es6-iterator>d>es5-ext>esniff>es5-ext": false,
       "level>classic-level": false,
-      "jest-preview": false
+      "jest-preview": false,
+      "@solana/web3.js>bigint-buffer": false
     }
   },
   "packageManager": "yarn@4.4.1"
