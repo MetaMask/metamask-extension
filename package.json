@@ -131,7 +131,7 @@
     "attributions:generate": "./development/generate-attributions.sh"
   },
   "resolutions": {
-    "@metamask/assets-controllers": "patch:@metamask-previews/assets-controllers@41.0.0-preview-db2c53b#~/.yarn/patches/@metamask-assets-controllers-npm-41.0.0-57b3d695bb.patch",
+    "@metamask/assets-controllers": "npm:@metamask-previews/assets-controllers@42.0.0-preview-3399c81f",
     "chokidar": "^3.6.0",
     "gridplus-sdk/elliptic": "^6.5.7",
     "gridplus-sdk/secp256k1": "^5.0.1",
