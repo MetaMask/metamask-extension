@@ -1,6 +1,7 @@
 import React, { ReactNode } from 'react';
 import useCurrencyRatePolling from '../hooks/useCurrencyRatePolling';
 import useTokenRatesPolling from '../hooks/useTokenRatesPolling';
+import useAccountTrackerPolling from '../hooks/useAccountTrackerPolling';
 
 // This provider is a step towards making controller polling fully UI based.
 // Eventually, individual UI components will call the use*Polling hooks to
@@ -8,6 +9,7 @@ import useTokenRatesPolling from '../hooks/useTokenRatesPolling';
 export const AssetPollingProvider = ({ children }: { children: ReactNode }) => {
   useCurrencyRatePolling();
   useTokenRatesPolling();
+  useAccountTrackerPolling();
 
   return <>{children}</>;
 };

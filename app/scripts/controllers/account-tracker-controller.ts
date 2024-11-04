@@ -319,12 +319,18 @@ export default class AccountTrackerController extends BaseController<
     const { selectedNetworkClientId } = this.messagingSystem.call(
       'NetworkController:getState',
     );
+    console.log(
+      '🚀 ~ #getCurrentChainId ~ selectedNetworkClientId:',
+      selectedNetworkClientId,
+    );
     const {
       configuration: { chainId },
     } = this.messagingSystem.call(
       'NetworkController:getNetworkClientById',
       selectedNetworkClientId,
     );
+
+    console.log('🚀 ~ #getCurrentChainId ~ chainId:', chainId);
     return chainId;
   }
 
@@ -370,6 +376,10 @@ export default class AccountTrackerController extends BaseController<
    * @returns pollingToken
    */
   startPollingByNetworkClientId(networkClientId: NetworkClientId): string {
+    console.log(
+      '############################## inside startPollingByNetworkClientId',
+      networkClientId,
+    );
     const pollToken = random();
 
     const pollingTokenSet = this.#pollingTokenSets.get(networkClientId);
@@ -659,6 +669,7 @@ export default class AccountTrackerController extends BaseController<
    * @param networkClientId - optional network client ID to use instead of the globally selected network.
    */
   async updateAccounts(networkClientId?: NetworkClientId): Promise<void> {
+    console.log('################# inside update accounts ################');
     const { completedOnboarding } = this.messagingSystem.call(
       'OnboardingController:getState',
     );
