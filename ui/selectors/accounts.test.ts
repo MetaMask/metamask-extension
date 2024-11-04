@@ -15,6 +15,7 @@ import {
   hasCreatedBtcMainnetAccount,
   hasCreatedBtcTestnetAccount,
   getSelectedInternalAccount,
+  getInternalAccounts,
 } from './accounts';
 
 const MOCK_STATE: AccountsState = {
@@ -27,6 +28,14 @@ const MOCK_STATE: AccountsState = {
 };
 
 describe('Accounts Selectors', () => {
+  describe('#getInternalAccounts', () => {
+    it('returns a list of internal accounts', () => {
+      expect(getInternalAccounts(mockState as AccountsState)).toStrictEqual(
+        Object.values(mockState.metamask.internalAccounts.accounts),
+      );
+    });
+  });
+
   describe('#getSelectedInternalAccount', () => {
     it('returns selected internalAccount', () => {
       expect(
