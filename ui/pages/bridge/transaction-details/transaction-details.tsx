@@ -60,6 +60,7 @@ const StatusToColorMap: Record<StatusTypes, TextColor> = {
   [StatusTypes.PENDING]: TextColor.warningDefault,
   [StatusTypes.COMPLETE]: TextColor.successDefault,
   [StatusTypes.FAILED]: TextColor.errorDefault,
+  [StatusTypes.UNKNOWN]: TextColor.errorDefault,
 };
 
 const CrossChainSwapTxDetails = () => {
@@ -88,18 +89,20 @@ const CrossChainSwapTxDetails = () => {
     destTxHash,
   );
 
-  const txMeta = selectedAddressTxList.find((tx) => tx.hash === srcTxHash);
+  const srcChainTxMeta = selectedAddressTxList.find(
+    (tx) => tx.hash === srcTxHash,
+  );
 
   const status = bridgeHistoryItem?.status?.status;
   const bridgeTypeTitle =
-    txMeta?.type === TransactionType.incoming
+    srcChainTxMeta?.type === TransactionType.incoming
       ? `From ${srcNetworkConfiguration?.name}`
       : `To ${destNetworkConfiguration?.name}`;
 
-  const data = txMeta
+  const data = srcChainTxMeta
     ? getTransactionBreakdownData({
         state: rootState as MetaMaskReduxState,
-        transaction: txMeta,
+        transaction: srcChainTxMeta,
         isTokenApprove: false,
       })
     : undefined;
@@ -125,7 +128,10 @@ const CrossChainSwapTxDetails = () => {
             <BridgeSteps bridgeHistoryItem={bridgeHistoryItem} />
           )} */}
           {bridgeHistoryItem && (
-            <BridgeStepList bridgeHistoryItem={bridgeHistoryItem} />
+            <BridgeStepList
+              bridgeHistoryItem={bridgeHistoryItem}
+              srcChainTxMeta={srcChainTxMeta}
+            />
           )}
 
           {/* Links to block explorers */}
@@ -149,13 +155,13 @@ const CrossChainSwapTxDetails = () => {
           <TransactionDetailRow title="Bridge type" value={bridgeTypeTitle} />
           <TransactionDetailRow
             title="Time stamp"
-            value={formatDate(txMeta?.time, "M/d/y 'at' hh:mm a")}
+            value={formatDate(srcChainTxMeta?.time, "M/d/y 'at' hh:mm a")}
           />
           <TransactionDetailRow
             title="Nonce"
             value={
-              txMeta?.txParams.nonce
-                ? hexToDecimal(txMeta?.txParams.nonce)
+              srcChainTxMeta?.txParams.nonce
+                ? hexToDecimal(srcChainTxMeta?.txParams.nonce)
                 : undefined
             }
           />
