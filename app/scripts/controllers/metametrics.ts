@@ -410,7 +410,7 @@ export default class MetaMetricsController {
     const { fragments } = this.store.getState();
 
     const id = options.uniqueIdentifier ?? uuidv4();
-    let fragment = {
+    const fragment = {
       id,
       ...options,
       lastUpdated: Date.now(),
@@ -428,16 +428,17 @@ export default class MetaMetricsController {
       options.initialEvent === TransactionMetaMetricsEvent.submitted &&
       fragments[id];
 
-    if (hasExistingSubmittedFragment) {
-      fragment = merge(fragments[id], fragment, {
-        canDeleteIfAbandoned: false,
-      });
-    }
+    const additionalFragmentProps = hasExistingSubmittedFragment
+      ? {}
+      : {
+          ...fragments[id],
+          canDeleteIfAbandoned: false,
+        };
 
     this.store.updateState({
       fragments: {
         ...fragments,
-        [id]: fragment,
+        [id]: merge(fragment, additionalFragmentProps),
       },
     });
 
