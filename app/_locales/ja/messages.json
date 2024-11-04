@@ -256,6 +256,9 @@
   "addNewBitcoinTestnetAccount": {
     "message": "新しいビットコインアカウントの追加 (テストネット)"
   },
+  "addNewSolanaAccount": {
+    "message": "新しいSolanaアカウントの追加 (ベータ版)"
+  },
   "addNewToken": {
     "message": "新しいトークンを追加"
   },

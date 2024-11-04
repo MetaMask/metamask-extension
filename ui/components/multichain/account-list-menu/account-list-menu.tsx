@@ -68,6 +68,7 @@ import {
   getOriginOfCurrentTab,
   getSelectedInternalAccount,
   getUpdatedAndSortedAccounts,
+  getIsSolanaSupportEnabled,
 } from '../../../selectors';
 import { setSelectedAccount } from '../../../store/actions';
 import {
@@ -96,9 +97,11 @@ import {
 import {
   hasCreatedBtcMainnetAccount,
   hasCreatedBtcTestnetAccount,
+  hasCreatedSolanaAccount,
 } from '../../../selectors/accounts';
 import { MultichainNetworks } from '../../../../shared/constants/multichain/networks';
 import { useBitcoinWalletSnapClient } from '../../../hooks/accounts/useBitcoinWalletSnapClient';
+import { useSolanaWalletSnapClient } from '../../../hooks/accounts/useSolanaWalletSnapClient';
 ///: END:ONLY_INCLUDE_IF
 import {
   InternalAccountWithBalance,
@@ -107,6 +110,7 @@ import {
 } from '../../../selectors/selectors.types';
 import { endTrace, TraceName } from '../../../../shared/lib/trace';
 import { HiddenAccountList } from './hidden-account-list';
+import { SOLANA_WALLET_NAME, SOLANA_WALLET_SNAP_ID } from '../../../../shared/lib/accounts/solana-wallet-snap';
 
 const ACTION_MODES = {
   // Displays the search box and account list
@@ -268,6 +272,10 @@ export const AccountListMenu = ({
   );
 
   const bitcoinWalletSnapClient = useBitcoinWalletSnapClient();
+
+  const solanaSupportEnabled = useSelector(getIsSolanaSupportEnabled);
+  const isSolanaAccountAlreadyCreated = useSelector(hasCreatedSolanaAccount);
+  const solanaWalletSnapClient = useSolanaWalletSnapClient();
   ///: END:ONLY_INCLUDE_IF
 
   const [searchQuery, setSearchQuery] = useState('');
@@ -449,6 +457,43 @@ export const AccountListMenu = ({
                   </ButtonLink>
                 </Box>
               ) : null
+              ///: END:ONLY_INCLUDE_IF
+            }
+                        {
+              ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
+              solanaSupportEnabled && (
+                <Box marginTop={4}>
+                  <ButtonLink
+                    disabled={isSolanaAccountAlreadyCreated}
+                    size={ButtonLinkSize.Sm}
+                    startIconName={IconName.Add}
+                    onClick={async () => {
+                      trackEvent({
+                        category: MetaMetricsEventCategory.Navigation,
+                        event: MetaMetricsEventName.AccountAddSelected,
+                        properties: {
+                          account_type: MetaMetricsEventAccountType.Snap,
+                          snap_id: SOLANA_WALLET_SNAP_ID,
+                          snap_name: SOLANA_WALLET_NAME,
+                          location: 'Main Menu',
+                        },
+                      });
+
+                      // The account creation + renaming is handled by the
+                      // Snap account bridge, so we need to close the current
+                      // modal
+                      onClose();
+
+                      await solanaWalletSnapClient.createAccount(
+                        MultichainNetworks.SOLANA,
+                      );
+                    }}
+                    data-testid="multichain-account-menu-popover-add-solana-account"
+                  >
+                    {t('addNewSolanaAccount')}
+                  </ButtonLink>
+                </Box>
+              )
               ///: END:ONLY_INCLUDE_IF
             }
             <Box marginTop={4}>

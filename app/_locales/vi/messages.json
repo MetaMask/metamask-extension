@@ -256,6 +256,9 @@
   "addNewBitcoinTestnetAccount": {
     "message": "Thêm tài khoản Bitcoin mới (Mạng thử nghiệm)"
   },
+  "addNewSolanaAccount": {
+    "message": "Thêm tài khoản Solana mới (Beta)"
+  },
   "addNewToken": {
     "message": "Thêm token mới"
   },
