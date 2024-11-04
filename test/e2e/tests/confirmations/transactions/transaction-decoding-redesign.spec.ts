@@ -57,6 +57,7 @@ describe('Confirmation Redesign Contract Interaction Transaction Decoding', func
           await driver.waitAndSwitchToWindowWithTitle(3, WINDOW_TITLES.Dialog);
 
           await confirmation.clickAdvancedDetailsButton();
+          await confirmation.clickScrollToBottomButton();
           await confirmation.verifyAdvancedDetailsIsDisplayed('4Bytes');
         },
       );
@@ -96,6 +97,7 @@ describe('Confirmation Redesign Contract Interaction Transaction Decoding', func
         await driver.waitAndSwitchToWindowWithTitle(3, WINDOW_TITLES.Dialog);
 
         await confirmation.clickAdvancedDetailsButton();
+        await confirmation.clickScrollToBottomButton();
         await confirmation.verifyAdvancedDetailsIsDisplayed('Sourcify');
       },
     );
@@ -133,7 +135,7 @@ describe('Confirmation Redesign Contract Interaction Transaction Decoding', func
         await driver.waitAndSwitchToWindowWithTitle(3, WINDOW_TITLES.Dialog);
 
         await confirmation.clickAdvancedDetailsButton();
-
+        await confirmation.clickScrollToBottomButton();
         await confirmation.verifyAdvancedDetailsHexDataIsDisplayed();
       },
     );
@@ -175,6 +177,7 @@ describe('Confirmation Redesign Contract Interaction Transaction Decoding', func
         await driver.waitAndSwitchToWindowWithTitle(3, WINDOW_TITLES.Dialog);
 
         await confirmation.clickAdvancedDetailsButton();
+        await confirmation.clickScrollToBottomButton();
         await confirmation.verifyUniswapDecodedTransactionAdvancedDetails();
       },
     );

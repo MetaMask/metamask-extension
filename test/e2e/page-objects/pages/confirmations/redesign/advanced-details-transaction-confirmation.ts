@@ -165,6 +165,8 @@ class AdvancedDetailsTransactionConfirmation extends TransactionConfirmation {
             paramText.includes(expectedValue),
             `Expected ${key} '${expectedValue}' in data section ${functionText}.`,
           );
+
+          this.clickScrollToBottomButton();
         }
       }),
     );
