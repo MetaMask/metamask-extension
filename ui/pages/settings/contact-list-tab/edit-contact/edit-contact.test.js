@@ -1,5 +1,5 @@
 import React from 'react';
-import { fireEvent } from '@testing-library/react';
+import { fireEvent, waitFor } from '@testing-library/react';
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import { renderWithProvider } from '../../../../../test/lib/render-helpers';
@@ -44,11 +44,14 @@ describe('AddContact component', () => {
     const store = configureMockStore(middleware)(state);
     const { getByText } = renderWithProvider(<EditContact {...props} />, store);
 
-    const input = document.getElementById('address');
-    fireEvent.change(input, { target: { value: 'invalid address' } });
-    setTimeout(() => {
-      expect(getByText('Invalid address')).toBeInTheDocument();
-    }, 100);
+    const addressInput = document.getElementById('address');
+    fireEvent.change(addressInput, { target: { value: 'invalid address' } });
+
+    const submitButton = getByText('Save');
+
+    fireEvent.click(submitButton);
+
+    expect(getByText('Invalid address')).toBeInTheDocument();
   });
 
   it('should get disabled submit button when username field is empty', () => {
