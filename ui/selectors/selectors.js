@@ -117,6 +117,7 @@ import {
   getOrderedConnectedAccountsForConnectedDapp,
   getSubjectMetadata,
 } from './permissions';
+import { getSelectedInternalAccount, getInternalAccounts } from './accounts';
 import { createDeepEqualSelector } from './util';
 import { getMultichainBalances, getMultichainNetwork } from './multichain';
 
@@ -353,11 +354,6 @@ export function getMaybeSelectedInternalAccount(state) {
     : undefined;
 }
 
-export function getSelectedInternalAccount(state) {
-  const accountId = state.metamask.internalAccounts.selectedAccount;
-  return state.metamask.internalAccounts.accounts[accountId];
-}
-
 export function checkIfMethodIsEnabled(state, methodName) {
   const internalAccount = getSelectedInternalAccount(state);
   return Boolean(internalAccount.methods.includes(methodName));
@@ -373,10 +369,6 @@ export function getSelectedInternalAccountWithBalance(state) {
   };
 
   return selectedAccountWithBalance;
-}
-
-export function getInternalAccounts(state) {
-  return Object.values(state.metamask.internalAccounts.accounts);
 }
 
 export function getInternalAccount(state, accountId) {
@@ -586,9 +578,25 @@ export const getTokenExchangeRates = (state) => {
   );
 };
 
+/**
+ * Get market data for tokens on the current chain
+ *
+ * @param state
+ * @returns {Record<Hex, import('@metamask/assets-controllers').MarketDataDetails>}
+ */
 export const getTokensMarketData = (state) => {
   const chainId = getCurrentChainId(state);
   return state.metamask.marketData?.[chainId];
+};
+
+/**
+ * Get market data for tokens across all chains
+ *
+ * @param state
+ * @returns {Record<Hex, Record<Hex, import('@metamask/assets-controllers').MarketDataDetails>>}
+ */
+export const getMarketData = (state) => {
+  return state.metamask.marketData;
 };
 
 export function getAddressBook(state) {
@@ -702,6 +710,28 @@ export const getNetworkConfigurationsByChainId = createDeepEqualSelector(
    * @returns { import('@metamask/network-controller').NetworkState['networkConfigurationsByChainId']}
    */
   (networkConfigurationsByChainId) => networkConfigurationsByChainId,
+);
+
+/**
+ * @type (state: any, chainId: string) => import('@metamask/network-controller').NetworkConfiguration
+ */
+export const selectNetworkConfigurationByChainId = createSelector(
+  getNetworkConfigurationsByChainId,
+  (_state, chainId) => chainId,
+  (networkConfigurationsByChainId, chainId) =>
+    networkConfigurationsByChainId[chainId],
+);
+
+export const selectDefaultRpcEndpointByChainId = createSelector(
+  selectNetworkConfigurationByChainId,
+  (networkConfiguration) => {
+    if (!networkConfiguration) {
+      return undefined;
+    }
+
+    const { defaultRpcEndpointIndex, rpcEndpoints } = networkConfiguration;
+    return rpcEndpoints[defaultRpcEndpointIndex];
+  },
 );
 
 export function getRequestingNetworkInfo(state, chainIds) {
@@ -1362,9 +1392,14 @@ export const getMemoizedAddressBook = createDeepEqualSelector(
   (addressBook) => addressBook,
 );
 
-export const getRemoteTokenList = createDeepEqualSelector(
+export const selectERC20TokensByChain = createDeepEqualSelector(
+  (state) => state.metamask.tokensChainsCache,
+  (erc20TokensByChain) => erc20TokensByChain,
+);
+
+export const selectERC20Tokens = createDeepEqualSelector(
   (state) => state.metamask.tokenList,
-  (remoteTokenList) => remoteTokenList,
+  (erc20Tokens) => erc20Tokens,
 );
 
 /**
@@ -1374,26 +1409,12 @@ export const getRemoteTokenList = createDeepEqualSelector(
  * @type {() => object}
  */
 export const getTokenList = createSelector(
-  getRemoteTokenList,
+  selectERC20Tokens,
   getIsTokenDetectionInactiveOnMainnet,
   (remoteTokenList, isTokenDetectionInactiveOnMainnet) =>
     isTokenDetectionInactiveOnMainnet
       ? STATIC_MAINNET_TOKEN_LIST
       : remoteTokenList,
-);
-
-/**
- * Returns a memoized selector that gets contract info.
- *
- * @param state - The Redux store state.
- * @param addresses - An array of contract addresses.
- * @returns {Array} A map of contract info, keyed by address.
- */
-export const getRemoteTokens = createSelector(
-  getRemoteTokenList,
-  (_state, addresses) => addresses,
-  (remoteTokenList, addresses) =>
-    addresses.map((address) => remoteTokenList[address?.toLowerCase()]),
 );
 
 export const getMemoizedMetadataContract = createSelector(

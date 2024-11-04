@@ -2,7 +2,7 @@ import PropTypes from 'prop-types';
 import { InternalAccount, isEvmAccountType } from '@metamask/keyring-api';
 import type { RatesControllerState } from '@metamask/assets-controllers';
 import { CaipChainId, Hex, KnownCaipNamespace } from '@metamask/utils';
-import { createSelector } from '@reduxjs/toolkit';
+import { createSelector } from 'reselect';
 import { NetworkType } from '@metamask/controller-utils';
 import { Numeric } from '../../shared/modules/Numeric';
 import {
@@ -24,7 +24,7 @@ import {
   CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP,
   TEST_NETWORK_IDS,
 } from '../../shared/constants/network';
-import { AccountsState } from './accounts';
+import { AccountsState, getSelectedInternalAccount } from './accounts';
 import {
   getCurrentChainId,
   getCurrentCurrency,
@@ -33,7 +33,6 @@ import {
   getNativeCurrencyImage,
   getNetworkConfigurationsByChainId,
   getSelectedAccountCachedBalance,
-  getSelectedInternalAccount,
   getShouldShowFiat,
   getShowFiatInTestnets,
 } from './selectors';

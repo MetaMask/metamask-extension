@@ -11,6 +11,7 @@ import {
   ConfirmInfoRowDivider,
   ConfirmInfoRowUrl,
 } from '../../../../../../components/app/confirm/info/row';
+import { ConfirmInfoSection } from '../../../../../../components/app/confirm/info/row/section';
 import { useI18nContext } from '../../../../../../hooks/useI18nContext';
 import { SignatureRequestType } from '../../../../types/confirm';
 import {
@@ -21,7 +22,7 @@ import { fetchErc20Decimals } from '../../../../utils/token';
 import { useConfirmContext } from '../../../../context/confirm';
 import { selectUseTransactionSimulations } from '../../../../selectors/preferences';
 import { ConfirmInfoRowTypedSignData } from '../../row/typed-sign-data/typedSignData';
-import { ConfirmInfoSection } from '../../../../../../components/app/confirm/info/row/section';
+import { isSnapId } from '../../../../../../helpers/utils/snaps';
 import { PermitSimulation } from './permit-simulation';
 
 const TypedSignInfo: React.FC = () => {
@@ -43,6 +44,7 @@ const TypedSignInfo: React.FC = () => {
 
   const isPermit = isPermitSignatureRequest(currentConfirmation);
   const isOrder = isOrderSignatureRequest(currentConfirmation);
+  const chainId = currentConfirmation.chainId as string;
 
   useEffect(() => {
     (async () => {
@@ -54,6 +56,11 @@ const TypedSignInfo: React.FC = () => {
     })();
   }, [verifyingContract]);
 
+  const toolTipMessage = isSnapId(currentConfirmation.msgParams.origin)
+    ? t('requestFromInfoSnap')
+    : t('requestFromInfo');
+  const msgData = currentConfirmation.msgParams?.data as string;
+
   return (
     <>
       {isPermit && useTransactionSimulations && <PermitSimulation />}
@@ -61,7 +68,7 @@ const TypedSignInfo: React.FC = () => {
         {isPermit && (
           <>
             <ConfirmInfoRow label={t('spender')}>
-              <ConfirmInfoRowAddress address={spender} />
+              <ConfirmInfoRowAddress address={spender} chainId={chainId} />
             </ConfirmInfoRow>
             <ConfirmInfoRowDivider />
           </>
@@ -70,21 +77,30 @@ const TypedSignInfo: React.FC = () => {
           alertKey={RowAlertKey.RequestFrom}
           ownerId={currentConfirmation.id}
           label={t('requestFrom')}
-          tooltip={t('requestFromInfo')}
+          tooltip={toolTipMessage}
         >
           <ConfirmInfoRowUrl url={currentConfirmation.msgParams.origin} />
         </ConfirmInfoAlertRow>
         {isValidAddress(verifyingContract) && (
           <ConfirmInfoRow label={t('interactingWith')}>
-            <ConfirmInfoRowAddress address={verifyingContract} />
+            <ConfirmInfoRowAddress
+              address={verifyingContract}
+              chainId={chainId}
+            />
           </ConfirmInfoRow>
         )}
       </ConfirmInfoSection>
       <ConfirmInfoSection>
-        <ConfirmInfoRow label={t('message')}>
+        <ConfirmInfoRow
+          label={t('message')}
+          collapsed={isPermit && useTransactionSimulations}
+          copyEnabled
+          copyText={JSON.stringify(parseTypedDataMessage(msgData ?? {}))}
+        >
           <ConfirmInfoRowTypedSignData
-            data={currentConfirmation.msgParams?.data as string}
+            data={msgData}
             tokenDecimals={decimals}
+            chainId={chainId}
           />
         </ConfirmInfoRow>
       </ConfirmInfoSection>

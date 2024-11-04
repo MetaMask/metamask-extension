@@ -805,10 +805,6 @@
   "buyNow": {
     "message": "立即购买"
   },
-  "buyToken": {
-    "message": "购买 $1",
-    "description": "$1 is the token symbol"
-  },
   "bytes": {
     "message": "字节"
   },
@@ -1883,13 +1879,6 @@
   "functionType": {
     "message": "功能类型"
   },
-  "fundYourWallet": {
-    "message": "向您的钱包存入资金"
-  },
-  "fundYourWalletDescription": {
-    "message": "将一些 $1 添加到您的钱包并开始使用",
-    "description": "$1 is the token symbol"
-  },
   "gas": {
     "message": "燃料"
   },
@@ -1972,14 +1961,6 @@
   },
   "genericExplorerView": {
     "message": "在$1查看账户"
-  },
-  "getStartedWithNFTs": {
-    "message": "获取 $1 以购买 NFT",
-    "description": "$1 is the token symbol"
-  },
-  "getStartedWithNFTsDescription": {
-    "message": "将一些 $1 添加到您的钱包并开始使用 NFT",
-    "description": "$1 is the token symbol"
   },
   "goBack": {
     "message": "返回"
@@ -4993,14 +4974,6 @@
   },
   "stake": {
     "message": "质押"
-  },
-  "startYourJourney": {
-    "message": "从 $1 开始您的旅程",
-    "description": "$1 is the token symbol"
-  },
-  "startYourJourneyDescription": {
-    "message": "将一些 $1 添加到您的钱包并开始使用 Web3",
-    "description": "$1 is the token symbol"
   },
   "stateLogError": {
     "message": "检索状态日志时出错。"
