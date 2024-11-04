@@ -11,6 +11,7 @@ import {
   MOCK_ADDRESS_BOOK,
   MOCK_DOMAIN_RESOLUTION,
 } from '../../../../../test/data/mock-data';
+import * as domainDucks from '../../../../ducks/domains';
 import AddContact from './add-contact.component';
 
 describe('AddContact component', () => {
@@ -32,6 +33,17 @@ describe('AddContact component', () => {
     domainError: '',
     resetDomainResolution: jest.fn(),
   };
+
+  beforeEach(() => {
+    jest.resetAllMocks();
+    jest
+      .spyOn(domainDucks, 'lookupDomainName')
+      .mockImplementation(() => jest.fn());
+  });
+
+  afterAll(() => {
+    jest.restoreAllMocks();
+  });
 
   it('should render the component with correct properties', () => {
     const store = configureMockStore(middleware)(state);
