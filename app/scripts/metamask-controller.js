@@ -2843,7 +2843,7 @@ export default class MetamaskController extends EventEmitter {
     let lastSelectedAddress;
     this.controllerMessenger.subscribe(
       'PreferencesController:stateChange',
-      previousValueComparator(async (prevState, currState) => {
+      previousValueComparator(async (_, currState) => {
         const { currentLocale } = currState;
         const chainId = getCurrentChainId({
           metamask: this.networkController.state,
@@ -2855,8 +2855,6 @@ export default class MetamaskController extends EventEmitter {
         } else {
           this.txController.stopIncomingTransactionPolling();
         }
-
-        // this.#checkTokenListPolling(currState, prevState);
       }, this.preferencesController.state),
     );
 
@@ -7171,33 +7169,4 @@ export default class MetamaskController extends EventEmitter {
       metamask: this.getState(),
     };
   }
-
-  // #checkTokenListPolling(currentState, previousState) {
-  //   const previousEnabled = this.#isTokenListPollingRequired(previousState);
-  //   const newEnabled = this.#isTokenListPollingRequired(currentState);
-
-  //   if (previousEnabled === newEnabled) {
-  //     return;
-  //   }
-
-  //   this.tokenListController.updatePreventPollingOnNetworkRestart(!newEnabled);
-
-  //   if (newEnabled) {
-  //     log.debug('Started token list controller polling');
-  //     this.tokenListController.start();
-  //   } else {
-  //     log.debug('Stopped token list controller polling');
-  //     this.tokenListController.clearingTokenListData();
-  //     this.tokenListController.stop();
-  //   }
-  // }
-
-  // #isTokenListPollingRequired(preferencesControllerState) {
-  //   const { useTokenDetection, useTransactionSimulations, preferences } =
-  //     preferencesControllerState ?? {};
-
-  //   const { petnamesEnabled } = preferences ?? {};
-
-  //   return useTokenDetection || petnamesEnabled || useTransactionSimulations;
-  // }
 }
