@@ -1,47 +1,38 @@
 import { strict as assert } from 'assert';
 import { Driver } from '../../../webdriver/driver';
-import { RawLocator } from '../../common';
 
 class SendTokenPage {
   private driver: Driver;
 
-  private inputRecipient: string;
+  private readonly assetPickerButton = '[data-testid="asset-picker-button"]';
 
-  private inputAmount: string;
+  private readonly continueButton = {
+    text: 'Continue',
+    tag: 'button',
+  };
 
-  private inputNFTAmount: string;
+  private readonly ensAddressAsRecipient =
+    '[data-testid="ens-input-selected"]';
 
-  private scanButton: string;
+  private readonly ensResolvedName =
+    '[data-testid="multichain-send-page__recipient__item__title"]';
 
-  private continueButton: object;
+  private readonly inputAmount = '[data-testid="currency-input"]';
 
-  private ensResolvedName: string;
+  private readonly inputNFTAmount = '[data-testid="nft-input"]';
 
-  private ensAddressAsRecipient: string;
+  private readonly inputRecipient = '[data-testid="ens-input"]';
 
-  private ensResolvedAddress: string;
+  private readonly recipientAccount =
+    '.multichain-account-list-item__account-name__button';
 
-  private assetPickerButton: RawLocator;
+  private readonly scanButton = '[data-testid="ens-qr-scan-button"]';
 
-  private tokenListButton: RawLocator;
+  private readonly tokenListButton =
+    '[data-testid="multichain-token-list-button"]';
 
   constructor(driver: Driver) {
     this.driver = driver;
-    this.inputAmount = '[data-testid="currency-input"]';
-    this.inputNFTAmount = '[data-testid="nft-input"]';
-    this.inputRecipient = '[data-testid="ens-input"]';
-    this.scanButton = '[data-testid="ens-qr-scan-button"]';
-    this.ensResolvedName =
-      '[data-testid="multichain-send-page__recipient__item__title"]';
-    this.ensResolvedAddress =
-      '[data-testid="multichain-send-page__recipient__item__subtitle"]';
-    this.ensAddressAsRecipient = '[data-testid="ens-input-selected"]';
-    this.continueButton = {
-      text: 'Continue',
-      tag: 'button',
-    };
-    this.assetPickerButton = '[data-testid="asset-picker-button"]';
-    this.tokenListButton = '[data-testid="multichain-token-list-button"]';
   }
 
   async check_pageIsLoaded(): Promise<void> {
@@ -60,11 +51,9 @@ class SendTokenPage {
     console.log('Send token screen is loaded');
   }
 
-  async fillRecipient(recipientAddress: string): Promise<void> {
-    console.log(
-      `Fill recipient input with ${recipientAddress} on send token screen`,
-    );
-    await this.driver.pasteIntoField(this.inputRecipient, recipientAddress);
+  async click_secondTokenListButton() {
+    const elements = await this.driver.findElements(this.tokenListButton);
+    await elements[1].click();
   }
 
   async fillAmount(amount: string): Promise<void> {
@@ -86,41 +75,28 @@ class SendTokenPage {
     await this.driver.pasteIntoField(this.inputNFTAmount, amount);
   }
 
+  async fillRecipient(recipientAddress: string): Promise<void> {
+    console.log(
+      `Fill recipient input with ${recipientAddress} on send token screen`,
+    );
+    await this.driver.pasteIntoField(this.inputRecipient, recipientAddress);
+  }
+
   async goToNextScreen(): Promise<void> {
     await this.driver.clickElement(this.continueButton);
   }
 
-  /**
-   * Verifies that an ENS domain correctly resolves to the specified Ethereum address on the send token screen.
-   *
-   * @param ensDomain - The ENS domain name expected to resolve (e.g., "test.eth").
-   * @param address - The Ethereum address to which the ENS domain is expected to resolve.
-   * @returns A promise that resolves if the ENS domain successfully resolves to the specified address on send token screen.
-   */
-  async check_ensAddressResolution(
-    ensDomain: string,
-    address: string,
-  ): Promise<void> {
-    console.log(
-      `Check ENS domain resolution: '${ensDomain}' should resolve to address '${address}' on the send token screen.`,
-    );
-    // check if ens domain is resolved as expected address
-    await this.driver.waitForSelector({
-      text: ensDomain,
-      css: this.ensResolvedName,
-    });
-    await this.driver.waitForSelector({
-      text: address,
+  async selectRecipientAccount(recipientAccount: string): Promise<void> {
+    await this.driver.clickElement({
+      text: recipientAccount,
+      css: this.recipientAccount,
     });
   }
 
-  /**
-   * Verifies that an address resolved via ENS can be selected as the recipient on the send token screen.
-   *
-   * @param ensDomain - The ENS domain name expected to resolve to the given address.
-   * @param address - The Ethereum address to which the ENS domain is expected to resolve.
-   * @returns A promise that resolves if the ENS domain can be successfully used as a recipient address on the send token screen.
-   */
+  async click_assetPickerButton() {
+    await this.driver.clickElement(this.assetPickerButton);
+  }
+
   async check_ensAddressAsRecipient(
     ensDomain: string,
     address: string,
@@ -140,13 +116,21 @@ class SendTokenPage {
     );
   }
 
-  async click_assetPickerButton() {
-    await this.driver.clickElement(this.assetPickerButton);
-  }
-
-  async click_secondTokenListButton() {
-    const elements = await this.driver.findElements(this.tokenListButton);
-    await elements[1].click();
+  async check_ensAddressResolution(
+    ensDomain: string,
+    address: string,
+  ): Promise<void> {
+    console.log(
+      `Check ENS domain resolution: '${ensDomain}' should resolve to address '${address}' on the send token screen.`,
+    );
+    // check if ens domain is resolved as expected address
+    await this.driver.waitForSelector({
+      text: ensDomain,
+      css: this.ensResolvedName,
+    });
+    await this.driver.waitForSelector({
+      text: address,
+    });
   }
 }
 

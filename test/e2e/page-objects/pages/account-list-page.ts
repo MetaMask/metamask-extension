@@ -1,4 +1,5 @@
 import { Driver } from '../../webdriver/driver';
+import { regularDelayMs } from '../../helpers';
 
 class AccountListPage {
   private readonly driver: Driver;
@@ -89,6 +90,9 @@ class AccountListPage {
     await this.driver.clickElement(this.createAccountButton);
     await this.driver.clickElement(this.addEthereumAccountButton);
     await this.driver.fill(this.accountNameInput, customLabel);
+    // needed to mitigate a race condition with the state update
+    // there is no condition we can wait for in the UI
+    await this.driver.delay(regularDelayMs);
     await this.driver.clickElementAndWaitToDisappear(
       this.addAccountConfirmButton,
     );
@@ -102,6 +106,9 @@ class AccountListPage {
     console.log(`Adding new account with next available name`);
     await this.driver.clickElement(this.createAccountButton);
     await this.driver.clickElement(this.addEthereumAccountButton);
+    // needed to mitigate a race condition with the state update
+    // there is no condition we can wait for in the UI
+    await this.driver.delay(regularDelayMs);
     await this.driver.clickElementAndWaitToDisappear(
       this.addAccountConfirmButton,
     );

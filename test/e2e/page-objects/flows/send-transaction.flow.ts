@@ -41,6 +41,42 @@ export const sendTransaction = async (
 };
 
 /**
+ * This function initiates the steps required to send a transaction from the homepage to final confirmation.
+ *
+ * @param driver - The webdriver instance.
+ * @param recipientAccount - The recipient account.
+ * @param amount - The amount of the asset to be sent in the transaction.
+ * @param gasfee - The expected transaction gas fee.
+ * @param totalfee - The expected total transaction fee.
+ */
+export const sendTransactionToAccount = async (
+  driver: Driver,
+  recipientAccount: string,
+  amount: string,
+  gasfee: string,
+  totalfee: string,
+): Promise<void> => {
+  console.log(
+    `Start flow to send amount ${amount} to recipient account ${recipientAccount} on home screen`,
+  );
+  // click send button on homepage to start flow
+  const homePage = new HomePage(driver);
+  await homePage.startSendFlow();
+
+  // user should land on send token screen to fill recipient and amount
+  const sendToPage = new SendTokenPage(driver);
+  await sendToPage.check_pageIsLoaded();
+  await sendToPage.selectRecipientAccount(recipientAccount);
+  await sendToPage.fillAmount(amount);
+  await sendToPage.goToNextScreen();
+
+  // confirm transaction when user lands on confirm transaction screen
+  const confirmTxPage = new ConfirmTxPage(driver);
+  await confirmTxPage.check_pageIsLoaded(gasfee, totalfee);
+  await confirmTxPage.confirmTx();
+};
+
+/**
  * This function initiates the steps required to send a transaction from snap account on homepage to final confirmation.
  *
  * @param driver - The webdriver instance.

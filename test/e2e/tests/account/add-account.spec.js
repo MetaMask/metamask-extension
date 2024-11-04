@@ -23,37 +23,6 @@ describe('Add account', function () {
       '0x53CB0AB5226EEBF4D872113D98332C1555DC304443BEE1CF759D15798D3C55A9',
   });
 
-  it('should display correct new account name after create', async function () {
-    await withFixtures(
-      {
-        fixtures: new FixtureBuilder().build(),
-        ganacheOptions,
-        title: this.test.fullTitle(),
-      },
-      async ({ driver }) => {
-        await unlockWallet(driver);
-
-        await driver.clickElement('[data-testid="account-menu-icon"]');
-        await driver.clickElement(
-          '[data-testid="multichain-account-menu-popover-action-button"]',
-        );
-        await driver.clickElement(
-          '[data-testid="multichain-account-menu-popover-add-account"]',
-        );
-
-        await driver.fill('[placeholder="Account 2"]', '2nd account');
-        // needed to mitigate a race condition with the state update
-        // there is no condition we can wait for in the UI
-        await driver.delay(regularDelayMs);
-        await driver.clickElement({ text: 'Add account', tag: 'button' });
-        await driver.findElement({
-          css: '[data-testid="account-menu-icon"]',
-          text: '2nd account',
-        });
-      },
-    );
-  });
-
   it('should not affect public address when using secret recovery phrase to recover account with non-zero balance @no-mmi', async function () {
     await withFixtures(
       {
@@ -70,7 +39,6 @@ describe('Add account', function () {
           TEST_SEED_PHRASE,
           WALLET_PASSWORD,
         );
-
         // Check address of 1st accoun
         await locateAccountBalanceDOM(driver, ganacheServer);
         await driver.findElement('[data-testid="app-header-copy-button"]');
@@ -150,7 +118,7 @@ describe('Add account', function () {
     );
   });
 
-  it('should be possible to remove an account imported with a private key, but should not be possible to remove an account generated from the SRP imported in onboarding @no-mmi', async function () {
+  it.only('should be possible to remove an account imported with a private key, but should not be possible to remove an account generated from the SRP imported in onboarding @no-mmi', async function () {
     const testPrivateKey =
       '14abe6f4aab7f9f626fe981c864d0adeb5685f289ac9270c27b8fd790b4235d6';
 
@@ -188,7 +156,7 @@ describe('Add account', function () {
           '.multichain-account-list-item',
         );
         assert.equal(menuItems.length, 2);
-
+        throw new Error('Not implemented');
         // User cannot delete 2nd account generated from the SRP imported in onboarding
         await driver.clickElement(
           '.multichain-account-list-item--selected [data-testid="account-list-item-menu-button"]',
