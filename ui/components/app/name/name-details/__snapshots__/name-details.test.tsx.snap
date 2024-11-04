@@ -66,7 +66,9 @@ exports[`NameDetails renders proposed names 1`] = `
             <div
               style="text-align: center; margin-bottom: 16px; margin-top: 8px;"
             >
-              <div>
+              <div
+                class="mm-box mm-box--display-flex"
+              >
                 <div
                   class="name name__saved"
                 >
@@ -326,7 +328,9 @@ exports[`NameDetails renders when no address value is passed 1`] = `
             <div
               style="text-align: center; margin-bottom: 16px; margin-top: 8px;"
             >
-              <div>
+              <div
+                class="mm-box mm-box--display-flex"
+              >
                 <div
                   class="name name__missing"
                 >
@@ -509,7 +513,9 @@ exports[`NameDetails renders with no saved name 1`] = `
             <div
               style="text-align: center; margin-bottom: 16px; margin-top: 8px;"
             >
-              <div>
+              <div
+                class="mm-box mm-box--display-flex"
+              >
                 <div
                   class="name name__missing"
                 >
@@ -694,19 +700,18 @@ exports[`NameDetails renders with recognized name 1`] = `
             <div
               style="text-align: center; margin-bottom: 16px; margin-top: 8px;"
             >
-              <div>
+              <div
+                class="mm-box mm-box--display-flex"
+              >
                 <div
                   class="name name__recognized_unsaved"
                 >
-                  <div
+                  <img
+                    alt=""
                     class="identicon"
+                    src="https://static.cx.metamask.io/api/v1/tokenIcons/1/0x0a3bb08b3a15a19b4de82f8acfc862606fb69a2d.png"
                     style="height: 16px; width: 16px; border-radius: 8px;"
-                  >
-                    <img
-                      src="https://static.cx.metamask.io/api/v1/tokenIcons/1/0x0a3bb08b3a15a19b4de82f8acfc862606fb69a2d.png"
-                      style="width: 100%;"
-                    />
-                  </div>
+                  />
                   <p
                     class="mm-box mm-text name__name mm-text--body-md mm-box--color-text-default"
                   >
@@ -884,7 +889,9 @@ exports[`NameDetails renders with saved name 1`] = `
             <div
               style="text-align: center; margin-bottom: 16px; margin-top: 8px;"
             >
-              <div>
+              <div
+                class="mm-box mm-box--display-flex"
+              >
                 <div
                   class="name name__saved"
                 >

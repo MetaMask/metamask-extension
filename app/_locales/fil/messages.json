@@ -436,12 +436,6 @@
   "prev": {
     "message": "Nakaraan"
   },
-  "primaryCurrencySetting": {
-    "message": "Pangunahing Currency"
-  },
-  "primaryCurrencySettingDescription": {
-    "message": "Piliin ang native para bigyang priyoridad ang pagpapakita ng mga halaga sa native currency ng chain (hal. ETH). Piliin ang Fiat para bigyang priyoridad ang pagpapakita ng mga halaga sa napili mong fiat currency."
-  },
   "privacyMsg": {
     "message": "Patakaran sa Privacy"
   },
@@ -676,9 +670,6 @@
   },
   "unlockMessage": {
     "message": "Naghihintay ang decentralized web"
-  },
-  "updatedWithDate": {
-    "message": "Na-update ang $1"
   },
   "urlErrorMsg": {
     "message": "Kinakailangan ng mga URI ang naaangkop na HTTP/HTTPS prefix."

@@ -244,10 +244,6 @@
   "fast": {
     "message": "מהיר"
   },
-  "fiat": {
-    "message": "פיאט",
-    "description": "Exchange type"
-  },
   "fileImportFail": {
     "message": "ייבוא הקובץ לא עובד? לחצ/י כאן!",
     "description": "Helps user import their account from a JSON file"
@@ -505,12 +501,6 @@
   "prev": {
     "message": "הקודם"
   },
-  "primaryCurrencySetting": {
-    "message": "מטבע ראשי"
-  },
-  "primaryCurrencySettingDescription": {
-    "message": "בחר/י 'מקומי' כדי לתעדף הצגת ערכים במטבע המקומי של הצ'יין (למשל ETH). בחר/י פיאט כדי לתעדף הצגת ערכים במטבע הפיאט שבחרת."
-  },
   "privacyMsg": {
     "message": "מדיניות הפרטיות"
   },
@@ -761,9 +751,6 @@
   },
   "unlockMessage": {
     "message": "הרשת המבוזרת מחכה"
-  },
-  "updatedWithDate": {
-    "message": "עודכן $1"
   },
   "urlErrorMsg": {
     "message": "כתובות URI דורשות את קידומת HTTP/HTTPS המתאימה."

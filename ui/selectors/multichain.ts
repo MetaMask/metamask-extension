@@ -2,7 +2,7 @@ import PropTypes from 'prop-types';
 import { InternalAccount, isEvmAccountType } from '@metamask/keyring-api';
 import type { RatesControllerState } from '@metamask/assets-controllers';
 import { CaipChainId, Hex, KnownCaipNamespace } from '@metamask/utils';
-import { createSelector } from '@reduxjs/toolkit';
+import { createSelector } from 'reselect';
 import { NetworkType } from '@metamask/controller-utils';
 import { Numeric } from '../../shared/modules/Numeric';
 import {
@@ -24,7 +24,7 @@ import {
   CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP,
   TEST_NETWORK_IDS,
 } from '../../shared/constants/network';
-import { AccountsState } from './accounts';
+import { AccountsState, getSelectedInternalAccount } from './accounts';
 import {
   getCurrentChainId,
   getCurrentCurrency,
@@ -33,10 +33,9 @@ import {
   getNativeCurrencyImage,
   getNetworkConfigurationsByChainId,
   getSelectedAccountCachedBalance,
-  getSelectedInternalAccount,
   getShouldShowFiat,
   getShowFiatInTestnets,
-} from '.';
+} from './selectors';
 
 export type RatesState = {
   metamask: RatesControllerState;
@@ -231,8 +230,11 @@ export function getMultichainProviderConfig(
   return getMultichainNetwork(state, account).network;
 }
 
-export function getMultichainCurrentNetwork(state: MultichainState) {
-  return getMultichainProviderConfig(state);
+export function getMultichainCurrentNetwork(
+  state: MultichainState,
+  account?: InternalAccount,
+) {
+  return getMultichainProviderConfig(state, account);
 }
 
 export function getMultichainNativeCurrency(
@@ -244,10 +246,13 @@ export function getMultichainNativeCurrency(
     : getMultichainProviderConfig(state, account).ticker;
 }
 
-export function getMultichainCurrentCurrency(state: MultichainState) {
+export function getMultichainCurrentCurrency(
+  state: MultichainState,
+  account?: InternalAccount,
+) {
   const currentCurrency = getCurrentCurrency(state);
 
-  if (getMultichainIsEvm(state)) {
+  if (getMultichainIsEvm(state, account)) {
     return currentCurrency;
   }
 
@@ -256,7 +261,7 @@ export function getMultichainCurrentCurrency(state: MultichainState) {
   // fallback to the current ticker symbol value
   return currentCurrency && currentCurrency.toLowerCase() === 'usd'
     ? 'usd'
-    : getMultichainProviderConfig(state).ticker;
+    : getMultichainProviderConfig(state, account).ticker;
 }
 
 export function getMultichainCurrencyImage(

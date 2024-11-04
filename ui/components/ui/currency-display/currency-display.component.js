@@ -1,9 +1,11 @@
 import React from 'react';
+import { useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
 import { useCurrencyDisplay } from '../../../hooks/useCurrencyDisplay';
 import { EtherDenomination } from '../../../../shared/constants/common';
-import { Text, Box } from '../../component-library';
+import { getPreferences } from '../../../selectors';
+import { SensitiveText, Box } from '../../component-library';
 import {
   AlignItems,
   Display,
@@ -32,8 +34,10 @@ export default function CurrencyDisplay({
   prefixComponentWrapperProps = {},
   textProps = {},
   suffixProps = {},
+  isAggregatedFiatOverviewBalance = false,
   ...props
 }) {
+  const { privacyMode } = useSelector(getPreferences);
   const [title, parts] = useCurrencyDisplay(value, {
     account,
     displayValue,
@@ -43,6 +47,7 @@ export default function CurrencyDisplay({
     denomination,
     currency,
     suffix,
+    isAggregatedFiatOverviewBalance,
   });
 
   return (
@@ -66,26 +71,33 @@ export default function CurrencyDisplay({
           {prefixComponent}
         </Box>
       ) : null}
-      <Text
+      <SensitiveText
         as="span"
         className="currency-display-component__text"
         ellipsis
         variant={TextVariant.inherit}
+        isHidden={privacyMode}
+        data-testid="account-value-and-suffix"
         {...textProps}
       >
         {parts.prefix}
         {parts.value}
-      </Text>
+      </SensitiveText>
       {parts.suffix ? (
-        <Text
+        <SensitiveText
           as="span"
-          className="currency-display-component__suffix"
-          marginInlineStart={1}
+          className={
+            privacyMode
+              ? 'currency-display-component__text'
+              : 'currency-display-component__suffix'
+          }
+          marginInlineStart={privacyMode ? 0 : 1}
           variant={TextVariant.inherit}
+          isHidden={privacyMode}
           {...suffixProps}
         >
           {parts.suffix}
-        </Text>
+        </SensitiveText>
       ) : null}
     </Box>
   );
@@ -112,6 +124,7 @@ const CurrencyDisplayPropTypes = {
   prefixComponentWrapperProps: PropTypes.object,
   textProps: PropTypes.object,
   suffixProps: PropTypes.object,
+  isAggregatedFiatOverviewBalance: PropTypes.bool,
 };
 
 CurrencyDisplay.propTypes = CurrencyDisplayPropTypes;

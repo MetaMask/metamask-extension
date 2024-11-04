@@ -3,11 +3,10 @@ import {
   TransactionType,
 } from '@metamask/transaction-controller';
 import React, { useState } from 'react';
-import { useSelector } from 'react-redux';
 import { useConfirmContext } from '../../../../context/confirm';
 import { useAssetDetails } from '../../../../hooks/useAssetDetails';
-import { selectConfirmationAdvancedDetailsOpen } from '../../../../selectors/preferences';
 import { AdvancedDetails } from '../shared/advanced-details/advanced-details';
+import { ConfirmLoader } from '../shared/confirm-loader/confirm-loader';
 import { GasFeesSection } from '../shared/gas-fees-section/gas-fees-section';
 import { ApproveDetails } from './approve-details/approve-details';
 import { ApproveStaticSimulation } from './approve-static-simulation/approve-static-simulation';
@@ -23,10 +22,6 @@ const ApproveInfo = () => {
     currentConfirmation: TransactionMeta;
   };
 
-  const showAdvancedDetails = useSelector(
-    selectConfirmationAdvancedDetailsOpen,
-  );
-
   const { isNFT } = useIsNFT(transactionMeta);
 
   const [isOpenEditSpendingCapModal, setIsOpenEditSpendingCapModal] =
@@ -38,7 +33,7 @@ const ApproveInfo = () => {
     transactionMeta.txParams.data,
   );
 
-  const { spendingCap } = useApproveTokenSimulation(
+  const { spendingCap, pending } = useApproveTokenSimulation(
     transactionMeta,
     decimals || '0',
   );
@@ -49,6 +44,10 @@ const ApproveInfo = () => {
 
   if (!transactionMeta?.txParams) {
     return null;
+  }
+
+  if (pending) {
+    return <ConfirmLoader />;
   }
 
   return (
@@ -65,7 +64,7 @@ const ApproveInfo = () => {
         />
       )}
       <GasFeesSection />
-      {showAdvancedDetails && <AdvancedDetails />}
+      <AdvancedDetails />
       <EditSpendingCapModal
         isOpenEditSpendingCapModal={isOpenEditSpendingCapModal}
         setIsOpenEditSpendingCapModal={setIsOpenEditSpendingCapModal}

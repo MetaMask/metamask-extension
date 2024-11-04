@@ -1,10 +1,9 @@
-const { strict: assert } = require('assert');
 const {
   defaultGanacheOptions,
-  withFixtures,
+  logInWithBalanceValidation,
   openDapp,
-  unlockWallet,
   WINDOW_TITLES,
+  withFixtures,
 } = require('../../helpers');
 const { SMART_CONTRACTS } = require('../../seeder/smart-contracts');
 const FixtureBuilder = require('../../fixture-builder');
@@ -26,31 +25,21 @@ describe('Editing confirmations of dapp initiated contract interactions', functi
         const contractAddress = await contractRegistry.getContractAddress(
           smartContract,
         );
-        await unlockWallet(driver);
+        await logInWithBalanceValidation(driver);
 
         // deploy contract
         await openDapp(driver, contractAddress);
         // wait for deployed contract, calls and confirms a contract method where ETH is sent
         await driver.findClickableElement('#deployButton');
         await driver.clickElement('#depositButton');
-        await driver.waitUntilXWindowHandles(3);
-        const windowHandles = await driver.getAllWindowHandles();
 
-        await driver.switchToWindowWithTitle(
-          WINDOW_TITLES.Dialog,
-          windowHandles,
-        );
+        await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
         await driver.waitForSelector({
           css: '.confirm-page-container-summary__action__name',
           text: 'Deposit',
         });
-        const editTransactionButton = await driver.isElementPresentAndVisible(
+        await driver.assertElementNotPresent(
           '[data-testid="confirm-page-back-edit-button"]',
-        );
-        assert.equal(
-          editTransactionButton,
-          false,
-          `Edit transaction button should not be visible on a contract interaction created by a dapp`,
         );
       },
     );
@@ -68,28 +57,18 @@ describe('Editing confirmations of dapp initiated contract interactions', functi
         title: this.test.fullTitle(),
       },
       async ({ driver }) => {
-        await unlockWallet(driver);
+        await logInWithBalanceValidation(driver);
 
         await openDapp(driver);
         await driver.clickElement('#sendButton');
-        await driver.waitUntilXWindowHandles(3);
-        const windowHandles = await driver.getAllWindowHandles();
 
-        await driver.switchToWindowWithTitle(
-          WINDOW_TITLES.Dialog,
-          windowHandles,
-        );
+        await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
         await driver.waitForSelector({
           css: '.confirm-page-container-summary__action__name',
           text: 'Sending ETH',
         });
-        const editTransactionButton = await driver.isElementPresentAndVisible(
+        await driver.assertElementNotPresent(
           '[data-testid="confirm-page-back-edit-button"]',
-        );
-        assert.equal(
-          editTransactionButton,
-          false,
-          `Edit transaction button should not be visible on a simple send transaction created by a dapp`,
         );
       },
     );

@@ -4,6 +4,7 @@ import { CHAIN_IDS } from '../../../shared/constants/network';
 import { addHexPrefixToObjectValues } from '../../../shared/lib/swaps-utils';
 import { toPrecisionWithoutTrailingZeros } from '../../../shared/lib/transactions-controller-utils';
 import { MinPermissionAbstractionDisplayCount } from '../../../shared/constants/permissions';
+import { createMockInternalAccount } from '../../../test/jest/mocks';
 import * as util from './util';
 
 describe('util', () => {
@@ -1224,6 +1225,87 @@ describe('util', () => {
           weight: 4,
         },
       ]);
+    });
+  });
+
+  describe('getCalculatedTokenAmount1dAgo', () => {
+    it('should return successfully balance of token 1dago', () => {
+      const mockTokenFiatAmount = '10';
+      const mockTokenPercent1dAgo = 1;
+      const expectedRes = 9.900990099009901;
+      const result = util.getCalculatedTokenAmount1dAgo(
+        mockTokenFiatAmount,
+        mockTokenPercent1dAgo,
+      );
+      expect(result).toBe(expectedRes);
+    });
+
+    it('should return token balance if percentage is undefined', () => {
+      const mockTokenFiatAmount = '10';
+      const mockTokenPercent1dAgo = undefined;
+      const result = util.getCalculatedTokenAmount1dAgo(
+        mockTokenFiatAmount,
+        mockTokenPercent1dAgo,
+      );
+      expect(result).toBe(mockTokenFiatAmount);
+    });
+
+    it('should return zero if token amount is undefined', () => {
+      const mockTokenFiatAmount = undefined;
+      const mockTokenPercent1dAgo = 1;
+      const result = util.getCalculatedTokenAmount1dAgo(
+        mockTokenFiatAmount,
+        mockTokenPercent1dAgo,
+      );
+      expect(result).toBe(0);
+    });
+  });
+
+  describe('sortSelectedInternalAccounts', () => {
+    const account1 = createMockInternalAccount({ lastSelected: 1 });
+    const account2 = createMockInternalAccount({ lastSelected: 2 });
+    const account3 = createMockInternalAccount({ lastSelected: 3 });
+    // We use a big "gap" here to make sure we're not only sorting with sequential indexes
+    const accountWithBigSelectedIndexGap = createMockInternalAccount({
+      lastSelected: 108912379837,
+    });
+    // We wanna make sure that negative indexes are also being considered properly
+    const accountWithNegativeSelectedIndex = createMockInternalAccount({
+      lastSelected: -1,
+    });
+
+    const orderedAccounts = [account3, account2, account1];
+
+    it.each([
+      { accounts: [account1, account2, account3] },
+      { accounts: [account2, account3, account1] },
+      { accounts: [account3, account2, account1] },
+    ])('sorts accounts by descending order: $accounts', ({ accounts }) => {
+      const sortedAccount = util.sortSelectedInternalAccounts(accounts);
+      expect(sortedAccount).toStrictEqual(orderedAccounts);
+    });
+
+    it('sorts accounts with bigger gap', () => {
+      const accounts = [account1, accountWithBigSelectedIndexGap, account3];
+      const sortedAccount = util.sortSelectedInternalAccounts(accounts);
+      expect(sortedAccount.length).toBeGreaterThan(0);
+      expect(sortedAccount).toHaveLength(accounts.length);
+      expect(sortedAccount[0]).toStrictEqual(accountWithBigSelectedIndexGap);
+    });
+
+    it('sorts accounts with negative `lastSelected` index', () => {
+      const accounts = [account1, accountWithNegativeSelectedIndex, account3];
+      const sortedAccount = util.sortSelectedInternalAccounts(accounts);
+      expect(sortedAccount.length).toBeGreaterThan(0); // Required since we using `length - 1`
+      expect(sortedAccount).toHaveLength(accounts.length);
+      expect(sortedAccount[sortedAccount.length - 1]).toStrictEqual(
+        accountWithNegativeSelectedIndex,
+      );
+    });
+
+    it('succeed with no accounts', () => {
+      const sortedAccount = util.sortSelectedInternalAccounts([]);
+      expect(sortedAccount).toStrictEqual([]);
     });
   });
 });

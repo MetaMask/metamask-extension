@@ -1,18 +1,18 @@
-import type { TransactionMeta } from '@metamask/transaction-controller';
 import type { KeyringObject } from '@metamask/keyring-controller';
+import type { TransactionMeta } from '@metamask/transaction-controller';
 import type { Hex } from '@metamask/utils';
 import { cloneDeep } from 'lodash';
-import { KeyringType } from '../../../../shared/constants/keyring';
-import { renderHookWithConfirmContextProvider } from '../../../../test/lib/confirmations/render-helpers';
-import { getMockConfirmStateForTransaction } from '../../../../test/data/confirmations/helper';
-import { genUnapprovedApproveConfirmation } from '../../../../test/data/confirmations/contract-interaction';
-import { flushPromises } from '../../../../test/lib/timer-helpers';
 import {
+  HardwareTransportStates,
+  LEDGER_USB_VENDOR_ID,
   LedgerTransportTypes,
   WebHIDConnectedStatuses,
-  LEDGER_USB_VENDOR_ID,
-  HardwareTransportStates,
 } from '../../../../shared/constants/hardware-wallets';
+import { KeyringType } from '../../../../shared/constants/keyring';
+import { getMockConfirmStateForTransaction } from '../../../../test/data/confirmations/helper';
+import { genUnapprovedApproveConfirmation } from '../../../../test/data/confirmations/token-approve';
+import { renderHookWithConfirmContextProvider } from '../../../../test/lib/confirmations/render-helpers';
+import { flushPromises } from '../../../../test/lib/timer-helpers';
 import * as appActions from '../../../ducks/app/app';
 import { attemptLedgerTransportCreation } from '../../../store/actions';
 import useLedgerConnection from './useLedgerConnection';
