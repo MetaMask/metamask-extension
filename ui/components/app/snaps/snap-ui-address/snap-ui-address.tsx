@@ -29,7 +29,6 @@ export type SnapUIAddressProps = {
 export const SnapUIAddress: React.FunctionComponent<SnapUIAddressProps> = ({
   address,
   avatarSize = 'md',
-
   truncate = true,
   displayName = false,
   avatar = true,
@@ -62,7 +61,12 @@ export const SnapUIAddress: React.FunctionComponent<SnapUIAddressProps> = ({
     : address;
 
   return (
-    <Box display={Display.Flex} alignItems={AlignItems.center} gap={2}>
+    <Box
+      className="snap-ui-renderer__address"
+      display={Display.Flex}
+      alignItems={AlignItems.center}
+      gap={2}
+    >
       {avatar && <SnapUIAvatar address={caipIdentifier} size={avatarSize} />}
       <Text
         variant={TextVariant.bodyMd}
