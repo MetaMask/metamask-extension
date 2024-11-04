@@ -8,10 +8,9 @@ import { useDispatch } from 'react-redux';
 import { renderHookWithConfirmContextProvider } from '../../../../test/lib/confirmations/render-helpers';
 import { genUnapprovedContractInteractionConfirmation } from '../../../../test/data/confirmations/contract-interaction';
 import { getMockConfirmStateForTransaction } from '../../../../test/data/confirmations/helper';
-import { CHAIN_IDS } from '@metamask/transaction-controller';
+import { CHAIN_IDS, TransactionMeta } from '@metamask/transaction-controller';
 import { mockNetworkState } from '../../../../test/stub/networks';
 import { fetchSwapsFeatureFlags } from '../../swaps/swaps.util';
-import mockState from '../../../../test/data/mock-state.json';
 import { Hex } from '@metamask/utils';
 
 jest.mock('react-redux', () => ({
@@ -33,13 +32,17 @@ jest.mock('../../swaps/swaps.util', () => ({
 async function runHook({
   smartTransactionsOptInStatus,
   chainId,
+  confirmation,
 }: {
   smartTransactionsOptInStatus: boolean;
   chainId: Hex;
+  confirmation?: Partial<TransactionMeta>;
 }) {
-  const transaction = genUnapprovedContractInteractionConfirmation({
-    chainId,
-  });
+  const transaction =
+    (confirmation as TransactionMeta) ??
+    genUnapprovedContractInteractionConfirmation({
+      chainId,
+    });
 
   const state = getMockConfirmStateForTransaction(transaction, {
     metamask: {
@@ -76,7 +79,7 @@ describe('useSmartTransactionFeatureFlags', () => {
     fetchSmartTransactionsLivenessMock.mockReturnValue(() => Promise.resolve());
   });
 
-  it('updates feature flags if transaction', async () => {
+  it('updates feature flags', async () => {
     await runHook({
       smartTransactionsOptInStatus: true,
       chainId: CHAIN_IDS.MAINNET,
@@ -97,8 +100,18 @@ describe('useSmartTransactionFeatureFlags', () => {
 
   it('does not update feature flags if chain not supported', async () => {
     await runHook({
-      smartTransactionsOptInStatus: false,
+      smartTransactionsOptInStatus: true,
       chainId: CHAIN_IDS.ARBITRUM,
+    });
+
+    expect(setSwapsFeatureFlagsMock).not.toHaveBeenCalled();
+  });
+
+  it('does not update feature flags if confirmation is not transaction', async () => {
+    await runHook({
+      smartTransactionsOptInStatus: true,
+      chainId: CHAIN_IDS.MAINNET,
+      confirmation: {},
     });
 
     expect(setSwapsFeatureFlagsMock).not.toHaveBeenCalled();
