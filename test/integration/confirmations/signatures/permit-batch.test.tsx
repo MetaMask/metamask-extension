@@ -1,4 +1,4 @@
-import { act, screen } from '@testing-library/react';
+import { act, fireEvent, screen } from '@testing-library/react';
 import nock from 'nock';
 import mockMetaMaskState from '../../data/integration-init-state.json';
 import { integrationTestRender } from '../../../lib/render-helpers';
@@ -88,9 +88,9 @@ describe('Permit Batch Signature Tests', () => {
       "You're giving the spender permission to spend this many tokens from your account.",
       'Spending cap',
       '0xA0b86...6eB48',
-      '14,615,016,373,...',
+      '1,461,501,637,3...',
       '0xb0B86...6EB48',
-      '24,615,016,373,...',
+      '2,461,501,637,3...',
     ];
 
     verifyDetails(simulationSection, simulationDetails);
@@ -112,6 +112,10 @@ describe('Permit Batch Signature Tests', () => {
     ];
     expect(requestDetailsSection).toBeInTheDocument();
     verifyDetails(requestDetailsSection, requestDetails);
+
+    act(() => {
+      fireEvent.click(screen.getByTestId('sectionCollapseButton'));
+    });
 
     const messageDetailsSection = screen.getByTestId(
       'confirmation_message-section',

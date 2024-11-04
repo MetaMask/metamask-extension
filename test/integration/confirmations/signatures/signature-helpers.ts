@@ -1,6 +1,7 @@
 import { ApprovalType } from '@metamask/controller-utils';
 import { MESSAGE_TYPE } from '../../../../shared/constants/app';
 import mockMetaMaskState from '../../data/integration-init-state.json';
+import { CHAIN_IDS } from '../../../../shared/constants/network';
 
 const PERMIT_DATA = `{"types":{"EIP712Domain":[{"name":"name","type":"string"},{"name":"version","type":"string"},{"name":"chainId","type":"uint256"},{"name":"verifyingContract","type":"address"}],"Permit":[{"name":"owner","type":"address"},{"name":"spender","type":"address"},{"name":"value","type":"uint256"},{"name":"nonce","type":"uint256"},{"name":"deadline","type":"uint256"}]},"primaryType":"Permit","domain":{"name":"MyToken","version":"1","verifyingContract":"0xCcCCccccCCCCcCCCCCCcCcCccCcCCCcCcccccccC","chainId":1},"message":{"owner":"{ownerAddress}","spender":"0x5B38Da6a701c568545dCfcB03FcB875f56beddC4","value":3000,"nonce":0,"deadline":50000000000}}`;
 
@@ -58,6 +59,7 @@ export const getMetaMaskStateWithUnapprovedPermitSign = (
     type: MESSAGE_TYPE.ETH_SIGN_TYPED_DATA,
     securityProviderResponse: null,
     msgParams: messageParams,
+    chainId: CHAIN_IDS.SEPOLIA,
   };
 
   const pendingApproval = {
