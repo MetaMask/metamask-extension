@@ -2,7 +2,10 @@ import { TransactionMeta } from '@metamask/transaction-controller';
 import { BigNumber } from 'bignumber.js';
 import React from 'react';
 import { useSelector } from 'react-redux';
-import { CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP } from '../../../../../../../../shared/constants/network';
+import {
+  CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP,
+  TEST_CHAINS,
+} from '../../../../../../../../shared/constants/network';
 import {
   AvatarToken,
   AvatarTokenSize,
@@ -22,7 +25,7 @@ import {
 } from '../../../../../../../helpers/constants/design-system';
 import { MIN_AMOUNT } from '../../../../../../../hooks/useCurrencyDisplay';
 import { useFiatFormatter } from '../../../../../../../hooks/useFiatFormatter';
-import { getIsTestnet, getPreferences } from '../../../../../../../selectors';
+import { getPreferences } from '../../../../../../../selectors';
 import { getMultichainNetwork } from '../../../../../../../selectors/multichain';
 import { useConfirmContext } from '../../../../../context/confirm';
 import {
@@ -60,7 +63,10 @@ const NativeSendHeading = () => {
     nativeAssetTransferValue.toNumber(),
   );
 
-  const isTestnet = useSelector(getIsTestnet);
+  type TestNetChainId = (typeof TEST_CHAINS)[number];
+  const isTestnet = TEST_CHAINS.includes(
+    transactionMeta.chainId as TestNetChainId,
+  );
   const { showFiatInTestnets } = useSelector(getPreferences);
 
   const NetworkImage = (

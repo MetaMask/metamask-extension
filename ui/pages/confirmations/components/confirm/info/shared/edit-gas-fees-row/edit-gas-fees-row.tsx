@@ -1,6 +1,7 @@
 import { TransactionMeta } from '@metamask/transaction-controller';
 import React, { Dispatch, SetStateAction } from 'react';
 import { useSelector } from 'react-redux';
+import { TEST_CHAINS } from '../../../../../../../../shared/constants/network';
 import { ConfirmInfoAlertRow } from '../../../../../../../components/app/confirm/info/row/alert-row/alert-row';
 import { RowAlertKey } from '../../../../../../../components/app/confirm/info/row/constants';
 import { Box, Text } from '../../../../../../../components/component-library';
@@ -13,7 +14,7 @@ import {
   TextColor,
 } from '../../../../../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../../../../../hooks/useI18nContext';
-import { getIsTestnet, getPreferences } from '../../../../../../../selectors';
+import { getPreferences } from '../../../../../../../selectors';
 import { useConfirmContext } from '../../../../../context/confirm';
 import { EditGasIconButton } from '../edit-gas-icon/edit-gas-icon-button';
 
@@ -33,7 +34,10 @@ export const EditGasFeesRow = ({
   const { currentConfirmation: transactionMeta } =
     useConfirmContext<TransactionMeta>();
 
-  const isTestnet = useSelector(getIsTestnet);
+  type TestNetChainId = (typeof TEST_CHAINS)[number];
+  const isTestnet = TEST_CHAINS.includes(
+    transactionMeta.chainId as TestNetChainId,
+  );
   const { showFiatInTestnets } = useSelector(getPreferences);
 
   return (
