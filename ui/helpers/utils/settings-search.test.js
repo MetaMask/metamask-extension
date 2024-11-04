@@ -68,6 +68,10 @@ const t = (key) => {
       return 'Dismiss Secret Recovery Phrase backup reminder';
     case 'dismissReminderDescriptionField':
       return 'Turn this on to dismiss the Secret Recovery Phrase backup reminder message. We highly recommend that you back up your Secret Recovery Phrase to avoid loss of funds';
+    case 'overrideContentSecurityPolicyHeader':
+      return 'Override Content-Security-Policy header';
+    case 'overrideContentSecurityPolicyHeaderDescription':
+      return 'This option is a workaround for a known issue in Firefox, where the Content-Security-Policy header may not be bypassed, causing the extension to fail to load properly. Disabling this option is not recommended unless required for specific web page compatibility.';
     case 'Contacts':
       return 'Contacts';
     case 'securityAndPrivacy':

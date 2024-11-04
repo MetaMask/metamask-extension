@@ -57,6 +57,8 @@ export default class AdvancedTab extends PureComponent {
     backupUserData: PropTypes.func.isRequired,
     showExtensionInFullSizeView: PropTypes.bool,
     setShowExtensionInFullSizeView: PropTypes.func.isRequired,
+    overrideContentSecurityPolicyHeader: PropTypes.bool,
+    setOverrideContentSecurityPolicyHeader: PropTypes.func.isRequired,
   };
 
   state = {
@@ -575,6 +577,42 @@ export default class AdvancedTab extends PureComponent {
     );
   }
 
+  renderOverrideContentSecurityPolicyHeader() {
+    const { t } = this.context;
+    const {
+      overrideContentSecurityPolicyHeader,
+      setOverrideContentSecurityPolicyHeader,
+    } = this.props;
+
+    return (
+      <Box
+        ref={this.settingsRefs[11]}
+        className="settings-page__content-row"
+        data-testid="advanced-setting-override-content-security-policy-header"
+        display={Display.Flex}
+        flexDirection={FlexDirection.Row}
+        justifyContent={JustifyContent.spaceBetween}
+        gap={4}
+      >
+        <div className="settings-page__content-item">
+          <span>{t('overrideContentSecurityPolicyHeader')}</span>
+          <div className="settings-page__content-description">
+            {t('overrideContentSecurityPolicyHeaderDescription')}
+          </div>
+        </div>
+
+        <div className="settings-page__content-item-col">
+          <ToggleButton
+            value={overrideContentSecurityPolicyHeader}
+            onToggle={(value) => setOverrideContentSecurityPolicyHeader(!value)}
+            offLabel={t('off')}
+            onLabel={t('on')}
+          />
+        </div>
+      </Box>
+    );
+  }
+
   render() {
     const { warning } = this.props;
     // When adding/removing/editing the order of renders, double-check the order of the settingsRefs. This affects settings-search.js
@@ -592,6 +630,7 @@ export default class AdvancedTab extends PureComponent {
         {this.renderAutoLockTimeLimit()}
         {this.renderUserDataBackup()}
         {this.renderDismissSeedBackupReminderControl()}
+        {this.renderOverrideContentSecurityPolicyHeader()}
       </div>
     );
   }

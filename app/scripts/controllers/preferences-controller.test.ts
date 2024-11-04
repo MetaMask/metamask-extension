@@ -837,6 +837,23 @@ describe('preferences controller', () => {
     });
   });
 
+  describe('overrideContentSecurityPolicyHeader', () => {
+    it('defaults overrideContentSecurityPolicyHeader to true', () => {
+      const { controller } = setupController({});
+      expect(
+        controller.state.overrideContentSecurityPolicyHeader,
+      ).toStrictEqual(true);
+    });
+
+    it('set overrideContentSecurityPolicyHeader to false', () => {
+      const { controller } = setupController({});
+      controller.setOverrideContentSecurityPolicyHeader(false);
+      expect(
+        controller.state.overrideContentSecurityPolicyHeader,
+      ).toStrictEqual(false);
+    });
+  });
+
   describe('snapsAddSnapAccountModalDismissed', () => {
     it('defaults snapsAddSnapAccountModalDismissed to false', () => {
       const { controller } = setupController({});

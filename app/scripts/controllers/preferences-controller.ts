@@ -133,6 +133,7 @@ export type PreferencesControllerState = Omit<
   useNonceField: boolean;
   usePhishDetect: boolean;
   dismissSeedBackUpReminder: boolean;
+  overrideContentSecurityPolicyHeader: boolean;
   useMultiAccountBalanceChecker: boolean;
   useSafeChainsListValidation: boolean;
   use4ByteResolution: boolean;
@@ -172,6 +173,7 @@ export const getDefaultPreferencesControllerState =
     useNonceField: false,
     usePhishDetect: true,
     dismissSeedBackUpReminder: false,
+    overrideContentSecurityPolicyHeader: true,
     useMultiAccountBalanceChecker: true,
     useSafeChainsListValidation: true,
     // set to true means the dynamic list from the API is being used
@@ -297,6 +299,10 @@ const controllerMetadata = {
     anonymous: true,
   },
   dismissSeedBackUpReminder: {
+    persist: true,
+    anonymous: true,
+  },
+  overrideContentSecurityPolicyHeader: {
     persist: true,
     anonymous: true,
   },
@@ -982,6 +988,20 @@ export class PreferencesController extends BaseController<
   setDismissSeedBackUpReminder(dismissSeedBackUpReminder: boolean): void {
     this.update((state) => {
       state.dismissSeedBackUpReminder = dismissSeedBackUpReminder;
+    });
+  }
+
+  /**
+   * A setter for the user preference to override the Content-Security-Policy header
+   *
+   * @param overrideContentSecurityPolicyHeader - User preference for overriding the Content-Security-Policy header.
+   */
+  setOverrideContentSecurityPolicyHeader(
+    overrideContentSecurityPolicyHeader: boolean,
+  ): void {
+    this.update((state) => {
+      state.overrideContentSecurityPolicyHeader =
+        overrideContentSecurityPolicyHeader;
     });
   }
 

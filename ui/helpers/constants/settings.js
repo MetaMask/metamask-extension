@@ -154,6 +154,15 @@ const SETTINGS_CONSTANTS = [
     route: `${ADVANCED_ROUTE}#export-data`,
     icon: 'fas fa-download',
   },
+  // advanced settingsRefs[11]
+  {
+    tabMessage: (t) => t('advanced'),
+    sectionMessage: (t) => t('overrideContentSecurityPolicyHeader'),
+    descriptionMessage: (t) =>
+      t('overrideContentSecurityPolicyHeaderDescription'),
+    route: `${ADVANCED_ROUTE}#override-content-security-policy-header`,
+    icon: 'fas fa-sliders-h',
+  },
   {
     tabMessage: (t) => t('contacts'),
     sectionMessage: (t) => t('contacts'),
