@@ -21,9 +21,6 @@ class AccountListPage {
   private readonly addAccountConfirmButton =
     '[data-testid="submit-add-account-with-name"]';
 
-  private readonly importAccountConfirmButton =
-    '[data-testid="import-account-confirm-button"]';
-
   private readonly addEthereumAccountButton =
     '[data-testid="multichain-account-menu-popover-add-account"]';
 
@@ -45,23 +42,39 @@ class AccountListPage {
 
   private readonly editableLabelInput = '[data-testid="editable-input"] input';
 
-  private readonly hideUnhideAccountButton =
-    '[data-testid="account-list-menu-hide"]';
-
   private readonly hiddenAccountOptionsMenuButton =
     '.multichain-account-menu-popover__list--menu-item-hidden-account [data-testid="account-list-item-menu-button"]';
 
   private readonly hiddenAccountsList = '[data-testid="hidden-accounts-list"]';
+
+  private readonly hideUnhideAccountButton =
+    '[data-testid="account-list-menu-hide"]';
+
+  private readonly importAccountConfirmButton =
+    '[data-testid="import-account-confirm-button"]';
+
+  private readonly importAccountPrivateKeyInput = '#private-key-box';
 
   private readonly pinUnpinAccountButton =
     '[data-testid="account-list-menu-pin"]';
 
   private readonly pinnedIcon = '[data-testid="account-pinned-icon"]';
 
+  private readonly removeAccountButton =
+    '[data-testid="account-list-menu-remove"]';
+
+  private readonly removeAccountConfirmButton = {
+    text: 'Remove',
+    tag: 'button',
+  };
+
+  private readonly removeAccountMessage = {
+    text: 'Remove account?',
+    tag: 'div',
+  };
+
   private readonly saveAccountLabelButton =
     '[data-testid="save-account-label-input"]';
-
-  private readonly importAccountPrivateKeyInput = '#private-key-box';
 
   constructor(driver: Driver) {
     this.driver = driver;
@@ -156,13 +169,17 @@ class AccountListPage {
   }
 
   /**
-   * Opens the account options menu for the specified account.
+   * Open the account options menu for the specified account.
    *
    * @param accountLabel - The label of the account to open the options menu for.
    */
   async openAccountOptionsInAccountList(accountLabel: string): Promise<void> {
-    console.log(`Open account options in account list for account ${accountLabel}`);
-    await this.driver.clickElement(`button[data-testid="account-list-item-menu-button"][aria-label="${accountLabel} Options"]`);
+    console.log(
+      `Open account options in account list for account ${accountLabel}`,
+    );
+    await this.driver.clickElement(
+      `button[data-testid="account-list-item-menu-button"][aria-label="${accountLabel} Options"]`,
+    );
   }
 
   async openAccountOptionsMenu(): Promise<void> {
@@ -190,6 +207,19 @@ class AccountListPage {
   async pinAccount(): Promise<void> {
     console.log(`Pin account in account list`);
     await this.driver.clickElement(this.pinUnpinAccountButton);
+  }
+
+  /**
+   * Remove the specified account from the account list.
+   *
+   * @param accountLabel - The label of the account to remove.
+   */
+  async removeAccount(accountLabel: string): Promise<void> {
+    console.log(`Remove account in account list`);
+    await this.openAccountOptionsInAccountList(accountLabel);
+    await this.driver.clickElement(this.removeAccountButton);
+    await this.driver.waitForSelector(this.removeAccountMessage);
+    await this.driver.clickElement(this.removeAccountConfirmButton);
   }
 
   async switchToAccount(expectedLabel: string): Promise<void> {
@@ -298,6 +328,21 @@ class AccountListPage {
       );
       return internalAccounts.length === expectedNumberOfAccounts;
     }, 20000);
+  }
+
+  /**
+   * Check that the remove account button is not displayed in the account options menu for the specified account.
+   *
+   * @param accountLabel - The label of the account to check.
+   */
+  async check_removeAccountButtonIsNotDisplayed(
+    accountLabel: string,
+  ): Promise<void> {
+    console.log(
+      `Check that remove account button is not displayed in account options menu for account ${accountLabel} in account list`,
+    );
+    await this.openAccountOptionsInAccountList(accountLabel);
+    await this.driver.assertElementNotPresent(this.removeAccountButton);
   }
 }
 

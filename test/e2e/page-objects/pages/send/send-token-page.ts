@@ -11,8 +11,7 @@ class SendTokenPage {
     tag: 'button',
   };
 
-  private readonly ensAddressAsRecipient =
-    '[data-testid="ens-input-selected"]';
+  private readonly ensAddressAsRecipient = '[data-testid="ens-input-selected"]';
 
   private readonly ensResolvedName =
     '[data-testid="multichain-send-page__recipient__item__title"]';
@@ -49,11 +48,6 @@ class SendTokenPage {
       throw e;
     }
     console.log('Send token screen is loaded');
-  }
-
-  async click_secondTokenListButton() {
-    const elements = await this.driver.findElements(this.tokenListButton);
-    await elements[1].click();
   }
 
   async fillAmount(amount: string): Promise<void> {
@@ -131,6 +125,11 @@ class SendTokenPage {
     await this.driver.waitForSelector({
       text: address,
     });
+  }
+
+  async click_secondTokenListButton() {
+    const elements = await this.driver.findElements(this.tokenListButton);
+    await elements[1].click();
   }
 }
 
