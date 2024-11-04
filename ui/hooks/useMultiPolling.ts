@@ -6,7 +6,9 @@ type UseMultiPollingOptions<PollingInput> = {
   input: PollingInput[];
 };
 
-// Version of ui/hooks/usePolling.ts that supports multiple inputs / polling loops
+// A hook that manages multiple polling loops of a polling controller.
+// Callers provide an array of inputs, and the hook manages starting
+// and stopping polling loops for each input.
 const useMultiPolling = <PollingInput>(
   usePollingOptions: UseMultiPollingOptions<PollingInput>,
 ) => {
