@@ -137,11 +137,11 @@ export default class BridgeStatusController extends StaticIntervalPollingControl
     const historyItems = Object.values(bridgeStatusState.txHistory);
     const incompleteHistoryItems = historyItems
       .filter(
-        (historyItem) => historyItem.status.status !== StatusTypes.COMPLETE,
+        (historyItem) => historyItem.status?.status !== StatusTypes.COMPLETE,
       )
       .filter((historyItem) => {
         // Check if we are already polling this tx, if so, skip restarting polling for that
-        const srcTxHash = historyItem.status.srcChain.txHash;
+        const srcTxHash = historyItem.status?.srcChain.txHash;
         const pollingToken = this.#pollingTokensBySrcTxHash[srcTxHash];
         console.log('pollingToken', {
           srcTxHash,
@@ -159,7 +159,7 @@ export default class BridgeStatusController extends StaticIntervalPollingControl
     incompleteHistoryItems.forEach((historyItem) => {
       const statusRequest = {
         bridgeId: historyItem.quote.bridgeId,
-        srcTxHash: historyItem.status.srcChain.txHash,
+        srcTxHash: historyItem.status?.srcChain.txHash,
         bridge: historyItem.quote.bridges[0],
         srcChainId: historyItem.quote.srcChainId,
         destChainId: historyItem.quote.destChainId,
@@ -182,7 +182,7 @@ export default class BridgeStatusController extends StaticIntervalPollingControl
         this.startPollingByNetworkClientId(networkClientId, options);
 
       console.log('restarting polling for', {
-        srcTxHash: historyItem.status.srcChain.txHash,
+        srcTxHash: historyItem.status?.srcChain.txHash,
       });
     });
   };

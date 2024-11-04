@@ -22,18 +22,17 @@ export const selectBridgeStatusState = (state: BridgeStatusAppState) =>
 export const selectBridgeHistoryForAccount = createSelector(
   [getSelectedAddress, selectBridgeStatusState],
   (selectedAddress, bridgeStatusState) => {
-    const { txHistory } = bridgeStatusState;
+    const { txHistory } = bridgeStatusState ?? {};
 
-    return Object.keys(txHistory).reduce<Record<string, BridgeHistoryItem>>(
-      (acc, txHash) => {
-        const txHistoryItem = txHistory[txHash];
-        if (txHistoryItem.account === selectedAddress) {
-          acc[txHash] = txHistoryItem;
-        }
-        return acc;
-      },
-      {},
-    );
+    return Object.keys(txHistory ?? {}).reduce<
+      Record<string, BridgeHistoryItem>
+    >((acc, txHash) => {
+      const txHistoryItem = txHistory[txHash];
+      if (txHistoryItem.account === selectedAddress) {
+        acc[txHash] = txHistoryItem;
+      }
+      return acc;
+    }, {});
   },
 );
 
