@@ -164,7 +164,7 @@ describe('Settings Search Utils', () => {
     });
 
     it('returns "Advanced" section count', () => {
-      expect(getNumberOfSettingRoutesInTab(t, t('advanced'))).toStrictEqual(11);
+      expect(getNumberOfSettingRoutesInTab(t, t('advanced'))).toStrictEqual(12);
     });
 
     it('returns "Contact" section count', () => {
