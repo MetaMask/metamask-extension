@@ -645,9 +645,9 @@ export default class MetamaskController extends EventEmitter {
 
     this.tokenListController = new TokenListController({
       chainId: getCurrentChainId({ metamask: this.networkController.state }),
-      preventPollingOnNetworkRestart: !this.#isTokenListPollingRequired(
-        this.preferencesController.state,
-      ),
+      // preventPollingOnNetworkRestart: !this.#isTokenListPollingRequired(
+      //   this.preferencesController.state,
+      // ),
       messenger: tokenListMessenger,
       state: initState.TokenListController,
     });
@@ -2854,7 +2854,7 @@ export default class MetamaskController extends EventEmitter {
           this.txController.stopIncomingTransactionPolling();
         }
 
-        this.#checkTokenListPolling(currState, prevState);
+        // this.#checkTokenListPolling(currState, prevState);
       }, this.preferencesController.state),
     );
 
@@ -7166,32 +7166,32 @@ export default class MetamaskController extends EventEmitter {
     };
   }
 
-  #checkTokenListPolling(currentState, previousState) {
-    const previousEnabled = this.#isTokenListPollingRequired(previousState);
-    const newEnabled = this.#isTokenListPollingRequired(currentState);
+  // #checkTokenListPolling(currentState, previousState) {
+  //   const previousEnabled = this.#isTokenListPollingRequired(previousState);
+  //   const newEnabled = this.#isTokenListPollingRequired(currentState);
 
-    if (previousEnabled === newEnabled) {
-      return;
-    }
+  //   if (previousEnabled === newEnabled) {
+  //     return;
+  //   }
 
-    this.tokenListController.updatePreventPollingOnNetworkRestart(!newEnabled);
+  //   this.tokenListController.updatePreventPollingOnNetworkRestart(!newEnabled);
 
-    if (newEnabled) {
-      log.debug('Started token list controller polling');
-      this.tokenListController.start();
-    } else {
-      log.debug('Stopped token list controller polling');
-      this.tokenListController.clearingTokenListData();
-      this.tokenListController.stop();
-    }
-  }
+  //   if (newEnabled) {
+  //     log.debug('Started token list controller polling');
+  //     this.tokenListController.start();
+  //   } else {
+  //     log.debug('Stopped token list controller polling');
+  //     this.tokenListController.clearingTokenListData();
+  //     this.tokenListController.stop();
+  //   }
+  // }
 
-  #isTokenListPollingRequired(preferencesControllerState) {
-    const { useTokenDetection, useTransactionSimulations, preferences } =
-      preferencesControllerState ?? {};
+  // #isTokenListPollingRequired(preferencesControllerState) {
+  //   const { useTokenDetection, useTransactionSimulations, preferences } =
+  //     preferencesControllerState ?? {};
 
-    const { petnamesEnabled } = preferences ?? {};
+  //   const { petnamesEnabled } = preferences ?? {};
 
-    return useTokenDetection || petnamesEnabled || useTransactionSimulations;
-  }
+  //   return useTokenDetection || petnamesEnabled || useTransactionSimulations;
+  // }
 }
