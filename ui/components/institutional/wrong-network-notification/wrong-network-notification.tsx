@@ -11,7 +11,7 @@ import {
 import { getSelectedAccountCachedBalance } from '../../../selectors';
 import { getIsCustodianSupportedChain } from '../../../selectors/institutional/selectors';
 import { useI18nContext } from '../../../hooks/useI18nContext';
-import { getProviderConfig } from '../../../selectors/networks';
+import { getProviderConfig } from '../../../../shared/modules/selectors/networks';
 import { Icon, IconName, IconSize, Box, Text } from '../../component-library';
 
 const WrongNetworkNotification: React.FC = () => {

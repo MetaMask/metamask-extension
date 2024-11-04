@@ -76,7 +76,7 @@ import {
 import {
   getProviderConfig,
   getSelectedNetworkClientId,
-} from '../../../selectors/networks';
+} from '../../../../shared/modules/selectors/networks';
 import {
   addHexPrefix,
   ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)

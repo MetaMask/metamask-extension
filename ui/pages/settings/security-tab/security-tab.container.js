@@ -27,7 +27,7 @@ import {
   getMetaMetricsDataDeletionId,
   getPetnamesEnabled,
 } from '../../../selectors/selectors';
-import { getNetworkConfigurationsByChainId } from '../../../selectors/networks';
+import { getNetworkConfigurationsByChainId } from '../../../../shared/modules/selectors/networks';
 import { openBasicFunctionalityModal } from '../../../ducks/app/app';
 import SecurityTab from './security-tab.component';
 

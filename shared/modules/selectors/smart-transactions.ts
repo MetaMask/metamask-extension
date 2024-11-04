@@ -15,7 +15,7 @@ import { isProduction } from '../environment';
 
 // TODO: Remove restricted imports
 // eslint-disable-next-line import/no-restricted-paths
-import { NetworkState } from '../../../ui/selectors/networks';
+import { NetworkState } from './networks';
 
 type SmartTransactionsMetaMaskState = {
   metamask: {

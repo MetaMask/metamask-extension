@@ -105,7 +105,8 @@ import { toChecksumHexAddress } from '../../shared/modules/hexstring-utils';
 import {
   getProviderConfig,
   getNetworkConfigurationsByChainId,
-} from './networks';
+} from '../../shared/modules/selectors/networks';
+import { createDeepEqualSelector } from '../../shared/modules/selectors/util';
 import {
   getAllUnapprovedTransactions,
   getCurrentNetworkTransactions,
@@ -120,7 +121,6 @@ import {
   getSubjectMetadata,
 } from './permissions';
 import { getSelectedInternalAccount, getInternalAccounts } from './accounts';
-import { createDeepEqualSelector } from './util';
 import { getMultichainBalances, getMultichainNetwork } from './multichain';
 
 export function getNetworkIdentifier(state) {

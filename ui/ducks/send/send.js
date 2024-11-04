@@ -103,7 +103,7 @@ import {
   getNativeCurrency,
   getTokens,
 } from '../metamask/metamask';
-import { getProviderConfig } from '../../selectors/networks';
+import { getProviderConfig } from '../../../shared/modules/selectors/networks';
 
 import { resetDomainResolution } from '../domains';
 import {

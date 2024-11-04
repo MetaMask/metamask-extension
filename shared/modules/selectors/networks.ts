@@ -4,7 +4,7 @@ import {
   type NetworkState as _NetworkState,
 } from '@metamask/network-controller';
 import { createSelector } from 'reselect';
-import { NetworkStatus } from '../../shared/constants/network';
+import { NetworkStatus } from '../../constants/network';
 import { createDeepEqualSelector } from './util';
 
 export type NetworkState = { metamask: _NetworkState };

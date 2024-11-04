@@ -27,7 +27,7 @@ import {
   getProviderConfig,
   NetworkState,
   getNetworkConfigurationsByChainId,
-} from './networks';
+} from '../../shared/modules/selectors/networks';
 import { AccountsState, getSelectedInternalAccount } from './accounts';
 import {
   getCurrentChainId,

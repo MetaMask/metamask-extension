@@ -19,7 +19,7 @@ import {
 import {
   getProviderConfig,
   getSelectedNetworkClientId,
-} from '../../selectors/networks';
+} from '../../../shared/modules/selectors/networks';
 import { getSelectedInternalAccount } from '../../selectors/accounts';
 import * as actionConstants from '../../store/actionConstants';
 import { updateTransactionGasFees } from '../../store/actions';

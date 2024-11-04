@@ -5,7 +5,7 @@ import mockState from '../../../../../test/data/mock-state.json';
 import { renderWithProvider } from '../../../../../test/lib/render-helpers';
 import configureStore from '../../../../store/store';
 import { getSelectedInternalAccountFromMockState } from '../../../../../test/jest/mocks';
-import { getProviderConfig } from '../../../../selectors/networks';
+import { getProviderConfig } from '../../../../../shared/modules/selectors/networks';
 import ConfirmSubTitle from './confirm-subtitle';
 
 const mockSelectedInternalAccount =

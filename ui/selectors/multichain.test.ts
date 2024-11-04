@@ -21,7 +21,7 @@ import {
 } from '../../shared/constants/network';
 import { MultichainNativeAssets } from '../../shared/constants/multichain/assets';
 import { mockNetworkState } from '../../test/stub/networks';
-import { getProviderConfig } from './networks';
+import { getProviderConfig } from '../../shared/modules/selectors/networks';
 import { AccountsState } from './accounts';
 import {
   MultichainState,

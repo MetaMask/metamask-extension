@@ -1,5 +1,5 @@
 import { useSelector } from 'react-redux';
-import { getProviderConfig } from '../../../selectors/networks';
+import { getProviderConfig } from '../../../../shared/modules/selectors/networks';
 
 import { isEqualCaseInsensitive } from '../../../../shared/modules/string-utils';
 import { getSelectedInternalAccount } from '../../../selectors';

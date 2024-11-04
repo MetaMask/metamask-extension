@@ -1,7 +1,10 @@
 import { toChecksumAddress } from 'ethereumjs-util';
 import { getAccountType } from '../selectors';
 import { getSelectedInternalAccount } from '../accounts';
-import { ProviderConfigState, getProviderConfig } from '../networks';
+import {
+  ProviderConfigState,
+  getProviderConfig,
+} from '../../../shared/modules/selectors/networks';
 import { hexToDecimal } from '../../../shared/modules/conversion.utils';
 // TODO: Remove restricted import
 // eslint-disable-next-line import/no-restricted-paths

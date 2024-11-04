@@ -32,7 +32,7 @@ import {
 import { INSUFFICIENT_TOKENS_ERROR } from '../send.constants';
 import { getCurrentDraftTransaction } from '../../../../ducks/send';
 import { getNativeCurrency } from '../../../../ducks/metamask/metamask';
-import { getProviderConfig } from '../../../../selectors/networks';
+import { getProviderConfig } from '../../../../../shared/modules/selectors/networks';
 import { showModal } from '../../../../store/actions';
 import {
   addHexes,

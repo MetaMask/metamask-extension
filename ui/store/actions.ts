@@ -82,7 +82,7 @@ import {
 } from '../ducks/send';
 import { switchedToUnconnectedAccount } from '../ducks/alerts/unconnected-account';
 import { getUnconnectedAccountAlertEnabledness } from '../ducks/metamask/metamask';
-import { getProviderConfig } from '../selectors/networks';
+import { getProviderConfig } from '../../shared/modules/selectors/networks';
 import { toChecksumHexAddress } from '../../shared/modules/hexstring-utils';
 import {
   HardwareDeviceNames,

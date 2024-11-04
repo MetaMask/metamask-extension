@@ -28,7 +28,7 @@ import {
   subtractHexes,
   sumHexes,
 } from '../../shared/modules/conversion.utils';
-import { getProviderConfig } from './networks';
+import { getProviderConfig } from '../../shared/modules/selectors/networks';
 import { getAveragePriceEstimateInHexWEI } from './custom-gas';
 import {
   checkNetworkAndAccountSupports1559,
