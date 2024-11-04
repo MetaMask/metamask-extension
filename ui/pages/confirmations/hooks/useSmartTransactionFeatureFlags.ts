@@ -1,6 +1,7 @@
 import { useDispatch, useSelector } from 'react-redux';
 import { useEffect } from 'react';
 import { TransactionMeta } from '@metamask/transaction-controller';
+import log from 'loglevel';
 import {
   getCurrentChainSupportsSmartTransactions,
   getSmartTransactionsPreferenceEnabled,
@@ -36,12 +37,13 @@ export function useSmartTransactionFeatureFlags() {
       return;
     }
 
-    Promise.all([
-      fetchSwapsFeatureFlags(),
-      fetchSmartTransactionsLiveness()(),
-    ]).then(([swapsFeatureFlags]) => {
-      dispatch(setSwapsFeatureFlags(swapsFeatureFlags));
-    });
+    Promise.all([fetchSwapsFeatureFlags(), fetchSmartTransactionsLiveness()()])
+      .then(([swapsFeatureFlags]) => {
+        dispatch(setSwapsFeatureFlags(swapsFeatureFlags));
+      })
+      .catch((error) => {
+        log.debug('Error updating smart transaction feature flags', error);
+      });
   }, [
     isTransaction,
     transactionId,
