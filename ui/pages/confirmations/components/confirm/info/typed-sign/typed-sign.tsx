@@ -22,6 +22,7 @@ import { fetchErc20Decimals } from '../../../../utils/token';
 import { useConfirmContext } from '../../../../context/confirm';
 import { selectUseTransactionSimulations } from '../../../../selectors/preferences';
 import { ConfirmInfoRowTypedSignData } from '../../row/typed-sign-data/typedSignData';
+import { isSnapId } from '../../../../../../helpers/utils/snaps';
 import { PermitSimulation } from './permit-simulation';
 
 const TypedSignInfo: React.FC = () => {
@@ -55,6 +56,9 @@ const TypedSignInfo: React.FC = () => {
     })();
   }, [verifyingContract]);
 
+  const toolTipMessage = isSnapId(currentConfirmation.msgParams.origin)
+    ? t('requestFromInfoSnap')
+    : t('requestFromInfo');
   const msgData = currentConfirmation.msgParams?.data as string;
 
   return (
@@ -73,7 +77,7 @@ const TypedSignInfo: React.FC = () => {
           alertKey={RowAlertKey.RequestFrom}
           ownerId={currentConfirmation.id}
           label={t('requestFrom')}
-          tooltip={t('requestFromInfo')}
+          tooltip={toolTipMessage}
         >
           <ConfirmInfoRowUrl url={currentConfirmation.msgParams.origin} />
         </ConfirmInfoAlertRow>
