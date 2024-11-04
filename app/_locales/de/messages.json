@@ -805,10 +805,6 @@
   "buyNow": {
     "message": "Jetzt kaufen"
   },
-  "buyToken": {
-    "message": "$1 kaufen",
-    "description": "$1 is the token symbol"
-  },
   "bytes": {
     "message": "Bytes"
   },
@@ -1883,13 +1879,6 @@
   "functionType": {
     "message": "Funktionstyp"
   },
-  "fundYourWallet": {
-    "message": "Versehen Sie Ihre Wallet mit Geldern"
-  },
-  "fundYourWalletDescription": {
-    "message": "Legen Sie los, indem Sie Ihrer Wallet $1 hinzufügen.",
-    "description": "$1 is the token symbol"
-  },
   "gas": {
     "message": "Gas"
   },
@@ -1972,14 +1961,6 @@
   },
   "genericExplorerView": {
     "message": "Konto auf $1 ansehen"
-  },
-  "getStartedWithNFTs": {
-    "message": "Erhalten Sie $1 für den Kauf von NFTs",
-    "description": "$1 is the token symbol"
-  },
-  "getStartedWithNFTsDescription": {
-    "message": "Legen Sie mit NFTs los, indem Sie Ihrer Wallet $1 hinzufügen.",
-    "description": "$1 is the token symbol"
   },
   "goBack": {
     "message": "Zurück"
@@ -4993,14 +4974,6 @@
   },
   "stake": {
     "message": "Anteil"
-  },
-  "startYourJourney": {
-    "message": "Beginnen Sie Ihre Reise mit $1",
-    "description": "$1 is the token symbol"
-  },
-  "startYourJourneyDescription": {
-    "message": "Legen Sie mit web3 los, indem Sie Ihrer Wallet $1 hinzufügen.",
-    "description": "$1 is the token symbol"
   },
   "stateLogError": {
     "message": "Fehler beim Abfragen der Statusprotokolle."
