@@ -46,6 +46,8 @@ const maskedBackgroundFields = [
   'AppStateController.notificationGasPollTokens',
   'AppStateController.popupGasPollTokens',
   'CurrencyController.currencyRates.ETH.conversionDate',
+  'CurrencyController.currencyRates.LineaETH.conversionDate',
+  'CurrencyController.currencyRates.SepoliaETH.conversionDate',
 ];
 const maskedUiFields = maskedBackgroundFields.map(backgroundToUiField);
 
@@ -873,6 +875,8 @@ describe('Sentry errors', function () {
           srcTokenAmount: true,
           walletAddress: false,
         },
+        quotesLastFetched: true,
+        quotesLoadingStatus: true,
       },
       currentPopupId: false, // Initialized as undefined
       // Part of transaction controller store, but missing from the initial
@@ -881,6 +885,7 @@ describe('Sentry errors', function () {
       preferences: {
         autoLockTimeLimit: true, // Initialized as undefined
         showConfirmationAdvancedDetails: true,
+        privacyMode: false,
       },
       smartTransactionsState: {
         fees: {
