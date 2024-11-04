@@ -40,7 +40,6 @@ export const ConfirmInfoExpandableRow = (
     <>
       <ConfirmInfoRow {...rowProps}>
         <Box display={Display.Flex}>
-          {children}
           <ButtonIcon
             marginLeft={1}
             className={classnames({
@@ -53,6 +52,7 @@ export const ConfirmInfoExpandableRow = (
             onClick={handleClick}
             ariaLabel="expand"
           />
+          {children}
         </Box>
       </ConfirmInfoRow>
       <Box
