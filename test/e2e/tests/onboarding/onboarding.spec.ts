@@ -1,5 +1,6 @@
 import {
   convertToHexValue,
+  TEST_SEED_PHRASE,
   WALLET_PASSWORD,
   withFixtures,
 } from '../../helpers';
@@ -164,7 +165,7 @@ describe('MetaMask onboarding @no-mmi', function () {
         title: this.test?.fullTitle(),
       },
       async ({ driver, secondaryGanacheServer }) => {
-        await importSRPOnboardingFlow(driver);
+        await importSRPOnboardingFlow(driver, TEST_SEED_PHRASE);
 
         const onboardingCompletePage = new OnboardingCompletePage(driver);
         await onboardingCompletePage.check_pageIsLoaded();
