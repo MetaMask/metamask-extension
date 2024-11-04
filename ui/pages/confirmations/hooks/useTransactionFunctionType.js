@@ -27,7 +27,7 @@ export const useTransactionFunctionType = (txData = {}) => {
     return {};
   }
 
-  const { nativeCurrency } = networkConfiguration;
+  const { nativeCurrency } = networkConfiguration ?? {};
 
   const isTokenApproval =
     txData.type === TransactionType.tokenMethodSetApprovalForAll ||

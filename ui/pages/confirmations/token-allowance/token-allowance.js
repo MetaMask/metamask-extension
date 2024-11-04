@@ -148,9 +148,10 @@ export default function TokenAllowance({
   const networkIdentifier = useSelector(getNetworkIdentifier);
   const { chainId } = txData;
 
-  const { blockExplorerUrls } = useSelector((state) =>
-    selectNetworkConfigurationByChainId(state, chainId),
-  );
+  const { blockExplorerUrls } =
+    useSelector((state) =>
+      selectNetworkConfigurationByChainId(state, chainId),
+    ) ?? {};
 
   const blockExplorerUrl = blockExplorerUrls?.[0];
   const unapprovedTxCount = useSelector(getUnapprovedTxCount);
