@@ -24,15 +24,48 @@ exports[`Confirm matches snapshot for signature - personal sign type 1`] = `
               <div
                 class="identicon"
                 style="height: 32px; width: 32px; border-radius: 16px;"
-              />
+              >
+                <div
+                  style="border-radius: 50px; overflow: hidden; padding: 0px; margin: 0px; width: 32px; height: 32px; display: inline-block; background: rgb(250, 58, 0);"
+                >
+                  <svg
+                    height="32"
+                    width="32"
+                    x="0"
+                    y="0"
+                  >
+                    <rect
+                      fill="#18CDF2"
+                      height="32"
+                      transform="translate(-1.04839350379394 -3.3042840694604987) rotate(328.9 16 16)"
+                      width="32"
+                      x="0"
+                      y="0"
+                    />
+                    <rect
+                      fill="#035E56"
+                      height="32"
+                      transform="translate(-18.298461708832043 10.5924618717486) rotate(176.2 16 16)"
+                      width="32"
+                      x="0"
+                      y="0"
+                    />
+                    <rect
+                      fill="#F26602"
+                      height="32"
+                      transform="translate(16.667842018223922 -14.205139722997082) rotate(468.9 16 16)"
+                      width="32"
+                      x="0"
+                      y="0"
+                    />
+                  </svg>
+                </div>
+              </div>
             </div>
             <div
               class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xs mm-avatar-network confirm_header__avatar-network mm-text--body-xs mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-goerli mm-box--rounded-full mm-box--border-color-transparent box--border-style-solid box--border-width-1"
             >
-              <img
-                alt="Goerli logo"
-                class="mm-avatar-network__network-image"
-              />
+              G
             </div>
           </div>
           <div
@@ -61,7 +94,7 @@ exports[`Confirm matches snapshot for signature - personal sign type 1`] = `
           >
             <div>
               <div
-                aria-describedby="tippy-tooltip-7"
+                aria-describedby="tippy-tooltip-6"
                 class=""
                 data-original-title="Account details"
                 data-tooltipped=""
@@ -92,7 +125,7 @@ exports[`Confirm matches snapshot for signature - personal sign type 1`] = `
           style="overflow: auto;"
         >
           <h2
-            class="mm-box mm-text mm-text--heading-lg mm-text--text-align-center mm-box--padding-top-4 mm-box--padding-bottom-2 mm-box--color-text-default"
+            class="mm-box mm-text mm-text--heading-lg mm-text--text-align-center mm-box--padding-top-4 mm-box--padding-bottom-4 mm-box--color-text-default"
           >
             Signature request
           </h2>
@@ -105,7 +138,7 @@ exports[`Confirm matches snapshot for signature - personal sign type 1`] = `
             class="mm-box mm-box--margin-bottom-4 mm-box--padding-2 mm-box--background-color-background-default mm-box--rounded-md"
           >
             <div
-              class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--color-text-default mm-box--rounded-lg"
+              class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-center mm-box--color-text-default mm-box--rounded-lg"
               style="overflow-wrap: anywhere; min-height: 24px; position: relative; background: transparent;"
             >
               <div
@@ -121,7 +154,7 @@ exports[`Confirm matches snapshot for signature - personal sign type 1`] = `
                   </p>
                   <div>
                     <div
-                      aria-describedby="tippy-tooltip-8"
+                      aria-describedby="tippy-tooltip-7"
                       class=""
                       data-original-title="This is the site asking for your signature."
                       data-tooltipped=""
@@ -151,9 +184,30 @@ exports[`Confirm matches snapshot for signature - personal sign type 1`] = `
             class="mm-box mm-box--margin-bottom-4 mm-box--padding-2 mm-box--background-color-background-default mm-box--rounded-md"
           >
             <div
-              class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--color-text-default mm-box--rounded-lg"
+              class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-5 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-column mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
               style="overflow-wrap: anywhere; min-height: 24px; position: relative; background: transparent;"
             >
+              <button
+                aria-label="copy-button"
+                class="mm-box mm-button-icon mm-button-icon--size-sm mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-muted mm-box--background-color-transparent mm-box--rounded-lg"
+                style="cursor: pointer; position: absolute; right: 32px; top: 4px;"
+              >
+                <span
+                  class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-inherit"
+                  style="mask-image: url('./images/icons/copy.svg');"
+                />
+              </button>
+              <button
+                aria-label="collapse-button"
+                class="mm-box mm-button-icon mm-button-icon--size-sm mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-muted mm-box--background-color-transparent mm-box--rounded-lg"
+                data-testid="sectionCollapseButton"
+                style="cursor: pointer; position: absolute; right: 8px; top: 4px;"
+              >
+                <span
+                  class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-inherit"
+                  style="mask-image: url('./images/icons/collapse.svg');"
+                />
+              </button>
               <div
                 class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start mm-box--color-text-default"
               >
@@ -295,7 +349,7 @@ exports[`Confirm should match snapshot for signature - typed sign - V4 - PermitB
           >
             <div>
               <div
-                aria-describedby="tippy-tooltip-19"
+                aria-describedby="tippy-tooltip-17"
                 class=""
                 data-original-title="Account details"
                 data-tooltipped=""
@@ -326,7 +380,7 @@ exports[`Confirm should match snapshot for signature - typed sign - V4 - PermitB
           style="overflow: auto;"
         >
           <h2
-            class="mm-box mm-text mm-text--heading-lg mm-text--text-align-center mm-box--padding-top-4 mm-box--padding-bottom-2 mm-box--color-text-default"
+            class="mm-box mm-text mm-text--heading-lg mm-text--text-align-center mm-box--padding-top-4 mm-box--padding-bottom-4 mm-box--color-text-default"
           >
             Spending cap request
           </h2>
@@ -340,7 +394,7 @@ exports[`Confirm should match snapshot for signature - typed sign - V4 - PermitB
             data-testid="confirmation__simulation_section"
           >
             <div
-              class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--color-text-default mm-box--rounded-lg"
+              class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-center mm-box--color-text-default mm-box--rounded-lg"
               style="overflow-wrap: anywhere; min-height: 24px; position: relative;"
             >
               <div
@@ -356,7 +410,7 @@ exports[`Confirm should match snapshot for signature - typed sign - V4 - PermitB
                   </p>
                   <div>
                     <div
-                      aria-describedby="tippy-tooltip-20"
+                      aria-describedby="tippy-tooltip-18"
                       class=""
                       data-original-title="Estimated changes are what might happen if you go through with this transaction. This is just a prediction, not a guarantee."
                       data-tooltipped=""
@@ -383,7 +437,7 @@ exports[`Confirm should match snapshot for signature - typed sign - V4 - PermitB
               </div>
             </div>
             <div
-              class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--color-text-default mm-box--rounded-lg"
+              class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-center mm-box--color-text-default mm-box--rounded-lg"
               style="overflow-wrap: anywhere; min-height: 24px; position: relative;"
             >
               <div
@@ -419,7 +473,7 @@ exports[`Confirm should match snapshot for signature - typed sign - V4 - PermitB
                           style="min-width: 0;"
                         >
                           <div
-                            aria-describedby="tippy-tooltip-26"
+                            aria-describedby="tippy-tooltip-22"
                             class=""
                             data-original-title="14,615,016,373,309,029,182,036,848,327,162,830,196,559,325,429.75"
                             data-tooltipped=""
@@ -436,7 +490,9 @@ exports[`Confirm should match snapshot for signature - typed sign - V4 - PermitB
                           </div>
                         </div>
                       </div>
-                      <div>
+                      <div
+                        class="mm-box mm-box--display-flex"
+                      >
                         <div
                           class="name name__missing"
                         >
@@ -469,7 +525,7 @@ exports[`Confirm should match snapshot for signature - typed sign - V4 - PermitB
                           style="min-width: 0;"
                         >
                           <div
-                            aria-describedby="tippy-tooltip-27"
+                            aria-describedby="tippy-tooltip-23"
                             class=""
                             data-original-title="24,615,016,373,309,029,182,036,848,327,162,830,196,559,325,429.75"
                             data-tooltipped=""
@@ -486,7 +542,9 @@ exports[`Confirm should match snapshot for signature - typed sign - V4 - PermitB
                           </div>
                         </div>
                       </div>
-                      <div>
+                      <div
+                        class="mm-box mm-box--display-flex"
+                      >
                         <div
                           class="name name__missing"
                         >
@@ -515,7 +573,7 @@ exports[`Confirm should match snapshot for signature - typed sign - V4 - PermitB
             data-testid="confirmation_request-section"
           >
             <div
-              class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--color-text-default mm-box--rounded-lg"
+              class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-center mm-box--color-text-default mm-box--rounded-lg"
               style="overflow-wrap: anywhere; min-height: 24px; position: relative;"
             >
               <div
@@ -593,7 +651,7 @@ exports[`Confirm should match snapshot for signature - typed sign - V4 - PermitB
               style="height: 1px; margin-left: -8px; margin-right: -8px;"
             />
             <div
-              class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--color-text-default mm-box--rounded-lg"
+              class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-center mm-box--color-text-default mm-box--rounded-lg"
               style="overflow-wrap: anywhere; min-height: 24px; position: relative; background: transparent;"
             >
               <div
@@ -609,7 +667,7 @@ exports[`Confirm should match snapshot for signature - typed sign - V4 - PermitB
                   </p>
                   <div>
                     <div
-                      aria-describedby="tippy-tooltip-23"
+                      aria-describedby="tippy-tooltip-21"
                       class=""
                       data-original-title="This is the site asking for your signature."
                       data-tooltipped=""
@@ -635,7 +693,7 @@ exports[`Confirm should match snapshot for signature - typed sign - V4 - PermitB
               </div>
             </div>
             <div
-              class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--color-text-default mm-box--rounded-lg"
+              class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-center mm-box--color-text-default mm-box--rounded-lg"
               style="overflow-wrap: anywhere; min-height: 24px; position: relative;"
             >
               <div
@@ -715,7 +773,7 @@ exports[`Confirm should match snapshot for signature - typed sign - V4 - PermitB
             data-testid="confirmation_message-section"
           >
             <div
-              class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--color-text-default mm-box--rounded-lg"
+              class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-5 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-column mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
               style="overflow-wrap: anywhere; min-height: 24px; position: relative;"
             >
               <div
@@ -1416,7 +1474,7 @@ exports[`Confirm should match snapshot for signature - typed sign - V4 - PermitS
           >
             <div>
               <div
-                aria-describedby="tippy-tooltip-13"
+                aria-describedby="tippy-tooltip-12"
                 class=""
                 data-original-title="Account details"
                 data-tooltipped=""
@@ -1447,7 +1505,7 @@ exports[`Confirm should match snapshot for signature - typed sign - V4 - PermitS
           style="overflow: auto;"
         >
           <h2
-            class="mm-box mm-text mm-text--heading-lg mm-text--text-align-center mm-box--padding-top-4 mm-box--padding-bottom-2 mm-box--color-text-default"
+            class="mm-box mm-text mm-text--heading-lg mm-text--text-align-center mm-box--padding-top-4 mm-box--padding-bottom-4 mm-box--color-text-default"
           >
             Spending cap request
           </h2>
@@ -1461,7 +1519,7 @@ exports[`Confirm should match snapshot for signature - typed sign - V4 - PermitS
             data-testid="confirmation__simulation_section"
           >
             <div
-              class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--color-text-default mm-box--rounded-lg"
+              class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-center mm-box--color-text-default mm-box--rounded-lg"
               style="overflow-wrap: anywhere; min-height: 24px; position: relative;"
             >
               <div
@@ -1477,7 +1535,7 @@ exports[`Confirm should match snapshot for signature - typed sign - V4 - PermitS
                   </p>
                   <div>
                     <div
-                      aria-describedby="tippy-tooltip-14"
+                      aria-describedby="tippy-tooltip-13"
                       class=""
                       data-original-title="Estimated changes are what might happen if you go through with this transaction. This is just a prediction, not a guarantee."
                       data-tooltipped=""
@@ -1504,7 +1562,7 @@ exports[`Confirm should match snapshot for signature - typed sign - V4 - PermitS
               </div>
             </div>
             <div
-              class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--color-text-default mm-box--rounded-lg"
+              class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-center mm-box--color-text-default mm-box--rounded-lg"
               style="overflow-wrap: anywhere; min-height: 24px; position: relative;"
             >
               <div
@@ -1540,7 +1598,7 @@ exports[`Confirm should match snapshot for signature - typed sign - V4 - PermitS
                           style="min-width: 0;"
                         >
                           <div
-                            aria-describedby="tippy-tooltip-18"
+                            aria-describedby="tippy-tooltip-16"
                             class=""
                             data-original-title="14,615,016,373,309,029,182,036,848,327,162,830,196,559,325,429.75"
                             data-tooltipped=""
@@ -1557,7 +1615,9 @@ exports[`Confirm should match snapshot for signature - typed sign - V4 - PermitS
                           </div>
                         </div>
                       </div>
-                      <div>
+                      <div
+                        class="mm-box mm-box--display-flex"
+                      >
                         <div
                           class="name name__missing"
                         >
@@ -1586,7 +1646,7 @@ exports[`Confirm should match snapshot for signature - typed sign - V4 - PermitS
             data-testid="confirmation_request-section"
           >
             <div
-              class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--color-text-default mm-box--rounded-lg"
+              class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-center mm-box--color-text-default mm-box--rounded-lg"
               style="overflow-wrap: anywhere; min-height: 24px; position: relative;"
             >
               <div
@@ -1664,7 +1724,7 @@ exports[`Confirm should match snapshot for signature - typed sign - V4 - PermitS
               style="height: 1px; margin-left: -8px; margin-right: -8px;"
             />
             <div
-              class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--color-text-default mm-box--rounded-lg"
+              class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-center mm-box--color-text-default mm-box--rounded-lg"
               style="overflow-wrap: anywhere; min-height: 24px; position: relative; background: transparent;"
             >
               <div
@@ -1680,7 +1740,7 @@ exports[`Confirm should match snapshot for signature - typed sign - V4 - PermitS
                   </p>
                   <div>
                     <div
-                      aria-describedby="tippy-tooltip-16"
+                      aria-describedby="tippy-tooltip-15"
                       class=""
                       data-original-title="This is the site asking for your signature."
                       data-tooltipped=""
@@ -1706,7 +1766,7 @@ exports[`Confirm should match snapshot for signature - typed sign - V4 - PermitS
               </div>
             </div>
             <div
-              class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--color-text-default mm-box--rounded-lg"
+              class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-center mm-box--color-text-default mm-box--rounded-lg"
               style="overflow-wrap: anywhere; min-height: 24px; position: relative;"
             >
               <div
@@ -1786,7 +1846,7 @@ exports[`Confirm should match snapshot for signature - typed sign - V4 - PermitS
             data-testid="confirmation_message-section"
           >
             <div
-              class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--color-text-default mm-box--rounded-lg"
+              class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-5 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-column mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
               style="overflow-wrap: anywhere; min-height: 24px; position: relative;"
             >
               <div
@@ -1842,7 +1902,6 @@ exports[`Confirm should match snapshot for signature - typed sign - V4 - PermitS
                   >
                     <div
                       class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--color-text-default mm-box--rounded-lg"
-                      data-testid="confirmation_data-details-index-0"
                       style="overflow-wrap: anywhere; min-height: 24px; position: relative; padding-right: 0px;"
                     >
                       <div
@@ -1863,7 +1922,6 @@ exports[`Confirm should match snapshot for signature - typed sign - V4 - PermitS
                       >
                         <div
                           class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--color-text-default mm-box--rounded-lg"
-                          data-testid="confirmation_data-token-index-0"
                           style="overflow-wrap: anywhere; min-height: 24px; position: relative; padding-right: 0px;"
                         >
                           <div
@@ -1939,7 +1997,6 @@ exports[`Confirm should match snapshot for signature - typed sign - V4 - PermitS
                         </div>
                         <div
                           class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--color-text-default mm-box--rounded-lg"
-                          data-testid="confirmation_data-amount-index-1"
                           style="overflow-wrap: anywhere; min-height: 24px; position: relative; padding-right: 0px;"
                         >
                           <div
@@ -1981,7 +2038,6 @@ exports[`Confirm should match snapshot for signature - typed sign - V4 - PermitS
                         </div>
                         <div
                           class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--color-text-default mm-box--rounded-lg"
-                          data-testid="confirmation_data-expiration-index-2"
                           style="overflow-wrap: anywhere; min-height: 24px; position: relative; padding-right: 0px;"
                         >
                           <div
@@ -2010,7 +2066,6 @@ exports[`Confirm should match snapshot for signature - typed sign - V4 - PermitS
                         </div>
                         <div
                           class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--color-text-default mm-box--rounded-lg"
-                          data-testid="confirmation_data-nonce-index-3"
                           style="overflow-wrap: anywhere; min-height: 24px; position: relative; padding-right: 0px;"
                         >
                           <div
@@ -2041,7 +2096,6 @@ exports[`Confirm should match snapshot for signature - typed sign - V4 - PermitS
                     </div>
                     <div
                       class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--color-text-default mm-box--rounded-lg"
-                      data-testid="confirmation_data-spender-index-1"
                       style="overflow-wrap: anywhere; min-height: 24px; position: relative; padding-right: 0px;"
                     >
                       <div
@@ -2117,7 +2171,6 @@ exports[`Confirm should match snapshot for signature - typed sign - V4 - PermitS
                     </div>
                     <div
                       class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--color-text-default mm-box--rounded-lg"
-                      data-testid="confirmation_data-sigDeadline-index-2"
                       style="overflow-wrap: anywhere; min-height: 24px; position: relative; padding-right: 0px;"
                     >
                       <div
@@ -2197,15 +2250,48 @@ exports[`Confirm should match snapshot for signature - typed sign - V4 1`] = `
               <div
                 class="identicon"
                 style="height: 32px; width: 32px; border-radius: 16px;"
-              />
+              >
+                <div
+                  style="border-radius: 50px; overflow: hidden; padding: 0px; margin: 0px; width: 32px; height: 32px; display: inline-block; background: rgb(250, 58, 0);"
+                >
+                  <svg
+                    height="32"
+                    width="32"
+                    x="0"
+                    y="0"
+                  >
+                    <rect
+                      fill="#18CDF2"
+                      height="32"
+                      transform="translate(-1.04839350379394 -3.3042840694604987) rotate(328.9 16 16)"
+                      width="32"
+                      x="0"
+                      y="0"
+                    />
+                    <rect
+                      fill="#035E56"
+                      height="32"
+                      transform="translate(-18.298461708832043 10.5924618717486) rotate(176.2 16 16)"
+                      width="32"
+                      x="0"
+                      y="0"
+                    />
+                    <rect
+                      fill="#F26602"
+                      height="32"
+                      transform="translate(16.667842018223922 -14.205139722997082) rotate(468.9 16 16)"
+                      width="32"
+                      x="0"
+                      y="0"
+                    />
+                  </svg>
+                </div>
+              </div>
             </div>
             <div
               class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xs mm-avatar-network confirm_header__avatar-network mm-text--body-xs mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-goerli mm-box--rounded-full mm-box--border-color-transparent box--border-style-solid box--border-width-1"
             >
-              <img
-                alt="Goerli logo"
-                class="mm-avatar-network__network-image"
-              />
+              G
             </div>
           </div>
           <div
@@ -2234,7 +2320,7 @@ exports[`Confirm should match snapshot for signature - typed sign - V4 1`] = `
           >
             <div>
               <div
-                aria-describedby="tippy-tooltip-11"
+                aria-describedby="tippy-tooltip-10"
                 class=""
                 data-original-title="Account details"
                 data-tooltipped=""
@@ -2265,7 +2351,7 @@ exports[`Confirm should match snapshot for signature - typed sign - V4 1`] = `
           style="overflow: auto;"
         >
           <h2
-            class="mm-box mm-text mm-text--heading-lg mm-text--text-align-center mm-box--padding-top-4 mm-box--padding-bottom-2 mm-box--color-text-default"
+            class="mm-box mm-text mm-text--heading-lg mm-text--text-align-center mm-box--padding-top-4 mm-box--padding-bottom-4 mm-box--color-text-default"
           >
             Signature request
           </h2>
@@ -2279,7 +2365,7 @@ exports[`Confirm should match snapshot for signature - typed sign - V4 1`] = `
             data-testid="confirmation_request-section"
           >
             <div
-              class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--color-text-default mm-box--rounded-lg"
+              class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-center mm-box--color-text-default mm-box--rounded-lg"
               style="overflow-wrap: anywhere; min-height: 24px; position: relative; background: transparent;"
             >
               <div
@@ -2295,7 +2381,7 @@ exports[`Confirm should match snapshot for signature - typed sign - V4 1`] = `
                   </p>
                   <div>
                     <div
-                      aria-describedby="tippy-tooltip-12"
+                      aria-describedby="tippy-tooltip-11"
                       class=""
                       data-original-title="This is the site asking for your signature."
                       data-tooltipped=""
@@ -2321,7 +2407,7 @@ exports[`Confirm should match snapshot for signature - typed sign - V4 1`] = `
               </div>
             </div>
             <div
-              class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--color-text-default mm-box--rounded-lg"
+              class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-center mm-box--color-text-default mm-box--rounded-lg"
               style="overflow-wrap: anywhere; min-height: 24px; position: relative;"
             >
               <div
@@ -2348,7 +2434,43 @@ exports[`Confirm should match snapshot for signature - typed sign - V4 1`] = `
                   >
                     <div
                       class="mm-avatar-account__jazzicon"
-                    />
+                    >
+                      <div
+                        style="border-radius: 50px; overflow: hidden; padding: 0px; margin: 0px; width: 16px; height: 16px; display: inline-block; background: rgb(1, 142, 116);"
+                      >
+                        <svg
+                          height="16"
+                          width="16"
+                          x="0"
+                          y="0"
+                        >
+                          <rect
+                            fill="#FB1891"
+                            height="16"
+                            transform="translate(0.6335263099240563 1.7352552986765108) rotate(129.9 8 8)"
+                            width="16"
+                            x="0"
+                            y="0"
+                          />
+                          <rect
+                            fill="#F90901"
+                            height="16"
+                            transform="translate(-5.227286615169763 8.640359200885621) rotate(141.5 8 8)"
+                            width="16"
+                            x="0"
+                            y="0"
+                          />
+                          <rect
+                            fill="#F26A02"
+                            height="16"
+                            transform="translate(10.585940898259892 -4.814122444807073) rotate(339.2 8 8)"
+                            width="16"
+                            x="0"
+                            y="0"
+                          />
+                        </svg>
+                      </div>
+                    </div>
                   </div>
                   <p
                     class="mm-box mm-text mm-text--body-md mm-box--margin-left-2 mm-box--color-inherit"
@@ -2365,9 +2487,30 @@ exports[`Confirm should match snapshot for signature - typed sign - V4 1`] = `
             data-testid="confirmation_message-section"
           >
             <div
-              class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--color-text-default mm-box--rounded-lg"
+              class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-5 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-column mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
               style="overflow-wrap: anywhere; min-height: 24px; position: relative;"
             >
+              <button
+                aria-label="copy-button"
+                class="mm-box mm-button-icon mm-button-icon--size-sm mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-muted mm-box--background-color-transparent mm-box--rounded-lg"
+                style="cursor: pointer; position: absolute; right: 32px; top: 4px;"
+              >
+                <span
+                  class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-inherit"
+                  style="mask-image: url('./images/icons/copy.svg');"
+                />
+              </button>
+              <button
+                aria-label="collapse-button"
+                class="mm-box mm-button-icon mm-button-icon--size-sm mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-muted mm-box--background-color-transparent mm-box--rounded-lg"
+                data-testid="sectionCollapseButton"
+                style="cursor: pointer; position: absolute; right: 8px; top: 4px;"
+              >
+                <span
+                  class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-inherit"
+                  style="mask-image: url('./images/icons/collapse.svg');"
+                />
+              </button>
               <div
                 class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
               >
@@ -2385,7 +2528,7 @@ exports[`Confirm should match snapshot for signature - typed sign - V4 1`] = `
                 class="mm-box mm-box--width-full"
               >
                 <div
-                  class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--color-text-default mm-box--rounded-lg"
+                  class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-center mm-box--color-text-default mm-box--rounded-lg"
                   style="overflow-wrap: anywhere; min-height: 24px; position: relative; padding-left: 0px; padding-right: 0px;"
                 >
                   <div
@@ -2421,7 +2564,6 @@ exports[`Confirm should match snapshot for signature - typed sign - V4 1`] = `
                   >
                     <div
                       class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--color-text-default mm-box--rounded-lg"
-                      data-testid="confirmation_data-contents-index-0"
                       style="overflow-wrap: anywhere; min-height: 24px; position: relative; padding-right: 0px;"
                     >
                       <div
@@ -2450,7 +2592,6 @@ exports[`Confirm should match snapshot for signature - typed sign - V4 1`] = `
                     </div>
                     <div
                       class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--color-text-default mm-box--rounded-lg"
-                      data-testid="confirmation_data-from-index-1"
                       style="overflow-wrap: anywhere; min-height: 24px; position: relative; padding-right: 0px;"
                     >
                       <div
@@ -2471,7 +2612,6 @@ exports[`Confirm should match snapshot for signature - typed sign - V4 1`] = `
                       >
                         <div
                           class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--color-text-default mm-box--rounded-lg"
-                          data-testid="confirmation_data-name-index-0"
                           style="overflow-wrap: anywhere; min-height: 24px; position: relative; padding-right: 0px;"
                         >
                           <div
@@ -2500,7 +2640,6 @@ exports[`Confirm should match snapshot for signature - typed sign - V4 1`] = `
                         </div>
                         <div
                           class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--color-text-default mm-box--rounded-lg"
-                          data-testid="confirmation_data-wallets-index-1"
                           style="overflow-wrap: anywhere; min-height: 24px; position: relative; padding-right: 0px;"
                         >
                           <div
@@ -2521,7 +2660,6 @@ exports[`Confirm should match snapshot for signature - typed sign - V4 1`] = `
                           >
                             <div
                               class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--color-text-default mm-box--rounded-lg"
-                              data-testid="confirmation_data-0-index-0"
                               style="overflow-wrap: anywhere; min-height: 24px; position: relative; padding-right: 0px;"
                             >
                               <div
@@ -2548,7 +2686,43 @@ exports[`Confirm should match snapshot for signature - typed sign - V4 1`] = `
                                   >
                                     <div
                                       class="mm-avatar-account__jazzicon"
-                                    />
+                                    >
+                                      <div
+                                        style="border-radius: 50px; overflow: hidden; padding: 0px; margin: 0px; width: 16px; height: 16px; display: inline-block; background: rgb(35, 98, 225);"
+                                      >
+                                        <svg
+                                          height="16"
+                                          width="16"
+                                          x="0"
+                                          y="0"
+                                        >
+                                          <rect
+                                            fill="#FA7900"
+                                            height="16"
+                                            transform="translate(-0.1251869550000172 -0.18581992328639055) rotate(237.8 8 8)"
+                                            width="16"
+                                            x="0"
+                                            y="0"
+                                          />
+                                          <rect
+                                            fill="#034F5E"
+                                            height="16"
+                                            transform="translate(5.484089776243406 -5.806818790918918) rotate(321.2 8 8)"
+                                            width="16"
+                                            x="0"
+                                            y="0"
+                                          />
+                                          <rect
+                                            fill="#FB185C"
+                                            height="16"
+                                            transform="translate(4.337646399293827 10.83159092527544) rotate(190.8 8 8)"
+                                            width="16"
+                                            x="0"
+                                            y="0"
+                                          />
+                                        </svg>
+                                      </div>
+                                    </div>
                                   </div>
                                   <p
                                     class="mm-box mm-text mm-text--body-md mm-box--margin-left-2 mm-box--color-inherit"
@@ -2561,7 +2735,6 @@ exports[`Confirm should match snapshot for signature - typed sign - V4 1`] = `
                             </div>
                             <div
                               class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--color-text-default mm-box--rounded-lg"
-                              data-testid="confirmation_data-1-index-1"
                               style="overflow-wrap: anywhere; min-height: 24px; position: relative; padding-right: 0px;"
                             >
                               <div
@@ -2588,7 +2761,43 @@ exports[`Confirm should match snapshot for signature - typed sign - V4 1`] = `
                                   >
                                     <div
                                       class="mm-avatar-account__jazzicon"
-                                    />
+                                    >
+                                      <div
+                                        style="border-radius: 50px; overflow: hidden; padding: 0px; margin: 0px; width: 16px; height: 16px; display: inline-block; background: rgb(24, 183, 242);"
+                                      >
+                                        <svg
+                                          height="16"
+                                          width="16"
+                                          x="0"
+                                          y="0"
+                                        >
+                                          <rect
+                                            fill="#F91E01"
+                                            height="16"
+                                            transform="translate(-3.031601448459508 1.44638157917772) rotate(179.5 8 8)"
+                                            width="16"
+                                            x="0"
+                                            y="0"
+                                          />
+                                          <rect
+                                            fill="#FA5300"
+                                            height="16"
+                                            transform="translate(0.001001577275992914 -7.592133809870717) rotate(370.7 8 8)"
+                                            width="16"
+                                            x="0"
+                                            y="0"
+                                          />
+                                          <rect
+                                            fill="#F5A300"
+                                            height="16"
+                                            transform="translate(-9.667744843805323 10.267175012988094) rotate(298.9 8 8)"
+                                            width="16"
+                                            x="0"
+                                            y="0"
+                                          />
+                                        </svg>
+                                      </div>
+                                    </div>
                                   </div>
                                   <p
                                     class="mm-box mm-text mm-text--body-md mm-box--margin-left-2 mm-box--color-inherit"
@@ -2601,7 +2810,6 @@ exports[`Confirm should match snapshot for signature - typed sign - V4 1`] = `
                             </div>
                             <div
                               class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--color-text-default mm-box--rounded-lg"
-                              data-testid="confirmation_data-2-index-2"
                               style="overflow-wrap: anywhere; min-height: 24px; position: relative; padding-right: 0px;"
                             >
                               <div
@@ -2628,7 +2836,43 @@ exports[`Confirm should match snapshot for signature - typed sign - V4 1`] = `
                                   >
                                     <div
                                       class="mm-avatar-account__jazzicon"
-                                    />
+                                    >
+                                      <div
+                                        style="border-radius: 50px; overflow: hidden; padding: 0px; margin: 0px; width: 16px; height: 16px; display: inline-block; background: rgb(245, 143, 0);"
+                                      >
+                                        <svg
+                                          height="16"
+                                          width="16"
+                                          x="0"
+                                          y="0"
+                                        >
+                                          <rect
+                                            fill="#FA3E00"
+                                            height="16"
+                                            transform="translate(2.1189727229825075 3.7201589705667972) rotate(163.6 8 8)"
+                                            width="16"
+                                            x="0"
+                                            y="0"
+                                          />
+                                          <rect
+                                            fill="#018E74"
+                                            height="16"
+                                            transform="translate(-3.5064720430845115 9.598091001429925) rotate(205.4 8 8)"
+                                            width="16"
+                                            x="0"
+                                            y="0"
+                                          />
+                                          <rect
+                                            fill="#238FE1"
+                                            height="16"
+                                            transform="translate(-5.001213401730692 12.04822844354251) rotate(286.5 8 8)"
+                                            width="16"
+                                            x="0"
+                                            y="0"
+                                          />
+                                        </svg>
+                                      </div>
+                                    </div>
                                   </div>
                                   <p
                                     class="mm-box mm-text mm-text--body-md mm-box--margin-left-2 mm-box--color-inherit"
@@ -2645,7 +2889,6 @@ exports[`Confirm should match snapshot for signature - typed sign - V4 1`] = `
                     </div>
                     <div
                       class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--color-text-default mm-box--rounded-lg"
-                      data-testid="confirmation_data-to-index-2"
                       style="overflow-wrap: anywhere; min-height: 24px; position: relative; padding-right: 0px;"
                     >
                       <div
@@ -2666,7 +2909,6 @@ exports[`Confirm should match snapshot for signature - typed sign - V4 1`] = `
                       >
                         <div
                           class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--color-text-default mm-box--rounded-lg"
-                          data-testid="confirmation_data-0-index-0"
                           style="overflow-wrap: anywhere; min-height: 24px; position: relative; padding-right: 0px;"
                         >
                           <div
@@ -2687,7 +2929,6 @@ exports[`Confirm should match snapshot for signature - typed sign - V4 1`] = `
                           >
                             <div
                               class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--color-text-default mm-box--rounded-lg"
-                              data-testid="confirmation_data-name-index-0"
                               style="overflow-wrap: anywhere; min-height: 24px; position: relative; padding-right: 0px;"
                             >
                               <div
@@ -2716,7 +2957,6 @@ exports[`Confirm should match snapshot for signature - typed sign - V4 1`] = `
                             </div>
                             <div
                               class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--color-text-default mm-box--rounded-lg"
-                              data-testid="confirmation_data-wallets-index-1"
                               style="overflow-wrap: anywhere; min-height: 24px; position: relative; padding-right: 0px;"
                             >
                               <div
@@ -2737,7 +2977,6 @@ exports[`Confirm should match snapshot for signature - typed sign - V4 1`] = `
                               >
                                 <div
                                   class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--color-text-default mm-box--rounded-lg"
-                                  data-testid="confirmation_data-0-index-0"
                                   style="overflow-wrap: anywhere; min-height: 24px; position: relative; padding-right: 0px;"
                                 >
                                   <div
@@ -2764,7 +3003,43 @@ exports[`Confirm should match snapshot for signature - typed sign - V4 1`] = `
                                       >
                                         <div
                                           class="mm-avatar-account__jazzicon"
-                                        />
+                                        >
+                                          <div
+                                            style="border-radius: 50px; overflow: hidden; padding: 0px; margin: 0px; width: 16px; height: 16px; display: inline-block; background: rgb(242, 162, 2);"
+                                          >
+                                            <svg
+                                              height="16"
+                                              width="16"
+                                              x="0"
+                                              y="0"
+                                            >
+                                              <rect
+                                                fill="#C8144A"
+                                                height="16"
+                                                transform="translate(3.3716958087807476 -1.5355449411453455) rotate(359.3 8 8)"
+                                                width="16"
+                                                x="0"
+                                                y="0"
+                                              />
+                                              <rect
+                                                fill="#01878E"
+                                                height="16"
+                                                transform="translate(-4.56026532072257 -4.118767169186573) rotate(335.8 8 8)"
+                                                width="16"
+                                                x="0"
+                                                y="0"
+                                              />
+                                              <rect
+                                                fill="#1897F2"
+                                                height="16"
+                                                transform="translate(-12.66850392914138 2.191919563316492) rotate(275.0 8 8)"
+                                                width="16"
+                                                x="0"
+                                                y="0"
+                                              />
+                                            </svg>
+                                          </div>
+                                        </div>
                                       </div>
                                       <p
                                         class="mm-box mm-text mm-text--body-md mm-box--margin-left-2 mm-box--color-inherit"
@@ -2777,7 +3052,6 @@ exports[`Confirm should match snapshot for signature - typed sign - V4 1`] = `
                                 </div>
                                 <div
                                   class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--color-text-default mm-box--rounded-lg"
-                                  data-testid="confirmation_data-1-index-1"
                                   style="overflow-wrap: anywhere; min-height: 24px; position: relative; padding-right: 0px;"
                                 >
                                   <div
@@ -2804,7 +3078,43 @@ exports[`Confirm should match snapshot for signature - typed sign - V4 1`] = `
                                       >
                                         <div
                                           class="mm-avatar-account__jazzicon"
-                                        />
+                                        >
+                                          <div
+                                            style="border-radius: 50px; overflow: hidden; padding: 0px; margin: 0px; width: 16px; height: 16px; display: inline-block; background: rgb(250, 54, 0);"
+                                          >
+                                            <svg
+                                              height="16"
+                                              width="16"
+                                              x="0"
+                                              y="0"
+                                            >
+                                              <rect
+                                                fill="#2395E1"
+                                                height="16"
+                                                transform="translate(-1.7353143855136905 0.5115867848025443) rotate(191.9 8 8)"
+                                                width="16"
+                                                x="0"
+                                                y="0"
+                                              />
+                                              <rect
+                                                fill="#F90101"
+                                                height="16"
+                                                transform="translate(1.7169232764557802 -9.276715881533601) rotate(319.8 8 8)"
+                                                width="16"
+                                                x="0"
+                                                y="0"
+                                              />
+                                              <rect
+                                                fill="#F58700"
+                                                height="16"
+                                                transform="translate(9.91414735179574 5.139720751783702) rotate(180.7 8 8)"
+                                                width="16"
+                                                x="0"
+                                                y="0"
+                                              />
+                                            </svg>
+                                          </div>
+                                        </div>
                                       </div>
                                       <p
                                         class="mm-box mm-text mm-text--body-md mm-box--margin-left-2 mm-box--color-inherit"
@@ -2817,7 +3127,6 @@ exports[`Confirm should match snapshot for signature - typed sign - V4 1`] = `
                                 </div>
                                 <div
                                   class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--color-text-default mm-box--rounded-lg"
-                                  data-testid="confirmation_data-2-index-2"
                                   style="overflow-wrap: anywhere; min-height: 24px; position: relative; padding-right: 0px;"
                                 >
                                   <div
@@ -2844,7 +3153,43 @@ exports[`Confirm should match snapshot for signature - typed sign - V4 1`] = `
                                       >
                                         <div
                                           class="mm-avatar-account__jazzicon"
-                                        />
+                                        >
+                                          <div
+                                            style="border-radius: 50px; overflow: hidden; padding: 0px; margin: 0px; width: 16px; height: 16px; display: inline-block; background: rgb(200, 20, 86);"
+                                          >
+                                            <svg
+                                              height="16"
+                                              width="16"
+                                              x="0"
+                                              y="0"
+                                            >
+                                              <rect
+                                                fill="#018E8C"
+                                                height="16"
+                                                transform="translate(3.988074950687866 0.3554940504644344) rotate(177.8 8 8)"
+                                                width="16"
+                                                x="0"
+                                                y="0"
+                                              />
+                                              <rect
+                                                fill="#F29202"
+                                                height="16"
+                                                transform="translate(-7.220928666254465 -2.4813555582770794) rotate(334.6 8 8)"
+                                                width="16"
+                                                x="0"
+                                                y="0"
+                                              />
+                                              <rect
+                                                fill="#236FE1"
+                                                height="16"
+                                                transform="translate(14.621768557060026 -6.282465882779628) rotate(456.1 8 8)"
+                                                width="16"
+                                                x="0"
+                                                y="0"
+                                              />
+                                            </svg>
+                                          </div>
+                                        </div>
                                       </div>
                                       <p
                                         class="mm-box mm-text mm-text--body-md mm-box--margin-left-2 mm-box--color-inherit"
@@ -3013,7 +3358,7 @@ exports[`Confirm should match snapshot for signature - typed sign - permit 1`] =
           style="overflow: auto;"
         >
           <h2
-            class="mm-box mm-text mm-text--heading-lg mm-text--text-align-center mm-box--padding-top-4 mm-box--padding-bottom-2 mm-box--color-text-default"
+            class="mm-box mm-text mm-text--heading-lg mm-text--text-align-center mm-box--padding-top-4 mm-box--padding-bottom-4 mm-box--color-text-default"
           >
             Spending cap request
           </h2>
@@ -3027,7 +3372,7 @@ exports[`Confirm should match snapshot for signature - typed sign - permit 1`] =
             data-testid="confirmation__simulation_section"
           >
             <div
-              class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--color-text-default mm-box--rounded-lg"
+              class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-center mm-box--color-text-default mm-box--rounded-lg"
               style="overflow-wrap: anywhere; min-height: 24px; position: relative;"
             >
               <div
@@ -3070,7 +3415,7 @@ exports[`Confirm should match snapshot for signature - typed sign - permit 1`] =
               </div>
             </div>
             <div
-              class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--color-text-default mm-box--rounded-lg"
+              class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-center mm-box--color-text-default mm-box--rounded-lg"
               style="overflow-wrap: anywhere; min-height: 24px; position: relative;"
             >
               <div
@@ -3120,7 +3465,9 @@ exports[`Confirm should match snapshot for signature - typed sign - permit 1`] =
                         </div>
                       </div>
                     </div>
-                    <div>
+                    <div
+                      class="mm-box mm-box--display-flex"
+                    >
                       <div
                         class="name name__missing"
                       >
@@ -3148,7 +3495,7 @@ exports[`Confirm should match snapshot for signature - typed sign - permit 1`] =
             data-testid="confirmation_request-section"
           >
             <div
-              class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--color-text-default mm-box--rounded-lg"
+              class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-center mm-box--color-text-default mm-box--rounded-lg"
               style="overflow-wrap: anywhere; min-height: 24px; position: relative;"
             >
               <div
@@ -3226,7 +3573,7 @@ exports[`Confirm should match snapshot for signature - typed sign - permit 1`] =
               style="height: 1px; margin-left: -8px; margin-right: -8px;"
             />
             <div
-              class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--color-text-default mm-box--rounded-lg"
+              class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-center mm-box--color-text-default mm-box--rounded-lg"
               style="overflow-wrap: anywhere; min-height: 24px; position: relative; background: transparent;"
             >
               <div
@@ -3268,7 +3615,7 @@ exports[`Confirm should match snapshot for signature - typed sign - permit 1`] =
               </div>
             </div>
             <div
-              class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--color-text-default mm-box--rounded-lg"
+              class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-center mm-box--color-text-default mm-box--rounded-lg"
               style="overflow-wrap: anywhere; min-height: 24px; position: relative;"
             >
               <div
@@ -3348,7 +3695,7 @@ exports[`Confirm should match snapshot for signature - typed sign - permit 1`] =
             data-testid="confirmation_message-section"
           >
             <div
-              class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--color-text-default mm-box--rounded-lg"
+              class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-5 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-column mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
               style="overflow-wrap: anywhere; min-height: 24px; position: relative;"
             >
               <div
@@ -3404,7 +3751,6 @@ exports[`Confirm should match snapshot for signature - typed sign - permit 1`] =
                   >
                     <div
                       class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--color-text-default mm-box--rounded-lg"
-                      data-testid="confirmation_data-owner-index-0"
                       style="overflow-wrap: anywhere; min-height: 24px; position: relative; padding-right: 0px;"
                     >
                       <div
@@ -3480,7 +3826,6 @@ exports[`Confirm should match snapshot for signature - typed sign - permit 1`] =
                     </div>
                     <div
                       class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--color-text-default mm-box--rounded-lg"
-                      data-testid="confirmation_data-spender-index-1"
                       style="overflow-wrap: anywhere; min-height: 24px; position: relative; padding-right: 0px;"
                     >
                       <div
@@ -3556,7 +3901,6 @@ exports[`Confirm should match snapshot for signature - typed sign - permit 1`] =
                     </div>
                     <div
                       class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--color-text-default mm-box--rounded-lg"
-                      data-testid="confirmation_data-value-index-2"
                       style="overflow-wrap: anywhere; min-height: 24px; position: relative; padding-right: 0px;"
                     >
                       <div
@@ -3598,7 +3942,6 @@ exports[`Confirm should match snapshot for signature - typed sign - permit 1`] =
                     </div>
                     <div
                       class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--color-text-default mm-box--rounded-lg"
-                      data-testid="confirmation_data-nonce-index-3"
                       style="overflow-wrap: anywhere; min-height: 24px; position: relative; padding-right: 0px;"
                     >
                       <div
@@ -3627,7 +3970,6 @@ exports[`Confirm should match snapshot for signature - typed sign - permit 1`] =
                     </div>
                     <div
                       class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--color-text-default mm-box--rounded-lg"
-                      data-testid="confirmation_data-deadline-index-4"
                       style="overflow-wrap: anywhere; min-height: 24px; position: relative; padding-right: 0px;"
                     >
                       <div
@@ -3775,7 +4117,7 @@ exports[`Confirm should match snapshot signature - typed sign - order 1`] = `
           >
             <div>
               <div
-                aria-describedby="tippy-tooltip-9"
+                aria-describedby="tippy-tooltip-8"
                 class=""
                 data-original-title="Account details"
                 data-tooltipped=""
@@ -3806,7 +4148,7 @@ exports[`Confirm should match snapshot signature - typed sign - order 1`] = `
           style="overflow: auto;"
         >
           <h2
-            class="mm-box mm-text mm-text--heading-lg mm-text--text-align-center mm-box--padding-top-4 mm-box--padding-bottom-2 mm-box--color-text-default"
+            class="mm-box mm-text mm-text--heading-lg mm-text--text-align-center mm-box--padding-top-4 mm-box--padding-bottom-4 mm-box--color-text-default"
           >
             Signature request
           </h2>
@@ -3820,7 +4162,7 @@ exports[`Confirm should match snapshot signature - typed sign - order 1`] = `
             data-testid="confirmation_request-section"
           >
             <div
-              class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--color-text-default mm-box--rounded-lg"
+              class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-center mm-box--color-text-default mm-box--rounded-lg"
               style="overflow-wrap: anywhere; min-height: 24px; position: relative; background: transparent;"
             >
               <div
@@ -3836,7 +4178,7 @@ exports[`Confirm should match snapshot signature - typed sign - order 1`] = `
                   </p>
                   <div>
                     <div
-                      aria-describedby="tippy-tooltip-10"
+                      aria-describedby="tippy-tooltip-9"
                       class=""
                       data-original-title="This is the site asking for your signature."
                       data-tooltipped=""
@@ -3862,7 +4204,7 @@ exports[`Confirm should match snapshot signature - typed sign - order 1`] = `
               </div>
             </div>
             <div
-              class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--color-text-default mm-box--rounded-lg"
+              class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-center mm-box--color-text-default mm-box--rounded-lg"
               style="overflow-wrap: anywhere; min-height: 24px; position: relative;"
             >
               <div
@@ -3942,9 +4284,30 @@ exports[`Confirm should match snapshot signature - typed sign - order 1`] = `
             data-testid="confirmation_message-section"
           >
             <div
-              class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--color-text-default mm-box--rounded-lg"
+              class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-5 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-column mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
               style="overflow-wrap: anywhere; min-height: 24px; position: relative;"
             >
+              <button
+                aria-label="copy-button"
+                class="mm-box mm-button-icon mm-button-icon--size-sm mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-muted mm-box--background-color-transparent mm-box--rounded-lg"
+                style="cursor: pointer; position: absolute; right: 32px; top: 4px;"
+              >
+                <span
+                  class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-inherit"
+                  style="mask-image: url('./images/icons/copy.svg');"
+                />
+              </button>
+              <button
+                aria-label="collapse-button"
+                class="mm-box mm-button-icon mm-button-icon--size-sm mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-muted mm-box--background-color-transparent mm-box--rounded-lg"
+                data-testid="sectionCollapseButton"
+                style="cursor: pointer; position: absolute; right: 8px; top: 4px;"
+              >
+                <span
+                  class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-inherit"
+                  style="mask-image: url('./images/icons/collapse.svg');"
+                />
+              </button>
               <div
                 class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
               >
@@ -3962,7 +4325,7 @@ exports[`Confirm should match snapshot signature - typed sign - order 1`] = `
                 class="mm-box mm-box--width-full"
               >
                 <div
-                  class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--color-text-default mm-box--rounded-lg"
+                  class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-center mm-box--color-text-default mm-box--rounded-lg"
                   style="overflow-wrap: anywhere; min-height: 24px; position: relative; padding-left: 0px; padding-right: 0px;"
                 >
                   <div
@@ -3998,7 +4361,6 @@ exports[`Confirm should match snapshot signature - typed sign - order 1`] = `
                   >
                     <div
                       class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--color-text-default mm-box--rounded-lg"
-                      data-testid="confirmation_data-direction-index-0"
                       style="overflow-wrap: anywhere; min-height: 24px; position: relative; padding-right: 0px;"
                     >
                       <div
@@ -4027,7 +4389,6 @@ exports[`Confirm should match snapshot signature - typed sign - order 1`] = `
                     </div>
                     <div
                       class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--color-text-default mm-box--rounded-lg"
-                      data-testid="confirmation_data-maker-index-1"
                       style="overflow-wrap: anywhere; min-height: 24px; position: relative; padding-right: 0px;"
                     >
                       <div
@@ -4103,7 +4464,6 @@ exports[`Confirm should match snapshot signature - typed sign - order 1`] = `
                     </div>
                     <div
                       class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--color-text-default mm-box--rounded-lg"
-                      data-testid="confirmation_data-taker-index-2"
                       style="overflow-wrap: anywhere; min-height: 24px; position: relative; padding-right: 0px;"
                     >
                       <div
@@ -4179,7 +4539,6 @@ exports[`Confirm should match snapshot signature - typed sign - order 1`] = `
                     </div>
                     <div
                       class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--color-text-default mm-box--rounded-lg"
-                      data-testid="confirmation_data-expiry-index-3"
                       style="overflow-wrap: anywhere; min-height: 24px; position: relative; padding-right: 0px;"
                     >
                       <div
@@ -4208,7 +4567,6 @@ exports[`Confirm should match snapshot signature - typed sign - order 1`] = `
                     </div>
                     <div
                       class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--color-text-default mm-box--rounded-lg"
-                      data-testid="confirmation_data-nonce-index-4"
                       style="overflow-wrap: anywhere; min-height: 24px; position: relative; padding-right: 0px;"
                     >
                       <div
@@ -4237,7 +4595,6 @@ exports[`Confirm should match snapshot signature - typed sign - order 1`] = `
                     </div>
                     <div
                       class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--color-text-default mm-box--rounded-lg"
-                      data-testid="confirmation_data-erc20Token-index-5"
                       style="overflow-wrap: anywhere; min-height: 24px; position: relative; padding-right: 0px;"
                     >
                       <div
@@ -4313,7 +4670,6 @@ exports[`Confirm should match snapshot signature - typed sign - order 1`] = `
                     </div>
                     <div
                       class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--color-text-default mm-box--rounded-lg"
-                      data-testid="confirmation_data-erc20TokenAmount-index-6"
                       style="overflow-wrap: anywhere; min-height: 24px; position: relative; padding-right: 0px;"
                     >
                       <div
@@ -4342,7 +4698,6 @@ exports[`Confirm should match snapshot signature - typed sign - order 1`] = `
                     </div>
                     <div
                       class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--color-text-default mm-box--rounded-lg"
-                      data-testid="confirmation_data-fees-index-7"
                       style="overflow-wrap: anywhere; min-height: 24px; position: relative; padding-right: 0px;"
                     >
                       <div
@@ -4364,7 +4719,6 @@ exports[`Confirm should match snapshot signature - typed sign - order 1`] = `
                     </div>
                     <div
                       class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--color-text-default mm-box--rounded-lg"
-                      data-testid="confirmation_data-erc721Token-index-8"
                       style="overflow-wrap: anywhere; min-height: 24px; position: relative; padding-right: 0px;"
                     >
                       <div
@@ -4440,7 +4794,6 @@ exports[`Confirm should match snapshot signature - typed sign - order 1`] = `
                     </div>
                     <div
                       class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--color-text-default mm-box--rounded-lg"
-                      data-testid="confirmation_data-erc721TokenId-index-9"
                       style="overflow-wrap: anywhere; min-height: 24px; position: relative; padding-right: 0px;"
                     >
                       <div
@@ -4469,7 +4822,6 @@ exports[`Confirm should match snapshot signature - typed sign - order 1`] = `
                     </div>
                     <div
                       class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--color-text-default mm-box--rounded-lg"
-                      data-testid="confirmation_data-erc721TokenProperties-index-10"
                       style="overflow-wrap: anywhere; min-height: 24px; position: relative; padding-right: 0px;"
                     >
                       <div

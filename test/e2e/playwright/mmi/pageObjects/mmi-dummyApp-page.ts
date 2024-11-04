@@ -34,10 +34,11 @@ export class DummyAppPage {
       this.connectBtn.click(),
     ]);
     await popup1.waitForLoadState();
-    // Check which account is selected and select if required
-    await popup1.locator('.check-box__indeterminate');
-    await popup1.locator('button:has-text("Next")').click();
-    await popup1.locator('button:has-text("Confirm")').click();
+    await popup1.getByTestId('edit').nth(1).click();
+    await popup1.getByText('Select all').click();
+    await popup1.getByTestId('Sepolia').click();
+    await popup1.getByTestId('connect-more-chains-button').click();
+    await popup1.getByTestId('confirm-btn').click();
     await popup1.close();
   }
 
@@ -60,11 +61,7 @@ export class DummyAppPage {
     if (isSign) {
       await popup.click('button:has-text("Confirm")');
     } else {
-      await popup.getByTestId('page-container-footer-next').click();
-
-      if (buttonId === 'approveTokens') {
-        await popup.getByTestId('page-container-footer-next').click();
-      }
+      await popup.getByTestId('confirm-footer-button').click();
 
       await popup
         .getByTestId('custody-confirm-link__btn')

@@ -2,6 +2,7 @@ import HomePage from '../pages/homepage';
 import ConfirmTxPage from '../pages/send/confirm-tx-page';
 import SendTokenPage from '../pages/send/send-token-page';
 import { Driver } from '../../webdriver/driver';
+import SnapSimpleKeyringPage from '../pages/snap-simple-keyring-page';
 
 /**
  * This function initiates the steps required to send a transaction from the homepage to final confirmation.
@@ -37,7 +38,32 @@ export const sendTransaction = async (
   const confirmTxPage = new ConfirmTxPage(driver);
   await confirmTxPage.check_pageIsLoaded(gasfee, totalfee);
   await confirmTxPage.confirmTx();
+};
 
-  // user should land on homepage after transaction is confirmed
-  await homePage.check_pageIsLoaded();
+/**
+ * This function initiates the steps required to send a transaction from snap account on homepage to final confirmation.
+ *
+ * @param driver - The webdriver instance.
+ * @param recipientAddress - The recipient address.
+ * @param amount - The amount of the asset to be sent in the transaction.
+ * @param gasfee - The expected transaction gas fee.
+ * @param totalfee - The expected total transaction fee.
+ * @param isSyncFlow - Indicates whether synchronous approval option is on for the snap. Defaults to true.
+ * @param approveTransaction - Indicates whether the transaction should be approved. Defaults to true.
+ */
+export const sendTransactionWithSnapAccount = async (
+  driver: Driver,
+  recipientAddress: string,
+  amount: string,
+  gasfee: string,
+  totalfee: string,
+  isSyncFlow: boolean = true,
+  approveTransaction: boolean = true,
+): Promise<void> => {
+  await sendTransaction(driver, recipientAddress, amount, gasfee, totalfee);
+  if (!isSyncFlow) {
+    await new SnapSimpleKeyringPage(driver).approveRejectSnapAccountTransaction(
+      approveTransaction,
+    );
+  }
 };

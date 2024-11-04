@@ -4,12 +4,16 @@ const {
 } = require('@metamask/snaps-utils');
 const { merge, mergeWith } = require('lodash');
 const { toHex } = require('@metamask/controller-utils');
+const {
+  ETHERSCAN_SUPPORTED_CHAIN_IDS,
+} = require('@metamask/preferences-controller');
 const { mockNetworkStateOld } = require('../stub/networks');
 
 const { CHAIN_IDS } = require('../../shared/constants/network');
 const { SMART_CONTRACTS } = require('./seeder/smart-contracts');
 const {
   DAPP_URL,
+  DAPP_URL_LOCALHOST,
   DAPP_ONE_URL,
   DEFAULT_FIXTURE_ACCOUNT,
   ERC_4337_ACCOUNT,
@@ -54,6 +58,7 @@ function onboardingFixture() {
         }),
         providerConfig: { id: 'networkConfigurationId' },
       },
+      NotificationServicesController: {},
       PreferencesController: {
         advancedGasFee: {},
         currentLocale: 'en',
@@ -70,13 +75,20 @@ function onboardingFixture() {
           hideZeroBalanceTokens: false,
           showExtensionInFullSizeView: false,
           showFiatInTestnets: false,
+          privacyMode: false,
           showTestNetworks: false,
           smartTransactionsOptInStatus: false,
-          useNativeCurrencyAsPrimaryCurrency: true,
+          showNativeTokenAsMainBalance: true,
           petnamesEnabled: true,
           showMultiRpcModal: false,
           isRedesignedConfirmationsDeveloperEnabled: false,
           showConfirmationAdvancedDetails: false,
+          tokenSortConfig: {
+            key: 'tokenFiatAmount',
+            order: 'dsc',
+            sortCallback: 'stringNumeric',
+          },
+          shouldShowAggregatedBalancePopover: true,
         },
         useExternalServices: true,
         theme: 'light',
@@ -88,6 +100,31 @@ function onboardingFixture() {
         useCurrencyRateCheck: true,
         useMultiAccountBalanceChecker: true,
         useRequestQueue: true,
+        isMultiAccountBalancesEnabled: true,
+        showIncomingTransactions: {
+          [ETHERSCAN_SUPPORTED_CHAIN_IDS.MAINNET]: true,
+          [ETHERSCAN_SUPPORTED_CHAIN_IDS.GOERLI]: true,
+          [ETHERSCAN_SUPPORTED_CHAIN_IDS.BSC]: true,
+          [ETHERSCAN_SUPPORTED_CHAIN_IDS.BSC_TESTNET]: true,
+          [ETHERSCAN_SUPPORTED_CHAIN_IDS.OPTIMISM]: true,
+          [ETHERSCAN_SUPPORTED_CHAIN_IDS.OPTIMISM_SEPOLIA]: true,
+          [ETHERSCAN_SUPPORTED_CHAIN_IDS.POLYGON]: true,
+          [ETHERSCAN_SUPPORTED_CHAIN_IDS.POLYGON_TESTNET]: true,
+          [ETHERSCAN_SUPPORTED_CHAIN_IDS.AVALANCHE]: true,
+          [ETHERSCAN_SUPPORTED_CHAIN_IDS.AVALANCHE_TESTNET]: true,
+          [ETHERSCAN_SUPPORTED_CHAIN_IDS.FANTOM]: true,
+          [ETHERSCAN_SUPPORTED_CHAIN_IDS.FANTOM_TESTNET]: true,
+          [ETHERSCAN_SUPPORTED_CHAIN_IDS.SEPOLIA]: true,
+          [ETHERSCAN_SUPPORTED_CHAIN_IDS.LINEA_GOERLI]: true,
+          [ETHERSCAN_SUPPORTED_CHAIN_IDS.LINEA_SEPOLIA]: true,
+          [ETHERSCAN_SUPPORTED_CHAIN_IDS.LINEA_MAINNET]: true,
+          [ETHERSCAN_SUPPORTED_CHAIN_IDS.MOONBEAM]: true,
+          [ETHERSCAN_SUPPORTED_CHAIN_IDS.MOONBEAM_TESTNET]: true,
+          [ETHERSCAN_SUPPORTED_CHAIN_IDS.MOONRIVER]: true,
+          [ETHERSCAN_SUPPORTED_CHAIN_IDS.GNOSIS]: true,
+        },
+        showTestNetworks: false,
+        smartTransactionsOptInStatus: false,
       },
       QueuedRequestController: {
         queuedRequestCount: 0,
@@ -104,6 +141,7 @@ function onboardingFixture() {
           },
         },
       },
+      UserStorageController: {},
       TokensController: {
         allDetectedTokens: {},
         allIgnoredTokens: {},
@@ -183,6 +221,14 @@ class FixtureBuilder {
   withConversionRateDisabled() {
     return this.withPreferencesController({
       useCurrencyRateCheck: false,
+    });
+  }
+
+  withShowFiatTestnetEnabled() {
+    return this.withPreferencesController({
+      preferences: {
+        showFiatInTestnets: true,
+      },
     });
   }
 
@@ -391,6 +437,10 @@ class FixtureBuilder {
           extensionSupport: false,
           srcNetworkAllowlist: [],
         },
+        destTokens: {},
+        destTopAssets: [],
+        srcTokens: {},
+        srcTopAssets: [],
       },
     };
     return this;
@@ -399,12 +449,13 @@ class FixtureBuilder {
   withPermissionControllerConnectedToTestDapp({
     restrictReturnedAccounts = true,
     account = '',
+    useLocalhostHostname = false,
   } = {}) {
     const selectedAccount = account || DEFAULT_FIXTURE_ACCOUNT;
     return this.withPermissionController({
       subjects: {
-        [DAPP_URL]: {
-          origin: DAPP_URL,
+        [useLocalhostHostname ? DAPP_URL_LOCALHOST : DAPP_URL]: {
+          origin: useLocalhostHostname ? DAPP_URL_LOCALHOST : DAPP_URL,
           permissions: {
             eth_accounts: {
               id: 'ZaqPEWxyhNCJYACFw93jE',
@@ -594,9 +645,25 @@ class FixtureBuilder {
     });
   }
 
+  withPreferencesControllerShowNativeTokenAsMainBalanceDisabled() {
+    return this.withPreferencesController({
+      preferences: {
+        showNativeTokenAsMainBalance: false,
+      },
+    });
+  }
+
   withPreferencesControllerTxSimulationsDisabled() {
     return this.withPreferencesController({
       useTransactionSimulations: false,
+    });
+  }
+
+  withPreferencesControllerSmartTransactionsOptedIn() {
+    return this.withPreferencesController({
+      preferences: {
+        smartTransactionsOptInStatus: true,
+      },
     });
   }
 

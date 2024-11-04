@@ -51,16 +51,20 @@ describe('Request Queuing Dapp 1, Switch Tx -> Dapp 2 Send Tx', function () {
 
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
+        const editButtons = await driver.findElements('[data-testid="edit"]');
+
+        await editButtons[1].click();
+
+        // Disconnect Localhost 8545
         await driver.clickElement({
-          text: 'Next',
-          tag: 'button',
-          css: '[data-testid="page-container-footer-next"]',
+          text: 'Localhost 8545',
+          tag: 'p',
         });
 
+        await driver.clickElement('[data-testid="connect-more-chains-button"]');
         await driver.clickElementAndWaitForWindowToClose({
-          text: 'Confirm',
+          text: 'Connect',
           tag: 'button',
-          css: '[data-testid="page-container-footer-next"]',
         });
 
         await driver.switchToWindowWithTitle(
@@ -86,16 +90,9 @@ describe('Request Queuing Dapp 1, Switch Tx -> Dapp 2 Send Tx', function () {
 
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
-        await driver.clickElement({
-          text: 'Next',
-          tag: 'button',
-          css: '[data-testid="page-container-footer-next"]',
-        });
-
         await driver.clickElementAndWaitForWindowToClose({
-          text: 'Confirm',
+          text: 'Connect',
           tag: 'button',
-          css: '[data-testid="page-container-footer-next"]',
         });
 
         await driver.switchToWindowWithUrl(DAPP_URL);
@@ -104,18 +101,18 @@ describe('Request Queuing Dapp 1, Switch Tx -> Dapp 2 Send Tx', function () {
         const switchEthereumChainRequest = JSON.stringify({
           jsonrpc: '2.0',
           method: 'wallet_switchEthereumChain',
-          params: [{ chainId: '0x3e8' }],
+          params: [{ chainId: '0x539' }],
         });
 
-        // Initiate switchEthereumChain on Dapp Two
+        // Initiate switchEthereumChain on Dapp One
         await driver.executeScript(
           `window.ethereum.request(${switchEthereumChainRequest})`,
         );
 
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
         await driver.findElement({
-          text: 'Allow this site to switch the network?',
-          tag: 'h3',
+          text: 'Use your enabled networks',
+          tag: 'p',
         });
 
         await driver.switchToWindowWithUrl(DAPP_ONE_URL);
@@ -124,7 +121,7 @@ describe('Request Queuing Dapp 1, Switch Tx -> Dapp 2 Send Tx', function () {
 
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
-        await driver.clickElement({ text: 'Switch network', tag: 'button' });
+        await driver.clickElement({ text: 'Confirm', tag: 'button' });
 
         await driver.switchToWindowWithUrl(DAPP_ONE_URL);
 
@@ -206,17 +203,20 @@ describe('Request Queuing Dapp 1, Switch Tx -> Dapp 2 Send Tx', function () {
         await driver.clickElement('#connectButton');
 
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
+        const editButtons = await driver.findElements('[data-testid="edit"]');
 
+        await editButtons[1].click();
+
+        // Disconnect Localhost 8545
         await driver.clickElement({
-          text: 'Next',
-          tag: 'button',
-          css: '[data-testid="page-container-footer-next"]',
+          text: 'Localhost 8545',
+          tag: 'p',
         });
 
+        await driver.clickElement('[data-testid="connect-more-chains-button"]');
         await driver.clickElementAndWaitForWindowToClose({
-          text: 'Confirm',
+          text: 'Connect',
           tag: 'button',
-          css: '[data-testid="page-container-footer-next"]',
         });
 
         await driver.switchToWindowWithTitle(
@@ -242,16 +242,9 @@ describe('Request Queuing Dapp 1, Switch Tx -> Dapp 2 Send Tx', function () {
 
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
-        await driver.clickElement({
-          text: 'Next',
-          tag: 'button',
-          css: '[data-testid="page-container-footer-next"]',
-        });
-
         await driver.clickElementAndWaitForWindowToClose({
-          text: 'Confirm',
+          text: 'Connect',
           tag: 'button',
-          css: '[data-testid="page-container-footer-next"]',
         });
 
         await driver.switchToWindowWithUrl(DAPP_URL);
@@ -260,19 +253,13 @@ describe('Request Queuing Dapp 1, Switch Tx -> Dapp 2 Send Tx', function () {
         const switchEthereumChainRequest = JSON.stringify({
           jsonrpc: '2.0',
           method: 'wallet_switchEthereumChain',
-          params: [{ chainId: '0x3e8' }],
+          params: [{ chainId: '0x539' }],
         });
 
-        // Initiate switchEthereumChain on Dapp Two
+        // Initiate switchEthereumChain on Dapp One
         await driver.executeScript(
           `window.ethereum.request(${switchEthereumChainRequest})`,
         );
-
-        await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
-        await driver.findElement({
-          text: 'Allow this site to switch the network?',
-          tag: 'h3',
-        });
 
         await driver.switchToWindowWithUrl(DAPP_ONE_URL);
 
@@ -287,6 +274,7 @@ describe('Request Queuing Dapp 1, Switch Tx -> Dapp 2 Send Tx', function () {
         // There is an extra window appearing and disappearing
         // so we leave this delay until the issue is fixed (#27360)
         await driver.delay(5000);
+
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
         // Check correct network on the send confirmation.

@@ -8,14 +8,14 @@ import React, {
 import { NameType } from '@metamask/name-controller';
 import classnames from 'classnames';
 import { toChecksumAddress } from 'ethereumjs-util';
-import { Icon, IconName, IconSize, Text } from '../../component-library';
+import { Box, Icon, IconName, IconSize, Text } from '../../component-library';
 import { shortenAddress } from '../../../helpers/utils/util';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
-import { TextVariant } from '../../../helpers/constants/design-system';
+import { Display, TextVariant } from '../../../helpers/constants/design-system';
 import { useDisplayName } from '../../../hooks/useDisplayName';
 import Identicon from '../../ui/identicon';
 import NameDetails from './name-details/name-details';
@@ -38,6 +38,12 @@ export type NameProps = {
 
   /** The raw value to display the name of. */
   value: string;
+
+  /**
+   * The variation of the value.
+   * Such as the chain ID if the `type` is an Ethereum address.
+   */
+  variation: string;
 };
 
 function formatValue(value: string, type: NameType): string {
@@ -61,15 +67,17 @@ const Name = memo(
     disableEdit,
     internal,
     preferContractSymbol = false,
+    variation,
   }: NameProps) => {
     const [modalOpen, setModalOpen] = useState(false);
     const trackEvent = useContext(MetaMetricsContext);
 
-    const { name, hasPetname, image } = useDisplayName(
+    const { name, hasPetname, image } = useDisplayName({
       value,
       type,
       preferContractSymbol,
-    );
+      variation,
+    });
 
     useEffect(() => {
       if (internal) {
@@ -98,9 +106,14 @@ const Name = memo(
     const hasDisplayName = Boolean(name);
 
     return (
-      <div>
+      <Box display={Display.Flex}>
         {!disableEdit && modalOpen && (
-          <NameDetails value={value} type={type} onClose={handleModalClose} />
+          <NameDetails
+            value={value}
+            type={type}
+            variation={variation}
+            onClose={handleModalClose}
+          />
         )}
         <div
           className={classnames({
@@ -130,7 +143,7 @@ const Name = memo(
             </Text>
           )}
         </div>
-      </div>
+      </Box>
     );
   },
 );

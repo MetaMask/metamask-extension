@@ -1,15 +1,15 @@
-import { act, fireEvent, waitFor, screen } from '@testing-library/react';
+import { act, fireEvent, screen, waitFor } from '@testing-library/react';
 import nock from 'nock';
-import mockMetaMaskState from '../../data/integration-init-state.json';
-import { integrationTestRender } from '../../../lib/render-helpers';
-import { shortenAddress } from '../../../../ui/helpers/utils/util';
-import * as backgroundConnection from '../../../../ui/store/background-connection';
+import { MESSAGE_TYPE } from '../../../../shared/constants/app';
 import {
   MetaMetricsEventCategory,
-  MetaMetricsEventName,
   MetaMetricsEventLocation,
+  MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
-import { MESSAGE_TYPE } from '../../../../shared/constants/app';
+import { shortenAddress } from '../../../../ui/helpers/utils/util';
+import * as backgroundConnection from '../../../../ui/store/background-connection';
+import { integrationTestRender } from '../../../lib/render-helpers';
+import mockMetaMaskState from '../../data/integration-init-state.json';
 import { createMockImplementation } from '../../helpers';
 import { tEn } from '../../../lib/i18n-helpers';
 import {
@@ -32,7 +32,7 @@ describe('Permit Confirmation', () => {
     jest.resetAllMocks();
     mockedBackgroundConnection.submitRequestToBackground.mockImplementation(
       createMockImplementation({
-        getTokenStandardAndDetails: { decimals: '2' },
+        getTokenStandardAndDetails: { decimals: '2', standard: 'ERC20' },
       }),
     );
   });
@@ -143,10 +143,12 @@ describe('Permit Confirmation', () => {
       });
     });
 
-    expect(screen.getByText('Spending cap request')).toBeInTheDocument();
-    expect(
-      screen.getByText('This site wants permission to spend your tokens.'),
-    ).toBeInTheDocument();
+    await waitFor(() => {
+      expect(screen.getByText('Spending cap request')).toBeInTheDocument();
+      expect(
+        screen.getByText('This site wants permission to spend your tokens.'),
+      ).toBeInTheDocument();
+    });
   });
 
   it('displays the simulation section', async () => {

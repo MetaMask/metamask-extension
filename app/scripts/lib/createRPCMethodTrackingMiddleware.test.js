@@ -1,4 +1,4 @@
-import { errorCodes } from 'eth-rpc-errors';
+import { errorCodes } from '@metamask/rpc-errors';
 import { detectSIWE } from '@metamask/controller-utils';
 
 import MetaMetricsController from '../controllers/metametrics';
@@ -58,13 +58,11 @@ const metaMetricsController = new MetaMetricsController({
   segment: createSegmentMock(2, 10000),
   getCurrentChainId: () => '0x1338',
   onNetworkDidChange: jest.fn(),
-  preferencesStore: {
-    subscribe: jest.fn(),
-    getState: jest.fn(() => ({
-      currentLocale: 'en_US',
-      preferences: {},
-    })),
+  preferencesControllerState: {
+    currentLocale: 'en_US',
+    preferences: {},
   },
+  onPreferencesStateChange: jest.fn(),
   version: '0.0.1',
   environment: 'test',
   initState: {
@@ -884,6 +882,34 @@ describe('createRPCMethodTrackingMiddleware', () => {
           },
         },
         { type: 'ERC20' },
+      ],
+      [
+        'only the chain ID',
+        'wallet_addEthereumChain',
+        [
+          {
+            chainId: '0x64',
+            chainName: 'Gnosis',
+            rpcUrls: ['https://rpc.gnosischain.com'],
+            iconUrls: [
+              'https://xdaichain.com/fake/example/url/xdai.svg',
+              'https://xdaichain.com/fake/example/url/xdai.png',
+            ],
+            nativeCurrency: {
+              name: 'XDAI',
+              symbol: 'XDAI',
+              decimals: 18,
+            },
+            blockExplorerUrls: ['https://blockscout.com/poa/xdai/'],
+          },
+        ],
+        { chainId: '0x64' },
+      ],
+      [
+        'only the chain ID',
+        'wallet_switchEthereumChain',
+        [{ chainId: '0x123' }],
+        { chainId: '0x123' },
       ],
     ])(
       `should include %s in the '%s' tracked events params property`,
