@@ -4574,6 +4574,7 @@ export async function tokenRatesStartPolling(chainId: string): Promise<string> {
 /**
  * Informs the TokenRatesController that the UI no longer
  * requires token rate polling for the given chain id.
+ *
  * @param pollingToken -
  */
 export async function tokenRatesStopPollingByPollingToken(
