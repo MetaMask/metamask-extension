@@ -1,5 +1,4 @@
 import React, { ReactNode, useEffect, useRef, useState } from 'react';
-import { useSelector } from 'react-redux';
 import classnames from 'classnames';
 import PropTypes from 'prop-types';
 import {
@@ -14,7 +13,6 @@ import {
   FlexDirection,
   TextVariant,
   BorderColor,
-  TextAlign,
 } from '../../../helpers/constants/design-system';
 import {
   AvatarNetwork,
@@ -77,8 +75,6 @@ export const NetworkListItem = ({
     setNetworkListItemMenuElement(ref);
   };
   const [networkOptionsMenuOpen, setNetworkOptionsMenuOpen] = useState(false);
-
-  const textDirection = useSelector((state) => state.metamask.textDirection);
 
   const renderButton = () => {
     return onDeleteClick || onEditClick ? (
@@ -194,9 +190,6 @@ export const NetworkListItem = ({
               as="button"
               variant={TextVariant.bodySmMedium}
               color={TextColor.textAlternative}
-              textAlign={
-                textDirection === 'rtl' ? TextAlign.Right : TextAlign.Left
-              }
               ellipsis
             >
               {rpcEndpoint.name ?? new URL(rpcEndpoint.url).host}
