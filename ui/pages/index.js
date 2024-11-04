@@ -51,9 +51,7 @@ class Index extends PureComponent {
                   <LegacyI18nProvider>
                     <AssetPollingProvider>
                       <MetamaskNotificationsProvider>
-                        <TokenRatesProvider>
-                          <Routes />
-                        </TokenRatesProvider>
+                        <Routes />
                       </MetamaskNotificationsProvider>
                     </AssetPollingProvider>
                   </LegacyI18nProvider>
