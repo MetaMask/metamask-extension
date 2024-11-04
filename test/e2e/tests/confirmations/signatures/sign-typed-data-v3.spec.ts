@@ -48,20 +48,16 @@ describe('Confirmation Signature - Sign Typed Data V3 @no-mmi', function (this: 
         await copyAddressAndPasteWalletAddress(driver);
         await assertPastedAddress(driver);
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
+        await driver.delay(1000);
 
         await assertInfoValues(driver);
         await scrollAndConfirmAndAssertConfirm(driver);
-        await driver.delay(1000);
 
         await assertAccountDetailsMetrics(
           driver,
           mockedEndpoints as MockedEndpoint[],
           'eth_signTypedData_v3',
         );
-        await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
-
-        await assertInfoValues(driver);
-        await scrollAndConfirmAndAssertConfirm(driver);
         await assertSignatureConfirmedMetrics({
           driver,
           mockedEndpoints: mockedEndpoints as MockedEndpoint[],
