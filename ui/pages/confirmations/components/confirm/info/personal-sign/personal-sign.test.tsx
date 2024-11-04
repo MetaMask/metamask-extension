@@ -47,24 +47,22 @@ jest.mock('../../../../../../helpers/utils/snaps', () => ({
 }));
 
 describe('PersonalSignInfo', () => {
-  const mockStore = configureMockStore([]);
-
   it('renders correctly for personal sign request', () => {
     const state = getMockPersonalSignConfirmState();
-    const mockStoreInstance = mockStore(state);
+    const mockStore = configureMockStore([])(state);
     const { container } = renderWithConfirmContextProvider(
       <PersonalSignInfo />,
-      mockStoreInstance,
+      mockStore,
     );
     expect(container).toMatchSnapshot();
   });
 
   it('does not render if required data is not present in the transaction', () => {
     const state = getMockConfirmState();
-    const mockStoreInstance = mockStore(state);
+    const mockStore = configureMockStore([])(state);
     const { container } = renderWithConfirmContextProvider(
       <PersonalSignInfo />,
-      mockStoreInstance,
+      mockStore,
     );
     expect(container).toMatchInlineSnapshot(`<div />`);
   });
@@ -80,10 +78,10 @@ describe('PersonalSignInfo', () => {
         siwe: { isSIWEMessage: false, parsedMessage: null },
       },
     });
-    const mockStoreInstance = mockStore(state);
+    const mockStore = configureMockStore([])(state);
     const { container } = renderWithConfirmContextProvider(
       <PersonalSignInfo />,
-      mockStoreInstance,
+      mockStore,
     );
     expect(container).toMatchSnapshot();
   });
@@ -92,10 +90,10 @@ describe('PersonalSignInfo', () => {
     (utils.isSIWESignatureRequest as jest.Mock).mockReturnValue(true);
     const state =
       getMockPersonalSignConfirmStateForRequest(signatureRequestSIWE);
-    const mockStoreInstance = mockStore(state);
+    const mockStore = configureMockStore([])(state);
     const { getByText } = renderWithConfirmContextProvider(
       <PersonalSignInfo />,
-      mockStoreInstance,
+      mockStore,
     );
     expect(getByText('Signing in with')).toBeDefined();
   });
@@ -110,10 +108,10 @@ describe('PersonalSignInfo', () => {
         },
       },
     );
-    const mockStoreInstance = mockStore(state);
+    const mockStore = configureMockStore([])(state);
     const { getByText } = renderWithConfirmContextProvider(
       <PersonalSignInfo />,
-      mockStoreInstance,
+      mockStore,
     );
     expect(getByText('Estimated changes')).toBeDefined();
   });
@@ -123,10 +121,10 @@ describe('PersonalSignInfo', () => {
       getMockPersonalSignConfirmStateForRequest(signatureRequestSIWE); // isSIWE is true
 
     (utils.isSIWESignatureRequest as jest.Mock).mockReturnValue(true);
-    const mockStoreInstance = mockStore(state);
+    const mockStore = configureMockStore([])(state);
     const { queryByText, getByText } = renderWithConfirmContextProvider(
       <PersonalSignInfo />,
-      mockStoreInstance,
+      mockStore,
     );
 
     const requestFromLabel = getByText('Request from');
@@ -149,10 +147,10 @@ describe('PersonalSignInfo', () => {
     (utils.isSIWESignatureRequest as jest.Mock).mockReturnValue(false);
     (snapUtils.isSnapId as jest.Mock).mockReturnValue(true);
 
-    const mockStoreInstance = mockStore(state);
+    const mockStore = configureMockStore([])(state);
     const { queryByText, getByText } = renderWithConfirmContextProvider(
       <PersonalSignInfo />,
-      mockStoreInstance,
+      mockStore,
     );
 
     const requestFromLabel = getByText('Request from');
@@ -171,10 +169,10 @@ describe('PersonalSignInfo', () => {
     (utils.isSIWESignatureRequest as jest.Mock).mockReturnValue(false);
     (snapUtils.isSnapId as jest.Mock).mockReturnValue(true);
 
-    const mockStoreInstance = mockStore(state);
+    const mockStore = configureMockStore([])(state);
     const { getByText, queryByText } = renderWithConfirmContextProvider(
       <PersonalSignInfo />,
-      mockStoreInstance,
+      mockStore,
     );
 
     const requestFromLabel = getByText('Request from');
