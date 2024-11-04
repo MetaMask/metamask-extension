@@ -65,7 +65,7 @@ export type Asset = (
     }
 ) & {
   /** The hexadecimal chain id */
-  chainId: string; // Changed from `0x${string}` to string
+  chainId: string;
   /** The asset's symbol, e.g. 'ETH' */
   symbol: string;
   /** The asset's name, e.g. 'Ethereum' */
