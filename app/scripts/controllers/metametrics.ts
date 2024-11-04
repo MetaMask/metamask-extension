@@ -313,11 +313,7 @@ export default class MetaMetricsController {
     // fragments that are not marked as persistent will be purged and the
     // failure event will be emitted.
     Object.values(abandonedFragments).forEach((fragment) => {
-      if (fragment.canDeleteIfAbandoned) {
-        this.deleteEventFragment(fragment.id);
-      } else {
-        this.finalizeEventFragment(fragment.id, { abandoned: true });
-      }
+      this.processAbandonedFragment(fragment);
     });
 
     // Code below submits any pending segmentApiCalls to Segment if/when the controller is re-instantiated
@@ -373,11 +369,7 @@ export default class MetaMetricsController {
         fragment.lastUpdated &&
         Date.now() - fragment.lastUpdated / 1000 > fragment.timeout
       ) {
-        if (fragment.canDeleteIfAbandoned) {
-          this.deleteEventFragment(fragment.id);
-        } else {
-          this.finalizeEventFragment(fragment.id, { abandoned: true });
-        }
+        this.processAbandonedFragment(fragment);
       }
     });
   }
@@ -481,6 +473,19 @@ export default class MetaMetricsController {
     const fragment = fragments[id];
 
     return fragment;
+  }
+
+  /**
+   * Deletes to finalizes event fragment based on the canDeleteIfAbandoned property.
+   *
+   * @param fragment
+   */
+  processAbandonedFragment(fragment: MetaMetricsEventFragment): void {
+    if (fragment.canDeleteIfAbandoned) {
+      this.deleteEventFragment(fragment.id);
+    } else {
+      this.finalizeEventFragment(fragment.id, { abandoned: true });
+    }
   }
 
   /**
