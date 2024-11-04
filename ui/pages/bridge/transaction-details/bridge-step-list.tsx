@@ -1,5 +1,7 @@
 import React from 'react';
 import { NetworkConfiguration } from '@metamask/network-controller';
+import { useSelector } from 'react-redux';
+import { TransactionMeta } from '@metamask/transaction-controller';
 import {
   Box,
   Icon,
@@ -15,16 +17,17 @@ import {
   ActionTypes,
   BridgeHistoryItem,
 } from '../../../../app/scripts/controllers/bridge-status/types';
-import { useSelector } from 'react-redux';
 import { getNetworkConfigurationsByChainId } from '../../../selectors';
 import BridgeStep from './bridge-step';
 
 type BridgeStepsProps = {
   bridgeHistoryItem: BridgeHistoryItem;
+  srcChainTxMeta?: TransactionMeta;
 };
 
 export default function BridgeStepList({
   bridgeHistoryItem,
+  srcChainTxMeta,
 }: BridgeStepsProps) {
   const networkConfigurationsByChainId = useSelector(
     getNetworkConfigurationsByChainId,
@@ -37,6 +40,7 @@ export default function BridgeStepList({
         <BridgeStep
           step={step}
           networkConfigurationsByChainId={networkConfigurationsByChainId}
+          srcChainTxMeta={srcChainTxMeta}
         />
       ))}
     </Box>
