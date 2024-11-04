@@ -12,7 +12,7 @@ import {
 } from '../store/actions';
 import useMultiPolling from './useMultiPolling';
 
-const useTokenRatesPolling = (chainIds: string[] | undefined = undefined) => {
+const useTokenRatesPolling = ({ chainIds }: { chainIds?: string[] } = {}) => {
   // Selectors to determine polling input
   const useCurrencyRateCheck = useSelector(getUseCurrencyRateCheck);
   const networkConfigurations = useSelector(getNetworkConfigurationsByChainId);

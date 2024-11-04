@@ -117,7 +117,7 @@ import {
   getOrderedConnectedAccountsForConnectedDapp,
   getSubjectMetadata,
 } from './permissions';
-import { getSelectedInternalAccount } from './accounts';
+import { getSelectedInternalAccount, getInternalAccounts } from './accounts';
 import { createDeepEqualSelector } from './util';
 import { getMultichainBalances, getMultichainNetwork } from './multichain';
 
@@ -369,10 +369,6 @@ export function getSelectedInternalAccountWithBalance(state) {
   };
 
   return selectedAccountWithBalance;
-}
-
-export function getInternalAccounts(state) {
-  return Object.values(state.metamask.internalAccounts.accounts);
 }
 
 export function getInternalAccount(state, accountId) {
@@ -714,6 +710,28 @@ export const getNetworkConfigurationsByChainId = createDeepEqualSelector(
    * @returns { import('@metamask/network-controller').NetworkState['networkConfigurationsByChainId']}
    */
   (networkConfigurationsByChainId) => networkConfigurationsByChainId,
+);
+
+/**
+ * @type (state: any, chainId: string) => import('@metamask/network-controller').NetworkConfiguration
+ */
+export const selectNetworkConfigurationByChainId = createSelector(
+  getNetworkConfigurationsByChainId,
+  (_state, chainId) => chainId,
+  (networkConfigurationsByChainId, chainId) =>
+    networkConfigurationsByChainId[chainId],
+);
+
+export const selectDefaultRpcEndpointByChainId = createSelector(
+  selectNetworkConfigurationByChainId,
+  (networkConfiguration) => {
+    if (!networkConfiguration) {
+      return undefined;
+    }
+
+    const { defaultRpcEndpointIndex, rpcEndpoints } = networkConfiguration;
+    return rpcEndpoints[defaultRpcEndpointIndex];
+  },
 );
 
 export function getRequestingNetworkInfo(state, chainIds) {

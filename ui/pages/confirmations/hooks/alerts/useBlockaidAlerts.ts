@@ -15,7 +15,6 @@ import {
 import { Alert } from '../../../../ducks/confirm-alerts/confirm-alerts';
 import ZENDESK_URLS from '../../../../helpers/constants/zendesk-url';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
-import { getCurrentChainId } from '../../../../selectors';
 import {
   SIGNATURE_TRANSACTION_TYPES,
   REDESIGN_DEV_TRANSACTION_TYPES,
@@ -51,7 +50,6 @@ type SecurityAlertResponsesState = {
 const useBlockaidAlerts = (): Alert[] => {
   const t = useI18nContext();
   const { currentConfirmation } = useConfirmContext();
-  const selectorChainId = useSelector(getCurrentChainId);
 
   const securityAlertId = (
     currentConfirmation?.securityAlertResponse as SecurityAlertResponse
@@ -99,9 +97,7 @@ const useBlockaidAlerts = (): Alert[] => {
     const reportData = {
       blockNumber: block,
       blockaidVersion: BlockaidPackage.version,
-      chain: (NETWORK_TO_NAME_MAP as Record<string, string>)[
-        chainId ?? selectorChainId
-      ],
+      chain: (NETWORK_TO_NAME_MAP as Record<string, string>)[chainId],
       classification: isFailedResultType ? 'error' : reason,
       domain: origin ?? msgParams?.origin ?? origin,
       jsonRpcMethod: type,
