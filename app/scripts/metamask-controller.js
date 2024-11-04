@@ -6648,6 +6648,7 @@ export default class MetamaskController extends EventEmitter {
       this.currencyRateController.stopAllPolling();
       this.tokenRatesController.stopAllPolling();
       this.appStateController.clearPollingTokens();
+      this.accountTrackerController.stopAllPolling();
     } catch (error) {
       console.error(error);
     }
