@@ -1781,6 +1781,8 @@ export default class MetamaskController extends EventEmitter {
       trackMetaMetricsEvent: this.metaMetricsController.trackEvent.bind(
         this.metaMetricsController,
       ),
+      useAccountsAPI: true,
+      platform: 'extension',
     });
 
     const addressBookControllerMessenger =
