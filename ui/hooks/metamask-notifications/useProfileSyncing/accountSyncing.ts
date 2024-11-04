@@ -1,11 +1,10 @@
 import log from 'loglevel';
-import { useCallback, useEffect } from 'react';
+import { useCallback } from 'react';
 import { useDispatch } from 'react-redux';
 import {
   deleteAccountSyncingDataFromUserStorage,
   syncInternalAccountsWithUserStorage,
 } from '../../../store/actions';
-import { useShouldDispatchProfileSyncing } from './profileSyncing';
 
 /**
  * Custom hook to dispatch account syncing.
@@ -13,40 +12,17 @@ import { useShouldDispatchProfileSyncing } from './profileSyncing';
  * @returns An object containing the `dispatchAccountSyncing` function, boolean `shouldDispatchAccountSyncing`,
  * and error state.
  */
-const useAccountSyncing = () => {
+export const useSyncAccounts = () => {
   const dispatch = useDispatch();
-
-  const shouldDispatchAccountSyncing = useShouldDispatchProfileSyncing();
-
-  const dispatchAccountSyncing = useCallback(() => {
+  const syncAccounts = useCallback(async () => {
     try {
-      if (!shouldDispatchAccountSyncing) {
-        return;
-      }
-      dispatch(syncInternalAccountsWithUserStorage());
+      await dispatch(syncInternalAccountsWithUserStorage());
     } catch (e) {
       log.error(e);
     }
-  }, [dispatch, shouldDispatchAccountSyncing]);
+  }, [dispatch]);
 
-  return {
-    dispatchAccountSyncing,
-    shouldDispatchAccountSyncing,
-  };
-};
-
-/**
- * Custom hook to apply account syncing effect.
- */
-export const useAccountSyncingEffect = () => {
-  const shouldSync = useShouldDispatchProfileSyncing();
-  const { dispatchAccountSyncing } = useAccountSyncing();
-
-  useEffect(() => {
-    if (shouldSync) {
-      dispatchAccountSyncing();
-    }
-  }, [shouldSync, dispatchAccountSyncing]);
+  return syncAccounts;
 };
 
 /**

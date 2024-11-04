@@ -26,10 +26,7 @@ jest.mock('../../store/actions', () => ({
 }));
 
 jest.mock('./useProfileSyncing', () => ({
-  useEnableProfileSyncing: jest.fn(() => ({
-    enableProfileSyncing: jest.fn(),
-  })),
-  useAccountSyncingEffect: jest.fn(),
+  useSyncEffect: jest.fn(),
 }));
 
 describe('useNotifications', () => {
