@@ -7,6 +7,7 @@ import {
   IconName,
   ButtonVariant,
   Text,
+  ButtonSecondary,
 } from '../../../components/component-library';
 import { openBlockExplorer } from '../../../components/multichain/menu-items/view-explorer-menu-item';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
@@ -58,11 +59,17 @@ export default function BridgeExplorerLinks({
 }: ExplorerLinksProps) {
   const trackEvent = useContext(MetaMetricsContext);
 
+  // Not sure why but the text is not being changed to white on hover, unless it's put into a variable before the render
+  const srcButtonText = `View on ${getBlockExplorerName(srcBlockExplorerUrl)}`;
+  const destButtonText = `View on ${getBlockExplorerName(
+    destBlockExplorerUrl,
+  )}`;
+
   return (
     <Box display={Display.Flex} flexDirection={FlexDirection.Column} gap={4}>
       {srcBlockExplorerUrl && (
-        <Button
-          variant={ButtonVariant.Secondary}
+        <ButtonSecondary
+          endIconName={IconName.Export}
           onClick={() => {
             if (srcBlockExplorerUrl) {
               openBlockExplorer(
@@ -73,17 +80,12 @@ export default function BridgeExplorerLinks({
             }
           }}
         >
-          <Box display={Display.Flex} alignItems={AlignItems.center} gap={2}>
-            <Text color={TextColor.primaryDefault}>
-              View on {getBlockExplorerName(srcBlockExplorerUrl)}
-            </Text>
-            <Icon name={IconName.Export} />
-          </Box>
-        </Button>
+          {srcButtonText}
+        </ButtonSecondary>
       )}
       {destBlockExplorerUrl && (
-        <Button
-          variant={ButtonVariant.Secondary}
+        <ButtonSecondary
+          endIconName={IconName.Export}
           onClick={() => {
             if (destBlockExplorerUrl) {
               openBlockExplorer(
@@ -94,13 +96,8 @@ export default function BridgeExplorerLinks({
             }
           }}
         >
-          <Box display={Display.Flex} alignItems={AlignItems.center} gap={2}>
-            <Text color={TextColor.primaryDefault}>
-              View on {getBlockExplorerName(destBlockExplorerUrl)}
-            </Text>
-            <Icon name={IconName.Export} />
-          </Box>
-        </Button>
+          {destButtonText}
+        </ButtonSecondary>
       )}
     </Box>
   );
