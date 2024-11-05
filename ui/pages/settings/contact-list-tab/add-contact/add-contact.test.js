@@ -12,7 +12,6 @@ import AddContact from './add-contact.component';
 describe('AddContact component', () => {
   const middleware = [thunk];
   const state = {
-    DNS: domainInitialState,
     metamask: {
       ...mockNetworkState({ chainId: CHAIN_IDS.SEPOLIA }),
     },
@@ -63,7 +62,12 @@ describe('AddContact component', () => {
   });
 
   it('should enable submit button when input is valid', () => {
-    const store = configureMockStore(middleware)(state);
+    const testStore = {
+      DNS: domainInitialState,
+      metamask: state.metamask,
+      snaps: {},
+    };
+    const store = configureMockStore(middleware)(testStore);
     const { getByText, getByTestId } = renderWithProvider(
       <AddContact {...props} />,
       store,
@@ -82,7 +86,12 @@ describe('AddContact component', () => {
   });
 
   it('should disable submit button when input is not a valid address', () => {
-    const store = configureMockStore(middleware)(state);
+    const testStore = {
+      DNS: domainInitialState,
+      metamask: state.metamask,
+      snaps: {},
+    };
+    const store = configureMockStore(middleware)(testStore);
     const { getByText, getByTestId } = renderWithProvider(
       <AddContact {...props} />,
       store,
