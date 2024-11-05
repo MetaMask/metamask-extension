@@ -1,4 +1,4 @@
-import React from 'react';
+import * as React from 'react';
 import { NetworkConfiguration } from '@metamask/network-controller';
 import {
   ActionTypes,
@@ -18,6 +18,8 @@ import {
   TransactionMeta,
   TransactionStatus,
 } from '@metamask/transaction-controller';
+import HollowCircle from './hollow-circle';
+import { IconColor } from '../../../helpers/constants/design-system';
 
 /**
  * bridge actions will have srcChainId and destChainId different from each other
@@ -82,12 +84,10 @@ export default function BridgeStep({
 }: BridgeStepProps) {
   return (
     <Box>
-      {/* <Icon name={IconName.circle} /> */}
+      <HollowCircle color={IconColor.errorDefault} />
       <Icon
-        className="bridge-transaction-details__icon-loading"
+        className="bridge-transaction-details__icon-loading" // Needed for animation
         name={IconName.Loading}
-        // color={iconColor}
-        size={IconSize.Md}
       />
       <Icon name={IconName.FullCircle} />
       <Text>{time}</Text>
