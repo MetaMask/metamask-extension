@@ -62,6 +62,7 @@ import {
 } from '../../shared/constants/swaps';
 
 import { ALLOWED_BRIDGE_CHAIN_IDS } from '../../shared/constants/bridge';
+import { AssetType } from '../../shared/constants/transaction';
 
 import {
   shortenAddress,
@@ -540,7 +541,7 @@ function getNativeTokenInfo(state, chainId) {
   const networkConfig = networkConfigurationsByChainId?.[chainId];
 
   if (networkConfig) {
-    const symbol = networkConfig.nativeCurrency || 'NATIVE';
+    const symbol = networkConfig.nativeCurrency || AssetType.native;
     const decimals = 18;
     const name = networkConfig.name || 'Native Token';
 
@@ -553,7 +554,7 @@ function getNativeTokenInfo(state, chainId) {
 
   const { provider } = state.metamask;
   if (provider && provider.chainId === chainId) {
-    const symbol = provider.ticker || 'NATIVE';
+    const symbol = provider.ticker || AssetType.native;
     const decimals = provider.nativeCurrency?.decimals || 18;
     const name = provider.nickname || 'Native Token';
 
@@ -564,7 +565,7 @@ function getNativeTokenInfo(state, chainId) {
     };
   }
 
-  return { symbol: 'NATIVE', decimals: 18, name: 'Native Token' };
+  return { symbol: AssetType.native, decimals: 18, name: 'Native Token' };
 }
 
 /**
