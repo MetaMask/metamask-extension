@@ -2,6 +2,18 @@
   &__icon-loading {
     animation: spinner 1.2s linear infinite;
   }
+
+  &__step-grid {
+    display: grid;
+    grid-template-columns: 1rem 6fr;
+    column-gap: 1rem;
+    justify-items: center;
+    align-items: center;
+
+    &--desc {
+      justify-self: start;
+    }
+  }
 }
 
 @keyframes spinner {
