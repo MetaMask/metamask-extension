@@ -71,7 +71,7 @@ const t = (key) => {
     case 'overrideContentSecurityPolicyHeader':
       return 'Override Content-Security-Policy header';
     case 'overrideContentSecurityPolicyHeaderDescription':
-      return 'This option is a workaround for a known issue in Firefox, where the Content-Security-Policy header may not be bypassed, causing the extension to fail to load properly. Disabling this option is not recommended unless required for specific web page compatibility.';
+      return "This option is a workaround for a known issue in Firefox, where a dapp's Content-Security-Policy header may prevent the extension from loading properly. Disabling this option is not recommended unless required for specific web page compatibility.";
     case 'Contacts':
       return 'Contacts';
     case 'securityAndPrivacy':
