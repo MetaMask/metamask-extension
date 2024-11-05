@@ -109,8 +109,7 @@ const AssetPage = ({
       ? toChecksumHexAddress(asset.address)
       : '0x0000000000000000000000000000000000000000';
 
-  const balance =
-    selectedAccountTokenBalancesAcrossChains[chainId]?.[address] || '0.00000';
+  const balance = selectedAccountTokenBalancesAcrossChains[chainId]?.[address];
 
   const marketData = marketDataAcrossChains[chainId]?.[address];
 
