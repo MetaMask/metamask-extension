@@ -76,6 +76,8 @@ type BridgeStepProps = {
   srcChainTxMeta?: TransactionMeta;
 };
 
+const iconColor = IconColor.primaryDefault;
+
 export default function BridgeStep({
   step,
   networkConfigurationsByChainId,
@@ -84,12 +86,13 @@ export default function BridgeStep({
 }: BridgeStepProps) {
   return (
     <Box>
-      <HollowCircle color={IconColor.errorDefault} />
+      <HollowCircle color={iconColor} />
       <Icon
         className="bridge-transaction-details__icon-loading" // Needed for animation
         name={IconName.Loading}
+        color={iconColor}
       />
-      <Icon name={IconName.FullCircle} />
+      <Icon name={IconName.FullCircle} color={iconColor} />
       <Text>{time}</Text>
       <Text>
         {step.action === ActionTypes.BRIDGE &&
