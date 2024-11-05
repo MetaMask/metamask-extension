@@ -6,25 +6,14 @@ import {
   StatusTypes,
   Step,
 } from '../../../../app/scripts/controllers/bridge-status/types';
-import {
-  Box,
-  Icon,
-  IconName,
-  IconSize,
-  Text,
-} from '../../../components/component-library';
+import { Box, Text } from '../../../components/component-library';
 import { Numeric } from '../../../../shared/modules/Numeric';
 import { Hex } from '@metamask/utils';
 import {
   TransactionMeta,
   TransactionStatus,
 } from '@metamask/transaction-controller';
-import HollowCircle from './hollow-circle';
-import {
-  AlignItems,
-  Display,
-  IconColor,
-} from '../../../helpers/constants/design-system';
+import { AlignItems, Display } from '../../../helpers/constants/design-system';
 
 /**
  * bridge actions will have step.srcChainId !== step.destChainId
