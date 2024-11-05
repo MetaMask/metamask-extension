@@ -91,8 +91,17 @@ export default function TokenList({ onTokenClick }: TokenListProps) {
       },
     ]);
 
-    const nativeTokens = filteredAssets.filter((token) => token.isNative);
-    const nonNativeTokens = filteredAssets.filter((token) => !token.isNative);
+    const { nativeTokens, nonNativeTokens } = filteredAssets.reduce(
+      (acc, token) => {
+        if (token.isNative) {
+          acc.nativeTokens.push(token);
+        } else {
+          acc.nonNativeTokens.push(token);
+        }
+        return acc;
+      },
+      { nativeTokens: [], nonNativeTokens: [] },
+    );
 
     return sortAssets([...nativeTokens, ...nonNativeTokens], tokenSortConfig);
   }, [
