@@ -23,6 +23,15 @@ export type SecurityAlertResponse = {
   source?: SecurityAlertSource;
 };
 
+// todo: DecodingData to be imported from signature controller once its updated in extension
+export type DecodingData = {
+  stateChanges: unknown[] | null;
+  error?: {
+    message: string;
+    type: string;
+  };
+};
+
 export type SignatureRequestType = {
   chainId?: string;
   id: string;
@@ -38,6 +47,8 @@ export type SignatureRequestType = {
   type: TransactionType;
   custodyId?: string;
   securityAlertResponse?: SecurityAlertResponse;
+  decodingLoading?: boolean;
+  decodingData?: DecodingData;
 };
 
 export type Confirmation = SignatureRequestType | TransactionMeta;
