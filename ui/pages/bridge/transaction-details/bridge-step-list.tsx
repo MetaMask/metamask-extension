@@ -41,6 +41,7 @@ export default function BridgeStepList({
           step={step}
           networkConfigurationsByChainId={networkConfigurationsByChainId}
           srcChainTxMeta={srcChainTxMeta}
+          bridgeHistoryItem={bridgeHistoryItem}
         />
       ))}
     </Box>
