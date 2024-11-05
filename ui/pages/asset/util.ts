@@ -1,4 +1,4 @@
-import { SUPPORTED_CHAIN_IDS } from '@metamask/assets-controllers';
+import { SUPPORTED_CHAIN_IDS, Token } from '@metamask/assets-controllers';
 
 /** Formats a datetime in a short human readable format like 'Feb 8, 12:11 PM' */
 export const getShortDateFormatter = () =>
@@ -64,3 +64,23 @@ export const chainSupportsPricing = (chainId: `0x${string}`) =>
 
 /** The opacity components should set during transition */
 export const loadingOpacity = 0.2;
+
+// TODO: Add unit tests
+export const findAssetByAddress = (
+  data: Record<string, Token[]>,
+  address?: string,
+) => {
+  if (!address) {
+    return null;
+  }
+
+  for (const [chainId, tokens] of Object.entries(data)) {
+    for (const token of tokens) {
+      if (token.address === address) {
+        return { chainId, ...token };
+      }
+    }
+  }
+
+  return null;
+};

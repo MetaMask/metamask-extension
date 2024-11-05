@@ -1,7 +1,6 @@
 import React, { useEffect } from 'react';
 import { useSelector } from 'react-redux';
 import { Redirect, useParams } from 'react-router-dom';
-import { Token } from '@metamask/assets-controllers';
 import { isEqualCaseInsensitive } from '../../../shared/modules/string-utils';
 import NftDetails from '../../components/app/assets/nfts/nft-details/nft-details';
 import { getSelectedAccountTokensAcrossChains } from '../../selectors';
@@ -10,22 +9,7 @@ import { DEFAULT_ROUTE } from '../../helpers/constants/routes';
 
 import NativeAsset from './components/native-asset';
 import TokenAsset from './components/token-asset';
-
-function findAssetByAddress(data: Record<string, Token[]>, address?: string) {
-  if (!address) {
-    return null;
-  }
-
-  for (const [chainId, tokens] of Object.entries(data)) {
-    for (const token of tokens) {
-      if (token.address === address) {
-        return { chainId, ...token };
-      }
-    }
-  }
-
-  return null;
-}
+import { findAssetByAddress } from './util';
 
 /** A page representing a native, token, or NFT asset */
 const Asset = () => {
