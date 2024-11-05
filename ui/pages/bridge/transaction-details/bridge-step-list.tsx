@@ -57,7 +57,7 @@ export default function BridgeStepList({
         flexDirection={FlexDirection.Column}
         alignItems={AlignItems.center}
       >
-        {steps.map((step, i) => {
+        {steps.map((_, i) => {
           const stepStatus = stepStatuses[i];
           return (
             <>
