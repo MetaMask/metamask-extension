@@ -191,15 +191,15 @@ const _getQuotesWithMetadata = createDeepEqualSelector(
   _getSelectedQuote,
   (state: BridgeAppState) => state.bridge.toTokenExchangeRate,
   (state: BridgeAppState) => state.bridge.toNativeExchangeRate,
-  (state) => getTokenExchangeRates(state),
-  getConversionRate,
+  (state: BridgeAppState) => state.bridge.fromTokenExchangeRate,
+  (state: BridgeAppState) => state.bridge.fromNativeExchangeRate,
   getBridgeFeesPerGas,
   (
     quotes,
     selectedQuote,
     toTokenExchangeRate,
     toNativeExchangeRate,
-    fromTokenExchangeRates,
+    fromTokenExchangeRate,
     fromNativeExchangeRate,
     { maxFeePerGas, maxPriorityFeePerGas },
   ): (QuoteResponse & QuoteMetadata)[] => {
@@ -213,11 +213,11 @@ const _getQuotesWithMetadata = createDeepEqualSelector(
         quote,
         add0x(maxFeePerGas),
         add0x(maxPriorityFeePerGas),
-        fromNativeExchangeRate,
+        fromNativeExchangeRate || undefined,
       );
       const sentAmount = calcSentAmount(
         quote.quote,
-        fromTokenExchangeRates,
+        fromTokenExchangeRate,
         fromNativeExchangeRate,
       );
       const adjustedReturn = calcAdjustedReturn(

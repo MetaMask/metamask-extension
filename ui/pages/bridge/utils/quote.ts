@@ -1,6 +1,5 @@
 import { zeroAddress } from 'ethereumjs-util';
 import { BigNumber } from 'bignumber.js';
-import { getAddress } from 'ethers/lib/utils';
 import { calcTokenAmount } from '../../../../shared/lib/transactions-controller-utils';
 import { QuoteResponse, QuoteRequest, Quote } from '../types';
 import { formatCurrency } from '../../../helpers/utils/confirm-tx.util';
@@ -61,22 +60,21 @@ export const calcToAmount = (
 
 export const calcSentAmount = (
   { srcTokenAmount, srcAsset, feeData }: Quote,
-  fromTokenExchangeRates: Record<string, number | null>,
+  fromTokenExchangeRate: number | null,
   fromNativeExchangeRate: number | null,
 ) => {
   const normalizedSentAmount = calcTokenAmount(
     new BigNumber(srcTokenAmount).plus(feeData.metabridge.amount),
     srcAsset.decimals,
   );
-  const fromTokenExchangeRate =
+  const tokenExchangeRate =
     srcAsset.address === zeroAddress()
       ? fromNativeExchangeRate
-      : fromTokenExchangeRates[getAddress(srcAsset.address)] ??
-        fromTokenExchangeRates[srcAsset.address.toLowerCase()];
+      : fromTokenExchangeRate;
   return {
     raw: normalizedSentAmount,
-    fiat: fromTokenExchangeRate
-      ? normalizedSentAmount.mul(fromTokenExchangeRate.toString())
+    fiat: tokenExchangeRate
+      ? normalizedSentAmount.mul(tokenExchangeRate.toString())
       : null,
   };
 };
