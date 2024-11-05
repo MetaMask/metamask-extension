@@ -46,7 +46,7 @@ export default function BridgeStepList({
         flexDirection={FlexDirection.Column}
         alignItems={AlignItems.center}
       >
-        {steps.map((_, i) => {
+        {steps.map((step, i) => {
           const stepStatus = stepStatuses[i];
           const nextStepStatus =
             i < stepStatuses.length - 1 ? stepStatuses[i + 1] : null;
@@ -57,6 +57,7 @@ export default function BridgeStepList({
 
           return (
             <StepProgressItem
+              key={`progress-${step.action}-${step.srcChainId}-${step.destChainId}`}
               stepStatus={stepStatus}
               isLastItem={i === steps.length - 1}
               isEdgeComplete={isEdgeComplete}
@@ -76,6 +77,7 @@ export default function BridgeStepList({
           const stepStatus = stepStatuses[i];
           return (
             <BridgeStep
+              key={`desc-${step.action}-${step.srcChainId}-${step.destChainId}`}
               step={step}
               networkConfigurationsByChainId={networkConfigurationsByChainId}
               stepStatus={stepStatus}
