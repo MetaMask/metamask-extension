@@ -29,6 +29,10 @@ import {
   getNumberOfSettingRoutesInTab,
   handleSettingsRefs,
 } from '../../../helpers/utils/settings-search';
+// TODO: Remove restricted import
+// eslint-disable-next-line import/no-restricted-paths
+import { getPlatform } from '../../../../app/scripts/lib/util';
+import { PLATFORM_FIREFOX } from '../../../../shared/constants/app';
 
 export default class AdvancedTab extends PureComponent {
   static contextTypes = {
@@ -630,7 +634,9 @@ export default class AdvancedTab extends PureComponent {
         {this.renderAutoLockTimeLimit()}
         {this.renderUserDataBackup()}
         {this.renderDismissSeedBackupReminderControl()}
-        {this.renderOverrideContentSecurityPolicyHeader()}
+        {getPlatform() === PLATFORM_FIREFOX
+          ? this.renderOverrideContentSecurityPolicyHeader()
+          : null}
       </div>
     );
   }
