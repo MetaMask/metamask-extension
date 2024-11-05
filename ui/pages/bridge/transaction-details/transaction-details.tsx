@@ -28,6 +28,7 @@ import CurrencyDisplay from '../../../components/ui/currency-display/currency-di
 import { StatusTypes } from '../../../../app/scripts/controllers/bridge-status/types';
 import {
   Display,
+  FlexDirection,
   JustifyContent,
   TextColor,
   TextTransform,
@@ -124,21 +125,27 @@ const CrossChainSwapTxDetails = () => {
           {t('bridge')} details
         </Header>
         <Content className="bridge__content">
-          {/* {status !== StatusTypes.COMPLETE && bridgeHistoryItem && (
+          <Box
+            display={Display.Flex}
+            flexDirection={FlexDirection.Column}
+            gap={4}
+          >
+            {/* {status !== StatusTypes.COMPLETE && bridgeHistoryItem && (
             <BridgeSteps bridgeHistoryItem={bridgeHistoryItem} />
-          )} */}
-          {bridgeHistoryItem && (
-            <BridgeStepList
-              bridgeHistoryItem={bridgeHistoryItem}
-              srcChainTxMeta={srcChainTxMeta}
-            />
-          )}
+            )} */}
+            {bridgeHistoryItem && (
+              <BridgeStepList
+                bridgeHistoryItem={bridgeHistoryItem}
+                srcChainTxMeta={srcChainTxMeta}
+              />
+            )}
 
-          {/* Links to block explorers */}
-          <BridgeExplorerLinks
-            srcBlockExplorerUrl={srcBlockExplorerUrl}
-            destBlockExplorerUrl={destBlockExplorerUrl}
-          />
+            {/* Links to block explorers */}
+            <BridgeExplorerLinks
+              srcBlockExplorerUrl={srcBlockExplorerUrl}
+              destBlockExplorerUrl={destBlockExplorerUrl}
+            />
+          </Box>
 
           {/* General tx details */}
           <TransactionDetailRow
