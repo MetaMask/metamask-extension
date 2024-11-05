@@ -11,8 +11,12 @@ import {
 import { openBlockExplorer } from '../../../components/multichain/menu-items/view-explorer-menu-item';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import {
+  AlignItems,
+  Color,
   Display,
   FlexDirection,
+  IconColor,
+  TextColor,
 } from '../../../helpers/constants/design-system';
 
 const getBlockExplorerName = (blockExplorerUrl: string | undefined) => {
@@ -69,8 +73,12 @@ export default function BridgeExplorerLinks({
             }
           }}
         >
-          <Text>View on {getBlockExplorerName(srcBlockExplorerUrl)}</Text>
-          <Icon name={IconName.Export} />
+          <Box display={Display.Flex} alignItems={AlignItems.center} gap={2}>
+            <Text color={TextColor.primaryDefault}>
+              View on {getBlockExplorerName(srcBlockExplorerUrl)}
+            </Text>
+            <Icon name={IconName.Export} />
+          </Box>
         </Button>
       )}
       {destBlockExplorerUrl && (
@@ -86,8 +94,12 @@ export default function BridgeExplorerLinks({
             }
           }}
         >
-          <Text>View on {getBlockExplorerName(destBlockExplorerUrl)}</Text>
-          <Icon name={IconName.Export} />
+          <Box display={Display.Flex} alignItems={AlignItems.center} gap={2}>
+            <Text color={TextColor.primaryDefault}>
+              View on {getBlockExplorerName(destBlockExplorerUrl)}
+            </Text>
+            <Icon name={IconName.Export} />
+          </Box>
         </Button>
       )}
     </Box>
