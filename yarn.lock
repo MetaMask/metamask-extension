@@ -2700,7 +2700,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@ethersproject/rlp@npm:5.7.0, @ethersproject/rlp@npm:^5.5.0, @ethersproject/rlp@npm:^5.7.0":
+"@ethersproject/rlp@npm:5.7.0, @ethersproject/rlp@npm:^5.7.0":
   version: 5.7.0
   resolution: "@ethersproject/rlp@npm:5.7.0"
   dependencies:
@@ -4265,13 +4265,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@ledgerhq/cryptoassets-evm-signatures@npm:^13.5.0":
-  version: 13.5.0
-  resolution: "@ledgerhq/cryptoassets-evm-signatures@npm:13.5.0"
+"@ledgerhq/cryptoassets-evm-signatures@npm:^13.5.2-nightly.2, @ledgerhq/cryptoassets-evm-signatures@npm:^13.5.2-spl-tokens-test.0":
+  version: 13.5.2-spl-tokens-test.0
+  resolution: "@ledgerhq/cryptoassets-evm-signatures@npm:13.5.2-spl-tokens-test.0"
   dependencies:
-    "@ledgerhq/live-env": "npm:^2.3.0"
+    "@ledgerhq/live-env": "npm:^2.4.1-spl-tokens-test.0"
     axios: "npm:1.7.7"
-  checksum: 10/ce6e3343fdf60255ede1d784a2fb47c8c5f49e8257559947e2678fac250700140695c85ae06bef777ccc4bb37577db813a4b3d031f3b0b84cbcd6e139613fbf9
+  checksum: 10/4e5d60f6a24ee6b17c7b5966c1518703c832e4a7272253bb6990a7e9a72652dbfab48b773fdc8c0e97bc78304b45647ee3410a9db181d9b3619837cb12da5837
   languageName: node
   linkType: hard
 
@@ -4287,18 +4287,18 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@ledgerhq/domain-service@npm:^1.2.6":
-  version: 1.2.6
-  resolution: "@ledgerhq/domain-service@npm:1.2.6"
+"@ledgerhq/domain-service@npm:^1.2.10":
+  version: 1.2.10
+  resolution: "@ledgerhq/domain-service@npm:1.2.10"
   dependencies:
     "@ledgerhq/errors": "npm:^6.19.1"
     "@ledgerhq/logs": "npm:^6.12.0"
-    "@ledgerhq/types-live": "npm:^6.52.0"
+    "@ledgerhq/types-live": "npm:^6.52.4"
     axios: "npm:1.7.7"
     eip55: "npm:^2.1.1"
     react: "npm:^18.2.0"
     react-dom: "npm:^18.2.0"
-  checksum: 10/0b680af9deff24f608446cb7026b06e09ea693a367a5ef5e71068c70fabfbb98019cb618daefed278ed875a0ff5d296735fb743746ac0edee1357ae12fd58d99
+  checksum: 10/a46d546bd68ee3f7247e63e89b3425ab7df9d62f75501b6db7a13b1a319fb40cb2272c638ddc6c1bee973f66bd70fa4156d3287fa31e20a5bb2d0164d59aaf61
   languageName: node
   linkType: hard
 
@@ -4309,71 +4309,39 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@ledgerhq/evm-tools@npm:1.2.3":
-  version: 1.2.3
-  resolution: "@ledgerhq/evm-tools@npm:1.2.3"
+"@ledgerhq/evm-tools@npm:^1.3.0-nightly.2":
+  version: 1.3.0-spl-tokens-test.0
+  resolution: "@ledgerhq/evm-tools@npm:1.3.0-spl-tokens-test.0"
   dependencies:
-    "@ledgerhq/cryptoassets-evm-signatures": "npm:^13.5.0"
-    "@ledgerhq/live-env": "npm:^2.3.0"
+    "@ethersproject/constants": "npm:^5.7.0"
+    "@ethersproject/hash": "npm:^5.7.0"
+    "@ledgerhq/cryptoassets-evm-signatures": "npm:^13.5.2-spl-tokens-test.0"
+    "@ledgerhq/live-env": "npm:^2.4.1-spl-tokens-test.0"
     axios: "npm:1.7.7"
     crypto-js: "npm:4.2.0"
-    ethers: "npm:5.7.2"
-  checksum: 10/956a0a3ac26454ac350c5e34b5cfb911ed3a0f3f724bec1ce2c56f2de344635b582f977e4901841c353d98c50b076e40bfb03d865eed3a82e328744043e00ee7
+  checksum: 10/23301ca57a285dc5103a436fc437bde0b0acf439875886f8a5d8d1386b604b7d18adfd1670d754ee34f80f87de19ec8786664e0dd40ce4d0daaf252584aaadcc
   languageName: node
   linkType: hard
 
-"@ledgerhq/evm-tools@patch:@ledgerhq/evm-tools@npm%3A1.2.3#~/.yarn/patches/@ledgerhq-evm-tools-npm-1.2.3-414f44baa9.patch":
-  version: 1.2.3
-  resolution: "@ledgerhq/evm-tools@patch:@ledgerhq/evm-tools@npm%3A1.2.3#~/.yarn/patches/@ledgerhq-evm-tools-npm-1.2.3-414f44baa9.patch::version=1.2.3&hash=1deaa9"
+"@ledgerhq/hw-app-eth@npm:6.41.0-nightly.0":
+  version: 6.41.0-nightly.0
+  resolution: "@ledgerhq/hw-app-eth@npm:6.41.0-nightly.0"
   dependencies:
-    "@ledgerhq/cryptoassets-evm-signatures": "npm:^13.5.0"
-    "@ledgerhq/live-env": "npm:^2.3.0"
-    axios: "npm:1.7.7"
-    crypto-js: "npm:4.2.0"
-    ethers: "npm:5.7.2"
-  checksum: 10/c7d79c691f681376efc6c44d16a00f6349301091a82a7a8ad264475562896bf8a9b4e922080f4f6f541bb62483ad9efeeec87910fa6f15d9db3e1d22820548c8
-  languageName: node
-  linkType: hard
-
-"@ledgerhq/hw-app-eth@npm:6.39.0":
-  version: 6.39.0
-  resolution: "@ledgerhq/hw-app-eth@npm:6.39.0"
-  dependencies:
-    "@ethersproject/abi": "npm:^5.5.0"
-    "@ethersproject/rlp": "npm:^5.5.0"
-    "@ledgerhq/cryptoassets-evm-signatures": "npm:^13.5.0"
-    "@ledgerhq/domain-service": "npm:^1.2.6"
+    "@ethersproject/abi": "npm:^5.7.0"
+    "@ethersproject/rlp": "npm:^5.7.0"
+    "@ethersproject/transactions": "npm:^5.7.0"
+    "@ledgerhq/cryptoassets-evm-signatures": "npm:^13.5.2-nightly.2"
+    "@ledgerhq/domain-service": "npm:^1.2.10"
     "@ledgerhq/errors": "npm:^6.19.1"
-    "@ledgerhq/evm-tools": "npm:^1.2.3"
+    "@ledgerhq/evm-tools": "npm:^1.3.0-nightly.2"
     "@ledgerhq/hw-transport": "npm:^6.31.4"
     "@ledgerhq/hw-transport-mocker": "npm:^6.29.4"
     "@ledgerhq/logs": "npm:^6.12.0"
-    "@ledgerhq/types-live": "npm:^6.52.0"
+    "@ledgerhq/types-live": "npm:^6.52.4"
     axios: "npm:1.7.7"
     bignumber.js: "npm:^9.1.2"
     semver: "npm:^7.3.5"
-  checksum: 10/5b50aac35989e09704557523efe5b6b29a1f31f5279088ecceb90164e32e05860f3ff20c32a084003a69723ed08165ae140c2987424657245f088c3f9a908cd6
-  languageName: node
-  linkType: hard
-
-"@ledgerhq/hw-app-eth@patch:@ledgerhq/hw-app-eth@npm%3A6.39.0#~/.yarn/patches/@ledgerhq-hw-app-eth-npm-6.39.0-866309bbbe.patch":
-  version: 6.39.0
-  resolution: "@ledgerhq/hw-app-eth@patch:@ledgerhq/hw-app-eth@npm%3A6.39.0#~/.yarn/patches/@ledgerhq-hw-app-eth-npm-6.39.0-866309bbbe.patch::version=6.39.0&hash=f5404c"
-  dependencies:
-    "@ethersproject/abi": "npm:^5.5.0"
-    "@ethersproject/rlp": "npm:^5.5.0"
-    "@ledgerhq/cryptoassets-evm-signatures": "npm:^13.5.0"
-    "@ledgerhq/domain-service": "npm:^1.2.6"
-    "@ledgerhq/errors": "npm:^6.19.1"
-    "@ledgerhq/evm-tools": "npm:^1.2.3"
-    "@ledgerhq/hw-transport": "npm:^6.31.4"
-    "@ledgerhq/hw-transport-mocker": "npm:^6.29.4"
-    "@ledgerhq/logs": "npm:^6.12.0"
-    "@ledgerhq/types-live": "npm:^6.52.0"
-    axios: "npm:1.7.7"
-    bignumber.js: "npm:^9.1.2"
-    semver: "npm:^7.3.5"
-  checksum: 10/fb270eee2b2d0886462908b4c511262da0c884f0b72ab50225407608d197ece71b05b4fdc07e628c75ab3ae573e49ed5c3ccf3b2f40a28e4663a28788d46b4dd
+  checksum: 10/fd9fecf44112067fb85afe1f8d0be0c54d5b18112519800b9e09ebbcbd09812f8fb1b3da492cc36778546f5c40c276331cf5f23c288c19e94c3f17fe054677f8
   languageName: node
   linkType: hard
 
@@ -4400,13 +4368,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@ledgerhq/live-env@npm:^2.3.0":
-  version: 2.3.0
-  resolution: "@ledgerhq/live-env@npm:2.3.0"
+"@ledgerhq/live-env@npm:^2.4.1-spl-tokens-test.0":
+  version: 2.4.1-spl-tokens-test.0
+  resolution: "@ledgerhq/live-env@npm:2.4.1-spl-tokens-test.0"
   dependencies:
     rxjs: "npm:^7.8.1"
     utility-types: "npm:^3.10.0"
-  checksum: 10/757ff834d6b94dce0487d60ab0efa45ef206ebbdfd29053c232b4c0fdce1594016531340c1603695b37f17deb1639dcb98078a9629eeb36c835a19f4180834ce
+  checksum: 10/32ddd9cd485d991d28d4757e053f807afb1f0decfe4f33933c5641befe395ac5de7ed6752d285e9cc5646081d379e4589ac77084b59c90d9c251f1ce3d311a0c
   languageName: node
   linkType: hard
 
@@ -4417,13 +4385,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@ledgerhq/types-live@npm:^6.52.0":
-  version: 6.52.0
-  resolution: "@ledgerhq/types-live@npm:6.52.0"
+"@ledgerhq/types-live@npm:^6.52.4":
+  version: 6.52.4
+  resolution: "@ledgerhq/types-live@npm:6.52.4"
   dependencies:
     bignumber.js: "npm:^9.1.2"
     rxjs: "npm:^7.8.1"
-  checksum: 10/c410f02159538d66f59956512fc5bab2cb17edee7f6a15a517c31d89d6c730e52691666bb2e1d98718c701e94306dd7498544ea3d7772ff0b5ad6522fb2c335c
+  checksum: 10/54288b5b334f0e9e57e5dbea9e8f9a86391e2e2daea2db755ee812dd9e687d45e426aab8737bac1c1fe308281ec170f75aca8845f2a3dba0201dc32a3dcdec1a
   languageName: node
   linkType: hard
 
@@ -18936,7 +18904,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"ethers@npm:5.7.2, ethers@npm:^5.7.0, ethers@npm:^5.7.2":
+"ethers@npm:^5.7.0, ethers@npm:^5.7.2":
   version: 5.7.2
   resolution: "ethers@npm:5.7.2"
   dependencies:
