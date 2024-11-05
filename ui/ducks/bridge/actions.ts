@@ -11,7 +11,11 @@ import { forceUpdateMetamaskState } from '../../store/actions';
 import { submitRequestToBackground } from '../../store/background-connection';
 import { QuoteRequest } from '../../pages/bridge/types';
 import { MetaMaskReduxDispatch } from '../../store/store';
-import { bridgeSlice, setDestTokenExchangeRates } from './bridge';
+import {
+  bridgeSlice,
+  setDestTokenExchangeRates,
+  setSrcTokenExchangeRates,
+} from './bridge';
 
 const {
   setToChainId,
@@ -28,6 +32,7 @@ export {
   setFromToken,
   setFromTokenInputValue,
   setDestTokenExchangeRates,
+  setSrcTokenExchangeRates,
 };
 
 const callBridgeControllerMethod = <T>(

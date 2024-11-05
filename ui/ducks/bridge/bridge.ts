@@ -11,6 +11,7 @@ export type BridgeState = {
   fromToken: SwapsTokenObject | SwapsEthToken | null;
   toToken: SwapsTokenObject | SwapsEthToken | null;
   fromTokenInputValue: string | null;
+  fromTokenExchangeRate: number | null;
   toTokenExchangeRate: number | null;
 };
 
@@ -19,8 +20,22 @@ const initialState: BridgeState = {
   fromToken: null,
   toToken: null,
   fromTokenInputValue: null,
+  fromTokenExchangeRate: null,
   toTokenExchangeRate: null,
 };
+
+export const setSrcTokenExchangeRates = createAsyncThunk(
+  'bridge/setSrcTokenExchangeRates',
+  async (request: { chainId: Hex; tokenAddress: string; currency: string }) => {
+    const { chainId, tokenAddress, currency } = request;
+    const exchangeRates = await fetchTokenExchangeRates(
+      currency,
+      [tokenAddress],
+      chainId,
+    );
+    return exchangeRates?.[getAddress(tokenAddress)];
+  },
+);
 
 export const setDestTokenExchangeRates = createAsyncThunk(
   'bridge/setDestTokenExchangeRates',
@@ -61,6 +76,9 @@ const bridgeSlice = createSlice({
   extraReducers: (builder) => {
     builder.addCase(setDestTokenExchangeRates.fulfilled, (state, action) => {
       state.toTokenExchangeRate = action.payload.toTokenExchangeRate ?? null;
+    });
+    builder.addCase(setSrcTokenExchangeRates.fulfilled, (state, action) => {
+      state.fromTokenExchangeRate = action.payload ?? null;
     });
   },
 });
