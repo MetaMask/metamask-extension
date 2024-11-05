@@ -43,7 +43,9 @@ const getBridgeActionText = (
     ? networkConfigurationsByChainId[hexDestChainId]
     : undefined;
 
-  return `${step.destAsset.symbol} received on ${destNetworkConfiguration?.name}`;
+  return stepStatus === StatusTypes.COMPLETE
+    ? `${step.destAsset.symbol} received on ${destNetworkConfiguration?.name}`
+    : `Receiving ${step.destAsset.symbol} on ${destNetworkConfiguration?.name}`;
 };
 
 const getBridgeActionStatus = (bridgeHistoryItem: BridgeHistoryItem) => {
