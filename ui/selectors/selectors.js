@@ -515,8 +515,6 @@ export function getSelectedAccountTokensAcrossChains(state) {
     }
   });
 
-  console.log(tokensByChain);
-
   return tokensByChain;
 }
 
