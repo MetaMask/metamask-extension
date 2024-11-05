@@ -18,6 +18,10 @@ class AccountListPage {
   private readonly accountOptionsMenuButton =
     '[data-testid="account-list-item-menu-button"]';
 
+  private readonly accountQrCodeImage = '.qr-code__wrapper';
+
+  private readonly accountQrCodeAddress = '.qr-code__address-segments';
+
   private readonly addAccountConfirmButton =
     '[data-testid="submit-add-account-with-name"]';
 
@@ -37,6 +41,8 @@ class AccountListPage {
   private readonly createAccountButton =
     '[data-testid="multichain-account-menu-popover-action-button"]';
 
+  private readonly currentSelectedAccount = '.multichain-account-list-item--selected';
+
   private readonly editableLabelButton =
     '[data-testid="editable-label-button"]';
 
@@ -54,6 +60,17 @@ class AccountListPage {
     '[data-testid="import-account-confirm-button"]';
 
   private readonly importAccountPrivateKeyInput = '#private-key-box';
+
+  private readonly importAccountDropdownOption = '.dropdown__select';
+
+  private readonly importAccountJsonFileOption = {
+    text: 'JSON File',
+    tag: 'option',
+  };
+
+  private readonly importAccountJsonFileInput = 'input[data-testid="file-input"]';
+
+  private readonly importAccountJsonPasswordInput = 'input[id="json-password-box"]';
 
   private readonly pinUnpinAccountButton =
     '[data-testid="account-list-menu-pin"]';
@@ -131,15 +148,24 @@ class AccountListPage {
    * Adds a new account with a custom label.
    *
    * @param privateKey - Private key of the account
+   * @param expectedErrorMessage - Expected error message if the import should fail
    */
-  async addNewImportedAccount(privateKey: string): Promise<void> {
+  async addNewImportedAccount(privateKey: string, expectedErrorMessage?: string): Promise<void> {
     console.log(`Adding new imported account`);
     await this.driver.clickElement(this.createAccountButton);
     await this.driver.clickElement(this.addImportedAccountButton);
     await this.driver.fill(this.importAccountPrivateKeyInput, privateKey);
-    await this.driver.clickElementAndWaitToDisappear(
-      this.importAccountConfirmButton,
-    );
+    if (!expectedErrorMessage) {
+      await this.driver.clickElementAndWaitToDisappear(
+        this.importAccountConfirmButton,
+      );
+    } else {
+      await this.driver.clickElement(this.importAccountConfirmButton);
+      await this.driver.waitForSelector({
+        css: '.mm-help-text',
+        text: expectedErrorMessage,
+      });
+    }
   }
 
   /**
@@ -166,6 +192,41 @@ class AccountListPage {
   async hideAccount(): Promise<void> {
     console.log(`Hide account in account list`);
     await this.driver.clickElement(this.hideUnhideAccountButton);
+  }
+
+  /**
+   * Import an account with a JSON file.
+   *
+   * @param jsonFilePath - Path to the JSON file to import
+   * @param password - Password for the imported account
+   */
+  async importAccountWithJsonFile(jsonFilePath: string, password: string): Promise<void> {
+    console.log(`Adding new imported account`);
+    console.log('importJsonFile', jsonFilePath);
+    await this.driver.clickElement(this.createAccountButton);
+    await this.driver.clickElement(this.addImportedAccountButton);
+    await this.driver.clickElement(this.importAccountDropdownOption);
+    await this.driver.clickElement(this.importAccountJsonFileOption);
+
+    const fileInput = await this.driver.findElement(this.importAccountJsonFileInput);
+    await fileInput.sendKeys(jsonFilePath);
+    await this.driver.fill(this.importAccountJsonPasswordInput, password);
+    await this.driver.clickElementAndWaitToDisappear(
+      this.importAccountConfirmButton,
+    );
+  }
+
+  /**
+   * Open the account details modal for the specified account.
+   *
+   * @param accountLabel - The label of the account to open the details modal for.
+   */
+  async openAccountDetailsModal(accountLabel: string): Promise<void> {
+    console.log(
+      `Open account details modal in account list for account ${accountLabel}`,
+    );
+    await this.openAccountOptionsInAccountList(accountLabel);
+    await this.driver.clickElement(this.accountMenuButton);
   }
 
   /**
@@ -304,6 +365,30 @@ class AccountListPage {
   async check_addAccountSnapButtonNotPresent(): Promise<void> {
     console.log('Check add account snap button is not present');
     await this.driver.assertElementNotPresent(this.addSnapAccountButton);
+  }
+
+  /**
+   * Check that the correct address is displayed in the account details modal.
+   *
+   * @param expectedAddress - The expected address to check.
+   */
+  async check_addressInAccountDetailsModal(
+    expectedAddress: string,
+  ): Promise<void> {
+    console.log(`Check that address ${expectedAddress} is displayed in account details modal`);
+    await this.driver.waitForSelector(this.accountQrCodeImage);
+    await this.driver.waitForSelector({
+      css: this.accountQrCodeAddress,
+      text: expectedAddress,
+    });
+  }
+
+  async check_currentAccountIsImported(): Promise<void> {
+    console.log(`Check that current account is an imported account`);
+    await this.driver.waitForSelector({
+      css: this.currentSelectedAccount,
+      text: 'Imported',
+    });
   }
 
   async check_hiddenAccountsListExists(): Promise<void> {
