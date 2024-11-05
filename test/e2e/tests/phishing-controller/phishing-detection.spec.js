@@ -59,10 +59,13 @@ describe('Phishing Detection', function () {
         await openDapp(driver);
         await driver.switchToWindowWithTitle('MetaMask Phishing Detection');
 
-        // we need to use this selector specifically because is the one that ensures that the event listener has been added
+        // we need to wait for this selector to mitigate a race condition on the phishing page site
         // see more here https://github.com/MetaMask/phishing-warning/pull/173
-        await driver.clickElement({
+        await driver.waitForSelector({
           testId: 'unsafe-continue-loaded',
+        });
+        await driver.clickElement({
+          text: 'Proceed anyway',
         });
         await driver.wait(until.titleIs(WINDOW_TITLES.TestDApp), 10000);
       },
@@ -107,12 +110,14 @@ describe('Phishing Detection', function () {
 
         await driver.switchToWindowWithTitle('MetaMask Phishing Detection');
 
-        // we need to use this selector specifically because is the one that ensures that the event listener has been added
+        // we need to wait for this selector to mitigate a race condition on the phishing page site
         // see more here https://github.com/MetaMask/phishing-warning/pull/173
-        await driver.clickElement({
+        await driver.waitForSelector({
           testId: 'unsafe-continue-loaded',
         });
-
+        await driver.clickElement({
+          text: 'Proceed anyway',
+        });
         await driver.wait(until.titleIs(WINDOW_TITLES.TestDApp), 10000);
       };
     }
@@ -176,10 +181,13 @@ describe('Phishing Detection', function () {
         });
         await driver.switchToWindowWithTitle('MetaMask Phishing Detection');
 
-        // we need to use this selector specifically because is the one that ensures that the event listener has been added
+        // we need to wait for this selector to mitigate a race condition on the phishing page site
         // see more here https://github.com/MetaMask/phishing-warning/pull/173
-        await driver.clickElement({
+        await driver.waitForSelector({
           testId: 'unsafe-continue-loaded',
+        });
+        await driver.clickElement({
+          text: 'Proceed anyway',
         });
 
         // We don't really know what we're going to see at this blocked site, so a waitAtLeast guard of 1000ms is the best choice
