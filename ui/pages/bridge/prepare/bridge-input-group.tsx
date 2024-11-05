@@ -221,7 +221,7 @@ export const BridgeInputGroup = ({
         >
           <TextField
             inputRef={inputRef}
-            type={TextFieldType.Text}
+            type={TextFieldType.Number}
             className="amount-input"
             style={{ width: '100%', gap: '4px', height: 'fit-content' }}
             placeholder={
