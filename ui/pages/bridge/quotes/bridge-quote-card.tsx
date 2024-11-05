@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useSelector } from 'react-redux';
+import { BigNumber } from 'bignumber.js';
 import {
   BannerAlert,
   BannerAlertSeverity,
@@ -22,6 +23,7 @@ import { useCountdownTimer } from '../../../hooks/bridge/useCountdownTimer';
 import { getCurrentCurrency } from '../../../selectors';
 import { getNativeCurrency } from '../../../ducks/metamask/metamask';
 import { TextAlign } from '../../../helpers/constants/design-system';
+import { BRIDGE_MIN_FIAT_SRC_AMOUNT } from '../../../../shared/constants/bridge';
 import { QuoteInfoRow } from './quote-info-row';
 import { BridgeQuotesModal } from './bridge-quotes-modal';
 
@@ -31,7 +33,7 @@ export const BridgeQuoteCard = () => {
   const { isLoading, activeQuote } = useSelector(getBridgeQuotes);
   const currency = useSelector(getCurrentCurrency);
   const ticker = useSelector(getNativeCurrency);
-  const { isNoQuotesAvailable, isSrcAmountLessThan30 } =
+  const { isNoQuotesAvailable, isSrcAmountLessThan30, isSrcAmountTooLow } =
     useSelector(getValidationErrors);
 
   const secondsUntilNextRefresh = useCountdownTimer();
@@ -124,6 +126,16 @@ export const BridgeQuoteCard = () => {
               ? t('noOptionsAvailableLessThan30Message')
               : t('noOptionsAvailableMessage')
           }
+          textAlign={TextAlign.Left}
+        />
+      )}
+      {isSrcAmountTooLow && !activeQuote && (
+        <BannerAlert
+          title={t('amountTooLow')}
+          severity={BannerAlertSeverity.Warning}
+          description={t('cantBridgeUnderAmount', [
+            formatFiatAmount(new BigNumber(BRIDGE_MIN_FIAT_SRC_AMOUNT), 'usd'),
+          ])}
           textAlign={TextAlign.Left}
         />
       )}
