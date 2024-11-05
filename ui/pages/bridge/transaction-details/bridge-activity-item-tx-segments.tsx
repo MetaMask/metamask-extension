@@ -4,10 +4,14 @@ import {
   StatusTypes,
 } from '../../../../app/scripts/controllers/bridge-status/types';
 import { UseBridgeDataProps } from '../utils/useBridgeData';
-import { Box } from '../../../components/component-library';
+import { Box, Text } from '../../../components/component-library';
 import {
+  BackgroundColor,
+  BlockSize,
+  BorderRadius,
   Display,
   FlexDirection,
+  TextColor,
 } from '../../../helpers/constants/design-system';
 import {
   TransactionMeta,
@@ -69,10 +73,50 @@ export default function BridgeActivityItemTxSegments({
 
   return (
     <Box display={Display.Flex} flexDirection={FlexDirection.Column} gap={2}>
-      <div>Transaction {txIndex} of 2</div>
-      <Box display={Display.Flex} gap={2}>
-        <div>{srcTxStatus}</div>
-        <div>{destTxStatus}</div>
+      <Text color={TextColor.textAlternative}>Transaction {txIndex} of 2</Text>
+      <Box display={Display.Flex} gap={2} width={BlockSize.Full}>
+        {/* Not started segment */}
+        <Box
+          width={BlockSize.Half}
+          backgroundColor={BackgroundColor.backgroundAlternative}
+          borderRadius={BorderRadius.pill}
+          style={{
+            height: '4px',
+          }}
+        />
+        {/* Pending segment */}
+        <Box display={Display.Flex} width={BlockSize.Half}>
+          <Box
+            width={BlockSize.Half}
+            backgroundColor={BackgroundColor.primaryDefault}
+            borderRadius={BorderRadius.pill}
+            style={{
+              borderTopRightRadius: 0,
+              borderBottomRightRadius: 0,
+              height: '4px',
+            }}
+          />
+          <Box
+            width={BlockSize.Half}
+            backgroundColor={BackgroundColor.backgroundAlternative}
+            borderRadius={BorderRadius.pill}
+            style={{
+              borderTopLeftRadius: 0,
+              borderBottomLeftRadius: 0,
+              height: '4px',
+            }}
+          />
+        </Box>
+
+        {/* Complete segment */}
+        <Box
+          width={BlockSize.Half}
+          backgroundColor={BackgroundColor.primaryDefault}
+          borderRadius={BorderRadius.pill}
+          style={{
+            height: '4px',
+          }}
+        />
       </Box>
     </Box>
   );
