@@ -90,7 +90,7 @@ const getSwapActionText = (status: StatusTypes, step: Step) => {
     : `Swapping ${step.srcAsset.symbol} for ${step.destAsset.symbol}`;
 };
 
-const getStepStatus = (
+export const getStepStatus = (
   bridgeHistoryItem: BridgeHistoryItem,
   step: Step,
   srcChainTxMeta?: TransactionMeta,
@@ -110,9 +110,8 @@ type BridgeStepProps = {
   time?: string;
   srcChainTxMeta?: TransactionMeta;
   bridgeHistoryItem: BridgeHistoryItem;
+  stepStatus: StatusTypes | null;
 };
-
-const iconColor = IconColor.primaryDefault;
 
 // You can have the following cases:
 // 1. Bridge: usually for cases like Optimism ETH to Arbitrum ETH
@@ -124,22 +123,10 @@ export default function BridgeStep({
   time,
   srcChainTxMeta,
   bridgeHistoryItem,
+  stepStatus,
 }: BridgeStepProps) {
-  const stepStatus = getStepStatus(bridgeHistoryItem, step, srcChainTxMeta);
-
   return (
     <Box display={Display.Flex} alignItems={AlignItems.center} gap={2}>
-      {/* {stepStatus === null && <HollowCircle color={iconColor} />}
-      {stepStatus === StatusTypes.PENDING && (
-        <Icon
-          className="bridge-transaction-details__icon-loading" // Needed for animation
-          name={IconName.Loading}
-          color={iconColor}
-        />
-      )}
-      {stepStatus === StatusTypes.COMPLETE && (
-        <Icon name={IconName.FullCircle} color={iconColor} />
-      )} */}
       <Text>{time}</Text>
       <Text>
         {step.action === ActionTypes.BRIDGE &&
