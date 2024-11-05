@@ -47,6 +47,7 @@ export default function BridgeStepList({
         alignItems={AlignItems.center}
       >
         {steps.map((step, i) => {
+          const prevStepStatus = i > 0 ? stepStatuses[i - 1] : null;
           const stepStatus = stepStatuses[i];
           const nextStepStatus =
             i < stepStatuses.length - 1 ? stepStatuses[i + 1] : null;
@@ -55,10 +56,20 @@ export default function BridgeStepList({
             stepStatus === StatusTypes.COMPLETE &&
             nextStepStatus === StatusTypes.COMPLETE;
 
+          // Making a distinction betweeen displayedStepStatus and stepStatus
+          // stepStatus is determined independently of other steps
+          // So despite both being technically PENDING,
+          // We only want a single spinner animation at a time, so we need to take into account other steps
+          const displayedStepStatus =
+            prevStepStatus === StatusTypes.PENDING &&
+            stepStatus === StatusTypes.PENDING
+              ? null
+              : stepStatus;
+
           return (
             <StepProgressItem
               key={`progress-${step.action}-${step.srcChainId}-${step.destChainId}`}
-              stepStatus={stepStatus}
+              stepStatus={displayedStepStatus}
               isLastItem={i === steps.length - 1}
               isEdgeComplete={isEdgeComplete}
             />
