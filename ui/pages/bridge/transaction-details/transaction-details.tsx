@@ -27,6 +27,7 @@ import { PRIMARY, SECONDARY } from '../../../helpers/constants/common';
 import CurrencyDisplay from '../../../components/ui/currency-display/currency-display.component';
 import { StatusTypes } from '../../../../app/scripts/controllers/bridge-status/types';
 import {
+  AlignItems,
   Display,
   FlexDirection,
   JustifyContent,
@@ -176,7 +177,11 @@ const CrossChainSwapTxDetails = () => {
               <TransactionDetailRow
                 title="Bridge type"
                 value={
-                  <Box display={Display.Flex} gap={1}>
+                  <Box
+                    display={Display.Flex}
+                    gap={1}
+                    alignItems={AlignItems.flexStart}
+                  >
                     {bridgeTypeDirection}{' '}
                     <img style={{ width: '1rem' }} src={destChainIconUrl} />{' '}
                     {bridgeTypeDestNetwork}
