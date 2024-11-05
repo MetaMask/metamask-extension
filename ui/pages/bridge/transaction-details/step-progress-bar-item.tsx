@@ -13,7 +13,9 @@ const ICON_SIZE = IconSize.Xs;
 const VerticalLine = ({ color }: { color: IconColor }) => (
   <div
     style={{
-      height: '46px',
+      height: '60px',
+      marginTop: '-1rem',
+      marginBottom: '-1rem',
       width: '1px',
       backgroundColor: `var(--color-${color})`,
     }}
