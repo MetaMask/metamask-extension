@@ -7,6 +7,8 @@ import {
   TransactionType,
 } from '@metamask/transaction-controller';
 import {
+  AvatarNetwork,
+  AvatarNetworkSize,
   Box,
   ButtonIcon,
   ButtonIconSize,
@@ -183,10 +185,16 @@ const CrossChainSwapTxDetails = () => {
                   <Box
                     display={Display.Flex}
                     gap={1}
-                    alignItems={AlignItems.flexStart}
+                    alignItems={AlignItems.baseline}
                   >
                     {bridgeTypeDirection}{' '}
-                    <img style={{ width: '1rem' }} src={destChainIconUrl} />{' '}
+                    {destNetworkConfiguration && (
+                      <AvatarNetwork
+                        size={AvatarNetworkSize.Xs}
+                        src={destChainIconUrl}
+                        name={destNetworkConfiguration?.name}
+                      />
+                    )}
                     {bridgeTypeDestNetwork}
                   </Box>
                 }
