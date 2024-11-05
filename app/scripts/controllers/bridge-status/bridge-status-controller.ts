@@ -175,6 +175,8 @@ export default class BridgeStatusController extends StaticIntervalPollingControl
         hexSourceChainId,
       );
 
+      // We manually call startPollingByNetworkClientId() here rather than go through startPollingForBridgeTxStatus()
+      // because we don't want to overwrite the existing historyItem in state
       const options: FetchBridgeTxStatusArgs = { statusRequest };
       this.#pollingTokensBySrcTxHash[statusRequest.srcTxHash] =
         this.startPollingByNetworkClientId(networkClientId, options);
@@ -225,6 +227,8 @@ export default class BridgeStatusController extends StaticIntervalPollingControl
             targetContractAddress,
             account,
             status: {
+              // We always have a PENDING status when we start polling for a tx, don't need the Bridge API for that
+              // Also we know the bare minimum fields for status at this point in time
               status: StatusTypes.PENDING,
               srcChain: {
                 chainId: statusRequest.srcChainId,
