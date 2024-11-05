@@ -229,6 +229,11 @@ export const BridgeInputGroup = ({
                 ? t('bridgeCalculatingAmount')
                 : '0'
             }
+            onKeyDown={(e?: React.KeyboardEvent<HTMLDivElement>) => {
+              if (e && ['e', '-'].includes(e.key)) {
+                e.preventDefault();
+              }
+            }}
             onChange={(e) => {
               onAmountChange?.(e.target.value);
             }}
