@@ -35,6 +35,7 @@ import {
 } from '../../../helpers/constants/design-system';
 import { formatDate } from '../../../helpers/utils/util';
 import { ConfirmInfoRowDivider as Divider } from '../../../components/app/confirm/info/row';
+import { calcTokenAmount } from '../../../../shared/lib/transactions-controller-utils';
 import TransactionDetailRow from './transaction-detail-row';
 import BridgeExplorerLinks from './bridge-explorer-links';
 import BridgeStepList from './bridge-step-list';
@@ -107,6 +108,13 @@ const CrossChainSwapTxDetails = () => {
         transaction: srcChainTxMeta,
         isTokenApprove: false,
       })
+    : undefined;
+
+  const bridgeAmount = bridgeHistoryItem
+    ? `${calcTokenAmount(
+        bridgeHistoryItem.quote.destTokenAmount,
+        bridgeHistoryItem.quote.destAsset.decimals,
+      ).toFixed()} ${bridgeHistoryItem.quote.destAsset.symbol}`
     : undefined;
 
   return (
@@ -191,7 +199,10 @@ const CrossChainSwapTxDetails = () => {
               flexDirection={FlexDirection.Column}
               gap={2}
             >
-              <TransactionDetailRow title="Bridge amount" value={'TODO'} />
+              <TransactionDetailRow
+                title="Bridge amount"
+                value={bridgeAmount}
+              />
               <TransactionDetailRow
                 title="Gas limit (units)"
                 value={data?.gas ? hexToDecimal(data?.gas) : undefined}
