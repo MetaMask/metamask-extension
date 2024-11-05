@@ -1,9 +1,7 @@
-import { screen, waitFor } from '@testing-library/react';
 import React from 'react';
 import configureMockStore from 'redux-mock-store';
 import { getMockTokenTransferConfirmState } from '../../../../../../../test/data/confirmations/helper';
 import { renderWithConfirmContextProvider } from '../../../../../../../test/lib/confirmations/render-helpers';
-import { tEn } from '../../../../../../../test/lib/i18n-helpers';
 import NativeTransferInfo from './native-transfer';
 
 jest.mock(
