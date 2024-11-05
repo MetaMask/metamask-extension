@@ -241,6 +241,13 @@ const PrepareBridgePage = () => {
             autoFocus: true,
             value: fromAmount || undefined,
           }}
+          onMaxButtonClick={
+            fromToken?.address === zeroAddress()
+              ? undefined
+              : (value: string) => {
+                  dispatch(setFromTokenInputValue(value));
+                }
+          }
         />
 
         <Box
