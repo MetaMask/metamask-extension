@@ -38,7 +38,7 @@ const getBridgeActionText = (
 };
 
 const getBridgeActionStatus = (bridgeHistoryItem: BridgeHistoryItem) => {
-  return bridgeHistoryItem.status?.status;
+  return bridgeHistoryItem.status ? bridgeHistoryItem.status.status : null;
 };
 
 /**
@@ -66,7 +66,7 @@ const getSwapActionStatus = (
     // if the swap action is on the dest chain, we check the bridgeHistoryItem.status,
     // since we don't know when the dest tx is confirmed
     if (srcChainTxMeta?.status === TransactionStatus.confirmed) {
-      return bridgeHistoryItem.status?.status;
+      return bridgeHistoryItem.status ? bridgeHistoryItem.status.status : null;
     }
 
     // If the source chain tx is not confirmed, we know the swap hasn't started
