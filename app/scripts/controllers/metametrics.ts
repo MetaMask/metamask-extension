@@ -438,7 +438,7 @@ export default class MetaMetricsController {
     this.store.updateState({
       fragments: {
         ...fragments,
-        [id]: merge(fragment, additionalFragmentProps),
+        [id]: merge(additionalFragmentProps, fragment),
       },
     });
 
