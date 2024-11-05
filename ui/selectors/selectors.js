@@ -507,7 +507,6 @@ export function getSelectedAccountTokensAcrossChains(state) {
       const nativeTokenInfo = getNativeTokenInfo(state, chainId);
       tokensByChain[chainId].push({
         ...nativeTokenInfo,
-        // TODO: infer this value
         address: '',
         balance: nativeBalance,
         chainId,
@@ -515,6 +514,8 @@ export function getSelectedAccountTokensAcrossChains(state) {
       });
     }
   });
+
+  console.log(tokensByChain);
 
   return tokensByChain;
 }
@@ -1503,6 +1504,10 @@ export const getIsBridgeEnabled = createSelector(
 export function getNativeCurrencyImage(state) {
   const chainId = getCurrentChainId(state);
   return CHAIN_ID_TOKEN_IMAGE_MAP[chainId];
+}
+
+export function getNativeCurrencyForChain(chainId) {
+  return CHAIN_ID_TOKEN_IMAGE_MAP[chainId] ?? undefined;
 }
 
 export function getNextSuggestedNonce(state) {

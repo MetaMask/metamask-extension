@@ -5,6 +5,7 @@ import {
   getTokenList,
   selectERC20TokensByChain,
   getPreferences,
+  getNativeCurrencyForChain,
 } from '../../../../selectors';
 import {
   isChainIdMainnet,
@@ -15,6 +16,7 @@ import { TokenListItem } from '../../../multichain';
 import { isEqualCaseInsensitive } from '../../../../../shared/modules/string-utils';
 import { useIsOriginalTokenSymbol } from '../../../../hooks/useIsOriginalTokenSymbol';
 import { getIntlLocale } from '../../../../ducks/locale/locale';
+import { CHAIN_ID_TOKEN_IMAGE_MAP } from '../../../../../shared/constants/network';
 
 type TokenCellProps = {
   address: string;
@@ -77,7 +79,7 @@ export default function TokenCell({
     <TokenListItem
       onClick={onClick ? () => onClick(address) : undefined}
       tokenSymbol={symbol}
-      tokenImage={tokenImage}
+      tokenImage={isNative ? getNativeCurrencyForChain(chainId) : tokenImage}
       tokenChainImage={chainId ? getImageForChainId(chainId) : undefined}
       primary={string}
       secondary={formattedFiatBalance}
