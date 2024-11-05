@@ -56,6 +56,7 @@ import {
   TextVariant,
 } from '../../../helpers/constants/design-system';
 import { getProviderConfig } from '../../../ducks/metamask/metamask';
+import { BridgeToken } from '../types';
 
 const generateAssetFromToken = (
   chainId: Hex,
@@ -94,7 +95,7 @@ export const BridgeInputGroup = ({
   onMaxButtonClick,
 }: {
   onAmountChange?: (value: string) => void;
-  token: SwapsTokenObject | SwapsEthToken | null;
+  token: BridgeToken | null;
   amountFieldProps: Pick<
     React.ComponentProps<typeof TextField>,
     'testId' | 'autoFocus' | 'value' | 'readOnly' | 'disabled' | 'className'
@@ -276,8 +277,8 @@ export const BridgeInputGroup = ({
           color={TextColor.textAlternative}
           style={{ height: 20 }}
         >
-          {isToField && token
-            ? t('confirmedBySources', [0, 'Avascan'])
+          {isToField && token && 'aggregators' in token
+            ? t('confirmedBySources', [token.aggregators.length, 'Avascan'])
             : undefined}
           {!isToField && formattedBalance
             ? t('available', [formattedBalance, token?.symbol])

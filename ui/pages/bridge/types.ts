@@ -1,4 +1,6 @@
 import { BigNumber } from 'bignumber.js';
+import { SwapsTokenObject } from '../../../shared/constants/swaps';
+import { SwapsEthToken } from '../../selectors';
 
 // Values derived from the quote response
 export type QuoteMetadata = {
@@ -15,6 +17,13 @@ export enum SortOrder {
   ADJUSTED_RETURN_DESC,
   ETA_ASC,
 }
+
+export type BridgeToken =
+  | SwapsEthToken
+  | SwapsTokenObject
+  | (SwapsTokenObject & {
+      aggregators: string[];
+    });
 
 // Types copied from Metabridge API
 export enum BridgeFlag {

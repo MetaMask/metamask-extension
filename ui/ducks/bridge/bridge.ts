@@ -3,10 +3,9 @@ import { Hex } from '@metamask/utils';
 import { getAddress } from 'ethers/lib/utils';
 import { zeroAddress } from 'ethereumjs-util';
 import { swapsSlice } from '../swaps/swaps';
-import { SwapsTokenObject } from '../../../shared/constants/swaps';
-import { SwapsEthToken } from '../../selectors';
 import { fetchTokenExchangeRates } from '../../helpers/utils/util';
 import {
+  BridgeToken,
   QuoteMetadata,
   QuoteResponse,
   SortOrder,
@@ -17,8 +16,8 @@ import { DEFAULT_SLIPPAGE } from '../../../app/scripts/controllers/bridge/consta
 
 export type BridgeState = {
   toChainId: Hex | null;
-  fromToken: SwapsTokenObject | SwapsEthToken | null;
-  toToken: SwapsTokenObject | SwapsEthToken | null;
+  fromToken: BridgeToken | null;
+  toToken: BridgeToken | null;
   fromTokenInputValue: string | null;
   fromTokenExchangeRate: number | null;
   fromNativeExchangeRate: number | null;

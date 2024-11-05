@@ -56,6 +56,15 @@ export const FEATURE_FLAG_VALIDATORS = [
   },
 ];
 
+export const TOKEN_AGGREGATOR_VALIDATORS = [
+  {
+    property: 'aggregators',
+    type: 'object',
+    validator: (v: unknown): v is number[] =>
+      isValidObject(v) && Object.values(v).every(isValidString),
+  },
+];
+
 export const TOKEN_VALIDATORS = [
   { property: 'decimals', type: 'number' },
   { property: 'address', type: 'string', validator: isValidHexAddress },
