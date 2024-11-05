@@ -2,6 +2,7 @@ import * as React from 'react';
 import { NetworkConfiguration } from '@metamask/network-controller';
 import {
   ActionTypes,
+  BridgeHistoryItem,
   StatusTypes,
   Step,
 } from '../../../../app/scripts/controllers/bridge-status/types';
@@ -22,20 +23,15 @@ import HollowCircle from './hollow-circle';
 import { IconColor } from '../../../helpers/constants/design-system';
 
 /**
- * bridge actions will have srcChainId and destChainId different from each other
+ * bridge actions will have step.srcChainId !== step.destChainId
  * We cannot infer the status of the bridge action since 2 different chains are involved
  * The best we can do is the bridgeHistoryItem.estimatedProcessingTimeInSeconds
  */
 const getBridgeActionText = (
+  stepStatus: StatusTypes,
   step: Step,
   networkConfigurationsByChainId: Record<`0x${string}`, NetworkConfiguration>,
 ) => {
-  const hexSrcChainId = new Numeric(
-    step.srcChainId,
-    10,
-  ).toPrefixedHexString() as Hex;
-  const srcNetworkConfiguration = networkConfigurationsByChainId[hexSrcChainId];
-
   const hexDestChainId = step.destChainId
     ? (new Numeric(step.destChainId, 10).toPrefixedHexString() as Hex)
     : undefined;
@@ -43,30 +39,56 @@ const getBridgeActionText = (
     ? networkConfigurationsByChainId[hexDestChainId]
     : undefined;
 
-  return `Bridging ${step.srcAsset.symbol} from ${srcNetworkConfiguration.name} to ${destNetworkConfiguration?.name}`;
+  return `${step.destAsset.symbol} received on ${destNetworkConfiguration?.name}`;
 };
 
 /**
- * swap actions can have srcChainId and destChainId the same
- * Despite not having any actual timestamp,
- * we can infer the status of the swap action based on the status of the source chain tx if srcChainId and destChainId are the same
+ * swap actions can have step.srcChainId === step.destChainId, and can occur on
+ * EITHER the quote.srcChainId or the quote.destChainId
+ * Despite not having any actual timestamp,we can infer the status of the swap action
+ * based on the status of the source chain tx if srcChainId and destChainId are the same*
  */
-const getSwapActionStatus = (step: Step, srcChainTxMeta?: TransactionMeta) => {
+const getSwapActionStatus = (
+  bridgeHistoryItem: BridgeHistoryItem,
+  step: Step,
+  srcChainTxMeta?: TransactionMeta,
+) => {
   const isSrcAndDestChainSame = step.srcChainId === step.destChainId;
-  const isSrcChainTxConfirmed =
-    srcChainTxMeta?.status === TransactionStatus.confirmed;
+  const isSwapOnSrcChain =
+    step.srcChainId === bridgeHistoryItem.quote.srcChainId;
 
-  return isSrcAndDestChainSame && isSrcChainTxConfirmed
-    ? StatusTypes.COMPLETE
-    : StatusTypes.PENDING;
+  if (isSrcAndDestChainSame && isSwapOnSrcChain) {
+    // if the swap action is on the src chain (i.e. step.srcChainId === step.destChainId === bridgeHistoryItem.quote.srcChainId),
+    //we check the source chain tx status, since we know when it's confirmed
+    const isSrcChainTxConfirmed =
+      srcChainTxMeta?.status === TransactionStatus.confirmed;
+    return isSrcChainTxConfirmed ? StatusTypes.COMPLETE : StatusTypes.PENDING;
+  } else {
+    // if the swap action is on the dest chain, we check the bridgeHistoryItem.status,
+    // since we don't know when the dest tx is confirmed
+    return bridgeHistoryItem.status.status;
+  }
 };
 
-const getSwapActionText = (step: Step, srcChainTxMeta?: TransactionMeta) => {
-  const swapActionStatus = getSwapActionStatus(step, srcChainTxMeta);
-
-  return swapActionStatus === StatusTypes.COMPLETE
+const getSwapActionText = (status: StatusTypes, step: Step) => {
+  return status === StatusTypes.COMPLETE
     ? `Swapped ${step.srcAsset.symbol} for ${step.destAsset.symbol}`
     : `Swapping ${step.srcAsset.symbol} for ${step.destAsset.symbol}`;
+};
+
+const getStepStatus = (
+  bridgeHistoryItem: BridgeHistoryItem,
+  step: Step,
+  srcChainTxMeta?: TransactionMeta,
+) => {
+  if (step.action === ActionTypes.SWAP) {
+    return getSwapActionStatus(bridgeHistoryItem, step, srcChainTxMeta);
+  } else if (step.action === ActionTypes.BRIDGE) {
+    // if action is bridge, the step.srcChainId !== step.destChainId,
+    // so we can simply check the bridgeHistoryItem.status
+    return bridgeHistoryItem.status.status;
+  }
+  return StatusTypes.PENDING;
 };
 
 type BridgeStepProps = {
@@ -74,16 +96,24 @@ type BridgeStepProps = {
   networkConfigurationsByChainId: Record<`0x${string}`, NetworkConfiguration>;
   time?: string;
   srcChainTxMeta?: TransactionMeta;
+  bridgeHistoryItem: BridgeHistoryItem;
 };
 
 const iconColor = IconColor.primaryDefault;
 
+// You can have the following cases:
+// 1. Bridge: usually for cases like Optimism ETH to Arbitrum ETH
+// 2. Swap > Bridge
+// 3. Swap > Bridge > Swap: e.g. Optimism ETH to Avalanche USDC
 export default function BridgeStep({
   step,
   networkConfigurationsByChainId,
   time,
   srcChainTxMeta,
+  bridgeHistoryItem,
 }: BridgeStepProps) {
+  const stepStatus = getStepStatus(bridgeHistoryItem, step, srcChainTxMeta);
+
   return (
     <Box>
       <HollowCircle color={iconColor} />
@@ -96,9 +126,9 @@ export default function BridgeStep({
       <Text>{time}</Text>
       <Text>
         {step.action === ActionTypes.BRIDGE &&
-          getBridgeActionText(step, networkConfigurationsByChainId)}
+          getBridgeActionText(stepStatus, step, networkConfigurationsByChainId)}
         {step.action === ActionTypes.SWAP &&
-          getSwapActionText(step, srcChainTxMeta)}
+          getSwapActionText(stepStatus, step)}
       </Text>
     </Box>
   );
