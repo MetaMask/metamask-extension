@@ -93,8 +93,7 @@ const DEFAULT_PAGE_PROPERTIES = {
   ...DEFAULT_SHARED_PROPERTIES,
 };
 
-const SAMPLE_PERSISTED_EVENT = {
-  id: 'testid',
+const SAMPLE_PERSISTED_EVENT_NO_ID = {
   persist: true,
   category: 'Unit Test',
   successEvent: 'sample persisted event success',
@@ -102,6 +101,11 @@ const SAMPLE_PERSISTED_EVENT = {
   properties: {
     test: true,
   },
+};
+
+const SAMPLE_PERSISTED_EVENT = {
+  id: 'testid',
+  ...SAMPLE_PERSISTED_EVENT_NO_ID,
 };
 
 const SAMPLE_NON_PERSISTED_EVENT = {
@@ -252,6 +256,47 @@ describe('MetaMetricsController', function () {
         currentLocale: 'en_UK',
       });
       expect(metaMetricsController.locale).toStrictEqual('en-UK');
+    });
+  });
+
+  describe('createEventFragment', function () {
+    it('should throw an error if the param is missing successEvent or category', async function () {
+      const metaMetricsController = getMetaMetricsController();
+
+      await expect(() => {
+        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+        // @ts-expect-error because we are testing the error case
+        metaMetricsController.createEventFragment({ event: 'test' });
+      }).toThrow(/Must specify success event and category\./u);
+
+      await expect(() => {
+        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+        // @ts-expect-error because we are testing the error case
+        metaMetricsController.createEventFragment({ category: 'test' });
+      }).toThrow(/Must specify success event and category\./u);
+    });
+
+    it('should update fragments state with new fragment', function () {
+      jest.useFakeTimers().setSystemTime(1730798301422);
+
+      const metaMetricsController = getMetaMetricsController();
+      const mockNewId = 'testid3';
+
+      metaMetricsController.createEventFragment({
+        ...SAMPLE_PERSISTED_EVENT_NO_ID,
+        uniqueIdentifier: mockNewId,
+      });
+
+      const resultFragment = metaMetricsController.state.fragments[mockNewId];
+
+      expect(resultFragment).toStrictEqual({
+        ...SAMPLE_PERSISTED_EVENT_NO_ID,
+        id: mockNewId,
+        uniqueIdentifier: mockNewId,
+        lastUpdated: 1730798301422,
+      });
+
+      jest.useRealTimers();
     });
   });
 
