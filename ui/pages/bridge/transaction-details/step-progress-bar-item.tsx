@@ -21,19 +21,22 @@ const VerticalLine = ({ color }: { color: IconColor }) => (
   />
 );
 
-type StepsProgressItemProps = {
+type StepsProgressBarItemProps = {
   stepStatus: StatusTypes | null;
   isLastItem: boolean;
   isEdgeComplete: boolean;
+  children: React.ReactNode;
 };
 
-export default function StepProgressItem({
+export default function StepProgressBarItem({
   stepStatus,
   isLastItem,
   isEdgeComplete,
-}: StepsProgressItemProps) {
+  children,
+}: StepsProgressBarItemProps) {
   return (
     <>
+      {/* Indicator dots */}
       {stepStatus === null && (
         <HollowCircle
           color={IconColor.iconMuted}
@@ -58,6 +61,11 @@ export default function StepProgressItem({
           style={ICON_STYLE}
         />
       )}
+
+      {/* Description */}
+      {children}
+
+      {/* Line */}
       {!isLastItem && (
         <VerticalLine
           color={
@@ -65,6 +73,9 @@ export default function StepProgressItem({
           }
         />
       )}
+
+      {/* Blank div to take up space to make sure everything is aligned */}
+      {!isLastItem && <div style={{ opacity: 0 }} />}
     </>
   );
 }

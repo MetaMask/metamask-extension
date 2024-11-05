@@ -147,7 +147,8 @@ const CrossChainSwapTxDetails = () => {
             flexDirection={FlexDirection.Column}
             gap={4}
           >
-            {status !== StatusTypes.COMPLETE && bridgeHistoryItem && (
+            {/* {status !== StatusTypes.COMPLETE && bridgeHistoryItem && ( */}
+            {bridgeHistoryItem && (
               <BridgeStepList
                 bridgeHistoryItem={bridgeHistoryItem}
                 srcChainTxMeta={srcChainTxMeta}

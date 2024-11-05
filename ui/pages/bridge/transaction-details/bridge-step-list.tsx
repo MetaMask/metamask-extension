@@ -14,8 +14,10 @@ import {
   StatusTypes,
 } from '../../../../app/scripts/controllers/bridge-status/types';
 import { getNetworkConfigurationsByChainId } from '../../../selectors';
-import BridgeStep, { getStepStatus } from './bridge-step';
-import StepProgressItem from './step-progress-item';
+import BridgeStepDescription, {
+  getStepStatus,
+} from './bridge-step-description';
+import StepProgressBarItem from './step-progress-bar-item';
 
 type BridgeStepsProps = {
   bridgeHistoryItem: BridgeHistoryItem;
@@ -35,67 +37,44 @@ export default function BridgeStepList({
   );
 
   return (
-    <Box
-      display={Display.Flex}
-      justifyContent={JustifyContent.flexStart}
-      gap={4}
-    >
-      {/* Dots and vertical lines */}
-      <Box
-        display={Display.Flex}
-        flexDirection={FlexDirection.Column}
-        alignItems={AlignItems.center}
-      >
-        {steps.map((step, i) => {
-          const prevStepStatus = i > 0 ? stepStatuses[i - 1] : null;
-          const stepStatus = stepStatuses[i];
-          const nextStepStatus =
-            i < stepStatuses.length - 1 ? stepStatuses[i + 1] : null;
+    <Box className="bridge-transaction-details__step-grid">
+      {steps.map((step, i) => {
+        const prevStepStatus = i > 0 ? stepStatuses[i - 1] : null;
+        const stepStatus = stepStatuses[i];
+        const nextStepStatus =
+          i < stepStatuses.length - 1 ? stepStatuses[i + 1] : null;
 
-          const isEdgeComplete =
-            stepStatus === StatusTypes.COMPLETE &&
-            nextStepStatus === StatusTypes.COMPLETE;
+        const isEdgeComplete =
+          stepStatus === StatusTypes.COMPLETE &&
+          nextStepStatus === StatusTypes.COMPLETE;
 
-          // Making a distinction betweeen displayedStepStatus and stepStatus
-          // stepStatus is determined independently of other steps
-          // So despite both being technically PENDING,
-          // We only want a single spinner animation at a time, so we need to take into account other steps
-          const displayedStepStatus =
-            prevStepStatus === StatusTypes.PENDING &&
-            stepStatus === StatusTypes.PENDING
-              ? null
-              : stepStatus;
+        // Making a distinction betweeen displayedStepStatus and stepStatus
+        // stepStatus is determined independently of other steps
+        // So despite both being technically PENDING,
+        // We only want a single spinner animation at a time, so we need to take into account other steps
+        const displayedStepStatus =
+          prevStepStatus === StatusTypes.PENDING &&
+          stepStatus === StatusTypes.PENDING
+            ? null
+            : stepStatus;
 
-          return (
-            <StepProgressItem
+        return (
+          <>
+            <StepProgressBarItem
               key={`progress-${step.action}-${step.srcChainId}-${step.destChainId}`}
               stepStatus={displayedStepStatus}
               isLastItem={i === steps.length - 1}
               isEdgeComplete={isEdgeComplete}
-            />
-          );
-        })}
-      </Box>
-
-      {/* Time and descriptions */}
-      <Box
-        display={Display.Flex}
-        flexDirection={FlexDirection.Column}
-        alignItems={AlignItems.flexStart}
-        gap={8}
-      >
-        {steps.map((step, i) => {
-          const stepStatus = stepStatuses[i];
-          return (
-            <BridgeStep
-              key={`desc-${step.action}-${step.srcChainId}-${step.destChainId}`}
-              step={step}
-              networkConfigurationsByChainId={networkConfigurationsByChainId}
-              stepStatus={stepStatus}
-            />
-          );
-        })}
-      </Box>
+            >
+              <BridgeStepDescription
+                step={step}
+                networkConfigurationsByChainId={networkConfigurationsByChainId}
+                stepStatus={displayedStepStatus}
+              />
+            </StepProgressBarItem>
+          </>
+        );
+      })}
     </Box>
   );
 }

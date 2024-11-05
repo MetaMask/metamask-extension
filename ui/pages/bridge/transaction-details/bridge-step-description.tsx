@@ -21,7 +21,7 @@ import { AlignItems, Display } from '../../../helpers/constants/design-system';
  * The best we can do is the bridgeHistoryItem.estimatedProcessingTimeInSeconds
  */
 const getBridgeActionText = (
-  stepStatus: StatusTypes,
+  stepStatus: StatusTypes | null,
   step: Step,
   networkConfigurationsByChainId: Record<`0x${string}`, NetworkConfiguration>,
 ) => {
@@ -75,7 +75,7 @@ const getSwapActionStatus = (
   }
 };
 
-const getSwapActionText = (status: StatusTypes, step: Step) => {
+const getSwapActionText = (status: StatusTypes | null, step: Step) => {
   return status === StatusTypes.COMPLETE
     ? `Swapped ${step.srcAsset.symbol} for ${step.destAsset.symbol}`
     : `Swapping ${step.srcAsset.symbol} for ${step.destAsset.symbol}`;
@@ -106,15 +106,20 @@ type BridgeStepProps = {
 // 1. Bridge: usually for cases like Optimism ETH to Arbitrum ETH
 // 2. Swap > Bridge
 // 3. Swap > Bridge > Swap: e.g. Optimism ETH to Avalanche USDC
-export default function BridgeStep({
+export default function BridgeStepDescription({
   step,
   networkConfigurationsByChainId,
   time,
   stepStatus,
 }: BridgeStepProps) {
   return (
-    <Box display={Display.Flex} alignItems={AlignItems.center} gap={2}>
-      <Text>{time}</Text>
+    <Box
+      display={Display.Flex}
+      alignItems={AlignItems.center}
+      gap={2}
+      className="bridge-transaction-details__step-grid--desc"
+    >
+      {time && <Text>{time}</Text>}
       <Text>
         {step.action === ActionTypes.BRIDGE &&
           getBridgeActionText(stepStatus, step, networkConfigurationsByChainId)}
