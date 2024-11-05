@@ -169,14 +169,11 @@ export class FakeLedgerBridge extends FakeKeyringBridge {
       hardfork: 'istanbul',
     });
 
-    // return Transaction.fromTxData(tx, {
-    //   common,
-    // }).sign(Buffer.from(KNOWN_PRIVATE_KEYS[0], 'hex'));
-
-    //removing r, s, v values from the unsigned tx
+    // removing r, s, v values from the unsigned tx
+    // Ledger uses v to communicate the chain ID, but we're removing it because these values are not a valid signature at this point.
     const txBuffer = Buffer.from(tx, 'hex');
     const VALID_TYPES = [1, 2];
-    const txType = VALID_TYPES.includes(rawTx[0]) ? rawTx[0] : null;
+    const txType = VALID_TYPES.includes(tx[0]) ? tx[0] : null;
     const rlpData = txType === null ? txBuffer : txBuffer.slice(1, tx.length);
     const rlpTx = rlp.decode(rlpData);
 
