@@ -429,11 +429,11 @@ export default class MetaMetricsController {
       fragments[id];
 
     const additionalFragmentProps = hasExistingSubmittedFragment
-      ? {}
-      : {
+      ? {
           ...fragments[id],
           canDeleteIfAbandoned: false,
-        };
+        }
+      : {};
 
     this.store.updateState({
       fragments: {
