@@ -23,26 +23,42 @@ export const useTokenValues = (transactionMeta: TransactionMeta) => {
   const decodedResponse = useDecodedTransactionData();
   const { value, pending } = decodedResponse;
 
-  const decodedTransferValue = useMemo(() => {
-    if (!value || !decimals) {
-      return 0;
-    }
+  const { decodedTransferValue, isDecodedTransferValuePending } =
+    useMemo(() => {
+      if (!value) {
+        return {
+          decodedTransferValue: 0,
+          isDecodedTransferValuePending: false,
+        };
+      }
 
-    const paramIndex = value.data[0].params.findIndex(
-      (param) =>
-        param.value !== undefined &&
-        !isHexString(param.value) &&
-        param.value.length === undefined &&
-        !isBoolean(param.value),
-    );
-    if (paramIndex === -1) {
-      return 0;
-    }
+      if (!decimals) {
+        return { decodedTransferValue: 0, isDecodedTransferValuePending: true };
+      }
 
-    return new BigNumber(value.data[0].params[paramIndex].value.toString())
-      .dividedBy(new BigNumber(10).pow(Number(decimals)))
-      .toNumber();
-  }, [value, decimals]);
+      const paramIndex = value.data[0].params.findIndex(
+        (param) =>
+          param.value !== undefined &&
+          !isHexString(param.value) &&
+          param.value.length === undefined &&
+          !isBoolean(param.value),
+      );
+      if (paramIndex === -1) {
+        return {
+          decodedTransferValue: 0,
+          isDecodedTransferValuePending: false,
+        };
+      }
+
+      return {
+        decodedTransferValue: new BigNumber(
+          value.data[0].params[paramIndex].value.toString(),
+        )
+          .dividedBy(new BigNumber(10).pow(Number(decimals)))
+          .toNumber(),
+        isDecodedTransferValuePending: false,
+      };
+    }, [value, decimals]);
 
   const [exchangeRate, setExchangeRate] = useState<Numeric | undefined>();
   const fetchExchangeRate = async () => {
@@ -70,7 +86,7 @@ export const useTokenValues = (transactionMeta: TransactionMeta) => {
     decodedTransferValue: toNonScientificString(decodedTransferValue),
     displayTransferValue,
     fiatDisplayValue,
-    pending,
+    pending: pending || isDecodedTransferValuePending,
   };
 };
 
