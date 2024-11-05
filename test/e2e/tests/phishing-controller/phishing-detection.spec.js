@@ -58,6 +58,9 @@ describe('Phishing Detection', function () {
         await unlockWallet(driver);
         await openDapp(driver);
         await driver.switchToWindowWithTitle('MetaMask Phishing Detection');
+
+        // we need to use this selector specifically because is the one that ensures that the event listener has been added
+        // see more here https://github.com/MetaMask/phishing-warning/pull/173
         await driver.clickElement({
           testId: 'unsafe-continue-loaded',
         });
@@ -172,6 +175,9 @@ describe('Phishing Detection', function () {
           text: 'Open this warning in a new tab',
         });
         await driver.switchToWindowWithTitle('MetaMask Phishing Detection');
+
+        // we need to use this selector specifically because is the one that ensures that the event listener has been added
+        // see more here https://github.com/MetaMask/phishing-warning/pull/173
         await driver.clickElement({
           testId: 'unsafe-continue-loaded',
         });
