@@ -59,20 +59,18 @@ export default function BridgeStepList({
             : stepStatus;
 
         return (
-          <>
-            <StepProgressBarItem
-              key={`progress-${step.action}-${step.srcChainId}-${step.destChainId}`}
+          <StepProgressBarItem
+            key={`progress-${step.action}-${step.srcChainId}-${step.destChainId}`}
+            stepStatus={displayedStepStatus}
+            isLastItem={i === steps.length - 1}
+            isEdgeComplete={isEdgeComplete}
+          >
+            <BridgeStepDescription
+              step={step}
+              networkConfigurationsByChainId={networkConfigurationsByChainId}
               stepStatus={displayedStepStatus}
-              isLastItem={i === steps.length - 1}
-              isEdgeComplete={isEdgeComplete}
-            >
-              <BridgeStepDescription
-                step={step}
-                networkConfigurationsByChainId={networkConfigurationsByChainId}
-                stepStatus={displayedStepStatus}
-              />
-            </StepProgressBarItem>
-          </>
+            />
+          </StepProgressBarItem>
         );
       })}
     </Box>

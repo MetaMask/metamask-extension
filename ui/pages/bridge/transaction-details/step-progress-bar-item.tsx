@@ -9,7 +9,6 @@ import { Color, IconColor } from '../../../helpers/constants/design-system';
 import HollowCircle from './hollow-circle';
 
 const ICON_SIZE = IconSize.Xs;
-const ICON_STYLE = { marginTop: '0.25rem', marginBottom: '0.25rem' };
 
 const VerticalLine = ({ color }: { color: IconColor }) => (
   <div
@@ -38,11 +37,7 @@ export default function StepProgressBarItem({
     <>
       {/* Indicator dots */}
       {stepStatus === null && (
-        <HollowCircle
-          color={IconColor.iconMuted}
-          size={ICON_SIZE}
-          style={ICON_STYLE}
-        />
+        <HollowCircle color={IconColor.iconMuted} size={ICON_SIZE} />
       )}
       {stepStatus === StatusTypes.PENDING && (
         <Icon
@@ -50,7 +45,6 @@ export default function StepProgressBarItem({
           name={IconName.Loading}
           color={IconColor.primaryDefault}
           size={ICON_SIZE}
-          style={ICON_STYLE}
         />
       )}
       {stepStatus === StatusTypes.COMPLETE && (
@@ -58,7 +52,6 @@ export default function StepProgressBarItem({
           name={IconName.FullCircle}
           color={IconColor.primaryDefault}
           size={ICON_SIZE}
-          style={ICON_STYLE}
         />
       )}
 
@@ -74,7 +67,7 @@ export default function StepProgressBarItem({
         />
       )}
 
-      {/* Blank div to take up space to make sure everything is aligned */}
+      {/* Blank div to take up space to make sure everythign */}
       {!isLastItem && <div style={{ opacity: 0 }} />}
     </>
   );
