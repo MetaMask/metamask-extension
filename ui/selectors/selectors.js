@@ -502,7 +502,7 @@ export function getSelectedAccountTokensAcrossChains(state) {
       tokensByChain[chainId] = [];
     }
 
-    if (allTokens[chainId] && allTokens[chainId][selectedAddress]) {
+    if (allTokens[chainId]?.[selectedAddress]) {
       allTokens[chainId][selectedAddress].forEach((token) => {
         const tokenWithChain = { ...token, chainId, isNative: false };
         tokensByChain[chainId].push(tokenWithChain);
