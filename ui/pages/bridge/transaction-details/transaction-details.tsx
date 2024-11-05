@@ -34,6 +34,7 @@ import {
   TextTransform,
 } from '../../../helpers/constants/design-system';
 import { formatDate } from '../../../helpers/utils/util';
+import { ConfirmInfoRowDivider as Divider } from '../../../components/app/confirm/info/row';
 import TransactionDetailRow from './transaction-detail-row';
 import BridgeExplorerLinks from './bridge-explorer-links';
 import BridgeStepList from './bridge-step-list';
@@ -145,142 +146,167 @@ const CrossChainSwapTxDetails = () => {
               srcBlockExplorerUrl={srcBlockExplorerUrl}
               destBlockExplorerUrl={destBlockExplorerUrl}
             />
-          </Box>
 
-          {/* General tx details */}
-          <TransactionDetailRow
-            title="Status"
-            value={
-              <Text
-                textTransform={TextTransform.Capitalize}
-                color={status ? StatusToColorMap[status] : undefined}
-              >
-                {status?.toLowerCase()}
-              </Text>
-            }
-          />
-          <TransactionDetailRow title="Bridge type" value={bridgeTypeTitle} />
-          <TransactionDetailRow
-            title="Time stamp"
-            value={formatDate(srcChainTxMeta?.time, "M/d/y 'at' hh:mm a")}
-          />
-          <TransactionDetailRow
-            title="Nonce"
-            value={
-              srcChainTxMeta?.txParams.nonce
-                ? hexToDecimal(srcChainTxMeta?.txParams.nonce)
-                : undefined
-            }
-          />
-          <TransactionDetailRow title="Bridge amount" value={'TODO'} />
-          <TransactionDetailRow
-            title="Gas limit (units)"
-            value={data?.gas ? hexToDecimal(data?.gas) : undefined}
-          />
-          <TransactionDetailRow
-            title="Gas used (units)"
-            value={data?.gasUsed ? hexToDecimal(data?.gasUsed) : undefined}
-          />
-          {data?.isEIP1559Transaction &&
-            typeof data?.baseFee !== 'undefined' && (
-              <TransactionDetailRow
-                title="Base fee (GWEI)"
-                value={
-                  <CurrencyDisplay
-                    currency={data?.nativeCurrency}
-                    denomination={EtherDenomination.GWEI}
-                    value={data?.baseFee}
-                    numberOfDecimals={10}
-                    hideLabel
-                  />
-                }
-              />
-            )}
-          {data?.isEIP1559Transaction &&
-            typeof data?.priorityFee !== 'undefined' && (
-              <TransactionDetailRow
-                title="Priority fee (GWEI)"
-                value={
-                  <CurrencyDisplay
-                    currency={data?.nativeCurrency}
-                    denomination={EtherDenomination.GWEI}
-                    value={data?.priorityFee}
-                    numberOfDecimals={10}
-                    hideLabel
-                  />
-                }
-              />
-            )}
+            <Divider />
 
-          <TransactionDetailRow
-            title="Total gas fee"
-            value={
-              <>
-                <UserPreferencedCurrencyDisplay
-                  currency={data?.nativeCurrency}
-                  denomination={EtherDenomination.ETH}
-                  numberOfDecimals={6}
-                  value={data?.hexGasTotal}
-                  type={PRIMARY}
-                />
-                {data?.showFiat && (
-                  <Box
-                    display={Display.Flex}
-                    justifyContent={JustifyContent.flexEnd}
+            {/* General tx details */}
+            <Box
+              display={Display.Flex}
+              flexDirection={FlexDirection.Column}
+              gap={2}
+            >
+              <TransactionDetailRow
+                title="Status"
+                value={
+                  <Text
+                    textTransform={TextTransform.Capitalize}
+                    color={status ? StatusToColorMap[status] : undefined}
                   >
-                    <UserPreferencedCurrencyDisplay
-                      type={SECONDARY}
-                      value={data?.hexGasTotal}
-                    />
-                  </Box>
+                    {status?.toLowerCase()}
+                  </Text>
+                }
+              />
+              <TransactionDetailRow
+                title="Bridge type"
+                value={bridgeTypeTitle}
+              />
+              <TransactionDetailRow
+                title="Time stamp"
+                value={formatDate(srcChainTxMeta?.time, "M/d/y 'at' hh:mm a")}
+              />
+              <TransactionDetailRow
+                title="Nonce"
+                value={
+                  srcChainTxMeta?.txParams.nonce
+                    ? hexToDecimal(srcChainTxMeta?.txParams.nonce)
+                    : undefined
+                }
+              />
+            </Box>
+
+            <Divider />
+
+            <Box
+              display={Display.Flex}
+              flexDirection={FlexDirection.Column}
+              gap={2}
+            >
+              <TransactionDetailRow title="Bridge amount" value={'TODO'} />
+              <TransactionDetailRow
+                title="Gas limit (units)"
+                value={data?.gas ? hexToDecimal(data?.gas) : undefined}
+              />
+              <TransactionDetailRow
+                title="Gas used (units)"
+                value={data?.gasUsed ? hexToDecimal(data?.gasUsed) : undefined}
+              />
+              {data?.isEIP1559Transaction &&
+                typeof data?.baseFee !== 'undefined' && (
+                  <TransactionDetailRow
+                    title="Base fee (GWEI)"
+                    value={
+                      <CurrencyDisplay
+                        currency={data?.nativeCurrency}
+                        denomination={EtherDenomination.GWEI}
+                        value={data?.baseFee}
+                        numberOfDecimals={10}
+                        hideLabel
+                      />
+                    }
+                  />
                 )}
-              </>
-            }
-          />
-          <TransactionDetailRow
-            title="Max fee per gas"
-            value={
-              <>
-                <UserPreferencedCurrencyDisplay
-                  currency={data?.nativeCurrency}
-                  denomination={EtherDenomination.ETH}
-                  numberOfDecimals={9}
-                  value={data?.maxFeePerGas}
-                  type={PRIMARY}
-                />
-                {data?.showFiat && (
-                  <Box
-                    display={Display.Flex}
-                    justifyContent={JustifyContent.flexEnd}
-                  >
+              {data?.isEIP1559Transaction &&
+                typeof data?.priorityFee !== 'undefined' && (
+                  <TransactionDetailRow
+                    title="Priority fee (GWEI)"
+                    value={
+                      <CurrencyDisplay
+                        currency={data?.nativeCurrency}
+                        denomination={EtherDenomination.GWEI}
+                        value={data?.priorityFee}
+                        numberOfDecimals={10}
+                        hideLabel
+                      />
+                    }
+                  />
+                )}
+
+              <TransactionDetailRow
+                title="Total gas fee"
+                value={
+                  <>
                     <UserPreferencedCurrencyDisplay
                       currency={data?.nativeCurrency}
-                      type={SECONDARY}
-                      value={data?.maxFeePerGas}
+                      denomination={EtherDenomination.ETH}
+                      numberOfDecimals={6}
+                      value={data?.hexGasTotal}
+                      type={PRIMARY}
                     />
-                  </Box>
-                )}
-              </>
-            }
-          />
-          <TransactionDetailRow
-            title="Total"
-            value={
-              <>
-                <UserPreferencedCurrencyDisplay
-                  type={PRIMARY}
-                  value={data?.totalInHex}
-                  numberOfDecimals={data?.l1HexGasTotal ? 18 : undefined}
-                />
-                {data?.showFiat && (
+                    {data?.showFiat && (
+                      <Box
+                        display={Display.Flex}
+                        justifyContent={JustifyContent.flexEnd}
+                      >
+                        <UserPreferencedCurrencyDisplay
+                          type={SECONDARY}
+                          value={data?.hexGasTotal}
+                        />
+                      </Box>
+                    )}
+                  </>
+                }
+              />
+              <TransactionDetailRow
+                title="Max fee per gas"
+                value={
+                  <>
+                    <UserPreferencedCurrencyDisplay
+                      currency={data?.nativeCurrency}
+                      denomination={EtherDenomination.ETH}
+                      numberOfDecimals={9}
+                      value={data?.maxFeePerGas}
+                      type={PRIMARY}
+                    />
+                    {data?.showFiat && (
+                      <Box
+                        display={Display.Flex}
+                        justifyContent={JustifyContent.flexEnd}
+                      >
+                        <UserPreferencedCurrencyDisplay
+                          currency={data?.nativeCurrency}
+                          type={SECONDARY}
+                          value={data?.maxFeePerGas}
+                        />
+                      </Box>
+                    )}
+                  </>
+                }
+              />
+            </Box>
+
+            <Divider />
+
+            <TransactionDetailRow
+              title="Total"
+              value={
+                <>
                   <UserPreferencedCurrencyDisplay
-                    type={SECONDARY}
+                    type={PRIMARY}
                     value={data?.totalInHex}
+                    numberOfDecimals={data?.l1HexGasTotal ? 18 : undefined}
                   />
-                )}
-              </>
-            }
-          />
+                  {data?.showFiat && (
+                    <UserPreferencedCurrencyDisplay
+                      type={SECONDARY}
+                      value={data?.totalInHex}
+                    />
+                  )}
+                </>
+              }
+            />
+
+            <Divider />
+          </Box>
         </Content>
       </div>
     </div>
