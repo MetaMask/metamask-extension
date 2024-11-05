@@ -10,6 +10,7 @@ import {
 import { InternalAccount } from '@metamask/keyring-api';
 import { Browser } from 'webextension-polyfill';
 import { Hex } from '@metamask/utils';
+import { merge } from 'lodash';
 import { ENVIRONMENT_TYPE_BACKGROUND } from '../../../shared/constants/app';
 import { createSegmentMock } from '../lib/segment';
 import {
@@ -91,6 +92,18 @@ const DEFAULT_EVENT_PROPERTIES = {
 
 const DEFAULT_PAGE_PROPERTIES = {
   ...DEFAULT_SHARED_PROPERTIES,
+};
+
+const SAMPLE_TX_SUBMITTED_PARTIAL_FRAGMENT = {
+  id: 'transaction-submitted-0000',
+  canDeleteIfAbandoned: true,
+  category: 'Unit Test',
+  successEvent: 'Transaction Finalized',
+  persist: true,
+  properties: {
+    simulation_response: 'no_balance_change',
+    test_stored_prop: 1,
+  },
 };
 
 const SAMPLE_PERSISTED_EVENT_NO_ID = {
@@ -325,6 +338,44 @@ describe('MetaMetricsController', function () {
       });
 
       expect(spy).toHaveBeenCalledTimes(0);
+    });
+
+    describe('when intialEvent is "Transaction Submitted" and a fragment exists before createEventFragment is called', function () {
+      it('should update existing fragment state with new fragment props', function () {
+        jest.useFakeTimers().setSystemTime(1730798302222);
+
+        const metaMetricsController = getMetaMetricsController();
+        const { id } = SAMPLE_TX_SUBMITTED_PARTIAL_FRAGMENT;
+
+        metaMetricsController.updateEventFragment(
+          SAMPLE_TX_SUBMITTED_PARTIAL_FRAGMENT.id,
+          {
+            ...SAMPLE_TX_SUBMITTED_PARTIAL_FRAGMENT,
+          },
+        );
+        metaMetricsController.createEventFragment({
+          ...SAMPLE_PERSISTED_EVENT_NO_ID,
+          initialEvent: 'Transaction Submitted',
+          uniqueIdentifier: id,
+        });
+
+        const resultFragment = metaMetricsController.state.fragments[id];
+        const expectedFragment = merge(
+          SAMPLE_TX_SUBMITTED_PARTIAL_FRAGMENT,
+          SAMPLE_PERSISTED_EVENT_NO_ID,
+          {
+            canDeleteIfAbandoned: false,
+            id,
+            initialEvent: 'Transaction Submitted',
+            uniqueIdentifier: id,
+            lastUpdated: 1730798302222,
+          },
+        );
+
+        expect(resultFragment).toStrictEqual(expectedFragment);
+
+        jest.useRealTimers();
+      });
     });
   });
 
