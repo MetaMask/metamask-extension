@@ -122,7 +122,7 @@ describe('AddContact component', () => {
     expect(getByText('Save')).toBeDisabled();
   });
 
-  it('should disable the submit button when the name is already in use', () => {
+  it('should disable the submit button when the name is an existing account name', () => {
     const duplicateName = 'Account 1';
 
     const store = configureMockStore(middleware)(state);
@@ -144,8 +144,47 @@ describe('AddContact component', () => {
     expect(saveButton).toBeDisabled();
   });
 
-  it('should display error message when name entered is already in use', () => {
+  it('should disable the submit button when the name is an existing contact name', () => {
+    const duplicateName = MOCK_ADDRESS_BOOK[0].name;
+
+    const store = configureMockStore(middleware)(state);
+    const { getByText, getByTestId } = renderWithProvider(
+      <AddContact {...props} />,
+      store,
+    );
+
+    const nameInput = document.getElementById('nickname');
+    fireEvent.change(nameInput, { target: { value: duplicateName } });
+
+    const addressInput = getByTestId('ens-input');
+
+    fireEvent.change(addressInput, {
+      target: { value: '0x43c9159B6251f3E205B9113A023C8256cDD40D91' },
+    });
+
+    const saveButton = getByText('Save');
+    expect(saveButton).toBeDisabled();
+  });
+
+  it('should display error message when name entered is an existing account name', () => {
     const duplicateName = 'Account 1';
+
+    const store = configureMockStore(middleware)(state);
+
+    const { getByText } = renderWithProvider(<AddContact {...props} />, store);
+
+    const nameInput = document.getElementById('nickname');
+
+    fireEvent.change(nameInput, { target: { value: duplicateName } });
+
+    const saveButton = getByText('Save');
+
+    expect(getByText('Name is already in use')).toBeDefined();
+    expect(saveButton).toBeDisabled();
+  });
+
+  it('should display error message when name entered is an existing contact name', () => {
+    const duplicateName = MOCK_ADDRESS_BOOK[0].name;
 
     const store = configureMockStore(middleware)(state);
 

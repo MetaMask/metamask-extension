@@ -21,6 +21,7 @@ import {
   Display,
   TextVariant,
 } from '../../../../helpers/constants/design-system';
+import { isDuplicateContact } from '../../../../components/app/contact-list/utils';
 
 export default class EditContact extends PureComponent {
   static contextTypes = {
@@ -61,16 +62,7 @@ export default class EditContact extends PureComponent {
 
     const { addressBook, internalAccounts } = this.props;
 
-    const nameExistsInAddressBook = addressBook.some(
-      ({ name }) => name.toLowerCase().trim() === newName.toLowerCase().trim(),
-    );
-
-    const nameExistsInAccountList = internalAccounts.some(
-      ({ metadata }) =>
-        metadata.name.toLowerCase().trim() === newName.toLowerCase().trim(),
-    );
-
-    return !nameExistsInAddressBook && !nameExistsInAccountList;
+    return isDuplicateContact(addressBook, internalAccounts, newName);
   };
 
   handleNameChange = (e) => {
@@ -242,13 +234,13 @@ export default class EditContact extends PureComponent {
             history.push(`${viewRoute}/${address}`);
           }}
           submitText={this.context.t('save')}
-          disabled={
+          disabled={Boolean(
             (this.state.newName === name &&
               this.state.newAddress === address &&
               this.state.newMemo === memo) ||
-            !this.state.newName.trim() ||
-            this.state.nameError
-          }
+              !this.state.newName.trim() ||
+              this.state.nameError,
+          )}
         />
       </div>
     );

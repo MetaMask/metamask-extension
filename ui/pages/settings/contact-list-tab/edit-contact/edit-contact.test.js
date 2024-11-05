@@ -65,7 +65,20 @@ describe('AddContact component', () => {
     expect(saveButton).toBeDisabled();
   });
 
-  it('should display error when entering a name that is in use by another contact', () => {
+  it('should display error when entering a name that is in use by an existing contact', () => {
+    const store = configureMockStore(middleware)(state);
+    const { getByText } = renderWithProvider(<EditContact {...props} />, store);
+
+    const input = document.getElementById('nickname');
+    fireEvent.change(input, { target: { value: MOCK_ADDRESS_BOOK[0].name } });
+
+    const saveButton = getByText('Save');
+
+    expect(saveButton).toBeDisabled();
+    expect(getByText('Name is already in use')).toBeDefined();
+  });
+
+  it('should display error when entering a name that is in use by an existing account', () => {
     const store = configureMockStore(middleware)(state);
     const { getByText } = renderWithProvider(<EditContact {...props} />, store);
 

@@ -12,6 +12,7 @@ import {
 } from '../../../../../shared/modules/hexstring-utils';
 import { INVALID_RECIPIENT_ADDRESS_ERROR } from '../../../confirmations/send/send.constants';
 import { DomainInputResolutionCell } from '../../../../components/multichain/pages/send/components';
+import { isDuplicateContact } from '../../../../components/app/contact-list/utils';
 
 export default class AddContact extends PureComponent {
   static contextTypes = {
@@ -105,17 +106,7 @@ export default class AddContact extends PureComponent {
 
   validateName = (newName) => {
     const { addressBook, internalAccounts } = this.props;
-
-    const nameExistsInAddressBook = addressBook.some(
-      ({ name }) => name.toLowerCase().trim() === newName.toLowerCase().trim(),
-    );
-
-    const nameExistsInAccountList = internalAccounts.some(
-      ({ metadata }) =>
-        metadata.name.toLowerCase().trim() === newName.toLowerCase().trim(),
-    );
-
-    return !nameExistsInAddressBook && !nameExistsInAccountList;
+    return isDuplicateContact(addressBook, internalAccounts, newName);
   };
 
   handleNameChange = (newName) => {

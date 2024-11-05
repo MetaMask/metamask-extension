@@ -4,10 +4,12 @@ import { sortBy } from 'lodash';
 import Button from '../../ui/button';
 import { BannerAlert, BannerAlertSeverity } from '../../component-library';
 import RecipientGroup from './recipient-group/recipient-group.component';
+import { hasDuplicateContacts } from './utils';
 
 export default class ContactList extends PureComponent {
   static propTypes = {
     addressBook: PropTypes.array,
+    internalAccounts: PropTypes.array,
     searchForContacts: PropTypes.func,
     searchForRecents: PropTypes.func,
     searchForMyAccounts: PropTypes.func,
@@ -104,38 +106,22 @@ export default class ContactList extends PureComponent {
     );
   }
 
-  hasDuplicateContacts() {
-    const { addressBook } = this.props;
-
-    if (!addressBook) {
-      return false;
-    }
-
-    const seen = new Set();
-
-    const uniqueNamesOnly = addressBook.filter((contact) => {
-      const isDuplicate = seen.has(contact.name);
-      seen.add(contact.name);
-      return !isDuplicate;
-    });
-
-    return uniqueNamesOnly.length !== addressBook.length;
-  }
-
   render() {
     const {
       children,
       searchForRecents,
       searchForContacts,
       searchForMyAccounts,
+      addressBook,
+      internalAccounts,
     } = this.props;
-
-    const hasDuplicateContacts = this.hasDuplicateContacts();
 
     return (
       <div className="send__select-recipient-wrapper__list">
         {children || null}
-        {hasDuplicateContacts ? this.renderDuplicateContactWarning() : null}
+        {hasDuplicateContacts(addressBook, internalAccounts)
+          ? this.renderDuplicateContactWarning()
+          : null}
         {searchForRecents ? this.renderRecents() : null}
         {searchForContacts ? this.renderAddressBook() : null}
         {searchForMyAccounts ? this.renderMyAccounts() : null}
