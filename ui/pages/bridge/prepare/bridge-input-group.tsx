@@ -17,6 +17,7 @@ import {
   AvatarBase,
   IconSize,
   SelectButtonSize,
+  ButtonLink,
 } from '../../../components/component-library';
 import { AssetPicker } from '../../../components/multichain/asset-picker-amount/asset-picker';
 import { TabName } from '../../../components/multichain/asset-picker-amount/asset-picker-modal/asset-picker-modal-tabs';
@@ -48,6 +49,7 @@ import {
   Display,
   FontWeight,
   IconColor,
+  JustifyContent,
   OverflowWrap,
   TextAlign,
   TextColor,
@@ -89,6 +91,7 @@ export const BridgeInputGroup = ({
   networkProps,
   customTokenListGenerator,
   amountFieldProps,
+  onMaxButtonClick,
 }: {
   onAmountChange?: (value: string) => void;
   token: SwapsTokenObject | SwapsEthToken | null;
@@ -96,6 +99,7 @@ export const BridgeInputGroup = ({
     React.ComponentProps<typeof TextField>,
     'testId' | 'autoFocus' | 'value' | 'readOnly' | 'disabled' | 'className'
   >;
+  onMaxButtonClick?: (value: string) => void;
 } & Pick<
   React.ComponentProps<typeof AssetPicker>,
   'networkProps' | 'header' | 'customTokenListGenerator' | 'onAssetChange'
@@ -266,18 +270,28 @@ export const BridgeInputGroup = ({
           </Text>
         </Column>
       </Row>
-      <Text
-        variant={TextVariant.bodySm}
-        color={TextColor.textAlternative}
-        style={{ height: 20 }}
-      >
-        {isToField && token
-          ? t('confirmedBySources', [0, 'Avascan'])
-          : undefined}
-        {!isToField && formattedBalance
-          ? t('available', [formattedBalance, token?.symbol])
-          : undefined}
-      </Text>
+      <Row justifyContent={JustifyContent.flexStart} gap={2}>
+        <Text
+          variant={TextVariant.bodySm}
+          color={TextColor.textAlternative}
+          style={{ height: 20 }}
+        >
+          {isToField && token
+            ? t('confirmedBySources', [0, 'Avascan'])
+            : undefined}
+          {!isToField && formattedBalance
+            ? t('available', [formattedBalance, token?.symbol])
+            : undefined}
+        </Text>
+        {onMaxButtonClick && formattedBalance && (
+          <ButtonLink
+            variant={TextVariant.bodySmMedium}
+            onClick={() => onMaxButtonClick(formattedBalance)}
+          >
+            {t('max')}
+          </ButtonLink>
+        )}
+      </Row>
     </Column>
   );
 };
