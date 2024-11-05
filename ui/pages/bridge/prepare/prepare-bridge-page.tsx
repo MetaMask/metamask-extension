@@ -8,6 +8,7 @@ import {
   setFromChain,
   setFromToken,
   setFromTokenInputValue,
+  setSrcTokenExchangeRates,
   setToChain,
   setToChainId,
   setToToken,
@@ -53,7 +54,7 @@ const PrepareBridgePage = () => {
 
   const t = useI18nContext();
 
-  const currentCurrency = useSelector(getCurrentCurrency);
+  const currency = useSelector(getCurrentCurrency);
 
   const fromToken = useSelector(getFromToken);
   const fromTokens = useSelector(getFromTokens);
@@ -128,15 +129,17 @@ const PrepareBridgePage = () => {
     debouncedUpdateQuoteRequestInController(quoteParams);
   }, Object.values(quoteParams));
 
+  const debouncedFetchFromExchangeRate = debounce(
+    (chainId: Hex, tokenAddress: string) => {
+      dispatch(setSrcTokenExchangeRates({ chainId, tokenAddress, currency }));
+    },
+    SECOND,
+  );
+
   const debouncedFetchToExchangeRate = debounce(
-    async (toChainId: Hex, toTokenAddress: string) =>
-      dispatch(
-        setDestTokenExchangeRates({
-          chainId: toChainId,
-          tokenAddress: toTokenAddress,
-          currency: currentCurrency,
-        }),
-      ),
+    (chainId: Hex, tokenAddress: string) => {
+      dispatch(setDestTokenExchangeRates({ chainId, tokenAddress, currency }));
+    },
     SECOND,
   );
 
@@ -153,6 +156,9 @@ const PrepareBridgePage = () => {
           onAssetChange={(token) => {
             dispatch(setFromToken(token));
             dispatch(setFromTokenInputValue(null));
+            fromChain?.chainId &&
+              token?.address &&
+              debouncedFetchFromExchangeRate(fromChain.chainId, token.address);
           }}
           networkProps={{
             network: fromChain,
@@ -212,6 +218,12 @@ const PrepareBridgePage = () => {
                 debouncedFetchToExchangeRate(
                   fromChain.chainId,
                   fromToken.address,
+                );
+              toChain?.chainId &&
+                toToken?.address &&
+                debouncedFetchFromExchangeRate(
+                  toChain.chainId,
+                  toToken.address,
                 );
             }}
           />
