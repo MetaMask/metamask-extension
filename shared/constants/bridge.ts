@@ -30,3 +30,5 @@ export const BRIDGE_QUOTE_MAXRETURN_VALUE_DIFFERENCE_PERCENTAGE = 0.8; // if a q
 
 // TODO change to high
 export const BRIDGE_PREFERRED_GAS_ESTIMATE = 'medium';
+
+export const BRIDGE_MIN_FIAT_SRC_AMOUNT = 10;

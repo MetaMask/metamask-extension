@@ -17,6 +17,7 @@ import {
 import {
   ALLOWED_BRIDGE_CHAIN_IDS,
   BRIDGE_PREFERRED_GAS_ESTIMATE,
+  BRIDGE_MIN_FIAT_SRC_AMOUNT,
   BRIDGE_QUOTE_MAX_ETA_SECONDS as MAX_ETA_SECONDS,
   BRIDGE_QUOTE_MAXRETURN_VALUE_DIFFERENCE_PERCENTAGE as MAX_RETURN_VALUE_DIFF_PERCENTAGE,
 } from '../../../shared/constants/bridge';
@@ -407,10 +408,20 @@ export const getFromAmountInFiat = createSelector(
 
 export const getValidationErrors = createDeepEqualSelector(
   getBridgeQuotes,
-  ({ activeQuote, quotesLastFetchedMs, isLoading }) => {
+  getFromAmountInFiat,
+  getFromAmount,
+  (
+    { activeQuote, quotesLastFetchedMs, isLoading },
+    fromAmountInFiat,
+    fromAmount,
+  ) => {
     return {
       isNoQuotesAvailable: !activeQuote && quotesLastFetchedMs && !isLoading,
-      isSrcAmountLessThan30: activeQuote?.sentAmount.fiat?.lt(30),
+      isSrcAmountLessThan30:
+        activeQuote?.sentAmount.fiat?.lt(30) &&
+        activeQuote?.sentAmount.fiat?.gt(BRIDGE_MIN_FIAT_SRC_AMOUNT),
+      isSrcAmountTooLow:
+        fromAmount && fromAmountInFiat.lte(BRIDGE_MIN_FIAT_SRC_AMOUNT),
     };
   },
 );
