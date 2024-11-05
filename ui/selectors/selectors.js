@@ -554,7 +554,7 @@ function getNativeTokenInfo(state, chainId) {
   }
 
   const { provider } = state.metamask;
-  if (provider && provider.chainId === chainId) {
+  if (provider?.chainId === chainId) {
     const symbol = provider.ticker || AssetType.native;
     const decimals = provider.nativeCurrency?.decimals || 18;
     const name = provider.nickname || 'Native Token';
