@@ -36,7 +36,7 @@ export default function BridgeStepList({
 
   return (
     <Box display={Display.Flex} flexDirection={FlexDirection.Column} gap={4}>
-      {steps.map((step, i) => (
+      {steps.map((step) => (
         <BridgeStep
           step={step}
           networkConfigurationsByChainId={networkConfigurationsByChainId}
