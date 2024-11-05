@@ -151,11 +151,12 @@ describe('Switch Ethereum Chain for two dapps', function () {
         await driver.clickElement('#connectButton');
 
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
-
-        await driver.clickElementAndWaitForWindowToClose({
-          text: 'Connect',
-          tag: 'button',
-        });
+        await driver.waitForSelector(
+          '[data-testid="confirm-btn"]',
+        );
+        await driver.clickElementAndWaitForWindowToClose(
+          '[data-testid="confirm-btn"]',
+        );
 
         // Switch to Dapp One and connect it
         await driver.switchToWindowWithUrl(DAPP_URL);
