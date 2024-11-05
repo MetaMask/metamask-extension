@@ -38,11 +38,11 @@ describe('Account syncing - Add Account @no-mmi', function () {
           },
         },
         async ({ driver }) => {
-          await completeImportSRPOnboardingFlow(
+          await completeImportSRPOnboardingFlow({
             driver,
-            NOTIFICATIONS_TEAM_SEED_PHRASE,
-            NOTIFICATIONS_TEAM_PASSWORD,
-          );
+            seedPhrase: NOTIFICATIONS_TEAM_SEED_PHRASE,
+            password: NOTIFICATIONS_TEAM_PASSWORD,
+          });
           const homePage = new HomePage(driver);
           await homePage.check_pageIsLoaded();
           await homePage.check_expectedBalanceIsDisplayed();
@@ -81,11 +81,11 @@ describe('Account syncing - Add Account @no-mmi', function () {
           },
         },
         async ({ driver }) => {
-          await completeImportSRPOnboardingFlow(
+          await completeImportSRPOnboardingFlow({
             driver,
-            NOTIFICATIONS_TEAM_SEED_PHRASE,
-            NOTIFICATIONS_TEAM_PASSWORD,
-          );
+            seedPhrase: NOTIFICATIONS_TEAM_SEED_PHRASE,
+            password: NOTIFICATIONS_TEAM_PASSWORD,
+          });
           const homePage = new HomePage(driver);
           await homePage.check_pageIsLoaded();
           await homePage.check_expectedBalanceIsDisplayed();
@@ -135,11 +135,11 @@ describe('Account syncing - Add Account @no-mmi', function () {
           },
         },
         async ({ driver }) => {
-          await completeImportSRPOnboardingFlow(
+          await completeImportSRPOnboardingFlow({
             driver,
-            NOTIFICATIONS_TEAM_SEED_PHRASE,
-            NOTIFICATIONS_TEAM_PASSWORD,
-          );
+            seedPhrase: NOTIFICATIONS_TEAM_SEED_PHRASE,
+            password: NOTIFICATIONS_TEAM_PASSWORD,
+          });
           const homePage = new HomePage(driver);
           await homePage.check_pageIsLoaded();
           await homePage.check_expectedBalanceIsDisplayed();
@@ -176,11 +176,11 @@ describe('Account syncing - Add Account @no-mmi', function () {
           },
         },
         async ({ driver }) => {
-          await completeImportSRPOnboardingFlow(
+          await completeImportSRPOnboardingFlow({
             driver,
-            NOTIFICATIONS_TEAM_SEED_PHRASE,
-            NOTIFICATIONS_TEAM_PASSWORD,
-          );
+            seedPhrase: NOTIFICATIONS_TEAM_SEED_PHRASE,
+            password: NOTIFICATIONS_TEAM_PASSWORD,
+          });
           const homePage = new HomePage(driver);
           await homePage.check_pageIsLoaded();
           await homePage.check_expectedBalanceIsDisplayed();

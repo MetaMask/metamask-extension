@@ -45,11 +45,11 @@ describe('Account syncing - Opt-out Profile Sync @no-mmi', function () {
           },
         },
         async ({ driver }) => {
-          await importSRPOnboardingFlow(
+          await importSRPOnboardingFlow({
             driver,
-            NOTIFICATIONS_TEAM_SEED_PHRASE,
-            NOTIFICATIONS_TEAM_PASSWORD,
-          );
+            seedPhrase: NOTIFICATIONS_TEAM_SEED_PHRASE,
+            password: NOTIFICATIONS_TEAM_PASSWORD,
+          });
           const onboardingCompletePage = new OnboardingCompletePage(driver);
           await onboardingCompletePage.check_pageIsLoaded();
           await onboardingCompletePage.navigateToDefaultPrivacySettings();
@@ -154,11 +154,11 @@ describe('Account syncing - Opt-out Profile Sync @no-mmi', function () {
           },
         },
         async ({ driver }) => {
-          await completeImportSRPOnboardingFlow(
+          await completeImportSRPOnboardingFlow({
             driver,
-            walletSrp,
-            NOTIFICATIONS_TEAM_PASSWORD,
-          );
+            seedPhrase: walletSrp,
+            password: NOTIFICATIONS_TEAM_PASSWORD,
+          });
           const homePage = new HomePage(driver);
           await homePage.check_pageIsLoaded();
           await homePage.check_expectedBalanceIsDisplayed();

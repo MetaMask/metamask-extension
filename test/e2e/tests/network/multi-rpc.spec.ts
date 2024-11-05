@@ -80,7 +80,7 @@ describe('MultiRpc:', function (this: Suite) {
       },
 
       async ({ driver, ganacheServer }) => {
-        await completeImportSRPOnboardingFlow(driver);
+        await completeImportSRPOnboardingFlow({ driver });
         const homePage = new HomePage(driver);
         await homePage.check_pageIsLoaded();
         await homePage.check_ganacheBalanceIsDisplayed(ganacheServer);
@@ -348,7 +348,7 @@ describe('MultiRpc:', function (this: Suite) {
       },
 
       async ({ driver }: { driver: Driver }) => {
-        await importSRPOnboardingFlow(driver);
+        await importSRPOnboardingFlow({ driver });
         const onboardingCompletePage = new OnboardingCompletePage(driver);
         await onboardingCompletePage.check_pageIsLoaded();
         await onboardingCompletePage.navigateToDefaultPrivacySettings();

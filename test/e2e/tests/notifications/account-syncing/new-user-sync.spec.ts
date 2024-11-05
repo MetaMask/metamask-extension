@@ -86,11 +86,11 @@ describe('Account syncing - New User @no-mmi', function () {
         },
         async ({ driver }) => {
           // Onboard with import flow using SRP from new account created above
-          await completeImportSRPOnboardingFlow(
+          await completeImportSRPOnboardingFlow({
             driver,
-            walletSrp,
-            NOTIFICATIONS_TEAM_PASSWORD,
-          );
+            seedPhrase: walletSrp,
+            password: NOTIFICATIONS_TEAM_PASSWORD,
+          });
           const homePage = new HomePage(driver);
           await homePage.check_pageIsLoaded();
           await homePage.check_expectedBalanceIsDisplayed();

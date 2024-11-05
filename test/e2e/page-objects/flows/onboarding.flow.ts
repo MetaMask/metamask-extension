@@ -41,17 +41,23 @@ export const createNewWalletOnboardingFlow = async (
 /**
  * Import SRP onboarding flow
  *
- * @param driver - The WebDriver instance.
- * @param seedPhrase - The seed phrase to import. Defaults to E2E_SRP.
- * @param password - The password to use. Defaults to WALLET_PASSWORD.
+ * @param options - The options object.
+ * @param options.driver - The WebDriver instance.
+ * @param [options.seedPhrase] - The seed phrase to import.
+ * @param [options.password] - The password to use.
  */
-export const importSRPOnboardingFlow = async (
-  driver: Driver,
-  seedPhrase: string = E2E_SRP,
-  password: string = WALLET_PASSWORD,
-) => {
+export const importSRPOnboardingFlow = async ({
+  driver,
+  seedPhrase = E2E_SRP,
+  password = WALLET_PASSWORD,
+}: {
+  driver: Driver;
+  seedPhrase?: string;
+  password?: string;
+}): Promise<void> => {
   console.log('Starting the import of SRP onboarding flow');
   await driver.navigate();
+
   const startOnboardingPage = new StartOnboardingPage(driver);
   await startOnboardingPage.check_pageIsLoaded();
   await startOnboardingPage.checkTermsCheckbox();
@@ -92,17 +98,24 @@ export const completeCreateNewWalletOnboardingFlow = async (
 /**
  * Complete import SRP onboarding flow
  *
- * @param driver - The WebDriver instance.
- * @param seedPhrase - The seed phrase to import. Defaults to E2E_SRP.
- * @param password - The password to use. Defaults to WALLET_PASSWORD.
+ * @param options - The options object.
+ * @param options.driver - The WebDriver instance.
+ * @param [options.seedPhrase] - The seed phrase to import. Defaults to E2E_SRP.
+ * @param [options.password] - The password to use. Defaults to WALLET_PASSWORD.
+ * @returns A promise that resolves when the onboarding flow is complete.
  */
-export const completeImportSRPOnboardingFlow = async (
-  driver: Driver,
-  seedPhrase: string = E2E_SRP,
-  password: string = WALLET_PASSWORD,
-) => {
-  console.log('start to complete import srp onboarding flow ');
-  await importSRPOnboardingFlow(driver, seedPhrase, password);
+export const completeImportSRPOnboardingFlow = async ({
+  driver,
+  seedPhrase = E2E_SRP,
+  password = WALLET_PASSWORD,
+}: {
+  driver: Driver;
+  seedPhrase?: string;
+  password?: string;
+}): Promise<void> => {
+  console.log('Starting to complete import SRP onboarding flow');
+  await importSRPOnboardingFlow({ driver, seedPhrase, password });
+
   const onboardingCompletePage = new OnboardingCompletePage(driver);
   await onboardingCompletePage.check_pageIsLoaded();
   await onboardingCompletePage.check_walletReadyMessageIsDisplayed();
