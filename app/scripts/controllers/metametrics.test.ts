@@ -298,6 +298,34 @@ describe('MetaMetricsController', function () {
 
       jest.useRealTimers();
     });
+
+    it('should track the initial event if provided', function () {
+      const metaMetricsController = getMetaMetricsController({
+        participateInMetaMetrics: true,
+      });
+      const spy = jest.spyOn(segmentMock, 'track');
+      const mockInitialEventName = 'Test Initial Event';
+
+      metaMetricsController.createEventFragment({
+        ...SAMPLE_PERSISTED_EVENT_NO_ID,
+        initialEvent: mockInitialEventName,
+      });
+
+      expect(spy).toHaveBeenCalledTimes(1);
+    });
+
+    it('should not call track if no initialEvent was provided', function () {
+      const metaMetricsController = getMetaMetricsController({
+        participateInMetaMetrics: true,
+      });
+      const spy = jest.spyOn(segmentMock, 'track');
+
+      metaMetricsController.createEventFragment({
+        ...SAMPLE_PERSISTED_EVENT_NO_ID,
+      });
+
+      expect(spy).toHaveBeenCalledTimes(0);
+    });
   });
 
   describe('generateMetaMetricsId', function () {
