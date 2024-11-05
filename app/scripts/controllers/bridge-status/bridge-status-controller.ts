@@ -252,9 +252,13 @@ export default class BridgeStatusController extends StaticIntervalPollingControl
     });
 
     sourceTxHashesToDelete.forEach((sourceTxHash) => {
-      this.stopPollingByPollingToken(
-        this.#pollingTokensBySrcTxHash[sourceTxHash],
-      );
+      const pollingToken = this.#pollingTokensBySrcTxHash[sourceTxHash];
+
+      if (pollingToken) {
+        this.stopPollingByPollingToken(
+          this.#pollingTokensBySrcTxHash[sourceTxHash],
+        );
+      }
     });
 
     this.update((_state) => {
