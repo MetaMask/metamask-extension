@@ -52,8 +52,7 @@ export default function TokenList({ onTokenClick }: TokenListProps) {
         (token: Record<string, any>) => {
           const { address } = token;
           const balance =
-            selectedAccountTokenBalancesAcrossChains[chainId]?.[address] ||
-            '0.00000';
+            selectedAccountTokenBalancesAcrossChains[chainId]?.[address];
 
           const baseCurrency = marketData[chainId]?.[address]?.currency;
 

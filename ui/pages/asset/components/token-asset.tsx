@@ -51,8 +51,6 @@ const TokenAsset = ({ token }: { token: Token }) => {
   const iconUrl = tokenData?.iconUrl || tokenDataFromChain?.iconUrl || '';
   const aggregators = tokenData?.aggregators;
 
-  console.log({ name, chainId, token });
-
   const {
     tokensWithBalances,
   }: { tokensWithBalances: { string: string; balance: string }[] } =
