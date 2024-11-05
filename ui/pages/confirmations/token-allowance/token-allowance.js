@@ -29,7 +29,6 @@ import { PageContainerFooter } from '../../../components/ui/page-container';
 import ContractDetailsModal from '../components/contract-details-modal/contract-details-modal';
 import {
   getCustomTokenAmount,
-  getNetworkIdentifier,
   transactionFeeSelector,
   getKnownMethodData,
   getUnapprovedTxCount,
@@ -76,8 +75,11 @@ import FeeDetailsComponent from '../components/fee-details-component/fee-details
 import { BlockaidResultType } from '../../../../shared/constants/security-provider';
 import { QueuedRequestsBannerAlert } from '../confirmation/components/queued-requests-banner-alert/queued-requests-banner-alert';
 
-// eslint-disable-next-line import/no-duplicates
-import { selectNetworkConfigurationByChainId } from '../../../selectors/selectors';
+import {
+  selectNetworkConfigurationByChainId,
+  selectNetworkIdentifierByChainId,
+  // eslint-disable-next-line import/no-duplicates
+} from '../../../selectors/selectors';
 
 ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
 // eslint-disable-next-line import/no-duplicates
@@ -145,8 +147,12 @@ export default function TokenAllowance({
   const fromAccount = useSelector((state) =>
     getTargetAccountWithSendEtherInfo(state, userAddress),
   );
-  const networkIdentifier = useSelector(getNetworkIdentifier);
+
   const { chainId } = txData;
+
+  const networkIdentifier = useSelector((state) =>
+    selectNetworkIdentifierByChainId(state, chainId),
+  );
 
   const { blockExplorerUrls } =
     useSelector((state) =>

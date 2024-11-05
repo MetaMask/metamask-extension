@@ -33,6 +33,7 @@ export const ApproveStaticSimulation = () => {
     transactionMeta?.txParams?.to,
     transactionMeta?.txParams?.from,
     transactionMeta?.txParams?.data,
+    transactionMeta?.chainId,
   );
 
   const decimals = initialDecimals || '0';

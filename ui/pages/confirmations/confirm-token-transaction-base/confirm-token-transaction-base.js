@@ -19,8 +19,8 @@ import {
   getSelectedInternalAccount,
   selectConversionRateByChainId,
   selectNetworkConfigurationByChainId,
+  selectNftContractsByChainId,
 } from '../../../selectors';
-import { getNftContracts } from '../../../ducks/metamask/metamask';
 import { TokenStandard } from '../../../../shared/constants/transaction';
 import {
   getWeiHexFromDecimalValue,
@@ -61,7 +61,10 @@ export default function ConfirmTokenTransactionBase({
   );
 
   const { address: userAddress } = useSelector(getSelectedInternalAccount);
-  const nftCollections = useSelector(getNftContracts);
+
+  const nftCollections = useSelector((state) =>
+    selectNftContractsByChainId(state, chainId),
+  );
 
   const ethTransactionTotalMaxAmount = Number(
     hexWEIToDecETH(hexMaximumTransactionFee),

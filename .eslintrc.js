@@ -478,13 +478,20 @@ module.exports = {
         'no-restricted-syntax': [
           'error',
           {
-            selector:
-              'ImportSpecifier[imported.name=/' +
-              '(getCurrentChainId)|' +
-              '(getNativeCurrency)|' +
-              '(getProviderConfig)|' +
-              '(getRpcPrefsForCurrentProvider)|' +
-              '(getConversionRate)/]',
+            selector: `ImportSpecifier[imported.name=/${[
+              'getConversionRate',
+              'getCurrentChainId',
+              'getNativeCurrency',
+              'getNetworkIdentifier',
+              'getNftContracts',
+              'getNfts',
+              'getProviderConfig',
+              'getRpcPrefsForCurrentProvider',
+              'getUSDConversionRate',
+              'isCurrentProviderCustom',
+            ]
+              .map((method) => `(${method})`)
+              .join('|')}/]`,
             message: 'Avoid using global network selectors in confirmations',
           },
         ],
