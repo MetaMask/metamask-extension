@@ -13,7 +13,11 @@ import {
   TransactionMeta,
   TransactionStatus,
 } from '@metamask/transaction-controller';
-import { AlignItems, Display } from '../../../helpers/constants/design-system';
+import {
+  AlignItems,
+  Display,
+  TextColor,
+} from '../../../helpers/constants/design-system';
 
 /**
  * bridge actions will have step.srcChainId !== step.destChainId
@@ -119,8 +123,8 @@ export default function BridgeStepDescription({
       gap={2}
       className="bridge-transaction-details__step-grid--desc"
     >
-      {time && <Text>{time}</Text>}
-      <Text>
+      {time && <Text color={TextColor.textDefault}>{time}</Text>}
+      <Text color={TextColor.textAlternative}>
         {step.action === ActionTypes.BRIDGE &&
           getBridgeActionText(stepStatus, step, networkConfigurationsByChainId)}
         {step.action === ActionTypes.SWAP &&
