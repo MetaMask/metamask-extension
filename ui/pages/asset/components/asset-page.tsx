@@ -10,7 +10,7 @@ import {
   getIsSwapsChain,
   getSelectedInternalAccount,
   getSwapsDefaultToken,
-  getTokensMarketDataAcrossChains,
+  getMarketData,
   getCurrencyRates,
   getSelectedAccountTokenBalancesAcrossChains,
 } from '../../../selectors';
@@ -99,7 +99,7 @@ const AssetPage = ({
 
   const selectedAccountTokenBalancesAcrossChains: Record<string, any> =
     useSelector(getSelectedAccountTokenBalancesAcrossChains);
-  const marketDataAcrossChains = useSelector(getTokensMarketDataAcrossChains);
+  const marketDataAcrossChains = useSelector(getMarketData);
   const currencyRates = useSelector(getCurrencyRates);
 
   const { chainId, type, symbol, name, image } = asset;
