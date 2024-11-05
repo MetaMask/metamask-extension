@@ -9,8 +9,12 @@ import {
   Text,
 } from '../../../components/component-library';
 import {
+  AlignItems,
+  Color,
   Display,
   FlexDirection,
+  IconColor,
+  JustifyContent,
   TextTransform,
 } from '../../../helpers/constants/design-system';
 import {
@@ -35,15 +39,51 @@ export default function BridgeStepList({
   const steps = bridgeHistoryItem.quote.steps;
 
   return (
-    <Box display={Display.Flex} flexDirection={FlexDirection.Column} gap={4}>
-      {steps.map((step) => (
-        <BridgeStep
-          step={step}
-          networkConfigurationsByChainId={networkConfigurationsByChainId}
-          srcChainTxMeta={srcChainTxMeta}
-          bridgeHistoryItem={bridgeHistoryItem}
-        />
-      ))}
+    <Box
+      display={Display.Flex}
+      justifyContent={JustifyContent.flexStart}
+      gap={4}
+    >
+      {/* Dots and vertical lines */}
+      <Box
+        display={Display.Flex}
+        flexDirection={FlexDirection.Column}
+        alignItems={AlignItems.center}
+      >
+        {steps.map((step, i) => (
+          <>
+            <Icon name={IconName.FullCircle} color={IconColor.primaryDefault} />
+            {i !== steps.length - 1 && (
+              <div
+                style={{
+                  height: '46px',
+                  width: '1px',
+                  backgroundColor: `var(--color-${Color.iconMuted})`,
+                }}
+              />
+            )}
+          </>
+        ))}
+      </Box>
+
+      {/* Time and descriptions */}
+      <Box
+        display={Display.Flex}
+        flexDirection={FlexDirection.Column}
+        alignItems={AlignItems.flexStart}
+        gap={8}
+      >
+        {steps.map((step, i) => (
+          <>
+            <BridgeStep
+              step={step}
+              networkConfigurationsByChainId={networkConfigurationsByChainId}
+              srcChainTxMeta={srcChainTxMeta}
+              bridgeHistoryItem={bridgeHistoryItem}
+            />
+          </>
+        ))}
+      </Box>
     </Box>
   );
 }
