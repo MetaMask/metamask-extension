@@ -1,18 +1,26 @@
-import React from 'react';
+import React, { useEffect, useRef } from 'react';
 import { Hex } from '@metamask/utils';
 import { useSelector } from 'react-redux';
 import { SwapsTokenObject } from '../../../../shared/constants/swaps';
 import {
-  Box,
   Text,
   TextField,
   TextFieldType,
+  SelectButton,
+  Icon,
+  IconName,
+  BadgeWrapper,
+  AvatarToken,
+  AvatarNetwork,
+  AvatarNetworkSize,
+  BadgeWrapperPosition,
+  AvatarBase,
+  IconSize,
+  SelectButtonSize,
 } from '../../../components/component-library';
 import { AssetPicker } from '../../../components/multichain/asset-picker-amount/asset-picker';
 import { TabName } from '../../../components/multichain/asset-picker-amount/asset-picker-modal/asset-picker-modal-tabs';
-import CurrencyDisplay from '../../../components/ui/currency-display';
 import { useI18nContext } from '../../../hooks/useI18nContext';
-import Tooltip from '../../../components/ui/tooltip';
 import { getCurrentCurrency, SwapsEthToken } from '../../../selectors';
 import {
   ERC20Asset,
@@ -28,9 +36,24 @@ import useLatestBalance from '../../../hooks/bridge/useLatestBalance';
 import {
   getBridgeQuotes,
   getFromAmountInFiat,
-  getFromChain,
 } from '../../../ducks/bridge/selectors';
 import { formatFiatAmount } from '../utils/quote';
+
+import { Column, Row } from '../layout';
+import {
+  AlignItems,
+  BackgroundColor,
+  BlockSize,
+  BorderRadius,
+  Display,
+  FontWeight,
+  IconColor,
+  OverflowWrap,
+  TextAlign,
+  TextColor,
+  TextVariant,
+} from '../../../helpers/constants/design-system';
+import { getProviderConfig } from '../../../ducks/metamask/metamask';
 
 const generateAssetFromToken = (
   chainId: Hex,
@@ -59,19 +82,17 @@ const generateAssetFromToken = (
 };
 
 export const BridgeInputGroup = ({
-  className,
   header,
   token,
   onAssetChange,
   onAmountChange,
   networkProps,
   customTokenListGenerator,
-  amountFieldProps = {},
+  amountFieldProps,
 }: {
-  className: string;
   onAmountChange?: (value: string) => void;
   token: SwapsTokenObject | SwapsEthToken | null;
-  amountFieldProps?: Pick<
+  amountFieldProps: Pick<
     React.ComponentProps<typeof TextField>,
     'testId' | 'autoFocus' | 'value' | 'readOnly' | 'disabled' | 'className'
   >;
@@ -82,72 +103,176 @@ export const BridgeInputGroup = ({
   const t = useI18nContext();
 
   const { isLoading, activeQuote } = useSelector(getBridgeQuotes);
-  const { chainId: fromChainId } = useSelector(getFromChain) ?? {};
   const currency = useSelector(getCurrentCurrency);
   const fromAmountInFiat = useSelector(getFromAmountInFiat);
+
+  const providerConfig = useSelector(getProviderConfig);
+  const isToField = networkProps?.network?.chainId !== providerConfig?.chainId;
 
   const { formattedBalance } = useLatestBalance(
     token,
     networkProps?.network?.chainId,
   );
 
+  const asset =
+    networkProps?.network?.chainId && token
+      ? generateAssetFromToken(networkProps.network.chainId, token)
+      : undefined;
+
+  const inputRef = useRef<HTMLInputElement | null>(null);
+
+  useEffect(() => {
+    if (inputRef.current) {
+      inputRef.current.value = amountFieldProps?.value?.toString() ?? '';
+    }
+  }, [amountFieldProps.value]);
+
   return (
-    <Box className={className}>
-      <Box className="prepare-bridge-page__input-row">
+    <Column paddingInline={4} gap={1}>
+      <Row gap={4}>
         <AssetPicker
           header={header}
           visibleTabs={[TabName.TOKENS]}
-          asset={
-            networkProps?.network?.chainId && token
-              ? generateAssetFromToken(networkProps.network.chainId, token)
-              : undefined
-          }
-          onAssetChange={onAssetChange}
+          asset={asset}
+          onAssetChange={(a) => {
+            onAssetChange(a);
+            inputRef?.current?.focus();
+          }}
           networkProps={networkProps}
           customTokenListGenerator={customTokenListGenerator}
-        />
-        <Tooltip
-          containerClassName="amount-tooltip"
-          position="top"
-          title={amountFieldProps.value}
-          disabled={(amountFieldProps.value?.toString()?.length ?? 0) < 12}
-          arrow
-          hideOnClick={false}
-          // explicitly inherit display since Tooltip will default to block
-          style={{ display: 'inherit' }}
+        >
+          {(onClickHandler, networkImageSrc) => (
+            <SelectButton
+              borderRadius={BorderRadius.pill}
+              backgroundColor={BackgroundColor.backgroundAlternative}
+              style={{
+                width: '180px',
+                height: '54px',
+                maxWidth: '343px',
+                border: 'none',
+                paddingLeft: 12,
+                paddingRight: 12,
+                paddingTop: 6,
+                paddingBottom: 6,
+              }}
+              gap={2}
+              size={SelectButtonSize.Lg}
+              alignItems={AlignItems.center}
+              descriptionProps={{
+                variant: TextVariant.bodyMd,
+                overflowWrap: OverflowWrap.BreakWord,
+                ellipsis: false,
+              }}
+              caretIconProps={{
+                name: IconName.ArrowDown,
+                color: IconColor.iconMuted,
+              }}
+              onClick={onClickHandler}
+              label={<Text ellipsis>{asset?.symbol ?? t('bridgeTo')}</Text>}
+              description={
+                token && networkProps?.network
+                  ? t('onNetwork', [networkProps.network.name])
+                  : undefined
+              }
+              startAccessory={
+                <BadgeWrapper
+                  badge={
+                    asset && networkProps?.network?.name ? (
+                      <AvatarNetwork
+                        name={networkProps.network.name}
+                        src={networkImageSrc}
+                        size={AvatarNetworkSize.Xs}
+                      />
+                    ) : undefined
+                  }
+                  position={BadgeWrapperPosition.bottomRight}
+                  badgeContainerProps={{ width: BlockSize.Min }}
+                  style={{ alignSelf: 'auto' }}
+                >
+                  {asset ? (
+                    <AvatarToken
+                      src={asset.image}
+                      backgroundColor={BackgroundColor.backgroundHover}
+                      name={asset.symbol}
+                    />
+                  ) : (
+                    <AvatarBase
+                      backgroundColor={BackgroundColor.backgroundHover}
+                    >
+                      <Icon
+                        name={IconName.Add}
+                        size={IconSize.Sm}
+                        color={IconColor.infoInverse}
+                      />
+                    </AvatarBase>
+                  )}
+                </BadgeWrapper>
+              }
+            />
+          )}
+        </AssetPicker>
+        <Column
+          style={{ width: 96 }}
+          display={
+            isToField && !activeQuote && !isLoading
+              ? Display.None
+              : Display.Flex
+          }
         >
           <TextField
-            type={TextFieldType.Number}
+            inputRef={inputRef}
+            type={TextFieldType.Text}
             className="amount-input"
+            style={{ width: '100%', gap: '4px', height: 'fit-content' }}
             placeholder={
-              isLoading && !activeQuote ? t('bridgeCalculatingAmount') : '0'
+              isLoading && !activeQuote && isToField
+                ? t('bridgeCalculatingAmount')
+                : '0'
             }
             onChange={(e) => {
               onAmountChange?.(e.target.value);
             }}
+            endAccessory={
+              (token?.symbol?.length ?? 0) > 6 ||
+              (isToField && !activeQuote) ? undefined : (
+                <Text
+                  style={{ maxWidth: 'fit-content' }}
+                  width={BlockSize.Full}
+                  fontWeight={FontWeight.Medium}
+                  ellipsis
+                >
+                  {token?.symbol}
+                </Text>
+              )
+            }
             {...amountFieldProps}
           />
-        </Tooltip>
-      </Box>
-      <Box className="prepare-bridge-page__amounts-row">
-        <Text>
-          {formattedBalance ? `${t('balance')}: ${formattedBalance}` : ' '}
-        </Text>
-        {networkProps?.network?.chainId &&
-        fromChainId === networkProps.network.chainId ? (
-          <CurrencyDisplay
-            currency={currency}
-            displayValue={formatFiatAmount(fromAmountInFiat, currency)}
-            hideLabel
-          />
-        ) : (
-          <>
-            {/* TODO use same style as src fiat value */}
-            {activeQuote?.toTokenAmount?.fiat &&
-              formatFiatAmount(activeQuote?.toTokenAmount?.fiat, currency)}
-          </>
-        )}
-      </Box>
-    </Box>
+          <Text
+            variant={TextVariant.bodyMd}
+            fontWeight={FontWeight.Normal}
+            color={TextColor.textMuted}
+            textAlign={TextAlign.End}
+            ellipsis
+          >
+            {isToField
+              ? activeQuote?.toTokenAmount?.fiat &&
+                formatFiatAmount(activeQuote?.toTokenAmount?.fiat, currency)
+              : formatFiatAmount(fromAmountInFiat, currency)}
+          </Text>
+        </Column>
+      </Row>
+      <Text
+        variant={TextVariant.bodySm}
+        color={TextColor.textAlternative}
+        style={{ height: 20 }}
+      >
+        {isToField && token
+          ? t('confirmedBySources', [0, 'Avascan'])
+          : undefined}
+        {!isToField && formattedBalance
+          ? t('available', [formattedBalance, token?.symbol])
+          : undefined}
+      </Text>
+    </Column>
   );
 };

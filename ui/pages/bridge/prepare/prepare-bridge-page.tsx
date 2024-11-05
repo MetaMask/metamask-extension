@@ -41,6 +41,8 @@ import {
 } from '../../../components/component-library';
 import {
   BlockSize,
+  BorderColor,
+  BorderRadius,
   FlexDirection,
   JustifyContent,
   TextAlign,
@@ -193,10 +195,16 @@ const PrepareBridgePage = () => {
   }, [fromChain, fromToken, fromTokens, searchParams]);
 
   return (
-    <Box className="prepare-bridge-page">
-      <Box className="prepare-bridge-page__content">
+    <Column className="prepare-bridge-page">
+      <Column
+        paddingTop={6}
+        paddingBottom={4}
+        paddingInline={0}
+        borderRadius={BorderRadius.LG}
+        borderWidth={1}
+        borderColor={BorderColor.borderMuted}
+      >
         <BridgeInputGroup
-          className="bridge-box"
           header={t('bridgeFrom')}
           token={fromToken}
           onAmountChange={(e) => {
@@ -235,7 +243,11 @@ const PrepareBridgePage = () => {
           }}
         />
 
-        <Box className="prepare-bridge-page__switch-tokens">
+        <Box
+          className="prepare-bridge-page__switch-tokens"
+          paddingTop={2}
+          paddingBottom={4}
+        >
           <ButtonIcon
             iconProps={{
               className: classnames({
@@ -279,7 +291,6 @@ const PrepareBridgePage = () => {
         </Box>
 
         <BridgeInputGroup
-          className="bridge-box"
           header={t('bridgeTo')}
           token={toToken}
           onAssetChange={(token) => {
@@ -305,13 +316,14 @@ const PrepareBridgePage = () => {
             testId: 'to-amount',
             readOnly: true,
             disabled: true,
-            value: activeQuote?.toTokenAmount?.raw.toFixed(2) ?? '0',
+            value: activeQuote?.toTokenAmount?.raw.toString(),
+            autoFocus: false,
             className: activeQuote?.toTokenAmount.raw
               ? 'amount-input defined'
               : 'amount-input',
           }}
         />
-      </Box>
+      </Column>
 
       <Column height={BlockSize.Full} justifyContent={JustifyContent.center}>
         {isLoading && !activeQuote ? (
@@ -347,7 +359,7 @@ const PrepareBridgePage = () => {
           ) : null}
         </Footer>
       </Column>
-    </Box>
+    </Column>
   );
 };
 
