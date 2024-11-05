@@ -17,6 +17,7 @@ import {
   TransactionMeta,
   TransactionStatus,
 } from '@metamask/transaction-controller';
+import Segment from './segment';
 
 const getTxIndex = (
   srcChainTxHash: string | undefined,
@@ -75,48 +76,8 @@ export default function BridgeActivityItemTxSegments({
     <Box display={Display.Flex} flexDirection={FlexDirection.Column} gap={2}>
       <Text color={TextColor.textAlternative}>Transaction {txIndex} of 2</Text>
       <Box display={Display.Flex} gap={2} width={BlockSize.Full}>
-        {/* Not started segment */}
-        <Box
-          width={BlockSize.Half}
-          backgroundColor={BackgroundColor.backgroundAlternative}
-          borderRadius={BorderRadius.pill}
-          style={{
-            height: '4px',
-          }}
-        />
-        {/* Pending segment */}
-        <Box display={Display.Flex} width={BlockSize.Half}>
-          <Box
-            width={BlockSize.Half}
-            backgroundColor={BackgroundColor.primaryDefault}
-            borderRadius={BorderRadius.pill}
-            style={{
-              borderTopRightRadius: 0,
-              borderBottomRightRadius: 0,
-              height: '4px',
-            }}
-          />
-          <Box
-            width={BlockSize.Half}
-            backgroundColor={BackgroundColor.backgroundAlternative}
-            borderRadius={BorderRadius.pill}
-            style={{
-              borderTopLeftRadius: 0,
-              borderBottomLeftRadius: 0,
-              height: '4px',
-            }}
-          />
-        </Box>
-
-        {/* Complete segment */}
-        <Box
-          width={BlockSize.Half}
-          backgroundColor={BackgroundColor.primaryDefault}
-          borderRadius={BorderRadius.pill}
-          style={{
-            height: '4px',
-          }}
-        />
+        <Segment type={srcTxStatus} width={BlockSize.Half} />
+        <Segment type={destTxStatus} width={BlockSize.Half} />
       </Box>
     </Box>
   );
