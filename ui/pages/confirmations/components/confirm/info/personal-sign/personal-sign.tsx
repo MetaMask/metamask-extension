@@ -19,6 +19,7 @@ import { selectUseTransactionSimulations } from '../../../../selectors/preferenc
 import { isSIWESignatureRequest } from '../../../../utils';
 import { ConfirmInfoAlertRow } from '../../../../../../components/app/confirm/info/row/alert-row/alert-row';
 import { ConfirmInfoSection } from '../../../../../../components/app/confirm/info/row/section';
+import { isSnapId } from '../../../../../../helpers/utils/snaps';
 import { SIWESignInfo } from './siwe-sign';
 
 const PersonalSignInfo: React.FC = () => {
@@ -35,6 +36,18 @@ const PersonalSignInfo: React.FC = () => {
   const { from } = currentConfirmation.msgParams;
   const isSIWE = isSIWESignatureRequest(currentConfirmation);
   const chainId = currentConfirmation.chainId as string;
+  const messageText = sanitizeString(
+    hexToText(currentConfirmation.msgParams?.data),
+  );
+
+  let toolTipMessage;
+  if (!isSIWE) {
+    if (isSnapId(currentConfirmation.msgParams.origin)) {
+      toolTipMessage = t('requestFromInfoSnap');
+    } else {
+      toolTipMessage = t('requestFromInfo');
+    }
+  }
 
   return (
     <>
@@ -53,7 +66,7 @@ const PersonalSignInfo: React.FC = () => {
           alertKey={RowAlertKey.RequestFrom}
           ownerId={currentConfirmation.id}
           label={t('requestFrom')}
-          tooltip={isSIWE ? undefined : t('requestFromInfo')}
+          tooltip={toolTipMessage}
         >
           <ConfirmInfoRowUrl url={currentConfirmation.msgParams.origin} />
         </ConfirmInfoAlertRow>
@@ -75,12 +88,11 @@ const PersonalSignInfo: React.FC = () => {
             alertKey="message"
             ownerId={currentConfirmation.id}
             label={t('message')}
+            collapsed={false}
+            copyEnabled
+            copyText={messageText}
           >
-            <ConfirmInfoRowText
-              text={sanitizeString(
-                hexToText(currentConfirmation.msgParams?.data),
-              )}
-            />
+            <ConfirmInfoRowText text={messageText} />
           </ConfirmInfoAlertRow>
         )}
       </ConfirmInfoSection>

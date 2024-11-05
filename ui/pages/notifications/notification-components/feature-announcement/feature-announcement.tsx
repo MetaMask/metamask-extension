@@ -95,6 +95,7 @@ export const components: NotificationComponent<FeatureAnnouncementNotification> 
           <Box paddingLeft={4} paddingRight={4}>
             <Text
               variant={TextVariant.bodyMd}
+              as="div"
               dangerouslySetInnerHTML={{
                 __html: notification.data.longDescription,
               }}
@@ -112,6 +113,20 @@ export const components: NotificationComponent<FeatureAnnouncementNotification> 
             variant={ButtonVariant.Primary}
             text={notification.data.extensionLink.extensionLinkText}
             href={`/${notification.data.extensionLink.extensionLinkRoute}`}
+            id={notification.id}
+            endIconName={false}
+            // Even if the link is not external, it will open in a new tab
+            // to avoid breaking the popup
+            isExternal={true}
+          />
+        ) : null,
+      ExternalLink: ({ notification }) =>
+        notification.data.externalLink ? (
+          <NotificationDetailButton
+            notification={notification}
+            variant={ButtonVariant.Secondary}
+            text={notification.data.externalLink.externalLinkText}
+            href={`${notification.data.externalLink.externalLinkUrl}`}
             id={notification.id}
             endIconName={false}
             isExternal={true}
