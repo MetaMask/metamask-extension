@@ -12,9 +12,6 @@ import { AssetPicker } from '../../../components/multichain/asset-picker-amount/
 import { TabName } from '../../../components/multichain/asset-picker-amount/asset-picker-modal/asset-picker-modal-tabs';
 import CurrencyDisplay from '../../../components/ui/currency-display';
 import { useI18nContext } from '../../../hooks/useI18nContext';
-import { useTokenFiatAmount } from '../../../hooks/useTokenFiatAmount';
-import { useEthFiatAmount } from '../../../hooks/useEthFiatAmount';
-import { isSwapsDefaultTokenSymbol } from '../../../../shared/modules/swaps.utils';
 import Tooltip from '../../../components/ui/tooltip';
 import { getCurrentCurrency, SwapsEthToken } from '../../../selectors';
 import {
@@ -28,7 +25,11 @@ import {
   CHAIN_ID_TOKEN_IMAGE_MAP,
 } from '../../../../shared/constants/network';
 import useLatestBalance from '../../../hooks/bridge/useLatestBalance';
-import { getBridgeQuotes, getFromChain } from '../../../ducks/bridge/selectors';
+import {
+  getBridgeQuotes,
+  getFromAmountInFiat,
+  getFromChain,
+} from '../../../ducks/bridge/selectors';
 import { formatFiatAmount } from '../utils/quote';
 
 const generateAssetFromToken = (
@@ -83,21 +84,7 @@ export const BridgeInputGroup = ({
   const { isLoading, activeQuote } = useSelector(getBridgeQuotes);
   const { chainId: fromChainId } = useSelector(getFromChain) ?? {};
   const currency = useSelector(getCurrentCurrency);
-
-  const tokenFiatValue = useTokenFiatAmount(
-    token?.address || undefined,
-    amountFieldProps?.value?.toString() || '0x0',
-    token?.symbol,
-    {
-      showFiat: true,
-    },
-    true,
-  );
-  const ethFiatValue = useEthFiatAmount(
-    amountFieldProps?.value?.toString() || '0x0',
-    { showFiat: true },
-    true,
-  );
+  const fromAmountInFiat = useSelector(getFromAmountInFiat);
 
   const { formattedBalance } = useLatestBalance(
     token,
@@ -150,15 +137,7 @@ export const BridgeInputGroup = ({
         fromChainId === networkProps.network.chainId ? (
           <CurrencyDisplay
             currency={currency}
-            displayValue={
-              token?.symbol &&
-              isSwapsDefaultTokenSymbol(
-                token.symbol,
-                networkProps.network.chainId,
-              )
-                ? ethFiatValue
-                : tokenFiatValue
-            }
+            displayValue={formatFiatAmount(fromAmountInFiat, currency)}
             hideLabel
           />
         ) : (

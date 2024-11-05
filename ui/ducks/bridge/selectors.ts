@@ -7,12 +7,12 @@ import { createSelector } from 'reselect';
 import { add0x } from '@metamask/utils';
 import { GasFeeEstimates } from '@metamask/gas-fee-controller';
 import { BigNumber } from 'bignumber.js';
+import { zeroAddress } from 'ethereumjs-util';
 import {
   getNetworkConfigurationsByChainId,
   getIsBridgeEnabled,
-  getSwapsDefaultToken,
   SwapsEthToken,
-  getTokenExchangeRates,
+  getCurrentCurrency,
 } from '../../selectors/selectors';
 import {
   ALLOWED_BRIDGE_CHAIN_IDS,
@@ -26,7 +26,10 @@ import {
   // eslint-disable-next-line import/no-restricted-paths
 } from '../../../app/scripts/controllers/bridge/types';
 import { createDeepEqualSelector } from '../../selectors/util';
-import { SwapsTokenObject } from '../../../shared/constants/swaps';
+import {
+  SWAPS_CHAINID_DEFAULT_TOKEN_MAP,
+  SwapsTokenObject,
+} from '../../../shared/constants/swaps';
 import {
   getConversionRate,
   getGasFeeEstimates,
@@ -48,7 +51,10 @@ import {
   calcToAmount,
   calcTotalNetworkFee,
 } from '../../pages/bridge/utils/quote';
-import { decGWEIToHexWEI } from '../../../shared/modules/conversion.utils';
+import {
+  decEthToConvertedCurrency,
+  decGWEIToHexWEI,
+} from '../../../shared/modules/conversion.utils';
 import { BridgeState } from './bridge';
 
 export type BridgeAppState = {
@@ -150,13 +156,20 @@ export const getToTokens = (state: BridgeAppState) => {
   return state.bridge.toChainId ? state.metamask.bridgeState.destTokens : {};
 };
 
-export const getFromToken = (
-  state: BridgeAppState,
-): SwapsTokenObject | SwapsEthToken | null => {
-  return state.bridge.fromToken?.address
-    ? state.bridge.fromToken
-    : getSwapsDefaultToken(state);
-};
+export const getFromToken = createSelector(
+  (state: BridgeAppState) => state.bridge.fromToken,
+  getFromChain,
+  (fromToken, fromChain): SwapsTokenObject | SwapsEthToken | null => {
+    if (!fromChain?.chainId) {
+      return null;
+    }
+    return fromToken?.address
+      ? fromToken
+      : SWAPS_CHAINID_DEFAULT_TOKEN_MAP[
+          fromChain.chainId as keyof typeof SWAPS_CHAINID_DEFAULT_TOKEN_MAP
+        ];
+  },
+);
 
 export const getToToken = (
   state: BridgeAppState,
@@ -329,6 +342,50 @@ export const getQuoteRequest = (state: BridgeAppState) => {
   const { quoteRequest } = state.metamask.bridgeState;
   return quoteRequest;
 };
+
+export const getFromAmountInFiat = createSelector(
+  getFromToken,
+  getFromChain,
+  getFromAmount,
+  (state: BridgeAppState) => state.bridge.fromTokenExchangeRate,
+  (state: BridgeAppState) => state.bridge.fromNativeExchangeRate,
+  getConversionRate,
+  getCurrentCurrency,
+  (
+    fromToken,
+    fromChain,
+    fromAmount,
+    fromTokenExchangeRate,
+    fromNativeExchangeRate,
+    cachedFromNativeExchangeRate,
+    currentCurrency,
+  ) => {
+    const nativeExchangeRate =
+      fromNativeExchangeRate ?? cachedFromNativeExchangeRate;
+    if (
+      fromToken?.symbol &&
+      fromChain?.chainId &&
+      fromAmount &&
+      nativeExchangeRate
+    ) {
+      if (fromToken.address === zeroAddress()) {
+        return new BigNumber(
+          decEthToConvertedCurrency(
+            fromAmount,
+            currentCurrency,
+            nativeExchangeRate,
+          ).toString(),
+        );
+      }
+      if (fromTokenExchangeRate) {
+        return new BigNumber(fromAmount).mul(
+          new BigNumber(fromTokenExchangeRate.toString() ?? 1),
+        );
+      }
+    }
+    return new BigNumber(0);
+  },
+);
 
 export const getValidationErrors = createDeepEqualSelector(
   getBridgeQuotes,
