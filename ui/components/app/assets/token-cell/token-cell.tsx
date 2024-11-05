@@ -16,7 +16,6 @@ import { TokenListItem } from '../../../multichain';
 import { isEqualCaseInsensitive } from '../../../../../shared/modules/string-utils';
 import { useIsOriginalTokenSymbol } from '../../../../hooks/useIsOriginalTokenSymbol';
 import { getIntlLocale } from '../../../../ducks/locale/locale';
-import { CHAIN_ID_TOKEN_IMAGE_MAP } from '../../../../../shared/constants/network';
 
 type TokenCellProps = {
   address: string;
@@ -53,9 +52,12 @@ export default function TokenCell({
 
   const title =
     tokenData?.name ||
-    (chainId &&
-      erc20TokensByChain?.[chainId]?.data?.[address.toLowerCase()]?.name) ||
+    (chainId === '0x1' && symbol === 'ETH'
+      ? 'Ethereum'
+      : chainId &&
+        erc20TokensByChain?.[chainId]?.data?.[address.toLowerCase()]?.name) ||
     symbol;
+
   const tokenImage =
     tokenData?.iconUrl ||
     (chainId &&
