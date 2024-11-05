@@ -120,6 +120,7 @@ import {
 } from './permissions';
 import { createDeepEqualSelector } from './util';
 import { getMultichainBalances, getMultichainNetwork } from './multichain';
+import { ERC20_DEFAULT_DECIMALS } from '../pages/confirmations/utils/token';
 
 /**
  * Returns true if the currently selected network is inaccessible or whether no
@@ -542,7 +543,7 @@ function getNativeTokenInfo(state, chainId) {
 
   if (networkConfig) {
     const symbol = networkConfig.nativeCurrency || AssetType.native;
-    const decimals = 18;
+    const decimals = ERC20_DEFAULT_DECIMALS;
     const name = networkConfig.name || 'Native Token';
 
     return {
