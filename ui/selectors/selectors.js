@@ -62,6 +62,7 @@ import {
 } from '../../shared/constants/swaps';
 
 import { ALLOWED_BRIDGE_CHAIN_IDS } from '../../shared/constants/bridge';
+import { AssetType } from '../../shared/constants/transaction';
 
 import {
   shortenAddress,
@@ -119,6 +120,7 @@ import {
 } from './permissions';
 import { createDeepEqualSelector } from './util';
 import { getMultichainBalances, getMultichainNetwork } from './multichain';
+import { ERC20_DEFAULT_DECIMALS } from '../pages/confirmations/utils/token';
 
 /**
  * Returns true if the currently selected network is inaccessible or whether no
@@ -477,41 +479,94 @@ export function getSelectedAccountNativeTokenCachedBalanceByChainId(state) {
 }
 
 /**
- * Based on the current account address, query for all tokens across all chain networks on that account.
- * This will eventually be exposed in a new piece of state called `tokenBalances`, which will including the new polling mechanism to stay up to date
+ * Based on the current account address, query for all tokens across all chain networks on that account,
+ * including the native tokens, without hardcoding any native token information.
  *
  * @param {object} state - Redux state
- * @returns {object} An array of tokens with balances for the given account. Data relationship will be chainId => balance
+ * @returns {object} An object mapping chain IDs to arrays of tokens (including native tokens) with balances.
  */
 export function getSelectedAccountTokensAcrossChains(state) {
   const { allTokens } = state.metamask;
-  const { address: selectedAddress } = getSelectedInternalAccount(state);
+  const selectedAddress = getSelectedInternalAccount(state).address;
 
-  // Initialize an empty object to hold tokens by chainId for the selected account
   const tokensByChain = {};
 
-  // Loop through each chain (0x1, 0x89, etc.)
-  for (const chainId in allTokens) {
-    if (allTokens[chainId]) {
-      const chainData = allTokens[chainId];
+  const nativeTokenBalancesByChainId =
+    getSelectedAccountNativeTokenCachedBalanceByChainId(state);
 
-      // Check if the selected account exists within this chain
-      if (chainData[selectedAddress]) {
-        // Ensure the chainId key exists in tokensByChain
-        if (!tokensByChain[chainId]) {
-          tokensByChain[chainId] = [];
-        }
+  const chainIds = new Set([
+    ...Object.keys(allTokens || {}),
+    ...Object.keys(nativeTokenBalancesByChainId || {}),
+  ]);
 
-        // Add each token to the array under its chainId
-        chainData[selectedAddress].forEach((token) => {
-          const tokenWithChain = { ...token, chainId };
-          tokensByChain[chainId].push(tokenWithChain);
-        });
-      }
+  chainIds.forEach((chainId) => {
+    if (!tokensByChain[chainId]) {
+      tokensByChain[chainId] = [];
     }
-  }
+
+    if (allTokens[chainId]?.[selectedAddress]) {
+      allTokens[chainId][selectedAddress].forEach((token) => {
+        const tokenWithChain = { ...token, chainId, isNative: false };
+        tokensByChain[chainId].push(tokenWithChain);
+      });
+    }
+
+    const nativeBalance = nativeTokenBalancesByChainId[chainId];
+    if (nativeBalance) {
+      const nativeTokenInfo = getNativeTokenInfo(state, chainId);
+      tokensByChain[chainId].push({
+        ...nativeTokenInfo,
+        // TODO: infer this value
+        address: '',
+        balance: nativeBalance,
+        chainId,
+        isNative: true,
+      });
+    }
+  });
 
   return tokensByChain;
+}
+
+/**
+ * Retrieves native token information (symbol, decimals, name) for a given chainId from the state,
+ * without hardcoding any values.
+ *
+ * @param {object} state - Redux state
+ * @param {string} chainId - Chain ID
+ * @returns {object} Native token information
+ */
+function getNativeTokenInfo(state, chainId) {
+  const { networkConfigurationsByChainId } = state.metamask;
+
+  const networkConfig = networkConfigurationsByChainId?.[chainId];
+
+  if (networkConfig) {
+    const symbol = networkConfig.nativeCurrency || AssetType.native;
+    const decimals = ERC20_DEFAULT_DECIMALS;
+    const name = networkConfig.name || 'Native Token';
+
+    return {
+      symbol,
+      decimals,
+      name,
+    };
+  }
+
+  const { provider } = state.metamask;
+  if (provider?.chainId === chainId) {
+    const symbol = provider.ticker || AssetType.native;
+    const decimals = provider.nativeCurrency?.decimals || 18;
+    const name = provider.nickname || 'Native Token';
+
+    return {
+      symbol,
+      decimals,
+      name,
+    };
+  }
+
+  return { symbol: AssetType.native, decimals: 18, name: 'Native Token' };
 }
 
 /**
@@ -1478,10 +1533,11 @@ export const selectERC20Tokens = createDeepEqualSelector(
 export const getTokenList = createSelector(
   selectERC20Tokens,
   getIsTokenDetectionInactiveOnMainnet,
-  (remoteTokenList, isTokenDetectionInactiveOnMainnet) =>
-    isTokenDetectionInactiveOnMainnet
+  (remoteTokenList, isTokenDetectionInactiveOnMainnet) => {
+    return isTokenDetectionInactiveOnMainnet
       ? STATIC_MAINNET_TOKEN_LIST
-      : remoteTokenList,
+      : remoteTokenList;
+  },
 );
 
 export const getMemoizedMetadataContract = createSelector(

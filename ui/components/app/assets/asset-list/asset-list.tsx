@@ -38,7 +38,6 @@ import {
 import { getIsNativeTokenBuyable } from '../../../../ducks/ramps';
 ///: END:ONLY_INCLUDE_IF
 import AssetListControlBar from './asset-list-control-bar';
-import NativeToken from './native-token';
 
 export type TokenWithBalance = {
   address: string;
@@ -115,7 +114,6 @@ const AssetList = ({ onClickAsset, showTokensLinks }: AssetListProps) => {
         )}
       <AssetListControlBar showTokensLinks={showTokensLinks} />
       <TokenList
-        nativeToken={<NativeToken onClickAsset={onClickAsset} />}
         onTokenClick={(tokenAddress: string) => {
           onClickAsset(tokenAddress);
           trackEvent({

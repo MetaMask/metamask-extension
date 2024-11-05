@@ -12,7 +12,6 @@ import { TokenListItem } from '../../../../multichain';
 import { useIsOriginalNativeTokenSymbol } from '../../../../../hooks/useIsOriginalNativeTokenSymbol';
 import { AssetListProps } from '../asset-list';
 import { useNativeTokenBalance } from './use-native-token-balance';
-// import { getPreferences } from '../../../../../selectors';
 
 const NativeToken = ({ onClickAsset }: AssetListProps) => {
   const nativeCurrency = useSelector(getMultichainNativeCurrency);

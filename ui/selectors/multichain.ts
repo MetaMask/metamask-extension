@@ -23,6 +23,7 @@ import { MultichainNativeAssets } from '../../shared/constants/multichain/assets
 import {
   CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP,
   TEST_NETWORK_IDS,
+  CHAIN_IDS,
 } from '../../shared/constants/network';
 import { AccountsState } from './accounts';
 import {
@@ -317,6 +318,10 @@ export function getMultichainCurrentChainId(state: MultichainState) {
   return chainId;
 }
 
+export function isChainIdMainnet(chainId: string) {
+  return chainId === CHAIN_IDS.MAINNET;
+}
+
 export function getMultichainIsMainnet(
   state: MultichainState,
   account?: InternalAccount,
@@ -368,6 +373,13 @@ function getBtcCachedBalance(state: MultichainState) {
     : MultichainNativeAssets.BITCOIN_TESTNET;
 
   return balances?.[account.id]?.[asset]?.amount;
+}
+
+export function getImageForChainId(chainId: string) {
+  const evmChainIdKey =
+    chainId as keyof typeof CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP;
+
+  return CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP[evmChainIdKey];
 }
 
 // This selector is not compatible with `useMultichainSelector` since it uses the selected
