@@ -110,8 +110,6 @@ type BridgeStepProps = {
   step: Step;
   networkConfigurationsByChainId: Record<`0x${string}`, NetworkConfiguration>;
   time?: string;
-  srcChainTxMeta?: TransactionMeta;
-  bridgeHistoryItem: BridgeHistoryItem;
   stepStatus: StatusTypes | null;
 };
 
@@ -123,8 +121,6 @@ export default function BridgeStep({
   step,
   networkConfigurationsByChainId,
   time,
-  srcChainTxMeta,
-  bridgeHistoryItem,
   stepStatus,
 }: BridgeStepProps) {
   return (
