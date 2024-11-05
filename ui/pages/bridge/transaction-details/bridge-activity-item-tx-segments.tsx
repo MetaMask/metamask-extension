@@ -20,21 +20,18 @@ import {
 import Segment from './segment';
 
 const getTxIndex = (
-  srcChainTxHash: string | undefined,
-  destChainTxHash: string | undefined,
+  srcTxStatus: StatusTypes,
+  destTxStatus: StatusTypes | null,
 ) => {
-  if (
-    (!srcChainTxHash && !destChainTxHash) ||
-    (srcChainTxHash && !destChainTxHash)
-  ) {
+  if (srcTxStatus === StatusTypes.PENDING) {
     return 1;
   }
 
-  if (srcChainTxHash && destChainTxHash) {
+  if (srcTxStatus === StatusTypes.COMPLETE) {
     return 2;
   }
 
-  throw new Error('Not possible to have dest chain tx without src chain tx');
+  throw new Error('No more possible states for srcTxStatus');
 };
 
 const getSrcTxStatus = (initialTransaction: TransactionMeta) => {
@@ -65,12 +62,9 @@ export default function BridgeActivityItemTxSegments({
   transactionGroup: UseBridgeDataProps['transactionGroup'];
 }) {
   const { initialTransaction } = transactionGroup;
-  const srcChainTxHash = bridgeTxHistoryItem?.status.srcChain.txHash;
-  const destChainTxHash = bridgeTxHistoryItem?.status.destChain?.txHash;
-
-  const txIndex = getTxIndex(srcChainTxHash, destChainTxHash);
   const srcTxStatus = getSrcTxStatus(initialTransaction);
   const destTxStatus = getDestTxStatus(bridgeTxHistoryItem, srcTxStatus);
+  const txIndex = getTxIndex(srcTxStatus, destTxStatus);
 
   return (
     <Box display={Display.Flex} flexDirection={FlexDirection.Column} gap={2}>
