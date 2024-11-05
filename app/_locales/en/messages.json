@@ -669,6 +669,9 @@
   "autoLockTimeLimitDescription": {
     "message": "Set the idle time in minutes before MetaMask will become locked."
   },
+  "available": {
+    "message": "$1 $2 available"
+  },
   "average": {
     "message": "Average"
   },
@@ -1104,6 +1107,9 @@
   },
   "confirmed": {
     "message": "Confirmed"
+  },
+  "confirmedBySources": {
+    "message": "Confirmed by $1 sources. Verify on $2."
   },
   "confusableUnicode": {
     "message": "'$1' is similar to '$2'."
@@ -3628,6 +3634,7 @@
   "on": {
     "message": "On"
   },
+  "onNetwork": { "message": "on $1" },
   "onboardedMetametricsAccept": {
     "message": "I agree"
   },
