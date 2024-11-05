@@ -9,7 +9,10 @@ import {
   FlexDirection,
   JustifyContent,
 } from '../../../helpers/constants/design-system';
-import { BridgeHistoryItem } from '../../../../app/scripts/controllers/bridge-status/types';
+import {
+  BridgeHistoryItem,
+  StatusTypes,
+} from '../../../../app/scripts/controllers/bridge-status/types';
 import { getNetworkConfigurationsByChainId } from '../../../selectors';
 import BridgeStep, { getStepStatus } from './bridge-step';
 import StepProgressItem from './step-progress-item';
@@ -45,10 +48,18 @@ export default function BridgeStepList({
       >
         {steps.map((_, i) => {
           const stepStatus = stepStatuses[i];
+          const nextStepStatus =
+            i < stepStatus.length - 1 ? stepStatuses[i + 1] : null;
+
+          const isEdgeComplete =
+            stepStatus === StatusTypes.COMPLETE &&
+            nextStepStatus === StatusTypes.COMPLETE;
+
           return (
             <StepProgressItem
               stepStatus={stepStatus}
               isLastItem={i === steps.length - 1}
+              isEdgeComplete={isEdgeComplete}
             />
           );
         })}
