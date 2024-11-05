@@ -4,6 +4,7 @@ import {
   getCurrentCurrency,
   getTokenList,
   selectERC20TokensByChain,
+  getPreferences,
 } from '../../../../selectors';
 import {
   isChainIdMainnet,
@@ -41,6 +42,7 @@ export default function TokenCell({
   const isEvm = useSelector(getMultichainIsEvm);
   const erc20TokensByChain = useSelector(selectERC20TokensByChain);
   const isMainnet = chainId ? isChainIdMainnet(chainId) : false;
+  const { privacyMode } = useSelector(getPreferences);
   const tokenData = Object.values(tokenList).find(
     (token) =>
       isEqualCaseInsensitive(token.symbol, symbol) &&
@@ -84,6 +86,7 @@ export default function TokenCell({
       address={address}
       isStakeable={isStakeable}
       showPercentage
+      privacyMode={privacyMode}
     />
   );
 }

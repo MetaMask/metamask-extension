@@ -28,6 +28,7 @@ type TokenListProps = {
 export default function TokenList({ onTokenClick }: TokenListProps) {
   const t = useI18nContext();
   const { tokenSortConfig, tokenNetworkFilter } = useSelector(getPreferences);
+  const selectedAccount = useSelector(getSelectedAccount);
   const conversionRate = useSelector(getConversionRate);
   const contractExchangeRates = useSelector(
     getTokenExchangeRates,
@@ -102,7 +103,6 @@ export default function TokenList({ onTokenClick }: TokenListProps) {
       },
       { nativeTokens: [], nonNativeTokens: [] },
     );
-
     return sortAssets([...nativeTokens, ...nonNativeTokens], tokenSortConfig);
   }, [
     tokenSortConfig,
