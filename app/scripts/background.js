@@ -292,16 +292,30 @@ function maybeDetectPhishing(theController) {
         blockReason = blockedRequestResponse.type;
       }
 
+      console.log({
+        url: phishingTestResponse?.result ? hostname : details.initiator,
+        referrer: {
+          url: hostname,
+        },
+        reason: blockReason,
+        requestDomain: blockedRequestResponse?.result
+          ? details.initiator
+          : undefined,
+      });
+
       theController.metaMetricsController.trackEvent({
         // should we differentiate between background redirection and content script redirection?
         event: MetaMetricsEventName.PhishingPageDisplayed,
         category: MetaMetricsEventCategory.Phishing,
         properties: {
-          url: hostname,
+          url: phishingTestResponse?.result ? hostname : details.initiator,
           referrer: {
             url: hostname,
           },
           reason: blockReason,
+          requestDomain: blockedRequestResponse?.result
+            ? details.initiator
+            : undefined,
         },
       });
       const querystring = new URLSearchParams({ hostname, href });
