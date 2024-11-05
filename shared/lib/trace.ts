@@ -9,6 +9,9 @@ import { log as sentryLogger } from '../../app/scripts/lib/setupSentry';
  * The supported trace names.
  */
 export enum TraceName {
+  /**
+   * `AccountList` component renders (FCP).
+   */
   AccountList = 'Account List',
   AccountOverviewAssetListTab = 'Account Overview Asset List Tab',
   AccountOverviewNftsTab = 'Account Overview Nfts Tab',
