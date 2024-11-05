@@ -18,6 +18,22 @@ import BridgeStepDescription, {
   getStepStatus,
 } from './bridge-step-description';
 import StepProgressBarItem from './step-progress-bar-item';
+import { formatDate } from '../../../helpers/utils/util';
+
+const getTime = (
+  index: number,
+  isLastIndex: boolean,
+  startTime?: number,
+  estimatedProcessingTimeInSeconds?: number,
+) => {
+  if (index === 0) {
+    return startTime;
+  }
+
+  return isLastIndex && startTime && estimatedProcessingTimeInSeconds
+    ? startTime + estimatedProcessingTimeInSeconds * 1000
+    : undefined;
+};
 
 type BridgeStepsProps = {
   bridgeHistoryItem: BridgeHistoryItem;
@@ -58,6 +74,16 @@ export default function BridgeStepList({
             ? null
             : stepStatus;
 
+        const time = formatDate(
+          getTime(
+            i,
+            i === steps.length - 1,
+            bridgeHistoryItem.startTime,
+            bridgeHistoryItem.estimatedProcessingTimeInSeconds,
+          ),
+          'hh:mm a',
+        );
+
         return (
           <StepProgressBarItem
             key={`progress-${step.action}-${step.srcChainId}-${step.destChainId}`}
@@ -69,6 +95,7 @@ export default function BridgeStepList({
               step={step}
               networkConfigurationsByChainId={networkConfigurationsByChainId}
               stepStatus={displayedStepStatus}
+              time={time}
             />
           </StepProgressBarItem>
         );
