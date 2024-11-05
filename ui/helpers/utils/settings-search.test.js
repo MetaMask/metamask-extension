@@ -151,9 +151,12 @@ describe('Settings Search Utils', () => {
   describe('getSettingsRoutes', () => {
     it('should be an array of settings routes objects', () => {
       const NUM_OF_ENV_FEATURE_FLAG_SETTINGS = 4;
+      const NUM_OF_HIDDEN_SETTINGS = 1;
 
       expect(getSettingsRoutes()).toHaveLength(
-        SETTINGS_CONSTANTS.length - NUM_OF_ENV_FEATURE_FLAG_SETTINGS,
+        SETTINGS_CONSTANTS.length -
+          NUM_OF_ENV_FEATURE_FLAG_SETTINGS -
+          NUM_OF_HIDDEN_SETTINGS,
       );
     });
   });
