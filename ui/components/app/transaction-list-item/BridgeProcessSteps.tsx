@@ -28,14 +28,14 @@ export default function BridgeProcessSteps({
   transactionGroup: UseBridgeDataProps['transactionGroup'];
 }) {
   const { initialTransaction } = transactionGroup;
-  const srcChainTxHash = bridgeTxHistoryItem?.status?.srcChain.txHash;
-  const destChainTxHash = bridgeTxHistoryItem?.status?.destChain?.txHash;
+  const srcChainTxHash = bridgeTxHistoryItem?.status.srcChain.txHash;
+  const destChainTxHash = bridgeTxHistoryItem?.status.destChain?.txHash;
 
   const txIndex = getTxIndex(srcChainTxHash, destChainTxHash);
 
   return (
     <div>
-      <div>status: {bridgeTxHistoryItem?.status?.status}</div>
+      <div>status: {bridgeTxHistoryItem?.status.status}</div>
       <div>
         tx 1:{' '}
         {`${(srcChainTxHash || initialTransaction.hash)?.substring(0, 6)}...`},{' '}

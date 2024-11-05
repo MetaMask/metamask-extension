@@ -88,7 +88,7 @@ const CrossChainSwapTxDetails = () => {
     srcTxHash,
   );
 
-  const destTxHash = bridgeHistoryItem?.status?.destChain?.txHash;
+  const destTxHash = bridgeHistoryItem?.status.destChain?.txHash;
   const destBlockExplorerUrl = getBlockExplorerUrl(
     destNetworkConfiguration,
     destTxHash,
@@ -98,10 +98,13 @@ const CrossChainSwapTxDetails = () => {
     (tx) => tx.hash === srcTxHash,
   );
 
-  const status = bridgeHistoryItem?.status?.status;
+  const status = bridgeHistoryItem?.status.status;
 
-  const destChainIconUrl =
-    CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP[destNetworkConfiguration?.chainId];
+  const destChainIconUrl = destNetworkConfiguration
+    ? CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP[
+        destNetworkConfiguration.chainId as keyof typeof CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP
+      ]
+    : undefined;
   const bridgeTypeDirection = 'To';
   const bridgeTypeDestNetwork = destNetworkConfiguration?.name;
 

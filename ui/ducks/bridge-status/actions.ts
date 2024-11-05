@@ -1,4 +1,4 @@
-import { FetchBridgeTxStatusArgs } from '../../../app/scripts/controllers/bridge-status/bridge-status-controller';
+import { StartPollingForBridgeTxStatusArgs } from '../../../app/scripts/controllers/bridge-status/bridge-status-controller';
 import { BridgeStatusAction } from '../../../app/scripts/controllers/bridge-status/types';
 import { forceUpdateMetamaskState } from '../../store/actions';
 import { submitRequestToBackground } from '../../store/background-connection';
@@ -15,13 +15,13 @@ const callBridgeStatusControllerMethod = <T extends unknown[]>(
 };
 
 export const startPollingForBridgeTxStatus = (
-  fetchBridgeTxStatusArgs: FetchBridgeTxStatusArgs,
+  startPollingForBridgeTxStatusArgs: StartPollingForBridgeTxStatusArgs,
 ) => {
   return async (dispatch: MetaMaskReduxDispatch) => {
     return dispatch(
-      callBridgeStatusControllerMethod<[FetchBridgeTxStatusArgs]>(
+      callBridgeStatusControllerMethod<[StartPollingForBridgeTxStatusArgs]>(
         BridgeStatusAction.START_POLLING_FOR_BRIDGE_TX_STATUS,
-        [fetchBridgeTxStatusArgs],
+        [startPollingForBridgeTxStatusArgs],
       ),
     );
   };

@@ -42,7 +42,7 @@ export default function useBridgeData({
   // By complete, this means BOTH source and dest tx are confirmed
   const isBridgeComplete = bridgeHistoryItem
     ? Boolean(
-        bridgeHistoryItem?.status?.srcChain.txHash &&
+        bridgeHistoryItem?.status.srcChain.txHash &&
           bridgeHistoryItem.status.destChain?.txHash,
       )
     : null;
