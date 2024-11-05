@@ -214,7 +214,6 @@ const AssetPage = ({
             tokenFiatAmount={tokenFiatAmount}
             string={balance.toString()}
             decimals={asset.decimals}
-            onClick={() => {}}
           />
         )}
         <Box
