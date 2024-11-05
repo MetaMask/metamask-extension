@@ -11,7 +11,6 @@ import { zeroAddress } from 'ethereumjs-util';
 import {
   getNetworkConfigurationsByChainId,
   getIsBridgeEnabled,
-  SwapsEthToken,
   getCurrentCurrency,
 } from '../../selectors/selectors';
 import {
@@ -28,10 +27,7 @@ import {
   // eslint-disable-next-line import/no-restricted-paths
 } from '../../../app/scripts/controllers/bridge/types';
 import { createDeepEqualSelector } from '../../selectors/util';
-import {
-  SWAPS_CHAINID_DEFAULT_TOKEN_MAP,
-  SwapsTokenObject,
-} from '../../../shared/constants/swaps';
+import { SWAPS_CHAINID_DEFAULT_TOKEN_MAP } from '../../../shared/constants/swaps';
 import {
   getConversionRate,
   getGasFeeEstimates,
@@ -41,6 +37,7 @@ import {
 // eslint-disable-next-line import/no-restricted-paths
 import { RequestStatus } from '../../../app/scripts/controllers/bridge/constants';
 import {
+  BridgeToken,
   QuoteMetadata,
   QuoteResponse,
   SortOrder,
@@ -161,7 +158,7 @@ export const getToTokens = (state: BridgeAppState) => {
 export const getFromToken = createSelector(
   (state: BridgeAppState) => state.bridge.fromToken,
   getFromChain,
-  (fromToken, fromChain): SwapsTokenObject | SwapsEthToken | null => {
+  (fromToken, fromChain): BridgeToken | null => {
     if (!fromChain?.chainId) {
       return null;
     }
@@ -173,9 +170,7 @@ export const getFromToken = createSelector(
   },
 );
 
-export const getToToken = (
-  state: BridgeAppState,
-): SwapsTokenObject | SwapsEthToken | null => {
+export const getToToken = (state: BridgeAppState): BridgeToken | null => {
   return state.bridge.toToken;
 };
 
