@@ -3113,6 +3113,10 @@ export function setTokenSortConfig(value: SortCriteria) {
   return setPreference('tokenSortConfig', value, false);
 }
 
+export function setTokenNetworkFilter(value: Record<string, boolean>) {
+  return setPreference('tokenNetworkFilter', value, false);
+}
+
 export function setSmartTransactionsPreferenceEnabled(
   value: boolean,
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
@@ -4521,15 +4525,15 @@ export async function removePollingTokenFromAppState(pollingToken: string) {
 /**
  * Informs the CurrencyRateController that the UI requires currency rate polling
  *
- * @param networkClientId - unique identifier for the network client
+ * @param nativeCurrencies - An array of native currency symbols
  * @returns polling token that can be used to stop polling
  */
-export async function currencyRateStartPollingByNetworkClientId(
-  networkClientId: string,
+export async function currencyRateStartPolling(
+  nativeCurrencies: string[],
 ): Promise<string> {
   const pollingToken = await submitRequestToBackground(
     'currencyRateStartPolling',
-    [{ networkClientId }],
+    [{ nativeCurrencies }],
   );
   await addPollingTokenToAppState(pollingToken);
   return pollingToken;
@@ -4546,6 +4550,37 @@ export async function currencyRateStopPollingByPollingToken(
   pollingToken: string,
 ) {
   await submitRequestToBackground('currencyRateStopPollingByPollingToken', [
+    pollingToken,
+  ]);
+  await removePollingTokenFromAppState(pollingToken);
+}
+
+/**
+ * Informs the TokenRatesController that the UI requires
+ * token rate polling for the given chain id.
+ *
+ * @param chainId - The chain id to poll token rates on.
+ * @returns polling token that can be used to stop polling
+ */
+export async function tokenRatesStartPolling(chainId: string): Promise<string> {
+  const pollingToken = await submitRequestToBackground(
+    'tokenRatesStartPolling',
+    [{ chainId }],
+  );
+  await addPollingTokenToAppState(pollingToken);
+  return pollingToken;
+}
+
+/**
+ * Informs the TokenRatesController that the UI no longer
+ * requires token rate polling for the given chain id.
+ *
+ * @param pollingToken -
+ */
+export async function tokenRatesStopPollingByPollingToken(
+  pollingToken: string,
+) {
+  await submitRequestToBackground('tokenRatesStopPollingByPollingToken', [
     pollingToken,
   ]);
   await removePollingTokenFromAppState(pollingToken);
@@ -4966,6 +5001,16 @@ export async function setBitcoinTestnetSupportEnabled(value: boolean) {
     logErrorWithMessage(error);
   }
 }
+
+///: BEGIN:ONLY_INCLUDE_IF(build-flask)
+export async function setSolanaSupportEnabled(value: boolean) {
+  try {
+    await submitRequestToBackground('setSolanaSupportEnabled', [value]);
+  } catch (error) {
+    logErrorWithMessage(error);
+  }
+}
+///: END:ONLY_INCLUDE_IF
 
 ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
 export async function setAddSnapAccountEnabled(value: boolean): Promise<void> {

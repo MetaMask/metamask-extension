@@ -81,6 +81,8 @@ ignores:
   # trezor
   - 'ts-mixer'
   - '@testing-library/dom'
+  - 'mini-css-extract-plugin'
+  - 'webpack-cli'
 
 # files depcheck should not parse
 ignorePatterns:

@@ -120,6 +120,7 @@ export type Preferences = {
     order: string;
     sortCallback: string;
   };
+  tokenNetworkFilter: Record<string, boolean>;
   shouldShowAggregatedBalancePopover: boolean;
 };
 
@@ -139,6 +140,7 @@ export type PreferencesControllerState = Omit<
   useRequestQueue: boolean;
   ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
   watchEthereumAccountEnabled: boolean;
+  solanaSupportEnabled: boolean;
   ///: END:ONLY_INCLUDE_IF
   bitcoinSupportEnabled: boolean;
   bitcoinTestnetSupportEnabled: boolean;
@@ -183,6 +185,9 @@ export const getDefaultPreferencesControllerState =
     openSeaEnabled: true,
     securityAlertsEnabled: true,
     watchEthereumAccountEnabled: false,
+    ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
+    solanaSupportEnabled: false,
+    ///: END:ONLY_INCLUDE_IF
     bitcoinSupportEnabled: false,
     bitcoinTestnetSupportEnabled: false,
     ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
@@ -222,6 +227,7 @@ export const getDefaultPreferencesControllerState =
         order: 'dsc',
         sortCallback: 'stringNumeric',
       },
+      tokenNetworkFilter: {},
     },
     // ENS decentralized website resolution
     ipfsGateway: IPFS_DEFAULT_GATEWAY_URL,
@@ -335,6 +341,10 @@ const controllerMetadata = {
     anonymous: false,
   },
   watchEthereumAccountEnabled: {
+    persist: true,
+    anonymous: false,
+  },
+  solanaSupportEnabled: {
     persist: true,
     anonymous: false,
   },
@@ -665,6 +675,18 @@ export class PreferencesController extends BaseController<
   setWatchEthereumAccountEnabled(watchEthereumAccountEnabled: boolean): void {
     this.update((state) => {
       state.watchEthereumAccountEnabled = watchEthereumAccountEnabled;
+    });
+  }
+
+  /**
+   * Setter for the `solanaSupportEnabled` property.
+   *
+   * @param solanaSupportEnabled - Whether or not the user wants to
+   * enable the "Add a new Solana account" button.
+   */
+  setSolanaSupportEnabled(solanaSupportEnabled: boolean): void {
+    this.update((state) => {
+      state.solanaSupportEnabled = solanaSupportEnabled;
     });
   }
   ///: END:ONLY_INCLUDE_IF

@@ -73,6 +73,7 @@
         "slippage": 0.5,
         "srcTokenAddress": "0x0000000000000000000000000000000000000000"
       },
+      "quotes": {},
       "srcTokens": {},
       "srcTopAssets": {}
     }
@@ -81,6 +82,16 @@
   "CurrencyController": {
     "currencyRates": {
       "ETH": {
+        "conversionDate": "number",
+        "conversionRate": 1700,
+        "usdConversionRate": 1700
+      },
+      "LineaETH": {
+        "conversionDate": "number",
+        "conversionRate": 1700,
+        "usdConversionRate": 1700
+      },
+      "SepoliaETH": {
         "conversionDate": "number",
         "conversionRate": 1700,
         "usdConversionRate": 1700
@@ -133,7 +144,7 @@
   "MultichainBalancesController": { "balances": "object" },
   "MultichainRatesController": {
     "fiatCurrency": "usd",
-    "rates": { "btc": { "conversionDate": 0, "conversionRate": "0" } },
+    "rates": { "btc": { "conversionDate": 0, "conversionRate": 0 } },
     "cryptocurrencies": ["btc"]
   },
   "NameController": { "names": "object", "nameSources": "object" },
