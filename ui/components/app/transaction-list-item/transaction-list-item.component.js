@@ -70,7 +70,7 @@ import { ActivityListItem } from '../../multichain';
 import { abortTransactionSigning } from '../../../store/actions';
 import { getIsSmartTransaction } from '../../../../shared/modules/selectors';
 import useBridgeData from '../../../pages/bridge/utils/useBridgeData';
-import BridgeProcessSteps from './BridgeProcessSteps';
+import BridgeActivityItemTxSegments from '../../../pages/bridge/transaction-details/bridge-activity-item-tx-segments';
 
 function TransactionListItemInner({
   transactionGroup,
@@ -355,8 +355,9 @@ function TransactionListItemInner({
           ///: END:ONLY_INCLUDE_IF
         }
         subtitle={
-          isBridgeTx && isBridgeComplete === false ? (
-            <BridgeProcessSteps
+          true ? (
+            // isBridgeTx && isBridgeComplete === false ? (
+            <BridgeActivityItemTxSegments
               bridgeTxHistoryItem={bridgeTxHistoryItem}
               transactionGroup={transactionGroup}
             />
