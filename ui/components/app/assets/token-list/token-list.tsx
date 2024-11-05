@@ -63,7 +63,7 @@ export default function TokenList({ onTokenClick }: TokenListProps) {
           let tokenFiatAmount = tokenMarketPrice * tokenExchangeRate * balance;
           if (token.isNative && currencyRates) {
             tokenFiatAmount =
-              currencyRates[token.symbol].conversionRate * balance;
+              currencyRates[token.symbol]?.conversionRate * balance;
           }
 
           tokensWithBalance.push({
