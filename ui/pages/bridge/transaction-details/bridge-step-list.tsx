@@ -20,9 +20,13 @@ import {
 import {
   ActionTypes,
   BridgeHistoryItem,
+  StatusTypes,
 } from '../../../../app/scripts/controllers/bridge-status/types';
 import { getNetworkConfigurationsByChainId } from '../../../selectors';
-import BridgeStep from './bridge-step';
+import BridgeStep, { getStepStatus } from './bridge-step';
+import HollowCircle from './hollow-circle';
+
+const iconColor = IconColor.primaryDefault;
 
 type BridgeStepsProps = {
   bridgeHistoryItem: BridgeHistoryItem;
@@ -37,6 +41,9 @@ export default function BridgeStepList({
     getNetworkConfigurationsByChainId,
   );
   const steps = bridgeHistoryItem.quote.steps;
+  const stepStatuses = steps.map((step) =>
+    getStepStatus(bridgeHistoryItem, step, srcChainTxMeta),
+  );
 
   return (
     <Box
@@ -50,20 +57,33 @@ export default function BridgeStepList({
         flexDirection={FlexDirection.Column}
         alignItems={AlignItems.center}
       >
-        {steps.map((step, i) => (
-          <>
-            <Icon name={IconName.FullCircle} color={IconColor.primaryDefault} />
-            {i !== steps.length - 1 && (
-              <div
-                style={{
-                  height: '46px',
-                  width: '1px',
-                  backgroundColor: `var(--color-${Color.iconMuted})`,
-                }}
-              />
-            )}
-          </>
-        ))}
+        {steps.map((step, i) => {
+          const stepStatus = stepStatuses[i];
+          return (
+            <>
+              {stepStatus === null && <HollowCircle color={iconColor} />}
+              {stepStatus === StatusTypes.PENDING && (
+                <Icon
+                  className="bridge-transaction-details__icon-loading" // Needed for animation
+                  name={IconName.Loading}
+                  color={iconColor}
+                />
+              )}
+              {stepStatus === StatusTypes.COMPLETE && (
+                <Icon name={IconName.FullCircle} color={iconColor} />
+              )}
+              {i !== steps.length - 1 && (
+                <div
+                  style={{
+                    height: '46px',
+                    width: '1px',
+                    backgroundColor: `var(--color-${Color.iconMuted})`,
+                  }}
+                />
+              )}
+            </>
+          );
+        })}
       </Box>
 
       {/* Time and descriptions */}
@@ -73,16 +93,18 @@ export default function BridgeStepList({
         alignItems={AlignItems.flexStart}
         gap={8}
       >
-        {steps.map((step, i) => (
-          <>
+        {steps.map((step, i) => {
+          const stepStatus = stepStatuses[i];
+          return (
             <BridgeStep
               step={step}
               networkConfigurationsByChainId={networkConfigurationsByChainId}
               srcChainTxMeta={srcChainTxMeta}
               bridgeHistoryItem={bridgeHistoryItem}
+              stepStatus={stepStatus}
             />
-          </>
-        ))}
+          );
+        })}
       </Box>
     </Box>
   );
