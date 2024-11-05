@@ -36,6 +36,7 @@ import {
 import { formatDate } from '../../../helpers/utils/util';
 import { ConfirmInfoRowDivider as Divider } from '../../../components/app/confirm/info/row';
 import { calcTokenAmount } from '../../../../shared/lib/transactions-controller-utils';
+import { CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP } from '../../../../shared/constants/network';
 import TransactionDetailRow from './transaction-detail-row';
 import BridgeExplorerLinks from './bridge-explorer-links';
 import BridgeStepList from './bridge-step-list';
@@ -97,10 +98,11 @@ const CrossChainSwapTxDetails = () => {
   );
 
   const status = bridgeHistoryItem?.status?.status;
-  const bridgeTypeTitle =
-    srcChainTxMeta?.type === TransactionType.incoming
-      ? `From ${srcNetworkConfiguration?.name}`
-      : `To ${destNetworkConfiguration?.name}`;
+
+  const destChainIconUrl =
+    CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP[destNetworkConfiguration?.chainId];
+  const bridgeTypeDirection = 'To';
+  const bridgeTypeDestNetwork = destNetworkConfiguration?.name;
 
   const data = srcChainTxMeta
     ? getTransactionBreakdownData({
@@ -173,7 +175,13 @@ const CrossChainSwapTxDetails = () => {
               />
               <TransactionDetailRow
                 title="Bridge type"
-                value={bridgeTypeTitle}
+                value={
+                  <Box display={Display.Flex} gap={1}>
+                    {bridgeTypeDirection}{' '}
+                    <img style={{ width: '1rem' }} src={destChainIconUrl} />{' '}
+                    {bridgeTypeDestNetwork}
+                  </Box>
+                }
               />
               <TransactionDetailRow
                 title="Time stamp"
