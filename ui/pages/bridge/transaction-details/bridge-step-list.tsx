@@ -49,7 +49,7 @@ export default function BridgeStepList({
         {steps.map((_, i) => {
           const stepStatus = stepStatuses[i];
           const nextStepStatus =
-            i < stepStatus.length - 1 ? stepStatuses[i + 1] : null;
+            i < stepStatuses.length - 1 ? stepStatuses[i + 1] : null;
 
           const isEdgeComplete =
             stepStatus === StatusTypes.COMPLETE &&
