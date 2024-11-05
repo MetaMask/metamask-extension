@@ -674,10 +674,7 @@
         "@ethersproject/providers": true,
         "@metamask/abi-utils": true,
         "@metamask/assets-controllers>@metamask/polling-controller": true,
-<<<<<<< HEAD
-=======
         "@metamask/assets-controllers>@metamask/utils": true,
->>>>>>> develop
         "@metamask/base-controller": true,
         "@metamask/contract-metadata": true,
         "@metamask/controller-utils": true,
@@ -685,10 +682,6 @@
         "@metamask/metamask-eth-abis": true,
         "@metamask/name-controller>async-mutex": true,
         "@metamask/rpc-errors": true,
-<<<<<<< HEAD
-        "@metamask/utils": true,
-=======
->>>>>>> develop
         "bn.js": true,
         "cockatiel": true,
         "ethers>@ethersproject/address": true,
@@ -709,8 +702,6 @@
         "uuid": true
       }
     },
-<<<<<<< HEAD
-=======
     "@metamask/assets-controllers>@metamask/utils": {
       "globals": {
         "TextDecoder": true,
@@ -726,7 +717,6 @@
         "semver": true
       }
     },
->>>>>>> develop
     "@metamask/base-controller": {
       "globals": {
         "setTimeout": true
