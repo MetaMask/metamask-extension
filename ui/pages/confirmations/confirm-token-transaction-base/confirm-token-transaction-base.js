@@ -17,12 +17,10 @@ import {
   contractExchangeRateSelector,
   getCurrentCurrency,
   getSelectedInternalAccount,
+  selectConversionRateByChainId,
   selectNetworkConfigurationByChainId,
 } from '../../../selectors';
-import {
-  getConversionRate,
-  getNftContracts,
-} from '../../../ducks/metamask/metamask';
+import { getNftContracts } from '../../../ducks/metamask/metamask';
 import { TokenStandard } from '../../../../shared/constants/transaction';
 import {
   getWeiHexFromDecimalValue,
@@ -57,7 +55,11 @@ export default function ConfirmTokenTransactionBase({
 
   const blockExplorerUrl = blockExplorerUrls?.[0];
   const currentCurrency = useSelector(getCurrentCurrency);
-  const conversionRate = useSelector(getConversionRate);
+
+  const conversionRate = useSelector((state) =>
+    selectConversionRateByChainId(state, chainId),
+  );
+
   const { address: userAddress } = useSelector(getSelectedInternalAccount);
   const nftCollections = useSelector(getNftContracts);
 

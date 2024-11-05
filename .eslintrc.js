@@ -479,7 +479,12 @@ module.exports = {
           'error',
           {
             selector:
-              'ImportSpecifier[imported.name=/(getCurrentChainId)|(getNativeCurrency)|(getProviderConfig)|(getRpcPrefsForCurrentProvider)/]',
+              'ImportSpecifier[imported.name=/' +
+              '(getCurrentChainId)|' +
+              '(getNativeCurrency)|' +
+              '(getProviderConfig)|' +
+              '(getRpcPrefsForCurrentProvider)|' +
+              '(getConversionRate)/]',
             message: 'Avoid using global network selectors in confirmations',
           },
         ],

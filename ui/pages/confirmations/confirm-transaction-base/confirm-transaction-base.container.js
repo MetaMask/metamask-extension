@@ -71,7 +71,6 @@ import {
   getIsGasEstimatesLoading,
   getSendToAccounts,
   findKeyringForAddress,
-  getConversionRate,
 } from '../../../ducks/metamask/metamask';
 import {
   addHexPrefix,
@@ -96,6 +95,7 @@ import { CUSTOM_GAS_ESTIMATE } from '../../../../shared/constants/gas';
 import { getIsUsingPaymaster } from '../../../selectors/account-abstraction';
 
 import {
+  selectConversionRateByChainId,
   selectNetworkConfigurationByChainId,
   // eslint-disable-next-line import/no-duplicates
 } from '../../../selectors/selectors';
@@ -174,7 +174,6 @@ const mapStateToProps = (state, ownProps) => {
   const gasLoadingAnimationIsShowing = getGasLoadingAnimationIsShowing(state);
   const isBuyableChain = getIsNativeTokenBuyable(state);
   const { confirmTransaction, metamask } = state;
-  const conversionRate = getConversionRate(state);
   const { addressBook, nextNonce } = metamask;
   const unapprovedTxs = getUnapprovedTransactions(state);
 
@@ -183,6 +182,7 @@ const mapStateToProps = (state, ownProps) => {
   const txId = transactionId || paramsTransactionId;
   const transaction = getUnapprovedTransaction(state, txId) ?? {};
   const { chainId } = transaction;
+  const conversionRate = selectConversionRateByChainId(state, chainId);
 
   const {
     from: fromAddress,

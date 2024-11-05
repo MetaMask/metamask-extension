@@ -11,7 +11,6 @@ import {
 } from '../../../../../../../components/component-library';
 import Tooltip from '../../../../../../../components/ui/tooltip';
 import { getIntlLocale } from '../../../../../../../ducks/locale/locale';
-import { getConversionRate } from '../../../../../../../ducks/metamask/metamask';
 import {
   AlignItems,
   Display,
@@ -29,16 +28,22 @@ import {
   formatAmountMaxPrecision,
 } from '../../../../simulation-details/formatAmount';
 import { toNonScientificString } from '../../hooks/use-token-values';
+import { selectConversionRateByChainId } from '../../../../../../../selectors';
 
 const NativeSendHeading = () => {
   const { currentConfirmation: transactionMeta } =
     useConfirmContext<TransactionMeta>();
 
+  const { chainId } = transactionMeta;
+
   const nativeAssetTransferValue = new BigNumber(
     transactionMeta.txParams.value as string,
   ).dividedBy(new BigNumber(10).pow(18));
 
-  const conversionRate = useSelector(getConversionRate);
+  const conversionRate = useSelector((state) =>
+    selectConversionRateByChainId(state, chainId),
+  );
+
   const fiatValue =
     conversionRate &&
     nativeAssetTransferValue &&
