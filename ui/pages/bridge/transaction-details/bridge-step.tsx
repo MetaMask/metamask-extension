@@ -42,6 +42,10 @@ const getBridgeActionText = (
   return `${step.destAsset.symbol} received on ${destNetworkConfiguration?.name}`;
 };
 
+const getBridgeActionStatus = (bridgeHistoryItem: BridgeHistoryItem) => {
+  return bridgeHistoryItem.status?.status;
+};
+
 /**
  * swap actions can have step.srcChainId === step.destChainId, and can occur on
  * EITHER the quote.srcChainId or the quote.destChainId
@@ -66,7 +70,13 @@ const getSwapActionStatus = (
   } else {
     // if the swap action is on the dest chain, we check the bridgeHistoryItem.status,
     // since we don't know when the dest tx is confirmed
-    return bridgeHistoryItem.status.status;
+    if (srcChainTxMeta?.status === TransactionStatus.confirmed) {
+      return bridgeHistoryItem.status?.status;
+    }
+
+    // If the source chain tx is not confirmed, we know the swap hasn't started
+    // use null to represent this as we don't have an equivalent in StatusTypes
+    return null;
   }
 };
 
@@ -84,11 +94,10 @@ const getStepStatus = (
   if (step.action === ActionTypes.SWAP) {
     return getSwapActionStatus(bridgeHistoryItem, step, srcChainTxMeta);
   } else if (step.action === ActionTypes.BRIDGE) {
-    // if action is bridge, the step.srcChainId !== step.destChainId,
-    // so we can simply check the bridgeHistoryItem.status
-    return bridgeHistoryItem.status.status;
+    return getBridgeActionStatus(bridgeHistoryItem);
   }
-  return StatusTypes.PENDING;
+
+  return StatusTypes.UNKNOWN;
 };
 
 type BridgeStepProps = {
@@ -116,13 +125,17 @@ export default function BridgeStep({
 
   return (
     <Box>
-      <HollowCircle color={iconColor} />
-      <Icon
-        className="bridge-transaction-details__icon-loading" // Needed for animation
-        name={IconName.Loading}
-        color={iconColor}
-      />
-      <Icon name={IconName.FullCircle} color={iconColor} />
+      {stepStatus === null && <HollowCircle color={iconColor} />}
+      {stepStatus === StatusTypes.PENDING && (
+        <Icon
+          className="bridge-transaction-details__icon-loading" // Needed for animation
+          name={IconName.Loading}
+          color={iconColor}
+        />
+      )}
+      {stepStatus === StatusTypes.COMPLETE && (
+        <Icon name={IconName.FullCircle} color={iconColor} />
+      )}
       <Text>{time}</Text>
       <Text>
         {step.action === ActionTypes.BRIDGE &&
