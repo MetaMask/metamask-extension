@@ -379,6 +379,78 @@ describe('MetaMetricsController', function () {
     });
   });
 
+  describe('updateEventFragment', function () {
+    beforeEach(function () {
+      jest.useFakeTimers().setSystemTime(1730798303333);
+    });
+    afterEach(function () {
+      jest.useRealTimers();
+    });
+
+    it('updates fragment with additional provided props', async function () {
+      const metaMetricsController = getMetaMetricsController();
+      const MOCK_PROPS_TO_UPDATE = {
+        properties: {
+          test: 1,
+        },
+      };
+
+      metaMetricsController.updateEventFragment(
+        SAMPLE_PERSISTED_EVENT.id,
+        MOCK_PROPS_TO_UPDATE,
+      );
+
+      const resultFragment =
+        metaMetricsController.state.fragments[SAMPLE_PERSISTED_EVENT.id];
+      const expectedPartialFragment = {
+        ...SAMPLE_PERSISTED_EVENT,
+        ...MOCK_PROPS_TO_UPDATE,
+        lastUpdated: 1730798303333,
+      };
+      expect(resultFragment).toStrictEqual(expectedPartialFragment);
+    });
+
+    it('throws error when no existing fragment exists', async function () {
+      const metaMetricsController = getMetaMetricsController();
+
+      const MOCK_NONEXISTING_ID = 'test-nonexistingid';
+
+      await expect(() => {
+        metaMetricsController.updateEventFragment(MOCK_NONEXISTING_ID, {
+          properties: { test: 1 },
+        });
+      }).toThrow(/Event fragment with id test-nonexistingid does not exist\./u);
+    });
+
+    describe('when id includes "transaction-submitted"', function () {
+      it('creates and stores new fragment props with canDeleteIfAbandoned set to true', function () {
+        const metaMetricsController = getMetaMetricsController();
+        const MOCK_ID = 'transaction-submitted-1111';
+        const MOCK_PROPS_TO_UPDATE = {
+          properties: {
+            test: 1,
+          },
+        };
+
+        metaMetricsController.updateEventFragment(
+          MOCK_ID,
+          MOCK_PROPS_TO_UPDATE,
+        );
+
+        const resultFragment = metaMetricsController.state.fragments[MOCK_ID];
+        const expectedPartialFragment = {
+          ...MOCK_PROPS_TO_UPDATE,
+          category: 'Transactions',
+          canDeleteIfAbandoned: true,
+          id: MOCK_ID,
+          lastUpdated: 1730798303333,
+          successEvent: 'Transaction Finalized',
+        };
+        expect(resultFragment).toStrictEqual(expectedPartialFragment);
+      });
+    });
+  });
+
   describe('generateMetaMetricsId', function () {
     it('should generate an 0x prefixed hex string', function () {
       const metaMetricsController = getMetaMetricsController();
