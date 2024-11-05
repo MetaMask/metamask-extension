@@ -1,8 +1,28 @@
 {
+  "[rocket-mvbasic]": {
+    "editor.codeLens": false
+  },
   "editor.defaultFormatter": "rvest.vs-code-prettier-eslint",
   "editor.tabSize": 2,
   "files.associations": {
-    "app/*.html": "ejs"
+    "*.embeddedhtml": "html",
+    "*.ejs": "html",
+    "**/src/main/resources/deploy.json": "json",
+    "**/src/main/resources/deploy_ch2.json": "json",
+    "*.jsonc": "json",
+    "app/*.html": "ejs",
+    "**/.rmv/config/*.json": "jsonc"
+  },
+  "files.exclude": {
+    "**/.git": true,
+    "**/.svn": true,
+    "**/.hg": true,
+    "**/CVS": true,
+    "**/.DS_Store": true,
+    "**/Thumbs.db": true,
+    "**/.ruby-lsp": true,
+    "**/.rmv/catalog/**": true,
+    "*/_*": false
   },
   "files.trimTrailingWhitespace": true,
   "javascript.preferences.importModuleSpecifier": "relative",
@@ -17,5 +37,8 @@
       "url": "./.vscode/package.json-schema.json"
     }
   ],
-  "typescript.tsdk": "node_modules/typescript/lib"
+  "typescript.tsdk": "node_modules/typescript/lib",
+  "ocaml.sandbox": {
+    "kind": "global"
+  }
 }

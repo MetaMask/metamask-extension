@@ -80,3 +80,5 @@ html-report/
 
 /app/images/branding
 /changed-files
+
+.cpqdevkit/**
