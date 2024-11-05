@@ -19,7 +19,7 @@ export function useSmartTransactionFeatureFlags() {
   const { id: transactionId, txParams } = currentConfirmation ?? {};
   const isTransaction = Boolean(txParams);
 
-  const smartTransactionsEnabled = useSelector(
+  const smartTransactionsPreferenceEnabled = useSelector(
     getSmartTransactionsPreferenceEnabled,
   );
 
@@ -31,7 +31,7 @@ export function useSmartTransactionFeatureFlags() {
     if (
       !isTransaction ||
       !transactionId ||
-      !smartTransactionsEnabled ||
+      !smartTransactionsPreferenceEnabled ||
       !currentChainSupportsSmartTransactions
     ) {
       return;
@@ -47,7 +47,7 @@ export function useSmartTransactionFeatureFlags() {
   }, [
     isTransaction,
     transactionId,
-    smartTransactionsEnabled,
+    smartTransactionsPreferenceEnabled,
     currentChainSupportsSmartTransactions,
   ]);
 }
