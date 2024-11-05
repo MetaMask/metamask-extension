@@ -20,7 +20,11 @@ import {
   TransactionStatus,
 } from '@metamask/transaction-controller';
 import HollowCircle from './hollow-circle';
-import { IconColor } from '../../../helpers/constants/design-system';
+import {
+  AlignItems,
+  Display,
+  IconColor,
+} from '../../../helpers/constants/design-system';
 
 /**
  * bridge actions will have step.srcChainId !== step.destChainId
@@ -124,8 +128,8 @@ export default function BridgeStep({
   const stepStatus = getStepStatus(bridgeHistoryItem, step, srcChainTxMeta);
 
   return (
-    <Box>
-      {stepStatus === null && <HollowCircle color={iconColor} />}
+    <Box display={Display.Flex} alignItems={AlignItems.center} gap={2}>
+      {/* {stepStatus === null && <HollowCircle color={iconColor} />}
       {stepStatus === StatusTypes.PENDING && (
         <Icon
           className="bridge-transaction-details__icon-loading" // Needed for animation
@@ -135,7 +139,7 @@ export default function BridgeStep({
       )}
       {stepStatus === StatusTypes.COMPLETE && (
         <Icon name={IconName.FullCircle} color={iconColor} />
-      )}
+      )} */}
       <Text>{time}</Text>
       <Text>
         {step.action === ActionTypes.BRIDGE &&
