@@ -104,7 +104,7 @@ const getMockQuote = ({ srcChainId = 42161, destChainId = 10 } = {}) => ({
   ],
 });
 
-const getMockFetchBridgeTxStatusArgs = ({
+const getMockStartPollingForBridgeTxStatusArgs = ({
   srcTxHash = '0xsrcTxHash1',
   account = '0xaccount1',
   srcChainId = 42161,
@@ -310,7 +310,7 @@ const executePollingWithPendingStatus = async () => {
 
   // Execution
   await bridgeStatusController.startPollingForBridgeTxStatus(
-    getMockFetchBridgeTxStatusArgs(),
+    getMockStartPollingForBridgeTxStatusArgs(),
   );
   fetchBridgeTxStatusSpy.mockImplementationOnce(async () => {
     return MockStatusResponse.getPending();
@@ -343,7 +343,7 @@ describe('BridgeStatusController', () => {
 
       // Execution
       await bridgeStatusController.startPollingForBridgeTxStatus(
-        getMockFetchBridgeTxStatusArgs(),
+        getMockStartPollingForBridgeTxStatusArgs(),
       );
 
       // Assertion
@@ -382,7 +382,7 @@ describe('BridgeStatusController', () => {
 
       // Execution
       await bridgeStatusController.startPollingForBridgeTxStatus(
-        getMockFetchBridgeTxStatusArgs(),
+        getMockStartPollingForBridgeTxStatusArgs(),
       );
       fetchBridgeTxStatusSpy.mockImplementationOnce(async () => {
         return MockStatusResponse.getComplete();
@@ -464,14 +464,14 @@ describe('BridgeStatusController', () => {
 
       // Start polling for 0xaccount1
       bridgeStatusController.startPollingForBridgeTxStatus(
-        getMockFetchBridgeTxStatusArgs(),
+        getMockStartPollingForBridgeTxStatusArgs(),
       );
       jest.advanceTimersByTime(10_000);
       expect(fetchBridgeTxStatusSpy).toHaveBeenCalledTimes(1);
 
       // Start polling for 0xaccount2
       bridgeStatusController.startPollingForBridgeTxStatus(
-        getMockFetchBridgeTxStatusArgs({
+        getMockStartPollingForBridgeTxStatusArgs({
           srcTxHash: '0xsrcTxHash2',
           account: '0xaccount2',
         }),
@@ -542,7 +542,7 @@ describe('BridgeStatusController', () => {
 
       // Start polling for chainId 42161 to chainId 1
       bridgeStatusController.startPollingForBridgeTxStatus(
-        getMockFetchBridgeTxStatusArgs({
+        getMockStartPollingForBridgeTxStatusArgs({
           account: '0xaccount1',
           srcTxHash: '0xsrcTxHash1',
           srcChainId: 42161,
@@ -554,7 +554,7 @@ describe('BridgeStatusController', () => {
 
       // Start polling for chainId 10 to chainId 123
       bridgeStatusController.startPollingForBridgeTxStatus(
-        getMockFetchBridgeTxStatusArgs({
+        getMockStartPollingForBridgeTxStatusArgs({
           account: '0xaccount1',
           srcTxHash: '0xsrcTxHash2',
           srcChainId: 10,
@@ -637,7 +637,7 @@ describe('BridgeStatusController', () => {
 
       // Start polling for chainId 42161 to chainId 1
       bridgeStatusController.startPollingForBridgeTxStatus(
-        getMockFetchBridgeTxStatusArgs({
+        getMockStartPollingForBridgeTxStatusArgs({
           account: '0xaccount1',
           srcTxHash: '0xsrcTxHash1',
           srcChainId: 42161,
@@ -649,7 +649,7 @@ describe('BridgeStatusController', () => {
 
       // Start polling for chainId 10 to chainId 123
       bridgeStatusController.startPollingForBridgeTxStatus(
-        getMockFetchBridgeTxStatusArgs({
+        getMockStartPollingForBridgeTxStatusArgs({
           account: '0xaccount1',
           srcTxHash: '0xsrcTxHash2',
           srcChainId: 10,

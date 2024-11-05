@@ -31,6 +31,9 @@ const metadata: StateMetadata<{
 type SrcTxHash = string;
 export type FetchBridgeTxStatusArgs = {
   statusRequest: StatusRequest;
+};
+export type StartPollingForBridgeTxStatusArgs = {
+  statusRequest: StatusRequest;
   quoteResponse: QuoteResponse;
   startTime?: BridgeHistoryItem['startTime'];
   slippagePercentage: BridgeHistoryItem['slippagePercentage'];
@@ -68,6 +71,10 @@ export default class BridgeStatusController extends StaticIntervalPollingControl
         },
       },
     });
+    console.log('BridgeStatusController constructor', {
+      state: this.state,
+      pollingTokensBySrcTxHash: this.#pollingTokensBySrcTxHash,
+    });
 
     // Register action handlers
     this.messagingSystem.registerActionHandler(
@@ -81,6 +88,11 @@ export default class BridgeStatusController extends StaticIntervalPollingControl
 
     // Set interval
     this.setIntervalLength(REFRESH_INTERVAL_MS);
+
+    // If you close the extension, but keep the browser open, the polling continues
+    // If you close the browser, the polling stops
+    // Check for historyItems that do not have a status of complete and restart polling
+    this.restartPollingForIncompleteHistoryItems();
   }
 
   resetState = () => {
@@ -119,10 +131,66 @@ export default class BridgeStatusController extends StaticIntervalPollingControl
     }
   };
 
+  restartPollingForIncompleteHistoryItems = () => {
+    // Check for historyItems that do not have a status of complete and restart polling
+    const { bridgeStatusState } = this.state;
+    const historyItems = Object.values(bridgeStatusState.txHistory);
+    const incompleteHistoryItems = historyItems
+      .filter(
+        (historyItem) => historyItem.status.status !== StatusTypes.COMPLETE,
+      )
+      .filter((historyItem) => {
+        // Check if we are already polling this tx, if so, skip restarting polling for that
+        const srcTxHash = historyItem.status.srcChain.txHash;
+        const pollingToken = this.#pollingTokensBySrcTxHash[srcTxHash];
+        console.log('pollingToken', {
+          srcTxHash,
+          pollingToken,
+          pollingTokensBySrcTxHash: this.#pollingTokensBySrcTxHash,
+        });
+        return !pollingToken;
+      });
+
+    console.log('restartPollingForIncompleteHistoryItems', {
+      incompleteHistoryItems,
+      pollingTokensBySrcTxHash: this.#pollingTokensBySrcTxHash,
+    });
+
+    incompleteHistoryItems.forEach((historyItem) => {
+      const statusRequest = {
+        bridgeId: historyItem.quote.bridgeId,
+        srcTxHash: historyItem.status.srcChain.txHash,
+        bridge: historyItem.quote.bridges[0],
+        srcChainId: historyItem.quote.srcChainId,
+        destChainId: historyItem.quote.destChainId,
+        quote: historyItem.quote,
+        refuel: Boolean(historyItem.quote.refuel),
+      };
+
+      const hexSourceChainId = new Numeric(statusRequest.srcChainId, 10)
+        .toPrefixedHexString()
+        .toLowerCase() as `0x${string}`;
+      const networkClientId = this.messagingSystem.call(
+        'NetworkController:findNetworkClientIdByChainId',
+        hexSourceChainId,
+      );
+
+      const options: FetchBridgeTxStatusArgs = { statusRequest };
+      this.#pollingTokensBySrcTxHash[statusRequest.srcTxHash] =
+        this.startPollingByNetworkClientId(networkClientId, options);
+
+      console.log('restarting polling for', {
+        srcTxHash: historyItem.status.srcChain.txHash,
+      });
+    });
+  };
+
   startPollingForBridgeTxStatus = (
-    fetchBridgeTxStatusArgs: Omit<FetchBridgeTxStatusArgs, 'completionTime'>,
+    startPollingForBridgeTxStatusArgs: StartPollingForBridgeTxStatusArgs,
   ) => {
-    console.log('startPollingForBridgeTxStatus', { fetchBridgeTxStatusArgs });
+    console.log('startPollingForBridgeTxStatus', {
+      startPollingForBridgeTxStatusArgs,
+    });
     const {
       statusRequest,
       quoteResponse,
@@ -131,7 +199,7 @@ export default class BridgeStatusController extends StaticIntervalPollingControl
       pricingData,
       initialDestAssetBalance,
       targetContractAddress,
-    } = fetchBridgeTxStatusArgs;
+    } = startPollingForBridgeTxStatusArgs;
     const hexSourceChainId = new Numeric(statusRequest.srcChainId, 10)
       .toPrefixedHexString()
       .toLowerCase() as `0x${string}`;
@@ -156,6 +224,13 @@ export default class BridgeStatusController extends StaticIntervalPollingControl
             initialDestAssetBalance,
             targetContractAddress,
             account,
+            status: {
+              status: StatusTypes.PENDING,
+              srcChain: {
+                chainId: statusRequest.srcChainId,
+                txHash: statusRequest.srcTxHash,
+              },
+            },
           },
         },
       };
@@ -166,13 +241,11 @@ export default class BridgeStatusController extends StaticIntervalPollingControl
       hexSourceChainId,
     );
     this.#pollingTokensBySrcTxHash[statusRequest.srcTxHash] =
-      this.startPollingByNetworkClientId(
-        networkClientId,
-        fetchBridgeTxStatusArgs,
-      );
+      this.startPollingByNetworkClientId(networkClientId, { statusRequest });
   };
 
   // This will be called after you call this.startPollingByNetworkClientId()
+  // The args passed in are the args you passed in to startPollingByNetworkClientId()
   _executePoll = async (
     _networkClientId: string,
     fetchBridgeTxStatusArgs: FetchBridgeTxStatusArgs,
