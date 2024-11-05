@@ -56,36 +56,40 @@ export default function BridgeExplorerLinks({
 
   return (
     <Box display={Display.Flex} flexDirection={FlexDirection.Column} gap={4}>
-      <Button
-        variant={ButtonVariant.Secondary}
-        onClick={() => {
-          if (srcBlockExplorerUrl) {
-            openBlockExplorer(
-              srcBlockExplorerUrl,
-              METRICS_LOCATION,
-              trackEvent,
-            );
-          }
-        }}
-      >
-        <Text>View on {getBlockExplorerName(srcBlockExplorerUrl)}</Text>
-        <Icon name={IconName.Export} />
-      </Button>
-      <Button
-        variant={ButtonVariant.Secondary}
-        onClick={() => {
-          if (destBlockExplorerUrl) {
-            openBlockExplorer(
-              destBlockExplorerUrl,
-              METRICS_LOCATION,
-              trackEvent,
-            );
-          }
-        }}
-      >
-        <div>View on {getBlockExplorerName(destBlockExplorerUrl)}</div>
-        <Icon name={IconName.Export} />
-      </Button>
+      {srcBlockExplorerUrl && (
+        <Button
+          variant={ButtonVariant.Secondary}
+          onClick={() => {
+            if (srcBlockExplorerUrl) {
+              openBlockExplorer(
+                srcBlockExplorerUrl,
+                METRICS_LOCATION,
+                trackEvent,
+              );
+            }
+          }}
+        >
+          <Text>View on {getBlockExplorerName(srcBlockExplorerUrl)}</Text>
+          <Icon name={IconName.Export} />
+        </Button>
+      )}
+      {destBlockExplorerUrl && (
+        <Button
+          variant={ButtonVariant.Secondary}
+          onClick={() => {
+            if (destBlockExplorerUrl) {
+              openBlockExplorer(
+                destBlockExplorerUrl,
+                METRICS_LOCATION,
+                trackEvent,
+              );
+            }
+          }}
+        >
+          <Text>View on {getBlockExplorerName(destBlockExplorerUrl)}</Text>
+          <Icon name={IconName.Export} />
+        </Button>
+      )}
     </Box>
   );
 }
