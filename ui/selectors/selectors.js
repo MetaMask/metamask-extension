@@ -534,7 +534,7 @@ function getNativeTokenInfo(state, chainId) {
 
   if (networkConfig) {
     const symbol = networkConfig.nativeCurrency || AssetType.native;
-    const decimals = ERC20_DEFAULT_DECIMALS;
+    const decimals = 18;
     const name = networkConfig.name || 'Native Token';
 
     return {
@@ -732,7 +732,7 @@ export const getTokensMarketData = (state) => {
   return state.metamask.marketData?.[chainId];
 };
 
-export const getTokensMarketDataAcrossChains = (state) => {
+export const getMarketData = (state) => {
   return state.metamask.marketData;
 };
 

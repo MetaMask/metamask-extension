@@ -11,11 +11,11 @@ import {
 import { sortAssets } from '../util/sort';
 import {
   getCurrencyRates,
+  getMarketData,
   getPreferences,
   getSelectedAccountTokenBalancesAcrossChains,
   getSelectedAccountTokensAcrossChains,
   getTokenExchangeRates,
-  getTokensMarketDataAcrossChains,
 } from '../../../../selectors';
 import { getConversionRate } from '../../../../ducks/metamask/metamask';
 import { filterAssets } from '../util/filter';
@@ -28,7 +28,6 @@ type TokenListProps = {
 export default function TokenList({ onTokenClick }: TokenListProps) {
   const t = useI18nContext();
   const { tokenSortConfig, tokenNetworkFilter } = useSelector(getPreferences);
-  const selectedAccount = useSelector(getSelectedAccount);
   const conversionRate = useSelector(getConversionRate);
   const contractExchangeRates = useSelector(
     getTokenExchangeRates,
@@ -42,7 +41,7 @@ export default function TokenList({ onTokenClick }: TokenListProps) {
   const selectedAccountTokenBalancesAcrossChains: Record<string, any> =
     useSelector(getSelectedAccountTokenBalancesAcrossChains);
 
-  const marketData = useSelector(getTokensMarketDataAcrossChains);
+  const marketData = useSelector(getMarketData);
   const currencyRates = useSelector(getCurrencyRates);
 
   const consolidatedBalances = () => {

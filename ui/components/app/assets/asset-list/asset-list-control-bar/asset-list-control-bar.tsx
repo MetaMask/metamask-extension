@@ -1,6 +1,10 @@
-import React, { useRef, useState } from 'react';
-import { useSelector } from 'react-redux';
-import { getCurrentNetwork, getPreferences } from '../../../../../selectors';
+import React, { useEffect, useRef, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import {
+  getCurrentNetwork,
+  getNetworkConfigurationsByChainId,
+  getPreferences,
+} from '../../../../../selectors';
 import {
   Box,
   ButtonBase,
@@ -28,6 +32,7 @@ import {
   ENVIRONMENT_TYPE_POPUP,
 } from '../../../../../../shared/constants/app';
 import NetworkFilter from '../network-filter';
+import { setTokenNetworkFilter } from '../../../../../store/actions';
 
 type AssetListControlBarProps = {
   showTokensLinks?: boolean;
@@ -35,14 +40,31 @@ type AssetListControlBarProps = {
 
 const AssetListControlBar = ({ showTokensLinks }: AssetListControlBarProps) => {
   const t = useI18nContext();
+  const dispatch = useDispatch();
   const popoverRef = useRef<HTMLDivElement>(null);
   const currentNetwork = useSelector(getCurrentNetwork);
+  const allNetworks = useSelector(getNetworkConfigurationsByChainId);
   const { tokenNetworkFilter } = useSelector(getPreferences);
   const [isTokenSortPopoverOpen, setIsTokenSortPopoverOpen] = useState(false);
   const [isNetworkFilterPopoverOpen, setIsNetworkFilterPopoverOpen] =
     useState(false);
 
-  const allNetworksFilterShown = Object.keys(tokenNetworkFilter ?? {}).length;
+  const allOpts: Record<string, boolean> = {};
+  Object.keys(allNetworks).forEach((chainId) => {
+    allOpts[chainId] = true;
+  });
+
+  const allNetworksFilterShown =
+    Object.keys(tokenNetworkFilter).length !== Object.keys(allOpts).length;
+
+  // TODO: This useEffect should be a migration
+  // We need to set the default filter for all users to be all included networks, rather than defaulting to empty object
+  // This effect is to unblock and derisk in the short-term
+  useEffect(() => {
+    if (Object.keys(tokenNetworkFilter).length === 0) {
+      dispatch(setTokenNetworkFilter(allOpts));
+    }
+  }, []);
 
   const windowType = getEnvironmentType();
   const isFullScreen =
