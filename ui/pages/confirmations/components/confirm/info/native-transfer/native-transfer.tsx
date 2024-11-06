@@ -24,6 +24,7 @@ const NativeTransferInfo = () => {
           <SimulationDetails
             transaction={transactionMeta}
             isTransactionsRedesign
+            enableMetrics
           />
         </ConfirmInfoSection>
       )}
