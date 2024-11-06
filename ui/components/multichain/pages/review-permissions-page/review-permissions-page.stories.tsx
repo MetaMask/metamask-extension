@@ -1,5 +1,5 @@
 import React from 'react';
-import ReviewPermissions from './review-permissions-page';
+import { ReviewPermissions } from './review-permissions-page';
 
 export default {
   title: 'Components/Multichain/ReviewPermissions',

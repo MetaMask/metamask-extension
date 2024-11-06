@@ -19,7 +19,7 @@ import { useIsOriginalNativeTokenSymbol } from '../../../../hooks/useIsOriginalN
 import { KeyringType } from '../../../../../shared/constants/keyring';
 import { ETH_EOA_METHODS } from '../../../../../shared/constants/eth-methods';
 import { mockNetworkState } from '../../../../../test/stub/networks';
-import SendPage from '.';
+import { SendPage } from '.';
 
 jest.mock('@ethersproject/providers', () => {
   const originalModule = jest.requireActual('@ethersproject/providers');

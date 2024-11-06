@@ -56,7 +56,7 @@ import { MergedInternalAccount } from '../../../../selectors/selectors.types';
 import { TEST_CHAINS } from '../../../../../shared/constants/network';
 import { SiteCell } from './site-cell/site-cell';
 
-export default function ReviewPermissions() {
+export const ReviewPermissions = () => {
   const t = useI18nContext();
   const dispatch = useDispatch();
   const history = useHistory();
@@ -282,4 +282,4 @@ export default function ReviewPermissions() {
       </>
     </Page>
   );
-}
+};

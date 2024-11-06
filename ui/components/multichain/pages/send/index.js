@@ -1,1 +1,1 @@
-export { SendPage as default } from './send';
+export { SendPage } from './send';

@@ -87,7 +87,7 @@ import { DeprecatedNetworkModal } from '../settings/deprecated-network-modal/Dep
 import { MultichainMetaFoxLogo } from '../../components/multichain/app-header/multichain-meta-fox-logo';
 import NetworkConfirmationPopover from '../../components/multichain/network-list-menu/network-confirmation-popover/network-confirmation-popover';
 import { ToastMaster } from '../../components/app/toast-master/toast-master';
-import AppLoadingSpinner from '../../components/app/app-loading-spinner';
+// eslint-disable-next-line import/order
 import {
   isCorrectDeveloperTransactionType,
   isCorrectSignatureApprovalType,
@@ -99,65 +99,58 @@ import {
   setTheme,
   showOnboardingHeader,
 } from './utils';
+import { mmLazy } from '../../helpers/utils/mm-lazy';
 
 // Begin Lazy Routes
-const OnboardingFlow = React.lazy(() =>
+const OnboardingFlow = mmLazy(() =>
   import('../onboarding-flow/onboarding-flow'),
 );
-const Lock = React.lazy(() => import('../lock'));
-const UnlockPage = React.lazy(() => import('../unlock-page'));
-const RestoreVaultPage = React.lazy(() => import('../keychains/restore-vault'));
-const RevealSeedConfirmation = React.lazy(() =>
-  import('../keychains/reveal-seed'),
-);
-const Settings = React.lazy(() => import('../settings'));
-const NotificationsSettings = React.lazy(() =>
-  import('../notifications-settings'),
-);
-const NotificationDetails = React.lazy(() => import('../notification-details'));
-const Notifications = React.lazy(() => import('../notifications'));
-const SnapList = React.lazy(() => import('../snaps/snaps-list'));
-const SnapView = React.lazy(() => import('../snaps/snap-view'));
+const Lock = mmLazy(() => import('../lock'));
+const UnlockPage = mmLazy(() => import('../unlock-page'));
+const RestoreVaultPage = mmLazy(() => import('../keychains/restore-vault'));
+const RevealSeedConfirmation = mmLazy(() => import('../keychains/reveal-seed'));
+const Settings = mmLazy(() => import('../settings'));
+const NotificationsSettings = mmLazy(() => import('../notifications-settings'));
+const NotificationDetails = mmLazy(() => import('../notification-details'));
+const Notifications = mmLazy(() => import('../notifications'));
+const SnapList = mmLazy(() => import('../snaps/snaps-list'));
+const SnapView = mmLazy(() => import('../snaps/snap-view'));
 
 // eslint-disable-next-line -- Un-lazy this one for now
-import ConfirmTransaction from '../confirmations/confirm-transaction/confirm-transaction';
-// const ConfirmTransaction = React.lazy(() =>
-//   import('../confirmations/confirm-transaction/confirm-transaction'),
+import ConfirmTransaction from '../confirmations/confirm-transaction';
+// const ConfirmTransaction = mmLazy(() =>
+//   import('../confirmations/confirm-transaction'),
 // );
 
-const SendPage = React.lazy(() =>
-  import('../../components/multichain/pages/send'),
-);
-const Swaps = React.lazy(() => import('../swaps'));
-const CrossChainSwap = React.lazy(() => import('../bridge'));
-const ConfirmAddSuggestedTokenPage = React.lazy(() =>
+const SendPage = mmLazy(() => import('../../components/multichain/pages/send'));
+const Swaps = mmLazy(() => import('../swaps'));
+const CrossChainSwap = mmLazy(() => import('../bridge'));
+const ConfirmAddSuggestedTokenPage = mmLazy(() =>
   import('../confirm-add-suggested-token'),
 );
-const ConfirmAddSuggestedNftPage = React.lazy(() =>
+const ConfirmAddSuggestedNftPage = mmLazy(() =>
   import('../confirm-add-suggested-nft'),
 );
-const ConfirmationPage = React.lazy(() =>
-  import('../confirmations/confirmation'),
-);
-const CreateAccountPage = React.lazy(() =>
+const ConfirmationPage = mmLazy(() => import('../confirmations/confirmation'));
+const CreateAccountPage = mmLazy(() =>
   import('../create-account/create-account.component'),
 );
-const NftFullImage = React.lazy(() =>
+const NftFullImage = mmLazy(() =>
   import('../../components/app/assets/nfts/nft-details/nft-full-image'),
 );
-const Asset = React.lazy(() => import('../asset'));
-const PermissionsPage = React.lazy(() =>
+const Asset = mmLazy(() => import('../asset'));
+const PermissionsPage = mmLazy(() =>
   import('../../components/multichain/pages/permissions-page/permissions-page'),
 );
-const Connections = React.lazy(() =>
+const Connections = mmLazy(() =>
   import('../../components/multichain/pages/connections'),
 );
-const ReviewPermissions = React.lazy(() =>
+const ReviewPermissions = mmLazy(() =>
   import(
     '../../components/multichain/pages/review-permissions-page/review-permissions-page'
   ),
 );
-const Home = React.lazy(() => import('../home'));
+const Home = mmLazy(() => import('../home'));
 // End Lazy Routes
 
 export default class Routes extends Component {
@@ -302,7 +295,8 @@ export default class Routes extends Component {
     const RestoreVaultComponent = forgottenPassword ? Route : Initialized;
 
     const routes = (
-      <Suspense fallback={<AppLoadingSpinner />}>
+      <Suspense fallback={null}>
+        {/* since the loading time is less than 200ms, we decided not to show a spinner fallback or anything */}
         <Switch>
           <Route path={ONBOARDING_ROUTE} component={OnboardingFlow} />
           <Route path={LOCK_ROUTE} component={Lock} exact />

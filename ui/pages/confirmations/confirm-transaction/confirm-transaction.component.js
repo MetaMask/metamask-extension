@@ -55,7 +55,7 @@ import { useAsyncResult } from '../../../hooks/useAsyncResult';
 import { TraceName } from '../../../../shared/lib/trace';
 import ConfirmTokenTransactionSwitch from './confirm-token-transaction-switch';
 
-export default function ConfirmTransaction() {
+const ConfirmTransaction = () => {
   const dispatch = useDispatch();
   const history = useHistory();
   const { id: paramsTransactionId } = useParams();
@@ -240,4 +240,6 @@ export default function ConfirmTransaction() {
   ) : (
     <Loading />
   );
-}
+};
+
+export default ConfirmTransaction;
