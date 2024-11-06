@@ -53,7 +53,7 @@ class OnboardingSrpPage {
   /**
    * Fill the SRP words with the provided seed phrase
    *
-   * @param seedPhrase - The seed phrase to fill. Defaults to TEST_SEED_PHRASE.
+   * @param seedPhrase - The seed phrase to fill. Defaults to E2E_SRP.
    */
   async fillSrp(seedPhrase: string = E2E_SRP): Promise<void> {
     await this.driver.pasteIntoField(this.srpWord0, seedPhrase);
