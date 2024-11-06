@@ -1,14 +1,10 @@
 import React, { useEffect } from 'react';
 import { StoryFn, Meta } from '@storybook/react';
-import { withKnobs, number } from '@storybook/addon-knobs';
 import {
-  AlignItems,
   BlockSize,
   Display,
   FlexDirection,
-  TextVariant,
 } from '../../../helpers/constants/design-system';
-import README from './README.mdx';
 import Segment from './segment';
 import { Box } from '../../../components/component-library';
 import { StatusTypes } from '../../../../app/scripts/controllers/bridge-status/types';
@@ -16,7 +12,6 @@ import { StatusTypes } from '../../../../app/scripts/controllers/bridge-status/t
 export default {
   title: 'pages/bridge/transaction-details/Segment',
   component: Segment,
-  decorators: [withKnobs],
 } as Meta<typeof Segment>;
 
 const types = [StatusTypes.PENDING, StatusTypes.COMPLETE, null];
