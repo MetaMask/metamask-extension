@@ -296,7 +296,10 @@ const PrepareBridgePage = () => {
         {isLoading && !activeQuote ? (
           <>
             <SpacerBox />
-            <MascotBackgroundAnimation />
+            <Text textAlign={TextAlign.Center} color={TextColor.textMuted}>
+              {t('swapFetchingQuotes')}
+            </Text>
+            <MascotBackgroundAnimation height="64" width="64" />
             <SpacerBox />
           </>
         ) : null}
