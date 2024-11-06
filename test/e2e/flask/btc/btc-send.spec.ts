@@ -1,12 +1,40 @@
 import { strict as assert } from 'assert';
 import { Suite } from 'mocha';
+import { Driver } from '../../webdriver/driver';
 import { DEFAULT_BTC_ACCOUNT, DEFAULT_BTC_BALANCE } from '../../constants';
 import {
   getTransactionRequest,
   SendFlowPlaceHolders,
-  startSendFlow,
   withBtcAccountSnap,
 } from './common-btc';
+
+export async function startSendFlow(driver: Driver, recipient?: string) {
+  // Wait a bit so the MultichainRatesController is able to fetch BTC -> USD rates.
+  await driver.delay(1000);
+
+  // Start the send flow.
+  const sendButton = await driver.waitForSelector({
+    text: 'Send',
+    tag: 'button',
+    css: '[data-testid="coin-overview-send"]',
+  });
+  await sendButton.click();
+
+  // See the review button is disabled by default.
+  await driver.waitForSelector({
+    text: 'Review',
+    tag: 'button',
+    css: '[disabled]',
+  });
+
+  if (recipient) {
+    // Set the recipient address (if any).
+    await driver.pasteIntoField(
+      `input[placeholder="${SendFlowPlaceHolders.RECIPIENT}"]`,
+      recipient,
+    );
+  }
+}
 
 describe('BTC Account - Send', function (this: Suite) {
   it('can send complete the send flow', async function () {
@@ -14,8 +42,6 @@ describe('BTC Account - Send', function (this: Suite) {
       { title: this.test?.fullTitle() },
       async (driver, mockServer) => {
         await startSendFlow(driver, DEFAULT_BTC_ACCOUNT);
-
-        await driver.delay(500);
 
         // Set the amount to send.
         const mockAmountToSend = '0.5';
@@ -71,10 +97,6 @@ describe('BTC Account - Send', function (this: Suite) {
       { title: this.test?.fullTitle() },
       async (driver, mockServer) => {
         await startSendFlow(driver, DEFAULT_BTC_ACCOUNT);
-
-        // Wait a bit for the inputs to be properly filled on the Snap UI before
-        // hitting the "Max" button.
-        await driver.delay(500);
 
         // Use the max spendable amount of that account.
         await driver.clickElement({

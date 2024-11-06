@@ -249,36 +249,7 @@ export async function getQuickNodeSeenRequests(mockServer: Mockttp) {
     .filter((request) => request.url.match(QUICKNODE_URL_REGEX));
 }
 
-export async function startSendFlow(driver: Driver, recipient?: string) {
-  // Wait a bit so the MultichainRatesController is able to fetch BTC -> USD rates.
-  await driver.delay(1000);
-
-  // Start the send flow.
-  const sendButton = await driver.waitForSelector({
-    text: 'Send',
-    tag: 'button',
-    css: '[data-testid="coin-overview-send"]',
-  });
-  await sendButton.click();
-
-  // See the review button is disabled by default.
-  await driver.waitForSelector({
-    text: 'Review',
-    tag: 'button',
-    css: '[disabled]',
-  });
-
-  if (recipient) {
-    // Set the recipient address (if any).
-    await driver.pasteIntoField(
-      `input[placeholder="${SendFlowPlaceHolders.RECIPIENT}"]`,
-      recipient,
-    );
-  }
-}
-
 export async function getTransactionRequest(mockServer: Mockttp) {
-  // NOTE: We wait to land on the "Activity tab" first before checking the transaction network call!
   // Check that the transaction has been sent.
   const transactionRequest = (await getQuickNodeSeenRequests(mockServer)).find(
     async (request) => {
