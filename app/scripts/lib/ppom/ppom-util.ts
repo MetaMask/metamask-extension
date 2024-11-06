@@ -11,6 +11,8 @@ import { SignatureController } from '@metamask/signature-controller';
 import {
   BlockaidReason,
   BlockaidResultType,
+  LOADING_SECURITY_ALERT_RESPONSE,
+  SECURITY_ALERT_RESPONSE_CHAIN_NOT_SUPPORTED,
   SECURITY_PROVIDER_SUPPORTED_CHAIN_IDS,
   SecurityAlertSource,
 } from '../../../../shared/constants/security-provider';
@@ -37,18 +39,37 @@ type PPOMRequest = Omit<JsonRpcRequest, 'method' | 'params'> & {
   method: typeof METHOD_SEND_TRANSACTION;
   params: [TransactionParams];
 };
+
 export async function validateRequestWithPPOM({
   ppomController,
   request,
   securityAlertId,
   chainId,
+  updateSecurityAlertResponse: updateSecurityResponse,
 }: {
   ppomController: PPOMController;
   request: JsonRpcRequest;
   securityAlertId: string;
   chainId: Hex;
+  updateSecurityAlertResponse: (
+    method: string,
+    securityAlertId: string,
+    securityAlertResponse: SecurityAlertResponse,
+  ) => void;
 }): Promise<SecurityAlertResponse> {
   try {
+    if (!(await isChainSupported(chainId))) {
+      return {
+        ...SECURITY_ALERT_RESPONSE_CHAIN_NOT_SUPPORTED,
+        securityAlertId,
+      };
+    }
+
+    updateSecurityResponse(request.method, securityAlertId, {
+      ...LOADING_SECURITY_ALERT_RESPONSE,
+      securityAlertId,
+    });
+
     const normalizedRequest = normalizePPOMRequest(request);
 
     const ppomResponse = isSecurityAlertsAPIEnabled()

@@ -197,50 +197,6 @@ describe('PPOMMiddleware', () => {
     expect(validateRequestWithPPOM).not.toHaveBeenCalled();
   });
 
-  it('does not do validation if unable to get the chainId from the network provider config', async () => {
-    isChainSupportedMock.mockResolvedValue(false);
-    const middlewareFunction = createMiddleware({
-      chainId: null,
-    });
-
-    const req = {
-      ...REQUEST_MOCK,
-      method: 'eth_sendTransaction',
-      securityAlertResponse: undefined,
-    };
-
-    await middlewareFunction(
-      req,
-      { ...JsonRpcResponseStruct.TYPE },
-      () => undefined,
-    );
-
-    expect(req.securityAlertResponse).toBeUndefined();
-    expect(validateRequestWithPPOM).not.toHaveBeenCalled();
-  });
-
-  it('does not do validation if user is not on a supported network', async () => {
-    isChainSupportedMock.mockResolvedValue(false);
-    const middlewareFunction = createMiddleware({
-      chainId: '0x2',
-    });
-
-    const req = {
-      ...REQUEST_MOCK,
-      method: 'eth_sendTransaction',
-      securityAlertResponse: undefined,
-    };
-
-    await middlewareFunction(
-      req,
-      { ...JsonRpcResponseStruct.TYPE },
-      () => undefined,
-    );
-
-    expect(req.securityAlertResponse).toBeUndefined();
-    expect(validateRequestWithPPOM).not.toHaveBeenCalled();
-  });
-
   it('does not do validation when request is not for confirmation method', async () => {
     const middlewareFunction = createMiddleware();
 
