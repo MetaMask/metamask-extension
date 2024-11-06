@@ -16,6 +16,7 @@ import {
 import {
   ALLOWED_BRIDGE_CHAIN_IDS,
   BRIDGE_MIN_FIAT_SRC_AMOUNT,
+  BRIDGE_PREFERRED_GAS_ESTIMATE,
   BRIDGE_QUOTE_MAX_ETA_SECONDS as MAX_ETA_SECONDS,
   BRIDGE_QUOTE_MAXRETURN_VALUE_DIFFERENCE_PERCENTAGE as MAX_RETURN_VALUE_DIFF_PERCENTAGE,
 } from '../../../shared/constants/bridge';
@@ -182,10 +183,12 @@ export const getBridgeFeesPerGas = createSelector(
   getGasFeeEstimates,
   (gasFeeEstimates) => ({
     maxFeePerGas: decGWEIToHexWEI(
-      (gasFeeEstimates as GasFeeEstimates)?.high?.suggestedMaxFeePerGas,
+      (gasFeeEstimates as GasFeeEstimates)?.[BRIDGE_PREFERRED_GAS_ESTIMATE]
+        ?.suggestedMaxFeePerGas,
     ),
     maxPriorityFeePerGas: decGWEIToHexWEI(
-      (gasFeeEstimates as GasFeeEstimates)?.high?.suggestedMaxPriorityFeePerGas,
+      (gasFeeEstimates as GasFeeEstimates)?.[BRIDGE_PREFERRED_GAS_ESTIMATE]
+        ?.suggestedMaxPriorityFeePerGas,
     ),
   }),
 );
