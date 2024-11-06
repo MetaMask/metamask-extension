@@ -24,7 +24,6 @@ import {
   getFromChains,
   getFromToken,
   getFromTokens,
-  getFromTopAssets,
   getQuoteRequest,
   getSlippage,
   getToChain,
@@ -75,8 +74,12 @@ const PrepareBridgePage = () => {
   const currency = useSelector(getCurrentCurrency);
 
   const fromToken = useSelector(getFromToken);
-  const fromTokens = useSelector(getFromTokens);
-  const fromTopAssets = useSelector(getFromTopAssets);
+  const {
+    fromTokens,
+    fromTopAssets,
+    isLoading: isFromTokensLoading,
+  } = useSelector(getFromTokens);
+  // const fromTopAssets = useSelector(getFromTopAssets);
 
   const toToken = useSelector(getToToken);
   const toTokens = useSelector(getToTokens);
@@ -248,6 +251,7 @@ const PrepareBridgePage = () => {
                   dispatch(setFromTokenInputValue(value));
                 }
           }
+          isTokenListLoading={isFromTokensLoading}
         />
 
         <Box
