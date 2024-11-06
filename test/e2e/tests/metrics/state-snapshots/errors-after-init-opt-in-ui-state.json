@@ -122,6 +122,7 @@
     "useCurrencyRateCheck": true,
     "useRequestQueue": true,
     "openSeaEnabled": false,
+    "overrideContentSecurityPolicyHeader": true,
     "securityAlertsEnabled": "boolean",
     "watchEthereumAccountEnabled": "boolean",
     "bitcoinSupportEnabled": "boolean",
