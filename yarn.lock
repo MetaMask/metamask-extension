@@ -5989,7 +5989,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/profile-sync-controller@npm:^0.9.7":
+"@metamask/profile-sync-controller@npm:0.9.7":
   version: 0.9.7
   resolution: "@metamask/profile-sync-controller@npm:0.9.7"
   dependencies:
@@ -6008,6 +6008,28 @@ __metadata:
     "@metamask/keyring-controller": ^17.2.0
     "@metamask/snaps-controllers": ^9.7.0
   checksum: 10/e53888533b2aae937bbe4e385dca2617c324b34e3e60af218cd98c26d514fb725f4c67b649f126e055f6a50a554817b229d37488115b98d70e8aee7b3a910bde
+  languageName: node
+  linkType: hard
+
+"@metamask/profile-sync-controller@patch:@metamask/profile-sync-controller@npm%3A0.9.7#~/.yarn/patches/@metamask-profile-sync-controller-npm-0.9.7-1a6c8ab57d.patch":
+  version: 0.9.7
+  resolution: "@metamask/profile-sync-controller@patch:@metamask/profile-sync-controller@npm%3A0.9.7#~/.yarn/patches/@metamask-profile-sync-controller-npm-0.9.7-1a6c8ab57d.patch::version=0.9.7&hash=074ded"
+  dependencies:
+    "@metamask/base-controller": "npm:^7.0.1"
+    "@metamask/keyring-api": "npm:^8.1.3"
+    "@metamask/keyring-controller": "npm:^17.2.2"
+    "@metamask/snaps-sdk": "npm:^6.5.0"
+    "@metamask/snaps-utils": "npm:^8.1.1"
+    "@noble/ciphers": "npm:^0.5.2"
+    "@noble/hashes": "npm:^1.4.0"
+    immer: "npm:^9.0.6"
+    loglevel: "npm:^1.8.1"
+    siwe: "npm:^2.3.2"
+  peerDependencies:
+    "@metamask/accounts-controller": ^18.1.1
+    "@metamask/keyring-controller": ^17.2.0
+    "@metamask/snaps-controllers": ^9.7.0
+  checksum: 10/d6ace99aa5e9600cefc2cc2a8e8f39d3858bcb426c0b5013e9ce29e4034872f724d1c35a56a621ceb42c909964a6d59fd8c3d775736db8e8666bde1c937f3973
   languageName: node
   linkType: hard
 
@@ -26453,7 +26475,7 @@ __metadata:
     "@metamask/ppom-validator": "npm:0.35.1"
     "@metamask/preferences-controller": "npm:^13.0.2"
     "@metamask/preinstalled-example-snap": "npm:^0.2.0"
-    "@metamask/profile-sync-controller": "npm:^0.9.7"
+    "@metamask/profile-sync-controller": "patch:@metamask/profile-sync-controller@npm%3A0.9.7#~/.yarn/patches/@metamask-profile-sync-controller-npm-0.9.7-1a6c8ab57d.patch"
     "@metamask/providers": "npm:^14.0.2"
     "@metamask/queued-request-controller": "npm:^7.0.0"
     "@metamask/rate-limit-controller": "npm:^6.0.0"
