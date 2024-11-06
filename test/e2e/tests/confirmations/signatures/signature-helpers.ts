@@ -1,13 +1,15 @@
 import { strict as assert } from 'assert';
 import { MockedEndpoint } from 'mockttp';
-import { Key } from 'selenium-webdriver/lib/input';
 import {
   WINDOW_TITLES,
   getEventPayloads,
-  openDapp,
   unlockWallet,
 } from '../../../helpers';
 import { Driver } from '../../../webdriver/driver';
+import TestDapp from '../../../page-objects/pages/test-dapp';
+import { DAPP_URL } from '../../../constants';
+import Confirmation from '../../../page-objects/pages/confirmations/redesign/confirmation';
+import AccountDetailsModal from '../../../page-objects/pages/confirmations/redesign/accountDetailsModal';
 
 export const WALLET_ADDRESS = '0x5CfE73b6021E818B776b421B1c4Db2474086a7e1';
 export const WALLET_ETH_BALANCE = '25';
@@ -209,43 +211,61 @@ function assertEventPropertiesMatch(
 }
 
 export async function clickHeaderInfoBtn(driver: Driver) {
+  const confirmation = new Confirmation(driver);
   await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
-
-  const accountDetailsButton = await driver.findElement(
-    '[data-testid="header-info__account-details-button"]',
-  );
-  await accountDetailsButton.sendKeys(Key.RETURN);
+  confirmation.clickHeaderAccountDetailsButton();
 }
 
 export async function assertHeaderInfoBalance(driver: Driver) {
-  await driver.waitForSelector({
-    css: '[data-testid="confirmation-account-details-modal__account-balance"]',
-    text: `${WALLET_ETH_BALANCE} ETH`,
-  });
+  const accountDetailsModal = new AccountDetailsModal(driver);
+  accountDetailsModal.assertHeaderInfoBalance(WALLET_ETH_BALANCE);
 }
 
 export async function copyAddressAndPasteWalletAddress(driver: Driver) {
-  await driver.clickElement('[data-testid="address-copy-button-text"]');
+  const testDapp = new TestDapp(driver);
+  const accountDetailsModal = new AccountDetailsModal(driver);
+
+  await accountDetailsModal.clickAddressCopyButton();
   await driver.delay(500); // Added delay to avoid error Element is not clickable at point (x,y) because another element obscures it, happens as soon as the mouse hovers over the close button
-  await driver.clickElement(
-    '[data-testid="confirmation-account-details-modal__close-button"]',
-  );
+  await accountDetailsModal.clickAccountDetailsModalCloseButton();
   await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
-  await driver.findElement('#eip747ContractAddress');
-  await driver.pasteFromClipboardIntoField('#eip747ContractAddress');
+  await testDapp.pasteIntoEip747ContractAddressInput();
 }
 
 export async function assertPastedAddress(driver: Driver) {
-  const formFieldEl = await driver.findElement('#eip747ContractAddress');
-  assert.equal(await formFieldEl.getAttribute('value'), WALLET_ADDRESS);
+  const testDapp = new TestDapp(driver);
+  await testDapp.assertEip747ContractAddressInputValue(WALLET_ADDRESS);
 }
 
 export async function openDappAndTriggerSignature(
   driver: Driver,
   type: string,
 ) {
+  const testDapp = new TestDapp(driver);
   await unlockWallet(driver);
-  await openDapp(driver);
-  await driver.clickElement(type);
+  await testDapp.openTestDappPage({ url: DAPP_URL });
+
+  switch (type) {
+    case SignatureType.PersonalSign:
+      await testDapp.clickPermit();
+      break;
+    case SignatureType.Permit:
+      await testDapp.clickPersonalSign();
+      break;
+    case SignatureType.SignTypedData:
+      await testDapp.clickSignTypedData();
+      break;
+    case SignatureType.SignTypedDataV3:
+      await testDapp.clickSignTypedDatav3();
+      break;
+    case SignatureType.SignTypedDataV4:
+      await testDapp.clickSignTypedDatav4();
+      break;
+    case SignatureType.SIWE:
+      await testDapp.clickSiwe();
+      break;
+    default:
+      throw new Error('Invalid signature type');
+  }
   await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 }

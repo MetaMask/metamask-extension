@@ -1,3 +1,4 @@
+import { strict as assert } from 'assert';
 import { WINDOW_TITLES } from '../../helpers';
 import { Driver } from '../../webdriver/driver';
 
@@ -131,6 +132,12 @@ class TestDapp {
   private readonly signTypedDataVerifyButton = '#signTypedDataVerify';
 
   private readonly signTypedDataVerifyResult = '#signTypedDataVerifyResult';
+
+  private readonly signSiweButton = '#siwe';
+
+  private readonly signSiweBadDomainButton = '#siweBadDomain';
+
+  private readonly eip747ContractAddressInput = '#eip747ContractAddress';
 
   private readonly transactionRequestMessage = {
     text: 'Transaction request',
@@ -433,12 +440,40 @@ class TestDapp {
     });
   }
 
+  async clickPersonalSign() {
+    await this.driver.clickElement(this.personalSignButton);
+  }
+
+  async clickSignTypedData() {
+    await this.driver.clickElement(this.signTypedDataButton);
+  }
+
+  async clickSignTypedDatav3() {
+    await this.driver.clickElement(this.signTypedDataV3Button);
+  }
+
+  async clickSignTypedDatav4() {
+    await this.driver.clickElement(this.signTypedDataV4Button);
+  }
+
+  async clickPermit() {
+    await this.driver.clickElement(this.signPermitButton);
+  }
+
+  async clickSiwe() {
+    await this.driver.clickElement(this.signSiweButton);
+  }
+
+  async clickSwieBadDomain() {
+    await this.driver.clickElement(this.signSiweBadDomainButton);
+  }
+
   /**
    * Sign a message with the personal sign method.
    */
   async personalSign() {
     console.log('Sign message with personal sign');
-    await this.driver.clickElement(this.personalSignButton);
+    await this.clickPersonalSign();
     await this.driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
     await this.driver.waitForSelector(this.personalSignSignatureRequestMessage);
     await this.driver.clickElementAndWaitForWindowToClose(
@@ -451,7 +486,7 @@ class TestDapp {
    */
   async signPermit() {
     console.log('Sign message with signPermit');
-    await this.driver.clickElement(this.signPermitButton);
+    await this.clickPermit();
     await this.driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
     await this.driver.waitForSelector(this.signPermitSignatureRequestMessage);
     await this.driver.clickElementAndWaitForWindowToClose(
@@ -464,7 +499,7 @@ class TestDapp {
    */
   async signTypedData() {
     console.log('Sign message with signTypedData');
-    await this.driver.clickElement(this.signTypedDataButton);
+    await this.clickSignTypedData();
     await this.driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
     await this.driver.waitForSelector(
       this.signTypedDataSignatureRequestMessage,
@@ -479,7 +514,7 @@ class TestDapp {
    */
   async signTypedDataV3() {
     console.log('Sign message with signTypedDataV3');
-    await this.driver.clickElement(this.signTypedDataV3Button);
+    await this.clickSignTypedDatav3();
     await this.driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
     await this.driver.waitForSelector(
       this.signTypedDataV3V4SignatureRequestMessage,
@@ -495,7 +530,7 @@ class TestDapp {
    */
   async signTypedDataV4() {
     console.log('Sign message with signTypedDataV4');
-    await this.driver.clickElement(this.signTypedDataV4Button);
+    await this.clickSignTypedDatav4();
     await this.driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
     await this.driver.waitForSelector(
       this.signTypedDataV3V4SignatureRequestMessage,
@@ -504,6 +539,20 @@ class TestDapp {
     await this.driver.clickElementAndWaitForWindowToClose(
       this.confirmSignatureButton,
     );
+  }
+
+  async pasteIntoEip747ContractAddressInput() {
+    await this.driver.findElement(this.eip747ContractAddressInput);
+    await this.driver.pasteFromClipboardIntoField(
+      this.eip747ContractAddressInput,
+    );
+  }
+
+  async assertEip747ContractAddressInputValue(expectedValue: string) {
+    const formFieldEl = await this.driver.findElement(
+      this.eip747ContractAddressInput,
+    );
+    assert.equal(await formFieldEl.getAttribute('value'), expectedValue);
   }
 }
 export default TestDapp;
