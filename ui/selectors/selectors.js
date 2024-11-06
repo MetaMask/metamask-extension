@@ -2364,7 +2364,7 @@ export function getIsBitcoinSupportEnabled(state) {
   return state.metamask.bitcoinSupportEnabled;
 }
 
-///: BEGIN:ONLY_INCLUDE_IF(build-flask)
+///: BEGIN:ONLY_INCLUDE_IF(solana)
 /**
  * Get the state of the `solanaSupportEnabled` flag.
  *

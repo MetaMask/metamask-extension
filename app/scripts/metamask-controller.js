@@ -3320,6 +3320,8 @@ export default class MetamaskController extends EventEmitter {
         preferencesController.setWatchEthereumAccountEnabled.bind(
           preferencesController,
         ),
+      ///: END:ONLY_INCLUDE_IF
+      ///: BEGIN:ONLY_INCLUDE_IF(solana)
       setSolanaSupportEnabled:
         preferencesController.setSolanaSupportEnabled.bind(
           preferencesController,
