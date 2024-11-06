@@ -1,11 +1,15 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
 import classnames from 'classnames';
+import { NetworkConfiguration } from '@metamask/network-controller';
 import {
   getCurrentCurrency,
   getSelectedAccountCachedBalance,
 } from '../../../../selectors';
-import { getNativeCurrency } from '../../../../ducks/metamask/metamask';
+import {
+  getNativeCurrency,
+  getProviderConfig,
+} from '../../../../ducks/metamask/metamask';
 import { useCurrencyDisplay } from '../../../../hooks/useCurrencyDisplay';
 import { AssetType } from '../../../../../shared/constants/transaction';
 import { Box } from '../../../component-library';
@@ -32,6 +36,7 @@ type AssetListProps = {
   isTokenDisabled?: (
     token: AssetWithDisplayData<ERC20Asset> | AssetWithDisplayData<NativeAsset>,
   ) => boolean;
+  network?: NetworkConfiguration;
 };
 
 export default function AssetList({
@@ -39,12 +44,17 @@ export default function AssetList({
   asset,
   tokenList,
   isTokenDisabled,
+  network,
 }: AssetListProps) {
   const selectedToken = asset?.address;
 
   const nativeCurrency = useSelector(getNativeCurrency);
   const balanceValue = useSelector(getSelectedAccountCachedBalance);
   const currentCurrency = useSelector(getCurrentCurrency);
+
+  const providerConfig = useSelector(getProviderConfig);
+  const isSelectedNetworkActive =
+    !network?.chainId || providerConfig?.chainId === network?.chainId;
 
   const [primaryCurrencyValue] = useCurrencyDisplay(balanceValue, {
     currency: currentCurrency,
@@ -103,9 +113,15 @@ export default function AssetList({
                 {token.type === AssetType.native ? (
                   <TokenListItem
                     title={token.symbol}
-                    primary={primaryCurrencyValue}
+                    primary={
+                      isSelectedNetworkActive ? primaryCurrencyValue : undefined
+                    }
                     tokenSymbol={token.symbol}
-                    secondary={secondaryCurrencyValue}
+                    secondary={
+                      isSelectedNetworkActive
+                        ? secondaryCurrencyValue
+                        : undefined
+                    }
                     tokenImage={token.image}
                     isOriginalTokenSymbol={token.symbol === nativeCurrency}
                     isPrimaryTokenSymbolHidden
