@@ -103,7 +103,7 @@ export type Preferences = {
   showExtensionInFullSizeView: boolean;
   showFiatInTestnets: boolean;
   showTestNetworks: boolean;
-  smartTransactionsOptInStatus: boolean | null;
+  smartTransactionsOptInStatus: boolean;
   showNativeTokenAsMainBalance: boolean;
   useNativeCurrencyAsPrimaryCurrency: boolean;
   hideZeroBalanceTokens: boolean;
@@ -140,6 +140,7 @@ export type PreferencesControllerState = Omit<
   useRequestQueue: boolean;
   ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
   watchEthereumAccountEnabled: boolean;
+  solanaSupportEnabled: boolean;
   ///: END:ONLY_INCLUDE_IF
   bitcoinSupportEnabled: boolean;
   bitcoinTestnetSupportEnabled: boolean;
@@ -184,6 +185,9 @@ export const getDefaultPreferencesControllerState =
     openSeaEnabled: true,
     securityAlertsEnabled: true,
     watchEthereumAccountEnabled: false,
+    ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
+    solanaSupportEnabled: false,
+    ///: END:ONLY_INCLUDE_IF
     bitcoinSupportEnabled: false,
     bitcoinTestnetSupportEnabled: false,
     ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
@@ -205,7 +209,7 @@ export const getDefaultPreferencesControllerState =
       showExtensionInFullSizeView: false,
       showFiatInTestnets: false,
       showTestNetworks: false,
-      smartTransactionsOptInStatus: null, // null means we will show the Smart Transactions opt-in modal to a user if they are eligible
+      smartTransactionsOptInStatus: true,
       showNativeTokenAsMainBalance: false,
       useNativeCurrencyAsPrimaryCurrency: true,
       hideZeroBalanceTokens: false,
@@ -337,6 +341,10 @@ const controllerMetadata = {
     anonymous: false,
   },
   watchEthereumAccountEnabled: {
+    persist: true,
+    anonymous: false,
+  },
+  solanaSupportEnabled: {
     persist: true,
     anonymous: false,
   },
@@ -667,6 +675,18 @@ export class PreferencesController extends BaseController<
   setWatchEthereumAccountEnabled(watchEthereumAccountEnabled: boolean): void {
     this.update((state) => {
       state.watchEthereumAccountEnabled = watchEthereumAccountEnabled;
+    });
+  }
+
+  /**
+   * Setter for the `solanaSupportEnabled` property.
+   *
+   * @param solanaSupportEnabled - Whether or not the user wants to
+   * enable the "Add a new Solana account" button.
+   */
+  setSolanaSupportEnabled(solanaSupportEnabled: boolean): void {
+    this.update((state) => {
+      state.solanaSupportEnabled = solanaSupportEnabled;
     });
   }
   ///: END:ONLY_INCLUDE_IF

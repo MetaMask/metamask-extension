@@ -1620,9 +1620,6 @@
   "editSpeedUpEditGasFeeModalTitle": {
     "message": "高速化用のガス代を編集"
   },
-  "enable": {
-    "message": "有効にする"
-  },
   "enableAutoDetect": {
     "message": " 自動検出を有効にする"
   },
@@ -4636,25 +4633,6 @@
   },
   "smartTransactions": {
     "message": "スマートトランザクション"
-  },
-  "smartTransactionsBenefit1": {
-    "message": "99.5%の成功率"
-  },
-  "smartTransactionsBenefit2": {
-    "message": "お金を節約できます"
-  },
-  "smartTransactionsBenefit3": {
-    "message": "リアルタイムの最新情報"
-  },
-  "smartTransactionsDescription": {
-    "message": "スマートトランザクションで、成功率を上げ、フロントランニングを防ぎ、可視性を高めましょう。"
-  },
-  "smartTransactionsDescription2": {
-    "message": "イーサリアムでのみご利用いただけ、いつでも設定で有効・無効を切り替えられます。$1",
-    "description": "$1 is an external link to learn more about Smart Transactions"
-  },
-  "smartTransactionsOptItModalTitle": {
-    "message": "強化されたトランザクション保護"
   },
   "snapAccountCreated": {
     "message": "アカウントが作成されました"
