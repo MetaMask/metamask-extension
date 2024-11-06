@@ -38,7 +38,7 @@ import InstitutionalHomeFooter from '../../../pages/home/institutional/instituti
 import {
   ACCOUNT_OVERVIEW_TAB_KEY_TO_METAMETRICS_EVENT_NAME_MAP,
   ACCOUNT_OVERVIEW_TAB_KEY_TO_TRACE_NAME_MAP,
-  AccountOverviewTabKeys,
+  AccountOverviewTabKey,
 } from '../../../../shared/constants/app-state';
 import { AccountOverviewCommonProps } from './common';
 
@@ -73,7 +73,7 @@ export const AccountOverviewTabs = ({
   );
 
   const handleTabClick = useCallback(
-    (tabName: AccountOverviewTabKeys) => {
+    (tabName: AccountOverviewTabKey) => {
       onTabClick(tabName);
       trackEvent({
         category: MetaMetricsEventCategory.Home,

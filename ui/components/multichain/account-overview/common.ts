@@ -1,4 +1,4 @@
-import { AccountOverviewTabKeys } from '../../../../shared/constants/app-state';
+import { AccountOverviewTabKey } from '../../../../shared/constants/app-state';
 
 export type AccountOverviewCommonProps = {
   onTabClick: (tabName: string) => void;
@@ -6,5 +6,5 @@ export type AccountOverviewCommonProps = {
   ///: BEGIN:ONLY_INCLUDE_IF(build-main)
   onSupportLinkClick: () => void;
   ///: END:ONLY_INCLUDE_IF
-  defaultHomeActiveTabName: AccountOverviewTabKeys | null;
+  defaultHomeActiveTabName: AccountOverviewTabKey | null;
 };

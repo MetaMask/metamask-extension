@@ -109,7 +109,7 @@ import {
 import { endTrace, trace, TraceName } from '../../../../shared/lib/trace';
 import {
   ACCOUNT_OVERVIEW_TAB_KEY_TO_TRACE_NAME_MAP,
-  AccountOverviewTabKeys,
+  AccountOverviewTabKey,
 } from '../../../../shared/constants/app-state';
 import { HiddenAccountList } from './hidden-account-list';
 
@@ -239,7 +239,7 @@ export const AccountListMenu = ({
       ),
     [updatedAccountsList, allowedAccountTypes],
   );
-  const defaultHomeActiveTabName: AccountOverviewTabKeys = useSelector(
+  const defaultHomeActiveTabName: AccountOverviewTabKey = useSelector(
     getDefaultHomeActiveTabName,
   );
   ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)

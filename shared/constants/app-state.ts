@@ -7,9 +7,6 @@ export enum AccountOverviewTabKey {
   Activity = 'activity',
 }
 
-export type AccountOverviewTabKeys =
-  (typeof AccountOverviewTabKey)[keyof typeof AccountOverviewTabKey];
-
 export const ACCOUNT_OVERVIEW_TAB_KEY_TO_METAMETRICS_EVENT_NAME_MAP = {
   [AccountOverviewTabKey.Tokens]: MetaMetricsEventName.TokenScreenOpened,
   [AccountOverviewTabKey.Nfts]: MetaMetricsEventName.NftScreenOpened,
