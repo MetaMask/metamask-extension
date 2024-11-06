@@ -19,6 +19,7 @@ import BridgeStepDescription, {
 } from './bridge-step-description';
 import StepProgressBarItem from './step-progress-bar-item';
 import { formatDate } from '../../../helpers/utils/util';
+import { Hex } from '@metamask/utils';
 
 const getTime = (
   index: number,
@@ -38,15 +39,14 @@ const getTime = (
 type BridgeStepsProps = {
   bridgeHistoryItem: BridgeHistoryItem;
   srcChainTxMeta?: TransactionMeta;
+  networkConfigurationsByChainId: Record<Hex, NetworkConfiguration>;
 };
 
 export default function BridgeStepList({
   bridgeHistoryItem,
   srcChainTxMeta,
+  networkConfigurationsByChainId,
 }: BridgeStepsProps) {
-  const networkConfigurationsByChainId = useSelector(
-    getNetworkConfigurationsByChainId,
-  );
   const steps = bridgeHistoryItem.quote.steps;
   const stepStatuses = steps.map((step) =>
     getStepStatus(bridgeHistoryItem, step, srcChainTxMeta),

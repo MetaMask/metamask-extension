@@ -18,7 +18,10 @@ import {
 import { Content, Header } from '../../../components/multichain/pages/page';
 import { selectBridgeHistoryForAccount } from '../../../ducks/bridge-status/selectors';
 import useBridgeChainInfo from '../utils/useBridgeChainInfo';
-import { selectedAddressTxListSelector } from '../../../selectors';
+import {
+  getNetworkConfigurationsByChainId,
+  selectedAddressTxListSelector,
+} from '../../../selectors';
 import { I18nContext } from '../../../contexts/i18n';
 import { getTransactionBreakdownData } from '../../../components/app/transaction-breakdown/transaction-breakdown-utils';
 import { MetaMaskReduxState } from '../../../store/store';
@@ -80,6 +83,9 @@ const CrossChainSwapTxDetails = () => {
     selectedAddressTxListSelector,
   ) as TransactionMeta[];
   const bridgeHistoryItem = srcTxHash ? bridgeHistory[srcTxHash] : undefined;
+  const networkConfigurationsByChainId = useSelector(
+    getNetworkConfigurationsByChainId,
+  );
   const { srcNetworkConfiguration, destNetworkConfiguration } =
     useBridgeChainInfo({
       bridgeHistoryItem,
@@ -151,6 +157,7 @@ const CrossChainSwapTxDetails = () => {
               <BridgeStepList
                 bridgeHistoryItem={bridgeHistoryItem}
                 srcChainTxMeta={srcChainTxMeta}
+                networkConfigurationsByChainId={networkConfigurationsByChainId}
               />
             )}
 

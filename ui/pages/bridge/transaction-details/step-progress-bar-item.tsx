@@ -14,8 +14,8 @@ const VerticalLine = ({ color }: { color: IconColor }) => (
   <div
     style={{
       height: '60px',
-      marginTop: '-1rem',
-      marginBottom: '-1rem',
+      marginTop: '-0.5rem',
+      marginBottom: '-0.5rem',
       width: '1px',
       backgroundColor: `var(--color-${color})`,
     }}
