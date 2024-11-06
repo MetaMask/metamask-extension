@@ -29,6 +29,9 @@ type StepsProgressBarItemProps = {
   children: React.ReactNode;
 };
 
+/**
+ * Renders the steps in the Bridge Transaction Details page
+ */
 export default function StepProgressBarItem({
   stepStatus,
   isLastItem,
