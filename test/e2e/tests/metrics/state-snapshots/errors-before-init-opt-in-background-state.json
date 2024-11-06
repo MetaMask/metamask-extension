@@ -115,6 +115,7 @@
       "currentLocale": "en",
       "useExternalServices": "boolean",
       "dismissSeedBackUpReminder": true,
+      "overrideContentSecurityPolicyHeader": true,
       "featureFlags": {},
       "forgottenPassword": false,
       "identities": "object",
@@ -123,7 +124,6 @@
       "ledgerTransportType": "webhid",
       "lostIdentities": "object",
       "openSeaEnabled": false,
-      "overrideContentSecurityPolicyHeader": true,
       "preferences": {
         "hideZeroBalanceTokens": false,
         "showExtensionInFullSizeView": false,
