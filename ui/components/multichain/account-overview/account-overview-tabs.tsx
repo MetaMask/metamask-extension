@@ -1,4 +1,5 @@
 import React, { useCallback, useContext, useMemo } from 'react';
+import { useDispatch } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import { endTrace, trace } from '../../../../shared/lib/trace';
 import { useI18nContext } from '../../../hooks/useI18nContext';
@@ -40,6 +41,7 @@ import {
   ACCOUNT_OVERVIEW_TAB_KEY_TO_TRACE_NAME_MAP,
   AccountOverviewTabKey,
 } from '../../../../shared/constants/app-state';
+import { detectNfts } from '../../../store/actions';
 import { AccountOverviewCommonProps } from './common';
 
 export type AccountOverviewTabsProps = AccountOverviewCommonProps & {
@@ -63,6 +65,7 @@ export const AccountOverviewTabs = ({
   const history = useHistory();
   const t = useI18nContext();
   const trackEvent = useContext(MetaMetricsContext);
+  const dispatch = useDispatch();
 
   const tabProps = useMemo(
     () => ({
@@ -75,6 +78,9 @@ export const AccountOverviewTabs = ({
   const handleTabClick = useCallback(
     (tabName: AccountOverviewTabKey) => {
       onTabClick(tabName);
+      if (tabName === AccountOverviewTabKey.Nfts) {
+        dispatch(detectNfts());
+      }
       trackEvent({
         category: MetaMetricsEventCategory.Home,
         event: ACCOUNT_OVERVIEW_TAB_KEY_TO_METAMETRICS_EVENT_NAME_MAP[tabName],
