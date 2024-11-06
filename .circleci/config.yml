@@ -352,7 +352,7 @@ workflows:
             - prep-build-ts-migration-dashboard
       - rerun-workflow-from-failed:
           requires:
-            - job-publish-release: completed or canceled
+            - test-lint
           #filters:
             #branches:
               #only: develop
@@ -1742,10 +1742,3 @@ jobs:
           root: .
           paths:
             - mmi_trigger.env
-
-  waiter:
-    executor: node-browsers-small
-    steps:
-      - run:
-          name: Wait for 1 hour
-          command: sleep 3600
