@@ -96,22 +96,19 @@ export default function NftsTab() {
   ]);
 
   useEffect(() => {
-    if (showNftBanner) {
-      if (nftsLoading) {
-        endTrace({ name: TraceName.AccountOverviewNftsTabFMP });
-      } else {
-        endTrace({ name: TraceName.AccountOverviewNftsTab });
-      }
-    } else {
-      // Preferring nested if-else over 'else if' for readability
-      // eslint-disable-next-line no-lonely-if
-      if (nftsStillFetchingIndication) {
-        endTrace({ name: TraceName.AccountOverviewNftsTabFMP });
-      } else {
-        endTrace({ name: TraceName.AccountOverviewNftsTab });
-      }
+    if (!nftsLoading && showNftBanner) {
+      endTrace({ name: TraceName.AccountOverviewNftsTabFMP });
+      endTrace({ name: TraceName.AccountOverviewNftsTab });
     }
-  }, [showNftBanner, nftsLoading, nftsStillFetchingIndication]);
+  }, [nftsLoading, showNftBanner]);
+
+  useEffect(() => {
+    if (nftsStillFetchingIndication) {
+      endTrace({ name: TraceName.AccountOverviewNftsTabFMP });
+    } else {
+      endTrace({ name: TraceName.AccountOverviewNftsTab });
+    }
+  }, [nftsStillFetchingIndication]);
 
   if (!hasAnyNfts && nftsStillFetchingIndication) {
     return (
