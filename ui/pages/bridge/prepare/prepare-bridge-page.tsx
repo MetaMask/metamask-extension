@@ -3,6 +3,8 @@ import { useSelector, useDispatch } from 'react-redux';
 import classnames from 'classnames';
 import { debounce } from 'lodash';
 import { Hex } from '@metamask/utils';
+import { zeroAddress } from 'ethereumjs-util';
+import { useSearchParams } from 'react-router-dom-v5-compat';
 import {
   setDestTokenExchangeRates,
   setFromChain,
@@ -76,6 +78,8 @@ const PrepareBridgePage = () => {
   const quoteRequest = useSelector(getQuoteRequest);
   const { activeQuote } = useSelector(getBridgeQuotes);
 
+  const [searchParams, setSearchParams] = useSearchParams();
+
   const fromTokenListGenerator = useTokensWithFiltering(
     fromTokens,
     fromTopAssets,
@@ -142,6 +146,32 @@ const PrepareBridgePage = () => {
     },
     SECOND,
   );
+
+  useEffect(() => {
+    const tokenAddressFromUrl = searchParams.get('token');
+    if (
+      tokenAddressFromUrl?.toLowerCase() === fromToken?.address?.toLowerCase()
+    ) {
+      const newParams = new URLSearchParams(searchParams);
+      newParams.delete('token');
+      setSearchParams(newParams);
+    } else if (tokenAddressFromUrl && Object.keys(fromTokens).length > 0) {
+      const matchedToken = fromTokens[tokenAddressFromUrl.toLowerCase()];
+      if (matchedToken && fromChain?.chainId) {
+        dispatch(setFromToken(matchedToken));
+        fromChain.chainId &&
+          matchedToken.address &&
+          debouncedFetchFromExchangeRate(
+            fromChain.chainId,
+            matchedToken.address,
+          );
+      } else {
+        const newParams = new URLSearchParams(searchParams);
+        newParams.delete('token');
+        setSearchParams(newParams);
+      }
+    }
+  }, [fromChain, fromToken, fromTokens, searchParams]);
 
   return (
     <div className="prepare-bridge-page">
