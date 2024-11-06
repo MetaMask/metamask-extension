@@ -6,6 +6,7 @@ import { flushPromises } from '../../../../test/lib/timer-helpers';
 // TODO: Remove restricted import
 // eslint-disable-next-line import/no-restricted-paths
 import * as bridgeUtil from '../../../../ui/pages/bridge/bridge.util';
+import * as balanceUtils from '../../../../shared/modules/bridge-utils/balance';
 import BridgeController from './bridge-controller';
 import { BridgeControllerMessenger } from './types';
 import { DEFAULT_BRIDGE_CONTROLLER_STATE } from './constants';
@@ -37,7 +38,7 @@ describe('BridgeController', function () {
       .reply(200, {
         'extension-config': {
           refreshRate: 3,
-          maxRefreshCount: 1,
+          maxRefreshCount: 3,
         },
         'extension-support': true,
         'src-network-allowlist': [10, 534352],
@@ -78,7 +79,7 @@ describe('BridgeController', function () {
       destNetworkAllowlist: [CHAIN_IDS.POLYGON, CHAIN_IDS.ARBITRUM],
       srcNetworkAllowlist: [CHAIN_IDS.OPTIMISM, CHAIN_IDS.SCROLL],
       extensionConfig: {
-        maxRefreshCount: 1,
+        maxRefreshCount: 3,
         refreshRate: 3,
       },
     };
@@ -236,7 +237,13 @@ describe('BridgeController', function () {
       bridgeController,
       'startPollingByNetworkClientId',
     );
-    messengerMock.call.mockReturnValue({ address: '0x123' } as never);
+    const hasSufficientBalanceSpy = jest
+      .spyOn(balanceUtils, 'hasSufficientBalance')
+      .mockResolvedValue(true);
+    messengerMock.call.mockReturnValue({
+      address: '0x123',
+      provider: jest.fn(),
+    } as never);
 
     const fetchBridgeQuotesSpy = jest
       .spyOn(bridgeUtil, 'fetchBridgeQuotes')
@@ -280,6 +287,144 @@ describe('BridgeController', function () {
 
     expect(stopAllPollingSpy).toHaveBeenCalledTimes(1);
     expect(startPollingByNetworkClientIdSpy).toHaveBeenCalledTimes(1);
+    expect(hasSufficientBalanceSpy).toHaveBeenCalledTimes(1);
+    expect(startPollingByNetworkClientIdSpy).toHaveBeenCalledWith('0x1', {
+      ...quoteRequest,
+      insufficientBal: false,
+    });
+
+    expect(bridgeController.state.bridgeState).toStrictEqual(
+      expect.objectContaining({
+        quoteRequest: { ...quoteRequest, walletAddress: undefined },
+        quotes: DEFAULT_BRIDGE_CONTROLLER_STATE.quotes,
+        quotesLastFetched: DEFAULT_BRIDGE_CONTROLLER_STATE.quotesLastFetched,
+        quotesLoadingStatus:
+          DEFAULT_BRIDGE_CONTROLLER_STATE.quotesLoadingStatus,
+      }),
+    );
+
+    // Loading state
+    jest.advanceTimersByTime(1000);
+    await flushPromises();
+    expect(fetchBridgeQuotesSpy).toHaveBeenCalledTimes(1);
+    expect(fetchBridgeQuotesSpy).toHaveBeenCalledWith(
+      {
+        ...quoteRequest,
+        insufficientBal: false,
+      },
+      expect.any(AbortSignal),
+    );
+    expect(bridgeController.state.bridgeState.quotesLastFetched).toStrictEqual(
+      undefined,
+    );
+
+    expect(bridgeController.state.bridgeState).toEqual(
+      expect.objectContaining({
+        quoteRequest: { ...quoteRequest, insufficientBal: false },
+        quotes: [],
+        quotesLoadingStatus: 0,
+      }),
+    );
+
+    // After first fetch
+    jest.advanceTimersByTime(10000);
+    await flushPromises();
+    expect(bridgeController.state.bridgeState).toEqual(
+      expect.objectContaining({
+        quoteRequest: { ...quoteRequest, insufficientBal: false },
+        quotes: [1, 2, 3],
+        quotesLoadingStatus: 1,
+      }),
+    );
+    const firstFetchTime =
+      bridgeController.state.bridgeState.quotesLastFetched ?? 0;
+    expect(firstFetchTime).toBeGreaterThan(0);
+
+    // After 2nd fetch
+    jest.advanceTimersByTime(50000);
+    await flushPromises();
+    expect(bridgeController.state.bridgeState).toEqual(
+      expect.objectContaining({
+        quoteRequest: { ...quoteRequest, insufficientBal: false },
+        quotes: [5, 6, 7],
+        quotesLoadingStatus: 1,
+        quotesRefreshCount: 2,
+      }),
+    );
+    expect(fetchBridgeQuotesSpy).toHaveBeenCalledTimes(2);
+    const secondFetchTime =
+      bridgeController.state.bridgeState.quotesLastFetched;
+    expect(secondFetchTime).toBeGreaterThan(firstFetchTime);
+
+    // After 3nd fetch throws an error
+    jest.advanceTimersByTime(50000);
+    await flushPromises();
+    expect(fetchBridgeQuotesSpy).toHaveBeenCalledTimes(3);
+    expect(bridgeController.state.bridgeState).toEqual(
+      expect.objectContaining({
+        quoteRequest: { ...quoteRequest, insufficientBal: false },
+        quotes: [5, 6, 7],
+        quotesLoadingStatus: 2,
+        quotesRefreshCount: 3,
+      }),
+    );
+    expect(bridgeController.state.bridgeState.quotesLastFetched).toStrictEqual(
+      secondFetchTime,
+    );
+
+    expect(hasSufficientBalanceSpy).toHaveBeenCalledTimes(1);
+  });
+
+  it('updateBridgeQuoteRequestParams should only poll once if insufficientBal=true', async function () {
+    jest.useFakeTimers();
+    const stopAllPollingSpy = jest.spyOn(bridgeController, 'stopAllPolling');
+    const startPollingByNetworkClientIdSpy = jest.spyOn(
+      bridgeController,
+      'startPollingByNetworkClientId',
+    );
+    const hasSufficientBalanceSpy = jest
+      .spyOn(balanceUtils, 'hasSufficientBalance')
+      .mockResolvedValue(false);
+    messengerMock.call.mockReturnValue({
+      address: '0x123',
+      provider: jest.fn(),
+    } as never);
+
+    const fetchBridgeQuotesSpy = jest
+      .spyOn(bridgeUtil, 'fetchBridgeQuotes')
+      .mockImplementationOnce(async () => {
+        return await new Promise((resolve) => {
+          return setTimeout(() => {
+            resolve([1, 2, 3] as never);
+          }, 5000);
+        });
+      });
+
+    fetchBridgeQuotesSpy.mockImplementation(async () => {
+      return await new Promise((resolve) => {
+        return setTimeout(() => {
+          resolve([5, 6, 7] as never);
+        }, 10000);
+      });
+    });
+
+    const quoteParams = {
+      srcChainId: 1,
+      destChainId: 10,
+      srcTokenAddress: '0x0000000000000000000000000000000000000000',
+      destTokenAddress: '0x123',
+      srcTokenAmount: '1000000000000000000',
+    };
+    const quoteRequest = {
+      ...quoteParams,
+      slippage: 0.5,
+      walletAddress: '0x123',
+    };
+    await bridgeController.updateBridgeQuoteRequestParams(quoteParams);
+
+    expect(stopAllPollingSpy).toHaveBeenCalledTimes(1);
+    expect(startPollingByNetworkClientIdSpy).toHaveBeenCalledTimes(1);
+    expect(hasSufficientBalanceSpy).toHaveBeenCalledTimes(1);
     expect(startPollingByNetworkClientIdSpy).toHaveBeenCalledWith('0x1', {
       ...quoteRequest,
       insufficientBal: true,
@@ -326,6 +471,7 @@ describe('BridgeController', function () {
         quoteRequest: { ...quoteRequest, insufficientBal: true },
         quotes: [1, 2, 3],
         quotesLoadingStatus: 1,
+        quotesRefreshCount: 1,
       }),
     );
     const firstFetchTime =
@@ -335,32 +481,18 @@ describe('BridgeController', function () {
     // After 2nd fetch
     jest.advanceTimersByTime(50000);
     await flushPromises();
-    expect(fetchBridgeQuotesSpy).toHaveBeenCalledTimes(2);
+    expect(fetchBridgeQuotesSpy).toHaveBeenCalledTimes(1);
     expect(bridgeController.state.bridgeState).toEqual(
       expect.objectContaining({
         quoteRequest: { ...quoteRequest, insufficientBal: true },
-        quotes: [5, 6, 7],
+        quotes: [1, 2, 3],
         quotesLoadingStatus: 1,
+        quotesRefreshCount: 1,
       }),
     );
     const secondFetchTime =
       bridgeController.state.bridgeState.quotesLastFetched;
-    expect(secondFetchTime).toBeGreaterThan(firstFetchTime);
-
-    // After 3nd fetch throws an error
-    jest.advanceTimersByTime(50000);
-    await flushPromises();
-    expect(fetchBridgeQuotesSpy).toHaveBeenCalledTimes(3);
-    expect(bridgeController.state.bridgeState).toEqual(
-      expect.objectContaining({
-        quoteRequest: { ...quoteRequest, insufficientBal: true },
-        quotes: [5, 6, 7],
-        quotesLoadingStatus: 2,
-      }),
-    );
-    expect(bridgeController.state.bridgeState.quotesLastFetched).toStrictEqual(
-      secondFetchTime,
-    );
+    expect(secondFetchTime).toStrictEqual(firstFetchTime);
   });
 
   it('updateBridgeQuoteRequestParams should not trigger quote polling if request is invalid', function () {
