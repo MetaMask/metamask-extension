@@ -36,6 +36,7 @@ const HollowCircle = React.forwardRef(
           border: `1px solid var(--color-${color})`,
           borderRadius: '50%',
           backgroundColor: `var(--color-${BackgroundColor.backgroundDefault})`,
+          zIndex: 1,
           ...style,
         }}
       />
