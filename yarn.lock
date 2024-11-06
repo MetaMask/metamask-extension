@@ -5575,6 +5575,23 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@metamask/keyring-api@npm:^9.0.0":
+  version: 9.0.0
+  resolution: "@metamask/keyring-api@npm:9.0.0"
+  dependencies:
+    "@metamask/snaps-sdk": "npm:^6.7.0"
+    "@metamask/superstruct": "npm:^3.1.0"
+    "@metamask/utils": "npm:^9.2.1"
+    "@types/uuid": "npm:^9.0.8"
+    bech32: "npm:^2.0.0"
+    uuid: "npm:^9.0.1"
+    webextension-polyfill: "npm:^0.12.0"
+  peerDependencies:
+    "@metamask/providers": ^17.2.0
+  checksum: 10/ff552c04a4d06c7b1a43d52809a9c141d38772586388f0ab96123bce445f148aa7f7e8165d03fa92ac391351de252c4b299fc2c16e690193f669b5329941fe75
+  languageName: node
+  linkType: hard
+
 "@metamask/keyring-controller@npm:^17.1.0, @metamask/keyring-controller@npm:^17.2.2":
   version: 17.2.2
   resolution: "@metamask/keyring-controller@npm:17.2.2"
@@ -6346,6 +6363,17 @@ __metadata:
     ses: "npm:^1.1.0"
     validate-npm-package-name: "npm:^5.0.0"
   checksum: 10/38c8098c7dfa82bf907d31f77e2d5ffe6a82dca9bf5d633d10ac024f153d94b8124d7ddfb2e3e35befb7af619ebff1900e81476f889011eebdd80b5e12328c30
+  languageName: node
+  linkType: hard
+
+"@metamask/solana-wallet-snap@npm:^0.1.9":
+  version: 0.1.9
+  resolution: "@metamask/solana-wallet-snap@npm:0.1.9"
+  dependencies:
+    "@metamask/keyring-api": "npm:^9.0.0"
+    "@metamask/snaps-sdk": "npm:^6.9.0"
+    buffer: "npm:^6.0.3"
+  checksum: 10/ec540948e1b5c693b0a31a32521d84c5d3796a5d62d1dfa0986cae47483040a0381c30419af4a86b2402efa5e95283b45a5d17bb705c11a181d0c6fa70b5be60
   languageName: node
   linkType: hard
 
@@ -26550,6 +26578,7 @@ __metadata:
     "@metamask/snaps-rpc-methods": "npm:^11.5.1"
     "@metamask/snaps-sdk": "npm:^6.10.0"
     "@metamask/snaps-utils": "npm:^8.5.1"
+    "@metamask/solana-wallet-snap": "npm:^0.1.9"
     "@metamask/test-bundler": "npm:^1.0.0"
     "@metamask/test-dapp": "npm:8.13.0"
     "@metamask/transaction-controller": "npm:^38.1.0"
@@ -37263,6 +37292,13 @@ __metadata:
   version: 0.10.0
   resolution: "webextension-polyfill@npm:0.10.0"
   checksum: 10/51ff30ebed4b1aa802b7f0347f05021b2fe492078bb1a597223d43995fcee96e2da8f914a2f6e36f988c1877ed5ab36ca7077f2f3ab828955151a59e4c01bf7e
+  languageName: node
+  linkType: hard
+
+"webextension-polyfill@npm:^0.12.0":
+  version: 0.12.0
+  resolution: "webextension-polyfill@npm:0.12.0"
+  checksum: 10/77e648b958b573ef075e75a0c180e2bbd74dee17b3145e86d21fcbb168c4999e4a311654fe634b8178997bee9b35ea5808d8d3d3e5ff2ad138f197f4f0ea75d9
   languageName: node
   linkType: hard
 
