@@ -1,0 +1,13 @@
+diff --git a/dist/controllers/user-storage/UserStorageController.cjs b/dist/controllers/user-storage/UserStorageController.cjs
+index 0abbdcae1f5c3979dc3a6629b9f02b23e3f9d0c3..dd8ed3ae2976923ad003445b1ed52f1c64e9f3a0 100644
+--- a/dist/controllers/user-storage/UserStorageController.cjs
++++ b/dist/controllers/user-storage/UserStorageController.cjs
+@@ -373,7 +373,7 @@ class UserStorageController extends base_controller_1.BaseController {
+             // We don't want to remove existing accounts for a user
+             // so we only add new accounts if the user has more accounts than the internal accounts list
+             if (!hasMoreInternalAccountsThanUserStorageAccounts) {
+-                const numberOfAccountsToAdd = userStorageAccountsList.length - internalAccountsList.length;
++                const numberOfAccountsToAdd = (Math.min(userStorageAccountsList.length, 100)) - internalAccountsList.length;
+                 // Create new accounts to match the user storage accounts list
+                 for (let i = 0; i < numberOfAccountsToAdd; i++) {
+                     await this.messagingSystem.call('KeyringController:addNewAccount');
