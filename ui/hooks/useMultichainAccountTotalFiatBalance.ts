@@ -25,6 +25,7 @@ export const EMPTY_VALUES = {
 export const useMultichainAccountTotalFiatBalance = (
   account: InternalAccount,
   shouldHideZeroBalanceTokens: boolean = false,
+  preventRunning = false,
 ): {
   formattedFiat: string;
   totalFiatBalance: string;
@@ -41,7 +42,7 @@ export const useMultichainAccountTotalFiatBalance = (
   orderedTokenList: { iconUrl: string; symbol: string; fiatBalance: string }[];
 } => {
   if (isEvmAccountType(account.type)) {
-    return useAccountTotalFiatBalance(account, shouldHideZeroBalanceTokens);
+    return useAccountTotalFiatBalance(account, shouldHideZeroBalanceTokens, preventRunning);
   }
 
   const currentCurrency = useMultichainSelector(

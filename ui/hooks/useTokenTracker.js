@@ -12,6 +12,7 @@ export function useTokenTracker({
   address,
   includeFailedTokens = false,
   hideZeroBalanceTokens = false,
+  preventRunning = false,
 }) {
   const { chainId, rpcUrl } = useSelector(getProviderConfig);
   const { address: selectedAddress } = useSelector(
@@ -96,6 +97,11 @@ export function useTokenTracker({
 
   // Effect to set loading state and initialize tracker when values change
   useEffect(() => {
+    if (preventRunning) {
+      console.log("Bailing out of useTokenTracker!")
+      return;
+    }
+
     // This effect will only run initially and when:
     // 1. chainId is updated,
     // 2. rpc url is changd,
@@ -127,6 +133,7 @@ export function useTokenTracker({
     memoizedTokens,
     updateBalances,
     buildTracker,
+    preventRunning,
   ]);
 
   return { loading, tokensWithBalances, error };

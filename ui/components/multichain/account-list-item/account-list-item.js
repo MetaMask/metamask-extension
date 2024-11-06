@@ -114,7 +114,7 @@ const AccountListItem = ({
   console.log(`${account.metadata.name} in view? `, isItemInViewport.inViewport);
 
   const accountTotalFiatBalances =
-    useMultichainAccountTotalFiatBalance(account);
+    useMultichainAccountTotalFiatBalance(account, true, true);
   const mappedOrderedTokenList = accountTotalFiatBalances.orderedTokenList.map(
     (item) => ({
       avatarValue: item.iconUrl,

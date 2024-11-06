@@ -27,6 +27,7 @@ import { useTokenTracker } from './useTokenTracker';
 export const useAccountTotalFiatBalance = (
   account,
   shouldHideZeroBalanceTokens,
+  preventRunning = false,
 ) => {
   const currentChainId = useSelector(getCurrentChainId);
   const conversionRate = useSelector(getConversionRate);
@@ -59,7 +60,20 @@ export const useAccountTotalFiatBalance = (
     address: account?.address,
     includeFailedTokens: true,
     hideZeroBalanceTokens: shouldHideZeroBalanceTokens,
+    preventRunning,
   });
+
+  if (preventRunning) {
+    return {
+      formattedFiat: '',
+      totalWeiBalance: '',
+      totalFiatBalance: '',
+      tokensWithBalances: [],
+      loading: false,
+      orderedTokenList: [],
+      mergedRates: {},
+    };
+  }
 
   const mergedRates = {
     ...contractExchangeRates,
