@@ -41,7 +41,6 @@ import {
 import {
   getMetaMetricsId,
   getTestNetworkBackgroundColor,
-  getTokensMarketData,
   getParticipateInMetaMetrics,
   getDataCollectionForMarketing,
   getMarketData,
@@ -131,7 +130,7 @@ export const TokenListItem = ({
 
   // Scam warning
   const showScamWarning =
-    isNativeCurrency && !isOriginalTokenSymbol && shouldShowPercentage;
+    !isNativeCurrency && !isOriginalTokenSymbol && shouldShowPercentage;
 
   const dispatch = useDispatch();
   const [showScamWarningModal, setShowScamWarningModal] = useState(false);
@@ -152,11 +151,10 @@ export const TokenListItem = ({
     }
   };
 
-  const tokensMarketData = useSelector(getTokensMarketData);
   const multiChainMarketData = useSelector(getMarketData);
 
   const tokenPercentageChange = address
-    ? tokensMarketData?.[address]?.pricePercentChange1d
+    ? multiChainMarketData?.[chainId]?.[address]?.pricePercentChange1d
     : null;
 
   const tokenTitle = getTokenTitle();
@@ -218,8 +216,6 @@ export const TokenListItem = ({
   // Used for badge icon
   const currentNetwork = useSelector(getMultichainCurrentNetwork);
   const testNetworkBackgroundColor = useSelector(getTestNetworkBackgroundColor);
-
-  console.log(chainId);
 
   return (
     <Box
