@@ -27,3 +27,6 @@ export const METABRIDGE_ETHEREUM_ADDRESS =
 
 export const BRIDGE_QUOTE_MAX_ETA_SECONDS = 60 * 60; // 1 hour
 export const BRIDGE_QUOTE_MAXRETURN_VALUE_DIFFERENCE_PERCENTAGE = 0.8; // if a quote returns in x times less return than the best quote, ignore it
+
+// TODO change to high
+export const BRIDGE_PREFERRED_GAS_ESTIMATE = 'medium';
