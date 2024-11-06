@@ -103,7 +103,7 @@ export type Preferences = {
   showExtensionInFullSizeView: boolean;
   showFiatInTestnets: boolean;
   showTestNetworks: boolean;
-  smartTransactionsOptInStatus: boolean | null;
+  smartTransactionsOptInStatus: boolean;
   showNativeTokenAsMainBalance: boolean;
   useNativeCurrencyAsPrimaryCurrency: boolean;
   hideZeroBalanceTokens: boolean;
@@ -209,7 +209,7 @@ export const getDefaultPreferencesControllerState =
       showExtensionInFullSizeView: false,
       showFiatInTestnets: false,
       showTestNetworks: false,
-      smartTransactionsOptInStatus: null, // null means we will show the Smart Transactions opt-in modal to a user if they are eligible
+      smartTransactionsOptInStatus: true,
       showNativeTokenAsMainBalance: false,
       useNativeCurrencyAsPrimaryCurrency: true,
       hideZeroBalanceTokens: false,

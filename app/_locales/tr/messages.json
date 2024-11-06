@@ -1620,9 +1620,6 @@
   "editSpeedUpEditGasFeeModalTitle": {
     "message": "Hızlandırma gaz ücretini düzenle"
   },
-  "enable": {
-    "message": "Etkinleştir"
-  },
   "enableAutoDetect": {
     "message": " Otomatik algılamayı etkinleştir"
   },
@@ -4636,25 +4633,6 @@
   },
   "smartTransactions": {
     "message": "Akıllı İşlemler"
-  },
-  "smartTransactionsBenefit1": {
-    "message": "%99,5 başarı oranı"
-  },
-  "smartTransactionsBenefit2": {
-    "message": "Paradan tasarruf sağlar"
-  },
-  "smartTransactionsBenefit3": {
-    "message": "Gerçek zamanlı güncellemeler"
-  },
-  "smartTransactionsDescription": {
-    "message": "Akıllı İşlemler ile daha yüksek başarı oranlarının, arkadan çalıştırma korumasının ve daha iyi görünürlüğün kilidini açın."
-  },
-  "smartTransactionsDescription2": {
-    "message": "Sadece Ethereum'da mevcuttur. Dilediğiniz zaman ayarlar kısmında etkinleştirin veya devre dışı bırakın. $1",
-    "description": "$1 is an external link to learn more about Smart Transactions"
-  },
-  "smartTransactionsOptItModalTitle": {
-    "message": "İyileştirilmiş İşlem Koruması"
   },
   "snapAccountCreated": {
     "message": "Hesap oluşturuldu"

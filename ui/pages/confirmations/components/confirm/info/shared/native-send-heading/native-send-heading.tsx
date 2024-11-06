@@ -24,7 +24,10 @@ import {
 } from '../../../../../../../helpers/constants/design-system';
 import { MIN_AMOUNT } from '../../../../../../../hooks/useCurrencyDisplay';
 import { useFiatFormatter } from '../../../../../../../hooks/useFiatFormatter';
-import { getPreferences } from '../../../../../../../selectors';
+import {
+  getPreferences,
+  selectConversionRateByChainId,
+} from '../../../../../../../selectors';
 import { getMultichainNetwork } from '../../../../../../../selectors/multichain';
 import { useConfirmContext } from '../../../../../context/confirm';
 import {
@@ -32,7 +35,6 @@ import {
   formatAmountMaxPrecision,
 } from '../../../../simulation-details/formatAmount';
 import { toNonScientificString } from '../../hooks/use-token-values';
-import { selectConversionRateByChainId } from '../../../../../../../selectors';
 
 const NativeSendHeading = () => {
   const { currentConfirmation: transactionMeta } =

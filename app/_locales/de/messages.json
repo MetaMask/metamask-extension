@@ -1620,9 +1620,6 @@
   "editSpeedUpEditGasFeeModalTitle": {
     "message": "Beschleunigung der Gasgebühr bearbeiten"
   },
-  "enable": {
-    "message": "Aktivieren"
-  },
   "enableAutoDetect": {
     "message": " Automatische Erkennung aktivieren"
   },
@@ -4636,25 +4633,6 @@
   },
   "smartTransactions": {
     "message": "Smart Transactions"
-  },
-  "smartTransactionsBenefit1": {
-    "message": "Erfolgsrate: 99,5 %"
-  },
-  "smartTransactionsBenefit2": {
-    "message": "Spart Ihnen Geld"
-  },
-  "smartTransactionsBenefit3": {
-    "message": "Updates in Echtzeit"
-  },
-  "smartTransactionsDescription": {
-    "message": "Erzielen Sie mit Smart Transactions höhere Erfolgsraten, einen Frontrunning-Schutz und eine bessere Transparenz."
-  },
-  "smartTransactionsDescription2": {
-    "message": "Nur auf Ethereum verfügbar. Sie können diese Funktion jederzeit in den Einstellungen aktivieren oder deaktivieren. $1",
-    "description": "$1 is an external link to learn more about Smart Transactions"
-  },
-  "smartTransactionsOptItModalTitle": {
-    "message": "Verbesserter Transaktionsschutz"
   },
   "snapAccountCreated": {
     "message": "Konto erstellt"

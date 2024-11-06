@@ -25,9 +25,8 @@ import { useIsNFT } from '../hooks/use-is-nft';
 export const ApproveStaticSimulation = () => {
   const t = useI18nContext();
 
-  const { currentConfirmation: transactionMeta } = useConfirmContext() as {
-    currentConfirmation: TransactionMeta;
-  };
+  const { currentConfirmation: transactionMeta } =
+    useConfirmContext<TransactionMeta>();
 
   const { decimals: initialDecimals } = useAssetDetails(
     transactionMeta?.txParams?.to,

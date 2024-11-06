@@ -217,6 +217,7 @@ export default class ConfirmTransactionBase extends Component {
       mostRecentOverviewPage,
       txData,
       getNextNonce,
+      fromAddress,
     } = this.props;
 
     const {
@@ -236,7 +237,7 @@ export default class ConfirmTransactionBase extends Component {
       transactionStatus === TransactionStatus.confirmed;
 
     if (txData.id !== prevTxData.id) {
-      getNextNonce();
+      getNextNonce(fromAddress);
     }
 
     if (
@@ -413,6 +414,7 @@ export default class ConfirmTransactionBase extends Component {
       tokenSymbol,
       isUsingPaymaster,
       isSigningOrSubmitting,
+      fromAddress,
     } = this.props;
 
     const { t } = this.context;
@@ -447,7 +449,7 @@ export default class ConfirmTransactionBase extends Component {
 
       updateCustomNonce(inputValue);
 
-      getNextNonce();
+      getNextNonce(fromAddress);
     };
 
     const renderTotalMaxAmount = ({
@@ -1012,6 +1014,7 @@ export default class ConfirmTransactionBase extends Component {
     this._isMounted = true;
     const {
       toAddress,
+      fromAddress,
       txData: { origin } = {},
       getNextNonce,
       tryReverseResolveAddress,
@@ -1032,7 +1035,7 @@ export default class ConfirmTransactionBase extends Component {
       },
     });
 
-    getNextNonce();
+    getNextNonce(fromAddress);
     if (toAddress) {
       tryReverseResolveAddress(toAddress);
     }

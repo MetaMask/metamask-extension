@@ -363,12 +363,12 @@ export default function TokenAllowance({
   };
 
   const handleNextNonce = useCallback(() => {
-    dispatch(getNextNonce());
-  }, [getNextNonce, dispatch]);
+    dispatch(getNextNonce(txData.txParams.from));
+  }, [dispatch, txData.txParams.from]);
 
   useEffect(() => {
-    dispatch(getNextNonce());
-  }, [getNextNonce, dispatch]);
+    dispatch(getNextNonce(txData.txParams.from));
+  }, [dispatch, txData.txParams.from]);
 
   const handleUpdateCustomNonce = (value) => {
     dispatch(updateCustomNonce(value));
