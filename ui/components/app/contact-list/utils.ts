@@ -1,6 +1,9 @@
+import { AddressBookEntry } from '@metamask/address-book-controller';
+import { InternalAccount } from '@metamask/keyring-api';
+
 export const hasDuplicateContacts = (
-  addressBook: any[],
-  internalAccounts: any[],
+  addressBook: AddressBookEntry[],
+  internalAccounts: InternalAccount[],
 ) => {
   const uniqueContactNames = Array.from(
     new Set(addressBook.map(({ name }) => name.toLowerCase().trim())),
@@ -16,8 +19,8 @@ export const hasDuplicateContacts = (
 };
 
 export const isDuplicateContact = (
-  addressBook: any[],
-  internalAccounts: any[],
+  addressBook: AddressBookEntry[],
+  internalAccounts: InternalAccount[],
   newName: string,
 ) => {
   const nameExistsInAddressBook = addressBook.some(
