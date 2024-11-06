@@ -4999,7 +4999,7 @@ export async function setBitcoinTestnetSupportEnabled(value: boolean) {
   }
 }
 
-///: BEGIN:ONLY_INCLUDE_IF(solana-snap)
+///: BEGIN:ONLY_INCLUDE_IF(solana)
 export async function setSolanaSupportEnabled(value: boolean) {
   try {
     await submitRequestToBackground('setSolanaSupportEnabled', [value]);
