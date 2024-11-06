@@ -4,6 +4,7 @@ import classnames from 'classnames';
 import { debounce } from 'lodash';
 import { Hex } from '@metamask/utils';
 import { zeroAddress } from 'ethereumjs-util';
+import { useSearchParams } from 'react-router-dom-v5-compat';
 import {
   setDestTokenExchangeRates,
   setFromChain,
@@ -94,6 +95,8 @@ const PrepareBridgePage = () => {
   const quoteRequest = useSelector(getQuoteRequest);
   const { activeQuote, isLoading } = useSelector(getBridgeQuotes);
 
+  const [searchParams, setSearchParams] = useSearchParams();
+
   const fromTokenListGenerator = useTokensWithFiltering(
     fromTokens,
     fromTopAssets,
@@ -164,6 +167,26 @@ const PrepareBridgePage = () => {
     },
     SECOND,
   );
+
+  useEffect(() => {
+    const tokenAddressFromUrl = searchParams.get('token');
+    if (
+      tokenAddressFromUrl?.toLowerCase() === fromToken?.address?.toLowerCase()
+    ) {
+      const newParams = new URLSearchParams(searchParams);
+      newParams.delete('token');
+      setSearchParams(newParams);
+    } else if (tokenAddressFromUrl && Object.keys(fromTokens).length > 0) {
+      const matchedToken = fromTokens[tokenAddressFromUrl.toLowerCase()];
+      if (matchedToken) {
+        dispatch(setFromToken(matchedToken));
+      } else {
+        const newParams = new URLSearchParams(searchParams);
+        newParams.delete('token');
+        setSearchParams(newParams);
+      }
+    }
+  }, [fromToken, fromTokens, searchParams]);
 
   return (
     <Column className="prepare-bridge-page">
