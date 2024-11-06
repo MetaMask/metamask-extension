@@ -4,6 +4,7 @@ import classnames from 'classnames';
 import { debounce } from 'lodash';
 import { Hex } from '@metamask/utils';
 import { zeroAddress } from 'ethereumjs-util';
+import { useHistory, useLocation } from 'react-router-dom';
 import {
   setDestTokenExchangeRates,
   setFromChain,
@@ -146,6 +147,48 @@ const PrepareBridgePage = () => {
     },
     SECOND,
   );
+
+  const { search } = useLocation();
+  const history = useHistory();
+
+  useEffect(() => {
+    if (!fromChain?.chainId || Object.keys(fromTokens).length === 0) {
+      return;
+    }
+
+    const searchParams = new URLSearchParams(search);
+    const tokenAddressFromUrl = searchParams.get('token');
+    if (!tokenAddressFromUrl) {
+      return;
+    }
+
+    const removeTokenFromUrl = () => {
+      const newParams = new URLSearchParams(searchParams);
+      newParams.delete('token');
+      history.replace({
+        search: newParams.toString(),
+      });
+    };
+
+    switch (tokenAddressFromUrl) {
+      case fromToken?.address?.toLowerCase():
+        // If the token is already set, remove the query param
+        removeTokenFromUrl();
+        break;
+      case fromTokens[tokenAddressFromUrl]?.address?.toLowerCase(): {
+        // If there is a matching fromToken, set it as the fromToken
+        const matchedToken = fromTokens[tokenAddressFromUrl];
+        dispatch(setFromToken(matchedToken));
+        debouncedFetchFromExchangeRate(fromChain.chainId, matchedToken.address);
+        removeTokenFromUrl();
+        break;
+      }
+      default:
+        // Otherwise remove query param
+        removeTokenFromUrl();
+        break;
+    }
+  }, [fromChain, fromToken, fromTokens, search]);
 
   return (
     <div className="prepare-bridge-page">
