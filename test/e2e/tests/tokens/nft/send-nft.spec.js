@@ -4,9 +4,11 @@ const {
   logInWithBalanceValidation,
   unlockWallet,
   withFixtures,
+  tempToggleSettingRedesignedTransactionConfirmations,
 } = require('../../../helpers');
 const { SMART_CONTRACTS } = require('../../../seeder/smart-contracts');
 const FixtureBuilder = require('../../../fixture-builder');
+const { PAGES } = require('../../../webdriver/driver');
 
 describe('Send NFT', function () {
   const smartContract = SMART_CONTRACTS.NFTS;
@@ -23,6 +25,11 @@ describe('Send NFT', function () {
       },
       async ({ driver }) => {
         await unlockWallet(driver);
+
+        await tempToggleSettingRedesignedTransactionConfirmations(driver);
+
+        // Navigate to extension home screen
+        await driver.navigate(PAGES.HOME);
 
         // Fill the send NFT form and confirm the transaction
         await driver.clickElement('[data-testid="account-overview__nfts-tab"]');

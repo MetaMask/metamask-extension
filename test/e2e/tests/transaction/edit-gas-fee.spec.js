@@ -3,12 +3,14 @@ const {
   createInternalTransaction,
   createDappTransaction,
 } = require('../../page-objects/flows/transaction');
+const { PAGES } = require('../../webdriver/driver');
 
 const {
   withFixtures,
   unlockWallet,
   generateGanacheOptions,
   WINDOW_TITLES,
+  tempToggleSettingRedesignedTransactionConfirmations,
 } = require('../../helpers');
 const FixtureBuilder = require('../../fixture-builder');
 
@@ -22,6 +24,12 @@ describe('Editing Confirm Transaction', function () {
       },
       async ({ driver }) => {
         await unlockWallet(driver);
+
+        await tempToggleSettingRedesignedTransactionConfirmations(driver);
+
+        // Navigate to extension home screen
+        await driver.navigate(PAGES.HOME);
+
         await createInternalTransaction(driver);
 
         await driver.findElement({
@@ -95,6 +103,11 @@ describe('Editing Confirm Transaction', function () {
       },
       async ({ driver }) => {
         await unlockWallet(driver);
+
+        await tempToggleSettingRedesignedTransactionConfirmations(driver);
+
+        // Navigate to extension home screen
+        await driver.navigate(PAGES.HOME);
         await createInternalTransaction(driver);
 
         await driver.findElement({
@@ -171,6 +184,11 @@ describe('Editing Confirm Transaction', function () {
       async ({ driver }) => {
         // login to extension
         await unlockWallet(driver);
+
+        await tempToggleSettingRedesignedTransactionConfirmations(driver);
+
+        // Navigate to extension home screen
+        await driver.navigate(PAGES.HOME);
 
         await createDappTransaction(driver, {
           maxFeePerGas: '0x2000000000',

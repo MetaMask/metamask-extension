@@ -8,8 +8,10 @@ const {
   unlockWallet,
   switchToNotificationWindow,
   WINDOW_TITLES,
+  tempToggleSettingRedesignedTransactionConfirmations,
 } = require('../helpers');
 const FixtureBuilder = require('../fixture-builder');
+const { PAGES } = require('../webdriver/driver');
 const { isManifestV3 } = require('../../../shared/modules/mv3.utils');
 
 describe('Switch Ethereum Chain for two dapps', function () {
@@ -253,6 +255,10 @@ describe('Switch Ethereum Chain for two dapps', function () {
       async ({ driver }) => {
         await unlockWallet(driver);
 
+        await tempToggleSettingRedesignedTransactionConfirmations(driver);
+
+        await driver.navigate(PAGES.HOME);
+
         // Open settings menu button
         const accountOptionsMenuSelector =
           '[data-testid="account-options-menu-button"]';
@@ -384,6 +390,10 @@ describe('Switch Ethereum Chain for two dapps', function () {
       },
       async ({ driver }) => {
         await unlockWallet(driver);
+
+        await tempToggleSettingRedesignedTransactionConfirmations(driver);
+
+        await driver.navigate(PAGES.HOME);
 
         // Open settings menu button
         const accountOptionsMenuSelector =

@@ -1,9 +1,11 @@
+const { PAGES } = require('../../webdriver/driver');
 const {
   defaultGanacheOptions,
   logInWithBalanceValidation,
   openDapp,
   WINDOW_TITLES,
   withFixtures,
+  tempToggleSettingRedesignedTransactionConfirmations,
 } = require('../../helpers');
 const { SMART_CONTRACTS } = require('../../seeder/smart-contracts');
 const FixtureBuilder = require('../../fixture-builder');
@@ -26,6 +28,11 @@ describe('Editing confirmations of dapp initiated contract interactions', functi
           smartContract,
         );
         await logInWithBalanceValidation(driver);
+
+        await tempToggleSettingRedesignedTransactionConfirmations(driver);
+
+        // Navigate to extension home screen
+        await driver.navigate(PAGES.HOME);
 
         // deploy contract
         await openDapp(driver, contractAddress);
@@ -58,6 +65,11 @@ describe('Editing confirmations of dapp initiated contract interactions', functi
       },
       async ({ driver }) => {
         await logInWithBalanceValidation(driver);
+
+        await tempToggleSettingRedesignedTransactionConfirmations(driver);
+
+        // Navigate to extension home screen
+        await driver.navigate(PAGES.HOME);
 
         await openDapp(driver);
         await driver.clickElement('#sendButton');

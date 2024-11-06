@@ -6,8 +6,10 @@ const {
   unlockWallet,
   generateGanacheOptions,
   WINDOW_TITLES,
+  tempToggleSettingRedesignedTransactionConfirmations,
 } = require('../../helpers');
 const FixtureBuilder = require('../../fixture-builder');
+const { PAGES } = require('../../webdriver/driver');
 
 describe('Multiple transactions', function () {
   it('creates multiple queued transactions, then confirms', async function () {
@@ -22,6 +24,11 @@ describe('Multiple transactions', function () {
       },
       async ({ driver }) => {
         await unlockWallet(driver);
+
+        await tempToggleSettingRedesignedTransactionConfirmations(driver);
+
+        // Navigate to extension home screen
+        await driver.navigate(PAGES.HOME);
 
         // initiates a transaction from the dapp
         await openDapp(driver);
@@ -84,6 +91,11 @@ describe('Multiple transactions', function () {
       },
       async ({ driver }) => {
         await unlockWallet(driver);
+
+        await tempToggleSettingRedesignedTransactionConfirmations(driver);
+
+        // Navigate to extension home screen
+        await driver.navigate(PAGES.HOME);
 
         // initiates a transaction from the dapp
         await openDapp(driver);

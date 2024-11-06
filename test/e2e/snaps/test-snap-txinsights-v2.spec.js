@@ -3,8 +3,10 @@ const {
   withFixtures,
   unlockWallet,
   WINDOW_TITLES,
+  tempToggleSettingRedesignedTransactionConfirmations,
 } = require('../helpers');
 const FixtureBuilder = require('../fixture-builder');
+const { PAGES } = require('../webdriver/driver');
 const { TEST_SNAPS_WEBSITE_URL } = require('./enums');
 
 describe('Test Snap TxInsights-v2', function () {
@@ -17,6 +19,9 @@ describe('Test Snap TxInsights-v2', function () {
       },
       async ({ driver }) => {
         await unlockWallet(driver);
+
+        await tempToggleSettingRedesignedTransactionConfirmations(driver);
+        await driver.navigate(PAGES.HOME);
 
         // navigate to test snaps page and connect
         await driver.openNewPage(TEST_SNAPS_WEBSITE_URL);

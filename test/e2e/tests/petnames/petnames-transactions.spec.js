@@ -5,8 +5,10 @@ const {
   unlockWallet,
   defaultGanacheOptions,
   openActionMenuAndStartSendFlow,
+  tempToggleSettingRedesignedTransactionConfirmations,
 } = require('../../helpers');
 const FixtureBuilder = require('../../fixture-builder');
+const { PAGES } = require('../../webdriver/driver');
 const {
   expectName,
   focusTestDapp,
@@ -49,6 +51,10 @@ describe('Petnames - Transactions', function () {
       },
       async ({ driver }) => {
         await unlockWallet(driver);
+
+        await tempToggleSettingRedesignedTransactionConfirmations(driver);
+        await driver.navigate(PAGES.HOME);
+
         await openDapp(driver);
         await createDappSendTransaction(driver);
         await switchToNotificationWindow(driver, 3);
@@ -94,6 +100,9 @@ describe('Petnames - Transactions', function () {
       },
       async ({ driver }) => {
         await unlockWallet(driver);
+        await tempToggleSettingRedesignedTransactionConfirmations(driver);
+        await driver.navigate(PAGES.HOME);
+
         await createWalletSendTransaction(driver, ADDRESS_MOCK);
         await expectName(driver, ABBREVIATED_ADDRESS_MOCK, false);
 

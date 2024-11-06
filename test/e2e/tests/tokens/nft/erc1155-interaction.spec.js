@@ -7,9 +7,11 @@ const {
   unlockWallet,
   WINDOW_TITLES,
   defaultGanacheOptions,
+  tempToggleSettingRedesignedTransactionConfirmations,
 } = require('../../../helpers');
 const { SMART_CONTRACTS } = require('../../../seeder/smart-contracts');
 const FixtureBuilder = require('../../../fixture-builder');
+const { PAGES } = require('../../../webdriver/driver');
 
 describe('ERC1155 NFTs testdapp interaction', function () {
   const smartContract = SMART_CONTRACTS.ERC1155;
@@ -37,6 +39,11 @@ describe('ERC1155 NFTs testdapp interaction', function () {
       async ({ driver, _, contractRegistry }) => {
         const contract = contractRegistry.getContractAddress(smartContract);
         await unlockWallet(driver);
+
+        await tempToggleSettingRedesignedTransactionConfirmations(driver);
+
+        // Navigate to extension home screen
+        await driver.navigate(PAGES.HOME);
 
         // Open Dapp and wait for deployed contract
         await openDapp(driver, contract);
@@ -118,6 +125,11 @@ describe('ERC1155 NFTs testdapp interaction', function () {
         const contract = contractRegistry.getContractAddress(smartContract);
         await unlockWallet(driver);
 
+        await tempToggleSettingRedesignedTransactionConfirmations(driver);
+
+        // Navigate to extension home screen
+        await driver.navigate(PAGES.HOME);
+
         await openDapp(driver, contract);
 
         await driver.fill('#batchTransferTokenIds', '1, 2, 3');
@@ -169,6 +181,11 @@ describe('ERC1155 NFTs testdapp interaction', function () {
       async ({ driver, _, contractRegistry }) => {
         const contract = contractRegistry.getContractAddress(smartContract);
         await unlockWallet(driver);
+
+        await tempToggleSettingRedesignedTransactionConfirmations(driver);
+
+        // Navigate to extension home screen
+        await driver.navigate(PAGES.HOME);
 
         // Create a set approval for all erc1155 token request in test dapp
         await openDapp(driver, contract);
@@ -253,6 +270,11 @@ describe('ERC1155 NFTs testdapp interaction', function () {
       async ({ driver, _, contractRegistry }) => {
         const contract = contractRegistry.getContractAddress(smartContract);
         await unlockWallet(driver);
+
+        await tempToggleSettingRedesignedTransactionConfirmations(driver);
+
+        // Navigate to extension home screen
+        await driver.navigate(PAGES.HOME);
 
         // Create a revoke approval for all erc1155 token request in test dapp
         await openDapp(driver, contract);

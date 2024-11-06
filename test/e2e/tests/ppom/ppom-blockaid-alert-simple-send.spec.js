@@ -1,12 +1,13 @@
 const { strict: assert } = require('assert');
 const FixtureBuilder = require('../../fixture-builder');
-
+const { PAGES } = require('../../webdriver/driver');
 const {
   defaultGanacheOptions,
   withFixtures,
   sendScreenToConfirmScreen,
   logInWithBalanceValidation,
   WINDOW_TITLES,
+  tempToggleSettingRedesignedTransactionConfirmations,
 } = require('../../helpers');
 const {
   mockMultiNetworkBalancePolling,
@@ -208,6 +209,11 @@ describe('Simple Send Security Alert - Blockaid @no-mmi', function () {
 
       async ({ driver }) => {
         await logInWithBalanceValidation(driver);
+
+        await tempToggleSettingRedesignedTransactionConfirmations(driver);
+
+        // Navigate to extension home screen
+        await driver.navigate(PAGES.HOME);
 
         await sendScreenToConfirmScreen(
           driver,

@@ -1,5 +1,4 @@
 const { strict: assert } = require('assert');
-
 const FixtureBuilder = require('../../fixture-builder');
 const {
   withFixtures,
@@ -10,7 +9,9 @@ const {
   regularDelayMs,
   WINDOW_TITLES,
   defaultGanacheOptions,
+  tempToggleSettingRedesignedTransactionConfirmations,
 } = require('../../helpers');
+const { PAGES } = require('../../webdriver/driver');
 
 describe('Request Queuing Dapp 1 Send Tx -> Dapp 2 Request Accounts Tx', function () {
   it('should queue `eth_requestAccounts` requests when the requesting dapp does not already have connected accounts', async function () {
@@ -39,6 +40,9 @@ describe('Request Queuing Dapp 1 Send Tx -> Dapp 2 Request Accounts Tx', functio
       },
       async ({ driver }) => {
         await unlockWallet(driver);
+
+        await tempToggleSettingRedesignedTransactionConfirmations(driver);
+        await driver.navigate(PAGES.HOME);
 
         // Open Dapp One
         await openDapp(driver, undefined, DAPP_URL);

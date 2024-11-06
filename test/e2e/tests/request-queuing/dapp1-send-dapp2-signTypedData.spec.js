@@ -10,7 +10,9 @@ const {
   tempToggleSettingRedesignedConfirmations,
   WINDOW_TITLES,
   largeDelayMs,
+  tempToggleSettingRedesignedTransactionConfirmations,
 } = require('../../helpers');
+const { PAGES } = require('../../webdriver/driver');
 
 describe('Request Queuing Dapp 1, Switch Tx -> Dapp 2 Send Tx', function () {
   it('should queue signTypedData tx after eth_sendTransaction confirmation and signTypedData confirmation should target the correct network after eth_sendTransaction is confirmed @no-mmi', async function () {
@@ -45,6 +47,14 @@ describe('Request Queuing Dapp 1, Switch Tx -> Dapp 2 Send Tx', function () {
       async ({ driver }) => {
         await unlockWallet(driver);
         await tempToggleSettingRedesignedConfirmations(driver);
+
+        // Navigate to extension home screen
+        await driver.navigate(PAGES.HOME);
+
+        await tempToggleSettingRedesignedTransactionConfirmations(driver);
+
+        // Navigate to extension home screen
+        await driver.navigate(PAGES.HOME);
 
         // Open and connect Dapp One
         await openDapp(driver, undefined, DAPP_URL);

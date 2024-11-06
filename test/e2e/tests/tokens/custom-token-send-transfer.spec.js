@@ -8,9 +8,11 @@ const {
   editGasFeeForm,
   WINDOW_TITLES,
   clickNestedButton,
+  tempToggleSettingRedesignedTransactionConfirmations,
 } = require('../../helpers');
 const FixtureBuilder = require('../../fixture-builder');
 const { SMART_CONTRACTS } = require('../../seeder/smart-contracts');
+const { PAGES } = require('../../webdriver/driver');
 
 const recipientAddress = '0x2f318C334780961FB129D2a6c30D0763d9a5C970';
 
@@ -27,6 +29,11 @@ describe('Transfer custom tokens @no-mmi', function () {
       },
       async ({ driver }) => {
         await unlockWallet(driver);
+
+        await tempToggleSettingRedesignedTransactionConfirmations(driver);
+
+        // Navigate to extension home screen
+        await driver.navigate(PAGES.HOME);
 
         // go to custom tokens view on extension, perform send tokens
         await driver.clickElement({
@@ -115,6 +122,11 @@ describe('Transfer custom tokens @no-mmi', function () {
         );
         await unlockWallet(driver);
 
+        await tempToggleSettingRedesignedTransactionConfirmations(driver);
+
+        // Navigate to extension home screen
+        await driver.navigate(PAGES.HOME);
+
         // transfer token from dapp
         await openDapp(driver, contractAddress);
         await driver.clickElement({ text: 'Transfer Tokens', tag: 'button' });
@@ -173,6 +185,11 @@ describe('Transfer custom tokens @no-mmi', function () {
           smartContract,
         );
         await unlockWallet(driver);
+
+        await tempToggleSettingRedesignedTransactionConfirmations(driver);
+
+        // Navigate to extension home screen
+        await driver.navigate(PAGES.HOME);
 
         // transfer token from dapp
         await openDapp(driver, contractAddress);

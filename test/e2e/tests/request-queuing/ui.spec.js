@@ -14,6 +14,7 @@ const {
   tempToggleSettingRedesignedConfirmations,
   veryLargeDelayMs,
   DAPP_TWO_URL,
+  tempToggleSettingRedesignedTransactionConfirmations,
 } = require('../../helpers');
 const { PAGES } = require('../../webdriver/driver');
 const {
@@ -216,6 +217,8 @@ describe('Request-queue UI changes', function () {
       async ({ driver }) => {
         await unlockWallet(driver);
 
+        await tempToggleSettingRedesignedTransactionConfirmations(driver);
+
         // Navigate to extension home screen
         await driver.navigate(PAGES.HOME);
 
@@ -287,6 +290,8 @@ describe('Request-queue UI changes', function () {
       },
       async ({ driver }) => {
         await unlockWallet(driver);
+
+        await tempToggleSettingRedesignedTransactionConfirmations(driver);
 
         // Navigate to extension home screen
         await driver.navigate(PAGES.HOME);
@@ -407,6 +412,8 @@ describe('Request-queue UI changes', function () {
       },
       async ({ driver }) => {
         await unlockWallet(driver);
+
+        await tempToggleSettingRedesignedTransactionConfirmations(driver);
 
         // Navigate to extension home screen
         await driver.navigate(PAGES.HOME);
@@ -579,6 +586,8 @@ describe('Request-queue UI changes', function () {
       async ({ driver }) => {
         await unlockWallet(driver);
 
+        await tempToggleSettingRedesignedTransactionConfirmations(driver);
+
         // Open the first dapp which starts on chain '0x539
         await openDappAndSwitchChain(driver, DAPP_URL, '0x539');
 
@@ -656,6 +665,11 @@ describe('Request-queue UI changes', function () {
         // Navigate to extension home screen
         await driver.navigate(PAGES.HOME);
 
+        await tempToggleSettingRedesignedTransactionConfirmations(driver);
+
+        // Navigate to extension home screen
+        await driver.navigate(PAGES.HOME);
+
         // Open the first dapp
         await openDappAndSwitchChain(driver, DAPP_URL, '0x539');
 
@@ -721,6 +735,8 @@ describe('Request-queue UI changes', function () {
       },
       async ({ driver, ganacheServer, secondaryGanacheServer }) => {
         await unlockWallet(driver);
+
+        await tempToggleSettingRedesignedTransactionConfirmations(driver);
 
         // Navigate to extension home screen
         await driver.navigate(PAGES.HOME);

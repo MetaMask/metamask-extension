@@ -1,10 +1,10 @@
 const {
   createDappTransaction,
 } = require('../../page-objects/flows/transaction');
-
 const {
   default: ConfirmationNavigation,
 } = require('../../page-objects/pages/confirmations/legacy/navigation');
+const { PAGES } = require('../../webdriver/driver');
 
 const {
   withFixtures,
@@ -13,6 +13,7 @@ const {
   unlockWallet,
   generateGanacheOptions,
   WINDOW_TITLES,
+  tempToggleSettingRedesignedTransactionConfirmations,
 } = require('../../helpers');
 const FixtureBuilder = require('../../fixture-builder');
 
@@ -32,6 +33,12 @@ describe('Navigate transactions', function () {
       },
       async ({ driver }) => {
         await unlockWallet(driver);
+
+        await tempToggleSettingRedesignedTransactionConfirmations(driver);
+
+        // Navigate to extension home screen
+        await driver.navigate(PAGES.HOME);
+
         await createMultipleTransactions(driver, TRANSACTION_COUNT);
 
         const navigation = new ConfirmationNavigation(driver);
@@ -73,6 +80,12 @@ describe('Navigate transactions', function () {
       },
       async ({ driver }) => {
         await unlockWallet(driver);
+
+        await tempToggleSettingRedesignedTransactionConfirmations(driver);
+
+        // Navigate to extension home screen
+        await driver.navigate(PAGES.HOME);
+
         await createMultipleTransactions(driver, TRANSACTION_COUNT);
 
         const navigation = new ConfirmationNavigation(driver);
@@ -107,6 +120,12 @@ describe('Navigate transactions', function () {
       },
       async ({ driver }) => {
         await unlockWallet(driver);
+
+        await tempToggleSettingRedesignedTransactionConfirmations(driver);
+
+        // Navigate to extension home screen
+        await driver.navigate(PAGES.HOME);
+
         await createMultipleTransactions(driver, TRANSACTION_COUNT);
 
         // reject transaction
@@ -131,6 +150,12 @@ describe('Navigate transactions', function () {
       },
       async ({ driver }) => {
         await unlockWallet(driver);
+
+        await tempToggleSettingRedesignedTransactionConfirmations(driver);
+
+        // Navigate to extension home screen
+        await driver.navigate(PAGES.HOME);
+
         await createMultipleTransactions(driver, TRANSACTION_COUNT);
 
         // confirm transaction
@@ -155,6 +180,12 @@ describe('Navigate transactions', function () {
       },
       async ({ driver, ganacheServer }) => {
         await unlockWallet(driver);
+
+        await tempToggleSettingRedesignedTransactionConfirmations(driver);
+
+        // Navigate to extension home screen
+        await driver.navigate(PAGES.HOME);
+
         await createMultipleTransactions(driver, TRANSACTION_COUNT);
 
         // reject transactions

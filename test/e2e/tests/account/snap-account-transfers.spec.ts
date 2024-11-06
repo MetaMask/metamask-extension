@@ -2,11 +2,12 @@ import { Suite } from 'mocha';
 import {
   multipleGanacheOptions,
   PRIVATE_KEY_TWO,
+  tempToggleSettingRedesignedTransactionConfirmations,
   WINDOW_TITLES,
   withFixtures,
 } from '../../helpers';
 import { DEFAULT_FIXTURE_ACCOUNT } from '../../constants';
-import { Driver } from '../../webdriver/driver';
+import { Driver, PAGES } from '../../webdriver/driver';
 import { Ganache } from '../../seeder/ganache';
 import AccountListPage from '../../page-objects/pages/account-list-page';
 import FixtureBuilder from '../../fixture-builder';
@@ -33,6 +34,12 @@ describe('Snap Account Transfers @no-mmi', function (this: Suite) {
         ganacheServer?: Ganache;
       }) => {
         await loginWithBalanceValidation(driver, ganacheServer);
+
+        await tempToggleSettingRedesignedTransactionConfirmations(driver);
+
+        // Navigate to extension home screen
+        await driver.navigate(PAGES.HOME);
+
         await installSnapSimpleKeyring(driver);
         const snapSimpleKeyringPage = new SnapSimpleKeyringPage(driver);
 
@@ -81,6 +88,12 @@ describe('Snap Account Transfers @no-mmi', function (this: Suite) {
         ganacheServer?: Ganache;
       }) => {
         await loginWithBalanceValidation(driver, ganacheServer);
+
+        await tempToggleSettingRedesignedTransactionConfirmations(driver);
+
+        // Navigate to extension home screen
+        await driver.navigate(PAGES.HOME);
+
         await installSnapSimpleKeyring(driver, false);
         const snapSimpleKeyringPage = new SnapSimpleKeyringPage(driver);
 
@@ -131,6 +144,12 @@ describe('Snap Account Transfers @no-mmi', function (this: Suite) {
         ganacheServer?: Ganache;
       }) => {
         await loginWithBalanceValidation(driver, ganacheServer);
+
+        await tempToggleSettingRedesignedTransactionConfirmations(driver);
+
+        // Navigate to extension home screen
+        await driver.navigate(PAGES.HOME);
+
         await installSnapSimpleKeyring(driver, false);
         const snapSimpleKeyringPage = new SnapSimpleKeyringPage(driver);
 

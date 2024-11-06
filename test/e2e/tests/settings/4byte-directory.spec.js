@@ -6,8 +6,10 @@ const {
   unlockWallet,
   withFixtures,
   WINDOW_TITLES,
+  tempToggleSettingRedesignedTransactionConfirmations,
 } = require('../../helpers');
 const { SMART_CONTRACTS } = require('../../seeder/smart-contracts');
+const { PAGES } = require('../../webdriver/driver');
 
 describe('4byte setting', function () {
   it('makes a call to 4byte when the setting is on', async function () {
@@ -26,6 +28,11 @@ describe('4byte setting', function () {
           smartContract,
         );
         await logInWithBalanceValidation(driver);
+
+        await tempToggleSettingRedesignedTransactionConfirmations(driver);
+
+        // Navigate to extension home screen
+        await driver.navigate(PAGES.HOME);
 
         // deploy contract
         await openDapp(driver, contractAddress);
@@ -62,6 +69,11 @@ describe('4byte setting', function () {
           smartContract,
         );
         await unlockWallet(driver);
+
+        await tempToggleSettingRedesignedTransactionConfirmations(driver);
+
+        // Navigate to extension home screen
+        await driver.navigate(PAGES.HOME);
 
         // goes to the settings screen
         await openMenuSafe(driver);

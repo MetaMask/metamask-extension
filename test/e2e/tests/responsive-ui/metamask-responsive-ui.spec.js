@@ -6,8 +6,10 @@ const {
   logInWithBalanceValidation,
   openActionMenuAndStartSendFlow,
   withFixtures,
+  tempToggleSettingRedesignedTransactionConfirmations,
 } = require('../../helpers');
 const FixtureBuilder = require('../../fixture-builder');
+const { PAGES } = require('../../webdriver/driver');
 
 describe('MetaMask Responsive UI', function () {
   it('Creating a new wallet @no-mmi', async function () {
@@ -21,6 +23,7 @@ describe('MetaMask Responsive UI', function () {
       },
       async ({ driver }) => {
         await driver.navigate();
+
         // agree to terms of use
         await driver.clickElement('[data-testid="onboarding-terms-checkbox"]');
 
@@ -128,6 +131,11 @@ describe('MetaMask Responsive UI', function () {
       },
       async ({ driver, ganacheServer }) => {
         await logInWithBalanceValidation(driver, ganacheServer);
+
+        await tempToggleSettingRedesignedTransactionConfirmations(driver);
+
+        // Navigate to extension home screen
+        await driver.navigate(PAGES.HOME);
 
         // Send ETH from inside MetaMask
         // starts to send a transaction

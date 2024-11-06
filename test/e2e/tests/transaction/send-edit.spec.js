@@ -2,12 +2,14 @@ const { strict: assert } = require('assert');
 const {
   createInternalTransaction,
 } = require('../../page-objects/flows/transaction');
+const { PAGES } = require('../../webdriver/driver');
 
 const {
   defaultGanacheOptions,
   withFixtures,
   unlockWallet,
   generateGanacheOptions,
+  tempToggleSettingRedesignedTransactionConfirmations,
 } = require('../../helpers');
 const FixtureBuilder = require('../../fixture-builder');
 
@@ -21,6 +23,8 @@ describe('Editing Confirm Transaction', function () {
       },
       async ({ driver }) => {
         await unlockWallet(driver);
+        await tempToggleSettingRedesignedTransactionConfirmations(driver);
+        await driver.navigate(PAGES.HOME);
         await createInternalTransaction(driver);
 
         await driver.findElement({
@@ -96,6 +100,9 @@ describe('Editing Confirm Transaction', function () {
       },
       async ({ driver }) => {
         await unlockWallet(driver);
+        await tempToggleSettingRedesignedTransactionConfirmations(driver);
+        await driver.navigate(PAGES.HOME);
+
         await createInternalTransaction(driver);
 
         await driver.findElement({

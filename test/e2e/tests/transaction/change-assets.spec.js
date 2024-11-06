@@ -3,9 +3,11 @@ const {
   defaultGanacheOptions,
   withFixtures,
   logInWithBalanceValidation,
+  tempToggleSettingRedesignedTransactionConfirmations,
 } = require('../../helpers');
 const FixtureBuilder = require('../../fixture-builder');
 const { SMART_CONTRACTS } = require('../../seeder/smart-contracts');
+const { PAGES } = require('../../webdriver/driver');
 const { tEn } = require('../../../lib/i18n-helpers');
 
 describe('Change assets', function () {
@@ -21,6 +23,11 @@ describe('Change assets', function () {
       },
       async ({ driver, ganacheServer }) => {
         await logInWithBalanceValidation(driver, ganacheServer);
+
+        await tempToggleSettingRedesignedTransactionConfirmations(driver);
+
+        // Navigate to extension home screen
+        await driver.navigate(PAGES.HOME);
 
         // Wait for balance to load
         await driver.delay(500);
@@ -100,6 +107,11 @@ describe('Change assets', function () {
       async ({ driver, ganacheServer }) => {
         await logInWithBalanceValidation(driver, ganacheServer);
 
+        await tempToggleSettingRedesignedTransactionConfirmations(driver);
+
+        // Navigate to extension home screen
+        await driver.navigate(PAGES.HOME);
+
         // Click the Send button
         await driver.clickElement({
           css: '[data-testid="multichain-token-list-button"] span',
@@ -178,6 +190,11 @@ describe('Change assets', function () {
       },
       async ({ driver, ganacheServer }) => {
         await logInWithBalanceValidation(driver, ganacheServer);
+
+        await tempToggleSettingRedesignedTransactionConfirmations(driver);
+
+        // Navigate to extension home screen
+        await driver.navigate(PAGES.HOME);
 
         // Choose the nft
         await driver.clickElement('[data-testid="account-overview__nfts-tab"]');
@@ -265,6 +282,11 @@ describe('Change assets', function () {
       },
       async ({ driver, ganacheServer }) => {
         await logInWithBalanceValidation(driver, ganacheServer);
+
+        await tempToggleSettingRedesignedTransactionConfirmations(driver);
+
+        // Navigate to extension home screen
+        await driver.navigate(PAGES.HOME);
 
         // Create second account
         await driver.clickElement('[data-testid="account-menu-icon"]');

@@ -7,6 +7,7 @@ const {
   regularDelayMs,
   WINDOW_TITLES,
   defaultGanacheOptions,
+  tempToggleSettingRedesignedTransactionConfirmations,
 } = require('../../helpers');
 const { PAGES } = require('../../webdriver/driver');
 
@@ -36,6 +37,11 @@ describe('Request Queuing Switch Network on Dapp Send Tx while on different netw
       },
       async ({ driver }) => {
         await unlockWallet(driver);
+
+        await tempToggleSettingRedesignedTransactionConfirmations(driver);
+
+        // Navigate to extension home screen
+        await driver.navigate(PAGES.HOME);
 
         // Open dapp
         await openDapp(driver, undefined, DAPP_URL);

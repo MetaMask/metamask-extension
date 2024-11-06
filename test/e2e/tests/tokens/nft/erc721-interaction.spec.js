@@ -6,9 +6,11 @@ const {
   WINDOW_TITLES,
   defaultGanacheOptions,
   clickNestedButton,
+  tempToggleSettingRedesignedTransactionConfirmations,
 } = require('../../../helpers');
 const { SMART_CONTRACTS } = require('../../../seeder/smart-contracts');
 const FixtureBuilder = require('../../../fixture-builder');
+const { PAGES } = require('../../../webdriver/driver');
 
 describe('ERC721 NFTs testdapp interaction', function () {
   const smartContract = SMART_CONTRACTS.NFTS;
@@ -27,6 +29,11 @@ describe('ERC721 NFTs testdapp interaction', function () {
       async ({ driver, _, contractRegistry }) => {
         const contract = contractRegistry.getContractAddress(smartContract);
         await unlockWallet(driver);
+
+        await tempToggleSettingRedesignedTransactionConfirmations(driver);
+
+        // Navigate to extension home screen
+        await driver.navigate(PAGES.HOME);
 
         // Open Dapp and wait for deployed contract
         await openDapp(driver, contract);
@@ -90,6 +97,11 @@ describe('ERC721 NFTs testdapp interaction', function () {
       async ({ driver, _, contractRegistry }) => {
         const contract = contractRegistry.getContractAddress(smartContract);
         await unlockWallet(driver);
+
+        await tempToggleSettingRedesignedTransactionConfirmations(driver);
+
+        // Navigate to extension home screen
+        await driver.navigate(PAGES.HOME);
 
         // Open Dapp and wait for deployed contract
         await openDapp(driver, contract);
@@ -212,6 +224,11 @@ describe('ERC721 NFTs testdapp interaction', function () {
         const contract = contractRegistry.getContractAddress(smartContract);
         await unlockWallet(driver);
 
+        await tempToggleSettingRedesignedTransactionConfirmations(driver);
+
+        // Navigate to extension home screen
+        await driver.navigate(PAGES.HOME);
+
         // Open Dapp and wait for deployed contract
         await openDapp(driver, contract);
         await driver.findClickableElement('#deployButton');
@@ -310,6 +327,11 @@ describe('ERC721 NFTs testdapp interaction', function () {
         const contract = contractRegistry.getContractAddress(smartContract);
         await unlockWallet(driver);
 
+        await tempToggleSettingRedesignedTransactionConfirmations(driver);
+
+        // Navigate to extension home screen
+        await driver.navigate(PAGES.HOME);
+
         // Open Dapp and wait for deployed contract
         await openDapp(driver, contract);
         await driver.findClickableElement('#deployButton');
@@ -356,6 +378,11 @@ describe('ERC721 NFTs testdapp interaction', function () {
       async ({ driver, _, contractRegistry }) => {
         const contract = contractRegistry.getContractAddress(smartContract);
         await unlockWallet(driver);
+
+        await tempToggleSettingRedesignedTransactionConfirmations(driver);
+
+        // Navigate to extension home screen
+        await driver.navigate(PAGES.HOME);
 
         // Open Dapp and wait for deployed contract
         await openDapp(driver, contract);
@@ -424,6 +451,11 @@ describe('ERC721 NFTs testdapp interaction', function () {
         const contract = contractRegistry.getContractAddress(smartContract);
         await unlockWallet(driver);
 
+        await tempToggleSettingRedesignedTransactionConfirmations(driver);
+
+        // Navigate to extension home screen
+        await driver.navigate(PAGES.HOME);
+
         // Open Dapp and wait for deployed contract
         await openDapp(driver, contract);
         await driver.findClickableElement('#deployButton');
@@ -489,6 +521,11 @@ describe('ERC721 NFTs testdapp interaction', function () {
       async ({ driver, _, contractRegistry }) => {
         const contract = contractRegistry.getContractAddress(smartContract);
         await unlockWallet(driver);
+
+        await tempToggleSettingRedesignedTransactionConfirmations(driver);
+
+        // Navigate to extension home screen
+        await driver.navigate(PAGES.HOME);
 
         // Open Dapp and wait for deployed contract
         await openDapp(driver, contract);

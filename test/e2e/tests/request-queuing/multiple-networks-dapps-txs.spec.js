@@ -8,6 +8,7 @@ const {
   WINDOW_TITLES,
   defaultGanacheOptions,
   largeDelayMs,
+  tempToggleSettingRedesignedTransactionConfirmations,
 } = require('../../helpers');
 const { PAGES } = require('../../webdriver/driver');
 
@@ -38,6 +39,8 @@ describe('Request Queuing for Multiple Dapps and Txs on different networks.', fu
       },
       async ({ driver }) => {
         await unlockWallet(driver);
+
+        await tempToggleSettingRedesignedTransactionConfirmations(driver);
 
         // Navigate to extension home screen
         await driver.navigate(PAGES.HOME);

@@ -9,8 +9,10 @@ const {
   editGasFeeForm,
   WINDOW_TITLES,
   defaultGanacheOptions,
+  tempToggleSettingRedesignedTransactionConfirmations,
 } = require('../../helpers');
 const FixtureBuilder = require('../../fixture-builder');
+const { PAGES } = require('../../webdriver/driver');
 
 describe('Send ETH', function () {
   describe('from inside MetaMask', function () {
@@ -105,6 +107,11 @@ describe('Send ETH', function () {
         },
         async ({ driver }) => {
           await unlockWallet(driver);
+
+          await tempToggleSettingRedesignedTransactionConfirmations(driver);
+
+          // Navigate to extension home screen
+          await driver.navigate(PAGES.HOME);
 
           await driver.delay(1000);
 
@@ -256,6 +263,11 @@ describe('Send ETH', function () {
           async ({ driver }) => {
             await unlockWallet(driver);
 
+            await tempToggleSettingRedesignedTransactionConfirmations(driver);
+
+            // Navigate to extension home screen
+            await driver.navigate(PAGES.HOME);
+
             // initiates a send from the dapp
             await openDapp(driver);
             await driver.clickElement({ text: 'Send', tag: 'button' });
@@ -331,6 +343,11 @@ describe('Send ETH', function () {
           },
           async ({ driver }) => {
             await unlockWallet(driver);
+
+            await tempToggleSettingRedesignedTransactionConfirmations(driver);
+
+            // Navigate to extension home screen
+            await driver.navigate(PAGES.HOME);
 
             // initiates a transaction from the dapp
             await openDapp(driver);
@@ -434,6 +451,11 @@ describe('Send ETH', function () {
           },
           async ({ driver }) => {
             await unlockWallet(driver);
+
+            await tempToggleSettingRedesignedTransactionConfirmations(driver);
+
+            // Navigate to extension home screen
+            await driver.navigate(PAGES.HOME);
 
             await driver.assertElementNotPresent('.loading-overlay__spinner');
             const balance = await driver.findElement(
