@@ -357,6 +357,7 @@ export function AssetPickerModal({
                 onChange={(value) => setSearchQuery(value)}
               />
               <AssetList
+                network={network}
                 handleAssetChange={handleAssetChange}
                 asset={asset?.type === AssetType.NFT ? undefined : asset}
                 tokenList={filteredTokenList}
