@@ -186,5 +186,9 @@ export const formatTokenAmount = (
   precision: number = 2,
 ) => `${amount.toFixed(precision)} ${symbol}`;
 
-export const formatFiatAmount = (amount: BigNumber | null, currency: string) =>
-  amount ? formatCurrency(amount.toString(), currency) : undefined;
+export const formatFiatAmount = (
+  amount: BigNumber | null,
+  currency: string,
+  precision?: number,
+) =>
+  amount ? formatCurrency(amount.toString(), currency, precision) : undefined;

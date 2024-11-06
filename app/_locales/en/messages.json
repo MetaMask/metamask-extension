@@ -2973,6 +2973,9 @@
     "message": "M",
     "description": "Shortened form of 'million'"
   },
+  "minimumAmountError": {
+    "message": "Minimum $1"
+  },
   "mismatchAccount": {
     "message": "Your selected account ($1) is different than the account trying to sign ($2)"
   },
