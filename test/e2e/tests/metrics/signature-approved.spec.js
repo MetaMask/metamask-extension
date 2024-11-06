@@ -1,5 +1,10 @@
 const { strict: assert } = require('assert');
 const {
+  BlockaidReason,
+  BlockaidResultType,
+} = require('../../../../shared/constants/security-provider');
+
+const {
   defaultGanacheOptions,
   switchToNotificationWindow,
   withFixtures,
@@ -47,6 +52,16 @@ async function mockSegment(mockServer) {
   ];
 }
 
+const eventPropertiesBase = {
+  account_type: 'MetaMask',
+  category: 'inpage_provider',
+  locale: 'en',
+  chain_id: '0x539',
+  environment_type: 'background',
+  security_alert_reason: BlockaidReason.checkingChain,
+  security_alert_response: BlockaidResultType.Benign,
+};
+
 describe('Signature Approved Event @no-mmi', function () {
   it('Successfully tracked for signTypedData_v4', async function () {
     await withFixtures(
@@ -76,31 +91,20 @@ describe('Signature Approved Event @no-mmi', function () {
         const events = await getEventPayloads(driver, mockedEndpoints);
 
         assert.deepStrictEqual(events[0].properties, {
-          account_type: 'MetaMask',
+          ...eventPropertiesBase,
           signature_type: 'eth_signTypedData_v4',
-          category: 'inpage_provider',
-          locale: 'en',
-          chain_id: '0x539',
           eip712_primary_type: 'Mail',
-          environment_type: 'background',
-          security_alert_reason: 'NotApplicable',
-          security_alert_response: 'NotApplicable',
         });
 
         assert.deepStrictEqual(events[1].properties, {
-          account_type: 'MetaMask',
+          ...eventPropertiesBase,
           signature_type: 'eth_signTypedData_v4',
-          category: 'inpage_provider',
-          locale: 'en',
-          chain_id: '0x539',
           eip712_primary_type: 'Mail',
-          environment_type: 'background',
-          security_alert_reason: 'NotApplicable',
-          security_alert_response: 'NotApplicable',
         });
       },
     );
   });
+
   it('Successfully tracked for signTypedData_v3', async function () {
     await withFixtures(
       {
@@ -127,29 +131,20 @@ describe('Signature Approved Event @no-mmi', function () {
         await validateContractDetails(driver);
         await clickSignOnSignatureConfirmation({ driver });
         const events = await getEventPayloads(driver, mockedEndpoints);
+
         assert.deepStrictEqual(events[0].properties, {
-          account_type: 'MetaMask',
+          ...eventPropertiesBase,
           signature_type: 'eth_signTypedData_v3',
-          category: 'inpage_provider',
-          locale: 'en',
-          chain_id: '0x539',
-          environment_type: 'background',
-          security_alert_reason: 'NotApplicable',
-          security_alert_response: 'NotApplicable',
         });
+
         assert.deepStrictEqual(events[1].properties, {
-          account_type: 'MetaMask',
+          ...eventPropertiesBase,
           signature_type: 'eth_signTypedData_v3',
-          category: 'inpage_provider',
-          locale: 'en',
-          chain_id: '0x539',
-          environment_type: 'background',
-          security_alert_reason: 'NotApplicable',
-          security_alert_response: 'NotApplicable',
         });
       },
     );
   });
+
   it('Successfully tracked for signTypedData', async function () {
     await withFixtures(
       {
@@ -175,29 +170,20 @@ describe('Signature Approved Event @no-mmi', function () {
         await switchToNotificationWindow(driver);
         await clickSignOnSignatureConfirmation({ driver });
         const events = await getEventPayloads(driver, mockedEndpoints);
+
         assert.deepStrictEqual(events[0].properties, {
-          account_type: 'MetaMask',
+          ...eventPropertiesBase,
           signature_type: 'eth_signTypedData',
-          category: 'inpage_provider',
-          locale: 'en',
-          chain_id: '0x539',
-          environment_type: 'background',
-          security_alert_reason: 'NotApplicable',
-          security_alert_response: 'NotApplicable',
         });
+
         assert.deepStrictEqual(events[1].properties, {
-          account_type: 'MetaMask',
+          ...eventPropertiesBase,
           signature_type: 'eth_signTypedData',
-          category: 'inpage_provider',
-          locale: 'en',
-          chain_id: '0x539',
-          environment_type: 'background',
-          security_alert_reason: 'NotApplicable',
-          security_alert_response: 'NotApplicable',
         });
       },
     );
   });
+
   it('Successfully tracked for personalSign', async function () {
     await withFixtures(
       {
@@ -223,25 +209,15 @@ describe('Signature Approved Event @no-mmi', function () {
         await switchToNotificationWindow(driver);
         await clickSignOnSignatureConfirmation({ driver });
         const events = await getEventPayloads(driver, mockedEndpoints);
+
         assert.deepStrictEqual(events[0].properties, {
-          account_type: 'MetaMask',
+          ...eventPropertiesBase,
           signature_type: 'personal_sign',
-          category: 'inpage_provider',
-          locale: 'en',
-          chain_id: '0x539',
-          environment_type: 'background',
-          security_alert_reason: 'NotApplicable',
-          security_alert_response: 'NotApplicable',
         });
+
         assert.deepStrictEqual(events[1].properties, {
-          account_type: 'MetaMask',
+          ...eventPropertiesBase,
           signature_type: 'personal_sign',
-          category: 'inpage_provider',
-          locale: 'en',
-          chain_id: '0x539',
-          environment_type: 'background',
-          security_alert_reason: 'NotApplicable',
-          security_alert_response: 'NotApplicable',
         });
       },
     );

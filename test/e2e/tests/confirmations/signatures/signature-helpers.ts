@@ -8,6 +8,10 @@ import {
   unlockWallet,
 } from '../../../helpers';
 import { Driver } from '../../../webdriver/driver';
+import {
+  BlockaidReason,
+  BlockaidResultType,
+} from '../../../../../shared/constants/security-provider';
 
 export const WALLET_ADDRESS = '0x5CfE73b6021E818B776b421B1c4Db2474086a7e1';
 export const WALLET_ETH_BALANCE = '25';
@@ -39,7 +43,7 @@ type SignatureEventProperty = {
   environment_type: 'background';
   locale: 'en';
   security_alert_reason: string;
-  security_alert_response: 'NotApplicable';
+  security_alert_response: string;
   signature_type: string;
   eip712_primary_type?: string;
   ui_customizations?: string[];
@@ -71,8 +75,8 @@ function getSignatureEventProperty(
     chain_id: '0x539',
     environment_type: 'background',
     locale: 'en',
-    security_alert_reason: 'NotApplicable',
-    security_alert_response: 'NotApplicable',
+    security_alert_reason: BlockaidReason.checkingChain,
+    security_alert_response: BlockaidResultType.Benign,
     ui_customizations: uiCustomizations,
   };
 
@@ -89,15 +93,15 @@ function assertSignatureRequestedMetrics(
   signatureEventProperty: SignatureEventProperty,
   withAnonEvents = false,
 ) {
-  assertEventPropertiesMatch(events, 'Signature Requested', {
-    ...signatureEventProperty,
-    security_alert_reason: 'NotApplicable',
-  });
+  assertEventPropertiesMatch(
+    events,
+    'Signature Requested',
+    signatureEventProperty,
+  );
 
   if (withAnonEvents) {
     assertEventPropertiesMatch(events, 'Signature Requested Anon', {
       ...signatureEventProperty,
-      security_alert_reason: 'NotApplicable',
       ...signatureAnonProperties,
     });
   }
