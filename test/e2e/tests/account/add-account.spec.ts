@@ -23,7 +23,7 @@ describe('Add account', function () {
         title: this.test?.fullTitle(),
       },
       async ({ driver, ganacheServer }) => {
-        await completeImportSRPOnboardingFlow(driver);
+        await completeImportSRPOnboardingFlow({ driver });
         const homePage = new HomePage(driver);
         await homePage.check_pageIsLoaded();
         await homePage.check_ganacheBalanceIsDisplayed(ganacheServer);

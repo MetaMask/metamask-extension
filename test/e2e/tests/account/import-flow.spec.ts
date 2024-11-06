@@ -1,7 +1,5 @@
 import path from 'path';
-import {
-  withFixtures,
-} from '../../helpers';
+import { withFixtures } from '../../helpers';
 import FixtureBuilder from '../../fixture-builder';
 import AccountListPage from '../../page-objects/pages/account-list-page';
 import HeaderNavbar from '../../page-objects/pages/header-navbar';
@@ -11,7 +9,6 @@ import { completeImportSRPOnboardingFlow } from '../../page-objects/flows/onboar
 
 describe('Import flow @no-mmi', function () {
   it('Import wallet using Secret Recovery Phrase with pasting word by word', async function () {
-    //const testAddress = '0x0Cc5261AB8cE458dc977078A3623E2BaDD27afD3';
     const testAddress = '0x5CfE73b6021E818B776b421B1c4Db2474086a7e1';
     await withFixtures(
       {
@@ -19,7 +16,10 @@ describe('Import flow @no-mmi', function () {
         title: this.test?.fullTitle(),
       },
       async ({ driver }) => {
-        await completeImportSRPOnboardingFlow(driver);
+        await completeImportSRPOnboardingFlow({
+          driver,
+          fillSrpWordByWord: true,
+        });
         const homePage = new HomePage(driver);
         await homePage.check_pageIsLoaded();
         await homePage.check_expectedBalanceIsDisplayed();
@@ -66,7 +66,10 @@ describe('Import flow @no-mmi', function () {
           'import-utc-json',
           'test-json-import-account-file.json',
         );
-        await accountListPage.importAccountWithJsonFile(jsonFile, 'foobarbazqux');
+        await accountListPage.importAccountWithJsonFile(
+          jsonFile,
+          'foobarbazqux',
+        );
 
         // Check new imported account has correct name and label
         const homePage = new HomePage(driver);
@@ -102,7 +105,10 @@ describe('Import flow @no-mmi', function () {
         await accountListPage.check_pageIsLoaded();
 
         // import active account with private key from the account menu and check error message
-        await accountListPage.addNewImportedAccount(testPrivateKey, 'The account you are trying to import is a duplicate');
+        await accountListPage.addNewImportedAccount(
+          testPrivateKey,
+          'The account you are trying to import is a duplicate',
+        );
       },
     );
   });

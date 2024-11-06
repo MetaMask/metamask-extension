@@ -2,10 +2,7 @@ import { strict as assert } from 'assert';
 import { Suite } from 'mocha';
 import { Driver } from '../../webdriver/driver';
 import FixtureBuilder from '../../fixture-builder';
-import {
-  withFixtures,
-  unlockWallet,
-} from '../../helpers';
+import { withFixtures, unlockWallet } from '../../helpers';
 import { isManifestV3 } from '../../../../shared/modules/mv3.utils';
 
 describe('Lattice hardware wallet @no-mmi', function (this: Suite) {
