@@ -94,26 +94,19 @@ const AssetListControlBar = ({ showTokensLinks }: AssetListControlBarProps) => {
       paddingTop={4}
       ref={popoverRef}
     >
-      <Box
-        display={Display.Flex}
-        justifyContent={
-          isFullScreen ? JustifyContent.flexStart : JustifyContent.spaceBetween
-        }
-      >
+      <Box display={Display.Flex} justifyContent={JustifyContent.spaceBetween}>
         {process.env.FILTER_TOKENS_TOGGLE && (
           <ButtonBase
             data-testid="sort-by-popover-toggle"
             className="asset-list-control-bar__button"
             onClick={toggleNetworkFilterPopover}
             size={ButtonBaseSize.Sm}
-            endIconName={IconName.ArrowDown}
+            endIconName={IconName.SwapVertical}
             backgroundColor={
               isNetworkFilterPopoverOpen
                 ? BackgroundColor.backgroundPressed
                 : BackgroundColor.backgroundDefault
             }
-            borderColor={BorderColor.borderMuted}
-            borderStyle={BorderStyle.solid}
             color={TextColor.textDefault}
             marginRight={isFullScreen ? 2 : null}
             ellipsis
@@ -124,26 +117,24 @@ const AssetListControlBar = ({ showTokensLinks }: AssetListControlBarProps) => {
           </ButtonBase>
         )}
 
-        <ButtonBase
-          data-testid="sort-by-popover-toggle"
-          className="asset-list-control-bar__button"
-          onClick={toggleTokenSortPopover}
-          size={ButtonBaseSize.Sm}
-          endIconName={IconName.ArrowDown}
-          backgroundColor={
-            isTokenSortPopoverOpen
-              ? BackgroundColor.backgroundPressed
-              : BackgroundColor.backgroundDefault
-          }
-          borderColor={BorderColor.borderMuted}
-          borderStyle={BorderStyle.solid}
-          color={TextColor.textDefault}
-          marginRight={isFullScreen ? 2 : null}
-        >
-          {t('sortBy')}
-        </ButtonBase>
+        <Box display={Display.Flex} justifyContent={JustifyContent.flexEnd}>
+          <ButtonBase
+            data-testid="sort-by-popover-toggle"
+            className="asset-list-control-bar__button"
+            onClick={toggleTokenSortPopover}
+            size={ButtonBaseSize.Sm}
+            endIconName={IconName.SwapVertical}
+            backgroundColor={
+              isTokenSortPopoverOpen
+                ? BackgroundColor.backgroundPressed
+                : BackgroundColor.backgroundDefault
+            }
+            color={TextColor.textDefault}
+            marginRight={isFullScreen ? 2 : null}
+          />
 
-        <ImportControl showTokensLinks={showTokensLinks} />
+          <ImportControl showTokensLinks={showTokensLinks} />
+        </Box>
       </Box>
 
       <Popover
@@ -165,7 +156,7 @@ const AssetListControlBar = ({ showTokensLinks }: AssetListControlBarProps) => {
       <Popover
         onClickOutside={closePopover}
         isOpen={isTokenSortPopoverOpen}
-        position={PopoverPosition.BottomStart}
+        position={PopoverPosition.BottomEnd}
         referenceElement={popoverRef.current}
         matchWidth={!isFullScreen}
         style={{
