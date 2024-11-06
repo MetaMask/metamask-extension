@@ -9,7 +9,7 @@ exports[`PrepareBridgePage should render the component, with initial state 1`] =
       class="mm-box prepare-bridge-page__content"
     >
       <div
-        class="mm-box prepare-bridge-page__from"
+        class="mm-box bridge-box"
       >
         <div
           class="mm-box prepare-bridge-page__input-row"
@@ -130,7 +130,7 @@ exports[`PrepareBridgePage should render the component, with initial state 1`] =
         </button>
       </div>
       <div
-        class="mm-box prepare-bridge-page__to"
+        class="mm-box bridge-box"
       >
         <div
           class="mm-box prepare-bridge-page__input-row"
@@ -213,7 +213,7 @@ exports[`PrepareBridgePage should render the component, with inputs set 1`] = `
       class="mm-box prepare-bridge-page__content"
     >
       <div
-        class="mm-box prepare-bridge-page__from"
+        class="mm-box bridge-box"
       >
         <div
           class="mm-box prepare-bridge-page__input-row"
@@ -340,7 +340,7 @@ exports[`PrepareBridgePage should render the component, with inputs set 1`] = `
         </button>
       </div>
       <div
-        class="mm-box prepare-bridge-page__to"
+        class="mm-box bridge-box"
       >
         <div
           class="mm-box prepare-bridge-page__input-row"
