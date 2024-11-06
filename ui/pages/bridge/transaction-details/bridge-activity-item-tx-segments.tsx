@@ -54,6 +54,9 @@ const getDestTxStatus = (
     : StatusTypes.PENDING;
 };
 
+/**
+ * Renders the 2 transaction segments for a bridge activity item
+ */
 export default function BridgeActivityItemTxSegments({
   bridgeTxHistoryItem,
   transactionGroup,
