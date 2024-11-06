@@ -805,10 +805,6 @@
   "buyNow": {
     "message": "지금 구매"
   },
-  "buyToken": {
-    "message": "$1 구매",
-    "description": "$1 is the token symbol"
-  },
   "bytes": {
     "message": "바이트"
   },
@@ -1624,9 +1620,6 @@
   "editSpeedUpEditGasFeeModalTitle": {
     "message": "가스비 가속 편집"
   },
-  "enable": {
-    "message": "활성화"
-  },
   "enableAutoDetect": {
     "message": " 자동 감지 활성화"
   },
@@ -1883,13 +1876,6 @@
   "functionType": {
     "message": "기능 유형"
   },
-  "fundYourWallet": {
-    "message": "지갑에 자금 추가"
-  },
-  "fundYourWalletDescription": {
-    "message": "지갑에 $1의 자금을 추가하여 시작하세요.",
-    "description": "$1 is the token symbol"
-  },
   "gas": {
     "message": "가스"
   },
@@ -1972,14 +1958,6 @@
   },
   "genericExplorerView": {
     "message": "$1에서 계정 보기"
-  },
-  "getStartedWithNFTs": {
-    "message": "$1 받고 NFT 구매하기",
-    "description": "$1 is the token symbol"
-  },
-  "getStartedWithNFTsDescription": {
-    "message": "지갑에 $1의 자금을 추가하여 시작하세요.",
-    "description": "$1 is the token symbol"
   },
   "goBack": {
     "message": "뒤로 가기"
@@ -4656,25 +4634,6 @@
   "smartTransactions": {
     "message": "스마트 트랜잭션"
   },
-  "smartTransactionsBenefit1": {
-    "message": "99.5% 성공률"
-  },
-  "smartTransactionsBenefit2": {
-    "message": "비용 절감"
-  },
-  "smartTransactionsBenefit3": {
-    "message": "실시간 업데이트"
-  },
-  "smartTransactionsDescription": {
-    "message": "스마트 트랜잭션으로 선행거래를 방지하고 더 높은 성공률과 가시성을 확보하세요."
-  },
-  "smartTransactionsDescription2": {
-    "message": "이더리움에서만 사용할 수 있습니다. 설정에서 언제든지 활성화하거나 비활성화할 수 있습니다. $1",
-    "description": "$1 is an external link to learn more about Smart Transactions"
-  },
-  "smartTransactionsOptItModalTitle": {
-    "message": "트랜잭션 보호 강화"
-  },
   "snapAccountCreated": {
     "message": "계정 생성됨"
   },
@@ -4993,14 +4952,6 @@
   },
   "stake": {
     "message": "스테이크"
-  },
-  "startYourJourney": {
-    "message": "$1 토큰으로 여정을 시작하세요",
-    "description": "$1 is the token symbol"
-  },
-  "startYourJourneyDescription": {
-    "message": "지갑에 $1 토큰을 추가하여 웹3를 시작하세요.",
-    "description": "$1 is the token symbol"
   },
   "stateLogError": {
     "message": "상태 로그를 가져오는 도중 오류가 발생했습니다."

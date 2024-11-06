@@ -805,10 +805,6 @@
   "buyNow": {
     "message": "Jetzt kaufen"
   },
-  "buyToken": {
-    "message": "$1 kaufen",
-    "description": "$1 is the token symbol"
-  },
   "bytes": {
     "message": "Bytes"
   },
@@ -1624,9 +1620,6 @@
   "editSpeedUpEditGasFeeModalTitle": {
     "message": "Beschleunigung der Gasgebühr bearbeiten"
   },
-  "enable": {
-    "message": "Aktivieren"
-  },
   "enableAutoDetect": {
     "message": " Automatische Erkennung aktivieren"
   },
@@ -1883,13 +1876,6 @@
   "functionType": {
     "message": "Funktionstyp"
   },
-  "fundYourWallet": {
-    "message": "Versehen Sie Ihre Wallet mit Geldern"
-  },
-  "fundYourWalletDescription": {
-    "message": "Legen Sie los, indem Sie Ihrer Wallet $1 hinzufügen.",
-    "description": "$1 is the token symbol"
-  },
   "gas": {
     "message": "Gas"
   },
@@ -1972,14 +1958,6 @@
   },
   "genericExplorerView": {
     "message": "Konto auf $1 ansehen"
-  },
-  "getStartedWithNFTs": {
-    "message": "Erhalten Sie $1 für den Kauf von NFTs",
-    "description": "$1 is the token symbol"
-  },
-  "getStartedWithNFTsDescription": {
-    "message": "Legen Sie mit NFTs los, indem Sie Ihrer Wallet $1 hinzufügen.",
-    "description": "$1 is the token symbol"
   },
   "goBack": {
     "message": "Zurück"
@@ -4656,25 +4634,6 @@
   "smartTransactions": {
     "message": "Smart Transactions"
   },
-  "smartTransactionsBenefit1": {
-    "message": "Erfolgsrate: 99,5 %"
-  },
-  "smartTransactionsBenefit2": {
-    "message": "Spart Ihnen Geld"
-  },
-  "smartTransactionsBenefit3": {
-    "message": "Updates in Echtzeit"
-  },
-  "smartTransactionsDescription": {
-    "message": "Erzielen Sie mit Smart Transactions höhere Erfolgsraten, einen Frontrunning-Schutz und eine bessere Transparenz."
-  },
-  "smartTransactionsDescription2": {
-    "message": "Nur auf Ethereum verfügbar. Sie können diese Funktion jederzeit in den Einstellungen aktivieren oder deaktivieren. $1",
-    "description": "$1 is an external link to learn more about Smart Transactions"
-  },
-  "smartTransactionsOptItModalTitle": {
-    "message": "Verbesserter Transaktionsschutz"
-  },
   "snapAccountCreated": {
     "message": "Konto erstellt"
   },
@@ -4993,14 +4952,6 @@
   },
   "stake": {
     "message": "Anteil"
-  },
-  "startYourJourney": {
-    "message": "Beginnen Sie Ihre Reise mit $1",
-    "description": "$1 is the token symbol"
-  },
-  "startYourJourneyDescription": {
-    "message": "Legen Sie mit web3 los, indem Sie Ihrer Wallet $1 hinzufügen.",
-    "description": "$1 is the token symbol"
   },
   "stateLogError": {
     "message": "Fehler beim Abfragen der Statusprotokolle."
