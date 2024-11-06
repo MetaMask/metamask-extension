@@ -44,6 +44,7 @@ import {
   getTokensMarketData,
   getParticipateInMetaMetrics,
   getDataCollectionForMarketing,
+  getMarketData,
 } from '../../../selectors';
 import {
   getMultichainCurrentChainId,
@@ -152,6 +153,7 @@ export const TokenListItem = ({
   };
 
   const tokensMarketData = useSelector(getTokensMarketData);
+  const multiChainMarketData = useSelector(getMarketData);
 
   const tokenPercentageChange = address
     ? tokensMarketData?.[address]?.pricePercentChange1d
@@ -216,6 +218,8 @@ export const TokenListItem = ({
   // Used for badge icon
   const currentNetwork = useSelector(getMultichainCurrentNetwork);
   const testNetworkBackgroundColor = useSelector(getTestNetworkBackgroundColor);
+
+  console.log(chainId);
 
   return (
     <Box
@@ -337,7 +341,8 @@ export const TokenListItem = ({
                 <PercentageChange
                   value={
                     isNativeCurrency
-                      ? tokensMarketData?.[zeroAddress()]?.pricePercentChange1d
+                      ? multiChainMarketData?.[chainId]?.[zeroAddress()]
+                          .pricePercentChange1d
                       : tokenPercentageChange
                   }
                   address={

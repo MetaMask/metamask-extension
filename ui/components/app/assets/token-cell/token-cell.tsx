@@ -91,6 +91,7 @@ export default function TokenCell({
       isStakeable={isStakeable}
       showPercentage
       privacyMode={privacyMode}
+      isNativeCurrency={isNative}
     />
   );
 }
