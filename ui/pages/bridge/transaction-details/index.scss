@@ -3,6 +3,20 @@
     animation: spinner 1.2s linear infinite;
   }
 
+  &__segment {
+    height: 40px;
+    width: 0;
+    transition: width 1.5s cubic-bezier(0.68, -0.55, 0.27, 1.55);
+
+    &--pending {
+      width: 50%;
+    }
+
+    &--complete {
+      width: 100%;
+    }
+  }
+
   &__step-grid {
     display: grid;
     grid-template-columns: 1rem 6fr;
