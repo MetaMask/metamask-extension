@@ -21522,7 +21522,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"hoist-non-react-statics@npm:^3.1.0, hoist-non-react-statics@npm:^3.3.0, hoist-non-react-statics@npm:^3.3.1, hoist-non-react-statics@npm:^3.3.2":
+"hoist-non-react-statics@npm:^3.0.0, hoist-non-react-statics@npm:^3.1.0, hoist-non-react-statics@npm:^3.3.0, hoist-non-react-statics@npm:^3.3.1, hoist-non-react-statics@npm:^3.3.2":
   version: 3.3.2
   resolution: "hoist-non-react-statics@npm:3.3.2"
   dependencies:
@@ -26697,6 +26697,7 @@ __metadata:
     react-dom: "npm:^16.12.0"
     react-focus-lock: "npm:^2.9.4"
     react-idle-timer: "npm:^4.2.5"
+    react-in-viewport: "npm:^1.0.0-beta.6"
     react-inspector: "npm:^6.0.2"
     react-markdown: "npm:^6.0.3"
     react-popper: "npm:^2.2.3"
@@ -30880,6 +30881,18 @@ __metadata:
     react: ^16.x.x
     react-dom: ^16.x.x
   checksum: 10/b17508e1706ec993c3f49ee10147d299c361963fb6b65073448b6e6a6857d5918e56d0b9e78f9c38c75620bf6eaa4601fdd347ac034f16fea7ed735635d39c97
+  languageName: node
+  linkType: hard
+
+"react-in-viewport@npm:^1.0.0-beta.6":
+  version: 1.0.0-beta.6
+  resolution: "react-in-viewport@npm:1.0.0-beta.6"
+  dependencies:
+    hoist-non-react-statics: "npm:^3.0.0"
+  peerDependencies:
+    react: ^16.8.3 || ^17.0.0 || ^18.0.0
+    react-dom: ^16.8.3 || ^17.0.0 || ^18.0.0
+  checksum: 10/058d251cf62e3a5a23c5f8dad77d4efd2c7221aa75cae56376ee21a688fefa1fa431e3fe1aa3b6a3e7b9fa8ff2ececa53098b6e96b4a528cef4b3a1bb242c7e6
   languageName: node
   linkType: hard
 
