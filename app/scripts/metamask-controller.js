@@ -1374,6 +1374,8 @@ export default class MetamaskController extends EventEmitter {
 
     const allowLocalSnaps = process.env.ALLOW_LOCAL_SNAPS;
     const requireAllowlist = process.env.REQUIRE_SNAPS_ALLOWLIST;
+    const rejectInvalidPlatformVersion =
+      process.env.REJECT_INVALID_SNAPS_PLATFORM_VERSION;
 
     this.snapController = new SnapController({
       environmentEndowmentPermissions: Object.values(EndowmentPermissions),
@@ -1388,6 +1390,7 @@ export default class MetamaskController extends EventEmitter {
         dappsCanUpdateSnaps: true,
         allowLocalSnaps,
         requireAllowlist,
+        rejectInvalidPlatformVersion,
       },
       encryptor: encryptorFactory(600_000),
       getMnemonic: this.getPrimaryKeyringMnemonic.bind(this),
