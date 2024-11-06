@@ -1,3 +1,13 @@
+diff --git a/lib/modules/Domains/index.d.ts b/lib/modules/Domains/index.d.ts
+index 6de3017e9b66c0e01df635b4ca062bad14edaca5..2fb6f0261b2a8d78853fe86e795d3b7378f9c86b 100644
+--- a/lib/modules/Domains/index.d.ts
++++ b/lib/modules/Domains/index.d.ts
+@@ -1,4 +1,4 @@
+-import type { DomainServiceResolution as DomainDescriptor } from "@ledgerhq/domain-service/types";
++import type { DomainServiceResolution as DomainDescriptor } from "@ledgerhq/domain-service/lib/types";
+ import type Eth from "../../Eth";
+ /**
+  * @ignore for the README
 diff --git a/lib/modules/EIP712/index.js b/lib/modules/EIP712/index.js
 index bbca23c9a596b2b300aca0f323bad277a4190def..c85cb18c3d6ff049c442d358b4d834c04a49951f 100644
 --- a/lib/modules/EIP712/index.js
@@ -11,6 +21,19 @@ index bbca23c9a596b2b300aca0f323bad277a4190def..c85cb18c3d6ff049c442d358b4d834c0
  const erc20_1 = require("../../services/ledger/erc20");
  const utils_1 = require("../../utils");
  const loadConfig_1 = require("../../services/ledger/loadConfig");
+diff --git a/lib/modules/EIP712/utils.d.ts b/lib/modules/EIP712/utils.d.ts
+index 3515eaff289cba97ac1be03695ae0d52a014bf6b..91acc157c9f2e470b11f9baf2b11f543cc417b4f 100644
+--- a/lib/modules/EIP712/utils.d.ts
++++ b/lib/modules/EIP712/utils.d.ts
+@@ -1,7 +1,7 @@
+ /// <reference types="node" />
+ import Transport from "@ledgerhq/hw-transport";
+ import { EIP712Message, EIP712MessageTypesEntry } from "@ledgerhq/types-live";
+-import { MessageFilters } from "@ledgerhq/evm-tools/message/EIP712/types";
++import { MessageFilters } from "@ledgerhq/evm-tools/lib/message/EIP712/types";
+ import { FilteringInfoShowField } from "./types";
+ /**
+  * @ignore for the README
 diff --git a/lib/modules/EIP712/utils.js b/lib/modules/EIP712/utils.js
 index 4f09ea8a24ae4f175f1a4d2d40999d36ffa2a915..1cc7de0d5ffd2b980741ad6d85a75792085c031b 100644
 --- a/lib/modules/EIP712/utils.js
@@ -38,26 +61,38 @@ index 8fdedf8037b2684ab6d48fd279a0c014b074b676..c10cea22504a4d3cd72bfac51463e566
  const asContractAddress = (addr) => {
      const a = addr.toLowerCase();
 diff --git a/lib/services/ledger/index.js b/lib/services/ledger/index.js
-index 8385537236dfc98902376b29f712e9f7b605091a..6641b951b0c7e477fe5622c724ee22b9e5272213 100644
+index 86db9973e63e1ac7c0e7f67e53ca8f05aa809805..29e1fe5ee164c5f0361a6a507df89e05e0c1b9b0 100644
 --- a/lib/services/ledger/index.js
 +++ b/lib/services/ledger/index.js
 @@ -12,7 +12,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
- // This implements the resolution of a Transaction using Ledger's own API
- const logs_1 = require("@ledgerhq/logs");
+ const transactions_1 = require("@ethersproject/transactions");
  const abi_1 = require("@ethersproject/abi");
+ const logs_1 = require("@ledgerhq/logs");
 -const index_1 = require("@ledgerhq/domain-service/signers/index");
 +const index_1 = require("@ledgerhq/domain-service/lib/signers/index");
+ const constants_1 = require("../../modules/Uniswap/constants");
  const erc20_1 = require("./erc20");
- const contracts_1 = require("./contracts");
- const nfts_1 = require("./nfts");
+ const Uniswap_1 = require("../../modules/Uniswap");
+diff --git a/lib/services/types.d.ts b/lib/services/types.d.ts
+index 98b6ff3226cafe76b672a913124b3c2c978b36a1..25ce83bda7d7619cee194dfd99c449eccc8b1f91 100644
+--- a/lib/services/types.d.ts
++++ b/lib/services/types.d.ts
+@@ -1,5 +1,5 @@
+-import { DomainServiceResolution as DomainDescriptor } from "@ledgerhq/domain-service/types";
+-import { signAddressResolution, signDomainResolution } from "@ledgerhq/domain-service/signers/index";
++import { DomainServiceResolution as DomainDescriptor } from "@ledgerhq/domain-service/lib/types";
++import { signAddressResolution, signDomainResolution } from "@ledgerhq/domain-service/lib/signers/index";
+ export type LedgerEthTransactionResolution = {
+     erc20Tokens: Array<string>;
+     nfts: Array<string>;
 diff --git a/lib/utils.js b/lib/utils.js
-index 027089bf09c047b34af79e3dea253d5335d336f3..1c5da628db47a33099532973de9ea634a1ee65df 100644
+index 6c5f58439116b2c6b5844f5e17d0eb876a436f41..f960780b4b52e31d3c5fe6710aa822c1524d8a5e 100644
 --- a/lib/utils.js
 +++ b/lib/utils.js
-@@ -2,7 +2,7 @@
- Object.defineProperty(exports, "__esModule", { value: true });
- exports.mergeResolutions = exports.nftSelectors = exports.tokenSelectors = exports.intAsHexBytes = exports.decodeTxInfo = exports.maybeHexBuffer = exports.hexBuffer = exports.splitPath = exports.padHexString = exports.ERC1155_CLEAR_SIGNED_SELECTORS = exports.ERC721_CLEAR_SIGNED_SELECTORS = exports.ERC20_CLEAR_SIGNED_SELECTORS = void 0;
+@@ -26,7 +26,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
+ exports.safeChunkTransaction = exports.getV = exports.getChainIdAsUint32 = exports.getParity = exports.mergeResolutions = exports.nftSelectors = exports.tokenSelectors = exports.intAsHexBytes = exports.maybeHexBuffer = exports.hexBuffer = exports.splitPath = exports.padHexString = exports.ERC1155_CLEAR_SIGNED_SELECTORS = exports.ERC721_CLEAR_SIGNED_SELECTORS = exports.ERC20_CLEAR_SIGNED_SELECTORS = void 0;
  const bignumber_js_1 = require("bignumber.js");
+ const rlp = __importStar(require("@ethersproject/rlp"));
 -const index_1 = require("@ledgerhq/evm-tools/selectors/index");
 +const index_1 = require("@ledgerhq/evm-tools/lib/selectors/index");
  Object.defineProperty(exports, "ERC20_CLEAR_SIGNED_SELECTORS", { enumerable: true, get: function () { return index_1.ERC20_CLEAR_SIGNED_SELECTORS; } });

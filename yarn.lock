@@ -4309,7 +4309,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@ledgerhq/evm-tools@npm:^1.3.0-nightly.2":
+"@ledgerhq/evm-tools@npm:1.3.0-spl-tokens-test.0":
   version: 1.3.0-spl-tokens-test.0
   resolution: "@ledgerhq/evm-tools@npm:1.3.0-spl-tokens-test.0"
   dependencies:
@@ -4320,6 +4320,20 @@ __metadata:
     axios: "npm:1.7.7"
     crypto-js: "npm:4.2.0"
   checksum: 10/23301ca57a285dc5103a436fc437bde0b0acf439875886f8a5d8d1386b604b7d18adfd1670d754ee34f80f87de19ec8786664e0dd40ce4d0daaf252584aaadcc
+  languageName: node
+  linkType: hard
+
+"@ledgerhq/evm-tools@patch:@ledgerhq/evm-tools@npm%3A1.3.0-spl-tokens-test.0#~/.yarn/patches/@ledgerhq-evm-tools-npm-1.3.0-spl-tokens-test.0-1d7191f4f1.patch":
+  version: 1.3.0-spl-tokens-test.0
+  resolution: "@ledgerhq/evm-tools@patch:@ledgerhq/evm-tools@npm%3A1.3.0-spl-tokens-test.0#~/.yarn/patches/@ledgerhq-evm-tools-npm-1.3.0-spl-tokens-test.0-1d7191f4f1.patch::version=1.3.0-spl-tokens-test.0&hash=7c7f17"
+  dependencies:
+    "@ethersproject/constants": "npm:^5.7.0"
+    "@ethersproject/hash": "npm:^5.7.0"
+    "@ledgerhq/cryptoassets-evm-signatures": "npm:^13.5.2-spl-tokens-test.0"
+    "@ledgerhq/live-env": "npm:^2.4.1-spl-tokens-test.0"
+    axios: "npm:1.7.7"
+    crypto-js: "npm:4.2.0"
+  checksum: 10/e4e01ad6e605d1575c1d9ace0ea07a8caa8252691312659d70aff04a9e9e3f2b0085c9f3a9fe6e9315e9f7ed961d0961ae56b7b5690bd26c3ea9903970e1a0e4
   languageName: node
   linkType: hard
 
@@ -4342,6 +4356,28 @@ __metadata:
     bignumber.js: "npm:^9.1.2"
     semver: "npm:^7.3.5"
   checksum: 10/fd9fecf44112067fb85afe1f8d0be0c54d5b18112519800b9e09ebbcbd09812f8fb1b3da492cc36778546f5c40c276331cf5f23c288c19e94c3f17fe054677f8
+  languageName: node
+  linkType: hard
+
+"@ledgerhq/hw-app-eth@patch:@ledgerhq/hw-app-eth@npm%3A6.41.0-nightly.0#~/.yarn/patches/@ledgerhq-hw-app-eth-npm-6.41.0-nightly.0-44b3720a74.patch":
+  version: 6.41.0-nightly.0
+  resolution: "@ledgerhq/hw-app-eth@patch:@ledgerhq/hw-app-eth@npm%3A6.41.0-nightly.0#~/.yarn/patches/@ledgerhq-hw-app-eth-npm-6.41.0-nightly.0-44b3720a74.patch::version=6.41.0-nightly.0&hash=33309e"
+  dependencies:
+    "@ethersproject/abi": "npm:^5.7.0"
+    "@ethersproject/rlp": "npm:^5.7.0"
+    "@ethersproject/transactions": "npm:^5.7.0"
+    "@ledgerhq/cryptoassets-evm-signatures": "npm:^13.5.2-nightly.2"
+    "@ledgerhq/domain-service": "npm:^1.2.10"
+    "@ledgerhq/errors": "npm:^6.19.1"
+    "@ledgerhq/evm-tools": "npm:^1.3.0-nightly.2"
+    "@ledgerhq/hw-transport": "npm:^6.31.4"
+    "@ledgerhq/hw-transport-mocker": "npm:^6.29.4"
+    "@ledgerhq/logs": "npm:^6.12.0"
+    "@ledgerhq/types-live": "npm:^6.52.4"
+    axios: "npm:1.7.7"
+    bignumber.js: "npm:^9.1.2"
+    semver: "npm:^7.3.5"
+  checksum: 10/db42f920db3ec159a3567726b0d11ad8adb6ffb5d83819fbe5d8b6d84e8a41f13aabb9784229c034366076640dfaaae859721c1f91cd7a202147a286968bf8d7
   languageName: node
   linkType: hard
 
