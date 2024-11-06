@@ -25,22 +25,20 @@ const HollowCircle = React.forwardRef(
     ref?: PolymorphicRef<C>,
   ) => {
     return (
-      <Box>
-        <Box
-          className={classnames(className, 'mm-icon', `mm-icon--size-${size}`)}
-          ref={ref}
-          as="span"
-          display={Display.InlineBlock}
-          color={BackgroundColor.backgroundDefault}
-          style={{
-            height: '12px',
-            width: '12px',
-            border: `1px solid var(--color-${color})`,
-            borderRadius: '50%',
-            ...style,
-          }}
-        />
-      </Box>
+      <Box
+        className={classnames(className, 'mm-icon', `mm-icon--size-${size}`)}
+        ref={ref}
+        as="span"
+        display={Display.InlineBlock}
+        style={{
+          height: '12px',
+          width: '12px',
+          border: `1px solid var(--color-${color})`,
+          borderRadius: '50%',
+          backgroundColor: `var(--color-${BackgroundColor.backgroundDefault})`,
+          ...style,
+        }}
+      />
     );
   },
 );
