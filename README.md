@@ -250,6 +250,7 @@ Whenever you change dependencies (adding, removing, or updating, either in `pack
 - [How to generate a visualization of this repository's development](./development/gource-viz.sh)
 - [How to add new confirmations](./docs/confirmations.md)
 - [Browser support guidelines](./docs/browser-support.md)
+- [Performance Tracing](./docs/performance-tracing.md)
 
 ## Dapp Developer Resources
 
