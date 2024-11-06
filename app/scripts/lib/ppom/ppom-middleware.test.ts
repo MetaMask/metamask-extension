@@ -158,8 +158,12 @@ describe('PPOMMiddleware', () => {
     );
   });
 
-  it('adds loading response to confirmation requests while validation is in progress', async () => {
-    const middlewareFunction = createMiddleware();
+  it('adds checking chain response to confirmation requests while validation is in progress', async () => {
+    const updateSecurityAlertResponse = jest.fn();
+
+    const middlewareFunction = createMiddleware({
+      updateSecurityAlertResponse,
+    });
 
     const req: PPOMMiddlewareRequest<(string | { to: string })[]> = {
       ...REQUEST_MOCK,
@@ -173,9 +177,11 @@ describe('PPOMMiddleware', () => {
       () => undefined,
     );
 
-    expect(req.securityAlertResponse?.reason).toBe(BlockaidReason.inProgress);
+    expect(req.securityAlertResponse?.reason).toBe(
+      BlockaidReason.checkingChain,
+    );
     expect(req.securityAlertResponse?.result_type).toBe(
-      BlockaidResultType.Loading,
+      BlockaidResultType.Benign,
     );
   });
 
