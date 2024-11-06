@@ -39,6 +39,7 @@ export type BridgeControllerState = {
   quotes: QuoteResponse[];
   quotesLastFetched?: number;
   quotesLoadingStatus?: RequestStatus;
+  quotesRefreshCount: number;
 };
 
 export enum BridgeUserAction {

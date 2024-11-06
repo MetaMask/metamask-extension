@@ -109,6 +109,7 @@ export default class BridgeController extends StaticIntervalPollingController<
         quotesLastFetched: DEFAULT_BRIDGE_CONTROLLER_STATE.quotesLastFetched,
         quotesLoadingStatus:
           DEFAULT_BRIDGE_CONTROLLER_STATE.quotesLoadingStatus,
+        quotesRefreshCount: DEFAULT_BRIDGE_CONTROLLER_STATE.quotesRefreshCount,
       };
     });
 
@@ -195,18 +196,31 @@ export default class BridgeController extends StaticIntervalPollingController<
         quoteRequest: request,
       };
     });
+    const { maxRefreshCount } =
+      bridgeState.bridgeFeatureFlags[BridgeFeatureFlagsKey.EXTENSION_CONFIG];
+    const newQuotesRefreshCount = bridgeState.quotesRefreshCount + 1;
 
     try {
       const quotes = await fetchBridgeQuotes(
         request,
         this.#abortController.signal,
       );
+
+      // Stop polling if the maximum number of refreshes has been reached
+      if (
+        (request.insufficientBal && newQuotesRefreshCount >= 1) ||
+        (!request.insufficientBal && newQuotesRefreshCount >= maxRefreshCount)
+      ) {
+        this.stopAllPolling();
+      }
+
       this.update((_state) => {
         _state.bridgeState = {
           ..._state.bridgeState,
           quotes,
           quotesLastFetched: Date.now(),
           quotesLoadingStatus: RequestStatus.FETCHED,
+          quotesRefreshCount: newQuotesRefreshCount,
         };
       });
     } catch (error) {
@@ -220,6 +234,7 @@ export default class BridgeController extends StaticIntervalPollingController<
         _state.bridgeState = {
           ...bridgeState,
           quotesLoadingStatus: RequestStatus.ERROR,
+          quotesRefreshCount: newQuotesRefreshCount,
         };
       });
       console.log('Failed to fetch bridge quotes', error);

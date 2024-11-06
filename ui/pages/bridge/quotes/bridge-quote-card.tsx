@@ -20,7 +20,7 @@ import { BridgeQuotesModal } from './bridge-quotes-modal';
 export const BridgeQuoteCard = () => {
   const t = useI18nContext();
   const recommendedQuote = useSelector(getRecommendedQuote);
-  const { isLoading } = useSelector(getBridgeQuotes);
+  const { isLoading, isQuoteGoingToRefresh } = useSelector(getBridgeQuotes);
 
   const { etaInMinutes, totalFees, quoteRate } =
     getQuoteDisplayData(recommendedQuote);
@@ -44,7 +44,7 @@ export const BridgeQuoteCard = () => {
         onClose={() => setShowAllQuotes(false)}
       />
       <Box className="bridge-box quote-card__timer">
-        {!isLoading && (
+        {!isLoading && isQuoteGoingToRefresh && (
           <Text>{t('swapNewQuoteIn', [secondsUntilNextRefresh])}</Text>
         )}
       </Box>
