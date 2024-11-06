@@ -1,6 +1,7 @@
 import React, { useEffect, useRef } from 'react';
 import { Hex } from '@metamask/utils';
 import { useSelector } from 'react-redux';
+import { BigNumber } from 'bignumber.js';
 import { SwapsTokenObject } from '../../../../shared/constants/swaps';
 import {
   Text,
@@ -58,6 +59,7 @@ import {
 } from '../../../helpers/constants/design-system';
 import { getProviderConfig } from '../../../ducks/metamask/metamask';
 import { BridgeToken } from '../types';
+import { BRIDGE_MIN_FIAT_SRC_AMOUNT } from '../../../../shared/constants/bridge';
 
 const generateAssetFromToken = (
   chainId: Hex,
@@ -111,7 +113,8 @@ export const BridgeInputGroup = ({
   const { isLoading, activeQuote } = useSelector(getBridgeQuotes);
   const currency = useSelector(getCurrentCurrency);
   const fromAmountInFiat = useSelector(getFromAmountInFiat);
-  const { isInsufficientBalance } = useSelector(getValidationErrors);
+  const { isInsufficientBalance, isSrcAmountTooLow } =
+    useSelector(getValidationErrors);
 
   const providerConfig = useSelector(getProviderConfig);
   const isToField = networkProps?.network?.chainId !== providerConfig?.chainId;
@@ -273,30 +276,43 @@ export const BridgeInputGroup = ({
           </Text>
         </Column>
       </Row>
-      <Row justifyContent={JustifyContent.flexStart} gap={2}>
-        <Text
-          variant={TextVariant.bodySm}
-          color={
-            !isToField && isInsufficientBalance(normalizedBalance)
-              ? TextColor.errorDefault
-              : TextColor.textAlternative
-          }
-          style={{ height: 20 }}
-        >
-          {isToField && token && 'aggregators' in token
-            ? t('confirmedBySources', [token.aggregators.length, 'Avascan'])
-            : undefined}
-          {!isToField && formattedBalance
-            ? t('available', [formattedBalance, token?.symbol])
-            : undefined}
-        </Text>
-        {onMaxButtonClick && formattedBalance && (
-          <ButtonLink
-            variant={TextVariant.bodySmMedium}
-            onClick={() => onMaxButtonClick(formattedBalance)}
+      <Row>
+        <Row justifyContent={JustifyContent.flexStart} gap={2}>
+          <Text
+            variant={TextVariant.bodySm}
+            color={
+              !isToField && isInsufficientBalance(normalizedBalance)
+                ? TextColor.errorDefault
+                : TextColor.textAlternative
+            }
+            style={{ height: 20 }}
           >
-            {t('max')}
-          </ButtonLink>
+            {isToField && token && 'aggregators' in token
+              ? t('confirmedBySources', [token.aggregators.length, 'Avascan'])
+              : undefined}
+            {!isToField && formattedBalance
+              ? t('available', [formattedBalance, token?.symbol])
+              : undefined}
+          </Text>
+          {onMaxButtonClick && formattedBalance && (
+            <ButtonLink
+              variant={TextVariant.bodySmMedium}
+              onClick={() => onMaxButtonClick(formattedBalance)}
+            >
+              {t('max')}
+            </ButtonLink>
+          )}
+        </Row>
+        {!isToField && isSrcAmountTooLow && (
+          <Text variant={TextVariant.bodySm} color={TextColor.errorDefault}>
+            {t('minimumAmountError', [
+              formatFiatAmount(
+                new BigNumber(BRIDGE_MIN_FIAT_SRC_AMOUNT),
+                currency,
+                0,
+              ),
+            ])}
+          </Text>
         )}
       </Row>
     </Column>
