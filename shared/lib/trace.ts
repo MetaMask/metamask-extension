@@ -33,6 +33,9 @@ export enum TraceName {
   UIStartup = 'UI Startup',
 }
 
+export enum TraceOperation {
+}
+
 const log = createModuleLogger(sentryLogger, 'trace');
 
 const ID_DEFAULT = 'default';
@@ -96,6 +99,11 @@ export type TraceRequest = {
    * Custom tags to associate with the trace.
    */
   tags?: Record<string, number | string | boolean>;
+
+  /**
+   * Custom operation name to associate with the trace.
+   */
+  op?: TraceOperation | typeof OP_DEFAULT;
 };
 
 /**
@@ -251,7 +259,7 @@ function startSpan<T>(
   const spanOptions: StartSpanOptions = {
     attributes,
     name,
-    op: OP_DEFAULT,
+    op: request.op ?? OP_DEFAULT,
     parentSpan,
     startTime,
   };
