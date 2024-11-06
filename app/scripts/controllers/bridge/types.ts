@@ -33,6 +33,7 @@ export type BridgeControllerState = {
   bridgeFeatureFlags: BridgeFeatureFlags;
   srcTokens: Record<string, SwapsTokenObject>;
   srcTopAssets: { address: string }[];
+  srcTokensLoadingStatus?: RequestStatus;
   destTokens: Record<string, SwapsTokenObject>;
   destTopAssets: { address: string }[];
   quoteRequest: Partial<QuoteRequest>;

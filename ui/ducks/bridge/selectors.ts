@@ -139,13 +139,23 @@ export const getBridgeGasMultipliers = (state: BridgeAppState) => {
   );
 };
 
-export const getFromTokens = (state: BridgeAppState) => {
-  return state.metamask.bridgeState.srcTokens ?? {};
-};
+export const getFromTokens = createDeepEqualSelector(
+  (state: BridgeAppState) => state.metamask.bridgeState.srcTokens,
+  (state: BridgeAppState) => state.metamask.bridgeState.srcTopAssets,
+  (state: BridgeAppState) =>
+    state.metamask.bridgeState.srcTokensLoadingStatus === RequestStatus.LOADING,
+  (fromTokens, fromTopAssets, isLoading) => {
+    return {
+      isLoading,
+      fromTokens: fromTokens ?? {},
+      fromTopAssets: fromTopAssets ?? [],
+    };
+  },
+);
 
-export const getFromTopAssets = (state: BridgeAppState) => {
-  return state.metamask.bridgeState.srcTopAssets ?? [];
-};
+// export const getFromTopAssets = (state: BridgeAppState) => {
+//   return state.metamask.bridgeState.srcTopAssets ?? [];
+// };
 
 export const getToTopAssets = (state: BridgeAppState) => {
   return state.bridge.toChainId ? state.metamask.bridgeState.destTopAssets : [];

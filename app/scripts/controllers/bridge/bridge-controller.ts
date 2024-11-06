@@ -174,8 +174,22 @@ export default class BridgeController extends StaticIntervalPollingController<
   };
 
   selectSrcNetwork = async (chainId: Hex) => {
+    // const { bridgeState } = this.state;
+    this.update((_state) => {
+      _state.bridgeState = {
+        ..._state.bridgeState,
+        srcTokensLoadingStatus: RequestStatus.LOADING,
+      };
+    });
     await this.#setTopAssets(chainId, 'srcTopAssets');
     await this.#setTokens(chainId, 'srcTokens');
+    // const { bridgeState } = this.state;
+    this.update((_state) => {
+      _state.bridgeState = {
+        ..._state.bridgeState,
+        srcTokensLoadingStatus: RequestStatus.FETCHED,
+      };
+    });
   };
 
   selectDestNetwork = async (chainId: Hex) => {
