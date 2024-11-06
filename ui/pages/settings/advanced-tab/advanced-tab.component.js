@@ -44,9 +44,10 @@ export default class AdvancedTab extends PureComponent {
     setUseNonceField: PropTypes.func,
     useNonceField: PropTypes.bool,
     setHexDataFeatureFlag: PropTypes.func,
-    displayWarning: PropTypes.func,
+    displayErrorInSettings: PropTypes.func,
+    hideErrorInSettings: PropTypes.func,
     showResetAccountConfirmationModal: PropTypes.func,
-    warning: PropTypes.string,
+    errorInSettings: PropTypes.string,
     sendHexData: PropTypes.bool,
     showFiatInTestnets: PropTypes.bool,
     showTestNetworks: PropTypes.bool,
@@ -86,7 +87,9 @@ export default class AdvancedTab extends PureComponent {
 
   componentDidMount() {
     const { t } = this.context;
+    const { hideErrorInSettings } = this.props;
     handleSettingsRefs(t, t('advanced'), this.settingsRefs);
+    hideErrorInSettings();
   }
 
   async getTextFromFile(file) {
@@ -118,7 +121,7 @@ export default class AdvancedTab extends PureComponent {
 
   renderStateLogs() {
     const { t } = this.context;
-    const { displayWarning } = this.props;
+    const { displayErrorInSettings } = this.props;
 
     return (
       <Box
@@ -139,16 +142,21 @@ export default class AdvancedTab extends PureComponent {
             <Button
               type="secondary"
               large
+              data-testid="advanced-setting-state-logs-button"
               onClick={() => {
-                window.logStateString((err, result) => {
+                window.logStateString(async (err, result) => {
                   if (err) {
-                    displayWarning(t('stateLogError'));
+                    displayErrorInSettings(t('stateLogError'));
                   } else {
-                    exportAsFile(
-                      `${t('stateLogFileName')}.json`,
-                      result,
-                      ExportableContentType.JSON,
-                    );
+                    try {
+                      await exportAsFile(
+                        `${t('stateLogFileName')}.json`,
+                        result,
+                        ExportableContentType.JSON,
+                      );
+                    } catch (error) {
+                      displayErrorInSettings(error.message);
+                    }
                   }
                 });
               }}
@@ -618,11 +626,13 @@ export default class AdvancedTab extends PureComponent {
   }
 
   render() {
-    const { warning } = this.props;
+    const { errorInSettings } = this.props;
     // When adding/removing/editing the order of renders, double-check the order of the settingsRefs. This affects settings-search.js
     return (
       <div className="settings-page__body">
-        {warning ? <div className="settings-tab__error">{warning}</div> : null}
+        {errorInSettings ? (
+          <div className="settings-tab__error">{errorInSettings}</div>
+        ) : null}
         {this.renderStateLogs()}
         {this.renderResetAccount()}
         {this.renderToggleStxOptIn()}

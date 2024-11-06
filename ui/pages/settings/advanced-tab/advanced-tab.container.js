@@ -5,7 +5,6 @@ import { DEFAULT_AUTO_LOCK_TIME_LIMIT } from '../../../../shared/constants/prefe
 import { getPreferences } from '../../../selectors';
 import {
   backupUserData,
-  displayWarning,
   setAutoLockTimeLimit,
   setDismissSeedBackUpReminder,
   setOverrideContentSecurityPolicyHeader,
@@ -18,11 +17,15 @@ import {
   showModal,
 } from '../../../store/actions';
 import { getSmartTransactionsPreferenceEnabled } from '../../../../shared/modules/selectors';
+import {
+  displayErrorInSettings,
+  hideErrorInSettings,
+} from '../../../ducks/app/app';
 import AdvancedTab from './advanced-tab.component';
 
 export const mapStateToProps = (state) => {
   const {
-    appState: { warning },
+    appState: { errorInSettings },
     metamask,
   } = state;
   const {
@@ -39,7 +42,7 @@ export const mapStateToProps = (state) => {
   } = getPreferences(state);
 
   return {
-    warning,
+    errorInSettings,
     sendHexData,
     showFiatInTestnets,
     showTestNetworks,
@@ -57,7 +60,9 @@ export const mapDispatchToProps = (dispatch) => {
     backupUserData: () => backupUserData(),
     setHexDataFeatureFlag: (shouldShow) =>
       dispatch(setFeatureFlag('sendHexData', shouldShow)),
-    displayWarning: (warning) => dispatch(displayWarning(warning)),
+    displayErrorInSettings: (errorInSettings) =>
+      dispatch(displayErrorInSettings(errorInSettings)),
+    hideErrorInSettings: () => dispatch(hideErrorInSettings()),
     showResetAccountConfirmationModal: () =>
       dispatch(showModal({ name: 'CONFIRM_RESET_ACCOUNT' })),
     setUseNonceField: (value) => dispatch(setUseNonceField(value)),

@@ -1,6 +1,7 @@
 import { TransactionMeta } from '@metamask/transaction-controller';
 import React from 'react';
 import { useSelector } from 'react-redux';
+import { TEST_CHAINS } from '../../../../../../../../shared/constants/network';
 import {
   AvatarToken,
   AvatarTokenSize,
@@ -20,6 +21,7 @@ import {
 } from '../../../../../../../helpers/constants/design-system';
 import { MIN_AMOUNT } from '../../../../../../../hooks/useCurrencyDisplay';
 import { useI18nContext } from '../../../../../../../hooks/useI18nContext';
+import { getPreferences } from '../../../../../../../selectors';
 import { useConfirmContext } from '../../../../../context/confirm';
 import { formatAmountMaxPrecision } from '../../../../simulation-details/formatAmount';
 import { useTokenValues } from '../../hooks/use-token-values';
@@ -38,6 +40,12 @@ const SendHeading = () => {
     fiatDisplayValue,
     pending,
   } = useTokenValues(transactionMeta);
+
+  type TestNetChainId = (typeof TEST_CHAINS)[number];
+  const isTestnet = TEST_CHAINS.includes(
+    transactionMeta.chainId as TestNetChainId,
+  );
+  const { showFiatInTestnets } = useSelector(getPreferences);
 
   const TokenImage = (
     <AvatarToken
@@ -75,11 +83,12 @@ const SendHeading = () => {
       >{`${displayTransferValue} ${tokenSymbol}`}</Text>
     );
 
-  const TokenFiatValue = fiatDisplayValue && (
-    <Text variant={TextVariant.bodyMd} color={TextColor.textAlternative}>
-      {fiatDisplayValue}
-    </Text>
-  );
+  const TokenFiatValue = Boolean(fiatDisplayValue) &&
+    (!isTestnet || showFiatInTestnets) && (
+      <Text variant={TextVariant.bodyMd} color={TextColor.textAlternative}>
+        {fiatDisplayValue}
+      </Text>
+    );
 
   if (pending) {
     return <ConfirmLoader />;
