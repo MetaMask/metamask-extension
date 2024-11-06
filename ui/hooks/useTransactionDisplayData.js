@@ -370,6 +370,7 @@ export function useTransactionDisplayData(transactionGroup) {
     primarySuffix = primaryTransaction.sourceTokenSymbol; // TODO this will be undefined right now
   } else if (type === TransactionType.bridge) {
     title = t('bridge');
+    category = TransactionGroupCategory.bridge;
   } else {
     dispatch(
       captureSingleException(
