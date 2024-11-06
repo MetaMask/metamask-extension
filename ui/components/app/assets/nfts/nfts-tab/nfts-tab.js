@@ -103,12 +103,15 @@ export default function NftsTab() {
   }, [nftsLoading, showNftBanner]);
 
   useEffect(() => {
+    if (nftsLoading) {
+      return;
+    }
     if (nftsStillFetchingIndication) {
       endTrace({ name: TraceName.AccountOverviewNftsTabFMP });
     } else {
       endTrace({ name: TraceName.AccountOverviewNftsTab });
     }
-  }, [nftsStillFetchingIndication]);
+  }, [nftsLoading, nftsStillFetchingIndication]);
 
   if (!hasAnyNfts && nftsStillFetchingIndication) {
     return (
