@@ -20,7 +20,7 @@ const VerticalLine = ({ color }: { color: IconColor }) => (
       marginBottom: '-1rem',
       width: '1px',
       backgroundColor: `var(--color-${color})`,
-      zIndex: 1,
+      zIndex: 0.1,
     }}
   />
 );
