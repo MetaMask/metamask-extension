@@ -70,7 +70,7 @@ export default function StepProgressBarItem({
         />
       )}
 
-      {/* Blank div to take up space to make sure everythign */}
+      {/* Blank div to take up space to make sure everything is aligned */}
       {!isLastItem && <div />}
     </>
   );
