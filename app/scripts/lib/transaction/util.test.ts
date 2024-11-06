@@ -425,8 +425,8 @@ describe('Transaction Utils', () => {
         ).toHaveBeenCalledWith(TRANSACTION_PARAMS_MOCK, {
           ...TRANSACTION_OPTIONS_MOCK,
           securityAlertResponse: {
-            reason: BlockaidReason.inProgress,
-            result_type: BlockaidResultType.Loading,
+            reason: BlockaidReason.checkingChain,
+            result_type: BlockaidResultType.Benign,
             securityAlertId: SECURITY_ALERT_ID_MOCK,
           },
         });
@@ -499,29 +499,6 @@ describe('Transaction Utils', () => {
           request.transactionController.addTransaction,
         ).toHaveBeenCalledWith(
           sendRequest.transactionParams,
-          TRANSACTION_OPTIONS_MOCK,
-        );
-
-        expect(validateRequestWithPPOMMock).toHaveBeenCalledTimes(0);
-      });
-
-      it('unless chain is not supported', async () => {
-        isChainSupportedMock.mockResolvedValue(false);
-
-        await addTransaction({
-          ...request,
-          securityAlertsEnabled: true,
-          chainId: '0xF',
-        });
-
-        expect(
-          request.transactionController.addTransaction,
-        ).toHaveBeenCalledTimes(1);
-
-        expect(
-          request.transactionController.addTransaction,
-        ).toHaveBeenCalledWith(
-          TRANSACTION_PARAMS_MOCK,
           TRANSACTION_OPTIONS_MOCK,
         );
 

@@ -70,7 +70,6 @@ export enum BlockaidResultType {
   // MetaMask defined result types
   NotApplicable = 'NotApplicable',
   Loading = 'loading',
-  CheckingChain = 'CheckingChain',
 }
 
 /**

@@ -34,6 +34,8 @@ type AssertSignatureMetricsOptions = {
   location?: string;
   expectedProps?: Record<string, unknown>;
   withAnonEvents?: boolean;
+  securityAlertReason?: string;
+  securityAlertResponse?: string;
 };
 
 type SignatureEventProperty = {
@@ -62,11 +64,15 @@ const signatureAnonProperties = {
  * @param signatureType
  * @param primaryType
  * @param uiCustomizations
+ * @param securityAlertReason
+ * @param securityAlertResponse
  */
 function getSignatureEventProperty(
   signatureType: string,
   primaryType: string,
   uiCustomizations: string[],
+  securityAlertReason: string = BlockaidReason.checkingChain,
+  securityAlertResponse: string = BlockaidResultType.Benign,
 ): SignatureEventProperty {
   const signatureEventProperty: SignatureEventProperty = {
     account_type: 'MetaMask',
@@ -75,8 +81,8 @@ function getSignatureEventProperty(
     chain_id: '0x539',
     environment_type: 'background',
     locale: 'en',
-    security_alert_reason: BlockaidReason.checkingChain,
-    security_alert_response: BlockaidResultType.Benign,
+    security_alert_reason: securityAlertReason,
+    security_alert_response: securityAlertResponse,
     ui_customizations: uiCustomizations,
   };
 
@@ -114,12 +120,16 @@ export async function assertSignatureConfirmedMetrics({
   primaryType = '',
   uiCustomizations = ['redesigned_confirmation'],
   withAnonEvents = false,
+  securityAlertReason,
+  securityAlertResponse,
 }: AssertSignatureMetricsOptions) {
   const events = await getEventPayloads(driver, mockedEndpoints);
   const signatureEventProperty = getSignatureEventProperty(
     signatureType,
     primaryType,
     uiCustomizations,
+    securityAlertReason,
+    securityAlertResponse,
   );
 
   assertSignatureRequestedMetrics(
@@ -151,12 +161,16 @@ export async function assertSignatureRejectedMetrics({
   location,
   expectedProps = {},
   withAnonEvents = false,
+  securityAlertReason,
+  securityAlertResponse,
 }: AssertSignatureMetricsOptions) {
   const events = await getEventPayloads(driver, mockedEndpoints);
   const signatureEventProperty = getSignatureEventProperty(
     signatureType,
     primaryType,
     uiCustomizations,
+    securityAlertReason,
+    securityAlertResponse,
   );
 
   assertSignatureRequestedMetrics(
