@@ -1620,9 +1620,6 @@
   "editSpeedUpEditGasFeeModalTitle": {
     "message": "Изменить плату за газ за ускорение"
   },
-  "enable": {
-    "message": "Включить"
-  },
   "enableAutoDetect": {
     "message": " Включить автоопределение"
   },
@@ -4636,25 +4633,6 @@
   },
   "smartTransactions": {
     "message": "Умные транзакции"
-  },
-  "smartTransactionsBenefit1": {
-    "message": "Коэффициент успеха 99,5%"
-  },
-  "smartTransactionsBenefit2": {
-    "message": "Экономит вам деньги"
-  },
-  "smartTransactionsBenefit3": {
-    "message": "Обновления в реальном времени"
-  },
-  "smartTransactionsDescription": {
-    "message": "Откройте для себя более высокие коэффициенты успеха, передовую защиту и лучшую прозрачность с помощью умных транзакций."
-  },
-  "smartTransactionsDescription2": {
-    "message": "Доступно только на Ethereum. Включайте или отключайте в любое время в настройках. $1",
-    "description": "$1 is an external link to learn more about Smart Transactions"
-  },
-  "smartTransactionsOptItModalTitle": {
-    "message": "Улучшенная защита транзакций"
   },
   "snapAccountCreated": {
     "message": "Счет создан"

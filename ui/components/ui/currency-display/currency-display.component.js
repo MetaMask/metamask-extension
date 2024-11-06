@@ -35,6 +35,7 @@ export default function CurrencyDisplay({
   textProps = {},
   suffixProps = {},
   isAggregatedFiatOverviewBalance = false,
+  privacyModeExempt,
   ...props
 }) {
   const { privacyMode } = useSelector(getPreferences);
@@ -76,7 +77,7 @@ export default function CurrencyDisplay({
         className="currency-display-component__text"
         ellipsis
         variant={TextVariant.inherit}
-        isHidden={privacyMode}
+        isHidden={!privacyModeExempt && privacyMode}
         data-testid="account-value-and-suffix"
         {...textProps}
       >
@@ -125,6 +126,7 @@ const CurrencyDisplayPropTypes = {
   textProps: PropTypes.object,
   suffixProps: PropTypes.object,
   isAggregatedFiatOverviewBalance: PropTypes.bool,
+  privacyModeExempt: PropTypes.bool,
 };
 
 CurrencyDisplay.propTypes = CurrencyDisplayPropTypes;
