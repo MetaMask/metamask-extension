@@ -148,7 +148,7 @@ class AccountListPage {
   }
 
   /**
-   * Adds a new account with a custom label.
+   * Import a new account with a private key.
    *
    * @param privateKey - Private key of the account
    * @param expectedErrorMessage - Expected error message if the import should fail
@@ -227,7 +227,7 @@ class AccountListPage {
   }
 
   /**
-   * Open the account details modal for the specified account.
+   * Open the account details modal for the specified account in account list.
    *
    * @param accountLabel - The label of the account to open the details modal for.
    */

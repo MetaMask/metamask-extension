@@ -50,6 +50,15 @@ class SendTokenPage {
     console.log('Send token screen is loaded');
   }
 
+  async clickAssetPickerButton() {
+    await this.driver.clickElement(this.assetPickerButton);
+  }
+
+  async clickSecondTokenListButton() {
+    const elements = await this.driver.findElements(this.tokenListButton);
+    await elements[1].click();
+  }
+
   async fillAmount(amount: string): Promise<void> {
     console.log(`Fill amount input with ${amount} on send token screen`);
     const inputAmount = await this.driver.waitForSelector(this.inputAmount);
@@ -69,6 +78,11 @@ class SendTokenPage {
     await this.driver.pasteIntoField(this.inputNFTAmount, amount);
   }
 
+  /**
+   * Fill recipient address input on send token screen.
+   *
+   * @param recipientAddress - The recipient address to fill in the input field.
+   */
   async fillRecipient(recipientAddress: string): Promise<void> {
     console.log(
       `Fill recipient input with ${recipientAddress} on send token screen`,
@@ -80,6 +94,11 @@ class SendTokenPage {
     await this.driver.clickElement(this.continueButton);
   }
 
+  /**
+   * Select recipient account on send token screen.
+   *
+   * @param recipientAccount - The recipient account to select.
+   */
   async selectRecipientAccount(recipientAccount: string): Promise<void> {
     await this.driver.clickElement({
       text: recipientAccount,
@@ -87,10 +106,13 @@ class SendTokenPage {
     });
   }
 
-  async click_assetPickerButton() {
-    await this.driver.clickElement(this.assetPickerButton);
-  }
-
+  /**
+   * Verifies that an address resolved via ENS can be selected as the recipient on the send token screen.
+   *
+   * @param ensDomain - The ENS domain name expected to resolve to the given address.
+   * @param address - The Ethereum address to which the ENS domain is expected to resolve.
+   * @returns A promise that resolves if the ENS domain can be successfully used as a recipient address on the send token screen.
+   */
   async check_ensAddressAsRecipient(
     ensDomain: string,
     address: string,
@@ -110,6 +132,13 @@ class SendTokenPage {
     );
   }
 
+  /**
+   * Verifies that an ENS domain correctly resolves to the specified Ethereum address on the send token screen.
+   *
+   * @param ensDomain - The ENS domain name expected to resolve (e.g., "test.eth").
+   * @param address - The Ethereum address to which the ENS domain is expected to resolve.
+   * @returns A promise that resolves if the ENS domain successfully resolves to the specified address on send token screen.
+   */
   async check_ensAddressResolution(
     ensDomain: string,
     address: string,
@@ -125,11 +154,6 @@ class SendTokenPage {
     await this.driver.waitForSelector({
       text: address,
     });
-  }
-
-  async click_secondTokenListButton() {
-    const elements = await this.driver.findElements(this.tokenListButton);
-    await elements[1].click();
   }
 }
 

@@ -144,8 +144,8 @@ async function createWalletInitiatedTransactionAndAssertDetails(
   await sendToPage.fillRecipient('0x2f318C334780961FB129D2a6c30D0763d9a5C970');
   await sendToPage.fillAmount('1');
 
-  await sendToPage.click_assetPickerButton();
-  await sendToPage.click_secondTokenListButton();
+  await sendToPage.clickAssetPickerButton();
+  await sendToPage.clickSecondTokenListButton();
   await sendToPage.goToNextScreen();
 
   const tokenTransferTransactionConfirmation =
