@@ -1,6 +1,7 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
 import classnames from 'classnames';
+import { NetworkConfiguration } from '@metamask/network-controller';
 import { getCurrentChainId } from '../../../../../shared/modules/selectors/networks';
 import {
   getCurrentCurrency,
@@ -33,6 +34,7 @@ type AssetListProps = {
   isTokenDisabled?: (
     token: AssetWithDisplayData<ERC20Asset> | AssetWithDisplayData<NativeAsset>,
   ) => boolean;
+  network?: NetworkConfiguration;
 };
 
 export default function AssetList({
@@ -40,6 +42,7 @@ export default function AssetList({
   asset,
   tokenList,
   isTokenDisabled,
+  network,
 }: AssetListProps) {
   const selectedToken = asset?.address;
 
@@ -47,6 +50,9 @@ export default function AssetList({
   const nativeCurrency = useSelector(getNativeCurrency);
   const balanceValue = useSelector(getSelectedAccountCachedBalance);
   const currentCurrency = useSelector(getCurrentCurrency);
+
+  const isSelectedNetworkActive =
+    !network?.chainId || chainId === network?.chainId;
 
   const [primaryCurrencyValue] = useCurrencyDisplay(balanceValue, {
     currency: currentCurrency,
@@ -106,9 +112,15 @@ export default function AssetList({
                   <TokenListItem
                     chainId={chainId}
                     title={token.symbol}
-                    primary={primaryCurrencyValue}
+                    primary={
+                      isSelectedNetworkActive ? primaryCurrencyValue : undefined
+                    }
                     tokenSymbol={token.symbol}
-                    secondary={secondaryCurrencyValue}
+                    secondary={
+                      isSelectedNetworkActive
+                        ? secondaryCurrencyValue
+                        : undefined
+                    }
                     tokenImage={token.image}
                     isPrimaryTokenSymbolHidden
                   />
