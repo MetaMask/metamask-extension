@@ -1620,9 +1620,6 @@
   "editSpeedUpEditGasFeeModalTitle": {
     "message": "Edit biaya gas percepatan"
   },
-  "enable": {
-    "message": "Aktifkan"
-  },
   "enableAutoDetect": {
     "message": " Aktifkan deteksi otomatis"
   },
@@ -4636,25 +4633,6 @@
   },
   "smartTransactions": {
     "message": "Transaksi Pintar"
-  },
-  "smartTransactionsBenefit1": {
-    "message": "Tingkat keberhasilan 99,5%"
-  },
-  "smartTransactionsBenefit2": {
-    "message": "Menghemat uang Anda"
-  },
-  "smartTransactionsBenefit3": {
-    "message": "Pembaruan waktu nyata"
-  },
-  "smartTransactionsDescription": {
-    "message": "Raih tingkat keberhasilan yang lebih tinggi, perlindungan frontrunning, dan visibilitas yang lebih baik dengan Transaksi Pintar."
-  },
-  "smartTransactionsDescription2": {
-    "message": "Hanya tersedia di Ethereum. Aktifkan atau nonaktifkan kapan saja di pengaturan. $1",
-    "description": "$1 is an external link to learn more about Smart Transactions"
-  },
-  "smartTransactionsOptItModalTitle": {
-    "message": "Peningkatan Perlindungan Transaksi"
   },
   "snapAccountCreated": {
     "message": "Akun dibuat"

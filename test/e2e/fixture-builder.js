@@ -77,7 +77,7 @@ function onboardingFixture() {
           showFiatInTestnets: false,
           privacyMode: false,
           showTestNetworks: false,
-          smartTransactionsOptInStatus: false,
+          smartTransactionsOptInStatus: true,
           showNativeTokenAsMainBalance: true,
           petnamesEnabled: true,
           showMultiRpcModal: false,
@@ -124,7 +124,7 @@ function onboardingFixture() {
           [ETHERSCAN_SUPPORTED_CHAIN_IDS.GNOSIS]: true,
         },
         showTestNetworks: false,
-        smartTransactionsOptInStatus: false,
+        smartTransactionsOptInStatus: true,
       },
       QueuedRequestController: {
         queuedRequestCount: 0,

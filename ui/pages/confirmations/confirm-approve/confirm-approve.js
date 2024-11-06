@@ -66,7 +66,7 @@ export default function ConfirmApprove({
   isSetApproveForAll,
 }) {
   const dispatch = useDispatch();
-  const { txParams: { data: transactionData } = {} } = transaction;
+  const { txParams: { data: transactionData, from } = {} } = transaction;
 
   const currentCurrency = useSelector(getCurrentCurrency);
   const nativeCurrency = useSelector(getNativeCurrency);
@@ -266,7 +266,7 @@ export default function ConfirmApprove({
               updateCustomNonce={(value) => {
                 dispatch(updateCustomNonce(value));
               }}
-              getNextNonce={() => dispatch(getNextNonce())}
+              getNextNonce={() => dispatch(getNextNonce(from))}
               showCustomizeNonceModal={({
                 /* eslint-disable no-shadow */
                 useNonceField,
