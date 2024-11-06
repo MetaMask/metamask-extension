@@ -1620,9 +1620,6 @@
   "editSpeedUpEditGasFeeModalTitle": {
     "message": "Chỉnh sửa phí gas tăng tốc"
   },
-  "enable": {
-    "message": "Bật"
-  },
   "enableAutoDetect": {
     "message": " Bật tự động phát hiện"
   },
@@ -4636,25 +4633,6 @@
   },
   "smartTransactions": {
     "message": "Giao dịch thông minh"
-  },
-  "smartTransactionsBenefit1": {
-    "message": "Tỷ lệ thành công 99,5%"
-  },
-  "smartTransactionsBenefit2": {
-    "message": "Tiết kiệm tiền của bạn"
-  },
-  "smartTransactionsBenefit3": {
-    "message": "Cập nhật theo thời gian thực"
-  },
-  "smartTransactionsDescription": {
-    "message": "Đạt tỷ lệ thành công cao hơn, bảo vệ chống hành vi lợi dụng thông tin biết trước và khả năng hiển thị tốt hơn với Giao dịch thông minh."
-  },
-  "smartTransactionsDescription2": {
-    "message": "Chỉ có sẵn trên Ethereum. Có thể bật/tắt bất cứ lúc nào trong phần Cài đặt. $1",
-    "description": "$1 is an external link to learn more about Smart Transactions"
-  },
-  "smartTransactionsOptItModalTitle": {
-    "message": "Tăng cường bảo vệ giao dịch"
   },
   "snapAccountCreated": {
     "message": "Tài khoản đã được tạo"
