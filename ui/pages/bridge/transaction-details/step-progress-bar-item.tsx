@@ -1,12 +1,14 @@
 import React from 'react';
 import { StatusTypes } from '../../../../app/scripts/controllers/bridge-status/types';
 import {
+  Box,
   Icon,
   IconName,
   IconSize,
 } from '../../../components/component-library';
-import { Color, IconColor } from '../../../helpers/constants/design-system';
+import { IconColor } from '../../../helpers/constants/design-system';
 import HollowCircle from './hollow-circle';
+import PulsingCircle from './pulsing-circle';
 
 const ICON_SIZE = IconSize.Xs;
 
@@ -14,8 +16,8 @@ const VerticalLine = ({ color }: { color: IconColor }) => (
   <div
     style={{
       height: '60px',
-      marginTop: '-0.5rem',
-      marginBottom: '-0.5rem',
+      marginTop: '-1rem',
+      marginBottom: '-1rem',
       width: '1px',
       backgroundColor: `var(--color-${color})`,
     }}
@@ -42,15 +44,10 @@ export default function StepProgressBarItem({
     <>
       {/* Indicator dots */}
       {stepStatus === null && (
-        <HollowCircle color={IconColor.iconMuted} size={ICON_SIZE} />
+        <HollowCircle size={ICON_SIZE} color={IconColor.iconMuted} />
       )}
       {stepStatus === StatusTypes.PENDING && (
-        <Icon
-          className="bridge-transaction-details__icon-loading" // Needed for animation
-          name={IconName.Loading}
-          color={IconColor.primaryDefault}
-          size={ICON_SIZE}
-        />
+        <PulsingCircle iconSize={ICON_SIZE} color={IconColor.primaryDefault} />
       )}
       {stepStatus === StatusTypes.COMPLETE && (
         <Icon
@@ -73,7 +70,7 @@ export default function StepProgressBarItem({
       )}
 
       {/* Blank div to take up space to make sure everythign */}
-      {!isLastItem && <div style={{ opacity: 0 }} />}
+      {!isLastItem && <div />}
     </>
   );
 }
