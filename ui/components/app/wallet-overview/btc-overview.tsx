@@ -1,6 +1,7 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
 import {
+  getMultichainIsTestnet,
   getMultichainProviderConfig,
   getMultichainSelectedAccountCachedBalance,
 } from '../../../selectors/multichain';
@@ -8,12 +9,21 @@ import {
 import { getIsBitcoinBuyable } from '../../../ducks/ramps';
 ///: END:ONLY_INCLUDE_IF
 import { CoinOverview } from './coin-overview';
+import { getSelectedInternalAccount } from '../../../selectors';
+import { useMultichainSelector } from '../../../hooks/useMultichainSelector';
 
 type BtcOverviewProps = {
   className?: string;
 };
 
 const BtcOverview = ({ className }: BtcOverviewProps) => {
+  const selectedAccount = useSelector(getSelectedInternalAccount);
+  const isBtcTestnetAccount = useMultichainSelector(
+    getMultichainIsTestnet,
+    selectedAccount,
+  );
+  console.log('isBtcTestnetAccount', isBtcTestnetAccount);
+  console.log('selectedAccount', selectedAccount);
   const { chainId } = useSelector(getMultichainProviderConfig);
   const balance = useSelector(getMultichainSelectedAccountCachedBalance);
   ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
@@ -31,7 +41,7 @@ const BtcOverview = ({ className }: BtcOverviewProps) => {
       isSwapsChain={false}
       ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
       isBridgeChain={false}
-      isBuyableChain={isBtcBuyable}
+      isBuyableChain={isBtcBuyable && !isBtcTestnetAccount}
       ///: END:ONLY_INCLUDE_IF
     />
   );
