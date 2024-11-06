@@ -55,9 +55,9 @@ import {
 } from '../../../selectors/institutional/selectors';
 ///: END:ONLY_INCLUDE_IF
 import {
+  ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
   getMetaMetricsId,
-  getParticipateInMetaMetrics,
-  getDataCollectionForMarketing,
+  ///: END:ONLY_INCLUDE_IF(build-mmi)
   getSelectedInternalAccount,
   getUnapprovedTransactions,
   getAnySnapUpdateAvailable,
@@ -74,7 +74,6 @@ import {
   JustifyContent,
 } from '../../../helpers/constants/design-system';
 import { AccountDetailsMenuItem, ViewExplorerMenuItem } from '..';
-import { getPortfolioUrl } from '../../../helpers/utils/portfolio';
 
 const METRICS_LOCATION = 'Global Menu';
 
@@ -105,11 +104,8 @@ export const GlobalMenu = ({ closeMenu, anchorElement, isOpen }) => {
   const hasUnapprovedTransactions =
     Object.keys(unapprovedTransactions).length > 0;
 
-  const isMetaMetricsEnabled = useSelector(getParticipateInMetaMetrics);
-  const isMarketingEnabled = useSelector(getDataCollectionForMarketing);
-  const metaMetricsId = useSelector(getMetaMetricsId);
-
   ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
+  const metaMetricsId = useSelector(getMetaMetricsId);
   const mmiPortfolioUrl = useSelector(getMmiPortfolioUrl);
   const mmiPortfolioEnabled = useSelector(getMmiPortfolioEnabled);
   ///: END:ONLY_INCLUDE_IF
@@ -310,36 +306,6 @@ export const GlobalMenu = ({ closeMenu, anchorElement, isOpen }) => {
         showInfoDot={snapsUpdatesAvailable}
       >
         {t('snaps')}
-      </MenuItem>
-      <MenuItem
-        iconName={IconName.SecurityUser}
-        onClick={() => {
-          const portfolioSpendingCapsUrl = getPortfolioUrl(
-            '',
-            'global_menu',
-            metaMetricsId,
-            isMetaMetricsEnabled,
-            isMarketingEnabled,
-            account.address,
-            'spending-caps',
-          );
-
-          global.platform.openTab({ url: portfolioSpendingCapsUrl });
-
-          trackEvent({
-            category: MetaMetricsEventCategory.Home,
-            event: MetaMetricsEventName.PortfolioLinkClicked,
-            properties: {
-              url: portfolioSpendingCapsUrl,
-              location: METRICS_LOCATION,
-            },
-          });
-
-          closeMenu();
-        }}
-        data-testid="global-menu-spending-caps"
-      >
-        {t('spendingCapsUppercase')}
       </MenuItem>
       <MenuItem
         iconName={IconName.MessageQuestion}
