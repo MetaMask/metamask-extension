@@ -264,10 +264,10 @@ export const BridgeInputGroup = ({
             textAlign={TextAlign.End}
             ellipsis
           >
-            {formatFiatAmount(fromAmountInFiat, currency)}
-            {isToField &&
-              activeQuote?.toTokenAmount?.fiat &&
-              formatFiatAmount(activeQuote?.toTokenAmount?.fiat, currency)}
+            {isToField
+              ? activeQuote?.toTokenAmount?.fiat &&
+                formatFiatAmount(activeQuote?.toTokenAmount?.fiat, currency)
+              : formatFiatAmount(fromAmountInFiat, currency)}
           </Text>
         </Column>
       </Row>
