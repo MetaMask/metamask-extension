@@ -399,6 +399,8 @@ export const getValidationErrors = createDeepEqualSelector(
         activeQuote?.sentAmount.fiat?.gt(BRIDGE_MIN_FIAT_SRC_AMOUNT),
       isSrcAmountTooLow:
         fromAmount && fromAmountInFiat.lte(BRIDGE_MIN_FIAT_SRC_AMOUNT),
+      isInsufficientBalance: (balance?: BigNumber) =>
+        fromAmount && balance !== undefined ? balance.lt(fromAmount) : false,
     };
   },
 );

@@ -21,6 +21,7 @@ import {
   BlockSize,
   TextVariant,
 } from '../../../helpers/constants/design-system';
+import useLatestBalance from '../../../hooks/bridge/useLatestBalance';
 
 export const BridgeCTAButton = () => {
   const dispatch = useDispatch();
@@ -38,19 +39,30 @@ export const BridgeCTAButton = () => {
   const { maxFeePerGas, maxPriorityFeePerGas } =
     useSelector(getBridgeFeesPerGas);
 
-  const { isNoQuotesAvailable, isSrcAmountLessThan30 } =
+  const { isNoQuotesAvailable, isSrcAmountLessThan30, isInsufficientBalance } =
     useSelector(getValidationErrors);
 
+  const { normalizedBalance } = useLatestBalance(fromToken, fromChain?.chainId);
+
   const isTxSubmittable =
-    fromToken && toToken && fromChain && toChain && fromAmount && activeQuote;
+    fromToken &&
+    toToken &&
+    fromChain &&
+    toChain &&
+    fromAmount &&
+    activeQuote &&
+    !isInsufficientBalance(normalizedBalance);
 
   const label = useMemo(() => {
-    if (isNoQuotesAvailable || isSrcAmountLessThan30) {
-      return t('swapQuotesNotAvailableErrorTitle');
-    }
-
     if (isLoading && !isTxSubmittable) {
       return t('swapFetchingQuotes');
+    }
+
+    if (isInsufficientBalance(normalizedBalance)) {
+      return t('alertReasonInsufficientBalance');
+    }
+    if (isNoQuotesAvailable || isSrcAmountLessThan30) {
+      return t('swapQuotesNotAvailableErrorTitle');
     }
 
     if (!fromAmount) {
@@ -65,7 +77,14 @@ export const BridgeCTAButton = () => {
     }
 
     return t('swapSelectToken');
-  }, [isLoading, fromAmount, toToken, isTxSubmittable]);
+  }, [
+    isLoading,
+    fromAmount,
+    toToken,
+    isTxSubmittable,
+    normalizedBalance,
+    isInsufficientBalance,
+  ]);
 
   return (
     <ButtonPrimary

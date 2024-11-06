@@ -37,6 +37,7 @@ import useLatestBalance from '../../../hooks/bridge/useLatestBalance';
 import {
   getBridgeQuotes,
   getFromAmountInFiat,
+  getValidationErrors,
 } from '../../../ducks/bridge/selectors';
 import { formatFiatAmount } from '../utils/quote';
 
@@ -110,11 +111,12 @@ export const BridgeInputGroup = ({
   const { isLoading, activeQuote } = useSelector(getBridgeQuotes);
   const currency = useSelector(getCurrentCurrency);
   const fromAmountInFiat = useSelector(getFromAmountInFiat);
+  const { isInsufficientBalance } = useSelector(getValidationErrors);
 
   const providerConfig = useSelector(getProviderConfig);
   const isToField = networkProps?.network?.chainId !== providerConfig?.chainId;
 
-  const { formattedBalance } = useLatestBalance(
+  const { formattedBalance, normalizedBalance } = useLatestBalance(
     token,
     networkProps?.network?.chainId,
   );
@@ -274,7 +276,11 @@ export const BridgeInputGroup = ({
       <Row justifyContent={JustifyContent.flexStart} gap={2}>
         <Text
           variant={TextVariant.bodySm}
-          color={TextColor.textAlternative}
+          color={
+            !isToField && isInsufficientBalance(normalizedBalance)
+              ? TextColor.errorDefault
+              : TextColor.textAlternative
+          }
           style={{ height: 20 }}
         >
           {isToField && token && 'aggregators' in token

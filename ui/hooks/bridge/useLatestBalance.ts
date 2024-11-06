@@ -10,6 +10,7 @@ import {
 import { SwapsTokenObject } from '../../../shared/constants/swaps';
 import { calcLatestSrcBalance } from '../../../shared/modules/bridge-utils/balance';
 import { useAsyncResult } from '../useAsyncResult';
+import { calcTokenAmount } from '../../../shared/lib/transactions-controller-utils';
 
 /**
  * Custom hook to fetch and format the latest balance of a given token or native asset.
@@ -60,6 +61,10 @@ const useLatestBalance = (
             .shiftedBy(tokenDecimals)
             .round(DEFAULT_PRECISION)
             .toString()
+        : undefined,
+    normalizedBalance:
+      token && latestBalance
+        ? calcTokenAmount(latestBalance.toString(), tokenDecimals)
         : undefined,
   };
 };
