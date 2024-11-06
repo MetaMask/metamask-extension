@@ -17,7 +17,7 @@ import mockState from '../../../../test/data/mock-state.json';
 import { renderWithConfirmContextProvider } from '../../../../test/lib/confirmations/render-helpers';
 import * as actions from '../../../store/actions';
 import { SignatureRequestType } from '../types/confirm';
-import { fetchErc20Decimals } from '../utils/token';
+import { memoizedGetTokenStandardAndDetails } from '../utils/token';
 import Confirm from './confirm';
 
 jest.mock('react-router-dom', () => ({
@@ -34,7 +34,7 @@ describe('Confirm', () => {
     jest.resetAllMocks();
 
     /** Reset memoized function using getTokenStandardAndDetails for each test */
-    fetchErc20Decimals?.cache?.clear?.();
+    memoizedGetTokenStandardAndDetails?.cache?.clear?.();
   });
 
   it('should render', () => {
@@ -59,7 +59,7 @@ describe('Confirm', () => {
 
     jest.spyOn(actions, 'getTokenStandardAndDetails').mockResolvedValue({
       decimals: '2',
-      standard: 'erc20',
+      standard: 'ERC20',
     });
 
     const mockStore = configureMockStore(middleware)(mockStateTypedSign);
@@ -103,7 +103,7 @@ describe('Confirm', () => {
 
     jest.spyOn(actions, 'getTokenStandardAndDetails').mockResolvedValue({
       decimals: '2',
-      standard: 'erc20',
+      standard: 'ERC20',
     });
 
     const mockStore = configureMockStore(middleware)(mockStateTypedSign);
@@ -146,7 +146,7 @@ describe('Confirm', () => {
 
     jest.spyOn(actions, 'getTokenStandardAndDetails').mockResolvedValue({
       decimals: '2',
-      standard: 'erc20',
+      standard: 'ERC20',
     });
 
     await act(async () => {
@@ -170,7 +170,7 @@ describe('Confirm', () => {
 
     jest.spyOn(actions, 'getTokenStandardAndDetails').mockResolvedValue({
       decimals: '2',
-      standard: 'erc20',
+      standard: 'ERC20',
     });
 
     await act(async () => {

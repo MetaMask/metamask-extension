@@ -1,5 +1,5 @@
 import { ApprovalType, detectSIWE } from '@metamask/controller-utils';
-import { errorCodes } from 'eth-rpc-errors';
+import { errorCodes } from '@metamask/rpc-errors';
 import { isValidAddress } from 'ethereumjs-util';
 import { MESSAGE_TYPE, ORIGIN_METAMASK } from '../../../shared/constants/app';
 import {
@@ -18,6 +18,7 @@ import {
   PRIMARY_TYPES_PERMIT,
 } from '../../../shared/constants/signatures';
 import { SIGNING_METHODS } from '../../../shared/constants/transaction';
+import { getErrorMessage } from '../../../shared/modules/error';
 import {
   generateSignatureUniqueId,
   getBlockaidMetricsProps,
@@ -52,6 +53,8 @@ const RATE_LIMIT_MAP = {
   [MESSAGE_TYPE.ETH_DECRYPT]: RATE_LIMIT_TYPES.NON_RATE_LIMITED,
   [MESSAGE_TYPE.ETH_GET_ENCRYPTION_PUBLIC_KEY]:
     RATE_LIMIT_TYPES.NON_RATE_LIMITED,
+  [MESSAGE_TYPE.ADD_ETHEREUM_CHAIN]: RATE_LIMIT_TYPES.NON_RATE_LIMITED,
+  [MESSAGE_TYPE.SWITCH_ETHEREUM_CHAIN]: RATE_LIMIT_TYPES.NON_RATE_LIMITED,
   [MESSAGE_TYPE.ETH_REQUEST_ACCOUNTS]: RATE_LIMIT_TYPES.TIMEOUT,
   [MESSAGE_TYPE.WALLET_REQUEST_PERMISSIONS]: RATE_LIMIT_TYPES.TIMEOUT,
   [MESSAGE_TYPE.SEND_METADATA]: RATE_LIMIT_TYPES.BLOCKED,
@@ -125,6 +128,8 @@ const EVENT_NAME_MAP = {
  */
 const TRANSFORM_PARAMS_MAP = {
   [MESSAGE_TYPE.WATCH_ASSET]: ({ type }) => ({ type }),
+  [MESSAGE_TYPE.ADD_ETHEREUM_CHAIN]: ([{ chainId }]) => ({ chainId }),
+  [MESSAGE_TYPE.SWITCH_ETHEREUM_CHAIN]: ([{ chainId }]) => ({ chainId }),
 };
 
 const rateLimitTimeoutsByMethod = {};
@@ -419,15 +424,20 @@ export default function createRPCMethodTrackingMiddleware({
       const location = res.error?.data?.location;
 
       let event;
+
+      const errorMessage = getErrorMessage(res.error);
+
       if (res.error?.code === errorCodes.provider.userRejectedRequest) {
         event = eventType.REJECTED;
       } else if (
         res.error?.code === errorCodes.rpc.internal &&
-        res.error?.message === 'Request rejected by user or snap.'
+        [errorMessage, res.error.message].includes(
+          'Request rejected by user or snap.',
+        )
       ) {
         // The signature was approved in MetaMask but rejected in the snap
         event = eventType.REJECTED;
-        eventProperties.status = res.error.message;
+        eventProperties.status = errorMessage;
       } else {
         event = eventType.APPROVED;
       }

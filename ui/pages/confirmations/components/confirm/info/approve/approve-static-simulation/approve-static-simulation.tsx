@@ -25,9 +25,8 @@ import { useIsNFT } from '../hooks/use-is-nft';
 export const ApproveStaticSimulation = () => {
   const t = useI18nContext();
 
-  const { currentConfirmation: transactionMeta } = useConfirmContext() as {
-    currentConfirmation: TransactionMeta;
-  };
+  const { currentConfirmation: transactionMeta } =
+    useConfirmContext<TransactionMeta>();
 
   const { decimals: initialDecimals } = useAssetDetails(
     transactionMeta?.txParams?.to,
@@ -49,6 +48,8 @@ export const ApproveStaticSimulation = () => {
   if (!value) {
     return null;
   }
+
+  const { chainId } = transactionMeta;
 
   const formattedTokenText = (
     <Text
@@ -88,6 +89,7 @@ export const ApproveStaticSimulation = () => {
             value={transactionMeta.txParams.to as string}
             type={NameType.ETHEREUM_ADDRESS}
             preferContractSymbol
+            variation={chainId}
           />
         </Box>
       </Box>

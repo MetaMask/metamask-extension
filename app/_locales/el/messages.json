@@ -207,23 +207,6 @@
   "addCustomNetwork": {
     "message": "Προσθήκη προσαρμοσμένου δικτύου"
   },
-  "addEthereumChainConfirmationDescription": {
-    "message": "Αυτό θα επιτρέψει σε αυτό το δίκτυο να χρησιμοποιηθεί στο MetaMask."
-  },
-  "addEthereumChainConfirmationRisks": {
-    "message": "Το MetaMask δεν επαληθεύει τα προσαρμοσμένα δίκτυα."
-  },
-  "addEthereumChainConfirmationRisksLearnMore": {
-    "message": "Μάθετε για το $1.",
-    "description": "$1 is a link with text that is provided by the 'addEthereumChainConfirmationRisksLearnMoreLink' key"
-  },
-  "addEthereumChainConfirmationRisksLearnMoreLink": {
-    "message": "απάτες και κίνδυνοι ασφάλειας δικτύου",
-    "description": "Link text for the 'addEthereumChainConfirmationRisksLearnMore' translation key"
-  },
-  "addEthereumChainConfirmationTitle": {
-    "message": "Επιτρέπετε σε αυτήν την ιστοσελίδα να προσθέσει ένα δίκτυο;"
-  },
   "addEthereumChainWarningModalHeader": {
     "message": "Προσθέστε αυτόν τον πάροχο RPC μόνο αν είστε σίγουροι ότι μπορείτε να τον εμπιστευτείτε. $1",
     "description": "$1 is addEthereumChainWarningModalHeaderPartTwo passed separately so that it can be bolded"
@@ -821,10 +804,6 @@
   },
   "buyNow": {
     "message": "Αγοράστε Τώρα"
-  },
-  "buyToken": {
-    "message": "Αγορά $1",
-    "description": "$1 is the token symbol"
   },
   "bytes": {
     "message": "Bytes"
@@ -1641,9 +1620,6 @@
   "editSpeedUpEditGasFeeModalTitle": {
     "message": "Επεξεργασία τελών επίσπευσης συναλλαγής"
   },
-  "enable": {
-    "message": "Ενεργοποίηση"
-  },
   "enableAutoDetect": {
     "message": " Ενεργοποίηση αυτόματου εντοπισμού"
   },
@@ -1900,13 +1876,6 @@
   "functionType": {
     "message": "Τύπος λειτουργίας"
   },
-  "fundYourWallet": {
-    "message": "Χρηματοδοτήστε το πορτοφόλι σας"
-  },
-  "fundYourWalletDescription": {
-    "message": "Ξεκινήστε προσθέτοντας περίπου $1 στο πορτοφόλι σας.",
-    "description": "$1 is the token symbol"
-  },
   "gas": {
     "message": "Τέλος συναλλαγής"
   },
@@ -1990,14 +1959,6 @@
   "genericExplorerView": {
     "message": "Προβολή λογαριασμού σε $1"
   },
-  "getStartedWithNFTs": {
-    "message": "Λάβετε $1 για να αγοράσετε NFT",
-    "description": "$1 is the token symbol"
-  },
-  "getStartedWithNFTsDescription": {
-    "message": "Ξεκινήστε με NFT προσθέτοντας περίπου $1 στο πορτοφόλι σας.",
-    "description": "$1 is the token symbol"
-  },
   "goBack": {
     "message": "Πηγαίνετε πίσω"
   },
@@ -2062,9 +2023,6 @@
   },
   "hideSentitiveInfo": {
     "message": "Απόκρυψη ευαίσθητων πληροφοριών"
-  },
-  "hideToken": {
-    "message": "Απόκρυψη token"
   },
   "hideTokenPrompt": {
     "message": "Απόκρυψη του token;"
@@ -3033,9 +2991,6 @@
   },
   "noAccountsFound": {
     "message": "Δεν βρέθηκαν λογαριασμοί για το συγκεκριμένο αίτημα αναζήτησης"
-  },
-  "noConnectedAccountDescription": {
-    "message": "Επιλέξτε έναν λογαριασμό που θέλετε να χρησιμοποιήσετε σε αυτόν τον ιστότοπο για να συνεχίσετε."
   },
   "noConnectedAccountTitle": {
     "message": "Το MetaMask δεν συνδέεται με αυτόν τον ιστότοπο"
@@ -4679,25 +4634,6 @@
   "smartTransactions": {
     "message": "Έξυπνες συναλλαγές"
   },
-  "smartTransactionsBenefit1": {
-    "message": "Ποσοστό επιτυχίας 99,5%"
-  },
-  "smartTransactionsBenefit2": {
-    "message": "Σας εξοικονομεί χρήματα"
-  },
-  "smartTransactionsBenefit3": {
-    "message": "Ενημερώσεις σε πραγματικό χρόνο"
-  },
-  "smartTransactionsDescription": {
-    "message": "Ξεκλειδώστε υψηλότερα ποσοστά επιτυχίας, προστασία σε \"προπορευόμενες συναλλαγές\" και καλύτερη ορατότητα με τις Έξυπνες Συναλλαγές."
-  },
-  "smartTransactionsDescription2": {
-    "message": "Διατίθεται μόνο στο Ethereum. Ενεργοποιήστε ή απενεργοποιήστε το ανά πάσα στιγμή στις ρυθμίσεις. $1",
-    "description": "$1 is an external link to learn more about Smart Transactions"
-  },
-  "smartTransactionsOptItModalTitle": {
-    "message": "Ενισχυμένη Προστασία Συναλλαγών"
-  },
   "snapAccountCreated": {
     "message": "Ο λογαριασμός δημιουργήθηκε"
   },
@@ -4864,9 +4800,6 @@
     "message": "Επικοινωνήστε με τους διαχειριστές του $1 για περαιτέρω υποστήριξη.",
     "description": "This is shown when the insight snap throws an error. $1 is the snap name"
   },
-  "someNetworksMayPoseSecurity": {
-    "message": "Ορισμένα δίκτυα ενδέχεται να ενέχουν κινδύνους για την ασφάλεια ή/και το απόρρητο. Ενημερωθείτε για τους κινδύνους πριν προσθέσετε και χρησιμοποιήσετε ένα δίκτυο."
-  },
   "somethingDoesntLookRight": {
     "message": "Κάτι δεν φαίνεται σωστό; $1",
     "description": "A false positive message for users to contact support. $1 is a link to the support page."
@@ -5019,14 +4952,6 @@
   },
   "stake": {
     "message": "Stake"
-  },
-  "startYourJourney": {
-    "message": "Ξεκινήστε το ταξίδι σας με $1",
-    "description": "$1 is the token symbol"
-  },
-  "startYourJourneyDescription": {
-    "message": "Ξεκινήστε με Web3 προσθέτοντας περίπου $1 στο πορτοφόλι σας.",
-    "description": "$1 is the token symbol"
   },
   "stateLogError": {
     "message": "Σφάλμα κατά την ανάκτηση αρχείων καταγραφής κατάστασης."
@@ -5198,10 +5123,6 @@
   "swapAreYouStillThereDescription": {
     "message": "Είμαστε έτοιμοι να σας δείξουμε τις τελευταίες προσφορές, όποτε θέλετε να συνεχίσετε"
   },
-  "swapBuildQuotePlaceHolderText": {
-    "message": "Δεν υπάρχουν διαθέσιμα tokens που να αντιστοιχούν σε $1",
-    "description": "Tells the user that a given search string does not match any tokens in our token lists. $1 can be any string of text"
-  },
   "swapConfirmWithHwWallet": {
     "message": "Επιβεβαιώστε με το πορτοφόλι υλικού σας"
   },
@@ -5266,9 +5187,6 @@
   "swapFetchingQuotesErrorTitle": {
     "message": "Σφάλμα κατά τη λήψη προσφορών"
   },
-  "swapFetchingTokens": {
-    "message": "Λήψη tokens..."
-  },
   "swapFromTo": {
     "message": "Η ανταλλαγή από $1 έως $2",
     "description": "Tells a user that they need to confirm on their hardware wallet a swap of 2 tokens. $1 is a source token and $2 is a destination token"
@@ -5288,9 +5206,6 @@
   },
   "swapHighSlippage": {
     "message": "Υψηλή ολίσθηση"
-  },
-  "swapHighSlippageWarning": {
-    "message": "Το ποσό ολίσθησης είναι πολύ υψηλό."
   },
   "swapIncludesMMFee": {
     "message": "Περιλαμβάνει μια χρέωση $1% στο MetaMask.",
@@ -5312,9 +5227,6 @@
   },
   "swapLowSlippage": {
     "message": "Χαμηλή ολίσθηση"
-  },
-  "swapLowSlippageError": {
-    "message": "Η συναλλαγή ενδέχεται να αποτύχει, η μέγιστη ολίσθηση είναι πολύ χαμηλή."
   },
   "swapMaxSlippage": {
     "message": "Μέγιστη ολίσθηση"
@@ -5349,9 +5261,6 @@
   "swapPriceDifferenceTitle": {
     "message": "Διαφορά τιμής ~$1%",
     "description": "$1 is a number (ex: 1.23) that represents the price difference."
-  },
-  "swapPriceImpactTooltip": {
-    "message": "Η επίπτωση στις τιμές είναι η διαφορά μεταξύ της τρέχουσας τιμής αγοράς και του ποσού που εισπράττεται κατά την εκτέλεση της συναλλαγής. Η επίπτωση στις τιμές είναι συνάρτηση του μεγέθους της συναλλαγής σας σε σχέση με το μέγεθος του αποθέματος ρευστότητας."
   },
   "swapPriceUnavailableDescription": {
     "message": "Η επίπτωση στις τιμές δεν ήταν δυνατόν να προσδιοριστεί λόγω έλλειψης στοιχείων για τις τιμές της αγοράς. Παρακαλούμε επιβεβαιώστε ότι είστε ικανοποιημένοι με το ποσό των tokens που πρόκειται να λάβετε πριν από την ανταλλαγή."
@@ -5399,12 +5308,6 @@
   "swapRequestForQuotation": {
     "message": "Αίτημα για προσφορά"
   },
-  "swapReviewSwap": {
-    "message": "Έλεγχος της ανταλλαγής"
-  },
-  "swapSearchNameOrAddress": {
-    "message": "Αναζήτηση ονόματος ή επικόλληση διεύθυνσης"
-  },
   "swapSelect": {
     "message": "Επιλογή"
   },
@@ -5436,9 +5339,6 @@
   },
   "swapSlippageLowTitle": {
     "message": "Χαμηλή απόκλιση"
-  },
-  "swapSlippageNegative": {
-    "message": "Η απόκλιση πρέπει να είναι μεγαλύτερη ή ίση με το μηδέν"
   },
   "swapSlippageNegativeDescription": {
     "message": "Η απόκλιση πρέπει να είναι μεγαλύτερη ή ίση με μηδέν"
@@ -5508,20 +5408,6 @@
     "message": "Ανταλλαγή $1 έως $2",
     "description": "Used in the transaction display list to describe a swap. $1 and $2 are the symbols of tokens in involved in a swap."
   },
-  "swapTokenVerificationAddedManually": {
-    "message": "Αυτό το token έχει προστεθεί χειροκίνητα."
-  },
-  "swapTokenVerificationMessage": {
-    "message": "Πάντα να επιβεβαιώνετε τη διεύθυνση του token στο $1.",
-    "description": "Points the user to Etherscan as a place they can verify information about a token. $1 is replaced with the translation for \"Etherscan\" followed by an info icon that shows more info on hover."
-  },
-  "swapTokenVerificationOnlyOneSource": {
-    "message": "Επαληθεύτηκε μόνο σε 1 πηγή."
-  },
-  "swapTokenVerificationSources": {
-    "message": "Επαληθεύτηκε μόνο σε $1 πηγές.",
-    "description": "Indicates the number of token information sources that recognize the symbol + address. $1 is a decimal number."
-  },
   "swapTokenVerifiedOn1SourceDescription": {
     "message": "Το $1 επαληθεύτηκε μόνο από 1 πηγή. Εξετάστε το ενδεχόμενο επαλήθευσης σε $2 πριν προχωρήσετε.",
     "description": "$1 is a token name, $2 points the user to etherscan as a place they can verify information about a token. $1 is replaced with the translation for \"etherscan\""
@@ -5542,29 +5428,11 @@
   "swapUnknown": {
     "message": "Άγνωστο"
   },
-  "swapVerifyTokenExplanation": {
-    "message": "Πολλαπλά tokens μπορούν να χρησιμοποιούν το ίδιο όνομα και σύμβολο. Ελέγξτε το $1 για να επιβεβαιώσετε ότι αυτό είναι το token που ψάχνετε.",
-    "description": "This appears in a tooltip next to the verifyThisTokenOn message. It gives the user more information about why they should check the token on a block explorer. $1 will be the name or url of the block explorer, which will be the translation of 'etherscan' or a block explorer url specified for a custom network."
-  },
-  "swapYourTokenBalance": {
-    "message": "$1 $2 διαθέσιμα για ανταλλαγή",
-    "description": "Tells the user how much of a token they have in their balance. $1 is a decimal number amount of tokens, and $2 is a token symbol"
-  },
   "swapZeroSlippage": {
     "message": "0% Απόκλιση"
   },
-  "swapsAdvancedOptions": {
-    "message": "Προηγμένες επιλογές"
-  },
-  "swapsExcessiveSlippageWarning": {
-    "message": "Το ποσοστό απόκλισης είναι πολύ υψηλό και θα οδηγήσει σε χαμηλή τιμή. Παρακαλούμε μειώστε την ανοχή απόκλισης σε τιμή κάτω του 15%."
-  },
   "swapsMaxSlippage": {
     "message": "Ανοχή απόκλισης"
-  },
-  "swapsNotEnoughForTx": {
-    "message": "Δεν υπάρχουν αρκετά $1 για να ολοκληρωθεί αυτή η συναλλαγή",
-    "description": "Tells the user that they don't have enough of a token for a proposed swap. $1 is a token symbol"
   },
   "swapsNotEnoughToken": {
     "message": "Δεν υπάρχουν αρκετά $1",
@@ -5700,9 +5568,6 @@
   },
   "tokenDecimalFetchFailed": {
     "message": "Απαιτείται δεκαδικό token. Βρείτε το σε: $1"
-  },
-  "tokenDecimalTitle": {
-    "message": "Δεκαδικά Ψηφία του token:"
   },
   "tokenDetails": {
     "message": "Λεπτομέρειες του token"
@@ -6064,14 +5929,6 @@
   "verifyContractDetails": {
     "message": "Επαλήθευση στοιχείων τρίτων"
   },
-  "verifyThisTokenOn": {
-    "message": "Επαλήθευση αυτού του token στο $1",
-    "description": "Points the user to etherscan as a place they can verify information about a token. $1 is replaced with the translation for \"etherscan\""
-  },
-  "verifyThisUnconfirmedTokenOn": {
-    "message": "Επαληθεύστε αυτό το token στο $1 και βεβαιωθείτε ότι αυτό είναι το token που θέλετε να κάνετε συναλλαγές.",
-    "description": "Points the user to etherscan as a place they can verify information about a token. $1 is replaced with the translation for \"etherscan\""
-  },
   "version": {
     "message": "Έκδοση"
   },
@@ -6080,9 +5937,6 @@
   },
   "viewActivity": {
     "message": "Προβολή δραστηριότητας"
-  },
-  "viewAllDetails": {
-    "message": "Προβολή όλων των λεπτομερειών"
   },
   "viewAllQuotes": {
     "message": "προβολή όλων των προσφορών"
