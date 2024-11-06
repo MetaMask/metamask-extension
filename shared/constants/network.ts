@@ -155,6 +155,7 @@ export const CHAIN_IDS = {
   NEAR_TESTNET: '0x18e',
   GRAVITY_ALPHA_MAINNET: '0x659',
   GRAVITY_ALPHA_TESTNET_SEPOLIA: '0x34c1',
+  MINT: '0xb9',
 } as const;
 
 export const CHAINLIST_CHAIN_IDS_MAP = {
@@ -213,6 +214,7 @@ export const CHAINLIST_CHAIN_IDS_MAP = {
   APE: '0x8173',
   GRAVITY_ALPHA_MAINNET: '0x659',
   GRAVITY_ALPHA_TESTNET_SEPOLIA: '0x34c1',
+  MINT: '0xb9',
 } as const;
 
 // To add a deprecation warning to a network, add it to the array
@@ -460,6 +462,7 @@ export const NEAR_IMAGE_URL = './images/near.svg';
 export const APE_IMAGE_URL = './images/ape.svg';
 export const GRAVITY_ALPHA_MAINNET_IMAGE_URL = './images/gravity.svg';
 export const GRAVITY_ALPHA_TESTNET_SEPOLIA_IMAGE_URL = './images/gravity.svg';
+export const MINT_IMAGE_URL = './images/mint.svg';
 
 export const INFURA_PROVIDER_TYPES = [
   NETWORK_TYPES.MAINNET,
@@ -802,6 +805,7 @@ export const CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP = {
     GRAVITY_ALPHA_MAINNET_IMAGE_URL,
   [CHAINLIST_CHAIN_IDS_MAP.GRAVITY_ALPHA_TESTNET_SEPOLIA]:
     GRAVITY_ALPHA_TESTNET_SEPOLIA_IMAGE_URL,
+  [CHAINLIST_CHAIN_IDS_MAP.MINT]: MINT_IMAGE_URL,
 } as const;
 
 export const CHAIN_ID_TO_ETHERS_NETWORK_NAME_MAP = {
