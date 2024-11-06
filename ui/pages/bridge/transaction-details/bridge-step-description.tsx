@@ -16,6 +16,7 @@ import {
 import {
   AlignItems,
   Display,
+  FontWeight,
   TextColor,
 } from '../../../helpers/constants/design-system';
 
@@ -124,7 +125,19 @@ export default function BridgeStepDescription({
       className="bridge-transaction-details__step-grid--desc"
     >
       {time && <Text color={TextColor.textDefault}>{time}</Text>}
-      <Text color={TextColor.textAlternative}>
+      <Text
+        color={
+          stepStatus === StatusTypes.PENDING ||
+          stepStatus === StatusTypes.COMPLETE
+            ? TextColor.textDefault
+            : TextColor.textAlternative
+        }
+        fontWeight={
+          stepStatus === StatusTypes.PENDING
+            ? FontWeight.Medium
+            : FontWeight.Normal
+        }
+      >
         {step.action === ActionTypes.BRIDGE &&
           getBridgeActionText(stepStatus, step, networkConfigurationsByChainId)}
         {step.action === ActionTypes.SWAP &&

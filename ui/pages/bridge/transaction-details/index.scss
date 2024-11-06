@@ -1,6 +1,6 @@
 .bridge-transaction-details {
   &__icon-loading {
-    animation: spinner 1.2s linear infinite;
+    animation: loading-dot 1.2s linear infinite;
   }
 
   &__segment {
@@ -30,7 +30,4 @@
   }
 }
 
-@keyframes spinner {
-  to { transform: rotate(360deg); }
-}
 

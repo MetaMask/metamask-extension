@@ -1,19 +1,11 @@
 import React from 'react';
 import { NetworkConfiguration } from '@metamask/network-controller';
-import { useSelector } from 'react-redux';
 import { TransactionMeta } from '@metamask/transaction-controller';
 import { Box } from '../../../components/component-library';
-import {
-  AlignItems,
-  Display,
-  FlexDirection,
-  JustifyContent,
-} from '../../../helpers/constants/design-system';
 import {
   BridgeHistoryItem,
   StatusTypes,
 } from '../../../../app/scripts/controllers/bridge-status/types';
-import { getNetworkConfigurationsByChainId } from '../../../selectors';
 import BridgeStepDescription, {
   getStepStatus,
 } from './bridge-step-description';
@@ -62,7 +54,8 @@ export default function BridgeStepList({
 
         const isEdgeComplete =
           stepStatus === StatusTypes.COMPLETE &&
-          nextStepStatus === StatusTypes.COMPLETE;
+          (nextStepStatus === StatusTypes.PENDING ||
+            nextStepStatus === StatusTypes.COMPLETE);
 
         // Making a distinction betweeen displayedStepStatus and stepStatus
         // stepStatus is determined independently of other steps
