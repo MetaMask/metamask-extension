@@ -60,13 +60,12 @@ export const SnapDeviceModal = ({ snapId }) => {
       return;
     }
 
-    navigator.hid.requestDevice({ filters: [] }).then((grantedDevices) => {
-      console.log(grantedDevices);
+    /**navigator.hid.requestDevice({ filters: [] }).then((grantedDevices) => {
       const device = grantedDevices[0];
       if (device) {
         dispatch(resolveSnapDevicePairing(device));
       }
-    });
+    });**/
   };
 
   return (

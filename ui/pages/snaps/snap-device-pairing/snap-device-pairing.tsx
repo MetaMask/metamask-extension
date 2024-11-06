@@ -44,8 +44,8 @@ export const SnapDevicePairing = () => {
     navigator.hid.requestDevice({ filters: [] }).then((grantedDevices) => {
       const device = grantedDevices[0];
       if (device) {
-        const { vendorId, productId, productName } = device;
-        const id = `HID-${vendorId}-${productId}`;
+        const { vendorId, productId } = device;
+        const id = `hid:${vendorId}:${productId}`;
         dispatch(resolveSnapDevicePairing(id));
         dispatch(transitionFromFullscreenToPopup());
       }

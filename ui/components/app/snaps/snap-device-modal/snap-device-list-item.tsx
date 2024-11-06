@@ -44,7 +44,7 @@ export const SnapDeviceListItem = ({ device }) => {
   const dispatch = useDispatch();
 
   const handleDeviceSelected = () => {
-    dispatch(resolveSnapDevicePairing(device));
+    dispatch(resolveSnapDevicePairing(device.id));
   };
 
   return (
