@@ -23,14 +23,6 @@ describe('useMultichainClient', () => {
     jest.clearAllMocks();
   });
 
-  const mockAccount = {
-    address: 'tb1q2hjrlnf8kmtt5dj6e49gqzy6jnpe0sj7ty50cl',
-    id: '11a33c6b-0d46-43f4-a401-01587d575fd0',
-    options: {},
-    methods: [BtcMethod.SendMany],
-    type: BtcAccountType.P2wpkh,
-  };
-
   const testCases = [
     {
       clientType: WalletClientType.Bitcoin,
@@ -40,7 +32,7 @@ describe('useMultichainClient', () => {
         address: 'tb1q2hjrlnf8kmtt5dj6e49gqzy6jnpe0sj7ty50cl',
         id: '11a33c6b-0d46-43f4-a401-01587d575fd0',
         options: {},
-        methods: [BtcMethod.SendMany],
+        methods: [BtcMethod.SendBitcoin],
         type: BtcAccountType.P2wpkh,
       },
     },
@@ -50,15 +42,15 @@ describe('useMultichainClient', () => {
       snapId: SOLANA_WALLET_SNAP_ID,
       mockAccount: {
         address: '4mip4tgbhxf8dpqvtb3zhzzapwfvznanhssqzgjyp7ha',
-        id: '22b44d7c-1e57-54g5-b502-02698e686fd1',
+        id: '22b44d7c-1e57-4b5b-8502-02698e686fd1',
         options: {},
         methods: ['someMethod'],
-        type: 'solana-account-type',
+        type: 'solana:data-account',
       },
     },
   ];
 
-  testCases.forEach(({ clientType, network, snapId }) => {
+  testCases.forEach(({ clientType, network, snapId, mockAccount }) => {
     it(`dispatches a Snap keyring request to create a ${clientType} account`, async () => {
       const { result } = renderHook(() => useMultichainClient(clientType));
       const multichainClient = result.current;
