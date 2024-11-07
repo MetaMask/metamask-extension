@@ -3,24 +3,32 @@ import { Driver } from '../../../webdriver/driver';
 class SettingsPage {
   private readonly driver: Driver;
 
+  private readonly closeSettingsPageButton =
+    '.settings-page__header__title-container__close-button';
+
   // Locators
-  private readonly experimentalSettingsButton: object = {
+  private readonly experimentalSettingsButton = {
     text: 'Experimental',
     css: '.tab-bar__tab__content__title',
   };
 
-  private readonly privacySettingsButton: object = {
+  private readonly privacySettingsButton = {
     text: 'Security & privacy',
     css: '.tab-bar__tab__content__title',
   };
 
-  private readonly settingsPageTitle: object = {
+  private readonly settingsPageTitle = {
     text: 'Settings',
     css: 'h3',
   };
 
   constructor(driver: Driver) {
     this.driver = driver;
+  }
+
+  async closeSettingsPage(): Promise<void> {
+    console.log('Closing Settings page');
+    await this.driver.clickElement(this.closeSettingsPageButton);
   }
 
   async check_pageIsLoaded(): Promise<void> {

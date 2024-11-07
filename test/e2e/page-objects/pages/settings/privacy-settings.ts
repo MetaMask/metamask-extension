@@ -5,6 +5,9 @@ import { tEn } from '../../../../lib/i18n-helpers';
 class PrivacySettings {
   private readonly driver: Driver;
 
+  private readonly autodetectNftToggleButton =
+    '[data-testid="useNftDetection"] .toggle-button > div';
+
   private readonly privacySettingsPageTitle = {
     text: 'Security & privacy',
     tag: 'h4',
@@ -159,6 +162,11 @@ class PrivacySettings {
     await this.driver.waitForSelector(this.revealSrpQuizQuestionTwo);
     await this.driver.clickElement(this.revealSrpQuizRightAnswerButton);
     await this.driver.clickElement(this.revealSrpQuizContinueButton);
+  }
+
+  async toggleAutodetectNft(): Promise<void> {
+    console.log('Toggle autodetect NFT on privacy settings page');
+    await this.driver.clickElement(this.autodetectNftToggleButton);
   }
 
   async check_displayedSrpCanBeCopied(): Promise<void> {

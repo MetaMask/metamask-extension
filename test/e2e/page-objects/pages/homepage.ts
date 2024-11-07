@@ -48,8 +48,6 @@ class HomePage {
   private readonly confirmImportNftButton =
     '[data-testid="import-nfts-modal-import-button"]';
 
-  private readonly defaultNftImage = '[data-testid="nft-default-image"]';
-
   private readonly importNftAddressInput = '#address';
 
   private readonly importNftButton = '[data-testid="import-nft-button"]';
@@ -215,9 +213,9 @@ class HomePage {
     );
   }
 
-  async check_defaultNftImageIsDisplayed(): Promise<void> {
-    console.log('Check that default NFT image is displayed in NFT tab on homepage');
-    await this.driver.waitForSelector(this.defaultNftImage);
+  async check_nftImageIsDisplayed(): Promise<void> {
+    console.log('Check that NFT image is displayed in NFT tab on homepage');
+    await this.driver.waitForSelector(this.nftIconOnActivityList);
   }
 
   /**
@@ -303,7 +301,9 @@ class HomePage {
    * @param nftName - The name of the NFT to check for.
    */
   async check_nftItemIsDisplayed(nftName: string): Promise<void> {
-    console.log(`Check that NFT item ${nftName} is displayed in NFT tab on homepage`);
+    console.log(
+      `Check that NFT item ${nftName} is displayed in NFT tab on homepage`,
+    );
     await this.driver.waitForSelector({
       tag: 'h5',
       text: nftName,
@@ -311,7 +311,9 @@ class HomePage {
   }
 
   async check_successImportNftMessageIsDisplayed(): Promise<void> {
-    console.log('Check that success imported NFT message is displayed on homepage');
+    console.log(
+      'Check that success imported NFT message is displayed on homepage',
+    );
     await this.driver.waitForSelector(this.successImportNftMessage);
   }
 
