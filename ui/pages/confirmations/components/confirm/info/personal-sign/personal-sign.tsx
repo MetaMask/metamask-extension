@@ -19,6 +19,7 @@ import { selectUseTransactionSimulations } from '../../../../selectors/preferenc
 import { isSIWESignatureRequest } from '../../../../utils';
 import { ConfirmInfoAlertRow } from '../../../../../../components/app/confirm/info/row/alert-row/alert-row';
 import { ConfirmInfoSection } from '../../../../../../components/app/confirm/info/row/section';
+import { isSnapId } from '../../../../../../helpers/utils/snaps';
 import { SIWESignInfo } from './siwe-sign';
 
 const PersonalSignInfo: React.FC = () => {
@@ -39,6 +40,15 @@ const PersonalSignInfo: React.FC = () => {
     hexToText(currentConfirmation.msgParams?.data),
   );
 
+  let toolTipMessage;
+  if (!isSIWE) {
+    if (isSnapId(currentConfirmation.msgParams.origin)) {
+      toolTipMessage = t('requestFromInfoSnap');
+    } else {
+      toolTipMessage = t('requestFromInfo');
+    }
+  }
+
   return (
     <>
       {isSIWE && useTransactionSimulations && (
@@ -56,7 +66,7 @@ const PersonalSignInfo: React.FC = () => {
           alertKey={RowAlertKey.RequestFrom}
           ownerId={currentConfirmation.id}
           label={t('requestFrom')}
-          tooltip={isSIWE ? undefined : t('requestFromInfo')}
+          tooltip={toolTipMessage}
         >
           <ConfirmInfoRowUrl url={currentConfirmation.msgParams.origin} />
         </ConfirmInfoAlertRow>

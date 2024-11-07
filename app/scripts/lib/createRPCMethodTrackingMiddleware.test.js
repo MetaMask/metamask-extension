@@ -883,6 +883,34 @@ describe('createRPCMethodTrackingMiddleware', () => {
         },
         { type: 'ERC20' },
       ],
+      [
+        'only the chain ID',
+        'wallet_addEthereumChain',
+        [
+          {
+            chainId: '0x64',
+            chainName: 'Gnosis',
+            rpcUrls: ['https://rpc.gnosischain.com'],
+            iconUrls: [
+              'https://xdaichain.com/fake/example/url/xdai.svg',
+              'https://xdaichain.com/fake/example/url/xdai.png',
+            ],
+            nativeCurrency: {
+              name: 'XDAI',
+              symbol: 'XDAI',
+              decimals: 18,
+            },
+            blockExplorerUrls: ['https://blockscout.com/poa/xdai/'],
+          },
+        ],
+        { chainId: '0x64' },
+      ],
+      [
+        'only the chain ID',
+        'wallet_switchEthereumChain',
+        [{ chainId: '0x123' }],
+        { chainId: '0x123' },
+      ],
     ])(
       `should include %s in the '%s' tracked events params property`,
       async (_, method, params, expected) => {

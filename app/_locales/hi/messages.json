@@ -805,10 +805,6 @@
   "buyNow": {
     "message": "अभी खरीदें"
   },
-  "buyToken": {
-    "message": "$1 खरीदें",
-    "description": "$1 is the token symbol"
-  },
   "bytes": {
     "message": "बाइट"
   },
@@ -1624,9 +1620,6 @@
   "editSpeedUpEditGasFeeModalTitle": {
     "message": "गैस फ़ीस स्पीड अप को बदलें"
   },
-  "enable": {
-    "message": "चालू करें"
-  },
   "enableAutoDetect": {
     "message": " ऑटो डिटेक्ट इनेबल करें"
   },
@@ -1883,13 +1876,6 @@
   "functionType": {
     "message": "फ़ंक्शन का प्रकार"
   },
-  "fundYourWallet": {
-    "message": "अपने वॉलेट को फंड करें"
-  },
-  "fundYourWalletDescription": {
-    "message": "अपने वॉलेट में कुछ $1 जोड़कर शुरुआत करें।",
-    "description": "$1 is the token symbol"
-  },
   "gas": {
     "message": "गैस"
   },
@@ -1972,14 +1958,6 @@
   },
   "genericExplorerView": {
     "message": "$1 पर अकाउंट देखें"
-  },
-  "getStartedWithNFTs": {
-    "message": "NFTs खरीदने के लिए $1 प्राप्त करें",
-    "description": "$1 is the token symbol"
-  },
-  "getStartedWithNFTsDescription": {
-    "message": "अपने वॉलेट में कुछ $1 जोड़कर NFTs से शुरुआत करें।",
-    "description": "$1 is the token symbol"
   },
   "goBack": {
     "message": "वापस जाएं"
@@ -4656,25 +4634,6 @@
   "smartTransactions": {
     "message": "स्मार्ट ट्रांसेक्शन"
   },
-  "smartTransactionsBenefit1": {
-    "message": "99.5% सफलता दर"
-  },
-  "smartTransactionsBenefit2": {
-    "message": "आपका पैसा बचाता है"
-  },
-  "smartTransactionsBenefit3": {
-    "message": "रियल-टाइम अपडेट"
-  },
-  "smartTransactionsDescription": {
-    "message": "स्मार्ट ट्रांसेक्शन के साथ उच्च सफलता दर, फ्रंटरनिंग सुरक्षा और बेहतर दृश्यता अनलॉक करें।"
-  },
-  "smartTransactionsDescription2": {
-    "message": "केवल Ethereum पर उपलब्ध है। सेटिंग्स में किसी भी समय चालू करें या बंद करें। $1",
-    "description": "$1 is an external link to learn more about Smart Transactions"
-  },
-  "smartTransactionsOptItModalTitle": {
-    "message": "एनहांस्ड ट्रांसेक्शन प्रोटेक्शन"
-  },
   "snapAccountCreated": {
     "message": "अकाउंट बनाया गया"
   },
@@ -4993,14 +4952,6 @@
   },
   "stake": {
     "message": "हिस्सेदारी"
-  },
-  "startYourJourney": {
-    "message": "$1 से अपनी यात्रा शुरू करें",
-    "description": "$1 is the token symbol"
-  },
-  "startYourJourneyDescription": {
-    "message": "अपने वॉलेट में कुछ $1 जोड़कर Web3 से शुरुआत करें।",
-    "description": "$1 is the token symbol"
   },
   "stateLogError": {
     "message": "स्टेट लॉग को पुनर्प्राप्त करने में गड़बड़ी।"

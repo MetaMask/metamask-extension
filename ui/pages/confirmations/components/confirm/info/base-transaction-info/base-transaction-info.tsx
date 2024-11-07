@@ -20,9 +20,9 @@ const BaseTransactionInfo = () => {
     <>
       <ConfirmInfoSection noPadding>
         <SimulationDetails
-          simulationData={transactionMeta.simulationData}
-          transactionId={transactionMeta.id}
+          transaction={transactionMeta}
           isTransactionsRedesign
+          enableMetrics
         />
       </ConfirmInfoSection>
       <TransactionDetails />
