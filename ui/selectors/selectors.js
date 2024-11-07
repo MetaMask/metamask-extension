@@ -86,6 +86,7 @@ import {
   getLedgerTransportType,
   isAddressLedger,
   getIsUnlocked,
+  getTokenBalances,
 } from '../ducks/metamask/metamask';
 import {
   getLedgerWebHidConnectedStatus,
@@ -567,8 +568,13 @@ function getNativeTokenInfo(state, chainId) {
  * @returns {object} An array of tokens with balances for the given account. Data relationship will be chainId => balance
  */
 export function getSelectedAccountTokenBalancesAcrossChains(state) {
+  const selectedAddress = getSelectedInternalAccount(state).address;
   const accountTokens = getSelectedAccountTokensAcrossChains(state);
-
+  const tokenBalances = getTokenBalances(state);
+  console.log(
+    'getSelectedAccountTokenBalancesAcrossChains',
+    tokenBalances[selectedAddress],
+  );
   // TODO: read this from tokenBalances state
   function generateRandomBalance(min = 10, max = 20) {
     const factor = 100000; // 10^5 to get 5 decimal places
@@ -588,7 +594,7 @@ export function getSelectedAccountTokenBalancesAcrossChains(state) {
     });
   });
 
-  return tokenBalancesByChain;
+  return tokenBalances[selectedAddress];
 }
 
 /**

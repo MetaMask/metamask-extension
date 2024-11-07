@@ -1,5 +1,6 @@
 import React, { ReactNode, useMemo } from 'react';
 import { shallowEqual, useSelector } from 'react-redux';
+import BN from 'bn.js';
 import TokenCell from '../token-cell';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { Box } from '../../../component-library';
@@ -20,6 +21,8 @@ import {
 } from '../../../../selectors';
 import { getConversionRate } from '../../../../ducks/metamask/metamask';
 import { filterAssets } from '../util/filter';
+import { hexToDecimal } from '../../../../../shared/modules/conversion.utils';
+import { stringifyBalance } from '../../../../hooks/useTokenBalances';
 
 type TokenListProps = {
   onTokenClick: (arg: string) => void;
@@ -53,8 +56,20 @@ export default function TokenList({ onTokenClick }: TokenListProps) {
       selectedAccountTokensChains[chainId].forEach(
         (token: Record<string, any>) => {
           const { address } = token;
-          const balance =
+          let balance;
+          // const balance = selectedAccountTokenBalancesAcrossChains?.[chainId]?.[address];
+          const hexBalance =
             selectedAccountTokenBalancesAcrossChains[chainId]?.[address];
+          console.log(token);
+          if (hexBalance !== '0x0') {
+            const decimalBalance = hexToDecimal(hexBalance);
+            const readableBalance = stringifyBalance(
+              new BN(decimalBalance),
+              new BN(token.decimals),
+            );
+            balance = readableBalance || 0;
+          }
+          // selectedAccountTokenBalancesAcrossChains[chainId]?.[address];
 
           const baseCurrency = marketData[chainId]?.[address]?.currency;
 
@@ -62,9 +77,13 @@ export default function TokenList({ onTokenClick }: TokenListProps) {
           const tokenExchangeRate =
             currencyRates[baseCurrency]?.conversionRate || '0';
 
+          // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+          // @ts-ignore
           let tokenFiatAmount = tokenMarketPrice * tokenExchangeRate * balance;
           if (token.isNative && currencyRates) {
             tokenFiatAmount =
+              // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+              // @ts-ignore
               currencyRates[token.symbol]?.conversionRate * balance;
           }
 
@@ -73,6 +92,8 @@ export default function TokenList({ onTokenClick }: TokenListProps) {
             balance,
             tokenFiatAmount,
             chainId,
+            // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+            // @ts-ignore
             string: balance.toString(),
           });
         },

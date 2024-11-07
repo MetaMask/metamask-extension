@@ -43,8 +43,10 @@ const NetworkFilter = ({ handleClose }: SortControlProps) => {
     getShouldHideZeroBalanceTokens,
   );
 
-  const { totalFiatBalance: selectedAccountBalance } =
-    useAccountTotalFiatBalance(selectedAccount, shouldHideZeroBalanceTokens);
+  // const { totalFiatBalance: selectedAccountBalance } =
+  //   useAccountTotalFiatBalance(selectedAccount, shouldHideZeroBalanceTokens);
+
+  const selectedAccountBalance = 100;
 
   // TODO: fetch balances across networks
   // const multiNetworkAccountBalance = useMultichainAccountBalance()

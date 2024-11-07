@@ -22,7 +22,7 @@ import {
 import { formatCurrency } from '../helpers/utils/confirm-tx.util';
 import { getTokenFiatAmount } from '../helpers/utils/token-util';
 import { roundToDecimalPlacesRemovingExtraZeroes } from '../helpers/utils/util';
-import { useTokenTracker } from './useTokenTracker';
+import { useTokenTracker } from './useTokenBalances';
 
 export const useAccountTotalFiatBalance = (
   account,
@@ -54,10 +54,11 @@ export const useAccountTotalFiatBalance = (
   const primaryTokenImage = useSelector(getNativeCurrencyImage);
   const nativeCurrency = useSelector(getNativeCurrency);
 
-  const { loading, tokensWithBalances } = useTokenTracker({
+  const loading = false;
+  const { loading: tokensWithBalances } = useTokenTracker({
+    chainId: currentChainId,
     tokens,
-    address: account?.address,
-    includeFailedTokens: true,
+    address: account.address,
     hideZeroBalanceTokens: shouldHideZeroBalanceTokens,
   });
 
@@ -67,21 +68,22 @@ export const useAccountTotalFiatBalance = (
   };
 
   // Create fiat values for token balances
-  const tokenFiatBalances = tokensWithBalances.map((token) => {
-    const tokenExchangeRate = mergedRates[toChecksumAddress(token.address)];
+  const tokenFiatBalances =
+    tokensWithBalances?.map((token) => {
+      const tokenExchangeRate = mergedRates[toChecksumAddress(token.address)];
 
-    const totalFiatValue = getTokenFiatAmount(
-      tokenExchangeRate,
-      conversionRate,
-      currentCurrency,
-      token.string,
-      token.symbol,
-      false,
-      false,
-    );
+      const totalFiatValue = getTokenFiatAmount(
+        tokenExchangeRate,
+        conversionRate,
+        currentCurrency,
+        token.string,
+        token.symbol,
+        false,
+        false,
+      );
 
-    return totalFiatValue;
-  });
+      return totalFiatValue;
+    }) || [];
 
   // Create an object with native token info. NOTE: Native token info is fetched from a separate controller
   const nativeTokenValues = {
@@ -94,7 +96,7 @@ export const useAccountTotalFiatBalance = (
   const findMatchingTokens = (tokenList, _tokensWithBalances) => {
     const result = [];
 
-    _tokensWithBalances.forEach((token) => {
+    _tokensWithBalances?.forEach((token) => {
       const matchingToken = tokenList[token.address.toLowerCase()];
 
       if (matchingToken) {
@@ -134,13 +136,13 @@ export const useAccountTotalFiatBalance = (
 
   // we need to append some values to tokensWithBalance for UI
   // this code was ported from asset-list
-  tokensWithBalances.forEach((token) => {
+  tokensWithBalances?.forEach((token) => {
     // token.string is the balance displayed in the TokenList UI
     token.string = roundToDecimalPlacesRemovingExtraZeroes(token.string, 5);
   });
 
   // to sort by fiat balance, we need to compute this at this level
-  tokensWithBalances.forEach((token) => {
+  tokensWithBalances?.forEach((token) => {
     const tokenExchangeRate = mergedRates[toChecksumAddress(token.address)];
 
     token.tokenFiatAmount =

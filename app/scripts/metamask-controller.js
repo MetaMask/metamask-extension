@@ -12,6 +12,7 @@ import {
   CodefiTokenPricesServiceV2,
   RatesController,
   fetchMultiExchangeRate,
+  TokenBalancesController,
 } from '@metamask/assets-controllers';
 import { JsonRpcEngine } from '@metamask/json-rpc-engine';
 import { createEngineStream } from '@metamask/json-rpc-middleware-stream';
@@ -890,6 +891,27 @@ export default class MetamaskController extends EventEmitter {
         usdConversionRate: null,
       };
     };
+
+    const tokenBalancesMessenger = this.controllerMessenger.getRestricted({
+      name: 'TokenBalancesController',
+      allowedActions: [
+        'NetworkController:getState',
+        'NetworkController:getNetworkClientById',
+        'TokensController:getState',
+        'PreferencesController:getState',
+        'AccountsController:getSelectedAccount',
+      ],
+      allowedEvents: [
+        'PreferencesController:stateChange',
+        'TokensController:stateChange',
+      ],
+    });
+
+    this.tokenBalancesController = new TokenBalancesController({
+      messenger: tokenBalancesMessenger,
+      state: initState.TokenBalancesController,
+      interval: 30000,
+    });
 
     const phishingControllerMessenger = this.controllerMessenger.getRestricted({
       name: 'PhishingController',
@@ -2397,6 +2419,7 @@ export default class MetamaskController extends EventEmitter {
       GasFeeController: this.gasFeeController,
       TokenListController: this.tokenListController,
       TokensController: this.tokensController,
+      TokenBalancesController: this.tokenBalancesController,
       SmartTransactionsController: this.smartTransactionsController,
       NftController: this.nftController,
       PhishingController: this.phishingController,
@@ -2452,6 +2475,7 @@ export default class MetamaskController extends EventEmitter {
         GasFeeController: this.gasFeeController,
         TokenListController: this.tokenListController,
         TokensController: this.tokensController,
+        TokenBalancesController: this.tokenBalancesController,
         SmartTransactionsController: this.smartTransactionsController,
         NftController: this.nftController,
         SelectedNetworkController: this.selectedNetworkController,
@@ -3225,6 +3249,7 @@ export default class MetamaskController extends EventEmitter {
       nftController,
       nftDetectionController,
       currencyRateController,
+      tokenBalancesController,
       tokenDetectionController,
       ensController,
       gasFeeController,
@@ -4017,6 +4042,14 @@ export default class MetamaskController extends EventEmitter {
       tokenRatesStopPollingByPollingToken:
         tokenRatesController.stopPollingByPollingToken.bind(
           tokenRatesController,
+        ),
+
+      tokenBalancesStartPolling: tokenBalancesController.startPolling.bind(
+        tokenBalancesController,
+      ),
+      tokenBalancesStopPollingByPollingToken:
+        tokenBalancesController.stopPollingByPollingToken.bind(
+          tokenBalancesController,
         ),
 
       // GasFeeController
@@ -6652,6 +6685,7 @@ export default class MetamaskController extends EventEmitter {
       this.currencyRateController.stopAllPolling();
       this.tokenRatesController.stopAllPolling();
       this.appStateController.clearPollingTokens();
+      this.tokenBalancesController.stopAllPolling();
     } catch (error) {
       console.error(error);
     }
