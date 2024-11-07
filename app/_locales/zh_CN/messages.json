@@ -4540,17 +4540,11 @@
   "signingInWith": {
     "message": "使用以下登录方式"
   },
-  "simulationDetailsFailed": {
-    "message": "加载估算时出错。"
-  },
   "simulationDetailsFiatNotAvailable": {
     "message": "不可用"
   },
   "simulationDetailsIncomingHeading": {
     "message": "您收到"
-  },
-  "simulationDetailsNoBalanceChanges": {
-    "message": "预计您的钱包不会发生变化"
   },
   "simulationDetailsOutgoingHeading": {
     "message": "您发送"
@@ -4588,9 +4582,6 @@
   },
   "siweResources": {
     "message": "资源"
-  },
-  "siweSignatureSimulationDetailInfo": {
-    "message": "您正在登录某个网站，并且您的账户没有预期变化。"
   },
   "siweURI": {
     "message": "URL"

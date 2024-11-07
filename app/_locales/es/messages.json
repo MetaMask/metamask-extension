@@ -4537,17 +4537,11 @@
   "signingInWith": {
     "message": "Iniciar sesión con"
   },
-  "simulationDetailsFailed": {
-    "message": "Se produjo un error al cargar su estimación."
-  },
   "simulationDetailsFiatNotAvailable": {
     "message": "No disponible"
   },
   "simulationDetailsIncomingHeading": {
     "message": "Usted recibe"
-  },
-  "simulationDetailsNoBalanceChanges": {
-    "message": "No se prevén cambios para su monedero"
   },
   "simulationDetailsOutgoingHeading": {
     "message": "Envía"
@@ -4585,9 +4579,6 @@
   },
   "siweResources": {
     "message": "Recursos"
-  },
-  "siweSignatureSimulationDetailInfo": {
-    "message": "Está iniciando sesión en un sitio y no se prevén cambios en su cuenta."
   },
   "siweURI": {
     "message": "URL"
