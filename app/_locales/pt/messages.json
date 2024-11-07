@@ -4540,17 +4540,11 @@
   "signingInWith": {
     "message": "Assinando com"
   },
-  "simulationDetailsFailed": {
-    "message": "Houve um erro ao carregar sua estimativa."
-  },
   "simulationDetailsFiatNotAvailable": {
     "message": "Não disponível"
   },
   "simulationDetailsIncomingHeading": {
     "message": "Você recebe"
-  },
-  "simulationDetailsNoBalanceChanges": {
-    "message": "Nenhuma alteração prevista para sua carteira"
   },
   "simulationDetailsOutgoingHeading": {
     "message": "Você envia"
@@ -4588,9 +4582,6 @@
   },
   "siweResources": {
     "message": "Recursos"
-  },
-  "siweSignatureSimulationDetailInfo": {
-    "message": "Você está fazendo login em um site e não há alterações previstas em sua conta."
   },
   "siweURI": {
     "message": "URL"
