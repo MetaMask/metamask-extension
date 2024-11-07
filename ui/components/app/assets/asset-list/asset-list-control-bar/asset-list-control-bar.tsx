@@ -19,6 +19,7 @@ import {
   Display,
   JustifyContent,
   TextColor,
+  TextVariant,
 } from '../../../../../helpers/constants/design-system';
 import ImportControl from '../import-control';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
@@ -96,6 +97,7 @@ const AssetListControlBar = ({ showTokensLinks }: AssetListControlBarProps) => {
         {process.env.FILTER_TOKENS_TOGGLE && (
           <ButtonBase
             data-testid="sort-by-popover-toggle"
+            variant={TextVariant.bodySmMedium}
             className="asset-list-control-bar__button asset-list-control-bar__network_control"
             onClick={toggleNetworkFilterPopover}
             size={ButtonBaseSize.Sm}
@@ -115,7 +117,11 @@ const AssetListControlBar = ({ showTokensLinks }: AssetListControlBarProps) => {
           </ButtonBase>
         )}
 
-        <Box display={Display.Flex} justifyContent={JustifyContent.flexEnd}>
+        <Box
+          className="asset-list-control-bar__buttons"
+          display={Display.Flex}
+          justifyContent={JustifyContent.flexEnd}
+        >
           <Tooltip title={t('sortBy')} position="bottom" distance={20}>
             <ButtonBase
               data-testid="sort-by-popover-toggle"
