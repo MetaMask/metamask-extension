@@ -4540,17 +4540,11 @@
   "signingInWith": {
     "message": "Masuk dengan"
   },
-  "simulationDetailsFailed": {
-    "message": "Terjadi kesalahan saat memuat estimasi Anda."
-  },
   "simulationDetailsFiatNotAvailable": {
     "message": "Tidak Tersedia"
   },
   "simulationDetailsIncomingHeading": {
     "message": "Anda menerima"
-  },
-  "simulationDetailsNoBalanceChanges": {
-    "message": "Tidak ada perubahan yang terprediksi untuk dompet Anda"
   },
   "simulationDetailsOutgoingHeading": {
     "message": "Anda mengirim"
@@ -4588,9 +4582,6 @@
   },
   "siweResources": {
     "message": "Sumber daya"
-  },
-  "siweSignatureSimulationDetailInfo": {
-    "message": "Anda masuk ke sebuah situs dan tidak ada perkiraan perubahan pada akun Anda."
   },
   "siweURI": {
     "message": "URL"
