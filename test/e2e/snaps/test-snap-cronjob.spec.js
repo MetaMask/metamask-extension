@@ -9,6 +9,9 @@ const { TEST_SNAPS_WEBSITE_URL } = require('./enums');
 
 describe('Test Snap Cronjob', function () {
   it('can trigger a cronjob to open a dialog every minute', async function () {
+    const MAX_RETRIES = 3;
+    const WAIT_TIME = 65000; // 65 seconds
+
     await withFixtures(
       {
         fixtures: new FixtureBuilder().build(),
@@ -74,19 +77,19 @@ describe('Test Snap Cronjob', function () {
           text: 'Reconnect to Cronjobs Snap',
         });
 
-        const MAX_RETRIES = 3;
-        const WAIT_TIME = 65000; // 65 seconds
-
         for (let attempt = 1; attempt <= MAX_RETRIES; attempt++) {
           try {
             // Switch to dialog popup, wait for a maximum of 65 seconds
             await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
             // Look for the dialog popup to verify cronjob fired
-            await driver.waitForSelector({
-              css: '.snap-ui-renderer__content',
-              text: 'This dialog was triggered by a cronjob',
-            }, WAIT_TIME);
+            await driver.waitForSelector(
+              {
+                css: '.snap-ui-renderer__content',
+                text: 'This dialog was triggered by a cronjob',
+              },
+              WAIT_TIME,
+            );
 
             // Try to click on the Ok button and pass test if window closes
             await driver.clickElementAndWaitForWindowToClose({
@@ -103,11 +106,9 @@ describe('Test Snap Cronjob', function () {
               // If the maximum number of retries is reached, throw an error
               throw new Error('Failed to handle the dialog after 3 attempts.');
             }
-            // Optionally, add a delay before retrying
-            await new Promise(resolve => setTimeout(resolve, 1000));
           }
         }
-      }
+      },
     );
   });
 });
