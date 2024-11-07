@@ -6,7 +6,6 @@ const {
 
 const {
   withFixtures,
-  openDapp,
   unlockWallet,
   generateGanacheOptions,
   WINDOW_TITLES,
