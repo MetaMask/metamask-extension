@@ -92,6 +92,7 @@ export default function TokenCell({
       showPercentage
       privacyMode={privacyMode}
       isNativeCurrency={isNative}
+      chainId={chainId}
     />
   );
 }
