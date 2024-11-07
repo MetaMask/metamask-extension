@@ -4,6 +4,7 @@ import { BigNumber } from 'bignumber.js';
 import { isBoolean } from 'lodash';
 import { useMemo, useState } from 'react';
 import { useSelector } from 'react-redux';
+import { calcTokenAmount } from '../../../../../../../shared/lib/transactions-controller-utils';
 import { Numeric } from '../../../../../../../shared/modules/Numeric';
 import useTokenExchangeRate from '../../../../../../components/app/currency-input/hooks/useTokenExchangeRate';
 import { getIntlLocale } from '../../../../../../ducks/locale/locale';
@@ -27,13 +28,16 @@ export const useTokenValues = (transactionMeta: TransactionMeta) => {
     useMemo(() => {
       if (!value) {
         return {
-          decodedTransferValue: 0,
+          decodedTransferValue: '0',
           isDecodedTransferValuePending: false,
         };
       }
 
       if (!decimals) {
-        return { decodedTransferValue: 0, isDecodedTransferValuePending: true };
+        return {
+          decodedTransferValue: '0',
+          isDecodedTransferValuePending: true,
+        };
       }
 
       const paramIndex = value.data[0].params.findIndex(
@@ -45,19 +49,19 @@ export const useTokenValues = (transactionMeta: TransactionMeta) => {
       );
       if (paramIndex === -1) {
         return {
-          decodedTransferValue: 0,
+          decodedTransferValue: '0',
           isDecodedTransferValuePending: false,
         };
       }
 
       return {
-        decodedTransferValue: new BigNumber(
-          value.data[0].params[paramIndex].value.toString(),
-        )
-          .dividedBy(new BigNumber(10).pow(Number(decimals)))
-          .toNumber(),
+        decodedTransferValue: calcTokenAmount(
+          value.data[0].params[paramIndex].value,
+          decimals,
+        ).toFixed(),
         isDecodedTransferValuePending: false,
       };
+      // };
     }, [value, decimals]);
 
   const [exchangeRate, setExchangeRate] = useState<Numeric | undefined>();
@@ -83,18 +87,9 @@ export const useTokenValues = (transactionMeta: TransactionMeta) => {
   );
 
   return {
-    decodedTransferValue: toNonScientificString(decodedTransferValue),
+    decodedTransferValue,
     displayTransferValue,
     fiatDisplayValue,
     pending: pending || isDecodedTransferValuePending,
   };
 };
-
-export function toNonScientificString(num: number): string {
-  if (num >= 10e-18) {
-    return num.toFixed(18).replace(/\.?0+$/u, '');
-  }
-
-  // keep in scientific notation
-  return num.toString();
-}
