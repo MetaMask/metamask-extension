@@ -146,7 +146,7 @@ class PrivacySettings {
    * @param password - The password to fill in the input.
    * @param expectedErrorMessage - Whether to expect an error message.
    */
-  async fillPasswordToRevealSRP(
+  async fillPasswordToRevealSrp(
     password: string,
     expectedErrorMessage?: string,
   ): Promise<void> {
