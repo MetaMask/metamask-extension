@@ -105,6 +105,42 @@ class PrivacySettings {
   }
 
   /**
+   * Open the reveal SRP dialog by completing the reveal SRP quiz.
+   *
+   * @param checkErrorAnswer - Whether to check for error answers during answering the quiz.
+   */
+  async completeRevealSrpQuiz(checkErrorAnswer?: boolean): Promise<void> {
+    console.log('Complete reveal SRP quiz on privacy settings page');
+    await this.driver.clickElement(this.revealSrpQuizGetStartedButton);
+
+    // answer quiz question 1
+    if (checkErrorAnswer) {
+      await this.driver.waitForSelector(this.revealSrpQuizQuestionOne);
+      await this.driver.clickElement(this.revealSrpQuizWrongAnswerButton);
+      await this.driver.waitForSelector(
+        this.revealSrpQuizWrongAnswerMessageOne,
+      );
+      await this.driver.clickElement(this.revealSrpQuizTryAgainButton);
+    }
+    await this.driver.waitForSelector(this.revealSrpQuizQuestionOne);
+    await this.driver.clickElement(this.revealSrpQuizRightAnswerButton);
+    await this.driver.clickElement(this.revealSrpQuizContinueButton);
+
+    // answer quiz question 2
+    if (checkErrorAnswer) {
+      await this.driver.waitForSelector(this.revealSrpQuizQuestionTwo);
+      await this.driver.clickElement(this.revealSrpQuizWrongAnswerButton);
+      await this.driver.waitForSelector(
+        this.revealSrpQuizWrongAnswerMessageTwo,
+      );
+      await this.driver.clickElement(this.revealSrpQuizTryAgainButton);
+    }
+    await this.driver.waitForSelector(this.revealSrpQuizQuestionTwo);
+    await this.driver.clickElement(this.revealSrpQuizRightAnswerButton);
+    await this.driver.clickElement(this.revealSrpQuizContinueButton);
+  }
+
+  /**
    * Fill the password input and click the next button to reveal the SRP.
    *
    * @param password - The password to fill in the input.
@@ -130,35 +166,10 @@ class PrivacySettings {
     }
   }
 
-  async openRevealSRPDialog(checkErrorAnswer?: boolean): Promise<void> {
-    console.log('Open reveal SRP dialog on privacy settings page');
+  async openRevealSrpQuiz(): Promise<void> {
+    console.log('Open reveal SRP quiz on privacy settings page');
     await this.driver.clickElement(this.revealSrpButton);
     await this.driver.waitForSelector(this.revealSrpQuizModalTitle);
-    await this.driver.clickElement(this.revealSrpQuizGetStartedButton);
-    // answer quiz question 1
-    if (checkErrorAnswer) {
-      await this.driver.waitForSelector(this.revealSrpQuizQuestionOne);
-      await this.driver.clickElement(this.revealSrpQuizWrongAnswerButton);
-      await this.driver.waitForSelector(
-        this.revealSrpQuizWrongAnswerMessageOne,
-      );
-      await this.driver.clickElement(this.revealSrpQuizTryAgainButton);
-    }
-    await this.driver.waitForSelector(this.revealSrpQuizQuestionOne);
-    await this.driver.clickElement(this.revealSrpQuizRightAnswerButton);
-    await this.driver.clickElement(this.revealSrpQuizContinueButton);
-    // answer quiz question 2
-    if (checkErrorAnswer) {
-      await this.driver.waitForSelector(this.revealSrpQuizQuestionTwo);
-      await this.driver.clickElement(this.revealSrpQuizWrongAnswerButton);
-      await this.driver.waitForSelector(
-        this.revealSrpQuizWrongAnswerMessageTwo,
-      );
-      await this.driver.clickElement(this.revealSrpQuizTryAgainButton);
-    }
-    await this.driver.waitForSelector(this.revealSrpQuizQuestionTwo);
-    await this.driver.clickElement(this.revealSrpQuizRightAnswerButton);
-    await this.driver.clickElement(this.revealSrpQuizContinueButton);
   }
 
   async check_displayedSrpCanBeCopied(): Promise<void> {
