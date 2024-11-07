@@ -17,12 +17,13 @@ import {
   NETWORK_TYPES,
   TEST_NETWORK_TICKER_MAP,
 } from '../../../shared/constants/network';
-import MMIController from './mmi-controller';
+import { MMIController, AllowedActions } from './mmi-controller';
 import { AppStateController } from './app-state-controller';
 import { ControllerMessenger } from '@metamask/base-controller';
 import { mmiKeyringBuilderFactory } from '../mmi-keyring-builder-factory';
 import { ETH_EOA_METHODS } from '../../../shared/constants/eth-methods';
 import { mockNetworkState } from '../../../test/stub/networks';
+import { InfuraNetworkType } from '@metamask/controller-utils';
 import { API_REQUEST_LOG_EVENT } from '@metamask-institutional/sdk';
 import { getDefaultPreferencesControllerState } from './preferences-controller';
 
@@ -38,6 +39,21 @@ jest.mock('./permissions', () => ({
     };
   }),
 }));
+
+export const createMockNetworkConfiguration = (
+  override?: Partial<NetworkConfiguration>,
+): NetworkConfiguration => {
+  return {
+    chainId: CHAIN_IDS.SEPOLIA,
+    blockExplorerUrls: [],
+    defaultRpcEndpointIndex: 0,
+    name: 'Mock Network',
+    nativeCurrency: 'MOCK TOKEN',
+    rpcEndpoints: [],
+    defaultBlockExplorerUrlIndex: 0,
+    ...override,
+  };
+};
 
 const mockAccount = {
   address: '0x758b8178a9A4B7206d1f648c4a77C515Cbac7001',
@@ -73,9 +89,9 @@ describe('MMIController', function () {
     mmiConfigurationController,
     controllerMessenger,
     accountsController,
-    networkController,
     keyringController,
-    custodyController;
+    custodyController,
+    mmiControllerMessenger;
 
   beforeEach(async function () {
     const mockMessenger = {
@@ -88,22 +104,10 @@ describe('MMIController', function () {
       subscribe: jest.fn(),
     };
 
-    controllerMessenger = new ControllerMessenger();
-
-    networkController = new NetworkController({
-      messenger: controllerMessenger.getRestricted({
-        name: 'NetworkController',
-        allowedEvents: [
-          'NetworkController:stateChange',
-          'NetworkController:networkWillChange',
-          'NetworkController:networkDidChange',
-          'NetworkController:infuraIsBlocked',
-          'NetworkController:infuraIsUnblocked',
-        ],
-      }),
-      state: mockNetworkState({ chainId: CHAIN_IDS.SEPOLIA }),
-      infuraProjectId: 'mock-infura-project-id',
-    });
+    const controllerMessenger = new ControllerMessenger<
+      AllowedActions,
+      never
+    >();
 
     accountsController = new AccountsController({
       messenger: controllerMessenger.getRestricted({
@@ -209,7 +213,33 @@ describe('MMIController', function () {
       }),
     );
 
-    const mmiControllerMessenger = controllerMessenger.getRestricted({
+    controllerMessenger.registerActionHandler(
+      'NetworkController:getState',
+      jest
+        .fn()
+        .mockReturnValue(mockNetworkState({ chainId: CHAIN_IDS.SEPOLIA })),
+    );
+
+    controllerMessenger.registerActionHandler(
+      'NetworkController:setActiveNetwork',
+      InfuraNetworkType['sepolia'],
+    );
+
+    controllerMessenger.registerActionHandler(
+      'NetworkController:getNetworkClientById',
+      jest.fn().mockReturnValue({
+        configuration: {
+          chainId: CHAIN_IDS.SEPOLIA,
+        },
+      }),
+    );
+
+    controllerMessenger.registerActionHandler(
+      'NetworkController:getNetworkConfigurationByChainId',
+      jest.fn().mockReturnValue(createMockNetworkConfiguration()),
+    );
+
+    mmiControllerMessenger = controllerMessenger.getRestricted({
       name: 'MMIController',
       allowedActions: [
         'AccountsController:getAccountByAddress',
@@ -218,6 +248,10 @@ describe('MMIController', function () {
         'AccountsController:getSelectedAccount',
         'AccountsController:setSelectedAccount',
         'MetaMetricsController:getState',
+        'NetworkController:getState',
+        'NetworkController:setActiveNetwork',
+        'NetworkController:getNetworkClientById',
+        'NetworkController:getNetworkConfigurationByChainId',
       ],
     });
 
@@ -251,7 +285,6 @@ describe('MMIController', function () {
           }),
         },
       }),
-      networkController,
       permissionController,
       custodyController,
       custodianEventHandlerFactory: jest.fn(),
@@ -518,8 +551,8 @@ describe('MMIController', function () {
       CUSTODIAN_TYPES['CUSTODIAN-TYPE'] = {
         keyringClass: { type: 'mock-keyring-class' },
       };
-      mmiController.messenger.call = jest
-        .fn()
+      jest
+        .spyOn(mmiControllerMessenger, 'call')
         .mockReturnValue({ address: '0x1' });
       mmiController.custodyController.getCustodyTypeByAddress = jest
         .fn()
@@ -639,8 +672,8 @@ describe('MMIController', function () {
       mmiController.custodyController.getAccountDetails = jest
         .fn()
         .mockReturnValue({});
-      mmiController.messenger.call = jest
-        .fn()
+      jest
+        .spyOn(mmiControllerMessenger, 'call')
         .mockReturnValue([mockAccount, mockAccount2]);
       mmiController.mmiConfigurationController.store.getState = jest
         .fn()
@@ -712,7 +745,7 @@ describe('MMIController', function () {
 
   describe('handleMmiCheckIfTokenIsPresent', () => {
     it('should check if a token is present', async () => {
-      mmiController.messenger.call = jest
+      mmiController.messagingSystem.call = jest
         .fn()
         .mockReturnValue({ address: '0x1' });
       mmiController.custodyController.getCustodyTypeByAddress = jest
@@ -744,7 +777,7 @@ describe('MMIController', function () {
 
   describe('handleMmiDashboardData', () => {
     it('should return internalAccounts as identities', async () => {
-      const controllerMessengerSpy = jest.spyOn(controllerMessenger, 'call');
+      const controllerMessengerSpy = jest.spyOn(mmiControllerMessenger, 'call');
       await mmiController.handleMmiDashboardData();
 
       expect(controllerMessengerSpy).toHaveBeenCalledWith(
@@ -822,7 +855,7 @@ describe('MMIController', function () {
 
   describe('setAccountAndNetwork', () => {
     it('should set a new selected account if the selectedAddress and the address from the arguments is different', async () => {
-      const selectedAccountSpy = jest.spyOn(controllerMessenger, 'call');
+      const selectedAccountSpy = jest.spyOn(mmiControllerMessenger, 'call');
       await mmiController.setAccountAndNetwork(
         'mock-origin',
         mockAccount2.address,
@@ -840,14 +873,14 @@ describe('MMIController', function () {
     });
 
     it('should not set a new selected account the accounts are the same', async () => {
-      const selectedAccountSpy = jest.spyOn(controllerMessenger, 'call');
+      const selectedAccountSpy = jest.spyOn(mmiControllerMessenger, 'call');
       await mmiController.setAccountAndNetwork(
         'mock-origin',
         mockAccount.address,
         '0x1',
       );
 
-      expect(selectedAccountSpy).toHaveBeenCalledTimes(1);
+      expect(selectedAccountSpy).toHaveBeenCalledTimes(4);
       const selectedAccount = accountsController.getSelectedAccount();
       expect(selectedAccount.id).toBe(mockAccount.id);
     });
