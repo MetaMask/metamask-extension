@@ -90,7 +90,6 @@ const AssetListControlBar = ({ showTokensLinks }: AssetListControlBarProps) => {
       className="asset-list-control-bar"
       marginLeft={2}
       marginRight={2}
-      paddingTop={4}
       ref={popoverRef}
     >
       <Box display={Display.Flex} justifyContent={JustifyContent.spaceBetween}>
