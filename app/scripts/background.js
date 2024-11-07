@@ -292,7 +292,8 @@ function maybeDetectPhishing(theController) {
         blockReason = blockedRequestResponse.type;
       }
 
-      const blockedUrl = blockedRequestResponse ? details.initiator : hostname;
+      const blockedUrl =
+        blockReason === 'c2DomainBlocklist' ? details.initiator : hostname;
 
       theController.metaMetricsController.trackEvent({
         // should we differentiate between background redirection and content script redirection?
