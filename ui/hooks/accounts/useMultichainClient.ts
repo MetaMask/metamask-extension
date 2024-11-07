@@ -1,6 +1,7 @@
 import { KeyringClient, Sender } from '@metamask/keyring-api';
 import { HandlerType } from '@metamask/snaps-utils';
 import { CaipChainId, Json, JsonRpcRequest } from '@metamask/utils';
+import { SnapId } from '@metamask/snaps-sdk';
 import { useMemo } from 'react';
 import {
   handleSnapRequest,
@@ -19,7 +20,7 @@ const SNAP_ID_MAP: Record<WalletClientType, SnapId> = {
   [WalletClientType.Solana]: SOLANA_WALLET_SNAP_ID,
 };
 
-export class MultichainSender implements Sender {
+export class MultichainWalletSnapSender implements Sender {
   private snapId: SnapId;
 
   constructor(snapId: SnapId) {
@@ -47,7 +48,7 @@ export class MultichainClient {
     if (!snapId) {
       throw new Error(`Unsupported client type: ${clientType}`);
     }
-    this.#client = new KeyringClient(new MultichainSender(snapId));
+    this.#client = new KeyringClient(new MultichainWalletSnapSender(snapId));
   }
 
   async createAccount(scope: CaipChainId) {

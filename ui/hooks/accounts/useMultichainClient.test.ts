@@ -36,11 +36,25 @@ describe('useMultichainClient', () => {
       clientType: WalletClientType.Bitcoin,
       network: MultichainNetworks.BITCOIN,
       snapId: BITCOIN_WALLET_SNAP_ID,
+      mockAccount: {
+        address: 'tb1q2hjrlnf8kmtt5dj6e49gqzy6jnpe0sj7ty50cl',
+        id: '11a33c6b-0d46-43f4-a401-01587d575fd0',
+        options: {},
+        methods: [BtcMethod.SendMany],
+        type: BtcAccountType.P2wpkh,
+      },
     },
     {
       clientType: WalletClientType.Solana,
       network: MultichainNetworks.SOLANA,
       snapId: SOLANA_WALLET_SNAP_ID,
+      mockAccount: {
+        address: '4mip4tgbhxf8dpqvtb3zhzzapwfvznanhssqzgjyp7ha',
+        id: '22b44d7c-1e57-54g5-b502-02698e686fd1',
+        options: {},
+        methods: ['someMethod'],
+        type: 'solana-account-type',
+      },
     },
   ];
 
