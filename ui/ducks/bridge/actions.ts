@@ -40,7 +40,6 @@ import { decGWEIToHexWEI } from '../../../shared/modules/conversion.utils';
 import { FEATURED_RPCS } from '../../../shared/constants/network';
 import { getEthUsdtResetData, isEthUsdt } from '../../pages/bridge/bridge.util';
 import { ETH_USDT_ADDRESS } from '../../../shared/constants/bridge';
-import BridgeController from '../../../app/scripts/controllers/bridge/bridge-controller';
 import { bridgeSlice } from './bridge';
 import { BridgeAppState } from './selectors';
 
@@ -120,7 +119,7 @@ export const updateQuoteRequestParams = (params: Partial<QuoteRequest>) => {
 export const getBridgeERC20Allowance = async (
   contractAddress: string,
   chainId: Hex,
-): ReturnType<BridgeController['getBridgeERC20Allowance']> => {
+): Promise<string> => {
   return await submitRequestToBackground(
     BridgeBackgroundAction.GET_BRIDGE_ERC20_ALLOWANCE,
     [contractAddress, chainId],

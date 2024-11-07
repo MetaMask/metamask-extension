@@ -1,6 +1,5 @@
 import { Contract } from '@ethersproject/contracts';
 import { Hex, add0x } from '@metamask/utils';
-import { TransactionParams } from '@metamask/transaction-controller';
 import { abiERC20 } from '@metamask/metamask-eth-abis';
 import {
   BridgeFeatureFlagsKey,

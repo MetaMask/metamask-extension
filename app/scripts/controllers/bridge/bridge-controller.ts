@@ -1,6 +1,6 @@
 import { add0x, Hex } from '@metamask/utils';
 import { StaticIntervalPollingController } from '@metamask/polling-controller';
-import { NetworkClientId, Provider } from '@metamask/network-controller';
+import { NetworkClientId } from '@metamask/network-controller';
 import { StateMetadata } from '@metamask/base-controller';
 import { Contract } from '@ethersproject/contracts';
 import { abiERC20 } from '@metamask/metamask-eth-abis';
