@@ -68,6 +68,7 @@ import {
   getOriginOfCurrentTab,
   getSelectedInternalAccount,
   getUpdatedAndSortedAccounts,
+  getPreferences,
 } from '../../../selectors';
 import { setSelectedAccount } from '../../../store/actions';
 import {
@@ -218,6 +219,7 @@ export const AccountListMenu = ({
       ),
     [accounts, allowedAccountTypes],
   );
+  const { privacyMode } = useSelector(getPreferences);
   const selectedAccount = useSelector(getSelectedInternalAccount);
   const connectedSites = useSelector(
     getConnectedSubjectsForAllAddresses,
@@ -644,6 +646,7 @@ export const AccountListMenu = ({
                       isHidden={Boolean(account.hidden)}
                       currentTabOrigin={currentTabOrigin}
                       isActive={Boolean(account.active)}
+                      privacyMode={privacyMode}
                       {...accountListItemProps}
                     />
                   </Box>

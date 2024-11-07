@@ -5,7 +5,7 @@ import classnames from 'classnames';
 import { useCurrencyDisplay } from '../../../hooks/useCurrencyDisplay';
 import { EtherDenomination } from '../../../../shared/constants/common';
 import { getPreferences } from '../../../selectors';
-import { Text, Box } from '../../component-library';
+import { SensitiveText, Box } from '../../component-library';
 import {
   AlignItems,
   Display,
@@ -35,9 +35,9 @@ export default function CurrencyDisplay({
   textProps = {},
   suffixProps = {},
   isAggregatedFiatOverviewBalance = false,
+  privacyMode = false,
   ...props
 }) {
-  const { privacyMode } = useSelector(getPreferences);
   const [title, parts] = useCurrencyDisplay(value, {
     account,
     displayValue,
@@ -71,7 +71,7 @@ export default function CurrencyDisplay({
           {prefixComponent}
         </Box>
       ) : null}
-      <Text
+      <SensitiveText
         as="span"
         className="currency-display-component__text"
         ellipsis
@@ -82,9 +82,9 @@ export default function CurrencyDisplay({
       >
         {parts.prefix}
         {parts.value}
-      </Text>
+      </SensitiveText>
       {parts.suffix ? (
-        <Text
+        <SensitiveText
           as="span"
           className={
             privacyMode
@@ -97,7 +97,7 @@ export default function CurrencyDisplay({
           {...suffixProps}
         >
           {parts.suffix}
-        </Text>
+        </SensitiveText>
       ) : null}
     </Box>
   );
@@ -125,6 +125,7 @@ const CurrencyDisplayPropTypes = {
   textProps: PropTypes.object,
   suffixProps: PropTypes.object,
   isAggregatedFiatOverviewBalance: PropTypes.bool,
+  privacyMode: PropTypes.bool,
 };
 
 CurrencyDisplay.propTypes = CurrencyDisplayPropTypes;
