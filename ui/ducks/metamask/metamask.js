@@ -50,7 +50,6 @@ const initialState = {
     smartTransactionsOptInStatus: true,
     petnamesEnabled: true,
     featureNotificationsEnabled: false,
-    privacyMode: false,
     showMultiRpcModal: false,
   },
   firstTimeFlowType: null,

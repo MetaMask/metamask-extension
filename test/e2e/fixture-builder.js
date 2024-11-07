@@ -75,7 +75,6 @@ function onboardingFixture() {
           hideZeroBalanceTokens: false,
           showExtensionInFullSizeView: false,
           showFiatInTestnets: false,
-          privacyMode: false,
           showTestNetworks: false,
           smartTransactionsOptInStatus: true,
           showNativeTokenAsMainBalance: true,

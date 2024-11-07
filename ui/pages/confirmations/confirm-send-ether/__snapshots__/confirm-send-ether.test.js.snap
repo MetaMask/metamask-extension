@@ -306,7 +306,6 @@ exports[`ConfirmSendEther should render correct information for for confirm send
               </div>
               <span
                 class="mm-box mm-text currency-display-component__text mm-text--inherit mm-text--ellipsis mm-box--color-text-default"
-                data-testid="account-value-and-suffix"
               >
                 0
               </span>
@@ -470,7 +469,6 @@ exports[`ConfirmSendEther should render correct information for for confirm send
                         >
                           <span
                             class="mm-box mm-text currency-display-component__text mm-text--body-md mm-text--ellipsis mm-box--color-text-alternative"
-                            data-testid="account-value-and-suffix"
                           >
                             0.000021
                           </span>
@@ -523,7 +521,6 @@ exports[`ConfirmSendEther should render correct information for for confirm send
                         >
                           <span
                             class="mm-box mm-text currency-display-component__text mm-text--body-sm mm-text--ellipsis mm-box--color-text-alternative"
-                            data-testid="account-value-and-suffix"
                           >
                             0.00021
                           </span>
