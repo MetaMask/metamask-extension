@@ -75,7 +75,11 @@ export type AssetPickerProps = {
   >;
 } & Pick<
   React.ComponentProps<typeof AssetPickerModal>,
-  'visibleTabs' | 'header' | 'sendingAsset' | 'customTokenListGenerator'
+  | 'visibleTabs'
+  | 'header'
+  | 'sendingAsset'
+  | 'customTokenListGenerator'
+  | 'isTokenListLoading'
 >;
 
 // A component that lets the user pick from a list of assets.
@@ -91,6 +95,7 @@ export function AssetPicker({
   isDisabled = false,
   visibleTabs,
   customTokenListGenerator,
+  isTokenListLoading = false,
 }: AssetPickerProps) {
   ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
   const t = useI18nContext();
@@ -189,6 +194,7 @@ export function AssetPicker({
           asset?.type === AssetType.NFT ? TabName.NFTS : TabName.TOKENS
         }
         customTokenListGenerator={customTokenListGenerator}
+        isTokenListLoading={isTokenListLoading}
       />
 
       {children?.(handleButtonClick, networkImageSrc) || (
