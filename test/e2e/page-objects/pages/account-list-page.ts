@@ -1,5 +1,5 @@
 import { Driver } from '../../webdriver/driver';
-import { regularDelayMs } from '../../helpers';
+import { largeDelayMs } from '../../helpers';
 
 class AccountListPage {
   private readonly driver: Driver;
@@ -125,7 +125,7 @@ class AccountListPage {
     await this.driver.fill(this.accountNameInput, customLabel);
     // needed to mitigate a race condition with the state update
     // there is no condition we can wait for in the UI
-    await this.driver.delay(regularDelayMs);
+    await this.driver.delay(largeDelayMs);
     await this.driver.clickElementAndWaitToDisappear(
       this.addAccountConfirmButton,
     );
@@ -141,7 +141,7 @@ class AccountListPage {
     await this.driver.clickElement(this.addEthereumAccountButton);
     // needed to mitigate a race condition with the state update
     // there is no condition we can wait for in the UI
-    await this.driver.delay(regularDelayMs);
+    await this.driver.delay(largeDelayMs);
     await this.driver.clickElementAndWaitToDisappear(
       this.addAccountConfirmButton,
     );
