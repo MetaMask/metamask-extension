@@ -1,15 +1,17 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
 import {
+  ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
   getMultichainIsMainnet,
+  ///: END:ONLY_INCLUDE_IF
   getMultichainProviderConfig,
   getMultichainSelectedAccountCachedBalance,
 } from '../../../selectors/multichain';
 ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
 import { getIsBitcoinBuyable } from '../../../ducks/ramps';
-///: END:ONLY_INCLUDE_IF
 import { getSelectedInternalAccount } from '../../../selectors';
 import { useMultichainSelector } from '../../../hooks/useMultichainSelector';
+///: END:ONLY_INCLUDE_IF
 import { CoinOverview } from './coin-overview';
 
 type BtcOverviewProps = {
@@ -17,14 +19,14 @@ type BtcOverviewProps = {
 };
 
 const BtcOverview = ({ className }: BtcOverviewProps) => {
+  const { chainId } = useSelector(getMultichainProviderConfig);
+  const balance = useSelector(getMultichainSelectedAccountCachedBalance);
+  ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
   const selectedAccount = useSelector(getSelectedInternalAccount);
   const isBtcMainnetAccount = useMultichainSelector(
     getMultichainIsMainnet,
     selectedAccount,
   );
-  const { chainId } = useSelector(getMultichainProviderConfig);
-  const balance = useSelector(getMultichainSelectedAccountCachedBalance);
-  ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
   const isBtcBuyable = useSelector(getIsBitcoinBuyable);
   ///: END:ONLY_INCLUDE_IF
 
