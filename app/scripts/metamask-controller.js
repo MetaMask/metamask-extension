@@ -156,6 +156,7 @@ import {
   NotificationServicesPushController,
   NotificationServicesController,
 } from '@metamask/notification-services-controller';
+import { isProduction } from '../../shared/modules/environment';
 import {
   methodsRequiringNetworkSwitch,
   methodsThatCanSwitchNetworkWithoutApproval,
@@ -282,7 +283,7 @@ import {
   checkForMultipleVersionsRunning,
 } from './detect-multiple-instances';
 ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-import MMIController from './controllers/mmi-controller';
+import { MMIController } from './controllers/mmi-controller';
 import { mmiKeyringBuilderFactory } from './mmi-keyring-builder-factory';
 ///: END:ONLY_INCLUDE_IF
 import ComposableObservableStore from './lib/ComposableObservableStore';
@@ -1374,6 +1375,8 @@ export default class MetamaskController extends EventEmitter {
 
     const allowLocalSnaps = process.env.ALLOW_LOCAL_SNAPS;
     const requireAllowlist = process.env.REQUIRE_SNAPS_ALLOWLIST;
+    const rejectInvalidPlatformVersion =
+      process.env.REJECT_INVALID_SNAPS_PLATFORM_VERSION;
 
     this.snapController = new SnapController({
       environmentEndowmentPermissions: Object.values(EndowmentPermissions),
@@ -1388,6 +1391,7 @@ export default class MetamaskController extends EventEmitter {
         dappsCanUpdateSnaps: true,
         allowLocalSnaps,
         requireAllowlist,
+        rejectInvalidPlatformVersion,
       },
       encryptor: encryptorFactory(600_000),
       getMnemonic: this.getPrimaryKeyringMnemonic.bind(this),
@@ -1569,7 +1573,7 @@ export default class MetamaskController extends EventEmitter {
         },
       },
       env: {
-        isAccountSyncingEnabled: isManifestV3,
+        isAccountSyncingEnabled: !isProduction() && isManifestV3,
       },
       messenger: this.controllerMessenger.getRestricted({
         name: 'UserStorageController',
@@ -2023,6 +2027,8 @@ export default class MetamaskController extends EventEmitter {
         'AccountsController:listAccounts',
         'AccountsController:getSelectedAccount',
         'AccountsController:setSelectedAccount',
+        'NetworkController:getState',
+        'NetworkController:setActiveNetwork',
       ],
     });
 
@@ -2030,7 +2036,6 @@ export default class MetamaskController extends EventEmitter {
       messenger: mmiControllerMessenger,
       mmiConfigurationController: this.mmiConfigurationController,
       keyringController: this.keyringController,
-      preferencesController: this.preferencesController,
       appStateController: this.appStateController,
       transactionUpdateController: this.transactionUpdateController,
       custodyController: this.custodyController,
@@ -2038,7 +2043,6 @@ export default class MetamaskController extends EventEmitter {
       getPendingNonce: this.getPendingNonce.bind(this),
       accountTrackerController: this.accountTrackerController,
       metaMetricsController: this.metaMetricsController,
-      networkController: this.networkController,
       permissionController: this.permissionController,
       signatureController: this.signatureController,
       platform: this.platform,
@@ -3316,6 +3320,8 @@ export default class MetamaskController extends EventEmitter {
         preferencesController.setWatchEthereumAccountEnabled.bind(
           preferencesController,
         ),
+      ///: END:ONLY_INCLUDE_IF
+      ///: BEGIN:ONLY_INCLUDE_IF(solana)
       setSolanaSupportEnabled:
         preferencesController.setSolanaSupportEnabled.bind(
           preferencesController,
@@ -3478,6 +3484,10 @@ export default class MetamaskController extends EventEmitter {
       ),
       setDismissSeedBackUpReminder:
         preferencesController.setDismissSeedBackUpReminder.bind(
+          preferencesController,
+        ),
+      setOverrideContentSecurityPolicyHeader:
+        preferencesController.setOverrideContentSecurityPolicyHeader.bind(
           preferencesController,
         ),
       setAdvancedGasFee: preferencesController.setAdvancedGasFee.bind(

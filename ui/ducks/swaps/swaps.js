@@ -857,6 +857,7 @@ export const fetchQuotesAndSetQuoteState = (
             stx_enabled: smartTransactionsEnabled,
             current_stx_enabled: currentSmartTransactionsEnabled,
             stx_user_opt_in: getSmartTransactionsOptInStatusForMetrics(state),
+            gas_included: newSelectedQuote.isGasIncludedTrade,
             anonymizedData: true,
           },
         });
