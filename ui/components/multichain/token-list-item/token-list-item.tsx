@@ -129,8 +129,9 @@ export const TokenListItem = ({
   const shouldShowPercentage = isEvm && showPercentage;
 
   // Scam warning
-  const showScamWarning =
-    !isNativeCurrency && !isOriginalTokenSymbol && shouldShowPercentage;
+  const showScamWarning = false;
+  // TODO: debug why this scam warning is buggy on multichain
+  // !isNativeCurrency && !isOriginalTokenSymbol && shouldShowPercentage;
 
   const dispatch = useDispatch();
   const [showScamWarningModal, setShowScamWarningModal] = useState(false);
