@@ -338,7 +338,7 @@ export const TokenListItem = ({
                   value={
                     isNativeCurrency
                       ? multiChainMarketData?.[chainId]?.[zeroAddress()]
-                          .pricePercentChange1d
+                          ?.pricePercentChange1d
                       : tokenPercentageChange
                   }
                   address={

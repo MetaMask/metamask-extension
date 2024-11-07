@@ -848,6 +848,20 @@ export const getNetworkConfigurationsByChainId = createDeepEqualSelector(
   (networkConfigurationsByChainId) => networkConfigurationsByChainId,
 );
 
+export const getNetworkConfigurationIdByChainId = createDeepEqualSelector(
+  (state) => state.metamask.networkConfigurationsByChainId,
+  (networkConfigurationsByChainId) =>
+    Object.entries(networkConfigurationsByChainId).reduce(
+      (acc, [_chainId, network]) => {
+        const selectedRpcEndpoint =
+          network.rpcEndpoints[network.defaultRpcEndpointIndex];
+        acc[_chainId] = selectedRpcEndpoint.networkClientId;
+        return acc;
+      },
+      {},
+    ),
+);
+
 /**
  * @type (state: any, chainId: string) => import('@metamask/network-controller').NetworkConfiguration
  */

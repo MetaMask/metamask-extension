@@ -23,18 +23,24 @@ import {
 ///: END:ONLY_INCLUDE_IF
 import {
   getIsSwapsChain,
-  getCurrentChainId,
   ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
   getIsBridgeChain,
   getCurrentKeyring,
   ///: END:ONLY_INCLUDE_IF
+  getCurrentChainId,
+  // getOriginOfCurrentTab,
+  getNetworkConfigurationIdByChainId,
 } from '../../../selectors';
 ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
 import useBridging from '../../../hooks/bridge/useBridging';
 ///: END:ONLY_INCLUDE_IF
 
 import { INVALID_ASSET_TYPE } from '../../../helpers/constants/error-keys';
-import { showModal } from '../../../store/actions';
+import {
+  setActiveNetwork,
+  showModal,
+  // setSwitchedNetworkDetails,
+} from '../../../store/actions';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import {
   MetaMetricsEventCategory,
@@ -68,14 +74,18 @@ const TokenButtons = ({
   const t = useContext(I18nContext);
   const trackEvent = useContext(MetaMetricsContext);
   const history = useHistory();
-
   ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
   const keyring = useSelector(getCurrentKeyring);
   // @ts-expect-error keyring type is wrong maybe?
   const usingHardwareWallet = isHardwareKeyring(keyring.type);
   ///: END:ONLY_INCLUDE_IF
 
-  const chainId = useSelector(getCurrentChainId);
+  const currentChainId = useSelector(getCurrentChainId);
+  // const selectedTabOrigin = useSelector(getOriginOfCurrentTab);
+  const networks = useSelector(getNetworkConfigurationIdByChainId) as Record<
+    string,
+    string
+  >;
   const isSwapsChain = useSelector(getIsSwapsChain);
   ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
   const isBridgeChain = useSelector(getIsBridgeChain);
@@ -137,7 +147,7 @@ const TokenButtons = ({
               properties: {
                 location: 'Token Overview',
                 text: 'Buy',
-                chain_id: chainId,
+                chain_id: currentChainId,
                 token_symbol: token.symbol,
               },
             });
@@ -206,12 +216,22 @@ const TokenButtons = ({
                 token_symbol: token.symbol,
                 location: MetaMetricsSwapsEventSource.TokenView,
                 text: 'Send',
-                chain_id: chainId,
+                chain_id: token.chainId,
               },
             },
             { excludeMetaMetricsId: false },
           );
           try {
+            if (currentChainId !== token.chainId) {
+              const networkConfigurationId = networks[token.chainId];
+              await dispatch(setActiveNetwork(networkConfigurationId));
+              // await dispatch(
+              //   setSwitchedNetworkDetails({
+              //     networkClientId: networkConfigurationId,
+              //     selectedTabOrigin,
+              //   }),
+              // );
+            }
             await dispatch(
               startNewDraftTransaction({
                 type: AssetType.token,
@@ -263,7 +283,7 @@ const TokenButtons = ({
                 token_symbol: token.symbol,
                 location: MetaMetricsSwapsEventSource.TokenView,
                 text: 'Swap',
-                chain_id: chainId,
+                chain_id: currentChainId,
               },
             });
             dispatch(

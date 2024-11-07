@@ -16,8 +16,6 @@ import {
 import SortControl from '../sort-control';
 import {
   BackgroundColor,
-  BorderColor,
-  BorderStyle,
   Display,
   JustifyContent,
   TextColor,
@@ -101,7 +99,7 @@ const AssetListControlBar = ({ showTokensLinks }: AssetListControlBarProps) => {
             className="asset-list-control-bar__button"
             onClick={toggleNetworkFilterPopover}
             size={ButtonBaseSize.Sm}
-            endIconName={IconName.SwapVertical}
+            endIconName={IconName.ArrowDown}
             backgroundColor={
               isNetworkFilterPopoverOpen
                 ? BackgroundColor.backgroundPressed
