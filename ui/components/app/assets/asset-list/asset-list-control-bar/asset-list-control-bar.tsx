@@ -61,7 +61,9 @@ const AssetListControlBar = ({ showTokensLinks }: AssetListControlBarProps) => {
   // We need to set the default filter for all users to be all included networks, rather than defaulting to empty object
   // This effect is to unblock and derisk in the short-term
   useEffect(() => {
-    dispatch(setTokenNetworkFilter(allOpts));
+    if (Object.keys(tokenNetworkFilter).length === 0) {
+      dispatch(setTokenNetworkFilter(allOpts));
+    }
   }, []);
 
   const windowType = getEnvironmentType();
