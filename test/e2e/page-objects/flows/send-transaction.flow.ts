@@ -10,15 +10,15 @@ import SnapSimpleKeyringPage from '../pages/snap-simple-keyring-page';
  * @param driver - The webdriver instance.
  * @param recipientAddress - The recipient address.
  * @param amount - The amount of the asset to be sent in the transaction.
- * @param gasfee - The expected transaction gas fee.
- * @param totalfee - The expected total transaction fee.
+ * @param gasFee - The expected transaction gas fee.
+ * @param totalFee - The expected total transaction fee.
  */
-export const sendTransaction = async (
+export const sendTransactionToAddress = async (
   driver: Driver,
   recipientAddress: string,
   amount: string,
-  gasfee: string,
-  totalfee: string,
+  gasFee: string,
+  totalFee: string,
 ): Promise<void> => {
   console.log(
     `Start flow to send amount ${amount} to recipient ${recipientAddress} on home screen`,
@@ -36,7 +36,7 @@ export const sendTransaction = async (
 
   // confirm transaction when user lands on confirm transaction screen
   const confirmTxPage = new ConfirmTxPage(driver);
-  await confirmTxPage.check_pageIsLoaded(gasfee, totalfee);
+  await confirmTxPage.check_pageIsLoaded(gasFee, totalFee);
   await confirmTxPage.confirmTx();
 };
 
@@ -46,15 +46,15 @@ export const sendTransaction = async (
  * @param driver - The webdriver instance.
  * @param recipientAccount - The recipient account.
  * @param amount - The amount of the asset to be sent in the transaction.
- * @param gasfee - The expected transaction gas fee.
- * @param totalfee - The expected total transaction fee.
+ * @param gasFee - The expected transaction gas fee.
+ * @param totalFee - The expected total transaction fee.
  */
 export const sendTransactionToAccount = async (
   driver: Driver,
   recipientAccount: string,
   amount: string,
-  gasfee: string,
-  totalfee: string,
+  gasFee: string,
+  totalFee: string,
 ): Promise<void> => {
   console.log(
     `Start flow to send amount ${amount} to recipient account ${recipientAccount} on home screen`,
@@ -72,7 +72,7 @@ export const sendTransactionToAccount = async (
 
   // confirm transaction when user lands on confirm transaction screen
   const confirmTxPage = new ConfirmTxPage(driver);
-  await confirmTxPage.check_pageIsLoaded(gasfee, totalfee);
+  await confirmTxPage.check_pageIsLoaded(gasFee, totalFee);
   await confirmTxPage.confirmTx();
 };
 
@@ -82,8 +82,8 @@ export const sendTransactionToAccount = async (
  * @param driver - The webdriver instance.
  * @param recipientAddress - The recipient address.
  * @param amount - The amount of the asset to be sent in the transaction.
- * @param gasfee - The expected transaction gas fee.
- * @param totalfee - The expected total transaction fee.
+ * @param gasFee - The expected transaction gas fee.
+ * @param totalFee - The expected total transaction fee.
  * @param isSyncFlow - Indicates whether synchronous approval option is on for the snap. Defaults to true.
  * @param approveTransaction - Indicates whether the transaction should be approved. Defaults to true.
  */
@@ -91,12 +91,18 @@ export const sendTransactionWithSnapAccount = async (
   driver: Driver,
   recipientAddress: string,
   amount: string,
-  gasfee: string,
-  totalfee: string,
+  gasFee: string,
+  totalFee: string,
   isSyncFlow: boolean = true,
   approveTransaction: boolean = true,
 ): Promise<void> => {
-  await sendTransaction(driver, recipientAddress, amount, gasfee, totalfee);
+  await sendTransactionToAddress(
+    driver,
+    recipientAddress,
+    amount,
+    gasFee,
+    totalFee,
+  );
   if (!isSyncFlow) {
     await new SnapSimpleKeyringPage(driver).approveRejectSnapAccountTransaction(
       approveTransaction,

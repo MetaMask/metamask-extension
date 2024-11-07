@@ -4,7 +4,7 @@ import { Ganache } from '../../seeder/ganache';
 import { withFixtures, defaultGanacheOptions } from '../../helpers';
 import FixtureBuilder from '../../fixture-builder';
 import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
-import { sendTransaction } from '../../page-objects/flows/send-transaction.flow';
+import { sendTransactionToAddress } from '../../page-objects/flows/send-transaction.flow';
 import HomePage from '../../page-objects/pages/homepage';
 
 describe('Simple send eth', function (this: Suite) {
@@ -23,7 +23,7 @@ describe('Simple send eth', function (this: Suite) {
         ganacheServer?: Ganache;
       }) => {
         await loginWithBalanceValidation(driver, ganacheServer);
-        await sendTransaction(
+        await sendTransactionToAddress(
           driver,
           '0x985c30949c92df7a0bd42e0f3e3d539ece98db24',
           '1',
