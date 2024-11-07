@@ -71,10 +71,6 @@ export default class BridgeStatusController extends StaticIntervalPollingControl
         },
       },
     });
-    console.log('BridgeStatusController constructor', {
-      state: this.state,
-      pollingTokensBySrcTxHash: this.#pollingTokensBySrcTxHash,
-    });
 
     // Register action handlers
     this.messagingSystem.registerActionHandler(
@@ -143,18 +139,8 @@ export default class BridgeStatusController extends StaticIntervalPollingControl
         // Check if we are already polling this tx, if so, skip restarting polling for that
         const srcTxHash = historyItem.status.srcChain.txHash;
         const pollingToken = this.#pollingTokensBySrcTxHash[srcTxHash];
-        console.log('pollingToken', {
-          srcTxHash,
-          pollingToken,
-          pollingTokensBySrcTxHash: this.#pollingTokensBySrcTxHash,
-        });
         return !pollingToken;
       });
-
-    console.log('restartPollingForIncompleteHistoryItems', {
-      incompleteHistoryItems,
-      pollingTokensBySrcTxHash: this.#pollingTokensBySrcTxHash,
-    });
 
     incompleteHistoryItems.forEach((historyItem) => {
       const statusRequest = {
@@ -180,19 +166,12 @@ export default class BridgeStatusController extends StaticIntervalPollingControl
       const options: FetchBridgeTxStatusArgs = { statusRequest };
       this.#pollingTokensBySrcTxHash[statusRequest.srcTxHash] =
         this.startPollingByNetworkClientId(networkClientId, options);
-
-      console.log('restarting polling for', {
-        srcTxHash: historyItem.status.srcChain.txHash,
-      });
     });
   };
 
   startPollingForBridgeTxStatus = (
     startPollingForBridgeTxStatusArgs: StartPollingForBridgeTxStatusArgs,
   ) => {
-    console.log('startPollingForBridgeTxStatus', {
-      startPollingForBridgeTxStatusArgs,
-    });
     const {
       statusRequest,
       quoteResponse,
@@ -268,10 +247,6 @@ export default class BridgeStatusController extends StaticIntervalPollingControl
       // We try here because we receive 500 errors from Bridge API if we try to fetch immediately after submitting the source tx
       // Oddly mostly happens on Optimism, never on Arbitrum. By the 2nd fetch, the Bridge API responds properly.
       const status = await fetchBridgeTxStatus(statusRequest);
-      console.log('fetchBridgeTxStatus', {
-        statusRequest,
-        status,
-      });
 
       // No need to purge these on network change or account change, TransactionController does not purge either.
       // TODO In theory we can skip checking status if it's not the current account/network

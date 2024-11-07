@@ -47,23 +47,6 @@ export default function useBridgeData({
       )
     : null;
 
-  if (bridgeHistoryItem && isBridgeComplete === false) {
-    let logTitle;
-    if (bridgeHistoryItem?.status) {
-      logTitle = `transactionGroup BRIDGE STATUS${transactionGroup.initialTransaction.hash}`;
-    } else {
-      logTitle = `transactionGroup${transactionGroup.initialTransaction.hash}`;
-    }
-    console.log(logTitle, {
-      transactionGroup,
-      bridgeTxHistory: bridgeHistory,
-      bridgeTxHistoryItem: bridgeHistoryItem,
-      networkConfigurationsByChainId,
-      destNetworkConfiguration,
-      isBridgeComplete,
-    });
-  }
-
   const showBridgeTxDetails = srcTxHash
     ? () => {
         history.push(`${CROSS_CHAIN_SWAP_TX_DETAILS_ROUTE}/${srcTxHash}`);
