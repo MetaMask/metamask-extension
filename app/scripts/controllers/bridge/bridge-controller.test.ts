@@ -1,4 +1,3 @@
-import { Provider } from '@metamask/network-controller';
 import nock from 'nock';
 import { BRIDGE_API_BASE_URL } from '../../../../shared/constants/bridge';
 import { CHAIN_IDS } from '../../../../shared/constants/network';
@@ -22,8 +21,6 @@ const messengerMock = {
   registerInitialEventPayload: jest.fn(),
   publish: jest.fn(),
 } as unknown as jest.Mocked<BridgeControllerMessenger>;
-
-const providerMock = {} as Provider;
 
 jest.mock('@ethersproject/contracts', () => {
   return {
@@ -538,7 +535,10 @@ describe('BridgeController', function () {
       bridgeController,
       'startPollingByNetworkClientId',
     );
-    messengerMock.call.mockReturnValueOnce({ address: '0x123' } as never);
+    messengerMock.call.mockReturnValue({
+      address: '0x123',
+      provider: jest.fn(),
+    } as never);
 
     bridgeController.updateBridgeQuoteRequestParams({
       srcChainId: 1,
@@ -570,6 +570,10 @@ describe('BridgeController', function () {
 
   describe('getBridgeERC20Allowance', () => {
     it('should return the atomic allowance of the ERC20 token contract', async () => {
+      messengerMock.call.mockReturnValue({
+        address: '0x123',
+        provider: jest.fn(),
+      } as never);
       const allowance = await bridgeController.getBridgeERC20Allowance(
         '0x1f9840a85d5af5bf1d1762f925bdaddc4201f984',
         '0xa',
