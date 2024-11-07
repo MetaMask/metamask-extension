@@ -54,7 +54,7 @@ export default class BridgeStatusController extends StaticIntervalPollingControl
     state,
   }: {
     messenger: BridgeStatusControllerMessenger;
-    state: Partial<{
+    state?: Partial<{
       bridgeStatusState: BridgeStatusControllerState;
     }>;
   }) {

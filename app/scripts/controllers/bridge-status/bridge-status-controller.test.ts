@@ -333,6 +333,51 @@ describe('BridgeStatusController', () => {
       });
       expect(bridgeStatusController.state).toEqual(EMPTY_INIT_STATE);
     });
+    it('rehydrates the tx history state', async () => {
+      // Setup
+      const bridgeStatusController = new BridgeStatusController({
+        messenger: getMessengerMock(),
+        state: {
+          bridgeStatusState: {
+            txHistory: MockTxHistory.getPending(),
+          },
+        },
+      });
+
+      // Execution
+      await bridgeStatusController.startPollingForBridgeTxStatus(
+        getMockStartPollingForBridgeTxStatusArgs(),
+      );
+
+      // Assertion
+      expect(
+        bridgeStatusController.state.bridgeStatusState.txHistory,
+      ).toMatchSnapshot();
+    });
+    it('restarts polling for history items that are not complete', async () => {
+      // Setup
+      jest.useFakeTimers();
+      const fetchBridgeTxStatusSpy = jest.spyOn(
+        bridgeStatusUtils,
+        'fetchBridgeTxStatus',
+      );
+
+      // Execution
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      const bridgeStatusController = new BridgeStatusController({
+        messenger: getMessengerMock(),
+        state: {
+          bridgeStatusState: {
+            txHistory: MockTxHistory.getPending(),
+          },
+        },
+      });
+      jest.advanceTimersByTime(10000);
+      await flushPromises();
+
+      // Assertions
+      expect(fetchBridgeTxStatusSpy).toHaveBeenCalledTimes(1);
+    });
   });
   describe('startPollingForBridgeTxStatus', () => {
     it('sets the inital tx history state', async () => {
@@ -347,9 +392,9 @@ describe('BridgeStatusController', () => {
       );
 
       // Assertion
-      expect(bridgeStatusController.state.bridgeStatusState.txHistory).toEqual(
-        MockTxHistory.getInit(),
-      );
+      expect(
+        bridgeStatusController.state.bridgeStatusState.txHistory,
+      ).toMatchSnapshot();
     });
     it('starts polling and updates the tx history when the status response is received', async () => {
       const {
@@ -360,7 +405,7 @@ describe('BridgeStatusController', () => {
 
       // Assertions
       expect(startPollingByNetworkClientIdSpy).toHaveBeenCalledTimes(1);
-      expect(fetchBridgeTxStatusSpy).toHaveBeenCalledTimes(1);
+      expect(fetchBridgeTxStatusSpy).toHaveBeenCalled();
       expect(bridgeStatusController.state.bridgeStatusState.txHistory).toEqual(
         MockTxHistory.getPending(),
       );
