@@ -31,61 +31,43 @@ describe('useMultichainClient', () => {
     type: BtcAccountType.P2wpkh,
   };
 
-  it('dispatch a Snap keyring request to create a Bitcoin account', async () => {
-    const { result } = renderHook(() =>
-      useMultichainClient(WalletClientType.Bitcoin),
-    );
-    const bitcoinWalletSnapClient = result.current;
-
-    mockHandleSnapRequest.mockResolvedValue(mockAccount);
-
-    await bitcoinWalletSnapClient.createAccount(MultichainNetworks.BITCOIN);
-    expect(mockHandleSnapRequest).toHaveBeenCalledWith({
-      origin: 'metamask',
+  const testCases = [
+    {
+      clientType: WalletClientType.Bitcoin,
+      network: MultichainNetworks.BITCOIN,
       snapId: BITCOIN_WALLET_SNAP_ID,
-      handler: HandlerType.OnKeyringRequest,
-      request: expect.any(Object),
-    });
-  });
-
-  it('force fetches the balance after creating a Bitcoin account', async () => {
-    const { result } = renderHook(() =>
-      useMultichainClient(WalletClientType.Bitcoin),
-    );
-    const bitcoinWalletSnapClient = result.current;
-
-    mockHandleSnapRequest.mockResolvedValue(mockAccount);
-
-    await bitcoinWalletSnapClient.createAccount(MultichainNetworks.BITCOIN);
-    expect(mockMultichainUpdateBalance).toHaveBeenCalledWith(mockAccount.id);
-  });
-
-  it('dispatches a Snap keyring request to create a Solana account', async () => {
-    const { result } = renderHook(() =>
-      useMultichainClient(WalletClientType.Solana),
-    );
-    const multichainClient = result.current;
-
-    mockHandleSnapRequest.mockResolvedValue(mockAccount);
-
-    await multichainClient.createAccount(MultichainNetworks.SOLANA);
-    expect(mockHandleSnapRequest).toHaveBeenCalledWith({
-      origin: 'metamask',
+    },
+    {
+      clientType: WalletClientType.Solana,
+      network: MultichainNetworks.SOLANA,
       snapId: SOLANA_WALLET_SNAP_ID,
-      handler: HandlerType.OnKeyringRequest,
-      request: expect.any(Object),
+    },
+  ];
+
+  testCases.forEach(({ clientType, network, snapId }) => {
+    it(`dispatches a Snap keyring request to create a ${clientType} account`, async () => {
+      const { result } = renderHook(() => useMultichainClient(clientType));
+      const multichainClient = result.current;
+
+      mockHandleSnapRequest.mockResolvedValue(mockAccount);
+
+      await multichainClient.createAccount(network);
+      expect(mockHandleSnapRequest).toHaveBeenCalledWith({
+        origin: 'metamask',
+        snapId,
+        handler: HandlerType.OnKeyringRequest,
+        request: expect.any(Object),
+      });
     });
-  });
 
-  it('force fetches the balance after creating a Solana account', async () => {
-    const { result } = renderHook(() =>
-      useMultichainClient(WalletClientType.Solana),
-    );
-    const multichainClient = result.current;
+    it(`force fetches the balance after creating a ${clientType} account`, async () => {
+      const { result } = renderHook(() => useMultichainClient(clientType));
+      const multichainClient = result.current;
 
-    mockHandleSnapRequest.mockResolvedValue(mockAccount);
+      mockHandleSnapRequest.mockResolvedValue(mockAccount);
 
-    await multichainClient.createAccount(MultichainNetworks.SOLANA);
-    expect(mockMultichainUpdateBalance).toHaveBeenCalledWith(mockAccount.id);
+      await multichainClient.createAccount(network);
+      expect(mockMultichainUpdateBalance).toHaveBeenCalledWith(mockAccount.id);
+    });
   });
 });
