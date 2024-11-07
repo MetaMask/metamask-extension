@@ -94,7 +94,6 @@ const AccountListItem = ({
   const [accountListItemMenuElement, setAccountListItemMenuElement] =
     useState();
 
-  // const { privacyMode } = useSelector(getPreferences);
   const useBlockie = useSelector(getUseBlockie);
   const { isEvmNetwork } = useMultichainSelector(getMultichainNetwork, account);
   const setAccountListItemMenuRef = (ref) => {
