@@ -1,7 +1,7 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
 import {
-  getMultichainIsTestnet,
+  getMultichainIsMainnet,
   getMultichainProviderConfig,
   getMultichainSelectedAccountCachedBalance,
 } from '../../../selectors/multichain';
@@ -18,8 +18,8 @@ type BtcOverviewProps = {
 
 const BtcOverview = ({ className }: BtcOverviewProps) => {
   const selectedAccount = useSelector(getSelectedInternalAccount);
-  const isBtcTestnetAccount = useMultichainSelector(
-    getMultichainIsTestnet,
+  const isBtcMainnetAccount = useMultichainSelector(
+    getMultichainIsMainnet,
     selectedAccount,
   );
   const { chainId } = useSelector(getMultichainProviderConfig);
@@ -39,7 +39,7 @@ const BtcOverview = ({ className }: BtcOverviewProps) => {
       isSwapsChain={false}
       ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
       isBridgeChain={false}
-      isBuyableChain={isBtcBuyable && !isBtcTestnetAccount}
+      isBuyableChain={isBtcBuyable && isBtcMainnetAccount}
       ///: END:ONLY_INCLUDE_IF
     />
   );
