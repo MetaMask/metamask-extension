@@ -977,8 +977,8 @@ describe('SwapsController', function () {
           MOCK_FETCH_PARAMS.sourceToken,
           MOCK_FETCH_PARAMS.fromAddress,
           {
-            networkClient,
-            networkClientId,
+            client: networkClient,
+            clientId: networkClientId,
             chainId,
             ethersProvider,
           },

@@ -69,8 +69,8 @@ import type {
 } from './swaps.types';
 
 type Network = {
-  networkClient: NetworkClient;
-  networkClientId: NetworkClientId;
+  client: NetworkClient;
+  clientId: NetworkClientId;
   chainId: Hex;
   ethersProvider: Web3Provider;
 };
@@ -296,9 +296,7 @@ export default class SwapsController extends BaseController<
     }
 
     let network;
-    if (
-      this.#network?.networkClientId === fetchParamsMetaData.networkClientId
-    ) {
+    if (this.#network?.clientId === fetchParamsMetaData.networkClientId) {
       network = this.#network;
     } else {
       network = this.#setNetwork(fetchParamsMetaData.networkClientId);
@@ -360,7 +358,7 @@ export default class SwapsController extends BaseController<
           if (quote.trade) {
             const multiLayerL1TradeFeeTotal = await this.#getLayer1GasFee({
               transactionParams: quote.trade,
-              networkClientId: network.networkClientId,
+              networkClientId: network.clientId,
             });
 
             quote.multiLayerL1TradeFeeTotal = multiLayerL1TradeFeeTotal;
@@ -1159,8 +1157,8 @@ export default class SwapsController extends BaseController<
     const ethersProvider = new Web3Provider(networkClient.provider);
 
     const network = {
-      networkClient,
-      networkClientId,
+      client: networkClient,
+      clientId: networkClientId,
       chainId,
       ethersProvider,
     };
