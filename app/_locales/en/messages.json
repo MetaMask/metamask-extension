@@ -844,17 +844,39 @@
   "bridge": {
     "message": "Bridge"
   },
+  "bridgeCalculatingAmount": {
+    "message": "Calculating..."
+  },
   "bridgeDontSend": {
     "message": "Bridge, don't send"
+  },
+  "bridgeEnterAmount": {
+    "message": "Enter amount"
   },
   "bridgeFrom": {
     "message": "Bridge from"
   },
+  "bridgeOverallCost": {
+    "message": "Overall cost"
+  },
   "bridgeSelectNetwork": {
     "message": "Select network"
   },
+  "bridgeSelectTokenAndAmount": {
+    "message": "Select token and amount"
+  },
+  "bridgeTimingMinutes": {
+    "message": "$1 minutes",
+    "description": "$1 is the ticker symbol of a an asset the user is being prompted to purchase"
+  },
+  "bridgeTimingTooltipText": {
+    "message": "This is the estimated time it will take for the bridging to be complete."
+  },
   "bridgeTo": {
     "message": "Bridge to"
+  },
+  "bridgeTotalFeesTooltipText": {
+    "message": "This includes gas fees (paid to crypto miners) and relayer fees (paid to power complex services like bridging).\nFees are based on network traffic and transaction complexity. MetaMask does not profit from either fee."
   },
   "browserNotSupported": {
     "message": "Your browser is not supported..."
@@ -1824,8 +1846,8 @@
   "editSpendingCapError": {
     "message": "The spending cap can’t exceed $1 decimal digits. Remove decimal digits to continue."
   },
-  "enable": {
-    "message": "Enable"
+  "editSpendingCapSpecialCharError": {
+    "message": "Enter numbers only"
   },
   "enableAutoDetect": {
     "message": " Enable autodetect"
@@ -1961,6 +1983,9 @@
   },
   "estimatedFeeTooltip": {
     "message": "Amount paid to process the transaction on network."
+  },
+  "estimatedTime": {
+    "message": "Estimated time"
   },
   "ethGasPriceFetchWarning": {
     "message": "Backup gas price is provided as the main gas estimation service is unavailable right now."
@@ -4435,6 +4460,9 @@
   "requestFromInfo": {
     "message": "This is the site asking for your signature."
   },
+  "requestFromInfoSnap": {
+    "message": "This is the Snap asking for your signature."
+  },
   "requestFromTransactionDescription": {
     "message": "This is the site asking for your confirmation."
   },
@@ -5033,25 +5061,6 @@
   "smartTransactions": {
     "message": "Smart Transactions"
   },
-  "smartTransactionsBenefit1": {
-    "message": "99.5% success rate"
-  },
-  "smartTransactionsBenefit2": {
-    "message": "Saves you money"
-  },
-  "smartTransactionsBenefit3": {
-    "message": "Real-time updates"
-  },
-  "smartTransactionsDescription": {
-    "message": "Unlock higher success rates, frontrunning protection, and better visibility with Smart Transactions."
-  },
-  "smartTransactionsDescription2": {
-    "message": "Only available on Ethereum. Enable or disable any time in settings. $1",
-    "description": "$1 is an external link to learn more about Smart Transactions"
-  },
-  "smartTransactionsOptItModalTitle": {
-    "message": "Enhanced Transaction Protection"
-  },
   "snapAccountCreated": {
     "message": "Account created"
   },
@@ -5217,6 +5226,15 @@
   "snapsUIError": {
     "message": "Contact the creators of $1 for further support.",
     "description": "This is shown when the insight snap throws an error. $1 is the snap name"
+  },
+  "solanaSupportSectionTitle": {
+    "message": "Solana"
+  },
+  "solanaSupportToggleDescription": {
+    "message": "Turning on this feature will give you the option to add a Solana Account to your MetaMask Extension derived from your existing Secret Recovery Phrase. This is an experimental Beta feature, so you should use it at your own risk."
+  },
+  "solanaSupportToggleTitle": {
+    "message": "Enable \"Add a new Solana account (Beta)\""
   },
   "somethingDoesntLookRight": {
     "message": "Something doesn't look right? $1",
@@ -6094,6 +6112,9 @@
   },
   "total": {
     "message": "Total"
+  },
+  "totalFees": {
+    "message": "Total fees"
   },
   "totalVolume": {
     "message": "Total volume"
