@@ -362,6 +362,7 @@ const AccountListItem = ({
                   type={SECONDARY}
                   showNative
                   data-testid="second-currency-display"
+                  privacyMode={privacyMode}
                 />
               </Text>
             </Box>
