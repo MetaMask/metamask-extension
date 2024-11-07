@@ -2364,6 +2364,18 @@ export function getIsBitcoinSupportEnabled(state) {
   return state.metamask.bitcoinSupportEnabled;
 }
 
+///: BEGIN:ONLY_INCLUDE_IF(solana)
+/**
+ * Get the state of the `solanaSupportEnabled` flag.
+ *
+ * @param {*} state
+ * @returns The state of the `solanaSupportEnabled` flag.
+ */
+export function getIsSolanaSupportEnabled(state) {
+  return state.metamask.solanaSupportEnabled;
+}
+///: END:ONLY_INCLUDE_IF
+
 /**
  * Get the state of the `bitcoinTestnetSupportEnabled` flag.
  *

@@ -1374,6 +1374,8 @@ export default class MetamaskController extends EventEmitter {
 
     const allowLocalSnaps = process.env.ALLOW_LOCAL_SNAPS;
     const requireAllowlist = process.env.REQUIRE_SNAPS_ALLOWLIST;
+    const rejectInvalidPlatformVersion =
+      process.env.REJECT_INVALID_SNAPS_PLATFORM_VERSION;
 
     this.snapController = new SnapController({
       environmentEndowmentPermissions: Object.values(EndowmentPermissions),
@@ -1388,6 +1390,7 @@ export default class MetamaskController extends EventEmitter {
         dappsCanUpdateSnaps: true,
         allowLocalSnaps,
         requireAllowlist,
+        rejectInvalidPlatformVersion,
       },
       encryptor: encryptorFactory(600_000),
       getMnemonic: this.getPrimaryKeyringMnemonic.bind(this),
@@ -1782,6 +1785,8 @@ export default class MetamaskController extends EventEmitter {
       trackMetaMetricsEvent: this.metaMetricsController.trackEvent.bind(
         this.metaMetricsController,
       ),
+      useAccountsAPI: true,
+      platform: 'extension',
     });
 
     const addressBookControllerMessenger =
@@ -3313,6 +3318,12 @@ export default class MetamaskController extends EventEmitter {
       ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
       setWatchEthereumAccountEnabled:
         preferencesController.setWatchEthereumAccountEnabled.bind(
+          preferencesController,
+        ),
+      ///: END:ONLY_INCLUDE_IF
+      ///: BEGIN:ONLY_INCLUDE_IF(solana)
+      setSolanaSupportEnabled:
+        preferencesController.setSolanaSupportEnabled.bind(
           preferencesController,
         ),
       ///: END:ONLY_INCLUDE_IF
