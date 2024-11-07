@@ -1,6 +1,6 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
-import { getTokenList, getPreferences } from '../../../../selectors';
+import { getTokenList } from '../../../../selectors';
 import { useTokenFiatAmount } from '../../../../hooks/useTokenFiatAmount';
 import { TokenListItem } from '../../../multichain';
 import { isEqualCaseInsensitive } from '../../../../../shared/modules/string-utils';

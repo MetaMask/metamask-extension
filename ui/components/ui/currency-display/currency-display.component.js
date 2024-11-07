@@ -1,10 +1,8 @@
 import React from 'react';
-import { useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
 import { useCurrencyDisplay } from '../../../hooks/useCurrencyDisplay';
 import { EtherDenomination } from '../../../../shared/constants/common';
-import { getPreferences } from '../../../selectors';
 import { SensitiveText, Box } from '../../component-library';
 import {
   AlignItems,
