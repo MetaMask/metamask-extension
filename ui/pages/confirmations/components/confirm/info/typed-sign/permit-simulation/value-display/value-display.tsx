@@ -59,6 +59,7 @@ const PermitSimulationValueDisplay: React.FC<
 
   const tokenDetails = useGetTokenStandardAndDetails(tokenContract);
   useTrackERC20WithoutDecimalInformation(
+    chainId,
     tokenContract,
     tokenDetails as TokenDetailsERC20,
     MetaMetricsEventLocation.SignatureConfirmation,
