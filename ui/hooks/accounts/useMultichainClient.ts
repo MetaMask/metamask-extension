@@ -13,7 +13,8 @@ export enum WalletClientType {
   Bitcoin = 'bitcoin-wallet-snap',
   Solana = 'solana-wallet-snap',
 }
-const SNAP_ID_MAP: Record<WalletClientType, string> = {
+
+const SNAP_ID_MAP: Record<WalletClientType, SnapId> = {
   [WalletClientType.Bitcoin]: BITCOIN_WALLET_SNAP_ID,
   [WalletClientType.Solana]: SOLANA_WALLET_SNAP_ID,
 };
