@@ -105,7 +105,7 @@ class PrivacySettings {
   }
 
   /**
-   * Open the reveal SRP dialog by completing the reveal SRP quiz.
+   * Complete reveal SRP quiz to open reveal SRP dialog.
    *
    * @param checkErrorAnswer - Whether to check for error answers during answering the quiz.
    */
