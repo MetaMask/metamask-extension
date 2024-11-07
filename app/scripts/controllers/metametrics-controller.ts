@@ -662,10 +662,11 @@ export default class MetaMetricsController extends BaseController<
 
     this.update((state) => {
       // @ts-expect-error this is caused by a bug in Immer, not being able to handle recursive types like Json
-      state.fragments[id] = merge(fragment, {
+      state.fragments[id] = {
+        ...fragment,
         ...payload,
         lastUpdated: Date.now(),
-      });
+      };
     });
   }
 

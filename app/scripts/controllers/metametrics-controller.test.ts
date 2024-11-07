@@ -348,10 +348,11 @@ describe('MetaMetricsController', function () {
           MOCK_PROPS_TO_UPDATE,
         );
 
-        const expectedPartialFragment = merge(SAMPLE_PERSISTED_EVENT, {
+        const expectedPartialFragment = {
+          ...SAMPLE_PERSISTED_EVENT,
           ...MOCK_PROPS_TO_UPDATE,
           lastUpdated: 1730798303333,
-        });
+        };
 
         expect(
           controller.state.fragments[SAMPLE_PERSISTED_EVENT.id],
