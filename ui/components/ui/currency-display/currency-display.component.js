@@ -5,7 +5,7 @@ import classnames from 'classnames';
 import { useCurrencyDisplay } from '../../../hooks/useCurrencyDisplay';
 import { EtherDenomination } from '../../../../shared/constants/common';
 import { getPreferences } from '../../../selectors';
-import { SensitiveText, Box } from '../../component-library';
+import { Text, Box } from '../../component-library';
 import {
   AlignItems,
   Display,
@@ -71,7 +71,7 @@ export default function CurrencyDisplay({
           {prefixComponent}
         </Box>
       ) : null}
-      <SensitiveText
+      <Text
         as="span"
         className="currency-display-component__text"
         ellipsis
@@ -82,9 +82,9 @@ export default function CurrencyDisplay({
       >
         {parts.prefix}
         {parts.value}
-      </SensitiveText>
+      </Text>
       {parts.suffix ? (
-        <SensitiveText
+        <Text
           as="span"
           className={
             privacyMode
@@ -97,7 +97,7 @@ export default function CurrencyDisplay({
           {...suffixProps}
         >
           {parts.suffix}
-        </SensitiveText>
+        </Text>
       ) : null}
     </Box>
   );
