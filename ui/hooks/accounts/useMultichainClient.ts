@@ -20,9 +20,9 @@ const SNAP_ID_MAP: Record<WalletClientType, SnapId> = {
 };
 
 export class MultichainSender implements Sender {
-  private snapId: string;
+  private snapId: SnapId;
 
-  constructor(snapId: string) {
+  constructor(snapId: SnapId) {
     this.snapId = snapId;
   }
 
