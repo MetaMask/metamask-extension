@@ -1,4 +1,4 @@
-import { Driver } from '../../webdriver/driver';
+import { Driver } from '../../../webdriver/driver';
 
 class SettingsPage {
   private readonly driver: Driver;
@@ -6,6 +6,11 @@ class SettingsPage {
   // Locators
   private readonly experimentalSettingsButton: object = {
     text: 'Experimental',
+    css: '.tab-bar__tab__content__title',
+  };
+
+  private readonly privacySettingsButton: object = {
+    text: 'Security & privacy',
     css: '.tab-bar__tab__content__title',
   };
 
@@ -31,6 +36,11 @@ class SettingsPage {
   async goToExperimentalSettings(): Promise<void> {
     console.log('Navigating to Experimental Settings page');
     await this.driver.clickElement(this.experimentalSettingsButton);
+  }
+
+  async goToPrivacySettings(): Promise<void> {
+    console.log('Navigating to Privacy & Security Settings page');
+    await this.driver.clickElement(this.privacySettingsButton);
   }
 }
 
