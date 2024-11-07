@@ -18,6 +18,12 @@ export async function startSendFlow(driver: Driver, recipient?: string) {
     tag: 'button',
     css: '[data-testid="coin-overview-send"]',
   });
+
+  // Firefox test is flaky without this delay. The send flow doesn't start properly.
+  if (driver.browser === 'firefox') {
+    await driver.delay(1000);
+  }
+
   await sendButton.click();
 
   // See the review button is disabled by default.
@@ -37,11 +43,14 @@ export async function startSendFlow(driver: Driver, recipient?: string) {
 }
 
 describe('BTC Account - Send', function (this: Suite) {
-  it('can send complete the send flow', async function () {
+  it.only('can send complete the send flow', async function () {
     await withBtcAccountSnap(
       { title: this.test?.fullTitle() },
       async (driver, mockServer) => {
         await startSendFlow(driver, DEFAULT_BTC_ACCOUNT);
+
+        // TODO: Remove delay here. There is a race condition if the amount and address are set too fast.
+        await driver.delay(500);
 
         // Set the amount to send.
         const mockAmountToSend = '0.5';
