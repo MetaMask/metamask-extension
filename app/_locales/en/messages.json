@@ -416,6 +416,9 @@
   "alertMessageAddressMismatchWarning": {
     "message": "Attackers sometimes mimic sites by making small changes to the site address. Make sure you're interacting with the intended site before you continue."
   },
+  "alertMessageChangeInSimulationResults": {
+    "message": "Estimated changes for this transaction have been updated. Review them closely before proceeding."
+  },
   "alertMessageGasEstimateFailed": {
     "message": "We’re unable to provide an accurate fee and this estimate might be high. We suggest you to input a custom gas limit, but there’s a risk the transaction will still fail."
   },
@@ -455,6 +458,9 @@
   "alertModalReviewAllAlerts": {
     "message": "Review all alerts"
   },
+  "alertReasonChangeInSimulationResults": {
+    "message": "Results have changed"
+  },
   "alertReasonGasEstimateFailed": {
     "message": "Inaccurate fee"
   },
@@ -493,6 +499,10 @@
   },
   "allCustodianAccountsConnectedTitle": {
     "message": "No accounts available to connect"
+  },
+  "allNetworks": {
+    "message": "All Networks",
+    "description": "Speicifies to token network filter to filter by all Networks"
   },
   "allOfYour": {
     "message": "All of your $1",
@@ -837,17 +847,39 @@
   "bridge": {
     "message": "Bridge"
   },
+  "bridgeCalculatingAmount": {
+    "message": "Calculating..."
+  },
   "bridgeDontSend": {
     "message": "Bridge, don't send"
+  },
+  "bridgeEnterAmount": {
+    "message": "Enter amount"
   },
   "bridgeFrom": {
     "message": "Bridge from"
   },
+  "bridgeOverallCost": {
+    "message": "Overall cost"
+  },
   "bridgeSelectNetwork": {
     "message": "Select network"
   },
+  "bridgeSelectTokenAndAmount": {
+    "message": "Select token and amount"
+  },
+  "bridgeTimingMinutes": {
+    "message": "$1 minutes",
+    "description": "$1 is the ticker symbol of a an asset the user is being prompted to purchase"
+  },
+  "bridgeTimingTooltipText": {
+    "message": "This is the estimated time it will take for the bridging to be complete."
+  },
   "bridgeTo": {
     "message": "Bridge to"
+  },
+  "bridgeTotalFeesTooltipText": {
+    "message": "This includes gas fees (paid to crypto miners) and relayer fees (paid to power complex services like bridging).\nFees are based on network traffic and transaction complexity. MetaMask does not profit from either fee."
   },
   "browserNotSupported": {
     "message": "Your browser is not supported..."
@@ -868,22 +900,12 @@
     "message": "Buy $1",
     "description": "$1 is the ticker symbol of a an asset the user is being prompted to purchase"
   },
-  "buyCrypto": {
-    "message": "Buy crypto"
-  },
-  "buyFirstCrypto": {
-    "message": "Buy your first crypto with a debit or credit card."
-  },
   "buyMoreAsset": {
     "message": "Buy more $1",
     "description": "$1 is the ticker symbol of a an asset the user is being prompted to purchase"
   },
   "buyNow": {
     "message": "Buy Now"
-  },
-  "buyToken": {
-    "message": "Buy $1",
-    "description": "$1 is the token symbol"
   },
   "bytes": {
     "message": "Bytes"
@@ -1170,9 +1192,13 @@
     "message": "Connected with $1",
     "description": "$1 represents account name"
   },
-  "connectedWithNetworks": {
+  "connectedWithNetwork": {
     "message": "$1 networks connected",
     "description": "$1 represents network length"
+  },
+  "connectedWithNetworkName": {
+    "message": "Connected with $1",
+    "description": "$1 represents network name"
   },
   "connecting": {
     "message": "Connecting"
@@ -1348,6 +1374,10 @@
   "currentLanguage": {
     "message": "Current language"
   },
+  "currentNetwork": {
+    "message": "Current Network",
+    "description": "Speicifies to token network filter to filter by current Network. Will render when network nickname is not available"
+  },
   "currentRpcUrlDeprecated": {
     "message": "The current rpc url for this network has been deprecated."
   },
@@ -1506,6 +1536,9 @@
   },
   "dcent": {
     "message": "D'Cent"
+  },
+  "debitCreditPurchaseOptions": {
+    "message": "Debit or credit card purchase options"
   },
   "decimal": {
     "message": "Token decimal"
@@ -1816,8 +1849,8 @@
   "editSpendingCapError": {
     "message": "The spending cap can’t exceed $1 decimal digits. Remove decimal digits to continue."
   },
-  "enable": {
-    "message": "Enable"
+  "editSpendingCapSpecialCharError": {
+    "message": "Enter numbers only"
   },
   "enableAutoDetect": {
     "message": " Enable autodetect"
@@ -1953,6 +1986,9 @@
   },
   "estimatedFeeTooltip": {
     "message": "Amount paid to process the transaction on network."
+  },
+  "estimatedTime": {
+    "message": "Estimated time"
   },
   "ethGasPriceFetchWarning": {
     "message": "Backup gas price is provided as the main gas estimation service is unavailable right now."
@@ -2099,12 +2135,8 @@
   "functionType": {
     "message": "Function type"
   },
-  "fundYourWallet": {
-    "message": "Fund your wallet"
-  },
-  "fundYourWalletDescription": {
-    "message": "Get started by adding some $1 to your wallet.",
-    "description": "$1 is the token symbol"
+  "fundingMethod": {
+    "message": "Funding method"
   },
   "gas": {
     "message": "Gas"
@@ -2194,20 +2226,6 @@
   },
   "genericExplorerView": {
     "message": "View account on $1"
-  },
-  "getStarted": {
-    "message": "Get Started"
-  },
-  "getStartedByFundingWallet": {
-    "message": "Get started by adding some crypto to your wallet."
-  },
-  "getStartedWithNFTs": {
-    "message": "Get $1 to buy NFTs",
-    "description": "$1 is the token symbol"
-  },
-  "getStartedWithNFTsDescription": {
-    "message": "Get started with NFTs by adding some $1 to your wallet.",
-    "description": "$1 is the token symbol"
   },
   "goBack": {
     "message": "Go back"
@@ -4445,6 +4463,9 @@
   "requestFromInfo": {
     "message": "This is the site asking for your signature."
   },
+  "requestFromInfoSnap": {
+    "message": "This is the Snap asking for your signature."
+  },
   "requestFromTransactionDescription": {
     "message": "This is the site asking for your confirmation."
   },
@@ -4466,6 +4487,10 @@
   "requestingForAccount": {
     "message": "Requesting for $1",
     "description": "Name of Account"
+  },
+  "requestingForNetwork": {
+    "message": "Requesting for $1",
+    "description": "Name of Network"
   },
   "requestsAwaitingAcknowledgement": {
     "message": "requests waiting to be acknowledged"
@@ -4748,9 +4773,6 @@
   },
   "selectEnableDisplayMediaPrivacyPreference": {
     "message": "Turn on Display NFT Media"
-  },
-  "selectFundingMethod": {
-    "message": "Select a funding method"
   },
   "selectHdPath": {
     "message": "Select HD path"
@@ -5041,25 +5063,6 @@
   },
   "smartTransactions": {
     "message": "Smart Transactions"
-  },
-  "smartTransactionsBenefit1": {
-    "message": "99.5% success rate"
-  },
-  "smartTransactionsBenefit2": {
-    "message": "Saves you money"
-  },
-  "smartTransactionsBenefit3": {
-    "message": "Real-time updates"
-  },
-  "smartTransactionsDescription": {
-    "message": "Unlock higher success rates, frontrunning protection, and better visibility with Smart Transactions."
-  },
-  "smartTransactionsDescription2": {
-    "message": "Only available on Ethereum. Enable or disable any time in settings. $1",
-    "description": "$1 is an external link to learn more about Smart Transactions"
-  },
-  "smartTransactionsOptItModalTitle": {
-    "message": "Enhanced Transaction Protection"
   },
   "snapAccountCreated": {
     "message": "Account created"
@@ -5407,14 +5410,6 @@
   },
   "stake": {
     "message": "Stake"
-  },
-  "startYourJourney": {
-    "message": "Start your journey with $1",
-    "description": "$1 is the token symbol"
-  },
-  "startYourJourneyDescription": {
-    "message": "Get started with web3 by adding some $1 to your wallet.",
-    "description": "$1 is the token symbol"
   },
   "stateLogError": {
     "message": "Error in retrieving state logs."
@@ -5902,6 +5897,10 @@
   "swapTokenVerifiedOn1SourceTitle": {
     "message": "Potentially inauthentic token"
   },
+  "swapTokenVerifiedSources": {
+    "message": "Confirmed by $1 sources. Verify on $2.",
+    "description": "$1 the number of sources that have verified the token, $2 points the user to a block explorer as a place they can verify information about the token."
+  },
   "swapTooManyDecimalsError": {
     "message": "$1 allows up to $2 decimals",
     "description": "$1 is a token symbol and $2 is the max. number of decimals allowed for the token"
@@ -6019,6 +6018,12 @@
   "tips": {
     "message": "Tips"
   },
+  "tipsForUsingAWallet": {
+    "message": "Tips for using a wallet"
+  },
+  "tipsForUsingAWalletDescription": {
+    "message": "Adding tokens unlocks more ways to use web3."
+  },
   "to": {
     "message": "To"
   },
@@ -6071,6 +6076,9 @@
   "tokenList": {
     "message": "Token lists"
   },
+  "tokenMarketplace": {
+    "message": "Token marketplace"
+  },
   "tokenScamSecurityRisk": {
     "message": "token scams and security risks"
   },
@@ -6107,6 +6115,9 @@
   },
   "total": {
     "message": "Total"
+  },
+  "totalFees": {
+    "message": "Total fees"
   },
   "totalVolume": {
     "message": "Total volume"

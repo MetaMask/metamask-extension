@@ -103,7 +103,7 @@ export type Preferences = {
   showExtensionInFullSizeView: boolean;
   showFiatInTestnets: boolean;
   showTestNetworks: boolean;
-  smartTransactionsOptInStatus: boolean | null;
+  smartTransactionsOptInStatus: boolean;
   showNativeTokenAsMainBalance: boolean;
   useNativeCurrencyAsPrimaryCurrency: boolean;
   hideZeroBalanceTokens: boolean;
@@ -112,6 +112,7 @@ export type Preferences = {
   redesignedTransactionsEnabled: boolean;
   featureNotificationsEnabled: boolean;
   showMultiRpcModal: boolean;
+  privacyMode: boolean;
   isRedesignedConfirmationsDeveloperEnabled: boolean;
   showConfirmationAdvancedDetails: boolean;
   tokenSortConfig: {
@@ -119,6 +120,7 @@ export type Preferences = {
     order: string;
     sortCallback: string;
   };
+  tokenNetworkFilter: Record<string, boolean>;
   shouldShowAggregatedBalancePopover: boolean;
 };
 
@@ -138,6 +140,8 @@ export type PreferencesControllerState = Omit<
   useRequestQueue: boolean;
   ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
   watchEthereumAccountEnabled: boolean;
+  ///: END:ONLY_INCLUDE_IF
+  ///: BEGIN:ONLY_INCLUDE_IF(solana)
   solanaSupportEnabled: boolean;
   ///: END:ONLY_INCLUDE_IF
   bitcoinSupportEnabled: boolean;
@@ -183,7 +187,7 @@ export const getDefaultPreferencesControllerState =
     openSeaEnabled: true,
     securityAlertsEnabled: true,
     watchEthereumAccountEnabled: false,
-    ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
+    ///: BEGIN:ONLY_INCLUDE_IF(solana)
     solanaSupportEnabled: false,
     ///: END:ONLY_INCLUDE_IF
     bitcoinSupportEnabled: false,
@@ -207,7 +211,7 @@ export const getDefaultPreferencesControllerState =
       showExtensionInFullSizeView: false,
       showFiatInTestnets: false,
       showTestNetworks: false,
-      smartTransactionsOptInStatus: null, // null means we will show the Smart Transactions opt-in modal to a user if they are eligible
+      smartTransactionsOptInStatus: true,
       showNativeTokenAsMainBalance: false,
       useNativeCurrencyAsPrimaryCurrency: true,
       hideZeroBalanceTokens: false,
@@ -218,12 +222,14 @@ export const getDefaultPreferencesControllerState =
       isRedesignedConfirmationsDeveloperEnabled: false,
       showConfirmationAdvancedDetails: false,
       showMultiRpcModal: false,
+      privacyMode: false,
       shouldShowAggregatedBalancePopover: true, // by default user should see popover;
       tokenSortConfig: {
         key: 'tokenFiatAmount',
         order: 'dsc',
         sortCallback: 'stringNumeric',
       },
+      tokenNetworkFilter: {},
     },
     // ENS decentralized website resolution
     ipfsGateway: IPFS_DEFAULT_GATEWAY_URL,
@@ -673,7 +679,9 @@ export class PreferencesController extends BaseController<
       state.watchEthereumAccountEnabled = watchEthereumAccountEnabled;
     });
   }
+  ///: END:ONLY_INCLUDE_IF
 
+  ///: BEGIN:ONLY_INCLUDE_IF(solana)
   /**
    * Setter for the `solanaSupportEnabled` property.
    *

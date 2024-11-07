@@ -808,10 +808,6 @@
   "buyNow": {
     "message": "Comprar agora"
   },
-  "buyToken": {
-    "message": "Comprar $1",
-    "description": "$1 is the token symbol"
-  },
   "bytes": {
     "message": "Bytes"
   },
@@ -1627,9 +1623,6 @@
   "editSpeedUpEditGasFeeModalTitle": {
     "message": "Editar taxa de gás para aceleração"
   },
-  "enable": {
-    "message": "Ativar"
-  },
   "enableAutoDetect": {
     "message": " Ativar detecção automática"
   },
@@ -1886,13 +1879,6 @@
   "functionType": {
     "message": "Tipo de função"
   },
-  "fundYourWallet": {
-    "message": "Adicione valores à sua carteira"
-  },
-  "fundYourWalletDescription": {
-    "message": "Comece adicionando $1 à sua carteira.",
-    "description": "$1 is the token symbol"
-  },
   "gas": {
     "message": "Gás"
   },
@@ -1975,14 +1961,6 @@
   },
   "genericExplorerView": {
     "message": "Ver conta na $1"
-  },
-  "getStartedWithNFTs": {
-    "message": "Adquira $1 para comprar NFTs",
-    "description": "$1 is the token symbol"
-  },
-  "getStartedWithNFTsDescription": {
-    "message": "Comece sua jornada com NFTs adicionando $1 à sua carteira.",
-    "description": "$1 is the token symbol"
   },
   "goBack": {
     "message": "Voltar"
@@ -4659,25 +4637,6 @@
   "smartTransactions": {
     "message": "Transações inteligentes"
   },
-  "smartTransactionsBenefit1": {
-    "message": "99,5% de taxa de sucesso"
-  },
-  "smartTransactionsBenefit2": {
-    "message": "Faz você economizar dinheiro"
-  },
-  "smartTransactionsBenefit3": {
-    "message": "Atualizações em tempo real"
-  },
-  "smartTransactionsDescription": {
-    "message": "Desbloqueie taxas de sucesso maiores, proteção contra front running e melhor visibilidade com as transações inteligentes."
-  },
-  "smartTransactionsDescription2": {
-    "message": "Disponível somente na Ethereum. Ative ou desative a qualquer momento nas configurações. $1",
-    "description": "$1 is an external link to learn more about Smart Transactions"
-  },
-  "smartTransactionsOptItModalTitle": {
-    "message": "Proteção de transações aprimorada"
-  },
   "snapAccountCreated": {
     "message": "Conta criada"
   },
@@ -4996,14 +4955,6 @@
   },
   "stake": {
     "message": "Stake"
-  },
-  "startYourJourney": {
-    "message": "Comece sua jornada com $1",
-    "description": "$1 is the token symbol"
-  },
-  "startYourJourneyDescription": {
-    "message": "Comece sua jornada na web3 adicionando $1 à sua conta.",
-    "description": "$1 is the token symbol"
   },
   "stateLogError": {
     "message": "Erro ao recuperar os logs de estado."

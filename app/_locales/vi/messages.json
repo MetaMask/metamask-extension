@@ -808,10 +808,6 @@
   "buyNow": {
     "message": "Mua ngay"
   },
-  "buyToken": {
-    "message": "Mua $1",
-    "description": "$1 is the token symbol"
-  },
   "bytes": {
     "message": "Byte"
   },
@@ -1627,9 +1623,6 @@
   "editSpeedUpEditGasFeeModalTitle": {
     "message": "Chỉnh sửa phí gas tăng tốc"
   },
-  "enable": {
-    "message": "Bật"
-  },
   "enableAutoDetect": {
     "message": " Bật tự động phát hiện"
   },
@@ -1886,13 +1879,6 @@
   "functionType": {
     "message": "Loại chức năng"
   },
-  "fundYourWallet": {
-    "message": "Nạp tiền vào ví của bạn"
-  },
-  "fundYourWalletDescription": {
-    "message": "Hãy bắt đầu bằng cách nạp một ít $1 vào ví của bạn.",
-    "description": "$1 is the token symbol"
-  },
   "gas": {
     "message": "Gas"
   },
@@ -1975,14 +1961,6 @@
   },
   "genericExplorerView": {
     "message": "Xem tài khoản trên $1"
-  },
-  "getStartedWithNFTs": {
-    "message": "Nhận $1 để mua NFT",
-    "description": "$1 is the token symbol"
-  },
-  "getStartedWithNFTsDescription": {
-    "message": "Hãy bắt đầu với NFT bằng cách nạp một ít $1 vào ví của bạn.",
-    "description": "$1 is the token symbol"
   },
   "goBack": {
     "message": "Quay Lại"
@@ -4659,25 +4637,6 @@
   "smartTransactions": {
     "message": "Giao dịch thông minh"
   },
-  "smartTransactionsBenefit1": {
-    "message": "Tỷ lệ thành công 99,5%"
-  },
-  "smartTransactionsBenefit2": {
-    "message": "Tiết kiệm tiền của bạn"
-  },
-  "smartTransactionsBenefit3": {
-    "message": "Cập nhật theo thời gian thực"
-  },
-  "smartTransactionsDescription": {
-    "message": "Đạt tỷ lệ thành công cao hơn, bảo vệ chống hành vi lợi dụng thông tin biết trước và khả năng hiển thị tốt hơn với Giao dịch thông minh."
-  },
-  "smartTransactionsDescription2": {
-    "message": "Chỉ có sẵn trên Ethereum. Có thể bật/tắt bất cứ lúc nào trong phần Cài đặt. $1",
-    "description": "$1 is an external link to learn more about Smart Transactions"
-  },
-  "smartTransactionsOptItModalTitle": {
-    "message": "Tăng cường bảo vệ giao dịch"
-  },
   "snapAccountCreated": {
     "message": "Tài khoản đã được tạo"
   },
@@ -4996,14 +4955,6 @@
   },
   "stake": {
     "message": "Stake"
-  },
-  "startYourJourney": {
-    "message": "Bắt đầu hành trình của bạn với $1",
-    "description": "$1 is the token symbol"
-  },
-  "startYourJourneyDescription": {
-    "message": "Hãy bắt đầu với Web3 bằng cách nạp một ít $1 vào ví của bạn.",
-    "description": "$1 is the token symbol"
   },
   "stateLogError": {
     "message": "Lỗi khi truy xuất nhật ký trạng thái."

@@ -109,8 +109,11 @@ import {
   MergedInternalAccount,
 } from '../../../selectors/selectors.types';
 import { endTrace, TraceName } from '../../../../shared/lib/trace';
+import {
+  SOLANA_WALLET_NAME,
+  SOLANA_WALLET_SNAP_ID,
+} from '../../../../shared/lib/accounts/solana-wallet-snap';
 import { HiddenAccountList } from './hidden-account-list';
-import { SOLANA_WALLET_NAME, SOLANA_WALLET_SNAP_ID } from '../../../../shared/lib/accounts/solana-wallet-snap';
 
 const ACTION_MODES = {
   // Displays the search box and account list
@@ -459,7 +462,7 @@ export const AccountListMenu = ({
               ) : null
               ///: END:ONLY_INCLUDE_IF
             }
-                        {
+            {
               ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
               solanaSupportEnabled && (
                 <Box marginTop={4}>

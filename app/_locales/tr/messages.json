@@ -808,10 +808,6 @@
   "buyNow": {
     "message": "Şimdi Satın Al"
   },
-  "buyToken": {
-    "message": "$1 Al",
-    "description": "$1 is the token symbol"
-  },
   "bytes": {
     "message": "Bayt"
   },
@@ -1627,9 +1623,6 @@
   "editSpeedUpEditGasFeeModalTitle": {
     "message": "Hızlandırma gaz ücretini düzenle"
   },
-  "enable": {
-    "message": "Etkinleştir"
-  },
   "enableAutoDetect": {
     "message": " Otomatik algılamayı etkinleştir"
   },
@@ -1886,13 +1879,6 @@
   "functionType": {
     "message": "İşlev türü"
   },
-  "fundYourWallet": {
-    "message": "Cüzdanınıza para ekleyin"
-  },
-  "fundYourWalletDescription": {
-    "message": "Cüzdanınıza biraz $1 ekleyerek başlayın.",
-    "description": "$1 is the token symbol"
-  },
   "gas": {
     "message": "Gaz"
   },
@@ -1975,14 +1961,6 @@
   },
   "genericExplorerView": {
     "message": "Hesabı $1 üzerinde görüntüleyin"
-  },
-  "getStartedWithNFTs": {
-    "message": "NFT satın almak için $1 edinin",
-    "description": "$1 is the token symbol"
-  },
-  "getStartedWithNFTsDescription": {
-    "message": "Cüzdanınıza biraz $1 ekleyerek NFT'lere başlayın.",
-    "description": "$1 is the token symbol"
   },
   "goBack": {
     "message": "Geri git"
@@ -4659,25 +4637,6 @@
   "smartTransactions": {
     "message": "Akıllı İşlemler"
   },
-  "smartTransactionsBenefit1": {
-    "message": "%99,5 başarı oranı"
-  },
-  "smartTransactionsBenefit2": {
-    "message": "Paradan tasarruf sağlar"
-  },
-  "smartTransactionsBenefit3": {
-    "message": "Gerçek zamanlı güncellemeler"
-  },
-  "smartTransactionsDescription": {
-    "message": "Akıllı İşlemler ile daha yüksek başarı oranlarının, arkadan çalıştırma korumasının ve daha iyi görünürlüğün kilidini açın."
-  },
-  "smartTransactionsDescription2": {
-    "message": "Sadece Ethereum'da mevcuttur. Dilediğiniz zaman ayarlar kısmında etkinleştirin veya devre dışı bırakın. $1",
-    "description": "$1 is an external link to learn more about Smart Transactions"
-  },
-  "smartTransactionsOptItModalTitle": {
-    "message": "İyileştirilmiş İşlem Koruması"
-  },
   "snapAccountCreated": {
     "message": "Hesap oluşturuldu"
   },
@@ -4996,14 +4955,6 @@
   },
   "stake": {
     "message": "Pay"
-  },
-  "startYourJourney": {
-    "message": "$1 ile yolculuğunuza başlayın",
-    "description": "$1 is the token symbol"
-  },
-  "startYourJourneyDescription": {
-    "message": "Cüzdanınıza biraz $1 ekleyerek web3'e başlayın.",
-    "description": "$1 is the token symbol"
   },
   "stateLogError": {
     "message": "Durum günlükleri alınırken hata."
