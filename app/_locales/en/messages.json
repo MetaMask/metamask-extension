@@ -2413,6 +2413,9 @@
   "importTokenWarning": {
     "message": "Anyone can create a token with any name, including fake versions of existing tokens. Add and trade at your own risk!"
   },
+  "importTokens": {
+    "message": "Import tokens"
+  },
   "importTokensCamelCase": {
     "message": "Import tokens"
   },

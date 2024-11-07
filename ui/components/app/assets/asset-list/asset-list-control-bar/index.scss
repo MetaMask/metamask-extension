@@ -7,6 +7,11 @@
     max-width: 35%;
   }
 
+  &__network_control {
+    justify-content: space-between;
+    min-width: 180px;
+  }
+
   &__button:hover {
     background-color: var(--color-background-hover);
   }

@@ -31,6 +31,7 @@ import {
 } from '../../../../../../shared/constants/app';
 import NetworkFilter from '../network-filter';
 import { setTokenNetworkFilter } from '../../../../../store/actions';
+import Tooltip from '../../../../ui/tooltip';
 
 type AssetListControlBarProps = {
   showTokensLinks?: boolean;
@@ -87,8 +88,8 @@ const AssetListControlBar = ({ showTokensLinks }: AssetListControlBarProps) => {
   return (
     <Box
       className="asset-list-control-bar"
-      marginLeft={4}
-      marginRight={4}
+      marginLeft={2}
+      marginRight={2}
       paddingTop={4}
       ref={popoverRef}
     >
@@ -96,7 +97,7 @@ const AssetListControlBar = ({ showTokensLinks }: AssetListControlBarProps) => {
         {process.env.FILTER_TOKENS_TOGGLE && (
           <ButtonBase
             data-testid="sort-by-popover-toggle"
-            className="asset-list-control-bar__button"
+            className="asset-list-control-bar__button asset-list-control-bar__network_control"
             onClick={toggleNetworkFilterPopover}
             size={ButtonBaseSize.Sm}
             endIconName={IconName.ArrowDown}
@@ -116,22 +117,26 @@ const AssetListControlBar = ({ showTokensLinks }: AssetListControlBarProps) => {
         )}
 
         <Box display={Display.Flex} justifyContent={JustifyContent.flexEnd}>
-          <ButtonBase
-            data-testid="sort-by-popover-toggle"
-            className="asset-list-control-bar__button"
-            onClick={toggleTokenSortPopover}
-            size={ButtonBaseSize.Sm}
-            endIconName={IconName.SwapVertical}
-            backgroundColor={
-              isTokenSortPopoverOpen
-                ? BackgroundColor.backgroundPressed
-                : BackgroundColor.backgroundDefault
-            }
-            color={TextColor.textDefault}
-            marginRight={isFullScreen ? 2 : null}
-          />
+          <Tooltip title={t('sortBy')} position="bottom" distance={20}>
+            <ButtonBase
+              data-testid="sort-by-popover-toggle"
+              className="asset-list-control-bar__button"
+              onClick={toggleTokenSortPopover}
+              size={ButtonBaseSize.Sm}
+              endIconName={IconName.SwapVertical}
+              backgroundColor={
+                isTokenSortPopoverOpen
+                  ? BackgroundColor.backgroundPressed
+                  : BackgroundColor.backgroundDefault
+              }
+              color={TextColor.textDefault}
+              marginRight={isFullScreen ? 2 : null}
+            />
+          </Tooltip>
 
-          <ImportControl showTokensLinks={showTokensLinks} />
+          <Tooltip title={t('importTokens')} position="bottom" distance={20}>
+            <ImportControl showTokensLinks={showTokensLinks} />
+          </Tooltip>
         </Box>
       </Box>
 

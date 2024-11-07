@@ -103,7 +103,8 @@ export default function TokenList({ onTokenClick }: TokenListProps) {
       },
       { nativeTokens: [], nonNativeTokens: [] },
     );
-    return sortAssets([...nativeTokens, ...nonNativeTokens], tokenSortConfig);
+    const assets = [...nativeTokens, ...nonNativeTokens];
+    return sortAssets(assets, tokenSortConfig);
   }, [
     tokenSortConfig,
     tokenNetworkFilter,
@@ -127,7 +128,7 @@ export default function TokenList({ onTokenClick }: TokenListProps) {
     <div>
       {sortedTokens.map((tokenData) => (
         <TokenCell
-          key={`${tokenData.symbol}-${tokenData.address}`}
+          key={`${tokenData.chainId}-${tokenData.symbol}-${tokenData.address}`}
           {...tokenData}
           onClick={onTokenClick}
         />
