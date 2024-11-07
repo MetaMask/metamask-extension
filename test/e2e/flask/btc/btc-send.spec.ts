@@ -43,7 +43,7 @@ export async function startSendFlow(driver: Driver, recipient?: string) {
 }
 
 describe('BTC Account - Send', function (this: Suite) {
-  it.only('can send complete the send flow', async function () {
+  it('can send complete the send flow', async function () {
     await withBtcAccountSnap(
       { title: this.test?.fullTitle() },
       async (driver, mockServer) => {
