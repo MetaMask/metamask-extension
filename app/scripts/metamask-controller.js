@@ -6082,7 +6082,10 @@ export default class MetamaskController extends EventEmitter {
             currency: fiatCurrency,
           };
         },
-        requestDevice: () => this.deviceController.requestDevice(origin),
+        requestDevice: this.deviceController.requestDevice.bind(this.deviceController, origin),
+        writeDevice: this.deviceController.writeDevice.bind(this.deviceController, origin),
+        readDevice: this.deviceController.readDevice.bind(this.deviceController, origin),
+        listDevices: this.deviceController.listDevices.bind(this.deviceController, origin),
         ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
         hasPermission: this.permissionController.hasPermission.bind(
           this.permissionController,
