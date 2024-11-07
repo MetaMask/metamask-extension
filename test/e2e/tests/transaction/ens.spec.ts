@@ -197,6 +197,18 @@ describe('ENS', function (this: Suite) {
           result: `0x000000000000000000000000${sampleAddress}`,
         },
       ],
+      [
+        'eth_call',
+        {
+          params: [
+            {
+              to: '0xf62e6a41561b3650a69bb03199c735e3e3328c0d',
+              data: '0xf0002ea90000000000000000000000000000000000000000000000000000000000000040000000000000000000000000000000000000000000000000000000000000008000000000000000000000000000000000000000000000000000000000000000010000000000000000000000005cfe73b6021e818b776b421b1c4db2474086a7e100000000000000000000000000000000000000000000000000000000000000010000000000000000000000000000000000000000000000000000000000000000',
+            },
+          ],
+          result: `0x`,
+        },
+      ],
     ]);
   }
 
@@ -210,6 +222,7 @@ describe('ENS', function (this: Suite) {
       },
       async ({ driver }: { driver: Driver }) => {
         await loginWithoutBalanceValidation(driver);
+        await driver.delay(10000 * 50);
 
         // click send button on homepage to start send flow
         const homepage = new HomePage(driver);
