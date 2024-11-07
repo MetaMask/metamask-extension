@@ -68,7 +68,6 @@ import {
   getOriginOfCurrentTab,
   getSelectedInternalAccount,
   getUpdatedAndSortedAccounts,
-  getPreferences,
 } from '../../../selectors';
 import { setSelectedAccount } from '../../../store/actions';
 import {
