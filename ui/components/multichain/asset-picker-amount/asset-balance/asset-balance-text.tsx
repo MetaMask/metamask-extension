@@ -105,6 +105,7 @@ export function AssetBalanceText({
         currency={secondaryCurrency}
         numberOfDecimals={2}
         displayValue={`${formattedFiat}${errorText}`}
+        privacyModeExempt
       />
     );
   }
@@ -116,6 +117,7 @@ export function AssetBalanceText({
           {...commonProps}
           value={asset.balance}
           type={PRIMARY}
+          privacyModeExempt
         />
         {errorText ? (
           <Text
@@ -136,6 +138,7 @@ export function AssetBalanceText({
       <UserPreferencedCurrencyDisplay
         {...commonProps}
         displayValue={`${balanceString || ''}${errorText}`}
+        privacyModeExempt
       />
     );
   }

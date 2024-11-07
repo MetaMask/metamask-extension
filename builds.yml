@@ -135,6 +135,9 @@ features:
   keyring-snaps:
     assets:
       - ./{app,shared,ui}/**/keyring-snaps/**
+  solana:
+    assets:
+      - ./{app,shared,ui}/**/solana/**
 
 # Env variables that are required for all types of builds
 #
