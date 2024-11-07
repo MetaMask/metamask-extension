@@ -68,7 +68,9 @@ import {
   getOriginOfCurrentTab,
   getSelectedInternalAccount,
   getUpdatedAndSortedAccounts,
+  ///: BEGIN:ONLY_INCLUDE_IF(solana)
   getIsSolanaSupportEnabled,
+  ///: END:ONLY_INCLUDE_IF
 } from '../../../selectors';
 import { setSelectedAccount } from '../../../store/actions';
 import {
@@ -97,10 +99,12 @@ import {
 import {
   hasCreatedBtcMainnetAccount,
   hasCreatedBtcTestnetAccount,
-  hasCreatedSolanaAccount,
 } from '../../../selectors/accounts';
 import { MultichainNetworks } from '../../../../shared/constants/multichain/networks';
 import { useBitcoinWalletSnapClient } from '../../../hooks/accounts/useBitcoinWalletSnapClient';
+///: END:ONLY_INCLUDE_IF
+
+///: BEGIN:ONLY_INCLUDE_IF(solana)
 import { useSolanaWalletSnapClient } from '../../../hooks/accounts/useSolanaWalletSnapClient';
 ///: END:ONLY_INCLUDE_IF
 import {
@@ -109,10 +113,12 @@ import {
   MergedInternalAccount,
 } from '../../../selectors/selectors.types';
 import { endTrace, TraceName } from '../../../../shared/lib/trace';
+///: BEGIN:ONLY_INCLUDE_IF(solana)
 import {
   SOLANA_WALLET_NAME,
   SOLANA_WALLET_SNAP_ID,
 } from '../../../../shared/lib/accounts/solana-wallet-snap';
+///: END:ONLY_INCLUDE_IF
 import { HiddenAccountList } from './hidden-account-list';
 
 const ACTION_MODES = {
@@ -275,9 +281,10 @@ export const AccountListMenu = ({
   );
 
   const bitcoinWalletSnapClient = useBitcoinWalletSnapClient();
+  ///: END:ONLY_INCLUDE_IF
 
+  ///: BEGIN:ONLY_INCLUDE_IF(solana)
   const solanaSupportEnabled = useSelector(getIsSolanaSupportEnabled);
-  const isSolanaAccountAlreadyCreated = useSelector(hasCreatedSolanaAccount);
   const solanaWalletSnapClient = useSolanaWalletSnapClient();
   ///: END:ONLY_INCLUDE_IF
 
@@ -463,11 +470,10 @@ export const AccountListMenu = ({
               ///: END:ONLY_INCLUDE_IF
             }
             {
-              ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
+              ///: BEGIN:ONLY_INCLUDE_IF(solana)
               solanaSupportEnabled && (
                 <Box marginTop={4}>
                   <ButtonLink
-                    disabled={isSolanaAccountAlreadyCreated}
                     size={ButtonLinkSize.Sm}
                     startIconName={IconName.Add}
                     onClick={async () => {

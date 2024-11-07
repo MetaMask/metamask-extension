@@ -7,7 +7,6 @@ import { AccountsControllerState } from '@metamask/accounts-controller';
 import {
   isBtcMainnetAddress,
   isBtcTestnetAddress,
-  isSolanaAddress,
 } from '../../shared/lib/multichain';
 
 export type AccountsState = {
@@ -56,8 +55,4 @@ export function hasCreatedBtcMainnetAccount(state: AccountsState) {
 
 export function hasCreatedBtcTestnetAccount(state: AccountsState) {
   return hasCreatedBtcAccount(state, isBtcTestnetAddress);
-}
-
-export function hasCreatedSolanaAccount(state: AccountsState) {
-  return hasCreatedSolanaAccount(state, isSolanaAddress);
 }
