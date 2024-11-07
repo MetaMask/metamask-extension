@@ -45,7 +45,8 @@ describe('useMultichainClient', () => {
         id: '22b44d7c-1e57-4b5b-8502-02698e686fd1',
         options: {},
         methods: ['someMethod'],
-        type: 'solana:data-account',
+        // TODO: Update when keyring-api is published with Solana types
+        type: BtcAccountType.P2wpkh,
       },
     },
   ];
