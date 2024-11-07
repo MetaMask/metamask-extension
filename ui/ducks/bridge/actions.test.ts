@@ -74,14 +74,7 @@ const makeMockHistory = () => {
 const makeMockStore = () => {
   const store = configureMockStore<any>(middleware)(
     createBridgeMockStore(
-      {
-        approvalGasMultiplier: {
-          '0x1': 1,
-        },
-        bridgeGasMultiplier: {
-          '0x1': 1,
-        },
-      },
+      {},
       {},
       {},
       {
@@ -153,7 +146,7 @@ describe('bridge/actions', () => {
               destinationTokenDecimals: 6,
               destinationTokenSymbol: 'USDC',
               sourceTokenSymbol: 'USDC',
-              swapTokenValue: '10.90375',
+              swapTokenValue: '11',
               type: 'bridge',
             },
           },
@@ -231,7 +224,7 @@ describe('bridge/actions', () => {
               destinationTokenDecimals: 6,
               destinationTokenSymbol: 'USDC',
               sourceTokenSymbol: 'USDC',
-              swapTokenValue: '10.90375',
+              swapTokenValue: '11',
               type: 'bridge',
             },
           },
