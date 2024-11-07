@@ -150,6 +150,7 @@ const jsonData = JSON.stringify({
     useNonceField: false,
     usePhishDetect: true,
     dismissSeedBackUpReminder: false,
+    overrideContentSecurityPolicyHeader: true,
     useTokenDetection: false,
     useCollectibleDetection: false,
     openSeaEnabled: false,
