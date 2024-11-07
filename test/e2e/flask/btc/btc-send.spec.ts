@@ -106,6 +106,8 @@ describe('BTC Account - Send', function (this: Suite) {
       { title: this.test?.fullTitle() },
       async (driver, mockServer) => {
         await startSendFlow(driver, DEFAULT_BTC_ACCOUNT);
+        // TODO: Remove delay here. There is a race condition if the amount and address are set too fast.
+        await driver.delay(1000);
 
         // Use the max spendable amount of that account.
         await driver.clickElement({
