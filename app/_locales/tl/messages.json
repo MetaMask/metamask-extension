@@ -1620,9 +1620,6 @@
   "editSpeedUpEditGasFeeModalTitle": {
     "message": "I-edit ang pagpapabilis ng bayad sa gas"
   },
-  "enable": {
-    "message": "Payagan"
-  },
   "enableAutoDetect": {
     "message": " Paganahin ang autodetect"
   },
@@ -4636,25 +4633,6 @@
   },
   "smartTransactions": {
     "message": "Mga Smart Transaction"
-  },
-  "smartTransactionsBenefit1": {
-    "message": "99.5% tiyansa ng tagumpay"
-  },
-  "smartTransactionsBenefit2": {
-    "message": "Makatitipid ng pera"
-  },
-  "smartTransactionsBenefit3": {
-    "message": "Mga real-time na update"
-  },
-  "smartTransactionsDescription": {
-    "message": "Mag-unlock na mas mataas na tiyansa ng tagumpay, proteksyon sa frontrunning, at mas mahusay na visibility sa mga Smart Transaction."
-  },
-  "smartTransactionsDescription2": {
-    "message": "Available lamang sa Ethereum. I-enable o i-disable anumang oras sa mga setting. $1",
-    "description": "$1 is an external link to learn more about Smart Transactions"
-  },
-  "smartTransactionsOptItModalTitle": {
-    "message": "Pinahusay na Proteksyon sa Transaksyon"
   },
   "snapAccountCreated": {
     "message": "Nagawa ang account"

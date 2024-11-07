@@ -43,6 +43,7 @@ import { ENVIRONMENT_TYPE_BACKGROUND } from '../../../shared/constants/app';
 import {
   METAMETRICS_ANONYMOUS_ID,
   METAMETRICS_BACKGROUND_PAGE_OBJECT,
+  MetaMetricsEventCategory,
   MetaMetricsEventName,
   MetaMetricsEventFragment,
   MetaMetricsUserTrait,
@@ -435,7 +436,7 @@ export default class MetaMetricsController extends BaseController<
     // fragments that are not marked as persistent will be purged and the
     // failure event will be emitted.
     Object.values(abandonedFragments).forEach((fragment) => {
-      this.finalizeEventFragment(fragment.id, { abandoned: true });
+      this.processAbandonedFragment(fragment);
     });
 
     // Code below submits any pending segmentApiCalls to Segment if/when the controller is re-instantiated
@@ -512,7 +513,7 @@ export default class MetaMetricsController extends BaseController<
         fragment.lastUpdated &&
         Date.now() - fragment.lastUpdated / 1000 > fragment.timeout
       ) {
-        this.finalizeEventFragment(fragment.id, { abandoned: true });
+        this.processAbandonedFragment(fragment);
       }
     });
   }
@@ -550,16 +551,37 @@ export default class MetaMetricsController extends BaseController<
       );
     }
 
+    const { fragments } = this.state;
+
     const id = options.uniqueIdentifier ?? uuidv4();
     const fragment = {
-      ...options,
       id,
+      ...options,
       lastUpdated: Date.now(),
     };
 
+    /**
+     * HACK: "transaction-submitted-<id>" fragment hack
+     * A "transaction-submitted-<id>" fragment may exist following the "Transaction Added"
+     * event to persist accumulated event fragment props to the "Transaction Submitted" event
+     * which fires after a user confirms a transaction. Rejecting a confirmation does not fire the
+     * "Transaction Submitted" event. In this case, these abandoned fragments will be deleted
+     * instead of finalized with canDeleteIfAbandoned set to true.
+     */
+    const hasExistingSubmittedFragment =
+      options.initialEvent === TransactionMetaMetricsEvent.submitted &&
+      fragments[id];
+
+    const additionalFragmentProps = hasExistingSubmittedFragment
+      ? {
+          ...fragments[id],
+          canDeleteIfAbandoned: false,
+        }
+      : {};
+
     this.update((state) => {
       // @ts-expect-error this is caused by a bug in Immer, not being able to handle recursive types like Json
-      state.fragments[id] = fragment;
+      state.fragments[id] = merge(additionalFragmentProps, fragment);
     });
 
     if (fragment.initialEvent) {
@@ -593,6 +615,19 @@ export default class MetaMetricsController extends BaseController<
   }
 
   /**
+   * Deletes to finalizes event fragment based on the canDeleteIfAbandoned property.
+   *
+   * @param fragment
+   */
+  processAbandonedFragment(fragment: MetaMetricsEventFragment): void {
+    if (fragment.canDeleteIfAbandoned) {
+      this.deleteEventFragment(fragment.id);
+    } else {
+      this.finalizeEventFragment(fragment.id, { abandoned: true });
+    }
+  }
+
+  /**
    * Updates an event fragment in state
    *
    * @param id - The fragment id to update
@@ -602,16 +637,49 @@ export default class MetaMetricsController extends BaseController<
     id: string,
     payload: Partial<MetaMetricsEventFragment>,
   ): void {
-    if (!this.state.fragments[id]) {
+    const { fragments } = this.state;
+
+    let fragment = fragments[id];
+
+    /**
+     * HACK: "transaction-submitted-<id>" fragment hack
+     * Creates a "transaction-submitted-<id>" fragment if it does not exist to persist
+     * accumulated event metrics. In the case it is unused, the abandoned fragment will
+     * eventually be deleted with canDeleteIfAbandoned set to true.
+     */
+    const createIfNotFound = !fragment && id.includes('transaction-submitted-');
+
+    if (createIfNotFound) {
+      fragment = {
+        canDeleteIfAbandoned: true,
+        category: MetaMetricsEventCategory.Transactions,
+        successEvent: TransactionMetaMetricsEvent.finalized,
+        id,
+      };
+    } else if (!fragment) {
       throw new Error(`Event fragment with id ${id} does not exist.`);
     }
 
     this.update((state) => {
-      state.fragments[id] = merge(state.fragments[id], {
+      // @ts-expect-error this is caused by a bug in Immer, not being able to handle recursive types like Json
+      state.fragments[id] = merge(fragment, {
         ...payload,
         lastUpdated: Date.now(),
       });
     });
+  }
+
+  /**
+   * Deletes an event fragment from state
+   *
+   * @param id - The fragment id to delete
+   */
+  deleteEventFragment(id: string): void {
+    if (this.state.fragments[id]) {
+      this.update((state) => {
+        delete state.fragments[id];
+      });
+    }
   }
 
   /**

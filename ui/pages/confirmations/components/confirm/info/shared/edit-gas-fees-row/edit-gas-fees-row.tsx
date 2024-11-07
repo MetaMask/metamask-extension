@@ -1,5 +1,9 @@
-import React, { Dispatch, SetStateAction } from 'react';
 import { TransactionMeta } from '@metamask/transaction-controller';
+import React, { Dispatch, SetStateAction } from 'react';
+import { useSelector } from 'react-redux';
+import { TEST_CHAINS } from '../../../../../../../../shared/constants/network';
+import { ConfirmInfoAlertRow } from '../../../../../../../components/app/confirm/info/row/alert-row/alert-row';
+import { RowAlertKey } from '../../../../../../../components/app/confirm/info/row/constants';
 import { Box, Text } from '../../../../../../../components/component-library';
 import {
   AlignItems,
@@ -10,10 +14,9 @@ import {
   TextColor,
 } from '../../../../../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../../../../../hooks/useI18nContext';
+import { getPreferences } from '../../../../../../../selectors';
 import { useConfirmContext } from '../../../../../context/confirm';
 import { EditGasIconButton } from '../edit-gas-icon/edit-gas-icon-button';
-import { ConfirmInfoAlertRow } from '../../../../../../../components/app/confirm/info/row/alert-row/alert-row';
-import { RowAlertKey } from '../../../../../../../components/app/confirm/info/row/constants';
 
 export const EditGasFeesRow = ({
   fiatFee,
@@ -30,6 +33,12 @@ export const EditGasFeesRow = ({
 
   const { currentConfirmation: transactionMeta } =
     useConfirmContext<TransactionMeta>();
+
+  type TestNetChainId = (typeof TEST_CHAINS)[number];
+  const isTestnet = TEST_CHAINS.includes(
+    transactionMeta.chainId as TestNetChainId,
+  );
+  const { showFiatInTestnets } = useSelector(getPreferences);
 
   return (
     <ConfirmInfoAlertRow
@@ -53,13 +62,15 @@ export const EditGasFeesRow = ({
         >
           {nativeFee}
         </Text>
-        <Text
-          marginRight={2}
-          color={TextColor.textAlternative}
-          data-testid="native-currency"
-        >
-          {fiatFee}
-        </Text>
+        {(!isTestnet || showFiatInTestnets) && (
+          <Text
+            marginRight={2}
+            color={TextColor.textAlternative}
+            data-testid="native-currency"
+          >
+            {fiatFee}
+          </Text>
+        )}
         <EditGasIconButton
           supportsEIP1559={supportsEIP1559}
           setShowCustomizeGasPopover={setShowCustomizeGasPopover}

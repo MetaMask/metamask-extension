@@ -13,6 +13,7 @@ import {
 import { InternalAccount } from '@metamask/keyring-api';
 import { Browser } from 'webextension-polyfill';
 import { ControllerMessenger } from '@metamask/base-controller';
+import { merge } from 'lodash';
 import { ENVIRONMENT_TYPE_BACKGROUND } from '../../../shared/constants/app';
 import { createSegmentMock } from '../lib/segment';
 import {
@@ -95,8 +96,19 @@ const DEFAULT_PAGE_PROPERTIES = {
   ...DEFAULT_SHARED_PROPERTIES,
 };
 
-const SAMPLE_PERSISTED_EVENT = {
-  id: 'testid',
+const SAMPLE_TX_SUBMITTED_PARTIAL_FRAGMENT = {
+  id: 'transaction-submitted-0000',
+  canDeleteIfAbandoned: true,
+  category: 'Unit Test',
+  successEvent: 'Transaction Finalized',
+  persist: true,
+  properties: {
+    simulation_response: 'no_balance_change',
+    test_stored_prop: 1,
+  },
+};
+
+const SAMPLE_PERSISTED_EVENT_NO_ID = {
   persist: true,
   category: 'Unit Test',
   successEvent: 'sample persisted event success',
@@ -104,6 +116,11 @@ const SAMPLE_PERSISTED_EVENT = {
   properties: {
     test: true,
   },
+};
+
+const SAMPLE_PERSISTED_EVENT = {
+  id: 'testid',
+  ...SAMPLE_PERSISTED_EVENT_NO_ID,
 };
 
 const SAMPLE_NON_PERSISTED_EVENT = {
@@ -188,6 +205,207 @@ describe('MetaMetricsController', function () {
           expect(controller.locale).toStrictEqual('en-UK');
         },
       );
+    });
+  });
+
+  describe('createEventFragment', function () {
+    it('should throw an error if the param is missing successEvent or category', async function () {
+      await withController(async ({ controller }) => {
+        await expect(() => {
+          // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+          // @ts-expect-error because we are testing the error case
+          controller.createEventFragment({ event: 'test' });
+        }).toThrow(/Must specify success event and category\./u);
+
+        await expect(() => {
+          // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+          // @ts-expect-error because we are testing the error case
+          controller.createEventFragment({ category: 'test' });
+        }).toThrow(/Must specify success event and category\./u);
+      });
+    });
+
+    it('should update fragments state with new fragment', async function () {
+      await withController(({ controller }) => {
+        jest.useFakeTimers().setSystemTime(1730798301422);
+        const mockNewId = 'testid3';
+
+        controller.createEventFragment({
+          ...SAMPLE_PERSISTED_EVENT_NO_ID,
+          uniqueIdentifier: mockNewId,
+        });
+
+        const resultFragment = controller.state.fragments[mockNewId];
+
+        expect(resultFragment).toStrictEqual({
+          ...SAMPLE_PERSISTED_EVENT_NO_ID,
+          id: mockNewId,
+          uniqueIdentifier: mockNewId,
+          lastUpdated: 1730798301422,
+        });
+
+        jest.useRealTimers();
+      });
+    });
+
+    it('should track the initial event if provided', async function () {
+      await withController(
+        {
+          options: {
+            state: {
+              participateInMetaMetrics: true,
+            },
+          },
+        },
+        ({ controller }) => {
+          const spy = jest.spyOn(segmentMock, 'track');
+          const mockInitialEventName = 'Test Initial Event';
+
+          controller.createEventFragment({
+            ...SAMPLE_PERSISTED_EVENT_NO_ID,
+            initialEvent: mockInitialEventName,
+          });
+
+          expect(spy).toHaveBeenCalledTimes(1);
+        },
+      );
+    });
+
+    it('should not call track if no initialEvent was provided', async function () {
+      await withController(
+        {
+          options: {
+            state: {
+              participateInMetaMetrics: true,
+            },
+          },
+        },
+        ({ controller }) => {
+          const spy = jest.spyOn(segmentMock, 'track');
+
+          controller.createEventFragment({
+            ...SAMPLE_PERSISTED_EVENT_NO_ID,
+          });
+
+          expect(spy).toHaveBeenCalledTimes(0);
+        },
+      );
+    });
+
+    describe('when intialEvent is "Transaction Submitted" and a fragment exists before createEventFragment is called', function () {
+      it('should update existing fragment state with new fragment props', async function () {
+        await withController(({ controller }) => {
+          jest.useFakeTimers().setSystemTime(1730798302222);
+          const { id } = SAMPLE_TX_SUBMITTED_PARTIAL_FRAGMENT;
+
+          controller.updateEventFragment(
+            SAMPLE_TX_SUBMITTED_PARTIAL_FRAGMENT.id,
+            {
+              ...SAMPLE_TX_SUBMITTED_PARTIAL_FRAGMENT,
+            },
+          );
+          controller.createEventFragment({
+            ...SAMPLE_PERSISTED_EVENT_NO_ID,
+            initialEvent: 'Transaction Submitted',
+            uniqueIdentifier: id,
+          });
+
+          const expectedFragment = merge(
+            SAMPLE_TX_SUBMITTED_PARTIAL_FRAGMENT,
+            SAMPLE_PERSISTED_EVENT_NO_ID,
+            {
+              canDeleteIfAbandoned: false,
+              id,
+              initialEvent: 'Transaction Submitted',
+              uniqueIdentifier: id,
+              lastUpdated: 1730798302222,
+            },
+          );
+
+          expect(controller.state.fragments[id]).toStrictEqual(
+            expectedFragment,
+          );
+
+          jest.useRealTimers();
+        });
+      });
+    });
+  });
+
+  describe('updateEventFragment', function () {
+    it('updates fragment with additional provided props', async function () {
+      await withController(({ controller }) => {
+        jest.useFakeTimers().setSystemTime(1730798303333);
+
+        const MOCK_PROPS_TO_UPDATE = {
+          properties: {
+            test: 1,
+          },
+        };
+
+        controller.updateEventFragment(
+          SAMPLE_PERSISTED_EVENT.id,
+          MOCK_PROPS_TO_UPDATE,
+        );
+
+        const expectedPartialFragment = merge(SAMPLE_PERSISTED_EVENT, {
+          ...MOCK_PROPS_TO_UPDATE,
+          lastUpdated: 1730798303333,
+        });
+
+        expect(
+          controller.state.fragments[SAMPLE_PERSISTED_EVENT.id],
+        ).toStrictEqual(expectedPartialFragment);
+
+        jest.useRealTimers();
+      });
+    });
+
+    it('throws error when no existing fragment exists', async function () {
+      await withController(async ({ controller }) => {
+        jest.useFakeTimers().setSystemTime(1730798303333);
+
+        const MOCK_NONEXISTING_ID = 'test-nonexistingid';
+
+        await expect(() => {
+          controller.updateEventFragment(MOCK_NONEXISTING_ID, {
+            properties: { test: 1 },
+          });
+        }).toThrow(
+          /Event fragment with id test-nonexistingid does not exist\./u,
+        );
+
+        jest.useRealTimers();
+      });
+    });
+
+    describe('when id includes "transaction-submitted"', function () {
+      it('creates and stores new fragment props with canDeleteIfAbandoned set to true', async function () {
+        await withController(({ controller }) => {
+          jest.useFakeTimers().setSystemTime(1730798303333);
+          const MOCK_ID = 'transaction-submitted-1111';
+          const MOCK_PROPS_TO_UPDATE = {
+            properties: {
+              test: 1,
+            },
+          };
+
+          controller.updateEventFragment(MOCK_ID, MOCK_PROPS_TO_UPDATE);
+
+          const resultFragment = controller.state.fragments[MOCK_ID];
+          const expectedPartialFragment = {
+            ...MOCK_PROPS_TO_UPDATE,
+            category: 'Transactions',
+            canDeleteIfAbandoned: true,
+            id: MOCK_ID,
+            lastUpdated: 1730798303333,
+            successEvent: 'Transaction Finalized',
+          };
+          expect(resultFragment).toStrictEqual(expectedPartialFragment);
+
+          jest.useRealTimers();
+        });
+      });
     });
   });
 

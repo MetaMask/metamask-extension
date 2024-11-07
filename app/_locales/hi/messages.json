@@ -1620,9 +1620,6 @@
   "editSpeedUpEditGasFeeModalTitle": {
     "message": "गैस फ़ीस स्पीड अप को बदलें"
   },
-  "enable": {
-    "message": "चालू करें"
-  },
   "enableAutoDetect": {
     "message": " ऑटो डिटेक्ट इनेबल करें"
   },
@@ -4636,25 +4633,6 @@
   },
   "smartTransactions": {
     "message": "स्मार्ट ट्रांसेक्शन"
-  },
-  "smartTransactionsBenefit1": {
-    "message": "99.5% सफलता दर"
-  },
-  "smartTransactionsBenefit2": {
-    "message": "आपका पैसा बचाता है"
-  },
-  "smartTransactionsBenefit3": {
-    "message": "रियल-टाइम अपडेट"
-  },
-  "smartTransactionsDescription": {
-    "message": "स्मार्ट ट्रांसेक्शन के साथ उच्च सफलता दर, फ्रंटरनिंग सुरक्षा और बेहतर दृश्यता अनलॉक करें।"
-  },
-  "smartTransactionsDescription2": {
-    "message": "केवल Ethereum पर उपलब्ध है। सेटिंग्स में किसी भी समय चालू करें या बंद करें। $1",
-    "description": "$1 is an external link to learn more about Smart Transactions"
-  },
-  "smartTransactionsOptItModalTitle": {
-    "message": "एनहांस्ड ट्रांसेक्शन प्रोटेक्शन"
   },
   "snapAccountCreated": {
     "message": "अकाउंट बनाया गया"
