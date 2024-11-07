@@ -20,6 +20,12 @@ describe('ENS', function (this: Suite) {
   const sampleEnsDomain: string = 'test.eth';
   const infuraUrl: string =
     'https://mainnet.infura.io/v3/00000000000000000000000000000000';
+  const infuraLineaMainnetUrl: string =
+    'https://linea-mainnet.infura.io/v3/00000000000000000000000000000000';
+  const infuraLineaSepoliaUrl: string =
+    'https://linea-sepolia.infura.io/v3/00000000000000000000000000000000';
+  const infuraSepoliaUrl: string =
+    'https://sepolia.infura.io/v3/00000000000000000000000000000000';
 
   async function mockInfura(mockServer: MockttpServer): Promise<void> {
     await mockServer
@@ -33,7 +39,39 @@ describe('ENS', function (this: Suite) {
           result: '0x1',
         },
       }));
-
+    await mockServer
+      .forPost(infuraLineaMainnetUrl)
+      .withJsonBodyIncluding({ method: 'eth_blockNumber' })
+      .thenCallback(() => ({
+        statusCode: 200,
+        json: {
+          jsonrpc: '2.0',
+          id: '43',
+          result: '0x1',
+        },
+      }));
+    await mockServer
+      .forPost(infuraLineaSepoliaUrl)
+      .withJsonBodyIncluding({ method: 'eth_blockNumber' })
+      .thenCallback(() => ({
+        statusCode: 200,
+        json: {
+          jsonrpc: '2.0',
+          id: '43',
+          result: '0x1',
+        },
+      }));
+    await mockServer
+      .forPost(infuraSepoliaUrl)
+      .withJsonBodyIncluding({ method: 'eth_blockNumber' })
+      .thenCallback(() => ({
+        statusCode: 200,
+        json: {
+          jsonrpc: '2.0',
+          id: '43',
+          result: '0x29',
+        },
+      }));
     await mockServer
       .forPost(infuraUrl)
       .withJsonBodyIncluding({ method: 'eth_getBalance' })
@@ -43,6 +81,36 @@ describe('ENS', function (this: Suite) {
           jsonrpc: '2.0',
           id: '1111111111111111',
           result: '0x1',
+        },
+      }));
+    await mockServer
+      .forPost(infuraSepoliaUrl)
+      .withJsonBodyIncluding({ method: 'eth_getBalance' })
+      .thenCallback(() => ({
+        statusCode: 200,
+        json: {
+          jsonrpc: '2.0',
+          id: '6183194981233610',
+        },
+      }));
+    await mockServer
+      .forPost(infuraLineaMainnetUrl)
+      .withJsonBodyIncluding({ method: 'eth_getBalance' })
+      .thenCallback(() => ({
+        statusCode: 200,
+        json: {
+          jsonrpc: '2.0',
+          id: '6183194981233610',
+        },
+      }));
+    await mockServer
+      .forPost(infuraLineaSepoliaUrl)
+      .withJsonBodyIncluding({ method: 'eth_getBalance' })
+      .thenCallback(() => ({
+        statusCode: 200,
+        json: {
+          jsonrpc: '2.0',
+          id: '6183194981233610',
         },
       }));
 
@@ -57,7 +125,40 @@ describe('ENS', function (this: Suite) {
           result: {},
         },
       }));
+    await mockServer
+      .forPost(infuraLineaMainnetUrl)
+      .withJsonBodyIncluding({ method: 'eth_getBlockByNumber' })
+      .thenCallback(() => ({
+        statusCode: 200,
+        json: {
+          jsonrpc: '2.0',
+          id: '1111111111111111',
+          result: {},
+        },
+      }));
 
+    await mockServer
+      .forPost(infuraLineaSepoliaUrl)
+      .withJsonBodyIncluding({ method: 'eth_getBlockByNumber' })
+      .thenCallback(() => ({
+        statusCode: 200,
+        json: {
+          jsonrpc: '2.0',
+          id: '1111111111111111',
+          result: {},
+        },
+      }));
+    await mockServer
+      .forPost(infuraSepoliaUrl)
+      .withJsonBodyIncluding({ method: 'eth_getBlockByNumber' })
+      .thenCallback(() => ({
+        statusCode: 200,
+        json: {
+          jsonrpc: '2.0',
+          id: '1111111111111111',
+          result: {},
+        },
+      }));
     await mockServerJsonRpc(mockServer, [
       ['eth_chainId', { result: `0x${chainId}` }],
       [
