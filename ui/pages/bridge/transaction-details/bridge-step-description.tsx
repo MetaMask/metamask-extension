@@ -19,6 +19,7 @@ import {
   FontWeight,
   TextColor,
 } from '../../../helpers/constants/design-system';
+import { useI18nContext } from '../../../hooks/useI18nContext';
 
 /**
  * bridge actions will have step.srcChainId !== step.destChainId
@@ -26,6 +27,7 @@ import {
  * The best we can do is the bridgeHistoryItem.estimatedProcessingTimeInSeconds
  */
 const getBridgeActionText = (
+  t: Function,
   stepStatus: StatusTypes | null,
   step: Step,
   networkConfigurationsByChainId: Record<`0x${string}`, NetworkConfiguration>,
@@ -38,8 +40,14 @@ const getBridgeActionText = (
     : undefined;
 
   return stepStatus === StatusTypes.COMPLETE
-    ? `${step.destAsset.symbol} received on ${destNetworkConfiguration?.name}`
-    : `Receiving ${step.destAsset.symbol} on ${destNetworkConfiguration?.name}`;
+    ? t('bridgeStepActionBridgeComplete', [
+        step.destAsset.symbol,
+        destNetworkConfiguration?.name,
+      ])
+    : t('bridgeStepActionBridgePending', [
+        step.destAsset.symbol,
+        destNetworkConfiguration?.name,
+      ]);
 };
 
 const getBridgeActionStatus = (bridgeHistoryItem: BridgeHistoryItem) => {
@@ -80,10 +88,22 @@ const getSwapActionStatus = (
   }
 };
 
-const getSwapActionText = (status: StatusTypes | null, step: Step) => {
+const getSwapActionText = (
+  t: Function,
+  status: StatusTypes | null,
+  step: Step,
+) => {
   return status === StatusTypes.COMPLETE
-    ? `Swapped ${step.srcAsset.symbol} for ${step.destAsset.symbol}`
-    : `Swapping ${step.srcAsset.symbol} for ${step.destAsset.symbol}`;
+    ? t(
+        'bridgeStepActionSwapComplete',
+        step.srcAsset.symbol,
+        step.destAsset.symbol,
+      )
+    : t(
+        'bridgeStepActionSwapPending',
+        step.srcAsset.symbol,
+        step.destAsset.symbol,
+      );
 };
 
 export const getStepStatus = (
@@ -117,6 +137,7 @@ export default function BridgeStepDescription({
   time,
   stepStatus,
 }: BridgeStepProps) {
+  const t = useI18nContext();
   return (
     <Box
       display={Display.Flex}
@@ -139,9 +160,14 @@ export default function BridgeStepDescription({
         }
       >
         {step.action === ActionTypes.BRIDGE &&
-          getBridgeActionText(stepStatus, step, networkConfigurationsByChainId)}
+          getBridgeActionText(
+            t,
+            stepStatus,
+            step,
+            networkConfigurationsByChainId,
+          )}
         {step.action === ActionTypes.SWAP &&
-          getSwapActionText(stepStatus, step)}
+          getSwapActionText(t, stepStatus, step)}
       </Text>
     </Box>
   );

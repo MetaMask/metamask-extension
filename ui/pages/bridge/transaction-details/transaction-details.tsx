@@ -43,6 +43,7 @@ import { formatDate } from '../../../helpers/utils/util';
 import { ConfirmInfoRowDivider as Divider } from '../../../components/app/confirm/info/row';
 import { calcTokenAmount } from '../../../../shared/lib/transactions-controller-utils';
 import { CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP } from '../../../../shared/constants/network';
+import { useI18nContext } from '../../../hooks/useI18nContext';
 import TransactionDetailRow from './transaction-detail-row';
 import BridgeExplorerLinks from './bridge-explorer-links';
 import BridgeStepList from './bridge-step-list';
@@ -74,7 +75,7 @@ const StatusToColorMap: Record<StatusTypes, TextColor> = {
 };
 
 const CrossChainSwapTxDetails = () => {
-  const t = useContext(I18nContext);
+  const t = useI18nContext();
   const rootState = useSelector((state) => state);
   const history = useHistory();
   const { srcTxHash } = useParams<{ srcTxHash: string }>();
@@ -113,7 +114,7 @@ const CrossChainSwapTxDetails = () => {
         destNetworkConfiguration.chainId as keyof typeof CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP
       ]
     : undefined;
-  const bridgeTypeDirection = 'To';
+  const bridgeTypeDirection = t('bridgeTypeDirectionTo');
   const bridgeTypeDestNetwork = destNetworkConfiguration?.name;
 
   const data = srcChainTxMeta
@@ -176,7 +177,7 @@ const CrossChainSwapTxDetails = () => {
               gap={2}
             >
               <TransactionDetailRow
-                title="Status"
+                title={t('bridgeTxDetailsStatus')}
                 value={
                   <Text
                     textTransform={TextTransform.Capitalize}
@@ -187,7 +188,7 @@ const CrossChainSwapTxDetails = () => {
                 }
               />
               <TransactionDetailRow
-                title="Bridge type"
+                title={t('bridgeTxDetailsBridgeType')}
                 value={
                   <Box
                     display={Display.Flex}
@@ -207,11 +208,14 @@ const CrossChainSwapTxDetails = () => {
                 }
               />
               <TransactionDetailRow
-                title="Time stamp"
-                value={formatDate(srcChainTxMeta?.time, "M/d/y 'at' hh:mm a")}
+                title={t('bridgeTxDetailsTimestamp')}
+                value={t('bridgeTxDetailsTimestampValue', [
+                  formatDate(srcChainTxMeta?.time, 'MMM d, yyyy'),
+                  formatDate(srcChainTxMeta?.time, 'hh:mm a'),
+                ])}
               />
               <TransactionDetailRow
-                title="Nonce"
+                title={t('bridgeTxDetailsNonce')}
                 value={
                   srcChainTxMeta?.txParams.nonce
                     ? hexToDecimal(srcChainTxMeta?.txParams.nonce)
@@ -228,21 +232,21 @@ const CrossChainSwapTxDetails = () => {
               gap={2}
             >
               <TransactionDetailRow
-                title="Bridge amount"
+                title={t('bridgeTxDetailsBridgeAmount')}
                 value={bridgeAmount}
               />
               <TransactionDetailRow
-                title="Gas limit (units)"
+                title={t('bridgeTxDetailsGasLimit')}
                 value={data?.gas ? hexToDecimal(data?.gas) : undefined}
               />
               <TransactionDetailRow
-                title="Gas used (units)"
+                title={t('bridgeTxDetailsGasUsed')}
                 value={data?.gasUsed ? hexToDecimal(data?.gasUsed) : undefined}
               />
               {data?.isEIP1559Transaction &&
                 typeof data?.baseFee !== 'undefined' && (
                   <TransactionDetailRow
-                    title="Base fee (GWEI)"
+                    title={t('bridgeTxDetailsBaseFee')}
                     value={
                       <CurrencyDisplay
                         currency={data?.nativeCurrency}
@@ -257,7 +261,7 @@ const CrossChainSwapTxDetails = () => {
               {data?.isEIP1559Transaction &&
                 typeof data?.priorityFee !== 'undefined' && (
                   <TransactionDetailRow
-                    title="Priority fee (GWEI)"
+                    title={t('bridgeTxDetailsPriorityFee')}
                     value={
                       <CurrencyDisplay
                         currency={data?.nativeCurrency}
@@ -271,7 +275,7 @@ const CrossChainSwapTxDetails = () => {
                 )}
 
               <TransactionDetailRow
-                title="Total gas fee"
+                title={t('bridgeTxDetailsTotalGasFee')}
                 value={
                   <>
                     <UserPreferencedCurrencyDisplay
@@ -296,7 +300,7 @@ const CrossChainSwapTxDetails = () => {
                 }
               />
               <TransactionDetailRow
-                title="Max fee per gas"
+                title={t('bridgeTxDetailsMaxFeePerGas')}
                 value={
                   <>
                     <UserPreferencedCurrencyDisplay
@@ -326,7 +330,7 @@ const CrossChainSwapTxDetails = () => {
             <Divider />
 
             <TransactionDetailRow
-              title="Total"
+              title={t('bridgeTxDetailsTotal')}
               value={
                 <>
                   <UserPreferencedCurrencyDisplay

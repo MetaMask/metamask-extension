@@ -19,6 +19,7 @@ import {
   IconColor,
   TextColor,
 } from '../../../helpers/constants/design-system';
+import { useI18nContext } from '../../../hooks/useI18nContext';
 
 const getBlockExplorerName = (blockExplorerUrl: string | undefined) => {
   if (!blockExplorerUrl) {
@@ -58,12 +59,15 @@ export default function BridgeExplorerLinks({
   destBlockExplorerUrl,
 }: ExplorerLinksProps) {
   const trackEvent = useContext(MetaMetricsContext);
+  const t = useI18nContext();
 
   // Not sure why but the text is not being changed to white on hover, unless it's put into a variable before the render
-  const srcButtonText = `View on ${getBlockExplorerName(srcBlockExplorerUrl)}`;
-  const destButtonText = `View on ${getBlockExplorerName(
-    destBlockExplorerUrl,
-  )}`;
+  const srcButtonText = t('bridgeExplorerLinkViewOn', [
+    getBlockExplorerName(srcBlockExplorerUrl),
+  ]);
+  const destButtonText = t('bridgeExplorerLinkViewOn', [
+    getBlockExplorerName(destBlockExplorerUrl),
+  ]);
 
   return (
     <Box display={Display.Flex} flexDirection={FlexDirection.Column} gap={4}>
