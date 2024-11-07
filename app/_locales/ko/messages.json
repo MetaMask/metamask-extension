@@ -1620,9 +1620,6 @@
   "editSpeedUpEditGasFeeModalTitle": {
     "message": "가스비 가속 편집"
   },
-  "enable": {
-    "message": "활성화"
-  },
   "enableAutoDetect": {
     "message": " 자동 감지 활성화"
   },
@@ -4543,17 +4540,11 @@
   "signingInWith": {
     "message": "다음으로 로그인:"
   },
-  "simulationDetailsFailed": {
-    "message": "추정치를 불러오는 동안 오류가 발생했습니다."
-  },
   "simulationDetailsFiatNotAvailable": {
     "message": "이용할 수 없음"
   },
   "simulationDetailsIncomingHeading": {
     "message": "받음:"
-  },
-  "simulationDetailsNoBalanceChanges": {
-    "message": "지갑에 예상 변동 사항 없음"
   },
   "simulationDetailsOutgoingHeading": {
     "message": "보냄:"
@@ -4591,9 +4582,6 @@
   },
   "siweResources": {
     "message": "리소스"
-  },
-  "siweSignatureSimulationDetailInfo": {
-    "message": "사이트에 로그인 중이며 계정에 예상되는 변경 사항이 없습니다."
   },
   "siweURI": {
     "message": "URL"
@@ -4636,25 +4624,6 @@
   },
   "smartTransactions": {
     "message": "스마트 트랜잭션"
-  },
-  "smartTransactionsBenefit1": {
-    "message": "99.5% 성공률"
-  },
-  "smartTransactionsBenefit2": {
-    "message": "비용 절감"
-  },
-  "smartTransactionsBenefit3": {
-    "message": "실시간 업데이트"
-  },
-  "smartTransactionsDescription": {
-    "message": "스마트 트랜잭션으로 선행거래를 방지하고 더 높은 성공률과 가시성을 확보하세요."
-  },
-  "smartTransactionsDescription2": {
-    "message": "이더리움에서만 사용할 수 있습니다. 설정에서 언제든지 활성화하거나 비활성화할 수 있습니다. $1",
-    "description": "$1 is an external link to learn more about Smart Transactions"
-  },
-  "smartTransactionsOptItModalTitle": {
-    "message": "트랜잭션 보호 강화"
   },
   "snapAccountCreated": {
     "message": "계정 생성됨"

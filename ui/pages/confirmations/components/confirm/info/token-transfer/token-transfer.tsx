@@ -24,6 +24,7 @@ const TokenTransferInfo = () => {
           <SimulationDetails
             transaction={transactionMeta}
             isTransactionsRedesign
+            enableMetrics
           />
         </ConfirmInfoSection>
       )}

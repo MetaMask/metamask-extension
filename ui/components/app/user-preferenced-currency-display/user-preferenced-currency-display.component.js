@@ -28,6 +28,7 @@ export default function UserPreferencedCurrencyDisplay({
   showNative,
   showCurrencySuffix,
   shouldCheckShowNativeToken,
+  privacyModeExempt,
   ...restProps
 }) {
   // NOTE: When displaying currencies, we need the actual account to detect whether we're in a
@@ -83,6 +84,7 @@ export default function UserPreferencedCurrencyDisplay({
       numberOfDecimals={numberOfDecimals}
       prefixComponent={prefixComponent}
       suffix={showCurrencySuffix && !showEthLogo && currency}
+      privacyModeExempt={privacyModeExempt}
     />
   );
 }
@@ -126,6 +128,7 @@ const UserPreferencedCurrencyDisplayPropTypes = {
   textProps: PropTypes.object,
   suffixProps: PropTypes.object,
   shouldCheckShowNativeToken: PropTypes.bool,
+  privacyModeExempt: PropTypes.bool,
 };
 
 UserPreferencedCurrencyDisplay.propTypes =
