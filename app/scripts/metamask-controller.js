@@ -381,6 +381,7 @@ export const METAMASK_CONTROLLER_EVENTS = {
   METAMASK_NOTIFICATIONS_MARK_AS_READ:
     'NotificationServicesController:markNotificationsAsRead',
   NOTIFICATIONS_STATE_CHANGE: 'NotificationController:stateChange',
+  APP_STATE_CHANGE: 'AppStateController:stateChange',
 };
 
 // stream channels

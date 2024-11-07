@@ -1,17 +1,19 @@
-import EventEmitter from 'events';
-import { ObservableStore } from '@metamask/obs-store';
 import { v4 as uuid } from 'uuid';
 import log from 'loglevel';
 import { ApprovalType } from '@metamask/controller-utils';
 import { KeyringControllerQRKeyringStateChangeEvent } from '@metamask/keyring-controller';
-import { RestrictedControllerMessenger } from '@metamask/base-controller';
+import {
+  BaseController,
+  ControllerGetStateAction,
+  ControllerStateChangeEvent,
+  RestrictedControllerMessenger,
+} from '@metamask/base-controller';
 import {
   AcceptRequest,
   AddApprovalRequest,
 } from '@metamask/approval-controller';
 import { Json } from '@metamask/utils';
 import { Browser } from 'webextension-polyfill';
-import { METAMASK_CONTROLLER_EVENTS } from '../metamask-controller';
 import { MINUTE } from '../../../shared/constants/time';
 import { AUTO_LOCK_TIMEOUT_ALARM } from '../../../shared/constants/alarms';
 import { isManifestV3 } from '../../../shared/modules/mv3.utils';
@@ -60,7 +62,7 @@ export type AppStateControllerState = {
   // multiple networks.
   hadAdvancedGasFeesSetPriorToMigration92_3: boolean;
   qrHardware: Json;
-  nftsDropdownState: Json;
+  nftsDropdownState: Record<string, Json>;
   usedNetworks: Record<string, boolean>;
   surveyLinkLastClickedOrClosed: number | null;
   signatureSecurityAlertResponses: Record<string, SecurityAlertResponse>;
@@ -81,10 +83,10 @@ const controllerName = 'AppStateController';
 /**
  * Returns the state of the {@link AppStateController}.
  */
-export type AppStateControllerGetStateAction = {
-  type: 'AppStateController:getState';
-  handler: () => AppStateControllerState;
-};
+export type AppStateControllerGetStateAction = ControllerGetStateAction<
+  typeof controllerName,
+  AppStateControllerState
+>;
 
 /**
  * Actions exposed by the {@link AppStateController}.
@@ -102,10 +104,10 @@ export type AllowedActions =
 /**
  * Event emitted when the state of the {@link AppStateController} changes.
  */
-export type AppStateControllerStateChangeEvent = {
-  type: 'AppStateController:stateChange';
-  payload: [AppStateControllerState, []];
-};
+export type AppStateControllerStateChangeEvent = ControllerStateChangeEvent<
+  typeof controllerName,
+  AppStateControllerState
+>;
 
 /**
  * Events emitted by {@link AppStateController}.
@@ -146,15 +148,35 @@ type AppStateControllerInitState = Partial<
   >
 >;
 
-type AppStateControllerOptions = {
+/**
+ * The AppState controller options
+ *
+ * @property state - The initial controller state
+ * @property controllerMessenger - The controller messenger
+ */
+export type AppStateControllerOptions = {
+  state?: Partial<AppStateControllerState>;
+  messenger: AppStateControllerMessenger;
   addUnlockListener: (callback: () => void) => void;
   isUnlocked: () => boolean;
-  initState?: AppStateControllerInitState;
   onInactiveTimeout?: () => void;
-  messenger: AppStateControllerMessenger;
   extension: Browser;
 };
 
+// export type AppStateControllerOptions = {
+//   addUnlockListener: (callback: () => void) => void;
+//   isUnlocked: () => boolean;
+//   initState?: AppStateControllerInitState;
+//   onInactiveTimeout?: () => void;
+//   messenger: AppStateControllerMessenger;
+//   extension: Browser;
+// };
+
+/**
+ * Function to get default state of the {@link AppStateController}.
+ *
+ * @param initState
+ */
 const getDefaultAppStateControllerState = (
   initState?: AppStateControllerInitState,
 ): AppStateControllerState => ({
@@ -195,12 +217,175 @@ const getDefaultAppStateControllerState = (
   currentExtensionPopupId: 0,
 });
 
-export class AppStateController extends EventEmitter {
+/**
+ * {@link AppStateController}'s metadata.
+ *
+ * This allows us to choose if fields of the state should be persisted or not
+ * using the `persist` flag; and if they can be sent to Sentry or not, using
+ * the `anonymous` flag.
+ */
+const controllerMetadata = {
+  timeoutMinutes: {
+    persist: true,
+    anonymous: true,
+  },
+  connectedStatusPopoverHasBeenShown: {
+    persist: true,
+    anonymous: true,
+  },
+  defaultHomeActiveTabName: {
+    persist: true,
+    anonymous: true,
+  },
+  browserEnvironment: {
+    persist: true,
+    anonymous: true,
+  },
+  popupGasPollTokens: {
+    persist: true,
+    anonymous: true,
+  },
+  notificationGasPollTokens: {
+    persist: true,
+    anonymous: true,
+  },
+  fullScreenGasPollTokens: {
+    persist: true,
+    anonymous: true,
+  },
+  recoveryPhraseReminderHasBeenShown: {
+    persist: true,
+    anonymous: true,
+  },
+  recoveryPhraseReminderLastShown: {
+    persist: true,
+    anonymous: true,
+  },
+  outdatedBrowserWarningLastShown: {
+    persist: true,
+    anonymous: true,
+  },
+  nftsDetectionNoticeDismissed: {
+    persist: true,
+    anonymous: true,
+  },
+  showTestnetMessageInDropdown: {
+    persist: true,
+    anonymous: true,
+  },
+  showBetaHeader: {
+    persist: true,
+    anonymous: true,
+  },
+  showPermissionsTour: {
+    persist: true,
+    anonymous: true,
+  },
+  showNetworkBanner: {
+    persist: true,
+    anonymous: true,
+  },
+  showAccountBanner: {
+    persist: true,
+    anonymous: true,
+  },
+  trezorModel: {
+    persist: true,
+    anonymous: true,
+  },
+  currentPopupId: {
+    persist: true,
+    anonymous: false,
+  },
+  onboardingDate: {
+    persist: true,
+    anonymous: false,
+  },
+  lastViewedUserSurvey: {
+    persist: true,
+    anonymous: false,
+  },
+  newPrivacyPolicyToastClickedOrClosed: {
+    persist: true,
+    anonymous: false,
+  },
+  newPrivacyPolicyToastShownDate: {
+    persist: true,
+    anonymous: false,
+  },
+  hadAdvancedGasFeesSetPriorToMigration92_3: {
+    persist: true,
+    anonymous: true,
+  },
+  qrHardware: {
+    persist: true,
+    anonymous: true,
+  },
+  nftsDropdownState: {
+    persist: true,
+    anonymous: true,
+  },
+  usedNetworks: {
+    persist: true,
+    anonymous: true,
+  },
+  surveyLinkLastClickedOrClosed: {
+    persist: true,
+    anonymous: true,
+  },
+  signatureSecurityAlertResponses: {
+    persist: true,
+    anonymous: false,
+  },
+  switchedNetworkDetails: {
+    persist: true,
+    anonymous: false,
+  },
+  switchedNetworkNeverShowMessage: {
+    persist: true,
+    anonymous: false,
+  },
+  currentExtensionPopupId: {
+    persist: true,
+    anonymous: false,
+  },
+  lastInteractedConfirmationInfo: {
+    persist: true,
+    anonymous: false,
+  },
+  termsOfUseLastAgreed: {
+    persist: true,
+    anonymous: true,
+  },
+  snapsInstallPrivacyWarningShown: {
+    persist: true,
+    anonymous: true,
+  },
+  interactiveReplacementToken: {
+    persist: true,
+    anonymous: false,
+  },
+  noteToTraderMessage: {
+    persist: true,
+    anonymous: false,
+  },
+  custodianDeepLink: {
+    persist: true,
+    anonymous: false,
+  },
+};
+
+/**
+ * Controller responsible for maintaining app state.
+ */
+export class AppStateController extends BaseController<
+  typeof controllerName,
+  AppStateControllerState,
+  AppStateControllerMessenger
+> {
   private readonly extension: AppStateControllerOptions['extension'];
 
   private readonly onInactiveTimeout: () => void;
-
-  store: ObservableStore<AppStateControllerState>;
 
   private timer: NodeJS.Timeout | null;
 
@@ -208,26 +393,28 @@ export class AppStateController extends EventEmitter {
 
   private readonly waitingForUnlock: { resolve: () => void }[];
 
-  private readonly messagingSystem: AppStateControllerMessenger;
-
   #approvalRequestId: string | null;
 
   constructor(opts: AppStateControllerOptions) {
     const {
       addUnlockListener,
       isUnlocked,
-      initState,
       onInactiveTimeout,
       messenger,
       extension,
     } = opts;
-    super();
+    super({
+      messenger: opts.messenger,
+      metadata: controllerMetadata,
+      name: controllerName,
+      state: {
+        ...getDefaultAppStateControllerState(),
+        ...opts.state,
+      },
+    });
 
     this.extension = extension;
     this.onInactiveTimeout = onInactiveTimeout || (() => undefined);
-    this.store = new ObservableStore(
-      getDefaultAppStateControllerState(initState),
-    );
     this.timer = null;
 
     this.isUnlocked = isUnlocked;
@@ -237,7 +424,7 @@ export class AppStateController extends EventEmitter {
     messenger.subscribe(
       'PreferencesController:stateChange',
       ({ preferences }: { preferences: Partial<Preferences> }) => {
-        const currentState = this.store.getState();
+        const currentState = this.state;
         if (
           typeof preferences?.autoLockTimeLimit === 'number' &&
           currentState.timeoutMinutes !== preferences.autoLockTimeLimit
@@ -249,10 +436,11 @@ export class AppStateController extends EventEmitter {
 
     messenger.subscribe(
       'KeyringController:qrKeyringStateChange',
-      (qrHardware: Json) =>
-        this.store.updateState({
-          qrHardware,
-        }),
+      (qrHardware: Json) => {
+        this.update((state) => {
+          state.qrHardware = qrHardware;
+        });
+      },
     );
 
     const { preferences } = messenger.call('PreferencesController:getState');
@@ -263,11 +451,9 @@ export class AppStateController extends EventEmitter {
     this.messagingSystem = messenger;
     this.messagingSystem.registerActionHandler(
       'AppStateController:getState',
-      () => this.store.getState(),
+      () => this.state,
     );
-    this.store.subscribe((state: AppStateControllerState) => {
-      this.messagingSystem.publish('AppStateController:stateChange', state, []);
-    });
+
     this.#approvalRequestId = null;
   }
 
@@ -301,7 +487,7 @@ export class AppStateController extends EventEmitter {
    */
   waitForUnlock(resolve: () => void, shouldShowUnlockRequest: boolean): void {
     this.waitingForUnlock.push({ resolve });
-    this.emit(METAMASK_CONTROLLER_EVENTS.UPDATE_BADGE);
+    this.emit();
     if (shouldShowUnlockRequest) {
       this._requestApproval();
     }
@@ -315,7 +501,7 @@ export class AppStateController extends EventEmitter {
       while (this.waitingForUnlock.length > 0) {
         this.waitingForUnlock.shift()?.resolve();
       }
-      this.emit(METAMASK_CONTROLLER_EVENTS.UPDATE_BADGE);
+      this.emit();
     }
 
     this._acceptApproval();
@@ -327,8 +513,8 @@ export class AppStateController extends EventEmitter {
    * @param defaultHomeActiveTabName - the tab name
    */
   setDefaultHomeActiveTabName(defaultHomeActiveTabName: string | null): void {
-    this.store.updateState({
-      defaultHomeActiveTabName,
+    this.update((state) => {
+      state.defaultHomeActiveTabName = defaultHomeActiveTabName;
     });
   }
 
@@ -336,8 +522,8 @@ export class AppStateController extends EventEmitter {
    * Record that the user has seen the connected status info popover
    */
   setConnectedStatusPopoverHasBeenShown(): void {
-    this.store.updateState({
-      connectedStatusPopoverHasBeenShown: true,
+    this.update((state) => {
+      state.connectedStatusPopoverHasBeenShown = true;
     });
   }
 
@@ -345,38 +531,38 @@ export class AppStateController extends EventEmitter {
    * Record that the user has been shown the recovery phrase reminder.
    */
   setRecoveryPhraseReminderHasBeenShown(): void {
-    this.store.updateState({
-      recoveryPhraseReminderHasBeenShown: true,
+    this.update((state) => {
+      state.recoveryPhraseReminderHasBeenShown = true;
     });
   }
 
   setSurveyLinkLastClickedOrClosed(time: number): void {
-    this.store.updateState({
-      surveyLinkLastClickedOrClosed: time,
+    this.update((state) => {
+      state.surveyLinkLastClickedOrClosed = time;
     });
   }
 
   setOnboardingDate(): void {
-    this.store.updateState({
-      onboardingDate: Date.now(),
+    this.update((state) => {
+      state.onboardingDate = Date.now();
     });
   }
 
   setLastViewedUserSurvey(id: number) {
-    this.store.updateState({
-      lastViewedUserSurvey: id,
+    this.update((state) => {
+      state.lastViewedUserSurvey = id;
     });
   }
 
   setNewPrivacyPolicyToastClickedOrClosed(): void {
-    this.store.updateState({
-      newPrivacyPolicyToastClickedOrClosed: true,
+    this.update((state) => {
+      state.newPrivacyPolicyToastClickedOrClosed = true;
     });
   }
 
   setNewPrivacyPolicyToastShownDate(time: number): void {
-    this.store.updateState({
-      newPrivacyPolicyToastShownDate: time,
+    this.update((state) => {
+      state.newPrivacyPolicyToastShownDate = time;
     });
   }
 
@@ -386,8 +572,8 @@ export class AppStateController extends EventEmitter {
    * @param lastShown - timestamp when user was last shown the reminder.
    */
   setRecoveryPhraseReminderLastShown(lastShown: number): void {
-    this.store.updateState({
-      recoveryPhraseReminderLastShown: lastShown,
+    this.update((state) => {
+      state.recoveryPhraseReminderLastShown = lastShown;
     });
   }
 
@@ -397,8 +583,8 @@ export class AppStateController extends EventEmitter {
    * @param lastAgreed - timestamp when user last accepted the terms of use
    */
   setTermsOfUseLastAgreed(lastAgreed: number): void {
-    this.store.updateState({
-      termsOfUseLastAgreed: lastAgreed,
+    this.update((state) => {
+      state.termsOfUseLastAgreed = lastAgreed;
     });
   }
 
@@ -409,8 +595,8 @@ export class AppStateController extends EventEmitter {
    * @param shown - shown status
    */
   setSnapsInstallPrivacyWarningShownStatus(shown: boolean): void {
-    this.store.updateState({
-      snapsInstallPrivacyWarningShown: shown,
+    this.update((state) => {
+      state.snapsInstallPrivacyWarningShown = shown;
     });
   }
 
@@ -420,8 +606,8 @@ export class AppStateController extends EventEmitter {
    * @param lastShown - Timestamp (in milliseconds) of when the user was last shown the warning.
    */
   setOutdatedBrowserWarningLastShown(lastShown: number): void {
-    this.store.updateState({
-      outdatedBrowserWarningLastShown: lastShown,
+    this.update((state) => {
+      state.outdatedBrowserWarningLastShown = lastShown;
     });
   }
 
@@ -438,8 +624,8 @@ export class AppStateController extends EventEmitter {
    * @param timeoutMinutes - The inactive timeout in minutes.
    */
   private _setInactiveTimeout(timeoutMinutes: number): void {
-    this.store.updateState({
-      timeoutMinutes,
+    this.update((state) => {
+      state.timeoutMinutes = timeoutMinutes;
     });
 
     this._resetTimer();
@@ -453,7 +639,7 @@ export class AppStateController extends EventEmitter {
    *
    */
   private _resetTimer(): void {
-    const { timeoutMinutes } = this.store.getState();
+    const { timeoutMinutes } = this.state;
 
     if (this.timer) {
       clearTimeout(this.timer);
@@ -502,7 +688,9 @@ export class AppStateController extends EventEmitter {
    * @param browser
    */
   setBrowserEnvironment(os: string, browser: string): void {
-    this.store.updateState({ browserEnvironment: { os, browser } });
+    this.update((state) => {
+      state.browserEnvironment = { os, browser };
+    });
   }
 
   /**
@@ -535,9 +723,9 @@ export class AppStateController extends EventEmitter {
     pollingToken: string,
     pollingTokenType: PollingTokenType,
   ) {
-    const currentTokens: string[] = this.store.getState()[pollingTokenType];
-    this.store.updateState({
-      [pollingTokenType]: [...currentTokens, pollingToken],
+    const currentTokens: string[] = this.state[pollingTokenType];
+    this.update((state) => {
+      state[pollingTokenType] = [...currentTokens, pollingToken];
     });
   }
 
@@ -555,12 +743,12 @@ export class AppStateController extends EventEmitter {
       pollingTokenType.toString() !==
       POLLING_TOKEN_ENVIRONMENT_TYPES[ENVIRONMENT_TYPE_BACKGROUND]
     ) {
-      const currentTokens: string[] = this.store.getState()[pollingTokenType];
+      const currentTokens: string[] = this.state[pollingTokenType];
       if (this.#isValidPollingTokenType(pollingTokenType)) {
-        this.store.updateState({
-          [pollingTokenType]: currentTokens.filter(
+        this.update((state) => {
+          state[pollingTokenType] = currentTokens.filter(
             (token: string) => token !== pollingToken,
-          ),
+          );
         });
       }
     }
@@ -586,10 +774,10 @@ export class AppStateController extends EventEmitter {
    * clears all pollingTokens
    */
   clearPollingTokens(): void {
-    this.store.updateState({
-      popupGasPollTokens: [],
-      notificationGasPollTokens: [],
-      fullScreenGasPollTokens: [],
+    this.update((state) => {
+      state.popupGasPollTokens = [];
+      state.notificationGasPollTokens = [];
+      state.fullScreenGasPollTokens = [];
     });
   }
 
@@ -599,7 +787,9 @@ export class AppStateController extends EventEmitter {
    * @param showTestnetMessageInDropdown
    */
   setShowTestnetMessageInDropdown(showTestnetMessageInDropdown: boolean): void {
-    this.store.updateState({ showTestnetMessageInDropdown });
+    this.update((state) => {
+      state.showTestnetMessageInDropdown = showTestnetMessageInDropdown;
+    });
   }
 
   /**
@@ -608,7 +798,9 @@ export class AppStateController extends EventEmitter {
    * @param showBetaHeader
    */
   setShowBetaHeader(showBetaHeader: boolean): void {
-    this.store.updateState({ showBetaHeader });
+    this.update((state) => {
+      state.showBetaHeader = showBetaHeader;
+    });
   }
 
   /**
@@ -617,7 +809,9 @@ export class AppStateController extends EventEmitter {
    * @param showPermissionsTour
    */
   setShowPermissionsTour(showPermissionsTour: boolean): void {
-    this.store.updateState({ showPermissionsTour });
+    this.update((state) => {
+      state.showPermissionsTour = showPermissionsTour;
+    });
   }
 
   /**
@@ -626,7 +820,9 @@ export class AppStateController extends EventEmitter {
    * @param showNetworkBanner
    */
   setShowNetworkBanner(showNetworkBanner: boolean): void {
-    this.store.updateState({ showNetworkBanner });
+    this.update((state) => {
+      state.showNetworkBanner = showNetworkBanner;
+    });
   }
 
   /**
@@ -635,7 +831,9 @@ export class AppStateController extends EventEmitter {
    * @param showAccountBanner
    */
   setShowAccountBanner(showAccountBanner: boolean): void {
-    this.store.updateState({ showAccountBanner });
+    this.update((state) => {
+      state.showAccountBanner = showAccountBanner;
+    });
   }
 
   /**
@@ -644,7 +842,9 @@ export class AppStateController extends EventEmitter {
    * @param currentExtensionPopupId
    */
   setCurrentExtensionPopupId(currentExtensionPopupId: number): void {
-    this.store.updateState({ currentExtensionPopupId });
+    this.update((state) => {
+      state.currentExtensionPopupId = currentExtensionPopupId;
+    });
   }
 
   /**
@@ -656,14 +856,18 @@ export class AppStateController extends EventEmitter {
   setSwitchedNetworkDetails(
     switchedNetworkDetails: { origin: string; networkClientId: string } | null,
   ): void {
-    this.store.updateState({ switchedNetworkDetails });
+    this.update((state) => {
+      state.switchedNetworkDetails = switchedNetworkDetails;
+    });
   }
 
   /**
    * Clears the switched network details in state
    */
   clearSwitchedNetworkDetails(): void {
-    this.store.updateState({ switchedNetworkDetails: null });
+    this.update((state) => {
+      state.switchedNetworkDetails = null;
+    });
   }
 
   /**
@@ -675,9 +879,9 @@ export class AppStateController extends EventEmitter {
   setSwitchedNetworkNeverShowMessage(
     switchedNetworkNeverShowMessage: boolean,
   ): void {
-    this.store.updateState({
-      switchedNetworkDetails: null,
-      switchedNetworkNeverShowMessage,
+    this.update((state) => {
+      state.switchedNetworkDetails = null;
+      state.switchedNetworkNeverShowMessage = switchedNetworkNeverShowMessage;
     });
   }
 
@@ -687,7 +891,9 @@ export class AppStateController extends EventEmitter {
    * @param trezorModel - The Trezor model.
    */
   setTrezorModel(trezorModel: string | null): void {
-    this.store.updateState({ trezorModel });
+    this.update((state) => {
+      state.trezorModel = trezorModel;
+    });
   }
 
   /**
@@ -695,9 +901,9 @@ export class AppStateController extends EventEmitter {
    *
    * @param nftsDropdownState
    */
-  updateNftDropDownState(nftsDropdownState: Json): void {
-    this.store.updateState({
-      nftsDropdownState,
+  updateNftDropDownState(nftsDropdownState: Record<string, Json>): void {
+    this.update((state) => {
+      state.nftsDropdownState = nftsDropdownState;
     });
   }
 
@@ -707,11 +913,13 @@ export class AppStateController extends EventEmitter {
    * @param chainId
    */
   setFirstTimeUsedNetwork(chainId: string): void {
-    const currentState = this.store.getState();
+    const currentState = this.state;
     const { usedNetworks } = currentState;
     usedNetworks[chainId] = true;
 
-    this.store.updateState({ usedNetworks });
+    this.update((state) => {
+      state.usedNetworks = usedNetworks;
+    });
   }
 
   ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
@@ -729,11 +937,11 @@ export class AppStateController extends EventEmitter {
     url: string;
     oldRefreshToken: string;
   }): void {
-    this.store.updateState({
-      interactiveReplacementToken: {
+    this.update((state) => {
+      state.interactiveReplacementToken = {
         url,
         oldRefreshToken,
-      },
+      };
     });
   }
 
@@ -751,14 +959,14 @@ export class AppStateController extends EventEmitter {
     fromAddress: string;
     custodyId: string;
   }): void {
-    this.store.updateState({
-      custodianDeepLink: { fromAddress, custodyId },
+    this.update((state) => {
+      state.custodianDeepLink = { fromAddress, custodyId };
     });
   }
 
   setNoteToTraderMessage(message: string): void {
-    this.store.updateState({
-      noteToTraderMessage: message,
+    this.update((state) => {
+      state.noteToTraderMessage = message;
     });
   }
 
@@ -767,23 +975,21 @@ export class AppStateController extends EventEmitter {
   getSignatureSecurityAlertResponse(
     securityAlertId: string,
   ): SecurityAlertResponse {
-    return this.store.getState().signatureSecurityAlertResponses[
-      securityAlertId
-    ];
+    return this.state.signatureSecurityAlertResponses[securityAlertId];
   }
 
   addSignatureSecurityAlertResponse(
     securityAlertResponse: SecurityAlertResponse,
   ): void {
-    const currentState = this.store.getState();
+    const currentState = this.state;
     const { signatureSecurityAlertResponses } = currentState;
     if (securityAlertResponse.securityAlertId) {
-      this.store.updateState({
-        signatureSecurityAlertResponses: {
+      this.update((state) => {
+        state.signatureSecurityAlertResponses = {
           ...signatureSecurityAlertResponses,
           [String(securityAlertResponse.securityAlertId)]:
             securityAlertResponse,
-        },
+        };
       });
     }
   }
@@ -794,8 +1000,8 @@ export class AppStateController extends EventEmitter {
    * @param currentPopupId
    */
   setCurrentPopupId(currentPopupId: number): void {
-    this.store.updateState({
-      currentPopupId,
+    this.update((state) => {
+      state.currentPopupId = currentPopupId;
     });
   }
 
@@ -805,7 +1011,7 @@ export class AppStateController extends EventEmitter {
   getLastInteractedConfirmationInfo():
     | LastInteractedConfirmationInfo
     | undefined {
-    return this.store.getState().lastInteractedConfirmationInfo;
+    return this.state.lastInteractedConfirmationInfo;
   }
 
   /**
@@ -816,8 +1022,8 @@ export class AppStateController extends EventEmitter {
   setLastInteractedConfirmationInfo(
     lastInteractedConfirmationInfo: LastInteractedConfirmationInfo | undefined,
   ): void {
-    this.store.updateState({
-      lastInteractedConfirmationInfo,
+    this.update((state) => {
+      state.lastInteractedConfirmationInfo = lastInteractedConfirmationInfo;
     });
   }
 
@@ -825,7 +1031,7 @@ export class AppStateController extends EventEmitter {
    * A getter to retrieve currentPopupId saved in the appState
    */
   getCurrentPopupId(): number | undefined {
-    return this.store.getState().currentPopupId;
+    return this.state.currentPopupId;
   }
 
   private _requestApproval(): void {
@@ -851,9 +1057,12 @@ export class AppStateController extends EventEmitter {
       });
   }
 
-  // Override emit method to provide strong typing for events
-  emit(event: string) {
-    return super.emit(event);
+  emit() {
+    this.messagingSystem.publish(
+      'AppStateController:stateChange',
+      this.state,
+      [],
+    );
   }
 
   private _acceptApproval(): void {
