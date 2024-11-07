@@ -79,7 +79,7 @@ export default function TokenCell({
 
   return (
     <TokenListItem
-      onClick={onClick ? () => onClick(address) : undefined}
+      onClick={onClick ? () => onClick(address || symbol) : undefined}
       tokenSymbol={symbol}
       tokenImage={isNative ? getNativeCurrencyForChain(chainId) : tokenImage}
       tokenChainImage={chainId ? getImageForChainId(chainId) : undefined}
