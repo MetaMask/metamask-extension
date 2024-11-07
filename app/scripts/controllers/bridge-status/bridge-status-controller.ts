@@ -274,7 +274,7 @@ export default class BridgeStatusController extends StaticIntervalPollingControl
         this.stopPollingByPollingToken(pollingToken);
       }
     } catch (e) {
-      console.error(e);
+      console.log('Failed to fetch bridge tx status', e);
     }
   };
 
