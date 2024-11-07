@@ -243,8 +243,6 @@ describe('MetaMetricsController', function () {
           uniqueIdentifier: mockNewId,
           lastUpdated: 1730798301422,
         });
-
-        jest.useRealTimers();
       });
     });
 
@@ -325,8 +323,6 @@ describe('MetaMetricsController', function () {
           expect(controller.state.fragments[id]).toStrictEqual(
             expectedFragment,
           );
-
-          jest.useRealTimers();
         });
       });
     });
@@ -357,8 +353,6 @@ describe('MetaMetricsController', function () {
         expect(
           controller.state.fragments[SAMPLE_PERSISTED_EVENT.id],
         ).toStrictEqual(expectedPartialFragment);
-
-        jest.useRealTimers();
       });
     });
 

@@ -639,7 +639,7 @@ export default class MetaMetricsController extends BaseController<
   ): void {
     const { fragments } = this.state;
 
-    let fragment = fragments[id];
+    const fragment = fragments[id];
 
     /**
      * HACK: "transaction-submitted-<id>" fragment hack
@@ -650,22 +650,26 @@ export default class MetaMetricsController extends BaseController<
     const createIfNotFound = !fragment && id.includes('transaction-submitted-');
 
     if (createIfNotFound) {
-      fragment = {
-        canDeleteIfAbandoned: true,
-        category: MetaMetricsEventCategory.Transactions,
-        successEvent: TransactionMetaMetricsEvent.finalized,
-        id,
-      };
+      this.update((state) => {
+        state.fragments[id] = {
+          canDeleteIfAbandoned: true,
+          category: MetaMetricsEventCategory.Transactions,
+          successEvent: TransactionMetaMetricsEvent.finalized,
+          id,
+          ...payload,
+          lastUpdated: Date.now(),
+        };
+      });
+      return;
     } else if (!fragment) {
       throw new Error(`Event fragment with id ${id} does not exist.`);
     }
 
     this.update((state) => {
-      state.fragments[id] = {
-        ...fragment,
+      state.fragments[id] = merge(state.fragments[id], {
         ...payload,
         lastUpdated: Date.now(),
-      };
+      });
     });
   }
 
