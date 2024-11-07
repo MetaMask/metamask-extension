@@ -296,10 +296,9 @@ export default class SwapsController extends BaseController<
     }
 
     let network;
-    if (isPolledRequest) {
-      if (this.#network === undefined) {
-        throw new Error('There is no network set');
-      }
+    if (
+      this.#network?.networkClientId === fetchParamsMetaData.networkClientId
+    ) {
       network = this.#network;
     } else {
       network = this.#setNetwork(fetchParamsMetaData.networkClientId);
