@@ -189,6 +189,7 @@ export const mergeAccounts = (
 
 type AccountListMenuProps = {
   onClose: () => void;
+  privacyMode?: boolean;
   showAccountCreation?: boolean;
   accountListItemProps?: object;
   allowedAccountTypes?: KeyringAccountType[];
@@ -196,6 +197,7 @@ type AccountListMenuProps = {
 
 export const AccountListMenu = ({
   onClose,
+  privacyMode = false,
   showAccountCreation = true,
   accountListItemProps,
   allowedAccountTypes = [
@@ -219,7 +221,6 @@ export const AccountListMenu = ({
       ),
     [accounts, allowedAccountTypes],
   );
-  const { privacyMode } = useSelector(getPreferences);
   const selectedAccount = useSelector(getSelectedInternalAccount);
   const connectedSites = useSelector(
     getConnectedSubjectsForAllAddresses,
