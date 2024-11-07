@@ -101,11 +101,13 @@ import {
   hasCreatedBtcTestnetAccount,
 } from '../../../selectors/accounts';
 import { MultichainNetworks } from '../../../../shared/constants/multichain/networks';
-import { useBitcoinWalletSnapClient } from '../../../hooks/accounts/useBitcoinWalletSnapClient';
 ///: END:ONLY_INCLUDE_IF
 
-///: BEGIN:ONLY_INCLUDE_IF(solana)
-import { useSolanaWalletSnapClient } from '../../../hooks/accounts/useSolanaWalletSnapClient';
+///: BEGIN:ONLY_INCLUDE_IF(build-flask,solana)
+import {
+  WalletClientType,
+  useMultichainClient,
+} from '../../../hooks/accounts/useMultichainClient';
 ///: END:ONLY_INCLUDE_IF
 import {
   InternalAccountWithBalance,
@@ -280,12 +282,12 @@ export const AccountListMenu = ({
     hasCreatedBtcTestnetAccount,
   );
 
-  const bitcoinWalletSnapClient = useBitcoinWalletSnapClient();
+  const bitcoinWalletSnapClient = useMultichainClient(WalletClientType.Bitcoin);
   ///: END:ONLY_INCLUDE_IF
 
   ///: BEGIN:ONLY_INCLUDE_IF(solana)
   const solanaSupportEnabled = useSelector(getIsSolanaSupportEnabled);
-  const solanaWalletSnapClient = useSolanaWalletSnapClient();
+  const solanaWalletSnapClient = useMultichainClient(WalletClientType.Solana);
   ///: END:ONLY_INCLUDE_IF
 
   const [searchQuery, setSearchQuery] = useState('');

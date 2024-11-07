@@ -6,27 +6,47 @@ import {
   handleSnapRequest,
   multichainUpdateBalance,
 } from '../../store/actions';
+import { BITCOIN_WALLET_SNAP_ID } from '../../../shared/lib/accounts/bitcoin-wallet-snap';
 import { SOLANA_WALLET_SNAP_ID } from '../../../shared/lib/accounts/solana-wallet-snap';
 
-export class SolanaWalletSnapSender implements Sender {
+export enum WalletClientType {
+  Bitcoin = 'bitcoin-wallet-snap',
+  Solana = 'solana-wallet-snap',
+}
+const SNAP_ID_MAP: Record<WalletClientType, string> = {
+  [WalletClientType.Bitcoin]: BITCOIN_WALLET_SNAP_ID,
+  [WalletClientType.Solana]: SOLANA_WALLET_SNAP_ID,
+};
+
+export class MultichainSender implements Sender {
+  private snapId: string;
+
+  constructor(snapId: string) {
+    this.snapId = snapId;
+  }
+
   send = async (request: JsonRpcRequest): Promise<Json> => {
     // We assume the caller of this module is aware of this. If we try to use this module
     // without having the pre-installed Snap, this will likely throw an error in
     // the `handleSnapRequest` action.
     return (await handleSnapRequest({
       origin: 'metamask',
-      snapId: SOLANA_WALLET_SNAP_ID,
+      snapId: this.snapId,
       handler: HandlerType.OnKeyringRequest,
       request,
     })) as Json;
   };
 }
 
-export class SolanaWalletSnapClient {
+export class MultichainClient {
   readonly #client: KeyringClient;
 
-  constructor() {
-    this.#client = new KeyringClient(new SolanaWalletSnapSender());
+  constructor(clientType: WalletClientType) {
+    const snapId = SNAP_ID_MAP[clientType];
+    if (!snapId) {
+      throw new Error(`Unsupported client type: ${clientType}`);
+    }
+    this.#client = new KeyringClient(new MultichainSender(snapId));
   }
 
   async createAccount(scope: CaipChainId) {
@@ -43,10 +63,10 @@ export class SolanaWalletSnapClient {
   }
 }
 
-export function useSolanaWalletSnapClient() {
+export function useMultichainClient(clientType: WalletClientType) {
   const client = useMemo(() => {
-    return new SolanaWalletSnapClient();
-  }, []);
+    return new MultichainClient(clientType);
+  }, [clientType]);
 
   return client;
 }
