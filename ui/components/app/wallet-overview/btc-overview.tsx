@@ -8,9 +8,9 @@ import {
 ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
 import { getIsBitcoinBuyable } from '../../../ducks/ramps';
 ///: END:ONLY_INCLUDE_IF
-import { CoinOverview } from './coin-overview';
 import { getSelectedInternalAccount } from '../../../selectors';
 import { useMultichainSelector } from '../../../hooks/useMultichainSelector';
+import { CoinOverview } from './coin-overview';
 
 type BtcOverviewProps = {
   className?: string;
@@ -22,8 +22,6 @@ const BtcOverview = ({ className }: BtcOverviewProps) => {
     getMultichainIsTestnet,
     selectedAccount,
   );
-  console.log('isBtcTestnetAccount', isBtcTestnetAccount);
-  console.log('selectedAccount', selectedAccount);
   const { chainId } = useSelector(getMultichainProviderConfig);
   const balance = useSelector(getMultichainSelectedAccountCachedBalance);
   ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
