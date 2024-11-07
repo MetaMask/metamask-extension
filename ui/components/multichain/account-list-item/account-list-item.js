@@ -49,7 +49,6 @@ import {
   isAccountConnectedToCurrentTab,
   getShowFiatInTestnets,
   getUseBlockie,
-  getPreferences,
 } from '../../../selectors';
 import {
   getMultichainIsTestnet,
