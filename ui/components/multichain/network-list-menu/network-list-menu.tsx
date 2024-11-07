@@ -286,7 +286,7 @@ export const NetworkListMenu = ({ onClose }: { onClose: () => void }) => {
           dispatch(updateCustomNonce(''));
           dispatch(setNextNonce(''));
 
-          dispatch(setTokenNetworkFilter(allOpts));
+          dispatch(setTokenNetworkFilter({ [network.chainId]: true }));
 
           if (permittedAccountAddresses.length > 0) {
             grantPermittedChain(selectedTabOrigin, network.chainId);

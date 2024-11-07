@@ -11,6 +11,7 @@ import {
 import { sortAssets } from '../util/sort';
 import {
   getCurrencyRates,
+  getCurrentNetwork,
   getMarketData,
   getPreferences,
   getSelectedAccountTokenBalancesAcrossChains,
@@ -27,6 +28,7 @@ type TokenListProps = {
 
 export default function TokenList({ onTokenClick }: TokenListProps) {
   const t = useI18nContext();
+  const currentNetwork = useSelector(getCurrentNetwork);
   const { tokenSortConfig, tokenNetworkFilter } = useSelector(getPreferences);
   const conversionRate = useSelector(getConversionRate);
   const contractExchangeRates = useSelector(
@@ -107,6 +109,7 @@ export default function TokenList({ onTokenClick }: TokenListProps) {
     tokenNetworkFilter,
     conversionRate,
     contractExchangeRates,
+    currentNetwork,
   ]);
 
   const loading = false;
