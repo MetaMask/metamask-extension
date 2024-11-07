@@ -12,9 +12,6 @@ import {
   getAccountTypeForKeyring,
   getPinnedAccountsList,
   getHiddenAccountsList,
-  getMetaMetricsId,
-  getParticipateInMetaMetrics,
-  getDataCollectionForMarketing,
   ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
   getMetaMaskAccountsOrdered,
   ///: END:ONLY_INCLUDE_IF
@@ -43,7 +40,6 @@ import {
 import { TextVariant } from '../../../helpers/constants/design-system';
 import { formatAccountType } from '../../../helpers/utils/metrics';
 import { AccountDetailsMenuItem, ViewExplorerMenuItem } from '..';
-import { getPortfolioUrl } from '../../../helpers/utils/portfolio';
 
 const METRICS_LOCATION = 'Account Options';
 
@@ -160,10 +156,6 @@ export const AccountListItemMenu = ({
     dispatch(updateHiddenAccountsList(updatedHiddenAccountList));
   };
 
-  const isMetaMetricsEnabled = useSelector(getParticipateInMetaMetrics);
-  const metaMetricsId = useSelector(getMetaMetricsId);
-  const isMarketingEnabled = useSelector(getDataCollectionForMarketing);
-
   return (
     <Popover
       className="multichain-account-list-item-menu__popover"
@@ -191,35 +183,6 @@ export const AccountListItemMenu = ({
             textProps={{ variant: TextVariant.bodySm }}
             account={account}
           />
-          <MenuItem
-            onClick={() => {
-              const portfolioUrl = getPortfolioUrl(
-                '',
-                'account_list_item_menu',
-                metaMetricsId,
-                isMetaMetricsEnabled,
-                isMarketingEnabled,
-                account.address,
-                '',
-              );
-
-              global.platform.openTab({ url: portfolioUrl });
-
-              trackEvent({
-                category: MetaMetricsEventCategory.Accounts,
-                event: MetaMetricsEventName.PortfolioLinkClicked,
-                properties: {
-                  url: portfolioUrl,
-                  location: METRICS_LOCATION,
-                },
-              });
-
-              closeMenu();
-            }}
-            iconName={IconName.Wallet}
-          >
-            <Text variant={TextVariant.bodySm}>{t('viewInPortfolio')}</Text>
-          </MenuItem>
           {isHidden ? null : (
             <MenuItem
               data-testid="account-list-menu-pin"
