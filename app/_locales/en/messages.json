@@ -4103,6 +4103,24 @@
   "permissionsPageTourTitle": {
     "message": "Connected sites are now permissions"
   },
+  "permitSimulationChange_transfer": {
+    "message": "You send"
+  },
+  "permitSimulationChange_receive": {
+    "message": "You receive"
+  },
+  "permitSimulationChange_approve": {
+    "message": "Spending cap"
+  },
+  "permitSimulationChange_revoke": {
+    "message": "Spending cap"
+  },
+  "permitSimulationChange_bidding": {
+    "message": "You bid"
+  },
+  "permitSimulationChange_listing": {
+    "message": "You list"
+  },
   "permitSimulationDetailInfo": {
     "message": "You're giving the spender permission to spend this many tokens from your account."
   },

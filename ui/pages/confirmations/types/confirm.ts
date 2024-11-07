@@ -1,4 +1,5 @@
 import { ApprovalControllerState } from '@metamask/approval-controller';
+import { DecodingData } from '@metamask/signature-controller';
 import { SIWEMessage } from '@metamask/controller-utils';
 import {
   TransactionMeta,
@@ -21,15 +22,6 @@ export type SecurityAlertResponse = {
   providerRequestsCount?: Record<string, number>;
   securityAlertId?: string;
   source?: SecurityAlertSource;
-};
-
-// todo: DecodingData to be imported from signature controller once its updated in extension
-export type DecodingData = {
-  stateChanges: unknown[] | null;
-  error?: {
-    message: string;
-    type: string;
-  };
 };
 
 export type SignatureRequestType = {
