@@ -250,7 +250,11 @@
     "@metamask/network-controller@npm:^17.0.0": "patch:@metamask/network-controller@npm%3A21.0.0#~/.yarn/patches/@metamask-network-controller-npm-21.0.0-559aa8e395.patch",
     "@metamask/network-controller@npm:^19.0.0": "patch:@metamask/network-controller@npm%3A21.0.0#~/.yarn/patches/@metamask-network-controller-npm-21.0.0-559aa8e395.patch",
     "@metamask/network-controller@npm:^20.0.0": "patch:@metamask/network-controller@npm%3A21.0.0#~/.yarn/patches/@metamask-network-controller-npm-21.0.0-559aa8e395.patch",
-    "path-to-regexp": "1.9.0"
+    "path-to-regexp": "1.9.0",
+    "@metamask/snaps-utils@npm:^8.5.0": "patch:@metamask/snaps-utils@npm%3A8.5.1#~/.yarn/patches/@metamask-snaps-utils-npm-8.5.1-808feb2a2a.patch",
+    "@metamask/snaps-utils@npm:^8.3.0": "patch:@metamask/snaps-utils@npm%3A8.5.1#~/.yarn/patches/@metamask-snaps-utils-npm-8.5.1-808feb2a2a.patch",
+    "@metamask/snaps-utils@npm:^8.1.1": "patch:@metamask/snaps-utils@npm%3A8.5.1#~/.yarn/patches/@metamask-snaps-utils-npm-8.5.1-808feb2a2a.patch",
+    "@metamask/snaps-utils@npm:^7.4.0": "patch:@metamask/snaps-utils@npm%3A8.5.1#~/.yarn/patches/@metamask-snaps-utils-npm-8.5.1-808feb2a2a.patch"
   },
   "dependencies": {
     "@babel/runtime": "patch:@babel/runtime@npm%3A7.25.9#~/.yarn/patches/@babel-runtime-npm-7.25.9-fe8c62510a.patch",
@@ -345,7 +349,7 @@
     "@metamask/snaps-execution-environments": "^6.9.2",
     "@metamask/snaps-rpc-methods": "^11.5.1",
     "@metamask/snaps-sdk": "^6.10.0",
-    "@metamask/snaps-utils": "^8.5.1",
+    "@metamask/snaps-utils": "patch:@metamask/snaps-utils@npm%3A8.5.1#~/.yarn/patches/@metamask-snaps-utils-npm-8.5.1-808feb2a2a.patch",
     "@metamask/solana-wallet-snap": "^0.1.9",
     "@metamask/transaction-controller": "^38.1.0",
     "@metamask/user-operation-controller": "^13.0.0",
