@@ -1,8 +1,6 @@
 import React from 'react';
-import {
-  BridgeHistoryItem,
-  StatusTypes,
-} from '../../../../app/scripts/controllers/bridge-status/types';
+import { BridgeHistoryItem } from '../../../../shared/types/bridge-status';
+import { StatusTypes } from '../../../../shared/types/bridge-status';
 import { UseBridgeDataProps } from '../utils/useBridgeData';
 import { Box, Text } from '../../../components/component-library';
 import {

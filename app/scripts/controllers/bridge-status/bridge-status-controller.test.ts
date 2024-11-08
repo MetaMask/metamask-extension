@@ -1,13 +1,10 @@
 import { flushPromises } from '../../../../test/lib/timer-helpers';
-import { ChainId } from '../../../../ui/pages/bridge/types';
 import { Numeric } from '../../../../shared/modules/Numeric';
+import { StatusTypes } from '../../../../shared/types/bridge-status';
 import BridgeStatusController from './bridge-status-controller';
-import {
-  ActionTypes,
-  BridgeId,
-  BridgeStatusControllerMessenger,
-  StatusTypes,
-} from './types';
+import { BridgeStatusControllerMessenger } from './types';
+import { ActionTypes } from '../../../../shared/types/bridge-status';
+import { BridgeId } from '../../../../shared/types/bridge-status';
 import { DEFAULT_BRIDGE_STATUS_CONTROLLER_STATE } from './constants';
 import * as bridgeStatusUtils from './utils';
 

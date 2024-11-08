@@ -2,7 +2,7 @@ import { useSelector } from 'react-redux';
 import { Hex } from '@metamask/utils';
 import { Numeric } from '../../../../shared/modules/Numeric';
 import { getNetworkConfigurationsByChainId } from '../../../selectors';
-import { BridgeHistoryItem } from '../../../../app/scripts/controllers/bridge-status/types';
+import { BridgeHistoryItem } from '../../../../shared/types/bridge-status';
 
 export type UseBridgeChainInfoProps = {
   bridgeHistoryItem?: BridgeHistoryItem;

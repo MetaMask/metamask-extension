@@ -4,6 +4,11 @@ import { Hex } from '@metamask/utils';
 import { Numeric } from '../../../../shared/modules/Numeric';
 import { QuoteResponse } from '../../../../ui/pages/bridge/types';
 import {
+  StatusTypes,
+  StatusRequest,
+  BridgeHistoryItem,
+} from '../../../../shared/types/bridge-status';
+import {
   BRIDGE_STATUS_CONTROLLER_NAME,
   DEFAULT_BRIDGE_STATUS_CONTROLLER_STATE,
   REFRESH_INTERVAL_MS,
@@ -11,9 +16,6 @@ import {
 import {
   BridgeStatusControllerState,
   BridgeStatusControllerMessenger,
-  StatusRequest,
-  StatusTypes,
-  BridgeHistoryItem,
 } from './types';
 import { fetchBridgeTxStatus } from './utils';
 

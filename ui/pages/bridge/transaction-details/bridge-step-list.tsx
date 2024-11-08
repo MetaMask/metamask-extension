@@ -2,10 +2,8 @@ import React from 'react';
 import { NetworkConfiguration } from '@metamask/network-controller';
 import { TransactionMeta } from '@metamask/transaction-controller';
 import { Box } from '../../../components/component-library';
-import {
-  BridgeHistoryItem,
-  StatusTypes,
-} from '../../../../app/scripts/controllers/bridge-status/types';
+import { BridgeHistoryItem } from '../../../../shared/types/bridge-status';
+import { StatusTypes } from '../../../../shared/types/bridge-status';
 import BridgeStepDescription, {
   getStepStatus,
 } from './bridge-step-description';

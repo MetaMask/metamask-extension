@@ -7,7 +7,7 @@ import {
   BorderRadius,
   Display,
 } from '../../../helpers/constants/design-system';
-import { StatusTypes } from '../../../../app/scripts/controllers/bridge-status/types';
+import { StatusTypes } from '../../../../shared/types/bridge-status';
 
 export default function Segment({
   type,

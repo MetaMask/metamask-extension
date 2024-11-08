@@ -1,5 +1,5 @@
 import React from 'react';
-import { StatusTypes } from '../../../../app/scripts/controllers/bridge-status/types';
+import { StatusTypes } from '../../../../shared/types/bridge-status';
 import {
   Box,
   Icon,

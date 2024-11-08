@@ -1,11 +1,9 @@
 import * as React from 'react';
 import { NetworkConfiguration } from '@metamask/network-controller';
-import {
-  ActionTypes,
-  BridgeHistoryItem,
-  StatusTypes,
-  Step,
-} from '../../../../app/scripts/controllers/bridge-status/types';
+import { BridgeHistoryItem } from '../../../../shared/types/bridge-status';
+import { Step } from '../../../../shared/types/bridge-status';
+import { ActionTypes } from '../../../../shared/types/bridge-status';
+import { StatusTypes } from '../../../../shared/types/bridge-status';
 import { Box, Text } from '../../../components/component-library';
 import { Numeric } from '../../../../shared/modules/Numeric';
 import { Hex } from '@metamask/utils';

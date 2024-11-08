@@ -1,5 +1,5 @@
 import { validateResponse, validators } from './validators';
-import { StatusResponse } from './types';
+import { StatusResponse } from '../../../../shared/types/bridge-status';
 
 const BridgeTxStatusResponses = {
   STATUS_PENDING_VALID: {

@@ -1,9 +1,7 @@
 import { createSelector } from 'reselect';
 import { Hex } from '@metamask/utils';
-import {
-  BridgeHistoryItem,
-  BridgeStatusControllerState,
-} from '../../../app/scripts/controllers/bridge-status/types';
+import { BridgeStatusControllerState } from '../../../app/scripts/controllers/bridge-status/types';
+import { BridgeHistoryItem } from '../../../shared/types/bridge-status';
 import { getCurrentChainId, getSelectedAddress } from '../../selectors';
 import { Numeric } from '../../../shared/modules/Numeric';
 

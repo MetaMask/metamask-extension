@@ -1,12 +1,10 @@
 import { validHex, validateData } from '../../../../shared/lib/swaps-utils';
 import { isValidHexAddress } from '../../../../shared/modules/hexstring-utils';
-import {
-  Asset,
-  BridgeId,
-  DestChainStatus,
-  SrcChainStatus,
-  StatusTypes,
-} from './types';
+import { BridgeId } from '../../../../shared/types/bridge-status';
+import { DestChainStatus } from '../../../../shared/types/bridge-status';
+import { SrcChainStatus } from '../../../../shared/types/bridge-status';
+import { Asset } from '../../../../shared/types/bridge-status';
+import { StatusTypes } from '../../../../shared/types/bridge-status';
 import { BRIDGE_STATUS_BASE_URL } from './utils';
 
 type Validator<ExpectedResponse, DataToValidate> = {

@@ -1,11 +1,8 @@
-import React, { useContext } from 'react';
+import React from 'react';
 import { useSelector } from 'react-redux';
 import { useHistory, useParams } from 'react-router-dom';
 import { NetworkConfiguration } from '@metamask/network-controller';
-import {
-  TransactionMeta,
-  TransactionType,
-} from '@metamask/transaction-controller';
+import { TransactionMeta } from '@metamask/transaction-controller';
 import {
   AvatarNetwork,
   AvatarNetworkSize,
@@ -22,7 +19,6 @@ import {
   getNetworkConfigurationsByChainId,
   selectedAddressTxListSelector,
 } from '../../../selectors';
-import { I18nContext } from '../../../contexts/i18n';
 import { getTransactionBreakdownData } from '../../../components/app/transaction-breakdown/transaction-breakdown-utils';
 import { MetaMaskReduxState } from '../../../store/store';
 import { hexToDecimal } from '../../../../shared/modules/conversion.utils';
@@ -30,7 +26,7 @@ import UserPreferencedCurrencyDisplay from '../../../components/app/user-prefere
 import { EtherDenomination } from '../../../../shared/constants/common';
 import { PRIMARY, SECONDARY } from '../../../helpers/constants/common';
 import CurrencyDisplay from '../../../components/ui/currency-display/currency-display.component';
-import { StatusTypes } from '../../../../app/scripts/controllers/bridge-status/types';
+import { StatusTypes } from '../../../../shared/types/bridge-status';
 import {
   AlignItems,
   Display,
