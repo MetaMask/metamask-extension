@@ -152,6 +152,7 @@ describe('Snap Account Transfers @no-mmi', function (this: Suite) {
           gasFee: '0.000042',
           totalFee: '1.000042',
           isSyncFlow: false,
+          approveTransaction: false,
         });
 
         // check the transaction is failed in MetaMask activity list
