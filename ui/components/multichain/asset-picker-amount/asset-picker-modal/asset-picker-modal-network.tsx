@@ -34,6 +34,7 @@ import { getNetworkConfigurationsByChainId } from '../../../../../shared/modules
  * @param props.onNetworkChange - The callback function to handle network change.
  * @param props.onClose - The callback function to handle modal close.
  * @param props.onBack - The callback function to handle going back in the modal.
+ * @param props.shouldDisableNetwork - The callback function to determine if a network should be disabled.
  * @returns A modal with a list of selectable networks.
  */
 export const AssetPickerModalNetwork = ({
@@ -43,11 +44,13 @@ export const AssetPickerModalNetwork = ({
   network,
   networks,
   onNetworkChange,
+  shouldDisableNetwork,
 }: {
   isOpen: boolean;
   network?: NetworkConfiguration;
   networks?: NetworkConfiguration[];
   onNetworkChange: (network: NetworkConfiguration) => void;
+  shouldDisableNetwork?: (network: NetworkConfiguration) => boolean;
   onClose: () => void;
   onBack: () => void;
 }) => {
@@ -102,6 +105,7 @@ export const AssetPickerModalNetwork = ({
                     ]
                   }
                   focus={false}
+                  disabled={shouldDisableNetwork?.(networkConfig)}
                 />
               );
             })}
