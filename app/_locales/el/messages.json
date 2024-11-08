@@ -1620,9 +1620,6 @@
   "editSpeedUpEditGasFeeModalTitle": {
     "message": "Επεξεργασία τελών επίσπευσης συναλλαγής"
   },
-  "enable": {
-    "message": "Ενεργοποίηση"
-  },
   "enableAutoDetect": {
     "message": " Ενεργοποίηση αυτόματου εντοπισμού"
   },
@@ -4543,17 +4540,11 @@
   "signingInWith": {
     "message": "Σύνδεση με"
   },
-  "simulationDetailsFailed": {
-    "message": "Υπήρξε σφάλμα στη φόρτωση της εκτίμησής σας."
-  },
   "simulationDetailsFiatNotAvailable": {
     "message": "Μη διαθέσιμο"
   },
   "simulationDetailsIncomingHeading": {
     "message": "Λαμβάνετε"
-  },
-  "simulationDetailsNoBalanceChanges": {
-    "message": "Δεν προβλέπονται αλλαγές για το πορτοφόλι σας"
   },
   "simulationDetailsOutgoingHeading": {
     "message": "Στέλνετε"
@@ -4591,9 +4582,6 @@
   },
   "siweResources": {
     "message": "Πόροι"
-  },
-  "siweSignatureSimulationDetailInfo": {
-    "message": "Συνδέεστε σε έναν ιστότοπο και δεν προβλέπονται αλλαγές στον λογαριασμό σας."
   },
   "siweURI": {
     "message": "Διεύθυνση URL"
@@ -4636,25 +4624,6 @@
   },
   "smartTransactions": {
     "message": "Έξυπνες συναλλαγές"
-  },
-  "smartTransactionsBenefit1": {
-    "message": "Ποσοστό επιτυχίας 99,5%"
-  },
-  "smartTransactionsBenefit2": {
-    "message": "Σας εξοικονομεί χρήματα"
-  },
-  "smartTransactionsBenefit3": {
-    "message": "Ενημερώσεις σε πραγματικό χρόνο"
-  },
-  "smartTransactionsDescription": {
-    "message": "Ξεκλειδώστε υψηλότερα ποσοστά επιτυχίας, προστασία σε \"προπορευόμενες συναλλαγές\" και καλύτερη ορατότητα με τις Έξυπνες Συναλλαγές."
-  },
-  "smartTransactionsDescription2": {
-    "message": "Διατίθεται μόνο στο Ethereum. Ενεργοποιήστε ή απενεργοποιήστε το ανά πάσα στιγμή στις ρυθμίσεις. $1",
-    "description": "$1 is an external link to learn more about Smart Transactions"
-  },
-  "smartTransactionsOptItModalTitle": {
-    "message": "Ενισχυμένη Προστασία Συναλλαγών"
   },
   "snapAccountCreated": {
     "message": "Ο λογαριασμός δημιουργήθηκε"

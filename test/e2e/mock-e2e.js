@@ -1,7 +1,7 @@
 const fs = require('fs');
 
 const {
-  SECURITY_PROVIDER_SUPPORTED_CHAIN_IDS,
+  SECURITY_PROVIDER_SUPPORTED_CHAIN_IDS_FALLBACK_LIST,
 } = require('../../shared/constants/security-provider');
 const {
   BRIDGE_DEV_API_BASE_URL,
@@ -160,7 +160,7 @@ async function setupMocking(
     .thenCallback(() => {
       return {
         statusCode: 200,
-        json: SECURITY_PROVIDER_SUPPORTED_CHAIN_IDS,
+        json: SECURITY_PROVIDER_SUPPORTED_CHAIN_IDS_FALLBACK_LIST,
       };
     });
 
