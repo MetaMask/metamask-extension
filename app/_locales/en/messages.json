@@ -4809,6 +4809,9 @@
   "searchAccounts": {
     "message": "Search accounts"
   },
+  "searchAllNetworks": {
+    "message": "Search all networks"
+  },
   "searchNfts": {
     "message": "Search NFTs"
   },

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 
 import { useSelector } from 'react-redux';
 import { NetworkConfiguration } from '@metamask/network-controller';
@@ -23,6 +23,7 @@ import { useI18nContext } from '../../../../hooks/useI18nContext';
 ///: END:ONLY_INCLUDE_IF
 import { NetworkListItem } from '../../network-list-item';
 import { getNetworkConfigurationsByChainId } from '../../../../../shared/modules/selectors/networks';
+import { Search } from './asset-picker-modal-search';
 
 /**
  * AssetPickerModalNetwork component displays a modal for selecting a network in the asset picker.
@@ -66,6 +67,8 @@ export const AssetPickerModalNetwork = ({
   const networksList: NetworkConfiguration[] =
     networks ?? Object.values(allNetworks) ?? [];
 
+  const [searchQuery, setSearchQuery] = useState('');
+
   return (
     <Modal
       isOpen={isOpen}
@@ -74,9 +77,27 @@ export const AssetPickerModalNetwork = ({
     >
       <ModalOverlay />
       <ModalContent modalDialogProps={{ padding: 0 }}>
-        <ModalHeader onBack={onBack} onClose={onClose}>
+        <ModalHeader
+          onBack={
+            network
+              ? () => {
+                  setSearchQuery('');
+                  onBack();
+                }
+              : undefined
+          }
+          onClose={() => {
+            setSearchQuery('');
+            onClose();
+          }}
+        >
           {header ?? t('bridgeSelectNetwork')}
         </ModalHeader>
+        <Search
+          searchQuery={searchQuery}
+          onChange={setSearchQuery}
+          placeholder={t('searchAllNetworks')}
+        />
         <Box className="multichain-asset-picker__network-list">
           <Box
             style={{
@@ -89,17 +110,26 @@ export const AssetPickerModalNetwork = ({
           >
             {networksList.map((networkConfig) => {
               const { name, chainId } = networkConfig;
+              const networkName =
+                NETWORK_TO_NAME_MAP[
+                  chainId as keyof typeof NETWORK_TO_NAME_MAP
+                ] ?? name;
+
+              if (
+                searchQuery.length > 0 &&
+                !networkName.toLowerCase().includes(searchQuery.toLowerCase())
+              ) {
+                return null;
+              }
+
               return (
                 <NetworkListItem
                   key={chainId}
-                  name={
-                    NETWORK_TO_NAME_MAP[
-                      chainId as keyof typeof NETWORK_TO_NAME_MAP
-                    ] ?? name
-                  }
+                  name={networkName}
                   selected={network?.chainId === chainId}
                   onClick={() => {
                     onNetworkChange(networkConfig);
+                    setSearchQuery('');
                     onBack();
                   }}
                   iconSrc={
