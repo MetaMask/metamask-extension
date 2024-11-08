@@ -18,7 +18,7 @@ import {
 } from '../../../../shared/constants/security-provider';
 import { SIGNING_METHODS } from '../../../../shared/constants/transaction';
 import { AppStateController } from '../../controllers/app-state-controller';
-import { SecurityAlertResponse } from './types';
+import { SecurityAlertResponse, UpdateSecurityAlertResponse } from './types';
 import {
   getSecurityAlertsAPISupportedChainIds,
   isSecurityAlertsAPIEnabled,
@@ -51,21 +51,18 @@ export async function validateRequestWithPPOM({
   request: JsonRpcRequest;
   securityAlertId: string;
   chainId: Hex;
-  updateSecurityAlertResponse: (
-    method: string,
-    securityAlertId: string,
-    securityAlertResponse: SecurityAlertResponse,
-  ) => void;
+  updateSecurityAlertResponse: UpdateSecurityAlertResponse;
 }): Promise<SecurityAlertResponse> {
   try {
     if (!(await isChainSupported(chainId))) {
       return {
         ...SECURITY_ALERT_RESPONSE_CHAIN_NOT_SUPPORTED,
         securityAlertId,
+        description: `Chain ID ${chainId} is not supported`,
       };
     }
 
-    updateSecurityResponse(request.method, securityAlertId, {
+    await updateSecurityResponse(request.method, securityAlertId, {
       ...LOADING_SECURITY_ALERT_RESPONSE,
       securityAlertId,
     });

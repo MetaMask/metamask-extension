@@ -52,7 +52,7 @@ async function mockSegment(mockServer) {
   ];
 }
 
-const eventPropertiesBase = {
+const expectedEventPropertiesBase = {
   account_type: 'MetaMask',
   category: 'inpage_provider',
   locale: 'en',
@@ -91,13 +91,13 @@ describe('Signature Approved Event @no-mmi', function () {
         const events = await getEventPayloads(driver, mockedEndpoints);
 
         assert.deepStrictEqual(events[0].properties, {
-          ...eventPropertiesBase,
+          ...expectedEventPropertiesBase,
           signature_type: 'eth_signTypedData_v4',
           eip712_primary_type: 'Mail',
         });
 
         assert.deepStrictEqual(events[1].properties, {
-          ...eventPropertiesBase,
+          ...expectedEventPropertiesBase,
           signature_type: 'eth_signTypedData_v4',
           eip712_primary_type: 'Mail',
         });
@@ -133,12 +133,12 @@ describe('Signature Approved Event @no-mmi', function () {
         const events = await getEventPayloads(driver, mockedEndpoints);
 
         assert.deepStrictEqual(events[0].properties, {
-          ...eventPropertiesBase,
+          ...expectedEventPropertiesBase,
           signature_type: 'eth_signTypedData_v3',
         });
 
         assert.deepStrictEqual(events[1].properties, {
-          ...eventPropertiesBase,
+          ...expectedEventPropertiesBase,
           signature_type: 'eth_signTypedData_v3',
         });
       },
@@ -172,12 +172,12 @@ describe('Signature Approved Event @no-mmi', function () {
         const events = await getEventPayloads(driver, mockedEndpoints);
 
         assert.deepStrictEqual(events[0].properties, {
-          ...eventPropertiesBase,
+          ...expectedEventPropertiesBase,
           signature_type: 'eth_signTypedData',
         });
 
         assert.deepStrictEqual(events[1].properties, {
-          ...eventPropertiesBase,
+          ...expectedEventPropertiesBase,
           signature_type: 'eth_signTypedData',
         });
       },
@@ -211,12 +211,12 @@ describe('Signature Approved Event @no-mmi', function () {
         const events = await getEventPayloads(driver, mockedEndpoints);
 
         assert.deepStrictEqual(events[0].properties, {
-          ...eventPropertiesBase,
+          ...expectedEventPropertiesBase,
           signature_type: 'personal_sign',
         });
 
         assert.deepStrictEqual(events[1].properties, {
-          ...eventPropertiesBase,
+          ...expectedEventPropertiesBase,
           signature_type: 'personal_sign',
         });
       },

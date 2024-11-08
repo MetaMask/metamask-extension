@@ -262,6 +262,7 @@ describe('PPOM Utils', () => {
 
       expect(response).toStrictEqual({
         ...SECURITY_ALERT_RESPONSE_CHAIN_NOT_SUPPORTED,
+        description: `Chain ID ${CHAIN_ID_UNSUPPORTED_MOCK} is not supported`,
         securityAlertId: SECURITY_ALERT_ID_MOCK,
       });
     });

@@ -22,7 +22,7 @@ import {
   handlePPOMError,
   validateRequestWithPPOM,
 } from './ppom-util';
-import { SecurityAlertResponse } from './types';
+import { SecurityAlertResponse, UpdateSecurityAlertResponse } from './types';
 
 const CONFIRMATION_METHODS = Object.freeze([
   'eth_sendRawTransaction',
@@ -63,11 +63,7 @@ export function createPPOMMiddleware<
   networkController: NetworkController,
   appStateController: AppStateController,
   accountsController: AccountsController,
-  updateSecurityAlertResponse: (
-    method: string,
-    signatureAlertId: string,
-    securityAlertResponse: SecurityAlertResponse,
-  ) => void,
+  updateSecurityAlertResponse: UpdateSecurityAlertResponse,
 ) {
   return async (
     req: PPOMMiddlewareRequest<Params>,

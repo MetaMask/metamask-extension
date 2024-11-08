@@ -18,7 +18,10 @@ import {
   handlePPOMError,
   validateRequestWithPPOM,
 } from '../ppom/ppom-util';
-import { SecurityAlertResponse } from '../ppom/types';
+import {
+  SecurityAlertResponse,
+  UpdateSecurityAlertResponse,
+} from '../ppom/types';
 import {
   SECURITY_ALERT_RESPONSE_CHECKING_CHAIN,
   SECURITY_PROVIDER_EXCLUDED_TRANSACTION_TYPES,
@@ -37,11 +40,7 @@ type BaseAddTransactionRequest = {
   selectedAccount: InternalAccount;
   transactionParams: TransactionParams;
   transactionController: TransactionController;
-  updateSecurityAlertResponse: (
-    method: string,
-    securityAlertId: string,
-    securityAlertResponse: SecurityAlertResponse,
-  ) => void;
+  updateSecurityAlertResponse: UpdateSecurityAlertResponse;
   userOperationController: UserOperationController;
   internalAccounts: InternalAccount[];
 };
