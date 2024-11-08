@@ -89,7 +89,7 @@ const middleware = [thunk];
 const makeMockStore = () => {
   const store = configureMockStore<any>(middleware)(
     createBridgeMockStore({
-      bridgeStatusStateOverrides: {
+      metamaskStateOverrides: {
         gasFeeEstimates: {
           high: {
             maxWaitTimeEstimate: 30000,
