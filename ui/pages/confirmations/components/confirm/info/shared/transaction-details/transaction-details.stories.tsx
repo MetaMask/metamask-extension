@@ -5,7 +5,6 @@ import {
   PAYMASTER_AND_DATA,
   genUnapprovedContractInteractionConfirmation,
 } from '../../../../../../../../test/data/confirmations/contract-interaction';
-import mockState from '../../../../../../../../test/data/mock-state.json';
 import { getMockConfirmStateForTransaction } from '../../../../../../../../test/data/confirmations/helper';
 import configureStore from '../../../../../../../store/store';
 import { ConfirmContextProvider } from '../../../../../context/confirm';
@@ -20,9 +19,7 @@ function getStore() {
   return configureStore(
     getMockConfirmStateForTransaction(confirmation, {
       metamask: {
-        ...mockState.metamask,
         preferences: {
-          ...mockState.metamask.preferences,
           petnamesEnabled: true,
         },
         userOperations: {

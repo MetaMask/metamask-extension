@@ -14,7 +14,6 @@ import {
 } from '../../../../../../../components/component-library';
 import Tooltip from '../../../../../../../components/ui/tooltip';
 import { getIntlLocale } from '../../../../../../../ducks/locale/locale';
-import { getConversionRate } from '../../../../../../../ducks/metamask/metamask';
 import {
   AlignItems,
   Display,
@@ -25,7 +24,10 @@ import {
 } from '../../../../../../../helpers/constants/design-system';
 import { MIN_AMOUNT } from '../../../../../../../hooks/useCurrencyDisplay';
 import { useFiatFormatter } from '../../../../../../../hooks/useFiatFormatter';
-import { getPreferences } from '../../../../../../../selectors';
+import {
+  getPreferences,
+  selectConversionRateByChainId,
+} from '../../../../../../../selectors';
 import { getMultichainNetwork } from '../../../../../../../selectors/multichain';
 import { useConfirmContext } from '../../../../../context/confirm';
 import {
@@ -38,11 +40,16 @@ const NativeSendHeading = () => {
   const { currentConfirmation: transactionMeta } =
     useConfirmContext<TransactionMeta>();
 
+  const { chainId } = transactionMeta;
+
   const nativeAssetTransferValue = new BigNumber(
     transactionMeta.txParams.value as string,
   ).dividedBy(new BigNumber(10).pow(18));
 
-  const conversionRate = useSelector(getConversionRate);
+  const conversionRate = useSelector((state) =>
+    selectConversionRateByChainId(state, chainId),
+  );
+
   const fiatValue =
     conversionRate &&
     nativeAssetTransferValue &&

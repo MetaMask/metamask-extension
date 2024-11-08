@@ -133,6 +133,7 @@ export type PreferencesControllerState = Omit<
   useNonceField: boolean;
   usePhishDetect: boolean;
   dismissSeedBackUpReminder: boolean;
+  overrideContentSecurityPolicyHeader: boolean;
   useMultiAccountBalanceChecker: boolean;
   useSafeChainsListValidation: boolean;
   use4ByteResolution: boolean;
@@ -140,6 +141,8 @@ export type PreferencesControllerState = Omit<
   useRequestQueue: boolean;
   ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
   watchEthereumAccountEnabled: boolean;
+  ///: END:ONLY_INCLUDE_IF
+  ///: BEGIN:ONLY_INCLUDE_IF(solana)
   solanaSupportEnabled: boolean;
   ///: END:ONLY_INCLUDE_IF
   bitcoinSupportEnabled: boolean;
@@ -173,6 +176,7 @@ export const getDefaultPreferencesControllerState =
     useNonceField: false,
     usePhishDetect: true,
     dismissSeedBackUpReminder: false,
+    overrideContentSecurityPolicyHeader: true,
     useMultiAccountBalanceChecker: true,
     useSafeChainsListValidation: true,
     // set to true means the dynamic list from the API is being used
@@ -185,7 +189,7 @@ export const getDefaultPreferencesControllerState =
     openSeaEnabled: true,
     securityAlertsEnabled: true,
     watchEthereumAccountEnabled: false,
-    ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
+    ///: BEGIN:ONLY_INCLUDE_IF(solana)
     solanaSupportEnabled: false,
     ///: END:ONLY_INCLUDE_IF
     bitcoinSupportEnabled: false,
@@ -301,6 +305,10 @@ const controllerMetadata = {
     anonymous: true,
   },
   dismissSeedBackUpReminder: {
+    persist: true,
+    anonymous: true,
+  },
+  overrideContentSecurityPolicyHeader: {
     persist: true,
     anonymous: true,
   },
@@ -677,7 +685,9 @@ export class PreferencesController extends BaseController<
       state.watchEthereumAccountEnabled = watchEthereumAccountEnabled;
     });
   }
+  ///: END:ONLY_INCLUDE_IF
 
+  ///: BEGIN:ONLY_INCLUDE_IF(solana)
   /**
    * Setter for the `solanaSupportEnabled` property.
    *
@@ -1002,6 +1012,20 @@ export class PreferencesController extends BaseController<
   setDismissSeedBackUpReminder(dismissSeedBackUpReminder: boolean): void {
     this.update((state) => {
       state.dismissSeedBackUpReminder = dismissSeedBackUpReminder;
+    });
+  }
+
+  /**
+   * A setter for the user preference to override the Content-Security-Policy header
+   *
+   * @param overrideContentSecurityPolicyHeader - User preference for overriding the Content-Security-Policy header.
+   */
+  setOverrideContentSecurityPolicyHeader(
+    overrideContentSecurityPolicyHeader: boolean,
+  ): void {
+    this.update((state) => {
+      state.overrideContentSecurityPolicyHeader =
+        overrideContentSecurityPolicyHeader;
     });
   }
 
