@@ -1,6 +1,7 @@
 import React, { ReactNode, useMemo } from 'react';
 import { shallowEqual, useSelector } from 'react-redux';
 import BN from 'bn.js';
+import { Hex } from '@metamask/utils';
 import TokenCell from '../token-cell';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { Box } from '../../../component-library';
@@ -30,6 +31,15 @@ type TokenListProps = {
   nativeToken?: ReactNode;
 };
 
+type Token = {
+  address: Hex;
+  aggregators: string[];
+  chainId: Hex;
+  decimals: number;
+  isNative: boolean;
+  symbol: string;
+};
+
 export default function TokenList({ onTokenClick }: TokenListProps) {
   const t = useI18nContext();
   const currentNetwork = useSelector(getCurrentNetwork);
@@ -41,29 +51,35 @@ export default function TokenList({ onTokenClick }: TokenListProps) {
     shallowEqual,
   );
 
-  const selectedAccountTokensChains: Record<string, any> = useSelector(
+  const selectedAccountTokensChains: Record<Hex, Token[]> = useSelector(
     getSelectedAccountTokensAcrossChains,
-  );
+  ) as Record<Hex, Token[]>;
 
-  const selectedAccountTokenBalancesAcrossChains: Record<string, any> =
-    useSelector(getSelectedAccountTokenBalancesAcrossChains);
+  const selectedAccountTokenBalancesAcrossChains: Record<
+    Hex,
+    Record<Hex, Hex>
+  > = useSelector(getSelectedAccountTokenBalancesAcrossChains) as Record<
+    Hex,
+    Record<Hex, Hex>
+  >;
 
   const marketData = useSelector(getMarketData);
   const currencyRates = useSelector(getCurrencyRates);
-  const nativeBalances = useSelector(
+  const nativeBalances: Record<Hex, Hex> = useSelector(
     getSelectedAccountNativeTokenCachedBalanceByChainId,
-  );
+  ) as Record<Hex, Hex>;
 
   const consolidatedBalances = () => {
     const tokensWithBalance: any[] = [];
 
     Object.entries(selectedAccountTokensChains).forEach(([chainId, tokens]) => {
-      tokens.forEach((token: Record<string, any>) => {
+      console.log('chainId', chainId);
+      tokens.forEach((token: Token) => {
         const { address, isNative, symbol, decimals } = token;
-        let balance = 0;
+        let balance;
 
         if (isNative) {
-          const nativeTokenBalanceHex = nativeBalances?.[chainId];
+          const nativeTokenBalanceHex = nativeBalances?.[chainId as Hex];
           if (nativeTokenBalanceHex && nativeTokenBalanceHex !== '0x0') {
             balance = stringifyBalance(
               new BN(hexToDecimal(nativeTokenBalanceHex)),
@@ -73,7 +89,7 @@ export default function TokenList({ onTokenClick }: TokenListProps) {
           }
         } else {
           const hexBalance =
-            selectedAccountTokenBalancesAcrossChains[chainId]?.[address];
+            selectedAccountTokenBalancesAcrossChains[chainId as Hex]?.[address];
           if (hexBalance && hexBalance !== '0x0') {
             balance = stringifyBalance(
               new BN(hexToDecimal(hexBalance)),
@@ -90,10 +106,10 @@ export default function TokenList({ onTokenClick }: TokenListProps) {
 
         // Calculate fiat amount
         let tokenFiatAmount =
-          tokenMarketPrice * tokenExchangeRate * parseFloat(balance);
+          tokenMarketPrice * tokenExchangeRate * parseFloat(String(balance));
         if (isNative && currencyRates) {
           tokenFiatAmount =
-            currencyRates[symbol]?.conversionRate * parseFloat(balance);
+            currencyRates[symbol]?.conversionRate * parseFloat(String(balance));
         }
 
         // Append processed token with balance and fiat amount
@@ -102,7 +118,7 @@ export default function TokenList({ onTokenClick }: TokenListProps) {
           balance,
           tokenFiatAmount,
           chainId,
-          string: balance.toString(),
+          string: String(balance),
         });
       });
     });
