@@ -11,7 +11,21 @@ class HomePage {
   private readonly activityTab =
     '[data-testid="account-overview__activity-tab"]';
 
+  private readonly nftTab = '[data-testid="account-overview__nfts-tab"]';
+
+  private readonly nftIconOnActivityList = '[data-testid="nft-item"]';
+
   private readonly balance = '[data-testid="eth-overview__primary-currency"]';
+
+  private readonly basicFunctionalityOffWarningMessage = {
+    text: 'Basic functionality is off',
+    css: '.mm-banner-alert',
+  };
+
+  private readonly closeUseNetworkNotificationModalButton = {
+    text: 'Got it',
+    tag: 'h6',
+  };
 
   private readonly completedTransactions = '[data-testid="activity-list-item"]';
 
@@ -24,6 +38,8 @@ class HomePage {
     text: 'Failed',
     css: '.transaction-status-label--failed',
   };
+
+  private readonly popoverBackground = '.popover-bg';
 
   private readonly sendButton = '[data-testid="eth-overview-send"]';
 
@@ -51,13 +67,80 @@ class HomePage {
     console.log('Home page is loaded');
   }
 
-  async startSendFlow(): Promise<void> {
-    await this.driver.clickElement(this.sendButton);
+  async closeUseNetworkNotificationModal(): Promise<void> {
+    // We need to use clickElementSafe + assertElementNotPresent as sometimes the network dialog doesn't appear, as per this issue (#25788)
+    // TODO: change the 2 actions for clickElementAndWaitToDisappear, once the issue is fixed
+    await this.driver.assertElementNotPresent(this.popoverBackground);
+    await this.driver.clickElementSafe(
+      this.closeUseNetworkNotificationModalButton,
+    );
+    await this.driver.assertElementNotPresent(
+      this.closeUseNetworkNotificationModalButton,
+    );
   }
 
   async goToActivityList(): Promise<void> {
     console.log(`Open activity tab on homepage`);
     await this.driver.clickElement(this.activityTab);
+  }
+
+  async goToNFTList(): Promise<void> {
+    console.log(`Open NFT tab on homepage`);
+    await this.driver.clickElement(this.nftTab);
+  }
+
+  async clickNFTIconOnActivityList() {
+    await this.driver.clickElement(this.nftIconOnActivityList);
+  }
+
+  async startSendFlow(): Promise<void> {
+    await this.driver.clickElement(this.sendButton);
+  }
+
+  /**
+   * Checks if the toaster message for adding a network is displayed on the homepage.
+   *
+   * @param networkName - The name of the network that was added.
+   */
+  async check_addNetworkMessageIsDisplayed(networkName: string): Promise<void> {
+    console.log(
+      `Check the toaster message for adding network ${networkName} is displayed on homepage`,
+    );
+    await this.driver.waitForSelector({
+      tag: 'h6',
+      text: `“${networkName}” was successfully added!`,
+    });
+  }
+
+  async check_basicFunctionalityOffWarnigMessageIsDisplayed(): Promise<void> {
+    console.log(
+      'Check if basic functionality off warning message is displayed on homepage',
+    );
+    await this.driver.waitForSelector(this.basicFunctionalityOffWarningMessage);
+  }
+
+  /**
+   * This function checks the specified number of completed transactions are displayed in the activity list on the homepage.
+   * It waits up to 10 seconds for the expected number of completed transactions to be visible.
+   *
+   * @param expectedNumber - The number of completed transactions expected to be displayed in the activity list. Defaults to 1.
+   * @returns A promise that resolves if the expected number of completed transactions is displayed within the timeout period.
+   */
+  async check_completedTxNumberDisplayedInActivity(
+    expectedNumber: number = 1,
+  ): Promise<void> {
+    console.log(
+      `Wait for ${expectedNumber} completed transactions to be displayed in activity list`,
+    );
+    await this.driver.wait(async () => {
+      const completedTxs = await this.driver.findElements(
+        this.completedTransactions,
+      );
+      return completedTxs.length === expectedNumber;
+    }, 10000);
+    console.log(
+      `${expectedNumber} completed transactions found in activity list on homepage`,
+    );
   }
 
   /**
@@ -85,27 +168,20 @@ class HomePage {
   }
 
   /**
-   * This function checks the specified number of completed transactions are displayed in the activity list on the homepage.
-   * It waits up to 10 seconds for the expected number of completed transactions to be visible.
+   * Checks if the toaster message for editing a network is displayed on the homepage.
    *
-   * @param expectedNumber - The number of completed transactions expected to be displayed in the activity list. Defaults to 1.
-   * @returns A promise that resolves if the expected number of completed transactions is displayed within the timeout period.
+   * @param networkName - The name of the network that was edited.
    */
-  async check_completedTxNumberDisplayedInActivity(
-    expectedNumber: number = 1,
+  async check_editNetworkMessageIsDisplayed(
+    networkName: string,
   ): Promise<void> {
     console.log(
-      `Wait for ${expectedNumber} completed transactions to be displayed in activity list`,
+      `Check the toaster message for editing network ${networkName} is displayed on homepage`,
     );
-    await this.driver.wait(async () => {
-      const completedTxs = await this.driver.findElements(
-        this.completedTransactions,
-      );
-      return completedTxs.length === expectedNumber;
-    }, 10000);
-    console.log(
-      `${expectedNumber} completed transactions found in activity list on homepage`,
-    );
+    await this.driver.waitForSelector({
+      tag: 'h6',
+      text: `“${networkName}” was successfully edited!`,
+    });
   }
 
   /**

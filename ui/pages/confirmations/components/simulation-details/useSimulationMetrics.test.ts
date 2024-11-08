@@ -517,7 +517,7 @@ describe('useSimulationMetrics', () => {
             simulationData: EMPTY_SIMULATION_DATA_MOCK,
           },
           expect.objectContaining({
-            sensitiveProperties: expect.objectContaining({
+            properties: expect.objectContaining({
               [property]: 2.46,
             }),
           }),

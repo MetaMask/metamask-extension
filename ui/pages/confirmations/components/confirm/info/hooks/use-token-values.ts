@@ -3,10 +3,13 @@ import { isHexString } from '@metamask/utils';
 import { BigNumber } from 'bignumber.js';
 import { isBoolean } from 'lodash';
 import { useMemo, useState } from 'react';
+import { useSelector } from 'react-redux';
 import { Numeric } from '../../../../../../../shared/modules/Numeric';
 import useTokenExchangeRate from '../../../../../../components/app/currency-input/hooks/useTokenExchangeRate';
+import { getIntlLocale } from '../../../../../../ducks/locale/locale';
 import { useFiatFormatter } from '../../../../../../hooks/useFiatFormatter';
 import { useAssetDetails } from '../../../../hooks/useAssetDetails';
+import { formatAmount } from '../../../simulation-details/formatAmount';
 import { useDecodedTransactionData } from './useDecodedTransactionData';
 
 export const useTokenValues = (transactionMeta: TransactionMeta) => {
@@ -14,6 +17,7 @@ export const useTokenValues = (transactionMeta: TransactionMeta) => {
     transactionMeta.txParams.to,
     transactionMeta.txParams.from,
     transactionMeta.txParams.data,
+    transactionMeta.chainId,
   );
 
   const decodedResponse = useDecodedTransactionData();
@@ -56,9 +60,25 @@ export const useTokenValues = (transactionMeta: TransactionMeta) => {
   const fiatDisplayValue =
     fiatValue && fiatFormatter(fiatValue, { shorten: true });
 
+  const locale = useSelector(getIntlLocale);
+  const displayTransferValue = formatAmount(
+    locale,
+    new BigNumber(decodedTransferValue),
+  );
+
   return {
-    decodedTransferValue,
+    decodedTransferValue: toNonScientificString(decodedTransferValue),
+    displayTransferValue,
     fiatDisplayValue,
     pending,
   };
 };
+
+export function toNonScientificString(num: number): string {
+  if (num >= 10e-18) {
+    return num.toFixed(18).replace(/\.?0+$/u, '');
+  }
+
+  // keep in scientific notation
+  return num.toString();
+}

@@ -805,10 +805,6 @@
   "buyNow": {
     "message": "立即购买"
   },
-  "buyToken": {
-    "message": "购买 $1",
-    "description": "$1 is the token symbol"
-  },
   "bytes": {
     "message": "字节"
   },
@@ -1624,9 +1620,6 @@
   "editSpeedUpEditGasFeeModalTitle": {
     "message": "编辑加速燃料费用"
   },
-  "enable": {
-    "message": "启用"
-  },
   "enableAutoDetect": {
     "message": " 启用自动检测"
   },
@@ -1883,13 +1876,6 @@
   "functionType": {
     "message": "功能类型"
   },
-  "fundYourWallet": {
-    "message": "向您的钱包存入资金"
-  },
-  "fundYourWalletDescription": {
-    "message": "将一些 $1 添加到您的钱包并开始使用",
-    "description": "$1 is the token symbol"
-  },
   "gas": {
     "message": "燃料"
   },
@@ -1972,14 +1958,6 @@
   },
   "genericExplorerView": {
     "message": "在$1查看账户"
-  },
-  "getStartedWithNFTs": {
-    "message": "获取 $1 以购买 NFT",
-    "description": "$1 is the token symbol"
-  },
-  "getStartedWithNFTsDescription": {
-    "message": "将一些 $1 添加到您的钱包并开始使用 NFT",
-    "description": "$1 is the token symbol"
   },
   "goBack": {
     "message": "返回"
@@ -4562,17 +4540,11 @@
   "signingInWith": {
     "message": "使用以下登录方式"
   },
-  "simulationDetailsFailed": {
-    "message": "加载估算时出错。"
-  },
   "simulationDetailsFiatNotAvailable": {
     "message": "不可用"
   },
   "simulationDetailsIncomingHeading": {
     "message": "您收到"
-  },
-  "simulationDetailsNoBalanceChanges": {
-    "message": "预计您的钱包不会发生变化"
   },
   "simulationDetailsOutgoingHeading": {
     "message": "您发送"
@@ -4610,9 +4582,6 @@
   },
   "siweResources": {
     "message": "资源"
-  },
-  "siweSignatureSimulationDetailInfo": {
-    "message": "您正在登录某个网站，并且您的账户没有预期变化。"
   },
   "siweURI": {
     "message": "URL"
@@ -4655,25 +4624,6 @@
   },
   "smartTransactions": {
     "message": "智能交易"
-  },
-  "smartTransactionsBenefit1": {
-    "message": "99.5%的成功率"
-  },
-  "smartTransactionsBenefit2": {
-    "message": "为您省钱"
-  },
-  "smartTransactionsBenefit3": {
-    "message": "实时更新"
-  },
-  "smartTransactionsDescription": {
-    "message": "通过智能交易解锁更高的成功率、抢先交易保护和更高的透明度。"
-  },
-  "smartTransactionsDescription2": {
-    "message": "仅适用于以太坊。可随时在设置中启用或禁用。$1",
-    "description": "$1 is an external link to learn more about Smart Transactions"
-  },
-  "smartTransactionsOptItModalTitle": {
-    "message": "增强型交易保护"
   },
   "snapAccountCreated": {
     "message": "账户已创建"
@@ -4993,14 +4943,6 @@
   },
   "stake": {
     "message": "质押"
-  },
-  "startYourJourney": {
-    "message": "从 $1 开始您的旅程",
-    "description": "$1 is the token symbol"
-  },
-  "startYourJourneyDescription": {
-    "message": "将一些 $1 添加到您的钱包并开始使用 Web3",
-    "description": "$1 is the token symbol"
   },
   "stateLogError": {
     "message": "检索状态日志时出错。"

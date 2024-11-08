@@ -2615,7 +2615,12 @@ export function updateSendAsset(
 
       let missingProperty = STANDARD_TO_REQUIRED_PROPERTIES[
         providedDetails.standard
-      ]?.find((property) => providedDetails[property] === undefined);
+      ]?.find((property) => {
+        if (providedDetails.collection && property === 'symbol') {
+          return providedDetails.collection[property] === undefined;
+        }
+        return providedDetails[property] === undefined;
+      });
 
       let details;
 
@@ -2652,10 +2657,9 @@ export function updateSendAsset(
             providedDetails.address,
             sendingAddress,
             providedDetails.tokenId,
-          ).catch((error) => {
+          ).catch(() => {
             // prevent infinite stuck loading state
             dispatch(hideLoadingIndication());
-            throw error;
           })),
         };
       }
@@ -2670,7 +2674,7 @@ export function updateSendAsset(
 
       if (details.standard === TokenStandard.ERC20) {
         asset.balance =
-          details.balance && typeof details.decimals === 'number'
+          details.balance && details.decimals !== undefined
             ? addHexPrefix(
                 calcTokenAmount(details.balance, details.decimals).toString(16),
               )
