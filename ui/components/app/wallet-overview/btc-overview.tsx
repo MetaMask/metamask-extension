@@ -32,7 +32,7 @@ const BtcOverview = ({ className }: BtcOverviewProps) => {
   const isBtcBuyable = useSelector(getIsBitcoinBuyable);
   ///: END:ONLY_INCLUDE_IF
 
-  // FIXME: This causes re-renders, so use isEqual to avoid this
+  // FIXME: Use `isEqual` to avoid potential re-renders
   const account = useSelector(getSelectedInternalAccount, isEqual);
 
   return (
