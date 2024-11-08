@@ -94,16 +94,14 @@ const getSwapActionText = (
   step: Step,
 ) => {
   return status === StatusTypes.COMPLETE
-    ? t(
-        'bridgeStepActionSwapComplete',
+    ? t('bridgeStepActionSwapComplete', [
         step.srcAsset.symbol,
         step.destAsset.symbol,
-      )
-    : t(
-        'bridgeStepActionSwapPending',
+      ])
+    : t('bridgeStepActionSwapPending', [
         step.srcAsset.symbol,
         step.destAsset.symbol,
-      );
+      ]);
 };
 
 export const getStepStatus = (
