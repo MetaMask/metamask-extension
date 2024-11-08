@@ -1,26 +1,18 @@
 import React, { ReactNode } from 'react';
 import {
-  DecodingData,
   DecodingDataChangeType,
   DecodingDataStateChange,
 } from '@metamask/signature-controller';
 import { Hex } from '@metamask/utils';
 
 import { TokenStandard } from '../../../../../../../../../shared/constants/transaction';
-import {
-  Box,
-  Text,
-} from '../../../../../../../../components/component-library';
-import {
-  TextColor,
-  TextVariant,
-} from '../../../../../../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../../../../../../hooks/useI18nContext';
 import { SignatureRequestType } from '../../../../../../types/confirm';
 import { useConfirmContext } from '../../../../../../context/confirm';
 import StaticSimulation from '../../../shared/static-simulation/static-simulation';
 import TokenValueDisplay from '../value-display/value-display';
 import NativeValueDisplay from '../native-value-display/native-value-display';
+import { ConfirmInfoRow } from '../../../../../../../../components/app/confirm/info/row';
 
 const getStateChangeLabelMap = (
   t: ReturnType<typeof useI18nContext>,
@@ -46,14 +38,7 @@ const StateChangeRow = ({
   const { assetType, changeType, amount, contractAddress, tokenID } =
     stateChange;
   return (
-    <Box>
-      <Text
-        variant={TextVariant.bodyMdMedium}
-        color={TextColor.inherit}
-        marginLeft={2}
-      >
-        {getStateChangeLabelMap(t, changeType)}
-      </Text>
+    <ConfirmInfoRow label={getStateChangeLabelMap(t, changeType)}>
       {(assetType === TokenStandard.ERC20 ||
         assetType === TokenStandard.ERC721) && (
         <TokenValueDisplay
@@ -73,7 +58,7 @@ const StateChangeRow = ({
           debit={changeType === DecodingDataChangeType.Transfer}
         />
       )}
-    </Box>
+    </ConfirmInfoRow>
   );
 };
 
@@ -82,6 +67,7 @@ const DecodedSimulation: React.FC<object> = () => {
   const { currentConfirmation } = useConfirmContext<SignatureRequestType>();
   const chainId = currentConfirmation.chainId as Hex;
   const { decodingLoading, decodingData } = currentConfirmation;
+  console.log('decodingData = ', decodingData);
 
   let stateChangeFragment: ReactNode[] = [];
   if (decodingData && decodingData.stateChanges) {
