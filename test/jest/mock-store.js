@@ -701,13 +701,21 @@ export const createSwapsMockStore = () => {
   };
 };
 
-export const createBridgeMockStore = ({
-  featureFlagOverrides = {},
-  bridgeSliceOverrides = {},
-  bridgeStateOverrides = {},
-  bridgeStatusStateOverrides = {},
-  metamaskStateOverrides = {},
-}) => {
+export const createBridgeMockStore = (
+  {
+    featureFlagOverrides = {},
+    bridgeSliceOverrides = {},
+    bridgeStateOverrides = {},
+    bridgeStatusStateOverrides = {},
+    metamaskStateOverrides = {},
+  } = {
+    featureFlagOverrides: {},
+    bridgeSliceOverrides: {},
+    bridgeStateOverrides: {},
+    bridgeStatusStateOverrides: {},
+    metamaskStateOverrides: {},
+  },
+) => {
   const swapsStore = createSwapsMockStore();
   return {
     ...swapsStore,
