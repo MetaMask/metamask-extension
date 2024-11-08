@@ -97,18 +97,6 @@ export const getToChain = createDeepEqualSelector(
     toChains.find(({ chainId }) => chainId === toChainId),
 );
 
-export const getApprovalGasMultipliers = (state: BridgeAppState) => {
-  return (
-    state.metamask.bridgeState.bridgeFeatureFlags.approvalGasMultiplier ?? {}
-  );
-};
-
-export const getBridgeGasMultipliers = (state: BridgeAppState) => {
-  return (
-    state.metamask.bridgeState.bridgeFeatureFlags.bridgeGasMultiplier ?? {}
-  );
-};
-
 export const getFromTokens = (state: BridgeAppState) => {
   return state.metamask.bridgeState.srcTokens ?? {};
 };

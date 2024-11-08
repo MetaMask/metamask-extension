@@ -4,8 +4,6 @@ export enum BridgeFlag {
   EXTENSION_SUPPORT = 'extension-support',
   NETWORK_SRC_ALLOWLIST = 'src-network-allowlist',
   NETWORK_DEST_ALLOWLIST = 'dest-network-allowlist',
-  APPROVAL_GAS_MULTIPLIER = 'approval-gas-multiplier',
-  BRIDGE_GAS_MULTIPLIER = 'bridge-gas-multiplier',
 }
 
 type DecimalChainId = string;
@@ -19,8 +17,6 @@ export type FeatureFlagResponse = {
   [BridgeFlag.EXTENSION_SUPPORT]: boolean;
   [BridgeFlag.NETWORK_SRC_ALLOWLIST]: number[];
   [BridgeFlag.NETWORK_DEST_ALLOWLIST]: number[];
-  [BridgeFlag.APPROVAL_GAS_MULTIPLIER]: GasMultiplierByChainId;
-  [BridgeFlag.BRIDGE_GAS_MULTIPLIER]: GasMultiplierByChainId;
 };
 
 export type BridgeAsset = {
