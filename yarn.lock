@@ -5752,14 +5752,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/notification-services-controller@npm:^0.12.0":
-  version: 0.12.0
-  resolution: "@metamask/notification-services-controller@npm:0.12.0"
+"@metamask/notification-services-controller@npm:^0.12.1":
+  version: 0.12.1
+  resolution: "@metamask/notification-services-controller@npm:0.12.1"
   dependencies:
     "@contentful/rich-text-html-renderer": "npm:^16.5.2"
-    "@metamask/base-controller": "npm:^7.0.1"
-    "@metamask/controller-utils": "npm:^11.4.0"
-    "@metamask/utils": "npm:^9.1.0"
+    "@metamask/base-controller": "npm:^7.0.2"
+    "@metamask/controller-utils": "npm:^11.4.2"
+    "@metamask/utils": "npm:^10.0.0"
     bignumber.js: "npm:^9.1.2"
     firebase: "npm:^10.11.0"
     loglevel: "npm:^1.8.1"
@@ -5767,7 +5767,7 @@ __metadata:
   peerDependencies:
     "@metamask/keyring-controller": ^17.0.0
     "@metamask/profile-sync-controller": ^0.0.0
-  checksum: 10/715cb7c656c6c5703d8582a9bcf368ce90fb6defcd5c8d71548b6271a04f2b761ce924d12091999bba5268a19d29ff7c84c87611dfdc8d599ce959f7b8b41b2f
+  checksum: 10/dd2f6e2d285dfdd5127bcf202b458a200fb0e578866c7ad73cd7d93f9b6c11bd887d040460e17a7b77885c0c18292bc864e6d417cc3ef7f107918c8987066b82
   languageName: node
   linkType: hard
 
@@ -26429,7 +26429,7 @@ __metadata:
     "@metamask/metamask-eth-abis": "npm:^3.1.1"
     "@metamask/name-controller": "npm:^8.0.0"
     "@metamask/network-controller": "patch:@metamask/network-controller@npm%3A21.0.0#~/.yarn/patches/@metamask-network-controller-npm-21.0.0-559aa8e395.patch"
-    "@metamask/notification-services-controller": "npm:^0.12.0"
+    "@metamask/notification-services-controller": "npm:^0.12.1"
     "@metamask/object-multiplex": "npm:^2.0.0"
     "@metamask/obs-store": "npm:^9.0.0"
     "@metamask/permission-controller": "npm:^10.0.0"
