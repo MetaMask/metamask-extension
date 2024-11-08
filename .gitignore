@@ -64,6 +64,9 @@ test-results/
 !.yarn/versions
 development/generate-attributions/.yarn/*
 
+# MetaMask
+.metamask/*
+
 # MMI Playwright
 public/playwright
 test/e2e/playwright/mmi/.env
