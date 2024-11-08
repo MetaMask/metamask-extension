@@ -61,7 +61,7 @@ exports[`Bridge renders the component with initial props 1`] = `
           data-theme="light"
           disabled=""
         >
-          Select token
+          Select token and amount
         </button>
       </div>
     </div>

@@ -207,23 +207,6 @@
   "addCustomNetwork": {
     "message": "Добавить пользовательскую сеть"
   },
-  "addEthereumChainConfirmationDescription": {
-    "message": "Это позволит использовать эту сеть в MetaMask."
-  },
-  "addEthereumChainConfirmationRisks": {
-    "message": "MetaMask не проверяет пользовательские сети."
-  },
-  "addEthereumChainConfirmationRisksLearnMore": {
-    "message": "Подробнее о $1.",
-    "description": "$1 is a link with text that is provided by the 'addEthereumChainConfirmationRisksLearnMoreLink' key"
-  },
-  "addEthereumChainConfirmationRisksLearnMoreLink": {
-    "message": "мошенничестве и угрозах безопасности в сети",
-    "description": "Link text for the 'addEthereumChainConfirmationRisksLearnMore' translation key"
-  },
-  "addEthereumChainConfirmationTitle": {
-    "message": "Разрешить этому сайту добавить сеть?"
-  },
   "addEthereumChainWarningModalHeader": {
     "message": "Добавляйте этого поставщика RPC только в том случае, если уверены, что ему можно доверять. $1",
     "description": "$1 is addEthereumChainWarningModalHeaderPartTwo passed separately so that it can be bolded"
@@ -821,10 +804,6 @@
   },
   "buyNow": {
     "message": "Купить сейчас"
-  },
-  "buyToken": {
-    "message": "Купить $1",
-    "description": "$1 is the token symbol"
   },
   "bytes": {
     "message": "Байты"
@@ -1641,9 +1620,6 @@
   "editSpeedUpEditGasFeeModalTitle": {
     "message": "Изменить плату за газ за ускорение"
   },
-  "enable": {
-    "message": "Включить"
-  },
   "enableAutoDetect": {
     "message": " Включить автоопределение"
   },
@@ -1720,10 +1696,6 @@
     "message": "Код: $1",
     "description": "Displayed error code for debugging purposes. $1 is the error code"
   },
-  "errorDetails": {
-    "message": "Сведения об ошибке",
-    "description": "Title for collapsible section that displays error details for debugging purposes"
-  },
   "errorGettingSafeChainList": {
     "message": "Ошибка при получении списка безопасных блокчейнов. Продолжайте с осторожностью."
   },
@@ -1734,14 +1706,6 @@
   "errorName": {
     "message": "Код: $1",
     "description": "Displayed error name for debugging purposes. $1 is the error name"
-  },
-  "errorPageMessage": {
-    "message": "Повторите попытку, перезагрузив страницу, или обратитесь в поддержку $1.",
-    "description": "Message displayed on generic error page in the fullscreen or notification UI, $1 is a clickable link with text defined by the 'here' key. The link will open to a form where users can file support tickets."
-  },
-  "errorPagePopupMessage": {
-    "message": "Повторите попытку, закрыв и вновь открыв всплывающее окно, или обратитесь в поддержку $1.",
-    "description": "Message displayed on generic error page in the popup UI, $1 is a clickable link with text defined by the 'here' key. The link will open to a form where users can file support tickets."
   },
   "errorPageTitle": {
     "message": "MetaMask обнаружил ошибку",
@@ -1900,13 +1864,6 @@
   "functionType": {
     "message": "Тип функции"
   },
-  "fundYourWallet": {
-    "message": "Пополните свой кошелек"
-  },
-  "fundYourWalletDescription": {
-    "message": "Начните с добавления $1 в свой кошелек.",
-    "description": "$1 is the token symbol"
-  },
   "gas": {
     "message": "Газ"
   },
@@ -1989,14 +1946,6 @@
   },
   "genericExplorerView": {
     "message": "Посмотреть счет на $1"
-  },
-  "getStartedWithNFTs": {
-    "message": "Получите $1 для покупки NFT",
-    "description": "$1 is the token symbol"
-  },
-  "getStartedWithNFTsDescription": {
-    "message": "Начните использовать NFT, добавив $1 в свой кошелек.",
-    "description": "$1 is the token symbol"
   },
   "goBack": {
     "message": "Назад"
@@ -4579,17 +4528,11 @@
   "signingInWith": {
     "message": "Вход с помощью"
   },
-  "simulationDetailsFailed": {
-    "message": "Не удалось загрузить прогноз."
-  },
   "simulationDetailsFiatNotAvailable": {
     "message": "Недоступно"
   },
   "simulationDetailsIncomingHeading": {
     "message": "Вы получаете"
-  },
-  "simulationDetailsNoBalanceChanges": {
-    "message": "Никаких изменений в вашем кошельке не прогнозируется"
   },
   "simulationDetailsOutgoingHeading": {
     "message": "Вы отправляете"
@@ -4627,9 +4570,6 @@
   },
   "siweResources": {
     "message": "Ресурсы"
-  },
-  "siweSignatureSimulationDetailInfo": {
-    "message": "Вы входите на сайт, и в вашем счете не происходит никаких прогнозируемых изменений."
   },
   "siweURI": {
     "message": "URL-адрес"
@@ -4672,25 +4612,6 @@
   },
   "smartTransactions": {
     "message": "Умные транзакции"
-  },
-  "smartTransactionsBenefit1": {
-    "message": "Коэффициент успеха 99,5%"
-  },
-  "smartTransactionsBenefit2": {
-    "message": "Экономит вам деньги"
-  },
-  "smartTransactionsBenefit3": {
-    "message": "Обновления в реальном времени"
-  },
-  "smartTransactionsDescription": {
-    "message": "Откройте для себя более высокие коэффициенты успеха, передовую защиту и лучшую прозрачность с помощью умных транзакций."
-  },
-  "smartTransactionsDescription2": {
-    "message": "Доступно только на Ethereum. Включайте или отключайте в любое время в настройках. $1",
-    "description": "$1 is an external link to learn more about Smart Transactions"
-  },
-  "smartTransactionsOptItModalTitle": {
-    "message": "Улучшенная защита транзакций"
   },
   "snapAccountCreated": {
     "message": "Счет создан"
@@ -4858,9 +4779,6 @@
     "message": "Свяжитесь с авторами $1 для получения дополнительной поддержки.",
     "description": "This is shown when the insight snap throws an error. $1 is the snap name"
   },
-  "someNetworksMayPoseSecurity": {
-    "message": "Некоторые сети могут представлять угрозу безопасности и/или конфиденциальности. Прежде чем добавлять и использовать сеть, ознакомьтесь с рисками."
-  },
   "somethingDoesntLookRight": {
     "message": "Что-то не так? $1",
     "description": "A false positive message for users to contact support. $1 is a link to the support page."
@@ -5013,14 +4931,6 @@
   },
   "stake": {
     "message": "Выполнить стейкинг"
-  },
-  "startYourJourney": {
-    "message": "Начните свое путешествие с $1",
-    "description": "$1 is the token symbol"
-  },
-  "startYourJourneyDescription": {
-    "message": "Начните использовать Web3, добавив $1 в свой кошелек.",
-    "description": "$1 is the token symbol"
   },
   "stateLogError": {
     "message": "Ошибка при получении журналов состояния."
@@ -6006,9 +5916,6 @@
   },
   "viewActivity": {
     "message": "Смотреть активность"
-  },
-  "viewAllDetails": {
-    "message": "Смотреть все сведения"
   },
   "viewAllQuotes": {
     "message": "смотреть все котировки"
