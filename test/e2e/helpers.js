@@ -387,107 +387,6 @@ const getWindowHandles = async (driver, handlesCount) => {
 
 /**
  * @deprecated Please use page object functions in `onboarding.flow.ts` and in `pages/onboarding/*`.
- * @param driver
- * @param seedPhrase
- * @param password
- */
-const importSRPOnboardingFlow = async (driver, seedPhrase, password) => {
-  // agree to terms of use
-  await driver.clickElement('[data-testid="onboarding-terms-checkbox"]');
-
-  // welcome
-  await driver.clickElement('[data-testid="onboarding-import-wallet"]');
-
-  // metrics
-  await driver.clickElement('[data-testid="metametrics-no-thanks"]');
-
-  await driver.waitForSelector('.import-srp__actions');
-  // import with recovery phrase
-  await driver.pasteIntoField(
-    '[data-testid="import-srp__srp-word-0"]',
-    seedPhrase,
-  );
-  await driver.clickElement('[data-testid="import-srp-confirm"]');
-
-  // create password
-  await driver.fill('[data-testid="create-password-new"]', password);
-  await driver.fill('[data-testid="create-password-confirm"]', password);
-  await driver.clickElement('[data-testid="create-password-terms"]');
-  await driver.clickElement('[data-testid="create-password-import"]');
-  await driver.assertElementNotPresent('.loading-overlay');
-};
-
-/**
- * @deprecated Please use page object functions in `onboarding.flow.ts` and in `pages/onboarding/*`.
- * @param driver
- * @param seedPhrase
- * @param password
- */
-const completeImportSRPOnboardingFlow = async (
-  driver,
-  seedPhrase,
-  password,
-) => {
-  await importSRPOnboardingFlow(driver, seedPhrase, password);
-
-  // complete
-  await driver.clickElement('[data-testid="onboarding-complete-done"]');
-
-  // pin extension
-  await driver.clickElement('[data-testid="pin-extension-next"]');
-  await driver.clickElement('[data-testid="pin-extension-done"]');
-};
-
-/**
- * @deprecated Please use page object functions in `onboarding.flow.ts` and in `pages/onboarding/*`.
- * @param driver
- * @param seedPhrase
- * @param password
- */
-const completeImportSRPOnboardingFlowWordByWord = async (
-  driver,
-  seedPhrase,
-  password,
-) => {
-  // agree to terms of use
-  await driver.clickElement('[data-testid="onboarding-terms-checkbox"]');
-
-  // welcome
-  await driver.clickElement('[data-testid="onboarding-import-wallet"]');
-
-  // metrics
-
-  await driver.clickElement('[data-testid="metametrics-no-thanks"]');
-
-  // import with recovery phrase, word by word
-  const words = seedPhrase.split(' ');
-  for (const word of words) {
-    await driver.pasteIntoField(
-      `[data-testid="import-srp__srp-word-${words.indexOf(word)}"]`,
-      word,
-    );
-  }
-  await driver.clickElement('[data-testid="import-srp-confirm"]');
-
-  // create password
-  await driver.fill('[data-testid="create-password-new"]', password);
-  await driver.fill('[data-testid="create-password-confirm"]', password);
-  await driver.clickElement('[data-testid="create-password-terms"]');
-  await driver.clickElement('[data-testid="create-password-import"]');
-
-  // wait for loading to complete
-  await driver.assertElementNotPresent('.loading-overlay');
-
-  // complete
-  await driver.clickElement('[data-testid="onboarding-complete-done"]');
-
-  // pin extension
-  await driver.clickElement('[data-testid="pin-extension-next"]');
-  await driver.clickElement('[data-testid="pin-extension-done"]');
-};
-
-/**
- * @deprecated Please use page object functions in `onboarding.flow.ts` and in `pages/onboarding/*`.
  * Begin the create new wallet flow on onboarding screen.
  * @param {WebDriver} driver
  */
@@ -1237,6 +1136,10 @@ async function initBundler(bundlerServer, ganacheServer, usePaymaster) {
   }
 }
 
+/**
+ * @deprecated Please use page object functions in `pages/account-list-page`.
+ * @param driver
+ */
 async function removeSelectedAccount(driver) {
   await driver.clickElement('[data-testid="account-menu-icon"]');
   await driver.clickElement(
@@ -1246,6 +1149,10 @@ async function removeSelectedAccount(driver) {
   await driver.clickElement({ text: 'Remove', tag: 'button' });
 }
 
+/**
+ * @deprecated Please use page object functions in `pages/account-list-page`.
+ * @param driver
+ */
 async function getSelectedAccountAddress(driver) {
   await driver.clickElement('[data-testid="account-options-menu-button"]');
   await driver.clickElement('[data-testid="account-list-menu-details"]');
@@ -1328,9 +1235,6 @@ module.exports = {
   largeDelayMs,
   veryLargeDelayMs,
   withFixtures,
-  importSRPOnboardingFlow,
-  completeImportSRPOnboardingFlow,
-  completeImportSRPOnboardingFlowWordByWord,
   completeCreateNewWalletOnboardingFlow,
   completeCreateNewWalletOnboardingFlowWithOptOut,
   openSRPRevealQuiz,

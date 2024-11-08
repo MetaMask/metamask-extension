@@ -59,6 +59,21 @@ class OnboardingSrpPage {
     await this.driver.pasteIntoField(this.srpWord0, seedPhrase);
   }
 
+  /**
+   * Fill the SRP words with the provided seed phrase word by word
+   *
+   * @param seedPhrase - The seed phrase to fill. Defaults to E2E_SRP.
+   */
+  async fillSrpWordByWord(seedPhrase: string = E2E_SRP): Promise<void> {
+    const words = seedPhrase.split(' ');
+    for (const word of words) {
+      await this.driver.pasteIntoField(
+        `[data-testid="import-srp__srp-word-${words.indexOf(word)}"]`,
+        word,
+      );
+    }
+  }
+
   async check_confirmSrpButtonIsDisabled(): Promise<void> {
     console.log('Check that confirm SRP button is disabled');
     const confirmSeedPhrase = await this.driver.findElement(
