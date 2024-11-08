@@ -1,6 +1,5 @@
-import { validateResponse } from '../../../../ui/pages/bridge/bridge.util';
+import { validateResponse, validators } from './validators';
 import { StatusResponse } from './types';
-import { validators } from './validators';
 
 const BridgeTxStatusResponses = {
   STATUS_PENDING_VALID: {
