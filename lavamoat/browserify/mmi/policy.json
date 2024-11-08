@@ -1949,10 +1949,10 @@
         "@metamask/base-controller": true,
         "@metamask/controller-utils": true,
         "@metamask/notification-services-controller>@contentful/rich-text-html-renderer": true,
-        "@metamask/notification-services-controller>@metamask/utils": true,
+        "@metamask/notification-services-controller>bignumber.js": true,
         "@metamask/notification-services-controller>firebase": true,
         "@metamask/profile-sync-controller": true,
-        "bignumber.js": true,
+        "@metamask/utils": true,
         "loglevel": true,
         "uuid": true
       }
@@ -1962,19 +1962,10 @@
         "SuppressedError": true
       }
     },
-    "@metamask/notification-services-controller>@metamask/utils": {
+    "@metamask/notification-services-controller>bignumber.js": {
       "globals": {
-        "TextDecoder": true,
-        "TextEncoder": true
-      },
-      "packages": {
-        "@metamask/utils>@metamask/superstruct": true,
-        "@metamask/utils>@scure/base": true,
-        "@metamask/utils>pony-cause": true,
-        "@noble/hashes": true,
-        "browserify>buffer": true,
-        "nock>debug": true,
-        "semver": true
+        "crypto": true,
+        "define": true
       }
     },
     "@metamask/notification-services-controller>firebase": {
