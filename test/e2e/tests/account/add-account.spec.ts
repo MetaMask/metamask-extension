@@ -44,13 +44,13 @@ describe('Add account', function () {
         await accountListPage.switchToAccount('Account 1');
         await headerNavbar.check_accountLabel('Account 1');
         await homePage.check_ganacheBalanceIsDisplayed(ganacheServer);
-        await sendTransactionToAccount(
+        await sendTransactionToAccount({
           driver,
-          'Account 2',
-          '2.8',
-          '0.000042',
-          '2.800042',
-        );
+          recipientAccount: 'Account 2',
+          amount: '2.8',
+          gasFee: '0.000042',
+          totalFee: '2.800042',
+        });
         await homePage.check_pageIsLoaded();
         await homePage.check_confirmedTxNumberDisplayedInActivity();
         await homePage.check_txAmountInActivity('-2.8 ETH');

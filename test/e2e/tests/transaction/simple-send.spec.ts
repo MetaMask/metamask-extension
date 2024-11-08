@@ -23,13 +23,13 @@ describe('Simple send eth', function (this: Suite) {
         ganacheServer?: Ganache;
       }) => {
         await loginWithBalanceValidation(driver, ganacheServer);
-        await sendTransactionToAddress(
+        await sendTransactionToAddress({
           driver,
-          '0x985c30949c92df7a0bd42e0f3e3d539ece98db24',
-          '1',
-          '0.000042',
-          '1.000042',
-        );
+          recipientAddress: '0x985c30949c92df7a0bd42e0f3e3d539ece98db24',
+          amount: '1',
+          gasFee: '0.000042',
+          totalFee: '1.000042',
+        });
         const homePage = new HomePage(driver);
         await homePage.check_pageIsLoaded();
         await homePage.check_confirmedTxNumberDisplayedInActivity();
