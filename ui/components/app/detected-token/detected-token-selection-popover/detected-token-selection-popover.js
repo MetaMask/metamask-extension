@@ -10,6 +10,7 @@ import {
   MetaMetricsTokenEventSource,
 } from '../../../../../shared/constants/metametrics';
 import {
+  getAllDetectedTokensForSelectedAddress,
   getCurrentChainId,
   getDetectedTokensInCurrentNetwork,
 } from '../../../../selectors';
@@ -33,10 +34,25 @@ const DetectedTokenSelectionPopover = ({
   const chainId = useSelector(getCurrentChainId);
 
   const detectedTokens = useSelector(getDetectedTokensInCurrentNetwork);
+
+  const detectedTokensMultichain = useSelector(
+    getAllDetectedTokensForSelectedAddress,
+  );
+
+  const totalTokens = process.env.PORTFOLIO_VIEW
+    ? Object.values(detectedTokensMultichain).reduce(
+        (count, tokenArray) => count + tokenArray.length,
+        0,
+      )
+    : detectedTokens.length;
+
   const { selected: selectedTokens = [] } =
     sortingBasedOnTokenSelection(tokensListDetected);
 
   const onClose = () => {
+    const chainIds = Object.keys(detectedTokensMultichain);
+    const chainIdForMetrics = process.env.PORTFOLIO_VIEW ? chainIds : chainId;
+
     setShowDetectedTokens(false);
     const eventTokensDetails = detectedTokens.map(
       ({ address, symbol }) => `${symbol} - ${address}`,
@@ -46,7 +62,7 @@ const DetectedTokenSelectionPopover = ({
       category: MetaMetricsEventCategory.Wallet,
       properties: {
         source_connection_method: MetaMetricsTokenEventSource.Detected,
-        chain_id: chainId,
+        chain_id: chainIdForMetrics,
         tokens: eventTokensDetails,
       },
     });
@@ -76,25 +92,43 @@ const DetectedTokenSelectionPopover = ({
     <Popover
       className="detected-token-selection-popover"
       title={
-        detectedTokens.length === 1
+        totalTokens === 1
           ? t('tokenFoundTitle')
-          : t('tokensFoundTitle', [detectedTokens.length])
+          : t('tokensFoundTitle', [totalTokens])
       }
       onClose={onClose}
       footer={footer}
     >
-      <Box margin={3}>
-        {detectedTokens.map((token, index) => {
-          return (
-            <DetectedTokenDetails
-              key={index}
-              token={token}
-              handleTokenSelection={handleTokenSelection}
-              tokensListDetected={tokensListDetected}
-            />
-          );
-        })}
-      </Box>
+      {process.env.PORTFOLIO_VIEW ? (
+        <Box margin={3}>
+          {Object.entries(detectedTokensMultichain).map(
+            ([networkId, tokens]) => {
+              return tokens.map((token, index) => (
+                <DetectedTokenDetails
+                  key={`${networkId}-${index}`}
+                  token={token}
+                  chainId={networkId}
+                  handleTokenSelection={handleTokenSelection}
+                  tokensListDetected={tokensListDetected}
+                />
+              ));
+            },
+          )}
+        </Box>
+      ) : (
+        <Box margin={3}>
+          {detectedTokens.map((token, index) => {
+            return (
+              <DetectedTokenDetails
+                key={index}
+                token={token}
+                handleTokenSelection={handleTokenSelection}
+                tokensListDetected={tokensListDetected}
+              />
+            );
+          })}
+        </Box>
+      )}
     </Popover>
   );
 };

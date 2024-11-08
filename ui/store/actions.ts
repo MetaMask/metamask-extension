@@ -4565,6 +4565,39 @@ export async function currencyRateStopPollingByPollingToken(
 }
 
 /**
+ * Informs the TokenDetectionController that the UI requires token detection polling
+ *
+ * @param chainIds
+ * @returns polling token that can be used to stop polling
+ */
+export async function tokenDetectionStartPolling(
+  chainIds: string[],
+): Promise<string> {
+  const pollingToken = await submitRequestToBackground(
+    'tokenDetectionStartPolling',
+    [{ chainIds }],
+  );
+
+  console.log('pollingToken ******', pollingToken, chainIds);
+  await addPollingTokenToAppState(pollingToken);
+  return pollingToken;
+}
+
+/**
+ *
+ * @param pollingToken -
+ */
+export async function tokenDetectionStopPollingByPollingToken(
+  pollingToken: string,
+) {
+  await submitRequestToBackground('tokenDetectionStopPollingByPollingToken', [
+    pollingToken,
+  ]);
+  // todo needed?
+  await removePollingTokenFromAppState(pollingToken);
+}
+
+/**
  * Informs the TokenRatesController that the UI requires
  * token rate polling for the given chain id.
  *

@@ -11,6 +11,7 @@ import {
 } from '../contexts/metametrics';
 import { MetamaskNotificationsProvider } from '../contexts/metamask-notifications';
 import { AssetPollingProvider } from '../contexts/assetPolling';
+import { TokenDetectionProvider } from '../contexts/tokenDetection';
 import ErrorPage from './error';
 import Routes from './routes';
 
@@ -51,7 +52,9 @@ class Index extends PureComponent {
                   <LegacyI18nProvider>
                     <AssetPollingProvider>
                       <MetamaskNotificationsProvider>
-                        <Routes />
+                        <TokenDetectionProvider>
+                          <Routes />
+                        </TokenDetectionProvider>
                       </MetamaskNotificationsProvider>
                     </AssetPollingProvider>
                   </LegacyI18nProvider>
