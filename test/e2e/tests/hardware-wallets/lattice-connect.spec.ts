@@ -34,10 +34,6 @@ describe('Lattice hardware wallet @no-mmi', function (this: Suite) {
           '[data-testid="hardware-connect-close-btn"]',
         );
         await driver.clickElement('[data-testid="connect-lattice-btn"]');
-        await driver.findClickableElement({
-          text: 'Continue',
-          tag: 'button',
-        });
         await driver.clickElement({ text: 'Continue', tag: 'button' });
 
         const allWindows = await driver.waitUntilXWindowHandles(2);
