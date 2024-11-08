@@ -71,6 +71,7 @@ type AssetPickerModalProps = {
   isOpen: boolean;
   onClose: () => void;
   action?: 'send' | 'receive';
+  onBack?: () => void;
   asset?: ERC20Asset | NativeAsset | Pick<NFT, 'type' | 'tokenId' | 'image'>;
   onAssetChange: (
     asset: AssetWithDisplayData<ERC20Asset> | AssetWithDisplayData<NativeAsset>,
@@ -102,6 +103,7 @@ export function AssetPickerModal({
   header,
   isOpen,
   onClose,
+  onBack,
   asset,
   onAssetChange,
   sendingAsset,
@@ -317,7 +319,7 @@ export function AssetPickerModal({
     >
       <ModalOverlay />
       <ModalContent modalDialogProps={{ padding: 0 }}>
-        <ModalHeader onClose={onClose}>
+        <ModalHeader onClose={onClose} onBack={asset ? undefined : onBack}>
           <Text variant={TextVariant.headingSm} textAlign={TextAlign.Center}>
             {header}
           </Text>
