@@ -202,13 +202,15 @@ const CoinButtons = ({
   ): { snap_id?: string } => {
     // Some accounts might be Snap accounts, in this case we add some extra properties
     // to the metrics:
-    if (internalAccount.metadata.snap) {
+    const snapId = internalAccount.metadata.snap?.id;
+    if (snapId) {
       return {
-        snap_id: internalAccount.metadata.snap?.id,
+        snap_id: snapId,
       };
     }
 
-    // If the account is not a Snap account, then there's no extra property
+    // If the account is not a Snap account or that we could not get the Snap ID for
+    // some reason, we don't add any extra property.
     return {};
   };
 
