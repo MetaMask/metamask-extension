@@ -32,7 +32,6 @@ const useMultiPolling = <PollingInput>(
       );
 
       if (!exists) {
-        console.log('stopping polling', token);
         usePollingOptions.stopPollingByPollingToken(token);
         pollingTokens.current.delete(inputKey);
       }
