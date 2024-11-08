@@ -3,6 +3,9 @@ import { ChainId, InfuraNetworkType } from '@metamask/controller-utils';
 import BigNumberjs from 'bignumber.js';
 import { mapValues } from 'lodash';
 import * as ethersProviders from '@ethersproject/providers';
+import { Hex } from '@metamask/utils';
+import { SafeEventEmitterProvider } from '@metamask/eth-json-rpc-provider';
+import { NetworkClientId } from '@metamask/network-controller';
 import { GasEstimateTypes } from '../../../../shared/constants/gas';
 import { CHAIN_IDS } from '../../../../shared/constants/network';
 import { ETH_SWAPS_TOKEN_OBJECT } from '../../../../shared/constants/swaps';
@@ -149,6 +152,28 @@ messengerMock.call.mockImplementation((actionName, ...args) => {
   }
   return undefined;
 });
+
+function mockNetworkControllerGetNetworkClientById(
+  networkClientsById: Record<
+    NetworkClientId,
+    {
+      provider: SafeEventEmitterProvider;
+      configuration: {
+        chainId: Hex;
+      };
+    }
+  >,
+) {
+  networkControllerGetNetworkClientByIdCallbackMock.mockImplementation(
+    (networkClientId) => {
+      const foundNetworkClient = networkClientsById[networkClientId];
+      if (foundNetworkClient === undefined) {
+        throw new Error(`Unknown network client ID '${networkClientId}'`);
+      }
+      return foundNetworkClient;
+    },
+  );
+}
 
 describe('SwapsController', function () {
   const getSwapsController = () => {
@@ -321,18 +346,11 @@ describe('SwapsController', function () {
       it('returns an empty object if passed an empty set of quotes', async function () {
         const chainId = CHAIN_IDS.MAINNET;
         const networkClientId = InfuraNetworkType.mainnet;
-        const provider = createTestProviderTools({ chainId });
+        const { provider } = createTestProviderTools({ chainId });
         const networkClient = { provider, configuration: { chainId } };
-        networkControllerGetNetworkClientByIdCallbackMock.mockImplementation(
-          (givenNetworkClientId) => {
-            if (givenNetworkClientId === networkClientId) {
-              return networkClient;
-            }
-            throw new Error(
-              `Unknown network client ID '${givenNetworkClientId}'`,
-            );
-          },
-        );
+        mockNetworkControllerGetNetworkClientById({
+          [networkClientId]: networkClient,
+        });
 
         expect(
           await swapsController.getTopQuoteWithCalculatedSavings({
@@ -345,18 +363,11 @@ describe('SwapsController', function () {
       it('returns the top aggId and quotes with savings and fee values if passed necessary data and an even number of quotes', async function () {
         const chainId = CHAIN_IDS.MAINNET;
         const networkClientId = InfuraNetworkType.mainnet;
-        const provider = createTestProviderTools({ chainId });
+        const { provider } = createTestProviderTools({ chainId });
         const networkClient = { provider, configuration: { chainId } };
-        networkControllerGetNetworkClientByIdCallbackMock.mockImplementation(
-          (givenNetworkClientId) => {
-            if (givenNetworkClientId === networkClientId) {
-              return networkClient;
-            }
-            throw new Error(
-              `Unknown network client ID '${givenNetworkClientId}'`,
-            );
-          },
-        );
+        mockNetworkControllerGetNetworkClientById({
+          [networkClientId]: networkClient,
+        });
 
         const topQuoteAndSavings =
           await swapsController.getTopQuoteWithCalculatedSavings({
@@ -430,18 +441,11 @@ describe('SwapsController', function () {
       it('returns the top aggId, without best quote flagged, and quotes with fee values if passed necessary data but no custom convert rate exists', async function () {
         const chainId = CHAIN_IDS.MAINNET;
         const networkClientId = InfuraNetworkType.mainnet;
-        const provider = createTestProviderTools({ chainId });
+        const { provider } = createTestProviderTools({ chainId });
         const networkClient = { provider, configuration: { chainId } };
-        networkControllerGetNetworkClientByIdCallbackMock.mockImplementation(
-          (givenNetworkClientId) => {
-            if (givenNetworkClientId === networkClientId) {
-              return networkClient;
-            }
-            throw new Error(
-              `Unknown network client ID '${givenNetworkClientId}'`,
-            );
-          },
-        );
+        mockNetworkControllerGetNetworkClientById({
+          [networkClientId]: networkClient,
+        });
 
         const testInput = mapValues(
           getTopQuoteAndSavingsMockQuotes(),
@@ -491,18 +495,11 @@ describe('SwapsController', function () {
       it('returns the top aggId and quotes with savings and fee values if passed necessary data and the source token is ETH', async function () {
         const chainId = CHAIN_IDS.MAINNET;
         const networkClientId = InfuraNetworkType.mainnet;
-        const provider = createTestProviderTools({ chainId });
+        const { provider } = createTestProviderTools({ chainId });
         const networkClient = { provider, configuration: { chainId } };
-        networkControllerGetNetworkClientByIdCallbackMock.mockImplementation(
-          (givenNetworkClientId) => {
-            if (givenNetworkClientId === networkClientId) {
-              return networkClient;
-            }
-            throw new Error(
-              `Unknown network client ID '${givenNetworkClientId}'`,
-            );
-          },
-        );
+        mockNetworkControllerGetNetworkClientById({
+          [networkClientId]: networkClient,
+        });
 
         const testInput = mapValues(
           getTopQuoteAndSavingsMockQuotes(),
@@ -576,18 +573,11 @@ describe('SwapsController', function () {
       it('returns the top aggId and quotes with savings and fee values if passed necessary data and the source token is ETH and an ETH fee is included in the trade value of what would be the best quote', async function () {
         const chainId = CHAIN_IDS.MAINNET;
         const networkClientId = InfuraNetworkType.mainnet;
-        const provider = createTestProviderTools({ chainId });
+        const { provider } = createTestProviderTools({ chainId });
         const networkClient = { provider, configuration: { chainId } };
-        networkControllerGetNetworkClientByIdCallbackMock.mockImplementation(
-          (givenNetworkClientId) => {
-            if (givenNetworkClientId === networkClientId) {
-              return networkClient;
-            }
-            throw new Error(
-              `Unknown network client ID '${givenNetworkClientId}'`,
-            );
-          },
-        );
+        mockNetworkControllerGetNetworkClientById({
+          [networkClientId]: networkClient,
+        });
 
         const testInput = mapValues(
           getTopQuoteAndSavingsMockQuotes(),
@@ -677,18 +667,11 @@ describe('SwapsController', function () {
       it('returns the top aggId and quotes with savings and fee values if passed necessary data and the source token is not ETH and an ETH fee is included in the trade value of what would be the best quote', async function () {
         const chainId = CHAIN_IDS.MAINNET;
         const networkClientId = InfuraNetworkType.mainnet;
-        const provider = createTestProviderTools({ chainId });
+        const { provider } = createTestProviderTools({ chainId });
         const networkClient = { provider, configuration: { chainId } };
-        networkControllerGetNetworkClientByIdCallbackMock.mockImplementation(
-          (givenNetworkClientId) => {
-            if (givenNetworkClientId === networkClientId) {
-              return networkClient;
-            }
-            throw new Error(
-              `Unknown network client ID '${givenNetworkClientId}'`,
-            );
-          },
-        );
+        mockNetworkControllerGetNetworkClientById({
+          [networkClientId]: networkClient,
+        });
 
         const testInput = getTopQuoteAndSavingsMockQuotes();
         // 0.04 ETH fee included in trade value
@@ -756,16 +739,9 @@ describe('SwapsController', function () {
           chainId: chainId as ChainId,
         });
         const networkClient = { provider, configuration: { chainId } };
-        networkControllerGetNetworkClientByIdCallbackMock.mockImplementation(
-          (givenNetworkClientId) => {
-            if (givenNetworkClientId === networkClientId) {
-              return networkClient;
-            }
-            throw new Error(
-              `Unknown network client ID '${givenNetworkClientId}'`,
-            );
-          },
-        );
+        mockNetworkControllerGetNetworkClientById({
+          [networkClientId]: networkClient,
+        });
 
         swapsController = getSwapsController();
 
@@ -849,16 +825,9 @@ describe('SwapsController', function () {
           chainId: chainId as ChainId,
         });
         const networkClient = { provider, configuration: { chainId } };
-        networkControllerGetNetworkClientByIdCallbackMock.mockImplementation(
-          (givenNetworkClientId) => {
-            if (givenNetworkClientId === networkClientId) {
-              return networkClient;
-            }
-            throw new Error(
-              `Unknown network client ID '${givenNetworkClientId}'`,
-            );
-          },
-        );
+        mockNetworkControllerGetNetworkClientById({
+          [networkClientId]: networkClient,
+        });
 
         swapsController = getSwapsController();
 
@@ -935,16 +904,9 @@ describe('SwapsController', function () {
           chainId: chainId as ChainId,
         });
         const networkClient = { provider, configuration: { chainId } };
-        networkControllerGetNetworkClientByIdCallbackMock.mockImplementation(
-          (givenNetworkClientId) => {
-            if (givenNetworkClientId === networkClientId) {
-              return networkClient;
-            }
-            throw new Error(
-              `Unknown network client ID '${givenNetworkClientId}'`,
-            );
-          },
-        );
+        mockNetworkControllerGetNetworkClientById({
+          [networkClientId]: networkClient,
+        });
         const ethersProvider = new ethersProviders.Web3Provider(provider);
         jest
           .spyOn(ethersProviders, 'Web3Provider')
