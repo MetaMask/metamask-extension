@@ -7,6 +7,7 @@ import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
   getCurrentChainId,
   getDetectedTokensInCurrentNetwork,
+  getAllDetectedTokensForSelectedAddress,
 } from '../../../selectors';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import {
@@ -25,11 +26,25 @@ export const DetectedTokensBanner = ({
   const trackEvent = useContext(MetaMetricsContext);
 
   const detectedTokens = useSelector(getDetectedTokensInCurrentNetwork);
-  const detectedTokensDetails = detectedTokens.map(
-    ({ address, symbol }) => `${symbol} - ${address}`,
+
+  const detectedTokensMultichain = useSelector(
+    getAllDetectedTokensForSelectedAddress,
   );
 
+  const detectedTokensDetails = process.env.PORTFOLIO_VIEW
+    ? Object.values(detectedTokensMultichain)
+        .flat()
+        .map(({ address, symbol }) => `${symbol} - ${address}`)
+    : detectedTokens.map(({ address, symbol }) => `${symbol} - ${address}`);
+
   const chainId = useSelector(getCurrentChainId);
+
+  const totalTokens = process.env.PORTFOLIO_VIEW
+    ? Object.values(detectedTokensMultichain).reduce(
+        (count, tokenArray) => count + tokenArray.length,
+        0,
+      )
+    : detectedTokens.length;
 
   const handleOnClick = () => {
     actionButtonOnClick();
@@ -51,9 +66,9 @@ export const DetectedTokensBanner = ({
       data-testid="detected-token-banner"
       {...props}
     >
-      {detectedTokens.length === 1
+      {totalTokens === 1
         ? t('numberOfNewTokensDetectedSingular')
-        : t('numberOfNewTokensDetectedPlural', [detectedTokens.length])}
+        : t('numberOfNewTokensDetectedPlural', [totalTokens])}
     </BannerAlert>
   );
 };

@@ -9,8 +9,9 @@ import {
   setNewTokensImported,
 } from '../../../store/actions';
 import {
-  getCurrentChainId,
+  getAllDetectedTokensForSelectedAddress,
   getDetectedTokensInCurrentNetwork,
+  getNetworkConfigurationsByChainId,
   getSelectedNetworkClientId,
 } from '../../../selectors';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
@@ -38,8 +39,8 @@ const sortingBasedOnTokenSelection = (tokensDetected) => {
       // ditch the 'selected' property and get just the tokens'
       .mapValues((group) =>
         group.map(({ token }) => {
-          const { address, symbol, decimals, aggregators } = token;
-          return { address, symbol, decimals, aggregators };
+          const { address, symbol, decimals, aggregators, chainId } = token;
+          return { address, symbol, decimals, aggregators, chainId };
         }),
       )
       // Exit the chain and get the underlying value, an object.
@@ -51,16 +52,41 @@ const DetectedToken = ({ setShowDetectedTokens }) => {
   const dispatch = useDispatch();
   const trackEvent = useContext(MetaMetricsContext);
 
-  const chainId = useSelector(getCurrentChainId);
   const detectedTokens = useSelector(getDetectedTokensInCurrentNetwork);
   const networkClientId = useSelector(getSelectedNetworkClientId);
+  const detectedTokensMultichain = useSelector(
+    getAllDetectedTokensForSelectedAddress,
+  );
+  const configuration = useSelector(getNetworkConfigurationsByChainId);
 
-  const [tokensListDetected, setTokensListDetected] = useState(() =>
-    detectedTokens.reduce((tokenObj, token) => {
+  const totalDetectedTokens = process.env.PORTFOLIO_VIEW
+    ? Object.values(detectedTokensMultichain).flat().length
+    : detectedTokens.length;
+
+  const [tokensListDetected, setTokensListDetected] = useState(() => {
+    if (process.env.PORTFOLIO_VIEW) {
+      return Object.entries(detectedTokensMultichain).reduce(
+        (acc, [chainId, tokens]) => {
+          if (Array.isArray(tokens)) {
+            tokens.forEach((token) => {
+              acc[token.address] = {
+                token: { ...token, chainId },
+                selected: true,
+              };
+            });
+          }
+          return acc;
+        },
+        {},
+      );
+    }
+
+    return detectedTokens.reduce((tokenObj, token) => {
       tokenObj[token.address] = { token, selected: true };
       return tokenObj;
-    }, {}),
-  );
+    }, {});
+  });
+
   const [showDetectedTokenIgnoredPopover, setShowDetectedTokenIgnoredPopover] =
     useState(false);
   const [partiallyIgnoreDetectedTokens, setPartiallyIgnoreDetectedTokens] =
@@ -79,22 +105,53 @@ const DetectedToken = ({ setShowDetectedTokens }) => {
           token_standard: TokenStandard.ERC20,
           asset_type: AssetType.token,
           token_added_type: 'detected',
-          chain_id: chainId,
+          chain_id: importedToken.chainId,
         },
       });
     });
-    await dispatch(addImportedTokens(selectedTokens, networkClientId));
-    const tokenSymbols = selectedTokens.map(({ symbol }) => symbol);
-    dispatch(setNewTokensImported(tokenSymbols.join(', ')));
+
+    if (process.env.PORTFOLIO_VIEW) {
+      const tokensByChainId = selectedTokens.reduce((acc, token) => {
+        const { chainId } = token;
+
+        if (!acc[chainId]) {
+          acc[chainId] = { tokens: [] };
+        }
+
+        acc[chainId].tokens.push(token);
+
+        return acc;
+      }, {});
+
+      const importPromises = Object.entries(tokensByChainId).map(
+        async ([networkId, { tokens }]) => {
+          const chainConfig = configuration[networkId];
+          const { defaultRpcEndpointIndex } = chainConfig;
+          const { networkClientId: networkInstanceId } =
+            chainConfig.rpcEndpoints[defaultRpcEndpointIndex];
+
+          await dispatch(addImportedTokens(tokens, networkInstanceId));
+          const tokenSymbols = tokens.map(({ symbol }) => symbol);
+          dispatch(setNewTokensImported(tokenSymbols.join(', ')));
+        },
+      );
+
+      await Promise.all(importPromises);
+    } else {
+      await dispatch(addImportedTokens(selectedTokens, networkClientId));
+      const tokenSymbols = selectedTokens.map(({ symbol }) => symbol);
+      dispatch(setNewTokensImported(tokenSymbols.join(', ')));
+    }
   };
 
   const handleClearTokensSelection = async () => {
     const { selected: selectedTokens = [], deselected: deSelectedTokens = [] } =
       sortingBasedOnTokenSelection(tokensListDetected);
 
-    if (deSelectedTokens.length < detectedTokens.length) {
+    if (deSelectedTokens.length < totalDetectedTokens) {
       await importSelectedTokens(selectedTokens);
     }
+
     const tokensDetailsList = deSelectedTokens.map(
       ({ symbol, address }) => `${symbol} - ${address}`,
     );
@@ -135,7 +192,7 @@ const DetectedToken = ({ setShowDetectedTokens }) => {
     const { selected: selectedTokens = [] } =
       sortingBasedOnTokenSelection(tokensListDetected);
 
-    if (selectedTokens.length < detectedTokens.length) {
+    if (selectedTokens.length < totalDetectedTokens) {
       setShowDetectedTokenIgnoredPopover(true);
       setPartiallyIgnoreDetectedTokens(true);
     } else {
@@ -169,9 +226,13 @@ const DetectedToken = ({ setShowDetectedTokens }) => {
           partiallyIgnoreDetectedTokens={partiallyIgnoreDetectedTokens}
         />
       )}
-      {detectedTokens.length > 0 && (
+      {totalDetectedTokens > 0 && (
         <DetectedTokenSelectionPopover
-          detectedTokens={detectedTokens}
+          detectedTokens={
+            process.env.PORTFOLIO_VIEW
+              ? detectedTokensMultichain
+              : detectedTokens
+          }
           tokensListDetected={tokensListDetected}
           handleTokenSelection={handleTokenSelection}
           onImport={onImport}
