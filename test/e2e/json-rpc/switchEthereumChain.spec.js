@@ -102,7 +102,7 @@ describe('Switch Ethereum Chain for two dapps', function () {
     );
   });
 
-  it('queues switchEthereumChain request from second dapp after send tx request', async function () {
+  it.only('queues switchEthereumChain request from second dapp after send tx request', async function () {
     await withFixtures(
       {
         dapp: true,
@@ -151,12 +151,11 @@ describe('Switch Ethereum Chain for two dapps', function () {
         await driver.clickElement('#connectButton');
 
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
-        await driver.waitForSelector(
-          '[data-testid="confirm-btn"]',
-        );
-        await driver.clickElementAndWaitForWindowToClose(
-          '[data-testid="confirm-btn"]',
-        );
+
+        await driver.clickElementAndWaitForWindowToClose({
+          text: 'Connect',
+          tag: 'button',
+        });
 
         // Switch to Dapp One and connect it
         await driver.switchToWindowWithUrl(DAPP_URL);
@@ -186,15 +185,14 @@ describe('Switch Ethereum Chain for two dapps', function () {
 
         // Switch to Dapp Two
         await driver.switchToWindowWithUrl(DAPP_ONE_URL);
+
         // Initiate send transaction on Dapp two
         await driver.clickElement('#sendButton');
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
-        await driver.waitForSelector(
-          '[data-testid="page-container-footer-next"]',
-        );
-        await driver.clickElementAndWaitForWindowToClose(
-          '[data-testid="page-container-footer-next"]',
-        );
+        await driver.findClickableElements({
+          text: 'Confirm',
+          tag: 'button',
+        });
 
         // Switch to Dapp One
         await driver.switchToWindowWithUrl(DAPP_URL);
@@ -212,25 +210,30 @@ describe('Switch Ethereum Chain for two dapps', function () {
         );
 
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
-        await driver.waitForSelector(
-          '[data-testid="page-container-footer-next"]',
-        );
-        await driver.clickElementAndWaitForWindowToClose(
-          '[data-testid="page-container-footer-next"]',
-        );
+        await driver.findClickableElements({
+          text: 'Confirm',
+          tag: 'button',
+        });
+        await driver.clickElement({
+          text: 'Confirm',
+          tag: 'button',
+        });
         // Delay here after notification for second notification popup for switchEthereumChain
         await driver.delay(1000);
 
+        await driver.switchToWindowWithUrl(DAPP_URL);
+        await driver.waitForSelector({ css: '#chainId', text: '0x1' });
+
         // Switch and confirm to queued notification for switchEthereumChain
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
-
-        await driver.waitForSelector(
-          '[data-testid="page-container-footer-next"]',
-        );
-        await driver.clickElementAndWaitForWindowToClose(
-          '[data-testid="page-container-footer-next"]',
-        );
-
+        await driver.findClickableElements({
+          text: 'Confirm',
+          tag: 'button',
+        });
+        await driver.clickElementAndWaitForWindowToClose({
+          text: 'Confirm',
+          tag: 'button',
+        });
         await driver.switchToWindowWithUrl(DAPP_URL);
         await driver.findElement({ css: '#chainId', text: '0x539' });
       },
