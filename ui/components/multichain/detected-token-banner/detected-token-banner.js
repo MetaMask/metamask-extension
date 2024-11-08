@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import React, { useContext, useMemo } from 'react';
 import { useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
@@ -7,6 +7,9 @@ import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
   getCurrentChainId,
   getDetectedTokensInCurrentNetwork,
+  getPreferences,
+  getSelectedInternalAccount,
+  getAllDetectedTokens,
 } from '../../../selectors';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import {
@@ -23,13 +26,47 @@ export const DetectedTokensBanner = ({
 }) => {
   const t = useI18nContext();
   const trackEvent = useContext(MetaMetricsContext);
+  const { tokenNetworkFilter } = useSelector(getPreferences);
+
+  const allNetworksFilterShown = Object.keys(tokenNetworkFilter ?? {}).length;
 
   const detectedTokens = useSelector(getDetectedTokensInCurrentNetwork);
-  const detectedTokensDetails = detectedTokens.map(
-    ({ address, symbol }) => `${symbol} - ${address}`,
-  );
+  const { address: selectedAddress } = useSelector(getSelectedInternalAccount);
+  const allDetectedTokens = useSelector(getAllDetectedTokens);
+
+  const { detectedTokensMultichain } = useMemo(() => {
+    const detectedTokensAllChains = Object.entries(
+      allDetectedTokens || {},
+    ).reduce((acc, [chainId, chainTokens]) => {
+      const tokensForAddress = chainTokens[selectedAddress];
+      if (tokensForAddress) {
+        acc[chainId] = tokensForAddress.map((token) => ({
+          ...token,
+          chainId,
+        }));
+      }
+      return acc;
+    }, {});
+
+    return { detectedTokensMultichain: detectedTokensAllChains };
+  }, [selectedAddress, allDetectedTokens]);
 
   const chainId = useSelector(getCurrentChainId);
+
+  const detectedTokensDetails =
+    process.env.PORTFOLIO_VIEW && !allNetworksFilterShown
+      ? Object.values(detectedTokensMultichain)
+          .flat()
+          .map(({ address, symbol }) => `${symbol} - ${address}`)
+      : detectedTokens.map(({ address, symbol }) => `${symbol} - ${address}`);
+
+  const totalTokens =
+    process.env.PORTFOLIO_VIEW && !allNetworksFilterShown
+      ? Object.values(detectedTokensMultichain).reduce(
+          (count, tokenArray) => count + tokenArray.length,
+          0,
+        )
+      : detectedTokens.length;
 
   const handleOnClick = () => {
     actionButtonOnClick();
@@ -51,9 +88,9 @@ export const DetectedTokensBanner = ({
       data-testid="detected-token-banner"
       {...props}
     >
-      {detectedTokens.length === 1
+      {totalTokens === 1
         ? t('numberOfNewTokensDetectedSingular')
-        : t('numberOfNewTokensDetectedPlural', [detectedTokens.length])}
+        : t('numberOfNewTokensDetectedPlural', [totalTokens])}
     </BannerAlert>
   );
 };
