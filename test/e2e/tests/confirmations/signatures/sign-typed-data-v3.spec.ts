@@ -20,6 +20,7 @@ import {
   assertSignatureRejectedMetrics,
   clickHeaderInfoBtn,
   copyAddressAndPasteWalletAddress,
+  initializePages,
   openDappAndTriggerSignature,
   SignatureType,
 } from './signature-helpers';
@@ -36,6 +37,7 @@ describe('Confirmation Signature - Sign Typed Data V3 @no-mmi', function (this: 
       }: TestSuiteArguments) => {
         const addresses = await (ganacheServer as Ganache).getAccounts();
         const publicAddress = addresses?.[0] as string;
+        await initializePages(driver);
 
         await openDappAndTriggerSignature(
           driver,
@@ -43,19 +45,21 @@ describe('Confirmation Signature - Sign Typed Data V3 @no-mmi', function (this: 
         );
 
         await clickHeaderInfoBtn(driver);
-        await assertHeaderInfoBalance(driver);
+        await assertHeaderInfoBalance();
 
         await copyAddressAndPasteWalletAddress(driver);
-        await assertPastedAddress(driver);
+        await assertPastedAddress();
+
+        await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
+
+        await assertInfoValues(driver);
+        await scrollAndConfirmAndAssertConfirm(driver);
+
         await assertAccountDetailsMetrics(
           driver,
           mockedEndpoints as MockedEndpoint[],
           'eth_signTypedData_v3',
         );
-        await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
-
-        await assertInfoValues(driver);
-        await scrollAndConfirmAndAssertConfirm(driver);
         await assertSignatureConfirmedMetrics({
           driver,
           mockedEndpoints: mockedEndpoints as MockedEndpoint[],

@@ -84,6 +84,9 @@ class TestDapp {
 
   private readonly personalSignVerifyButton = '#personalSignVerify';
 
+  private personalSignSigUtilResultSelector =
+    '#personalSignVerifySigUtilResult';
+
   private readonly revokePermissionButton = '#revokeAccountsPermission';
 
   private readonly signPermitButton = '#signPermit';
@@ -98,6 +101,12 @@ class TestDapp {
   private readonly signPermitVerifyButton = '#signPermitVerify';
 
   private readonly signPermitVerifyResult = '#signPermitVerifyResult';
+
+  private readonly signPermitResultR = '#signPermitResultR';
+
+  private readonly signPermitResultS = '#signPermitResultS';
+
+  private readonly signPermitResultV = '#signPermitResultV';
 
   private readonly signTypedDataButton = '#signTypedData';
 
@@ -147,6 +156,11 @@ class TestDapp {
   private readonly updateNetworkButton = {
     text: 'Update',
     tag: 'button',
+  };
+
+  private readonly userRejectedRequestMessage = {
+    tag: 'span',
+    text: 'Error: User rejected the request.',
   };
 
   private erc20TokenTransferButton = '#transferTokens';
@@ -380,6 +394,17 @@ class TestDapp {
     });
   }
 
+  async verifyPersonalSignSigUtilResult(publicKey: string) {
+    const sigUtilResult = await this.driver.waitForSelector({
+      css: this.personalSignSigUtilResultSelector,
+      text: publicKey,
+    });
+    assert.ok(
+      sigUtilResult,
+      `Sig Util result did not match address ${publicKey}`,
+    );
+  }
+
   /**
    * Verify the successful signPermit signature.
    *
@@ -392,6 +417,34 @@ class TestDapp {
     await this.driver.waitForSelector({
       css: this.signPermitVerifyResult,
       text: publicKey.toLowerCase(),
+    });
+  }
+
+  async verifySignPermitResult(expectedSignature: string) {
+    await this.driver.waitForSelector({
+      css: this.signPermitResult,
+      text: expectedSignature,
+    });
+  }
+
+  async verifySignPermitResultR(expectedR: string) {
+    await this.driver.waitForSelector({
+      css: this.signPermitResultR,
+      text: `r: ${expectedR}`,
+    });
+  }
+
+  async verifySignPermitResultS(expectedS: string) {
+    await this.driver.waitForSelector({
+      css: this.signPermitResultS,
+      text: `s: ${expectedS}`,
+    });
+  }
+
+  async verifySignPermitResultV(expectedV: string) {
+    await this.driver.waitForSelector({
+      css: this.signPermitResultV,
+      text: `v: ${expectedV}`,
     });
   }
 
@@ -553,6 +606,10 @@ class TestDapp {
       this.eip747ContractAddressInput,
     );
     assert.equal(await formFieldEl.getAttribute('value'), expectedValue);
+  }
+
+  async assertUserRejectedRequest() {
+    await this.driver.waitForSelector(this.userRejectedRequestMessage);
   }
 }
 export default TestDapp;

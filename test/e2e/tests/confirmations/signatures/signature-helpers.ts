@@ -54,6 +54,14 @@ const signatureAnonProperties = {
   eip712_domain_name: 'Ether Mail',
 };
 
+let testDapp: TestDapp;
+let accountDetailsModal: AccountDetailsModal;
+
+export async function initializePages(driver: Driver) {
+  testDapp = new TestDapp(driver);
+  accountDetailsModal = new AccountDetailsModal(driver);
+}
+
 /**
  * Generates expected signature metric properties
  *
@@ -216,15 +224,11 @@ export async function clickHeaderInfoBtn(driver: Driver) {
   confirmation.clickHeaderAccountDetailsButton();
 }
 
-export async function assertHeaderInfoBalance(driver: Driver) {
-  const accountDetailsModal = new AccountDetailsModal(driver);
+export async function assertHeaderInfoBalance() {
   accountDetailsModal.assertHeaderInfoBalance(WALLET_ETH_BALANCE);
 }
 
 export async function copyAddressAndPasteWalletAddress(driver: Driver) {
-  const testDapp = new TestDapp(driver);
-  const accountDetailsModal = new AccountDetailsModal(driver);
-
   await accountDetailsModal.clickAddressCopyButton();
   await driver.delay(500); // Added delay to avoid error Element is not clickable at point (x,y) because another element obscures it, happens as soon as the mouse hovers over the close button
   await accountDetailsModal.clickAccountDetailsModalCloseButton();
@@ -232,25 +236,27 @@ export async function copyAddressAndPasteWalletAddress(driver: Driver) {
   await testDapp.pasteIntoEip747ContractAddressInput();
 }
 
-export async function assertPastedAddress(driver: Driver) {
-  const testDapp = new TestDapp(driver);
+export async function assertPastedAddress() {
   await testDapp.assertEip747ContractAddressInputValue(WALLET_ADDRESS);
+}
+
+export async function assertRejectedSignature() {
+  testDapp.assertUserRejectedRequest();
 }
 
 export async function openDappAndTriggerSignature(
   driver: Driver,
   type: string,
 ) {
-  const testDapp = new TestDapp(driver);
   await unlockWallet(driver);
   await testDapp.openTestDappPage({ url: DAPP_URL });
 
   switch (type) {
     case SignatureType.PersonalSign:
-      await testDapp.clickPermit();
+      await testDapp.clickPersonalSign();
       break;
     case SignatureType.Permit:
-      await testDapp.clickPersonalSign();
+      await testDapp.clickPermit();
       break;
     case SignatureType.SignTypedData:
       await testDapp.clickSignTypedData();

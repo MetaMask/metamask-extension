@@ -11,6 +11,10 @@ class Confirmation {
 
   private headerAccountDetailsButton: RawLocator;
 
+  private footerCancelButton: RawLocator;
+
+  private sectionCollapseButton = '[data-testid="sectionCollapseButton"]';
+
   constructor(driver: Driver) {
     this.driver = driver;
 
@@ -18,6 +22,7 @@ class Confirmation {
     this.footerConfirmButton = '[data-testid="confirm-footer-button"]';
     this.headerAccountDetailsButton =
       '[data-testid="header-info__account-details-button"]';
+    this.footerCancelButton = '[data-testid="confirm-footer-cancel-button"]';
   }
 
   async clickScrollToBottomButton() {
@@ -33,6 +38,16 @@ class Confirmation {
       this.headerAccountDetailsButton,
     );
     await accountDetailsButton.sendKeys(Key.RETURN);
+  }
+
+  async clickFooterCancelButtonAndAndWaitForWindowToClose() {
+    await this.driver.clickElementAndWaitForWindowToClose(
+      this.footerCancelButton,
+    );
+  }
+
+  async clickCollapseSectionButton() {
+    await this.driver.clickElement(this.sectionCollapseButton);
   }
 }
 
