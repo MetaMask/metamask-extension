@@ -85,6 +85,7 @@ import {
   getLedgerTransportType,
   isAddressLedger,
   getIsUnlocked,
+  getCompletedOnboarding,
 } from '../ducks/metamask/metamask';
 import {
   getLedgerWebHidConnectedStatus,
@@ -1456,10 +1457,11 @@ export const selectERC20Tokens = createDeepEqualSelector(
 export const getTokenList = createSelector(
   selectERC20Tokens,
   getIsTokenDetectionInactiveOnMainnet,
-  (remoteTokenList, isTokenDetectionInactiveOnMainnet) =>
-    isTokenDetectionInactiveOnMainnet
+  (remoteTokenList, isTokenDetectionInactiveOnMainnet) => {
+    return isTokenDetectionInactiveOnMainnet
       ? STATIC_MAINNET_TOKEN_LIST
-      : remoteTokenList,
+      : remoteTokenList;
+  },
 );
 
 export const getMemoizedMetadataContract = createSelector(
@@ -2303,6 +2305,37 @@ export function getDetectedTokensInCurrentNetwork(state) {
   const currentChainId = getCurrentChainId(state);
   const { address: selectedAddress } = getSelectedInternalAccount(state);
   return state.metamask.allDetectedTokens?.[currentChainId]?.[selectedAddress];
+}
+
+/**
+ * To retrieve the list of tokens detected across all chains.
+ *
+ * @param {*} state
+ * @returns list of token objects on all networks
+ */
+export function getAllDetectedTokensForSelectedAddress(state) {
+  const completedOnboarding = getCompletedOnboarding(state);
+
+  if (!completedOnboarding) {
+    return {};
+  }
+
+  const { address: selectedAddress } = getSelectedInternalAccount(state);
+
+  const tokensByChainId = Object.entries(
+    state.metamask.allDetectedTokens || {},
+  ).reduce((acc, [chainId, chainTokens]) => {
+    const tokensForAddress = chainTokens[selectedAddress];
+    if (tokensForAddress) {
+      acc[chainId] = tokensForAddress.map((token) => ({
+        ...token,
+        chainId,
+      }));
+    }
+    return acc;
+  }, {});
+
+  return tokensByChainId;
 }
 
 /**

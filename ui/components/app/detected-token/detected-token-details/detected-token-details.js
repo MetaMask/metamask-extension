@@ -1,6 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { useSelector } from 'react-redux';
+import { CHAIN_IDS } from '@metamask/transaction-controller';
 import {
   AvatarNetwork,
   AvatarNetworkSize,
@@ -14,20 +15,31 @@ import DetectedTokenAddress from '../detected-token-address/detected-token-addre
 import DetectedTokenAggregators from '../detected-token-aggregators/detected-token-aggregators';
 import { Display } from '../../../../helpers/constants/design-system';
 import {
-  getCurrentNetwork,
+  getIsTokenDetectionInactiveOnMainnet,
   getTestNetworkBackgroundColor,
-  getTokenList,
+  selectERC20TokensByChain,
 } from '../../../../selectors';
+import { CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP } from '../../../../../shared/constants/network';
+import { STATIC_MAINNET_TOKEN_LIST } from '../../../../../shared/constants/tokens';
 
 const DetectedTokenDetails = ({
   token,
   handleTokenSelection,
   tokensListDetected,
+  chainId,
 }) => {
-  const tokenList = useSelector(getTokenList);
-  const tokenData = tokenList[token.address?.toLowerCase()];
+  const tokenListByChainId = useSelector(selectERC20TokensByChain);
+  const tokenList = tokenListByChainId?.[chainId]?.data ?? {};
+  const isTokenDetectionInactiveOnMainnet = useSelector(
+    getIsTokenDetectionInactiveOnMainnet,
+  );
+
+  const tokenData =
+    chainId === CHAIN_IDS.MAINNET && isTokenDetectionInactiveOnMainnet
+      ? STATIC_MAINNET_TOKEN_LIST
+      : tokenList[token.address?.toLowerCase()] ?? {};
+
   const testNetworkBackgroundColor = useSelector(getTestNetworkBackgroundColor);
-  const currentNetwork = useSelector(getCurrentNetwork);
 
   return (
     <Box
@@ -39,8 +51,7 @@ const DetectedTokenDetails = ({
         badge={
           <AvatarNetwork
             size={AvatarNetworkSize.Xs}
-            name={currentNetwork?.nickname || ''}
-            src={currentNetwork?.rpcPrefs?.imageUrl}
+            src={CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP[chainId]}
             backgroundColor={testNetworkBackgroundColor}
           />
         }
@@ -84,6 +95,7 @@ DetectedTokenDetails.propTypes = {
   }),
   handleTokenSelection: PropTypes.func.isRequired,
   tokensListDetected: PropTypes.object,
+  chainId: PropTypes.string,
 };
 
 export default DetectedTokenDetails;

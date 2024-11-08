@@ -3237,6 +3237,7 @@ export default class MetamaskController extends EventEmitter {
       nftDetectionController,
       currencyRateController,
       tokenDetectionController,
+      tokenListController,
       ensController,
       gasFeeController,
       metaMetricsController,
@@ -4039,6 +4040,21 @@ export default class MetamaskController extends EventEmitter {
         tokenRatesController.stopPollingByPollingToken.bind(
           tokenRatesController,
         ),
+
+      // Token detection polling
+      tokenDetectionStartPolling: tokenDetectionController.startPolling.bind(
+        tokenDetectionController,
+      ),
+      tokenDetectionStopPollingByPollingToken:
+        tokenDetectionController.stopPollingByPollingToken.bind(
+          tokenDetectionController,
+        ),
+
+      // TokenListController
+      tokenListStartPolling:
+        tokenListController.startPolling.bind(tokenListController),
+      tokenListStopPollingByPollingToken:
+        tokenListController.stopPollingByPollingToken.bind(tokenListController),
 
       // GasFeeController
       gasFeeStartPollingByNetworkClientId:

@@ -32,6 +32,7 @@ export const ImportTokensModalConfirm = () => {
   const testNetworkBackgroundColor = useSelector(getTestNetworkBackgroundColor);
   const pendingTokens = useSelector(getPendingTokens);
   const tokenList = useSelector(getTokenList);
+
   return (
     <Box paddingTop={6}>
       <Text textAlign={TextAlign.Center}>

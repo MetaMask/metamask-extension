@@ -4,6 +4,7 @@ import TokenList from '../token-list';
 import { PRIMARY } from '../../../../helpers/constants/common';
 import { useUserPreferencedCurrency } from '../../../../hooks/useUserPreferencedCurrency';
 import {
+  getAllDetectedTokensForSelectedAddress,
   getDetectedTokensInCurrentNetwork,
   getIstokenDetectionInactiveOnNonMainnetSupportedNetwork,
   getSelectedAccount,
@@ -103,16 +104,29 @@ const AssetList = ({ onClickAsset, showTokensLinks }: AssetListProps) => {
   // for EVM assets
   const shouldShowTokensLinks = showTokensLinks ?? isEvm;
 
+  const detectedTokensMultichain = useSelector(
+    getAllDetectedTokensForSelectedAddress,
+  );
+
+  const totalTokens = process.env.PORTFOLIO_VIEW
+    ? (Object.values(detectedTokensMultichain).reduce(
+        // @ts-expect-error TS18046: 'tokenArray' is of type 'unknown'
+        (count, tokenArray) => count + tokenArray.length,
+        0,
+      ) as number)
+    : detectedTokens.length;
+
   return (
     <>
-      {detectedTokens.length > 0 &&
-        !isTokenDetectionInactiveOnNonMainnetSupportedNetwork && (
-          <DetectedTokensBanner
-            className=""
-            actionButtonOnClick={() => setShowDetectedTokens(true)}
-            margin={4}
-          />
-        )}
+      {totalTokens &&
+      totalTokens > 0 &&
+      !isTokenDetectionInactiveOnNonMainnetSupportedNetwork ? (
+        <DetectedTokensBanner
+          className=""
+          actionButtonOnClick={() => setShowDetectedTokens(true)}
+          margin={4}
+        />
+      ) : null}
       <AssetListControlBar showTokensLinks={showTokensLinks} />
       <TokenList
         nativeToken={<NativeToken onClickAsset={onClickAsset} />}
