@@ -571,10 +571,7 @@ export function getSelectedAccountTokenBalancesAcrossChains(state) {
   const selectedAddress = getSelectedInternalAccount(state).address;
   const accountTokens = getSelectedAccountTokensAcrossChains(state);
   const tokenBalances = getTokenBalances(state);
-  console.log(
-    'getSelectedAccountTokenBalancesAcrossChains',
-    tokenBalances[selectedAddress],
-  );
+
   // TODO: read this from tokenBalances state
   function generateRandomBalance(min = 10, max = 20) {
     const factor = 100000; // 10^5 to get 5 decimal places

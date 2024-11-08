@@ -1,5 +1,6 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
+import BN from 'bn.js';
 import {
   getCurrentCurrency,
   getTokenList,
@@ -7,6 +8,8 @@ import {
   getPreferences,
   getNativeCurrencyForChain,
   getMarketData,
+  getSelectedAccountNativeTokenCachedBalanceByChainId,
+  getCurrencyRates,
 } from '../../../../selectors';
 import {
   isChainIdMainnet,
@@ -17,6 +20,8 @@ import { TokenListItem } from '../../../multichain';
 import { isEqualCaseInsensitive } from '../../../../../shared/modules/string-utils';
 import { useIsOriginalTokenSymbol } from '../../../../hooks/useIsOriginalTokenSymbol';
 import { getIntlLocale } from '../../../../ducks/locale/locale';
+import { hexToDecimal } from '../../../../../shared/modules/conversion.utils';
+import { stringifyBalance } from '../../../../hooks/useTokenBalances';
 
 type TokenCellProps = {
   address: string;
@@ -51,6 +56,11 @@ export default function TokenCell({
   onClick,
 }: TokenCellProps) {
   const currentCurrency = useSelector(getCurrentCurrency);
+  const currencyRates = useSelector(getCurrencyRates);
+  console.log('currency rates', currencyRates);
+  const nativeBalances = useSelector(
+    getSelectedAccountNativeTokenCachedBalanceByChainId,
+  );
   const marketData = useSelector(getMarketData);
   const tokenList = useSelector(getTokenList);
   const isEvm = useSelector(getMultichainIsEvm);
@@ -101,8 +111,8 @@ export default function TokenCell({
     primaryThreshold,
     locale,
     {
-      minimumFractionDigits: 5,
-      maximumFractionDigits: 5,
+      minimumFractionDigits: 4,
+      maximumFractionDigits: 4,
     },
   );
 
@@ -115,10 +125,66 @@ export default function TokenCell({
 
   const secondaryTokenDisplayText = () => {
     if (isNative) {
-      return 'NATIVE';
+      // @ts-ignore
+      const nativeTokenBalanceHex = nativeBalances?.[chainId];
+
+      if (nativeTokenBalanceHex !== '0x0') {
+        const decimalBalance = hexToDecimal(nativeTokenBalanceHex);
+        const readableBalance = stringifyBalance(
+          new BN(decimalBalance),
+          new BN(18),
+          5,
+        );
+        const nativeTokenFiatAmount =
+          parseFloat(readableBalance) * currencyRates[symbol].conversionRate;
+        return formatWithThreshold(
+          nativeTokenFiatAmount,
+          secondaryThreshold,
+          locale,
+          {
+            style: 'currency',
+            currency: currentCurrency.toUpperCase(),
+          },
+        );
+      }
     }
     if (tokenMarketPrice && !isNative) {
       return secondary;
+    }
+    return '';
+  };
+
+  const primaryTokenDisplayText = () => {
+    if (isNative) {
+      let nativeBalance;
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      // @ts-ignore
+      const nativeTokenBalanceHex = nativeBalances?.[chainId];
+      // console.log('nativeTokenBalanceHex', chainId, nativeTokenBalanceHex);
+
+      if (nativeTokenBalanceHex !== '0x0') {
+        const decimalBalance = hexToDecimal(nativeTokenBalanceHex);
+        const readableBalance = stringifyBalance(
+          new BN(decimalBalance),
+          new BN(16),
+          5,
+        );
+        nativeBalance = readableBalance || 0;
+      }
+      console.log('nativeBalance', chainId, nativeBalance);
+
+      return formatWithThreshold(
+        Number(nativeBalance),
+        primaryThreshold,
+        locale,
+        {
+          minimumFractionDigits: 4,
+          maximumFractionDigits: 4,
+        },
+      );
+    }
+    if (tokenMarketPrice && !isNative) {
+      return primary;
     }
     return '';
   };
@@ -129,7 +195,7 @@ export default function TokenCell({
       tokenSymbol={symbol}
       tokenImage={isNative ? getNativeCurrencyForChain(chainId) : tokenImage}
       tokenChainImage={chainId ? getImageForChainId(chainId) : undefined}
-      primary={primary}
+      primary={primaryTokenDisplayText()}
       secondary={secondaryTokenDisplayText()}
       title={title}
       isOriginalTokenSymbol={isOriginalTokenSymbol}
