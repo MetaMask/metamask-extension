@@ -22,10 +22,7 @@ import {
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 ///: END:ONLY_INCLUDE_IF
 import { NetworkListItem } from '../../network-list-item';
-import {
-  getNetworkConfigurationsByChainId,
-  getProviderConfig,
-} from '../../../../../shared/modules/selectors/networks';
+import { getNetworkConfigurationsByChainId } from '../../../../../shared/modules/selectors/networks';
 
 /**
  * AssetPickerModalNetwork component displays a modal for selecting a network in the asset picker.
@@ -58,11 +55,7 @@ export const AssetPickerModalNetwork = ({
   const t = useI18nContext();
   ///: END:ONLY_INCLUDE_IF
 
-  const currentNetwork = useSelector(getProviderConfig);
   const allNetworks = useSelector(getNetworkConfigurationsByChainId);
-
-  const selectedNetwork =
-    network ?? (currentNetwork?.chainId && allNetworks[currentNetwork.chainId]);
 
   const networksList: NetworkConfiguration[] =
     networks ?? Object.values(allNetworks) ?? [];
@@ -98,7 +91,7 @@ export const AssetPickerModalNetwork = ({
                       chainId as keyof typeof NETWORK_TO_NAME_MAP
                     ] ?? name
                   }
-                  selected={selectedNetwork?.chainId === chainId}
+                  selected={network?.chainId === chainId}
                   onClick={() => {
                     onNetworkChange(networkConfig);
                     onBack();
