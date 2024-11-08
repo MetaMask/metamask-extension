@@ -6,7 +6,12 @@ import React, {
   useEffect,
 } from 'react';
 import PropTypes from 'prop-types';
-import { useHistory, useLocation } from 'react-router-dom';
+import {
+  useHistory,
+  ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
+  useLocation,
+  ///: END:ONLY_INCLUDE_IF
+} from 'react-router-dom';
 import Fuse from 'fuse.js';
 import { useDispatch, useSelector } from 'react-redux';
 import {
