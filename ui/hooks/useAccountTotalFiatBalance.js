@@ -55,7 +55,7 @@ export const useAccountTotalFiatBalance = (
   const nativeCurrency = useSelector(getNativeCurrency);
 
   const loading = false;
-  const { loading:tokensWithBalances } = useTokenTracker({
+  const { tokensWithBalances } = useTokenTracker({
     chainId: currentChainId,
     tokens,
     address: account.address,
