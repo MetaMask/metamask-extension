@@ -6,7 +6,11 @@ class SettingsPage {
   private readonly closeSettingsPageButton =
     '.settings-page__header__title-container__close-button';
 
-  // Locators
+  private readonly developerOptionsButton = {
+    text: 'Developer Options',
+    css: '.tab-bar__tab__content__title',
+  };
+
   private readonly experimentalSettingsButton = {
     text: 'Experimental',
     css: '.tab-bar__tab__content__title',
@@ -26,11 +30,6 @@ class SettingsPage {
     this.driver = driver;
   }
 
-  async closeSettingsPage(): Promise<void> {
-    console.log('Closing Settings page');
-    await this.driver.clickElement(this.closeSettingsPageButton);
-  }
-
   async check_pageIsLoaded(): Promise<void> {
     try {
       await this.driver.waitForSelector(this.settingsPageTitle);
@@ -39,6 +38,16 @@ class SettingsPage {
       throw e;
     }
     console.log('Settings page is loaded');
+  }
+
+  async closeSettingsPage(): Promise<void> {
+    console.log('Closing Settings page');
+    await this.driver.clickElement(this.closeSettingsPageButton);
+  }
+
+  async goToDevelopOptionSettings(): Promise<void> {
+    console.log('Navigating to Develop options page');
+    await this.driver.clickElement(this.developerOptionsButton);
   }
 
   async goToExperimentalSettings(): Promise<void> {

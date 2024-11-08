@@ -193,6 +193,7 @@ function defaultFixture(inputChainId = CHAIN_IDS.LOCALHOST) {
         currentLocale: 'en',
         useExternalServices: true,
         dismissSeedBackUpReminder: true,
+        overrideContentSecurityPolicyHeader: true,
         featureFlags: {},
         forgottenPassword: false,
         identities: {

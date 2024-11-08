@@ -16,7 +16,7 @@ export type UserPrefrencedCurrencyDisplayProps = OverridingUnion<
     showCurrencySuffix?: boolean;
     shouldCheckShowNativeToken?: boolean;
     isAggregatedFiatOverviewBalance?: boolean;
-    privacyModeExempt?: boolean;
+    privacyMode?: boolean;
   }
 >;
 
