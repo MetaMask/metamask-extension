@@ -957,8 +957,8 @@ export default class MetaMetricsController extends BaseController<
       };
 
       const combinedProperties = merge(
-        anonymousPayload.sensitiveProperties,
-        anonymousPayload.properties,
+        { ...anonymousPayload.sensitiveProperties },
+        { ...anonymousPayload.properties },
       );
 
       events.push(
