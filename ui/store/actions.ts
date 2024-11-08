@@ -4218,6 +4218,18 @@ export function setDismissSeedBackUpReminder(
   };
 }
 
+export function setOverrideContentSecurityPolicyHeader(
+  value: boolean,
+): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
+  return async (dispatch: MetaMaskReduxDispatch) => {
+    dispatch(showLoadingIndication());
+    await submitRequestToBackground('setOverrideContentSecurityPolicyHeader', [
+      value,
+    ]);
+    dispatch(hideLoadingIndication());
+  };
+}
+
 export function getRpcMethodPreferences(): ThunkAction<
   void,
   MetaMaskReduxState,
@@ -4999,7 +5011,7 @@ export async function setBitcoinTestnetSupportEnabled(value: boolean) {
   }
 }
 
-///: BEGIN:ONLY_INCLUDE_IF(build-flask)
+///: BEGIN:ONLY_INCLUDE_IF(solana)
 export async function setSolanaSupportEnabled(value: boolean) {
   try {
     await submitRequestToBackground('setSolanaSupportEnabled', [value]);
