@@ -71,7 +71,11 @@ export type AssetPickerProps = {
   action?: 'send' | 'receive';
   networkProps?: Pick<
     React.ComponentProps<typeof AssetPickerModalNetwork>,
-    'network' | 'networks' | 'onNetworkChange' | 'shouldDisableNetwork'
+    | 'network'
+    | 'networks'
+    | 'onNetworkChange'
+    | 'shouldDisableNetwork'
+    | 'header'
   >;
 } & Pick<
   React.ComponentProps<typeof AssetPickerModal>,
