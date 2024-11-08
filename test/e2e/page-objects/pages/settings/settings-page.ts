@@ -3,18 +3,22 @@ import { Driver } from '../../../webdriver/driver';
 class SettingsPage {
   private readonly driver: Driver;
 
-  // Locators
-  private readonly experimentalSettingsButton: object = {
+  private readonly developerOptionsButton = {
+    text: 'Developer Options',
+    css: '.tab-bar__tab__content__title',
+  };
+
+  private readonly experimentalSettingsButton = {
     text: 'Experimental',
     css: '.tab-bar__tab__content__title',
   };
 
-  private readonly privacySettingsButton: object = {
+  private readonly privacySettingsButton = {
     text: 'Security & privacy',
     css: '.tab-bar__tab__content__title',
   };
 
-  private readonly settingsPageTitle: object = {
+  private readonly settingsPageTitle = {
     text: 'Settings',
     css: 'h3',
   };
@@ -31,6 +35,11 @@ class SettingsPage {
       throw e;
     }
     console.log('Settings page is loaded');
+  }
+
+  async goToDevelopOptionSettings(): Promise<void> {
+    console.log('Navigating to Develop options page');
+    await this.driver.clickElement(this.developerOptionsButton);
   }
 
   async goToExperimentalSettings(): Promise<void> {
