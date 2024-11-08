@@ -7,7 +7,7 @@ import {
 } from '../../../helpers/constants/design-system';
 import Segment from './segment';
 import { Box } from '../../../components/component-library';
-import { StatusTypes } from '../../../../app/scripts/controllers/bridge-status/types';
+import { StatusTypes } from '../../../../shared/types/bridge-status';
 
 export default {
   title: 'pages/bridge/transaction-details/Segment',

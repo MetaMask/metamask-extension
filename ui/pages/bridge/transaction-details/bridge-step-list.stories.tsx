@@ -6,7 +6,6 @@ import {
   FlexDirection,
 } from '../../../helpers/constants/design-system';
 import { Box } from '../../../components/component-library';
-import { StatusTypes } from '../../../../app/scripts/controllers/bridge-status/types';
 import BridgeStepList from './bridge-step-list';
 
 export default {
