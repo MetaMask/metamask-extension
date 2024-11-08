@@ -347,7 +347,7 @@
     "@metamask/snaps-sdk": "^6.10.0",
     "@metamask/snaps-utils": "^8.5.1",
     "@metamask/solana-wallet-snap": "^0.1.9",
-    "@metamask/transaction-controller": "^38.1.0",
+    "@metamask/transaction-controller": "^38.3.0",
     "@metamask/user-operation-controller": "^13.0.0",
     "@metamask/utils": "^10.0.1",
     "@ngraveio/bc-ur": "^1.1.12",
@@ -751,5 +751,5 @@
       "jest-preview": false
     }
   },
-  "packageManager": "yarn@4.4.1"
+  "packageManager": "yarn@4.5.1"
 }
