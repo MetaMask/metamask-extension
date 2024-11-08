@@ -34,7 +34,7 @@ type TokenCellProps = {
   onClick?: (arg: string) => void;
 };
 
-const formatWithThreshold = (
+export const formatWithThreshold = (
   amount: number,
   threshold: number,
   locale: string,
@@ -55,13 +55,8 @@ export default function TokenCell({
   isNative,
   onClick,
 }: TokenCellProps) {
+  const locale = useSelector(getIntlLocale);
   const currentCurrency = useSelector(getCurrentCurrency);
-  const currencyRates = useSelector(getCurrencyRates);
-  console.log('currency rates', currencyRates);
-  const nativeBalances = useSelector(
-    getSelectedAccountNativeTokenCachedBalanceByChainId,
-  );
-  const marketData = useSelector(getMarketData);
   const tokenList = useSelector(getTokenList);
   const isEvm = useSelector(getMultichainIsEvm);
   const erc20TokensByChain = useSelector(selectERC20TokensByChain);
@@ -72,8 +67,6 @@ export default function TokenCell({
       isEqualCaseInsensitive(token.symbol, symbol) &&
       isEqualCaseInsensitive(token.address, address),
   );
-
-  const tokenMarketPrice = marketData[chainId]?.[address]?.price;
 
   const title =
     tokenData?.name ||
@@ -88,8 +81,6 @@ export default function TokenCell({
     (chainId &&
       erc20TokensByChain?.[chainId]?.data?.[address.toLowerCase()]?.iconUrl) ||
     image;
-
-  const locale = useSelector(getIntlLocale);
 
   const secondaryThreshold = 0.01;
   const primaryThreshold = 0.00001;
@@ -123,80 +114,14 @@ export default function TokenCell({
   isStakeable = false;
   ///: END:ONLY_INCLUDE_IF
 
-  const secondaryTokenDisplayText = () => {
-    if (isNative) {
-      // @ts-ignore
-      const nativeTokenBalanceHex = nativeBalances?.[chainId];
-
-      if (nativeTokenBalanceHex !== '0x0') {
-        const decimalBalance = hexToDecimal(nativeTokenBalanceHex);
-        const readableBalance = stringifyBalance(
-          new BN(decimalBalance),
-          new BN(18),
-          5,
-        );
-        const nativeTokenFiatAmount =
-          parseFloat(readableBalance) * currencyRates[symbol].conversionRate;
-        return formatWithThreshold(
-          nativeTokenFiatAmount,
-          secondaryThreshold,
-          locale,
-          {
-            style: 'currency',
-            currency: currentCurrency.toUpperCase(),
-          },
-        );
-      }
-    }
-    if (tokenMarketPrice && !isNative) {
-      return secondary;
-    }
-    return '';
-  };
-
-  const primaryTokenDisplayText = () => {
-    if (isNative) {
-      let nativeBalance;
-      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-      // @ts-ignore
-      const nativeTokenBalanceHex = nativeBalances?.[chainId];
-      // console.log('nativeTokenBalanceHex', chainId, nativeTokenBalanceHex);
-
-      if (nativeTokenBalanceHex !== '0x0') {
-        const decimalBalance = hexToDecimal(nativeTokenBalanceHex);
-        const readableBalance = stringifyBalance(
-          new BN(decimalBalance),
-          new BN(16),
-          5,
-        );
-        nativeBalance = readableBalance || 0;
-      }
-      console.log('nativeBalance', chainId, nativeBalance);
-
-      return formatWithThreshold(
-        Number(nativeBalance),
-        primaryThreshold,
-        locale,
-        {
-          minimumFractionDigits: 4,
-          maximumFractionDigits: 4,
-        },
-      );
-    }
-    if (tokenMarketPrice && !isNative) {
-      return primary;
-    }
-    return '';
-  };
-
   return (
     <TokenListItem
       onClick={onClick ? () => onClick(address) : undefined}
       tokenSymbol={symbol}
       tokenImage={isNative ? getNativeCurrencyForChain(chainId) : tokenImage}
       tokenChainImage={chainId ? getImageForChainId(chainId) : undefined}
-      primary={primaryTokenDisplayText()}
-      secondary={secondaryTokenDisplayText()}
+      primary={primary}
+      secondary={secondary}
       title={title}
       isOriginalTokenSymbol={isOriginalTokenSymbol}
       address={address}

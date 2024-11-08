@@ -12,9 +12,11 @@ import {
 import { sortAssets } from '../util/sort';
 import {
   getCurrencyRates,
+  getCurrentCurrency,
   getCurrentNetwork,
   getMarketData,
   getPreferences,
+  getSelectedAccountNativeTokenCachedBalanceByChainId,
   getSelectedAccountTokenBalancesAcrossChains,
   getSelectedAccountTokensAcrossChains,
   getTokenExchangeRates,
@@ -23,6 +25,8 @@ import { getConversionRate } from '../../../../ducks/metamask/metamask';
 import { filterAssets } from '../util/filter';
 import { hexToDecimal } from '../../../../../shared/modules/conversion.utils';
 import { stringifyBalance } from '../../../../hooks/useTokenBalances';
+import { formatWithThreshold } from '../token-cell/token-cell';
+import { getIntlLocale } from '../../../../ducks/locale/locale';
 
 type TokenListProps = {
   onTokenClick: (arg: string) => void;
@@ -32,6 +36,7 @@ type TokenListProps = {
 export default function TokenList({ onTokenClick }: TokenListProps) {
   const t = useI18nContext();
   const currentNetwork = useSelector(getCurrentNetwork);
+
   const { tokenSortConfig, tokenNetworkFilter } = useSelector(getPreferences);
   const conversionRate = useSelector(getConversionRate);
   const contractExchangeRates = useSelector(
@@ -48,54 +53,61 @@ export default function TokenList({ onTokenClick }: TokenListProps) {
 
   const marketData = useSelector(getMarketData);
   const currencyRates = useSelector(getCurrencyRates);
+  const nativeBalances = useSelector(
+    getSelectedAccountNativeTokenCachedBalanceByChainId,
+  );
 
   const consolidatedBalances = () => {
     const tokensWithBalance: any[] = [];
 
-    Object.keys(selectedAccountTokensChains).forEach((chainId: string) => {
-      selectedAccountTokensChains[chainId].forEach(
-        (token: Record<string, any>) => {
-          const { address } = token;
-          let balance;
+    Object.entries(selectedAccountTokensChains).forEach(([chainId, tokens]) => {
+      tokens.forEach((token: Record<string, any>) => {
+        const { address, isNative, symbol, decimals } = token;
+        let balance = 0;
 
+        if (isNative) {
+          const nativeTokenBalanceHex = nativeBalances?.[chainId];
+          if (nativeTokenBalanceHex && nativeTokenBalanceHex !== '0x0') {
+            balance = stringifyBalance(
+              new BN(hexToDecimal(nativeTokenBalanceHex)),
+              new BN(decimals),
+              5,
+            );
+          }
+        } else {
           const hexBalance =
             selectedAccountTokenBalancesAcrossChains[chainId]?.[address];
-
-          if (hexBalance !== '0x0') {
-            const decimalBalance = hexToDecimal(hexBalance);
-            const readableBalance = stringifyBalance(
-              new BN(decimalBalance),
-              new BN(token.decimals),
+          if (hexBalance && hexBalance !== '0x0') {
+            balance = stringifyBalance(
+              new BN(hexToDecimal(hexBalance)),
+              new BN(decimals),
             );
-            balance = readableBalance || 0;
           }
+        }
 
-          const baseCurrency = marketData[chainId]?.[address]?.currency;
+        // Market and conversion rate data
+        const baseCurrency = marketData[chainId]?.[address]?.currency;
+        const tokenMarketPrice = marketData[chainId]?.[address]?.price || 0;
+        const tokenExchangeRate =
+          currencyRates[baseCurrency]?.conversionRate || 0;
 
-          const tokenMarketPrice = marketData[chainId]?.[address]?.price;
-          const tokenExchangeRate = currencyRates[baseCurrency]?.conversionRate;
+        // Calculate fiat amount
+        let tokenFiatAmount =
+          tokenMarketPrice * tokenExchangeRate * parseFloat(balance);
+        if (isNative && currencyRates) {
+          tokenFiatAmount =
+            currencyRates[symbol]?.conversionRate * parseFloat(balance);
+        }
 
-          // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-          // @ts-ignore
-          let tokenFiatAmount = tokenMarketPrice * tokenExchangeRate * balance;
-          if (token.isNative && currencyRates) {
-            tokenFiatAmount =
-              // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-              // @ts-ignore
-              currencyRates[token.symbol]?.conversionRate * balance;
-          }
-
-          tokensWithBalance.push({
-            ...token,
-            balance,
-            tokenFiatAmount,
-            chainId,
-            // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-            // @ts-ignore
-            string: balance.toString(),
-          });
-        },
-      );
+        // Append processed token with balance and fiat amount
+        tokensWithBalance.push({
+          ...token,
+          balance,
+          tokenFiatAmount,
+          chainId,
+          string: balance.toString(),
+        });
+      });
     });
 
     return tokensWithBalance;
