@@ -48,6 +48,7 @@ export const NetworkListItem = ({
   onRpcEndpointClick,
   startAccessory,
   showEndAccessory = true,
+  disabled = false,
 }: {
   name: string;
   iconSrc?: string;
@@ -62,6 +63,7 @@ export const NetworkListItem = ({
   focus?: boolean;
   startAccessory?: ReactNode;
   showEndAccessory?: boolean;
+  disabled?: boolean;
 }) => {
   const t = useI18nContext();
   const networkRef = useRef<HTMLInputElement>(null);
@@ -116,12 +118,13 @@ export const NetworkListItem = ({
       }
       className={classnames('multichain-network-list-item', {
         'multichain-network-list-item--selected': selected,
+        'multichain-network-list-item--disabled': disabled,
       })}
       display={Display.Flex}
       alignItems={AlignItems.center}
       justifyContent={JustifyContent.spaceBetween}
       width={BlockSize.Full}
-      onClick={onClick}
+      onClick={disabled ? undefined : onClick}
     >
       {startAccessory ? <Box marginTop={1}>{startAccessory}</Box> : null}
       {selected && (
