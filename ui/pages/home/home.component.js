@@ -13,7 +13,6 @@ import TermsOfUsePopup from '../../components/app/terms-of-use-popup';
 import RecoveryPhraseReminder from '../../components/app/recovery-phrase-reminder';
 import WhatsNewPopup from '../../components/app/whats-new-popup';
 import { FirstTimeFlowType } from '../../../shared/constants/onboarding';
-import SmartTransactionsOptInModal from '../smart-transactions/components/smart-transactions-opt-in-modal';
 ///: END:ONLY_INCLUDE_IF
 import HomeNotification from '../../components/app/home-notification';
 import MultipleNotifications from '../../components/app/multiple-notifications';
@@ -50,6 +49,9 @@ import {
   ModalHeader,
   ModalOverlay,
 } from '../../components/component-library';
+///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
+import MultiRpcEditModal from '../../components/app/multi-rpc-edit-modal/multi-rpc-edit-modal';
+///: END:ONLY_INCLUDE_IF
 import {
   RESTORE_VAULT_ROUTE,
   CONFIRM_TRANSACTION_ROUTE,
@@ -59,8 +61,7 @@ import {
   CONNECTED_ROUTE,
   CONNECTED_ACCOUNTS_ROUTE,
   AWAITING_SWAP_ROUTE,
-  BUILD_QUOTE_ROUTE,
-  VIEW_QUOTE_ROUTE,
+  PREPARE_SWAP_ROUTE,
   CONFIRMATION_V_NEXT_ROUTE,
   ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
   ONBOARDING_SECURE_YOUR_WALLET_ROUTE,
@@ -153,7 +154,7 @@ export default class Home extends PureComponent {
     hideWhatsNewPopup: PropTypes.func.isRequired,
     announcementsToShow: PropTypes.bool.isRequired,
     onboardedInThisUISession: PropTypes.bool,
-    isSmartTransactionsOptInModalAvailable: PropTypes.bool.isRequired,
+    showMultiRpcModal: PropTypes.bool.isRequired,
     ///: END:ONLY_INCLUDE_IF
     newNetworkAddedConfigurationId: PropTypes.string,
     isNotification: PropTypes.bool.isRequired,
@@ -177,7 +178,6 @@ export default class Home extends PureComponent {
     pendingConfirmations: PropTypes.arrayOf(PropTypes.object).isRequired,
     pendingConfirmationsPrioritized: PropTypes.arrayOf(PropTypes.object)
       .isRequired,
-    networkMenuRedesign: PropTypes.bool,
     hasApprovalFlows: PropTypes.bool.isRequired,
     infuraBlocked: PropTypes.bool.isRequired,
     setRecoveryPhraseReminderHasBeenShown: PropTypes.func.isRequired,
@@ -325,10 +325,8 @@ export default class Home extends PureComponent {
     const canRedirect = !isNotification && !stayOnHomePage;
     if (canRedirect && showAwaitingSwapScreen) {
       history.push(AWAITING_SWAP_ROUTE);
-    } else if (canRedirect && haveSwapsQuotes) {
-      history.push(VIEW_QUOTE_ROUTE);
-    } else if (canRedirect && swapsFetchParams) {
-      history.push(BUILD_QUOTE_ROUTE);
+    } else if (canRedirect && (haveSwapsQuotes || swapsFetchParams)) {
+      history.push(PREPARE_SWAP_ROUTE);
     } else if (firstPermissionsRequestId) {
       history.push(`${CONNECT_ROUTE}/${firstPermissionsRequestId}`);
     } else if (pendingConfirmationsPrioritized.length > 0) {
@@ -374,7 +372,6 @@ export default class Home extends PureComponent {
       closeNotificationPopup,
       isNotification,
       hasAllowedPopupRedirectApprovals,
-      networkMenuRedesign,
       newNetworkAddedConfigurationId,
       setActiveNetwork,
       clearNewNetworkAdded,
@@ -392,8 +389,8 @@ export default class Home extends PureComponent {
     const { notificationClosing } = this.state;
 
     if (
-      prevNewNetworkAddedConfigurationId !== newNetworkAddedConfigurationId &&
-      networkMenuRedesign
+      newNetworkAddedConfigurationId &&
+      prevNewNetworkAddedConfigurationId !== newNetworkAddedConfigurationId
     ) {
       setActiveNetwork(newNetworkAddedConfigurationId);
       clearNewNetworkAdded();
@@ -498,11 +495,8 @@ export default class Home extends PureComponent {
       newTokensImportedError,
       setNewTokensImported,
       setNewTokensImportedError,
-      newNetworkAddedConfigurationId,
-      networkMenuRedesign,
       clearNewNetworkAdded,
       clearEditedNetwork,
-      setActiveNetwork,
     } = this.props;
 
     const onAutoHide = () => {
@@ -627,7 +621,9 @@ export default class Home extends PureComponent {
               <Box display={Display.InlineFlex}>
                 <i className="fa fa-check-circle home__new-network-notification-icon" />
                 <Text variant={TextVariant.bodySm} as="h6">
-                  {t('newNetworkEdited', [editedNetwork.nickname])}
+                  {editedNetwork.newNetwork
+                    ? t('newNetworkAdded', [editedNetwork.nickname])
+                    : t('newNetworkEdited', [editedNetwork.nickname])}
                 </Text>
                 <ButtonIcon
                   iconName={IconName.Close}
@@ -774,52 +770,6 @@ export default class Home extends PureComponent {
             key="home-outdatedBrowserNotification"
           />
         ) : null}
-        {newNetworkAddedConfigurationId && !networkMenuRedesign && (
-          <Popover
-            className="home__new-network-added"
-            onClose={() => clearNewNetworkAdded()}
-          >
-            <i className="fa fa-check-circle fa-2x home__new-network-added__check-circle" />
-            <Text
-              variant={TextVariant.headingSm}
-              as="h4"
-              marginTop={5}
-              marginRight={9}
-              marginLeft={9}
-              marginBottom={0}
-              fontWeight={FontWeight.Bold}
-            >
-              {t('networkAddedSuccessfully')}
-            </Text>
-            <Box marginTop={8} marginRight={8} marginLeft={8} marginBottom={5}>
-              <Button
-                type="primary"
-                className="home__new-network-added__switch-to-button"
-                onClick={() => {
-                  setActiveNetwork(newNetworkAddedConfigurationId);
-                  clearNewNetworkAdded();
-                }}
-              >
-                <Text
-                  variant={TextVariant.bodySm}
-                  as="h6"
-                  color={TextColor.primaryInverse}
-                >
-                  {t('switchToNetwork', [newNetworkAddedName])}
-                </Text>
-              </Button>
-              <Button type="secondary" onClick={() => clearNewNetworkAdded()}>
-                <Text
-                  variant={TextVariant.bodySm}
-                  as="h6"
-                  color={TextColor.primaryDefault}
-                >
-                  {t('dismiss')}
-                </Text>
-              </Button>
-            </Box>
-          </Popover>
-        )}
       </MultipleNotifications>
     );
   }
@@ -985,7 +935,7 @@ export default class Home extends PureComponent {
       announcementsToShow,
       firstTimeFlowType,
       newNetworkAddedConfigurationId,
-      isSmartTransactionsOptInModalAvailable,
+      showMultiRpcModal,
       ///: END:ONLY_INCLUDE_IF
     } = this.props;
 
@@ -1003,14 +953,11 @@ export default class Home extends PureComponent {
       !process.env.IN_TEST &&
       !newNetworkAddedConfigurationId;
 
-    const showSmartTransactionsOptInModal =
-      canSeeModals && isSmartTransactionsOptInModalAvailable;
-
     const showWhatsNew =
-      canSeeModals &&
-      announcementsToShow &&
-      showWhatsNewPopup &&
-      !showSmartTransactionsOptInModal;
+      canSeeModals && announcementsToShow && showWhatsNewPopup;
+
+    const showMultiRpcEditModal =
+      canSeeModals && showMultiRpcModal && !showWhatsNew;
 
     const showTermsOfUse =
       completedOnboarding && !onboardedInThisUISession && showTermsOfUsePopup;
@@ -1032,10 +979,7 @@ export default class Home extends PureComponent {
           {
             ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
           }
-          <SmartTransactionsOptInModal
-            isOpen={showSmartTransactionsOptInModal}
-            hideWhatsNewPopup={hideWhatsNewPopup}
-          />
+          {showMultiRpcEditModal && <MultiRpcEditModal />}
           {showWhatsNew ? <WhatsNewPopup onClose={hideWhatsNewPopup} /> : null}
           {!showWhatsNew && showRecoveryPhraseReminder ? (
             <RecoveryPhraseReminder

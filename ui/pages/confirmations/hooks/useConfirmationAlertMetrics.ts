@@ -2,13 +2,11 @@ import { useCallback, useEffect, useState } from 'react';
 import { validate as isUuid } from 'uuid';
 
 import useAlerts from '../../../hooks/useAlerts';
-import { updateEventFragment } from '../../../store/actions';
-import { SignatureRequestType } from '../types/confirm';
 import { isSignatureTransactionType } from '../utils';
 import { Alert } from '../../../ducks/confirm-alerts/confirm-alerts';
 import { useConfirmContext } from '../context/confirm';
-import { generateSignatureUniqueId } from '../../../helpers/utils/metrics';
 import { AlertsName } from './alerts/constants';
+import { useSignatureEventFragment } from './useSignatureEventFragment';
 import { useTransactionEventFragment } from './useTransactionEventFragment';
 
 export type AlertMetricsProperties = {
@@ -48,6 +46,7 @@ export function useConfirmationAlertMetrics() {
   const { currentConfirmation } = useConfirmContext();
   const ownerId = currentConfirmation?.id ?? '';
   const { alerts, isAlertConfirmed } = useAlerts(ownerId);
+  const { updateSignatureEventFragment } = useSignatureEventFragment();
   const { updateTransactionEventFragment } = useTransactionEventFragment();
 
   const [metricsProperties, setMetricsProperties] =
@@ -116,12 +115,7 @@ export function useConfirmationAlertMetrics() {
     }
 
     if (isSignatureTransactionType(currentConfirmation)) {
-      const requestId = (currentConfirmation as SignatureRequestType).msgParams
-        ?.requestId as number;
-      const fragmentUniqueId = generateSignatureUniqueId(requestId);
-      updateEventFragment(fragmentUniqueId, {
-        properties,
-      });
+      updateSignatureEventFragment({ properties });
     } else {
       updateTransactionEventFragment({ properties }, ownerId);
     }

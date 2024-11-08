@@ -205,9 +205,6 @@
   "delete": {
     "message": "Izbriši"
   },
-  "deleteNetwork": {
-    "message": "Izbrišem to omrežje?"
-  },
   "details": {
     "message": "Podrobnosti"
   },
@@ -246,10 +243,6 @@
   },
   "fast": {
     "message": "Hiter"
-  },
-  "fiat": {
-    "message": "Klasične",
-    "description": "Exchange type"
   },
   "fileImportFail": {
     "message": "Uvoz z datoteko ne deluje? Kliknite tukaj!",
@@ -344,9 +337,6 @@
   },
   "invalidAddressRecipient": {
     "message": "Neveljaven nasklov prejemnika"
-  },
-  "invalidBlockExplorerURL": {
-    "message": "Neveljaven Block Explorer URL"
   },
   "invalidRPC": {
     "message": "Neveljaven RPC URL"
@@ -501,12 +491,6 @@
   },
   "prev": {
     "message": "Prej"
-  },
-  "primaryCurrencySetting": {
-    "message": "Glavna valuta"
-  },
-  "primaryCurrencySettingDescription": {
-    "message": "Izberite Native za prikaz vrednosti v privzeti valuti verige (npr. ETH). Izberite Klasične za prikaz vrednosti v izbrani klasični valuti."
   },
   "privacyMsg": {
     "message": "Zasebnost"
@@ -758,9 +742,6 @@
   },
   "unlockMessage": {
     "message": "Decentralizirana spletna denarnica"
-  },
-  "updatedWithDate": {
-    "message": "Posodobljeno $1"
   },
   "urlErrorMsg": {
     "message": "URI zahtevajo ustrezno HTTP/HTTPS predpono."

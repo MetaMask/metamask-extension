@@ -1,20 +1,19 @@
-import { deepClone } from '@metamask/snaps-utils';
 import { ApprovalType } from '@metamask/controller-utils';
-import { EthAccountType, EthMethod } from '@metamask/keyring-api';
-import { TransactionStatus } from '@metamask/transaction-controller';
-import mockState from '../../test/data/mock-state.json';
-import { KeyringType } from '../../shared/constants/keyring';
 import {
-  CHAIN_IDS,
-  LOCALHOST_DISPLAY_NAME,
-  NETWORK_TYPES,
-  OPTIMISM_DISPLAY_NAME,
-} from '../../shared/constants/network';
-import { SURVEY_DATE, SURVEY_GMT } from '../helpers/constants/survey';
-import { PRIVACY_POLICY_DATE } from '../helpers/constants/privacy-policy';
+  BtcAccountType,
+  EthAccountType,
+  EthMethod,
+} from '@metamask/keyring-api';
+import { deepClone } from '@metamask/snaps-utils';
+import { TransactionStatus } from '@metamask/transaction-controller';
+import { KeyringType } from '../../shared/constants/keyring';
+import mockState from '../../test/data/mock-state.json';
+import { CHAIN_IDS, NETWORK_TYPES } from '../../shared/constants/network';
 import { createMockInternalAccount } from '../../test/jest/mocks';
-import { ETH_EOA_METHODS } from '../../shared/constants/eth-methods';
+import { getProviderConfig } from '../ducks/metamask/metamask';
 import { mockNetworkState } from '../../test/stub/networks';
+import { DeleteRegulationStatus } from '../../shared/constants/metametrics';
+import { selectSwitchedNetworkNeverShowMessage } from '../components/app/toast-master/selectors';
 import * as selectors from './selectors';
 
 jest.mock('../../app/scripts/lib/util', () => ({
@@ -39,6 +38,21 @@ const modifyStateWithHWKeyring = (keyring) => {
   return modifiedState;
 };
 
+const mockAccountsState = (accounts) => {
+  const accountsMap = accounts.reduce((map, account) => {
+    map[account.id] = account;
+    return map;
+  }, {});
+
+  return {
+    metamask: {
+      internalAccounts: {
+        accounts: accountsMap,
+      },
+    },
+  };
+};
+
 describe('Selectors', () => {
   describe('#getSelectedAddress', () => {
     it('returns undefined if selectedAddress is undefined', () => {
@@ -61,49 +75,6 @@ describe('Selectors', () => {
       expect(
         selectors.getSelectedAddress({ metamask: { internalAccounts } }),
       ).toStrictEqual(mockInternalAccount.address);
-    });
-  });
-
-  describe('#getSelectedInternalAccount', () => {
-    it('returns undefined if selectedAccount is undefined', () => {
-      expect(
-        selectors.getSelectedInternalAccount({
-          metamask: {
-            internalAccounts: {
-              accounts: {},
-              selectedAccount: '',
-            },
-          },
-        }),
-      ).toBeUndefined();
-    });
-
-    it('returns selectedAccount', () => {
-      const mockInternalAccount = {
-        address: '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc',
-        id: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
-        metadata: {
-          name: 'Test Account',
-          keyring: {
-            type: 'HD Key Tree',
-          },
-        },
-        options: {},
-        methods: ETH_EOA_METHODS,
-        type: EthAccountType.Eoa,
-      };
-      expect(
-        selectors.getSelectedInternalAccount({
-          metamask: {
-            internalAccounts: {
-              accounts: {
-                [mockInternalAccount.id]: mockInternalAccount,
-              },
-              selectedAccount: mockInternalAccount.id,
-            },
-          },
-        }),
-      ).toStrictEqual(mockInternalAccount);
     });
   });
 
@@ -142,14 +113,6 @@ describe('Selectors', () => {
     });
   });
 
-  describe('#getInternalAccounts', () => {
-    it('returns a list of internal accounts', () => {
-      expect(selectors.getInternalAccounts(mockState)).toStrictEqual(
-        Object.values(mockState.metamask.internalAccounts.accounts),
-      );
-    });
-  });
-
   describe('#getInternalAccount', () => {
     it("returns undefined if the account doesn't exist", () => {
       expect(
@@ -171,10 +134,10 @@ describe('Selectors', () => {
     });
   });
 
-  describe('#getNeverShowSwitchedNetworkMessage', () => {
+  describe('#selectSwitchedNetworkNeverShowMessage', () => {
     it('returns the correct value', () => {
       expect(
-        selectors.getNeverShowSwitchedNetworkMessage({
+        selectSwitchedNetworkNeverShowMessage({
           metamask: { switchedNetworkNeverShowMessage: true },
         }),
       ).toStrictEqual(true);
@@ -185,7 +148,10 @@ describe('Selectors', () => {
     it('returns no details when switchedNetworkDetails is empty', () => {
       expect(
         selectors.getSwitchedNetworkDetails({
-          metamask: { switchedNetworkDetails: undefined },
+          metamask: {
+            ...mockState.metamask,
+            switchedNetworkDetails: undefined,
+          },
         }),
       ).toStrictEqual(null);
     });
@@ -193,47 +159,38 @@ describe('Selectors', () => {
     it('returns network information when valid switchedNetworkDetails are present', () => {
       const origin = 'portfolio.metamask.io';
 
-      expect(
-        selectors.getSwitchedNetworkDetails({
-          ...mockState,
-          metamask: {
-            ...mockState.metamask,
-            switchedNetworkDetails: {
-              networkClientId:
-                mockState.metamask.networkConfigurations
-                  .testNetworkConfigurationId.id,
-              origin,
+      const state = {
+        ...mockState,
+        metamask: {
+          ...mockState.metamask,
+          selectedNetworkClientId: 'testNetworkConfigurationId',
+
+          networkConfigurationsByChainId: {
+            '0x1': {
+              chainId: '0x1',
+              name: 'Custom Mainnet RPC',
+              nativeCurrency: 'ETH',
+              defaultRpcEndpointIndex: 0,
+              rpcEndpoints: [
+                {
+                  url: 'https://testrpc.com',
+                  networkClientId: 'testNetworkConfigurationId',
+                  type: 'custom',
+                },
+              ],
             },
           },
-        }),
-      ).toStrictEqual({
+          switchedNetworkDetails: {
+            networkClientId: 'testNetworkConfigurationId',
+            origin,
+          },
+        },
+      };
+
+      expect(selectors.getSwitchedNetworkDetails(state)).toStrictEqual({
         imageUrl: './images/eth_logo.svg',
-        nickname:
-          mockState.metamask.networkConfigurations.testNetworkConfigurationId
-            .nickname,
+        nickname: getProviderConfig(state).nickname,
         origin,
-      });
-    });
-  });
-
-  describe('#getNetworkDetails', () => {
-    it('returns no details when chainId is undefined', () => {
-      expect(selectors.getNetworkDetails(mockState, undefined)).toStrictEqual(
-        null,
-      );
-    });
-
-    it('returns network information when valid chainId is present', () => {
-      expect(
-        selectors.getNetworkDetails(
-          mockState,
-          mockState.metamask.networkConfigurations.testNetworkConfigurationId
-            .chainId,
-        ),
-      ).toStrictEqual({
-        imageUrl: './images/eth_logo.svg',
-        nickname: 'Ethereum Mainnet',
-        origin: undefined,
       });
     });
   });
@@ -298,6 +255,12 @@ describe('Selectors', () => {
       expect(
         selectors.getNumberOfAllUnapprovedTransactionsAndMessages({
           metamask: {
+            networkConfigurationsByChainId: {
+              [CHAIN_IDS.MAINNET]: {
+                chainId: CHAIN_IDS.MAINNET,
+                rpcEndpoints: [{}],
+              },
+            },
             transactions: [
               {
                 id: 0,
@@ -347,12 +310,23 @@ describe('Selectors', () => {
         domains: {
           [SELECTED_ORIGIN]: SELECTED_ORIGIN_NETWORK_ID,
         },
+        networkConfigurationsByChainId: {
+          [CHAIN_IDS.MAINNET]: {
+            chainId: CHAIN_IDS.MAINNET,
+            defaultRpcEndpointIndex: 0,
+            rpcEndpoints: [
+              {
+                url: 'https://testrpc.com',
+                networkClientId: mockState.metamask.selectedNetworkClientId,
+              },
+            ],
+          },
+        },
         queuedRequestCount: 0,
         transactions: [],
-        selectedNetworkClientId:
-          mockState.metamask.networkConfigurations.testNetworkConfigurationId
-            .id,
-        networkConfigurations: mockState.metamask.networkConfigurations,
+        selectedNetworkClientId: mockState.metamask.selectedNetworkClientId,
+        // networkConfigurations:
+        //   mockState.metamask.networkConfigurationsByChainId,
       },
     };
 
@@ -367,7 +341,20 @@ describe('Selectors', () => {
         ...state,
         metamask: {
           ...state.metamask,
-          selectedNetworkClientId: NETWORK_TYPES.LINEA_SEPOLIA,
+          selectedNetworkClientId: 'linea-sepolia',
+          networkConfigurationsByChainId: {
+            [CHAIN_IDS.LINEA_SEPOLIA]: {
+              chainId: CHAIN_IDS.LINEA_SEPOLIA,
+              defaultRpcEndpointIndex: 0,
+              rpcEndpoints: [
+                {
+                  url: 'https://testrpc.com',
+                  networkClientId: 'linea-sepolia',
+                  type: 'custom',
+                },
+              ],
+            },
+          },
         },
       });
       expect(networkToSwitchTo).toBe(null);
@@ -379,6 +366,19 @@ describe('Selectors', () => {
         metamask: {
           ...state.metamask,
           selectedNetworkClientId: NETWORK_TYPES.LINEA_SEPOLIA,
+          networkConfigurationsByChainId: {
+            [CHAIN_IDS.LINEA_SEPOLIA]: {
+              chainId: CHAIN_IDS.LINEA_SEPOLIA,
+              defaultRpcEndpointIndex: 0,
+              rpcEndpoints: [
+                {
+                  url: 'https://testrpc.com',
+                  networkClientId: 'linea-sepolia',
+                  type: 'custom',
+                },
+              ],
+            },
+          },
           transactions: [
             {
               id: 0,
@@ -646,129 +646,42 @@ describe('Selectors', () => {
     });
   });
 
-  describe('#getNetworkConfigurations', () => {
-    it('returns undefined if state.metamask.networkConfigurations is undefined', () => {
-      expect(
-        selectors.getNetworkConfigurations({
-          metamask: {},
-        }),
-      ).toBeUndefined();
-    });
-
-    it('returns networkConfigurations', () => {
-      const networkConfigurations = {
-        testNetworkConfigurationId1: {
-          rpcUrl: 'https://mock-rpc-url-1',
+  describe('#getNetworkConfigurationsByChainId', () => {
+    it('returns networkConfigurationsByChainId', () => {
+      const networkConfigurationsByChainId = {
+        '0xtest': {
           chainId: '0xtest',
-          ticker: 'TEST',
-          id: 'testNetworkConfigurationId1',
+          nativeCurrency: 'TEST',
+          defaultRpcEndpointUrl: 'https://mock-rpc-url-1',
+          defaultRpcEndpointIndex: 0,
+          rpcEndpoints: [
+            {
+              networkClientId: 'testNetworkConfigurationId1',
+              url: 'https://mock-rpc-url-1',
+            },
+          ],
         },
-        testNetworkConfigurationId2: {
-          rpcUrl: 'https://mock-rpc-url-2',
+        '0x1337': {
           chainId: '0x1337',
-          ticker: 'RPC',
-          id: 'testNetworkConfigurationId2',
+          nativeCurrency: 'RPC',
+          defaultRpcEndpointUrl: 'https://mock-rpc-url-2',
+          defaultRpcEndpointIndex: 0,
+          rpcEndpoints: [
+            {
+              networkClientId: 'testNetworkConfigurationId2',
+              url: 'https://mock-rpc-url-2',
+            },
+          ],
         },
       };
+
       expect(
-        selectors.getNetworkConfigurations({
+        selectors.getNetworkConfigurationsByChainId({
           metamask: {
-            networkConfigurations,
+            networkConfigurationsByChainId,
           },
         }),
-      ).toStrictEqual(networkConfigurations);
-    });
-  });
-
-  describe('#getNonTestNetworks', () => {
-    it('returns nonTestNetworks', () => {
-      const nonTestNetworks = selectors.getNonTestNetworks({
-        metamask: {},
-      });
-
-      // Assert that the `nonTestNetworks` array returned by the selector matches a specific structure.
-      expect(nonTestNetworks).toStrictEqual(
-        expect.arrayContaining([
-          expect.objectContaining({
-            chainId: expect.any(String),
-            nickname: expect.any(String),
-            rpcUrl: expect.any(String),
-            rpcPrefs: expect.objectContaining({
-              imageUrl: expect.any(String),
-            }),
-            providerType: expect.any(String),
-            ticker: expect.any(String),
-            id: expect.any(String),
-            removable: expect.any(Boolean),
-          }),
-        ]),
-      );
-
-      // Verify that each network object has a 'ticker' property that is not undefined
-      nonTestNetworks.forEach((network) => {
-        expect(network.ticker).toBeDefined();
-      });
-    });
-  });
-  describe('#getAllNetworks', () => {
-    it('sorts Localhost to the bottom of the test lists', () => {
-      const networks = selectors.getAllNetworks({
-        metamask: {
-          preferences: {
-            showTestNetworks: true,
-          },
-          ...mockNetworkState({
-            chainId: CHAIN_IDS.LOCALHOST,
-            nickname: LOCALHOST_DISPLAY_NAME,
-          }),
-        },
-      });
-      const lastItem = networks.pop();
-      expect(lastItem.nickname.toLowerCase()).toContain('localhost');
-    });
-
-    it('properly assigns a network as removable', () => {
-      const networks = selectors.getAllNetworks({
-        metamask: {
-          preferences: {
-            showTestNetworks: true,
-          },
-          ...mockNetworkState({
-            chainId: CHAIN_IDS.LOCALHOST,
-            nickname: LOCALHOST_DISPLAY_NAME,
-            id: 'some-config-name',
-          }),
-        },
-      });
-
-      const mainnet = networks.find(
-        (network) => network.id === NETWORK_TYPES.MAINNET,
-      );
-      expect(mainnet.removable).toBe(false);
-
-      const customNetwork = networks.find(
-        (network) => network.id === 'some-config-name',
-      );
-      expect(customNetwork.removable).toBe(true);
-    });
-
-    it('properly proposes a known network image when not provided by adding function', () => {
-      const networks = selectors.getAllNetworks({
-        metamask: {
-          preferences: {
-            showTestNetworks: true,
-          },
-          ...mockNetworkState({
-            chainId: CHAIN_IDS.OPTIMISM,
-            nickname: OPTIMISM_DISPLAY_NAME,
-          }),
-        },
-      });
-
-      const optimismConfig = networks.find(
-        ({ chainId }) => chainId === CHAIN_IDS.OPTIMISM,
-      );
-      expect(optimismConfig.rpcPrefs.imageUrl).toBe('./images/optimism.svg');
+      ).toStrictEqual(networkConfigurationsByChainId);
     });
   });
 
@@ -779,18 +692,23 @@ describe('Selectors', () => {
         metamask: {
           ...mockState.metamask,
           selectedNetworkClientId: NETWORK_TYPES.SEPOLIA,
+          blockExplorerUrls: [],
+          ...mockNetworkState({ chainId: CHAIN_IDS.SEPOLIA, id: 'sepolia' }),
         },
       };
       const currentNetwork = selectors.getCurrentNetwork(modifiedMockState);
 
       expect(currentNetwork).toMatchInlineSnapshot(`
         {
+          "blockExplorerUrl": "https://localhost/blockExplorer/0xaa36a7",
           "chainId": "0xaa36a7",
           "id": "sepolia",
           "nickname": "Sepolia",
-          "providerType": "sepolia",
-          "removable": false,
-          "rpcUrl": "https://sepolia.infura.io/v3/undefined",
+          "rpcPrefs": {
+            "blockExplorerUrl": "https://localhost/blockExplorer/0xaa36a7",
+            "imageUrl": undefined,
+          },
+          "rpcUrl": "https://localhost/rpc/0xaa36a7",
           "ticker": "SepoliaETH",
         }
       `);
@@ -820,8 +738,8 @@ describe('Selectors', () => {
           "chainId": "0x9999",
           "id": "mock-network-config-id",
           "nickname": undefined,
-          "removable": true,
           "rpcPrefs": {
+            "blockExplorerUrl": undefined,
             "imageUrl": undefined,
           },
           "rpcUrl": "https://mock-rpc-endpoint.test",
@@ -835,9 +753,22 @@ describe('Selectors', () => {
         ...mockState,
         metamask: {
           ...mockState.metamask,
-          selectedNetworkClientId:
-            mockState.metamask.networkConfigurations.testNetworkConfigurationId
-              .id,
+          selectedNetworkClientId: 'testNetworkConfigurationId',
+          networkConfigurationsByChainId: {
+            '0x1': {
+              chainId: '0x1',
+              name: 'Custom Mainnet RPC',
+              nativeCurrency: 'ETH',
+              defaultRpcEndpointIndex: 0,
+              rpcEndpoints: [
+                {
+                  url: 'https://testrpc.com',
+                  networkClientId: 'testNetworkConfigurationId',
+                  type: 'custom',
+                },
+              ],
+            },
+          },
         },
       };
 
@@ -860,15 +791,37 @@ describe('Selectors', () => {
   });
 
   describe('#getAllEnabledNetworks', () => {
+    const networkConfigurationsByChainId = {
+      [CHAIN_IDS.MAINNET]: {
+        chainId: CHAIN_IDS.MAINNET,
+        defaultRpcEndpointIndex: 0,
+        rpcEndpoints: [{ networkClientId: 'mainnet' }],
+      },
+      [CHAIN_IDS.LINEA_MAINNET]: {
+        chainId: CHAIN_IDS.LINEA_MAINNET,
+        defaultRpcEndpointIndex: 0,
+        rpcEndpoints: [{ networkClientId: 'linea-mainnet' }],
+      },
+      [CHAIN_IDS.SEPOLIA]: {
+        chainId: CHAIN_IDS.SEPOLIA,
+        defaultRpcEndpointIndex: 0,
+        rpcEndpoints: [{ networkClientId: 'sepolia' }],
+      },
+      [CHAIN_IDS.LINEA_SEPOLIA]: {
+        chainId: CHAIN_IDS.LINEA_SEPOLIA,
+        defaultRpcEndpointIndex: 0,
+        rpcEndpoints: [{ networkClientId: 'linea-sepolia' }],
+      },
+    };
+
     it('returns only Mainnet and Linea with showTestNetworks off', () => {
       const networks = selectors.getAllEnabledNetworks({
         metamask: {
-          preferences: {
-            showTestNetworks: false,
-          },
+          preferences: { showTestNetworks: false },
+          networkConfigurationsByChainId,
         },
       });
-      expect(networks).toHaveLength(2);
+      expect(Object.values(networks)).toHaveLength(2);
     });
 
     it('returns networks with showTestNetworks on', () => {
@@ -877,9 +830,11 @@ describe('Selectors', () => {
           preferences: {
             showTestNetworks: true,
           },
+          networkConfigurationsByChainId,
         },
       });
-      expect(networks.length).toBeGreaterThan(2);
+
+      expect(Object.values(networks).length).toBeGreaterThan(2);
     });
   });
 
@@ -967,28 +922,6 @@ describe('Selectors', () => {
     });
   });
 
-  it('returns selected internalAccount', () => {
-    expect(selectors.getSelectedInternalAccount(mockState)).toStrictEqual({
-      address: '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc',
-      id: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
-      metadata: {
-        name: 'Test Account',
-        keyring: {
-          type: 'HD Key Tree',
-        },
-      },
-      options: {},
-      methods: [
-        'personal_sign',
-        'eth_signTransaction',
-        'eth_signTypedData_v1',
-        'eth_signTypedData_v3',
-        'eth_signTypedData_v4',
-      ],
-      type: 'eip155:eoa',
-    });
-  });
-
   it('returns selected account', () => {
     const account = selectors.getSelectedAccount(mockState);
     expect(account.balance).toStrictEqual('0x346ba7725f412cbfdb');
@@ -1015,6 +948,10 @@ describe('Selectors', () => {
         ...mockState,
         metamask: {
           ...mockState.metamask,
+          ...mockNetworkState({
+            chainId: CHAIN_IDS.GOERLI,
+            metadata: { EIPS: { 1559: true } },
+          }),
           keyrings: [
             {
               type: KeyringType.ledger,
@@ -1394,194 +1331,6 @@ describe('Selectors', () => {
     });
   });
 
-  describe('#getShowSurveyToast', () => {
-    const realDateNow = Date.now;
-
-    afterEach(() => {
-      Date.now = realDateNow;
-    });
-
-    it('shows the survey link when not yet seen and within time bounds', () => {
-      Date.now = () =>
-        new Date(`${SURVEY_DATE} 12:25:00 ${SURVEY_GMT}`).getTime();
-      const result = selectors.getShowSurveyToast({
-        metamask: {
-          surveyLinkLastClickedOrClosed: null,
-        },
-      });
-      expect(result).toStrictEqual(true);
-    });
-
-    it('does not show the survey link when seen and within time bounds', () => {
-      Date.now = () =>
-        new Date(`${SURVEY_DATE} 12:25:00 ${SURVEY_GMT}`).getTime();
-      const result = selectors.getShowSurveyToast({
-        metamask: {
-          surveyLinkLastClickedOrClosed: 123456789,
-        },
-      });
-      expect(result).toStrictEqual(false);
-    });
-
-    it('does not show the survey link before time bounds', () => {
-      Date.now = () =>
-        new Date(`${SURVEY_DATE} 11:25:00 ${SURVEY_GMT}`).getTime();
-      const result = selectors.getShowSurveyToast({
-        metamask: {
-          surveyLinkLastClickedOrClosed: null,
-        },
-      });
-      expect(result).toStrictEqual(false);
-    });
-
-    it('does not show the survey link after time bounds', () => {
-      Date.now = () =>
-        new Date(`${SURVEY_DATE} 14:25:00 ${SURVEY_GMT}`).getTime();
-      const result = selectors.getShowSurveyToast({
-        metamask: {
-          surveyLinkLastClickedOrClosed: null,
-        },
-      });
-      expect(result).toStrictEqual(false);
-    });
-  });
-
-  describe('#getShowPrivacyPolicyToast', () => {
-    let dateNowSpy;
-
-    describe('mock one day after', () => {
-      beforeEach(() => {
-        const dayAfterPolicyDate = new Date(PRIVACY_POLICY_DATE);
-        dayAfterPolicyDate.setDate(dayAfterPolicyDate.getDate() + 1);
-
-        dateNowSpy = jest
-          .spyOn(Date, 'now')
-          .mockReturnValue(dayAfterPolicyDate.getTime());
-      });
-
-      afterEach(() => {
-        dateNowSpy.mockRestore();
-      });
-
-      it('shows the privacy policy toast when not yet seen, on or after the policy date, and onboardingDate is before the policy date', () => {
-        const result = selectors.getShowPrivacyPolicyToast({
-          metamask: {
-            newPrivacyPolicyToastClickedOrClosed: null,
-            onboardingDate: new Date(PRIVACY_POLICY_DATE).setDate(
-              new Date(PRIVACY_POLICY_DATE).getDate() - 2,
-            ),
-          },
-        });
-        expect(result).toBe(true);
-      });
-
-      it('does not show the privacy policy toast when seen, even if on or after the policy date and onboardingDate is before the policy date', () => {
-        const result = selectors.getShowPrivacyPolicyToast({
-          metamask: {
-            newPrivacyPolicyToastClickedOrClosed: true,
-            onboardingDate: new Date(PRIVACY_POLICY_DATE).setDate(
-              new Date(PRIVACY_POLICY_DATE).getDate() - 2,
-            ),
-          },
-        });
-        expect(result).toBe(false);
-      });
-
-      it('shows the privacy policy toast when not yet seen, on or after the policy date, and onboardingDate is not set', () => {
-        const result = selectors.getShowPrivacyPolicyToast({
-          metamask: {
-            newPrivacyPolicyToastClickedOrClosed: null,
-            onboardingDate: null,
-          },
-        });
-        expect(result).toBe(true);
-      });
-    });
-
-    describe('mock same day', () => {
-      beforeEach(() => {
-        dateNowSpy = jest
-          .spyOn(Date, 'now')
-          .mockReturnValue(new Date(PRIVACY_POLICY_DATE).getTime());
-      });
-
-      afterEach(() => {
-        dateNowSpy.mockRestore();
-      });
-
-      it('shows the privacy policy toast when not yet seen, on or after the policy date, and onboardingDate is before the policy date', () => {
-        const result = selectors.getShowPrivacyPolicyToast({
-          metamask: {
-            newPrivacyPolicyToastClickedOrClosed: null,
-            onboardingDate: new Date(PRIVACY_POLICY_DATE).setDate(
-              new Date(PRIVACY_POLICY_DATE).getDate() - 2,
-            ),
-          },
-        });
-        expect(result).toBe(true);
-      });
-
-      it('does not show the privacy policy toast when seen, even if on or after the policy date and onboardingDate is before the policy date', () => {
-        const result = selectors.getShowPrivacyPolicyToast({
-          metamask: {
-            newPrivacyPolicyToastClickedOrClosed: true,
-            onboardingDate: new Date(PRIVACY_POLICY_DATE).setDate(
-              new Date(PRIVACY_POLICY_DATE).getDate() - 2,
-            ),
-          },
-        });
-        expect(result).toBe(false);
-      });
-
-      it('shows the privacy policy toast when not yet seen, on or after the policy date, and onboardingDate is not set', () => {
-        const result = selectors.getShowPrivacyPolicyToast({
-          metamask: {
-            newPrivacyPolicyToastClickedOrClosed: null,
-            onboardingDate: null,
-          },
-        });
-        expect(result).toBe(true);
-      });
-    });
-
-    describe('mock day before', () => {
-      beforeEach(() => {
-        const dayBeforePolicyDate = new Date(PRIVACY_POLICY_DATE);
-        dayBeforePolicyDate.setDate(dayBeforePolicyDate.getDate() - 1);
-
-        dateNowSpy = jest
-          .spyOn(Date, 'now')
-          .mockReturnValue(dayBeforePolicyDate.getTime());
-      });
-
-      afterEach(() => {
-        dateNowSpy.mockRestore();
-      });
-
-      it('does not show the privacy policy toast before the policy date', () => {
-        const result = selectors.getShowPrivacyPolicyToast({
-          metamask: {
-            newPrivacyPolicyToastClickedOrClosed: null,
-            onboardingDate: new Date(PRIVACY_POLICY_DATE).setDate(
-              new Date(PRIVACY_POLICY_DATE).getDate() - 2,
-            ),
-          },
-        });
-        expect(result).toBe(false);
-      });
-
-      it('does not show the privacy policy toast before the policy date even if onboardingDate is not set', () => {
-        const result = selectors.getShowPrivacyPolicyToast({
-          metamask: {
-            newPrivacyPolicyToastClickedOrClosed: null,
-            onboardingDate: null,
-          },
-        });
-        expect(result).toBe(false);
-      });
-    });
-  });
-
   it('#getUpdatedAndSortedAccounts', () => {
     const pinnedAccountState = {
       ...mockState,
@@ -1652,6 +1401,7 @@ describe('Selectors', () => {
         balance: '0x0',
         id: '07c2cfec-36c9-46c4-8115-3836d3ac9047',
         metadata: {
+          importTime: 0,
           name: 'Test Account 2',
           keyring: {
             type: 'HD Key Tree',
@@ -1676,6 +1426,7 @@ describe('Selectors', () => {
         balance: '0x0',
         id: '784225f4-d30b-4e77-a900-c8bbce735b88',
         metadata: {
+          importTime: 0,
           name: 'Test Account 3',
           keyring: {
             type: 'HD Key Tree',
@@ -1699,6 +1450,7 @@ describe('Selectors', () => {
         address: '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc',
         id: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
         metadata: {
+          importTime: 0,
           name: 'Test Account',
           keyring: {
             type: 'HD Key Tree',
@@ -1724,6 +1476,7 @@ describe('Selectors', () => {
         address: '0xc42edfcc21ed14dda456aa0756c153f7985d8813',
         id: '15e69915-2a1a-4019-93b3-916e11fd432f',
         metadata: {
+          importTime: 0,
           name: 'Ledger Hardware 2',
           keyring: {
             type: 'Ledger Hardware',
@@ -1751,8 +1504,10 @@ describe('Selectors', () => {
           keyring: {
             type: 'Snap Keyring',
           },
+          importTime: 0,
           name: 'Snap Account 1',
           snap: {
+            enabled: true,
             id: 'snap-id',
             name: 'snap-name',
           },
@@ -1773,6 +1528,7 @@ describe('Selectors', () => {
       {
         id: '694225f4-d30b-4e77-a900-c8bbce735b42',
         metadata: {
+          importTime: 0,
           name: 'Test Account 4',
           keyring: {
             type: 'Custody test',
@@ -1910,29 +1666,35 @@ describe('#getConnectedSitesListWithNetworkInfo', () => {
     const networks = [
       {
         id: 'network1',
-        rpcPrefs: {
-          imageUrl: 'network1-icon.png',
-        },
-        nickname: 'Network 1',
+        chainId: '0x1',
+        name: 'Network 1',
+        rpcEndpoints: [
+          {
+            networkClientId: 'network1',
+          },
+        ],
       },
       {
         id: 'network2',
-        rpcPrefs: {
-          imageUrl: 'network2-icon.png',
-        },
-        nickname: 'Network 2',
+        chainId: '0x38',
+        name: 'Network 2',
+        rpcEndpoints: [
+          {
+            networkClientId: 'network2',
+          },
+        ],
       },
     ];
 
     const expectedSitesList = {
       site1: {
         id: 'site1',
-        networkIconUrl: 'network1-icon.png',
+        networkIconUrl: './images/eth_logo.svg',
         networkName: 'Network 1',
       },
       site2: {
         id: 'site2',
-        networkIconUrl: 'network2-icon.png',
+        networkIconUrl: './images/bnb.svg',
         networkName: 'Network 2',
       },
     };
@@ -2018,6 +1780,162 @@ describe('#getConnectedSitesList', () => {
         },
         name: 'Site 3',
       },
+    });
+  });
+  describe('#getShowDeleteMetaMetricsDataModal', () => {
+    it('returns state of showDeleteMetaMetricsDataModal', () => {
+      expect(
+        selectors.getShowDeleteMetaMetricsDataModal({
+          appState: {
+            showDeleteMetaMetricsDataModal: true,
+          },
+        }),
+      ).toStrictEqual(true);
+    });
+  });
+  describe('#getShowDataDeletionErrorModal', () => {
+    it('returns state of showDataDeletionErrorModal', () => {
+      expect(
+        selectors.getShowDataDeletionErrorModal({
+          appState: {
+            showDataDeletionErrorModal: true,
+          },
+        }),
+      ).toStrictEqual(true);
+    });
+  });
+  describe('#getMetaMetricsDataDeletionId', () => {
+    it('returns metaMetricsDataDeletionId', () => {
+      expect(
+        selectors.getMetaMetricsDataDeletionId({
+          metamask: {
+            metaMetricsDataDeletionId: '123',
+            metaMetricsDataDeletionTimestamp: '123345',
+            metaMetricsDataDeletionStatus: DeleteRegulationStatus.Initialized,
+          },
+        }),
+      ).toStrictEqual('123');
+    });
+  });
+  describe('#getMetaMetricsDataDeletionTimestamp', () => {
+    it('returns metaMetricsDataDeletionTimestamp', () => {
+      expect(
+        selectors.getMetaMetricsDataDeletionTimestamp({
+          metamask: {
+            metaMetricsDataDeletionId: '123',
+            metaMetricsDataDeletionTimestamp: '123345',
+            metaMetricsDataDeletionStatus: DeleteRegulationStatus.Initialized,
+          },
+        }),
+      ).toStrictEqual('123345');
+    });
+  });
+  describe('#getMetaMetricsDataDeletionStatus', () => {
+    it('returns metaMetricsDataDeletionStatus', () => {
+      expect(
+        selectors.getMetaMetricsDataDeletionStatus({
+          metamask: {
+            metaMetricsDataDeletionId: '123',
+            metaMetricsDataDeletionTimestamp: '123345',
+            metaMetricsDataDeletionStatus: DeleteRegulationStatus.Initialized,
+          },
+        }),
+      ).toStrictEqual('INITIALIZED');
+    });
+  });
+
+  describe('getEvmInternalAccounts', () => {
+    const account1 = createMockInternalAccount({
+      keyringType: KeyringType.hd,
+    });
+    const account2 = createMockInternalAccount({
+      type: EthAccountType.Erc4337,
+      keyringType: KeyringType.snap,
+    });
+    const account3 = createMockInternalAccount({
+      keyringType: KeyringType.imported,
+    });
+    const account4 = createMockInternalAccount({
+      keyringType: KeyringType.ledger,
+    });
+    const account5 = createMockInternalAccount({
+      keyringType: KeyringType.trezor,
+    });
+    const nonEvmAccount1 = createMockInternalAccount({
+      type: BtcAccountType.P2wpkh,
+      keyringType: KeyringType.snap,
+    });
+    const nonEvmAccount2 = createMockInternalAccount({
+      type: BtcAccountType.P2wpkh,
+      keyringType: KeyringType.snap,
+    });
+
+    const evmAccounts = [account1, account2, account3, account4, account5];
+
+    it('returns all EVM accounts when only EVM accounts are present', () => {
+      const state = mockAccountsState(evmAccounts);
+      expect(selectors.getEvmInternalAccounts(state)).toStrictEqual(
+        evmAccounts,
+      );
+    });
+
+    it('only returns EVM accounts when there are non-EVM accounts', () => {
+      const state = mockAccountsState([
+        ...evmAccounts,
+        nonEvmAccount1,
+        nonEvmAccount2,
+      ]);
+      expect(selectors.getEvmInternalAccounts(state)).toStrictEqual(
+        evmAccounts,
+      );
+    });
+
+    it('returns an empty array when there are no EVM accounts', () => {
+      const state = mockAccountsState([nonEvmAccount1, nonEvmAccount2]);
+      expect(selectors.getEvmInternalAccounts(state)).toStrictEqual([]);
+    });
+  });
+
+  describe('getSelectedEvmInternalAccount', () => {
+    const account1 = createMockInternalAccount({
+      lastSelected: 1,
+    });
+    const account2 = createMockInternalAccount({
+      lastSelected: 2,
+    });
+    const account3 = createMockInternalAccount({
+      lastSelected: 3,
+    });
+    const nonEvmAccount1 = createMockInternalAccount({
+      type: BtcAccountType.P2wpkh,
+      keyringType: KeyringType.snap,
+      lastSelected: 4,
+    });
+    const nonEvmAccount2 = createMockInternalAccount({
+      type: BtcAccountType.P2wpkh,
+      keyringType: KeyringType.snap,
+      lastSelected: 5,
+    });
+
+    it('returns the last selected EVM account', () => {
+      const state = mockAccountsState([account1, account2, account3]);
+      expect(selectors.getSelectedEvmInternalAccount(state)).toBe(account3);
+    });
+
+    it('returns the last selected EVM account when there are non-EVM accounts', () => {
+      const state = mockAccountsState([
+        account1,
+        account2,
+        account3,
+        nonEvmAccount1,
+        nonEvmAccount2,
+      ]);
+      expect(selectors.getSelectedEvmInternalAccount(state)).toBe(account3);
+    });
+
+    it('returns `undefined` if there are no EVM accounts', () => {
+      const state = mockAccountsState([nonEvmAccount1, nonEvmAccount2]);
+      expect(selectors.getSelectedEvmInternalAccount(state)).toBe(undefined);
     });
   });
 });

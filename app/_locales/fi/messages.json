@@ -205,9 +205,6 @@
   "delete": {
     "message": "Poista"
   },
-  "deleteNetwork": {
-    "message": "Poistetaanko verkko?"
-  },
   "details": {
     "message": "Tiedot"
   },
@@ -246,10 +243,6 @@
   },
   "fast": {
     "message": "Nopea"
-  },
-  "fiat": {
-    "message": "Kiinteä",
-    "description": "Exchange type"
   },
   "fileImportFail": {
     "message": "Eikö tiedoston tuominen onnistu? Klikkaa tästä!",
@@ -350,9 +343,6 @@
   },
   "invalidAddressRecipient": {
     "message": "Vastaanottajan osoite on virheellinen"
-  },
-  "invalidBlockExplorerURL": {
-    "message": "Virheellinen Block Explorer URL-osoite"
   },
   "invalidRPC": {
     "message": "Virheellinen RPC:n URL-osoite"
@@ -510,12 +500,6 @@
   },
   "prev": {
     "message": "Aiemp."
-  },
-  "primaryCurrencySetting": {
-    "message": "Ensisijainen valuutta"
-  },
-  "primaryCurrencySettingDescription": {
-    "message": "Valitse natiivivaihtoehto näyttääksesi arvot ensisijaisesti ketjun natiivivaluutalla (esim. ETH). Valitse oletusmääräys asettaaksesi valitsemasi oletusvaluutan ensisijaiseksi."
   },
   "privacyMsg": {
     "message": "Tietosuojakäytäntö"
@@ -767,9 +751,6 @@
   },
   "unlockMessage": {
     "message": "Hajautettu verkko odottaa"
-  },
-  "updatedWithDate": {
-    "message": "$1 päivitetty"
   },
   "urlErrorMsg": {
     "message": "URI:t vaativat asianmukaisen HTTP/HTTPS-etuliitteen."

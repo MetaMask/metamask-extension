@@ -205,9 +205,6 @@
   "delete": {
     "message": "Padam"
   },
-  "deleteNetwork": {
-    "message": "Padamkan Rangkaian?"
-  },
   "details": {
     "message": "Butiran"
   },
@@ -339,9 +336,6 @@
   },
   "invalidAddressRecipient": {
     "message": "Alamat penerima tidak sah"
-  },
-  "invalidBlockExplorerURL": {
-    "message": "URL Block Explorer tidak sah"
   },
   "invalidRPC": {
     "message": "URL RPC tidak sah"
@@ -493,12 +487,6 @@
   },
   "prev": {
     "message": "Sebelumnya"
-  },
-  "primaryCurrencySetting": {
-    "message": "Mata Wang Utama"
-  },
-  "primaryCurrencySettingDescription": {
-    "message": "Pilih natif untuk mengutamakan nilai paparan dalam mata wang natif rantaian (cth. ETH). Pilih Fiat untuk mengutamakan nilai paparan dalam mata wang fiat yang anda pilih."
   },
   "privacyMsg": {
     "message": "Dasar Privasi"
@@ -747,9 +735,6 @@
   },
   "unlockMessage": {
     "message": "Web ternyahpusat menanti"
-  },
-  "updatedWithDate": {
-    "message": "Dikemaskini $1"
   },
   "urlErrorMsg": {
     "message": "URI memerlukan awalan HTTP/HTTPS yang sesuai."

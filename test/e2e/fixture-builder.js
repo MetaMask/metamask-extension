@@ -4,12 +4,16 @@ const {
 } = require('@metamask/snaps-utils');
 const { merge, mergeWith } = require('lodash');
 const { toHex } = require('@metamask/controller-utils');
-const { mockNetworkState } = require('../stub/networks');
+const {
+  ETHERSCAN_SUPPORTED_CHAIN_IDS,
+} = require('@metamask/preferences-controller');
+const { mockNetworkStateOld } = require('../stub/networks');
 
 const { CHAIN_IDS } = require('../../shared/constants/network');
 const { SMART_CONTRACTS } = require('./seeder/smart-contracts');
 const {
   DAPP_URL,
+  DAPP_URL_LOCALHOST,
   DAPP_ONE_URL,
   DEFAULT_FIXTURE_ACCOUNT,
   ERC_4337_ACCOUNT,
@@ -44,7 +48,7 @@ function onboardingFixture() {
         },
       },
       NetworkController: {
-        ...mockNetworkState({
+        ...mockNetworkStateOld({
           id: 'networkConfigurationId',
           chainId: CHAIN_IDS.LOCALHOST,
           nickname: 'Localhost 8545',
@@ -54,10 +58,12 @@ function onboardingFixture() {
         }),
         providerConfig: { id: 'networkConfigurationId' },
       },
+      NotificationServicesController: {},
       PreferencesController: {
-        advancedGasFee: null,
+        advancedGasFee: {},
         currentLocale: 'en',
         dismissSeedBackUpReminder: false,
+        overrideContentSecurityPolicyHeader: true,
         featureFlags: {},
         forgottenPassword: false,
         identities: {},
@@ -70,12 +76,20 @@ function onboardingFixture() {
           hideZeroBalanceTokens: false,
           showExtensionInFullSizeView: false,
           showFiatInTestnets: false,
+          privacyMode: false,
           showTestNetworks: false,
-          smartTransactionsOptInStatus: false,
-          useNativeCurrencyAsPrimaryCurrency: true,
+          smartTransactionsOptInStatus: true,
+          showNativeTokenAsMainBalance: true,
           petnamesEnabled: true,
+          showMultiRpcModal: false,
           isRedesignedConfirmationsDeveloperEnabled: false,
           showConfirmationAdvancedDetails: false,
+          tokenSortConfig: {
+            key: 'tokenFiatAmount',
+            order: 'dsc',
+            sortCallback: 'stringNumeric',
+          },
+          shouldShowAggregatedBalancePopover: true,
         },
         useExternalServices: true,
         theme: 'light',
@@ -87,6 +101,31 @@ function onboardingFixture() {
         useCurrencyRateCheck: true,
         useMultiAccountBalanceChecker: true,
         useRequestQueue: true,
+        isMultiAccountBalancesEnabled: true,
+        showIncomingTransactions: {
+          [ETHERSCAN_SUPPORTED_CHAIN_IDS.MAINNET]: true,
+          [ETHERSCAN_SUPPORTED_CHAIN_IDS.GOERLI]: true,
+          [ETHERSCAN_SUPPORTED_CHAIN_IDS.BSC]: true,
+          [ETHERSCAN_SUPPORTED_CHAIN_IDS.BSC_TESTNET]: true,
+          [ETHERSCAN_SUPPORTED_CHAIN_IDS.OPTIMISM]: true,
+          [ETHERSCAN_SUPPORTED_CHAIN_IDS.OPTIMISM_SEPOLIA]: true,
+          [ETHERSCAN_SUPPORTED_CHAIN_IDS.POLYGON]: true,
+          [ETHERSCAN_SUPPORTED_CHAIN_IDS.POLYGON_TESTNET]: true,
+          [ETHERSCAN_SUPPORTED_CHAIN_IDS.AVALANCHE]: true,
+          [ETHERSCAN_SUPPORTED_CHAIN_IDS.AVALANCHE_TESTNET]: true,
+          [ETHERSCAN_SUPPORTED_CHAIN_IDS.FANTOM]: true,
+          [ETHERSCAN_SUPPORTED_CHAIN_IDS.FANTOM_TESTNET]: true,
+          [ETHERSCAN_SUPPORTED_CHAIN_IDS.SEPOLIA]: true,
+          [ETHERSCAN_SUPPORTED_CHAIN_IDS.LINEA_GOERLI]: true,
+          [ETHERSCAN_SUPPORTED_CHAIN_IDS.LINEA_SEPOLIA]: true,
+          [ETHERSCAN_SUPPORTED_CHAIN_IDS.LINEA_MAINNET]: true,
+          [ETHERSCAN_SUPPORTED_CHAIN_IDS.MOONBEAM]: true,
+          [ETHERSCAN_SUPPORTED_CHAIN_IDS.MOONBEAM_TESTNET]: true,
+          [ETHERSCAN_SUPPORTED_CHAIN_IDS.MOONRIVER]: true,
+          [ETHERSCAN_SUPPORTED_CHAIN_IDS.GNOSIS]: true,
+        },
+        showTestNetworks: false,
+        smartTransactionsOptInStatus: true,
       },
       QueuedRequestController: {
         queuedRequestCount: 0,
@@ -103,6 +142,7 @@ function onboardingFixture() {
           },
         },
       },
+      UserStorageController: {},
       TokensController: {
         allDetectedTokens: {},
         allIgnoredTokens: {},
@@ -111,6 +151,7 @@ function onboardingFixture() {
         ignoredTokens: [],
         tokens: [],
       },
+      TransactionController: {},
       config: {},
       firstTimeInfo: {
         date: 1665507600000,
@@ -181,6 +222,14 @@ class FixtureBuilder {
   withConversionRateDisabled() {
     return this.withPreferencesController({
       useCurrencyRateCheck: false,
+    });
+  }
+
+  withShowFiatTestnetEnabled() {
+    return this.withPreferencesController({
+      preferences: {
+        showFiatInTestnets: true,
+      },
     });
   }
 
@@ -255,37 +304,29 @@ class FixtureBuilder {
   }
 
   withNetworkControllerDoubleGanache() {
-    const ganacheNetworks = mockNetworkState(
-      {
-        chainId: CHAIN_IDS.LOCALHOST,
-        nickname: 'Localhost 8545',
-        rpcUrl: 'http://localhost:8545',
-        ticker: 'ETH',
-      },
-      {
-        id: '76e9cd59-d8e2-47e7-b369-9c205ccb602c',
-        rpcUrl: 'http://localhost:8546',
-        chainId: '0x53a',
-        ticker: 'ETH',
-        nickname: 'Localhost 8546',
-      },
-    );
+    const ganacheNetworks = mockNetworkStateOld({
+      id: '76e9cd59-d8e2-47e7-b369-9c205ccb602c',
+      rpcUrl: 'http://localhost:8546',
+      chainId: '0x53a',
+      ticker: 'ETH',
+      nickname: 'Localhost 8546',
+    });
     delete ganacheNetworks.selectedNetworkClientId;
     return this.withNetworkController(ganacheNetworks);
   }
 
   withNetworkControllerTripleGanache() {
     this.withNetworkControllerDoubleGanache();
-    merge(
-      this.fixture.data.NetworkController,
-      mockNetworkState({
-        rpcUrl: 'http://localhost:7777',
-        chainId: '0x3e8',
-        ticker: 'ETH',
-        nickname: 'Localhost 7777',
-        blockExplorerUrl: undefined,
-      }),
-    );
+    const thirdGanache = mockNetworkStateOld({
+      rpcUrl: 'http://localhost:7777',
+      chainId: '0x3e8',
+      ticker: 'ETH',
+      nickname: 'Localhost 7777',
+      blockExplorerUrl: undefined,
+    });
+
+    delete thirdGanache.selectedNetworkClientId;
+    merge(this.fixture.data.NetworkController, thirdGanache);
     return this;
   }
 
@@ -397,16 +438,25 @@ class FixtureBuilder {
           extensionSupport: false,
           srcNetworkAllowlist: [],
         },
+        destTokens: {},
+        destTopAssets: [],
+        srcTokens: {},
+        srcTopAssets: [],
       },
     };
     return this;
   }
 
-  withPermissionControllerConnectedToTestDapp(restrictReturnedAccounts = true) {
+  withPermissionControllerConnectedToTestDapp({
+    restrictReturnedAccounts = true,
+    account = '',
+    useLocalhostHostname = false,
+  } = {}) {
+    const selectedAccount = account || DEFAULT_FIXTURE_ACCOUNT;
     return this.withPermissionController({
       subjects: {
-        [DAPP_URL]: {
-          origin: DAPP_URL,
+        [useLocalhostHostname ? DAPP_URL_LOCALHOST : DAPP_URL]: {
+          origin: useLocalhostHostname ? DAPP_URL_LOCALHOST : DAPP_URL,
           permissions: {
             eth_accounts: {
               id: 'ZaqPEWxyhNCJYACFw93jE',
@@ -416,7 +466,7 @@ class FixtureBuilder {
                 {
                   type: 'restrictReturnedAccounts',
                   value: [
-                    DEFAULT_FIXTURE_ACCOUNT.toLowerCase(),
+                    selectedAccount.toLowerCase(),
                     '0x09781764c08de8ca82e156bbf156a3ca217c7950',
                     ERC_4337_ACCOUNT.toLowerCase(),
                   ],
@@ -596,9 +646,25 @@ class FixtureBuilder {
     });
   }
 
+  withPreferencesControllerShowNativeTokenAsMainBalanceDisabled() {
+    return this.withPreferencesController({
+      preferences: {
+        showNativeTokenAsMainBalance: false,
+      },
+    });
+  }
+
   withPreferencesControllerTxSimulationsDisabled() {
     return this.withPreferencesController({
       useTransactionSimulations: false,
+    });
+  }
+
+  withPreferencesControllerSmartTransactionsOptedIn() {
+    return this.withPreferencesController({
+      preferences: {
+        smartTransactionsOptInStatus: true,
+      },
     });
   }
 

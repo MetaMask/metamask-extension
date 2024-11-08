@@ -1,0 +1,58 @@
+# This GitHub action will checkout and scan third party code.
+# Please ensure that any changes to this action do not perform
+# actions that may result in code from that branch being executed
+# such as installing dependencies or running build scripts.
+
+name: SonarCloud
+
+on:
+  workflow_run:
+    workflows:
+      - Run tests
+    types:
+      - completed
+
+permissions:
+  actions: read
+
+jobs:
+  sonarcloud:
+    # Only scan code from non-forked repositories that have passed the tests
+    # This will skip scanning the code for forks, but will run for the main repository on PRs from forks
+    if: ${{ github.event.workflow_run.conclusion == 'success' && github.event.workflow_run.repository.fork == false }}
+    name: SonarCloud
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          repository: ${{ github.event.workflow_run.head_repository.full_name }} # Use the repository that triggered the workflow
+          ref: ${{ github.event.workflow_run.head_branch }} # Use the branch that triggered the workflow
+          fetch-depth: 0  # Shallow clones should be disabled for better relevancy of analysis
+
+      - name: Download artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: lcov.info
+          path: coverage
+          github-token: ${{ github.token }} # This is required when downloading artifacts from a different repository or from a different workflow run.
+          run-id: ${{ github.event.workflow_run.id }} # Use the workflow id that triggered the workflow
+
+      - name: Download sonar-project.properties
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          REPOSITORY: MetaMask/metamask-extension
+        run: |
+          sonar_project_properties=$(gh api -H "Accept: application/vnd.github.raw" "repos/$REPOSITORY/contents/sonar-project.properties")
+          if [ -z "$sonar_project_properties" ]; then
+            echo "::error::sonar-project.properties not found in $REPOSITORY. Please make sure this file exists on the default branch."
+            exit 1
+          fi
+          echo "$sonar_project_properties" > sonar-project.properties
+
+      - name: SonarCloud Scan
+        # This is SonarSource/sonarcloud-github-action@v2.0.0
+        uses: SonarSource/sonarcloud-github-action@4b4d7634dab97dcee0b75763a54a6dc92a9e6bc1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}

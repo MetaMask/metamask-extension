@@ -1,7 +1,7 @@
 import { isEqual } from 'lodash';
 import { useState, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { getNfts, getTokens } from '../../../ducks/metamask/metamask';
+import { getTokens } from '../../../ducks/metamask/metamask';
 import { getAssetDetails } from '../../../helpers/utils/token-util';
 import {
   hideLoadingIndication,
@@ -10,11 +10,18 @@ import {
 import { isEqualCaseInsensitive } from '../../../../shared/modules/string-utils';
 import { usePrevious } from '../../../hooks/usePrevious';
 import { useTokenTracker } from '../../../hooks/useTokenTracker';
+import { selectNftsByChainId } from '../../../selectors';
 
-export function useAssetDetails(tokenAddress, userAddress, transactionData) {
+export function useAssetDetails(
+  tokenAddress,
+  userAddress,
+  transactionData,
+  chainId,
+) {
   const dispatch = useDispatch();
+
   // state selectors
-  const nfts = useSelector(getNfts);
+  const nfts = useSelector((state) => selectNftsByChainId(state, chainId));
   const tokens = useSelector(getTokens, isEqual);
   const currentToken = tokens.find((token) =>
     isEqualCaseInsensitive(token.address, tokenAddress),
@@ -33,6 +40,10 @@ export function useAssetDetails(tokenAddress, userAddress, transactionData) {
   const prevTokenBalance = usePrevious(tokensWithBalances);
 
   useEffect(() => {
+    if (!tokenAddress && !userAddress && !transactionData) {
+      return;
+    }
+
     async function getAndSetAssetDetails() {
       dispatch(showLoadingIndication());
       const assetDetails = await getAssetDetails(
@@ -64,6 +75,10 @@ export function useAssetDetails(tokenAddress, userAddress, transactionData) {
     tokensWithBalances,
     prevTokenBalance,
   ]);
+
+  if (!tokenAddress && !userAddress && !transactionData) {
+    return {};
+  }
 
   if (currentAsset) {
     const {

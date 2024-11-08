@@ -34,6 +34,8 @@ import {
   ModalFooter,
   ModalHeader,
   ModalOverlay,
+  SensitiveText,
+  SensitiveTextLength,
   Text,
 } from '../../component-library';
 import {
@@ -56,13 +58,15 @@ import {
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
 import { CURRENCY_SYMBOLS } from '../../../../shared/constants/network';
+import { hexToDecimal } from '../../../../shared/modules/conversion.utils';
 
 import { NETWORKS_ROUTE } from '../../../helpers/constants/routes';
-import { setSelectedNetworkConfigurationId } from '../../../store/actions';
-import { ENVIRONMENT_TYPE_FULLSCREEN } from '../../../../shared/constants/app';
-import { getEnvironmentType } from '../../../../app/scripts/lib/util';
-import { getProviderConfig } from '../../../ducks/metamask/metamask';
+import { setEditedNetwork } from '../../../store/actions';
 import { getPortfolioUrl } from '../../../helpers/utils/portfolio';
+import {
+  SafeChain,
+  useSafeChains,
+} from '../../../pages/settings/networks-tab/networks-form/use-safe-chains';
 import { PercentageChange } from './price/percentage-change/percentage-change';
 
 type TokenListItemProps = {
@@ -79,6 +83,8 @@ type TokenListItemProps = {
   isStakeable?: boolean;
   address?: string | null;
   showPercentage?: boolean;
+  isPrimaryTokenSymbolHidden?: boolean;
+  privacyMode?: boolean;
 };
 
 export const TokenListItem = ({
@@ -91,10 +97,12 @@ export const TokenListItem = ({
   title,
   tooltipText,
   isOriginalTokenSymbol,
+  isPrimaryTokenSymbolHidden = false,
   isNativeCurrency = false,
   isStakeable = false,
   address = null,
   showPercentage = false,
+  privacyMode = false,
 }: TokenListItemProps) => {
   const t = useI18nContext();
   const isEvm = useSelector(getMultichainIsEvm);
@@ -103,16 +111,27 @@ export const TokenListItem = ({
   const metaMetricsId = useSelector(getMetaMetricsId);
   const isMetaMetricsEnabled = useSelector(getParticipateInMetaMetrics);
   const isMarketingEnabled = useSelector(getDataCollectionForMarketing);
+  const { safeChains } = useSafeChains();
+
+  const decimalChainId = isEvm && parseInt(hexToDecimal(chainId), 10);
+
+  const safeChainDetails: SafeChain | undefined = safeChains?.find((chain) => {
+    if (typeof decimalChainId === 'number') {
+      return chain.chainId === decimalChainId.toString();
+    }
+    return undefined;
+  });
+
+  // We do not want to display any percentage with non-EVM since we don't have the data for this yet. So
+  // we only use this option for EVM here:
+  const shouldShowPercentage = isEvm && showPercentage;
 
   // Scam warning
   const showScamWarning =
-    isNativeCurrency && !isOriginalTokenSymbol && showPercentage;
+    isNativeCurrency && !isOriginalTokenSymbol && shouldShowPercentage;
 
   const dispatch = useDispatch();
   const [showScamWarningModal, setShowScamWarningModal] = useState(false);
-  const environmentType = getEnvironmentType();
-  const providerConfig = useSelector(getProviderConfig);
-  const isFullScreen = environmentType === ENVIRONMENT_TYPE_FULLSCREEN;
   const history = useHistory();
 
   const getTokenTitle = () => {
@@ -137,7 +156,9 @@ export const TokenListItem = ({
     : null;
 
   const tokenTitle = getTokenTitle();
-  const tokenMainTitleToDisplay = showPercentage ? tokenTitle : tokenSymbol;
+  const tokenMainTitleToDisplay = shouldShowPercentage
+    ? tokenTitle
+    : tokenSymbol;
 
   const stakeableTitle = (
     <Box
@@ -310,16 +331,7 @@ export const TokenListItem = ({
                 </Text>
               )}
 
-              {isEvm && !showPercentage ? (
-                <Text
-                  variant={TextVariant.bodyMd}
-                  color={TextColor.textAlternative}
-                  data-testid="multichain-token-list-item-token-name"
-                  ellipsis
-                >
-                  {tokenTitle}
-                </Text>
-              ) : (
+              {shouldShowPercentage ? (
                 <PercentageChange
                   value={
                     isNativeCurrency
@@ -332,6 +344,15 @@ export const TokenListItem = ({
                       : (address as `0x${string}`)
                   }
                 />
+              ) : (
+                <Text
+                  variant={TextVariant.bodyMd}
+                  color={TextColor.textAlternative}
+                  data-testid="multichain-token-list-item-token-name"
+                  ellipsis
+                >
+                  {tokenTitle}
+                </Text>
               )}
             </Box>
 
@@ -358,14 +379,19 @@ export const TokenListItem = ({
                   ariaLabel={''}
                 />
 
-                <Text
+                <SensitiveText
                   data-testid="multichain-token-list-item-value"
                   color={TextColor.textAlternative}
                   variant={TextVariant.bodyMd}
                   textAlign={TextAlign.End}
+                  isHidden={privacyMode}
+                  length={SensitiveTextLength.Short}
                 >
-                  {primary} {isNativeCurrency ? '' : tokenSymbol}
-                </Text>
+                  {primary}{' '}
+                  {isNativeCurrency || isPrimaryTokenSymbolHidden
+                    ? ''
+                    : tokenSymbol}
+                </SensitiveText>
               </Box>
             ) : (
               <Box
@@ -374,24 +400,31 @@ export const TokenListItem = ({
                 width={isStakeable ? BlockSize.Half : BlockSize.TwoThirds}
                 alignItems={AlignItems.flexEnd}
               >
-                <Text
+                <SensitiveText
                   fontWeight={FontWeight.Medium}
                   variant={TextVariant.bodyMd}
                   width={isStakeable ? BlockSize.Half : BlockSize.TwoThirds}
                   textAlign={TextAlign.End}
                   data-testid="multichain-token-list-item-secondary-value"
                   ellipsis={isStakeable}
+                  isHidden={privacyMode}
+                  length={SensitiveTextLength.Medium}
                 >
                   {secondary}
-                </Text>
-                <Text
+                </SensitiveText>
+                <SensitiveText
                   data-testid="multichain-token-list-item-value"
                   color={TextColor.textAlternative}
-                  variant={TextVariant.bodyMd}
+                  variant={TextVariant.bodySmMedium}
                   textAlign={TextAlign.End}
+                  isHidden={privacyMode}
+                  length={SensitiveTextLength.Short}
                 >
-                  {primary} {isNativeCurrency ? '' : tokenSymbol}
-                </Text>
+                  {primary}{' '}
+                  {isNativeCurrency || isPrimaryTokenSymbolHidden
+                    ? ''
+                    : tokenSymbol}
+                </SensitiveText>
               </Box>
             )}
           </Box>
@@ -407,23 +440,21 @@ export const TokenListItem = ({
         <Modal isOpen onClose={() => setShowScamWarningModal(false)}>
           <ModalOverlay />
           <ModalContent>
-            <ModalHeader>{t('nativeTokenScamWarningTitle')}</ModalHeader>
-            <ModalBody>
-              <Box marginTop={4} marginBottom={4}>
-                {t('nativeTokenScamWarningDescription', [tokenSymbol])}
-              </Box>
+            <ModalHeader onClose={() => setShowScamWarningModal(false)}>
+              {t('nativeTokenScamWarningTitle')}
+            </ModalHeader>
+            <ModalBody marginTop={4} marginBottom={4}>
+              {t('nativeTokenScamWarningDescription', [
+                tokenSymbol,
+                safeChainDetails?.nativeCurrency?.symbol ||
+                  t('nativeTokenScamWarningDescriptionExpectedTokenFallback'), // never render "undefined" string value
+              ])}
             </ModalBody>
             <ModalFooter>
               <ButtonSecondary
                 onClick={() => {
-                  dispatch(
-                    setSelectedNetworkConfigurationId(providerConfig.id),
-                  );
-                  if (isFullScreen) {
-                    history.push(NETWORKS_ROUTE);
-                  } else {
-                    global.platform.openExtensionInBrowser?.(NETWORKS_ROUTE);
-                  }
+                  dispatch(setEditedNetwork({ chainId }));
+                  history.push(NETWORKS_ROUTE);
                 }}
                 block
               >

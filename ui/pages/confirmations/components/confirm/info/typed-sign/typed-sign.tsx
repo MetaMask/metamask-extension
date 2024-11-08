@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import { useSelector } from 'react-redux';
 import { isValidAddress } from 'ethereumjs-util';
 
@@ -11,9 +11,10 @@ import {
   ConfirmInfoRowDivider,
   ConfirmInfoRowUrl,
 } from '../../../../../../components/app/confirm/info/row';
+import { ConfirmInfoSection } from '../../../../../../components/app/confirm/info/row/section';
 import { useI18nContext } from '../../../../../../hooks/useI18nContext';
-import { getTokenStandardAndDetails } from '../../../../../../store/actions';
 import { SignatureRequestType } from '../../../../types/confirm';
+import { useGetTokenStandardAndDetails } from '../../../../hooks/useGetTokenStandardAndDetails';
 import {
   isOrderSignatureRequest,
   isPermitSignatureRequest,
@@ -21,7 +22,7 @@ import {
 import { useConfirmContext } from '../../../../context/confirm';
 import { selectUseTransactionSimulations } from '../../../../selectors/preferences';
 import { ConfirmInfoRowTypedSignData } from '../../row/typed-sign-data/typedSignData';
-import { ConfirmInfoSection } from '../../../../../../components/app/confirm/info/row/section';
+import { isSnapId } from '../../../../../../helpers/utils/snaps';
 import { PermitSimulation } from './permit-simulation';
 
 const TypedSignInfo: React.FC = () => {
@@ -30,7 +31,6 @@ const TypedSignInfo: React.FC = () => {
   const useTransactionSimulations = useSelector(
     selectUseTransactionSimulations,
   );
-  const [decimals, setDecimals] = useState<number>(0);
 
   if (!currentConfirmation?.msgParams) {
     return null;
@@ -43,18 +43,15 @@ const TypedSignInfo: React.FC = () => {
 
   const isPermit = isPermitSignatureRequest(currentConfirmation);
   const isOrder = isOrderSignatureRequest(currentConfirmation);
+  const tokenContract = isPermit || isOrder ? verifyingContract : undefined;
+  const { decimalsNumber } = useGetTokenStandardAndDetails(tokenContract);
 
-  useEffect(() => {
-    (async () => {
-      if (!isPermit && !isOrder) {
-        return;
-      }
-      const tokenDetails = await getTokenStandardAndDetails(verifyingContract);
-      const tokenDecimals = tokenDetails?.decimals;
+  const chainId = currentConfirmation.chainId as string;
 
-      setDecimals(parseInt(tokenDecimals ?? '0', 10));
-    })();
-  }, [verifyingContract]);
+  const toolTipMessage = isSnapId(currentConfirmation.msgParams.origin)
+    ? t('requestFromInfoSnap')
+    : t('requestFromInfo');
+  const msgData = currentConfirmation.msgParams?.data as string;
 
   return (
     <>
@@ -63,7 +60,7 @@ const TypedSignInfo: React.FC = () => {
         {isPermit && (
           <>
             <ConfirmInfoRow label={t('spender')}>
-              <ConfirmInfoRowAddress address={spender} />
+              <ConfirmInfoRowAddress address={spender} chainId={chainId} />
             </ConfirmInfoRow>
             <ConfirmInfoRowDivider />
           </>
@@ -72,21 +69,30 @@ const TypedSignInfo: React.FC = () => {
           alertKey={RowAlertKey.RequestFrom}
           ownerId={currentConfirmation.id}
           label={t('requestFrom')}
-          tooltip={t('requestFromInfo')}
+          tooltip={toolTipMessage}
         >
           <ConfirmInfoRowUrl url={currentConfirmation.msgParams.origin} />
         </ConfirmInfoAlertRow>
         {isValidAddress(verifyingContract) && (
           <ConfirmInfoRow label={t('interactingWith')}>
-            <ConfirmInfoRowAddress address={verifyingContract} />
+            <ConfirmInfoRowAddress
+              address={verifyingContract}
+              chainId={chainId}
+            />
           </ConfirmInfoRow>
         )}
       </ConfirmInfoSection>
       <ConfirmInfoSection>
-        <ConfirmInfoRow label={t('message')}>
+        <ConfirmInfoRow
+          label={t('message')}
+          collapsed={isPermit && useTransactionSimulations}
+          copyEnabled
+          copyText={JSON.stringify(parseTypedDataMessage(msgData ?? {}))}
+        >
           <ConfirmInfoRowTypedSignData
-            data={currentConfirmation.msgParams?.data as string}
-            tokenDecimals={decimals}
+            data={msgData}
+            tokenDecimals={decimalsNumber}
+            chainId={chainId}
           />
         </ConfirmInfoRow>
       </ConfirmInfoSection>

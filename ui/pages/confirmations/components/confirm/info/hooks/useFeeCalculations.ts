@@ -8,14 +8,17 @@ import {
   addHexes,
   decGWEIToHexWEI,
   decimalToHex,
-  getEthConversionFromWeiHex,
   getValueFromWeiHex,
   multiplyHexes,
 } from '../../../../../../../shared/modules/conversion.utils';
-import { getConversionRate } from '../../../../../../ducks/metamask/metamask';
+import { Numeric } from '../../../../../../../shared/modules/Numeric';
 import { useFiatFormatter } from '../../../../../../hooks/useFiatFormatter';
 import { useGasFeeEstimates } from '../../../../../../hooks/useGasFeeEstimates';
-import { getCurrentCurrency } from '../../../../../../selectors';
+import {
+  getCurrentCurrency,
+  selectConversionRateByChainId,
+} from '../../../../../../selectors';
+import { getMultichainNetwork } from '../../../../../../selectors/multichain';
 import { HEX_ZERO } from '../shared/constants';
 import { useEIP1559TxFees } from './useEIP1559TxFees';
 import { useSupportsEIP1559 } from './useSupportsEIP1559';
@@ -29,17 +32,25 @@ const EMPTY_FEES = {
 
 export function useFeeCalculations(transactionMeta: TransactionMeta) {
   const currentCurrency = useSelector(getCurrentCurrency);
-  const conversionRate = useSelector(getConversionRate);
+  const { chainId } = transactionMeta;
   const fiatFormatter = useFiatFormatter();
+
+  const conversionRate = useSelector((state) =>
+    selectConversionRateByChainId(state, chainId),
+  );
+
+  const multichainNetwork = useSelector(getMultichainNetwork);
+  const ticker = multichainNetwork?.network?.ticker;
 
   const getFeesFromHex = useCallback(
     (hexFee: string) => {
-      const nativeCurrencyFee =
-        getEthConversionFromWeiHex({
+      const nativeCurrencyFee = `${
+        getValueFromWeiHex({
           value: hexFee,
           fromCurrency: EtherDenomination.GWEI,
           numberOfDecimals: 4,
-        }) || `0 ${EtherDenomination.ETH}`;
+        }) || 0
+      } ${ticker}`;
 
       const currentCurrencyFee = fiatFormatter(
         Number(
@@ -114,10 +125,20 @@ export function useFeeCalculations(transactionMeta: TransactionMeta) {
     }
 
     // Logic for any network without L1 and L2 fee components
-    const minimumFeePerGas = addHexes(
+    let minimumFeePerGas = addHexes(
       decGWEIToHexWEI(estimatedBaseFee) || HEX_ZERO,
       decimalToHex(maxPriorityFeePerGas),
     );
+
+    // `minimumFeePerGas` should never be higher than the `maxFeePerGas`
+    if (
+      new Numeric(minimumFeePerGas, 16).greaterThan(
+        decimalToHex(maxFeePerGas),
+        16,
+      )
+    ) {
+      minimumFeePerGas = decimalToHex(maxFeePerGas);
+    }
 
     const estimatedFee = multiplyHexes(
       supportsEIP1559 ? (minimumFeePerGas as Hex) : (gasPrice as Hex),

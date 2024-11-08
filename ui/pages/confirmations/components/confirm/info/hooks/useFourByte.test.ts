@@ -34,7 +34,7 @@ describe('useFourByte', () => {
     expect(result.current.params).toEqual([]);
   });
 
-  it('returns empty object if resolution is turned off', () => {
+  it('returns null if resolution disabled', () => {
     const currentConfirmation = genUnapprovedContractInteractionConfirmation({
       address: CONTRACT_INTERACTION_SENDER_ADDRESS,
       txData: depositHexData,
@@ -54,10 +54,10 @@ describe('useFourByte', () => {
       },
     );
 
-    expect(result.current).toEqual({});
+    expect(result.current).toBeNull();
   });
 
-  it("returns undefined if it's not known even if resolution is enabled", () => {
+  it('returns null if not known even if resolution enabled', () => {
     const currentConfirmation = genUnapprovedContractInteractionConfirmation({
       address: CONTRACT_INTERACTION_SENDER_ADDRESS,
       txData: depositHexData,
@@ -75,6 +75,31 @@ describe('useFourByte', () => {
       },
     );
 
-    expect(result.current).toEqual({});
+    expect(result.current).toBeNull();
+  });
+
+  it('returns null if no transaction to', () => {
+    const currentConfirmation = genUnapprovedContractInteractionConfirmation({
+      address: CONTRACT_INTERACTION_SENDER_ADDRESS,
+      txData: depositHexData,
+    }) as TransactionMeta;
+
+    currentConfirmation.txParams.to = undefined;
+
+    const { result } = renderHookWithProvider(
+      () => useFourByte(currentConfirmation),
+      {
+        ...mockState,
+        metamask: {
+          ...mockState.metamask,
+          use4ByteResolution: true,
+          knownMethodData: {
+            [depositHexData]: { name: 'Deposit', params: [] },
+          },
+        },
+      },
+    );
+
+    expect(result.current).toBeNull();
   });
 });

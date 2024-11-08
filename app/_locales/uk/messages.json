@@ -205,9 +205,6 @@
   "delete": {
     "message": "Видалити"
   },
-  "deleteNetwork": {
-    "message": "Видалити мережу?"
-  },
   "details": {
     "message": "Деталі"
   },
@@ -246,10 +243,6 @@
   },
   "fast": {
     "message": "Швидка"
-  },
-  "fiat": {
-    "message": "Вказівка",
-    "description": "Exchange type"
   },
   "fileImportFail": {
     "message": "Не працює імпорт файлу? Натисніть тут!",
@@ -350,9 +343,6 @@
   },
   "invalidAddressRecipient": {
     "message": "Недійсна адреса отримувача"
-  },
-  "invalidBlockExplorerURL": {
-    "message": "Недійсний Block Explorer URL"
   },
   "invalidRPC": {
     "message": "Недійсний RPC URL"
@@ -513,12 +503,6 @@
   },
   "prev": {
     "message": "Попередній"
-  },
-  "primaryCurrencySetting": {
-    "message": "Первісна валюта"
-  },
-  "primaryCurrencySettingDescription": {
-    "message": "Оберіть \"рідна\", щоб пріоритезувати показ сум у рідних валютах мережі (напр.ETH). \nОберіть \"фіатна\", щоб пріоритезувати показ сум у ваших обраних фіатних валютах."
   },
   "privacyMsg": {
     "message": "Політика конфіденційності"
@@ -770,9 +754,6 @@
   },
   "unlockMessage": {
     "message": "Децентралізована мережа очікує"
-  },
-  "updatedWithDate": {
-    "message": "Оновлено $1"
   },
   "urlErrorMsg": {
     "message": "URIs вимагають відповідного префікса HTTP/HTTPS."

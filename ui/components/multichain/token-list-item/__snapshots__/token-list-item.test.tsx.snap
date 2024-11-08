@@ -59,7 +59,7 @@ exports[`TokenListItem should render correctly 1`] = `
               data-testid="multichain-token-list-item-secondary-value"
             />
             <p
-              class="mm-box mm-text mm-text--body-md mm-text--text-align-end mm-box--color-text-alternative"
+              class="mm-box mm-text mm-text--body-sm-medium mm-text--text-align-end mm-box--color-text-alternative"
               data-testid="multichain-token-list-item-value"
             >
                

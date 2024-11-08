@@ -205,9 +205,6 @@
   "delete": {
     "message": "Șterge"
   },
-  "deleteNetwork": {
-    "message": "Ștergeți rețeaua?"
-  },
   "details": {
     "message": "Detalii"
   },
@@ -340,9 +337,6 @@
   },
   "invalidAddressRecipient": {
     "message": "Adresa destinatarului nu este validă"
-  },
-  "invalidBlockExplorerURL": {
-    "message": "URL Block Explorer nevalid"
   },
   "invalidRPC": {
     "message": "URL RPC nevalid"
@@ -500,12 +494,6 @@
   },
   "prev": {
     "message": "Ant"
-  },
-  "primaryCurrencySetting": {
-    "message": "Moneda principală"
-  },
-  "primaryCurrencySettingDescription": {
-    "message": "Selectați nativ pentru a prioritiza valorile afișate în moneda nativă a lanțului (ex. ETH). Selectați Fiat pentru a prioritiza valorile afișate în moneda selectată fiat."
   },
   "privacyMsg": {
     "message": "Politica de Confidențialitate"
@@ -751,9 +739,6 @@
   },
   "unlockMessage": {
     "message": "Web-ul descentralizat așteaptă"
-  },
-  "updatedWithDate": {
-    "message": "Actualizat $1"
   },
   "urlErrorMsg": {
     "message": "URL necesită prefixul potrivit HTTP/HTTPS."

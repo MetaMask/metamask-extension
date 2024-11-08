@@ -202,9 +202,6 @@
   "delete": {
     "message": "মুছুন"
   },
-  "deleteNetwork": {
-    "message": "নেটওয়ার্ক মুছবেন?"
-  },
   "details": {
     "message": "বিশদ বিবরণ"
   },
@@ -243,10 +240,6 @@
   },
   "fast": {
     "message": "দ্রুত"
-  },
-  "fiat": {
-    "message": "ফিয়াট",
-    "description": "Exchange type"
   },
   "fileImportFail": {
     "message": "ফাইল আমদানি কাজ করছে না? এখানে ক্লিক করুন!",
@@ -347,9 +340,6 @@
   },
   "invalidAddressRecipient": {
     "message": "প্রাপকের ঠিকানা অবৈধ"
-  },
-  "invalidBlockExplorerURL": {
-    "message": "অবৈধ Block Explorer URL"
   },
   "invalidRPC": {
     "message": "অবৈধ RPC URL"
@@ -507,12 +497,6 @@
   },
   "prev": {
     "message": "পূর্ববর্তী"
-  },
-  "primaryCurrencySetting": {
-    "message": "প্রাথমিক মুদ্রা"
-  },
-  "primaryCurrencySettingDescription": {
-    "message": "চেনটিতে (যেমন ETH) দেশীয় মুদ্রায় মানগুলি প্রদর্শনকে অগ্রাধিকার দিতে দেশীয় নির্বাচন করুন। আপনার নির্দেশিত মুদ্রায় মানগুলির প্রদর্শনকে অগ্রাধিকার দিতে নির্দেশিত নির্বাচন করুন।"
   },
   "privacyMsg": {
     "message": "সম্মত হয়েছেন"
@@ -764,9 +748,6 @@
   },
   "unlockMessage": {
     "message": "ছড়িয়ে ছিটিয়ে থাকা ওয়েব অপেক্ষা করছে"
-  },
-  "updatedWithDate": {
-    "message": "আপডেট করা $1"
   },
   "urlErrorMsg": {
     "message": "URI গুলির যথাযথ HTTP/HTTPS প্রেফিক্সের প্রয়োজন।"

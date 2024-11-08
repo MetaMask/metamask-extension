@@ -205,9 +205,6 @@
   "delete": {
     "message": "Изтриване"
   },
-  "deleteNetwork": {
-    "message": "Да се изтрие ли мрежата?"
-  },
   "details": {
     "message": "Подробности"
   },
@@ -346,9 +343,6 @@
   },
   "invalidAddressRecipient": {
     "message": "Адресът на получателя е невалиден"
-  },
-  "invalidBlockExplorerURL": {
-    "message": "Невалиден Block Explorer URL адрес"
   },
   "invalidRPC": {
     "message": "Невалиден RPC URL адрес"
@@ -509,12 +503,6 @@
   },
   "prev": {
     "message": "Предишен"
-  },
-  "primaryCurrencySetting": {
-    "message": "Основна валута"
-  },
-  "primaryCurrencySettingDescription": {
-    "message": "Изберете местна, за да приоритизирате показването на стойности в основната валута на веригата (например ETH). Изберете Fiat, за да поставите приоритет на показването на стойности в избраната от вас fiat валута."
   },
   "privacyMsg": {
     "message": "Политика за поверителност"
@@ -766,9 +754,6 @@
   },
   "unlockMessage": {
     "message": "Децентрализираната мрежа очаква"
-  },
-  "updatedWithDate": {
-    "message": "Актуализирано $1 "
   },
   "urlErrorMsg": {
     "message": "URI изискват съответния HTTP / HTTPS префикс."

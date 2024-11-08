@@ -5,7 +5,6 @@ import { isHexString, zeroAddress } from 'ethereumjs-util';
 import { Text, Box } from '../../../../component-library';
 import {
   Display,
-  FontWeight,
   TextColor,
   TextVariant,
 } from '../../../../../helpers/constants/design-system';
@@ -24,9 +23,11 @@ import {
 import {
   formatValue,
   isValidAmount,
+  // TODO: Remove restricted import
+  // eslint-disable-next-line import/no-restricted-paths
 } from '../../../../../../app/scripts/lib/util';
 
-const renderPercentageWithNumber = (
+export const renderPercentageWithNumber = (
   value: string,
   formattedValuePrice: string,
   color: TextColor,
@@ -34,8 +35,7 @@ const renderPercentageWithNumber = (
   return (
     <Box display={Display.Flex}>
       <Text
-        fontWeight={FontWeight.Normal}
-        variant={TextVariant.bodyMd}
+        variant={TextVariant.bodyMdMedium}
         color={color}
         data-testid="token-increase-decrease-value"
         style={{ whiteSpace: 'pre' }}
@@ -44,8 +44,7 @@ const renderPercentageWithNumber = (
         {formattedValuePrice}
       </Text>
       <Text
-        fontWeight={FontWeight.Normal}
-        variant={TextVariant.bodyMd}
+        variant={TextVariant.bodyMdMedium}
         color={color}
         data-testid="token-increase-decrease-percentage"
         ellipsis

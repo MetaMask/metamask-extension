@@ -199,9 +199,6 @@
   "delete": {
     "message": "Radera"
   },
-  "deleteNetwork": {
-    "message": "Radera nätverk?"
-  },
   "details": {
     "message": "Info"
   },
@@ -340,9 +337,6 @@
   },
   "invalidAddressRecipient": {
     "message": "Mottagarens adress är ogiltig"
-  },
-  "invalidBlockExplorerURL": {
-    "message": "Ogiltig Block Explorer URL"
   },
   "invalidRPC": {
     "message": "Ogiltig RPC-URL"
@@ -497,12 +491,6 @@
   },
   "prev": {
     "message": "Föregående"
-  },
-  "primaryCurrencySetting": {
-    "message": "Primär valuta"
-  },
-  "primaryCurrencySettingDescription": {
-    "message": "Välj native för att prioritera visning av värden i den ursprungliga valutan i kedjan (t.ex. ETH). Välj Fiat för att prioritera visning av värden i din valda fiatvaluta."
   },
   "privacyMsg": {
     "message": "Integritetspolicy"
@@ -745,9 +733,6 @@
   },
   "unlockMessage": {
     "message": "Den decentraliserade webben väntar"
-  },
-  "updatedWithDate": {
-    "message": "Uppdaterat $1"
   },
   "urlErrorMsg": {
     "message": "URI:er kräver lämpligt HTTP/HTTPS-prefix."

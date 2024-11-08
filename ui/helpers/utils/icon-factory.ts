@@ -8,14 +8,21 @@ type TokenMetadata = {
   iconUrl: string;
 };
 
+type GenerateSeedFunction = (address: string) => number | number[];
+
 /**
  * A factory for generating icons for cryptocurrency addresses using Jazzicon or predefined token metadata.
  */
-class IconFactory {
+export class IconFactory {
   /**
    * Function to generate a Jazzicon SVG element.
    */
   jazzicon: typeof Jazzicon;
+
+  /**
+   * Function to generate seed before passing to jazzicon implementation.
+   */
+  generateSeed: GenerateSeedFunction;
 
   /**
    * Cache for storing generated SVG elements to avoid re-rendering.
@@ -26,9 +33,14 @@ class IconFactory {
    * Constructs an IconFactory instance with a given Jazzicon function.
    *
    * @param jazzicon - A function that returns a Jazzicon SVG given a diameter and seed.
+   * @param generateSeed - An optional function that generates a seed based on an address.
    */
-  constructor(jazzicon: typeof Jazzicon) {
+  constructor(
+    jazzicon: typeof Jazzicon,
+    generateSeed: GenerateSeedFunction = jsNumberForAddress,
+  ) {
     this.jazzicon = jazzicon;
+    this.generateSeed = generateSeed;
     this.cache = {};
   }
 
@@ -76,7 +88,7 @@ class IconFactory {
    * @returns A new Jazzicon SVG element.
    */
   generateNewIdenticon(address: string, diameter: number): SVGSVGElement {
-    const numericRepresentation = jsNumberForAddress(address);
+    const numericRepresentation = this.generateSeed(address);
     const identicon = this.jazzicon(diameter, numericRepresentation);
     return identicon;
   }

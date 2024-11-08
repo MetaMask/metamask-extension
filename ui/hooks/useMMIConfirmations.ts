@@ -20,7 +20,9 @@ export function useMMIConfirmations() {
         currentConfirmation.type === TransactionType.signTypedData) &&
       Boolean(currentConfirmation?.custodyId),
     mmiOnSignCallback: () => custodySignFn(currentConfirmation),
-    mmiOnTransactionCallback: () =>
-      custodyTransactionFn(currentConfirmation as TransactionMeta),
+    mmiOnTransactionCallback: (
+      transactionData: TransactionMeta,
+      noteToTraderMessage: string,
+    ) => custodyTransactionFn(transactionData, noteToTraderMessage),
   };
 }

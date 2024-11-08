@@ -1,44 +1,56 @@
 import { strict as assert } from 'assert';
 import { Driver } from '../../webdriver/driver';
-import { DEFAULT_GANACHE_ETH_BALANCE_DEC } from '../../constants';
+import { Ganache } from '../../seeder/ganache';
 import HeaderNavbar from './header-navbar';
 
 class HomePage {
   private driver: Driver;
 
-  private sendButton: string;
-
-  private activityTab: string;
-
-  private tokensTab: string;
-
-  private balance: string;
-
-  private completedTransactions: string;
-
-  private confirmedTransactions: object;
-
-  private transactionAmountsInActivity: string;
-
-  private accountMenuButton: string;
-
   public headerNavbar: HeaderNavbar;
+
+  private readonly activityTab =
+    '[data-testid="account-overview__activity-tab"]';
+
+  private readonly nftTab = '[data-testid="account-overview__nfts-tab"]';
+
+  private readonly nftIconOnActivityList = '[data-testid="nft-item"]';
+
+  private readonly balance = '[data-testid="eth-overview__primary-currency"]';
+
+  private readonly basicFunctionalityOffWarningMessage = {
+    text: 'Basic functionality is off',
+    css: '.mm-banner-alert',
+  };
+
+  private readonly closeUseNetworkNotificationModalButton = {
+    text: 'Got it',
+    tag: 'h6',
+  };
+
+  private readonly completedTransactions = '[data-testid="activity-list-item"]';
+
+  private readonly confirmedTransactions = {
+    text: 'Confirmed',
+    css: '.transaction-status-label--confirmed',
+  };
+
+  private readonly failedTransactions = {
+    text: 'Failed',
+    css: '.transaction-status-label--failed',
+  };
+
+  private readonly popoverBackground = '.popover-bg';
+
+  private readonly sendButton = '[data-testid="eth-overview-send"]';
+
+  private readonly tokensTab = '[data-testid="account-overview__asset-tab"]';
+
+  private readonly transactionAmountsInActivity =
+    '[data-testid="transaction-list-item-primary-currency"]';
 
   constructor(driver: Driver) {
     this.driver = driver;
     this.headerNavbar = new HeaderNavbar(driver);
-    this.sendButton = '[data-testid="eth-overview-send"]';
-    this.activityTab = '[data-testid="account-overview__activity-tab"]';
-    this.tokensTab = '[data-testid="account-overview__asset-tab"]';
-    this.confirmedTransactions = {
-      text: 'Confirmed',
-      css: '.transaction-status-label--confirmed',
-    };
-    this.balance = '[data-testid="eth-overview__primary-currency"]';
-    this.completedTransactions = '[data-testid="activity-list-item"]';
-    this.transactionAmountsInActivity =
-      '[data-testid="transaction-list-item-primary-currency"]';
-    this.accountMenuButton = '[data-testid="account-menu-icon"]';
   }
 
   async check_pageIsLoaded(): Promise<void> {
@@ -55,28 +67,16 @@ class HomePage {
     console.log('Home page is loaded');
   }
 
-  async check_expectedBalanceIsDisplayed(
-    expectedBalance: string = DEFAULT_GANACHE_ETH_BALANCE_DEC,
-  ): Promise<void> {
-    try {
-      await this.driver.waitForSelector({
-        css: this.balance,
-        text: `${expectedBalance} ETH`,
-      });
-    } catch (e) {
-      const balance = await this.driver.waitForSelector(this.balance);
-      const currentBalance = parseFloat(await balance.getText());
-      const errorMessage = `Expected balance ${expectedBalance} ETH, got balance ${currentBalance} ETH`;
-      console.log(errorMessage, e);
-      throw e;
-    }
-    console.log(
-      `Expected balance ${expectedBalance} ETH is displayed on homepage`,
+  async closeUseNetworkNotificationModal(): Promise<void> {
+    // We need to use clickElementSafe + assertElementNotPresent as sometimes the network dialog doesn't appear, as per this issue (#25788)
+    // TODO: change the 2 actions for clickElementAndWaitToDisappear, once the issue is fixed
+    await this.driver.assertElementNotPresent(this.popoverBackground);
+    await this.driver.clickElementSafe(
+      this.closeUseNetworkNotificationModalButton,
     );
-  }
-
-  async startSendFlow(): Promise<void> {
-    await this.driver.clickElement(this.sendButton);
+    await this.driver.assertElementNotPresent(
+      this.closeUseNetworkNotificationModalButton,
+    );
   }
 
   async goToActivityList(): Promise<void> {
@@ -84,9 +84,63 @@ class HomePage {
     await this.driver.clickElement(this.activityTab);
   }
 
-  async openAccountMenu(): Promise<void> {
-    console.log(`Opening account menu`);
-    await this.driver.clickElement(this.accountMenuButton);
+  async goToNFTList(): Promise<void> {
+    console.log(`Open NFT tab on homepage`);
+    await this.driver.clickElement(this.nftTab);
+  }
+
+  async clickNFTIconOnActivityList() {
+    await this.driver.clickElement(this.nftIconOnActivityList);
+  }
+
+  async startSendFlow(): Promise<void> {
+    await this.driver.clickElement(this.sendButton);
+  }
+
+  /**
+   * Checks if the toaster message for adding a network is displayed on the homepage.
+   *
+   * @param networkName - The name of the network that was added.
+   */
+  async check_addNetworkMessageIsDisplayed(networkName: string): Promise<void> {
+    console.log(
+      `Check the toaster message for adding network ${networkName} is displayed on homepage`,
+    );
+    await this.driver.waitForSelector({
+      tag: 'h6',
+      text: `“${networkName}” was successfully added!`,
+    });
+  }
+
+  async check_basicFunctionalityOffWarnigMessageIsDisplayed(): Promise<void> {
+    console.log(
+      'Check if basic functionality off warning message is displayed on homepage',
+    );
+    await this.driver.waitForSelector(this.basicFunctionalityOffWarningMessage);
+  }
+
+  /**
+   * This function checks the specified number of completed transactions are displayed in the activity list on the homepage.
+   * It waits up to 10 seconds for the expected number of completed transactions to be visible.
+   *
+   * @param expectedNumber - The number of completed transactions expected to be displayed in the activity list. Defaults to 1.
+   * @returns A promise that resolves if the expected number of completed transactions is displayed within the timeout period.
+   */
+  async check_completedTxNumberDisplayedInActivity(
+    expectedNumber: number = 1,
+  ): Promise<void> {
+    console.log(
+      `Wait for ${expectedNumber} completed transactions to be displayed in activity list`,
+    );
+    await this.driver.wait(async () => {
+      const completedTxs = await this.driver.findElements(
+        this.completedTransactions,
+      );
+      return completedTxs.length === expectedNumber;
+    }, 10000);
+    console.log(
+      `${expectedNumber} completed transactions found in activity list on homepage`,
+    );
   }
 
   /**
@@ -114,27 +168,80 @@ class HomePage {
   }
 
   /**
-   * This function checks the specified number of completed transactions are displayed in the activity list on the homepage.
-   * It waits up to 10 seconds for the expected number of completed transactions to be visible.
+   * Checks if the toaster message for editing a network is displayed on the homepage.
    *
-   * @param expectedNumber - The number of completed transactions expected to be displayed in the activity list. Defaults to 1.
-   * @returns A promise that resolves if the expected number of completed transactions is displayed within the timeout period.
+   * @param networkName - The name of the network that was edited.
    */
-  async check_completedTxNumberDisplayedInActivity(
+  async check_editNetworkMessageIsDisplayed(
+    networkName: string,
+  ): Promise<void> {
+    console.log(
+      `Check the toaster message for editing network ${networkName} is displayed on homepage`,
+    );
+    await this.driver.waitForSelector({
+      tag: 'h6',
+      text: `“${networkName}” was successfully edited!`,
+    });
+  }
+
+  /**
+   * Checks if the expected balance is displayed on homepage.
+   *
+   * @param expectedBalance - The expected balance to be displayed. Defaults to '0'.
+   */
+  async check_expectedBalanceIsDisplayed(
+    expectedBalance: string = '0',
+  ): Promise<void> {
+    try {
+      await this.driver.waitForSelector({
+        css: this.balance,
+        text: `${expectedBalance} ETH`,
+      });
+    } catch (e) {
+      const balance = await this.driver.waitForSelector(this.balance);
+      const currentBalance = parseFloat(await balance.getText());
+      const errorMessage = `Expected balance ${expectedBalance} ETH, got balance ${currentBalance} ETH`;
+      console.log(errorMessage, e);
+      throw e;
+    }
+    console.log(
+      `Expected balance ${expectedBalance} ETH is displayed on homepage`,
+    );
+  }
+
+  /**
+   * This function checks if the specified number of failed transactions are displayed in the activity list on homepage.
+   * It waits up to 10 seconds for the expected number of failed transactions to be visible.
+   *
+   * @param expectedNumber - The number of failed transactions expected to be displayed in activity list. Defaults to 1.
+   * @returns A promise that resolves if the expected number of failed transactions is displayed within the timeout period.
+   */
+  async check_failedTxNumberDisplayedInActivity(
     expectedNumber: number = 1,
   ): Promise<void> {
     console.log(
-      `Wait for ${expectedNumber} completed transactions to be displayed in activity list`,
+      `Wait for ${expectedNumber} failed transactions to be displayed in activity list`,
     );
     await this.driver.wait(async () => {
-      const completedTxs = await this.driver.findElements(
-        this.completedTransactions,
-      );
-      return completedTxs.length === expectedNumber;
+      const failedTxs = await this.driver.findElements(this.failedTransactions);
+      return failedTxs.length === expectedNumber;
     }, 10000);
     console.log(
-      `${expectedNumber} completed transactions found in activity list on homepage`,
+      `${expectedNumber} failed transactions found in activity list on homepage`,
     );
+  }
+
+  async check_ganacheBalanceIsDisplayed(
+    ganacheServer?: Ganache,
+    address = null,
+  ): Promise<void> {
+    let expectedBalance: string;
+    if (ganacheServer) {
+      expectedBalance = (await ganacheServer.getBalance(address)).toString();
+    } else {
+      expectedBalance = '0';
+    }
+    await this.check_expectedBalanceIsDisplayed(expectedBalance);
   }
 
   /**

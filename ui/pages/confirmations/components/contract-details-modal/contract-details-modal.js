@@ -39,7 +39,7 @@ export default function ContractDetailsModal({
   tokenAddress,
   toAddress,
   chainId,
-  rpcPrefs,
+  blockExplorerUrl,
   tokenId,
   assetName,
   assetStandard,
@@ -178,7 +178,7 @@ export default function ContractDetailsModal({
                         tokenAddress,
                         chainId,
                         {
-                          blockExplorerUrl: rpcPrefs?.blockExplorerUrl ?? null,
+                          blockExplorerUrl: blockExplorerUrl ?? null,
                         },
                         null,
                       );
@@ -224,7 +224,11 @@ export default function ContractDetailsModal({
           <Box data-testid="recipient">
             {petnamesEnabled ? (
               <Text variant={TextVariant.bodyMd} as="h5">
-                <Name value={toAddress} type={NameType.ETHEREUM_ADDRESS} />
+                <Name
+                  value={toAddress}
+                  type={NameType.ETHEREUM_ADDRESS}
+                  variation={chainId}
+                />
               </Text>
             ) : (
               <Text
@@ -283,7 +287,7 @@ export default function ContractDetailsModal({
                     toAddress,
                     chainId,
                     {
-                      blockExplorerUrl: rpcPrefs?.blockExplorerUrl ?? null,
+                      blockExplorerUrl: blockExplorerUrl ?? null,
                     },
                     null,
                   );
@@ -334,9 +338,9 @@ ContractDetailsModal.propTypes = {
    */
   chainId: PropTypes.string,
   /**
-   * RPC prefs of the current network
+   * Block explorer URL for the contract chain
    */
-  rpcPrefs: PropTypes.object,
+  blockExplorerUrl: PropTypes.string,
   /**
    * The token id of the NFT
    */

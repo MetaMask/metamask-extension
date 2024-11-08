@@ -5,7 +5,7 @@ import { useHistory } from 'react-router-dom';
 import thunk from 'redux-thunk';
 import { renderWithProvider } from '../../../../test/lib/render-helpers';
 import mockState from '../../../../test/data/mock-state.json';
-import { SWAPS_CHAINID_DEFAULT_BLOCK_EXPLORER_URL_MAP } from '../../../../shared/constants/swaps';
+import { CHAINID_DEFAULT_BLOCK_EXPLORER_URL_MAP } from '../../../../shared/constants/common';
 import { CHAIN_IDS } from '../../../../shared/constants/network';
 import { shortenAddress } from '../../../helpers/utils/util';
 import { getSelectedInternalAccountFromMockState } from '../../../../test/jest/mocks';
@@ -145,7 +145,7 @@ describe('Interactive Replacement Token Page', function () {
 
   it('should render all the accounts correctly', async () => {
     const expectedHref = `${
-      SWAPS_CHAINID_DEFAULT_BLOCK_EXPLORER_URL_MAP[CHAIN_IDS.MAINNET]
+      CHAINID_DEFAULT_BLOCK_EXPLORER_URL_MAP[CHAIN_IDS.MAINNET]
     }address/${custodianAddress}`;
 
     await act(async () => {

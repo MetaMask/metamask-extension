@@ -1,6 +1,10 @@
 import React, { useState } from 'react';
 import { useDispatch } from 'react-redux';
 import {
+  NetworkConfiguration,
+  RpcEndpointType,
+} from '@metamask/network-controller';
+import {
   Box,
   Text,
   AvatarNetwork,
@@ -25,18 +29,10 @@ import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { setEditedNetwork, toggleNetworkMenu } from '../../../../store/actions';
 import { CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP } from '../../../../../shared/constants/network';
 
-// TODO: Use version from network controller with v21 upgrade
-enum RpcEndpointType {
-  Custom = 'custom',
-  Infura = 'infura',
-}
-
 const NetworkListItem = ({
   networkConfiguration,
 }: {
-  // TODO: `NetworkConfiguration` with network controller v21 upgrade
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  networkConfiguration: any;
+  networkConfiguration: NetworkConfiguration;
 }) => {
   const rpcEndpoint =
     networkConfiguration.rpcEndpoints[

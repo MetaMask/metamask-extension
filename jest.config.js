@@ -22,7 +22,11 @@ module.exports = {
   // TODO: enable resetMocks
   // resetMocks: true,
   restoreMocks: true,
-  setupFiles: ['<rootDir>/test/setup.js', '<rootDir>/test/env.js'],
+  setupFiles: [
+    'jest-canvas-mock',
+    '<rootDir>/test/setup.js',
+    '<rootDir>/test/env.js',
+  ],
   setupFilesAfterEnv: ['<rootDir>/test/jest/setup.js'],
   testMatch: [
     '<rootDir>/app/scripts/**/*.test.(js|ts|tsx)',
@@ -31,6 +35,7 @@ module.exports = {
     '<rootDir>/development/**/*.test.(js|ts|tsx)',
     '<rootDir>/test/unit-global/**/*.test.(js|ts|tsx)',
     '<rootDir>/test/e2e/helpers.test.js',
+    '<rootDir>/test/e2e/helpers/**/*.test.(js|ts|tsx)',
   ],
   testPathIgnorePatterns: ['<rootDir>/development/webpack/'],
   testTimeout: 5500,

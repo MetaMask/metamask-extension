@@ -205,9 +205,6 @@
   "delete": {
     "message": "Törlés"
   },
-  "deleteNetwork": {
-    "message": "Törli a hálózatot?"
-  },
   "details": {
     "message": "Részletek"
   },
@@ -346,9 +343,6 @@
   },
   "invalidAddressRecipient": {
     "message": "A címzett címe érvénytelen "
-  },
-  "invalidBlockExplorerURL": {
-    "message": "Helytelen Block Explorer URL"
   },
   "invalidRPC": {
     "message": "Helytelen RPC URL"
@@ -506,12 +500,6 @@
   },
   "prev": {
     "message": "Előző"
-  },
-  "primaryCurrencySetting": {
-    "message": "Elsődleges pénznem"
-  },
-  "primaryCurrencySettingDescription": {
-    "message": "Válaszd a helyit, hogy az értékek elsősorban a helyi pénznemben jelenjenek meg (pl. ETH). Válaszd a Fiatot, hogy az értékek elsősorban a választott fiat pénznemben jelenjenek meg."
   },
   "privacyMsg": {
     "message": "Adatvédelmi szabályzat"
@@ -760,9 +748,6 @@
   },
   "unlockMessage": {
     "message": "A decentralizált hálózat csak önre vár"
-  },
-  "updatedWithDate": {
-    "message": "$1 frissítve"
   },
   "urlErrorMsg": {
     "message": "Az URI-hez szükség van a megfelelő HTTP/HTTPS előtagra."

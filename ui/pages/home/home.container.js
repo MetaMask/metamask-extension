@@ -51,7 +51,6 @@ import {
   getAccountType,
   ///: END:ONLY_INCLUDE_IF
 } from '../../selectors';
-import { getIsSmartTransactionsOptInModalAvailable } from '../../../shared/modules/selectors';
 
 import {
   closeNotificationPopup,
@@ -79,6 +78,8 @@ import {
 import { getWeb3ShimUsageAlertEnabledness } from '../../ducks/metamask/metamask';
 import { getSwapsFeatureIsLive } from '../../ducks/swaps/swaps';
 import { fetchBuyableChains } from '../../ducks/ramps';
+// TODO: Remove restricted import
+// eslint-disable-next-line import/no-restricted-paths
 import { getEnvironmentType } from '../../../app/scripts/lib/util';
 import { getIsBrowserDeprecated } from '../../helpers/utils/util';
 import {
@@ -93,7 +94,6 @@ import {
   Web3ShimUsageAlertStates,
 } from '../../../shared/constants/alerts';
 import { hasTransactionPendingApprovals } from '../../selectors/transactions';
-import { getLocalNetworkMenuRedesignFeatureFlag } from '../../helpers/utils/feature-flags';
 import Home from './home.component';
 
 const mapStateToProps = (state) => {
@@ -118,7 +118,6 @@ const mapStateToProps = (state) => {
   const pendingConfirmations = getUnapprovedTemplatedConfirmations(state);
   const pendingConfirmationsPrioritized =
     getPrioritizedUnapprovedTemplatedConfirmations(state);
-  const networkMenuRedesign = getLocalNetworkMenuRedesignFeatureFlag(state);
 
   ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
   const institutionalConnectRequests = getInstitutionalConnectRequests(state);
@@ -195,7 +194,6 @@ const mapStateToProps = (state) => {
     shouldShowWeb3ShimUsageNotification,
     pendingConfirmations,
     pendingConfirmationsPrioritized,
-    networkMenuRedesign,
     infuraBlocked: getInfuraBlocked(state),
     announcementsToShow: getSortedAnnouncementsToShow(state).length > 0,
     showWhatsNewPopup,
@@ -224,8 +222,7 @@ const mapStateToProps = (state) => {
     custodianDeepLink: getCustodianDeepLink(state),
     accountType: getAccountType(state),
     ///: END:ONLY_INCLUDE_IF
-    isSmartTransactionsOptInModalAvailable:
-      getIsSmartTransactionsOptInModalAvailable(state),
+    showMultiRpcModal: state.metamask.preferences.showMultiRpcModal,
   };
 };
 

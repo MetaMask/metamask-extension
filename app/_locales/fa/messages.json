@@ -205,9 +205,6 @@
   "delete": {
     "message": "حذف"
   },
-  "deleteNetwork": {
-    "message": "شبکه حذف شود؟"
-  },
   "details": {
     "message": "جزئیات"
   },
@@ -246,10 +243,6 @@
   },
   "fast": {
     "message": "سریع"
-  },
-  "fiat": {
-    "message": "حکم قانونی",
-    "description": "Exchange type"
   },
   "fileImportFail": {
     "message": "وارد کردن فایل کار نمیکند؟ اینجا کلیک نمایید!",
@@ -350,9 +343,6 @@
   },
   "invalidAddressRecipient": {
     "message": "آدرس دریافت کننده نامعتبر است"
-  },
-  "invalidBlockExplorerURL": {
-    "message": "Block Explorer URL نا معتبر"
   },
   "invalidRPC": {
     "message": "RPC URL نا معتبر"
@@ -513,12 +503,6 @@
   },
   "prev": {
     "message": "قبلی"
-  },
-  "primaryCurrencySetting": {
-    "message": "واحد پول اصلی"
-  },
-  "primaryCurrencySettingDescription": {
-    "message": "برای اولویت دهی نمایش قیمت ها در واحد پولی اصلی زنجیره (مثلًا ETH)، اصلی را انتخاب کنید. برای اولویت دهی نمایش قیمت ها در فیات واحد پولی شما، فیات را انتخاب کنید."
   },
   "privacyMsg": {
     "message": "خط‌مشی رازداری"
@@ -770,9 +754,6 @@
   },
   "unlockMessage": {
     "message": "وب غیر متمرکز شده انتظار میکشد"
-  },
-  "updatedWithDate": {
-    "message": "بروزرسانی شد 1$1"
   },
   "urlErrorMsg": {
     "message": "URl ها نیازمند پیشوند مناسب HTTP/HTTPS اند."
