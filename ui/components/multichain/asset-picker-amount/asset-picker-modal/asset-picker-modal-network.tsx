@@ -14,7 +14,10 @@ import {
   Modal,
   Box,
 } from '../../../component-library';
-import { CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP } from '../../../../../shared/constants/network';
+import {
+  CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP,
+  NETWORK_TO_NAME_MAP,
+} from '../../../../../shared/constants/network';
 ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 ///: END:ONLY_INCLUDE_IF
@@ -90,7 +93,11 @@ export const AssetPickerModalNetwork = ({
               return (
                 <NetworkListItem
                   key={chainId}
-                  name={name}
+                  name={
+                    NETWORK_TO_NAME_MAP[
+                      chainId as keyof typeof NETWORK_TO_NAME_MAP
+                    ] ?? name
+                  }
                   selected={selectedNetwork?.chainId === chainId}
                   onClick={() => {
                     onNetworkChange(networkConfig);
