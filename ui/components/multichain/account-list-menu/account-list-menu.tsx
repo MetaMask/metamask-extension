@@ -100,10 +100,10 @@ import {
   hasCreatedBtcMainnetAccount,
   hasCreatedBtcTestnetAccount,
 } from '../../../selectors/accounts';
-import { MultichainNetworks } from '../../../../shared/constants/multichain/networks';
 ///: END:ONLY_INCLUDE_IF
 
 ///: BEGIN:ONLY_INCLUDE_IF(build-flask,solana)
+import { MultichainNetworks } from '../../../../shared/constants/multichain/networks';
 import {
   WalletClientType,
   useMultichainClient,
