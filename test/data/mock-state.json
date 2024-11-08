@@ -2031,6 +2031,9 @@
           }
         }
       }
+    },
+    "bridgeStatusState": {
+      "txHistory": {}
     }
   },
   "ramps": {
