@@ -98,5 +98,6 @@ TransactionIcon.propTypes = {
     TransactionGroupCategory.signatureRequest,
     TransactionGroupCategory.swap,
     TransactionGroupCategory.swapAndSend,
+    TransactionGroupCategory.bridge,
   ]).isRequired,
 };
