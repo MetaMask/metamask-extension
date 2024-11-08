@@ -1,6 +1,5 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
-import { isEqual } from 'lodash';
 import {
   ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
   getMultichainIsMainnet,
@@ -10,7 +9,6 @@ import {
 } from '../../../selectors/multichain';
 ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
 import { getIsBitcoinBuyable } from '../../../ducks/ramps';
-import { getSelectedInternalAccount } from '../../../selectors';
 import { useMultichainSelector } from '../../../hooks/useMultichainSelector';
 ///: END:ONLY_INCLUDE_IF
 import { getSelectedInternalAccount } from '../../../selectors';
@@ -23,17 +21,14 @@ type BtcOverviewProps = {
 const BtcOverview = ({ className }: BtcOverviewProps) => {
   const { chainId } = useSelector(getMultichainProviderConfig);
   const balance = useSelector(getMultichainSelectedAccountCachedBalance);
+  const account = useSelector(getSelectedInternalAccount);
   ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
-  const selectedAccount = useSelector(getSelectedInternalAccount);
   const isBtcMainnetAccount = useMultichainSelector(
     getMultichainIsMainnet,
-    selectedAccount,
+    account,
   );
   const isBtcBuyable = useSelector(getIsBitcoinBuyable);
   ///: END:ONLY_INCLUDE_IF
-
-  // FIXME: Use `isEqual` to avoid potential re-renders
-  const account = useSelector(getSelectedInternalAccount, isEqual);
 
   return (
     <CoinOverview
