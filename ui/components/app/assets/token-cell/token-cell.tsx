@@ -6,6 +6,7 @@ import {
   selectERC20TokensByChain,
   getPreferences,
   getNativeCurrencyForChain,
+  getMarketData,
 } from '../../../../selectors';
 import {
   isChainIdMainnet,
@@ -21,11 +22,22 @@ type TokenCellProps = {
   address: string;
   symbol: string;
   string?: string;
-  chainId?: string;
+  chainId: string;
   tokenFiatAmount: number;
   image: string;
   isNative?: boolean;
   onClick?: (arg: string) => void;
+};
+
+const formatWithThreshold = (
+  amount: number,
+  threshold: number,
+  locale: string,
+  options: Intl.NumberFormatOptions,
+): string => {
+  return amount < threshold
+    ? `<${new Intl.NumberFormat(locale, options).format(threshold)}`
+    : new Intl.NumberFormat(locale, options).format(amount);
 };
 
 export default function TokenCell({
@@ -39,6 +51,7 @@ export default function TokenCell({
   onClick,
 }: TokenCellProps) {
   const currentCurrency = useSelector(getCurrentCurrency);
+  const marketData = useSelector(getMarketData);
   const tokenList = useSelector(getTokenList);
   const isEvm = useSelector(getMultichainIsEvm);
   const erc20TokensByChain = useSelector(selectERC20TokensByChain);
@@ -49,6 +62,8 @@ export default function TokenCell({
       isEqualCaseInsensitive(token.symbol, symbol) &&
       isEqualCaseInsensitive(token.address, address),
   );
+
+  const tokenMarketPrice = marketData[chainId]?.[address]?.price;
 
   const title =
     tokenData?.name ||
@@ -65,10 +80,31 @@ export default function TokenCell({
     image;
 
   const locale = useSelector(getIntlLocale);
-  const formattedFiatBalance = new Intl.NumberFormat(locale, {
-    currency: currentCurrency.toUpperCase(),
-    style: 'currency',
-  }).format(tokenFiatAmount);
+
+  const secondaryThreshold = 0.01;
+  const primaryThreshold = 0.00001;
+
+  // Format for fiat balance with currency style
+  const secondary = formatWithThreshold(
+    tokenFiatAmount,
+    secondaryThreshold,
+    locale,
+    {
+      style: 'currency',
+      currency: currentCurrency.toUpperCase(),
+    },
+  );
+
+  // Format for primary amount with 5 decimal places
+  const primary = formatWithThreshold(
+    Number(string),
+    primaryThreshold,
+    locale,
+    {
+      minimumFractionDigits: 5,
+      maximumFractionDigits: 5,
+    },
+  );
 
   const isOriginalTokenSymbol = useIsOriginalTokenSymbol(address, symbol);
 
@@ -77,14 +113,24 @@ export default function TokenCell({
   isStakeable = false;
   ///: END:ONLY_INCLUDE_IF
 
+  const secondaryTokenDisplayText = () => {
+    if (isNative) {
+      return 'NATIVE';
+    }
+    if (tokenMarketPrice && !isNative) {
+      return secondary;
+    }
+    return '';
+  };
+
   return (
     <TokenListItem
       onClick={onClick ? () => onClick(address) : undefined}
       tokenSymbol={symbol}
       tokenImage={isNative ? getNativeCurrencyForChain(chainId) : tokenImage}
       tokenChainImage={chainId ? getImageForChainId(chainId) : undefined}
-      primary={string}
-      secondary={formattedFiatBalance}
+      primary={primary}
+      secondary={secondaryTokenDisplayText()}
       title={title}
       isOriginalTokenSymbol={isOriginalTokenSymbol}
       address={address}

@@ -57,10 +57,10 @@ export default function TokenList({ onTokenClick }: TokenListProps) {
         (token: Record<string, any>) => {
           const { address } = token;
           let balance;
-          // const balance = selectedAccountTokenBalancesAcrossChains?.[chainId]?.[address];
+
           const hexBalance =
             selectedAccountTokenBalancesAcrossChains[chainId]?.[address];
-          console.log(token);
+
           if (hexBalance !== '0x0') {
             const decimalBalance = hexToDecimal(hexBalance);
             const readableBalance = stringifyBalance(
@@ -69,13 +69,11 @@ export default function TokenList({ onTokenClick }: TokenListProps) {
             );
             balance = readableBalance || 0;
           }
-          // selectedAccountTokenBalancesAcrossChains[chainId]?.[address];
 
           const baseCurrency = marketData[chainId]?.[address]?.currency;
 
-          const tokenMarketPrice = marketData[chainId]?.[address]?.price || '0';
-          const tokenExchangeRate =
-            currencyRates[baseCurrency]?.conversionRate || '0';
+          const tokenMarketPrice = marketData[chainId]?.[address]?.price;
+          const tokenExchangeRate = currencyRates[baseCurrency]?.conversionRate;
 
           // eslint-disable-next-line @typescript-eslint/ban-ts-comment
           // @ts-ignore
@@ -103,7 +101,7 @@ export default function TokenList({ onTokenClick }: TokenListProps) {
     return tokensWithBalance;
   };
 
-  const sortedTokens = useMemo(() => {
+  const sortedFilteredTokens = useMemo(() => {
     const consolidatedTokensWithBalances = consolidatedBalances();
     const filteredAssets = filterAssets(consolidatedTokensWithBalances, [
       {
@@ -147,7 +145,7 @@ export default function TokenList({ onTokenClick }: TokenListProps) {
     </Box>
   ) : (
     <div>
-      {sortedTokens.map((tokenData) => (
+      {sortedFilteredTokens.map((tokenData) => (
         <TokenCell
           key={`${tokenData.chainId}-${tokenData.symbol}-${tokenData.address}`}
           {...tokenData}
