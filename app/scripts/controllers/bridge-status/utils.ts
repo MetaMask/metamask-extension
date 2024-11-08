@@ -3,8 +3,10 @@ import {
   BRIDGE_CLIENT_ID,
 } from '../../../../shared/constants/bridge';
 import fetchWithCache from '../../../../shared/lib/fetch-with-cache';
-import { StatusResponse } from '../../../../shared/types/bridge-status';
-import { StatusRequest } from '../../../../shared/types/bridge-status';
+import {
+  StatusResponse,
+  StatusRequest,
+} from '../../../../shared/types/bridge-status';
 import { validateResponse, validators } from './validators';
 
 const CLIENT_ID_HEADER = { 'X-Client-Id': BRIDGE_CLIENT_ID };

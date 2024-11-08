@@ -1,15 +1,17 @@
 import React from 'react';
 import { NetworkConfiguration } from '@metamask/network-controller';
 import { TransactionMeta } from '@metamask/transaction-controller';
+import { Hex } from '@metamask/utils';
 import { Box } from '../../../components/component-library';
-import { BridgeHistoryItem } from '../../../../shared/types/bridge-status';
-import { StatusTypes } from '../../../../shared/types/bridge-status';
+import {
+  BridgeHistoryItem,
+  StatusTypes,
+} from '../../../../shared/types/bridge-status';
+import { formatDate } from '../../../helpers/utils/util';
 import BridgeStepDescription, {
   getStepStatus,
 } from './bridge-step-description';
 import StepProgressBarItem from './step-progress-bar-item';
-import { formatDate } from '../../../helpers/utils/util';
-import { Hex } from '@metamask/utils';
 
 const getTime = (
   index: number,
@@ -37,7 +39,7 @@ export default function BridgeStepList({
   srcChainTxMeta,
   networkConfigurationsByChainId,
 }: BridgeStepsProps) {
-  const steps = bridgeHistoryItem.quote.steps;
+  const { steps } = bridgeHistoryItem.quote;
   const stepStatuses = steps.map((step) =>
     getStepStatus(bridgeHistoryItem, step, srcChainTxMeta),
   );

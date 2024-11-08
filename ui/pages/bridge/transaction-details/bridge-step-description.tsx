@@ -12,6 +12,14 @@ import {
   TransactionStatus,
 } from '@metamask/transaction-controller';
 import {
+  BridgeHistoryItem,
+  Step,
+  ActionTypes,
+  StatusTypes,
+} from '../../../../shared/types/bridge-status';
+import { Box, Text } from '../../../components/component-library';
+import { Numeric } from '../../../../shared/modules/Numeric';
+import {
   AlignItems,
   Display,
   FontWeight,

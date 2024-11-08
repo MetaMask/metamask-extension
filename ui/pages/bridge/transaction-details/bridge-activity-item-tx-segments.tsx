@@ -1,6 +1,12 @@
 import React from 'react';
-import { BridgeHistoryItem } from '../../../../shared/types/bridge-status';
-import { StatusTypes } from '../../../../shared/types/bridge-status';
+import {
+  TransactionMeta,
+  TransactionStatus,
+} from '@metamask/transaction-controller';
+import {
+  BridgeHistoryItem,
+  StatusTypes,
+} from '../../../../shared/types/bridge-status';
 import { UseBridgeDataProps } from '../utils/useBridgeData';
 import { Box, Text } from '../../../components/component-library';
 import {
