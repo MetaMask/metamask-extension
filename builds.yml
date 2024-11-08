@@ -281,7 +281,7 @@ env:
   # Determines if feature flagged Chain permissions
   - CHAIN_PERMISSIONS: ''
   # Determines if feature flagged Filter toggle
-  - FILTER_TOKENS_TOGGLE: ''
+  - PORTFOLIO_VIEW: ''
   # Enables use of test gas fee flow to debug gas fee estimation
   - TEST_GAS_FEE_FLOWS: false
   # Temporary mechanism to enable security alerts API prior to release
