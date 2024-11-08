@@ -188,6 +188,7 @@ export const mergeAccounts = (
 
 type AccountListMenuProps = {
   onClose: () => void;
+  privacyMode?: boolean;
   showAccountCreation?: boolean;
   accountListItemProps?: object;
   allowedAccountTypes?: KeyringAccountType[];
@@ -195,6 +196,7 @@ type AccountListMenuProps = {
 
 export const AccountListMenu = ({
   onClose,
+  privacyMode = false,
   showAccountCreation = true,
   accountListItemProps,
   allowedAccountTypes = [
@@ -644,6 +646,7 @@ export const AccountListMenu = ({
                       isHidden={Boolean(account.hidden)}
                       currentTabOrigin={currentTabOrigin}
                       isActive={Boolean(account.active)}
+                      privacyMode={privacyMode}
                       {...accountListItemProps}
                     />
                   </Box>
