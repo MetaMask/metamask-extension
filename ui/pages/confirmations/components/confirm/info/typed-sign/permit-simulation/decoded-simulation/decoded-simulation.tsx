@@ -1,5 +1,6 @@
 import React, { ReactNode } from 'react';
 import {
+  DecodingData,
   DecodingDataChangeType,
   DecodingDataStateChange,
 } from '@metamask/signature-controller';
@@ -18,7 +19,8 @@ import { useI18nContext } from '../../../../../../../../hooks/useI18nContext';
 import { SignatureRequestType } from '../../../../../../types/confirm';
 import { useConfirmContext } from '../../../../../../context/confirm';
 import StaticSimulation from '../../../shared/static-simulation/static-simulation';
-import PermitSimulationValueDisplay from '../value-display/value-display';
+import TokenValueDisplay from '../value-display/value-display';
+import NativeValueDisplay from '../native-value-display/native-value-display';
 
 const getStateChangeLabelMap = (
   t: ReturnType<typeof useI18nContext>,
@@ -54,11 +56,19 @@ const StateChangeRow = ({
       </Text>
       {(assetType === TokenStandard.ERC20 ||
         assetType === TokenStandard.ERC721) && (
-        <PermitSimulationValueDisplay
+        <TokenValueDisplay
           tokenContract={contractAddress}
           value={amount}
           chainId={chainId}
           tokenId={tokenID}
+          credit={changeType === DecodingDataChangeType.Receive}
+          debit={changeType === DecodingDataChangeType.Transfer}
+        />
+      )}
+      {assetType === 'NATIVE' && (
+        <NativeValueDisplay
+          value={amount}
+          chainId={chainId}
           credit={changeType === DecodingDataChangeType.Receive}
           debit={changeType === DecodingDataChangeType.Transfer}
         />
