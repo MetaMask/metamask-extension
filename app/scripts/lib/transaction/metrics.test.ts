@@ -75,7 +75,7 @@ const mockTransactionMetricsRequest = {
   getSmartTransactionByMinedTxHash: jest.fn(),
   getRedesignedTransactionsEnabled: jest.fn(),
   getMethodData: jest.fn(),
-  getIsRedesignedConfirmationsDeveloperEnabled: jest.fn(),
+  getIsRedesignedConfirmationsDeveloperEnabled: jest.fn().mockReturnValue(true),
   getIsConfirmationAdvancedDetailsOpen: jest.fn(),
 } as TransactionMetricsRequest;
 
@@ -277,6 +277,43 @@ describe('Transaction metrics', () => {
           ppom_eth_getCode_count: 3,
         },
         sensitiveProperties: expectedSensitiveProperties,
+      });
+    });
+
+    describe('when redesignedTransactionsEnabled is false', () => {
+      it('should exclude "redesigned_confirmation" ui_customizations value from metrics', async () => {
+        const updatedMockTransactionMetricsRequest = {
+          ...mockTransactionMetricsRequest,
+          getIsRedesignedConfirmationsDeveloperEnabled: jest
+            .fn()
+            .mockReturnValue(false),
+          getRedesignedTransactionsEnabled: jest.fn().mockReturnValue(false),
+        };
+
+        await handleTransactionAdded(updatedMockTransactionMetricsRequest, {
+          // TODO: Replace `any` with type
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          transactionMeta: mockTransactionMeta as any,
+          actionId: mockActionId,
+        });
+
+        expect(
+          mockTransactionMetricsRequest.createEventFragment,
+        ).toBeCalledWith({
+          actionId: mockActionId,
+          category: MetaMetricsEventCategory.Transactions,
+          failureEvent: TransactionMetaMetricsEvent.rejected,
+          initialEvent: TransactionMetaMetricsEvent.added,
+          successEvent: TransactionMetaMetricsEvent.approved,
+          uniqueIdentifier: 'transaction-added-1',
+          persist: true,
+          properties: {
+            ...expectedProperties,
+            ui_customizations: null,
+            transaction_advanced_view: null,
+          },
+          sensitiveProperties: expectedSensitiveProperties,
+        });
       });
     });
   });

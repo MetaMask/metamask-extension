@@ -996,11 +996,13 @@ async function buildEventFragmentProperties({
   if (simulationFails) {
     uiCustomizations.push(MetaMetricsEventUiCustomization.GasEstimationFailed);
   }
+
   const isRedesignedConfirmationsDeveloperSettingEnabled =
-    transactionMetricsRequest.getIsRedesignedConfirmationsDeveloperEnabled() ||
-    Boolean(process.env.ENABLE_CONFIRMATION_REDESIGN);
+    Boolean(process.env.ENABLE_CONFIRMATION_REDESIGN) &&
+    transactionMetricsRequest.getIsRedesignedConfirmationsDeveloperEnabled();
 
   const isRedesignedTransactionsUserSettingEnabled =
+    Boolean(process.env.ENABLE_CONFIRMATION_REDESIGN) &&
     transactionMetricsRequest.getRedesignedTransactionsEnabled();
 
   if (
