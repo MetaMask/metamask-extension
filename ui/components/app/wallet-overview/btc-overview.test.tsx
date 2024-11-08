@@ -233,4 +233,34 @@ describe('BtcOverview', () => {
     const receiveButton = queryByTestId(BTC_OVERVIEW_RECEIVE);
     expect(receiveButton).toBeInTheDocument();
   });
+
+  it('"Buy & Sell" button is disabled for testnet accounts', () => {
+    const storeWithBtcBuyable = getStore({
+      metamask: {
+        ...mockMetamaskStore,
+        internalAccounts: {
+          ...mockMetamaskStore.internalAccounts,
+          accounts: {
+            [mockNonEvmAccount.id]: {
+              ...mockNonEvmAccount,
+              address: 'tb1q9lakrt5sw0w0twnc6ww4vxs7hm0q23e03286k8',
+            },
+          },
+        },
+      },
+      ramps: {
+        buyableChains: mockBuyableChainsWithBtc,
+      },
+    });
+
+    const { queryByTestId } = renderWithProvider(
+      <BtcOverview />,
+      storeWithBtcBuyable,
+    );
+
+    const buyButton = queryByTestId(BTC_OVERVIEW_BUY);
+
+    expect(buyButton).toBeInTheDocument();
+    expect(buyButton).toBeDisabled();
+  });
 });

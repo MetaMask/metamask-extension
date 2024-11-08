@@ -1,6 +1,6 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
-import { getTokenList, getPreferences } from '../../../../selectors';
+import { getTokenList } from '../../../../selectors';
 import { useTokenFiatAmount } from '../../../../hooks/useTokenFiatAmount';
 import { TokenListItem } from '../../../multichain';
 import { isEqualCaseInsensitive } from '../../../../../shared/modules/string-utils';
@@ -12,6 +12,7 @@ type TokenCellProps = {
   symbol: string;
   string?: string;
   image: string;
+  privacyMode?: boolean;
   onClick?: (arg: string) => void;
 };
 
@@ -20,10 +21,10 @@ export default function TokenCell({
   image,
   symbol,
   string,
+  privacyMode = false,
   onClick,
 }: TokenCellProps) {
   const tokenList = useSelector(getTokenList);
-  const { privacyMode } = useSelector(getPreferences);
   const tokenData = Object.values(tokenList).find(
     (token) =>
       isEqualCaseInsensitive(token.symbol, symbol) &&

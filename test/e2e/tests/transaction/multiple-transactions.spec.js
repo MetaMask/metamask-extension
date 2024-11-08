@@ -26,19 +26,13 @@ describe('Multiple transactions', function () {
         // initiates a transaction from the dapp
         await openDapp(driver);
         // creates first transaction
-        await driver.clickElement({
-          text: 'Send EIP 1559 Transaction',
-          tag: 'button',
-        });
+        await createDappTransaction(driver);
         await driver.waitUntilXWindowHandles(3);
 
         await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
 
         // creates second transaction
-        await driver.clickElement({
-          text: 'Send EIP 1559 Transaction',
-          tag: 'button',
-        });
+        await createDappTransaction(driver);
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
         // confirms second transaction
@@ -94,19 +88,13 @@ describe('Multiple transactions', function () {
         // initiates a transaction from the dapp
         await openDapp(driver);
         // creates first transaction
-        await driver.clickElement({
-          text: 'Send EIP 1559 Transaction',
-          tag: 'button',
-        });
+        await createDappTransaction(driver);
         await driver.waitUntilXWindowHandles(3);
 
         await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
 
         // creates second transaction
-        await driver.clickElement({
-          text: 'Send EIP 1559 Transaction',
-          tag: 'button',
-        });
+        await createDappTransaction(driver);
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
         // rejects second transaction
@@ -141,3 +129,10 @@ describe('Multiple transactions', function () {
     );
   });
 });
+
+async function createDappTransaction(driver) {
+  await driver.clickElement({
+    text: 'Send EIP 1559 Without Gas',
+    tag: 'button',
+  });
+}

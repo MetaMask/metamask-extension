@@ -12,10 +12,12 @@ import {
   multiplyHexes,
 } from '../../../../../../../shared/modules/conversion.utils';
 import { Numeric } from '../../../../../../../shared/modules/Numeric';
-import { getConversionRate } from '../../../../../../ducks/metamask/metamask';
 import { useFiatFormatter } from '../../../../../../hooks/useFiatFormatter';
 import { useGasFeeEstimates } from '../../../../../../hooks/useGasFeeEstimates';
-import { getCurrentCurrency } from '../../../../../../selectors';
+import {
+  getCurrentCurrency,
+  selectConversionRateByChainId,
+} from '../../../../../../selectors';
 import { getMultichainNetwork } from '../../../../../../selectors/multichain';
 import { HEX_ZERO } from '../shared/constants';
 import { useEIP1559TxFees } from './useEIP1559TxFees';
@@ -30,8 +32,12 @@ const EMPTY_FEES = {
 
 export function useFeeCalculations(transactionMeta: TransactionMeta) {
   const currentCurrency = useSelector(getCurrentCurrency);
-  const conversionRate = useSelector(getConversionRate);
+  const { chainId } = transactionMeta;
   const fiatFormatter = useFiatFormatter();
+
+  const conversionRate = useSelector((state) =>
+    selectConversionRateByChainId(state, chainId),
+  );
 
   const multichainNetwork = useSelector(getMultichainNetwork);
   const ticker = multichainNetwork?.network?.ticker;
