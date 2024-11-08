@@ -357,8 +357,7 @@ const CoinButtons = ({
         event: MetaMetricsEventName.NavSwapButtonClicked,
         category: MetaMetricsEventCategory.Swaps,
         properties: {
-          account_type: account.type,
-          token_symbol: nativeToken,
+          token_symbol: 'ETH',
           location: MetaMetricsSwapsEventSource.MainView,
           text: 'Swap',
           chain_id: chainId,

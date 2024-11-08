@@ -182,7 +182,6 @@ async function assertReqsNumAndFilterMetrics(driver, mockedEndpoints) {
 async function assertNavSwapButtonClickedEvent(reqs) {
   assert.equal(reqs[0].event, MetaMetricsEventName.NavSwapButtonClicked);
   assert.deepStrictEqual(reqs[0].properties, {
-    account_type: 'eip155:eoa',
     category: MetaMetricsEventCategory.Swaps,
     chain_id: toHex(1337),
     environment_type: 'fullscreen',
