@@ -222,7 +222,6 @@ export default function CurrencyInput({
         suffix={suffix}
         className="currency-input__conversion-component"
         displayValue={displayValue}
-        privacyModeExempt
       />
     );
   };
