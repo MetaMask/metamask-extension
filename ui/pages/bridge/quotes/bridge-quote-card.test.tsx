@@ -16,13 +16,13 @@ describe('BridgeQuoteCard', () => {
   });
 
   it('should render the recommended quote', async () => {
-    const mockStore = createBridgeMockStore(
-      {
+    const mockStore = createBridgeMockStore({
+      featureFlagOverrides: {
         srcNetworkAllowlist: [CHAIN_IDS.MAINNET, CHAIN_IDS.OPTIMISM],
         destNetworkAllowlist: [CHAIN_IDS.OPTIMISM],
       },
-      { fromTokenInputValue: 1 },
-      {
+      bridgeSliceOverrides: { fromTokenInputValue: 1 },
+      bridgeStateOverrides: {
         quoteRequest: { insufficientBal: false },
         quotesRefreshCount: 1,
         quotes: mockBridgeQuotesErc20Erc20,
@@ -32,7 +32,7 @@ describe('BridgeQuoteCard', () => {
           extensionConfig: { maxRefreshCount: 5, refreshRate: 30000 },
         },
       },
-    );
+    });
     const { container } = renderWithProvider(
       <BridgeQuoteCard />,
       configureStore(mockStore),
@@ -42,18 +42,18 @@ describe('BridgeQuoteCard', () => {
   });
 
   it('should render the recommended quote while loading new quotes', async () => {
-    const mockStore = createBridgeMockStore(
-      {
+    const mockStore = createBridgeMockStore({
+      featureFlagOverrides: {
         srcNetworkAllowlist: [CHAIN_IDS.MAINNET, CHAIN_IDS.OPTIMISM],
         destNetworkAllowlist: [CHAIN_IDS.OPTIMISM],
       },
-      { fromTokenInputValue: 1 },
-      {
+      bridgeSliceOverrides: { fromTokenInputValue: 1 },
+      bridgeStateOverrides: {
         quotes: mockBridgeQuotesNativeErc20,
         getQuotesLastFetched: Date.now() - 5000,
         quotesLoadingStatus: RequestStatus.LOADING,
       },
-    );
+    });
     const { container, queryByText } = renderWithProvider(
       <BridgeQuoteCard />,
       configureStore(mockStore),
@@ -64,18 +64,18 @@ describe('BridgeQuoteCard', () => {
   });
 
   it('should not render when there is no quote', async () => {
-    const mockStore = createBridgeMockStore(
-      {
+    const mockStore = createBridgeMockStore({
+      featureFlagOverrides: {
         srcNetworkAllowlist: [CHAIN_IDS.MAINNET, CHAIN_IDS.OPTIMISM],
         destNetworkAllowlist: [CHAIN_IDS.OPTIMISM],
       },
-      { fromTokenInputValue: 1 },
-      {
+      bridgeSliceOverrides: { fromTokenInputValue: 1 },
+      bridgeStateOverrides: {
         quotes: [],
         getQuotesLastFetched: Date.now() - 5000,
         quotesLoadingStatus: RequestStatus.FETCHED,
       },
-    );
+    });
     const { container } = renderWithProvider(
       <BridgeQuoteCard />,
       configureStore(mockStore),
@@ -85,18 +85,18 @@ describe('BridgeQuoteCard', () => {
   });
 
   it('should not render when there is a quote fetch error', async () => {
-    const mockStore = createBridgeMockStore(
-      {
+    const mockStore = createBridgeMockStore({
+      featureFlagOverrides: {
         srcNetworkAllowlist: [CHAIN_IDS.MAINNET, CHAIN_IDS.OPTIMISM],
         destNetworkAllowlist: [CHAIN_IDS.OPTIMISM],
       },
-      { fromTokenInputValue: 1 },
-      {
+      bridgeSliceOverrides: { fromTokenInputValue: 1 },
+      bridgeStateOverrides: {
         quotes: [],
         getQuotesLastFetched: Date.now() - 5000,
         quotesLoadingStatus: RequestStatus.ERROR,
       },
-    );
+    });
     const { container } = renderWithProvider(
       <BridgeQuoteCard />,
       configureStore(mockStore),

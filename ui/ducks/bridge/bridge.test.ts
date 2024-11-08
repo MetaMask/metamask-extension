@@ -182,7 +182,9 @@ describe('Ducks - Bridge', () => {
     it('dispatches action to the bridge controller', () => {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const mockStore = configureMockStore<any>(middleware)(
-        createBridgeMockStore({}, { fromTokenInputValue: '10' }),
+        createBridgeMockStore({
+          bridgeSliceOverrides: { fromTokenInputValue: '10' },
+        }),
       );
       const state = mockStore.getState().bridge;
       const mockResetBridgeState = jest.fn();

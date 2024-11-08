@@ -701,13 +701,13 @@ export const createSwapsMockStore = () => {
   };
 };
 
-export const createBridgeMockStore = (
+export const createBridgeMockStore = ({
   featureFlagOverrides = {},
   bridgeSliceOverrides = {},
   bridgeStateOverrides = {},
-  bridgeStatusStateOverrides = {},
+  // bridgeStatusStateOverrides = {},
   metamaskStateOverrides = {},
-) => {
+}) => {
   const swapsStore = createSwapsMockStore();
   return {
     ...swapsStore,

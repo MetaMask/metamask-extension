@@ -16,17 +16,15 @@ describe('useCountdownTimer', () => {
   it('returns time remaining', async () => {
     const quotesLastFetched = Date.now();
     const { result } = renderUseCountdownTimer(
-      createBridgeMockStore(
-        {},
-        {},
-        {
+      createBridgeMockStore({
+        bridgeStateOverrides: {
           quotesLastFetched,
           quotesRefreshCount: 0,
           bridgeFeatureFlags: {
             extensionConfig: { maxRefreshCount: 5, refreshRate: 40000 },
           },
         },
-      ),
+      }),
     );
 
     let i = 0;
