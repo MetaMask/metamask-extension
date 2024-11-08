@@ -12,7 +12,6 @@ import {
 import { sortAssets } from '../util/sort';
 import {
   getCurrencyRates,
-  getCurrentCurrency,
   getCurrentNetwork,
   getMarketData,
   getPreferences,
@@ -25,8 +24,6 @@ import { getConversionRate } from '../../../../ducks/metamask/metamask';
 import { filterAssets } from '../util/filter';
 import { hexToDecimal } from '../../../../../shared/modules/conversion.utils';
 import { stringifyBalance } from '../../../../hooks/useTokenBalances';
-import { formatWithThreshold } from '../token-cell/token-cell';
-import { getIntlLocale } from '../../../../ducks/locale/locale';
 
 type TokenListProps = {
   onTokenClick: (arg: string) => void;

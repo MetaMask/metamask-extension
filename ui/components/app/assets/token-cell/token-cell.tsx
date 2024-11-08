@@ -1,15 +1,11 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
-import BN from 'bn.js';
 import {
   getCurrentCurrency,
   getTokenList,
   selectERC20TokensByChain,
   getPreferences,
   getNativeCurrencyForChain,
-  getMarketData,
-  getSelectedAccountNativeTokenCachedBalanceByChainId,
-  getCurrencyRates,
 } from '../../../../selectors';
 import {
   isChainIdMainnet,
@@ -20,8 +16,6 @@ import { TokenListItem } from '../../../multichain';
 import { isEqualCaseInsensitive } from '../../../../../shared/modules/string-utils';
 import { useIsOriginalTokenSymbol } from '../../../../hooks/useIsOriginalTokenSymbol';
 import { getIntlLocale } from '../../../../ducks/locale/locale';
-import { hexToDecimal } from '../../../../../shared/modules/conversion.utils';
-import { stringifyBalance } from '../../../../hooks/useTokenBalances';
 
 type TokenCellProps = {
   address: string;
