@@ -685,32 +685,6 @@ const onboardingCompleteWalletCreationWithOptOut = async (
 
 /**
  * @deprecated Please use page object functions in `onboarding.flow.ts` and in `pages/onboarding/*`.
- * Completes the onboarding flow for creating a new wallet with opt-out options.
- *
- * This function guides the user through the onboarding process of creating a new wallet,
- * including opting out of certain features as specified by the `optOutOptions` parameter.
- * @param {object} driver - The Selenium driver instance.
- * @param {string} password - The password to use for the new wallet.
- * @param {object} optOutOptions - An object specifying the features to opt out of.
- * @param {boolean} optOutOptions.isNewWallet - Indicates if this is a new wallet creation.
- * @param {boolean} optOutOptions.basicFunctionality - Indicates if basic functionality should be opted out.
- * @param {boolean} optOutOptions.profileSync - Indicates if profile sync should be opted out.
- * @param {boolean} optOutOptions.assets - Indicates if assets should be opted out.
- */
-const completeCreateNewWalletOnboardingFlowWithOptOut = async (
-  driver,
-  password,
-  optOutOptions,
-) => {
-  await onboardingBeginCreateNewWallet(driver);
-  await onboardingChooseMetametricsOption(driver, false);
-  await onboardingCreatePassword(driver, password);
-  await onboardingRevealAndConfirmSRP(driver);
-  await onboardingCompleteWalletCreationWithOptOut(driver, optOutOptions);
-};
-
-/**
- * @deprecated Please use page object functions in `onboarding.flow.ts` and in `pages/onboarding/*`.
  * @param driver
  * @param password
  */
@@ -1318,7 +1292,6 @@ module.exports = {
   completeImportSRPOnboardingFlow,
   completeImportSRPOnboardingFlowWordByWord,
   completeCreateNewWalletOnboardingFlow,
-  completeCreateNewWalletOnboardingFlowWithOptOut,
   openSRPRevealQuiz,
   completeSRPRevealQuiz,
   tapAndHoldToRevealSRP,

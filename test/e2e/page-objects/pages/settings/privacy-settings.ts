@@ -166,6 +166,12 @@ class PrivacySettings {
     }
   }
 
+  async getSrpInRevealSrpDialog(): Promise<string> {
+    console.log('Get SRP in reveal SRP dialog on privacy settings page');
+    await this.driver.waitForSelector(this.displayedSrpText);
+    return (await this.driver.findElement(this.displayedSrpText)).getText();
+  }
+
   async openRevealSrpQuiz(): Promise<void> {
     console.log('Open reveal SRP quiz on privacy settings page');
     await this.driver.clickElement(this.revealSrpButton);
