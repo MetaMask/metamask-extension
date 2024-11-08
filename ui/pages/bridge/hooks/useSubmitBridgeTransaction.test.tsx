@@ -92,6 +92,7 @@ const makeMockStore = () => {
       {},
       {},
       {},
+      {},
       {
         gasFeeEstimates: {
           high: {
