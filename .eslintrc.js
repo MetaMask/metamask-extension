@@ -472,5 +472,30 @@ module.exports = {
         '@metamask/design-tokens/color-no-hex': 'off',
       },
     },
+    {
+      files: ['ui/pages/confirmations/**/*.{js,ts,tsx}'],
+      rules: {
+        'no-restricted-syntax': [
+          'error',
+          {
+            selector: `ImportSpecifier[imported.name=/${[
+              'getConversionRate',
+              'getCurrentChainId',
+              'getNativeCurrency',
+              'getNetworkIdentifier',
+              'getNftContracts',
+              'getNfts',
+              'getProviderConfig',
+              'getRpcPrefsForCurrentProvider',
+              'getUSDConversionRate',
+              'isCurrentProviderCustom',
+            ]
+              .map((method) => `(${method})`)
+              .join('|')}/]`,
+            message: 'Avoid using global network selectors in confirmations',
+          },
+        ],
+      },
+    },
   ],
 };
