@@ -319,7 +319,7 @@ exports[`Develop options tab should match snapshot 1`] = `
           class="settings-page__content-item-col"
         >
           <button
-            class="mm-box mm-text mm-button-base mm-button-base--size-md mm-button-primary mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-inverse mm-box--background-color-primary-default mm-box--rounded-pill"
+            class="mm-box mm-text mm-button-base mm-button-base--size-lg mm-button-primary mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-inverse mm-box--background-color-primary-default mm-box--rounded-pill"
             data-theme="light"
           >
             Generate UI Error
@@ -362,7 +362,7 @@ exports[`Develop options tab should match snapshot 1`] = `
           class="settings-page__content-item-col"
         >
           <button
-            class="mm-box mm-text mm-button-base mm-button-base--size-md mm-button-primary mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-inverse mm-box--background-color-primary-default mm-box--rounded-pill"
+            class="mm-box mm-text mm-button-base mm-button-base--size-lg mm-button-primary mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-inverse mm-box--background-color-primary-default mm-box--rounded-pill"
             data-theme="light"
           >
             Generate Background Error
@@ -405,10 +405,50 @@ exports[`Develop options tab should match snapshot 1`] = `
           class="settings-page__content-item-col"
         >
           <button
-            class="mm-box mm-text mm-button-base mm-button-base--size-md mm-button-primary mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-inverse mm-box--background-color-primary-default mm-box--rounded-pill"
+            class="mm-box mm-text mm-button-base mm-button-base--size-lg mm-button-primary mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-inverse mm-box--background-color-primary-default mm-box--rounded-pill"
             data-theme="light"
           >
             Generate Trace
+          </button>
+        </div>
+        <div
+          class="settings-page__content-item-col"
+        >
+          <div
+            class="mm-box mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--align-items-center"
+            style="height: 40px; width: 40px;"
+          >
+            <span
+              class="mm-box settings-page-developer-options__icon-check mm-icon mm-icon--size-lg mm-box--display-inline-block mm-box--color-success-default"
+              hidden=""
+              style="mask-image: url('./images/icons/check.svg');"
+            />
+          </div>
+        </div>
+      </div>
+      <div
+        class="mm-box settings-page__content-row mm-box--display-flex mm-box--gap-4 mm-box--flex-direction-row mm-box--justify-content-space-between"
+      >
+        <div
+          class="settings-page__content-item"
+        >
+          <div
+            class="settings-page__content-description"
+          >
+            <span>
+              Trigger the crash on extension to send user feedback to sentry. You can click "Try again" to reload extension
+            </span>
+          </div>
+        </div>
+        <div
+          class="settings-page__content-item-col"
+        >
+          <button
+            class="mm-box mm-text mm-button-base mm-button-base--size-lg mm-button-primary mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-inverse mm-box--background-color-primary-default mm-box--rounded-pill"
+            data-testid="developer-options-generate-page-crash-button"
+            data-theme="light"
+          >
+            Generate A Page Crash
           </button>
         </div>
         <div
