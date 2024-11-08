@@ -81,7 +81,7 @@ const {
   })
   .option('arch', {
     description: 'Specify the architecture (amd64 or arm64)',
-    default: osArch,
+    default: osArch === 'arm' ? 'arm64' : 'amd64',
     choices: ['amd64', 'arm64'] as const,
     coerce: (ARCHITECTURE: NodeJS.Architecture) => {
       if (ARCHITECTURE === 'arm') {
