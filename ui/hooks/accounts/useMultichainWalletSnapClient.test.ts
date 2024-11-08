@@ -8,7 +8,10 @@ import {
   handleSnapRequest,
   multichainUpdateBalance,
 } from '../../store/actions';
-import { useMultichainWalletSnapClient, WalletClientType } from './useMultichainWalletSnapClient';
+import {
+  useMultichainWalletSnapClient,
+  WalletClientType,
+} from './useMultichainWalletSnapClient';
 
 jest.mock('../../store/actions', () => ({
   handleSnapRequest: jest.fn(),
@@ -53,7 +56,9 @@ describe('useMultichainWalletSnapClient', () => {
 
   testCases.forEach(({ clientType, network, snapId, mockAccount }) => {
     it(`dispatches a Snap keyring request to create a ${clientType} account`, async () => {
-      const { result } = renderHook(() => useMultichainWalletSnapClient(clientType));
+      const { result } = renderHook(() =>
+        useMultichainWalletSnapClient(clientType),
+      );
       const multichainWalletSnapClient = result.current;
 
       mockHandleSnapRequest.mockResolvedValue(mockAccount);
@@ -68,7 +73,9 @@ describe('useMultichainWalletSnapClient', () => {
     });
 
     it(`force fetches the balance after creating a ${clientType} account`, async () => {
-      const { result } = renderHook(() => useMultichainWalletSnapClient(clientType));
+      const { result } = renderHook(() =>
+        useMultichainWalletSnapClient(clientType),
+      );
       const multichainWalletSnapClient = result.current;
 
       mockHandleSnapRequest.mockResolvedValue(mockAccount);
