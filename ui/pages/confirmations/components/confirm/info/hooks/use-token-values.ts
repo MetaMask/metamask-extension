@@ -17,6 +17,7 @@ export const useTokenValues = (transactionMeta: TransactionMeta) => {
     transactionMeta.txParams.to,
     transactionMeta.txParams.from,
     transactionMeta.txParams.data,
+    transactionMeta.chainId,
   );
 
   const decodedResponse = useDecodedTransactionData();

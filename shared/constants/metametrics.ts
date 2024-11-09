@@ -158,6 +158,10 @@ export type MetaMetricsEventOptions = {
    * as not conforming to our schema.
    */
   matomoEvent?: boolean;
+  /**
+   * Values that can used in the "properties" tracking object as keys,
+   */
+  contextPropsIntoEventProperties?: string | string[];
 };
 
 export type MetaMetricsEventFragment = {
@@ -247,6 +251,13 @@ export type MetaMetricsEventFragment = {
    * The event name.
    */
   event?: string;
+
+  /**
+   * HACK: "transaction-submitted-<id>" fragment hack
+   * If this is true and the fragment is found as an abandoned fragment,
+   * then delete the fragment instead of finalizing it.
+   */
+  canDeleteIfAbandoned?: boolean;
 };
 
 /**
@@ -607,6 +618,7 @@ export enum MetaMetricsEventName {
   BridgeLinkClicked = 'Bridge Link Clicked',
   BitcoinSupportToggled = 'Bitcoin Support Toggled',
   BitcoinTestnetSupportToggled = 'Bitcoin Testnet Support Toggled',
+  SolanaSupportToggled = 'Solana Support Toggled',
   CurrentCurrency = 'Current Currency',
   DappViewed = 'Dapp Viewed',
   DecryptionApproved = 'Decryption Approved',
