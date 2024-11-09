@@ -84,7 +84,7 @@ export default function AssetList({
             padding={0}
             gap={0}
             margin={0}
-            key={token.symbol}
+            key={`${token.symbol}-${token.address ?? ''}`}
             backgroundColor={
               isSelected
                 ? BackgroundColor.primaryMuted
