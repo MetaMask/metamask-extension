@@ -30,6 +30,7 @@
     cursor: pointer;
     overflow-y: auto;
     max-height: 50vh;
+    white-space: nowrap;
 
     &:not(.multichain-asset-picker-list-item--selected) {
       &:hover,
