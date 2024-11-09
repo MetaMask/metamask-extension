@@ -28,6 +28,7 @@ export const useAccountTotalFiatBalance = (
   account,
   shouldHideZeroBalanceTokens,
   preventRunning = false,
+  accountName,
 ) => {
   const currentChainId = useSelector(getCurrentChainId);
   const conversionRate = useSelector(getConversionRate);
@@ -61,6 +62,7 @@ export const useAccountTotalFiatBalance = (
     includeFailedTokens: true,
     hideZeroBalanceTokens: shouldHideZeroBalanceTokens,
     preventRunning,
+    accountName,
   });
 
   if (preventRunning) {

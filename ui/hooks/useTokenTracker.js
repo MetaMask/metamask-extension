@@ -13,6 +13,7 @@ export function useTokenTracker({
   includeFailedTokens = false,
   hideZeroBalanceTokens = false,
   preventRunning = false,
+  accountName,
 }) {
   const { chainId, rpcUrl } = useSelector(getProviderConfig);
   const { address: selectedAddress } = useSelector(
@@ -30,6 +31,13 @@ export function useTokenTracker({
 
   const updateBalances = useCallback(
     (tokenWithBalances) => {
+      if (preventRunning) {
+        console.log('Bailing out of useTokenTracker! [updateBalances] for ', accountName);
+        return;
+      }
+
+      console.log(`Updating balances for ${accountName}`);
+
       const matchingTokens = hideZeroBalanceTokens
         ? tokenWithBalances.filter((token) => Number(token.balance) > 0)
         : tokenWithBalances;
@@ -49,7 +57,7 @@ export function useTokenTracker({
       setLoading(false);
       setError(null);
     },
-    [hideZeroBalanceTokens, memoizedTokens],
+    [hideZeroBalanceTokens, memoizedTokens, preventRunning, accountName],
   );
 
   const showError = useCallback((err) => {
@@ -70,6 +78,16 @@ export function useTokenTracker({
     (usersAddress, tokenList) => {
       // clear out previous tracker, if it exists.
       teardownTracker();
+      if (preventRunning) {
+        console.log('Bailing out of useTokenTracker! [buildTracker]', accountName);
+        return;
+      }
+      else {
+        console.log('Creating new TokenTracker for ', accountName);
+      }
+
+      console.log(`Updating buildTracker for ${accountName}`);
+
       tokenTracker.current = new TokenTracker({
         userAddress: usersAddress,
         provider: global.ethereumProvider,
@@ -83,7 +101,14 @@ export function useTokenTracker({
       tokenTracker.current.on('error', showError);
       tokenTracker.current.updateBalances();
     },
-    [updateBalances, includeFailedTokens, showError, teardownTracker],
+    [
+      updateBalances,
+      includeFailedTokens,
+      showError,
+      teardownTracker,
+      preventRunning,
+      accountName,
+    ],
   );
 
   // Effect to remove the tracker when the component is removed from DOM
@@ -98,9 +123,11 @@ export function useTokenTracker({
   // Effect to set loading state and initialize tracker when values change
   useEffect(() => {
     if (preventRunning) {
-      console.log("Bailing out of useTokenTracker!")
+      console.log('Bailing out of useTokenTracker! [useEffect]', accountName);
       return;
     }
+
+    console.log(`Updating useEffect for ${accountName}`);
 
     // This effect will only run initially and when:
     // 1. chainId is updated,
@@ -134,6 +161,7 @@ export function useTokenTracker({
     updateBalances,
     buildTracker,
     preventRunning,
+    accountName,
   ]);
 
   return { loading, tokensWithBalances, error };

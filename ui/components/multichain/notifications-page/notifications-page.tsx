@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useCallback } from 'react';
 ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
 import { useSelector } from 'react-redux';
 ///: END:ONLY_INCLUDE_IF
@@ -30,6 +30,10 @@ export function NotificationsPage({ children }: NotificationsPageProps) {
   const theme = useSelector((state) => getTheme(state));
   ///: END:ONLY_INCLUDE_IF
 
+  const metaFoxOnClick = useCallback(() => {
+    history.push(DEFAULT_ROUTE);
+  }, [history]);
+
   return (
     <div className="main-container" data-testid="notifications-page">
       <Box
@@ -42,7 +46,7 @@ export function NotificationsPage({ children }: NotificationsPageProps) {
       >
         <MetafoxLogo
           unsetIconHeight
-          onClick={() => history.push(DEFAULT_ROUTE)}
+          onClick={metaFoxOnClick}
           ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
           theme={theme}
           ///: END:ONLY_INCLUDE_IF

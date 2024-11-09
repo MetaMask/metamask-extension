@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useCallback } from 'react';
 import { useHistory } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import { useI18nContext } from '../../../hooks/useI18nContext';
@@ -21,6 +21,9 @@ export const AppHeaderLockedContent = ({
   const history = useHistory();
 
   const testNetworkBackgroundColor = useSelector(getTestNetworkBackgroundColor);
+  const metaFoxOnClick = useCallback(() => {
+    history.push(DEFAULT_ROUTE);
+  }, [history]);
 
   return (
     <>
@@ -43,12 +46,7 @@ export const AppHeaderLockedContent = ({
           data-testid="network-display"
         />
       </div>
-      <MetafoxLogo
-        unsetIconHeight
-        onClick={async () => {
-          history.push(DEFAULT_ROUTE);
-        }}
-      />
+      <MetafoxLogo unsetIconHeight onClick={metaFoxOnClick} />
     </>
   );
 };

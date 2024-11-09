@@ -109,12 +109,20 @@ const AccountListItem = ({
     shouldShowFiat && (isMainnet || (isTestnet && showFiatInTestnets));
 
   const itemRef = useRef(null);
+  /*
   const isItemInViewport = useInViewport(itemRef);
 
-  console.log(`${account.metadata.name} in view? `, isItemInViewport.inViewport);
-
-  const accountTotalFiatBalances =
-    useMultichainAccountTotalFiatBalance(account, true, true);
+  console.log(
+    `${account.metadata.name} in view? `,
+    isItemInViewport.inViewport,
+  );
+  */
+  const accountTotalFiatBalances = /*useMultichainAccountTotalFiatBalance(
+    account,
+    true,
+    !isItemInViewport.inViewport,
+    account.metadata.name,
+  )*/ {orderedTokenList: [], totalBalance: ''};
   const mappedOrderedTokenList = accountTotalFiatBalances.orderedTokenList.map(
     (item) => ({
       avatarValue: item.iconUrl,
@@ -154,6 +162,8 @@ const AccountListItem = ({
   const isConnected =
     currentTabOrigin && currentTabIsConnectedToSelectedAddress;
   const isSingleAccount = accountsCount === 1;
+
+  return <div>{account.metadata.name}</div>;
 
   return (
     <Box
