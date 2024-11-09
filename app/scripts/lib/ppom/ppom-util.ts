@@ -55,11 +55,12 @@ export async function validateRequestWithPPOM({
 }): Promise<SecurityAlertResponse> {
   try {
     if (!(await isChainSupported(chainId))) {
-      return {
+      const response = {
         ...SECURITY_ALERT_RESPONSE_CHAIN_NOT_SUPPORTED,
         securityAlertId,
-        description: `Chain ID ${chainId} is not supported`,
       };
+      await updateSecurityResponse(request.method, securityAlertId, response);
+      return response;
     }
 
     await updateSecurityResponse(request.method, securityAlertId, {
