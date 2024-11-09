@@ -1,18 +1,21 @@
 #!/usr/bin/env node
 
-import yargs from 'yargs/yargs';
-import { mkdir } from 'node:fs/promises';
+import { execSync } from 'node:child_process';
 import { createWriteStream } from 'node:fs';
+import { mkdir } from 'node:fs/promises';
+import { Agent as HttpAgent, type IncomingMessage } from 'node:http';
+import {
+  Agent as HttpsAgent,
+  request as httpRequest,
+  request as httpsRequest,
+} from 'node:https';
 import { join } from 'node:path';
 import { argv, arch as osArch, platform as osPlatform } from 'node:process';
-import { execSync } from 'node:child_process';
-import { extract as extractTar } from 'tar';
-import { Open as Unzip, Source } from 'unzipper';
-import { request as httpRequest } from 'node:https';
-import { Agent as HttpsAgent, request as httpsRequest } from 'node:https';
-import { toOrange } from './development/webpack/utils/helpers';
 import { Stream } from 'node:stream';
-import { Agent as HttpAgent, type IncomingMessage } from 'node:http';
+import { extract as extractTar } from 'tar';
+import { Source, Open as Unzip } from 'unzipper';
+import yargs from 'yargs/yargs';
+import { toOrange } from './development/webpack/utils/helpers';
 
 type BinFormat = 'zip' | 'tar.gz';
 
@@ -69,31 +72,26 @@ const {
     type: 'string',
     description: 'Specify the version',
     default: 'nightly',
-    coerce: (version) => {
-      if (/^nightly/.test(version)) {
-        return { version: 'nightly', tag: version };
-      } else if (/^\d/.test(version)) {
-        return { version: `v${version}`, tag: version };
-      } else {
-        return { version: version, tag: version };
+    coerce: (rawVersion) => {
+      if (/^nightly/u.test(rawVersion)) {
+        return { version: 'nightly', tag: rawVersion };
+      } else if (/^\d/u.test(rawVersion)) {
+        return { version: `v${rawVersion}`, tag: rawVersion };
       }
+      return { version: rawVersion, tag: rawVersion };
     },
   })
   .option('arch', {
-    description: 'Specify the architecture (amd64 or arm64)',
+    description: 'Specify the architecture',
     default: osArch === 'arm' ? 'arm64' : 'amd64',
     choices: ['amd64', 'arm64'] as const,
-    coerce: (ARCHITECTURE: NodeJS.Architecture) => {
-      if (ARCHITECTURE === 'arm') {
-        return 'arm64';
-      } else {
-        return 'amd64';
-      }
+    coerce: (rawArch: NodeJS.Architecture) => {
+      return rawArch === 'arm' ? 'arm64' : 'amd64';
     },
   })
   .option('platform', {
     type: 'string',
-    description: 'Specify the platform (win32, linux, or darwin)',
+    description: 'Specify the platform',
     default: osPlatform,
     choices: ['win32', 'linux', 'darwin'] as const,
   })
@@ -217,27 +215,28 @@ async function download(
 async function downloadAndExtract(format: BinFormat, url: URL, cwd: string) {
   await mkdir(cwd, { recursive: true });
 
+  // eslint-disable-next-line no-async-promise-executor
   return await new Promise(async (resolve, reject) => {
     if (format === 'zip') {
       const agent = new (url.protocol === 'http' ? HttpAgent : HttpsAgent)({
         keepAlive: true,
       });
       const source: Source = {
-        stream: function (offset: number, length: number) {
-          const stream = new Stream.PassThrough();
+        stream(offset: number, length: number) {
+          const passThrough = new Stream.PassThrough();
           const options = {
             agent,
             headers: {
-              range: 'bytes=' + offset + '-' + (length ? offset + length : ''),
+              range: `bytes=${offset}-${length ? offset + length : ''}`,
             },
           };
           download(url, options).then(
-            (response) => response.pipe(stream),
-            (error: Error) => stream.emit('error', error),
+            (response) => response.pipe(passThrough),
+            (error: Error) => passThrough.emit('error', error),
           );
-          return stream;
+          return passThrough;
         },
-        size: async function () {
+        async size() {
           const response = await download(url, { agent, method: 'HEAD' });
           response.resume(); // Consume response data to free up memory
           const contentLength = response.headers['content-length'];
@@ -246,23 +245,24 @@ async function downloadAndExtract(format: BinFormat, url: URL, cwd: string) {
       };
       const { files } = await Unzip.custom(source);
       for await (const file of files) {
-        if (file.type !== 'File') continue;
+        if (file.type !== 'File') {
+          continue;
+        }
         // remove `.exe` from the path to get the binary name
         const path = file.path.slice(0, -4) as (typeof BINS)[number];
         // ignore files that are not in the list of binaries
-        if (!binaries.includes(path)) continue;
+        if (!binaries.includes(path)) {
+          continue;
+        }
         // write the binary to the destination
-
-        file
-          .stream()
-          .pipe(createWriteStream(join(cwd, file.path)))
-          .on('error', reject)
-          .on('finish', resolve);
+        const dest = join(cwd, file.path);
+        const stream = file.stream().pipe(createWriteStream(dest));
+        stream.on('finish', resolve).on('error', reject);
       }
     } else {
+      // write the binaries to the destination
       const stream = (await download(url)).pipe(extractTar({ cwd }, binaries));
-      stream.on('finish', resolve);
-      stream.on('error', reject);
+      stream.on('finish', resolve).on('error', reject);
     }
   });
 }
