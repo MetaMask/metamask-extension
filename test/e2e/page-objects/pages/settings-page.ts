@@ -9,6 +9,10 @@ class SettingsPage {
     css: '.tab-bar__tab__content__title',
   };
 
+  private readonly showNativeTokenToggle = '.show-native-token-as-main-balance';
+
+  private readonly closeSettingsButton = 'button[aria-label="Close"]';
+
   private readonly settingsPageTitle: object = {
     text: 'Settings',
     css: 'h3',
@@ -31,6 +35,16 @@ class SettingsPage {
   async goToExperimentalSettings(): Promise<void> {
     console.log('Navigating to Experimental Settings page');
     await this.driver.clickElement(this.experimentalSettingsButton);
+  }
+
+  async toggleBalanceSetting(): Promise<void> {
+    console.log('Toggling balance setting');
+    await this.driver.clickElement(this.showNativeTokenToggle);
+  }
+
+  async exitSettings(): Promise<void> {
+    console.log('Closing settings page');
+    await this.driver.clickElement(this.closeSettingsButton);
   }
 }
 

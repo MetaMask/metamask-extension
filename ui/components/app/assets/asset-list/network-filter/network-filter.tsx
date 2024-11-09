@@ -71,6 +71,7 @@ const NetworkFilter = ({ handleClose }: SortControlProps) => {
           Object.keys(allNetworks).length
         }
         onClick={() => handleFilter(allOpts)}
+        testId="network-filter-all"
       >
         <Box
           display={Display.Flex}
@@ -86,6 +87,7 @@ const NetworkFilter = ({ handleClose }: SortControlProps) => {
             <Text
               variant={TextVariant.bodyMdMedium}
               color={TextColor.textDefault}
+              data-testid="network-filter-all__total"
             >
               {/* TODO: Should query cross chain account balance */}
               $1,000.00
@@ -121,6 +123,7 @@ const NetworkFilter = ({ handleClose }: SortControlProps) => {
           Object.keys(tokenNetworkFilter).length === 1
         }
         onClick={() => handleFilter({ [chainId]: true })}
+        testId="network-filter-current"
       >
         <Box
           display={Display.Flex}
