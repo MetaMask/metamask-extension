@@ -17,6 +17,7 @@ import {
 import {
   DEFAULT_ROUTE,
   REVIEW_PERMISSIONS,
+  SEND_ROUTE,
 } from '../../../helpers/constants/routes';
 import { getURLHost } from '../../../helpers/utils/util';
 import { useI18nContext } from '../../../hooks/useI18nContext';
@@ -61,9 +62,10 @@ export function ToastMaster() {
   const location = useLocation();
 
   const onHomeScreen = location.pathname === DEFAULT_ROUTE;
+  const onSendScreen = location.pathname === SEND_ROUTE;
 
-  return (
-    onHomeScreen && (
+  if (onHomeScreen) {
+    return (
       <ToastContainer>
         <SurveyToast />
         <ConnectAccountToast />
@@ -73,8 +75,18 @@ export function ToastMaster() {
         <NftEnablementToast />
         <PermittedNetworkToast />
       </ToastContainer>
-    )
-  );
+    );
+  }
+
+  if (onSendScreen) {
+    return (
+      <ToastContainer>
+        <SwitchedNetworkToast />
+      </ToastContainer>
+    );
+  }
+
+  return null;
 }
 
 function ConnectAccountToast() {
@@ -204,6 +216,19 @@ function SwitchedNetworkToast() {
   );
 
   const isShown = switchedNetworkDetails && !switchedNetworkNeverShowMessage;
+  const hasOrigin = Boolean(switchedNetworkDetails?.origin);
+
+  function getMessage() {
+    if (hasOrigin) {
+      return t('switchedNetworkToastMessage', [
+        switchedNetworkDetails.nickname,
+        getURLHost(switchedNetworkDetails.origin),
+      ]);
+    }
+    return t('switchedNetworkToastMessageNoOrigin', [
+      switchedNetworkDetails.nickname,
+    ]);
+  }
 
   return (
     isShown && (
@@ -217,10 +242,7 @@ function SwitchedNetworkToast() {
             name={switchedNetworkDetails?.nickname}
           />
         }
-        text={t('switchedNetworkToastMessage', [
-          switchedNetworkDetails.nickname,
-          getURLHost(switchedNetworkDetails.origin),
-        ])}
+        text={getMessage()}
         actionText={t('switchedNetworkToastDecline')}
         onActionClick={setSwitchedNetworkNeverShowMessage}
         onClose={() => dispatch(clearSwitchedNetworkDetails())}

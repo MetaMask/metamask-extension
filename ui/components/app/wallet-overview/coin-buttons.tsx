@@ -55,9 +55,6 @@ import {
   ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
   getMemoizedUnapprovedTemplatedConfirmations,
   ///: END:ONLY_INCLUDE_IF
-  getCurrentChainId,
-  getNetworkConfigurationIdByChainId,
-  getOriginOfCurrentTab,
 } from '../../../selectors';
 import Tooltip from '../../ui/tooltip';
 ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
@@ -88,7 +85,6 @@ import useBridging from '../../../hooks/bridge/useBridging';
 import { ReceiveModal } from '../../multichain/receive-modal';
 ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
 import {
-  setActiveNetwork,
   sendMultichainTransaction,
   setDefaultHomeActiveTabName,
 } from '../../../store/actions';
@@ -127,12 +123,6 @@ const CoinButtons = ({
   const [showReceiveModal, setShowReceiveModal] = useState(false);
 
   const account = useSelector(getSelectedAccount);
-  // const selectedTabOrigin = useSelector(getOriginOfCurrentTab);
-  const currentChainId = useSelector(getCurrentChainId);
-  const networks = useSelector(getNetworkConfigurationIdByChainId) as Record<
-    string,
-    string
-  >;
   const { address: selectedAddress } = account;
   const history = useHistory();
   ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
@@ -314,16 +304,6 @@ const CoinButtons = ({
           },
           { excludeMetaMetricsId: false },
         );
-        if (currentChainId !== chainId) {
-          const networkConfigurationId = networks[chainId];
-          await dispatch(setActiveNetwork(networkConfigurationId));
-          // await dispatch(
-          //   setSwitchedNetworkDetails({
-          //     networkClientId: networkConfigurationId,
-          //     selectedTabOrigin,
-          //   }),
-          // );
-        }
         await dispatch(startNewDraftTransaction({ type: AssetType.native }));
         history.push(SEND_ROUTE);
       }

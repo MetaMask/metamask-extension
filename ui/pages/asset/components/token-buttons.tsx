@@ -28,7 +28,6 @@ import {
   getCurrentKeyring,
   ///: END:ONLY_INCLUDE_IF
   getCurrentChainId,
-  // getOriginOfCurrentTab,
   getNetworkConfigurationIdByChainId,
 } from '../../../selectors';
 ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
@@ -39,7 +38,7 @@ import { INVALID_ASSET_TYPE } from '../../../helpers/constants/error-keys';
 import {
   setActiveNetwork,
   showModal,
-  // setSwitchedNetworkDetails,
+  setSwitchedNetworkDetails,
 } from '../../../store/actions';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import {
@@ -81,7 +80,6 @@ const TokenButtons = ({
   ///: END:ONLY_INCLUDE_IF
 
   const currentChainId = useSelector(getCurrentChainId);
-  // const selectedTabOrigin = useSelector(getOriginOfCurrentTab);
   const networks = useSelector(getNetworkConfigurationIdByChainId) as Record<
     string,
     string
@@ -225,12 +223,11 @@ const TokenButtons = ({
             if (currentChainId !== token.chainId) {
               const networkConfigurationId = networks[token.chainId];
               await dispatch(setActiveNetwork(networkConfigurationId));
-              // await dispatch(
-              //   setSwitchedNetworkDetails({
-              //     networkClientId: networkConfigurationId,
-              //     selectedTabOrigin,
-              //   }),
-              // );
+              await dispatch(
+                setSwitchedNetworkDetails({
+                  networkClientId: networkConfigurationId,
+                }),
+              );
             }
             await dispatch(
               startNewDraftTransaction({
