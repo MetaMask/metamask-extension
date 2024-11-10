@@ -352,7 +352,7 @@ workflows:
             - prep-build-ts-migration-dashboard
   rerun-from-failed:
     jobs:
-      - rerun-workflow-from-failed
+      - rerun-workflows-from-failed
 
   locales_only:
     when:
@@ -928,7 +928,7 @@ jobs:
           paths:
             - development/ts-migration-dashboard/build/final
 
-  rerun-workflow-from-failed:
+  rerun-workflows-from-failed:
     executor: node-browsers-small
     steps:
       - run: *shallow-git-clone-and-enable-vnc
