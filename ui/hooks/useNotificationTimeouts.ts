@@ -1,3 +1,4 @@
+import { useEffect } from 'react';
 import { useDispatch } from 'react-redux';
 import { deleteNotificationsById } from '../store/actions';
 import { NOTIFICATIONS_EXPIRATION_DELAY } from '../helpers/constants/notifications';
@@ -12,12 +13,20 @@ import { NOTIFICATIONS_EXPIRATION_DELAY } from '../helpers/constants/notificatio
  */
 export const useSnapNotificationTimeouts = () => {
   const dispatch = useDispatch();
+  const ids: string[] = [];
 
   const setNotificationTimeout = (id: string) => {
-    setTimeout(async () => {
-      await dispatch(deleteNotificationsById([id]));
+    ids.push(id);
+    setTimeout(() => {
+      dispatch(deleteNotificationsById([id]));
     }, NOTIFICATIONS_EXPIRATION_DELAY);
   };
+
+  useEffect(() => {
+    return () => {
+      dispatch(deleteNotificationsById(ids));
+    };
+  }, [dispatch]);
 
   return { setNotificationTimeout };
 };
