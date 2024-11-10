@@ -32,6 +32,7 @@ describe('migration #132', () => {
     it('deletes the NotificationController from state', async () => {
       const oldState = {
         NotificationController: {},
+        OtherController: {},
       };
 
       const transformedState = await migrate({
@@ -39,7 +40,7 @@ describe('migration #132', () => {
         data: cloneDeep(oldState),
       });
 
-      expect(transformedState.data).toEqual({});
+      expect(transformedState.data).toEqual({ OtherController: {} });
     });
   });
 });

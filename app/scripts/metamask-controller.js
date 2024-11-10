@@ -1431,19 +1431,12 @@ export default class MetamaskController extends EventEmitter {
         },
         showInAppNotification: {
           method: (origin, args) => {
-            const { message, title, footerLink } = args;
-
-            const detailedView = {
-              title,
-              ...(footerLink ? { footerLink } : {}),
-              interfaceId: args.content,
-            };
+            const { message } = args;
 
             const notification = {
               data: {
                 message,
                 origin,
-                ...(args.content ? { detailedView } : {}),
               },
               type: TRIGGER_TYPES.SNAP,
               readDate: null,
@@ -1509,7 +1502,6 @@ export default class MetamaskController extends EventEmitter {
           `${this.approvalController.name}:hasRequest`,
           `${this.approvalController.name}:acceptRequest`,
           `${this.snapController.name}:get`,
-          'NotificationServicesController:getNotificationsByType',
         ],
       });
 
@@ -3031,7 +3023,7 @@ export default class MetamaskController extends EventEmitter {
 
     this.controllerMessenger.subscribe(
       `${this.snapController.name}:snapUninstalled`,
-      async (truncatedSnap) => {
+      (truncatedSnap) => {
         const notificationIds = this.notificationServicesController
           .getNotificationsByType(TRIGGER_TYPES.SNAP)
           .filter(
@@ -3039,7 +3031,7 @@ export default class MetamaskController extends EventEmitter {
           )
           .map((notification) => notification.id);
 
-        await this.notificationServicesController.deleteNotificationsById(
+        this.notificationServicesController.deleteNotificationsById(
           notificationIds,
         );
 
