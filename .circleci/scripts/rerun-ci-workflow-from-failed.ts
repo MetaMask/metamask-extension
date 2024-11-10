@@ -4,6 +4,10 @@ const CIRCLE_TOKEN = process.env.CIRCLE_OIDC_TOKEN_V2;
 
 /**
  * Fetches the last 20 CircleCI workflows for 'develop' branch.
+ * Note: the API returns the first 20 workflows by default.
+ * If we wanted to get older workflows, we would need to use the 'page-token' we would get in the first response
+ * and perform a subsequent request with the 'page-token' parameter.
+ * This seems unnecessary as of today, as the amount of daily PRs merged to develop is not that high.
  *
  * @returns {Promise<any[]>} A promise that resolves to an array of workflow items.
  * @throws Will throw an error if the CircleCI token is not defined or if the HTTP request fails.
@@ -74,9 +78,10 @@ async function rerunWorkflowById(workflowId: string) {
 
 /**
  * Re-runs failed CircleCI workflows from develop branch.
- * The workflow will only be re-runed if
- *   1. It has only been run once
- *   2. It has the status of 'failed'
+ * The workflow will only be re-runed if:
+ *   1. It has the status of 'failed'
+ *   2. It has only been run once
+ *   3. It is among the most recent 20 workflows
  *
  * @throws Will throw an error if fetching the workflows or re-running a workflow fails.
  */
