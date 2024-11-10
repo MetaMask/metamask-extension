@@ -286,7 +286,8 @@ const TokenButtons = ({
             dispatch(
               setSwapsFromToken({
                 ...token,
-                address: token.address.toLowerCase(),
+                // TODO: This will get fixed once we have the native token address
+                address: token.address?.toLowerCase(),
                 iconUrl: token.image,
                 balance: token.balance.value,
                 string: token.balance.display,

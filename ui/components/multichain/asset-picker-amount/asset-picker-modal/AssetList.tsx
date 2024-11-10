@@ -4,6 +4,7 @@ import classnames from 'classnames';
 import {
   getCurrentCurrency,
   getSelectedAccountCachedBalance,
+  getCurrentChainId,
 } from '../../../../selectors';
 import { getNativeCurrency } from '../../../../ducks/metamask/metamask';
 import { useCurrencyDisplay } from '../../../../hooks/useCurrencyDisplay';
@@ -42,6 +43,7 @@ export default function AssetList({
 }: AssetListProps) {
   const selectedToken = asset?.address;
 
+  const chainId = useSelector(getCurrentChainId);
   const nativeCurrency = useSelector(getNativeCurrency);
   const balanceValue = useSelector(getSelectedAccountCachedBalance);
   const currentCurrency = useSelector(getCurrentCurrency);
@@ -102,6 +104,7 @@ export default function AssetList({
               <Box marginInlineStart={2}>
                 {token.type === AssetType.native ? (
                   <TokenListItem
+                    chainId={chainId}
                     title={token.symbol}
                     primary={primaryCurrencyValue}
                     tokenSymbol={token.symbol}
