@@ -56,7 +56,7 @@ async function rerunWorkflowById(workflowId: string) {
     body: JSON.stringify({
       enable_ssh: false,
       from_failed: true,
-      sparse_tree: false,
+      sparse_tree: false, // mutually exclusive with the from_failed parameter
     })
   };
 
