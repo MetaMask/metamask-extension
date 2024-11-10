@@ -4,26 +4,28 @@ import { Redirect, useParams } from 'react-router-dom';
 import { isEqualCaseInsensitive } from '../../../shared/modules/string-utils';
 import NftDetails from '../../components/app/assets/nfts/nft-details/nft-details';
 import { getSelectedAccountTokensAcrossChains } from '../../selectors';
-import { getNativeCurrency, getNfts } from '../../ducks/metamask/metamask';
+import { getNfts } from '../../ducks/metamask/metamask';
 import { DEFAULT_ROUTE } from '../../helpers/constants/routes';
 
-import NativeAsset from './components/native-asset';
 import TokenAsset from './components/token-asset';
 import { findAssetByAddress } from './util';
+import NativeAsset from './components/native-asset';
 
 /** A page representing a native, token, or NFT asset */
 const Asset = () => {
-  const nativeCurrency = useSelector(getNativeCurrency);
   const nfts = useSelector(getNfts);
   const selectedAccountTokensChains: Record<string, any> = useSelector(
     getSelectedAccountTokensAcrossChains,
   );
-  const { asset, id } = useParams<{ asset: string; id: string }>();
+  const params = useParams<{
+    chainId: string;
+    asset: string;
+    id: string;
+  }>();
 
-  const multichainToken = findAssetByAddress(
-    selectedAccountTokensChains,
-    asset,
-  );
+  const { chainId, asset, id } = params;
+
+  const token = findAssetByAddress(selectedAccountTokensChains, asset, chainId);
 
   const nft = nfts.find(
     ({ address, tokenId }: { address: string; tokenId: string }) =>
@@ -39,10 +41,12 @@ const Asset = () => {
   let content;
   if (nft) {
     content = <NftDetails nft={nft} />;
-  } else if (multichainToken) {
-    content = <TokenAsset token={multichainToken} />;
-  } else if (asset === nativeCurrency) {
-    content = <NativeAsset />;
+  } else if (token && chainId) {
+    if (token?.address) {
+      content = <TokenAsset chainId={chainId} token={token} />;
+    } else {
+      content = <NativeAsset chainId={chainId} token={token} />;
+    }
   } else {
     content = <Redirect to={{ pathname: DEFAULT_ROUTE }} />;
   }

@@ -1,20 +1,16 @@
 import React, { useContext } from 'react';
+import { Token } from '@metamask/assets-controllers';
 import { useSelector } from 'react-redux';
 import { getAccountLink } from '@metamask/etherscan-link';
 import {
-  getCurrentChainId,
   getCurrentCurrency,
-  getNativeCurrencyImage,
   getRpcPrefsForCurrentProvider,
-  getSelectedAccountCachedBalance,
   getSelectedInternalAccount,
   getShouldShowFiat,
+  getNativeCurrencyForChain,
 } from '../../../selectors';
 import { useCurrencyDisplay } from '../../../hooks/useCurrencyDisplay';
-import {
-  getNativeCurrency,
-  getProviderConfig,
-} from '../../../ducks/metamask/metamask';
+import { getProviderConfig } from '../../../ducks/metamask/metamask';
 import { AssetType } from '../../../../shared/constants/transaction';
 import { useIsOriginalNativeTokenSymbol } from '../../../hooks/useIsOriginalNativeTokenSymbol';
 import { MetaMetricsEventCategory } from '../../../../shared/constants/metametrics';
@@ -24,14 +20,12 @@ import { hexToDecimal } from '../../../../shared/modules/conversion.utils';
 import AssetOptions from './asset-options';
 import AssetPage from './asset-page';
 
-const NativeAsset = () => {
-  const nativeCurrency = useSelector(getNativeCurrency);
-  const balance = useSelector(getSelectedAccountCachedBalance);
-  const image = useSelector(getNativeCurrencyImage);
+const NativeAsset = ({ token, chainId }: { token: Token; chainId: string }) => {
+  const { balance, symbol } = token;
+  const image = getNativeCurrencyForChain(chainId);
   const showFiat = useSelector(getShouldShowFiat);
   const currentCurrency = useSelector(getCurrentCurrency);
-  const chainId = useSelector(getCurrentChainId);
-  const { ticker, type } = useSelector(getProviderConfig) ?? {};
+  const { type } = useSelector(getProviderConfig) ?? {};
   const { address } = useSelector(getSelectedInternalAccount);
   const rpcPrefs = useSelector(getRpcPrefsForCurrentProvider);
 
@@ -39,12 +33,12 @@ const NativeAsset = () => {
   const trackEvent = useContext(MetaMetricsContext);
   const isOriginalNativeSymbol = useIsOriginalNativeTokenSymbol(
     chainId,
-    ticker,
+    symbol,
     type,
   );
 
   const [, { value: balanceDisplay }] = useCurrencyDisplay(balance, {
-    currency: nativeCurrency,
+    currency: symbol,
   });
   const [fiatDisplay] = useCurrencyDisplay(balance, {
     currency: currentCurrency,
@@ -55,7 +49,7 @@ const NativeAsset = () => {
       asset={{
         chainId,
         type: AssetType.native,
-        symbol: nativeCurrency,
+        symbol,
         image,
         balance: {
           value: hexToDecimal(balance),

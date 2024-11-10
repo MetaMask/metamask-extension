@@ -22,7 +22,7 @@ import { getConversionRate } from '../../../../ducks/metamask/metamask';
 import { filterAssets } from '../util/filter';
 
 type TokenListProps = {
-  onTokenClick: (arg: string) => void;
+  onTokenClick: (chainId: string, address: string) => void;
   nativeToken?: ReactNode;
 };
 
