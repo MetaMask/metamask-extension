@@ -1,12 +1,14 @@
 import { NameType } from '@metamask/name-controller';
-import { useSelector } from 'react-redux';
 import { Hex } from '@metamask/utils';
-import { selectERC20TokensByChain } from '../selectors';
-import { getNftContractsByAddressByChain } from '../selectors/nft';
+import { useSelector } from 'react-redux';
 import {
   EXPERIENCES_TYPE,
   FIRST_PARTY_CONTRACT_NAMES,
 } from '../../shared/constants/first-party-contracts';
+import { toChecksumHexAddress } from '../../shared/modules/hexstring-utils';
+import { getDomainResolutions } from '../ducks/domains';
+import { selectERC20TokensByChain } from '../selectors';
+import { getNftContractsByAddressByChain } from '../selectors/nft';
 import { useNames } from './useName';
 import { useNftCollectionsMetadata } from './useNftCollectionsMetadata';
 
@@ -29,9 +31,11 @@ export function useDisplayNames(
 ): UseDisplayNameResponse[] {
   const nameEntries = useNames(requests);
   const firstPartyContractNames = useFirstPartyContractNames(requests);
+
   const erc20Tokens = useERC20Tokens(requests);
   const watchedNFTNames = useWatchedNFTNames(requests);
   const nfts = useNFTs(requests);
+  const ens = useDomainResolutions(requests);
 
   return requests.map((_request, index) => {
     const nameEntry = nameEntries[index];
@@ -39,6 +43,7 @@ export function useDisplayNames(
     const erc20Token = erc20Tokens[index];
     const watchedNftName = watchedNFTNames[index];
     const nft = nfts[index];
+    const ensName = ens[index];
 
     const name =
       nameEntry?.name ||
@@ -46,6 +51,7 @@ export function useDisplayNames(
       nft?.name ||
       erc20Token?.name ||
       watchedNftName ||
+      ensName ||
       null;
 
     const image = nft?.image || erc20Token?.image;
@@ -107,6 +113,7 @@ function useWatchedNFTNames(
 
     const contractAddress = value.toLowerCase();
     const watchedNftNamesByAddress = watchedNftNamesByAddressByChain[variation];
+
     return watchedNftNamesByAddress?.[contractAddress]?.name;
   });
 }
@@ -145,6 +152,32 @@ function useNFTs(
       return { name, image };
     },
   );
+}
+
+function useDomainResolutions(nameRequests: UseDisplayNameRequest[]) {
+  const domainResolutions = useSelector(getDomainResolutions);
+
+  return nameRequests.map(({ type, value }) => {
+    if (type !== NameType.ETHEREUM_ADDRESS) {
+      return undefined;
+    }
+
+    const matchedResolution = domainResolutions?.find(
+      (resolution: {
+        addressBookEntryName: string;
+        domainName: string;
+        protocol: string;
+        resolvedAddress: string;
+        resolvingSnap: string;
+      }) =>
+        toChecksumHexAddress(resolution.resolvedAddress) ===
+        toChecksumHexAddress(value),
+    );
+
+    const ensName = matchedResolution?.domainName;
+
+    return ensName;
+  });
 }
 
 function useFirstPartyContractNames(nameRequests: UseDisplayNameRequest[]) {
