@@ -350,12 +350,9 @@ workflows:
               only: develop
           requires:
             - prep-build-ts-migration-dashboard
-      - rerun-workflow-from-failed:
-          requires:
-            - test-lint
-          #filters:
-            #branches:
-              #only: develop
+  rerun-from-failed:
+    jobs:
+      - rerun-workflow-from-failed
 
   locales_only:
     when:
@@ -939,9 +936,8 @@ jobs:
       - attach_workspace:
           at: .
       - run:
-          name: Rerun workflow from failed
-          when: always
-          command: npx tsx .circleci/scripts/rerun-ci-workflow.ts
+          name: Rerun workflows from failed
+          command: npx tsx .circleci/scripts/rerun-ci-workflow-from-failed.ts
 
   test-yarn-dedupe:
     executor: node-browsers-small

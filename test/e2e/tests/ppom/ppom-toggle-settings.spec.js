@@ -28,9 +28,7 @@ describe('PPOM Settings @no-mmi', function () {
           '[data-testid="account-options-menu-button"]',
         );
 
-
-// LINT FAIL ON PURPOSE
-        await driver.clickElement({ text: 'FAIL-ON-PURPOSE', tag: 'div' });
+        await driver.clickElement({ text: 'Settings', tag: 'div' });
         await driver.clickElement({ text: 'Security & privacy', tag: 'div' });
 
         await driver.clickElement(
