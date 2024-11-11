@@ -8,6 +8,12 @@ import HomePage from '../../page-objects/pages/homepage';
 import SendTokenPage from '../../page-objects/pages/send/send-token-page';
 import { mockServerJsonRpc } from '../ppom/mocks/mock-server-json-rpc';
 
+
+const CONTRACT_ADDRESS = {
+  BalanceCheckerEthereumMainnet: '0xb1f8e55c7f64d203c1400b9d8555d050f94adf39',
+  BalanceCheckerLineaMainnet: '0xf62e6a41561b3650a69bb03199c735e3e3328c0d',
+};
+
 describe('ENS', function (this: Suite) {
   const sampleAddress: string = '1111111111111111111111111111111111111111';
 
@@ -30,57 +36,13 @@ describe('ENS', function (this: Suite) {
   async function mockInfura(mockServer: MockttpServer): Promise<void> {
     await mockServer
       .forPost(infuraUrl)
-      .withJsonBodyIncluding({ method: 'eth_blockNumber' })
-      .thenCallback(() => ({
-        statusCode: 200,
-        json: {
-          jsonrpc: '2.0',
-          id: '1111111111111111',
-          result: '0x1',
-        },
-      }));
-    await mockServer
-      .forPost(infuraLineaMainnetUrl)
-      .withJsonBodyIncluding({ method: 'eth_blockNumber' })
-      .thenCallback(() => ({
-        statusCode: 200,
-        json: {
-          jsonrpc: '2.0',
-          id: '43',
-          result: '0x1',
-        },
-      }));
-    await mockServer
-      .forPost(infuraLineaSepoliaUrl)
-      .withJsonBodyIncluding({ method: 'eth_blockNumber' })
-      .thenCallback(() => ({
-        statusCode: 200,
-        json: {
-          jsonrpc: '2.0',
-          id: '43',
-          result: '0x1',
-        },
-      }));
-    await mockServer
-      .forPost(infuraSepoliaUrl)
-      .withJsonBodyIncluding({ method: 'eth_blockNumber' })
-      .thenCallback(() => ({
-        statusCode: 200,
-        json: {
-          jsonrpc: '2.0',
-          id: '43',
-          result: '0x29',
-        },
-      }));
-    await mockServer
-      .forPost(infuraUrl)
       .withJsonBodyIncluding({ method: 'eth_getBalance' })
       .thenCallback(() => ({
         statusCode: 200,
         json: {
           jsonrpc: '2.0',
           id: '1111111111111111',
-          result: '0x1',
+          result: '0x1BC16D674EC8',
         },
       }));
     await mockServer
@@ -91,6 +53,7 @@ describe('ENS', function (this: Suite) {
         json: {
           jsonrpc: '2.0',
           id: '6183194981233610',
+          result: '0x1BC16D674EC8',
         },
       }));
     await mockServer
@@ -101,6 +64,7 @@ describe('ENS', function (this: Suite) {
         json: {
           jsonrpc: '2.0',
           id: '6183194981233610',
+          result: '0x1BC16D674EC8',
         },
       }));
     await mockServer
@@ -111,55 +75,91 @@ describe('ENS', function (this: Suite) {
         json: {
           jsonrpc: '2.0',
           id: '6183194981233610',
+          result: '0x1BC16D674EC8',
         },
       }));
 
     await mockServer
       .forPost(infuraUrl)
-      .withJsonBodyIncluding({ method: 'eth_getBlockByNumber' })
+      .withJsonBodyIncluding({ method: 'net_version' })
       .thenCallback(() => ({
         statusCode: 200,
         json: {
           jsonrpc: '2.0',
-          id: '1111111111111111',
-          result: {},
+          id: '6183194981233610',
+          result: '0x1',
         },
-      }));
+    }));
     await mockServer
       .forPost(infuraLineaMainnetUrl)
-      .withJsonBodyIncluding({ method: 'eth_getBlockByNumber' })
+      .withJsonBodyIncluding({ method: 'eth_call' })
       .thenCallback(() => ({
         statusCode: 200,
         json: {
           jsonrpc: '2.0',
           id: '1111111111111111',
-          result: {},
+          result: '0x0000000000000000000000000000000000000000000000000000000000000020000000000000000000000000000000000000000000000000000000000000000a0000000000000000000000000000000000000000000000001BC16D674EC800000000000000000000000000000000000000000000000000000001699651aa88200000000000000000000000000000000000000000000000000001beca58919dc0000000000000000000000000000000000000000000000000000974189179054f0000000000000000000000000000000000000000000000000001d9ae54845818000000000000000000000000000000000000000000000000000009184e72a00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000110d9316ec0000000000000000000000000000000000000000000000000000000000000000000',
         },
       }));
 
     await mockServer
-      .forPost(infuraLineaSepoliaUrl)
-      .withJsonBodyIncluding({ method: 'eth_getBlockByNumber' })
+      .forGet('https://accounts.api.cx.metamask.io/v2/accounts/0x5cfe73b6021e818b776b421b1c4db2474086a7e1/balances')
+      .withQuery({
+        networks: 1
+      })
       .thenCallback(() => ({
         statusCode: 200,
         json: {
-          jsonrpc: '2.0',
-          id: '1111111111111111',
-          result: {},
+          count:0,
+          balances:[
+            {
+              "object": "token",
+              "address": "0x45804880de22913dafe09f4980848ece6ecbaf78",
+              "name": "Paxos Gold",
+              "symbol": "PAXG",
+              "decimals": 18,
+              "balance": "0.000199960000000000",
+              "chainId": 1
+          },
+          {
+              "object": "token",
+              "address": "0x6b175474e89094c44da98b954eedeac495271d0f",
+              "name": "Dai Stablecoin",
+              "symbol": "DAI",
+              "decimals": 18,
+              "balance": "1.371534639562184532",
+              "chainId": 1
+          },
+          {
+              "object": "token",
+              "address": "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48",
+              "name": "USD Coin",
+              "symbol": "USDC",
+              "decimals": 6,
+              "balance": "0.033000",
+              "chainId": 1
+          },
+          {
+              "object": "token",
+              "address": "0x0000000000000000000000000000000000000000",
+              "symbol": "ETH",
+              "name": "Ether",
+              "type": "native",
+              "timestamp": "2015-07-30T03:26:13.000Z",
+              "decimals": 18,
+              "chainId": 1,
+              "balance": "2"
+          }
+          ],
+          unprocessedNetworks:[],
         },
       }));
-    await mockServer
-      .forPost(infuraSepoliaUrl)
-      .withJsonBodyIncluding({ method: 'eth_getBlockByNumber' })
-      .thenCallback(() => ({
-        statusCode: 200,
-        json: {
-          jsonrpc: '2.0',
-          id: '1111111111111111',
-          result: {},
-        },
-      }));
+
+
+
     await mockServerJsonRpc(mockServer, [
+      ['eth_blockNumber'],
+      ['eth_getBlockByNumber'],
       ['eth_chainId', { result: `0x${chainId}` }],
       [
         'eth_call',
@@ -200,13 +200,8 @@ describe('ENS', function (this: Suite) {
       [
         'eth_call',
         {
-          params: [
-            {
-              to: '0xf62e6a41561b3650a69bb03199c735e3e3328c0d',
-              data: '0xf0002ea90000000000000000000000000000000000000000000000000000000000000040000000000000000000000000000000000000000000000000000000000000008000000000000000000000000000000000000000000000000000000000000000010000000000000000000000005cfe73b6021e818b776b421b1c4db2474086a7e100000000000000000000000000000000000000000000000000000000000000010000000000000000000000000000000000000000000000000000000000000000',
-            },
-          ],
-          result: `0x`,
+          methodResultVariant: 'balanceChecker',
+          params: [{ to: CONTRACT_ADDRESS.BalanceCheckerEthereumMainnet }],
         },
       ],
     ]);
@@ -215,14 +210,50 @@ describe('ENS', function (this: Suite) {
   it('domain resolves to a correct address', async function () {
     await withFixtures(
       {
-        fixtures: new FixtureBuilder().withNetworkControllerOnMainnet().build(),
+        fixtures: new FixtureBuilder()
+          .withNetworkControllerOnMainnet()
+          .withAccountTracker({
+            accounts: {
+                "0x5cfe73b6021e818b776b421b1c4db2474086a7e1": {
+                    address: "0x5cfe73b6021e818b776b421b1c4db2474086a7e1",
+                    balance: "0x1bc16d674ec80000"
+                }
+            },
+            currentBlockGasLimit: '0x1c9c380',
+            accountsByChainId: {
+                "0x1": {
+                    "0x5cfe73b6021e818b776b421b1c4db2474086a7e1": {
+                        address: "0x5cfe73b6021e818b776b421b1c4db2474086a7e1",
+                        balance: "0x1bc16d674ec80000"
+                    }
+                }
+            },
+            currentBlockGasLimitByChainId: {
+              '0x1': '0x1c9c380',
+            },
+          })
+          .withNameController({
+            names: {
+              ethereumAddress: {
+                '0x5cfe73b6021e818b776b421b1c4db2474086a7e1': {
+                  '*': {
+                    name: 'Account 1',
+                    sourceId: null,
+                    proposedNames: {},
+                    origin: 'account-identity',
+                  },
+                },
+              }
+            },
+          })
+          .build(),
         ganacheOptions: defaultGanacheOptions,
         title: this.test?.fullTitle(),
         testSpecificMock: mockInfura,
       },
       async ({ driver }: { driver: Driver }) => {
+        await driver.delay(10000)
         await loginWithoutBalanceValidation(driver);
-        await driver.delay(10000 * 50);
 
         // click send button on homepage to start send flow
         const homepage = new HomePage(driver);

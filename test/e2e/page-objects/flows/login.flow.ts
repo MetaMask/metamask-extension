@@ -17,7 +17,6 @@ export const loginWithoutBalanceValidation = async (
   await driver.navigate();
   const loginPage = new LoginPage(driver);
   await loginPage.check_pageIsLoaded();
-  await driver.delay(10000);
   await loginPage.loginToHomepage(password);
 };
 

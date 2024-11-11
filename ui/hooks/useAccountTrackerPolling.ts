@@ -19,7 +19,7 @@ const useAccountTrackerPolling = () => {
   useMultiPolling({
     startPolling: accountTrackerStartPolling,
     stopPollingByPollingToken: accountTrackerStopPollingByPollingToken,
-    input: availableNetworkClientIds,
+    input: ['mainnet'],
   });
 };
 export default useAccountTrackerPolling;

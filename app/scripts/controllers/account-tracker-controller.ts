@@ -276,6 +276,7 @@ export default class AccountTrackerController extends BaseController<
       currentBlockGasLimitByChainId,
     } = getDefaultAccountTrackerControllerState();
     this.update((state) => {
+      debugger;
       state.accounts = accounts;
       state.accountsByChainId = accountsByChainId;
       state.currentBlockGasLimit = currentBlockGasLimit;
@@ -301,7 +302,9 @@ export default class AccountTrackerController extends BaseController<
     // add listener
     this.#blockTracker.addListener('latest', this.#updateForBlock);
     // fetch account balances
+    debugger;
     this.updateAccounts();
+    debugger;
   }
 
   /**
@@ -370,6 +373,7 @@ export default class AccountTrackerController extends BaseController<
    * @returns pollingToken
    */
   startPollingByNetworkClientId(networkClientId: NetworkClientId): string {
+    debugger;
     const pollToken = random();
 
     const pollingTokenSet = this.#pollingTokenSets.get(networkClientId);
@@ -381,6 +385,8 @@ export default class AccountTrackerController extends BaseController<
       this.#pollingTokenSets.set(networkClientId, set);
       this.#subscribeWithNetworkClientId(networkClientId);
     }
+    debugger;
+
     return pollToken;
   }
 
@@ -388,6 +394,8 @@ export default class AccountTrackerController extends BaseController<
    * Stops polling for all networkClientIds
    */
   stopAllPolling(): void {
+    debugger;
+
     this.stop();
     this.#pollingTokenSets.forEach((tokenSet, _networkClientId) => {
       tokenSet.forEach((token) => {
@@ -402,6 +410,8 @@ export default class AccountTrackerController extends BaseController<
    * @param pollingToken - The polling token to stop polling for
    */
   stopPollingByPollingToken(pollingToken: string | undefined): void {
+    debugger;
+
     if (!pollingToken) {
       throw new Error('pollingToken required');
     }
@@ -750,6 +760,7 @@ export default class AccountTrackerController extends BaseController<
     const accounts = this.#getAccountsForChainId(chainId);
     // only populate if the entry is still present
     if (!accounts[address]) {
+      debugger;
       return;
     }
 
@@ -769,6 +780,7 @@ export default class AccountTrackerController extends BaseController<
     newAccounts[address] = result;
 
     this.update((state) => {
+      debugger;
       if (chainId === this.#getCurrentChainId()) {
         state.accounts = newAccounts;
       }

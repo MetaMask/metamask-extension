@@ -13,7 +13,7 @@ import { KNOWN_PUBLIC_KEY_ADDRESSES } from '../../../stub/keyring-bridge';
 const RECIPIENT = '0x0Cc5261AB8cE458dc977078A3623E2BaDD27afD3';
 
 describe('Trezor Hardware', function (this: Suite) {
-  it('send ETH', async function () {
+  it.only('send ETH', async function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilder().withTrezorAccount().build(),
@@ -33,6 +33,7 @@ describe('Trezor Hardware', function (this: Suite) {
           '0x100000000000000000000',
         );
         await logInWithBalanceValidation(driver);
+        await driver.delay(50000)
 
         await sendTransaction(driver, RECIPIENT, '1');
 
