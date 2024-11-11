@@ -15,8 +15,9 @@ import { SnapNotification } from '../pages/notifications/notification-components
  */
 export const useSnapNotificationTimeouts = () => {
   const dispatch = useDispatch();
-  const snapNotifications: SnapNotification[] =
-    useSelector(getSnapNotifications);
+  const snapNotifications = useSelector(
+    getSnapNotifications,
+  ) as SnapNotification[];
 
   const setNotificationTimeout = (id: string) => {
     setTimeout(() => {
