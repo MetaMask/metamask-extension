@@ -5,17 +5,10 @@ import {
   BackgroundColor,
   BlockSize,
   BorderRadius,
-  Display,
 } from '../../../helpers/constants/design-system';
 import { StatusTypes } from '../../../../shared/types/bridge-status';
 
-export default function Segment({
-  type,
-  width,
-}: {
-  type: StatusTypes | null;
-  width: BlockSize;
-}) {
+export default function Segment({ type }: { type: StatusTypes | null }) {
   return (
     <Box
       width={BlockSize.Full}

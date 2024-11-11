@@ -1,4 +1,8 @@
-import { ChainId, Quote } from '../../ui/pages/bridge/types';
+// eslint-disable-next-line import/no-restricted-paths
+import { ChainId, Quote, QuoteResponse } from '../../ui/pages/bridge/types';
+
+// All fields need to be types not interfaces, same with their children fields
+// o/w you get a type error
 
 export enum StatusTypes {
   UNKNOWN = 'UNKNOWN',
@@ -96,9 +100,9 @@ export type StatusResponse = {
   refuel?: RefuelStatusResponse;
 };
 
-export type RefuelStatusResponse = {} & StatusResponse;
+export type RefuelStatusResponse = object & StatusResponse;
 
-export type RefuelData = {} & Step;
+export type RefuelData = object & Step;
 
 export type BridgeHistoryItem = {
   quote: Quote;
@@ -117,4 +121,26 @@ export type BridgeHistoryItem = {
   initialDestAssetBalance?: number;
   targetContractAddress?: string;
   account: string;
+};
+
+export enum BridgeStatusAction {
+  START_POLLING_FOR_BRIDGE_TX_STATUS = 'startPollingForBridgeTxStatus',
+  WIPE_BRIDGE_STATUS = 'wipeBridgeStatus',
+  GET_STATE = 'getState',
+}
+
+export type StartPollingForBridgeTxStatusArgs = {
+  statusRequest: StatusRequest;
+  quoteResponse: QuoteResponse;
+  startTime?: BridgeHistoryItem['startTime'];
+  slippagePercentage: BridgeHistoryItem['slippagePercentage'];
+  pricingData?: BridgeHistoryItem['pricingData'];
+  initialDestAssetBalance?: BridgeHistoryItem['initialDestAssetBalance'];
+  targetContractAddress?: BridgeHistoryItem['targetContractAddress'];
+};
+
+export type SourceChainTxHash = string;
+
+export type BridgeStatusControllerState = {
+  txHistory: Record<SourceChainTxHash, BridgeHistoryItem>;
 };

@@ -39,7 +39,7 @@ export const DefaultStory: StoryFn<typeof Segment> = () => {
       gap={1}
       width={BlockSize.Full}
     >
-      <Segment type={typeIndex} width={BlockSize.Full} />
+      <Segment type={typeIndex} />
     </Box>
   );
 };

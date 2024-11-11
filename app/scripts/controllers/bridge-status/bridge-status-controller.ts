@@ -2,21 +2,19 @@ import { StateMetadata } from '@metamask/base-controller';
 import { StaticIntervalPollingController } from '@metamask/polling-controller';
 import { Hex } from '@metamask/utils';
 import { Numeric } from '../../../../shared/modules/Numeric';
-import { QuoteResponse } from '../../../../ui/pages/bridge/types';
+// eslint-disable-next-line import/no-restricted-paths
 import {
-  StatusTypes,
+  StartPollingForBridgeTxStatusArgs,
   StatusRequest,
-  BridgeHistoryItem,
+  StatusTypes,
+  BridgeStatusControllerState,
 } from '../../../../shared/types/bridge-status';
 import {
   BRIDGE_STATUS_CONTROLLER_NAME,
   DEFAULT_BRIDGE_STATUS_CONTROLLER_STATE,
   REFRESH_INTERVAL_MS,
 } from './constants';
-import {
-  BridgeStatusControllerState,
-  BridgeStatusControllerMessenger,
-} from './types';
+import { BridgeStatusControllerMessenger } from './types';
 import { fetchBridgeTxStatus } from './utils';
 
 const metadata: StateMetadata<{
@@ -34,16 +32,6 @@ type SrcTxHash = string;
 export type FetchBridgeTxStatusArgs = {
   statusRequest: StatusRequest;
 };
-export type StartPollingForBridgeTxStatusArgs = {
-  statusRequest: StatusRequest;
-  quoteResponse: QuoteResponse;
-  startTime?: BridgeHistoryItem['startTime'];
-  slippagePercentage: BridgeHistoryItem['slippagePercentage'];
-  pricingData?: BridgeHistoryItem['pricingData'];
-  initialDestAssetBalance?: BridgeHistoryItem['initialDestAssetBalance'];
-  targetContractAddress?: BridgeHistoryItem['targetContractAddress'];
-};
-
 export default class BridgeStatusController extends StaticIntervalPollingController<
   typeof BRIDGE_STATUS_CONTROLLER_NAME,
   { bridgeStatusState: BridgeStatusControllerState },

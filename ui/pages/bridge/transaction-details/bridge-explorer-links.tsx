@@ -2,22 +2,14 @@ import { NetworkConfiguration } from '@metamask/network-controller';
 import React, { useContext } from 'react';
 import {
   Box,
-  Button,
-  Icon,
   IconName,
-  ButtonVariant,
-  Text,
   ButtonSecondary,
 } from '../../../components/component-library';
 import { openBlockExplorer } from '../../../components/multichain/menu-items/view-explorer-menu-item';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import {
-  AlignItems,
-  Color,
   Display,
   FlexDirection,
-  IconColor,
-  TextColor,
 } from '../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 
@@ -41,7 +33,7 @@ export const getBlockExplorerUrl = (
   }
 
   const rootUrl = networkConfiguration.blockExplorerUrls[index]?.replace(
-    /\/$/g,
+    /\/$/u,
     '',
   );
   return `${rootUrl}/tx/${txHash}`;

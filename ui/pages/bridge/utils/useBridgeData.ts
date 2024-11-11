@@ -3,7 +3,6 @@ import { Hex } from '@metamask/utils';
 import { TransactionMeta } from '@metamask/transaction-controller';
 import { useHistory } from 'react-router-dom';
 import { selectBridgeHistoryForAccount } from '../../../ducks/bridge-status/selectors';
-import { getNetworkConfigurationsByChainId } from '../../../selectors';
 import { CROSS_CHAIN_SWAP_TX_DETAILS_ROUTE } from '../../../helpers/constants/routes';
 import useBridgeChainInfo from './useBridgeChainInfo';
 
@@ -22,9 +21,6 @@ export default function useBridgeData({
   transactionGroup,
 }: UseBridgeDataProps) {
   const history = useHistory();
-  const networkConfigurationsByChainId = useSelector(
-    getNetworkConfigurationsByChainId,
-  );
   const bridgeHistory = useSelector(selectBridgeHistoryForAccount);
 
   const srcTxHash = transactionGroup.initialTransaction.hash;

@@ -1,5 +1,7 @@
-import { StartPollingForBridgeTxStatusArgs } from '../../../app/scripts/controllers/bridge-status/bridge-status-controller';
-import { BridgeStatusAction } from '../../../app/scripts/controllers/bridge-status/types';
+import {
+  StartPollingForBridgeTxStatusArgs,
+  BridgeStatusAction,
+} from '../../../shared/types/bridge-status';
 import { forceUpdateMetamaskState } from '../../store/actions';
 import { submitRequestToBackground } from '../../store/background-connection';
 import { MetaMaskReduxDispatch } from '../../store/store';

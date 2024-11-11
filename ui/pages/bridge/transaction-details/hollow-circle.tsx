@@ -2,7 +2,6 @@ import * as React from 'react';
 import classnames from 'classnames';
 import {
   Box,
-  BoxProps,
   IconProps,
   IconSize,
   PolymorphicRef,
@@ -10,18 +9,11 @@ import {
 import {
   BackgroundColor,
   Display,
-  IconColor,
 } from '../../../helpers/constants/design-system';
 
 const HollowCircle = React.forwardRef(
   <C extends React.ElementType = 'span'>(
-    {
-      size = IconSize.Md,
-      color,
-      className = '',
-      style,
-      ...props
-    }: IconProps<C>,
+    { size = IconSize.Md, color, className = '', style }: IconProps<C>,
     ref?: PolymorphicRef<C>,
   ) => {
     return (

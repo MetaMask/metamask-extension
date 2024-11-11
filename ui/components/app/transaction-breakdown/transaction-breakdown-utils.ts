@@ -1,4 +1,3 @@
-import { connect } from 'react-redux';
 import {
   TransactionMeta,
   TransactionType,
@@ -66,6 +65,7 @@ export const getTransactionBreakdownData = ({
         destinationTokenDecimals,
         undefined,
         undefined,
+        // @ts-expect-error TODO: fix this, ported directly from original code
         null,
       );
 
@@ -113,7 +113,12 @@ export const getTransactionBreakdownData = ({
       getHexGasTotal({ gasLimit, gasPrice: usedGasPrice })) ||
     '0x0';
 
-  const totalInHex = sumHexes(hexGasTotal, value, l1HexGasTotal ?? 0);
+  const totalInHex = sumHexes(
+    hexGasTotal,
+    // @ts-expect-error TODO: fix this, ported directly from original code
+    value,
+    l1HexGasTotal ?? 0,
+  );
 
   return {
     nativeCurrency: getNativeCurrency(state),

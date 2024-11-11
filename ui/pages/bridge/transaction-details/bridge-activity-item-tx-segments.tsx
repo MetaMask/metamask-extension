@@ -23,10 +23,7 @@ import {
 } from '@metamask/transaction-controller';
 import Segment from './segment';
 
-const getTxIndex = (
-  srcTxStatus: StatusTypes,
-  destTxStatus: StatusTypes | null,
-) => {
+const getTxIndex = (srcTxStatus: StatusTypes) => {
   if (srcTxStatus === StatusTypes.PENDING) {
     return 1;
   }
@@ -71,14 +68,14 @@ export default function BridgeActivityItemTxSegments({
   const { initialTransaction } = transactionGroup;
   const srcTxStatus = getSrcTxStatus(initialTransaction);
   const destTxStatus = getDestTxStatus(bridgeTxHistoryItem, srcTxStatus);
-  const txIndex = getTxIndex(srcTxStatus, destTxStatus);
+  const txIndex = getTxIndex(srcTxStatus);
 
   return (
     <Box display={Display.Flex} flexDirection={FlexDirection.Column} gap={2}>
       <Text color={TextColor.textAlternative}>Transaction {txIndex} of 2</Text>
       <Box display={Display.Flex} gap={2} width={BlockSize.Full}>
-        <Segment type={srcTxStatus} width={BlockSize.Half} />
-        <Segment type={destTxStatus} width={BlockSize.Half} />
+        <Segment type={srcTxStatus} />
+        <Segment type={destTxStatus} />
       </Box>
     </Box>
   );
