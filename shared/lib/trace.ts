@@ -14,11 +14,11 @@ export enum TraceName {
    */
   AccountList = 'Account List',
   /**
-   * `TokenList` component loading message disappears or no-Nfts banner renders.
+   * `TokenList` component renders (FCP).
    */
-  AccountOverviewAssetListTabFMP = 'Account Overview - Asset List Tab - First Meaningful Paint',
+  AccountOverviewAssetListTabFCP = 'Account Overview - Asset List Tab - First Contentful Paint',
   /**
-   * `TokenList` component fully loads, including all resources.
+   * `TokenList` component loading message disappears (FMP).
    */
   AccountOverviewAssetListTab = 'Account Overview - Asset List Tab',
   /**

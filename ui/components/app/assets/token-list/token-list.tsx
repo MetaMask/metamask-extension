@@ -68,6 +68,10 @@ export default function TokenList({
   ]);
 
   useEffect(() => {
+    endTrace({ name: TraceName.AccountOverviewAssetListTabFCP });
+  }, []);
+
+  useEffect(() => {
     if (!loading) {
       endTrace({ name: TraceName.AccountOverviewAssetListTab });
     }
