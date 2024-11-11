@@ -354,7 +354,7 @@ workflows:
   rerun-from-failed:
     when:
       condition:
-        equal: ["<< pipeline.trigger_source >>", "api"]
+        equal: ["<< pipeline.schedule.name >>", "rerun-from-failed"]
     jobs:
       - rerun-workflows-from-failed:
           filters:
