@@ -498,7 +498,7 @@
     "message": "No accounts available to connect"
   },
   "allNetworks": {
-    "message": "All Networks",
+    "message": "All networks",
     "description": "Speicifies to token network filter to filter by all Networks"
   },
   "allOfYour": {
@@ -1350,7 +1350,7 @@
     "message": "Current language"
   },
   "currentNetwork": {
-    "message": "Current Network",
+    "message": "Current network",
     "description": "Speicifies to token network filter to filter by current Network. Will render when network nickname is not available"
   },
   "currentRpcUrlDeprecated": {

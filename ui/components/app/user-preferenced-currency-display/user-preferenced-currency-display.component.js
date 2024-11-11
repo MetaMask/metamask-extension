@@ -82,6 +82,7 @@ export default function UserPreferencedCurrencyDisplay({
       data-testid={dataTestId}
       numberOfDecimals={numberOfDecimals}
       prefixComponent={prefixComponent}
+      hideLabel={!showCurrencySuffix}
       suffix={showCurrencySuffix && !showEthLogo && currency}
     />
   );

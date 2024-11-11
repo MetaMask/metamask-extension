@@ -97,7 +97,7 @@ const AssetListControlBar = ({ showTokensLinks }: AssetListControlBarProps) => {
         {process.env.FILTER_TOKENS_TOGGLE && (
           <ButtonBase
             data-testid="sort-by-popover-toggle"
-            variant={TextVariant.bodySmMedium}
+            variant={TextVariant.bodyMdMedium}
             className="asset-list-control-bar__button asset-list-control-bar__network_control"
             onClick={toggleNetworkFilterPopover}
             size={ButtonBaseSize.Sm}
