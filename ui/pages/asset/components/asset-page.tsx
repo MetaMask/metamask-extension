@@ -4,7 +4,6 @@ import { useHistory } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import { EthMethod } from '@metamask/keyring-api';
 import { isEqual } from 'lodash';
-import BN from 'bn.js';
 import { Hex } from '@metamask/utils';
 import { zeroAddress } from 'ethereumjs-util';
 import {
@@ -45,8 +44,6 @@ import { getConversionRate } from '../../../ducks/metamask/metamask';
 import { toChecksumHexAddress } from '../../../../shared/modules/hexstring-utils';
 import CoinButtons from '../../../components/app/wallet-overview/coin-buttons';
 import { getIsNativeTokenBuyable } from '../../../ducks/ramps';
-import { stringifyBalance } from '../../../hooks/useTokenBalances';
-import { hexToDecimal } from '../../../../shared/modules/conversion.utils';
 import AssetChart from './chart/asset-chart';
 import TokenButtons from './token-buttons';
 
@@ -101,8 +98,11 @@ const AssetPage = ({
     account.methods.includes(EthMethod.SignTransaction) ||
     account.methods.includes(EthMethod.SignUserOperation);
 
-  const selectedAccountTokenBalancesAcrossChains: Record<string, any> =
-    useSelector(getSelectedAccountTokenBalancesAcrossChains);
+  const selectedAccountTokenBalancesAcrossChains: AddressBalanceMapping =
+    useSelector(
+      getSelectedAccountTokenBalancesAcrossChains,
+    ) as AddressBalanceMapping;
+
   const marketData = useSelector(getMarketData);
   const currencyRates = useSelector(getCurrencyRates);
 
@@ -118,26 +118,14 @@ const AssetPage = ({
       ? toChecksumHexAddress(asset.address)
       : zeroAddress();
 
-  let balance;
-  if (type === AssetType.native) {
-    const nativeTokenBalanceHex = nativeBalances?.[chainId];
-    if (nativeTokenBalanceHex && nativeTokenBalanceHex !== '0x0') {
-      balance = stringifyBalance(
-        new BN(hexToDecimal(nativeTokenBalanceHex)),
-        new BN(decimals),
-        5,
-      );
-    }
-  } else {
-    const hexBalance =
-      selectedAccountTokenBalancesAcrossChains[chainId as Hex]?.[address];
-    if (hexBalance && hexBalance !== '0x0') {
-      balance = stringifyBalance(
-        new BN(hexToDecimal(hexBalance)),
-        new BN(decimals),
-      );
-    }
-  }
+  const balance = calculateTokenBalance({
+    isNative: type === AssetType.native,
+    chainId,
+    address: address as Hex,
+    decimals,
+    nativeBalances,
+    selectedAccountTokenBalancesAcrossChains,
+  });
 
   // Market and conversion rate data
   const baseCurrency = marketData[chainId]?.[address]?.currency;
@@ -235,7 +223,6 @@ const AssetPage = ({
           chainId={chainId}
           symbol={symbol}
           image={image}
-          balance={balance}
           tokenFiatAmount={tokenFiatAmount}
           string={balance?.toString()}
         />

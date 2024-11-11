@@ -1,6 +1,5 @@
 import React, { ReactNode, useMemo } from 'react';
 import { shallowEqual, useSelector } from 'react-redux';
-import BN from 'bn.js';
 import { Hex } from '@metamask/utils';
 import TokenCell from '../token-cell';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
@@ -24,8 +23,8 @@ import {
 } from '../../../../selectors';
 import { getConversionRate } from '../../../../ducks/metamask/metamask';
 import { filterAssets } from '../util/filter';
-import { hexToDecimal } from '../../../../../shared/modules/conversion.utils';
-import { stringifyBalance } from '../../../../hooks/useTokenBalances';
+import { calculateTokenBalance } from '../util/calculateTokenBalance';
+import { calculateTokenFiatAmount } from '../util/calculateTokenFiatAmount';
 
 type TokenListProps = {
   onTokenClick: (chainId: string, address: string) => void;
@@ -49,6 +48,10 @@ export type TokenWithFiatAmount = Token & {
 };
 
 export type AddressBalanceMapping = Record<Hex, Record<Hex, Hex>>;
+export type ChainAddressMarketData = Record<
+  Hex,
+  Record<Hex, Record<string, string | number>>
+>;
 
 export default function TokenList({ onTokenClick }: TokenListProps) {
   const t = useI18nContext();
@@ -71,7 +74,10 @@ export default function TokenList({ onTokenClick }: TokenListProps) {
       getSelectedAccountTokenBalancesAcrossChains,
     ) as AddressBalanceMapping;
 
-  const marketData = useSelector(getMarketData);
+  const marketData: ChainAddressMarketData = useSelector(
+    getMarketData,
+  ) as ChainAddressMarketData;
+  console.log(marketData);
   const currencyRates = useSelector(getCurrencyRates);
   const nativeBalances: Record<Hex, Hex> = useSelector(
     getSelectedAccountNativeTokenCachedBalanceByChainId,
@@ -84,43 +90,23 @@ export default function TokenList({ onTokenClick }: TokenListProps) {
       ([stringChainKey, tokens]) => {
         const chainId = stringChainKey as Hex;
         tokens.forEach((token: Token) => {
-          const { address, isNative, symbol, decimals } = token;
-          let balance;
+          const { isNative, address, decimals } = token;
+          const balance = calculateTokenBalance({
+            isNative,
+            chainId,
+            address,
+            decimals,
+            nativeBalances,
+            selectedAccountTokenBalancesAcrossChains,
+          });
 
-          if (isNative) {
-            const nativeTokenBalanceHex = nativeBalances?.[chainId];
-            if (nativeTokenBalanceHex && nativeTokenBalanceHex !== '0x0') {
-              balance = stringifyBalance(
-                new BN(hexToDecimal(nativeTokenBalanceHex)),
-                new BN(decimals),
-                5,
-              );
-            }
-          } else {
-            const hexBalance =
-              selectedAccountTokenBalancesAcrossChains[chainId]?.[address];
-            if (hexBalance && hexBalance !== '0x0') {
-              balance = stringifyBalance(
-                new BN(hexToDecimal(hexBalance)),
-                new BN(decimals),
-              );
-            }
-          }
-
-          // Market and conversion rate data
-          const baseCurrency = marketData[chainId]?.[address]?.currency;
-          const tokenMarketPrice = marketData[chainId]?.[address]?.price || 0;
-          const tokenExchangeRate =
-            currencyRates[baseCurrency]?.conversionRate || 0;
-
-          // Calculate fiat amount
-          let tokenFiatAmount =
-            tokenMarketPrice * tokenExchangeRate * parseFloat(String(balance));
-          if (isNative && currencyRates) {
-            tokenFiatAmount =
-              currencyRates[symbol]?.conversionRate *
-              parseFloat(String(balance));
-          }
+          const tokenFiatAmount = calculateTokenFiatAmount({
+            token,
+            chainId,
+            balance,
+            marketData,
+            currencyRates,
+          });
 
           // Append processed token with balance and fiat amount
           tokensWithBalance.push({

@@ -14,23 +14,18 @@ type CalculateTokenBalanceParams = {
   chainId: Hex;
   address: Hex;
   decimals: number;
+  nativeBalances: Record<Hex, Hex>;
+  selectedAccountTokenBalancesAcrossChains: AddressBalanceMapping;
 };
 
-function calculateTokenBalance({
+export function calculateTokenBalance({
   isNative,
   chainId,
   address,
   decimals,
+  nativeBalances,
+  selectedAccountTokenBalancesAcrossChains,
 }: CalculateTokenBalanceParams): string | undefined {
-  const selectedAccountTokenBalancesAcrossChains: AddressBalanceMapping =
-    useSelector(
-      getSelectedAccountTokenBalancesAcrossChains,
-    ) as AddressBalanceMapping;
-
-  const nativeBalances: Record<Hex, Hex> = useSelector(
-    getSelectedAccountNativeTokenCachedBalanceByChainId,
-  ) as Record<Hex, Hex>;
-
   let balance;
 
   if (isNative) {

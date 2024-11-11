@@ -24,7 +24,6 @@ import AssetOptions from './asset-options';
 import AssetPage from './asset-page';
 
 const TokenAsset = ({ token, chainId }: { token: Token; chainId: string }) => {
-  console.log(token);
   const { address, symbol, isERC721 } = token;
 
   const tokenList = useSelector(getTokenList);
