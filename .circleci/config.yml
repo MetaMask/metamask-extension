@@ -350,15 +350,17 @@ workflows:
               only: develop
           requires:
             - prep-build-ts-migration-dashboard
+
   rerun-from-failed:
+    when:
+      condition:
+        equal: ["<< pipeline.trigger_source >>", "api"]
     jobs:
       - rerun-workflows-from-failed:
           filters:
             branches:
               only: develop
-          when:
-            condition:
-              equal: ["<< pipeline.trigger_source >>", "api"]
+
   locales_only:
     when:
       matches:
