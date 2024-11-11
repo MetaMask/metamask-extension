@@ -191,6 +191,7 @@ export default function TokenList({ onTokenClick }: TokenListProps) {
           tokenFiatAmount={tokenData.tokenFiatAmount}
           image={tokenData?.image}
           isNative={tokenData.isNative}
+          string={tokenData.string}
           onClick={onTokenClick}
         />
       ))}
