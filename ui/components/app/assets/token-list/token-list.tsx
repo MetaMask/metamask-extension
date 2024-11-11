@@ -77,7 +77,7 @@ export default function TokenList({ onTokenClick }: TokenListProps) {
   const marketData: ChainAddressMarketData = useSelector(
     getMarketData,
   ) as ChainAddressMarketData;
-  console.log(marketData);
+
   const currencyRates = useSelector(getCurrencyRates);
   const nativeBalances: Record<Hex, Hex> = useSelector(
     getSelectedAccountNativeTokenCachedBalanceByChainId,
@@ -156,6 +156,7 @@ export default function TokenList({ onTokenClick }: TokenListProps) {
     contractExchangeRates,
     currentNetwork,
     selectedAccount,
+    selectedAccountTokensChains,
   ]);
 
   const loading = false;
