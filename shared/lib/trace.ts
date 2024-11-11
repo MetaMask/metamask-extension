@@ -114,6 +114,10 @@ export type EndTraceRequest = {
    * Override the end time of the trace.
    */
   timestamp?: number;
+  /**
+   * Custom tags to associate with the trace.
+   */
+  tags?: Record<string, number | string | boolean>;
 };
 
 export function trace<T>(request: TraceRequest, fn: TraceCallback<T>): T;
@@ -156,6 +160,13 @@ export function endTrace(request: EndTraceRequest) {
   if (!pendingTrace) {
     log('No pending trace found', name, id);
     return;
+  }
+
+  if ('tags' in request) {
+    pendingTrace.request.tags = Object.assign(
+      pendingTrace.request.tags ?? {},
+      request.tags,
+    );
   }
 
   pendingTrace.end(timestamp);
