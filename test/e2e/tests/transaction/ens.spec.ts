@@ -1,11 +1,12 @@
 import { Suite } from 'mocha';
 import { MockttpServer } from 'mockttp';
-import { defaultGanacheOptions, withFixtures } from '../../helpers';
+import { defaultGanacheOptions, withFixtures, editGasFeeForm } from '../../helpers';
 import { Driver } from '../../webdriver/driver';
 import FixtureBuilder from '../../fixture-builder';
 import { loginWithoutBalanceValidation } from '../../page-objects/flows/login.flow';
 import HomePage from '../../page-objects/pages/homepage';
 import SendTokenPage from '../../page-objects/pages/send/send-token-page';
+import ConfirmTxPage from '../../page-objects/pages/send/confirm-tx-page';
 import { mockServerJsonRpc } from '../ppom/mocks/mock-server-json-rpc';
 
 describe('ENS', function (this: Suite) {
@@ -42,7 +43,7 @@ describe('ENS', function (this: Suite) {
         json: {
           jsonrpc: '2.0',
           id: '1111111111111111',
-          result: '0x1',
+          result: '0xDE0B6B3A7640000', // 1 ETH in hex
         },
       }));
 
@@ -102,18 +103,31 @@ describe('ENS', function (this: Suite) {
   it('domain resolves to a correct address', async function () {
     await withFixtures(
       {
-        fixtures: new FixtureBuilder().withNetworkControllerOnMainnet().build(),
-        ganacheOptions: defaultGanacheOptions,
+        fixtures: new FixtureBuilder()
+        .withNetworkControllerOnMainnet()
+        .build(),
+        ganacheOptions: {
+          ...defaultGanacheOptions,
+          accounts:[
+            {
+              balance: '0xDE0B6B3A7640000', // 1 ETH in hex
+            },
+          ],
+        },
         title: this.test?.fullTitle(),
         testSpecificMock: mockInfura,
       },
+
+
+
       async ({ driver }: { driver: Driver }) => {
+        await driver.delay(20000);
         await loginWithoutBalanceValidation(driver);
 
         // click send button on homepage to start send flow
         const homepage = new HomePage(driver);
         await homepage.check_pageIsLoaded();
-        await homepage.check_expectedBalanceIsDisplayed('<0.000001');
+        await homepage.check_expectedBalanceIsDisplayed('1');
         await homepage.startSendFlow();
 
         // fill ens address as recipient when user lands on send token screen
@@ -127,11 +141,31 @@ describe('ENS', function (this: Suite) {
           shortSampleAddress,
         );
 
+        await driver.delay(90000);
+
+        await driver.delay(90000);
+
+        await driver.delay(90000);
+
         // Verify the resolved ENS address can be used as the recipient address
         await sendToPage.check_ensAddressAsRecipient(
           sampleEnsDomain,
           shortSampleAddresV2,
         );
+
+         // Enter an amount
+         await sendToPage.fillAmount('0.1');
+
+         // Proceed to the confirmation screen
+         await sendToPage.goToNextScreen();
+
+          // Edit gas fee form
+         await editGasFeeForm(driver, '21000', '100');
+
+         // Confirm the transaction
+         const confirmTxPage = new ConfirmTxPage(driver);
+         await confirmTxPage.check_pageIsLoaded('expectedGasFee, expectedTotalFee');
+         await confirmTxPage.confirmTx();
       },
     );
   });
