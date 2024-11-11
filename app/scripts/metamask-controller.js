@@ -2000,6 +2000,11 @@ export default class MetamaskController extends EventEmitter {
         ],
       }),
       trace,
+      decodingApiUrl: process.env.DECODING_API_URL,
+      isDecodeSignatureRequestEnabled: () =>
+        this.preferencesController.state.useExternalServices === true &&
+        this.preferencesController.state.useTransactionSimulations &&
+        process.env.ENABLE_SIGNATURE_DECODING === true,
     });
 
     this.signatureController.hub.on(
@@ -3321,8 +3326,6 @@ export default class MetamaskController extends EventEmitter {
         preferencesController.setWatchEthereumAccountEnabled.bind(
           preferencesController,
         ),
-      ///: END:ONLY_INCLUDE_IF
-      ///: BEGIN:ONLY_INCLUDE_IF(solana)
       setSolanaSupportEnabled:
         preferencesController.setSolanaSupportEnabled.bind(
           preferencesController,
@@ -6405,7 +6408,9 @@ export default class MetamaskController extends EventEmitter {
       process.env.TRANSACTION_MULTICHAIN ? networkClientId : undefined,
     );
     nonceLock.releaseLock();
-    return nonceLock.nextNonce;
+    const nn = nonceLock.nextNonce;
+    console.log('-- nn --', nn);
+    return nn;
   }
 
   /**
