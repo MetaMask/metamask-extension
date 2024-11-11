@@ -64,6 +64,7 @@ buildTypes:
     features:
       - build-flask
       - keyring-snaps
+      - solana
     env:
       - INFURA_FLASK_PROJECT_ID
       - SEGMENT_FLASK_WRITE_KEY
