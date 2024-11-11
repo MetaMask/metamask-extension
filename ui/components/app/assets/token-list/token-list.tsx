@@ -40,6 +40,8 @@ type Token = {
   symbol: string;
 };
 
+type AddressBalanceMapping = Record<Hex, Record<Hex, Hex>>;
+
 export default function TokenList({ onTokenClick }: TokenListProps) {
   const t = useI18nContext();
   const currentNetwork = useSelector(getCurrentNetwork);
@@ -55,13 +57,10 @@ export default function TokenList({ onTokenClick }: TokenListProps) {
     getSelectedAccountTokensAcrossChains,
   ) as Record<Hex, Token[]>;
 
-  const selectedAccountTokenBalancesAcrossChains: Record<
-    Hex,
-    Record<Hex, Hex>
-  > = useSelector(getSelectedAccountTokenBalancesAcrossChains) as Record<
-    Hex,
-    Record<Hex, Hex>
-  >;
+  const selectedAccountTokenBalancesAcrossChains: AddressBalanceMapping =
+    useSelector(
+      getSelectedAccountTokenBalancesAcrossChains,
+    ) as AddressBalanceMapping;
 
   const marketData = useSelector(getMarketData);
   const currencyRates = useSelector(getCurrencyRates);
@@ -70,7 +69,7 @@ export default function TokenList({ onTokenClick }: TokenListProps) {
   ) as Record<Hex, Hex>;
 
   const consolidatedBalances = () => {
-    const tokensWithBalance: any[] = [];
+    const tokensWithBalance: Token[] = [];
 
     Object.entries(selectedAccountTokensChains).forEach(([chainId, tokens]) => {
       console.log('chainId', chainId);
