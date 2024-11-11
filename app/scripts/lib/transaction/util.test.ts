@@ -426,7 +426,7 @@ describe('Transaction Utils', () => {
           ...TRANSACTION_OPTIONS_MOCK,
           securityAlertResponse: {
             reason: BlockaidReason.checkingChain,
-            result_type: BlockaidResultType.Benign,
+            result_type: BlockaidResultType.Loading,
             securityAlertId: SECURITY_ALERT_ID_MOCK,
           },
         });

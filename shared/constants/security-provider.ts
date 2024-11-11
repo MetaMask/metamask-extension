@@ -120,7 +120,7 @@ export const LOADING_SECURITY_ALERT_RESPONSE: SecurityAlertResponse = {
 };
 
 export const SECURITY_ALERT_RESPONSE_CHECKING_CHAIN: SecurityAlertResponse = {
-  result_type: BlockaidResultType.Benign,
+  result_type: BlockaidResultType.Loading,
   reason: BlockaidReason.checkingChain,
 };
 

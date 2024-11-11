@@ -59,7 +59,7 @@ const expectedEventPropertiesBase = {
   chain_id: '0x539',
   environment_type: 'background',
   security_alert_reason: BlockaidReason.checkingChain,
-  security_alert_response: BlockaidResultType.Benign,
+  security_alert_response: BlockaidResultType.Loading,
 };
 
 describe('Signature Approved Event @no-mmi', function () {
