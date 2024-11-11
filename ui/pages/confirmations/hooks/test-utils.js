@@ -4,16 +4,13 @@ import { useMultichainSelector } from '../../../hooks/useMultichainSelector';
 
 import { GasEstimateTypes } from '../../../../shared/constants/gas';
 import {
-  getConversionRate,
-  getNativeCurrency,
-} from '../../../ducks/metamask/metamask';
-import {
   getCurrentCurrency,
   getShouldShowFiat,
   txDataSelector,
   getCurrentKeyring,
   getTokenExchangeRates,
   getPreferences,
+  selectConversionRateByChainId,
 } from '../../../selectors';
 
 import {
@@ -107,13 +104,10 @@ export const generateUseSelectorRouter =
     if (selector === getMultichainIsEvm) {
       return true;
     }
-    if (selector === getConversionRate) {
+    if (selector === selectConversionRateByChainId) {
       return MOCK_ETH_USD_CONVERSION_RATE;
     }
-    if (
-      selector === getMultichainNativeCurrency ||
-      selector === getNativeCurrency
-    ) {
+    if (selector === getMultichainNativeCurrency) {
       return EtherDenomination.ETH;
     }
     if (selector === getPreferences) {
