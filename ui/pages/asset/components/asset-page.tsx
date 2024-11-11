@@ -156,6 +156,16 @@ const AssetPage = ({
       ? tokenExchangeRate * tokenMarketPrice
       : undefined;
 
+  const tokenMarketDetails = marketData[chainId]?.[address];
+  const shouldDisplayMarketData =
+    conversionRate > 0 &&
+    tokenMarketDetails &&
+    (tokenMarketDetails.marketCap > 0 ||
+      tokenMarketDetails.totalVolume > 0 ||
+      tokenMarketDetails.circulatingSupply > 0 ||
+      tokenMarketDetails.allTimeHigh > 0 ||
+      tokenMarketDetails.allTimeLow > 0);
+
   return (
     <Box
       marginLeft="auto"
@@ -270,90 +280,75 @@ const AssetPage = ({
               </Box>
             </Box>
           )}
-          {conversionRate > 0 &&
-            (marketData[chainId]?.[address].marketCap > 0 ||
-              marketData[chainId]?.[address].totalVolume > 0 ||
-              marketData[chainId]?.[address].circulatingSupply > 0 ||
-              marketData[chainId]?.[address].allTimeHigh > 0 ||
-              marketData[chainId]?.[address]?.allTimeLow > 0) && (
-              <Box paddingLeft={4} paddingRight={4}>
-                <Text variant={TextVariant.headingMd} paddingBottom={4}>
-                  {t('marketDetails')}
-                </Text>
-                <Box
-                  display={Display.Flex}
-                  flexDirection={FlexDirection.Column}
-                  gap={2}
-                >
-                  {marketData[chainId]?.[address].marketCap > 0 &&
-                    renderRow(
-                      t('marketCap'),
-                      <Text data-testid="asset-market-cap">
-                        {localizeLargeNumber(
-                          t,
-                          tokenExchangeRate *
-                            marketData[chainId]?.[address].marketCap,
-                        )}
-                      </Text>,
-                    )}
-                  {marketData[chainId]?.[address].totalVolume > 0 &&
-                    renderRow(
-                      t('totalVolume'),
-                      <Text>
-                        {localizeLargeNumber(
-                          t,
-                          tokenExchangeRate *
-                            marketData[chainId]?.[address].totalVolume,
-                        )}
-                      </Text>,
-                    )}
-                  {marketData[chainId]?.[address].circulatingSupply > 0 &&
-                    renderRow(
-                      t('circulatingSupply'),
-                      <Text>
-                        {localizeLargeNumber(
-                          t,
-                          marketData[chainId]?.[address].circulatingSupply,
-                        )}
-                      </Text>,
-                    )}
-                  {marketData[chainId]?.[address].allTimeHigh > 0 &&
-                    renderRow(
-                      t('allTimeHigh'),
-                      <Text>
-                        {formatCurrency(
-                          `${
-                            tokenExchangeRate *
-                            marketData[chainId]?.[address].allTimeHigh
-                          }`,
-                          currency,
-                          getPricePrecision(
-                            tokenExchangeRate *
-                              marketData[chainId]?.[address].allTimeHigh,
-                          ),
-                        )}
-                      </Text>,
-                    )}
-                  {marketData[chainId]?.[address]?.allTimeLow > 0 &&
-                    renderRow(
-                      t('allTimeLow'),
-                      <Text>
-                        {formatCurrency(
-                          `${
-                            tokenExchangeRate *
-                            marketData[chainId]?.[address]?.allTimeLow
-                          }`,
-                          currency,
-                          getPricePrecision(
-                            tokenExchangeRate *
-                              marketData[chainId]?.[address]?.allTimeLow,
-                          ),
-                        )}
-                      </Text>,
-                    )}
-                </Box>
+          {shouldDisplayMarketData && (
+            <Box paddingLeft={4} paddingRight={4}>
+              <Text variant={TextVariant.headingMd} paddingBottom={4}>
+                {t('marketDetails')}
+              </Text>
+              <Box
+                display={Display.Flex}
+                flexDirection={FlexDirection.Column}
+                gap={2}
+              >
+                {tokenMarketDetails.marketCap > 0 &&
+                  renderRow(
+                    t('marketCap'),
+                    <Text data-testid="asset-market-cap">
+                      {localizeLargeNumber(
+                        t,
+                        tokenExchangeRate * tokenMarketDetails.marketCap,
+                      )}
+                    </Text>,
+                  )}
+                {tokenMarketDetails.totalVolume > 0 &&
+                  renderRow(
+                    t('totalVolume'),
+                    <Text>
+                      {localizeLargeNumber(
+                        t,
+                        tokenExchangeRate * tokenMarketDetails.totalVolume,
+                      )}
+                    </Text>,
+                  )}
+                {tokenMarketDetails.circulatingSupply > 0 &&
+                  renderRow(
+                    t('circulatingSupply'),
+                    <Text>
+                      {localizeLargeNumber(
+                        t,
+                        tokenMarketDetails.circulatingSupply,
+                      )}
+                    </Text>,
+                  )}
+                {tokenMarketDetails.allTimeHigh > 0 &&
+                  renderRow(
+                    t('allTimeHigh'),
+                    <Text>
+                      {formatCurrency(
+                        `${tokenExchangeRate * tokenMarketDetails.allTimeHigh}`,
+                        currency,
+                        getPricePrecision(
+                          tokenExchangeRate * tokenMarketDetails.allTimeHigh,
+                        ),
+                      )}
+                    </Text>,
+                  )}
+                {tokenMarketDetails.allTimeLow > 0 &&
+                  renderRow(
+                    t('allTimeLow'),
+                    <Text>
+                      {formatCurrency(
+                        `${tokenExchangeRate * tokenMarketDetails.allTimeLow}`,
+                        currency,
+                        getPricePrecision(
+                          tokenExchangeRate * tokenMarketDetails.allTimeLow,
+                        ),
+                      )}
+                    </Text>,
+                  )}
               </Box>
-            )}
+            </Box>
+          )}
           <Box marginBottom={8}>
             <Text
               paddingLeft={4}
