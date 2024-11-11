@@ -115,7 +115,12 @@ import {
   AccountConnections,
   MergedInternalAccount,
 } from '../../../selectors/selectors.types';
-import { endTrace, trace, TraceName } from '../../../../shared/lib/trace';
+import {
+  endTrace,
+  trace,
+  TraceName,
+  TraceOperation,
+} from '../../../../shared/lib/trace';
 import {
   ACCOUNT_OVERVIEW_TAB_KEY_TO_TRACE_NAME_MAP,
   AccountOverviewTabKey,
@@ -357,6 +362,7 @@ export const AccountListMenu = ({
           name: ACCOUNT_OVERVIEW_TAB_KEY_TO_TRACE_NAME_MAP[
             defaultHomeActiveTabName
           ],
+          op: TraceOperation.ComponentLoad,
         });
         dispatch(setSelectedAccount(account.address));
       };

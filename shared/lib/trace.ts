@@ -34,6 +34,7 @@ export enum TraceName {
 }
 
 export enum TraceOperation {
+  ComponentLoad = 'custom.ui.component_load',
 }
 
 const log = createModuleLogger(sentryLogger, 'trace');
