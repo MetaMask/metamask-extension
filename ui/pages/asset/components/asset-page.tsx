@@ -124,7 +124,7 @@ const AssetPage = ({
     if (nativeTokenBalanceHex && nativeTokenBalanceHex !== '0x0') {
       balance = stringifyBalance(
         new BN(hexToDecimal(nativeTokenBalanceHex)),
-        new BN(18),
+        new BN(decimals),
         5,
       );
     }
