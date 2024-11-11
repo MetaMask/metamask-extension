@@ -26,6 +26,8 @@ import {
   setEditedNetwork,
   grantPermittedChain,
   showPermittedNetworkToast,
+  updateCustomNonce,
+  setNextNonce,
 } from '../../../store/actions';
 import {
   CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP,
@@ -249,10 +251,7 @@ export const NetworkListMenu = ({ onClose }: { onClose: () => void }) => {
   const generateNetworkListItem = (network: NetworkConfiguration) => {
     const isCurrentNetwork = network.chainId === currentChainId;
     const canDeleteNetwork =
-      isUnlocked &&
-      !isCurrentNetwork &&
-      network.chainId !== CHAIN_IDS.MAINNET &&
-      network.chainId !== CHAIN_IDS.LINEA_MAINNET;
+      isUnlocked && !isCurrentNetwork && network.chainId !== CHAIN_IDS.MAINNET;
 
     return (
       <NetworkListItem
@@ -277,11 +276,10 @@ export const NetworkListMenu = ({ onClose }: { onClose: () => void }) => {
             network.rpcEndpoints[network.defaultRpcEndpointIndex];
           dispatch(setActiveNetwork(networkClientId));
           dispatch(toggleNetworkMenu());
+          dispatch(updateCustomNonce(''));
+          dispatch(setNextNonce(''));
 
-          if (
-            process.env.CHAIN_PERMISSIONS &&
-            permittedAccountAddresses.length > 0
-          ) {
+          if (permittedAccountAddresses.length > 0) {
             grantPermittedChain(selectedTabOrigin, network.chainId);
             if (!permittedChainIds.includes(network.chainId)) {
               dispatch(showPermittedNetworkToast());

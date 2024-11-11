@@ -860,8 +860,7 @@
     "showExtensionInFullSizeView": false,
     "showFiatInTestnets": false,
     "showTestNetworks": true,
-    "smartTransactionsOptInStatus": false,
-    "useNativeCurrencyAsPrimaryCurrency": true,
+    "smartTransactionsOptInStatus": true,
     "petnamesEnabled": false,
     "showConfirmationAdvancedDetails": false,
     "showMultiRpcModal": false
@@ -1296,10 +1295,6 @@
       "smart_transactions": {
         "extension_active": true,
         "mobile_active": true
-      },
-      "swapRedesign": {
-        "extensionActive": true,
-        "mobileActive": false
       },
       "zksync": {
         "extensionActive": true,

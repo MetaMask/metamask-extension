@@ -56,6 +56,7 @@ const InteractiveReplacementTokenNotification: React.FC<
         interactiveReplacementToken &&
         Boolean(Object.keys(interactiveReplacementToken).length);
 
+      // @ts-expect-error keyring type is wrong maybe?
       if (!/^Custody/u.test(keyring.type) || !hasInteractiveReplacementToken) {
         setShowNotification(false);
         return;
@@ -66,6 +67,7 @@ const InteractiveReplacementTokenNotification: React.FC<
       )) as unknown as string;
       const custodyAccountDetails = await dispatch(
         mmiActions.getAllCustodianAccountsWithToken(
+          // @ts-expect-error keyring type is wrong maybe?
           keyring.type.split(' - ')[1],
           token,
         ),
@@ -105,6 +107,7 @@ const InteractiveReplacementTokenNotification: React.FC<
     interactiveReplacementToken?.oldRefreshToken,
     isUnlocked,
     dispatch,
+    // @ts-expect-error keyring type is wrong maybe?
     keyring.type,
     interactiveReplacementToken,
     mmiActions,

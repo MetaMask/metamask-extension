@@ -1,16 +1,17 @@
-import { act, fireEvent, waitFor, screen } from '@testing-library/react';
-import nock from 'nock';
 import { ApprovalType } from '@metamask/controller-utils';
-import mockMetaMaskState from '../../data/integration-init-state.json';
-import { integrationTestRender } from '../../../lib/render-helpers';
-import { shortenAddress } from '../../../../ui/helpers/utils/util';
-import * as backgroundConnection from '../../../../ui/store/background-connection';
+import { act, fireEvent, screen, waitFor } from '@testing-library/react';
+import nock from 'nock';
+import { CHAIN_IDS } from '@metamask/transaction-controller';
+import { MESSAGE_TYPE } from '../../../../shared/constants/app';
 import {
   MetaMetricsEventCategory,
-  MetaMetricsEventName,
   MetaMetricsEventLocation,
+  MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
-import { MESSAGE_TYPE } from '../../../../shared/constants/app';
+import { shortenAddress } from '../../../../ui/helpers/utils/util';
+import * as backgroundConnection from '../../../../ui/store/background-connection';
+import { integrationTestRender } from '../../../lib/render-helpers';
+import mockMetaMaskState from '../../data/integration-init-state.json';
 import { createMockImplementation } from '../../helpers';
 
 jest.mock('../../../../ui/store/background-connection', () => ({
@@ -42,6 +43,7 @@ const getMetaMaskStateWithUnapprovedPermitSign = (accountAddress: string) => {
     unapprovedTypedMessages: {
       [pendingPermitId]: {
         id: pendingPermitId,
+        chainId: CHAIN_IDS.SEPOLIA,
         status: 'unapproved',
         time: pendingPermitTime,
         type: MESSAGE_TYPE.ETH_SIGN_TYPED_DATA,
@@ -73,7 +75,7 @@ describe('Permit Confirmation', () => {
     jest.resetAllMocks();
     mockedBackgroundConnection.submitRequestToBackground.mockImplementation(
       createMockImplementation({
-        getTokenStandardAndDetails: { decimals: '2' },
+        getTokenStandardAndDetails: { decimals: '2', standard: 'ERC20' },
       }),
     );
   });
@@ -182,10 +184,12 @@ describe('Permit Confirmation', () => {
       });
     });
 
-    expect(screen.getByText('Spending cap request')).toBeInTheDocument();
-    expect(
-      screen.getByText('This site wants permission to spend your tokens.'),
-    ).toBeInTheDocument();
+    await waitFor(() => {
+      expect(screen.getByText('Spending cap request')).toBeInTheDocument();
+      expect(
+        screen.getByText('This site wants permission to spend your tokens.'),
+      ).toBeInTheDocument();
+    });
   });
 
   it('displays the simulation section', async () => {
