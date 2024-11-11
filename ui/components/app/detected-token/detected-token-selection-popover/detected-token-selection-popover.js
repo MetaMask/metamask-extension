@@ -21,9 +21,12 @@ import DetectedTokenDetails from '../detected-token-details/detected-token-detai
 import {
   trace,
   endTrace,
-  TraceName,
   TraceOperation,
 } from '../../../../../shared/lib/trace';
+import {
+  ACCOUNT_OVERVIEW_TAB_KEY_TO_TRACE_NAMES_ARRAY_MAP,
+  AccountOverviewTabKey,
+} from '../../../../../shared/constants/app-state';
 
 const DetectedTokenSelectionPopover = ({
   tokensListDetected,
@@ -71,14 +74,12 @@ const DetectedTokenSelectionPopover = ({
         className="detected-token-selection-popover__import-button"
         type="primary"
         onClick={() => {
-          endTrace({
-            name: TraceName.AccountOverviewAssetListTab,
-            tags: { 'ui.event.abort': true },
-          });
-          trace({
-            name: TraceName.AccountOverviewAssetListTab,
-            op: TraceOperation.ComponentLoad,
-          });
+          for (const traceName of ACCOUNT_OVERVIEW_TAB_KEY_TO_TRACE_NAMES_ARRAY_MAP[
+            AccountOverviewTabKey.Tokens
+          ]) {
+            endTrace({ name: traceName, tags: { 'ui.event.abort': true } });
+            trace({ name: traceName, op: TraceOperation.ComponentLoad });
+          }
           onImport();
         }}
         disabled={selectedTokens.length === 0}
