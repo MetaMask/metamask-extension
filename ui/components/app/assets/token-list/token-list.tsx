@@ -86,7 +86,6 @@ export default function TokenList({ onTokenClick }: TokenListProps) {
           let balance;
 
           if (isNative) {
-            console.log(decimals);
             const nativeTokenBalanceHex = nativeBalances?.[chainId];
             if (nativeTokenBalanceHex && nativeTokenBalanceHex !== '0x0') {
               balance = stringifyBalance(
@@ -170,6 +169,8 @@ export default function TokenList({ onTokenClick }: TokenListProps) {
     currentNetwork,
   ]);
 
+  console.log(sortedFilteredTokens);
+
   const loading = false;
   return loading ? (
     <Box
@@ -190,7 +191,8 @@ export default function TokenList({ onTokenClick }: TokenListProps) {
           address={tokenData.address}
           symbol={tokenData.symbol}
           tokenFiatAmount={tokenData.tokenFiatAmount}
-          image={tokenData.image}
+          image={tokenData?.image}
+          isNative={tokenData.isNative}
           onClick={onTokenClick}
         />
       ))}
