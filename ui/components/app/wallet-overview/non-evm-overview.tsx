@@ -14,11 +14,11 @@ import { useMultichainSelector } from '../../../hooks/useMultichainSelector';
 ///: END:ONLY_INCLUDE_IF
 import { CoinOverview } from './coin-overview';
 
-type BtcOverviewProps = {
+type NonEvmOverviewProps = {
   className?: string;
 };
 
-const BtcOverview = ({ className }: BtcOverviewProps) => {
+const NonEvmOverview = ({ className }: NonEvmOverviewProps) => {
   const { chainId } = useSelector(getMultichainProviderConfig);
   const balance = useSelector(getMultichainSelectedAccountCachedBalance);
   ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
@@ -47,4 +47,4 @@ const BtcOverview = ({ className }: BtcOverviewProps) => {
   );
 };
 
-export default BtcOverview;
+export default NonEvmOverview;

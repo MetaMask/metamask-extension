@@ -1,5 +1,10 @@
 import PropTypes from 'prop-types';
-import { InternalAccount, isEvmAccountType } from '@metamask/keyring-api';
+import {
+  BtcAccountType,
+  InternalAccount,
+  isEvmAccountType,
+  SolAccountType,
+} from '@metamask/keyring-api';
 import type { RatesControllerState } from '@metamask/assets-controllers';
 import { CaipChainId, Hex, KnownCaipNamespace } from '@metamask/utils';
 import { createSelector } from 'reselect';
@@ -322,11 +327,19 @@ export function getMultichainIsMainnet(
 ) {
   const selectedAccount = account ?? getSelectedInternalAccount(state);
   const providerConfig = getMultichainProviderConfig(state, selectedAccount);
-  return getMultichainIsEvm(state, account)
-    ? getIsMainnet(state)
-    : // TODO: For now we only check for bitcoin, but we will need to
-      // update this for other non-EVM networks later!
-      providerConfig.chainId === MultichainNetworks.BITCOIN;
+
+  if (getMultichainIsEvm(state, account)) {
+    return getIsMainnet(state);
+  }
+
+  const mainnetMap = {
+    [SolAccountType.DataAccount]:
+      providerConfig.chainId === MultichainNetworks.SOLANA,
+    [BtcAccountType.P2wpkh]:
+      providerConfig.chainId === MultichainNetworks.BITCOIN,
+  };
+
+  return mainnetMap[selectedAccount.type as keyof typeof mainnetMap] ?? false;
 }
 
 export function getMultichainIsTestnet(
@@ -359,12 +372,25 @@ export const getMultichainCoinRates = (state: MultichainState) => {
   return state.metamask.rates;
 };
 
-function getBtcCachedBalance(state: MultichainState) {
+function getNonEvmCachedBalance(state: MultichainState) {
   const balances = getMultichainBalances(state);
   const account = getSelectedInternalAccount(state);
-  const asset = getMultichainIsMainnet(state)
-    ? MultichainNativeAssets.BITCOIN
-    : MultichainNativeAssets.BITCOIN_TESTNET;
+  const isMainnet = getMultichainIsMainnet(state);
+
+  const assetMap = {
+    [SolAccountType.DataAccount]: isMainnet
+      ? MultichainNativeAssets.SOLANA
+      : MultichainNativeAssets.SOLANA_DEVNET,
+    [BtcAccountType.P2wpkh]: isMainnet
+      ? MultichainNativeAssets.BITCOIN
+      : MultichainNativeAssets.BITCOIN_TESTNET,
+  };
+
+  const asset =
+    assetMap[account.type as keyof typeof assetMap] ??
+    (isMainnet
+      ? MultichainNativeAssets.BITCOIN
+      : MultichainNativeAssets.BITCOIN_TESTNET);
 
   return balances?.[account.id]?.[asset]?.amount;
 }
@@ -376,7 +402,7 @@ export function getMultichainSelectedAccountCachedBalance(
 ) {
   return getMultichainIsEvm(state)
     ? getSelectedAccountCachedBalance(state)
-    : getBtcCachedBalance(state);
+    : getNonEvmCachedBalance(state);
 }
 
 export const getMultichainSelectedAccountCachedBalanceIsZero = createSelector(
