@@ -23,9 +23,8 @@ import { MetaMetricsEventCategory } from '../../../../shared/constants/metametri
 import AssetOptions from './asset-options';
 import AssetPage from './asset-page';
 
-const TokenAsset = ({ token }: { token: Token }) => {
+const TokenAsset = ({ token, chainId }: { token: Token; chainId: string }) => {
   const { address, symbol, isERC721 } = token;
-  const { chainId } = token as any;
 
   const tokenList = useSelector(getTokenList);
   const rpcPrefs = useSelector(getRpcPrefsForCurrentProvider);

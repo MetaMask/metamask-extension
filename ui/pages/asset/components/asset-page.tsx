@@ -31,10 +31,7 @@ import {
 } from '../../../components/component-library';
 import { formatCurrency } from '../../../helpers/utils/confirm-tx.util';
 import { useI18nContext } from '../../../hooks/useI18nContext';
-import {
-  AddressCopyButton,
-  TokenListItem,
-} from '../../../components/multichain';
+import { AddressCopyButton } from '../../../components/multichain';
 import { AssetType } from '../../../../shared/constants/transaction';
 import TokenCell from '../../../components/app/assets/token-cell';
 import TransactionList from '../../../components/app/transaction-list';
@@ -104,13 +101,11 @@ const AssetPage = ({
 
   const { chainId, type, symbol, name, image } = asset;
 
+  // TODO: adding the addres here for native tokens would enable marketData/historic data
   const address =
-    type === AssetType.token
-      ? toChecksumHexAddress(asset.address)
-      : '0x0000000000000000000000000000000000000000';
+    type === AssetType.token ? toChecksumHexAddress(asset.address) : '';
 
   const balance = selectedAccountTokenBalancesAcrossChains[chainId]?.[address];
-
   const marketData = marketDataAcrossChains[chainId]?.[address];
 
   const baseCurrency = marketData?.currency;
@@ -191,31 +186,16 @@ const AssetPage = ({
         <Text variant={TextVariant.headingMd} paddingBottom={2} paddingLeft={4}>
           {t('yourBalance')}
         </Text>
-        {type === AssetType.native ? (
-          <TokenListItem
-            title={symbol}
-            tokenSymbol={symbol}
-            primary={`${balance} ${symbol}`}
-            secondary={
-              tokenFiatAmount ? formatCurrency(tokenFiatAmount, currency) : ''
-            }
-            tokenImage={image}
-            isOriginalTokenSymbol={asset.isOriginalNativeSymbol}
-            isNativeCurrency={true}
-          />
-        ) : (
-          <TokenCell
-            key={`${symbol}-${address}`}
-            address={address}
-            chainId={chainId}
-            symbol={symbol}
-            image={image}
-            balance={balance}
-            tokenFiatAmount={tokenFiatAmount}
-            string={balance.toString()}
-            decimals={asset.decimals}
-          />
-        )}
+        <TokenCell
+          key={`${symbol}-${address}`}
+          address={address}
+          chainId={chainId}
+          symbol={symbol}
+          image={image}
+          balance={balance}
+          tokenFiatAmount={tokenFiatAmount}
+          string={balance.toString()}
+        />
         <Box
           marginTop={2}
           display={Display.Flex}

@@ -95,6 +95,7 @@ const AssetChart = ({
     setPrice: (_: { price?: number; date?: number }) => void;
   }>();
 
+  // TODO: We need to get the address of the nativeToken to get the historicalPrices for it!
   const {
     loading,
     data: { prices, edges },

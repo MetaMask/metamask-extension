@@ -50,7 +50,7 @@ export type TokenWithBalance = {
 };
 
 export type AssetListProps = {
-  onClickAsset: (arg: string) => void;
+  onClickAsset: (chainId: string, address: string) => void;
   showTokensLinks?: boolean;
 };
 
@@ -114,8 +114,8 @@ const AssetList = ({ onClickAsset, showTokensLinks }: AssetListProps) => {
         )}
       <AssetListControlBar showTokensLinks={showTokensLinks} />
       <TokenList
-        onTokenClick={(tokenAddress: string) => {
-          onClickAsset(tokenAddress);
+        onTokenClick={(chainId: string, tokenAddress: string) => {
+          onClickAsset(chainId, tokenAddress);
           trackEvent({
             event: MetaMetricsEventName.TokenScreenOpened,
             category: MetaMetricsEventCategory.Navigation,

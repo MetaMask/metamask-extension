@@ -27,7 +27,7 @@ import { hexToDecimal } from '../../../../../shared/modules/conversion.utils';
 import { stringifyBalance } from '../../../../hooks/useTokenBalances';
 
 type TokenListProps = {
-  onTokenClick: (arg: string) => void;
+  onTokenClick: (chainId: string, address: string) => void;
   nativeToken?: ReactNode;
 };
 

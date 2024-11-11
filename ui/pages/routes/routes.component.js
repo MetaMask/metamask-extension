@@ -355,8 +355,15 @@ export default class Routes extends Component {
           component={NftFullImage}
         />
 
-        <Authenticated path={`${ASSET_ROUTE}/:asset/:id`} component={Asset} />
-        <Authenticated path={`${ASSET_ROUTE}/:asset/`} component={Asset} />
+        <Authenticated
+          path={`${ASSET_ROUTE}/:chainId/:asset/:id`}
+          component={Asset}
+        />
+        <Authenticated
+          path={`${ASSET_ROUTE}/:chainId/:asset/`}
+          component={Asset}
+        />
+        <Authenticated path={`${ASSET_ROUTE}/:chainId`} component={Asset} />
         <Authenticated
           path={`${CONNECTIONS}/:origin`}
           component={Connections}

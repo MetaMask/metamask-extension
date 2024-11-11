@@ -4,13 +4,14 @@
 
 .selectable-list-item {
   cursor: pointer;
-  padding: 16px;
+  padding: 12px 16px;
 
   &--selected {
     background: var(--color-primary-muted);
   }
 
   &:not(.selectable-list-item--selected) {
+
     &:hover,
     &:focus-within {
       background: var(--color-background-default-hover);

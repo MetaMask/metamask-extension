@@ -15,13 +15,17 @@ import { SelectableListItem } from '../sort-control/sort-control';
 import { useAccountTotalFiatBalance } from '../../../../../hooks/useAccountTotalFiatBalance';
 import { Text } from '../../../../component-library/text/text';
 import {
+  AlignItems,
   Display,
   JustifyContent,
   TextColor,
   TextVariant,
 } from '../../../../../helpers/constants/design-system';
 import { Box } from '../../../../component-library/box/box';
-import { AvatarNetwork } from '../../../../component-library';
+import {
+  AvatarNetwork,
+  AvatarNetworkSize,
+} from '../../../../component-library';
 import UserPreferencedCurrencyDisplay from '../../../user-preferenced-currency-display';
 import { CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP } from '../../../../../../shared/constants/network';
 
@@ -84,14 +88,14 @@ const NetworkFilter = ({ handleClose }: SortControlProps) => {
               {t('allNetworks')}
             </Text>
             <Text
-              variant={TextVariant.bodyMdMedium}
-              color={TextColor.textDefault}
+              variant={TextVariant.bodySmMedium}
+              color={TextColor.textAlternative}
             >
               {/* TODO: Should query cross chain account balance */}
               $1,000.00
             </Text>
           </Box>
-          <Box display={Display.Flex}>
+          <Box display={Display.Flex} alignItems={AlignItems.center}>
             {Object.values(allNetworks)
               .slice(0, 5) // only show a max of 5 icons overlapping
               .map((network, index) => {
@@ -104,6 +108,7 @@ const NetworkFilter = ({ handleClose }: SortControlProps) => {
                     key={network.chainId}
                     name="All"
                     src={networkImageUrl ?? undefined}
+                    size={AvatarNetworkSize.Sm}
                     // overlap the icons
                     style={{
                       marginLeft: index === 0 ? 0 : '-20px',
@@ -125,6 +130,7 @@ const NetworkFilter = ({ handleClose }: SortControlProps) => {
         <Box
           display={Display.Flex}
           justifyContent={JustifyContent.spaceBetween}
+          alignItems={AlignItems.center}
         >
           <Box>
             <Text
@@ -136,8 +142,13 @@ const NetworkFilter = ({ handleClose }: SortControlProps) => {
             <UserPreferencedCurrencyDisplay
               value={selectedAccountBalance}
               type="PRIMARY"
+              textProps={{
+                color: TextColor.textAlternative,
+                variant: TextVariant.bodySmMedium,
+              }}
               ethNumberOfDecimals={4}
               hideTitle
+              showCurrencySuffix={false}
               shouldCheckShowNativeToken
               isAggregatedFiatOverviewBalance={
                 !showNativeTokenAsMainBalance && !isTestnet

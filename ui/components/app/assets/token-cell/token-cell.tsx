@@ -25,7 +25,7 @@ type TokenCellProps = {
   tokenFiatAmount: number;
   image: string;
   isNative?: boolean;
-  onClick?: (arg: string) => void;
+  onClick?: (chainId: string, address: string) => void;
 };
 
 export const formatWithThreshold = (
@@ -108,9 +108,20 @@ export default function TokenCell({
   isStakeable = false;
   ///: END:ONLY_INCLUDE_IF
 
+  function handleOnClick() {
+    if (!onClick || !chainId) {
+      return;
+    }
+    onClick(chainId, address);
+  }
+
+  if (!chainId) {
+    return null;
+  }
+
   return (
     <TokenListItem
-      onClick={onClick ? () => onClick(address) : undefined}
+      onClick={handleOnClick}
       tokenSymbol={symbol}
       tokenImage={isNative ? getNativeCurrencyForChain(chainId) : tokenImage}
       tokenChainImage={chainId ? getImageForChainId(chainId) : undefined}

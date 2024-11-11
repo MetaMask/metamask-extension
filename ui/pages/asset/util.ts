@@ -69,18 +69,26 @@ export const loadingOpacity = 0.2;
 export const findAssetByAddress = (
   data: Record<string, Token[]>,
   address?: string,
-) => {
-  if (!address) {
+  chainId?: string,
+): Token | undefined | null => {
+  if (!chainId) {
+    console.error('Chain ID is required.');
     return null;
   }
 
-  for (const [chainId, tokens] of Object.entries(data)) {
-    for (const token of tokens) {
-      if (token.address === address) {
-        return { chainId, ...token };
-      }
-    }
+  const tokens = data[chainId];
+
+  if (!tokens) {
+    console.warn(`No tokens found for chainId: ${chainId}`);
+    return null;
   }
 
-  return null;
+  if (!address) {
+    return tokens.find((token) => !token.address);
+  }
+
+  return tokens.find(
+    (token) =>
+      token.address && token.address.toLowerCase() === address.toLowerCase(),
+  );
 };
