@@ -6,6 +6,7 @@ import { EthMethod } from '@metamask/keyring-api';
 import { isEqual } from 'lodash';
 import BN from 'bn.js';
 import { Hex } from '@metamask/utils';
+import { zeroAddress } from 'ethereumjs-util';
 import {
   getCurrentCurrency,
   getIsBridgeChain,
@@ -113,7 +114,9 @@ const AssetPage = ({
 
   // TODO: adding the addres here for native tokens would enable marketData/historic data
   const address =
-    type === AssetType.token ? toChecksumHexAddress(asset.address) : '';
+    type === AssetType.token
+      ? toChecksumHexAddress(asset.address)
+      : zeroAddress();
 
   let balance;
   if (type === AssetType.native) {
@@ -153,6 +156,8 @@ const AssetPage = ({
     tokenExchangeRate !== undefined && tokenMarketPrice !== undefined
       ? tokenExchangeRate * tokenMarketPrice
       : undefined;
+
+  console.log(marketData[chainId]?.[address]);
 
   return (
     <Box
@@ -289,7 +294,8 @@ const AssetPage = ({
                       <Text data-testid="asset-market-cap">
                         {localizeLargeNumber(
                           t,
-                          conversionRate * marketData.marketCap,
+                          conversionRate *
+                            marketData[chainId]?.[address].marketCap,
                         )}
                       </Text>,
                     )}
@@ -299,7 +305,8 @@ const AssetPage = ({
                       <Text>
                         {localizeLargeNumber(
                           t,
-                          conversionRate * marketData.totalVolume,
+                          conversionRate *
+                            marketData[chainId]?.[address].totalVolume,
                         )}
                       </Text>,
                     )}
@@ -307,7 +314,10 @@ const AssetPage = ({
                     renderRow(
                       t('circulatingSupply'),
                       <Text>
-                        {localizeLargeNumber(t, marketData.circulatingSupply)}
+                        {localizeLargeNumber(
+                          t,
+                          marketData[chainId]?.[address].circulatingSupply,
+                        )}
                       </Text>,
                     )}
                   {marketData?.allTimeHigh > 0 &&
@@ -315,23 +325,31 @@ const AssetPage = ({
                       t('allTimeHigh'),
                       <Text>
                         {formatCurrency(
-                          `${conversionRate * marketData.allTimeHigh}`,
+                          `${
+                            conversionRate *
+                            marketData[chainId]?.[address].allTimeHigh
+                          }`,
                           currency,
                           getPricePrecision(
-                            conversionRate * marketData.allTimeHigh,
+                            conversionRate *
+                              marketData[chainId]?.[address].allTimeHigh,
                           ),
                         )}
                       </Text>,
                     )}
-                  {marketData?.allTimeLow > 0 &&
+                  {marketData[chainId]?.[address]?.allTimeLow > 0 &&
                     renderRow(
                       t('allTimeLow'),
                       <Text>
                         {formatCurrency(
-                          `${conversionRate * marketData.allTimeLow}`,
+                          `${
+                            conversionRate *
+                            marketData[chainId]?.[address]?.allTimeLow
+                          }`,
                           currency,
                           getPricePrecision(
-                            conversionRate * marketData.allTimeLow,
+                            conversionRate *
+                              marketData[chainId]?.[address]?.allTimeLow,
                           ),
                         )}
                       </Text>,
