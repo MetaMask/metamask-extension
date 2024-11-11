@@ -10,17 +10,11 @@ import {
 import { UseBridgeDataProps } from '../utils/useBridgeData';
 import { Box, Text } from '../../../components/component-library';
 import {
-  BackgroundColor,
   BlockSize,
-  BorderRadius,
   Display,
   FlexDirection,
   TextColor,
 } from '../../../helpers/constants/design-system';
-import {
-  TransactionMeta,
-  TransactionStatus,
-} from '@metamask/transaction-controller';
 import Segment from './segment';
 
 const getTxIndex = (srcTxStatus: StatusTypes) => {
@@ -57,6 +51,10 @@ const getDestTxStatus = (
 
 /**
  * Renders the 2 transaction segments for a bridge activity item
+ *
+ * @param options
+ * @param options.bridgeTxHistoryItem - The bridge history item for the transaction
+ * @param options.transactionGroup - The transaction group for the transaction
  */
 export default function BridgeActivityItemTxSegments({
   bridgeTxHistoryItem,

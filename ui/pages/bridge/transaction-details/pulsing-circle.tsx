@@ -12,6 +12,10 @@ import HollowCircle from './hollow-circle';
 
 /**
  * Renders the steps in the Bridge Transaction Details page
+ *
+ * @param options
+ * @param options.iconSize - The size of the icon
+ * @param options.color - The color of the icon
  */
 export default function PulsingCircle({
   iconSize,

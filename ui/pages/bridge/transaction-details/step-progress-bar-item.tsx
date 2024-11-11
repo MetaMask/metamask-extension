@@ -1,7 +1,6 @@
 import React from 'react';
 import { StatusTypes } from '../../../../shared/types/bridge-status';
 import {
-  Box,
   Icon,
   IconName,
   IconSize,
@@ -34,6 +33,12 @@ type StepsProgressBarItemProps = {
 
 /**
  * Renders the steps in the Bridge Transaction Details page
+ *
+ * @param options
+ * @param options.stepStatus - The status of the step
+ * @param options.isLastItem - Whether the step is the last item
+ * @param options.isEdgeComplete - Whether the edge is complete
+ * @param options.children - The description of the step to be rendered
  */
 export default function StepProgressBarItem({
   stepStatus,
