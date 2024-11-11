@@ -166,6 +166,7 @@ export type MetaMaskState = {
   currentCurrency: string;
   preferences: {
     privacyMode: PreferencesControllerState['preferences']['privacyMode'];
+    tokenNetworkFilter: PreferencesControllerState['preferences']['tokenNetworkFilter'];
   };
   ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
   custodyAccountDetails: {
@@ -1233,6 +1234,8 @@ export default class MetaMetricsController extends BaseController<
         metamaskState.tokenSortConfig?.key || '',
       [MetaMetricsUserTrait.PrivacyModeEnabled]:
         metamaskState.preferences.privacyMode,
+      [MetaMetricsUserTrait.NetworkFilterPreference]:
+        metamaskState.preferences.tokenNetworkFilter,
     };
 
     if (!previousUserTraits) {
