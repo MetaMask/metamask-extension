@@ -53,6 +53,8 @@ const RATE_LIMIT_MAP = {
   [MESSAGE_TYPE.ETH_DECRYPT]: RATE_LIMIT_TYPES.NON_RATE_LIMITED,
   [MESSAGE_TYPE.ETH_GET_ENCRYPTION_PUBLIC_KEY]:
     RATE_LIMIT_TYPES.NON_RATE_LIMITED,
+  [MESSAGE_TYPE.ADD_ETHEREUM_CHAIN]: RATE_LIMIT_TYPES.NON_RATE_LIMITED,
+  [MESSAGE_TYPE.SWITCH_ETHEREUM_CHAIN]: RATE_LIMIT_TYPES.NON_RATE_LIMITED,
   [MESSAGE_TYPE.ETH_REQUEST_ACCOUNTS]: RATE_LIMIT_TYPES.TIMEOUT,
   [MESSAGE_TYPE.WALLET_REQUEST_PERMISSIONS]: RATE_LIMIT_TYPES.TIMEOUT,
   [MESSAGE_TYPE.SEND_METADATA]: RATE_LIMIT_TYPES.BLOCKED,
@@ -126,6 +128,8 @@ const EVENT_NAME_MAP = {
  */
 const TRANSFORM_PARAMS_MAP = {
   [MESSAGE_TYPE.WATCH_ASSET]: ({ type }) => ({ type }),
+  [MESSAGE_TYPE.ADD_ETHEREUM_CHAIN]: ([{ chainId }]) => ({ chainId }),
+  [MESSAGE_TYPE.SWITCH_ETHEREUM_CHAIN]: ([{ chainId }]) => ({ chainId }),
 };
 
 const rateLimitTimeoutsByMethod = {};
@@ -185,8 +189,6 @@ function finalizeSignatureFragment(
  * signature requests
  *
  * @param {object} opts - options for the rpc method tracking middleware
- * @param {Function} opts.getMetricsState - get the state of
- *  MetaMetricsController
  * @param {number} [opts.rateLimitTimeout] - time, in milliseconds, to wait before
  *  allowing another set of events to be tracked for methods rate limited by timeout.
  * @param {number} [opts.rateLimitSamplePercent] - percentage, in decimal, of events
@@ -205,7 +207,6 @@ function finalizeSignatureFragment(
  */
 
 export default function createRPCMethodTrackingMiddleware({
-  getMetricsState,
   rateLimitTimeout = 60 * 5 * 1000, // 5 minutes
   rateLimitSamplePercent = 0.001, // 0.1%
   globalRateLimitTimeout = 60 * 5 * 1000, // 5 minutes
@@ -252,7 +253,7 @@ export default function createRPCMethodTrackingMiddleware({
     // anything. This is extra redundancy because this value is checked in
     // the metametrics controller's trackEvent method as well.
     const userParticipatingInMetaMetrics =
-      getMetricsState().participateInMetaMetrics === true;
+      metaMetricsController.state.participateInMetaMetrics === true;
 
     // Get the event type, each of which has APPROVED, REJECTED and REQUESTED
     // keys for the various events in the flow.
