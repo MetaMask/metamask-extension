@@ -1,6 +1,7 @@
 import { createSelector } from 'reselect';
 import { NotificationServicesController } from '@metamask/notification-services-controller';
 import { createDeepEqualSelector } from '../util';
+import { TRIGGER_TYPES } from '@metamask/notification-services-controller/notification-services';
 
 const { TRIGGER_TYPES } = NotificationServicesController.Constants;
 
@@ -39,6 +40,21 @@ export const getMetamaskNotificationById = (id: string) => {
     },
   );
 };
+
+/**
+ * Selector to get the list of Snap notifications.
+ *
+ * @param {AppState} state - The current state of the Redux store.
+ * @returns {Notification[]} An array of snap notifications.
+ */
+export const getSnapNotifications = createDeepEqualSelector(
+  getMetamaskNotifications,
+  (notifications: Notification[]) => {
+    return notifications.filter(
+      (notification) => notification.type === TRIGGER_TYPES.SNAP,
+    );
+  },
+);
 
 /**
  * Selector to get the list of read MetaMask notifications.
