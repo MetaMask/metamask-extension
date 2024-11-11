@@ -1,12 +1,10 @@
-import { ApprovalControllerState } from '@metamask/approval-controller';
-import { ApprovalType } from '@metamask/controller-utils';
 import { createSelector } from 'reselect';
-import { createDeepEqualSelector } from './util';
+import { createDeepEqualSelector } from '../util';
 
 export type DevicesMetaMaskState = {
   metamask: {
     devices: Record<string, any>;
-    pairing: { snapId: string | null };
+    pairing: { snapId: string; type: any; filters?: any[] } | null;
   };
 };
 
@@ -19,18 +17,18 @@ function getPairedDevicesState(state: DevicesMetaMaskState) {
   return state.metamask.devices;
 }
 
-export const getPairedDevices = createSelector(
+export const getPairedDevices = createDeepEqualSelector(
   getPairedDevicesState,
   (devices) => Object.values(devices),
 );
 
-export const hasDevicePairing = createSelector(
+export const getDevicePairing = createDeepEqualSelector(
   getDevicePairingState,
   (_state: DevicesMetaMaskState, snapId: string) => snapId,
-  (pairing, snapId) => pairing?.snapId === snapId,
+  (pairing, snapId) => (pairing?.snapId === snapId ? pairing : null),
 );
 
-export const hasAnyDevicePairing = createSelector(
+export const getAnyDevicePairing = createDeepEqualSelector(
   getDevicePairingState,
-  (pairing) => pairing !== undefined,
+  (pairing) => pairing,
 );

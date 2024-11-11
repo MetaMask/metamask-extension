@@ -33,23 +33,24 @@ import {
   resolveSnapDevicePairing,
   transitionFromFullscreenToPopup,
 } from '../../../store/actions';
-import { hasAnyDevicePairing } from '../../../selectors/snaps';
+import { getAnyDevicePairing } from '../../../selectors/snaps';
 
 export const SnapDevicePairing = () => {
   const dispatch = useDispatch();
-  const hasPairing = useSelector(hasAnyDevicePairing);
+  const pairing = useSelector(getAnyDevicePairing);
 
-  // TODO: Allow filters
   const handleConnectNewDevice = () => {
-    navigator.hid.requestDevice({ filters: [] }).then((grantedDevices) => {
-      const device = grantedDevices[0];
-      if (device) {
-        const { vendorId, productId } = device;
-        const id = `hid:${vendorId}:${productId}`;
-        dispatch(resolveSnapDevicePairing(id));
-        dispatch(transitionFromFullscreenToPopup());
-      }
-    });
+    navigator.hid
+      .requestDevice({ filters: pairing?.filters ?? [] })
+      .then((grantedDevices) => {
+        const device = grantedDevices[0];
+        if (device) {
+          const { vendorId, productId } = device;
+          const id = `hid:${vendorId}:${productId}`;
+          dispatch(resolveSnapDevicePairing(id));
+          dispatch(transitionFromFullscreenToPopup());
+        }
+      });
   };
 
   const handleClose = () => {

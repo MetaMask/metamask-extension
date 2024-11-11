@@ -29,12 +29,11 @@ import {
   JustifyContent,
 } from '../../../../helpers/constants/design-system';
 import {
-  hasDevicePairing,
+  getDevicePairing,
   getPairedDevices,
 } from '../../../../selectors/snaps';
 import {
   rejectSnapDevicePairing,
-  resolveSnapDevicePairing,
   transitionFromPopupToFullscreen,
 } from '../../../../store/actions';
 import { getEnvironmentType } from '../../../../../app/scripts/lib/util';
@@ -44,15 +43,29 @@ import { SnapDeviceListItem } from './snap-device-list-item';
 
 export const SnapDeviceModal = ({ snapId }) => {
   const dispatch = useDispatch();
-  const hasPairing = useSelector((state) => hasDevicePairing(state, snapId));
-
   const devices = useSelector(getPairedDevices);
+  const pairing = useSelector((state) => getDevicePairing(state, snapId));
+  const hasPairing = pairing !== null;
+
+  const filteredDevices = devices.filter((device) => {
+    if (device.type !== pairing?.type) {
+      return false;
+    }
+
+    if (pairing?.filters) {
+      return pairing.filters.some(
+        (filter) =>
+          filter.vendorId === device.vendorId ||
+          filter.productId === device.productId,
+      );
+    }
+
+    return true;
+  });
 
   const handleClose = () => {
     dispatch(rejectSnapDevicePairing());
   };
-
-  // TODO: Allow filters
 
   const handleConnectNewDevice = () => {
     if (getEnvironmentType() !== ENVIRONMENT_TYPE_FULLSCREEN) {
@@ -87,7 +100,7 @@ export const SnapDeviceModal = ({ snapId }) => {
             MetaMask.
           </Text>
 
-          {devices.length > 0 ? (
+          {filteredDevices.length > 0 ? (
             <Box
               display={Display.Flex}
               justifyContent={JustifyContent.center}
@@ -98,7 +111,7 @@ export const SnapDeviceModal = ({ snapId }) => {
               marginTop={2}
               gap={2}
             >
-              {devices.map((device) => (
+              {filteredDevices.map((device) => (
                 <SnapDeviceListItem key={device.name} device={device} />
               ))}
             </Box>
