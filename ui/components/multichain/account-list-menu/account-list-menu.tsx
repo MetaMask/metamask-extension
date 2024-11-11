@@ -122,8 +122,8 @@ import {
   TraceOperation,
 } from '../../../../shared/lib/trace';
 import {
-  ACCOUNT_OVERVIEW_TAB_KEY_TO_TRACE_NAME_MAP,
   AccountOverviewTabKey,
+  ACCOUNT_OVERVIEW_TAB_KEY_TO_TRACE_NAMES_ARRAY_MAP,
 } from '../../../../shared/constants/app-state';
 ///: BEGIN:ONLY_INCLUDE_IF(solana)
 import {
@@ -353,18 +353,12 @@ export const AccountListMenu = ({
             location: 'Main Menu',
           },
         });
-        endTrace({
-          name: ACCOUNT_OVERVIEW_TAB_KEY_TO_TRACE_NAME_MAP[
-            defaultHomeActiveTabName
-          ],
-          tags: { 'ui.event.abort': true },
-        });
-        trace({
-          name: ACCOUNT_OVERVIEW_TAB_KEY_TO_TRACE_NAME_MAP[
-            defaultHomeActiveTabName
-          ],
-          op: TraceOperation.ComponentLoad,
-        });
+        for (const traceName of ACCOUNT_OVERVIEW_TAB_KEY_TO_TRACE_NAMES_ARRAY_MAP[
+          defaultHomeActiveTabName
+        ]) {
+          endTrace({ name: traceName, tags: { 'ui.event.abort': true } });
+          trace({ name: traceName, op: TraceOperation.ComponentLoad });
+        }
         dispatch(setSelectedAccount(account.address));
       };
     },

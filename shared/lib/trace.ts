@@ -13,9 +13,26 @@ export enum TraceName {
    * `AccountList` component renders (FCP).
    */
   AccountList = 'Account List',
-  AccountOverviewAssetListTab = 'Account Overview Asset List Tab',
-  AccountOverviewNftsTab = 'Account Overview Nfts Tab',
-  AccountOverviewActivityTab = 'Account Overview Activity Tab',
+  /**
+   * `TokenList` component loading message disappears or no-Nfts banner renders.
+   */
+  AccountOverviewAssetListTabFMP = 'Account Overview - Asset List Tab - First Meaningful Paint',
+  /**
+   * `TokenList` component fully loads, including all resources.
+   */
+  AccountOverviewAssetListTab = 'Account Overview - Asset List Tab',
+  /**
+   * `NftsTab` component loading spinner disappears or no-Nfts banner renders.
+   */
+  AccountOverviewNftsTabFMP = 'Account Overview - Nfts Tab - First Meaningful Paint',
+  /**
+   * `NftsTab` component fully loads, including all resources.
+   */
+  AccountOverviewNftsTab = 'Account Overview - Nfts Tab',
+  /**
+   * `TransactionList` component renders (FCP).
+   */
+  AccountOverviewActivityTab = 'Account Overview - Activity Tab',
   BackgroundConnect = 'Background Connect',
   DeveloperTest = 'Developer Test',
   FirstRender = 'First Render',

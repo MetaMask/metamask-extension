@@ -38,8 +38,8 @@ import InstitutionalHomeFooter from '../../../pages/home/institutional/instituti
 ///: END:ONLY_INCLUDE_IF
 import {
   ACCOUNT_OVERVIEW_TAB_KEY_TO_METAMETRICS_EVENT_NAME_MAP,
-  ACCOUNT_OVERVIEW_TAB_KEY_TO_TRACE_NAME_MAP,
   AccountOverviewTabKey,
+  ACCOUNT_OVERVIEW_TAB_KEY_TO_TRACE_NAMES_ARRAY_MAP,
 } from '../../../../shared/constants/app-state';
 import { detectNfts } from '../../../store/actions';
 import { AccountOverviewCommonProps } from './common';
@@ -86,17 +86,17 @@ export const AccountOverviewTabs = ({
         event: ACCOUNT_OVERVIEW_TAB_KEY_TO_METAMETRICS_EVENT_NAME_MAP[tabName],
       });
       if (defaultHomeActiveTabName) {
-        endTrace({
-          name: ACCOUNT_OVERVIEW_TAB_KEY_TO_TRACE_NAME_MAP[
-            defaultHomeActiveTabName
-          ],
-          tags: { 'ui.event.abort': true },
-        });
+        for (const traceName of ACCOUNT_OVERVIEW_TAB_KEY_TO_TRACE_NAMES_ARRAY_MAP[
+          defaultHomeActiveTabName
+        ]) {
+          endTrace({ name: traceName, tags: { 'ui.event.abort': true } });
+        }
       }
-      trace({
-        name: ACCOUNT_OVERVIEW_TAB_KEY_TO_TRACE_NAME_MAP[tabName],
-        op: TraceOperation.ComponentLoad,
-      });
+      for (const traceName of ACCOUNT_OVERVIEW_TAB_KEY_TO_TRACE_NAMES_ARRAY_MAP[
+        tabName
+      ]) {
+        trace({ name: traceName, op: TraceOperation.ComponentLoad });
+      }
     },
     [onTabClick],
   );
