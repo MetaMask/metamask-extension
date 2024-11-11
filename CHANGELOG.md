@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ## [12.6.1]
+### Fixed
+- Fixed gas limit estimation on Base and BNB chains ([#28327](https://github.com/MetaMask/metamask-extension/pull/28327))
 
 ## [12.6.0]
 ### Added
