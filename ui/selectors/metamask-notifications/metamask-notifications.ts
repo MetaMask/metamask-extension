@@ -1,7 +1,6 @@
 import { createSelector } from 'reselect';
 import { NotificationServicesController } from '@metamask/notification-services-controller';
 import { createDeepEqualSelector } from '../util';
-import { TRIGGER_TYPES } from '@metamask/notification-services-controller/notification-services';
 
 const { TRIGGER_TYPES } = NotificationServicesController.Constants;
 
