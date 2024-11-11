@@ -17,8 +17,8 @@ import {
   TextAlign,
 } from '../../../../../../../../helpers/constants/design-system';
 import Tooltip from '../../../../../../../../components/ui/tooltip';
-import { getConversionRate } from '../../../../../../../../ducks/metamask/metamask';
 import { shortenString } from '../../../../../../../../helpers/utils/util';
+import { selectConversionRateByChainId } from '../../../../../../../../selectors';
 import { AssetPill } from '../../../../../simulation-details/asset-pill';
 import {
   formatAmount,
@@ -49,7 +49,9 @@ const NativeValueDisplay: React.FC<PermitSimulationValueDisplayParams> = ({
   credit,
   debit,
 }) => {
-  const nativeFiatRate = useSelector(getConversionRate);
+  const conversionRate = useSelector((state) =>
+    selectConversionRateByChainId(state, chainId),
+  );
 
   const { fiatValue, tokenValue, tokenValueMaxPrecision } = useMemo(() => {
     if (!value) {
@@ -59,13 +61,13 @@ const NativeValueDisplay: React.FC<PermitSimulationValueDisplayParams> = ({
     const tokenAmount = calcTokenAmount(value, NATIVE_DECIMALS);
 
     return {
-      fiatValue: nativeFiatRate
-        ? new BigNumber(tokenAmount).times(String(nativeFiatRate)).toNumber()
+      fiatValue: conversionRate
+        ? new BigNumber(tokenAmount).times(String(conversionRate)).toNumber()
         : undefined,
       tokenValue: formatAmount('en-US', tokenAmount),
       tokenValueMaxPrecision: formatAmountMaxPrecision('en-US', tokenAmount),
     };
-  }, [nativeFiatRate, value]);
+  }, [conversionRate, value]);
 
   const { color, backgroundColor } = getAmountColors(credit, debit);
 
