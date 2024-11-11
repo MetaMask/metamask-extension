@@ -4,23 +4,23 @@ import configureStore from '../../../store/store';
 import { renderWithProvider } from '../../../../test/jest/rendering';
 import { setBackgroundConnection } from '../../../store/background-connection';
 import {
-  AccountOverviewBtc,
-  AccountOverviewBtcProps,
-} from './account-overview-btc';
+  AccountOverviewNonEvm,
+  AccountOverviewNonEvmProps,
+} from './account-overview-non-evm';
 
-const defaultProps: AccountOverviewBtcProps = {
+const defaultProps: AccountOverviewNonEvmProps = {
   defaultHomeActiveTabName: '',
   onTabClick: jest.fn(),
   setBasicFunctionalityModalOpen: jest.fn(),
   onSupportLinkClick: jest.fn(),
 };
 
-const render = (props: AccountOverviewBtcProps = defaultProps) => {
+const render = (props: AccountOverviewNonEvmProps = defaultProps) => {
   const store = configureStore({
     metamask: mockState.metamask,
   });
 
-  return renderWithProvider(<AccountOverviewBtc {...props} />, store);
+  return renderWithProvider(<AccountOverviewNonEvm {...props} />, store);
 };
 
 describe('AccountOverviewBtc', () => {

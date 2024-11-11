@@ -1,5 +1,6 @@
 import { useMemo } from 'react';
 import BigNumber from 'bignumber.js';
+import { BtcAccountType } from '@metamask/keyring-api';
 import { formatCurrency } from '../helpers/utils/confirm-tx.util';
 import {
   getMultichainCurrentCurrency,
@@ -9,7 +10,10 @@ import {
 } from '../selectors/multichain';
 
 import { getValueFromWeiHex } from '../../shared/modules/conversion.utils';
-import { TEST_NETWORK_TICKER_MAP } from '../../shared/constants/network';
+import {
+  TEST_NETWORK_TICKER_MAP,
+  NON_EVM_CURRENCY_SYMBOLS,
+} from '../../shared/constants/network';
 import { Numeric } from '../../shared/modules/Numeric';
 import { EtherDenomination } from '../../shared/constants/common';
 import { getTokenFiatAmount } from '../helpers/utils/token-util';
@@ -62,7 +66,8 @@ function formatEthCurrencyDisplay({
   return null;
 }
 
-function formatBtcCurrencyDisplay({
+function formatNonEvmAssetCurrencyDisplay({
+  nonEvmAsset,
   isNativeCurrency,
   isUserPreferredCurrency,
   currency,
@@ -77,15 +82,19 @@ function formatBtcCurrencyDisplay({
     // We use `Numeric` here, so we handle those amount the same way than for EVMs (it's worth
     // noting that if `inputValue` is not properly defined, the amount will be set to '0', see
     // `Numeric` constructor for that)
-    return new Numeric(inputValue, 10).toString(); // BTC usually uses 10 digits
+    return new Numeric(inputValue, 10).toString();
   } else if (isUserPreferredCurrency && conversionRate) {
+    const nonEvmAssetSymbol =
+      nonEvmAsset === BtcAccountType.P2wpkh
+        ? NON_EVM_CURRENCY_SYMBOLS.BTC
+        : NON_EVM_CURRENCY_SYMBOLS.SOL;
     const amount =
       getTokenFiatAmount(
         1, // coin to native conversion rate is 1:1
         Number(conversionRate), // native to fiat conversion rate
         currentCurrency,
         inputValue,
-        'BTC',
+        nonEvmAssetSymbol,
         false,
         false,
       ) ?? '0'; // if the conversion fails, return 0
@@ -161,9 +170,9 @@ export function useCurrencyDisplay(
       return displayValue;
     }
 
-    if (!isEvm) {
-      // TODO: We would need to update this for other non-EVM coins
-      return formatBtcCurrencyDisplay({
+    if (!isEvm && account) {
+      return formatNonEvmAssetCurrencyDisplay({
+        nonEvmAsset: account.type,
         isNativeCurrency,
         isUserPreferredCurrency,
         currency,

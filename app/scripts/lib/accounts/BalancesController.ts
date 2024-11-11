@@ -13,6 +13,7 @@ import {
   type CaipAssetType,
   type InternalAccount,
   isEvmAccountType,
+  SolAccountType,
 } from '@metamask/keyring-api';
 import type { HandleSnapRequest } from '@metamask/snaps-controllers';
 import type { SnapId } from '@metamask/snaps-sdk';
@@ -23,7 +24,10 @@ import type {
   AccountsControllerAccountRemovedEvent,
   AccountsControllerListMultichainAccountsAction,
 } from '@metamask/accounts-controller';
-import { isBtcMainnetAddress } from '../../../../shared/lib/multichain';
+import {
+  isBtcMainnetAddress,
+  isSolanaAddress,
+} from '../../../../shared/lib/multichain';
 import { BalancesTracker } from './BalancesTracker';
 
 const controllerName = 'BalancesController';
@@ -126,9 +130,15 @@ const BTC_TESTNET_ASSETS = ['bip122:000000000933ea01ad0ee984209779ba/slip44:0'];
 const BTC_MAINNET_ASSETS = ['bip122:000000000019d6689c085ae165831e93/slip44:0'];
 const BTC_AVG_BLOCK_TIME = 10 * 60 * 1000; // 10 minutes in milliseconds
 
+const SOLANA_ASSETS = ['solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44:501'];
+const SOLANA_DEVNET_ASSETS = [
+  'solana:EtWTRABZaYq6iMfeYKouRu166VU2xqa1/slip44:501',
+];
+const SOLANA_AVG_BLOCK_TIME = 400; // 400 milliseconds
+
 // NOTE: We set an interval of half the average block time to mitigate when our interval
 // is de-synchronized with the actual block time.
-export const BALANCES_UPDATE_TIME = BTC_AVG_BLOCK_TIME / 2;
+export const BTC_BALANCES_UPDATE_TIME = BTC_AVG_BLOCK_TIME / 2;
 
 /**
  * The BalancesController is responsible for fetching and caching account
@@ -165,7 +175,11 @@ export class BalancesController extends BaseController<
     // Register all non-EVM accounts into the tracker
     for (const account of this.#listAccounts()) {
       if (this.#isNonEvmAccount(account)) {
-        this.#tracker.track(account.id, BALANCES_UPDATE_TIME);
+        const updateTime =
+          account.type === BtcAccountType.P2wpkh
+            ? BTC_BALANCES_UPDATE_TIME
+            : SOLANA_AVG_BLOCK_TIME;
+        this.#tracker.track(account.id, updateTime);
       }
     }
 
@@ -207,15 +221,16 @@ export class BalancesController extends BaseController<
   /**
    * Lists the accounts that we should get balances for.
    *
-   * Currently, we only get balances for P2WPKH accounts, but this will change
-   * in the future when we start support other non-EVM account types.
-   *
    * @returns A list of accounts that we should get balances for.
    */
   #listAccounts(): InternalAccount[] {
     const accounts = this.#listMultichainAccounts();
 
-    return accounts.filter((account) => account.type === BtcAccountType.P2wpkh);
+    return accounts.filter(
+      (account) =>
+        account.type === SolAccountType.DataAccount ||
+        account.type === BtcAccountType.P2wpkh,
+    );
   }
 
   /**
@@ -249,13 +264,21 @@ export class BalancesController extends BaseController<
     const partialState: BalancesControllerState = { balances: {} };
 
     if (account.metadata.snap) {
-      partialState.balances[account.id] = await this.#getBalances(
-        account.id,
-        account.metadata.snap.id,
-        isBtcMainnetAddress(account.address)
-          ? BTC_MAINNET_ASSETS
-          : BTC_TESTNET_ASSETS,
-      );
+      // In here we need to check which assets to query
+      let assetTypes: CaipAssetType[];
+      if (isSolanaAddress(account.address)) {
+        assetTypes = SOLANA_ASSETS;
+      } else if (isBtcMainnetAddress(account.address)) {
+        assetTypes = BTC_MAINNET_ASSETS;
+      } else {
+        // If not mainnet, we need to check if it's testnet or devnet
+        assetTypes =
+          account.type === BtcAccountType.P2wpkh
+            ? BTC_TESTNET_ASSETS
+            : SOLANA_DEVNET_ASSETS;
+      }
+
+      await this.#getBalances(account.id, account.metadata.snap.id, assetTypes);
     }
 
     this.update((state: Draft<BalancesControllerState>) => ({
@@ -312,8 +335,11 @@ export class BalancesController extends BaseController<
       return;
     }
 
-    this.#tracker.track(account.id, BTC_AVG_BLOCK_TIME);
-    // NOTE: Unfortunately, we cannot update the balance right away here, because
+    const updateTime =
+      account.type === BtcAccountType.P2wpkh
+        ? BTC_AVG_BLOCK_TIME
+        : SOLANA_AVG_BLOCK_TIME;
+    this.#tracker.track(account.id, updateTime); // NOTE: Unfortunately, we cannot update the balance right away here, because
     // messenger's events are running synchronously and fetching the balance is
     // asynchronous.
     // Updating the balance here would resume at some point but the event emitter
