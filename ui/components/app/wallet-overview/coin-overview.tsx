@@ -132,7 +132,8 @@ export const CoinOverview = ({
 
   const shouldShowPopover = useSelector(getShouldShowAggregatedBalancePopover);
   const isTestnet = useSelector(getIsTestnet);
-  const { showFiatInTestnets, privacyMode } = useSelector(getPreferences);
+  const { showFiatInTestnets, privacyMode, showNativeTokenAsMainBalance } =
+    useSelector(getPreferences);
 
   const selectedAccount = useSelector(getSelectedAccount);
   const shouldHideZeroBalanceTokens = useSelector(
@@ -142,8 +143,6 @@ export const CoinOverview = ({
     selectedAccount,
     shouldHideZeroBalanceTokens,
   );
-
-  const { showNativeTokenAsMainBalance } = useSelector(getPreferences);
 
   const isEvm = useSelector(getMultichainIsEvm);
   const isNotAggregatedFiatBalance =
@@ -281,6 +280,7 @@ export const CoinOverview = ({
                     isAggregatedFiatOverviewBalance={
                       !showNativeTokenAsMainBalance && !isTestnet
                     }
+                    privacyMode={privacyMode}
                   />
                   <ButtonIcon
                     color={IconColor.iconAlternative}

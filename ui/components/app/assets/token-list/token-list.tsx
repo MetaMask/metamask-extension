@@ -30,7 +30,8 @@ export default function TokenList({
   nativeToken,
 }: TokenListProps) {
   const t = useI18nContext();
-  const { tokenSortConfig, tokenNetworkFilter } = useSelector(getPreferences);
+  const { tokenSortConfig, tokenNetworkFilter, privacyMode } =
+    useSelector(getPreferences);
   const selectedAccount = useSelector(getSelectedAccount);
   const conversionRate = useSelector(getConversionRate);
   const nativeTokenWithBalance = useNativeTokenBalance();
@@ -88,6 +89,7 @@ export default function TokenList({
           <TokenCell
             key={`${tokenData.symbol}-${tokenData.address}`}
             {...tokenData}
+            privacyMode={privacyMode}
             onClick={onTokenClick}
           />
         );
