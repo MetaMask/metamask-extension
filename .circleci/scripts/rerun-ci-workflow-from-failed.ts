@@ -1,5 +1,3 @@
-import fetch from 'node-fetch';
-
 const CIRCLE_TOKEN = process.env.CIRCLE_OIDC_TOKEN_V2;
 
 /**
