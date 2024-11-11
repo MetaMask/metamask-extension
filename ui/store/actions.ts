@@ -126,6 +126,7 @@ import {
   CaveatTypes,
   EndowmentTypes,
 } from '../../shared/constants/permissions';
+import { NOTIFICATIONS_EXPIRATION_DELAY } from '../helpers/constants/notifications';
 import * as actionConstants from './actionConstants';
 ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
 import { updateCustodyState } from './institutional/institution-actions';
@@ -1265,6 +1266,38 @@ export function revokeDynamicSnapPermissions(
       permissionNames,
     ]);
     await forceUpdateMetamaskState(dispatch);
+  };
+}
+
+export function deleteExpiredNotifications(): ThunkAction<
+  void,
+  MetaMaskReduxState,
+  unknown,
+  AnyAction
+> {
+  return async (dispatch, getState) => {
+    const state = getState();
+    const notifications = state.metamask.metamaskNotificationsList;
+
+    const notificationIdsToDelete = notifications
+      .filter((notification) => {
+        const expirationTime = new Date(
+          Date.now() - NOTIFICATIONS_EXPIRATION_DELAY,
+        );
+
+        return Boolean(
+          notification.readDate &&
+            new Date(notification.readDate) < expirationTime,
+        );
+      })
+      .map(({ id }) => id);
+
+    if (notificationIdsToDelete.length) {
+      await submitRequestToBackground('deleteNotificationsById', [
+        notificationIdsToDelete,
+      ]);
+      await forceUpdateMetamaskState(dispatch);
+    }
   };
 }
 

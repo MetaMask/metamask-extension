@@ -41,21 +41,6 @@ export const getMetamaskNotificationById = (id: string) => {
 };
 
 /**
- * Selector to get the list of Snap notifications.
- *
- * @param {AppState} state - The current state of the Redux store.
- * @returns {Notification[]} An array of snap notifications.
- */
-export const getSnapNotifications = createDeepEqualSelector(
-  getMetamaskNotifications,
-  (notifications: Notification[]) => {
-    return notifications.filter(
-      (notification) => notification.type === TRIGGER_TYPES.SNAP,
-    );
-  },
-);
-
-/**
  * Selector to get the list of read MetaMask notifications.
  *
  * @param {AppState} state - The current state of the Redux store.

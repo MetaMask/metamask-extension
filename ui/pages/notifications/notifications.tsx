@@ -1,5 +1,5 @@
-import React, { useState, useMemo } from 'react';
-import { useSelector } from 'react-redux';
+import React, { useState, useMemo, useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import { NotificationServicesController } from '@metamask/notification-services-controller';
 import { useI18nContext } from '../../hooks/useI18nContext';
@@ -29,6 +29,7 @@ import {
   Display,
   JustifyContent,
 } from '../../helpers/constants/design-system';
+import { deleteExpiredNotifications } from '../../store/actions';
 import { NotificationsList } from './notifications-list';
 import { NewFeatureTag } from './NewFeatureTag';
 
@@ -148,6 +149,7 @@ export const filterNotifications = (
 export default function Notifications() {
   const history = useHistory();
   const t = useI18nContext();
+  const dispatch = useDispatch();
 
   const { isLoading, error } = useMetamaskNotificationsContext();
 
@@ -161,6 +163,10 @@ export default function Notifications() {
 
   let hasNotifySnaps = false;
   hasNotifySnaps = useSelector(getNotifySnaps).length > 0;
+
+  useEffect(() => {
+    dispatch(deleteExpiredNotifications());
+  }, [dispatch]);
 
   return (
     <NotificationsPage>
