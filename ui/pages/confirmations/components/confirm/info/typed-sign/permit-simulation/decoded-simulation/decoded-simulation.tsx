@@ -67,7 +67,6 @@ const DecodedSimulation: React.FC<object> = () => {
   const { currentConfirmation } = useConfirmContext<SignatureRequestType>();
   const chainId = currentConfirmation.chainId as Hex;
   const { decodingLoading, decodingData } = currentConfirmation;
-  console.log('decodingData = ', decodingData);
 
   let stateChangeFragment: ReactNode[] = [];
   if (decodingData?.stateChanges) {
