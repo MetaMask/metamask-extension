@@ -16,6 +16,7 @@ import {
   getCurrentNetwork,
   getMarketData,
   getPreferences,
+  getSelectedAccount,
   getSelectedAccountNativeTokenCachedBalanceByChainId,
   getSelectedAccountTokenBalancesAcrossChains,
   getSelectedAccountTokensAcrossChains,
@@ -52,6 +53,7 @@ export type AddressBalanceMapping = Record<Hex, Record<Hex, Hex>>;
 export default function TokenList({ onTokenClick }: TokenListProps) {
   const t = useI18nContext();
   const currentNetwork = useSelector(getCurrentNetwork);
+  const selectedAccount = useSelector(getSelectedAccount);
 
   const { tokenSortConfig, tokenNetworkFilter } = useSelector(getPreferences);
   const conversionRate = useSelector(getConversionRate);
@@ -167,6 +169,7 @@ export default function TokenList({ onTokenClick }: TokenListProps) {
     conversionRate,
     contractExchangeRates,
     currentNetwork,
+    selectedAccount,
   ]);
 
   const loading = false;

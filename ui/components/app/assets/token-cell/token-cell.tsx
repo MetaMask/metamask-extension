@@ -34,6 +34,9 @@ export const formatWithThreshold = (
   locale: string,
   options: Intl.NumberFormatOptions,
 ): string => {
+  if (amount === 0) {
+    return new Intl.NumberFormat(locale, options).format(0);
+  }
   return amount < threshold
     ? `<${new Intl.NumberFormat(locale, options).format(threshold)}`
     : new Intl.NumberFormat(locale, options).format(amount);
@@ -76,7 +79,7 @@ export default function TokenCell({
       erc20TokensByChain?.[chainId]?.data?.[address.toLowerCase()]?.iconUrl) ||
     image;
 
-  const secondaryThreshold = 0.01;
+  const secondaryThreshold = 0.0;
   const primaryThreshold = 0.00001;
 
   // Format for fiat balance with currency style
