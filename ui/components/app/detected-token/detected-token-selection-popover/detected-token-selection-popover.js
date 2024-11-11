@@ -71,7 +71,10 @@ const DetectedTokenSelectionPopover = ({
         className="detected-token-selection-popover__import-button"
         type="primary"
         onClick={() => {
-          endTrace({ name: TraceName.AccountOverviewAssetListTab });
+          endTrace({
+            name: TraceName.AccountOverviewAssetListTab,
+            tags: { 'ui.event.abort': true },
+          });
           trace({
             name: TraceName.AccountOverviewAssetListTab,
             op: TraceOperation.ComponentLoad,
