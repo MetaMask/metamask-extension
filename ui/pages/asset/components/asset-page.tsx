@@ -142,22 +142,19 @@ const AssetPage = ({
   // Market and conversion rate data
   const baseCurrency = marketData[chainId]?.[address]?.currency;
   const tokenMarketPrice = marketData[chainId]?.[address]?.price || 0;
-  const tokenExchangeRate = currencyRates[baseCurrency]?.conversionRate || 0;
+  const tokenExchangeRate =
+    type === AssetType.native
+      ? currencyRates[symbol]?.conversionRate
+      : currencyRates[baseCurrency]?.conversionRate || 0;
 
   // Calculate fiat amount
-  let tokenFiatAmount =
+  const tokenFiatAmount =
     tokenMarketPrice * tokenExchangeRate * parseFloat(String(balance));
-  if (type === AssetType.native && currencyRates) {
-    tokenFiatAmount =
-      currencyRates[symbol]?.conversionRate * parseFloat(String(balance));
-  }
 
   const currentPrice =
     tokenExchangeRate !== undefined && tokenMarketPrice !== undefined
       ? tokenExchangeRate * tokenMarketPrice
       : undefined;
-
-  console.log(marketData[chainId]?.[address]);
 
   return (
     <Box
@@ -274,11 +271,11 @@ const AssetPage = ({
             </Box>
           )}
           {conversionRate > 0 &&
-            (marketData?.marketCap > 0 ||
-              marketData?.totalVolume > 0 ||
-              marketData?.circulatingSupply > 0 ||
-              marketData?.allTimeHigh > 0 ||
-              marketData?.allTimeLow > 0) && (
+            (marketData[chainId]?.[address].marketCap > 0 ||
+              marketData[chainId]?.[address].totalVolume > 0 ||
+              marketData[chainId]?.[address].circulatingSupply > 0 ||
+              marketData[chainId]?.[address].allTimeHigh > 0 ||
+              marketData[chainId]?.[address]?.allTimeLow > 0) && (
               <Box paddingLeft={4} paddingRight={4}>
                 <Text variant={TextVariant.headingMd} paddingBottom={4}>
                   {t('marketDetails')}
@@ -288,29 +285,29 @@ const AssetPage = ({
                   flexDirection={FlexDirection.Column}
                   gap={2}
                 >
-                  {marketData?.marketCap > 0 &&
+                  {marketData[chainId]?.[address].marketCap > 0 &&
                     renderRow(
                       t('marketCap'),
                       <Text data-testid="asset-market-cap">
                         {localizeLargeNumber(
                           t,
-                          conversionRate *
+                          tokenExchangeRate *
                             marketData[chainId]?.[address].marketCap,
                         )}
                       </Text>,
                     )}
-                  {marketData?.totalVolume > 0 &&
+                  {marketData[chainId]?.[address].totalVolume > 0 &&
                     renderRow(
                       t('totalVolume'),
                       <Text>
                         {localizeLargeNumber(
                           t,
-                          conversionRate *
+                          tokenExchangeRate *
                             marketData[chainId]?.[address].totalVolume,
                         )}
                       </Text>,
                     )}
-                  {marketData?.circulatingSupply > 0 &&
+                  {marketData[chainId]?.[address].circulatingSupply > 0 &&
                     renderRow(
                       t('circulatingSupply'),
                       <Text>
@@ -320,18 +317,18 @@ const AssetPage = ({
                         )}
                       </Text>,
                     )}
-                  {marketData?.allTimeHigh > 0 &&
+                  {marketData[chainId]?.[address].allTimeHigh > 0 &&
                     renderRow(
                       t('allTimeHigh'),
                       <Text>
                         {formatCurrency(
                           `${
-                            conversionRate *
+                            tokenExchangeRate *
                             marketData[chainId]?.[address].allTimeHigh
                           }`,
                           currency,
                           getPricePrecision(
-                            conversionRate *
+                            tokenExchangeRate *
                               marketData[chainId]?.[address].allTimeHigh,
                           ),
                         )}
@@ -343,12 +340,12 @@ const AssetPage = ({
                       <Text>
                         {formatCurrency(
                           `${
-                            conversionRate *
+                            tokenExchangeRate *
                             marketData[chainId]?.[address]?.allTimeLow
                           }`,
                           currency,
                           getPricePrecision(
-                            conversionRate *
+                            tokenExchangeRate *
                               marketData[chainId]?.[address]?.allTimeLow,
                           ),
                         )}
