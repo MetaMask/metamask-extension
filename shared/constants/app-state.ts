@@ -14,7 +14,13 @@ export const ACCOUNT_OVERVIEW_TAB_KEY_TO_METAMETRICS_EVENT_NAME_MAP = {
 } as const;
 
 export const ACCOUNT_OVERVIEW_TAB_KEY_TO_TRACE_NAMES_ARRAY_MAP = {
-  [AccountOverviewTabKey.Tokens]: [TraceName.AccountOverviewAssetListTab, TraceName.AccountOverviewAssetListTabFMP],
-  [AccountOverviewTabKey.Nfts]: [TraceName.AccountOverviewNftsTab, TraceName.AccountOverviewNftsTabFMP],
+  [AccountOverviewTabKey.Tokens]: [
+    TraceName.AccountOverviewAssetListTab,
+    TraceName.AccountOverviewAssetListTabFMP,
+  ],
+  [AccountOverviewTabKey.Nfts]: [
+    TraceName.AccountOverviewNftsTab,
+    TraceName.AccountOverviewNftsTabFMP,
+  ],
   [AccountOverviewTabKey.Activity]: [TraceName.AccountOverviewActivityTab],
 } as const;
