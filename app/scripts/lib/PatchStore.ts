@@ -1,6 +1,11 @@
-import { createProjectLogger } from '@metamask/utils';
+import {
+  createProjectLogger,
+  getKnownPropertyNames,
+  isNullOrUndefined,
+} from '@metamask/utils';
 import { Patch } from 'immer';
 import { v4 as uuid } from 'uuid';
+import { MemStoreControllersComposedState } from '../../../shared/types/metamask-controller-stores';
 import ComposableObservableStore from './ComposableObservableStore';
 import { sanitizeUIState } from './state-utils';
 
@@ -15,8 +20,8 @@ export class PatchStore {
 
   private listener: (request: {
     controllerKey: string;
-    oldState: Record<string, unknown>;
-    newState: Record<string, unknown>;
+    oldState: MemStoreControllersComposedState;
+    newState: MemStoreControllersComposedState;
   }) => void;
 
   constructor(observableStore: ComposableObservableStore) {
@@ -51,12 +56,12 @@ export class PatchStore {
     newState,
   }: {
     controllerKey: string;
-    oldState: Record<string, unknown>;
-    newState: Record<string, unknown>;
+    oldState: MemStoreControllersComposedState;
+    newState: MemStoreControllersComposedState;
   }) {
     const sanitizedNewState = sanitizeUIState(newState);
     const patches = this._generatePatches(oldState, sanitizedNewState);
-    const isInitialized = Boolean(newState.vault);
+    const isInitialized = Boolean(newState.KeyringController.vault);
 
     if (isInitialized) {
       patches.push({
@@ -80,24 +85,42 @@ export class PatchStore {
   }
 
   private _generatePatches(
-    oldState: Record<string, unknown>,
-    newState: Record<string, unknown>,
+    oldState: MemStoreControllersComposedState,
+    newState: MemStoreControllersComposedState,
   ): Patch[] {
-    return Object.keys(newState)
-      .map((key) => {
-        const oldData = oldState[key];
-        const newData = newState[key];
+    return getKnownPropertyNames<keyof MemStoreControllersComposedState>(
+      newState,
+    ).reduce<Patch[]>((acc, controllerName) => {
+      const curr = Object.keys(oldState[controllerName]).map((key) => {
+        const oldData = oldState[controllerName][key];
+        const newData = newState[controllerName][key];
 
         if (oldData === newData) {
           return null;
         }
-
         return {
           op: 'replace',
-          path: [key],
+          path: [controllerName, key],
           value: newData,
         };
-      })
-      .filter(Boolean) as Patch[];
+      });
+      return acc.concat(curr.filter((e) => isReplacePatch(e)));
+    }, []);
   }
+}
+
+export function isReplacePatch(
+  patch: unknown,
+): patch is Omit<Patch, 'op'> & { op: 'replace' } {
+  return (
+    typeof patch === 'object' &&
+    !isNullOrUndefined(patch) &&
+    'op' in patch &&
+    patch.op === 'replace' &&
+    'path' in patch &&
+    Array.isArray(patch.path) &&
+    (!patch.path.length ||
+      ['string', 'number'].includes(typeof patch.path[0])) &&
+    'value' in patch
+  );
 }
