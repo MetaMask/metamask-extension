@@ -75,9 +75,9 @@ describe('Test Snap Cronjob', function () {
           text: 'Reconnect to Cronjobs Snap',
         });
 
+        // Switching to dialog popup takes time, hence this wait is needed
         await driver.delay(largeDelayMs);
 
-        // switch to dialog popup, wait for a maximum of 65 seconds
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
         // look for the dialog popup to verify cronjob fired
