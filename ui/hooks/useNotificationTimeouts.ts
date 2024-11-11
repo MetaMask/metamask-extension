@@ -3,6 +3,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { deleteNotificationsById } from '../store/actions';
 import { NOTIFICATIONS_EXPIRATION_DELAY } from '../helpers/constants/notifications';
 import { getSnapNotifications } from '../selectors/metamask-notifications/metamask-notifications';
+import { SnapNotification } from '../pages/notifications/notification-components/snap/snap';
 
 /**
  * This hook is used to enforce lifecycles for snap notifications.
@@ -14,7 +15,8 @@ import { getSnapNotifications } from '../selectors/metamask-notifications/metama
  */
 export const useSnapNotificationTimeouts = () => {
   const dispatch = useDispatch();
-  const snapNotifications = useSelector(getSnapNotifications);
+  const snapNotifications: SnapNotification[] =
+    useSelector(getSnapNotifications);
 
   const setNotificationTimeout = (id: string) => {
     setTimeout(() => {
