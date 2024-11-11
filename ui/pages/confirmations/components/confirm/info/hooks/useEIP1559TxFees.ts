@@ -1,5 +1,6 @@
 import { TransactionMeta } from '@metamask/transaction-controller';
 import { useMemo } from 'react';
+import { PriorityLevels } from '../../../../../../../shared/constants/gas';
 import { hexToDecimal } from '../../../../../../../shared/modules/conversion.utils';
 
 export const useEIP1559TxFees = (
@@ -9,11 +10,14 @@ export const useEIP1559TxFees = (
   maxPriorityFeePerGas: string;
 } => {
   const hexMaxFeePerGas =
-    transactionMeta.dappSuggestedGasFees?.maxFeePerGas ||
-    transactionMeta?.txParams?.maxFeePerGas;
+    transactionMeta.userFeeLevel === PriorityLevels.dAppSuggested
+      ? transactionMeta.dappSuggestedGasFees?.maxFeePerGas
+      : transactionMeta?.txParams?.maxFeePerGas;
+
   const hexMaxPriorityFeePerGas =
-    transactionMeta.dappSuggestedGasFees?.maxPriorityFeePerGas ||
-    transactionMeta?.txParams?.maxPriorityFeePerGas;
+    transactionMeta.userFeeLevel === PriorityLevels.dAppSuggested
+      ? transactionMeta.dappSuggestedGasFees?.maxPriorityFeePerGas
+      : transactionMeta?.txParams?.maxPriorityFeePerGas;
 
   return useMemo(() => {
     const maxFeePerGas = hexMaxFeePerGas ? hexToDecimal(hexMaxFeePerGas) : '0';

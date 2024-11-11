@@ -1,6 +1,7 @@
 import { GasFeeEstimates } from '@metamask/gas-fee-controller';
 import { TransactionMeta } from '@metamask/transaction-controller';
 import { Hex } from '@metamask/utils';
+import { PriorityLevels } from '../../../../../../../shared/constants/gas';
 import {
   addHexes,
   multiplyHexes,
@@ -22,17 +23,22 @@ export function useTransactionGasFeeEstimate(
     ?.estimatedBaseFee;
 
   // override with values from `dappSuggestedGasFees` if they exist
-  gasLimit = transactionMeta.dappSuggestedGasFees?.gas || gasLimit || HEX_ZERO;
+  gasLimit =
+    (transactionMeta.userFeeLevel === PriorityLevels.dAppSuggested
+      ? transactionMeta.dappSuggestedGasFees?.gas
+      : gasLimit) || HEX_ZERO;
   gasPrice =
-    transactionMeta.dappSuggestedGasFees?.gasPrice || gasPrice || HEX_ZERO;
+    (transactionMeta.userFeeLevel === PriorityLevels.dAppSuggested
+      ? transactionMeta.dappSuggestedGasFees?.gasPrice
+      : gasPrice) || HEX_ZERO;
   const maxPriorityFeePerGas =
-    transactionMeta.dappSuggestedGasFees?.maxPriorityFeePerGas ||
-    transactionMeta.txParams?.maxPriorityFeePerGas ||
-    HEX_ZERO;
+    (transactionMeta.userFeeLevel === PriorityLevels.dAppSuggested
+      ? transactionMeta.dappSuggestedGasFees?.maxPriorityFeePerGas
+      : transactionMeta.txParams?.maxPriorityFeePerGas) || HEX_ZERO;
   const maxFeePerGas =
-    transactionMeta.dappSuggestedGasFees?.maxFeePerGas ||
-    transactionMeta.txParams?.maxFeePerGas ||
-    HEX_ZERO;
+    (transactionMeta.userFeeLevel === PriorityLevels.dAppSuggested
+      ? transactionMeta.dappSuggestedGasFees?.maxFeePerGas
+      : transactionMeta.txParams?.maxFeePerGas) || HEX_ZERO;
 
   let gasEstimate: Hex;
   if (supportsEIP1559) {
