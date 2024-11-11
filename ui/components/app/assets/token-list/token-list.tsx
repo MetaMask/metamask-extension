@@ -169,8 +169,6 @@ export default function TokenList({ onTokenClick }: TokenListProps) {
     currentNetwork,
   ]);
 
-  console.log(sortedFilteredTokens);
-
   const loading = false;
   return loading ? (
     <Box
