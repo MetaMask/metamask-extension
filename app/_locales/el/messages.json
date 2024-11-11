@@ -256,6 +256,9 @@
   "addNewBitcoinTestnetAccount": {
     "message": "Προσθήκη νέου λογαριασμού Bitcoin (Testnet)"
   },
+  "addNewSolanaAccount": {
+    "message": "Προσθήκη νέου λογαριασμού Solana (Beta)"
+  },
   "addNewToken": {
     "message": "Προσθήκη νέου token"
   },
@@ -1620,9 +1623,6 @@
   "editSpeedUpEditGasFeeModalTitle": {
     "message": "Επεξεργασία τελών επίσπευσης συναλλαγής"
   },
-  "enable": {
-    "message": "Ενεργοποίηση"
-  },
   "enableAutoDetect": {
     "message": " Ενεργοποίηση αυτόματου εντοπισμού"
   },
@@ -1699,10 +1699,6 @@
     "message": "Κωδικός: $1",
     "description": "Displayed error code for debugging purposes. $1 is the error code"
   },
-  "errorDetails": {
-    "message": "Λεπτομέρειες σφάλματος",
-    "description": "Title for collapsible section that displays error details for debugging purposes"
-  },
   "errorGettingSafeChainList": {
     "message": "Σφάλμα κατά τη λήψη της λίστας ασφαλών αλυσίδων, συνεχίστε με προσοχή."
   },
@@ -1713,14 +1709,6 @@
   "errorName": {
     "message": "Κωδικός: $1",
     "description": "Displayed error name for debugging purposes. $1 is the error name"
-  },
-  "errorPageMessage": {
-    "message": "Προσπαθήστε ξανά με επαναφόρτωση της σελίδας ή επικοινωνήστε με την υποστήριξη $1.",
-    "description": "Message displayed on generic error page in the fullscreen or notification UI, $1 is a clickable link with text defined by the 'here' key. The link will open to a form where users can file support tickets."
-  },
-  "errorPagePopupMessage": {
-    "message": "Προσπαθήστε ξανά κλείνοντας και ανοίγοντας ξανά το αναδυόμενο παράθυρο ή επικοινωνήστε με την υποστήριξη $1.",
-    "description": "Message displayed on generic error page in the popup UI, $1 is a clickable link with text defined by the 'here' key. The link will open to a form where users can file support tickets."
   },
   "errorPageTitle": {
     "message": "Το MetaMask αντιμετώπισε ένα σφάλμα",
@@ -4543,17 +4531,11 @@
   "signingInWith": {
     "message": "Σύνδεση με"
   },
-  "simulationDetailsFailed": {
-    "message": "Υπήρξε σφάλμα στη φόρτωση της εκτίμησής σας."
-  },
   "simulationDetailsFiatNotAvailable": {
     "message": "Μη διαθέσιμο"
   },
   "simulationDetailsIncomingHeading": {
     "message": "Λαμβάνετε"
-  },
-  "simulationDetailsNoBalanceChanges": {
-    "message": "Δεν προβλέπονται αλλαγές για το πορτοφόλι σας"
   },
   "simulationDetailsOutgoingHeading": {
     "message": "Στέλνετε"
@@ -4591,9 +4573,6 @@
   },
   "siweResources": {
     "message": "Πόροι"
-  },
-  "siweSignatureSimulationDetailInfo": {
-    "message": "Συνδέεστε σε έναν ιστότοπο και δεν προβλέπονται αλλαγές στον λογαριασμό σας."
   },
   "siweURI": {
     "message": "Διεύθυνση URL"
@@ -4636,25 +4615,6 @@
   },
   "smartTransactions": {
     "message": "Έξυπνες συναλλαγές"
-  },
-  "smartTransactionsBenefit1": {
-    "message": "Ποσοστό επιτυχίας 99,5%"
-  },
-  "smartTransactionsBenefit2": {
-    "message": "Σας εξοικονομεί χρήματα"
-  },
-  "smartTransactionsBenefit3": {
-    "message": "Ενημερώσεις σε πραγματικό χρόνο"
-  },
-  "smartTransactionsDescription": {
-    "message": "Ξεκλειδώστε υψηλότερα ποσοστά επιτυχίας, προστασία σε \"προπορευόμενες συναλλαγές\" και καλύτερη ορατότητα με τις Έξυπνες Συναλλαγές."
-  },
-  "smartTransactionsDescription2": {
-    "message": "Διατίθεται μόνο στο Ethereum. Ενεργοποιήστε ή απενεργοποιήστε το ανά πάσα στιγμή στις ρυθμίσεις. $1",
-    "description": "$1 is an external link to learn more about Smart Transactions"
-  },
-  "smartTransactionsOptItModalTitle": {
-    "message": "Ενισχυμένη Προστασία Συναλλαγών"
   },
   "snapAccountCreated": {
     "message": "Ο λογαριασμός δημιουργήθηκε"

@@ -3,6 +3,7 @@ import configureMockStore from 'redux-mock-store';
 import { fireEvent, screen } from '@testing-library/react';
 import { act } from 'react-dom/test-utils';
 import { EthAccountType } from '@metamask/keyring-api';
+import { CHAIN_IDS } from '@metamask/transaction-controller';
 import { MESSAGE_TYPE } from '../../../../../shared/constants/app';
 import { SECURITY_PROVIDER_MESSAGE_SEVERITY } from '../../../../../shared/constants/security-provider';
 import mockState from '../../../../../test/data/mock-state.json';
@@ -11,6 +12,7 @@ import configureStore from '../../../../store/store';
 import { rejectPendingApproval } from '../../../../store/actions';
 import { shortenAddress } from '../../../../helpers/utils/util';
 import { ETH_EOA_METHODS } from '../../../../../shared/constants/eth-methods';
+import { mockNetworkState } from '../../../../../test/stub/networks';
 import SignatureRequestOriginal from '.';
 
 jest.mock('../../../../store/actions', () => ({
@@ -21,12 +23,15 @@ jest.mock('../../../../store/actions', () => ({
   setLastInteractedConfirmationInfo: jest.fn(),
 }));
 
+const CHAIN_ID_MOCK = CHAIN_IDS.GOERLI;
+
 const address = '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc';
 
 const props = {
   signMessage: jest.fn(),
   cancelMessage: jest.fn(),
   txData: {
+    chainId: CHAIN_ID_MOCK,
     msgParams: {
       from: address,
       data: [
@@ -76,6 +81,7 @@ const render = ({ txData = props.txData, selectedAccount } = {}) => {
   const store = configureStore({
     metamask: {
       ...mockState.metamask,
+      ...mockNetworkState({ chainId: CHAIN_ID_MOCK }),
       internalAccounts,
     },
   });
@@ -120,6 +126,7 @@ describe('SignatureRequestOriginal', () => {
 
   it('should escape RTL character in label or value', () => {
     const txData = {
+      chainId: CHAIN_ID_MOCK,
       msgParams: {
         from: '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc',
         data: [
