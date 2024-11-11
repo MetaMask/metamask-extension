@@ -1,7 +1,7 @@
 import React, { useCallback, useContext, useMemo } from 'react';
 import { useDispatch } from 'react-redux';
 import { useHistory } from 'react-router-dom';
-import { endTrace, trace } from '../../../../shared/lib/trace';
+import { endTrace, trace, TraceOperation } from '../../../../shared/lib/trace';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { ASSET_ROUTE } from '../../../helpers/constants/routes';
 import {
@@ -92,7 +92,10 @@ export const AccountOverviewTabs = ({
           ],
         });
       }
-      trace({ name: ACCOUNT_OVERVIEW_TAB_KEY_TO_TRACE_NAME_MAP[tabName] });
+      trace({
+        name: ACCOUNT_OVERVIEW_TAB_KEY_TO_TRACE_NAME_MAP[tabName],
+        op: TraceOperation.ComponentLoad,
+      });
     },
     [onTabClick],
   );

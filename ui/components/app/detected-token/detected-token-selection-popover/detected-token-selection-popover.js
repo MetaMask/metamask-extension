@@ -18,7 +18,12 @@ import Popover from '../../../ui/popover';
 import Box from '../../../ui/box';
 import Button from '../../../ui/button';
 import DetectedTokenDetails from '../detected-token-details/detected-token-details';
-import { trace, endTrace, TraceName } from '../../../../../shared/lib/trace';
+import {
+  trace,
+  endTrace,
+  TraceName,
+  TraceOperation,
+} from '../../../../../shared/lib/trace';
 
 const DetectedTokenSelectionPopover = ({
   tokensListDetected,
@@ -67,7 +72,10 @@ const DetectedTokenSelectionPopover = ({
         type="primary"
         onClick={() => {
           endTrace({ name: TraceName.AccountOverviewAssetListTab });
-          trace({ name: TraceName.AccountOverviewAssetListTab });
+          trace({
+            name: TraceName.AccountOverviewAssetListTab,
+            op: TraceOperation.ComponentLoad,
+          });
           onImport();
         }}
         disabled={selectedTokens.length === 0}
