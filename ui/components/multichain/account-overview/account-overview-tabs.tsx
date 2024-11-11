@@ -90,6 +90,7 @@ export const AccountOverviewTabs = ({
           name: ACCOUNT_OVERVIEW_TAB_KEY_TO_TRACE_NAME_MAP[
             defaultHomeActiveTabName
           ],
+          tags: { 'ui.event.abort': true },
         });
       }
       trace({

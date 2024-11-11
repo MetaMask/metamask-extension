@@ -357,6 +357,7 @@ export const AccountListMenu = ({
           name: ACCOUNT_OVERVIEW_TAB_KEY_TO_TRACE_NAME_MAP[
             defaultHomeActiveTabName
           ],
+          tags: { 'ui.event.abort': true },
         });
         trace({
           name: ACCOUNT_OVERVIEW_TAB_KEY_TO_TRACE_NAME_MAP[
