@@ -1,4 +1,4 @@
-import BigNumber from 'bignumber.js';
+import { BigNumber } from 'bignumber.js';
 import { Hex } from '@metamask/utils';
 import React, { useMemo } from 'react';
 import { useSelector } from 'react-redux';
@@ -67,7 +67,7 @@ const NativeValueDisplay: React.FC<PermitSimulationValueDisplayParams> = ({
     };
   }, [nativeFiatRate, value]);
 
-  const { color, backgroundColor} = getAmountColors(credit, debit);
+  const { color, backgroundColor } = getAmountColors(credit, debit);
 
   return (
     <Box>

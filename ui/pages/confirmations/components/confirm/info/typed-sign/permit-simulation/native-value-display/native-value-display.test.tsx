@@ -5,16 +5,12 @@ import mockState from '../../../../../../../../../test/data/mock-state.json';
 import { renderWithProvider } from '../../../../../../../../../test/lib/render-helpers';
 import NativeValueDisplay from './native-value-display';
 
-
 describe('NativeValueDisplay', () => {
   it('renders component correctly', async () => {
     const mockStore = configureMockStore([])(mockState);
 
     const { container, findByText } = renderWithProvider(
-      <NativeValueDisplay
-        value="4321"
-        chainId="0x1"
-      />,
+      <NativeValueDisplay value="4321" chainId="0x1" />,
       mockStore,
     );
 
