@@ -1453,7 +1453,7 @@ describe('MetaMetricsController', function () {
           participateInMetaMetrics: true,
           currentCurrency: 'usd',
           dataCollectionForMarketing: false,
-          preferences: { privacyMode: true, tokenNetworkFilter: {} },
+          preferences: { privacyMode: true, tokenNetworkFilter: [] },
           ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
           custodyAccountDetails: {},
           ///: END:ONLY_INCLUDE_IF
@@ -1494,7 +1494,7 @@ describe('MetaMetricsController', function () {
           ///: END:ONLY_INCLUDE_IF
           [MetaMetricsUserTrait.TokenSortPreference]: 'token-sort-key',
           [MetaMetricsUserTrait.PrivacyModeEnabled]: true,
-          [MetaMetricsUserTrait.NetworkFilterPreference]: {},
+          [MetaMetricsUserTrait.NetworkFilterPreference]: [],
         });
       });
     });
@@ -1544,7 +1544,7 @@ describe('MetaMetricsController', function () {
           allNfts: {},
           participateInMetaMetrics: true,
           dataCollectionForMarketing: false,
-          preferences: { privacyMode: true, tokenNetworkFilter: {} },
+          preferences: { privacyMode: true, tokenNetworkFilter: [] },
           securityAlertsEnabled: true,
           names: {
             ethereumAddress: {},
@@ -1608,7 +1608,7 @@ describe('MetaMetricsController', function () {
           allNfts: {},
           participateInMetaMetrics: true,
           dataCollectionForMarketing: false,
-          preferences: { privacyMode: true, tokenNetworkFilter: {} },
+          preferences: { privacyMode: true, tokenNetworkFilter: [] },
           securityAlertsEnabled: true,
           ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
           custodyAccountDetails: {},
@@ -1673,7 +1673,7 @@ describe('MetaMetricsController', function () {
           },
           participateInMetaMetrics: true,
           dataCollectionForMarketing: false,
-          preferences: { privacyMode: true, tokenNetworkFilter: {} },
+          preferences: { privacyMode: true, tokenNetworkFilter: [] },
           securityAlertsEnabled: true,
           security_providers: ['blockaid'],
           currentCurrency: 'usd',
@@ -1719,7 +1719,7 @@ describe('MetaMetricsController', function () {
           allNfts: {},
           participateInMetaMetrics: true,
           dataCollectionForMarketing: false,
-          preferences: { privacyMode: true, tokenNetworkFilter: {} },
+          preferences: { privacyMode: true, tokenNetworkFilter: [] },
           names: {
             ethereumAddress: {},
           },
