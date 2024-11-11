@@ -54,6 +54,7 @@ export const EditSpendingCapModal = ({
     transactionMeta.txParams.to,
     transactionMeta.txParams.from,
     transactionMeta.txParams.data,
+    transactionMeta.chainId,
   );
 
   const accountBalance = calcTokenAmount(

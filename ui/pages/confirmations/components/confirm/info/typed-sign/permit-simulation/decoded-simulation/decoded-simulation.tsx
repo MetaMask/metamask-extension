@@ -70,7 +70,7 @@ const DecodedSimulation: React.FC<object> = () => {
   console.log('decodingData = ', decodingData);
 
   let stateChangeFragment: ReactNode[] = [];
-  if (decodingData && decodingData.stateChanges) {
+  if (decodingData?.stateChanges) {
     stateChangeFragment = decodingData.stateChanges.map(
       (change: DecodingDataStateChange) => (
         <StateChangeRow stateChange={change} chainId={chainId} />

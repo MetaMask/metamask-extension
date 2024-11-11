@@ -256,6 +256,9 @@
   "addNewBitcoinTestnetAccount": {
     "message": "添加新的比特币账户（测试网）"
   },
+  "addNewSolanaAccount": {
+    "message": "添加新的Solana账户（测试版）"
+  },
   "addNewToken": {
     "message": "添加新代币"
   },
@@ -1696,10 +1699,6 @@
     "message": "代码：$1",
     "description": "Displayed error code for debugging purposes. $1 is the error code"
   },
-  "errorDetails": {
-    "message": "错误详情",
-    "description": "Title for collapsible section that displays error details for debugging purposes"
-  },
   "errorGettingSafeChainList": {
     "message": "获取安全链列表时出错，请谨慎继续。"
   },
@@ -1710,14 +1709,6 @@
   "errorName": {
     "message": "代码：$1",
     "description": "Displayed error name for debugging purposes. $1 is the error name"
-  },
-  "errorPageMessage": {
-    "message": "通过重新加载页面再试一次，或联系支持团队 $1。",
-    "description": "Message displayed on generic error page in the fullscreen or notification UI, $1 is a clickable link with text defined by the 'here' key. The link will open to a form where users can file support tickets."
-  },
-  "errorPagePopupMessage": {
-    "message": "通过关闭并重新打开弹出窗口再试一次，或联系支持团队 $1。",
-    "description": "Message displayed on generic error page in the popup UI, $1 is a clickable link with text defined by the 'here' key. The link will open to a form where users can file support tickets."
   },
   "errorPageTitle": {
     "message": "MetaMask 遇到了一个错误",
@@ -4540,17 +4531,11 @@
   "signingInWith": {
     "message": "使用以下登录方式"
   },
-  "simulationDetailsFailed": {
-    "message": "加载估算时出错。"
-  },
   "simulationDetailsFiatNotAvailable": {
     "message": "不可用"
   },
   "simulationDetailsIncomingHeading": {
     "message": "您收到"
-  },
-  "simulationDetailsNoBalanceChanges": {
-    "message": "预计您的钱包不会发生变化"
   },
   "simulationDetailsOutgoingHeading": {
     "message": "您发送"
@@ -4588,9 +4573,6 @@
   },
   "siweResources": {
     "message": "资源"
-  },
-  "siweSignatureSimulationDetailInfo": {
-    "message": "您正在登录某个网站，并且您的账户没有预期变化。"
   },
   "siweURI": {
     "message": "URL"

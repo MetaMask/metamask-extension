@@ -25,7 +25,6 @@ export type CurrencyDisplayProps = OverridingUnion<
     // TODO: Replace `any` with type
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     suffixProps?: Record<string, any>;
-    privacyModeExempt?: boolean;
   }
 >;
 

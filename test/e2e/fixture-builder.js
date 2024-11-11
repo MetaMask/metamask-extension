@@ -63,6 +63,7 @@ function onboardingFixture() {
         advancedGasFee: {},
         currentLocale: 'en',
         dismissSeedBackUpReminder: false,
+        overrideContentSecurityPolicyHeader: true,
         featureFlags: {},
         forgottenPassword: false,
         identities: {},

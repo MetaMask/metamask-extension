@@ -156,6 +156,7 @@ import {
   NotificationServicesPushController,
   NotificationServicesController,
 } from '@metamask/notification-services-controller';
+import { isProduction } from '../../shared/modules/environment';
 import {
   methodsRequiringNetworkSwitch,
   methodsThatCanSwitchNetworkWithoutApproval,
@@ -282,7 +283,7 @@ import {
   checkForMultipleVersionsRunning,
 } from './detect-multiple-instances';
 ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-import MMIController from './controllers/mmi-controller';
+import { MMIController } from './controllers/mmi-controller';
 import { mmiKeyringBuilderFactory } from './mmi-keyring-builder-factory';
 ///: END:ONLY_INCLUDE_IF
 import ComposableObservableStore from './lib/ComposableObservableStore';
@@ -1572,7 +1573,7 @@ export default class MetamaskController extends EventEmitter {
         },
       },
       env: {
-        isAccountSyncingEnabled: isManifestV3,
+        isAccountSyncingEnabled: !isProduction() && isManifestV3,
       },
       messenger: this.controllerMessenger.getRestricted({
         name: 'UserStorageController',
@@ -1999,6 +2000,11 @@ export default class MetamaskController extends EventEmitter {
         ],
       }),
       trace,
+      decodingApiUrl: process.env.DECODING_API_URL,
+      isDecodeSignatureRequestEnabled: () =>
+        this.preferencesController.state.useExternalServices === true &&
+        this.preferencesController.state.useTransactionSimulations &&
+        process.env.ENABLE_SIGNATURE_DECODING === true,
     });
 
     this.signatureController.hub.on(
@@ -2026,6 +2032,8 @@ export default class MetamaskController extends EventEmitter {
         'AccountsController:listAccounts',
         'AccountsController:getSelectedAccount',
         'AccountsController:setSelectedAccount',
+        'NetworkController:getState',
+        'NetworkController:setActiveNetwork',
       ],
     });
 
@@ -2033,7 +2041,6 @@ export default class MetamaskController extends EventEmitter {
       messenger: mmiControllerMessenger,
       mmiConfigurationController: this.mmiConfigurationController,
       keyringController: this.keyringController,
-      preferencesController: this.preferencesController,
       appStateController: this.appStateController,
       transactionUpdateController: this.transactionUpdateController,
       custodyController: this.custodyController,
@@ -2041,7 +2048,6 @@ export default class MetamaskController extends EventEmitter {
       getPendingNonce: this.getPendingNonce.bind(this),
       accountTrackerController: this.accountTrackerController,
       metaMetricsController: this.metaMetricsController,
-      networkController: this.networkController,
       permissionController: this.permissionController,
       signatureController: this.signatureController,
       platform: this.platform,
@@ -3484,6 +3490,10 @@ export default class MetamaskController extends EventEmitter {
       ),
       setDismissSeedBackUpReminder:
         preferencesController.setDismissSeedBackUpReminder.bind(
+          preferencesController,
+        ),
+      setOverrideContentSecurityPolicyHeader:
+        preferencesController.setOverrideContentSecurityPolicyHeader.bind(
           preferencesController,
         ),
       setAdvancedGasFee: preferencesController.setAdvancedGasFee.bind(
