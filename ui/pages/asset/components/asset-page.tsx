@@ -4,6 +4,8 @@ import { useHistory } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import { EthMethod } from '@metamask/keyring-api';
 import { isEqual } from 'lodash';
+import BN from 'bn.js';
+import { Hex } from '@metamask/utils';
 import {
   getCurrentCurrency,
   getIsBridgeChain,
@@ -13,6 +15,7 @@ import {
   getMarketData,
   getCurrencyRates,
   getSelectedAccountTokenBalancesAcrossChains,
+  getSelectedAccountNativeTokenCachedBalanceByChainId,
 } from '../../../selectors';
 import {
   Display,
@@ -41,6 +44,8 @@ import { getConversionRate } from '../../../ducks/metamask/metamask';
 import { toChecksumHexAddress } from '../../../../shared/modules/hexstring-utils';
 import CoinButtons from '../../../components/app/wallet-overview/coin-buttons';
 import { getIsNativeTokenBuyable } from '../../../ducks/ramps';
+import { stringifyBalance } from '../../../hooks/useTokenBalances';
+import { hexToDecimal } from '../../../../shared/modules/conversion.utils';
 import AssetChart from './chart/asset-chart';
 import TokenButtons from './token-buttons';
 
@@ -50,6 +55,7 @@ export type Asset = (
       type: AssetType.native;
       /** Whether the symbol has been verified to match the chain */
       isOriginalNativeSymbol: boolean;
+      decimals: number;
     }
   | {
       type: AssetType.token;
@@ -62,7 +68,7 @@ export type Asset = (
     }
 ) & {
   /** The hexadecimal chain id */
-  chainId: string;
+  chainId: Hex;
   /** The asset's symbol, e.g. 'ETH' */
   symbol: string;
   /** The asset's name, e.g. 'Ethereum' */
@@ -96,31 +102,56 @@ const AssetPage = ({
 
   const selectedAccountTokenBalancesAcrossChains: Record<string, any> =
     useSelector(getSelectedAccountTokenBalancesAcrossChains);
-  const marketDataAcrossChains = useSelector(getMarketData);
+  const marketData = useSelector(getMarketData);
   const currencyRates = useSelector(getCurrencyRates);
 
-  const { chainId, type, symbol, name, image } = asset;
+  const nativeBalances: Record<Hex, Hex> = useSelector(
+    getSelectedAccountNativeTokenCachedBalanceByChainId,
+  ) as Record<Hex, Hex>;
+
+  const { chainId, type, symbol, name, image, decimals } = asset;
 
   // TODO: adding the addres here for native tokens would enable marketData/historic data
   const address =
     type === AssetType.token ? toChecksumHexAddress(asset.address) : '';
 
-  const balance = selectedAccountTokenBalancesAcrossChains[chainId]?.[address];
-  const marketData = marketDataAcrossChains[chainId]?.[address];
+  let balance;
+  if (type === AssetType.native) {
+    const nativeTokenBalanceHex = nativeBalances?.[chainId];
+    if (nativeTokenBalanceHex && nativeTokenBalanceHex !== '0x0') {
+      balance = stringifyBalance(
+        new BN(hexToDecimal(nativeTokenBalanceHex)),
+        new BN(18),
+        5,
+      );
+    }
+  } else {
+    const hexBalance =
+      selectedAccountTokenBalancesAcrossChains[chainId as Hex]?.[address];
+    if (hexBalance && hexBalance !== '0x0') {
+      balance = stringifyBalance(
+        new BN(hexToDecimal(hexBalance)),
+        new BN(decimals),
+      );
+    }
+  }
 
-  const baseCurrency = marketData?.currency;
-
-  const tokenMarketPrice = marketData?.price || 0;
+  // Market and conversion rate data
+  const baseCurrency = marketData[chainId]?.[address]?.currency;
+  const tokenMarketPrice = marketData[chainId]?.[address]?.price || 0;
   const tokenExchangeRate = currencyRates[baseCurrency]?.conversionRate || 0;
 
-  let tokenFiatAmount = tokenMarketPrice * tokenExchangeRate * balance;
+  // Calculate fiat amount
+  let tokenFiatAmount =
+    tokenMarketPrice * tokenExchangeRate * parseFloat(String(balance));
   if (type === AssetType.native && currencyRates) {
-    tokenFiatAmount = currencyRates[symbol]?.conversionRate * balance || 0;
+    tokenFiatAmount =
+      currencyRates[symbol]?.conversionRate * parseFloat(String(balance));
   }
 
   const currentPrice =
-    conversionRate !== undefined && marketData?.price !== undefined
-      ? conversionRate * marketData.price
+    tokenExchangeRate !== undefined && tokenMarketPrice !== undefined
+      ? tokenExchangeRate * tokenMarketPrice
       : undefined;
 
   return (
@@ -194,7 +225,7 @@ const AssetPage = ({
           image={image}
           balance={balance}
           tokenFiatAmount={tokenFiatAmount}
-          string={balance.toString()}
+          string={balance?.toString()}
         />
         <Box
           marginTop={2}

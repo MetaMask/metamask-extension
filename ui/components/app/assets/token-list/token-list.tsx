@@ -31,7 +31,7 @@ type TokenListProps = {
   nativeToken?: ReactNode;
 };
 
-type Token = {
+export type Token = {
   address: Hex;
   aggregators: string[];
   chainId: Hex;
@@ -40,7 +40,7 @@ type Token = {
   symbol: string;
 };
 
-type AddressBalanceMapping = Record<Hex, Record<Hex, Hex>>;
+export type AddressBalanceMapping = Record<Hex, Record<Hex, Hex>>;
 
 export default function TokenList({ onTokenClick }: TokenListProps) {
   const t = useI18nContext();
@@ -72,12 +72,12 @@ export default function TokenList({ onTokenClick }: TokenListProps) {
     const tokensWithBalance: Token[] = [];
 
     Object.entries(selectedAccountTokensChains).forEach(([chainId, tokens]) => {
-      console.log('chainId', chainId);
       tokens.forEach((token: Token) => {
         const { address, isNative, symbol, decimals } = token;
         let balance;
 
         if (isNative) {
+          console.log(decimals);
           const nativeTokenBalanceHex = nativeBalances?.[chainId as Hex];
           if (nativeTokenBalanceHex && nativeTokenBalanceHex !== '0x0') {
             balance = stringifyBalance(
