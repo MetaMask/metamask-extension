@@ -182,6 +182,7 @@ export function createMockInternalAccount({
   keyringType = KeyringTypes.hd,
   lastSelected = 0,
   snapOptions = undefined,
+  options = undefined,
 }: {
   name?: string;
   address?: string;
@@ -192,6 +193,9 @@ export function createMockInternalAccount({
     enabled: boolean;
     name: string;
     id: string;
+  };
+  options?: {
+    scope: string;
   };
 } = {}) {
   let methods;
@@ -232,7 +236,7 @@ export function createMockInternalAccount({
       snap: snapOptions,
       lastSelected,
     },
-    options: {},
+    options: options ?? {},
     methods,
     type,
   };

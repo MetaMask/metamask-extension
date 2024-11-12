@@ -274,7 +274,7 @@ export class BalancesController extends BaseController<
       const scope = account.options.scope as keyof typeof assetMap;
       const assetTypes = [assetMap[scope]];
 
-      await this.#getBalances(account.id, account.metadata.snap.id, assetTypes);
+      partialState.balances[account.id] = await this.#getBalances(account.id, account.metadata.snap.id, assetTypes);
     }
 
     this.update((state: Draft<BalancesControllerState>) => ({

@@ -15,6 +15,7 @@ import {
   BalancesControllerMessenger,
 } from './BalancesController';
 import { BalancesTracker } from './BalancesTracker';
+import { MultichainNetworks } from '../../../../shared/constants/multichain/networks';
 
 const mockBtcAccount = createMockInternalAccount({
   address: '',
@@ -24,6 +25,9 @@ const mockBtcAccount = createMockInternalAccount({
     id: 'mock-btc-snap',
     name: 'mock-btc-snap',
     enabled: true,
+  },
+  options: {
+    scope: MultichainNetworks.BITCOIN_TESTNET,
   },
 });
 
