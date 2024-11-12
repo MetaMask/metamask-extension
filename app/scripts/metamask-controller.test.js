@@ -41,7 +41,7 @@ import { createMockInternalAccount } from '../../test/jest/mocks';
 import { mockNetworkState } from '../../test/stub/networks';
 import {
   BalancesController as MultichainBalancesController,
-  BALANCES_UPDATE_TIME as MULTICHAIN_BALANCES_UPDATE_TIME,
+  BTC_BALANCES_UPDATE_TIME as MULTICHAIN_BALANCES_UPDATE_TIME,
 } from './lib/accounts/BalancesController';
 import { BalancesTracker as MultichainBalancesTracker } from './lib/accounts/BalancesTracker';
 import { deferredPromise } from './lib/util';
