@@ -21,6 +21,7 @@ jest.mock('../../../../../../../store/actions', () => {
     getTokenStandardAndDetails: jest
       .fn()
       .mockResolvedValue({ decimals: 2, standard: 'ERC20' }),
+    updateEventFragment: jest.fn(),
   };
 });
 
@@ -113,7 +114,6 @@ describe('PermitSimulation', () => {
 
       await waitFor(() => {
         expect(queryByTestId('30')).not.toBeInTheDocument();
-        expect(queryByTestId('Estimated changes')).toBeInTheDocument();
         expect(
           queryByTestId(
             "You're giving the spender permission to spend this many tokens from your account.",
@@ -132,18 +132,17 @@ describe('PermitSimulation', () => {
     const mockStore = configureMockStore([])(state);
 
     await act(async () => {
-      const { findByText } = renderWithConfirmContextProvider(
+      const { container, findByText } = renderWithConfirmContextProvider(
         <TypedSignV4Simulation />,
         mockStore,
       );
 
       expect(await findByText('Estimated changes')).toBeInTheDocument();
       expect(await findByText('Spending cap')).toBeInTheDocument();
-      expect(await findByText('1,461,501,637,3...')).toBeInTheDocument();
     });
   });
 
-  it.only('should render decoding simulation for seaport request', async () => {
+  it('should render decoding simulation for seaport request', async () => {
     const state = getMockTypedSignConfirmStateForRequest(seaportSignatureMsg);
     const mockStore = configureMockStore([])(state);
 

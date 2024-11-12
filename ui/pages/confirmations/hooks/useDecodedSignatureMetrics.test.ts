@@ -22,7 +22,6 @@ const decodingData: DecodingData = {
 };
 
 describe('useDecodedSignatureMetrics', () => {
-  process.env.ENABLE_SIGNATURE_DECODING = 'true';
   it('should not call updateSignatureEventFragment if decodingLoading is true', async () => {
     const state = getMockTypedSignConfirmStateForRequest({
       ...permitSignatureMsg,

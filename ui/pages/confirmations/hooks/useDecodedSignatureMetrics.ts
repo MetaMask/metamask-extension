@@ -26,7 +26,7 @@ export function useDecodedSignatureMetrics() {
       : DecodingResponseType.NoChange);
 
   useEffect(() => {
-    if (decodingLoading || !process.env.ENABLE_SIGNATURE_DECODING) {
+    if (decodingLoading) {
       return;
     }
 

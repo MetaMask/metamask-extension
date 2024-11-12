@@ -2046,8 +2046,7 @@ export default class MetamaskController extends EventEmitter {
       decodingApiUrl: process.env.DECODING_API_URL,
       isDecodeSignatureRequestEnabled: () =>
         this.preferencesController.state.useExternalServices === true &&
-        this.preferencesController.state.useTransactionSimulations &&
-        process.env.ENABLE_SIGNATURE_DECODING === true,
+        this.preferencesController.state.useTransactionSimulations,
     });
 
     this.signatureController.hub.on(
