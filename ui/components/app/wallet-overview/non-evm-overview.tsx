@@ -13,6 +13,7 @@ import { getSelectedInternalAccount } from '../../../selectors';
 import { useMultichainSelector } from '../../../hooks/useMultichainSelector';
 ///: END:ONLY_INCLUDE_IF
 import { CoinOverview } from './coin-overview';
+import { BtcAccountType, SolAccountType } from '@metamask/keyring-api';
 
 type NonEvmOverviewProps = {
   className?: string;
@@ -28,6 +29,11 @@ const NonEvmOverview = ({ className }: NonEvmOverviewProps) => {
     selectedAccount,
   );
   const isBtcBuyable = useSelector(getIsBitcoinBuyable);
+
+  // TODO: Update this to add support to check if Solana is buyable when the Send flow starts
+  const accountType = selectedAccount.type;
+  const isBtc = accountType === BtcAccountType.P2wpkh;
+  const isBuyableChain = isBtc ? isBtcBuyable && isBtcMainnetAccount : false;
   ///: END:ONLY_INCLUDE_IF
 
   return (
@@ -41,7 +47,7 @@ const NonEvmOverview = ({ className }: NonEvmOverviewProps) => {
       isSwapsChain={false}
       ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
       isBridgeChain={false}
-      isBuyableChain={isBtcBuyable && isBtcMainnetAccount}
+      isBuyableChain={isBuyableChain}
       ///: END:ONLY_INCLUDE_IF
     />
   );
