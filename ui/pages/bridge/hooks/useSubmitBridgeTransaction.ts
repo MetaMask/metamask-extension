@@ -21,6 +21,7 @@ export default function useSubmitBridgeTransaction() {
     // Execute transaction(s)
     let approvalTxMeta: TransactionMeta | undefined;
     if (quoteResponse?.approval) {
+      // This will never be an STX
       approvalTxMeta = await handleApprovalTx({
         approval: quoteResponse.approval,
         quoteResponse,
