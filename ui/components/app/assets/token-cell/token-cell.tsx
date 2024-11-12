@@ -22,18 +22,21 @@ type TokenCellProps = {
   symbol: string;
   string?: string;
   chainId: string;
-  tokenFiatAmount: number;
+  tokenFiatAmount: number | null;
   image: string;
   isNative?: boolean;
   onClick?: (chainId: string, address: string) => void;
 };
 
 export const formatWithThreshold = (
-  amount: number,
+  amount: number | null,
   threshold: number,
   locale: string,
   options: Intl.NumberFormatOptions,
 ): string => {
+  if (amount === null) {
+    return '';
+  }
   if (amount === 0) {
     return new Intl.NumberFormat(locale, options).format(0);
   }
@@ -79,8 +82,10 @@ export default function TokenCell({
       erc20TokensByChain?.[chainId]?.data?.[address.toLowerCase()]?.iconUrl) ||
     image;
 
-  const secondaryThreshold = 0.0;
-  const primaryThreshold = 0.00001;
+  const secondaryThreshold = 0.01;
+  const primaryThreshold = 0.0001;
+
+  // console.log('string', string);
 
   // Format for fiat balance with currency style
   const secondary = formatWithThreshold(

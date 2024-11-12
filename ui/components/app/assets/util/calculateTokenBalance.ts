@@ -1,12 +1,7 @@
 import BN from 'bn.js';
 import { stringifyBalance } from '../../../../hooks/useTokenBalances';
 import { hexToDecimal } from '../../../../../shared/modules/conversion.utils';
-import { useSelector } from 'react-redux';
 import { AddressBalanceMapping } from '../token-list/token-list';
-import {
-  getSelectedAccountNativeTokenCachedBalanceByChainId,
-  getSelectedAccountTokenBalancesAcrossChains,
-} from '../../../../selectors';
 import { Hex } from '@metamask/utils';
 
 type CalculateTokenBalanceParams = {

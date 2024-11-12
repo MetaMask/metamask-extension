@@ -16,7 +16,7 @@ export function calculateTokenFiatAmount({
   balance,
   marketData,
   currencyRates,
-}: CalculateTokenFiatAmountParams): number {
+}: CalculateTokenFiatAmountParams): number | null {
   const { address, isNative, symbol } = token;
 
   // Market and conversion rate data
@@ -28,6 +28,9 @@ export function calculateTokenFiatAmount({
   if (isNative && currencyRates) {
     return (currencyRates[symbol]?.conversionRate || 0) * parsedBalance;
   } else {
+    if (!tokenMarketPrice) {
+      return null; // when no market price is available, we don't want to render the fiat amount
+    }
     return tokenMarketPrice * tokenExchangeRate * parsedBalance;
   }
 }
