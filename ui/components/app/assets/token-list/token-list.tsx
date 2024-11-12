@@ -91,14 +91,15 @@ export default function TokenList({ onTokenClick }: TokenListProps) {
         const chainId = stringChainKey as Hex;
         tokens.forEach((token: Token) => {
           const { isNative, address, decimals } = token;
-          const balance = calculateTokenBalance({
-            isNative,
-            chainId,
-            address,
-            decimals,
-            nativeBalances,
-            selectedAccountTokenBalancesAcrossChains,
-          });
+          const balance =
+            calculateTokenBalance({
+              isNative,
+              chainId,
+              address,
+              decimals,
+              nativeBalances,
+              selectedAccountTokenBalancesAcrossChains,
+            }) || '0';
 
           const tokenFiatAmount = calculateTokenFiatAmount({
             token,
@@ -158,6 +159,8 @@ export default function TokenList({ onTokenClick }: TokenListProps) {
     selectedAccount,
     selectedAccountTokensChains,
   ]);
+
+  console.log({ sortedFilteredTokens });
 
   const loading = false;
   return loading ? (
