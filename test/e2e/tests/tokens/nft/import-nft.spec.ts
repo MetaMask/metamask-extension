@@ -30,7 +30,7 @@ describe('Import NFT', function () {
         await homepage.importNft(contractAddress, '1');
         await homepage.check_successImportNftMessageIsDisplayed();
 
-        await homepage.check_nftItemIsDisplayed('TestDappNFTs');
+        await homepage.check_nftNameIsDisplayed('TestDappNFTs');
         await homepage.check_nftImageIsDisplayed();
       },
     );
@@ -57,7 +57,7 @@ describe('Import NFT', function () {
         await homepage.goToNftTab();
         await homepage.importNft(contractAddress, '1');
         await homepage.check_successImportNftMessageIsDisplayed();
-        await homepage.check_nftItemIsDisplayed('TestDappNFTs');
+        await homepage.check_nftNameIsDisplayed('TestDappNFTs');
         await homepage.check_nftImageIsDisplayed();
 
         // Create new account with default name Account 2
@@ -76,7 +76,7 @@ describe('Import NFT', function () {
         await accountListPage.switchToAccount('Account 1');
         await headerNavbar.check_accountLabel('Account 1');
         await homepage.check_ganacheBalanceIsDisplayed(ganacheServer);
-        await homepage.check_nftItemIsDisplayed('TestDappNFTs');
+        await homepage.check_nftNameIsDisplayed('TestDappNFTs');
         await homepage.check_nftImageIsDisplayed();
       },
     );

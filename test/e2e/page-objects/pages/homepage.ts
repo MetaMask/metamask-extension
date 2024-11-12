@@ -300,7 +300,7 @@ class HomePage {
    *
    * @param nftName - The name of the NFT to check for.
    */
-  async check_nftItemIsDisplayed(nftName: string): Promise<void> {
+  async check_nftNameIsDisplayed(nftName: string): Promise<void> {
     console.log(
       `Check that NFT item ${nftName} is displayed in NFT tab on homepage`,
     );
