@@ -10,12 +10,15 @@ import { GasEstimateTypes } from '../../../../shared/constants/gas';
 import { CHAIN_IDS } from '../../../../shared/constants/network';
 import { ETH_SWAPS_TOKEN_OBJECT } from '../../../../shared/constants/swaps';
 import { createTestProviderTools } from '../../../../test/stub/provider';
+import * as fetchWithCacheModule from '../../../../shared/lib/fetch-with-cache';
 import { getDefaultSwapsControllerState } from './swaps.constants';
 import {
   FetchTradesInfoParams,
   FetchTradesInfoParamsMetadata,
   Quote,
   SwapsControllerMessenger,
+  SwapsControllerOptions,
+  SwapsControllerState,
 } from './swaps.types';
 import { getMedianEthValueQuote } from './swaps.utils';
 import SwapsController from '.';
@@ -137,6 +140,10 @@ const tokenRatesControllerGetStateCallbackMock = jest.fn().mockReturnValue({
       '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48': { price: 2 },
       '0x1111111111111111111111111111111111111111': { price: 0.1 },
     },
+    [CHAIN_IDS.BASE]: {
+      '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48': { price: 2 },
+      '0x1111111111111111111111111111111111111111': { price: 0.1 },
+    },
   },
 });
 
@@ -176,7 +183,13 @@ function mockNetworkControllerGetNetworkClientById(
 }
 
 describe('SwapsController', function () {
-  const getSwapsController = () => {
+  const getSwapsController = ({
+    options,
+    state,
+  }: {
+    options?: Partial<SwapsControllerOptions>;
+    state?: Partial<SwapsControllerState>;
+  } = {}) => {
     return new SwapsController(
       {
         getBufferedGasLimit: MOCK_GET_BUFFERED_GAS_LIMIT,
@@ -185,8 +198,12 @@ describe('SwapsController', function () {
         getLayer1GasFee: getLayer1GasFeeStub,
         trackMetaMetricsEvent: trackMetaMetricsEventStub,
         messenger: messengerMock,
+        ...options,
       },
-      getDefaultSwapsControllerState(),
+      {
+        ...getDefaultSwapsControllerState(),
+        ...state,
+      },
     );
   };
 
@@ -743,12 +760,8 @@ describe('SwapsController', function () {
           [networkClientId]: networkClient,
         });
 
-        swapsController = getSwapsController();
-
-        const fetchTradesInfoSpy = jest
-          // eslint-disable-next-line @typescript-eslint/no-explicit-any
-          .spyOn(swapsController as any, '_fetchTradesInfo')
-          .mockReturnValue(getMockQuotes());
+        const fetchTradesInfo = jest.fn().mockReturnValue(getMockQuotes());
+        swapsController = getSwapsController({ options: { fetchTradesInfo } });
 
         // Make it so approval is not required
         jest
@@ -802,13 +815,13 @@ describe('SwapsController', function () {
           },
         });
 
-        expect(fetchTradesInfoSpy).toHaveBeenCalledTimes(1);
-        expect(fetchTradesInfoSpy).toHaveBeenCalledWith(MOCK_FETCH_PARAMS, {
-          chainId: CHAIN_IDS.MAINNET,
+        expect(fetchTradesInfo).toHaveBeenCalledTimes(1);
+        expect(fetchTradesInfo).toHaveBeenCalledWith(MOCK_FETCH_PARAMS, {
+          chainId,
         });
       });
 
-      it('calls returns the correct quotes on the optimism chain', async function () {
+      it('returns the correct quotes on the Optimism chain', async function () {
         fetchTradesInfoStub.mockReset();
         const chainId = CHAIN_IDS.OPTIMISM;
         const networkClientId = 'AAAA-BBBB-CCCC-DDDD';
@@ -829,12 +842,8 @@ describe('SwapsController', function () {
           [networkClientId]: networkClient,
         });
 
-        swapsController = getSwapsController();
-
-        const fetchTradesInfoSpy = jest
-          // eslint-disable-next-line @typescript-eslint/no-explicit-any
-          .spyOn(swapsController as any, '_fetchTradesInfo')
-          .mockReturnValue(getMockQuotes());
+        const fetchTradesInfo = jest.fn().mockReturnValue(getMockQuotes());
+        swapsController = getSwapsController({ options: { fetchTradesInfo } });
 
         // Make it so approval is not required
         jest
@@ -889,18 +898,160 @@ describe('SwapsController', function () {
           },
         });
 
-        expect(fetchTradesInfoSpy).toHaveBeenCalledTimes(1);
-        expect(fetchTradesInfoSpy).toHaveBeenCalledWith(MOCK_FETCH_PARAMS, {
-          chainId: CHAIN_IDS.OPTIMISM,
+        expect(fetchTradesInfo).toHaveBeenCalledTimes(1);
+        expect(fetchTradesInfo).toHaveBeenCalledWith(MOCK_FETCH_PARAMS, {
+          chainId,
+        });
+      });
+
+      it('returns the correct quotes on the Base chain', async function () {
+        fetchTradesInfoStub.mockReset();
+        const chainId = CHAIN_IDS.BASE;
+        const networkClientId = 'AAAA-BBBB-CCCC-DDDD';
+        const { provider } = createTestProviderTools({
+          scaffold: {
+            // 1 gwei
+            eth_gasPrice: '0x0de0b6b3a7640000',
+            // by default, all accounts are external accounts (not contracts)
+            eth_getCode: '0x',
+            eth_call:
+              '0x000000000000000000000000000000000000000000000000000103c18816d4e8',
+          },
+          networkId: 8453,
+          chainId: chainId as ChainId,
+        });
+        const networkClient = { provider, configuration: { chainId } };
+        mockNetworkControllerGetNetworkClientById({
+          [networkClientId]: networkClient,
+        });
+
+        const fetchTradesInfo = jest.fn().mockReturnValue(getMockQuotes());
+        swapsController = getSwapsController({ options: { fetchTradesInfo } });
+
+        // Make it so approval is not required
+        jest
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          .spyOn(swapsController as any, '_getERC20Allowance')
+          .mockReturnValue(BigNumber.from(1));
+
+        // Make the network fetch error message disappear
+        jest
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          .spyOn(swapsController as any, '_setSwapsNetworkConfig')
+          .mockReturnValue(undefined);
+
+        const fetchResponse = await swapsController.fetchAndSetQuotes(
+          MOCK_FETCH_PARAMS,
+          { ...MOCK_FETCH_METADATA, networkClientId },
+        );
+
+        if (!fetchResponse?.[0]) {
+          throw new Error('Quotes should be defined');
+        }
+
+        const [newQuotes] = fetchResponse;
+
+        expect(newQuotes[TEST_AGG_ID_BEST]).toStrictEqual({
+          ...getMockQuotes()[TEST_AGG_ID_BEST],
+          destinationTokenInfo: {
+            address: '0xSomeAddress',
+            symbol: 'FOO',
+            decimals: 18,
+          },
+          isBestQuote: true,
+          // TODO: find a way to calculate these values dynamically
+          gasEstimate: '2000000',
+          gasEstimateWithRefund: '0xb8cae',
+          savings: {
+            fee: '-0.061067',
+            metaMaskFee: '0.50505050505050505050505050505050505',
+            performance: '6',
+            total: '5.43388249494949494949494949494949495',
+            medianMetaMaskFee: '0.444444444444444444444444444444444444',
+          },
+          ethFee: '0.113536',
+          multiLayerL1TradeFeeTotal: '0x1',
+          overallValueOfQuote: '49.886464',
+          metaMaskFeeInEth: '0.50505050505050505050505050505050505',
+          ethValueOfTokens: '50',
+          sourceTokenInfo: {
+            address: '0xSomeOtherAddress',
+            decimals: 18,
+            symbol: 'BAR',
+          },
+        });
+
+        expect(fetchTradesInfo).toHaveBeenCalledTimes(1);
+        expect(fetchTradesInfo).toHaveBeenCalledWith(MOCK_FETCH_PARAMS, {
+          chainId,
+        });
+      });
+
+      it('copies network config from the Swaps API into state', async () => {
+        const chainId = '0x64' as const; // Gnosis
+        const networkClientId = InfuraNetworkType.mainnet;
+        const { provider } = createTestProviderTools({
+          scaffold: {
+            // 1 gwei
+            eth_gasPrice: '0x0de0b6b3a7640000',
+            // by default, all accounts are external accounts (not contracts)
+            eth_getCode: '0x',
+          },
+          networkId: 100,
+          chainId: chainId as ChainId,
+        });
+        const networkClient = { provider, configuration: { chainId } };
+        mockNetworkControllerGetNetworkClientById({
+          [networkClientId]: networkClient,
+        });
+        const fetchWithCacheSpy = jest
+          .spyOn(fetchWithCacheModule, 'default')
+          .mockResolvedValue({
+            refreshRates: {
+              quotes: 1,
+              quotesPrefetching: 2,
+              stxGetTransactions: 3,
+              stxBatchStatus: 4,
+              stxStatusDeadline: 5,
+            },
+            parameters: {
+              stxMaxFeeMultiplier: 6,
+            },
+          });
+
+        swapsController = getSwapsController();
+
+        await swapsController.fetchAndSetQuotes(MOCK_FETCH_PARAMS, {
+          ...MOCK_FETCH_METADATA,
+          networkClientId,
+        });
+
+        expect(fetchWithCacheSpy).toHaveBeenCalledWith({
+          url: 'https://swap.api.cx.metamask.io/networks/100',
+          fetchOptions: {
+            method: 'GET',
+          },
+          cacheOptions: {
+            cacheRefreshTime: 600000,
+          },
+          functionName: '_fetchSwapsNetworkConfig',
+        });
+        expect(swapsController.state.swapsState).toMatchObject({
+          swapsQuoteRefreshTime: 1000,
+          swapsQuotePrefetchingRefreshTime: 2000,
+          swapsStxGetTransactionsRefreshTime: 3000,
+          swapsStxBatchStatusRefreshTime: 4000,
+          swapsStxMaxFeeMultiplier: 6,
+          swapsStxStatusDeadline: 5,
         });
       });
 
       it('performs the allowance check', async function () {
-        const chainId = CHAIN_IDS.MAINNET;
-        const networkClientId = InfuraNetworkType.mainnet;
+        const chainId = CHAIN_IDS.OPTIMISM;
+        const networkClientId = 'AAAA-BBBB-CCCC-DDDD';
         const { provider } = createTestProviderTools({
           scaffold: MOCK_PROVIDER_RESULT_STUB,
-          networkId: 1,
+          networkId: 10,
           chainId: chainId as ChainId,
         });
         const networkClient = { provider, configuration: { chainId } };
@@ -916,6 +1067,11 @@ describe('SwapsController', function () {
             }
             throw new Error('Could not create a Web3Provider');
           });
+
+        jest
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          .spyOn(swapsController as any, '_fetchTradesInfo')
+          .mockReturnValue(getMockQuotes());
 
         // Make it so approval is not required
         const getERC20AllowanceSpy = jest
