@@ -4,7 +4,7 @@ import { Redirect, useParams } from 'react-router-dom';
 import { isEqualCaseInsensitive } from '../../../shared/modules/string-utils';
 import NftDetails from '../../components/app/assets/nfts/nft-details/nft-details';
 import { getSelectedAccountTokensAcrossChains } from '../../selectors';
-import { getNfts } from '../../ducks/metamask/metamask';
+import { getNftsForChainId } from '../../ducks/metamask/metamask';
 import { DEFAULT_ROUTE } from '../../helpers/constants/routes';
 
 import TokenAsset from './components/token-asset';
@@ -13,7 +13,6 @@ import NativeAsset from './components/native-asset';
 
 /** A page representing a native, token, or NFT asset */
 const Asset = () => {
-  const nfts = useSelector(getNfts);
   const selectedAccountTokensChains: Record<string, any> = useSelector(
     getSelectedAccountTokensAcrossChains,
   );
@@ -22,8 +21,9 @@ const Asset = () => {
     asset: string;
     id: string;
   }>();
-
   const { chainId, asset, id } = params;
+
+  const nfts = useSelector((state) => getNftsForChainId(state, chainId));
 
   const token = findAssetByAddress(selectedAccountTokensChains, asset, chainId);
 
