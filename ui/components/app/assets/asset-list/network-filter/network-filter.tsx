@@ -6,13 +6,10 @@ import {
   getCurrentNetwork,
   getIsTestnet,
   getPreferences,
-  getSelectedInternalAccount,
-  getShouldHideZeroBalanceTokens,
   getNetworkConfigurationsByChainId,
 } from '../../../../../selectors';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import { SelectableListItem } from '../sort-control/sort-control';
-import { useAccountTotalFiatBalance } from '../../../../../hooks/useAccountTotalFiatBalance';
 import { Text } from '../../../../component-library/text/text';
 import {
   AlignItems,
@@ -58,16 +55,16 @@ const NetworkFilter = ({ handleClose }: SortControlProps) => {
   };
 
   useEffect(() => {
+    const testnetChains: string[] = TEST_CHAINS;
     const mainnetChainIds = Object.keys(allNetworks).filter(
-      // @ts-ignore
-      (chainId) => !TEST_CHAINS.includes(chainId),
+      (chain) => !testnetChains.includes(chain),
     );
     setChainsToShow(mainnetChainIds);
   }, []);
 
   const allOpts: Record<string, boolean> = {};
-  Object.keys(allNetworks).forEach((chainId) => {
-    allOpts[chainId] = true;
+  Object.keys(allNetworks).forEach((chain) => {
+    allOpts[chain] = true;
   });
 
   return (
@@ -101,10 +98,10 @@ const NetworkFilter = ({ handleClose }: SortControlProps) => {
           <Box display={Display.Flex} alignItems={AlignItems.center}>
             {chainsToShow
               .slice(0, 5) // only show a max of 5 icons overlapping
-              .map((chainId, index) => {
+              .map((chain, index) => {
                 const networkImageUrl =
                   CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP[
-                    chainId as keyof typeof CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP
+                    chain as keyof typeof CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP
                   ];
                 return (
                   <AvatarNetwork

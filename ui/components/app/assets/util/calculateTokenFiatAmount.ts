@@ -1,13 +1,14 @@
-import { Asset } from '../../../../pages/asset/components/asset-page';
-import { ChainAddressMarketData, Token } from '../token-list/token-list';
 import { Hex } from '@metamask/utils';
+import { ChainAddressMarketData, Token } from '../token-list/token-list';
+
+type SymbolCurrencyRateMapping = Record<string, Record<string, number>>;
 
 type CalculateTokenFiatAmountParams = {
   token: Token;
   chainId: Hex;
   balance: string | undefined;
   marketData: ChainAddressMarketData;
-  currencyRates: any;
+  currencyRates: SymbolCurrencyRateMapping;
 };
 
 export function calculateTokenFiatAmount({
@@ -27,10 +28,9 @@ export function calculateTokenFiatAmount({
 
   if (isNative && currencyRates) {
     return (currencyRates[symbol]?.conversionRate || 0) * parsedBalance;
-  } else {
-    if (!tokenMarketPrice) {
-      return null; // when no market price is available, we don't want to render the fiat amount
-    }
-    return tokenMarketPrice * tokenExchangeRate * parsedBalance;
   }
+  if (!tokenMarketPrice) {
+    return null; // when no market price is available, we don't want to render the fiat amount
+  }
+  return tokenMarketPrice * tokenExchangeRate * parsedBalance;
 }
