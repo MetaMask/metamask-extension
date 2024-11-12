@@ -81,7 +81,7 @@ async function getCircleCiWorkflowsByBranch(branch: string): Promise<WorkflowIte
   try {
     const response = await fetch(url, options);
     if (!response.ok) {
-      throw new Error(`HTTP error: ${response}`);
+      throw new Error(`HTTP error: ${response.json()}`);
     }
     const body = await response.json();
     return body.items;
@@ -115,7 +115,7 @@ async function getWorkflowStatusById(workflowId: string): Promise<WorkflowStatus
   try {
     const response = await fetch(url, options);
     if (!response.ok) {
-      throw new Error(`HTTP error: ${response}`);
+      throw new Error(`HTTP error: ${response.json()}`);
     }
     const body = await response.json();
     return body;
@@ -154,7 +154,7 @@ async function rerunWorkflowById(workflowId: string) {
   try {
     const response = await fetch(url, options);
     if (!response.ok) {
-      throw new Error(`HTTP error: ${response}`);
+      throw new Error(`HTTP error: ${response.json()}`);
     }
     const body = await response.json();
     console.log(body);
