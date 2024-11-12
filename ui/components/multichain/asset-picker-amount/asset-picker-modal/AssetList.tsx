@@ -20,6 +20,7 @@ import {
 } from '../../../../helpers/constants/design-system';
 import { TokenListItem } from '../..';
 import LoadingScreen from '../../../ui/loading-screen';
+import { useI18nContext } from '../../../../hooks/useI18nContext';
 import AssetComponent from './Asset';
 import { AssetWithDisplayData, ERC20Asset, NativeAsset } from './types';
 
@@ -47,6 +48,7 @@ export default function AssetList({
   network,
   isTokenListLoading = false,
 }: AssetListProps) {
+  const t = useI18nContext();
   const selectedToken = asset?.address;
 
   const chainId = useSelector(getCurrentChainId);
@@ -70,7 +72,7 @@ export default function AssetList({
     <Box className="tokens-main-view-modal">
       {isTokenListLoading && (
         <LoadingScreen
-          loadingMessage={'Loading token list'}
+          loadingMessage={t('loadingTokenList')}
           showLoadingSpinner
         />
       )}
