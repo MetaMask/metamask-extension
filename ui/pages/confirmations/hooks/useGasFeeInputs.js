@@ -124,8 +124,7 @@ export function useGasFeeInputs(
   );
 
   const networkClientId =
-    network?.rpcEndpoints?.[network?.defaultRpcEndpointIndex]
-      ?.networkClientId ?? transaction?.networkClientId;
+    network?.rpcEndpoints?.[network?.defaultRpcEndpointIndex]?.networkClientId;
 
   const supportsEIP1559 =
     useSelector(checkNetworkAndAccountSupports1559) &&

@@ -14,7 +14,6 @@ import { ETH, PRIMARY } from '../../../helpers/constants/common';
 
 import { useGasFeeEstimates } from '../../../hooks/useGasFeeEstimates';
 import { useUserPreferencedCurrency } from '../../../hooks/useUserPreferencedCurrency';
-import { selectNetworkConfigurationByChainId } from '../../../selectors';
 import { useGasFeeInputs } from './useGasFeeInputs';
 
 import {
@@ -51,7 +50,7 @@ jest.mock('../../../hooks/useMultichainSelector', () => ({
 const mockTransaction = {
   status: TransactionStatus.unapproved,
   type: TransactionType.simpleSend,
-  networkClientId: '1',
+  networkClientId: '2',
   txParams: {
     from: '0x000000000000000000000000000000000000dead',
     type: '0x2',
@@ -190,16 +189,15 @@ describe('useGasFeeInputs', () => {
       );
       expect(result.current.balanceError).toBe(true);
     });
+
+    it('should call useGasFeeEstimates with correct networkClientId', () => {
+      renderHook(() => useGasFeeInputs(null, mockTransaction));
+      expect(useGasFeeEstimates).not.toHaveBeenCalledWith('2');
+    });
   });
 
   describe('editGasMode', () => {
     beforeEach(() => {
-      useSelector.mockImplementation((selector) => {
-        if (selector === selectNetworkConfigurationByChainId) {
-          return '2';
-        }
-        return undefined;
-      });
       useGasFeeEstimates.mockImplementation(
         () => HIGH_FEE_MARKET_ESTIMATE_RETURN_VALUE,
       );
