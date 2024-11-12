@@ -28,7 +28,6 @@ class PrivacySettings {
     tag: 'h4',
   };
 
-
   // reveal SRP related locators
   private readonly displayedSrpText = '[data-testid="srp_text"]';
 
