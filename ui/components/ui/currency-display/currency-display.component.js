@@ -1,10 +1,8 @@
 import React from 'react';
-import { useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
 import { useCurrencyDisplay } from '../../../hooks/useCurrencyDisplay';
 import { EtherDenomination } from '../../../../shared/constants/common';
-import { getPreferences } from '../../../selectors';
 import { SensitiveText, Box } from '../../component-library';
 import {
   AlignItems,
@@ -35,9 +33,9 @@ export default function CurrencyDisplay({
   textProps = {},
   suffixProps = {},
   isAggregatedFiatOverviewBalance = false,
+  privacyMode = false,
   ...props
 }) {
-  const { privacyMode } = useSelector(getPreferences);
   const [title, parts] = useCurrencyDisplay(value, {
     account,
     displayValue,
@@ -125,6 +123,7 @@ const CurrencyDisplayPropTypes = {
   textProps: PropTypes.object,
   suffixProps: PropTypes.object,
   isAggregatedFiatOverviewBalance: PropTypes.bool,
+  privacyMode: PropTypes.bool,
 };
 
 CurrencyDisplay.propTypes = CurrencyDisplayPropTypes;

@@ -1,19 +1,23 @@
 import { NameType } from '@metamask/name-controller';
 import { CHAIN_IDS } from '@metamask/transaction-controller';
-import { cloneDeep } from 'lodash';
 import { Hex } from '@metamask/utils';
-import { renderHookWithProvider } from '../../test/lib/render-helpers';
-import mockState from '../../test/data/mock-state.json';
+import { cloneDeep } from 'lodash';
 import {
   EXPERIENCES_TYPE,
   FIRST_PARTY_CONTRACT_NAMES,
 } from '../../shared/constants/first-party-contracts';
+import mockState from '../../test/data/mock-state.json';
+import { renderHookWithProvider } from '../../test/lib/render-helpers';
+import { getDomainResolutions } from '../ducks/domains';
 import { useDisplayName } from './useDisplayName';
-import { useNftCollectionsMetadata } from './useNftCollectionsMetadata';
 import { useNames } from './useName';
+import { useNftCollectionsMetadata } from './useNftCollectionsMetadata';
 
 jest.mock('./useName');
 jest.mock('./useNftCollectionsMetadata');
+jest.mock('../ducks/domains', () => ({
+  getDomainResolutions: jest.fn(),
+}));
 
 const VALUE_MOCK = 'testvalue';
 const VARIATION_MOCK = CHAIN_IDS.GOERLI;
@@ -22,6 +26,7 @@ const ERC20_TOKEN_NAME_MOCK = 'testName2';
 const WATCHED_NFT_NAME_MOCK = 'testName3';
 const NFT_NAME_MOCK = 'testName4';
 const FIRST_PARTY_CONTRACT_NAME_MOCK = 'testName5';
+const ENS_NAME_MOCK = 'vitalik.eth';
 const SYMBOL_MOCK = 'tes';
 const NFT_IMAGE_MOCK = 'testNftImage';
 const ERC20_IMAGE_MOCK = 'testImage';
@@ -30,6 +35,7 @@ const OTHER_NAME_TYPE = 'test' as NameType;
 describe('useDisplayName', () => {
   const useNamesMock = jest.mocked(useNames);
   const useNftCollectionsMetadataMock = jest.mocked(useNftCollectionsMetadata);
+  const domainResolutionsMock = jest.mocked(getDomainResolutions);
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   let state: any;
@@ -85,6 +91,18 @@ describe('useDisplayName', () => {
         [value]: { name, image, isSpam },
       },
     });
+  }
+
+  function mockDomainResolutions(address: string, ensName: string) {
+    domainResolutionsMock.mockReturnValue([
+      {
+        addressBookEntryName: undefined,
+        domainName: ensName,
+        protocol: 'Ethereum Name Service',
+        resolvedAddress: address,
+        resolvingSnap: 'Ethereum Name Service resolver',
+      },
+    ]);
   }
 
   function mockFirstPartyContractName(
@@ -383,6 +401,50 @@ describe('useDisplayName', () => {
 
     it('returns no name if type not address', () => {
       mockNFT(VALUE_MOCK, VARIATION_MOCK, NFT_NAME_MOCK, NFT_IMAGE_MOCK, false);
+
+      const { result } = renderHookWithProvider(
+        () =>
+          useDisplayName({
+            value: VALUE_MOCK,
+            type: OTHER_NAME_TYPE,
+            variation: VARIATION_MOCK,
+          }),
+        mockState,
+      );
+
+      expect(result.current).toStrictEqual({
+        contractDisplayName: undefined,
+        hasPetname: false,
+        image: undefined,
+        name: null,
+      });
+    });
+  });
+
+  describe('Domain Resolutions', () => {
+    it('returns ENS name if domain resolution for that address exists', () => {
+      mockDomainResolutions(VALUE_MOCK, ENS_NAME_MOCK);
+
+      const { result } = renderHookWithProvider(
+        () =>
+          useDisplayName({
+            value: VALUE_MOCK,
+            type: NameType.ETHEREUM_ADDRESS,
+            variation: VARIATION_MOCK,
+          }),
+        mockState,
+      );
+
+      expect(result.current).toStrictEqual({
+        contractDisplayName: undefined,
+        hasPetname: false,
+        image: undefined,
+        name: ENS_NAME_MOCK,
+      });
+    });
+
+    it('returns no name if type not address', () => {
+      mockDomainResolutions(VALUE_MOCK, ENS_NAME_MOCK);
 
       const { result } = renderHookWithProvider(
         () =>
