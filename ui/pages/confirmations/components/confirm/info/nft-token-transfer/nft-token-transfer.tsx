@@ -13,7 +13,8 @@ const NFTTokenTransferInfo = () => {
   const { currentConfirmation: transactionMeta } =
     useConfirmContext<TransactionMeta>();
 
-  const isWalletInitiated = transactionMeta.origin === 'metamask';
+  // const isWalletInitiated = transactionMeta.origin === 'metamask';
+  const isWalletInitiated = false;
 
   return (
     <>
