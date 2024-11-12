@@ -18,6 +18,7 @@ import {
   DEFAULT_ROUTE,
   REVIEW_PERMISSIONS,
   SEND_ROUTE,
+  SWAPS_ROUTE,
 } from '../../../helpers/constants/routes';
 import { getURLHost } from '../../../helpers/utils/util';
 import { useI18nContext } from '../../../hooks/useI18nContext';
@@ -63,6 +64,7 @@ export function ToastMaster() {
 
   const onHomeScreen = location.pathname === DEFAULT_ROUTE;
   const onSendScreen = location.pathname === SEND_ROUTE;
+  const onSwapsScreen = location.pathname === SWAPS_ROUTE;
 
   if (onHomeScreen) {
     return (
@@ -78,7 +80,7 @@ export function ToastMaster() {
     );
   }
 
-  if (onSendScreen) {
+  if (onSendScreen || onSwapsScreen) {
     return (
       <ToastContainer>
         <SwitchedNetworkToast />

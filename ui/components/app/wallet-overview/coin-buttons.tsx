@@ -55,6 +55,8 @@ import {
   ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
   getMemoizedUnapprovedTemplatedConfirmations,
   ///: END:ONLY_INCLUDE_IF
+  getNetworkConfigurationIdByChainId,
+  getCurrentChainId,
 } from '../../../selectors';
 import Tooltip from '../../ui/tooltip';
 ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
@@ -83,11 +85,15 @@ import useRamps from '../../../hooks/ramps/useRamps/useRamps';
 import useBridging from '../../../hooks/bridge/useBridging';
 ///: END:ONLY_INCLUDE_IF
 import { ReceiveModal } from '../../multichain/receive-modal';
-///: BEGIN:ONLY_INCLUDE_IF(build-flask)
 import {
+  setActiveNetwork,
+  setSwitchedNetworkDetails,
+  ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
   sendMultichainTransaction,
   setDefaultHomeActiveTabName,
+  ///: END:ONLY_INCLUDE_IF
 } from '../../../store/actions';
+///: BEGIN:ONLY_INCLUDE_IF(build-flask)
 import { BITCOIN_WALLET_SNAP_ID } from '../../../../shared/lib/accounts/bitcoin-wallet-snap';
 ///: END:ONLY_INCLUDE_IF
 
@@ -125,6 +131,11 @@ const CoinButtons = ({
   const account = useSelector(getSelectedAccount);
   const { address: selectedAddress } = account;
   const history = useHistory();
+  const networks = useSelector(getNetworkConfigurationIdByChainId) as Record<
+    string,
+    string
+  >;
+  const currentChainId = useSelector(getCurrentChainId);
   ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
   const location = useLocation();
   const keyring = useSelector(getCurrentKeyring);
@@ -275,6 +286,18 @@ const CoinButtons = ({
   }, [unapprovedTemplatedConfirmations, history]);
   ///: END:ONLY_INCLUDE_IF
 
+  const setCorrectChain = useCallback(async () => {
+    if (currentChainId !== chainId) {
+      const networkConfigurationId = networks[chainId];
+      await dispatch(setActiveNetwork(networkConfigurationId));
+      await dispatch(
+        setSwitchedNetworkDetails({
+          networkClientId: networkConfigurationId,
+        }),
+      );
+    }
+  }, [currentChainId, chainId, networks, dispatch]);
+
   const handleSendOnClick = useCallback(async () => {
     switch (account.type) {
       ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
@@ -304,13 +327,16 @@ const CoinButtons = ({
           },
           { excludeMetaMetricsId: false },
         );
+        await setCorrectChain();
         await dispatch(startNewDraftTransaction({ type: AssetType.native }));
         history.push(SEND_ROUTE);
       }
     }
-  }, [chainId, account]);
+  }, [chainId, account, setCorrectChain]);
 
   const handleSwapOnClick = useCallback(async () => {
+    await setCorrectChain();
+
     ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
     global.platform.openTab({
       url: `${mmiPortfolioUrl}/swap`,
@@ -340,6 +366,7 @@ const CoinButtons = ({
     }
     ///: END:ONLY_INCLUDE_IF
   }, [
+    setCorrectChain,
     isSwapsChain,
     chainId,
     ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
