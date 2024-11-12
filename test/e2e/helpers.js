@@ -837,22 +837,6 @@ const sendTransaction = async (
   }
 };
 
-const findAnotherAccountFromAccountList = async (
-  driver,
-  itemNumber,
-  accountName,
-) => {
-  await driver.clickElement('[data-testid="account-menu-icon"]');
-  const accountMenuItemSelector = `.multichain-account-list-item:nth-child(${itemNumber})`;
-
-  await driver.findElement({
-    css: `${accountMenuItemSelector} .multichain-account-list-item__account-name__button`,
-    text: accountName,
-  });
-
-  return accountMenuItemSelector;
-};
-
 const TEST_SEED_PHRASE =
   'forum vessel pink push lonely enact gentle tail admit parrot grunt dress';
 
@@ -1213,7 +1197,6 @@ module.exports = {
   multipleGanacheOptionsForType2Transactions,
   sendTransaction,
   sendScreenToConfirmScreen,
-  findAnotherAccountFromAccountList,
   unlockWallet,
   logInWithBalanceValidation,
   locateAccountBalanceDOM,
