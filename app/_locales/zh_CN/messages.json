@@ -256,6 +256,9 @@
   "addNewBitcoinTestnetAccount": {
     "message": "添加新的比特币账户（测试网）"
   },
+  "addNewSolanaAccount": {
+    "message": "添加新的Solana账户（测试版）"
+  },
   "addNewToken": {
     "message": "添加新代币"
   },
