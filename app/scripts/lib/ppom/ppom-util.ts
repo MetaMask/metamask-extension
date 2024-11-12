@@ -55,18 +55,19 @@ export async function validateRequestWithPPOM({
 }) {
   try {
     if (!(await isChainSupported(chainId))) {
-      const response = {
-        ...SECURITY_ALERT_RESPONSE_CHAIN_NOT_SUPPORTED,
+      await updateSecurityResponse(
+        request.method,
         securityAlertId,
-      };
-      await updateSecurityResponse(request.method, securityAlertId, response);
+        SECURITY_ALERT_RESPONSE_CHAIN_NOT_SUPPORTED,
+      );
       return;
     }
 
-    await updateSecurityResponse(request.method, securityAlertId, {
-      ...LOADING_SECURITY_ALERT_RESPONSE,
+    await updateSecurityResponse(
+      request.method,
       securityAlertId,
-    });
+      LOADING_SECURITY_ALERT_RESPONSE,
+    );
 
     const normalizedRequest = normalizePPOMRequest(request);
 
@@ -77,14 +78,7 @@ export async function validateRequestWithPPOM({
           normalizedRequest,
           chainId,
         );
-    await updateSecurityResponse(request.method, securityAlertId, {
-      ...ppomResponse,
-      securityAlertId,
-    });
-    // return {
-    //   ...ppomResponse,
-    //   securityAlertId,
-    // };
+    await updateSecurityResponse(request.method, securityAlertId, ppomResponse);
   } catch (error: unknown) {
     await updateSecurityResponse(
       request.method,
@@ -123,16 +117,15 @@ export async function updateSecurityAlertResponse({
   );
 
   if (isSignatureRequest) {
-    appStateController.addSignatureSecurityAlertResponse(securityAlertResponse);
+    appStateController.addSignatureSecurityAlertResponse({
+      ...securityAlertResponse,
+      securityAlertId,
+    });
   } else {
-    try {
-      transactionController.updateSecurityAlertResponse(
-        confirmation.id,
-        securityAlertResponse,
-      );
-    } catch (error) {
-      console.error('Error updating security alert response:', error);
-    }
+    transactionController.updateSecurityAlertResponse(confirmation.id, {
+      ...securityAlertResponse,
+      securityAlertId,
+    } as SecurityAlertResponse);
   }
 }
 

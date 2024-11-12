@@ -48,6 +48,7 @@ const SECURITY_ALERT_RESPONSE_MOCK: SecurityAlertResponse = {
   result_type: 'success',
   reason: 'success',
   source: SecurityAlertSource.Local,
+  securityAlertId: SECURITY_ALERT_ID_MOCK,
 };
 
 const TRANSACTION_PARAMS_MOCK_1: TransactionParams = {
@@ -131,7 +132,7 @@ describe('PPOM Utils', () => {
   });
 
   describe('validateRequestWithPPOM', () => {
-    it('returns response from validation with PPOM instance via controller', async () => {
+    it('updates response from validation with PPOM instance via controller', async () => {
       const ppom = createPPOMMock();
       const ppomController = createPPOMControllerMock();
 
@@ -169,14 +170,11 @@ describe('PPOM Utils', () => {
       expect(updateSecurityAlertResponseMock).toHaveBeenCalledWith(
         REQUEST_MOCK.method,
         SECURITY_ALERT_ID_MOCK,
-        {
-          ...LOADING_SECURITY_ALERT_RESPONSE,
-          securityAlertId: SECURITY_ALERT_ID_MOCK,
-        },
+        LOADING_SECURITY_ALERT_RESPONSE,
       );
     });
 
-    it('returns error response if validation with PPOM instance throws', async () => {
+    it('updates error response if validation with PPOM instance throws', async () => {
       const ppom = createPPOMMock();
       const ppomController = createPPOMControllerMock();
 
@@ -204,7 +202,7 @@ describe('PPOM Utils', () => {
       );
     });
 
-    it('returns error response if controller throws', async () => {
+    it('updates error response if controller throws', async () => {
       const ppomController = createPPOMControllerMock();
 
       ppomController.usePPOM.mockRejectedValue(createErrorMock());
@@ -261,7 +259,7 @@ describe('PPOM Utils', () => {
       );
     });
 
-    it('returns response indicating chain is not supported', async () => {
+    it('updates response indicating chain is not supported', async () => {
       const ppomController = {} as PPOMController;
       const CHAIN_ID_UNSUPPORTED_MOCK = '0x2';
 
@@ -274,10 +272,7 @@ describe('PPOM Utils', () => {
       expect(updateSecurityAlertResponseMock).toHaveBeenCalledWith(
         validateRequestWithPPOMOptionsBase.request.method,
         SECURITY_ALERT_ID_MOCK,
-        {
-          ...SECURITY_ALERT_RESPONSE_CHAIN_NOT_SUPPORTED,
-          securityAlertId: SECURITY_ALERT_ID_MOCK,
-        },
+        SECURITY_ALERT_RESPONSE_CHAIN_NOT_SUPPORTED,
       );
     });
   });
