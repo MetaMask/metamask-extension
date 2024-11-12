@@ -35,10 +35,13 @@ const getSrcTxStatus = (initialTransaction: TransactionMeta) => {
     : StatusTypes.PENDING;
 };
 
-const getDestTxStatus = (
-  bridgeTxHistoryItem: BridgeHistoryItem,
-  srcTxStatus: StatusTypes,
-) => {
+const getDestTxStatus = ({
+  bridgeTxHistoryItem,
+  srcTxStatus,
+}: {
+  bridgeTxHistoryItem?: BridgeHistoryItem;
+  srcTxStatus: StatusTypes;
+}) => {
   if (srcTxStatus !== StatusTypes.COMPLETE) {
     return null;
   }
@@ -60,12 +63,12 @@ export default function BridgeActivityItemTxSegments({
   bridgeTxHistoryItem,
   transactionGroup,
 }: {
-  bridgeTxHistoryItem: BridgeHistoryItem;
+  bridgeTxHistoryItem?: BridgeHistoryItem;
   transactionGroup: UseBridgeDataProps['transactionGroup'];
 }) {
   const { initialTransaction } = transactionGroup;
   const srcTxStatus = getSrcTxStatus(initialTransaction);
-  const destTxStatus = getDestTxStatus(bridgeTxHistoryItem, srcTxStatus);
+  const destTxStatus = getDestTxStatus({ bridgeTxHistoryItem, srcTxStatus });
   const txIndex = getTxIndex(srcTxStatus);
 
   return (
