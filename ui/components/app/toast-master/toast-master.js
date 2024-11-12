@@ -83,8 +83,6 @@ export function ToastMaster() {
     );
   }
 
-  console.log(onSwapsScreen, { location });
-
   if (onSendScreen || onSwapsScreen) {
     return (
       <ToastContainer>
