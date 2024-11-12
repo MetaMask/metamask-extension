@@ -104,11 +104,8 @@ class FixtureServer {
   }
 
   loadJsonState(rawState, contractRegistry) {
-    return new Promise((resolve) => {
-      const state = performStateSubstitutions(rawState, contractRegistry);
-      this._stateMap.set(CURRENT_STATE_KEY, state);
-      resolve();
-    });
+    const state = performStateSubstitutions(rawState, contractRegistry);
+    this._stateMap.set(CURRENT_STATE_KEY, state);
   }
 
   _isStateRequest(ctx) {

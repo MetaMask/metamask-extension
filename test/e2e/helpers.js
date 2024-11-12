@@ -120,7 +120,7 @@ async function withFixtures(options, testSuite) {
     }
 
     await fixtureServer.start();
-    await fixtureServer.loadJsonState(fixtures, contractRegistry);
+    fixtureServer.loadJsonState(fixtures, contractRegistry);
 
     if (ganacheOptions?.concurrent) {
       ganacheOptions.concurrent.forEach(async (ganacheSettings) => {
