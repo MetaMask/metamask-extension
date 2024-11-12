@@ -355,7 +355,7 @@ function TransactionListItemInner({
           ///: END:ONLY_INCLUDE_IF
         }
         subtitle={
-          isBridgeTx && isBridgeComplete === false ? (
+          isBridgeTx && !isBridgeComplete ? (
             <BridgeActivityItemTxSegments
               bridgeTxHistoryItem={bridgeTxHistoryItem}
               transactionGroup={transactionGroup}
