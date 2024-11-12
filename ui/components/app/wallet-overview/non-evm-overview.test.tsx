@@ -113,7 +113,10 @@ describe('BtcOverview', () => {
   });
 
   it('shows the primary balance as BTC when showNativeTokenAsMainBalance if true', async () => {
-    const { queryByTestId } = renderWithProvider(<NonEvmOverview />, getStore());
+    const { queryByTestId } = renderWithProvider(
+      <NonEvmOverview />,
+      getStore(),
+    );
 
     const primaryBalance = queryByTestId(BTC_OVERVIEW_PRIMARY_CURRENCY);
     expect(primaryBalance).toBeInTheDocument();
@@ -158,7 +161,10 @@ describe('BtcOverview', () => {
   });
 
   it('buttons Swap/Bridge are disabled', () => {
-    const { queryByTestId } = renderWithProvider(<NonEvmOverview />, getStore());
+    const { queryByTestId } = renderWithProvider(
+      <NonEvmOverview />,
+      getStore(),
+    );
 
     for (const buttonTestId of [BTC_OVERVIEW_SWAP, BTC_OVERVIEW_BRIDGE]) {
       const button = queryByTestId(buttonTestId);
@@ -168,13 +174,19 @@ describe('BtcOverview', () => {
   });
 
   it('shows the "Buy & Sell" button', () => {
-    const { queryByTestId } = renderWithProvider(<NonEvmOverview />, getStore());
+    const { queryByTestId } = renderWithProvider(
+      <NonEvmOverview />,
+      getStore(),
+    );
     const buyButton = queryByTestId(BTC_OVERVIEW_BUY);
     expect(buyButton).toBeInTheDocument();
   });
 
   it('"Buy & Sell" button is disabled if BTC is not buyable', () => {
-    const { queryByTestId } = renderWithProvider(<NonEvmOverview />, getStore());
+    const { queryByTestId } = renderWithProvider(
+      <NonEvmOverview />,
+      getStore(),
+    );
     const buyButton = queryByTestId(BTC_OVERVIEW_BUY);
 
     expect(buyButton).toBeInTheDocument();
@@ -229,7 +241,10 @@ describe('BtcOverview', () => {
   });
 
   it('always show the Receive button', () => {
-    const { queryByTestId } = renderWithProvider(<NonEvmOverview />, getStore());
+    const { queryByTestId } = renderWithProvider(
+      <NonEvmOverview />,
+      getStore(),
+    );
     const receiveButton = queryByTestId(BTC_OVERVIEW_RECEIVE);
     expect(receiveButton).toBeInTheDocument();
   });
@@ -254,7 +269,7 @@ describe('BtcOverview', () => {
     });
 
     const { queryByTestId } = renderWithProvider(
-      <BtcOverview />,
+      <NonEvmOverview />,
       storeWithBtcBuyable,
     );
 
