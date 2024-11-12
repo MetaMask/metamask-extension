@@ -115,14 +115,19 @@ async function getWorkflowStatusById(workflowId: string): Promise<WorkflowStatus
   };
 
   try {
+    console.log(`Fetching workflow ${workflowId}...`);
+
     const response = await fetch(url, options);
     if (!response.ok) {
       const errorBody = await response.text();
       console.error('HTTP error response:', errorBody);
       throw new Error(`HTTP error! status: ${response.status}`);
     }
-    const body = await response.json();
-    return body;
+    const workflowStatus = await response.json();
+
+    console.log(`Workflow status: ${workflowStatus.items}`);
+
+    return workflowStatus;
 
   } catch (error) {
     console.error('Error:', error);
@@ -156,6 +161,7 @@ async function rerunWorkflowById(workflowId: string) {
   };
 
   try {
+    console.log(`Rerunning workflow ${workflowId}...`);
     const response = await fetch(url, options);
     if (!response.ok) {
       const errorBody = await response.text();
@@ -163,6 +169,7 @@ async function rerunWorkflowById(workflowId: string) {
       throw new Error(`HTTP error! status: ${response.status}`);
     }
     const body = await response.json();
+    console.log('Workflow rerun successfully!');
     console.log(body);
   } catch (error) {
     console.error('Error:', error);
@@ -180,8 +187,10 @@ async function rerunWorkflowById(workflowId: string) {
  * @throws Will throw an error if fetching the workflows or re-running a workflow fails.
  */
 async function rerunFailedWorkflowsFromDevelop() {
+  console.log('Getting Circle Ci workflows from develop branch...');
   const workflows = await getCircleCiWorkflowsByBranch('develop');
 
+  console.log('Assessing if any of the workflows needs to be rerun...');
   for (const item of workflows) {
     if (item.trigger.actor.login === 'github-merge-queue[bot]') {
       const workflowStatus = await getWorkflowStatusById(item.id);
@@ -192,6 +201,7 @@ async function rerunFailedWorkflowsFromDevelop() {
       }
     }
   }
+  console.log('Task completed successfully!');
 }
 
 rerunFailedWorkflowsFromDevelop();
