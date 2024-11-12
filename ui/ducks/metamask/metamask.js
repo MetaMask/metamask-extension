@@ -47,7 +47,7 @@ const initialState = {
     showExtensionInFullSizeView: false,
     showFiatInTestnets: false,
     showTestNetworks: false,
-    smartTransactionsOptInStatus: false,
+    smartTransactionsOptInStatus: true,
     petnamesEnabled: true,
     featureNotificationsEnabled: false,
     privacyMode: false,
@@ -334,6 +334,15 @@ export const getNfts = (state) => {
   const { address: selectedAddress } = getSelectedInternalAccount(state);
 
   const { chainId } = getProviderConfig(state);
+
+  return allNfts?.[selectedAddress]?.[chainId] ?? [];
+};
+
+export const getNftsForChainId = (state, chainId) => {
+  const {
+    metamask: { allNfts },
+  } = state;
+  const { address: selectedAddress } = getSelectedInternalAccount(state);
 
   return allNfts?.[selectedAddress]?.[chainId] ?? [];
 };

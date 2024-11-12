@@ -4,6 +4,8 @@ import { useHistory } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import { EthMethod } from '@metamask/keyring-api';
 import { isEqual } from 'lodash';
+import { Hex } from '@metamask/utils';
+import { zeroAddress } from 'ethereumjs-util';
 import {
   getCurrentCurrency,
   getIsBridgeChain,
@@ -13,6 +15,7 @@ import {
   getMarketData,
   getCurrencyRates,
   getSelectedAccountTokenBalancesAcrossChains,
+  getSelectedAccountNativeTokenCachedBalanceByChainId,
 } from '../../../selectors';
 import {
   Display,
@@ -31,10 +34,7 @@ import {
 } from '../../../components/component-library';
 import { formatCurrency } from '../../../helpers/utils/confirm-tx.util';
 import { useI18nContext } from '../../../hooks/useI18nContext';
-import {
-  AddressCopyButton,
-  TokenListItem,
-} from '../../../components/multichain';
+import { AddressCopyButton } from '../../../components/multichain';
 import { AssetType } from '../../../../shared/constants/transaction';
 import TokenCell from '../../../components/app/assets/token-cell';
 import TransactionList from '../../../components/app/transaction-list';
@@ -44,6 +44,8 @@ import { getConversionRate } from '../../../ducks/metamask/metamask';
 import { toChecksumHexAddress } from '../../../../shared/modules/hexstring-utils';
 import CoinButtons from '../../../components/app/wallet-overview/coin-buttons';
 import { getIsNativeTokenBuyable } from '../../../ducks/ramps';
+import { calculateTokenBalance } from '../../../components/app/assets/util/calculateTokenBalance';
+import { AddressBalanceMapping } from '../../../components/app/assets/token-list/token-list';
 import AssetChart from './chart/asset-chart';
 import TokenButtons from './token-buttons';
 
@@ -53,6 +55,7 @@ export type Asset = (
       type: AssetType.native;
       /** Whether the symbol has been verified to match the chain */
       isOriginalNativeSymbol: boolean;
+      decimals: number;
     }
   | {
       type: AssetType.token;
@@ -65,7 +68,7 @@ export type Asset = (
     }
 ) & {
   /** The hexadecimal chain id */
-  chainId: string;
+  chainId: Hex;
   /** The asset's symbol, e.g. 'ETH' */
   symbol: string;
   /** The asset's name, e.g. 'Ethereum' */
@@ -97,36 +100,61 @@ const AssetPage = ({
     account.methods.includes(EthMethod.SignTransaction) ||
     account.methods.includes(EthMethod.SignUserOperation);
 
-  const selectedAccountTokenBalancesAcrossChains: Record<string, any> =
-    useSelector(getSelectedAccountTokenBalancesAcrossChains);
-  const marketDataAcrossChains = useSelector(getMarketData);
+  const selectedAccountTokenBalancesAcrossChains: AddressBalanceMapping =
+    useSelector(
+      getSelectedAccountTokenBalancesAcrossChains,
+    ) as AddressBalanceMapping;
+
+  const marketData = useSelector(getMarketData);
   const currencyRates = useSelector(getCurrencyRates);
 
-  const { chainId, type, symbol, name, image } = asset;
+  const nativeBalances: Record<Hex, Hex> = useSelector(
+    getSelectedAccountNativeTokenCachedBalanceByChainId,
+  ) as Record<Hex, Hex>;
 
+  const { chainId, type, symbol, name, image, decimals } = asset;
+
+  // TODO: adding the addres here for native tokens would enable marketData/historic data
   const address =
     type === AssetType.token
       ? toChecksumHexAddress(asset.address)
-      : '0x0000000000000000000000000000000000000000';
+      : zeroAddress();
 
-  const balance = selectedAccountTokenBalancesAcrossChains[chainId]?.[address];
+  const balance = calculateTokenBalance({
+    isNative: type === AssetType.native,
+    chainId,
+    address: address as Hex,
+    decimals,
+    nativeBalances,
+    selectedAccountTokenBalancesAcrossChains,
+  });
 
-  const marketData = marketDataAcrossChains[chainId]?.[address];
+  // Market and conversion rate data
+  const baseCurrency = marketData[chainId]?.[address]?.currency;
+  const tokenMarketPrice = marketData[chainId]?.[address]?.price || 0;
+  const tokenExchangeRate =
+    type === AssetType.native
+      ? currencyRates[symbol]?.conversionRate
+      : currencyRates[baseCurrency]?.conversionRate || 0;
 
-  const baseCurrency = marketData?.currency;
-
-  const tokenMarketPrice = marketData?.price || 0;
-  const tokenExchangeRate = currencyRates[baseCurrency]?.conversionRate || 0;
-
-  let tokenFiatAmount = tokenMarketPrice * tokenExchangeRate * balance;
-  if (type === AssetType.native && currencyRates) {
-    tokenFiatAmount = currencyRates[symbol]?.conversionRate * balance || 0;
-  }
+  // Calculate fiat amount
+  const tokenFiatAmount =
+    tokenMarketPrice * tokenExchangeRate * parseFloat(String(balance));
 
   const currentPrice =
-    conversionRate !== undefined && marketData?.price !== undefined
-      ? conversionRate * marketData.price
+    tokenExchangeRate !== undefined && tokenMarketPrice !== undefined
+      ? tokenExchangeRate * tokenMarketPrice
       : undefined;
+
+  const tokenMarketDetails = marketData[chainId]?.[address];
+  const shouldDisplayMarketData =
+    conversionRate > 0 &&
+    tokenMarketDetails &&
+    (tokenMarketDetails.marketCap > 0 ||
+      tokenMarketDetails.totalVolume > 0 ||
+      tokenMarketDetails.circulatingSupply > 0 ||
+      tokenMarketDetails.allTimeHigh > 0 ||
+      tokenMarketDetails.allTimeLow > 0);
 
   return (
     <Box
@@ -170,6 +198,7 @@ const AssetPage = ({
         {type === AssetType.native ? (
           <CoinButtons
             {...{
+              account,
               trackingLocation: 'asset-page',
               isBuyableChain,
               isSigningEnabled,
@@ -191,31 +220,15 @@ const AssetPage = ({
         <Text variant={TextVariant.headingMd} paddingBottom={2} paddingLeft={4}>
           {t('yourBalance')}
         </Text>
-        {type === AssetType.native ? (
-          <TokenListItem
-            title={symbol}
-            tokenSymbol={symbol}
-            primary={`${balance} ${symbol}`}
-            secondary={
-              tokenFiatAmount ? formatCurrency(tokenFiatAmount, currency) : ''
-            }
-            tokenImage={image}
-            isOriginalTokenSymbol={asset.isOriginalNativeSymbol}
-            isNativeCurrency={true}
-          />
-        ) : (
-          <TokenCell
-            key={`${symbol}-${address}`}
-            address={address}
-            chainId={chainId}
-            symbol={symbol}
-            image={image}
-            balance={balance}
-            tokenFiatAmount={tokenFiatAmount}
-            string={balance.toString()}
-            decimals={asset.decimals}
-          />
-        )}
+        <TokenCell
+          key={`${symbol}-${address}`}
+          address={address}
+          chainId={chainId}
+          symbol={symbol}
+          image={image}
+          tokenFiatAmount={tokenFiatAmount}
+          string={balance?.toString()}
+        />
         <Box
           marginTop={2}
           display={Display.Flex}
@@ -257,77 +270,75 @@ const AssetPage = ({
               </Box>
             </Box>
           )}
-          {conversionRate > 0 &&
-            (marketData?.marketCap > 0 ||
-              marketData?.totalVolume > 0 ||
-              marketData?.circulatingSupply > 0 ||
-              marketData?.allTimeHigh > 0 ||
-              marketData?.allTimeLow > 0) && (
-              <Box paddingLeft={4} paddingRight={4}>
-                <Text variant={TextVariant.headingMd} paddingBottom={4}>
-                  {t('marketDetails')}
-                </Text>
-                <Box
-                  display={Display.Flex}
-                  flexDirection={FlexDirection.Column}
-                  gap={2}
-                >
-                  {marketData?.marketCap > 0 &&
-                    renderRow(
-                      t('marketCap'),
-                      <Text data-testid="asset-market-cap">
-                        {localizeLargeNumber(
-                          t,
-                          conversionRate * marketData.marketCap,
-                        )}
-                      </Text>,
-                    )}
-                  {marketData?.totalVolume > 0 &&
-                    renderRow(
-                      t('totalVolume'),
-                      <Text>
-                        {localizeLargeNumber(
-                          t,
-                          conversionRate * marketData.totalVolume,
-                        )}
-                      </Text>,
-                    )}
-                  {marketData?.circulatingSupply > 0 &&
-                    renderRow(
-                      t('circulatingSupply'),
-                      <Text>
-                        {localizeLargeNumber(t, marketData.circulatingSupply)}
-                      </Text>,
-                    )}
-                  {marketData?.allTimeHigh > 0 &&
-                    renderRow(
-                      t('allTimeHigh'),
-                      <Text>
-                        {formatCurrency(
-                          `${conversionRate * marketData.allTimeHigh}`,
-                          currency,
-                          getPricePrecision(
-                            conversionRate * marketData.allTimeHigh,
-                          ),
-                        )}
-                      </Text>,
-                    )}
-                  {marketData?.allTimeLow > 0 &&
-                    renderRow(
-                      t('allTimeLow'),
-                      <Text>
-                        {formatCurrency(
-                          `${conversionRate * marketData.allTimeLow}`,
-                          currency,
-                          getPricePrecision(
-                            conversionRate * marketData.allTimeLow,
-                          ),
-                        )}
-                      </Text>,
-                    )}
-                </Box>
+          {shouldDisplayMarketData && (
+            <Box paddingLeft={4} paddingRight={4}>
+              <Text variant={TextVariant.headingMd} paddingBottom={4}>
+                {t('marketDetails')}
+              </Text>
+              <Box
+                display={Display.Flex}
+                flexDirection={FlexDirection.Column}
+                gap={2}
+              >
+                {tokenMarketDetails.marketCap > 0 &&
+                  renderRow(
+                    t('marketCap'),
+                    <Text data-testid="asset-market-cap">
+                      {localizeLargeNumber(
+                        t,
+                        tokenExchangeRate * tokenMarketDetails.marketCap,
+                      )}
+                    </Text>,
+                  )}
+                {tokenMarketDetails.totalVolume > 0 &&
+                  renderRow(
+                    t('totalVolume'),
+                    <Text>
+                      {localizeLargeNumber(
+                        t,
+                        tokenExchangeRate * tokenMarketDetails.totalVolume,
+                      )}
+                    </Text>,
+                  )}
+                {tokenMarketDetails.circulatingSupply > 0 &&
+                  renderRow(
+                    t('circulatingSupply'),
+                    <Text>
+                      {localizeLargeNumber(
+                        t,
+                        tokenMarketDetails.circulatingSupply,
+                      )}
+                    </Text>,
+                  )}
+                {tokenMarketDetails.allTimeHigh > 0 &&
+                  renderRow(
+                    t('allTimeHigh'),
+                    <Text>
+                      {formatCurrency(
+                        `${tokenExchangeRate * tokenMarketDetails.allTimeHigh}`,
+                        currency,
+                        getPricePrecision(
+                          tokenExchangeRate * tokenMarketDetails.allTimeHigh,
+                        ),
+                      )}
+                    </Text>,
+                  )}
+                {tokenMarketDetails.allTimeLow > 0 &&
+                  renderRow(
+                    t('allTimeLow'),
+                    <Text>
+                      {formatCurrency(
+                        `${tokenExchangeRate * tokenMarketDetails.allTimeLow}`,
+                        currency,
+                        getPricePrecision(
+                          tokenExchangeRate * tokenMarketDetails.allTimeLow,
+                        ),
+                      )}
+                    </Text>,
+                  )}
               </Box>
-            )}
+            </Box>
+          )}
           <Box marginBottom={8}>
             <Text
               paddingLeft={4}

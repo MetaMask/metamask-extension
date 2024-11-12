@@ -138,6 +138,7 @@ export default class Routes extends Component {
     history: PropTypes.object,
     location: PropTypes.object,
     autoLockTimeLimit: PropTypes.number,
+    privacyMode: PropTypes.bool,
     pageChanged: PropTypes.func.isRequired,
     browserEnvironmentOs: PropTypes.string,
     browserEnvironmentBrowser: PropTypes.string,
@@ -355,8 +356,15 @@ export default class Routes extends Component {
           component={NftFullImage}
         />
 
-        <Authenticated path={`${ASSET_ROUTE}/:asset/:id`} component={Asset} />
-        <Authenticated path={`${ASSET_ROUTE}/:asset/`} component={Asset} />
+        <Authenticated
+          path={`${ASSET_ROUTE}/:chainId/:asset/:id`}
+          component={Asset}
+        />
+        <Authenticated
+          path={`${ASSET_ROUTE}/:chainId/:asset/`}
+          component={Asset}
+        />
+        <Authenticated path={`${ASSET_ROUTE}/:chainId`} component={Asset} />
         <Authenticated
           path={`${CONNECTIONS}/:origin`}
           component={Connections}
@@ -417,6 +425,7 @@ export default class Routes extends Component {
       switchedNetworkDetails,
       clearSwitchedNetworkDetails,
       clearEditedNetwork,
+      privacyMode,
       ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
       isShowKeyringSnapRemovalResultModal,
       hideShowKeyringSnapRemovalResultModal,
@@ -494,7 +503,10 @@ export default class Routes extends Component {
           ///: END:ONLY_INCLUDE_IF
         }
         {isAccountMenuOpen ? (
-          <AccountListMenu onClose={() => toggleAccountMenu()} />
+          <AccountListMenu
+            onClose={() => toggleAccountMenu()}
+            privacyMode={privacyMode}
+          />
         ) : null}
         {isNetworkMenuOpen ? (
           <NetworkListMenu

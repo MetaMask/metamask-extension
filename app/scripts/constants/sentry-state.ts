@@ -223,6 +223,7 @@ export const SENTRY_BACKGROUND_STATE = {
     advancedGasFee: true,
     currentLocale: true,
     dismissSeedBackUpReminder: true,
+    overrideContentSecurityPolicyHeader: true,
     featureFlags: true,
     forgottenPassword: true,
     identities: false,

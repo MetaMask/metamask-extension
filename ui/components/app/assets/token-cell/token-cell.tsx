@@ -4,7 +4,6 @@ import {
   getCurrentCurrency,
   getTokenList,
   selectERC20TokensByChain,
-  getPreferences,
   getNativeCurrencyForChain,
 } from '../../../../selectors';
 import {
@@ -22,18 +21,25 @@ type TokenCellProps = {
   symbol: string;
   string?: string;
   chainId: string;
-  tokenFiatAmount: number;
+  tokenFiatAmount: number | null;
   image: string;
   isNative?: boolean;
-  onClick?: (arg: string) => void;
+  privacyMode?: boolean;
+  onClick?: (chainId: string, address: string) => void;
 };
 
 export const formatWithThreshold = (
-  amount: number,
+  amount: number | null,
   threshold: number,
   locale: string,
   options: Intl.NumberFormatOptions,
 ): string => {
+  if (amount === null) {
+    return '';
+  }
+  if (amount === 0) {
+    return new Intl.NumberFormat(locale, options).format(0);
+  }
   return amount < threshold
     ? `<${new Intl.NumberFormat(locale, options).format(threshold)}`
     : new Intl.NumberFormat(locale, options).format(amount);
@@ -47,6 +53,7 @@ export default function TokenCell({
   string,
   tokenFiatAmount,
   isNative,
+  privacyMode = false,
   onClick,
 }: TokenCellProps) {
   const locale = useSelector(getIntlLocale);
@@ -55,7 +62,6 @@ export default function TokenCell({
   const isEvm = useSelector(getMultichainIsEvm);
   const erc20TokensByChain = useSelector(selectERC20TokensByChain);
   const isMainnet = chainId ? isChainIdMainnet(chainId) : false;
-  const { privacyMode } = useSelector(getPreferences);
   const tokenData = Object.values(tokenList).find(
     (token) =>
       isEqualCaseInsensitive(token.symbol, symbol) &&
@@ -77,7 +83,7 @@ export default function TokenCell({
     image;
 
   const secondaryThreshold = 0.01;
-  const primaryThreshold = 0.00001;
+  const primaryThreshold = 0.0001;
 
   // Format for fiat balance with currency style
   const secondary = formatWithThreshold(
@@ -108,9 +114,20 @@ export default function TokenCell({
   isStakeable = false;
   ///: END:ONLY_INCLUDE_IF
 
+  function handleOnClick() {
+    if (!onClick || !chainId) {
+      return;
+    }
+    onClick(chainId, address);
+  }
+
+  if (!chainId) {
+    return null;
+  }
+
   return (
     <TokenListItem
-      onClick={onClick ? () => onClick(address) : undefined}
+      onClick={handleOnClick}
       tokenSymbol={symbol}
       tokenImage={isNative ? getNativeCurrencyForChain(chainId) : tokenImage}
       tokenChainImage={chainId ? getImageForChainId(chainId) : undefined}

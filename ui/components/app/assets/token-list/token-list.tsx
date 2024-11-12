@@ -1,6 +1,5 @@
 import React, { ReactNode, useMemo } from 'react';
 import { shallowEqual, useSelector } from 'react-redux';
-import BN from 'bn.js';
 import { Hex } from '@metamask/utils';
 import TokenCell from '../token-cell';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
@@ -16,6 +15,7 @@ import {
   getCurrentNetwork,
   getMarketData,
   getPreferences,
+  getSelectedAccount,
   getSelectedAccountNativeTokenCachedBalanceByChainId,
   getSelectedAccountTokenBalancesAcrossChains,
   getSelectedAccountTokensAcrossChains,
@@ -23,28 +23,42 @@ import {
 } from '../../../../selectors';
 import { getConversionRate } from '../../../../ducks/metamask/metamask';
 import { filterAssets } from '../util/filter';
-import { hexToDecimal } from '../../../../../shared/modules/conversion.utils';
-import { stringifyBalance } from '../../../../hooks/useTokenBalances';
+import { calculateTokenBalance } from '../util/calculateTokenBalance';
+import { calculateTokenFiatAmount } from '../util/calculateTokenFiatAmount';
 
 type TokenListProps = {
-  onTokenClick: (arg: string) => void;
+  onTokenClick: (chainId: string, address: string) => void;
   nativeToken?: ReactNode;
 };
 
-type Token = {
+export type Token = {
   address: Hex;
   aggregators: string[];
   chainId: Hex;
   decimals: number;
   isNative: boolean;
   symbol: string;
+  image: string;
 };
+
+export type TokenWithFiatAmount = Token & {
+  tokenFiatAmount: number | null;
+  balance?: string;
+  string: string; // needed for backwards compatability TODO: fix this
+};
+
+export type AddressBalanceMapping = Record<Hex, Record<Hex, Hex>>;
+export type ChainAddressMarketData = Record<
+  Hex,
+  Record<Hex, Record<string, string | number>>
+>;
 
 export default function TokenList({ onTokenClick }: TokenListProps) {
   const t = useI18nContext();
   const currentNetwork = useSelector(getCurrentNetwork);
-
-  const { tokenSortConfig, tokenNetworkFilter } = useSelector(getPreferences);
+  const { tokenSortConfig, tokenNetworkFilter, privacyMode } =
+    useSelector(getPreferences);
+  const selectedAccount = useSelector(getSelectedAccount);
   const conversionRate = useSelector(getConversionRate);
   const contractExchangeRates = useSelector(
     getTokenExchangeRates,
@@ -55,73 +69,57 @@ export default function TokenList({ onTokenClick }: TokenListProps) {
     getSelectedAccountTokensAcrossChains,
   ) as Record<Hex, Token[]>;
 
-  const selectedAccountTokenBalancesAcrossChains: Record<
-    Hex,
-    Record<Hex, Hex>
-  > = useSelector(getSelectedAccountTokenBalancesAcrossChains) as Record<
-    Hex,
-    Record<Hex, Hex>
-  >;
+  const selectedAccountTokenBalancesAcrossChains: AddressBalanceMapping =
+    useSelector(
+      getSelectedAccountTokenBalancesAcrossChains,
+    ) as AddressBalanceMapping;
 
-  const marketData = useSelector(getMarketData);
+  const marketData: ChainAddressMarketData = useSelector(
+    getMarketData,
+  ) as ChainAddressMarketData;
+
   const currencyRates = useSelector(getCurrencyRates);
   const nativeBalances: Record<Hex, Hex> = useSelector(
     getSelectedAccountNativeTokenCachedBalanceByChainId,
   ) as Record<Hex, Hex>;
 
   const consolidatedBalances = () => {
-    const tokensWithBalance: any[] = [];
+    const tokensWithBalance: TokenWithFiatAmount[] = [];
 
-    Object.entries(selectedAccountTokensChains).forEach(([chainId, tokens]) => {
-      console.log('chainId', chainId);
-      tokens.forEach((token: Token) => {
-        const { address, isNative, symbol, decimals } = token;
-        let balance;
+    Object.entries(selectedAccountTokensChains).forEach(
+      ([stringChainKey, tokens]) => {
+        const chainId = stringChainKey as Hex;
+        tokens.forEach((token: Token) => {
+          const { isNative, address, decimals } = token;
+          const balance =
+            calculateTokenBalance({
+              isNative,
+              chainId,
+              address,
+              decimals,
+              nativeBalances,
+              selectedAccountTokenBalancesAcrossChains,
+            }) || '0';
 
-        if (isNative) {
-          const nativeTokenBalanceHex = nativeBalances?.[chainId as Hex];
-          if (nativeTokenBalanceHex && nativeTokenBalanceHex !== '0x0') {
-            balance = stringifyBalance(
-              new BN(hexToDecimal(nativeTokenBalanceHex)),
-              new BN(decimals),
-              5,
-            );
-          }
-        } else {
-          const hexBalance =
-            selectedAccountTokenBalancesAcrossChains[chainId as Hex]?.[address];
-          if (hexBalance && hexBalance !== '0x0') {
-            balance = stringifyBalance(
-              new BN(hexToDecimal(hexBalance)),
-              new BN(decimals),
-            );
-          }
-        }
+          const tokenFiatAmount = calculateTokenFiatAmount({
+            token,
+            chainId,
+            balance,
+            marketData,
+            currencyRates,
+          });
 
-        // Market and conversion rate data
-        const baseCurrency = marketData[chainId]?.[address]?.currency;
-        const tokenMarketPrice = marketData[chainId]?.[address]?.price || 0;
-        const tokenExchangeRate =
-          currencyRates[baseCurrency]?.conversionRate || 0;
-
-        // Calculate fiat amount
-        let tokenFiatAmount =
-          tokenMarketPrice * tokenExchangeRate * parseFloat(String(balance));
-        if (isNative && currencyRates) {
-          tokenFiatAmount =
-            currencyRates[symbol]?.conversionRate * parseFloat(String(balance));
-        }
-
-        // Append processed token with balance and fiat amount
-        tokensWithBalance.push({
-          ...token,
-          balance,
-          tokenFiatAmount,
-          chainId,
-          string: String(balance),
+          // Append processed token with balance and fiat amount
+          tokensWithBalance.push({
+            ...token,
+            balance,
+            tokenFiatAmount,
+            chainId,
+            string: String(balance),
+          });
         });
-      });
-    });
+      },
+    );
 
     return tokensWithBalance;
   };
@@ -136,7 +134,10 @@ export default function TokenList({ onTokenClick }: TokenListProps) {
       },
     ]);
 
-    const { nativeTokens, nonNativeTokens } = filteredAssets.reduce(
+    const { nativeTokens, nonNativeTokens } = filteredAssets.reduce<{
+      nativeTokens: TokenWithFiatAmount[];
+      nonNativeTokens: TokenWithFiatAmount[];
+    }>(
       (acc, token) => {
         if (token.isNative) {
           acc.nativeTokens.push(token);
@@ -155,7 +156,11 @@ export default function TokenList({ onTokenClick }: TokenListProps) {
     conversionRate,
     contractExchangeRates,
     currentNetwork,
+    selectedAccount,
+    selectedAccountTokensChains,
   ]);
+
+  console.log({ sortedFilteredTokens });
 
   const loading = false;
   return loading ? (
@@ -173,7 +178,14 @@ export default function TokenList({ onTokenClick }: TokenListProps) {
       {sortedFilteredTokens.map((tokenData) => (
         <TokenCell
           key={`${tokenData.chainId}-${tokenData.symbol}-${tokenData.address}`}
-          {...tokenData}
+          chainId={tokenData.chainId}
+          address={tokenData.address}
+          symbol={tokenData.symbol}
+          tokenFiatAmount={tokenData.tokenFiatAmount}
+          image={tokenData?.image}
+          isNative={tokenData.isNative}
+          string={tokenData.string}
+          privacyMode={privacyMode}
           onClick={onTokenClick}
         />
       ))}

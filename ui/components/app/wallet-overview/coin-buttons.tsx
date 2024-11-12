@@ -24,7 +24,7 @@ import {
 } from '@metamask/utils';
 
 ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
-import { BtcAccountType } from '@metamask/keyring-api';
+import { BtcAccountType, InternalAccount } from '@metamask/keyring-api';
 ///: END:ONLY_INCLUDE_IF
 ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
 import { ChainId } from '../../../../shared/constants/network';
@@ -51,13 +51,11 @@ import {
   getCurrentKeyring,
   ///: END:ONLY_INCLUDE_IF
   getUseExternalServices,
-  getSelectedAccount,
   ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
   getMemoizedUnapprovedTemplatedConfirmations,
   ///: END:ONLY_INCLUDE_IF
-  getCurrentChainId,
   getNetworkConfigurationIdByChainId,
-  getOriginOfCurrentTab,
+  getCurrentChainId,
 } from '../../../selectors';
 import Tooltip from '../../ui/tooltip';
 ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
@@ -86,28 +84,25 @@ import useRamps from '../../../hooks/ramps/useRamps/useRamps';
 import useBridging from '../../../hooks/bridge/useBridging';
 ///: END:ONLY_INCLUDE_IF
 import { ReceiveModal } from '../../multichain/receive-modal';
-///: BEGIN:ONLY_INCLUDE_IF(build-flask)
 import {
   setActiveNetwork,
+  setSwitchedNetworkDetails,
+  ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
   sendMultichainTransaction,
   setDefaultHomeActiveTabName,
+  ///: END:ONLY_INCLUDE_IF
 } from '../../../store/actions';
+///: BEGIN:ONLY_INCLUDE_IF(build-flask)
 import { BITCOIN_WALLET_SNAP_ID } from '../../../../shared/lib/accounts/bitcoin-wallet-snap';
 ///: END:ONLY_INCLUDE_IF
+import {
+  getMultichainIsEvm,
+  getMultichainNativeCurrency,
+} from '../../../selectors/multichain';
+import { useMultichainSelector } from '../../../hooks/useMultichainSelector';
 
-const CoinButtons = ({
-  chainId,
-  trackingLocation,
-  isSwapsChain,
-  isSigningEnabled,
-  ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
-  isBridgeChain,
-  isBuyableChain,
-  defaultSwapsToken,
-  ///: END:ONLY_INCLUDE_IF
-  classPrefix = 'coin',
-  iconButtonClassName = '',
-}: {
+type CoinButtonsProps = {
+  account: InternalAccount;
   chainId: `0x${string}` | CaipChainId | number;
   trackingLocation: string;
   isSwapsChain: boolean;
@@ -119,27 +114,50 @@ const CoinButtons = ({
   ///: END:ONLY_INCLUDE_IF
   classPrefix?: string;
   iconButtonClassName?: string;
-}) => {
+};
+
+const CoinButtons = ({
+  account,
+  chainId,
+  trackingLocation,
+  isSwapsChain,
+  isSigningEnabled,
+  ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
+  isBridgeChain,
+  isBuyableChain,
+  defaultSwapsToken,
+  ///: END:ONLY_INCLUDE_IF
+  classPrefix = 'coin',
+  iconButtonClassName = '',
+}: CoinButtonsProps) => {
   const t = useContext(I18nContext);
   const dispatch = useDispatch();
 
   const trackEvent = useContext(MetaMetricsContext);
   const [showReceiveModal, setShowReceiveModal] = useState(false);
 
-  const account = useSelector(getSelectedAccount);
-  // const selectedTabOrigin = useSelector(getOriginOfCurrentTab);
-  const currentChainId = useSelector(getCurrentChainId);
+  const { address: selectedAddress } = account;
+  const history = useHistory();
   const networks = useSelector(getNetworkConfigurationIdByChainId) as Record<
     string,
     string
   >;
-  const { address: selectedAddress } = account;
-  const history = useHistory();
+  const currentChainId = useSelector(getCurrentChainId);
   ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
   const location = useLocation();
   const keyring = useSelector(getCurrentKeyring);
   const usingHardwareWallet = isHardwareKeyring(keyring?.type);
   ///: END:ONLY_INCLUDE_IF
+
+  // Initially, those events were using a "ETH" as `token_symbol`, so we keep this behavior
+  // for EVM, no matter the currently selected native token (e.g. SepoliaETH if you are on Sepolia
+  // network).
+  const isEvm = useMultichainSelector(getMultichainIsEvm, account);
+  const multichainNativeToken = useMultichainSelector(
+    getMultichainNativeCurrency,
+    account,
+  );
+  const nativeToken = isEvm ? 'ETH' : multichainNativeToken;
 
   const isExternalServicesEnabled = useSelector(getUseExternalServices);
 
@@ -189,6 +207,23 @@ const CoinButtons = ({
     return toHex(chainId) as ChainId;
   };
   ///: END:ONLY_INCLUDE_IF
+
+  const getSnapAccountMetaMetricsPropertiesIfAny = (
+    internalAccount: InternalAccount,
+  ): { snap_id?: string } => {
+    // Some accounts might be Snap accounts, in this case we add some extra properties
+    // to the metrics:
+    const snapId = internalAccount.metadata.snap?.id;
+    if (snapId) {
+      return {
+        snap_id: snapId,
+      };
+    }
+
+    // If the account is not a Snap account or that we could not get the Snap ID for
+    // some reason, we don't add any extra property.
+    return {};
+  };
 
   ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
   const mmiPortfolioEnabled = useSelector(getMmiPortfolioEnabled);
@@ -285,7 +320,34 @@ const CoinButtons = ({
   }, [unapprovedTemplatedConfirmations, history]);
   ///: END:ONLY_INCLUDE_IF
 
+  const setCorrectChain = useCallback(async () => {
+    if (currentChainId !== chainId) {
+      const networkConfigurationId = networks[chainId];
+      await dispatch(setActiveNetwork(networkConfigurationId));
+      await dispatch(
+        setSwitchedNetworkDetails({
+          networkClientId: networkConfigurationId,
+        }),
+      );
+    }
+  }, [currentChainId, chainId, networks, dispatch]);
+
   const handleSendOnClick = useCallback(async () => {
+    trackEvent(
+      {
+        event: MetaMetricsEventName.NavSendButtonClicked,
+        category: MetaMetricsEventCategory.Navigation,
+        properties: {
+          account_type: account.type,
+          token_symbol: nativeToken,
+          location: 'Home',
+          text: 'Send',
+          chain_id: chainId,
+          ...getSnapAccountMetaMetricsPropertiesIfAny(account),
+        },
+      },
+      { excludeMetaMetricsId: false },
+    );
     switch (account.type) {
       ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
       case BtcAccountType.P2wpkh: {
@@ -314,23 +376,16 @@ const CoinButtons = ({
           },
           { excludeMetaMetricsId: false },
         );
-        if (currentChainId !== chainId) {
-          const networkConfigurationId = networks[chainId];
-          await dispatch(setActiveNetwork(networkConfigurationId));
-          // await dispatch(
-          //   setSwitchedNetworkDetails({
-          //     networkClientId: networkConfigurationId,
-          //     selectedTabOrigin,
-          //   }),
-          // );
-        }
+        await setCorrectChain();
         await dispatch(startNewDraftTransaction({ type: AssetType.native }));
         history.push(SEND_ROUTE);
       }
     }
-  }, [chainId, account]);
+  }, [chainId, account, setCorrectChain]);
 
   const handleSwapOnClick = useCallback(async () => {
+    await setCorrectChain();
+
     ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
     global.platform.openTab({
       url: `${mmiPortfolioUrl}/swap`,
@@ -360,6 +415,7 @@ const CoinButtons = ({
     }
     ///: END:ONLY_INCLUDE_IF
   }, [
+    setCorrectChain,
     isSwapsChain,
     chainId,
     ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
@@ -378,10 +434,12 @@ const CoinButtons = ({
       event: MetaMetricsEventName.NavBuyButtonClicked,
       category: MetaMetricsEventCategory.Navigation,
       properties: {
+        account_type: account.type,
         location: 'Home',
         text: 'Buy',
         chain_id: chainId,
         token_symbol: defaultSwapsToken,
+        ...getSnapAccountMetaMetricsPropertiesIfAny(account),
       },
     });
   }, [chainId, defaultSwapsToken]);

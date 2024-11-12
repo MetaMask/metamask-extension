@@ -28,7 +28,6 @@ import {
   getCurrentKeyring,
   ///: END:ONLY_INCLUDE_IF
   getCurrentChainId,
-  // getOriginOfCurrentTab,
   getNetworkConfigurationIdByChainId,
 } from '../../../selectors';
 ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
@@ -39,7 +38,7 @@ import { INVALID_ASSET_TYPE } from '../../../helpers/constants/error-keys';
 import {
   setActiveNetwork,
   showModal,
-  // setSwitchedNetworkDetails,
+  setSwitchedNetworkDetails,
 } from '../../../store/actions';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import {
@@ -81,7 +80,6 @@ const TokenButtons = ({
   ///: END:ONLY_INCLUDE_IF
 
   const currentChainId = useSelector(getCurrentChainId);
-  // const selectedTabOrigin = useSelector(getOriginOfCurrentTab);
   const networks = useSelector(getNetworkConfigurationIdByChainId) as Record<
     string,
     string
@@ -123,6 +121,18 @@ const TokenButtons = ({
       );
     }
   }, [token.isERC721, token.address, dispatch]);
+
+  const setCorrectChain = async () => {
+    if (currentChainId !== token.chainId) {
+      const networkConfigurationId = networks[token.chainId];
+      await dispatch(setActiveNetwork(networkConfigurationId));
+      await dispatch(
+        setSwitchedNetworkDetails({
+          networkClientId: networkConfigurationId,
+        }),
+      );
+    }
+  };
 
   return (
     <Box display={Display.Flex} justifyContent={JustifyContent.spaceEvenly}>
@@ -222,16 +232,7 @@ const TokenButtons = ({
             { excludeMetaMetricsId: false },
           );
           try {
-            if (currentChainId !== token.chainId) {
-              const networkConfigurationId = networks[token.chainId];
-              await dispatch(setActiveNetwork(networkConfigurationId));
-              // await dispatch(
-              //   setSwitchedNetworkDetails({
-              //     networkClientId: networkConfigurationId,
-              //     selectedTabOrigin,
-              //   }),
-              // );
-            }
+            await setCorrectChain();
             await dispatch(
               startNewDraftTransaction({
                 type: AssetType.token,
@@ -268,7 +269,9 @@ const TokenButtons = ({
               size={IconSize.Sm}
             />
           }
-          onClick={() => {
+          onClick={async () => {
+            await setCorrectChain();
+
             ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
             global.platform.openTab({
               url: `${mmiPortfolioUrl}/swap`,
@@ -289,7 +292,8 @@ const TokenButtons = ({
             dispatch(
               setSwapsFromToken({
                 ...token,
-                address: token.address.toLowerCase(),
+                // TODO: This will get fixed once we have the native token address
+                address: token.address?.toLowerCase(),
                 iconUrl: token.image,
                 balance: token.balance.value,
                 string: token.balance.display,
