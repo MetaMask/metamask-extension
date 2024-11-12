@@ -9,11 +9,17 @@ class ConfirmTxPage {
 
   private transactionFee: string;
 
+  private editFee: object;
+
   constructor(driver: Driver) {
     this.driver = driver;
     this.confirmButton = '[data-testid="page-container-footer-next"]';
     this.transactionFee = '[data-testid="confirm-gas-display"]';
     this.totalFee = '[data-testid="confirm-page-total-amount"]';
+    this.editFee = {
+           text: 'Edit',
+           tag: 'button'
+    }
   }
 
   /**
@@ -25,7 +31,7 @@ class ConfirmTxPage {
    */
   async check_pageIsLoaded(
     expectedGasFee: string,
-    expectedTotalFee: string,
+    expectedTotalAmount: string,
   ): Promise<void> {
     try {
       await Promise.all([
@@ -36,7 +42,7 @@ class ConfirmTxPage {
         }),
         this.driver.waitForSelector({
           css: this.totalFee,
-          text: `${expectedTotalFee} ETH`,
+          text: `${expectedTotalAmount} ETH`,
         }),
       ]);
     } catch (e) {
@@ -52,6 +58,10 @@ class ConfirmTxPage {
   async confirmTx(): Promise<void> {
     console.log('Click confirm button to confirm transaction');
     await this.driver.clickElement(this.confirmButton);
+  }
+  async openEditFeeModal(): Promise<void> {
+    console.log('Click edit fee button to open edit fee modal');
+    await this.driver.clickElement(this.editFee);
   }
 }
 

@@ -121,7 +121,6 @@ describe('ENS', function (this: Suite) {
 
 
       async ({ driver }: { driver: Driver }) => {
-        await driver.delay(20000);
         await loginWithoutBalanceValidation(driver);
 
         // click send button on homepage to start send flow
@@ -141,12 +140,6 @@ describe('ENS', function (this: Suite) {
           shortSampleAddress,
         );
 
-        await driver.delay(90000);
-
-        await driver.delay(90000);
-
-        await driver.delay(90000);
-
         // Verify the resolved ENS address can be used as the recipient address
         await sendToPage.check_ensAddressAsRecipient(
           sampleEnsDomain,
@@ -159,13 +152,29 @@ describe('ENS', function (this: Suite) {
          // Proceed to the confirmation screen
          await sendToPage.goToNextScreen();
 
-          // Edit gas fee form
-         await editGasFeeForm(driver, '21000', '100');
-
          // Confirm the transaction
          const confirmTxPage = new ConfirmTxPage(driver);
-         await confirmTxPage.check_pageIsLoaded('expectedGasFee, expectedTotalFee');
+
+         await confirmTxPage.openEditFeeModal();
+
+         await confirmTxPage.check_pageIsLoaded(
+          '0.000042',
+          '0.100042'
+      )
+
+         // Edit gas fee form
+         await editGasFeeForm(driver, '21000', '100');
+
+         await confirmTxPage.check_pageIsLoaded(
+          '0.0021',
+          '0.1021'
+      )
+
          await confirmTxPage.confirmTx();
+
+         await driver.delay(50000);
+
+         await homepage.check_confirmedTxNumberDisplayedInActivity();
       },
     );
   });
