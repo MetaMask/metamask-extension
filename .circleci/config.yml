@@ -352,8 +352,14 @@ workflows:
             - prep-build-ts-migration-dashboard
 
   rerun-from-failed:
+    when:
+      condition:
+        equal: ["<< pipeline.schedule.name >>", "rerun-from-failed"]
     jobs:
-      - rerun-workflows-from-failed
+      - rerun-workflows-from-failed:
+          filters:
+            branches:
+              only: develop
 
   locales_only:
     when:
