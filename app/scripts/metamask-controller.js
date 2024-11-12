@@ -308,7 +308,7 @@ import OnboardingController from './controllers/onboarding';
 import Backup from './lib/backup';
 import DecryptMessageController from './controllers/decrypt-message';
 import SwapsController from './controllers/swaps';
-import MetaMetricsController from './controllers/metametrics';
+import MetaMetricsController from './controllers/metametrics-controller';
 import { segment } from './lib/segment';
 import createMetaRPCHandler from './lib/createMetaRPCHandler';
 import {
@@ -764,23 +764,23 @@ export default class MetamaskController extends EventEmitter {
       disabled: !this.preferencesController.state.useNftDetection,
     });
 
+    const metaMetricsControllerMessenger =
+      this.controllerMessenger.getRestricted({
+        name: 'MetaMetricsController',
+        allowedActions: [
+          'PreferencesController:getState',
+          'NetworkController:getState',
+          'NetworkController:getNetworkClientById',
+        ],
+        allowedEvents: [
+          'PreferencesController:stateChange',
+          'NetworkController:networkDidChange',
+        ],
+      });
     this.metaMetricsController = new MetaMetricsController({
-      initState: initState.MetaMetricsController,
+      state: initState.MetaMetricsController,
+      messenger: metaMetricsControllerMessenger,
       segment,
-      preferencesControllerState: {
-        currentLocale: this.preferencesController.state.currentLocale,
-        selectedAddress: this.preferencesController.state.selectedAddress,
-      },
-      onPreferencesStateChange: preferencesMessenger.subscribe.bind(
-        preferencesMessenger,
-        'PreferencesController:stateChange',
-      ),
-      onNetworkDidChange: networkControllerMessenger.subscribe.bind(
-        networkControllerMessenger,
-        'NetworkController:networkDidChange',
-      ),
-      getCurrentChainId: () =>
-        getCurrentChainId({ metamask: this.networkController.state }),
       version: process.env.METAMASK_VERSION,
       environment: process.env.METAMASK_ENVIRONMENT,
       extension: this.extension,
@@ -795,13 +795,14 @@ export default class MetamaskController extends EventEmitter {
     const metaMetricsDataDeletionMessenger =
       this.controllerMessenger.getRestricted({
         name: 'MetaMetricsDataDeletionController',
+        allowedActions: ['MetaMetricsController:getState'],
+        allowedEvents: [],
       });
     this.metaMetricsDataDeletionController =
       new MetaMetricsDataDeletionController({
         dataDeletionService,
         messenger: metaMetricsDataDeletionMessenger,
         state: initState.metaMetricsDataDeletionController,
-        getMetaMetricsId: () => this.metaMetricsController.state.metaMetricsId,
       });
 
     const gasFeeMessenger = this.controllerMessenger.getRestricted({
@@ -2032,6 +2033,7 @@ export default class MetamaskController extends EventEmitter {
         'AccountsController:listAccounts',
         'AccountsController:getSelectedAccount',
         'AccountsController:setSelectedAccount',
+        'MetaMetricsController:getState',
         'NetworkController:getState',
         'NetworkController:setActiveNetwork',
       ],
@@ -2047,6 +2049,7 @@ export default class MetamaskController extends EventEmitter {
       getState: this.getState.bind(this),
       getPendingNonce: this.getPendingNonce.bind(this),
       accountTrackerController: this.accountTrackerController,
+      networkController: this.networkController,
       metaMetricsController: this.metaMetricsController,
       permissionController: this.permissionController,
       signatureController: this.signatureController,
@@ -2390,7 +2393,7 @@ export default class MetamaskController extends EventEmitter {
       TransactionController: this.txController,
       KeyringController: this.keyringController,
       PreferencesController: this.preferencesController,
-      MetaMetricsController: this.metaMetricsController.store,
+      MetaMetricsController: this.metaMetricsController,
       MetaMetricsDataDeletionController: this.metaMetricsDataDeletionController,
       AddressBookController: this.addressBookController,
       CurrencyController: this.currencyRateController,
@@ -2445,7 +2448,7 @@ export default class MetamaskController extends EventEmitter {
         NetworkController: this.networkController,
         KeyringController: this.keyringController,
         PreferencesController: this.preferencesController,
-        MetaMetricsController: this.metaMetricsController.store,
+        MetaMetricsController: this.metaMetricsController,
         MetaMetricsDataDeletionController:
           this.metaMetricsDataDeletionController,
         AddressBookController: this.addressBookController,
@@ -5351,7 +5354,7 @@ export default class MetamaskController extends EventEmitter {
       metaMetricsId,
       dataCollectionForMarketing,
       participateInMetaMetrics,
-    } = this.metaMetricsController.store.getState();
+    } = this.metaMetricsController.state;
 
     if (
       metaMetricsId &&
@@ -5718,9 +5721,6 @@ export default class MetamaskController extends EventEmitter {
 
     engine.push(
       createRPCMethodTrackingMiddleware({
-        getMetricsState: this.metaMetricsController.store.getState.bind(
-          this.metaMetricsController.store,
-        ),
         getAccountType: this.getAccountType.bind(this),
         getDeviceModel: this.getDeviceModel.bind(this),
         isConfirmationRedesignEnabled,

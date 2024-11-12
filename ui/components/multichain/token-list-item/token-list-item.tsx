@@ -302,6 +302,7 @@ export const TokenListItem = ({
                     as="span"
                     fontWeight={FontWeight.Medium}
                     variant={TextVariant.bodyMd}
+                    display={Display.Block}
                     ellipsis
                   >
                     {isStakeable ? (
