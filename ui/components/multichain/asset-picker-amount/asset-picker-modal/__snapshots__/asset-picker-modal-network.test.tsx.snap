@@ -33,20 +33,6 @@ exports[`AssetPickerModalNetwork renders modal with no network list by default 1
             class="mm-box mm-header-base mm-modal-header mm-box--padding-right-4 mm-box--padding-bottom-4 mm-box--padding-left-4 mm-box--display-flex mm-box--justify-content-space-between"
           >
             <div
-              class="mm-box"
-              style="min-width: 0px;"
-            >
-              <button
-                aria-label="Back"
-                class="mm-box mm-button-icon mm-button-icon--size-sm mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-default mm-box--background-color-transparent mm-box--rounded-lg"
-              >
-                <span
-                  class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-inherit"
-                  style="mask-image: url('./images/icons/arrow-left.svg');"
-                />
-              </button>
-            </div>
-            <div
               class="mm-box mm-box--width-full"
             >
               <h4
@@ -70,6 +56,27 @@ exports[`AssetPickerModalNetwork renders modal with no network list by default 1
               </button>
             </div>
           </header>
+          <div
+            class="mm-box mm-box--padding-4"
+          >
+            <div
+              class="mm-box mm-text-field mm-text-field--size-lg mm-text-field--focused mm-text-field--truncate mm-text-field-search asset-picker-modal__search-list mm-box--padding-right-0 mm-box--padding-left-4 mm-box--display-inline-flex mm-box--align-items-center mm-box--width-full mm-box--background-color-background-default mm-box--rounded-lg mm-box--border-width-1 box--border-style-solid"
+            >
+              <span
+                class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-inherit"
+                style="mask-image: url('./images/icons/search.svg');"
+              />
+              <input
+                autocomplete="off"
+                class="mm-box mm-text mm-input mm-input--disable-state-styles mm-text-field__input mm-text--body-md mm-box--margin-0 mm-box--margin-right-6 mm-box--padding-0 mm-box--padding-right-4 mm-box--padding-left-2 mm-box--color-text-default mm-box--background-color-transparent mm-box--border-style-none"
+                data-testid="asset-picker-modal-search-input"
+                focused="true"
+                placeholder="Search all networks"
+                type="search"
+                value=""
+              />
+            </div>
+          </div>
           <div
             class="mm-box multichain-asset-picker__network-list"
           >
@@ -123,20 +130,6 @@ exports[`AssetPickerModalNetwork should not show selected network when network p
             class="mm-box mm-header-base mm-modal-header mm-box--padding-right-4 mm-box--padding-bottom-4 mm-box--padding-left-4 mm-box--display-flex mm-box--justify-content-space-between"
           >
             <div
-              class="mm-box"
-              style="min-width: 0px;"
-            >
-              <button
-                aria-label="Back"
-                class="mm-box mm-button-icon mm-button-icon--size-sm mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-default mm-box--background-color-transparent mm-box--rounded-lg"
-              >
-                <span
-                  class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-inherit"
-                  style="mask-image: url('./images/icons/arrow-left.svg');"
-                />
-              </button>
-            </div>
-            <div
               class="mm-box mm-box--width-full"
             >
               <h4
@@ -161,6 +154,27 @@ exports[`AssetPickerModalNetwork should not show selected network when network p
             </div>
           </header>
           <div
+            class="mm-box mm-box--padding-4"
+          >
+            <div
+              class="mm-box mm-text-field mm-text-field--size-lg mm-text-field--focused mm-text-field--truncate mm-text-field-search asset-picker-modal__search-list mm-box--padding-right-0 mm-box--padding-left-4 mm-box--display-inline-flex mm-box--align-items-center mm-box--width-full mm-box--background-color-background-default mm-box--rounded-lg mm-box--border-width-1 box--border-style-solid"
+            >
+              <span
+                class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-inherit"
+                style="mask-image: url('./images/icons/search.svg');"
+              />
+              <input
+                autocomplete="off"
+                class="mm-box mm-text mm-input mm-input--disable-state-styles mm-text-field__input mm-text--body-md mm-box--margin-0 mm-box--margin-right-6 mm-box--padding-0 mm-box--padding-right-4 mm-box--padding-left-2 mm-box--color-text-default mm-box--background-color-transparent mm-box--border-style-none"
+                data-testid="asset-picker-modal-search-input"
+                focused="true"
+                placeholder="Search all networks"
+                type="search"
+                value=""
+              />
+            </div>
+          </div>
+          <div
             class="mm-box multichain-asset-picker__network-list"
           >
             <div
@@ -174,7 +188,7 @@ exports[`AssetPickerModalNetwork should not show selected network when network p
                   class="mm-box mm-text mm-avatar-base mm-avatar-base--size-md mm-avatar-network mm-text--body-sm mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-full mm-box--border-color-background-default box--border-style-solid box--border-width-1"
                 >
                   <img
-                    alt="Network name 3 logo"
+                    alt="Ethereum Mainnet logo"
                     class="mm-avatar-network__network-image"
                     src="./images/eth_logo.svg"
                   />
@@ -185,13 +199,13 @@ exports[`AssetPickerModalNetwork should not show selected network when network p
                 >
                   <div
                     class="mm-box mm-box--display-flex mm-box--align-items-center mm-box--width-full"
-                    data-testid="Network name 3"
+                    data-testid="Ethereum Mainnet"
                   >
                     <p
                       class="mm-box mm-text mm-text--body-md mm-text--ellipsis mm-box--color-text-default mm-box--background-color-transparent"
                       tabindex="0"
                     >
-                      Network name 3
+                      Ethereum Mainnet
                     </p>
                   </div>
                 </div>
@@ -203,7 +217,7 @@ exports[`AssetPickerModalNetwork should not show selected network when network p
                   class="mm-box mm-text mm-avatar-base mm-avatar-base--size-md mm-avatar-network mm-text--body-sm mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-full mm-box--border-color-background-default box--border-style-solid box--border-width-1"
                 >
                   <img
-                    alt="Network name 4 logo"
+                    alt="OP Mainnet logo"
                     class="mm-avatar-network__network-image"
                     src="./images/optimism.svg"
                   />
@@ -214,13 +228,13 @@ exports[`AssetPickerModalNetwork should not show selected network when network p
                 >
                   <div
                     class="mm-box mm-box--display-flex mm-box--align-items-center mm-box--width-full"
-                    data-testid="Network name 4"
+                    data-testid="OP Mainnet"
                   >
                     <p
                       class="mm-box mm-text mm-text--body-md mm-text--ellipsis mm-box--color-text-default mm-box--background-color-transparent"
                       tabindex="0"
                     >
-                      Network name 4
+                      OP Mainnet
                     </p>
                   </div>
                 </div>
@@ -310,6 +324,27 @@ exports[`AssetPickerModalNetwork should use passed in network as default when ne
             </div>
           </header>
           <div
+            class="mm-box mm-box--padding-4"
+          >
+            <div
+              class="mm-box mm-text-field mm-text-field--size-lg mm-text-field--focused mm-text-field--truncate mm-text-field-search asset-picker-modal__search-list mm-box--padding-right-0 mm-box--padding-left-4 mm-box--display-inline-flex mm-box--align-items-center mm-box--width-full mm-box--background-color-background-default mm-box--rounded-lg mm-box--border-width-1 box--border-style-solid"
+            >
+              <span
+                class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-inherit"
+                style="mask-image: url('./images/icons/search.svg');"
+              />
+              <input
+                autocomplete="off"
+                class="mm-box mm-text mm-input mm-input--disable-state-styles mm-text-field__input mm-text--body-md mm-box--margin-0 mm-box--margin-right-6 mm-box--padding-0 mm-box--padding-right-4 mm-box--padding-left-2 mm-box--color-text-default mm-box--background-color-transparent mm-box--border-style-none"
+                data-testid="asset-picker-modal-search-input"
+                focused="true"
+                placeholder="Search all networks"
+                type="search"
+                value=""
+              />
+            </div>
+          </div>
+          <div
             class="mm-box multichain-asset-picker__network-list"
           >
             <div
@@ -326,7 +361,7 @@ exports[`AssetPickerModalNetwork should use passed in network as default when ne
                   class="mm-box mm-text mm-avatar-base mm-avatar-base--size-md mm-avatar-network mm-text--body-sm mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-full mm-box--border-color-background-default box--border-style-solid box--border-width-1"
                 >
                   <img
-                    alt="Network name 3 logo"
+                    alt="Ethereum Mainnet logo"
                     class="mm-avatar-network__network-image"
                     src="./images/eth_logo.svg"
                   />
@@ -337,13 +372,13 @@ exports[`AssetPickerModalNetwork should use passed in network as default when ne
                 >
                   <div
                     class="mm-box mm-box--display-flex mm-box--align-items-center mm-box--width-full"
-                    data-testid="Network name 3"
+                    data-testid="Ethereum Mainnet"
                   >
                     <p
                       class="mm-box mm-text mm-text--body-md mm-text--ellipsis mm-box--color-text-default mm-box--background-color-transparent"
                       tabindex="0"
                     >
-                      Network name 3
+                      Ethereum Mainnet
                     </p>
                   </div>
                 </div>
@@ -355,7 +390,7 @@ exports[`AssetPickerModalNetwork should use passed in network as default when ne
                   class="mm-box mm-text mm-avatar-base mm-avatar-base--size-md mm-avatar-network mm-text--body-sm mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-full mm-box--border-color-background-default box--border-style-solid box--border-width-1"
                 >
                   <img
-                    alt="Network name 4 logo"
+                    alt="OP Mainnet logo"
                     class="mm-avatar-network__network-image"
                     src="./images/optimism.svg"
                   />
@@ -366,13 +401,13 @@ exports[`AssetPickerModalNetwork should use passed in network as default when ne
                 >
                   <div
                     class="mm-box mm-box--display-flex mm-box--align-items-center mm-box--width-full"
-                    data-testid="Network name 4"
+                    data-testid="OP Mainnet"
                   >
                     <p
                       class="mm-box mm-text mm-text--body-md mm-text--ellipsis mm-box--color-text-default mm-box--background-color-transparent"
                       tabindex="0"
                     >
-                      Network name 4
+                      OP Mainnet
                     </p>
                   </div>
                 </div>
