@@ -160,8 +160,6 @@ export default function TokenList({ onTokenClick }: TokenListProps) {
     selectedAccountTokensChains,
   ]);
 
-  console.log({ sortedFilteredTokens });
-
   const loading = false;
   return loading ? (
     <Box
