@@ -289,6 +289,9 @@
   "addNewBitcoinTestnetAccount": {
     "message": "Add a new Bitcoin account (Testnet)"
   },
+  "addNewSolanaAccount": {
+    "message": "Add a new Solana account (Beta)"
+  },
   "addNewToken": {
     "message": "Add new token"
   },
