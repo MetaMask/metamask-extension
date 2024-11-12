@@ -381,7 +381,6 @@ export default class AccountTrackerController extends BaseController<
       this.#pollingTokenSets.set(networkClientId, set);
       this.#subscribeWithNetworkClientId(networkClientId);
     }
-
     return pollToken;
   }
 

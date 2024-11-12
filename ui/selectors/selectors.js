@@ -435,11 +435,9 @@ export function getMetaMaskAccountBalances(state) {
 }
 
 export function getMetaMaskCachedBalances(state) {
-  debugger;
   const chainId = getCurrentChainId(state);
 
   if (state.metamask.accountsByChainId?.[chainId]) {
-    debugger;
     return Object.entries(state.metamask.accountsByChainId[chainId]).reduce(
       (accumulator, [key, value]) => {
         accumulator[key] = value.balance;
@@ -487,7 +485,6 @@ export function isBalanceCached(state) {
 }
 
 export function getSelectedAccountCachedBalance(state) {
-  debugger;
   const cachedBalances = getMetaMaskCachedBalances(state);
   const { address: selectedAddress } = getSelectedInternalAccount(state);
 

@@ -149,10 +149,8 @@ export const CoinOverview = ({
     showNativeTokenAsMainBalance || isTestnet || !isEvm;
   let balanceToDisplay;
   if (isNotAggregatedFiatBalance) {
-    debugger;
     balanceToDisplay = balance;
   } else if (!loading) {
-    debugger;
     balanceToDisplay = totalFiatBalance;
   }
 
