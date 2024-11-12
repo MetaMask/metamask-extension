@@ -11,10 +11,6 @@ class HomePage {
   private readonly activityTab =
     '[data-testid="account-overview__activity-tab"]';
 
-  private readonly nftTab = '[data-testid="account-overview__nfts-tab"]';
-
-  private readonly nftIconOnActivityList = '[data-testid="nft-item"]';
-
   private readonly balance = '[data-testid="eth-overview__primary-currency"]';
 
   private readonly basicFunctionalityOffWarningMessage = {
@@ -47,6 +43,27 @@ class HomePage {
 
   private readonly transactionAmountsInActivity =
     '[data-testid="transaction-list-item-primary-currency"]';
+
+  // NFT selectors
+  private readonly confirmImportNftButton =
+    '[data-testid="import-nfts-modal-import-button"]';
+
+  private readonly importNftAddressInput = '#address';
+
+  private readonly importNftButton = '[data-testid="import-nft-button"]';
+
+  private readonly importNftModalTitle = { text: 'Import NFT', tag: 'header' };
+
+  private readonly importNftTokenIdInput = '#token-id';
+
+  private readonly nftIconOnActivityList = '[data-testid="nft-item"]';
+
+  private readonly nftTab = '[data-testid="account-overview__nfts-tab"]';
+
+  private readonly successImportNftMessage = {
+    text: 'NFT was successfully added!',
+    tag: 'h6',
+  };
 
   constructor(driver: Driver) {
     this.driver = driver;
@@ -84,8 +101,8 @@ class HomePage {
     await this.driver.clickElement(this.activityTab);
   }
 
-  async goToNFTList(): Promise<void> {
-    console.log(`Open NFT tab on homepage`);
+  async goToNftTab(): Promise<void> {
+    console.log(`Go to NFT tab on homepage`);
     await this.driver.clickElement(this.nftTab);
   }
 
@@ -95,6 +112,35 @@ class HomePage {
 
   async startSendFlow(): Promise<void> {
     await this.driver.clickElement(this.sendButton);
+  }
+
+  /**
+   * Imports an NFT by entering the NFT contract address and token ID
+   *
+   * @param nftContractAddress - The address of the NFT contract to import
+   * @param id - The ID of the NFT to import
+   * @param expectedErrorMessage - Expected error message if the import should fail
+   */
+  async importNft(
+    nftContractAddress: string,
+    id: string,
+    expectedErrorMessage?: string,
+  ) {
+    await this.driver.clickElement(this.importNftButton);
+    await this.driver.waitForSelector(this.importNftModalTitle);
+    await this.driver.fill(this.importNftAddressInput, nftContractAddress);
+    await this.driver.fill(this.importNftTokenIdInput, id);
+    if (expectedErrorMessage) {
+      await this.driver.clickElement(this.confirmImportNftButton);
+      await this.driver.waitForSelector({
+        tag: 'p',
+        text: expectedErrorMessage,
+      });
+    } else {
+      await this.driver.clickElementAndWaitToDisappear(
+        this.confirmImportNftButton,
+      );
+    }
   }
 
   /**
@@ -165,6 +211,11 @@ class HomePage {
     console.log(
       `${expectedNumber} confirmed transactions found in activity list on homepage`,
     );
+  }
+
+  async check_nftImageIsDisplayed(): Promise<void> {
+    console.log('Check that NFT image is displayed in NFT tab on homepage');
+    await this.driver.waitForSelector(this.nftIconOnActivityList);
   }
 
   /**
@@ -242,6 +293,28 @@ class HomePage {
       expectedBalance = '0';
     }
     await this.check_expectedBalanceIsDisplayed(expectedBalance);
+  }
+
+  /**
+   * Checks if the NFT item with the specified name is displayed in the homepage nft tab.
+   *
+   * @param nftName - The name of the NFT to check for.
+   */
+  async check_nftNameIsDisplayed(nftName: string): Promise<void> {
+    console.log(
+      `Check that NFT item ${nftName} is displayed in NFT tab on homepage`,
+    );
+    await this.driver.waitForSelector({
+      tag: 'h5',
+      text: nftName,
+    });
+  }
+
+  async check_successImportNftMessageIsDisplayed(): Promise<void> {
+    console.log(
+      'Check that success imported NFT message is displayed on homepage',
+    );
+    await this.driver.waitForSelector(this.successImportNftMessage);
   }
 
   /**
