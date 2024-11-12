@@ -1,4 +1,4 @@
-const CIRCLE_TOKEN = process.env.CIRCLE_OIDC_TOKEN_V2;
+const CIRCLE_TOKEN = process.env.API_V2_TOKEN;
 
 interface Actor {
   login: string;
