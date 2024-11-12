@@ -5,6 +5,7 @@ import { screen, fireEvent } from '@testing-library/react';
 import { RpcEndpointType } from '@metamask/network-controller';
 import { renderWithProvider } from '../../../../../test/lib/render-helpers';
 import mockState from '../../../../../test/data/mock-send-state.json';
+import { NETWORK_TO_NAME_MAP } from '../../../../../shared/constants/network';
 import { AssetPickerModalNetwork } from './asset-picker-modal-network';
 
 const mockOnClose = jest.fn();
@@ -110,7 +111,10 @@ describe('AssetPickerModalNetwork', () => {
   });
 
   it('should call onClose and onBack when header buttons are clicked', () => {
-    renderWithProvider(<AssetPickerModalNetwork {...defaultProps} />, store);
+    renderWithProvider(
+      <AssetPickerModalNetwork {...defaultProps} {...networkProps} />,
+      store,
+    );
 
     fireEvent.click(screen.getByLabelText('Close'));
     expect(mockOnClose).toHaveBeenCalledTimes(1);
@@ -125,7 +129,7 @@ describe('AssetPickerModalNetwork', () => {
       store,
     );
 
-    fireEvent.click(screen.getByText('Network name 3'));
+    fireEvent.click(screen.getByText(NETWORK_TO_NAME_MAP['0x1']));
     expect(mockOnBack).toHaveBeenCalledTimes(1);
     expect(mockOnNetworkChange).toHaveBeenCalledTimes(1);
   });
