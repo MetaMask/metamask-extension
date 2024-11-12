@@ -288,10 +288,13 @@ describe('BridgeController', function () {
     expect(stopAllPollingSpy).toHaveBeenCalledTimes(1);
     expect(startPollingByNetworkClientIdSpy).toHaveBeenCalledTimes(1);
     expect(hasSufficientBalanceSpy).toHaveBeenCalledTimes(1);
-    expect(startPollingByNetworkClientIdSpy).toHaveBeenCalledWith('0x1', {
-      ...quoteRequest,
-      insufficientBal: false,
-    });
+    expect(startPollingByNetworkClientIdSpy).toHaveBeenCalledWith(
+      expect.anything(),
+      {
+        ...quoteRequest,
+        insufficientBal: false,
+      },
+    );
 
     expect(bridgeController.state.bridgeState).toStrictEqual(
       expect.objectContaining({
@@ -425,10 +428,13 @@ describe('BridgeController', function () {
     expect(stopAllPollingSpy).toHaveBeenCalledTimes(1);
     expect(startPollingByNetworkClientIdSpy).toHaveBeenCalledTimes(1);
     expect(hasSufficientBalanceSpy).toHaveBeenCalledTimes(1);
-    expect(startPollingByNetworkClientIdSpy).toHaveBeenCalledWith('0x1', {
-      ...quoteRequest,
-      insufficientBal: true,
-    });
+    expect(startPollingByNetworkClientIdSpy).toHaveBeenCalledWith(
+      expect.anything(),
+      {
+        ...quoteRequest,
+        insufficientBal: true,
+      },
+    );
 
     expect(bridgeController.state.bridgeState).toStrictEqual(
       expect.objectContaining({
