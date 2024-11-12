@@ -1,5 +1,8 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
+///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
+import { BtcAccountType } from '@metamask/keyring-api';
+///: END:ONLY_INCLUDE_IF
 import {
   ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
   getMultichainIsMainnet,
@@ -13,7 +16,6 @@ import { getSelectedInternalAccount } from '../../../selectors';
 import { useMultichainSelector } from '../../../hooks/useMultichainSelector';
 ///: END:ONLY_INCLUDE_IF
 import { CoinOverview } from './coin-overview';
-import { BtcAccountType, SolAccountType } from '@metamask/keyring-api';
 
 type NonEvmOverviewProps = {
   className?: string;
