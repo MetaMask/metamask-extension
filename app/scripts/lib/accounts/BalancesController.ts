@@ -27,6 +27,10 @@ import type {
 import { MultichainNetworks } from '../../../../shared/constants/multichain/networks';
 import { MultichainNativeAssets } from '../../../../shared/constants/multichain/assets';
 import { BalancesTracker } from './BalancesTracker';
+import {
+  isBtcMainnetAddress,
+  isBtcTestnetAddress,
+} from '../../../../shared/lib/multichain';
 
 const controllerName = 'BalancesController';
 
@@ -271,10 +275,25 @@ export class BalancesController extends BaseController<
           MultichainNativeAssets.BITCOIN_TESTNET,
       };
 
-      const scope = account.options.scope as keyof typeof assetMap;
+      let scope = account.options.scope as keyof typeof assetMap;
+
+      // For Bitcoin accounts, override the scope based on the address format
+      // For solana we know we have a scope, but for bitcoin we are not sure
+      if (account.type === BtcAccountType.P2wpkh) {
+        if (isBtcMainnetAddress(account.address)) {
+          scope = MultichainNetworks.BITCOIN;
+        } else if (isBtcTestnetAddress(account.address)) {
+          scope = MultichainNetworks.BITCOIN_TESTNET;
+        }
+      }
+
       const assetTypes = [assetMap[scope]];
 
-      partialState.balances[account.id] = await this.#getBalances(account.id, account.metadata.snap.id, assetTypes);
+      partialState.balances[account.id] = await this.#getBalances(
+        account.id,
+        account.metadata.snap.id,
+        assetTypes,
+      );
     }
 
     this.update((state: Draft<BalancesControllerState>) => ({
