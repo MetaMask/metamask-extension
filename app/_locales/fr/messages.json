@@ -256,6 +256,9 @@
   "addNewBitcoinTestnetAccount": {
     "message": "Ajouter un nouveau compte Bitcoin (Testnet)"
   },
+  "addNewSolanaAccount": {
+    "message": "Ajouter un nouveau compte Solana (Bêta)"
+  },
   "addNewToken": {
     "message": "Ajouter un nouveau jeton"
   },
