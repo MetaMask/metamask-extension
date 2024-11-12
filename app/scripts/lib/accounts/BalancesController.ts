@@ -29,6 +29,8 @@ import {
   isSolanaAddress,
 } from '../../../../shared/lib/multichain';
 import { BalancesTracker } from './BalancesTracker';
+import { MultichainNetworks } from '../../../../shared/constants/multichain/networks';
+import { MultichainNativeAssets } from '../../../../shared/constants/multichain/assets';
 
 const controllerName = 'BalancesController';
 
@@ -175,10 +177,15 @@ export class BalancesController extends BaseController<
     // Register all non-EVM accounts into the tracker
     for (const account of this.#listAccounts()) {
       if (this.#isNonEvmAccount(account)) {
+        const updateTimes = {
+          [BtcAccountType.P2wpkh]: BTC_BALANCES_UPDATE_TIME,
+          [SolAccountType.DataAccount]: SOLANA_AVG_BLOCK_TIME,
+        };
+
         const updateTime =
-          account.type === BtcAccountType.P2wpkh
-            ? BTC_BALANCES_UPDATE_TIME
-            : SOLANA_AVG_BLOCK_TIME;
+          updateTimes[account.type as keyof typeof updateTimes] ||
+          SOLANA_AVG_BLOCK_TIME;
+
         this.#tracker.track(account.id, updateTime);
       }
     }
@@ -264,19 +271,16 @@ export class BalancesController extends BaseController<
     const partialState: BalancesControllerState = { balances: {} };
 
     if (account.metadata.snap) {
-      // In here we need to check which assets to query
-      let assetTypes: CaipAssetType[];
-      if (isSolanaAddress(account.address)) {
-        assetTypes = SOLANA_ASSETS;
-      } else if (isBtcMainnetAddress(account.address)) {
-        assetTypes = BTC_MAINNET_ASSETS;
-      } else {
-        // If not mainnet, we need to check if it's testnet or devnet
-        assetTypes =
-          account.type === BtcAccountType.P2wpkh
-            ? BTC_TESTNET_ASSETS
-            : SOLANA_DEVNET_ASSETS;
-      }
+      const assetMap = {
+        [MultichainNetworks.SOLANA]: MultichainNativeAssets.SOLANA,
+        [MultichainNetworks.SOLANA_TESTNET]: MultichainNativeAssets.SOLANA_TESTNET,
+        [MultichainNetworks.SOLANA_DEVNET]: MultichainNativeAssets.SOLANA_DEVNET,
+        [MultichainNetworks.BITCOIN]: MultichainNativeAssets.BITCOIN,
+        [MultichainNetworks.BITCOIN_TESTNET]: MultichainNativeAssets.BITCOIN_TESTNET,
+      };
+
+      const scope = account.options.scope as keyof typeof assetMap;
+      const assetTypes = [assetMap[scope]];
 
       await this.#getBalances(account.id, account.metadata.snap.id, assetTypes);
     }
@@ -334,11 +338,14 @@ export class BalancesController extends BaseController<
       // Nothing to do here for EVM accounts
       return;
     }
+    const updateTimes = {
+      [BtcAccountType.P2wpkh]: BTC_AVG_BLOCK_TIME,
+      [SolAccountType.DataAccount]: SOLANA_AVG_BLOCK_TIME,
+    };
 
     const updateTime =
-      account.type === BtcAccountType.P2wpkh
-        ? BTC_AVG_BLOCK_TIME
-        : SOLANA_AVG_BLOCK_TIME;
+      updateTimes[account.type as keyof typeof updateTimes] ||
+      SOLANA_AVG_BLOCK_TIME;
     this.#tracker.track(account.id, updateTime); // NOTE: Unfortunately, we cannot update the balance right away here, because
     // messenger's events are running synchronously and fetching the balance is
     // asynchronous.

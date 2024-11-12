@@ -147,6 +147,8 @@ export const TokenListItem = ({
         return t('networkNameEthereum');
       case NON_EVM_CURRENCY_SYMBOLS.BTC:
         return t('networkNameBitcoin');
+      case NON_EVM_CURRENCY_SYMBOLS.SOL:
+        return t('networkNameSolana');
       default:
         return title;
     }

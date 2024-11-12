@@ -375,22 +375,17 @@ export const getMultichainCoinRates = (state: MultichainState) => {
 function getNonEvmCachedBalance(state: MultichainState) {
   const balances = getMultichainBalances(state);
   const account = getSelectedInternalAccount(state);
-  const isMainnet = getMultichainIsMainnet(state);
+  const network = getMultichainCurrentNetwork(state);
 
   const assetMap = {
-    [SolAccountType.DataAccount]: isMainnet
-      ? MultichainNativeAssets.SOLANA
-      : MultichainNativeAssets.SOLANA_DEVNET,
-    [BtcAccountType.P2wpkh]: isMainnet
-      ? MultichainNativeAssets.BITCOIN
-      : MultichainNativeAssets.BITCOIN_TESTNET,
+    [MultichainNetworks.SOLANA]: MultichainNativeAssets.SOLANA,
+    [MultichainNetworks.SOLANA_TESTNET]: MultichainNativeAssets.SOLANA_TESTNET,
+    [MultichainNetworks.SOLANA_DEVNET]: MultichainNativeAssets.SOLANA_DEVNET,
+    [MultichainNetworks.BITCOIN]: MultichainNativeAssets.BITCOIN,
+    [MultichainNetworks.BITCOIN_TESTNET]: MultichainNativeAssets.BITCOIN_TESTNET,
   };
 
-  const asset =
-    assetMap[account.type as keyof typeof assetMap] ??
-    (isMainnet
-      ? MultichainNativeAssets.BITCOIN
-      : MultichainNativeAssets.BITCOIN_TESTNET);
+  const asset = assetMap[network.chainId as keyof typeof assetMap];
 
   return balances?.[account.id]?.[asset]?.amount;
 }

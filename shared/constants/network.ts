@@ -540,14 +540,6 @@ export const BUILT_IN_INFURA_NETWORKS = pick(
 
 export type BuiltInInfuraNetwork = keyof typeof BUILT_IN_INFURA_NETWORKS;
 
-// type SupportedNetworksType = {
-//   [key: string]: {
-//     domain: string;
-//     subdomain: string;
-//     networkId: string;
-//   };
-// };
-
 export const NETWORK_TO_NAME_MAP = {
   [NETWORK_TYPES.GOERLI]: GOERLI_DISPLAY_NAME,
   [NETWORK_TYPES.MAINNET]: MAINNET_DISPLAY_NAME,
