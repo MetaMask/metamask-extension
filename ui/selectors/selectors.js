@@ -721,6 +721,16 @@ export function getRequestingNetworkInfo(state, chainIds) {
 }
 
 /**
+ * @type (state: any, chainId: string) => import('@metamask/network-controller').NetworkConfiguration
+ */
+export const selectNetworkConfigurationByChainId = createSelector(
+  getNetworkConfigurationsByChainId,
+  (_state, chainId) => chainId,
+  (networkConfigurationsByChainId, chainId) =>
+    networkConfigurationsByChainId[chainId],
+);
+
+/**
  * Provides information about the last network change if present
  *
  * @param state - Redux state object.
