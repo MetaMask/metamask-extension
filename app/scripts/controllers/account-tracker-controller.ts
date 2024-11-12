@@ -675,6 +675,7 @@ export default class AccountTrackerController extends BaseController<
     let addresses = [];
     if (useMultiAccountBalanceChecker) {
       const { accounts } = this.state;
+      console.log('🚀 ~ updateAccounts ~ accounts:', accounts);
 
       addresses = Object.keys(accounts);
     } else {

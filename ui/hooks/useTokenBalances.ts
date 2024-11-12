@@ -1,9 +1,8 @@
 import { useSelector } from 'react-redux';
 import BN from 'bn.js';
 import { Token } from '@metamask/assets-controllers';
-import {
-  getNetworkConfigurationsByChainId,
-} from '../selectors';
+import { Hex } from '@metamask/utils';
+import { getNetworkConfigurationsByChainId } from '../selectors';
 import {
   tokenBalancesStartPolling,
   tokenBalancesStopPollingByPollingToken,
@@ -11,9 +10,8 @@ import {
 import { getTokenBalances, getTokens } from '../ducks/metamask/metamask';
 import { hexToDecimal } from '../../shared/modules/conversion.utils';
 import useMultiPolling from './useMultiPolling';
-import { Hex } from '@metamask/utils';
 
-export const useTokenBalances = ({chainIds}: {chainIds?: Hex[]} = {}) => {
+export const useTokenBalances = ({ chainIds }: { chainIds?: Hex[] } = {}) => {
   const tokenBalances = useSelector(getTokenBalances);
   const networkConfigurations = useSelector(getNetworkConfigurationsByChainId);
 
@@ -41,11 +39,11 @@ export const useTokenTracker = ({
   address: Hex;
   hideZeroBalanceTokens?: boolean;
 }) => {
-
   const { tokenBalances } = useTokenBalances({ chainIds: [chainId] });
 
   const tokensWithBalances = tokens.reduce((acc, token) => {
-    const hexBalance = tokenBalances[address]?.[chainId]?.[token.address as Hex] ?? '0x0';
+    const hexBalance =
+      tokenBalances[address]?.[chainId]?.[token.address as Hex] ?? '0x0';
     if (hexBalance !== '0x0' || !hideZeroBalanceTokens) {
       const decimalBalance = hexToDecimal(hexBalance);
       acc.push({
@@ -53,16 +51,18 @@ export const useTokenTracker = ({
         symbol: token.symbol,
         decimals: token.decimals,
         balance: decimalBalance,
-        string: stringifyBalance(new BN(decimalBalance), new BN(token.decimals)),
+        string: stringifyBalance(
+          new BN(decimalBalance),
+          new BN(token.decimals),
+        ),
       });
     }
     return acc;
-  }, [] as (Token & { balance: string, string: string })[])
+  }, [] as (Token & { balance: string; string: string })[]);
 
   return {
-    tokensWithBalances
-  }
-
+    tokensWithBalances,
+  };
 };
 
 // From https://github.com/MetaMask/eth-token-tracker/blob/main/lib/util.js

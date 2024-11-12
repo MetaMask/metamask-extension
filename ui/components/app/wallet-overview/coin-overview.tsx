@@ -55,13 +55,14 @@ import {
   getMetaMetricsId,
   getParticipateInMetaMetrics,
   SwapsEthToken,
+  getAllTokens,
+  getNetworkConfigurationsByChainId,
   ///: END:ONLY_INCLUDE_IF
 } from '../../../selectors';
 import Spinner from '../../ui/spinner';
 
 import { PercentageAndAmountChange } from '../../multichain/token-list-item/price/percentage-and-amount-change/percentage-and-amount-change';
 import { getMultichainIsEvm } from '../../../selectors/multichain';
-import { useAccountTotalFiatBalance } from '../../../hooks/useAccountTotalFiatBalance';
 import {
   setAggregatedBalancePopoverShown,
   setPrivacyMode,
@@ -69,9 +70,12 @@ import {
 import { useTheme } from '../../../hooks/useTheme';
 import { getSpecificSettingsRoute } from '../../../helpers/utils/settings-search';
 import { useI18nContext } from '../../../hooks/useI18nContext';
+import { useAccountTotalCrossChainFiatBalance } from '../../../hooks/useAccountTotalCrossChainFiatBalance';
+import { useTokenTracker } from '../../../hooks/useTokenBalances';
+import { TEST_CHAINS } from '../../../../shared/constants/network';
 import WalletOverview from './wallet-overview';
 import CoinButtons from './coin-buttons';
-import { AggregatedPercentageOverview } from './aggregated-percentage-overview';
+import { AggregatedPercentageOverviewCrossChains } from './aggregated-percentage-overview-cross-chains';
 
 export type CoinOverviewProps = {
   balance: string;
@@ -138,9 +142,31 @@ export const CoinOverview = ({
   const shouldHideZeroBalanceTokens = useSelector(
     getShouldHideZeroBalanceTokens,
   );
-  const { totalFiatBalance, loading } = useAccountTotalFiatBalance(
+  const allNetworks = useSelector(getNetworkConfigurationsByChainId);
+  const allChainIDs = Object.entries(allNetworks)
+    .map(([chainIdElm, _]) => {
+      return chainIdElm;
+    })
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    .filter((singleChainId) => !TEST_CHAINS.includes(singleChainId as any));
+
+  const detectedTokens = useSelector(getAllTokens);
+  const dataTokensWithBalancesCrossChain = allChainIDs.map((singleChain) => {
+    const tokens = detectedTokens?.[singleChain]?.[account?.address] ?? [];
+    const { tokensWithBalances } = useTokenTracker({
+      chainId: singleChain as `0x${string}`,
+      tokens,
+      address: account.address,
+      hideZeroBalanceTokens: shouldHideZeroBalanceTokens,
+    });
+    return {
+      chainId: singleChain,
+      tokensWithBalances,
+    };
+  });
+  const { totalFiatBalance } = useAccountTotalCrossChainFiatBalance(
     selectedAccount,
-    shouldHideZeroBalanceTokens,
+    dataTokensWithBalancesCrossChain,
   );
 
   const { showNativeTokenAsMainBalance } = useSelector(getPreferences);
@@ -151,7 +177,7 @@ export const CoinOverview = ({
   let balanceToDisplay;
   if (isNotAggregatedFiatBalance) {
     balanceToDisplay = balance;
-  } else if (!loading) {
+  } else {
     balanceToDisplay = totalFiatBalance;
   }
 
@@ -226,7 +252,8 @@ export const CoinOverview = ({
       }
       return (
         <Box className="wallet-overview__currency-wrapper">
-          <AggregatedPercentageOverview />
+          {/*   <AggregatedPercentageOverview /> */}
+          <AggregatedPercentageOverviewCrossChains />
           {
             ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
             <ButtonLink

@@ -360,6 +360,10 @@ export function getConversionRate(state) {
     ?.conversionRate;
 }
 
+export function getCurrencyRates(state) {
+  return state.metamask.currencyRates;
+}
+
 export function getSendHexDataFeatureFlagState(state) {
   return state.metamask.featureFlags.sendHexData;
 }
