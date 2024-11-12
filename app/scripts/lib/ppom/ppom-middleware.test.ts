@@ -7,7 +7,6 @@ import {
   BlockaidReason,
   BlockaidResultType,
 } from '../../../../shared/constants/security-provider';
-import { flushPromises } from '../../../../test/lib/timer-helpers';
 import { mockNetworkState } from '../../../../test/stub/networks';
 import { createPPOMMiddleware, PPOMMiddlewareRequest } from './ppom-middleware';
 import {
@@ -105,7 +104,6 @@ const createMiddleware = (
 };
 
 describe('PPOMMiddleware', () => {
-  const validateRequestWithPPOMMock = jest.mocked(validateRequestWithPPOM);
   const generateSecurityAlertIdMock = jest.mocked(generateSecurityAlertId);
   const handlePPOMErrorMock = jest.mocked(handlePPOMError);
   const isChainSupportedMock = jest.mocked(isChainSupported);
@@ -114,7 +112,6 @@ describe('PPOMMiddleware', () => {
   beforeEach(() => {
     jest.resetAllMocks();
 
-    validateRequestWithPPOMMock.mockResolvedValue(SECURITY_ALERT_RESPONSE_MOCK);
     generateSecurityAlertIdMock.mockReturnValue(SECURITY_ALERT_ID_MOCK);
     handlePPOMErrorMock.mockReturnValue(SECURITY_ALERT_RESPONSE_MOCK);
     isChainSupportedMock.mockResolvedValue(true);
@@ -127,35 +124,6 @@ describe('PPOMMiddleware', () => {
       startSpan: jest.fn().mockImplementation((_, fn) => fn({})),
       startSpanManual: jest.fn().mockImplementation((_, fn) => fn({})),
     };
-  });
-
-  it('updates alert response after validating request', async () => {
-    const updateSecurityAlertResponse = jest.fn();
-
-    const middlewareFunction = createMiddleware({
-      updateSecurityAlertResponse,
-    });
-
-    const req = {
-      ...REQUEST_MOCK,
-      method: 'eth_sendTransaction',
-      securityAlertResponse: undefined,
-    };
-
-    await middlewareFunction(
-      req,
-      { ...JsonRpcResponseStruct.TYPE },
-      () => undefined,
-    );
-
-    await flushPromises();
-
-    expect(updateSecurityAlertResponse).toHaveBeenCalledTimes(1);
-    expect(updateSecurityAlertResponse).toHaveBeenCalledWith(
-      req.method,
-      SECURITY_ALERT_ID_MOCK,
-      SECURITY_ALERT_RESPONSE_MOCK,
-    );
   });
 
   it('adds checking chain response to confirmation requests while validation is in progress', async () => {

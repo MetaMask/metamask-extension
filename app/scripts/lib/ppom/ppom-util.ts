@@ -52,7 +52,7 @@ export async function validateRequestWithPPOM({
   securityAlertId: string;
   chainId: Hex;
   updateSecurityAlertResponse: UpdateSecurityAlertResponse;
-}): Promise<SecurityAlertResponse> {
+}) {
   try {
     if (!(await isChainSupported(chainId))) {
       const response = {
@@ -60,7 +60,7 @@ export async function validateRequestWithPPOM({
         securityAlertId,
       };
       await updateSecurityResponse(request.method, securityAlertId, response);
-      return response;
+      return;
     }
 
     await updateSecurityResponse(request.method, securityAlertId, {
@@ -77,13 +77,20 @@ export async function validateRequestWithPPOM({
           normalizedRequest,
           chainId,
         );
-
-    return {
+    await updateSecurityResponse(request.method, securityAlertId, {
       ...ppomResponse,
       securityAlertId,
-    };
+    });
+    // return {
+    //   ...ppomResponse,
+    //   securityAlertId,
+    // };
   } catch (error: unknown) {
-    return handlePPOMError(error, 'Error validating JSON RPC using PPOM: ');
+    await updateSecurityResponse(
+      request.method,
+      securityAlertId,
+      handlePPOMError(error, 'Error validating JSON RPC using PPOM: '),
+    );
   }
 }
 
@@ -118,10 +125,14 @@ export async function updateSecurityAlertResponse({
   if (isSignatureRequest) {
     appStateController.addSignatureSecurityAlertResponse(securityAlertResponse);
   } else {
-    transactionController.updateSecurityAlertResponse(
-      confirmation.id,
-      securityAlertResponse,
-    );
+    try {
+      transactionController.updateSecurityAlertResponse(
+        confirmation.id,
+        securityAlertResponse,
+      );
+    } catch (error) {
+      console.error('Error updating security alert response:', error);
+    }
   }
 }
 
