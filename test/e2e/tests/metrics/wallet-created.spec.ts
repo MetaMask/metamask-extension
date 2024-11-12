@@ -1,9 +1,6 @@
 import { strict as assert } from 'assert';
 import { Mockttp } from 'mockttp';
-import {
-  withFixtures,
-  getEventPayloads,
-} from '../../helpers';
+import { getEventPayloads, withFixtures } from '../../helpers';
 import FixtureBuilder from '../../fixture-builder';
 import { completeCreateNewWalletOnboardingFlow } from '../../page-objects/flows/onboarding.flow';
 
