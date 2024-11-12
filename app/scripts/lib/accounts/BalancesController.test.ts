@@ -6,6 +6,7 @@ import {
   InternalAccount,
 } from '@metamask/keyring-api';
 import { createMockInternalAccount } from '../../../../test/jest/mocks';
+import { MultichainNetworks } from '../../../../shared/constants/multichain/networks';
 import {
   BalancesController,
   AllowedActions,
@@ -15,7 +16,6 @@ import {
   BalancesControllerMessenger,
 } from './BalancesController';
 import { BalancesTracker } from './BalancesTracker';
-import { MultichainNetworks } from '../../../../shared/constants/multichain/networks';
 
 const mockBtcAccount = createMockInternalAccount({
   address: '',

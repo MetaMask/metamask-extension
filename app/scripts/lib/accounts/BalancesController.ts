@@ -26,11 +26,11 @@ import type {
 } from '@metamask/accounts-controller';
 import { MultichainNetworks } from '../../../../shared/constants/multichain/networks';
 import { MultichainNativeAssets } from '../../../../shared/constants/multichain/assets';
-import { BalancesTracker } from './BalancesTracker';
 import {
   isBtcMainnetAddress,
   isBtcTestnetAddress,
 } from '../../../../shared/lib/multichain';
+import { BalancesTracker } from './BalancesTracker';
 
 const controllerName = 'BalancesController';
 
