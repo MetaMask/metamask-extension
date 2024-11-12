@@ -87,6 +87,10 @@ function defaultFixture(inputChainId = CHAIN_IDS.LOCALHOST) {
             networkRpcUrl:
               'https://linea-mainnet.infura.io/v3/00000000000000000000000000000000',
           },
+          {
+            networkId: '0x539',
+            networkRpcUrl: 'http://localhost:8545',
+          },
         ],
       },
       AccountOrderController: {
@@ -166,14 +170,14 @@ function defaultFixture(inputChainId = CHAIN_IDS.LOCALHOST) {
       },
       NetworkController: {
         ...mockNetworkStateOld({
-          id: 'mainnet',
-          chainId: 1,
-          nickname: 'Ethereum',
+          id: 'networkConfigurationId',
+          chainId: inputChainId,
+          nickname: 'Localhost 8545',
           rpcUrl: 'http://localhost:8545',
           ticker: 'ETH',
           blockExplorerUrl: undefined,
         }),
-        providerConfig: { id: 'mainnet' },
+        providerConfig: { id: 'networkConfigurationId' },
       },
       OnboardingController: {
         completedOnboarding: true,
