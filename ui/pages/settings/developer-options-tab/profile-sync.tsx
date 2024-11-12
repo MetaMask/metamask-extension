@@ -120,7 +120,7 @@ export const ProfileSyncDevSettings = () => {
       <Text className="settings-page__security-tab-sub-header__bold">
         Profile Sync
       </Text>
-      <DeleteSetting {...useDeleteAccountSyncProps()} />,
+      <DeleteSetting {...useDeleteAccountSyncProps()} />
       <DeleteSetting {...useDeleteNetworkSyncProps()} />
     </>
   );
