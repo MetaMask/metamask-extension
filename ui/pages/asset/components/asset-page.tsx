@@ -44,6 +44,8 @@ import { getConversionRate } from '../../../ducks/metamask/metamask';
 import { toChecksumHexAddress } from '../../../../shared/modules/hexstring-utils';
 import CoinButtons from '../../../components/app/wallet-overview/coin-buttons';
 import { getIsNativeTokenBuyable } from '../../../ducks/ramps';
+import { calculateTokenBalance } from '../../../components/app/assets/util/calculateTokenBalance';
+import { AddressBalanceMapping } from '../../../components/app/assets/token-list/token-list';
 import AssetChart from './chart/asset-chart';
 import TokenButtons from './token-buttons';
 
