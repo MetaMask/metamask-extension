@@ -123,7 +123,8 @@ export default class BridgeController extends StaticIntervalPollingController<
         paramsToUpdate.insufficientBal ||
         !(await this.#hasSufficientBalance(updatedQuoteRequest));
 
-      this.startPollingByNetworkClientId(srcChainIdInHex, {
+      const networkClientId = this.#getSelectedNetworkClientId(srcChainIdInHex);
+      this.startPollingByNetworkClientId(networkClientId, {
         ...updatedQuoteRequest,
         walletAddress,
         insufficientBal,
@@ -267,6 +268,13 @@ export default class BridgeController extends StaticIntervalPollingController<
   #getSelectedNetworkClient() {
     return this.messagingSystem.call(
       'NetworkController:getSelectedNetworkClient',
+    );
+  }
+
+  #getSelectedNetworkClientId(chainId: Hex) {
+    return this.messagingSystem.call(
+      'NetworkController:findNetworkClientIdByChainId',
+      chainId,
     );
   }
 }

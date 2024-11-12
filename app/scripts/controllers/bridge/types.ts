@@ -4,7 +4,10 @@ import {
 } from '@metamask/base-controller';
 import { Hex } from '@metamask/utils';
 import { AccountsControllerGetSelectedAccountAction } from '@metamask/accounts-controller';
-import { NetworkControllerGetSelectedNetworkClientAction } from '@metamask/network-controller';
+import {
+  NetworkControllerFindNetworkClientIdByChainIdAction,
+  NetworkControllerGetSelectedNetworkClientAction,
+} from '@metamask/network-controller';
 import { SwapsTokenObject } from '../../../../shared/constants/swaps';
 // TODO: Remove restricted import
 // eslint-disable-next-line import/no-restricted-paths
@@ -72,7 +75,8 @@ type BridgeControllerEvents = ControllerStateChangeEvent<
 
 type AllowedActions =
   | AccountsControllerGetSelectedAccountAction['type']
-  | NetworkControllerGetSelectedNetworkClientAction['type'];
+  | NetworkControllerGetSelectedNetworkClientAction['type']
+  | NetworkControllerFindNetworkClientIdByChainIdAction['type'];
 type AllowedEvents = never;
 
 /**
@@ -82,7 +86,8 @@ export type BridgeControllerMessenger = RestrictedControllerMessenger<
   typeof BRIDGE_CONTROLLER_NAME,
   | BridgeControllerActions
   | AccountsControllerGetSelectedAccountAction
-  | NetworkControllerGetSelectedNetworkClientAction,
+  | NetworkControllerGetSelectedNetworkClientAction
+  | NetworkControllerFindNetworkClientIdByChainIdAction,
   BridgeControllerEvents,
   AllowedActions,
   AllowedEvents

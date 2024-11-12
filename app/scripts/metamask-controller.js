@@ -2132,6 +2132,7 @@ export default class MetamaskController extends EventEmitter {
       allowedActions: [
         'AccountsController:getSelectedAccount',
         'NetworkController:getSelectedNetworkClient',
+        'NetworkController:findNetworkClientIdByChainId',
       ],
       allowedEvents: [],
     });
