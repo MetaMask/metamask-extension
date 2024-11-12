@@ -2,6 +2,7 @@ import { TransactionMeta } from '@metamask/transaction-controller';
 import React from 'react';
 import { ConfirmInfoSection } from '../../../../../../components/app/confirm/info/row/section';
 import { useConfirmContext } from '../../../../context/confirm';
+import { useSimulationMetricsNoShow } from '../../../../hooks/useSimulationMetricsNoShow';
 import { SimulationDetails } from '../../../simulation-details';
 import { AdvancedDetails } from '../shared/advanced-details/advanced-details';
 import { GasFeesSection } from '../shared/gas-fees-section/gas-fees-section';
@@ -14,6 +15,10 @@ const NativeTransferInfo = () => {
     useConfirmContext<TransactionMeta>();
 
   const isWalletInitiated = transactionMeta.origin === 'metamask';
+  useSimulationMetricsNoShow({
+    enableMetrics: isWalletInitiated,
+    transactionId: transactionMeta.id,
+  });
 
   return (
     <>
