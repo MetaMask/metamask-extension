@@ -12,9 +12,9 @@ import {
 } from '../../../selectors/multichain';
 ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
 import { getIsBitcoinBuyable } from '../../../ducks/ramps';
-import { getSelectedInternalAccount } from '../../../selectors';
 import { useMultichainSelector } from '../../../hooks/useMultichainSelector';
 ///: END:ONLY_INCLUDE_IF
+import { getSelectedInternalAccount } from '../../../selectors';
 import { CoinOverview } from './coin-overview';
 
 type NonEvmOverviewProps = {
@@ -24,22 +24,23 @@ type NonEvmOverviewProps = {
 const NonEvmOverview = ({ className }: NonEvmOverviewProps) => {
   const { chainId } = useSelector(getMultichainProviderConfig);
   const balance = useSelector(getMultichainSelectedAccountCachedBalance);
+  const account = useSelector(getSelectedInternalAccount);
   ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
-  const selectedAccount = useSelector(getSelectedInternalAccount);
   const isBtcMainnetAccount = useMultichainSelector(
     getMultichainIsMainnet,
-    selectedAccount,
+    account,
   );
   const isBtcBuyable = useSelector(getIsBitcoinBuyable);
 
   // TODO: Update this to add support to check if Solana is buyable when the Send flow starts
-  const accountType = selectedAccount.type;
+  const accountType = account.type;
   const isBtc = accountType === BtcAccountType.P2wpkh;
   const isBuyableChain = isBtc ? isBtcBuyable && isBtcMainnetAccount : false;
   ///: END:ONLY_INCLUDE_IF
 
   return (
     <CoinOverview
+      account={account}
       balance={balance}
       // We turn this off to avoid having that asterisk + the "Balance maybe be outdated" message for now
       balanceIsCached={false}

@@ -1453,6 +1453,7 @@ describe('MetaMetricsController', function () {
           participateInMetaMetrics: true,
           currentCurrency: 'usd',
           dataCollectionForMarketing: false,
+          preferences: { privacyMode: true },
           ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
           custodyAccountDetails: {},
           ///: END:ONLY_INCLUDE_IF
@@ -1492,6 +1493,7 @@ describe('MetaMetricsController', function () {
           [MetaMetricsUserTrait.PetnameAddressCount]: 3,
           ///: END:ONLY_INCLUDE_IF
           [MetaMetricsUserTrait.TokenSortPreference]: 'token-sort-key',
+          [MetaMetricsUserTrait.PrivacyModeEnabled]: true,
         });
       });
     });
@@ -1541,6 +1543,7 @@ describe('MetaMetricsController', function () {
           allNfts: {},
           participateInMetaMetrics: true,
           dataCollectionForMarketing: false,
+          preferences: { privacyMode: true },
           securityAlertsEnabled: true,
           names: {
             ethereumAddress: {},
@@ -1604,6 +1607,7 @@ describe('MetaMetricsController', function () {
           allNfts: {},
           participateInMetaMetrics: true,
           dataCollectionForMarketing: false,
+          preferences: { privacyMode: true },
           securityAlertsEnabled: true,
           ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
           custodyAccountDetails: {},
@@ -1668,6 +1672,7 @@ describe('MetaMetricsController', function () {
           },
           participateInMetaMetrics: true,
           dataCollectionForMarketing: false,
+          preferences: { privacyMode: true },
           securityAlertsEnabled: true,
           security_providers: ['blockaid'],
           currentCurrency: 'usd',
@@ -1713,6 +1718,7 @@ describe('MetaMetricsController', function () {
           allNfts: {},
           participateInMetaMetrics: true,
           dataCollectionForMarketing: false,
+          preferences: { privacyMode: true },
           names: {
             ethereumAddress: {},
           },
