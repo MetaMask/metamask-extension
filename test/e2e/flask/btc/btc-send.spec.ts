@@ -18,12 +18,10 @@ export async function startSendFlow(driver: Driver, recipient?: string) {
     tag: 'button',
     css: '[data-testid="coin-overview-send"]',
   });
-
-  // Firefox test is flaky without this delay. The send flow doesn't start properly.
+  // FIXME: Firefox test is flaky without this delay. The send flow doesn't start properly.
   if (driver.browser === 'firefox') {
     await driver.delay(1000);
   }
-
   await sendButton.click();
 
   // See the review button is disabled by default.
