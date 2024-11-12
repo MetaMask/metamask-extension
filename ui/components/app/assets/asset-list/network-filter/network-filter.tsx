@@ -45,7 +45,7 @@ const NetworkFilter = ({ handleClose }: SortControlProps) => {
 
   const [chainsToShow, setChainsToShow] = useState<string[]>([]);
 
-  const selectedAccountBalance = 100;
+  const selectedAccountBalance = '100';
 
   const handleFilter = (chainFilters: Record<string, boolean>) => {
     dispatch(setTokenNetworkFilter(chainFilters));

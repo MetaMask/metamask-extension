@@ -77,6 +77,7 @@ export type Asset = (
   image: string;
   /** True if the asset implements ERC721 */
   isERC721?: boolean;
+  balance?: { value: string; display: string; fiat: string };
 };
 
 // A page representing a native or token asset
