@@ -1,7 +1,6 @@
 import { strict as assert } from 'assert';
 import { Mockttp } from 'mockttp';
 import {
-  defaultGanacheOptions,
   withFixtures,
   getEventPayloads,
 } from '../../helpers';
@@ -53,7 +52,6 @@ describe('Wallet Created Events @no-mmi', function () {
             participateInMetaMetrics: true,
           })
           .build(),
-        ganacheOptions: defaultGanacheOptions,
         title: this.test?.fullTitle(),
         testSpecificMock: mockSegment,
       },
@@ -91,7 +89,6 @@ describe('Wallet Created Events @no-mmi', function () {
             metaMetricsId: 'fake-metrics-id',
           })
           .build(),
-        ganacheOptions: defaultGanacheOptions,
         title: this.test?.fullTitle(),
         testSpecificMock: mockSegment,
       },

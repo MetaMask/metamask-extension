@@ -1,7 +1,6 @@
 import { strict as assert } from 'assert';
 import { Mockttp } from 'mockttp';
 import {
-  defaultGanacheOptions,
   withFixtures,
   getEventPayloads,
 } from '../../helpers';
@@ -64,7 +63,6 @@ describe('Token detection event @no-mmi', function () {
           })
           .withPreferencesController({ useTokenDetection: true })
           .build(),
-        ganacheOptions: defaultGanacheOptions,
         title: this.test?.fullTitle(),
         testSpecificMock: mockSegment,
       },

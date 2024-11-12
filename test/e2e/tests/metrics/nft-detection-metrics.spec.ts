@@ -1,7 +1,6 @@
 import { strict as assert } from 'assert';
 import { Mockttp } from 'mockttp';
 import {
-  defaultGanacheOptions,
   withFixtures,
   getEventPayloads,
 } from '../../helpers';
@@ -67,7 +66,6 @@ describe('Nft detection event @no-mmi', function () {
             useNftDetection: true,
           })
           .build(),
-        ganacheOptions: defaultGanacheOptions,
         title: this.test?.fullTitle(),
         testSpecificMock: mockSegment,
       },
