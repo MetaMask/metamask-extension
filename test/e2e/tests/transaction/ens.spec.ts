@@ -252,7 +252,6 @@ describe('ENS', function (this: Suite) {
         testSpecificMock: mockInfura,
       },
       async ({ driver }: { driver: Driver }) => {
-        await driver.delay(10000)
         await loginWithoutBalanceValidation(driver);
 
         // click send button on homepage to start send flow

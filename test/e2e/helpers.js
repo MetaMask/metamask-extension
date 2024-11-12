@@ -119,6 +119,9 @@ async function withFixtures(options, testSuite) {
       contractRegistry = ganacheSeeder.getContractRegistry();
     }
 
+    await fixtureServer.start();
+    fixtureServer.loadJsonState(fixtures, contractRegistry);
+
     if (ganacheOptions?.concurrent) {
       ganacheOptions.concurrent.forEach(async (ganacheSettings) => {
         const { port, chainId, ganacheOptions2 } = ganacheSettings;
@@ -138,8 +141,6 @@ async function withFixtures(options, testSuite) {
       await initBundler(bundlerServer, ganacheServer, usePaymaster);
     }
 
-    await fixtureServer.start();
-    fixtureServer.loadJsonState(fixtures, contractRegistry);
     await phishingPageServer.start();
     if (dapp) {
       if (dappOptions?.numberOfDapps) {
