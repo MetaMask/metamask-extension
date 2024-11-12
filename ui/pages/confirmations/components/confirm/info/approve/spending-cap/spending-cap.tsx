@@ -87,6 +87,7 @@ export const SpendingCap = ({
     transactionMeta.txParams.to,
     transactionMeta.txParams.from,
     transactionMeta.txParams.data,
+    transactionMeta.chainId,
   );
 
   const accountBalance = calcTokenAmount(

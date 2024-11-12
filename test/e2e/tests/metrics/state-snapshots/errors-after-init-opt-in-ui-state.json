@@ -115,6 +115,7 @@
     "useNonceField": false,
     "usePhishDetect": true,
     "dismissSeedBackUpReminder": true,
+    "overrideContentSecurityPolicyHeader": true,
     "useMultiAccountBalanceChecker": true,
     "useSafeChainsListValidation": true,
     "useTokenDetection": true,

@@ -63,3 +63,10 @@ export const DEFAULT_BTC_TRANSACTION_ID =
 
 /* Number of sats in 1 BTC */
 export const SATS_IN_1_BTC = 100000000; // sats
+
+/* Default (mocked) SOLANA address created using test SRP */
+export const DEFAULT_SOLANA_ACCOUNT =
+  'E6Aa9DDv7zsePJHosoqiNb3cFuup3fkXTyRH2pZ1nVzP';
+
+/* Default (mocked) SOLANA balance used by the Solana RPC provider */
+export const DEFAULT_SOLANA_BALANCE = 1; // SOL

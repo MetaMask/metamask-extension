@@ -287,6 +287,9 @@
   "addNewBitcoinTestnetAccount": {
     "message": "Add a new Bitcoin account (Testnet)"
   },
+  "addNewSolanaAccount": {
+    "message": "Add a new Solana account (Beta)"
+  },
   "addNewToken": {
     "message": "Add new token"
   },
@@ -1940,10 +1943,6 @@
     "message": "Code: $1",
     "description": "Displayed error code for debugging purposes. $1 is the error code"
   },
-  "errorDetails": {
-    "message": "Error details",
-    "description": "Title for collapsible section that displays error details for debugging purposes"
-  },
   "errorGettingSafeChainList": {
     "message": "Error while getting safe chain list, please continue with caution."
   },
@@ -1955,17 +1954,41 @@
     "message": "Code: $1",
     "description": "Displayed error name for debugging purposes. $1 is the error name"
   },
-  "errorPageMessage": {
-    "message": "Try again by reloading the page, or contact support $1.",
-    "description": "Message displayed on generic error page in the fullscreen or notification UI, $1 is a clickable link with text defined by the 'here' key. The link will open to a form where users can file support tickets."
+  "errorPageContactSupport": {
+    "message": "Contact support",
+    "description": "Button for contact MM support"
   },
-  "errorPagePopupMessage": {
-    "message": "Try again by closing and reopening the popup, or contact support $1.",
-    "description": "Message displayed on generic error page in the popup UI, $1 is a clickable link with text defined by the 'here' key. The link will open to a form where users can file support tickets."
+  "errorPageDescribeUsWhatHappened": {
+    "message": "Describe what happened",
+    "description": "Button for submitting report to sentry"
+  },
+  "errorPageInfo": {
+    "message": "Your information can’t be shown. Don’t worry, your wallet and funds are safe.",
+    "description": "Information banner shown in the error page"
+  },
+  "errorPageMessageTitle": {
+    "message": "Error message",
+    "description": "Title for description, which is displayed for debugging purposes"
+  },
+  "errorPageSentryFormTitle": {
+    "message": "Describe what happened",
+    "description": "In sentry feedback form, The title at the top of the feedback form."
+  },
+  "errorPageSentryMessagePlaceholder": {
+    "message": "Sharing details like how we can reproduce the bug will help us fix the problem.",
+    "description": "In sentry feedback form, The placeholder for the feedback description input field."
+  },
+  "errorPageSentrySuccessMessageText": {
+    "message": "Thanks! We will take a look soon.",
+    "description": "In sentry feedback form, The message displayed after a successful feedback submission."
   },
   "errorPageTitle": {
     "message": "MetaMask encountered an error",
     "description": "Title of generic error page"
+  },
+  "errorPageTryAgain": {
+    "message": "Try again",
+    "description": "Button for try again"
   },
   "errorStack": {
     "message": "Stack:",
@@ -3789,6 +3812,12 @@
   "outdatedBrowserNotification": {
     "message": "Your browser is out of date. If you don't update your browser, you won't be able to get security patches and new features from MetaMask."
   },
+  "overrideContentSecurityPolicyHeader": {
+    "message": "Override Content-Security-Policy header"
+  },
+  "overrideContentSecurityPolicyHeaderDescription": {
+    "message": "This option is a workaround for a known issue in Firefox, where a dapp's Content-Security-Policy header may prevent the extension from loading properly. Disabling this option is not recommended unless required for specific web page compatibility."
+  },
   "padlock": {
     "message": "Padlock"
   },
@@ -4961,17 +4990,14 @@
   "simulationDetailsERC20ApproveDesc": {
     "message": "You're giving someone else permission to spend this amount from your account."
   },
-  "simulationDetailsFailed": {
-    "message": "There was an error loading your estimation."
-  },
   "simulationDetailsFiatNotAvailable": {
     "message": "Not Available"
   },
   "simulationDetailsIncomingHeading": {
     "message": "You receive"
   },
-  "simulationDetailsNoBalanceChanges": {
-    "message": "No changes predicted for your wallet"
+  "simulationDetailsNoChanges": {
+    "message": "No changes"
   },
   "simulationDetailsOutgoingHeading": {
     "message": "You send"
@@ -4995,6 +5021,9 @@
   "simulationDetailsTransactionReverted": {
     "message": "This transaction is likely to fail"
   },
+  "simulationDetailsUnavailable": {
+    "message": "Unavailable"
+  },
   "simulationErrorMessageV2": {
     "message": "We were not able to estimate gas. There might be an error in the contract and this transaction may fail."
   },
@@ -5015,9 +5044,6 @@
   },
   "siweResources": {
     "message": "Resources"
-  },
-  "siweSignatureSimulationDetailInfo": {
-    "message": "You’re signing into a site and there are no predicted changes to your account."
   },
   "siweURI": {
     "message": "URL"
