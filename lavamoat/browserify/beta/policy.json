@@ -965,12 +965,23 @@
       },
       "packages": {
         "@ethereumjs/tx": true,
-        "@metamask/eth-sig-util": true,
+        "@metamask/eth-snap-keyring>@metamask/eth-sig-util": true,
         "@metamask/eth-snap-keyring>@metamask/utils": true,
         "@metamask/eth-snap-keyring>uuid": true,
         "@metamask/keyring-api": true,
         "@metamask/utils>@metamask/superstruct": true,
         "webpack>events": true
+      }
+    },
+    "@metamask/eth-snap-keyring>@metamask/eth-sig-util": {
+      "packages": {
+        "@ethereumjs/tx>@ethereumjs/util": true,
+        "@ethereumjs/tx>ethereum-cryptography": true,
+        "@metamask/abi-utils": true,
+        "@metamask/eth-sig-util>tweetnacl": true,
+        "@metamask/eth-snap-keyring>@metamask/utils": true,
+        "@metamask/utils>@scure/base": true,
+        "browserify>buffer": true
       }
     },
     "@metamask/eth-snap-keyring>@metamask/utils": {
