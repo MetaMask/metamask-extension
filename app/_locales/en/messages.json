@@ -3158,9 +3158,6 @@
   "networkNameBitcoin": {
     "message": "Bitcoin"
   },
-  "networkNameSolana": {
-    "message": "Solana"
-  },
   "networkNameDefinition": {
     "message": "The name associated with this network."
   },
@@ -3178,6 +3175,9 @@
   },
   "networkNamePolygon": {
     "message": "Polygon"
+  },
+  "networkNameSolana": {
+    "message": "Solana"
   },
   "networkNameTestnet": {
     "message": "Testnet"

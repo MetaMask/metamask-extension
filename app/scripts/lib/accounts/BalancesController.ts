@@ -24,13 +24,9 @@ import type {
   AccountsControllerAccountRemovedEvent,
   AccountsControllerListMultichainAccountsAction,
 } from '@metamask/accounts-controller';
-import {
-  isBtcMainnetAddress,
-  isSolanaAddress,
-} from '../../../../shared/lib/multichain';
-import { BalancesTracker } from './BalancesTracker';
 import { MultichainNetworks } from '../../../../shared/constants/multichain/networks';
 import { MultichainNativeAssets } from '../../../../shared/constants/multichain/assets';
+import { BalancesTracker } from './BalancesTracker';
 
 const controllerName = 'BalancesController';
 
@@ -128,14 +124,7 @@ const balancesControllerMetadata = {
   },
 };
 
-const BTC_TESTNET_ASSETS = ['bip122:000000000933ea01ad0ee984209779ba/slip44:0'];
-const BTC_MAINNET_ASSETS = ['bip122:000000000019d6689c085ae165831e93/slip44:0'];
 const BTC_AVG_BLOCK_TIME = 10 * 60 * 1000; // 10 minutes in milliseconds
-
-const SOLANA_ASSETS = ['solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44:501'];
-const SOLANA_DEVNET_ASSETS = [
-  'solana:EtWTRABZaYq6iMfeYKouRu166VU2xqa1/slip44:501',
-];
 const SOLANA_AVG_BLOCK_TIME = 400; // 400 milliseconds
 
 // NOTE: We set an interval of half the average block time to mitigate when our interval
@@ -273,10 +262,13 @@ export class BalancesController extends BaseController<
     if (account.metadata.snap) {
       const assetMap = {
         [MultichainNetworks.SOLANA]: MultichainNativeAssets.SOLANA,
-        [MultichainNetworks.SOLANA_TESTNET]: MultichainNativeAssets.SOLANA_TESTNET,
-        [MultichainNetworks.SOLANA_DEVNET]: MultichainNativeAssets.SOLANA_DEVNET,
+        [MultichainNetworks.SOLANA_TESTNET]:
+          MultichainNativeAssets.SOLANA_TESTNET,
+        [MultichainNetworks.SOLANA_DEVNET]:
+          MultichainNativeAssets.SOLANA_DEVNET,
         [MultichainNetworks.BITCOIN]: MultichainNativeAssets.BITCOIN,
-        [MultichainNetworks.BITCOIN_TESTNET]: MultichainNativeAssets.BITCOIN_TESTNET,
+        [MultichainNetworks.BITCOIN_TESTNET]:
+          MultichainNativeAssets.BITCOIN_TESTNET,
       };
 
       const scope = account.options.scope as keyof typeof assetMap;

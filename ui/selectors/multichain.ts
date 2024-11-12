@@ -382,7 +382,8 @@ function getNonEvmCachedBalance(state: MultichainState) {
     [MultichainNetworks.SOLANA_TESTNET]: MultichainNativeAssets.SOLANA_TESTNET,
     [MultichainNetworks.SOLANA_DEVNET]: MultichainNativeAssets.SOLANA_DEVNET,
     [MultichainNetworks.BITCOIN]: MultichainNativeAssets.BITCOIN,
-    [MultichainNetworks.BITCOIN_TESTNET]: MultichainNativeAssets.BITCOIN_TESTNET,
+    [MultichainNetworks.BITCOIN_TESTNET]:
+      MultichainNativeAssets.BITCOIN_TESTNET,
   };
 
   const asset = assetMap[network.chainId as keyof typeof assetMap];
