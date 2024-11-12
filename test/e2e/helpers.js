@@ -485,117 +485,6 @@ const onboardingPinExtension = async (driver) => {
   await driver.clickElement('[data-testid="pin-extension-done"]');
 };
 
-/**
- * @deprecated Please use page object functions in `onboarding.flow.ts` and in `pages/onboarding/*`.
- * Completes the onboarding flow with optional opt-out settings for wallet creation.
- *
- * This function navigates through the onboarding process, allowing for opt-out of certain features.
- * It waits for the appropriate heading to appear, then proceeds to opt-out of third-party API
- * integration for general and assets sections if specified in the optOutOptions.
- * @param {WebDriver} driver - The Selenium WebDriver instance.
- * @param {object} optOutOptions - Optional. An object specifying which features to opt-out of.
- * @param {boolean} optOutOptions.basicFunctionality - Optional. Defaults to true. Opt-out of basic functionality.
- * @param {boolean} optOutOptions.profileSync - Optional. Defaults to true. Opt-out of profile sync.
- * @param {boolean} optOutOptions.assets - Optional. Defaults to true. Opt-out of assets options.
- * @param {boolean} optOutOptions.isNewWallet - Optional. Defaults to true. Indicates if this is a new wallet creation.
- */
-const onboardingCompleteWalletCreationWithOptOut = async (
-  driver,
-  optOutOptions = {},
-) => {
-  const defaultOptOutOptions = {
-    basicFunctionality: true,
-    profileSync: true,
-    assets: true,
-    isNewWallet: true,
-  };
-
-  const optOutOptionsToUse = { ...defaultOptOutOptions, ...optOutOptions };
-
-  // wait for h2 to appear
-  await driver.findElement({
-    text: optOutOptionsToUse.isNewWallet
-      ? 'Congratulations'
-      : 'Your wallet is ready',
-    tag: 'h2',
-  });
-
-  // opt-out from third party API on general section
-  await driver.clickElementAndWaitToDisappear({
-    text: 'Manage default privacy settings',
-    tag: 'button',
-  });
-  await driver.clickElement({ text: 'General', tag: 'p' });
-
-  if (optOutOptionsToUse.basicFunctionality) {
-    await driver.clickElement(
-      '[data-testid="basic-functionality-toggle"] .toggle-button',
-    );
-    await driver.clickElement('[id="basic-configuration-checkbox"]');
-    await driver.clickElementAndWaitToDisappear({
-      tag: 'button',
-      text: 'Turn off',
-    });
-  }
-
-  if (
-    optOutOptionsToUse.profileSync &&
-    !optOutOptionsToUse.basicFunctionality
-  ) {
-    await driver.clickElement(
-      '[data-testid="profile-sync-toggle"] .toggle-button',
-    );
-    await driver.clickElementAndWaitToDisappear({
-      tag: 'button',
-      text: 'Turn off',
-    });
-  }
-
-  await driver.clickElement('[data-testid="category-back-button"]');
-
-  if (optOutOptionsToUse.assets) {
-    // opt-out from third party API on assets section
-    await driver.clickElement({ text: 'Assets', tag: 'p' });
-    await Promise.all(
-      (
-        await driver.findClickableElements(
-          '.toggle-button.toggle-button--on:not([data-testid="basic-functionality-toggle"] .toggle-button)',
-        )
-      ).map((toggle) => toggle.click()),
-    );
-
-    await driver.clickElement('[data-testid="category-back-button"]');
-  }
-
-  // Wait until the onboarding carousel has stopped moving
-  // otherwise the click has no effect.
-  await driver.waitForElementToStopMoving(
-    '[data-testid="privacy-settings-back-button"]',
-  );
-  await driver.clickElement('[data-testid="privacy-settings-back-button"]');
-
-  // complete onboarding
-  await driver.clickElementAndWaitToDisappear({
-    tag: 'button',
-    text: 'Done',
-  });
-  await onboardingPinExtension(driver);
-};
-
-/**
- * @deprecated Please use page object functions in `onboarding.flow.ts` and in `pages/onboarding/*`.
- * @param driver
- * @param password
- */
-const completeCreateNewWalletOnboardingFlow = async (driver, password) => {
-  await onboardingBeginCreateNewWallet(driver);
-  await onboardingChooseMetametricsOption(driver, false);
-  await onboardingCreatePassword(driver, password);
-  await onboardingRevealAndConfirmSRP(driver);
-  await onboardingCompleteWalletCreation(driver);
-  await onboardingPinExtension(driver);
-};
-
 const openSRPRevealQuiz = async (driver) => {
   // navigate settings to reveal SRP
   await driver.clickElement('[data-testid="account-options-menu-button"]');
@@ -1181,7 +1070,6 @@ module.exports = {
   largeDelayMs,
   veryLargeDelayMs,
   withFixtures,
-  completeCreateNewWalletOnboardingFlow,
   openSRPRevealQuiz,
   completeSRPRevealQuiz,
   tapAndHoldToRevealSRP,
@@ -1215,7 +1103,6 @@ module.exports = {
   onboardingCreatePassword,
   onboardingRevealAndConfirmSRP,
   onboardingCompleteWalletCreation,
-  onboardingCompleteWalletCreationWithOptOut,
   onboardingPinExtension,
   assertInAnyOrder,
   genRandInitBal,
