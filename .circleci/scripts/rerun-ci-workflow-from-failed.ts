@@ -1,5 +1,59 @@
 const CIRCLE_TOKEN = process.env.CIRCLE_OIDC_TOKEN_V2;
 
+interface Actor {
+  login: string;
+  avatar_url: string | null;
+}
+
+interface Trigger {
+  received_at: string;
+  type: string;
+  actor: Actor;
+}
+
+interface VCS {
+  origin_repository_url: string;
+  target_repository_url: string;
+  revision: string;
+  provider_name: string;
+  branch: string;
+}
+
+interface WorkflowItem {
+  id: string;
+  errors: string[];
+  project_slug: string;
+  updated_at: string;
+  number: number;
+  state: string;
+  created_at: string;
+  trigger: Trigger;
+  vcs: VCS;
+}
+
+interface CircleCIResponse {
+  next_page_token: string | null;
+  items: WorkflowItem[];
+}
+
+interface WorkflowStatusItem {
+  pipeline_id: string;
+  id: string;
+  name: string;
+  project_slug: string;
+  tag?: string;
+  status: string;
+  started_by: string;
+  pipeline_number: number;
+  created_at: string;
+  stopped_at: string;
+}
+
+interface WorkflowStatusResponse {
+  next_page_token: string | null;
+  items: WorkflowStatusItem[];
+}
+
 /**
  * Fetches the last 20 CircleCI workflows for 'develop' branch.
  * Note: the API returns the first 20 workflows by default.
@@ -7,10 +61,10 @@ const CIRCLE_TOKEN = process.env.CIRCLE_OIDC_TOKEN_V2;
  * and perform a subsequent request with the 'page-token' parameter.
  * This seems unnecessary as of today, as the amount of daily PRs merged to develop is not that high.
  *
- * @returns {Promise<any[]>} A promise that resolves to an array of workflow items.
+ * @returns {Promise<WorkflowItem[]>} A promise that resolves to an array of workflow items.
  * @throws Will throw an error if the CircleCI token is not defined or if the HTTP request fails.
  */
-async function getCircleCiWorkflowsByBranch(branch: string): Promise<any[]> {
+async function getCircleCiWorkflowsByBranch(branch: string): Promise<WorkflowItem[]> {
   if (!CIRCLE_TOKEN) {
     throw new Error('CircleCI token is not defined');
   }
@@ -27,10 +81,45 @@ async function getCircleCiWorkflowsByBranch(branch: string): Promise<any[]> {
   try {
     const response = await fetch(url, options);
     if (!response.ok) {
-      throw new Error(`HTTP error! status: ${response.status}`);
+      throw new Error(`HTTP error: ${response}`);
     }
     const body = await response.json();
     return body.items;
+  } catch (error) {
+    console.error('Error:', error);
+    throw error;
+  }
+}
+
+/**
+ * Fetches the status of a specific CircleCI workflow.
+ *
+ * @param {string} workflowId - The ID of the workflow to fetch the status for.
+ * @returns {Promise<WorkflowStatusResponse>} A promise that resolves to the workflow status response.
+ * @throws Will throw an error if the CircleCI token is not defined or if the HTTP request fails.
+ */
+async function getWorkflowStatusById(workflowId: string): Promise<WorkflowStatusResponse> {
+  if (!CIRCLE_TOKEN) {
+    throw new Error('CircleCI token is not defined');
+  }
+
+  const url = `https://circleci.com/api/v2/pipeline/${workflowId}/workflow`;
+  const options = {
+    method: 'GET',
+    headers: {
+      'Content-Type': 'application/json',
+      'Circle-Token': CIRCLE_TOKEN,
+    }
+  };
+
+  try {
+    const response = await fetch(url, options);
+    if (!response.ok) {
+      throw new Error(`HTTP error: ${response}`);
+    }
+    const body = await response.json();
+    return body;
+
   } catch (error) {
     console.error('Error:', error);
     throw error;
@@ -65,7 +154,7 @@ async function rerunWorkflowById(workflowId: string) {
   try {
     const response = await fetch(url, options);
     if (!response.ok) {
-      throw new Error(`HTTP error! status: ${response.status}`);
+      throw new Error(`HTTP error: ${response}`);
     }
     const body = await response.json();
     console.log(body);
@@ -80,24 +169,22 @@ async function rerunWorkflowById(workflowId: string) {
  *   1. It has the status of 'failed'
  *   2. It has only been run once
  *   3. It is among the most recent 20 workflows
+ *   4. It was triggered by the 'github-merge-queue[bot]' user
  *
  * @throws Will throw an error if fetching the workflows or re-running a workflow fails.
  */
 async function rerunFailedWorkflowsFromDevelop() {
-  try {
-    const workflows = await getCircleCiWorkflowsByBranch('develop');
-    for (const workflow of workflows) {
-      const workflowIds = workflow.WorkflowIDs;
+  const workflows = await getCircleCiWorkflowsByBranch('develop');
 
-      if (
-        workflowIds.length === 1 &&
-        workflow.state === 'failed'
-      ) {
-        await rerunWorkflowById(workflow.id);
+  for (const item of workflows) {
+    if (item.trigger.actor.login === 'github-merge-queue[bot]') {
+      const workflowStatus = await getWorkflowStatusById(item.id);
+
+      if (workflowStatus.items.length === 1 && workflowStatus.items[0].status === 'failed') {
+        await rerunWorkflowById(item.id);
+        console.log(`Rerun workflow with ID: ${item.id}`);
       }
     }
-  } catch (error) {
-    console.error('Error:', error);
   }
 }
 
