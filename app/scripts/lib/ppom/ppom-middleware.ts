@@ -13,17 +13,16 @@ import { MESSAGE_TYPE } from '../../../../shared/constants/app';
 import { SIGNING_METHODS } from '../../../../shared/constants/transaction';
 import { PreferencesController } from '../../controllers/preferences-controller';
 import { AppStateController } from '../../controllers/app-state-controller';
-import { LOADING_SECURITY_ALERT_RESPONSE } from '../../../../shared/constants/security-provider';
+import { SECURITY_ALERT_RESPONSE_CHECKING_CHAIN } from '../../../../shared/constants/security-provider';
 // eslint-disable-next-line import/no-restricted-paths
 import { getProviderConfig } from '../../../../ui/ducks/metamask/metamask';
 import { trace, TraceContext, TraceName } from '../../../../shared/lib/trace';
 import {
   generateSecurityAlertId,
   handlePPOMError,
-  isChainSupported,
   validateRequestWithPPOM,
 } from './ppom-util';
-import { SecurityAlertResponse } from './types';
+import { SecurityAlertResponse, UpdateSecurityAlertResponse } from './types';
 
 const CONFIRMATION_METHODS = Object.freeze([
   'eth_sendRawTransaction',
@@ -64,11 +63,7 @@ export function createPPOMMiddleware<
   networkController: NetworkController,
   appStateController: AppStateController,
   accountsController: AccountsController,
-  updateSecurityAlertResponse: (
-    method: string,
-    signatureAlertId: string,
-    securityAlertResponse: SecurityAlertResponse,
-  ) => void,
+  updateSecurityAlertResponse: UpdateSecurityAlertResponse,
 ) {
   return async (
     req: PPOMMiddlewareRequest<Params>,
@@ -88,9 +83,7 @@ export function createPPOMMiddleware<
 
       if (
         !securityAlertsEnabled ||
-        !CONFIRMATION_METHODS.includes(req.method) ||
-        // Do not move this call above this check because it will result in unnecessary calls
-        !(await isChainSupported(chainId))
+        !CONFIRMATION_METHODS.includes(req.method)
       ) {
         return;
       }
@@ -122,27 +115,22 @@ export function createPPOMMiddleware<
             request: req,
             securityAlertId,
             chainId,
-          }).then((securityAlertResponse) => {
-            updateSecurityAlertResponse(
-              req.method,
-              securityAlertId,
-              securityAlertResponse,
-            );
+            updateSecurityAlertResponse,
           }),
       );
 
-      const loadingSecurityAlertResponse: SecurityAlertResponse = {
-        ...LOADING_SECURITY_ALERT_RESPONSE,
+      const securityAlertResponseCheckingChain: SecurityAlertResponse = {
+        ...SECURITY_ALERT_RESPONSE_CHECKING_CHAIN,
         securityAlertId,
       };
 
       if (SIGNING_METHODS.includes(req.method)) {
         appStateController.addSignatureSecurityAlertResponse(
-          loadingSecurityAlertResponse,
+          securityAlertResponseCheckingChain,
         );
       }
 
-      req.securityAlertResponse = loadingSecurityAlertResponse;
+      req.securityAlertResponse = securityAlertResponseCheckingChain;
     } catch (error) {
       req.securityAlertResponse = handlePPOMError(
         error,

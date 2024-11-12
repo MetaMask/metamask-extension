@@ -256,6 +256,9 @@
   "addNewBitcoinTestnetAccount": {
     "message": "Ein neues Bitcoin-Konto hinzufügen (Testnet)"
   },
+  "addNewSolanaAccount": {
+    "message": "Ein neues Solana-Konto hinzufügen (Beta)"
+  },
   "addNewToken": {
     "message": "Neues Token hinzufügen"
   },
@@ -1620,9 +1623,6 @@
   "editSpeedUpEditGasFeeModalTitle": {
     "message": "Beschleunigung der Gasgebühr bearbeiten"
   },
-  "enable": {
-    "message": "Aktivieren"
-  },
   "enableAutoDetect": {
     "message": " Automatische Erkennung aktivieren"
   },
@@ -1699,10 +1699,6 @@
     "message": "Code: $1",
     "description": "Displayed error code for debugging purposes. $1 is the error code"
   },
-  "errorDetails": {
-    "message": "Fehlerdetails",
-    "description": "Title for collapsible section that displays error details for debugging purposes"
-  },
   "errorGettingSafeChainList": {
     "message": "Fehler beim Abrufen der Liste sicherer Ketten, bitte mit Vorsicht fortfahren."
   },
@@ -1713,14 +1709,6 @@
   "errorName": {
     "message": "Code: $1",
     "description": "Displayed error name for debugging purposes. $1 is the error name"
-  },
-  "errorPageMessage": {
-    "message": "Versuchen Sie es erneut, indem Sie die Seite neu laden oder kontaktieren Sie den Support $1.",
-    "description": "Message displayed on generic error page in the fullscreen or notification UI, $1 is a clickable link with text defined by the 'here' key. The link will open to a form where users can file support tickets."
-  },
-  "errorPagePopupMessage": {
-    "message": "Versuchen Sie es erneut, indem das Popup schließen und neu laden oder kontaktieren Sie den Support $1.",
-    "description": "Message displayed on generic error page in the popup UI, $1 is a clickable link with text defined by the 'here' key. The link will open to a form where users can file support tickets."
   },
   "errorPageTitle": {
     "message": "MetaMask hat einen Fehler festgestellt.",
@@ -4543,17 +4531,11 @@
   "signingInWith": {
     "message": "Anmelden mit"
   },
-  "simulationDetailsFailed": {
-    "message": "Es ist ein Fehler beim Laden Ihrer Schätzung aufgetreten."
-  },
   "simulationDetailsFiatNotAvailable": {
     "message": "Nicht verfügbar"
   },
   "simulationDetailsIncomingHeading": {
     "message": "Sie erhalten"
-  },
-  "simulationDetailsNoBalanceChanges": {
-    "message": "Keine Änderungen für Ihre Wallet prognostiziert."
   },
   "simulationDetailsOutgoingHeading": {
     "message": "Sie senden"
@@ -4591,9 +4573,6 @@
   },
   "siweResources": {
     "message": "Ressourcen"
-  },
-  "siweSignatureSimulationDetailInfo": {
-    "message": "Sie melden sich bei einer Website an und es sind keine Änderungen an Ihrem Konto vorgesehen."
   },
   "siweURI": {
     "message": "URL"
@@ -4636,25 +4615,6 @@
   },
   "smartTransactions": {
     "message": "Smart Transactions"
-  },
-  "smartTransactionsBenefit1": {
-    "message": "Erfolgsrate: 99,5 %"
-  },
-  "smartTransactionsBenefit2": {
-    "message": "Spart Ihnen Geld"
-  },
-  "smartTransactionsBenefit3": {
-    "message": "Updates in Echtzeit"
-  },
-  "smartTransactionsDescription": {
-    "message": "Erzielen Sie mit Smart Transactions höhere Erfolgsraten, einen Frontrunning-Schutz und eine bessere Transparenz."
-  },
-  "smartTransactionsDescription2": {
-    "message": "Nur auf Ethereum verfügbar. Sie können diese Funktion jederzeit in den Einstellungen aktivieren oder deaktivieren. $1",
-    "description": "$1 is an external link to learn more about Smart Transactions"
-  },
-  "smartTransactionsOptItModalTitle": {
-    "message": "Verbesserter Transaktionsschutz"
   },
   "snapAccountCreated": {
     "message": "Konto erstellt"

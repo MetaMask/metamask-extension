@@ -56,9 +56,9 @@ export type ChainAddressMarketData = Record<
 export default function TokenList({ onTokenClick }: TokenListProps) {
   const t = useI18nContext();
   const currentNetwork = useSelector(getCurrentNetwork);
+  const { tokenSortConfig, tokenNetworkFilter, privacyMode } =
+    useSelector(getPreferences);
   const selectedAccount = useSelector(getSelectedAccount);
-
-  const { tokenSortConfig, tokenNetworkFilter } = useSelector(getPreferences);
   const conversionRate = useSelector(getConversionRate);
   const contractExchangeRates = useSelector(
     getTokenExchangeRates,
@@ -185,6 +185,7 @@ export default function TokenList({ onTokenClick }: TokenListProps) {
           image={tokenData?.image}
           isNative={tokenData.isNative}
           string={tokenData.string}
+          privacyMode={privacyMode}
           onClick={onTokenClick}
         />
       ))}

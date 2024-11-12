@@ -4,7 +4,6 @@ import {
   getCurrentCurrency,
   getTokenList,
   selectERC20TokensByChain,
-  getPreferences,
   getNativeCurrencyForChain,
 } from '../../../../selectors';
 import {
@@ -25,6 +24,7 @@ type TokenCellProps = {
   tokenFiatAmount: number | null;
   image: string;
   isNative?: boolean;
+  privacyMode?: boolean;
   onClick?: (chainId: string, address: string) => void;
 };
 
@@ -53,6 +53,7 @@ export default function TokenCell({
   string,
   tokenFiatAmount,
   isNative,
+  privacyMode = false,
   onClick,
 }: TokenCellProps) {
   const locale = useSelector(getIntlLocale);
@@ -61,7 +62,6 @@ export default function TokenCell({
   const isEvm = useSelector(getMultichainIsEvm);
   const erc20TokensByChain = useSelector(selectERC20TokensByChain);
   const isMainnet = chainId ? isChainIdMainnet(chainId) : false;
-  const { privacyMode } = useSelector(getPreferences);
   const tokenData = Object.values(tokenList).find(
     (token) =>
       isEqualCaseInsensitive(token.symbol, symbol) &&
@@ -84,8 +84,6 @@ export default function TokenCell({
 
   const secondaryThreshold = 0.01;
   const primaryThreshold = 0.0001;
-
-  // console.log('string', string);
 
   // Format for fiat balance with currency style
   const secondary = formatWithThreshold(

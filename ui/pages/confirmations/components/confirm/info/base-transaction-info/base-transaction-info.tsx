@@ -22,6 +22,7 @@ const BaseTransactionInfo = () => {
         <SimulationDetails
           transaction={transactionMeta}
           isTransactionsRedesign
+          enableMetrics
         />
       </ConfirmInfoSection>
       <TransactionDetails />
