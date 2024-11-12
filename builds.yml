@@ -237,7 +237,7 @@ env:
   - ENABLE_CONFIRMATION_REDESIGN: ''
   # Used to enable signature decoding
   - ENABLE_SIGNATURE_DECODING: ''
-  # Url of the decoding api
+  # URL of the decoding API used to provide additional data from signature requests
   - DECODING_API_URL: null
   # Determines if feature flagged Settings Page - Developer Options should be used
   - ENABLE_SETTINGS_PAGE_DEV_OPTIONS: false
