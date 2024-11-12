@@ -425,7 +425,8 @@ describe('EthOverview', () => {
         chain_id: CHAIN_IDS.MAINNET,
         location: 'Home',
         text: 'Buy',
-        token_symbol: expect.any(Object), // FIXME: Is this wrong?
+        // We use a `SwapsEthToken` in this case, so we're expecting an entire object here.
+        token_symbol: expect.any(Object),
       },
     });
   });
