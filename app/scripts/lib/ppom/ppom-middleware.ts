@@ -116,12 +116,6 @@ export function createPPOMMiddleware<
             securityAlertId,
             chainId,
             updateSecurityAlertResponse,
-          }).then((securityAlertResponse) => {
-            updateSecurityAlertResponse(
-              req.method,
-              securityAlertId,
-              securityAlertResponse,
-            );
           }),
       );
 

@@ -52,21 +52,22 @@ export async function validateRequestWithPPOM({
   securityAlertId: string;
   chainId: Hex;
   updateSecurityAlertResponse: UpdateSecurityAlertResponse;
-}): Promise<SecurityAlertResponse> {
+}) {
   try {
     if (!(await isChainSupported(chainId))) {
-      const response = {
-        ...SECURITY_ALERT_RESPONSE_CHAIN_NOT_SUPPORTED,
+      await updateSecurityResponse(
+        request.method,
         securityAlertId,
-      };
-      await updateSecurityResponse(request.method, securityAlertId, response);
-      return response;
+        SECURITY_ALERT_RESPONSE_CHAIN_NOT_SUPPORTED,
+      );
+      return;
     }
 
-    await updateSecurityResponse(request.method, securityAlertId, {
-      ...LOADING_SECURITY_ALERT_RESPONSE,
+    await updateSecurityResponse(
+      request.method,
       securityAlertId,
-    });
+      LOADING_SECURITY_ALERT_RESPONSE,
+    );
 
     const normalizedRequest = normalizePPOMRequest(request);
 
@@ -77,13 +78,13 @@ export async function validateRequestWithPPOM({
           normalizedRequest,
           chainId,
         );
-
-    return {
-      ...ppomResponse,
-      securityAlertId,
-    };
+    await updateSecurityResponse(request.method, securityAlertId, ppomResponse);
   } catch (error: unknown) {
-    return handlePPOMError(error, 'Error validating JSON RPC using PPOM: ');
+    await updateSecurityResponse(
+      request.method,
+      securityAlertId,
+      handlePPOMError(error, 'Error validating JSON RPC using PPOM: '),
+    );
   }
 }
 
@@ -116,12 +117,15 @@ export async function updateSecurityAlertResponse({
   );
 
   if (isSignatureRequest) {
-    appStateController.addSignatureSecurityAlertResponse(securityAlertResponse);
+    appStateController.addSignatureSecurityAlertResponse({
+      ...securityAlertResponse,
+      securityAlertId,
+    });
   } else {
-    transactionController.updateSecurityAlertResponse(
-      confirmation.id,
-      securityAlertResponse,
-    );
+    transactionController.updateSecurityAlertResponse(confirmation.id, {
+      ...securityAlertResponse,
+      securityAlertId,
+    } as SecurityAlertResponse);
   }
 }
 

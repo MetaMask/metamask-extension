@@ -283,12 +283,6 @@ async function validateSecurity(request: AddTransactionRequest) {
       securityAlertId,
       chainId,
       updateSecurityAlertResponse,
-    }).then((securityAlertResponse) => {
-      updateSecurityAlertResponse(
-        ppomRequest.method,
-        securityAlertId,
-        securityAlertResponse,
-      );
     });
 
     const securityAlertResponseCheckingChain: SecurityAlertResponse = {
