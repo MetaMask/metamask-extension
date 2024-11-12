@@ -86,6 +86,7 @@ async function getCircleCiWorkflowsByBranch(branch: string): Promise<WorkflowIte
       throw new Error(`HTTP error! status: ${response.status}`);
     }
     const body = await response.json();
+    console.log('Circle Ci workflows fetched successfully!');
     return body.items;
   } catch (error) {
     console.error('Error:', error);
@@ -125,7 +126,8 @@ async function getWorkflowStatusById(workflowId: string): Promise<WorkflowStatus
     }
     const workflowStatus = await response.json();
 
-    console.log(`Workflow status: ${workflowStatus.items}`);
+    console.log(`Number of runs: ${workflowStatus.items.length}`);
+    console.log(`Workflow status from last run: ${workflowStatus.items[0].status}`);
 
     return workflowStatus;
 
