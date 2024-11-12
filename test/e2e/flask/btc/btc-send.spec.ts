@@ -50,7 +50,7 @@ describe('BTC Account - Send', function (this: Suite) {
         await startSendFlow(driver, DEFAULT_BTC_ACCOUNT);
 
         // TODO: Remove delay here. There is a race condition if the amount and address are set too fast.
-        await driver.delay(500);
+        await driver.delay(1000);
 
         // Set the amount to send.
         const mockAmountToSend = '0.5';
@@ -106,6 +106,7 @@ describe('BTC Account - Send', function (this: Suite) {
       { title: this.test?.fullTitle() },
       async (driver, mockServer) => {
         await startSendFlow(driver, DEFAULT_BTC_ACCOUNT);
+
         // TODO: Remove delay here. There is a race condition if the amount and address are set too fast.
         await driver.delay(1000);
 
