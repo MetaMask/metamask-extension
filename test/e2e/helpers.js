@@ -119,7 +119,6 @@ async function withFixtures(options, testSuite) {
       contractRegistry = ganacheSeeder.getContractRegistry();
     }
 
-
     if (ganacheOptions?.concurrent) {
       ganacheOptions.concurrent.forEach(async (ganacheSettings) => {
         const { port, chainId, ganacheOptions2 } = ganacheSettings;
