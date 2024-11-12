@@ -44,8 +44,8 @@ import {
   getAddressBookEntry,
   getInternalAccounts,
   getMetadataContractName,
-  getNetworkIdentifier,
   getSwapsDefaultToken,
+  selectNetworkIdentifierByChainId,
 } from '../../../../selectors';
 import useRamps from '../../../../hooks/ramps/useRamps/useRamps';
 ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
@@ -120,7 +120,6 @@ const ConfirmPageContainer = (props) => {
     useState(false);
   const isBuyableChain = useSelector(getIsNativeTokenBuyable);
   const contact = useSelector((state) => getAddressBookEntry(state, toAddress));
-  const networkIdentifier = useSelector(getNetworkIdentifier);
   const defaultToken = useSelector(getSwapsDefaultToken);
   const accountBalance = defaultToken.string;
   const internalAccounts = useSelector(getInternalAccounts);
@@ -139,8 +138,13 @@ const ConfirmPageContainer = (props) => {
   const shouldDisplayWarning =
     contentComponent && disabled && (errorKey || errorMessage);
 
-  const networkName =
-    NETWORK_TO_NAME_MAP[currentTransaction.chainId] || networkIdentifier;
+  const { chainId } = currentTransaction;
+
+  const networkIdentifier = useSelector((state) =>
+    selectNetworkIdentifierByChainId(state, chainId),
+  );
+
+  const networkName = NETWORK_TO_NAME_MAP[chainId] || networkIdentifier;
 
   const fetchCollectionBalance = useCallback(async () => {
     const tokenBalance = await fetchTokenBalance(

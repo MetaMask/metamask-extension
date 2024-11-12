@@ -345,9 +345,9 @@
     "@metamask/snaps-execution-environments": "^6.9.2",
     "@metamask/snaps-rpc-methods": "^11.5.1",
     "@metamask/snaps-sdk": "^6.10.0",
-    "@metamask/snaps-utils": "^8.5.1",
+    "@metamask/snaps-utils": "^8.5.2",
     "@metamask/solana-wallet-snap": "^0.1.9",
-    "@metamask/transaction-controller": "^38.1.0",
+    "@metamask/transaction-controller": "^38.3.0",
     "@metamask/user-operation-controller": "^13.0.0",
     "@metamask/utils": "^10.0.1",
     "@ngraveio/bc-ur": "^1.1.12",
@@ -528,6 +528,7 @@
     "@types/redux-mock-store": "1.0.6",
     "@types/remote-redux-devtools": "^0.5.5",
     "@types/selenium-webdriver": "^4.1.19",
+    "@types/serve-handler": "^6.1.4",
     "@types/sinon": "^10.0.13",
     "@types/sprintf-js": "^1",
     "@types/w3c-web-hid": "^1.0.3",
@@ -750,5 +751,5 @@
       "jest-preview": false
     }
   },
-  "packageManager": "yarn@4.4.1"
+  "packageManager": "yarn@4.5.1"
 }
