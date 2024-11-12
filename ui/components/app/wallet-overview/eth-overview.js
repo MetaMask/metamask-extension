@@ -39,6 +39,7 @@ const EthOverview = ({ className }) => {
 
   return (
     <CoinOverview
+      account={account}
       balance={balance}
       balanceIsCached={balanceIsCached}
       className={className}

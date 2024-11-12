@@ -280,6 +280,7 @@
         "srcTokenAddress": "0x0000000000000000000000000000000000000000"
       },
       "quotes": {},
+      "quotesRefreshCount": 0,
       "srcTokens": {},
       "srcTopAssets": {}
     },
