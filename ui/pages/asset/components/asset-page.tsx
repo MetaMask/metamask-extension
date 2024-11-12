@@ -115,7 +115,6 @@ const AssetPage = ({
 
   const { chainId, type, symbol, name, image, decimals } = asset;
 
-  // TODO: adding the addres here for native tokens would enable marketData/historic data
   const address =
     type === AssetType.token
       ? toChecksumHexAddress(asset.address)
