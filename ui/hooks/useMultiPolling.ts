@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef } from 'react';
 
 type UseMultiPollingOptions<PollingInput> = {
   startPolling: (input: PollingInput) => Promise<string>;
@@ -12,34 +12,28 @@ type UseMultiPollingOptions<PollingInput> = {
 const useMultiPolling = <PollingInput>(
   usePollingOptions: UseMultiPollingOptions<PollingInput>,
 ) => {
-  const [polls, setPolls] = useState(new Map());
+  const pollingTokens = useRef<Map<string, string>>(new Map());
 
   useEffect(() => {
     // start new polls
     for (const input of usePollingOptions.input) {
       const key = JSON.stringify(input);
-      if (!polls.has(key)) {
+      if (!pollingTokens.current.has(key)) {
         usePollingOptions
           .startPolling(input)
-          .then((token) =>
-            setPolls((prevPolls) => new Map(prevPolls).set(key, token)),
-          );
+          .then((token) => pollingTokens.current.set(key, token));
       }
     }
 
     // stop existing polls
-    for (const [inputKey, token] of polls.entries()) {
+    for (const [inputKey, token] of pollingTokens.current.entries()) {
       const exists = usePollingOptions.input.some(
         (i) => inputKey === JSON.stringify(i),
       );
 
       if (!exists) {
         usePollingOptions.stopPollingByPollingToken(token);
-        setPolls((prevPolls) => {
-          const newPolls = new Map(prevPolls);
-          newPolls.delete(inputKey);
-          return newPolls;
-        });
+        pollingTokens.current.delete(inputKey);
       }
     }
   }, [usePollingOptions.input && JSON.stringify(usePollingOptions.input)]);
@@ -47,7 +41,7 @@ const useMultiPolling = <PollingInput>(
   // stop all polling on dismount
   useEffect(() => {
     return () => {
-      for (const token of polls.values()) {
+      for (const token of pollingTokens.current.values()) {
         usePollingOptions.stopPollingByPollingToken(token);
       }
     };

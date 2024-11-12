@@ -8,19 +8,8 @@ class PrivacySettings {
   private readonly autodetectNftToggleButton =
     '[data-testid="useNftDetection"] .toggle-button > div';
 
-  private readonly privacySettingsPageTitle = {
-    text: 'Security & privacy',
-    tag: 'h4',
-  };
-
-  // SRP related locators
   private readonly closeRevealSrpDialogButton = {
     text: tEn('close'),
-    tag: 'button',
-  };
-
-  private readonly copySrpButton = {
-    text: tEn('copyToClipboard'),
     tag: 'button',
   };
 
@@ -29,6 +18,18 @@ class PrivacySettings {
     tag: 'button',
   };
 
+  private readonly copySrpButton = {
+    text: tEn('copyToClipboard'),
+    tag: 'button',
+  };
+
+  private readonly privacySettingsPageTitle = {
+    text: 'Security & privacy',
+    tag: 'h4',
+  };
+
+
+  // reveal SRP related locators
   private readonly displayedSrpText = '[data-testid="srp_text"]';
 
   private readonly holdToRevealSRPButton = {
@@ -108,12 +109,48 @@ class PrivacySettings {
   }
 
   /**
+   * Complete reveal SRP quiz to open reveal SRP dialog.
+   *
+   * @param checkErrorAnswer - Whether to check for error answers during answering the quiz.
+   */
+  async completeRevealSrpQuiz(checkErrorAnswer?: boolean): Promise<void> {
+    console.log('Complete reveal SRP quiz on privacy settings page');
+    await this.driver.clickElement(this.revealSrpQuizGetStartedButton);
+
+    // answer quiz question 1
+    if (checkErrorAnswer) {
+      await this.driver.waitForSelector(this.revealSrpQuizQuestionOne);
+      await this.driver.clickElement(this.revealSrpQuizWrongAnswerButton);
+      await this.driver.waitForSelector(
+        this.revealSrpQuizWrongAnswerMessageOne,
+      );
+      await this.driver.clickElement(this.revealSrpQuizTryAgainButton);
+    }
+    await this.driver.waitForSelector(this.revealSrpQuizQuestionOne);
+    await this.driver.clickElement(this.revealSrpQuizRightAnswerButton);
+    await this.driver.clickElement(this.revealSrpQuizContinueButton);
+
+    // answer quiz question 2
+    if (checkErrorAnswer) {
+      await this.driver.waitForSelector(this.revealSrpQuizQuestionTwo);
+      await this.driver.clickElement(this.revealSrpQuizWrongAnswerButton);
+      await this.driver.waitForSelector(
+        this.revealSrpQuizWrongAnswerMessageTwo,
+      );
+      await this.driver.clickElement(this.revealSrpQuizTryAgainButton);
+    }
+    await this.driver.waitForSelector(this.revealSrpQuizQuestionTwo);
+    await this.driver.clickElement(this.revealSrpQuizRightAnswerButton);
+    await this.driver.clickElement(this.revealSrpQuizContinueButton);
+  }
+
+  /**
    * Fill the password input and click the next button to reveal the SRP.
    *
    * @param password - The password to fill in the input.
    * @param expectedErrorMessage - Whether to expect an error message.
    */
-  async fillPasswordToRevealSRP(
+  async fillPasswordToRevealSrp(
     password: string,
     expectedErrorMessage?: string,
   ): Promise<void> {
@@ -162,6 +199,12 @@ class PrivacySettings {
     await this.driver.waitForSelector(this.revealSrpQuizQuestionTwo);
     await this.driver.clickElement(this.revealSrpQuizRightAnswerButton);
     await this.driver.clickElement(this.revealSrpQuizContinueButton);
+  }
+
+  async openRevealSrpQuiz(): Promise<void> {
+    console.log('Open reveal SRP quiz on privacy settings page');
+    await this.driver.clickElement(this.revealSrpButton);
+    await this.driver.waitForSelector(this.revealSrpQuizModalTitle);
   }
 
   async toggleAutodetectNft(): Promise<void> {
