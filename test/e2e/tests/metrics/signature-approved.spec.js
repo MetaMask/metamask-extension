@@ -1,8 +1,4 @@
 const { strict: assert } = require('assert');
-const {
-  BlockaidReason,
-  BlockaidResultType,
-} = require('../../../../shared/constants/security-provider');
 
 const {
   defaultGanacheOptions,
@@ -58,8 +54,8 @@ const expectedEventPropertiesBase = {
   locale: 'en',
   chain_id: '0x539',
   environment_type: 'background',
-  security_alert_reason: BlockaidReason.checkingChain,
-  security_alert_response: BlockaidResultType.Loading,
+  security_alert_reason: 'CheckingChain',
+  security_alert_response: 'loading',
 };
 
 describe('Signature Approved Event @no-mmi', function () {
@@ -100,6 +96,7 @@ describe('Signature Approved Event @no-mmi', function () {
           ...expectedEventPropertiesBase,
           signature_type: 'eth_signTypedData_v4',
           eip712_primary_type: 'Mail',
+          security_alert_response: 'Benign',
         });
       },
     );
@@ -140,6 +137,7 @@ describe('Signature Approved Event @no-mmi', function () {
         assert.deepStrictEqual(events[1].properties, {
           ...expectedEventPropertiesBase,
           signature_type: 'eth_signTypedData_v3',
+          security_alert_response: 'Benign',
         });
       },
     );
@@ -179,6 +177,7 @@ describe('Signature Approved Event @no-mmi', function () {
         assert.deepStrictEqual(events[1].properties, {
           ...expectedEventPropertiesBase,
           signature_type: 'eth_signTypedData',
+          security_alert_response: 'Benign',
         });
       },
     );
@@ -218,6 +217,7 @@ describe('Signature Approved Event @no-mmi', function () {
         assert.deepStrictEqual(events[1].properties, {
           ...expectedEventPropertiesBase,
           signature_type: 'personal_sign',
+          security_alert_response: 'Benign',
         });
       },
     );

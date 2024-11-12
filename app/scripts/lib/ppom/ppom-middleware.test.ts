@@ -181,7 +181,7 @@ describe('PPOMMiddleware', () => {
       BlockaidReason.checkingChain,
     );
     expect(req.securityAlertResponse?.result_type).toBe(
-      BlockaidResultType.Benign,
+      BlockaidResultType.Loading,
     );
   });
 

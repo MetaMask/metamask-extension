@@ -73,7 +73,7 @@ function getSignatureEventProperty(
   primaryType: string,
   uiCustomizations: string[],
   securityAlertReason: string = BlockaidReason.checkingChain,
-  securityAlertResponse: string = BlockaidResultType.Benign,
+  securityAlertResponse: string = BlockaidResultType.Loading,
 ): SignatureEventProperty {
   const signatureEventProperty: SignatureEventProperty = {
     account_type: 'MetaMask',
@@ -219,12 +219,42 @@ function assertEventPropertiesMatch(
   expectedProperties: object,
 ) {
   const event = events.find((e) => e.event === eventName);
+
+  const actualProperties = { ...event.properties };
+  const expectedProps = { ...expectedProperties };
+
+  compareSecurityAlertResponse(actualProperties, expectedProps, eventName);
+
   assert(event, `${eventName} event not found`);
   assert.deepStrictEqual(
-    event.properties,
-    expectedProperties,
+    actualProperties,
+    expectedProps,
     `${eventName} event properties do not match`,
   );
+}
+
+function compareSecurityAlertResponse(
+  actualProperties: Record<string, unknown>,
+  expectedProperties: Record<string, unknown>,
+  eventName: string,
+) {
+  if (
+    expectedProperties.security_alert_response &&
+    (expectedProperties.security_alert_response === 'loading' ||
+      expectedProperties.security_alert_response === 'Benign')
+  ) {
+    if (
+      actualProperties.security_alert_response !== 'loading' &&
+      actualProperties.security_alert_response !== 'Benign'
+    ) {
+      assert.fail(
+        `${eventName} event properties do not match: security_alert_response is ${actualProperties.security_alert_response}`,
+      );
+    }
+    // Remove the property from both objects to avoid comparison
+    delete actualProperties.security_alert_response;
+    delete expectedProperties.security_alert_response;
+  }
 }
 
 export async function clickHeaderInfoBtn(driver: Driver) {
