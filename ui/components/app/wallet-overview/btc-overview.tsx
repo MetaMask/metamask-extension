@@ -9,9 +9,9 @@ import {
 } from '../../../selectors/multichain';
 ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
 import { getIsBitcoinBuyable } from '../../../ducks/ramps';
-import { getSelectedInternalAccount } from '../../../selectors';
 import { useMultichainSelector } from '../../../hooks/useMultichainSelector';
 ///: END:ONLY_INCLUDE_IF
+import { getSelectedInternalAccount } from '../../../selectors';
 import { CoinOverview } from './coin-overview';
 
 type BtcOverviewProps = {
@@ -21,17 +21,18 @@ type BtcOverviewProps = {
 const BtcOverview = ({ className }: BtcOverviewProps) => {
   const { chainId } = useSelector(getMultichainProviderConfig);
   const balance = useSelector(getMultichainSelectedAccountCachedBalance);
+  const account = useSelector(getSelectedInternalAccount);
   ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
-  const selectedAccount = useSelector(getSelectedInternalAccount);
   const isBtcMainnetAccount = useMultichainSelector(
     getMultichainIsMainnet,
-    selectedAccount,
+    account,
   );
   const isBtcBuyable = useSelector(getIsBitcoinBuyable);
   ///: END:ONLY_INCLUDE_IF
 
   return (
     <CoinOverview
+      account={account}
       balance={balance}
       // We turn this off to avoid having that asterisk + the "Balance maybe be outdated" message for now
       balanceIsCached={false}
