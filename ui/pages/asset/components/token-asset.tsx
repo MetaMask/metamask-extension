@@ -3,6 +3,7 @@ import { Token } from '@metamask/assets-controllers';
 import { useSelector, useDispatch } from 'react-redux';
 import { getTokenTrackerLink } from '@metamask/etherscan-link';
 import { useHistory } from 'react-router-dom';
+import { Hex } from '@metamask/utils';
 import {
   getRpcPrefsForCurrentProvider,
   getSelectedInternalAccount,
@@ -23,7 +24,7 @@ import { MetaMetricsEventCategory } from '../../../../shared/constants/metametri
 import AssetOptions from './asset-options';
 import AssetPage from './asset-page';
 
-const TokenAsset = ({ token, chainId }: { token: Token; chainId: string }) => {
+const TokenAsset = ({ token, chainId }: { token: Token; chainId: Hex }) => {
   const { address, symbol, isERC721 } = token;
 
   const tokenList = useSelector(getTokenList);

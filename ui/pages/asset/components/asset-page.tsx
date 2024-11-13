@@ -77,6 +77,7 @@ export type Asset = (
   image: string;
   /** True if the asset implements ERC721 */
   isERC721?: boolean;
+  balance?: { value: string; display: string; fiat: string };
 };
 
 // A page representing a native or token asset
@@ -114,7 +115,6 @@ const AssetPage = ({
 
   const { chainId, type, symbol, name, image, decimals } = asset;
 
-  // TODO: adding the addres here for native tokens would enable marketData/historic data
   const address =
     type === AssetType.token
       ? toChecksumHexAddress(asset.address)

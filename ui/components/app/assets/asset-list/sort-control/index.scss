@@ -11,7 +11,6 @@
   }
 
   &:not(.selectable-list-item--selected) {
-
     &:hover,
     &:focus-within {
       background: var(--color-background-default-hover);

@@ -1,15 +1,15 @@
 import { useSelector } from 'react-redux';
 import BN from 'bn.js';
 import { Token } from '@metamask/assets-controllers';
+import { Hex } from '@metamask/utils';
 import { getNetworkConfigurationsByChainId } from '../selectors';
 import {
   tokenBalancesStartPolling,
   tokenBalancesStopPollingByPollingToken,
 } from '../store/actions';
-import { getTokenBalances, getTokens } from '../ducks/metamask/metamask';
+import { getTokenBalances } from '../ducks/metamask/metamask';
 import { hexToDecimal } from '../../shared/modules/conversion.utils';
 import useMultiPolling from './useMultiPolling';
-import { Hex } from '@metamask/utils';
 
 export const useTokenBalances = ({ chainIds }: { chainIds?: Hex[] } = {}) => {
   const tokenBalances = useSelector(getTokenBalances);
@@ -76,7 +76,7 @@ export function stringifyBalance(
     return '0';
   }
 
-  const decimals = parseInt(bnDecimals.toString());
+  const decimals = parseInt(bnDecimals.toString(), 10);
   if (decimals === 0) {
     return balance.toString();
   }
@@ -89,7 +89,7 @@ export function stringifyBalance(
   if (decimalIndex <= 0) {
     while (prefix.length <= decimalIndex * -1) {
       prefix += '0';
-      len++;
+      len += 1;
     }
     bal = prefix + bal;
     decimalIndex = 1;
@@ -102,8 +102,8 @@ export function stringifyBalance(
   }
 
   const fractional = bal.substr(decimalIndex, balanceDecimals);
-  if (/0+$/.test(fractional)) {
-    let withOnlySigZeroes = bal.substr(decimalIndex).replace(/0+$/, '');
+  if (/0+$/u.test(fractional)) {
+    let withOnlySigZeroes = bal.substr(decimalIndex).replace(/0+$/u, '');
     if (withOnlySigZeroes.length > 0) {
       withOnlySigZeroes = `.${withOnlySigZeroes}`;
     }

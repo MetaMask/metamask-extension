@@ -119,6 +119,7 @@ export const SENTRY_BACKGROUND_STATE = {
       quotes: [],
       quotesLastFetched: true,
       quotesLoadingStatus: true,
+      quotesRefreshCount: true,
     },
   },
   CronjobController: {

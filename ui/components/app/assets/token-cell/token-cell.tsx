@@ -13,7 +13,6 @@ import {
 } from '../../../../selectors/multichain';
 import { TokenListItem } from '../../../multichain';
 import { isEqualCaseInsensitive } from '../../../../../shared/modules/string-utils';
-import { useIsOriginalTokenSymbol } from '../../../../hooks/useIsOriginalTokenSymbol';
 import { getIntlLocale } from '../../../../ducks/locale/locale';
 
 type TokenCellProps = {
@@ -107,8 +106,6 @@ export default function TokenCell({
     },
   );
 
-  const isOriginalTokenSymbol = useIsOriginalTokenSymbol(address, symbol);
-
   let isStakeable = isMainnet && isEvm && isNative;
   ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
   isStakeable = false;
@@ -125,16 +122,18 @@ export default function TokenCell({
     return null;
   }
 
+  const tokenChainImage = getImageForChainId(chainId);
+  // console.log('FOO: ', symbol, tokenChainImage ?? '');
+
   return (
     <TokenListItem
       onClick={handleOnClick}
       tokenSymbol={symbol}
       tokenImage={isNative ? getNativeCurrencyForChain(chainId) : tokenImage}
-      tokenChainImage={chainId ? getImageForChainId(chainId) : undefined}
+      tokenChainImage={tokenChainImage || undefined}
       primary={primary}
       secondary={secondary}
       title={title}
-      isOriginalTokenSymbol={isOriginalTokenSymbol}
       address={address}
       isStakeable={isStakeable}
       showPercentage

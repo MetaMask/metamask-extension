@@ -292,11 +292,10 @@ const TokenButtons = ({
             dispatch(
               setSwapsFromToken({
                 ...token,
-                // TODO: This will get fixed once we have the native token address
                 address: token.address?.toLowerCase(),
                 iconUrl: token.image,
-                balance: token.balance.value,
-                string: token.balance.display,
+                balance: token?.balance?.value,
+                string: token?.balance?.display,
               }),
             );
             if (usingHardwareWallet) {
@@ -333,8 +332,8 @@ const TokenButtons = ({
               openBridgeExperience(MetaMetricsSwapsEventSource.TokenView, {
                 ...token,
                 iconUrl: token.image,
-                balance: token.balance.value,
-                string: token.balance.display,
+                balance: token?.balance?.value,
+                string: token?.balance?.display,
                 name: token.name ?? '',
               });
             }}
