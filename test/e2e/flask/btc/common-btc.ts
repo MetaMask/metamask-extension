@@ -1,6 +1,6 @@
 import { Mockttp } from 'mockttp';
 import FixtureBuilder from '../../fixture-builder';
-import { withFixtures, unlockWallet } from '../../helpers';
+import { withFixtures } from '../../helpers';
 import {
   DEFAULT_BTC_ACCOUNT,
   DEFAULT_BTC_BALANCE,

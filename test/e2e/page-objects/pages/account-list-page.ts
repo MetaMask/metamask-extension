@@ -163,7 +163,8 @@ class AccountListPage {
 
   /**
    * Adds a new BTC account with default next available name.
-   * @param btcAccountCreationEnabled indicates if the BTC account creation is expected to be enabled or disabled. Defaults to true.
+   *
+   * @param btcAccountCreationEnabled - indicates if the BTC account creation is expected to be enabled or disabled. Defaults to true.
    */
   async addNewBtcAccountWithDefaultName(
     btcAccountCreationEnabled: boolean = true,
@@ -183,7 +184,9 @@ class AccountListPage {
         5000,
       );
     } else {
-      const createButton = await this.driver.findElement(this.addBtcAccountButton);
+      const createButton = await this.driver.findElement(
+        this.addBtcAccountButton,
+      );
       assert.equal(await createButton.isEnabled(), false);
       await this.driver.clickElement(this.closeAccountModalButton);
     }
@@ -247,9 +250,10 @@ class AccountListPage {
     await this.openAccountOptionsInAccountList(accountLabel);
     await this.driver.clickElement(this.accountMenuButton);
     await this.driver.waitForSelector(this.accountAddressText);
-    const accountAddress = await (await this.driver.findElement(this.accountAddressText)).getText();
+    const accountAddress = await (
+      await this.driver.findElement(this.accountAddressText)
+    ).getText();
     await this.driver.clickElement(this.closeAccountModalButton);
-    console.log('Account address: ' + accountAddress);
     return accountAddress;
   }
 
@@ -344,14 +348,19 @@ class AccountListPage {
    * @param accountLabel - The label of the account to remove.
    * @param confirmRemoval - Whether to confirm the removal of the account. Defaults to true.
    */
-  async removeAccount(accountLabel: string, confirmRemoval: boolean = true): Promise<void> {
+  async removeAccount(
+    accountLabel: string,
+    confirmRemoval: boolean = true,
+  ): Promise<void> {
     console.log(`Remove account in account list`);
     await this.openAccountOptionsInAccountList(accountLabel);
     await this.driver.clickElement(this.removeAccountButton);
     await this.driver.waitForSelector(this.removeAccountMessage);
     if (confirmRemoval) {
+      console.log('Confirm removal of account');
       await this.driver.clickElement(this.removeAccountConfirmButton);
     } else {
+      console.log('Click nevermind button to cancel account removal');
       await this.driver.clickElement(this.removeAccountNevermindButton);
     }
   }

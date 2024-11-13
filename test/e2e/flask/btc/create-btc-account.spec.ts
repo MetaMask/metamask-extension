@@ -1,13 +1,13 @@
 import { strict as assert } from 'assert';
 import { Suite } from 'mocha';
 import { WALLET_PASSWORD } from '../../helpers';
-import { withBtcAccountSnap } from './common-btc';
 import AccountListPage from '../../page-objects/pages/account-list-page';
 import HeaderNavbar from '../../page-objects/pages/header-navbar';
 import LoginPage from '../../page-objects/pages/login-page';
 import PrivacySettings from '../../page-objects/pages/settings/privacy-settings';
 import ResetPasswordPage from '../../page-objects/pages/reset-password-page';
 import SettingsPage from '../../page-objects/pages/settings/settings-page';
+import { withBtcAccountSnap } from './common-btc';
 
 describe('Create BTC Account', function (this: Suite) {
   it('create BTC account from the menu', async function () {
@@ -57,9 +57,7 @@ describe('Create BTC Account', function (this: Suite) {
         await headerNavbar.openAccountMenu();
         const accountListPage = new AccountListPage(driver);
         await accountListPage.check_pageIsLoaded();
-        await accountListPage.removeAccount(
-          'Bitcoin Account', false
-        );
+        await accountListPage.removeAccount('Bitcoin Account', false);
         await headerNavbar.check_accountLabel('Bitcoin Account');
 
         // check the number of accounts. it should be 2.
@@ -83,7 +81,9 @@ describe('Create BTC Account', function (this: Suite) {
         await headerNavbar.openAccountMenu();
         const accountListPage = new AccountListPage(driver);
         await accountListPage.check_pageIsLoaded();
-        const accountAddress = await accountListPage.getAccountAddress('Bitcoin Account');
+        const accountAddress = await accountListPage.getAccountAddress(
+          'Bitcoin Account',
+        );
         await headerNavbar.openAccountMenu();
         await accountListPage.removeAccount('Bitcoin Account');
 
@@ -95,10 +95,11 @@ describe('Create BTC Account', function (this: Suite) {
 
         await headerNavbar.openAccountMenu();
         await accountListPage.check_pageIsLoaded();
-        const recreatedAccountAddress = await accountListPage.getAccountAddress('Bitcoin Account');
+        const recreatedAccountAddress = await accountListPage.getAccountAddress(
+          'Bitcoin Account',
+        );
 
         assert(accountAddress === recreatedAccountAddress);
-        console.log('Recreated account address: ' + recreatedAccountAddress);
       },
     );
   });
@@ -115,7 +116,9 @@ describe('Create BTC Account', function (this: Suite) {
         await headerNavbar.openAccountMenu();
         const accountListPage = new AccountListPage(driver);
         await accountListPage.check_pageIsLoaded();
-        const accountAddress = await accountListPage.getAccountAddress('Bitcoin Account');
+        const accountAddress = await accountListPage.getAccountAddress(
+          'Bitcoin Account',
+        );
 
         // go to privacy settings page and get the SRP
         await headerNavbar.openSettingsPage();
@@ -146,7 +149,9 @@ describe('Create BTC Account', function (this: Suite) {
 
         await headerNavbar.openAccountMenu();
         await accountListPage.check_pageIsLoaded();
-        const recreatedAccountAddress = await accountListPage.getAccountAddress('Bitcoin Account');
+        const recreatedAccountAddress = await accountListPage.getAccountAddress(
+          'Bitcoin Account',
+        );
         assert(accountAddress === recreatedAccountAddress);
       },
     );
