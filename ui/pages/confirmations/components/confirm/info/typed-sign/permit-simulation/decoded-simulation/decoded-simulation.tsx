@@ -15,6 +15,26 @@ import TokenValueDisplay from '../value-display/value-display';
 import NativeValueDisplay from '../native-value-display/native-value-display';
 import { ConfirmInfoRow } from '../../../../../../../../components/app/confirm/info/row';
 
+const decodingData = {
+	"stateChanges": [
+		{
+			"assetType": "NATIVE",
+			"changeType": "RECEIVE",
+			"address": "",
+			"amount": "900000000000000000",
+			"contractAddress": ""
+		},
+		{
+			"assetType": "ERC721",
+			"changeType": "LISTING",
+			"address": "",
+			"amount": "",
+			"contractAddress": "0xafd4896984CA60d2feF66136e57f958dCe9482d5",
+			"tokenID": "2101"
+		}
+	]
+};
+
 export const getStateChangeToolip = (
   stateChangeList: DecodingDataStateChanges | null,
   stateChange: DecodingDataStateChange,
@@ -100,7 +120,8 @@ const DecodedSimulation: React.FC<object> = () => {
   const t = useI18nContext();
   const { currentConfirmation } = useConfirmContext<SignatureRequestType>();
   const chainId = currentConfirmation.chainId as Hex;
-  const { decodingLoading, decodingData } = currentConfirmation;
+  const { decodingLoading } = currentConfirmation;
+  // const { decodingLoading, decodingData } = currentConfirmation;
 
   let stateChangeFragment: ReactNode[] = [];
   if (decodingData?.stateChanges) {
