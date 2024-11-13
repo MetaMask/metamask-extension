@@ -117,7 +117,6 @@ const AssetList = ({ onClickAsset, showTokensLinks }: AssetListProps) => {
       <TokenList
         nativeToken={<NativeToken onClickAsset={onClickAsset} />}
         onTokenClick={(chainId: string, tokenAddress: string) => {
-          console.log('click', chainId, tokenAddress);
           onClickAsset(chainId, tokenAddress);
           trackEvent({
             event: MetaMetricsEventName.TokenScreenOpened,
