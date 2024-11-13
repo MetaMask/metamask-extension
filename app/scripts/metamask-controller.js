@@ -5717,16 +5717,14 @@ export default class MetamaskController extends EventEmitter {
       ),
     );
 
-    const isConfirmationRedesignEnabled = () => {
-      return this.preferencesController.state.preferences
-        .redesignedConfirmationsEnabled;
-    };
-
     engine.push(
       createRPCMethodTrackingMiddleware({
         getAccountType: this.getAccountType.bind(this),
         getDeviceModel: this.getDeviceModel.bind(this),
-        isConfirmationRedesignEnabled,
+        isConfirmationRedesignEnabled:
+          this.isConfirmationRedesignEnabled.bind(this),
+        isRedesignedConfirmationsDeveloperEnabled:
+          this.isConfirmationRedesignDeveloperEnabled.bind(this),
         snapAndHardwareMessenger: this.controllerMessenger.getRestricted({
           name: 'SnapAndHardwareMessenger',
           allowedActions: [
@@ -6364,6 +6362,21 @@ export default class MetamaskController extends EventEmitter {
     });
   }
 
+  isConfirmationRedesignEnabled() {
+    return this.preferencesController.state.preferences
+      .redesignedConfirmationsEnabled;
+  }
+
+  isTransactionsRedesignEnabled() {
+    return this.preferencesController.state.preferences
+      .redesignedTransactionsEnabled;
+  }
+
+  isConfirmationRedesignDeveloperEnabled() {
+    return this.preferencesController.state.preferences
+      .isRedesignedConfirmationsDeveloperEnabled;
+  }
+
   /**
    * The chain list is fetched live at runtime, falling back to a cache.
    * This preseeds the cache at startup with a static list provided at build.
@@ -6548,12 +6561,10 @@ export default class MetamaskController extends EventEmitter {
           txHash,
         );
       },
-      getRedesignedConfirmationsEnabled: () => {
-        return this.preferencesController.getRedesignedConfirmationsEnabled;
-      },
-      getRedesignedTransactionsEnabled: () => {
-        return this.preferencesController.getRedesignedTransactionsEnabled;
-      },
+      getRedesignedConfirmationsEnabled:
+        this.isConfirmationRedesignEnabled.bind(this),
+      getRedesignedTransactionsEnabled:
+        this.isTransactionsRedesignEnabled.bind(this),
       getMethodData: (data) => {
         if (!data) {
           return null;
@@ -6571,10 +6582,8 @@ export default class MetamaskController extends EventEmitter {
           this.provider,
         );
       },
-      getIsRedesignedConfirmationsDeveloperEnabled: () => {
-        return this.preferencesController.state.preferences
-          .isRedesignedConfirmationsDeveloperEnabled;
-      },
+      getIsRedesignedConfirmationsDeveloperEnabled:
+        this.isConfirmationRedesignDeveloperEnabled.bind(this),
       getIsConfirmationAdvancedDetailsOpen: () => {
         return this.preferencesController.state.preferences
           .showConfirmationAdvancedDetails;

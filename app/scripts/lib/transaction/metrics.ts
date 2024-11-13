@@ -43,16 +43,12 @@ import {
   // TODO: Remove restricted import
   // eslint-disable-next-line import/no-restricted-paths
 } from '../../../../ui/helpers/utils/metrics';
-import {
-  REDESIGN_DEV_TRANSACTION_TYPES,
-  REDESIGN_USER_TRANSACTION_TYPES,
-  // TODO: Remove restricted import
-  // eslint-disable-next-line import/no-restricted-paths
-} from '../../../../ui/pages/confirmations/utils';
+
 import {
   getSnapAndHardwareInfoForMetrics,
   type SnapAndHardwareMessenger,
 } from '../snap-keyring/metrics';
+import { shouldUseRedesignForTransactions } from '../../../../shared/modules/confirmation.utils';
 
 export type TransactionMetricsRequest = {
   createEventFragment: (
@@ -996,23 +992,13 @@ async function buildEventFragmentProperties({
   if (simulationFails) {
     uiCustomizations.push(MetaMetricsEventUiCustomization.GasEstimationFailed);
   }
-  const isRedesignedConfirmationsDeveloperSettingEnabled =
-    transactionMetricsRequest.getIsRedesignedConfirmationsDeveloperEnabled() ||
-    Boolean(process.env.ENABLE_CONFIRMATION_REDESIGN);
 
-  const isRedesignedTransactionsUserSettingEnabled =
-    transactionMetricsRequest.getRedesignedTransactionsEnabled();
-
-  if (
-    (isRedesignedConfirmationsDeveloperSettingEnabled &&
-      REDESIGN_DEV_TRANSACTION_TYPES.includes(
-        transactionMeta.type as TransactionType,
-      )) ||
-    (isRedesignedTransactionsUserSettingEnabled &&
-      REDESIGN_USER_TRANSACTION_TYPES.includes(
-        transactionMeta.type as TransactionType,
-      ))
-  ) {
+  const isRedesignedForTransaction = shouldUseRedesignForTransactions(
+    transactionMeta.type as TransactionType,
+    transactionMetricsRequest.getRedesignedTransactionsEnabled(),
+    transactionMetricsRequest.getIsRedesignedConfirmationsDeveloperEnabled(),
+  );
+  if (isRedesignedForTransaction) {
     uiCustomizations.push(
       MetaMetricsEventUiCustomization.RedesignedConfirmation,
     );

@@ -10,36 +10,11 @@ import { parseTypedDataMessage } from '../../../../shared/modules/transaction.ut
 import { sanitizeMessage } from '../../../helpers/utils/util';
 import { Confirmation, SignatureRequestType } from '../types/confirm';
 import { TYPED_SIGNATURE_VERSIONS } from '../constants';
-
-export const REDESIGN_APPROVAL_TYPES = [
-  ApprovalType.EthSignTypedData,
-  ApprovalType.PersonalSign,
-];
-
-export const REDESIGN_USER_TRANSACTION_TYPES = [
-  TransactionType.contractInteraction,
-  TransactionType.deployContract,
-  TransactionType.tokenMethodApprove,
-  TransactionType.tokenMethodIncreaseAllowance,
-  TransactionType.tokenMethodSetApprovalForAll,
-  TransactionType.tokenMethodTransfer,
-  TransactionType.tokenMethodTransferFrom,
-  TransactionType.tokenMethodSafeTransferFrom,
-  TransactionType.simpleSend,
-];
-
-export const REDESIGN_DEV_TRANSACTION_TYPES = [
-  ...REDESIGN_USER_TRANSACTION_TYPES,
-];
-
-const SIGNATURE_APPROVAL_TYPES = [
-  ApprovalType.PersonalSign,
-  ApprovalType.EthSignTypedData,
-];
+import { REDESIGN_APPROVAL_TYPES } from '../../../../shared/modules/confirmation.utils';
 
 export const isSignatureApprovalRequest = (
   request: ApprovalRequest<Record<string, Json>>,
-) => SIGNATURE_APPROVAL_TYPES.includes(request.type as ApprovalType);
+) => REDESIGN_APPROVAL_TYPES.includes(request.type as ApprovalType);
 
 export const SIGNATURE_TRANSACTION_TYPES = [
   TransactionType.personalSign,
