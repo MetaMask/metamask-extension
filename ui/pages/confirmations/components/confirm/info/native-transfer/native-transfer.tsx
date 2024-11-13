@@ -17,7 +17,7 @@ const NativeTransferInfo = () => {
   const isWalletInitiated = transactionMeta.origin === 'metamask';
   useSimulationMetricsNoShow({
     enableMetrics: isWalletInitiated,
-    transactionId: transactionMeta.id,
+    transactionMeta,
   });
 
   return (
