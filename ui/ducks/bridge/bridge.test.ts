@@ -219,7 +219,7 @@ describe('Ducks - Bridge', () => {
     it('fetches token prices and updates dest exchange rates in state, native dest token', async () => {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const mockStore = configureMockStore<any>(middleware)(
-        createBridgeMockStore({}, {}),
+        createBridgeMockStore(),
       );
       const state = mockStore.getState().bridge;
       const fetchTokenExchangeRatesSpy = jest
@@ -261,7 +261,7 @@ describe('Ducks - Bridge', () => {
     it('fetches token prices and updates dest exchange rates in state, erc20 dest token', async () => {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const mockStore = configureMockStore<any>(middleware)(
-        createBridgeMockStore({}, {}),
+        createBridgeMockStore(),
       );
       const state = mockStore.getState().bridge;
       const fetchTokenExchangeRatesSpy = jest

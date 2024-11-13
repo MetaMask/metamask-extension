@@ -70,9 +70,7 @@ describe('Bridge quote utils', () => {
       'native',
       NATIVE_TOKEN,
       '1009000000000000000',
-      {
-        '0x0000000000000000000000000000000000000000': 1.0000825923770915,
-      },
+      1.0000825923770915,
       2515.02,
       {
         raw: '1.143217728',
@@ -83,9 +81,7 @@ describe('Bridge quote utils', () => {
       'erc20',
       ERC20_TOKEN,
       '100000000',
-      {
-        '0x0b2c639c533813f4aa9d7837caf62653d097ff85': 0.999781,
-      },
+      0.999781,
       2517.14,
       { raw: '100.512', fiat: '100.489987872' },
     ],
@@ -103,7 +99,7 @@ describe('Bridge quote utils', () => {
       _: string,
       srcAsset: { decimals: number; address: string },
       srcTokenAmount: string,
-      fromTokenExchangeRates: Record<string, number | null>,
+      fromTokenExchangeRate: number,
       fromNativeExchangeRate: number,
       { raw, fiat }: { raw: string; fiat: string },
     ) => {
@@ -117,7 +113,7 @@ describe('Bridge quote utils', () => {
             },
           },
         } as never,
-        fromTokenExchangeRates,
+        fromTokenExchangeRate,
         fromNativeExchangeRate,
       );
       expect(result.raw?.toString()).toStrictEqual(raw);
