@@ -6,6 +6,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [12.6.1]
+### Fixed
+- Fixed gas limit estimation on Base and BNB chains ([#28327](https://github.com/MetaMask/metamask-extension/pull/28327))
+
 ## [12.6.0]
 ### Added
 - Added the APE network icon ([#27841](https://github.com/MetaMask/metamask-extension/pull/27841))
@@ -5303,7 +5307,8 @@ Update styles and spacing on the critical error page  ([#20350](https://github.c
 - Added the ability to restore accounts from seed words.
 
 
-[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v12.6.0...HEAD
+[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v12.6.1...HEAD
+[12.6.1]: https://github.com/MetaMask/metamask-extension/compare/v12.6.0...v12.6.1
 [12.6.0]: https://github.com/MetaMask/metamask-extension/compare/v12.5.1...v12.6.0
 [12.5.1]: https://github.com/MetaMask/metamask-extension/compare/v12.5.0...v12.5.1
 [12.5.0]: https://github.com/MetaMask/metamask-extension/compare/v12.4.2...v12.5.0
