@@ -85,7 +85,6 @@ export default function NftsTab() {
         referrer: ORIGIN_METAMASK,
       },
     });
-    endTrace({ name: TraceName.AccountOverviewNftsTab });
   }, [
     nftsLoading,
     showNftBanner,
