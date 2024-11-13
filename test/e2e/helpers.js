@@ -986,21 +986,6 @@ async function removeSelectedAccount(driver) {
 }
 
 /**
- * @deprecated Please use page object functions in `pages/account-list-page`.
- * @param driver
- */
-async function getSelectedAccountAddress(driver) {
-  await driver.clickElement('[data-testid="account-options-menu-button"]');
-  await driver.clickElement('[data-testid="account-list-menu-details"]');
-  const accountAddress = await (
-    await driver.findElement('[data-testid="address-copy-button-text"]')
-  ).getText();
-  await driver.clickElement('.mm-box button[aria-label="Close"]');
-
-  return accountAddress;
-}
-
-/**
  * Rather than using the FixtureBuilder#withPreferencesController to set the setting
  * we need to manually set the setting because the migration #122 overrides this.
  * We should be able to remove this when we delete the redesignedConfirmationsEnabled setting.
@@ -1112,7 +1097,6 @@ module.exports = {
   editGasFeeForm,
   clickNestedButton,
   removeSelectedAccount,
-  getSelectedAccountAddress,
   tempToggleSettingRedesignedConfirmations,
   openMenuSafe,
   sentryRegEx,

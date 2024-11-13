@@ -1,17 +1,13 @@
 import { strict as assert } from 'assert';
 import { Suite } from 'mocha';
-
-import {
-  WALLET_PASSWORD,
-  completeSRPRevealQuiz,
-  getSelectedAccountAddress,
-  openSRPRevealQuiz,
-  removeSelectedAccount,
-  tapAndHoldToRevealSRP,
-} from '../../helpers';
+import { WALLET_PASSWORD } from '../../helpers';
 import { withBtcAccountSnap } from './common-btc';
 import AccountListPage from '../../page-objects/pages/account-list-page';
 import HeaderNavbar from '../../page-objects/pages/header-navbar';
+import LoginPage from '../../page-objects/pages/login-page';
+import PrivacySettings from '../../page-objects/pages/settings/privacy-settings';
+import ResetPasswordPage from '../../page-objects/pages/reset-password-page';
+import SettingsPage from '../../page-objects/pages/settings/settings-page';
 
 describe('Create BTC Account', function (this: Suite) {
   it('create BTC account from the menu', async function () {
@@ -107,7 +103,7 @@ describe('Create BTC Account', function (this: Suite) {
     );
   });
 
-  it.only('can recreate BTC account after restoring wallet with SRP', async function () {
+  it('can recreate BTC account after restoring wallet with SRP', async function () {
     await withBtcAccountSnap(
       { title: this.test?.fullTitle() },
       async (driver) => {
@@ -121,55 +117,36 @@ describe('Create BTC Account', function (this: Suite) {
         await accountListPage.check_pageIsLoaded();
         const accountAddress = await accountListPage.getAccountAddress('Bitcoin Account');
 
-        await openSRPRevealQuiz(driver);
-        await completeSRPRevealQuiz(driver);
-        await driver.fill('[data-testid="input-password"]', WALLET_PASSWORD);
-        await driver.press('[data-testid="input-password"]', driver.Key.ENTER);
-        await tapAndHoldToRevealSRP(driver);
-        const seedPhrase = await (
-          await driver.findElement('[data-testid="srp_text"]')
-        ).getText();
+        // go to privacy settings page and get the SRP
+        await headerNavbar.openSettingsPage();
+        const settingsPage = new SettingsPage(driver);
+        await settingsPage.check_pageIsLoaded();
+        await settingsPage.goToPrivacySettings();
 
-        // Reset wallet
-        await driver.clickElement(
-          '[data-testid="account-options-menu-button"]',
-        );
-        await driver.clickElement({
-          css: '[data-testid="global-menu-lock"]',
-          text: 'Lock MetaMask',
-        });
+        const privacySettings = new PrivacySettings(driver);
+        await privacySettings.check_pageIsLoaded();
+        await privacySettings.openRevealSrpQuiz();
+        await privacySettings.completeRevealSrpQuiz();
+        await privacySettings.fillPasswordToRevealSrp(WALLET_PASSWORD);
+        const seedPhrase = await privacySettings.getSrpInRevealSrpDialog();
 
-        await driver.clickElement({
-          text: 'Forgot password?',
-          tag: 'a',
-        });
+        // lock metamask and reset wallet by clicking forgot password button
+        await headerNavbar.lockMetaMask();
+        await new LoginPage(driver).gotoResetPasswordPage();
+        const resetPasswordPage = new ResetPasswordPage(driver);
+        await resetPasswordPage.check_pageIsLoaded();
+        await resetPasswordPage.resetPassword(seedPhrase, WALLET_PASSWORD);
 
-        await driver.pasteIntoField(
-          '[data-testid="import-srp__srp-word-0"]',
-          seedPhrase,
-        );
+        // create a BTC account and check that the address is the same
+        await headerNavbar.check_pageIsLoaded();
+        await headerNavbar.openAccountMenu();
+        await accountListPage.check_pageIsLoaded();
+        await accountListPage.addNewBtcAccountWithDefaultName();
+        await headerNavbar.check_accountLabel('Bitcoin Account');
 
-        await driver.fill(
-          '[data-testid="create-vault-password"]',
-          WALLET_PASSWORD,
-        );
-        await driver.fill(
-          '[data-testid="create-vault-confirm-password"]',
-          WALLET_PASSWORD,
-        );
-
-        await driver.clickElement({
-          text: 'Restore',
-          tag: 'button',
-        });
-
-        await createBtcAccount(driver);
-        await driver.findElement({
-          css: '[data-testid="account-menu-icon"]',
-          text: 'Bitcoin Account',
-        });
-
-        const recreatedAccountAddress = await getSelectedAccountAddress(driver);
+        await headerNavbar.openAccountMenu();
+        await accountListPage.check_pageIsLoaded();
+        const recreatedAccountAddress = await accountListPage.getAccountAddress('Bitcoin Account');
         assert(accountAddress === recreatedAccountAddress);
       },
     );
