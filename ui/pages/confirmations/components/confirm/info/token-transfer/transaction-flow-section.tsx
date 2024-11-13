@@ -11,6 +11,7 @@ import {
   Icon,
   IconName,
   IconSize,
+  Text,
 } from '../../../../../../components/component-library';
 import {
   AlignItems,
@@ -18,14 +19,19 @@ import {
   FlexDirection,
   IconColor,
   JustifyContent,
+  TextVariant,
 } from '../../../../../../helpers/constants/design-system';
 import { useConfirmContext } from '../../../../context/confirm';
 import { useDecodedTransactionData } from '../hooks/useDecodedTransactionData';
 import { ConfirmLoader } from '../shared/confirm-loader/confirm-loader';
+import { ConfirmInfoAlertRow } from '../../../../../../components/app/confirm/info/row/alert-row/alert-row';
+import { RowAlertKey } from '../../../../../../components/app/confirm/info/row/constants';
+import { useI18nContext } from '../../../../../../hooks/useI18nContext';
 
 export const TransactionFlowSection = () => {
   const { currentConfirmation: transactionMeta } =
     useConfirmContext<TransactionMeta>();
+  const t = useI18nContext();
 
   const { value, pending } = useDecodedTransactionData();
 
@@ -51,25 +57,52 @@ export const TransactionFlowSection = () => {
         flexDirection={FlexDirection.Row}
         justifyContent={JustifyContent.spaceBetween}
         alignItems={AlignItems.center}
-        padding={3}
+        padding={1}
       >
-        <Name
-          value={transactionMeta.txParams.from}
-          type={NameType.ETHEREUM_ADDRESS}
-          variation={chainId}
-        />
+        <div>
+          <Text
+            variant={TextVariant.bodyMdMedium}
+            style={{
+              marginBottom: 6,
+            }}
+          >
+            From
+          </Text>
+          <Name
+            value={transactionMeta.txParams.from}
+            type={NameType.ETHEREUM_ADDRESS}
+            variation={chainId}
+          />
+        </div>
         <Icon
           name={IconName.ArrowRight}
           size={IconSize.Md}
           color={IconColor.iconMuted}
         />
-        {recipientAddress && (
-          <Name
-            value={recipientAddress}
-            type={NameType.ETHEREUM_ADDRESS}
-            variation={chainId}
-          />
-        )}
+        <div>
+          {recipientAddress && (
+            <>
+              <ConfirmInfoAlertRow
+                alertKey={RowAlertKey.FirstTimeInteraction}
+                label={t('to')}
+                ownerId={transactionMeta.id}
+                style={{
+                  padding: 0,
+                  margin: 0,
+                  marginBottom: 4,
+                }}
+              >
+                {/* Intentional fragment */}
+                <></>
+              </ConfirmInfoAlertRow>
+              <Name
+                value={recipientAddress}
+                type={NameType.ETHEREUM_ADDRESS}
+                variation={chainId}
+              />
+            </>
+          )}
+        </div>
       </Box>
     </ConfirmInfoSection>
   );

@@ -2091,6 +2091,12 @@
     "message": "File import not working? Click here!",
     "description": "Helps user import their account from a JSON file"
   },
+  "firstTimeInteractionReason": {
+    "message": "You're interacting with this address for the first time. Make sure that it's correct before you continue."
+  },
+  "firstTimeInteractionTitle": {
+    "message": "1st interaction"
+  },
   "flaskWelcomeUninstall": {
     "message": "you should uninstall this extension",
     "description": "This request is shown on the Flask Welcome screen. It is intended for non-developers, and will be bolded."
