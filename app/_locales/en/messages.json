@@ -5032,6 +5032,12 @@
   "simulationDetailsTitleTooltip": {
     "message": "Estimated changes are what might happen if you go through with this transaction. This is just a prediction, not a guarantee."
   },
+  "signature_decoding_list_nft_tooltip": {
+    "message": "Expect changes only if someone buys your NFTs."
+  },
+  "signature_decoding_bid_nft_tooltip": {
+    "message": "The NFT will be reflected in your wallet, when the bid is accepted."
+  },
   "simulationDetailsTotalFiat": {
     "message": "Total = $1",
     "description": "$1 is the total amount in fiat currency on one side of the transaction"
