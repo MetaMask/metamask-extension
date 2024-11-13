@@ -28,7 +28,6 @@ import { calculateTokenFiatAmount } from '../util/calculateTokenFiatAmount';
 
 type TokenListProps = {
   onTokenClick: (chainId: string, address: string) => void;
-  nativeToken?: ReactNode;
 };
 
 export type Token = {
