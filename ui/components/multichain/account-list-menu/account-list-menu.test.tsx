@@ -48,8 +48,11 @@ jest.mock('react-router-dom', () => ({
   useHistory: jest.fn(() => []),
 }));
 
-jest.mock('../../../hooks/accounts/useBitcoinWalletSnapClient', () => ({
-  useBitcoinWalletSnapClient: () => ({
+jest.mock('../../../hooks/accounts/useMultichainWalletSnapClient', () => ({
+  ...jest.requireActual(
+    '../../../hooks/accounts/useMultichainWalletSnapClient',
+  ),
+  useMultichainWalletSnapClient: () => ({
     createAccount: mockBitcoinClientCreateAccount,
   }),
 }));
