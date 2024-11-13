@@ -292,7 +292,7 @@
     "@metamask/address-book-controller": "^6.0.0",
     "@metamask/announcement-controller": "^7.0.0",
     "@metamask/approval-controller": "^7.0.0",
-    "@metamask/assets-controllers": "^43.1.1",
+    "@metamask/assets-controllers": "patch:@metamask/assets-controllers@npm%3A43.1.1#~/.yarn/patches/@metamask-assets-controllers-npm-43.1.1-c223d56176.patch",
     "@metamask/base-controller": "^7.0.0",
     "@metamask/bitcoin-wallet-snap": "^0.8.2",
     "@metamask/browser-passworder": "^4.3.0",

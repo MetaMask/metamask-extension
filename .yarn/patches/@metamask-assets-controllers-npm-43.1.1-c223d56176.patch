@@ -1,0 +1,14 @@
+diff --git a/dist/token-prices-service/codefi-v2.mjs b/dist/token-prices-service/codefi-v2.mjs
+index e7eaad2cfa8b233c4fd42a51f745233a1cc5c387..b89849c0caf7e5db3b53cf03dd5746b6b1433543 100644
+--- a/dist/token-prices-service/codefi-v2.mjs
++++ b/dist/token-prices-service/codefi-v2.mjs
+@@ -12,8 +12,7 @@ var __classPrivateFieldGet = (this && this.__classPrivateFieldGet) || function (
+ var _CodefiTokenPricesServiceV2_tokenPricePolicy;
+ import { handleFetch } from "@metamask/controller-utils";
+ import { hexToNumber } from "@metamask/utils";
+-import $cockatiel from "cockatiel";
+-const { circuitBreaker, ConsecutiveBreaker, ExponentialBackoff, handleAll, retry, wrap, CircuitState } = $cockatiel;
++import { circuitBreaker, ConsecutiveBreaker, ExponentialBackoff, handleAll, retry, wrap, CircuitState } from "cockatiel";
+ /**
+  * The list of currencies that can be supplied as the `vsCurrency` parameter to
+  * the `/spot-prices` endpoint, in lowercase form.
