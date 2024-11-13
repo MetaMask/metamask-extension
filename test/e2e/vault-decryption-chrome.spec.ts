@@ -191,7 +191,7 @@ describe('Vault Decryptor Page', function () {
         const privacySettings = new PrivacySettings(driver);
         await privacySettings.check_pageIsLoaded();
         await privacySettings.openRevealSrpQuiz();
-        await privacySettings.completeRevealSrpQuiz(true);
+        await privacySettings.completeRevealSrpQuiz();
         await privacySettings.fillPasswordToRevealSrp(WALLET_PASSWORD);
         const seedPhrase = await privacySettings.getSrpInRevealSrpDialog();
 
@@ -249,7 +249,7 @@ describe('Vault Decryptor Page', function () {
         const privacySettings = new PrivacySettings(driver);
         await privacySettings.check_pageIsLoaded();
         await privacySettings.openRevealSrpQuiz();
-        await privacySettings.completeRevealSrpQuiz(true);
+        await privacySettings.completeRevealSrpQuiz();
         await privacySettings.fillPasswordToRevealSrp(WALLET_PASSWORD);
         const seedPhrase = await privacySettings.getSrpInRevealSrpDialog();
 
