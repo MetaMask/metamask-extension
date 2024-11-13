@@ -4,7 +4,6 @@ import { Hex } from '@metamask/utils';
 import { useCallback, useMemo } from 'react';
 import { useSelector } from 'react-redux';
 import { EtherDenomination } from '../../../../../../../shared/constants/common';
-import { PriorityLevels } from '../../../../../../../shared/constants/gas';
 import {
   addHexes,
   decGWEIToHexWEI,
@@ -100,10 +99,7 @@ export function useFeeCalculations(transactionMeta: TransactionMeta) {
   );
 
   // Max fee
-  const gasLimit =
-    (transactionMeta.userFeeLevel === PriorityLevels.dAppSuggested
-      ? transactionMeta?.dappSuggestedGasFees?.gas
-      : transactionMeta?.txParams?.gas) || HEX_ZERO;
+  const gasLimit = transactionMeta?.txParams?.gas || HEX_ZERO;
   const gasPrice = transactionMeta?.txParams?.gasPrice || HEX_ZERO;
 
   const maxFee = useMemo(() => {
