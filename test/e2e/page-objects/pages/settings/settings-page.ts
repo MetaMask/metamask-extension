@@ -3,6 +3,9 @@ import { Driver } from '../../../webdriver/driver';
 class SettingsPage {
   private readonly driver: Driver;
 
+  private readonly closeSettingsPageButton =
+    '.settings-page__header__title-container__close-button';
+
   private readonly developerOptionsButton = {
     text: 'Developer Options',
     css: '.tab-bar__tab__content__title',
@@ -35,6 +38,11 @@ class SettingsPage {
       throw e;
     }
     console.log('Settings page is loaded');
+  }
+
+  async closeSettingsPage(): Promise<void> {
+    console.log('Closing Settings page');
+    await this.driver.clickElement(this.closeSettingsPageButton);
   }
 
   async goToDevelopOptionSettings(): Promise<void> {
