@@ -501,7 +501,7 @@
     "message": "No accounts available to connect"
   },
   "allNetworks": {
-    "message": "All Networks",
+    "message": "All networks",
     "description": "Speicifies to token network filter to filter by all Networks"
   },
   "allOfYour": {
@@ -1375,7 +1375,7 @@
     "message": "Current language"
   },
   "currentNetwork": {
-    "message": "Current Network",
+    "message": "Current network",
     "description": "Speicifies to token network filter to filter by current Network. Will render when network nickname is not available"
   },
   "currentRpcUrlDeprecated": {
@@ -2457,6 +2457,9 @@
   },
   "importTokenWarning": {
     "message": "Anyone can create a token with any name, including fake versions of existing tokens. Add and trade at your own risk!"
+  },
+  "importTokens": {
+    "message": "Import tokens"
   },
   "importTokensCamelCase": {
     "message": "Import tokens"
@@ -5981,6 +5984,10 @@
   "switchedNetworkToastMessage": {
     "message": "$1 is now active on $2",
     "description": "$1 represents the account name, $2 represents the network name"
+  },
+  "switchedNetworkToastMessageNoOrigin": {
+    "message": "You're now using $1",
+    "description": "$1 represents the network name"
   },
   "switchedTo": {
     "message": "You're now using"
