@@ -101,8 +101,8 @@ export default function TokenCell({
     primaryThreshold,
     locale,
     {
-      minimumFractionDigits: 4,
-      maximumFractionDigits: 4,
+      minimumFractionDigits: string?.includes('.') ? 4 : 0,
+      maximumFractionDigits: string?.includes('.') ? 4 : 0,
     },
   );
 
