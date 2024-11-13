@@ -298,7 +298,7 @@
     "@metamask/address-book-controller": "^6.0.0",
     "@metamask/announcement-controller": "^7.0.0",
     "@metamask/approval-controller": "^7.0.0",
-    "@metamask/assets-controllers": "patch:@metamask/assets-controllers@npm%3A42.0.0#~/.yarn/patches/@metamask-assets-controllers-npm-42.0.0-57b3d695bb.patch",
+    "@metamask/assets-controllers": "^43.1.0",
     "@metamask/base-controller": "^7.0.0",
     "@metamask/bitcoin-wallet-snap": "^0.8.2",
     "@metamask/browser-passworder": "^4.3.0",
@@ -358,7 +358,7 @@
     "@metamask/snaps-rpc-methods": "^11.5.1",
     "@metamask/snaps-sdk": "^6.10.0",
     "@metamask/snaps-utils": "^8.5.2",
-    "@metamask/solana-wallet-snap": "^0.1.9",
+    "@metamask/solana-wallet-snap": "1.0.0",
     "@metamask/transaction-controller": "^38.3.0",
     "@metamask/user-operation-controller": "^13.0.0",
     "@metamask/utils": "^10.0.1",
@@ -760,7 +760,8 @@
       "resolve-url-loader>es6-iterator>d>es5-ext": false,
       "resolve-url-loader>es6-iterator>d>es5-ext>esniff>es5-ext": false,
       "level>classic-level": false,
-      "jest-preview": false
+      "jest-preview": false,
+      "@metamask/solana-wallet-snap>@solana/web3.js>bigint-buffer": false
     }
   },
   "packageManager": "yarn@4.5.1"
