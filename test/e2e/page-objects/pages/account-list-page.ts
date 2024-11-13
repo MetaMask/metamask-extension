@@ -1,8 +1,12 @@
+import { strict as assert } from 'assert';
 import { Driver } from '../../webdriver/driver';
 import { largeDelayMs } from '../../helpers';
+import messages from '../../../../app/_locales/en/messages.json';
 
 class AccountListPage {
   private readonly driver: Driver;
+
+  private readonly accountAddressText = '.qr-code__address-segments';
 
   private readonly accountListBalance =
     '[data-testid="second-currency-display"]';
@@ -24,6 +28,11 @@ class AccountListPage {
 
   private readonly addAccountConfirmButton =
     '[data-testid="submit-add-account-with-name"]';
+
+  private readonly addBtcAccountButton = {
+    text: messages.addNewBitcoinAccount.message,
+    tag: 'button',
+  };
 
   private readonly addEthereumAccountButton =
     '[data-testid="multichain-account-menu-popover-add-account"]';
@@ -93,6 +102,11 @@ class AccountListPage {
     tag: 'div',
   };
 
+  private readonly removeAccountNevermindButton = {
+    text: 'Nevermind',
+    tag: 'button',
+  };
+
   private readonly saveAccountLabelButton =
     '[data-testid="save-account-label-input"]';
 
@@ -148,6 +162,34 @@ class AccountListPage {
   }
 
   /**
+   * Adds a new BTC account with default next available name.
+   * @param btcAccountCreationEnabled indicates if the BTC account creation is expected to be enabled or disabled. Defaults to true.
+   */
+  async addNewBtcAccountWithDefaultName(
+    btcAccountCreationEnabled: boolean = true,
+  ): Promise<void> {
+    console.log(`Adding new BTC account with next available name`);
+    await this.driver.clickElement(this.createAccountButton);
+    if (btcAccountCreationEnabled) {
+      await this.driver.clickElement(this.addBtcAccountButton);
+      // needed to mitigate a race condition with the state update
+      // there is no condition we can wait for in the UI
+      await this.driver.delay(largeDelayMs);
+      await this.driver.clickElementAndWaitToDisappear(
+        this.addAccountConfirmButton,
+        // Longer timeout than usual, this reduces the flakiness
+        // around Bitcoin account creation (mainly required for
+        // Firefox)
+        5000,
+      );
+    } else {
+      const createButton = await this.driver.findElement(this.addBtcAccountButton);
+      assert.equal(await createButton.isEnabled(), false);
+      await this.driver.clickElement(this.closeAccountModalButton);
+    }
+  }
+
+  /**
    * Import a new account with a private key.
    *
    * @param privateKey - Private key of the account
@@ -193,6 +235,22 @@ class AccountListPage {
     await this.driver.clickElementAndWaitToDisappear(
       this.closeAccountModalButton,
     );
+  }
+
+  /**
+   * Get the address of the specified account.
+   *
+   * @param accountLabel - The label of the account to get the address.
+   */
+  async getAccountAddress(accountLabel: string): Promise<string> {
+    console.log(`Get account address in account list`);
+    await this.openAccountOptionsInAccountList(accountLabel);
+    await this.driver.clickElement(this.accountMenuButton);
+    await this.driver.waitForSelector(this.accountAddressText);
+    const accountAddress = await (await this.driver.findElement(this.accountAddressText)).getText();
+    await this.driver.clickElement(this.closeAccountModalButton);
+    console.log('Account address: ' + accountAddress);
+    return accountAddress;
   }
 
   async hideAccount(): Promise<void> {
@@ -284,13 +342,18 @@ class AccountListPage {
    * Remove the specified account from the account list.
    *
    * @param accountLabel - The label of the account to remove.
+   * @param confirmRemoval - Whether to confirm the removal of the account. Defaults to true.
    */
-  async removeAccount(accountLabel: string): Promise<void> {
+  async removeAccount(accountLabel: string, confirmRemoval: boolean = true): Promise<void> {
     console.log(`Remove account in account list`);
     await this.openAccountOptionsInAccountList(accountLabel);
     await this.driver.clickElement(this.removeAccountButton);
     await this.driver.waitForSelector(this.removeAccountMessage);
-    await this.driver.clickElement(this.removeAccountConfirmButton);
+    if (confirmRemoval) {
+      await this.driver.clickElement(this.removeAccountConfirmButton);
+    } else {
+      await this.driver.clickElement(this.removeAccountNevermindButton);
+    }
   }
 
   async switchToAccount(expectedLabel: string): Promise<void> {

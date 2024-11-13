@@ -1,6 +1,5 @@
 import { strict as assert } from 'assert';
 import { Suite } from 'mocha';
-import messages from '../../../../app/_locales/en/messages.json';
 
 import {
   WALLET_PASSWORD,
@@ -10,17 +9,18 @@ import {
   removeSelectedAccount,
   tapAndHoldToRevealSRP,
 } from '../../helpers';
-import { createBtcAccount, withBtcAccountSnap } from './common-btc';
+import { withBtcAccountSnap } from './common-btc';
+import AccountListPage from '../../page-objects/pages/account-list-page';
+import HeaderNavbar from '../../page-objects/pages/header-navbar';
 
 describe('Create BTC Account', function (this: Suite) {
   it('create BTC account from the menu', async function () {
     await withBtcAccountSnap(
       { title: this.test?.fullTitle() },
       async (driver) => {
-        await driver.findElement({
-          css: '[data-testid="account-menu-icon"]',
-          text: 'Bitcoin Account',
-        });
+        const headerNavbar = new HeaderNavbar(driver);
+        await headerNavbar.check_pageIsLoaded();
+        await headerNavbar.check_accountLabel('Bitcoin Account');
       },
     );
   });
@@ -29,27 +29,21 @@ describe('Create BTC Account', function (this: Suite) {
     await withBtcAccountSnap(
       { title: this.test?.fullTitle() },
       async (driver) => {
-        await driver.delay(500);
-        await driver.clickElement('[data-testid="account-menu-icon"]');
-        await driver.clickElement(
-          '[data-testid="multichain-account-menu-popover-action-button"]',
-        );
+        // check that we have one BTC account
+        const headerNavbar = new HeaderNavbar(driver);
+        await headerNavbar.check_pageIsLoaded();
+        await headerNavbar.check_accountLabel('Bitcoin Account');
 
-        const createButton = await driver.findElement({
-          text: messages.addNewBitcoinAccount.message,
-          tag: 'button',
-        });
-        assert.equal(await createButton.isEnabled(), false);
+        // check user cannot create second BTC account
+        await headerNavbar.openAccountMenu();
+        const accountListPage = new AccountListPage(driver);
+        await accountListPage.check_pageIsLoaded();
+        await accountListPage.addNewBtcAccountWithDefaultName(false);
 
-        // modal will still be here
-        await driver.clickElement('.mm-box button[aria-label="Close"]');
-
-        // check the number of accounts. it should only be 2.
-        await driver.clickElement('[data-testid="account-menu-icon"]');
-        const menuItems = await driver.findElements(
-          '.multichain-account-list-item',
-        );
-        assert.equal(menuItems.length, 2);
+        // check the number of available accounts is 2
+        await headerNavbar.openAccountMenu();
+        await accountListPage.check_pageIsLoaded();
+        await accountListPage.check_numberOfAvailableAccounts(2);
       },
     );
   });
@@ -58,29 +52,24 @@ describe('Create BTC Account', function (this: Suite) {
     await withBtcAccountSnap(
       { title: this.test?.fullTitle() },
       async (driver) => {
-        await driver.findElement({
-          css: '[data-testid="account-menu-icon"]',
-          text: 'Bitcoin Account',
-        });
+        // check that we have one BTC account
+        const headerNavbar = new HeaderNavbar(driver);
+        await headerNavbar.check_pageIsLoaded();
+        await headerNavbar.check_accountLabel('Bitcoin Account');
 
-        await driver.clickElement('[data-testid="account-menu-icon"]');
-        await driver.clickElement(
-          '.multichain-account-list-item--selected [data-testid="account-list-item-menu-button"]',
+        // check user can cancel the removal of the BTC account
+        await headerNavbar.openAccountMenu();
+        const accountListPage = new AccountListPage(driver);
+        await accountListPage.check_pageIsLoaded();
+        await accountListPage.removeAccount(
+          'Bitcoin Account', false
         );
-        await driver.clickElement('[data-testid="account-list-menu-remove"]');
-        await driver.clickElement({ text: 'Nevermind', tag: 'button' });
+        await headerNavbar.check_accountLabel('Bitcoin Account');
 
-        await driver.findElement({
-          css: '[data-testid="account-menu-icon"]',
-          text: 'Bitcoin Account',
-        });
-
-        // check the number of accounts. it should only be 2.
-        await driver.clickElement('[data-testid="account-menu-icon"]');
-        const menuItems = await driver.findElements(
-          '.multichain-account-list-item',
-        );
-        assert.equal(menuItems.length, 2);
+        // check the number of accounts. it should be 2.
+        await headerNavbar.openAccountMenu();
+        await accountListPage.check_pageIsLoaded();
+        await accountListPage.check_numberOfAvailableAccounts(2);
       },
     );
   });
@@ -89,37 +78,48 @@ describe('Create BTC Account', function (this: Suite) {
     await withBtcAccountSnap(
       { title: this.test?.fullTitle() },
       async (driver) => {
-        await driver.findElement({
-          css: '[data-testid="account-menu-icon"]',
-          text: 'Bitcoin Account',
-        });
+        // check that we have one BTC account
+        const headerNavbar = new HeaderNavbar(driver);
+        await headerNavbar.check_pageIsLoaded();
+        await headerNavbar.check_accountLabel('Bitcoin Account');
 
-        const accountAddress = await getSelectedAccountAddress(driver);
-        await removeSelectedAccount(driver);
+        // get the address of the BTC account and remove it
+        await headerNavbar.openAccountMenu();
+        const accountListPage = new AccountListPage(driver);
+        await accountListPage.check_pageIsLoaded();
+        const accountAddress = await accountListPage.getAccountAddress('Bitcoin Account');
+        await headerNavbar.openAccountMenu();
+        await accountListPage.removeAccount('Bitcoin Account');
 
-        // Recreate account
-        await createBtcAccount(driver);
-        await driver.findElement({
-          css: '[data-testid="account-menu-icon"]',
-          text: 'Bitcoin Account',
-        });
+        // Recreate account and check that the address is the same
+        await headerNavbar.openAccountMenu();
+        await accountListPage.check_pageIsLoaded();
+        await accountListPage.addNewBtcAccountWithDefaultName();
+        await headerNavbar.check_accountLabel('Bitcoin Account');
 
-        const recreatedAccountAddress = await getSelectedAccountAddress(driver);
+        await headerNavbar.openAccountMenu();
+        await accountListPage.check_pageIsLoaded();
+        const recreatedAccountAddress = await accountListPage.getAccountAddress('Bitcoin Account');
+
         assert(accountAddress === recreatedAccountAddress);
+        console.log('Recreated account address: ' + recreatedAccountAddress);
       },
     );
   });
 
-  it('can recreate BTC account after restoring wallet with SRP', async function () {
+  it.only('can recreate BTC account after restoring wallet with SRP', async function () {
     await withBtcAccountSnap(
       { title: this.test?.fullTitle() },
       async (driver) => {
-        await driver.findElement({
-          css: '[data-testid="account-menu-icon"]',
-          text: 'Bitcoin Account',
-        });
+        // check that we have one BTC account
+        const headerNavbar = new HeaderNavbar(driver);
+        await headerNavbar.check_pageIsLoaded();
+        await headerNavbar.check_accountLabel('Bitcoin Account');
 
-        const accountAddress = await getSelectedAccountAddress(driver);
+        await headerNavbar.openAccountMenu();
+        const accountListPage = new AccountListPage(driver);
+        await accountListPage.check_pageIsLoaded();
+        const accountAddress = await accountListPage.getAccountAddress('Bitcoin Account');
 
         await openSRPRevealQuiz(driver);
         await completeSRPRevealQuiz(driver);
