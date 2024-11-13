@@ -84,7 +84,7 @@ export const ButtonBase: ButtonBaseComponent = React.forwardRef(
           <Icon
             name={startIconName}
             size={IconSize.Sm}
-            marginInlineEnd={0}
+            marginInlineEnd={1}
             {...startIconProps}
             color={loading ? IconColor.transparent : startIconProps?.color}
           />
@@ -111,7 +111,7 @@ export const ButtonBase: ButtonBaseComponent = React.forwardRef(
           <Icon
             name={endIconName}
             size={IconSize.Sm}
-            marginInlineStart={0}
+            marginInlineStart={1}
             {...endIconProps}
             color={loading ? IconColor.transparent : endIconProps?.color}
           />
