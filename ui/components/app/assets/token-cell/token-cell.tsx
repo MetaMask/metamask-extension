@@ -96,13 +96,16 @@ export default function TokenCell({
   );
 
   // Format for primary amount with 5 decimal places
+  const num = Number(string);
+  const hasNonZeroDecimal = num % 1 !== 0;
+
   const primary = formatWithThreshold(
     Number(string),
     primaryThreshold,
     locale,
     {
-      minimumFractionDigits: string?.includes('.') ? 4 : 0,
-      maximumFractionDigits: string?.includes('.') ? 4 : 0,
+      minimumFractionDigits: hasNonZeroDecimal ? 4 : 0,
+      maximumFractionDigits: hasNonZeroDecimal ? 4 : 0,
     },
   );
 
@@ -123,7 +126,6 @@ export default function TokenCell({
   }
 
   const tokenChainImage = getImageForChainId(chainId);
-  // console.log('FOO: ', symbol, tokenChainImage ?? '');
 
   return (
     <TokenListItem
