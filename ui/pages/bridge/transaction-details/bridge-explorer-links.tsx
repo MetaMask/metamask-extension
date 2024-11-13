@@ -73,9 +73,11 @@ export default function BridgeExplorerLinks({
   const srcButtonText = t('bridgeExplorerLinkViewOn', [
     getBlockExplorerName(srcChainId, srcBlockExplorerUrl),
   ]);
-  const destButtonText = t('bridgeExplorerLinkViewOn', [
-    getBlockExplorerName(destChainId, destBlockExplorerUrl),
-  ]);
+  const destButtonText = destBlockExplorerUrl
+    ? t('bridgeExplorerLinkViewOn', [
+        getBlockExplorerName(destChainId, destBlockExplorerUrl),
+      ])
+    : undefined;
 
   return (
     <Box display={Display.Flex} flexDirection={FlexDirection.Column} gap={4}>
