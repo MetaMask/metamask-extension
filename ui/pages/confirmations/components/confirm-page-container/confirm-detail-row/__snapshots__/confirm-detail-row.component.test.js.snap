@@ -13,7 +13,7 @@ exports[`Confirm Detail Row Component should match snapshot 1`] = `
     >
       <div
         class="mm-box currency-display-component confirm-detail-row__primary mm-box--display-flex mm-box--flex-wrap-wrap mm-box--align-items-center"
-        title="0"
+        title="0 GoerliETH"
       >
         <div
           class="mm-box currency-display-component__prefix mm-box--margin-inline-end-1"
@@ -31,10 +31,15 @@ exports[`Confirm Detail Row Component should match snapshot 1`] = `
         >
           0
         </span>
+        <span
+          class="mm-box mm-text currency-display-component__suffix mm-text--inherit mm-box--margin-inline-start-1 mm-box--color-text-default"
+        >
+          GoerliETH
+        </span>
       </div>
       <div
         class="mm-box currency-display-component confirm-detail-row__secondary mm-box--display-flex mm-box--flex-wrap-wrap mm-box--align-items-center"
-        title="0"
+        title="0 GoerliETH"
       >
         <div
           class="mm-box currency-display-component__prefix mm-box--margin-inline-end-1"
@@ -51,6 +56,11 @@ exports[`Confirm Detail Row Component should match snapshot 1`] = `
           data-testid="account-value-and-suffix"
         >
           0
+        </span>
+        <span
+          class="mm-box mm-text currency-display-component__suffix mm-text--inherit mm-box--margin-inline-start-1 mm-box--color-text-default"
+        >
+          GoerliETH
         </span>
       </div>
     </div>

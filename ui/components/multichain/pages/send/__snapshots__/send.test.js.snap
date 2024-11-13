@@ -152,7 +152,7 @@ exports[`SendPage render and initialization should render correctly even when a 
               </span>
             </span>
             <span
-              class="mm-box mm-icon mm-icon--size-sm mm-box--margin-inline-start-1 mm-box--display-inline-block mm-box--color-icon-default"
+              class="mm-box mm-icon mm-icon--size-sm mm-box--margin-inline-start-0 mm-box--display-inline-block mm-box--color-icon-default"
               style="mask-image: url('./images/icons/arrow-down.svg');"
             />
           </button>

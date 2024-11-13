@@ -25,7 +25,7 @@ exports[`AccountListItem should match snapshot 1`] = `
           </div>
         </span>
         <span
-          class="mm-box mm-icon mm-icon--size-sm mm-box--margin-inline-start-1 mm-box--display-inline-block mm-box--color-inherit"
+          class="mm-box mm-icon mm-icon--size-sm mm-box--margin-inline-start-0 mm-box--display-inline-block mm-box--color-inherit"
           style="mask-image: url('./images/icons/copy.svg');"
         />
       </button>
