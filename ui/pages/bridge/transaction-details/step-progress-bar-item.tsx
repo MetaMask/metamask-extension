@@ -49,7 +49,7 @@ export default function StepProgressBarItem({
   return (
     <>
       {/* Indicator dots */}
-      {stepStatus === null && (
+      {(stepStatus === null || stepStatus === StatusTypes.UNKNOWN) && (
         <HollowCircle size={ICON_SIZE} color={IconColor.iconMuted} />
       )}
       {stepStatus === StatusTypes.PENDING && (

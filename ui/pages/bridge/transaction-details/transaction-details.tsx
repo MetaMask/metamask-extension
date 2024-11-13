@@ -147,28 +147,26 @@ const CrossChainSwapTxDetails = () => {
             flexDirection={FlexDirection.Column}
             gap={4}
           >
-            {bridgeHistoryItem && (
-              <>
-                {status !== StatusTypes.COMPLETE && bridgeHistoryItem && (
-                  <BridgeStepList
-                    bridgeHistoryItem={bridgeHistoryItem}
-                    srcChainTxMeta={srcChainTxMeta}
-                    networkConfigurationsByChainId={
-                      networkConfigurationsByChainId
-                    }
-                  />
-                )}
-
-                {/* Links to block explorers */}
-                <BridgeExplorerLinks
-                  srcChainId={srcNetwork?.chainId}
-                  destChainId={destNetwork?.chainId}
-                  srcBlockExplorerUrl={srcBlockExplorerUrl}
-                  destBlockExplorerUrl={destBlockExplorerUrl}
+            {status !== StatusTypes.COMPLETE &&
+              (bridgeHistoryItem || srcChainTxMeta) && (
+                <BridgeStepList
+                  bridgeHistoryItem={bridgeHistoryItem}
+                  srcChainTxMeta={srcChainTxMeta}
+                  networkConfigurationsByChainId={
+                    networkConfigurationsByChainId
+                  }
                 />
-                <Divider />
-              </>
-            )}
+              )}
+
+            {/* Links to block explorers */}
+            <BridgeExplorerLinks
+              srcChainId={srcNetwork?.chainId}
+              destChainId={destNetwork?.chainId}
+              srcBlockExplorerUrl={srcBlockExplorerUrl}
+              destBlockExplorerUrl={destBlockExplorerUrl}
+            />
+            <Divider />
+
             {/* General tx details */}
             <Box
               display={Display.Flex}
