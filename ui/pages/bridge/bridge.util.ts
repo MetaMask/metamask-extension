@@ -136,6 +136,7 @@ export async function fetchBridgeTokens(
 // Returns a list of bridge tx quotes
 export async function fetchBridgeQuotes(
   request: QuoteRequest,
+  signal: AbortSignal,
 ): Promise<QuoteResponse[]> {
   const queryParams = new URLSearchParams({
     walletAddress: request.walletAddress,
@@ -151,7 +152,11 @@ export async function fetchBridgeQuotes(
   const url = `${BRIDGE_API_BASE_URL}/getQuote?${queryParams}`;
   const quotes = await fetchWithCache({
     url,
-    fetchOptions: { method: 'GET', headers: CLIENT_ID_HEADER },
+    fetchOptions: {
+      method: 'GET',
+      headers: CLIENT_ID_HEADER,
+      signal,
+    },
     cacheOptions: { cacheRefreshTime: 0 },
     functionName: 'fetchBridgeQuotes',
   });
