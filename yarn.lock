@@ -11537,13 +11537,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/wtfnode@npm:^0":
-  version: 0.7.3
-  resolution: "@types/wtfnode@npm:0.7.3"
-  checksum: 10/73d7b2faf57c7337c9541c8e194f2ca380b8ea848144d14f1c7534dd5c3f1b7117c8b113bd9e9de7ff099ad56a03c4e70fdb066294503c37fe88fd11fc2de157
-  languageName: node
-  linkType: hard
-
 "@types/yargs-parser@npm:*, @types/yargs-parser@npm:^21.0.3":
   version: 21.0.3
   resolution: "@types/yargs-parser@npm:21.0.3"
@@ -26886,7 +26879,6 @@ __metadata:
     "@types/watchify": "npm:^3.11.1"
     "@types/webextension-polyfill": "npm:^0.10.4"
     "@types/ws": "npm:^8.5.10"
-    "@types/wtfnode": "npm:^0"
     "@types/yargs": "npm:^17.0.32"
     "@types/yargs-parser": "npm:^21.0.3"
     "@typescript-eslint/eslint-plugin": "npm:^7.10.0"
@@ -27104,7 +27096,6 @@ __metadata:
     webpack-cli: "npm:^5.1.4"
     webpack-dev-server: "npm:^5.0.3"
     ws: "npm:^8.17.1"
-    wtfnode: "npm:^0.9.3"
     yaml: "npm:^2.4.1"
     yargs: "npm:^17.7.2"
     yargs-parser: "npm:^21.1.1"
@@ -38192,15 +38183,6 @@ __metadata:
     utf-8-validate:
       optional: true
   checksum: 10/9c796b84ba80ffc2c2adcdfc9c8e9a219ba99caa435c9a8d45f9ac593bba325563b3f83edc5eb067cc6d21b9a6bf2c930adf76dd40af5f58a5ca6859e81858f0
-  languageName: node
-  linkType: hard
-
-"wtfnode@npm:^0.9.3":
-  version: 0.9.3
-  resolution: "wtfnode@npm:0.9.3"
-  bin:
-    wtfnode: proxy.js
-  checksum: 10/986252f94ebb8c977773f3529a0031842b2403fdc5dc776aed0e995641b750bcddcf7b4862f6ba02a8888518ab324854c8a8907a1c622ae95506db51722d04a7
   languageName: node
   linkType: hard
 
