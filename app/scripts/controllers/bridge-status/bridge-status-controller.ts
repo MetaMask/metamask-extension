@@ -182,31 +182,33 @@ export default class BridgeStatusController extends StaticIntervalPollingControl
 
     // Write all non-status fields to state so we can reference the quote in Activity list without the Bridge API
     // We know it's in progress but not the exact status yet
+    const txHistoryItem = {
+      quote: quoteResponse.quote,
+      startTime,
+      estimatedProcessingTimeInSeconds:
+        quoteResponse.estimatedProcessingTimeInSeconds,
+      slippagePercentage,
+      pricingData,
+      initialDestAssetBalance,
+      targetContractAddress,
+      account,
+      status: {
+        // We always have a PENDING status when we start polling for a tx, don't need the Bridge API for that
+        // Also we know the bare minimum fields for status at this point in time
+        status: StatusTypes.PENDING,
+        srcChain: {
+          chainId: statusRequest.srcChainId,
+          txHash: statusRequest.srcTxHash,
+        },
+      },
+    };
+
     this.update((_state) => {
       _state.bridgeStatusState = {
         ...bridgeStatusState,
         txHistory: {
           ...bridgeStatusState.txHistory,
-          [statusRequest.srcTxHash]: {
-            quote: quoteResponse.quote,
-            startTime,
-            estimatedProcessingTimeInSeconds:
-              quoteResponse.estimatedProcessingTimeInSeconds,
-            slippagePercentage,
-            pricingData,
-            initialDestAssetBalance,
-            targetContractAddress,
-            account,
-            status: {
-              // We always have a PENDING status when we start polling for a tx, don't need the Bridge API for that
-              // Also we know the bare minimum fields for status at this point in time
-              status: StatusTypes.PENDING,
-              srcChain: {
-                chainId: statusRequest.srcChainId,
-                txHash: statusRequest.srcTxHash,
-              },
-            },
-          },
+          [statusRequest.srcTxHash]: txHistoryItem,
         },
       };
     });
