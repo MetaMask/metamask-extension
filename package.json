@@ -250,7 +250,13 @@
     "@metamask/network-controller@npm:^17.0.0": "patch:@metamask/network-controller@npm%3A21.0.0#~/.yarn/patches/@metamask-network-controller-npm-21.0.0-559aa8e395.patch",
     "@metamask/network-controller@npm:^19.0.0": "patch:@metamask/network-controller@npm%3A21.0.0#~/.yarn/patches/@metamask-network-controller-npm-21.0.0-559aa8e395.patch",
     "@metamask/network-controller@npm:^20.0.0": "patch:@metamask/network-controller@npm%3A21.0.0#~/.yarn/patches/@metamask-network-controller-npm-21.0.0-559aa8e395.patch",
-    "path-to-regexp": "1.9.0"
+    "path-to-regexp": "1.9.0",
+    "@ledgerhq/cryptoassets-evm-signatures/axios": "^0.28.0",
+    "@ledgerhq/domain-service/axios": "^0.28.0",
+    "@ledgerhq/evm-tools/axios": "^0.28.0",
+    "@ledgerhq/hw-app-eth/axios": "^0.28.0",
+    "@ledgerhq/hw-app-eth@npm:^6.39.0": "patch:@ledgerhq/hw-app-eth@npm%3A6.39.0#~/.yarn/patches/@ledgerhq-hw-app-eth-npm-6.39.0-866309bbbe.patch",
+    "@ledgerhq/evm-tools@npm:^1.2.3": "patch:@ledgerhq/evm-tools@npm%3A1.2.3#~/.yarn/patches/@ledgerhq-evm-tools-npm-1.2.3-414f44baa9.patch"
   },
   "dependencies": {
     "@babel/runtime": "patch:@babel/runtime@npm%3A7.25.9#~/.yarn/patches/@babel-runtime-npm-7.25.9-fe8c62510a.patch",
@@ -297,7 +303,7 @@
     "@metamask/ens-resolver-snap": "^0.1.2",
     "@metamask/eth-json-rpc-filters": "^9.0.0",
     "@metamask/eth-json-rpc-middleware": "patch:@metamask/eth-json-rpc-middleware@npm%3A14.0.1#~/.yarn/patches/@metamask-eth-json-rpc-middleware-npm-14.0.1-b6c2ccbe8c.patch",
-    "@metamask/eth-ledger-bridge-keyring": "^3.0.1",
+    "@metamask/eth-ledger-bridge-keyring": "^5.0.1",
     "@metamask/eth-query": "^4.0.0",
     "@metamask/eth-sig-util": "^7.0.1",
     "@metamask/eth-snap-keyring": "^4.4.0",

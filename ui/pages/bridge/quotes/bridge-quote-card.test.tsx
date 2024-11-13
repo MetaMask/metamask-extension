@@ -23,9 +23,14 @@ describe('BridgeQuoteCard', () => {
       },
       { fromTokenInputValue: 1 },
       {
+        quoteRequest: { insufficientBal: false },
+        quotesRefreshCount: 1,
         quotes: mockBridgeQuotesErc20Erc20,
         getQuotesLastFetched: Date.now(),
         quotesLoadingStatus: RequestStatus.FETCHED,
+        bridgeFeatureFlags: {
+          extensionConfig: { maxRefreshCount: 5, refreshRate: 30000 },
+        },
       },
     );
     const { container } = renderWithProvider(
