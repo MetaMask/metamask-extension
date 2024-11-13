@@ -1,4 +1,4 @@
-import React, { ReactNode, useMemo } from 'react';
+import React, { ReactNode, useEffect, useMemo } from 'react';
 import { shallowEqual, useSelector } from 'react-redux';
 import { Hex } from '@metamask/utils';
 import TokenCell from '../token-cell';
@@ -25,6 +25,7 @@ import { getConversionRate } from '../../../../ducks/metamask/metamask';
 import { filterAssets } from '../util/filter';
 import { calculateTokenBalance } from '../util/calculateTokenBalance';
 import { calculateTokenFiatAmount } from '../util/calculateTokenFiatAmount';
+import { endTrace, TraceName } from '../../../../../shared/lib/trace';
 
 type TokenListProps = {
   onTokenClick: (chainId: string, address: string) => void;
@@ -159,6 +160,12 @@ export default function TokenList({ onTokenClick }: TokenListProps) {
     selectedAccount,
     selectedAccountTokensChains,
   ]);
+
+  useEffect(() => {
+    if (sortedFilteredTokens) {
+      endTrace({ name: TraceName.AccountOverviewAssetListTab });
+    }
+  }, [sortedFilteredTokens]);
 
   const loading = false;
   return loading ? (
