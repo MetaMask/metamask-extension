@@ -198,8 +198,8 @@ async function rerunFailedWorkflowsFromDevelop() {
       const workflowStatus = await getWorkflowStatusById(item.id);
 
       if (workflowStatus.items.length === 1 && workflowStatus.items[0].status === 'failed') {
-        await rerunWorkflowById(item.id);
-        console.log(`Rerun workflow with ID: ${item.id}`);
+        await rerunWorkflowById(workflowStatus.items[0].id);
+        console.log(`Rerun workflow with ID: ${workflowStatus.items[0].id}`);
       }
     }
   }
