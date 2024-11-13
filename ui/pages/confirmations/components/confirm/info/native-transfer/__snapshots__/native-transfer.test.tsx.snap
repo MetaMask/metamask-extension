@@ -334,7 +334,7 @@ exports[`NativeTransferInfo renders correctly 1`] = `
           style="text-decoration: none;"
         >
           <span
-            class="mm-box mm-icon mm-icon--size-sm mm-box--margin-inline-end-1 mm-box--display-inline-block mm-box--color-inherit"
+            class="mm-box mm-icon mm-icon--size-sm mm-box--margin-inline-end-0 mm-box--display-inline-block mm-box--color-inherit"
             style="mask-image: url('./images/icons/edit.svg');"
           />
           <span
