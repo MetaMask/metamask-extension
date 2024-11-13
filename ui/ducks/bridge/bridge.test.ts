@@ -145,6 +145,7 @@ describe('Ducks - Bridge', () => {
       expect(actions[0].type).toStrictEqual('bridge/resetInputFields');
       const newState = bridgeReducer(state, actions[0]);
       expect(newState).toStrictEqual({
+        selectedQuote: null,
         toChainId: null,
         fromToken: null,
         toToken: null,
@@ -206,12 +207,14 @@ describe('Ducks - Bridge', () => {
       expect(actions[0].type).toStrictEqual('bridge/resetInputFields');
       const newState = bridgeReducer(state, actions[0]);
       expect(newState).toStrictEqual({
-        toChainId: null,
         fromToken: null,
-        toToken: null,
-        fromTokenInputValue: null,
-        toTokenExchangeRate: null,
         fromTokenExchangeRate: null,
+        fromTokenInputValue: null,
+        selectedQuote: null,
+        sortOrder: 0,
+        toChainId: null,
+        toToken: null,
+        toTokenExchangeRate: null,
       });
     });
   });
@@ -255,6 +258,7 @@ describe('Ducks - Bridge', () => {
       expect(newState).toStrictEqual({
         toChainId: null,
         toTokenExchangeRate: 0.356628,
+        sortOrder: 0,
       });
     });
 
@@ -299,6 +303,7 @@ describe('Ducks - Bridge', () => {
       expect(newState).toStrictEqual({
         toChainId: null,
         toTokenExchangeRate: 0.999881,
+        sortOrder: 0,
       });
     });
   });

@@ -39,16 +39,15 @@ DefaultStory.decorators = [
       store={configureStore(
         createBridgeMockStore({
           bridgeSliceOverrides: {
-            fromNativeExchangeRate: 1,
             fromTokenExchangeRate: 0.99,
             toNativeExchangeRate: 1,
             toTokenExchangeRate: 0.99,
-            sortOrder: SortOrder.ADJUSTED_RETURN_DESC,
+            sortOrder: SortOrder.COST_ASC,
           },
           bridgeStateOverrides: { quotes: mockBridgeQuotesErc20Erc20 },
           metamaskStateOverrides: {
             currencyRates: {
-              ETH: { conversionRate: 2514.5 },
+              ETH: { conversionRate: 2514.5 }, //1
             },
             marketData: {
               '0x1': {
@@ -77,7 +76,6 @@ PositiveArbitrage.decorators = [
       store={configureStore(
         createBridgeMockStore({
           bridgeSliceOverrides: {
-            fromNativeExchangeRate: 1,
             fromTokenExchangeRate: 0.99,
             toNativeExchangeRate: 1,
             toTokenExchangeRate: 2.1,

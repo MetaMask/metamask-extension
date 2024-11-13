@@ -22,21 +22,21 @@ describe('Bridge quote utils', () => {
       'native',
       NATIVE_TOKEN,
       '1009000000000000000',
-      { toTokenExchangeRate: 1, toNativeExchangeRate: 2521.73 },
+      2521.73,
       { raw: '1.009', fiat: '2544.42557' },
     ],
     [
       'erc20',
       ERC20_TOKEN,
       '2543140000',
-      { toTokenExchangeRate: 0.999781, toNativeExchangeRate: 0.352999 },
+      0.999781,
       { raw: '2543.14', fiat: '2542.58305234' },
     ],
     [
       'erc20 with null exchange rates',
       ERC20_TOKEN,
       '2543140000',
-      { toTokenExchangeRate: null, toNativeExchangeRate: null },
+      null,
       { raw: '2543.14', fiat: undefined },
     ],
   ])(
@@ -45,10 +45,7 @@ describe('Bridge quote utils', () => {
       _: string,
       destAsset: { decimals: number; address: string },
       destTokenAmount: string,
-      {
-        toTokenExchangeRate,
-        toNativeExchangeRate,
-      }: { toTokenExchangeRate: number; toNativeExchangeRate: number },
+      toTokenExchangeRate: number,
       { raw, fiat }: { raw: string; fiat: string },
     ) => {
       const result = calcToAmount(
@@ -57,7 +54,6 @@ describe('Bridge quote utils', () => {
           destTokenAmount,
         } as never,
         toTokenExchangeRate,
-        toNativeExchangeRate,
       );
       expect(result.raw?.toString()).toStrictEqual(raw);
       expect(result.fiat?.toString()).toStrictEqual(fiat);
@@ -70,7 +66,6 @@ describe('Bridge quote utils', () => {
       'native',
       NATIVE_TOKEN,
       '1009000000000000000',
-      1.0000825923770915,
       2515.02,
       {
         raw: '1.143217728',
@@ -82,14 +77,12 @@ describe('Bridge quote utils', () => {
       ERC20_TOKEN,
       '100000000',
       0.999781,
-      2517.14,
       { raw: '100.512', fiat: '100.489987872' },
     ],
     [
       'erc20 with null exchange rates',
       ERC20_TOKEN,
       '2543140000',
-      {},
       null,
       { raw: '2543.652', fiat: undefined },
     ],
@@ -100,7 +93,6 @@ describe('Bridge quote utils', () => {
       srcAsset: { decimals: number; address: string },
       srcTokenAmount: string,
       fromTokenExchangeRate: number,
-      fromNativeExchangeRate: number,
       { raw, fiat }: { raw: string; fiat: string },
     ) => {
       const result = calcSentAmount(
@@ -114,7 +106,6 @@ describe('Bridge quote utils', () => {
           },
         } as never,
         fromTokenExchangeRate,
-        fromNativeExchangeRate,
       );
       expect(result.raw?.toString()).toStrictEqual(raw);
       expect(result.fiat?.toString()).toStrictEqual(fiat);
@@ -182,8 +173,8 @@ describe('Bridge quote utils', () => {
             : undefined,
           quote: { srcAsset, srcTokenAmount, feeData },
         } as never,
-        '0x19870',
-        '0x186a0',
+        '0.00010456',
+        '0.0001',
         2517.42,
       );
       expect(result.raw?.toString()).toStrictEqual(raw);
