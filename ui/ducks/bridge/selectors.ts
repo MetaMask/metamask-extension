@@ -50,6 +50,7 @@ import {
   isNativeAddress,
 } from '../../pages/bridge/utils/quote';
 import { decGWEIToHexWEI } from '../../../shared/modules/conversion.utils';
+import { calcTokenAmount } from '../../../shared/lib/transactions-controller-utils';
 import { BridgeState } from './bridge';
 
 type BridgeAppState = {
@@ -376,14 +377,52 @@ export const getIsBridgeTx = createDeepEqualSelector(
       : false,
 );
 
+const _getValidatedSrcAmount = createSelector(
+  getFromToken,
+  (state: BridgeAppState) =>
+    state.metamask.bridgeState.quoteRequest.srcTokenAmount,
+  (fromToken, srcTokenAmount) =>
+    srcTokenAmount && fromToken?.decimals
+      ? calcTokenAmount(srcTokenAmount, Number(fromToken.decimals)).toFixed()
+      : null,
+);
+
 export const getValidationErrors = createDeepEqualSelector(
   getBridgeQuotes,
   getFromAmount,
-  ({ activeQuote, quotesLastFetchedMs, isLoading }, fromAmount) => {
+  _getValidatedSrcAmount,
+  getFromToken,
+  (
+    { activeQuote, quotesLastFetchedMs, isLoading },
+    fromAmount,
+    validatedSrcAmount,
+    fromToken,
+  ) => {
     return {
       isNoQuotesAvailable: Boolean(
         !activeQuote && quotesLastFetchedMs && !isLoading,
       ),
+      // Shown prior to fetching quotes
+      isInsufficientGasBalance: (balance?: BigNumber) => {
+        if (balance && !activeQuote && validatedSrcAmount && fromToken) {
+          return isNativeAddress(fromToken.address)
+            ? balance.eq(validatedSrcAmount)
+            : balance.lte(0);
+        }
+        return false;
+      },
+      // Shown after fetching quotes
+      isInsufficientGasForQuote: (balance?: BigNumber) => {
+        if (balance && activeQuote && fromToken) {
+          return isNativeAddress(fromToken.address)
+            ? balance
+                .sub(activeQuote.totalNetworkFee.amount)
+                .sub(activeQuote.sentAmount.amount)
+                .lte(0)
+            : balance.lte(activeQuote.totalNetworkFee.amount);
+        }
+        return false;
+      },
       isInsufficientBalance: (balance?: BigNumber) =>
         fromAmount && balance !== undefined ? balance.lt(fromAmount) : false,
     };

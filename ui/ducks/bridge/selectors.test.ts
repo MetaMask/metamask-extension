@@ -1,4 +1,5 @@
 import { BigNumber } from 'bignumber.js';
+import { zeroAddress } from 'ethereumjs-util';
 import { createBridgeMockStore } from '../../../test/jest/mock-store';
 import {
   BUILT_IN_NETWORKS,
@@ -1011,6 +1012,142 @@ describe('Bridge selectors', () => {
       expect(result.isInsufficientBalance(new BigNumber(0))).toStrictEqual(
         true,
       );
+    });
+
+    it('should return isInsufficientGasBalance=true when balance is equal to srcAmount and fromToken is native', () => {
+      const state = createBridgeMockStore(
+        {},
+        {
+          toChainId: '0x1',
+          fromTokenInputValue: '0.001',
+          fromToken: { address: zeroAddress(), decimals: 18 },
+        },
+        {
+          srcTokens: { '0x00': { address: '0x00', symbol: 'TEST' } },
+          srcTopAssets: [{ address: '0x00', symbol: 'TEST' }],
+          quotesLastFetched: Date.now(),
+          quoteRequest: { srcTokenAmount: '10000000000000000' },
+        },
+      );
+      const result = getValidationErrors(state as never);
+
+      expect(
+        result.isInsufficientGasBalance(new BigNumber(0.01)),
+      ).toStrictEqual(true);
+    });
+
+    it('should return isInsufficientGasBalance=true when balance is 0 and fromToken is erc20', () => {
+      const state = createBridgeMockStore(
+        {},
+        {
+          toChainId: '0x1',
+          fromTokenInputValue: '0.001',
+          fromToken: { address: '0x123', decimals: 6 },
+        },
+        {
+          srcTokens: { '0x00': { address: '0x00', symbol: 'TEST' } },
+          srcTopAssets: [{ address: '0x00', symbol: 'TEST' }],
+          quotesLastFetched: Date.now(),
+          quoteRequest: { srcTokenAmount: '100000000' },
+        },
+      );
+      const result = getValidationErrors(state as never);
+
+      expect(result.isInsufficientGasBalance(new BigNumber(0))).toStrictEqual(
+        true,
+      );
+    });
+
+    it('should return isInsufficientGasBalance=false if there is no fromAmount', () => {
+      const state = createBridgeMockStore(
+        {},
+        { toChainId: '0x1', fromTokenInputValue: '0.001' },
+        {
+          srcTokens: { '0x00': { address: '0x00', symbol: 'TEST' } },
+          srcTopAssets: [{ address: '0x00', symbol: 'TEST' }],
+          quotesLastFetched: Date.now(),
+          quoteRequest: {},
+        },
+      );
+      const result = getValidationErrors(state as never);
+
+      expect(result.isInsufficientGasBalance(new BigNumber(0))).toStrictEqual(
+        false,
+      );
+    });
+
+    it('should return isInsufficientGasBalance=false when quotes have been loaded', () => {
+      const state = createBridgeMockStore(
+        {},
+        { toChainId: '0x1', fromTokenInputValue: '0.001' },
+        {
+          srcTokens: { '0x00': { address: '0x00', symbol: 'TEST' } },
+          srcTopAssets: [{ address: '0x00', symbol: 'TEST' }],
+          quotesLastFetched: Date.now(),
+          quotes: mockErc20Erc20Quotes,
+        },
+      );
+      const result = getValidationErrors(state as never);
+
+      expect(result.isInsufficientGasBalance(new BigNumber(0))).toStrictEqual(
+        false,
+      );
+    });
+
+    it('should return isInsufficientGasForQuote=true when balance is less than required network fees in quote', () => {
+      const state = createBridgeMockStore(
+        {},
+        {
+          toChainId: '0x1',
+          fromTokenInputValue: '0.001',
+          fromToken: { address: zeroAddress(), decimals: 18 },
+        },
+        {
+          srcTokens: { '0x00': { address: '0x00', symbol: 'TEST' } },
+          srcTopAssets: [{ address: '0x00', symbol: 'TEST' }],
+          quotesLastFetched: Date.now(),
+          quotes: mockBridgeQuotesNativeErc20,
+        },
+      );
+      const result = getValidationErrors(state as never);
+
+      expect(
+        getBridgeQuotes(state as never).activeQuote?.totalNetworkFee.amount,
+      ).toStrictEqual(new BigNumber('0.00100012486628784'));
+      expect(
+        getBridgeQuotes(state as never).activeQuote?.sentAmount.amount,
+      ).toStrictEqual(new BigNumber('0.01'));
+      expect(
+        result.isInsufficientGasForQuote(new BigNumber(0.001)),
+      ).toStrictEqual(true);
+    });
+
+    it('should return isInsufficientGasForQuote=false when balance is greater than required network fees in quote', () => {
+      const state = createBridgeMockStore(
+        {},
+        {
+          toChainId: '0x1',
+          fromTokenInputValue: '0.001',
+          fromToken: { address: zeroAddress(), decimals: 18 },
+        },
+        {
+          srcTokens: { '0x00': { address: '0x00', symbol: 'TEST' } },
+          srcTopAssets: [{ address: '0x00', symbol: 'TEST' }],
+          quotesLastFetched: Date.now(),
+          quotes: mockBridgeQuotesNativeErc20,
+        },
+      );
+      const result = getValidationErrors(state as never);
+
+      expect(
+        getBridgeQuotes(state as never).activeQuote?.totalNetworkFee.amount,
+      ).toStrictEqual(new BigNumber('0.00100012486628784'));
+      expect(
+        getBridgeQuotes(state as never).activeQuote?.sentAmount.amount,
+      ).toStrictEqual(new BigNumber('0.01'));
+      expect(
+        result.isInsufficientGasForQuote(new BigNumber('0.01100012486628785')),
+      ).toStrictEqual(false);
     });
   });
 });
