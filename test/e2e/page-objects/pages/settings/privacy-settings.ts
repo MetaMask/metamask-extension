@@ -5,19 +5,11 @@ import { tEn } from '../../../../lib/i18n-helpers';
 class PrivacySettings {
   private readonly driver: Driver;
 
-  private readonly privacySettingsPageTitle = {
-    text: 'Security & privacy',
-    tag: 'h4',
-  };
+  private readonly autodetectNftToggleButton =
+    '[data-testid="useNftDetection"] .toggle-button > div';
 
-  // SRP related locators
   private readonly closeRevealSrpDialogButton = {
     text: tEn('close'),
-    tag: 'button',
-  };
-
-  private readonly copySrpButton = {
-    text: tEn('copyToClipboard'),
     tag: 'button',
   };
 
@@ -26,6 +18,17 @@ class PrivacySettings {
     tag: 'button',
   };
 
+  private readonly copySrpButton = {
+    text: tEn('copyToClipboard'),
+    tag: 'button',
+  };
+
+  private readonly privacySettingsPageTitle = {
+    text: 'Security & privacy',
+    tag: 'h4',
+  };
+
+  // reveal SRP related locators
   private readonly displayedSrpText = '[data-testid="srp_text"]';
 
   private readonly holdToRevealSRPButton = {
@@ -170,6 +173,11 @@ class PrivacySettings {
     console.log('Open reveal SRP quiz on privacy settings page');
     await this.driver.clickElement(this.revealSrpButton);
     await this.driver.waitForSelector(this.revealSrpQuizModalTitle);
+  }
+
+  async toggleAutodetectNft(): Promise<void> {
+    console.log('Toggle autodetect NFT on privacy settings page');
+    await this.driver.clickElement(this.autodetectNftToggleButton);
   }
 
   async check_displayedSrpCanBeCopied(): Promise<void> {
