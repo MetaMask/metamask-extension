@@ -71,27 +71,33 @@ const CrossChainSwapTxDetails = () => {
   const t = useI18nContext();
   const rootState = useSelector((state) => state);
   const history = useHistory();
-  const { srcTxHash } = useParams<{ srcTxHash: string }>();
+  // we should be able to use a srcTxHash or a txMeta.id, STX won't have txHash right away
+  const { srcTxHashOrTxId } = useParams<{ srcTxHashOrTxId: string }>();
   const bridgeHistory = useSelector(selectBridgeHistoryForAccount);
   const selectedAddressTxList = useSelector(
     selectedAddressTxListSelector,
   ) as TransactionMeta[];
-  const bridgeHistoryItem = srcTxHash ? bridgeHistory[srcTxHash] : undefined;
+
+  const bridgeHistoryItem = srcTxHashOrTxId
+    ? bridgeHistory[srcTxHashOrTxId]
+    : undefined;
   const networkConfigurationsByChainId = useSelector(
     getNetworkConfigurationsByChainId,
   );
+
+  const srcChainTxMeta = selectedAddressTxList.find(
+    (tx) => tx.hash === srcTxHashOrTxId || tx.id === srcTxHashOrTxId,
+  );
+
   const { srcNetwork, destNetwork } = useBridgeChainInfo({
     bridgeHistoryItem,
+    srcTxMeta: srcChainTxMeta,
   });
 
-  const srcBlockExplorerUrl = getBlockExplorerUrl(srcNetwork, srcTxHash);
+  const srcBlockExplorerUrl = getBlockExplorerUrl(srcNetwork, srcTxHashOrTxId);
 
   const destTxHash = bridgeHistoryItem?.status.destChain?.txHash;
   const destBlockExplorerUrl = getBlockExplorerUrl(destNetwork, destTxHash);
-
-  const srcChainTxMeta = selectedAddressTxList.find(
-    (tx) => tx.hash === srcTxHash,
-  );
 
   const status = bridgeHistoryItem?.status.status;
 
@@ -141,24 +147,28 @@ const CrossChainSwapTxDetails = () => {
             flexDirection={FlexDirection.Column}
             gap={4}
           >
-            {status !== StatusTypes.COMPLETE && bridgeHistoryItem && (
-              <BridgeStepList
-                bridgeHistoryItem={bridgeHistoryItem}
-                srcChainTxMeta={srcChainTxMeta}
-                networkConfigurationsByChainId={networkConfigurationsByChainId}
-              />
+            {bridgeHistoryItem && (
+              <>
+                {status !== StatusTypes.COMPLETE && bridgeHistoryItem && (
+                  <BridgeStepList
+                    bridgeHistoryItem={bridgeHistoryItem}
+                    srcChainTxMeta={srcChainTxMeta}
+                    networkConfigurationsByChainId={
+                      networkConfigurationsByChainId
+                    }
+                  />
+                )}
+
+                {/* Links to block explorers */}
+                <BridgeExplorerLinks
+                  srcChainId={srcNetwork?.chainId}
+                  destChainId={destNetwork?.chainId}
+                  srcBlockExplorerUrl={srcBlockExplorerUrl}
+                  destBlockExplorerUrl={destBlockExplorerUrl}
+                />
+                <Divider />
+              </>
             )}
-
-            {/* Links to block explorers */}
-            <BridgeExplorerLinks
-              srcChainId={srcNetwork?.chainId}
-              destChainId={destNetwork?.chainId}
-              srcBlockExplorerUrl={srcBlockExplorerUrl}
-              destBlockExplorerUrl={destBlockExplorerUrl}
-            />
-
-            <Divider />
-
             {/* General tx details */}
             <Box
               display={Display.Flex}

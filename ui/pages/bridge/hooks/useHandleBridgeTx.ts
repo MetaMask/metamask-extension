@@ -27,6 +27,9 @@ export default function useHandleBridgeTx() {
       swapsOptions: {
         hasApproveTx: Boolean(quoteResponse?.approval),
         meta: {
+          destinationChainId: new Numeric(quoteResponse.quote.destChainId, 10)
+            .toPrefixedHexString()
+            .toLowerCase() as `0x${string}`,
           // estimatedBaseFee: decEstimatedBaseFee,
           // swapMetaData,
           type: TransactionType.bridge,
