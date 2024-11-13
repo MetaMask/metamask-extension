@@ -6,7 +6,6 @@ const mockttp = require('mockttp');
 const detectPort = require('detect-port');
 const { difference } = require('lodash');
 const createStaticServer = require('../../development/create-static-server');
-const { tEn } = require('../lib/i18n-helpers');
 const { setupMocking } = require('./mock-e2e');
 const { Ganache } = require('./seeder/ganache');
 const FixtureServer = require('./fixture-server');
@@ -486,51 +485,6 @@ const onboardingPinExtension = async (driver) => {
   await driver.clickElement('[data-testid="pin-extension-done"]');
 };
 
-const openSRPRevealQuiz = async (driver) => {
-  // navigate settings to reveal SRP
-  await driver.clickElement('[data-testid="account-options-menu-button"]');
-
-  // fix race condition with mmi build
-  if (process.env.MMI) {
-    await driver.waitForSelector('[data-testid="global-menu-mmi-portfolio"]');
-  }
-
-  await driver.clickElement({ text: 'Settings', tag: 'div' });
-  await driver.clickElement({ text: 'Security & privacy', tag: 'div' });
-  await driver.clickElement('[data-testid="reveal-seed-words"]');
-};
-
-/**
- * @deprecated Please use page object functions in `test/e2e/page-objects/pages/settings/privacy-settings.ts`.
- * @param driver
- */
-const completeSRPRevealQuiz = async (driver) => {
-  // start quiz
-  await driver.clickElement('[data-testid="srp-quiz-get-started"]');
-
-  // tap correct answer 1
-  await driver.clickElement('[data-testid="srp-quiz-right-answer"]');
-
-  // tap Continue 1
-  await driver.clickElement('[data-testid="srp-quiz-continue"]');
-
-  // tap correct answer 2
-  await driver.clickElement('[data-testid="srp-quiz-right-answer"]');
-
-  // tap Continue 2
-  await driver.clickElement('[data-testid="srp-quiz-continue"]');
-};
-
-const tapAndHoldToRevealSRP = async (driver) => {
-  await driver.holdMouseDownOnElement(
-    {
-      text: tEn('holdToRevealSRP'),
-      tag: 'span',
-    },
-    3000,
-  );
-};
-
 const DAPP_HOST_ADDRESS = '127.0.0.1:8080';
 const DAPP_URL = `http://${DAPP_HOST_ADDRESS}`;
 const DAPP_ONE_URL = 'http://127.0.0.1:8081';
@@ -973,19 +927,6 @@ async function initBundler(bundlerServer, ganacheServer, usePaymaster) {
 }
 
 /**
- * @deprecated Please use page object functions in `pages/account-list-page`.
- * @param driver
- */
-async function removeSelectedAccount(driver) {
-  await driver.clickElement('[data-testid="account-menu-icon"]');
-  await driver.clickElement(
-    '.multichain-account-list-item--selected [data-testid="account-list-item-menu-button"]',
-  );
-  await driver.clickElement('[data-testid="account-list-menu-remove"]');
-  await driver.clickElement({ text: 'Remove', tag: 'button' });
-}
-
-/**
  * Rather than using the FixtureBuilder#withPreferencesController to set the setting
  * we need to manually set the setting because the migration #122 overrides this.
  * We should be able to remove this when we delete the redesignedConfirmationsEnabled setting.
@@ -1056,9 +997,6 @@ module.exports = {
   largeDelayMs,
   veryLargeDelayMs,
   withFixtures,
-  openSRPRevealQuiz,
-  completeSRPRevealQuiz,
-  tapAndHoldToRevealSRP,
   createDownloadFolder,
   openDapp,
   openDappConnectionsPage,
@@ -1096,7 +1034,6 @@ module.exports = {
   getCleanAppState,
   editGasFeeForm,
   clickNestedButton,
-  removeSelectedAccount,
   tempToggleSettingRedesignedConfirmations,
   openMenuSafe,
   sentryRegEx,
