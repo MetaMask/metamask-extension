@@ -241,7 +241,7 @@ exports[`NameDetails renders proposed names 1`] = `
               data-theme="light"
             >
               <span
-                class="mm-box mm-icon mm-icon--size-sm mm-box--margin-inline-end-0 mm-box--display-inline-block mm-box--color-inherit"
+                class="mm-box mm-icon mm-icon--size-sm mm-box--margin-inline-end-1 mm-box--display-inline-block mm-box--color-inherit"
                 style="mask-image: url('./images/icons/save.svg');"
               />
               Save
@@ -426,7 +426,7 @@ exports[`NameDetails renders when no address value is passed 1`] = `
               data-theme="light"
             >
               <span
-                class="mm-box mm-icon mm-icon--size-sm mm-box--margin-inline-end-0 mm-box--display-inline-block mm-box--color-inherit"
+                class="mm-box mm-icon mm-icon--size-sm mm-box--margin-inline-end-1 mm-box--display-inline-block mm-box--color-inherit"
                 style="mask-image: url('./images/icons/save.svg');"
               />
               Save
@@ -613,7 +613,7 @@ exports[`NameDetails renders with no saved name 1`] = `
               data-theme="light"
             >
               <span
-                class="mm-box mm-icon mm-icon--size-sm mm-box--margin-inline-end-0 mm-box--display-inline-block mm-box--color-inherit"
+                class="mm-box mm-icon mm-icon--size-sm mm-box--margin-inline-end-1 mm-box--display-inline-block mm-box--color-inherit"
                 style="mask-image: url('./images/icons/save.svg');"
               />
               Save
@@ -840,7 +840,7 @@ exports[`NameDetails renders with recognized name 1`] = `
               data-theme="light"
             >
               <span
-                class="mm-box mm-icon mm-icon--size-sm mm-box--margin-inline-end-0 mm-box--display-inline-block mm-box--color-inherit"
+                class="mm-box mm-icon mm-icon--size-sm mm-box--margin-inline-end-1 mm-box--display-inline-block mm-box--color-inherit"
                 style="mask-image: url('./images/icons/save.svg');"
               />
               Save
@@ -1067,7 +1067,7 @@ exports[`NameDetails renders with saved name 1`] = `
               data-theme="light"
             >
               <span
-                class="mm-box mm-icon mm-icon--size-sm mm-box--margin-inline-end-0 mm-box--display-inline-block mm-box--color-inherit"
+                class="mm-box mm-icon mm-icon--size-sm mm-box--margin-inline-end-1 mm-box--display-inline-block mm-box--color-inherit"
                 style="mask-image: url('./images/icons/save.svg');"
               />
               Save

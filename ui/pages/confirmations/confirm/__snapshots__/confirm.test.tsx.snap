@@ -94,7 +94,7 @@ exports[`Confirm matches snapshot for signature - personal sign type 1`] = `
           >
             <div>
               <div
-                aria-describedby="tippy-tooltip-1"
+                aria-describedby="tippy-tooltip-6"
                 class=""
                 data-original-title="Account details"
                 data-tooltipped=""
@@ -154,7 +154,7 @@ exports[`Confirm matches snapshot for signature - personal sign type 1`] = `
                   </p>
                   <div>
                     <div
-                      aria-describedby="tippy-tooltip-2"
+                      aria-describedby="tippy-tooltip-7"
                       class=""
                       data-original-title="This is the site asking for your signature."
                       data-tooltipped=""
@@ -1453,7 +1453,7 @@ exports[`Confirm should match snapshot for signature - typed sign - V4 1`] = `
           >
             <div>
               <div
-                aria-describedby="tippy-tooltip-3"
+                aria-describedby="tippy-tooltip-10"
                 class=""
                 data-original-title="Account details"
                 data-tooltipped=""
@@ -1513,7 +1513,7 @@ exports[`Confirm should match snapshot for signature - typed sign - V4 1`] = `
                   </p>
                   <div>
                     <div
-                      aria-describedby="tippy-tooltip-4"
+                      aria-describedby="tippy-tooltip-11"
                       class=""
                       data-original-title="This is the site asking for your signature."
                       data-tooltipped=""
