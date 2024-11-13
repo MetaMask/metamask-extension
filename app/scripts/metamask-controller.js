@@ -6549,10 +6549,12 @@ export default class MetamaskController extends EventEmitter {
         );
       },
       getRedesignedConfirmationsEnabled: () => {
-        return this.preferencesController.getRedesignedConfirmationsEnabled;
+        return this.preferencesController.state.preferences
+          .redesignedConfirmationsEnabled;
       },
       getRedesignedTransactionsEnabled: () => {
-        return this.preferencesController.getRedesignedTransactionsEnabled;
+        return this.preferencesController.state.preferences
+          .redesignedTransactionsEnabled;
       },
       getMethodData: (data) => {
         if (!data) {
