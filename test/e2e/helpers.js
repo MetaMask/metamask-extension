@@ -119,6 +119,9 @@ async function withFixtures(options, testSuite) {
       contractRegistry = ganacheSeeder.getContractRegistry();
     }
 
+    await fixtureServer.start();
+    fixtureServer.loadJsonState(fixtures, contractRegistry);
+
     if (ganacheOptions?.concurrent) {
       ganacheOptions.concurrent.forEach(async (ganacheSettings) => {
         const { port, chainId, ganacheOptions2 } = ganacheSettings;
@@ -138,8 +141,6 @@ async function withFixtures(options, testSuite) {
       await initBundler(bundlerServer, ganacheServer, usePaymaster);
     }
 
-    await fixtureServer.start();
-    fixtureServer.loadJsonState(fixtures, contractRegistry);
     await phishingPageServer.start();
     if (dapp) {
       if (dappOptions?.numberOfDapps) {
@@ -636,11 +637,10 @@ const openSRPRevealQuiz = async (driver) => {
   await driver.clickElement('[data-testid="reveal-seed-words"]');
 };
 
-const passwordUnlockOpenSRPRevealQuiz = async (driver) => {
-  await unlockWallet(driver);
-  await openSRPRevealQuiz(driver);
-};
-
+/**
+ * @deprecated Please use page object functions in `test/e2e/page-objects/pages/settings/privacy-settings.ts`.
+ * @param driver
+ */
 const completeSRPRevealQuiz = async (driver) => {
   // start quiz
   await driver.clickElement('[data-testid="srp-quiz-get-started"]');
@@ -666,17 +666,6 @@ const tapAndHoldToRevealSRP = async (driver) => {
     },
     3000,
   );
-};
-
-const closeSRPReveal = async (driver) => {
-  await driver.clickElement({
-    text: tEn('close'),
-    tag: 'button',
-  });
-  await driver.findVisibleElement({
-    text: tEn('tokens'),
-    tag: 'button',
-  });
 };
 
 const DAPP_HOST_ADDRESS = '127.0.0.1:8080';
@@ -1238,9 +1227,7 @@ module.exports = {
   completeCreateNewWalletOnboardingFlow,
   completeCreateNewWalletOnboardingFlowWithOptOut,
   openSRPRevealQuiz,
-  passwordUnlockOpenSRPRevealQuiz,
   completeSRPRevealQuiz,
-  closeSRPReveal,
   tapAndHoldToRevealSRP,
   createDownloadFolder,
   openDapp,
