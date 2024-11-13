@@ -83,7 +83,8 @@ export const findAssetByAddress = (
   }
 
   if (!address) {
-    return tokens.find((token) => !token.address);
+    console.warn(`No token found for address: ${address}`);
+    return null;
   }
 
   return tokens.find(
