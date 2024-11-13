@@ -34,6 +34,7 @@ import { useSimulationMetrics } from './useSimulationMetrics';
 export type SimulationDetailsProps = {
   enableMetrics?: boolean;
   isTransactionsRedesign?: boolean;
+  onlyMetrics?: boolean;
   transaction: TransactionMeta;
 };
 
@@ -225,11 +226,13 @@ const SimulationDetailsLayout: React.FC<{
  * @param props.enableMetrics - Whether to enable simulation metrics.
  * @param props.isTransactionsRedesign - Whether or not the component is being
  * used inside the transaction redesign flow.
+ * @param props.onlyMetrics - Whether to only track metrics and not render the UI.
  */
 export const SimulationDetails: React.FC<SimulationDetailsProps> = ({
   transaction,
   enableMetrics = false,
   isTransactionsRedesign = false,
+  onlyMetrics = false,
 }: SimulationDetailsProps) => {
   const t = useI18nContext();
   const { chainId, id: transactionId, simulationData } = transaction;
@@ -243,6 +246,10 @@ export const SimulationDetails: React.FC<SimulationDetailsProps> = ({
     simulationData,
     transactionId,
   });
+
+  if (onlyMetrics) {
+    return null;
+  }
 
   if (loading) {
     return (
