@@ -280,8 +280,8 @@ env:
   - BARAD_DUR: ''
   # Determines if feature flagged Chain permissions
   - CHAIN_PERMISSIONS: ''
-  # Determines if feature flagged Filter toggle
-  - FILTER_TOKENS_TOGGLE: ''
+  # Determines if Portfolio View UI should be shown
+  - PORTFOLIO_VIEW: ''
   # Enables use of test gas fee flow to debug gas fee estimation
   - TEST_GAS_FEE_FLOWS: false
   # Temporary mechanism to enable security alerts API prior to release
