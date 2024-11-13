@@ -44,11 +44,9 @@ import {
   getParticipateInMetaMetrics,
   getDataCollectionForMarketing,
   getMarketData,
+  getNetworkConfigurationIdByChainId,
 } from '../../../selectors';
-import {
-  getMultichainCurrentNetwork,
-  getMultichainIsEvm,
-} from '../../../selectors/multichain';
+import { getMultichainIsEvm } from '../../../selectors/multichain';
 import Tooltip from '../../ui/tooltip';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
@@ -215,7 +213,9 @@ export const TokenListItem = ({
     </Box>
   );
   // Used for badge icon
-  const currentNetwork = useSelector(getMultichainCurrentNetwork);
+  const allNetworks: Record<string, string> = useSelector(
+    getNetworkConfigurationIdByChainId,
+  );
   const testNetworkBackgroundColor = useSelector(getTestNetworkBackgroundColor);
 
   return (
@@ -267,8 +267,8 @@ export const TokenListItem = ({
           badge={
             <AvatarNetwork
               size={AvatarNetworkSize.Xs}
-              name={currentNetwork?.nickname || ''}
-              src={tokenChainImage || currentNetwork?.rpcPrefs?.imageUrl}
+              name={allNetworks?.[chainId] || ''}
+              src={tokenChainImage || undefined}
               backgroundColor={testNetworkBackgroundColor}
               className="multichain-token-list-item__badge__avatar-network"
             />

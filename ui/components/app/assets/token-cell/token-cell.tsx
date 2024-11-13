@@ -125,12 +125,15 @@ export default function TokenCell({
     return null;
   }
 
+  const tokenChainImage = getImageForChainId(chainId);
+  // console.log('FOO: ', symbol, tokenChainImage ?? '');
+
   return (
     <TokenListItem
       onClick={handleOnClick}
       tokenSymbol={symbol}
       tokenImage={isNative ? getNativeCurrencyForChain(chainId) : tokenImage}
-      tokenChainImage={chainId ? getImageForChainId(chainId) : undefined}
+      tokenChainImage={tokenChainImage || undefined}
       primary={primary}
       secondary={secondary}
       title={title}
