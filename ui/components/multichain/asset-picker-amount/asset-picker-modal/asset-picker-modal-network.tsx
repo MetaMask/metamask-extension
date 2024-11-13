@@ -22,7 +22,7 @@ import { NetworkListItem } from '../../network-list-item';
 import {
   getNetworkConfigurationsByChainId,
   getProviderConfig,
-} from '../../../../selectors';
+} from '../../../../../shared/modules/selectors/networks';
 
 /**
  * AssetPickerModalNetwork component displays a modal for selecting a network in the asset picker.

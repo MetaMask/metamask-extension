@@ -167,6 +167,7 @@ const AssetPage = ({
         {type === AssetType.native ? (
           <CoinButtons
             {...{
+              account,
               trackingLocation: 'asset-page',
               isBuyableChain,
               isSigningEnabled,

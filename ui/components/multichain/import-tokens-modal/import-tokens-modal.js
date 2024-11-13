@@ -21,13 +21,13 @@ import {
   getIstokenDetectionInactiveOnNonMainnetSupportedNetwork,
   getRpcPrefsForCurrentProvider,
   getSelectedInternalAccount,
-  getSelectedNetworkClientId,
   getTokenDetectionSupportNetworkByChainId,
   getTokenList,
   getCurrentNetwork,
   getTestNetworkBackgroundColor,
   getTokenExchangeRates,
 } from '../../../selectors';
+import { getSelectedNetworkClientId } from '../../../../shared/modules/selectors/networks';
 import {
   addImportedTokens,
   clearPendingTokens,
