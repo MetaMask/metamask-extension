@@ -9,6 +9,7 @@ import {
   getCurrentChainSupportsSmartTransactions,
   getSmartTransactionsEnabled,
   getIsSmartTransaction,
+  getIsSmartTransactionsOptInModalAvailable,
   getSmartTransactionsPreferenceEnabled,
 } from '.';
 
@@ -69,7 +70,7 @@ describe('Selectors', () => {
   };
 
   describe('getSmartTransactionsOptInStatusForMetrics and getSmartTransactionsPreferenceEnabled', () => {
-    const createMockOptInStatusState = (status: boolean) => {
+    const createMockOptInStatusState = (status: boolean | null) => {
       return {
         metamask: {
           preferences: {
@@ -88,6 +89,7 @@ describe('Selectors', () => {
       jestIt.each([
         { status: true, expected: true },
         { status: false, expected: false },
+        { status: null, expected: null },
       ])(
         'should return $expected if the smart transactions opt-in status is $status',
         ({ status, expected }) => {
@@ -111,6 +113,7 @@ describe('Selectors', () => {
       jestIt.each([
         { status: true, expected: true },
         { status: false, expected: false },
+        { status: null, expected: true },
       ])(
         'should return $expected if the smart transactions opt-in status is $status',
         ({ status, expected }) => {
@@ -312,5 +315,124 @@ describe('Selectors', () => {
       const result = getIsSmartTransaction(newState);
       expect(result).toBe(false);
     });
+  });
+
+  describe('getIsSmartTransactionsOptInModalAvailable', () => {
+    jestIt(
+      'returns true for Ethereum Mainnet + supported RPC URL + null opt-in status and non-zero balance',
+      () => {
+        const state = createMockState();
+        const newState = {
+          ...state,
+          metamask: {
+            ...state.metamask,
+            preferences: {
+              ...state.metamask.preferences,
+              smartTransactionsOptInStatus: null,
+            },
+          },
+        };
+        expect(getIsSmartTransactionsOptInModalAvailable(newState)).toBe(true);
+      },
+    );
+
+    jestIt(
+      'returns false for Polygon Mainnet + supported RPC URL + null opt-in status and non-zero balance',
+      () => {
+        const state = createMockState();
+        const newState = {
+          ...state,
+          metamask: {
+            ...state.metamask,
+            preferences: {
+              ...state.metamask.preferences,
+              smartTransactionsOptInStatus: null,
+            },
+            ...mockNetworkState({ chainId: CHAIN_IDS.POLYGON }),
+          },
+        };
+        expect(getIsSmartTransactionsOptInModalAvailable(newState)).toBe(false);
+      },
+    );
+
+    jestIt(
+      'returns false for Ethereum Mainnet + unsupported RPC URL + null opt-in status and non-zero balance',
+      () => {
+        const state = createMockState();
+        const newState = {
+          ...state,
+          metamask: {
+            ...state.metamask,
+            preferences: {
+              ...state.metamask.preferences,
+              smartTransactionsOptInStatus: null,
+            },
+            ...mockNetworkState({
+              chainId: CHAIN_IDS.MAINNET,
+              rpcUrl: 'https://mainnet.quiknode.pro/',
+            }),
+          },
+        };
+        expect(getIsSmartTransactionsOptInModalAvailable(newState)).toBe(false);
+      },
+    );
+
+    jestIt(
+      'returns false for Ethereum Mainnet + supported RPC URL + true opt-in status and non-zero balance',
+      () => {
+        const state = createMockState();
+        expect(getIsSmartTransactionsOptInModalAvailable(state)).toBe(false);
+      },
+    );
+
+    jestIt(
+      'returns false for Ethereum Mainnet + supported RPC URL + null opt-in status and zero balance (0x0)',
+      () => {
+        const state = createMockState();
+        const newState = {
+          ...state,
+          metamask: {
+            ...state.metamask,
+            preferences: {
+              ...state.metamask.preferences,
+              smartTransactionsOptInStatus: null,
+            },
+            accounts: {
+              ...state.metamask.accounts,
+              '0x123': {
+                address: '0x123',
+                balance: '0x0',
+              },
+            },
+          },
+        };
+        expect(getIsSmartTransactionsOptInModalAvailable(newState)).toBe(false);
+      },
+    );
+
+    jestIt(
+      'returns false for Ethereum Mainnet + supported RPC URL + null opt-in status and zero balance (0x00)',
+      () => {
+        const state = createMockState();
+        const newState = {
+          ...state,
+          metamask: {
+            ...state.metamask,
+            preferences: {
+              ...state.metamask.preferences,
+              smartTransactionsOptInStatus: null,
+            },
+            accounts: {
+              ...state.metamask.accounts,
+              '0x123': {
+                address: '0x123',
+                balance: '0x00',
+              },
+            },
+          },
+        };
+        expect(getIsSmartTransactionsOptInModalAvailable(newState)).toBe(false);
+      },
+    );
   });
 });

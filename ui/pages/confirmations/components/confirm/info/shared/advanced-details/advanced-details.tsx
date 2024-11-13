@@ -1,7 +1,5 @@
 import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { TransactionMeta } from '@metamask/transaction-controller';
-
 import {
   ConfirmInfoRow,
   ConfirmInfoRowText,
@@ -19,23 +17,15 @@ import {
   updateCustomNonce,
 } from '../../../../../../../store/actions';
 import { selectConfirmationAdvancedDetailsOpen } from '../../../../../selectors/preferences';
-import { useConfirmContext } from '../../../../../context/confirm';
-import { isSignatureTransactionType } from '../../../../../utils';
 import { TransactionData } from '../transaction-data/transaction-data';
 
 const NonceDetails = () => {
-  const { currentConfirmation } = useConfirmContext<TransactionMeta>();
   const t = useI18nContext();
   const dispatch = useDispatch();
 
   useEffect(() => {
-    if (
-      currentConfirmation &&
-      !isSignatureTransactionType(currentConfirmation)
-    ) {
-      dispatch(getNextNonce(currentConfirmation.txParams.from));
-    }
-  }, [currentConfirmation, dispatch]);
+    dispatch(getNextNonce());
+  }, [dispatch]);
 
   const enableCustomNonce = useSelector(getUseNonceField);
   const nextNonce = useSelector(getNextSuggestedNonce);

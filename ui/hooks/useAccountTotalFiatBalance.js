@@ -51,6 +51,7 @@ export const useAccountTotalFiatBalance = (
   const tokens = detectedTokens?.[currentChainId]?.[account?.address] ?? [];
   // This selector returns all the tokens, we need it to get the image of token
   const allTokenList = useSelector(getTokenList);
+  const allTokenListValues = Object.values(allTokenList);
   const primaryTokenImage = useSelector(getNativeCurrencyImage);
   const nativeCurrency = useSelector(getNativeCurrency);
 
@@ -91,18 +92,20 @@ export const useAccountTotalFiatBalance = (
   };
 
   // To match the list of detected tokens with the entire token list to find the image for tokens
-  const findMatchingTokens = (tokenList, _tokensWithBalances) => {
+  const findMatchingTokens = (array1, array2) => {
     const result = [];
 
-    _tokensWithBalances.forEach((token) => {
-      const matchingToken = tokenList[token.address.toLowerCase()];
+    array2.forEach((token2) => {
+      const matchingToken = array1.find(
+        (token1) => token1.symbol === token2.symbol,
+      );
 
       if (matchingToken) {
         result.push({
           ...matchingToken,
-          balance: token.balance,
-          string: token.string,
-          balanceError: token.balanceError,
+          balance: token2.balance,
+          string: token2.string,
+          balanceError: token2.balanceError,
         });
       }
     });
@@ -110,7 +113,10 @@ export const useAccountTotalFiatBalance = (
     return result;
   };
 
-  const matchingTokens = findMatchingTokens(allTokenList, tokensWithBalances);
+  const matchingTokens = findMatchingTokens(
+    allTokenListValues,
+    tokensWithBalances,
+  );
 
   // Combine native token, detected token with image in an array
   const allTokensWithFiatValues = [

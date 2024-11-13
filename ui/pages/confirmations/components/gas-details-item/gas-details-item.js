@@ -4,7 +4,6 @@ import classNames from 'classnames';
 
 import { useSelector } from 'react-redux';
 import {
-  Box,
   Icon,
   IconName,
   IconSize,
@@ -31,6 +30,7 @@ import { useDraftTransactionWithTxParams } from '../../hooks/useDraftTransaction
 import { useGasFeeContext } from '../../../../contexts/gasFee';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 
+import Box from '../../../../components/ui/box';
 import LoadingHeartBeat from '../../../../components/ui/loading-heartbeat';
 import EditGasFeeIcon from '../edit-gas-fee-icon/edit-gas-fee-icon';
 import GasTiming from '../gas-timing/gas-timing.component';
@@ -194,10 +194,10 @@ const GasDetailsItem = ({
                 {t('editGasSubTextFeeLabel')}
               </Text>
             </Box>
-            <Box
+            <div
               key="editGasSubTextFeeValue"
               className="gas-details-item__currency-container"
-              paddingInlineStart={1}
+              paddingStart={1}
             >
               <LoadingHeartBeat estimateUsed={estimateUsed} />
               <UserPreferencedCurrencyDisplay
@@ -215,7 +215,7 @@ const GasDetailsItem = ({
                   getMaxTransactionFeeTotal || draftHexMaximumTransactionFee
                 }
               />
-            </Box>
+            </div>
           </Box>
         </>
       }

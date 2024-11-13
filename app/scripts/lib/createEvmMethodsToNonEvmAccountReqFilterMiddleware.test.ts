@@ -1,11 +1,12 @@
 import { jsonrpc2, Json } from '@metamask/utils';
 import { BtcAccountType, EthAccountType } from '@metamask/keyring-api';
+import type { JsonRpcParams, JsonRpcRequest } from '@metamask/utils';
 import createEvmMethodsToNonEvmAccountReqFilterMiddleware, {
   EvmMethodsToNonEvmAccountFilterMessenger,
 } from './createEvmMethodsToNonEvmAccountReqFilterMiddleware';
 
 describe('createEvmMethodsToNonEvmAccountReqFilterMiddleware', () => {
-  const getMockRequest = (method: string, params: Record<string, Json>) => ({
+  const getMockRequest = (method: string, params: Json) => ({
     jsonrpc: jsonrpc2,
     id: 1,
     method,
@@ -285,7 +286,7 @@ describe('createEvmMethodsToNonEvmAccountReqFilterMiddleware', () => {
     }: {
       accountType: EthAccountType | BtcAccountType;
       method: string;
-      params: Record<string, Json>;
+      params: Json;
       calledNext: number;
     }) => {
       const filterFn = createEvmMethodsToNonEvmAccountReqFilterMiddleware({
@@ -297,7 +298,7 @@ describe('createEvmMethodsToNonEvmAccountReqFilterMiddleware', () => {
       const mockEnd = jest.fn();
 
       filterFn(
-        getMockRequest(method, params),
+        getMockRequest(method, params) as JsonRpcRequest<JsonRpcParams>,
         getMockResponse(),
         mockNext,
         mockEnd,

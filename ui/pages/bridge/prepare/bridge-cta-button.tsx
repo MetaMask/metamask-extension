@@ -2,7 +2,6 @@ import React, { useMemo } from 'react';
 import { useSelector } from 'react-redux';
 import { Button } from '../../../components/component-library';
 import {
-  getBridgeQuotes,
   getFromAmount,
   getFromChain,
   getFromToken,
@@ -23,29 +22,16 @@ export const BridgeCTAButton = () => {
   const fromAmount = useSelector(getFromAmount);
   const toAmount = useSelector(getToAmount);
 
-  const { isLoading } = useSelector(getBridgeQuotes);
-
   const isTxSubmittable =
     fromToken && toToken && fromChain && toChain && fromAmount && toAmount;
 
   const label = useMemo(() => {
-    if (isLoading && !isTxSubmittable) {
-      return t('swapFetchingQuotes');
-    }
-
-    if (!fromAmount) {
-      if (!toToken) {
-        return t('bridgeSelectTokenAndAmount');
-      }
-      return t('bridgeEnterAmount');
-    }
-
     if (isTxSubmittable) {
-      return t('confirm');
+      return t('bridge');
     }
 
     return t('swapSelectToken');
-  }, [isLoading, fromAmount, toToken, isTxSubmittable]);
+  }, [isTxSubmittable]);
 
   return (
     <Button

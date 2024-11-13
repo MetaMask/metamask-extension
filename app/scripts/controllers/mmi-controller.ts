@@ -1,3 +1,4 @@
+import EventEmitter from 'events';
 import log from 'loglevel';
 import { captureException } from '@sentry/browser';
 import {
@@ -20,13 +21,13 @@ import { IApiCallLogEntry } from '@metamask-institutional/types';
 import { TransactionUpdateController } from '@metamask-institutional/transaction-update';
 import { TransactionMeta } from '@metamask/transaction-controller';
 import { KeyringTypes } from '@metamask/keyring-controller';
-import { NetworkState } from '@metamask/network-controller';
 import {
   MessageParamsPersonal,
   MessageParamsTyped,
   SignatureController,
 } from '@metamask/signature-controller';
 import { OriginalRequest } from '@metamask/message-manager';
+import { NetworkController } from '@metamask/network-controller';
 import { InternalAccount } from '@metamask/keyring-api';
 import { toHex } from '@metamask/controller-utils';
 import { toChecksumHexAddress } from '../../../shared/modules/hexstring-utils';
@@ -40,11 +41,15 @@ import {
   Label,
   Signature,
   ConnectionRequest,
-  MMIControllerMessenger,
 } from '../../../shared/constants/mmi-controller';
+// TODO: Remove restricted import
+// eslint-disable-next-line import/no-restricted-paths
+import { getCurrentChainId } from '../../../ui/selectors';
+import MetaMetricsController from './metametrics';
 import { getPermissionBackgroundApiMethods } from './permissions';
 import AccountTrackerController from './account-tracker-controller';
 import { AppStateController } from './app-state-controller';
+import { PreferencesController } from './preferences-controller';
 
 type UpdateCustodianTransactionsParameters = {
   keyring: CustodyKeyring;
@@ -59,7 +64,7 @@ type UpdateCustodianTransactionsParameters = {
   setTxHash: (txId: string, txHash: string) => void;
 };
 
-export class MMIController {
+export default class MMIController extends EventEmitter {
   public opts: MMIControllerOptions;
 
   public mmiConfigurationController: MmiConfigurationController;
@@ -67,6 +72,8 @@ export class MMIController {
   // TODO: Replace `any` with type
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   public keyringController: any;
+
+  public preferencesController: PreferencesController;
 
   public appStateController: AppStateController;
 
@@ -84,7 +91,9 @@ export class MMIController {
 
   private accountTrackerController: AccountTrackerController;
 
-  #networkControllerState: NetworkState;
+  private metaMetricsController: MetaMetricsController;
+
+  private networkController: NetworkController;
 
   // TODO: Replace `any` with type
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -92,7 +101,9 @@ export class MMIController {
 
   private signatureController: SignatureController;
 
-  private messagingSystem: MMIControllerMessenger;
+  // TODO: Replace `any` with type
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  private messenger: any;
 
   // TODO: Replace `any` with type
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -128,16 +139,21 @@ export class MMIController {
   };
 
   constructor(opts: MMIControllerOptions) {
+    super();
+
     this.opts = opts;
-    this.messagingSystem = opts.messenger;
+    this.messenger = opts.messenger;
     this.mmiConfigurationController = opts.mmiConfigurationController;
     this.keyringController = opts.keyringController;
+    this.preferencesController = opts.preferencesController;
     this.appStateController = opts.appStateController;
     this.transactionUpdateController = opts.transactionUpdateController;
     this.custodyController = opts.custodyController;
     this.getState = opts.getState;
     this.getPendingNonce = opts.getPendingNonce;
     this.accountTrackerController = opts.accountTrackerController;
+    this.metaMetricsController = opts.metaMetricsController;
+    this.networkController = opts.networkController;
     this.permissionController = opts.permissionController;
     this.signatureController = opts.signatureController;
     this.platform = opts.platform;
@@ -197,10 +213,6 @@ export class MMIController {
       async (payload: ConnectionRequest) => {
         this.setConnectionRequest(payload);
       },
-    );
-
-    this.#networkControllerState = this.messagingSystem.call(
-      'NetworkController:getState',
     );
   } // End of constructor
 
@@ -390,10 +402,7 @@ export class MMIController {
     // Check if any address is already added
     if (
       newAccounts.some((address) =>
-        this.messagingSystem.call(
-          'AccountsController:getAccountByAddress',
-          address,
-        ),
+        this.messenger.call('AccountsController:getAccountByAddress', address),
       )
     ) {
       throw new Error('Cannot import duplicate accounts');
@@ -493,17 +502,15 @@ export class MMIController {
         // If the label is defined
         if (label) {
           // Set the label for the address
-          const account = this.messagingSystem.call(
+          const account = this.messenger.call(
             'AccountsController:getAccountByAddress',
             address,
           );
-          if (account) {
-            this.messagingSystem.call(
-              'AccountsController:setAccountName',
-              account.id,
-              label,
-            );
-          }
+          this.messenger.call(
+            'AccountsController:setAccountName',
+            account.id,
+            label,
+          );
         }
       }
     });
@@ -545,7 +552,7 @@ export class MMIController {
   ) {
     let currentCustodyType: string = '';
     if (!custodianType) {
-      const { address } = this.messagingSystem.call(
+      const { address } = this.messenger.call(
         'AccountsController:getSelectedAccount',
       );
       currentCustodyType = this.custodyController.getCustodyTypeByAddress(
@@ -630,7 +637,7 @@ export class MMIController {
 
   // Based on a custodian name, get all the tokens associated with that custodian
   async getCustodianJWTList(custodianEnvName: string) {
-    const internalAccounts = this.messagingSystem.call(
+    const internalAccounts = this.messenger.call(
       'AccountsController:listAccounts',
     );
 
@@ -729,8 +736,7 @@ export class MMIController {
 
     const currentAddress =
       address ||
-      this.messagingSystem.call('AccountsController:getSelectedAccount')
-        .address;
+      this.messenger.call('AccountsController:getSelectedAccount').address;
     const currentCustodyType = this.custodyController.getCustodyTypeByAddress(
       toChecksumHexAddress(currentAddress),
     );
@@ -755,7 +761,7 @@ export class MMIController {
 
     // TEMP: Convert internal accounts to match identities format
     // TODO: Convert handleMmiPortfolio to use internal accounts
-    const internalAccounts = this.messagingSystem
+    const internalAccounts = this.messenger
       .call('AccountsController:listAccounts')
       .map((internalAccount: InternalAccount) => {
         return {
@@ -763,17 +769,14 @@ export class MMIController {
           name: internalAccount.metadata.name,
         };
       });
-    const { metaMetricsId } = this.messagingSystem.call(
-      'MetaMetricsController:getState',
-    );
+    const { metaMetricsId } = this.metaMetricsController.store.getState();
     const getAccountDetails = (address: string) =>
       this.custodyController.getAccountDetails(address);
     const extensionId = this.extension.runtime.id;
 
-    const { networkConfigurationsByChainId } = this.messagingSystem.call(
-      'NetworkController:getState',
+    const networks = Object.values(
+      this.networkController.state.networkConfigurationsByChainId,
     );
-    const networks = Object.values(networkConfigurationsByChainId);
 
     return handleMmiPortfolio({
       keyringAccounts,
@@ -845,38 +848,30 @@ export class MMIController {
   async setAccountAndNetwork(origin: string, address: string, chainId: number) {
     await this.appStateController.getUnlockPromise(true);
     const addressToLowerCase = address.toLowerCase();
-    const { address: selectedAddress } = this.messagingSystem.call(
+    const { address: selectedAddress } = this.messenger.call(
       'AccountsController:getSelectedAccount',
     );
 
     if (selectedAddress.toLowerCase() !== addressToLowerCase) {
-      const internalAccount = this.messagingSystem.call(
+      const internalAccount = this.messenger.call(
         'AccountsController:getAccountByAddress',
         addressToLowerCase,
       );
-      if (internalAccount) {
-        this.messagingSystem.call(
-          'AccountsController:setSelectedAccount',
-          internalAccount.id,
-        );
-      }
+      this.messenger.call(
+        'AccountsController:setSelectedAccount',
+        internalAccount.id,
+      );
     }
 
-    const { selectedNetworkClientId } = this.messagingSystem.call(
-      'NetworkController:getState',
-    );
-    const {
-      configuration: { chainId: selectedChainId },
-    } = this.messagingSystem.call(
-      'NetworkController:getNetworkClientById',
-      selectedNetworkClientId,
-    );
+    const selectedChainId = getCurrentChainId({
+      metamask: this.networkController.state,
+    });
 
     if (selectedChainId !== toHex(chainId)) {
-      const networkConfiguration = this.messagingSystem.call(
-        'NetworkController:getNetworkConfigurationByChainId',
-        toHex(chainId),
-      );
+      const networkConfiguration =
+        this.networkController.state.networkConfigurationsByChainId[
+          toHex(chainId)
+        ];
 
       const { networkClientId } =
         networkConfiguration?.rpcEndpoints?.[
@@ -884,10 +879,7 @@ export class MMIController {
         ] ?? {};
 
       if (networkClientId) {
-        await this.messagingSystem.call(
-          'NetworkController:setActiveNetwork',
-          networkClientId,
-        );
+        await this.networkController.setActiveNetwork(networkClientId);
       }
     }
 

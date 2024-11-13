@@ -13,7 +13,6 @@ const {
   convertToHexValue,
   logInWithBalanceValidation,
   withFixtures,
-  sentryRegEx,
 } = require('../../helpers');
 const { PAGES } = require('../../webdriver/driver');
 
@@ -47,8 +46,6 @@ const maskedBackgroundFields = [
   'AppStateController.notificationGasPollTokens',
   'AppStateController.popupGasPollTokens',
   'CurrencyController.currencyRates.ETH.conversionDate',
-  'CurrencyController.currencyRates.LineaETH.conversionDate',
-  'CurrencyController.currencyRates.SepoliaETH.conversionDate',
 ];
 const maskedUiFields = maskedBackgroundFields.map(backgroundToUiField);
 
@@ -60,7 +57,6 @@ const removedBackgroundFields = [
   'AppStateController.currentPopupId',
   'AppStateController.timeoutMinutes',
   'AppStateController.lastInteractedConfirmationInfo',
-  'BridgeController.bridgeState.quoteRequest.walletAddress',
   'PPOMController.chainStatus.0x539.lastVisited',
   'PPOMController.versionInfo',
   // This property is timing-dependent
@@ -182,6 +178,8 @@ function getMissingProperties(complete, object) {
 }
 
 describe('Sentry errors', function () {
+  const sentryRegEx = /^https:\/\/sentry\.io\/api\/\d+\/envelope/gu;
+
   const migrationError =
     process.env.SELENIUM_BROWSER === Browser.CHROME
       ? `"type":"TypeError","value":"Cannot read properties of undefined (reading 'version')`
@@ -864,20 +862,6 @@ describe('Sentry errors', function () {
 
   it('should not have extra properties in UI state mask @no-mmi', async function () {
     const expectedMissingState = {
-      bridgeState: {
-        // This can get wiped out during initialization due to a bug in
-        // the "resetState" method
-        quoteRequest: {
-          destChainId: true,
-          destTokenAddress: true,
-          srcChainId: true,
-          srcTokenAmount: true,
-          walletAddress: false,
-        },
-        quotesLastFetched: true,
-        quotesLoadingStatus: true,
-        quotesRefreshCount: true,
-      },
       currentPopupId: false, // Initialized as undefined
       // Part of transaction controller store, but missing from the initial
       // state
@@ -885,7 +869,6 @@ describe('Sentry errors', function () {
       preferences: {
         autoLockTimeLimit: true, // Initialized as undefined
         showConfirmationAdvancedDetails: true,
-        privacyMode: false,
       },
       smartTransactionsState: {
         fees: {

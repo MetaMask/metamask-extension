@@ -6,7 +6,6 @@ import { useMemo } from 'react';
 import { useSelector } from 'react-redux';
 import { getIntlLocale } from '../../../../../../../ducks/locale/locale';
 import { SPENDING_CAP_UNLIMITED_MSG } from '../../../../../constants';
-import { toNonScientificString } from '../../hooks/use-token-values';
 import { useDecodedTransactionData } from '../../hooks/useDecodedTransactionData';
 import { useIsNFT } from './use-is-nft';
 
@@ -47,9 +46,8 @@ export const useApproveTokenSimulation = (
   }, [value, decimals]);
 
   const formattedSpendingCap = useMemo(() => {
-    // formatting coerces small numbers to 0
-    return isNFT || decodedSpendingCap < 1
-      ? toNonScientificString(decodedSpendingCap)
+    return isNFT
+      ? decodedSpendingCap
       : new Intl.NumberFormat(locale).format(decodedSpendingCap);
   }, [decodedSpendingCap, isNFT, locale]);
 

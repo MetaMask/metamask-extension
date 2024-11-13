@@ -935,7 +935,6 @@ function setupBundlerDefaults(
             './**/node_modules/firebase',
             './**/node_modules/@firebase',
             './**/node_modules/marked',
-            './**/node_modules/@solana',
           ],
           global: true,
         },

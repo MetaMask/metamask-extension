@@ -217,7 +217,6 @@ export default class ConfirmTransactionBase extends Component {
       mostRecentOverviewPage,
       txData,
       getNextNonce,
-      fromAddress,
     } = this.props;
 
     const {
@@ -237,7 +236,7 @@ export default class ConfirmTransactionBase extends Component {
       transactionStatus === TransactionStatus.confirmed;
 
     if (txData.id !== prevTxData.id) {
-      getNextNonce(fromAddress);
+      getNextNonce();
     }
 
     if (
@@ -414,7 +413,6 @@ export default class ConfirmTransactionBase extends Component {
       tokenSymbol,
       isUsingPaymaster,
       isSigningOrSubmitting,
-      fromAddress,
     } = this.props;
 
     const { t } = this.context;
@@ -449,7 +447,7 @@ export default class ConfirmTransactionBase extends Component {
 
       updateCustomNonce(inputValue);
 
-      getNextNonce(fromAddress);
+      getNextNonce();
     };
 
     const renderTotalMaxAmount = ({
@@ -545,7 +543,11 @@ export default class ConfirmTransactionBase extends Component {
     const { simulationData } = txData;
 
     const simulationDetails = (
-      <SimulationDetails transaction={txData} enableMetrics />
+      <SimulationDetails
+        simulationData={simulationData}
+        transactionId={txData.id}
+        enableMetrics
+      />
     );
 
     const showTotals = Boolean(simulationData?.error);
@@ -1014,15 +1016,23 @@ export default class ConfirmTransactionBase extends Component {
     this._isMounted = true;
     const {
       toAddress,
-      fromAddress,
-      txData: { origin } = {},
+      txData: { origin, chainId: txChainId } = {},
       getNextNonce,
       tryReverseResolveAddress,
       smartTransactionsPreferenceEnabled,
       currentChainSupportsSmartTransactions,
       setSwapsFeatureFlags,
       fetchSmartTransactionsLiveness,
+      chainId,
     } = this.props;
+
+    // If the user somehow finds themselves seeing a confirmation
+    // on a network which is not presently selected, throw
+    if (txChainId === undefined || txChainId !== chainId) {
+      throw new Error(
+        `Currently selected chainId (${chainId}) does not match chainId (${txChainId}) on which the transaction was proposed.`,
+      );
+    }
 
     const { trackEvent } = this.context;
     trackEvent({
@@ -1035,7 +1045,7 @@ export default class ConfirmTransactionBase extends Component {
       },
     });
 
-    getNextNonce(fromAddress);
+    getNextNonce();
     if (toAddress) {
       tryReverseResolveAddress(toAddress);
     }

@@ -7,16 +7,21 @@ import {
   getCurrentChainId,
   getCurrentNetwork,
   accountSupportsSmartTx,
+  getSelectedAccount,
   getPreferences,
   // TODO: Remove restricted import
   // eslint-disable-next-line import/no-restricted-paths
 } from '../../../ui/selectors/selectors'; // TODO: Migrate shared selectors to this file.
 import { isProduction } from '../environment';
 
+// TODO: Remove restricted import
+// eslint-disable-next-line import/no-restricted-paths
+import { MultichainState } from '../../../ui/selectors/multichain';
+
 type SmartTransactionsMetaMaskState = {
   metamask: {
     preferences: {
-      smartTransactionsOptInStatus?: boolean;
+      smartTransactionsOptInStatus?: boolean | null;
     };
     internalAccounts: {
       selectedAccount: string;
@@ -67,8 +72,10 @@ type SmartTransactionsMetaMaskState = {
  */
 export const getSmartTransactionsOptInStatusInternal = createSelector(
   getPreferences,
-  (preferences: { smartTransactionsOptInStatus?: boolean }): boolean => {
-    return preferences?.smartTransactionsOptInStatus ?? true;
+  (preferences: {
+    smartTransactionsOptInStatus?: boolean | null;
+  }): boolean | null => {
+    return preferences?.smartTransactionsOptInStatus ?? null;
   },
 );
 
@@ -86,7 +93,7 @@ export const getSmartTransactionsOptInStatusInternal = createSelector(
  */
 export const getSmartTransactionsOptInStatusForMetrics = createSelector(
   getSmartTransactionsOptInStatusInternal,
-  (optInStatus: boolean): boolean => optInStatus,
+  (optInStatus: boolean | null): boolean | null => optInStatus,
 );
 
 /**
@@ -98,7 +105,7 @@ export const getSmartTransactionsOptInStatusForMetrics = createSelector(
  */
 export const getSmartTransactionsPreferenceEnabled = createSelector(
   getSmartTransactionsOptInStatusInternal,
-  (optInStatus: boolean): boolean => {
+  (optInStatus: boolean | null): boolean => {
     // In the absence of an explicit opt-in or opt-out,
     // the Smart Transactions toggle is enabled.
     const DEFAULT_SMART_TRANSACTIONS_ENABLED = true;
@@ -128,6 +135,30 @@ const getIsAllowedRpcUrlForSmartTransactions = (
   const rpcUrl = new URL(currentNetwork.rpcUrl);
   // Only allow STX in prod if an Infura RPC URL is being used.
   return rpcUrl?.hostname?.endsWith('.infura.io');
+};
+
+/**
+ * Checks if the selected account has a non-zero balance.
+ *
+ * @param state - The state object containing account information.
+ * @returns true if the selected account has a non-zero balance, otherwise false.
+ */
+const hasNonZeroBalance = (state: SmartTransactionsMetaMaskState) => {
+  const selectedAccount = getSelectedAccount(
+    state as unknown as MultichainState,
+  );
+  return BigInt(selectedAccount?.balance || '0x0') > 0n;
+};
+
+export const getIsSmartTransactionsOptInModalAvailable = (
+  state: SmartTransactionsMetaMaskState,
+) => {
+  return (
+    getCurrentChainSupportsSmartTransactions(state) &&
+    getIsAllowedRpcUrlForSmartTransactions(state) &&
+    getSmartTransactionsOptInStatusInternal(state) === null &&
+    hasNonZeroBalance(state)
+  );
 };
 
 export const getSmartTransactionsEnabled = (

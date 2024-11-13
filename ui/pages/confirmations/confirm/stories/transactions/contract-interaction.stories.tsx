@@ -39,16 +39,15 @@ export const UserOperationStory = () => {
   };
 
   const confirmState = getMockConfirmStateForTransaction(confirmation, {
-    metamask: {
-      preferences: {
-        ...mockState.metamask.preferences,
-        petnamesEnabled: true,
-      },
-      userOperations: {
-        [confirmation.id]: {
-          userOperation: {
-            paymasterAndData: PAYMASTER_AND_DATA,
-          },
+    metamask: {},
+    preferences: {
+      ...mockState.metamask.preferences,
+      petnamesEnabled: true,
+    },
+    userOperations: {
+      [confirmation.id]: {
+        userOperation: {
+          paymasterAndData: PAYMASTER_AND_DATA,
         },
       },
     },

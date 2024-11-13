@@ -1,6 +1,5 @@
 import { ApprovalType } from '@metamask/controller-utils';
 import { act, fireEvent, screen, waitFor } from '@testing-library/react';
-import { CHAIN_IDS } from '@metamask/transaction-controller';
 import { MESSAGE_TYPE } from '../../../../shared/constants/app';
 import {
   MetaMetricsEventCategory,
@@ -35,7 +34,6 @@ const getMetaMaskStateWithUnapprovedPersonalSign = (accountAddress: string) => {
     unapprovedPersonalMsgs: {
       [pendingPersonalSignId]: {
         id: pendingPersonalSignId,
-        chainId: CHAIN_IDS.SEPOLIA,
         status: 'unapproved',
         time: pendingPersonalSignTime,
         type: MESSAGE_TYPE.PERSONAL_SIGN,

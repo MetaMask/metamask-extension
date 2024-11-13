@@ -1,6 +1,5 @@
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
-import { zeroAddress } from 'ethereumjs-util';
 import { createBridgeMockStore } from '../../../test/jest/mock-store';
 import { CHAIN_IDS } from '../../../shared/constants/network';
 import { setBackgroundConnection } from '../../store/background-connection';
@@ -19,9 +18,7 @@ import {
   setToToken,
   setFromChain,
   resetInputFields,
-  setToChainId,
-  updateQuoteRequestParams,
-  resetBridgeState,
+  switchToAndFromTokens,
 } from './actions';
 
 const middleware = [thunk];
@@ -34,23 +31,9 @@ describe('Ducks - Bridge', () => {
     store.clearActions();
   });
 
-  describe('setToChainId', () => {
-    it('calls the "bridge/setToChainId" action', () => {
-      const state = store.getState().bridge;
-      const actionPayload = CHAIN_IDS.OPTIMISM;
-
-      store.dispatch(setToChainId(actionPayload as never) as never);
-
-      // Check redux state
-      const actions = store.getActions();
-      expect(actions[0].type).toStrictEqual('bridge/setToChainId');
-      const newState = bridgeReducer(state, actions[0]);
-      expect(newState.toChainId).toStrictEqual(actionPayload);
-    });
-  });
-
   describe('setToChain', () => {
-    it('calls the selectDestNetwork background action', () => {
+    it('calls the "bridge/setToChainId" action and the selectDestNetwork background action', () => {
+      const state = store.getState().bridge;
       const actionPayload = CHAIN_IDS.OPTIMISM;
 
       const mockSelectDestNetwork = jest.fn().mockReturnValue({});
@@ -60,6 +43,11 @@ describe('Ducks - Bridge', () => {
 
       store.dispatch(setToChain(actionPayload as never) as never);
 
+      // Check redux state
+      const actions = store.getActions();
+      expect(actions[0].type).toStrictEqual('bridge/setToChainId');
+      const newState = bridgeReducer(state, actions[0]);
+      expect(newState.toChainId).toStrictEqual(actionPayload);
       // Check background state
       expect(mockSelectDestNetwork).toHaveBeenCalledTimes(1);
       expect(mockSelectDestNetwork).toHaveBeenCalledWith(
@@ -73,7 +61,7 @@ describe('Ducks - Bridge', () => {
     it('calls the "bridge/setFromToken" action', () => {
       const state = store.getState().bridge;
       const actionPayload = { symbol: 'SYMBOL', address: '0x13341432' };
-      store.dispatch(setFromToken(actionPayload as never) as never);
+      store.dispatch(setFromToken(actionPayload));
       const actions = store.getActions();
       expect(actions[0].type).toStrictEqual('bridge/setFromToken');
       const newState = bridgeReducer(state, actions[0]);
@@ -85,8 +73,7 @@ describe('Ducks - Bridge', () => {
     it('calls the "bridge/setToToken" action', () => {
       const state = store.getState().bridge;
       const actionPayload = { symbol: 'SYMBOL', address: '0x13341431' };
-
-      store.dispatch(setToToken(actionPayload as never) as never);
+      store.dispatch(setToToken(actionPayload));
       const actions = store.getActions();
       expect(actions[0].type).toStrictEqual('bridge/setToToken');
       const newState = bridgeReducer(state, actions[0]);
@@ -98,8 +85,7 @@ describe('Ducks - Bridge', () => {
     it('calls the "bridge/setFromTokenInputValue" action', () => {
       const state = store.getState().bridge;
       const actionPayload = '10';
-
-      store.dispatch(setFromTokenInputValue(actionPayload as never) as never);
+      store.dispatch(setFromTokenInputValue(actionPayload));
       const actions = store.getActions();
       expect(actions[0].type).toStrictEqual('bridge/setFromTokenInputValue');
       const newState = bridgeReducer(state, actions[0]);
@@ -151,59 +137,29 @@ describe('Ducks - Bridge', () => {
     });
   });
 
-  describe('updateQuoteRequestParams', () => {
-    it('dispatches quote params to the bridge controller', () => {
-      const mockUpdateParams = jest.fn();
-      setBackgroundConnection({
-        [BridgeUserAction.UPDATE_QUOTE_PARAMS]: mockUpdateParams,
-      } as never);
-
-      store.dispatch(
-        updateQuoteRequestParams({
-          srcChainId: 1,
-          srcTokenAddress: zeroAddress(),
-          destTokenAddress: undefined,
-        }) as never,
-      );
-
-      expect(mockUpdateParams).toHaveBeenCalledTimes(1);
-      expect(mockUpdateParams).toHaveBeenCalledWith(
-        {
-          srcChainId: 1,
-          srcTokenAddress: zeroAddress(),
-          destTokenAddress: undefined,
-        },
-        expect.anything(),
-      );
-    });
-  });
-
-  describe('resetBridgeState', () => {
-    it('dispatches action to the bridge controller', () => {
+  describe('switchToAndFromTokens', () => {
+    it('switches to and from input values', async () => {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      const mockStore = configureMockStore<any>(middleware)(
-        createBridgeMockStore({}, { fromTokenInputValue: '10' }),
+      const bridgeStore = configureMockStore<any>(middleware)(
+        createBridgeMockStore(
+          {},
+          {
+            toChainId: CHAIN_IDS.MAINNET,
+            fromToken: { symbol: 'WETH', address: '0x13341432' },
+            toToken: { symbol: 'USDC', address: '0x13341431' },
+            fromTokenInputValue: '10',
+          },
+        ),
       );
-      const state = mockStore.getState().bridge;
-      const mockResetBridgeState = jest.fn();
-      setBackgroundConnection({
-        [BridgeBackgroundAction.RESET_STATE]: mockResetBridgeState,
-      } as never);
-
-      mockStore.dispatch(resetBridgeState() as never);
-
-      expect(mockResetBridgeState).toHaveBeenCalledTimes(1);
-      expect(mockResetBridgeState).toHaveBeenCalledWith(
-        undefined,
-        expect.anything(),
-      );
-      const actions = mockStore.getActions();
-      expect(actions[0].type).toStrictEqual('bridge/resetInputFields');
+      const state = bridgeStore.getState().bridge;
+      bridgeStore.dispatch(switchToAndFromTokens(CHAIN_IDS.POLYGON));
+      const actions = bridgeStore.getActions();
+      expect(actions[0].type).toStrictEqual('bridge/switchToAndFromTokens');
       const newState = bridgeReducer(state, actions[0]);
       expect(newState).toStrictEqual({
-        toChainId: null,
-        fromToken: null,
-        toToken: null,
+        toChainId: CHAIN_IDS.POLYGON,
+        fromToken: { symbol: 'USDC', address: '0x13341431' },
+        toToken: { symbol: 'WETH', address: '0x13341432' },
         fromTokenInputValue: null,
       });
     });

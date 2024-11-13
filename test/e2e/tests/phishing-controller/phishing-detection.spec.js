@@ -58,12 +58,6 @@ describe('Phishing Detection', function () {
         await unlockWallet(driver);
         await openDapp(driver);
         await driver.switchToWindowWithTitle('MetaMask Phishing Detection');
-
-        // we need to wait for this selector to mitigate a race condition on the phishing page site
-        // see more here https://github.com/MetaMask/phishing-warning/pull/173
-        await driver.waitForSelector({
-          testId: 'unsafe-continue-loaded',
-        });
         await driver.clickElement({
           text: 'Proceed anyway',
         });
@@ -109,15 +103,10 @@ describe('Phishing Detection', function () {
         }
 
         await driver.switchToWindowWithTitle('MetaMask Phishing Detection');
-
-        // we need to wait for this selector to mitigate a race condition on the phishing page site
-        // see more here https://github.com/MetaMask/phishing-warning/pull/173
-        await driver.waitForSelector({
-          testId: 'unsafe-continue-loaded',
-        });
         await driver.clickElement({
           text: 'Proceed anyway',
         });
+
         await driver.wait(until.titleIs(WINDOW_TITLES.TestDApp), 10000);
       };
     }
@@ -180,12 +169,6 @@ describe('Phishing Detection', function () {
           text: 'Open this warning in a new tab',
         });
         await driver.switchToWindowWithTitle('MetaMask Phishing Detection');
-
-        // we need to wait for this selector to mitigate a race condition on the phishing page site
-        // see more here https://github.com/MetaMask/phishing-warning/pull/173
-        await driver.waitForSelector({
-          testId: 'unsafe-continue-loaded',
-        });
         await driver.clickElement({
           text: 'Proceed anyway',
         });

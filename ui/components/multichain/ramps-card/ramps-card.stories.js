@@ -24,6 +24,12 @@ export const TokensStory = (args) => (
 
 TokensStory.storyName = 'Tokens';
 
+export const NFTsStory = (args) => (
+  <RampsCard {...args} variant={RAMPS_CARD_VARIANT_TYPES.NFT} />
+);
+
+NFTsStory.storyName = 'NFTs';
+
 export const ActivityStory = (args) => (
   <RampsCard {...args} variant={RAMPS_CARD_VARIANT_TYPES.ACTIVITY} />
 );

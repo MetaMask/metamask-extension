@@ -1,13 +1,9 @@
+import { ObservableStore } from '@metamask/obs-store';
 import {
   AccountsControllerGetSelectedAccountAction,
   AccountsControllerSelectedAccountChangeEvent,
 } from '@metamask/accounts-controller';
-import {
-  BaseController,
-  ControllerGetStateAction,
-  ControllerStateChangeEvent,
-  RestrictedControllerMessenger,
-} from '@metamask/base-controller';
+import { RestrictedControllerMessenger } from '@metamask/base-controller';
 import {
   TOGGLEABLE_ALERT_TYPES,
   Web3ShimUsageAlertStates,
@@ -18,10 +14,10 @@ const controllerName = 'AlertController';
 /**
  * Returns the state of the {@link AlertController}.
  */
-export type AlertControllerGetStateAction = ControllerGetStateAction<
-  typeof controllerName,
-  AlertControllerState
->;
+export type AlertControllerGetStateAction = {
+  type: 'AlertController:getState';
+  handler: () => AlertControllerState;
+};
 
 /**
  * Actions exposed by the {@link AlertController}.
@@ -31,10 +27,10 @@ export type AlertControllerActions = AlertControllerGetStateAction;
 /**
  * Event emitted when the state of the {@link AlertController} changes.
  */
-export type AlertControllerStateChangeEvent = ControllerStateChangeEvent<
-  typeof controllerName,
-  AlertControllerState
->;
+export type AlertControllerStateChangeEvent = {
+  type: 'AlertController:stateChange';
+  payload: [AlertControllerState, []];
+};
 
 /**
  * Events emitted by {@link AlertController}.
@@ -80,15 +76,12 @@ export type AlertControllerState = {
  * @property state - The initial controller state
  * @property controllerMessenger - The controller messenger
  */
-export type AlertControllerOptions = {
+type AlertControllerOptions = {
   state?: Partial<AlertControllerState>;
-  messenger: AlertControllerMessenger;
+  controllerMessenger: AlertControllerMessenger;
 };
 
-/**
- * Function to get default state of the {@link AlertController}.
- */
-export const getDefaultAlertControllerState = (): AlertControllerState => ({
+const defaultState: AlertControllerState = {
   alertEnabledness: TOGGLEABLE_ALERT_TYPES.reduce(
     (alertEnabledness: Record<string, boolean>, alertType: string) => {
       alertEnabledness[alertType] = true;
@@ -98,76 +91,61 @@ export const getDefaultAlertControllerState = (): AlertControllerState => ({
   ),
   unconnectedAccountAlertShownOrigins: {},
   web3ShimUsageOrigins: {},
-});
-
-/**
- * {@link AlertController}'s metadata.
- *
- * This allows us to choose if fields of the state should be persisted or not
- * using the `persist` flag; and if they can be sent to Sentry or not, using
- * the `anonymous` flag.
- */
-const controllerMetadata = {
-  alertEnabledness: {
-    persist: true,
-    anonymous: true,
-  },
-  unconnectedAccountAlertShownOrigins: {
-    persist: true,
-    anonymous: false,
-  },
-  web3ShimUsageOrigins: {
-    persist: true,
-    anonymous: false,
-  },
 };
 
 /**
  * Controller responsible for maintaining alert-related state.
  */
-export class AlertController extends BaseController<
-  typeof controllerName,
-  AlertControllerState,
-  AlertControllerMessenger
-> {
+export class AlertController {
+  store: ObservableStore<AlertControllerState>;
+
+  readonly #controllerMessenger: AlertControllerMessenger;
+
   #selectedAddress: string;
 
   constructor(opts: AlertControllerOptions) {
-    super({
-      messenger: opts.messenger,
-      metadata: controllerMetadata,
-      name: controllerName,
-      state: {
-        ...getDefaultAlertControllerState(),
-        ...opts.state,
-      },
+    const state: AlertControllerState = {
+      ...defaultState,
+      ...opts.state,
+    };
+
+    this.store = new ObservableStore(state);
+    this.#controllerMessenger = opts.controllerMessenger;
+    this.#controllerMessenger.registerActionHandler(
+      'AlertController:getState',
+      () => this.store.getState(),
+    );
+    this.store.subscribe((alertState: AlertControllerState) => {
+      this.#controllerMessenger.publish(
+        'AlertController:stateChange',
+        alertState,
+        [],
+      );
     });
 
-    this.#selectedAddress = this.messagingSystem.call(
+    this.#selectedAddress = this.#controllerMessenger.call(
       'AccountsController:getSelectedAccount',
     ).address;
 
-    this.messagingSystem.subscribe(
+    this.#controllerMessenger.subscribe(
       'AccountsController:selectedAccountChange',
       (account: { address: string }) => {
-        const currentState = this.state;
+        const currentState = this.store.getState();
         if (
           currentState.unconnectedAccountAlertShownOrigins &&
           this.#selectedAddress !== account.address
         ) {
           this.#selectedAddress = account.address;
-          this.update((state) => {
-            state.unconnectedAccountAlertShownOrigins = {};
-          });
+          this.store.updateState({ unconnectedAccountAlertShownOrigins: {} });
         }
       },
     );
   }
 
   setAlertEnabledness(alertId: string, enabledness: boolean): void {
-    this.update((state) => {
-      state.alertEnabledness[alertId] = enabledness;
-    });
+    const { alertEnabledness } = this.store.getState();
+    alertEnabledness[alertId] = enabledness;
+    this.store.updateState({ alertEnabledness });
   }
 
   /**
@@ -176,9 +154,9 @@ export class AlertController extends BaseController<
    * @param origin - The origin the alert has been shown for
    */
   setUnconnectedAccountAlertShown(origin: string): void {
-    this.update((state) => {
-      state.unconnectedAccountAlertShownOrigins[origin] = true;
-    });
+    const { unconnectedAccountAlertShownOrigins } = this.store.getState();
+    unconnectedAccountAlertShownOrigins[origin] = true;
+    this.store.updateState({ unconnectedAccountAlertShownOrigins });
   }
 
   /**
@@ -189,7 +167,7 @@ export class AlertController extends BaseController<
    * origin, or undefined.
    */
   getWeb3ShimUsageState(origin: string): number | undefined {
-    return this.state.web3ShimUsageOrigins?.[origin];
+    return this.store.getState().web3ShimUsageOrigins?.[origin];
   }
 
   /**
@@ -216,10 +194,10 @@ export class AlertController extends BaseController<
    * @param value - The state value to set.
    */
   #setWeb3ShimUsageState(origin: string, value: number): void {
-    this.update((state) => {
-      if (state.web3ShimUsageOrigins) {
-        state.web3ShimUsageOrigins[origin] = value;
-      }
-    });
+    const { web3ShimUsageOrigins } = this.store.getState();
+    if (web3ShimUsageOrigins) {
+      web3ShimUsageOrigins[origin] = value;
+      this.store.updateState({ web3ShimUsageOrigins });
+    }
   }
 }

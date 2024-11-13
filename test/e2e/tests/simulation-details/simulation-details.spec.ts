@@ -215,7 +215,7 @@ describe('Simulation Details', () => {
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
         await driver.findElement({
           css: '[data-testid="simulation-details-layout"]',
-          text: 'No changes',
+          text: 'No changes predicted for your wallet',
         });
       },
     );
@@ -276,7 +276,7 @@ describe('Simulation Details', () => {
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
         await driver.findElement({
           css: '[data-testid="simulation-details-layout"]',
-          text: 'Unavailable',
+          text: 'There was an error loading your estimation',
         });
       },
     );

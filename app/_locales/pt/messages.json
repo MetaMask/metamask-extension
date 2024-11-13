@@ -256,9 +256,6 @@
   "addNewBitcoinTestnetAccount": {
     "message": "Adicionar uma nova conta Bitcoin (Testnet)"
   },
-  "addNewSolanaAccount": {
-    "message": "Adicionar uma nova conta Solana (Beta)"
-  },
   "addNewToken": {
     "message": "Adicionar novo token"
   },
@@ -807,6 +804,10 @@
   },
   "buyNow": {
     "message": "Comprar agora"
+  },
+  "buyToken": {
+    "message": "Comprar $1",
+    "description": "$1 is the token symbol"
   },
   "bytes": {
     "message": "Bytes"
@@ -1623,6 +1624,9 @@
   "editSpeedUpEditGasFeeModalTitle": {
     "message": "Editar taxa de gás para aceleração"
   },
+  "enable": {
+    "message": "Ativar"
+  },
   "enableAutoDetect": {
     "message": " Ativar detecção automática"
   },
@@ -1699,6 +1703,10 @@
     "message": "Código: $1",
     "description": "Displayed error code for debugging purposes. $1 is the error code"
   },
+  "errorDetails": {
+    "message": "Detalhes do erro",
+    "description": "Title for collapsible section that displays error details for debugging purposes"
+  },
   "errorGettingSafeChainList": {
     "message": "Erro ao obter uma lista segura da cadeia. Por favor, prossiga com cautela."
   },
@@ -1709,6 +1717,14 @@
   "errorName": {
     "message": "Código: $1",
     "description": "Displayed error name for debugging purposes. $1 is the error name"
+  },
+  "errorPageMessage": {
+    "message": "Recarregue a página para tentar novamente ou entre em contato com o suporte $1.",
+    "description": "Message displayed on generic error page in the fullscreen or notification UI, $1 is a clickable link with text defined by the 'here' key. The link will open to a form where users can file support tickets."
+  },
+  "errorPagePopupMessage": {
+    "message": "Feche e reabra o pop-up para tentar novamente ou entre em contato com o suporte $1.",
+    "description": "Message displayed on generic error page in the popup UI, $1 is a clickable link with text defined by the 'here' key. The link will open to a form where users can file support tickets."
   },
   "errorPageTitle": {
     "message": "A MetaMask encontrou um erro",
@@ -1867,6 +1883,13 @@
   "functionType": {
     "message": "Tipo de função"
   },
+  "fundYourWallet": {
+    "message": "Adicione valores à sua carteira"
+  },
+  "fundYourWalletDescription": {
+    "message": "Comece adicionando $1 à sua carteira.",
+    "description": "$1 is the token symbol"
+  },
   "gas": {
     "message": "Gás"
   },
@@ -1949,6 +1972,14 @@
   },
   "genericExplorerView": {
     "message": "Ver conta na $1"
+  },
+  "getStartedWithNFTs": {
+    "message": "Adquira $1 para comprar NFTs",
+    "description": "$1 is the token symbol"
+  },
+  "getStartedWithNFTsDescription": {
+    "message": "Comece sua jornada com NFTs adicionando $1 à sua carteira.",
+    "description": "$1 is the token symbol"
   },
   "goBack": {
     "message": "Voltar"
@@ -4531,11 +4562,17 @@
   "signingInWith": {
     "message": "Assinando com"
   },
+  "simulationDetailsFailed": {
+    "message": "Houve um erro ao carregar sua estimativa."
+  },
   "simulationDetailsFiatNotAvailable": {
     "message": "Não disponível"
   },
   "simulationDetailsIncomingHeading": {
     "message": "Você recebe"
+  },
+  "simulationDetailsNoBalanceChanges": {
+    "message": "Nenhuma alteração prevista para sua carteira"
   },
   "simulationDetailsOutgoingHeading": {
     "message": "Você envia"
@@ -4573,6 +4610,9 @@
   },
   "siweResources": {
     "message": "Recursos"
+  },
+  "siweSignatureSimulationDetailInfo": {
+    "message": "Você está fazendo login em um site e não há alterações previstas em sua conta."
   },
   "siweURI": {
     "message": "URL"
@@ -4615,6 +4655,25 @@
   },
   "smartTransactions": {
     "message": "Transações inteligentes"
+  },
+  "smartTransactionsBenefit1": {
+    "message": "99,5% de taxa de sucesso"
+  },
+  "smartTransactionsBenefit2": {
+    "message": "Faz você economizar dinheiro"
+  },
+  "smartTransactionsBenefit3": {
+    "message": "Atualizações em tempo real"
+  },
+  "smartTransactionsDescription": {
+    "message": "Desbloqueie taxas de sucesso maiores, proteção contra front running e melhor visibilidade com as transações inteligentes."
+  },
+  "smartTransactionsDescription2": {
+    "message": "Disponível somente na Ethereum. Ative ou desative a qualquer momento nas configurações. $1",
+    "description": "$1 is an external link to learn more about Smart Transactions"
+  },
+  "smartTransactionsOptItModalTitle": {
+    "message": "Proteção de transações aprimorada"
   },
   "snapAccountCreated": {
     "message": "Conta criada"
@@ -4934,6 +4993,14 @@
   },
   "stake": {
     "message": "Stake"
+  },
+  "startYourJourney": {
+    "message": "Comece sua jornada com $1",
+    "description": "$1 is the token symbol"
+  },
+  "startYourJourneyDescription": {
+    "message": "Comece sua jornada na web3 adicionando $1 à sua conta.",
+    "description": "$1 is the token symbol"
   },
   "stateLogError": {
     "message": "Erro ao recuperar os logs de estado."

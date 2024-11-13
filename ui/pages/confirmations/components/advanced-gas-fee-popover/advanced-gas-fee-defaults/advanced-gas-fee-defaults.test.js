@@ -21,7 +21,6 @@ import { mockNetworkState } from '../../../../../../test/stub/networks';
 import AdvancedGasFeeDefaults from './advanced-gas-fee-defaults';
 
 const TEXT_SELECTOR = 'Save these values as my default for the Goerli network.';
-const CHAIN_ID_MOCK = CHAIN_IDS.GOERLI;
 
 jest.mock('../../../../../store/actions', () => ({
   gasFeeStartPollingByNetworkClientId: jest
@@ -44,7 +43,7 @@ const render = async (defaultGasParams, contextParams) => {
     metamask: {
       ...mockState.metamask,
       ...defaultGasParams,
-      ...mockNetworkState({ chainId: CHAIN_ID_MOCK }),
+      ...mockNetworkState({ chainId: CHAIN_IDS.GOERLI }),
       accounts: {
         [mockSelectedInternalAccount.address]: {
           address: mockSelectedInternalAccount.address,
@@ -72,7 +71,6 @@ const render = async (defaultGasParams, contextParams) => {
       (result = renderWithProvider(
         <GasFeeContextProvider
           transaction={{
-            chainId: CHAIN_ID_MOCK,
             userFeeLevel: 'medium',
           }}
           {...contextParams}

@@ -1,15 +1,9 @@
 import React from 'react';
 import { action } from '@storybook/addon-actions';
-import { CHAIN_IDS } from '@metamask/transaction-controller';
-import { Provider } from 'react-redux';
 import { MESSAGE_TYPE } from '../../../../../shared/constants/app';
 import testData from '../../../../../.storybook/test-data';
-import configureStore from '../../../../store/store';
-import { mockNetworkState } from '../../../../../test/stub/networks';
 import README from './README.mdx';
 import SignatureRequestOriginal from './signature-request-original.component';
-
-const CHAIN_ID_MOCK = CHAIN_IDS.MAINNET;
 
 const [MOCK_PRIMARY_ACCOUNT, MOCK_SECONDARY_ACCOUNT] = Object.values(
   testData.metamask.internalAccounts.accounts,
@@ -47,17 +41,9 @@ const MOCK_SIGN_DATA = JSON.stringify({
   },
 });
 
-const store = configureStore({
-  ...testData,
-  metamask: {
-    ...testData.metamask,
-    ...mockNetworkState({ chainId: CHAIN_ID_MOCK }),
-  },
-});
-
 export default {
   title: 'Confirmations/Components/SignatureRequestOriginal',
-  decorators: [(story) => <Provider store={store}>{story()}</Provider>],
+
   component: SignatureRequestOriginal,
   parameters: {
     docs: {
@@ -101,7 +87,6 @@ DefaultStory.storyName = 'personal_sign Type';
 
 DefaultStory.args = {
   txData: {
-    chainId: CHAIN_ID_MOCK,
     msgParams: {
       from: '0xb19ac54efa18cc3a14a5b821bfec73d284bf0c5e',
       data: MOCK_SIGN_DATA,
@@ -117,7 +102,6 @@ ETHSignTypedStory.storyName = 'eth_signTypedData Type';
 
 ETHSignTypedStory.args = {
   txData: {
-    chainId: CHAIN_ID_MOCK,
     msgParams: {
       from: '0xb19ac54efa18cc3a14a5b821bfec73d284bf0c5e',
       data: [
@@ -144,7 +128,6 @@ AccountMismatchStory.storyName = 'Account Mismatch warning';
 
 AccountMismatchStory.args = {
   txData: {
-    chainId: CHAIN_ID_MOCK,
     msgParams: {
       from: '0x64a845a5b02460acf8a3d84503b0d68d028b4bb4',
       data: MOCK_SIGN_DATA,

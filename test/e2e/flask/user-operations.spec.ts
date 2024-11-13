@@ -256,8 +256,7 @@ describe('User Operations', function () {
         from: ERC_4337_ACCOUNT,
         to: GANACHE_ACCOUNT,
         value: convertETHToHexGwei(1),
-        maxFeePerGas: '0x0',
-        maxPriorityFeePerGas: '0x0',
+        data: '0x',
       });
 
       await confirmTransaction(driver);
@@ -295,8 +294,7 @@ describe('User Operations', function () {
           from: ERC_4337_ACCOUNT,
           to: GANACHE_ACCOUNT,
           value: convertETHToHexGwei(1),
-          maxFeePerGas: '0x0',
-          maxPriorityFeePerGas: '0x0',
+          data: '0x',
         });
 
         await confirmTransaction(driver);

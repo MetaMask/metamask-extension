@@ -257,8 +257,7 @@ export default function ReviewQuote({ setReceiveToAmount }) {
   );
   const smartTransactionFees = useSelector(getSmartTransactionFees, isEqual);
   const swapsNetworkConfig = useSelector(getSwapsNetworkConfig, shallowEqual);
-  const { gasFeeEstimates: networkGasFeeEstimates } = useGasFeeEstimates();
-  const { estimatedBaseFee = '0' } = networkGasFeeEstimates ?? {};
+  const { estimatedBaseFee = '0' } = useGasFeeEstimates();
 
   const gasFeeEstimates = useAsyncResult(async () => {
     if (!networkAndAccountSupports1559) {

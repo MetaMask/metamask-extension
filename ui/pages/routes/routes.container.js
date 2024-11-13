@@ -55,7 +55,7 @@ import Routes from './routes.component';
 function mapStateToProps(state) {
   const { activeTab, appState } = state;
   const { alertOpen, alertMessage, isLoading, loadingMessage } = appState;
-  const { autoLockTimeLimit = DEFAULT_AUTO_LOCK_TIME_LIMIT, privacyMode } =
+  const { autoLockTimeLimit = DEFAULT_AUTO_LOCK_TIME_LIMIT } =
     getPreferences(state);
   const { completedOnboarding } = state.metamask;
 
@@ -81,7 +81,6 @@ function mapStateToProps(state) {
     isNetworkLoading: isNetworkLoading(state),
     currentCurrency: state.metamask.currentCurrency,
     autoLockTimeLimit,
-    privacyMode,
     browserEnvironmentOs: state.metamask.browserEnvironment?.os,
     browserEnvironmentContainter: state.metamask.browserEnvironment?.browser,
     providerId: getNetworkIdentifier(state),

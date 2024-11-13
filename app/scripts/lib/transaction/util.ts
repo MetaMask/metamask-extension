@@ -16,14 +16,12 @@ import { PPOMController } from '@metamask/ppom-validator';
 import {
   generateSecurityAlertId,
   handlePPOMError,
+  isChainSupported,
   validateRequestWithPPOM,
 } from '../ppom/ppom-util';
+import { SecurityAlertResponse } from '../ppom/types';
 import {
-  SecurityAlertResponse,
-  UpdateSecurityAlertResponse,
-} from '../ppom/types';
-import {
-  SECURITY_ALERT_RESPONSE_CHECKING_CHAIN,
+  LOADING_SECURITY_ALERT_RESPONSE,
   SECURITY_PROVIDER_EXCLUDED_TRANSACTION_TYPES,
 } from '../../../../shared/constants/security-provider';
 import { endTrace, TraceName } from '../../../../shared/lib/trace';
@@ -40,7 +38,11 @@ type BaseAddTransactionRequest = {
   selectedAccount: InternalAccount;
   transactionParams: TransactionParams;
   transactionController: TransactionController;
-  updateSecurityAlertResponse: UpdateSecurityAlertResponse;
+  updateSecurityAlertResponse: (
+    method: string,
+    securityAlertId: string,
+    securityAlertResponse: SecurityAlertResponse,
+  ) => void;
   userOperationController: UserOperationController;
   internalAccounts: InternalAccount[];
 };
@@ -237,12 +239,18 @@ async function validateSecurity(request: AddTransactionRequest) {
 
   const { type } = transactionOptions;
 
+  const isCurrentChainSupported = await isChainSupported(chainId);
+
   const typeIsExcludedFromPPOM =
     SECURITY_PROVIDER_EXCLUDED_TRANSACTION_TYPES.includes(
       type as TransactionType,
     );
 
-  if (!securityAlertsEnabled || typeIsExcludedFromPPOM) {
+  if (
+    !securityAlertsEnabled ||
+    !isCurrentChainSupported ||
+    typeIsExcludedFromPPOM
+  ) {
     return;
   }
 
@@ -282,16 +290,21 @@ async function validateSecurity(request: AddTransactionRequest) {
       request: ppomRequest,
       securityAlertId,
       chainId,
-      updateSecurityAlertResponse,
+    }).then((securityAlertResponse) => {
+      updateSecurityAlertResponse(
+        ppomRequest.method,
+        securityAlertId,
+        securityAlertResponse,
+      );
     });
 
-    const securityAlertResponseCheckingChain: SecurityAlertResponse = {
-      ...SECURITY_ALERT_RESPONSE_CHECKING_CHAIN,
+    const loadingSecurityAlertResponse: SecurityAlertResponse = {
+      ...LOADING_SECURITY_ALERT_RESPONSE,
       securityAlertId,
     };
 
     request.transactionOptions.securityAlertResponse =
-      securityAlertResponseCheckingChain;
+      loadingSecurityAlertResponse;
   } catch (error) {
     handlePPOMError(error, 'Error validating JSON RPC using PPOM: ');
   }

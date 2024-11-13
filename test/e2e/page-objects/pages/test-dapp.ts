@@ -34,20 +34,6 @@ class TestDapp {
     tag: 'button',
   };
 
-  private readonly simpleSendButton = '#sendButton';
-
-  private readonly erc721MintButton = '#mintButton';
-
-  private readonly erc721TransferFromButton = '#transferFromButton';
-
-  private readonly erc1155TokenIDInput = '#batchMintTokenIds';
-
-  private readonly erc1155TokenAmountInput = '#batchMintIdAmounts';
-
-  private readonly erc1155MintButton = '#batchMintButton';
-
-  private readonly erc1155WatchButton = '#watchAssetButton';
-
   private readonly erc1155RevokeSetApprovalForAllButton =
     '#revokeERC1155Button';
 
@@ -188,34 +174,6 @@ class TestDapp {
     });
   }
 
-  async clickSimpleSendButton() {
-    await this.driver.clickElement(this.simpleSendButton);
-  }
-
-  async clickERC721MintButton() {
-    await this.driver.clickElement(this.erc721MintButton);
-  }
-
-  async clickERC721TransferFromButton() {
-    await this.driver.clickElement(this.erc721TransferFromButton);
-  }
-
-  async fillERC1155TokenID(tokenID: string) {
-    await this.driver.pasteIntoField(this.erc1155TokenIDInput, tokenID);
-  }
-
-  async fillERC1155TokenAmount(amount: string) {
-    await this.driver.pasteIntoField(this.erc1155TokenAmountInput, amount);
-  }
-
-  async clickERC1155MintButton() {
-    await this.driver.clickElement(this.erc1155MintButton);
-  }
-
-  async clickERC1155WatchButton() {
-    await this.driver.clickElement(this.erc1155WatchButton);
-  }
-
   async clickERC721SetApprovalForAllButton() {
     await this.driver.clickElement(this.erc721SetApprovalForAllButton);
   }
@@ -250,6 +208,15 @@ class TestDapp {
     await this.driver.clickElement(this.connectAccountButton);
     await this.driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
     await this.driver.waitForSelector(this.connectMetaMaskMessage);
+
+    // TODO: Extra steps needed to preserve the current network.
+    // Following steps can be removed once the issue is fixed (#27891)
+    const editNetworkButton = await this.driver.findClickableElements(
+      this.editConnectButton,
+    );
+    await editNetworkButton[1].click();
+    await this.driver.clickElement(this.localhostCheckbox);
+    await this.driver.clickElement(this.updateNetworkButton);
 
     await this.driver.clickElementAndWaitForWindowToClose(
       this.confirmDialogButton,

@@ -41,7 +41,6 @@ export const DEFAULT_GANACHE_ETH_BALANCE_DEC = '25';
 
 /* Dapp host addresses and URL*/
 export const DAPP_HOST_ADDRESS = '127.0.0.1:8080';
-export const DAPP_URL_LOCALHOST = 'http://localhost:8080';
 export const DAPP_URL = `http://${DAPP_HOST_ADDRESS}`;
 export const DAPP_ONE_URL = 'http://127.0.0.1:8081';
 
@@ -50,10 +49,3 @@ export const DEFAULT_BTC_ACCOUNT = 'bc1qg6whd6pc0cguh6gpp3ewujm53hv32ta9hdp252';
 
 /* Default (mocked) BTC balance used by the Bitcoin RPC provider */
 export const DEFAULT_BTC_BALANCE = 1; // BTC
-
-/* Default (mocked) SOLANA address created using test SRP */
-export const DEFAULT_SOLANA_ACCOUNT =
-  'E6Aa9DDv7zsePJHosoqiNb3cFuup3fkXTyRH2pZ1nVzP';
-
-/* Default (mocked) SOLANA balance used by the Solana RPC provider */
-export const DEFAULT_SOLANA_BALANCE = 1; // SOL

@@ -192,40 +192,29 @@ describe('Test Snap Metrics', function () {
           tag: 'h2',
         });
 
-        // find and scroll to the notifications snap
+        // find and scroll to the notifications card and click first
         const snapButton = await driver.findElement('#connectnotifications');
         await driver.scrollToElement(snapButton);
-
-        // added delay for firefox (deflake)
-        await driver.delayFirefox(1000);
-
-        // wait for and click connect
-        await driver.waitForSelector('#connectnotifications');
+        await driver.delay(1000);
         await driver.clickElement('#connectnotifications');
 
-        // switch to metamask extension
+        // switch to metamask popup and click connect
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
-
-        // wait for and click connect
-        await driver.waitForSelector({
-          text: 'Connect',
-          tag: 'button',
-        });
         await driver.clickElement({
           text: 'Connect',
           tag: 'button',
         });
 
-        // wait for and click confirm
         await driver.waitForSelector({ text: 'Confirm' });
+
         await driver.clickElement({
           text: 'Confirm',
           tag: 'button',
         });
 
-        // wait for and click ok and wait for window to close
         await driver.waitForSelector({ text: 'OK' });
-        await driver.clickElementAndWaitForWindowToClose({
+
+        await driver.clickElement({
           text: 'OK',
           tag: 'button',
         });
@@ -288,31 +277,21 @@ describe('Test Snap Metrics', function () {
           tag: 'h2',
         });
 
-        // find and scroll to the notifications snap
+        // find and scroll to the notifications card and click first
         const snapButton = await driver.findElement('#connectnotifications');
         await driver.scrollToElement(snapButton);
-
-        // added delay for firefox (deflake)
-        await driver.delayFirefox(1000);
-
-        // wait for and click connect
-        await driver.waitForSelector('#connectnotifications');
+        await driver.delay(1000);
         await driver.clickElement('#connectnotifications');
 
-        // switch to metamask extension
+        // switch to metamask popup and click connect
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
-
-        // wait for and click connect
-        await driver.waitForSelector({
-          text: 'Connect',
-          tag: 'button',
-        });
         await driver.clickElement({
           text: 'Connect',
           tag: 'button',
         });
-        // wait for and click confirm
+
         await driver.waitForSelector({ text: 'Confirm' });
+
         await driver.clickElement({
           text: 'Cancel',
           tag: 'button',
@@ -376,31 +355,19 @@ describe('Test Snap Metrics', function () {
           tag: 'h2',
         });
 
-        // find and scroll to the notifications snap
+        // find and scroll to the notifications card and click first
         const snapButton = await driver.findElement('#connectnotifications');
         await driver.scrollToElement(snapButton);
-
-        // added delay for firefox (deflake)
-        await driver.delayFirefox(1000);
-
-        // wait for and click connect
-        await driver.waitForSelector('#connectnotifications');
+        await driver.delay(1000);
         await driver.clickElement('#connectnotifications');
 
-        // switch to metamask extension
+        // switch to metamask popup and click connect
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
-
-        // wait for and click connect
-        await driver.waitForSelector({
-          text: 'Connect',
-          tag: 'button',
-        });
         await driver.clickElement({
           text: 'Connect',
           tag: 'button',
         });
 
-        // wait for connection failure
         await driver.waitForSelector({ text: 'Connection failed' });
 
         // check that snap installed event metrics have been sent
@@ -457,40 +424,29 @@ describe('Test Snap Metrics', function () {
           tag: 'h2',
         });
 
-        // find and scroll to the notifications snap
+        // find and scroll to the notifications card and click first
         const snapButton = await driver.findElement('#connectnotifications');
         await driver.scrollToElement(snapButton);
-
-        // added delay for firefox (deflake)
-        await driver.delayFirefox(1000);
-
-        // wait for and click connect
-        await driver.waitForSelector('#connectnotifications');
+        await driver.delay(1000);
         await driver.clickElement('#connectnotifications');
 
-        // switch to metamask extension
+        // switch to metamask popup and click connect
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
-
-        // wait for and click connect
-        await driver.waitForSelector({
-          text: 'Connect',
-          tag: 'button',
-        });
         await driver.clickElement({
           text: 'Connect',
           tag: 'button',
         });
 
-        // wait for and click confirm
         await driver.waitForSelector({ text: 'Confirm' });
+
         await driver.clickElement({
           text: 'Confirm',
           tag: 'button',
         });
 
-        // wait for and click ok and wait for window to close
         await driver.waitForSelector({ text: 'OK' });
-        await driver.clickElementAndWaitForWindowToClose({
+
+        await driver.clickElement({
           text: 'OK',
           tag: 'button',
         });
@@ -586,31 +542,19 @@ describe('Test Snap Metrics', function () {
           tag: 'h2',
         });
 
-        // find and scroll to the update snap
+        // find and scroll to the correct card and connect to update snap
         const snapButton = await driver.findElement('#connectUpdate');
         await driver.scrollToElement(snapButton);
-
-        // added delay for firefox (deflake)
-        await driver.delayFirefox(1000);
-
-        // wait for and click connect
-        await driver.waitForSelector('#connectUpdate');
+        await driver.delay(1000);
         await driver.clickElement('#connectUpdate');
 
-        // switch to metamask extension
+        // switch to metamask popup and click connect
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
-
-        // wait for and click connect
-        await driver.waitForSelector({
-          text: 'Connect',
-          tag: 'button',
-        });
         await driver.clickElement({
           text: 'Connect',
           tag: 'button',
         });
 
-        // wait for confirm button
         await driver.waitForSelector({ text: 'Confirm' });
 
         // Wait for the permissions content to be rendered
@@ -619,10 +563,8 @@ describe('Test Snap Metrics', function () {
           tag: 'span',
         });
 
-        // click and dismiss possible scroll element
         await driver.clickElementSafe('[data-testid="snap-install-scroll"]');
 
-        // click confirm button
         await driver.clickElement({
           text: 'Confirm',
           tag: 'button',
@@ -638,9 +580,9 @@ describe('Test Snap Metrics', function () {
           '[data-testid="snap-install-warning-modal-confirm"]',
         );
 
-        // wait for and click ok and wait for window to close
         await driver.waitForSelector({ text: 'OK' });
-        await driver.clickElementAndWaitForWindowToClose({
+
+        await driver.clickElement({
           text: 'OK',
           tag: 'button',
         });
@@ -654,35 +596,27 @@ describe('Test Snap Metrics', function () {
           text: 'Reconnect to Update Snap',
         });
 
-        // find and scroll to the update new button
+        // find and scroll to the correct card and click first
         const snapButton2 = await driver.findElement('#connectUpdateNew');
         await driver.scrollToElement(snapButton2);
-
-        // added delay for firefox (deflake)
-        await driver.delayFirefox(1000);
-
-        // wait for and click connect
-        await driver.waitForSelector('#connectUpdateNew');
+        await driver.delay(1000);
         await driver.clickElement('#connectUpdateNew');
 
         // switch to metamask popup and update
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
-        // wait for confirm button
         await driver.waitForSelector({ text: 'Confirm' });
 
-        // click and dismiss possible scroll element
         await driver.clickElementSafe('[data-testid="snap-update-scroll"]');
 
-        // click confirm
         await driver.clickElement({
           text: 'Confirm',
           tag: 'button',
         });
 
-        // wait for and click ok and wait for window to close
         await driver.waitForSelector({ text: 'OK' });
-        await driver.clickElementAndWaitForWindowToClose({
+
+        await driver.clickElement({
           text: 'OK',
           tag: 'button',
         });
@@ -756,31 +690,19 @@ describe('Test Snap Metrics', function () {
           tag: 'h2',
         });
 
-        // find and scroll to the update snap
+        // find and scroll to the correct card and connect to update snap
         const snapButton = await driver.findElement('#connectUpdate');
         await driver.scrollToElement(snapButton);
-
-        // added delay for firefox (deflake)
-        await driver.delayFirefox(1000);
-
-        // wait for and click connect
-        await driver.waitForSelector('#connectUpdate');
+        await driver.delay(1000);
         await driver.clickElement('#connectUpdate');
 
-        // switch to metamask extension
+        // switch to metamask popup and click connect
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
-
-        // wait for and click connect
-        await driver.waitForSelector({
-          text: 'Connect',
-          tag: 'button',
-        });
         await driver.clickElement({
           text: 'Connect',
           tag: 'button',
         });
 
-        // wait for confirm button
         await driver.waitForSelector({ text: 'Confirm' });
 
         // Wait for the permissions content to be rendered
@@ -789,10 +711,8 @@ describe('Test Snap Metrics', function () {
           tag: 'span',
         });
 
-        // click and dismiss possible scroll element
         await driver.clickElementSafe('[data-testid="snap-install-scroll"]');
 
-        // click confirm
         await driver.clickElement({
           text: 'Confirm',
           tag: 'button',
@@ -808,9 +728,9 @@ describe('Test Snap Metrics', function () {
           '[data-testid="snap-install-warning-modal-confirm"]',
         );
 
-        // wait for and click ok and wait for window to close
         await driver.waitForSelector({ text: 'OK' });
-        await driver.clickElementAndWaitForWindowToClose({
+
+        await driver.clickElement({
           text: 'OK',
           tag: 'button',
         });
@@ -824,28 +744,20 @@ describe('Test Snap Metrics', function () {
           text: 'Reconnect to Update Snap',
         });
 
-        // find and scroll to the update snap
+        // find and scroll to the correct card and click first
         const snapButton2 = await driver.findElement('#connectUpdateNew');
         await driver.scrollToElement(snapButton2);
-
-        // added delay for firefox (deflake)
-        await driver.delayFirefox(1000);
-
-        // wait for and click connect new
-        await driver.waitForSelector('#connectUpdateNew');
+        await driver.delay(1000);
         await driver.clickElement('#connectUpdateNew');
 
         // switch to metamask popup and update
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
-        // wait for confirm button
         await driver.waitForSelector({ text: 'Confirm' });
 
-        // click and dismiss possible scroll element
         await driver.clickElementSafe('[data-testid="snap-update-scroll"]');
 
-        // click cancel and wait for window to close
-        await driver.clickElementAndWaitForWindowToClose({
+        await driver.clickElement({
           text: 'Cancel',
           tag: 'button',
         });
@@ -914,31 +826,19 @@ describe('Test Snap Metrics', function () {
           tag: 'h2',
         });
 
-        // find and scroll to the update snap
+        // find and scroll to the correct card and connect to update snap
         const snapButton = await driver.findElement('#connectUpdate');
         await driver.scrollToElement(snapButton);
-
-        // added delay for firefox (deflake)
-        await driver.delayFirefox(1000);
-
-        // wait for and click connect
-        await driver.waitForSelector('#connectUpdate');
+        await driver.delay(1000);
         await driver.clickElement('#connectUpdate');
 
-        // switch to metamask extension
+        // switch to metamask popup and click connect
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
-
-        // wait for and click connect
-        await driver.waitForSelector({
-          text: 'Connect',
-          tag: 'button',
-        });
         await driver.clickElement({
           text: 'Connect',
           tag: 'button',
         });
 
-        // wait for confirm button
         await driver.waitForSelector({ text: 'Confirm' });
 
         // Wait for the permissions content to be rendered
@@ -947,10 +847,8 @@ describe('Test Snap Metrics', function () {
           tag: 'span',
         });
 
-        // click and dismiss possible scroll element
         await driver.clickElementSafe('[data-testid="snap-install-scroll"]');
 
-        // click confirm
         await driver.clickElement({
           text: 'Confirm',
           tag: 'button',
@@ -966,9 +864,9 @@ describe('Test Snap Metrics', function () {
           '[data-testid="snap-install-warning-modal-confirm"]',
         );
 
-        // wait for and click ok and wait for window to close
         await driver.waitForSelector({ text: 'OK' });
-        await driver.clickElementAndWaitForWindowToClose({
+
+        await driver.clickElement({
           text: 'OK',
           tag: 'button',
         });
@@ -982,25 +880,18 @@ describe('Test Snap Metrics', function () {
           text: 'Reconnect to Update Snap',
         });
 
-        // find and scroll to the update snap
+        // find and scroll to the correct card and click first
         const snapButton2 = await driver.findElement('#connectUpdateNew');
         await driver.scrollToElement(snapButton2);
-
-        // added delay for firefox (deflake)
-        await driver.delayFirefox(1000);
-
-        // wait for and click update new
-        await driver.waitForSelector('#connectUpdateNew');
+        await driver.delay(1000);
         await driver.clickElement('#connectUpdateNew');
 
-        // wait for and close alert window
         await driver.delay(1000);
         await driver.closeAlertPopup();
 
         // switch to metamask popup and update
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
-        // wait for failure message
         await driver.waitForSelector({ text: 'Update failed' });
 
         // check that snap updated event metrics have been sent

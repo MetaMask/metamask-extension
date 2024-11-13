@@ -11,7 +11,6 @@
   flex-flow: column;
   flex: 1;
   width: 100%;
-  gap: 24px;
 
   &__content {
     display: flex;
@@ -21,7 +20,8 @@
     border: 1px solid var(--color-border-muted);
   }
 
-  .bridge-box {
+  &__from,
+  &__to {
     display: flex;
     flex-direction: column;
     gap: 4px;
@@ -54,34 +54,6 @@
       &--focused {
         outline: none;
       }
-    }
-
-    .defined {
-      opacity: 1;
-
-      & > .mm-input--disabled {
-        opacity: 1;
-      }
-    }
-  }
-
-  .amount-input {
-    border: none;
-
-    input {
-      text-align: right;
-      padding-right: 0;
-      font-size: 24px;
-      font-weight: 700;
-
-      &:focus,
-      &:focus-visible {
-        outline: none;
-      }
-    }
-
-    .mm-text-field--focused {
-      outline: none;
     }
   }
 
@@ -121,6 +93,26 @@
       height: 10px;
       width: 10px;
       border: none;
+    }
+  }
+
+  .amount-input {
+    border: none;
+
+    input {
+      text-align: right;
+      padding-right: 0;
+      font-size: 24px;
+      font-weight: 700;
+
+      &:focus,
+      &:focus-visible {
+        outline: none;
+      }
+    }
+
+    .mm-text-field--focused {
+      outline: none;
     }
   }
 

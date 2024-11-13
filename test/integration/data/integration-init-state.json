@@ -781,10 +781,9 @@
     "showExtensionInFullSizeView": false,
     "showFiatInTestnets": false,
     "showTestNetworks": true,
-    "smartTransactionsOptInStatus": true,
+    "smartTransactionsOptInStatus": false,
     "petnamesEnabled": false,
-    "showConfirmationAdvancedDetails": false,
-    "showMultiRpcModal": false
+    "showConfirmationAdvancedDetails": false
   },
   "preventPollingOnNetworkRestart": true,
   "previousAppVersion": "11.14.4",

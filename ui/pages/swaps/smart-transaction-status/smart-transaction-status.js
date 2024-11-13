@@ -23,7 +23,7 @@ import {
   getSmartTransactionsEnabled,
   getSmartTransactionsOptInStatusForMetrics,
 } from '../../../../shared/modules/selectors';
-import { CHAINID_DEFAULT_BLOCK_EXPLORER_URL_MAP } from '../../../../shared/constants/common';
+import { SWAPS_CHAINID_DEFAULT_BLOCK_EXPLORER_URL_MAP } from '../../../../shared/constants/swaps';
 import {
   DEFAULT_ROUTE,
   PREPARE_SWAP_ROUTE,
@@ -87,7 +87,7 @@ export default function SmartTransactionStatusPage() {
   );
   const baseNetworkUrl =
     rpcPrefs.blockExplorerUrl ??
-    CHAINID_DEFAULT_BLOCK_EXPLORER_URL_MAP[chainId] ??
+    SWAPS_CHAINID_DEFAULT_BLOCK_EXPLORER_URL_MAP[chainId] ??
     null;
 
   let smartTransactionStatus = SmartTransactionStatus.pending;

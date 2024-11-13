@@ -1,16 +1,22 @@
 import { useEffect, useRef } from 'react';
 
-type UsePollingOptions<PollingInput> = {
+type UsePollingOptions = {
   callback?: (pollingToken: string) => (pollingToken: string) => void;
-  startPolling: (input: PollingInput) => Promise<string>;
+  startPollingByNetworkClientId: (
+    networkClientId: string,
+    // TODO: Replace `any` with type
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    options: any,
+  ) => Promise<string>;
   stopPollingByPollingToken: (pollingToken: string) => void;
-  input: PollingInput;
+  networkClientId: string;
+  // TODO: Replace `any` with type
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  options?: any;
   enabled?: boolean;
 };
 
-const usePolling = <PollingInput>(
-  usePollingOptions: UsePollingOptions<PollingInput>,
-) => {
+const usePolling = (usePollingOptions: UsePollingOptions) => {
   const pollTokenRef = useRef<null | string>(null);
   const cleanupRef = useRef<null | ((pollingToken: string) => void)>(null);
   let isMounted = false;
@@ -32,7 +38,10 @@ const usePolling = <PollingInput>(
 
     // Start polling when the component mounts
     usePollingOptions
-      .startPolling(usePollingOptions.input)
+      .startPollingByNetworkClientId(
+        usePollingOptions.networkClientId,
+        usePollingOptions.options,
+      )
       .then((pollToken) => {
         pollTokenRef.current = pollToken;
         cleanupRef.current = usePollingOptions.callback?.(pollToken) || null;
@@ -47,7 +56,12 @@ const usePolling = <PollingInput>(
       cleanup();
     };
   }, [
-    usePollingOptions.input && JSON.stringify(usePollingOptions.input),
+    usePollingOptions.networkClientId,
+    usePollingOptions.options &&
+      JSON.stringify(
+        usePollingOptions.options,
+        Object.keys(usePollingOptions.options).sort(),
+      ),
     usePollingOptions.enabled,
   ]);
 };

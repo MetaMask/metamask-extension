@@ -15,6 +15,7 @@ jest.mock('react-redux', () => ({
 }));
 
 jest.mock('../selectors', () => ({
+  getCurrentChainId: jest.fn(),
   getNames: jest.fn(),
 }));
 

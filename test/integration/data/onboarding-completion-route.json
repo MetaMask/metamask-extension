@@ -223,12 +223,11 @@
     "showExtensionInFullSizeView": false,
     "showFiatInTestnets": false,
     "showTestNetworks": false,
-    "smartTransactionsOptInStatus": true,
+    "smartTransactionsOptInStatus": null,
     "hideZeroBalanceTokens": false,
     "petnamesEnabled": true,
     "redesignedConfirmationsEnabled": true,
-    "featureNotificationsEnabled": false,
-    "privacyMode": false
+    "featureNotificationsEnabled": false
   },
   "preventPollingOnNetworkRestart": false,
   "previousAppVersion": "",

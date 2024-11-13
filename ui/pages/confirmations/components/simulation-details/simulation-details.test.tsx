@@ -4,7 +4,6 @@ import { screen } from '@testing-library/react';
 import {
   SimulationData,
   SimulationErrorCode,
-  TransactionMeta,
 } from '@metamask/transaction-controller';
 import { BigNumber } from 'bignumber.js';
 import { renderWithProvider } from '../../../../../test/lib/render-helpers';
@@ -26,27 +25,11 @@ jest.mock('./balance-change-list', () => ({
 
 jest.mock('./useSimulationMetrics');
 
-jest.mock(
-  '../../../../components/app/confirm/info/row/alert-row/alert-row',
-  () => ({
-    ConfirmInfoAlertRow: jest.fn(({ label }) => <>{label}</>),
-  }),
-);
-
-jest.mock('../../context/confirm', () => ({
-  useConfirmContext: jest.fn(() => ({
-    currentConfirmation: {
-      id: 'testTransactionId',
-    },
-  })),
-}));
-
 const renderSimulationDetails = (simulationData?: Partial<SimulationData>) =>
   renderWithProvider(
     <SimulationDetails
-      transaction={
-        { id: 'testTransactionId', simulationData } as TransactionMeta
-      }
+      simulationData={simulationData as SimulationData}
+      transactionId="testTransactionId"
     />,
     store,
   );
@@ -101,13 +84,17 @@ describe('SimulationDetails', () => {
     renderSimulationDetails({
       error: { message: 'Unknown error' },
     });
-    expect(screen.getByText(/Unavailable/u)).toBeInTheDocument();
+    expect(
+      screen.getByText(/error loading your estimation/u),
+    ).toBeInTheDocument();
   });
 
   it('renders empty content when there are no balance changes', () => {
     renderSimulationDetails({});
 
-    expect(screen.getByText(/No changes/u)).toBeInTheDocument();
+    expect(
+      screen.getByText(/No changes predicted for your wallet/u),
+    ).toBeInTheDocument();
   });
 
   it('passes the correct properties to BalanceChangeList components', () => {

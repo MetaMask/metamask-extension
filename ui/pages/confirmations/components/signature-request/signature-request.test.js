@@ -1,24 +1,34 @@
 import React from 'react';
+import { useSelector } from 'react-redux';
 import { fireEvent } from '@testing-library/react';
 import configureMockStore from 'redux-mock-store';
 import { EthAccountType } from '@metamask/keyring-api';
 import mockState from '../../../../../test/data/mock-state.json';
 import { renderWithProvider } from '../../../../../test/lib/render-helpers';
 import { SECURITY_PROVIDER_MESSAGE_SEVERITY } from '../../../../../shared/constants/security-provider';
+import {
+  getNativeCurrency,
+  getProviderConfig,
+} from '../../../../ducks/metamask/metamask';
+import {
+  accountsWithSendEtherInfoSelector,
+  conversionRateSelector,
+  getCurrentCurrency,
+  getMemoizedAddressBook,
+  getPreferences,
+  getSelectedAccount,
+  getTotalUnapprovedMessagesCount,
+  getInternalAccounts,
+  unconfirmedTransactionsHashSelector,
+  getAccountType,
+  getMemoizedMetaMaskInternalAccounts,
+  getSelectedInternalAccount,
+  pendingApprovalsSortedSelector,
+  getNetworkConfigurationsByChainId,
+} from '../../../../selectors';
 import { ETH_EOA_METHODS } from '../../../../../shared/constants/eth-methods';
 import { mockNetworkState } from '../../../../../test/stub/networks';
 import SignatureRequest from './signature-request';
-
-jest.mock('react-redux', () => ({
-  ...jest.requireActual('react-redux'),
-  useDispatch: () => jest.fn(),
-}));
-
-const CHAIN_ID_MOCK = '0x539';
-
-const TRANSACTION_DATA_MOCK = {
-  chainId: CHAIN_ID_MOCK,
-};
 
 const baseProps = {
   clearConfirmTransaction: () => jest.fn(),
@@ -27,11 +37,8 @@ const baseProps = {
   showRejectTransactionsConfirmationModal: () => jest.fn(),
   sign: () => jest.fn(),
 };
-
 const mockStore = {
-  ...mockState,
   metamask: {
-    ...mockState.metamask,
     ...mockNetworkState({
       chainId: '0x539',
       nickname: 'Localhost 8545',
@@ -54,13 +61,12 @@ const mockStore = {
           metadata: {
             name: 'John Doe',
             keyring: {
-              type: 'Custody',
+              type: 'HD Key Tree',
             },
           },
           options: {},
           methods: ETH_EOA_METHODS,
           type: EthAccountType.Eoa,
-          balance: 0,
         },
       },
       selectedAccount: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
@@ -88,6 +94,15 @@ const mockStore = {
     },
   },
 };
+jest.mock('react-redux', () => {
+  const actual = jest.requireActual('react-redux');
+
+  return {
+    ...actual,
+    useSelector: jest.fn(),
+    useDispatch: () => jest.fn(),
+  };
+});
 
 const mockCustodySignFn = jest.fn();
 
@@ -99,13 +114,62 @@ jest.mock('../../../../hooks/useMMICustodySignMessage', () => ({
 
 jest.mock('@metamask-institutional/extension');
 
+const generateUseSelectorRouter = (opts) => (selector) => {
+  const mockSelectedInternalAccount = getSelectedInternalAccount(opts);
+
+  switch (selector) {
+    case getProviderConfig:
+      return getProviderConfig(opts);
+    case getCurrentCurrency:
+      return opts.metamask.currentCurrency;
+    case getNativeCurrency:
+      return getProviderConfig(opts).ticker;
+    case getTotalUnapprovedMessagesCount:
+      return opts.metamask.unapprovedTypedMessagesCount;
+    case getPreferences:
+      return opts.metamask.preferences;
+    case conversionRateSelector:
+      return opts.metamask.currencyRates[getProviderConfig(opts).ticker]
+        ?.conversionRate;
+    case getSelectedAccount:
+      return mockSelectedInternalAccount;
+    case getInternalAccounts:
+      return Object.values(opts.metamask.internalAccounts.accounts);
+    case getMemoizedMetaMaskInternalAccounts:
+      return Object.values(opts.metamask.internalAccounts.accounts);
+    case getMemoizedAddressBook:
+      return [];
+    case accountsWithSendEtherInfoSelector:
+      return Object.values(opts.metamask.internalAccounts.accounts).map(
+        (internalAccount) => {
+          return {
+            ...internalAccount,
+            ...(opts.metamask.accounts[internalAccount.address] ?? {}),
+            balance:
+              opts.metamask.accounts[internalAccount.address]?.balance ?? 0,
+          };
+        },
+      );
+    case getAccountType:
+      return 'custody';
+    case unconfirmedTransactionsHashSelector:
+      return {};
+    case pendingApprovalsSortedSelector:
+      return Object.values(opts.metamask.pendingApprovals);
+    case getNetworkConfigurationsByChainId:
+      return opts.metamask.networkConfigurationsByChainId;
+    default:
+      return undefined;
+  }
+};
 describe('Signature Request Component', () => {
-  const store = configureMockStore()(mockStore);
+  const store = configureMockStore()(mockState);
 
   describe('render', () => {
     let messageData;
 
     beforeEach(() => {
+      useSelector.mockImplementation(generateUseSelectorRouter(mockStore));
       messageData = {
         domain: {
           chainId: 97,
@@ -155,39 +219,35 @@ describe('Signature Request Component', () => {
     });
 
     it('should match snapshot when we want to switch to fiat', () => {
-      const storeOverride = configureMockStore()({
-        ...mockStore,
-        metamask: {
-          ...mockStore.metamask,
-          ...mockNetworkState({
-            chainId: CHAIN_ID_MOCK,
-          }),
-          currencyRates: {
-            ...mockStore.metamask.currencyRates,
-            ETH: {
-              ...(mockStore.metamask.currencyRates.ETH || {}),
-              conversionRate: 231.06,
+      useSelector.mockImplementation(
+        generateUseSelectorRouter({
+          ...mockStore,
+          metamask: {
+            ...mockStore.metamask,
+            currencyRates: {
+              ...mockStore.metamask.currencyRates,
+              ETH: {
+                ...(mockStore.metamask.currencyRates.ETH || {}),
+                conversionRate: 231.06,
+              },
             },
           },
-        },
-      });
-
+        }),
+      );
       const msgParams = {
         from: '0xd8f6a2ffb0fc5952d16c9768b71cfd35b6399aa5',
         data: JSON.stringify(messageData),
         version: 'V4',
         origin: 'test',
       };
-
       const { container } = renderWithProvider(
         <SignatureRequest
           {...baseProps}
           txData={{
-            ...TRANSACTION_DATA_MOCK,
             msgParams,
           }}
         />,
-        storeOverride,
+        store,
       );
 
       expect(container).toMatchSnapshot();
@@ -200,12 +260,10 @@ describe('Signature Request Component', () => {
         version: 'V4',
         origin: 'test',
       };
-
       const { container } = renderWithProvider(
         <SignatureRequest
           {...baseProps}
           txData={{
-            ...TRANSACTION_DATA_MOCK,
             msgParams,
           }}
         />,
@@ -222,12 +280,10 @@ describe('Signature Request Component', () => {
         version: 'V4',
         origin: 'test',
       };
-
       const { queryByTestId } = renderWithProvider(
         <SignatureRequest
           {...baseProps}
           txData={{
-            ...TRANSACTION_DATA_MOCK,
             msgParams,
           }}
         />,
@@ -252,7 +308,6 @@ describe('Signature Request Component', () => {
         <SignatureRequest
           {...baseProps}
           txData={{
-            ...TRANSACTION_DATA_MOCK,
             msgParams,
           }}
         />,
@@ -266,30 +321,29 @@ describe('Signature Request Component', () => {
     });
 
     it('should not render a reject multiple requests link if there is not multiple requests', () => {
-      const storeOverride = configureMockStore()({
-        ...mockStore,
-        metamask: {
-          ...mockStore.metamask,
-          unapprovedTypedMessagesCount: 0,
-        },
-      });
-
+      useSelector.mockImplementation(
+        generateUseSelectorRouter({
+          ...mockStore,
+          metamask: {
+            ...mockStore.metamask,
+            unapprovedTypedMessagesCount: 0,
+          },
+        }),
+      );
       const msgParams = {
         from: '0xd8f6a2ffb0fc5952d16c9768b71cfd35b6399aa5',
         data: JSON.stringify(messageData),
         version: 'V4',
         origin: 'test',
       };
-
       const { container } = renderWithProvider(
         <SignatureRequest
           {...baseProps}
           txData={{
-            ...TRANSACTION_DATA_MOCK,
             msgParams,
           }}
         />,
-        storeOverride,
+        store,
       );
 
       expect(
@@ -304,12 +358,10 @@ describe('Signature Request Component', () => {
         version: 'V4',
         origin: 'test',
       };
-
       const { container } = renderWithProvider(
         <SignatureRequest
           {...baseProps}
           txData={{
-            ...TRANSACTION_DATA_MOCK,
             msgParams,
           }}
         />,
@@ -332,7 +384,6 @@ describe('Signature Request Component', () => {
         <SignatureRequest
           {...baseProps}
           txData={{
-            ...TRANSACTION_DATA_MOCK,
             msgParams,
           }}
         />,
@@ -357,7 +408,6 @@ describe('Signature Request Component', () => {
         <SignatureRequest
           {...baseProps}
           txData={{
-            ...TRANSACTION_DATA_MOCK,
             msgParams,
           }}
         />,
@@ -379,7 +429,6 @@ describe('Signature Request Component', () => {
         <SignatureRequest
           {...baseProps}
           txData={{
-            ...TRANSACTION_DATA_MOCK,
             msgParams,
             securityProviderResponse: {
               flagAsDangerous: '?',
@@ -412,7 +461,6 @@ describe('Signature Request Component', () => {
         <SignatureRequest
           {...baseProps}
           txData={{
-            ...TRANSACTION_DATA_MOCK,
             msgParams,
             securityProviderResponse: {
               flagAsDangerous: SECURITY_PROVIDER_MESSAGE_SEVERITY.NOT_MALICIOUS,
@@ -432,57 +480,6 @@ describe('Signature Request Component', () => {
     });
 
     it('should render a warning when the selected account is not the one being used to sign', () => {
-      const storeOverride = configureMockStore()({
-        ...mockStore,
-        metamask: {
-          ...mockStore.metamask,
-          accounts: {
-            ...mockStore.metamask.accounts,
-            '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc': {
-              address: '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc',
-              balance: '0x0',
-              name: 'Account 1',
-            },
-            '0xd8f6a2ffb0fc5952d16c9768b71cfd35b6399aa5': {
-              address: '0xd8f6a2ffb0fc5952d16c9768b71cfd35b6399aa5',
-              balance: '0x0',
-              name: 'Account 2',
-            },
-          },
-          internalAccounts: {
-            accounts: {
-              'b7e813d6-e31c-4bad-8615-8d4eff9f44f1': {
-                address: '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc',
-                id: 'b7e813d6-e31c-4bad-8615-8d4eff9f44f1',
-                metadata: {
-                  name: 'Account 1',
-                  keyring: {
-                    type: 'HD Key Tree',
-                  },
-                },
-                options: {},
-                methods: ETH_EOA_METHODS,
-                type: EthAccountType.Eoa,
-              },
-              'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3': {
-                address: '0xd8f6a2ffb0fc5952d16c9768b71cfd35b6399aa5',
-                id: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
-                metadata: {
-                  name: 'Account 2',
-                  keyring: {
-                    type: 'HD Key Tree',
-                  },
-                },
-                options: {},
-                methods: ETH_EOA_METHODS,
-                type: EthAccountType.Eoa,
-              },
-            },
-            selectedAccount: 'b7e813d6-e31c-4bad-8615-8d4eff9f44f1',
-          },
-        },
-      });
-
       const msgParams = {
         from: '0xd8f6a2ffb0fc5952d16c9768b71cfd35b6399aa5',
         data: JSON.stringify(messageData),
@@ -490,18 +487,70 @@ describe('Signature Request Component', () => {
         origin: 'test',
       };
 
+      useSelector.mockImplementation(
+        generateUseSelectorRouter({
+          ...mockStore,
+          metamask: {
+            ...mockStore.metamask,
+            accounts: {
+              ...mockStore.metamask.accounts,
+              '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc': {
+                address: '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc',
+                balance: '0x0',
+                name: 'Account 1',
+              },
+              '0xd8f6a2ffb0fc5952d16c9768b71cfd35b6399aa5': {
+                address: '0xd8f6a2ffb0fc5952d16c9768b71cfd35b6399aa5',
+                balance: '0x0',
+                name: 'Account 2',
+              },
+            },
+            internalAccounts: {
+              accounts: {
+                'b7e813d6-e31c-4bad-8615-8d4eff9f44f1': {
+                  address: '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc',
+                  id: 'b7e813d6-e31c-4bad-8615-8d4eff9f44f1',
+                  metadata: {
+                    name: 'Account 1',
+                    keyring: {
+                      type: 'HD Key Tree',
+                    },
+                  },
+                  options: {},
+                  methods: ETH_EOA_METHODS,
+                  type: EthAccountType.Eoa,
+                },
+                'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3': {
+                  address: '0xd8f6a2ffb0fc5952d16c9768b71cfd35b6399aa5',
+                  id: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
+                  metadata: {
+                    name: 'Account 2',
+                    keyring: {
+                      type: 'HD Key Tree',
+                    },
+                  },
+                  options: {},
+                  methods: ETH_EOA_METHODS,
+                  type: EthAccountType.Eoa,
+                },
+              },
+              selectedAccount: 'b7e813d6-e31c-4bad-8615-8d4eff9f44f1',
+            },
+          },
+        }),
+      );
+
       const { container } = renderWithProvider(
         <SignatureRequest
           {...baseProps}
           txData={{
-            ...TRANSACTION_DATA_MOCK,
             msgParams,
             securityProviderResponse: {
               flagAsDangerous: SECURITY_PROVIDER_MESSAGE_SEVERITY.NOT_MALICIOUS,
             },
           }}
         />,
-        storeOverride,
+        store,
       );
 
       expect(
@@ -522,7 +571,6 @@ describe('Signature Request Component', () => {
           {...baseProps}
           conversionRate={null}
           txData={{
-            ...TRANSACTION_DATA_MOCK,
             msgParams,
             securityAlertResponse: {
               resultType: 'Malicious',
@@ -554,7 +602,6 @@ describe('Signature Request Component', () => {
         <SignatureRequest
           {...baseProps}
           txData={{
-            ...TRANSACTION_DATA_MOCK,
             msgParams,
           }}
         />,
@@ -563,9 +610,7 @@ describe('Signature Request Component', () => {
 
       const rejectRequestsLink = getByTestId('page-container-footer-next');
       fireEvent.click(rejectRequestsLink);
-      expect(mockCustodySignFn).toHaveBeenCalledWith(
-        expect.objectContaining({ msgParams }),
-      );
+      expect(mockCustodySignFn).toHaveBeenCalledWith({ msgParams });
     });
   });
 });

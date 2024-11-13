@@ -15,12 +15,16 @@ import {
 import { PRIMARY } from '../../../helpers/constants/common';
 import {
   contractExchangeRateSelector,
+  getCurrentChainId,
   getCurrentCurrency,
+  getRpcPrefsForCurrentProvider,
   getSelectedInternalAccount,
-  selectConversionRateByChainId,
-  selectNetworkConfigurationByChainId,
-  selectNftContractsByChainId,
 } from '../../../selectors';
+import {
+  getConversionRate,
+  getNativeCurrency,
+  getNftContracts,
+} from '../../../ducks/metamask/metamask';
 import { TokenStandard } from '../../../../shared/constants/transaction';
 import {
   getWeiHexFromDecimalValue,
@@ -43,28 +47,16 @@ export default function ConfirmTokenTransactionBase({
   ethTransactionTotal,
   fiatTransactionTotal,
   hexMaximumTransactionFee,
-  transaction,
 }) {
   const t = useContext(I18nContext);
   const contractExchangeRate = useSelector(contractExchangeRateSelector);
-  const { chainId } = transaction;
-
-  const { blockExplorerUrls, nativeCurrency } = useSelector((state) =>
-    selectNetworkConfigurationByChainId(state, chainId),
-  );
-
-  const blockExplorerUrl = blockExplorerUrls?.[0];
+  const nativeCurrency = useSelector(getNativeCurrency);
   const currentCurrency = useSelector(getCurrentCurrency);
-
-  const conversionRate = useSelector((state) =>
-    selectConversionRateByChainId(state, chainId),
-  );
-
+  const conversionRate = useSelector(getConversionRate);
+  const rpcPrefs = useSelector(getRpcPrefsForCurrentProvider);
+  const chainId = useSelector(getCurrentChainId);
   const { address: userAddress } = useSelector(getSelectedInternalAccount);
-
-  const nftCollections = useSelector((state) =>
-    selectNftContractsByChainId(state, chainId),
-  );
+  const nftCollections = useSelector(getNftContracts);
 
   const ethTransactionTotalMaxAmount = Number(
     hexWEIToDecETH(hexMaximumTransactionFee),
@@ -72,7 +64,7 @@ export default function ConfirmTokenTransactionBase({
 
   const getTitleTokenDescription = (renderType) => {
     const useBlockExplorer =
-      blockExplorerUrl ||
+      rpcPrefs?.blockExplorerUrl ||
       [...TEST_CHAINS, CHAIN_IDS.MAINNET, CHAIN_IDS.LINEA_MAINNET].includes(
         chainId,
       );
@@ -95,7 +87,7 @@ export default function ConfirmTokenTransactionBase({
         null,
         userAddress,
         {
-          blockExplorerUrl: blockExplorerUrl ?? null,
+          blockExplorerUrl: rpcPrefs?.blockExplorerUrl ?? null,
         },
       );
       const blockExplorerElement = (
@@ -227,5 +219,4 @@ ConfirmTokenTransactionBase.propTypes = {
   ethTransactionTotal: PropTypes.string,
   fiatTransactionTotal: PropTypes.string,
   hexMaximumTransactionFee: PropTypes.string,
-  transaction: PropTypes.string,
 };

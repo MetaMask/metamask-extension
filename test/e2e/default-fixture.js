@@ -193,7 +193,6 @@ function defaultFixture(inputChainId = CHAIN_IDS.LOCALHOST) {
         currentLocale: 'en',
         useExternalServices: true,
         dismissSeedBackUpReminder: true,
-        overrideContentSecurityPolicyHeader: true,
         featureFlags: {},
         forgottenPassword: false,
         identities: {
@@ -213,7 +212,7 @@ function defaultFixture(inputChainId = CHAIN_IDS.LOCALHOST) {
           showExtensionInFullSizeView: false,
           showFiatInTestnets: false,
           showTestNetworks: false,
-          smartTransactionsOptInStatus: true,
+          smartTransactionsOptInStatus: false,
           showNativeTokenAsMainBalance: true,
           petnamesEnabled: true,
           showMultiRpcModal: false,

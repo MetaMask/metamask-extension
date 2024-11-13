@@ -1,7 +1,4 @@
-import {
-  TransactionMeta,
-  TransactionType,
-} from '@metamask/transaction-controller';
+import { TransactionMeta } from '@metamask/transaction-controller';
 import React from 'react';
 import { useSelector } from 'react-redux';
 import { CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP } from '../../../../../../../shared/constants/network';
@@ -49,7 +46,7 @@ export const TokenDetailsSection = () => {
       >
         <AvatarNetwork
           borderColor={BorderColor.backgroundDefault}
-          size={AvatarNetworkSize.Xs}
+          size={AvatarNetworkSize.Sm}
           src={
             CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP[
               chainId as keyof typeof CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP
@@ -64,11 +61,8 @@ export const TokenDetailsSection = () => {
     </ConfirmInfoRow>
   );
 
-  const tokenRow = transactionMeta.type !== TransactionType.simpleSend && (
-    <ConfirmInfoRow
-      label={t('interactingWith')}
-      tooltip={t('interactingWithTransactionDescription')}
-    >
+  const tokenRow = (
+    <ConfirmInfoRow label={t('interactingWith')}>
       <ConfirmInfoRowAddress
         address={transactionMeta.txParams.to as string}
         chainId={chainId}

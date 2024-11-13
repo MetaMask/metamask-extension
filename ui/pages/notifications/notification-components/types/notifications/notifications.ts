@@ -57,7 +57,6 @@ type FooterOnChainNotification<N = Notification> = {
 type FooterFeatureAnnouncement<N = Notification> = {
   type: NotificationComponentType.AnnouncementFooter;
   ExtensionLink: NotificationFC<N>;
-  ExternalLink: NotificationFC<N>;
 };
 
 type FooterSnapNotification<N = Notification> = {

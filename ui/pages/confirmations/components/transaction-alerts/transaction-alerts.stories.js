@@ -10,8 +10,6 @@ import { CHAIN_IDS } from '../../../../../shared/constants/network';
 import { mockNetworkState } from '../../../../../test/stub/networks';
 import TransactionAlerts from '.';
 
-const CHAIN_ID_MOCK = CHAIN_IDS.MAINNET;
-
 const mockSelectedInternalAccount =
   getSelectedInternalAccountFromMockState(testData);
 
@@ -26,7 +24,7 @@ const customTransaction = ({
     userFeeLevel: estimateUsed ? 'low' : 'medium',
     blockNumber: `${10902987 + i}`,
     id: 4678200543090545 + i,
-    chainId: CHAIN_ID_MOCK,
+    chainId: '0x1',
     status: 'confirmed',
     time: 1600654021000,
     txParams: {
@@ -50,14 +48,23 @@ const customTransaction = ({
 };
 
 // simulate gas fee state
-const customStore = ({ supportsEIP1559, pendingCount = 0 } = {}) => {
+const customStore = ({
+  supportsEIP1559,
+  isNetworkBusy,
+  pendingCount = 0,
+} = {}) => {
   const data = cloneDeep({
     ...testData,
     metamask: {
       ...testData?.metamask,
+      // isNetworkBusy
+      gasFeeEstimates: {
+        ...testData?.metamask?.gasFeeEstimates,
+        networkCongestion: isNetworkBusy ? 1 : 0.1,
+      },
       // supportsEIP1559
       ...mockNetworkState({
-        chainId: CHAIN_ID_MOCK,
+        chainId: CHAIN_IDS.MAINNET,
         metadata: {
           EIPS: {
             1559: Boolean(supportsEIP1559),
@@ -68,12 +75,15 @@ const customStore = ({ supportsEIP1559, pendingCount = 0 } = {}) => {
       featureFlags: {
         ...testData?.metamask?.featureFlags,
       },
-      transactions: [
-        ...testData.metamask.transactions,
-        ...Array.from({ length: pendingCount }).map((_, i) =>
-          customTransaction({ i, status: 'submitted' }),
+      incomingTransactions: {
+        ...testData?.metamask?.incomingTransactions,
+        ...Object.fromEntries(
+          Array.from({ length: pendingCount }).map((_, i) => {
+            const transaction = customTransaction({ i, status: 'submitted' });
+            return [transaction?.hash, transaction];
+          }),
         ),
-      ],
+      },
     },
   });
   return configureStore(data);
@@ -89,7 +99,6 @@ export default {
   args: {
     userAcknowledgedGasMissing: false,
     txData: {
-      chainId: CHAIN_ID_MOCK,
       txParams: {
         value: '0x1',
       },
@@ -120,7 +129,6 @@ DefaultStory.storyName = 'Default';
 DefaultStory.args = {
   ...DefaultStory.args,
   txData: {
-    chainId: CHAIN_ID_MOCK,
     txParams: {
       value: '0x0',
     },
@@ -168,6 +176,15 @@ export const LowPriority = (args) => (
 );
 LowPriority.storyName = 'LowPriority';
 
+export const BusyNetwork = (args) => (
+  <Provider store={customStore({ isNetworkBusy: true })}>
+    <GasFeeContextProvider transaction={customTransaction()}>
+      <TransactionAlerts {...args} />
+    </GasFeeContextProvider>
+  </Provider>
+);
+BusyNetwork.storyName = 'BusyNetwork';
+
 export const SendingZeroAmount = (args) => (
   <Provider store={customStore()}>
     <GasFeeContextProvider transaction={customTransaction()}>
@@ -178,7 +195,6 @@ export const SendingZeroAmount = (args) => (
 SendingZeroAmount.storyName = 'SendingZeroAmount';
 SendingZeroAmount.args = {
   txData: {
-    chainId: CHAIN_ID_MOCK,
     txParams: {
       value: '0x0',
     },

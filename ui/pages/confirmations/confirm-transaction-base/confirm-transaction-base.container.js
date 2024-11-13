@@ -69,8 +69,11 @@ import {
   isAddressLedger,
   updateGasFees,
   getIsGasEstimatesLoading,
+  getNativeCurrency,
   getSendToAccounts,
+  getProviderConfig,
   findKeyringForAddress,
+  getConversionRate,
 } from '../../../ducks/metamask/metamask';
 import {
   addHexPrefix,
@@ -94,19 +97,10 @@ import { CUSTOM_GAS_ESTIMATE } from '../../../../shared/constants/gas';
 // eslint-disable-next-line import/no-duplicates
 import { getIsUsingPaymaster } from '../../../selectors/account-abstraction';
 
-import {
-  selectConversionRateByChainId,
-  selectNetworkConfigurationByChainId,
-  // eslint-disable-next-line import/no-duplicates
-} from '../../../selectors/selectors';
-
 ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-import {
-  getAccountType,
-  selectDefaultRpcEndpointByChainId,
-  // eslint-disable-next-line import/no-duplicates
-} from '../../../selectors/selectors';
 // eslint-disable-next-line import/no-duplicates
+import { getAccountType } from '../../../selectors/selectors';
+
 import { ENVIRONMENT_TYPE_NOTIFICATION } from '../../../../shared/constants/app';
 import {
   getIsNoteToTraderSupported,
@@ -174,16 +168,15 @@ const mapStateToProps = (state, ownProps) => {
   const gasLoadingAnimationIsShowing = getGasLoadingAnimationIsShowing(state);
   const isBuyableChain = getIsNativeTokenBuyable(state);
   const { confirmTransaction, metamask } = state;
+  const conversionRate = getConversionRate(state);
   const { addressBook, nextNonce } = metamask;
   const unapprovedTxs = getUnapprovedTransactions(state);
 
+  const { chainId } = getProviderConfig(state);
   const { tokenData, txData, tokenProps, nonce } = confirmTransaction;
   const { txParams = {}, id: transactionId, type } = txData;
   const txId = transactionId || paramsTransactionId;
   const transaction = getUnapprovedTransaction(state, txId) ?? {};
-  const { chainId } = transaction;
-  const conversionRate = selectConversionRateByChainId(state, chainId);
-
   const {
     from: fromAddress,
     to: txParamsToAddress,
@@ -191,7 +184,6 @@ const mapStateToProps = (state, ownProps) => {
     gas: gasLimit,
     data,
   } = (transaction && transaction.txParams) || txParams;
-
   const accounts = getMetaMaskAccounts(state);
   const smartTransactionsPreferenceEnabled =
     getSmartTransactionsPreferenceEnabled(state);
@@ -278,10 +270,7 @@ const mapStateToProps = (state, ownProps) => {
     fullTxData.userFeeLevel === CUSTOM_GAS_ESTIMATE ||
     txParamsAreDappSuggested(fullTxData);
   const fromAddressIsLedger = isAddressLedger(state, fromAddress);
-
-  const { nativeCurrency } =
-    selectNetworkConfigurationByChainId(state, chainId) ?? {};
-
+  const nativeCurrency = getNativeCurrency(state);
   ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
   const accountType = getAccountType(state, fromAddress);
   const fromChecksumHexAddress = toChecksumHexAddress(fromAddress);
@@ -292,9 +281,7 @@ const mapStateToProps = (state, ownProps) => {
   const custodianPublishesTransaction =
     getIsCustodianPublishesTransactionSupported(state, fromChecksumHexAddress);
   const builtinRpcUrl = CHAIN_ID_TO_RPC_URL_MAP[chainId];
-
-  const { url: customRpcUrl } =
-    selectDefaultRpcEndpointByChainId(state, chainId) ?? {};
+  const { rpcUrl: customRpcUrl } = getProviderConfig(state);
 
   const rpcUrl = customRpcUrl || builtinRpcUrl;
 
@@ -442,7 +429,7 @@ export const mapDispatchToProps = (dispatch) => {
     fetchSmartTransactionsLiveness: () => {
       dispatch(fetchSmartTransactionsLiveness());
     },
-    getNextNonce: (address) => dispatch(getNextNonce(address)),
+    getNextNonce: () => dispatch(getNextNonce()),
     setNextNonce: (val) => dispatch(setNextNonce(val)),
     setDefaultHomeActiveTabName: (tabName) =>
       dispatch(setDefaultHomeActiveTabName(tabName)),

@@ -64,6 +64,7 @@ export default class SecurityTab extends PureComponent {
   };
 
   static propTypes = {
+    warning: PropTypes.string,
     history: PropTypes.object,
     openSeaEnabled: PropTypes.bool,
     setOpenSeaEnabled: PropTypes.func,
@@ -1130,6 +1131,7 @@ export default class SecurityTab extends PureComponent {
 
   render() {
     const {
+      warning,
       petnamesEnabled,
       dataCollectionForMarketing,
       setDataCollectionForMarketing,
@@ -1142,6 +1144,8 @@ export default class SecurityTab extends PureComponent {
         {showDataCollectionDisclaimer
           ? this.renderDataCollectionWarning()
           : null}
+
+        {warning && <div className="settings-tab__error">{warning}</div>}
         <span className="settings-page__security-tab-sub-header__bold">
           {this.context.t('security')}
         </span>

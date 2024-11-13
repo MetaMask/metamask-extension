@@ -23,14 +23,17 @@ const AccountSyncDeleteDataFromUserStorage = () => {
   const [hasDeletedAccountSyncEntries, setHasDeletedAccountSyncEntries] =
     useState(false);
 
-  const { dispatchDeleteAccountData } =
+  const { dispatchDeleteAccountSyncingDataFromUserStorage } =
     useDeleteAccountSyncingDataFromUserStorage();
 
   const handleDeleteAccountSyncingDataFromUserStorage =
     useCallback(async () => {
-      await dispatchDeleteAccountData();
+      await dispatchDeleteAccountSyncingDataFromUserStorage();
       setHasDeletedAccountSyncEntries(true);
-    }, [dispatchDeleteAccountData, setHasDeletedAccountSyncEntries]);
+    }, [
+      dispatchDeleteAccountSyncingDataFromUserStorage,
+      setHasDeletedAccountSyncEntries,
+    ]);
 
   return (
     <div className="settings-page__content-padded">

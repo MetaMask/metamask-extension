@@ -109,21 +109,7 @@ describe('I18N Module', () => {
             );
           });
 
-          it('throws if IN_TEST is set true', () => {
-            expect(() =>
-              getMessage(
-                FALLBACK_LOCALE,
-                {} as unknown as I18NMessageDict,
-                keyMock,
-              ),
-            ).toThrow(
-              `Unable to find value of key "${keyMock}" for locale "${FALLBACK_LOCALE}"`,
-            );
-          });
-
-          it('throws if ENABLE_SETTINGS_PAGE_DEV_OPTIONS is set true', () => {
-            process.env.IN_TEST = String(false);
-            process.env.ENABLE_SETTINGS_PAGE_DEV_OPTIONS = String(true);
+          it('throws if test env set', () => {
             expect(() =>
               getMessage(
                 FALLBACK_LOCALE,

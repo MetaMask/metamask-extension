@@ -24,7 +24,7 @@ import {
   CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP,
   TEST_NETWORK_IDS,
 } from '../../shared/constants/network';
-import { AccountsState, getSelectedInternalAccount } from './accounts';
+import { AccountsState } from './accounts';
 import {
   getCurrentChainId,
   getCurrentCurrency,
@@ -33,6 +33,7 @@ import {
   getNativeCurrencyImage,
   getNetworkConfigurationsByChainId,
   getSelectedAccountCachedBalance,
+  getSelectedInternalAccount,
   getShouldShowFiat,
   getShowFiatInTestnets,
 } from './selectors';

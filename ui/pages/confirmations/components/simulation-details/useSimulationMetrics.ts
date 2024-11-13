@@ -4,6 +4,7 @@ import {
 } from '@metamask/transaction-controller';
 import { useContext, useEffect, useState } from 'react';
 import { NameType } from '@metamask/name-controller';
+import { useSelector } from 'react-redux';
 import { useTransactionEventFragment } from '../../hooks/useTransactionEventFragment';
 import {
   UseDisplayNameRequest,
@@ -16,6 +17,7 @@ import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../../../../shared/constants/metametrics';
+import { getCurrentChainId } from '../../../../selectors';
 import { calculateTotalFiat } from './fiat-display';
 import { BalanceChange } from './types';
 import { useLoadingTime } from './useLoadingTime';
@@ -63,6 +65,9 @@ export function useSimulationMetrics({
 }: UseSimulationMetricsProps) {
   const { loadingTime, setLoadingComplete } = useLoadingTime();
 
+  // TODO: Temporary pending multi-chain support in simulations.
+  const chainId = useSelector(getCurrentChainId);
+
   if (!loading) {
     setLoadingComplete();
   }
@@ -74,7 +79,7 @@ export function useSimulationMetrics({
       value: asset.address as string,
       type: NameType.ETHEREUM_ADDRESS,
       preferContractSymbol: true,
-      variation: asset.chainId,
+      variation: chainId,
     }));
 
   const displayNames = useDisplayNames(displayNameRequests);
@@ -117,7 +122,10 @@ export function useSimulationMetrics({
     ),
   };
 
-  const sensitiveProperties = {};
+  const sensitiveProperties = {
+    ...getSensitiveProperties(receivingAssets, 'simulation_receiving_assets_'),
+    ...getSensitiveProperties(sendingAssets, 'simulation_sending_assets_'),
+  };
 
   const params = { properties, sensitiveProperties };
 
@@ -207,14 +215,15 @@ function getProperties(
     ),
   );
 
+  return getPrefixProperties({ petname, quantity, type, value }, prefix);
+}
+
+function getSensitiveProperties(changes: BalanceChange[], prefix: string) {
   const fiatAmounts = changes.map((change) => change.fiatAmount);
   const totalFiat = calculateTotalFiat(fiatAmounts);
   const totalValue = totalFiat ? Math.abs(totalFiat) : undefined;
 
-  return getPrefixProperties(
-    { petname, quantity, type, value, total_value: totalValue },
-    prefix,
-  );
+  return getPrefixProperties({ total_value: totalValue }, prefix);
 }
 
 // TODO: Replace `any` with type

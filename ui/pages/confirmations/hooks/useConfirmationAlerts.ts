@@ -10,7 +10,6 @@ import { useNetworkBusyAlerts } from './alerts/transactions/useNetworkBusyAlerts
 import { useNoGasPriceAlerts } from './alerts/transactions/useNoGasPriceAlerts';
 import { usePendingTransactionAlerts } from './alerts/transactions/usePendingTransactionAlerts';
 import { useQueuedConfirmationsAlerts } from './alerts/transactions/useQueuedConfirmationsAlerts';
-import { useResimulationAlert } from './alerts/transactions/useResimulationAlert';
 ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
 import { useSigningOrSubmittingAlerts } from './alerts/transactions/useSigningOrSubmittingAlerts';
 ///: END:ONLY_INCLUDE_IF
@@ -35,11 +34,11 @@ function useTransactionAlerts(): Alert[] {
   const networkBusyAlerts = useNetworkBusyAlerts();
   const noGasPriceAlerts = useNoGasPriceAlerts();
   const pendingTransactionAlerts = usePendingTransactionAlerts();
-  const resimulationAlert = useResimulationAlert();
   ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
   const signingOrSubmittingAlerts = useSigningOrSubmittingAlerts();
   ///: END:ONLY_INCLUDE_IF
   const queuedConfirmationsAlerts = useQueuedConfirmationsAlerts();
+
   return useMemo(
     () => [
       ...gasEstimateFailedAlerts,
@@ -49,7 +48,6 @@ function useTransactionAlerts(): Alert[] {
       ...networkBusyAlerts,
       ...noGasPriceAlerts,
       ...pendingTransactionAlerts,
-      ...resimulationAlert,
       ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
       ...signingOrSubmittingAlerts,
       ///: END:ONLY_INCLUDE_IF
@@ -63,7 +61,6 @@ function useTransactionAlerts(): Alert[] {
       networkBusyAlerts,
       noGasPriceAlerts,
       pendingTransactionAlerts,
-      resimulationAlert,
       ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
       signingOrSubmittingAlerts,
       ///: END:ONLY_INCLUDE_IF

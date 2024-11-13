@@ -13,7 +13,7 @@ const phishingWarningDirectory = path.resolve(
 
 class PhishingWarningPageServer {
   constructor() {
-    this._server = createStaticServer({ public: phishingWarningDirectory });
+    this._server = createStaticServer(phishingWarningDirectory);
   }
 
   async start({ port = 9999 } = {}) {

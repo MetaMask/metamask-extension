@@ -21,20 +21,10 @@ const getFetchWithTimeout = memoize((timeout = SECOND * 30) => {
     opts?: RequestInit,
   ): Promise<Response> {
     const abortController = new window.AbortController();
-
-    // Add the provided signal to the list of signals that can abort the request
-    const abortSignals = [abortController.signal];
-    if (opts?.signal) {
-      abortSignals.push(opts.signal);
-    }
-
-    const combinedAbortController = new AbortController();
-    const abortHandler = () => combinedAbortController.abort();
-    abortSignals.forEach((sig) => sig.addEventListener('abort', abortHandler));
-
+    const { signal } = abortController;
     const f = window.fetch(url, {
       ...opts,
-      signal: combinedAbortController.signal,
+      signal,
     });
 
     const timer = setTimeout(() => abortController.abort(), timeout);
@@ -43,9 +33,6 @@ const getFetchWithTimeout = memoize((timeout = SECOND * 30) => {
       return await f;
     } finally {
       clearTimeout(timer);
-      abortSignals.forEach((sig) =>
-        sig.removeEventListener('abort', abortHandler),
-      );
     }
   };
 });

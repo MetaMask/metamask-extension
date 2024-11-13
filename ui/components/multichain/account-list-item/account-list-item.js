@@ -88,7 +88,6 @@ const AccountListItem = ({
   startAccessory,
   onActionClick,
   shouldScrollToWhenSelected = true,
-  privacyMode = false,
 }) => {
   const t = useI18nContext();
   const [accountOptionsMenuOpen, setAccountOptionsMenuOpen] = useState(false);
@@ -315,7 +314,6 @@ const AccountListItem = ({
                 type={PRIMARY}
                 showFiat={showFiat}
                 data-testid="first-currency-display"
-                privacyMode={privacyMode}
               />
             </Text>
           </Box>
@@ -363,7 +361,6 @@ const AccountListItem = ({
                   type={SECONDARY}
                   showNative
                   data-testid="second-currency-display"
-                  privacyMode={privacyMode}
                 />
               </Text>
             </Box>
@@ -511,10 +508,6 @@ AccountListItem.propTypes = {
    * Determines if list item should be scrolled to when selected
    */
   shouldScrollToWhenSelected: PropTypes.bool,
-  /**
-   * Determines if list balance should be obfuscated
-   */
-  privacyMode: PropTypes.bool,
 };
 
 AccountListItem.displayName = 'AccountListItem';

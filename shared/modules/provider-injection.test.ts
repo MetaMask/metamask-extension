@@ -8,7 +8,11 @@ describe('shouldInjectProvider', () => {
     const urlObj = new URL(urlString);
 
     mockedWindow.mockImplementation(() => ({
-      location: urlObj,
+      location: {
+        hostname: urlObj.hostname,
+        origin: urlObj.origin,
+        pathname: urlObj.pathname,
+      },
       document: {
         doctype: {
           name: 'html',

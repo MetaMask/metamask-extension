@@ -9,7 +9,6 @@ const {
   defaultGanacheOptions,
   tempToggleSettingRedesignedConfirmations,
   WINDOW_TITLES,
-  largeDelayMs,
 } = require('../../helpers');
 
 describe('Request Queuing Dapp 1, Switch Tx -> Dapp 2 Send Tx', function () {
@@ -91,7 +90,7 @@ describe('Request Queuing Dapp 1, Switch Tx -> Dapp 2 Send Tx', function () {
           `window.ethereum.request(${switchEthereumChainRequest})`,
         );
 
-        await driver.waitForSelector({
+        await driver.findElement({
           css: '[id="chainId"]',
           text: '0x53a',
         });
@@ -112,7 +111,7 @@ describe('Request Queuing Dapp 1, Switch Tx -> Dapp 2 Send Tx', function () {
         await driver.executeScript(
           `window.ethereum.request(${switchEthereumChainRequest})`,
         );
-        await driver.waitForSelector({
+        await driver.findElement({
           css: '[id="chainId"]',
           text: '0x3e8',
         });
@@ -133,24 +132,21 @@ describe('Request Queuing Dapp 1, Switch Tx -> Dapp 2 Send Tx', function () {
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
         // Check correct network on the send confirmation.
-        await driver.waitForSelector({
+        await driver.findElement({
           css: '[data-testid="network-display"]',
           text: 'Localhost 7777',
         });
 
         await driver.clickElement({ text: 'Confirm', tag: 'button' });
 
-        await driver.delay(largeDelayMs);
         await driver.waitUntilXWindowHandles(4);
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
         // Check correct network on the signTypedData confirmation.
-        await driver.waitForSelector({
+        await driver.findElement({
           css: '[data-testid="signature-request-network-display"]',
           text: 'Localhost 8546',
         });
-
-        await driver.clickElement({ text: 'Reject', tag: 'button' });
       },
     );
   });

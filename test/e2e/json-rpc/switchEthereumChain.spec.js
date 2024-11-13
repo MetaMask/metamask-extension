@@ -157,34 +157,8 @@ describe('Switch Ethereum Chain for two dapps', function () {
           tag: 'button',
         });
 
-        // Switch to Dapp One and connect it
-        await driver.switchToWindowWithUrl(DAPP_URL);
-        await driver.findClickableElement({
-          text: 'Connect',
-          tag: 'button',
-        });
-        await driver.clickElement('#connectButton');
-
-        await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
-        const editButtons = await driver.findElements('[data-testid="edit"]');
-
-        await editButtons[1].click();
-
-        // Disconnect Localhost 8545
-        await driver.clickElement({
-          text: 'Localhost 8545',
-          tag: 'p',
-        });
-
-        await driver.clickElement('[data-testid="connect-more-chains-button"]');
-
-        await driver.clickElementAndWaitForWindowToClose({
-          text: 'Connect',
-          tag: 'button',
-        });
-
-        // Switch to Dapp Two
         await driver.switchToWindowWithUrl(DAPP_ONE_URL);
+
         // Initiate send transaction on Dapp two
         await driver.clickElement('#sendButton');
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
@@ -207,6 +181,8 @@ describe('Switch Ethereum Chain for two dapps', function () {
         await driver.executeScript(
           `window.ethereum.request(${switchEthereumChainRequest})`,
         );
+
+        // Switch to tx and confirm send tx.
         await switchToNotificationWindow(driver, 4);
         await driver.findClickableElements({
           text: 'Confirm',
@@ -216,6 +192,7 @@ describe('Switch Ethereum Chain for two dapps', function () {
           text: 'Confirm',
           tag: 'button',
         });
+
         // Delay here after notification for second notification popup for switchEthereumChain
         await driver.delay(1000);
 
@@ -226,12 +203,7 @@ describe('Switch Ethereum Chain for two dapps', function () {
           text: 'Confirm',
           tag: 'button',
         });
-        await driver.clickElementAndWaitForWindowToClose({
-          text: 'Confirm',
-          tag: 'button',
-        });
-        await driver.switchToWindowWithUrl(DAPP_URL);
-        await driver.findElement({ css: '#chainId', text: '0x539' });
+        await driver.clickElement({ text: 'Confirm', tag: 'button' });
       },
     );
   });
@@ -301,18 +273,7 @@ describe('Switch Ethereum Chain for two dapps', function () {
         await driver.clickElement('#connectButton');
 
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
-        const editButtons = await driver.findElements('[data-testid="edit"]');
 
-        // Click the edit button for networks
-        await editButtons[1].click();
-
-        // Disconnect Mainnet
-        await driver.clickElement({
-          text: 'Localhost 8545',
-          tag: 'p',
-        });
-
-        await driver.clickElement('[data-testid="connect-more-chains-button"]');
         await driver.clickElementAndWaitForWindowToClose({
           text: 'Connect',
           tag: 'button',
@@ -332,11 +293,14 @@ describe('Switch Ethereum Chain for two dapps', function () {
         await driver.executeScript(
           `window.ethereum.request(${switchEthereumChainRequest})`,
         );
+
+        // Switch to notification of switchEthereumChain
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
         await driver.findClickableElements({
           text: 'Confirm',
           tag: 'button',
         });
+
         // Switch back to dapp one
         await driver.switchToWindow(dappOne);
         assert.equal(await driver.getCurrentUrl(), `${DAPP_URL}/`);
@@ -433,22 +397,11 @@ describe('Switch Ethereum Chain for two dapps', function () {
 
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
-        const editButtons = await driver.findElements('[data-testid="edit"]');
-
-        // Click the edit button for networks
-        await editButtons[1].click();
-
-        // Disconnect Mainnet
-        await driver.clickElement({
-          text: 'Localhost 8545',
-          tag: 'p',
-        });
-
-        await driver.clickElement('[data-testid="connect-more-chains-button"]');
         await driver.clickElementAndWaitForWindowToClose({
           text: 'Connect',
           tag: 'button',
         });
+
         await driver.switchToWindow(dappTwo);
         assert.equal(await driver.getCurrentUrl(), `${DAPP_ONE_URL}/`);
 

@@ -39,7 +39,7 @@ export default function ContractDetailsModal({
   tokenAddress,
   toAddress,
   chainId,
-  blockExplorerUrl,
+  rpcPrefs,
   tokenId,
   assetName,
   assetStandard,
@@ -178,7 +178,7 @@ export default function ContractDetailsModal({
                         tokenAddress,
                         chainId,
                         {
-                          blockExplorerUrl: blockExplorerUrl ?? null,
+                          blockExplorerUrl: rpcPrefs?.blockExplorerUrl ?? null,
                         },
                         null,
                       );
@@ -287,7 +287,7 @@ export default function ContractDetailsModal({
                     toAddress,
                     chainId,
                     {
-                      blockExplorerUrl: blockExplorerUrl ?? null,
+                      blockExplorerUrl: rpcPrefs?.blockExplorerUrl ?? null,
                     },
                     null,
                   );
@@ -338,9 +338,9 @@ ContractDetailsModal.propTypes = {
    */
   chainId: PropTypes.string,
   /**
-   * Block explorer URL for the contract chain
+   * RPC prefs of the current network
    */
-  blockExplorerUrl: PropTypes.string,
+  rpcPrefs: PropTypes.object,
   /**
    * The token id of the NFT
    */

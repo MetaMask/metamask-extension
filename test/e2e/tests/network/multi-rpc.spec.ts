@@ -1,27 +1,20 @@
 import { strict as assert } from 'assert';
 import { Suite } from 'mocha';
 import FixtureBuilder from '../../fixture-builder';
-import { defaultGanacheOptions, withFixtures } from '../../helpers';
+import {
+  defaultGanacheOptions,
+  importSRPOnboardingFlow,
+  regularDelayMs,
+  TEST_SEED_PHRASE,
+  unlockWallet,
+  withFixtures,
+} from '../../helpers';
 import { Driver } from '../../webdriver/driver';
 import { Mockttp } from '../../mock-e2e';
 import {
   expectMockRequest,
   expectNoMockRequest,
 } from '../../helpers/mock-server';
-import EditNetworkModal from '../../page-objects/pages/dialog/edit-network';
-import HeaderNavbar from '../../page-objects/pages/header-navbar';
-import HomePage from '../../page-objects/pages/homepage';
-import OnboardingCompletePage from '../../page-objects/pages/onboarding/onboarding-complete-page';
-import OnboardingPrivacySettingsPage from '../../page-objects/pages/onboarding/onboarding-privacy-settings-page';
-import SelectNetwork from '../../page-objects/pages/dialog/select-network';
-import {
-  loginWithoutBalanceValidation,
-  loginWithBalanceValidation,
-} from '../../page-objects/flows/login.flow';
-import {
-  completeImportSRPOnboardingFlow,
-  importSRPOnboardingFlow,
-} from '../../page-objects/flows/onboarding.flow';
 
 describe('MultiRpc:', function (this: Suite) {
   it('should migrate to multi rpc @no-mmi', async function () {
@@ -79,19 +72,37 @@ describe('MultiRpc:', function (this: Suite) {
         testSpecificMock: mockRPCURLAndChainId,
       },
 
-      async ({ driver, ganacheServer }) => {
-        await completeImportSRPOnboardingFlow({ driver });
-        const homePage = new HomePage(driver);
-        await homePage.check_pageIsLoaded();
-        await homePage.check_ganacheBalanceIsDisplayed(ganacheServer);
+      async ({ driver }: { driver: Driver }) => {
+        const password = 'password';
 
-        await new HeaderNavbar(driver).clickSwitchNetworkDropDown();
-        const selectNetworkDialog = new SelectNetwork(driver);
-        await selectNetworkDialog.check_pageIsLoaded();
+        await driver.navigate();
+
+        await importSRPOnboardingFlow(driver, TEST_SEED_PHRASE, password);
+
+        await driver.delay(regularDelayMs);
+
+        // complete
+        await driver.clickElement('[data-testid="onboarding-complete-done"]');
+
+        // pin extension
+        await driver.clickElement('[data-testid="pin-extension-next"]');
+        await driver.clickElement('[data-testid="pin-extension-done"]');
+
+        // pin extension walkthrough screen
+        await driver.findElement('[data-testid="account-menu-icon"]');
+
+        // Avoid a stale element error
+        await driver.delay(regularDelayMs);
+        await driver.clickElement('[data-testid="network-display"]');
+
+        await driver.clickElement(
+          '[data-testid="network-rpc-name-button-0xa4b1"]',
+        );
+
+        const menuItems = await driver.findElements('.select-rpc-url__item');
 
         // check rpc number
-        await selectNetworkDialog.openNetworkRPC('0xa4b1');
-        await selectNetworkDialog.check_networkRPCNumber(2);
+        assert.equal(menuItems.length, 2);
       },
     );
   });
@@ -162,9 +173,7 @@ describe('MultiRpc:', function (this: Suite) {
       },
 
       async ({ driver, mockedEndpoint }) => {
-        await loginWithoutBalanceValidation(driver);
-        const homePage = new HomePage(driver);
-        await homePage.check_pageIsLoaded();
+        await unlockWallet(driver);
 
         const usedUrlBeforeSwitch = await mockedEndpoint[1].getSeenRequests();
 
@@ -180,21 +189,28 @@ describe('MultiRpc:', function (this: Suite) {
         // check that requests are sent on the background for the rpc https://responsive-rpc.test/
         await expectNoMockRequest(driver, mockedEndpoint[0], { timeout: 3000 });
 
-        const headerNavbar = new HeaderNavbar(driver);
-        await headerNavbar.clickSwitchNetworkDropDown();
-        const selectNetworkDialog = new SelectNetwork(driver);
-        await selectNetworkDialog.check_pageIsLoaded();
-        await selectNetworkDialog.openNetworkRPC('0xa4b1');
-        await selectNetworkDialog.check_networkRPCNumber(2);
+        // Avoid a stale element error
+        await driver.delay(regularDelayMs);
+        await driver.clickElement('[data-testid="network-display"]');
 
-        // select second rpc for Arbitrum network in the network dialog
-        await selectNetworkDialog.selectRPC('Arbitrum mainnet 2');
-        await homePage.check_pageIsLoaded();
-        await headerNavbar.clickSwitchNetworkDropDown();
+        // select second rpc
+        await driver.clickElement(
+          '[data-testid="network-rpc-name-button-0xa4b1"]',
+        );
 
-        // check that the second rpc is selected in the network dialog
-        await selectNetworkDialog.check_pageIsLoaded();
-        await selectNetworkDialog.check_rpcIsSelected('Arbitrum mainnet 2');
+        await driver.delay(regularDelayMs);
+        await driver.clickElement({
+          text: 'Arbitrum mainnet 2',
+          tag: 'button',
+        });
+
+        await driver.delay(regularDelayMs);
+        await driver.clickElement('[data-testid="network-display"]');
+
+        const arbitrumRpcUsed = await driver.findElement({
+          text: 'Arbitrum mainnet 2',
+          tag: 'button',
+        });
 
         const usedUrl = await mockedEndpoint[0].getSeenRequests();
         // check the url first request send on the background to the mocked rpc after switch
@@ -202,6 +218,9 @@ describe('MultiRpc:', function (this: Suite) {
 
         // check that requests are sent on the background for the url https://responsive-rpc.test/
         await expectMockRequest(driver, mockedEndpoint[0], { timeout: 3000 });
+
+        const existRpcUsed = arbitrumRpcUsed !== undefined;
+        assert.equal(existRpcUsed, true, 'Second Rpc is used');
       },
     );
   });
@@ -261,33 +280,53 @@ describe('MultiRpc:', function (this: Suite) {
         testSpecificMock: mockRPCURLAndChainId,
       },
 
-      async ({ driver, ganacheServer }) => {
-        await loginWithBalanceValidation(driver, ganacheServer);
-        const headerNavbar = new HeaderNavbar(driver);
-        await headerNavbar.clickSwitchNetworkDropDown();
-        const selectNetworkDialog = new SelectNetwork(driver);
-        await selectNetworkDialog.check_pageIsLoaded();
+      async ({ driver }: { driver: Driver }) => {
+        await unlockWallet(driver);
 
-        // go to Edit Menu for Arbitrum network and select the second rpc
-        await selectNetworkDialog.openNetworkListOptions('0xa4b1');
-        await selectNetworkDialog.openEditNetworkModal();
+        // Avoid a stale element error
+        await driver.delay(regularDelayMs);
+        await driver.clickElement('[data-testid="network-display"]');
 
-        const editNetworkModal = new EditNetworkModal(driver);
-        await editNetworkModal.check_pageIsLoaded();
-        await editNetworkModal.selectRPCInEditNetworkModal(
-          'Arbitrum mainnet 2',
+        // Go to Edit Menu
+        await driver.clickElement(
+          '[data-testid="network-list-item-options-button-0xa4b1"]',
+        );
+        await driver.clickElement(
+          '[data-testid="network-list-item-options-edit"]',
+        );
+        await driver.clickElement('[data-testid="test-add-rpc-drop-down"]');
+
+        await driver.delay(regularDelayMs);
+        await driver.clickElement({
+          text: 'Arbitrum mainnet 2',
+          tag: 'button',
+        });
+
+        await driver.clickElement({
+          text: 'Save',
+          tag: 'button',
+        });
+
+        // Validate the network was edited
+        const networkEdited = await driver.isElementPresent({
+          text: '“Arbitrum One” was successfully edited!',
+        });
+        assert.equal(
+          networkEdited,
+          true,
+          '“Arbitrum One” was successfully edited!',
         );
 
-        // validate the network was successfully edited
-        const homePage = new HomePage(driver);
-        await homePage.check_pageIsLoaded();
-        await homePage.check_editNetworkMessageIsDisplayed('Arbitrum One');
-        await homePage.closeUseNetworkNotificationModal();
+        await driver.delay(regularDelayMs);
+        await driver.clickElement('[data-testid="network-display"]');
 
-        // check that the second rpc is selected in the network dialog
-        await headerNavbar.clickSwitchNetworkDropDown();
-        await selectNetworkDialog.check_pageIsLoaded();
-        await selectNetworkDialog.check_rpcIsSelected('Arbitrum mainnet 2');
+        const arbitrumRpcUsed = await driver.findElement({
+          text: 'Arbitrum mainnet 2',
+          tag: 'button',
+        });
+
+        const existRpcUsed = arbitrumRpcUsed !== undefined;
+        assert.equal(existRpcUsed, true, 'Second Rpc is used');
       },
     );
   });
@@ -348,41 +387,93 @@ describe('MultiRpc:', function (this: Suite) {
       },
 
       async ({ driver }: { driver: Driver }) => {
-        await importSRPOnboardingFlow({ driver });
-        const onboardingCompletePage = new OnboardingCompletePage(driver);
-        await onboardingCompletePage.check_pageIsLoaded();
-        await onboardingCompletePage.navigateToDefaultPrivacySettings();
-        const onboardingPrivacySettingsPage = new OnboardingPrivacySettingsPage(
-          driver,
-        );
-        await onboardingPrivacySettingsPage.check_pageIsLoaded();
-        await onboardingPrivacySettingsPage.navigateToGeneralSettings();
+        const password = 'password';
 
-        // open edit network modal during onboarding and select the second rpc
-        await onboardingPrivacySettingsPage.openEditNetworkModal(
-          'Arbitrum One',
-        );
-        const editNetworkModal = new EditNetworkModal(driver);
-        await editNetworkModal.check_pageIsLoaded();
-        await editNetworkModal.selectRPCInEditNetworkModal(
-          'Arbitrum mainnet 2',
-        );
-        await onboardingPrivacySettingsPage.navigateBackToSettingsPage();
-        await onboardingPrivacySettingsPage.check_pageIsLoaded();
-        await onboardingPrivacySettingsPage.navigateBackToOnboardingCompletePage();
+        await driver.navigate();
 
-        // finish onboarding and check the network successfully edited message is displayed
-        await onboardingCompletePage.completeOnboarding();
-        const homePage = new HomePage(driver);
-        await homePage.check_pageIsLoaded();
-        await homePage.check_editNetworkMessageIsDisplayed('Arbitrum One');
-        await homePage.closeUseNetworkNotificationModal();
+        await importSRPOnboardingFlow(driver, TEST_SEED_PHRASE, password);
 
-        // check that the second rpc is selected in the network dialog
-        await new HeaderNavbar(driver).clickSwitchNetworkDropDown();
-        const selectNetworkDialog = new SelectNetwork(driver);
-        await selectNetworkDialog.check_pageIsLoaded();
-        await selectNetworkDialog.check_rpcIsSelected('Arbitrum mainnet 2');
+        await driver.delay(regularDelayMs);
+
+        // go to advanced settigns
+        await driver.clickElementAndWaitToDisappear({
+          text: 'Manage default privacy settings',
+        });
+
+        await driver.clickElement({
+          text: 'General',
+        });
+
+        // open edit modal
+        await driver.clickElement({
+          text: 'arbitrum-mainnet.infura.io',
+          tag: 'p',
+        });
+
+        await driver.clickElement('[data-testid="test-add-rpc-drop-down"]');
+
+        await driver.delay(regularDelayMs);
+        await driver.clickElement({
+          text: 'Arbitrum mainnet 2',
+          tag: 'button',
+        });
+
+        await driver.clickElementAndWaitToDisappear({
+          text: 'Save',
+          tag: 'button',
+        });
+
+        await driver.clickElement('[data-testid="category-back-button"]');
+
+        await driver.clickElement(
+          '[data-testid="privacy-settings-back-button"]',
+        );
+
+        await driver.clickElementAndWaitToDisappear({
+          text: 'Done',
+          tag: 'button',
+        });
+
+        await driver.clickElement({
+          text: 'Next',
+          tag: 'button',
+        });
+
+        await driver.clickElementAndWaitToDisappear({
+          text: 'Done',
+          tag: 'button',
+        });
+
+        // Validate the network was edited
+        const networkEdited = await driver.isElementPresent({
+          text: '“Arbitrum One” was successfully edited!',
+        });
+        assert.equal(
+          networkEdited,
+          true,
+          '“Arbitrum One” was successfully edited!',
+        );
+        // Ensures popover backround doesn't kill test
+        await driver.assertElementNotPresent('.popover-bg');
+
+        // We need to use clickElementSafe + assertElementNotPresent as sometimes the network dialog doesn't appear, as per this issue (#27870)
+        // TODO: change the 2 actions for clickElementAndWaitToDisappear, once the issue is fixed
+        await driver.clickElementSafe({ tag: 'h6', text: 'Got it' });
+
+        await driver.assertElementNotPresent({
+          tag: 'h6',
+          text: 'Got it',
+        });
+
+        await driver.clickElement('[data-testid="network-display"]');
+
+        const arbitrumRpcUsed = await driver.findElement({
+          text: 'Arbitrum mainnet 2',
+          tag: 'button',
+        });
+
+        const existRpcUsed = arbitrumRpcUsed !== undefined;
+        assert.equal(existRpcUsed, true, 'Second Rpc is used');
       },
     );
   });

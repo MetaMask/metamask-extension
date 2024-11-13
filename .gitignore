@@ -80,6 +80,3 @@ html-report/
 
 /app/images/branding
 /changed-files
-
-# UI Integration tests
-test/integration/config/assets

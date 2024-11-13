@@ -56,7 +56,7 @@ import {
 
 export type TransactionMetricsRequest = {
   createEventFragment: (
-    options: Omit<MetaMetricsEventFragment, 'id'>,
+    options: MetaMetricsEventFragment,
   ) => MetaMetricsEventFragment;
   finalizeEventFragment: (
     fragmentId: string,
@@ -528,12 +528,7 @@ function createTransactionEventFragment({
       transactionMetricsRequest.getEventFragmentById,
       eventName,
       transactionMeta,
-    ) &&
-    /**
-     * HACK: "transaction-submitted-<id>" fragment hack
-     * can continue to createEventFragment if "transaction-submitted-<id>"  submitted fragment exists
-     */
-    eventName !== TransactionMetaMetricsEvent.submitted
+    )
   ) {
     return;
   }
@@ -647,14 +642,25 @@ function updateTransactionEventFragment({
 
   switch (eventName) {
     case TransactionMetaMetricsEvent.approved:
-    case TransactionMetaMetricsEvent.rejected:
-    case TransactionMetaMetricsEvent.finalized:
       transactionMetricsRequest.updateEventFragment(uniqueId, {
         properties: payload.properties,
         sensitiveProperties: payload.sensitiveProperties,
       });
       break;
 
+    case TransactionMetaMetricsEvent.rejected:
+      transactionMetricsRequest.updateEventFragment(uniqueId, {
+        properties: payload.properties,
+        sensitiveProperties: payload.sensitiveProperties,
+      });
+      break;
+
+    case TransactionMetaMetricsEvent.finalized:
+      transactionMetricsRequest.updateEventFragment(uniqueId, {
+        properties: payload.properties,
+        sensitiveProperties: payload.sensitiveProperties,
+      });
+      break;
     default:
       break;
   }
@@ -673,7 +679,6 @@ function finalizeTransactionEventFragment({
 
   switch (eventName) {
     case TransactionMetaMetricsEvent.approved:
-    case TransactionMetaMetricsEvent.finalized:
       transactionMetricsRequest.finalizeEventFragment(uniqueId);
       break;
 
@@ -683,6 +688,9 @@ function finalizeTransactionEventFragment({
       });
       break;
 
+    case TransactionMetaMetricsEvent.finalized:
+      transactionMetricsRequest.finalizeEventFragment(uniqueId);
+      break;
     default:
       break;
   }
@@ -908,7 +916,6 @@ async function buildEventFragmentProperties({
   let transactionContractMethod;
   let transactionApprovalAmountVsProposedRatio;
   let transactionApprovalAmountVsBalanceRatio;
-  let transactionContractAddress;
   let transactionType = TransactionType.simpleSend;
   if (type === TransactionType.swapAndSend) {
     transactionType = TransactionType.swapAndSend;
@@ -921,7 +928,6 @@ async function buildEventFragmentProperties({
   } else if (contractInteractionTypes) {
     transactionType = TransactionType.contractInteraction;
     transactionContractMethod = contractMethodName;
-    transactionContractAddress = transactionMeta.txParams?.to;
     if (
       transactionContractMethod === contractMethodNames.APPROVE &&
       tokenStandard === TokenStandard.ERC20
@@ -1054,7 +1060,6 @@ async function buildEventFragmentProperties({
     // ui_customizations must come after ...blockaidProperties
     ui_customizations: uiCustomizations.length > 0 ? uiCustomizations : null,
     transaction_advanced_view: isAdvancedDetailsOpen,
-    transaction_contract_method: transactionContractMethod,
     ...smartTransactionMetricsProperties,
     ...swapAndSendMetricsProperties,
     // TODO: Replace `any` with type
@@ -1081,8 +1086,8 @@ async function buildEventFragmentProperties({
       : TRANSACTION_ENVELOPE_TYPE_NAMES.LEGACY,
     first_seen: time,
     gas_limit: gasLimit,
+    transaction_contract_method: transactionContractMethod,
     transaction_replaced: transactionReplaced,
-    transaction_contract_address: transactionContractAddress,
     ...extraParams,
     ...gasParamsInGwei,
     // TODO: Replace `any` with type

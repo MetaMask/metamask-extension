@@ -8,6 +8,7 @@ import {
   isBtcMainnetAddress,
   isBtcTestnetAddress,
 } from '../../shared/lib/multichain';
+import { getSelectedInternalAccount, getInternalAccounts } from './selectors';
 
 export type AccountsState = {
   metamask: AccountsControllerState;
@@ -17,15 +18,6 @@ function isBtcAccount(account: InternalAccount) {
   const { P2wpkh } = BtcAccountType;
 
   return Boolean(account && account.type === P2wpkh);
-}
-
-export function getInternalAccounts(state: AccountsState) {
-  return Object.values(state.metamask.internalAccounts.accounts);
-}
-
-export function getSelectedInternalAccount(state: AccountsState) {
-  const accountId = state.metamask.internalAccounts.selectedAccount;
-  return state.metamask.internalAccounts.accounts[accountId];
 }
 
 export function isSelectedInternalAccountEth(state: AccountsState) {

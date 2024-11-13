@@ -29,10 +29,6 @@ import {
   getNumberOfSettingRoutesInTab,
   handleSettingsRefs,
 } from '../../../helpers/utils/settings-search';
-// TODO: Remove restricted import
-// eslint-disable-next-line import/no-restricted-paths
-import { getPlatform } from '../../../../app/scripts/lib/util';
-import { PLATFORM_FIREFOX } from '../../../../shared/constants/app';
 
 export default class AdvancedTab extends PureComponent {
   static contextTypes = {
@@ -44,10 +40,9 @@ export default class AdvancedTab extends PureComponent {
     setUseNonceField: PropTypes.func,
     useNonceField: PropTypes.bool,
     setHexDataFeatureFlag: PropTypes.func,
-    displayErrorInSettings: PropTypes.func,
-    hideErrorInSettings: PropTypes.func,
+    displayWarning: PropTypes.func,
     showResetAccountConfirmationModal: PropTypes.func,
-    errorInSettings: PropTypes.string,
+    warning: PropTypes.string,
     sendHexData: PropTypes.bool,
     showFiatInTestnets: PropTypes.bool,
     showTestNetworks: PropTypes.bool,
@@ -62,8 +57,6 @@ export default class AdvancedTab extends PureComponent {
     backupUserData: PropTypes.func.isRequired,
     showExtensionInFullSizeView: PropTypes.bool,
     setShowExtensionInFullSizeView: PropTypes.func.isRequired,
-    overrideContentSecurityPolicyHeader: PropTypes.bool,
-    setOverrideContentSecurityPolicyHeader: PropTypes.func.isRequired,
   };
 
   state = {
@@ -87,9 +80,7 @@ export default class AdvancedTab extends PureComponent {
 
   componentDidMount() {
     const { t } = this.context;
-    const { hideErrorInSettings } = this.props;
     handleSettingsRefs(t, t('advanced'), this.settingsRefs);
-    hideErrorInSettings();
   }
 
   async getTextFromFile(file) {
@@ -121,7 +112,7 @@ export default class AdvancedTab extends PureComponent {
 
   renderStateLogs() {
     const { t } = this.context;
-    const { displayErrorInSettings } = this.props;
+    const { displayWarning } = this.props;
 
     return (
       <Box
@@ -142,21 +133,16 @@ export default class AdvancedTab extends PureComponent {
             <Button
               type="secondary"
               large
-              data-testid="advanced-setting-state-logs-button"
               onClick={() => {
-                window.logStateString(async (err, result) => {
+                window.logStateString((err, result) => {
                   if (err) {
-                    displayErrorInSettings(t('stateLogError'));
+                    displayWarning(t('stateLogError'));
                   } else {
-                    try {
-                      await exportAsFile(
-                        `${t('stateLogFileName')}.json`,
-                        result,
-                        ExportableContentType.JSON,
-                      );
-                    } catch (error) {
-                      displayErrorInSettings(error.message);
-                    }
+                    exportAsFile(
+                      `${t('stateLogFileName')}.json`,
+                      result,
+                      ExportableContentType.JSON,
+                    );
                   }
                 });
               }}
@@ -589,50 +575,12 @@ export default class AdvancedTab extends PureComponent {
     );
   }
 
-  renderOverrideContentSecurityPolicyHeader() {
-    const { t } = this.context;
-    const {
-      overrideContentSecurityPolicyHeader,
-      setOverrideContentSecurityPolicyHeader,
-    } = this.props;
-
-    return (
-      <Box
-        ref={this.settingsRefs[11]}
-        className="settings-page__content-row"
-        data-testid="advanced-setting-override-content-security-policy-header"
-        display={Display.Flex}
-        flexDirection={FlexDirection.Row}
-        justifyContent={JustifyContent.spaceBetween}
-        gap={4}
-      >
-        <div className="settings-page__content-item">
-          <span>{t('overrideContentSecurityPolicyHeader')}</span>
-          <div className="settings-page__content-description">
-            {t('overrideContentSecurityPolicyHeaderDescription')}
-          </div>
-        </div>
-
-        <div className="settings-page__content-item-col">
-          <ToggleButton
-            value={overrideContentSecurityPolicyHeader}
-            onToggle={(value) => setOverrideContentSecurityPolicyHeader(!value)}
-            offLabel={t('off')}
-            onLabel={t('on')}
-          />
-        </div>
-      </Box>
-    );
-  }
-
   render() {
-    const { errorInSettings } = this.props;
+    const { warning } = this.props;
     // When adding/removing/editing the order of renders, double-check the order of the settingsRefs. This affects settings-search.js
     return (
       <div className="settings-page__body">
-        {errorInSettings ? (
-          <div className="settings-tab__error">{errorInSettings}</div>
-        ) : null}
+        {warning ? <div className="settings-tab__error">{warning}</div> : null}
         {this.renderStateLogs()}
         {this.renderResetAccount()}
         {this.renderToggleStxOptIn()}
@@ -644,9 +592,6 @@ export default class AdvancedTab extends PureComponent {
         {this.renderAutoLockTimeLimit()}
         {this.renderUserDataBackup()}
         {this.renderDismissSeedBackupReminderControl()}
-        {getPlatform() === PLATFORM_FIREFOX
-          ? this.renderOverrideContentSecurityPolicyHeader()
-          : null}
       </div>
     );
   }

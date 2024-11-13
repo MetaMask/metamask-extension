@@ -32,14 +32,8 @@ export function useCurrentSpendingCap(currentConfirmation: Confirmation) {
   const txParamsData = isTxWithSpendingCap
     ? currentConfirmation.txParams.data
     : null;
-  const chainId = isTxWithSpendingCap ? currentConfirmation.chainId : null;
 
-  const { decimals } = useAssetDetails(
-    txParamsTo,
-    txParamsFrom,
-    txParamsData,
-    chainId,
-  );
+  const { decimals } = useAssetDetails(txParamsTo, txParamsFrom, txParamsData);
 
   const { spendingCap, pending } = useApproveTokenSimulation(
     currentConfirmation as TransactionMeta,

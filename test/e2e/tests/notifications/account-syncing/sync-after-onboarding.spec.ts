@@ -1,5 +1,9 @@
 import { Mockttp } from 'mockttp';
-import { withFixtures } from '../../../helpers';
+import {
+  withFixtures,
+  defaultGanacheOptions,
+  completeImportSRPOnboardingFlow,
+} from '../../../helpers';
 import FixtureBuilder from '../../../fixture-builder';
 import { mockNotificationServices } from '../mocks';
 import {
@@ -7,14 +11,10 @@ import {
   NOTIFICATIONS_TEAM_SEED_PHRASE,
 } from '../constants';
 import { UserStorageMockttpController } from '../../../helpers/user-storage/userStorageMockttpController';
-import HeaderNavbar from '../../../page-objects/pages/header-navbar';
-import AccountListPage from '../../../page-objects/pages/account-list-page';
-import HomePage from '../../../page-objects/pages/homepage';
-import { completeImportSRPOnboardingFlow } from '../../../page-objects/flows/onboarding.flow';
 import { accountsSyncMockResponse } from './mockData';
 import { IS_ACCOUNT_SYNCING_ENABLED } from './helpers';
 
-describe('Account syncing - Onboarding @no-mmi', function () {
+describe('Account syncing @no-mmi', function () {
   if (!IS_ACCOUNT_SYNCING_ENABLED) {
     return;
   }
@@ -25,6 +25,7 @@ describe('Account syncing - Onboarding @no-mmi', function () {
       await withFixtures(
         {
           fixtures: new FixtureBuilder({ onboarding: true }).build(),
+          ganacheOptions: defaultGanacheOptions,
           title: this.test?.fullTitle(),
           testSpecificMock: (server: Mockttp) => {
             userStorageMockttpController.setupPath('accounts', server, {
@@ -37,30 +38,21 @@ describe('Account syncing - Onboarding @no-mmi', function () {
           },
         },
         async ({ driver }) => {
-          await completeImportSRPOnboardingFlow({
+          await driver.navigate();
+          await completeImportSRPOnboardingFlow(
             driver,
-            seedPhrase: NOTIFICATIONS_TEAM_SEED_PHRASE,
-            password: NOTIFICATIONS_TEAM_PASSWORD,
-          });
-          const homePage = new HomePage(driver);
-          await homePage.check_pageIsLoaded();
-          await homePage.check_expectedBalanceIsDisplayed();
+            NOTIFICATIONS_TEAM_SEED_PHRASE,
+            NOTIFICATIONS_TEAM_PASSWORD,
+          );
 
-          const header = new HeaderNavbar(driver);
-          await header.check_pageIsLoaded();
-          await header.openAccountMenu();
+          await driver.clickElement('[data-testid="account-menu-icon"]');
 
-          const accountListPage = new AccountListPage(driver);
-          await accountListPage.check_pageIsLoaded();
-          await accountListPage.check_numberOfAvailableAccounts(
-            accountsSyncMockResponse.length,
-          );
-          await accountListPage.check_accountDisplayedInAccountList(
-            'My First Synced Account',
-          );
-          await accountListPage.check_accountDisplayedInAccountList(
-            'My Second Synced Account',
-          );
+          await driver.wait(async () => {
+            const internalAccounts = await driver.findElements(
+              '.multichain-account-list-item',
+            );
+            return internalAccounts.length === accountsSyncMockResponse.length;
+          }, 20000);
         },
       );
     });

@@ -3,7 +3,6 @@ import {
   TransactionType,
 } from '@metamask/transaction-controller';
 import React from 'react';
-import { ORIGIN_METAMASK } from '../../../../../../shared/constants/app';
 import {
   AvatarNetwork,
   AvatarNetworkSize,
@@ -27,13 +26,6 @@ import { DAppInitiatedHeader } from './dapp-initiated-header';
 import HeaderInfo from './header-info';
 import { WalletInitiatedHeader } from './wallet-initiated-header';
 
-const CONFIRMATIONS_WITH_NEW_HEADER = [
-  TransactionType.tokenMethodTransfer,
-  TransactionType.tokenMethodTransferFrom,
-  TransactionType.tokenMethodSafeTransferFrom,
-  TransactionType.simpleSend,
-];
-
 const Header = () => {
   const { networkImageUrl, networkDisplayName } = useConfirmationNetworkInfo();
   const { senderAddress: fromAddress, senderName: fromName } =
@@ -41,7 +33,17 @@ const Header = () => {
 
   const { currentConfirmation } = useConfirmContext<Confirmation>();
 
-  const DefaultHeader = (
+  if (currentConfirmation?.type === TransactionType.tokenMethodTransfer) {
+    const isWalletInitiated =
+      (currentConfirmation as TransactionMeta).origin === 'metamask';
+
+    if (isWalletInitiated) {
+      return <WalletInitiatedHeader />;
+    }
+    return <DAppInitiatedHeader />;
+  }
+
+  return (
     <Box
       display={Display.Flex}
       className="confirm_header__wrapper"
@@ -81,22 +83,6 @@ const Header = () => {
       </Box>
     </Box>
   );
-
-  // The new header includes only a heading, the advanced details toggle, and a
-  // back button if it's a wallet initiated confirmation. The default header is
-  // the original header for the redesigns and includes the sender and recipient
-  // addresses as well.
-  const isConfirmationWithNewHeader =
-    currentConfirmation?.type &&
-    CONFIRMATIONS_WITH_NEW_HEADER.includes(currentConfirmation.type);
-  const isWalletInitiated =
-    (currentConfirmation as TransactionMeta)?.origin === ORIGIN_METAMASK;
-  if (isConfirmationWithNewHeader && isWalletInitiated) {
-    return <WalletInitiatedHeader />;
-  } else if (isConfirmationWithNewHeader && !isWalletInitiated) {
-    return <DAppInitiatedHeader />;
-  }
-  return DefaultHeader;
 };
 
 export default Header;

@@ -22,13 +22,13 @@ describe('useFeeCalculations', () => {
     expect(result.current).toMatchInlineSnapshot(`
       {
         "estimatedFeeFiat": "$0.00",
-        "estimatedFeeNative": "0 ETH",
+        "estimatedFeeNative": "0 WEI",
         "l1FeeFiat": "",
         "l1FeeNative": "",
         "l2FeeFiat": "",
         "l2FeeNative": "",
         "maxFeeFiat": "$0.00",
-        "maxFeeNative": "0 ETH",
+        "maxFeeNative": "0 WEI",
       }
     `);
   });

@@ -2,9 +2,9 @@ import React, { useContext, useEffect, useState, useCallback } from 'react';
 import BigNumber from 'bignumber.js';
 import PropTypes from 'prop-types';
 import { shallowEqual, useDispatch, useSelector } from 'react-redux';
-import { uniqBy, isEqual, isEmpty } from 'lodash';
+import { uniqBy, isEqual } from 'lodash';
 import { useHistory } from 'react-router-dom';
-import { getAccountLink, getTokenTrackerLink } from '@metamask/etherscan-link';
+import { getTokenTrackerLink } from '@metamask/etherscan-link';
 import classnames from 'classnames';
 
 import { MetaMetricsContext } from '../../../contexts/metametrics';
@@ -83,23 +83,23 @@ import { usePrevious } from '../../../hooks/usePrevious';
 import { useTokenTracker } from '../../../hooks/useTokenTracker';
 import { useTokenFiatAmount } from '../../../hooks/useTokenFiatAmount';
 import { useEthFiatAmount } from '../../../hooks/useEthFiatAmount';
-import { isSwapsDefaultTokenAddress } from '../../../../shared/modules/swaps.utils';
+import {
+  isSwapsDefaultTokenAddress,
+  isSwapsDefaultTokenSymbol,
+} from '../../../../shared/modules/swaps.utils';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventLinkType,
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
 import {
+  SWAPS_CHAINID_DEFAULT_BLOCK_EXPLORER_URL_MAP,
   TokenBucketPriority,
   ERROR_FETCHING_QUOTES,
   QUOTES_NOT_AVAILABLE_ERROR,
   QUOTES_EXPIRED_ERROR,
   MAX_ALLOWED_SLIPPAGE,
 } from '../../../../shared/constants/swaps';
-import {
-  CHAINID_DEFAULT_BLOCK_EXPLORER_URL_MAP,
-  CHAINID_DEFAULT_BLOCK_EXPLORER_HUMAN_READABLE_URL_MAP,
-} from '../../../../shared/constants/common';
 import {
   resetSwapsPostFetchState,
   ignoreTokens,
@@ -142,7 +142,6 @@ import SwapsBannerAlert from '../swaps-banner-alert/swaps-banner-alert';
 import SwapsFooter from '../swaps-footer';
 import SelectedToken from '../selected-token/selected-token';
 import ListWithSearch from '../list-with-search/list-with-search';
-import { CHAIN_IDS } from '../../../../shared/constants/network';
 import QuotesLoadingAnimation from './quotes-loading-animation';
 import ReviewQuote from './review-quote';
 
@@ -229,8 +228,8 @@ export default function PrepareSwapPage({
   const isMetaMetricsEnabled = useSelector(getParticipateInMetaMetrics);
   const isMarketingEnabled = useSelector(getDataCollectionForMarketing);
 
-  const fetchParamsFromToken = isSwapsDefaultTokenAddress(
-    sourceTokenInfo?.address,
+  const fetchParamsFromToken = isSwapsDefaultTokenSymbol(
+    sourceTokenInfo?.symbol,
     chainId,
   )
     ? defaultSwapsToken
@@ -242,8 +241,7 @@ export default function PrepareSwapPage({
   // but is not in tokensWithBalances or tokens, then we want to add it to the usersTokens array so that
   // the balance of the token can appear in the from token selection dropdown
   const fromTokenArray =
-    !isSwapsDefaultTokenAddress(fromToken?.address, chainId) &&
-    fromToken?.balance
+    !isSwapsDefaultTokenSymbol(fromToken?.symbol, chainId) && fromToken?.balance
       ? [fromToken]
       : [];
   const usersTokens = uniqBy(
@@ -312,10 +310,7 @@ export default function PrepareSwapPage({
     { showFiat: true },
     true,
   );
-  const swapFromFiatValue = isSwapsDefaultTokenAddress(
-    fromTokenAddress,
-    chainId,
-  )
+  const swapFromFiatValue = isSwapsDefaultTokenSymbol(fromTokenSymbol, chainId)
     ? swapFromEthFiatValue
     : swapFromTokenFiatValue;
 
@@ -440,27 +435,19 @@ export default function PrepareSwapPage({
     onInputChange(fromTokenInputValue, token.string, token.decimals);
   };
 
-  const blockExplorerTokenLink =
-    chainId === CHAIN_IDS.ZKSYNC_ERA
-      ? // Use getAccountLink because zksync explorer uses a /address URL scheme instead of /token
-        getAccountLink(selectedToToken.address, chainId, {
-          blockExplorerUrl:
-            CHAINID_DEFAULT_BLOCK_EXPLORER_URL_MAP[chainId] ?? null,
-        })
-      : getTokenTrackerLink(
-          selectedToToken.address,
-          chainId,
-          null, // no networkId
-          null, // no holderAddress
-          {
-            blockExplorerUrl:
-              CHAINID_DEFAULT_BLOCK_EXPLORER_URL_MAP[chainId] ?? null,
-          },
-        );
+  const blockExplorerTokenLink = getTokenTrackerLink(
+    selectedToToken.address,
+    chainId,
+    null, // no networkId
+    null, // no holderAddress
+    {
+      blockExplorerUrl:
+        SWAPS_CHAINID_DEFAULT_BLOCK_EXPLORER_URL_MAP[chainId] ?? null,
+    },
+  );
 
   const blockExplorerLabel = rpcPrefs.blockExplorerUrl
-    ? CHAINID_DEFAULT_BLOCK_EXPLORER_HUMAN_READABLE_URL_MAP[chainId] ??
-      t('etherscan')
+    ? getURLHostName(blockExplorerTokenLink)
     : t('etherscan');
 
   const { address: toAddress } = toToken || {};
@@ -799,22 +786,17 @@ export default function PrepareSwapPage({
     );
   }
 
-  const isNonDefaultFromToken = !isSwapsDefaultTokenAddress(
-    fromTokenAddress,
+  const isNonDefaultToken = !isSwapsDefaultTokenSymbol(
+    fromTokenSymbol,
     chainId,
   );
   const hasPositiveFromTokenBalance = rawFromTokenBalance > 0;
   const isTokenEligibleForMaxBalance =
-    isSmartTransaction || (!isSmartTransaction && isNonDefaultFromToken);
+    isSmartTransaction || (!isSmartTransaction && isNonDefaultToken);
   const showMaxBalanceLink =
     fromTokenSymbol &&
     isTokenEligibleForMaxBalance &&
     hasPositiveFromTokenBalance;
-
-  const isNonDefaultToToken = !isSwapsDefaultTokenAddress(
-    selectedToToken.address,
-    chainId,
-  );
 
   return (
     <div className="prepare-swap-page">
@@ -1040,21 +1022,6 @@ export default function PrepareSwapPage({
           >
             <div className="prepare-swap-page__balance-message">
               {selectedToToken?.string && yourTokenToBalance}
-            </div>
-          </Box>
-          <Box
-            display={DISPLAY.FLEX}
-            justifyContent={JustifyContent.spaceBetween}
-            alignItems={AlignItems.stretch}
-          >
-            <div className="prepare-swap-page__balance-message">
-              {selectedToToken &&
-                !isEmpty(selectedToToken) &&
-                isNonDefaultToToken &&
-                t('swapTokenVerifiedSources', [
-                  occurrences,
-                  <BlockExplorerLink key="block-explorer-link" />,
-                ])}
             </div>
           </Box>
         </div>

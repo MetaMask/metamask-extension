@@ -9,10 +9,6 @@
   flex-direction: column;
   width: 100%;
 
-  &-fullscreen {
-    align-items: center;
-  }
-
   &__balance {
     flex: 1;
     display: flex;
@@ -20,10 +16,6 @@
     flex-direction: column;
     align-items: start;
     width: 100%;
-
-    .wallet-overview-fullscreen > & {
-      align-items: center;
-    }
   }
 
   &__icon_button {
@@ -78,8 +70,7 @@
     display: flex;
     max-width: inherit;
     justify-content: center;
-    align-items: center;
-    flex-wrap: nowrap;
+    flex-wrap: wrap;
   }
 
   &__primary-balance {
@@ -143,8 +134,7 @@
     display: flex;
     max-width: inherit;
     justify-content: center;
-    align-items: center;
-    flex-wrap: nowrap;
+    flex-wrap: wrap;
   }
 
   &__primary-balance {

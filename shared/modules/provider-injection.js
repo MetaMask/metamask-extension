@@ -5,36 +5,40 @@
  */
 export default function shouldInjectProvider() {
   return (
-    checkURLForProviderInjection(new URL(window.location)) &&
-    checkDocumentForProviderInjection()
+    doctypeCheck() &&
+    suffixCheck() &&
+    documentElementCheck() &&
+    !blockedDomainCheck()
   );
 }
 
 /**
- * Checks if a given URL is eligible for provider injection.
+ * Checks the doctype of the current document if it exists
  *
- * This function determines if a URL passes the suffix check and is not part of the blocked domains.
- *
- * @param {URL} url - The URL to be checked for injection.
- * @returns {boolean} Returns `true` if the URL passes the suffix check and is not blocked, otherwise `false`.
+ * @returns {boolean} {@code true} if the doctype is html or if none exists
  */
-export function checkURLForProviderInjection(url) {
-  return suffixCheck(url) && !blockedDomainCheck(url);
+function doctypeCheck() {
+  const { doctype } = window.document;
+  if (doctype) {
+    return doctype.name === 'html';
+  }
+  return true;
 }
 
 /**
- * Returns whether or not the extension (suffix) of the given URL's pathname is prohibited
+ * Returns whether or not the extension (suffix) of the current document is prohibited
  *
- * This checks the provided URL's pathname against a set of file extensions
- * that we should not inject the provider into.
+ * This checks {@code window.location.pathname} against a set of file extensions
+ * that we should not inject the provider into. This check is indifferent of
+ * query parameters in the location.
  *
- * @param {URL} url - The URL to check
- * @returns {boolean} whether or not the extension of the given URL's pathname is prohibited
+ * @returns {boolean} whether or not the extension of the current document is prohibited
  */
-function suffixCheck({ pathname }) {
+function suffixCheck() {
   const prohibitedTypes = [/\.xml$/u, /\.pdf$/u];
+  const currentUrl = window.location.pathname;
   for (let i = 0; i < prohibitedTypes.length; i++) {
-    if (prohibitedTypes[i].test(pathname)) {
+    if (prohibitedTypes[i].test(currentUrl)) {
       return false;
     }
   }
@@ -42,12 +46,24 @@ function suffixCheck({ pathname }) {
 }
 
 /**
- * Checks if the given domain is blocked
+ * Checks the documentElement of the current document
  *
- * @param {URL} url - The URL to check
- * @returns {boolean} {@code true} if the given domain is blocked
+ * @returns {boolean} {@code true} if the documentElement is an html node or if none exists
  */
-function blockedDomainCheck(url) {
+function documentElementCheck() {
+  const documentElement = document.documentElement.nodeName;
+  if (documentElement) {
+    return documentElement.toLowerCase() === 'html';
+  }
+  return true;
+}
+
+/**
+ * Checks if the current domain is blocked
+ *
+ * @returns {boolean} {@code true} if the current domain is blocked
+ */
+function blockedDomainCheck() {
   // If making any changes, please also update the same list found in the MetaMask-Mobile & SDK repositories
   const blockedDomains = [
     'execution.consensys.io',
@@ -69,7 +85,8 @@ function blockedDomainCheck(url) {
     'cdn.shopify.com/s/javascripts/tricorder/xtld-read-only-frame.html',
   ];
 
-  const { hostname: currentHostname, pathname: currentPathname } = url;
+  const { hostname: currentHostname, pathname: currentPathname } =
+    window.location;
 
   const trimTrailingSlash = (str) =>
     str.endsWith('/') ? str.slice(0, -1) : str;
@@ -86,39 +103,4 @@ function blockedDomainCheck(url) {
         trimTrailingSlash(currentHostname + currentPathname),
     )
   );
-}
-
-/**
- * Checks if the document is suitable for provider injection by verifying the doctype and document element.
- *
- * @returns {boolean} `true` if the document passes both the doctype and document element checks, otherwise `false`.
- */
-export function checkDocumentForProviderInjection() {
-  return doctypeCheck() && documentElementCheck();
-}
-
-/**
- * Checks the doctype of the current document if it exists
- *
- * @returns {boolean} {@code true} if the doctype is html or if none exists
- */
-function doctypeCheck() {
-  const { doctype } = window.document;
-  if (doctype) {
-    return doctype.name === 'html';
-  }
-  return true;
-}
-
-/**
- * Checks the documentElement of the current document
- *
- * @returns {boolean} {@code true} if the documentElement is an html node or if none exists
- */
-function documentElementCheck() {
-  const documentElement = document.documentElement.nodeName;
-  if (documentElement) {
-    return documentElement.toLowerCase() === 'html';
-  }
-  return true;
 }

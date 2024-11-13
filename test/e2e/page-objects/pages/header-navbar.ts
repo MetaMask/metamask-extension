@@ -5,7 +5,7 @@ class HeaderNavbar {
 
   private readonly accountMenuButton = '[data-testid="account-menu-icon"]';
 
-  private readonly threeDotMenuButton =
+  private readonly accountOptionMenu =
     '[data-testid="account-options-menu-button"]';
 
   private readonly accountSnapButton = { text: 'Snaps', tag: 'div' };
@@ -17,8 +17,6 @@ class HeaderNavbar {
 
   private readonly settingsButton = '[data-testid="global-menu-settings"]';
 
-  private readonly switchNetworkDropDown = '[data-testid="network-display"]';
-
   constructor(driver: Driver) {
     this.driver = driver;
   }
@@ -27,7 +25,7 @@ class HeaderNavbar {
     try {
       await this.driver.waitForMultipleSelectors([
         this.accountMenuButton,
-        this.threeDotMenuButton,
+        this.accountOptionMenu,
       ]);
     } catch (e) {
       console.log('Timeout while waiting for header navbar to be loaded', e);
@@ -37,7 +35,11 @@ class HeaderNavbar {
   }
 
   async lockMetaMask(): Promise<void> {
-    await this.openThreeDotMenu();
+    await this.driver.clickElement(this.accountOptionMenu);
+    // fix race condition with mmi build
+    if (process.env.MMI) {
+      await this.driver.waitForSelector(this.mmiPortfolioButton);
+    }
     await this.driver.clickElement(this.lockMetaMaskButton);
   }
 
@@ -45,37 +47,20 @@ class HeaderNavbar {
     await this.driver.clickElement(this.accountMenuButton);
   }
 
-  async openThreeDotMenu(): Promise<void> {
-    console.log('Open account options menu');
-    await this.driver.clickElement(this.threeDotMenuButton);
-    // fix race condition with mmi build
-    if (process.env.MMI) {
-      await this.driver.waitForSelector(this.mmiPortfolioButton);
-    }
-  }
-
   async openSnapListPage(): Promise<void> {
     console.log('Open account snap page');
-    await this.openThreeDotMenu();
+    await this.driver.clickElement(this.accountOptionMenu);
     await this.driver.clickElement(this.accountSnapButton);
   }
 
   async openSettingsPage(): Promise<void> {
     console.log('Open settings page');
-    await this.openThreeDotMenu();
+    await this.driver.clickElement(this.accountOptionMenu);
+    // fix race condition with mmi build
+    if (process.env.MMI) {
+      await this.driver.waitForSelector(this.mmiPortfolioButton);
+    }
     await this.driver.clickElement(this.settingsButton);
-  }
-
-  async clickSwitchNetworkDropDown(): Promise<void> {
-    console.log(`Click switch network menu`);
-    await this.driver.clickElement(this.switchNetworkDropDown);
-  }
-
-  async check_currentSelectedNetwork(networkName: string): Promise<void> {
-    console.log(`Validate the Switch network to ${networkName}`);
-    await this.driver.waitForSelector(
-      `button[data-testid="network-display"][aria-label="Network Menu ${networkName}"]`,
-    );
   }
 
   /**

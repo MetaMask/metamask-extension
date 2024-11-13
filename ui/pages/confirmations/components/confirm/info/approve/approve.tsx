@@ -18,8 +18,9 @@ import { RevokeStaticSimulation } from './revoke-static-simulation/revoke-static
 import { SpendingCap } from './spending-cap/spending-cap';
 
 const ApproveInfo = () => {
-  const { currentConfirmation: transactionMeta } =
-    useConfirmContext<TransactionMeta>();
+  const { currentConfirmation: transactionMeta } = useConfirmContext() as {
+    currentConfirmation: TransactionMeta;
+  };
 
   const { isNFT } = useIsNFT(transactionMeta);
 
@@ -30,7 +31,6 @@ const ApproveInfo = () => {
     transactionMeta.txParams.to,
     transactionMeta.txParams.from,
     transactionMeta.txParams.data,
-    transactionMeta.chainId,
   );
 
   const { spendingCap, pending } = useApproveTokenSimulation(

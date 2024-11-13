@@ -24,6 +24,7 @@ function getStore(transactionData?: string, to?: string) {
 
   const confirmation = {
     ...confirmationTemplate,
+    chainId: '0x1',
     txParams: {
       ...confirmationTemplate.txParams,
       to: to ?? confirmationTemplate.txParams.to,

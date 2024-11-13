@@ -5,27 +5,17 @@ import getFirstPreferredLangCode from '../../app/scripts/lib/get-first-preferred
 import { fetchLocale, loadRelativeTimeFormatLocaleData } from '../modules/i18n';
 import switchDirection from './switch-direction';
 
-const defaultLocale = 'en';
 const _setupLocale = async (currentLocale) => {
-  const enRelativeTime = loadRelativeTimeFormatLocaleData(defaultLocale);
-  const enLocale = fetchLocale(defaultLocale);
+  const currentLocaleMessages = currentLocale
+    ? await fetchLocale(currentLocale)
+    : {};
+  const enLocaleMessages = await fetchLocale('en');
 
-  const promises = [enRelativeTime, enLocale];
-  if (currentLocale === defaultLocale) {
-    // enLocaleMessages and currentLocaleMessages are the same; reuse enLocale
-    promises.push(enLocale); // currentLocaleMessages
-  } else if (currentLocale) {
-    // currentLocale does not match enLocaleMessages
-    promises.push(fetchLocale(currentLocale)); // currentLocaleMessages
-    promises.push(loadRelativeTimeFormatLocaleData(currentLocale));
-  } else {
-    // currentLocale is not set
-    promises.push(Promise.resolve({})); // currentLocaleMessages
+  await loadRelativeTimeFormatLocaleData('en');
+  if (currentLocale) {
+    await loadRelativeTimeFormatLocaleData(currentLocale);
   }
 
-  const [, enLocaleMessages, currentLocaleMessages] = await Promise.all(
-    promises,
-  );
   return { currentLocaleMessages, enLocaleMessages };
 };
 

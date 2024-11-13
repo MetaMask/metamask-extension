@@ -36,7 +36,7 @@
       "showExtensionInFullSizeView": false,
       "showFiatInTestnets": false,
       "showTestNetworks": false,
-      "smartTransactionsOptInStatus": true
+      "smartTransactionsOptInStatus": false
     },
     "theme": "light",
     "useBlockie": false,

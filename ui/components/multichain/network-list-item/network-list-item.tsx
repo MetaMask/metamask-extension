@@ -190,7 +190,6 @@ export const NetworkListItem = ({
               as="button"
               variant={TextVariant.bodySmMedium}
               color={TextColor.textAlternative}
-              ellipsis
             >
               {rpcEndpoint.name ?? new URL(rpcEndpoint.url).host}
             </Text>

@@ -1,14 +1,17 @@
 import { useSelector } from 'react-redux';
+import { zeroAddress } from 'ethereumjs-util';
+import { Web3Provider } from '@ethersproject/providers';
 import { Hex } from '@metamask/utils';
+import { BigNumber } from 'ethers';
 import { Numeric } from '../../../shared/modules/Numeric';
 import { DEFAULT_PRECISION } from '../useCurrencyDisplay';
+import { fetchTokenBalance } from '../../../shared/lib/token-util';
 import {
   getCurrentChainId,
   getSelectedInternalAccount,
   SwapsEthToken,
 } from '../../selectors';
 import { SwapsTokenObject } from '../../../shared/constants/swaps';
-import { calcLatestSrcBalance } from '../../../shared/modules/bridge-utils/balance';
 import { useAsyncResult } from '../useAsyncResult';
 
 /**
@@ -25,25 +28,21 @@ const useLatestBalance = (
   const { address: selectedAddress } = useSelector(getSelectedInternalAccount);
   const currentChainId = useSelector(getCurrentChainId);
 
-  const { value: latestBalance } = useAsyncResult<
-    Numeric | undefined
-  >(async () => {
-    if (token?.address && chainId && currentChainId === chainId) {
-      return await calcLatestSrcBalance(
-        global.ethereumProvider,
-        selectedAddress,
+  const { value: latestBalance } = useAsyncResult<BigNumber>(async () => {
+    if (token && chainId && currentChainId === chainId) {
+      if (!token.address || token.address === zeroAddress()) {
+        const ethersProvider = new Web3Provider(global.ethereumProvider);
+        return await ethersProvider.getBalance(selectedAddress);
+      }
+      return await fetchTokenBalance(
         token.address,
-        chainId,
+        selectedAddress,
+        global.ethereumProvider,
       );
     }
+
     return undefined;
-  }, [
-    chainId,
-    currentChainId,
-    token,
-    selectedAddress,
-    global.ethereumProvider,
-  ]);
+  }, [token, selectedAddress, global.ethereumProvider]);
 
   if (token && !token.decimals) {
     throw new Error(
@@ -56,7 +55,7 @@ const useLatestBalance = (
   return {
     formattedBalance:
       token && latestBalance
-        ? latestBalance
+        ? Numeric.from(latestBalance.toString(), 10)
             .shiftedBy(tokenDecimals)
             .round(DEFAULT_PRECISION)
             .toString()

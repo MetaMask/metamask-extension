@@ -13,6 +13,7 @@ import TermsOfUsePopup from '../../components/app/terms-of-use-popup';
 import RecoveryPhraseReminder from '../../components/app/recovery-phrase-reminder';
 import WhatsNewPopup from '../../components/app/whats-new-popup';
 import { FirstTimeFlowType } from '../../../shared/constants/onboarding';
+import SmartTransactionsOptInModal from '../smart-transactions/components/smart-transactions-opt-in-modal';
 ///: END:ONLY_INCLUDE_IF
 import HomeNotification from '../../components/app/home-notification';
 import MultipleNotifications from '../../components/app/multiple-notifications';
@@ -154,6 +155,7 @@ export default class Home extends PureComponent {
     hideWhatsNewPopup: PropTypes.func.isRequired,
     announcementsToShow: PropTypes.bool.isRequired,
     onboardedInThisUISession: PropTypes.bool,
+    isSmartTransactionsOptInModalAvailable: PropTypes.bool.isRequired,
     showMultiRpcModal: PropTypes.bool.isRequired,
     ///: END:ONLY_INCLUDE_IF
     newNetworkAddedConfigurationId: PropTypes.string,
@@ -935,6 +937,7 @@ export default class Home extends PureComponent {
       announcementsToShow,
       firstTimeFlowType,
       newNetworkAddedConfigurationId,
+      isSmartTransactionsOptInModalAvailable,
       showMultiRpcModal,
       ///: END:ONLY_INCLUDE_IF
     } = this.props;
@@ -953,11 +956,20 @@ export default class Home extends PureComponent {
       !process.env.IN_TEST &&
       !newNetworkAddedConfigurationId;
 
+    const showSmartTransactionsOptInModal =
+      canSeeModals && isSmartTransactionsOptInModalAvailable;
+
     const showWhatsNew =
-      canSeeModals && announcementsToShow && showWhatsNewPopup;
+      canSeeModals &&
+      announcementsToShow &&
+      showWhatsNewPopup &&
+      !showSmartTransactionsOptInModal;
 
     const showMultiRpcEditModal =
-      canSeeModals && showMultiRpcModal && !showWhatsNew;
+      canSeeModals &&
+      showMultiRpcModal &&
+      !showSmartTransactionsOptInModal &&
+      !showWhatsNew;
 
     const showTermsOfUse =
       completedOnboarding && !onboardedInThisUISession && showTermsOfUsePopup;
@@ -979,6 +991,11 @@ export default class Home extends PureComponent {
           {
             ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
           }
+          <SmartTransactionsOptInModal
+            isOpen={showSmartTransactionsOptInModal}
+            hideWhatsNewPopup={hideWhatsNewPopup}
+          />
+
           {showMultiRpcEditModal && <MultiRpcEditModal />}
           {showWhatsNew ? <WhatsNewPopup onClose={hideWhatsNewPopup} /> : null}
           {!showWhatsNew && showRecoveryPhraseReminder ? (

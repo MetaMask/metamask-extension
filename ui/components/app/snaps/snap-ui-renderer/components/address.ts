@@ -6,8 +6,5 @@ export const address: UIComponentFactory<AddressElement> = ({ element }) => ({
   props: {
     address: element.props.address,
     avatarSize: 'xs',
-    truncate: element.props.truncate,
-    displayName: element.props.displayName,
-    avatar: element.props.avatar,
   },
 });

@@ -11,7 +11,6 @@ import { zeroAddress } from 'ethereumjs-util';
 import { CaipChainId } from '@metamask/utils';
 import type { Hex } from '@metamask/utils';
 
-import { InternalAccount } from '@metamask/keyring-api';
 import {
   Box,
   ButtonIcon,
@@ -29,7 +28,6 @@ import {
   JustifyContent,
   TextAlign,
   TextVariant,
-  IconColor,
 } from '../../../helpers/constants/design-system';
 ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
 import { getPortfolioUrl } from '../../../helpers/utils/portfolio';
@@ -46,6 +44,7 @@ import UserPreferencedCurrencyDisplay from '../user-preferenced-currency-display
 import { PRIMARY } from '../../../helpers/constants/common';
 import {
   getPreferences,
+  getSelectedAccount,
   getShouldHideZeroBalanceTokens,
   getTokensMarketData,
   getIsTestnet,
@@ -62,10 +61,7 @@ import Spinner from '../../ui/spinner';
 import { PercentageAndAmountChange } from '../../multichain/token-list-item/price/percentage-and-amount-change/percentage-and-amount-change';
 import { getMultichainIsEvm } from '../../../selectors/multichain';
 import { useAccountTotalFiatBalance } from '../../../hooks/useAccountTotalFiatBalance';
-import {
-  setAggregatedBalancePopoverShown,
-  setPrivacyMode,
-} from '../../../store/actions';
+import { setAggregatedBalancePopoverShown } from '../../../store/actions';
 import { useTheme } from '../../../hooks/useTheme';
 import { getSpecificSettingsRoute } from '../../../helpers/utils/settings-search';
 import { useI18nContext } from '../../../hooks/useI18nContext';
@@ -74,7 +70,6 @@ import CoinButtons from './coin-buttons';
 import { AggregatedPercentageOverview } from './aggregated-percentage-overview';
 
 export type CoinOverviewProps = {
-  account: InternalAccount;
   balance: string;
   balanceIsCached: boolean;
   className?: string;
@@ -91,7 +86,6 @@ export type CoinOverviewProps = {
 };
 
 export const CoinOverview = ({
-  account,
   balance,
   balanceIsCached,
   className,
@@ -123,6 +117,7 @@ export const CoinOverview = ({
 
   ///: END:ONLY_INCLUDE_IF
 
+  const account = useSelector(getSelectedAccount);
   const showNativeTokenAsMainBalanceRoute = getSpecificSettingsRoute(
     t,
     t('general'),
@@ -133,16 +128,18 @@ export const CoinOverview = ({
 
   const shouldShowPopover = useSelector(getShouldShowAggregatedBalancePopover);
   const isTestnet = useSelector(getIsTestnet);
-  const { showFiatInTestnets, privacyMode, showNativeTokenAsMainBalance } =
-    useSelector(getPreferences);
+  const { showFiatInTestnets } = useSelector(getPreferences);
 
+  const selectedAccount = useSelector(getSelectedAccount);
   const shouldHideZeroBalanceTokens = useSelector(
     getShouldHideZeroBalanceTokens,
   );
   const { totalFiatBalance, loading } = useAccountTotalFiatBalance(
-    account,
+    selectedAccount,
     shouldHideZeroBalanceTokens,
   );
+
+  const { showNativeTokenAsMainBalance } = useSelector(getPreferences);
 
   const isEvm = useSelector(getMultichainIsEvm);
   const isNotAggregatedFiatBalance =
@@ -164,10 +161,6 @@ export const CoinOverview = ({
   const handleClick = () => {
     setIsOpen(!isOpen);
     dispatch(setAggregatedBalancePopoverShown());
-  };
-
-  const handleSensitiveToggle = () => {
-    dispatch(setPrivacyMode(!privacyMode));
   };
 
   const [referenceElement, setReferenceElement] =
@@ -260,39 +253,26 @@ export const CoinOverview = ({
               ref={setBoxRef}
             >
               {balanceToDisplay ? (
-                <>
-                  <UserPreferencedCurrencyDisplay
-                    style={{ display: 'contents' }}
-                    account={account}
-                    className={classnames(
-                      `${classPrefix}-overview__primary-balance`,
-                      {
-                        [`${classPrefix}-overview__cached-balance`]:
-                          balanceIsCached,
-                      },
-                    )}
-                    data-testid={`${classPrefix}-overview__primary-currency`}
-                    value={balanceToDisplay}
-                    type={PRIMARY}
-                    ethNumberOfDecimals={4}
-                    hideTitle
-                    shouldCheckShowNativeToken
-                    isAggregatedFiatOverviewBalance={
-                      !showNativeTokenAsMainBalance && !isTestnet
-                    }
-                    privacyMode={privacyMode}
-                  />
-                  <ButtonIcon
-                    color={IconColor.iconAlternative}
-                    marginLeft={2}
-                    size={ButtonIconSize.Md}
-                    onClick={handleSensitiveToggle}
-                    iconName={privacyMode ? IconName.EyeSlash : IconName.Eye}
-                    justifyContent={JustifyContent.center}
-                    ariaLabel="Sensitive toggle"
-                    data-testid="sensitive-toggle"
-                  />
-                </>
+                <UserPreferencedCurrencyDisplay
+                  style={{ display: 'contents' }}
+                  account={account}
+                  className={classnames(
+                    `${classPrefix}-overview__primary-balance`,
+                    {
+                      [`${classPrefix}-overview__cached-balance`]:
+                        balanceIsCached,
+                    },
+                  )}
+                  data-testid={`${classPrefix}-overview__primary-currency`}
+                  value={balanceToDisplay}
+                  type={PRIMARY}
+                  ethNumberOfDecimals={4}
+                  hideTitle
+                  shouldCheckShowNativeToken
+                  isAggregatedFiatOverviewBalance={
+                    !showNativeTokenAsMainBalance && !isTestnet
+                  }
+                />
               ) : (
                 <Spinner className="loading-overlay__spinner" />
               )}
@@ -368,7 +348,6 @@ export const CoinOverview = ({
       buttons={
         <CoinButtons
           {...{
-            account,
             trackingLocation: 'home',
             chainId,
             isSwapsChain,

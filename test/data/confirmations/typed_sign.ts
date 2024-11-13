@@ -1,10 +1,9 @@
-import { CHAIN_IDS, TransactionType } from '@metamask/transaction-controller';
+import { TransactionType } from '@metamask/transaction-controller';
 import { MESSAGE_TYPE } from '../../../shared/constants/app';
 import { SignatureRequestType } from '../../../ui/pages/confirmations/types/confirm';
 
 export const unapprovedTypedSignMsgV1 = {
   id: '82ab2400-e2c6-11ee-9627-73cc88f00492',
-  chainId: CHAIN_IDS.GOERLI,
   securityAlertResponse: {
     reason: 'loading',
     result_type: 'validation_in_progress',
@@ -61,7 +60,6 @@ const rawMessageV3 = {
 
 export const unapprovedTypedSignMsgV3 = {
   id: '17e41af0-e073-11ee-9eec-5fd284826685',
-  chainId: CHAIN_IDS.GOERLI,
   securityAlertResponse: {
     reason: 'loading',
     result_type: 'validation_in_progress',
@@ -131,7 +129,6 @@ export const rawMessageV4 = {
 
 export const unapprovedTypedSignMsgV4 = {
   id: '0050d5b0-c023-11ee-a0cb-3390a510a0ab',
-  chainId: CHAIN_IDS.GOERLI,
   status: 'unapproved',
   time: new Date().getTime(),
   chainid: '0x5',
@@ -148,7 +145,6 @@ export const unapprovedTypedSignMsgV4 = {
 
 export const orderSignatureMsg = {
   id: 'e5249ae0-4b6b-11ef-831f-65b48eb489ec',
-  chainId: CHAIN_IDS.GOERLI,
   securityAlertResponse: {
     result_type: 'loading',
     reason: 'validation_in_progress',
@@ -169,7 +165,6 @@ export const orderSignatureMsg = {
 
 export const permitSignatureMsg = {
   id: '0b1787a0-1c44-11ef-b70d-e7064bd7b659',
-  chainId: CHAIN_IDS.GOERLI,
   securityAlertResponse: {
     reason: 'loading',
     result_type: 'validation_in_progress',
@@ -190,7 +185,6 @@ export const permitSignatureMsg = {
 
 export const permitNFTSignatureMsg = {
   id: 'c5067710-87cf-11ef-916c-71f266571322',
-  chainId: CHAIN_IDS.GOERLI,
   status: 'unapproved',
   time: 1728651190529,
   type: 'eth_signTypedData',
@@ -206,7 +200,6 @@ export const permitNFTSignatureMsg = {
 
 export const permitSignatureMsgWithNoDeadline = {
   id: '0b1787a0-1c44-11ef-b70d-e7064bd7b659',
-  chainId: CHAIN_IDS.GOERLI,
   securityAlertResponse: {
     reason: 'loading',
     result_type: 'validation_in_progress',
@@ -226,7 +219,6 @@ export const permitSignatureMsgWithNoDeadline = {
 
 export const permitBatchSignatureMsg = {
   id: '0b1787a0-1c44-11ef-b70d-e7064bd7b659',
-  chainId: CHAIN_IDS.GOERLI,
   securityAlertResponse: {
     reason: 'loading',
     result_type: 'validation_in_progress',
@@ -247,7 +239,6 @@ export const permitBatchSignatureMsg = {
 
 export const permitSingleSignatureMsg = {
   id: '0b1787a0-1c44-11ef-b70d-e7064bd7b659',
-  chainId: CHAIN_IDS.GOERLI,
   securityAlertResponse: {
     reason: 'loading',
     result_type: 'validation_in_progress',

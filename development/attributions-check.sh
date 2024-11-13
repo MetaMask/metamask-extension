@@ -1,9 +1,4 @@
 #!/bin/bash
-
-set -e
-set -u
-set -o pipefail
-
 yarn attributions:generate
 
 ATTRIBUTIONS_FILE="./attribution.txt"

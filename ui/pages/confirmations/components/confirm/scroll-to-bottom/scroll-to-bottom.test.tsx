@@ -2,10 +2,7 @@ import React from 'react';
 import configureMockStore from 'redux-mock-store';
 
 import { unapprovedTypedSignMsgV4 } from '../../../../../../test/data/confirmations/typed_sign';
-import {
-  getMockContractInteractionConfirmState,
-  getMockPersonalSignConfirmState,
-} from '../../../../../../test/data/confirmations/helper';
+import { getMockPersonalSignConfirmState } from '../../../../../../test/data/confirmations/helper';
 import { renderWithConfirmContextProvider } from '../../../../../../test/lib/confirmations/render-helpers';
 import * as usePreviousHooks from '../../../../../hooks/usePrevious';
 import ScrollToBottom from './scroll-to-bottom';
@@ -117,16 +114,6 @@ describe('ScrollToBottom', () => {
       );
 
       expect(mockSetHasScrolledToBottom).toHaveBeenCalledWith(false);
-    });
-
-    it('does not render the scroll button when the confirmation is transaction redesigned', () => {
-      const mockStateTransaction = getMockContractInteractionConfirmState();
-      const { container } = renderWithConfirmContextProvider(
-        <ScrollToBottom>foobar</ScrollToBottom>,
-        configureMockStore([])(mockStateTransaction),
-      );
-
-      expect(container.querySelector(buttonSelector)).not.toBeInTheDocument();
     });
 
     describe('when user has scrolled to the bottom', () => {

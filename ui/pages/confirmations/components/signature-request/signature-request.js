@@ -18,14 +18,16 @@ import {
   doesAddressRequireLedgerHidConnection,
   getSubjectMetadata,
   getTotalUnapprovedMessagesCount,
-  selectNetworkConfigurationByChainId,
   ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
   accountsWithSendEtherInfoSelector,
   getSelectedAccount,
   getAccountType,
   ///: END:ONLY_INCLUDE_IF
 } from '../../../../selectors';
-import { isAddressLedger } from '../../../../ducks/metamask/metamask';
+import {
+  getProviderConfig,
+  isAddressLedger,
+} from '../../../../ducks/metamask/metamask';
 import {
   sanitizeMessage,
   ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
@@ -95,7 +97,6 @@ const SignatureRequest = ({ txData, warnings }) => {
   const {
     id,
     type,
-    chainId,
     msgParams: { from, data, origin, version },
   } = txData;
 
@@ -103,12 +104,7 @@ const SignatureRequest = ({ txData, warnings }) => {
   const hardwareWalletRequiresConnection = useSelector((state) =>
     doesAddressRequireLedgerHidConnection(state, from),
   );
-
-  const { blockExplorerUrls } = useSelector((state) =>
-    selectNetworkConfigurationByChainId(state, chainId),
-  );
-
-  const blockExplorerUrl = blockExplorerUrls?.[0];
+  const { chainId, rpcPrefs } = useSelector(getProviderConfig);
   const unapprovedMessagesCount = useSelector(getTotalUnapprovedMessagesCount);
   const subjectMetadata = useSelector(getSubjectMetadata);
   const isLedgerWallet = useSelector((state) => isAddressLedger(state, from));
@@ -341,7 +337,7 @@ const SignatureRequest = ({ txData, warnings }) => {
           <ContractDetailsModal
             toAddress={verifyingContract}
             chainId={chainId}
-            blockExplorerUrl={blockExplorerUrl}
+            rpcPrefs={rpcPrefs}
             onClose={() => setShowContractDetails(false)}
             isContractRequestingSignature
           />

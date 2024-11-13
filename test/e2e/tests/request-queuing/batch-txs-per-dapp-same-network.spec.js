@@ -1,4 +1,4 @@
-const { By } = require('selenium-webdriver');
+const { strict: assert } = require('assert');
 const FixtureBuilder = require('../../fixture-builder');
 const {
   withFixtures,
@@ -10,6 +10,7 @@ const {
   WINDOW_TITLES,
   defaultGanacheOptions,
   largeDelayMs,
+  switchToNotificationWindow,
 } = require('../../helpers');
 const { PAGES } = require('../../webdriver/driver');
 
@@ -58,7 +59,7 @@ describe('Request Queuing for Multiple Dapps and Txs on same networks', function
 
         await driver.delay(regularDelayMs);
 
-        await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
+        await switchToNotificationWindow(driver);
 
         await driver.clickElement({
           text: 'Connect',
@@ -97,7 +98,7 @@ describe('Request Queuing for Multiple Dapps and Txs on same networks', function
 
         await driver.delay(regularDelayMs);
 
-        await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
+        await switchToNotificationWindow(driver, 4);
 
         await driver.clickElement({
           text: 'Connect',
@@ -133,11 +134,15 @@ describe('Request Queuing for Multiple Dapps and Txs on same networks', function
         await driver.clickElement('#sendButton');
         await driver.clickElement('#sendButton');
 
-        await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
+        await switchToNotificationWindow(driver, 4);
 
-        await driver.waitForSelector(
-          By.xpath("//div[normalize-space(.)='1 of 2']"),
+        let navigationElement = await driver.findElement(
+          '.confirm-page-container-navigation',
         );
+
+        let navigationText = await navigationElement.getText();
+
+        assert.equal(navigationText.includes('1 of 2'), true);
 
         // Check correct network on confirm tx.
         await driver.findElement({
@@ -157,9 +162,13 @@ describe('Request Queuing for Multiple Dapps and Txs on same networks', function
         await driver.delay(largeDelayMs);
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
-        await driver.waitForSelector(
-          By.xpath("//div[normalize-space(.)='1 of 2']"),
+        navigationElement = await driver.findElement(
+          '.confirm-page-container-navigation',
         );
+
+        navigationText = await navigationElement.getText();
+
+        assert.equal(navigationText.includes('1 of 2'), true);
 
         // Check correct network on confirm tx.
         await driver.findElement({
