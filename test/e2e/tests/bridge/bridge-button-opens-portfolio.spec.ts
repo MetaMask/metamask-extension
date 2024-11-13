@@ -23,7 +23,7 @@ describe('Click bridge button @no-mmi', function (this: Suite) {
         await logInWithBalanceValidation(driver, ganacheServer);
 
         // ETH
-        await bridgePage.navigateToAssetPage('ETH');
+        await bridgePage.navigateToAssetPage('Ethereum');
         await bridgePage.navigateToBridgePage('coin-overview');
         await bridgePage.verifyPortfolioTab(2);
 
