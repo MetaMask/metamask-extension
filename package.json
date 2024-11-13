@@ -9,7 +9,7 @@
   "scripts": {
     "webpack": "tsx ./development/webpack/launch.ts",
     "webpack:clearcache": "rimraf node_modules/.cache/webpack",
-    "postinstall": "yarn webpack:clearcache && tsx foundryup",
+    "postinstall": "yarn webpack:clearcache && tsx --tsconfig ./test/helpers/foundry/tsconfig.json ./test/helpers/foundry/foundryup.mts",
     "env:e2e": "SEGMENT_HOST='https://api.segment.io' SEGMENT_WRITE_KEY='FAKE' yarn",
     "start": "yarn build:dev dev --apply-lavamoat=false --snow=false",
     "start:with-state": "node ./app/scripts/start-with-wallet-state.mjs",
