@@ -39,6 +39,7 @@ import {
 import Root from './pages';
 import txHelper from './helpers/utils/tx-helper';
 import { setBackgroundConnection } from './store/background-connection';
+import { getStartupTraceTags } from './helpers/utils/tags';
 
 log.setLevel(global.METAMASK_DEBUG ? 'debug' : 'warn', false);
 
@@ -182,8 +183,14 @@ export async function setupInitialStore(
 async function startApp(metamaskState, backgroundConnection, opts) {
   const { traceContext } = opts;
 
+  const tags = getStartupTraceTags({ metamask: metamaskState });
+
   const store = await trace(
-    { name: TraceName.SetupStore, parentContext: traceContext },
+    {
+      name: TraceName.SetupStore,
+      parentContext: traceContext,
+      tags,
+    },
     () =>
       setupInitialStore(metamaskState, backgroundConnection, opts.activeTab),
   );

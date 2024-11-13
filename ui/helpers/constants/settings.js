@@ -1,7 +1,10 @@
 /* eslint-disable @metamask/design-tokens/color-no-hex*/
+// TODO: Remove restricted import
+// eslint-disable-next-line import/no-restricted-paths
+import { getPlatform } from '../../../app/scripts/lib/util';
+import { PLATFORM_FIREFOX } from '../../../shared/constants/app';
 import { IconName } from '../../components/component-library';
 import {
-  ALERTS_ROUTE,
   ADVANCED_ROUTE,
   SECURITY_ROUTE,
   GENERAL_ROUTE,
@@ -20,6 +23,7 @@ import {
  * # @param {string} route tab route with appended arbitrary, unique anchor tag / hash route
  * # @param {string} iconName
  * # @param {string} featureFlag ENV variable name. If the ENV value exists, the route will be searchable; else, route will not be searchable.
+ * # @param {boolean} hidden If true, the route will not be searchable.
  */
 
 /** @type {SettingRouteConfig[]} */
@@ -154,6 +158,16 @@ const SETTINGS_CONSTANTS = [
     descriptionMessage: (t) => t('exportYourDataDescription'),
     route: `${ADVANCED_ROUTE}#export-data`,
     icon: 'fas fa-download',
+  },
+  // advanced settingsRefs[11]
+  {
+    tabMessage: (t) => t('advanced'),
+    sectionMessage: (t) => t('overrideContentSecurityPolicyHeader'),
+    descriptionMessage: (t) =>
+      t('overrideContentSecurityPolicyHeaderDescription'),
+    route: `${ADVANCED_ROUTE}#override-content-security-policy-header`,
+    icon: 'fas fa-sliders-h',
+    hidden: getPlatform() !== PLATFORM_FIREFOX,
   },
   {
     tabMessage: (t) => t('contacts'),
@@ -330,20 +344,6 @@ const SETTINGS_CONSTANTS = [
     descriptionMessage: (t) => t('deleteMetaMetricsDataDescription'),
     route: `${SECURITY_ROUTE}#delete-metametrics-data`,
     icon: 'fa fa-lock',
-  },
-  {
-    tabMessage: (t) => t('alerts'),
-    sectionMessage: (t) => t('alertSettingsUnconnectedAccount'),
-    descriptionMessage: (t) => t('alertSettingsUnconnectedAccount'),
-    route: `${ALERTS_ROUTE}#unconnected-account`,
-    iconName: IconName.Notification,
-  },
-  {
-    tabMessage: (t) => t('alerts'),
-    sectionMessage: (t) => t('alertSettingsWeb3ShimUsage'),
-    descriptionMessage: (t) => t('alertSettingsWeb3ShimUsage'),
-    route: `${ALERTS_ROUTE}#web3-shimusage`,
-    icon: 'fa fa-bell',
   },
   {
     tabMessage: (t) => t('networks'),

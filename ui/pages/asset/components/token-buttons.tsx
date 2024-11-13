@@ -6,7 +6,7 @@ import { I18nContext } from '../../../contexts/i18n';
 import {
   SEND_ROUTE,
   ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
-  BUILD_QUOTE_ROUTE,
+  PREPARE_SWAP_ROUTE,
   ///: END:ONLY_INCLUDE_IF
 } from '../../../helpers/constants/routes';
 import { startNewDraftTransaction } from '../../../ducks/send';
@@ -71,6 +71,7 @@ const TokenButtons = ({
 
   ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
   const keyring = useSelector(getCurrentKeyring);
+  // @ts-expect-error keyring type is wrong maybe?
   const usingHardwareWallet = isHardwareKeyring(keyring.type);
   ///: END:ONLY_INCLUDE_IF
 
@@ -276,12 +277,12 @@ const TokenButtons = ({
             );
             if (usingHardwareWallet) {
               global.platform.openExtensionInBrowser?.(
-                BUILD_QUOTE_ROUTE,
+                PREPARE_SWAP_ROUTE,
                 undefined,
                 false,
               );
             } else {
-              history.push(BUILD_QUOTE_ROUTE);
+              history.push(PREPARE_SWAP_ROUTE);
             }
             ///: END:ONLY_INCLUDE_IF
           }}

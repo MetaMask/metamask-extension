@@ -3,13 +3,14 @@ import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 
 import { NetworkType } from '@metamask/controller-utils';
-import { setBackgroundConnection } from '../../../store/background-connection';
+import { act } from '@testing-library/react';
 import {
   renderWithProvider,
   createSwapsMockStore,
-  MOCKS,
 } from '../../../../test/jest';
 import { CHAIN_IDS } from '../../../../shared/constants/network';
+import { getSwap1559GasFeeEstimates } from '../swaps.util';
+import { getNetworkConfigurationByNetworkClientId } from '../../../store/actions';
 import ReviewQuote from './review-quote';
 
 jest.mock(
@@ -17,17 +18,17 @@ jest.mock(
   () => () => '<InfoTooltipIcon />',
 );
 
-jest.mock('../../confirmations/hooks/useGasFeeInputs', () => {
-  return {
-    useGasFeeInputs: () => {
-      return {
-        maxFeePerGas: 16,
-        maxPriorityFeePerGas: 3,
-        gasFeeEstimates: MOCKS.createGasFeeEstimatesForFeeMarket(),
-      };
-    },
-  };
-});
+jest.mock('../../../store/actions', () => ({
+  ...jest.requireActual('../../../store/actions'),
+  getNetworkConfigurationByNetworkClientId: jest.fn(),
+}));
+
+jest.mock('../swaps.util', () => ({
+  ...jest.requireActual('../swaps.util'),
+  getSwap1559GasFeeEstimates: jest.fn(),
+}));
+
+const ESTIMATED_BASE_FEE_MOCK = '1234';
 
 const middleware = [thunk];
 const createProps = (customProps = {}) => {
@@ -37,16 +38,20 @@ const createProps = (customProps = {}) => {
   };
 };
 
-setBackgroundConnection({
-  resetPostFetchState: jest.fn(),
-  safeRefetchQuotes: jest.fn(),
-  setSwapsErrorKey: jest.fn(),
-  updateTransaction: jest.fn(),
-  getGasFeeTimeEstimate: jest.fn(),
-  setSwapsQuotesPollingLimitEnabled: jest.fn(),
-});
-
 describe('ReviewQuote', () => {
+  const getNetworkConfigurationByNetworkClientIdMock = jest.mocked(
+    getNetworkConfigurationByNetworkClientId,
+  );
+
+  beforeEach(() => {
+    jest.resetAllMocks();
+    getNetworkConfigurationByNetworkClientIdMock.mockResolvedValue(undefined);
+  });
+
+  const getSwap1559GasFeeEstimatesMock = jest.mocked(
+    getSwap1559GasFeeEstimates,
+  );
+
   it('renders the component with initial props', () => {
     const store = configureMockStore(middleware)(createSwapsMockStore());
     const props = createProps();
@@ -136,5 +141,131 @@ describe('ReviewQuote', () => {
     // $6.82 gas fee is calculated based on params set in the the beginning of the test.
     expect(getByText('$6.82')).toBeInTheDocument();
     expect(getByText('Swap')).toBeInTheDocument();
+  });
+
+  describe('uses gas fee estimates from transaction controller if 1559 and smart disabled', () => {
+    let smartDisabled1559State;
+
+    beforeEach(() => {
+      smartDisabled1559State = createSwapsMockStore();
+      smartDisabled1559State.metamask.selectedNetworkClientId =
+        NetworkType.mainnet;
+      smartDisabled1559State.metamask.networksMetadata = {
+        [NetworkType.mainnet]: {
+          EIPS: { 1559: true },
+          status: 'available',
+        },
+      };
+      smartDisabled1559State.metamask.preferences.smartTransactionsOptInStatus = false;
+    });
+
+    it('with only trade transaction', async () => {
+      getSwap1559GasFeeEstimatesMock.mockResolvedValueOnce({
+        estimatedBaseFee: '0x1',
+        tradeGasFeeEstimates: {
+          maxFeePerGas: '0x2',
+          maxPriorityFeePerGas: '0x3',
+          baseAndPriorityFeePerGas: '0x123456789123',
+        },
+        approveGasFeeEstimates: undefined,
+      });
+
+      const store = configureMockStore(middleware)(smartDisabled1559State);
+      const props = createProps();
+      const { getByText } = renderWithProvider(
+        <ReviewQuote {...props} />,
+        store,
+      );
+
+      await act(() => {
+        // Intentionally empty
+      });
+
+      expect(getByText('Estimated gas fee')).toBeInTheDocument();
+      expect(getByText('3.94315 ETH')).toBeInTheDocument();
+      expect(getByText('Max fee:')).toBeInTheDocument();
+      expect(getByText('$7.37')).toBeInTheDocument();
+    });
+
+    it('with trade and approve transactions', async () => {
+      smartDisabled1559State.metamask.swapsState.quotes.TEST_AGG_2.approvalNeeded =
+        {
+          data: '0x095ea7b300000000000000000000000095e6f48254609a6ee006f7d493c8e5fb97094cef0000000000000000000000000000000000000000004a817c7ffffffdabf41c00',
+          to: '0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2',
+          amount: '0',
+          from: '0x2369267687A84ac7B494daE2f1542C40E37f4455',
+          gas: '123456',
+        };
+
+      getSwap1559GasFeeEstimatesMock.mockResolvedValueOnce({
+        estimatedBaseFee: '0x1',
+        tradeGasFeeEstimates: {
+          maxFeePerGas: '0x2',
+          maxPriorityFeePerGas: '0x3',
+          baseAndPriorityFeePerGas: '0x123456789123',
+        },
+        approveGasFeeEstimates: {
+          maxFeePerGas: '0x4',
+          maxPriorityFeePerGas: '0x5',
+          baseAndPriorityFeePerGas: '0x9876543210',
+        },
+      });
+
+      const store = configureMockStore(middleware)(smartDisabled1559State);
+      const props = createProps();
+      const { getByText } = renderWithProvider(
+        <ReviewQuote {...props} />,
+        store,
+      );
+
+      await act(() => {
+        // Intentionally empty
+      });
+
+      expect(getByText('Estimated gas fee')).toBeInTheDocument();
+      expect(getByText('4.72438 ETH')).toBeInTheDocument();
+      expect(getByText('Max fee:')).toBeInTheDocument();
+      expect(getByText('$8.15')).toBeInTheDocument();
+    });
+
+    it('extracts estimated base fee from network gas fee estimates', async () => {
+      getNetworkConfigurationByNetworkClientIdMock.mockResolvedValueOnce({
+        chainId: CHAIN_IDS.MAINNET,
+      });
+
+      smartDisabled1559State.metamask.gasFeeEstimatesByChainId = {
+        [CHAIN_IDS.MAINNET]: {
+          gasFeeEstimates: {
+            estimatedBaseFee: ESTIMATED_BASE_FEE_MOCK,
+          },
+        },
+      };
+
+      getSwap1559GasFeeEstimatesMock.mockResolvedValueOnce({
+        estimatedBaseFee: '0x1',
+        tradeGasFeeEstimates: {
+          maxFeePerGas: '0x2',
+          maxPriorityFeePerGas: '0x3',
+          baseAndPriorityFeePerGas: '0x123456789123',
+        },
+        approveGasFeeEstimates: undefined,
+      });
+
+      const store = configureMockStore(middleware)(smartDisabled1559State);
+      const props = createProps();
+
+      renderWithProvider(<ReviewQuote {...props} />, store);
+
+      await act(() => {
+        // Intentionally empty
+      });
+
+      expect(getSwap1559GasFeeEstimatesMock).toHaveBeenCalledWith(
+        expect.any(Object),
+        null,
+        ESTIMATED_BASE_FEE_MOCK,
+        CHAIN_IDS.MAINNET,
+      );
+    });
   });
 });

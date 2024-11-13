@@ -5,6 +5,7 @@ import {
 import { PublicInterface } from '@metamask/utils';
 import type { DataDeletionService } from '../../services/data-deletion-service';
 import { DeleteRegulationStatus } from '../../../../shared/constants/metametrics';
+import { MetaMetricsControllerGetStateAction } from '../metametrics-controller';
 
 // Unique name for the controller
 const controllerName = 'MetaMetricsDataDeletionController';
@@ -70,14 +71,24 @@ export type MetaMetricsDataDeletionControllerMessengerActions =
   | CreateMetaMetricsDataDeletionTaskAction
   | UpdateDataDeletionTaskStatusAction;
 
+/**
+ * Actions that this controller is allowed to call.
+ */
+export type AllowedActions = MetaMetricsControllerGetStateAction;
+
+/**
+ * Events that this controller is allowed to subscribe.
+ */
+export type AllowedEvents = never;
+
 // Type for the messenger of MetaMetricsDataDeletionController
 export type MetaMetricsDataDeletionControllerMessenger =
   RestrictedControllerMessenger<
     typeof controllerName,
-    MetaMetricsDataDeletionControllerMessengerActions,
-    never,
-    never,
-    never
+    MetaMetricsDataDeletionControllerMessengerActions | AllowedActions,
+    AllowedEvents,
+    AllowedActions['type'],
+    AllowedEvents['type']
   >;
 
 /**
@@ -91,8 +102,6 @@ export class MetaMetricsDataDeletionController extends BaseController<
 > {
   #dataDeletionService: PublicInterface<DataDeletionService>;
 
-  #getMetaMetricsId: () => string | null;
-
   /**
    * Creates a MetaMetricsDataDeletionController instance.
    *
@@ -100,18 +109,15 @@ export class MetaMetricsDataDeletionController extends BaseController<
    * @param args.dataDeletionService - The service used for deleting data.
    * @param args.messenger - Messenger used to communicate with BaseV2 controller.
    * @param args.state - Initial state to set on this controller.
-   * @param args.getMetaMetricsId - A function that returns the current MetaMetrics ID.
    */
   constructor({
     dataDeletionService,
     messenger,
     state,
-    getMetaMetricsId,
   }: {
     dataDeletionService: PublicInterface<DataDeletionService>;
     messenger: MetaMetricsDataDeletionControllerMessenger;
     state?: Partial<MetaMetricsDataDeletionState>;
-    getMetaMetricsId: () => string | null;
   }) {
     // Call the constructor of BaseControllerV2
     super({
@@ -120,7 +126,6 @@ export class MetaMetricsDataDeletionController extends BaseController<
       name: controllerName,
       state: { ...getDefaultState(), ...state },
     });
-    this.#getMetaMetricsId = getMetaMetricsId;
     this.#dataDeletionService = dataDeletionService;
     this.#registerMessageHandlers();
   }
@@ -146,7 +151,9 @@ export class MetaMetricsDataDeletionController extends BaseController<
    *
    */
   async createMetaMetricsDataDeletionTask(): Promise<void> {
-    const metaMetricsId = this.#getMetaMetricsId();
+    const { metaMetricsId } = this.messagingSystem.call(
+      'MetaMetricsController:getState',
+    );
     if (!metaMetricsId) {
       throw new Error('MetaMetrics ID not found');
     }

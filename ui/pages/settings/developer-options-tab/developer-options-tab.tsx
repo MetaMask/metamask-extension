@@ -38,7 +38,8 @@ import { getEnvironmentType } from '../../../../app/scripts/lib/util';
 import { ENVIRONMENT_TYPE_POPUP } from '../../../../shared/constants/app';
 import { getIsRedesignedConfirmationsDeveloperEnabled } from '../../confirmations/selectors/confirm';
 import ToggleRow from './developer-options-toggle-row-component';
-import { SentryTest } from './sentry-test';
+import SentryTest from './sentry-test';
+import { ProfileSyncDevSettings } from './profile-sync';
 
 /**
  * Settings Page for Developer Options (internal-only)
@@ -260,6 +261,8 @@ const DeveloperOptionsTab = () => {
         {renderServiceWorkerKeepAliveToggle()}
         {renderEnableConfirmationsRedesignToggle()}
       </div>
+
+      <ProfileSyncDevSettings />
       <SentryTest />
     </div>
   );

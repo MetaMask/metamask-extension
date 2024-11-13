@@ -12,6 +12,10 @@ import {
 } from '../helpers';
 import { TestSuiteArguments } from '../transactions/shared';
 import {
+  BlockaidReason,
+  BlockaidResultType,
+} from '../../../../../shared/constants/security-provider';
+import {
   assertAccountDetailsMetrics,
   assertHeaderInfoBalance,
   assertPastedAddress,
@@ -47,7 +51,6 @@ describe('Confirmation Signature - SIWE @no-mmi', function (this: Suite) {
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
         await assertInfoValues(driver);
         await scrollAndConfirmAndAssertConfirm(driver);
-        await driver.delay(1000);
 
         await assertVerifiedSiweMessage(
           driver,
@@ -61,6 +64,8 @@ describe('Confirmation Signature - SIWE @no-mmi', function (this: Suite) {
             'redesigned_confirmation',
             'sign_in_with_ethereum',
           ],
+          securityAlertReason: BlockaidReason.notApplicable,
+          securityAlertResponse: BlockaidResultType.NotApplicable,
         });
       },
       mockSignatureApproved,
@@ -77,18 +82,16 @@ describe('Confirmation Signature - SIWE @no-mmi', function (this: Suite) {
       }: TestSuiteArguments) => {
         await openDappAndTriggerSignature(driver, SignatureType.SIWE);
 
-        await driver.clickElement(
+        await driver.clickElementAndWaitForWindowToClose(
           '[data-testid="confirm-footer-cancel-button"]',
         );
 
-        await driver.waitUntilXWindowHandles(2);
         await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
 
-        const rejectionResult = await driver.findElement('#siweResult');
-        assert.equal(
-          await rejectionResult.getText(),
-          'Error: User rejected the request.',
-        );
+        await driver.waitForSelector({
+          css: '#siweResult',
+          text: 'Error: User rejected the request.',
+        });
         await assertSignatureRejectedMetrics({
           driver,
           mockedEndpoints: mockedEndpoints as MockedEndpoint[],
@@ -98,6 +101,8 @@ describe('Confirmation Signature - SIWE @no-mmi', function (this: Suite) {
             'sign_in_with_ethereum',
           ],
           location: 'confirmation',
+          securityAlertReason: BlockaidReason.notApplicable,
+          securityAlertResponse: BlockaidResultType.NotApplicable,
         });
       },
       mockSignatureRejected,
@@ -106,6 +111,7 @@ describe('Confirmation Signature - SIWE @no-mmi', function (this: Suite) {
 });
 
 async function assertInfoValues(driver: Driver) {
+  await driver.clickElement('[data-testid="sectionCollapseButton"]');
   const origin = driver.findElement({ text: DAPP_HOST_ADDRESS });
   const message = driver.findElement({
     text: 'I accept the MetaMask Terms of Service: https://community.metamask.io/tos',
@@ -119,6 +125,8 @@ async function assertVerifiedSiweMessage(driver: Driver, message: string) {
   await driver.waitUntilXWindowHandles(2);
   await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
 
-  const verifySigUtil = await driver.findElement('#siweResult');
-  assert.equal(await verifySigUtil.getText(), message);
+  await driver.waitForSelector({
+    css: '#siweResult',
+    text: message,
+  });
 }

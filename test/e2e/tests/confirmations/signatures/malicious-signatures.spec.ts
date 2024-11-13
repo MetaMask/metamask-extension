@@ -11,6 +11,10 @@ import {
 } from '../helpers';
 import { TestSuiteArguments } from '../transactions/shared';
 import {
+  BlockaidReason,
+  BlockaidResultType,
+} from '../../../../../shared/constants/security-provider';
+import {
   assertSignatureRejectedMetrics,
   openDappAndTriggerSignature,
   SignatureType,
@@ -50,11 +54,10 @@ describe('Malicious Confirmation Signature - Bad Domain @no-mmi', function (this
       }: TestSuiteArguments) => {
         await openDappAndTriggerSignature(driver, SignatureType.SIWE_BadDomain);
 
-        await driver.clickElement(
+        await driver.clickElementAndWaitForWindowToClose(
           '[data-testid="confirm-footer-cancel-button"]',
         );
 
-        await driver.waitUntilXWindowHandles(2);
         await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
 
         const rejectionResult = await driver.waitForSelector({
@@ -81,6 +84,8 @@ describe('Malicious Confirmation Signature - Bad Domain @no-mmi', function (this
             alert_visualized: [],
             alert_visualized_count: 0,
           },
+          securityAlertReason: BlockaidReason.notApplicable,
+          securityAlertResponse: BlockaidResultType.NotApplicable,
         });
       },
       mockSignatureRejected,
@@ -131,6 +136,8 @@ describe('Malicious Confirmation Signature - Bad Domain @no-mmi', function (this
             alert_visualized: ['requestFrom'],
             alert_visualized_count: 1,
           },
+          securityAlertReason: BlockaidReason.notApplicable,
+          securityAlertResponse: BlockaidResultType.NotApplicable,
         });
       },
       mockSignatureRejected,

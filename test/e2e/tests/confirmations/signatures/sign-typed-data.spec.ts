@@ -76,10 +76,9 @@ describe('Confirmation Signature - Sign Typed Data @no-mmi', function (this: Sui
       }: TestSuiteArguments) => {
         await openDappAndTriggerSignature(driver, SignatureType.SignTypedData);
 
-        await driver.clickElement(
+        await driver.clickElementAndWaitForWindowToClose(
           '[data-testid="confirm-footer-cancel-button"]',
         );
-        await driver.delay(1000);
 
         await assertSignatureRejectedMetrics({
           driver,

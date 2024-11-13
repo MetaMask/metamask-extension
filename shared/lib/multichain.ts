@@ -1,6 +1,6 @@
-// TODO: Remove restricted import
-// eslint-disable-next-line import/no-restricted-paths
-import { isEthAddress } from '../../app/scripts/lib/multichain/address';
+import { CaipNamespace, KnownCaipNamespace } from '@metamask/utils';
+import { validate, Network } from 'bitcoin-address-validation';
+import { isAddress } from '@solana/addresses';
 
 /**
  * Returns whether an address is on the Bitcoin mainnet.
@@ -14,10 +14,7 @@ import { isEthAddress } from '../../app/scripts/lib/multichain/address';
  * @returns `true` if the address is on the Bitcoin mainnet, `false` otherwise.
  */
 export function isBtcMainnetAddress(address: string): boolean {
-  return (
-    !isEthAddress(address) &&
-    (address.startsWith('bc1') || address.startsWith('1'))
-  );
+  return validate(address, Network.mainnet);
 }
 
 /**
@@ -29,5 +26,36 @@ export function isBtcMainnetAddress(address: string): boolean {
  * @returns `true` if the address is on the Bitcoin testnet, `false` otherwise.
  */
 export function isBtcTestnetAddress(address: string): boolean {
-  return !isEthAddress(address) && !isBtcMainnetAddress(address);
+  return validate(address, Network.testnet);
+}
+
+/**
+ * Returns whether an address is a valid Solana address, specifically an account's.
+ * Derived addresses (like Program's) will return false.
+ * See: https://stackoverflow.com/questions/71200948/how-can-i-validate-a-solana-wallet-address-with-web3js
+ *
+ * @param address - The address to check.
+ * @returns `true` if the address is a valid Solana address, `false` otherwise.
+ */
+export function isSolanaAddress(address: string): boolean {
+  return isAddress(address);
+}
+
+/**
+ * Returns the associated chain's type for the given address.
+ *
+ * @param address - The address to check.
+ * @returns The chain's type for that address.
+ */
+export function getCaipNamespaceFromAddress(address: string): CaipNamespace {
+  if (isBtcMainnetAddress(address) || isBtcTestnetAddress(address)) {
+    return KnownCaipNamespace.Bip122;
+  }
+
+  if (isSolanaAddress(address)) {
+    return KnownCaipNamespace.Solana;
+  }
+
+  // Defaults to "Ethereum" for all other cases for now.
+  return KnownCaipNamespace.Eip155;
 }

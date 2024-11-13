@@ -1,6 +1,7 @@
 import { ApprovalType } from '@metamask/controller-utils';
 import { act, fireEvent, screen, waitFor } from '@testing-library/react';
 import nock from 'nock';
+import { CHAIN_IDS } from '@metamask/transaction-controller';
 import { MESSAGE_TYPE } from '../../../../shared/constants/app';
 import {
   MetaMetricsEventCategory,
@@ -42,6 +43,7 @@ const getMetaMaskStateWithUnapprovedPermitSign = (accountAddress: string) => {
     unapprovedTypedMessages: {
       [pendingPermitId]: {
         id: pendingPermitId,
+        chainId: CHAIN_IDS.SEPOLIA,
         status: 'unapproved',
         time: pendingPermitTime,
         type: MESSAGE_TYPE.ETH_SIGN_TYPED_DATA,
@@ -73,7 +75,7 @@ describe('Permit Confirmation', () => {
     jest.resetAllMocks();
     mockedBackgroundConnection.submitRequestToBackground.mockImplementation(
       createMockImplementation({
-        getTokenStandardAndDetails: { decimals: '2' },
+        getTokenStandardAndDetails: { decimals: '2', standard: 'ERC20' },
       }),
     );
   });

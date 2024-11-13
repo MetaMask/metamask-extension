@@ -1,0 +1,13 @@
+.asset-list-control-bar {
+  padding-top: 8px;
+  padding-bottom: 8px;
+
+  &__button {
+    // using percentage here to allow for full network name to show when full screen, but ellipsize on extension view
+    max-width: 35%;
+  }
+
+  &__button:hover {
+    background-color: var(--color-background-hover);
+  }
+}

@@ -2,8 +2,9 @@ import React, { useMemo } from 'react';
 import { NameType } from '@metamask/name-controller';
 import { Hex } from '@metamask/utils';
 import { captureException } from '@sentry/browser';
-import { shortenString } from '../../../../../../../../helpers/utils/util';
 
+import { MetaMetricsEventLocation } from '../../../../../../../../../shared/constants/metametrics';
+import { shortenString } from '../../../../../../../../helpers/utils/util';
 import { calcTokenAmount } from '../../../../../../../../../shared/lib/transactions-controller-utils';
 import useTokenExchangeRate from '../../../../../../../../components/app/currency-input/hooks/useTokenExchangeRate';
 import { IndividualFiatDisplay } from '../../../../../simulation-details/fiat-display';
@@ -11,7 +12,8 @@ import {
   formatAmount,
   formatAmountMaxPrecision,
 } from '../../../../../simulation-details/formatAmount';
-import { useAsyncResult } from '../../../../../../../../hooks/useAsyncResult';
+import { useGetTokenStandardAndDetails } from '../../../../../../hooks/useGetTokenStandardAndDetails';
+import useTrackERC20WithoutDecimalInformation from '../../../../../../hooks/useTrackERC20WithoutDecimalInformation';
 
 import {
   Box,
@@ -27,9 +29,12 @@ import {
   TextAlign,
 } from '../../../../../../../../helpers/constants/design-system';
 import Name from '../../../../../../../../components/app/name/name';
-import { fetchErc20Decimals } from '../../../../../../utils/token';
+import { TokenDetailsERC20 } from '../../../../../../utils/token';
 
 type PermitSimulationValueDisplayParams = {
+  /** ID of the associated chain. */
+  chainId: Hex;
+
   /** The primaryType of the typed sign message */
   primaryType?: string;
 
@@ -41,21 +46,28 @@ type PermitSimulationValueDisplayParams = {
   tokenContract: Hex | string;
 
   /** The token amount */
-  value: number | string;
+  value?: number | string;
+
+  /** The tokenId for NFT */
+  tokenId?: string;
 };
 
 const PermitSimulationValueDisplay: React.FC<
   PermitSimulationValueDisplayParams
-> = ({ primaryType, tokenContract, value }) => {
+> = ({ chainId, primaryType, tokenContract, tokenId, value }) => {
   const exchangeRate = useTokenExchangeRate(tokenContract);
 
-  const { value: tokenDecimals } = useAsyncResult(
-    async () => await fetchErc20Decimals(tokenContract),
-    [tokenContract],
+  const tokenDetails = useGetTokenStandardAndDetails(tokenContract);
+  useTrackERC20WithoutDecimalInformation(
+    chainId,
+    tokenContract,
+    tokenDetails as TokenDetailsERC20,
+    MetaMetricsEventLocation.SignatureConfirmation,
   );
+  const { decimalsNumber: tokenDecimals } = tokenDetails;
 
   const fiatValue = useMemo(() => {
-    if (exchangeRate && value) {
+    if (exchangeRate && value && !tokenId) {
       const tokenAmount = calcTokenAmount(value, tokenDecimals);
       return exchangeRate.times(tokenAmount).toNumber();
     }
@@ -63,7 +75,7 @@ const PermitSimulationValueDisplay: React.FC<
   }, [exchangeRate, tokenDecimals, value]);
 
   const { tokenValue, tokenValueMaxPrecision } = useMemo(() => {
-    if (!value) {
+    if (!value || tokenId) {
       return { tokenValue: null, tokenValueMaxPrecision: null };
     }
 
@@ -107,16 +119,23 @@ const PermitSimulationValueDisplay: React.FC<
               style={{ paddingTop: '1px', paddingBottom: '1px' }}
               textAlign={TextAlign.Center}
             >
-              {shortenString(tokenValue || '', {
-                truncatedCharLimit: 15,
-                truncatedStartChars: 15,
-                truncatedEndChars: 0,
-                skipCharacterInEnd: true,
-              })}
+              {tokenValue !== null &&
+                shortenString(tokenValue || '', {
+                  truncatedCharLimit: 15,
+                  truncatedStartChars: 15,
+                  truncatedEndChars: 0,
+                  skipCharacterInEnd: true,
+                })}
+              {tokenId && `#${tokenId}`}
             </Text>
           </Tooltip>
         </Box>
-        <Name value={tokenContract} type={NameType.ETHEREUM_ADDRESS} />
+        <Name
+          value={tokenContract}
+          type={NameType.ETHEREUM_ADDRESS}
+          variation={chainId}
+          preferContractSymbol
+        />
       </Box>
       <Box>
         {fiatValue && <IndividualFiatDisplay fiatAmount={fiatValue} shorten />}

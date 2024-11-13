@@ -74,11 +74,10 @@ describe('Confirmation Signature - Personal Sign @no-mmi', function (this: Suite
       }: TestSuiteArguments) => {
         await openDappAndTriggerSignature(driver, SignatureType.PersonalSign);
 
-        await driver.clickElement(
+        await driver.clickElementAndWaitForWindowToClose(
           '[data-testid="confirm-footer-cancel-button"]',
         );
 
-        await driver.waitUntilXWindowHandles(2);
         await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
 
         const rejectionResult = await driver.waitForSelector({
