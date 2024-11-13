@@ -75,7 +75,6 @@ type TokenListItemProps = {
   secondary?: string | null;
   title: string;
   tooltipText?: string;
-  isOriginalTokenSymbol?: boolean | null;
   isNativeCurrency?: boolean;
   isStakeable?: boolean;
   tokenChainImage?: string;
@@ -95,7 +94,6 @@ export const TokenListItem = ({
   secondary,
   title,
   tooltipText,
-  isOriginalTokenSymbol,
   tokenChainImage,
   chainId,
   isPrimaryTokenSymbolHidden = false,
