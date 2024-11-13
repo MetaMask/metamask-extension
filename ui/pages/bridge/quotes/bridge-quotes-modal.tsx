@@ -1,10 +1,9 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { IconName } from '@metamask/snaps-sdk/jsx';
 import { useDispatch, useSelector } from 'react-redux';
+import { startCase } from 'lodash';
 import {
-  Box,
-  Button,
-  Icon,
+  ButtonLink,
   IconSize,
   Modal,
   ModalContent,
@@ -13,7 +12,10 @@ import {
   Text,
 } from '../../../components/component-library';
 import {
+  AlignItems,
+  BackgroundColor,
   TextAlign,
+  TextColor,
   TextVariant,
 } from '../../../helpers/constants/design-system';
 import {
@@ -24,13 +26,13 @@ import {
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { getCurrentCurrency } from '../../../selectors';
 import { setSelectedQuote, setSortOrder } from '../../../ducks/bridge/actions';
-import { SortOrder, QuoteMetadata, QuoteResponse } from '../types';
-import { Footer } from '../../../components/multichain/pages/page';
-import { useCountdownTimer } from '../../../hooks/bridge/useCountdownTimer';
+import { SortOrder } from '../types';
 import {
   getBridgeQuotes,
   getBridgeSortOrder,
 } from '../../../ducks/bridge/selectors';
+import { Column, Row } from '../layout';
+import { getNativeCurrency } from '../../../ducks/metamask/metamask';
 
 export const BridgeQuotesModal = ({
   onClose,
@@ -39,156 +41,157 @@ export const BridgeQuotesModal = ({
   const t = useI18nContext();
   const dispatch = useDispatch();
 
-  const { sortedQuotes, activeQuote, recommendedQuote } =
-    useSelector(getBridgeQuotes);
+  const { sortedQuotes, activeQuote } = useSelector(getBridgeQuotes);
   const sortOrder = useSelector(getBridgeSortOrder);
   const currency = useSelector(getCurrentCurrency);
-  const { isLoading } = useSelector(getBridgeQuotes);
-
-  const secondsUntilNextRefresh = useCountdownTimer();
-
-  const [expandedQuote, setExpandedQuote] = useState<
-    (QuoteResponse & QuoteMetadata) | undefined
-  >(undefined);
+  const nativeCurrency = useSelector(getNativeCurrency);
 
   return (
     <Modal className="quotes-modal" onClose={onClose} {...modalProps}>
       <ModalOverlay />
 
-      {expandedQuote ? (
-        <ModalContent modalDialogProps={{ padding: 0 }}>
-          <ModalHeader onBack={() => setExpandedQuote(undefined)}>
-            <Text variant={TextVariant.headingSm} textAlign={TextAlign.Center}>
-              {t('swapQuoteDetails')}
-            </Text>
-          </ModalHeader>
-          <Box className="quotes-modal__quote-details">
-            <Text>{JSON.stringify(expandedQuote)}</Text>
-          </Box>
-          <Footer>
-            <Button
-              data-testid="quotes-modal-use-quote-button"
-              onClick={() => {
-                dispatch(setSelectedQuote(expandedQuote));
-                setExpandedQuote(undefined);
-                onClose();
+      <ModalContent
+        modalDialogProps={{
+          padding: 0,
+        }}
+      >
+        <ModalHeader onBack={onClose}>
+          <Text variant={TextVariant.headingSm} textAlign={TextAlign.Center}>
+            {t('swapSelectAQuote')}
+          </Text>
+        </ModalHeader>
+
+        {/* HEADERS */}
+        <Row padding={[4, 3]} paddingBottom={1}>
+          {[
+            [SortOrder.COST_ASC, t('bridgeNetCost'), IconName.Arrow2Up],
+            [SortOrder.ETA_ASC, t('time'), IconName.Arrow2Down],
+          ].map(([sortOrderOption, label, icon]) => (
+            <ButtonLink
+              key={label}
+              onClick={() => dispatch(setSortOrder(sortOrderOption))}
+              startIconName={sortOrder === sortOrderOption ? icon : undefined}
+              startIconProps={{
+                size: IconSize.Xs,
               }}
-              disabled={false}
-            >
-              {t('bridgeUseQuote')}
-            </Button>
-          </Footer>
-        </ModalContent>
-      ) : (
-        <ModalContent
-          className="quotes-modal__container"
-          modalDialogProps={{ padding: 0 }}
-        >
-          <ModalHeader onClose={onClose}>
-            <Text variant={TextVariant.headingSm} textAlign={TextAlign.Center}>
-              {t('swapSelectAQuote')}
-            </Text>
-          </ModalHeader>
-
-          {/* HEADERS */}
-          <Box className="quotes-modal__column-header">
-            <span
-              onClick={() =>
-                dispatch(setSortOrder(SortOrder.ADJUSTED_RETURN_DESC))
-              }
-              className={
-                sortOrder === SortOrder.ADJUSTED_RETURN_DESC
-                  ? 'active-sort'
-                  : ''
+              color={
+                sortOrder === sortOrderOption
+                  ? TextColor.primaryDefault
+                  : TextColor.textAlternative
               }
             >
-              <Icon name={IconName.ArrowDown} size={IconSize.Xs} />
-              <Text>{t('bridgeOverallCost')}</Text>
-            </span>
-            <span
-              onClick={() => dispatch(setSortOrder(SortOrder.ETA_ASC))}
-              className={sortOrder === SortOrder.ETA_ASC ? 'active-sort' : ''}
-            >
-              <Icon name={IconName.ArrowDown} size={IconSize.Xs} />
-              <Text>{t('time')}</Text>
-            </span>
-          </Box>
-          {/* QUOTE LIST */}
-          <Box className="quotes-modal__quotes">
-            {sortedQuotes.map((quote, index) => {
-              const {
-                totalNetworkFee,
-                estimatedProcessingTimeInSeconds,
-                toTokenAmount,
-                cost,
-                quote: { destAsset, bridges, requestId },
-              } = quote;
-              const isQuoteActive = requestId === activeQuote?.quote.requestId;
-              const isQuoteRecommended =
-                requestId === recommendedQuote?.quote.requestId;
+              <Text
+                variant={TextVariant.bodySm}
+                color={
+                  sortOrder === sortOrderOption
+                    ? TextColor.primaryDefault
+                    : TextColor.textAlternative
+                }
+              >
+                {label}
+              </Text>
+            </ButtonLink>
+          ))}
+        </Row>
+        {/* QUOTE LIST */}
+        <Column>
+          {sortedQuotes.map((quote, index) => {
+            const {
+              totalNetworkFee,
+              estimatedProcessingTimeInSeconds,
+              toTokenAmount,
+              cost,
+              quote: { destAsset, bridges, requestId },
+            } = quote;
+            const isQuoteActive = requestId === activeQuote?.quote.requestId;
 
-              return (
-                <Box
-                  key={index}
-                  className={`quotes-modal__quotes__row ${
-                    isQuoteActive ? 'active-quote' : ''
-                  }`}
-                  onClick={() => setExpandedQuote(quote)}
-                >
-                  {isQuoteActive && (
-                    <span className="quotes-modal__quotes__row-bar" />
-                  )}
-                  <span className="quotes-modal__quotes__row-left">
-                    {cost.fiat && (
-                      <span>
-                        {isQuoteRecommended && (
-                          <Text className="description">
-                            {t(
-                              sortOrder === SortOrder.ADJUSTED_RETURN_DESC
-                                ? 'bridgeLowest'
-                                : 'bridgeFastest',
-                            )}
-                          </Text>
-                        )}
-                        <Text>{formatFiatAmount(cost.fiat, currency)}</Text>
-                      </span>
-                    )}
-                    <span>
-                      <Text>
-                        {formatFiatAmount(toTokenAmount.fiat, currency) ??
+            return (
+              <Row
+                alignItems={AlignItems.flexStart}
+                key={index}
+                backgroundColor={
+                  isQuoteActive ? BackgroundColor.primaryMuted : undefined
+                }
+                onClick={() => {
+                  dispatch(setSelectedQuote(quote));
+                  onClose();
+                }}
+                paddingInline={4}
+                paddingTop={3}
+                paddingBottom={3}
+                style={{ position: 'relative', height: 78 }}
+              >
+                {isQuoteActive && (
+                  <Column
+                    style={{
+                      position: 'absolute',
+                      left: 4,
+                      top: 4,
+                      height: 70,
+                      width: 4,
+                      borderRadius: 8,
+                    }}
+                    backgroundColor={BackgroundColor.primaryDefault}
+                  />
+                )}
+                <Column>
+                  <Text variant={TextVariant.bodyMd}>
+                    {cost.fiat && formatFiatAmount(cost.fiat, currency, 0)}
+                  </Text>
+                  {[
+                    totalNetworkFee?.fiat
+                      ? t('quotedNetworkFee', [
+                          formatFiatAmount(totalNetworkFee.fiat, currency, 0),
+                        ])
+                      : t('quotedNetworkFee', [
+                          formatTokenAmount(
+                            totalNetworkFee.raw,
+                            nativeCurrency,
+                          ),
+                        ]),
+                    t(
+                      sortOrder === SortOrder.ETA_ASC
+                        ? 'quotedReceivingAmount'
+                        : 'quotedReceiveAmount',
+                      [
+                        formatFiatAmount(toTokenAmount.fiat, currency, 0) ??
                           formatTokenAmount(
                             toTokenAmount.raw,
                             destAsset.symbol,
-                          )}
+                            0,
+                          ),
+                      ],
+                    ),
+                  ]
+                    [sortOrder === SortOrder.ETA_ASC ? 'reverse' : 'slice']()
+                    .map((content) => (
+                      <Text
+                        key={content}
+                        variant={TextVariant.bodyXsMedium}
+                        color={TextColor.textAlternative}
+                      >
+                        {content}
                       </Text>
-                      <span>
-                        <Icon name={IconName.Gas} size={IconSize.Xs} />
-                        <Text>
-                          {formatFiatAmount(totalNetworkFee?.fiat, currency)}
-                        </Text>
-                      </span>
-                    </span>
-                  </span>
-                  <span className="quotes-modal__quotes__row-right">
-                    <Text>{bridges[0]}</Text>
-                    <Text>
-                      {t('bridgeTimingMinutes', [
-                        formatEtaInMinutes(estimatedProcessingTimeInSeconds),
-                      ])}
-                    </Text>
-                    <Icon name={IconName.ArrowRight} size={IconSize.Sm} />
-                  </span>
-                </Box>
-              );
-            })}
-          </Box>
-          <Box className="quotes-modal__timer">
-            {!isLoading && (
-              <Text>{t('swapNewQuoteIn', [secondsUntilNextRefresh])}</Text>
-            )}
-          </Box>
-        </ModalContent>
-      )}
+                    ))}
+                </Column>
+                <Column alignItems={AlignItems.flexEnd}>
+                  <Text variant={TextVariant.bodyMd}>
+                    {t('bridgeTimingMinutes', [
+                      formatEtaInMinutes(estimatedProcessingTimeInSeconds),
+                    ])}
+                  </Text>
+                  <Text
+                    variant={TextVariant.bodyXsMedium}
+                    color={TextColor.textAlternative}
+                  >
+                    {startCase(bridges[0])}
+                  </Text>
+                </Column>
+              </Row>
+            );
+          })}
+        </Column>
+      </ModalContent>
     </Modal>
   );
 };

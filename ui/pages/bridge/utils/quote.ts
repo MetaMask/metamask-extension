@@ -9,6 +9,7 @@ import {
 import { formatCurrency } from '../../../helpers/utils/confirm-tx.util';
 import { Numeric } from '../../../../shared/modules/Numeric';
 import { EtherDenomination } from '../../../../shared/constants/common';
+import { DEFAULT_PRECISION } from '../../../hooks/useCurrencyDisplay';
 
 export const isNativeAddress = (address?: string) => address === zeroAddress();
 
@@ -190,5 +191,21 @@ export const formatTokenAmount = (
   precision: number = 2,
 ) => `${amount.toFixed(precision)} ${symbol}`;
 
-export const formatFiatAmount = (amount: BigNumber | null, currency: string) =>
-  amount ? formatCurrency(amount.toString(), currency) : undefined;
+export const formatFiatAmount = (
+  amount: BigNumber | null,
+  currency: string,
+  precision: number = DEFAULT_PRECISION,
+) => {
+  if (!amount) {
+    return undefined;
+  }
+  if (precision === 0) {
+    if (amount.lt(0.01)) {
+      return `<${formatCurrency('0', currency, precision)}`;
+    }
+    if (amount.lt(1)) {
+      return formatCurrency(amount.toString(), currency, 2);
+    }
+  }
+  return formatCurrency(amount.toString(), currency, precision);
+};

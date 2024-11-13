@@ -4,6 +4,7 @@ import configureStore from '../../../store/store';
 import { BridgeQuotesModal } from './bridge-quotes-modal';
 import { createBridgeMockStore } from '../../../../test/jest/mock-store';
 import mockBridgeQuotesErc20Erc20 from '../../../../test/data/bridge/mock-quotes-erc20-erc20.json';
+import { SortOrder } from '../types';
 
 const storybook = {
   title: 'Pages/Bridge/BridgeQuotesModal',
@@ -18,7 +19,9 @@ NoTokenPricesAvailableStory.decorators = [
   (story) => (
     <Provider
       store={configureStore(
-        createBridgeMockStore({}, {}, { quotes: mockBridgeQuotesErc20Erc20 }),
+        createBridgeMockStore({
+          bridgeStateOverrides: { quotes: mockBridgeQuotesErc20Erc20 },
+        }),
       )}
     >
       {story()}
@@ -34,14 +37,16 @@ DefaultStory.decorators = [
   (story) => (
     <Provider
       store={configureStore(
-        createBridgeMockStore(
-          {},
-          {
+        createBridgeMockStore({
+          bridgeSliceOverrides: {
+            fromNativeExchangeRate: 1,
+            fromTokenExchangeRate: 0.99,
             toNativeExchangeRate: 1,
             toTokenExchangeRate: 0.99,
+            sortOrder: SortOrder.ADJUSTED_RETURN_DESC,
           },
-          { quotes: mockBridgeQuotesErc20Erc20 },
-          {
+          bridgeStateOverrides: { quotes: mockBridgeQuotesErc20Erc20 },
+          metamaskStateOverrides: {
             currencyRates: {
               ETH: { conversionRate: 2514.5 },
             },
@@ -55,7 +60,7 @@ DefaultStory.decorators = [
               },
             },
           },
-        ),
+        }),
       )}
     >
       {story()}
@@ -70,14 +75,15 @@ PositiveArbitrage.decorators = [
   (story) => (
     <Provider
       store={configureStore(
-        createBridgeMockStore(
-          {},
-          {
+        createBridgeMockStore({
+          bridgeSliceOverrides: {
+            fromNativeExchangeRate: 1,
+            fromTokenExchangeRate: 0.99,
             toNativeExchangeRate: 1,
             toTokenExchangeRate: 2.1,
           },
-          { quotes: mockBridgeQuotesErc20Erc20 },
-          {
+          bridgeStateOverrides: { quotes: mockBridgeQuotesErc20Erc20 },
+          metamaskStateOverrides: {
             currencyRates: {
               ETH: { conversionRate: 2514.5 },
             },
@@ -91,7 +97,7 @@ PositiveArbitrage.decorators = [
               },
             },
           },
-        ),
+        }),
       )}
     >
       {story()}
