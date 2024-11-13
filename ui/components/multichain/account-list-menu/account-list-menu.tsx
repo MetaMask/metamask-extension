@@ -65,6 +65,9 @@ import {
   getOriginOfCurrentTab,
   getSelectedInternalAccount,
   getUpdatedAndSortedAccounts,
+  ///: BEGIN:ONLY_INCLUDE_IF(solana)
+  getIsSolanaSupportEnabled,
+  ///: END:ONLY_INCLUDE_IF
 } from '../../../selectors';
 import { setSelectedAccount } from '../../../store/actions';
 import {
@@ -94,8 +97,14 @@ import {
   hasCreatedBtcMainnetAccount,
   hasCreatedBtcTestnetAccount,
 } from '../../../selectors/accounts';
+///: END:ONLY_INCLUDE_IF
+
+///: BEGIN:ONLY_INCLUDE_IF(build-flask,solana)
 import { MultichainNetworks } from '../../../../shared/constants/multichain/networks';
-import { useBitcoinWalletSnapClient } from '../../../hooks/accounts/useBitcoinWalletSnapClient';
+import {
+  WalletClientType,
+  useMultichainWalletSnapClient,
+} from '../../../hooks/accounts/useMultichainWalletSnapClient';
 ///: END:ONLY_INCLUDE_IF
 import {
   InternalAccountWithBalance,
@@ -105,6 +114,12 @@ import {
 import { CreateEthAccount } from '../create-eth-account';
 import { ImportAccount } from '../import-account';
 import { endTrace, TraceName } from '../../../../shared/lib/trace';
+///: BEGIN:ONLY_INCLUDE_IF(solana)
+import {
+  SOLANA_WALLET_NAME,
+  SOLANA_WALLET_SNAP_ID,
+} from '../../../../shared/lib/accounts/solana-wallet-snap';
+///: END:ONLY_INCLUDE_IF
 import { HiddenAccountList } from './hidden-account-list';
 
 const ACTION_MODES = {
@@ -187,6 +202,7 @@ export const mergeAccounts = (
 
 type AccountListMenuProps = {
   onClose: () => void;
+  privacyMode?: boolean;
   showAccountCreation?: boolean;
   accountListItemProps?: object;
   allowedAccountTypes?: KeyringAccountType[];
@@ -194,6 +210,7 @@ type AccountListMenuProps = {
 
 export const AccountListMenu = ({
   onClose,
+  privacyMode = false,
   showAccountCreation = true,
   accountListItemProps,
   allowedAccountTypes = [
@@ -266,7 +283,16 @@ export const AccountListMenu = ({
     hasCreatedBtcTestnetAccount,
   );
 
-  const bitcoinWalletSnapClient = useBitcoinWalletSnapClient();
+  const bitcoinWalletSnapClient = useMultichainWalletSnapClient(
+    WalletClientType.Bitcoin,
+  );
+  ///: END:ONLY_INCLUDE_IF
+
+  ///: BEGIN:ONLY_INCLUDE_IF(solana)
+  const solanaSupportEnabled = useSelector(getIsSolanaSupportEnabled);
+  const solanaWalletSnapClient = useMultichainWalletSnapClient(
+    WalletClientType.Solana,
+  );
   ///: END:ONLY_INCLUDE_IF
 
   const [searchQuery, setSearchQuery] = useState('');
@@ -450,10 +476,47 @@ export const AccountListMenu = ({
               ) : null
               ///: END:ONLY_INCLUDE_IF
             }
+            {
+              ///: BEGIN:ONLY_INCLUDE_IF(solana)
+              solanaSupportEnabled && (
+                <Box marginTop={4}>
+                  <ButtonLink
+                    size={ButtonLinkSize.Sm}
+                    startIconName={IconName.Add}
+                    onClick={async () => {
+                      trackEvent({
+                        category: MetaMetricsEventCategory.Navigation,
+                        event: MetaMetricsEventName.AccountAddSelected,
+                        properties: {
+                          account_type: MetaMetricsEventAccountType.Snap,
+                          snap_id: SOLANA_WALLET_SNAP_ID,
+                          snap_name: SOLANA_WALLET_NAME,
+                          location: 'Main Menu',
+                        },
+                      });
+
+                      // The account creation + renaming is handled by the
+                      // Snap account bridge, so we need to close the current
+                      // modal
+                      onClose();
+
+                      await solanaWalletSnapClient.createAccount(
+                        MultichainNetworks.SOLANA,
+                      );
+                    }}
+                    data-testid="multichain-account-menu-popover-add-solana-account"
+                  >
+                    {t('addNewSolanaAccount')}
+                  </ButtonLink>
+                </Box>
+              )
+              ///: END:ONLY_INCLUDE_IF
+            }
             <Box marginTop={4}>
               <ButtonLink
                 size={ButtonLinkSize.Sm}
                 startIconName={IconName.Import}
+                data-testid="multichain-account-menu-popover-add-imported-account"
                 onClick={() => {
                   trackEvent({
                     category: MetaMetricsEventCategory.Navigation,
@@ -642,6 +705,7 @@ export const AccountListMenu = ({
                       isHidden={Boolean(account.hidden)}
                       currentTabOrigin={currentTabOrigin}
                       isActive={Boolean(account.active)}
+                      privacyMode={privacyMode}
                       {...accountListItemProps}
                     />
                   </Box>
