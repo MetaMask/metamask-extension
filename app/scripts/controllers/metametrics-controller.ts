@@ -1235,7 +1235,7 @@ export default class MetaMetricsController extends BaseController<
       [MetaMetricsUserTrait.PrivacyModeEnabled]:
         metamaskState.preferences.privacyMode,
       [MetaMetricsUserTrait.NetworkFilterPreference]: Object.keys(
-        metamaskState.preferences.tokenNetworkFilter,
+        metamaskState.preferences.tokenNetworkFilter || {},
       ),
     };
 
