@@ -136,10 +136,6 @@ export const TokenListItem = ({
   const history = useHistory();
 
   const getTokenTitle = () => {
-    if (!isOriginalTokenSymbol) {
-      return title;
-    }
-    // We only consider native token symbols!
     switch (title) {
       case CURRENCY_SYMBOLS.ETH:
         return t('networkNameEthereum');
