@@ -51,7 +51,7 @@ export type TokenWithBalance = {
 };
 
 export type AssetListProps = {
-  onClickAsset: (arg: string) => void;
+  onClickAsset: (chainId: string, address: string) => void;
   showTokensLinks?: boolean;
 };
 
