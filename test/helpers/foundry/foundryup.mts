@@ -1,6 +1,6 @@
 #!/usr/bin/env -S node --require "./node_modules/tsx/dist/preflight.cjs" --import "./node_modules/tsx/dist/loader.mjs"
 
-import { join } from 'node:path';
+import { join, relative } from 'node:path';
 import { homedir } from 'node:os';
 import {
   BinFormat,
@@ -10,8 +10,12 @@ import {
   printBanner,
   say,
   parseArgs,
+  isCodedError,
+  noop,
 } from './helpers.mts';
-import { existsSync, mkdirSync, symlinkSync, unlinkSync } from 'node:fs';
+import { Dir } from 'node:fs';
+import { opendir, symlink, unlink, copyFile } from 'node:fs/promises';
+import { createHash } from 'node:crypto';
 
 const {
   repo,
@@ -23,35 +27,53 @@ const {
 
 printBanner();
 
-say(`installing foundry (version ${version}, tag ${tag})`);
+say(
+  `installing foundry (version ${version}, tag ${tag}) for ${platform} ${arch}`,
+);
 
 const ext = platform === Platform.Windows ? BinFormat.Zip : BinFormat.Tar;
-const RELEASE_URL = `https://github.com/${repo}/releases/download/${tag}/`;
-const BIN_ARCHIVE_URL = `${RELEASE_URL}foundry_${version}_${platform}_${arch}.${ext}`;
+const BIN_ARCHIVE_URL = `https://github.com/${repo}/releases/download/${tag}/foundry_${version}_${platform}_${arch}.${ext}`;
 const BIN_DIR = join(process.cwd(), 'node_modules', '.bin');
+const CACHE_DIR = join(homedir(), '.cache', 'metamask-extension');
 
 say(`downloading ${binaries.join(', ')}`);
 const url = new URL(BIN_ARCHIVE_URL);
-const cacheDir = join(homedir(), '.cache', 'metamask-extension');
-const cacheKey = Buffer.from(
-  `${BIN_ARCHIVE_URL}-${binaries.join('_')}`,
-).toString('base64url');
-const cachePath = join(cacheDir, cacheKey);
-if (!existsSync(cachePath)) {
-  mkdirSync(cachePath, { recursive: true });
-  await extractFrom(url, binaries, cachePath);
-}
+const cacheKey = createHash('sha256')
+  .update(`${BIN_ARCHIVE_URL}-${binaries.join('_')}`)
+  .digest('hex');
+const cachePath = join(CACHE_DIR, cacheKey);
 
-for (const file of binaries) {
-  const path = join(BIN_DIR, file);
+// check the cache, if the cache dir exists we assume the correct files do, too
+let downloadedBinaries: Dir;
+try {
+  downloadedBinaries = await opendir(cachePath);
+} catch (e: unknown) {
+  if ((e as NodeJS.ErrnoException).code === 'ENOENT') {
+    // directory doesn't exist, download and extract
+    await extractFrom(url, binaries, cachePath);
+    downloadedBinaries = await opendir(cachePath);
+  } else {
+    throw e;
+  }
+}
+for await (const file of downloadedBinaries) {
+  if (!file.isFile()) continue;
+  const target = join(file.parentPath, file.name);
+  const path = join(BIN_DIR, relative(cachePath, target));
+  // clean up any existing files or symlinks
+  await unlink(path).catch(noop);
   try {
-    // remove existing symlink
-    unlinkSync(path);
-  } catch {}
-  const target = join(cachePath, file);
-  // create new symlink
-  symlinkSync(target, path);
-  // check that it works and log the version
+    // create new symlink
+    await symlink(target, path);
+  } catch (e) {
+    if (!(isCodedError(e) && ['EPERM', 'EXDEV'].includes(e.code))) {
+      throw e;
+    }
+    // symlinking can fail if its a cross-device/filesystem link, or for
+    // permissions reasons, so we'll just copy the file instead
+    await copyFile(target, path);
+  }
+  // check that it works by logging the version
   say(`installed - ${getVersion(target)}`);
 }
 

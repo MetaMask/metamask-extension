@@ -1,13 +1,14 @@
 import { ok } from 'node:assert';
 import { execSync } from 'node:child_process';
 import { createWriteStream } from 'node:fs';
+import { rename, mkdir, rm } from 'node:fs/promises';
 import {
   Agent as HttpAgent,
   request as httpRequest,
   type IncomingMessage,
 } from 'node:http';
 import { Agent as HttpsAgent, request as httpsRequest } from 'node:https';
-import { join, basename, extname } from 'node:path';
+import { join, basename, extname, relative } from 'node:path';
 import {
   argv,
   arch as osArch,
@@ -19,6 +20,8 @@ import { pipeline } from 'node:stream/promises';
 import { extract as extractTar } from 'tar';
 import { Source, Open as Unzip } from 'unzipper';
 import yargs from 'yargs/yargs';
+
+export function noop() {}
 
 export enum BinFormat {
   Zip = 'zip',
@@ -158,7 +161,31 @@ export async function extractFrom(url: URL, binaries: string[], dir: string) {
   const extract = url.pathname.toLowerCase().endsWith(BinFormat.Tar)
     ? extractFromTar
     : extractFromZip;
-  return extract(url, binaries, dir);
+  // write all files to a temporary directory first, then rename to the final
+  // destination to avoid accidental partial extraction. We don't use
+  // `os.tmpdir` for this because `rename` will fail if the directories are on
+  // different file systems.
+  const tempDir = dir + '.downloading';
+  const rmOpts = { recursive: true, maxRetries: 3, force: true };
+  try {
+    // clean up any previous in-progress downloads
+    await rm(tempDir, rmOpts);
+    // make the temporary directory to extract the binaries to
+    await mkdir(tempDir, { recursive: true });
+    const downloads = await extract(url, binaries, tempDir);
+    ok(downloads.length === binaries.length, 'Failed to extract all binaries');
+
+    // everything has been extracted; move the files to their final destination
+    await rename(tempDir, dir);
+    // return the list of extracted binaries
+    return downloads.map((file) => join(dir, relative(tempDir, file)));
+  } catch (e) {
+    // if things fail for any reason try to clean up a bit. it is very important
+    // to not leave `dir` behind, as its existence is a signal that the binaries
+    // are installed.
+    await Promise.all([rm(tempDir, rmOpts), rm(dir, rmOpts)]).catch(noop);
+    throw e;
+  }
 }
 
 /**
@@ -170,8 +197,14 @@ export async function extractFrom(url: URL, binaries: string[], dir: string) {
  * @returns The list of binaries extracted
  */
 async function extractFromTar(url: URL, binaries: string[], dir: string) {
-  const dl = startDownload(url);
-  await pipeline(dl, extractTar({ cwd: dir }, binaries));
+  const downloads: string[] = [];
+  await pipeline(
+    startDownload(url),
+    extractTar({ cwd: dir }, binaries).on('entry', ({ absolute }) =>
+      downloads.push(absolute),
+    ),
+  );
+  return downloads;
 }
 
 /**
@@ -208,10 +241,11 @@ async function extractFromZip(url: URL, binaries: string[], dir: string) {
   const filtered = files.filter(({ path }) =>
     binaries.includes(basename(path, extname(path))),
   );
-  ok(filtered.length === binaries.length, 'Failed to extract all binaries');
   return await Promise.all(
     filtered.map(async ({ stream, path }) => {
-      await pipeline(stream(), createWriteStream(join(dir, path)));
+      const dest = join(dir, path);
+      await pipeline(stream(), createWriteStream(dest));
+      return dest;
     }),
   );
 }
@@ -315,4 +349,12 @@ export function getVersion(binPath: string): Buffer {
     }
     throw new Error(msg);
   }
+}
+
+export function isCodedError(
+  error: unknown,
+): error is Error & { code: string } {
+  return (
+    error instanceof Error && 'code' in error && typeof error.code === 'string'
+  );
 }
