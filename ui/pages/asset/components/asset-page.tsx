@@ -1,6 +1,5 @@
 import React, { ReactNode } from 'react';
 import { useHistory } from 'react-router-dom';
-
 import { useSelector } from 'react-redux';
 import { EthMethod } from '@metamask/keyring-api';
 import { isEqual } from 'lodash';

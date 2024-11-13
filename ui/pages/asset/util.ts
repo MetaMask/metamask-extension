@@ -65,7 +65,6 @@ export const chainSupportsPricing = (chainId: `0x${string}`) =>
 /** The opacity components should set during transition */
 export const loadingOpacity = 0.2;
 
-// TODO: Add unit tests
 export const findAssetByAddress = (
   data: Record<string, Token[]>,
   address?: string,
@@ -84,7 +83,8 @@ export const findAssetByAddress = (
   }
 
   if (!address) {
-    return tokens.find((token) => !token.address);
+    console.warn(`No token found for address: ${address}`);
+    return null;
   }
 
   return tokens.find(
