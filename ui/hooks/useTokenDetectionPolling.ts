@@ -7,17 +7,20 @@ import {
   tokenDetectionStartPolling,
   tokenDetectionStopPollingByPollingToken,
 } from '../store/actions';
+import { getCompletedOnboarding } from '../ducks/metamask/metamask';
 import useMultiPolling from './useMultiPolling';
 
 const useTokenDetectionPolling = () => {
   const useTokenDetection = useSelector(getUseTokenDetection);
+  const completedOnboarding = useSelector(getCompletedOnboarding);
   const networkConfigurations = useSelector(getNetworkConfigurationsByChainId);
-  const chainIds = Object.keys(networkConfigurations);
+
+  const enabled = completedOnboarding && useTokenDetection;
 
   useMultiPolling({
     startPolling: tokenDetectionStartPolling,
     stopPollingByPollingToken: tokenDetectionStopPollingByPollingToken,
-    input: useTokenDetection ? [chainIds] : [],
+    input: enabled ? [Object.keys(networkConfigurations)] : [],
   });
 
   return {};

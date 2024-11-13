@@ -25,6 +25,8 @@ describe('useTokenListPolling', () => {
   it('should poll for token lists on each chain when enabled, and stop on dismount', async () => {
     const state = {
       metamask: {
+        completedOnboarding: true,
+        useExternalServices: true,
         useTokenDetection: true,
         networkConfigurationsByChainId: {
           '0x1': {},
@@ -55,10 +57,32 @@ describe('useTokenListPolling', () => {
     );
   });
 
+  it('should not poll before onboarding is completed', async () => {
+    const state = {
+      metamask: {
+        completedOnboarding: false,
+        useExternalServices: true,
+        useTokenDetection: true,
+        networkConfigurationsByChainId: {
+          '0x1': {},
+          '0x89': {},
+        },
+      },
+    };
+
+    renderHookWithProvider(() => useTokenListPolling(), state);
+
+    await Promise.all(mockPromises);
+    expect(tokenListStartPolling).toHaveBeenCalledTimes(0);
+    expect(tokenListStopPollingByPollingToken).toHaveBeenCalledTimes(0);
+  });
+
   it('should not poll when disabled', async () => {
     // disabled when detection, petnames, and simulations are all disabled
     const state = {
       metamask: {
+        completedOnboarding: true,
+        useExternalServices: true,
         useTokenDetection: false,
         useTransactionSimulations: false,
         preferences: {
