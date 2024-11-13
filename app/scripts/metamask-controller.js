@@ -2155,7 +2155,11 @@ export default class MetamaskController extends EventEmitter {
       });
     this.smartTransactionsController = new SmartTransactionsController({
       supportedChainIds: getAllowedSmartTransactionsChainIds(),
-      getNonceLock: this.txController.getNonceLock.bind(this.txController),
+      getNonceLock: (address) =>
+        this.txController.getNonceLock(
+          address,
+          this.#getGlobalNetworkClientId(),
+        ),
       confirmExternalTransaction:
         this.txController.confirmExternalTransaction.bind(this.txController),
       trackMetaMetricsEvent: this.metaMetricsController.trackEvent.bind(
@@ -5062,8 +5066,7 @@ export default class MetamaskController extends EventEmitter {
       internalAccounts: this.accountsController.listAccounts(),
       dappRequest,
       networkClientId:
-        dappRequest?.networkClientId ??
-        this.networkController.state.selectedNetworkClientId,
+        dappRequest?.networkClientId ?? this.#getGlobalNetworkClientId(),
       selectedAccount: this.accountsController.getAccountByAddress(
         transactionParams.from,
       ),
