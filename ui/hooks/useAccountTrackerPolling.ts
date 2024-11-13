@@ -37,7 +37,7 @@ const useAccountTrackerPolling = () => {
     ? [currentRpcEndpoint.networkClientId]
     : [];
 
-  const networkArrayToPollFor = process.env.FILTER_TOKENS_TOGGLE
+  const networkArrayToPollFor = process.env.PORTFOLIO_VIEW
     ? portfolioViewNetworks
     : nonPortfolioViewNetworks;
 
