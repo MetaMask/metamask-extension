@@ -17,6 +17,7 @@ import { Display } from '../../../../helpers/constants/design-system';
 import {
   getIsTokenDetectionInactiveOnMainnet,
   getTestNetworkBackgroundColor,
+  getTokenList,
   selectERC20TokensByChain,
 } from '../../../../selectors';
 import { CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP } from '../../../../../shared/constants/network';
@@ -28,16 +29,22 @@ const DetectedTokenDetails = ({
   tokensListDetected,
   chainId,
 }) => {
+  const tokenListCurrentChain = useSelector(getTokenList);
   const tokenListByChainId = useSelector(selectERC20TokensByChain);
   const tokenList = tokenListByChainId?.[chainId]?.data ?? {};
   const isTokenDetectionInactiveOnMainnet = useSelector(
     getIsTokenDetectionInactiveOnMainnet,
   );
 
-  const tokenData =
-    chainId === CHAIN_IDS.MAINNET && isTokenDetectionInactiveOnMainnet
-      ? STATIC_MAINNET_TOKEN_LIST
-      : tokenList[token.address?.toLowerCase()] ?? {};
+  let tokenData = {};
+  if (process.env.PORTFOLIO_VIEW) {
+    tokenData =
+      chainId === CHAIN_IDS.MAINNET && isTokenDetectionInactiveOnMainnet
+        ? STATIC_MAINNET_TOKEN_LIST
+        : tokenList[token.address?.toLowerCase()] ?? {};
+  } else {
+    tokenData = tokenListCurrentChain[token.address?.toLowerCase()];
+  }
 
   const testNetworkBackgroundColor = useSelector(getTestNetworkBackgroundColor);
 
@@ -75,6 +82,13 @@ const DetectedTokenDetails = ({
           handleTokenSelection={handleTokenSelection}
           tokensListDetected={tokensListDetected}
         />
+        {/* {process.env.PORTFOLIO_VIEW ? (
+          <DetectedTokenAddress tokenAddress={token.address} />
+          {tokenData?.aggregators.length > 0 && (
+            <DetectedTokenAggregators aggregators={tokenData?.aggregators} />
+          )}
+        ) : null} */}
+
         <DetectedTokenAddress tokenAddress={token.address} />
         {tokenData?.aggregators.length > 0 && (
           <DetectedTokenAggregators aggregators={tokenData?.aggregators} />

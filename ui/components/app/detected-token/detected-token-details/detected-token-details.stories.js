@@ -1,4 +1,5 @@
 import React from 'react';
+import { CHAIN_IDS } from '@metamask/transaction-controller';
 
 import DetectedTokenDetails from './detected-token-details';
 
@@ -76,7 +77,7 @@ export default {
 const Template = (args) => {
   return (
     <div style={{ width: '320px' }}>
-      <DetectedTokenDetails {...args} />
+      <DetectedTokenDetails {...args} chainId={CHAIN_IDS.MAINNET} />
     </div>
   );
 };

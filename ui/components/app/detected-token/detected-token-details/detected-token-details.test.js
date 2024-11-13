@@ -1,4 +1,5 @@
 import * as React from 'react';
+import { CHAIN_IDS } from '@metamask/transaction-controller';
 import {
   renderWithProvider,
   screen,
@@ -75,7 +76,10 @@ describe('DetectedTokenDetails', () => {
 
   it('should render the detected token details', async () => {
     const store = configureStore(testData);
-    renderWithProvider(<DetectedTokenDetails {...args} />, store);
+    renderWithProvider(
+      <DetectedTokenDetails {...args} chainId={CHAIN_IDS.MAINNET} />,
+      store,
+    );
 
     expect(screen.getByText('0 SNX')).toBeInTheDocument();
     expect(screen.getByText('$0')).toBeInTheDocument();
