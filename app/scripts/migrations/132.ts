@@ -9,8 +9,9 @@ type VersionedData = {
 export const version = 132;
 
 /**
- * This migration removes properties from the CurrencyController state that
- * are no longer used. There presence in state causes "No metadata found" errors
+ * This migration removes the notification controller from state. Previously used for
+ * snap notifications, it is no longer needed now that snap notifications will live in the
+ * notification services controller.
  *
  * @param originalVersionedData - Versioned MetaMask extension state, exactly
  * what we persist to dist.
