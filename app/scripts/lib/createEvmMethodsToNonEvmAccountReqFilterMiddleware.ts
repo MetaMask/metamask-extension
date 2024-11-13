@@ -1,12 +1,12 @@
 import { isEvmAccountType } from '@metamask/keyring-api';
 import { RestrictedControllerMessenger } from '@metamask/base-controller';
-import { AccountsControllerGetSelectedAccountAction } from '@metamask/accounts-controller';
+import { AccountsControllerGetSelectedMultichainAccountAction } from '@metamask/accounts-controller';
 import { JsonRpcMiddleware } from '@metamask/json-rpc-engine';
 import type { Json, JsonRpcParams } from '@metamask/utils';
 import { RestrictedEthMethods } from '../../../shared/constants/permissions';
 import { unrestrictedEthSigningMethods } from '../controllers/permissions';
 
-type AllowedActions = AccountsControllerGetSelectedAccountAction;
+type AllowedActions = AccountsControllerGetSelectedMultichainAccountAction;
 
 export type EvmMethodsToNonEvmAccountFilterMessenger =
   RestrictedControllerMessenger<
@@ -41,8 +41,13 @@ export default function createEvmMethodsToNonEvmAccountReqFilterMiddleware({
     end,
   ) {
     const selectedAccount = messenger.call(
-      'AccountsController:getSelectedAccount',
+      'AccountsController:getSelectedMultichainAccount',
     );
+    if (!selectedAccount) {
+      // If the account is undefined we just skip this middleware (this should not never happen
+      // since this should use the current internal account no matter if it's EVM or not.
+      return next();
+    }
 
     // If it's an EVM account, there nothing to filter, so jump to the next
     // middleware directly.

@@ -5773,7 +5773,7 @@ export default class MetamaskController extends EventEmitter {
       createEvmMethodsToNonEvmAccountReqFilterMiddleware({
         messenger: this.controllerMessenger.getRestricted({
           name: 'EvmMethodsToNonEvmAccountFilterMessenger',
-          allowedActions: ['AccountsController:getSelectedAccount'],
+          allowedActions: ['AccountsController:getSelectedMultichainAccount'],
         }),
       }),
     );
