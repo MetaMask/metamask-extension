@@ -126,6 +126,8 @@ class SmartTransactionHook {
   }
 
   async submit() {
+    const shouldShowStatusPage =
+      this.#transactionMeta.type !== TransactionType.bridge;
     const isUnsupportedTransactionTypeForSmartTransaction = this
       .#transactionMeta?.type
       ? [TransactionType.swapAndSend, TransactionType.swapApproval].includes(
@@ -141,10 +143,13 @@ class SmartTransactionHook {
     ) {
       return useRegularTransactionSubmit;
     }
-    const { id: approvalFlowId } = await this.#controllerMessenger.call(
-      'ApprovalController:startFlow',
-    );
-    this.#approvalFlowId = approvalFlowId;
+
+    if (shouldShowStatusPage) {
+      const { id: approvalFlowId } = await this.#controllerMessenger.call(
+        'ApprovalController:startFlow',
+      );
+      this.#approvalFlowId = approvalFlowId;
+    }
     let getFeesResponse;
     try {
       getFeesResponse = await this.#smartTransactionsController.getFees(
@@ -169,12 +174,15 @@ class SmartTransactionHook {
       }
       const extensionReturnTxHashAsap =
         this.#featureFlags?.smartTransactions?.extensionReturnTxHashAsap;
-      this.#addApprovalRequest({
-        uuid,
-      });
-      this.#addListenerToUpdateStatusPage({
-        uuid,
-      });
+
+      if (shouldShowStatusPage) {
+        this.#addApprovalRequest({
+          uuid,
+        });
+        this.#addListenerToUpdateStatusPage({
+          uuid,
+        });
+      }
       let transactionHash: string | undefined | null;
       if (extensionReturnTxHashAsap && submitTransactionResponse?.txHash) {
         transactionHash = submitTransactionResponse.txHash;

@@ -39,7 +39,7 @@ export default function useHandleTx() {
     };
     swapsOptions: {
       hasApproveTx: boolean;
-      meta: Partial<TransactionMeta>;
+      meta: Partial<TransactionMeta>; // all fields in meta are merged with TransactionMeta downstream in TransactionController
     };
   }) => {
     const hexChainId = decimalToPrefixedHex(txParams.chainId);
