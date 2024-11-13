@@ -5,7 +5,6 @@ import {
   getCurrentChainId,
   getCurrentCurrency,
   getSelectedAccountCachedBalance,
-  getCurrentChainId,
 } from '../../../../selectors';
 import { getNativeCurrency } from '../../../../ducks/metamask/metamask';
 import { useCurrencyDisplay } from '../../../../hooks/useCurrencyDisplay';
