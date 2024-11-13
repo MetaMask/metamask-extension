@@ -18,7 +18,6 @@ import { Stream } from 'node:stream';
 import { pipeline } from 'node:stream/promises';
 import { extract as extractTar } from 'tar';
 import { Source, Open as Unzip } from 'unzipper';
-import { alias } from 'yargs';
 import yargs from 'yargs/yargs';
 
 export enum BinFormat {
