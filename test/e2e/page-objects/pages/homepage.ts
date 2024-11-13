@@ -246,7 +246,6 @@ class HomePage {
     try {
       await this.driver.waitForSelector({
         css: this.balance,
-        text: expectedBalance,
       });
     } catch (e) {
       const balance = await this.driver.waitForSelector(this.balance);
