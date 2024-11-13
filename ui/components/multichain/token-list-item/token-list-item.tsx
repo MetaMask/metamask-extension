@@ -97,7 +97,7 @@ export const TokenListItem = ({
   tooltipText,
   tokenChainImage,
   chainId,
-  isOriginalTokenSymbol = true,
+  isOriginalTokenSymbol,
   isPrimaryTokenSymbolHidden = false,
   isNativeCurrency = false,
   isStakeable = false,

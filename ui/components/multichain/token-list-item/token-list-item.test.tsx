@@ -1,6 +1,5 @@
 import React from 'react';
 import configureMockStore from 'redux-mock-store';
-
 import { fireEvent, waitFor } from '@testing-library/react';
 import { renderWithProvider } from '../../../../test/lib/render-helpers';
 import { CHAIN_IDS } from '../../../../shared/constants/network';
@@ -8,6 +7,9 @@ import { getIntlLocale } from '../../../ducks/locale/locale';
 import { mockNetworkState } from '../../../../test/stub/networks';
 import { useSafeChains } from '../../../pages/settings/networks-tab/networks-form/use-safe-chains';
 import { TokenListItem } from '.';
+import { useSelector } from 'react-redux';
+import { getNetworkConfigurationIdByChainId } from '../../../selectors';
+import { getMultichainIsEvm } from '../../../selectors/multichain';
 
 const state = {
   metamask: {
@@ -55,6 +57,13 @@ jest.mock(
     }),
   }),
 );
+jest.mock('react-redux', () => {
+  const actual = jest.requireActual('react-redux');
+  return {
+    ...actual,
+    useSelector: jest.fn(),
+  };
+});
 
 const mockGetIntlLocale = getIntlLocale;
 const mockGetSafeChains = useSafeChains;
@@ -70,9 +79,19 @@ describe('TokenListItem', () => {
     tokenImage: '',
     title: '',
     chainId: '0x1',
+    tokenChainImage: './eth-logo.png',
   };
   it('should render correctly', () => {
     const store = configureMockStore()(state);
+    (useSelector as jest.Mock).mockImplementation((selector) => {
+      if (selector === getNetworkConfigurationIdByChainId) {
+        return '0x1';
+      }
+      if (selector === getMultichainIsEvm) {
+        return true;
+      }
+      return undefined;
+    });
     const { getByTestId, container } = renderWithProvider(
       <TokenListItem {...props} />,
       store,
