@@ -1,4 +1,3 @@
-import { renderWithProvider } from '../../test/jest';
 import { renderHookWithProvider } from '../../test/lib/render-helpers';
 import {
   tokenListStartPolling,
