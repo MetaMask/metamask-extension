@@ -81,9 +81,7 @@ describe('ENS', function (this: Suite) {
   it('domain resolves to a correct address', async function () {
     await withFixtures(
       {
-        fixtures: new FixtureBuilder()
-          .withNetworkControllerOnMainnet()
-          .build(),
+        fixtures: new FixtureBuilder().withNetworkControllerOnMainnet().build(),
         ganacheOptions: defaultGanacheOptions,
         title: this.test?.fullTitle(),
         testSpecificMock: mockInfura,
