@@ -1,5 +1,5 @@
-import { Token } from '@metamask/assets-controllers';
 import { findAssetByAddress } from './util';
+import { Token } from '@metamask/assets-controllers';
 
 describe('findAssetByAddress', () => {
   const mockTokens: Record<string, Token[]> = {
