@@ -26,8 +26,7 @@ const useTokenListPolling = () => {
     input: enabled ? Object.keys(networkConfigurations) : [],
   });
 
-  return {
-  };
+  return {};
 };
 
 export default useTokenListPolling;

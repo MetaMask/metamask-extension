@@ -20,8 +20,7 @@ const useTokenDetectionPolling = () => {
     input: useTokenDetection ? [chainIds] : [],
   });
 
-  return {
-  };
+  return {};
 };
 
 export default useTokenDetectionPolling;

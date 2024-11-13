@@ -17,7 +17,10 @@ jest.mock('../store/actions', () => ({
 }));
 
 describe('useTokenListPolling', () => {
-  beforeEach(() => (mockPromises = []));
+  beforeEach(() => {
+    mockPromises = [];
+    jest.clearAllMocks();
+  });
 
   it('should poll for token lists on each chain when enabled, and stop on dismount', async () => {
     const state = {
