@@ -19,6 +19,7 @@ import { Stream } from 'node:stream';
 import { pipeline } from 'node:stream/promises';
 import { extract as extractTar } from 'tar';
 import { Source, Open as Unzip } from 'unzipper';
+import { Argv, InferredOptionTypes } from 'yargs';
 import yargs from 'yargs/yargs';
 
 export function noop() {}
@@ -43,6 +44,9 @@ export enum Binary {
 
 type Options = ReturnType<typeof getOptions>;
 type OptionsKeys = keyof Options;
+type ParsedOptions = {
+  [key in OptionsKeys]: InferredOptionTypes<Options>[key];
+};
 
 export function parseArgs(args: string[] = argv.slice(2)) {
   const { $0, _, ...parsed } = yargs()
@@ -54,9 +58,6 @@ export function parseArgs(args: string[] = argv.slice(2)) {
     .scriptName('yarn foundryup')
     // wrap output at a maximum of 120 characters or `process.stdout.columns`
     .wrap(Math.min(120, stdout.columns))
-    // enable the `--config` command, which allows the user to specify a custom
-    // config file containing webpack options
-    .config()
     .parserConfiguration({
       'strip-aliased': true,
       'strip-dashed': true,
@@ -64,9 +65,26 @@ export function parseArgs(args: string[] = argv.slice(2)) {
     // enable ENV parsing, which allows the user to specify foundryup options
     // via environment variables prefixed with `FOUNDRYUP_`
     .env('FOUNDRYUP')
-    .options(getOptions())
+    .command(['$0', 'install'], 'Install foundry binaries', getOptions())
+    .command('cache', '', (yargs) => {
+      yargs.command('clean', 'Remove the shared cache files').demandCommand();
+    })
     .parseSync(args);
-  return parsed as { [key in OptionsKeys]: (typeof parsed)[key] };
+
+  const command = _.join(' ');
+  switch (command) {
+    case 'cache clean':
+      return {
+        command,
+      } as const;
+    case '':
+    case 'install':
+      return {
+        command: 'install',
+        options: parsed as ParsedOptions,
+      } as const;
+  }
+  throw new Error(`Unknown command: '${command}'`);
 }
 
 function getOptions() {

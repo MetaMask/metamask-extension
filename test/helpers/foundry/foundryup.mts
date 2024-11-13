@@ -14,8 +14,18 @@ import {
   noop,
 } from './helpers.mts';
 import { Dir } from 'node:fs';
-import { opendir, symlink, unlink, copyFile } from 'node:fs/promises';
+import { opendir, symlink, unlink, copyFile, rm } from 'node:fs/promises';
 import { createHash } from 'node:crypto';
+
+const parsedArgs = parseArgs();
+
+const CACHE_DIR = join(homedir(), '.cache', 'metamask-extension');
+
+if (parsedArgs.command === 'cache clean') {
+  await rm(CACHE_DIR, { recursive: true, force: true });
+  say('done!');
+  process.exit(0);
+}
 
 const {
   repo,
@@ -23,7 +33,7 @@ const {
   arch,
   platform,
   binaries,
-} = parseArgs();
+} = parsedArgs.options;
 
 printBanner();
 
@@ -34,7 +44,6 @@ say(
 const ext = platform === Platform.Windows ? BinFormat.Zip : BinFormat.Tar;
 const BIN_ARCHIVE_URL = `https://github.com/${repo}/releases/download/${tag}/foundry_${version}_${platform}_${arch}.${ext}`;
 const BIN_DIR = join(process.cwd(), 'node_modules', '.bin');
-const CACHE_DIR = join(homedir(), '.cache', 'metamask-extension');
 
 say(`downloading ${binaries.join(', ')}`);
 const url = new URL(BIN_ARCHIVE_URL);
