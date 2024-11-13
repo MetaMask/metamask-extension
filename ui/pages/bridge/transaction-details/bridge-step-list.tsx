@@ -6,8 +6,10 @@ import { Box } from '../../../components/component-library';
 import {
   BridgeHistoryItem,
   StatusTypes,
+  Step,
 } from '../../../../shared/types/bridge-status';
 import { formatDate } from '../../../helpers/utils/util';
+import { Numeric } from '../../../../shared/modules/Numeric';
 import BridgeStepDescription, {
   getStepStatus,
 } from './bridge-step-description';
@@ -29,7 +31,7 @@ const getTime = (
 };
 
 type BridgeStepsProps = {
-  bridgeHistoryItem: BridgeHistoryItem;
+  bridgeHistoryItem?: BridgeHistoryItem;
   srcChainTxMeta?: TransactionMeta;
   networkConfigurationsByChainId: Record<Hex, NetworkConfiguration>;
 };
@@ -39,9 +41,29 @@ export default function BridgeStepList({
   srcChainTxMeta,
   networkConfigurationsByChainId,
 }: BridgeStepsProps) {
-  const { steps } = bridgeHistoryItem.quote;
+  const steps =
+    bridgeHistoryItem?.quote.steps ||
+    srcChainTxMeta?.bridgeSteps?.map((step) => ({
+      // Convert hex to numbers
+      ...step,
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      action: step.action as any,
+      srcChainId: new Numeric(step.srcChainId, 16).toBase(10).toNumber(),
+      destChainId: step.destChainId
+        ? new Numeric(step.destChainId, 16).toBase(10).toNumber()
+        : undefined,
+      srcAsset: {
+        ...step.srcAsset,
+        chainId: new Numeric(step.srcAsset.chainId, 16).toBase(10).toNumber(),
+      },
+      destAsset: {
+        ...step.destAsset,
+        chainId: new Numeric(step.destAsset.chainId, 16).toBase(10).toNumber(),
+      },
+    })) ||
+    [];
   const stepStatuses = steps.map((step) =>
-    getStepStatus(bridgeHistoryItem, step, srcChainTxMeta),
+    getStepStatus({ bridgeHistoryItem, step: step as Step, srcChainTxMeta }),
   );
 
   return (
@@ -71,8 +93,8 @@ export default function BridgeStepList({
           getTime(
             i,
             i === steps.length - 1,
-            bridgeHistoryItem.startTime,
-            bridgeHistoryItem.estimatedProcessingTimeInSeconds,
+            bridgeHistoryItem?.startTime || srcChainTxMeta?.time,
+            bridgeHistoryItem?.estimatedProcessingTimeInSeconds || 0,
           ),
           'hh:mm a',
         );
@@ -85,7 +107,7 @@ export default function BridgeStepList({
             isEdgeComplete={isEdgeComplete}
           >
             <BridgeStepDescription
-              step={step}
+              step={step as Step}
               networkConfigurationsByChainId={networkConfigurationsByChainId}
               stepStatus={displayedStepStatus}
               time={time}
