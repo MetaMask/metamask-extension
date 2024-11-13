@@ -34,4 +34,5 @@ export const DEFAULT_BRIDGE_CONTROLLER_STATE: BridgeControllerState = {
   quotes: [],
   quotesLastFetched: undefined,
   quotesLoadingStatus: undefined,
+  quotesRefreshCount: 0,
 };
