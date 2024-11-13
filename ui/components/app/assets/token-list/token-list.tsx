@@ -1,4 +1,4 @@
-import React, { ReactNode, useMemo } from 'react';
+import React, { ReactNode, useEffect, useMemo } from 'react';
 import { shallowEqual, useSelector } from 'react-redux';
 import TokenCell from '../token-cell';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
@@ -20,6 +20,7 @@ import {
 import { useAccountTotalFiatBalance } from '../../../../hooks/useAccountTotalFiatBalance';
 import { getConversionRate } from '../../../../ducks/metamask/metamask';
 import { useNativeTokenBalance } from '../asset-list/native-token/use-native-token-balance';
+import { endTrace, TraceName } from '../../../../../shared/lib/trace';
 
 type TokenListProps = {
   onTokenClick: (chainId: string, address: string) => void;
@@ -67,6 +68,12 @@ export default function TokenList({
     conversionRate,
     contractExchangeRates,
   ]);
+
+  useEffect(() => {
+    if (!loading) {
+      endTrace({ name: TraceName.AccountOverviewAssetListTab });
+    }
+  }, [loading]);
 
   return loading ? (
     <Box
