@@ -40,6 +40,32 @@ export default function useHandleBridgeTx() {
           approvalTxId,
           // this is the decimal (non atomic) amount (not USD value) of source token to swap
           swapTokenValue: sentAmountDec,
+          // Convert chainIds to hex
+          bridgeSteps: quoteResponse.quote.steps.map((step) => ({
+            ...step,
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            action: step.action as any,
+            srcChainId: new Numeric(step.srcChainId, 10)
+              .toPrefixedHexString()
+              .toLowerCase() as `0x${string}`,
+            destChainId: step.destChainId
+              ? (new Numeric(step.destChainId, 10)
+                  .toPrefixedHexString()
+                  .toLowerCase() as `0x${string}`)
+              : undefined,
+            srcAsset: {
+              ...step.srcAsset,
+              chainId: new Numeric(step.srcAsset.chainId, 10)
+                .toPrefixedHexString()
+                .toLowerCase() as `0x${string}`,
+            },
+            destAsset: {
+              ...step.destAsset,
+              chainId: new Numeric(step.destAsset.chainId, 10)
+                .toPrefixedHexString()
+                .toLowerCase() as `0x${string}`,
+            },
+          })),
         },
       },
     });
