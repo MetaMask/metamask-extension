@@ -2600,25 +2600,25 @@ export default class MetamaskController extends EventEmitter {
   triggerNetworkrequests() {
     this.accountTrackerController.start();
     this.txController.startIncomingTransactionPolling();
-    this.tokenDetectionController.enable();
+    // this.tokenDetectionController.enable();
 
-    const preferencesControllerState = this.preferencesController.state;
+    // const preferencesControllerState = this.preferencesController.state;
 
-    if (this.#isTokenListPollingRequired(preferencesControllerState)) {
-      this.tokenListController.start();
-    }
+    // if (this.#isTokenListPollingRequired(preferencesControllerState)) {
+    //   this.tokenListController.start();
+    // }
   }
 
   stopNetworkRequests() {
     this.accountTrackerController.stop();
     this.txController.stopIncomingTransactionPolling();
-    this.tokenDetectionController.disable();
+    // this.tokenDetectionController.disable();
 
-    const preferencesControllerState = this.preferencesController.state;
+    // const preferencesControllerState = this.preferencesController.state;
 
-    if (this.#isTokenListPollingRequired(preferencesControllerState)) {
-      this.tokenListController.stop();
-    }
+    // if (this.#isTokenListPollingRequired(preferencesControllerState)) {
+    //   this.tokenListController.stop();
+    // }
   }
 
   resetStates(resetMethods) {
@@ -3238,6 +3238,7 @@ export default class MetamaskController extends EventEmitter {
       currencyRateController,
       tokenDetectionController,
       ensController,
+      tokenListController,
       gasFeeController,
       metaMetricsController,
       networkController,
@@ -4040,6 +4041,19 @@ export default class MetamaskController extends EventEmitter {
           tokenRatesController,
         ),
 
+      tokenDetectionStartPolling: tokenDetectionController.startPolling.bind(
+        tokenDetectionController,
+      ),
+      tokenDetectionStopPollingByPollingToken:
+        tokenDetectionController.stopPollingByPollingToken.bind(
+          tokenDetectionController,
+        ),
+
+      tokenListStartPolling:
+        tokenListController.startPolling.bind(tokenListController),
+      tokenListStopPollingByPollingToken:
+        tokenListController.stopPollingByPollingToken.bind(tokenListController),
+
       // GasFeeController
       gasFeeStartPollingByNetworkClientId:
         gasFeeController.startPollingByNetworkClientId.bind(gasFeeController),
@@ -4403,6 +4417,7 @@ export default class MetamaskController extends EventEmitter {
       if (balance === '0x0') {
         // This account has no balance, so check for tokens
         await this.tokenDetectionController.detectTokens({
+          chainIds: [chainId],
           selectedAddress: address,
         });
 
@@ -6669,6 +6684,8 @@ export default class MetamaskController extends EventEmitter {
       this.gasFeeController.stopAllPolling();
       this.currencyRateController.stopAllPolling();
       this.tokenRatesController.stopAllPolling();
+      this.tokenDetectionController.stopAllPolling();
+      this.tokenListController.stopAllPolling();
       this.appStateController.clearPollingTokens();
     } catch (error) {
       console.error(error);
@@ -7205,14 +7222,14 @@ export default class MetamaskController extends EventEmitter {
 
     this.tokenListController.updatePreventPollingOnNetworkRestart(!newEnabled);
 
-    if (newEnabled) {
-      log.debug('Started token list controller polling');
-      this.tokenListController.start();
-    } else {
-      log.debug('Stopped token list controller polling');
-      this.tokenListController.clearingTokenListData();
-      this.tokenListController.stop();
-    }
+    // if (newEnabled) {
+    //   log.debug('Started token list controller polling');
+    //   this.tokenListController.start();
+    // } else {
+    //   log.debug('Stopped token list controller polling');
+    //   this.tokenListController.clearingTokenListData();
+    //   this.tokenListController.stop();
+    // }
   }
 
   #isTokenListPollingRequired(preferencesControllerState) {

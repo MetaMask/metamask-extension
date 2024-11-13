@@ -4565,6 +4565,66 @@ export async function currencyRateStopPollingByPollingToken(
 }
 
 /**
+ * Informs the TokenDetectionController that the UI requires token detection polling
+ *
+ * @param chainIds - An array of chain ids to poll token detection on.
+ * @returns polling token that can be used to stop polling.
+ */
+export async function tokenDetectionStartPolling(
+  chainIds: string[],
+): Promise<string> {
+  const pollingToken = await submitRequestToBackground(
+    'tokenDetectionStartPolling',
+    [{ chainIds }],
+  );
+
+  await addPollingTokenToAppState(pollingToken);
+  return pollingToken;
+}
+
+/**
+ * Informs the TokenDetectionController that the UI no longer token detection polling
+ *
+ * @param pollingToken - Poll token received from calling tokenDetectionStartPolling
+ */
+export async function tokenDetectionStopPollingByPollingToken(
+  pollingToken: string,
+) {
+  await submitRequestToBackground('tokenDetectionStopPollingByPollingToken', [
+    pollingToken,
+  ]);
+  await removePollingTokenFromAppState(pollingToken);
+}
+
+/**
+ * Informs the TokenListController that the UI requires token list polling
+ *
+ * @param chainId
+ * @returns polling token that can be used to stop polling
+ */
+export async function tokenListStartPolling(chainId: string): Promise<string> {
+  const pollingToken = await submitRequestToBackground(
+    'tokenListStartPolling',
+    [{ chainId }],
+  );
+
+  await addPollingTokenToAppState(pollingToken);
+  return pollingToken;
+}
+
+/**
+ * Informs the TokenListController that the UI no longer token list polling
+ *
+ * @param pollingToken - Poll token received from calling tokenListStartPolling
+ */
+export async function tokenListStopPollingByPollingToken(pollingToken: string) {
+  await submitRequestToBackground('tokenListStopPollingByPollingToken', [
+    pollingToken,
+  ]);
+  await removePollingTokenFromAppState(pollingToken);
+}
+
+/**
  * Informs the TokenRatesController that the UI requires
  * token rate polling for the given chain id.
  *
