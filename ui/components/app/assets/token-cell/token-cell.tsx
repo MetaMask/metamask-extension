@@ -123,7 +123,6 @@ export default function TokenCell({
   }
 
   const tokenChainImage = getImageForChainId(chainId);
-  // console.log('FOO: ', symbol, tokenChainImage ?? '');
 
   return (
     <TokenListItem
