@@ -116,8 +116,9 @@ const AssetList = ({ onClickAsset, showTokensLinks }: AssetListProps) => {
       <AssetListControlBar showTokensLinks={showTokensLinks} />
       <TokenList
         nativeToken={<NativeToken onClickAsset={onClickAsset} />}
-        onTokenClick={(tokenAddress: string) => {
-          onClickAsset(tokenAddress);
+        onTokenClick={(chainId: string, tokenAddress: string) => {
+          console.log('click', chainId, tokenAddress);
+          onClickAsset(chainId, tokenAddress);
           trackEvent({
             event: MetaMetricsEventName.TokenScreenOpened,
             category: MetaMetricsEventCategory.Navigation,
