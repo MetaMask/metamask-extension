@@ -83,40 +83,6 @@ describe('ENS', function (this: Suite) {
       {
         fixtures: new FixtureBuilder()
           .withNetworkControllerOnMainnet()
-          .withAccountTracker({
-            accounts: {
-              '0x5cfe73b6021e818b776b421b1c4db2474086a7e1': {
-                address: '0x5cfe73b6021e818b776b421b1c4db2474086a7e1',
-                balance: '0x1bc16d674ec80000',
-              },
-            },
-            currentBlockGasLimit: '0x1c9c380',
-            accountsByChainId: {
-              '0x1': {
-                '0x5cfe73b6021e818b776b421b1c4db2474086a7e1': {
-                  address: '0x5cfe73b6021e818b776b421b1c4db2474086a7e1',
-                  balance: '0x1bc16d674ec80000',
-                },
-              },
-            },
-            currentBlockGasLimitByChainId: {
-              '0x1': '0x1c9c380',
-            },
-          })
-          .withNameController({
-            names: {
-              ethereumAddress: {
-                '0x5cfe73b6021e818b776b421b1c4db2474086a7e1': {
-                  '*': {
-                    name: 'Account 1',
-                    sourceId: null,
-                    proposedNames: {},
-                    origin: 'account-identity',
-                  },
-                },
-              },
-            },
-          })
           .build(),
         ganacheOptions: defaultGanacheOptions,
         title: this.test?.fullTitle(),
