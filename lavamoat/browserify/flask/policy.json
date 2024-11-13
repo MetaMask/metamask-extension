@@ -676,6 +676,7 @@
         "Headers": true,
         "URL": true,
         "URLSearchParams": true,
+        "__import__": true,
         "clearInterval": true,
         "clearTimeout": true,
         "console.error": true,
@@ -684,8 +685,8 @@
         "setTimeout": true
       },
       "packages": {
-        "@ensdomains/content-hash>multicodec>uint8arrays>multiformats": true,
         "@ethereumjs/tx>@ethereumjs/util": true,
+        "@ethersproject/bignumber": true,
         "@ethersproject/contracts": true,
         "@ethersproject/providers": true,
         "@metamask/abi-utils": true,
@@ -3122,6 +3123,11 @@
         "semver": true
       }
     },
+    "@metamask/solana-wallet-snap>@solana/web3.js>bs58": {
+      "packages": {
+        "@ensdomains/content-hash>multihashes>multibase>base-x": true
+      }
+    },
     "@metamask/test-bundler>@ethersproject/networks": {
       "packages": {
         "ethers>@ethersproject/logger": true
@@ -4520,14 +4526,9 @@
     },
     "ethereumjs-util>ethereum-cryptography>bs58check": {
       "packages": {
+        "@metamask/solana-wallet-snap>@solana/web3.js>bs58": true,
         "ethereumjs-util>create-hash": true,
-        "ethereumjs-util>ethereum-cryptography>bs58check>bs58": true,
         "koa>content-disposition>safe-buffer": true
-      }
-    },
-    "ethereumjs-util>ethereum-cryptography>bs58check>bs58": {
-      "packages": {
-        "@ensdomains/content-hash>multihashes>multibase>base-x": true
       }
     },
     "ethereumjs-util>ethereum-cryptography>keccak": {
