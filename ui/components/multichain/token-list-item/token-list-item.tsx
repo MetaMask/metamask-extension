@@ -79,6 +79,7 @@ type TokenListItemProps = {
   isStakeable?: boolean;
   tokenChainImage?: string;
   chainId: string;
+  isOriginalTokenSymbol?: boolean | null;
   address?: string | null;
   showPercentage?: boolean;
   isPrimaryTokenSymbolHidden?: boolean;
@@ -96,6 +97,7 @@ export const TokenListItem = ({
   tooltipText,
   tokenChainImage,
   chainId,
+  isOriginalTokenSymbol = true,
   isPrimaryTokenSymbolHidden = false,
   isNativeCurrency = false,
   isStakeable = false,
@@ -125,9 +127,8 @@ export const TokenListItem = ({
   const shouldShowPercentage = isEvm && showPercentage;
 
   // Scam warning
-  const showScamWarning = false;
-  // TODO: debug why this scam warning is buggy on multichain
-  // !isNativeCurrency && !isOriginalTokenSymbol && shouldShowPercentage;
+  const showScamWarning =
+    isNativeCurrency && !isOriginalTokenSymbol && shouldShowPercentage;
 
   const dispatch = useDispatch();
   const [showScamWarningModal, setShowScamWarningModal] = useState(false);
