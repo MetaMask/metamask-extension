@@ -62,6 +62,7 @@ class VaultDecryptorPage {
    * @param vaultText - The text to fill in the text input field.
    */
   async fillVaultText(vaultText: string) {
+    console.log('fill vault text on vault decryptor page');
     await this.driver.clickElement(this.radioTextInput);
     await this.driver.fill(this.textInput, vaultText);
   }
@@ -72,6 +73,7 @@ class VaultDecryptorPage {
    * @param filePath - The path to the log file to upload.
    */
   async uploadLogFile(filePath: string) {
+    console.log('upload log file on vault decryptor page');
     await this.driver.clickElement(this.radioFileInput);
     const inputField = await this.driver.findElement(this.fileInput);
     await inputField.sendKeys(filePath);
@@ -83,6 +85,7 @@ class VaultDecryptorPage {
    * @param seedPhrase - The expected seed phrase.
    */
   async check_vaultIsDecrypted(seedPhrase: string) {
+    console.log('check vault is decrypted on vault decryptor page');
     await this.driver.waitForSelector({
       text: seedPhrase,
       tag: 'div',
