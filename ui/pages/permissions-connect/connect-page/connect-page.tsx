@@ -50,7 +50,7 @@ export type ConnectPageRequest = {
   >;
 };
 
-type ConnectPageProps = {
+export type ConnectPageProps = {
   request: ConnectPageRequest;
   permissionsRequestId: string;
   rejectPermissionsRequest: (id: string) => void;
