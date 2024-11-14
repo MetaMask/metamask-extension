@@ -1,7 +1,9 @@
 import React from 'react';
 import { screen, act, waitFor } from '@testing-library/react';
+import configureMockStore from 'redux-mock-store';
+import thunk from 'redux-thunk';
 import { renderWithProvider } from '../../../../../test/jest';
-import configureStore, { MetaMaskReduxState } from '../../../../store/store';
+import { MetaMaskReduxState } from '../../../../store/store';
 import mockState from '../../../../../test/data/mock-state.json';
 import { CHAIN_IDS } from '../../../../../shared/constants/network';
 import { useIsOriginalNativeTokenSymbol } from '../../../../hooks/useIsOriginalNativeTokenSymbol';
@@ -64,6 +66,9 @@ jest.mock('../../../../hooks/useIsOriginalNativeTokenSymbol', () => {
 jest.mock('../../../../store/actions', () => {
   return {
     getTokenSymbol: jest.fn(),
+    setTokenNetworkFilter: jest.fn(() => ({
+      type: 'TOKEN_NETWORK_FILTER',
+    })),
   };
 });
 
@@ -101,7 +106,7 @@ const render = (balance = ETH_BALANCE, chainId = CHAIN_IDS.MAINNET) => {
       },
     },
   };
-  const store = configureStore(state);
+  const store = configureMockStore([thunk])(state);
   return renderWithProvider(
     <AssetList onClickAsset={() => undefined} showTokensLinks />,
     store,
