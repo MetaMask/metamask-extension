@@ -26,7 +26,6 @@ import { filterAssets } from '../util/filter';
 import { calculateTokenBalance } from '../util/calculateTokenBalance';
 import { calculateTokenFiatAmount } from '../util/calculateTokenFiatAmount';
 import { endTrace, TraceName } from '../../../../../shared/lib/trace';
-import { zeroAddress } from 'ethereumjs-util';
 
 type TokenListProps = {
   onTokenClick: (chainId: string, address: string) => void;
