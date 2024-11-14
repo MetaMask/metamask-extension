@@ -2,6 +2,10 @@
 
 import { join, relative } from 'node:path';
 import { homedir } from 'node:os';
+import { Dir } from 'node:fs';
+import { opendir, symlink, unlink, copyFile, rm } from 'node:fs/promises';
+import { createHash } from 'node:crypto';
+import { exit, cwd } from 'node:process';
 import {
   BinFormat,
   Platform,
@@ -13,9 +17,6 @@ import {
   isCodedError,
   noop,
 } from './helpers.mts';
-import { Dir } from 'node:fs';
-import { opendir, symlink, unlink, copyFile, rm } from 'node:fs/promises';
-import { createHash } from 'node:crypto';
 
 const parsedArgs = parseArgs();
 
@@ -24,7 +25,7 @@ const CACHE_DIR = join(homedir(), '.cache', 'metamask-extension');
 if (parsedArgs.command === 'cache clean') {
   await rm(CACHE_DIR, { recursive: true, force: true });
   say('done!');
-  process.exit(0);
+  exit(0);
 }
 
 const {
@@ -36,28 +37,29 @@ const {
 } = parsedArgs.options;
 
 printBanner();
-
-say(
-  `installing foundry (version ${version}, tag ${tag}) for ${platform} ${arch}`,
-);
+const bins = binaries.join(', ');
+say(`fetching ${bins} ${version} for ${platform} ${arch}`);
 
 const ext = platform === Platform.Windows ? BinFormat.Zip : BinFormat.Tar;
 const BIN_ARCHIVE_URL = `https://github.com/${repo}/releases/download/${tag}/foundry_${version}_${platform}_${arch}.${ext}`;
-const BIN_DIR = join(process.cwd(), 'node_modules', '.bin');
+const BIN_DIR = join(cwd(), 'node_modules', '.bin');
 
-say(`downloading ${binaries.join(', ')}`);
 const url = new URL(BIN_ARCHIVE_URL);
 const cacheKey = createHash('sha256')
-  .update(`${BIN_ARCHIVE_URL}-${binaries.join('_')}`)
+  .update(`${BIN_ARCHIVE_URL}-${bins}`)
   .digest('hex');
 const cachePath = join(CACHE_DIR, cacheKey);
 
 // check the cache, if the cache dir exists we assume the correct files do, too
 let downloadedBinaries: Dir;
 try {
+  say(`checking cache`);
   downloadedBinaries = await opendir(cachePath);
+  say(`found binaries in cache`);
 } catch (e: unknown) {
+  say(`binaries not in cache`);
   if ((e as NodeJS.ErrnoException).code === 'ENOENT') {
+    say(`installing from ${url.toString()}`);
     // directory doesn't exist, download and extract
     await extractFrom(url, binaries, cachePath);
     downloadedBinaries = await opendir(cachePath);

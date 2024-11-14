@@ -9,17 +9,13 @@ import {
 } from 'node:http';
 import { Agent as HttpsAgent, request as httpsRequest } from 'node:https';
 import { join, basename, extname, relative } from 'node:path';
-import {
-  argv,
-  arch as osArch,
-  platform as osPlatform,
-  stdout,
-} from 'node:process';
+import { argv, stdout } from 'node:process';
+import { arch, platform } from 'node:os';
 import { Stream } from 'node:stream';
 import { pipeline } from 'node:stream/promises';
 import { extract as extractTar } from 'tar';
 import { Source, Open as Unzip } from 'unzipper';
-import { Argv, InferredOptionTypes } from 'yargs';
+import { InferredOptionTypes } from 'yargs';
 import yargs from 'yargs/yargs';
 
 export function noop() {}
@@ -56,7 +52,7 @@ export function parseArgs(args: string[] = argv.slice(2)) {
     .version(false)
     // use the scriptName in `--help` output
     .scriptName('yarn foundryup')
-    // wrap output at a maximum of 120 characters or `process.stdout.columns`
+    // wrap output at a maximum of 120 characters or `stdout.columns`
     .wrap(Math.min(120, stdout.columns))
     .parserConfiguration({
       'strip-aliased': true,
@@ -111,7 +107,7 @@ function getOptions() {
       ): { version: 'nightly' | `v${string}`; tag: string } => {
         if (/^nightly/u.test(rawVersion)) {
           return { version: 'nightly', tag: rawVersion };
-          // we don't validate the version here, we just trust the user
+          // we don't validate the version much, we just trust the user
         } else if (/^\d/u.test(rawVersion)) {
           return { version: `v${rawVersion}`, tag: rawVersion };
         }
@@ -121,21 +117,38 @@ function getOptions() {
     arch: {
       alias: 'a',
       description: 'Specify the architecture',
-      // foundry only handles `amd64` and `arm64` architectures
-      default:
-        osArch === 'arm' || osArch === 'arm64'
-          ? ('arm64' as const)
-          : ('amd64' as const),
+      default: getSystemArch(),
       choices: ['amd64', 'arm64'] as const,
     },
     platform: {
       alias: 'p',
       description: 'Specify the platform',
       // if `osPlatform` is not a supported Platform yargs will throw an error
-      default: osPlatform as Platform,
+      default: platform() as Platform,
       choices: Object.values(Platform) as Platform[],
     },
   };
+}
+
+function getSystemArch(): 'amd64' | 'arm64' {
+  const architecture = arch();
+  if (architecture.startsWith('arm')) {
+    // if `arm*`, use `arm64`
+    return 'arm64';
+  } else if (architecture === 'x64') {
+    // if `x64`, it _might_ be amd64 running via Rosetta on Apple Silicon
+    // (arm64). we can check this by running `sysctl.proc_translated` and
+    // checking the output; `1` === `arm64`. This can happen if the user is
+    // running an amd64 version of Node on Apple Silicon. We want to use the
+    // binaries native to the system for better performance.
+    try {
+      if (execSync('sysctl -n sysctl.proc_translated 2>/dev/null')[0] === 1) {
+        return 'arm64';
+      }
+    } catch {} // if `sysctl` check fails, assume native `amd64`
+  }
+
+  return 'amd64'; // Default for all other architectures
 }
 
 export function printBanner() {
