@@ -246,7 +246,6 @@
     "snapRegistryList": "object",
     "theme": "light",
     "snapsAddSnapAccountModalDismissed": "boolean",
-    "solanaSupportEnabled": "boolean",
     "useExternalNameSources": "boolean",
     "useTransactionSimulations": true,
     "enableMV3TimestampSave": true,
