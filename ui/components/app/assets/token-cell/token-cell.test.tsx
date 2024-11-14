@@ -9,6 +9,7 @@ import {
   getTokenList,
   getPreferences,
   getCurrentCurrency,
+  getCurrencyRates,
 } from '../../../../selectors';
 import {
   getMultichainCurrentChainId,
@@ -123,6 +124,9 @@ describe('Token Cell', () => {
     }
     if (selector === getCurrentCurrency) {
       return 'usd';
+    }
+    if (selector === getCurrencyRates) {
+      return { POL: '' };
     }
     return undefined;
   });
