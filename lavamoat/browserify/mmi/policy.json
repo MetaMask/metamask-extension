@@ -2696,6 +2696,9 @@
       }
     },
     "@metamask/signature-controller": {
+      "globals": {
+        "fetch": true
+      },
       "packages": {
         "@metamask/base-controller": true,
         "@metamask/controller-utils": true,
