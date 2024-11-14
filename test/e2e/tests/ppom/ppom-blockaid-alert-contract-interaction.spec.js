@@ -1,4 +1,3 @@
-const { strict: assert } = require('assert');
 const FixtureBuilder = require('../../fixture-builder');
 
 const {
@@ -224,20 +223,15 @@ describe('PPOM Blockaid Alert - Malicious Contract interaction @no-mmi', functio
 
         await driver.assertElementNotPresent('.loading-indicator');
 
-        const bannerAlert = await driver.findElement(
-          '[data-testid="confirm-banner-alert"]',
-        );
+        await driver.findElement({
+          css: '[data-testid="confirm-banner-alert"]',
+          text: expectedTitle,
+        });
 
-        const bannerAlertText = await bannerAlert.getText();
-
-        assert.ok(
-          bannerAlertText.includes(expectedTitle),
-          `Expected text "${expectedTitle}" not found on the alert`,
-        );
-        assert.ok(
-          bannerAlertText.includes(expectedDescription),
-          `Expected text "${expectedDescription}" not found on the alert`,
-        );
+        await driver.findElement({
+          css: '[data-testid="confirm-banner-alert"]',
+          text: expectedDescription,
+        });
       },
     );
   });
