@@ -34,7 +34,7 @@ export function calculateTokenBalance({
     }
   } else {
     const hexBalance =
-      selectedAccountTokenBalancesAcrossChains[chainId]?.[address];
+      selectedAccountTokenBalancesAcrossChains?.[chainId]?.[address];
     if (hexBalance && hexBalance !== '0x0') {
       balance = stringifyBalance(
         new BN(hexToDecimal(hexBalance)),
