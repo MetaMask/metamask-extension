@@ -107,7 +107,6 @@ const ConfirmLegacyGasDisplay = ({ 'data-testid': dataTestId } = {}) => {
               type={SECONDARY}
               value={estimatedHexMinFeeTotal}
               hideLabel
-              showCurrencySuffix={false}
             />
           </div>
         )
@@ -127,7 +126,6 @@ const ConfirmLegacyGasDisplay = ({ 'data-testid': dataTestId } = {}) => {
               variant: TextVariant.bodyMdBold,
             }}
             numberOfDecimals={6}
-            showCurrencySuffix={false}
           />
         </div>
       }
@@ -142,7 +140,6 @@ const ConfirmLegacyGasDisplay = ({ 'data-testid': dataTestId } = {}) => {
               key="editGasSubTextFeeAmount"
               type={PRIMARY}
               value={estimatedHexMaxFeeTotal}
-              showCurrencySuffix={false}
             />
           </div>
         </>
