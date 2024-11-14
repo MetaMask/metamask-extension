@@ -28,6 +28,8 @@ import {
 import { useI18nContext } from '../../../../../../hooks/useI18nContext';
 import { getNetworkConfigurationsByChainId } from '../../../../../../selectors';
 import { useConfirmContext } from '../../../../context/confirm';
+import { selectConfirmationAdvancedDetailsOpen } from '../../../../selectors/preferences';
+import { useBalanceChanges } from '../../../simulation-details/useBalanceChanges';
 
 export const TokenDetailsSection = () => {
   const t = useI18nContext();
@@ -37,6 +39,20 @@ export const TokenDetailsSection = () => {
   const { chainId } = transactionMeta;
   const networkConfigurations = useSelector(getNetworkConfigurationsByChainId);
   const networkName = networkConfigurations[chainId].name;
+
+  const showAdvancedDetails = useSelector(
+    selectConfirmationAdvancedDetailsOpen,
+  );
+
+  const isSimulationError = Boolean(
+    transactionMeta.simulationData?.error?.code,
+  );
+  const balanceChangesResult = useBalanceChanges({
+    chainId,
+    simulationData: transactionMeta.simulationData,
+  });
+  const balanceChanges = balanceChangesResult.value;
+  const isSimulationEmpty = balanceChanges.length === 0;
 
   const networkRow = (
     <ConfirmInfoRow label={t('transactionFlowNetwork')}>
@@ -64,17 +80,18 @@ export const TokenDetailsSection = () => {
     </ConfirmInfoRow>
   );
 
-  const tokenRow = transactionMeta.type !== TransactionType.simpleSend && (
-    <ConfirmInfoRow
-      label={t('interactingWith')}
-      tooltip={t('interactingWithTransactionDescription')}
-    >
-      <ConfirmInfoRowAddress
-        address={transactionMeta.txParams.to as string}
-        chainId={chainId}
-      />
-    </ConfirmInfoRow>
-  );
+  const tokenRow = transactionMeta.type !== TransactionType.simpleSend &&
+    (showAdvancedDetails || isSimulationEmpty || isSimulationError) && (
+      <ConfirmInfoRow
+        label={t('interactingWith')}
+        tooltip={t('interactingWithTransactionDescription')}
+      >
+        <ConfirmInfoRowAddress
+          address={transactionMeta.txParams.to as string}
+          chainId={chainId}
+        />
+      </ConfirmInfoRow>
+    );
 
   return (
     <ConfirmInfoSection data-testid="confirmation__transaction-flow">
