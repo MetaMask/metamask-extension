@@ -23,7 +23,10 @@ import UserPreferencedCurrencyDisplay from '../../../components/app/user-prefere
 import { EtherDenomination } from '../../../../shared/constants/common';
 import { PRIMARY } from '../../../helpers/constants/common';
 import CurrencyDisplay from '../../../components/ui/currency-display/currency-display.component';
-import { StatusTypes } from '../../../../shared/types/bridge-status';
+import {
+  BridgeHistoryItem,
+  StatusTypes,
+} from '../../../../shared/types/bridge-status';
 import {
   AlignItems,
   Display,
@@ -60,6 +63,51 @@ const getBlockExplorerUrl = (
   return `${rootUrl}/tx/${txHash}`;
 };
 
+const getBridgeHistoryItem = (
+  srcTxHashOrTxId: string | undefined,
+  bridgeHistory: Record<string, BridgeHistoryItem>,
+  srcChainTxMeta: TransactionMeta | undefined,
+) => {
+  if (!srcTxHashOrTxId) {
+    return undefined;
+  }
+
+  const historyItemFromUrlParamHash = bridgeHistory[srcTxHashOrTxId];
+  const historyItemFromTxMetaHash = srcChainTxMeta?.hash
+    ? bridgeHistory[srcChainTxMeta?.hash]
+    : undefined;
+
+  return historyItemFromUrlParamHash || historyItemFromTxMetaHash;
+};
+
+const getBridgeAmount = ({
+  bridgeHistoryItem,
+  srcChainTxMeta,
+}: {
+  bridgeHistoryItem?: BridgeHistoryItem;
+  srcChainTxMeta?: TransactionMeta;
+}) => {
+  if (bridgeHistoryItem) {
+    return `${calcTokenAmount(
+      bridgeHistoryItem.quote.srcTokenAmount,
+      bridgeHistoryItem.quote.srcAsset.decimals,
+    ).toFixed()} ${bridgeHistoryItem.quote.srcAsset.symbol}`;
+  }
+
+  if (
+    srcChainTxMeta &&
+    srcChainTxMeta.sourceTokenAmount &&
+    srcChainTxMeta.sourceTokenDecimals
+  ) {
+    return `${calcTokenAmount(
+      srcChainTxMeta.sourceTokenAmount,
+      srcChainTxMeta.sourceTokenDecimals,
+    ).toFixed()} ${srcChainTxMeta.sourceTokenSymbol}`;
+  }
+
+  return undefined;
+};
+
 const StatusToColorMap: Record<StatusTypes, TextColor> = {
   [StatusTypes.PENDING]: TextColor.warningDefault,
   [StatusTypes.COMPLETE]: TextColor.successDefault,
@@ -78,15 +126,18 @@ const CrossChainSwapTxDetails = () => {
     selectedAddressTxListSelector,
   ) as TransactionMeta[];
 
-  const bridgeHistoryItem = srcTxHashOrTxId
-    ? bridgeHistory[srcTxHashOrTxId]
-    : undefined;
   const networkConfigurationsByChainId = useSelector(
     getNetworkConfigurationsByChainId,
   );
 
   const srcChainTxMeta = selectedAddressTxList.find(
     (tx) => tx.hash === srcTxHashOrTxId || tx.id === srcTxHashOrTxId,
+  );
+  // Even if user is still on /tx-details/txMetaId, we want to be able to show the bridge history item
+  const bridgeHistoryItem = getBridgeHistoryItem(
+    srcTxHashOrTxId,
+    bridgeHistory,
+    srcChainTxMeta,
   );
 
   const { srcNetwork, destNetwork } = useBridgeChainInfo({
@@ -99,7 +150,9 @@ const CrossChainSwapTxDetails = () => {
   const destTxHash = bridgeHistoryItem?.status.destChain?.txHash;
   const destBlockExplorerUrl = getBlockExplorerUrl(destNetwork, destTxHash);
 
-  const status = bridgeHistoryItem?.status.status;
+  const status = bridgeHistoryItem
+    ? bridgeHistoryItem?.status.status
+    : StatusTypes.PENDING;
 
   const destChainIconUrl = destNetwork
     ? CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP[
@@ -118,12 +171,7 @@ const CrossChainSwapTxDetails = () => {
       })
     : undefined;
 
-  const bridgeAmount = bridgeHistoryItem
-    ? `${calcTokenAmount(
-        bridgeHistoryItem.quote.srcTokenAmount,
-        bridgeHistoryItem.quote.srcAsset.decimals,
-      ).toFixed()} ${bridgeHistoryItem.quote.srcAsset.symbol}`
-    : undefined;
+  const bridgeAmount = getBridgeAmount({ bridgeHistoryItem, srcChainTxMeta });
 
   return (
     <div className="bridge">
