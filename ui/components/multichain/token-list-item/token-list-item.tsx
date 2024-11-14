@@ -112,11 +112,6 @@ export const TokenListItem = ({
   const isMarketingEnabled = useSelector(getDataCollectionForMarketing);
   const { safeChains } = useSafeChains();
   const currencyRates = useSelector(getCurrencyRates);
-  console.log(
-    currencyRates,
-    tokenSymbol,
-    tokenSymbol && currencyRates[tokenSymbol],
-  );
 
   const decimalChainId = isEvm && parseInt(hexToDecimal(chainId), 10);
 
