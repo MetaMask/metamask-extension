@@ -115,6 +115,8 @@ const AssetChart = ({
     },
   } as const;
 
+  console.log('THIS: ', currentPrice, loading, prices);
+
   if (!currentPrice || (!loading && !prices)) {
     return null;
   }
