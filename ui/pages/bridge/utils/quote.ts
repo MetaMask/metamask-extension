@@ -1,11 +1,18 @@
 import { zeroAddress } from 'ethereumjs-util';
 import { BigNumber } from 'bignumber.js';
 import { calcTokenAmount } from '../../../../shared/lib/transactions-controller-utils';
-import { QuoteResponse, QuoteRequest, Quote } from '../types';
+import { QuoteResponse, QuoteRequest, Quote, L1GasFees } from '../types';
 import {
   hexToDecimal,
   sumDecimals,
 } from '../../../../shared/modules/conversion.utils';
+<<<<<<< HEAD
+=======
+import { formatCurrency } from '../../../helpers/utils/confirm-tx.util';
+import { DEFAULT_PRECISION } from '../../../hooks/useCurrencyDisplay';
+import { Numeric } from '../../../../shared/modules/Numeric';
+import { EtherDenomination } from '../../../../shared/constants/common';
+>>>>>>> 61f029ee7a (chore: add L1 fees for Base and Optimism)
 
 export const isNativeAddress = (address?: string) => address === zeroAddress();
 
@@ -96,13 +103,12 @@ const calcRelayerFee = (
 };
 
 const calcTotalGasFee = (
-  bridgeQuote: QuoteResponse,
+  bridgeQuote: QuoteResponse & L1GasFees,
   estimatedBaseFeeInDecGwei: string,
   maxPriorityFeePerGasInDecGwei: string,
   nativeExchangeRate?: number,
-  l1GasInDecGwei?: BigNumber,
 ) => {
-  const { approval, trade } = bridgeQuote;
+  const { approval, trade, l1GasFeesInHexWei } = bridgeQuote;
   const totalGasLimitInDec = sumDecimals(
     trade.gasLimit?.toString() ?? '0',
     approval?.gasLimit?.toString() ?? '0',
@@ -111,11 +117,16 @@ const calcTotalGasFee = (
     estimatedBaseFeeInDecGwei,
     maxPriorityFeePerGasInDecGwei,
   );
-  const gasFeesInDecGwei = totalGasLimitInDec.times(feePerGasInDecGwei);
 
-  if (l1GasInDecGwei) {
-    gasFeesInDecGwei.add(l1GasInDecGwei);
-  }
+  const l1GasFeesInDecGWei = Numeric.from(
+    l1GasFeesInHexWei ?? '0',
+    16,
+    EtherDenomination.WEI,
+  ).toDenomination(EtherDenomination.GWEI);
+
+  const gasFeesInDecGwei = totalGasLimitInDec
+    .times(feePerGasInDecGwei)
+    .add(l1GasFeesInDecGWei);
 
   const gasFeesInDecEth = new BigNumber(
     gasFeesInDecGwei.shiftedBy(9).toString(),
@@ -131,7 +142,7 @@ const calcTotalGasFee = (
 };
 
 export const calcTotalNetworkFee = (
-  bridgeQuote: QuoteResponse,
+  bridgeQuote: QuoteResponse & L1GasFees,
   estimatedBaseFeeInDecGwei: string,
   maxPriorityFeePerGasInDecGwei: string,
   nativeExchangeRate?: number,

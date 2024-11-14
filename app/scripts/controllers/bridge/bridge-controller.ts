@@ -6,6 +6,8 @@ import { Contract } from '@ethersproject/contracts';
 import { abiERC20 } from '@metamask/metamask-eth-abis';
 import { Web3Provider } from '@ethersproject/providers';
 import { BigNumber } from '@ethersproject/bignumber';
+import { TransactionParams } from '@metamask/transaction-controller';
+import type { ChainId } from '@metamask/controller-utils';
 import {
   fetchBridgeFeatureFlags,
   fetchBridgeQuotes,
@@ -16,14 +18,23 @@ import {
 // TODO: Remove restricted import
 // eslint-disable-next-line import/no-restricted-paths
 import { fetchTopAssetsList } from '../../../../ui/pages/swaps/swaps.util';
-import { decimalToHex } from '../../../../shared/modules/conversion.utils';
-// TODO: Remove restricted import
-// eslint-disable-next-line import/no-restricted-paths
-import { QuoteRequest } from '../../../../ui/pages/bridge/types';
+import {
+  decimalToHex,
+  sumHexes,
+} from '../../../../shared/modules/conversion.utils';
+import {
+  L1GasFees,
+  QuoteRequest,
+  QuoteResponse,
+  TxData,
+  // TODO: Remove restricted import
+  // eslint-disable-next-line import/no-restricted-paths
+} from '../../../../ui/pages/bridge/types';
 // TODO: Remove restricted import
 // eslint-disable-next-line import/no-restricted-paths
 import { isValidQuoteRequest } from '../../../../ui/pages/bridge/utils/quote';
 import { hasSufficientBalance } from '../../../../shared/modules/bridge-utils/balance';
+import { CHAIN_IDS } from '../../../../shared/constants/network';
 import {
   BRIDGE_CONTROLLER_NAME,
   DEFAULT_BRIDGE_CONTROLLER_STATE,
@@ -53,7 +64,21 @@ export default class BridgeController extends StaticIntervalPollingController<
 > {
   #abortController: AbortController | undefined;
 
-  constructor({ messenger }: { messenger: BridgeControllerMessenger }) {
+  #getLayer1GasFee: (params: {
+    transactionParams: TransactionParams;
+    chainId: ChainId;
+  }) => Promise<string>;
+
+  constructor({
+    messenger,
+    getLayer1GasFee,
+  }: {
+    messenger: BridgeControllerMessenger;
+    getLayer1GasFee: (params: {
+      transactionParams: TransactionParams;
+      chainId: ChainId;
+    }) => Promise<string>;
+  }) {
     super({
       name: BRIDGE_CONTROLLER_NAME,
       metadata,
@@ -91,6 +116,8 @@ export default class BridgeController extends StaticIntervalPollingController<
       `${BRIDGE_CONTROLLER_NAME}:getBridgeERC20Allowance`,
       this.getBridgeERC20Allowance.bind(this),
     );
+
+    this.#getLayer1GasFee = getLayer1GasFee;
   }
 
   _executePoll = async (
@@ -226,10 +253,12 @@ export default class BridgeController extends StaticIntervalPollingController<
         this.stopAllPolling();
       }
 
+      const quotesWithL1GasFees = await this.#appendL1GasFees(quotes);
+
       this.update((_state) => {
         _state.bridgeState = {
           ..._state.bridgeState,
-          quotes,
+          quotes: quotesWithL1GasFees,
           quotesLastFetched: Date.now(),
           quotesLoadingStatus: RequestStatus.FETCHED,
           quotesRefreshCount: newQuotesRefreshCount,
@@ -251,6 +280,45 @@ export default class BridgeController extends StaticIntervalPollingController<
       });
       console.log('Failed to fetch bridge quotes', error);
     }
+  };
+
+  #appendL1GasFees = async (
+    quotes: QuoteResponse[],
+  ): Promise<(QuoteResponse & L1GasFees)[]> => {
+    return await Promise.all(
+      quotes.map(async (quoteResponse) => {
+        const { quote, trade, approval } = quoteResponse;
+        const chainId = add0x(decimalToHex(quote.srcChainId)) as ChainId;
+        if (
+          [CHAIN_IDS.OPTIMISM.toString(), CHAIN_IDS.BASE.toString()].includes(
+            chainId,
+          )
+        ) {
+          const getTxParams = (txData: TxData) => ({
+            from: txData.from,
+            to: txData.to,
+            value: txData.value,
+            data: txData.data,
+            gasLimit: txData.gasLimit?.toString(),
+          });
+          const approvalL1GasFees = approval
+            ? await this.#getLayer1GasFee({
+                transactionParams: getTxParams(approval),
+                chainId,
+              })
+            : '0';
+          const tradeL1GasFees = await this.#getLayer1GasFee({
+            transactionParams: getTxParams(trade),
+            chainId,
+          });
+          return {
+            ...quoteResponse,
+            l1GasFeesInHexWei: sumHexes(approvalL1GasFees, tradeL1GasFees),
+          };
+        }
+        return quoteResponse;
+      }),
+    );
   };
 
   #setTopAssets = async (

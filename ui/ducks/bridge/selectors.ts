@@ -35,6 +35,7 @@ import { calcTokenAmount } from '../../../shared/lib/transactions-controller-uti
 // eslint-disable-next-line import/no-restricted-paths
 import { RequestStatus } from '../../../app/scripts/controllers/bridge/constants';
 import {
+  L1GasFees,
   QuoteMetadata,
   QuoteResponse,
   SortOrder,

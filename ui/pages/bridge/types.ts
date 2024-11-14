@@ -1,5 +1,9 @@
 import { BigNumber } from 'bignumber.js';
 
+export type L1GasFees = {
+  l1GasFeesInHexWei?: string; // l1 fees for approval and trade in hex wei, appended by controller
+};
+
 // Values derived from the quote response
 export type QuoteMetadata = {
   totalNetworkFee: { raw: BigNumber; fiat: BigNumber | null }; // gasFees + relayerFees

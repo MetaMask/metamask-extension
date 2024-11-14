@@ -1,5 +1,5 @@
 import { BigNumber } from 'bignumber.js';
-import { zeroAddress } from '../../../__mocks__/ethereumjs-util';
+import { zeroAddress } from 'ethereumjs-util';
 import {
   calcAdjustedReturn,
   calcSentAmount,
@@ -188,6 +188,77 @@ describe('Bridge quote utils', () => {
         } as never,
         '0x19870',
         '0x186a0',
+        2517.42,
+      );
+      expect(result.raw?.toString()).toStrictEqual(raw);
+      expect(result.fiat?.toString()).toStrictEqual(fiat);
+    },
+  );
+
+  // @ts-expect-error This is missing from the Mocha type definitions
+  it.each([
+    [
+      'native',
+      NATIVE_TOKEN,
+      '1000000000000000000',
+      '0x0de0b6b3a7640000',
+      { raw: '0.000002832228395508', fiat: '0.00712990840741974936' },
+      undefined,
+    ],
+    [
+      'erc20',
+      ERC20_TOKEN,
+      '100000000',
+      '0x00',
+      { raw: '0.000002832228395508', fiat: '0.00712990840741974936' },
+      undefined,
+    ],
+    [
+      'erc20 with approval',
+      ERC20_TOKEN,
+      '100000000',
+      '0x00',
+      { raw: '0.000003055746402628', fiat: '0.00769259710890377976' },
+      1092677,
+    ],
+    [
+      'erc20 with relayer fee',
+      ERC20_TOKEN,
+      '100000000',
+      '0x0de0b6b3a7640000',
+      { raw: '1.000002832228395508', fiat: '2517.42712990840741974936' },
+      undefined,
+    ],
+    [
+      'native with relayer fee',
+      NATIVE_TOKEN,
+      '1000000000000000000',
+      '0x0de1b6b3a7640000',
+      { raw: '0.000284307205106164', fiat: '0.71572064427835937688' },
+      undefined,
+    ],
+  ])(
+    'calcTotalNetworkFee: fromToken is %s with l1GasFee',
+    (
+      _: string,
+      srcAsset: { decimals: number; address: string },
+      srcTokenAmount: string,
+      value: string,
+      { raw, fiat }: { raw: string; fiat: string },
+      approvalGasLimit?: number,
+    ) => {
+      const feeData = { metabridge: { amount: 0 } };
+      const result = calcTotalNetworkFee(
+        {
+          trade: { value, gasLimit: 1092677 },
+          approval: approvalGasLimit
+            ? { gasLimit: approvalGasLimit }
+            : undefined,
+          quote: { srcAsset, srcTokenAmount, feeData },
+          l1GasFeesInHexWei: '0x25F63418AA4',
+        } as never,
+        '0.00010456',
+        '0.0001',
         2517.42,
       );
       expect(result.raw?.toString()).toStrictEqual(raw);
