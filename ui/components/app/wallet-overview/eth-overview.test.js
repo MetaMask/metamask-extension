@@ -7,6 +7,7 @@ import { CHAIN_IDS } from '../../../../shared/constants/network';
 import { renderWithProvider } from '../../../../test/jest/rendering';
 import { KeyringType } from '../../../../shared/constants/keyring';
 import { useIsOriginalNativeTokenSymbol } from '../../../hooks/useIsOriginalNativeTokenSymbol';
+import useMultiPolling from '../../../hooks/useMultiPolling';
 import { defaultBuyableChains } from '../../../ducks/ramps/constants';
 import { ETH_EOA_METHODS } from '../../../../shared/constants/eth-methods';
 import { getIntlLocale } from '../../../ducks/locale/locale';
@@ -38,6 +39,11 @@ jest.mock('../../../ducks/locale/locale', () => ({
 
 jest.mock('../../../store/actions', () => ({
   startNewDraftTransaction: jest.fn(),
+}));
+
+jest.mock('../../../hooks/useMultiPolling', () => ({
+  __esModule: true,
+  default: jest.fn(),
 }));
 
 const mockGetIntlLocale = getIntlLocale;
@@ -157,6 +163,23 @@ describe('EthOverview', () => {
 
     beforeEach(() => {
       openTabSpy.mockClear();
+      // Clear previous mock implementations
+      useMultiPolling.mockClear();
+
+      // Mock implementation for useMultiPolling
+      useMultiPolling.mockImplementation(({ input }) => {
+        // Mock startPolling and stopPollingByPollingToken for each input
+        const startPolling = jest.fn().mockResolvedValue('mockPollingToken');
+        const stopPollingByPollingToken = jest.fn();
+
+        input.forEach((inputItem) => {
+          const key = JSON.stringify(inputItem);
+          // Simulate returning a unique token for each input
+          startPolling.mockResolvedValueOnce(`mockToken-${key}`);
+        });
+
+        return { startPolling, stopPollingByPollingToken };
+      });
     });
 
     it('should show the primary balance', async () => {
