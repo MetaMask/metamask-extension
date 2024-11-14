@@ -705,27 +705,12 @@
       "packages": {
         "@ethereumjs/tx>@ethereumjs/util": true,
         "@ethereumjs/tx>ethereum-cryptography": true,
-        "@metamask/accounts-controller>@metamask/utils": true,
         "@metamask/base-controller": true,
         "@metamask/eth-snap-keyring": true,
         "@metamask/keyring-api": true,
         "@metamask/keyring-controller": true,
+        "@metamask/utils": true,
         "uuid": true
-      }
-    },
-    "@metamask/accounts-controller>@metamask/utils": {
-      "globals": {
-        "TextDecoder": true,
-        "TextEncoder": true
-      },
-      "packages": {
-        "@metamask/utils>@metamask/superstruct": true,
-        "@metamask/utils>@scure/base": true,
-        "@metamask/utils>pony-cause": true,
-        "@noble/hashes": true,
-        "browserify>buffer": true,
-        "nock>debug": true,
-        "semver": true
       }
     },
     "@metamask/address-book-controller": {
@@ -1204,12 +1189,23 @@
       },
       "packages": {
         "@ethereumjs/tx": true,
-        "@metamask/eth-sig-util": true,
+        "@metamask/eth-snap-keyring>@metamask/eth-sig-util": true,
         "@metamask/eth-snap-keyring>@metamask/utils": true,
         "@metamask/eth-snap-keyring>uuid": true,
         "@metamask/keyring-api": true,
         "@metamask/utils>@metamask/superstruct": true,
         "webpack>events": true
+      }
+    },
+    "@metamask/eth-snap-keyring>@metamask/eth-sig-util": {
+      "packages": {
+        "@ethereumjs/tx>@ethereumjs/util": true,
+        "@ethereumjs/tx>ethereum-cryptography": true,
+        "@metamask/abi-utils": true,
+        "@metamask/eth-sig-util>tweetnacl": true,
+        "@metamask/eth-snap-keyring>@metamask/utils": true,
+        "@metamask/utils>@scure/base": true,
+        "browserify>buffer": true
       }
     },
     "@metamask/eth-snap-keyring>@metamask/utils": {
@@ -2793,6 +2789,21 @@
         "immer": true
       }
     },
+    "@metamask/smart-transactions-controller>@metamask/base-controller>@metamask/utils": {
+      "globals": {
+        "TextDecoder": true,
+        "TextEncoder": true
+      },
+      "packages": {
+        "@metamask/utils>@metamask/superstruct": true,
+        "@metamask/utils>@scure/base": true,
+        "@metamask/utils>pony-cause": true,
+        "@noble/hashes": true,
+        "browserify>buffer": true,
+        "nock>debug": true,
+        "semver": true
+      }
+    },
     "@metamask/smart-transactions-controller>@metamask/controllers>nanoid": {
       "globals": {
         "crypto.getRandomValues": true
@@ -2890,22 +2901,7 @@
     "@metamask/smart-transactions-controller>@metamask/transaction-controller>@metamask/rpc-errors": {
       "packages": {
         "@metamask/rpc-errors>fast-safe-stringify": true,
-        "@metamask/smart-transactions-controller>@metamask/transaction-controller>@metamask/rpc-errors>@metamask/utils": true
-      }
-    },
-    "@metamask/smart-transactions-controller>@metamask/transaction-controller>@metamask/rpc-errors>@metamask/utils": {
-      "globals": {
-        "TextDecoder": true,
-        "TextEncoder": true
-      },
-      "packages": {
-        "@metamask/utils>@metamask/superstruct": true,
-        "@metamask/utils>@scure/base": true,
-        "@metamask/utils>pony-cause": true,
-        "@noble/hashes": true,
-        "browserify>buffer": true,
-        "nock>debug": true,
-        "semver": true
+        "@metamask/smart-transactions-controller>@metamask/base-controller>@metamask/utils": true
       }
     },
     "@metamask/smart-transactions-controller>@metamask/transaction-controller>@metamask/utils": {
