@@ -1,16 +1,22 @@
-const { strict: assert } = require('assert');
-const {
+import { strict as assert } from 'assert';
+import {
   withFixtures,
   defaultGanacheOptions,
   openDapp,
-  DAPP_URL,
-  DAPP_ONE_URL,
   unlockWallet,
   switchToNotificationWindow,
   WINDOW_TITLES,
-} = require('../helpers');
-const FixtureBuilder = require('../fixture-builder');
-const { isManifestV3 } = require('../../../shared/modules/mv3.utils');
+} from '../helpers';
+import FixtureBuilder from '../fixture-builder';
+import { isManifestV3 } from '../../../shared/modules/mv3.utils';
+import { loginWithBalanceValidation } from '../page-objects/flows/login.flow';
+import SettingsPage from '../page-objects/pages/settings/settings-page';
+import HeaderNavbar from '../page-objects/pages/header-navbar';
+import ExperimentalSettings from '../page-objects/pages/settings/experimental-settings';
+import TestDapp from '../page-objects/pages/test-dapp';
+import { DAPP_HOST_ADDRESS, DAPP_TWO_URL } from '../page-objects/pages/test-dapp';
+import ReviewPermissionConfirmation from '../page-objects/pages/confirmations/redesign/review-permission-confirmation';
+
 
 describe('Switch Ethereum Chain for two dapps', function () {
   it.only('switches the chainId of two dapps when switchEthereumChain of one dapp is confirmed', async function () {
@@ -26,40 +32,30 @@ describe('Switch Ethereum Chain for two dapps', function () {
           ...defaultGanacheOptions,
           concurrent: [{ port: 8546, chainId: 1338 }],
         },
-        title: this.test.fullTitle(),
+        title: this.test?.fullTitle(),
       },
-      async ({ driver }) => {
-        await unlockWallet(driver);
+      async ({ driver, ganacheServer }) => {
+        await loginWithBalanceValidation(driver, ganacheServer);
 
-        // Open settings menu button
-        const accountOptionsMenuSelector =
-          '[data-testid="account-options-menu-button"]';
-        await driver.waitForSelector(accountOptionsMenuSelector);
-        await driver.clickElement(accountOptionsMenuSelector);
+        // Go to experimental settings page and toggle off request queue setting (on by default now)
+        const headerNavbar = new HeaderNavbar(driver);
+        await headerNavbar.openSettingsPage();
+        const settingsPage = new SettingsPage(driver);
+        await settingsPage.check_pageIsLoaded();
+        await settingsPage.goToExperimentalSettings();
 
-        // Click settings from dropdown menu
-        const globalMenuSettingsSelector =
-          '[data-testid="global-menu-settings"]';
-        await driver.waitForSelector(globalMenuSettingsSelector);
-        await driver.clickElement(globalMenuSettingsSelector);
-
-        // Click Experimental tab
-        const experimentalTabRawLocator = {
-          text: 'Experimental',
-          tag: 'div',
-        };
-        await driver.clickElement(experimentalTabRawLocator);
-
-        // Toggle off request queue setting (on by default now)
-        await driver.clickElement(
-          '[data-testid="experimental-setting-toggle-request-queue"]',
-        );
+        const experimentalSettings = new ExperimentalSettings(driver);
+        await experimentalSettings.check_pageIsLoaded();
+        await experimentalSettings.toggleRequestQueue();
 
         // open two dapps
-        const dappOne = await openDapp(driver, undefined, DAPP_URL);
-        const dappTwo = await openDapp(driver, undefined, DAPP_ONE_URL);
+        const testDapp = new TestDapp(driver);
+        await testDapp.openTestDappPage({ url: DAPP_HOST_ADDRESS });
+        await testDapp.check_pageIsLoaded();
+        await testDapp.openTestDappPage({ url: DAPP_TWO_URL });
+        await testDapp.check_pageIsLoaded();
 
-        // switchEthereumChain requestx
+        // switchEthereumChain request
         const switchEthereumChainRequest = JSON.stringify({
           jsonrpc: '2.0',
           method: 'wallet_switchEthereumChain',
@@ -72,32 +68,24 @@ describe('Switch Ethereum Chain for two dapps', function () {
         );
 
         // Confirm switchEthereumChain
-        await switchToNotificationWindow(driver, 4);
-        await driver.findClickableElements({
-          text: 'Confirm',
-          tag: 'button',
+        await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
+        const reviewPermissionConfirmation = new ReviewPermissionConfirmation(driver);
+        await reviewPermissionConfirmation.check_pageIsLoaded();
+        await reviewPermissionConfirmation.confirmReviewPermissions();
+
+        // Switch to Dapp One and check chainId
+        await driver.switchToWindowWithUrl(DAPP_HOST_ADDRESS);
+        await driver.waitForUrl({
+          url: DAPP_HOST_ADDRESS + '/',
         });
-        await driver.clickElement({ text: 'Confirm', tag: 'button' });
+        await testDapp.check_pageIsLoaded();
+        await testDapp.check_currentConnectedChainId('0x53a');
 
-        // Switch to Dapp One
-        await driver.switchToWindow(dappOne);
-        assert.equal(await driver.getCurrentUrl(), `${DAPP_URL}/`);
-
-        // Wait for chain id element to change, there's a page reload.
-        await driver.waitForSelector({
-          css: '#chainId',
-          text: '0x53a',
-        });
-
-        // Dapp One ChainId assertion
-        await driver.findElement({ css: '#chainId', text: '0x53a' });
-
-        // Switch to Dapp Two
-        await driver.switchToWindow(dappTwo);
-        assert.equal(await driver.getCurrentUrl(), `${DAPP_ONE_URL}/`);
-
-        // Dapp Two ChainId Assertion
-        await driver.findElement({ css: '#chainId', text: '0x53a' });
+        // Switch to Dapp Two and check chainId
+        await driver.switchToWindowWithUrl(DAPP_TWO_URL);
+        await driver.waitForUrl({ url: DAPP_TWO_URL + '/' });
+        await testDapp.check_pageIsLoaded();
+        await testDapp.check_currentConnectedChainId('0x53a');
       },
     );
   });
@@ -114,7 +102,7 @@ describe('Switch Ethereum Chain for two dapps', function () {
           ...defaultGanacheOptions,
           concurrent: [{ port: 8546, chainId: 1338 }],
         },
-        title: this.test.fullTitle(),
+        title: this.test?.fullTitle(),
       },
       async ({ driver }) => {
         await unlockWallet(driver);
@@ -248,7 +236,7 @@ describe('Switch Ethereum Chain for two dapps', function () {
           ...defaultGanacheOptions,
           concurrent: [{ port: 8546, chainId: 1338 }],
         },
-        title: this.test.fullTitle(),
+        title: this.test?.fullTitle(),
       },
       async ({ driver }) => {
         await unlockWallet(driver);
@@ -313,6 +301,7 @@ describe('Switch Ethereum Chain for two dapps', function () {
         });
 
         await driver.clickElement('[data-testid="connect-more-chains-button"]');
+
         await driver.clickElementAndWaitForWindowToClose({
           text: 'Connect',
           tag: 'button',
@@ -380,7 +369,7 @@ describe('Switch Ethereum Chain for two dapps', function () {
           ...defaultGanacheOptions,
           concurrent: [{ port: 8546, chainId: 1338 }],
         },
-        title: this.test.fullTitle(),
+        title: this.test?.fullTitle(),
       },
       async ({ driver }) => {
         await unlockWallet(driver);

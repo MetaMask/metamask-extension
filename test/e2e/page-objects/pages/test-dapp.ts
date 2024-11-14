@@ -1,8 +1,8 @@
 import { WINDOW_TITLES } from '../../helpers';
 import { Driver } from '../../webdriver/driver';
 
-const DAPP_HOST_ADDRESS = '127.0.0.1:8080';
-const DAPP_URL = `http://${DAPP_HOST_ADDRESS}`;
+export const DAPP_HOST_ADDRESS = 'http://127.0.0.1:8080';
+export const DAPP_TWO_URL = 'http://127.0.0.1:8081';
 
 class TestDapp {
   private driver: Driver;
@@ -27,12 +27,9 @@ class TestDapp {
 
   private readonly connectedAccount = '#accounts';
 
-  private readonly depositPiggyBankContractButton = '#depositButton';
+  private readonly currentChainId = '#chainId';
 
-  private readonly editConnectButton = {
-    text: 'Edit',
-    tag: 'button',
-  };
+  private readonly depositPiggyBankContractButton = '#depositButton';
 
   private readonly simpleSendButton = '#sendButton';
 
@@ -59,11 +56,6 @@ class TestDapp {
   private readonly erc721RevokeSetApprovalForAllButton = '#revokeButton';
 
   private readonly erc721SetApprovalForAllButton = '#setApprovalForAllButton';
-
-  private readonly localhostCheckbox = {
-    text: 'Localhost 8545',
-    tag: 'p',
-  };
 
   private readonly localhostNetworkMessage = {
     css: '#chainId',
@@ -137,11 +129,6 @@ class TestDapp {
     tag: 'h2',
   };
 
-  private readonly updateNetworkButton = {
-    text: 'Update',
-    tag: 'button',
-  };
-
   private erc20TokenTransferButton = '#transferTokens';
 
   constructor(driver: Driver) {
@@ -163,12 +150,11 @@ class TestDapp {
    *
    * @param options - The options for opening the test dapp page.
    * @param options.contractAddress - The contract address to open the dapp with. Defaults to null.
-   * @param options.url - The URL of the dapp. Defaults to DAPP_URL.
-   * @returns A promise that resolves when the new page is opened.
+   * @param options.url - The URL of the dapp. Defaults to DAPP_HOST_ADDRESS.
    */
   async openTestDappPage({
     contractAddress = null,
-    url = DAPP_URL,
+    url = DAPP_HOST_ADDRESS,
   }: {
     contractAddress?: string | null;
     url?: string;
@@ -182,7 +168,7 @@ class TestDapp {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   async request(method: string, params: any[]) {
     await this.openTestDappPage({
-      url: `${DAPP_URL}/request?method=${method}&params=${JSON.stringify(
+      url: `${DAPP_HOST_ADDRESS}/request?method=${method}&params=${JSON.stringify(
         params,
       )}`,
     });
@@ -198,14 +184,6 @@ class TestDapp {
 
   async clickERC721TransferFromButton() {
     await this.driver.clickElement(this.erc721TransferFromButton);
-  }
-
-  async fillERC1155TokenID(tokenID: string) {
-    await this.driver.pasteIntoField(this.erc1155TokenIDInput, tokenID);
-  }
-
-  async fillERC1155TokenAmount(amount: string) {
-    await this.driver.pasteIntoField(this.erc1155TokenAmountInput, amount);
   }
 
   async clickERC1155MintButton() {
@@ -232,11 +210,11 @@ class TestDapp {
     await this.driver.clickElement(this.erc1155RevokeSetApprovalForAllButton);
   }
 
-  public async clickERC20WatchAssetButton() {
+  async clickERC20WatchAssetButton() {
     await this.driver.clickElement(this.erc20WatchAssetButton);
   }
 
-  public async clickERC20TokenTransferButton() {
+  async clickERC20TokenTransferButton() {
     await this.driver.clickElement(this.erc20TokenTransferButton);
   }
 
@@ -285,6 +263,99 @@ class TestDapp {
     await this.driver.assertElementNotPresent({
       css: this.connectedAccount,
       text: publicAddress.toLowerCase(),
+    });
+  }
+
+  async fillERC1155TokenID(tokenID: string) {
+    await this.driver.pasteIntoField(this.erc1155TokenIDInput, tokenID);
+  }
+
+  async fillERC1155TokenAmount(amount: string) {
+    await this.driver.pasteIntoField(this.erc1155TokenAmountInput, amount);
+  }
+
+  /**
+   * Sign a message with the personal sign method.
+   */
+    async personalSign() {
+      console.log('Sign message with personal sign');
+      await this.driver.clickElement(this.personalSignButton);
+      await this.driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
+      await this.driver.waitForSelector(this.personalSignSignatureRequestMessage);
+      await this.driver.clickElementAndWaitForWindowToClose(
+        this.confirmSignatureButton,
+    );
+  }
+
+  /**
+   * Sign message with the signPermit method.
+   */
+    async signPermit() {
+      console.log('Sign message with signPermit');
+      await this.driver.clickElement(this.signPermitButton);
+      await this.driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
+      await this.driver.waitForSelector(this.signPermitSignatureRequestMessage);
+      await this.driver.clickElementAndWaitForWindowToClose(
+        this.confirmSignatureButton,
+      );
+  }
+
+  /**
+   * Sign a message with the signTypedData method.
+     */
+    async signTypedData() {
+      console.log('Sign message with signTypedData');
+      await this.driver.clickElement(this.signTypedDataButton);
+      await this.driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
+      await this.driver.waitForSelector(
+        this.signTypedDataSignatureRequestMessage,
+      );
+      await this.driver.clickElementAndWaitForWindowToClose(
+        this.confirmSignatureButton,
+      );
+    }
+
+    /**
+     * Sign a message with the signTypedDataV3 method.
+     */
+    async signTypedDataV3() {
+      console.log('Sign message with signTypedDataV3');
+      await this.driver.clickElement(this.signTypedDataV3Button);
+      await this.driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
+      await this.driver.waitForSelector(
+        this.signTypedDataV3V4SignatureRequestMessage,
+      );
+      await this.driver.clickElementSafe(this.confirmDialogScrollButton, 200);
+      await this.driver.clickElementAndWaitForWindowToClose(
+        this.confirmSignatureButton,
+      );
+    }
+
+    /**
+     * Sign a message with the signTypedDataV4 method.
+     */
+    async signTypedDataV4() {
+      console.log('Sign message with signTypedDataV4');
+      await this.driver.clickElement(this.signTypedDataV4Button);
+      await this.driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
+      await this.driver.waitForSelector(
+        this.signTypedDataV3V4SignatureRequestMessage,
+      );
+      await this.driver.clickElementSafe(this.confirmDialogScrollButton, 200);
+      await this.driver.clickElementAndWaitForWindowToClose(
+        this.confirmSignatureButton,
+      );
+    }
+
+  /**
+   * Verify the current connected chainId.
+   *
+   * @param chainId - The chainId to verify.
+   */
+  async check_currentConnectedChainId(chainId: string) {
+    await this.driver.waitForSelector({
+      css: this.currentChainId,
+      text: chainId,
     });
   }
 
@@ -431,79 +502,6 @@ class TestDapp {
       css: this.signTypedDataV4VerifyResult,
       text: publicKey.toLowerCase(),
     });
-  }
-
-  /**
-   * Sign a message with the personal sign method.
-   */
-  async personalSign() {
-    console.log('Sign message with personal sign');
-    await this.driver.clickElement(this.personalSignButton);
-    await this.driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
-    await this.driver.waitForSelector(this.personalSignSignatureRequestMessage);
-    await this.driver.clickElementAndWaitForWindowToClose(
-      this.confirmSignatureButton,
-    );
-  }
-
-  /**
-   * Sign message with the signPermit method.
-   */
-  async signPermit() {
-    console.log('Sign message with signPermit');
-    await this.driver.clickElement(this.signPermitButton);
-    await this.driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
-    await this.driver.waitForSelector(this.signPermitSignatureRequestMessage);
-    await this.driver.clickElementAndWaitForWindowToClose(
-      this.confirmSignatureButton,
-    );
-  }
-
-  /**
-   * Sign a message with the signTypedData method.
-   */
-  async signTypedData() {
-    console.log('Sign message with signTypedData');
-    await this.driver.clickElement(this.signTypedDataButton);
-    await this.driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
-    await this.driver.waitForSelector(
-      this.signTypedDataSignatureRequestMessage,
-    );
-    await this.driver.clickElementAndWaitForWindowToClose(
-      this.confirmSignatureButton,
-    );
-  }
-
-  /**
-   * Sign a message with the signTypedDataV3 method.
-   */
-  async signTypedDataV3() {
-    console.log('Sign message with signTypedDataV3');
-    await this.driver.clickElement(this.signTypedDataV3Button);
-    await this.driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
-    await this.driver.waitForSelector(
-      this.signTypedDataV3V4SignatureRequestMessage,
-    );
-    await this.driver.clickElementSafe(this.confirmDialogScrollButton, 200);
-    await this.driver.clickElementAndWaitForWindowToClose(
-      this.confirmSignatureButton,
-    );
-  }
-
-  /**
-   * Sign a message with the signTypedDataV4 method.
-   */
-  async signTypedDataV4() {
-    console.log('Sign message with signTypedDataV4');
-    await this.driver.clickElement(this.signTypedDataV4Button);
-    await this.driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
-    await this.driver.waitForSelector(
-      this.signTypedDataV3V4SignatureRequestMessage,
-    );
-    await this.driver.clickElementSafe(this.confirmDialogScrollButton, 200);
-    await this.driver.clickElementAndWaitForWindowToClose(
-      this.confirmSignatureButton,
-    );
   }
 }
 export default TestDapp;
