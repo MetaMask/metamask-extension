@@ -8,9 +8,9 @@ import {
   WINDOW_TITLES,
 } from '../../../helpers';
 import TestDapp from '../../../page-objects/pages/test-dapp';
-import AdvancedDetailsTransactionConfirmation from '../../../page-objects/pages/confirmations/redesign/advanced-details-transaction-confirmation';
 import { TRANSACTION_DATA_UNISWAP } from '../../../../data/confirmations/transaction-decode';
 import { Ganache } from '../../../seeder/ganache';
+import TransactionConfirmation from '../../../page-objects/pages/confirmations/redesign/transaction-confirmation';
 import { TestSuiteArguments } from './shared';
 
 const { defaultGanacheOptions, withFixtures } = require('../../../helpers');
@@ -46,9 +46,7 @@ describe('Confirmation Redesign Contract Interaction Transaction Decoding', func
           ).getContractAddress(smartContract);
 
           const testDapp = new TestDapp(driver);
-          const confirmation = new AdvancedDetailsTransactionConfirmation(
-            driver,
-          );
+          const confirmation = new TransactionConfirmation(driver);
 
           await testDapp.openTestDappPage({ contractAddress, url: DAPP_URL });
 
@@ -89,7 +87,7 @@ describe('Confirmation Redesign Contract Interaction Transaction Decoding', func
         ).getContractAddress(smartContract);
 
         const testDapp = new TestDapp(driver);
-        const confirmation = new AdvancedDetailsTransactionConfirmation(driver);
+        const confirmation = new TransactionConfirmation(driver);
 
         await testDapp.openTestDappPage({ contractAddress, url: DAPP_URL });
 
@@ -127,7 +125,7 @@ describe('Confirmation Redesign Contract Interaction Transaction Decoding', func
         ).getContractAddress(smartContract);
 
         const testDapp = new TestDapp(driver);
-        const confirmation = new AdvancedDetailsTransactionConfirmation(driver);
+        const confirmation = new TransactionConfirmation(driver);
 
         await testDapp.openTestDappPage({ contractAddress, url: DAPP_URL });
 
@@ -166,7 +164,7 @@ describe('Confirmation Redesign Contract Interaction Transaction Decoding', func
         await unlockWallet(driver);
         const contractAddress = '0xEf1c6E67703c7BD7107eed8303Fbe6EC2554BF6B';
 
-        const confirmation = new AdvancedDetailsTransactionConfirmation(driver);
+        const confirmation = new TransactionConfirmation(driver);
 
         await createDappTransaction(driver, {
           data: TRANSACTION_DATA_UNISWAP,
