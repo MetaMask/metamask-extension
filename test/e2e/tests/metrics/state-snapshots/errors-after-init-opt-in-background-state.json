@@ -145,8 +145,11 @@
   "MultichainBalancesController": { "balances": "object" },
   "MultichainRatesController": {
     "fiatCurrency": "usd",
-    "rates": { "btc": { "conversionDate": 0, "conversionRate": 0 } },
-    "cryptocurrencies": ["btc"]
+    "rates": {
+      "btc": { "conversionDate": 0, "conversionRate": 0 },
+      "sol": { "conversionDate": 0, "conversionRate": 0 }
+    },
+    "cryptocurrencies": ["btc", "sol"]
   },
   "NameController": { "names": "object", "nameSources": "object" },
   "NetworkController": {
@@ -243,6 +246,7 @@
     "snapRegistryList": "object",
     "theme": "light",
     "snapsAddSnapAccountModalDismissed": "boolean",
+    "solanaSupportEnabled": "boolean",
     "useExternalNameSources": "boolean",
     "useTransactionSimulations": true,
     "enableMV3TimestampSave": true,
@@ -327,7 +331,6 @@
   },
   "TxController": {
     "methodData": "object",
-    "submitHistory": "object",
     "transactions": "object",
     "lastFetchedBlockNumbers": "object",
     "submitHistory": "object"
