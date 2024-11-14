@@ -21,6 +21,10 @@ class SettingsPage {
     css: '.tab-bar__tab__content__title',
   };
 
+  private readonly balanceSettingToggle = {
+    css: '.toggle-button.show-native-token-as-main-balance',
+  };
+
   private readonly settingsPageTitle = {
     text: 'Settings',
     css: 'h3',
@@ -43,6 +47,20 @@ class SettingsPage {
   async closeSettingsPage(): Promise<void> {
     console.log('Closing Settings page');
     await this.driver.clickElement(this.closeSettingsPageButton);
+  }
+
+  async toggleBalanceSetting(): Promise<void> {
+    console.log('Toggling balance setting');
+    await this.driver.clickElement(
+      '.toggle-button.show-native-token-as-main-balance',
+    );
+  }
+
+  async exitSettings(): Promise<void> {
+    console.log('Exiting settings page');
+    await this.driver.clickElement(
+      '.settings-page__header__title-container__close-button',
+    );
   }
 
   async goToDevelopOptionSettings(): Promise<void> {

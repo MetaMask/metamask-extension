@@ -21,7 +21,7 @@ export function calculateTokenBalance({
   nativeBalances,
   selectedAccountTokenBalancesAcrossChains,
 }: CalculateTokenBalanceParams): string | undefined {
-  let balance;
+  let balance = '0';
 
   if (isNative) {
     const nativeTokenBalanceHex = nativeBalances?.[chainId];
@@ -33,16 +33,15 @@ export function calculateTokenBalance({
       );
     }
     return '0';
-  } else {
-    const hexBalance =
-      selectedAccountTokenBalancesAcrossChains?.[chainId]?.[address];
-    if (hexBalance && hexBalance !== '0x0') {
-      balance = stringifyBalance(
-        new BN(hexToDecimal(hexBalance)),
-        new BN(decimals),
-      );
-    }
-    return '0';
+  }
+
+  const hexBalance =
+    selectedAccountTokenBalancesAcrossChains?.[chainId]?.[address];
+  if (hexBalance && hexBalance !== '0x0') {
+    balance = stringifyBalance(
+      new BN(hexToDecimal(hexBalance)),
+      new BN(decimals),
+    );
   }
 
   return balance;

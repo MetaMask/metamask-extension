@@ -167,6 +167,8 @@ export default function TokenList({ onTokenClick }: TokenListProps) {
     }
   }, [sortedFilteredTokens]);
 
+  console.log('FOO', { sortedFilteredTokens });
+
   const loading = false;
   return loading ? (
     <Box

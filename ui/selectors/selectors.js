@@ -478,6 +478,7 @@ export function getSelectedAccountNativeTokenCachedBalanceByChainId(state) {
  * @returns {object} An object mapping chain IDs to arrays of tokens (including native tokens) with balances.
  */
 export function getSelectedAccountTokensAcrossChains(state) {
+  console.log('FOO', { state });
   const { allTokens } = state.metamask;
   const selectedAddress = getSelectedInternalAccount(state).address;
 
