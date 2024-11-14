@@ -5012,7 +5012,7 @@ __metadata:
 
 "@metamask/assets-controllers@patch:@metamask/assets-controllers@patch%3A@metamask/assets-controllers@npm%253A43.1.1%23~/.yarn/patches/@metamask-assets-controllers-npm-43.1.1-c223d56176.patch%3A%3Aversion=43.1.1&hash=5a94c2#~/.yarn/patches/@metamask-assets-controllers-patch-9e00573eb4.patch":
   version: 43.1.1
-  resolution: "@metamask/assets-controllers@patch:@metamask/assets-controllers@patch%3A@metamask/assets-controllers@npm%253A43.1.1%23~/.yarn/patches/@metamask-assets-controllers-npm-43.1.1-c223d56176.patch%3A%3Aversion=43.1.1&hash=5a94c2#~/.yarn/patches/@metamask-assets-controllers-patch-9e00573eb4.patch::version=43.1.1&hash=dc8e48"
+  resolution: "@metamask/assets-controllers@patch:@metamask/assets-controllers@patch%3A@metamask/assets-controllers@npm%253A43.1.1%23~/.yarn/patches/@metamask-assets-controllers-npm-43.1.1-c223d56176.patch%3A%3Aversion=43.1.1&hash=5a94c2#~/.yarn/patches/@metamask-assets-controllers-patch-9e00573eb4.patch::version=43.1.1&hash=c4e407"
   dependencies:
     "@ethereumjs/util": "npm:^8.1.0"
     "@ethersproject/address": "npm:^5.7.0"
@@ -5044,7 +5044,7 @@ __metadata:
     "@metamask/keyring-controller": ^18.0.0
     "@metamask/network-controller": ^22.0.0
     "@metamask/preferences-controller": ^14.0.0
-  checksum: 10/f315ebf72d8d3e53855e6c3fa5257e298e6b925d418dba5f849f22b8aa100b7c292ac2686d7a6c9acd72c55674d64824a94a09af4a311fe4f183caadef9225db
+  checksum: 10/189f45b9afefef9dc54f29920eb64fcebbc1dd13d792627ab2649c973a94ca310c848411fe4b294419c881d1956ff50bd6107f7411faa2a953da005662269e40
   languageName: node
   linkType: hard
 
