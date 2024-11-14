@@ -149,7 +149,9 @@ export const AccountOverviewTabs = ({
             <Box marginTop={2}>
               <AssetList
                 showTokensLinks={showTokensLinks ?? true}
-                onClickAsset={(asset: string) =>
+                // TODO: chainID to be incorporated in unified asset list
+                // eslint-disable-next-line @typescript-eslint/no-unused-vars
+                onClickAsset={(chainId: string, asset: string) =>
                   history.push(`${ASSET_ROUTE}/${asset}`)
                 }
               />
