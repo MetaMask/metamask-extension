@@ -63,9 +63,11 @@ describe('AssetPage', () => {
       currencyRates: {
         TEST: {
           conversionRate: 123,
+          ticker: 'ETH',
         },
         ETH: {
           conversionRate: 123,
+          ticker: 'ETH',
         },
       },
       useCurrencyRateCheck: true,
@@ -353,6 +355,15 @@ describe('AssetPage', () => {
       expect(chart).toBeNull();
     });
 
+    const dynamicImages = container.querySelectorAll('img[alt*="logo"]');
+    dynamicImages.forEach((img) => {
+      img.setAttribute('alt', 'static-logo');
+    });
+    const elementsWithAria = container.querySelectorAll('[aria-describedby]');
+    elementsWithAria.forEach((el) =>
+      el.setAttribute('aria-describedby', 'static-tooltip-id'),
+    );
+
     expect(container).toMatchSnapshot();
   });
 
@@ -388,7 +399,6 @@ describe('AssetPage', () => {
     // Verify chart is rendered
     await waitFor(() => {
       const chart = queryByTestId('asset-price-chart');
-      console.log('CHART: ', chart);
       expect(chart).toHaveClass('mm-box--background-color-transparent');
     });
 
@@ -398,6 +408,14 @@ describe('AssetPage', () => {
       `${marketCap * mockStore.metamask.currencyRates.ETH.conversionRate}`,
     );
 
+    const dynamicImages = container.querySelectorAll('img[alt*="logo"]');
+    dynamicImages.forEach((img) => {
+      img.setAttribute('alt', 'static-logo');
+    });
+    const elementsWithAria = container.querySelectorAll('[aria-describedby]');
+    elementsWithAria.forEach((el) =>
+      el.setAttribute('aria-describedby', 'static-tooltip-id'),
+    );
     expect(container).toMatchSnapshot();
   });
 });

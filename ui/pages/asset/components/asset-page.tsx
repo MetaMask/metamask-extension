@@ -113,7 +113,6 @@ const AssetPage = ({
   ) as Record<Hex, Hex>;
 
   const { chainId, type, symbol, name, image, decimals } = asset;
-  console.log(symbol);
 
   const address =
     type === AssetType.token
@@ -155,8 +154,6 @@ const AssetPage = ({
       tokenMarketDetails.circulatingSupply > 0 ||
       tokenMarketDetails.allTimeHigh > 0 ||
       tokenMarketDetails.allTimeLow > 0);
-
-  console.log('chart', chainId, address, currentPrice, currency);
 
   return (
     <Box

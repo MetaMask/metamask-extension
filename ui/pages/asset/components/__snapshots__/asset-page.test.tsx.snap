@@ -200,7 +200,7 @@ exports[`AssetPage should render a native asset 1`] = `
                 class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xs mm-avatar-network multichain-token-list-item__badge__avatar-network mm-text--body-xs mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-full mm-box--border-color-transparent box--border-style-solid box--border-width-1"
               >
                 <img
-                  alt="929c0f2f-eac8-49d0-848f-bbf6fdd590c3 logo"
+                  alt="f4b9b278-0dec-4f6d-8feb-13ce9f0ddb8d logo"
                   class="mm-avatar-network__network-image"
                   src="./images/eth_logo.svg"
                 />
@@ -495,7 +495,7 @@ exports[`AssetPage should render an ERC20 asset without prices 1`] = `
                 class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xs mm-avatar-network multichain-token-list-item__badge__avatar-network mm-text--body-xs mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-full mm-box--border-color-transparent box--border-style-solid box--border-width-1"
               >
                 <img
-                  alt="929c0f2f-eac8-49d0-848f-bbf6fdd590c3 logo"
+                  alt="static-logo"
                   class="mm-avatar-network__network-image"
                   src="./images/eth_logo.svg"
                 />
@@ -572,7 +572,7 @@ exports[`AssetPage should render an ERC20 asset without prices 1`] = `
             </p>
             <div>
               <div
-                aria-describedby="tippy-tooltip-9"
+                aria-describedby="static-tooltip-id"
                 class=""
                 data-original-title="Copy to clipboard"
                 data-tooltipped=""
@@ -981,7 +981,7 @@ exports[`AssetPage should render an ERC20 token with prices 1`] = `
                 class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xs mm-avatar-network multichain-token-list-item__badge__avatar-network mm-text--body-xs mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-full mm-box--border-color-transparent box--border-style-solid box--border-width-1"
               >
                 <img
-                  alt="929c0f2f-eac8-49d0-848f-bbf6fdd590c3 logo"
+                  alt="static-logo"
                   class="mm-avatar-network__network-image"
                   src="./images/eth_logo.svg"
                 />
@@ -1058,7 +1058,7 @@ exports[`AssetPage should render an ERC20 token with prices 1`] = `
             </p>
             <div>
               <div
-                aria-describedby="tippy-tooltip-10"
+                aria-describedby="static-tooltip-id"
                 class=""
                 data-original-title="Copy to clipboard"
                 data-tooltipped=""
