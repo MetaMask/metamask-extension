@@ -45,6 +45,7 @@ import {
   getDataCollectionForMarketing,
   getMarketData,
   getNetworkConfigurationIdByChainId,
+  getCurrencyRates,
 } from '../../../selectors';
 import { getMultichainIsEvm } from '../../../selectors/multichain';
 import Tooltip from '../../ui/tooltip';
@@ -79,7 +80,6 @@ type TokenListItemProps = {
   isStakeable?: boolean;
   tokenChainImage?: string;
   chainId: string;
-  isOriginalTokenSymbol?: boolean | null;
   address?: string | null;
   showPercentage?: boolean;
   isPrimaryTokenSymbolHidden?: boolean;
@@ -97,7 +97,6 @@ export const TokenListItem = ({
   tooltipText,
   tokenChainImage,
   chainId,
-  isOriginalTokenSymbol,
   isPrimaryTokenSymbolHidden = false,
   isNativeCurrency = false,
   isStakeable = false,
@@ -112,6 +111,12 @@ export const TokenListItem = ({
   const isMetaMetricsEnabled = useSelector(getParticipateInMetaMetrics);
   const isMarketingEnabled = useSelector(getDataCollectionForMarketing);
   const { safeChains } = useSafeChains();
+  const currencyRates = useSelector(getCurrencyRates);
+  console.log(
+    currencyRates,
+    tokenSymbol,
+    tokenSymbol && currencyRates[tokenSymbol],
+  );
 
   const decimalChainId = isEvm && parseInt(hexToDecimal(chainId), 10);
 
@@ -125,6 +130,8 @@ export const TokenListItem = ({
   // We do not want to display any percentage with non-EVM since we don't have the data for this yet. So
   // we only use this option for EVM here:
   const shouldShowPercentage = isEvm && showPercentage;
+
+  const isOriginalTokenSymbol = tokenSymbol && currencyRates[tokenSymbol];
 
   // Scam warning
   const showScamWarning =
