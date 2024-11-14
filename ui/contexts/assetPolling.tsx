@@ -10,7 +10,7 @@ import useTokenListPolling from '../hooks/useTokenListPolling';
 export const AssetPollingProvider = ({ children }: { children: ReactNode }) => {
   useCurrencyRatePolling();
   useTokenRatesPolling();
-  useTokenDetectionPolling();
+  // useTokenDetectionPolling();
   useTokenListPolling();
 
   return <>{children}</>;
