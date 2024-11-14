@@ -84,7 +84,7 @@ export default function UserPreferencedCurrencyDisplay({
       numberOfDecimals={numberOfDecimals}
       prefixComponent={prefixComponent}
       hideLabel={!showCurrencySuffix}
-      suffix={showCurrencySuffix && !showEthLogo && currency}
+      suffix={showCurrencySuffix && !showEthLogo && currency.toUpperCase()}
       privacyMode={privacyMode}
     />
   );

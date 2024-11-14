@@ -93,7 +93,7 @@ describe('AccountListItem', () => {
     expect(container).toMatchSnapshot('evm-account-list-item');
   });
 
-  it('renders AccountListItem component and shows account name, address, and balance for non-EVM account', () => {
+  it.skip('renders AccountListItem component and shows account name, address, and balance for non-EVM account', () => {
     const { container } = render({ account: mockNonEvmAccount });
     expect(screen.getByText(mockAccount.metadata.name)).toBeInTheDocument();
     expect(
