@@ -69,18 +69,13 @@ exports[`ConfirmLegacyGasDisplay should match snapshot 1`] = `
           <div>
             <div
               class="mm-box currency-display-component mm-box--display-flex mm-box--flex-wrap-wrap mm-box--align-items-center"
-              title="0.000021 ETH"
+              title="0.000021"
             >
               <span
                 class="mm-box mm-text currency-display-component__text mm-text--body-md-bold mm-text--ellipsis mm-box--color-text-default"
                 data-testid="account-value-and-suffix"
               >
                 0.000021
-              </span>
-              <span
-                class="mm-box mm-text currency-display-component__suffix mm-text--body-md-bold mm-box--margin-inline-start-1 mm-box--color-text-default"
-              >
-                ETH
               </span>
             </div>
           </div>
@@ -103,18 +98,13 @@ exports[`ConfirmLegacyGasDisplay should match snapshot 1`] = `
         <div>
           <div
             class="mm-box currency-display-component mm-box--display-flex mm-box--flex-wrap-wrap mm-box--align-items-center"
-            title="0.000021 ETH"
+            title="0.000021"
           >
             <span
               class="mm-box mm-text currency-display-component__text mm-text--inherit mm-text--ellipsis mm-box--color-text-default"
               data-testid="account-value-and-suffix"
             >
               0.000021
-            </span>
-            <span
-              class="mm-box mm-text currency-display-component__suffix mm-text--inherit mm-box--margin-inline-start-1 mm-box--color-text-default"
-            >
-              ETH
             </span>
           </div>
         </div>
