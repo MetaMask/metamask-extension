@@ -101,7 +101,7 @@ const AssetListControlBar = ({ showTokensLinks }: AssetListControlBarProps) => {
         }
       >
         <ButtonBase
-          data-testid="sort-by-popover-toggle"
+          data-testid="sort-by-networks"
           variant={TextVariant.bodyMdMedium}
           className="asset-list-control-bar__button asset-list-control-bar__network_control"
           onClick={toggleNetworkFilterPopover}
