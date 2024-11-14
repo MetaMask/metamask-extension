@@ -10,7 +10,10 @@ import {
   tokenListStartPolling,
   tokenListStopPollingByPollingToken,
 } from '../store/actions';
-import { getCompletedOnboarding } from '../ducks/metamask/metamask';
+import {
+  getCompletedOnboarding,
+  getIsUnlocked,
+} from '../ducks/metamask/metamask';
 import useMultiPolling from './useMultiPolling';
 
 const useTokenListPolling = () => {
@@ -19,10 +22,12 @@ const useTokenListPolling = () => {
   const useTransactionSimulations = useSelector(getUseTransactionSimulations);
   const petnamesEnabled = useSelector(getPetnamesEnabled);
   const completedOnboarding = useSelector(getCompletedOnboarding);
+  const isUnlocked = useSelector(getIsUnlocked);
   const useExternalServices = useSelector(getUseExternalServices);
 
   const enabled =
     completedOnboarding &&
+    isUnlocked &&
     useExternalServices &&
     (useTokenDetection || petnamesEnabled || useTransactionSimulations);
 

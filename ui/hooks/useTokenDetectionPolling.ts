@@ -7,15 +7,19 @@ import {
   tokenDetectionStartPolling,
   tokenDetectionStopPollingByPollingToken,
 } from '../store/actions';
-import { getCompletedOnboarding } from '../ducks/metamask/metamask';
+import {
+  getCompletedOnboarding,
+  getIsUnlocked,
+} from '../ducks/metamask/metamask';
 import useMultiPolling from './useMultiPolling';
 
 const useTokenDetectionPolling = () => {
   const useTokenDetection = useSelector(getUseTokenDetection);
   const completedOnboarding = useSelector(getCompletedOnboarding);
+  const isUnlocked = useSelector(getIsUnlocked);
   const networkConfigurations = useSelector(getNetworkConfigurationsByChainId);
 
-  const enabled = completedOnboarding && useTokenDetection;
+  const enabled = completedOnboarding && isUnlocked && useTokenDetection;
 
   useMultiPolling({
     startPolling: tokenDetectionStartPolling,
