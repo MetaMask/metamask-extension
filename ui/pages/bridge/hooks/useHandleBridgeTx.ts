@@ -33,10 +33,17 @@ export default function useHandleBridgeTx() {
           // estimatedBaseFee: decEstimatedBaseFee,
           // swapMetaData,
           type: TransactionType.bridge,
+
+          sourceTokenAmount: quoteResponse.quote.srcTokenAmount,
           sourceTokenSymbol: quoteResponse.quote.srcAsset.symbol,
+          sourceTokenDecimals: quoteResponse.quote.srcAsset.decimals,
+          sourceTokenAddress: quoteResponse.quote.srcAsset.address,
+
+          destinationTokenAmount: quoteResponse.quote.destTokenAmount,
           destinationTokenSymbol: quoteResponse.quote.destAsset.symbol,
           destinationTokenDecimals: quoteResponse.quote.destAsset.decimals,
           destinationTokenAddress: quoteResponse.quote.destAsset.address,
+
           approvalTxId,
           // this is the decimal (non atomic) amount (not USD value) of source token to swap
           swapTokenValue: sentAmountDec,
