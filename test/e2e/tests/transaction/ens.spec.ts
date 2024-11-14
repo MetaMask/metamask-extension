@@ -59,6 +59,16 @@ describe('ENS', function (this: Suite) {
         },
       }));
 
+      await mockServer
+      .forPost(infuraUrl)
+      .withJsonBodyIncluding({ method: 'net_version' })
+      .thenCallback(() => {
+        return {
+          statusCode: 200,
+          json: { id: 8262367391254633, jsonrpc: '2.0', result: '1' },
+        };
+      });
+
     await mockServerJsonRpc(mockServer, [
       ['eth_chainId', { result: `0x${chainId}` }],
       [
@@ -121,6 +131,8 @@ describe('ENS', function (this: Suite) {
 
 
       async ({ driver }: { driver: Driver }) => {
+        await driver.delay(10000);
+
         await loginWithoutBalanceValidation(driver);
 
         // click send button on homepage to start send flow
