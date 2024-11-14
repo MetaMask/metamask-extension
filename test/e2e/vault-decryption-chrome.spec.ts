@@ -162,7 +162,7 @@ describe('Vault Decryptor Page', function () {
         disableServerMochaToBackground: true,
       },
       async ({ driver }) => {
-        // we don't need to use navigatesince MM will automatically open a new window in prod build
+        // we don't need to use navigate since MM will automatically open a new window in prod build
         await driver.waitUntilXWindowHandles(2);
 
         // we cannot use the customized driver functionsas there is no socket for window communications in prod builds
