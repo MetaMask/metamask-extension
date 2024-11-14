@@ -99,29 +99,26 @@ const AssetListControlBar = ({ showTokensLinks }: AssetListControlBarProps) => {
           isFullScreen ? JustifyContent.flexStart : JustifyContent.spaceBetween
         }
       >
-        {process.env.PORTFOLIO_VIEW && (
-          <ButtonBase
-            data-testid="sort-by-popover-toggle"
-            variant={TextVariant.bodyMdMedium}
-            className="asset-list-control-bar__button asset-list-control-bar__network_control"
-            onClick={toggleNetworkFilterPopover}
-            size={ButtonBaseSize.Sm}
-            endIconName={IconName.ArrowDown}
-            backgroundColor={
-              isNetworkFilterPopoverOpen
-                ? BackgroundColor.backgroundPressed
-                : BackgroundColor.backgroundDefault
-            }
-            color={TextColor.textDefault}
-            marginRight={isFullScreen ? 2 : null}
-            ellipsis
-          >
-            {allNetworksFilterShown
-              ? currentNetwork?.nickname ?? t('currentNetwork')
-              : t('allNetworks')}
-          </ButtonBase>
-        )}
-
+        <ButtonBase
+          data-testid="sort-by-popover-toggle"
+          variant={TextVariant.bodyMdMedium}
+          className="asset-list-control-bar__button asset-list-control-bar__network_control"
+          onClick={toggleNetworkFilterPopover}
+          size={ButtonBaseSize.Sm}
+          endIconName={IconName.ArrowDown}
+          backgroundColor={
+            isNetworkFilterPopoverOpen
+              ? BackgroundColor.backgroundPressed
+              : BackgroundColor.backgroundDefault
+          }
+          color={TextColor.textDefault}
+          marginRight={isFullScreen ? 2 : null}
+          ellipsis
+        >
+          {allNetworksFilterShown
+            ? currentNetwork?.nickname ?? t('currentNetwork')
+            : t('allNetworks')}
+        </ButtonBase>
         <Box
           className="asset-list-control-bar__buttons"
           display={Display.Flex}
