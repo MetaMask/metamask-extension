@@ -44,7 +44,6 @@ const Asset = () => {
   if (nft) {
     content = <NftDetails nft={nft} />;
   } else if (token && chainId) {
-    console.log('foo');
     if (token?.address) {
       content = <TokenAsset chainId={chainId} token={token} />;
     } else {
