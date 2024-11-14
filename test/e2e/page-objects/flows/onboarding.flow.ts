@@ -148,7 +148,7 @@ export const completeImportSRPOnboardingFlow = async ({
 };
 
 /**
- * Complete create new wallet onboarding flow with opt-out privacy settings
+ * Complete create new wallet onboarding flow with custom privacy settings.
  *
  * @param options - The options object.
  * @param options.driver - The WebDriver instance.
@@ -157,7 +157,7 @@ export const completeImportSRPOnboardingFlow = async ({
  * @param options.toggleBasicFunctionality - Indicates if basic functionalities should be opted out. Defaults to true.
  * @param options.toggleAssetsPrivacy - Indicates if assets privacy functionalities should be opted out. Defaults to true.
  */
-export const completeCreateNewWalletOnboardingFlowWithOptOut = async ({
+export const completeCreateNewWalletOnboardingFlowWithCustomSettings = async ({
   driver,
   password = WALLET_PASSWORD,
   needNavigateToNewPage = true,
