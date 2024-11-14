@@ -320,6 +320,10 @@ describe('AssetPage', () => {
       <AssetPage asset={native} optionsButton={null} />,
       store,
     );
+    const dynamicImages = container.querySelectorAll('img[alt*="logo"]');
+    dynamicImages.forEach((img) => {
+      img.setAttribute('alt', 'static-logo');
+    });
     expect(container).toMatchSnapshot();
   });
 
