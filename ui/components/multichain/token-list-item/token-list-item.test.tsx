@@ -69,6 +69,7 @@ describe('TokenListItem', () => {
     onClick: jest.fn(),
     tokenImage: '',
     title: '',
+    chainId: '0x1',
   };
   it('should render correctly', () => {
     const store = configureMockStore()(state);
@@ -99,6 +100,7 @@ describe('TokenListItem', () => {
       isOriginalTokenSymbol: false,
       tokenImage: '',
       title: '',
+      chainId: '0x1',
     };
     const { getByText } = renderWithProvider(
       <TokenListItem {...propsToUse} />,
@@ -117,6 +119,7 @@ describe('TokenListItem', () => {
       tokenImage: '',
       title: '',
       tokenSymbol: 'SCAM_TOKEN',
+      chainId: '0x1',
     };
     const { getByTestId, getByText } = renderWithProvider(
       <TokenListItem {...propsToUse} />,
@@ -144,6 +147,7 @@ describe('TokenListItem', () => {
       tokenImage: '',
       title: '',
       tokenSymbol: 'SCAM_TOKEN',
+      chainId: '0x1',
     };
     const { getByTestId, getByText } = renderWithProvider(
       <TokenListItem {...propsToUse} />,
@@ -171,6 +175,7 @@ describe('TokenListItem', () => {
       isOriginalTokenSymbol: false,
       tokenImage: '',
       title: '',
+      chainId: '0x1',
     };
 
     const { getByText } = renderWithProvider(
