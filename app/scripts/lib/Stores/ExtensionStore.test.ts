@@ -118,7 +118,7 @@ describe('ExtensionStore', () => {
           get: jest
             .fn()
             .mockImplementation(() =>
-              Promise.resolve({ appState: { test: true } }),
+              Promise.resolve({ data: { test: true } }),
             ),
         } as unknown as browser.Storage.LocalStorageArea,
       });
@@ -126,20 +126,84 @@ describe('ExtensionStore', () => {
       await localStore.get();
 
       expect(localStore.mostRecentRetrievedState).toStrictEqual({
-        appState: { test: true },
+        data: { test: true },
       });
     });
 
-    it('should reset mostRecentRetrievedState to null if storage.local is empty', async () => {
+    it('should return default state, reset mostRecentRetrievedState to null, and set stateCorruptionDetected to true, if storage.local is an empty object', async () => {
       const localStore = setup({
         localMock: {
           get: jest.fn().mockImplementation(() => Promise.resolve({})),
         } as unknown as browser.Storage.LocalStorageArea,
       });
 
-      await localStore.get();
+      const result = await localStore.get();
+
+      expect(result).toStrictEqual({
+        data: { config: {} },
+        meta: { version: 0 },
+      });
 
       expect(localStore.mostRecentRetrievedState).toStrictEqual(null);
+      expect(localStore.stateCorruptionDetected).toStrictEqual(true);
+    });
+
+    it('should return default state, reset mostRecentRetrievedState to null, and set stateCorruptionDetected to true, if storage.local returns undefined', async () => {
+      const localStore = setup({
+        localMock: {
+          get: jest.fn().mockImplementation(() => Promise.resolve()),
+        } as unknown as browser.Storage.LocalStorageArea,
+      });
+
+      const result = await localStore.get();
+
+      expect(result).toStrictEqual({
+        data: { config: {} },
+        meta: { version: 0 },
+      });
+
+      expect(localStore.mostRecentRetrievedState).toStrictEqual(null);
+      expect(localStore.stateCorruptionDetected).toStrictEqual(true);
+    });
+
+    it('should return default state, reset mostRecentRetrievedState to null, and set stateCorruptionDetected to true, if storage.local returns an object without a data property', async () => {
+      const localStore = setup({
+        localMock: {
+          get: jest
+            .fn()
+            .mockImplementation(() => Promise.resolve({ foo: 'bar' })),
+        } as unknown as browser.Storage.LocalStorageArea,
+      });
+
+      const result = await localStore.get();
+
+      expect(result).toStrictEqual({
+        data: { config: {} },
+        meta: { version: 0 },
+      });
+
+      expect(localStore.mostRecentRetrievedState).toStrictEqual(null);
+      expect(localStore.stateCorruptionDetected).toStrictEqual(true);
+    });
+
+    it('should return default state, reset mostRecentRetrievedState to null, and set stateCorruptionDetected to true, if storage.local returns an object with an undefined data property', async () => {
+      const localStore = setup({
+        localMock: {
+          get: jest
+            .fn()
+            .mockImplementation(() => Promise.resolve({ data: undefined })),
+        } as unknown as browser.Storage.LocalStorageArea,
+      });
+
+      const result = await localStore.get();
+
+      expect(result).toStrictEqual({
+        data: { config: {} },
+        meta: { version: 0 },
+      });
+
+      expect(localStore.mostRecentRetrievedState).toStrictEqual(null);
+      expect(localStore.stateCorruptionDetected).toStrictEqual(true);
     });
 
     it('should set mostRecentRetrievedState to current state if isExtensionInitialized is true', async () => {

@@ -10,6 +10,8 @@ import {
   EmptyState,
 } from './BaseStore';
 
+const { sentry } = global;
+
 /**
  * Returns whether or not the given object contains no keys
  *
@@ -112,18 +114,20 @@ export class ExtensionStore extends BaseStore {
      * which will not be persisted. This should probably be a bug that we
      * report to sentry.
      *
-     * TODO: Investigate what happens in this case and log sentry report.
      */
     if (!this.isSupported) {
       return this.generateFirstTimeState();
     }
     try {
-      const result = await this.#get();
+       const result = await this.#get();
       // extension.storage.local always returns an obj
       // if the object is empty, treat it as undefined
-      if (isEmpty(result)) {
+      if (!result?.data) {
         this.mostRecentRetrievedState = null;
         this.stateCorruptionDetected = true;
+
+        sentry.captureMessage('Empty/corrupted vault found');
+
         // If the data is missing, but we have a record of it existing at some
         // point return an empty object, return the fallback state tree from
         return this.generateFirstTimeState();
