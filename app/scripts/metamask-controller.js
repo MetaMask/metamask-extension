@@ -2600,7 +2600,7 @@ export default class MetamaskController extends EventEmitter {
   triggerNetworkrequests() {
     this.accountTrackerController.start();
     this.txController.startIncomingTransactionPolling();
-    // this.tokenDetectionController.enable();
+    this.tokenDetectionController.enable();
 
     // const preferencesControllerState = this.preferencesController.state;
 
@@ -2612,7 +2612,7 @@ export default class MetamaskController extends EventEmitter {
   stopNetworkRequests() {
     this.accountTrackerController.stop();
     this.txController.stopIncomingTransactionPolling();
-    // this.tokenDetectionController.disable();
+    this.tokenDetectionController.disable();
 
     // const preferencesControllerState = this.preferencesController.state;
 

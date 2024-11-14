@@ -1,0 +1,40 @@
+diff --git a/dist/TokenDetectionController.cjs b/dist/TokenDetectionController.cjs
+index ab23c95d667357db365f925c4c4acce4736797f8..54916fd37337e79c344bdcd1eac764bd547ab117 100644
+--- a/dist/TokenDetectionController.cjs
++++ b/dist/TokenDetectionController.cjs
+@@ -203,14 +203,7 @@ class TokenDetectionController extends (0, polling_controller_1.StaticIntervalPo
+         const { chainsToDetectUsingRpc, chainsToDetectUsingAccountAPI } = __classPrivateFieldGet(this, _TokenDetectionController_instances, "m", _TokenDetectionController_getChainsToDetect).call(this, clientNetworks, supportedNetworks);
+         // Try detecting tokens via Account API first if conditions allow
+         if (supportedNetworks && chainsToDetectUsingAccountAPI.length > 0) {
+-            const apiResult = await __classPrivateFieldGet(this, _TokenDetectionController_instances, "m", _TokenDetectionController_attemptAccountAPIDetection).call(this, chainsToDetectUsingAccountAPI, addressToDetect, supportedNetworks);
+-            // If API succeeds and no chains are left for RPC detection, we can return early
+-            if (apiResult?.result === 'success' &&
+-                chainsToDetectUsingRpc.length === 0) {
+-                return;
+-            }
+-            // If API fails or chainsToDetectUsingRpc still has items, add chains to RPC detection
+-            __classPrivateFieldGet(this, _TokenDetectionController_instances, "m", _TokenDetectionController_addChainsToRpcDetection).call(this, chainsToDetectUsingRpc, chainsToDetectUsingAccountAPI, clientNetworks);
++            await __classPrivateFieldGet(this, _TokenDetectionController_instances, "m", _TokenDetectionController_attemptAccountAPIDetection).call(this, chainsToDetectUsingAccountAPI, addressToDetect, supportedNetworks);
+         }
+         // Proceed with RPC detection if there are chains remaining in chainsToDetectUsingRpc
+         if (chainsToDetectUsingRpc.length > 0) {
+diff --git a/dist/TokenDetectionController.mjs b/dist/TokenDetectionController.mjs
+index f75eb5c2c74f2a9d15a79760985111171dc938e1..983acd0a63bac2ceedc9ed4896d1a342ac71c990 100644
+--- a/dist/TokenDetectionController.mjs
++++ b/dist/TokenDetectionController.mjs
+@@ -204,14 +204,7 @@ export class TokenDetectionController extends StaticIntervalPollingController()
+         const { chainsToDetectUsingRpc, chainsToDetectUsingAccountAPI } = __classPrivateFieldGet(this, _TokenDetectionController_instances, "m", _TokenDetectionController_getChainsToDetect).call(this, clientNetworks, supportedNetworks);
+         // Try detecting tokens via Account API first if conditions allow
+         if (supportedNetworks && chainsToDetectUsingAccountAPI.length > 0) {
+-            const apiResult = await __classPrivateFieldGet(this, _TokenDetectionController_instances, "m", _TokenDetectionController_attemptAccountAPIDetection).call(this, chainsToDetectUsingAccountAPI, addressToDetect, supportedNetworks);
+-            // If API succeeds and no chains are left for RPC detection, we can return early
+-            if (apiResult?.result === 'success' &&
+-                chainsToDetectUsingRpc.length === 0) {
+-                return;
+-            }
+-            // If API fails or chainsToDetectUsingRpc still has items, add chains to RPC detection
+-            __classPrivateFieldGet(this, _TokenDetectionController_instances, "m", _TokenDetectionController_addChainsToRpcDetection).call(this, chainsToDetectUsingRpc, chainsToDetectUsingAccountAPI, clientNetworks);
++            await __classPrivateFieldGet(this, _TokenDetectionController_instances, "m", _TokenDetectionController_attemptAccountAPIDetection).call(this, chainsToDetectUsingAccountAPI, addressToDetect, supportedNetworks);
+         }
+         // Proceed with RPC detection if there are chains remaining in chainsToDetectUsingRpc
+         if (chainsToDetectUsingRpc.length > 0) {
