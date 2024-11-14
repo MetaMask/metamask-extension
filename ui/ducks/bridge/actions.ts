@@ -5,7 +5,10 @@ import { zeroAddress } from 'ethereumjs-util';
 import { useHistory } from 'react-router-dom';
 import { BigNumber } from 'bignumber.js';
 import { NetworkConfiguration } from '@metamask/network-controller';
-import { TransactionMeta } from '@metamask/transaction-controller';
+import {
+  TransactionMeta,
+  TransactionType,
+} from '@metamask/transaction-controller';
 import {
   BridgeBackgroundAction,
   BridgeUserAction,
@@ -175,7 +178,7 @@ export const submitBridgeTransaction = (
       maxPriorityFeePerGas,
       meta,
     }: {
-      txType: 'bridgeApproval' | 'bridge';
+      txType: TransactionType.bridgeApproval | TransactionType.bridge;
       txParams: {
         chainId: ChainId;
         to: string;
@@ -206,11 +209,12 @@ export const submitBridgeTransaction = (
 
       const txMeta = await addTransactionAndWaitForPublish(finalTxParams, {
         requireApproval: false,
-        // @ts-expect-error Need TransactionController v37+, TODO add this type
         type: txType,
         swaps: {
           hasApproveTx:
-            txType === 'bridge' ? Boolean(quoteResponse?.approval) : true,
+            txType === TransactionType.bridge
+              ? Boolean(quoteResponse?.approval)
+              : true,
           meta,
         },
       });
@@ -251,13 +255,12 @@ export const submitBridgeTransaction = (
         };
 
         await handleTx({
-          txType: 'bridgeApproval',
+          txType: TransactionType.bridgeApproval,
           txParams,
           maxFeePerGas,
           maxPriorityFeePerGas,
           meta: {
-            // @ts-expect-error Need TransactionController v37+, TODO add this type
-            type: 'bridgeApproval', // TransactionType.bridgeApproval,
+            type: TransactionType.bridgeApproval,
           },
         });
       }
@@ -289,13 +292,12 @@ export const submitBridgeTransaction = (
       }
 
       const txMeta = await handleTx({
-        txType: 'bridgeApproval',
+        txType: TransactionType.bridgeApproval,
         txParams: approval,
         maxFeePerGas,
         maxPriorityFeePerGas,
         meta: {
-          // @ts-expect-error Need TransactionController v37+, TODO add this type
-          type: 'bridgeApproval', // TransactionType.bridgeApproval,
+          type: TransactionType.bridgeApproval,
           sourceTokenSymbol: quoteResponse.quote.srcAsset.symbol,
         },
       });
@@ -320,15 +322,14 @@ export const submitBridgeTransaction = (
         .toString();
 
       const txMeta = await handleTx({
-        txType: 'bridge',
+        txType: TransactionType.bridge,
         txParams: quoteResponse.trade,
         maxFeePerGas,
         maxPriorityFeePerGas,
         meta: {
           // estimatedBaseFee: decEstimatedBaseFee,
           // swapMetaData,
-          // @ts-expect-error Need TransactionController v37+, TODO add this type
-          type: 'bridge', // TransactionType.bridge,
+          type: TransactionType.bridge,
           sourceTokenSymbol: quoteResponse.quote.srcAsset.symbol,
           destinationTokenSymbol: quoteResponse.quote.destAsset.symbol,
           destinationTokenDecimals: quoteResponse.quote.destAsset.decimals,
