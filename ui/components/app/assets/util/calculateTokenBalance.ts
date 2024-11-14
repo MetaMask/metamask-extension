@@ -31,8 +31,9 @@ export function calculateTokenBalance({
         new BN(decimals),
         5, // precision for native token balance
       );
+    } else {
+      balance = '0';
     }
-    return '0';
   } else {
     const hexBalance =
       selectedAccountTokenBalancesAcrossChains?.[chainId]?.[address];
@@ -41,8 +42,9 @@ export function calculateTokenBalance({
         new BN(hexToDecimal(hexBalance)),
         new BN(decimals),
       );
+    } else {
+      balance = '0';
     }
-    return '0';
   }
 
   return balance;
