@@ -78,7 +78,7 @@ const AssetListControlBar = ({ showTokensLinks }: AssetListControlBarProps) => {
           isFullScreen ? JustifyContent.flexStart : JustifyContent.spaceBetween
         }
       >
-        {process.env.FILTER_TOKENS_TOGGLE && (
+        {process.env.PORTFOLIO_VIEW && (
           <ButtonBase
             data-testid="sort-by-popover-toggle"
             className="asset-list-control-bar__button"

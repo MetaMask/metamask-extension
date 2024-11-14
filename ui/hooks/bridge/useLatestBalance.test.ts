@@ -61,7 +61,7 @@ describe('useLatestBalance', () => {
 
     expect(mockGetBalance).toHaveBeenCalledTimes(1);
     expect(mockGetBalance).toHaveBeenCalledWith(
-      '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc',
+      '0x0DCD5D886577d5081B0c52e242Ef29E70Be3E7bc',
     );
     expect(mockFetchTokenBalance).toHaveBeenCalledTimes(0);
   });
