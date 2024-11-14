@@ -274,6 +274,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - fix: Confirm Page test failing in CI/CD ([#27423](https://github.com/MetaMask/metamask-extension/pull/27423))
 - feat: Add performance metrics for signature requests ([#26967](https://github.com/MetaMask/metamask-extension/pull/26967))
 - fix(NOTIFY-1166): rename account sync event names ([#27413](https://github.com/MetaMask/metamask-extension/pull/27413))
+## [12.6.1]
+### Fixed
+- Fixed gas limit estimation on Base and BNB chains ([#28327](https://github.com/MetaMask/metamask-extension/pull/28327))
 
 ## [12.6.0]
 ### Added
@@ -5574,6 +5577,8 @@ Update styles and spacing on the critical error page  ([#20350](https://github.c
 
 [Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v12.7.0...HEAD
 [12.7.0]: https://github.com/MetaMask/metamask-extension/compare/v12.6.0...v12.7.0
+[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v12.6.1...HEAD
+[12.6.1]: https://github.com/MetaMask/metamask-extension/compare/v12.6.0...v12.6.1
 [12.6.0]: https://github.com/MetaMask/metamask-extension/compare/v12.5.1...v12.6.0
 [12.5.1]: https://github.com/MetaMask/metamask-extension/compare/v12.5.0...v12.5.1
 [12.5.0]: https://github.com/MetaMask/metamask-extension/compare/v12.4.2...v12.5.0
