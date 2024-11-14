@@ -93,8 +93,13 @@ const AssetListControlBar = ({ showTokensLinks }: AssetListControlBarProps) => {
       marginRight={2}
       ref={popoverRef}
     >
-      <Box display={Display.Flex} justifyContent={JustifyContent.spaceBetween}>
-        {process.env.FILTER_TOKENS_TOGGLE && (
+      <Box
+        display={Display.Flex}
+        justifyContent={
+          isFullScreen ? JustifyContent.flexStart : JustifyContent.spaceBetween
+        }
+      >
+        {process.env.PORTFOLIO_VIEW && (
           <ButtonBase
             data-testid="sort-by-popover-toggle"
             variant={TextVariant.bodyMdMedium}
