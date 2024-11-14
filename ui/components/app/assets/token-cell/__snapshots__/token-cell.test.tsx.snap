@@ -71,7 +71,7 @@ exports[`Token Cell should match snapshot 1`] = `
               data-testid="multichain-token-list-item-value"
             >
               5
-              
+               
               TEST
             </p>
           </div>
