@@ -2,12 +2,6 @@ import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import {
   Box,
-  Button,
-  ButtonSize,
-  Checkbox,
-  Icon,
-  IconName,
-  IconSize,
   Modal,
   ModalBody,
   ModalContent,
@@ -18,12 +12,7 @@ import {
   ButtonLink,
 } from '../../../components/component-library';
 import {
-  BackgroundColor,
-  BlockSize,
-  BorderRadius,
   Display,
-  FlexDirection,
-  IconColor,
   TextAlign,
   TextVariant,
   JustifyContent,
@@ -46,7 +35,10 @@ export const SnapDevicePairing = () => {
         const device = grantedDevices[0];
         if (device) {
           const { vendorId, productId } = device;
-          const id = `hid:${vendorId}:${productId}`;
+
+          // TODO: Move this to a shared util function.
+          const id = `hid:${vendorId.toString(16)}:${productId.toString(16)}`;
+
           dispatch(resolveSnapDevicePairing(id));
           dispatch(transitionFromFullscreenToPopup());
         }
