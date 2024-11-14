@@ -4,6 +4,7 @@ import { TransactionMeta } from '@metamask/transaction-controller';
 import { useHistory } from 'react-router-dom';
 import { selectBridgeHistoryForAccount } from '../../../ducks/bridge-status/selectors';
 import { CROSS_CHAIN_SWAP_TX_DETAILS_ROUTE } from '../../../helpers/constants/routes';
+import { useI18nContext } from '../../../hooks/useI18nContext';
 import useBridgeChainInfo from './useBridgeChainInfo';
 
 export type UseBridgeDataProps = {
@@ -20,6 +21,7 @@ export type UseBridgeDataProps = {
 export default function useBridgeData({
   transactionGroup,
 }: UseBridgeDataProps) {
+  const t = useI18nContext();
   const history = useHistory();
   const bridgeHistory = useSelector(selectBridgeHistoryForAccount);
 
@@ -32,8 +34,10 @@ export default function useBridgeData({
     bridgeHistoryItem,
   });
 
-  const destChainName = destNetworkConfiguration?.name || 'Unknown';
-  const bridgeTitleSuffix = bridgeHistoryItem ? ` to ${destChainName}` : '';
+  const destChainName = destNetworkConfiguration?.name;
+  const bridgeTitleSuffix = destChainName
+    ? t('bridgeToChain', [destChainName])
+    : '';
 
   // By complete, this means BOTH source and dest tx are confirmed
   const isBridgeComplete = bridgeHistoryItem
