@@ -18,7 +18,11 @@ const render = (props: AccountOverviewEthProps) => {
 
 describe('AccountOverviewEth', () => {
   beforeEach(() => {
-    setBackgroundConnection({ setBridgeFeatureFlags: jest.fn() } as never);
+    setBackgroundConnection({
+      setBridgeFeatureFlags: jest.fn(),
+      tokenBalancesStartPolling: jest.fn(),
+      setPreference: jest.fn(),
+    } as never);
   });
   it('shows all tabs', () => {
     const { queryByTestId } = render({
