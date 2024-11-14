@@ -24,13 +24,11 @@ export const REDESIGN_DEV_TRANSACTION_TYPES = [
 
 const isCorrectDeveloperTransactionType = (
   transactionMetadataType: TransactionType,
-): boolean =>
-  REDESIGN_DEV_TRANSACTION_TYPES.includes(transactionMetadataType);
+): boolean => REDESIGN_DEV_TRANSACTION_TYPES.includes(transactionMetadataType);
 
 const isCorrectUserTransactionType = (
   transactionMetadataType: TransactionType,
-): boolean =>
-  REDESIGN_USER_TRANSACTION_TYPES.includes(transactionMetadataType);
+): boolean => REDESIGN_USER_TRANSACTION_TYPES.includes(transactionMetadataType);
 
 const isCorrectApprovalType = (approvalType: ApprovalType): boolean =>
   REDESIGN_APPROVAL_TYPES.includes(approvalType);
@@ -40,7 +38,8 @@ const shouldUseRedesignForTransactionsDeveloperMode = (
   transactionMetadataType: TransactionType,
 ): boolean =>
   (process.env.ENABLE_CONFIRMATION_REDESIGN === 'true' ||
-  isRedesignedConfirmationsDeveloperEnabled) && isCorrectDeveloperTransactionType(transactionMetadataType);
+    isRedesignedConfirmationsDeveloperEnabled) &&
+  isCorrectDeveloperTransactionType(transactionMetadataType);
 
 const shouldUseRedesignForTransactionsUserMode = (
   isRedesignedTransactionsUserSettingEnabled: boolean,

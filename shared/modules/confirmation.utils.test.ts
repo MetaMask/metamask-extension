@@ -206,7 +206,7 @@ describe('confirmation.utils', () => {
 
   describe('REDESIGN_APPROVAL_TYPES', () => {
     it('should contain the correct approval types', () => {
-      expect(REDESIGN_APPROVAL_TYPES).toEqual([
+      expect(REDESIGN_APPROVAL_TYPES).toStrictEqual([
         ApprovalType.EthSignTypedData,
         ApprovalType.PersonalSign,
       ]);
