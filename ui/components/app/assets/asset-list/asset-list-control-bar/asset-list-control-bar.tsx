@@ -50,12 +50,13 @@ const AssetListControlBar = ({ showTokensLinks }: AssetListControlBarProps) => {
     useState(false);
 
   const allOpts: Record<string, boolean> = {};
-  Object.keys(allNetworks).forEach((chainId) => {
+  Object.keys(allNetworks || {}).forEach((chainId) => {
     allOpts[chainId] = true;
   });
 
   const allNetworksFilterShown =
-    Object.keys(tokenNetworkFilter || {}).length !== Object.keys(allOpts || {}).length;
+    Object.keys(tokenNetworkFilter || {}).length !==
+    Object.keys(allOpts || {}).length;
 
   // TODO: This useEffect should be a migration
   // We need to set the default filter for all users to be all included networks, rather than defaulting to empty object
@@ -93,30 +94,32 @@ const AssetListControlBar = ({ showTokensLinks }: AssetListControlBarProps) => {
       marginRight={2}
       ref={popoverRef}
     >
-      <Box display={Display.Flex} justifyContent={JustifyContent.spaceBetween}>
-        {process.env.FILTER_TOKENS_TOGGLE && (
-          <ButtonBase
-            data-testid="sort-by-popover-toggle"
-            variant={TextVariant.bodyMdMedium}
-            className="asset-list-control-bar__button asset-list-control-bar__network_control"
-            onClick={toggleNetworkFilterPopover}
-            size={ButtonBaseSize.Sm}
-            endIconName={IconName.ArrowDown}
-            backgroundColor={
-              isNetworkFilterPopoverOpen
-                ? BackgroundColor.backgroundPressed
-                : BackgroundColor.backgroundDefault
-            }
-            color={TextColor.textDefault}
-            marginRight={isFullScreen ? 2 : null}
-            ellipsis
-          >
-            {allNetworksFilterShown
-              ? currentNetwork?.nickname ?? t('currentNetwork')
-              : t('allNetworks')}
-          </ButtonBase>
-        )}
-
+      <Box
+        display={Display.Flex}
+        justifyContent={
+          isFullScreen ? JustifyContent.flexStart : JustifyContent.spaceBetween
+        }
+      >
+        <ButtonBase
+          data-testid="sort-by-networks"
+          variant={TextVariant.bodyMdMedium}
+          className="asset-list-control-bar__button asset-list-control-bar__network_control"
+          onClick={toggleNetworkFilterPopover}
+          size={ButtonBaseSize.Sm}
+          endIconName={IconName.ArrowDown}
+          backgroundColor={
+            isNetworkFilterPopoverOpen
+              ? BackgroundColor.backgroundPressed
+              : BackgroundColor.backgroundDefault
+          }
+          color={TextColor.textDefault}
+          marginRight={isFullScreen ? 2 : null}
+          ellipsis
+        >
+          {allNetworksFilterShown
+            ? currentNetwork?.nickname ?? t('currentNetwork')
+            : t('allNetworks')}
+        </ButtonBase>
         <Box
           className="asset-list-control-bar__buttons"
           display={Display.Flex}

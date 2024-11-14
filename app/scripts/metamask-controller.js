@@ -2023,6 +2023,11 @@ export default class MetamaskController extends EventEmitter {
         ],
       }),
       trace,
+      decodingApiUrl: process.env.DECODING_API_URL,
+      isDecodeSignatureRequestEnabled: () =>
+        this.preferencesController.state.useExternalServices === true &&
+        this.preferencesController.state.useTransactionSimulations &&
+        process.env.ENABLE_SIGNATURE_DECODING === true,
     });
 
     this.signatureController.hub.on(
@@ -6582,10 +6587,12 @@ export default class MetamaskController extends EventEmitter {
         );
       },
       getRedesignedConfirmationsEnabled: () => {
-        return this.preferencesController.getRedesignedConfirmationsEnabled;
+        return this.preferencesController.state.preferences
+          .redesignedConfirmationsEnabled;
       },
       getRedesignedTransactionsEnabled: () => {
-        return this.preferencesController.getRedesignedTransactionsEnabled;
+        return this.preferencesController.state.preferences
+          .redesignedTransactionsEnabled;
       },
       getMethodData: (data) => {
         if (!data) {

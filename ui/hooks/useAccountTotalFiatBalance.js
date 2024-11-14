@@ -58,7 +58,7 @@ export const useAccountTotalFiatBalance = (
   const { loading: tokensWithBalances } = useTokenTracker({
     chainId: currentChainId,
     tokens,
-    address: account.address,
+    address: account?.address,
     hideZeroBalanceTokens: shouldHideZeroBalanceTokens,
   });
 

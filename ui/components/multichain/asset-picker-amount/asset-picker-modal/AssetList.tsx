@@ -2,9 +2,9 @@ import React from 'react';
 import { useSelector } from 'react-redux';
 import classnames from 'classnames';
 import {
+  getCurrentChainId,
   getCurrentCurrency,
   getSelectedAccountCachedBalance,
-  getCurrentChainId,
 } from '../../../../selectors';
 import { getNativeCurrency } from '../../../../ducks/metamask/metamask';
 import { useCurrencyDisplay } from '../../../../hooks/useCurrencyDisplay';
