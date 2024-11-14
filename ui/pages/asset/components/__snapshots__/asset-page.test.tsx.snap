@@ -274,7 +274,7 @@ exports[`AssetPage should render a native asset 1`] = `
                 Spending caps
               </p>
               <a
-                class="asset-page__spending-caps mm-text--body-md-medium"
+                class="mm-box mm-text asset-page__spending-caps mm-text--body-md-medium mm-text--body-md mm-box--color-primary-default"
                 href="https://portfolio.test/?metamaskEntry=asset_page&metametricsId=&metricsEnabled=false&marketingEnabled=false&accountAddress=0x1&tab=spending-caps"
                 rel="noopener noreferrer"
                 target="_blank"
@@ -656,7 +656,7 @@ exports[`AssetPage should render an ERC20 asset without prices 1`] = `
                 Spending caps
               </p>
               <a
-                class="asset-page__spending-caps mm-text--body-md-medium"
+                class="mm-box mm-text asset-page__spending-caps mm-text--body-md-medium mm-text--body-md mm-box--color-primary-default"
                 href="https://portfolio.test/?metamaskEntry=asset_page&metametricsId=&metricsEnabled=false&marketingEnabled=false&accountAddress=0x1&tab=spending-caps"
                 rel="noopener noreferrer"
                 target="_blank"
@@ -1164,7 +1164,7 @@ exports[`AssetPage should render an ERC20 token with prices 1`] = `
                 Spending caps
               </p>
               <a
-                class="asset-page__spending-caps mm-text--body-md-medium"
+                class="mm-box mm-text asset-page__spending-caps mm-text--body-md-medium mm-text--body-md mm-box--color-primary-default"
                 href="https://portfolio.test/?metamaskEntry=asset_page&metametricsId=&metricsEnabled=false&marketingEnabled=false&accountAddress=0x1&tab=spending-caps"
                 rel="noopener noreferrer"
                 target="_blank"
