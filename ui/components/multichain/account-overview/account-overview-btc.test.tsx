@@ -25,7 +25,11 @@ const render = (props: AccountOverviewBtcProps = defaultProps) => {
 
 describe('AccountOverviewBtc', () => {
   beforeEach(() => {
-    setBackgroundConnection({ setBridgeFeatureFlags: jest.fn() } as never);
+    setBackgroundConnection({
+      setBridgeFeatureFlags: jest.fn(),
+      tokenBalancesStartPolling: jest.fn(),
+      setPreference: jest.fn(),
+    } as never);
   });
 
   it('shows only Tokens and Activity tabs', () => {

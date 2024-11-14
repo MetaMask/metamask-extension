@@ -55,6 +55,8 @@
     }
   },
   "metamask": {
+    "allTokens": {},
+    "tokenBalances": {},
     "use4ByteResolution": true,
     "ipfsGateway": "dweb.link",
     "dismissSeedBackUpReminder": false,
@@ -383,7 +385,8 @@
         "key": "tokenFiatAmount",
         "order": "dsc",
         "sortCallback": "stringNumeric"
-      }
+      },
+      "tokenNetworkFilter": {}
     },
     "ensResolutionsByAddress": {},
     "isAccountMenuOpen": false,
