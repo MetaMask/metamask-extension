@@ -123,9 +123,9 @@ const CrossChainSwapTxDetails = () => {
 
   const bridgeAmount = bridgeHistoryItem
     ? `${calcTokenAmount(
-        bridgeHistoryItem.quote.destTokenAmount,
-        bridgeHistoryItem.quote.destAsset.decimals,
-      ).toFixed()} ${bridgeHistoryItem.quote.destAsset.symbol}`
+        bridgeHistoryItem.quote.srcTokenAmount,
+        bridgeHistoryItem.quote.srcAsset.decimals,
+      ).toFixed()} ${bridgeHistoryItem.quote.srcAsset.symbol}`
     : undefined;
 
   return (
