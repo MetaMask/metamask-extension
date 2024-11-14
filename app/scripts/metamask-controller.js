@@ -1892,25 +1892,10 @@ export default class MetamaskController extends EventEmitter {
           [CHAIN_IDS.SEPOLIA]: process.env.ETHERSCAN_API_KEY,
         },
         includeTokenTransfers: false,
-        isEnabled: () => {
-          const globalChainId = this.#getGlobalChainId();
-
-          const isChainEnabled =
-            this.preferencesController.state.incomingTransactionsPreferences?.[
-              globalChainId
-            ];
-
-          const isOnboardingComplete =
-            this.onboardingController.state.completedOnboarding;
-
-          console.log('#MATT', {
-            globalChainId,
-            isChainEnabled,
-            isOnboardingComplete,
-          });
-
-          return isChainEnabled && isOnboardingComplete;
-        },
+        isEnabled: () =>
+          this.preferencesController.state.incomingTransactionsPreferences?.[
+            this.#getGlobalChainId()
+          ] && this.onboardingController.state.completedOnboarding,
         queryEntireHistory: false,
         updateTransactions: false,
       },
