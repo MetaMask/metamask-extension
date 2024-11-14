@@ -106,12 +106,12 @@ exports[`ConfirmLegacyGasDisplay should match snapshot 1`] = `
             >
               0.000021
             </span>
+            <span
+              class="mm-box mm-text currency-display-component__suffix mm-text--inherit mm-box--margin-inline-start-1 mm-box--color-text-default"
+            >
+              ETH
+            </span>
           </div>
-          <span
-            class="mm-box mm-text currency-display-component__suffix mm-text--inherit mm-box--margin-inline-start-1 mm-box--color-text-default"
-          >
-            ETH
-          </span>
         </div>
       </h6>
     </div>
