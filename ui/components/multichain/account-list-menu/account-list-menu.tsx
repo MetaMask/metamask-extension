@@ -69,6 +69,7 @@ import {
   getOriginOfCurrentTab,
   getSelectedInternalAccount,
   getUpdatedAndSortedAccounts,
+  getDefaultHomeActiveTabName,
   ///: BEGIN:ONLY_INCLUDE_IF(solana)
   getIsSolanaSupportEnabled,
   ///: END:ONLY_INCLUDE_IF
@@ -115,7 +116,11 @@ import {
   AccountConnections,
   MergedInternalAccount,
 } from '../../../selectors/selectors.types';
-import { endTrace, TraceName } from '../../../../shared/lib/trace';
+import { endTrace, trace, TraceName } from '../../../../shared/lib/trace';
+import {
+  ACCOUNT_OVERVIEW_TAB_KEY_TO_TRACE_NAME_MAP,
+  AccountOverviewTabKey,
+} from '../../../../shared/constants/app-state';
 ///: BEGIN:ONLY_INCLUDE_IF(solana)
 import {
   SOLANA_WALLET_NAME,
@@ -253,6 +258,9 @@ export const AccountListMenu = ({
       ),
     [updatedAccountsList, allowedAccountTypes],
   );
+  const defaultHomeActiveTabName: AccountOverviewTabKey = useSelector(
+    getDefaultHomeActiveTabName,
+  );
   ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
   const addSnapAccountEnabled = useSelector(getIsAddSnapAccountEnabled);
   ///: END:ONLY_INCLUDE_IF
@@ -341,6 +349,16 @@ export const AccountListMenu = ({
           properties: {
             location: 'Main Menu',
           },
+        });
+        endTrace({
+          name: ACCOUNT_OVERVIEW_TAB_KEY_TO_TRACE_NAME_MAP[
+            defaultHomeActiveTabName
+          ],
+        });
+        trace({
+          name: ACCOUNT_OVERVIEW_TAB_KEY_TO_TRACE_NAME_MAP[
+            defaultHomeActiveTabName
+          ],
         });
         dispatch(setSelectedAccount(account.address));
       };

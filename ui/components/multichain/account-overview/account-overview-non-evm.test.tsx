@@ -9,7 +9,7 @@ import {
 } from './account-overview-non-evm';
 
 const defaultProps: AccountOverviewNonEvmProps = {
-  defaultHomeActiveTabName: '',
+  defaultHomeActiveTabName: null,
   onTabClick: jest.fn(),
   setBasicFunctionalityModalOpen: jest.fn(),
   onSupportLinkClick: jest.fn(),
