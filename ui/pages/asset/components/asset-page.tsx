@@ -267,7 +267,7 @@ const AssetPage = ({
                           t('tokenDecimal'),
                           <Text>{asset.decimals}</Text>,
                         )}
-                      {asset.aggregators && asset.aggregators?.length > 0 && (
+                      {asset.aggregators && asset.aggregators.length > 0 && (
                         <Box>
                           <Text
                             color={TextColor.textAlternative}
@@ -275,7 +275,7 @@ const AssetPage = ({
                           >
                             {t('tokenList')}
                           </Text>
-                          <Text>{asset.aggregators?.join(', ')}</Text>
+                          <Text>{asset.aggregators.join(', ')}</Text>
                         </Box>
                       )}
                     </Box>
@@ -283,14 +283,16 @@ const AssetPage = ({
                 )}
                 {renderRow(
                   t('spendingCaps'),
-                  <a
+                  <Text
+                    as="a"
+                    color={TextColor.primaryDefault}
                     className="asset-page__spending-caps mm-text--body-md-medium"
                     href={portfolioSpendingCapsUrl}
                     target="_blank"
                     rel="noopener noreferrer"
                   >
                     {t('editInPortfolio')}
-                  </a>,
+                  </Text>,
                 )}
               </Box>
             </Box>
