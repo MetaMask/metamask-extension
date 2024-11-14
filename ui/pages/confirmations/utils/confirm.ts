@@ -10,11 +10,11 @@ import { parseTypedDataMessage } from '../../../../shared/modules/transaction.ut
 import { sanitizeMessage } from '../../../helpers/utils/util';
 import { Confirmation, SignatureRequestType } from '../types/confirm';
 import { TYPED_SIGNATURE_VERSIONS } from '../constants';
-import { REDESIGN_APPROVAL_TYPES } from '../../../../shared/modules/confirmation.utils';
+import { REDESIGN_SIGNATURE_APPROVAL_TYPES } from '../../../../shared/modules/confirmation.utils';
 
 export const isSignatureApprovalRequest = (
   request: ApprovalRequest<Record<string, Json>>,
-) => REDESIGN_APPROVAL_TYPES.includes(request.type as ApprovalType);
+) => REDESIGN_SIGNATURE_APPROVAL_TYPES.includes(request.type as ApprovalType);
 
 export const SIGNATURE_TRANSACTION_TYPES = [
   TransactionType.personalSign,

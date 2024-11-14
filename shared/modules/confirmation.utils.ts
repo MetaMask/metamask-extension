@@ -1,7 +1,7 @@
 import { TransactionType } from '@metamask/transaction-controller';
 import { ApprovalType } from '@metamask/controller-utils';
 
-export const REDESIGN_APPROVAL_TYPES = [
+export const REDESIGN_SIGNATURE_APPROVAL_TYPES = [
   ApprovalType.EthSignTypedData,
   ApprovalType.PersonalSign,
 ];
@@ -30,8 +30,8 @@ const isCorrectUserTransactionType = (
   transactionMetadataType: TransactionType,
 ): boolean => REDESIGN_USER_TRANSACTION_TYPES.includes(transactionMetadataType);
 
-const isCorrectApprovalType = (approvalType: ApprovalType): boolean =>
-  REDESIGN_APPROVAL_TYPES.includes(approvalType);
+const isCorrectSignatureApprovalType = (approvalType: ApprovalType): boolean =>
+  REDESIGN_SIGNATURE_APPROVAL_TYPES.includes(approvalType);
 
 const shouldUseRedesignForTransactionsDeveloperMode = (
   isRedesignedConfirmationsDeveloperEnabled: boolean,
@@ -71,7 +71,7 @@ export const shouldUseRedesignForSignatures = (
     process.env.ENABLE_CONFIRMATION_REDESIGN === 'true' ||
     isRedesignedConfirmationsDeveloperEnabled;
 
-  if (!isCorrectApprovalType(approvalType)) {
+  if (!isCorrectSignatureApprovalType(approvalType)) {
     return false;
   }
 
