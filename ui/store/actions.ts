@@ -3548,13 +3548,14 @@ export function setIpfsGateway(
 export function toggleExternalServices(
   val: boolean,
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
-  return (dispatch: MetaMaskReduxDispatch) => {
+  return async (dispatch: MetaMaskReduxDispatch) => {
     log.debug(`background.toggleExternalServices`);
-    callBackgroundMethod('toggleExternalServices', [val], (err) => {
-      if (err) {
-        dispatch(displayWarning(err));
-      }
-    });
+    try {
+      await submitRequestToBackground('toggleExternalServices', [val]);
+      await forceUpdateMetamaskState(dispatch);
+    } catch (err) {
+      dispatch(displayWarning(err));
+    }
   };
 }
 
