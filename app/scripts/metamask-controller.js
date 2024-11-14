@@ -2606,24 +2606,12 @@ export default class MetamaskController extends EventEmitter {
     this.accountTrackerController.start();
     this.txController.startIncomingTransactionPolling();
     this.tokenDetectionController.enable();
-
-    // const preferencesControllerState = this.preferencesController.state;
-
-    // if (this.#isTokenListPollingRequired(preferencesControllerState)) {
-    //   this.tokenListController.start();
-    // }
   }
 
   stopNetworkRequests() {
     this.accountTrackerController.stop();
     this.txController.stopIncomingTransactionPolling();
     this.tokenDetectionController.disable();
-
-    // const preferencesControllerState = this.preferencesController.state;
-
-    // if (this.#isTokenListPollingRequired(preferencesControllerState)) {
-    //   this.tokenListController.stop();
-    // }
   }
 
   resetStates(resetMethods) {
@@ -7228,15 +7216,6 @@ export default class MetamaskController extends EventEmitter {
     }
 
     this.tokenListController.updatePreventPollingOnNetworkRestart(!newEnabled);
-
-    // if (newEnabled) {
-    //   log.debug('Started token list controller polling');
-    //   this.tokenListController.start();
-    // } else {
-    //   log.debug('Stopped token list controller polling');
-    //   this.tokenListController.clearingTokenListData();
-    //   this.tokenListController.stop();
-    // }
   }
 
   #isTokenListPollingRequired(preferencesControllerState) {
