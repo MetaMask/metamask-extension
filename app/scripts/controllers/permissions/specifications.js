@@ -418,6 +418,7 @@ export const unrestrictedMethods = Object.freeze([
   'snap_writeDevice',
   'snap_readDevice',
   'snap_listDevices',
+  'snap_getSupportedDevices',
   ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
   'metamaskinstitutional_authenticate',
   'metamaskinstitutional_reauthenticate',
