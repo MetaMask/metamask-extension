@@ -46,7 +46,6 @@ import {
   getDataCollectionForMarketing,
 } from '../../../selectors';
 import {
-  getMultichainCurrentChainId,
   getMultichainCurrentNetwork,
   getMultichainIsEvm,
 } from '../../../selectors/multichain';
@@ -78,6 +77,7 @@ type TokenListItemProps = {
   secondary?: string | null;
   title: string;
   tooltipText?: string;
+  chainId: string;
   isOriginalTokenSymbol?: boolean | null;
   isNativeCurrency?: boolean;
   isStakeable?: boolean;
@@ -96,6 +96,7 @@ export const TokenListItem = ({
   secondary,
   title,
   tooltipText,
+  chainId,
   isOriginalTokenSymbol,
   isPrimaryTokenSymbolHidden = false,
   isNativeCurrency = false,
@@ -107,7 +108,6 @@ export const TokenListItem = ({
   const t = useI18nContext();
   const isEvm = useSelector(getMultichainIsEvm);
   const trackEvent = useContext(MetaMetricsContext);
-  const chainId = useSelector(getMultichainCurrentChainId);
   const metaMetricsId = useSelector(getMetaMetricsId);
   const isMetaMetricsEnabled = useSelector(getParticipateInMetaMetrics);
   const isMarketingEnabled = useSelector(getDataCollectionForMarketing);
