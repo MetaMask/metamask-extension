@@ -682,6 +682,7 @@ const state = {
         order: 'dsc',
         sortCallback: 'stringNumeric',
       },
+      tokenNetworkFilter: {},
     },
     incomingTransactionsPreferences: {
       [CHAIN_IDS.MAINNET]: true,
