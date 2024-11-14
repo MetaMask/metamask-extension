@@ -692,7 +692,7 @@
     "yargs-parser": "^21.1.1"
   },
   "engines": {
-    "node": ">= 20.17",
+    "node": ">= 20.16.0",
     "yarn": "^4.4.1"
   },
   "lavamoat": {
