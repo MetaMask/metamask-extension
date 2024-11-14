@@ -15,10 +15,8 @@ import {
 import { Alert } from '../../../../ducks/confirm-alerts/confirm-alerts';
 import ZENDESK_URLS from '../../../../helpers/constants/zendesk-url';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
-import {
-  SIGNATURE_TRANSACTION_TYPES,
-  REDESIGN_DEV_TRANSACTION_TYPES,
-} from '../../utils';
+import { SIGNATURE_TRANSACTION_TYPES } from '../../utils';
+import { REDESIGN_DEV_TRANSACTION_TYPES } from '../../../../../shared/modules/confirmation.utils';
 import {
   SecurityAlertResponse,
   SignatureRequestType,

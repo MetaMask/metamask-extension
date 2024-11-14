@@ -42,10 +42,8 @@ import { useConfirmContext } from '../../../context/confirm';
 import { useBalance } from '../../../hooks/useBalance';
 import useConfirmationRecipientInfo from '../../../hooks/useConfirmationRecipientInfo';
 import { SignatureRequestType } from '../../../types/confirm';
-import {
-  isSignatureTransactionType,
-  REDESIGN_DEV_TRANSACTION_TYPES,
-} from '../../../utils/confirm';
+import { isSignatureTransactionType } from '../../../utils/confirm';
+import { REDESIGN_DEV_TRANSACTION_TYPES } from '../../../../../../shared/modules/confirmation.utils';
 import { AdvancedDetailsButton } from './advanced-details-button';
 
 const HeaderInfo = () => {

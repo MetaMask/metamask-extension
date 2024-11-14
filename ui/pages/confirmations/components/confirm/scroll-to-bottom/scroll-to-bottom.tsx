@@ -21,7 +21,7 @@ import { usePrevious } from '../../../../../hooks/usePrevious';
 import { useScrollRequired } from '../../../../../hooks/useScrollRequired';
 import { useConfirmContext } from '../../../context/confirm';
 import { selectConfirmationAdvancedDetailsOpen } from '../../../selectors/preferences';
-import { REDESIGN_DEV_TRANSACTION_TYPES } from '../../../utils';
+import { REDESIGN_DEV_TRANSACTION_TYPES } from '../../../../../../shared/modules/confirmation.utils';
 
 type ContentProps = {
   /**

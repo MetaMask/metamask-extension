@@ -117,7 +117,7 @@ import { ToastMaster } from '../../components/app/toast-master/toast-master';
 import {
   REDESIGN_APPROVAL_TYPES,
   REDESIGN_DEV_TRANSACTION_TYPES,
-} from '../confirmations/utils';
+} from '../../../shared/modules/confirmation.utils';
 import {
   getConnectingLabel,
   hideAppHeader,

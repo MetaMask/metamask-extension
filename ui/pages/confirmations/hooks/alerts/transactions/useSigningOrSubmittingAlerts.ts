@@ -9,8 +9,8 @@ import { getApprovedAndSignedTransactions } from '../../../../../selectors';
 import { Severity } from '../../../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import { Alert } from '../../../../../ducks/confirm-alerts/confirm-alerts';
-import { REDESIGN_DEV_TRANSACTION_TYPES } from '../../../utils';
 import { useConfirmContext } from '../../../context/confirm';
+import { REDESIGN_DEV_TRANSACTION_TYPES } from '../../../../../../shared/modules/confirmation.utils';
 
 export function useSigningOrSubmittingAlerts(): Alert[] {
   const t = useI18nContext();

@@ -34,13 +34,13 @@ import { selectUseTransactionSimulations } from '../../../selectors/preferences'
 import {
   isPermitSignatureRequest,
   isSIWESignatureRequest,
-  REDESIGN_DEV_TRANSACTION_TYPES,
 } from '../../../utils';
 import { useConfirmContext } from '../../../context/confirm';
 import { getConfirmationSender } from '../utils';
 import { MetaMetricsEventLocation } from '../../../../../../shared/constants/metametrics';
 import { Alert } from '../../../../../ducks/confirm-alerts/confirm-alerts';
 import { Severity } from '../../../../../helpers/constants/design-system';
+import { REDESIGN_DEV_TRANSACTION_TYPES } from '../../../../../../shared/modules/confirmation.utils';
 
 export type OnCancelHandler = ({
   location,
