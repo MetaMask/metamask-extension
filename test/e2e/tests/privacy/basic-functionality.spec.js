@@ -14,14 +14,15 @@ async function mockApis(mockServer) {
         body: [{ fakedata: true }],
       };
     }),
-    await mockServer
-      .forGet('https://token.api.cx.metamask.io/tokens/1')
-      .thenCallback(() => {
-        return {
-          statusCode: 200,
-          body: [{ fakedata: true }],
-        };
-      }),
+    // NOTE: Very Flaky, this endpoint is constantly failing with no reason even if the driver delay is increased
+    // await mockServer
+    //   .forGet('https://token.api.cx.metamask.io/tokens/1')
+    //   .thenCallback(() => {
+    //     return {
+    //       statusCode: 200,
+    //       body: [{ fakedata: true }],
+    //     };
+    //   }),
     await mockServer
       .forGet('https://min-api.cryptocompare.com/data/pricemulti')
       .withQuery({ fsyms: 'ETH', tsyms: 'usd' })
