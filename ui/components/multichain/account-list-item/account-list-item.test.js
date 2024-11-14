@@ -272,7 +272,7 @@ describe('AccountListItem', () => {
         expect(firstCurrencyDisplay.firstChild.textContent).toContain(
           expectedBalance,
         );
-        expect(firstCurrencyDisplay.lastChild.textContent).toContain('USD');
+        expect(firstCurrencyDisplay.lastChild.textContent).toContain('usd');
         expect(secondCurrencyDisplay.textContent).toContain('');
         expect(avatarGroup).not.toBeInTheDocument();
       });
@@ -307,7 +307,7 @@ describe('AccountListItem', () => {
         expect(firstCurrencyDisplay.firstChild.textContent).toContain(
           expectedBalance,
         );
-        expect(firstCurrencyDisplay.lastChild.textContent).toContain('USD');
+        expect(firstCurrencyDisplay.lastChild.textContent).toContain('usd');
         expect(secondCurrencyDisplay).not.toBeInTheDocument();
         expect(avatarGroup).toBeInTheDocument();
       });
