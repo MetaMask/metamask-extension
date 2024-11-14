@@ -463,6 +463,13 @@ class TestDapp {
     });
   }
 
+  async verify_successSignTypedDataResult(result: string) {
+    await this.driver.waitForSelector({
+      css: this.signTypedDataResult,
+      text: result.toLowerCase(),
+    });
+  }
+
   /**
    * Verify the successful signTypedDataV3 signature.
    *
