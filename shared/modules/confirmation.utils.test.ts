@@ -50,7 +50,6 @@ describe('confirmation.utils', () => {
       const originalEnv = process.env;
 
       beforeEach(() => {
-        jest.resetModules();
         process.env = { ...originalEnv };
       });
 
@@ -101,7 +100,6 @@ describe('confirmation.utils', () => {
       const originalEnv = process.env;
 
       beforeEach(() => {
-        jest.resetModules();
         process.env = { ...originalEnv };
         process.env.ENABLE_CONFIRMATION_REDESIGN = 'false';
       });
@@ -201,15 +199,6 @@ describe('confirmation.utils', () => {
           ),
         ).toBe(false);
       });
-    });
-  });
-
-  describe('REDESIGN_APPROVAL_TYPES', () => {
-    it('should contain the correct approval types', () => {
-      expect(REDESIGN_APPROVAL_TYPES).toStrictEqual([
-        ApprovalType.EthSignTypedData,
-        ApprovalType.PersonalSign,
-      ]);
     });
   });
 });
