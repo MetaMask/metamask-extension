@@ -56,14 +56,14 @@ const NetworkFilter = ({ handleClose }: SortControlProps) => {
 
   useEffect(() => {
     const testnetChains: string[] = TEST_CHAINS;
-    const mainnetChainIds = Object.keys(allNetworks).filter(
+    const mainnetChainIds = Object.keys(allNetworks || {}).filter(
       (chain) => !testnetChains.includes(chain),
     );
     setChainsToShow(mainnetChainIds);
   }, []);
 
   const allOpts: Record<string, boolean> = {};
-  Object.keys(allNetworks).forEach((chain) => {
+  Object.keys(allNetworks || {}).forEach((chain) => {
     allOpts[chain] = true;
   });
 
@@ -71,8 +71,8 @@ const NetworkFilter = ({ handleClose }: SortControlProps) => {
     <>
       <SelectableListItem
         isSelected={
-          Object.keys(tokenNetworkFilter).length ===
-          Object.keys(allNetworks).length
+          Object.keys(tokenNetworkFilter || {}).length ===
+          Object.keys(allNetworks || {}).length
         }
         onClick={() => handleFilter(allOpts)}
       >
@@ -123,7 +123,7 @@ const NetworkFilter = ({ handleClose }: SortControlProps) => {
       <SelectableListItem
         isSelected={
           tokenNetworkFilter[chainId] &&
-          Object.keys(tokenNetworkFilter).length === 1
+          Object.keys(tokenNetworkFilter || {}).length === 1
         }
         onClick={() => handleFilter({ [chainId]: true })}
       >
