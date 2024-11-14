@@ -16,12 +16,12 @@ import {
   getUnapprovedConfirmations,
   ///: END:ONLY_INCLUDE_IF
   getShowExtensionInFullSizeView,
-  getSelectedAccount,
   getSwitchedNetworkDetails,
   getNetworkToAutomaticallySwitchTo,
   getNumberOfAllUnapprovedTransactionsAndMessages,
   getUseRequestQueue,
   getCurrentNetwork,
+  getSelectedInternalAccount,
 } from '../../selectors';
 import {
   lockMetamask,
@@ -61,7 +61,7 @@ function mapStateToProps(state) {
 
   // If there is more than one connected account to activeTabOrigin,
   // *BUT* the current account is not one of them, show the banner
-  const account = getSelectedAccount(state);
+  const account = getSelectedInternalAccount(state);
   const activeTabOrigin = activeTab?.origin;
   const currentNetwork = getCurrentNetwork(state);
 
