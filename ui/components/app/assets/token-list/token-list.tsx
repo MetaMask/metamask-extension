@@ -11,6 +11,7 @@ import {
 import { TokenWithBalance } from '../asset-list/asset-list';
 import { sortAssets } from '../util/sort';
 import {
+  getCurrentChainId,
   getPreferences,
   getSelectedAccount,
   getShouldHideZeroBalanceTokens,
@@ -22,7 +23,7 @@ import { useNativeTokenBalance } from '../asset-list/native-token/use-native-tok
 import { endTrace, TraceName } from '../../../../../shared/lib/trace';
 
 type TokenListProps = {
-  onTokenClick: (arg: string) => void;
+  onTokenClick: (chainId: string, address: string) => void;
   nativeToken: ReactNode;
 };
 
@@ -31,6 +32,7 @@ export default function TokenList({
   nativeToken,
 }: TokenListProps) {
   const t = useI18nContext();
+  const currentChainId = useSelector(getCurrentChainId);
   const { tokenSortConfig, tokenNetworkFilter, privacyMode } =
     useSelector(getPreferences);
   const selectedAccount = useSelector(getSelectedAccount);
@@ -95,6 +97,7 @@ export default function TokenList({
         return (
           <TokenCell
             key={`${tokenData.symbol}-${tokenData.address}`}
+            chainId={currentChainId}
             {...tokenData}
             privacyMode={privacyMode}
             onClick={onTokenClick}
