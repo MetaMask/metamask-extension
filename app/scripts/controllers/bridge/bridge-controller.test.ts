@@ -582,3 +582,5 @@ describe('BridgeController', function () {
     });
   });
 });
+
+// trigger tests to rerun
