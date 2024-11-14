@@ -1,7 +1,7 @@
 import React from 'react';
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
-import { fireEvent, waitFor } from '@testing-library/react';
+import { fireEvent, waitFor, act } from '@testing-library/react';
 import { EthAccountType, EthMethod } from '@metamask/keyring-api';
 import { CHAIN_IDS } from '../../../../shared/constants/network';
 import { renderWithProvider } from '../../../../test/jest/rendering';
@@ -303,14 +303,16 @@ describe('EthOverview', () => {
       expect(swapButton).toBeInTheDocument();
       expect(swapButton).not.toBeDisabled();
 
-      fireEvent.click(swapButton);
-      expect(openTabSpy).toHaveBeenCalledTimes(1);
+      await act(async () => {
+        fireEvent.click(swapButton);
+      });
 
-      await waitFor(() =>
+      await waitFor(() => {
+        expect(openTabSpy).toHaveBeenCalledTimes(1);
         expect(openTabSpy).toHaveBeenCalledWith({
           url: 'https://metamask-institutional.io/swap',
-        }),
-      );
+        });
+      });
     });
 
     it('should have the Bridge button disabled if chain id is not part of supported chains', () => {
