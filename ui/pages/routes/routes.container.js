@@ -22,6 +22,9 @@ import {
   getNumberOfAllUnapprovedTransactionsAndMessages,
   getUseRequestQueue,
   getCurrentNetwork,
+  oldestPendingConfirmationSelector,
+  getUnapprovedTransactions,
+  getPendingApprovals,
 } from '../../selectors';
 import {
   lockMetamask,
@@ -55,7 +58,7 @@ import Routes from './routes.component';
 function mapStateToProps(state) {
   const { activeTab, appState } = state;
   const { alertOpen, alertMessage, isLoading, loadingMessage } = appState;
-  const { autoLockTimeLimit = DEFAULT_AUTO_LOCK_TIME_LIMIT } =
+  const { autoLockTimeLimit = DEFAULT_AUTO_LOCK_TIME_LIMIT, privacyMode } =
     getPreferences(state);
   const { completedOnboarding } = state.metamask;
 
@@ -69,6 +72,10 @@ function mapStateToProps(state) {
     getNetworkToAutomaticallySwitchTo(state);
   const switchedNetworkDetails = getSwitchedNetworkDetails(state);
 
+  const oldestPendingApproval = oldestPendingConfirmationSelector(state);
+  const pendingApprovals = getPendingApprovals(state);
+  const transactionsMetadata = getUnapprovedTransactions(state);
+
   return {
     alertOpen,
     alertMessage,
@@ -81,6 +88,7 @@ function mapStateToProps(state) {
     isNetworkLoading: isNetworkLoading(state),
     currentCurrency: state.metamask.currentCurrency,
     autoLockTimeLimit,
+    privacyMode,
     browserEnvironmentOs: state.metamask.browserEnvironment?.os,
     browserEnvironmentContainter: state.metamask.browserEnvironment?.browser,
     providerId: getNetworkIdentifier(state),
@@ -113,6 +121,9 @@ function mapStateToProps(state) {
       selectSwitchedNetworkNeverShowMessage(state),
     currentExtensionPopupId: state.metamask.currentExtensionPopupId,
     useRequestQueue: getUseRequestQueue(state),
+    oldestPendingApproval,
+    pendingApprovals,
+    transactionsMetadata,
     ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
     isShowKeyringSnapRemovalResultModal:
       state.appState.showKeyringRemovalSnapModal,

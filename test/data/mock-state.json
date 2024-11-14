@@ -46,7 +46,13 @@
     "mostRecentOverviewPage": "/mostRecentOverviewPage"
   },
   "localeMessages": {
-    "currentLocale": "en"
+    "currentLocale": "en",
+    "current": {
+      "user": "user"
+    },
+    "en": {
+      "user": "user"
+    }
   },
   "metamask": {
     "use4ByteResolution": true,
@@ -372,7 +378,7 @@
       "showFiatInTestnets": false,
       "showNativeTokenAsMainBalance": true,
       "showTestNetworks": true,
-      "smartTransactionsOptInStatus": false,
+      "smartTransactionsOptInStatus": true,
       "tokenSortConfig": {
         "key": "tokenFiatAmount",
         "order": "dsc",

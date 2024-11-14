@@ -22,7 +22,7 @@ describe('AccountOverviewEth', () => {
   });
   it('shows all tabs', () => {
     const { queryByTestId } = render({
-      defaultHomeActiveTabName: '',
+      defaultHomeActiveTabName: null,
       onTabClick: jest.fn(),
       setBasicFunctionalityModalOpen: jest.fn(),
       onSupportLinkClick: jest.fn(),
