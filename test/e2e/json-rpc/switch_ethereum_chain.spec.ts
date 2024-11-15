@@ -144,7 +144,7 @@ describe('Switch Ethereum Chain for two dapps', function () {
         await driver.waitForUrl({ url: `${DAPP_TWO_URL}/` });
         await testDapp.check_pageIsLoaded();
         await testDapp.clickSimpleSendButton();
-        await driver.delay(1000);
+        await driver.delay(2000);
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
         const confirmTxPage = new ConfirmTxPage(driver);
         await confirmTxPage.check_pageIsLoaded('0.00021');
@@ -253,6 +253,7 @@ describe('Switch Ethereum Chain for two dapps', function () {
         await driver.executeScript(
           `window.ethereum.request(${switchEthereumChainRequest})`,
         );
+        await driver.delay(1000);
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
         const reviewPermissionConfirmation = new ReviewPermissionConfirmation(
           driver,
@@ -352,6 +353,7 @@ describe('Switch Ethereum Chain for two dapps', function () {
         await driver.executeScript(
           `window.ethereum.request(${switchEthereumChainRequest})`,
         );
+        await this.driver.delay(1000);
 
         // Switch to notification of switchEthereumChain
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
