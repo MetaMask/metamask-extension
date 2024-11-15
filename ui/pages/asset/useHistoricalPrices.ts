@@ -60,8 +60,8 @@ export const useHistoricalPrices = ({
           setLoading(false);
         });
     } else {
-      setLoading(false);
       setData({});
+      setLoading(false);
     }
   }, [chainSupported, chainId, address, currency, timeRange]);
 
