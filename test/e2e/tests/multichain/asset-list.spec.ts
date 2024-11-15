@@ -26,12 +26,18 @@ describe('Multichain Asset List', function (this: Suite) {
         const accountListPage = new AssetListPage(driver);
 
         // Ensure starts as "All networks"
-        assert.equal(await accountListPage.getNetworksFilterLabel(), 'All Networks');
+        assert.equal(
+          await accountListPage.getNetworksFilterLabel(),
+          'all networks',
+        );
 
         // Switch to "Current Network"
         await accountListPage.openNetworksFilter();
         await accountListPage.selectNetworkFilterCurrentNetwork();
-        assert.equal(await accountListPage.getNetworksFilterLabel(), 'Localhost 8545');
+        assert.equal(
+          await accountListPage.getNetworksFilterLabel(),
+          'localhost 8545',
+        );
 
         // Switch to second network
         await headerNavbar.clickSwitchNetworkDropDown();
@@ -41,7 +47,10 @@ describe('Multichain Asset List', function (this: Suite) {
         await driver.delay(2000);
 
         // Ensure that preference stays the same
-        assert.equal(await accountListPage.getNetworksFilterLabel(), 'Ethereum Mainnet');
+        assert.equal(
+          await accountListPage.getNetworksFilterLabel(),
+          'ethereum mainnet',
+        );
       },
     );
   });
@@ -120,7 +129,6 @@ describe('Multichain Asset List', function (this: Suite) {
 
   it('switches networks when clicking on send for a token on another network', async function () {
     // TODO: Need a test fixture that has multiple tokens on different networks
-
     // Ends with ensuring the global network picker says the destination network
     // and the toast is displaying with correct text
   });
@@ -168,7 +176,6 @@ describe('Multichain Asset List', function (this: Suite) {
         await sendPage.click_assetPickerButton();
 
         // TODO: Check that there are no known assets from other networks here
-
       },
     );
   });
