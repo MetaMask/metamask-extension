@@ -119,7 +119,7 @@ export const completeCreateNewWalletOnboardingFlow = async ({
   driver: Driver;
   password?: string;
   participateInMetaMetrics?: boolean;
-  needNavigateToNewPage?:boolean;
+  needNavigateToNewPage?: boolean;
 }): Promise<void> => {
   console.log('start to complete create new wallet onboarding flow ');
   await createNewWalletOnboardingFlow({
