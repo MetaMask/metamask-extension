@@ -3142,6 +3142,7 @@
         "@metamask/utils": true,
         "bn.js": true,
         "browserify>buffer": true,
+        "eth-method-registry": true,
         "fast-json-patch": true,
         "lodash": true,
         "uuid": true,
