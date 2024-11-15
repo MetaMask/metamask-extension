@@ -9,6 +9,9 @@ class ConfirmTxPage {
 
   private readonly transactionFee = '[data-testid="confirm-gas-display"]';
 
+  private readonly actionNameSummary =
+    '.confirm-page-container-summary__action__name';
+
   constructor(driver: Driver) {
     this.driver = driver;
   }
@@ -36,6 +39,24 @@ class ConfirmTxPage {
       throw e;
     }
     console.log('Confirm transaction page is loaded with expected gas value');
+  }
+
+  /**
+   * Checks if the action name is displayed on the confirm transaction page.
+   *
+   * @param expectedActionName - The expected action name to be displayed.
+   * @returns A boolean indicating whether the action name is displayed.
+   */
+  async actionNameIsDisplayed(expectedActionName: string): Promise<boolean> {
+    try {
+      await this.driver.waitForSelector({
+        css: this.actionNameSummary,
+        text: expectedActionName,
+      });
+      return true;
+    } catch (e) {
+      return false;
+    }
   }
 
   async confirmTx(): Promise<void> {

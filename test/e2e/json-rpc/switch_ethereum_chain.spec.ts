@@ -144,6 +144,9 @@ describe('Switch Ethereum Chain for two dapps', function () {
         await driver.waitForUrl({ url: `${DAPP_TWO_URL}/` });
         await testDapp.check_pageIsLoaded();
         await testDapp.clickSimpleSendButton();
+        await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
+        const confirmTxPage = new ConfirmTxPage(driver);
+        await confirmTxPage.check_pageIsLoaded('0.00021');
 
         // Switch to Dapp One and initiate switch ethereum chain request
         await driver.switchToWindowWithUrl(DAPP_HOST_ADDRESS);
@@ -161,6 +164,9 @@ describe('Switch Ethereum Chain for two dapps', function () {
 
         // Confirm switch ethereum chain
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
+        if (await confirmTxPage.actionNameIsDisplayed('Sending ETH')) {
+          await confirmTxPage.confirmTx();
+        }
         const reviewPermissionConfirmation = new ReviewPermissionConfirmation(
           driver,
         );
