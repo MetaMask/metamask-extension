@@ -144,6 +144,7 @@ describe('Switch Ethereum Chain for two dapps', function () {
         await driver.waitForUrl({ url: `${DAPP_TWO_URL}/` });
         await testDapp.check_pageIsLoaded();
         await testDapp.clickSimpleSendButton();
+        await driver.delay(1000);
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
         const confirmTxPage = new ConfirmTxPage(driver);
         await confirmTxPage.check_pageIsLoaded('0.00021');
@@ -263,6 +264,7 @@ describe('Switch Ethereum Chain for two dapps', function () {
         await driver.waitForUrl({ url: `${DAPP_HOST_ADDRESS}/` });
         await testDapp.check_pageIsLoaded();
         await testDapp.clickSimpleSendButton();
+        await driver.delay(1000);
 
         // Switch to notification that should still be switchEthereumChain request but with a warning
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
