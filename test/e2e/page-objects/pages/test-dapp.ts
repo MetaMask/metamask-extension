@@ -174,6 +174,10 @@ class TestDapp {
     });
   }
 
+  async clickConnectButton() {
+    await this.driver.clickElement(this.connectAccountButton);
+  }
+
   async clickSimpleSendButton() {
     await this.driver.clickElement(this.simpleSendButton);
   }
@@ -222,17 +226,21 @@ class TestDapp {
    * Connect account to test dapp.
    *
    * @param publicAddress - The public address to connect to test dapp.
+   * @param testDappUrl - The URL of the test dapp, defaults to DAPP_HOST_ADDRESS.
    */
-  async connectAccount(publicAddress: string) {
+  async connectAccount(
+    publicAddress: string,
+    testDappUrl: string = DAPP_HOST_ADDRESS,
+  ) {
     console.log('Connect account to test dapp');
-    await this.driver.clickElement(this.connectAccountButton);
+    await this.clickConnectButton();
     await this.driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
     await this.driver.waitForSelector(this.connectMetaMaskMessage);
 
     await this.driver.clickElementAndWaitForWindowToClose(
       this.confirmDialogButton,
     );
-    await this.driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
+    await this.driver.switchToWindowWithUrl(testDappUrl);
     await this.driver.waitForSelector({
       css: this.connectedAccount,
       text: publicAddress.toLowerCase(),
@@ -277,75 +285,75 @@ class TestDapp {
   /**
    * Sign a message with the personal sign method.
    */
-    async personalSign() {
-      console.log('Sign message with personal sign');
-      await this.driver.clickElement(this.personalSignButton);
-      await this.driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
-      await this.driver.waitForSelector(this.personalSignSignatureRequestMessage);
-      await this.driver.clickElementAndWaitForWindowToClose(
-        this.confirmSignatureButton,
+  async personalSign() {
+    console.log('Sign message with personal sign');
+    await this.driver.clickElement(this.personalSignButton);
+    await this.driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
+    await this.driver.waitForSelector(this.personalSignSignatureRequestMessage);
+    await this.driver.clickElementAndWaitForWindowToClose(
+      this.confirmSignatureButton,
     );
   }
 
   /**
    * Sign message with the signPermit method.
    */
-    async signPermit() {
-      console.log('Sign message with signPermit');
-      await this.driver.clickElement(this.signPermitButton);
-      await this.driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
-      await this.driver.waitForSelector(this.signPermitSignatureRequestMessage);
-      await this.driver.clickElementAndWaitForWindowToClose(
-        this.confirmSignatureButton,
-      );
+  async signPermit() {
+    console.log('Sign message with signPermit');
+    await this.driver.clickElement(this.signPermitButton);
+    await this.driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
+    await this.driver.waitForSelector(this.signPermitSignatureRequestMessage);
+    await this.driver.clickElementAndWaitForWindowToClose(
+      this.confirmSignatureButton,
+    );
   }
 
   /**
    * Sign a message with the signTypedData method.
-     */
-    async signTypedData() {
-      console.log('Sign message with signTypedData');
-      await this.driver.clickElement(this.signTypedDataButton);
-      await this.driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
-      await this.driver.waitForSelector(
-        this.signTypedDataSignatureRequestMessage,
-      );
-      await this.driver.clickElementAndWaitForWindowToClose(
-        this.confirmSignatureButton,
-      );
-    }
+   */
+  async signTypedData() {
+    console.log('Sign message with signTypedData');
+    await this.driver.clickElement(this.signTypedDataButton);
+    await this.driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
+    await this.driver.waitForSelector(
+      this.signTypedDataSignatureRequestMessage,
+    );
+    await this.driver.clickElementAndWaitForWindowToClose(
+      this.confirmSignatureButton,
+    );
+  }
 
-    /**
-     * Sign a message with the signTypedDataV3 method.
-     */
-    async signTypedDataV3() {
-      console.log('Sign message with signTypedDataV3');
-      await this.driver.clickElement(this.signTypedDataV3Button);
-      await this.driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
-      await this.driver.waitForSelector(
-        this.signTypedDataV3V4SignatureRequestMessage,
-      );
-      await this.driver.clickElementSafe(this.confirmDialogScrollButton, 200);
-      await this.driver.clickElementAndWaitForWindowToClose(
-        this.confirmSignatureButton,
-      );
-    }
+  /**
+   * Sign a message with the signTypedDataV3 method.
+   */
+  async signTypedDataV3() {
+    console.log('Sign message with signTypedDataV3');
+    await this.driver.clickElement(this.signTypedDataV3Button);
+    await this.driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
+    await this.driver.waitForSelector(
+      this.signTypedDataV3V4SignatureRequestMessage,
+    );
+    await this.driver.clickElementSafe(this.confirmDialogScrollButton, 200);
+    await this.driver.clickElementAndWaitForWindowToClose(
+      this.confirmSignatureButton,
+    );
+  }
 
-    /**
-     * Sign a message with the signTypedDataV4 method.
-     */
-    async signTypedDataV4() {
-      console.log('Sign message with signTypedDataV4');
-      await this.driver.clickElement(this.signTypedDataV4Button);
-      await this.driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
-      await this.driver.waitForSelector(
-        this.signTypedDataV3V4SignatureRequestMessage,
-      );
-      await this.driver.clickElementSafe(this.confirmDialogScrollButton, 200);
-      await this.driver.clickElementAndWaitForWindowToClose(
-        this.confirmSignatureButton,
-      );
-    }
+  /**
+   * Sign a message with the signTypedDataV4 method.
+   */
+  async signTypedDataV4() {
+    console.log('Sign message with signTypedDataV4');
+    await this.driver.clickElement(this.signTypedDataV4Button);
+    await this.driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
+    await this.driver.waitForSelector(
+      this.signTypedDataV3V4SignatureRequestMessage,
+    );
+    await this.driver.clickElementSafe(this.confirmDialogScrollButton, 200);
+    await this.driver.clickElementAndWaitForWindowToClose(
+      this.confirmSignatureButton,
+    );
+  }
 
   /**
    * Verify the current connected chainId.

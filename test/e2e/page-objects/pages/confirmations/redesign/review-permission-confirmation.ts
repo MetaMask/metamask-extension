@@ -8,7 +8,11 @@ class ReviewPermissionConfirmation {
     text: 'Review permissions',
   };
 
-  private readonly footerConfirmButton = '[data-testid="page-container-footer-next"]';
+  private readonly footerCancelButton =
+    '[data-testid="page-container-footer-cancel"]';
+
+  private readonly footerConfirmButton =
+    '[data-testid="page-container-footer-next"]';
 
   constructor(driver: Driver) {
     this.driver = driver;
@@ -25,6 +29,11 @@ class ReviewPermissionConfirmation {
       throw e;
     }
     console.log('Review Permission Confirmation page is loaded');
+  }
+
+  async cancelReviewPermissions() {
+    console.log('Cancel review permissions in dialog');
+    await this.driver.clickElementAndWaitToDisappear(this.footerCancelButton);
   }
 
   async confirmReviewPermissions() {

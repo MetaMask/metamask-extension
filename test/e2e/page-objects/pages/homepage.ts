@@ -60,6 +60,11 @@ class HomePage {
 
   private readonly nftTab = '[data-testid="account-overview__nfts-tab"]';
 
+  private readonly noTransactionMessage = {
+    text: 'You have no transactions',
+    tag: 'div',
+  };
+
   private readonly successImportNftMessage = {
     text: 'NFT was successfully added!',
     tag: 'h6',
@@ -308,6 +313,11 @@ class HomePage {
       tag: 'h5',
       text: nftName,
     });
+  }
+
+  async check_noTransactionMessageIsDisplayed(): Promise<void> {
+    console.log('Check that no transaction message is displayed on homepage');
+    await this.driver.waitForSelector(this.noTransactionMessage);
   }
 
   async check_successImportNftMessageIsDisplayed(): Promise<void> {
