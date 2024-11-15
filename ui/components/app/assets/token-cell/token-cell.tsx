@@ -11,15 +11,17 @@ type TokenCellProps = {
   address: string;
   symbol: string;
   string?: string;
+  chainId: string;
   image: string;
   privacyMode?: boolean;
-  onClick?: (arg: string) => void;
+  onClick?: (chainId: string, address: string) => void;
 };
 
 export default function TokenCell({
   address,
   image,
   symbol,
+  chainId,
   string,
   privacyMode = false,
   onClick,
@@ -44,7 +46,8 @@ export default function TokenCell({
 
   return (
     <TokenListItem
-      onClick={onClick ? () => onClick(address) : undefined}
+      chainId={chainId}
+      onClick={onClick ? () => onClick(chainId, address) : undefined}
       tokenSymbol={symbol}
       tokenImage={tokenImage}
       primary={`${primary || 0}`}
