@@ -838,7 +838,7 @@ describe('Selectors', () => {
     });
   });
 
-  describe('#getNetworkClientIdsToPoll', () => {
+  describe('#getChainIdsToPoll', () => {
     const networkConfigurationsByChainId = {
       [CHAIN_IDS.MAINNET]: {
         chainId: CHAIN_IDS.MAINNET,
@@ -863,7 +863,7 @@ describe('Selectors', () => {
     };
 
     it('returns only non-test chain IDs', () => {
-      const chainIds = selectors.getNetworkClientIdsToPoll({
+      const chainIds = selectors.getChainIdsToPoll({
         metamask: {
           preferences: { pausedChainIds: [] },
           networkConfigurationsByChainId,
@@ -877,7 +877,7 @@ describe('Selectors', () => {
     });
 
     it('does not return paused chain IDs', () => {
-      const chainIds = selectors.getNetworkClientIdsToPoll({
+      const chainIds = selectors.getChainIdsToPoll({
         metamask: {
           preferences: { pausedChainIds: [CHAIN_IDS.LINEA_MAINNET] },
           networkConfigurationsByChainId,
