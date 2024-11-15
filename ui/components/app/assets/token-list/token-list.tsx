@@ -17,7 +17,6 @@ import {
   getPreferences,
   getSelectedAccount,
   getSelectedAccountNativeTokenCachedBalanceByChainId,
-  getSelectedAccountTokenBalancesAcrossChains,
   getSelectedAccountTokensAcrossChains,
   getTokenExchangeRates,
 } from '../../../../selectors';
@@ -26,6 +25,7 @@ import { filterAssets } from '../util/filter';
 import { calculateTokenBalance } from '../util/calculateTokenBalance';
 import { calculateTokenFiatAmount } from '../util/calculateTokenFiatAmount';
 import { endTrace, TraceName } from '../../../../../shared/lib/trace';
+import { useTokenBalances } from '../../../../hooks/useTokenBalances';
 
 type TokenListProps = {
   onTokenClick: (chainId: string, address: string) => void;
@@ -70,10 +70,9 @@ export default function TokenList({ onTokenClick }: TokenListProps) {
     getSelectedAccountTokensAcrossChains,
   ) as Record<Hex, Token[]>;
 
-  const selectedAccountTokenBalancesAcrossChains: AddressBalanceMapping =
-    useSelector(
-      getSelectedAccountTokenBalancesAcrossChains,
-    ) as AddressBalanceMapping;
+  const { tokenBalances } = useTokenBalances();
+  const selectedAccountTokenBalancesAcrossChains =
+    tokenBalances[selectedAccount.address];
 
   const marketData: ChainAddressMarketData = useSelector(
     getMarketData,
