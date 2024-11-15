@@ -12,11 +12,9 @@ export const useGetFormattedTokensPerChain = (
 ) => {
   const allNetworks = useSelector(getNetworkConfigurationsByChainId);
   // We want to filter out test chains
-  const allChainIDs = Object.entries(allNetworks)
-    .map(([chainIdElm, _]) => {
-      return chainIdElm;
-    })
-    .filter((singleChainId) => !TEST_CHAINS.includes(singleChainId));
+  const allChainIDs = Object.keys(allNetworks).filter(
+    (singleChainId) => !TEST_CHAINS.includes(singleChainId),
+  );
 
   const importedTokens = useSelector(getAllTokens); // returns the tokens only when they are imported
   const currentTokenBalances = useTokenBalances({ chainIds: allChainIDs }); // returns tokens with balances only after clicking on network
