@@ -459,6 +459,7 @@ export const getGasEstimateTypeByChainId = createSelector(
 
 /**
  * Returns the balances of imported and detected tokens across all accounts and chains.
+ *
  * @param {*} state
  * @returns { import('@metamask/assets-controllers').TokenBalancesControllerState['tokenBalances']}
  */

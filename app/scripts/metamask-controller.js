@@ -12,7 +12,7 @@ import {
   CodefiTokenPricesServiceV2,
   RatesController,
   fetchMultiExchangeRate,
-  TokenBalancesController
+  TokenBalancesController,
 } from '@metamask/assets-controllers';
 import { JsonRpcEngine } from '@metamask/json-rpc-engine';
 import { createEngineStream } from '@metamask/json-rpc-middleware-stream';
@@ -686,7 +686,7 @@ export default class MetamaskController extends EventEmitter {
         'AccountsController:selectedEvmAccountChange',
         'PreferencesController:stateChange',
         'TokenListController:stateChange',
-        'NetworkController:stateChange'
+        'NetworkController:stateChange',
       ],
     });
     this.tokensController = new TokensController({
@@ -907,7 +907,7 @@ export default class MetamaskController extends EventEmitter {
       allowedEvents: [
         'PreferencesController:stateChange',
         'TokensController:stateChange',
-        'NetworkController:stateChange'
+        'NetworkController:stateChange',
       ],
     });
 
