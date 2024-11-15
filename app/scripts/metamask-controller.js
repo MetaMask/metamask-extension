@@ -1902,12 +1902,6 @@ export default class MetamaskController extends EventEmitter {
       isSimulationEnabled: () =>
         this.preferencesController.state.useTransactionSimulations,
       messenger: transactionControllerMessenger,
-      onNetworkStateChange: (listener) => {
-        networkControllerMessenger.subscribe(
-          'NetworkController:networkDidChange',
-          () => listener(),
-        );
-      },
       pendingTransactions: {
         isResubmitEnabled: () => {
           const state = this._getMetaMaskState();
@@ -2944,7 +2938,15 @@ export default class MetamaskController extends EventEmitter {
     this.controllerMessenger.subscribe(
       'NetworkController:networkDidChange',
       async () => {
-        await this.txController.updateIncomingTransactions();
+        await this.txController.updateIncomingTransactions([
+          this.#getGlobalNetworkClientId(),
+        ]);
+
+        await this.txController.stopIncomingTransactionPolling();
+
+        await this.txController.startIncomingTransactionPolling([
+          this.#getGlobalNetworkClientId(),
+        ]);
       },
     );
 
