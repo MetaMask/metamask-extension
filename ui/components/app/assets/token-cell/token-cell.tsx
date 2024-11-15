@@ -12,6 +12,7 @@ type TokenCellProps = {
   symbol: string;
   string?: string;
   image: string;
+  privacyMode?: boolean;
   onClick?: (arg: string) => void;
 };
 
@@ -20,6 +21,7 @@ export default function TokenCell({
   image,
   symbol,
   string,
+  privacyMode = false,
   onClick,
 }: TokenCellProps) {
   const tokenList = useSelector(getTokenList);
@@ -51,6 +53,7 @@ export default function TokenCell({
       isOriginalTokenSymbol={isOriginalTokenSymbol}
       address={address}
       showPercentage
+      privacyMode={privacyMode}
     />
   );
 }
