@@ -59,6 +59,8 @@ export default class ReadOnlyNetworkStore extends BaseStore {
     } catch (error) {
       if (isErrorWithMessage(error)) {
         log.debug(`Error loading network state: '${error.message}'`);
+      } else {
+        log.debug(`Unknown error loading network state`);
       }
     } finally {
       this.#initialized = true;
