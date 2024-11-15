@@ -879,7 +879,7 @@ describe('Test Snap Metrics', function () {
     );
   });
 
-  it.only('test snap update failed metric', async function () {
+  it('test snap update failed metric', async function () {
     async function mockSegment(mockServer) {
       return [
         await mockedSnapUpdateStarted(mockServer),
