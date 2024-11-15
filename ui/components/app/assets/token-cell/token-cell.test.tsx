@@ -85,6 +85,8 @@ describe('Token Cell', () => {
     string: '5.000',
     currentCurrency: 'usd',
     image: '',
+    chainId: '0x1',
+    tokenFiatAmount: 5,
     onClick: jest.fn(),
   };
 
@@ -94,6 +96,8 @@ describe('Token Cell', () => {
     string: '5000000',
     currentCurrency: 'usd',
     image: '',
+    chainId: '0x1',
+    tokenFiatAmount: 5000000,
     onClick: jest.fn(),
   };
   const useSelectorMock = useSelector;

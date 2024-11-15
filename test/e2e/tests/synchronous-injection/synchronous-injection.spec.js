@@ -7,7 +7,7 @@ const dappPort = 8080;
 
 describe('The provider', function () {
   it('can be injected synchronously and successfully used by a dapp', async function () {
-    const dappServer = createStaticServer(__dirname);
+    const dappServer = createStaticServer({ public: __dirname });
     dappServer.listen(dappPort);
     await new Promise((resolve, reject) => {
       dappServer.on('listening', resolve);

@@ -3548,13 +3548,14 @@ export function setIpfsGateway(
 export function toggleExternalServices(
   val: boolean,
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
-  return (dispatch: MetaMaskReduxDispatch) => {
+  return async (dispatch: MetaMaskReduxDispatch) => {
     log.debug(`background.toggleExternalServices`);
-    callBackgroundMethod('toggleExternalServices', [val], (err) => {
-      if (err) {
-        dispatch(displayWarning(err));
-      }
-    });
+    try {
+      await submitRequestToBackground('toggleExternalServices', [val]);
+      await forceUpdateMetamaskState(dispatch);
+    } catch (err) {
+      dispatch(displayWarning(err));
+    }
   };
 }
 
@@ -4218,6 +4219,18 @@ export function setDismissSeedBackUpReminder(
   };
 }
 
+export function setOverrideContentSecurityPolicyHeader(
+  value: boolean,
+): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
+  return async (dispatch: MetaMaskReduxDispatch) => {
+    dispatch(showLoadingIndication());
+    await submitRequestToBackground('setOverrideContentSecurityPolicyHeader', [
+      value,
+    ]);
+    dispatch(hideLoadingIndication());
+  };
+}
+
 export function getRpcMethodPreferences(): ThunkAction<
   void,
   MetaMaskReduxState,
@@ -4374,16 +4387,13 @@ export function setNextNonce(nextNonce: string): PayloadAction<string> {
  * accidental usage of a stale nonce as the call to getNextNonce only works for
  * the currently selected address.
  *
+ * @param address - address for which nonce lock shouuld be obtained.
  * @returns
  */
-export function getNextNonce(): ThunkAction<
-  Promise<string>,
-  MetaMaskReduxState,
-  unknown,
-  AnyAction
-> {
+export function getNextNonce(
+  address,
+): ThunkAction<Promise<string>, MetaMaskReduxState, unknown, AnyAction> {
   return async (dispatch, getState) => {
-    const { address } = getSelectedInternalAccount(getState());
     const networkClientId = getSelectedNetworkClientId(getState());
     let nextNonce;
     try {
@@ -4550,6 +4560,97 @@ export async function currencyRateStopPollingByPollingToken(
   pollingToken: string,
 ) {
   await submitRequestToBackground('currencyRateStopPollingByPollingToken', [
+    pollingToken,
+  ]);
+  await removePollingTokenFromAppState(pollingToken);
+}
+
+/**
+ * Informs the TokenDetectionController that the UI requires token detection polling
+ *
+ * @param chainIds - An array of chain ids to poll token detection on.
+ * @returns polling token that can be used to stop polling.
+ */
+export async function tokenDetectionStartPolling(
+  chainIds: string[],
+): Promise<string> {
+  const pollingToken = await submitRequestToBackground(
+    'tokenDetectionStartPolling',
+    [{ chainIds }],
+  );
+
+  await addPollingTokenToAppState(pollingToken);
+  return pollingToken;
+}
+
+/**
+ * Informs the TokenDetectionController that the UI no longer token detection polling
+ *
+ * @param pollingToken - Poll token received from calling tokenDetectionStartPolling
+ */
+export async function tokenDetectionStopPollingByPollingToken(
+  pollingToken: string,
+) {
+  await submitRequestToBackground('tokenDetectionStopPollingByPollingToken', [
+    pollingToken,
+  ]);
+  await removePollingTokenFromAppState(pollingToken);
+}
+
+/**
+ * Informs the TokenListController that the UI requires token list polling
+ *
+ * @param chainId
+ * @returns polling token that can be used to stop polling
+ */
+export async function tokenListStartPolling(chainId: string): Promise<string> {
+  const pollingToken = await submitRequestToBackground(
+    'tokenListStartPolling',
+    [{ chainId }],
+  );
+
+  await addPollingTokenToAppState(pollingToken);
+  return pollingToken;
+}
+
+/**
+ * Informs the TokenListController that the UI no longer token list polling
+ *
+ * @param pollingToken - Poll token received from calling tokenListStartPolling
+ */
+export async function tokenListStopPollingByPollingToken(pollingToken: string) {
+  await submitRequestToBackground('tokenListStopPollingByPollingToken', [
+    pollingToken,
+  ]);
+  await removePollingTokenFromAppState(pollingToken);
+}
+
+/**
+ * Informs the TokenRatesController that the UI requires
+ * token rate polling for the given chain id.
+ *
+ * @param chainId - The chain id to poll token rates on.
+ * @returns polling token that can be used to stop polling
+ */
+export async function tokenRatesStartPolling(chainId: string): Promise<string> {
+  const pollingToken = await submitRequestToBackground(
+    'tokenRatesStartPolling',
+    [{ chainId }],
+  );
+  await addPollingTokenToAppState(pollingToken);
+  return pollingToken;
+}
+
+/**
+ * Informs the TokenRatesController that the UI no longer
+ * requires token rate polling for the given chain id.
+ *
+ * @param pollingToken -
+ */
+export async function tokenRatesStopPollingByPollingToken(
+  pollingToken: string,
+) {
+  await submitRequestToBackground('tokenRatesStopPollingByPollingToken', [
     pollingToken,
   ]);
   await removePollingTokenFromAppState(pollingToken);
@@ -4970,6 +5071,16 @@ export async function setBitcoinTestnetSupportEnabled(value: boolean) {
     logErrorWithMessage(error);
   }
 }
+
+///: BEGIN:ONLY_INCLUDE_IF(solana)
+export async function setSolanaSupportEnabled(value: boolean) {
+  try {
+    await submitRequestToBackground('setSolanaSupportEnabled', [value]);
+  } catch (error) {
+    logErrorWithMessage(error);
+  }
+}
+///: END:ONLY_INCLUDE_IF
 
 ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
 export async function setAddSnapAccountEnabled(value: boolean): Promise<void> {

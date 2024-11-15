@@ -234,6 +234,9 @@ workflows:
       - test-e2e-mmi-playwright:
           requires:
             - prep-build-test-mmi-playwright
+      - test-e2e-swap-playwright - OPTIONAL:
+          requires:
+            - prep-build
       - test-e2e-chrome-rpc-mmi:
           requires:
             - prep-build-test-mmi
@@ -444,7 +447,7 @@ jobs:
       - gh/install
       - run:
           name: Install dependencies
-          command: .circleci/scripts/install-dependencies.sh
+          command: yarn --immutable
       - save_cache:
           key: dependency-cache-{{ checksum "/tmp/YARN_VERSION" }}-{{ checksum "yarn.lock" }}
           paths:
@@ -1192,7 +1195,7 @@ jobs:
           at: .
       - run:
           name: test:e2e:single
-          command: .circleci/scripts/test-run-e2e.sh yarn test:e2e:single test/e2e/vault-decryption-chrome.spec.js --browser chrome
+          command: .circleci/scripts/test-run-e2e.sh yarn test:e2e:single test/e2e/vault-decryption-chrome.spec.ts --browser chrome
           no_output_timeout: 5m
       - store_artifacts:
           path: test-artifacts

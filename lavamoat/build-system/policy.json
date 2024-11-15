@@ -3004,23 +3004,12 @@
         "eslint-plugin-prettier": true,
         "eslint-plugin-react": true,
         "eslint-plugin-react-hooks": true,
-        "eslint>@eslint/eslintrc>ajv": true,
+        "eslint>ajv": true,
         "eslint>globals": true,
         "eslint>ignore": true,
         "eslint>minimatch": true,
         "mocha>strip-json-comments": true,
         "nock>debug": true
-      }
-    },
-    "eslint>@eslint/eslintrc>ajv": {
-      "globals": {
-        "console": true
-      },
-      "packages": {
-        "@metamask/snaps-utils>fast-json-stable-stringify": true,
-        "eslint>@eslint/eslintrc>ajv>json-schema-traverse": true,
-        "eslint>fast-deep-equal": true,
-        "uri-js": true
       }
     },
     "eslint>@eslint/eslintrc>import-fresh": {
@@ -3185,22 +3174,8 @@
         "__dirname": true
       },
       "packages": {
-        "eslint>file-entry-cache>flat-cache>flatted": true,
-        "eslint>file-entry-cache>flat-cache>rimraf": true
-      }
-    },
-    "eslint>file-entry-cache>flat-cache>rimraf": {
-      "builtin": {
-        "assert": true,
-        "fs": true,
-        "path.join": true
-      },
-      "globals": {
-        "process.platform": true,
-        "setTimeout": true
-      },
-      "packages": {
-        "nyc>glob": true
+        "del>rimraf": true,
+        "eslint>file-entry-cache>flat-cache>flatted": true
       }
     },
     "eslint>glob-parent": {
@@ -8491,15 +8466,10 @@
         "process.stdout.write": true
       },
       "packages": {
+        "eslint>ajv": true,
         "lodash": true,
-        "stylelint>table>ajv": true,
         "stylelint>table>slice-ansi": true,
         "stylelint>table>string-width": true
-      }
-    },
-    "stylelint>table>ajv": {
-      "packages": {
-        "eslint>fast-deep-equal": true
       }
     },
     "stylelint>table>slice-ansi": {

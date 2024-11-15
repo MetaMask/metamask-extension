@@ -18,6 +18,7 @@ export const WALLET_ETH_BALANCE = '25';
 export enum SignatureType {
   PersonalSign = '#personalSign',
   Permit = '#signPermit',
+  NFTPermit = '#sign721Permit',
   SignTypedDataV3 = '#signTypedDataV3',
   SignTypedDataV4 = '#signTypedDataV4',
   SignTypedData = '#signTypedData',
@@ -288,12 +289,23 @@ export async function assertPastedAddress(driver: Driver) {
   assert.equal(await formFieldEl.getAttribute('value'), WALLET_ADDRESS);
 }
 
+export async function triggerSignature(driver: Driver, type: string) {
+  await driver.clickElement(type);
+  await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
+}
+
 export async function openDappAndTriggerSignature(
   driver: Driver,
   type: string,
 ) {
   await unlockWallet(driver);
   await openDapp(driver);
-  await driver.clickElement(type);
+  await triggerSignature(driver, type);
+}
+
+export async function openDappAndTriggerDeploy(driver: Driver) {
+  await unlockWallet(driver);
+  await openDapp(driver);
+  await driver.clickElement('#deployNFTsButton');
   await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 }
