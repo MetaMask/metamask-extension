@@ -1311,7 +1311,20 @@ class Driver {
 
   #getErrorFromEvent(event) {
     // Extract the values from the array
-    const values = event.args.map((a) => (a.value ? a.value : a.description));
+    const values = event.args.map((a) => {
+      // Handle snaps error type
+      if (a && a.preview && Array.isArray(a.preview.properties)) {
+        return a.preview.properties
+          .filter((prop) => prop.value !== 'Object')
+          .map((prop) => prop.value)
+          .join(', ');
+      } else if (a.description) {
+        // Handle RPC error type
+        return a.description;
+      }
+      // Handle rest of error types
+      return a.value;
+    });
 
     if (values[0]?.includes('%s')) {
       // The values are in the "printf" form of [message, ...substitutions]

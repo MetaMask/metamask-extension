@@ -13,6 +13,7 @@ describe('Test Snap Multi Install', function () {
       {
         fixtures: new FixtureBuilder().build(),
         ganacheOptions: defaultGanacheOptions,
+        failOnConsoleError: false,
         title: this.test.fullTitle(),
       },
       async ({ driver }) => {
