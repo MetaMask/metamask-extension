@@ -1107,6 +1107,10 @@ export function getPetnamesEnabled(state) {
   return petnamesEnabled;
 }
 
+export function getUseTransactionSimulations(state) {
+  return Boolean(state.metamask.useTransactionSimulations);
+}
+
 export function getRedesignedConfirmationsEnabled(state) {
   const { redesignedConfirmationsEnabled } = getPreferences(state);
   return redesignedConfirmationsEnabled;
