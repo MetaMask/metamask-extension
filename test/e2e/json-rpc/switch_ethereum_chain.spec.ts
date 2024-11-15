@@ -253,7 +253,7 @@ describe('Switch Ethereum Chain for two dapps', function () {
         await driver.executeScript(
           `window.ethereum.request(${switchEthereumChainRequest})`,
         );
-        await driver.delay(1000);
+        await driver.delay(2000);
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
         const reviewPermissionConfirmation = new ReviewPermissionConfirmation(
           driver,
@@ -291,7 +291,7 @@ describe('Switch Ethereum Chain for two dapps', function () {
     );
   });
 
-  it('queues send tx after switchEthereum request with a warning, if switchEthereum request is cancelled should show pending tx', async function () {
+  it('queues send tx after switchEthereum request with a warning, if switch ethereum request is cancelled should show pending tx', async function () {
     await withFixtures(
       {
         dapp: true,
@@ -353,7 +353,7 @@ describe('Switch Ethereum Chain for two dapps', function () {
         await driver.executeScript(
           `window.ethereum.request(${switchEthereumChainRequest})`,
         );
-        await driver.delay(1000);
+        await driver.delay(2000);
 
         // Switch to notification of switchEthereumChain
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
