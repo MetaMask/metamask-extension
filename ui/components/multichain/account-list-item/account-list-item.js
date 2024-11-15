@@ -47,15 +47,15 @@ import {
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import {
   isAccountConnectedToCurrentTab,
-  getShowFiatInTestnets,
   getUseBlockie,
+  getPreferences,
+  getShouldHideZeroBalanceTokens,
 } from '../../../selectors';
 import {
   getMultichainIsTestnet,
   getMultichainNativeCurrency,
   getMultichainNativeCurrencyImage,
   getMultichainNetwork,
-  getMultichainShouldShowFiat,
 } from '../../../selectors/multichain';
 import { useMultichainAccountTotalFiatBalance } from '../../../hooks/useMultichainAccountTotalFiatBalance';
 import { ConnectedStatus } from '../connected-status/connected-status';
@@ -67,6 +67,8 @@ import { useTheme } from '../../../hooks/useTheme';
 // eslint-disable-next-line import/no-restricted-paths
 import { normalizeSafeAddress } from '../../../../app/scripts/lib/multichain/address';
 import { useMultichainSelector } from '../../../hooks/useMultichainSelector';
+import { useGetFormattedTokensPerChain } from '../../../hooks/useGetFormattedTokensPerChain';
+import { useAccountTotalCrossChainFiatBalance } from '../../../hooks/useAccountTotalCrossChainFiatBalance';
 import { AccountListItemMenuTypes } from './account-list-item.types';
 
 const MAXIMUM_CURRENCY_DECIMALS = 3;
@@ -99,24 +101,36 @@ const AccountListItem = ({
     setAccountListItemMenuElement(ref);
   };
   const isTestnet = useMultichainSelector(getMultichainIsTestnet, account);
-  const isMainnet = !isTestnet;
-  const shouldShowFiat = useMultichainSelector(
-    getMultichainShouldShowFiat,
-    account,
-  );
-  const showFiatInTestnets = useSelector(getShowFiatInTestnets);
-  const showFiat =
-    shouldShowFiat && (isMainnet || (isTestnet && showFiatInTestnets));
   const accountTotalFiatBalances =
     useMultichainAccountTotalFiatBalance(account);
+  // cross chain agg balance
+  const { showNativeTokenAsMainBalance } = useSelector(getPreferences);
+  const shouldHideZeroBalanceTokens = useSelector(
+    getShouldHideZeroBalanceTokens,
+  );
+  const { formattedTokensWithBalancesPerChain } = useGetFormattedTokensPerChain(
+    account,
+    shouldHideZeroBalanceTokens,
+  );
+  const { totalFiatBalance } = useAccountTotalCrossChainFiatBalance(
+    account,
+    formattedTokensWithBalancesPerChain,
+  );
+  // cross chain agg balance
   const mappedOrderedTokenList = accountTotalFiatBalances.orderedTokenList.map(
     (item) => ({
       avatarValue: item.iconUrl,
     }),
   );
-  const balanceToTranslate = isEvmNetwork
-    ? account.balance
-    : accountTotalFiatBalances.totalBalance;
+  let balanceToTranslate;
+  if (isEvmNetwork) {
+    balanceToTranslate =
+      showNativeTokenAsMainBalance || isTestnet // balance in crypto
+        ? account.balance
+        : totalFiatBalance;
+  } else {
+    balanceToTranslate = accountTotalFiatBalances.totalBalance;
+  }
 
   ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
   const custodianIcon = useSelector((state) =>
@@ -311,7 +325,12 @@ const AccountListItem = ({
                 ethNumberOfDecimals={MAXIMUM_CURRENCY_DECIMALS}
                 value={balanceToTranslate}
                 type={PRIMARY}
-                showFiat={showFiat}
+                // showFiat={showFiat}
+                showFiat={!isEvmNetwork}
+                shouldCheckShowNativeToken
+                isAggregatedFiatOverviewBalance={
+                  !showNativeTokenAsMainBalance && !isTestnet
+                }
                 data-testid="first-currency-display"
               />
             </Text>
