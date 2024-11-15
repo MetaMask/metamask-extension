@@ -2204,6 +2204,29 @@ export const getChainIdsToPoll = createDeepEqualSelector(
   },
 );
 
+export const getNetworkClientIdsToPoll = createDeepEqualSelector(
+  getPreferences,
+  getNetworkConfigurationsByChainId,
+  (preferences, networkConfigurations) => {
+    const { pausedChainIds = [] } = preferences;
+    return Object.entries(networkConfigurations).reduce(
+      (acc, [chainId, network]) => {
+        if (
+          !TEST_CHAINS.includes(chainId) &&
+          !pausedChainIds.includes(chainId)
+        ) {
+          acc.push(
+            network.rpcEndpoints[network.defaultRpcEndpointIndex]
+              .networkClientId,
+          );
+        }
+        return acc;
+      },
+      [],
+    );
+  },
+);
+
 /**
  *  To retrieve the maxBaseFee and priorityFee the user has set as default
  *
