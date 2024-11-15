@@ -11,7 +11,7 @@ import { useConfirmContext } from '../../../../../context/confirm';
 export type TokenWithBalance = {
   address: string;
   balance: string;
-  balanceError: unknown;
+  balanceError?: unknown;
   decimals: number;
   image: unknown;
   isERC721: unknown;
