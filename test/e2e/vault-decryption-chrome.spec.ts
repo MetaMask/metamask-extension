@@ -9,7 +9,7 @@ import HomePage from './page-objects/pages/homepage';
 import PrivacySettings from './page-objects/pages/settings/privacy-settings';
 import SettingsPage from './page-objects/pages/settings/settings-page';
 import VaultDecryptorPage from './page-objects/pages/vault-decryptor-page';
-import { completeCreateNewWalletOnboardingFlowWithOptOut } from './page-objects/flows/onboarding.flow';
+import { completeCreateNewWalletOnboardingFlowWithCustomSettings } from './page-objects/flows/onboarding.flow';
 
 const VAULT_DECRYPTOR_PAGE = 'https://metamask.github.io/vault-decryptor';
 
@@ -162,15 +162,15 @@ describe('Vault Decryptor Page', function () {
         disableServerMochaToBackground: true,
       },
       async ({ driver }) => {
-        // we don't need to use navigatesince MM will automatically open a new window in prod build
+        // we don't need to use navigate since MM will automatically open a new window in prod build
         await driver.waitUntilXWindowHandles(2);
 
-        // we cannot use the customized driver functionsas there is no socket for window communications in prod builds
+        // we cannot use the customized driver functions as there is no socket for window communications in prod builds
         const windowHandles = await driver.driver.getAllWindowHandles();
 
         // switch to MetaMask window and create a new vault through onboarding flow
         await driver.driver.switchTo().window(windowHandles[2]);
-        await completeCreateNewWalletOnboardingFlowWithOptOut({
+        await completeCreateNewWalletOnboardingFlowWithCustomSettings({
           driver,
           password: WALLET_PASSWORD,
           needNavigateToNewPage: false,
@@ -228,7 +228,7 @@ describe('Vault Decryptor Page', function () {
 
         // switch to MetaMask window and create a new vault through onboarding flow
         await driver.driver.switchTo().window(windowHandles[2]);
-        await completeCreateNewWalletOnboardingFlowWithOptOut({
+        await completeCreateNewWalletOnboardingFlowWithCustomSettings({
           driver,
           password: WALLET_PASSWORD,
           needNavigateToNewPage: false,

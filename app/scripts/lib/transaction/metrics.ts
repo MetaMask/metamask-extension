@@ -998,7 +998,7 @@ async function buildEventFragmentProperties({
   }
   const isRedesignedConfirmationsDeveloperSettingEnabled =
     transactionMetricsRequest.getIsRedesignedConfirmationsDeveloperEnabled() ||
-    Boolean(process.env.ENABLE_CONFIRMATION_REDESIGN);
+    process.env.ENABLE_CONFIRMATION_REDESIGN === 'true';
 
   const isRedesignedTransactionsUserSettingEnabled =
     transactionMetricsRequest.getRedesignedTransactionsEnabled();
