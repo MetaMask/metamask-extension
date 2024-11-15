@@ -2192,6 +2192,27 @@ export const getAllEnabledNetworks = createDeepEqualSelector(
     ),
 );
 
+export const getNetworkClientIdsToPoll = createDeepEqualSelector(
+  getPreferences,
+  getNetworkConfigurationsByChainId,
+  (preferences, networkConfigurations) => {
+    const { pausedChainIds = [] } = preferences;
+    const networkClientIds = Object.keys(networkConfigurations).reduce(
+      (acc, chainId) => {
+        if (
+          !TEST_CHAINS.includes(chainId) &&
+          !pausedChainIds.includes(chainId)
+        ) {
+          acc.push(chainId);
+        }
+        return acc;
+      },
+      [],
+    );
+    return networkClientIds;
+  },
+);
+
 /**
  *  To retrieve the maxBaseFee and priorityFee the user has set as default
  *
