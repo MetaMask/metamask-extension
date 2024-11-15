@@ -1311,7 +1311,7 @@ class Driver {
 
   #getErrorFromEvent(event) {
     // Extract the values from the array
-    const values = event.args.map((a) => a.value);
+    const values = event.args.map((a) => (a.value ? a.value : a.description));
 
     if (values[0]?.includes('%s')) {
       // The values are in the "printf" form of [message, ...substitutions]
