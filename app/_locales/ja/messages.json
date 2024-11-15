@@ -256,6 +256,9 @@
   "addNewBitcoinTestnetAccount": {
     "message": "新しいビットコインアカウントの追加 (テストネット)"
   },
+  "addNewSolanaAccount": {
+    "message": "新しいSolanaアカウントの追加 (ベータ版)"
+  },
   "addNewToken": {
     "message": "新しいトークンを追加"
   },
@@ -1696,10 +1699,6 @@
     "message": "コード: $1",
     "description": "Displayed error code for debugging purposes. $1 is the error code"
   },
-  "errorDetails": {
-    "message": "エラーの詳細",
-    "description": "Title for collapsible section that displays error details for debugging purposes"
-  },
   "errorGettingSafeChainList": {
     "message": "安全なチェーンリストの取得中にエラーが発生しました。慎重に続けてください。"
   },
@@ -1710,14 +1709,6 @@
   "errorName": {
     "message": "コード: $1",
     "description": "Displayed error name for debugging purposes. $1 is the error name"
-  },
-  "errorPageMessage": {
-    "message": "ページを再ロードしてもう一度実行するか、$1からサポートまでお問い合わせください。",
-    "description": "Message displayed on generic error page in the fullscreen or notification UI, $1 is a clickable link with text defined by the 'here' key. The link will open to a form where users can file support tickets."
-  },
-  "errorPagePopupMessage": {
-    "message": "ポップアップを閉じてから再び開いてもう一度実行するか、$1からサポートまでお問い合わせください。",
-    "description": "Message displayed on generic error page in the popup UI, $1 is a clickable link with text defined by the 'here' key. The link will open to a form where users can file support tickets."
   },
   "errorPageTitle": {
     "message": "MetaMaskにエラーが発生しました",
@@ -4540,17 +4531,11 @@
   "signingInWith": {
     "message": "サインイン方法:"
   },
-  "simulationDetailsFailed": {
-    "message": "予測結果の読み込み中にエラーが発生しました。"
-  },
   "simulationDetailsFiatNotAvailable": {
     "message": "利用できません"
   },
   "simulationDetailsIncomingHeading": {
     "message": "受取額"
-  },
-  "simulationDetailsNoBalanceChanges": {
-    "message": "ウォレット残高の増減は予測されていません"
   },
   "simulationDetailsOutgoingHeading": {
     "message": "送金額"
@@ -4588,9 +4573,6 @@
   },
   "siweResources": {
     "message": "リソース"
-  },
-  "siweSignatureSimulationDetailInfo": {
-    "message": "サイトにサインインしようとしていて、予想されるアカウントの変更はありません。"
   },
   "siweURI": {
     "message": "URL"

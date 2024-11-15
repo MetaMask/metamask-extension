@@ -24,7 +24,7 @@ import {
 } from '@metamask/utils';
 
 ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
-import { BtcAccountType } from '@metamask/keyring-api';
+import { BtcAccountType, InternalAccount } from '@metamask/keyring-api';
 ///: END:ONLY_INCLUDE_IF
 ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
 import { ChainId } from '../../../../shared/constants/network';
@@ -51,7 +51,6 @@ import {
   getCurrentKeyring,
   ///: END:ONLY_INCLUDE_IF
   getUseExternalServices,
-  getSelectedAccount,
   ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
   getMemoizedUnapprovedTemplatedConfirmations,
   ///: END:ONLY_INCLUDE_IF
@@ -90,20 +89,14 @@ import {
 } from '../../../store/actions';
 import { BITCOIN_WALLET_SNAP_ID } from '../../../../shared/lib/accounts/bitcoin-wallet-snap';
 ///: END:ONLY_INCLUDE_IF
+import {
+  getMultichainIsEvm,
+  getMultichainNativeCurrency,
+} from '../../../selectors/multichain';
+import { useMultichainSelector } from '../../../hooks/useMultichainSelector';
 
-const CoinButtons = ({
-  chainId,
-  trackingLocation,
-  isSwapsChain,
-  isSigningEnabled,
-  ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
-  isBridgeChain,
-  isBuyableChain,
-  defaultSwapsToken,
-  ///: END:ONLY_INCLUDE_IF
-  classPrefix = 'coin',
-  iconButtonClassName = '',
-}: {
+type CoinButtonsProps = {
+  account: InternalAccount;
   chainId: `0x${string}` | CaipChainId | number;
   trackingLocation: string;
   isSwapsChain: boolean;
@@ -115,21 +108,51 @@ const CoinButtons = ({
   ///: END:ONLY_INCLUDE_IF
   classPrefix?: string;
   iconButtonClassName?: string;
-}) => {
+};
+
+const CoinButtons = ({
+  account,
+  chainId,
+  trackingLocation,
+  isSwapsChain,
+  isSigningEnabled,
+  ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
+  isBridgeChain,
+  isBuyableChain,
+  defaultSwapsToken,
+  ///: END:ONLY_INCLUDE_IF
+  classPrefix = 'coin',
+  iconButtonClassName = '',
+}: CoinButtonsProps) => {
   const t = useContext(I18nContext);
   const dispatch = useDispatch();
 
   const trackEvent = useContext(MetaMetricsContext);
   const [showReceiveModal, setShowReceiveModal] = useState(false);
 
-  const account = useSelector(getSelectedAccount);
   const { address: selectedAddress } = account;
   const history = useHistory();
+  ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
+  const currentActivityTabName = useSelector(
+    // @ts-expect-error TODO: fix state type
+    (state) => state.metamask.defaultHomeActiveTabName,
+  );
+  ///: END:ONLY_INCLUDE_IF
   ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
   const location = useLocation();
   const keyring = useSelector(getCurrentKeyring);
   const usingHardwareWallet = isHardwareKeyring(keyring?.type);
   ///: END:ONLY_INCLUDE_IF
+
+  // Initially, those events were using a "ETH" as `token_symbol`, so we keep this behavior
+  // for EVM, no matter the currently selected native token (e.g. SepoliaETH if you are on Sepolia
+  // network).
+  const isEvm = useMultichainSelector(getMultichainIsEvm, account);
+  const multichainNativeToken = useMultichainSelector(
+    getMultichainNativeCurrency,
+    account,
+  );
+  const nativeToken = isEvm ? 'ETH' : multichainNativeToken;
 
   const isExternalServicesEnabled = useSelector(getUseExternalServices);
 
@@ -179,6 +202,23 @@ const CoinButtons = ({
     return toHex(chainId) as ChainId;
   };
   ///: END:ONLY_INCLUDE_IF
+
+  const getSnapAccountMetaMetricsPropertiesIfAny = (
+    internalAccount: InternalAccount,
+  ): { snap_id?: string } => {
+    // Some accounts might be Snap accounts, in this case we add some extra properties
+    // to the metrics:
+    const snapId = internalAccount.metadata.snap?.id;
+    if (snapId) {
+      return {
+        snap_id: snapId,
+      };
+    }
+
+    // If the account is not a Snap account or that we could not get the Snap ID for
+    // some reason, we don't add any extra property.
+    return {};
+  };
 
   ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
   const mmiPortfolioEnabled = useSelector(getMmiPortfolioEnabled);
@@ -276,34 +316,42 @@ const CoinButtons = ({
   ///: END:ONLY_INCLUDE_IF
 
   const handleSendOnClick = useCallback(async () => {
+    trackEvent(
+      {
+        event: MetaMetricsEventName.NavSendButtonClicked,
+        category: MetaMetricsEventCategory.Navigation,
+        properties: {
+          account_type: account.type,
+          token_symbol: nativeToken,
+          location: 'Home',
+          text: 'Send',
+          chain_id: chainId,
+          ...getSnapAccountMetaMetricsPropertiesIfAny(account),
+        },
+      },
+      { excludeMetaMetricsId: false },
+    );
     switch (account.type) {
       ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
       case BtcAccountType.P2wpkh: {
-        await sendMultichainTransaction(
-          BITCOIN_WALLET_SNAP_ID,
-          account.id,
-          chainId as CaipChainId,
-        );
+        try {
+          // FIXME: We switch the tab before starting the send flow (we
+          // faced some inconsistencies when changing it after).
+          await dispatch(setDefaultHomeActiveTabName('activity'));
+          await sendMultichainTransaction(
+            BITCOIN_WALLET_SNAP_ID,
+            account.id,
+            chainId as CaipChainId,
+          );
+        } catch {
+          // Restore the previous tab in case of any error (see FIXME comment above).
+          await dispatch(setDefaultHomeActiveTabName(currentActivityTabName));
+        }
 
-        // We automatically switch to the activity tab once the transaction has been sent.
-        dispatch(setDefaultHomeActiveTabName('activity'));
         break;
       }
       ///: END:ONLY_INCLUDE_IF
       default: {
-        trackEvent(
-          {
-            event: MetaMetricsEventName.NavSendButtonClicked,
-            category: MetaMetricsEventCategory.Navigation,
-            properties: {
-              token_symbol: 'ETH',
-              location: 'Home',
-              text: 'Send',
-              chain_id: chainId,
-            },
-          },
-          { excludeMetaMetricsId: false },
-        );
         await dispatch(startNewDraftTransaction({ type: AssetType.native }));
         history.push(SEND_ROUTE);
       }
@@ -358,10 +406,12 @@ const CoinButtons = ({
       event: MetaMetricsEventName.NavBuyButtonClicked,
       category: MetaMetricsEventCategory.Navigation,
       properties: {
+        account_type: account.type,
         location: 'Home',
         text: 'Buy',
         chain_id: chainId,
         token_symbol: defaultSwapsToken,
+        ...getSnapAccountMetaMetricsPropertiesIfAny(account),
       },
     });
   }, [chainId, defaultSwapsToken]);

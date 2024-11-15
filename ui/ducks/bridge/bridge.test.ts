@@ -21,6 +21,7 @@ import {
   resetInputFields,
   setToChainId,
   updateQuoteRequestParams,
+  resetBridgeState,
 } from './actions';
 
 const middleware = [thunk];
@@ -174,6 +175,37 @@ describe('Ducks - Bridge', () => {
         },
         expect.anything(),
       );
+    });
+  });
+
+  describe('resetBridgeState', () => {
+    it('dispatches action to the bridge controller', () => {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const mockStore = configureMockStore<any>(middleware)(
+        createBridgeMockStore({}, { fromTokenInputValue: '10' }),
+      );
+      const state = mockStore.getState().bridge;
+      const mockResetBridgeState = jest.fn();
+      setBackgroundConnection({
+        [BridgeBackgroundAction.RESET_STATE]: mockResetBridgeState,
+      } as never);
+
+      mockStore.dispatch(resetBridgeState() as never);
+
+      expect(mockResetBridgeState).toHaveBeenCalledTimes(1);
+      expect(mockResetBridgeState).toHaveBeenCalledWith(
+        undefined,
+        expect.anything(),
+      );
+      const actions = mockStore.getActions();
+      expect(actions[0].type).toStrictEqual('bridge/resetInputFields');
+      const newState = bridgeReducer(state, actions[0]);
+      expect(newState).toStrictEqual({
+        toChainId: null,
+        fromToken: null,
+        toToken: null,
+        fromTokenInputValue: null,
+      });
     });
   });
 });

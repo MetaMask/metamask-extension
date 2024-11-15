@@ -55,7 +55,7 @@ const convertETHToHexGwei = (eth) => convertToHexValue(eth * 10 ** 18);
 /**
  *
  * @param {object} options
- * @param {(fixtures: Fixtures) => Promise<void>} testSuite
+ * @param {({driver: Driver, mockedEndpoint: MockedEndpoint}: TestSuiteArguments) => Promise<void>} testSuite
  */
 async function withFixtures(options, testSuite) {
   const {
@@ -65,6 +65,7 @@ async function withFixtures(options, testSuite) {
     smartContract,
     driverOptions,
     dappOptions,
+    staticServerOptions,
     title,
     ignoredConsoleErrors = [],
     dappPath = undefined,
@@ -118,6 +119,9 @@ async function withFixtures(options, testSuite) {
       contractRegistry = ganacheSeeder.getContractRegistry();
     }
 
+    await fixtureServer.start();
+    fixtureServer.loadJsonState(fixtures, contractRegistry);
+
     if (ganacheOptions?.concurrent) {
       ganacheOptions.concurrent.forEach(async (ganacheSettings) => {
         const { port, chainId, ganacheOptions2 } = ganacheSettings;
@@ -137,8 +141,6 @@ async function withFixtures(options, testSuite) {
       await initBundler(bundlerServer, ganacheServer, usePaymaster);
     }
 
-    await fixtureServer.start();
-    fixtureServer.loadJsonState(fixtures, contractRegistry);
     await phishingPageServer.start();
     if (dapp) {
       if (dappOptions?.numberOfDapps) {
@@ -159,7 +161,9 @@ async function withFixtures(options, testSuite) {
             'dist',
           );
         }
-        dappServer.push(createStaticServer(dappDirectory));
+        dappServer.push(
+          createStaticServer({ public: dappDirectory, ...staticServerOptions }),
+        );
         dappServer[i].listen(`${dappBasePort + i}`);
         await new Promise((resolve, reject) => {
           dappServer[i].on('listening', resolve);
@@ -380,107 +384,6 @@ const getWindowHandles = async (driver, handlesCount) => {
     (handle) => handle !== extension && handle !== dapp,
   );
   return { extension, dapp, popup };
-};
-
-/**
- * @deprecated Please use page object functions in `onboarding.flow.ts` and in `pages/onboarding/*`.
- * @param driver
- * @param seedPhrase
- * @param password
- */
-const importSRPOnboardingFlow = async (driver, seedPhrase, password) => {
-  // agree to terms of use
-  await driver.clickElement('[data-testid="onboarding-terms-checkbox"]');
-
-  // welcome
-  await driver.clickElement('[data-testid="onboarding-import-wallet"]');
-
-  // metrics
-  await driver.clickElement('[data-testid="metametrics-no-thanks"]');
-
-  await driver.waitForSelector('.import-srp__actions');
-  // import with recovery phrase
-  await driver.pasteIntoField(
-    '[data-testid="import-srp__srp-word-0"]',
-    seedPhrase,
-  );
-  await driver.clickElement('[data-testid="import-srp-confirm"]');
-
-  // create password
-  await driver.fill('[data-testid="create-password-new"]', password);
-  await driver.fill('[data-testid="create-password-confirm"]', password);
-  await driver.clickElement('[data-testid="create-password-terms"]');
-  await driver.clickElement('[data-testid="create-password-import"]');
-  await driver.assertElementNotPresent('.loading-overlay');
-};
-
-/**
- * @deprecated Please use page object functions in `onboarding.flow.ts` and in `pages/onboarding/*`.
- * @param driver
- * @param seedPhrase
- * @param password
- */
-const completeImportSRPOnboardingFlow = async (
-  driver,
-  seedPhrase,
-  password,
-) => {
-  await importSRPOnboardingFlow(driver, seedPhrase, password);
-
-  // complete
-  await driver.clickElement('[data-testid="onboarding-complete-done"]');
-
-  // pin extension
-  await driver.clickElement('[data-testid="pin-extension-next"]');
-  await driver.clickElement('[data-testid="pin-extension-done"]');
-};
-
-/**
- * @deprecated Please use page object functions in `onboarding.flow.ts` and in `pages/onboarding/*`.
- * @param driver
- * @param seedPhrase
- * @param password
- */
-const completeImportSRPOnboardingFlowWordByWord = async (
-  driver,
-  seedPhrase,
-  password,
-) => {
-  // agree to terms of use
-  await driver.clickElement('[data-testid="onboarding-terms-checkbox"]');
-
-  // welcome
-  await driver.clickElement('[data-testid="onboarding-import-wallet"]');
-
-  // metrics
-
-  await driver.clickElement('[data-testid="metametrics-no-thanks"]');
-
-  // import with recovery phrase, word by word
-  const words = seedPhrase.split(' ');
-  for (const word of words) {
-    await driver.pasteIntoField(
-      `[data-testid="import-srp__srp-word-${words.indexOf(word)}"]`,
-      word,
-    );
-  }
-  await driver.clickElement('[data-testid="import-srp-confirm"]');
-
-  // create password
-  await driver.fill('[data-testid="create-password-new"]', password);
-  await driver.fill('[data-testid="create-password-confirm"]', password);
-  await driver.clickElement('[data-testid="create-password-terms"]');
-  await driver.clickElement('[data-testid="create-password-import"]');
-
-  // wait for loading to complete
-  await driver.assertElementNotPresent('.loading-overlay');
-
-  // complete
-  await driver.clickElement('[data-testid="onboarding-complete-done"]');
-
-  // pin extension
-  await driver.clickElement('[data-testid="pin-extension-next"]');
-  await driver.clickElement('[data-testid="pin-extension-done"]');
 };
 
 /**
@@ -734,11 +637,10 @@ const openSRPRevealQuiz = async (driver) => {
   await driver.clickElement('[data-testid="reveal-seed-words"]');
 };
 
-const passwordUnlockOpenSRPRevealQuiz = async (driver) => {
-  await unlockWallet(driver);
-  await openSRPRevealQuiz(driver);
-};
-
+/**
+ * @deprecated Please use page object functions in `test/e2e/page-objects/pages/settings/privacy-settings.ts`.
+ * @param driver
+ */
 const completeSRPRevealQuiz = async (driver) => {
   // start quiz
   await driver.clickElement('[data-testid="srp-quiz-get-started"]');
@@ -764,17 +666,6 @@ const tapAndHoldToRevealSRP = async (driver) => {
     },
     3000,
   );
-};
-
-const closeSRPReveal = async (driver) => {
-  await driver.clickElement({
-    text: tEn('close'),
-    tag: 'button',
-  });
-  await driver.findVisibleElement({
-    text: tEn('tokens'),
-    tag: 'button',
-  });
 };
 
 const DAPP_HOST_ADDRESS = '127.0.0.1:8080';
@@ -1234,6 +1125,10 @@ async function initBundler(bundlerServer, ganacheServer, usePaymaster) {
   }
 }
 
+/**
+ * @deprecated Please use page object functions in `pages/account-list-page`.
+ * @param driver
+ */
 async function removeSelectedAccount(driver) {
   await driver.clickElement('[data-testid="account-menu-icon"]');
   await driver.clickElement(
@@ -1243,6 +1138,10 @@ async function removeSelectedAccount(driver) {
   await driver.clickElement({ text: 'Remove', tag: 'button' });
 }
 
+/**
+ * @deprecated Please use page object functions in `pages/account-list-page`.
+ * @param driver
+ */
 async function getSelectedAccountAddress(driver) {
   await driver.clickElement('[data-testid="account-options-menu-button"]');
   await driver.clickElement('[data-testid="account-list-menu-details"]');
@@ -1305,6 +1204,8 @@ async function openMenuSafe(driver) {
   }
 }
 
+const sentryRegEx = /^https:\/\/sentry\.io\/api\/\d+\/envelope/gu;
+
 module.exports = {
   DAPP_HOST_ADDRESS,
   DAPP_URL,
@@ -1323,15 +1224,10 @@ module.exports = {
   largeDelayMs,
   veryLargeDelayMs,
   withFixtures,
-  importSRPOnboardingFlow,
-  completeImportSRPOnboardingFlow,
-  completeImportSRPOnboardingFlowWordByWord,
   completeCreateNewWalletOnboardingFlow,
   completeCreateNewWalletOnboardingFlowWithOptOut,
   openSRPRevealQuiz,
-  passwordUnlockOpenSRPRevealQuiz,
   completeSRPRevealQuiz,
-  closeSRPReveal,
   tapAndHoldToRevealSRP,
   createDownloadFolder,
   openDapp,
@@ -1376,4 +1272,5 @@ module.exports = {
   getSelectedAccountAddress,
   tempToggleSettingRedesignedConfirmations,
   openMenuSafe,
+  sentryRegEx,
 };
