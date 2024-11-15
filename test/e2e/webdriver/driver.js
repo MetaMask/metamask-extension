@@ -1324,10 +1324,9 @@ class Driver {
       } else if (a.value) {
         // Handle generic error types
         return a.value;
-      } else {
-        // Fallback for other error structures
-        return JSON.stringify(a, null, 2);
       }
+      // Fallback for other error structures
+      return JSON.stringify(a, null, 2);
     });
 
     if (values[0]?.includes('%s')) {
