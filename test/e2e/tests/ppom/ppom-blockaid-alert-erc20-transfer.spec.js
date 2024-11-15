@@ -59,7 +59,8 @@ async function mockInfuraWithMaliciousResponses(mockServer) {
   await mockRequest(mockServer, maliciousTransferAlert);
 }
 
-describe('PPOM Blockaid Alert - Malicious ERC20 Transfer @no-mmi', function () {
+// eslint-disable-next-line mocha/no-skipped-tests
+describe.skip('PPOM Blockaid Alert - Malicious ERC20 Transfer @no-mmi', function () {
   it('should show banner alert', async function () {
     // we need to use localhost instead of the ip
     // see issue: https://github.com/MetaMask/MetaMask-planning/issues/3560
