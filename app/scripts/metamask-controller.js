@@ -1624,7 +1624,7 @@ export default class MetamaskController extends EventEmitter {
           'AccountsController:updateAccountMetadata',
           'NetworkController:getState',
           'NetworkController:addNetwork',
-          'NetworkController:updateNetwork',
+          'NetworkController:dangerouslySetNetworkConfiguration',
           'NetworkController:removeNetwork',
         ],
         allowedEvents: [
