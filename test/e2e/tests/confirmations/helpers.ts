@@ -35,12 +35,6 @@ export function withRedesignConfirmationFixtures(
           metaMetricsId: 'fake-metrics-id',
           participateInMetaMetrics: true,
         })
-        .withPreferencesController({
-          preferences: {
-            redesignedConfirmationsEnabled: true,
-            isRedesignedConfirmationsDeveloperEnabled: true,
-          },
-        })
         .build(),
       ganacheOptions:
         transactionEnvelopeType === TransactionEnvelopeType.legacy
