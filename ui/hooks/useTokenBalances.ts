@@ -51,6 +51,7 @@ export const useTokenTracker = ({
         symbol: token.symbol,
         decimals: token.decimals,
         balance: decimalBalance,
+        balanceError: false,
         string: stringifyBalance(
           new BN(decimalBalance),
           new BN(token.decimals),
@@ -58,7 +59,7 @@ export const useTokenTracker = ({
       });
     }
     return acc;
-  }, [] as (Token & { balance: string; string: string })[]);
+  }, [] as (Token & { balance: string; string: string; balanceError: boolean })[]);
 
   return {
     tokensWithBalances,
