@@ -10,10 +10,7 @@ import {
   getValueFromWeiHex,
   sumDecimals,
 } from '../../shared/modules/conversion.utils';
-import {
-  getConversionRate,
-  getCurrencyRates,
-} from '../ducks/metamask/metamask';
+import { getCurrencyRates } from '../ducks/metamask/metamask';
 import { getTokenFiatAmount } from '../helpers/utils/token-util';
 
 export const useAccountTotalCrossChainFiatBalance = (
@@ -21,10 +18,7 @@ export const useAccountTotalCrossChainFiatBalance = (
   formattedTokensWithBalancesPerChain,
 ) => {
   const allNetworks = useSelector(getNetworkConfigurationsByChainId);
-
   const currencyRates = useSelector(getCurrencyRates);
-
-  const conversionRate = useSelector(getConversionRate);
   const currentCurrency = useSelector(getCurrentCurrency);
 
   const crossChainContractRates = useSelector(
@@ -45,12 +39,15 @@ export const useAccountTotalCrossChainFiatBalance = (
   const tokenFiatBalancesCrossChains = formattedTokensWithBalancesPerChain.map(
     (singleChainTokenBalances) => {
       const { tokensWithBalances } = singleChainTokenBalances;
+      const matchedChainSymbol =
+        allNetworks[singleChainTokenBalances.chainId].nativeCurrency;
+      const conversionRate =
+        currencyRates?.[matchedChainSymbol]?.conversionRate;
       const tokenFiatBalances = tokensWithBalances.map((token) => {
         const tokenExchangeRate =
           mergedCrossChainRates[singleChainTokenBalances.chainId][
             toChecksumAddress(token.address)
           ];
-
         const totalFiatValue = getTokenFiatAmount(
           tokenExchangeRate,
           conversionRate,
@@ -63,11 +60,7 @@ export const useAccountTotalCrossChainFiatBalance = (
 
         return totalFiatValue;
       });
-      // todo make sure this is returning the correct value, compare with tickers
-      const matchedChainSymbol =
-        allNetworks[singleChainTokenBalances.chainId].nativeCurrency;
-      const matchedConversionRate =
-        currencyRates?.[matchedChainSymbol]?.conversionRate;
+
       const balanceCached =
         crossChainCachedBalances?.[singleChainTokenBalances.chainId]?.[
           account?.address
@@ -75,7 +68,7 @@ export const useAccountTotalCrossChainFiatBalance = (
       const nativeFiatValue = getValueFromWeiHex({
         value: balanceCached,
         toCurrency: currentCurrency,
-        conversionRate: matchedConversionRate,
+        conversionRate,
         numberOfDecimals: 2,
       });
       return {
