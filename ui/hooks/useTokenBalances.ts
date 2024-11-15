@@ -7,7 +7,7 @@ import {
   tokenBalancesStartPolling,
   tokenBalancesStopPollingByPollingToken,
 } from '../store/actions';
-import { getTokenBalances, getTokens } from '../ducks/metamask/metamask';
+import { getTokenBalances } from '../ducks/metamask/metamask';
 import { hexToDecimal } from '../../shared/modules/conversion.utils';
 import useMultiPolling from './useMultiPolling';
 
@@ -67,12 +67,12 @@ export const useTokenTracker = ({
 
 // From https://github.com/MetaMask/eth-token-tracker/blob/main/lib/util.js
 // Ensures backwards compatibility with display formatting.
-function stringifyBalance(balance: BN, bnDecimals: BN, balanceDecimals = 3) {
+function stringifyBalance(balance: BN, bnDecimals: BN, balanceDecimals = 5) {
   if (balance.eq(new BN(0))) {
     return '0';
   }
 
-  const decimals = parseInt(bnDecimals.toString());
+  const decimals = parseInt(bnDecimals.toString(), 10);
   if (decimals === 0) {
     return balance.toString();
   }
@@ -85,7 +85,7 @@ function stringifyBalance(balance: BN, bnDecimals: BN, balanceDecimals = 3) {
   if (decimalIndex <= 0) {
     while (prefix.length <= decimalIndex * -1) {
       prefix += '0';
-      len++;
+      len += 1;
     }
     bal = prefix + bal;
     decimalIndex = 1;
@@ -98,8 +98,8 @@ function stringifyBalance(balance: BN, bnDecimals: BN, balanceDecimals = 3) {
   }
 
   const fractional = bal.substr(decimalIndex, balanceDecimals);
-  if (/0+$/.test(fractional)) {
-    let withOnlySigZeroes = bal.substr(decimalIndex).replace(/0+$/, '');
+  if (/0+$/u.test(fractional)) {
+    let withOnlySigZeroes = bal.substr(decimalIndex).replace(/0+$/u, '');
     if (withOnlySigZeroes.length > 0) {
       withOnlySigZeroes = `.${withOnlySigZeroes}`;
     }
