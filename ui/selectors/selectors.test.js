@@ -862,11 +862,20 @@ describe('Selectors', () => {
       },
     };
 
+    beforeEach(() => {
+      process.env.PORTFOLIO_VIEW = 'true';
+    });
+
+    afterEach(() => {
+      process.env.PORTFOLIO_VIEW = undefined;
+    });
+
     it('returns only non-test chain IDs', () => {
       const chainIds = selectors.getChainIdsToPoll({
         metamask: {
           preferences: { pausedChainIds: [] },
           networkConfigurationsByChainId,
+          selectedNetworkClientId: 'mainnet',
         },
       });
       expect(Object.values(chainIds)).toHaveLength(2);
@@ -881,6 +890,7 @@ describe('Selectors', () => {
         metamask: {
           preferences: { pausedChainIds: [CHAIN_IDS.LINEA_MAINNET] },
           networkConfigurationsByChainId,
+          selectedNetworkClientId: 'mainnet',
         },
       });
       expect(Object.values(chainIds)).toHaveLength(1);
@@ -912,11 +922,20 @@ describe('Selectors', () => {
       },
     };
 
+    beforeEach(() => {
+      process.env.PORTFOLIO_VIEW = 'true';
+    });
+
+    afterEach(() => {
+      process.env.PORTFOLIO_VIEW = undefined;
+    });
+
     it('returns only non-test chain IDs', () => {
       const chainIds = selectors.getNetworkClientIdsToPoll({
         metamask: {
           preferences: { pausedChainIds: [] },
           networkConfigurationsByChainId,
+          selectedNetworkClientId: 'mainnet',
         },
       });
       expect(Object.values(chainIds)).toHaveLength(2);
@@ -928,6 +947,7 @@ describe('Selectors', () => {
         metamask: {
           preferences: { pausedChainIds: [CHAIN_IDS.LINEA_MAINNET] },
           networkConfigurationsByChainId,
+          selectedNetworkClientId: 'mainnet',
         },
       });
       expect(Object.values(chainIds)).toHaveLength(1);
