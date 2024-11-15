@@ -109,5 +109,6 @@ export function stringifyBalance(
     }
     return `${whole}${withOnlySigZeroes}`;
   }
+
   return `${whole}.${fractional}`;
 }
