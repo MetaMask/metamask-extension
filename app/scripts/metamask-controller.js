@@ -686,6 +686,7 @@ export default class MetamaskController extends EventEmitter {
         'AccountsController:selectedEvmAccountChange',
         'PreferencesController:stateChange',
         'TokenListController:stateChange',
+        'NetworkController:stateChange',
       ],
     });
     this.tokensController = new TokensController({
@@ -906,6 +907,7 @@ export default class MetamaskController extends EventEmitter {
       allowedEvents: [
         'PreferencesController:stateChange',
         'TokensController:stateChange',
+        'NetworkController:stateChange',
       ],
     });
 
