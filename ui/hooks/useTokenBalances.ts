@@ -70,7 +70,7 @@ export const useTokenTracker = ({
 export function stringifyBalance(
   balance: BN,
   bnDecimals: BN,
-  balanceDecimals = 3,
+  balanceDecimals = 5,
 ) {
   if (balance.eq(new BN(0))) {
     return '0';
