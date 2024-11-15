@@ -13,6 +13,7 @@ const mockTokenBalances = [
   {
     address: '0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48',
     balance: '48573',
+    balanceError: null,
     decimals: 6,
     string: 0.04857,
     symbol: 'USDC',
@@ -24,6 +25,7 @@ const mockTokenBalances = [
     balance: '1409247882142934',
     decimals: 18,
     string: 0.00141,
+    balanceError: null,
     tokenFiatAmount: '7.52',
   },
 ];
@@ -167,7 +169,7 @@ describe('useMultichainAccountTotalFiatBalance', () => {
             'zeroEx',
           ],
           balance: '1409247882142934',
-          balanceError: undefined,
+          balanceError: null,
           decimals: 18,
           fiatBalance: '0.05',
           iconUrl:

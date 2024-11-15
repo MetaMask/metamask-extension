@@ -103,6 +103,7 @@ describe('useAccountTotalFiatBalance', () => {
           balance: '48573',
           decimals: 6,
           string: 0.04857,
+          balanceError: null,
           tokenFiatAmount: '0.05',
         },
         {
@@ -111,6 +112,7 @@ describe('useAccountTotalFiatBalance', () => {
           balance: '1409247882142934',
           decimals: 18,
           string: 0.00141,
+          balanceError: null,
           tokenFiatAmount: '7.52',
         },
       ],
@@ -142,7 +144,7 @@ describe('useAccountTotalFiatBalance', () => {
             'zeroEx',
           ],
           balance: '1409247882142934',
-          balanceError: undefined,
+          balanceError: null,
           decimals: 18,
           fiatBalance: '0.05',
           iconUrl:
