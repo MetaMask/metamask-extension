@@ -1322,7 +1322,7 @@ class Driver {
         // Handle RPC error type
         return a.description;
       }
-      // Handle rest of error types
+      // Handle generic error types
       return a.value;
     });
 
