@@ -1,4 +1,5 @@
 import { strict as assert } from 'assert';
+import { WebElement } from 'selenium-webdriver';
 import { Driver } from '../../../webdriver/driver';
 
 class SendTokenPage {
@@ -48,6 +49,11 @@ class SendTokenPage {
       throw e;
     }
     console.log('Send token screen is loaded');
+  }
+
+  async getAssetPickerItems(): Promise<WebElement[]> {
+    console.log('Retrieving asset picker items');
+    return this.driver.findElements(this.tokenListButton);
   }
 
   async clickAssetPickerButton() {

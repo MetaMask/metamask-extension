@@ -172,10 +172,14 @@ describe('Multichain Asset List', function (this: Suite) {
         await homepage.startSendFlow();
         sendPage.fillRecipient('0x2f318C334780961FB129D2a6c30D0763d9a5C970');
 
-        // Open asset picker to confirm only one asset is shown
-        await sendPage.click_assetPickerButton();
+        await sendPage.clickAssetPickerButton();
 
-        // TODO: Check that there are no known assets from other networks here
+        const assetPickerItems = await sendPage.getAssetPickerItems();
+        assert.equal(
+          assetPickerItems.length,
+          1,
+          'Only one asset should be shown in the asset picker',
+        );
       },
     );
   });
