@@ -43,6 +43,7 @@ import { decGWEIToHexWEI } from '../../../shared/modules/conversion.utils';
 import { FEATURED_RPCS } from '../../../shared/constants/network';
 import { getEthUsdtResetData, isEthUsdt } from '../../pages/bridge/bridge.util';
 import { ETH_USDT_ADDRESS } from '../../../shared/constants/bridge';
+import { getTransaction1559GasFeeEstimates } from '../../pages/swaps/swaps.util';
 import { bridgeSlice } from './bridge';
 import { BridgeAppState } from './selectors';
 
@@ -129,6 +130,47 @@ export const getBridgeERC20Allowance = async (
   );
 };
 
+// We don't need to use gas multipliers here because the gasLimit from Bridge API already included it
+const getHexMaxGasLimit = (gasLimit: number) => {
+  return new Numeric(
+    new BigNumber(gasLimit).toString(),
+    10,
+  ).toPrefixedHexString() as Hex;
+};
+
+const getTxGasEstimates = async ({
+  networkAndAccountSupports1559,
+  networkGasFeeEstimates,
+  txParams,
+  hexChainId,
+}: {
+  networkAndAccountSupports1559: boolean;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  networkGasFeeEstimates: any;
+  txParams: TxData;
+  hexChainId: Hex;
+}) => {
+  if (networkAndAccountSupports1559) {
+    const { estimatedBaseFeeGwei = '0' } = networkGasFeeEstimates;
+    const hexEstimatedBaseFee = decGWEIToHexWEI(estimatedBaseFeeGwei) as Hex;
+    return await getTransaction1559GasFeeEstimates(
+      {
+        ...txParams,
+        chainId: hexChainId,
+        gasLimit: txParams.gasLimit?.toString(),
+      },
+      hexEstimatedBaseFee,
+      hexChainId,
+    );
+  }
+
+  return {
+    baseAndPriorityFeePerGas: undefined,
+    maxFeePerGas: undefined,
+    maxPriorityFeePerGas: undefined,
+  };
+};
+
 export const submitBridgeTransaction = (
   quoteResponse: QuoteResponse,
   history: ReturnType<typeof useHistory>,
@@ -138,44 +180,13 @@ export const submitBridgeTransaction = (
     getState: () => MetaMaskReduxState & BridgeAppState,
   ) => {
     const state = getState();
-    // Track event TODO
-
-    const calcFeePerGas = () => {
-      let maxFeePerGas: undefined | string;
-      let maxPriorityFeePerGas: undefined | string;
-
-      const networkAndAccountSupports1559 =
-        checkNetworkAndAccountSupports1559(state);
-
-      if (networkAndAccountSupports1559) {
-        const gasFeeEstimates = getGasFeeEstimates(state);
-        maxFeePerGas = decGWEIToHexWEI(
-          gasFeeEstimates?.high?.suggestedMaxFeePerGas,
-        );
-        maxPriorityFeePerGas = decGWEIToHexWEI(
-          gasFeeEstimates?.high?.suggestedMaxPriorityFeePerGas,
-        );
-      }
-
-      return {
-        maxFeePerGas,
-        maxPriorityFeePerGas,
-      };
-    };
-
-    // We don't need to use gas multipliers here because the gasLimit from Bridge API already included it
-    const getMaxGasLimit = (gasLimit: number) => {
-      return new Numeric(
-        new BigNumber(gasLimit).toString(),
-        10,
-      ).toPrefixedHexString();
-    };
+    const networkAndAccountSupports1559 =
+      checkNetworkAndAccountSupports1559(state);
+    const networkGasFeeEstimates = getGasFeeEstimates(state);
 
     const handleTx = async ({
       txType,
       txParams,
-      maxFeePerGas,
-      maxPriorityFeePerGas,
       meta,
     }: {
       txType: TransactionType.bridgeApproval | TransactionType.bridge;
@@ -187,8 +198,6 @@ export const submitBridgeTransaction = (
         data: string;
         gasLimit: number | null;
       };
-      maxFeePerGas: string | undefined;
-      maxPriorityFeePerGas: string | undefined;
       meta: Partial<TransactionMeta>; // all fields in meta are merged with TransactionMeta downstream
     }) => {
       const hexChainId = new Numeric(
@@ -196,7 +205,13 @@ export const submitBridgeTransaction = (
         10,
       ).toPrefixedHexString() as `0x${string}`;
 
-      const maxGasLimit = getMaxGasLimit(txParams.gasLimit ?? 0);
+      const { maxFeePerGas, maxPriorityFeePerGas } = await getTxGasEstimates({
+        networkAndAccountSupports1559,
+        networkGasFeeEstimates,
+        txParams,
+        hexChainId,
+      });
+      const maxGasLimit = getHexMaxGasLimit(txParams.gasLimit ?? 0);
 
       const finalTxParams = {
         ...txParams,
@@ -227,13 +242,9 @@ export const submitBridgeTransaction = (
     const handleEthUsdtAllowanceReset = async ({
       approval,
       hexChainId,
-      maxFeePerGas,
-      maxPriorityFeePerGas,
     }: {
       approval: TxData;
       hexChainId: Hex;
-      maxFeePerGas: string | undefined;
-      maxPriorityFeePerGas: string | undefined;
     }) => {
       const allowance = new BigNumber(
         await getBridgeERC20Allowance(ETH_USDT_ADDRESS, hexChainId),
@@ -257,8 +268,6 @@ export const submitBridgeTransaction = (
         await handleTx({
           txType: TransactionType.bridgeApproval,
           txParams,
-          maxFeePerGas,
-          maxPriorityFeePerGas,
           meta: {
             type: TransactionType.bridgeApproval,
           },
@@ -266,15 +275,7 @@ export const submitBridgeTransaction = (
       }
     };
 
-    const handleApprovalTx = async ({
-      approval,
-      maxFeePerGas,
-      maxPriorityFeePerGas,
-    }: {
-      approval: TxData;
-      maxFeePerGas: string | undefined;
-      maxPriorityFeePerGas: string | undefined;
-    }) => {
+    const handleApprovalTx = async ({ approval }: { approval: TxData }) => {
       const hexChainId = new Numeric(
         approval.chainId,
         10,
@@ -286,16 +287,12 @@ export const submitBridgeTransaction = (
         await handleEthUsdtAllowanceReset({
           approval,
           hexChainId,
-          maxFeePerGas,
-          maxPriorityFeePerGas,
         });
       }
 
       const txMeta = await handleTx({
         txType: TransactionType.bridgeApproval,
         txParams: approval,
-        maxFeePerGas,
-        maxPriorityFeePerGas,
         meta: {
           type: TransactionType.bridgeApproval,
           sourceTokenSymbol: quoteResponse.quote.srcAsset.symbol,
@@ -307,12 +304,8 @@ export const submitBridgeTransaction = (
 
     const handleBridgeTx = async ({
       approvalTxId,
-      maxFeePerGas,
-      maxPriorityFeePerGas,
     }: {
       approvalTxId: string | undefined;
-      maxFeePerGas: string | undefined;
-      maxPriorityFeePerGas: string | undefined;
     }) => {
       const sentAmount = new BigNumber(quoteResponse.quote.srcTokenAmount).plus(
         quoteResponse.quote.feeData[FeeType.METABRIDGE].amount,
@@ -324,8 +317,6 @@ export const submitBridgeTransaction = (
       const txMeta = await handleTx({
         txType: TransactionType.bridge,
         txParams: quoteResponse.trade,
-        maxFeePerGas,
-        maxPriorityFeePerGas,
         meta: {
           // estimatedBaseFee: decEstimatedBaseFee,
           // swapMetaData,
@@ -411,22 +402,16 @@ export const submitBridgeTransaction = (
     };
 
     const execute = async () => {
-      const { maxFeePerGas, maxPriorityFeePerGas } = calcFeePerGas();
-
       // Execute transaction(s)
       let approvalTxId: string | undefined;
       if (quoteResponse?.approval) {
         approvalTxId = await handleApprovalTx({
           approval: quoteResponse.approval,
-          maxFeePerGas,
-          maxPriorityFeePerGas,
         });
       }
 
       await handleBridgeTx({
         approvalTxId,
-        maxFeePerGas,
-        maxPriorityFeePerGas,
       });
 
       // Add tokens if not the native gas token
