@@ -1321,9 +1321,13 @@ class Driver {
       } else if (a.description) {
         // Handle RPC error type
         return a.description;
+      } else if (a.value) {
+        // Handle generic error types
+        return a.value;
+      } else {
+        // Fallback for other error structures
+        return JSON.stringify(a, null, 2);
       }
-      // Handle generic error types
-      return a.value;
     });
 
     if (values[0]?.includes('%s')) {
