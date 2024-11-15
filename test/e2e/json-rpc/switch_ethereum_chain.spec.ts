@@ -166,7 +166,7 @@ describe('Switch Ethereum Chain for two dapps', function () {
         // Confirm switch ethereum chain
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
         if (await confirmTxPage.actionNameIsDisplayed('Sending ETH')) {
-          await confirmTxPage.confirmTx();
+          await confirmTxPage.rejectTx();
         }
         const reviewPermissionConfirmation = new ReviewPermissionConfirmation(
           driver,

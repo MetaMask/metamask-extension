@@ -3,14 +3,17 @@ import { Driver } from '../../../webdriver/driver';
 class ConfirmTxPage {
   private driver: Driver;
 
+  private readonly actionNameSummary =
+    '.confirm-page-container-summary__action__name';
+
   private readonly confirmButton = '[data-testid="page-container-footer-next"]';
 
   private readonly totalFee = '[data-testid="confirm-page-total-amount"]';
 
   private readonly transactionFee = '[data-testid="confirm-gas-display"]';
 
-  private readonly actionNameSummary =
-    '.confirm-page-container-summary__action__name';
+  private readonly rejectButton =
+    '[data-testid="page-container-footer-cancel"]';
 
   constructor(driver: Driver) {
     this.driver = driver;
@@ -62,6 +65,11 @@ class ConfirmTxPage {
   async confirmTx(): Promise<void> {
     console.log('Click confirm button to confirm transaction');
     await this.driver.clickElement(this.confirmButton);
+  }
+
+  async rejectTx(): Promise<void> {
+    console.log('Click reject button to confirm transaction');
+    await this.driver.clickElement(this.rejectButton);
   }
 
   /**
