@@ -353,7 +353,7 @@ describe('Switch Ethereum Chain for two dapps', function () {
         await driver.executeScript(
           `window.ethereum.request(${switchEthereumChainRequest})`,
         );
-        await this.driver.delay(1000);
+        await driver.delay(1000);
 
         // Switch to notification of switchEthereumChain
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
