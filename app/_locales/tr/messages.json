@@ -256,6 +256,9 @@
   "addNewBitcoinTestnetAccount": {
     "message": "Yeni bir Bitcoin hesabı ekle (Test Ağı)"
   },
+  "addNewSolanaAccount": {
+    "message": "Yeni bir Solana hesabı ekle (Beta)"
+  },
   "addNewToken": {
     "message": "Yeni token ekleyin"
   },
@@ -1696,10 +1699,6 @@
     "message": "Kod: $1",
     "description": "Displayed error code for debugging purposes. $1 is the error code"
   },
-  "errorDetails": {
-    "message": "Hata ayrıntıları",
-    "description": "Title for collapsible section that displays error details for debugging purposes"
-  },
   "errorGettingSafeChainList": {
     "message": "Güvenli zincir listesi alınırken hata oluştu, lütfen dikkatli bir şekilde devam edin."
   },
@@ -1710,14 +1709,6 @@
   "errorName": {
     "message": "Kod: $1",
     "description": "Displayed error name for debugging purposes. $1 is the error name"
-  },
-  "errorPageMessage": {
-    "message": "Sayfayı yeniden yükleyerek tekrar deneyin veya $1 destek bölümümüze ulaşın.",
-    "description": "Message displayed on generic error page in the fullscreen or notification UI, $1 is a clickable link with text defined by the 'here' key. The link will open to a form where users can file support tickets."
-  },
-  "errorPagePopupMessage": {
-    "message": "Açılır pencereyi kapatarak ve yeniden açarak tekrar deneyin $1 destek bölümümüze ulaşın.",
-    "description": "Message displayed on generic error page in the popup UI, $1 is a clickable link with text defined by the 'here' key. The link will open to a form where users can file support tickets."
   },
   "errorPageTitle": {
     "message": "MetaMask bir hata ile karşılaştı",
@@ -4540,17 +4531,11 @@
   "signingInWith": {
     "message": "Şununla giriş yap:"
   },
-  "simulationDetailsFailed": {
-    "message": "Tahmininiz yüklenirken bir hata oldu."
-  },
   "simulationDetailsFiatNotAvailable": {
     "message": "Mevcut Değil"
   },
   "simulationDetailsIncomingHeading": {
     "message": "Aldığınız"
-  },
-  "simulationDetailsNoBalanceChanges": {
-    "message": "Cüzdanınız için değişiklik öngörülmüyor"
   },
   "simulationDetailsOutgoingHeading": {
     "message": "Gönderdiğiniz"
@@ -4588,9 +4573,6 @@
   },
   "siweResources": {
     "message": "Kaynaklar"
-  },
-  "siweSignatureSimulationDetailInfo": {
-    "message": "Bir siteye giriş yapıyorsunuz ve hesabınızda öngörülen herhangi bir değişiklik yok."
   },
   "siweURI": {
     "message": "URL adresi"

@@ -156,6 +156,7 @@ import {
   NotificationServicesPushController,
   NotificationServicesController,
 } from '@metamask/notification-services-controller';
+import { isProduction } from '../../shared/modules/environment';
 import {
   methodsRequiringNetworkSwitch,
   methodsThatCanSwitchNetworkWithoutApproval,
@@ -282,7 +283,7 @@ import {
   checkForMultipleVersionsRunning,
 } from './detect-multiple-instances';
 ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-import MMIController from './controllers/mmi-controller';
+import { MMIController } from './controllers/mmi-controller';
 import { mmiKeyringBuilderFactory } from './mmi-keyring-builder-factory';
 ///: END:ONLY_INCLUDE_IF
 import ComposableObservableStore from './lib/ComposableObservableStore';
@@ -307,7 +308,7 @@ import OnboardingController from './controllers/onboarding';
 import Backup from './lib/backup';
 import DecryptMessageController from './controllers/decrypt-message';
 import SwapsController from './controllers/swaps';
-import MetaMetricsController from './controllers/metametrics';
+import MetaMetricsController from './controllers/metametrics-controller';
 import { segment } from './lib/segment';
 import createMetaRPCHandler from './lib/createMetaRPCHandler';
 import {
@@ -763,23 +764,23 @@ export default class MetamaskController extends EventEmitter {
       disabled: !this.preferencesController.state.useNftDetection,
     });
 
+    const metaMetricsControllerMessenger =
+      this.controllerMessenger.getRestricted({
+        name: 'MetaMetricsController',
+        allowedActions: [
+          'PreferencesController:getState',
+          'NetworkController:getState',
+          'NetworkController:getNetworkClientById',
+        ],
+        allowedEvents: [
+          'PreferencesController:stateChange',
+          'NetworkController:networkDidChange',
+        ],
+      });
     this.metaMetricsController = new MetaMetricsController({
-      initState: initState.MetaMetricsController,
+      state: initState.MetaMetricsController,
+      messenger: metaMetricsControllerMessenger,
       segment,
-      preferencesControllerState: {
-        currentLocale: this.preferencesController.state.currentLocale,
-        selectedAddress: this.preferencesController.state.selectedAddress,
-      },
-      onPreferencesStateChange: preferencesMessenger.subscribe.bind(
-        preferencesMessenger,
-        'PreferencesController:stateChange',
-      ),
-      onNetworkDidChange: networkControllerMessenger.subscribe.bind(
-        networkControllerMessenger,
-        'NetworkController:networkDidChange',
-      ),
-      getCurrentChainId: () =>
-        getCurrentChainId({ metamask: this.networkController.state }),
       version: process.env.METAMASK_VERSION,
       environment: process.env.METAMASK_ENVIRONMENT,
       extension: this.extension,
@@ -794,13 +795,14 @@ export default class MetamaskController extends EventEmitter {
     const metaMetricsDataDeletionMessenger =
       this.controllerMessenger.getRestricted({
         name: 'MetaMetricsDataDeletionController',
+        allowedActions: ['MetaMetricsController:getState'],
+        allowedEvents: [],
       });
     this.metaMetricsDataDeletionController =
       new MetaMetricsDataDeletionController({
         dataDeletionService,
         messenger: metaMetricsDataDeletionMessenger,
         state: initState.metaMetricsDataDeletionController,
-        getMetaMetricsId: () => this.metaMetricsController.state.metaMetricsId,
       });
 
     const gasFeeMessenger = this.controllerMessenger.getRestricted({
@@ -1572,7 +1574,7 @@ export default class MetamaskController extends EventEmitter {
         },
       },
       env: {
-        isAccountSyncingEnabled: isManifestV3,
+        isAccountSyncingEnabled: !isProduction() && isManifestV3,
       },
       messenger: this.controllerMessenger.getRestricted({
         name: 'UserStorageController',
@@ -1999,6 +2001,11 @@ export default class MetamaskController extends EventEmitter {
         ],
       }),
       trace,
+      decodingApiUrl: process.env.DECODING_API_URL,
+      isDecodeSignatureRequestEnabled: () =>
+        this.preferencesController.state.useExternalServices === true &&
+        this.preferencesController.state.useTransactionSimulations &&
+        process.env.ENABLE_SIGNATURE_DECODING === true,
     });
 
     this.signatureController.hub.on(
@@ -2026,6 +2033,9 @@ export default class MetamaskController extends EventEmitter {
         'AccountsController:listAccounts',
         'AccountsController:getSelectedAccount',
         'AccountsController:setSelectedAccount',
+        'MetaMetricsController:getState',
+        'NetworkController:getState',
+        'NetworkController:setActiveNetwork',
       ],
     });
 
@@ -2033,15 +2043,14 @@ export default class MetamaskController extends EventEmitter {
       messenger: mmiControllerMessenger,
       mmiConfigurationController: this.mmiConfigurationController,
       keyringController: this.keyringController,
-      preferencesController: this.preferencesController,
       appStateController: this.appStateController,
       transactionUpdateController: this.transactionUpdateController,
       custodyController: this.custodyController,
       getState: this.getState.bind(this),
       getPendingNonce: this.getPendingNonce.bind(this),
       accountTrackerController: this.accountTrackerController,
-      metaMetricsController: this.metaMetricsController,
       networkController: this.networkController,
+      metaMetricsController: this.metaMetricsController,
       permissionController: this.permissionController,
       signatureController: this.signatureController,
       platform: this.platform,
@@ -2125,7 +2134,11 @@ export default class MetamaskController extends EventEmitter {
 
     const bridgeControllerMessenger = this.controllerMessenger.getRestricted({
       name: BRIDGE_CONTROLLER_NAME,
-      allowedActions: ['AccountsController:getSelectedAccount'],
+      allowedActions: [
+        'AccountsController:getSelectedAccount',
+        'NetworkController:getSelectedNetworkClient',
+        'NetworkController:findNetworkClientIdByChainId',
+      ],
       allowedEvents: [],
     });
     this.bridgeController = new BridgeController({
@@ -2384,7 +2397,7 @@ export default class MetamaskController extends EventEmitter {
       TransactionController: this.txController,
       KeyringController: this.keyringController,
       PreferencesController: this.preferencesController,
-      MetaMetricsController: this.metaMetricsController.store,
+      MetaMetricsController: this.metaMetricsController,
       MetaMetricsDataDeletionController: this.metaMetricsDataDeletionController,
       AddressBookController: this.addressBookController,
       CurrencyController: this.currencyRateController,
@@ -2439,7 +2452,7 @@ export default class MetamaskController extends EventEmitter {
         NetworkController: this.networkController,
         KeyringController: this.keyringController,
         PreferencesController: this.preferencesController,
-        MetaMetricsController: this.metaMetricsController.store,
+        MetaMetricsController: this.metaMetricsController,
         MetaMetricsDataDeletionController:
           this.metaMetricsDataDeletionController,
         AddressBookController: this.addressBookController,
@@ -2593,24 +2606,12 @@ export default class MetamaskController extends EventEmitter {
     this.accountTrackerController.start();
     this.txController.startIncomingTransactionPolling();
     this.tokenDetectionController.enable();
-
-    const preferencesControllerState = this.preferencesController.state;
-
-    if (this.#isTokenListPollingRequired(preferencesControllerState)) {
-      this.tokenListController.start();
-    }
   }
 
   stopNetworkRequests() {
     this.accountTrackerController.stop();
     this.txController.stopIncomingTransactionPolling();
     this.tokenDetectionController.disable();
-
-    const preferencesControllerState = this.preferencesController.state;
-
-    if (this.#isTokenListPollingRequired(preferencesControllerState)) {
-      this.tokenListController.stop();
-    }
   }
 
   resetStates(resetMethods) {
@@ -3230,6 +3231,7 @@ export default class MetamaskController extends EventEmitter {
       currencyRateController,
       tokenDetectionController,
       ensController,
+      tokenListController,
       gasFeeController,
       metaMetricsController,
       networkController,
@@ -3484,6 +3486,10 @@ export default class MetamaskController extends EventEmitter {
       ),
       setDismissSeedBackUpReminder:
         preferencesController.setDismissSeedBackUpReminder.bind(
+          preferencesController,
+        ),
+      setOverrideContentSecurityPolicyHeader:
+        preferencesController.setOverrideContentSecurityPolicyHeader.bind(
           preferencesController,
         ),
       setAdvancedGasFee: preferencesController.setAdvancedGasFee.bind(
@@ -3935,6 +3941,10 @@ export default class MetamaskController extends EventEmitter {
           this.controllerMessenger,
           `${BRIDGE_CONTROLLER_NAME}:${BridgeBackgroundAction.SET_FEATURE_FLAGS}`,
         ),
+      [BridgeBackgroundAction.RESET_STATE]: this.controllerMessenger.call.bind(
+        this.controllerMessenger,
+        `${BRIDGE_CONTROLLER_NAME}:${BridgeBackgroundAction.RESET_STATE}`,
+      ),
       [BridgeUserAction.SELECT_SRC_NETWORK]: this.controllerMessenger.call.bind(
         this.controllerMessenger,
         `${BRIDGE_CONTROLLER_NAME}:${BridgeUserAction.SELECT_SRC_NETWORK}`,
@@ -4023,6 +4033,19 @@ export default class MetamaskController extends EventEmitter {
         tokenRatesController.stopPollingByPollingToken.bind(
           tokenRatesController,
         ),
+
+      tokenDetectionStartPolling: tokenDetectionController.startPolling.bind(
+        tokenDetectionController,
+      ),
+      tokenDetectionStopPollingByPollingToken:
+        tokenDetectionController.stopPollingByPollingToken.bind(
+          tokenDetectionController,
+        ),
+
+      tokenListStartPolling:
+        tokenListController.startPolling.bind(tokenListController),
+      tokenListStopPollingByPollingToken:
+        tokenListController.stopPollingByPollingToken.bind(tokenListController),
 
       // GasFeeController
       gasFeeStartPollingByNetworkClientId:
@@ -4387,6 +4410,7 @@ export default class MetamaskController extends EventEmitter {
       if (balance === '0x0') {
         // This account has no balance, so check for tokens
         await this.tokenDetectionController.detectTokens({
+          chainIds: [chainId],
           selectedAddress: address,
         });
 
@@ -5140,7 +5164,7 @@ export default class MetamaskController extends EventEmitter {
     securityAlertId,
     securityAlertResponse,
   ) {
-    updateSecurityAlertResponse({
+    await updateSecurityAlertResponse({
       appStateController: this.appStateController,
       method,
       securityAlertId,
@@ -5341,7 +5365,7 @@ export default class MetamaskController extends EventEmitter {
       metaMetricsId,
       dataCollectionForMarketing,
       participateInMetaMetrics,
-    } = this.metaMetricsController.store.getState();
+    } = this.metaMetricsController.state;
 
     if (
       metaMetricsId &&
@@ -5708,9 +5732,6 @@ export default class MetamaskController extends EventEmitter {
 
     engine.push(
       createRPCMethodTrackingMiddleware({
-        getMetricsState: this.metaMetricsController.store.getState.bind(
-          this.metaMetricsController.store,
-        ),
         getAccountType: this.getAccountType.bind(this),
         getDeviceModel: this.getDeviceModel.bind(this),
         isConfirmationRedesignEnabled,
@@ -6536,10 +6557,12 @@ export default class MetamaskController extends EventEmitter {
         );
       },
       getRedesignedConfirmationsEnabled: () => {
-        return this.preferencesController.getRedesignedConfirmationsEnabled;
+        return this.preferencesController.state.preferences
+          .redesignedConfirmationsEnabled;
       },
       getRedesignedTransactionsEnabled: () => {
-        return this.preferencesController.getRedesignedTransactionsEnabled;
+        return this.preferencesController.state.preferences
+          .redesignedTransactionsEnabled;
       },
       getMethodData: (data) => {
         if (!data) {
@@ -6656,6 +6679,8 @@ export default class MetamaskController extends EventEmitter {
       this.gasFeeController.stopAllPolling();
       this.currencyRateController.stopAllPolling();
       this.tokenRatesController.stopAllPolling();
+      this.tokenDetectionController.stopAllPolling();
+      this.tokenListController.stopAllPolling();
       this.appStateController.clearPollingTokens();
     } catch (error) {
       console.error(error);
@@ -7191,15 +7216,6 @@ export default class MetamaskController extends EventEmitter {
     }
 
     this.tokenListController.updatePreventPollingOnNetworkRestart(!newEnabled);
-
-    if (newEnabled) {
-      log.debug('Started token list controller polling');
-      this.tokenListController.start();
-    } else {
-      log.debug('Stopped token list controller polling');
-      this.tokenListController.clearingTokenListData();
-      this.tokenListController.stop();
-    }
   }
 
   #isTokenListPollingRequired(preferencesControllerState) {

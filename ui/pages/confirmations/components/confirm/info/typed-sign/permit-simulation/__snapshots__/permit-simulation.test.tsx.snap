@@ -1,6 +1,14 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`PermitSimulation renders component correctly 1`] = `
+exports[`PermitSimulation should not render default simulation if decodingLoading is true 1`] = `
+<div>
+  <div>
+    "DECODED SIMULATION IMPLEMENTATION"
+  </div>
+</div>
+`;
+
+exports[`PermitSimulation should render default simulation if decoding api does not return result 1`] = `
 <div>
   <div
     class="mm-box mm-box--margin-bottom-4 mm-box--padding-2 mm-box--background-color-background-default mm-box--rounded-md"
@@ -128,7 +136,7 @@ exports[`PermitSimulation renders component correctly 1`] = `
 </div>
 `;
 
-exports[`PermitSimulation renders correctly for NFT permit 1`] = `
+exports[`PermitSimulation should render default simulation if decoding api returns error 1`] = `
 <div>
   <div
     class="mm-box mm-box--margin-bottom-4 mm-box--padding-2 mm-box--background-color-background-default mm-box--rounded-md"
@@ -173,7 +181,7 @@ exports[`PermitSimulation renders correctly for NFT permit 1`] = `
           class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
           style="white-space: pre-wrap;"
         >
-          You're giving someone else permission to withdraw NFTs from your account.
+          You're giving the spender permission to spend this many tokens from your account.
         </p>
       </div>
     </div>
@@ -190,7 +198,7 @@ exports[`PermitSimulation renders correctly for NFT permit 1`] = `
           <p
             class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
           >
-            Withdraw
+            Spending cap
           </p>
         </div>
       </div>
@@ -207,14 +215,25 @@ exports[`PermitSimulation renders correctly for NFT permit 1`] = `
             <div
               class="mm-box mm-box--margin-inline-end-1 mm-box--display-inline mm-box--min-width-0"
             >
-              <div>
-                <p
-                  class="mm-box mm-text mm-text--body-md mm-text--text-align-center mm-box--padding-inline-2 mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-xl"
-                  data-testid="simulation-token-value"
-                  style="padding-top: 1px; padding-bottom: 1px;"
+              <div
+                style="min-width: 0;"
+              >
+                <div
+                  aria-describedby="tippy-tooltip-4"
+                  class=""
+                  data-original-title="30"
+                  data-tooltipped=""
+                  style="display: inline;"
+                  tabindex="0"
                 >
-                  #3606393
-                </p>
+                  <p
+                    class="mm-box mm-text mm-text--body-md mm-text--text-align-center mm-box--padding-inline-2 mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-xl"
+                    data-testid="simulation-token-value"
+                    style="padding-top: 1px; padding-bottom: 1px;"
+                  >
+                    30
+                  </p>
+                </div>
               </div>
             </div>
             <div
@@ -230,7 +249,7 @@ exports[`PermitSimulation renders correctly for NFT permit 1`] = `
                 <p
                   class="mm-box mm-text name__value mm-text--body-md mm-box--color-text-default"
                 >
-                  0xC3644...1FE88
+                  0xCcCCc...ccccC
                 </p>
               </div>
             </div>

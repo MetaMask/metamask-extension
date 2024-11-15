@@ -7,8 +7,6 @@ import {
 } from '../../../../component-library';
 import {
   BackgroundColor,
-  BorderColor,
-  BorderStyle,
   TextColor,
 } from '../../../../../helpers/constants/design-system';
 import { showImportTokensModal } from '../../../../../store/actions';
@@ -18,7 +16,6 @@ import {
   MetaMetricsEventName,
 } from '../../../../../../shared/constants/metametrics';
 import { getMultichainIsEvm } from '../../../../../selectors/multichain';
-import { useI18nContext } from '../../../../../hooks/useI18nContext';
 
 type AssetListControlBarProps = {
   showTokensLinks?: boolean;
@@ -27,7 +24,6 @@ type AssetListControlBarProps = {
 const AssetListControlBar = ({ showTokensLinks }: AssetListControlBarProps) => {
   const dispatch = useDispatch();
   const trackEvent = useContext(MetaMetricsContext);
-  const t = useI18nContext();
   const isEvm = useSelector(getMultichainIsEvm);
   // NOTE: Since we can parametrize it now, we keep the original behavior
   // for EVM assets
@@ -41,8 +37,6 @@ const AssetListControlBar = ({ showTokensLinks }: AssetListControlBarProps) => {
       size={ButtonBaseSize.Sm}
       startIconName={IconName.Add}
       backgroundColor={BackgroundColor.backgroundDefault}
-      borderColor={BorderColor.borderMuted}
-      borderStyle={BorderStyle.solid}
       color={TextColor.textDefault}
       onClick={() => {
         dispatch(showImportTokensModal());
@@ -54,9 +48,7 @@ const AssetListControlBar = ({ showTokensLinks }: AssetListControlBarProps) => {
           },
         });
       }}
-    >
-      {t('import')}
-    </ButtonBase>
+    />
   );
 };
 

@@ -74,6 +74,7 @@
         "srcTokenAddress": "0x0000000000000000000000000000000000000000"
       },
       "quotes": {},
+      "quotesRefreshCount": 0,
       "srcTokens": {},
       "srcTopAssets": {}
     }
@@ -144,8 +145,11 @@
   "MultichainBalancesController": { "balances": "object" },
   "MultichainRatesController": {
     "fiatCurrency": "usd",
-    "rates": { "btc": { "conversionDate": 0, "conversionRate": 0 } },
-    "cryptocurrencies": ["btc"]
+    "rates": {
+      "btc": { "conversionDate": 0, "conversionRate": 0 },
+      "sol": { "conversionDate": 0, "conversionRate": 0 }
+    },
+    "cryptocurrencies": ["btc", "sol"]
   },
   "NameController": { "names": "object", "nameSources": "object" },
   "NetworkController": {
@@ -198,6 +202,7 @@
     "useNonceField": false,
     "usePhishDetect": true,
     "dismissSeedBackUpReminder": true,
+    "overrideContentSecurityPolicyHeader": true,
     "useMultiAccountBalanceChecker": true,
     "useSafeChainsListValidation": "boolean",
     "useTokenDetection": true,
@@ -311,7 +316,13 @@
   },
   "TokenListController": {
     "tokenList": "object",
-    "tokensChainsCache": {},
+    "tokensChainsCache": {
+      "0x1": "object",
+      "0x539": "object",
+      "0xaa36a7": "object",
+      "0xe705": "object",
+      "0xe708": "object"
+    },
     "preventPollingOnNetworkRestart": false
   },
   "TokenRatesController": { "marketData": "object" },
