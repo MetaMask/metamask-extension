@@ -74,7 +74,6 @@ async function getCircleCiWorkflowsByBranch(branch: string): Promise<WorkflowIte
     method: 'GET',
     headers: {
       'Content-Type': 'application/json',
-      'Circle-Token': CIRCLE_TOKEN,
     }
   };
 
@@ -111,7 +110,6 @@ async function getWorkflowStatusById(workflowId: string): Promise<WorkflowStatus
     method: 'GET',
     headers: {
       'Content-Type': 'application/json',
-      'Circle-Token': CIRCLE_TOKEN,
     }
   };
 
