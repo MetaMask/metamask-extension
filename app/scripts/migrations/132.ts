@@ -49,7 +49,7 @@ const migration = {
 
    if (currentOptInStatus === undefined || currentOptInStatus === null) {
      PreferencesController.smartTransactionsOptInStatus = true;
-   } else if (currentOptInStatus === false && !hasExistingSTX(state)) {
+   } else if (currentOptInStatus === false && !hasExistingSmartTransactions(state)) {
      PreferencesController.smartTransactionsOptInStatus = true;
    }
 
@@ -57,7 +57,7 @@ const migration = {
  },
 };
 
-function hasExistingSTX(state: VersionedData['data']): boolean {
+function hasExistingSmartTransactions(state: VersionedData['data']): boolean {
  if (
    !hasProperty(state, 'SmartTransactionsController') ||
    !isObject(
@@ -72,7 +72,7 @@ function hasExistingSTX(state: VersionedData['data']): boolean {
    state.SmartTransactionsController.smartTransactionsState;
 
  return Object.values(smartTransactions).some(
-   (chainTransactions: SmartTransaction[]) => chainTransactions.length > 0,
+   (stxTransactions: SmartTransaction[]) => stxTransactions.length > 0,
  );
 }
 

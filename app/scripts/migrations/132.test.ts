@@ -4,12 +4,6 @@ import migration132, { type VersionedData } from './132';
 describe('migration #132', () => {
   const mockSmartTransaction: SmartTransaction = {
     uuid: 'test-uuid',
-    status: 'success',
-    time: Date.now(),
-    destinationTokenAddress: '0x456',
-    destinationTokenDecimals: '18',
-    destinationTokenSymbol: 'ETH',
-    sourceTokenSymbol: 'USDC',
   };
 
   it('should update the version metadata', async () => {
@@ -22,7 +16,7 @@ describe('migration #132', () => {
     expect(newStorage.meta).toStrictEqual({ version: 132 });
   });
 
-  it('should set opt-in to true when status is null', async () => {
+  it('should set stx opt-in to true when stx opt-in status is null', async () => {
     const oldStorage: VersionedData = {
       meta: { version: 131 },
       data: {
@@ -38,7 +32,7 @@ describe('migration #132', () => {
     ).toBe(true);
   });
 
-  it('should set opt-in to true when status is undefined', async () => {
+  it('should set stx opt-in to true when stx opt-in status is undefined', async () => {
     const oldStorage: VersionedData = {
       meta: { version: 131 },
       data: {
@@ -52,7 +46,7 @@ describe('migration #132', () => {
     ).toBe(true);
   });
 
-  it('should set opt-in to true when false and no existing transactions', async () => {
+  it('should set stx opt-in to true when stx opt-in is false and no existing smart transactions', async () => {
     const oldStorage: VersionedData = {
       meta: { version: 131 },
       data: {
@@ -73,7 +67,7 @@ describe('migration #132', () => {
     ).toBe(true);
   });
 
-  it('should not change opt-in when false but has existing transactions', async () => {
+  it('should not change stx opt-in when stx opt-in is false but has existing smart transactions', async () => {
     const oldStorage: VersionedData = {
       meta: { version: 131 },
       data: {
@@ -96,7 +90,7 @@ describe('migration #132', () => {
     ).toBe(false);
   });
 
-  it('should not change opt-in when already true', async () => {
+  it('should not change stx opt-in when stx opt-in is already true', async () => {
     const oldStorage: VersionedData = {
       meta: { version: 131 },
       data: {
