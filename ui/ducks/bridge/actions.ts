@@ -39,13 +39,12 @@ import {
 import { MetaMaskReduxDispatch, MetaMaskReduxState } from '../../store/store';
 import { DEFAULT_ROUTE } from '../../helpers/constants/routes';
 import { getGasFeeEstimates } from '../metamask/metamask';
-import { decGWEIToHexWEI } from '../../../shared/modules/conversion.utils';
 import { FEATURED_RPCS } from '../../../shared/constants/network';
 import { getEthUsdtResetData, isEthUsdt } from '../../pages/bridge/bridge.util';
 import { ETH_USDT_ADDRESS } from '../../../shared/constants/bridge';
-import { getTransaction1559GasFeeEstimates } from '../../pages/swaps/swaps.util';
 import { bridgeSlice } from './bridge';
 import { BridgeAppState } from './selectors';
+import { getTxGasEstimates, getHexMaxGasLimit } from './utils';
 
 const {
   setToChainId,
@@ -130,47 +129,6 @@ export const getBridgeERC20Allowance = async (
   );
 };
 
-// We don't need to use gas multipliers here because the gasLimit from Bridge API already included it
-const getHexMaxGasLimit = (gasLimit: number) => {
-  return new Numeric(
-    new BigNumber(gasLimit).toString(),
-    10,
-  ).toPrefixedHexString() as Hex;
-};
-
-const getTxGasEstimates = async ({
-  networkAndAccountSupports1559,
-  networkGasFeeEstimates,
-  txParams,
-  hexChainId,
-}: {
-  networkAndAccountSupports1559: boolean;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  networkGasFeeEstimates: any;
-  txParams: TxData;
-  hexChainId: Hex;
-}) => {
-  if (networkAndAccountSupports1559) {
-    const { estimatedBaseFeeGwei = '0' } = networkGasFeeEstimates;
-    const hexEstimatedBaseFee = decGWEIToHexWEI(estimatedBaseFeeGwei) as Hex;
-    return await getTransaction1559GasFeeEstimates(
-      {
-        ...txParams,
-        chainId: hexChainId,
-        gasLimit: txParams.gasLimit?.toString(),
-      },
-      hexEstimatedBaseFee,
-      hexChainId,
-    );
-  }
-
-  return {
-    baseAndPriorityFeePerGas: undefined,
-    maxFeePerGas: undefined,
-    maxPriorityFeePerGas: undefined,
-  };
-};
-
 export const submitBridgeTransaction = (
   quoteResponse: QuoteResponse,
   history: ReturnType<typeof useHistory>,
@@ -187,7 +145,7 @@ export const submitBridgeTransaction = (
     const handleTx = async ({
       txType,
       txParams,
-      meta,
+      swapsOptions,
     }: {
       txType: TransactionType.bridgeApproval | TransactionType.bridge;
       txParams: {
@@ -198,7 +156,10 @@ export const submitBridgeTransaction = (
         data: string;
         gasLimit: number | null;
       };
-      meta: Partial<TransactionMeta>; // all fields in meta are merged with TransactionMeta downstream
+      swapsOptions: {
+        hasApproveTx: boolean;
+        meta: Partial<TransactionMeta>;
+      };
     }) => {
       const hexChainId = new Numeric(
         txParams.chainId,
@@ -225,13 +186,7 @@ export const submitBridgeTransaction = (
       const txMeta = await addTransactionAndWaitForPublish(finalTxParams, {
         requireApproval: false,
         type: txType,
-        swaps: {
-          hasApproveTx:
-            txType === TransactionType.bridge
-              ? Boolean(quoteResponse?.approval)
-              : true,
-          meta,
-        },
+        swaps: swapsOptions,
       });
 
       await forceUpdateMetamaskState(dispatch);
@@ -268,8 +223,11 @@ export const submitBridgeTransaction = (
         await handleTx({
           txType: TransactionType.bridgeApproval,
           txParams,
-          meta: {
-            type: TransactionType.bridgeApproval,
+          swapsOptions: {
+            hasApproveTx: true,
+            meta: {
+              type: TransactionType.bridgeApproval,
+            },
           },
         });
       }
@@ -293,9 +251,12 @@ export const submitBridgeTransaction = (
       const txMeta = await handleTx({
         txType: TransactionType.bridgeApproval,
         txParams: approval,
-        meta: {
-          type: TransactionType.bridgeApproval,
-          sourceTokenSymbol: quoteResponse.quote.srcAsset.symbol,
+        swapsOptions: {
+          hasApproveTx: true,
+          meta: {
+            type: TransactionType.bridgeApproval,
+            sourceTokenSymbol: quoteResponse.quote.srcAsset.symbol,
+          },
         },
       });
 
@@ -317,17 +278,20 @@ export const submitBridgeTransaction = (
       const txMeta = await handleTx({
         txType: TransactionType.bridge,
         txParams: quoteResponse.trade,
-        meta: {
-          // estimatedBaseFee: decEstimatedBaseFee,
-          // swapMetaData,
-          type: TransactionType.bridge,
-          sourceTokenSymbol: quoteResponse.quote.srcAsset.symbol,
-          destinationTokenSymbol: quoteResponse.quote.destAsset.symbol,
-          destinationTokenDecimals: quoteResponse.quote.destAsset.decimals,
-          destinationTokenAddress: quoteResponse.quote.destAsset.address,
-          approvalTxId,
-          // this is the decimal (non atomic) amount (not USD value) of source token to swap
-          swapTokenValue: sentAmountDec,
+        swapsOptions: {
+          hasApproveTx: Boolean(quoteResponse?.approval),
+          meta: {
+            // estimatedBaseFee: decEstimatedBaseFee,
+            // swapMetaData,
+            type: TransactionType.bridge,
+            sourceTokenSymbol: quoteResponse.quote.srcAsset.symbol,
+            destinationTokenSymbol: quoteResponse.quote.destAsset.symbol,
+            destinationTokenDecimals: quoteResponse.quote.destAsset.decimals,
+            destinationTokenAddress: quoteResponse.quote.destAsset.address,
+            approvalTxId,
+            // this is the decimal (non atomic) amount (not USD value) of source token to swap
+            swapTokenValue: sentAmountDec,
+          },
         },
       });
 
