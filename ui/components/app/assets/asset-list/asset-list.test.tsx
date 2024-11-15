@@ -7,6 +7,7 @@ import { MetaMaskReduxState } from '../../../../store/store';
 import mockState from '../../../../../test/data/mock-state.json';
 import { CHAIN_IDS } from '../../../../../shared/constants/network';
 import { useIsOriginalNativeTokenSymbol } from '../../../../hooks/useIsOriginalNativeTokenSymbol';
+import useMultiPolling from '../../../../hooks/useMultiPolling';
 import { getTokenSymbol } from '../../../../store/actions';
 import { getSelectedInternalAccountFromMockState } from '../../../../../test/jest/mocks';
 import { mockNetworkState } from '../../../../../test/stub/networks';
@@ -72,6 +73,11 @@ jest.mock('../../../../store/actions', () => {
   };
 });
 
+jest.mock('../../../../hooks/useMultiPolling', () => ({
+  __esModule: true,
+  default: jest.fn(),
+}));
+
 const mockSelectedInternalAccount = getSelectedInternalAccountFromMockState(
   mockState as unknown as MetaMaskReduxState,
 );
@@ -114,6 +120,22 @@ const render = (balance = ETH_BALANCE, chainId = CHAIN_IDS.MAINNET) => {
 };
 
 describe('AssetList', () => {
+  (useMultiPolling as jest.Mock).mockClear();
+
+  // Mock implementation for useMultiPolling
+  (useMultiPolling as jest.Mock).mockImplementation(({ input }) => {
+    // Mock startPolling and stopPollingByPollingToken for each input
+    const startPolling = jest.fn().mockResolvedValue('mockPollingToken');
+    const stopPollingByPollingToken = jest.fn();
+
+    input.forEach((inputItem: string) => {
+      const key = JSON.stringify(inputItem);
+      // Simulate returning a unique token for each input
+      startPolling.mockResolvedValueOnce(`mockToken-${key}`);
+    });
+
+    return { startPolling, stopPollingByPollingToken };
+  });
   (useIsOriginalNativeTokenSymbol as jest.Mock).mockReturnValue(true);
 
   (getTokenSymbol as jest.Mock).mockImplementation(async (address) => {
