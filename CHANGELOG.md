@@ -7,7 +7,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ## [12.8.0]
-### Uncategorized
+### Fixed
 - chore: Master sync ([#28459](https://github.com/MetaMask/metamask-extension/pull/28459))
 - Merge origin/develop into master-sync
 - feat: Upgrade assets controllers to 43 with multichain polling for token lists + detection ([#28447](https://github.com/MetaMask/metamask-extension/pull/28447))
