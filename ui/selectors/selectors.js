@@ -561,40 +561,6 @@ function getNativeTokenInfo(state, chainId) {
 }
 
 /**
- * Based on the current account address, query for all tokens across all chain networks on that account.
- * This will eventually be exposed in a new piece of state called `tokenBalances`, which will including the new polling mechanism to stay up to date
- *
- * @param {object} state - Redux state
- * @returns {object} An array of tokens with balances for the given account. Data relationship will be chainId => balance
- */
-export function getSelectedAccountTokenBalancesAcrossChains(state) {
-  const selectedAddress = getSelectedInternalAccount(state).address;
-  const accountTokens = getSelectedAccountTokensAcrossChains(state);
-  const tokenBalances = getTokenBalances(state);
-
-  // TODO: read this from tokenBalances state
-  function generateRandomBalance(min = 10, max = 20) {
-    const factor = 100000; // 10^5 to get 5 decimal places
-    const randomValue = Math.random() * (max - min) + min;
-    return Math.floor(randomValue * factor) / factor;
-  }
-
-  const tokenBalancesByChain = {};
-
-  Object.keys(accountTokens).forEach((chainId) => {
-    tokenBalancesByChain[chainId] = {};
-
-    accountTokens[chainId].forEach((token) => {
-      const { address } = token;
-
-      tokenBalancesByChain[chainId][address] = generateRandomBalance();
-    });
-  });
-
-  return tokenBalances[selectedAddress];
-}
-
-/**
  *  @typedef {import('./selectors.types').InternalAccountWithBalance} InternalAccountWithBalance
  */
 
@@ -1105,6 +1071,10 @@ export function getShowTestNetworks(state) {
 export function getPetnamesEnabled(state) {
   const { petnamesEnabled = true } = getPreferences(state);
   return petnamesEnabled;
+}
+
+export function getUseTransactionSimulations(state) {
+  return Boolean(state.metamask.useTransactionSimulations);
 }
 
 export function getRedesignedConfirmationsEnabled(state) {

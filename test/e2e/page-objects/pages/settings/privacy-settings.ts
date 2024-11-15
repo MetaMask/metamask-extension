@@ -110,9 +110,11 @@ class PrivacySettings {
   /**
    * Complete reveal SRP quiz to open reveal SRP dialog.
    *
-   * @param checkErrorAnswer - Whether to check for error answers during answering the quiz.
+   * @param checkErrorAnswer - Whether to check for error answers during answering the quiz. Defaults to false.
    */
-  async completeRevealSrpQuiz(checkErrorAnswer?: boolean): Promise<void> {
+  async completeRevealSrpQuiz(
+    checkErrorAnswer: boolean = false,
+  ): Promise<void> {
     console.log('Complete reveal SRP quiz on privacy settings page');
     await this.driver.clickElement(this.revealSrpQuizGetStartedButton);
 
@@ -167,6 +169,12 @@ class PrivacySettings {
         3000,
       );
     }
+  }
+
+  async getSrpInRevealSrpDialog(): Promise<string> {
+    console.log('Get SRP in reveal SRP dialog on privacy settings page');
+    await this.driver.waitForSelector(this.displayedSrpText);
+    return (await this.driver.findElement(this.displayedSrpText)).getText();
   }
 
   async openRevealSrpQuiz(): Promise<void> {
