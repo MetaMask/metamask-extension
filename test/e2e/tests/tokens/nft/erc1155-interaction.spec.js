@@ -8,6 +8,7 @@ const {
   WINDOW_TITLES,
   defaultGanacheOptions,
   tempToggleSettingRedesignedTransactionConfirmations,
+  veryLargeDelayMs,
 } = require('../../../helpers');
 const { SMART_CONTRACTS } = require('../../../seeder/smart-contracts');
 const FixtureBuilder = require('../../../fixture-builder');
@@ -278,6 +279,9 @@ describe('ERC1155 NFTs testdapp interaction', function () {
 
         // Create a revoke approval for all erc1155 token request in test dapp
         await openDapp(driver, contract);
+
+        await driver.delay(veryLargeDelayMs);
+
         await driver.clickElement('#revokeERC1155Button');
 
         // Wait for notification popup and check the displayed message
