@@ -51,7 +51,6 @@ export const useTokensWithFiltering = (
   const shouldHideZeroBalanceTokens = useSelector(
     getShouldHideZeroBalanceTokens,
   );
-
   const {
     tokensWithBalances: erc20TokensWithBalances,
   }: { tokensWithBalances: TokenWithBalance[] } = useTokenTracker({
