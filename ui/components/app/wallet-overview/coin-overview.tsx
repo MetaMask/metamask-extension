@@ -55,8 +55,6 @@ import {
   getMetaMetricsId,
   getParticipateInMetaMetrics,
   SwapsEthToken,
-  getAllTokens,
-  getNetworkConfigurationsByChainId,
   ///: END:ONLY_INCLUDE_IF
 } from '../../../selectors';
 import Spinner from '../../ui/spinner';
@@ -71,8 +69,8 @@ import { useTheme } from '../../../hooks/useTheme';
 import { getSpecificSettingsRoute } from '../../../helpers/utils/settings-search';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { useAccountTotalCrossChainFiatBalance } from '../../../hooks/useAccountTotalCrossChainFiatBalance';
-import { useTokenTracker } from '../../../hooks/useTokenBalances';
-import { TEST_CHAINS } from '../../../../shared/constants/network';
+
+import { useGetFormattedTokensPerChain } from '../../../hooks/useGetFormattedTokensPerChain';
 import WalletOverview from './wallet-overview';
 import CoinButtons from './coin-buttons';
 import { AggregatedPercentageOverviewCrossChains } from './aggregated-percentage-overview-cross-chains';
@@ -142,31 +140,14 @@ export const CoinOverview = ({
   const shouldHideZeroBalanceTokens = useSelector(
     getShouldHideZeroBalanceTokens,
   );
-  const allNetworks = useSelector(getNetworkConfigurationsByChainId);
-  const allChainIDs = Object.entries(allNetworks)
-    .map(([chainIdElm, _]) => {
-      return chainIdElm;
-    })
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    .filter((singleChainId) => !TEST_CHAINS.includes(singleChainId as any));
 
-  const detectedTokens = useSelector(getAllTokens);
-  const dataTokensWithBalancesCrossChain = allChainIDs.map((singleChain) => {
-    const tokens = detectedTokens?.[singleChain]?.[account?.address] ?? [];
-    const { tokensWithBalances } = useTokenTracker({
-      chainId: singleChain as `0x${string}`,
-      tokens,
-      address: account.address,
-      hideZeroBalanceTokens: shouldHideZeroBalanceTokens,
-    });
-    return {
-      chainId: singleChain,
-      tokensWithBalances,
-    };
-  });
+  const { formattedTokensWithBalancesPerChain } = useGetFormattedTokensPerChain(
+    account,
+    shouldHideZeroBalanceTokens,
+  );
   const { totalFiatBalance } = useAccountTotalCrossChainFiatBalance(
     selectedAccount,
-    dataTokensWithBalancesCrossChain,
+    formattedTokensWithBalancesPerChain,
   );
 
   const { showNativeTokenAsMainBalance } = useSelector(getPreferences);

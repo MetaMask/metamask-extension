@@ -67,7 +67,11 @@ export const useTokenTracker = ({
 
 // From https://github.com/MetaMask/eth-token-tracker/blob/main/lib/util.js
 // Ensures backwards compatibility with display formatting.
-function stringifyBalance(balance: BN, bnDecimals: BN, balanceDecimals = 3) {
+export function stringifyBalance(
+  balance: BN,
+  bnDecimals: BN,
+  balanceDecimals = 3,
+) {
   if (balance.eq(new BN(0))) {
     return '0';
   }
@@ -105,5 +109,6 @@ function stringifyBalance(balance: BN, bnDecimals: BN, balanceDecimals = 3) {
     }
     return `${whole}${withOnlySigZeroes}`;
   }
+
   return `${whole}.${fractional}`;
 }

@@ -18,11 +18,12 @@ import { AggregatedPercentageOverviewCrossChains } from './aggregated-percentage
 jest.mock('react-redux', () => ({
   useSelector: jest.fn((selector) => selector()),
 }));
-const mockUseTokenTracker = jest.fn().mockReturnValue({
-  tokensWithBalances: {},
+
+const mockUseGetFormattedTokensPerChain = jest.fn().mockReturnValue({
+  formattedTokensWithBalancesPerChain: {},
 });
-jest.mock('../../../hooks/useTokenBalances', () => ({
-  useTokenTracker: () => mockUseTokenTracker(),
+jest.mock('../../../hooks/useGetFormattedTokensPerChain', () => ({
+  useGetFormattedTokensPerChain: () => mockUseGetFormattedTokensPerChain(),
 }));
 
 jest.mock('../../../ducks/locale/locale', () => ({

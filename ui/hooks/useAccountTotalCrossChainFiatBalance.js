@@ -18,7 +18,7 @@ import { getTokenFiatAmount } from '../helpers/utils/token-util';
 
 export const useAccountTotalCrossChainFiatBalance = (
   account,
-  dataTokensWithBalancesCrossChain,
+  formattedTokensWithBalancesPerChain,
 ) => {
   const allNetworks = useSelector(getNetworkConfigurationsByChainId);
 
@@ -42,7 +42,7 @@ export const useAccountTotalCrossChainFiatBalance = (
     ...crossChainContractRates, // todo add confirmation exchange rates?
   };
 
-  const tokenFiatBalancesCrossChains = dataTokensWithBalancesCrossChain.map(
+  const tokenFiatBalancesCrossChains = formattedTokensWithBalancesPerChain.map(
     (singleChainTokenBalances) => {
       const { tokensWithBalances } = singleChainTokenBalances;
       const tokenFiatBalances = tokensWithBalances.map((token) => {

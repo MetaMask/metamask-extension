@@ -8,8 +8,6 @@ import {
   getShouldHideZeroBalanceTokens,
   getPreferences,
   getMarketData,
-  getNetworkConfigurationsByChainId,
-  getAllTokens,
 } from '../../../selectors';
 
 // TODO: Remove restricted import
@@ -24,8 +22,7 @@ import {
 import { Box, SensitiveText } from '../../component-library';
 import { getCalculatedTokenAmount1dAgo } from '../../../helpers/utils/util';
 import { useAccountTotalCrossChainFiatBalance } from '../../../hooks/useAccountTotalCrossChainFiatBalance';
-import { TEST_CHAINS } from '../../../../shared/constants/network';
-import { useTokenTracker } from '../../../hooks/useTokenBalances';
+import { useGetFormattedTokensPerChain } from '../../../hooks/useGetFormattedTokensPerChain';
 
 export const AggregatedPercentageOverviewCrossChains = () => {
   const locale = useSelector(getIntlLocale);
@@ -37,35 +34,16 @@ export const AggregatedPercentageOverviewCrossChains = () => {
   );
   const crossChainMarketData = useSelector(getMarketData);
 
-  const allNetworks = useSelector(getNetworkConfigurationsByChainId);
-  const allChainIDs = Object.entries(allNetworks)
-    .map(([chainIdElm, _]) => {
-      return chainIdElm;
-    })
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    .filter((singleChainId) => !TEST_CHAINS.includes(singleChainId as any));
-
-  const detectedTokens = useSelector(getAllTokens);
-  const dataTokensWithBalancesCrossChain = allChainIDs.map((singleChain) => {
-    const tokens =
-      detectedTokens?.[singleChain]?.[selectedAccount?.address] ?? [];
-    const { tokensWithBalances } = useTokenTracker({
-      chainId: singleChain as `0x${string}`,
-      tokens,
-      address: selectedAccount.address,
-      hideZeroBalanceTokens: shouldHideZeroBalanceTokens,
-    });
-    return {
-      chainId: singleChain,
-      tokensWithBalances,
-    };
-  });
+  const { formattedTokensWithBalancesPerChain } = useGetFormattedTokensPerChain(
+    selectedAccount,
+    shouldHideZeroBalanceTokens,
+  );
   const {
     totalFiatBalance: totalFiatCrossChains,
     tokenFiatBalancesCrossChains,
   } = useAccountTotalCrossChainFiatBalance(
     selectedAccount,
-    dataTokensWithBalancesCrossChain,
+    formattedTokensWithBalancesPerChain,
   );
 
   const getPerChainTotalFiat1dAgo = (
