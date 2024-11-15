@@ -6,6 +6,100 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [12.7.1]
+### Uncategorized
+- Version v12.7.0 RC ([#28235](https://github.com/MetaMask/metamask-extension/pull/28235))
+- chore:  V12.7.0 changelog ([#28458](https://github.com/MetaMask/metamask-extension/pull/28458))
+- chore: Merge master (as of v12.6.1) into v12.7.0 ([#28468](https://github.com/MetaMask/metamask-extension/pull/28468))
+- Fixed lint
+- Merge remote-tracking branch 'origin/master' into resolve-conflicts-v12.7.0-master
+- fix (cherry-pick): add simulation metrics when simulation UI is not visible (#28427) ([#28427](https://github.com/MetaMask/metamask-extension/pull/28427))
+- fix: ui customizations for redesigned transactions (#28443) ([#28443](https://github.com/MetaMask/metamask-extension/pull/28443))
+- fix: fix network client ID used on the useGasFeeInputs hook (#28391) ([#28391](https://github.com/MetaMask/metamask-extension/pull/28391))
+- fix (cherry-pick): get `supportedChains` to avoid blocking the confirmation process ([#28422](https://github.com/MetaMask/metamask-extension/pull/28422))
+- fix(snaps): Patch `@metamask/snaps-utils` ([#28377](https://github.com/MetaMask/metamask-extension/pull/28377))
+- fix: cherry-pick: Return to send page with different asset types ([#28384](https://github.com/MetaMask/metamask-extension/pull/28384))
+- cherry-pick: bump `@metamask/queued-request-controller` with patch fix (#28355) ([#28355](https://github.com/MetaMask/metamask-extension/pull/28355))
+- fix: Bug 28347 - Privacy mode tweaks (#28367) ([#28367](https://github.com/MetaMask/metamask-extension/pull/28367))
+- fix (Cherrypick v12.7.0 ): disable account syncing ([#28361](https://github.com/MetaMask/metamask-extension/pull/28361))
+- Cherrypick v12.7.0 feat: Add simulation metrics to "Transaction Submitted" and "Transaction Finalized" events  ([#28314](https://github.com/MetaMask/metamask-extension/pull/28314))
+- Cherrypick v12.7.0 feat: Enable simulation metrics for redesign transactions ([#28324](https://github.com/MetaMask/metamask-extension/pull/28324))
+- cherry pick: chore: add the gas_included prop into Quotes Received event ([#28351](https://github.com/MetaMask/metamask-extension/pull/28351))
+- cherry pick: fix: smart transactions in redesigned confirmations ([#28353](https://github.com/MetaMask/metamask-extension/pull/28353))
+- chore: Modify changelog title to fix ci job  ([#28237](https://github.com/MetaMask/metamask-extension/pull/28237))
+- Version v12.7.0
+- chore: Master sync ([#28222](https://github.com/MetaMask/metamask-extension/pull/28222))
+- Merge origin/develop into master-sync
+- refactor: move `getSelectedInternalAccount` from `selectors.js` to `accounts.ts` ([#27644](https://github.com/MetaMask/metamask-extension/pull/27644))
+- feat: Improve provider method metrics for add/switch chain ([#28214](https://github.com/MetaMask/metamask-extension/pull/28214))
+- fix: Fix left-aligned fullscreen UI ([#28218](https://github.com/MetaMask/metamask-extension/pull/28218))
+- test: add ui render for debug ui integration tests ([#27621](https://github.com/MetaMask/metamask-extension/pull/27621))
+- feat: poll native currency prices across chains ([#28196](https://github.com/MetaMask/metamask-extension/pull/28196))
+- test: Fix data deletion e2e tests ([#28221](https://github.com/MetaMask/metamask-extension/pull/28221))
+- chore: Add a new transaction event prop ([#28153](https://github.com/MetaMask/metamask-extension/pull/28153))
+- feat: Copy updates to satisfy UK regulation requirements ([#28157](https://github.com/MetaMask/metamask-extension/pull/28157))
+- fix: flaky test `BTC Account - Overview has balance` ([#28181](https://github.com/MetaMask/metamask-extension/pull/28181))
+- chore: poll for bridge quotes ([#28029](https://github.com/MetaMask/metamask-extension/pull/28029))
+- chore: update confirmations code ownership ([#27862](https://github.com/MetaMask/metamask-extension/pull/27862))
+- feat(snaps): Add `useDisplayName` hook ([#27868](https://github.com/MetaMask/metamask-extension/pull/27868))
+- chore: upgrade signature controller to remove global network ([#28063](https://github.com/MetaMask/metamask-extension/pull/28063))
+- chore: update bridge quote request on input change ([#28028](https://github.com/MetaMask/metamask-extension/pull/28028))
+- chore: bump asset controllers to 39 + polling API ([#28025](https://github.com/MetaMask/metamask-extension/pull/28025))
+- fix: incorrect standard swap gas fee estimation ([#28127](https://github.com/MetaMask/metamask-extension/pull/28127))
+- feat: Capture 3 existing properties within non-anonymous transaction … ([#28144](https://github.com/MetaMask/metamask-extension/pull/28144))
+- refactor: remove global network usage from transaction simulation ([#27895](https://github.com/MetaMask/metamask-extension/pull/27895))
+- test(ramps): fixes btc native token test ([#27601](https://github.com/MetaMask/metamask-extension/pull/27601))
+- refactor: clean up profile sync hooks ([#28132](https://github.com/MetaMask/metamask-extension/pull/28132))
+- chore: ignore warning for ethereumjs-wallet ([#28145](https://github.com/MetaMask/metamask-extension/pull/28145))
+- test: [Snaps E2E] Unified methods and clean up snaps e2e tests ([#27684](https://github.com/MetaMask/metamask-extension/pull/27684))
+- chore: update @metamask/bitcoin-wallet-snap to 0.8.2 ([#28135](https://github.com/MetaMask/metamask-extension/pull/28135))
+- chore: small storybook and docs updates to SensitiveText component ([#28089](https://github.com/MetaMask/metamask-extension/pull/28089))
+- chore: bridge-api fetchBridgeQuotes util ([#28027](https://github.com/MetaMask/metamask-extension/pull/28027))
+- feat: update phishing controller version ([#28131](https://github.com/MetaMask/metamask-extension/pull/28131))
+- fix: broken not existing type file import ([#28055](https://github.com/MetaMask/metamask-extension/pull/28055))
+- test: blockaid update version and reenable specs ([#28121](https://github.com/MetaMask/metamask-extension/pull/28121))
+- test: [POM] Migrate onboarding infura call privacy e2e tests  ([#28079](https://github.com/MetaMask/metamask-extension/pull/28079))
+- feat: share the same user storage mock instance in tests ([#28119](https://github.com/MetaMask/metamask-extension/pull/28119))
+- chore: Using button icon component for clikable icons ([#28082](https://github.com/MetaMask/metamask-extension/pull/28082))
+- feat: convert MetaMetricsController to typescript ([#28072](https://github.com/MetaMask/metamask-extension/pull/28072))
+- feat: improved way to trigger mmi e2e tests ([#27932](https://github.com/MetaMask/metamask-extension/pull/27932))
+- test: allow more simple findElement by data-testid ([#28065](https://github.com/MetaMask/metamask-extension/pull/28065))
+- fix: json-rpc-middleware-stream@^5 -> @metamask/json-rpc-middleware-stream@^8 ([#28060](https://github.com/MetaMask/metamask-extension/pull/28060))
+- fix(devDeps): babel@7.23.2->7.25.9 ([#28068](https://github.com/MetaMask/metamask-extension/pull/28068))
+- feat: better storybook stories for the notification pages ([#27861](https://github.com/MetaMask/metamask-extension/pull/27861))
+- fix: update storybook to support NFT images ([#28105](https://github.com/MetaMask/metamask-extension/pull/28105))
+- fix: broken test `Vault Decryptor Page is able to decrypt the vault uploading the log file in the vault-decryptor webapp` ([#28098](https://github.com/MetaMask/metamask-extension/pull/28098))
+- test: Complete missing step for add a contact to the address book in existing E2E test ([#27959](https://github.com/MetaMask/metamask-extension/pull/27959))
+- feat(3419): sensitive text component ([#28056](https://github.com/MetaMask/metamask-extension/pull/28056))
+- test: Added e2e for switch network ([#27967](https://github.com/MetaMask/metamask-extension/pull/27967))
+- fix: c2 bypass ([#28057](https://github.com/MetaMask/metamask-extension/pull/28057))
+- test: NOTIFY-1256 - Extending E2E tests for Account Sync ([#28067](https://github.com/MetaMask/metamask-extension/pull/28067))
+- test: notifications integration tests ([#28022](https://github.com/MetaMask/metamask-extension/pull/28022))
+- chore: update stories for name component ([#28049](https://github.com/MetaMask/metamask-extension/pull/28049))
+- fix: flaky anti-pattern getText + assert 3 ([#28062](https://github.com/MetaMask/metamask-extension/pull/28062))
+- test: [POM] Create onboarding related page object modal base pages and migrate e2e tests  ([#28036](https://github.com/MetaMask/metamask-extension/pull/28036))
+- docs: update debugging sentry step 3 ([#28034](https://github.com/MetaMask/metamask-extension/pull/28034))
+- fix: Support dynamic native token name on gas component ([#28048](https://github.com/MetaMask/metamask-extension/pull/28048))
+- fix: Fall back to token list for the token symbol ([#28003](https://github.com/MetaMask/metamask-extension/pull/28003))
+- fix: flaky anti-pattern getText + assert 2 ([#28043](https://github.com/MetaMask/metamask-extension/pull/28043))
+- fix(deps): @metamask/eth-json-rpc-filters@^8.0.0->^9.0.0 ([#27956](https://github.com/MetaMask/metamask-extension/pull/27956))
+- chore: Bump gridplus-sdk to 2.7.1 ([#28008](https://github.com/MetaMask/metamask-extension/pull/28008))
+- fix(deps): @keystonehq/metamask-airgapped-keyring@^0.13.1->^0.14.1 ([#27952](https://github.com/MetaMask/metamask-extension/pull/27952))
+- refactor: use `reselect`'s `createSelector` instead of going through `@redux/toolkit`, as the import names collide when trying to merge files. ([#27643](https://github.com/MetaMask/metamask-extension/pull/27643))
+- fix: storybook `getManifest` issue ([#28010](https://github.com/MetaMask/metamask-extension/pull/28010))
+- feat: bump @metamask/notification-services-controller from 0.7.0 to 0.11.0 ([#28017](https://github.com/MetaMask/metamask-extension/pull/28017))
+- refactor: remove global network usage from petnames ([#27946](https://github.com/MetaMask/metamask-extension/pull/27946))
+- chore: updated package ([#28002](https://github.com/MetaMask/metamask-extension/pull/28002))
+- feat(NOTIFY-1245): add account syncing E2E helpers & basic tests ([#28005](https://github.com/MetaMask/metamask-extension/pull/28005))
+- fix: Fix stream re-initialization ([#28024](https://github.com/MetaMask/metamask-extension/pull/28024))
+- refactor: routes.component.js and creation of ToastMaster ([#27735](https://github.com/MetaMask/metamask-extension/pull/27735))
+- fix: @metamask/eth-json-rpc-filters@^7.0.0->^8.0.0 ([#27917](https://github.com/MetaMask/metamask-extension/pull/27917))
+- refactor: remove relative imports to `selectors/index.js` from other selectors files ([#27642](https://github.com/MetaMask/metamask-extension/pull/27642))
+- refactor: remove circular dependency between `ui/ducks/custom-gas.js` and `ui/selectors/index.js` ([#27640](https://github.com/MetaMask/metamask-extension/pull/27640))
+- test: update notification date tests to be timezone agnostic ([#27925](https://github.com/MetaMask/metamask-extension/pull/27925))
+- fix: updated event name for site cell component ([#27981](https://github.com/MetaMask/metamask-extension/pull/27981))
+- fix(deps): gridplus-sdk@2.5.1->~2.6.0 ([#27973](https://github.com/MetaMask/metamask-extension/pull/27973))
+
 ## [12.7.0]
 ### Added
 - Added Token Network Filter UI, allowing users to filter tokens by network (behind a feature flag) ([#27884](https://github.com/MetaMask/metamask-extension/pull/27884))
@@ -5343,7 +5437,8 @@ Update styles and spacing on the critical error page  ([#20350](https://github.c
 - Added the ability to restore accounts from seed words.
 
 
-[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v12.7.0...HEAD
+[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v12.7.1...HEAD
+[12.7.1]: https://github.com/MetaMask/metamask-extension/compare/v12.7.0...v12.7.1
 [12.7.0]: https://github.com/MetaMask/metamask-extension/compare/v12.6.1...v12.7.0
 [12.6.1]: https://github.com/MetaMask/metamask-extension/compare/v12.6.0...v12.6.1
 [12.6.0]: https://github.com/MetaMask/metamask-extension/compare/v12.5.1...v12.6.0
