@@ -62,7 +62,7 @@ export default class EditContact extends PureComponent {
 
     const { addressBook, internalAccounts } = this.props;
 
-    return isDuplicateContact(addressBook, internalAccounts, newName);
+    return !isDuplicateContact(addressBook, internalAccounts, newName);
   };
 
   handleNameChange = (e) => {

@@ -1,6 +1,31 @@
 import { AddressBookEntry } from '@metamask/address-book-controller';
 import { InternalAccount } from '@metamask/keyring-api';
 
+export const buildDuplicateContactMap = (
+  addressBook: AddressBookEntry[],
+  internalAccounts: InternalAccount[],
+) => {
+  const contactMap = new Map<string, string[]>(
+    internalAccounts.map((account) => [
+      account.metadata.name.trim().toLowerCase(),
+      [`account-id-${account.id}`],
+    ]),
+  );
+
+  addressBook.forEach((entry) => {
+    const { name, address } = entry;
+
+    const sanitizedName = name.trim().toLowerCase();
+
+    const currentArray = contactMap.get(sanitizedName) ?? [];
+    currentArray.push(address);
+
+    contactMap.set(sanitizedName, currentArray);
+  });
+
+  return contactMap;
+};
+
 export const hasDuplicateContacts = (
   addressBook: AddressBookEntry[],
   internalAccounts: InternalAccount[],
@@ -32,5 +57,5 @@ export const isDuplicateContact = (
       metadata.name.toLowerCase().trim() === newName.toLowerCase().trim(),
   );
 
-  return !nameExistsInAddressBook && !nameExistsInAccountList;
+  return nameExistsInAddressBook || nameExistsInAccountList;
 };

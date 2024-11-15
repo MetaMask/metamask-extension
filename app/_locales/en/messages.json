@@ -1727,6 +1727,9 @@
   "dropped": {
     "message": "Dropped"
   },
+  "duplicateContactTooltip": {
+    "message": "This contact name collides with an existing account or contact"
+  },
   "duplicateContactWarning": {
     "message": "You have duplicate contacts"
   },

@@ -4,7 +4,7 @@ import { sortBy } from 'lodash';
 import Button from '../../ui/button';
 import { BannerAlert, BannerAlertSeverity } from '../../component-library';
 import RecipientGroup from './recipient-group/recipient-group.component';
-import { hasDuplicateContacts } from './utils';
+import { hasDuplicateContacts, buildDuplicateContactMap } from './utils';
 
 export default class ContactList extends PureComponent {
   static propTypes = {
@@ -62,15 +62,40 @@ export default class ContactList extends PureComponent {
   }
 
   renderAddressBook() {
-    const unsortedContactsByLetter = this.props
-      .searchForContacts()
-      .reduce((obj, contact) => {
+    const {
+      addressBook,
+      internalAccounts,
+      searchForContacts,
+      selectRecipient,
+      selectedAddress,
+    } = this.props;
+
+    const duplicateContactMap = buildDuplicateContactMap(
+      addressBook,
+      internalAccounts,
+    );
+
+    const unsortedContactsByLetter = searchForContacts().reduce(
+      (obj, contact) => {
         const firstLetter = contact.name[0].toUpperCase();
+
+        const isDuplicate =
+          (duplicateContactMap.get(contact.name.trim().toLowerCase()) ?? [])
+            .length > 1;
+
         return {
           ...obj,
-          [firstLetter]: [...(obj[firstLetter] || []), contact],
+          [firstLetter]: [
+            ...(obj[firstLetter] || []),
+            {
+              ...contact,
+              isDuplicate,
+            },
+          ],
         };
-      }, {});
+      },
+      {},
+    );
 
     const letters = Object.keys(unsortedContactsByLetter).sort();
 
@@ -88,8 +113,8 @@ export default class ContactList extends PureComponent {
         key={`${letter}-contact-group`}
         label={letter}
         items={groupItems}
-        onSelect={this.props.selectRecipient}
-        selectedAddress={this.props.selectedAddress}
+        onSelect={selectRecipient}
+        selectedAddress={selectedAddress}
       />
     ));
   }

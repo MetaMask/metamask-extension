@@ -106,7 +106,7 @@ export default class AddContact extends PureComponent {
 
   validateName = (newName) => {
     const { addressBook, internalAccounts } = this.props;
-    return isDuplicateContact(addressBook, internalAccounts, newName);
+    return !isDuplicateContact(addressBook, internalAccounts, newName);
   };
 
   handleNameChange = (newName) => {
