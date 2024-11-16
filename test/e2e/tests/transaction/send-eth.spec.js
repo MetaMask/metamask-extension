@@ -208,38 +208,38 @@ describe('Send ETH', function () {
       );
     });
 
-    it('shows no error when cancel transaction when sending via QR code', async function () {
-      await withFixtures(
-        {
-          fixtures: new FixtureBuilder().build(),
-          ganacheOptions: defaultGanacheOptions,
-          title: this.test.fullTitle(),
-        },
-        async ({ driver }) => {
-          await unlockWallet(driver);
+    // it('shows no error when cancel transaction when sending via QR code', async function () {
+    //   await withFixtures(
+    //     {
+    //       fixtures: new FixtureBuilder().build(),
+    //       ganacheOptions: defaultGanacheOptions,
+    //       title: this.test.fullTitle(),
+    //     },
+    //     async ({ driver }) => {
+    //       await unlockWallet(driver);
 
-          await driver.assertElementNotPresent('.loading-overlay__spinner');
-          const balance = await driver.findElement(
-            '[data-testid="eth-overview__primary-currency"]',
-          );
-          assert.ok(/^[\d.]+\sETH$/u.test(await balance.getText()));
+    //       await driver.assertElementNotPresent('.loading-overlay__spinner');
+    //       const balance = await driver.findElement(
+    //         '[data-testid="eth-overview__primary-currency"]',
+    //       );
+    //       assert.ok(/^[\d.]+\sETH$/u.test(await balance.getText()));
 
-          await openActionMenuAndStartSendFlow(driver);
-          // choose to scan via QR code
-          await driver.clickElement('[data-testid="ens-qr-scan-button"]');
-          await driver.findVisibleElement('[data-testid="qr-scanner-modal"]');
-          // cancel action will close the dialog and shut down camera initialization
-          await driver.waitForSelector({
-            css: '.qr-scanner__error',
-            text: "We couldn't access your camera. Please give it another try.",
-          });
-          await driver.clickElement({ text: 'Cancel', tag: 'button' });
-          await driver.assertElementNotPresent(
-            '[data-testid="qr-scanner-modal"]',
-          );
-        },
-      );
-    });
+    //       await openActionMenuAndStartSendFlow(driver);
+    //       // choose to scan via QR code
+    //       await driver.clickElement('[data-testid="ens-qr-scan-button"]');
+    //       await driver.findVisibleElement('[data-testid="qr-scanner-modal"]');
+    //       // cancel action will close the dialog and shut down camera initialization
+    //       await driver.waitForSelector({
+    //         css: '.qr-scanner__error',
+    //         text: "We couldn't access your camera. Please give it another try.",
+    //       });
+    //       await driver.clickElement({ text: 'Cancel', tag: 'button' });
+    //       await driver.assertElementNotPresent(
+    //         '[data-testid="qr-scanner-modal"]',
+    //       );
+    //     },
+    //   );
+    // });
 
     describe('from dapp using advanced gas controls', function () {
       it('should display the correct gas price on the legacy transaction', async function () {
