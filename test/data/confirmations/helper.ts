@@ -133,7 +133,6 @@ export const getMockConfirmState = (args: RootState = { metamask: {} }) => ({
     ...args.metamask,
     preferences: {
       ...mockState.metamask.preferences,
-      ...(args.metamask?.preferences as Record<string, unknown>),
       redesignedTransactionsEnabled: true,
       redesignedConfirmationsEnabled: true,
       isRedesignedConfirmationsDeveloperEnabled: true,

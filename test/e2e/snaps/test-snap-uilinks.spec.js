@@ -2,6 +2,7 @@ const {
   defaultGanacheOptions,
   withFixtures,
   unlockWallet,
+  switchToNotificationWindow,
   WINDOW_TITLES,
 } = require('../helpers');
 const FixtureBuilder = require('../fixture-builder');
@@ -19,49 +20,31 @@ describe('Test Snap UI Links', function () {
       async ({ driver }) => {
         await unlockWallet(driver);
 
-        // navigate to test snaps page
+        // navigate to test snaps page and connect to dialog snap
         await driver.openNewPage(TEST_SNAPS_WEBSITE_URL);
-
-        // wait for page to load
-        await driver.waitForSelector({
-          text: 'Installed Snaps',
-          tag: 'h2',
-        });
-
-        // scroll to dialogs snap
+        await driver.delay(1000);
         const dialogButton = await driver.findElement('#connectdialogs');
         await driver.scrollToElement(dialogButton);
-
-        // added delay for firefox (deflake)
-        await driver.delayFirefox(1000);
-
-        // wait for and click connect
-        await driver.waitForSelector('#connectdialogs');
+        await driver.delay(1000);
         await driver.clickElement('#connectdialogs');
 
-        // switch to metamask extension
-        await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
-
-        // wait for and click connect
-        await driver.waitForSelector({
-          text: 'Connect',
-          tag: 'button',
-        });
+        // switch to metamask extension and click connect
+        await switchToNotificationWindow(driver);
         await driver.clickElement({
           text: 'Connect',
           tag: 'button',
         });
 
-        // wait for and click confirm
         await driver.waitForSelector({ text: 'Confirm' });
+
         await driver.clickElement({
           text: 'Confirm',
           tag: 'button',
         });
 
-        // wait for and click ok and wait for window to close
         await driver.waitForSelector({ text: 'OK' });
-        await driver.clickElementAndWaitForWindowToClose({
+
+        await driver.clickElement({
           text: 'OK',
           tag: 'button',
         });
@@ -77,14 +60,10 @@ describe('Test Snap UI Links', function () {
 
         // click conf button
         await driver.clickElement('#sendConfirmationButton');
-
-        // delay added for rendering (deflake)
         await driver.delay(500);
 
         // switch to dialog popup
-        await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
-
-        // delay added for rendering (deflake)
+        await switchToNotificationWindow(driver);
         await driver.delay(500);
 
         // wait for link to appear and click it
@@ -123,7 +102,7 @@ describe('Test Snap UI Links', function () {
         });
 
         // switch back to metamask window
-        await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
+        await switchToNotificationWindow(driver, 4);
 
         // wait for and click approve button
         await driver.waitForSelector({

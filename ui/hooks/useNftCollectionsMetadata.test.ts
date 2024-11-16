@@ -1,5 +1,6 @@
 import { renderHook } from '@testing-library/react-hooks';
 import { TokenStandard } from '../../shared/constants/transaction';
+import { getCurrentChainId } from '../selectors';
 import {
   getNFTContractInfo,
   getTokenStandardAndDetails,
@@ -41,6 +42,7 @@ const ERC_721_COLLECTION_2_MOCK = {
 };
 
 describe('useNftCollectionsMetadata', () => {
+  const mockGetCurrentChainId = jest.mocked(getCurrentChainId);
   const mockGetNFTContractInfo = jest.mocked(getNFTContractInfo);
   const mockGetTokenStandardAndDetails = jest.mocked(
     getTokenStandardAndDetails,
@@ -48,6 +50,7 @@ describe('useNftCollectionsMetadata', () => {
 
   beforeEach(() => {
     jest.resetAllMocks();
+    mockGetCurrentChainId.mockReturnValue(CHAIN_ID_MOCK);
     mockGetNFTContractInfo.mockResolvedValue({
       collections: [ERC_721_COLLECTION_1_MOCK, ERC_721_COLLECTION_2_MOCK],
     });
@@ -64,12 +67,10 @@ describe('useNftCollectionsMetadata', () => {
     const { result, waitForNextUpdate } = renderHook(() =>
       useNftCollectionsMetadata([
         {
-          chainId: CHAIN_ID_MOCK,
-          contractAddress: ERC_721_ADDRESS_1,
+          value: ERC_721_ADDRESS_1,
         },
         {
-          chainId: CHAIN_ID_MOCK,
-          contractAddress: ERC_721_ADDRESS_2,
+          value: ERC_721_ADDRESS_2,
         },
       ]),
     );
@@ -78,10 +79,8 @@ describe('useNftCollectionsMetadata', () => {
 
     expect(mockGetNFTContractInfo).toHaveBeenCalledTimes(1);
     expect(result.current).toStrictEqual({
-      [CHAIN_ID_MOCK]: {
-        [ERC_721_ADDRESS_1.toLowerCase()]: ERC_721_COLLECTION_1_MOCK,
-        [ERC_721_ADDRESS_2.toLowerCase()]: ERC_721_COLLECTION_2_MOCK,
-      },
+      [ERC_721_ADDRESS_1.toLowerCase()]: ERC_721_COLLECTION_1_MOCK,
+      [ERC_721_ADDRESS_2.toLowerCase()]: ERC_721_COLLECTION_2_MOCK,
     });
   });
 
@@ -100,8 +99,7 @@ describe('useNftCollectionsMetadata', () => {
       renderHook(() =>
         useNftCollectionsMetadata([
           {
-            chainId: CHAIN_ID_MOCK,
-            contractAddress: '0xERC20Address',
+            value: '0xERC20Address',
           },
         ]),
       );
@@ -116,8 +114,7 @@ describe('useNftCollectionsMetadata', () => {
       renderHook(() =>
         useNftCollectionsMetadata([
           {
-            chainId: CHAIN_ID_MOCK,
-            contractAddress: '0xERC20Address',
+            value: '0xERC20Address',
           },
         ]),
       );
@@ -129,12 +126,10 @@ describe('useNftCollectionsMetadata', () => {
     const { waitForNextUpdate, rerender } = renderHook(() =>
       useNftCollectionsMetadata([
         {
-          chainId: CHAIN_ID_MOCK,
-          contractAddress: ERC_721_ADDRESS_1,
+          value: ERC_721_ADDRESS_1,
         },
         {
-          chainId: CHAIN_ID_MOCK,
-          contractAddress: ERC_721_ADDRESS_2,
+          value: ERC_721_ADDRESS_2,
         },
       ]),
     );

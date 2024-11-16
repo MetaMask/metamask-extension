@@ -135,7 +135,7 @@ const useCombinedNotifications = () => {
   return combinedNotifications;
 };
 
-export const filterNotifications = (
+const filterNotifications = (
   activeTab: TAB_KEYS,
   notifications: NotificationType[],
 ) => {
@@ -206,7 +206,7 @@ export default function Notifications() {
       >
         {t('notifications')}
       </Header>
-      <Content padding={0}>
+      <Content paddingLeft={0} paddingRight={0} paddingTop={0}>
         {hasNotifySnaps && (
           <Tabs
             defaultActiveTabKey={activeTab}
@@ -246,7 +246,6 @@ export default function Notifications() {
             />
           </Tabs>
         )}
-
         <NotificationsList
           activeTab={activeTab}
           notifications={filteredNotifications}

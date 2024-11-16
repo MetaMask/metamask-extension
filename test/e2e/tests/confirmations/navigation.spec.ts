@@ -66,15 +66,10 @@ describe('Navigation Signature - Different signature types', function (this: Sui
           '[data-testid="confirm-nav__next-confirmation"]',
         );
 
-        // Verify simple send transaction is displayed
-        await driver.waitForSelector({
-          tag: 'h3',
-          text: 'Transfer request',
-        });
+        // Verify Transaction Sending ETH is displayed
+        await verifyTransaction(driver, 'Sending ETH');
 
-        await driver.clickElement(
-          '[data-testid="confirm-nav__next-confirmation"]',
-        );
+        await driver.clickElement('[data-testid="next-page"]');
 
         // Verify Sign Typed Data v3 confirmation is displayed
         await verifySignedTypeV3Confirmation(driver);
@@ -83,15 +78,10 @@ describe('Navigation Signature - Different signature types', function (this: Sui
           '[data-testid="confirm-nav__previous-confirmation"]',
         );
 
-        // Verify simple send transaction is displayed
-        await driver.waitForSelector({
-          tag: 'h3',
-          text: 'Transfer request',
-        });
+        // Verify Sign Typed Data v3 confirmation is displayed
+        await verifyTransaction(driver, 'Sending ETH');
 
-        await driver.clickElement(
-          '[data-testid="confirm-nav__previous-confirmation"]',
-        );
+        await driver.clickElement('[data-testid="previous-page"]');
 
         // Verify Sign Typed Data v3 confirmation is displayed
         await verifySignTypedData(driver);
@@ -188,4 +178,14 @@ async function queueSignaturesAndTransactions(driver: Driver) {
   await driver.clickElement('#signTypedDataV3');
   await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
   await driver.waitForSelector(By.xpath("//div[normalize-space(.)='1 of 3']"));
+}
+
+async function verifyTransaction(
+  driver: Driver,
+  expectedTransactionType: string,
+) {
+  await driver.waitForSelector({
+    tag: 'span',
+    text: expectedTransactionType,
+  });
 }

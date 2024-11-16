@@ -97,6 +97,12 @@ import {
 } from '../../shared/modules/conversion.utils';
 import { BackgroundColor } from '../helpers/constants/design-system';
 import { NOTIFICATION_DROP_LEDGER_FIREFOX } from '../../shared/notifications';
+import {
+  SURVEY_DATE,
+  SURVEY_END_TIME,
+  SURVEY_START_TIME,
+} from '../helpers/constants/survey';
+import { PRIVACY_POLICY_DATE } from '../helpers/constants/privacy-policy';
 import { ENVIRONMENT_TYPE_POPUP } from '../../shared/constants/app';
 import { MultichainNativeAssets } from '../../shared/constants/multichain/assets';
 // TODO: Remove restricted import
@@ -117,7 +123,6 @@ import {
   getOrderedConnectedAccountsForConnectedDapp,
   getSubjectMetadata,
 } from './permissions';
-import { getSelectedInternalAccount } from './accounts';
 import { createDeepEqualSelector } from './util';
 import { getMultichainBalances, getMultichainNetwork } from './multichain';
 
@@ -352,6 +357,11 @@ export function getMaybeSelectedInternalAccount(state) {
   return accountId
     ? state.metamask.internalAccounts?.accounts[accountId]
     : undefined;
+}
+
+export function getSelectedInternalAccount(state) {
+  const accountId = state.metamask.internalAccounts.selectedAccount;
+  return state.metamask.internalAccounts.accounts[accountId];
 }
 
 export function checkIfMethodIsEnabled(state, methodName) {
@@ -691,6 +701,16 @@ export function getGasIsLoading(state) {
   return state.appState.gasIsLoading;
 }
 
+/**
+ * Retrieves user preference to never see the "Switched Network" toast
+ *
+ * @param state - Redux state object.
+ * @returns Boolean preference value
+ */
+export function getNeverShowSwitchedNetworkMessage(state) {
+  return state.metamask.switchedNetworkNeverShowMessage;
+}
+
 export const getNetworkConfigurationsByChainId = createDeepEqualSelector(
   (state) => state.metamask.networkConfigurationsByChainId,
   /**
@@ -719,16 +739,6 @@ export function getRequestingNetworkInfo(state, chainIds) {
       flattenedChainIds.includes(network.chainId),
   );
 }
-
-/**
- * @type (state: any, chainId: string) => import('@metamask/network-controller').NetworkConfiguration
- */
-export const selectNetworkConfigurationByChainId = createSelector(
-  getNetworkConfigurationsByChainId,
-  (_state, chainId) => chainId,
-  (networkConfigurationsByChainId, chainId) =>
-    networkConfigurationsByChainId[chainId],
-);
 
 /**
  * Provides information about the last network change if present
@@ -765,6 +775,10 @@ export function getAppIsLoading(state) {
 
 export function getNftIsStillFetchingIndication(state) {
   return state.appState.isNftStillFetchingIndication;
+}
+
+export function getNftDetectionEnablementToast(state) {
+  return state.appState.showNftDetectionEnablementToast;
 }
 
 export function getCurrentCurrency(state) {
@@ -1368,14 +1382,9 @@ export const getMemoizedAddressBook = createDeepEqualSelector(
   (addressBook) => addressBook,
 );
 
-export const selectERC20TokensByChain = createDeepEqualSelector(
-  (state) => state.metamask.tokensChainsCache,
-  (erc20TokensByChain) => erc20TokensByChain,
-);
-
-export const selectERC20Tokens = createDeepEqualSelector(
+export const getRemoteTokenList = createDeepEqualSelector(
   (state) => state.metamask.tokenList,
-  (erc20Tokens) => erc20Tokens,
+  (remoteTokenList) => remoteTokenList,
 );
 
 /**
@@ -1385,12 +1394,26 @@ export const selectERC20Tokens = createDeepEqualSelector(
  * @type {() => object}
  */
 export const getTokenList = createSelector(
-  selectERC20Tokens,
+  getRemoteTokenList,
   getIsTokenDetectionInactiveOnMainnet,
   (remoteTokenList, isTokenDetectionInactiveOnMainnet) =>
     isTokenDetectionInactiveOnMainnet
       ? STATIC_MAINNET_TOKEN_LIST
       : remoteTokenList,
+);
+
+/**
+ * Returns a memoized selector that gets contract info.
+ *
+ * @param state - The Redux store state.
+ * @param addresses - An array of contract addresses.
+ * @returns {Array} A map of contract info, keyed by address.
+ */
+export const getRemoteTokens = createSelector(
+  getRemoteTokenList,
+  (_state, addresses) => addresses,
+  (remoteTokenList, addresses) =>
+    addresses.map((address) => remoteTokenList[address?.toLowerCase()]),
 );
 
 export const getMemoizedMetadataContract = createSelector(
@@ -1967,6 +1990,41 @@ export function getShowTermsOfUse(state) {
   );
 }
 
+/**
+ * Determines if the survey toast should be shown based on the current time, survey start and end times, and whether the survey link was last clicked or closed.
+ *
+ * @param {*} state - The application state containing the necessary survey data.
+ * @returns {boolean} True if the current time is between the survey start and end times and the survey link was not last clicked or closed. False otherwise.
+ */
+export function getShowSurveyToast(state) {
+  const { surveyLinkLastClickedOrClosed } = state.metamask;
+  const startTime = new Date(`${SURVEY_DATE} ${SURVEY_START_TIME}`).getTime();
+  const endTime = new Date(`${SURVEY_DATE} ${SURVEY_END_TIME}`).getTime();
+  const now = Date.now();
+  return now > startTime && now < endTime && !surveyLinkLastClickedOrClosed;
+}
+
+/**
+ * Determines if the privacy policy toast should be shown based on the current date and whether the new privacy policy toast was clicked or closed.
+ *
+ * @param {*} state - The application state containing the privacy policy data.
+ * @returns {boolean} True if the current date is on or after the new privacy policy date and the privacy policy toast was not clicked or closed. False otherwise.
+ */
+export function getShowPrivacyPolicyToast(state) {
+  const { newPrivacyPolicyToastClickedOrClosed, onboardingDate } =
+    state.metamask;
+  const newPrivacyPolicyDate = new Date(PRIVACY_POLICY_DATE);
+  const currentDate = new Date(Date.now());
+  return (
+    !newPrivacyPolicyToastClickedOrClosed &&
+    currentDate >= newPrivacyPolicyDate &&
+    // users who onboarded before the privacy policy date should see the notice
+    // and
+    // old users who don't have onboardingDate set should see the notice
+    (onboardingDate < newPrivacyPolicyDate || !onboardingDate)
+  );
+}
+
 export function getLastViewedUserSurvey(state) {
   return state.metamask.lastViewedUserSurvey;
 }
@@ -1978,6 +2036,10 @@ export function getShowOutdatedBrowserWarning(state) {
   }
   const currentTime = new Date().getTime();
   return currentTime - outdatedBrowserWarningLastShown >= DAY * 2;
+}
+
+export function getNewPrivacyPolicyToastShownDate(state) {
+  return state.metamask.newPrivacyPolicyToastShownDate;
 }
 
 export function getOnboardingDate(state) {

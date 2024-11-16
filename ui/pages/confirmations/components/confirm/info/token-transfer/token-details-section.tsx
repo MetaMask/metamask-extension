@@ -1,7 +1,4 @@
-import {
-  TransactionMeta,
-  TransactionType,
-} from '@metamask/transaction-controller';
+import { TransactionMeta } from '@metamask/transaction-controller';
 import React from 'react';
 import { useSelector } from 'react-redux';
 import { CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP } from '../../../../../../../shared/constants/network';
@@ -64,12 +61,9 @@ export const TokenDetailsSection = () => {
     </ConfirmInfoRow>
   );
 
-  const tokenRow = transactionMeta.type !== TransactionType.simpleSend && (
+  const tokenRow = (
     <ConfirmInfoRow label={t('interactingWith')}>
-      <ConfirmInfoRowAddress
-        address={transactionMeta.txParams.to as string}
-        chainId={chainId}
-      />
+      <ConfirmInfoRowAddress address={transactionMeta.txParams.to as string} />
     </ConfirmInfoRow>
   );
 

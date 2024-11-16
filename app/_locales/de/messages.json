@@ -207,6 +207,23 @@
   "addCustomNetwork": {
     "message": "Benutzerdefiniertes Netzwerk hinzufügen"
   },
+  "addEthereumChainConfirmationDescription": {
+    "message": "Dadurch kann dieses Netzwerk innerhalb MetaMask verwendet werden."
+  },
+  "addEthereumChainConfirmationRisks": {
+    "message": "MetaMask überprüft keine benutzerdefinierten Netzwerke."
+  },
+  "addEthereumChainConfirmationRisksLearnMore": {
+    "message": "Erfahren Sie mehr über $1.",
+    "description": "$1 is a link with text that is provided by the 'addEthereumChainConfirmationRisksLearnMoreLink' key"
+  },
+  "addEthereumChainConfirmationRisksLearnMoreLink": {
+    "message": "Betrug und Sicherheitsrisiken im Netzwerk",
+    "description": "Link text for the 'addEthereumChainConfirmationRisksLearnMore' translation key"
+  },
+  "addEthereumChainConfirmationTitle": {
+    "message": "Dieser Seite das Hinzufügen eines Netzwerks erlauben?"
+  },
   "addEthereumChainWarningModalHeader": {
     "message": "Fügen Sie diesen RPC-Anbieter nur hinzu, wenn Sie sich sicher sind, dass Sie ihm vertrauen können. $1",
     "description": "$1 is addEthereumChainWarningModalHeaderPartTwo passed separately so that it can be bolded"
@@ -804,6 +821,10 @@
   },
   "buyNow": {
     "message": "Jetzt kaufen"
+  },
+  "buyToken": {
+    "message": "$1 kaufen",
+    "description": "$1 is the token symbol"
   },
   "bytes": {
     "message": "Bytes"
@@ -1879,6 +1900,13 @@
   "functionType": {
     "message": "Funktionstyp"
   },
+  "fundYourWallet": {
+    "message": "Versehen Sie Ihre Wallet mit Geldern"
+  },
+  "fundYourWalletDescription": {
+    "message": "Legen Sie los, indem Sie Ihrer Wallet $1 hinzufügen.",
+    "description": "$1 is the token symbol"
+  },
   "gas": {
     "message": "Gas"
   },
@@ -1961,6 +1989,14 @@
   },
   "genericExplorerView": {
     "message": "Konto auf $1 ansehen"
+  },
+  "getStartedWithNFTs": {
+    "message": "Erhalten Sie $1 für den Kauf von NFTs",
+    "description": "$1 is the token symbol"
+  },
+  "getStartedWithNFTsDescription": {
+    "message": "Legen Sie mit NFTs los, indem Sie Ihrer Wallet $1 hinzufügen.",
+    "description": "$1 is the token symbol"
   },
   "goBack": {
     "message": "Zurück"
@@ -4822,6 +4858,9 @@
     "message": "Kontaktieren Sie die Ersteller von $1 für weitere Unterstützung.",
     "description": "This is shown when the insight snap throws an error. $1 is the snap name"
   },
+  "someNetworksMayPoseSecurity": {
+    "message": "Einige Netzwerke können Sicherheits- und/oder Datenschutzrisiken bergen. Informieren Sie sich über die Risiken, bevor Sie ein Netzwerk hinzufügen und nutzen."
+  },
   "somethingDoesntLookRight": {
     "message": "Scheint irgendetwas nicht in Ordnung zu sein? $1",
     "description": "A false positive message for users to contact support. $1 is a link to the support page."
@@ -4974,6 +5013,14 @@
   },
   "stake": {
     "message": "Anteil"
+  },
+  "startYourJourney": {
+    "message": "Beginnen Sie Ihre Reise mit $1",
+    "description": "$1 is the token symbol"
+  },
+  "startYourJourneyDescription": {
+    "message": "Legen Sie mit web3 los, indem Sie Ihrer Wallet $1 hinzufügen.",
+    "description": "$1 is the token symbol"
   },
   "stateLogError": {
     "message": "Fehler beim Abfragen der Statusprotokolle."
@@ -5959,6 +6006,9 @@
   },
   "viewActivity": {
     "message": "Aktivität anzeigen"
+  },
+  "viewAllDetails": {
+    "message": "Alle Details anzeigen"
   },
   "viewAllQuotes": {
     "message": "alle Angebote anzeigen"

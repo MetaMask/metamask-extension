@@ -18,6 +18,10 @@ export const loginWithoutBalanceValidation = async (
   const loginPage = new LoginPage(driver);
   await loginPage.check_pageIsLoaded();
   await loginPage.loginToHomepage(password);
+
+  // user should land on homepage after successfully logging in with password
+  const homePage = new HomePage(driver);
+  await homePage.check_pageIsLoaded();
 };
 
 /**
@@ -33,14 +37,10 @@ export const loginWithBalanceValidation = async (
   password?: string,
 ) => {
   await loginWithoutBalanceValidation(driver, password);
-  // user should land on homepage after successfully logging in with password
-  const homePage = new HomePage(driver);
-  await homePage.check_pageIsLoaded();
-
   // Verify the expected balance on the homepage
   if (ganacheServer) {
-    await homePage.check_ganacheBalanceIsDisplayed(ganacheServer);
+    await new HomePage(driver).check_ganacheBalanceIsDisplayed(ganacheServer);
   } else {
-    await homePage.check_expectedBalanceIsDisplayed();
+    await new HomePage(driver).check_expectedBalanceIsDisplayed();
   }
 };

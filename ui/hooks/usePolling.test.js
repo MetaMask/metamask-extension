@@ -4,12 +4,13 @@ import usePolling from './usePolling';
 
 describe('usePolling', () => {
   // eslint-disable-next-line jest/no-done-callback
-  it('calls startPolling and calls back with polling token when component instantiating the hook mounts', (done) => {
+  it('calls startPollingByNetworkClientId and callback option args with polling token when component instantiating the hook mounts', (done) => {
     const mockStart = jest.fn().mockImplementation(() => {
       return Promise.resolve('pollingToken');
     });
     const mockStop = jest.fn();
     const networkClientId = 'mainnet';
+    const options = {};
     const mockState = {
       metamask: {},
     };
@@ -17,16 +18,17 @@ describe('usePolling', () => {
     renderHookWithProvider(() => {
       usePolling({
         callback: (pollingToken) => {
-          expect(mockStart).toHaveBeenCalledWith({ networkClientId });
+          expect(mockStart).toHaveBeenCalledWith(networkClientId, options);
           expect(pollingToken).toBeDefined();
           done();
           return (_pollingToken) => {
             // noop
           };
         },
-        startPolling: mockStart,
+        startPollingByNetworkClientId: mockStart,
         stopPollingByPollingToken: mockStop,
-        input: { networkClientId },
+        networkClientId,
+        options,
       });
     }, mockState);
   });
@@ -37,6 +39,7 @@ describe('usePolling', () => {
     });
     const mockStop = jest.fn();
     const networkClientId = 'mainnet';
+    const options = {};
     const mockState = {
       metamask: {},
     };
@@ -51,9 +54,10 @@ describe('usePolling', () => {
               done();
             };
           },
-          startPolling: mockStart,
+          startPollingByNetworkClientId: mockStart,
           stopPollingByPollingToken: mockStop,
-          input: { networkClientId },
+          networkClientId,
+          options,
         }),
       mockState,
     );

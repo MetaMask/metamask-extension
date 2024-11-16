@@ -44,7 +44,6 @@ export enum IconName {
   Book = 'book',
   Bookmark = 'bookmark',
   Bridge = 'bridge',
-  Collapse = 'collapse',
   Calculator = 'calculator',
   CardPos = 'card-pos',
   CardToken = 'card-token',

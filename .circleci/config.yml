@@ -87,15 +87,15 @@ aliases:
         cat ${HOME}/project/.circleci/scripts/enable-vnc.sh >> ~/.bashrc
       fi
 
-  # Check if MMI tests should run
-  - &check-mmi-trigger
-    name: Check if MMI tests should run
+  # Check if MMI Optional tests should run
+  - &check-mmi-optional
+    name: Check if MMI Optional tests should run
     command: |
-      source mmi_trigger.env
-      if [ "${run_mmi_tests}" == "true" ]; then
-        echo "Running MMI tests"
+      RUN_MMI_OPTIONAL=$(cat ./RUN_MMI_OPTIONAL)
+      if [[ "${RUN_MMI_OPTIONAL}" == "true" ]]; then
+        echo "Running MMI Optional tests"
       else
-        echo "Skipping MMI tests"
+        echo "Skipping MMI Optional tests"
         circleci step halt
       fi
 
@@ -114,7 +114,7 @@ workflows:
       - trigger-beta-build:
           requires:
             - prep-deps
-      - check-mmi-trigger
+      - check-pr-tag
       - prep-deps
       - get-changed-files-with-git-diff:
           filters:
@@ -179,7 +179,7 @@ workflows:
       - prep-build-test-mmi-playwright:
           requires:
             - prep-deps
-            - check-mmi-trigger
+            - check-pr-tag
       - prep-build-storybook:
           requires:
             - prep-deps
@@ -231,7 +231,7 @@ workflows:
           requires:
             - prep-build-test-mmi
             - get-changed-files-with-git-diff
-      - test-e2e-mmi-playwright:
+      - test-e2e-mmi-playwright - OPTIONAL:
           requires:
             - prep-build-test-mmi-playwright
       - test-e2e-chrome-rpc-mmi:
@@ -420,6 +420,39 @@ jobs:
       - run:
           name: Create GitHub Pull Request for version
           command: .circleci/scripts/release-create-release-pr.sh
+
+  check-pr-tag:
+    docker:
+      - image: cimg/base:stable
+    steps:
+      - run:
+          name: Check for MMI Team Tag
+          command: |
+            #!/bin/bash
+
+            GH_LABEL=team-mmi
+            if [ -z "$CIRCLE_PULL_REQUESTS" ]; then
+              echo "Skipping tag check; this is not a PR."
+              echo "false" > ./RUN_MMI_OPTIONAL
+              exit 0
+            fi
+
+            echo $CIRCLE_PULL_REQUESTS | sed 's/,/\n/g'
+
+            # See if any associated PRs have matching label
+            HAS_MATCHING_PR=$(echo $CIRCLE_PULL_REQUESTS \
+              | sed -e 's#,#\n#g' -e 's#/github.com/#/api.github.com/repos/#g' -e 's#/pull/#/pulls/#g' \
+              | xargs -n1 curl -s \
+              | jq -s "map((.labels|map(select(.name==\"${GH_LABEL}\"))))|flatten|length > 0")
+
+            echo "${GH_LABEL} tag presence: ${HAS_MATCHING_PR}"
+
+            # assign the RUN_MMI_OPTIONAL variable
+            echo "${HAS_MATCHING_PR}" > ./RUN_MMI_OPTIONAL
+      - persist_to_workspace:
+          root: .
+          paths:
+            - RUN_MMI_OPTIONAL
 
   prep-deps:
     executor: node-browsers-medium
@@ -806,7 +839,7 @@ jobs:
       - run: corepack enable
       - attach_workspace:
           at: .
-      - run: *check-mmi-trigger
+      - run: *check-mmi-optional
       - run:
           name: Build MMI extension for Playwright e2e
           command: |
@@ -821,6 +854,7 @@ jobs:
       - persist_to_workspace:
           root: .
           paths:
+            - RUN_MMI_OPTIONAL
             - dist-test-mmi-playwright
             - builds-test-mmi-playwright
       - store_artifacts:
@@ -1272,7 +1306,7 @@ jobs:
       - store_test_results:
           path: test/test-results/e2e
 
-  test-e2e-mmi-playwright:
+  test-e2e-mmi-playwright - OPTIONAL:
     executor: playwright
     parallelism: 2
     steps:
@@ -1280,7 +1314,7 @@ jobs:
       - run: corepack enable
       - attach_workspace:
           at: .
-      - run: *check-mmi-trigger
+      - run: *check-mmi-optional
       - run:
           name: Move test build to dist
           command: mv ./dist-test-mmi-playwright ./dist
@@ -1709,18 +1743,3 @@ jobs:
       - run:
           name: All Tests Passed
           command: echo 'whew - everything passed!'
-
-  check-mmi-trigger:
-    executor: node-browsers-medium
-    steps:
-      - checkout
-      - run:
-          name: Check for MMI Team Label or Reviewer
-          command: ./.circleci/scripts/check_mmi_trigger.sh
-      - store_artifacts:
-          path: mmi_trigger.env
-          destination: mmi_trigger.env
-      - persist_to_workspace:
-          root: .
-          paths:
-            - mmi_trigger.env

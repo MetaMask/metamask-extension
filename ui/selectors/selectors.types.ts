@@ -1,9 +1,6 @@
 import type { InternalAccount } from '@metamask/keyring-api';
 import { SubjectMetadata } from '@metamask/permission-controller';
-
-type KeyringType = {
-  type: string;
-};
+import { KeyringType } from '../hooks/metamask-notifications/useProfileSyncing';
 
 export type InternalAccountWithBalance = InternalAccount & {
   balance: string;

@@ -396,7 +396,7 @@ exports[`ConnectPage should render with defaults from the requested permissions 
                 <span
                   class="mm-box mm-text mm-text--body-sm mm-text--ellipsis mm-box--width-max mm-box--color-text-alternative"
                 >
-                  Requesting for Custom Mainnet RPC
+                  Requesting for
                 </span>
                 <div
                   aria-describedby="tippy-tooltip-6"

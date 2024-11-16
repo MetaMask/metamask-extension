@@ -15,6 +15,8 @@ import { BlockSize } from '../../../helpers/constants/design-system';
 
 type Notification = NotificationServicesController.Types.INotification;
 
+const { TRIGGER_TYPES } = NotificationServicesController.Constants;
+
 type NotificationDetailButtonProps = {
   notification: Notification;
   variant: ButtonVariant;
@@ -43,8 +45,8 @@ export const NotificationDetailButton = ({
       properties: {
         notification_id: notification.id,
         notification_type: notification.type,
-        ...('chain_id' in notification && {
-          chain_id: notification.chain_id,
+        ...(notification.type !== TRIGGER_TYPES.FEATURES_ANNOUNCEMENT && {
+          chain_id: notification?.chain_id,
         }),
         clicked_item: 'block_explorer',
       },

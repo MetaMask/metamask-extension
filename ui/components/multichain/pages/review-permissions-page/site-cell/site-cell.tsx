@@ -82,15 +82,6 @@ export const SiteCell: React.FC<SiteCellProps> = ({
         ])
       : t('requestingFor');
 
-  const networkMessageConnectedState =
-    selectedChainIdsLength === 1
-      ? t('connectedWithNetworkName', [selectedNetworks[0].name])
-      : t('connectedWithNetwork', [selectedChainIdsLength]);
-  const networkMessageNotConnectedState =
-    selectedChainIdsLength === 1
-      ? t('requestingForNetwork', [selectedNetworks[0].name])
-      : t('requestingFor');
-
   return (
     <>
       <Box
@@ -109,7 +100,7 @@ export const SiteCell: React.FC<SiteCellProps> = ({
             setShowEditAccountsModal(true);
             trackEvent({
               category: MetaMetricsEventCategory.Navigation,
-              event: MetaMetricsEventName.ViewPermissionedAccounts,
+              event: MetaMetricsEventName.TokenImportButtonClicked,
               properties: {
                 location: 'Connect view, Permissions toast, Permissions (dapp)',
               },
@@ -133,14 +124,16 @@ export const SiteCell: React.FC<SiteCellProps> = ({
         <SiteCellConnectionListItem
           title={t('permission_walletSwitchEthereumChain')}
           iconName={IconName.Data}
-          connectedMessage={networkMessageConnectedState}
-          unconnectedMessage={networkMessageNotConnectedState}
+          connectedMessage={t('connectedWithNetworks', [
+            selectedChainIdsLength,
+          ])}
+          unconnectedMessage={t('requestingFor')}
           isConnectFlow={isConnectFlow}
           onClick={() => {
             setShowEditNetworksModal(true);
             trackEvent({
               category: MetaMetricsEventCategory.Navigation,
-              event: MetaMetricsEventName.ViewPermissionedNetworks,
+              event: MetaMetricsEventName.TokenImportButtonClicked,
               properties: {
                 location: 'Connect view, Permissions toast, Permissions (dapp)',
               },

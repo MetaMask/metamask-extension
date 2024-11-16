@@ -474,7 +474,6 @@ exports[`SendPage render and initialization should render correctly even when a 
                             >
                               <span
                                 class="mm-box mm-text currency-display-component__text mm-text--inherit mm-text--ellipsis mm-box--color-text-default"
-                                data-testid="account-value-and-suffix"
                               >
                                 $0.00
                               </span>
@@ -518,7 +517,6 @@ exports[`SendPage render and initialization should render correctly even when a 
                             >
                               <span
                                 class="mm-box mm-text currency-display-component__text mm-text--inherit mm-text--ellipsis mm-box--color-text-default"
-                                data-testid="account-value-and-suffix"
                               >
                                 0
                               </span>

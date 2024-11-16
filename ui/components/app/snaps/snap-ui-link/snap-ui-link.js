@@ -34,7 +34,7 @@ export const SnapUILink = ({ href, children }) => {
       <ButtonLink
         as="a"
         size={ButtonLinkSize.Inherit}
-        className="snap-ui-renderer__link"
+        className="snap-ui-link"
         onClick={handleLinkClick}
       >
         {children}
@@ -51,14 +51,7 @@ export const SnapUILink = ({ href, children }) => {
         externalLink
         size={ButtonLinkSize.Inherit}
         display={Display.Inline}
-        className="snap-ui-renderer__link"
-        style={{
-          // Prevents the link from taking up the full width of the parent.
-          width: 'fit-content',
-        }}
-        textProps={{
-          display: Display.Inline,
-        }}
+        className="snap-ui-link"
       >
         {children}
         <Icon name={IconName.Export} size={IconSize.Inherit} marginLeft={1} />

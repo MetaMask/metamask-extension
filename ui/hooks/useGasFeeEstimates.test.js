@@ -8,6 +8,7 @@ import {
   getIsNetworkBusyByChainId,
 } from '../ducks/metamask/metamask';
 import {
+  gasFeeStartPollingByNetworkClientId,
   gasFeeStopPollingByPollingToken,
   getNetworkConfigurationByNetworkClientId,
 } from '../store/actions';
@@ -114,9 +115,9 @@ describe('useGasFeeEstimates', () => {
       renderHook(() => useGasFeeEstimates());
     });
     expect(usePolling).toHaveBeenCalledWith({
-      startPolling: expect.any(Function),
+      startPollingByNetworkClientId: gasFeeStartPollingByNetworkClientId,
       stopPollingByPollingToken: gasFeeStopPollingByPollingToken,
-      input: { networkClientId: 'selectedNetworkClientId' },
+      networkClientId: 'selectedNetworkClientId',
     });
   });
 
@@ -126,9 +127,9 @@ describe('useGasFeeEstimates', () => {
       renderHook(() => useGasFeeEstimates('networkClientId1'));
     });
     expect(usePolling).toHaveBeenCalledWith({
-      startPolling: expect.any(Function),
+      startPollingByNetworkClientId: gasFeeStartPollingByNetworkClientId,
       stopPollingByPollingToken: gasFeeStopPollingByPollingToken,
-      input: { networkClientId: 'networkClientId1' },
+      networkClientId: 'networkClientId1',
     });
   });
 

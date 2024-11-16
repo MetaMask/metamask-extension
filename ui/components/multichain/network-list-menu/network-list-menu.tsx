@@ -251,7 +251,10 @@ export const NetworkListMenu = ({ onClose }: { onClose: () => void }) => {
   const generateNetworkListItem = (network: NetworkConfiguration) => {
     const isCurrentNetwork = network.chainId === currentChainId;
     const canDeleteNetwork =
-      isUnlocked && !isCurrentNetwork && network.chainId !== CHAIN_IDS.MAINNET;
+      isUnlocked &&
+      !isCurrentNetwork &&
+      network.chainId !== CHAIN_IDS.MAINNET &&
+      network.chainId !== CHAIN_IDS.LINEA_MAINNET;
 
     return (
       <NetworkListItem

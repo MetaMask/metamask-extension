@@ -1,0 +1,12 @@
+diff --git a/lib/index.js b/lib/index.js
+index 64ff8344f6280d20988f8c3c81e1f248a1869e53..6739e7bd2271be6b861479ec384bbd007bdb5df8 100644
+--- a/lib/index.js
++++ b/lib/index.js
+@@ -222,7 +222,6 @@ var _transform = require("./transform.js");
+ var _transformFile = require("./transform-file.js");
+ var _transformAst = require("./transform-ast.js");
+ var _parse = require("./parse.js");
+-var thisFile = require("./index.js");
+ ;
+ const version = "7.23.2";
+ exports.version = version;
