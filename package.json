@@ -292,7 +292,7 @@
     "@metamask/address-book-controller": "^6.0.0",
     "@metamask/announcement-controller": "^7.0.0",
     "@metamask/approval-controller": "^7.0.0",
-    "@metamask/assets-controllers": "patch:@metamask/assets-controllers@patch%3A@metamask/assets-controllers@npm%253A43.1.1%23~/.yarn/patches/@metamask-assets-controllers-npm-43.1.1-c223d56176.patch%3A%3Aversion=43.1.1&hash=5a94c2#~/.yarn/patches/@metamask-assets-controllers-patch-9e00573eb4.patch",
+    "@metamask/assets-controllers": "patch:@metamask/assets-controllers@patch%3A@metamask/assets-controllers@npm%253A44.0.0%23~/.yarn/patches/@metamask-assets-controllers-npm-44.0.0-c223d56176.patch%3A%3Aversion=44.0.0&hash=5a94c2#~/.yarn/patches/@metamask-assets-controllers-patch-9e00573eb4.patch",
     "@metamask/base-controller": "^7.0.0",
     "@metamask/bitcoin-wallet-snap": "^0.8.2",
     "@metamask/browser-passworder": "^4.3.0",

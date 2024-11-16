@@ -12,6 +12,7 @@ import {
   CodefiTokenPricesServiceV2,
   RatesController,
   fetchMultiExchangeRate,
+  TokenBalancesController,
 } from '@metamask/assets-controllers';
 import { JsonRpcEngine } from '@metamask/json-rpc-engine';
 import { createEngineStream } from '@metamask/json-rpc-middleware-stream';
@@ -685,6 +686,7 @@ export default class MetamaskController extends EventEmitter {
         'AccountsController:selectedEvmAccountChange',
         'PreferencesController:stateChange',
         'TokenListController:stateChange',
+        'NetworkController:stateChange',
       ],
     });
     this.tokensController = new TokensController({
@@ -892,6 +894,28 @@ export default class MetamaskController extends EventEmitter {
         usdConversionRate: null,
       };
     };
+
+    const tokenBalancesMessenger = this.controllerMessenger.getRestricted({
+      name: 'TokenBalancesController',
+      allowedActions: [
+        'NetworkController:getState',
+        'NetworkController:getNetworkClientById',
+        'TokensController:getState',
+        'PreferencesController:getState',
+        'AccountsController:getSelectedAccount',
+      ],
+      allowedEvents: [
+        'PreferencesController:stateChange',
+        'TokensController:stateChange',
+        'NetworkController:stateChange',
+      ],
+    });
+
+    this.tokenBalancesController = new TokenBalancesController({
+      messenger: tokenBalancesMessenger,
+      state: initState.TokenBalancesController,
+      interval: 30000,
+    });
 
     const phishingControllerMessenger = this.controllerMessenger.getRestricted({
       name: 'PhishingController',
@@ -2413,6 +2437,7 @@ export default class MetamaskController extends EventEmitter {
       GasFeeController: this.gasFeeController,
       TokenListController: this.tokenListController,
       TokensController: this.tokensController,
+      TokenBalancesController: this.tokenBalancesController,
       SmartTransactionsController: this.smartTransactionsController,
       NftController: this.nftController,
       PhishingController: this.phishingController,
@@ -2468,6 +2493,7 @@ export default class MetamaskController extends EventEmitter {
         GasFeeController: this.gasFeeController,
         TokenListController: this.tokenListController,
         TokensController: this.tokensController,
+        TokenBalancesController: this.tokenBalancesController,
         SmartTransactionsController: this.smartTransactionsController,
         NftController: this.nftController,
         SelectedNetworkController: this.selectedNetworkController,
@@ -3229,6 +3255,7 @@ export default class MetamaskController extends EventEmitter {
       nftController,
       nftDetectionController,
       currencyRateController,
+      tokenBalancesController,
       tokenDetectionController,
       ensController,
       tokenListController,
@@ -4046,6 +4073,14 @@ export default class MetamaskController extends EventEmitter {
         tokenListController.startPolling.bind(tokenListController),
       tokenListStopPollingByPollingToken:
         tokenListController.stopPollingByPollingToken.bind(tokenListController),
+
+      tokenBalancesStartPolling: tokenBalancesController.startPolling.bind(
+        tokenBalancesController,
+      ),
+      tokenBalancesStopPollingByPollingToken:
+        tokenBalancesController.stopPollingByPollingToken.bind(
+          tokenBalancesController,
+        ),
 
       // GasFeeController
       gasFeeStartPollingByNetworkClientId:
@@ -6681,6 +6716,7 @@ export default class MetamaskController extends EventEmitter {
       this.tokenRatesController.stopAllPolling();
       this.tokenDetectionController.stopAllPolling();
       this.tokenListController.stopAllPolling();
+      this.tokenBalancesController.stopAllPolling();
       this.appStateController.clearPollingTokens();
     } catch (error) {
       console.error(error);
@@ -6921,6 +6957,9 @@ export default class MetamaskController extends EventEmitter {
     await this._createTransactionNotifcation(transactionMeta);
     await this._updateNFTOwnership(transactionMeta);
     this._trackTransactionFailure(transactionMeta);
+    await this.tokenBalancesController.updateBalancesByChainId({
+      chainId: transactionMeta.chainId,
+    });
   }
 
   async _createTransactionNotifcation(transactionMeta) {
