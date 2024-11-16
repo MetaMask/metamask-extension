@@ -115,6 +115,10 @@ import NftFullImage from '../../components/app/assets/nfts/nft-details/nft-full-
 import CrossChainSwap from '../bridge';
 import { ToastMaster } from '../../components/app/toast-master/toast-master';
 import {
+  REDESIGN_APPROVAL_TYPES,
+  REDESIGN_DEV_TRANSACTION_TYPES,
+} from '../confirmations/utils';
+import {
   getConnectingLabel,
   hideAppHeader,
   isConfirmTransactionRoute,
@@ -174,6 +178,9 @@ export default class Routes extends Component {
     currentExtensionPopupId: PropTypes.number,
     useRequestQueue: PropTypes.bool,
     clearEditedNetwork: PropTypes.func.isRequired,
+    oldestPendingApproval: PropTypes.object.isRequired,
+    pendingApprovals: PropTypes.arrayOf(PropTypes.object).isRequired,
+    transactionsMetadata: PropTypes.arrayOf(PropTypes.object).isRequired,
     ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
     isShowKeyringSnapRemovalResultModal: PropTypes.bool.isRequired,
     hideShowKeyringSnapRemovalResultModal: PropTypes.func.isRequired,
@@ -419,6 +426,9 @@ export default class Routes extends Component {
       clearSwitchedNetworkDetails,
       clearEditedNetwork,
       privacyMode,
+      oldestPendingApproval,
+      pendingApprovals,
+      transactionsMetadata,
       ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
       isShowKeyringSnapRemovalResultModal,
       hideShowKeyringSnapRemovalResultModal,
@@ -454,7 +464,28 @@ export default class Routes extends Component {
       isUnlocked &&
       !shouldShowSeedPhraseReminder;
 
-    let isLoadingShown = isLoading && completedOnboarding;
+    const paramsConfirmationId = location.pathname.split(
+      '/confirm-transaction/',
+    )[1];
+    const confirmationId = paramsConfirmationId ?? oldestPendingApproval?.id;
+    const pendingApproval = pendingApprovals.find(
+      (approval) => approval.id === confirmationId,
+    );
+    const isCorrectApprovalType = REDESIGN_APPROVAL_TYPES.includes(
+      pendingApproval?.type,
+    );
+    const isCorrectDeveloperTransactionType =
+      REDESIGN_DEV_TRANSACTION_TYPES.includes(
+        transactionsMetadata[confirmationId]?.type,
+      );
+
+    let isLoadingShown =
+      isLoading &&
+      completedOnboarding &&
+      // In the redesigned screens, we hide the general loading spinner and the
+      // loading states are on a component by component basis.
+      !isCorrectApprovalType &&
+      !isCorrectDeveloperTransactionType;
 
     ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
     isLoadingShown =
@@ -464,7 +495,11 @@ export default class Routes extends Component {
         (confirmation) =>
           confirmation.type ===
           SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES.showSnapAccountRedirect,
-      );
+      ) &&
+      // In the redesigned screens, we hide the general loading spinner and the
+      // loading states are on a component by component basis.
+      !isCorrectApprovalType &&
+      !isCorrectDeveloperTransactionType;
     ///: END:ONLY_INCLUDE_IF
 
     return (
