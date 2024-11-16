@@ -59,7 +59,6 @@ const NetworkFilter = ({ handleClose }: SortControlProps) => {
   const currentNetwork = useSelector(getCurrentNetwork);
   const currentCurrency = useSelector(getCurrentCurrency);
   const allNetworks = useSelector(getNetworkConfigurationsByChainId);
-  const isTestnet = useSelector(getIsTestnet);
   const { tokenNetworkFilter, showNativeTokenAsMainBalance } =
     useSelector(getPreferences);
   const shouldHideZeroBalanceTokens = useSelector(

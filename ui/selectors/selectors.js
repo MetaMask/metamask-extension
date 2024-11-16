@@ -86,7 +86,6 @@ import {
   getLedgerTransportType,
   isAddressLedger,
   getIsUnlocked,
-  getTokenBalances,
 } from '../ducks/metamask/metamask';
 import {
   getLedgerWebHidConnectedStatus,
