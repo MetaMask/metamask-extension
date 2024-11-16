@@ -44,7 +44,8 @@ import {
 } from '../../../../../shared/constants/transaction';
 import { MetaMetricsContext } from '../../../../contexts/metametrics';
 import { INSUFFICIENT_FUNDS_ERROR } from '../../../../pages/confirmations/send/send.constants';
-import { cancelTx, showQrScanner } from '../../../../store/actions';
+// import { cancelTx, showQrScanner } from '../../../../store/actions';
+import { cancelTx } from '../../../../store/actions';
 import {
   DEFAULT_ROUTE,
   SEND_ROUTE,
@@ -216,12 +217,11 @@ export const SendPage = () => {
 
   useEffect(() => {
     if (location.search === '?scan=true') {
-      dispatch(showQrScanner());
-
+      // dispatch(showQrScanner());
       // Clear the queryString param after showing the modal
-      const [cleanUrl] = window.location.href.split('?');
-      window.history.pushState({}, null, `${cleanUrl}`);
-      window.location.hash = '#send';
+      // const [cleanUrl] = window.location.href.split('?');
+      // window.history.pushState({}, null, `${cleanUrl}`);
+      // window.location.hash = '#send';
     }
   }, [location, dispatch]);
 

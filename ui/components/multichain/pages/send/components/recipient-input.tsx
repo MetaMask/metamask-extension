@@ -12,7 +12,7 @@ import {
   updateRecipient,
   updateRecipientUserInput,
 } from '../../../../../ducks/send';
-import { showQrScanner } from '../../../../../store/actions';
+// import { showQrScanner } from '../../../../../store/actions';
 import { MetaMetricsContext } from '../../../../../contexts/metametrics';
 import {
   MetaMetricsEventCategory,
@@ -75,15 +75,15 @@ export const SendPageRecipientInput = () => {
         }}
         onReset={() => dispatch(resetRecipientInput())}
         scanQrCode={() => {
-          trackEvent({
-            event: 'Used QR scanner',
-            category: MetaMetricsEventCategory.Transactions,
-            properties: {
-              action: 'Edit Screen',
-              legacy_event: true,
-            },
-          });
-          dispatch(showQrScanner());
+          // trackEvent({
+          //   event: 'Used QR scanner',
+          //   category: MetaMetricsEventCategory.Transactions,
+          //   properties: {
+          //     action: 'Edit Screen',
+          //     legacy_event: true,
+          //   },
+          // });
+          // dispatch(showQrScanner());
         }}
       />
     </SendPageRow>
