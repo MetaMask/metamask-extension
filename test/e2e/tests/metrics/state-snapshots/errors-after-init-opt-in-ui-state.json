@@ -181,6 +181,7 @@
       "0xe705": "object",
       "0xe708": "object"
     },
+    "tokenBalances": "object",
     "preventPollingOnNetworkRestart": false,
     "tokens": "object",
     "ignoredTokens": "object",

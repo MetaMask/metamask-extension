@@ -4565,26 +4565,6 @@ export async function currencyRateStopPollingByPollingToken(
   await removePollingTokenFromAppState(pollingToken);
 }
 
-export async function tokenBalancesStartPolling(
-  chainId: string,
-): Promise<string> {
-  const pollingToken = await submitRequestToBackground(
-    'tokenBalancesStartPolling',
-    [{ chainId }],
-  );
-  await addPollingTokenToAppState(pollingToken);
-  return pollingToken;
-}
-
-export async function tokenBalancesStopPollingByPollingToken(
-  pollingToken: string,
-) {
-  await submitRequestToBackground('tokenBalancesStopPollingByPollingToken', [
-    pollingToken,
-  ]);
-  await removePollingTokenFromAppState(pollingToken);
-}
-
 /**
  * Informs the TokenDetectionController that the UI requires token detection polling
  *
@@ -4640,6 +4620,26 @@ export async function tokenListStartPolling(chainId: string): Promise<string> {
  */
 export async function tokenListStopPollingByPollingToken(pollingToken: string) {
   await submitRequestToBackground('tokenListStopPollingByPollingToken', [
+    pollingToken,
+  ]);
+  await removePollingTokenFromAppState(pollingToken);
+}
+
+export async function tokenBalancesStartPolling(
+  chainId: string,
+): Promise<string> {
+  const pollingToken = await submitRequestToBackground(
+    'tokenBalancesStartPolling',
+    [{ chainId }],
+  );
+  await addPollingTokenToAppState(pollingToken);
+  return pollingToken;
+}
+
+export async function tokenBalancesStopPollingByPollingToken(
+  pollingToken: string,
+) {
+  await submitRequestToBackground('tokenBalancesStopPollingByPollingToken', [
     pollingToken,
   ]);
   await removePollingTokenFromAppState(pollingToken);

@@ -3,10 +3,16 @@ import mockState from '../../../../test/data/mock-state.json';
 import configureStore from '../../../store/store';
 import { renderWithProvider } from '../../../../test/jest/rendering';
 import { setBackgroundConnection } from '../../../store/background-connection';
+import { CHAIN_IDS } from '../../../../shared/constants/network';
 import {
   AccountOverviewBtc,
   AccountOverviewBtcProps,
 } from './account-overview-btc';
+
+jest.mock('../../../store/actions', () => ({
+  tokenBalancesStartPolling: jest.fn().mockResolvedValue('pollingToken'),
+  tokenBalancesStopPollingByPollingToken: jest.fn(),
+}));
 
 const defaultProps: AccountOverviewBtcProps = {
   defaultHomeActiveTabName: null,
@@ -17,7 +23,13 @@ const defaultProps: AccountOverviewBtcProps = {
 
 const render = (props: AccountOverviewBtcProps = defaultProps) => {
   const store = configureStore({
-    metamask: mockState.metamask,
+    metamask: {
+      ...mockState.metamask,
+      preferences: {
+        ...mockState.metamask.preferences,
+        tokenNetworkFilter: { [CHAIN_IDS.MAINNET]: true },
+      },
+    },
   });
 
   return renderWithProvider(<AccountOverviewBtc {...props} />, store);
@@ -28,7 +40,6 @@ describe('AccountOverviewBtc', () => {
     setBackgroundConnection({
       setBridgeFeatureFlags: jest.fn(),
       tokenBalancesStartPolling: jest.fn(),
-      setPreference: jest.fn(),
     } as never);
   });
 
