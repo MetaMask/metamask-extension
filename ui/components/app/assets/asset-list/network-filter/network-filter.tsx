@@ -43,6 +43,8 @@ import { calculateTokenBalance } from '../../util/calculateTokenBalance';
 import { Hex } from '@metamask/utils';
 import { ChainAddressMarketData, Token } from '../../token-list/token-list';
 import { calculateTokenFiatAmount } from '../../util/calculateTokenFiatAmount';
+import { zeroAddress } from 'ethereumjs-util';
+import { findAssetByAddress } from '../../../../../pages/asset/util';
 
 type SortControlProps = {
   handleClose: () => void;
@@ -91,53 +93,61 @@ const NetworkFilter = ({ handleClose }: SortControlProps) => {
 
   const [chainsToShow, setChainsToShow] = useState<string[]>([]);
 
-  const selectedAccountFiatBalance = useMemo(() => {
-    const currentChainBalances =
-      tokenBalances[selectedAccount.address]?.[chainId];
+  const currentChainBalances =
+    tokenBalances[selectedAccount.address]?.[chainId];
+  const currentChainTokenInfo = selectedAccountTokensChains[chainId];
+  const nativeToken = currentChainTokenInfo.find((token) => token.isNative);
 
-    const currentChainTokenInfo = selectedAccountTokensChains[chainId];
-
+  const selectedAccountBalances = useMemo(() => {
     if (!currentChainBalances || !currentChainTokenInfo) {
-      return 0; // Return 0 if no balances or token info
+      return { aggregatedFiatAmount: 0, nativeTokenBalance: 0 }; // Return 0 for both if no balances or token info
     }
 
-    // Calculate the sum of all tokenFiatAmount
-    const totalFiatAmount = Object.entries(currentChainBalances).reduce(
-      (total, [address, balance]) => {
-        const tokenInfo = currentChainTokenInfo.find(
-          (token) => token.address === address,
-        );
+    let nativeTokenBalance = 0;
 
-        if (!tokenInfo) {
-          return total; // Skip if tokenInfo is not found
-        }
+    // Aggregate the total fiat amount and find native token balance
+    const aggregatedFiatAmount = Object.entries({
+      ...currentChainBalances,
+      nativeToken,
+    }).reduce((totalFiat, [address]) => {
+      const tokenInfo =
+        address === 'nativeToken'
+          ? nativeToken
+          : currentChainTokenInfo.find((token) => token.address === address);
 
-        const calculatedTokenBalance =
-          calculateTokenBalance({
-            isNative: tokenInfo.isNative,
-            chainId: tokenInfo.chainId,
-            address: tokenInfo.address,
-            decimals: tokenInfo.decimals,
-            nativeBalances,
-            selectedAccountTokenBalancesAcrossChains:
-              tokenBalances[selectedAccount.address],
-          }) || '0';
+      if (!tokenInfo) {
+        return totalFiat; // Skip if tokenInfo is not found
+      }
 
-        const tokenFiatAmount = calculateTokenFiatAmount({
-          token: tokenInfo,
+      const calculatedTokenBalance =
+        calculateTokenBalance({
+          isNative: tokenInfo.isNative,
           chainId: tokenInfo.chainId,
-          balance: calculatedTokenBalance,
-          marketData,
-          currencyRates,
-        });
+          address: tokenInfo.address,
+          decimals: tokenInfo.decimals,
+          nativeBalances,
+          selectedAccountTokenBalancesAcrossChains:
+            tokenBalances[selectedAccount.address],
+        }) || '0';
 
-        // @ts-ignore
-        return total + parseFloat(tokenFiatAmount || '0'); // Accumulate the fiat amount
-      },
-      0, // Initial total is 0
-    );
+      const tokenFiatAmount = calculateTokenFiatAmount({
+        token: tokenInfo,
+        chainId: tokenInfo.chainId,
+        balance: calculatedTokenBalance,
+        marketData,
+        currencyRates,
+      });
 
-    return totalFiatAmount; // Return the total fiat amount
+      // If it's the native token, set the native token balance
+      if (address === 'nativeToken') {
+        nativeTokenBalance = parseFloat(String(calculatedTokenBalance) || '0');
+      }
+
+      // Accumulate fiat amount for all tokens
+      return totalFiat + parseFloat(String(tokenFiatAmount) || '0');
+    }, 0); // Initial total fiat amount is 0
+
+    return { aggregatedFiatAmount, nativeTokenBalance }; // Return both values
   }, [
     tokenBalances,
     selectedAccount.address,
@@ -158,14 +168,28 @@ const NetworkFilter = ({ handleClose }: SortControlProps) => {
     },
   );
 
-  const formattedAggregatedCurrentChainBalance = formatWithThreshold(
-    selectedAccountFiatBalance,
+  const formattedAggregatedCurrentChainFiatBalance = formatWithThreshold(
+    selectedAccountBalances.aggregatedFiatAmount || 0,
     0.01,
     locale,
     {
       style: 'currency',
       currency: currentCurrency.toUpperCase(),
     },
+  );
+
+  const num = Number(selectedAccountBalances.aggregatedFiatAmount);
+  const hasNonZeroDecimal = num % 1 !== 0;
+
+  const formattedAggregatedCurrentChainNativeTokenBalance = formatWithThreshold(
+    selectedAccountBalances.nativeTokenBalance || 0,
+    0.0001,
+    locale,
+    {
+      minimumFractionDigits: hasNonZeroDecimal ? 4 : 0,
+      maximumFractionDigits: hasNonZeroDecimal ? 4 : 0,
+    },
+    nativeToken?.symbol,
   );
 
   const handleFilter = (chainFilters: Record<string, boolean>) => {
@@ -263,7 +287,9 @@ const NetworkFilter = ({ handleClose }: SortControlProps) => {
               variant={TextVariant.bodySmMedium}
               color={TextColor.textAlternative}
             >
-              {formattedAggregatedCurrentChainBalance}
+              {showNativeTokenAsMainBalance
+                ? formattedAggregatedCurrentChainNativeTokenBalance
+                : formattedAggregatedCurrentChainFiatBalance}
             </Text>
           </Box>
           <AvatarNetwork

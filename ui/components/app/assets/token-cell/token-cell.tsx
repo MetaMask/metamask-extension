@@ -32,16 +32,23 @@ export const formatWithThreshold = (
   threshold: number,
   locale: string,
   options: Intl.NumberFormatOptions,
+  suffix?: string, // Optional suffix
 ): string => {
   if (amount === null) {
     return '';
   }
   if (amount === 0) {
-    return new Intl.NumberFormat(locale, options).format(0);
+    return `${new Intl.NumberFormat(locale, options).format(0)}${
+      suffix ? ` ${suffix}` : ''
+    }`;
   }
   return amount < threshold
-    ? `<${new Intl.NumberFormat(locale, options).format(threshold)}`
-    : new Intl.NumberFormat(locale, options).format(amount);
+    ? `<${new Intl.NumberFormat(locale, options).format(threshold)}${
+        suffix ? ` ${suffix}` : ''
+      }`
+    : `${new Intl.NumberFormat(locale, options).format(amount)}${
+        suffix ? ` ${suffix}` : ''
+      }`;
 };
 
 export default function TokenCell({
