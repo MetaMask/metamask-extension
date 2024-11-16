@@ -135,7 +135,9 @@ describe('AssetPage', () => {
     balance: {
       value: '0',
       display: '0',
+      fiat: '',
     },
+    decimals: 18,
   } as const;
 
   const token = {
@@ -148,6 +150,7 @@ describe('AssetPage', () => {
     balance: {
       value: '0',
       display: '0',
+      fiat: '',
     },
   } as const;
 
