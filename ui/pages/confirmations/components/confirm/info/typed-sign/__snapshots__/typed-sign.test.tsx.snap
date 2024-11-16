@@ -72,6 +72,7 @@ exports[`TypedSignInfo correctly renders permit sign type 1`] = `
       >
         <div
           class="mm-box"
+          style="margin-left: auto; max-width: 100%;"
         >
           <div
             class="mm-box mm-box--display-flex mm-box--justify-content-flex-end"
@@ -442,6 +443,7 @@ exports[`TypedSignInfo correctly renders permit sign type with no deadline 1`] =
       >
         <div
           class="mm-box"
+          style="margin-left: auto; max-width: 100%;"
         >
           <div
             class="mm-box mm-box--display-flex mm-box--justify-content-flex-end"
