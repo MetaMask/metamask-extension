@@ -22,16 +22,16 @@ exports[`ConfirmInfoExpandableRow should match snapshot 1`] = `
     <div
       class="mm-box mm-box--display-flex"
     >
-      Expandable Value
       <button
         aria-label="expand"
         class="mm-box mm-button-icon mm-button-icon--size-sm expandIcon mm-box--margin-left-1 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-default mm-box--background-color-transparent mm-box--rounded-lg"
       >
         <span
           class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-inherit"
-          style="mask-image: url('./images/icons/arrow-left.svg');"
+          style="mask-image: url('./images/icons/arrow-down.svg');"
         />
       </button>
+      Expandable Value
     </div>
   </div>
   <div

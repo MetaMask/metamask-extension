@@ -158,6 +158,7 @@ exports[`PermitSimulation should render default simulation if decoding api does 
       >
         <div
           class="mm-box"
+          style="margin-left: auto; max-width: 100%;"
         >
           <div
             class="mm-box mm-box--display-flex mm-box--justify-content-flex-end"
@@ -286,6 +287,7 @@ exports[`PermitSimulation should render default simulation if decoding api retur
       >
         <div
           class="mm-box"
+          style="margin-left: auto; max-width: 100%;"
         >
           <div
             class="mm-box mm-box--display-flex mm-box--justify-content-flex-end"

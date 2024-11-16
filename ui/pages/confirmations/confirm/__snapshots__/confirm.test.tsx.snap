@@ -462,6 +462,7 @@ exports[`Confirm should match snapshot for signature - typed sign - V4 - PermitB
                 >
                   <div
                     class="mm-box"
+                    style="margin-left: auto; max-width: 100%;"
                   >
                     <div
                       class="mm-box mm-box--display-flex mm-box--justify-content-flex-end"
@@ -514,6 +515,7 @@ exports[`Confirm should match snapshot for signature - typed sign - V4 - PermitB
                   </div>
                   <div
                     class="mm-box"
+                    style="margin-left: auto; max-width: 100%;"
                   >
                     <div
                       class="mm-box mm-box--display-flex mm-box--justify-content-flex-end"
@@ -1039,6 +1041,7 @@ exports[`Confirm should match snapshot for signature - typed sign - V4 - PermitS
                 >
                   <div
                     class="mm-box"
+                    style="margin-left: auto; max-width: 100%;"
                   >
                     <div
                       class="mm-box mm-box--display-flex mm-box--justify-content-flex-end"
@@ -2568,6 +2571,7 @@ exports[`Confirm should match snapshot for signature - typed sign - permit 1`] =
               >
                 <div
                   class="mm-box"
+                  style="margin-left: auto; max-width: 100%;"
                 >
                   <div
                     class="mm-box mm-box--display-flex mm-box--justify-content-flex-end"

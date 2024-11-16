@@ -72,7 +72,7 @@ const NativeValueDisplay: React.FC<PermitSimulationValueDisplayParams> = ({
   const { color, backgroundColor } = getAmountColors(credit, debit);
 
   return (
-    <Box>
+    <Box style={{ marginLeft: 'auto', maxWidth: '100%' }}>
       <Box display={Display.Flex} justifyContent={JustifyContent.flexEnd}>
         <Box
           display={Display.Inline}
