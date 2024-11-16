@@ -314,6 +314,9 @@
       "swapsFeatureFlags": {}
     }
   },
+  "TokenBalancesController": {
+    "tokenBalances": "object"
+  },
   "TokenListController": {
     "tokenList": "object",
     "tokensChainsCache": {
