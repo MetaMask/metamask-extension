@@ -8,6 +8,11 @@ import {
   AccountOverviewEthProps,
 } from './account-overview-eth';
 
+jest.mock('../../../store/actions', () => ({
+  tokenBalancesStartPolling: jest.fn().mockResolvedValue('pollingToken'),
+  tokenBalancesStopPollingByPollingToken: jest.fn(),
+}));
+
 const render = (props: AccountOverviewEthProps) => {
   const store = configureStore({
     metamask: mockState.metamask,
@@ -22,7 +27,7 @@ describe('AccountOverviewEth', () => {
   });
   it('shows all tabs', () => {
     const { queryByTestId } = render({
-      defaultHomeActiveTabName: '',
+      defaultHomeActiveTabName: null,
       onTabClick: jest.fn(),
       setBasicFunctionalityModalOpen: jest.fn(),
       onSupportLinkClick: jest.fn(),

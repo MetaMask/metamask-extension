@@ -954,6 +954,10 @@ export function getPetnamesEnabled(state) {
   return petnamesEnabled;
 }
 
+export function getUseTransactionSimulations(state) {
+  return Boolean(state.metamask.useTransactionSimulations);
+}
+
 export function getRedesignedConfirmationsEnabled(state) {
   const { redesignedConfirmationsEnabled } = getPreferences(state);
   return redesignedConfirmationsEnabled;
@@ -1297,6 +1301,10 @@ export function getFeatureFlags(state) {
 
 export function getOriginOfCurrentTab(state) {
   return state.activeTab.origin;
+}
+
+export function getDefaultHomeActiveTabName(state) {
+  return state.metamask.defaultHomeActiveTabName;
 }
 
 export function getIpfsGateway(state) {
