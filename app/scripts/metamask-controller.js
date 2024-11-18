@@ -6718,7 +6718,6 @@ export default class MetamaskController extends EventEmitter {
       this.tokenListController.stopAllPolling();
       this.tokenBalancesController.stopAllPolling();
       this.appStateController.clearPollingTokens();
-      this.tokenBalancesController.stopAllPolling();
     } catch (error) {
       console.error(error);
     }
