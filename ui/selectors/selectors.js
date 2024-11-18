@@ -986,9 +986,9 @@ export function getPetnamesEnabled(state) {
 
 export function getIsTokenNetworkFilterEqualCurrentNetwork(state) {
   const chainId = getCurrentChainId(state);
-  const { tokenNetworkFilter } = getPreferences(state);
+  const { tokenNetworkFilter } = getPreferences(state) || {};
   if (
-    Object.keys(tokenNetworkFilter)?.length === 1 &&
+    Object.keys(tokenNetworkFilter).length === 1 &&
     Object.keys(tokenNetworkFilter)[0] === chainId
   ) {
     return true;
