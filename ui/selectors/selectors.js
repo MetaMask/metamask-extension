@@ -85,6 +85,7 @@ import {
   getLedgerTransportType,
   isAddressLedger,
   getIsUnlocked,
+  getCompletedOnboarding,
 } from '../ducks/metamask/metamask';
 import {
   getLedgerWebHidConnectedStatus,
@@ -598,6 +599,10 @@ export const getTokensMarketData = (state) => {
 export const getMarketData = (state) => {
   return state.metamask.marketData;
 };
+
+export function getCurrencyRates(state) {
+  return state.metamask.currencyRates;
+}
 
 export function getAddressBook(state) {
   const chainId = getCurrentChainId(state);

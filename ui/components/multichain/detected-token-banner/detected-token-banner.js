@@ -8,6 +8,7 @@ import {
   getCurrentChainId,
   getDetectedTokensInCurrentNetwork,
   getAllDetectedTokensForSelectedAddress,
+  getPreferences,
 } from '../../../selectors';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import {
@@ -24,27 +25,31 @@ export const DetectedTokensBanner = ({
 }) => {
   const t = useI18nContext();
   const trackEvent = useContext(MetaMetricsContext);
+  const { tokenNetworkFilter } = useSelector(getPreferences);
+
+  const allNetworksFilterShown = Object.keys(tokenNetworkFilter ?? {}).length;
 
   const detectedTokens = useSelector(getDetectedTokensInCurrentNetwork);
 
   const detectedTokensMultichain = useSelector(
     getAllDetectedTokensForSelectedAddress,
   );
-
-  const detectedTokensDetails = process.env.PORTFOLIO_VIEW
-    ? Object.values(detectedTokensMultichain)
-        .flat()
-        .map(({ address, symbol }) => `${symbol} - ${address}`)
-    : detectedTokens.map(({ address, symbol }) => `${symbol} - ${address}`);
-
   const chainId = useSelector(getCurrentChainId);
 
-  const totalTokens = process.env.PORTFOLIO_VIEW
-    ? Object.values(detectedTokensMultichain).reduce(
-        (count, tokenArray) => count + tokenArray.length,
-        0,
-      )
-    : detectedTokens.length;
+  const detectedTokensDetails =
+    process.env.PORTFOLIO_VIEW && !allNetworksFilterShown
+      ? Object.values(detectedTokensMultichain)
+          .flat()
+          .map(({ address, symbol }) => `${symbol} - ${address}`)
+      : detectedTokens.map(({ address, symbol }) => `${symbol} - ${address}`);
+
+  const totalTokens =
+    process.env.PORTFOLIO_VIEW && !allNetworksFilterShown
+      ? Object.values(detectedTokensMultichain).reduce(
+          (count, tokenArray) => count + tokenArray.length,
+          0,
+        )
+      : detectedTokens.length;
 
   const handleOnClick = () => {
     actionButtonOnClick();

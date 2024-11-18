@@ -7,6 +7,7 @@ import {
   getAllDetectedTokensForSelectedAddress,
   getDetectedTokensInCurrentNetwork,
   getIstokenDetectionInactiveOnNonMainnetSupportedNetwork,
+  getPreferences,
   getSelectedAccount,
 } from '../../../../selectors';
 import {
@@ -80,6 +81,8 @@ const AssetList = ({ onClickAsset, showTokensLinks }: AssetListProps) => {
   const isTokenDetectionInactiveOnNonMainnetSupportedNetwork = useSelector(
     getIstokenDetectionInactiveOnNonMainnetSupportedNetwork,
   );
+  const { tokenNetworkFilter } = useSelector(getPreferences);
+  const allNetworksFilterShown = Object.keys(tokenNetworkFilter ?? {}).length;
 
   const [showFundingMethodModal, setShowFundingMethodModal] = useState(false);
   const [showReceiveModal, setShowReceiveModal] = useState(false);
@@ -108,13 +111,14 @@ const AssetList = ({ onClickAsset, showTokensLinks }: AssetListProps) => {
     getAllDetectedTokensForSelectedAddress,
   );
 
-  const totalTokens = process.env.PORTFOLIO_VIEW
-    ? (Object.values(detectedTokensMultichain).reduce(
-        // @ts-expect-error TS18046: 'tokenArray' is of type 'unknown'
-        (count, tokenArray) => count + tokenArray.length,
-        0,
-      ) as number)
-    : detectedTokens.length;
+  const totalTokens =
+    process.env.PORTFOLIO_VIEW && !allNetworksFilterShown
+      ? (Object.values(detectedTokensMultichain).reduce(
+          // @ts-expect-error TS18046: 'tokenArray' is of type 'unknown'
+          (count, tokenArray) => count + tokenArray.length,
+          0,
+        ) as number)
+      : detectedTokens.length;
 
   return (
     <>

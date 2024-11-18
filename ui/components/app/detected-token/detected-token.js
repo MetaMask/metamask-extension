@@ -1,4 +1,4 @@
-import React, { useState, useContext } from 'react';
+import React, { useState, useContext, useEffect, useMemo } from 'react';
 import PropTypes from 'prop-types';
 import { useSelector, useDispatch } from 'react-redux';
 import { chain } from 'lodash';
@@ -12,6 +12,7 @@ import {
   getAllDetectedTokensForSelectedAddress,
   getDetectedTokensInCurrentNetwork,
   getNetworkConfigurationsByChainId,
+  getPreferences,
   getSelectedNetworkClientId,
 } from '../../../selectors';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
@@ -57,35 +58,46 @@ const DetectedToken = ({ setShowDetectedTokens }) => {
   const detectedTokensMultichain = useSelector(
     getAllDetectedTokensForSelectedAddress,
   );
+  const { tokenNetworkFilter } = useSelector(getPreferences);
+  const allNetworksFilterShown = Object.keys(tokenNetworkFilter ?? {}).length;
+
   const configuration = useSelector(getNetworkConfigurationsByChainId);
 
-  const totalDetectedTokens = process.env.PORTFOLIO_VIEW
-    ? Object.values(detectedTokensMultichain).flat().length
-    : detectedTokens.length;
+  const totalDetectedTokens = useMemo(() => {
+    return process.env.PORTFOLIO_VIEW && !allNetworksFilterShown
+      ? Object.values(detectedTokensMultichain).flat().length
+      : detectedTokens.length;
+  }, [detectedTokens, detectedTokensMultichain, allNetworksFilterShown]);
 
-  const [tokensListDetected, setTokensListDetected] = useState(() => {
-    if (process.env.PORTFOLIO_VIEW) {
-      return Object.entries(detectedTokensMultichain).reduce(
-        (acc, [chainId, tokens]) => {
-          if (Array.isArray(tokens)) {
-            tokens.forEach((token) => {
-              acc[token.address] = {
-                token: { ...token, chainId },
-                selected: true,
-              };
-            });
-          }
-          return acc;
-        },
-        {},
-      );
-    }
+  const [tokensListDetected, setTokensListDetected] = useState({});
 
-    return detectedTokens.reduce((tokenObj, token) => {
-      tokenObj[token.address] = { token, selected: true };
-      return tokenObj;
-    }, {});
-  });
+  useEffect(() => {
+    const newTokensList = () => {
+      if (process.env.PORTFOLIO_VIEW && !allNetworksFilterShown) {
+        return Object.entries(detectedTokensMultichain).reduce(
+          (acc, [chainId, tokens]) => {
+            if (Array.isArray(tokens)) {
+              tokens.forEach((token) => {
+                acc[token.address] = {
+                  token: { ...token, chainId },
+                  selected: true,
+                };
+              });
+            }
+            return acc;
+          },
+          {},
+        );
+      }
+
+      return detectedTokens.reduce((tokenObj, token) => {
+        tokenObj[token.address] = { token, selected: true };
+        return tokenObj;
+      }, {});
+    };
+
+    setTokensListDetected(newTokensList());
+  }, [allNetworksFilterShown, detectedTokensMultichain, detectedTokens]);
 
   const [showDetectedTokenIgnoredPopover, setShowDetectedTokenIgnoredPopover] =
     useState(false);
@@ -110,7 +122,7 @@ const DetectedToken = ({ setShowDetectedTokens }) => {
       });
     });
 
-    if (process.env.PORTFOLIO_VIEW) {
+    if (process.env.PORTFOLIO_VIEW && !allNetworksFilterShown) {
       const tokensByChainId = selectedTokens.reduce((acc, token) => {
         const { chainId } = token;
 

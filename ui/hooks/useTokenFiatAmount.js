@@ -5,10 +5,13 @@ import {
   getCurrentCurrency,
   getShouldShowFiat,
   getConfirmationExchangeRates,
+  getMarketData,
+  getCurrencyRates,
 } from '../selectors';
 import { getTokenFiatAmount } from '../helpers/utils/token-util';
 import { getConversionRate } from '../ducks/metamask/metamask';
 import { isEqualCaseInsensitive } from '../../shared/modules/string-utils';
+import { CHAIN_ID_TO_CURRENCY_SYMBOL_MAP } from '../../shared/constants/network';
 
 /**
  * Get the token balance converted to fiat and formatted for display
@@ -22,6 +25,7 @@ import { isEqualCaseInsensitive } from '../../shared/modules/string-utils';
  * @param {boolean} [overrides.showFiat] - If truthy, ensures the fiat value is shown even if the showFiat value from state is falsey
  * @param {boolean} hideCurrencySymbol - Indicates whether the returned formatted amount should include the trailing currency symbol
  * @returns {string} The formatted token amount in the user's chosen fiat currency
+ * @param {string} [chainId] - The chain id
  */
 export function useTokenFiatAmount(
   tokenAddress,
@@ -29,17 +33,40 @@ export function useTokenFiatAmount(
   tokenSymbol,
   overrides = {},
   hideCurrencySymbol,
+  chainId = null,
 ) {
+  const allMarketData = useSelector(getMarketData);
+
   const contractExchangeRates = useSelector(
     getTokenExchangeRates,
     shallowEqual,
   );
+
+  const contractMarketData = chainId
+    ? Object.entries(allMarketData[chainId]).reduce(
+        (acc, [address, marketData]) => {
+          acc[address] = marketData?.price ?? null;
+          return acc;
+        },
+        {},
+      )
+    : null;
+
+  const tokenMarketData = chainId ? contractMarketData : contractExchangeRates;
+
   const confirmationExchangeRates = useSelector(getConfirmationExchangeRates);
   const mergedRates = {
-    ...contractExchangeRates,
+    ...tokenMarketData,
     ...confirmationExchangeRates,
   };
+
+  const currencyRates = useSelector(getCurrencyRates);
   const conversionRate = useSelector(getConversionRate);
+
+  const tokenConversionRate = chainId
+    ? currencyRates[CHAIN_ID_TO_CURRENCY_SYMBOL_MAP[chainId]]?.usdConversionRate
+    : conversionRate;
+
   const currentCurrency = useSelector(getCurrentCurrency);
   const userPrefersShownFiat = useSelector(getShouldShowFiat);
   const showFiat = overrides.showFiat ?? userPrefersShownFiat;
@@ -53,7 +80,7 @@ export function useTokenFiatAmount(
     () =>
       getTokenFiatAmount(
         tokenExchangeRate,
-        conversionRate,
+        tokenConversionRate,
         currentCurrency,
         tokenAmount,
         tokenSymbol,
@@ -61,8 +88,8 @@ export function useTokenFiatAmount(
         hideCurrencySymbol,
       ),
     [
+      tokenConversionRate,
       tokenExchangeRate,
-      conversionRate,
       currentCurrency,
       tokenAmount,
       tokenSymbol,

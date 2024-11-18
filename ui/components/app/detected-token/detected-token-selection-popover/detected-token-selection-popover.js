@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import React, { useContext, useMemo } from 'react';
 import PropTypes from 'prop-types';
 import { useSelector } from 'react-redux';
 
@@ -12,7 +12,9 @@ import {
 import {
   getAllDetectedTokensForSelectedAddress,
   getCurrentChainId,
+  getCurrentNetwork,
   getDetectedTokensInCurrentNetwork,
+  getPreferences,
 } from '../../../../selectors';
 
 import Popover from '../../../ui/popover';
@@ -35,17 +37,23 @@ const DetectedTokenSelectionPopover = ({
   const chainId = useSelector(getCurrentChainId);
 
   const detectedTokens = useSelector(getDetectedTokensInCurrentNetwork);
+  const { tokenNetworkFilter } = useSelector(getPreferences);
+  const allNetworksFilterShown = Object.keys(tokenNetworkFilter ?? {}).length;
+
+  const currentNetwork = useSelector(getCurrentNetwork);
 
   const detectedTokensMultichain = useSelector(
     getAllDetectedTokensForSelectedAddress,
   );
 
-  const totalTokens = process.env.PORTFOLIO_VIEW
-    ? Object.values(detectedTokensMultichain).reduce(
-        (count, tokenArray) => count + tokenArray.length,
-        0,
-      )
-    : detectedTokens.length;
+  const totalTokens = useMemo(() => {
+    return process.env.PORTFOLIO_VIEW && !allNetworksFilterShown
+      ? Object.values(detectedTokensMultichain).reduce(
+          (count, tokenArray) => count + tokenArray.length,
+          0,
+        )
+      : detectedTokens.length;
+  }, [detectedTokensMultichain, detectedTokens, allNetworksFilterShown]);
 
   const { selected: selectedTokens = [] } =
     sortingBasedOnTokenSelection(tokensListDetected);
@@ -104,7 +112,7 @@ const DetectedTokenSelectionPopover = ({
       onClose={onClose}
       footer={footer}
     >
-      {process.env.PORTFOLIO_VIEW ? (
+      {process.env.PORTFOLIO_VIEW && !allNetworksFilterShown ? (
         <Box margin={3}>
           {Object.entries(detectedTokensMultichain).map(
             ([networkId, tokens]) => {
@@ -129,6 +137,7 @@ const DetectedTokenSelectionPopover = ({
                 token={token}
                 handleTokenSelection={handleTokenSelection}
                 tokensListDetected={tokensListDetected}
+                chainId={currentNetwork.chainId}
               />
             );
           })}
