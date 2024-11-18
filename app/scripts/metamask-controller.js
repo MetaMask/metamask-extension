@@ -4061,14 +4061,6 @@ export default class MetamaskController extends EventEmitter {
           tokenRatesController,
         ),
 
-      tokenBalancesStartPolling: tokenBalancesController.startPolling.bind(
-        tokenBalancesController,
-      ),
-      tokenBalancesStopPollingByPollingToken:
-        tokenBalancesController.stopPollingByPollingToken.bind(
-          tokenBalancesController,
-        ),
-
       tokenDetectionStartPolling: tokenDetectionController.startPolling.bind(
         tokenDetectionController,
       ),
