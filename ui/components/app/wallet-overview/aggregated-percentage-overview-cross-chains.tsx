@@ -48,11 +48,11 @@ export const AggregatedPercentageOverviewCrossChains = () => {
 
   const getPerChainTotalFiat1dAgo = (
     chainId: string,
-    tokenFiatBalances: { [x: string]: any },
-    tokensWithBalances: any[],
+    tokenFiatBalances: string[],
+    tokensWithBalances: { string: string; balance: string; address: string }[],
   ) => {
     const totalPerChain1dAgoERC20 = tokensWithBalances.reduce(
-      (total1dAgo: number, item: { address: string }, idx: string | number) => {
+      (total1dAgo: number, item: { address: string }, idx: number) => {
         const found =
           crossChainMarketData?.[chainId]?.[toChecksumAddress(item.address)];
 
@@ -70,7 +70,19 @@ export const AggregatedPercentageOverviewCrossChains = () => {
 
   const totalFiat1dAgoCrossChains = useMemo(() => {
     return tokenFiatBalancesCrossChains.reduce(
-      (total1dAgoCrossChains: any, item: any) => {
+      (
+        total1dAgoCrossChains: number,
+        item: {
+          chainId: string;
+          nativeFiatValue: string;
+          tokenFiatBalances: string[];
+          tokensWithBalances: {
+            string: string;
+            balance: string;
+            address: string;
+          }[];
+        },
+      ) => {
         const perChainERC20Total = getPerChainTotalFiat1dAgo(
           item.chainId,
           item.tokenFiatBalances,

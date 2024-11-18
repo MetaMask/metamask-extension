@@ -55,6 +55,7 @@ import {
   getMetaMetricsId,
   getParticipateInMetaMetrics,
   SwapsEthToken,
+  getIsTokenNetworkFilterEqualCurrentNetwork,
   ///: END:ONLY_INCLUDE_IF
 } from '../../../selectors';
 import Spinner from '../../ui/spinner';
@@ -73,6 +74,7 @@ import { useAccountTotalCrossChainFiatBalance } from '../../../hooks/useAccountT
 import { useGetFormattedTokensPerChain } from '../../../hooks/useGetFormattedTokensPerChain';
 import WalletOverview from './wallet-overview';
 import CoinButtons from './coin-buttons';
+import { AggregatedPercentageOverview } from './aggregated-percentage-overview';
 import { AggregatedPercentageOverviewCrossChains } from './aggregated-percentage-overview-cross-chains';
 
 export type CoinOverviewProps = {
@@ -138,10 +140,13 @@ export const CoinOverview = ({
   const { showFiatInTestnets, privacyMode, showNativeTokenAsMainBalance } =
     useSelector(getPreferences);
 
+  const isTokenNetworkFilterEqualCurrentNetwork = useSelector(
+    getIsTokenNetworkFilterEqualCurrentNetwork,
+  );
+
   const shouldHideZeroBalanceTokens = useSelector(
     getShouldHideZeroBalanceTokens,
   );
-
   const { formattedTokensWithBalancesPerChain } = useGetFormattedTokensPerChain(
     account,
     shouldHideZeroBalanceTokens,
@@ -232,8 +237,12 @@ export const CoinOverview = ({
       }
       return (
         <Box className="wallet-overview__currency-wrapper">
-          {/*   <AggregatedPercentageOverview /> */}
-          <AggregatedPercentageOverviewCrossChains />
+          {isTokenNetworkFilterEqualCurrentNetwork ? (
+            <AggregatedPercentageOverview />
+          ) : (
+            <AggregatedPercentageOverviewCrossChains />
+          )}
+
           {
             ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
             <ButtonLink

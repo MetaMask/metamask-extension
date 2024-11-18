@@ -984,6 +984,18 @@ export function getPetnamesEnabled(state) {
   return petnamesEnabled;
 }
 
+export function getIsTokenNetworkFilterEqualCurrentNetwork(state) {
+  const chainId = getCurrentChainId(state);
+  const { tokenNetworkFilter } = getPreferences(state);
+  if (
+    Object.keys(tokenNetworkFilter)?.length === 1 &&
+    Object.keys(tokenNetworkFilter)[0] === chainId
+  ) {
+    return true;
+  }
+  return false;
+}
+
 export function getUseTransactionSimulations(state) {
   return Boolean(state.metamask.useTransactionSimulations);
 }

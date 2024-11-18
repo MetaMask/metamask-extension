@@ -12,7 +12,6 @@ import {
   getAllTokens,
 } from '../../../selectors';
 import { useAccountTotalCrossChainFiatBalance } from '../../../hooks/useAccountTotalCrossChainFiatBalance';
-import { AggregatedPercentageOverview } from './aggregated-percentage-overview';
 import { AggregatedPercentageOverviewCrossChains } from './aggregated-percentage-overview-cross-chains';
 
 jest.mock('react-redux', () => ({
