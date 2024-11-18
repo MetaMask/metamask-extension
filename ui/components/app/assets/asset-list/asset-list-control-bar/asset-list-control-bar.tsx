@@ -96,7 +96,9 @@ const AssetListControlBar = ({ showTokensLinks }: AssetListControlBarProps) => {
       <Box
         display={Display.Flex}
         justifyContent={
-          isFullScreen ? JustifyContent.flexStart : JustifyContent.spaceBetween
+          process.env.PORTFOLIO_VIEW
+            ? JustifyContent.spaceBetween
+            : JustifyContent.flexEnd
         }
       >
         {process.env.PORTFOLIO_VIEW && (
