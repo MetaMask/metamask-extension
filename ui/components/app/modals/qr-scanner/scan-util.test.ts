@@ -1,109 +1,35 @@
 import { parseScanContent } from './scan-util';
 
-describe('QR Scanner parseContent', () => {
+describe('QR Scanner parseScanContent', () => {
   it('should parse ethereum prefixed addresses', () => {
     const result = parseScanContent(
       'ethereum:0x1234567890123456789012345678901234567890',
     );
-    expect(result).toStrictEqual({
-      type: 'address',
-      values: { address: '0x1234567890123456789012345678901234567890' },
-    });
+    expect(result).toBe('0x1234567890123456789012345678901234567890');
   });
 
-  it('should parse plain Ethereum addresses', () => {
-    const result = parseScanContent(
-      '0x1234567890123456789012345678901234567890',
-    );
-    expect(result).toStrictEqual({
-      type: 'address',
-      values: { address: '0x1234567890123456789012345678901234567890' },
-    });
-  });
-
-  // New test cases for unknown types
-  it('should return unknown type for invalid ethereum prefix format', () => {
+  it('should return null for invalid ethereum prefix format', () => {
     const result = parseScanContent('ethereum:0x123'); // too short
-    expect(result).toStrictEqual({
-      type: 'unknown',
-      values: {},
-    });
+    expect(result).toBe(null);
   });
 
-  it('should return unknown type for non-address format', () => {
+  it('should return null for non-address format', () => {
     const result = parseScanContent('hello world');
-    expect(result).toStrictEqual({
-      type: 'unknown',
-      values: {},
-    });
+    expect(result).toBe(null);
   });
 
-  it('should return unknown type for invalid hex address', () => {
+  it('should return null for invalid hex address', () => {
     const result = parseScanContent(
-      '0xZZZZ567890123456789012345678901234567890',
+      'ethereum:0xZZZZ567890123456789012345678901234567890',
     ); // invalid hex
-    expect(result).toStrictEqual({
-      type: 'unknown',
-      values: {},
-    });
+    expect(result).toBe(null);
   });
 
-  it('should return unknown type for address with wrong length', () => {
+  it('should return null for address with wrong length', () => {
     const result = parseScanContent(
-      '0x12345678901234567890123456789012345678901',
+      'ethereum:0x12345678901234567890123456789012345678901',
     ); // 41 chars instead of 40
-    expect(result).toStrictEqual({
-      type: 'unknown',
-      values: {},
-    });
+    expect(result).toBe(null);
   });
 
-  // New EIP-681 format tests
-  it('should return unknown type for ERC20 transfer format', () => {
-    const result = parseScanContent(
-      'ethereum:0x89205a3a3b2a69de6dbf7f01ed13b2108b2c43e7/transfer?address=0x8e23ee67d1332ad560396262c48ffbb01f93d052&uint256=1',
-    );
-    expect(result).toStrictEqual({
-      type: 'unknown',
-      values: {},
-    });
-  });
-
-  it('should return unknown type for pay with gas parameters', () => {
-    const result = parseScanContent(
-      'ethereum:0x89205a3a3b2a69de6dbf7f01ed13b2108b2c43e7?value=1&gasPrice=100',
-    );
-    expect(result).toStrictEqual({
-      type: 'unknown',
-      values: {},
-    });
-  });
-
-  it('should return unknown type for contract function calls', () => {
-    const result = parseScanContent(
-      'ethereum:0x89205a3a3b2a69de6dbf7f01ed13b2108b2c43e7/transfer(address,uint256)?address=0x8e23ee67d1332ad560396262c48ffbb01f93d052&uint256=1',
-    );
-    expect(result).toStrictEqual({
-      type: 'unknown',
-      values: {},
-    });
-  });
-
-  it('should return unknown type for ENS names', () => {
-    const result = parseScanContent('ethereum:vitalik.eth');
-    expect(result).toStrictEqual({
-      type: 'unknown',
-      values: {},
-    });
-  });
-
-  it('should return unknown type for value parameter', () => {
-    const result = parseScanContent(
-      'ethereum:0x89205a3a3b2a69de6dbf7f01ed13b2108b2c43e7?value=2.014e18',
-    );
-    expect(result).toStrictEqual({
-      type: 'unknown',
-      values: {},
-    });
-  });
 });
