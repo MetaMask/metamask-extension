@@ -490,7 +490,7 @@ export function getSelectedAccountTokensAcrossChains(state) {
     ...Object.keys(nativeTokenBalancesByChainId || {}),
   ]);
 
-  chainIds.forEach((chainId) => {
+  chainIds?.forEach((chainId) => {
     if (!tokensByChain[chainId]) {
       tokensByChain[chainId] = [];
     }
