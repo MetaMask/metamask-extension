@@ -4934,11 +4934,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/assets-controllers@npm:43.1.1":
-  version: 43.1.1
-  resolution: "@metamask/assets-controllers@npm:43.1.1"
+"@metamask/assets-controllers@npm:44.0.0":
+  version: 44.0.0
+  resolution: "@metamask/assets-controllers@npm:44.0.0"
   dependencies:
     "@ethereumjs/util": "npm:^8.1.0"
+    "@ethersproject/abi": "npm:^5.7.0"
     "@ethersproject/address": "npm:^5.7.0"
     "@ethersproject/bignumber": "npm:^5.7.0"
     "@ethersproject/contracts": "npm:^5.7.0"
@@ -4968,15 +4969,16 @@ __metadata:
     "@metamask/keyring-controller": ^18.0.0
     "@metamask/network-controller": ^22.0.0
     "@metamask/preferences-controller": ^14.0.0
-  checksum: 10/e8f37928085a243f2f3a9d3b09b486f31737814d6257ee49bc2d841d2f467733b8c533c056e9ca24acdcc80414503b34b00e10abb1cdfeb8483e6fe30bc4a62f
+  checksum: 10/6f3d8712a90aa322aabd38d43663d299ad7ee98a6d838d72bfc3b426ea0e4e925bb78c1aaaa3c75d43e95d46993c47583a4a03f4c58aee155525424fa86207ae
   languageName: node
   linkType: hard
 
-"@metamask/assets-controllers@patch:@metamask/assets-controllers@npm%3A43.1.1#~/.yarn/patches/@metamask-assets-controllers-npm-43.1.1-c223d56176.patch::version=43.1.1&hash=5a94c2":
-  version: 43.1.1
-  resolution: "@metamask/assets-controllers@patch:@metamask/assets-controllers@npm%3A43.1.1#~/.yarn/patches/@metamask-assets-controllers-npm-43.1.1-c223d56176.patch::version=43.1.1&hash=5a94c2"
+"@metamask/assets-controllers@patch:@metamask/assets-controllers@npm%3A44.0.0#~/.yarn/patches/@metamask-assets-controllers-npm-44.0.0-c223d56176.patch::version=44.0.0&hash=5a94c2":
+  version: 44.0.0
+  resolution: "@metamask/assets-controllers@patch:@metamask/assets-controllers@npm%3A44.0.0#~/.yarn/patches/@metamask-assets-controllers-npm-44.0.0-c223d56176.patch::version=44.0.0&hash=5a94c2"
   dependencies:
     "@ethereumjs/util": "npm:^8.1.0"
+    "@ethersproject/abi": "npm:^5.7.0"
     "@ethersproject/address": "npm:^5.7.0"
     "@ethersproject/bignumber": "npm:^5.7.0"
     "@ethersproject/contracts": "npm:^5.7.0"
@@ -5006,15 +5008,16 @@ __metadata:
     "@metamask/keyring-controller": ^18.0.0
     "@metamask/network-controller": ^22.0.0
     "@metamask/preferences-controller": ^14.0.0
-  checksum: 10/1a3672cb721c6716d33c1c6c5e7ffc2859689407e70af7503204220afe41f6c0d20f883ad7d51089af7376e4005de7479525b3faa49113c942cf3ab1bceba154
+  checksum: 10/0d6c386a1f1e68ab339340fd8fa600827f55f234bc54b2224069a1819ab037641daa9696a0d62f187c0649317393efaeeb119a7852af51da3bb340e0e98cf9f6
   languageName: node
   linkType: hard
 
-"@metamask/assets-controllers@patch:@metamask/assets-controllers@patch%3A@metamask/assets-controllers@npm%253A43.1.1%23~/.yarn/patches/@metamask-assets-controllers-npm-43.1.1-c223d56176.patch%3A%3Aversion=43.1.1&hash=5a94c2#~/.yarn/patches/@metamask-assets-controllers-patch-9e00573eb4.patch":
-  version: 43.1.1
-  resolution: "@metamask/assets-controllers@patch:@metamask/assets-controllers@patch%3A@metamask/assets-controllers@npm%253A43.1.1%23~/.yarn/patches/@metamask-assets-controllers-npm-43.1.1-c223d56176.patch%3A%3Aversion=43.1.1&hash=5a94c2#~/.yarn/patches/@metamask-assets-controllers-patch-9e00573eb4.patch::version=43.1.1&hash=c4e407"
+"@metamask/assets-controllers@patch:@metamask/assets-controllers@patch%3A@metamask/assets-controllers@npm%253A44.0.0%23~/.yarn/patches/@metamask-assets-controllers-npm-44.0.0-c223d56176.patch%3A%3Aversion=44.0.0&hash=5a94c2#~/.yarn/patches/@metamask-assets-controllers-patch-9e00573eb4.patch":
+  version: 44.0.0
+  resolution: "@metamask/assets-controllers@patch:@metamask/assets-controllers@patch%3A@metamask/assets-controllers@npm%253A44.0.0%23~/.yarn/patches/@metamask-assets-controllers-npm-44.0.0-c223d56176.patch%3A%3Aversion=44.0.0&hash=5a94c2#~/.yarn/patches/@metamask-assets-controllers-patch-9e00573eb4.patch::version=44.0.0&hash=c4e407"
   dependencies:
     "@ethereumjs/util": "npm:^8.1.0"
+    "@ethersproject/abi": "npm:^5.7.0"
     "@ethersproject/address": "npm:^5.7.0"
     "@ethersproject/bignumber": "npm:^5.7.0"
     "@ethersproject/contracts": "npm:^5.7.0"
@@ -5044,7 +5047,7 @@ __metadata:
     "@metamask/keyring-controller": ^18.0.0
     "@metamask/network-controller": ^22.0.0
     "@metamask/preferences-controller": ^14.0.0
-  checksum: 10/189f45b9afefef9dc54f29920eb64fcebbc1dd13d792627ab2649c973a94ca310c848411fe4b294419c881d1956ff50bd6107f7411faa2a953da005662269e40
+  checksum: 10/11e8920bdf8ffce4a534c6aadfe768176c4e461a00bc06e6ece52f085755ff252194881d9edd308097186a05057075fd9812b6e4b1fd97dd731814ad205013da
   languageName: node
   linkType: hard
 
@@ -26737,7 +26740,7 @@ __metadata:
     "@metamask/announcement-controller": "npm:^7.0.0"
     "@metamask/api-specs": "npm:^0.9.3"
     "@metamask/approval-controller": "npm:^7.0.0"
-    "@metamask/assets-controllers": "patch:@metamask/assets-controllers@patch%3A@metamask/assets-controllers@npm%253A43.1.1%23~/.yarn/patches/@metamask-assets-controllers-npm-43.1.1-c223d56176.patch%3A%3Aversion=43.1.1&hash=5a94c2#~/.yarn/patches/@metamask-assets-controllers-patch-9e00573eb4.patch"
+    "@metamask/assets-controllers": "patch:@metamask/assets-controllers@patch%3A@metamask/assets-controllers@npm%253A44.0.0%23~/.yarn/patches/@metamask-assets-controllers-npm-44.0.0-c223d56176.patch%3A%3Aversion=44.0.0&hash=5a94c2#~/.yarn/patches/@metamask-assets-controllers-patch-9e00573eb4.patch"
     "@metamask/auto-changelog": "npm:^2.1.0"
     "@metamask/base-controller": "npm:^7.0.0"
     "@metamask/bitcoin-wallet-snap": "npm:^0.8.2"

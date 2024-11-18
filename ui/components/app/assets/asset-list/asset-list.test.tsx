@@ -64,6 +64,8 @@ jest.mock('../../../../hooks/useIsOriginalNativeTokenSymbol', () => {
 jest.mock('../../../../store/actions', () => {
   return {
     getTokenSymbol: jest.fn(),
+    tokenBalancesStartPolling: jest.fn().mockResolvedValue('pollingToken'),
+    tokenBalancesStopPollingByPollingToken: jest.fn(),
   };
 });
 
