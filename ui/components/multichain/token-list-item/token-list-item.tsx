@@ -389,10 +389,7 @@ export const TokenListItem = ({
                   isHidden={privacyMode}
                   length={SensitiveTextLength.Short}
                 >
-                  {primary}{' '}
-                  {isNativeCurrency || isPrimaryTokenSymbolHidden
-                    ? ''
-                    : tokenSymbol}
+                  {primary} {isPrimaryTokenSymbolHidden ? '' : tokenSymbol}
                 </SensitiveText>
               </Box>
             ) : (
@@ -422,10 +419,7 @@ export const TokenListItem = ({
                   isHidden={privacyMode}
                   length={SensitiveTextLength.Short}
                 >
-                  {primary}{' '}
-                  {isNativeCurrency || isPrimaryTokenSymbolHidden
-                    ? ''
-                    : tokenSymbol}
+                  {primary} {isPrimaryTokenSymbolHidden ? '' : tokenSymbol}
                 </SensitiveText>
               </Box>
             )}
