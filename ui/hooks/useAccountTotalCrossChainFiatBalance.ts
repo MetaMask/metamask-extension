@@ -13,7 +13,6 @@ import {
 import { getCurrencyRates } from '../ducks/metamask/metamask';
 import { getTokenFiatAmount } from '../helpers/utils/token-util';
 import { TokenWithBalance } from '../components/app/assets/asset-list/asset-list';
-import { number } from 'yargs';
 
 type AddressBalances = {
   [address: string]: number;
