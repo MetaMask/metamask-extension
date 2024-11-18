@@ -12,10 +12,23 @@ import {
 } from '../../shared/modules/conversion.utils';
 import { getCurrencyRates } from '../ducks/metamask/metamask';
 import { getTokenFiatAmount } from '../helpers/utils/token-util';
+import { TokenWithBalance } from '../components/app/assets/asset-list/asset-list';
+import { number } from 'yargs';
+
+type AddressBalances = {
+  [address: string]: number;
+};
+
+export type Balances = {
+  [id: string]: AddressBalances;
+};
 
 export const useAccountTotalCrossChainFiatBalance = (
-  account,
-  formattedTokensWithBalancesPerChain,
+  account: { address: string },
+  formattedTokensWithBalancesPerChain: {
+    chainId: string;
+    tokensWithBalances: TokenWithBalance[];
+  }[],
 ) => {
   const allNetworks = useSelector(getNetworkConfigurationsByChainId);
   const currencyRates = useSelector(getCurrencyRates);
@@ -26,13 +39,13 @@ export const useAccountTotalCrossChainFiatBalance = (
     shallowEqual,
   );
 
-  const crossChainCachedBalances = useSelector(
+  const crossChainCachedBalances: Balances = useSelector(
     getCrossChainMetaMaskCachedBalances,
   );
 
   // const loading = false; //todo check if loading is still needed
 
-  const mergedCrossChainRates = {
+  const mergedCrossChainRates: Balances = {
     ...crossChainContractRates, // todo add confirmation exchange rates?
   };
 
@@ -40,7 +53,8 @@ export const useAccountTotalCrossChainFiatBalance = (
     (singleChainTokenBalances) => {
       const { tokensWithBalances } = singleChainTokenBalances;
       const matchedChainSymbol =
-        allNetworks[singleChainTokenBalances.chainId].nativeCurrency;
+        allNetworks[singleChainTokenBalances.chainId as `0x${string}`]
+          .nativeCurrency;
       const conversionRate =
         currencyRates?.[matchedChainSymbol]?.conversionRate;
       const tokenFiatBalances = tokensWithBalances.map((token) => {
@@ -81,11 +95,14 @@ export const useAccountTotalCrossChainFiatBalance = (
 
   const finalTotal = tokenFiatBalancesCrossChains.reduce(
     (accumulator, currentValue) => {
+      const tmpCurrentValueFiatBalances = currentValue.tokenFiatBalances.filter(
+        (value) => value !== undefined,
+      );
       const totalFiatBalance = sumDecimals(
         currentValue.nativeFiatValue,
-        ...currentValue.tokenFiatBalances,
+        ...tmpCurrentValueFiatBalances,
       );
-      // todo clean this
+
       const totalAsNumber = totalFiatBalance.toNumber
         ? totalFiatBalance.toNumber()
         : Number(totalFiatBalance);
