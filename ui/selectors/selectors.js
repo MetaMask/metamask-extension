@@ -451,14 +451,6 @@ export function getMetaMaskCachedBalances(state) {
 
 export function getCrossChainMetaMaskCachedBalances(state) {
   const allAccountsByChainId = state.metamask.accountsByChainId;
-  /*   return Object.entries(state.metamask.accountsByChainId).reduce(
-    (accumulator, [key, value]) => {
-      accumulator[key] = value.balance;
-      return accumulator;
-    },
-    {},
-  ); */
-
   return Object.keys(allAccountsByChainId).reduce((acc, topLevelKey) => {
     acc[topLevelKey] = Object.keys(allAccountsByChainId[topLevelKey]).reduce(
       (innerAcc, innerKey) => {
@@ -614,14 +606,6 @@ export const getCrossChainTokenExchangeRates = (state) => {
 
     return acc;
   }, {});
-
-  /*   return Object.entries(contractMarketData).reduce(
-    (acc, [address, marketData]) => {
-      acc[address] = marketData?.price ?? null;
-      return acc;
-    },
-    {},
-  ); */
 };
 
 /**
