@@ -838,6 +838,123 @@ describe('Selectors', () => {
     });
   });
 
+  describe('#getChainIdsToPoll', () => {
+    const networkConfigurationsByChainId = {
+      [CHAIN_IDS.MAINNET]: {
+        chainId: CHAIN_IDS.MAINNET,
+        defaultRpcEndpointIndex: 0,
+        rpcEndpoints: [{ networkClientId: 'mainnet' }],
+      },
+      [CHAIN_IDS.LINEA_MAINNET]: {
+        chainId: CHAIN_IDS.LINEA_MAINNET,
+        defaultRpcEndpointIndex: 0,
+        rpcEndpoints: [{ networkClientId: 'linea-mainnet' }],
+      },
+      [CHAIN_IDS.SEPOLIA]: {
+        chainId: CHAIN_IDS.SEPOLIA,
+        defaultRpcEndpointIndex: 0,
+        rpcEndpoints: [{ networkClientId: 'sepolia' }],
+      },
+      [CHAIN_IDS.LINEA_SEPOLIA]: {
+        chainId: CHAIN_IDS.LINEA_SEPOLIA,
+        defaultRpcEndpointIndex: 0,
+        rpcEndpoints: [{ networkClientId: 'linea-sepolia' }],
+      },
+    };
+
+    beforeEach(() => {
+      process.env.PORTFOLIO_VIEW = 'true';
+    });
+
+    afterEach(() => {
+      process.env.PORTFOLIO_VIEW = undefined;
+    });
+
+    it('returns only non-test chain IDs', () => {
+      const chainIds = selectors.getChainIdsToPoll({
+        metamask: {
+          preferences: { pausedChainIds: [] },
+          networkConfigurationsByChainId,
+          selectedNetworkClientId: 'mainnet',
+        },
+      });
+      expect(Object.values(chainIds)).toHaveLength(2);
+      expect(chainIds).toStrictEqual([
+        CHAIN_IDS.MAINNET,
+        CHAIN_IDS.LINEA_MAINNET,
+      ]);
+    });
+
+    it('does not return paused chain IDs', () => {
+      const chainIds = selectors.getChainIdsToPoll({
+        metamask: {
+          preferences: { pausedChainIds: [CHAIN_IDS.LINEA_MAINNET] },
+          networkConfigurationsByChainId,
+          selectedNetworkClientId: 'mainnet',
+        },
+      });
+      expect(Object.values(chainIds)).toHaveLength(1);
+      expect(chainIds).toStrictEqual([CHAIN_IDS.MAINNET]);
+    });
+  });
+
+  describe('#getNetworkClientIdsToPoll', () => {
+    const networkConfigurationsByChainId = {
+      [CHAIN_IDS.MAINNET]: {
+        chainId: CHAIN_IDS.MAINNET,
+        defaultRpcEndpointIndex: 0,
+        rpcEndpoints: [{ networkClientId: 'mainnet' }],
+      },
+      [CHAIN_IDS.LINEA_MAINNET]: {
+        chainId: CHAIN_IDS.LINEA_MAINNET,
+        defaultRpcEndpointIndex: 0,
+        rpcEndpoints: [{ networkClientId: 'linea-mainnet' }],
+      },
+      [CHAIN_IDS.SEPOLIA]: {
+        chainId: CHAIN_IDS.SEPOLIA,
+        defaultRpcEndpointIndex: 0,
+        rpcEndpoints: [{ networkClientId: 'sepolia' }],
+      },
+      [CHAIN_IDS.LINEA_SEPOLIA]: {
+        chainId: CHAIN_IDS.LINEA_SEPOLIA,
+        defaultRpcEndpointIndex: 0,
+        rpcEndpoints: [{ networkClientId: 'linea-sepolia' }],
+      },
+    };
+
+    beforeEach(() => {
+      process.env.PORTFOLIO_VIEW = 'true';
+    });
+
+    afterEach(() => {
+      process.env.PORTFOLIO_VIEW = undefined;
+    });
+
+    it('returns only non-test chain IDs', () => {
+      const chainIds = selectors.getNetworkClientIdsToPoll({
+        metamask: {
+          preferences: { pausedChainIds: [] },
+          networkConfigurationsByChainId,
+          selectedNetworkClientId: 'mainnet',
+        },
+      });
+      expect(Object.values(chainIds)).toHaveLength(2);
+      expect(chainIds).toStrictEqual(['mainnet', 'linea-mainnet']);
+    });
+
+    it('does not return paused chain IDs', () => {
+      const chainIds = selectors.getNetworkClientIdsToPoll({
+        metamask: {
+          preferences: { pausedChainIds: [CHAIN_IDS.LINEA_MAINNET] },
+          networkConfigurationsByChainId,
+          selectedNetworkClientId: 'mainnet',
+        },
+      });
+      expect(Object.values(chainIds)).toHaveLength(1);
+      expect(chainIds).toStrictEqual(['mainnet']);
+    });
+  });
+
   describe('#isHardwareWallet', () => {
     it('returns false if it is not a HW wallet', () => {
       const mockStateWithImported = modifyStateWithHWKeyring(
