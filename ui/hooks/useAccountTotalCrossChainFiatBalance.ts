@@ -58,7 +58,7 @@ export const useAccountTotalCrossChainFiatBalance = (
         currencyRates?.[matchedChainSymbol]?.conversionRate;
       const tokenFiatBalances = tokensWithBalances.map((token) => {
         const tokenExchangeRate =
-          mergedCrossChainRates[singleChainTokenBalances.chainId][
+          mergedCrossChainRates?.[singleChainTokenBalances.chainId]?.[
             toChecksumAddress(token.address)
           ];
         const totalFiatValue = getTokenFiatAmount(
