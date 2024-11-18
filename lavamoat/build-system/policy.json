@@ -1163,21 +1163,6 @@
         "crypto": true
       }
     },
-    "@sentry/cli>which": {
-      "builtin": {
-        "path.join": true
-      },
-      "globals": {
-        "process.cwd": true,
-        "process.env.OSTYPE": true,
-        "process.env.PATH": true,
-        "process.env.PATHEXT": true,
-        "process.platform": true
-      },
-      "packages": {
-        "@sentry/cli>which>isexe": true
-      }
-    },
     "@sentry/cli>which>isexe": {
       "builtin": {
         "fs": true
@@ -2145,9 +2130,9 @@
         "process.platform": true
       },
       "packages": {
-        "@sentry/cli>which": true,
         "cross-spawn>path-key": true,
-        "cross-spawn>shebang-command": true
+        "cross-spawn>shebang-command": true,
+        "cross-spawn>which": true
       }
     },
     "cross-spawn>path-key": {
@@ -2159,6 +2144,21 @@
     "cross-spawn>shebang-command": {
       "packages": {
         "cross-spawn>shebang-command>shebang-regex": true
+      }
+    },
+    "cross-spawn>which": {
+      "builtin": {
+        "path.join": true
+      },
+      "globals": {
+        "process.cwd": true,
+        "process.env.OSTYPE": true,
+        "process.env.PATH": true,
+        "process.env.PATHEXT": true,
+        "process.platform": true
+      },
+      "packages": {
+        "@sentry/cli>which>isexe": true
       }
     },
     "debounce-stream>duplexer": {
