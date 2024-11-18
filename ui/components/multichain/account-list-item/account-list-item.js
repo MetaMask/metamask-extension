@@ -50,6 +50,7 @@ import {
   getUseBlockie,
   getPreferences,
   getShouldHideZeroBalanceTokens,
+  getIsTokenNetworkFilterEqualCurrentNetwork,
 } from '../../../selectors';
 import {
   getMultichainIsTestnet,
@@ -109,9 +110,13 @@ const AccountListItem = ({
   const shouldHideZeroBalanceTokens = useSelector(
     getShouldHideZeroBalanceTokens,
   );
+  const isTokenNetworkFilterEqualCurrentNetwork = useSelector(
+    getIsTokenNetworkFilterEqualCurrentNetwork,
+  );
   const { formattedTokensWithBalancesPerChain } = useGetFormattedTokensPerChain(
     account,
     shouldHideZeroBalanceTokens,
+    isTokenNetworkFilterEqualCurrentNetwork,
   );
   const { totalFiatBalance } = useAccountTotalCrossChainFiatBalance(
     account,

@@ -147,9 +147,11 @@ export const CoinOverview = ({
   const shouldHideZeroBalanceTokens = useSelector(
     getShouldHideZeroBalanceTokens,
   );
+
   const { formattedTokensWithBalancesPerChain } = useGetFormattedTokensPerChain(
     account,
     shouldHideZeroBalanceTokens,
+    isTokenNetworkFilterEqualCurrentNetwork,
   );
   const { totalFiatBalance } = useAccountTotalCrossChainFiatBalance(
     account,

@@ -37,6 +37,7 @@ export const AggregatedPercentageOverviewCrossChains = () => {
   const { formattedTokensWithBalancesPerChain } = useGetFormattedTokensPerChain(
     selectedAccount,
     shouldHideZeroBalanceTokens,
+    false,
   );
   const {
     totalFiatBalance: totalFiatCrossChains,

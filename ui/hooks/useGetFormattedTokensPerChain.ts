@@ -4,7 +4,6 @@ import { Token } from '@metamask/assets-controllers';
 import {
   getNetworkConfigurationsByChainId,
   getAllTokens,
-  getIsTokenNetworkFilterEqualCurrentNetwork,
   getCurrentChainId,
 } from '../selectors';
 import { hexToDecimal } from '../../shared/modules/conversion.utils';
@@ -26,6 +25,7 @@ type TokenBalancesMapping = {
 export const useGetFormattedTokensPerChain = (
   account: { address: string },
   shouldHideZeroBalanceTokens: boolean,
+  shouldGetTokensPerCurrentChain: boolean,
 ) => {
   const allNetworks = useSelector(getNetworkConfigurationsByChainId);
   const currentChainId = useSelector(getCurrentChainId);
@@ -34,10 +34,6 @@ export const useGetFormattedTokensPerChain = (
     (singleChainId) =>
       !TEST_CHAINS.includes(singleChainId as (typeof TEST_CHAINS)[number]),
   );
-  const isTokenNetworkFilterEqualCurrentNetwork = useSelector(
-    getIsTokenNetworkFilterEqualCurrentNetwork,
-  );
-
   const importedTokens = useSelector(getAllTokens); // returns the tokens only when they are imported
   const currentTokenBalances: { tokenBalances: TokenBalancesMapping } =
     useTokenBalances({
@@ -46,7 +42,7 @@ export const useGetFormattedTokensPerChain = (
 
   // We will calculate aggregated balance only after the user imports the tokens to the wallet
   // we need to format the balances we get from useTokenBalances and match them with symbol and decimals we get from getAllTokens
-  const networksToFormat = isTokenNetworkFilterEqualCurrentNetwork
+  const networksToFormat = shouldGetTokensPerCurrentChain
     ? [currentChainId]
     : allChainIDs;
   const formattedTokensWithBalancesPerChain = networksToFormat.map(
