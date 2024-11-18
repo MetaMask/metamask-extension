@@ -969,45 +969,4 @@ describe('Confirm Transaction Base', () => {
       expect(confirmButton).toBeDisabled();
     });
   });
-
-  describe('Preventing transaction submission', () => {
-    it('should throw error when on wrong chain', async () => {
-      const txParams = {
-        ...mockTxParams,
-        to: undefined,
-        data: '0xa22cb46500000000000000',
-        chainId: '0x5',
-      };
-      const state = {
-        ...baseStore,
-        metamask: {
-          ...baseStore.metamask,
-          transactions: [
-            {
-              id: baseStore.confirmTransaction.txData.id,
-              chainId: '0x5',
-              status: 'unapproved',
-              txParams,
-            },
-          ],
-          ...mockNetworkState({ chainId: CHAIN_IDS.SEPOLIA }),
-        },
-        confirmTransaction: {
-          ...baseStore.confirmTransaction,
-          txData: {
-            ...baseStore.confirmTransaction.txData,
-            value: '0x0',
-            isUserOperation: true,
-            txParams,
-            chainId: '0x5',
-          },
-        },
-      };
-
-      // Error will be triggered by componentDidMount
-      await expect(render({ state })).rejects.toThrow(
-        'Currently selected chainId (0xaa36a7) does not match chainId (0x5) on which the transaction was proposed.',
-      );
-    });
-  });
 });

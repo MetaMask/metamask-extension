@@ -1,6 +1,6 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
-import { getTokenList, getPreferences } from '../../../../selectors';
+import { getTokenList } from '../../../../selectors';
 import { useTokenFiatAmount } from '../../../../hooks/useTokenFiatAmount';
 import { TokenListItem } from '../../../multichain';
 import { isEqualCaseInsensitive } from '../../../../../shared/modules/string-utils';
@@ -11,19 +11,22 @@ type TokenCellProps = {
   address: string;
   symbol: string;
   string?: string;
+  chainId: string;
   image: string;
-  onClick?: (arg: string) => void;
+  privacyMode?: boolean;
+  onClick?: (chainId: string, address: string) => void;
 };
 
 export default function TokenCell({
   address,
   image,
   symbol,
+  chainId,
   string,
+  privacyMode = false,
   onClick,
 }: TokenCellProps) {
   const tokenList = useSelector(getTokenList);
-  const { privacyMode } = useSelector(getPreferences);
   const tokenData = Object.values(tokenList).find(
     (token) =>
       isEqualCaseInsensitive(token.symbol, symbol) &&
@@ -43,7 +46,8 @@ export default function TokenCell({
 
   return (
     <TokenListItem
-      onClick={onClick ? () => onClick(address) : undefined}
+      chainId={chainId}
+      onClick={onClick ? () => onClick(chainId, address) : undefined}
       tokenSymbol={symbol}
       tokenImage={tokenImage}
       primary={`${primary || 0}`}

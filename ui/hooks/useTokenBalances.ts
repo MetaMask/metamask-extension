@@ -7,7 +7,7 @@ import {
   tokenBalancesStartPolling,
   tokenBalancesStopPollingByPollingToken,
 } from '../store/actions';
-import { getTokenBalances, getTokens } from '../ducks/metamask/metamask';
+import { getTokenBalances } from '../ducks/metamask/metamask';
 import { hexToDecimal } from '../../shared/modules/conversion.utils';
 import useMultiPolling from './useMultiPolling';
 
@@ -25,9 +25,9 @@ export const useTokenBalances = ({ chainIds }: { chainIds?: Hex[] } = {}) => {
 };
 
 // This hook is designed for backwards compatibility with `ui/hooks/useTokenTracker.js`
-// and the github.com/MetaMask/eth-token-tracker library. It replaces RPC
-// calls with reading state from `TokenBalancesController`. New code may prefer
-// to use `useTokenBalances` directly, or compose higher level hooks from it.
+// and the github.com/MetaMask/eth-token-tracker library. It replaces RPC calls with
+// reading state from `TokenBalancesController`. It should not be used in new code.
+// Instead, prefer to use `useTokenBalances` directly, or compose higher level hooks from it.
 export const useTokenTracker = ({
   chainId,
   tokens,
@@ -51,6 +51,7 @@ export const useTokenTracker = ({
         symbol: token.symbol,
         decimals: token.decimals,
         balance: decimalBalance,
+        balanceError: null,
         string: stringifyBalance(
           new BN(decimalBalance),
           new BN(token.decimals),
@@ -58,7 +59,7 @@ export const useTokenTracker = ({
       });
     }
     return acc;
-  }, [] as (Token & { balance: string; string: string })[]);
+  }, [] as (Token & { balance: string; string: string; balanceError: unknown })[]);
 
   return {
     tokensWithBalances,
@@ -70,13 +71,13 @@ export const useTokenTracker = ({
 export function stringifyBalance(
   balance: BN,
   bnDecimals: BN,
-  balanceDecimals = 3,
+  balanceDecimals = 5,
 ) {
   if (balance.eq(new BN(0))) {
     return '0';
   }
 
-  const decimals = parseInt(bnDecimals.toString());
+  const decimals = parseInt(bnDecimals.toString(), 10);
   if (decimals === 0) {
     return balance.toString();
   }
@@ -89,7 +90,7 @@ export function stringifyBalance(
   if (decimalIndex <= 0) {
     while (prefix.length <= decimalIndex * -1) {
       prefix += '0';
-      len++;
+      len += 1;
     }
     bal = prefix + bal;
     decimalIndex = 1;
@@ -102,13 +103,12 @@ export function stringifyBalance(
   }
 
   const fractional = bal.substr(decimalIndex, balanceDecimals);
-  if (/0+$/.test(fractional)) {
-    let withOnlySigZeroes = bal.substr(decimalIndex).replace(/0+$/, '');
+  if (/0+$/u.test(fractional)) {
+    let withOnlySigZeroes = bal.substr(decimalIndex).replace(/0+$/u, '');
     if (withOnlySigZeroes.length > 0) {
       withOnlySigZeroes = `.${withOnlySigZeroes}`;
     }
     return `${whole}${withOnlySigZeroes}`;
   }
-
   return `${whole}.${fractional}`;
 }

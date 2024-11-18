@@ -256,6 +256,9 @@
   "addNewBitcoinTestnetAccount": {
     "message": "Magdagdag ng bagong account sa Bitcoin (Testnet)"
   },
+  "addNewSolanaAccount": {
+    "message": "Magdagdag ng bagong account sa Solana (Beta)"
+  },
   "addNewToken": {
     "message": "Magdagdag ng bagong token"
   },
@@ -1620,9 +1623,6 @@
   "editSpeedUpEditGasFeeModalTitle": {
     "message": "I-edit ang pagpapabilis ng bayad sa gas"
   },
-  "enable": {
-    "message": "Payagan"
-  },
   "enableAutoDetect": {
     "message": " Paganahin ang autodetect"
   },
@@ -1699,10 +1699,6 @@
     "message": "Code: $1",
     "description": "Displayed error code for debugging purposes. $1 is the error code"
   },
-  "errorDetails": {
-    "message": "Mga Detalye ng Error",
-    "description": "Title for collapsible section that displays error details for debugging purposes"
-  },
   "errorGettingSafeChainList": {
     "message": "May error habang kinukuha ang ligtas na chain list, mangyaring magpatuloy nang may pag-iingat."
   },
@@ -1713,14 +1709,6 @@
   "errorName": {
     "message": "Code: $1",
     "description": "Displayed error name for debugging purposes. $1 is the error name"
-  },
-  "errorPageMessage": {
-    "message": "Subukang muling i-reload ang page, o kontakin ang support $1.",
-    "description": "Message displayed on generic error page in the fullscreen or notification UI, $1 is a clickable link with text defined by the 'here' key. The link will open to a form where users can file support tickets."
-  },
-  "errorPagePopupMessage": {
-    "message": "Subukan muli sa pamamagitan ng pagsasara o muling pagbubukas ng pop-up, kontakin ang support $1.",
-    "description": "Message displayed on generic error page in the popup UI, $1 is a clickable link with text defined by the 'here' key. The link will open to a form where users can file support tickets."
   },
   "errorPageTitle": {
     "message": "Nagkaroon ng error sa MetaMask",
@@ -4543,17 +4531,11 @@
   "signingInWith": {
     "message": "Nagsa-sign in gamit ang"
   },
-  "simulationDetailsFailed": {
-    "message": "Mayroong error sa pag-load ng iyong pagtataya."
-  },
   "simulationDetailsFiatNotAvailable": {
     "message": "Hindi Available"
   },
   "simulationDetailsIncomingHeading": {
     "message": "Natanggap mo"
-  },
-  "simulationDetailsNoBalanceChanges": {
-    "message": "Walang pagbabagong nahulaan para sa iyong wallet"
   },
   "simulationDetailsOutgoingHeading": {
     "message": "Nagpadala ka"
@@ -4591,9 +4573,6 @@
   },
   "siweResources": {
     "message": "Mga Mapagkukunan"
-  },
-  "siweSignatureSimulationDetailInfo": {
-    "message": "Ikaw ay nagsa-sign in sa isang site at walang mga inaasahang pagbabago sa iyong account."
   },
   "siweURI": {
     "message": "URL"
@@ -4636,25 +4615,6 @@
   },
   "smartTransactions": {
     "message": "Mga Smart Transaction"
-  },
-  "smartTransactionsBenefit1": {
-    "message": "99.5% tiyansa ng tagumpay"
-  },
-  "smartTransactionsBenefit2": {
-    "message": "Makatitipid ng pera"
-  },
-  "smartTransactionsBenefit3": {
-    "message": "Mga real-time na update"
-  },
-  "smartTransactionsDescription": {
-    "message": "Mag-unlock na mas mataas na tiyansa ng tagumpay, proteksyon sa frontrunning, at mas mahusay na visibility sa mga Smart Transaction."
-  },
-  "smartTransactionsDescription2": {
-    "message": "Available lamang sa Ethereum. I-enable o i-disable anumang oras sa mga setting. $1",
-    "description": "$1 is an external link to learn more about Smart Transactions"
-  },
-  "smartTransactionsOptItModalTitle": {
-    "message": "Pinahusay na Proteksyon sa Transaksyon"
   },
   "snapAccountCreated": {
     "message": "Nagawa ang account"

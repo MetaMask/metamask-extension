@@ -733,7 +733,7 @@ describe('preferences controller', () => {
         privacyMode: false,
         showFiatInTestnets: false,
         showTestNetworks: false,
-        smartTransactionsOptInStatus: null,
+        smartTransactionsOptInStatus: true,
         useNativeCurrencyAsPrimaryCurrency: true,
         hideZeroBalanceTokens: false,
         petnamesEnabled: true,
@@ -762,7 +762,7 @@ describe('preferences controller', () => {
         showExtensionInFullSizeView: false,
         showFiatInTestnets: false,
         showTestNetworks: false,
-        smartTransactionsOptInStatus: null,
+        smartTransactionsOptInStatus: true,
         useNativeCurrencyAsPrimaryCurrency: true,
         hideZeroBalanceTokens: false,
         petnamesEnabled: true,
@@ -834,6 +834,23 @@ describe('preferences controller', () => {
       const { controller } = setupController({});
       controller.setDismissSeedBackUpReminder(true);
       expect(controller.state.dismissSeedBackUpReminder).toStrictEqual(true);
+    });
+  });
+
+  describe('overrideContentSecurityPolicyHeader', () => {
+    it('defaults overrideContentSecurityPolicyHeader to true', () => {
+      const { controller } = setupController({});
+      expect(
+        controller.state.overrideContentSecurityPolicyHeader,
+      ).toStrictEqual(true);
+    });
+
+    it('set overrideContentSecurityPolicyHeader to false', () => {
+      const { controller } = setupController({});
+      controller.setOverrideContentSecurityPolicyHeader(false);
+      expect(
+        controller.state.overrideContentSecurityPolicyHeader,
+      ).toStrictEqual(false);
     });
   });
 

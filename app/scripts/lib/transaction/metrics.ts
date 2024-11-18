@@ -528,7 +528,12 @@ function createTransactionEventFragment({
       transactionMetricsRequest.getEventFragmentById,
       eventName,
       transactionMeta,
-    )
+    ) &&
+    /**
+     * HACK: "transaction-submitted-<id>" fragment hack
+     * can continue to createEventFragment if "transaction-submitted-<id>"  submitted fragment exists
+     */
+    eventName !== TransactionMetaMetricsEvent.submitted
   ) {
     return;
   }
@@ -642,25 +647,14 @@ function updateTransactionEventFragment({
 
   switch (eventName) {
     case TransactionMetaMetricsEvent.approved:
-      transactionMetricsRequest.updateEventFragment(uniqueId, {
-        properties: payload.properties,
-        sensitiveProperties: payload.sensitiveProperties,
-      });
-      break;
-
     case TransactionMetaMetricsEvent.rejected:
-      transactionMetricsRequest.updateEventFragment(uniqueId, {
-        properties: payload.properties,
-        sensitiveProperties: payload.sensitiveProperties,
-      });
-      break;
-
     case TransactionMetaMetricsEvent.finalized:
       transactionMetricsRequest.updateEventFragment(uniqueId, {
         properties: payload.properties,
         sensitiveProperties: payload.sensitiveProperties,
       });
       break;
+
     default:
       break;
   }
@@ -679,6 +673,7 @@ function finalizeTransactionEventFragment({
 
   switch (eventName) {
     case TransactionMetaMetricsEvent.approved:
+    case TransactionMetaMetricsEvent.finalized:
       transactionMetricsRequest.finalizeEventFragment(uniqueId);
       break;
 
@@ -688,9 +683,6 @@ function finalizeTransactionEventFragment({
       });
       break;
 
-    case TransactionMetaMetricsEvent.finalized:
-      transactionMetricsRequest.finalizeEventFragment(uniqueId);
-      break;
     default:
       break;
   }
@@ -1006,7 +998,7 @@ async function buildEventFragmentProperties({
   }
   const isRedesignedConfirmationsDeveloperSettingEnabled =
     transactionMetricsRequest.getIsRedesignedConfirmationsDeveloperEnabled() ||
-    Boolean(process.env.ENABLE_CONFIRMATION_REDESIGN);
+    process.env.ENABLE_CONFIRMATION_REDESIGN === 'true';
 
   const isRedesignedTransactionsUserSettingEnabled =
     transactionMetricsRequest.getRedesignedTransactionsEnabled();
