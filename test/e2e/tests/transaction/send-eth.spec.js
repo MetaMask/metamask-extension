@@ -509,7 +509,7 @@ describe('Send ETH', function () {
           // Verify error message is shown
           await driver.waitForSelector({
             css: '.qr-scanner__error',
-            text: 'Unknown QR code',
+            text: "We couldn't identify that QR code",
           });
 
           // Close QR scanner
