@@ -48,15 +48,16 @@ import { MetaMetricsContext } from '../../../contexts/metametrics';
 import {
   isAccountConnectedToCurrentTab,
   getUseBlockie,
-  getPreferences,
   getShouldHideZeroBalanceTokens,
   getIsTokenNetworkFilterEqualCurrentNetwork,
+  getShowFiatInTestnets,
 } from '../../../selectors';
 import {
   getMultichainIsTestnet,
   getMultichainNativeCurrency,
   getMultichainNativeCurrencyImage,
   getMultichainNetwork,
+  getMultichainShouldShowFiat,
 } from '../../../selectors/multichain';
 import { useMultichainAccountTotalFiatBalance } from '../../../hooks/useMultichainAccountTotalFiatBalance';
 import { ConnectedStatus } from '../connected-status/connected-status';
@@ -102,11 +103,19 @@ const AccountListItem = ({
   const setAccountListItemMenuRef = (ref) => {
     setAccountListItemMenuElement(ref);
   };
+
   const isTestnet = useMultichainSelector(getMultichainIsTestnet, account);
+  const isMainnet = !isTestnet;
+  const shouldShowFiat = useMultichainSelector(
+    getMultichainShouldShowFiat,
+    account,
+  );
+  const showFiatInTestnets = useSelector(getShowFiatInTestnets);
+  const showFiat =
+    shouldShowFiat && (isMainnet || (isTestnet && showFiatInTestnets));
   const accountTotalFiatBalances =
     useMultichainAccountTotalFiatBalance(account);
   // cross chain agg balance
-  const { showNativeTokenAsMainBalance } = useSelector(getPreferences);
   const shouldHideZeroBalanceTokens = useSelector(
     getShouldHideZeroBalanceTokens,
   );
@@ -130,10 +139,7 @@ const AccountListItem = ({
   );
   let balanceToTranslate;
   if (isEvmNetwork) {
-    balanceToTranslate =
-      showNativeTokenAsMainBalance || isTestnet // balance in crypto
-        ? account.balance
-        : totalFiatBalance;
+    balanceToTranslate = isTestnet ? account.balance : totalFiatBalance;
   } else {
     balanceToTranslate = accountTotalFiatBalances.totalBalance;
   }
@@ -331,12 +337,8 @@ const AccountListItem = ({
                 ethNumberOfDecimals={MAXIMUM_CURRENCY_DECIMALS}
                 value={balanceToTranslate}
                 type={PRIMARY}
-                // showFiat={showFiat}
-                showFiat={!isEvmNetwork}
-                shouldCheckShowNativeToken
-                isAggregatedFiatOverviewBalance={
-                  !showNativeTokenAsMainBalance && !isTestnet
-                }
+                showFiat={showFiat}
+                isAggregatedFiatOverviewBalance={!isTestnet}
                 data-testid="first-currency-display"
                 privacyMode={privacyMode}
               />

@@ -23,6 +23,7 @@ import { Box, SensitiveText } from '../../component-library';
 import { getCalculatedTokenAmount1dAgo } from '../../../helpers/utils/util';
 import { useAccountTotalCrossChainFiatBalance } from '../../../hooks/useAccountTotalCrossChainFiatBalance';
 import { useGetFormattedTokensPerChain } from '../../../hooks/useGetFormattedTokensPerChain';
+import { TokenWithBalance } from '../assets/asset-list/asset-list';
 
 export const AggregatedPercentageOverviewCrossChains = () => {
   const locale = useSelector(getIntlLocale);
@@ -49,8 +50,8 @@ export const AggregatedPercentageOverviewCrossChains = () => {
 
   const getPerChainTotalFiat1dAgo = (
     chainId: string,
-    tokenFiatBalances: string[],
-    tokensWithBalances: { string: string; balance: string; address: string }[],
+    tokenFiatBalances: (string | undefined)[],
+    tokensWithBalances: TokenWithBalance[],
   ) => {
     const totalPerChain1dAgoERC20 = tokensWithBalances.reduce(
       (total1dAgo: number, item: { address: string }, idx: number) => {
@@ -76,12 +77,8 @@ export const AggregatedPercentageOverviewCrossChains = () => {
         item: {
           chainId: string;
           nativeFiatValue: string;
-          tokenFiatBalances: string[];
-          tokensWithBalances: {
-            string: string;
-            balance: string;
-            address: string;
-          }[];
+          tokenFiatBalances: (string | undefined)[];
+          tokensWithBalances: TokenWithBalance[];
         },
       ) => {
         const perChainERC20Total = getPerChainTotalFiat1dAgo(
