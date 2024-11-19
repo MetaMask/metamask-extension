@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState, useContext } from 'react';
+import React, { useEffect, useRef, useState, useContext, useMemo } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import {
   getCurrentNetwork,
@@ -24,6 +24,7 @@ import {
 import ImportControl from '../import-control';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import { MetaMetricsContext } from '../../../../../contexts/metametrics';
+import { TEST_CHAINS } from '../../../../../../shared/constants/network';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
@@ -62,6 +63,10 @@ const AssetListControlBar = ({ showTokensLinks }: AssetListControlBarProps) => {
   const [isNetworkFilterPopoverOpen, setIsNetworkFilterPopoverOpen] =
     useState(false);
 
+  const isTestNetwork = useMemo(() => {
+    return (TEST_CHAINS as string[]).includes(currentNetwork.chainId);
+  }, [currentNetwork.chainId, TEST_CHAINS]);
+
   const allOpts: Record<string, boolean> = {};
   Object.keys(allNetworks).forEach((chainId) => {
     allOpts[chainId] = true;
@@ -69,6 +74,13 @@ const AssetListControlBar = ({ showTokensLinks }: AssetListControlBarProps) => {
 
   const allNetworksFilterShown =
     Object.keys(tokenNetworkFilter).length !== Object.keys(allOpts).length;
+
+  useEffect(() => {
+    if (isTestNetwork) {
+      const testnetFilter = { [currentNetwork.chainId]: true };
+      dispatch(setTokenNetworkFilter(testnetFilter));
+    }
+  }, [isTestNetwork, currentNetwork.chainId, dispatch]);
 
   // TODO: This useEffect should be a migration
   // We need to set the default filter for all users to be all included networks, rather than defaulting to empty object
@@ -150,11 +162,12 @@ const AssetListControlBar = ({ showTokensLinks }: AssetListControlBarProps) => {
       >
         {process.env.PORTFOLIO_VIEW && (
           <ButtonBase
-            data-testid="sort-by-popover-toggle"
+            data-testid="network-filter"
             variant={TextVariant.bodyMdMedium}
             className="asset-list-control-bar__button asset-list-control-bar__network_control"
             onClick={toggleNetworkFilterPopover}
             size={ButtonBaseSize.Sm}
+            disabled={isTestNetwork}
             endIconName={IconName.ArrowDown}
             backgroundColor={
               isNetworkFilterPopoverOpen
