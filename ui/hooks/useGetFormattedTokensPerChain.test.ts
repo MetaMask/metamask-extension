@@ -1,8 +1,8 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { renderHook } from '@testing-library/react-hooks';
 import { act } from 'react-dom/test-utils';
-import { useGetFormattedTokensPerChain } from './useGetFormattedTokensPerChain';
 import { getAllTokens, getCurrentChainId } from '../selectors';
+import { useGetFormattedTokensPerChain } from './useGetFormattedTokensPerChain';
 import { stringifyBalance } from './useTokenBalances';
 
 jest.mock('react-redux', () => ({

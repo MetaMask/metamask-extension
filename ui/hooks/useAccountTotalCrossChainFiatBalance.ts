@@ -22,12 +22,14 @@ export type Balances = {
   [id: string]: AddressBalances;
 };
 
+export type FormattedTokensWithBalances = {
+  chainId: string;
+  tokensWithBalances: TokenWithBalance[];
+};
+
 export const useAccountTotalCrossChainFiatBalance = (
   account: { address: string },
-  formattedTokensWithBalancesPerChain: {
-    chainId: string;
-    tokensWithBalances: TokenWithBalance[];
-  }[],
+  formattedTokensWithBalancesPerChain: FormattedTokensWithBalances[],
 ) => {
   const allNetworks = useSelector(getNetworkConfigurationsByChainId);
   const currencyRates = useSelector(getCurrencyRates);
@@ -37,11 +39,9 @@ export const useAccountTotalCrossChainFiatBalance = (
     getCrossChainTokenExchangeRates,
     shallowEqual,
   );
-
   const crossChainCachedBalances: Balances = useSelector(
     getCrossChainMetaMaskCachedBalances,
   );
-
   const mergedCrossChainRates: Balances = {
     ...crossChainContractRates, // todo add confirmation exchange rates?
   };
