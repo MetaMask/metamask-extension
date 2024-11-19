@@ -6,6 +6,7 @@ import { TransactionType } from '@metamask/transaction-controller';
 
 export default function useHandleBridgeTx() {
   const { handleTx } = useHandleTx();
+
   const handleBridgeTx = async ({
     quoteResponse,
     approvalTxId,
