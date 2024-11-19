@@ -31,17 +31,15 @@ const REDESIGN_DEV_TRANSACTION_TYPES = [...REDESIGN_USER_TRANSACTION_TYPES];
  * @param opts.isRedesignedTransactionsUserSettingEnabled - Whether the user has enabled the redesigned flow
  * @param opts.isRedesignedConfirmationsDeveloperEnabled - Whether developer mode is enabled
  */
-export function shouldUseRedesignForTransactions(
-  {
-    transactionMetadataType,
-    isRedesignedTransactionsUserSettingEnabled,
-    isRedesignedConfirmationsDeveloperEnabled,
-  }: {
-    transactionMetadataType?: TransactionType;
-    isRedesignedTransactionsUserSettingEnabled: boolean;
-    isRedesignedConfirmationsDeveloperEnabled: boolean;
-  },
-): boolean {
+export function shouldUseRedesignForTransactions({
+  transactionMetadataType,
+  isRedesignedTransactionsUserSettingEnabled,
+  isRedesignedConfirmationsDeveloperEnabled,
+}: {
+  transactionMetadataType?: TransactionType;
+  isRedesignedTransactionsUserSettingEnabled: boolean;
+  isRedesignedConfirmationsDeveloperEnabled: boolean;
+}): boolean {
   return (
     shouldUseRedesignForTransactionsUserMode(
       isRedesignedTransactionsUserSettingEnabled,
@@ -58,21 +56,19 @@ export function shouldUseRedesignForTransactions(
  * Determines whether to use the redesigned confirmation flow for a given signature
  * based on user settings and developer mode
  *
- * @param approvalType - The type of signature approval to check
- * @param isRedesignedSignaturesUserSettingEnabled - Whether the user has enabled the redesigned flow
- * @param isRedesignedConfirmationsDeveloperEnabled - Whether developer mode is enabled
+ * @param opts.approvalType - The type of signature approval to check
+ * @param opts.isRedesignedSignaturesUserSettingEnabled - Whether the user has enabled the redesigned flow
+ * @param opts.isRedesignedConfirmationsDeveloperEnabled - Whether developer mode is enabled
  */
-export function shouldUseRedesignForSignatures(
-  {
-    approvalType,
-    isRedesignedSignaturesUserSettingEnabled,
-    isRedesignedConfirmationsDeveloperEnabled,
-  }: {
-    approvalType?: ApprovalType;
-    isRedesignedSignaturesUserSettingEnabled: boolean;
-    isRedesignedConfirmationsDeveloperEnabled: boolean;
-  },
-): boolean {
+export function shouldUseRedesignForSignatures({
+  approvalType,
+  isRedesignedSignaturesUserSettingEnabled,
+  isRedesignedConfirmationsDeveloperEnabled,
+}: {
+  approvalType?: ApprovalType;
+  isRedesignedSignaturesUserSettingEnabled: boolean;
+  isRedesignedConfirmationsDeveloperEnabled: boolean;
+}): boolean {
   const isRedesignedConfirmationsDeveloperSettingEnabled =
     process.env.ENABLE_CONFIRMATION_REDESIGN === 'true' ||
     isRedesignedConfirmationsDeveloperEnabled;

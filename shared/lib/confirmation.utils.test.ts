@@ -90,7 +90,7 @@ describe('confirmation.utils', () => {
             transactionMetadataType: unsupportedTransactionType,
             isRedesignedTransactionsUserSettingEnabled: false, // user setting disabled
             isRedesignedConfirmationsDeveloperEnabled: true, // developer setting enabled
-      }),
+          }),
         ).toBe(false);
       });
     });
