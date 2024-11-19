@@ -1,4 +1,5 @@
 import { Mockttp } from 'mockttp';
+import { USER_STORAGE_FEATURE_NAMES } from '@metamask/profile-sync-controller/sdk';
 import { withFixtures } from '../../../helpers';
 import FixtureBuilder from '../../../fixture-builder';
 import { mockNotificationServices } from '../mocks';
@@ -27,9 +28,13 @@ describe('Account syncing - Add Account @no-mmi', function () {
           fixtures: new FixtureBuilder({ onboarding: true }).build(),
           title: this.test?.fullTitle(),
           testSpecificMock: (server: Mockttp) => {
-            userStorageMockttpController.setupPath('accounts', server, {
-              getResponse: accountsSyncMockResponse,
-            });
+            userStorageMockttpController.setupPath(
+              USER_STORAGE_FEATURE_NAMES.accounts,
+              server,
+              {
+                getResponse: accountsSyncMockResponse,
+              },
+            );
 
             return mockNotificationServices(
               server,
@@ -73,7 +78,10 @@ describe('Account syncing - Add Account @no-mmi', function () {
           fixtures: new FixtureBuilder({ onboarding: true }).build(),
           title: this.test?.fullTitle(),
           testSpecificMock: (server: Mockttp) => {
-            userStorageMockttpController.setupPath('accounts', server);
+            userStorageMockttpController.setupPath(
+              USER_STORAGE_FEATURE_NAMES.accounts,
+              server,
+            );
             return mockNotificationServices(
               server,
               userStorageMockttpController,
@@ -97,8 +105,9 @@ describe('Account syncing - Add Account @no-mmi', function () {
           const accountListPage = new AccountListPage(driver);
           await accountListPage.check_pageIsLoaded();
 
-          const accountSyncResponse =
-            userStorageMockttpController.paths.get('accounts')?.response;
+          const accountSyncResponse = userStorageMockttpController.paths.get(
+            USER_STORAGE_FEATURE_NAMES.accounts,
+          )?.response;
 
           await accountListPage.check_numberOfAvailableAccounts(
             accountSyncResponse?.length as number,
@@ -124,9 +133,13 @@ describe('Account syncing - Add Account @no-mmi', function () {
           fixtures: new FixtureBuilder({ onboarding: true }).build(),
           title: this.test?.fullTitle(),
           testSpecificMock: (server: Mockttp) => {
-            userStorageMockttpController.setupPath('accounts', server, {
-              getResponse: accountsSyncMockResponse,
-            });
+            userStorageMockttpController.setupPath(
+              USER_STORAGE_FEATURE_NAMES.accounts,
+              server,
+              {
+                getResponse: accountsSyncMockResponse,
+              },
+            );
 
             return mockNotificationServices(
               server,
@@ -168,7 +181,10 @@ describe('Account syncing - Add Account @no-mmi', function () {
           fixtures: new FixtureBuilder({ onboarding: true }).build(),
           title: this.test?.fullTitle(),
           testSpecificMock: (server: Mockttp) => {
-            userStorageMockttpController.setupPath('accounts', server);
+            userStorageMockttpController.setupPath(
+              USER_STORAGE_FEATURE_NAMES.accounts,
+              server,
+            );
             return mockNotificationServices(
               server,
               userStorageMockttpController,
@@ -192,8 +208,9 @@ describe('Account syncing - Add Account @no-mmi', function () {
           const accountListPage = new AccountListPage(driver);
           await accountListPage.check_pageIsLoaded();
 
-          const accountSyncResponse =
-            userStorageMockttpController.paths.get('accounts')?.response;
+          const accountSyncResponse = userStorageMockttpController.paths.get(
+            USER_STORAGE_FEATURE_NAMES.accounts,
+          )?.response;
 
           await accountListPage.check_numberOfAvailableAccounts(
             accountSyncResponse?.length as number,

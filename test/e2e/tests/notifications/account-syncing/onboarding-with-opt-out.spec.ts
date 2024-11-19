@@ -1,4 +1,5 @@
 import { Mockttp } from 'mockttp';
+import { USER_STORAGE_FEATURE_NAMES } from '@metamask/profile-sync-controller/sdk';
 import { withFixtures } from '../../../helpers';
 import FixtureBuilder from '../../../fixture-builder';
 import { mockNotificationServices } from '../mocks';
@@ -35,9 +36,13 @@ describe('Account syncing - Opt-out Profile Sync @no-mmi', function () {
           title: this.test?.fullTitle(),
           testSpecificMock: (server: Mockttp) => {
             // Mocks are still set up to ensure that requests are not matched
-            userStorageMockttpController.setupPath('accounts', server, {
-              getResponse: accountsSyncMockResponse,
-            });
+            userStorageMockttpController.setupPath(
+              USER_STORAGE_FEATURE_NAMES.accounts,
+              server,
+              {
+                getResponse: accountsSyncMockResponse,
+              },
+            );
             return mockNotificationServices(
               server,
               userStorageMockttpController,
@@ -94,7 +99,10 @@ describe('Account syncing - Opt-out Profile Sync @no-mmi', function () {
           title: this.test?.fullTitle(),
           testSpecificMock: (server: Mockttp) => {
             // Mocks are still set up to ensure that requests are not matched
-            userStorageMockttpController.setupPath('accounts', server);
+            userStorageMockttpController.setupPath(
+              USER_STORAGE_FEATURE_NAMES.accounts,
+              server,
+            );
             return mockNotificationServices(
               server,
               userStorageMockttpController,
@@ -146,7 +154,10 @@ describe('Account syncing - Opt-out Profile Sync @no-mmi', function () {
           title: this.test?.fullTitle(),
           testSpecificMock: (server: Mockttp) => {
             // Mocks are still set up to ensure that requests are not matched
-            userStorageMockttpController.setupPath('accounts', server);
+            userStorageMockttpController.setupPath(
+              USER_STORAGE_FEATURE_NAMES.accounts,
+              server,
+            );
             return mockNotificationServices(
               server,
               userStorageMockttpController,

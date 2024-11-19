@@ -337,7 +337,7 @@
     "@metamask/post-message-stream": "^8.0.0",
     "@metamask/ppom-validator": "0.35.1",
     "@metamask/preinstalled-example-snap": "^0.2.0",
-    "@metamask/profile-sync-controller": "^0.9.7",
+    "@metamask/profile-sync-controller": "^1.0.1",
     "@metamask/providers": "^14.0.2",
     "@metamask/queued-request-controller": "^7.0.1",
     "@metamask/rate-limit-controller": "^6.0.0",
