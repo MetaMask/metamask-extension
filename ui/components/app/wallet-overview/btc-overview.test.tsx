@@ -29,6 +29,8 @@ jest.mock('../../../store/actions', () => ({
   handleSnapRequest: jest.fn(),
   sendMultichainTransaction: jest.fn(),
   setDefaultHomeActiveTabName: jest.fn(),
+  tokenBalancesStartPolling: jest.fn().mockResolvedValue('pollingToken'),
+  tokenBalancesStopPollingByPollingToken: jest.fn(),
 }));
 
 const PORTOFOLIO_URL = 'https://portfolio.test';
