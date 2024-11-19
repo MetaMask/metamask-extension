@@ -95,7 +95,9 @@ export const useAccountTotalCrossChainFiatBalance = (
   const finalTotal = tokenFiatBalancesCrossChains.reduce(
     (accumulator, currentValue) => {
       const tmpCurrentValueFiatBalances: string[] =
-        currentValue.tokenFiatBalances.filter((value) => value !== undefined);
+        currentValue.tokenFiatBalances.filter(
+          (value): value is string => value !== undefined,
+        );
       const totalFiatBalance = sumDecimals(
         currentValue.nativeFiatValue,
         ...tmpCurrentValueFiatBalances,
