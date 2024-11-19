@@ -8,6 +8,11 @@ import {
   AccountOverviewBtcProps,
 } from './account-overview-btc';
 
+jest.mock('../../../store/actions', () => ({
+  tokenBalancesStartPolling: jest.fn().mockResolvedValue('pollingToken'),
+  tokenBalancesStopPollingByPollingToken: jest.fn(),
+}));
+
 const defaultProps: AccountOverviewBtcProps = {
   defaultHomeActiveTabName: null,
   onTabClick: jest.fn(),

@@ -14,35 +14,6 @@ const mockAccount = createMockInternalAccount({
   address: '0x0836f5ed6b62baf60706fe3adc0ff0fd1df833da',
 });
 
-jest.mock('./useTokenTracker', () => {
-  return {
-    useTokenTracker: () => ({
-      loading: false,
-      tokensWithBalances: [
-        {
-          address: '0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48',
-          balance: '48573',
-          balanceError: null,
-          decimals: 6,
-          image: undefined,
-          isERC721: undefined,
-          string: '0.04857',
-          symbol: 'USDC',
-        },
-        {
-          address: '0x0bc529c00C6401aEF6D220BE8C6Ea1667F6Ad93e',
-          symbol: 'YFI',
-          balance: '1409247882142934',
-          decimals: 18,
-          string: '0.001409247882142934',
-          balanceError: null,
-        },
-      ],
-      error: null,
-    }),
-  };
-});
-
 const renderUseAccountTotalFiatBalance = (address) => {
   const state = {
     ...mockState,
@@ -78,7 +49,7 @@ const renderUseAccountTotalFiatBalance = (address) => {
       },
       ...mockNetworkState({ chainId: CHAIN_IDS.MAINNET }),
 
-      detectedTokens: {
+      allTokens: {
         '0x1': {
           '0x0836f5ed6b62baf60706fe3adc0ff0fd1df833da': [
             {
@@ -94,6 +65,14 @@ const renderUseAccountTotalFiatBalance = (address) => {
               symbol: 'YFI',
             },
           ],
+        },
+      },
+      tokenBalances: {
+        [mockAccount.address]: {
+          [CHAIN_IDS.MAINNET]: {
+            '0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48': '0xBDBD',
+            '0x0bc529c00C6401aEF6D220BE8C6Ea1667F6Ad93e': '0x501B4176A64D6',
+          },
         },
       },
     },
@@ -122,8 +101,6 @@ describe('useAccountTotalFiatBalance', () => {
           address: '0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48',
           symbol: 'USDC',
           balance: '48573',
-          image: undefined,
-          isERC721: undefined,
           decimals: 6,
           string: 0.04857,
           balanceError: null,
