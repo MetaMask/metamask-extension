@@ -102,10 +102,10 @@ describe('Account syncing - Opt-out Profile Sync @no-mmi', function () {
           },
         },
         async ({ driver }) => {
-          await createNewWalletOnboardingFlow(
+          await createNewWalletOnboardingFlow({
             driver,
-            NOTIFICATIONS_TEAM_PASSWORD,
-          );
+            password: NOTIFICATIONS_TEAM_PASSWORD,
+          });
           const onboardingCompletePage = new OnboardingCompletePage(driver);
           await onboardingCompletePage.check_pageIsLoaded();
           await onboardingCompletePage.navigateToDefaultPrivacySettings();
