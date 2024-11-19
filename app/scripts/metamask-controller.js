@@ -14,9 +14,9 @@ import {
   fetchMultiExchangeRate,
 } from '@metamask/assets-controllers';
 import { JsonRpcEngine } from '@metamask/json-rpc-engine';
+import { createEngineStream } from '@metamask/json-rpc-middleware-stream';
 import { ObservableStore } from '@metamask/obs-store';
 import { storeAsStream } from '@metamask/obs-store/dist/asStream';
-import { createEngineStream } from 'json-rpc-middleware-stream';
 import { providerAsMiddleware } from '@metamask/eth-json-rpc-middleware';
 import { debounce, throttle, memoize, wrap } from 'lodash';
 import {
@@ -765,31 +765,25 @@ export default class MetamaskController extends EventEmitter {
     });
 
     this.metaMetricsController = new MetaMetricsController({
+      initState: initState.MetaMetricsController,
       segment,
-      onPreferencesStateChange: preferencesMessenger.subscribe.bind(
-        preferencesMessenger,
-        'PreferencesController:stateChange',
-      ),
       preferencesControllerState: {
         currentLocale: this.preferencesController.state.currentLocale,
         selectedAddress: this.preferencesController.state.selectedAddress,
       },
+      onPreferencesStateChange: preferencesMessenger.subscribe.bind(
+        preferencesMessenger,
+        'PreferencesController:stateChange',
+      ),
       onNetworkDidChange: networkControllerMessenger.subscribe.bind(
         networkControllerMessenger,
         'NetworkController:networkDidChange',
       ),
-      getNetworkIdentifier: () => {
-        const { type, rpcUrl } = getProviderConfig({
-          metamask: this.networkController.state,
-        });
-        return type === NETWORK_TYPES.RPC ? rpcUrl : type;
-      },
       getCurrentChainId: () =>
         getCurrentChainId({ metamask: this.networkController.state }),
       version: process.env.METAMASK_VERSION,
       environment: process.env.METAMASK_ENVIRONMENT,
       extension: this.extension,
-      initState: initState.MetaMetricsController,
       captureException,
     });
 
@@ -884,13 +878,13 @@ export default class MetamaskController extends EventEmitter {
       messenger: currencyRateMessenger,
       state: initState.CurrencyController,
     });
-    const initialFetchExchangeRate =
-      this.currencyRateController.fetchExchangeRate.bind(
+    const initialFetchMultiExchangeRate =
+      this.currencyRateController.fetchMultiExchangeRate.bind(
         this.currencyRateController,
       );
-    this.currencyRateController.fetchExchangeRate = (...args) => {
+    this.currencyRateController.fetchMultiExchangeRate = (...args) => {
       if (this.preferencesController.state.useCurrencyRateCheck) {
-        return initialFetchExchangeRate(...args);
+        return initialFetchMultiExchangeRate(...args);
       }
       return {
         conversionRate: null,
@@ -1996,11 +1990,9 @@ export default class MetamaskController extends EventEmitter {
           `${this.keyringController.name}:signPersonalMessage`,
           `${this.keyringController.name}:signTypedMessage`,
           `${this.loggingController.name}:add`,
+          `${this.networkController.name}:getNetworkClientById`,
         ],
       }),
-      getAllState: this.getState.bind(this),
-      getCurrentChainId: () =>
-        getCurrentChainId({ metamask: this.networkController.state }),
       trace,
     });
 
@@ -2128,7 +2120,7 @@ export default class MetamaskController extends EventEmitter {
 
     const bridgeControllerMessenger = this.controllerMessenger.getRestricted({
       name: BRIDGE_CONTROLLER_NAME,
-      allowedActions: [],
+      allowedActions: ['AccountsController:getSelectedAccount'],
       allowedEvents: [],
     });
     this.bridgeController = new BridgeController({
@@ -3952,6 +3944,11 @@ export default class MetamaskController extends EventEmitter {
           this.controllerMessenger,
           `${BRIDGE_CONTROLLER_NAME}:${BridgeUserAction.SELECT_DEST_NETWORK}`,
         ),
+      [BridgeUserAction.UPDATE_QUOTE_PARAMS]:
+        this.controllerMessenger.call.bind(
+          this.controllerMessenger,
+          `${BRIDGE_CONTROLLER_NAME}:${BridgeUserAction.UPDATE_QUOTE_PARAMS}`,
+        ),
 
       // Smart Transactions
       fetchSmartTransactionFees: smartTransactionsController.getFees.bind(
@@ -4012,10 +4009,9 @@ export default class MetamaskController extends EventEmitter {
       ),
 
       // CurrencyRateController
-      currencyRateStartPollingByNetworkClientId:
-        currencyRateController.startPollingByNetworkClientId.bind(
-          currencyRateController,
-        ),
+      currencyRateStartPolling: currencyRateController.startPolling.bind(
+        currencyRateController,
+      ),
       currencyRateStopPollingByPollingToken:
         currencyRateController.stopPollingByPollingToken.bind(
           currencyRateController,
@@ -6533,10 +6529,12 @@ export default class MetamaskController extends EventEmitter {
         );
       },
       getRedesignedConfirmationsEnabled: () => {
-        return this.preferencesController.getRedesignedConfirmationsEnabled;
+        return this.preferencesController.state.preferences
+          .redesignedConfirmationsEnabled;
       },
       getRedesignedTransactionsEnabled: () => {
-        return this.preferencesController.getRedesignedTransactionsEnabled;
+        return this.preferencesController.state.preferences
+          .redesignedTransactionsEnabled;
       },
       getMethodData: (data) => {
         if (!data) {
@@ -6685,12 +6683,34 @@ export default class MetamaskController extends EventEmitter {
    * @param {string} origin - the domain to safelist
    */
   safelistPhishingDomain(origin) {
+    this.metaMetricsController.trackEvent({
+      category: MetaMetricsEventCategory.Phishing,
+      event: MetaMetricsEventName.ProceedAnywayClicked,
+      properties: {
+        url: origin,
+        referrer: {
+          url: origin,
+        },
+      },
+    });
+
     return this.phishingController.bypass(origin);
   }
 
   async backToSafetyPhishingWarning() {
-    const extensionURL = this.platform.getExtensionURL();
-    await this.platform.switchToAnotherURL(undefined, extensionURL);
+    const portfolioBaseURL = process.env.PORTFOLIO_URL;
+    const portfolioURL = `${portfolioBaseURL}/?metamaskEntry=phishing_page_portfolio_button`;
+
+    this.metaMetricsController.trackEvent({
+      category: MetaMetricsEventCategory.Navigation,
+      event: MetaMetricsEventName.PortfolioLinkClicked,
+      properties: {
+        location: 'phishing_page',
+        text: 'Back to safety',
+      },
+    });
+
+    await this.platform.switchToAnotherURL(undefined, portfolioURL);
   }
 
   /**

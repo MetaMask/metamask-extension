@@ -1,7 +1,6 @@
 const {
   defaultGanacheOptions,
   withFixtures,
-  switchToNotificationWindow,
   unlockWallet,
   WINDOW_TITLES,
 } = require('../helpers');
@@ -28,24 +27,37 @@ describe('Test Snap update', function () {
           tag: 'h2',
         });
 
-        // find and scroll to the correct card and connect to update snap
+        // find and scroll to the update snap
         const snapButton = await driver.findElement('#connectUpdate');
         await driver.scrollToElement(snapButton);
-        await driver.delay(1000);
+
+        // added delay for firefox (deflake)
+        await driver.delayFirefox(1000);
+
+        // wait for and click connect
+        await driver.waitForSelector('#connectUpdate');
         await driver.clickElement('#connectUpdate');
 
-        // switch to metamask extension and click connect
-        await switchToNotificationWindow(driver, 2);
+        // switch to metamask extension
+        await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
+
+        // wait for and click connect
+        await driver.waitForSelector({
+          text: 'Connect',
+          tag: 'button',
+        });
         await driver.clickElement({
           text: 'Connect',
           tag: 'button',
         });
 
+        // wait for confirm
         await driver.waitForSelector({ text: 'Confirm' });
 
-        // scroll to bottom
+        // click and dismiss possible scroll element
         await driver.clickElementSafe('[data-testid="snap-install-scroll"]');
 
+        // click confirm
         await driver.clickElement({
           text: 'Confirm',
           tag: 'button',
@@ -74,22 +86,29 @@ describe('Test Snap update', function () {
           text: 'Reconnect to Update Snap',
         });
 
-        // find and scroll to the correct card and click first
+        // find and scroll to the update snap
         const snapButton2 = await driver.findElement('#connectUpdateNew');
         await driver.scrollToElement(snapButton2);
-        await driver.delay(1000);
+
+        // added delay for firefox (deflake)
+        await driver.delayFirefox(1000);
+
+        // wait for and click connect
+        await driver.waitForSelector('#connectUpdateNew');
         await driver.clickElement('#connectUpdateNew');
 
         // switch to metamask extension and update
-        await switchToNotificationWindow(driver, 2);
+        await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
         await driver.waitForSelector({ text: 'Update request' });
 
         // Scroll to bottom of dialog
         await driver.clickElementSafe('[data-testid="snap-update-scroll"]');
+
         // Click confirm button
         await driver.clickElementAndWaitToDisappear(
           '[data-testid="page-container-footer-next"]',
         );
+
         // When it is confirmed, click okay button
         await driver.waitForSelector({ text: 'OK' });
         await driver.clickElement('[data-testid="page-container-footer-next"]');
