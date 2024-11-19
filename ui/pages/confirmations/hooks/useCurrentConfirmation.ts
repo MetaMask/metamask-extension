@@ -71,12 +71,6 @@ const useCurrentConfirmation = () => {
     isRedesignedConfirmationsDeveloperEnabled,
   );
 
-  // If the developer toggle or the build time environment variable are enabled,
-  // all the signatures and transactions in development are shown. If the user
-  // facing feature toggles for signature or transactions are enabled, we show
-  // only confirmations that shipped (contained in `REDESIGN_SIGNATURE_APPROVAL_TYPES` and
-  // `REDESIGN_USER_TRANSACTION_TYPES` or `REDESIGN_DEV_TRANSACTION_TYPES`
-  // respectively).
   const shouldUseRedesign =
     useRedesignedForSignatures || useRedesignedForTransaction;
 
