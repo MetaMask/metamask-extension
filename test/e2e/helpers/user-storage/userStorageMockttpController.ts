@@ -1,7 +1,8 @@
 import { CompletedRequest, Mockttp } from 'mockttp';
 import { USER_STORAGE_FEATURE_NAMES } from '@metamask/profile-sync-controller/sdk';
 
-const baseUrl = 'https://user-storage.api.cx.metamask.io/api/v1/userstorage';
+const baseUrl =
+  'https://user-storage\\.api\\.cx\\.metamask\\.io\\/api\\/v1\\/userstorage';
 
 export const pathRegexps = {
   [USER_STORAGE_FEATURE_NAMES.accounts]: new RegExp(
