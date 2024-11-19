@@ -413,7 +413,7 @@ export class BalancesController extends BaseController<
     if (account.type === BtcAccountType.P2wpkh) {
       if (isBtcMainnetAddress(account.address)) {
         return MultichainNetworks.BITCOIN;
-      } else if (isBtcTestnetAddress(account.address)) {
+      } else {
         return MultichainNetworks.BITCOIN_TESTNET;
       }
     }
