@@ -9,7 +9,33 @@ const {
   switchToNetworkFlow,
 } = require('../../page-objects/flows/network.flow');
 
+const { mockServerJsonRpc } = require('../ppom/mocks/mock-server-json-rpc');
 const FixtureBuilder = require('../../fixture-builder');
+
+const infuraSepoliaUrl =
+  'https://sepolia.infura.io/v3/00000000000000000000000000000000';
+
+async function mockInfura(mockServer) {
+  await mockServerJsonRpc(mockServer, [
+    ['eth_blockNumber'],
+    ['eth_getBlockByNumber'],
+  ]);
+  await mockServer
+    .forPost(infuraSepoliaUrl)
+    .withJsonBodyIncluding({ method: 'eth_getBalance' })
+    .thenCallback(() => ({
+      statusCode: 200,
+      json: {
+        jsonrpc: '2.0',
+        id: '6857940763865360',
+        result: '0x15af1d78b58c40000',
+      },
+    }));
+}
+
+async function mockInfuraResponses(mockServer) {
+  await mockInfura(mockServer);
+}
 
 describe('Settings', function () {
   it('Should match the value of token list item and account list item for eth conversion', async function () {
@@ -52,6 +78,7 @@ describe('Settings', function () {
           .build(),
         ganacheOptions: defaultGanacheOptions,
         title: this.test.fullTitle(),
+        testSpecificMock: mockInfuraResponses,
       },
       async ({ driver }) => {
         await unlockWallet(driver);
