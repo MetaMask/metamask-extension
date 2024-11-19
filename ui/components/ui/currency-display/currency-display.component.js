@@ -94,7 +94,7 @@ export default function CurrencyDisplay({
           isHidden={privacyMode}
           {...suffixProps}
         >
-          {parts.suffix}
+          {parts.suffix.toUpperCase()}
         </SensitiveText>
       ) : null}
     </Box>
