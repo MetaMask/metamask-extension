@@ -8,6 +8,7 @@ import {
   getSelectedInternalAccount,
   getShouldHideZeroBalanceTokens,
   getNetworkConfigurationsByChainId,
+  getChainIdsToPoll,
 } from '../../../../../selectors';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import { SelectableListItem } from '../sort-control/sort-control';
@@ -40,11 +41,12 @@ const NetworkFilter = ({ handleClose }: SortControlProps) => {
   const shouldHideZeroBalanceTokens = useSelector(
     getShouldHideZeroBalanceTokens,
   );
-
+  const allChainIDs = useSelector(getChainIdsToPoll);
   const { formattedTokensWithBalancesPerChain } = useGetFormattedTokensPerChain(
     selectedAccount,
     shouldHideZeroBalanceTokens,
     true, // true to get formattedTokensWithBalancesPerChain for the current chain
+    allChainIDs,
   );
   const { totalFiatBalance: selectedAccountBalance } =
     useAccountTotalCrossChainFiatBalance(
@@ -57,6 +59,7 @@ const NetworkFilter = ({ handleClose }: SortControlProps) => {
       selectedAccount,
       shouldHideZeroBalanceTokens,
       false, // false to get the value for all networks
+      allChainIDs,
     );
   const { totalFiatBalance: selectedAccountBalanceForAllNetworks } =
     useAccountTotalCrossChainFiatBalance(

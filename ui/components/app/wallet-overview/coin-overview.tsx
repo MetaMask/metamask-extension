@@ -56,6 +56,7 @@ import {
   getMetaMetricsId,
   getParticipateInMetaMetrics,
   SwapsEthToken,
+  getChainIdsToPoll,
   ///: END:ONLY_INCLUDE_IF
 } from '../../../selectors';
 import Spinner from '../../ui/spinner';
@@ -147,11 +148,12 @@ export const CoinOverview = ({
   const shouldHideZeroBalanceTokens = useSelector(
     getShouldHideZeroBalanceTokens,
   );
-
+  const allChainIDs = useSelector(getChainIdsToPoll);
   const { formattedTokensWithBalancesPerChain } = useGetFormattedTokensPerChain(
     account,
     shouldHideZeroBalanceTokens,
     isTokenNetworkFilterEqualCurrentNetwork,
+    allChainIDs,
   );
   const { totalFiatBalance } = useAccountTotalCrossChainFiatBalance(
     account,

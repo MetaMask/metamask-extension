@@ -8,6 +8,7 @@ import {
   getShouldHideZeroBalanceTokens,
   getPreferences,
   getMarketData,
+  getChainIdsToPoll,
 } from '../../../selectors';
 
 // TODO: Remove restricted import
@@ -34,11 +35,12 @@ export const AggregatedPercentageOverviewCrossChains = () => {
     getShouldHideZeroBalanceTokens,
   );
   const crossChainMarketData = useSelector(getMarketData);
-
+  const allChainIDs = useSelector(getChainIdsToPoll);
   const { formattedTokensWithBalancesPerChain } = useGetFormattedTokensPerChain(
     selectedAccount,
     shouldHideZeroBalanceTokens,
     false,
+    allChainIDs,
   );
   const {
     totalFiatBalance: totalFiatCrossChains,

@@ -51,6 +51,7 @@ import {
   getShouldHideZeroBalanceTokens,
   getIsTokenNetworkFilterEqualCurrentNetwork,
   getShowFiatInTestnets,
+  getChainIdsToPoll,
 } from '../../../selectors';
 import {
   getMultichainIsTestnet,
@@ -122,10 +123,12 @@ const AccountListItem = ({
   const isTokenNetworkFilterEqualCurrentNetwork = useSelector(
     getIsTokenNetworkFilterEqualCurrentNetwork,
   );
+  const allChainIDs = useSelector(getChainIdsToPoll);
   const { formattedTokensWithBalancesPerChain } = useGetFormattedTokensPerChain(
     account,
     shouldHideZeroBalanceTokens,
     isTokenNetworkFilterEqualCurrentNetwork,
+    allChainIDs,
   );
   const { totalFiatBalance } = useAccountTotalCrossChainFiatBalance(
     account,
@@ -139,7 +142,10 @@ const AccountListItem = ({
   );
   let balanceToTranslate;
   if (isEvmNetwork) {
-    balanceToTranslate = isTestnet ? account.balance : totalFiatBalance;
+    balanceToTranslate =
+      isTestnet || !process.env.PORTFOLIO_VIEW
+        ? account.balance
+        : totalFiatBalance;
   } else {
     balanceToTranslate = accountTotalFiatBalances.totalBalance;
   }
