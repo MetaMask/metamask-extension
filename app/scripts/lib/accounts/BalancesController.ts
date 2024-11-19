@@ -132,6 +132,11 @@ const SOLANA_AVG_BLOCK_TIME = 400; // 400 milliseconds
 // is de-synchronized with the actual block time.
 export const BTC_BALANCES_UPDATE_TIME = BTC_AVG_BLOCK_TIME / 2;
 
+const balanceCheckIntervals = {
+  [BtcAccountType.P2wpkh]: BTC_BALANCES_UPDATE_TIME,
+  [SolAccountType.DataAccount]: SOLANA_AVG_BLOCK_TIME,
+};
+
 /**
  * The BalancesController is responsible for fetching and caching account
  * balances.
@@ -167,16 +172,7 @@ export class BalancesController extends BaseController<
     // Register all non-EVM accounts into the tracker
     for (const account of this.#listAccounts()) {
       if (this.#isNonEvmAccount(account)) {
-        const updateTimes = {
-          [BtcAccountType.P2wpkh]: BTC_BALANCES_UPDATE_TIME,
-          [SolAccountType.DataAccount]: SOLANA_AVG_BLOCK_TIME,
-        };
-
-        const updateTime =
-          updateTimes[account.type as keyof typeof updateTimes] ||
-          SOLANA_AVG_BLOCK_TIME;
-
-        this.#tracker.track(account.id, updateTime);
+        this.#tracker.track(account.id, this.#getBlockTimeFor(account));
       }
     }
 
@@ -202,6 +198,18 @@ export class BalancesController extends BaseController<
    */
   async stop(): Promise<void> {
     this.#tracker.stop();
+  }
+
+  /**
+   * Gets the block time for a given account.
+   *
+   * @param account - The account to get the block time for.
+   * @returns The block time for the account.
+   */
+  #getBlockTimeFor(account: InternalAccount): number {
+    return balanceCheckIntervals[
+      account.type as BtcAccountType.P2wpkh | SolAccountType.DataAccount
+    ];
   }
 
   /**
