@@ -19,15 +19,16 @@ const NFTTokenTransferInfo = () => {
     <>
       <NFTSendHeading />
       <TransactionFlowSection />
-      {!isWalletInitiated && (
+      {
         <ConfirmInfoSection noPadding>
           <SimulationDetails
-            simulationData={transactionMeta.simulationData}
-            transactionId={transactionMeta.id}
+            transaction={transactionMeta}
             isTransactionsRedesign
+            enableMetrics
+            metricsOnly={isWalletInitiated}
           />
         </ConfirmInfoSection>
-      )}
+      }
       <TokenDetailsSection />
       <GasFeesSection />
       <AdvancedDetails />

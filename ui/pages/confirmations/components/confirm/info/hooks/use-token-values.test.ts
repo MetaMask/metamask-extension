@@ -73,7 +73,8 @@ describe('useTokenValues', () => {
     await waitForNextUpdate();
 
     expect(result.current).toEqual({
-      decodedTransferValue: 7,
+      decodedTransferValue: '7',
+      displayTransferValue: '7',
       fiatDisplayValue: '$6.37',
       pending: false,
     });
@@ -118,7 +119,8 @@ describe('useTokenValues', () => {
     await waitForNextUpdate();
 
     expect(result.current).toEqual({
-      decodedTransferValue: 7,
+      decodedTransferValue: '7',
+      displayTransferValue: '7',
       fiatDisplayValue: null,
       pending: false,
     });

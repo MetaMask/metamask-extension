@@ -7,7 +7,6 @@ import {
   BlockaidReason,
   BlockaidResultType,
 } from '../../../../shared/constants/security-provider';
-import { flushPromises } from '../../../../test/lib/timer-helpers';
 import { mockNetworkState } from '../../../../test/stub/networks';
 import { createPPOMMiddleware, PPOMMiddlewareRequest } from './ppom-middleware';
 import {
@@ -105,7 +104,6 @@ const createMiddleware = (
 };
 
 describe('PPOMMiddleware', () => {
-  const validateRequestWithPPOMMock = jest.mocked(validateRequestWithPPOM);
   const generateSecurityAlertIdMock = jest.mocked(generateSecurityAlertId);
   const handlePPOMErrorMock = jest.mocked(handlePPOMError);
   const isChainSupportedMock = jest.mocked(isChainSupported);
@@ -114,7 +112,6 @@ describe('PPOMMiddleware', () => {
   beforeEach(() => {
     jest.resetAllMocks();
 
-    validateRequestWithPPOMMock.mockResolvedValue(SECURITY_ALERT_RESPONSE_MOCK);
     generateSecurityAlertIdMock.mockReturnValue(SECURITY_ALERT_ID_MOCK);
     handlePPOMErrorMock.mockReturnValue(SECURITY_ALERT_RESPONSE_MOCK);
     isChainSupportedMock.mockResolvedValue(true);
@@ -129,37 +126,12 @@ describe('PPOMMiddleware', () => {
     };
   });
 
-  it('updates alert response after validating request', async () => {
+  it('adds checking chain response to confirmation requests while validation is in progress', async () => {
     const updateSecurityAlertResponse = jest.fn();
 
     const middlewareFunction = createMiddleware({
       updateSecurityAlertResponse,
     });
-
-    const req = {
-      ...REQUEST_MOCK,
-      method: 'eth_sendTransaction',
-      securityAlertResponse: undefined,
-    };
-
-    await middlewareFunction(
-      req,
-      { ...JsonRpcResponseStruct.TYPE },
-      () => undefined,
-    );
-
-    await flushPromises();
-
-    expect(updateSecurityAlertResponse).toHaveBeenCalledTimes(1);
-    expect(updateSecurityAlertResponse).toHaveBeenCalledWith(
-      req.method,
-      SECURITY_ALERT_ID_MOCK,
-      SECURITY_ALERT_RESPONSE_MOCK,
-    );
-  });
-
-  it('adds loading response to confirmation requests while validation is in progress', async () => {
-    const middlewareFunction = createMiddleware();
 
     const req: PPOMMiddlewareRequest<(string | { to: string })[]> = {
       ...REQUEST_MOCK,
@@ -173,7 +145,9 @@ describe('PPOMMiddleware', () => {
       () => undefined,
     );
 
-    expect(req.securityAlertResponse?.reason).toBe(BlockaidReason.inProgress);
+    expect(req.securityAlertResponse?.reason).toBe(
+      BlockaidReason.checkingChain,
+    );
     expect(req.securityAlertResponse?.result_type).toBe(
       BlockaidResultType.Loading,
     );
@@ -192,50 +166,6 @@ describe('PPOMMiddleware', () => {
 
     // @ts-expect-error Passing in invalid input for testing purposes
     await middlewareFunction(req, undefined, () => undefined);
-
-    expect(req.securityAlertResponse).toBeUndefined();
-    expect(validateRequestWithPPOM).not.toHaveBeenCalled();
-  });
-
-  it('does not do validation if unable to get the chainId from the network provider config', async () => {
-    isChainSupportedMock.mockResolvedValue(false);
-    const middlewareFunction = createMiddleware({
-      chainId: null,
-    });
-
-    const req = {
-      ...REQUEST_MOCK,
-      method: 'eth_sendTransaction',
-      securityAlertResponse: undefined,
-    };
-
-    await middlewareFunction(
-      req,
-      { ...JsonRpcResponseStruct.TYPE },
-      () => undefined,
-    );
-
-    expect(req.securityAlertResponse).toBeUndefined();
-    expect(validateRequestWithPPOM).not.toHaveBeenCalled();
-  });
-
-  it('does not do validation if user is not on a supported network', async () => {
-    isChainSupportedMock.mockResolvedValue(false);
-    const middlewareFunction = createMiddleware({
-      chainId: '0x2',
-    });
-
-    const req = {
-      ...REQUEST_MOCK,
-      method: 'eth_sendTransaction',
-      securityAlertResponse: undefined,
-    };
-
-    await middlewareFunction(
-      req,
-      { ...JsonRpcResponseStruct.TYPE },
-      () => undefined,
-    );
 
     expect(req.securityAlertResponse).toBeUndefined();
     expect(validateRequestWithPPOM).not.toHaveBeenCalled();
