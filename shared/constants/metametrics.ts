@@ -590,6 +590,10 @@ export enum MetaMetricsUserTrait {
    * Identified when the user changes token sort order on asset-list
    */
   TokenSortPreference = 'token_sort_preference',
+  /**
+   * Identifies if the Privacy Mode is enabled
+   */
+  PrivacyModeEnabled = 'privacy_mode_toggle',
 }
 
 /**

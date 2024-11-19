@@ -164,6 +164,9 @@ export type MetaMaskState = {
   security_providers: string[];
   addressBook: AddressBookControllerState['addressBook'];
   currentCurrency: string;
+  preferences: {
+    privacyMode: PreferencesControllerState['preferences']['privacyMode'];
+  };
   ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
   custodyAccountDetails: {
     [address: string]: {
@@ -1228,6 +1231,8 @@ export default class MetaMetricsController extends BaseController<
         metamaskState.dataCollectionForMarketing,
       [MetaMetricsUserTrait.TokenSortPreference]:
         metamaskState.tokenSortConfig?.key || '',
+      [MetaMetricsUserTrait.PrivacyModeEnabled]:
+        metamaskState.preferences.privacyMode,
     };
 
     if (!previousUserTraits) {
