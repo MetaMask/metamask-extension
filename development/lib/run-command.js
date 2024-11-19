@@ -1,5 +1,5 @@
 const fs = require('fs');
-const spawn = require('cross-spawn');
+const { spawn } = require('node:child_process');
 
 /**
  * Run a command to completion using the system shell.
