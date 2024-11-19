@@ -7,6 +7,8 @@ import {
   getIsTestnet,
   getPreferences,
   getNetworkConfigurationsByChainId,
+  getShouldHideZeroBalanceTokens,
+  getSelectedAccount,
 } from '../../../../../selectors';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import { SelectableListItem } from '../sort-control/sort-control';
@@ -28,6 +30,8 @@ import {
   CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP,
   TEST_CHAINS,
 } from '../../../../../../shared/constants/network';
+import { useGetFormattedTokensPerChain } from '../../../../../hooks/useGetFormattedTokensPerChain';
+import { useAccountTotalCrossChainFiatBalance } from '../../../../../hooks/useAccountTotalCrossChainFiatBalance';
 
 type SortControlProps = {
   handleClose: () => void;
@@ -37,15 +41,39 @@ const NetworkFilter = ({ handleClose }: SortControlProps) => {
   const t = useI18nContext();
   const dispatch = useDispatch();
   const chainId = useSelector(getCurrentChainId);
+  const selectedAccount = useSelector(getSelectedAccount)
   const currentNetwork = useSelector(getCurrentNetwork);
   const allNetworks = useSelector(getNetworkConfigurationsByChainId);
   const isTestnet = useSelector(getIsTestnet);
-  const { tokenNetworkFilter, showNativeTokenAsMainBalance } =
-    useSelector(getPreferences);
 
   const [chainsToShow, setChainsToShow] = useState<string[]>([]);
+  const { tokenNetworkFilter } = useSelector(getPreferences);
+  const shouldHideZeroBalanceTokens = useSelector(
+    getShouldHideZeroBalanceTokens,
+  );
 
-  const selectedAccountBalance = '100';
+  const { formattedTokensWithBalancesPerChain } = useGetFormattedTokensPerChain(
+    selectedAccount,
+    shouldHideZeroBalanceTokens,
+    true,
+  );
+  const { totalFiatBalance: selectedAccountBalance } =
+    useAccountTotalCrossChainFiatBalance(
+      selectedAccount,
+      formattedTokensWithBalancesPerChain,
+    );
+
+  const { formattedTokensWithBalancesPerChain: formattedTokensForAllNetworks } =
+    useGetFormattedTokensPerChain(
+      selectedAccount,
+      shouldHideZeroBalanceTokens,
+      false,
+    );
+  const { totalFiatBalance: selectedAccountBalanceForAllNetworks } =
+    useAccountTotalCrossChainFiatBalance(
+      selectedAccount,
+      formattedTokensForAllNetworks,
+    );
 
   const handleFilter = (chainFilters: Record<string, boolean>) => {
     dispatch(setTokenNetworkFilter(chainFilters));
@@ -92,7 +120,16 @@ const NetworkFilter = ({ handleClose }: SortControlProps) => {
               color={TextColor.textAlternative}
             >
               {/* TODO: Should query cross chain account balance */}
-              $1,000.00
+
+              <UserPreferencedCurrencyDisplay
+                value={selectedAccountBalanceForAllNetworks}
+                type="PRIMARY"
+                ethNumberOfDecimals={4}
+                hideTitle
+                showFiat
+                shouldCheckShowNativeToken
+                isAggregatedFiatOverviewBalance={!isTestnet}
+              />
             </Text>
           </Box>
           <Box display={Display.Flex} alignItems={AlignItems.center}>
@@ -148,11 +185,9 @@ const NetworkFilter = ({ handleClose }: SortControlProps) => {
               }}
               ethNumberOfDecimals={4}
               hideTitle
-              showCurrencySuffix={false}
+              showFiat
               shouldCheckShowNativeToken
-              isAggregatedFiatOverviewBalance={
-                !showNativeTokenAsMainBalance && !isTestnet
-              }
+              isAggregatedFiatOverviewBalance={!isTestnet}
             />
           </Box>
           <AvatarNetwork

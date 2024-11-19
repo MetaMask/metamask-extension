@@ -55,13 +55,13 @@ import {
   getMetaMetricsId,
   getParticipateInMetaMetrics,
   SwapsEthToken,
+  getIsTokenNetworkFilterEqualCurrentNetwork,
   ///: END:ONLY_INCLUDE_IF
 } from '../../../selectors';
 import Spinner from '../../ui/spinner';
 
 import { PercentageAndAmountChange } from '../../multichain/token-list-item/price/percentage-and-amount-change/percentage-and-amount-change';
 import { getMultichainIsEvm } from '../../../selectors/multichain';
-import { useAccountTotalFiatBalance } from '../../../hooks/useAccountTotalFiatBalance';
 import {
   setAggregatedBalancePopoverShown,
   setPrivacyMode,
@@ -69,9 +69,13 @@ import {
 import { useTheme } from '../../../hooks/useTheme';
 import { getSpecificSettingsRoute } from '../../../helpers/utils/settings-search';
 import { useI18nContext } from '../../../hooks/useI18nContext';
+import { useAccountTotalCrossChainFiatBalance } from '../../../hooks/useAccountTotalCrossChainFiatBalance';
+
+import { useGetFormattedTokensPerChain } from '../../../hooks/useGetFormattedTokensPerChain';
 import WalletOverview from './wallet-overview';
 import CoinButtons from './coin-buttons';
 import { AggregatedPercentageOverview } from './aggregated-percentage-overview';
+import { AggregatedPercentageOverviewCrossChains } from './aggregated-percentage-overview-cross-chains';
 
 export type CoinOverviewProps = {
   account: InternalAccount;
@@ -136,12 +140,22 @@ export const CoinOverview = ({
   const { showFiatInTestnets, privacyMode, showNativeTokenAsMainBalance } =
     useSelector(getPreferences);
 
+  const isTokenNetworkFilterEqualCurrentNetwork = useSelector(
+    getIsTokenNetworkFilterEqualCurrentNetwork,
+  );
+
   const shouldHideZeroBalanceTokens = useSelector(
     getShouldHideZeroBalanceTokens,
   );
-  const { totalFiatBalance, loading } = useAccountTotalFiatBalance(
+
+  const { formattedTokensWithBalancesPerChain } = useGetFormattedTokensPerChain(
     account,
     shouldHideZeroBalanceTokens,
+    isTokenNetworkFilterEqualCurrentNetwork,
+  );
+  const { totalFiatBalance } = useAccountTotalCrossChainFiatBalance(
+    account,
+    formattedTokensWithBalancesPerChain,
   );
 
   const isEvm = useSelector(getMultichainIsEvm);
@@ -150,7 +164,7 @@ export const CoinOverview = ({
   let balanceToDisplay;
   if (isNotAggregatedFiatBalance) {
     balanceToDisplay = balance;
-  } else if (!loading) {
+  } else {
     balanceToDisplay = totalFiatBalance;
   }
 
@@ -225,7 +239,12 @@ export const CoinOverview = ({
       }
       return (
         <Box className="wallet-overview__currency-wrapper">
-          <AggregatedPercentageOverview />
+          {isTokenNetworkFilterEqualCurrentNetwork ? (
+            <AggregatedPercentageOverview />
+          ) : (
+            <AggregatedPercentageOverviewCrossChains />
+          )}
+
           {
             ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
             <ButtonLink
