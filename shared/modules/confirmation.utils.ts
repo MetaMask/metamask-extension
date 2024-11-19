@@ -21,9 +21,7 @@ const REDESIGN_USER_TRANSACTION_TYPES = [
 ];
 
 /** List of transaction types that support the redesigned confirmation flow for developers */
-export const REDESIGN_DEV_TRANSACTION_TYPES = [
-  ...REDESIGN_USER_TRANSACTION_TYPES,
-];
+const REDESIGN_DEV_TRANSACTION_TYPES = [...REDESIGN_USER_TRANSACTION_TYPES];
 
 /**
  * Determines whether to use the redesigned confirmation flow for a given transaction
@@ -97,9 +95,13 @@ export function isCorrectSignatureApprovalType(
  *
  * @param transactionMetadataType - The type of transaction to check
  */
-function isCorrectDeveloperTransactionType(
-  transactionMetadataType: TransactionType,
+export function isCorrectDeveloperTransactionType(
+  transactionMetadataType?: TransactionType,
 ): boolean {
+  if (!transactionMetadataType) {
+    return false;
+  }
+
   return REDESIGN_DEV_TRANSACTION_TYPES.includes(transactionMetadataType);
 }
 

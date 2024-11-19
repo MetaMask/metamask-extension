@@ -40,7 +40,7 @@ import { getConfirmationSender } from '../utils';
 import { MetaMetricsEventLocation } from '../../../../../../shared/constants/metametrics';
 import { Alert } from '../../../../../ducks/confirm-alerts/confirm-alerts';
 import { Severity } from '../../../../../helpers/constants/design-system';
-import { REDESIGN_DEV_TRANSACTION_TYPES } from '../../../../../../shared/modules/confirmation.utils';
+import { isCorrectDeveloperTransactionType } from '../../../../../../shared/modules/confirmation.utils';
 
 export type OnCancelHandler = ({
   location,
@@ -218,9 +218,10 @@ const Footer = () => {
       return;
     }
 
-    const isTransactionConfirmation = REDESIGN_DEV_TRANSACTION_TYPES.find(
-      (type) => type === currentConfirmation?.type,
+    const isTransactionConfirmation = isCorrectDeveloperTransactionType(
+      currentConfirmation?.type,
     );
+
     if (isTransactionConfirmation) {
       const mergeTxDataWithNonce = (transactionData: TransactionMeta) =>
         customNonceValue

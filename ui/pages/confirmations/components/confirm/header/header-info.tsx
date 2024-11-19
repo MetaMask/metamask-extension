@@ -1,4 +1,3 @@
-import { TransactionType } from '@metamask/transaction-controller';
 import React, { useContext } from 'react';
 import { useSelector } from 'react-redux';
 import {
@@ -43,7 +42,7 @@ import { useBalance } from '../../../hooks/useBalance';
 import useConfirmationRecipientInfo from '../../../hooks/useConfirmationRecipientInfo';
 import { SignatureRequestType } from '../../../types/confirm';
 import { isSignatureTransactionType } from '../../../utils/confirm';
-import { REDESIGN_DEV_TRANSACTION_TYPES } from '../../../../../../shared/modules/confirmation.utils';
+import { isCorrectDeveloperTransactionType } from '../../../../../../shared/modules/confirmation.utils';
 import { AdvancedDetailsButton } from './advanced-details-button';
 
 const HeaderInfo = () => {
@@ -87,8 +86,8 @@ const HeaderInfo = () => {
     trackEvent(event);
   }
 
-  const isShowAdvancedDetailsToggle = REDESIGN_DEV_TRANSACTION_TYPES.includes(
-    currentConfirmation?.type as TransactionType,
+  const isShowAdvancedDetailsToggle = isCorrectDeveloperTransactionType(
+    currentConfirmation?.type,
   );
 
   return (
