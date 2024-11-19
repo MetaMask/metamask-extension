@@ -1,22 +1,21 @@
 import { Suite } from 'mocha';
 import { Driver } from '../../webdriver/driver';
-import { withFixtures, defaultGanacheOptions } from '../../helpers';
+import { withFixtures } from '../../helpers';
 import FixtureBuilder from '../../fixture-builder';
 import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
-import HomePage from '../../page-objects/pages/homepage';
 import AccountListPage from '../../page-objects/pages/account-list-page';
+import HeaderNavbar from '../../page-objects/pages/header-navbar';
 
 describe('Account list - hide/unhide functionality', function (this: Suite) {
   it('hide and unhide account by clicking hide and unhide button', async function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilder().build(),
-        ganacheOptions: defaultGanacheOptions,
         title: this.test?.fullTitle(),
       },
       async ({ driver }: { driver: Driver }) => {
         await loginWithBalanceValidation(driver);
-        new HomePage(driver).openAccountMenu();
+        new HeaderNavbar(driver).openAccountMenu();
 
         // hide account
         const accountListPage = new AccountListPage(driver);
@@ -29,7 +28,7 @@ describe('Account list - hide/unhide functionality', function (this: Suite) {
         await accountListPage.openHiddenAccountsList();
         await accountListPage.openHiddenAccountOptions();
         await accountListPage.unhideAccount();
-        await accountListPage.check_accountIsDisplayed();
+        await accountListPage.check_accountDisplayedInAccountList();
       },
     );
   });

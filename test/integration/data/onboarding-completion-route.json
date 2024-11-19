@@ -223,12 +223,12 @@
     "showExtensionInFullSizeView": false,
     "showFiatInTestnets": false,
     "showTestNetworks": false,
-    "smartTransactionsOptInStatus": null,
-    "useNativeCurrencyAsPrimaryCurrency": true,
+    "smartTransactionsOptInStatus": true,
     "hideZeroBalanceTokens": false,
     "petnamesEnabled": true,
     "redesignedConfirmationsEnabled": true,
-    "featureNotificationsEnabled": false
+    "featureNotificationsEnabled": false,
+    "privacyMode": false
   },
   "preventPollingOnNetworkRestart": false,
   "previousAppVersion": "",

@@ -6,6 +6,7 @@ import { renderWithProvider } from '../../../../test/lib/render-helpers';
 import { CHAIN_IDS } from '../../../../shared/constants/network';
 import { getIntlLocale } from '../../../ducks/locale/locale';
 import { mockNetworkState } from '../../../../test/stub/networks';
+import { useSafeChains } from '../../../pages/settings/networks-tab/networks-form/use-safe-chains';
 import { TokenListItem } from '.';
 
 const state = {
@@ -13,9 +14,7 @@ const state = {
     ...mockNetworkState({ chainId: CHAIN_IDS.MAINNET }),
     useTokenDetection: false,
     currencyRates: {},
-    preferences: {
-      useNativeCurrencyAsPrimaryCurrency: false,
-    },
+    preferences: {},
     internalAccounts: {
       accounts: {
         'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3': {
@@ -35,13 +34,30 @@ const state = {
   },
 };
 
+const safeChainDetails = {
+  chainId: '1',
+  nativeCurrency: {
+    symbol: 'ETH',
+  },
+};
+
 let openTabSpy: jest.SpyInstance<void, [opts: { url: string }], unknown>;
 
 jest.mock('../../../ducks/locale/locale', () => ({
   getIntlLocale: jest.fn(),
 }));
 
+jest.mock(
+  '../../../pages/settings/networks-tab/networks-form/use-safe-chains',
+  () => ({
+    useSafeChains: jest.fn().mockReturnValue({
+      safeChains: [safeChainDetails],
+    }),
+  }),
+);
+
 const mockGetIntlLocale = getIntlLocale;
+const mockGetSafeChains = useSafeChains;
 
 describe('TokenListItem', () => {
   beforeAll(() => {
@@ -53,6 +69,7 @@ describe('TokenListItem', () => {
     onClick: jest.fn(),
     tokenImage: '',
     title: '',
+    chainId: '0x1',
   };
   it('should render correctly', () => {
     const store = configureMockStore()(state);
@@ -83,6 +100,7 @@ describe('TokenListItem', () => {
       isOriginalTokenSymbol: false,
       tokenImage: '',
       title: '',
+      chainId: '0x1',
     };
     const { getByText } = renderWithProvider(
       <TokenListItem {...propsToUse} />,
@@ -100,6 +118,8 @@ describe('TokenListItem', () => {
       showPercentage: true,
       tokenImage: '',
       title: '',
+      tokenSymbol: 'SCAM_TOKEN',
+      chainId: '0x1',
     };
     const { getByTestId, getByText } = renderWithProvider(
       <TokenListItem {...propsToUse} />,
@@ -109,15 +129,45 @@ describe('TokenListItem', () => {
     const warningScamModal = getByTestId('scam-warning');
     fireEvent.click(warningScamModal);
 
-    expect(getByText('This is a potential scam')).toBeInTheDocument();
+    expect(
+      getByText(
+        'The native token symbol does not match the expected symbol of the native token for the network with the associated chain ID. You have entered SCAM_TOKEN while the expected token symbol is ETH. Please verify you are connected to the correct chain.',
+      ),
+    ).toBeInTheDocument();
   });
 
-  it('should render crypto balance if useNativeCurrencyAsPrimaryCurrency is false', () => {
+  it('should display warning scam modal fallback when safechains fails to resolve correctly', () => {
+    (mockGetSafeChains as unknown as jest.Mock).mockReturnValue([]);
+    const store = configureMockStore()(state);
+    const propsToUse = {
+      primary: '11.9751 ETH',
+      isNativeCurrency: true,
+      isOriginalTokenSymbol: false,
+      showPercentage: true,
+      tokenImage: '',
+      title: '',
+      tokenSymbol: 'SCAM_TOKEN',
+      chainId: '0x1',
+    };
+    const { getByTestId, getByText } = renderWithProvider(
+      <TokenListItem {...propsToUse} />,
+      store,
+    );
+
+    const warningScamModal = getByTestId('scam-warning');
+    fireEvent.click(warningScamModal);
+
+    expect(
+      getByText(
+        'The native token symbol does not match the expected symbol of the native token for the network with the associated chain ID. You have entered SCAM_TOKEN while the expected token symbol is something else. Please verify you are connected to the correct chain.',
+      ),
+    ).toBeInTheDocument();
+  });
+
+  it('should render crypto balance', () => {
     const store = configureMockStore()({
       ...state,
-      preferences: {
-        useNativeCurrencyAsPrimaryCurrency: false,
-      },
+      preferences: {},
     });
     const propsToUse = {
       primary: '11.9751 ETH',
@@ -125,6 +175,7 @@ describe('TokenListItem', () => {
       isOriginalTokenSymbol: false,
       tokenImage: '',
       title: '',
+      chainId: '0x1',
     };
 
     const { getByText } = renderWithProvider(

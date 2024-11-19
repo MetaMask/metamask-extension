@@ -13,6 +13,12 @@ import { setBackgroundConnection } from '../../../store/background-connection';
 import { mockNetworkState } from '../../../../test/stub/networks';
 import AssetPage from './asset-page';
 
+jest.mock('../../../store/actions', () => ({
+  ...jest.requireActual('../../../store/actions'),
+  tokenBalancesStartPolling: jest.fn().mockResolvedValue('pollingToken'),
+  tokenBalancesStopPollingByPollingToken: jest.fn(),
+}));
+
 // Mock the price chart
 jest.mock('react-chartjs-2', () => ({ Line: () => null }));
 
@@ -49,9 +55,7 @@ describe('AssetPage', () => {
         },
       },
       useCurrencyRateCheck: true,
-      preferences: {
-        useNativeCurrencyAsPrimaryCurrency: true,
-      },
+      preferences: {},
       internalAccounts: {
         accounts: {
           'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3': {
@@ -137,7 +141,9 @@ describe('AssetPage', () => {
     balance: {
       value: '0',
       display: '0',
+      fiat: '',
     },
+    decimals: 18,
   } as const;
 
   const token = {
@@ -150,6 +156,7 @@ describe('AssetPage', () => {
     balance: {
       value: '0',
       display: '0',
+      fiat: '',
     },
   } as const;
 

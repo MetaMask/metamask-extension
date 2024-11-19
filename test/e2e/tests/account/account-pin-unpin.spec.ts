@@ -1,22 +1,21 @@
 import { Suite } from 'mocha';
 import { Driver } from '../../webdriver/driver';
-import { withFixtures, defaultGanacheOptions } from '../../helpers';
+import { withFixtures } from '../../helpers';
 import FixtureBuilder from '../../fixture-builder';
 import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
-import HomePage from '../../page-objects/pages/homepage';
 import AccountListPage from '../../page-objects/pages/account-list-page';
+import HeaderNavbar from '../../page-objects/pages/header-navbar';
 
 describe('Account list - pin/unpin functionality', function (this: Suite) {
   it('pin and unpin account by clicking the pin/unpin button', async function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilder().build(),
-        ganacheOptions: defaultGanacheOptions,
         title: this.test?.fullTitle(),
       },
       async ({ driver }: { driver: Driver }) => {
         await loginWithBalanceValidation(driver);
-        new HomePage(driver).openAccountMenu();
+        new HeaderNavbar(driver).openAccountMenu();
 
         // pin account
         const accountListPage = new AccountListPage(driver);
@@ -37,12 +36,11 @@ describe('Account list - pin/unpin functionality', function (this: Suite) {
     await withFixtures(
       {
         fixtures: new FixtureBuilder().build(),
-        ganacheOptions: defaultGanacheOptions,
         title: this.test?.fullTitle(),
       },
       async ({ driver }: { driver: Driver }) => {
         await loginWithBalanceValidation(driver);
-        new HomePage(driver).openAccountMenu();
+        new HeaderNavbar(driver).openAccountMenu();
 
         // pin account
         const accountListPage = new AccountListPage(driver);
@@ -61,7 +59,7 @@ describe('Account list - pin/unpin functionality', function (this: Suite) {
         await accountListPage.openHiddenAccountsList();
         await accountListPage.openHiddenAccountOptions();
         await accountListPage.unhideAccount();
-        await accountListPage.check_accountIsDisplayed();
+        await accountListPage.check_accountDisplayedInAccountList();
         await accountListPage.check_accountIsUnpinned();
       },
     );

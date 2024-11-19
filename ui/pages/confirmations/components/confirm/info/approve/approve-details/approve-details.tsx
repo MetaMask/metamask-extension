@@ -17,9 +17,14 @@ import {
   OriginRow,
   RecipientRow,
 } from '../../shared/transaction-details/transaction-details';
+import { getIsRevokeSetApprovalForAll } from '../../utils';
 import { useIsNFT } from '../hooks/use-is-nft';
 
-const Spender = () => {
+const Spender = ({
+  isSetApprovalForAll = false,
+}: {
+  isSetApprovalForAll?: boolean;
+}) => {
   const t = useI18nContext();
 
   const { currentConfirmation: transactionMeta } =
@@ -40,17 +45,22 @@ const Spender = () => {
   }
 
   const spender = value.data[0].params[0].value;
+  const { chainId } = transactionMeta;
+
+  if (getIsRevokeSetApprovalForAll(value)) {
+    return null;
+  }
 
   return (
     <>
       <ConfirmInfoRow
-        label={t('spender')}
+        label={t(isSetApprovalForAll ? 'permissionFor' : 'spender')}
         tooltip={t(
           isNFT ? 'spenderTooltipDesc' : 'spenderTooltipERC20ApproveDesc',
         )}
         data-testid="confirmation__approve-spender"
       >
-        <ConfirmInfoRowAddress address={spender} />
+        <ConfirmInfoRowAddress address={spender} chainId={chainId} />
       </ConfirmInfoRow>
 
       <ConfirmInfoRowDivider />
@@ -58,14 +68,18 @@ const Spender = () => {
   );
 };
 
-export const ApproveDetails = () => {
+export const ApproveDetails = ({
+  isSetApprovalForAll = false,
+}: {
+  isSetApprovalForAll?: boolean;
+}) => {
   const showAdvancedDetails = useSelector(
     selectConfirmationAdvancedDetailsOpen,
   );
 
   return (
     <ConfirmInfoSection data-testid="confirmation__approve-details">
-      <Spender />
+      <Spender isSetApprovalForAll={isSetApprovalForAll} />
       <OriginRow />
       {showAdvancedDetails && (
         <>

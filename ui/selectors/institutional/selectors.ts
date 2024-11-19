@@ -1,7 +1,10 @@
 import { toChecksumAddress } from 'ethereumjs-util';
-import { getAccountType, getSelectedInternalAccount } from '../selectors';
+import { getAccountType } from '../selectors';
+import { getSelectedInternalAccount } from '../accounts';
 import { getProviderConfig } from '../../ducks/metamask/metamask';
 import { hexToDecimal } from '../../../shared/modules/conversion.utils';
+// TODO: Remove restricted import
+// eslint-disable-next-line import/no-restricted-paths
 import { normalizeSafeAddress } from '../../../app/scripts/lib/multichain/address';
 import { AccountType } from '../../../shared/constants/custody';
 
@@ -50,6 +53,7 @@ type MetaMaskState = {
   custodyAccountDetails?: CustodyAccountDetails;
   custodianSupportedChains?: CustodianSupportedChains;
   mmiConfiguration?: MmiConfiguration;
+  noteToTraderMessage?: string;
   interactiveReplacementToken?: {
     oldRefreshToken?: string;
     url?: string;
@@ -163,6 +167,7 @@ export function getCustodianIconForAddress(state: State, address: string) {
 
 export function getIsCustodianSupportedChain(state: State) {
   try {
+    // @ts-expect-error state types don't match
     const selectedAccount = getSelectedInternalAccount(state);
     const accountType = getAccountType(state);
     const providerConfig = getProviderConfig(state);
@@ -204,6 +209,7 @@ export function getIsCustodianSupportedChain(state: State) {
 
 export function getMMIAddressFromModalOrAddress(state: State) {
   const modalAddress = state?.appState?.modal?.modalState?.props?.address;
+  // @ts-expect-error state types don't match
   const selectedAddress = getSelectedInternalAccount(state)?.address;
 
   return modalAddress || selectedAddress;
@@ -255,4 +261,8 @@ export function getIsCustodianPublishesTransactionSupported(
   );
 
   return foundCustodian ? foundCustodian.custodianPublishesTransaction : false;
+}
+
+export function getNoteToTraderMessage(state: State) {
+  return state.metamask.noteToTraderMessage || '';
 }

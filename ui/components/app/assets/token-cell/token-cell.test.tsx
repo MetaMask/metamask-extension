@@ -5,8 +5,14 @@ import { fireEvent } from '@testing-library/react';
 import { useSelector } from 'react-redux';
 import { renderWithProvider } from '../../../../../test/lib/render-helpers';
 import { useTokenFiatAmount } from '../../../../hooks/useTokenFiatAmount';
+import { getTokenList, getPreferences } from '../../../../selectors';
+import {
+  getMultichainCurrentChainId,
+  getMultichainIsEvm,
+} from '../../../../selectors/multichain';
 
 import { useIsOriginalTokenSymbol } from '../../../../hooks/useIsOriginalTokenSymbol';
+import { getIntlLocale } from '../../../../ducks/locale/locale';
 import TokenCell from '.';
 
 jest.mock('react-redux', () => {
@@ -79,6 +85,8 @@ describe('Token Cell', () => {
     string: '5.000',
     currentCurrency: 'usd',
     image: '',
+    chainId: '0x1',
+    tokenFiatAmount: 5,
     onClick: jest.fn(),
   };
 
@@ -88,9 +96,29 @@ describe('Token Cell', () => {
     string: '5000000',
     currentCurrency: 'usd',
     image: '',
+    chainId: '0x1',
+    tokenFiatAmount: 5000000,
     onClick: jest.fn(),
   };
-  (useSelector as jest.Mock).mockReturnValue(MOCK_GET_TOKEN_LIST);
+  const useSelectorMock = useSelector;
+  (useSelectorMock as jest.Mock).mockImplementation((selector) => {
+    if (selector === getPreferences) {
+      return { privacyMode: false };
+    }
+    if (selector === getTokenList) {
+      return MOCK_GET_TOKEN_LIST;
+    }
+    if (selector === getMultichainCurrentChainId) {
+      return '0x89';
+    }
+    if (selector === getMultichainIsEvm) {
+      return true;
+    }
+    if (selector === getIntlLocale) {
+      return 'en-US';
+    }
+    return undefined;
+  });
   (useTokenFiatAmount as jest.Mock).mockReturnValue('5.00');
 
   it('should match snapshot', () => {

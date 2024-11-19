@@ -61,7 +61,7 @@ export const container: UIComponentFactory<BoxElement> = ({
         className: 'snap-ui-renderer__footer-centered',
       },
       children: {
-        element: 'SnapFooterButton',
+        element: 'SnapUIFooterButton',
         key: 'default-button',
         props: {
           onCancel,

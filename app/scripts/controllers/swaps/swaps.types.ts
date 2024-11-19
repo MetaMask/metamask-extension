@@ -308,6 +308,7 @@ export type FetchTradesInfoParams = {
   fromAddress: string;
   exchangeList: string;
   balanceError: boolean;
+  enableGasIncludedQuotes: boolean;
 };
 
 export type FetchTradesInfoParamsMetadata = {

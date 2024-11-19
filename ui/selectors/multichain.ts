@@ -2,7 +2,7 @@ import PropTypes from 'prop-types';
 import { InternalAccount, isEvmAccountType } from '@metamask/keyring-api';
 import type { RatesControllerState } from '@metamask/assets-controllers';
 import { CaipChainId, Hex, KnownCaipNamespace } from '@metamask/utils';
-import { createSelector } from '@reduxjs/toolkit';
+import { createSelector } from 'reselect';
 import { NetworkType } from '@metamask/controller-utils';
 import { Numeric } from '../../shared/modules/Numeric';
 import {
@@ -16,13 +16,16 @@ import {
   getNativeCurrency,
   getProviderConfig,
 } from '../ducks/metamask/metamask';
+// TODO: Remove restricted import
+// eslint-disable-next-line import/no-restricted-paths
 import { BalancesControllerState } from '../../app/scripts/lib/accounts/BalancesController';
 import { MultichainNativeAssets } from '../../shared/constants/multichain/assets';
 import {
   CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP,
   TEST_NETWORK_IDS,
+  CHAIN_IDS,
 } from '../../shared/constants/network';
-import { AccountsState } from './accounts';
+import { AccountsState, getSelectedInternalAccount } from './accounts';
 import {
   getCurrentChainId,
   getCurrentCurrency,
@@ -31,10 +34,9 @@ import {
   getNativeCurrencyImage,
   getNetworkConfigurationsByChainId,
   getSelectedAccountCachedBalance,
-  getSelectedInternalAccount,
   getShouldShowFiat,
   getShowFiatInTestnets,
-} from '.';
+} from './selectors';
 
 export type RatesState = {
   metamask: RatesControllerState;
@@ -229,8 +231,11 @@ export function getMultichainProviderConfig(
   return getMultichainNetwork(state, account).network;
 }
 
-export function getMultichainCurrentNetwork(state: MultichainState) {
-  return getMultichainProviderConfig(state);
+export function getMultichainCurrentNetwork(
+  state: MultichainState,
+  account?: InternalAccount,
+) {
+  return getMultichainProviderConfig(state, account);
 }
 
 export function getMultichainNativeCurrency(
@@ -242,10 +247,13 @@ export function getMultichainNativeCurrency(
     : getMultichainProviderConfig(state, account).ticker;
 }
 
-export function getMultichainCurrentCurrency(state: MultichainState) {
+export function getMultichainCurrentCurrency(
+  state: MultichainState,
+  account?: InternalAccount,
+) {
   const currentCurrency = getCurrentCurrency(state);
 
-  if (getMultichainIsEvm(state)) {
+  if (getMultichainIsEvm(state, account)) {
     return currentCurrency;
   }
 
@@ -254,7 +262,7 @@ export function getMultichainCurrentCurrency(state: MultichainState) {
   // fallback to the current ticker symbol value
   return currentCurrency && currentCurrency.toLowerCase() === 'usd'
     ? 'usd'
-    : getMultichainProviderConfig(state).ticker;
+    : getMultichainProviderConfig(state, account).ticker;
 }
 
 export function getMultichainCurrencyImage(
@@ -309,6 +317,10 @@ export function getMultichainCurrentChainId(state: MultichainState) {
   return chainId;
 }
 
+export function isChainIdMainnet(chainId: string) {
+  return chainId === CHAIN_IDS.MAINNET;
+}
+
 export function getMultichainIsMainnet(
   state: MultichainState,
   account?: InternalAccount,
@@ -360,6 +372,13 @@ function getBtcCachedBalance(state: MultichainState) {
     : MultichainNativeAssets.BITCOIN_TESTNET;
 
   return balances?.[account.id]?.[asset]?.amount;
+}
+
+export function getImageForChainId(chainId: string) {
+  const evmChainIdKey =
+    chainId as keyof typeof CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP;
+
+  return CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP[evmChainIdKey];
 }
 
 // This selector is not compatible with `useMultichainSelector` since it uses the selected

@@ -10,16 +10,20 @@ import { getIntlLocale } from '../../../../ducks/locale/locale';
 type TokenCellProps = {
   address: string;
   symbol: string;
-  string: string;
+  string?: string;
+  chainId: string;
   image: string;
-  onClick?: (arg: string) => void;
+  privacyMode?: boolean;
+  onClick?: (chainId: string, address: string) => void;
 };
 
 export default function TokenCell({
   address,
   image,
   symbol,
+  chainId,
   string,
+  privacyMode = false,
   onClick,
 }: TokenCellProps) {
   const tokenList = useSelector(getTokenList);
@@ -42,7 +46,8 @@ export default function TokenCell({
 
   return (
     <TokenListItem
-      onClick={onClick ? () => onClick(address) : undefined}
+      chainId={chainId}
+      onClick={onClick ? () => onClick(chainId, address) : undefined}
       tokenSymbol={symbol}
       tokenImage={tokenImage}
       primary={`${primary || 0}`}
@@ -51,6 +56,7 @@ export default function TokenCell({
       isOriginalTokenSymbol={isOriginalTokenSymbol}
       address={address}
       showPercentage
+      privacyMode={privacyMode}
     />
   );
 }

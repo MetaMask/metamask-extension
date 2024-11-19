@@ -16,10 +16,6 @@ import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import { useNftsCollections } from '../../../../../hooks/useNftsCollections';
 import {
   getCurrentNetwork,
-  ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
-  getShouldHideZeroBalanceTokens,
-  getSelectedAccount,
-  ///: END:ONLY_INCLUDE_IF
   getIsMainnet,
   getUseNftDetection,
   getNftIsStillFetchingIndication,
@@ -42,15 +38,8 @@ import {
   MetaMetricsEventName,
 } from '../../../../../../shared/constants/metametrics';
 import { getCurrentLocale } from '../../../../../ducks/locale/locale';
-///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
-import {
-  RAMPS_CARD_VARIANT_TYPES,
-  RampsCard,
-} from '../../../../multichain/ramps-card/ramps-card';
-import { useAccountTotalFiatBalance } from '../../../../../hooks/useAccountTotalFiatBalance';
-import { getIsNativeTokenBuyable } from '../../../../../ducks/ramps';
-///: END:ONLY_INCLUDE_IF
 import Spinner from '../../../../ui/spinner';
+import { endTrace, TraceName } from '../../../../../../shared/lib/trace';
 
 export default function NftsTab() {
   const useNftDetection = useSelector(getUseNftDetection);
@@ -62,20 +51,6 @@ export default function NftsTab() {
   const nftsStillFetchingIndication = useSelector(
     getNftIsStillFetchingIndication,
   );
-
-  ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
-  const selectedAccount = useSelector(getSelectedAccount);
-  const shouldHideZeroBalanceTokens = useSelector(
-    getShouldHideZeroBalanceTokens,
-  );
-  const { totalFiatBalance } = useAccountTotalFiatBalance(
-    selectedAccount,
-    shouldHideZeroBalanceTokens,
-  );
-  const balanceIsZero = Number(totalFiatBalance) === 0;
-  const isBuyableChain = useSelector(getIsNativeTokenBuyable);
-  const showRampsCard = isBuyableChain && balanceIsZero;
-  ///: END:ONLY_INCLUDE_IF
 
   const { nftsLoading, collections, previouslyOwnedCollection } =
     useNftsCollections();
@@ -119,6 +94,12 @@ export default function NftsTab() {
     currentLocale,
   ]);
 
+  useEffect(() => {
+    if (!nftsLoading && !nftsStillFetchingIndication) {
+      endTrace({ name: TraceName.AccountOverviewNftsTab });
+    }
+  }, [nftsLoading, nftsStillFetchingIndication]);
+
   if (!hasAnyNfts && nftsStillFetchingIndication) {
     return (
       <Box className="nfts-tab__loading">
@@ -132,13 +113,6 @@ export default function NftsTab() {
 
   return (
     <>
-      {
-        ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
-        showRampsCard ? (
-          <RampsCard variant={RAMPS_CARD_VARIANT_TYPES.NFT} />
-        ) : null
-        ///: END:ONLY_INCLUDE_IF
-      }
       <Box className="nfts-tab">
         {isMainnet && !useNftDetection ? (
           <Box paddingTop={4} paddingInlineStart={4} paddingInlineEnd={4}>

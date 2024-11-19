@@ -1,5 +1,5 @@
 import { ApprovalType, detectSIWE } from '@metamask/controller-utils';
-import { errorCodes } from 'eth-rpc-errors';
+import { errorCodes } from '@metamask/rpc-errors';
 import { isValidAddress } from 'ethereumjs-util';
 import { MESSAGE_TYPE, ORIGIN_METAMASK } from '../../../shared/constants/app';
 import {
@@ -18,10 +18,15 @@ import {
   PRIMARY_TYPES_PERMIT,
 } from '../../../shared/constants/signatures';
 import { SIGNING_METHODS } from '../../../shared/constants/transaction';
+import { getErrorMessage } from '../../../shared/modules/error';
 import {
   generateSignatureUniqueId,
   getBlockaidMetricsProps,
+  // TODO: Remove restricted import
+  // eslint-disable-next-line import/no-restricted-paths
 } from '../../../ui/helpers/utils/metrics';
+// TODO: Remove restricted import
+// eslint-disable-next-line import/no-restricted-paths
 import { REDESIGN_APPROVAL_TYPES } from '../../../ui/pages/confirmations/utils/confirm';
 import { getSnapAndHardwareInfoForMetrics } from './snap-keyring/metrics';
 
@@ -48,6 +53,8 @@ const RATE_LIMIT_MAP = {
   [MESSAGE_TYPE.ETH_DECRYPT]: RATE_LIMIT_TYPES.NON_RATE_LIMITED,
   [MESSAGE_TYPE.ETH_GET_ENCRYPTION_PUBLIC_KEY]:
     RATE_LIMIT_TYPES.NON_RATE_LIMITED,
+  [MESSAGE_TYPE.ADD_ETHEREUM_CHAIN]: RATE_LIMIT_TYPES.NON_RATE_LIMITED,
+  [MESSAGE_TYPE.SWITCH_ETHEREUM_CHAIN]: RATE_LIMIT_TYPES.NON_RATE_LIMITED,
   [MESSAGE_TYPE.ETH_REQUEST_ACCOUNTS]: RATE_LIMIT_TYPES.TIMEOUT,
   [MESSAGE_TYPE.WALLET_REQUEST_PERMISSIONS]: RATE_LIMIT_TYPES.TIMEOUT,
   [MESSAGE_TYPE.SEND_METADATA]: RATE_LIMIT_TYPES.BLOCKED,
@@ -121,6 +128,8 @@ const EVENT_NAME_MAP = {
  */
 const TRANSFORM_PARAMS_MAP = {
   [MESSAGE_TYPE.WATCH_ASSET]: ({ type }) => ({ type }),
+  [MESSAGE_TYPE.ADD_ETHEREUM_CHAIN]: ([{ chainId }]) => ({ chainId }),
+  [MESSAGE_TYPE.SWITCH_ETHEREUM_CHAIN]: ([{ chainId }]) => ({ chainId }),
 };
 
 const rateLimitTimeoutsByMethod = {};
@@ -136,9 +145,11 @@ let globalRateLimitCount = 0;
 function createSignatureFragment(metaMetricsController, req, fragmentPayload) {
   metaMetricsController.createEventFragment({
     category: MetaMetricsEventCategory.InpageProvider,
+
     initialEvent: MetaMetricsEventName.SignatureRequested,
     successEvent: MetaMetricsEventName.SignatureApproved,
     failureEvent: MetaMetricsEventName.SignatureRejected,
+
     uniqueIdentifier: generateSignatureUniqueId(req.id),
     persist: true,
     referrer: {
@@ -164,12 +175,7 @@ function finalizeSignatureFragment(
 ) {
   const signatureUniqueId = generateSignatureUniqueId(req.id);
 
-  if (fragmentPayload) {
-    metaMetricsController.updateEventFragment(
-      signatureUniqueId,
-      fragmentPayload,
-    );
-  }
+  metaMetricsController.updateEventFragment(signatureUniqueId, fragmentPayload);
 
   metaMetricsController.finalizeEventFragment(
     signatureUniqueId,
@@ -183,8 +189,6 @@ function finalizeSignatureFragment(
  * signature requests
  *
  * @param {object} opts - options for the rpc method tracking middleware
- * @param {Function} opts.getMetricsState - get the state of
- *  MetaMetricsController
  * @param {number} [opts.rateLimitTimeout] - time, in milliseconds, to wait before
  *  allowing another set of events to be tracked for methods rate limited by timeout.
  * @param {number} [opts.rateLimitSamplePercent] - percentage, in decimal, of events
@@ -203,7 +207,6 @@ function finalizeSignatureFragment(
  */
 
 export default function createRPCMethodTrackingMiddleware({
-  getMetricsState,
   rateLimitTimeout = 60 * 5 * 1000, // 5 minutes
   rateLimitSamplePercent = 0.001, // 0.1%
   globalRateLimitTimeout = 60 * 5 * 1000, // 5 minutes
@@ -222,8 +225,7 @@ export default function createRPCMethodTrackingMiddleware({
   ) {
     const { origin, method, params } = req;
 
-    const rateLimitType =
-      RATE_LIMIT_MAP[method] ?? RATE_LIMIT_TYPES.RANDOM_SAMPLE;
+    const rateLimitType = RATE_LIMIT_MAP[method];
 
     let isRateLimited;
     switch (rateLimitType) {
@@ -251,13 +253,14 @@ export default function createRPCMethodTrackingMiddleware({
     // anything. This is extra redundancy because this value is checked in
     // the metametrics controller's trackEvent method as well.
     const userParticipatingInMetaMetrics =
-      getMetricsState().participateInMetaMetrics === true;
+      metaMetricsController.state.participateInMetaMetrics === true;
 
     // Get the event type, each of which has APPROVED, REJECTED and REQUESTED
     // keys for the various events in the flow.
     const eventType = EVENT_NAME_MAP[method];
 
     const eventProperties = {};
+    let sensitiveEventProperties;
 
     // Boolean variable that reduces code duplication and increases legibility
     const shouldTrackEvent =
@@ -269,8 +272,6 @@ export default function createRPCMethodTrackingMiddleware({
       !isGlobalRateLimited &&
       // Don't track if the user isn't participating in metametrics
       userParticipatingInMetaMetrics === true;
-
-    let signatureUniqueId;
 
     if (shouldTrackEvent) {
       // We track an initial "requested" event as soon as the dapp calls the
@@ -346,14 +347,25 @@ export default function createRPCMethodTrackingMiddleware({
               ];
             }
           } else if (method === MESSAGE_TYPE.ETH_SIGN_TYPED_DATA_V4) {
-            const { primaryType } = parseTypedDataMessage(data);
-            eventProperties.eip712_primary_type = primaryType;
-            if (PRIMARY_TYPES_PERMIT.includes(primaryType)) {
+            const parsedMessageData = parseTypedDataMessage(data);
+            sensitiveEventProperties = {};
+
+            eventProperties.eip712_primary_type = parsedMessageData.primaryType;
+            sensitiveEventProperties.eip712_verifyingContract =
+              parsedMessageData.domain.verifyingContract;
+            sensitiveEventProperties.eip712_domain_version =
+              parsedMessageData.domain.version;
+            sensitiveEventProperties.eip712_domain_name =
+              parsedMessageData.domain.name;
+
+            if (PRIMARY_TYPES_PERMIT.includes(parsedMessageData.primaryType)) {
               eventProperties.ui_customizations = [
                 ...(eventProperties.ui_customizations || []),
                 MetaMetricsEventUiCustomization.Permit,
               ];
-            } else if (PRIMARY_TYPES_ORDER.includes(primaryType)) {
+            } else if (
+              PRIMARY_TYPES_ORDER.includes(parsedMessageData.primaryType)
+            ) {
               eventProperties.ui_customizations = [
                 ...(eventProperties.ui_customizations || []),
                 MetaMetricsEventUiCustomization.Order,
@@ -373,9 +385,12 @@ export default function createRPCMethodTrackingMiddleware({
       }
 
       if (event === MetaMetricsEventName.SignatureRequested) {
-        createSignatureFragment(metaMetricsController, req, {
+        const fragmentPayload = {
           properties: eventProperties,
-        });
+          sensitiveProperties: sensitiveEventProperties,
+        };
+
+        createSignatureFragment(metaMetricsController, req, fragmentPayload);
       } else {
         metaMetricsController.trackEvent({
           event,
@@ -406,15 +421,20 @@ export default function createRPCMethodTrackingMiddleware({
       const location = res.error?.data?.location;
 
       let event;
+
+      const errorMessage = getErrorMessage(res.error);
+
       if (res.error?.code === errorCodes.provider.userRejectedRequest) {
         event = eventType.REJECTED;
       } else if (
         res.error?.code === errorCodes.rpc.internal &&
-        res.error?.message === 'Request rejected by user or snap.'
+        [errorMessage, res.error.message].includes(
+          'Request rejected by user or snap.',
+        )
       ) {
         // The signature was approved in MetaMask but rejected in the snap
         event = eventType.REJECTED;
-        eventProperties.status = res.error.message;
+        eventProperties.status = errorMessage;
       } else {
         event = eventType.APPROVED;
       }
@@ -436,12 +456,16 @@ export default function createRPCMethodTrackingMiddleware({
         location,
       };
 
-      if (signatureUniqueId) {
+      if (
+        event === MetaMetricsEventName.SignatureRejected ||
+        event === MetaMetricsEventName.SignatureApproved
+      ) {
         const finalizeOptions = {
           abandoned: event === eventType.REJECTED,
         };
         const fragmentPayload = {
           properties,
+          sensitiveProperties: sensitiveEventProperties,
         };
 
         finalizeSignatureFragment(
@@ -460,7 +484,6 @@ export default function createRPCMethodTrackingMiddleware({
           properties,
         });
       }
-
       return callback();
     });
   };

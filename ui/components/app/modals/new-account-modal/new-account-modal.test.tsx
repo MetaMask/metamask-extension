@@ -4,6 +4,8 @@ import { waitFor, fireEvent } from '@testing-library/react';
 import configureStore from 'redux-mock-store';
 import { renderWithProvider } from '../../../../../test/jest';
 import mockState from '../../../../../test/data/mock-state.json';
+// TODO: Remove restricted import
+// eslint-disable-next-line import/no-restricted-paths
 import messages from '../../../../../app/_locales/en/messages.json';
 import NewAccountModal from './new-account-modal.container';
 

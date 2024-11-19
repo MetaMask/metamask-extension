@@ -1,9 +1,10 @@
-import { TransactionType } from '@metamask/transaction-controller';
+import { CHAIN_IDS, TransactionType } from '@metamask/transaction-controller';
 import { MESSAGE_TYPE } from '../../../shared/constants/app';
 import { SignatureRequestType } from '../../../ui/pages/confirmations/types/confirm';
 
 export const unapprovedTypedSignMsgV1 = {
   id: '82ab2400-e2c6-11ee-9627-73cc88f00492',
+  chainId: CHAIN_IDS.GOERLI,
   securityAlertResponse: {
     reason: 'loading',
     result_type: 'validation_in_progress',
@@ -60,6 +61,7 @@ const rawMessageV3 = {
 
 export const unapprovedTypedSignMsgV3 = {
   id: '17e41af0-e073-11ee-9eec-5fd284826685',
+  chainId: CHAIN_IDS.GOERLI,
   securityAlertResponse: {
     reason: 'loading',
     result_type: 'validation_in_progress',
@@ -129,6 +131,7 @@ export const rawMessageV4 = {
 
 export const unapprovedTypedSignMsgV4 = {
   id: '0050d5b0-c023-11ee-a0cb-3390a510a0ab',
+  chainId: CHAIN_IDS.GOERLI,
   status: 'unapproved',
   time: new Date().getTime(),
   chainid: '0x5',
@@ -145,6 +148,7 @@ export const unapprovedTypedSignMsgV4 = {
 
 export const orderSignatureMsg = {
   id: 'e5249ae0-4b6b-11ef-831f-65b48eb489ec',
+  chainId: CHAIN_IDS.GOERLI,
   securityAlertResponse: {
     result_type: 'loading',
     reason: 'validation_in_progress',
@@ -165,6 +169,7 @@ export const orderSignatureMsg = {
 
 export const permitSignatureMsg = {
   id: '0b1787a0-1c44-11ef-b70d-e7064bd7b659',
+  chainId: CHAIN_IDS.GOERLI,
   securityAlertResponse: {
     reason: 'loading',
     result_type: 'validation_in_progress',
@@ -183,8 +188,45 @@ export const permitSignatureMsg = {
   },
 } as SignatureRequestType;
 
+export const permitNFTSignatureMsg = {
+  id: 'c5067710-87cf-11ef-916c-71f266571322',
+  chainId: CHAIN_IDS.GOERLI,
+  status: 'unapproved',
+  time: 1728651190529,
+  type: 'eth_signTypedData',
+  msgParams: {
+    data: '{"domain":{"name":"Uniswap V3 Positions NFT-V1","version":"1","chainId":1,"verifyingContract":"0xC36442b4a4522E871399CD717aBDD847Ab11FE88"},"types":{"Permit":[{"name":"spender","type":"address"},{"name":"tokenId","type":"uint256"},{"name":"nonce","type":"uint256"},{"name":"deadline","type":"uint256"}]},"primaryType":"Permit","message":{"spender":"0x00000000Ede6d8D217c60f93191C060747324bca","tokenId":"3606393","nonce":"0","deadline":"1734995006"}}',
+    from: '0x935e73edb9ff52e23bac7f7e043a1ecd06d05477',
+    version: 'V4',
+    signatureMethod: 'eth_signTypedData_v4',
+    requestId: 2874791875,
+    origin: 'https://metamask.github.io',
+  },
+} as SignatureRequestType;
+
+export const permitSignatureMsgWithNoDeadline = {
+  id: '0b1787a0-1c44-11ef-b70d-e7064bd7b659',
+  chainId: CHAIN_IDS.GOERLI,
+  securityAlertResponse: {
+    reason: 'loading',
+    result_type: 'validation_in_progress',
+    securityAlertId: 'ab21395f-2190-472f-8cfa-3d224e7529d8',
+  },
+  status: 'unapproved',
+  time: 1716826404122,
+  type: 'eth_signTypedData',
+  msgParams: {
+    data: '{"types":{"EIP712Domain":[{"name":"name","type":"string"},{"name":"version","type":"string"},{"name":"chainId","type":"uint256"},{"name":"verifyingContract","type":"address"}],"Permit":[{"name":"owner","type":"address"},{"name":"spender","type":"address"},{"name":"value","type":"uint256"},{"name":"nonce","type":"uint256"},{"name":"deadline","type":"uint256"}]},"primaryType":"Permit","domain":{"name":"MyToken","version":"1","verifyingContract":"0xCcCCccccCCCCcCCCCCCcCcCccCcCCCcCcccccccC","chainId":1},"message":{"owner":"0x935e73edb9ff52e23bac7f7e043a1ecd06d05477","spender":"0x5B38Da6a701c568545dCfcB03FcB875f56beddC4","value":3000,"nonce":0,"deadline":-1}}',
+    from: '0x935e73edb9ff52e23bac7f7e043a1ecd06d05477',
+    version: 'V4',
+    signatureMethod: 'eth_signTypedData_v4',
+    origin: 'https://metamask.github.io',
+  },
+} as SignatureRequestType;
+
 export const permitBatchSignatureMsg = {
   id: '0b1787a0-1c44-11ef-b70d-e7064bd7b659',
+  chainId: CHAIN_IDS.GOERLI,
   securityAlertResponse: {
     reason: 'loading',
     result_type: 'validation_in_progress',
@@ -205,6 +247,7 @@ export const permitBatchSignatureMsg = {
 
 export const permitSingleSignatureMsg = {
   id: '0b1787a0-1c44-11ef-b70d-e7064bd7b659',
+  chainId: CHAIN_IDS.GOERLI,
   securityAlertResponse: {
     reason: 'loading',
     result_type: 'validation_in_progress',

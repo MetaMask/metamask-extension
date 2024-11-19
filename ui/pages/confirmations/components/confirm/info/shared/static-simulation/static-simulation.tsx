@@ -1,34 +1,36 @@
 import React from 'react';
+
+import { Box } from '../../../../../../../components/component-library';
 import {
   ConfirmInfoRow,
   ConfirmInfoRowText,
 } from '../../../../../../../components/app/confirm/info/row';
 import { ConfirmInfoSection } from '../../../../../../../components/app/confirm/info/row/section';
-import { Box } from '../../../../../../../components/component-library';
+import {
+  Display,
+  JustifyContent,
+} from '../../../../../../../helpers/constants/design-system';
+import Preloader from '../../../../../../../components/ui/icon/preloader';
 
 const StaticSimulation: React.FC<{
   title: string;
   titleTooltip: string;
   description: string;
-  simulationHeading: string;
   simulationElements: React.ReactNode;
-}> = ({
-  title,
-  titleTooltip,
-  description,
-  simulationHeading,
-  simulationElements,
-}) => {
+  isLoading?: boolean;
+}> = ({ title, titleTooltip, description, simulationElements, isLoading }) => {
   return (
     <ConfirmInfoSection data-testid="confirmation__simulation_section">
       <ConfirmInfoRow label={title} tooltip={titleTooltip}>
         <ConfirmInfoRowText text={description} />
       </ConfirmInfoRow>
-      <ConfirmInfoRow label={simulationHeading}>
-        <Box style={{ marginLeft: 'auto', maxWidth: '100%' }}>
-          {simulationElements}
+      {isLoading ? (
+        <Box display={Display.Flex} justifyContent={JustifyContent.center}>
+          <Preloader size={20} />
         </Box>
-      </ConfirmInfoRow>
+      ) : (
+        simulationElements
+      )}
     </ConfirmInfoSection>
   );
 };

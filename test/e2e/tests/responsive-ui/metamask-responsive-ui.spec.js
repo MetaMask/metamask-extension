@@ -2,10 +2,10 @@ const { strict: assert } = require('assert');
 const {
   TEST_SEED_PHRASE_TWO,
   defaultGanacheOptions,
-  withFixtures,
   locateAccountBalanceDOM,
+  logInWithBalanceValidation,
   openActionMenuAndStartSendFlow,
-  unlockWallet,
+  withFixtures,
 } = require('../../helpers');
 const FixtureBuilder = require('../../fixture-builder');
 
@@ -72,10 +72,10 @@ describe('MetaMask Responsive UI', function () {
         await driver.clickElement('[data-testid="pin-extension-done"]');
         await driver.assertElementNotPresent('.loading-overlay__spinner');
         // assert balance
-        const balance = await driver.findElement(
-          '[data-testid="eth-overview__primary-currency"]',
-        );
-        assert.ok(/^0\sETH$/u.test(await balance.getText()));
+        await driver.waitForSelector({
+          css: '[data-testid="eth-overview__primary-currency"]',
+          text: '0',
+        });
       },
     );
   });
@@ -93,11 +93,14 @@ describe('MetaMask Responsive UI', function () {
         await driver.navigate();
 
         // Import Secret Recovery Phrase
-        const restoreSeedLink = await driver.findClickableElement(
-          '.unlock-page__link',
-        );
-        assert.equal(await restoreSeedLink.getText(), 'Forgot password?');
-        await restoreSeedLink.click();
+        await driver.waitForSelector({
+          tag: 'span',
+          text: 'Localhost 8545',
+        });
+        await driver.clickElement({
+          css: '.unlock-page__link',
+          text: 'Forgot password?',
+        });
 
         await driver.pasteIntoField(
           '[data-testid="import-srp__srp-word-0"]',
@@ -123,10 +126,8 @@ describe('MetaMask Responsive UI', function () {
         ganacheOptions: defaultGanacheOptions,
         title: this.test.fullTitle(),
       },
-      async ({ driver }) => {
-        await unlockWallet(driver);
-
-        await driver.delay(1000);
+      async ({ driver, ganacheServer }) => {
+        await logInWithBalanceValidation(driver, ganacheServer);
 
         // Send ETH from inside MetaMask
         // starts to send a transaction
@@ -140,9 +141,13 @@ describe('MetaMask Responsive UI', function () {
 
         const inputValue = await inputAmount.getProperty('value');
         assert.equal(inputValue, '1');
-
-        // confirming transcation
         await driver.clickElement({ text: 'Continue', tag: 'button' });
+
+        // wait for transaction value to be rendered and confirm
+        await driver.waitForSelector({
+          css: '.currency-display-component__text',
+          text: '1.000042',
+        });
         await driver.clickElement({ text: 'Confirm', tag: 'button' });
 
         // finds the transaction in the transactions list

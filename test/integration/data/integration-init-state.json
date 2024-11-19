@@ -781,10 +781,10 @@
     "showExtensionInFullSizeView": false,
     "showFiatInTestnets": false,
     "showTestNetworks": true,
-    "smartTransactionsOptInStatus": false,
-    "useNativeCurrencyAsPrimaryCurrency": true,
+    "smartTransactionsOptInStatus": true,
     "petnamesEnabled": false,
-    "showConfirmationAdvancedDetails": false
+    "showConfirmationAdvancedDetails": false,
+    "showMultiRpcModal": false
   },
   "preventPollingOnNetworkRestart": true,
   "previousAppVersion": "11.14.4",
@@ -1209,10 +1209,6 @@
       "smart_transactions": {
         "extension_active": true,
         "mobile_active": true
-      },
-      "swapRedesign": {
-        "extensionActive": true,
-        "mobileActive": false
       },
       "zksync": {
         "extensionActive": true,

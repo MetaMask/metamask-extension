@@ -6,9 +6,13 @@ import React from 'react';
 import { render } from 'react-dom';
 import browser from 'webextension-polyfill';
 
+// TODO: Remove restricted import
+// eslint-disable-next-line import/no-restricted-paths
 import { getEnvironmentType } from '../app/scripts/lib/util';
 import { AlertTypes } from '../shared/constants/alerts';
 import { maskObject } from '../shared/modules/object.utils';
+// TODO: Remove restricted import
+// eslint-disable-next-line import/no-restricted-paths
 import { SENTRY_UI_STATE } from '../app/scripts/constants/sentry-state';
 import { ENVIRONMENT_TYPE_POPUP } from '../shared/constants/app';
 import { COPY_OPTIONS } from '../shared/constants/copy';
@@ -35,6 +39,7 @@ import {
 import Root from './pages';
 import txHelper from './helpers/utils/tx-helper';
 import { setBackgroundConnection } from './store/background-connection';
+import { getStartupTraceTags } from './helpers/utils/tags';
 
 log.setLevel(global.METAMASK_DEBUG ? 'debug' : 'warn', false);
 
@@ -178,8 +183,14 @@ export async function setupInitialStore(
 async function startApp(metamaskState, backgroundConnection, opts) {
   const { traceContext } = opts;
 
+  const tags = getStartupTraceTags({ metamask: metamaskState });
+
   const store = await trace(
-    { name: TraceName.SetupStore, parentContext: traceContext },
+    {
+      name: TraceName.SetupStore,
+      parentContext: traceContext,
+      tags,
+    },
     () =>
       setupInitialStore(metamaskState, backgroundConnection, opts.activeTab),
   );
@@ -286,9 +297,6 @@ function setupStateHooks(store) {
     // for more info)
     state.version = global.platform.getVersion();
     state.browser = window.navigator.userAgent;
-    state.completeTxList = await actions.getTransactions({
-      filterToCurrentNetwork: false,
-    });
     return state;
   };
   window.stateHooks.getSentryAppState = function () {

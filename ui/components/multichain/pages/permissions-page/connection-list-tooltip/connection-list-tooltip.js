@@ -26,8 +26,8 @@ import { useI18nContext } from '../../../../../hooks/useI18nContext';
 
 export const ConnectionListTooltip = ({ connection }) => {
   const t = useI18nContext();
-  const AVATAR_GROUP_LIMIT = 5;
-  const TOOLTIP_LIMIT = 7;
+  const AVATAR_GROUP_LIMIT = 4;
+  const TOOLTIP_LIMIT = 4;
   const addressIconList = connection.addresses
     ?.slice(0, TOOLTIP_LIMIT)
     .map((address) => ({

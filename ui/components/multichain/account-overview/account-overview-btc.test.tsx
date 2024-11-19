@@ -8,8 +8,13 @@ import {
   AccountOverviewBtcProps,
 } from './account-overview-btc';
 
+jest.mock('../../../store/actions', () => ({
+  tokenBalancesStartPolling: jest.fn().mockResolvedValue('pollingToken'),
+  tokenBalancesStopPollingByPollingToken: jest.fn(),
+}));
+
 const defaultProps: AccountOverviewBtcProps = {
-  defaultHomeActiveTabName: '',
+  defaultHomeActiveTabName: null,
   onTabClick: jest.fn(),
   setBasicFunctionalityModalOpen: jest.fn(),
   onSupportLinkClick: jest.fn(),
@@ -40,7 +45,9 @@ describe('AccountOverviewBtc', () => {
     const { queryByTestId } = render();
 
     expect(queryByTestId('account-overview__asset-tab')).toBeInTheDocument();
-    expect(queryByTestId('import-token-button')).not.toBeInTheDocument();
+    const button = queryByTestId('import-token-button');
+    expect(button).toBeInTheDocument(); // Verify the button is present
+    expect(button).toBeDisabled(); // Verify the button is disabled
     // TODO: This one might be required, but we do not really handle tokens for BTC yet...
     expect(queryByTestId('refresh-list-button')).not.toBeInTheDocument();
   });

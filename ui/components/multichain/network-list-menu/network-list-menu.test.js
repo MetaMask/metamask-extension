@@ -1,5 +1,6 @@
 /* eslint-disable jest/require-top-level-describe */
 import React from 'react';
+import { RpcEndpointType } from '@metamask/network-controller';
 import { fireEvent, renderWithProvider } from '../../../../test/jest';
 import configureStore from '../../../store/store';
 import mockState from '../../../../test/data/mock-state.json';
@@ -18,11 +19,15 @@ const mockSetShowTestNetworks = jest.fn();
 const mockToggleNetworkMenu = jest.fn();
 const mockSetNetworkClientIdForDomain = jest.fn();
 const mockSetActiveNetwork = jest.fn();
+const mockUpdateCustomNonce = jest.fn();
+const mockSetNextNonce = jest.fn();
 
 jest.mock('../../../store/actions.ts', () => ({
   setShowTestNetworks: () => mockSetShowTestNetworks,
   setActiveNetwork: () => mockSetActiveNetwork,
   toggleNetworkMenu: () => mockToggleNetworkMenu,
+  updateCustomNonce: () => mockUpdateCustomNonce,
+  setNextNonce: () => mockSetNextNonce,
   setNetworkClientIdForDomain: (network, id) =>
     mockSetNetworkClientIdForDomain(network, id),
 }));
@@ -35,11 +40,16 @@ const render = ({
   isUnlocked = true,
   origin = MOCK_ORIGIN,
   selectedTabOriginInDomainsState = true,
+  isAddingNewNetwork = false,
+  editedNetwork = undefined,
 } = {}) => {
   const state = {
+    appState: {
+      isAddingNewNetwork,
+      editedNetwork,
+    },
     metamask: {
       ...mockState.metamask,
-      // this could use the network controllers default state instead
       networkConfigurationsByChainId: {
         '0x1': {
           nativeCurrency: 'ETH',
@@ -48,6 +58,8 @@ const render = ({
           defaultRpcEndpointIndex: 0,
           rpcEndpoints: [
             {
+              url: 'http://localhost/rpc',
+              type: RpcEndpointType.Custom,
               networkClientId: NETWORK_TYPES.MAINNET,
             },
           ],
@@ -59,6 +71,8 @@ const render = ({
           defaultRpcEndpointIndex: 0,
           rpcEndpoints: [
             {
+              url: 'http://localhost/rpc',
+              type: RpcEndpointType.Custom,
               networkClientId: 'linea-mainnet',
             },
           ],
@@ -70,6 +84,8 @@ const render = ({
           defaultRpcEndpointIndex: 0,
           rpcEndpoints: [
             {
+              url: 'http://localhost/rpc',
+              type: RpcEndpointType.Custom,
               networkClientId: 'bnb-network',
             },
           ],
@@ -81,6 +97,8 @@ const render = ({
           defaultRpcEndpointIndex: 0,
           rpcEndpoints: [
             {
+              url: 'http://localhost/rpc',
+              type: RpcEndpointType.Custom,
               networkClientId: 'goerli',
             },
           ],
@@ -92,6 +110,8 @@ const render = ({
           defaultRpcEndpointIndex: 0,
           rpcEndpoints: [
             {
+              url: 'http://localhost/rpc',
+              type: RpcEndpointType.Custom,
               networkClientId: 'sepolia',
             },
           ],
@@ -103,6 +123,8 @@ const render = ({
           defaultRpcEndpointIndex: 0,
           rpcEndpoints: [
             {
+              url: 'http://localhost/rpc',
+              type: RpcEndpointType.Custom,
               networkClientId: 'linea-sepolia',
             },
           ],
@@ -135,9 +157,24 @@ describe('NetworkListMenu', () => {
   });
 
   it('renders properly', () => {
-    const { container } = render();
-    expect(container).toMatchSnapshot();
+    const { baseElement } = render();
+    expect(baseElement).toMatchSnapshot();
   });
+
+  it('should match snapshot when adding a network', async () => {
+    const { baseElement } = render({
+      isAddingNewNetwork: true,
+    });
+    expect(baseElement).toMatchSnapshot();
+  });
+
+  it('should match snapshot when editing a network', async () => {
+    const { baseElement } = render({
+      editedNetwork: { chainId: '0x1' },
+    });
+    expect(baseElement).toMatchSnapshot();
+  });
+
   it('displays important controls', () => {
     const { getByText, getByPlaceholderText } = render();
 
@@ -173,6 +210,8 @@ describe('NetworkListMenu', () => {
     fireEvent.click(getByText(MAINNET_DISPLAY_NAME));
     expect(mockToggleNetworkMenu).toHaveBeenCalled();
     expect(mockSetActiveNetwork).toHaveBeenCalled();
+    expect(mockUpdateCustomNonce).toHaveBeenCalled();
+    expect(mockSetNextNonce).toHaveBeenCalled();
   });
 
   it('shows the correct selected network when networks share the same chain ID', () => {

@@ -25,8 +25,11 @@ import {
   DecodedTransactionDataParam,
   DecodedTransactionDataSource,
 } from '../../../../../../../../shared/types/transaction-decode';
+// TODO: Remove restricted import
+// eslint-disable-next-line import/no-restricted-paths
 import { UniswapPathPool } from '../../../../../../../../app/scripts/lib/transaction/decode/uniswap';
 import { useConfirmContext } from '../../../../../context/confirm';
+import { hasTransactionData } from '../../../../../../../../shared/modules/transaction.utils';
 
 export const TransactionData = () => {
   const { currentConfirmation } = useConfirmContext<TransactionMeta>();
@@ -40,7 +43,7 @@ export const TransactionData = () => {
     return <Container isLoading />;
   }
 
-  if (!transactionData?.length) {
+  if (!hasTransactionData(transactionData)) {
     return null;
   }
 
@@ -54,6 +57,7 @@ export const TransactionData = () => {
 
   const { data, source } = value;
   const isExpandable = data.length > 1;
+  const { chainId } = currentConfirmation;
 
   return (
     <Container transactionData={transactionData}>
@@ -64,6 +68,7 @@ export const TransactionData = () => {
               method={method}
               source={source}
               isExpandable={isExpandable}
+              chainId={chainId}
             />
             {index < data.length - 1 && <ConfirmInfoRowDivider />}
           </React.Fragment>
@@ -116,10 +121,12 @@ function FunctionContainer({
   method,
   source,
   isExpandable,
+  chainId,
 }: {
   method: DecodedTransactionDataMethod;
   source?: DecodedTransactionDataSource;
   isExpandable: boolean;
+  chainId: string;
 }) {
   const t = useI18nContext();
 
@@ -131,6 +138,7 @@ function FunctionContainer({
           param={param}
           index={paramIndex}
           source={source}
+          chainId={chainId}
         />
       ))}
     </Box>
@@ -169,18 +177,20 @@ function FunctionContainer({
 function ParamValue({
   param,
   source,
+  chainId,
 }: {
   param: DecodedTransactionDataParam;
   source?: DecodedTransactionDataSource;
+  chainId: string;
 }) {
   const { name, type, value } = param;
 
   if (type === 'address') {
-    return <ConfirmInfoRowAddress address={value} />;
+    return <ConfirmInfoRowAddress address={value} chainId={chainId} />;
   }
 
   if (name === 'path' && source === DecodedTransactionDataSource.Uniswap) {
-    return <UniswapPath pathPools={value} />;
+    return <UniswapPath pathPools={value} chainId={chainId} />;
   }
 
   let valueString = value.toString();
@@ -196,10 +206,12 @@ function ParamRow({
   param,
   index,
   source,
+  chainId,
 }: {
   param: DecodedTransactionDataParam;
   index: number;
   source?: DecodedTransactionDataSource;
+  chainId: string;
 }) {
   const { name, type, description } = param;
   const label = name ? _.startCase(name) : `Param #${index + 1}`;
@@ -212,20 +224,29 @@ function ParamRow({
       param={childParam}
       index={childIndex}
       source={source}
+      chainId={chainId}
     />
   ));
 
   return (
     <>
       <ConfirmInfoRow label={label} tooltip={tooltip} data-testid={dataTestId}>
-        {!childRows?.length && <ParamValue param={param} source={source} />}
+        {!childRows?.length && (
+          <ParamValue param={param} source={source} chainId={chainId} />
+        )}
       </ConfirmInfoRow>
       {childRows && <Box paddingLeft={2}>{childRows}</Box>}
     </>
   );
 }
 
-function UniswapPath({ pathPools }: { pathPools: UniswapPathPool[] }) {
+function UniswapPath({
+  pathPools,
+  chainId,
+}: {
+  pathPools: UniswapPathPool[];
+  chainId: string;
+}) {
   return (
     <Box
       display={Display.Flex}
@@ -234,9 +255,17 @@ function UniswapPath({ pathPools }: { pathPools: UniswapPathPool[] }) {
     >
       {pathPools.map((pool, index) => (
         <>
-          {index === 0 && <ConfirmInfoRowAddress address={pool.firstAddress} />}
+          {index === 0 && (
+            <ConfirmInfoRowAddress
+              address={pool.firstAddress}
+              chainId={chainId}
+            />
+          )}
           <ConfirmInfoRowText text={String(pool.tickSpacing)} />
-          <ConfirmInfoRowAddress address={pool.secondAddress} />
+          <ConfirmInfoRowAddress
+            address={pool.secondAddress}
+            chainId={chainId}
+          />
         </>
       ))}
     </Box>
