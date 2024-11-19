@@ -1,11 +1,13 @@
 import { TransactionType } from '@metamask/transaction-controller';
 import { ApprovalType } from '@metamask/controller-utils';
 
+/** List of signature approval types that support the redesigned confirmation flow */
 export const REDESIGN_SIGNATURE_APPROVAL_TYPES = [
   ApprovalType.EthSignTypedData,
   ApprovalType.PersonalSign,
 ];
 
+/** List of transaction types that support the redesigned confirmation flow for users */
 const REDESIGN_USER_TRANSACTION_TYPES = [
   TransactionType.contractInteraction,
   TransactionType.deployContract,
@@ -18,10 +20,19 @@ const REDESIGN_USER_TRANSACTION_TYPES = [
   TransactionType.simpleSend,
 ];
 
+/** List of transaction types that support the redesigned confirmation flow for developers */
 export const REDESIGN_DEV_TRANSACTION_TYPES = [
   ...REDESIGN_USER_TRANSACTION_TYPES,
 ];
 
+/**
+ * Determines whether to use the redesigned confirmation flow for a given transaction
+ * based on user settings and developer mode
+ *
+ * @param transactionMetadataType - The type of transaction to check
+ * @param isRedesignedTransactionsUserSettingEnabled - Whether the user has enabled the redesigned flow
+ * @param isRedesignedConfirmationsDeveloperEnabled - Whether developer mode is enabled
+ */
 export function shouldUseRedesignForTransactions(
   transactionMetadataType: TransactionType,
   isRedesignedTransactionsUserSettingEnabled: boolean,
@@ -39,6 +50,14 @@ export function shouldUseRedesignForTransactions(
   );
 }
 
+/**
+ * Determines whether to use the redesigned confirmation flow for a given signature
+ * based on user settings and developer mode
+ *
+ * @param approvalType - The type of signature approval to check
+ * @param isRedesignedSignaturesUserSettingEnabled - Whether the user has enabled the redesigned flow
+ * @param isRedesignedConfirmationsDeveloperEnabled - Whether developer mode is enabled
+ */
 export function shouldUseRedesignForSignatures(
   approvalType: ApprovalType,
   isRedesignedSignaturesUserSettingEnabled: boolean,
@@ -58,22 +77,44 @@ export function shouldUseRedesignForSignatures(
   );
 }
 
+/**
+ * Checks if a redesigned transaction type is supported in developer mode
+ *
+ * @param transactionMetadataType - The type of transaction to check
+ */
 function isCorrectDeveloperTransactionType(
   transactionMetadataType: TransactionType,
 ): boolean {
   return REDESIGN_DEV_TRANSACTION_TYPES.includes(transactionMetadataType);
 }
 
+/**
+ * Checks if a redesigned transaction type is supported in user mode
+ *
+ * @param transactionMetadataType - The type of transaction to check
+ */
 function isCorrectUserTransactionType(
   transactionMetadataType: TransactionType,
 ): boolean {
   return REDESIGN_USER_TRANSACTION_TYPES.includes(transactionMetadataType);
 }
 
+/**
+ * Checks if an redesign approval type is supported for signature redesign
+ *
+ * @param approvalType - The type of approval to check
+ */
 function isCorrectSignatureApprovalType(approvalType: ApprovalType): boolean {
   return REDESIGN_SIGNATURE_APPROVAL_TYPES.includes(approvalType);
 }
 
+/**
+ * Determines if the redesigned confirmation flow should be used for transactions
+ * when in developer mode
+ *
+ * @param isRedesignedConfirmationsDeveloperEnabled - Whether developer mode is enabled
+ * @param transactionMetadataType - The type of transaction to check
+ */
 function shouldUseRedesignForTransactionsDeveloperMode(
   isRedesignedConfirmationsDeveloperEnabled: boolean,
   transactionMetadataType: TransactionType,
@@ -88,6 +129,13 @@ function shouldUseRedesignForTransactionsDeveloperMode(
   );
 }
 
+/**
+ * Determines if the redesigned confirmation flow should be used for transactions
+ * when in user mode
+ *
+ * @param isRedesignedTransactionsUserSettingEnabled - Whether the user has enabled the redesigned flow
+ * @param transactionMetadataType - The type of transaction to check
+ */
 function shouldUseRedesignForTransactionsUserMode(
   isRedesignedTransactionsUserSettingEnabled: boolean,
   transactionMetadataType: TransactionType,
