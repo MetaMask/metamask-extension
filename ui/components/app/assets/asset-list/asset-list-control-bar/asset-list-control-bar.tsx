@@ -263,7 +263,7 @@ const AssetListControlBar = ({ showTokensLinks }: AssetListControlBarProps) => {
         <SelectableListItem onClick={handleImport} testId="importTokens">
           {t('importTokensCamelCase')}
         </SelectableListItem>
-        <SelectableListItem onClick={handleRefresh} testId="resfreshList">
+        <SelectableListItem onClick={handleRefresh} testId="refreshList">
           {t('refreshList')}
         </SelectableListItem>
       </Popover>
