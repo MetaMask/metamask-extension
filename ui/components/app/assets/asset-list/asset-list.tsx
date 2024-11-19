@@ -9,7 +9,7 @@ import {
   getSelectedAccount,
 } from '../../../../selectors';
 import {
-  getMultichainIsEvm,
+  // getMultichainIsEvm,
   getMultichainSelectedAccountCachedBalance,
   ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
   getMultichainIsBitcoin,
@@ -93,10 +93,10 @@ const AssetList = ({ onClickAsset, showTokensLinks }: AssetListProps) => {
   const isBtc = useSelector(getMultichainIsBitcoin);
   ///: END:ONLY_INCLUDE_IF
 
-  const isEvm = useSelector(getMultichainIsEvm);
+  // const isEvm = useSelector(getMultichainIsEvm);
   // NOTE: Since we can parametrize it now, we keep the original behavior
   // for EVM assets
-  const shouldShowTokensLinks = showTokensLinks ?? isEvm;
+  // const shouldShowTokensLinks = showTokensLinks ?? isEvm;
 
   return (
     <>
