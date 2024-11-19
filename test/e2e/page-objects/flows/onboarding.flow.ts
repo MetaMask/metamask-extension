@@ -186,7 +186,7 @@ export const completeCreateNewWalletOnboardingFlowWithCustomSettings = async ({
     await onboardingPrivacySettingsPage.toggleBasicFunctionalitySettings();
   }
   if (toggleAssetsPrivacy) {
-    await onboardingPrivacySettingsPage.toggleAssetsSettings();
+    await onboardingPrivacySettingsPage.toggleAdvancedAssetsSettings();
   }
 
   await onboardingPrivacySettingsPage.navigateBackToOnboardingCompletePage();
