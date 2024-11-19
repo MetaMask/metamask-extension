@@ -11,6 +11,10 @@ import { TestSuiteArguments } from '../transactions/shared';
 import Confirmation from '../../../page-objects/pages/confirmations/redesign/confirmation';
 import ConfirmAlertModal from '../../../page-objects/pages/dialog/confirm-alert';
 import {
+  BlockaidReason,
+  BlockaidResultType,
+} from '../../../../../shared/constants/security-provider';
+import {
   assertRejectedSignature,
   assertSignatureRejectedMetrics,
   assertVerifiedSiweMessage,
@@ -85,6 +89,8 @@ describe('Malicious Confirmation Signature - Bad Domain @no-mmi', function (this
             alert_visualized: [],
             alert_visualized_count: 0,
           },
+          securityAlertReason: BlockaidReason.notApplicable,
+          securityAlertResponse: BlockaidResultType.NotApplicable,
         });
       },
       mockSignatureRejected,
@@ -133,6 +139,8 @@ describe('Malicious Confirmation Signature - Bad Domain @no-mmi', function (this
             alert_visualized: ['requestFrom'],
             alert_visualized_count: 1,
           },
+          securityAlertReason: BlockaidReason.notApplicable,
+          securityAlertResponse: BlockaidResultType.NotApplicable,
         });
       },
       mockSignatureRejected,

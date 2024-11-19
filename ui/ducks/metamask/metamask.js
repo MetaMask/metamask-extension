@@ -47,7 +47,7 @@ const initialState = {
     showExtensionInFullSizeView: false,
     showFiatInTestnets: false,
     showTestNetworks: false,
-    smartTransactionsOptInStatus: false,
+    smartTransactionsOptInStatus: true,
     petnamesEnabled: true,
     featureNotificationsEnabled: false,
     privacyMode: false,
@@ -456,6 +456,16 @@ export const getGasEstimateTypeByChainId = createSelector(
     return transactionGasFeeEstimateType ?? gasFeeControllerEstimateType;
   },
 );
+
+/**
+ * Returns the balances of imported and detected tokens across all accounts and chains.
+ *
+ * @param {*} state
+ * @returns { import('@metamask/assets-controllers').TokenBalancesControllerState['tokenBalances']}
+ */
+export function getTokenBalances(state) {
+  return state.metamask.tokenBalances;
+}
 
 export const getGasFeeEstimatesByChainId = createSelector(
   getGasFeeControllerEstimatesByChainId,

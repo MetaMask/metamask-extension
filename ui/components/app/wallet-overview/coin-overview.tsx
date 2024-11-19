@@ -11,6 +11,7 @@ import { zeroAddress } from 'ethereumjs-util';
 import { CaipChainId } from '@metamask/utils';
 import type { Hex } from '@metamask/utils';
 
+import { InternalAccount } from '@metamask/keyring-api';
 import {
   Box,
   ButtonIcon,
@@ -45,7 +46,6 @@ import UserPreferencedCurrencyDisplay from '../user-preferenced-currency-display
 import { PRIMARY } from '../../../helpers/constants/common';
 import {
   getPreferences,
-  getSelectedAccount,
   getShouldHideZeroBalanceTokens,
   getTokensMarketData,
   getIsTestnet,
@@ -74,6 +74,7 @@ import CoinButtons from './coin-buttons';
 import { AggregatedPercentageOverview } from './aggregated-percentage-overview';
 
 export type CoinOverviewProps = {
+  account: InternalAccount;
   balance: string;
   balanceIsCached: boolean;
   className?: string;
@@ -90,6 +91,7 @@ export type CoinOverviewProps = {
 };
 
 export const CoinOverview = ({
+  account,
   balance,
   balanceIsCached,
   className,
@@ -121,7 +123,6 @@ export const CoinOverview = ({
 
   ///: END:ONLY_INCLUDE_IF
 
-  const account = useSelector(getSelectedAccount);
   const showNativeTokenAsMainBalanceRoute = getSpecificSettingsRoute(
     t,
     t('general'),
@@ -132,18 +133,16 @@ export const CoinOverview = ({
 
   const shouldShowPopover = useSelector(getShouldShowAggregatedBalancePopover);
   const isTestnet = useSelector(getIsTestnet);
-  const { showFiatInTestnets, privacyMode } = useSelector(getPreferences);
+  const { showFiatInTestnets, privacyMode, showNativeTokenAsMainBalance } =
+    useSelector(getPreferences);
 
-  const selectedAccount = useSelector(getSelectedAccount);
   const shouldHideZeroBalanceTokens = useSelector(
     getShouldHideZeroBalanceTokens,
   );
   const { totalFiatBalance, loading } = useAccountTotalFiatBalance(
-    selectedAccount,
+    account,
     shouldHideZeroBalanceTokens,
   );
-
-  const { showNativeTokenAsMainBalance } = useSelector(getPreferences);
 
   const isEvm = useSelector(getMultichainIsEvm);
   const isNotAggregatedFiatBalance =
@@ -281,6 +280,7 @@ export const CoinOverview = ({
                     isAggregatedFiatOverviewBalance={
                       !showNativeTokenAsMainBalance && !isTestnet
                     }
+                    privacyMode={privacyMode}
                   />
                   <ButtonIcon
                     color={IconColor.iconAlternative}
@@ -368,6 +368,7 @@ export const CoinOverview = ({
       buttons={
         <CoinButtons
           {...{
+            account,
             trackingLocation: 'home',
             chainId,
             isSwapsChain,

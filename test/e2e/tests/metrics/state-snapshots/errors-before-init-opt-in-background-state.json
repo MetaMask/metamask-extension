@@ -50,23 +50,6 @@
       },
       "snapsInstallPrivacyWarningShown": true
     },
-    "BridgeController": {
-      "bridgeState": {
-        "bridgeFeatureFlags": {
-          "extensionSupport": "boolean",
-          "srcNetworkAllowlist": {
-            "0": "string",
-            "1": "string",
-            "2": "string"
-          },
-          "destNetworkAllowlist": {
-            "0": "string",
-            "1": "string",
-            "2": "string"
-          }
-        }
-      }
-    },
     "CurrencyController": {
       "currentCurrency": "usd",
       "currencyRates": {
@@ -115,6 +98,7 @@
       "currentLocale": "en",
       "useExternalServices": "boolean",
       "dismissSeedBackUpReminder": true,
+      "overrideContentSecurityPolicyHeader": true,
       "featureFlags": {},
       "forgottenPassword": false,
       "identities": "object",
@@ -128,7 +112,7 @@
         "showExtensionInFullSizeView": false,
         "showFiatInTestnets": false,
         "showTestNetworks": false,
-        "smartTransactionsOptInStatus": false,
+        "smartTransactionsOptInStatus": true,
         "showNativeTokenAsMainBalance": true,
         "petnamesEnabled": true,
         "isRedesignedConfirmationsDeveloperEnabled": "boolean",

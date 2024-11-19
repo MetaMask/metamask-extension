@@ -50,3 +50,23 @@ export const DEFAULT_BTC_ACCOUNT = 'bc1qg6whd6pc0cguh6gpp3ewujm53hv32ta9hdp252';
 
 /* Default (mocked) BTC balance used by the Bitcoin RPC provider */
 export const DEFAULT_BTC_BALANCE = 1; // BTC
+
+/* Default BTC fees rate */
+export const DEFAULT_BTC_FEES_RATE = 0.00001; // BTC
+
+/* Default BTC conversion rate to USD */
+export const DEFAULT_BTC_CONVERSION_RATE = 62000; // USD
+
+/* Default BTC transaction ID */
+export const DEFAULT_BTC_TRANSACTION_ID =
+  'e4111a707317da67d49a71af4cbcf6c0546f900ca32c3842d2254e315d1fca18';
+
+/* Number of sats in 1 BTC */
+export const SATS_IN_1_BTC = 100000000; // sats
+
+/* Default (mocked) SOLANA address created using test SRP */
+export const DEFAULT_SOLANA_ACCOUNT =
+  'E6Aa9DDv7zsePJHosoqiNb3cFuup3fkXTyRH2pZ1nVzP';
+
+/* Default (mocked) SOLANA balance used by the Solana RPC provider */
+export const DEFAULT_SOLANA_BALANCE = 1; // SOL
