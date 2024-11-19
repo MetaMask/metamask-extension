@@ -1,6 +1,6 @@
 import assert from 'assert';
 import { Mockttp, MockedEndpoint } from 'mockttp';
-import { defaultGanacheOptions, withFixtures } from '../../helpers';
+import { withFixtures } from '../../helpers';
 import FixtureBuilder from '../../fixture-builder';
 import HomePage from '../../page-objects/pages/homepage';
 import OnboardingCompletePage from '../../page-objects/pages/onboarding/onboarding-complete-page';
@@ -64,12 +64,11 @@ describe('MetaMask onboarding @no-mmi', function () {
         fixtures: new FixtureBuilder({ onboarding: true })
           .withNetworkControllerOnMainnet()
           .build(),
-        ganacheOptions: defaultGanacheOptions,
         title: this.test?.fullTitle(),
         testSpecificMock: mockApis,
       },
       async ({ driver, mockedEndpoint }) => {
-        await importSRPOnboardingFlow(driver);
+        await importSRPOnboardingFlow({ driver });
 
         const onboardingCompletePage = new OnboardingCompletePage(driver);
         await onboardingCompletePage.check_pageIsLoaded();
@@ -113,7 +112,7 @@ describe('MetaMask onboarding @no-mmi', function () {
         testSpecificMock: mockApis,
       },
       async ({ driver, mockedEndpoint }) => {
-        await completeImportSRPOnboardingFlow(driver);
+        await completeImportSRPOnboardingFlow({ driver });
 
         // Refresh tokens before asserting to mitigate flakiness
         const homePage = new HomePage(driver);
@@ -121,6 +120,8 @@ describe('MetaMask onboarding @no-mmi', function () {
         await homePage.check_expectedBalanceIsDisplayed();
         await homePage.refreshTokenList();
 
+        // intended delay to allow for network requests to complete
+        await driver.delay(1000);
         for (const m of mockedEndpoint) {
           const requests = await m.getSeenRequests();
           assert.equal(
