@@ -150,6 +150,18 @@ class TestDapp {
 
   private readonly sign721PermitButton = '#sign721Permit';
 
+  private sign721PermitVerifyButton = '#sign721PermitVerify';
+
+  private sign721PermitVerifyResult = '#sign721PermitVerifyResult';
+
+  private sign721PermitResult = '#sign721PermitResult';
+
+  private sign721PermitResultR = '#sign721PermitResultR';
+
+  private sign721PermitResultS = '#sign721PermitResultS';
+
+  private sign721PermitResultV = '#sign721PermitResultV';
+
   private readonly eip747ContractAddressInput = '#eip747ContractAddress';
 
   private readonly transactionRequestMessage = {
@@ -448,6 +460,44 @@ class TestDapp {
   async verifySignPermitResultV(expectedV: string) {
     await this.driver.waitForSelector({
       css: this.signPermitResultV,
+      text: `v: ${expectedV}`,
+    });
+  }
+
+  async check_successSign721Permit(publicKey: string) {
+    console.log('Verify successful signPermit signature');
+    await this.driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
+    await this.driver.clickElement(this.sign721PermitVerifyButton);
+    await this.driver.waitForSelector({
+      css: this.sign721PermitVerifyResult,
+      text: publicKey.toLowerCase(),
+    });
+  }
+
+  async verifySign721PermitResult(expectedSignature: string) {
+    await this.driver.waitForSelector({
+      css: this.sign721PermitResult,
+      text: expectedSignature,
+    });
+  }
+
+  async verifySign721PermitResultR(expectedR: string) {
+    await this.driver.waitForSelector({
+      css: this.sign721PermitResultR,
+      text: `r: ${expectedR}`,
+    });
+  }
+
+  async verifySign721PermitResultS(expectedS: string) {
+    await this.driver.waitForSelector({
+      css: this.sign721PermitResultS,
+      text: `s: ${expectedS}`,
+    });
+  }
+
+  async verifySign721PermitResultV(expectedV: string) {
+    await this.driver.waitForSelector({
+      css: this.sign721PermitResultV,
       text: `v: ${expectedV}`,
     });
   }

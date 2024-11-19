@@ -29,6 +29,27 @@ export default class PermitConfirmation extends Confirmation {
 
   private deadlineSelector = { text: '09 June 3554, 16:53' };
 
+  private nftContractPetNameSelector = {
+    css: '.name__value',
+    text: '0x581c3...45947',
+  };
+
+  private nftTitle = { text: 'Withdrawal request' };
+
+  private nftDescription = {
+    text: 'This site wants permission to withdraw your NFTs',
+  };
+
+  private nftPrimaryType = { text: 'Permit' };
+
+  private nftSpender = { css: '.name__value', text: '0x581c3...45947' };
+
+  private nftTokenId = { text: '3606393' };
+
+  private nftNonce = { text: '0' };
+
+  private nftDeadline = { text: '23 December 2024, 23:03' };
+
   async verifyOrigin() {
     const origin = await this.driver.findElement(this.originSelector);
     assert.ok(origin, 'Origin element is missing or incorrect');
@@ -72,5 +93,50 @@ export default class PermitConfirmation extends Confirmation {
   async verifyDeadline() {
     const deadline = await this.driver.findElement(this.deadlineSelector);
     assert.ok(deadline, 'Deadline element is missing or incorrect');
+  }
+
+  async verifyNftContractPetName() {
+    const nftContractPetName = await this.driver.findElement(
+      this.nftContractPetNameSelector,
+    );
+    assert.ok(
+      nftContractPetName,
+      'NFT Contract Pet Name element is missing or incorrect',
+    );
+  }
+
+  async verifyNftTitle() {
+    const element = await this.driver.findElement(this.nftTitle);
+    assert.ok(element, 'NFT Title element is missing or incorrect');
+  }
+
+  async verifyNftDescription() {
+    const element = await this.driver.findElement(this.nftDescription);
+    assert.ok(element, 'NFT Description element is missing or incorrect');
+  }
+
+  async verifyNftPrimaryType() {
+    const element = await this.driver.findElement(this.nftPrimaryType);
+    assert.ok(element, 'NFT PrimaryType element is missing or incorrect');
+  }
+
+  async verifyNftSpender() {
+    const element = await this.driver.findElement(this.nftSpender);
+    assert.ok(element, 'NFT Spender element is missing or incorrect');
+  }
+
+  async verifyNftTokenId() {
+    const element = await this.driver.findElement(this.nftTokenId);
+    assert.ok(element, 'NFT TokenId element is missing or incorrect');
+  }
+
+  async verifyNftNonce() {
+    const element = await this.driver.findElement(this.nftNonce);
+    assert.ok(element, 'NFT Nonce element is missing or incorrect');
+  }
+
+  async verifyNftDeadline() {
+    const element = await this.driver.findElement(this.nftDeadline);
+    assert.ok(element, 'NFT Deadline element is missing or incorrect');
   }
 }
