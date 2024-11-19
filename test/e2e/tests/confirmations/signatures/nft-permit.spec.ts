@@ -126,7 +126,7 @@ async function assertInfoValues(driver: Driver) {
     text: '0x581c3...45947',
   });
 
-  const title = driver.findElement({ text: 'Withdrawal request' });
+  const title = driver.findElement({ text: 'Signature request' });
   const description = driver.findElement({
     text: 'This site wants permission to withdraw your NFTs',
   });
