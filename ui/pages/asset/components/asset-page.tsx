@@ -8,7 +8,6 @@ import {
   getCurrentCurrency,
   getIsBridgeChain,
   getIsSwapsChain,
-  getPreferences,
   getSelectedInternalAccount,
   getSwapsDefaultToken,
   getTokensMarketData,
@@ -103,7 +102,6 @@ const AssetPage = ({
   const conversionRate = useSelector(getConversionRate);
   const allMarketData = useSelector(getTokensMarketData);
   const isBridgeChain = useSelector(getIsBridgeChain);
-  const { privacyMode } = useSelector(getPreferences);
   const isBuyableChain = useSelector(getIsNativeTokenBuyable);
   const defaultSwapsToken = useSelector(getSwapsDefaultToken, isEqual);
   const account = useSelector(getSelectedInternalAccount, isEqual);
@@ -168,6 +166,7 @@ const AssetPage = ({
         {type === AssetType.native ? (
           <CoinButtons
             {...{
+              account,
               trackingLocation: 'asset-page',
               isBuyableChain,
               isSigningEnabled,
@@ -191,6 +190,7 @@ const AssetPage = ({
         </Text>
         {type === AssetType.native ? (
           <TokenListItem
+            chainId={asset.chainId}
             title={symbol}
             tokenSymbol={symbol}
             primary={`${balance.display} ${symbol}`}
@@ -198,10 +198,10 @@ const AssetPage = ({
             tokenImage={image}
             isOriginalTokenSymbol={asset.isOriginalNativeSymbol}
             isNativeCurrency={true}
-            privacyMode={privacyMode}
           />
         ) : (
           <TokenCell
+            chainId={asset.chainId}
             address={address}
             image={image}
             symbol={symbol}

@@ -130,27 +130,50 @@ export const getToToken = (
 export const getFromAmount = (state: BridgeAppState): string | null =>
   state.bridge.fromTokenInputValue;
 
-export const getBridgeQuotes = (state: BridgeAppState) => {
-  return {
-    quotes: state.metamask.bridgeState.quotes,
-    quotesLastFetchedMs: state.metamask.bridgeState.quotesLastFetched,
-    isLoading:
-      state.metamask.bridgeState.quotesLoadingStatus === RequestStatus.LOADING,
-  };
-};
-
-export const getRecommendedQuote = createSelector(
-  getBridgeQuotes,
-  ({ quotes }) => {
-    // TODO implement sorting
-    return quotes[0];
-  },
-);
-
 export const getQuoteRequest = (state: BridgeAppState) => {
   const { quoteRequest } = state.metamask.bridgeState;
   return quoteRequest;
 };
+
+export const getBridgeQuotesConfig = (state: BridgeAppState) =>
+  state.metamask.bridgeState?.bridgeFeatureFlags[
+    BridgeFeatureFlagsKey.EXTENSION_CONFIG
+  ] ?? {};
+
+export const getBridgeQuotes = createSelector(
+  (state: BridgeAppState) => state.metamask.bridgeState.quotes,
+  (state: BridgeAppState) => state.metamask.bridgeState.quotesLastFetched,
+  (state: BridgeAppState) =>
+    state.metamask.bridgeState.quotesLoadingStatus === RequestStatus.LOADING,
+  (state: BridgeAppState) => state.metamask.bridgeState.quotesRefreshCount,
+  getBridgeQuotesConfig,
+  getQuoteRequest,
+  (
+    quotes,
+    quotesLastFetchedMs,
+    isLoading,
+    quotesRefreshCount,
+    { maxRefreshCount },
+    { insufficientBal },
+  ) => {
+    return {
+      quotes,
+      quotesLastFetchedMs,
+      isLoading,
+      quotesRefreshCount,
+      isQuoteGoingToRefresh: insufficientBal
+        ? false
+        : quotesRefreshCount < maxRefreshCount,
+    };
+  },
+);
+
+export const getRecommendedQuote = createSelector(
+  getBridgeQuotes,
+  ({ quotes }) => {
+    return quotes[0];
+  },
+);
 
 export const getToAmount = createSelector(getRecommendedQuote, (quote) =>
   quote

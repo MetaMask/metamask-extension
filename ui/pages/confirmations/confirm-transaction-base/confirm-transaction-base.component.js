@@ -1015,23 +1015,14 @@ export default class ConfirmTransactionBase extends Component {
     const {
       toAddress,
       fromAddress,
-      txData: { origin, chainId: txChainId } = {},
+      txData: { origin } = {},
       getNextNonce,
       tryReverseResolveAddress,
       smartTransactionsPreferenceEnabled,
       currentChainSupportsSmartTransactions,
       setSwapsFeatureFlags,
       fetchSmartTransactionsLiveness,
-      chainId,
     } = this.props;
-
-    // If the user somehow finds themselves seeing a confirmation
-    // on a network which is not presently selected, throw
-    if (txChainId === undefined || txChainId !== chainId) {
-      throw new Error(
-        `Currently selected chainId (${chainId}) does not match chainId (${txChainId}) on which the transaction was proposed.`,
-      );
-    }
 
     const { trackEvent } = this.context;
     trackEvent({
