@@ -1,4 +1,4 @@
-import { Transaction } from '@ethereumjs/tx';
+import { Transaction, FeeMarketEIP1559Transaction } from '@ethereumjs/tx';
 import { signTypedData, SignTypedDataVersion } from '@metamask/eth-sig-util';
 import { bufferToHex, rlp } from 'ethereumjs-util';
 import { addHexPrefix, Common } from './keyring-utils';
@@ -172,19 +172,36 @@ export class FakeLedgerBridge extends FakeKeyringBridge {
     // removing r, s, v values from the unsigned tx
     // Ledger uses v to communicate the chain ID, but we're removing it because these values are not a valid signature at this point.
     const txBuffer = Buffer.from(tx, 'hex');
-    const VALID_TYPES = [1, 2];
-    const txType = VALID_TYPES.includes(tx[0]) ? tx[0] : null;
-    const rlpData = txType === null ? txBuffer : txBuffer.slice(1, tx.length);
-    const rlpTx = rlp.decode(rlpData);
 
-    return Transaction.fromValuesArray(rlpTx.slice(0,6), {
-      common,
-    }).sign(Buffer.from(KNOWN_PRIVATE_KEYS[0], 'hex'));
+    // Determine the transaction type from the first byte of the buffer
+    const firstByte = txBuffer[0];
+    let txType;
+
+    // Type 1 and type 2 transactions have an explicit type set in the first element of the array
+    // Type 0 transactions do not have a specific type byte and are identified by their RLP encoding
+    if (firstByte === 1) {
+      txType = 1;
+    } else if (firstByte === 2) {
+      txType = 2;
+    } else {
+      txType = 0;
+    }
+
+    // TODO: add support to type 1 transactions
+    if (txType === 0) {
+      const rlpData = txBuffer;
+      const rlpTx = rlp.decode(rlpData);
+      return Transaction.fromValuesArray(rlpTx.slice(0, 6), {
+        common,
+      }).sign(Buffer.from(KNOWN_PRIVATE_KEYS[0], 'hex'));
+    } else if (txType === 2) {
+      const rlpData = txBuffer.slice(1, tx.length);
+      const rlpTx = rlp.decode(rlpData);
+      return FeeMarketEIP1559Transaction.fromValuesArray(rlpTx, {
+        common,
+      }).sign(Buffer.from(KNOWN_PRIVATE_KEYS[0], 'hex'));
+    }
+
+    throw new Error('Unsupported transaction type.');
   }
-
-  // async deviceSignTypedData(params) {
-  //   console.log('=============> params', params);
-  //   const { tx } = params;
-  //   return ecsign(tx, Buffer.from(KNOWN_PRIVATE_KEYS[0], 'hex'));
-  // }
 }

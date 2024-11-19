@@ -202,7 +202,7 @@ describe('Ledger Hardware', function () {
     );
   });
 
-  it.only('can send a simple transaction from a ledger account to another', async function () {
+  it('can send a legacy transaction from a ledger account to another', async function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilder().build(),
@@ -210,21 +210,53 @@ describe('Ledger Hardware', function () {
         title: this.test?.fullTitle(),
       },
       async ({ driver, ganacheServer }) => {
+        // Seed the Trezor account with balance
+        await ganacheServer?.setAccountBalance(
+          KNOWN_PUBLIC_KEY_ADDRESSES[0].address,
+          '0x100000000000000000000',
+        );
         await unlockWallet(driver);
         await connectLedger(driver);
         await addLedgerAccount(driver);
-        const ganacheSeeder = new GanacheSeeder(ganacheServer?.getProvider());
-        await ganacheSeeder.transfer(
-          KNOWN_PUBLIC_KEY_ADDRESSES[0].address,
-          convertETHToHexGwei(2),
-        );
-        await driver.delay(2000);
         await sendTransaction(
           driver,
           KNOWN_PUBLIC_KEY_ADDRESSES[1].address,
           '1',
           '0.000042',
           '1.000042',
+        );
+        const homePage = new HomePage(driver);
+        await homePage.check_confirmedTxNumberDisplayedInActivity();
+        await homePage.check_txAmountInActivity();
+      },
+    );
+  });
+
+  it('can send an EIP1559 transaction from a ledger account to another', async function () {
+    await withFixtures(
+      {
+        fixtures: new FixtureBuilder().build(),
+        ganacheOptions: {
+          ...defaultGanacheOptions,
+          hardfork: 'london',
+        },
+        title: this.test?.fullTitle(),
+      },
+      async ({ driver, ganacheServer }) => {
+        // Seed the Ledger account with balance
+        await ganacheServer?.setAccountBalance(
+          KNOWN_PUBLIC_KEY_ADDRESSES[0].address,
+          '0x100000000000000000000',
+        );
+        await unlockWallet(driver);
+        await connectLedger(driver);
+        await addLedgerAccount(driver);
+        await sendTransaction(
+          driver,
+          KNOWN_PUBLIC_KEY_ADDRESSES[1].address,
+          '1',
+          '0.00054192',
+          '1.00054192',
         );
         const homePage = new HomePage(driver);
         await homePage.check_confirmedTxNumberDisplayedInActivity();
