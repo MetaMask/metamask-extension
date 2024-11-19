@@ -26,10 +26,7 @@ import type {
 } from '@metamask/accounts-controller';
 import { MultichainNetworks } from '../../../../shared/constants/multichain/networks';
 import { NETWORK_ASSET_MAP } from '../../../../shared/constants/multichain/assets';
-import {
-  isBtcMainnetAddress,
-  isBtcTestnetAddress,
-} from '../../../../shared/lib/multichain';
+import { isBtcMainnetAddress } from '../../../../shared/lib/multichain';
 import { BalancesTracker } from './BalancesTracker';
 
 const controllerName = 'BalancesController';
@@ -413,9 +410,8 @@ export class BalancesController extends BaseController<
     if (account.type === BtcAccountType.P2wpkh) {
       if (isBtcMainnetAddress(account.address)) {
         return MultichainNetworks.BITCOIN;
-      } else {
-        return MultichainNetworks.BITCOIN_TESTNET;
       }
+      return MultichainNetworks.BITCOIN_TESTNET;
     }
 
     // For Solana accounts, we know we have a `scope` on the account's `options` bag.
