@@ -10,6 +10,7 @@ import {
   getMarketData,
   getNetworkConfigurationsByChainId,
   getAllTokens,
+  getChainIdsToPoll,
 } from '../../../selectors';
 import { useAccountTotalCrossChainFiatBalance } from '../../../hooks/useAccountTotalCrossChainFiatBalance';
 import { AggregatedPercentageOverviewCrossChains } from './aggregated-percentage-overview-cross-chains';
@@ -37,6 +38,7 @@ jest.mock('../../../selectors', () => ({
   getMarketData: jest.fn(),
   getNetworkConfigurationsByChainId: jest.fn(),
   getAllTokens: jest.fn(),
+  getChainIdsToPoll: jest.fn(),
 }));
 
 jest.mock('../../../hooks/useAccountTotalCrossChainFiatBalance', () => ({
@@ -51,6 +53,7 @@ const mockGetShouldHideZeroBalanceTokens =
   getShouldHideZeroBalanceTokens as jest.Mock;
 
 const mockGetMarketData = getMarketData as jest.Mock;
+const mockGetChainIdsToPoll = getChainIdsToPoll as unknown as jest.Mock;
 const mockGetNetworkConfigurationsByChainId =
   getNetworkConfigurationsByChainId as unknown as jest.Mock;
 const mockGetAllTokens = getAllTokens as jest.Mock;
@@ -373,6 +376,7 @@ describe('AggregatedPercentageOverviewCrossChains', () => {
     mockGetShouldHideZeroBalanceTokens.mockReturnValue(false);
 
     mockGetMarketData.mockReturnValue(crossChainMarketDataMock);
+    mockGetChainIdsToPoll.mockReturnValue(['0x1']);
     mockGetNetworkConfigurationsByChainId.mockReturnValue(
       networkConfigsByChainId,
     );
