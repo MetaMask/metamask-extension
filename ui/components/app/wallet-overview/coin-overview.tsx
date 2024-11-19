@@ -241,7 +241,8 @@ export const CoinOverview = ({
       }
       return (
         <Box className="wallet-overview__currency-wrapper">
-          {isTokenNetworkFilterEqualCurrentNetwork ? (
+          {isTokenNetworkFilterEqualCurrentNetwork ||
+          !process.env.PORTFOLIO_VIEW ? (
             <AggregatedPercentageOverview />
           ) : (
             <AggregatedPercentageOverviewCrossChains />

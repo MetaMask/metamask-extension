@@ -42,8 +42,6 @@ export const useAccountTotalCrossChainFiatBalance = (
     getCrossChainMetaMaskCachedBalances,
   );
 
-  // const loading = false; //todo check if loading is still needed
-
   const mergedCrossChainRates: Balances = {
     ...crossChainContractRates, // todo add confirmation exchange rates?
   };
