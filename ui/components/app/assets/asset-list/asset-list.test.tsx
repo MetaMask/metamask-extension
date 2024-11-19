@@ -153,13 +153,14 @@ describe('AssetList', () => {
     return null;
   });
 
-  it('renders AssetList component and shows Refresh List text', async () => {
+  it('renders AssetList component and shows AssetList control bar', async () => {
     await act(async () => {
       render();
     });
 
     await waitFor(() => {
-      expect(screen.getByText('Refresh list')).toBeInTheDocument();
+      expect(screen.getByTestId('sort-by-popover-toggle')).toBeInTheDocument();
+      expect(screen.getByTestId('import-token-button')).toBeInTheDocument();
     });
   });
 });

@@ -8,7 +8,9 @@
 
   &__network_control {
     justify-content: space-between;
-    min-width: 185px;
+    width: auto;
+    min-width: auto;
+    max-width: none;
     border-radius: 8px;
     padding: 0 8px !important;
     gap: 5px;

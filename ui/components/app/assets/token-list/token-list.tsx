@@ -9,6 +9,7 @@ import {
   Display,
   JustifyContent,
 } from '../../../../helpers/constants/design-system';
+import { TEST_CHAINS } from '../../../../../shared/constants/network';
 import { sortAssets } from '../util/sort';
 import {
   getCurrencyRates,
@@ -54,6 +55,28 @@ export type ChainAddressMarketData = Record<
   Record<Hex, Record<string, string | number>>
 >;
 
+const useFilteredAccountTokens = (currentNetwork: { chainId: string }) => {
+  const isTestNetwork = useMemo(() => {
+    return (TEST_CHAINS as string[]).includes(currentNetwork.chainId);
+  }, [currentNetwork.chainId, TEST_CHAINS]);
+
+  const selectedAccountTokensChains: Record<string, Token[]> = useSelector(
+    getSelectedAccountTokensAcrossChains,
+  ) as Record<string, Token[]>;
+
+  const filteredAccountTokensChains = useMemo(() => {
+    return Object.fromEntries(
+      Object.entries(selectedAccountTokensChains).filter(([chainId]) =>
+        isTestNetwork
+          ? (TEST_CHAINS as string[]).includes(chainId)
+          : !(TEST_CHAINS as string[]).includes(chainId),
+      ),
+    );
+  }, [selectedAccountTokensChains, isTestNetwork, TEST_CHAINS]);
+
+  return filteredAccountTokensChains;
+};
+
 export default function TokenList({ onTokenClick }: TokenListProps) {
   const t = useI18nContext();
   const currentNetwork = useSelector(getCurrentNetwork);
@@ -65,10 +88,7 @@ export default function TokenList({ onTokenClick }: TokenListProps) {
     getTokenExchangeRates,
     shallowEqual,
   );
-
-  const selectedAccountTokensChains: Record<Hex, Token[]> = useSelector(
-    getSelectedAccountTokensAcrossChains,
-  ) as Record<Hex, Token[]>;
+  const selectedAccountTokensChains = useFilteredAccountTokens(currentNetwork);
 
   const { tokenBalances } = useTokenBalances();
   const selectedAccountTokenBalancesAcrossChains =
