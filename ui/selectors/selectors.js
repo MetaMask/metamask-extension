@@ -954,6 +954,10 @@ export function getPetnamesEnabled(state) {
   return petnamesEnabled;
 }
 
+export function getUseTransactionSimulations(state) {
+  return Boolean(state.metamask.useTransactionSimulations);
+}
+
 export function getRedesignedConfirmationsEnabled(state) {
   const { redesignedConfirmationsEnabled } = getPreferences(state);
   return redesignedConfirmationsEnabled;
@@ -1297,6 +1301,10 @@ export function getFeatureFlags(state) {
 
 export function getOriginOfCurrentTab(state) {
   return state.activeTab.origin;
+}
+
+export function getDefaultHomeActiveTabName(state) {
+  return state.metamask.defaultHomeActiveTabName;
 }
 
 export function getIpfsGateway(state) {
@@ -2186,6 +2194,58 @@ export const getAllEnabledNetworks = createDeepEqualSelector(
       },
       {},
     ),
+);
+
+export const getChainIdsToPoll = createDeepEqualSelector(
+  getPreferences,
+  getNetworkConfigurationsByChainId,
+  getCurrentChainId,
+  (preferences, networkConfigurations, currentChainId) => {
+    const { pausedChainIds = [] } = preferences;
+
+    if (!process.env.PORTFOLIO_VIEW) {
+      return [currentChainId];
+    }
+
+    return Object.keys(networkConfigurations).filter(
+      (chainId) =>
+        !TEST_CHAINS.includes(chainId) && !pausedChainIds.includes(chainId),
+    );
+  },
+);
+
+export const getNetworkClientIdsToPoll = createDeepEqualSelector(
+  getPreferences,
+  getNetworkConfigurationsByChainId,
+  getCurrentChainId,
+  (preferences, networkConfigurations, currentChainId) => {
+    const { pausedChainIds = [] } = preferences;
+
+    if (!process.env.PORTFOLIO_VIEW) {
+      const networkConfiguration = networkConfigurations[currentChainId];
+      return [
+        networkConfiguration.rpcEndpoints[
+          networkConfiguration.defaultRpcEndpointIndex
+        ].networkClientId,
+      ];
+    }
+
+    return Object.entries(networkConfigurations).reduce(
+      (acc, [chainId, network]) => {
+        if (
+          !TEST_CHAINS.includes(chainId) &&
+          !pausedChainIds.includes(chainId)
+        ) {
+          acc.push(
+            network.rpcEndpoints[network.defaultRpcEndpointIndex]
+              .networkClientId,
+          );
+        }
+        return acc;
+      },
+      [],
+    );
+  },
 );
 
 /**

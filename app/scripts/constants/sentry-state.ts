@@ -119,6 +119,7 @@ export const SENTRY_BACKGROUND_STATE = {
       quotes: [],
       quotesLastFetched: true,
       quotesLoadingStatus: true,
+      quotesRefreshCount: true,
     },
   },
   CronjobController: {
@@ -353,6 +354,9 @@ export const SENTRY_BACKGROUND_STATE = {
     tokensChainsCache: {
       [AllProperties]: false,
     },
+  },
+  TokenBalancesController: {
+    tokenBalances: false,
   },
   TokenRatesController: {
     marketData: false,
