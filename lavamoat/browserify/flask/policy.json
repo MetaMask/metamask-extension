@@ -5841,6 +5841,17 @@
         "crypto": true
       }
     },
+    "wait-on>rxjs": {
+      "globals": {
+        "cancelAnimationFrame": true,
+        "clearInterval": true,
+        "clearTimeout": true,
+        "performance": true,
+        "requestAnimationFrame": true,
+        "setInterval.apply": true,
+        "setTimeout.apply": true
+      }
+    },
     "web3": {
       "globals": {
         "XMLHttpRequest": true
