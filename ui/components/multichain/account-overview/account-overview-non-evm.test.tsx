@@ -8,6 +8,11 @@ import {
   AccountOverviewNonEvmProps,
 } from './account-overview-non-evm';
 
+jest.mock('../../../store/actions', () => ({
+  tokenBalancesStartPolling: jest.fn().mockResolvedValue('pollingToken'),
+  tokenBalancesStopPollingByPollingToken: jest.fn(),
+}));
+
 const defaultProps: AccountOverviewNonEvmProps = {
   defaultHomeActiveTabName: null,
   onTabClick: jest.fn(),
