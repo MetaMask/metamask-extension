@@ -164,7 +164,6 @@ export type PreferencesControllerState = Omit<
   enableMV3TimestampSave: boolean;
   useExternalServices: boolean;
   textDirection?: string;
-  hasFinishedAddingAccountsWithBalance?: boolean;
 };
 
 /**
@@ -455,7 +454,6 @@ const controllerMetadata = {
   },
   isMultiAccountBalancesEnabled: { persist: true, anonymous: true },
   showIncomingTransactions: { persist: true, anonymous: true },
-  hasFinishedAddingAccountsWithBalance: { persist: true, anonymous: true },
 };
 
 export class PreferencesController extends BaseController<
@@ -1058,12 +1056,6 @@ export class PreferencesController extends BaseController<
     });
   }
   ///: END:ONLY_INCLUDE_IF
-
-  setHasFinishedAddingAccountsWithBalance(value: boolean): void {
-    this.update((state) => {
-      state.hasFinishedAddingAccountsWithBalance = value;
-    });
-  }
 
   #handleAccountsControllerSync(
     newAccountsControllerState: AccountsControllerState,

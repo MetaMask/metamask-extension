@@ -6287,9 +6287,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/profile-sync-controller@npm:^1.0.1":
-  version: 1.0.1
-  resolution: "@metamask/profile-sync-controller@npm:1.0.1"
+"@metamask/profile-sync-controller@npm:@metamask-previews/profile-sync-controller@1.0.1-preview-913143f":
+  version: 1.0.1-preview-913143f
+  resolution: "@metamask-previews/profile-sync-controller@npm:1.0.1-preview-913143f"
   dependencies:
     "@metamask/base-controller": "npm:^7.0.2"
     "@metamask/keyring-api": "npm:^8.1.3"
@@ -6307,7 +6307,7 @@ __metadata:
     "@metamask/keyring-controller": ^18.0.0
     "@metamask/network-controller": ^22.0.0
     "@metamask/snaps-controllers": ^9.7.0
-  checksum: 10/4a4b0e95e4a03d1ba45343dae38c2c2670ab4931f742f1b3eca0af3d8736204b84258621917b30987e8ab6e633d9b9c255acb989609b9c6d2d341441b73b4ade
+  checksum: 10/2bfe4be88a1d4c75470970a2606a01b7d60665b4b44e5ded7b4711c923cdc367a7ac28a0b188019d9bf2dd339bd7d1fff31d884819309a34efc32931dcadfe59
   languageName: node
   linkType: hard
 
@@ -26854,7 +26854,7 @@ __metadata:
     "@metamask/ppom-validator": "npm:0.35.1"
     "@metamask/preferences-controller": "npm:^13.0.2"
     "@metamask/preinstalled-example-snap": "npm:^0.2.0"
-    "@metamask/profile-sync-controller": "npm:^1.0.1"
+    "@metamask/profile-sync-controller": "npm:@metamask-previews/profile-sync-controller@1.0.1-preview-913143f"
     "@metamask/providers": "npm:^14.0.2"
     "@metamask/queued-request-controller": "npm:^7.0.1"
     "@metamask/rate-limit-controller": "npm:^6.0.0"

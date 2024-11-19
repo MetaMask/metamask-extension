@@ -1769,6 +1769,7 @@ export default class MetamaskController extends EventEmitter {
 
           this.postOnboardingInitialization();
           this.triggerNetworkrequests();
+
           // execute once the token detection on the post-onboarding
           await this.tokenDetectionController.detectTokens({
             selectedAddress: address,
@@ -4473,7 +4474,9 @@ export default class MetamaskController extends EventEmitter {
     } catch (e) {
       log.warn(`Failed to add accounts with balance. Error: ${e}`);
     } finally {
-      this.preferencesController.setHasFinishedAddingAccountsWithBalance(true);
+      await this.userStorageController.setIsAccountSyncingReadyToBeDispatched(
+        true,
+      );
     }
   }
 
