@@ -2,7 +2,7 @@ import { TransactionType } from '@metamask/transaction-controller';
 import { ApprovalType } from '@metamask/controller-utils';
 
 /** List of signature approval types that support the redesigned confirmation flow */
-export const REDESIGN_SIGNATURE_APPROVAL_TYPES = [
+const REDESIGN_SIGNATURE_APPROVAL_TYPES = [
   ApprovalType.EthSignTypedData,
   ApprovalType.PersonalSign,
 ];
@@ -78,6 +78,21 @@ export function shouldUseRedesignForSignatures(
 }
 
 /**
+ * Checks if an redesign approval type is supported for signature redesign
+ *
+ * @param approvalType - The type of approval to check
+ */
+export function isCorrectSignatureApprovalType(
+  approvalType?: ApprovalType,
+): boolean {
+  if (!approvalType) {
+    return false;
+  }
+
+  return REDESIGN_SIGNATURE_APPROVAL_TYPES.includes(approvalType);
+}
+
+/**
  * Checks if a redesigned transaction type is supported in developer mode
  *
  * @param transactionMetadataType - The type of transaction to check
@@ -97,15 +112,6 @@ function isCorrectUserTransactionType(
   transactionMetadataType: TransactionType,
 ): boolean {
   return REDESIGN_USER_TRANSACTION_TYPES.includes(transactionMetadataType);
-}
-
-/**
- * Checks if an redesign approval type is supported for signature redesign
- *
- * @param approvalType - The type of approval to check
- */
-function isCorrectSignatureApprovalType(approvalType: ApprovalType): boolean {
-  return REDESIGN_SIGNATURE_APPROVAL_TYPES.includes(approvalType);
 }
 
 /**

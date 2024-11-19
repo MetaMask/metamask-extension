@@ -1,7 +1,4 @@
-import { ApprovalRequest } from '@metamask/approval-controller';
-import { ApprovalType } from '@metamask/controller-utils';
 import { TransactionType } from '@metamask/transaction-controller';
-import { Json } from '@metamask/utils';
 import {
   PRIMARY_TYPES_ORDER,
   PRIMARY_TYPES_PERMIT,
@@ -10,11 +7,6 @@ import { parseTypedDataMessage } from '../../../../shared/modules/transaction.ut
 import { sanitizeMessage } from '../../../helpers/utils/util';
 import { Confirmation, SignatureRequestType } from '../types/confirm';
 import { TYPED_SIGNATURE_VERSIONS } from '../constants';
-import { REDESIGN_SIGNATURE_APPROVAL_TYPES } from '../../../../shared/modules/confirmation.utils';
-
-export const isSignatureApprovalRequest = (
-  request: ApprovalRequest<Record<string, Json>>,
-) => REDESIGN_SIGNATURE_APPROVAL_TYPES.includes(request.type as ApprovalType);
 
 export const SIGNATURE_TRANSACTION_TYPES = [
   TransactionType.personalSign,

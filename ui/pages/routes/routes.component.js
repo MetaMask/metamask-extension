@@ -115,8 +115,8 @@ import NftFullImage from '../../components/app/assets/nfts/nft-details/nft-full-
 import CrossChainSwap from '../bridge';
 import { ToastMaster } from '../../components/app/toast-master/toast-master';
 import {
-  REDESIGN_SIGNATURE_APPROVAL_TYPES,
   REDESIGN_DEV_TRANSACTION_TYPES,
+  isCorrectSignatureApprovalType,
 } from '../../../shared/modules/confirmation.utils';
 import {
   getConnectingLabel,
@@ -471,7 +471,7 @@ export default class Routes extends Component {
     const pendingApproval = pendingApprovals.find(
       (approval) => approval.id === confirmationId,
     );
-    const isCorrectApprovalType = REDESIGN_SIGNATURE_APPROVAL_TYPES.includes(
+    const isCorrectApprovalType = isCorrectSignatureApprovalType(
       pendingApproval?.type,
     );
     const isCorrectDeveloperTransactionType =

@@ -1,7 +1,6 @@
 import { TransactionType } from '@metamask/transaction-controller';
 import { ApprovalType } from '@metamask/controller-utils';
 import {
-  REDESIGN_SIGNATURE_APPROVAL_TYPES,
   shouldUseRedesignForTransactions,
   shouldUseRedesignForSignatures,
 } from './confirmation.utils';
@@ -127,6 +126,11 @@ describe('confirmation.utils', () => {
   describe('shouldUseRedesignForSignatures', () => {
     const originalEnv = process.env;
 
+    const supportedSignatureApprovalTypes = [
+      ApprovalType.EthSignTypedData,
+      ApprovalType.PersonalSign,
+    ];
+
     beforeEach(() => {
       jest.resetModules();
       process.env = { ...originalEnv };
@@ -138,7 +142,7 @@ describe('confirmation.utils', () => {
     });
 
     it('should return true for supported approval types when user setting is enabled', () => {
-      REDESIGN_SIGNATURE_APPROVAL_TYPES.forEach((approvalType) => {
+      supportedSignatureApprovalTypes.forEach((approvalType) => {
         expect(
           shouldUseRedesignForSignatures(
             approvalType,
@@ -152,7 +156,7 @@ describe('confirmation.utils', () => {
     it('should return true for supported approval types when developer mode is enabled via env', () => {
       process.env.ENABLE_CONFIRMATION_REDESIGN = 'true';
 
-      REDESIGN_SIGNATURE_APPROVAL_TYPES.forEach((approvalType) => {
+      supportedSignatureApprovalTypes.forEach((approvalType) => {
         expect(
           shouldUseRedesignForSignatures(
             approvalType,
@@ -164,7 +168,7 @@ describe('confirmation.utils', () => {
     });
 
     it('should return true for supported approval types when developer setting is enabled', () => {
-      REDESIGN_SIGNATURE_APPROVAL_TYPES.forEach((approvalType) => {
+      supportedSignatureApprovalTypes.forEach((approvalType) => {
         expect(
           shouldUseRedesignForSignatures(
             approvalType,
@@ -190,7 +194,7 @@ describe('confirmation.utils', () => {
     it('should return false when both user setting and developer mode are disabled', () => {
       process.env.ENABLE_CONFIRMATION_REDESIGN = 'false';
 
-      REDESIGN_SIGNATURE_APPROVAL_TYPES.forEach((approvalType) => {
+      supportedSignatureApprovalTypes.forEach((approvalType) => {
         expect(
           shouldUseRedesignForSignatures(
             approvalType,
