@@ -8,6 +8,7 @@ import {
   JsonRpcResponse,
 } from '@metamask/utils';
 import { detectSIWE } from '@metamask/controller-utils';
+
 import { MESSAGE_TYPE } from '../../../../shared/constants/app';
 import { SIGNING_METHODS } from '../../../../shared/constants/transaction';
 import { PreferencesController } from '../../controllers/preferences-controller';

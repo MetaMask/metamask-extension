@@ -11,8 +11,8 @@ import {
 import {
   getCurrentChainId,
   getDetectedTokensInCurrentNetwork,
-  getSelectedNetworkClientId,
 } from '../../../selectors';
+import { getSelectedNetworkClientId } from '../../../../shared/modules/selectors/networks';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 
 import {

@@ -65,9 +65,9 @@ import {
   isHardwareWallet,
   getHardwareWalletType,
   checkNetworkAndAccountSupports1559,
-  getSelectedNetworkClientId,
   getSelectedInternalAccount,
 } from '../../selectors';
+import { getSelectedNetworkClientId } from '../../../shared/modules/selectors/networks';
 import {
   getSmartTransactionsEnabled,
   getSmartTransactionsOptInStatusForMetrics,

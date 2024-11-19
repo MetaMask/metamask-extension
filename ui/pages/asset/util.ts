@@ -1,4 +1,4 @@
-import { SUPPORTED_CHAIN_IDS } from '@metamask/assets-controllers';
+import { SUPPORTED_CHAIN_IDS, Token } from '@metamask/assets-controllers';
 import { Hex } from '@metamask/utils';
 
 /** Formats a datetime in a short human readable format like 'Feb 8, 12:11 PM' */
@@ -65,3 +65,31 @@ export const chainSupportsPricing = (chainId: Hex) =>
 
 /** The opacity components should set during transition */
 export const loadingOpacity = 0.2;
+
+export const findAssetByAddress = (
+  data: Record<string, Token[]>,
+  address?: string,
+  chainId?: string,
+): Token | undefined | null => {
+  if (!chainId) {
+    console.error('Chain ID is required.');
+    return null;
+  }
+
+  const tokens = data[chainId];
+
+  if (!tokens) {
+    console.warn(`No tokens found for chainId: ${chainId}`);
+    return null;
+  }
+
+  if (!address) {
+    console.warn(`No token found for address: ${address}`);
+    return null;
+  }
+
+  return tokens.find(
+    (token) =>
+      token.address && token.address.toLowerCase() === address.toLowerCase(),
+  );
+};

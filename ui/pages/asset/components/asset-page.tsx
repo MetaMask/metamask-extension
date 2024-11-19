@@ -191,6 +191,7 @@ const AssetPage = ({
         </Text>
         {type === AssetType.native ? (
           <TokenListItem
+            chainId={asset.chainId}
             title={symbol}
             tokenSymbol={symbol}
             primary={`${balance.display} ${symbol}`}
@@ -201,6 +202,7 @@ const AssetPage = ({
           />
         ) : (
           <TokenCell
+            chainId={asset.chainId}
             address={address}
             image={image}
             symbol={symbol}

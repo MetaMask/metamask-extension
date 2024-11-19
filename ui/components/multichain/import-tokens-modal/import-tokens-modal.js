@@ -493,7 +493,6 @@ export const ImportTokensModal = ({ onClose }) => {
   return (
     <Modal
       isOpen
-      isClosedOnOutsideClick={false}
       onClose={() => {
         dispatch(clearPendingTokens());
         onClose();

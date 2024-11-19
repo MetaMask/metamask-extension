@@ -6,7 +6,6 @@ import {
   getIsNetworkUsed,
   getNetworkIdentifier,
   getPreferences,
-  isNetworkLoading,
   getTheme,
   getIsTestnet,
   getCurrentChainId,
@@ -22,7 +21,14 @@ import {
   getNumberOfAllUnapprovedTransactionsAndMessages,
   getUseRequestQueue,
   getCurrentNetwork,
+  oldestPendingConfirmationSelector,
+  getUnapprovedTransactions,
+  getPendingApprovals,
 } from '../../selectors';
+import {
+  isNetworkLoading,
+  getProviderConfig,
+} from '../../../shared/modules/selectors/networks';
 import {
   lockMetamask,
   hideImportNftsModal,
@@ -45,7 +51,6 @@ import { pageChanged } from '../../ducks/history/history';
 import { prepareToLeaveSwaps } from '../../ducks/swaps/swaps';
 import { getSendStage } from '../../ducks/send';
 import { getIsUnlocked } from '../../ducks/metamask/metamask';
-import { getProviderConfig } from '../../../shared/modules/selectors/networks';
 import { DEFAULT_AUTO_LOCK_TIME_LIMIT } from '../../../shared/constants/preferences';
 import { selectSwitchedNetworkNeverShowMessage } from '../../components/app/toast-master/selectors';
 import Routes from './routes.component';
@@ -66,6 +71,10 @@ function mapStateToProps(state) {
   const networkToAutomaticallySwitchTo =
     getNetworkToAutomaticallySwitchTo(state);
   const switchedNetworkDetails = getSwitchedNetworkDetails(state);
+
+  const oldestPendingApproval = oldestPendingConfirmationSelector(state);
+  const pendingApprovals = getPendingApprovals(state);
+  const transactionsMetadata = getUnapprovedTransactions(state);
 
   return {
     alertOpen,
@@ -112,6 +121,9 @@ function mapStateToProps(state) {
       selectSwitchedNetworkNeverShowMessage(state),
     currentExtensionPopupId: state.metamask.currentExtensionPopupId,
     useRequestQueue: getUseRequestQueue(state),
+    oldestPendingApproval,
+    pendingApprovals,
+    transactionsMetadata,
     ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
     isShowKeyringSnapRemovalResultModal:
       state.appState.showKeyringRemovalSnapModal,

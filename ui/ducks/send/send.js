@@ -53,10 +53,13 @@ import {
   getSelectedInternalAccount,
   getSelectedInternalAccountWithBalance,
   getUnapprovedTransactions,
-  getSelectedNetworkClientId,
   getIsSwapsChain,
   getUseExternalServices,
 } from '../../selectors';
+import {
+  getSelectedNetworkClientId,
+  getProviderConfig,
+} from '../../../shared/modules/selectors/networks';
 import {
   displayWarning,
   hideLoadingIndication,
@@ -103,7 +106,6 @@ import {
   getNativeCurrency,
   getTokens,
 } from '../metamask/metamask';
-import { getProviderConfig } from '../../../shared/modules/selectors/networks';
 
 import { resetDomainResolution } from '../domains';
 import {

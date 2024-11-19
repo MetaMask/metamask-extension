@@ -12,9 +12,6 @@ import {
   // eslint-disable-next-line import/no-restricted-paths
 } from '../../../ui/selectors/selectors'; // TODO: Migrate shared selectors to this file.
 import { isProduction } from '../environment';
-
-// TODO: Remove restricted imports
-// eslint-disable-next-line import/no-restricted-paths
 import { NetworkState } from './networks';
 
 type SmartTransactionsMetaMaskState = {
