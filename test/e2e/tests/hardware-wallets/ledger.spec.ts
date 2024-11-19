@@ -210,7 +210,7 @@ describe('Ledger Hardware', function () {
         title: this.test?.fullTitle(),
       },
       async ({ driver, ganacheServer }) => {
-        // Seed the Trezor account with balance
+        // Seed the Ledger account with balance
         await ganacheServer?.setAccountBalance(
           KNOWN_PUBLIC_KEY_ADDRESSES[0].address,
           '0x100000000000000000000',
