@@ -1,6 +1,6 @@
 import { useMemo } from 'react';
 import BigNumber from 'bignumber.js';
-import { BtcAccountType } from '@metamask/keyring-api';
+import { BtcAccountType, SolAccountType } from '@metamask/keyring-api';
 import { formatCurrency } from '../helpers/utils/confirm-tx.util';
 import {
   getMultichainCurrentCurrency,

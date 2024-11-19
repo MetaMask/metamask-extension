@@ -1,9 +1,7 @@
 import PropTypes from 'prop-types';
 import {
-  BtcAccountType,
   InternalAccount,
   isEvmAccountType,
-  SolAccountType,
 } from '@metamask/keyring-api';
 import type { RatesControllerState } from '@metamask/assets-controllers';
 import { CaipChainId, Hex, KnownCaipNamespace } from '@metamask/utils';
