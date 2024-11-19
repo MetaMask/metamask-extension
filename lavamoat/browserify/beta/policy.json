@@ -686,6 +686,7 @@
       "packages": {
         "@ensdomains/content-hash>multicodec>uint8arrays>multiformats": true,
         "@ethereumjs/tx>@ethereumjs/util": true,
+        "@ethersproject/bignumber": true,
         "@ethersproject/contracts": true,
         "@ethersproject/providers": true,
         "@metamask/abi-utils": true,
@@ -2604,6 +2605,9 @@
       }
     },
     "@metamask/signature-controller": {
+      "globals": {
+        "fetch": true
+      },
       "packages": {
         "@metamask/base-controller": true,
         "@metamask/controller-utils": true,

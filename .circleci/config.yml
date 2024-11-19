@@ -1195,7 +1195,7 @@ jobs:
           at: .
       - run:
           name: test:e2e:single
-          command: .circleci/scripts/test-run-e2e.sh yarn test:e2e:single test/e2e/vault-decryption-chrome.spec.js --browser chrome
+          command: .circleci/scripts/test-run-e2e.sh yarn test:e2e:single test/e2e/vault-decryption-chrome.spec.ts --browser chrome
           no_output_timeout: 5m
       - store_artifacts:
           path: test-artifacts

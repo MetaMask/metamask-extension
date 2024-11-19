@@ -1,0 +1,9 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`DecodedSimulation renders component correctly 1`] = `
+<div>
+  <div>
+    "DECODED SIMULATION IMPLEMENTATION"
+  </div>
+</div>
+`;
