@@ -2,7 +2,7 @@ import { Suite } from 'mocha';
 import { Driver } from '../../webdriver/driver';
 import { withFixtures } from '../../helpers';
 import FixtureBuilder from '../../fixture-builder';
-import { loginWithBalanceValidation, loginWithoutBalanceValidation } from '../../page-objects/flows/login.flow';
+import { loginWithoutBalanceValidation } from '../../page-objects/flows/login.flow';
 import { sendTransactionToAddress } from '../../page-objects/flows/send-transaction.flow';
 import HomePage from '../../page-objects/pages/homepage';
 
@@ -13,9 +13,7 @@ describe('Simple send eth', function (this: Suite) {
         fixtures: new FixtureBuilder().build(),
         title: this.test?.fullTitle(),
       },
-      async ({
-        driver,
-      }: { driver: Driver }) => {
+      async ({ driver }: { driver: Driver }) => {
         await loginWithoutBalanceValidation(driver);
         await sendTransactionToAddress({
           driver,
