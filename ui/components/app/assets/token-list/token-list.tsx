@@ -15,6 +15,7 @@ import {
   getCurrencyRates,
   getCurrentNetwork,
   getMarketData,
+  getNewTokensImported,
   getPreferences,
   getSelectedAccount,
   getSelectedAccountNativeTokenCachedBalanceByChainId,
@@ -88,6 +89,7 @@ export default function TokenList({ onTokenClick }: TokenListProps) {
     getTokenExchangeRates,
     shallowEqual,
   );
+  const newTokensImported = useSelector(getNewTokensImported);
   const selectedAccountTokensChains = useFilteredAccountTokens(currentNetwork);
 
   const { tokenBalances } = useTokenBalances();
@@ -178,6 +180,7 @@ export default function TokenList({ onTokenClick }: TokenListProps) {
     currentNetwork,
     selectedAccount,
     selectedAccountTokensChains,
+    newTokensImported,
   ]);
 
   useEffect(() => {
