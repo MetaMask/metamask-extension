@@ -3,7 +3,6 @@ import { RawLocator } from '../../../common';
 import Confirmation from './confirmation';
 
 class AccountDetailsModal extends Confirmation {
-
   private accountBalanceInfo: RawLocator;
 
   private addressCopyButton: RawLocator;
@@ -20,7 +19,8 @@ class AccountDetailsModal extends Confirmation {
 
     this.addressCopyButton = '[data-testid="address-copy-button-text"]';
 
-    this.accountDetailsModalCloseButton = '[data-testid="confirmation-account-details-modal__close-button"]';
+    this.accountDetailsModalCloseButton =
+      '[data-testid="confirmation-account-details-modal__close-button"]';
   }
 
   async clickAddressCopyButton() {
