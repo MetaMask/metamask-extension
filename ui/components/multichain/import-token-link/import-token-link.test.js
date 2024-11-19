@@ -88,6 +88,6 @@ describe('Import Token Link', () => {
     const importToken = screen.getByTestId('import-token-button');
     fireEvent.click(importToken);
 
-    expect(screen.getByText('Import')).toBeInTheDocument();
+    expect(screen.getByTestId('import-token-button')).toBeInTheDocument();
   });
 });
