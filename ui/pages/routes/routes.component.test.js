@@ -16,7 +16,6 @@ import { createMockInternalAccount } from '../../../test/jest/mocks';
 import { CHAIN_IDS } from '../../../shared/constants/network';
 import { mockNetworkState } from '../../../test/stub/networks';
 // eslint-disable-next-line import/no-restricted-paths
-import messages from '../../../app/_locales/en/messages.json';
 import Routes from '.';
 
 const middlewares = [thunk];
