@@ -61,13 +61,17 @@ export function useSimulationMetrics({
   transactionId,
   enableMetrics,
 }: UseSimulationMetricsProps) {
+  if (!enableMetrics) {
+    return;
+  }
+
   const { loadingTime, setLoadingComplete } = useLoadingTime();
 
   if (!loading) {
     setLoadingComplete();
   }
 
-  if (!simulationData) {
+  if (!simulationData || balanceChanges.length === 0) {
     return;
   }
 
@@ -93,9 +97,7 @@ export function useSimulationMetrics({
 
   const { updateTransactionEventFragment } = useTransactionEventFragment();
 
-  useIncompleteAssetEvent(balanceChanges, displayNamesByAddress, {
-    enableMetrics,
-  });
+  useIncompleteAssetEvent(balanceChanges, displayNamesByAddress);
 
   const receivingAssets = balanceChanges.filter(
     (change) => !change.amount.isNegative(),
@@ -153,18 +155,9 @@ function useIncompleteAssetEvent(
   displayNamesByAddress: {
     [address: string]: UseDisplayNameResponse | undefined;
   },
-  {
-    enableMetrics,
-  }: {
-    enableMetrics: boolean;
-  },
 ) {
   const trackEvent = useContext(MetaMetricsContext);
   const [processedAssets, setProcessedAssets] = useState<string[]>([]);
-
-  if (!enableMetrics) {
-    return;
-  }
 
   for (const change of balanceChanges) {
     const assetAddress = change.asset.address ?? '';
