@@ -118,7 +118,7 @@ describe('MetaMask onboarding @no-mmi', function () {
     );
   });
 
-  it.only('should not prevent network requests to basic functionality endpoints when the basic functionality toggle is on', async function () {
+  it('should not prevent network requests to basic functionality endpoints when the basic functionality toggle is on', async function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilder({ onboarding: true }).build(),
