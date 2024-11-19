@@ -15,7 +15,7 @@ const { SMART_CONTRACTS } = require('../../seeder/smart-contracts');
 describe('Create token, approve token and approve token without gas', function () {
   const smartContract = SMART_CONTRACTS.HST;
 
-  it.only('imports and renders the balance for the new token', async function () {
+  it('imports and renders the balance for the new token', async function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilder().build(),
