@@ -41,7 +41,7 @@ const NetworkFilter = ({ handleClose }: SortControlProps) => {
   const t = useI18nContext();
   const dispatch = useDispatch();
   const chainId = useSelector(getCurrentChainId);
-  const selectedAccount = useSelector(getSelectedAccount)
+  const selectedAccount = useSelector(getSelectedAccount);
   const currentNetwork = useSelector(getCurrentNetwork);
   const allNetworks = useSelector(getNetworkConfigurationsByChainId);
   const isTestnet = useSelector(getIsTestnet);
@@ -176,19 +176,20 @@ const NetworkFilter = ({ handleClose }: SortControlProps) => {
             >
               {t('currentNetwork')}
             </Text>
-            <UserPreferencedCurrencyDisplay
-              value={selectedAccountBalance}
-              type="PRIMARY"
-              textProps={{
-                color: TextColor.textAlternative,
-                variant: TextVariant.bodySmMedium,
-              }}
-              ethNumberOfDecimals={4}
-              hideTitle
-              showFiat
-              shouldCheckShowNativeToken
-              isAggregatedFiatOverviewBalance={!isTestnet}
-            />
+            <Text
+              variant={TextVariant.bodySmMedium}
+              color={TextColor.textAlternative}
+            >
+              <UserPreferencedCurrencyDisplay
+                value={selectedAccountBalance}
+                type="PRIMARY"
+                ethNumberOfDecimals={4}
+                hideTitle
+                showFiat
+                shouldCheckShowNativeToken
+                isAggregatedFiatOverviewBalance={!isTestnet}
+              />
+            </Text>
           </Box>
           <AvatarNetwork
             name="Current"
