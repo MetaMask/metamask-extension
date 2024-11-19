@@ -2,13 +2,12 @@ import { useSelector } from 'react-redux';
 import { BN } from 'bn.js';
 import { Token } from '@metamask/assets-controllers';
 import {
-  getNetworkConfigurationsByChainId,
   getAllTokens,
   getCurrentChainId,
+  getChainIdsToPoll,
 } from '../selectors';
 import { hexToDecimal } from '../../shared/modules/conversion.utils';
 
-import { TEST_CHAINS } from '../../shared/constants/network';
 import { TokenWithBalance } from '../components/multichain/asset-picker-amount/asset-picker-modal/types';
 import { stringifyBalance, useTokenBalances } from './useTokenBalances';
 
@@ -27,13 +26,10 @@ export const useGetFormattedTokensPerChain = (
   shouldHideZeroBalanceTokens: boolean,
   shouldGetTokensPerCurrentChain: boolean,
 ) => {
-  const allNetworks = useSelector(getNetworkConfigurationsByChainId);
   const currentChainId = useSelector(getCurrentChainId);
   // We want to filter out test chains
-  const allChainIDs = Object.keys(allNetworks).filter(
-    (singleChainId) =>
-      !TEST_CHAINS.includes(singleChainId as (typeof TEST_CHAINS)[number]),
-  );
+  const allChainIDs = useSelector(getChainIdsToPoll);
+
   const importedTokens = useSelector(getAllTokens); // returns the tokens only when they are imported
   const currentTokenBalances: { tokenBalances: TokenBalancesMapping } =
     useTokenBalances({
