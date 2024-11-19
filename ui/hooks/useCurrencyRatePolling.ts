@@ -1,30 +1,24 @@
 import { useSelector } from 'react-redux';
 import {
-  getNetworkConfigurationsByChainId,
+  getSelectedNetworkClientId,
   getUseCurrencyRateCheck,
 } from '../selectors';
 import {
-  currencyRateStartPolling,
+  currencyRateStartPollingByNetworkClientId,
   currencyRateStopPollingByPollingToken,
 } from '../store/actions';
 import { getCompletedOnboarding } from '../ducks/metamask/metamask';
 import usePolling from './usePolling';
 
-const useCurrencyRatePolling = () => {
+const useCurrencyRatePolling = (networkClientId?: string) => {
   const useCurrencyRateCheck = useSelector(getUseCurrencyRateCheck);
   const completedOnboarding = useSelector(getCompletedOnboarding);
-  const networkConfigurations = useSelector(getNetworkConfigurationsByChainId);
-
-  const nativeCurrencies = [
-    ...new Set(
-      Object.values(networkConfigurations).map((n) => n.nativeCurrency),
-    ),
-  ];
+  const selectedNetworkClientId = useSelector(getSelectedNetworkClientId);
 
   usePolling({
-    startPolling: currencyRateStartPolling,
+    startPollingByNetworkClientId: currencyRateStartPollingByNetworkClientId,
     stopPollingByPollingToken: currencyRateStopPollingByPollingToken,
-    input: nativeCurrencies,
+    networkClientId: networkClientId ?? selectedNetworkClientId,
     enabled: useCurrencyRateCheck && completedOnboarding,
   });
 };

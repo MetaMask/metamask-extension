@@ -12,10 +12,6 @@ import {
 } from '../helpers';
 import { TestSuiteArguments } from '../transactions/shared';
 import {
-  BlockaidReason,
-  BlockaidResultType,
-} from '../../../../../shared/constants/security-provider';
-import {
   assertAccountDetailsMetrics,
   assertHeaderInfoBalance,
   assertPastedAddress,
@@ -64,8 +60,6 @@ describe('Confirmation Signature - SIWE @no-mmi', function (this: Suite) {
             'redesigned_confirmation',
             'sign_in_with_ethereum',
           ],
-          securityAlertReason: BlockaidReason.notApplicable,
-          securityAlertResponse: BlockaidResultType.NotApplicable,
         });
       },
       mockSignatureApproved,
@@ -101,8 +95,6 @@ describe('Confirmation Signature - SIWE @no-mmi', function (this: Suite) {
             'sign_in_with_ethereum',
           ],
           location: 'confirmation',
-          securityAlertReason: BlockaidReason.notApplicable,
-          securityAlertResponse: BlockaidResultType.NotApplicable,
         });
       },
       mockSignatureRejected,
@@ -111,7 +103,6 @@ describe('Confirmation Signature - SIWE @no-mmi', function (this: Suite) {
 });
 
 async function assertInfoValues(driver: Driver) {
-  await driver.clickElement('[data-testid="sectionCollapseButton"]');
   const origin = driver.findElement({ text: DAPP_HOST_ADDRESS });
   const message = driver.findElement({
     text: 'I accept the MetaMask Terms of Service: https://community.metamask.io/tos',

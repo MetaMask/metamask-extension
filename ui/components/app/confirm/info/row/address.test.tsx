@@ -8,8 +8,6 @@ import { mockNetworkState } from '../../../../../../test/stub/networks';
 import { ConfirmInfoRowAddress } from './address';
 import { TEST_ADDRESS } from './constants';
 
-const CHAIN_ID_MOCK = CHAIN_IDS.MAINNET;
-
 const render = (
   // TODO: Replace `any` with type
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -21,10 +19,7 @@ const render = (
     ...storeOverrides,
   });
 
-  return renderWithProvider(
-    <ConfirmInfoRowAddress address={address} chainId={CHAIN_ID_MOCK} />,
-    store,
-  );
+  return renderWithProvider(<ConfirmInfoRowAddress address={address} />, store);
 };
 
 describe('ConfirmInfoRowAddress', () => {

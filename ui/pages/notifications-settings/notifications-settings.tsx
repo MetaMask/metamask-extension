@@ -1,6 +1,6 @@
 import React, { useMemo, useState } from 'react';
 import { useSelector } from 'react-redux';
-import { useHistory, useLocation } from 'react-router-dom';
+import { useHistory } from 'react-router-dom';
 import type { InternalAccount } from '@metamask/keyring-api';
 import { useI18nContext } from '../../hooks/useI18nContext';
 import { NOTIFICATIONS_ROUTE } from '../../helpers/constants/routes';
@@ -47,7 +47,6 @@ type AccountType = InternalAccount & {
 
 export default function NotificationsSettings() {
   const history = useHistory();
-  const location = useLocation();
   const t = useI18nContext();
 
   // Selectors
@@ -75,9 +74,6 @@ export default function NotificationsSettings() {
     await accountSettingsProps.update(accountAddresses);
   };
 
-  // Previous page
-  const previousPage = location.state?.fromPage;
-
   return (
     <NotificationsPage>
       <Header
@@ -86,11 +82,7 @@ export default function NotificationsSettings() {
             ariaLabel="Back"
             iconName={IconName.ArrowLeft}
             size={ButtonIconSize.Sm}
-            onClick={() =>
-              previousPage
-                ? history.push(previousPage)
-                : history.push(NOTIFICATIONS_ROUTE)
-            }
+            onClick={() => history.push(NOTIFICATIONS_ROUTE)}
           />
         }
         endAccessory={null}

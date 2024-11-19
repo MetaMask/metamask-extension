@@ -20,6 +20,7 @@ import {
 } from './notification-components';
 
 type Notification = NotificationServicesController.Types.INotification;
+const { TRIGGER_TYPES } = NotificationServicesController.Constants;
 
 export function NotificationsListItem({
   notification,
@@ -38,8 +39,8 @@ export function NotificationsListItem({
       properties: {
         notification_id: notification.id,
         notification_type: notification.type,
-        ...('chain_id' in notification && {
-          chain_id: notification.chain_id,
+        ...(notification.type !== TRIGGER_TYPES.FEATURES_ANNOUNCEMENT && {
+          chain_id: notification?.chain_id,
         }),
         previously_read: notification.isRead,
       },

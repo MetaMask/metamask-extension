@@ -1,7 +1,4 @@
-import {
-  TransactionMeta,
-  TransactionType,
-} from '@metamask/transaction-controller';
+import { TransactionMeta } from '@metamask/transaction-controller';
 import React, { useCallback } from 'react';
 import { useDispatch } from 'react-redux';
 import { useHistory } from 'react-router-dom';
@@ -41,26 +38,7 @@ export const WalletInitiatedHeader = () => {
   const handleBackButtonClick = useCallback(async () => {
     const { id } = currentConfirmation;
 
-    const isNativeSend =
-      currentConfirmation.type === TransactionType.simpleSend;
-    const isERC20TokenSend =
-      currentConfirmation.type === TransactionType.tokenMethodTransfer;
-    const isNFTTokenSend =
-      currentConfirmation.type === TransactionType.tokenMethodTransferFrom ||
-      currentConfirmation.type === TransactionType.tokenMethodSafeTransferFrom;
-
-    let assetType: AssetType;
-    if (isNativeSend) {
-      assetType = AssetType.native;
-    } else if (isERC20TokenSend) {
-      assetType = AssetType.token;
-    } else if (isNFTTokenSend) {
-      assetType = AssetType.NFT;
-    } else {
-      assetType = AssetType.unknown;
-    }
-
-    await dispatch(editExistingTransaction(assetType, id.toString()));
+    await dispatch(editExistingTransaction(AssetType.token, id.toString()));
     dispatch(clearConfirmTransaction());
     dispatch(showSendTokenPage());
 

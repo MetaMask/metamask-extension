@@ -61,8 +61,15 @@ describe('add-ethereum-chain confirmation', () => {
       },
     };
     const store = configureMockStore(middleware)(testStore);
-    const { container } = renderWithProvider(<Confirmation />, store);
+    const { container, getByText } = renderWithProvider(
+      <Confirmation />,
+      store,
+    );
     await waitFor(() => {
+      expect(
+        getByText('MetaMask does not verify custom networks.'),
+      ).toBeInTheDocument();
+      expect(container.querySelector('.callout')).toBeDefined();
       expect(container).toMatchSnapshot();
     });
   });

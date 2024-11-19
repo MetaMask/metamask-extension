@@ -8,8 +8,6 @@ import { renderWithProvider } from '../../../../../../../test/lib/render-helpers
 import configureStore from '../../../../../../store/store';
 import { ConfirmInfoRowTypedSignData } from './typedSignData';
 
-const CHAIN_ID_MOCK = '0x123';
-
 describe('ConfirmInfoRowTypedSignData', () => {
   const renderWithComponentData = (
     data = unapprovedTypedSignMsgV4.msgParams?.data as string,
@@ -17,7 +15,7 @@ describe('ConfirmInfoRowTypedSignData', () => {
     const store = configureStore(mockState);
 
     return renderWithProvider(
-      <ConfirmInfoRowTypedSignData data={data} chainId={CHAIN_ID_MOCK} />,
+      <ConfirmInfoRowTypedSignData data={data} />,
       store,
     );
   };

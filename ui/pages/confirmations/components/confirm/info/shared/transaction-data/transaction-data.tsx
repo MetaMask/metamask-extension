@@ -57,7 +57,6 @@ export const TransactionData = () => {
 
   const { data, source } = value;
   const isExpandable = data.length > 1;
-  const { chainId } = currentConfirmation;
 
   return (
     <Container transactionData={transactionData}>
@@ -68,7 +67,6 @@ export const TransactionData = () => {
               method={method}
               source={source}
               isExpandable={isExpandable}
-              chainId={chainId}
             />
             {index < data.length - 1 && <ConfirmInfoRowDivider />}
           </React.Fragment>
@@ -121,12 +119,10 @@ function FunctionContainer({
   method,
   source,
   isExpandable,
-  chainId,
 }: {
   method: DecodedTransactionDataMethod;
   source?: DecodedTransactionDataSource;
   isExpandable: boolean;
-  chainId: string;
 }) {
   const t = useI18nContext();
 
@@ -138,7 +134,6 @@ function FunctionContainer({
           param={param}
           index={paramIndex}
           source={source}
-          chainId={chainId}
         />
       ))}
     </Box>
@@ -177,20 +172,18 @@ function FunctionContainer({
 function ParamValue({
   param,
   source,
-  chainId,
 }: {
   param: DecodedTransactionDataParam;
   source?: DecodedTransactionDataSource;
-  chainId: string;
 }) {
   const { name, type, value } = param;
 
   if (type === 'address') {
-    return <ConfirmInfoRowAddress address={value} chainId={chainId} />;
+    return <ConfirmInfoRowAddress address={value} />;
   }
 
   if (name === 'path' && source === DecodedTransactionDataSource.Uniswap) {
-    return <UniswapPath pathPools={value} chainId={chainId} />;
+    return <UniswapPath pathPools={value} />;
   }
 
   let valueString = value.toString();
@@ -206,12 +199,10 @@ function ParamRow({
   param,
   index,
   source,
-  chainId,
 }: {
   param: DecodedTransactionDataParam;
   index: number;
   source?: DecodedTransactionDataSource;
-  chainId: string;
 }) {
   const { name, type, description } = param;
   const label = name ? _.startCase(name) : `Param #${index + 1}`;
@@ -224,29 +215,20 @@ function ParamRow({
       param={childParam}
       index={childIndex}
       source={source}
-      chainId={chainId}
     />
   ));
 
   return (
     <>
       <ConfirmInfoRow label={label} tooltip={tooltip} data-testid={dataTestId}>
-        {!childRows?.length && (
-          <ParamValue param={param} source={source} chainId={chainId} />
-        )}
+        {!childRows?.length && <ParamValue param={param} source={source} />}
       </ConfirmInfoRow>
       {childRows && <Box paddingLeft={2}>{childRows}</Box>}
     </>
   );
 }
 
-function UniswapPath({
-  pathPools,
-  chainId,
-}: {
-  pathPools: UniswapPathPool[];
-  chainId: string;
-}) {
+function UniswapPath({ pathPools }: { pathPools: UniswapPathPool[] }) {
   return (
     <Box
       display={Display.Flex}
@@ -255,17 +237,9 @@ function UniswapPath({
     >
       {pathPools.map((pool, index) => (
         <>
-          {index === 0 && (
-            <ConfirmInfoRowAddress
-              address={pool.firstAddress}
-              chainId={chainId}
-            />
-          )}
+          {index === 0 && <ConfirmInfoRowAddress address={pool.firstAddress} />}
           <ConfirmInfoRowText text={String(pool.tickSpacing)} />
-          <ConfirmInfoRowAddress
-            address={pool.secondAddress}
-            chainId={chainId}
-          />
+          <ConfirmInfoRowAddress address={pool.secondAddress} />
         </>
       ))}
     </Box>

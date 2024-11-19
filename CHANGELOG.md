@@ -35,16 +35,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Updated network message to show the full network name on the Review Permission and Connections pages ([#28126](https://github.com/MetaMask/metamask-extension/pull/28126))
 - Removed the feature flag for the confirmations screen ([#27877](https://github.com/MetaMask/metamask-extension/pull/27877))
 
+## [12.6.2]
 ### Fixed
-- Fixed issue where token balance showed as 0 during send flow when navigating from the token details page ([#28136](https://github.com/MetaMask/metamask-extension/pull/28136))
-- Fixed issue where small spending caps were coerced to zero on the approve screen ([#28179](https://github.com/MetaMask/metamask-extension/pull/28179))
-- Fixed gas calculations for low Max base fee and Priority fee ([#28037](https://github.com/MetaMask/metamask-extension/pull/28037))
-- Disabled notifications when Basic functionality is turned off ([#28045])
-- Fixed alignment issues of custom UI links in Snaps ([#27957](https://github.com/MetaMask/metamask-extension/pull/27957))
-- Fixed misalignment of the quote rate in swaps ([#28016](https://github.com/MetaMask/metamask-extension/pull/28016))
-- Prevented scrolling to the account list item on the send page to keep the relevant UI in view ([#27934](https://github.com/MetaMask/metamask-extension/pull/27934))
-- Improved handling of network switching and adding networks to prevent issues with queued transactions ([#28090](https://github.com/MetaMask/metamask-extension/pull/28090))
-- Prevented redirect after adding a network in Onboarding Settings ([#28165](https://github.com/MetaMask/metamask-extension/pull/28165))
+- Prevent QR code scanning from setting incorrect recipient addresses during the send flow by restricting the QR scanner feature to only handle simple sends, and fail on QR codes that encode more complex transaction types ([#28521](https://github.com/MetaMask/metamask-extension/pull/28521))
 
 ## [12.6.1]
 ### Fixed
@@ -5349,7 +5342,8 @@ Update styles and spacing on the critical error page  ([#20350](https://github.c
 
 [Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v12.7.1...HEAD
 [12.7.1]: https://github.com/MetaMask/metamask-extension/compare/v12.7.0...v12.7.1
-[12.7.0]: https://github.com/MetaMask/metamask-extension/compare/v12.6.1...v12.7.0
+[12.7.0]: https://github.com/MetaMask/metamask-extension/compare/v12.6.2...v12.7.0
+[12.6.2]: https://github.com/MetaMask/metamask-extension/compare/v12.6.1...v12.6.2
 [12.6.1]: https://github.com/MetaMask/metamask-extension/compare/v12.6.0...v12.6.1
 [12.6.0]: https://github.com/MetaMask/metamask-extension/compare/v12.5.1...v12.6.0
 [12.5.1]: https://github.com/MetaMask/metamask-extension/compare/v12.5.0...v12.5.1

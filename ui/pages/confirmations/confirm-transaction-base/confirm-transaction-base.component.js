@@ -543,7 +543,11 @@ export default class ConfirmTransactionBase extends Component {
     const { simulationData } = txData;
 
     const simulationDetails = (
-      <SimulationDetails transaction={txData} enableMetrics />
+      <SimulationDetails
+        simulationData={simulationData}
+        transactionId={txData.id}
+        enableMetrics
+      />
     );
 
     const showTotals = Boolean(simulationData?.error);

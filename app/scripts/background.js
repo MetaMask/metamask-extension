@@ -298,9 +298,6 @@ function maybeDetectPhishing(theController) {
         category: MetaMetricsEventCategory.Phishing,
         properties: {
           url: hostname,
-          referrer: {
-            url: hostname,
-          },
           reason: blockReason,
         },
       });

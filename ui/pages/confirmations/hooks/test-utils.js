@@ -14,7 +14,6 @@ import {
   getCurrentKeyring,
   getTokenExchangeRates,
   getPreferences,
-  selectNetworkConfigurationByChainId,
 } from '../../../selectors';
 
 import {
@@ -127,9 +126,6 @@ export const generateUseSelectorRouter =
       selector === getCurrentCurrency
     ) {
       return 'USD';
-    }
-    if (selector === selectNetworkConfigurationByChainId) {
-      return '2';
     }
     if (
       selector === getMultichainShouldShowFiat ||

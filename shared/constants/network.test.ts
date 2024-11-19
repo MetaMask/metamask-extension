@@ -35,7 +35,6 @@ describe('NetworkConstants', () => {
         'Polygon Mainnet': CHAIN_IDS.POLYGON,
         'zkSync Era Mainnet': CHAIN_IDS.ZKSYNC_ERA,
         'Base Mainnet': CHAIN_IDS.BASE,
-        'Linea Mainnet': CHAIN_IDS.LINEA_MAINNET,
       };
 
       FEATURED_RPCS.forEach((rpc) => {

@@ -46,7 +46,7 @@ import Name from '../name';
 import FormComboField, {
   FormComboFieldOption,
 } from '../../../ui/form-combo-field/form-combo-field';
-import { getNameSources } from '../../../../selectors';
+import { getCurrentChainId, getNameSources } from '../../../../selectors';
 import {
   setName as saveName,
   updateProposedNames,
@@ -64,7 +64,6 @@ export type NameDetailsProps = {
   sourcePriority?: string[];
   type: NameType;
   value: string;
-  variation: string;
 };
 
 type ProposedNameOption = Required<FormComboFieldOption> & {
@@ -158,14 +157,12 @@ function getInitialSources(
   return [...resultSources, ...stateSources].sort();
 }
 
-function useProposedNames(value: string, type: NameType, variation: string) {
+function useProposedNames(value: string, type: NameType, chainId: string) {
   const dispatch = useDispatch();
-  const { proposedNames } = useName(value, type, variation);
-
+  const { proposedNames } = useName(value, type);
   // TODO: Replace `any` with type
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const updateInterval = useRef<any>();
-
   const [initialSources, setInitialSources] = useState<string[]>();
 
   useEffect(() => {
@@ -181,7 +178,7 @@ function useProposedNames(value: string, type: NameType, variation: string) {
           value,
           type,
           onlyUpdateAfterDelay: true,
-          variation,
+          variation: chainId,
         }),
         // TODO: Replace `any` with type
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -199,7 +196,7 @@ function useProposedNames(value: string, type: NameType, variation: string) {
 
     updateInterval.current = setInterval(update, UPDATE_DELAY);
     return reset;
-  }, [value, type, variation, dispatch, initialSources, setInitialSources]);
+  }, [value, type, chainId, dispatch, initialSources, setInitialSources]);
 
   return { proposedNames, initialSources };
 }
@@ -208,20 +205,13 @@ export default function NameDetails({
   onClose,
   type,
   value,
-  variation,
 }: NameDetailsProps) {
-  const { name: savedPetname, sourceId: savedSourceId } = useName(
+  const chainId = useSelector(getCurrentChainId);
+  const { name: savedPetname, sourceId: savedSourceId } = useName(value, type);
+  const { name: displayName, hasPetname: hasSavedPetname } = useDisplayName(
     value,
     type,
-    variation,
   );
-
-  const { name: displayName, hasPetname: hasSavedPetname } = useDisplayName({
-    value,
-    type,
-    variation,
-  });
-
   const nameSources = useSelector(getNameSources, isEqual);
   const [name, setName] = useState('');
   const [openMetricSent, setOpenMetricSent] = useState(false);
@@ -236,7 +226,7 @@ export default function NameDetails({
   const { proposedNames, initialSources } = useProposedNames(
     value,
     type,
-    variation,
+    chainId,
   );
 
   const [copiedAddress, handleCopyAddress] = useCopyToClipboard() as [
@@ -285,12 +275,12 @@ export default function NameDetails({
         type,
         name: name?.length ? name : null,
         sourceId: selectedSourceId,
-        variation,
+        variation: chainId,
       }),
     );
 
     onClose();
-  }, [name, selectedSourceId, onClose, trackPetnamesSaveEvent, variation]);
+  }, [name, selectedSourceId, onClose, trackPetnamesSaveEvent, chainId]);
 
   const handleClose = useCallback(() => {
     onClose();
@@ -343,7 +333,6 @@ export default function NameDetails({
               <Name
                 value={value}
                 type={NameType.ETHEREUM_ADDRESS}
-                variation={variation}
                 disableEdit
                 internal
               />

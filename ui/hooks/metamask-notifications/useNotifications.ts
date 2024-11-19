@@ -54,13 +54,8 @@ export function useListNotifications(): {
     setLoading(true);
     setError(null);
 
-    const urlParams = new URLSearchParams(window.location.search);
-    const previewToken = urlParams.get('previewToken');
-
     try {
-      const data = await dispatch(
-        fetchAndUpdateMetamaskNotifications(previewToken ?? undefined),
-      );
+      const data = await dispatch(fetchAndUpdateMetamaskNotifications());
       setNotificationsData(data as unknown as Notification[]);
       return data as unknown as Notification[];
     } catch (e) {

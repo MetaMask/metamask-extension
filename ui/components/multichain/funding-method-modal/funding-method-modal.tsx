@@ -115,8 +115,8 @@ export const FundingMethodModal: React.FC<FundingMethodModalProps> = ({
         </ModalHeader>
         <FundingMethodItem
           icon={IconName.Card}
-          title={t('tokenMarketplace')}
-          description={t('debitCreditPurchaseOptions')}
+          title={t('buyCrypto')}
+          description={t('buyFirstCrypto')}
           onClick={handleBuyCryptoClick}
         />
         <FundingMethodItem

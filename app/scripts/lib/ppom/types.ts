@@ -10,9 +10,3 @@ export type SecurityAlertResponse = {
   securityAlertId?: string;
   source?: SecurityAlertSource;
 };
-
-export type UpdateSecurityAlertResponse = (
-  method: string,
-  securityAlertId: string,
-  securityAlertResponse: SecurityAlertResponse,
-) => Promise<void>;

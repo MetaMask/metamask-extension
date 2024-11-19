@@ -5,6 +5,7 @@ import { MetaMetricsContext } from '../../../../contexts/metametrics';
 import {
   useEnableProfileSyncing,
   useDisableProfileSyncing,
+  useSetIsProfileSyncingEnabled,
 } from '../../../../hooks/metamask-notifications/useProfileSyncing';
 import {
   MetaMetricsEventCategory,
@@ -30,14 +31,14 @@ import { getUseExternalServices } from '../../../../selectors';
 
 function ProfileSyncBasicFunctionalitySetting() {
   const basicFunctionality: boolean = useSelector(getUseExternalServices);
-  const { disableProfileSyncing } = useDisableProfileSyncing();
+  const { setIsProfileSyncingEnabled } = useSetIsProfileSyncingEnabled();
 
-  // Effect - disable profile syncing when basic functionality is off
+  // Effect - toggle profile syncing off when basic functionality is off
   useEffect(() => {
     if (basicFunctionality === false) {
-      disableProfileSyncing();
+      setIsProfileSyncingEnabled(false);
     }
-  }, [basicFunctionality, disableProfileSyncing]);
+  }, [basicFunctionality, setIsProfileSyncingEnabled]);
 
   return {
     isProfileSyncDisabled: !basicFunctionality,
@@ -71,6 +72,7 @@ const ProfileSyncToggle = () => {
         showModal({
           name: 'CONFIRM_TURN_OFF_PROFILE_SYNCING',
           turnOffProfileSyncing: () => {
+            disableProfileSyncing();
             trackEvent({
               category: MetaMetricsEventCategory.Settings,
               event: MetaMetricsEventName.SettingsUpdated,
@@ -82,11 +84,11 @@ const ProfileSyncToggle = () => {
                 was_notifications_on: isMetamaskNotificationsEnabled,
               },
             });
-            disableProfileSyncing();
           },
         }),
       );
     } else {
+      await enableProfileSyncing();
       trackEvent({
         category: MetaMetricsEventCategory.Settings,
         event: MetaMetricsEventName.SettingsUpdated,
@@ -98,7 +100,6 @@ const ProfileSyncToggle = () => {
           was_notifications_on: isMetamaskNotificationsEnabled,
         },
       });
-      await enableProfileSyncing();
     }
   };
 

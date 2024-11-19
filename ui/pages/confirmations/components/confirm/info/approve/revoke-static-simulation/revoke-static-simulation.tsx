@@ -16,8 +16,6 @@ export const RevokeStaticSimulation = () => {
     currentConfirmation: TransactionMeta;
   };
 
-  const { chainId } = transactionMeta;
-
   const TokenContractRow = (
     <ConfirmInfoRow label={t('spendingCap')}>
       <Box style={{ marginLeft: 'auto', maxWidth: '100%' }}>
@@ -26,7 +24,6 @@ export const RevokeStaticSimulation = () => {
             value={transactionMeta.txParams.to as string}
             type={NameType.ETHEREUM_ADDRESS}
             preferContractSymbol
-            variation={chainId}
           />
         </Box>
       </Box>
@@ -41,7 +38,6 @@ export const RevokeStaticSimulation = () => {
             value={transactionMeta.txParams.from as string}
             type={NameType.ETHEREUM_ADDRESS}
             preferContractSymbol
-            variation={chainId}
           />
         </Box>
       </Box>

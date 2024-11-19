@@ -2258,7 +2258,7 @@ describe('Actions', () => {
 
       const fetchAndUpdateMetamaskNotificationsStub = sinon
         .stub()
-        .callsFake((_, cb) => cb());
+        .callsFake((cb) => cb());
       const forceUpdateMetamaskStateStub = sinon.stub().callsFake((cb) => cb());
 
       background.getApi.returns({
@@ -2280,7 +2280,7 @@ describe('Actions', () => {
 
       const fetchAndUpdateMetamaskNotificationsStub = sinon
         .stub()
-        .callsFake((_, cb) => cb(error));
+        .callsFake((cb) => cb(error));
       const forceUpdateMetamaskStateStub = sinon
         .stub()
         .callsFake((cb) => cb(error));

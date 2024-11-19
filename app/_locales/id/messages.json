@@ -207,6 +207,23 @@
   "addCustomNetwork": {
     "message": "Tambahkan jaringan khusus"
   },
+  "addEthereumChainConfirmationDescription": {
+    "message": "Tindakan ini akan membantu jaringan ini agar dapat digunakan di MetaMask."
+  },
+  "addEthereumChainConfirmationRisks": {
+    "message": "MetaMask tidak memverifikasi jaringan kustom."
+  },
+  "addEthereumChainConfirmationRisksLearnMore": {
+    "message": "Pelajari tentang $1.",
+    "description": "$1 is a link with text that is provided by the 'addEthereumChainConfirmationRisksLearnMoreLink' key"
+  },
+  "addEthereumChainConfirmationRisksLearnMoreLink": {
+    "message": "penipuan dan risiko keamanan jaringan",
+    "description": "Link text for the 'addEthereumChainConfirmationRisksLearnMore' translation key"
+  },
+  "addEthereumChainConfirmationTitle": {
+    "message": "Izinkan situs ini untuk menambahkan jaringan?"
+  },
   "addEthereumChainWarningModalHeader": {
     "message": "Cukup tambahkan penyedia RPC ini jika Anda yakin dapat memercayainya. $1",
     "description": "$1 is addEthereumChainWarningModalHeaderPartTwo passed separately so that it can be bolded"
@@ -804,6 +821,10 @@
   },
   "buyNow": {
     "message": "Beli Sekarang"
+  },
+  "buyToken": {
+    "message": "Beli $1",
+    "description": "$1 is the token symbol"
   },
   "bytes": {
     "message": "Byte"
@@ -1879,6 +1900,13 @@
   "functionType": {
     "message": "Jenis fungsi"
   },
+  "fundYourWallet": {
+    "message": "Danai dompet Anda"
+  },
+  "fundYourWalletDescription": {
+    "message": "Mulailah dengan menambahkan sejumlah $1 ke dompet Anda.",
+    "description": "$1 is the token symbol"
+  },
   "gas": {
     "message": "Gas"
   },
@@ -1961,6 +1989,14 @@
   },
   "genericExplorerView": {
     "message": "Lihat akun di $1"
+  },
+  "getStartedWithNFTs": {
+    "message": "Dapatkan $1 untuk membeli NFT",
+    "description": "$1 is the token symbol"
+  },
+  "getStartedWithNFTsDescription": {
+    "message": "Mulailah menggunakan NFT dengan menambahkan sejumlah $1 ke dompet Anda.",
+    "description": "$1 is the token symbol"
   },
   "goBack": {
     "message": "Kembali"
@@ -4822,6 +4858,9 @@
     "message": "Hubungi pembuat $1 untuk dukungan lebih lanjut.",
     "description": "This is shown when the insight snap throws an error. $1 is the snap name"
   },
+  "someNetworksMayPoseSecurity": {
+    "message": "Beberapa jaringan dapat menimbulkan risiko keamanan dan/atau privasi. Pahami risikonya sebelum menambahkan dan menggunakan jaringan."
+  },
   "somethingDoesntLookRight": {
     "message": "Ada yang tidak beres? $1",
     "description": "A false positive message for users to contact support. $1 is a link to the support page."
@@ -4974,6 +5013,14 @@
   },
   "stake": {
     "message": "Stake"
+  },
+  "startYourJourney": {
+    "message": "Mulailah perjalanan Anda dengan $1",
+    "description": "$1 is the token symbol"
+  },
+  "startYourJourneyDescription": {
+    "message": "Mulailah dengan web3 dengan menambahkan sejumlah $1 ke dompet Anda.",
+    "description": "$1 is the token symbol"
   },
   "stateLogError": {
     "message": "Terjadi kesalahan pada log status pengambilan."
@@ -5959,6 +6006,9 @@
   },
   "viewActivity": {
     "message": "Lihat aktivitas"
+  },
+  "viewAllDetails": {
+    "message": "Lihat semua detail"
   },
   "viewAllQuotes": {
     "message": "lihat semua kuotasi"

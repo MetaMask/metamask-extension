@@ -31,7 +31,7 @@ describe('Dapp interactions', function () {
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
         await unlockWallet(driver);
         const notification = await driver.isElementPresent({
-          text: 'Add Localhost 8546',
+          text: 'Allow this site to add a network?',
           tag: 'h3',
         });
 

@@ -57,8 +57,6 @@ const DIFFERENCE_1_MOCK: Hex = '0x11';
 const DIFFERENCE_2_MOCK: Hex = '0x2';
 const DIFFERENCE_ETH_MOCK: Hex = '0x1234567890123456789';
 
-const CHAIN_ID_MOCK = '0x123';
-
 const dummyBalanceChange = {
   previousBalance: '0xIGNORE' as Hex,
   newBalance: '0xIGNORE' as Hex,
@@ -100,10 +98,7 @@ describe('useBalanceChanges', () => {
   describe('pending states', () => {
     it('returns pending=true if no simulation data', async () => {
       const { result, waitForNextUpdate } = renderHook(() =>
-        useBalanceChanges({
-          chainId: CHAIN_ID_MOCK,
-          simulationData: undefined,
-        }),
+        useBalanceChanges(undefined),
       );
       expect(result.current).toEqual({ pending: true, value: [] });
       await waitForNextUpdate();
@@ -124,7 +119,7 @@ describe('useBalanceChanges', () => {
         ],
       };
       const { result, unmount, waitForNextUpdate } = renderHook(() =>
-        useBalanceChanges({ chainId: CHAIN_ID_MOCK, simulationData }),
+        useBalanceChanges(simulationData),
       );
 
       await waitForNextUpdate();
@@ -148,7 +143,7 @@ describe('useBalanceChanges', () => {
         ],
       };
       const { result, unmount, waitForNextUpdate } = renderHook(() =>
-        useBalanceChanges({ chainId: CHAIN_ID_MOCK, simulationData }),
+        useBalanceChanges(simulationData),
       );
 
       await waitForNextUpdate();
@@ -166,9 +161,7 @@ describe('useBalanceChanges', () => {
         nativeBalanceChange: undefined,
         tokenBalanceChanges,
       };
-      return renderHook(() =>
-        useBalanceChanges({ chainId: CHAIN_ID_MOCK, simulationData }),
-      );
+      return renderHook(() => useBalanceChanges(simulationData));
     };
 
     it('maps token balance changes correctly', async () => {
@@ -188,7 +181,6 @@ describe('useBalanceChanges', () => {
       expect(changes).toEqual([
         {
           asset: {
-            chainId: CHAIN_ID_MOCK,
             address: ERC20_TOKEN_ADDRESS_1_MOCK,
             standard: TokenStandard.ERC20,
             tokenId: undefined,
@@ -245,7 +237,6 @@ describe('useBalanceChanges', () => {
       expect(result.current.value).toEqual([
         {
           asset: {
-            chainId: CHAIN_ID_MOCK,
             address: NFT_TOKEN_ADDRESS_MOCK,
             standard: TokenStandard.ERC721,
             tokenId: TOKEN_ID_1_MOCK,
@@ -316,9 +307,7 @@ describe('useBalanceChanges', () => {
         nativeBalanceChange,
         tokenBalanceChanges: [],
       };
-      return renderHook(() =>
-        useBalanceChanges({ chainId: CHAIN_ID_MOCK, simulationData }),
-      );
+      return renderHook(() => useBalanceChanges(simulationData));
     };
 
     it('maps native balance change correctly', async () => {
@@ -334,7 +323,6 @@ describe('useBalanceChanges', () => {
       expect(changes).toEqual([
         {
           asset: {
-            chainId: CHAIN_ID_MOCK,
             standard: TokenStandard.none,
           },
           amount: new BigNumber('-5373.003641998677469065'),
@@ -394,7 +382,7 @@ describe('useBalanceChanges', () => {
       ],
     };
     const { result, waitForNextUpdate } = renderHook(() =>
-      useBalanceChanges({ chainId: CHAIN_ID_MOCK, simulationData }),
+      useBalanceChanges(simulationData),
     );
 
     await waitForNextUpdate();
@@ -402,7 +390,6 @@ describe('useBalanceChanges', () => {
     const changes = result.current.value;
     expect(changes).toHaveLength(2);
     expect(changes[0].asset).toEqual({
-      chainId: CHAIN_ID_MOCK,
       standard: TokenStandard.none,
     });
     expect(changes[0].amount).toEqual(
@@ -410,7 +397,6 @@ describe('useBalanceChanges', () => {
     );
     expect(changes[0].fiatAmount).toBe(Number('-16119.010925996032'));
     expect(changes[1].asset).toEqual({
-      chainId: CHAIN_ID_MOCK,
       address: ERC20_TOKEN_ADDRESS_1_MOCK,
       standard: TokenStandard.ERC20,
     });

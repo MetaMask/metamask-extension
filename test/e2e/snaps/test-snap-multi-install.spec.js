@@ -21,32 +21,14 @@ describe('Test Snap Multi Install', function () {
 
         // navigate to test snaps page and multi-install snaps
         await driver.openNewPage(TEST_SNAPS_WEBSITE_URL);
-
-        // wait for page to load
-        await driver.waitForSelector({
-          text: 'Installed Snaps',
-          tag: 'h2',
-        });
-
-        // scroll to multi-install snap
+        await driver.delay(1000);
         const dialogButton = await driver.findElement('#multi-install-connect');
         await driver.scrollToElement(dialogButton);
-
-        // added delay for firefox (deflake)
-        await driver.delayFirefox(1000);
-
-        // wait for and click connect
-        await driver.waitForSelector('#multi-install-connect');
+        await driver.delay(1000);
         await driver.clickElement('#multi-install-connect');
 
-        // switch to metamask extension
+        // switch to metamask extension and click connect
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
-
-        // wait for and click connect
-        await driver.waitForSelector({
-          text: 'Connect',
-          tag: 'button',
-        });
         await driver.clickElement({
           text: 'Connect',
           tag: 'button',
@@ -75,7 +57,7 @@ describe('Test Snap Multi Install', function () {
           '[data-testid="snap-install-warning-modal-confirm"]',
         );
 
-        // wait for and click OK
+        // wait for anc click OK
         await driver.waitForSelector({ text: 'OK' });
         await driver.clickElement({
           text: 'OK',
@@ -108,7 +90,7 @@ describe('Test Snap Multi Install', function () {
           '[data-testid="snap-install-warning-modal-confirm"]',
         );
 
-        // wait for and click OK
+        // wait for anc click OK
         await driver.waitForSelector({ text: 'OK' });
         await driver.clickElement({
           text: 'OK',

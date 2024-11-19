@@ -207,6 +207,23 @@
   "addCustomNetwork": {
     "message": "カスタムネットワークを追加"
   },
+  "addEthereumChainConfirmationDescription": {
+    "message": "これにより、このネットワークはMetaMask内で使用できるようになります。"
+  },
+  "addEthereumChainConfirmationRisks": {
+    "message": "MetaMaskはカスタムネットワークを検証しません。"
+  },
+  "addEthereumChainConfirmationRisksLearnMore": {
+    "message": "$1の詳細。",
+    "description": "$1 is a link with text that is provided by the 'addEthereumChainConfirmationRisksLearnMoreLink' key"
+  },
+  "addEthereumChainConfirmationRisksLearnMoreLink": {
+    "message": "詐欺やネットワークセキュリティのリスク",
+    "description": "Link text for the 'addEthereumChainConfirmationRisksLearnMore' translation key"
+  },
+  "addEthereumChainConfirmationTitle": {
+    "message": "このサイトにネットワークの追加を許可しますか？"
+  },
   "addEthereumChainWarningModalHeader": {
     "message": "このRPCプロバイダーは、確実に信頼できる場合のみ追加してください。$1",
     "description": "$1 is addEthereumChainWarningModalHeaderPartTwo passed separately so that it can be bolded"
@@ -804,6 +821,10 @@
   },
   "buyNow": {
     "message": "今すぐ購入"
+  },
+  "buyToken": {
+    "message": "$1を購入",
+    "description": "$1 is the token symbol"
   },
   "bytes": {
     "message": "バイト"
@@ -1879,6 +1900,13 @@
   "functionType": {
     "message": "機能の種類"
   },
+  "fundYourWallet": {
+    "message": "ウォレットへの入金"
+  },
+  "fundYourWalletDescription": {
+    "message": "ウォレットに$1を追加して開始します。",
+    "description": "$1 is the token symbol"
+  },
   "gas": {
     "message": "ガス"
   },
@@ -1961,6 +1989,14 @@
   },
   "genericExplorerView": {
     "message": "$1でアカウントを表示"
+  },
+  "getStartedWithNFTs": {
+    "message": "$1を入手してNFTを購入",
+    "description": "$1 is the token symbol"
+  },
+  "getStartedWithNFTsDescription": {
+    "message": "ウォレットに$1を追加してNFTの利用を開始します。",
+    "description": "$1 is the token symbol"
   },
   "goBack": {
     "message": "戻る"
@@ -4822,6 +4858,9 @@
     "message": "今後のサポートは、$1の作成者にお問い合わせください。",
     "description": "This is shown when the insight snap throws an error. $1 is the snap name"
   },
+  "someNetworksMayPoseSecurity": {
+    "message": "ネットワークによっては、セキュリティやプライバシーの面でリスクが伴う可能性があります。ネットワークを追加・使用する前にリスクを理解するようにしてください。"
+  },
   "somethingDoesntLookRight": {
     "message": "何か不審な点があれば、$1",
     "description": "A false positive message for users to contact support. $1 is a link to the support page."
@@ -4974,6 +5013,14 @@
   },
   "stake": {
     "message": "ステーク"
+  },
+  "startYourJourney": {
+    "message": "$1で利用開始",
+    "description": "$1 is the token symbol"
+  },
+  "startYourJourneyDescription": {
+    "message": "ウォレットに$1を追加してWeb3の利用を開始します。",
+    "description": "$1 is the token symbol"
   },
   "stateLogError": {
     "message": "ステートログの取得中にエラーが発生しました。"
@@ -5959,6 +6006,9 @@
   },
   "viewActivity": {
     "message": "アクティビティを表示"
+  },
+  "viewAllDetails": {
+    "message": "すべての詳細の表示"
   },
   "viewAllQuotes": {
     "message": "すべてのクォートを表示"

@@ -8,10 +8,6 @@ import {
   unlockWallet,
 } from '../../../helpers';
 import { Driver } from '../../../webdriver/driver';
-import {
-  BlockaidReason,
-  BlockaidResultType,
-} from '../../../../../shared/constants/security-provider';
 
 export const WALLET_ADDRESS = '0x5CfE73b6021E818B776b421B1c4Db2474086a7e1';
 export const WALLET_ETH_BALANCE = '25';
@@ -34,8 +30,6 @@ type AssertSignatureMetricsOptions = {
   location?: string;
   expectedProps?: Record<string, unknown>;
   withAnonEvents?: boolean;
-  securityAlertReason?: string;
-  securityAlertResponse?: string;
 };
 
 type SignatureEventProperty = {
@@ -45,7 +39,7 @@ type SignatureEventProperty = {
   environment_type: 'background';
   locale: 'en';
   security_alert_reason: string;
-  security_alert_response: string;
+  security_alert_response: 'NotApplicable';
   signature_type: string;
   eip712_primary_type?: string;
   ui_customizations?: string[];
@@ -64,15 +58,11 @@ const signatureAnonProperties = {
  * @param signatureType
  * @param primaryType
  * @param uiCustomizations
- * @param securityAlertReason
- * @param securityAlertResponse
  */
 function getSignatureEventProperty(
   signatureType: string,
   primaryType: string,
   uiCustomizations: string[],
-  securityAlertReason: string = BlockaidReason.checkingChain,
-  securityAlertResponse: string = BlockaidResultType.Loading,
 ): SignatureEventProperty {
   const signatureEventProperty: SignatureEventProperty = {
     account_type: 'MetaMask',
@@ -81,8 +71,8 @@ function getSignatureEventProperty(
     chain_id: '0x539',
     environment_type: 'background',
     locale: 'en',
-    security_alert_reason: securityAlertReason,
-    security_alert_response: securityAlertResponse,
+    security_alert_reason: 'NotApplicable',
+    security_alert_response: 'NotApplicable',
     ui_customizations: uiCustomizations,
   };
 
@@ -99,15 +89,15 @@ function assertSignatureRequestedMetrics(
   signatureEventProperty: SignatureEventProperty,
   withAnonEvents = false,
 ) {
-  assertEventPropertiesMatch(
-    events,
-    'Signature Requested',
-    signatureEventProperty,
-  );
+  assertEventPropertiesMatch(events, 'Signature Requested', {
+    ...signatureEventProperty,
+    security_alert_reason: 'NotApplicable',
+  });
 
   if (withAnonEvents) {
     assertEventPropertiesMatch(events, 'Signature Requested Anon', {
       ...signatureEventProperty,
+      security_alert_reason: 'NotApplicable',
       ...signatureAnonProperties,
     });
   }
@@ -120,16 +110,12 @@ export async function assertSignatureConfirmedMetrics({
   primaryType = '',
   uiCustomizations = ['redesigned_confirmation'],
   withAnonEvents = false,
-  securityAlertReason,
-  securityAlertResponse,
 }: AssertSignatureMetricsOptions) {
   const events = await getEventPayloads(driver, mockedEndpoints);
   const signatureEventProperty = getSignatureEventProperty(
     signatureType,
     primaryType,
     uiCustomizations,
-    securityAlertReason,
-    securityAlertResponse,
   );
 
   assertSignatureRequestedMetrics(
@@ -161,16 +147,12 @@ export async function assertSignatureRejectedMetrics({
   location,
   expectedProps = {},
   withAnonEvents = false,
-  securityAlertReason,
-  securityAlertResponse,
 }: AssertSignatureMetricsOptions) {
   const events = await getEventPayloads(driver, mockedEndpoints);
   const signatureEventProperty = getSignatureEventProperty(
     signatureType,
     primaryType,
     uiCustomizations,
-    securityAlertReason,
-    securityAlertResponse,
   );
 
   assertSignatureRequestedMetrics(
@@ -218,42 +200,12 @@ function assertEventPropertiesMatch(
   expectedProperties: object,
 ) {
   const event = events.find((e) => e.event === eventName);
-
-  const actualProperties = { ...event.properties };
-  const expectedProps = { ...expectedProperties };
-
-  compareSecurityAlertResponse(actualProperties, expectedProps, eventName);
-
   assert(event, `${eventName} event not found`);
   assert.deepStrictEqual(
-    actualProperties,
-    expectedProps,
+    event.properties,
+    expectedProperties,
     `${eventName} event properties do not match`,
   );
-}
-
-function compareSecurityAlertResponse(
-  actualProperties: Record<string, unknown>,
-  expectedProperties: Record<string, unknown>,
-  eventName: string,
-) {
-  if (
-    expectedProperties.security_alert_response &&
-    (expectedProperties.security_alert_response === 'loading' ||
-      expectedProperties.security_alert_response === 'Benign')
-  ) {
-    if (
-      actualProperties.security_alert_response !== 'loading' &&
-      actualProperties.security_alert_response !== 'Benign'
-    ) {
-      assert.fail(
-        `${eventName} event properties do not match: security_alert_response is ${actualProperties.security_alert_response}`,
-      );
-    }
-    // Remove the property from both objects to avoid comparison
-    delete actualProperties.security_alert_response;
-    delete expectedProperties.security_alert_response;
-  }
 }
 
 export async function clickHeaderInfoBtn(driver: Driver) {

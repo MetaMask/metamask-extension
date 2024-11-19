@@ -1,3 +1,4 @@
+const { strict: assert } = require('assert');
 const {
   defaultGanacheOptions,
   openMenuSafe,
@@ -27,15 +28,25 @@ describe('Settings', function () {
           '[data-testid="jazz_icon"] .settings-page__content-item__identicon__item__icon--active',
         );
 
-        await driver.waitForSelector({
+        const jazziconText = await driver.findElement({
           tag: 'h6',
           text: 'Jazzicons',
         });
+        assert.equal(
+          await jazziconText.getText(),
+          'Jazzicons',
+          'Text for icon should be Jazzicons',
+        );
 
-        await driver.waitForSelector({
+        const blockiesText = await driver.findElement({
           tag: 'h6',
           text: 'Blockies',
         });
+        assert.equal(
+          await blockiesText.getText(),
+          'Blockies',
+          'Text for icon should be Blockies',
+        );
       },
     );
   });
