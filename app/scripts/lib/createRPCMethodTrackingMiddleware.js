@@ -318,11 +318,13 @@ export default function createRPCMethodTrackingMiddleware({
         }
 
         if (
-          shouldUseRedesignForSignatures(
-            MESSAGE_TYPE_TO_APPROVAL_TYPE[method],
-            isConfirmationRedesignEnabled(),
-            isRedesignedConfirmationsDeveloperEnabled(),
-          )
+          shouldUseRedesignForSignatures({
+            approvalType: MESSAGE_TYPE_TO_APPROVAL_TYPE[method],
+            isRedesignedSignaturesUserSettingEnabled:
+              isConfirmationRedesignEnabled(),
+            isRedesignedConfirmationsDeveloperEnabled:
+              isRedesignedConfirmationsDeveloperEnabled(),
+          })
         ) {
           eventProperties.ui_customizations = [
             ...(eventProperties.ui_customizations || []),

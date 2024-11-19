@@ -35,7 +35,7 @@ export function shouldUseRedesignForTransactions(
   {
     transactionMetadataType,
     isRedesignedTransactionsUserSettingEnabled,
-    isRedesignedConfirmationsDeveloperEnabled
+    isRedesignedConfirmationsDeveloperEnabled,
   }: {
     transactionMetadataType?: TransactionType;
     isRedesignedTransactionsUserSettingEnabled: boolean;
@@ -63,9 +63,15 @@ export function shouldUseRedesignForTransactions(
  * @param isRedesignedConfirmationsDeveloperEnabled - Whether developer mode is enabled
  */
 export function shouldUseRedesignForSignatures(
-  approvalType: ApprovalType,
-  isRedesignedSignaturesUserSettingEnabled: boolean,
-  isRedesignedConfirmationsDeveloperEnabled: boolean,
+  {
+    approvalType,
+    isRedesignedSignaturesUserSettingEnabled,
+    isRedesignedConfirmationsDeveloperEnabled,
+  }: {
+    approvalType?: ApprovalType;
+    isRedesignedSignaturesUserSettingEnabled: boolean;
+    isRedesignedConfirmationsDeveloperEnabled: boolean;
+  },
 ): boolean {
   const isRedesignedConfirmationsDeveloperSettingEnabled =
     process.env.ENABLE_CONFIRMATION_REDESIGN === 'true' ||

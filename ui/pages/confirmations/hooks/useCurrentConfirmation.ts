@@ -56,11 +56,11 @@ const useCurrentConfirmation = () => {
     selectUnapprovedMessage(state, confirmationId),
   );
 
-  const useRedesignedForSignatures = shouldUseRedesignForSignatures(
-    pendingApproval?.type as ApprovalType,
+  const useRedesignedForSignatures = shouldUseRedesignForSignatures({
+    approvalType: pendingApproval?.type as ApprovalType,
     isRedesignedSignaturesUserSettingEnabled,
     isRedesignedConfirmationsDeveloperEnabled,
-  );
+  });
 
   const useRedesignedForTransaction = shouldUseRedesignForTransactions({
     transactionMetadataType: transactionMetadata?.type,

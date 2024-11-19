@@ -144,11 +144,11 @@ describe('confirmation.utils', () => {
     it('should return true for supported approval types when user setting is enabled', () => {
       supportedSignatureApprovalTypes.forEach((approvalType) => {
         expect(
-          shouldUseRedesignForSignatures(
+          shouldUseRedesignForSignatures({
             approvalType,
-            true, // user setting enabled
-            false, // developer setting disabled
-          ),
+            isRedesignedSignaturesUserSettingEnabled: true, // user setting enabled
+            isRedesignedConfirmationsDeveloperEnabled: false, // developer setting disabled
+          }),
         ).toBe(true);
       });
     });
@@ -158,11 +158,11 @@ describe('confirmation.utils', () => {
 
       supportedSignatureApprovalTypes.forEach((approvalType) => {
         expect(
-          shouldUseRedesignForSignatures(
+          shouldUseRedesignForSignatures({
             approvalType,
-            false, // user setting disabled
-            false, // developer setting disabled
-          ),
+            isRedesignedSignaturesUserSettingEnabled: false, // user setting disabled
+            isRedesignedConfirmationsDeveloperEnabled: false, // developer setting disabled
+          }),
         ).toBe(true);
       });
     });
@@ -170,11 +170,11 @@ describe('confirmation.utils', () => {
     it('should return true for supported approval types when developer setting is enabled', () => {
       supportedSignatureApprovalTypes.forEach((approvalType) => {
         expect(
-          shouldUseRedesignForSignatures(
+          shouldUseRedesignForSignatures({
             approvalType,
-            false, // user setting disabled
-            true, // developer setting enabled
-          ),
+            isRedesignedSignaturesUserSettingEnabled: false, // user setting disabled
+            isRedesignedConfirmationsDeveloperEnabled: true, // developer setting enabled
+          }),
         ).toBe(true);
       });
     });
@@ -183,11 +183,11 @@ describe('confirmation.utils', () => {
       const unsupportedApprovalType = ApprovalType.AddEthereumChain;
 
       expect(
-        shouldUseRedesignForSignatures(
-          unsupportedApprovalType,
-          true, // user setting enabled
-          true, // developer setting enabled
-        ),
+        shouldUseRedesignForSignatures({
+          approvalType: unsupportedApprovalType,
+          isRedesignedSignaturesUserSettingEnabled: true, // user setting enabled
+          isRedesignedConfirmationsDeveloperEnabled: true, // developer setting enabled
+        }),
       ).toBe(false);
     });
 
@@ -196,11 +196,11 @@ describe('confirmation.utils', () => {
 
       supportedSignatureApprovalTypes.forEach((approvalType) => {
         expect(
-          shouldUseRedesignForSignatures(
+          shouldUseRedesignForSignatures({
             approvalType,
-            false, // user setting disabled
-            false, // developer setting disabled
-          ),
+            isRedesignedSignaturesUserSettingEnabled: false, // user setting disabled
+            isRedesignedConfirmationsDeveloperEnabled: false, // developer setting disabled
+          }),
         ).toBe(false);
       });
     });
