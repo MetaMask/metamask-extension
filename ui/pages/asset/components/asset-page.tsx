@@ -155,6 +155,14 @@ const AssetPage = ({
       tokenMarketDetails.allTimeHigh > 0 ||
       tokenMarketDetails.allTimeLow > 0);
 
+  // this is needed in order to assign the correct balances to TokenButtons before sending/swapping
+  // without this, the balances we be populated as zero until the user refreshes the screen: https://github.com/MetaMask/metamask-extension/issues/28509
+  asset.balance = {
+    value: '', // decimal value not needed
+    display: String(balance),
+    fiat: String(tokenFiatAmount),
+  };
+
   return (
     <Box
       marginLeft="auto"

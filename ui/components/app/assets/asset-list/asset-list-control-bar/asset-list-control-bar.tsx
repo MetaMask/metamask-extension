@@ -67,6 +67,14 @@ const AssetListControlBar = ({ showTokensLinks }: AssetListControlBarProps) => {
     }
   }, []);
 
+  // When a network gets added/removed we want to make sure that we switch to the filtered list of the current network
+  // We only want to do this if the "Current Network" filter is selected
+  useEffect(() => {
+    if (Object.keys(tokenNetworkFilter).length === 1) {
+      dispatch(setTokenNetworkFilter({ [currentNetwork.chainId]: true }));
+    }
+  }, [Object.keys(allNetworks).length]);
+
   const windowType = getEnvironmentType();
   const isFullScreen =
     windowType !== ENVIRONMENT_TYPE_NOTIFICATION &&
@@ -97,7 +105,9 @@ const AssetListControlBar = ({ showTokensLinks }: AssetListControlBarProps) => {
       <Box
         display={Display.Flex}
         justifyContent={
-          isFullScreen ? JustifyContent.flexStart : JustifyContent.spaceBetween
+          process.env.PORTFOLIO_VIEW
+            ? JustifyContent.spaceBetween
+            : JustifyContent.flexEnd
         }
       >
         {process.env.PORTFOLIO_VIEW && (

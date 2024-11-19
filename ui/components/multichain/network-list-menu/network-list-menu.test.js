@@ -136,6 +136,10 @@ const render = ({
       selectedNetworkClientId: NETWORK_TYPES.MAINNET,
       preferences: {
         showTestNetworks,
+        tokenNetworkFilter: {
+          [CHAIN_IDS.MAINNET]: true,
+          [CHAIN_IDS.LINEA_MAINNET]: true,
+        },
       },
       useRequestQueue: true,
       domains: {
