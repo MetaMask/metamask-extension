@@ -35,7 +35,7 @@ import { pendingConfirmationsSortedSelector } from '../../../../../selectors';
 import { rejectPendingApproval } from '../../../../../store/actions';
 import { useConfirmContext } from '../../../context/confirm';
 import { useQueuedConfirmationsEvent } from '../../../hooks/useQueuedConfirmationEvents';
-import { isCorrectSignatureApprovalType } from '../../../../../../shared/modules/confirmation.utils';
+import { isCorrectSignatureApprovalType } from '../../../../../../shared/lib/confirmation.utils';
 
 const Nav = () => {
   const history = useHistory();

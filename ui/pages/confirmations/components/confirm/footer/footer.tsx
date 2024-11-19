@@ -40,7 +40,7 @@ import { getConfirmationSender } from '../utils';
 import { MetaMetricsEventLocation } from '../../../../../../shared/constants/metametrics';
 import { Alert } from '../../../../../ducks/confirm-alerts/confirm-alerts';
 import { Severity } from '../../../../../helpers/constants/design-system';
-import { isCorrectDeveloperTransactionType } from '../../../../../../shared/modules/confirmation.utils';
+import { isCorrectDeveloperTransactionType } from '../../../../../../shared/lib/confirmation.utils';
 
 export type OnCancelHandler = ({
   location,

@@ -48,7 +48,7 @@ import {
   getSnapAndHardwareInfoForMetrics,
   type SnapAndHardwareMessenger,
 } from '../snap-keyring/metrics';
-import { shouldUseRedesignForTransactions } from '../../../../shared/modules/confirmation.utils';
+import { shouldUseRedesignForTransactions } from '../../../../shared/lib/confirmation.utils';
 
 export type TransactionMetricsRequest = {
   createEventFragment: (

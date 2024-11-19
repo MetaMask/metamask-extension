@@ -42,7 +42,7 @@ import { useBalance } from '../../../hooks/useBalance';
 import useConfirmationRecipientInfo from '../../../hooks/useConfirmationRecipientInfo';
 import { SignatureRequestType } from '../../../types/confirm';
 import { isSignatureTransactionType } from '../../../utils/confirm';
-import { isCorrectDeveloperTransactionType } from '../../../../../../shared/modules/confirmation.utils';
+import { isCorrectDeveloperTransactionType } from '../../../../../../shared/lib/confirmation.utils';
 import { AdvancedDetailsButton } from './advanced-details-button';
 
 const HeaderInfo = () => {

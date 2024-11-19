@@ -19,7 +19,7 @@ import { selectUnapprovedMessage } from '../../../selectors/signatures';
 import {
   shouldUseRedesignForSignatures,
   shouldUseRedesignForTransactions,
-} from '../../../../shared/modules/confirmation.utils';
+} from '../../../../shared/lib/confirmation.utils';
 
 /**
  * Determine the current confirmation based on the pending approvals and controller state.

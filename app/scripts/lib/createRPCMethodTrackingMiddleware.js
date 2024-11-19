@@ -27,7 +27,7 @@ import {
 } from '../../../ui/helpers/utils/metrics';
 // TODO: Remove restricted import
 // eslint-disable-next-line import/no-restricted-paths
-import { shouldUseRedesignForSignatures } from '../../../shared/modules/confirmation.utils';
+import { shouldUseRedesignForSignatures } from '../../../shared/lib/confirmation.utils';
 import { getSnapAndHardwareInfoForMetrics } from './snap-keyring/metrics';
 
 /**

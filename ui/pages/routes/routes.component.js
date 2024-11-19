@@ -117,7 +117,7 @@ import { ToastMaster } from '../../components/app/toast-master/toast-master';
 import {
   isCorrectDeveloperTransactionType,
   isCorrectSignatureApprovalType,
-} from '../../../shared/modules/confirmation.utils';
+} from '../../../shared/lib/confirmation.utils';
 import {
   getConnectingLabel,
   hideAppHeader,
