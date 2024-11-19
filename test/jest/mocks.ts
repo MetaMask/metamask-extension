@@ -194,9 +194,7 @@ export function createMockInternalAccount({
     name: string;
     id: string;
   };
-  options?: {
-    scope: string;
-  };
+  options?: Record<string, unknown>;
 } = {}) {
   let methods;
 

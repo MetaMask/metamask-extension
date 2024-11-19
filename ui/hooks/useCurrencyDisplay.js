@@ -66,8 +66,19 @@ function formatEthCurrencyDisplay({
   return null;
 }
 
+function getTokenSymbolFrom(account) {
+  switch (account.type) {
+    case BtcAccountType.P2wpkh:
+      return NON_EVM_CURRENCY_SYMBOLS.BTC;
+    case SolAccountType.DataAccount:
+      return NON_EVM_CURRENCY_SYMBOLS.SOL;
+    default:
+      throw new Error(`Unsupported account type: ${account.type}`);
+  }
+}
+
 function formatNonEvmAssetCurrencyDisplay({
-  nonEvmAsset,
+  tokenSymbol,
   isNativeCurrency,
   isUserPreferredCurrency,
   currency,
@@ -84,17 +95,13 @@ function formatNonEvmAssetCurrencyDisplay({
     // `Numeric` constructor for that)
     return new Numeric(inputValue, 10).toString();
   } else if (isUserPreferredCurrency && conversionRate) {
-    const nonEvmAssetSymbol =
-      nonEvmAsset === BtcAccountType.P2wpkh
-        ? NON_EVM_CURRENCY_SYMBOLS.BTC
-        : NON_EVM_CURRENCY_SYMBOLS.SOL;
     const amount =
       getTokenFiatAmount(
         1, // coin to native conversion rate is 1:1
         Number(conversionRate), // native to fiat conversion rate
         currentCurrency,
         inputValue,
-        nonEvmAssetSymbol,
+        tokenSymbol,
         false,
         false,
       ) ?? '0'; // if the conversion fails, return 0
@@ -172,7 +179,7 @@ export function useCurrencyDisplay(
 
     if (!isEvm && account) {
       return formatNonEvmAssetCurrencyDisplay({
-        nonEvmAsset: account.type,
+        tokenSymbol: getTokenSymbolFrom(account),
         isNativeCurrency,
         isUserPreferredCurrency,
         currency,

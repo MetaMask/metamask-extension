@@ -25,7 +25,7 @@ import type {
   AccountsControllerListMultichainAccountsAction,
 } from '@metamask/accounts-controller';
 import { MultichainNetworks } from '../../../../shared/constants/multichain/networks';
-import { MultichainNativeAssets } from '../../../../shared/constants/multichain/assets';
+import { NETWORK_ASSET_MAP } from '../../../../shared/constants/multichain/assets';
 import {
   isBtcMainnetAddress,
   isBtcTestnetAddress,
@@ -264,30 +264,8 @@ export class BalancesController extends BaseController<
     const partialState: BalancesControllerState = { balances: {} };
 
     if (account.metadata.snap) {
-      const assetMap = {
-        [MultichainNetworks.SOLANA]: MultichainNativeAssets.SOLANA,
-        [MultichainNetworks.SOLANA_TESTNET]:
-          MultichainNativeAssets.SOLANA_TESTNET,
-        [MultichainNetworks.SOLANA_DEVNET]:
-          MultichainNativeAssets.SOLANA_DEVNET,
-        [MultichainNetworks.BITCOIN]: MultichainNativeAssets.BITCOIN,
-        [MultichainNetworks.BITCOIN_TESTNET]:
-          MultichainNativeAssets.BITCOIN_TESTNET,
-      };
-
-      let scope = account.options.scope as keyof typeof assetMap;
-
-      // For Bitcoin accounts, override the scope based on the address format
-      // For solana we know we have a scope, but for bitcoin we are not sure
-      if (account.type === BtcAccountType.P2wpkh) {
-        if (isBtcMainnetAddress(account.address)) {
-          scope = MultichainNetworks.BITCOIN;
-        } else if (isBtcTestnetAddress(account.address)) {
-          scope = MultichainNetworks.BITCOIN_TESTNET;
-        }
-      }
-
-      const assetTypes = [assetMap[scope]];
+      const scope = this.#getScopeFrom(account);
+      const assetTypes = NETWORK_ASSET_MAP[scope];
 
       partialState.balances[account.id] = await this.#getBalances(
         account.id,
@@ -419,5 +397,35 @@ export class BalancesController extends BaseController<
           request,
         })) as Promise<Json>,
     });
+  }
+
+  /**
+   * Gets the network scope for a given account.
+   *
+   * @param account - The account to get the scope for.
+   * @returns The network scope for the account.
+   * @throws If the account type is unknown or unsupported.
+   */
+  #getScopeFrom(account: InternalAccount): MultichainNetworks {
+    // TODO: Use the new `account.scopes` once available in the `keyring-api`.
+
+    // For Bitcoin accounts, we get the scope based on the address format.
+    if (account.type === BtcAccountType.P2wpkh) {
+      if (isBtcMainnetAddress(account.address)) {
+        return MultichainNetworks.BITCOIN;
+      } else if (isBtcTestnetAddress(account.address)) {
+        return MultichainNetworks.BITCOIN_TESTNET;
+      }
+    }
+
+    // For Solana accounts, we know we have a `scope` on the account's `options` bag.
+    if (account.type === SolAccountType.DataAccount) {
+      if (!account.options.scope) {
+        throw new Error('Solana account scope is undefined');
+      }
+      return account.options.scope as MultichainNetworks;
+    }
+
+    throw new Error(`Unsupported non-EVM account type: ${account.type}`);
   }
 }

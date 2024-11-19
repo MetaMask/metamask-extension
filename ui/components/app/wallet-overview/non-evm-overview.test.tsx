@@ -131,7 +131,7 @@ describe('NonEvmOverview', () => {
     setBackgroundConnection({ setBridgeFeatureFlags: jest.fn() } as never);
   });
 
-  it('shows the primary balance as BTC when showNativeTokenAsMainBalance if true', async () => {
+  it('shows the primary balance using the native token when showNativeTokenAsMainBalance if true', async () => {
     const { queryByTestId } = renderWithProvider(
       <NonEvmOverview />,
       getStore(),

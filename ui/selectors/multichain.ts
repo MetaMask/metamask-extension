@@ -14,6 +14,7 @@ import {
   MultichainProviderConfig,
   MULTICHAIN_PROVIDER_CONFIGS,
   MultichainNetworks,
+  MULTICHAIN_ACCOUNT_TYPE_TO_MAINNET,
 } from '../../shared/constants/multichain/networks';
 import {
   getCompletedOnboarding,
@@ -24,7 +25,7 @@ import {
 // TODO: Remove restricted import
 // eslint-disable-next-line import/no-restricted-paths
 import { BalancesControllerState } from '../../app/scripts/lib/accounts/BalancesController';
-import { MultichainNativeAssets } from '../../shared/constants/multichain/assets';
+import { NETWORK_ASSET_MAP } from '../../shared/constants/multichain/assets';
 import {
   CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP,
   TEST_NETWORK_IDS,
@@ -337,14 +338,10 @@ export function getMultichainIsMainnet(
     return getIsMainnet(state);
   }
 
-  const mainnetMap = {
-    [SolAccountType.DataAccount]:
-      providerConfig.chainId === MultichainNetworks.SOLANA,
-    [BtcAccountType.P2wpkh]:
-      providerConfig.chainId === MultichainNetworks.BITCOIN,
-  };
-
-  return mainnetMap[selectedAccount.type as keyof typeof mainnetMap] ?? false;
+  const mainnet = (
+    MULTICHAIN_ACCOUNT_TYPE_TO_MAINNET as Record<string, string>
+  )[selectedAccount.type];
+  return providerConfig.chainId === mainnet ?? false;
 }
 
 export function getMultichainIsTestnet(
@@ -382,16 +379,7 @@ function getNonEvmCachedBalance(state: MultichainState) {
   const account = getSelectedInternalAccount(state);
   const network = getMultichainCurrentNetwork(state);
 
-  const assetMap = {
-    [MultichainNetworks.SOLANA]: MultichainNativeAssets.SOLANA,
-    [MultichainNetworks.SOLANA_TESTNET]: MultichainNativeAssets.SOLANA_TESTNET,
-    [MultichainNetworks.SOLANA_DEVNET]: MultichainNativeAssets.SOLANA_DEVNET,
-    [MultichainNetworks.BITCOIN]: MultichainNativeAssets.BITCOIN,
-    [MultichainNetworks.BITCOIN_TESTNET]:
-      MultichainNativeAssets.BITCOIN_TESTNET,
-  };
-
-  const asset = assetMap[network.chainId as keyof typeof assetMap];
+  const asset = NETWORK_ASSET_MAP[network.chainId as MultichainNetworks]?.[0];
 
   return balances?.[account.id]?.[asset]?.amount;
 }
