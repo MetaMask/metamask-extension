@@ -14,7 +14,7 @@ type ArrangeMocksMetamaskStateOverrides = {
   isUnlocked?: boolean;
   useExternalServices?: boolean;
   completedOnboarding?: boolean;
-  hasFinishedAddingAccountsWithBalance?: boolean;
+  isAccountSyncingReadyToBeDispatched?: boolean;
 };
 
 const initialMetamaskState: ArrangeMocksMetamaskStateOverrides = {
@@ -23,7 +23,7 @@ const initialMetamaskState: ArrangeMocksMetamaskStateOverrides = {
   isUnlocked: true,
   useExternalServices: true,
   completedOnboarding: true,
-  hasFinishedAddingAccountsWithBalance: true,
+  isAccountSyncingReadyToBeDispatched: true,
 };
 
 const arrangeMockState = (
@@ -91,7 +91,7 @@ describe('useShouldDispatchProfileSyncing()', () => {
       'isUnlocked',
       'useExternalServices',
       'completedOnboarding',
-      'hasFinishedAddingAccountsWithBalance',
+      'isAccountSyncingReadyToBeDispatched',
     ] as const;
     const baseState = {
       isSignedIn: true,
@@ -99,7 +99,7 @@ describe('useShouldDispatchProfileSyncing()', () => {
       isUnlocked: true,
       useExternalServices: true,
       completedOnboarding: true,
-      hasFinishedAddingAccountsWithBalance: true,
+      isAccountSyncingReadyToBeDispatched: true,
     };
 
     const failureStateCases: {
