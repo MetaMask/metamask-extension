@@ -287,14 +287,18 @@ export const NetworkListMenu = ({ onClose }: { onClose: () => void }) => {
           dispatch(toggleNetworkMenu());
           dispatch(updateCustomNonce(''));
           dispatch(setNextNonce(''));
+          console.log('Nidhi', tokenNetworkFilter, allOpts);
 
           // as a user, I don't want my network selection to force update my filter when I have "All Networks" toggled on
           // however, if I am already filtered on "Current Network", we'll want to filter by the selected network when the network changes
           if (Object.keys(tokenNetworkFilter).length <= 1) {
+            console.log('test 1');
             dispatch(setTokenNetworkFilter({ [network.chainId]: true }));
           } else {
+            console.log('test 2');
             dispatch(setTokenNetworkFilter(allOpts));
           }
+          console.log('nick');
 
           if (permittedAccountAddresses.length > 0) {
             grantPermittedChain(selectedTabOrigin, network.chainId);
