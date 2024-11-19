@@ -598,7 +598,7 @@ export const getCrossChainTokenExchangeRates = (state) => {
   return Object.keys(contractMarketData).reduce((acc, topLevelKey) => {
     acc[topLevelKey] = Object.keys(contractMarketData[topLevelKey]).reduce(
       (innerAcc, innerKey) => {
-        innerAcc[innerKey] = contractMarketData[topLevelKey][innerKey].price;
+        innerAcc[innerKey] = contractMarketData[topLevelKey][innerKey]?.price;
         return innerAcc;
       },
       {},
