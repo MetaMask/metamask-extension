@@ -452,6 +452,7 @@ export default class Routes extends Component {
     });
     const shouldShowNetworkInfo =
       isUnlocked &&
+      account &&
       isCurrentChainCompatibleWithAccount(currentChainId, account) &&
       !isTestNet &&
       !isSendRoute &&
