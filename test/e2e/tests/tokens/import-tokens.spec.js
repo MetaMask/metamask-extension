@@ -69,6 +69,7 @@ describe('Import flow', function () {
         await driver.assertElementNotPresent('.loading-overlay');
 
         await driver.clickElement('[data-testid="import-token-button"]');
+        await driver.clickElement('[data-testid="importTokens"]');
 
         await driver.fill('input[placeholder="Search tokens"]', 'cha');
 
