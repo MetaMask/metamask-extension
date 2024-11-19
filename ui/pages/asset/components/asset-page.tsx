@@ -27,6 +27,7 @@ import {
   Box,
   ButtonIcon,
   ButtonIconSize,
+  ButtonLink,
   IconName,
   Text,
 } from '../../../components/component-library';
@@ -283,16 +284,14 @@ const AssetPage = ({
                 )}
                 {renderRow(
                   t('spendingCaps'),
-                  <Text
-                    as="a"
-                    color={TextColor.primaryDefault}
+                  <ButtonLink
                     className="asset-page__spending-caps mm-text--body-md-medium"
                     href={portfolioSpendingCapsUrl}
                     target="_blank"
                     rel="noopener noreferrer"
                   >
                     {t('editInPortfolio')}
-                  </Text>,
+                  </ButtonLink>,
                 )}
               </Box>
             </Box>
