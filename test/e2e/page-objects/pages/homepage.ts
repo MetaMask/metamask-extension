@@ -356,7 +356,7 @@ class HomePage {
   async check_hasAccountSyncingSyncedAtLeastOnce(): Promise<void> {
     console.log('Check if account syncing has synced at least once');
     await this.driver.wait(async () => {
-      const uiState = await getCleanAppState();
+      const uiState = await getCleanAppState(this.driver);
       return uiState.metamask.hasAccountSyncingSyncedAtLeastOnce === true;
     }, 10000);
   }
