@@ -109,6 +109,15 @@ describe('Add existing token using search', function () {
       {
         fixtures: new FixtureBuilder({ inputChainId: CHAIN_IDS.BSC })
           .withPreferencesController({ useTokenDetection: true })
+          .withTokenListController({
+            tokenList: [
+              {
+                name: 'Basic Attention Token',
+                symbol: 'BAT',
+                address: '0x0d8775f648430679a709e98d2b0cb6250d2887ef',
+              },
+            ],
+          })
           .build(),
         ganacheOptions: {
           ...defaultGanacheOptions,
@@ -120,7 +129,7 @@ describe('Add existing token using search', function () {
       async ({ driver }) => {
         await unlockWallet(driver);
 
-        await driver.clickElement({ text: 'Import', tag: 'button' });
+        await driver.clickElement(`[data-testid="import-token-button"]`);
         await driver.fill('input[placeholder="Search tokens"]', 'BAT');
         await driver.clickElement({
           text: 'BAT',

@@ -23,7 +23,6 @@ import {
 } from '../../../../../../helpers/constants/design-system';
 import { useConfirmContext } from '../../../../context/confirm';
 import { useDecodedTransactionData } from '../hooks/useDecodedTransactionData';
-import { ConfirmLoader } from '../shared/confirm-loader/confirm-loader';
 import { ConfirmInfoAlertRow } from '../../../../../../components/app/confirm/info/row/alert-row/alert-row';
 import { RowAlertKey } from '../../../../../../components/app/confirm/info/row/constants';
 import { useI18nContext } from '../../../../../../hooks/useI18nContext';
@@ -45,7 +44,7 @@ export const TransactionFlowSection = () => {
         addresses?.[addresses.length - 1].value;
 
   if (pending) {
-    return <ConfirmLoader />;
+    return null;
   }
 
   const { chainId } = transactionMeta;
