@@ -10,6 +10,7 @@ import {
   FlexWrap,
   TextVariant,
 } from '../../../helpers/constants/design-system';
+import NumberFlow from '@number-flow/react';
 
 /* eslint-disable jsdoc/require-param-name */
 // eslint-disable-next-line jsdoc/require-param
@@ -79,7 +80,11 @@ export default function CurrencyDisplay({
         {...textProps}
       >
         {parts.prefix}
-        {parts.value}
+        $
+        <NumberFlow
+          value={Number(parts.value.replace(/[^0-9.-]/g, ''))}
+          trend={false}
+        />
       </SensitiveText>
       {parts.suffix ? (
         <SensitiveText
