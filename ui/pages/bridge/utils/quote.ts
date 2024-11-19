@@ -55,7 +55,9 @@ export const calcToAmount = (
   );
   return {
     raw: normalizedDestAmount,
-    fiat: exchangeRate ? normalizedDestAmount.mul(exchangeRate) : null,
+    fiat: exchangeRate
+      ? normalizedDestAmount.mul(exchangeRate.toString())
+      : null,
   };
 };
 
@@ -94,7 +96,7 @@ const calcRelayerFee = (
   return {
     raw: relayerFeeInNative,
     fiat: nativeExchangeRate
-      ? relayerFeeInNative.mul(nativeExchangeRate)
+      ? relayerFeeInNative.mul(nativeExchangeRate.toString())
       : null,
   };
 };
@@ -129,7 +131,7 @@ const calcTotalGasFee = (
     gasFeesInDecGwei.shiftedBy(9).toString(),
   );
   const gasFeesInUSD = nativeExchangeRate
-    ? gasFeesInDecEth.times(nativeExchangeRate)
+    ? gasFeesInDecEth.times(nativeExchangeRate.toString())
     : null;
 
   return {
