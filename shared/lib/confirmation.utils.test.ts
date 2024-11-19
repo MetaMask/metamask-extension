@@ -25,22 +25,22 @@ describe('confirmation.utils', () => {
       it('should return true for supported transaction types', () => {
         supportedTransactionTypes.forEach((transactionType) => {
           expect(
-            shouldUseRedesignForTransactions(
-              transactionType,
-              true, // user setting enabled
-              false, // developer mode disabled
-            ),
+            shouldUseRedesignForTransactions({
+              transactionMetadataType: transactionType,
+              isRedesignedTransactionsUserSettingEnabled: true, // user setting enabled
+              isRedesignedConfirmationsDeveloperEnabled: false, // developer mode disabled
+            }),
           ).toBe(true);
         });
       });
 
       it('should return false for unsupported transaction types', () => {
         expect(
-          shouldUseRedesignForTransactions(
-            unsupportedTransactionType,
-            true, // user setting enabled
-            false, // developer mode disabled
-          ),
+          shouldUseRedesignForTransactions({
+            transactionMetadataType: unsupportedTransactionType,
+            isRedesignedTransactionsUserSettingEnabled: true, // user setting enabled
+            isRedesignedConfirmationsDeveloperEnabled: false, // developer mode disabled
+          }),
         ).toBe(false);
       });
     });
@@ -61,11 +61,11 @@ describe('confirmation.utils', () => {
 
         supportedTransactionTypes.forEach((transactionType) => {
           expect(
-            shouldUseRedesignForTransactions(
-              transactionType,
-              false, // user setting disabled
-              false, // developer setting disabled
-            ),
+            shouldUseRedesignForTransactions({
+              transactionMetadataType: transactionType,
+              isRedesignedTransactionsUserSettingEnabled: false, // user setting disabled
+              isRedesignedConfirmationsDeveloperEnabled: false, // developer setting disabled
+            }),
           ).toBe(true);
         });
       });
@@ -73,11 +73,11 @@ describe('confirmation.utils', () => {
       it('should return true for supported transaction types when developer setting is enabled', () => {
         supportedTransactionTypes.forEach((transactionType) => {
           expect(
-            shouldUseRedesignForTransactions(
-              transactionType,
-              false, // user setting disabled
-              true, // developer setting enabled
-            ),
+            shouldUseRedesignForTransactions({
+              transactionMetadataType: transactionType,
+              isRedesignedTransactionsUserSettingEnabled: false, // user setting disabled
+              isRedesignedConfirmationsDeveloperEnabled: true, // developer setting enabled
+            }),
           ).toBe(true);
         });
       });
@@ -86,11 +86,11 @@ describe('confirmation.utils', () => {
         process.env.ENABLE_CONFIRMATION_REDESIGN = 'true';
 
         expect(
-          shouldUseRedesignForTransactions(
-            unsupportedTransactionType,
-            false, // user setting disabled
-            true, // developer setting enabled
-          ),
+          shouldUseRedesignForTransactions({
+            transactionMetadataType: unsupportedTransactionType,
+            isRedesignedTransactionsUserSettingEnabled: false, // user setting disabled
+            isRedesignedConfirmationsDeveloperEnabled: true, // developer setting enabled
+      }),
         ).toBe(false);
       });
     });
@@ -111,11 +111,11 @@ describe('confirmation.utils', () => {
         [...supportedTransactionTypes, unsupportedTransactionType].forEach(
           (transactionType) => {
             expect(
-              shouldUseRedesignForTransactions(
-                transactionType,
-                false, // user setting disabled
-                false, // developer setting disabled
-              ),
+              shouldUseRedesignForTransactions({
+                transactionMetadataType: transactionType,
+                isRedesignedTransactionsUserSettingEnabled: false, // user setting disabled
+                isRedesignedConfirmationsDeveloperEnabled: false, // developer setting disabled
+              }),
             ).toBe(false);
           },
         );

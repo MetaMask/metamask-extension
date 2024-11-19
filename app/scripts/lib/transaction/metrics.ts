@@ -993,11 +993,13 @@ async function buildEventFragmentProperties({
     uiCustomizations.push(MetaMetricsEventUiCustomization.GasEstimationFailed);
   }
 
-  const isRedesignedForTransaction = shouldUseRedesignForTransactions(
-    transactionMeta.type as TransactionType,
-    transactionMetricsRequest.getRedesignedTransactionsEnabled(),
-    transactionMetricsRequest.getIsRedesignedConfirmationsDeveloperEnabled(),
-  );
+  const isRedesignedForTransaction = shouldUseRedesignForTransactions({
+    transactionMetadataType: transactionMeta.type as TransactionType,
+    isRedesignedTransactionsUserSettingEnabled:
+      transactionMetricsRequest.getRedesignedTransactionsEnabled(),
+    isRedesignedConfirmationsDeveloperEnabled:
+      transactionMetricsRequest.getIsRedesignedConfirmationsDeveloperEnabled(),
+  });
   if (isRedesignedForTransaction) {
     uiCustomizations.push(
       MetaMetricsEventUiCustomization.RedesignedConfirmation,

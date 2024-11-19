@@ -1,8 +1,5 @@
 import { ApprovalType } from '@metamask/controller-utils';
-import {
-  TransactionMeta,
-  TransactionType,
-} from '@metamask/transaction-controller';
+import { TransactionMeta } from '@metamask/transaction-controller';
 import { useMemo } from 'react';
 import { useSelector } from 'react-redux';
 import { useParams } from 'react-router-dom';
@@ -65,11 +62,11 @@ const useCurrentConfirmation = () => {
     isRedesignedConfirmationsDeveloperEnabled,
   );
 
-  const useRedesignedForTransaction = shouldUseRedesignForTransactions(
-    transactionMetadata?.type as TransactionType,
+  const useRedesignedForTransaction = shouldUseRedesignForTransactions({
+    transactionMetadataType: transactionMetadata?.type,
     isRedesignedTransactionsUserSettingEnabled,
     isRedesignedConfirmationsDeveloperEnabled,
-  );
+  });
 
   const shouldUseRedesign =
     useRedesignedForSignatures || useRedesignedForTransaction;
