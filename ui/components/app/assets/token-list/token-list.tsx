@@ -9,6 +9,7 @@ import {
   Display,
   JustifyContent,
 } from '../../../../helpers/constants/design-system';
+import { TEST_CHAINS } from '../../../../../shared/constants/network';
 import { sortAssets } from '../util/sort';
 import {
   getCurrencyRates,
@@ -17,7 +18,6 @@ import {
   getPreferences,
   getSelectedAccount,
   getSelectedAccountNativeTokenCachedBalanceByChainId,
-  getSelectedAccountTokenBalancesAcrossChains,
   getSelectedAccountTokensAcrossChains,
   getTokenExchangeRates,
 } from '../../../../selectors';
@@ -26,6 +26,7 @@ import { filterAssets } from '../util/filter';
 import { calculateTokenBalance } from '../util/calculateTokenBalance';
 import { calculateTokenFiatAmount } from '../util/calculateTokenFiatAmount';
 import { endTrace, TraceName } from '../../../../../shared/lib/trace';
+import { useTokenBalances } from '../../../../hooks/useTokenBalances';
 
 type TokenListProps = {
   onTokenClick: (chainId: string, address: string) => void;
@@ -54,6 +55,28 @@ export type ChainAddressMarketData = Record<
   Record<Hex, Record<string, string | number>>
 >;
 
+const useFilteredAccountTokens = (currentNetwork: { chainId: string }) => {
+  const isTestNetwork = useMemo(() => {
+    return (TEST_CHAINS as string[]).includes(currentNetwork.chainId);
+  }, [currentNetwork.chainId, TEST_CHAINS]);
+
+  const selectedAccountTokensChains: Record<string, Token[]> = useSelector(
+    getSelectedAccountTokensAcrossChains,
+  ) as Record<string, Token[]>;
+
+  const filteredAccountTokensChains = useMemo(() => {
+    return Object.fromEntries(
+      Object.entries(selectedAccountTokensChains).filter(([chainId]) =>
+        isTestNetwork
+          ? (TEST_CHAINS as string[]).includes(chainId)
+          : !(TEST_CHAINS as string[]).includes(chainId),
+      ),
+    );
+  }, [selectedAccountTokensChains, isTestNetwork, TEST_CHAINS]);
+
+  return filteredAccountTokensChains;
+};
+
 export default function TokenList({ onTokenClick }: TokenListProps) {
   const t = useI18nContext();
   const currentNetwork = useSelector(getCurrentNetwork);
@@ -65,15 +88,11 @@ export default function TokenList({ onTokenClick }: TokenListProps) {
     getTokenExchangeRates,
     shallowEqual,
   );
+  const selectedAccountTokensChains = useFilteredAccountTokens(currentNetwork);
 
-  const selectedAccountTokensChains: Record<Hex, Token[]> = useSelector(
-    getSelectedAccountTokensAcrossChains,
-  ) as Record<Hex, Token[]>;
-
-  const selectedAccountTokenBalancesAcrossChains: AddressBalanceMapping =
-    useSelector(
-      getSelectedAccountTokenBalancesAcrossChains,
-    ) as AddressBalanceMapping;
+  const { tokenBalances } = useTokenBalances();
+  const selectedAccountTokenBalancesAcrossChains =
+    tokenBalances[selectedAccount.address];
 
   const marketData: ChainAddressMarketData = useSelector(
     getMarketData,

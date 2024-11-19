@@ -1,25 +1,21 @@
-const { strict: assert } = require('assert');
-const {
-  defaultGanacheOptions,
-  withFixtures,
-  onboardingBeginCreateNewWallet,
-  onboardingChooseMetametricsOption,
-  getEventPayloads,
-  tinyDelayMs,
-} = require('../../helpers');
-const FixtureBuilder = require('../../fixture-builder');
+import { strict as assert } from 'assert';
+import { Mockttp } from 'mockttp';
+import { getEventPayloads, withFixtures } from '../../helpers';
+import FixtureBuilder from '../../fixture-builder';
+import OnboardingMetricsPage from '../../page-objects/pages/onboarding/onboarding-metrics-page';
+import StartOnboardingPage from '../../page-objects/pages/onboarding/start-onboarding-page';
 
 /**
- * mocks the segment api multiple times for specific payloads that we expect to
- * see when these tests are run. In this case we are looking for
+ * Mocks the segment API multiple times for specific payloads that we expect to
+ * see when these tests are run. In this case, we are looking for
  * 'App Installed'. Do not use the constants from the metrics constants files,
  * because if these change we want a strong indicator to our data team that the
  * shape of data will change.
  *
- * @param {import('mockttp').Mockttp} mockServer
- * @returns {Promise<import('mockttp/dist/pluggable-admin').MockttpClientResponse>[]}
+ * @param mockServer - The mock server instance.
+ * @returns
  */
-async function mockSegment(mockServer) {
+async function mockSegment(mockServer: Mockttp) {
   return [
     await mockServer
       .forPost('https://api.segment.io/v1/batch')
@@ -44,15 +40,19 @@ describe('App Installed Events @no-mmi', function () {
             participateInMetaMetrics: true,
           })
           .build(),
-        ganacheOptions: defaultGanacheOptions,
-        title: this.test.fullTitle(),
+        title: this.test?.fullTitle(),
         testSpecificMock: mockSegment,
       },
       async ({ driver, mockedEndpoint: mockedEndpoints }) => {
         await driver.navigate();
-        await driver.delay(tinyDelayMs);
-        await onboardingBeginCreateNewWallet(driver);
-        await onboardingChooseMetametricsOption(driver, true);
+        const startOnboardingPage = new StartOnboardingPage(driver);
+        await startOnboardingPage.check_pageIsLoaded();
+        await startOnboardingPage.checkTermsCheckbox();
+        await startOnboardingPage.clickCreateWalletButton();
+
+        const onboardingMetricsPage = new OnboardingMetricsPage(driver);
+        await onboardingMetricsPage.check_pageIsLoaded();
+        await onboardingMetricsPage.clickIAgreeButton();
 
         const events = await getEventPayloads(driver, mockedEndpoints);
         assert.equal(events.length, 1);
@@ -74,14 +74,19 @@ describe('App Installed Events @no-mmi', function () {
             metaMetricsId: 'fake-metrics-id',
           })
           .build(),
-        defaultGanacheOptions,
-        title: this.test.fullTitle(),
+        title: this.test?.fullTitle(),
         testSpecificMock: mockSegment,
       },
       async ({ driver, mockedEndpoint: mockedEndpoints }) => {
         await driver.navigate();
-        await onboardingBeginCreateNewWallet(driver);
-        await onboardingChooseMetametricsOption(driver, false);
+        const startOnboardingPage = new StartOnboardingPage(driver);
+        await startOnboardingPage.check_pageIsLoaded();
+        await startOnboardingPage.checkTermsCheckbox();
+        await startOnboardingPage.clickCreateWalletButton();
+
+        const onboardingMetricsPage = new OnboardingMetricsPage(driver);
+        await onboardingMetricsPage.check_pageIsLoaded();
+        await onboardingMetricsPage.clickNoThanksButton();
 
         const mockedRequests = await getEventPayloads(
           driver,

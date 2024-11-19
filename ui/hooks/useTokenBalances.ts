@@ -25,9 +25,9 @@ export const useTokenBalances = ({ chainIds }: { chainIds?: Hex[] } = {}) => {
 };
 
 // This hook is designed for backwards compatibility with `ui/hooks/useTokenTracker.js`
-// and the github.com/MetaMask/eth-token-tracker library. It replaces RPC
-// calls with reading state from `TokenBalancesController`. New code may prefer
-// to use `useTokenBalances` directly, or compose higher level hooks from it.
+// and the github.com/MetaMask/eth-token-tracker library. It replaces RPC calls with
+// reading state from `TokenBalancesController`. It should not be used in new code.
+// Instead, prefer to use `useTokenBalances` directly, or compose higher level hooks from it.
 export const useTokenTracker = ({
   chainId,
   tokens,
@@ -51,6 +51,7 @@ export const useTokenTracker = ({
         symbol: token.symbol,
         decimals: token.decimals,
         balance: decimalBalance,
+        balanceError: null,
         string: stringifyBalance(
           new BN(decimalBalance),
           new BN(token.decimals),
@@ -58,7 +59,7 @@ export const useTokenTracker = ({
       });
     }
     return acc;
-  }, [] as (Token & { balance: string; string: string })[]);
+  }, [] as (Token & { balance: string; string: string; balanceError: unknown })[]);
 
   return {
     tokensWithBalances,
@@ -70,7 +71,7 @@ export const useTokenTracker = ({
 export function stringifyBalance(
   balance: BN,
   bnDecimals: BN,
-  balanceDecimals = 3,
+  balanceDecimals = 5,
 ) {
   if (balance.eq(new BN(0))) {
     return '0';

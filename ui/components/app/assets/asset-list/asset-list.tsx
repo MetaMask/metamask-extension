@@ -23,11 +23,7 @@ import {
   MetaMetricsEventName,
 } from '../../../../../shared/constants/metametrics';
 import DetectedToken from '../../detected-token/detected-token';
-import {
-  DetectedTokensBanner,
-  ImportTokenLink,
-  ReceiveModal,
-} from '../../../multichain';
+import { DetectedTokensBanner, ReceiveModal } from '../../../multichain';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { FundingMethodModal } from '../../../multichain/funding-method-modal/funding-method-modal';
 ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
@@ -142,13 +138,6 @@ const AssetList = ({ onClickAsset, showTokensLinks }: AssetListProps) => {
         ) : null
         ///: END:ONLY_INCLUDE_IF
       }
-      {shouldShowTokensLinks && (
-        <ImportTokenLink
-          margin={4}
-          marginBottom={2}
-          marginTop={detectedTokens.length > 0 && !balanceIsZero ? 0 : 2}
-        />
-      )}
       {showDetectedTokens && (
         <DetectedToken setShowDetectedTokens={setShowDetectedTokens} />
       )}
