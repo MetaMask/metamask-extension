@@ -174,12 +174,6 @@ env:
   - SENTRY_MMI_DSN: ''
 
   ###
-  # Storybook
-  ###
-  - STORYBOOK: false
-  - INFURA_STORYBOOK_PROJECT_ID
-
-  ###
   # Notifications Feature
   ###
   - AUTH_API: https://authentication.api.cx.metamask.io
@@ -273,14 +267,12 @@ env:
   - BARAD_DUR: ''
   # Determines if feature flagged Chain permissions
   - CHAIN_PERMISSIONS: ''
-  # Determines if feature flagged Filter toggle
-  - FILTER_TOKENS_TOGGLE: ''
   # Enables use of test gas fee flow to debug gas fee estimation
   - TEST_GAS_FEE_FLOWS: false
   # Temporary mechanism to enable security alerts API prior to release
-  - SECURITY_ALERTS_API_ENABLED: 'true'
+  - SECURITY_ALERTS_API_ENABLED: ''
   # URL of security alerts API used to validate dApp requests
-  - SECURITY_ALERTS_API_URL: 'https://security-alerts.api.cx.metamask.io'
+  - SECURITY_ALERTS_API_URL: 'http://localhost:3000'
   # API key to authenticate Etherscan requests to avoid rate limiting
   - ETHERSCAN_API_KEY: ''
 

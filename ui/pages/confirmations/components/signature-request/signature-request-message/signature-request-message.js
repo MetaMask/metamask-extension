@@ -25,7 +25,6 @@ export default function SignatureRequestMessage({
   messageRootRef,
   messageIsScrollable,
   primaryType,
-  chainId,
 }) {
   const t = useContext(I18nContext);
   const [messageIsScrolled, setMessageIsScrolled] = useState(false);
@@ -87,7 +86,7 @@ export default function SignatureRequestMessage({
         >
           {primaryType}
         </Text>
-        <SignatureRequestData data={data.value} chainId={chainId} />
+        <SignatureRequestData data={data.value} />
       </Box>
     </Box>
   );
@@ -100,5 +99,4 @@ SignatureRequestMessage.propTypes = {
   messageRootRef: PropTypes.object,
   messageIsScrollable: PropTypes.bool,
   primaryType: PropTypes.string,
-  chainId: PropTypes.string,
 };

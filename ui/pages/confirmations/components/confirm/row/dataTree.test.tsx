@@ -10,8 +10,6 @@ import configureStore from '../../../../../store/store';
 
 import { DataTree } from './dataTree';
 
-const CHAIN_ID_MOCK = '0x123';
-
 const mockData = {
   contents: { value: 'Hello, Bob!', type: 'string' },
   from: {
@@ -69,7 +67,7 @@ const store = configureStore(mockState);
 describe('DataTree', () => {
   it('should match snapshot', () => {
     const { container } = renderWithProvider(
-      <DataTree data={mockData} chainId={CHAIN_ID_MOCK} />,
+      <DataTree data={mockData} />,
       store,
     );
     expect(container).toMatchSnapshot();
@@ -79,7 +77,6 @@ describe('DataTree', () => {
     const { container } = renderWithProvider(
       <DataTree
         data={JSON.parse(permitSignatureMsg.msgParams?.data as string)}
-        chainId={CHAIN_ID_MOCK}
       />,
       store,
     );
@@ -93,7 +90,7 @@ describe('DataTree', () => {
     mockPermitData.message.deadline = '-1';
 
     const { container } = renderWithProvider(
-      <DataTree data={mockPermitData} chainId={CHAIN_ID_MOCK} />,
+      <DataTree data={mockPermitData} />,
       store,
     );
     expect(container).toMatchSnapshot();
@@ -103,7 +100,6 @@ describe('DataTree', () => {
     const { container } = renderWithProvider(
       <DataTree
         data={JSON.parse(orderSignatureMsg.msgParams?.data as string)}
-        chainId={CHAIN_ID_MOCK}
       />,
       store,
     );
@@ -118,10 +114,7 @@ describe('DataTree', () => {
       },
       'A number': { type: 'uint32', value: '1337' },
     };
-    const { container } = renderWithProvider(
-      <DataTree data={data} chainId={CHAIN_ID_MOCK} />,
-      store,
-    );
+    const { container } = renderWithProvider(<DataTree data={data} />, store);
     expect(container).toMatchSnapshot();
   });
 });

@@ -1,5 +1,5 @@
 import React from 'react';
-import { screen } from '@testing-library/react';
+import { render, screen } from '@testing-library/react';
 import { NameType } from '@metamask/name-controller';
 import { TokenStandard } from '../../../../../shared/constants/transaction';
 import Name from '../../../../components/app/name';
@@ -8,9 +8,8 @@ import configureStore from '../../../../store/store';
 import { CHAIN_IDS } from '../../../../../shared/constants/network';
 import { AvatarNetwork } from '../../../../components/component-library/avatar-network';
 import { mockNetworkState } from '../../../../../test/stub/networks';
-import mockState from '../../../../../test/data/mock-state.json';
 import { AssetPill } from './asset-pill';
-import { NativeAssetIdentifier, TokenAssetIdentifier } from './types';
+import { NATIVE_ASSET_IDENTIFIER, TokenAssetIdentifier } from './types';
 
 jest.mock('../../../../components/component-library/avatar-network', () => ({
   AvatarNetworkSize: { Sm: 'Sm' },
@@ -21,8 +20,6 @@ jest.mock('../../../../components/app/name', () => ({
   __esModule: true,
   default: jest.fn(() => null),
 }));
-
-const CHAIN_ID_MOCK = '0x1';
 
 describe('AssetPill', () => {
   beforeEach(() => {
@@ -63,12 +60,10 @@ describe('AssetPill', () => {
           },
         });
 
-        const asset: NativeAssetIdentifier = {
-          chainId,
-          standard: TokenStandard.none,
-        };
-
-        renderWithProvider(<AssetPill asset={asset} />, store);
+        renderWithProvider(
+          <AssetPill asset={NATIVE_ASSET_IDENTIFIER} />,
+          store,
+        );
 
         expect(screen.getByText(expected.ticker)).toBeInTheDocument();
 
@@ -85,12 +80,11 @@ describe('AssetPill', () => {
 
   it('renders Name component with correct props when asset standard is not none', () => {
     const asset: TokenAssetIdentifier = {
-      chainId: CHAIN_ID_MOCK,
       standard: TokenStandard.ERC20,
       address: '0x1234567890123456789012345678901234567890',
     };
 
-    renderWithProvider(<AssetPill asset={asset} />, configureStore(mockState));
+    render(<AssetPill asset={asset} />);
 
     expect(Name).toHaveBeenCalledWith(
       expect.objectContaining({

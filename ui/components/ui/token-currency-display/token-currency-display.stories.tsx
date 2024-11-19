@@ -1,8 +1,9 @@
 import React from 'react';
-import type { Meta, StoryObj } from '@storybook/react';
+import { Meta, Story } from '@storybook/react';
 import TokenCurrencyDisplay from './token-currency-display.component';
+import { TokenCurrencyDisplayProps } from './token-currency-display.types';
 
-const meta: Meta<typeof TokenCurrencyDisplay> = {
+export default {
   title: 'Components/UI/TokenCurrencyDisplay',
   component: TokenCurrencyDisplay,
   argTypes: {
@@ -11,15 +12,14 @@ const meta: Meta<typeof TokenCurrencyDisplay> = {
     token: { control: 'object' },
     prefix: { control: 'text' },
   },
-  args: {
-    className: '',
-    transactionData: '0x123',
-    token: { symbol: 'ETH' },
-    prefix: '',
-  },
+} as Meta;
+
+const Template: Story<TokenCurrencyDisplayProps> = (args) => <TokenCurrencyDisplay {...args} />;
+
+export const Default = Template.bind({});
+Default.args = {
+  className: '',
+  transactionData: '0x123',
+  token: { symbol: 'ETH' },
+  prefix: '',
 };
-
-export default meta;
-type Story = StoryObj<typeof TokenCurrencyDisplay>;
-
-export const Default: Story = {};

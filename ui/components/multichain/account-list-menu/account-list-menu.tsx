@@ -188,7 +188,6 @@ export const mergeAccounts = (
 
 type AccountListMenuProps = {
   onClose: () => void;
-  privacyMode?: boolean;
   showAccountCreation?: boolean;
   accountListItemProps?: object;
   allowedAccountTypes?: KeyringAccountType[];
@@ -196,7 +195,6 @@ type AccountListMenuProps = {
 
 export const AccountListMenu = ({
   onClose,
-  privacyMode = false,
   showAccountCreation = true,
   accountListItemProps,
   allowedAccountTypes = [
@@ -457,7 +455,6 @@ export const AccountListMenu = ({
               <ButtonLink
                 size={ButtonLinkSize.Sm}
                 startIconName={IconName.Import}
-                data-testid="multichain-account-menu-popover-add-imported-account"
                 onClick={() => {
                   trackEvent({
                     category: MetaMetricsEventCategory.Navigation,
@@ -646,7 +643,6 @@ export const AccountListMenu = ({
                       isHidden={Boolean(account.hidden)}
                       currentTabOrigin={currentTabOrigin}
                       isActive={Boolean(account.active)}
-                      privacyMode={privacyMode}
                       {...accountListItemProps}
                     />
                   </Box>

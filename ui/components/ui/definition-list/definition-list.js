@@ -32,7 +32,7 @@ export default function DefinitionList({
       {Object.entries(dictionary).map(([term, definition]) => (
         <React.Fragment key={`definition-for-${term}`}>
           <Text
-            variant={TextVariant.bodyMdMedium}
+            variant={TextVariant.bodySmBold}
             {...termTypography}
             marginTop={0}
             marginBottom={1}
@@ -47,7 +47,7 @@ export default function DefinitionList({
                 containerClassName="definition-list__tooltip-wrapper"
               >
                 <Icon
-                  name={IconName.Question}
+                  name={IconName.Info}
                   size={IconSize.Sm}
                   marginLeft={1}
                   color={IconColor.iconDefault}
@@ -56,7 +56,7 @@ export default function DefinitionList({
             )}
           </Text>
           <Text
-            variant={TextVariant.bodyMd}
+            variant={TextVariant.bodySm}
             color={TextColor.textAlternative}
             {...definitionTypography}
             marginTop={0}

@@ -13,7 +13,6 @@ export const FIXTURES_PREFERENCES = {
     showNftAutodetectModal: false,
     isRedesignedConfirmationsDeveloperEnabled: false,
     showConfirmationAdvancedDetails: false,
-    privacyMode: false,
   },
   featureFlags: {
     sendHexData: true,

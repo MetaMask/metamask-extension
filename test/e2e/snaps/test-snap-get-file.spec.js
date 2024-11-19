@@ -2,6 +2,7 @@ const {
   defaultGanacheOptions,
   withFixtures,
   unlockWallet,
+  switchToNotificationWindow,
   WINDOW_TITLES,
 } = require('../helpers');
 const FixtureBuilder = require('../fixture-builder');
@@ -27,40 +28,28 @@ describe('Test Snap Get File', function () {
           tag: 'h2',
         });
 
-        // scroll to and wait for connect to get file button
-        const snapButton = await driver.findElement('#connectgetfile');
-        await driver.scrollToElement(snapButton);
-
-        // added delay for firefox (deflake)
-        await driver.delayFirefox(1000);
-
-        // wait for and click connect
-        await driver.waitForSelector('#connectgetfile');
+        const dialogButton = await driver.findElement('#connectgetfile');
+        await driver.scrollToElement(dialogButton);
+        await driver.delay(1000);
         await driver.clickElement('#connectgetfile');
 
-        // switch to metamask extension
-        await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
-
-        // wait for and click connect
-        await driver.waitForSelector({
-          text: 'Connect',
-          tag: 'button',
-        });
+        // switch to metamask extension and click connect
+        await switchToNotificationWindow(driver);
         await driver.clickElement({
           text: 'Connect',
           tag: 'button',
         });
 
-        // wait for and click confirm
         await driver.waitForSelector({ text: 'Confirm' });
+
         await driver.clickElement({
           text: 'Confirm',
           tag: 'button',
         });
 
-        // wait for and click ok and wait for window to close
         await driver.waitForSelector({ text: 'OK' });
-        await driver.clickElementAndWaitForWindowToClose({
+
+        await driver.clickElement({
           text: 'OK',
           tag: 'button',
         });

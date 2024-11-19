@@ -57,7 +57,6 @@ export const SendPageYourAccounts = ({
           selected={selectedAccount.address === account.address}
           key={account.address}
           isPinned={Boolean(account.pinned)}
-          shouldScrollToWhenSelected={false}
           onClick={() => {
             dispatch(
               addHistoryEntry(

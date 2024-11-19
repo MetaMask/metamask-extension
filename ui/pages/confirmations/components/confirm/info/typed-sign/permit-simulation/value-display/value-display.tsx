@@ -32,9 +32,6 @@ import Name from '../../../../../../../../components/app/name/name';
 import { TokenDetailsERC20 } from '../../../../../../utils/token';
 
 type PermitSimulationValueDisplayParams = {
-  /** ID of the associated chain. */
-  chainId: Hex;
-
   /** The primaryType of the typed sign message */
   primaryType?: string;
 
@@ -54,7 +51,7 @@ type PermitSimulationValueDisplayParams = {
 
 const PermitSimulationValueDisplay: React.FC<
   PermitSimulationValueDisplayParams
-> = ({ chainId, primaryType, tokenContract, tokenId, value }) => {
+> = ({ primaryType, tokenContract, value, tokenId }) => {
   const exchangeRate = useTokenExchangeRate(tokenContract);
 
   const tokenDetails = useGetTokenStandardAndDetails(tokenContract);
@@ -132,7 +129,6 @@ const PermitSimulationValueDisplay: React.FC<
         <Name
           value={tokenContract}
           type={NameType.ETHEREUM_ADDRESS}
-          variation={chainId}
           preferContractSymbol
         />
       </Box>

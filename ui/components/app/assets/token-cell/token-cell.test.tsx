@@ -5,7 +5,7 @@ import { fireEvent } from '@testing-library/react';
 import { useSelector } from 'react-redux';
 import { renderWithProvider } from '../../../../../test/lib/render-helpers';
 import { useTokenFiatAmount } from '../../../../hooks/useTokenFiatAmount';
-import { getTokenList, getPreferences } from '../../../../selectors';
+import { getTokenList } from '../../../../selectors';
 import {
   getMultichainCurrentChainId,
   getMultichainIsEvm,
@@ -98,9 +98,6 @@ describe('Token Cell', () => {
   };
   const useSelectorMock = useSelector;
   (useSelectorMock as jest.Mock).mockImplementation((selector) => {
-    if (selector === getPreferences) {
-      return { privacyMode: false };
-    }
     if (selector === getTokenList) {
       return MOCK_GET_TOKEN_LIST;
     }

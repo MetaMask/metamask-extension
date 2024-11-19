@@ -86,8 +86,6 @@ const AccountListItem = ({
   isActive = false,
   startAccessory,
   onActionClick,
-  shouldScrollToWhenSelected = true,
-  privacyMode = false,
 }) => {
   const t = useI18nContext();
   const [accountOptionsMenuOpen, setAccountOptionsMenuOpen] = useState(false);
@@ -130,10 +128,10 @@ const AccountListItem = ({
   // scroll the item into view
   const itemRef = useRef(null);
   useEffect(() => {
-    if (selected && shouldScrollToWhenSelected) {
+    if (selected) {
       itemRef.current?.scrollIntoView?.();
     }
-  }, [itemRef, selected, shouldScrollToWhenSelected]);
+  }, [itemRef, selected]);
 
   const trackEvent = useContext(MetaMetricsContext);
   const primaryTokenImage = useMultichainSelector(
@@ -314,7 +312,6 @@ const AccountListItem = ({
                 type={PRIMARY}
                 showFiat={showFiat}
                 data-testid="first-currency-display"
-                privacyMode={privacyMode}
               />
             </Text>
           </Box>
@@ -362,7 +359,6 @@ const AccountListItem = ({
                   type={SECONDARY}
                   showNative
                   data-testid="second-currency-display"
-                  privacyMode={privacyMode}
                 />
               </Text>
             </Box>
@@ -506,14 +502,6 @@ AccountListItem.propTypes = {
    * Represents start accessory
    */
   startAccessory: PropTypes.node,
-  /**
-   * Determines if list item should be scrolled to when selected
-   */
-  shouldScrollToWhenSelected: PropTypes.bool,
-  /**
-   * Determines if list balance should be obfuscated
-   */
-  privacyMode: PropTypes.bool,
 };
 
 AccountListItem.displayName = 'AccountListItem';

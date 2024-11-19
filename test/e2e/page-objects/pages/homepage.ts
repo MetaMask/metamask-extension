@@ -11,16 +11,7 @@ class HomePage {
   private readonly activityTab =
     '[data-testid="account-overview__activity-tab"]';
 
-  private readonly nftTab = '[data-testid="account-overview__nfts-tab"]';
-
-  private readonly nftIconOnActivityList = '[data-testid="nft-item"]';
-
   private readonly balance = '[data-testid="eth-overview__primary-currency"]';
-
-  private readonly basicFunctionalityOffWarningMessage = {
-    text: 'Basic functionality is off',
-    css: '.mm-banner-alert',
-  };
 
   private readonly completedTransactions = '[data-testid="activity-list-item"]';
 
@@ -67,37 +58,6 @@ class HomePage {
   async goToActivityList(): Promise<void> {
     console.log(`Open activity tab on homepage`);
     await this.driver.clickElement(this.activityTab);
-  }
-
-  async check_basicFunctionalityOffWarnigMessageIsDisplayed(): Promise<void> {
-    console.log(
-      'Check if basic functionality off warning message is displayed on homepage',
-    );
-    await this.driver.waitForSelector(this.basicFunctionalityOffWarningMessage);
-  }
-
-  async goToNFTList(): Promise<void> {
-    console.log(`Open NFT tab on homepage`);
-    await this.driver.clickElement(this.nftTab);
-  }
-
-  async clickNFTIconOnActivityList() {
-    await this.driver.clickElement(this.nftIconOnActivityList);
-  }
-
-  /**
-   * Checks if the toaster message for adding a network is displayed on the homepage.
-   *
-   * @param networkName - The name of the network that was added.
-   */
-  async check_addNetworkMessageIsDisplayed(networkName: string): Promise<void> {
-    console.log(
-      `Check the toaster message for adding network ${networkName} is displayed on homepage`,
-    );
-    await this.driver.waitForSelector({
-      tag: 'h6',
-      text: `“${networkName}” was successfully added!`,
-    });
   }
 
   /**

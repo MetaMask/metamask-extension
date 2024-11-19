@@ -2,6 +2,7 @@ const {
   defaultGanacheOptions,
   withFixtures,
   unlockWallet,
+  switchToNotificationWindow,
   WINDOW_TITLES,
 } = require('../helpers');
 const FixtureBuilder = require('../fixture-builder');
@@ -27,39 +28,27 @@ describe('Test Snap Lifecycle Hooks', function () {
           tag: 'h2',
         });
 
-        // scroll to lifecycle hooks snap
         const snapButton = await driver.findElement('#connectlifecycle-hooks');
         await driver.scrollToElement(snapButton);
-
-        // added delay for firefox (deflake)
-        await driver.delayFirefox(1000);
-
-        // wait for and click connect
-        await driver.waitForSelector('#connectlifecycle-hooks');
+        await driver.delay(1000);
         await driver.clickElement('#connectlifecycle-hooks');
 
-        // switch to metamask extension
-        await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
-
-        // wait for and click connect
-        await driver.waitForSelector({
-          text: 'Connect',
-          tag: 'button',
-        });
+        // switch to metamask extension and click connect
+        await switchToNotificationWindow(driver);
         await driver.clickElement({
           text: 'Connect',
           tag: 'button',
         });
 
-        // wait for and click confirm
         await driver.waitForSelector({ text: 'Confirm' });
+
         await driver.clickElement({
           text: 'Confirm',
           tag: 'button',
         });
 
-        // wait for and click ok
-        await driver.waitForSelector({ text: 'OK', tag: 'button' });
+        await driver.waitForSelector({ text: 'OK' });
+
         await driver.clickElement({
           text: 'OK',
           tag: 'button',
@@ -75,7 +64,7 @@ describe('Test Snap Lifecycle Hooks', function () {
         });
 
         // switch to dialog popup
-        await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
+        await switchToNotificationWindow(driver);
 
         // check dialog contents
         const result = await driver.findElement('.snap-ui-renderer__panel');

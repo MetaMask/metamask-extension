@@ -118,9 +118,7 @@ describe('useCurrentConfirmation', () => {
       redesignedConfirmationsEnabled: true,
     });
 
-    expect(currentConfirmation).toStrictEqual(
-      expect.objectContaining(MESSAGE_MOCK),
-    );
+    expect(currentConfirmation).toStrictEqual(MESSAGE_MOCK);
   });
 
   it('return transaction matching latest pending approval ID', () => {
@@ -146,9 +144,7 @@ describe('useCurrentConfirmation', () => {
       redesignedConfirmationsEnabled: true,
     });
 
-    expect(currentConfirmation).toStrictEqual(
-      expect.objectContaining(MESSAGE_MOCK),
-    );
+    expect(currentConfirmation).toStrictEqual(MESSAGE_MOCK);
   });
 
   it('returns transaction matching ID param', () => {
@@ -229,12 +225,10 @@ describe('useCurrentConfirmation', () => {
       redesignedConfirmationsEnabled: true,
     });
 
-    expect(currentConfirmation).toStrictEqual(
-      expect.objectContaining({
-        id: APPROVAL_MOCK.id,
-        msgParams: { siwe: { isSIWEMessage: true } },
-      }),
-    );
+    expect(currentConfirmation).toStrictEqual({
+      id: APPROVAL_MOCK.id,
+      msgParams: { siwe: { isSIWEMessage: true } },
+    });
   });
 
   it('returns undefined if developer and user settings are enabled and transaction has incorrect type', () => {

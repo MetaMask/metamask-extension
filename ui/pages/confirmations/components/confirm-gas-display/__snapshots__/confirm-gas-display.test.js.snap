@@ -51,7 +51,6 @@ exports[`ConfirmGasDisplay should match snapshot 1`] = `
             >
               <span
                 class="mm-box mm-text currency-display-component__text mm-text--body-md mm-text--ellipsis mm-box--color-text-alternative"
-                data-testid="account-value-and-suffix"
               >
                 0.001197
               </span>
@@ -114,7 +113,6 @@ exports[`ConfirmGasDisplay should match snapshot 1`] = `
             >
               <span
                 class="mm-box mm-text currency-display-component__text mm-text--body-sm mm-text--ellipsis mm-box--color-text-alternative"
-                data-testid="account-value-and-suffix"
               >
                 0.00147
               </span>

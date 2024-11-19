@@ -9,8 +9,6 @@ class SendTokenPage {
 
   private inputAmount: string;
 
-  private inputNFTAmount: string;
-
   private scanButton: string;
 
   private continueButton: object;
@@ -28,7 +26,6 @@ class SendTokenPage {
   constructor(driver: Driver) {
     this.driver = driver;
     this.inputAmount = '[data-testid="currency-input"]';
-    this.inputNFTAmount = '[data-testid="nft-input"]';
     this.inputRecipient = '[data-testid="ens-input"]';
     this.scanButton = '[data-testid="ens-qr-scan-button"]';
     this.ensResolvedName =
@@ -80,10 +77,6 @@ class SendTokenPage {
       amount,
       `Error when filling amount field on send token screen: the value entered is ${inputValue} instead of expected ${amount}.`,
     );
-  }
-
-  async fillNFTAmount(amount: string) {
-    await this.driver.pasteIntoField(this.inputNFTAmount, amount);
   }
 
   async goToNextScreen(): Promise<void> {

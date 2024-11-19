@@ -26,8 +26,8 @@ async function mockApis(mockServer) {
         };
       }),
     await mockServer
-      .forGet('https://min-api.cryptocompare.com/data/pricemulti')
-      .withQuery({ fsyms: 'ETH', tsyms: 'usd' })
+      .forGet('https://min-api.cryptocompare.com/data/price')
+      .withQuery({ fsym: 'ETH', tsyms: 'USD' })
       .thenCallback(() => {
         return {
           statusCode: 200,

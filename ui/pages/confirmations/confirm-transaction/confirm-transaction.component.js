@@ -126,10 +126,9 @@ const ConfirmTransaction = () => {
   const prevTransactionId = usePrevious(transactionId);
 
   usePolling({
-    startPolling: (input) =>
-      gasFeeStartPollingByNetworkClientId(input.networkClientId),
+    startPollingByNetworkClientId: gasFeeStartPollingByNetworkClientId,
     stopPollingByPollingToken: gasFeeStopPollingByPollingToken,
-    input: { networkClientId: transaction.networkClientId ?? networkClientId },
+    networkClientId: transaction.networkClientId ?? networkClientId,
   });
 
   useEffect(() => {

@@ -1,3 +1,4 @@
+const { strict: assert } = require('assert');
 const {
   defaultGanacheOptions,
   openMenuSafe,
@@ -40,11 +41,12 @@ describe('Auto-Lock Timer', function () {
           '[data-testid="advanced-setting-auto-lock"] button',
         );
         // Verify the wallet is locked
-        await driver.waitForSelector({
-          css: '[data-testid="unlock-page-title"]',
-          text: 'Welcome back!',
-        });
-        await driver.waitForSelector('.unlock-page button');
+        const pageTitle = await driver.findElement(
+          '[data-testid="unlock-page-title"]',
+        );
+        const unlockButton = await driver.findElement('.unlock-page button');
+        assert.equal(await pageTitle.getText(), 'Welcome back!');
+        assert.equal(await unlockButton.isDisplayed(), true);
       },
     );
   });

@@ -1,11 +1,13 @@
 import React, { ReactNode, useContext } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import classnames from 'classnames';
-import { Box } from '../../../../component-library';
+import { Box, Text } from '../../../../component-library';
 import { SortOrder, SortingCallbacksT } from '../../util/sort';
 import {
   BackgroundColor,
   BorderRadius,
+  TextColor,
+  TextVariant,
 } from '../../../../../helpers/constants/design-system';
 import { setTokenSortConfig } from '../../../../../store/actions';
 import { MetaMetricsContext } from '../../../../../contexts/metametrics';
@@ -43,7 +45,9 @@ export const SelectableListItem = ({
         })}
         onClick={onClick}
       >
-        {children}
+        <Text variant={TextVariant.bodyMdMedium} color={TextColor.textDefault}>
+          {children}
+        </Text>
       </Box>
       {isSelected && (
         <Box

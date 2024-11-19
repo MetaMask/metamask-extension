@@ -184,8 +184,8 @@ class Driver {
    *
    * To target an element based on its attribute using a CSS selector,
    * use square brackets ([]) to specify the attribute name and its value.
-   * @example <caption>Example to locate the ‘Buy & Sell’ button using its unique attribute testId and its value on the overview screen</caption>
-   *        await driver.findElement({testId: 'eth-overview-buy'});
+   * @example <caption>Example to locate the ‘Buy & Sell’ button using its unique attribute data-testid and its value on the overview screen</caption>
+   *        await driver.findElement('[data-testid="eth-overview-buy"]');
    *
    * To locate an element by XPath locator strategy
    * @example <caption>Example to locate 'Confirm' button on the send transaction page</caption>
@@ -204,11 +204,6 @@ class Driver {
       // xpath locator.
       return By.xpath(locator.xpath);
     } else if (locator.text) {
-      // If a testId prop was provided along with text, convert that to a css prop and continue
-      if (locator.testId) {
-        locator.css = `[data-testid="${locator.testId}"]`;
-      }
-
       // Providing a text prop, and optionally a tag or css prop, will use
       // xpath to look for an element with the tag that has matching text.
       if (locator.css) {
@@ -237,12 +232,7 @@ class Driver {
       const quoted = quoteXPathText(locator.text);
       // The tag prop is optional and further refines which elements match
       return By.xpath(`//${locator.tag ?? '*'}[contains(text(), ${quoted})]`);
-    } else if (locator.testId) {
-      // Providing a testId prop will use css to look for an element with the
-      // data-testid attribute that matches the testId provided.
-      return By.css(`[data-testid="${locator.testId}"]`);
     }
-
     throw new Error(
       `The locator '${locator}' is not supported by the E2E test driver`,
     );
@@ -284,12 +274,6 @@ class Driver {
 
   async delay(time) {
     await new Promise((resolve) => setTimeout(resolve, time));
-  }
-
-  async delayFirefox(time) {
-    if (process.env.SELENIUM_BROWSER === 'firefox') {
-      await new Promise((resolve) => setTimeout(resolve, time));
-    }
   }
 
   /**

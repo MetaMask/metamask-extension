@@ -27,7 +27,7 @@ import {
   getNetworkConfigurationsByChainId,
   getMetaMetricsDataDeletionId,
   getPetnamesEnabled,
-} from '../../../selectors/selectors';
+} from '../../../selectors';
 import { openBasicFunctionalityModal } from '../../../ducks/app/app';
 import SecurityTab from './security-tab.component';
 
