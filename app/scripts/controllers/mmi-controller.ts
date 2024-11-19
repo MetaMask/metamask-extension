@@ -311,7 +311,7 @@ export class MMIController {
           }
         }
 
-        const txList = this.txStateManager.getTransactions({}, [], false); // Includes all transactions, but we are looping through keyrings. Currently filtering is done in updateCustodianTransactions :-/
+        const txList = this.txStateManager.getTransactions(); // Includes all transactions, but we are looping through keyrings. Currently filtering is done in updateCustodianTransactions :-/
 
         try {
           updateCustodianTransactions({
