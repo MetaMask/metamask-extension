@@ -152,23 +152,6 @@
   "addContact": {
     "message": "Aggiungi contatto"
   },
-  "addEthereumChainConfirmationDescription": {
-    "message": "Ciò consentirà a questa rete di essere utilizzata all'interno di MetaMask."
-  },
-  "addEthereumChainConfirmationRisks": {
-    "message": "MetaMask non verifica le reti personalizzate."
-  },
-  "addEthereumChainConfirmationRisksLearnMore": {
-    "message": "Maggiori informazioni su $1.",
-    "description": "$1 is a link with text that is provided by the 'addEthereumChainConfirmationRisksLearnMoreLink' key"
-  },
-  "addEthereumChainConfirmationRisksLearnMoreLink": {
-    "message": "truffe e rischi per la sicurezza della rete",
-    "description": "Link text for the 'addEthereumChainConfirmationRisksLearnMore' translation key"
-  },
-  "addEthereumChainConfirmationTitle": {
-    "message": "Consenti a questo sito di aggiungere una rete?"
-  },
   "addFriendsAndAddresses": {
     "message": "Aggiungi amici e indirizzi di cui ti fidi"
   },
@@ -752,10 +735,6 @@
   "errorCode": {
     "message": "Codice: $1",
     "description": "Displayed error code for debugging purposes. $1 is the error code"
-  },
-  "errorDetails": {
-    "message": "Dettagli Errore",
-    "description": "Title for collapsible section that displays error details for debugging purposes"
   },
   "errorMessage": {
     "message": "Messaggio: $1",
@@ -1648,9 +1627,6 @@
   },
   "userName": {
     "message": "Nome utente"
-  },
-  "viewAllDetails": {
-    "message": "Vedi tutti i dettagli"
   },
   "viewContact": {
     "message": "Visualizza contatto"

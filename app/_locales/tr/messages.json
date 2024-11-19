@@ -207,23 +207,6 @@
   "addCustomNetwork": {
     "message": "Özel ağ ekle"
   },
-  "addEthereumChainConfirmationDescription": {
-    "message": "Bu, bu ağın MetaMas dahilinde kullanılmasına olanak tanıyacaktır."
-  },
-  "addEthereumChainConfirmationRisks": {
-    "message": "MetaMask özel ağları doğrulamaz."
-  },
-  "addEthereumChainConfirmationRisksLearnMore": {
-    "message": "$1 hakkında bilgi edinin.",
-    "description": "$1 is a link with text that is provided by the 'addEthereumChainConfirmationRisksLearnMoreLink' key"
-  },
-  "addEthereumChainConfirmationRisksLearnMoreLink": {
-    "message": "dolandırıcılık ve ağ güvenliği riskleri",
-    "description": "Link text for the 'addEthereumChainConfirmationRisksLearnMore' translation key"
-  },
-  "addEthereumChainConfirmationTitle": {
-    "message": "Bu sitenin ağ eklemesine izin ver?"
-  },
   "addEthereumChainWarningModalHeader": {
     "message": "Bu RPC sağlayıcısını sadece ona güvenebileceğinizden eminseniz ekleyin. $1",
     "description": "$1 is addEthereumChainWarningModalHeaderPartTwo passed separately so that it can be bolded"
@@ -272,6 +255,9 @@
   },
   "addNewBitcoinTestnetAccount": {
     "message": "Yeni bir Bitcoin hesabı ekle (Test Ağı)"
+  },
+  "addNewSolanaAccount": {
+    "message": "Yeni bir Solana hesabı ekle (Beta)"
   },
   "addNewToken": {
     "message": "Yeni token ekleyin"
@@ -821,10 +807,6 @@
   },
   "buyNow": {
     "message": "Şimdi Satın Al"
-  },
-  "buyToken": {
-    "message": "$1 Al",
-    "description": "$1 is the token symbol"
   },
   "bytes": {
     "message": "Bayt"
@@ -1641,9 +1623,6 @@
   "editSpeedUpEditGasFeeModalTitle": {
     "message": "Hızlandırma gaz ücretini düzenle"
   },
-  "enable": {
-    "message": "Etkinleştir"
-  },
   "enableAutoDetect": {
     "message": " Otomatik algılamayı etkinleştir"
   },
@@ -1720,10 +1699,6 @@
     "message": "Kod: $1",
     "description": "Displayed error code for debugging purposes. $1 is the error code"
   },
-  "errorDetails": {
-    "message": "Hata ayrıntıları",
-    "description": "Title for collapsible section that displays error details for debugging purposes"
-  },
   "errorGettingSafeChainList": {
     "message": "Güvenli zincir listesi alınırken hata oluştu, lütfen dikkatli bir şekilde devam edin."
   },
@@ -1734,14 +1709,6 @@
   "errorName": {
     "message": "Kod: $1",
     "description": "Displayed error name for debugging purposes. $1 is the error name"
-  },
-  "errorPageMessage": {
-    "message": "Sayfayı yeniden yükleyerek tekrar deneyin veya $1 destek bölümümüze ulaşın.",
-    "description": "Message displayed on generic error page in the fullscreen or notification UI, $1 is a clickable link with text defined by the 'here' key. The link will open to a form where users can file support tickets."
-  },
-  "errorPagePopupMessage": {
-    "message": "Açılır pencereyi kapatarak ve yeniden açarak tekrar deneyin $1 destek bölümümüze ulaşın.",
-    "description": "Message displayed on generic error page in the popup UI, $1 is a clickable link with text defined by the 'here' key. The link will open to a form where users can file support tickets."
   },
   "errorPageTitle": {
     "message": "MetaMask bir hata ile karşılaştı",
@@ -1900,13 +1867,6 @@
   "functionType": {
     "message": "İşlev türü"
   },
-  "fundYourWallet": {
-    "message": "Cüzdanınıza para ekleyin"
-  },
-  "fundYourWalletDescription": {
-    "message": "Cüzdanınıza biraz $1 ekleyerek başlayın.",
-    "description": "$1 is the token symbol"
-  },
   "gas": {
     "message": "Gaz"
   },
@@ -1989,14 +1949,6 @@
   },
   "genericExplorerView": {
     "message": "Hesabı $1 üzerinde görüntüleyin"
-  },
-  "getStartedWithNFTs": {
-    "message": "NFT satın almak için $1 edinin",
-    "description": "$1 is the token symbol"
-  },
-  "getStartedWithNFTsDescription": {
-    "message": "Cüzdanınıza biraz $1 ekleyerek NFT'lere başlayın.",
-    "description": "$1 is the token symbol"
   },
   "goBack": {
     "message": "Geri git"
@@ -4579,17 +4531,11 @@
   "signingInWith": {
     "message": "Şununla giriş yap:"
   },
-  "simulationDetailsFailed": {
-    "message": "Tahmininiz yüklenirken bir hata oldu."
-  },
   "simulationDetailsFiatNotAvailable": {
     "message": "Mevcut Değil"
   },
   "simulationDetailsIncomingHeading": {
     "message": "Aldığınız"
-  },
-  "simulationDetailsNoBalanceChanges": {
-    "message": "Cüzdanınız için değişiklik öngörülmüyor"
   },
   "simulationDetailsOutgoingHeading": {
     "message": "Gönderdiğiniz"
@@ -4627,9 +4573,6 @@
   },
   "siweResources": {
     "message": "Kaynaklar"
-  },
-  "siweSignatureSimulationDetailInfo": {
-    "message": "Bir siteye giriş yapıyorsunuz ve hesabınızda öngörülen herhangi bir değişiklik yok."
   },
   "siweURI": {
     "message": "URL adresi"
@@ -4672,25 +4615,6 @@
   },
   "smartTransactions": {
     "message": "Akıllı İşlemler"
-  },
-  "smartTransactionsBenefit1": {
-    "message": "%99,5 başarı oranı"
-  },
-  "smartTransactionsBenefit2": {
-    "message": "Paradan tasarruf sağlar"
-  },
-  "smartTransactionsBenefit3": {
-    "message": "Gerçek zamanlı güncellemeler"
-  },
-  "smartTransactionsDescription": {
-    "message": "Akıllı İşlemler ile daha yüksek başarı oranlarının, arkadan çalıştırma korumasının ve daha iyi görünürlüğün kilidini açın."
-  },
-  "smartTransactionsDescription2": {
-    "message": "Sadece Ethereum'da mevcuttur. Dilediğiniz zaman ayarlar kısmında etkinleştirin veya devre dışı bırakın. $1",
-    "description": "$1 is an external link to learn more about Smart Transactions"
-  },
-  "smartTransactionsOptItModalTitle": {
-    "message": "İyileştirilmiş İşlem Koruması"
   },
   "snapAccountCreated": {
     "message": "Hesap oluşturuldu"
@@ -4858,9 +4782,6 @@
     "message": "Daha fazla destek için $1 oluşturucuları ile iletişime geçin.",
     "description": "This is shown when the insight snap throws an error. $1 is the snap name"
   },
-  "someNetworksMayPoseSecurity": {
-    "message": "Bazı ağlar güvenlik ve/veya gizlilik riskleri teşkil edebilir. Bir ağ eklemeden ve kullanmadan önce riskleri anlayın."
-  },
   "somethingDoesntLookRight": {
     "message": "Doğru görünmeyen bir şeyler mi var? $1",
     "description": "A false positive message for users to contact support. $1 is a link to the support page."
@@ -5013,14 +4934,6 @@
   },
   "stake": {
     "message": "Pay"
-  },
-  "startYourJourney": {
-    "message": "$1 ile yolculuğunuza başlayın",
-    "description": "$1 is the token symbol"
-  },
-  "startYourJourneyDescription": {
-    "message": "Cüzdanınıza biraz $1 ekleyerek web3'e başlayın.",
-    "description": "$1 is the token symbol"
   },
   "stateLogError": {
     "message": "Durum günlükleri alınırken hata."
@@ -6006,9 +5919,6 @@
   },
   "viewActivity": {
     "message": "Aktiviteyi görüntüle"
-  },
-  "viewAllDetails": {
-    "message": "Tüm bilgileri görüntüle"
   },
   "viewAllQuotes": {
     "message": "tüm teklifleri görüntüle"

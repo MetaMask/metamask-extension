@@ -74,6 +74,7 @@ export function useSimulationMetrics({
       value: asset.address as string,
       type: NameType.ETHEREUM_ADDRESS,
       preferContractSymbol: true,
+      variation: asset.chainId,
     }));
 
   const displayNames = useDisplayNames(displayNameRequests);
@@ -116,10 +117,7 @@ export function useSimulationMetrics({
     ),
   };
 
-  const sensitiveProperties = {
-    ...getSensitiveProperties(receivingAssets, 'simulation_receiving_assets_'),
-    ...getSensitiveProperties(sendingAssets, 'simulation_sending_assets_'),
-  };
+  const sensitiveProperties = {};
 
   const params = { properties, sensitiveProperties };
 
@@ -209,15 +207,14 @@ function getProperties(
     ),
   );
 
-  return getPrefixProperties({ petname, quantity, type, value }, prefix);
-}
-
-function getSensitiveProperties(changes: BalanceChange[], prefix: string) {
   const fiatAmounts = changes.map((change) => change.fiatAmount);
   const totalFiat = calculateTotalFiat(fiatAmounts);
   const totalValue = totalFiat ? Math.abs(totalFiat) : undefined;
 
-  return getPrefixProperties({ total_value: totalValue }, prefix);
+  return getPrefixProperties(
+    { petname, quantity, type, value, total_value: totalValue },
+    prefix,
+  );
 }
 
 // TODO: Replace `any` with type

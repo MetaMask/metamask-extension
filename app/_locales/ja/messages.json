@@ -207,23 +207,6 @@
   "addCustomNetwork": {
     "message": "カスタムネットワークを追加"
   },
-  "addEthereumChainConfirmationDescription": {
-    "message": "これにより、このネットワークはMetaMask内で使用できるようになります。"
-  },
-  "addEthereumChainConfirmationRisks": {
-    "message": "MetaMaskはカスタムネットワークを検証しません。"
-  },
-  "addEthereumChainConfirmationRisksLearnMore": {
-    "message": "$1の詳細。",
-    "description": "$1 is a link with text that is provided by the 'addEthereumChainConfirmationRisksLearnMoreLink' key"
-  },
-  "addEthereumChainConfirmationRisksLearnMoreLink": {
-    "message": "詐欺やネットワークセキュリティのリスク",
-    "description": "Link text for the 'addEthereumChainConfirmationRisksLearnMore' translation key"
-  },
-  "addEthereumChainConfirmationTitle": {
-    "message": "このサイトにネットワークの追加を許可しますか？"
-  },
   "addEthereumChainWarningModalHeader": {
     "message": "このRPCプロバイダーは、確実に信頼できる場合のみ追加してください。$1",
     "description": "$1 is addEthereumChainWarningModalHeaderPartTwo passed separately so that it can be bolded"
@@ -272,6 +255,9 @@
   },
   "addNewBitcoinTestnetAccount": {
     "message": "新しいビットコインアカウントの追加 (テストネット)"
+  },
+  "addNewSolanaAccount": {
+    "message": "新しいSolanaアカウントの追加 (ベータ版)"
   },
   "addNewToken": {
     "message": "新しいトークンを追加"
@@ -821,10 +807,6 @@
   },
   "buyNow": {
     "message": "今すぐ購入"
-  },
-  "buyToken": {
-    "message": "$1を購入",
-    "description": "$1 is the token symbol"
   },
   "bytes": {
     "message": "バイト"
@@ -1641,9 +1623,6 @@
   "editSpeedUpEditGasFeeModalTitle": {
     "message": "高速化用のガス代を編集"
   },
-  "enable": {
-    "message": "有効にする"
-  },
   "enableAutoDetect": {
     "message": " 自動検出を有効にする"
   },
@@ -1720,10 +1699,6 @@
     "message": "コード: $1",
     "description": "Displayed error code for debugging purposes. $1 is the error code"
   },
-  "errorDetails": {
-    "message": "エラーの詳細",
-    "description": "Title for collapsible section that displays error details for debugging purposes"
-  },
   "errorGettingSafeChainList": {
     "message": "安全なチェーンリストの取得中にエラーが発生しました。慎重に続けてください。"
   },
@@ -1734,14 +1709,6 @@
   "errorName": {
     "message": "コード: $1",
     "description": "Displayed error name for debugging purposes. $1 is the error name"
-  },
-  "errorPageMessage": {
-    "message": "ページを再ロードしてもう一度実行するか、$1からサポートまでお問い合わせください。",
-    "description": "Message displayed on generic error page in the fullscreen or notification UI, $1 is a clickable link with text defined by the 'here' key. The link will open to a form where users can file support tickets."
-  },
-  "errorPagePopupMessage": {
-    "message": "ポップアップを閉じてから再び開いてもう一度実行するか、$1からサポートまでお問い合わせください。",
-    "description": "Message displayed on generic error page in the popup UI, $1 is a clickable link with text defined by the 'here' key. The link will open to a form where users can file support tickets."
   },
   "errorPageTitle": {
     "message": "MetaMaskにエラーが発生しました",
@@ -1900,13 +1867,6 @@
   "functionType": {
     "message": "機能の種類"
   },
-  "fundYourWallet": {
-    "message": "ウォレットへの入金"
-  },
-  "fundYourWalletDescription": {
-    "message": "ウォレットに$1を追加して開始します。",
-    "description": "$1 is the token symbol"
-  },
   "gas": {
     "message": "ガス"
   },
@@ -1989,14 +1949,6 @@
   },
   "genericExplorerView": {
     "message": "$1でアカウントを表示"
-  },
-  "getStartedWithNFTs": {
-    "message": "$1を入手してNFTを購入",
-    "description": "$1 is the token symbol"
-  },
-  "getStartedWithNFTsDescription": {
-    "message": "ウォレットに$1を追加してNFTの利用を開始します。",
-    "description": "$1 is the token symbol"
   },
   "goBack": {
     "message": "戻る"
@@ -4579,17 +4531,11 @@
   "signingInWith": {
     "message": "サインイン方法:"
   },
-  "simulationDetailsFailed": {
-    "message": "予測結果の読み込み中にエラーが発生しました。"
-  },
   "simulationDetailsFiatNotAvailable": {
     "message": "利用できません"
   },
   "simulationDetailsIncomingHeading": {
     "message": "受取額"
-  },
-  "simulationDetailsNoBalanceChanges": {
-    "message": "ウォレット残高の増減は予測されていません"
   },
   "simulationDetailsOutgoingHeading": {
     "message": "送金額"
@@ -4627,9 +4573,6 @@
   },
   "siweResources": {
     "message": "リソース"
-  },
-  "siweSignatureSimulationDetailInfo": {
-    "message": "サイトにサインインしようとしていて、予想されるアカウントの変更はありません。"
   },
   "siweURI": {
     "message": "URL"
@@ -4672,25 +4615,6 @@
   },
   "smartTransactions": {
     "message": "スマートトランザクション"
-  },
-  "smartTransactionsBenefit1": {
-    "message": "99.5%の成功率"
-  },
-  "smartTransactionsBenefit2": {
-    "message": "お金を節約できます"
-  },
-  "smartTransactionsBenefit3": {
-    "message": "リアルタイムの最新情報"
-  },
-  "smartTransactionsDescription": {
-    "message": "スマートトランザクションで、成功率を上げ、フロントランニングを防ぎ、可視性を高めましょう。"
-  },
-  "smartTransactionsDescription2": {
-    "message": "イーサリアムでのみご利用いただけ、いつでも設定で有効・無効を切り替えられます。$1",
-    "description": "$1 is an external link to learn more about Smart Transactions"
-  },
-  "smartTransactionsOptItModalTitle": {
-    "message": "強化されたトランザクション保護"
   },
   "snapAccountCreated": {
     "message": "アカウントが作成されました"
@@ -4858,9 +4782,6 @@
     "message": "今後のサポートは、$1の作成者にお問い合わせください。",
     "description": "This is shown when the insight snap throws an error. $1 is the snap name"
   },
-  "someNetworksMayPoseSecurity": {
-    "message": "ネットワークによっては、セキュリティやプライバシーの面でリスクが伴う可能性があります。ネットワークを追加・使用する前にリスクを理解するようにしてください。"
-  },
   "somethingDoesntLookRight": {
     "message": "何か不審な点があれば、$1",
     "description": "A false positive message for users to contact support. $1 is a link to the support page."
@@ -5013,14 +4934,6 @@
   },
   "stake": {
     "message": "ステーク"
-  },
-  "startYourJourney": {
-    "message": "$1で利用開始",
-    "description": "$1 is the token symbol"
-  },
-  "startYourJourneyDescription": {
-    "message": "ウォレットに$1を追加してWeb3の利用を開始します。",
-    "description": "$1 is the token symbol"
   },
   "stateLogError": {
     "message": "ステートログの取得中にエラーが発生しました。"
@@ -6006,9 +5919,6 @@
   },
   "viewActivity": {
     "message": "アクティビティを表示"
-  },
-  "viewAllDetails": {
-    "message": "すべての詳細の表示"
   },
   "viewAllQuotes": {
     "message": "すべてのクォートを表示"

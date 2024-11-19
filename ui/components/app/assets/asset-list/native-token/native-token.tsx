@@ -8,11 +8,11 @@ import {
   getMultichainIsMainnet,
   getMultichainSelectedAccountCachedBalance,
 } from '../../../../../selectors/multichain';
+import { getPreferences } from '../../../../../selectors';
 import { TokenListItem } from '../../../../multichain';
 import { useIsOriginalNativeTokenSymbol } from '../../../../../hooks/useIsOriginalNativeTokenSymbol';
 import { AssetListProps } from '../asset-list';
 import { useNativeTokenBalance } from './use-native-token-balance';
-// import { getPreferences } from '../../../../../selectors';
 
 const NativeToken = ({ onClickAsset }: AssetListProps) => {
   const nativeCurrency = useSelector(getMultichainNativeCurrency);
@@ -20,6 +20,7 @@ const NativeToken = ({ onClickAsset }: AssetListProps) => {
   const { chainId, ticker, type, rpcUrl } = useSelector(
     getMultichainCurrentNetwork,
   );
+  const { privacyMode } = useSelector(getPreferences);
   const isOriginalNativeSymbol = useIsOriginalNativeTokenSymbol(
     chainId,
     ticker,
@@ -42,7 +43,8 @@ const NativeToken = ({ onClickAsset }: AssetListProps) => {
 
   return (
     <TokenListItem
-      onClick={() => onClickAsset(nativeCurrency)}
+      chainId={chainId}
+      onClick={() => onClickAsset(chainId, nativeCurrency)}
       title={nativeCurrency}
       primary={string}
       tokenSymbol={symbol}
@@ -52,6 +54,7 @@ const NativeToken = ({ onClickAsset }: AssetListProps) => {
       isNativeCurrency
       isStakeable={isStakeable}
       showPercentage
+      privacyMode={privacyMode}
     />
   );
 };

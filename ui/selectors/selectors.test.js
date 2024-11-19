@@ -1,21 +1,19 @@
-import { deepClone } from '@metamask/snaps-utils';
 import { ApprovalType } from '@metamask/controller-utils';
 import {
   BtcAccountType,
   EthAccountType,
   EthMethod,
 } from '@metamask/keyring-api';
+import { deepClone } from '@metamask/snaps-utils';
 import { TransactionStatus } from '@metamask/transaction-controller';
-import mockState from '../../test/data/mock-state.json';
 import { KeyringType } from '../../shared/constants/keyring';
+import mockState from '../../test/data/mock-state.json';
 import { CHAIN_IDS, NETWORK_TYPES } from '../../shared/constants/network';
-import { SURVEY_DATE, SURVEY_GMT } from '../helpers/constants/survey';
-import { PRIVACY_POLICY_DATE } from '../helpers/constants/privacy-policy';
 import { createMockInternalAccount } from '../../test/jest/mocks';
-import { ETH_EOA_METHODS } from '../../shared/constants/eth-methods';
 import { getProviderConfig } from '../ducks/metamask/metamask';
 import { mockNetworkState } from '../../test/stub/networks';
 import { DeleteRegulationStatus } from '../../shared/constants/metametrics';
+import { selectSwitchedNetworkNeverShowMessage } from '../components/app/toast-master/selectors';
 import * as selectors from './selectors';
 
 jest.mock('../../app/scripts/lib/util', () => ({
@@ -80,49 +78,6 @@ describe('Selectors', () => {
     });
   });
 
-  describe('#getSelectedInternalAccount', () => {
-    it('returns undefined if selectedAccount is undefined', () => {
-      expect(
-        selectors.getSelectedInternalAccount({
-          metamask: {
-            internalAccounts: {
-              accounts: {},
-              selectedAccount: '',
-            },
-          },
-        }),
-      ).toBeUndefined();
-    });
-
-    it('returns selectedAccount', () => {
-      const mockInternalAccount = {
-        address: '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc',
-        id: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
-        metadata: {
-          name: 'Test Account',
-          keyring: {
-            type: 'HD Key Tree',
-          },
-        },
-        options: {},
-        methods: ETH_EOA_METHODS,
-        type: EthAccountType.Eoa,
-      };
-      expect(
-        selectors.getSelectedInternalAccount({
-          metamask: {
-            internalAccounts: {
-              accounts: {
-                [mockInternalAccount.id]: mockInternalAccount,
-              },
-              selectedAccount: mockInternalAccount.id,
-            },
-          },
-        }),
-      ).toStrictEqual(mockInternalAccount);
-    });
-  });
-
   describe('#checkIfMethodIsEnabled', () => {
     it('returns true if the method is enabled', () => {
       expect(
@@ -158,14 +113,6 @@ describe('Selectors', () => {
     });
   });
 
-  describe('#getInternalAccounts', () => {
-    it('returns a list of internal accounts', () => {
-      expect(selectors.getInternalAccounts(mockState)).toStrictEqual(
-        Object.values(mockState.metamask.internalAccounts.accounts),
-      );
-    });
-  });
-
   describe('#getInternalAccount', () => {
     it("returns undefined if the account doesn't exist", () => {
       expect(
@@ -187,10 +134,10 @@ describe('Selectors', () => {
     });
   });
 
-  describe('#getNeverShowSwitchedNetworkMessage', () => {
+  describe('#selectSwitchedNetworkNeverShowMessage', () => {
     it('returns the correct value', () => {
       expect(
-        selectors.getNeverShowSwitchedNetworkMessage({
+        selectSwitchedNetworkNeverShowMessage({
           metamask: { switchedNetworkNeverShowMessage: true },
         }),
       ).toStrictEqual(true);
@@ -891,6 +838,123 @@ describe('Selectors', () => {
     });
   });
 
+  describe('#getChainIdsToPoll', () => {
+    const networkConfigurationsByChainId = {
+      [CHAIN_IDS.MAINNET]: {
+        chainId: CHAIN_IDS.MAINNET,
+        defaultRpcEndpointIndex: 0,
+        rpcEndpoints: [{ networkClientId: 'mainnet' }],
+      },
+      [CHAIN_IDS.LINEA_MAINNET]: {
+        chainId: CHAIN_IDS.LINEA_MAINNET,
+        defaultRpcEndpointIndex: 0,
+        rpcEndpoints: [{ networkClientId: 'linea-mainnet' }],
+      },
+      [CHAIN_IDS.SEPOLIA]: {
+        chainId: CHAIN_IDS.SEPOLIA,
+        defaultRpcEndpointIndex: 0,
+        rpcEndpoints: [{ networkClientId: 'sepolia' }],
+      },
+      [CHAIN_IDS.LINEA_SEPOLIA]: {
+        chainId: CHAIN_IDS.LINEA_SEPOLIA,
+        defaultRpcEndpointIndex: 0,
+        rpcEndpoints: [{ networkClientId: 'linea-sepolia' }],
+      },
+    };
+
+    beforeEach(() => {
+      process.env.PORTFOLIO_VIEW = 'true';
+    });
+
+    afterEach(() => {
+      process.env.PORTFOLIO_VIEW = undefined;
+    });
+
+    it('returns only non-test chain IDs', () => {
+      const chainIds = selectors.getChainIdsToPoll({
+        metamask: {
+          preferences: { pausedChainIds: [] },
+          networkConfigurationsByChainId,
+          selectedNetworkClientId: 'mainnet',
+        },
+      });
+      expect(Object.values(chainIds)).toHaveLength(2);
+      expect(chainIds).toStrictEqual([
+        CHAIN_IDS.MAINNET,
+        CHAIN_IDS.LINEA_MAINNET,
+      ]);
+    });
+
+    it('does not return paused chain IDs', () => {
+      const chainIds = selectors.getChainIdsToPoll({
+        metamask: {
+          preferences: { pausedChainIds: [CHAIN_IDS.LINEA_MAINNET] },
+          networkConfigurationsByChainId,
+          selectedNetworkClientId: 'mainnet',
+        },
+      });
+      expect(Object.values(chainIds)).toHaveLength(1);
+      expect(chainIds).toStrictEqual([CHAIN_IDS.MAINNET]);
+    });
+  });
+
+  describe('#getNetworkClientIdsToPoll', () => {
+    const networkConfigurationsByChainId = {
+      [CHAIN_IDS.MAINNET]: {
+        chainId: CHAIN_IDS.MAINNET,
+        defaultRpcEndpointIndex: 0,
+        rpcEndpoints: [{ networkClientId: 'mainnet' }],
+      },
+      [CHAIN_IDS.LINEA_MAINNET]: {
+        chainId: CHAIN_IDS.LINEA_MAINNET,
+        defaultRpcEndpointIndex: 0,
+        rpcEndpoints: [{ networkClientId: 'linea-mainnet' }],
+      },
+      [CHAIN_IDS.SEPOLIA]: {
+        chainId: CHAIN_IDS.SEPOLIA,
+        defaultRpcEndpointIndex: 0,
+        rpcEndpoints: [{ networkClientId: 'sepolia' }],
+      },
+      [CHAIN_IDS.LINEA_SEPOLIA]: {
+        chainId: CHAIN_IDS.LINEA_SEPOLIA,
+        defaultRpcEndpointIndex: 0,
+        rpcEndpoints: [{ networkClientId: 'linea-sepolia' }],
+      },
+    };
+
+    beforeEach(() => {
+      process.env.PORTFOLIO_VIEW = 'true';
+    });
+
+    afterEach(() => {
+      process.env.PORTFOLIO_VIEW = undefined;
+    });
+
+    it('returns only non-test chain IDs', () => {
+      const chainIds = selectors.getNetworkClientIdsToPoll({
+        metamask: {
+          preferences: { pausedChainIds: [] },
+          networkConfigurationsByChainId,
+          selectedNetworkClientId: 'mainnet',
+        },
+      });
+      expect(Object.values(chainIds)).toHaveLength(2);
+      expect(chainIds).toStrictEqual(['mainnet', 'linea-mainnet']);
+    });
+
+    it('does not return paused chain IDs', () => {
+      const chainIds = selectors.getNetworkClientIdsToPoll({
+        metamask: {
+          preferences: { pausedChainIds: [CHAIN_IDS.LINEA_MAINNET] },
+          networkConfigurationsByChainId,
+          selectedNetworkClientId: 'mainnet',
+        },
+      });
+      expect(Object.values(chainIds)).toHaveLength(1);
+      expect(chainIds).toStrictEqual(['mainnet']);
+    });
+  });
+
   describe('#isHardwareWallet', () => {
     it('returns false if it is not a HW wallet', () => {
       const mockStateWithImported = modifyStateWithHWKeyring(
@@ -972,28 +1036,6 @@ describe('Selectors', () => {
       expect(selectors.getHardwareWalletType(mockStateWithTrezor)).toBe(
         KeyringType.trezor,
       );
-    });
-  });
-
-  it('returns selected internalAccount', () => {
-    expect(selectors.getSelectedInternalAccount(mockState)).toStrictEqual({
-      address: '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc',
-      id: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
-      metadata: {
-        name: 'Test Account',
-        keyring: {
-          type: 'HD Key Tree',
-        },
-      },
-      options: {},
-      methods: [
-        'personal_sign',
-        'eth_signTransaction',
-        'eth_signTypedData_v1',
-        'eth_signTypedData_v3',
-        'eth_signTypedData_v4',
-      ],
-      type: 'eip155:eoa',
     });
   });
 
@@ -1406,194 +1448,6 @@ describe('Selectors', () => {
     });
   });
 
-  describe('#getShowSurveyToast', () => {
-    const realDateNow = Date.now;
-
-    afterEach(() => {
-      Date.now = realDateNow;
-    });
-
-    it('shows the survey link when not yet seen and within time bounds', () => {
-      Date.now = () =>
-        new Date(`${SURVEY_DATE} 12:25:00 ${SURVEY_GMT}`).getTime();
-      const result = selectors.getShowSurveyToast({
-        metamask: {
-          surveyLinkLastClickedOrClosed: null,
-        },
-      });
-      expect(result).toStrictEqual(true);
-    });
-
-    it('does not show the survey link when seen and within time bounds', () => {
-      Date.now = () =>
-        new Date(`${SURVEY_DATE} 12:25:00 ${SURVEY_GMT}`).getTime();
-      const result = selectors.getShowSurveyToast({
-        metamask: {
-          surveyLinkLastClickedOrClosed: 123456789,
-        },
-      });
-      expect(result).toStrictEqual(false);
-    });
-
-    it('does not show the survey link before time bounds', () => {
-      Date.now = () =>
-        new Date(`${SURVEY_DATE} 11:25:00 ${SURVEY_GMT}`).getTime();
-      const result = selectors.getShowSurveyToast({
-        metamask: {
-          surveyLinkLastClickedOrClosed: null,
-        },
-      });
-      expect(result).toStrictEqual(false);
-    });
-
-    it('does not show the survey link after time bounds', () => {
-      Date.now = () =>
-        new Date(`${SURVEY_DATE} 14:25:00 ${SURVEY_GMT}`).getTime();
-      const result = selectors.getShowSurveyToast({
-        metamask: {
-          surveyLinkLastClickedOrClosed: null,
-        },
-      });
-      expect(result).toStrictEqual(false);
-    });
-  });
-
-  describe('#getShowPrivacyPolicyToast', () => {
-    let dateNowSpy;
-
-    describe('mock one day after', () => {
-      beforeEach(() => {
-        const dayAfterPolicyDate = new Date(PRIVACY_POLICY_DATE);
-        dayAfterPolicyDate.setDate(dayAfterPolicyDate.getDate() + 1);
-
-        dateNowSpy = jest
-          .spyOn(Date, 'now')
-          .mockReturnValue(dayAfterPolicyDate.getTime());
-      });
-
-      afterEach(() => {
-        dateNowSpy.mockRestore();
-      });
-
-      it('shows the privacy policy toast when not yet seen, on or after the policy date, and onboardingDate is before the policy date', () => {
-        const result = selectors.getShowPrivacyPolicyToast({
-          metamask: {
-            newPrivacyPolicyToastClickedOrClosed: null,
-            onboardingDate: new Date(PRIVACY_POLICY_DATE).setDate(
-              new Date(PRIVACY_POLICY_DATE).getDate() - 2,
-            ),
-          },
-        });
-        expect(result).toBe(true);
-      });
-
-      it('does not show the privacy policy toast when seen, even if on or after the policy date and onboardingDate is before the policy date', () => {
-        const result = selectors.getShowPrivacyPolicyToast({
-          metamask: {
-            newPrivacyPolicyToastClickedOrClosed: true,
-            onboardingDate: new Date(PRIVACY_POLICY_DATE).setDate(
-              new Date(PRIVACY_POLICY_DATE).getDate() - 2,
-            ),
-          },
-        });
-        expect(result).toBe(false);
-      });
-
-      it('shows the privacy policy toast when not yet seen, on or after the policy date, and onboardingDate is not set', () => {
-        const result = selectors.getShowPrivacyPolicyToast({
-          metamask: {
-            newPrivacyPolicyToastClickedOrClosed: null,
-            onboardingDate: null,
-          },
-        });
-        expect(result).toBe(true);
-      });
-    });
-
-    describe('mock same day', () => {
-      beforeEach(() => {
-        dateNowSpy = jest
-          .spyOn(Date, 'now')
-          .mockReturnValue(new Date(PRIVACY_POLICY_DATE).getTime());
-      });
-
-      afterEach(() => {
-        dateNowSpy.mockRestore();
-      });
-
-      it('shows the privacy policy toast when not yet seen, on or after the policy date, and onboardingDate is before the policy date', () => {
-        const result = selectors.getShowPrivacyPolicyToast({
-          metamask: {
-            newPrivacyPolicyToastClickedOrClosed: null,
-            onboardingDate: new Date(PRIVACY_POLICY_DATE).setDate(
-              new Date(PRIVACY_POLICY_DATE).getDate() - 2,
-            ),
-          },
-        });
-        expect(result).toBe(true);
-      });
-
-      it('does not show the privacy policy toast when seen, even if on or after the policy date and onboardingDate is before the policy date', () => {
-        const result = selectors.getShowPrivacyPolicyToast({
-          metamask: {
-            newPrivacyPolicyToastClickedOrClosed: true,
-            onboardingDate: new Date(PRIVACY_POLICY_DATE).setDate(
-              new Date(PRIVACY_POLICY_DATE).getDate() - 2,
-            ),
-          },
-        });
-        expect(result).toBe(false);
-      });
-
-      it('shows the privacy policy toast when not yet seen, on or after the policy date, and onboardingDate is not set', () => {
-        const result = selectors.getShowPrivacyPolicyToast({
-          metamask: {
-            newPrivacyPolicyToastClickedOrClosed: null,
-            onboardingDate: null,
-          },
-        });
-        expect(result).toBe(true);
-      });
-    });
-
-    describe('mock day before', () => {
-      beforeEach(() => {
-        const dayBeforePolicyDate = new Date(PRIVACY_POLICY_DATE);
-        dayBeforePolicyDate.setDate(dayBeforePolicyDate.getDate() - 1);
-
-        dateNowSpy = jest
-          .spyOn(Date, 'now')
-          .mockReturnValue(dayBeforePolicyDate.getTime());
-      });
-
-      afterEach(() => {
-        dateNowSpy.mockRestore();
-      });
-
-      it('does not show the privacy policy toast before the policy date', () => {
-        const result = selectors.getShowPrivacyPolicyToast({
-          metamask: {
-            newPrivacyPolicyToastClickedOrClosed: null,
-            onboardingDate: new Date(PRIVACY_POLICY_DATE).setDate(
-              new Date(PRIVACY_POLICY_DATE).getDate() - 2,
-            ),
-          },
-        });
-        expect(result).toBe(false);
-      });
-
-      it('does not show the privacy policy toast before the policy date even if onboardingDate is not set', () => {
-        const result = selectors.getShowPrivacyPolicyToast({
-          metamask: {
-            newPrivacyPolicyToastClickedOrClosed: null,
-            onboardingDate: null,
-          },
-        });
-        expect(result).toBe(false);
-      });
-    });
-  });
-
   it('#getUpdatedAndSortedAccounts', () => {
     const pinnedAccountState = {
       ...mockState,
@@ -1664,6 +1518,7 @@ describe('Selectors', () => {
         balance: '0x0',
         id: '07c2cfec-36c9-46c4-8115-3836d3ac9047',
         metadata: {
+          importTime: 0,
           name: 'Test Account 2',
           keyring: {
             type: 'HD Key Tree',
@@ -1688,6 +1543,7 @@ describe('Selectors', () => {
         balance: '0x0',
         id: '784225f4-d30b-4e77-a900-c8bbce735b88',
         metadata: {
+          importTime: 0,
           name: 'Test Account 3',
           keyring: {
             type: 'HD Key Tree',
@@ -1711,6 +1567,7 @@ describe('Selectors', () => {
         address: '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc',
         id: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
         metadata: {
+          importTime: 0,
           name: 'Test Account',
           keyring: {
             type: 'HD Key Tree',
@@ -1736,6 +1593,7 @@ describe('Selectors', () => {
         address: '0xc42edfcc21ed14dda456aa0756c153f7985d8813',
         id: '15e69915-2a1a-4019-93b3-916e11fd432f',
         metadata: {
+          importTime: 0,
           name: 'Ledger Hardware 2',
           keyring: {
             type: 'Ledger Hardware',
@@ -1763,8 +1621,10 @@ describe('Selectors', () => {
           keyring: {
             type: 'Snap Keyring',
           },
+          importTime: 0,
           name: 'Snap Account 1',
           snap: {
+            enabled: true,
             id: 'snap-id',
             name: 'snap-name',
           },
@@ -1785,6 +1645,7 @@ describe('Selectors', () => {
       {
         id: '694225f4-d30b-4e77-a900-c8bbce735b42',
         metadata: {
+          importTime: 0,
           name: 'Test Account 4',
           keyring: {
             type: 'Custody test',
