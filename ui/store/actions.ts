@@ -68,8 +68,8 @@ import {
   getInternalAccountByAddress,
   getSelectedInternalAccount,
   getInternalAccounts,
-  getSelectedNetworkClientId,
 } from '../selectors';
+import { getSelectedNetworkClientId } from '../../shared/modules/selectors/networks';
 import {
   computeEstimatedGasLimit,
   initializeSendState,

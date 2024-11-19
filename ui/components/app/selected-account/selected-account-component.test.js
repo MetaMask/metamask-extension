@@ -44,14 +44,8 @@ jest.mock('../../../selectors/institutional/selectors', () => {
   };
 });
 
-jest.mock('../../../selectors', () => {
-  const mockGetAccountType = jest.fn(() => undefined);
-  const mockGetSelectedAccount = jest.fn(() => mockSelectedAccount);
-
+jest.mock('../../../../shared/modules/selectors/networks', () => {
   return {
-    getAccountType: mockGetAccountType,
-    getSelectedInternalAccount: mockGetSelectedAccount,
-    getCurrentChainId: jest.fn(() => '0x5'),
     getSelectedNetworkClientId: jest.fn(() => 'goerli'),
     getNetworkConfigurationsByChainId: jest.fn(() => ({
       '0x5': {
@@ -59,6 +53,17 @@ jest.mock('../../../selectors', () => {
         rpcEndpoints: [{ networkClientId: 'goerli' }],
       },
     })),
+  };
+});
+
+jest.mock('../../../selectors', () => {
+  const mockGetAccountType = jest.fn(() => undefined);
+  const mockGetSelectedAccount = jest.fn(() => mockSelectedAccount);
+
+  return {
+    getAccountType: mockGetAccountType,
+    getSelectedInternalAccount: mockGetSelectedAccount,
+    getCurrentChainId: jest.fn(() => '0x5')
   };
 });
 
