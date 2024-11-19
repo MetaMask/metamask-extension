@@ -15,6 +15,11 @@ class Confirmation {
 
   private sectionCollapseButton = '[data-testid="sectionCollapseButton"]';
 
+  private inlineAlertButton = {
+    css: '[data-testid="inline-alert"]',
+    text: 'Alert',
+  };
+
   constructor(driver: Driver) {
     this.driver = driver;
 
@@ -48,6 +53,10 @@ class Confirmation {
 
   async clickCollapseSectionButton() {
     await this.driver.clickElement(this.sectionCollapseButton);
+  }
+
+  async clickInlineAlert() {
+    await this.driver.clickElement(this.inlineAlertButton);
   }
 }
 

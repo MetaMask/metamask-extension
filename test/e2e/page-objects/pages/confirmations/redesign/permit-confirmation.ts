@@ -1,24 +1,32 @@
 import { strict as assert } from 'assert';
 import { Driver } from '../../../../webdriver/driver';
-import Confirmation from './confirmation';
 import { DAPP_HOST_ADDRESS } from '../../../../constants';
+import Confirmation from './confirmation';
 
-
-export default class PermitConfirmation extends Confirmation{
+export default class PermitConfirmation extends Confirmation {
   constructor(driver: Driver) {
     super(driver);
 
     this.driver = driver;
-
   }
 
   private originSelector = { text: DAPP_HOST_ADDRESS };
-  private contractPetNameSelector = { css: '.name__value', text: '0xCcCCc...ccccC' };
+
+  private contractPetNameSelector = {
+    css: '.name__value',
+    text: '0xCcCCc...ccccC',
+  };
+
   private primaryTypeSelector = { text: 'Permit' };
+
   private ownerSelector = { css: '.name__name', text: 'Account 1' };
+
   private spenderSelector = { css: '.name__value', text: '0x5B38D...eddC4' };
+
   private valueSelector = { text: '3,000' };
+
   private nonceSelector = { text: '0' };
+
   private deadlineSelector = { text: '09 June 3554, 16:53' };
 
   async verifyOrigin() {
@@ -27,8 +35,13 @@ export default class PermitConfirmation extends Confirmation{
   }
 
   async verifyContractPetName() {
-    const contractPetName = await this.driver.findElement(this.contractPetNameSelector);
-    assert.ok(contractPetName, 'Contract Pet Name element is missing or incorrect');
+    const contractPetName = await this.driver.findElement(
+      this.contractPetNameSelector,
+    );
+    assert.ok(
+      contractPetName,
+      'Contract Pet Name element is missing or incorrect',
+    );
   }
 
   async verifyPrimaryType() {

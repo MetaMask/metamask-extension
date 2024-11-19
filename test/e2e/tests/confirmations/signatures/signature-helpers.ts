@@ -270,8 +270,21 @@ export async function openDappAndTriggerSignature(
     case SignatureType.SIWE:
       await testDapp.clickSiwe();
       break;
+    case SignatureType.SIWE_BadDomain:
+      await testDapp.clickSwieBadDomain();
+      break;
     default:
       throw new Error('Invalid signature type');
   }
   await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
+}
+
+export async function assertVerifiedSiweMessage(
+  driver: Driver,
+  message: string,
+) {
+  await driver.waitUntilXWindowHandles(2);
+  await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
+
+  await testDapp.check_successSiwe(message);
 }

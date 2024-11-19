@@ -144,6 +144,8 @@ class TestDapp {
 
   private readonly signSiweButton = '#siwe';
 
+  private readonly signSiweVerifyResult = '#siweResult';
+
   private readonly signSiweBadDomainButton = '#siweBadDomain';
 
   private readonly eip747ContractAddressInput = '#eip747ContractAddress';
@@ -485,6 +487,13 @@ class TestDapp {
     });
   }
 
+  async verify_successSignTypedDataV3Result(result: string) {
+    await this.driver.waitForSelector({
+      css: this.signTypedDataV3Result,
+      text: result.toLowerCase(),
+    });
+  }
+
   /**
    * Verify the successful signTypedDataV4 signature.
    *
@@ -497,6 +506,21 @@ class TestDapp {
     await this.driver.waitForSelector({
       css: this.signTypedDataV4VerifyResult,
       text: publicKey.toLowerCase(),
+    });
+  }
+
+  async verify_successSignTypedDataV4Result(result: string) {
+    await this.driver.waitForSelector({
+      css: this.signTypedDataV4Result,
+      text: result.toLowerCase(),
+    });
+  }
+
+  async check_successSiwe(result: string) {
+    console.log('Verify successful SIWE signature');
+    await this.driver.waitForSelector({
+      css: this.signSiweVerifyResult,
+      text: result.toLowerCase(),
     });
   }
 
