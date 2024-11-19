@@ -1,4 +1,4 @@
-import React, { useRef, useState } from 'react';
+import React, { useMemo, useRef, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { getCurrentNetwork, getPreferences } from '../../../../../selectors';
 import {
@@ -28,6 +28,7 @@ import {
   ENVIRONMENT_TYPE_POPUP,
 } from '../../../../../../shared/constants/app';
 import NetworkFilter from '../network-filter';
+import { TEST_CHAINS } from '../../../../../../shared/constants/network';
 
 type AssetListControlBarProps = {
   showTokensLinks?: boolean;
@@ -43,6 +44,9 @@ const AssetListControlBar = ({ showTokensLinks }: AssetListControlBarProps) => {
     useState(false);
 
   const allNetworksFilterShown = Object.keys(tokenNetworkFilter ?? {}).length;
+  const isTestNetwork = useMemo(() => {
+    return (TEST_CHAINS as string[]).includes(currentNetwork.chainId);
+  }, [currentNetwork.chainId, TEST_CHAINS]);
 
   const windowType = getEnvironmentType();
   const isFullScreen =
@@ -84,6 +88,7 @@ const AssetListControlBar = ({ showTokensLinks }: AssetListControlBarProps) => {
             className="asset-list-control-bar__button"
             onClick={toggleNetworkFilterPopover}
             size={ButtonBaseSize.Sm}
+            disabled={isTestNetwork}
             endIconName={IconName.ArrowDown}
             backgroundColor={
               isNetworkFilterPopoverOpen

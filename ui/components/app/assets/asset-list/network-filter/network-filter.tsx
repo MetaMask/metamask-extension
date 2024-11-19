@@ -4,7 +4,6 @@ import { setTokenNetworkFilter } from '../../../../../store/actions';
 import {
   getCurrentChainId,
   getCurrentNetwork,
-  getIsTestnet,
   getPreferences,
   getSelectedInternalAccount,
   getShouldHideZeroBalanceTokens,
@@ -37,7 +36,6 @@ const NetworkFilter = ({ handleClose }: SortControlProps) => {
   const selectedAccount = useSelector(getSelectedInternalAccount);
   const currentNetwork = useSelector(getCurrentNetwork);
   const allNetworks = useSelector(getNetworkConfigurationsByChainId);
-  const isTestnet = useSelector(getIsTestnet);
   const { tokenNetworkFilter } = useSelector(getPreferences);
   const shouldHideZeroBalanceTokens = useSelector(
     getShouldHideZeroBalanceTokens,
@@ -46,7 +44,7 @@ const NetworkFilter = ({ handleClose }: SortControlProps) => {
   const { formattedTokensWithBalancesPerChain } = useGetFormattedTokensPerChain(
     selectedAccount,
     shouldHideZeroBalanceTokens,
-    true,
+    true, // true to get formattedTokensWithBalancesPerChain for the current chain
   );
   const { totalFiatBalance: selectedAccountBalance } =
     useAccountTotalCrossChainFiatBalance(
@@ -58,7 +56,7 @@ const NetworkFilter = ({ handleClose }: SortControlProps) => {
     useGetFormattedTokensPerChain(
       selectedAccount,
       shouldHideZeroBalanceTokens,
-      false,
+      false, // false to get the value for all networks
     );
   const { totalFiatBalance: selectedAccountBalanceForAllNetworks } =
     useAccountTotalCrossChainFiatBalance(
@@ -105,8 +103,7 @@ const NetworkFilter = ({ handleClose }: SortControlProps) => {
                 ethNumberOfDecimals={4}
                 hideTitle
                 showFiat
-                shouldCheckShowNativeToken
-                isAggregatedFiatOverviewBalance={!isTestnet}
+                isAggregatedFiatOverviewBalance
               />
             </Text>
           </Box>
@@ -149,15 +146,19 @@ const NetworkFilter = ({ handleClose }: SortControlProps) => {
             >
               {t('currentNetwork')}
             </Text>
-            <UserPreferencedCurrencyDisplay
-              value={selectedAccountBalance}
-              type="PRIMARY"
-              ethNumberOfDecimals={4}
-              hideTitle
-              showFiat
-              shouldCheckShowNativeToken
-              isAggregatedFiatOverviewBalance={!isTestnet}
-            />
+            <Text
+              variant={TextVariant.bodySmMedium}
+              color={TextColor.textAlternative}
+            >
+              <UserPreferencedCurrencyDisplay
+                value={selectedAccountBalance}
+                type="PRIMARY"
+                ethNumberOfDecimals={4}
+                hideTitle
+                showFiat
+                isAggregatedFiatOverviewBalance
+              />
+            </Text>
           </Box>
           <AvatarNetwork
             name="Current"
