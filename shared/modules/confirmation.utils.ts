@@ -22,51 +22,28 @@ export const REDESIGN_DEV_TRANSACTION_TYPES = [
   ...REDESIGN_USER_TRANSACTION_TYPES,
 ];
 
-const isCorrectDeveloperTransactionType = (
-  transactionMetadataType: TransactionType,
-): boolean => REDESIGN_DEV_TRANSACTION_TYPES.includes(transactionMetadataType);
-
-const isCorrectUserTransactionType = (
-  transactionMetadataType: TransactionType,
-): boolean => REDESIGN_USER_TRANSACTION_TYPES.includes(transactionMetadataType);
-
-const isCorrectSignatureApprovalType = (approvalType: ApprovalType): boolean =>
-  REDESIGN_SIGNATURE_APPROVAL_TYPES.includes(approvalType);
-
-const shouldUseRedesignForTransactionsDeveloperMode = (
-  isRedesignedConfirmationsDeveloperEnabled: boolean,
-  transactionMetadataType: TransactionType,
-): boolean =>
-  (process.env.ENABLE_CONFIRMATION_REDESIGN === 'true' ||
-    isRedesignedConfirmationsDeveloperEnabled) &&
-  isCorrectDeveloperTransactionType(transactionMetadataType);
-
-const shouldUseRedesignForTransactionsUserMode = (
-  isRedesignedTransactionsUserSettingEnabled: boolean,
-  transactionMetadataType: TransactionType,
-): boolean =>
-  isRedesignedTransactionsUserSettingEnabled &&
-  isCorrectUserTransactionType(transactionMetadataType);
-
-export const shouldUseRedesignForTransactions = (
+export function shouldUseRedesignForTransactions(
   transactionMetadataType: TransactionType,
   isRedesignedTransactionsUserSettingEnabled: boolean,
   isRedesignedConfirmationsDeveloperEnabled: boolean,
-): boolean =>
-  shouldUseRedesignForTransactionsUserMode(
-    isRedesignedTransactionsUserSettingEnabled,
-    transactionMetadataType,
-  ) ||
-  shouldUseRedesignForTransactionsDeveloperMode(
-    isRedesignedConfirmationsDeveloperEnabled,
-    transactionMetadataType,
+): boolean {
+  return (
+    shouldUseRedesignForTransactionsUserMode(
+      isRedesignedTransactionsUserSettingEnabled,
+      transactionMetadataType,
+    ) ||
+    shouldUseRedesignForTransactionsDeveloperMode(
+      isRedesignedConfirmationsDeveloperEnabled,
+      transactionMetadataType,
+    )
   );
+}
 
-export const shouldUseRedesignForSignatures = (
+export function shouldUseRedesignForSignatures(
   approvalType: ApprovalType,
   isRedesignedSignaturesUserSettingEnabled: boolean,
   isRedesignedConfirmationsDeveloperEnabled: boolean,
-): boolean => {
+): boolean {
   const isRedesignedConfirmationsDeveloperSettingEnabled =
     process.env.ENABLE_CONFIRMATION_REDESIGN === 'true' ||
     isRedesignedConfirmationsDeveloperEnabled;
@@ -79,4 +56,44 @@ export const shouldUseRedesignForSignatures = (
     isRedesignedSignaturesUserSettingEnabled ||
     isRedesignedConfirmationsDeveloperSettingEnabled
   );
-};
+}
+
+function isCorrectDeveloperTransactionType(
+  transactionMetadataType: TransactionType,
+): boolean {
+  return REDESIGN_DEV_TRANSACTION_TYPES.includes(transactionMetadataType);
+}
+
+function isCorrectUserTransactionType(
+  transactionMetadataType: TransactionType,
+): boolean {
+  return REDESIGN_USER_TRANSACTION_TYPES.includes(transactionMetadataType);
+}
+
+function isCorrectSignatureApprovalType(approvalType: ApprovalType): boolean {
+  return REDESIGN_SIGNATURE_APPROVAL_TYPES.includes(approvalType);
+}
+
+function shouldUseRedesignForTransactionsDeveloperMode(
+  isRedesignedConfirmationsDeveloperEnabled: boolean,
+  transactionMetadataType: TransactionType,
+): boolean {
+  const isDeveloperModeEnabled =
+    process.env.ENABLE_CONFIRMATION_REDESIGN === 'true' ||
+    isRedesignedConfirmationsDeveloperEnabled;
+
+  return (
+    isDeveloperModeEnabled &&
+    isCorrectDeveloperTransactionType(transactionMetadataType)
+  );
+}
+
+function shouldUseRedesignForTransactionsUserMode(
+  isRedesignedTransactionsUserSettingEnabled: boolean,
+  transactionMetadataType: TransactionType,
+): boolean {
+  return (
+    isRedesignedTransactionsUserSettingEnabled &&
+    isCorrectUserTransactionType(transactionMetadataType)
+  );
+}
