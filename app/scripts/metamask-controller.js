@@ -2629,13 +2629,11 @@ export default class MetamaskController extends EventEmitter {
   }
 
   triggerNetworkrequests() {
-    this.accountTrackerController.start();
     this.txController.startIncomingTransactionPolling();
     this.tokenDetectionController.enable();
   }
 
   stopNetworkRequests() {
-    this.accountTrackerController.stop();
     this.txController.stopIncomingTransactionPolling();
     this.tokenDetectionController.disable();
   }
@@ -3274,6 +3272,7 @@ export default class MetamaskController extends EventEmitter {
       approvalController,
       phishingController,
       tokenRatesController,
+      accountTrackerController,
       // Notification Controllers
       authenticationController,
       userStorageController,
@@ -4060,13 +4059,13 @@ export default class MetamaskController extends EventEmitter {
         tokenRatesController.stopPollingByPollingToken.bind(
           tokenRatesController,
         ),
-
-      tokenBalancesStartPolling: tokenBalancesController.startPolling.bind(
-        tokenBalancesController,
-      ),
-      tokenBalancesStopPollingByPollingToken:
-        tokenBalancesController.stopPollingByPollingToken.bind(
-          tokenBalancesController,
+      accountTrackerStartPolling:
+        accountTrackerController.startPollingByNetworkClientId.bind(
+          accountTrackerController,
+        ),
+      accountTrackerStopPollingByPollingToken:
+        accountTrackerController.stopPollingByPollingToken.bind(
+          accountTrackerController,
         ),
 
       tokenDetectionStartPolling: tokenDetectionController.startPolling.bind(
@@ -6727,6 +6726,7 @@ export default class MetamaskController extends EventEmitter {
       this.tokenBalancesController.stopAllPolling();
       this.appStateController.clearPollingTokens();
       this.tokenBalancesController.stopAllPolling();
+      this.accountTrackerController.stopAllPolling();
     } catch (error) {
       console.error(error);
     }
