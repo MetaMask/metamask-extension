@@ -862,14 +862,6 @@ describe('Selectors', () => {
       },
     };
 
-    beforeEach(() => {
-      process.env.PORTFOLIO_VIEW = 'true';
-    });
-
-    afterEach(() => {
-      process.env.PORTFOLIO_VIEW = undefined;
-    });
-
     it('returns only non-test chain IDs', () => {
       const chainIds = selectors.getChainIdsToPoll({
         metamask: {
@@ -921,14 +913,6 @@ describe('Selectors', () => {
         rpcEndpoints: [{ networkClientId: 'linea-sepolia' }],
       },
     };
-
-    beforeEach(() => {
-      process.env.PORTFOLIO_VIEW = 'true';
-    });
-
-    afterEach(() => {
-      process.env.PORTFOLIO_VIEW = undefined;
-    });
 
     it('returns only non-test chain IDs', () => {
       const chainIds = selectors.getNetworkClientIdsToPoll({

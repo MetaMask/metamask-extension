@@ -153,15 +153,7 @@ const AssetListControlBar = ({ showTokensLinks }: AssetListControlBarProps) => {
       marginRight={2}
       ref={popoverRef}
     >
-      <Box
-        display={Display.Flex}
-        justifyContent={
-          process.env.PORTFOLIO_VIEW
-            ? JustifyContent.spaceBetween
-            : JustifyContent.flexEnd
-        }
-      >
-
+      <Box display={Display.Flex} justifyContent={JustifyContent.spaceBetween}>
         <ButtonBase
           data-testid="network-filter"
           variant={TextVariant.bodyMdMedium}
