@@ -3,7 +3,7 @@ import type { UserStorageController } from '@metamask/profile-sync-controller';
 
 type AppState = {
   metamask: UserStorageController.UserStorageControllerState & {
-    hasFinishedAddingAccountsWithBalance: boolean;
+    hasFinishedAddingAccountsWithBalance?: boolean;
   };
 };
 
