@@ -48,6 +48,13 @@ export default function CurrencyDisplay({
     isAggregatedFiatOverviewBalance,
   });
 
+  const suffixOverride = (suffixString) => {
+    if (suffixString === 'SepoliaETH') {
+      return suffixString;
+    }
+    return suffixString.toUpperCase();
+  };
+
   return (
     <Box
       className={classnames('currency-display-component', className)}
@@ -94,7 +101,7 @@ export default function CurrencyDisplay({
           isHidden={privacyMode}
           {...suffixProps}
         >
-          {parts.suffix.toUpperCase()}
+          {suffixOverride(parts.suffix)}
         </SensitiveText>
       ) : null}
     </Box>
