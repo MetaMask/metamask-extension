@@ -11,11 +11,11 @@ export function useFirstTimeInteractionAlert(): Alert[] {
   const t = useI18nContext();
   const { currentConfirmation } = useConfirmContext();
 
-  const isFirstTimeInteraction = (currentConfirmation as TransactionMeta)
-    ?.firstTimeInteraction;
+  const { isFirstTimeInteraction, isFirstTimeInteractionDisabled } =
+    currentConfirmation as TransactionMeta;
 
   return useMemo(() => {
-    if (!isFirstTimeInteraction) {
+    if (!isFirstTimeInteraction || isFirstTimeInteractionDisabled) {
       return [];
     }
 

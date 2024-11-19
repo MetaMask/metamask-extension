@@ -1906,6 +1906,8 @@ export default class MetamaskController extends EventEmitter {
         updateTransactions: false,
       },
       isMultichainEnabled: process.env.TRANSACTION_MULTICHAIN,
+      isFirstTimeInteractionEnabled: () =>
+        this.preferencesController.state.securityAlertsEnabled,
       isSimulationEnabled: () =>
         this.preferencesController.state.useTransactionSimulations,
       messenger: transactionControllerMessenger,

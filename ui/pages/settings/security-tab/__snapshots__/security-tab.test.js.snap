@@ -126,7 +126,7 @@ exports[`Security Tab should match snapshot 1`] = `
           >
             <span>
                
-              This feature alerts you to malicious activity by actively reviewing transaction and signature requests. 
+              This feature alerts you to malicious or unusual activity by actively reviewing transaction and signature requests. 
               <a
                 href="https://support.metamask.io/privacy-and-security/how-to-turn-on-security-alerts/"
                 rel="noreferrer"
