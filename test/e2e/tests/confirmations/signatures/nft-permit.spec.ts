@@ -1,8 +1,7 @@
-import { strict as assert } from 'assert';
 import { TransactionEnvelopeType } from '@metamask/transaction-controller';
-import { Suite, Test } from 'mocha';
+import { Suite } from 'mocha';
 import { MockedEndpoint } from 'mockttp';
-import { DAPP_HOST_ADDRESS, WINDOW_TITLES } from '../../../helpers';
+import { WINDOW_TITLES } from '../../../helpers';
 import { Ganache } from '../../../seeder/ganache';
 import { Driver } from '../../../webdriver/driver';
 import {
@@ -12,6 +11,8 @@ import {
   withRedesignConfirmationFixtures,
 } from '../helpers';
 import { TestSuiteArguments } from '../transactions/shared';
+import PermitConfirmation from '../../../page-objects/pages/confirmations/redesign/permit-confirmation';
+import TestDapp from '../../../page-objects/pages/test-dapp';
 import {
   assertAccountDetailsMetrics,
   assertPastedAddress,
@@ -25,8 +26,6 @@ import {
   SignatureType,
   triggerSignature,
 } from './signature-helpers';
-import PermitConfirmation from '../../../page-objects/pages/confirmations/redesign/permit-confirmation';
-import TestDapp from '../../../page-objects/pages/test-dapp';
 
 describe('Confirmation Signature - NFT Permit @no-mmi', function (this: Suite) {
   it('initiates and confirms and emits the correct events', async function () {
@@ -141,9 +140,15 @@ async function assertVerifiedResults(driver: Driver, publicAddress: string) {
   await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
 
   await testDapp.check_successSign721Permit(publicAddress);
-  await testDapp.verifySign721PermitResult('0x572bc6300f6aa669e85e0a7792bc0b0803fb70c3c492226b30007ff7030b03600e390ef295a5a525d19f444943ae82697f0e5b5b0d77cc382cb2ea9486ec27801c');
-  await testDapp.verifySign721PermitResultR('0x572bc6300f6aa669e85e0a7792bc0b0803fb70c3c492226b30007ff7030b0360');
-  await testDapp.verifySign721PermitResultS('0x0e390ef295a5a525d19f444943ae82697f0e5b5b0d77cc382cb2ea9486ec2780');
+  await testDapp.verifySign721PermitResult(
+    '0x572bc6300f6aa669e85e0a7792bc0b0803fb70c3c492226b30007ff7030b03600e390ef295a5a525d19f444943ae82697f0e5b5b0d77cc382cb2ea9486ec27801c',
+  );
+  await testDapp.verifySign721PermitResultR(
+    '0x572bc6300f6aa669e85e0a7792bc0b0803fb70c3c492226b30007ff7030b0360',
+  );
+  await testDapp.verifySign721PermitResultS(
+    '0x0e390ef295a5a525d19f444943ae82697f0e5b5b0d77cc382cb2ea9486ec2780',
+  );
   await testDapp.verifySign721PermitResultV('28');
   await driver.clickElement('#sign721PermitVerify');
 }
