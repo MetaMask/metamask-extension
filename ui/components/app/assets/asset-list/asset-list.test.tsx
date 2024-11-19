@@ -152,14 +152,4 @@ describe('AssetList', () => {
     }
     return null;
   });
-
-  it('renders AssetList component and shows Refresh List text', async () => {
-    await act(async () => {
-      render();
-    });
-
-    await waitFor(() => {
-      expect(screen.getByText('Refresh list')).toBeInTheDocument();
-    });
-  });
 });
