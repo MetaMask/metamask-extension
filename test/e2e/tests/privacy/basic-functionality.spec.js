@@ -102,6 +102,7 @@ describe('MetaMask onboarding @no-mmi', function () {
 
         // Wait until network is fully switched and refresh tokens before asserting to mitigate flakiness
         await driver.assertElementNotPresent('.loading-overlay');
+        await driver.clickElement(`[data-testid="import-token-button"]`);
         await driver.clickElement('[data-testid="refresh-list-button"]');
 
         for (let i = 0; i < mockedEndpoints.length; i += 1) {
@@ -157,6 +158,7 @@ describe('MetaMask onboarding @no-mmi', function () {
 
         // Wait until network is fully switched and refresh tokens before asserting to mitigate flakiness
         await driver.assertElementNotPresent('.loading-overlay');
+        await driver.clickElement(`[data-testid="import-token-button"]`);
         await driver.clickElement('[data-testid="refresh-list-button"]');
         // intended delay to allow for network requests to complete
         await driver.delay(1000);
