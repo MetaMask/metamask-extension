@@ -148,6 +148,8 @@ class TestDapp {
 
   private readonly signSiweBadDomainButton = '#siweBadDomain';
 
+  private readonly sign721PermitButton = '#sign721Permit';
+
   private readonly eip747ContractAddressInput = '#eip747ContractAddress';
 
   private readonly transactionRequestMessage = {
@@ -550,6 +552,10 @@ class TestDapp {
 
   async clickSwieBadDomain() {
     await this.driver.clickElement(this.signSiweBadDomainButton);
+  }
+
+  async clickERC721Permit() {
+    await this.driver.clickElement(this.sign721PermitButton);
   }
 
   /**

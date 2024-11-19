@@ -299,7 +299,18 @@ export async function openDappAndTriggerSignature(
 ) {
   await unlockWallet(driver);
   await testDapp.openTestDappPage({ url: DAPP_URL });
+  await triggerSignature(type);
+  await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
+}
 
+export async function openDappAndTriggerDeploy(driver: Driver) {
+  await unlockWallet(driver);
+  await testDapp.openTestDappPage({ url: DAPP_URL });
+  await driver.clickElement('#deployNFTsButton');
+  await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
+}
+
+export async function triggerSignature(type: string) {
   switch (type) {
     case SignatureType.PersonalSign:
       await testDapp.clickPersonalSign();
@@ -322,10 +333,12 @@ export async function openDappAndTriggerSignature(
     case SignatureType.SIWE_BadDomain:
       await testDapp.clickSwieBadDomain();
       break;
+    case SignatureType.NFTPermit:
+      await testDapp.clickERC721Permit();
+      break;
     default:
       throw new Error('Invalid signature type');
   }
-  await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 }
 
 export async function assertVerifiedSiweMessage(

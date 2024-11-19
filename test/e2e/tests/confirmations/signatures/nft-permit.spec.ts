@@ -19,6 +19,7 @@ import {
   assertSignatureRejectedMetrics,
   clickHeaderInfoBtn,
   copyAddressAndPasteWalletAddress,
+  initializePages,
   openDappAndTriggerDeploy,
   SignatureType,
   triggerSignature,
@@ -36,6 +37,7 @@ describe('Confirmation Signature - NFT Permit @no-mmi', function (this: Suite) {
       }: TestSuiteArguments) => {
         const addresses = await (ganacheServer as Ganache).getAccounts();
         const publicAddress = addresses?.[0] as string;
+        await initializePages(driver);
 
         await openDappAndTriggerDeploy(driver);
         await driver.delay(1000);
@@ -44,12 +46,12 @@ describe('Confirmation Signature - NFT Permit @no-mmi', function (this: Suite) {
 
         await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
         await driver.delay(1000);
-        await triggerSignature(driver, SignatureType.NFTPermit);
+        await triggerSignature(SignatureType.NFTPermit);
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
         await clickHeaderInfoBtn(driver);
         await copyAddressAndPasteWalletAddress(driver);
-        await assertPastedAddress(driver);
+        await assertPastedAddress();
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
         await assertInfoValues(driver);
@@ -84,6 +86,7 @@ describe('Confirmation Signature - NFT Permit @no-mmi', function (this: Suite) {
         driver,
         mockedEndpoint: mockedEndpoints,
       }: TestSuiteArguments) => {
+        await initializePages(driver);
         await openDappAndTriggerDeploy(driver);
         await driver.delay(1000);
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
@@ -91,7 +94,7 @@ describe('Confirmation Signature - NFT Permit @no-mmi', function (this: Suite) {
 
         await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
         await driver.delay(1000);
-        await triggerSignature(driver, SignatureType.NFTPermit);
+        await triggerSignature(SignatureType.NFTPermit);
 
         await driver.clickElementAndWaitForWindowToClose(
           '[data-testid="confirm-footer-cancel-button"]',
