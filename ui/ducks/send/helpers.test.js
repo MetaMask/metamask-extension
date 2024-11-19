@@ -70,7 +70,6 @@ jest.mock('../../../shared/modules/selectors/networks', () => ({
   getProviderConfig: jest.fn(),
 }));
 
-
 jest.mock('../swaps/swaps', () => ({
   getUsedSwapsGasPrice: jest.fn(),
 }));

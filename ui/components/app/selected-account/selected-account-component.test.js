@@ -63,7 +63,7 @@ jest.mock('../../../selectors', () => {
   return {
     getAccountType: mockGetAccountType,
     getSelectedInternalAccount: mockGetSelectedAccount,
-    getCurrentChainId: jest.fn(() => '0x5')
+    getCurrentChainId: jest.fn(() => '0x5'),
   };
 });
 

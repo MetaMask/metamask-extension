@@ -69,7 +69,10 @@ import {
   getSelectedInternalAccount,
   getInternalAccounts,
 } from '../selectors';
-import { getSelectedNetworkClientId } from '../../shared/modules/selectors/networks';
+import {
+  getSelectedNetworkClientId,
+  getProviderConfig,
+} from '../../shared/modules/selectors/networks';
 import {
   computeEstimatedGasLimit,
   initializeSendState,
@@ -82,7 +85,6 @@ import {
 } from '../ducks/send';
 import { switchedToUnconnectedAccount } from '../ducks/alerts/unconnected-account';
 import { getUnconnectedAccountAlertEnabledness } from '../ducks/metamask/metamask';
-import { getProviderConfig } from '../../shared/modules/selectors/networks';
 import { toChecksumHexAddress } from '../../shared/modules/hexstring-utils';
 import {
   HardwareDeviceNames,
