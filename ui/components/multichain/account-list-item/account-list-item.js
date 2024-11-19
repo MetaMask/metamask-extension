@@ -344,7 +344,9 @@ const AccountListItem = ({
                 value={balanceToTranslate}
                 type={PRIMARY}
                 showFiat={showFiat}
-                isAggregatedFiatOverviewBalance={!isTestnet}
+                isAggregatedFiatOverviewBalance={
+                  !isTestnet && process.env.PORTFOLIO_VIEW
+                }
                 data-testid="first-currency-display"
                 privacyMode={privacyMode}
               />
