@@ -50,12 +50,12 @@ import {
   getTokensMarketData,
   getIsTestnet,
   getShouldShowAggregatedBalancePopover,
+  getIsTokenNetworkFilterEqualCurrentNetwork,
   ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
   getDataCollectionForMarketing,
   getMetaMetricsId,
   getParticipateInMetaMetrics,
   SwapsEthToken,
-  getIsTokenNetworkFilterEqualCurrentNetwork,
   ///: END:ONLY_INCLUDE_IF
 } from '../../../selectors';
 import Spinner from '../../ui/spinner';
