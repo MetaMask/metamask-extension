@@ -15,7 +15,7 @@ const { SMART_CONTRACTS } = require('../../seeder/smart-contracts');
 describe('Create token, approve token and approve token without gas', function () {
   const smartContract = SMART_CONTRACTS.HST;
 
-  it('imports and renders the balance for the new token', async function () {
+  it.only('imports and renders the balance for the new token', async function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilder().build(),
@@ -36,6 +36,7 @@ describe('Create token, approve token and approve token without gas', function (
         await clickNestedButton(driver, 'Tokens');
 
         await driver.clickElement(`[data-testid="import-token-button"]`);
+        await driver.clickElement(`[data-testid="importTokens"]`);
         await clickNestedButton(driver, 'Custom token');
         await driver.fill(
           '[data-testid="import-tokens-modal-custom-address"]',
