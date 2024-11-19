@@ -543,6 +543,11 @@ export default class ConfirmTransactionBase extends Component {
     ) : null;
 
     const { simulationData } = txData;
+
+    const simulationDetails = (
+      <SimulationDetails transaction={txData} enableMetrics />
+    );
+
     const showTotals = Boolean(simulationData?.error);
 
     return (
@@ -560,11 +565,7 @@ export default class ConfirmTransactionBase extends Component {
           tokenSymbol={tokenSymbol}
           isUsingPaymaster={isUsingPaymaster}
         />
-        <SimulationDetails
-          simulationData={simulationData}
-          transactionId={txData.id}
-          enableMetrics
-        />
+        {simulationDetails}
         {!renderSimulationFailureWarning && (
           <TransactionDetail
             disableEditGasFeeButton
