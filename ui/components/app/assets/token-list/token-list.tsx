@@ -3,12 +3,6 @@ import { shallowEqual, useSelector, useDispatch } from 'react-redux';
 import { Hex } from '@metamask/utils';
 import TokenCell from '../token-cell';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
-import { Box } from '../../../component-library';
-import {
-  AlignItems,
-  Display,
-  JustifyContent,
-} from '../../../../helpers/constants/design-system';
 import { TEST_CHAINS } from '../../../../../shared/constants/network';
 import { sortAssets } from '../util/sort';
 import {
