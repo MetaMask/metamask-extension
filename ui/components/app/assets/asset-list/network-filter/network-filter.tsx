@@ -8,7 +8,6 @@ import {
   getNetworkConfigurationsByChainId,
   getChainIdsToPoll,
   getShouldHideZeroBalanceTokens,
-  getIsTestnet,
   getSelectedAccount,
 } from '../../../../../selectors';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
