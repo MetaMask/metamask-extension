@@ -1595,6 +1595,16 @@ export default class MetamaskController extends EventEmitter {
               },
             });
           },
+          onAccountSyncErroneousSituation: (profileId, situationMessage) => {
+            this.metaMetricsController.trackEvent({
+              category: MetaMetricsEventCategory.ProfileSyncing,
+              event: MetaMetricsEventName.AccountsSyncErroneousSituation,
+              properties: {
+                profile_id: profileId,
+                situation_message: situationMessage,
+              },
+            });
+          },
         },
       },
       env: {
