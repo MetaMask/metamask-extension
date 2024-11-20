@@ -15,14 +15,14 @@ import Preloader from '../../../../../../../components/ui/icon/preloader';
 const StaticSimulation: React.FC<{
   title: string;
   titleTooltip: string;
-  description: string;
+  description?: string;
   simulationElements: React.ReactNode;
   isLoading?: boolean;
 }> = ({ title, titleTooltip, description, simulationElements, isLoading }) => {
   return (
     <ConfirmInfoSection data-testid="confirmation__simulation_section">
       <ConfirmInfoRow label={title} tooltip={titleTooltip}>
-        <ConfirmInfoRowText text={description} />
+        {description && <ConfirmInfoRowText text={description} />}
       </ConfirmInfoRow>
       {isLoading ? (
         <Box display={Display.Flex} justifyContent={JustifyContent.center}>

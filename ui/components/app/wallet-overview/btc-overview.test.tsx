@@ -150,6 +150,7 @@ describe('BtcOverview', () => {
           // The balances won't be available
           preferences: {
             showNativeTokenAsMainBalance: false,
+            tokenNetworkFilter: {},
           },
         },
       }),
