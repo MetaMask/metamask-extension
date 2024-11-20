@@ -107,6 +107,135 @@ describe('ENS', function (this: Suite) {
           result: `0x000000000000000000000000${sampleAddress}`,
         },
       ],
+      [
+        'eth_call',
+        {
+          params: [
+            {
+              to: '0xb1f8e55c7f64d203c1400b9d8555d050f94adf39',
+              data: '0xf0002ea90000000000000000000000000000000000000000000000000000000000000040000000000000000000000000000000000000000000000000000000000000008000000000000000000000000000000000000000000000000000000000000000010000000000000000000000005cfe73b6021e818b776b421b1c4db2474086a7e100000000000000000000000000000000000000000000000000000000000000010000000000000000000000000000000000000000000000000000000000000000',
+            },
+          ],
+          result: '0x1',
+        }
+      ],
+      [
+        'eth_call',
+        {
+          params: [
+            {
+              to: '0xb1f8e55c7f64d203c1400b9d8555d050f94adf39',
+              data: '0xf0002ea900000000000000000000000000000000000000000000000000000000000000400000000000000000000000000000000000000000000000000000000000000060000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000010000000000000000000000000000000000000000000000000000000000000000',
+            },
+          ],
+          result: '0x1',
+        }
+      ],
+      [
+        'eth_call',
+        {
+          params: [
+            {
+              to: '0x1111111111111111111111111111111111111111',
+              data: '0x01ffc9a7d9b67a2600000000000000000000000000000000000000000000000000000000',
+            },
+          ],
+          result: '0x1',
+        }
+      ],
+      [
+        'eth_call',
+        {
+          params: [
+            {
+              to: '0x1111111111111111111111111111111111111111',
+              data: '0x01ffc9a780ac58cd00000000000000000000000000000000000000000000000000000000',
+            },
+          ],
+          result: '0x1',
+        }
+      ],
+      [
+        'eth_call',
+        {
+          params: [
+            {
+              to: '0x1111111111111111111111111111111111111111',
+              data: '0x313ce567',
+            },
+          ],
+          result: '0x1',
+        }
+      ],
+      [
+        'eth_call',
+        {
+          params: [
+            {
+              to: '0x1111111111111111111111111111111111111111',
+              data: '0x95d89b41',
+            },
+          ],
+          result: '0x1',
+        }
+      ],
+      [
+        'eth_call',
+        {
+          params: [
+            {
+              to: '0x1111111111111111111111111111111111111111',
+              data: '0x70a082310000000000000000000000005cfe73b6021e818b776b421b1c4db2474086a7e1',
+            },
+          ],
+          result: '0x1',
+        }
+      ],
+      [
+        'eth_gasPrice',
+        {
+          result: '0x09184e72a000', // 10000000000000 in hex
+        },
+      ],
+      [
+        'eth_getCode',
+        {
+          params: [`0x${mockResolver}`, 'latest'],
+          result: '0x', // Assuming the contract code is empty
+        },
+      ],
+      [
+        'eth_getCode',
+        {
+          params: [`0x1111111111111111111111111111111111111111`, '0x1'],
+          result: '0x1', // Assuming the contract code is empty
+        },
+      ],
+      [
+        'eth_getTransactionCount',
+        {
+          params: [`0x${mockResolver}`, 'latest'],
+          result: '0x1', // Assuming the transaction count is 1
+        },
+      ],
+      [
+        'eth_getTransactionCount',
+        {
+          params: [`0x5cfe73b6021e818b776b421b1c4db2474086a7e1`, '0x1'],
+          result: '0x1', // Assuming the transaction count is 1
+        },
+      ],
+      [
+        'eth_estimateGas',
+        {
+          params: [
+            {
+              to: '0x1111111111111111111111111111111111111111',
+              from: '0x5cfe73b6021e818b776b421b1c4db2474086a7e1',
+            },
+          ],
+        },
+      ],
     ]);
   }
 
@@ -172,7 +301,7 @@ describe('ENS', function (this: Suite) {
          await confirmTxPage.check_pageIsLoaded(
           '0.000042',
           '0.100042'
-      )
+      );
 
          // Edit gas fee form
          await editGasFeeForm(driver, '21000', '100');
@@ -180,7 +309,7 @@ describe('ENS', function (this: Suite) {
          await confirmTxPage.check_pageIsLoaded(
           '0.0021',
           '0.1021'
-      )
+      );
 
          await confirmTxPage.confirmTx();
 

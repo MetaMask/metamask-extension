@@ -26,7 +26,7 @@ class ConfirmTxPage {
    * Verifies that the confirm transaction page is fully loaded by checking for the presence of confirm button and the expected gas values.
    *
    * @param expectedGasFee - The expected gas fee value to be displayed on the page.
-   * @param expectedTotalFee - The expected total fee value to be displayed on the page.
+   * @param expectedTotalAmount - The expected total fee value to be displayed on the page.
    * @returns A promise that resolves when all specified elements are verified to be present and contain the expected values, indicating the page has fully loaded.
    */
   async check_pageIsLoaded(
@@ -47,7 +47,7 @@ class ConfirmTxPage {
       ]);
     } catch (e) {
       console.log(
-        `Timeout while waiting for confirm transaction screen to be loaded, expected gas fee is: ${expectedGasFee} and expected total fee is: ${expectedTotalFee}`,
+        `Timeout while waiting for confirm transaction screen to be loaded, expected gas fee is: ${expectedGasFee} and expected total fee is: ${expectedTotalAmount}`,
         e,
       );
       throw e;
