@@ -150,7 +150,7 @@ describe('Send ETH', function () {
       await withFixtures(
         {
           fixtures: new FixtureBuilder().build(),
-          networkOptions: {
+          anvilOptions: {
             hardfork: 'london',
           },
           smartContract,
@@ -315,7 +315,7 @@ describe('Send ETH', function () {
             fixtures: new FixtureBuilder()
               .withPermissionControllerConnectedToTestDapp()
               .build(),
-            networkOptions: {
+              anvilOptions: {
               hardfork: 'london',
             },
             title: this.test.fullTitle(),

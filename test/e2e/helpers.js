@@ -64,7 +64,7 @@ async function withFixtures(options, testSuite) {
     dapp,
     fixtures,
     ganacheOptions,
-    networkOptions,
+    anvilOptions,
     smartContract,
     driverOptions,
     dappOptions,
@@ -89,7 +89,7 @@ async function withFixtures(options, testSuite) {
   let localNetworkServer;
 
   // Temporary logic for network management until we remove ganache from all specs
-  if (networkOptions || (!ganacheOptions && !disableGanache)) {
+  if (anvilOptions) {
     localNetworkServer = new Anvil();
   } else if (!disableGanache) {
     ganacheServer = new Ganache();
@@ -116,7 +116,7 @@ async function withFixtures(options, testSuite) {
     }
 
     if (localNetworkServer) {
-      await localNetworkServer.start(networkOptions || {});
+      await localNetworkServer.start(anvilOptions || {});
     }
 
     let contractRegistry;
