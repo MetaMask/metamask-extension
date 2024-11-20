@@ -1,4 +1,5 @@
 import { Mockttp } from 'mockttp';
+import { USER_STORAGE_FEATURE_NAMES } from '@metamask/profile-sync-controller/sdk';
 import { withFixtures } from '../../../helpers';
 import FixtureBuilder from '../../../fixture-builder';
 import { mockNotificationServices } from '../mocks';
@@ -28,7 +29,10 @@ describe('Account syncing - New User @no-mmi', function () {
           fixtures: new FixtureBuilder({ onboarding: true }).build(),
           title: this.test?.fullTitle(),
           testSpecificMock: (server: Mockttp) => {
-            userStorageMockttpController.setupPath('accounts', server);
+            userStorageMockttpController.setupPath(
+              USER_STORAGE_FEATURE_NAMES.accounts,
+              server,
+            );
 
             return mockNotificationServices(
               server,
@@ -45,6 +49,7 @@ describe('Account syncing - New User @no-mmi', function () {
           const homePage = new HomePage(driver);
           await homePage.check_pageIsLoaded();
           await homePage.check_expectedBalanceIsDisplayed();
+          await homePage.check_hasAccountSyncingSyncedAtLeastOnce();
 
           // Open account menu and validate 1 account is shown
           const header = new HeaderNavbar(driver);
@@ -77,7 +82,10 @@ describe('Account syncing - New User @no-mmi', function () {
           fixtures: new FixtureBuilder({ onboarding: true }).build(),
           title: this.test?.fullTitle(),
           testSpecificMock: (server: Mockttp) => {
-            userStorageMockttpController.setupPath('accounts', server);
+            userStorageMockttpController.setupPath(
+              USER_STORAGE_FEATURE_NAMES.accounts,
+              server,
+            );
             return mockNotificationServices(
               server,
               userStorageMockttpController,
@@ -94,6 +102,7 @@ describe('Account syncing - New User @no-mmi', function () {
           const homePage = new HomePage(driver);
           await homePage.check_pageIsLoaded();
           await homePage.check_expectedBalanceIsDisplayed();
+          await homePage.check_hasAccountSyncingSyncedAtLeastOnce();
 
           // Open account menu and validate the 2 accounts have been retrieved
           const header = new HeaderNavbar(driver);

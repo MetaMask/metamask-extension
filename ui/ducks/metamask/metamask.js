@@ -338,7 +338,7 @@ export const getNfts = (state) => {
   return allNfts?.[selectedAddress]?.[chainId] ?? [];
 };
 
-export const getNftsForChainId = (state, chainId) => {
+export const getNFTsByChainId = (state, chainId) => {
   const {
     metamask: { allNfts },
   } = state;
@@ -367,6 +367,10 @@ export function getNativeCurrency(state) {
 export function getConversionRate(state) {
   return state.metamask.currencyRates[getProviderConfig(state).ticker]
     ?.conversionRate;
+}
+
+export function getCurrencyRates(state) {
+  return state.metamask.currencyRates;
 }
 
 export function getSendHexDataFeatureFlagState(state) {
