@@ -10,7 +10,6 @@ import {
 } from '../../../store/actions';
 import {
   getAllDetectedTokensForSelectedAddress,
-  getCurrentChainId,
   getDetectedTokensInCurrentNetwork,
   getNetworkConfigurationsByChainId,
   getPreferences,
@@ -63,7 +62,6 @@ const DetectedToken = ({ setShowDetectedTokens }) => {
   const allNetworksFilterShown = Object.keys(tokenNetworkFilter ?? {}).length;
 
   const configuration = useSelector(getNetworkConfigurationsByChainId);
-  const currentChainId = useSelector(getCurrentChainId);
 
   const totalDetectedTokens = useMemo(() => {
     return process.env.PORTFOLIO_VIEW && !allNetworksFilterShown
