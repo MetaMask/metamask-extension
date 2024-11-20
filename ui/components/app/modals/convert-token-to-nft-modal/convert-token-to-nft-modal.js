@@ -10,10 +10,6 @@ import { ASSET_ROUTE } from '../../../../helpers/constants/routes';
 import { getNfts } from '../../../../ducks/metamask/metamask';
 import { ignoreTokens, showImportNftsModal } from '../../../../store/actions';
 import { isEqualCaseInsensitive } from '../../../../../shared/modules/string-utils';
-import {
-  getCurrentChainId,
-  getNetworkConfigurationsByChainId,
-} from '../../../../selectors';
 
 const ConvertTokenToNFTModal = ({ hideModal, tokenAddress }) => {
   const history = useHistory();
@@ -23,15 +19,6 @@ const ConvertTokenToNFTModal = ({ hideModal, tokenAddress }) => {
   const tokenAddedAsNFT = allNfts.find(({ address }) =>
     isEqualCaseInsensitive(address, tokenAddress),
   );
-  const chainId = useSelector(getCurrentChainId);
-  const networkConfigurationsByChainId = useSelector(
-    getNetworkConfigurationsByChainId,
-  );
-
-  const chainConfig = networkConfigurationsByChainId[chainId];
-  const { defaultRpcEndpointIndex } = chainConfig;
-  const { networkClientId: networkInstanceId } =
-    chainConfig.rpcEndpoints[defaultRpcEndpointIndex];
 
   return (
     <Modal
@@ -41,7 +28,6 @@ const ConvertTokenToNFTModal = ({ hideModal, tokenAddress }) => {
             ignoreTokens({
               tokensToIgnore: tokenAddress,
               dontShowLoadingIndicator: true,
-              networkInstanceId,
             }),
           );
           const { tokenId } = tokenAddedAsNFT;

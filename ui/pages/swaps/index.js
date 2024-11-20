@@ -197,16 +197,10 @@ export default function Swap() {
   useEffect(() => {
     clearTemporaryTokenRef.current = () => {
       if (latestAddedTokenTo && (!isAwaitingSwapRoute || conversionError)) {
-        const chainConfig = networkConfigurationsByChainId[chainId];
-        const { defaultRpcEndpointIndex } = chainConfig;
-        const { networkClientId: networkInstanceId } =
-          chainConfig.rpcEndpoints[defaultRpcEndpointIndex];
-
         dispatch(
           ignoreTokens({
             tokensToIgnore: latestAddedTokenTo,
             dontShowLoadingIndicator: true,
-            networkClientId: networkInstanceId,
           }),
         );
       }

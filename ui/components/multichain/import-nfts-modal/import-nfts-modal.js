@@ -106,16 +106,10 @@ export const ImportNftsModal = ({ onClose }) => {
       return;
     }
     if (ignoreErc20Token && nftAddress) {
-      const chainConfig = networkConfigurationsByChainId[chainId];
-      const { defaultRpcEndpointIndex } = chainConfig;
-      const { networkClientId: networkInstanceId } =
-        chainConfig.rpcEndpoints[defaultRpcEndpointIndex];
-
       await dispatch(
         ignoreTokens({
           tokensToIgnore: nftAddress,
           dontShowLoadingIndicator: true,
-          networkClientId: networkInstanceId,
         }),
       );
     }

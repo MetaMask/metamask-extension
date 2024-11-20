@@ -212,11 +212,6 @@ const DetectedToken = ({ setShowDetectedTokens }) => {
       setShowDetectedTokens(false);
       setPartiallyIgnoreDetectedTokens(false);
     } else {
-      const chainConfig = configuration[currentChainId];
-      const { defaultRpcEndpointIndex } = chainConfig;
-      const { networkClientId: networkInstanceId } =
-        chainConfig.rpcEndpoints[defaultRpcEndpointIndex];
-
       const deSelectedTokensAddresses = deSelectedTokens.map(
         ({ address }) => address,
       );
@@ -225,7 +220,6 @@ const DetectedToken = ({ setShowDetectedTokens }) => {
         ignoreTokens({
           tokensToIgnore: deSelectedTokensAddresses,
           dontShowLoadingIndicator: true,
-          networkClientId: networkInstanceId,
         }),
       );
 

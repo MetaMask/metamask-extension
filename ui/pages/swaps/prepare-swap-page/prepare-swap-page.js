@@ -471,29 +471,17 @@ export default function PrepareSwapPage({
   const onToSelect = useCallback(
     (token) => {
       if (latestAddedTokenTo && token.address !== toAddress) {
-        const chainConfig = networkConfigurationsByChainId[chainId];
-        const { defaultRpcEndpointIndex } = chainConfig;
-        const { networkClientId: networkInstanceId } =
-          chainConfig.rpcEndpoints[defaultRpcEndpointIndex];
-
         dispatch(
           ignoreTokens({
             tokensToIgnore: toAddress,
             dontShowLoadingIndicator: true,
-            networkClientId: networkInstanceId,
           }),
         );
       }
       dispatch(setSwapToToken(token));
       setVerificationClicked(false);
     },
-    [
-      dispatch,
-      latestAddedTokenTo,
-      toAddress,
-      chainId,
-      networkConfigurationsByChainId,
-    ],
+    [dispatch, latestAddedTokenTo, toAddress],
   );
 
   const tokensWithBalancesFromToken = tokensWithBalances.find((token) =>
