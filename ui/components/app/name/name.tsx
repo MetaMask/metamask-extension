@@ -9,7 +9,7 @@ import { NameType } from '@metamask/name-controller';
 import classnames from 'classnames';
 import { toChecksumAddress } from 'ethereumjs-util';
 import { Box, Icon, IconName, IconSize, Text } from '../../component-library';
-import { shortenAddress } from '../../../helpers/utils/util';
+import { shortenAddress, shortenString } from '../../../helpers/utils/util';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import {
   MetaMetricsEventCategory,
@@ -60,20 +60,6 @@ function formatValue(value: string, type: NameType): string {
   }
 }
 
-export function formatName(name: string): string {
-  const MAX_NAME_CHAR_COUNT = 15;
-
-  if (!name || !name.length) {
-    return name;
-  }
-
-  if (name.length > MAX_NAME_CHAR_COUNT) {
-    return `${name.substring(0, MAX_NAME_CHAR_COUNT)}...`;
-  }
-
-  return name;
-}
-
 const Name = memo(
   ({
     value,
@@ -117,7 +103,12 @@ const Name = memo(
     }, [setModalOpen]);
 
     const formattedValue = formatValue(value, type);
-    const formattedName = formatName(name);
+    const formattedName = shortenString(name || undefined, {
+      truncatedCharLimit: 15,
+      truncatedStartChars: 15,
+      truncatedEndChars: 0,
+      skipCharacterInEnd: true,
+    });
     const hasDisplayName = Boolean(name);
 
     return (

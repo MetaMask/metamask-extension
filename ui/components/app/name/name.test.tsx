@@ -10,7 +10,7 @@ import {
 import { useDisplayName } from '../../../hooks/useDisplayName';
 import { mockNetworkState } from '../../../../test/stub/networks';
 import { CHAIN_IDS } from '../../../../shared/constants/network';
-import Name, { formatName } from './name';
+import Name from './name';
 
 jest.mock('../../../hooks/useDisplayName');
 
@@ -92,6 +92,24 @@ describe('Name', () => {
     expect(container).toMatchSnapshot();
   });
 
+  it('renders address with long saved name', () => {
+    useDisplayNameMock.mockReturnValue({
+      name: "Very long and length saved name that doesn't seem to end, really.",
+      hasPetname: true,
+    });
+
+    const { container } = renderWithProvider(
+      <Name
+        type={NameType.ETHEREUM_ADDRESS}
+        value={ADDRESS_SAVED_NAME_MOCK}
+        variation={VARIATION_MOCK}
+      />,
+      store,
+    );
+
+    expect(container).toMatchSnapshot();
+  });
+
   it('renders address with image', () => {
     useDisplayNameMock.mockReturnValue({
       name: SAVED_NAME_MOCK,
@@ -147,34 +165,5 @@ describe('Name', () => {
         });
       },
     );
-  });
-});
-
-describe('formatName()', () => {
-  it('returns empty string if name is empty string', () => {
-    const TEST_NAME = '';
-
-    const actual = formatName(TEST_NAME);
-    const expected = '';
-
-    expect(actual).toEqual(expected);
-  });
-
-  it('returns whole name if it is short enough', () => {
-    const TEST_NAME = 'Short name';
-
-    const actual = formatName(TEST_NAME);
-    const expected = 'Short name';
-
-    expect(actual).toEqual(expected);
-  });
-
-  it('returns name with ellipsis if it is long enough', () => {
-    const TEST_NAME = 'Quite a long name';
-
-    const actual = formatName(TEST_NAME);
-    const expected = 'Quite a long na...';
-
-    expect(actual).toEqual(expected);
   });
 });
