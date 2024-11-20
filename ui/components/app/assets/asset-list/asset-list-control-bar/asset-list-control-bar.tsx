@@ -73,7 +73,8 @@ const AssetListControlBar = ({ showTokensLinks }: AssetListControlBarProps) => {
   });
 
   const allNetworksFilterShown =
-    Object.keys(tokenNetworkFilter || {}).length !== Object.keys(allOpts || {}).length;
+    Object.keys(tokenNetworkFilter || {}).length !==
+    Object.keys(allOpts || {}).length;
 
   useEffect(() => {
     if (isTestNetwork) {
