@@ -84,11 +84,10 @@ const AssetList = ({ onClickAsset, showTokensLinks }: AssetListProps) => {
     setShowReceiveModal(true);
   };
 
+  ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
   const balanceIsZero = useSelector(
     getMultichainSelectedAccountCachedBalanceIsZero,
   );
-
-  ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
   const isBuyableChain = useSelector(getIsNativeTokenBuyable);
   const shouldShowBuy = isBuyableChain && balanceIsZero;
   const isBtc = useSelector(getMultichainIsBitcoin);
