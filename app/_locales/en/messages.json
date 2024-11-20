@@ -416,12 +416,6 @@
   "alertMessageAddressMismatchWarning": {
     "message": "Attackers sometimes mimic sites by making small changes to the site address. Make sure you're interacting with the intended site before you continue."
   },
-  "selectedAccountMismatch": {
-    "message": "Different account selected"
-  },
-  "alertSelectedAccountWarning": {
-    "message": "This request is for a different account than the one selected in your wallet. To use another account, connect it to the site."
-  },
   "alertMessageChangeInSimulationResults": {
     "message": "Estimated changes for this transaction have been updated. Review them closely before proceeding."
   },
@@ -493,6 +487,9 @@
   },
   "alertReasonWrongAccount": {
     "message": "Wrong account"
+  },
+  "alertSelectedAccountWarning": {
+    "message": "This request is for a different account than the one selected in your wallet. To use another account, connect it to the site."
   },
   "alerts": {
     "message": "Alerts"
@@ -4510,9 +4507,6 @@
   "requestFrom": {
     "message": "Request from"
   },
-  "signingAccount": {
-    "message": "Signing Account"
-  },
   "requestFromInfo": {
     "message": "This is the site asking for your signature."
   },
@@ -4845,6 +4839,9 @@
   "selectType": {
     "message": "Select Type"
   },
+  "selectedAccountMismatch": {
+    "message": "Different account selected"
+  },
   "selectingAllWillAllow": {
     "message": "Selecting all will allow this site to view all of your current accounts. Make sure you trust this site."
   },
@@ -5004,6 +5001,9 @@
   },
   "signing": {
     "message": "Signing"
+  },
+  "signingAccount": {
+    "message": "Signing Account"
   },
   "signingInWith": {
     "message": "Signing in with"

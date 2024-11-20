@@ -21,6 +21,8 @@ import {
   ConfirmInfoRow,
   ConfirmInfoRowAddress,
 } from '../../../../../../components/app/confirm/info/row';
+import { RowAlertKey } from '../../../../../../components/app/confirm/info/row/constants';
+import { ConfirmInfoAlertRow } from '../../../../../../components/app/confirm/info/row/alert-row/alert-row';
 import { useI18nContext } from '../../../../../../hooks/useI18nContext';
 import { useConfirmContext } from '../../../../context/confirm';
 import { useDecodedTransactionData } from '../hooks/useDecodedTransactionData';
@@ -54,17 +56,20 @@ export const TransactionFlowSection = () => {
         flexDirection={FlexDirection.Row}
         justifyContent={JustifyContent.spaceBetween}
         alignItems={AlignItems.center}
-        padding={3}
       >
-        <ConfirmInfoRow
+        <ConfirmInfoAlertRow
+          alertKey={RowAlertKey.SigningInWith}
           label={t('from')}
-          style={{ flexDirection: 'column', alignItems: AlignItems.flexStart }}
+          ownerId={transactionMeta.id}
         >
-          <ConfirmInfoRowAddress
-            address={transactionMeta.txParams.from}
-            chainId={chainId}
-          />
-        </ConfirmInfoRow>
+          <Box marginTop={1}>
+            <ConfirmInfoRowAddress
+              address={transactionMeta.txParams.from}
+              chainId={chainId}
+            />
+          </Box>
+        </ConfirmInfoAlertRow>
+
         <Icon
           name={IconName.ArrowRight}
           size={IconSize.Md}
@@ -78,10 +83,12 @@ export const TransactionFlowSection = () => {
               alignItems: AlignItems.flexStart,
             }}
           >
-            <ConfirmInfoRowAddress
-              address={recipientAddress}
-              chainId={chainId}
-            />
+            <Box marginTop={1}>
+              <ConfirmInfoRowAddress
+                address={recipientAddress}
+                chainId={chainId}
+              />
+            </Box>
           </ConfirmInfoRow>
         )}
       </Box>
