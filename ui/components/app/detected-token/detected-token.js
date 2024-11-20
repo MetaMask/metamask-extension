@@ -2,6 +2,7 @@ import React, { useState, useContext, useEffect, useMemo } from 'react';
 import PropTypes from 'prop-types';
 import { useSelector, useDispatch } from 'react-redux';
 import { chain } from 'lodash';
+import deepEqual from 'fast-deep-equal';
 
 import {
   addImportedTokens,
@@ -80,7 +81,7 @@ const DetectedToken = ({ setShowDetectedTokens }) => {
               tokens.forEach((token) => {
                 acc[token.address] = {
                   token: { ...token, chainId },
-                  selected: true,
+                  selected: tokensListDetected[token.address]?.selected ?? true,
                 };
               });
             }
