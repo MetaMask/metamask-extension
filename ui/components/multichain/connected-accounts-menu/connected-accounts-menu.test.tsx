@@ -89,8 +89,6 @@ const renderComponent = (props = {}, stateChanges = {}) => {
                     requiredScopes: {},
                     optionalScopes: {
                       'eip155:1': {
-                        methods: [],
-                        notifications: [],
                         accounts: [
                           'eip155:1:0x8e5d75d60224ea0c33d0041e75de68b1c3cb6dd5',
                           'eip155:1:0x7250739de134d33ec7ab1ee592711e15098c9d2d',

@@ -48,8 +48,6 @@ describe('Connections Content', () => {
                     requiredScopes: {},
                     optionalScopes: {
                       'eip155:1': {
-                        methods: [],
-                        notifications: [],
                         accounts: [
                           'eip155:1:0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc',
                         ],
@@ -87,8 +85,6 @@ describe('Connections Content', () => {
                     requiredScopes: {},
                     optionalScopes: {
                       'eip155:1': {
-                        methods: [],
-                        notifications: [],
                         accounts: [
                           'eip155:1:0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc',
                         ],

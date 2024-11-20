@@ -134,13 +134,9 @@ describe('Ethereum Chain Utils', () => {
                     requiredScopes: {},
                     optionalScopes: {
                       'eip155:1': {
-                        methods: KnownRpcMethods.eip155,
-                        notifications: KnownNotifications.eip155,
                         accounts: [],
                       },
                       'wallet:eip155': {
-                        methods: [],
-                        notifications: [],
                         accounts: [],
                       },
                     },
@@ -237,13 +233,9 @@ describe('Ethereum Chain Utils', () => {
             requiredScopes: {},
             optionalScopes: {
               'eip155:1': {
-                methods: KnownRpcMethods.eip155,
-                notifications: KnownNotifications.eip155,
                 accounts: [],
               },
               'wallet:eip155': {
-                methods: [],
-                notifications: [],
                 accounts: [],
               },
             },
@@ -333,8 +325,6 @@ describe('Ethereum Chain Utils', () => {
             value: {
               requiredScopes: {
                 'eip155:1': {
-                  methods: [],
-                  notifications: [],
                   accounts: [],
                 },
               },
@@ -355,8 +345,6 @@ describe('Ethereum Chain Utils', () => {
             value: {
               requiredScopes: {
                 'eip155:1': {
-                  methods: [],
-                  notifications: [],
                   accounts: [],
                 },
               },

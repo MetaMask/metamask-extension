@@ -58,27 +58,19 @@ describe('permission background API methods', () => {
           value: {
             requiredScopes: {
               'eip155:1': {
-                methods: [],
-                notifications: [],
                 accounts: [],
               },
               'eip155:10': {
-                methods: [],
-                notifications: [],
                 accounts: ['eip155:10:0x1', 'eip155:10:0x2'],
               },
             },
             optionalScopes: {
               'bip122:000000000019d6689c085ae165831e93': {
-                methods: [],
-                notifications: [],
                 accounts: [
                   'bip122:000000000019d6689c085ae165831e93:128Lkh3S7CkDTBZ8W7BbpsN3YYizJMp8p6',
                 ],
               },
               'eip155:1': {
-                methods: [],
-                notifications: [],
                 accounts: ['eip155:1:0x2', 'eip155:1:0x3'],
               },
             },
@@ -100,8 +92,6 @@ describe('permission background API methods', () => {
         {
           requiredScopes: {
             'eip155:1': {
-              methods: [],
-              notifications: [],
               accounts: [
                 'eip155:1:0x2',
                 'eip155:1:0x3',
@@ -110,8 +100,6 @@ describe('permission background API methods', () => {
               ],
             },
             'eip155:10': {
-              methods: [],
-              notifications: [],
               accounts: [
                 'eip155:10:0x2',
                 'eip155:10:0x3',
@@ -122,15 +110,11 @@ describe('permission background API methods', () => {
           },
           optionalScopes: {
             'bip122:000000000019d6689c085ae165831e93': {
-              methods: [],
-              notifications: [],
               accounts: [
                 'bip122:000000000019d6689c085ae165831e93:128Lkh3S7CkDTBZ8W7BbpsN3YYizJMp8p6',
               ],
             },
             'eip155:1': {
-              methods: [],
-              notifications: [],
               accounts: [
                 'eip155:1:0x2',
                 'eip155:1:0x3',
@@ -139,8 +123,6 @@ describe('permission background API methods', () => {
               ],
             },
             'wallet:eip155': {
-              methods: [],
-              notifications: [],
               accounts: [
                 'wallet:eip155:0x2',
                 'wallet:eip155:0x3',
@@ -198,27 +180,19 @@ describe('permission background API methods', () => {
           value: {
             requiredScopes: {
               'eip155:1': {
-                methods: [],
-                notifications: [],
                 accounts: [],
               },
               'eip155:10': {
-                methods: [],
-                notifications: [],
                 accounts: ['eip155:10:0x1', 'eip155:10:0x2'],
               },
             },
             optionalScopes: {
               'bip122:000000000019d6689c085ae165831e93': {
-                methods: [],
-                notifications: [],
                 accounts: [
                   'bip122:000000000019d6689c085ae165831e93:128Lkh3S7CkDTBZ8W7BbpsN3YYizJMp8p6',
                 ],
               },
               'eip155:1': {
-                methods: [],
-                notifications: [],
                 accounts: ['eip155:1:0x2', 'eip155:1:0x3'],
               },
             },
@@ -240,8 +214,6 @@ describe('permission background API methods', () => {
         {
           requiredScopes: {
             'eip155:1': {
-              methods: [],
-              notifications: [],
               accounts: [
                 'eip155:1:0x2',
                 'eip155:1:0x3',
@@ -251,8 +223,6 @@ describe('permission background API methods', () => {
               ],
             },
             'eip155:10': {
-              methods: [],
-              notifications: [],
               accounts: [
                 'eip155:10:0x2',
                 'eip155:10:0x3',
@@ -264,15 +234,11 @@ describe('permission background API methods', () => {
           },
           optionalScopes: {
             'bip122:000000000019d6689c085ae165831e93': {
-              methods: [],
-              notifications: [],
               accounts: [
                 'bip122:000000000019d6689c085ae165831e93:128Lkh3S7CkDTBZ8W7BbpsN3YYizJMp8p6',
               ],
             },
             'eip155:1': {
-              methods: [],
-              notifications: [],
               accounts: [
                 'eip155:1:0x2',
                 'eip155:1:0x3',
@@ -282,8 +248,6 @@ describe('permission background API methods', () => {
               ],
             },
             'wallet:eip155': {
-              methods: [],
-              notifications: [],
               accounts: [
                 'wallet:eip155:0x2',
                 'wallet:eip155:0x3',
@@ -342,27 +306,19 @@ describe('permission background API methods', () => {
           value: {
             requiredScopes: {
               'eip155:1': {
-                methods: [],
-                notifications: [],
                 accounts: [],
               },
               'eip155:10': {
-                methods: [],
-                notifications: [],
                 accounts: ['eip155:10:0x1', 'eip155:10:0x2'],
               },
             },
             optionalScopes: {
               'bip122:000000000019d6689c085ae165831e93': {
-                methods: [],
-                notifications: [],
                 accounts: [
                   'bip122:000000000019d6689c085ae165831e93:128Lkh3S7CkDTBZ8W7BbpsN3YYizJMp8p6',
                 ],
               },
               'eip155:1': {
-                methods: [],
-                notifications: [],
                 accounts: ['eip155:1:0x2', 'eip155:1:0x3'],
               },
             },
@@ -387,20 +343,14 @@ describe('permission background API methods', () => {
           value: {
             requiredScopes: {
               'eip155:1': {
-                methods: [],
-                notifications: [],
                 accounts: [],
               },
               'eip155:10': {
-                methods: [],
-                notifications: [],
                 accounts: ['eip155:10:0x1'],
               },
             },
             optionalScopes: {
               'bip122:000000000019d6689c085ae165831e93': {
-                methods: [],
-                notifications: [],
                 accounts: [
                   'bip122:000000000019d6689c085ae165831e93:128Lkh3S7CkDTBZ8W7BbpsN3YYizJMp8p6',
                 ],
@@ -428,27 +378,19 @@ describe('permission background API methods', () => {
           value: {
             requiredScopes: {
               'eip155:1': {
-                methods: [],
-                notifications: [],
                 accounts: [],
               },
               'eip155:10': {
-                methods: [],
-                notifications: [],
                 accounts: ['eip155:10:0x1', 'eip155:10:0x2'],
               },
             },
             optionalScopes: {
               'bip122:000000000019d6689c085ae165831e93': {
-                methods: [],
-                notifications: [],
                 accounts: [
                   'bip122:000000000019d6689c085ae165831e93:128Lkh3S7CkDTBZ8W7BbpsN3YYizJMp8p6',
                 ],
               },
               'eip155:1': {
-                methods: [],
-                notifications: [],
                 accounts: ['eip155:1:0x2', 'eip155:1:0x3'],
               },
             },
@@ -469,32 +411,22 @@ describe('permission background API methods', () => {
         {
           requiredScopes: {
             'eip155:1': {
-              methods: [],
-              notifications: [],
               accounts: ['eip155:1:0x3', 'eip155:1:0x1'],
             },
             'eip155:10': {
-              methods: [],
-              notifications: [],
               accounts: ['eip155:10:0x3', 'eip155:10:0x1'],
             },
           },
           optionalScopes: {
             'bip122:000000000019d6689c085ae165831e93': {
-              methods: [],
-              notifications: [],
               accounts: [
                 'bip122:000000000019d6689c085ae165831e93:128Lkh3S7CkDTBZ8W7BbpsN3YYizJMp8p6',
               ],
             },
             'eip155:1': {
-              methods: [],
-              notifications: [],
               accounts: ['eip155:1:0x3', 'eip155:1:0x1'],
             },
             'wallet:eip155': {
-              methods: [],
-              notifications: [],
               accounts: ['wallet:eip155:0x3', 'wallet:eip155:0x1'],
             },
           },
@@ -575,18 +507,12 @@ describe('permission background API methods', () => {
                   requiredScopes: {},
                   optionalScopes: {
                     'eip155:1': {
-                      methods: KnownRpcMethods.eip155,
-                      notifications: KnownNotifications.eip155,
                       accounts: ['eip155:1:0xdeadbeef'],
                     },
                     'eip155:5': {
-                      methods: KnownRpcMethods.eip155,
-                      notifications: KnownNotifications.eip155,
                       accounts: ['eip155:5:0xdeadbeef'],
                     },
                     'wallet:eip155': {
-                      methods: [],
-                      notifications: [],
                       accounts: ['wallet:eip155:0xdeadbeef'],
                     },
                   },
@@ -643,27 +569,19 @@ describe('permission background API methods', () => {
           value: {
             requiredScopes: {
               'eip155:1': {
-                methods: [],
-                notifications: [],
                 accounts: [],
               },
               'eip155:10': {
-                methods: [],
-                notifications: [],
                 accounts: ['eip155:10:0x2'],
               },
             },
             optionalScopes: {
               'bip122:000000000019d6689c085ae165831e93': {
-                methods: [],
-                notifications: [],
                 accounts: [
                   'bip122:000000000019d6689c085ae165831e93:128Lkh3S7CkDTBZ8W7BbpsN3YYizJMp8p6',
                 ],
               },
               'eip155:1': {
-                methods: [],
-                notifications: [],
                 accounts: ['eip155:1:0x1'],
               },
             },
@@ -685,37 +603,25 @@ describe('permission background API methods', () => {
         {
           requiredScopes: {
             'eip155:1': {
-              methods: [],
-              notifications: [],
               accounts: ['eip155:1:0x1', 'eip155:1:0x2'],
             },
             'eip155:10': {
-              methods: [],
-              notifications: [],
               accounts: ['eip155:10:0x1', 'eip155:10:0x2'],
             },
           },
           optionalScopes: {
             'bip122:000000000019d6689c085ae165831e93': {
-              methods: [],
-              notifications: [],
               accounts: [
                 'bip122:000000000019d6689c085ae165831e93:128Lkh3S7CkDTBZ8W7BbpsN3YYizJMp8p6',
               ],
             },
             'eip155:1': {
-              methods: [],
-              notifications: [],
               accounts: ['eip155:1:0x1', 'eip155:1:0x2'],
             },
             'eip155:1337': {
-              methods: KnownRpcMethods.eip155,
-              notifications: KnownNotifications.eip155,
               accounts: ['eip155:1337:0x1', 'eip155:1337:0x2'],
             },
             'wallet:eip155': {
-              methods: [],
-              notifications: [],
               accounts: ['wallet:eip155:0x1', 'wallet:eip155:0x2'],
             },
           },
@@ -768,27 +674,19 @@ describe('permission background API methods', () => {
           value: {
             requiredScopes: {
               'eip155:1': {
-                methods: [],
-                notifications: [],
                 accounts: [],
               },
               'eip155:10': {
-                methods: [],
-                notifications: [],
                 accounts: ['eip155:10:0x2'],
               },
             },
             optionalScopes: {
               'bip122:000000000019d6689c085ae165831e93': {
-                methods: [],
-                notifications: [],
                 accounts: [
                   'bip122:000000000019d6689c085ae165831e93:128Lkh3S7CkDTBZ8W7BbpsN3YYizJMp8p6',
                 ],
               },
               'eip155:1': {
-                methods: [],
-                notifications: [],
                 accounts: ['eip155:1:0x1'],
               },
             },
@@ -810,42 +708,28 @@ describe('permission background API methods', () => {
         {
           requiredScopes: {
             'eip155:1': {
-              methods: [],
-              notifications: [],
               accounts: ['eip155:1:0x1', 'eip155:1:0x2'],
             },
             'eip155:10': {
-              methods: [],
-              notifications: [],
               accounts: ['eip155:10:0x1', 'eip155:10:0x2'],
             },
           },
           optionalScopes: {
             'bip122:000000000019d6689c085ae165831e93': {
-              methods: [],
-              notifications: [],
               accounts: [
                 'bip122:000000000019d6689c085ae165831e93:128Lkh3S7CkDTBZ8W7BbpsN3YYizJMp8p6',
               ],
             },
             'eip155:1': {
-              methods: [],
-              notifications: [],
               accounts: ['eip155:1:0x1', 'eip155:1:0x2'],
             },
             'eip155:4': {
-              methods: KnownRpcMethods.eip155,
-              notifications: KnownNotifications.eip155,
               accounts: ['eip155:4:0x1', 'eip155:4:0x2'],
             },
             'eip155:5': {
-              methods: KnownRpcMethods.eip155,
-              notifications: KnownNotifications.eip155,
               accounts: ['eip155:5:0x1', 'eip155:5:0x2'],
             },
             'wallet:eip155': {
-              methods: [],
-              notifications: [],
               accounts: ['wallet:eip155:0x1', 'wallet:eip155:0x2'],
             },
           },
@@ -898,20 +782,14 @@ describe('permission background API methods', () => {
           value: {
             requiredScopes: {
               'eip155:1': {
-                methods: [],
-                notifications: [],
                 accounts: [],
               },
               'eip155:10': {
-                methods: [],
-                notifications: [],
                 accounts: ['eip155:10:0x1', 'eip155:10:0x2'],
               },
             },
             optionalScopes: {
               'bip122:000000000019d6689c085ae165831e93': {
-                methods: [],
-                notifications: [],
                 accounts: [
                   'bip122:000000000019d6689c085ae165831e93:128Lkh3S7CkDTBZ8W7BbpsN3YYizJMp8p6',
                 ],
@@ -938,14 +816,10 @@ describe('permission background API methods', () => {
           value: {
             requiredScopes: {
               'eip155:1': {
-                methods: [],
-                notifications: [],
               },
             },
             optionalScopes: {
               'bip122:000000000019d6689c085ae165831e93': {
-                methods: [],
-                notifications: [],
                 accounts: [
                   'bip122:000000000019d6689c085ae165831e93:128Lkh3S7CkDTBZ8W7BbpsN3YYizJMp8p6',
                 ],
@@ -973,20 +847,14 @@ describe('permission background API methods', () => {
           value: {
             requiredScopes: {
               'eip155:1': {
-                methods: [],
-                notifications: [],
                 accounts: [],
               },
               'eip155:10': {
-                methods: [],
-                notifications: [],
                 accounts: ['eip155:10:0x1', 'eip155:10:0x2'],
               },
             },
             optionalScopes: {
               'bip122:000000000019d6689c085ae165831e93': {
-                methods: [],
-                notifications: [],
                 accounts: [
                   'bip122:000000000019d6689c085ae165831e93:128Lkh3S7CkDTBZ8W7BbpsN3YYizJMp8p6',
                 ],
@@ -1009,15 +877,11 @@ describe('permission background API methods', () => {
         {
           requiredScopes: {
             'eip155:1': {
-              methods: [],
-              notifications: [],
               accounts: [],
             },
           },
           optionalScopes: {
             'bip122:000000000019d6689c085ae165831e93': {
-              methods: [],
-              notifications: [],
               accounts: [
                 'bip122:000000000019d6689c085ae165831e93:128Lkh3S7CkDTBZ8W7BbpsN3YYizJMp8p6',
               ],

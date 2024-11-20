@@ -66,25 +66,17 @@ const createMockedHandler = () => {
             value: {
               requiredScopes: {
                 'eip155:1': {
-                  methods: [],
-                  notifications: [],
                   accounts: ['eip155:1:0x1', 'eip155:1:0x2'],
                 },
                 'eip155:5': {
-                  methods: [],
-                  notifications: [],
                   accounts: ['eip155:5:0x1', 'eip155:5:0x3'],
                 },
               },
               optionalScopes: {
                 'eip155:1': {
-                  methods: [],
-                  notifications: [],
                   accounts: ['eip155:1:0x4'],
                 },
                 'other:1': {
-                  methods: [],
-                  notifications: [],
                   accounts: ['other:1:0x4'],
                 },
               },
