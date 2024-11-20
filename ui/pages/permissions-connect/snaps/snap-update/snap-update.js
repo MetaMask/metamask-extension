@@ -48,7 +48,10 @@ export default function SnapUpdate({
   const [showAllPermissions, setShowAllPermissions] = useState(false);
 
   const { isScrollable, hasScrolledToBottom, scrollToBottom, ref, onScroll } =
-    useScrollRequired([requestState]);
+    useScrollRequired([requestState], {
+      offsetPxFromBottom: 100,
+    });
+
   const snapsMetadata = useSelector(getSnapsMetadata);
 
   const onCancel = useCallback(
