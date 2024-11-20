@@ -14,6 +14,8 @@ import {
 import { TokenListItem } from '../../../multichain';
 import { isEqualCaseInsensitive } from '../../../../../shared/modules/string-utils';
 import { getIntlLocale } from '../../../../ducks/locale/locale';
+import { formatAmount } from '../../../../pages/confirmations/components/simulation-details/formatAmount';
+import BigNumber from 'bignumber.js';
 
 type TokenCellProps = {
   address: string;
@@ -82,7 +84,6 @@ export default function TokenCell({
     image;
 
   const secondaryThreshold = 0.01;
-  const primaryThreshold = 0.0001;
 
   // Format for fiat balance with currency style
   const secondary = formatWithThreshold(
@@ -95,18 +96,9 @@ export default function TokenCell({
     },
   );
 
-  // Format for primary amount with 5 decimal places
-  const num = Number(string);
-  const hasNonZeroDecimal = num % 1 !== 0;
-
-  const primary = formatWithThreshold(
-    Number(string),
-    primaryThreshold,
+  const primary = formatAmount(
     locale,
-    {
-      minimumFractionDigits: hasNonZeroDecimal ? 4 : 0,
-      maximumFractionDigits: hasNonZeroDecimal ? 4 : 0,
-    },
+    new BigNumber(Number(string) || '0', 10),
   );
 
   let isStakeable = isMainnet && isEvm && isNative;
