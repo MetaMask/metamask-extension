@@ -7,9 +7,11 @@ const {
   unlockWallet,
   withFixtures,
 } = require('../../helpers');
+const { mockSecurityAlertsAPIFailed } = require('./utils');
 const { mockServerJsonRpc } = require('./mocks/mock-server-json-rpc');
 
 async function mockInfura(mockServer) {
+  await mockSecurityAlertsAPIFailed(mockServer);
   await mockServerJsonRpc(mockServer, [
     ['eth_blockNumber'],
     ['eth_call'],
@@ -48,7 +50,7 @@ async function mockInfuraWithMaliciousResponses(mockServer) {
 
 describe('PPOM Blockaid Alert - Multiple Networks Support @no-mmi', function () {
   // eslint-disable-next-line mocha/no-skipped-tests
-  it.skip('should show banner alert after switchinig to another supported network', async function () {
+  it.skip('should show banner alert after switching to another supported network', async function () {
     await withFixtures(
       {
         dapp: true,

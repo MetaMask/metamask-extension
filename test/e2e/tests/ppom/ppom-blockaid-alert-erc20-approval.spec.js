@@ -8,6 +8,7 @@ const {
   unlockWallet,
   withFixtures,
 } = require('../../helpers');
+const { mockSecurityAlertsAPIFailed } = require('./utils');
 const { mockServerJsonRpc } = require('./mocks/mock-server-json-rpc');
 
 const bannerAlertSelector = '[data-testid="security-provider-banner-alert"]';
@@ -23,6 +24,7 @@ const CONTRACT_ADDRESS = {
 };
 
 async function mockInfura(mockServer) {
+  await mockSecurityAlertsAPIFailed(mockServer);
   await mockServerJsonRpc(mockServer, [
     ['eth_blockNumber'],
     [
@@ -210,8 +212,7 @@ async function mockInfura(mockServer) {
 }
 
 describe('PPOM Blockaid Alert - Malicious ERC20 Approval @no-mmi', function () {
-  // eslint-disable-next-line mocha/no-skipped-tests
-  it.skip('should show banner alert', async function () {
+  it('should show banner alert', async function () {
     await withFixtures(
       {
         dapp: true,

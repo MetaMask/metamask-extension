@@ -3,12 +3,12 @@ const FixtureBuilder = require('../../fixture-builder');
 
 const {
   defaultGanacheOptions,
-  withFixtures,
-  sendScreenToConfirmScreen,
   logInWithBalanceValidation,
+  sendScreenToConfirmScreen,
   WINDOW_TITLES,
+  withFixtures,
 } = require('../../helpers');
-const { SECURITY_ALERTS_PROD_API_BASE_URL } = require('./constants');
+const { mockSecurityAlertsAPIFailed } = require('./utils');
 const { mockServerJsonRpc } = require('./mocks/mock-server-json-rpc');
 
 const bannerAlertSelector = '[data-testid="security-provider-banner-alert"]';
@@ -19,19 +19,8 @@ const expectedMaliciousTitle = 'This is a deceptive request';
 const expectedMaliciousDescription =
   'If you approve this request, a third party known for scams will take all your assets.';
 
-const SEND_REQUEST_BASE_MOCK = {
-  method: 'eth_sendTransaction',
-  params: [
-    {
-      from: '0x5cfe73b6021e818b776b421b1c4db2474086a7e1',
-      data: '0x',
-      to: mockMaliciousAddress,
-      value: '0xde0b6b3a7640000',
-    },
-  ],
-};
-
 async function mockInfura(mockServer) {
+  await mockSecurityAlertsAPIFailed(mockServer);
   await mockServerJsonRpc(mockServer, [
     ['eth_blockNumber'],
     ['eth_call'],
@@ -45,63 +34,85 @@ async function mockInfura(mockServer) {
   ]);
 }
 
-async function mockRequest(server, request, response) {
-  await server
-    .forPost(`${SECURITY_ALERTS_PROD_API_BASE_URL}/validate/0x1`)
-    .withJsonBodyIncluding(request)
-    .thenJson(response.statusCode ?? 201, response);
-}
-
 async function mockInfuraWithBenignResponses(mockServer) {
   await mockInfura(mockServer);
 
-  await mockRequest(mockServer, SEND_REQUEST_BASE_MOCK, {
-    block: 20733513,
-    result_type: 'Benign',
-    reason: '',
-    description: '',
-    features: [],
-  });
+  await mockServer
+    .forPost()
+    .withJsonBodyIncluding({
+      method: 'debug_traceCall',
+    })
+    .thenCallback(async (req) => {
+      return {
+        statusCode: 200,
+        json: {
+          jsonrpc: '2.0',
+          id: (await req.body.getJson()).id,
+          result: {
+            type: 'CALL',
+            from: '0x0000000000000000000000000000000000000000',
+            to: '0xd46e8dd67c5d32be8058bb8eb970870f07244567',
+            value: '0xde0b6b3a7640000',
+            gas: '0x16c696eb7',
+            gasUsed: '0x0',
+            input: '0x',
+            output: '0x',
+          },
+        },
+      };
+    });
 }
 
 async function mockInfuraWithMaliciousResponses(mockServer) {
   await mockInfura(mockServer);
 
-  await mockRequest(mockServer, SEND_REQUEST_BASE_MOCK, {
-    block: 20733277,
-    result_type: 'Malicious',
-    reason: 'transfer_farming',
-    description: '',
-    features: ['Interaction with a known malicious address'],
-  });
+  await mockServer
+    .forPost()
+    .withJsonBodyIncluding({
+      method: 'debug_traceCall',
+      params: [{ accessList: [], data: '0x00000000' }],
+    })
+    .thenCallback(async (req) => {
+      return {
+        statusCode: 200,
+        json: {
+          jsonrpc: '2.0',
+          id: (await req.body.getJson()).id,
+          result: {
+            calls: [
+              {
+                error: 'execution reverted',
+                from: '0x0000000000000000000000000000000000000000',
+                gas: '0x1d55c2cb',
+                gasUsed: '0x39c',
+                input: '0x00000000',
+                to: mockMaliciousAddress,
+                type: 'DELEGATECALL',
+                value: '0x0',
+              },
+            ],
+            error: 'execution reverted',
+            from: '0x0000000000000000000000000000000000000000',
+            gas: '0x1dcd6500',
+            gasUsed: '0x721e',
+            input: '0x00000000',
+            to: mockMaliciousAddress,
+            type: 'CALL',
+            value: '0x0',
+          },
+        },
+      };
+    });
 }
 
 async function mockInfuraWithFailedResponses(mockServer) {
   await mockInfura(mockServer);
 
-  await mockRequest(
-    mockServer,
-    {
-      ...SEND_REQUEST_BASE_MOCK,
-      params: [
-        {
-          from: '0x5cfe73b6021e818b776b421b1c4db2474086a7e1',
-          data: '0x',
-          to: '0xb8c77482e45f1f44de1745f52c74426c631bdd52',
-          value: '0xf43fc2c04ee0000',
-        },
-      ],
-    },
-    { statusCode: 500, message: 'Internal server error' },
-  );
-
-  // Retained this mock to support fallback to the local PPOM
   await mockServer
     .forGet(
       'https://static.cx.metamask.io/api/v1/confirmations/ppom/ppom_version.json',
     )
     .thenCallback(() => {
-      console.log('mocked ppom_version.json');
       return {
         statusCode: 500,
       };
