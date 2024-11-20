@@ -1,4 +1,3 @@
-import { title } from 'node:process';
 import { CardElement } from '@metamask/snaps-sdk/jsx';
 import { mapToTemplate } from '../utils';
 import { UIComponentFactory } from './types';
@@ -7,7 +6,7 @@ export const card: UIComponentFactory<CardElement> = ({
   element,
   ...params
 }) => {
-  if (element.props.title !== 'string') {
+  if (typeof element.props.title !== 'string') {
     return {
       element: 'SnapUICard',
       props: {
