@@ -1,10 +1,15 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { TransactionType } from '@metamask/transaction-controller';
 import { PriorityLevels } from '../../../../../shared/constants/gas';
 import { useGasFeeContext } from '../../../../contexts/gasFee';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
+import { STXBannerAlert } from '../stx-banner-alert';
+import {
+  dismissSTXMigrationAlert,
+  stxAlertIsOpen,
+} from '../../../../ducks/alerts/stx-migration';
 import {
   BannerAlert,
   ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
@@ -36,6 +41,12 @@ const TransactionAlerts = ({
   txData,
   isUsingPaymaster,
 }) => {
+  const dispatch = useDispatch();
+  const stxAlertIsVisible = useSelector(stxAlertIsOpen);
+
+  const handleSTXAlertClose = () => {
+    dispatch(dismissSTXMigrationAlert());
+  };
   const {
     estimateUsed,
     hasSimulationError,
@@ -81,6 +92,9 @@ const TransactionAlerts = ({
   return (
     <div className="transaction-alerts">
       <BlockaidBannerAlert txData={txData} />
+      {stxAlertIsVisible && (
+        <STXBannerAlert onClose={() => handleSTXAlertClose()} />
+      )}
       {isSuspiciousResponse(txData?.securityProviderResponse) && (
         <SecurityProviderBannerMessage
           securityProviderResponse={txData.securityProviderResponse}
