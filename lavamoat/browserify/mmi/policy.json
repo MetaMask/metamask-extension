@@ -2017,14 +2017,6 @@
         "semver": true
       }
     },
-    "@metamask/network-controller>@metamask/eth-json-rpc-provider": {
-      "packages": {
-        "@metamask/json-rpc-engine": true,
-        "@metamask/rpc-errors": true,
-        "@metamask/safe-event-emitter": true,
-        "uuid": true
-      }
-    },
     "@metamask/network-controller>@metamask/json-rpc-engine": {
       "packages": {
         "@metamask/network-controller>@metamask/rpc-errors": true,
