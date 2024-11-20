@@ -60,7 +60,7 @@ describe('Confirmation Redesign ERC20 Revoke Allowance', function () {
       );
     });
 
-    it.only('Sends a type 2 transaction (EIP1559)', async function () {
+    it('Sends a type 2 transaction (EIP1559)', async function () {
       await withFixtures(
         {
           dapp: true,
