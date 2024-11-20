@@ -4,6 +4,7 @@ import { useHistory } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import { EthMethod } from '@metamask/keyring-api';
 import { isEqual } from 'lodash';
+import { getNativeTokenAddress } from '@metamask/assets-controllers';
 import {
   getCurrentCurrency,
   getIsBridgeChain,
@@ -115,7 +116,7 @@ const AssetPage = ({
   const address =
     type === AssetType.token
       ? toChecksumHexAddress(asset.address)
-      : '0x0000000000000000000000000000000000000000';
+      : getNativeTokenAddress(chainId);
 
   const marketData = allMarketData?.[address];
 
