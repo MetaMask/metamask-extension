@@ -134,9 +134,6 @@ describe('Ethereum Chain Utils', () => {
                       'eip155:1': {
                         accounts: [],
                       },
-                      'wallet:eip155': {
-                        accounts: [],
-                      },
                     },
                     isMultichainOrigin: false,
                   },
@@ -231,9 +228,6 @@ describe('Ethereum Chain Utils', () => {
             requiredScopes: {},
             optionalScopes: {
               'eip155:1': {
-                accounts: [],
-              },
-              'wallet:eip155': {
                 accounts: [],
               },
             },
