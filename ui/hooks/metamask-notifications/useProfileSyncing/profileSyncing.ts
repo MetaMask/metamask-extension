@@ -10,7 +10,10 @@ import {
 } from '../../../store/actions';
 
 import { selectIsSignedIn } from '../../../selectors/metamask-notifications/authentication';
-import { selectIsProfileSyncingEnabled } from '../../../selectors/metamask-notifications/profile-syncing';
+import {
+  selectIsAccountSyncingReadyToBeDispatched,
+  selectIsProfileSyncingEnabled,
+} from '../../../selectors/metamask-notifications/profile-syncing';
 import { getUseExternalServices } from '../../../selectors';
 import {
   getIsUnlocked,
@@ -120,6 +123,9 @@ export function useSetIsProfileSyncingEnabled(): {
  * @returns a boolean if internally we can perform syncing features or not.
  */
 export const useShouldDispatchProfileSyncing = () => {
+  const isAccountSyncingReadyToBeDispatched = useSelector(
+    selectIsAccountSyncingReadyToBeDispatched,
+  );
   const isProfileSyncingEnabled = useSelector(selectIsProfileSyncingEnabled);
   const basicFunctionality: boolean | undefined = useSelector(
     getUseExternalServices,
@@ -135,7 +141,8 @@ export const useShouldDispatchProfileSyncing = () => {
       isProfileSyncingEnabled &&
       isUnlocked &&
       isSignedIn &&
-      completedOnboarding,
+      completedOnboarding &&
+      isAccountSyncingReadyToBeDispatched,
   );
 
   return shouldDispatchProfileSyncing;

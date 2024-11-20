@@ -449,6 +449,21 @@ export function getMetaMaskCachedBalances(state) {
   return {};
 }
 
+export function getCrossChainMetaMaskCachedBalances(state) {
+  const allAccountsByChainId = state.metamask.accountsByChainId;
+  return Object.keys(allAccountsByChainId).reduce((acc, topLevelKey) => {
+    acc[topLevelKey] = Object.keys(allAccountsByChainId[topLevelKey]).reduce(
+      (innerAcc, innerKey) => {
+        innerAcc[innerKey] =
+          allAccountsByChainId[topLevelKey][innerKey].balance;
+        return innerAcc;
+      },
+      {},
+    );
+
+    return acc;
+  }, {});
+}
 /**
  *  @typedef {import('./selectors.types').InternalAccountWithBalance} InternalAccountWithBalance
  */
@@ -568,7 +583,6 @@ export function getTargetAccount(state, targetAddress) {
 export const getTokenExchangeRates = (state) => {
   const chainId = getCurrentChainId(state);
   const contractMarketData = state.metamask.marketData?.[chainId] ?? {};
-
   return Object.entries(contractMarketData).reduce(
     (acc, [address, marketData]) => {
       acc[address] = marketData?.price ?? null;
@@ -576,6 +590,22 @@ export const getTokenExchangeRates = (state) => {
     },
     {},
   );
+};
+
+export const getCrossChainTokenExchangeRates = (state) => {
+  const contractMarketData = state.metamask.marketData ?? {};
+
+  return Object.keys(contractMarketData).reduce((acc, topLevelKey) => {
+    acc[topLevelKey] = Object.keys(contractMarketData[topLevelKey]).reduce(
+      (innerAcc, innerKey) => {
+        innerAcc[innerKey] = contractMarketData[topLevelKey][innerKey]?.price;
+        return innerAcc;
+      },
+      {},
+    );
+
+    return acc;
+  }, {});
 };
 
 /**
@@ -952,6 +982,19 @@ export function getShowTestNetworks(state) {
 export function getPetnamesEnabled(state) {
   const { petnamesEnabled = true } = getPreferences(state);
   return petnamesEnabled;
+}
+
+export function getIsTokenNetworkFilterEqualCurrentNetwork(state) {
+  const chainId = getCurrentChainId(state);
+  const { tokenNetworkFilter: tokenNetworkFilterValue } = getPreferences(state);
+  const tokenNetworkFilter = tokenNetworkFilterValue || {};
+  if (
+    Object.keys(tokenNetworkFilter).length === 1 &&
+    Object.keys(tokenNetworkFilter)[0] === chainId
+  ) {
+    return true;
+  }
+  return false;
 }
 
 export function getUseTransactionSimulations(state) {
