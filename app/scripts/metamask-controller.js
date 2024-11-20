@@ -155,13 +155,13 @@ import {
   NotificationServicesPushController,
   NotificationServicesController,
 } from '@metamask/notification-services-controller';
-import { isProduction } from '../../shared/modules/environment';
 import {
   Caip25CaveatMutatorFactories,
   Caip25CaveatType,
   Caip25EndowmentPermissionName,
   getEthAccounts,
 } from '@metamask/multichain';
+import { isProduction } from '../../shared/modules/environment';
 import {
   methodsRequiringNetworkSwitch,
   methodsThatCanSwitchNetworkWithoutApproval,
