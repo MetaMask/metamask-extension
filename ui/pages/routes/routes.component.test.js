@@ -15,6 +15,10 @@ import { useIsOriginalNativeTokenSymbol } from '../../hooks/useIsOriginalNativeT
 import { createMockInternalAccount } from '../../../test/jest/mocks';
 import { CHAIN_IDS } from '../../../shared/constants/network';
 import { mockNetworkState } from '../../../test/stub/networks';
+import {
+  MOCK_ACCOUNT_BIP122_P2WPKH,
+  MOCK_ACCOUNT_EOA,
+} from '../../../test/data/mock-accounts';
 import Routes from '.';
 
 const middlewares = [thunk];
@@ -146,18 +150,8 @@ describe('Routes Component', () => {
   });
 
   describe('new network popup', () => {
-    const mockBtcAccount = createMockInternalAccount({
-      address: 'bc1q26a367uz34eg5mufwhlscwdcplu6frtgf00r7a',
-      name: 'Btc Account',
-      type: BtcAccountType.P2wpkh,
-      snapOptions: {
-        id: 'mock-btc-snap',
-        name: 'mock-btc-snap',
-        enabled: true,
-      },
-    });
-
-    const mockEvmAccount = createMockInternalAccount();
+    const mockBtcAccount = MOCK_ACCOUNT_BIP122_P2WPKH;
+    const mockEvmAccount = MOCK_ACCOUNT_EOA;
 
     const mockNewlyAddedNetwork = {
       chainId: CHAIN_IDS.BASE,
@@ -174,6 +168,7 @@ describe('Routes Component', () => {
     };
 
     const renderPopup = async (account) => {
+      // This popup does not show up for tests, so we have to disable this:
       process.env.IN_TEST = '';
       const state = {
         ...mockSendState,

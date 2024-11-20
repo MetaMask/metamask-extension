@@ -70,10 +70,16 @@ export function isCurrentChainCompatibleWithAccount(
   chainId: string,
   account: InternalAccount,
 ): boolean {
+  if (!chainId) {
+    return false;
+  }
+
   if (isCaipChainId(chainId)) {
     const { namespace } = parseCaipChainId(chainId);
     return namespace === getCaipNamespaceFromAddress(account.address);
   }
 
+  // For EVM accounts, we do not check the chain ID format, but we just expect it
+  // to be defined.
   return isEvmAccountType(account.type);
 }
