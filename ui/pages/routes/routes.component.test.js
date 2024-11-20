@@ -43,6 +43,8 @@ jest.mock('../../store/actions', () => ({
     .mockResolvedValue({ chainId: '0x5' }),
   showNetworkDropdown: () => mockShowNetworkDropdown,
   hideNetworkDropdown: () => mockHideNetworkDropdown,
+  tokenBalancesStartPolling: jest.fn().mockResolvedValue('pollingToken'),
+  tokenBalancesStopPollingByPollingToken: jest.fn(),
 }));
 
 jest.mock('../../ducks/bridge/actions', () => ({
@@ -110,6 +112,7 @@ describe('Routes Component', () => {
             ...mockSendState.metamask.swapsState,
             swapsFeatureIsLive: true,
           },
+          accountsByChainId: {},
           pendingApprovals: {},
           approvalFlows: [],
           announcements: {},
@@ -121,6 +124,7 @@ describe('Routes Component', () => {
               order: 'dsc',
               sortCallback: 'stringNumeric',
             },
+            tokenNetworkFilter: {},
           },
         },
         send: {

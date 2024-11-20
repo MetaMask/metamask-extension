@@ -42,6 +42,7 @@ import {
 import { InterfaceState } from '@metamask/snaps-sdk';
 import { KeyringTypes } from '@metamask/keyring-controller';
 import type { NotificationServicesController } from '@metamask/notification-services-controller';
+import { USER_STORAGE_FEATURE_NAMES } from '@metamask/profile-sync-controller/sdk';
 import { Patch } from 'immer';
 import { HandlerType } from '@metamask/snaps-utils';
 import switchDirection from '../../shared/lib/switch-direction';
@@ -4625,6 +4626,26 @@ export async function tokenListStopPollingByPollingToken(pollingToken: string) {
   await removePollingTokenFromAppState(pollingToken);
 }
 
+export async function tokenBalancesStartPolling(
+  chainId: string,
+): Promise<string> {
+  const pollingToken = await submitRequestToBackground(
+    'tokenBalancesStartPolling',
+    [{ chainId }],
+  );
+  await addPollingTokenToAppState(pollingToken);
+  return pollingToken;
+}
+
+export async function tokenBalancesStopPollingByPollingToken(
+  pollingToken: string,
+) {
+  await submitRequestToBackground('tokenBalancesStopPollingByPollingToken', [
+    pollingToken,
+  ]);
+  await removePollingTokenFromAppState(pollingToken);
+}
+
 /**
  * Informs the TokenRatesController that the UI requires
  * token rate polling for the given chain id.
@@ -4651,6 +4672,37 @@ export async function tokenRatesStopPollingByPollingToken(
   pollingToken: string,
 ) {
   await submitRequestToBackground('tokenRatesStopPollingByPollingToken', [
+    pollingToken,
+  ]);
+  await removePollingTokenFromAppState(pollingToken);
+}
+
+/**
+ * Starts polling on accountTrackerController with the networkClientId
+ *
+ * @param networkClientId - The network client ID to pull balances for.
+ * @returns polling token used to stop polling
+ */
+export async function accountTrackerStartPolling(
+  networkClientId: string,
+): Promise<string> {
+  const pollingToken = await submitRequestToBackground(
+    'accountTrackerStartPolling',
+    [networkClientId],
+  );
+  await addPollingTokenToAppState(pollingToken);
+  return pollingToken;
+}
+
+/**
+ * Stops polling on the account tracker controller.
+ *
+ * @param pollingToken - polling token to use to stop polling.
+ */
+export async function accountTrackerStopPollingByPollingToken(
+  pollingToken: string,
+) {
+  await submitRequestToBackground('accountTrackerStopPollingByPollingToken', [
     pollingToken,
   ]);
   await removePollingTokenFromAppState(pollingToken);
@@ -5610,7 +5662,7 @@ export function deleteAccountSyncingDataFromUserStorage(): ThunkAction<
     try {
       const response = await submitRequestToBackground(
         'deleteAccountSyncingDataFromUserStorage',
-        ['accounts'],
+        [USER_STORAGE_FEATURE_NAMES.accounts],
       );
       return response;
     } catch (error) {
