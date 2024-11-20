@@ -7,11 +7,11 @@ import {
   getConfirmationExchangeRates,
   getMarketData,
   getCurrencyRates,
+  getNetworkConfigurationsByChainId,
 } from '../selectors';
 import { getTokenFiatAmount } from '../helpers/utils/token-util';
 import { getConversionRate } from '../ducks/metamask/metamask';
 import { isEqualCaseInsensitive } from '../../shared/modules/string-utils';
-import { CHAIN_ID_TO_CURRENCY_SYMBOL_MAP } from '../../shared/constants/network';
 
 /**
  * Get the token balance converted to fiat and formatted for display
@@ -62,9 +62,13 @@ export function useTokenFiatAmount(
 
   const currencyRates = useSelector(getCurrencyRates);
   const conversionRate = useSelector(getConversionRate);
+  const networkConfigurationsByChainId = useSelector(
+    getNetworkConfigurationsByChainId,
+  );
 
   const tokenConversionRate = chainId
-    ? currencyRates[CHAIN_ID_TO_CURRENCY_SYMBOL_MAP[chainId]]?.usdConversionRate
+    ? currencyRates[networkConfigurationsByChainId[chainId].nativeCurrency]
+        .conversionRate
     : conversionRate;
 
   const currentCurrency = useSelector(getCurrentCurrency);
