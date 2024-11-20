@@ -204,4 +204,8 @@ async function rerunFailedWorkflowsFromDevelop() {
   console.log('Task completed successfully!');
 }
 
-rerunFailedWorkflowsFromDevelop();
+rerunFailedWorkflowsFromDevelop()
+  .catch((error) => {
+    console.error(error);
+    process.exitCode = 1;
+  });
