@@ -1919,38 +1919,10 @@
     },
     "@metamask/network-controller>@metamask/eth-json-rpc-provider": {
       "packages": {
-        "@metamask/network-controller>@metamask/eth-json-rpc-provider>@metamask/json-rpc-engine": true,
-        "@metamask/network-controller>@metamask/eth-json-rpc-provider>@metamask/rpc-errors": true,
+        "@metamask/json-rpc-engine": true,
+        "@metamask/rpc-errors": true,
         "@metamask/safe-event-emitter": true,
         "uuid": true
-      }
-    },
-    "@metamask/network-controller>@metamask/eth-json-rpc-provider>@metamask/json-rpc-engine": {
-      "packages": {
-        "@metamask/network-controller>@metamask/eth-json-rpc-provider>@metamask/rpc-errors": true,
-        "@metamask/network-controller>@metamask/eth-json-rpc-provider>@metamask/utils": true,
-        "@metamask/safe-event-emitter": true
-      }
-    },
-    "@metamask/network-controller>@metamask/eth-json-rpc-provider>@metamask/rpc-errors": {
-      "packages": {
-        "@metamask/network-controller>@metamask/eth-json-rpc-provider>@metamask/utils": true,
-        "@metamask/rpc-errors>fast-safe-stringify": true
-      }
-    },
-    "@metamask/network-controller>@metamask/eth-json-rpc-provider>@metamask/utils": {
-      "globals": {
-        "TextDecoder": true,
-        "TextEncoder": true
-      },
-      "packages": {
-        "@metamask/utils>@metamask/superstruct": true,
-        "@metamask/utils>@scure/base": true,
-        "@metamask/utils>pony-cause": true,
-        "@noble/hashes": true,
-        "browserify>buffer": true,
-        "nock>debug": true,
-        "semver": true
       }
     },
     "@metamask/network-controller>@metamask/json-rpc-engine": {

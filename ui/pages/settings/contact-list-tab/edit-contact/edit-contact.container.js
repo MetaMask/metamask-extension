@@ -2,8 +2,10 @@ import { compose } from 'redux';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
 import {
+  getAddressBook,
   getAddressBookEntry,
   getInternalAccountByAddress,
+  getInternalAccounts,
 } from '../../../../selectors';
 import { getProviderConfig } from '../../../../../shared/modules/selectors/networks';
 import {
@@ -34,6 +36,8 @@ const mapStateToProps = (state, ownProps) => {
 
   return {
     address: contact ? address : null,
+    addressBook: getAddressBook(state),
+    internalAccounts: getInternalAccounts(state),
     chainId,
     name,
     memo,

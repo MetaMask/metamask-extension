@@ -38,7 +38,7 @@
       "redesignedConfirmationsEnabled": true,
       "redesignedTransactionsEnabled": "boolean",
       "tokenSortConfig": "object",
-      "showMultiRpcModal": "boolean",
+      "tokenNetworkFilter": "object",
       "shouldShowAggregatedBalancePopover": "boolean"
     },
     "firstTimeFlowType": "import",
@@ -224,6 +224,8 @@
     "isSignedIn": "boolean",
     "isProfileSyncingEnabled": null,
     "isProfileSyncingUpdateLoading": "boolean",
+    "hasAccountSyncingSyncedAtLeastOnce": "boolean",
+    "isAccountSyncingReadyToBeDispatched": "boolean",
     "subscriptionAccountsSeen": "object",
     "isMetamaskNotificationsFeatureSeen": "boolean",
     "isNotificationServicesEnabled": "boolean",
