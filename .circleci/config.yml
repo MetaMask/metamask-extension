@@ -359,10 +359,13 @@ workflows:
       condition:
         equal: ["<< pipeline.schedule.name >>", "rerun-from-failed"]
     jobs:
+      - prep-deps
       - rerun-workflows-from-failed:
           filters:
             branches:
               only: develop
+          requires:
+            - prep-deps
 
   locales_only:
     when:
@@ -947,7 +950,7 @@ jobs:
           at: .
       - run:
           name: Rerun workflows from failed
-          command: npx tsx .circleci/scripts/rerun-ci-workflow-from-failed.ts
+          command: yarn ci-rerun-from-failed
 
   test-yarn-dedupe:
     executor: node-browsers-small
