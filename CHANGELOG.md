@@ -46,6 +46,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Improved handling of network switching and adding networks to prevent issues with queued transactions ([#28090](https://github.com/MetaMask/metamask-extension/pull/28090))
 - Prevented redirect after adding a network in Onboarding Settings ([#28165](https://github.com/MetaMask/metamask-extension/pull/28165))
 
+## [12.6.2]
+### Fixed
+- Prevent QR code scanning from setting incorrect recipient addresses during the send flow by restricting the QR scanner feature to only handle simple sends, and fail on QR codes that encode more complex transaction types ([#28521](https://github.com/MetaMask/metamask-extension/pull/28521))
+
 ## [12.6.1]
 ### Fixed
 - Fixed gas limit estimation on Base and BNB chains ([#28327](https://github.com/MetaMask/metamask-extension/pull/28327))
@@ -5349,7 +5353,8 @@ Update styles and spacing on the critical error page  ([#20350](https://github.c
 
 [Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v12.7.1...HEAD
 [12.7.1]: https://github.com/MetaMask/metamask-extension/compare/v12.7.0...v12.7.1
-[12.7.0]: https://github.com/MetaMask/metamask-extension/compare/v12.6.1...v12.7.0
+[12.7.0]: https://github.com/MetaMask/metamask-extension/compare/v12.6.2...v12.7.0
+[12.6.2]: https://github.com/MetaMask/metamask-extension/compare/v12.6.1...v12.6.2
 [12.6.1]: https://github.com/MetaMask/metamask-extension/compare/v12.6.0...v12.6.1
 [12.6.0]: https://github.com/MetaMask/metamask-extension/compare/v12.5.1...v12.6.0
 [12.5.1]: https://github.com/MetaMask/metamask-extension/compare/v12.5.0...v12.5.1
