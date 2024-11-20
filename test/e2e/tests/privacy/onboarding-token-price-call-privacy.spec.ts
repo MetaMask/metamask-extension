@@ -21,13 +21,6 @@ async function mockTokenPriceApi(
         statusCode: 200,
         json: {},
       })),
-    // linea
-    await mockServer
-      .forGet('https://price.api.cx.metamask.io/v2/chains/59144/spot-prices')
-      .thenCallback(() => ({
-        statusCode: 200,
-        json: {},
-      })),
   ];
 }
 
