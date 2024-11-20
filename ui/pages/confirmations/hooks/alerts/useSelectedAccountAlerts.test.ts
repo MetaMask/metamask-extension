@@ -46,7 +46,9 @@ describe('useSelectedAccountAlerts', () => {
   });
 
   it('returns an alert for transaction if signing account is different from selected account', () => {
-    const contractInteraction = genUnapprovedContractInteractionConfirmation({ address: '0x0' });
+    const contractInteraction = genUnapprovedContractInteractionConfirmation({
+      address: '0x0',
+    });
     const { result } = renderHookWithConfirmContextProvider(
       () => useSelectedAccountAlerts(),
       getMockConfirmStateForTransaction(contractInteraction as TransactionMeta),
