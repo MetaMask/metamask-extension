@@ -1,6 +1,8 @@
 import { TransactionType } from '@metamask/transaction-controller';
 import { ApprovalType } from '@metamask/controller-utils';
 
+/* eslint-disable jsdoc/require-param, jsdoc/check-param-names */
+
 /** List of signature approval types that support the redesigned confirmation flow */
 const REDESIGN_SIGNATURE_APPROVAL_TYPES = [
   ApprovalType.EthSignTypedData,
