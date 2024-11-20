@@ -112,6 +112,7 @@ describe('Routes Component', () => {
             ...mockSendState.metamask.swapsState,
             swapsFeatureIsLive: true,
           },
+          accountsByChainId: {},
           pendingApprovals: {},
           approvalFlows: [],
           announcements: {},
@@ -123,6 +124,7 @@ describe('Routes Component', () => {
               order: 'dsc',
               sortCallback: 'stringNumeric',
             },
+            tokenNetworkFilter: {},
           },
         },
         send: {
