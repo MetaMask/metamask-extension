@@ -24,6 +24,7 @@ import {
   isHardwareWallet,
   getHardwareWalletType,
   getTokenList,
+  getNetworkConfigurationsByChainId,
 } from '../../selectors/selectors';
 import {
   getQuotes,
@@ -142,6 +143,9 @@ export default function Swap() {
   const currentSmartTransactionsError = useSelector(
     getCurrentSmartTransactionsError,
   );
+  const networkConfigurationsByChainId = useSelector(
+    getNetworkConfigurationsByChainId,
+  );
 
   useEffect(() => {
     const leaveSwaps = async () => {
@@ -193,10 +197,16 @@ export default function Swap() {
   useEffect(() => {
     clearTemporaryTokenRef.current = () => {
       if (latestAddedTokenTo && (!isAwaitingSwapRoute || conversionError)) {
+        const chainConfig = networkConfigurationsByChainId[chainId];
+        const { defaultRpcEndpointIndex } = chainConfig;
+        const { networkClientId: networkInstanceId } =
+          chainConfig.rpcEndpoints[defaultRpcEndpointIndex];
+
         dispatch(
           ignoreTokens({
             tokensToIgnore: latestAddedTokenTo,
             dontShowLoadingIndicator: true,
+            networkClientId: networkInstanceId,
           }),
         );
       }
@@ -208,6 +218,8 @@ export default function Swap() {
     destinationTokenInfo,
     fetchParams,
     isAwaitingSwapRoute,
+    chainId,
+    networkConfigurationsByChainId,
   ]);
   useEffect(() => {
     return () => {

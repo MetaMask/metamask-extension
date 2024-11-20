@@ -79,6 +79,7 @@ describe('Hide Token Confirmation Modal', () => {
     expect(mockHideModal).toHaveBeenCalled();
     expect(actions.ignoreTokens).toHaveBeenCalledWith({
       tokensToIgnore: tokenState.address,
+      networkClientId: 'goerli',
     });
   });
 });

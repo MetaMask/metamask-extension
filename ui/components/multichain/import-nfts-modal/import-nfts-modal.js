@@ -27,6 +27,7 @@ import {
   getIsMainnet,
   getSelectedInternalAccount,
   getOpenSeaEnabled,
+  getNetworkConfigurationsByChainId,
 } from '../../../selectors';
 import {
   addNftVerifyOwnership,
@@ -76,6 +77,9 @@ export const ImportNftsModal = ({ onClose }) => {
   const [disabled, setDisabled] = useState(true);
   const [nftAddFailed, setNftAddFailed] = useState(false);
   const trackEvent = useContext(MetaMetricsContext);
+  const networkConfigurationsByChainId = useSelector(
+    getNetworkConfigurationsByChainId,
+  );
   const [nftAddressValidationError, setNftAddressValidationError] =
     useState(null);
   const [duplicateTokenIdError, setDuplicateTokenIdError] = useState(null);
@@ -102,10 +106,16 @@ export const ImportNftsModal = ({ onClose }) => {
       return;
     }
     if (ignoreErc20Token && nftAddress) {
+      const chainConfig = networkConfigurationsByChainId[chainId];
+      const { defaultRpcEndpointIndex } = chainConfig;
+      const { networkClientId: networkInstanceId } =
+        chainConfig.rpcEndpoints[defaultRpcEndpointIndex];
+
       await dispatch(
         ignoreTokens({
           tokensToIgnore: nftAddress,
           dontShowLoadingIndicator: true,
+          networkClientId: networkInstanceId,
         }),
       );
     }

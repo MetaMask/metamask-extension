@@ -67,6 +67,7 @@ import {
   getMetaMetricsId,
   getParticipateInMetaMetrics,
   getDataCollectionForMarketing,
+  getNetworkConfigurationsByChainId,
 } from '../../../selectors';
 import {
   getSmartTransactionsEnabled,
@@ -228,6 +229,9 @@ export default function PrepareSwapPage({
   const loadingComplete = !fetchingQuotes && areQuotesPresent;
   const isMetaMetricsEnabled = useSelector(getParticipateInMetaMetrics);
   const isMarketingEnabled = useSelector(getDataCollectionForMarketing);
+  const networkConfigurationsByChainId = useSelector(
+    getNetworkConfigurationsByChainId,
+  );
 
   const fetchParamsFromToken = isSwapsDefaultTokenAddress(
     sourceTokenInfo?.address,
@@ -467,17 +471,29 @@ export default function PrepareSwapPage({
   const onToSelect = useCallback(
     (token) => {
       if (latestAddedTokenTo && token.address !== toAddress) {
+        const chainConfig = networkConfigurationsByChainId[chainId];
+        const { defaultRpcEndpointIndex } = chainConfig;
+        const { networkClientId: networkInstanceId } =
+          chainConfig.rpcEndpoints[defaultRpcEndpointIndex];
+
         dispatch(
           ignoreTokens({
             tokensToIgnore: toAddress,
             dontShowLoadingIndicator: true,
+            networkClientId: networkInstanceId,
           }),
         );
       }
       dispatch(setSwapToToken(token));
       setVerificationClicked(false);
     },
-    [dispatch, latestAddedTokenTo, toAddress],
+    [
+      dispatch,
+      latestAddedTokenTo,
+      toAddress,
+      chainId,
+      networkConfigurationsByChainId,
+    ],
   );
 
   const tokensWithBalancesFromToken = tokensWithBalances.find((token) =>
