@@ -177,41 +177,53 @@ const DetectedToken = ({ setShowDetectedTokens }) => {
         asset_type: AssetType.token,
       },
     });
-    const deSelectedTokensAddresses = deSelectedTokens.map(
-      ({ address }) => address,
-    );
 
-    // group deselected tokens by chainId
-    const groupedByChainId = deSelectedTokens.reduce((acc, token) => {
-      const { chainId } = token;
-      if (!acc[chainId]) {
-        acc[chainId] = [];
-      }
-      acc[chainId].push(token);
-      return acc;
-    }, {});
+    if (process.env.PORTFOLIO_VIEW) {
+      // group deselected tokens by chainId
+      const groupedByChainId = deSelectedTokens.reduce((acc, token) => {
+        const { chainId } = token;
+        if (!acc[chainId]) {
+          acc[chainId] = [];
+        }
+        acc[chainId].push(token);
+        return acc;
+      }, {});
 
-    const promises = Object.entries(groupedByChainId).map(
-      async ([chainId, tokens]) => {
-        const chainConfig = configuration[chainId];
-        const { defaultRpcEndpointIndex } = chainConfig;
-        const { networkClientId: networkInstanceId } =
-          chainConfig.rpcEndpoints[defaultRpcEndpointIndex];
+      const promises = Object.entries(groupedByChainId).map(
+        async ([chainId, tokens]) => {
+          const chainConfig = configuration[chainId];
+          const { defaultRpcEndpointIndex } = chainConfig;
+          const { networkClientId: networkInstanceId } =
+            chainConfig.rpcEndpoints[defaultRpcEndpointIndex];
 
-        await dispatch(
-          ignoreTokens({
-            tokensToIgnore: tokens,
-            dontShowLoadingIndicator: true,
-            networkClientId: networkInstanceId,
-          }),
-        );
-      },
-    );
+          await dispatch(
+            ignoreTokens({
+              tokensToIgnore: tokens,
+              dontShowLoadingIndicator: true,
+              networkClientId: networkInstanceId,
+            }),
+          );
+        },
+      );
 
-    await Promise.all(promises);
+      await Promise.all(promises);
+      setShowDetectedTokens(false);
+      setPartiallyIgnoreDetectedTokens(false);
+    } else {
+      const deSelectedTokensAddresses = deSelectedTokens.map(
+        ({ address }) => address,
+      );
 
-    setShowDetectedTokens(false);
-    setPartiallyIgnoreDetectedTokens(false);
+      await dispatch(
+        ignoreTokens({
+          tokensToIgnore: deSelectedTokensAddresses,
+          dontShowLoadingIndicator: true,
+        }),
+      );
+
+      setShowDetectedTokens(false);
+      setPartiallyIgnoreDetectedTokens(false);
+    }
   };
 
   const handleTokenSelection = (token) => {
