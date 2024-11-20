@@ -12,6 +12,7 @@ describe('Simple send eth', function (this: Suite) {
       {
         fixtures: new FixtureBuilder().build(),
         title: this.test?.fullTitle(),
+        useAnvil: true,
       },
       async ({ driver }: { driver: Driver }) => {
         await loginWithoutBalanceValidation(driver);

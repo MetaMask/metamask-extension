@@ -18,9 +18,10 @@ describe('Send ETH', function () {
         {
           fixtures: new FixtureBuilder().build(),
           title: this.test.fullTitle(),
+          useAnvil: true,
         },
-        async ({ driver, networkServer }) => {
-          await logInWithBalanceValidation(driver, networkServer);
+        async ({ driver, anvilServer }) => {
+          await logInWithBalanceValidation(driver, anvilServer);
 
           await openActionMenuAndStartSendFlow(driver);
 
@@ -98,6 +99,7 @@ describe('Send ETH', function () {
         {
           fixtures: new FixtureBuilder().build(),
           title: this.test.fullTitle(),
+          useAnvil: true,
         },
         async ({ driver }) => {
           await unlockWallet(driver);
@@ -156,11 +158,11 @@ describe('Send ETH', function () {
           smartContract,
           title: this.test.fullTitle(),
         },
-        async ({ driver, contractRegistry, networkServer }) => {
+        async ({ driver, contractRegistry, anvilServer }) => {
           const contractAddress = await contractRegistry.getContractAddress(
             smartContract,
           );
-          await logInWithBalanceValidation(driver, networkServer);
+          await logInWithBalanceValidation(driver, anvilServer);
 
           // Wait for balance to load
           await driver.delay(500);
@@ -208,6 +210,7 @@ describe('Send ETH', function () {
         {
           fixtures: new FixtureBuilder().build(),
           title: this.test.fullTitle(),
+          useAnvil: true,
         },
         async ({ driver }) => {
           await unlockWallet(driver);
@@ -244,6 +247,7 @@ describe('Send ETH', function () {
               .withPermissionControllerConnectedToTestDapp()
               .build(),
             title: this.test.fullTitle(),
+            useAnvil: true,
           },
           async ({ driver }) => {
             await unlockWallet(driver);
@@ -315,7 +319,7 @@ describe('Send ETH', function () {
             fixtures: new FixtureBuilder()
               .withPermissionControllerConnectedToTestDapp()
               .build(),
-              anvilOptions: {
+            anvilOptions: {
               hardfork: 'london',
             },
             title: this.test.fullTitle(),
@@ -421,6 +425,7 @@ describe('Send ETH', function () {
               .withPreferencesControllerPetnamesDisabled()
               .build(),
             title: this.test.fullTitle(),
+            useAnvil: true,
           },
           async ({ driver }) => {
             await unlockWallet(driver);

@@ -17,9 +17,10 @@ describe('Send ETH to a 40 character hexadecimal address', function () {
           .withPreferencesControllerPetnamesDisabled()
           .build(),
         title: this.test.fullTitle(),
+        useAnvil: true,
       },
-      async ({ driver, networkServer }) => {
-        await logInWithBalanceValidation(driver, networkServer);
+      async ({ driver, anvilServer }) => {
+        await logInWithBalanceValidation(driver, anvilServer);
 
         // Send ETH
         await openActionMenuAndStartSendFlow(driver);
@@ -61,9 +62,10 @@ describe('Send ETH to a 40 character hexadecimal address', function () {
           .withPreferencesControllerPetnamesDisabled()
           .build(),
         title: this.test.fullTitle(),
+        useAnvil: true,
       },
-      async ({ driver, networkServer }) => {
-        await logInWithBalanceValidation(driver, networkServer);
+      async ({ driver, anvilServer }) => {
+        await logInWithBalanceValidation(driver, anvilServer);
 
         // Send ETH
         await openActionMenuAndStartSendFlow(driver);
@@ -112,9 +114,10 @@ describe('Send ERC20 to a 40 character hexadecimal address', function () {
           .build(),
         smartContract,
         title: this.test.fullTitle(),
+        useAnvil: true,
       },
-      async ({ driver, networkServer }) => {
-        await logInWithBalanceValidation(driver, networkServer);
+      async ({ driver, anvilServer }) => {
+        await logInWithBalanceValidation(driver, anvilServer);
         // Send TST
         await driver.clickElement(
           '[data-testid="account-overview__asset-tab"]',
@@ -173,9 +176,10 @@ describe('Send ERC20 to a 40 character hexadecimal address', function () {
           .build(),
         smartContract,
         title: this.test.fullTitle(),
+        useAnvil: true,
       },
-      async ({ driver, networkServer }) => {
-        await logInWithBalanceValidation(driver, networkServer);
+      async ({ driver, anvilServer }) => {
+        await logInWithBalanceValidation(driver, anvilServer);
         // Send TST
         await driver.clickElement(
           '[data-testid="account-overview__asset-tab"]',

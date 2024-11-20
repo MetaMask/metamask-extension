@@ -15,7 +15,7 @@ describe('Settings', function () {
       {
         dapp: true,
         fixtures: new FixtureBuilder().withNftControllerERC1155().build(),
-        ganacheOptions: defaultGanacheOptions,
+        defaultGanacheOptions,
         smartContract,
         title: this.test.fullTitle(),
       },

@@ -65,6 +65,7 @@ async function withFixtures(options, testSuite) {
     fixtures,
     ganacheOptions,
     anvilOptions,
+    useAnvil,
     smartContract,
     driverOptions,
     dappOptions,
@@ -86,15 +87,14 @@ async function withFixtures(options, testSuite) {
 
   const fixtureServer = new FixtureServer();
   let ganacheServer;
-  let localNetworkServer;
+  let anvilServer;
 
   // Temporary logic for network management until we remove ganache from all specs
-  if (anvilOptions) {
-    localNetworkServer = new Anvil();
+  if (anvilOptions || useAnvil) {
+    anvilServer = new Anvil();
   } else if (!disableGanache) {
     ganacheServer = new Ganache();
   }
-
   const bundlerServer = new Bundler();
   const https = await mockttp.generateCACertificate();
   const mockServer = mockttp.getLocal({ https, cors: true });
@@ -115,8 +115,8 @@ async function withFixtures(options, testSuite) {
       await ganacheServer.start(ganacheOptions);
     }
 
-    if (localNetworkServer) {
-      await localNetworkServer.start(anvilOptions || {});
+    if (anvilServer) {
+      await anvilServer.start(anvilOptions || {});
     }
 
     let contractRegistry;
@@ -132,9 +132,9 @@ async function withFixtures(options, testSuite) {
           ),
         );
         contractRegistry = ganacheSeeder.getContractRegistry();
-      } else if (localNetworkServer) {
+      } else if (anvilServer) {
         const localNetworkSeeder = new AnvilSeeder(
-          localNetworkServer.getProvider(),
+          anvilServer.getProvider(),
         );
         const contracts =
           smartContract instanceof Array ? smartContract : [smartContract];
@@ -251,7 +251,7 @@ async function withFixtures(options, testSuite) {
       contractRegistry,
       driver: driverProxy ?? driver,
       ganacheServer,
-      localNetworkServer,
+      anvilServer,
       mockedEndpoint,
       mockServer,
       secondaryGanacheServer,
@@ -338,8 +338,8 @@ async function withFixtures(options, testSuite) {
         await ganacheServer.quit();
       }
 
-      if (localNetworkServer) {
-        await localNetworkServer.quit();
+      if (anvilServer) {
+        await anvilServer.quit();
       }
 
       if (ganacheOptions?.concurrent) {
@@ -772,17 +772,17 @@ const TEST_SEED_PHRASE_TWO =
  * or after a transaction is made.
  *
  * @param {WebDriver} driver - The WebDriver instance.
- * @param {Ganache} [localNetworkServer] - The local server instance (optional).
+ * @param {Ganache} [anvilServer] - The local server instance (optional).
  * @param {string} [address] - The address to check the balance for (optional).
  */
 const locateAccountBalanceDOM = async (
   driver,
-  localNetworkServer,
+  anvilServer,
   address = null,
 ) => {
   const balanceSelector = '[data-testid="eth-overview__primary-currency"]';
-  if (localNetworkServer) {
-    const balance = await localNetworkServer.getBalance(address);
+  if (anvilServer) {
+    const balance = await anvilServer.getBalance(address);
     await driver.waitForSelector({
       css: balanceSelector,
       text: `${balance} ETH`,
@@ -823,10 +823,10 @@ async function unlockWallet(
   }
 }
 
-const logInWithBalanceValidation = async (driver, localNetworkServer) => {
+const logInWithBalanceValidation = async (driver, anvilServer) => {
   await unlockWallet(driver);
   // Wait for balance to load
-  await locateAccountBalanceDOM(driver, localNetworkServer);
+  await locateAccountBalanceDOM(driver, anvilServer);
 };
 
 function roundToXDecimalPlaces(number, decimalPlaces) {
