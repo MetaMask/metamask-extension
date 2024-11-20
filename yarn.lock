@@ -5963,20 +5963,20 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/multichain@npm:@metamask-previews/multichain@0.0.0-preview-7d32a0b2":
-  version: 0.0.0-preview-7d32a0b2
-  resolution: "@metamask-previews/multichain@npm:0.0.0-preview-7d32a0b2"
+"@metamask/multichain@npm:@metamask-previews/multichain@0.0.0-preview-26118713":
+  version: 0.0.0-preview-26118713
+  resolution: "@metamask-previews/multichain@npm:0.0.0-preview-26118713"
   dependencies:
     "@metamask/api-specs": "npm:^0.10.12"
-    "@metamask/controller-utils": "npm:^11.4.0"
+    "@metamask/controller-utils": "npm:^11.4.3"
     "@metamask/eth-json-rpc-filters": "npm:^7.0.0"
-    "@metamask/rpc-errors": "npm:^7.0.0"
-    "@metamask/utils": "npm:^9.1.0"
+    "@metamask/rpc-errors": "npm:^7.0.1"
+    "@metamask/utils": "npm:^10.0.0"
     lodash: "npm:^4.17.21"
   peerDependencies:
-    "@metamask/network-controller": ^21.0.0
+    "@metamask/network-controller": ^22.0.0
     "@metamask/permission-controller": ^11.0.0
-  checksum: 10/90855e2d9e382008736facef3bf1e0f1e2cf02f20087bb81c0bc352730d89cb4b3606bcbc15b36a9d4a8ecec4b590b42aadcb4106cc640f1054294e02a8d0682
+  checksum: 10/6fda0b0dcdc159edec37151e516ed82f0bdcb3202fe6e873d4bf26216b95b1bb284a834b3815d48f344c2fdf8ae00bf7155cbdcb0188aa58bf09eeb513935d98
   languageName: node
   linkType: hard
 
@@ -26913,7 +26913,7 @@ __metadata:
     "@metamask/message-manager": "npm:^10.1.0"
     "@metamask/message-signing-snap": "npm:^0.4.0"
     "@metamask/metamask-eth-abis": "npm:^3.1.1"
-    "@metamask/multichain": "npm:@metamask-previews/multichain@0.0.0-preview-7d32a0b2"
+    "@metamask/multichain": "npm:@metamask-previews/multichain@0.0.0-preview-26118713"
     "@metamask/name-controller": "npm:^8.0.0"
     "@metamask/network-controller": "patch:@metamask/network-controller@npm%3A21.0.0#~/.yarn/patches/@metamask-network-controller-npm-21.0.0-559aa8e395.patch"
     "@metamask/notification-controller": "npm:^6.0.0"
