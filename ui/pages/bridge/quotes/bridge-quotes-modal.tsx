@@ -70,8 +70,21 @@ export const BridgeQuotesModal = ({
             <ButtonLink
               key={label}
               onClick={() => dispatch(setSortOrder(sortOrderOption))}
-              startIconName={sortOrder === sortOrderOption ? icon : undefined}
+              startIconName={
+                sortOrder === sortOrderOption && sortOrder === SortOrder.ETA_ASC
+                  ? icon
+                  : undefined
+              }
               startIconProps={{
+                size: IconSize.Xs,
+              }}
+              endIconName={
+                sortOrder === sortOrderOption &&
+                sortOrder === SortOrder.COST_ASC
+                  ? icon
+                  : undefined
+              }
+              endIconProps={{
                 size: IconSize.Xs,
               }}
               color={
