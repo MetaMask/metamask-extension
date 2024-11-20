@@ -55,7 +55,7 @@ interface WorkflowStatusResponse {
 }
 
 /**
- * Fetches the last 20 CircleCI workflows for 'develop' branch.
+ * Fetches the last 20 CircleCI workflows for the given branch.
  * Note: the API returns the first 20 workflows by default.
  * If we wanted to get older workflows, we would need to use the 'page-token' we would get in the first response
  * and perform a subsequent request with the 'page-token' parameter.
