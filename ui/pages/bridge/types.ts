@@ -5,6 +5,7 @@ export type L1GasFees = {
 };
 
 // Values derived from the quote response
+// fiat values are calculated based on the user's selected currency
 export type QuoteMetadata = {
   totalNetworkFee: { amount: BigNumber; fiat: BigNumber | null }; // gasFees + relayerFees
   toTokenAmount: { amount: BigNumber; fiat: BigNumber | null };
