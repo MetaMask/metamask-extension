@@ -1,8 +1,9 @@
-import ConfirmPage from '../../confirm'
+import { getMockTypedSignConfirmStateForRequest } from '../../../../../../test/data/confirmations/helper';
+import ConfirmPage from '../../confirm';
 import {
   ARG_TYPES_SIGNATURE,
   CONFIRM_PAGE_DECORATOR,
-  SignatureStoryTemplate
+  ConfirmStoryTemplate,
 } from '../utils';
 import { unapprovedTypedSignMsgV1 } from '../../../../../../test/data/confirmations/typed_sign';
 
@@ -14,12 +15,12 @@ export default {
   component: ConfirmPage,
   decorators: CONFIRM_PAGE_DECORATOR,
   argTypes: ARG_TYPES_SIGNATURE,
-  args: {
-    msgParams: { ...unapprovedTypedSignMsgV1.msgParams },
-  },
 };
 
 export const DefaultStory = (args) => {
-  return SignatureStoryTemplate(args, unapprovedTypedSignMsgV1);
-}
+  return ConfirmStoryTemplate(
+    getMockTypedSignConfirmStateForRequest(unapprovedTypedSignMsgV1),
+  );
+};
+
 DefaultStory.storyName = 'Default';

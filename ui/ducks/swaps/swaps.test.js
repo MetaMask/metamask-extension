@@ -7,6 +7,7 @@ import { setSwapsLiveness, setSwapsFeatureFlags } from '../../store/actions';
 import { CHAIN_IDS } from '../../../shared/constants/network';
 import { setStorageItem } from '../../../shared/lib/storage-helpers';
 import { createMockInternalAccount } from '../../../test/jest/mocks';
+import { mockNetworkState } from '../../../test/stub/networks';
 import swapsReducer, * as swaps from './swaps';
 
 const middleware = [thunk];
@@ -19,15 +20,6 @@ jest.mock('../../store/actions.ts', () => ({
     return [];
   }),
 }));
-
-const providerConfigState = {
-  chainId: '0x1',
-  nickname: '',
-  rpcPrefs: {},
-  rpcUrl: '',
-  ticker: 'ETH',
-  type: 'mainnet',
-};
 
 describe('Ducks - Swaps', () => {
   afterEach(() => {
@@ -67,7 +59,7 @@ describe('Ducks - Swaps', () => {
 
       return () => ({
         metamask: {
-          providerConfig: { ...providerConfigState },
+          ...mockNetworkState({ chainId: CHAIN_IDS.MAINNET }),
           from: '0x64a845a5b02460acf8a3d84503b0d68d028b4bb4',
           internalAccounts: {
             accounts: {
@@ -660,12 +652,35 @@ describe('Ducks - Swaps', () => {
   });
 
   describe('getSmartTransactionFees', () => {
-    it('returns unsigned transactions and estimates', () => {
+    it('returns estimates from the STX controller', () => {
       const state = createSwapsMockStore();
       const smartTransactionFees = swaps.getSmartTransactionFees(state);
       expect(smartTransactionFees).toMatchObject(
         state.metamask.smartTransactionsState.fees,
       );
+    });
+
+    it('returns estimates from a selected quote', () => {
+      const state = createSwapsMockStore();
+      state.metamask.swapsState.quotes.TEST_AGG_2.isGasIncludedTrade = true;
+      const smartTransactionFees = swaps.getSmartTransactionFees(state);
+      expect(smartTransactionFees).toMatchObject({
+        approvalTxFees:
+          state.metamask.swapsState.quotes.TEST_AGG_2.approvalTxFees,
+        tradeTxFees: state.metamask.swapsState.quotes.TEST_AGG_2.tradeTxFees,
+      });
+    });
+
+    it('returns estimates from a top quote if no quote is selected', () => {
+      const state = createSwapsMockStore();
+      state.metamask.swapsState.selectedAggId = null;
+      state.metamask.swapsState.quotes.TEST_AGG_BEST.isGasIncludedTrade = true;
+      const smartTransactionFees = swaps.getSmartTransactionFees(state);
+      expect(smartTransactionFees).toMatchObject({
+        approvalTxFees:
+          state.metamask.swapsState.quotes.TEST_AGG_BEST.approvalTxFees,
+        tradeTxFees: state.metamask.swapsState.quotes.TEST_AGG_BEST.tradeTxFees,
+      });
     });
   });
 
@@ -907,25 +922,6 @@ describe('Ducks - Swaps', () => {
         const newState = swapsReducer(state, actions[0]);
         expect(newState.customGas.price).toBe(null);
         expect(newState.customGas.limit).toBe(null);
-      });
-    });
-
-    describe('getSwapRedesignEnabled', () => {
-      it('returns true if feature flags are not returned from backend yet', () => {
-        const state = createSwapsMockStore();
-        delete state.metamask.swapsState.swapsFeatureFlags.swapRedesign;
-        expect(swaps.getSwapRedesignEnabled(state)).toBe(true);
-      });
-
-      it('returns false if the extension feature flag for swaps redesign is false', () => {
-        const state = createSwapsMockStore();
-        state.metamask.swapsState.swapsFeatureFlags.swapRedesign.extensionActive = false;
-        expect(swaps.getSwapRedesignEnabled(state)).toBe(false);
-      });
-
-      it('returns true if the extension feature flag for swaps redesign is true', () => {
-        const state = createSwapsMockStore();
-        expect(swaps.getSwapRedesignEnabled(state)).toBe(true);
       });
     });
   });

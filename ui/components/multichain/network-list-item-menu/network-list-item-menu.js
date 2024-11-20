@@ -2,6 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
+  Box,
   IconName,
   ModalFocus,
   Popover,
@@ -27,8 +28,8 @@ export const NetworkListItemMenu = ({
       onClickOutside={onClose}
       referenceElement={anchorElement}
       role={PopoverRole.Dialog}
-      position={PopoverPosition.Bottom}
-      offset={[0, 0]}
+      position={PopoverPosition.BottomEnd}
+      offset={[8, 0]}
       padding={0}
       isOpen={isOpen}
       isPortal
@@ -36,19 +37,17 @@ export const NetworkListItemMenu = ({
       flip
     >
       <ModalFocus restoreFocus initialFocusRef={anchorElement}>
-        <div>
+        <Box>
           {onEditClick ? (
             <MenuItem
               iconName={IconName.Edit}
               onClick={(e) => {
                 e.stopPropagation();
-
-                // Pass network info?
                 onEditClick();
               }}
               data-testid="network-list-item-options-edit"
             >
-              {t('edit')}
+              <Text> {t('edit')}</Text>
             </MenuItem>
           ) : null}
           {onDeleteClick ? (
@@ -57,8 +56,6 @@ export const NetworkListItemMenu = ({
               iconColor={IconColor.errorDefault}
               onClick={(e) => {
                 e.stopPropagation();
-
-                // Pass network info?
                 onDeleteClick();
               }}
               data-testid="network-list-item-options-delete"
@@ -66,7 +63,7 @@ export const NetworkListItemMenu = ({
               <Text color={TextColor.errorDefault}>{t('delete')}</Text>
             </MenuItem>
           ) : null}
-        </div>
+        </Box>
       </ModalFocus>
     </Popover>
   );

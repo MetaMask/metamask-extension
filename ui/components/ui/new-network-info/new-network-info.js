@@ -21,6 +21,8 @@ import {
   getMetaMetricsId,
   getUseTokenDetection,
   getUseExternalServices,
+  getParticipateInMetaMetrics,
+  getDataCollectionForMarketing,
 } from '../../../selectors';
 import { setFirstTimeUsedNetwork } from '../../../store/actions';
 import {
@@ -49,6 +51,8 @@ export default function NewNetworkInfo() {
   const currentNetwork = useSelector(getCurrentNetwork);
   const metaMetricsId = useSelector(getMetaMetricsId);
   const isBridgeChain = useSelector(getIsBridgeChain);
+  const isMetaMetricsEnabled = useSelector(getParticipateInMetaMetrics);
+  const isMarketingEnabled = useSelector(getDataCollectionForMarketing);
 
   const onCloseClick = () => {
     setShowPopup(false);
@@ -203,6 +207,8 @@ export default function NewNetworkInfo() {
                             'bridge',
                             'ext_bridge_new_network_info_link',
                             metaMetricsId,
+                            isMetaMetricsEnabled,
+                            isMarketingEnabled,
                           )}&destChain=${currentNetwork?.chainId}`}
                           target="_blank"
                           rel="noreferrer"

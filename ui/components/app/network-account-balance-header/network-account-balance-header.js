@@ -68,6 +68,7 @@ export default function NetworkAccountBalanceHeader({
             variant={TextVariant.bodySm}
             as="h6"
             color={TextColor.textAlternative}
+            data-testid="signature-request-network-display"
           >
             {networkName}
           </Text>

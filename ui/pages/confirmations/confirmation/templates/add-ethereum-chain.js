@@ -1,22 +1,23 @@
-import { ethErrors } from 'eth-rpc-errors';
-import React from 'react';
+import { providerErrors } from '@metamask/rpc-errors';
+import { RpcEndpointType } from '@metamask/network-controller';
 import {
   infuraProjectId,
   DEPRECATED_NETWORKS,
 } from '../../../../../shared/constants/network';
 import {
-  Severity,
-  TypographyVariant,
-  TextAlign,
+  AlignItems,
   Display,
   FlexDirection,
-  AlignItems,
-  JustifyContent,
-  BackgroundColor,
+  Severity,
+  TypographyVariant,
 } from '../../../../helpers/constants/design-system';
-import { DEFAULT_ROUTE } from '../../../../helpers/constants/routes';
+import {
+  DEFAULT_ROUTE,
+  ONBOARDING_PRIVACY_SETTINGS_ROUTE,
+} from '../../../../helpers/constants/routes';
 import ZENDESK_URLS from '../../../../helpers/constants/zendesk-url';
 import { jsonRpcRequest } from '../../../../../shared/modules/rpc.utils';
+import { isValidASCIIURL, toPunycodeURL } from '../../utils/confirm';
 
 const UNRECOGNIZED_CHAIN = {
   id: 'UNRECOGNIZED_CHAIN',
@@ -219,38 +220,33 @@ function getState(pendingApproval) {
 function getValues(pendingApproval, t, actions, history, data) {
   const originIsMetaMask = pendingApproval.origin === 'metamask';
   const customRpcUrl = pendingApproval.requestData.rpcUrl;
+
+  let title;
+  if (originIsMetaMask) {
+    title = t('wantToAddThisNetwork');
+  } else if (data.existingNetworkConfiguration) {
+    title = t('updateNetworkConfirmationTitle', [
+      data.existingNetworkConfiguration.name,
+    ]);
+  } else {
+    title = t('addNetworkConfirmationTitle', [
+      pendingApproval.requestData.chainName,
+    ]);
+  }
+
+  let subtitle;
+  if (data.existingNetworkConfiguration) {
+    subtitle = t('updateEthereumChainConfirmationDescription');
+  } else {
+    subtitle = t('multichainAddEthereumChainConfirmationDescription');
+  }
+
   return {
     content: [
       {
-        hide: !originIsMetaMask,
-        element: 'Box',
-        key: 'network-box',
-        props: {
-          textAlign: TextAlign.Center,
-          display: Display.Flex,
-          justifyContent: JustifyContent.center,
-          marginTop: 4,
-          marginBottom: 2,
-        },
-        children: [
-          {
-            element: 'Chip',
-            key: 'network-chip',
-            props: {
-              label: pendingApproval.requestData.chainName,
-              backgroundColor: BackgroundColor.backgroundAlternative,
-              leftIconUrl: pendingApproval.requestData.imageUrl,
-            },
-          },
-        ],
-      },
-
-      {
         element: 'Typography',
         key: 'title',
-        children: originIsMetaMask
-          ? t('wantToAddThisNetwork')
-          : t('addEthereumChainConfirmationTitle'),
+        children: title,
         props: {
           variant: TypographyVariant.H3,
           align: 'center',
@@ -263,9 +259,9 @@ function getValues(pendingApproval, t, actions, history, data) {
       {
         element: 'Typography',
         key: 'description',
-        children: t('addEthereumChainConfirmationDescription'),
+        children: subtitle,
         props: {
-          variant: TypographyVariant.H7,
+          variant: TypographyVariant.H6,
           align: 'center',
           boxProps: {
             margin: originIsMetaMask ? [0, 8, 4] : [0, 0, 4],
@@ -273,72 +269,52 @@ function getValues(pendingApproval, t, actions, history, data) {
         },
       },
       {
+        element: 'TruncatedDefinitionList',
+        key: 'network-details',
+        props: {
+          title: t('networkDetails'),
+          tooltips: {
+            [t('currencySymbol')]: t('currencySymbolDefinition'),
+            [t('networkURL')]: t('networkURLDefinition'),
+            [t('chainId')]: t('chainIdDefinition'),
+            [t('networkName')]: t('networkNameDefinition'),
+            [t('blockExplorerUrl')]: t('blockExplorerUrlDefinition'),
+          },
+          warnings: {
+            [t('networkURL')]: isValidASCIIURL(customRpcUrl)
+              ? undefined
+              : t('networkUrlErrorWarning', [toPunycodeURL(customRpcUrl)]),
+            [t('currencySymbol')]: data.currencySymbolWarning,
+          },
+          dictionary: {
+            [t('currencySymbol')]: pendingApproval.requestData.ticker,
+            [t('networkURL')]: customRpcUrl
+              .toLowerCase()
+              ?.includes(`/v3/${infuraProjectId}`)
+              ? customRpcUrl.replace(`/v3/${infuraProjectId}`, '').toLowerCase()
+              : customRpcUrl.toLowerCase(),
+            [t('chainId')]: parseInt(pendingApproval.requestData.chainId, 16),
+            [t('networkName')]: pendingApproval.requestData.chainName,
+            [t('blockExplorerUrl')]:
+              pendingApproval.requestData.rpcPrefs.blockExplorerUrl,
+          },
+          prefaceKeys: [t('currencySymbol'), t('networkURL')],
+        },
+      },
+      {
         element: 'Typography',
         key: 'only-add-networks-you-trust',
         children: [
           {
-            element: 'b',
-            key: 'bolded-text',
-            props: {
-              style: { display: originIsMetaMask && '-webkit-box' },
-            },
-            children: [
-              `${t('addEthereumChainConfirmationRisks')} `,
-              {
-                hide: !originIsMetaMask,
-                element: 'Tooltip',
-                key: 'tooltip-info',
-                props: {
-                  position: 'bottom',
-                  interactive: true,
-                  trigger: 'mouseenter',
-                  html: (
-                    <div
-                      style={{
-                        width: '180px',
-                        margin: '16px',
-                        textAlign: 'left',
-                      }}
-                    >
-                      {t('someNetworksMayPoseSecurity')}{' '}
-                      <a
-                        key="zendesk_page_link"
-                        href={ZENDESK_URLS.UNKNOWN_NETWORK}
-                        rel="noreferrer"
-                        target="_blank"
-                        style={{ color: 'var(--color-primary-default)' }}
-                      >
-                        {t('learnMoreUpperCase')}
-                      </a>
-                    </div>
-                  ),
-                },
-                children: [
-                  {
-                    element: 'i',
-                    key: 'info-circle',
-                    props: {
-                      className: 'fas fa-info-circle',
-                      style: {
-                        marginLeft: '4px',
-                        color: 'var(--color-icon-default)',
-                      },
-                    },
-                  },
-                ],
-              },
-            ],
-          },
-          {
             element: 'MetaMaskTranslation',
             key: 'learn-about-risks',
             props: {
-              translationKey: 'addEthereumChainConfirmationRisksLearnMore',
+              translationKey: 'watchOutMessage',
               variables: [
                 {
                   element: 'a',
-                  children: t('addEthereumChainConfirmationRisksLearnMoreLink'),
-                  key: 'addEthereumChainConfirmationRisksLearnMoreLink',
+                  children: t('securityMessageLinkForNetworks'),
+                  key: 'securityMessageLinkForNetworks',
                   props: {
                     href: ZENDESK_URLS.USER_GUIDE_CUSTOM_NETWORKS,
                     target: '__blank',
@@ -349,50 +325,13 @@ function getValues(pendingApproval, t, actions, history, data) {
           },
         ],
         props: {
-          variant: TypographyVariant.H7,
+          variant: TypographyVariant.H6,
           boxProps: {
             margin: originIsMetaMask ? [0, 8] : 0,
             display: Display.Flex,
             flexDirection: FlexDirection.Column,
             alignItems: AlignItems.center,
           },
-        },
-      },
-      {
-        element: 'TruncatedDefinitionList',
-        key: 'network-details',
-        props: {
-          title: t('networkDetails'),
-          tooltips: {
-            [t('networkName')]: t('networkNameDefinition'),
-            [t('networkURL')]: t('networkURLDefinition'),
-            [t('chainId')]: t('chainIdDefinition'),
-            [t('currencySymbol')]: t('currencySymbolDefinition'),
-            [t('blockExplorerUrl')]: t('blockExplorerUrlDefinition'),
-          },
-          warnings: {
-            [t('currencySymbol')]: data.currencySymbolWarning,
-          },
-          dictionary: {
-            [t('networkName')]: pendingApproval.requestData.chainName,
-            [t('networkURL')]: pendingApproval.requestData.rpcUrl
-              .toLowerCase()
-              ?.includes(`/v3/${infuraProjectId}`)
-              ? pendingApproval.requestData.rpcUrl
-                  .replace(`/v3/${infuraProjectId}`, '')
-                  .toLowerCase()
-              : pendingApproval.requestData.rpcUrl.toLowerCase(),
-            [t('chainId')]: parseInt(pendingApproval.requestData.chainId, 16),
-            [t('currencySymbol')]: pendingApproval.requestData.ticker,
-            [t('blockExplorerUrl')]:
-              pendingApproval.requestData.rpcPrefs.blockExplorerUrl,
-          },
-          prefaceKeys: [
-            t('networkName'),
-            t('networkURL'),
-            t('chainId'),
-            t('currencySymbol'),
-          ],
         },
       },
     ],
@@ -422,29 +361,43 @@ function getValues(pendingApproval, t, actions, history, data) {
         pendingApproval.requestData,
       );
       if (originIsMetaMask) {
-        const networkConfigurationId = await actions.upsertNetworkConfiguration(
-          {
-            ...pendingApproval.requestData,
-            nickname: pendingApproval.requestData.chainName,
-          },
-          {
-            setActive: false,
-            source: pendingApproval.requestData.source,
-          },
-        );
+        const blockExplorer =
+          pendingApproval.requestData.rpcPrefs.blockExplorerUrl;
+
+        const addedNetwork = await actions.addNetwork({
+          chainId: pendingApproval.requestData.chainId,
+          name: pendingApproval.requestData.chainName,
+          nativeCurrency: pendingApproval.requestData.ticker,
+          blockExplorerUrls: blockExplorer ? [blockExplorer] : [],
+          defaultBlockExplorerUrlIndex: blockExplorer ? 0 : undefined,
+          defaultRpcEndpointIndex: 0,
+          rpcEndpoints: [
+            {
+              url: pendingApproval.requestData.rpcUrl,
+              type: RpcEndpointType.Custom,
+            },
+          ],
+        });
+
         await actions.setNewNetworkAdded({
-          networkConfigurationId,
+          networkConfigurationId: addedNetwork.rpcEndpoints[0].networkClientId,
           nickname: pendingApproval.requestData.chainName,
         });
 
-        history.push(DEFAULT_ROUTE);
+        const locationPath = document.location.hash.replace('#', '/');
+        const isOnboardingRoute =
+          locationPath === ONBOARDING_PRIVACY_SETTINGS_ROUTE;
+
+        if (!isOnboardingRoute) {
+          history.push(DEFAULT_ROUTE);
+        }
       }
       return [];
     },
     onCancel: () =>
       actions.rejectPendingApproval(
         pendingApproval.id,
-        ethErrors.provider.userRejectedRequest().serialize(),
+        providerErrors.userRejectedRequest().serialize(),
       ),
     networkDisplay: !originIsMetaMask,
   };

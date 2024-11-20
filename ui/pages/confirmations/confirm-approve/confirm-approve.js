@@ -12,10 +12,7 @@ import { getTokenApprovedParam } from '../../../helpers/utils/token-util';
 import { readAddressAsContract } from '../../../../shared/modules/contract-utils';
 import { GasFeeContextProvider } from '../../../contexts/gasFee';
 import { TransactionModalContextProvider } from '../../../contexts/transaction-modal';
-import {
-  getNativeCurrency,
-  isAddressLedger,
-} from '../../../ducks/metamask/metamask';
+import { isAddressLedger } from '../../../ducks/metamask/metamask';
 import ConfirmContractInteraction from '../confirm-contract-interaction';
 import {
   getCurrentCurrency,
@@ -23,11 +20,9 @@ import {
   getUseNonceField,
   getCustomNonceValue,
   getNextSuggestedNonce,
-  getCurrentChainId,
-  getRpcPrefsForCurrentProvider,
   checkNetworkAndAccountSupports1559,
   getUseCurrencyRateCheck,
-  getPreferences,
+  selectNetworkConfigurationByChainId,
 } from '../../../selectors';
 import { useApproveTransaction } from '../hooks/useApproveTransaction';
 import { useSimulationFailureWarning } from '../hooks/useSimulationFailureWarning';
@@ -39,6 +34,7 @@ import { parseStandardTokenTransactionData } from '../../../../shared/modules/tr
 import { TokenStandard } from '../../../../shared/constants/transaction';
 import { calcTokenAmount } from '../../../../shared/lib/transactions-controller-utils';
 import TokenAllowance from '../token-allowance/token-allowance';
+import { NetworkChangeToastLegacy } from '../components/confirm/network-change-toast';
 import { getCustomTxParamsData } from './confirm-approve.util';
 import ConfirmApproveContent from './confirm-approve-content';
 
@@ -66,16 +62,23 @@ export default function ConfirmApprove({
   isSetApproveForAll,
 }) {
   const dispatch = useDispatch();
-  const { txParams: { data: transactionData } = {} } = transaction;
+  const { chainId, txParams: { data: transactionData, from } = {} } =
+    transaction;
 
   const currentCurrency = useSelector(getCurrentCurrency);
-  const nativeCurrency = useSelector(getNativeCurrency);
+
+  const { nativeCurrency } = useSelector((state) =>
+    selectNetworkConfigurationByChainId(state, chainId),
+  );
+
   const subjectMetadata = useSelector(getSubjectMetadata);
   const useNonceField = useSelector(getUseNonceField);
   const nextNonce = useSelector(getNextSuggestedNonce);
   const customNonceValue = useSelector(getCustomNonceValue);
-  const chainId = useSelector(getCurrentChainId);
-  const rpcPrefs = useSelector(getRpcPrefsForCurrentProvider);
+  const { blockExplorerUrls } = useSelector((state) =>
+    selectNetworkConfigurationByChainId(state, chainId),
+  );
+  const blockExplorerUrl = blockExplorerUrls?.[0];
   const networkAndAccountSupports1559 = useSelector(
     checkNetworkAndAccountSupports1559,
   );
@@ -83,7 +86,6 @@ export default function ConfirmApprove({
     isAddressLedgerByFromAddress(userAddress),
   );
   const useCurrencyRateCheck = useSelector(getUseCurrencyRateCheck);
-  const { useNativeCurrencyAsPrimaryCurrency } = useSelector(getPreferences);
   const [customPermissionAmount, setCustomPermissionAmount] = useState('');
   const [submitWarning, setSubmitWarning] = useState('');
   const [isContract, setIsContract] = useState(false);
@@ -175,17 +177,7 @@ export default function ConfirmApprove({
     return <ConfirmContractInteraction />;
   }
 
-  let tokenAllowanceImprovements = true;
-
-  ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-  tokenAllowanceImprovements = false;
-  ///: END:ONLY_INCLUDE_IF
-
-  if (
-    tokenAllowanceImprovements &&
-    assetStandard === TokenStandard.ERC20 &&
-    !isSetApproveForAll
-  ) {
+  if (assetStandard === TokenStandard.ERC20 && !isSetApproveForAll) {
     return (
       <GasFeeContextProvider transaction={transaction}>
         <TransactionModalContextProvider>
@@ -229,6 +221,7 @@ export default function ConfirmApprove({
             </>
           )}
         </TransactionModalContextProvider>
+        <NetworkChangeToastLegacy confirmation={transaction} />
       </GasFeeContextProvider>
     );
   }
@@ -276,7 +269,7 @@ export default function ConfirmApprove({
               updateCustomNonce={(value) => {
                 dispatch(updateCustomNonce(value));
               }}
-              getNextNonce={() => dispatch(getNextNonce())}
+              getNextNonce={() => dispatch(getNextNonce(from))}
               showCustomizeNonceModal={({
                 /* eslint-disable no-shadow */
                 useNonceField,
@@ -301,14 +294,11 @@ export default function ConfirmApprove({
               txData={transaction}
               fromAddressIsLedger={fromAddressIsLedger}
               chainId={chainId}
-              rpcPrefs={rpcPrefs}
+              blockExplorerUrl={blockExplorerUrl}
               isContract={isContract}
               hasLayer1GasFee={layer1GasFee !== undefined}
               supportsEIP1559={supportsEIP1559}
               useCurrencyRateCheck={useCurrencyRateCheck}
-              useNativeCurrencyAsPrimaryCurrency={
-                useNativeCurrencyAsPrimaryCurrency
-              }
             />
             {showCustomizeGasPopover && !supportsEIP1559 && (
               <EditGasPopover
@@ -347,6 +337,7 @@ ConfirmApprove.propTypes = {
   userAddress: PropTypes.string,
   toAddress: PropTypes.string,
   transaction: PropTypes.shape({
+    chainId: PropTypes.string,
     layer1GasFee: PropTypes.string,
     origin: PropTypes.string,
     txParams: PropTypes.shape({

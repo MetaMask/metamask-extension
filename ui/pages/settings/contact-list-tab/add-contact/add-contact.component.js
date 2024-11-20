@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { debounce } from 'lodash';
 import TextField from '../../../../components/ui/text-field';
 import { CONTACT_LIST_ROUTE } from '../../../../helpers/constants/routes';
-import { IS_FLASK, isValidDomainName } from '../../../../helpers/utils/util';
+import { isValidDomainName } from '../../../../helpers/utils/util';
 import DomainInput from '../../../confirmations/send/send-content/add-recipient/domain-input';
 import PageContainerFooter from '../../../../components/ui/page-container/page-container-footer';
 import {
@@ -11,7 +11,8 @@ import {
   isValidHexAddress,
 } from '../../../../../shared/modules/hexstring-utils';
 import { INVALID_RECIPIENT_ADDRESS_ERROR } from '../../../confirmations/send/send.constants';
-import { DomainInputResolutionCell } from '../../../../components/multichain/pages/send/components/domain-input-resolution-cell';
+import { DomainInputResolutionCell } from '../../../../components/multichain/pages/send/components';
+import { isDuplicateContact } from '../../../../components/app/contact-list/utils';
 
 export default class AddContact extends PureComponent {
   static contextTypes = {
@@ -19,6 +20,8 @@ export default class AddContact extends PureComponent {
   };
 
   static propTypes = {
+    addressBook: PropTypes.array,
+    internalAccounts: PropTypes.array,
     addToAddressBook: PropTypes.func,
     history: PropTypes.object,
     scanQrCode: PropTypes.func,
@@ -33,7 +36,8 @@ export default class AddContact extends PureComponent {
   state = {
     newName: '',
     selectedAddress: '',
-    error: '',
+    addressInputError: '',
+    nameInputError: '',
     input: '',
   };
 
@@ -68,8 +72,10 @@ export default class AddContact extends PureComponent {
       isValidHexAddress(input, { mixedCaseUseChecksum: true });
     const validEnsAddress = isValidDomainName(input);
 
-    if (!IS_FLASK && !validEnsAddress && !valid) {
-      this.setState({ error: INVALID_RECIPIENT_ADDRESS_ERROR });
+    if (!validEnsAddress && !valid) {
+      this.setState({ addressInputError: INVALID_RECIPIENT_ADDRESS_ERROR });
+    } else {
+      this.setState({ addressInputError: null });
     }
   };
 
@@ -98,12 +104,31 @@ export default class AddContact extends PureComponent {
     );
   }
 
+  validateName = (newName) => {
+    const { addressBook, internalAccounts } = this.props;
+    return !isDuplicateContact(addressBook, internalAccounts, newName);
+  };
+
+  handleNameChange = (newName) => {
+    const isValidName = this.validateName(newName);
+
+    this.setState({
+      nameInputError: isValidName ? null : this.context.t('nameAlreadyInUse'),
+    });
+
+    this.setState({ newName });
+  };
+
   render() {
     const { t } = this.context;
     const { history, addToAddressBook, domainError, domainResolutions } =
       this.props;
 
-    const errorToRender = domainError || this.state.error;
+    const addressError = domainError || this.state.addressInputError;
+    const newAddress = this.state.selectedAddress || this.state.input;
+    const validAddress =
+      !isBurnAddress(newAddress) &&
+      isValidHexAddress(newAddress, { mixedCaseUseChecksum: true });
 
     return (
       <div className="settings-page__content-row address-book__add-contact">
@@ -115,10 +140,12 @@ export default class AddContact extends PureComponent {
             <TextField
               type="text"
               id="nickname"
+              placeholder={this.context.t('addAlias')}
               value={this.state.newName}
-              onChange={(e) => this.setState({ newName: e.target.value })}
+              onChange={(e) => this.handleNameChange(e.target.value)}
               fullWidth
               margin="dense"
+              error={this.state.nameInputError}
             />
           </div>
 
@@ -138,20 +165,17 @@ export default class AddContact extends PureComponent {
                   resolvingSnap,
                   addressBookEntryName,
                   protocol,
+                  domainName,
                 } = resolution;
-                const domainName = addressBookEntryName || this.state.input;
                 return (
                   <DomainInputResolutionCell
                     key={`${resolvedAddress}${resolvingSnap}${protocol}`}
-                    domainType={
-                      protocol === 'Ethereum Name Service' ? 'ENS' : 'Other'
-                    }
                     address={resolvedAddress}
-                    domainName={domainName}
+                    domainName={addressBookEntryName ?? domainName}
                     onClick={() => {
+                      this.handleNameChange(domainName);
                       this.setState({
-                        selectedAddress: resolvedAddress,
-                        newName: this.state.newName || domainName,
+                        input: resolvedAddress,
                       });
                       this.props.resetDomainResolution();
                     }}
@@ -161,9 +185,9 @@ export default class AddContact extends PureComponent {
                 );
               })}
             </div>
-            {errorToRender && (
+            {addressError && (
               <div className="address-book__add-contact__error">
-                {t(errorToRender)}
+                {t(addressError)}
               </div>
             )}
           </div>
@@ -171,15 +195,13 @@ export default class AddContact extends PureComponent {
         <PageContainerFooter
           cancelText={this.context.t('cancel')}
           disabled={Boolean(
-            this.state.error ||
-              !this.state.selectedAddress ||
+            this.state.addressInputError ||
+              this.state.nameInputError ||
+              !validAddress ||
               !this.state.newName.trim(),
           )}
           onSubmit={async () => {
-            await addToAddressBook(
-              this.state.selectedAddress,
-              this.state.newName,
-            );
+            await addToAddressBook(newAddress, this.state.newName);
             history.push(CONTACT_LIST_ROUTE);
           }}
           onCancel={() => {

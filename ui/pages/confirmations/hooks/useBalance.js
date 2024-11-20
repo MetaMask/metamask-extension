@@ -1,6 +1,7 @@
 import { useSelector } from 'react-redux';
 import {
   getCurrentNetwork,
+  getInternalAccountByAddress,
   getSelectedAccountCachedBalance,
   getShouldHideZeroBalanceTokens,
   getShowFiatInTestnets,
@@ -13,8 +14,12 @@ export const useBalance = (fromAddress) => {
     getShouldHideZeroBalanceTokens,
   );
 
+  const fromAccount = useSelector((state) =>
+    getInternalAccountByAddress(state, fromAddress),
+  );
+
   const { totalWeiBalance } = useAccountTotalFiatBalance(
-    fromAddress,
+    fromAccount,
     shouldHideZeroBalanceTokens,
   );
 

@@ -35,9 +35,7 @@ const render = async ({ contextProps } = {}) => {
           balance: '0x1F4',
         },
       },
-      preferences: {
-        useNativeCurrencyAsPrimaryCurrency: true,
-      },
+      preferences: {},
       gasFeeEstimates:
         mockEstimates[GasEstimateTypes.feeMarket].gasFeeEstimates,
       gasFeeEstimatesByChainId: {
@@ -79,7 +77,7 @@ describe('GasDetailsItem', () => {
   it('should render label', async () => {
     await render();
     await waitFor(() => {
-      expect(screen.queryAllByText('Market')[0]).toBeInTheDocument();
+      expect(screen.queryAllByText('🦊 Market')[0]).toBeInTheDocument();
       expect(screen.queryByText('Max fee:')).toBeInTheDocument();
       expect(screen.queryAllByText('ETH').length).toBeGreaterThan(0);
     });
@@ -155,7 +153,7 @@ describe('GasDetailsItem', () => {
   it('should not return null even if there is simulationError if user acknowledged gasMissing warning', async () => {
     await render();
     await waitFor(() => {
-      expect(screen.queryAllByText('Market')[0]).toBeInTheDocument();
+      expect(screen.queryAllByText('🦊 Market')[0]).toBeInTheDocument();
       expect(screen.queryByText('Max fee:')).toBeInTheDocument();
       expect(screen.queryAllByText('ETH').length).toBeGreaterThan(0);
     });
@@ -270,7 +268,7 @@ describe('GasDetailsItem', () => {
               high: {
                 suggestedMaxPriorityFeePerGas: '1',
               },
-              networkCongestion: 0.7,
+              networkCongestion: 0.91,
             },
           },
         },

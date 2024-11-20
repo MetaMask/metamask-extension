@@ -1,10 +1,16 @@
 import React from 'react';
 
+import {
+  orderSignatureMsg,
+  permitSignatureMsg,
+} from '../../../../../../test/data/confirmations/typed_sign';
 import mockState from '../../../../../../test/data/mock-state.json';
 import { renderWithProvider } from '../../../../../../test/lib/render-helpers';
 import configureStore from '../../../../../store/store';
 
 import { DataTree } from './dataTree';
+
+const CHAIN_ID_MOCK = '0x123';
 
 const mockData = {
   contents: { value: 'Hello, Bob!', type: 'string' },
@@ -63,7 +69,42 @@ const store = configureStore(mockState);
 describe('DataTree', () => {
   it('should match snapshot', () => {
     const { container } = renderWithProvider(
-      <DataTree data={mockData} />,
+      <DataTree data={mockData} chainId={CHAIN_ID_MOCK} />,
+      store,
+    );
+    expect(container).toMatchSnapshot();
+  });
+
+  it('should match snapshot for permit signature type', () => {
+    const { container } = renderWithProvider(
+      <DataTree
+        data={JSON.parse(permitSignatureMsg.msgParams?.data as string)}
+        chainId={CHAIN_ID_MOCK}
+      />,
+      store,
+    );
+    expect(container).toMatchSnapshot();
+  });
+
+  it('should match snapshot for permit signature type and deadline is -1 (None)', () => {
+    const mockPermitData = JSON.parse(
+      permitSignatureMsg.msgParams?.data as string,
+    );
+    mockPermitData.message.deadline = '-1';
+
+    const { container } = renderWithProvider(
+      <DataTree data={mockPermitData} chainId={CHAIN_ID_MOCK} />,
+      store,
+    );
+    expect(container).toMatchSnapshot();
+  });
+
+  it('should match snapshot for order signature type', () => {
+    const { container } = renderWithProvider(
+      <DataTree
+        data={JSON.parse(orderSignatureMsg.msgParams?.data as string)}
+        chainId={CHAIN_ID_MOCK}
+      />,
       store,
     );
     expect(container).toMatchSnapshot();
@@ -77,7 +118,10 @@ describe('DataTree', () => {
       },
       'A number': { type: 'uint32', value: '1337' },
     };
-    const { container } = renderWithProvider(<DataTree data={data} />, store);
+    const { container } = renderWithProvider(
+      <DataTree data={data} chainId={CHAIN_ID_MOCK} />,
+      store,
+    );
     expect(container).toMatchSnapshot();
   });
 });

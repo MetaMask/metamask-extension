@@ -3,57 +3,27 @@ import configureMockStore from 'redux-mock-store';
 import { fireEvent, screen } from '@testing-library/react';
 import { act } from 'react-dom/test-utils';
 import { EthAccountType } from '@metamask/keyring-api';
+import { CHAIN_IDS } from '@metamask/transaction-controller';
 import { MESSAGE_TYPE } from '../../../../../shared/constants/app';
 import { SECURITY_PROVIDER_MESSAGE_SEVERITY } from '../../../../../shared/constants/security-provider';
 import mockState from '../../../../../test/data/mock-state.json';
 import { renderWithProvider } from '../../../../../test/lib/render-helpers';
 import configureStore from '../../../../store/store';
-import {
-  resolvePendingApproval,
-  rejectPendingApproval,
-  completedTx,
-} from '../../../../store/actions';
+import { rejectPendingApproval } from '../../../../store/actions';
 import { shortenAddress } from '../../../../helpers/utils/util';
 import { ETH_EOA_METHODS } from '../../../../../shared/constants/eth-methods';
+import { mockNetworkState } from '../../../../../test/stub/networks';
 import SignatureRequestOriginal from '.';
 
 jest.mock('../../../../store/actions', () => ({
   resolvePendingApproval: jest.fn().mockReturnValue({ type: 'test' }),
   rejectPendingApproval: jest.fn().mockReturnValue({ type: 'test' }),
   completedTx: jest.fn().mockReturnValue({ type: 'test' }),
+  getLastInteractedConfirmationInfo: jest.fn(),
+  setLastInteractedConfirmationInfo: jest.fn(),
 }));
 
-const MOCK_SIGN_DATA = JSON.stringify({
-  domain: {
-    name: 'happydapp.website',
-  },
-  message: {
-    string: 'haay wuurl',
-    number: 42,
-  },
-  primaryType: 'Mail',
-  types: {
-    EIP712Domain: [
-      { name: 'name', type: 'string' },
-      { name: 'version', type: 'string' },
-      { name: 'chainId', type: 'uint256' },
-      { name: 'verifyingContract', type: 'address' },
-    ],
-    Group: [
-      { name: 'name', type: 'string' },
-      { name: 'members', type: 'Person[]' },
-    ],
-    Mail: [
-      { name: 'from', type: 'Person' },
-      { name: 'to', type: 'Person[]' },
-      { name: 'contents', type: 'string' },
-    ],
-    Person: [
-      { name: 'name', type: 'string' },
-      { name: 'wallets', type: 'address[]' },
-    ],
-  },
-});
+const CHAIN_ID_MOCK = CHAIN_IDS.GOERLI;
 
 const address = '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc';
 
@@ -61,12 +31,24 @@ const props = {
   signMessage: jest.fn(),
   cancelMessage: jest.fn(),
   txData: {
+    chainId: CHAIN_ID_MOCK,
     msgParams: {
       from: address,
-      data: MOCK_SIGN_DATA,
+      data: [
+        {
+          type: 'string',
+          name: 'Message',
+          value: 'Hi, Alice!',
+        },
+        {
+          type: 'uint32',
+          name: 'A number',
+          value: '1337',
+        },
+      ],
       origin: 'https://happydapp.website/governance?futarchy=true',
     },
-    type: MESSAGE_TYPE.ETH_SIGN,
+    type: MESSAGE_TYPE.ETH_SIGN_TYPED_DATA,
   },
   selectedAccount: {
     address: '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc',
@@ -99,6 +81,7 @@ const render = ({ txData = props.txData, selectedAccount } = {}) => {
   const store = configureStore({
     metamask: {
       ...mockState.metamask,
+      ...mockNetworkState({ chainId: CHAIN_ID_MOCK }),
       internalAccounts,
     },
   });
@@ -132,23 +115,6 @@ describe('SignatureRequestOriginal', () => {
     expect(screen.getByText('Signature request')).toBeInTheDocument();
   });
 
-  it('should render warning for eth sign when sign button clicked', async () => {
-    render();
-    const signButton = screen.getByTestId('page-container-footer-next');
-
-    fireEvent.click(signButton);
-    expect(screen.getByText('Your funds may be at risk')).toBeInTheDocument();
-
-    const secondSignButton = screen.getByTestId(
-      'signature-warning-sign-button',
-    );
-    await act(async () => {
-      fireEvent.click(secondSignButton);
-    });
-    expect(resolvePendingApproval).toHaveBeenCalledTimes(1);
-    expect(completedTx).toHaveBeenCalledTimes(1);
-  });
-
   it('should cancel approval when user reject signing', async () => {
     render();
     const rejectButton = screen.getByTestId('page-container-footer-cancel');
@@ -160,6 +126,7 @@ describe('SignatureRequestOriginal', () => {
 
   it('should escape RTL character in label or value', () => {
     const txData = {
+      chainId: CHAIN_ID_MOCK,
       msgParams: {
         from: '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc',
         data: [

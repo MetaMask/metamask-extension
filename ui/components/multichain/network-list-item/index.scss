@@ -14,14 +14,11 @@
     color: inherit;
   }
 
-  &__network-name {
-    width: 100%;
-    flex: 1;
-    overflow: hidden;
-    text-align: start;
-
-    button:hover {
-      opacity: 1;
+  &:hover,
+  &:focus,
+  &:focus-within {
+    .multichain-network-list-item__delete {
+      visibility: visible;
     }
   }
 
@@ -35,5 +32,13 @@
     position: absolute;
     top: 4px;
     left: 4px;
+  }
+
+  &__delete {
+    visibility: hidden;
+  }
+
+  &__rpc-endpoint {
+    max-width: 100%;
   }
 }

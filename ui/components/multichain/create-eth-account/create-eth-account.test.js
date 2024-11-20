@@ -44,7 +44,7 @@ describe('CreateEthAccount', () => {
     fireEvent.change(input, {
       target: { value: newAccountName },
     });
-    fireEvent.click(getByText('Create'));
+    fireEvent.click(getByText('Add account'));
 
     await waitFor(() => expect(mockAddNewAccount).toHaveBeenCalled());
     await waitFor(() =>
@@ -66,7 +66,7 @@ describe('CreateEthAccount', () => {
       target: { value: usedAccountName },
     });
 
-    const submitButton = getByText('Create');
+    const submitButton = getByText('Add account');
     expect(submitButton).toHaveAttribute('disabled');
   });
 });

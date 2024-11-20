@@ -15,7 +15,7 @@
       "512": "images/icon-512.png"
     },
     "default_title": "MetaMask",
-    "default_popup": "popup.html"
+    "default_popup": "popup-init.html"
   },
   "commands": {
     "_execute_browser_action": {
@@ -42,7 +42,7 @@
       "all_frames": true
     },
     {
-      "matches": ["*://connect.trezor.io/*/popup.html"],
+      "matches": ["*://connect.trezor.io/*/popup.html*"],
       "js": ["vendor/trezor/content-script.js"]
     }
   ],
@@ -64,14 +64,11 @@
     "storage",
     "unlimitedStorage",
     "clipboardWrite",
-    "http://localhost:8545/",
-    "https://*.infura.io/",
-    "https://*.codefi.network/",
-    "https://*.cx.metamask.io/",
-    "https://chainid.network/chains.json",
-    "https://lattice.gridplus.io/*",
+    "http://*/*",
+    "https://*/*",
     "activeTab",
     "webRequest",
+    "webRequestBlocking",
     "*://*.eth/",
     "notifications"
   ],

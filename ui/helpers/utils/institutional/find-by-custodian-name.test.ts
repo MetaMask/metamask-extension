@@ -14,6 +14,7 @@ describe('findCustodianByEnvName', () => {
       refreshTokenUrl: null,
       websocketApiUrl: 'wss://websocket.dev.metamask-institutional.io/v1/ws',
       isNoteToTraderSupported: true,
+      isQRCodeSupported: false,
       version: 2,
     },
     {
@@ -30,6 +31,7 @@ describe('findCustodianByEnvName', () => {
         'https://saturn-custody.dev.metamask-institutional.io/oauth/token',
       websocketApiUrl: 'wss://websocket.dev.metamask-institutional.io/v1/ws',
       isNoteToTraderSupported: true,
+      isQRCodeSupported: false,
       version: 2,
     },
   ];

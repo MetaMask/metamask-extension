@@ -1,6 +1,7 @@
 import React, { useCallback, useEffect } from 'react';
 import { useSelector } from 'react-redux';
 import { useHistory, useLocation } from 'react-router-dom';
+import type { NotificationServicesController } from '@metamask/notification-services-controller';
 import { Box } from '../../components/component-library';
 import {
   BlockSize,
@@ -17,11 +18,12 @@ import {
   NotificationComponents,
   hasNotificationComponents,
 } from '../notifications/notification-components';
-import type { Notification } from '../../../app/scripts/controllers/metamask-notifications/types/types';
 import { getExtractIdentifier } from './utils/utils';
 import { NotificationDetailsHeader } from './notification-details-header/notification-details-header';
 import { NotificationDetailsBody } from './notification-details-body/notification-details-body';
 import { NotificationDetailsFooter } from './notification-details-footer/notification-details-footer';
+
+type Notification = NotificationServicesController.Types.INotification;
 
 function useModalNavigation() {
   const history = useHistory();

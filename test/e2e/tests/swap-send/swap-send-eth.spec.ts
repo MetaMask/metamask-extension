@@ -1,10 +1,9 @@
 import { Suite } from 'mocha';
 import {
-  withFixtures,
-  openActionMenuAndStartSendFlow,
   logInWithBalanceValidation,
+  openActionMenuAndStartSendFlow,
+  withFixtures,
 } from '../../helpers';
-import type { Ganache } from '../../seeder/ganache';
 import {
   NATIVE_TOKEN_SYMBOL,
   SwapSendPage,
@@ -13,20 +12,12 @@ import {
 
 const RECIPIENT_ADDRESS = '0xc427D562164062a23a5cFf596A4a3208e72Acd28';
 
-describe('Swap-Send ETH', function () {
+describe('Swap-Send ETH @no-mmi', function () {
   describe('to non-contract address with data that matches swap data signature', function (this: Suite) {
     it('submits a transaction successfully', async function () {
       await withFixtures(
         getSwapSendFixtures(this.test?.fullTitle()),
-        async ({
-          driver,
-          ganacheServer,
-        }: {
-          // TODO: Replace `any` with type
-          // eslint-disable-next-line @typescript-eslint/no-explicit-any
-          driver: any;
-          ganacheServer: Ganache;
-        }) => {
+        async ({ driver, ganacheServer }) => {
           const swapSendPage = new SwapSendPage(driver);
           await logInWithBalanceValidation(driver, ganacheServer);
 
@@ -76,12 +67,6 @@ describe('Swap-Send ETH', function () {
           await swapSendPage.submitSwap();
           await swapSendPage.verifyHistoryEntry(
             'Send ETH as TST',
-            'Pending',
-            '-1 ETH',
-            '',
-          );
-          await swapSendPage.verifyHistoryEntry(
-            'Send ETH as TST',
             'Confirmed',
             '-1 ETH',
             '',
@@ -96,15 +81,7 @@ describe('Swap-Send ETH', function () {
   it('sets max amount', async function () {
     await withFixtures(
       getSwapSendFixtures(this.test?.fullTitle()),
-      async ({
-        driver,
-        ganacheServer,
-      }: {
-        // TODO: Replace `any` with type
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        driver: any;
-        ganacheServer: Ganache;
-      }) => {
+      async ({ driver, ganacheServer }) => {
         const swapSendPage = new SwapSendPage(driver);
         await logInWithBalanceValidation(driver, ganacheServer);
 

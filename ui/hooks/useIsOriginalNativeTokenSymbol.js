@@ -4,16 +4,23 @@ import fetchWithCache from '../../shared/lib/fetch-with-cache';
 import {
   CHAIN_ID_TO_CURRENCY_SYMBOL_MAP,
   CHAIN_ID_TO_CURRENCY_SYMBOL_MAP_NETWORK_COLLISION,
+  CHAIN_SPEC_URL,
 } from '../../shared/constants/network';
 import { DAY } from '../../shared/constants/time';
 import { useSafeChainsListValidationSelector } from '../selectors';
+import {
+  getMultichainIsEvm,
+  getMultichainCurrentNetwork,
+} from '../selectors/multichain';
+// TODO: Remove restricted import
+// eslint-disable-next-line import/no-restricted-paths
 import { getValidUrl } from '../../app/scripts/lib/util';
 
 export function useIsOriginalNativeTokenSymbol(
   chainId,
   ticker,
   type,
-  rpcUrl = null,
+  rpcUrl = '',
 ) {
   const [isOriginalNativeSymbol, setIsOriginalNativeSymbol] = useState(false);
   const useSafeChainsListValidation = useSelector(
@@ -29,8 +36,16 @@ export function useIsOriginalNativeTokenSymbol(
     );
   };
 
+  const isEvm = useSelector(getMultichainIsEvm);
+  const providerConfig = useSelector(getMultichainCurrentNetwork);
+
   useEffect(() => {
     async function getNativeTokenSymbol(networkId) {
+      if (!isEvm) {
+        setIsOriginalNativeSymbol(ticker === providerConfig?.ticker);
+        return;
+      }
+
       try {
         if (!useSafeChainsListValidation) {
           setIsOriginalNativeSymbol(true);
@@ -64,7 +79,8 @@ export function useIsOriginalNativeTokenSymbol(
         }
 
         const safeChainsList = await fetchWithCache({
-          url: 'https://chainid.network/chains.json',
+          url: CHAIN_SPEC_URL,
+          allowStale: true,
           cacheOptions: { cacheRefreshTime: DAY },
           functionName: 'getSafeChainsList',
         });

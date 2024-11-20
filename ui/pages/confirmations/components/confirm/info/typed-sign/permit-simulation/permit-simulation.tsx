@@ -1,78 +1,22 @@
-import React, { useMemo } from 'react';
-import { useSelector } from 'react-redux';
-import { NameType } from '@metamask/name-controller';
+import React from 'react';
 
-import { parseTypedDataMessage } from '../../../../../../../../shared/modules/transaction.utils';
-import { Numeric } from '../../../../../../../../shared/modules/Numeric';
-import Name from '../../../../../../../components/app/name/name';
-import {
-  ConfirmInfoRow,
-  ConfirmInfoRowText,
-} from '../../../../../../../components/app/confirm/info/row';
-import { useI18nContext } from '../../../../../../../hooks/useI18nContext';
-import { currentConfirmationSelector } from '../../../../../../../selectors';
-import { Box, Text } from '../../../../../../../components/component-library';
-import {
-  BackgroundColor,
-  BorderRadius,
-  Display,
-  TextAlign,
-} from '../../../../../../../helpers/constants/design-system';
 import { SignatureRequestType } from '../../../../../types/confirm';
-import useTokenExchangeRate from '../../../../../../../components/app/currency-input/hooks/useTokenExchangeRate';
-import { IndividualFiatDisplay } from '../../../../simulation-details/fiat-display';
-import { ConfirmInfoSection } from '../../../../../../../components/app/confirm/info/row/section';
+import { useConfirmContext } from '../../../../../context/confirm';
+import { DefaultSimulation } from './default-simulation';
+import { DecodedSimulation } from './decoded-simulation';
 
-const PermitSimulation: React.FC = () => {
-  const t = useI18nContext();
-  const currentConfirmation = useSelector(
-    currentConfirmationSelector,
-  ) as SignatureRequestType;
+const PermitSimulation: React.FC<object> = () => {
+  const { currentConfirmation } = useConfirmContext<SignatureRequestType>();
+  const { decodingLoading, decodingData } = currentConfirmation;
 
-  const {
-    domain: { verifyingContract },
-    message: { value },
-  } = parseTypedDataMessage(currentConfirmation.msgParams?.data as string);
+  if (
+    decodingData?.error ||
+    (decodingData === undefined && decodingLoading !== true)
+  ) {
+    return <DefaultSimulation />;
+  }
 
-  const exchangeRate = useTokenExchangeRate(verifyingContract);
-
-  const fiatValue = useMemo(() => {
-    if (exchangeRate && value) {
-      return exchangeRate.times(new Numeric(value, 10)).toNumber();
-    }
-    return undefined;
-  }, [exchangeRate, value]);
-
-  return (
-    <ConfirmInfoSection>
-      <ConfirmInfoRow
-        label={t('simulationDetailsTitle')}
-        tooltip={t('simulationDetailsTitleTooltip')}
-      >
-        <ConfirmInfoRowText text={t('permitSimulationDetailInfo')} />
-      </ConfirmInfoRow>
-      <ConfirmInfoRow label={t('approve')}>
-        <Box style={{ marginLeft: 'auto' }}>
-          <Box display={Display.Flex}>
-            <Box display={Display.Inline} marginInlineEnd={1}>
-              <Text
-                backgroundColor={BackgroundColor.backgroundAlternative}
-                borderRadius={BorderRadius.XL}
-                paddingInline={2}
-                textAlign={TextAlign.Center}
-              >
-                {value}
-              </Text>
-            </Box>
-            <Name value={verifyingContract} type={NameType.ETHEREUM_ADDRESS} />
-          </Box>
-          <Box>
-            {fiatValue && <IndividualFiatDisplay fiatAmount={fiatValue} />}
-          </Box>
-        </Box>
-      </ConfirmInfoRow>
-    </ConfirmInfoSection>
-  );
+  return <DecodedSimulation />;
 };
 
 export default PermitSimulation;

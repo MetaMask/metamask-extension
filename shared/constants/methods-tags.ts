@@ -10,23 +10,28 @@ export const methodsRequiringNetworkSwitch = [
   'eth_sendTransaction',
   'eth_sendRawTransaction',
   'wallet_switchEthereumChain',
-  'wallet_addEthereumChain',
   'wallet_watchAsset',
+  'eth_signTypedData',
+  'eth_signTypedData_v3',
   'eth_signTypedData_v4',
   'personal_sign',
 ] as const;
 
 /**
- * This is a list of methods that can cause a confirmation to be
- * presented to the user. Note that some of these methods may
- * only sometimes cause a confirmation to appear.
+ * This is a list of methods that may change the globally selected network
+ * without prompting for user approval.  For UI/UX reasons these type of
+ * requests must be treated specially in the QueuedRequestController.
  */
-export const methodsWithConfirmation = [
+export const methodsThatCanSwitchNetworkWithoutApproval = [
+  'wallet_addEthereumChain',
+  'wallet_switchEthereumChain',
+];
+
+/**
+ * This is a list of methods that require special handling and must
+ * be enqueued and processed by the QueuedRequestController.
+ */
+export const methodsThatShouldBeEnqueued = [
   ...methodsRequiringNetworkSwitch,
-  'wallet_requestPermissions',
-  'wallet_requestSnaps',
-  'eth_decrypt',
-  'eth_sign',
-  'eth_requestAccounts',
-  'eth_getEncryptionPublicKey',
+  ...methodsThatCanSwitchNetworkWithoutApproval,
 ];

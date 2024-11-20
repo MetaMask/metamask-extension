@@ -1,6 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
+import { useSelector } from 'react-redux';
 import {
   AlignItems,
   Color,
@@ -24,6 +25,7 @@ import {
   Box,
 } from '../../component-library';
 import Tooltip from '../../ui/tooltip';
+import { getRequestingNetworkInfo } from '../../../selectors';
 import { PermissionCellOptions } from './permission-cell-options';
 import { PermissionCellStatus } from './permission-cell-status';
 
@@ -40,6 +42,7 @@ const PermissionCell = ({
   showOptions,
   hideStatus,
   accounts,
+  permissionValue,
 }) => {
   const infoIcon = IconName.Info;
   let infoIconColor = IconColor.iconMuted;
@@ -66,6 +69,10 @@ const PermissionCell = ({
   if (typeof avatarIcon !== 'string' && avatarIcon?.props?.iconName) {
     permissionIcon = avatarIcon.props.iconName;
   }
+
+  const networksInfo = useSelector((state) =>
+    getRequestingNetworkInfo(state, permissionValue),
+  );
 
   return (
     <Box
@@ -114,6 +121,7 @@ const PermissionCell = ({
             approved={approved}
             dateApproved={dateApproved}
             accounts={accounts}
+            networks={networksInfo || null}
           />
         )}
       </Box>
@@ -163,6 +171,7 @@ PermissionCell.propTypes = {
   showOptions: PropTypes.bool,
   hideStatus: PropTypes.bool,
   accounts: PropTypes.array,
+  permissionValue: PropTypes.array,
 };
 
 export default PermissionCell;

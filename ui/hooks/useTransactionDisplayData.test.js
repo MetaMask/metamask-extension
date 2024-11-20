@@ -1,5 +1,6 @@
 import React from 'react';
 import * as reactRedux from 'react-redux';
+import { Provider } from 'react-redux';
 import { renderHook } from '@testing-library/react-hooks';
 import sinon from 'sinon';
 import { MemoryRouter } from 'react-router-dom';
@@ -7,30 +8,18 @@ import {
   TransactionStatus,
   TransactionType,
 } from '@metamask/transaction-controller';
+import mockState from '../../test/data/mock-state.json';
+import configureStore from '../store/store';
 import transactions from '../../test/data/transaction-data.json';
-import {
-  getPreferences,
-  getShouldShowFiat,
-  getCurrentCurrency,
-  getCurrentChainId,
-} from '../selectors';
-import {
-  getTokens,
-  getNativeCurrency,
-  getNfts,
-} from '../ducks/metamask/metamask';
+// TODO: Remove restricted import
+// eslint-disable-next-line import/no-restricted-paths
 import messages from '../../app/_locales/en/messages.json';
 import { ASSET_ROUTE, DEFAULT_ROUTE } from '../helpers/constants/routes';
-import { CHAIN_IDS } from '../../shared/constants/network';
 import { TransactionGroupCategory } from '../../shared/constants/transaction';
 import { formatDateWithYearContext } from '../helpers/utils/util';
 import { getMessage } from '../helpers/utils/i18n-helper';
-import {
-  getMultichainCurrentCurrency,
-  getMultichainIsEvm,
-  getMultichainNativeCurrency,
-  getMultichainShouldShowFiat,
-} from '../selectors/multichain';
+import { mockNetworkState } from '../../test/stub/networks';
+import { CHAIN_IDS } from '../../shared/constants/network';
 import * as i18nhooks from './useI18nContext';
 import * as useTokenFiatAmountHooks from './useTokenFiatAmount';
 import { useTransactionDisplayData } from './useTransactionDisplayData';
@@ -206,14 +195,39 @@ const expectedResults = [
   },
 ];
 
-let useSelector, useI18nContext, useTokenFiatAmount;
+let useI18nContext, useTokenFiatAmount;
 
 const renderHookWithRouter = (cb, tokenAddress) => {
   const initialEntries = [
     tokenAddress ? `${ASSET_ROUTE}/${tokenAddress}` : DEFAULT_ROUTE,
   ];
+
+  const defaultState = {
+    ...mockState,
+    metamask: {
+      ...mockState.metamask,
+      completeOnboarding: true,
+      ...mockNetworkState({ chainId: CHAIN_IDS.MAINNET }),
+      currentCurrency: 'ETH',
+      useCurrencyRateCheck: false, // to force getShouldShowFiat to return false
+      preferences: {
+        getShowFiatInTestnets: false,
+      },
+      allNfts: [],
+      tokens: [
+        {
+          address: '0xabca64466f257793eaa52fcfff5066894b76a149',
+          symbol: 'ABC',
+          decimals: 18,
+        },
+      ],
+    },
+  };
+
   const wrapper = ({ children }) => (
-    <MemoryRouter initialEntries={initialEntries}>{children}</MemoryRouter>
+    <MemoryRouter initialEntries={initialEntries}>
+      <Provider store={configureStore(defaultState)}>{children}</Provider>
+    </MemoryRouter>
   );
   return renderHook(cb, { wrapper });
 };
@@ -222,7 +236,6 @@ describe('useTransactionDisplayData', () => {
   const dispatch = sinon.spy();
 
   beforeAll(() => {
-    useSelector = sinon.stub(reactRedux, 'useSelector');
     useTokenFiatAmount = sinon.stub(
       useTokenFiatAmountHooks,
       'useTokenFiatAmount',
@@ -232,43 +245,6 @@ describe('useTransactionDisplayData', () => {
     useI18nContext.returns((key, variables) =>
       getMessage('en', messages, key, variables),
     );
-    useSelector.callsFake((selector) => {
-      if (selector === getMultichainIsEvm) {
-        return true;
-      } else if (selector === getTokens) {
-        return [
-          {
-            address: '0xabca64466f257793eaa52fcfff5066894b76a149',
-            symbol: 'ABC',
-            decimals: 18,
-          },
-        ];
-      } else if (selector === getPreferences) {
-        return {
-          useNativeCurrencyAsPrimaryCurrency: true,
-        };
-      } else if (
-        selector === getShouldShowFiat ||
-        selector === getMultichainShouldShowFiat
-      ) {
-        return false;
-      } else if (
-        selector === getNativeCurrency ||
-        selector === getMultichainNativeCurrency
-      ) {
-        return 'ETH';
-      } else if (
-        selector === getCurrentCurrency ||
-        selector === getMultichainCurrentCurrency
-      ) {
-        return 'ETH';
-      } else if (selector === getCurrentChainId) {
-        return CHAIN_IDS.MAINNET;
-      } else if (selector === getNfts) {
-        return [];
-      }
-      return null;
-    });
     sinon.stub(reactRedux, 'useDispatch').returns(dispatch);
   });
 

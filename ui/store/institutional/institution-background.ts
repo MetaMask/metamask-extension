@@ -1,6 +1,7 @@
 import log from 'loglevel';
 import { ThunkAction } from 'redux-thunk';
 import { AnyAction } from 'redux';
+import { IApiCallLogEntry } from '@metamask-institutional/types';
 import {
   forceUpdateMetamaskState,
   displayWarning,
@@ -12,15 +13,18 @@ import {
   submitRequestToBackground,
 } from '../background-connection';
 import { MetaMaskReduxDispatch, MetaMaskReduxState } from '../store';
-import { isErrorWithMessage } from '../../../shared/modules/error';
+import {
+  isErrorWithMessage,
+  getErrorMessage,
+} from '../../../shared/modules/error';
 import { ConnectionRequest } from '../../../shared/constants/mmi-controller';
 
 export function showInteractiveReplacementTokenBanner({
   url,
   oldRefreshToken,
 }: {
-  url: string;
-  oldRefreshToken: string;
+  url?: string;
+  oldRefreshToken?: string;
 }) {
   return async (dispatch: MetaMaskReduxDispatch) => {
     try {
@@ -34,8 +38,8 @@ export function showInteractiveReplacementTokenBanner({
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (err: any) {
       if (err) {
-        dispatch(displayWarning(err.message));
-        throw new Error(err.message);
+        dispatch(displayWarning(err));
+        throw new Error(getErrorMessage(err));
       }
     }
   };
@@ -56,6 +60,21 @@ export function setCustodianDeepLink({
   };
 }
 
+export function setNoteToTraderMessage(message: string) {
+  return async (dispatch: MetaMaskReduxDispatch) => {
+    try {
+      await submitRequestToBackground('setNoteToTraderMessage', [message]);
+      // TODO: Replace `any` with type
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    } catch (error: any) {
+      if (error) {
+        dispatch(displayWarning(error.message));
+        throw new Error(error.message);
+      }
+    }
+  };
+}
+
 export function setTypedMessageInProgress(msgId: string) {
   return async (dispatch: MetaMaskReduxDispatch) => {
     dispatch(showLoadingIndication());
@@ -65,7 +84,7 @@ export function setTypedMessageInProgress(msgId: string) {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
       log.error(error);
-      dispatch(displayWarning(error.message));
+      dispatch(displayWarning(error));
     } finally {
       await forceUpdateMetamaskState(dispatch);
       dispatch(hideLoadingIndication());
@@ -82,12 +101,18 @@ export function setPersonalMessageInProgress(msgId: string) {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
       log.error(error);
-      dispatch(displayWarning(error.message));
+      dispatch(displayWarning(error));
     } finally {
       await forceUpdateMetamaskState(dispatch);
       dispatch(hideLoadingIndication());
     }
   };
+}
+
+export async function logAndStoreApiRequest(
+  logData: IApiCallLogEntry,
+): Promise<void> {
+  return await submitRequestToBackground('logAndStoreApiRequest', [logData]);
 }
 
 /**
@@ -120,7 +145,7 @@ export function mmiActionsFactory() {
       } catch (error) {
         dispatch(displayWarning(error));
         if (isErrorWithMessage(error)) {
-          throw new Error(error.message);
+          throw new Error(getErrorMessage(error));
         } else {
           throw error;
         }
@@ -142,7 +167,7 @@ export function mmiActionsFactory() {
     return () => {
       callBackgroundMethod(name, [payload], (err) => {
         if (isErrorWithMessage(err)) {
-          throw new Error(err.message);
+          throw new Error(getErrorMessage(err));
         }
       });
     };
@@ -169,19 +194,6 @@ export function mmiActionsFactory() {
       createAsyncAction(
         'getCustodianAccounts',
         [token, envName, custody, getNonImportedAccounts],
-        forceUpdateMetamaskState,
-        'Getting custodian accounts...',
-      ),
-    // TODO (Bernardo) - It doesn't look like this is being used
-    getCustodianAccountsByAddress: (
-      jwt: string,
-      envName: string,
-      address: string,
-      custody: string,
-    ) =>
-      createAsyncAction(
-        'getCustodianAccountsByAddress',
-        [jwt, envName, address, custody],
         forceUpdateMetamaskState,
         'Getting custodian accounts...',
       ),

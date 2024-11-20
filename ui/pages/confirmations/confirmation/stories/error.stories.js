@@ -128,7 +128,6 @@ export const TemplateStory = () => {
                     options: {},
                     methods: [
                       'personal_sign',
-                      'eth_sign',
                       'eth_signTransaction',
                       'eth_signTypedData_v1',
                       'eth_signTypedData_v3',
@@ -205,7 +204,6 @@ export const TemplateOnlyStory = () => {
               options: {},
               methods: [
                 'personal_sign',
-                'eth_sign',
                 'eth_signTransaction',
                 'eth_signTypedData_v1',
                 'eth_signTypedData_v3',

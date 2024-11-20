@@ -14,6 +14,7 @@ import {
   TextVariant,
 } from '../../../../helpers/constants/design-system';
 import { Box, Text } from '../../../component-library';
+import { getURLHost } from '../../../../helpers/utils/util';
 
 export default class PermissionPageContainerContent extends PureComponent {
   static propTypes = {
@@ -70,16 +71,16 @@ export default class PermissionPageContainerContent extends PureComponent {
           paddingBottom={4}
         >
           <Text variant={TextVariant.headingMd} textAlign={TextAlign.Center}>
-            {t('permissions')}
+            {t('reviewPermissions')}
           </Text>
           <Text variant={TextVariant.bodyMd} textAlign={TextAlign.Center}>
-            {t('nativePermissionRequestDescription', [
+            {t('nativeNetworkPermissionRequestDescription', [
               <Text
                 as="span"
                 key={`description_key_${subjectMetadata.origin}`}
                 fontWeight={FontWeight.Medium}
               >
-                {subjectMetadata.origin}
+                {getURLHost(subjectMetadata.origin)}
               </Text>,
             ])}
           </Text>

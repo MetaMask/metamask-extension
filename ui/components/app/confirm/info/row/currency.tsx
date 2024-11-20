@@ -1,6 +1,5 @@
 import React from 'react';
 
-import { PRIMARY } from '../../../../../helpers/constants/common';
 import {
   AlignItems,
   Display,
@@ -13,7 +12,7 @@ import CurrencyDisplay from '../../../../ui/currency-display/currency-display.co
 export type ConfirmInfoRowCurrencyProps = {
   value: number | string;
   currency?: string;
-  dataTestId?: string;
+  'data-testid'?: string;
 };
 
 // todo: the component currently takes care of displaying value in the currency passed
@@ -23,7 +22,7 @@ export type ConfirmInfoRowCurrencyProps = {
 export const ConfirmInfoRowCurrency = ({
   value,
   currency,
-  dataTestId,
+  'data-testid': dataTestId,
 }: ConfirmInfoRowCurrencyProps) => (
   <Box
     display={Display.Flex}
@@ -38,7 +37,7 @@ export const ConfirmInfoRowCurrency = ({
     {currency ? (
       <CurrencyDisplay currency={currency} value={`${value}`} />
     ) : (
-      <UserPreferencedCurrencyDisplay type={PRIMARY} value={`${value}`} />
+      <UserPreferencedCurrencyDisplay showNative value={`${value}`} />
     )}
   </Box>
 );

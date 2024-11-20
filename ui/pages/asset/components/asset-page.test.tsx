@@ -9,7 +9,15 @@ import { renderWithProvider } from '../../../../test/jest/rendering';
 import { KeyringType } from '../../../../shared/constants/keyring';
 import { AssetType } from '../../../../shared/constants/transaction';
 import { ETH_EOA_METHODS } from '../../../../shared/constants/eth-methods';
+import { setBackgroundConnection } from '../../../store/background-connection';
+import { mockNetworkState } from '../../../../test/stub/networks';
 import AssetPage from './asset-page';
+
+jest.mock('../../../store/actions', () => ({
+  ...jest.requireActual('../../../store/actions'),
+  tokenBalancesStartPolling: jest.fn().mockResolvedValue('pollingToken'),
+  tokenBalancesStopPollingByPollingToken: jest.fn(),
+}));
 
 // Mock the price chart
 jest.mock('react-chartjs-2', () => ({ Line: () => null }));
@@ -40,27 +48,14 @@ describe('AssetPage', () => {
       tokenList: {},
       currentCurrency: 'usd',
       accounts: {},
-      networkConfigurations: {
-        test: {
-          id: 'test',
-          chainId: CHAIN_IDS.MAINNET,
-        },
-      },
-      providerConfig: {
-        id: '1',
-        type: 'test',
-        ticker: 'ETH',
-        chainId: CHAIN_IDS.MAINNET,
-      },
+      ...mockNetworkState({ chainId: CHAIN_IDS.MAINNET }),
       currencyRates: {
         ETH: {
           conversionRate: 123,
         },
       },
       useCurrencyRateCheck: true,
-      preferences: {
-        useNativeCurrencyAsPrimaryCurrency: true,
-      },
+      preferences: {},
       internalAccounts: {
         accounts: {
           'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3': {
@@ -110,6 +105,10 @@ describe('AssetPage', () => {
       },
     });
     openTabSpy = jest.spyOn(global.platform, 'openTab');
+    setBackgroundConnection({
+      getTokenSymbol: jest.fn(),
+      setBridgeFeatureFlags: jest.fn(),
+    } as never);
   });
 
   beforeEach(() => {
@@ -142,7 +141,9 @@ describe('AssetPage', () => {
     balance: {
       value: '0',
       display: '0',
+      fiat: '',
     },
+    decimals: 18,
   } as const;
 
   const token = {
@@ -155,6 +156,7 @@ describe('AssetPage', () => {
     balance: {
       value: '0',
       display: '0',
+      fiat: '',
     },
   } as const;
 
@@ -189,12 +191,14 @@ describe('AssetPage', () => {
   });
 
   it('should disable the buy button on unsupported chains', () => {
-    const chainId = CHAIN_IDS.SEPOLIA;
     const { queryByTestId } = renderWithProvider(
       <AssetPage asset={token} optionsButton={null} />,
       configureMockStore([thunk])({
         ...mockStore,
-        metamask: { ...mockStore.metamask, providerConfig: { chainId } },
+        metamask: {
+          ...mockStore.metamask,
+          ...mockNetworkState({ chainId: CHAIN_IDS.SEPOLIA }),
+        },
       }),
     );
     const buyButton = queryByTestId('token-overview-buy');
@@ -207,7 +211,7 @@ describe('AssetPage', () => {
       ...mockStore,
       metamask: {
         ...mockStore.metamask,
-        providerConfig: { type: 'test', chainId: CHAIN_IDS.POLYGON },
+        ...mockNetworkState({ chainId: CHAIN_IDS.POLYGON }),
       },
     };
     const mockedStore = configureMockStore([thunk])(
@@ -246,20 +250,20 @@ describe('AssetPage', () => {
 
     await waitFor(() =>
       expect(openTabSpy).toHaveBeenCalledWith({
-        url: expect.stringContaining(
-          `/bridge?metamaskEntry=ext_bridge_button&metametricsId=&token=${token.address}`,
-        ),
+        url: `https://portfolio.test/bridge?metamaskEntry=ext_bridge_button&metametricsId=&metricsEnabled=false&marketingEnabled=false&token=${token.address}`,
       }),
     );
   });
 
   it('should not show the Bridge button if chain id is not supported', async () => {
-    const chainId = CHAIN_IDS.SEPOLIA;
     const { queryByTestId } = renderWithProvider(
       <AssetPage asset={token} optionsButton={null} />,
       configureMockStore([thunk])({
         ...mockStore,
-        metamask: { ...mockStore.metamask, providerConfig: { chainId } },
+        metamask: {
+          ...mockStore.metamask,
+          ...mockNetworkState({ chainId: CHAIN_IDS.SEPOLIA }),
+        },
       }),
     );
     const bridgeButton = queryByTestId('token-overview-bridge');

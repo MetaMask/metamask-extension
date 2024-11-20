@@ -6,6 +6,7 @@ import { AssetType } from '../../../../shared/constants/transaction';
 import mockState from '../../../../test/data/mock-state.json';
 import { AssetPickerAmount } from './asset-picker-amount';
 import { INSUFFICIENT_FUNDS_ERROR_KEY } from '../../../helpers/constants/error-keys';
+import { mockNetworkState } from '../../../../test/stub/networks';
 
 const noop = () => {};
 
@@ -54,10 +55,7 @@ const store = configureStore({
         decimals: '18',
       },
     ],
-    providerConfig: {
-      chainId: '0x1',
-      ticker: 'ETH',
-    },
+    ...mockNetworkState({ chainId: '0x1' }),
     preferences: {
       showFiatInTestnets: true,
     },
@@ -74,6 +72,12 @@ const store = configureStore({
           value: '0xde0b6b3a7640000',
         },
         sendAsset: {
+          balance: '0x1158e460913d00000',
+          details: null,
+          error: null,
+          type: 'NATIVE',
+        },
+        receiveAsset: {
           balance: '0x1158e460913d00000',
           details: null,
           error: null,

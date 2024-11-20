@@ -1,0 +1,62 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`CustodianListView should render CustodianListView 1`] = `
+<div>
+  <div
+    class="mm-box mm-box--padding-4 mm-box--display-flex mm-box--flex-direction-column mm-box--width-full"
+    data-testid="connect-custodial-account"
+  >
+    <div
+      class="mm-box mm-box--margin-top-4 mm-box--margin-bottom-4 mm-box--display-flex mm-box--align-items-center"
+    >
+      <button
+        aria-label="[back]"
+        class="mm-box mm-button-icon mm-button-icon--size-sm mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-default mm-box--background-color-transparent mm-box--rounded-lg"
+      >
+        <span
+          class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-inherit"
+          style="mask-image: url('./images/icons/arrow-left.svg');"
+        />
+      </button>
+      <p
+        class="mm-box mm-text mm-text--body-md mm-box--color-text-default"
+      >
+        [back]
+      </p>
+    </div>
+    <h4
+      class="mm-box mm-text mm-text--body-lg-medium mm-box--margin-top-4 mm-box--color-text-default"
+    >
+      [connectCustodialAccountTitle]
+    </h4>
+    <h6
+      class="mm-box mm-text mm-text--body-md mm-box--margin-top-2 mm-box--margin-bottom-5 mm-box--color-text-default"
+    >
+      [connectCustodialAccountMsg]
+    </h6>
+    <div
+      class="mm-box"
+    >
+      <ul
+        class="mm-box mm-box--width-full"
+      >
+        <div
+          class="mm-box"
+        >
+          Custodian 1
+        </div>
+        <div
+          class="mm-box"
+        >
+          Custodian 2
+        </div>
+        <div
+          class="mm-box"
+        >
+          Custodian 3
+        </div>
+      </ul>
+    </div>
+  </div>
+</div>
+`;

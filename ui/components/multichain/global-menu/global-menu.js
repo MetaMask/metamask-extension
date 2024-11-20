@@ -2,17 +2,18 @@ import React, { useContext } from 'react';
 import PropTypes from 'prop-types';
 import { useHistory } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
-import { useCounter } from '../../../hooks/metamask-notifications/useCounter';
+import {
+  useUnreadNotificationsCounter,
+  useReadNotificationsCounter,
+} from '../../../hooks/metamask-notifications/useCounter';
 import { NotificationsTagCounter } from '../notifications-tag-counter';
 import { NewFeatureTag } from '../../../pages/notifications/NewFeatureTag';
 import {
   SETTINGS_ROUTE,
   DEFAULT_ROUTE,
-  ///: BEGIN:ONLY_INCLUDE_IF(snaps)
   NOTIFICATIONS_ROUTE,
   SNAPS_ROUTE,
   PERMISSIONS,
-  ///: END:ONLY_INCLUDE_IF(snaps)
 } from '../../../helpers/constants/routes';
 import {
   lockMetamask,
@@ -32,6 +33,8 @@ import {
 } from '../../component-library';
 
 import { MenuItem } from '../../ui/menu';
+// TODO: Remove restricted import
+// eslint-disable-next-line import/no-restricted-paths
 import { getEnvironmentType } from '../../../../app/scripts/lib/util';
 import { ENVIRONMENT_TYPE_FULLSCREEN } from '../../../../shared/constants/app';
 import { SUPPORT_LINK } from '../../../../shared/lib/ui-utils';
@@ -57,13 +60,10 @@ import {
   ///: END:ONLY_INCLUDE_IF(build-mmi)
   getSelectedInternalAccount,
   getUnapprovedTransactions,
-  ///: BEGIN:ONLY_INCLUDE_IF(snaps)
   getAnySnapUpdateAvailable,
   getNotifySnaps,
   getUseExternalServices,
-  ///: END:ONLY_INCLUDE_IF
 } from '../../../selectors';
-///: BEGIN:ONLY_INCLUDE_IF(snaps)
 import {
   AlignItems,
   BlockSize,
@@ -73,7 +73,6 @@ import {
   FlexDirection,
   JustifyContent,
 } from '../../../helpers/constants/design-system';
-///: END:ONLY_INCLUDE_IF
 import { AccountDetailsMenuItem, ViewExplorerMenuItem } from '..';
 
 const METRICS_LOCATION = 'Global Menu';
@@ -86,7 +85,8 @@ export const GlobalMenu = ({ closeMenu, anchorElement, isOpen }) => {
 
   const history = useHistory();
 
-  const { notificationsCount } = useCounter();
+  const { notificationsUnreadCount } = useUnreadNotificationsCounter();
+  const { notificationsReadCount } = useReadNotificationsCounter();
 
   const account = useSelector(getSelectedInternalAccount);
 
@@ -111,10 +111,8 @@ export const GlobalMenu = ({ closeMenu, anchorElement, isOpen }) => {
   ///: END:ONLY_INCLUDE_IF
 
   let hasNotifySnaps = false;
-  ///: BEGIN:ONLY_INCLUDE_IF(snaps)
   const snapsUpdatesAvailable = useSelector(getAnySnapUpdateAvailable);
   hasNotifySnaps = useSelector(getNotifySnaps).length > 0;
-  ///: END:ONLY_INCLUDE_IF
 
   let supportText = t('support');
   let supportLink = SUPPORT_LINK;
@@ -152,14 +150,15 @@ export const GlobalMenu = ({ closeMenu, anchorElement, isOpen }) => {
 
     if (shouldShowEnableModal) {
       trackEvent({
-        category: MetaMetricsEventCategory.EnableNotifications,
-        event: MetaMetricsEventName.StartEnablingNotificationsFlow,
+        category: MetaMetricsEventCategory.NotificationsActivationFlow,
+        event: MetaMetricsEventName.NotificationsActivated,
         properties: {
-          isProfileSyncingEnabled,
-          isMetamaskNotificationsEnabled,
+          action_type: 'started',
+          is_profile_syncing_enabled: isProfileSyncingEnabled,
         },
       });
       dispatch(showConfirmTurnOnMetamaskNotifications());
+
       closeMenu();
       return;
     }
@@ -167,10 +166,10 @@ export const GlobalMenu = ({ closeMenu, anchorElement, isOpen }) => {
     // Otherwise we can navigate to the notifications page
     trackEvent({
       category: MetaMetricsEventCategory.NotificationInteraction,
-      event: MetaMetricsEventName.NotificationPageOpened,
+      event: MetaMetricsEventName.NotificationsMenuOpened,
       properties: {
-        isProfileSyncingEnabled,
-        isMetamaskNotificationsEnabled,
+        unread_count: notificationsUnreadCount,
+        read_count: notificationsReadCount,
       },
     });
     history.push(NOTIFICATIONS_ROUTE);
@@ -197,6 +196,7 @@ export const GlobalMenu = ({ closeMenu, anchorElement, isOpen }) => {
           <MenuItem
             iconName={IconName.Notification}
             onClick={() => handleNotificationsClick()}
+            data-testid="notifications-menu-item"
           >
             <Box
               display={Display.Flex}
@@ -205,7 +205,7 @@ export const GlobalMenu = ({ closeMenu, anchorElement, isOpen }) => {
               justifyContent={JustifyContent.spaceBetween}
             >
               {t('notifications')}
-              {notificationsCount === 0 &&
+              {notificationsUnreadCount === 0 &&
                 !isMetamaskNotificationFeatureSeen && <NewFeatureTag />}
               <NotificationsTagCounter />
             </Box>
@@ -227,7 +227,7 @@ export const GlobalMenu = ({ closeMenu, anchorElement, isOpen }) => {
           <ViewExplorerMenuItem
             metricsLocation={METRICS_LOCATION}
             closeMenu={closeMenu}
-            address={account.address}
+            account={account}
           />
         </>
       )}
@@ -297,20 +297,16 @@ export const GlobalMenu = ({ closeMenu, anchorElement, isOpen }) => {
           {t('expandView')}
         </MenuItem>
       )}
-      {
-        ///: BEGIN:ONLY_INCLUDE_IF(snaps)
-        <MenuItem
-          iconName={IconName.Snaps}
-          onClick={() => {
-            history.push(SNAPS_ROUTE);
-            closeMenu();
-          }}
-          showInfoDot={snapsUpdatesAvailable}
-        >
-          {t('snaps')}
-        </MenuItem>
-        ///: END:ONLY_INCLUDE_IF(snaps)
-      }
+      <MenuItem
+        iconName={IconName.Snaps}
+        onClick={() => {
+          history.push(SNAPS_ROUTE);
+          closeMenu();
+        }}
+        showInfoDot={snapsUpdatesAvailable}
+      >
+        {t('snaps')}
+      </MenuItem>
       <MenuItem
         iconName={IconName.MessageQuestion}
         onClick={() => {

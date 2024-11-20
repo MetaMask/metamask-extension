@@ -1,6 +1,8 @@
 import React from 'react';
-import { TRIGGER_TYPES } from '../../../../../app/scripts/controllers/metamask-notifications/constants/notification-schema';
+import { NotificationServicesController } from '@metamask/notification-services-controller';
 import { CHAIN_IDS } from '../../../../../shared/constants/network';
+// TODO: Remove restricted import
+// eslint-disable-next-line import/no-restricted-paths
 import { t } from '../../../../../app/scripts/translate';
 
 import { type ExtractedNotification, isOfTypeNodeGuard } from '../node-guard';
@@ -37,8 +39,11 @@ import {
   IconName,
 } from '../../../../components/component-library';
 
+const { TRIGGER_TYPES } = NotificationServicesController.Constants;
+
 type ERC721Notification = ExtractedNotification<
-  TRIGGER_TYPES.ERC721_RECEIVED | TRIGGER_TYPES.ERC721_SENT
+  | NotificationServicesController.Constants.TRIGGER_TYPES.ERC721_RECEIVED
+  | NotificationServicesController.Constants.TRIGGER_TYPES.ERC721_SENT
 >;
 const isERC721Notification = isOfTypeNodeGuard([
   TRIGGER_TYPES.ERC721_RECEIVED,

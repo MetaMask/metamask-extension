@@ -144,6 +144,7 @@ exports[`Signature Request Component render should match snapshot when we are us
           >
             <h6
               class="mm-box mm-text mm-text--body-sm mm-box--color-text-alternative"
+              data-testid="signature-request-network-display"
             >
               Localhost 8545
             </h6>
@@ -916,6 +917,7 @@ exports[`Signature Request Component render should match snapshot when we want t
           >
             <h6
               class="mm-box mm-text mm-text--body-sm mm-box--color-text-alternative"
+              data-testid="signature-request-network-display"
             >
               Localhost 8545
             </h6>
@@ -940,7 +942,6 @@ exports[`Signature Request Component render should match snapshot when we want t
           >
             0
              
-            ETH
           </h6>
         </div>
       </div>

@@ -3,11 +3,11 @@
  */
 import { EthAccountType } from '@metamask/keyring-api';
 import { ETH_EOA_METHODS } from '../../../shared/constants/eth-methods';
+import { mockNetworkState } from '../../../test/stub/networks';
 import Backup from './backup';
 
 function getMockPreferencesController() {
-  const mcState = {
-    getSelectedAddress: jest.fn().mockReturnValue('0x01'),
+  const state = {
     selectedAddress: '0x01',
     identities: {
       '0x295e26495CEF6F69dFA69911d9D8e4F3bBadB89B': {
@@ -23,15 +23,14 @@ function getMockPreferencesController() {
         name: 'Ledger 1',
       },
     },
-    update: (store) => (mcState.store = store),
   };
+  const getSelectedAddress = jest.fn().mockReturnValue('0x01');
 
-  mcState.store = {
-    getState: jest.fn().mockReturnValue(mcState),
-    updateState: (store) => (mcState.store = store),
+  return {
+    state,
+    getSelectedAddress,
+    update: jest.fn(),
   };
-
-  return mcState;
 }
 
 function getMockAddressBookController() {
@@ -61,11 +60,11 @@ function getMockAddressBookController() {
 
 function getMockNetworkController() {
   const state = {
-    networkConfigurations: {},
+    networkConfigurationsByChainId: {},
   };
 
-  const loadBackup = ({ networkConfigurations }) => {
-    Object.assign(state, { networkConfigurations });
+  const loadBackup = ({ networkConfigurationsByChainId }) => {
+    Object.assign(state, { networkConfigurationsByChainId });
   };
 
   return { state, loadBackup };
@@ -105,15 +104,17 @@ const jsonData = JSON.stringify({
     },
   },
   network: {
-    networkConfigurations: {
-      'network-configuration-id-1': {
+    ...mockNetworkState(
+      {
+        id: 'network-configuration-id-1',
         chainId: '0x539',
         nickname: 'Localhost 8545',
         rpcPrefs: {},
         rpcUrl: 'http://localhost:8545',
         ticker: 'ETH',
       },
-      'network-configuration-id-2': {
+      {
+        id: 'network-configuration-id-2',
         chainId: '0x38',
         nickname: 'Binance Smart Chain Mainnet',
         rpcPrefs: {
@@ -122,7 +123,8 @@ const jsonData = JSON.stringify({
         rpcUrl: 'https://bsc-dataseed1.binance.org',
         ticker: 'BNB',
       },
-      'network-configuration-id-3': {
+      {
+        id: 'network-configuration-id-3',
         chainId: '0x61',
         nickname: 'Binance Smart Chain Testnet',
         rpcPrefs: {
@@ -131,7 +133,8 @@ const jsonData = JSON.stringify({
         rpcUrl: 'https://data-seed-prebsc-1-s1.binance.org:8545',
         ticker: 'tBNB',
       },
-      'network-configuration-id-4': {
+      {
+        id: 'network-configuration-id-4',
         chainId: '0x89',
         nickname: 'Polygon Mainnet',
         rpcPrefs: {
@@ -140,13 +143,14 @@ const jsonData = JSON.stringify({
         rpcUrl: 'https://polygon-rpc.com',
         ticker: 'MATIC',
       },
-    },
+    ),
   },
   preferences: {
     useBlockie: false,
     useNonceField: false,
     usePhishDetect: true,
     dismissSeedBackUpReminder: false,
+    overrideContentSecurityPolicyHeader: true,
     useTokenDetection: false,
     useCollectibleDetection: false,
     openSeaEnabled: false,
@@ -162,9 +166,9 @@ const jsonData = JSON.stringify({
       showExtensionInFullSizeView: false,
       showFiatInTestnets: false,
       showTestNetworks: true,
-      smartTransactionsOptInStatus: false,
+      smartTransactionsOptInStatus: true,
       useNativeCurrencyAsPrimaryCurrency: true,
-      showTokenAutodetectModal: false,
+      showMultiRpcModal: false,
     },
     ipfsGateway: 'dweb.link',
     ledgerTransportType: 'webhid',
@@ -217,51 +221,47 @@ describe('Backup', function () {
       await backup.restoreUserData(jsonData);
       // check networks backup
       expect(
-        backup.networkController.state.networkConfigurations[
-          'network-configuration-id-1'
-        ].chainId,
-      ).toStrictEqual('0x539');
+        backup.networkController.state.networkConfigurationsByChainId['0x539']
+          .rpcEndpoints[0].networkClientId,
+      ).toStrictEqual('network-configuration-id-1');
       expect(
-        backup.networkController.state.networkConfigurations[
-          'network-configuration-id-2'
-        ].chainId,
-      ).toStrictEqual('0x38');
+        backup.networkController.state.networkConfigurationsByChainId['0x38']
+          .rpcEndpoints[0].networkClientId,
+      ).toStrictEqual('network-configuration-id-2');
       expect(
-        backup.networkController.state.networkConfigurations[
-          'network-configuration-id-3'
-        ].chainId,
-      ).toStrictEqual('0x61');
+        backup.networkController.state.networkConfigurationsByChainId['0x61']
+          .rpcEndpoints[0].networkClientId,
+      ).toStrictEqual('network-configuration-id-3');
       expect(
-        backup.networkController.state.networkConfigurations[
-          'network-configuration-id-4'
-        ].chainId,
-      ).toStrictEqual('0x89');
+        backup.networkController.state.networkConfigurationsByChainId['0x89']
+          .rpcEndpoints[0].networkClientId,
+      ).toStrictEqual('network-configuration-id-4');
       // make sure identities are not lost after restore
       expect(
-        backup.preferencesController.store.identities[
+        backup.preferencesController.state.identities[
           '0x295e26495CEF6F69dFA69911d9D8e4F3bBadB89B'
         ].lastSelected,
       ).toStrictEqual(1655380342907);
 
       expect(
-        backup.preferencesController.store.identities[
+        backup.preferencesController.state.identities[
           '0x295e26495CEF6F69dFA69911d9D8e4F3bBadB89B'
         ].name,
       ).toStrictEqual('Account 3');
 
       expect(
-        backup.preferencesController.store.lostIdentities[
+        backup.preferencesController.state.lostIdentities[
           '0xfd59bbe569376e3d3e4430297c3c69ea93f77435'
         ].lastSelected,
       ).toStrictEqual(1655379648197);
 
       expect(
-        backup.preferencesController.store.lostIdentities[
+        backup.preferencesController.state.lostIdentities[
           '0xfd59bbe569376e3d3e4430297c3c69ea93f77435'
         ].name,
       ).toStrictEqual('Ledger 1');
       // make sure selected address is not lost after restore
-      expect(backup.preferencesController.store.selectedAddress).toStrictEqual(
+      expect(backup.preferencesController.state.selectedAddress).toStrictEqual(
         '0x01',
       );
 
@@ -299,7 +299,6 @@ describe('Backup', function () {
         },
         methods: [
           'personal_sign',
-          'eth_sign',
           'eth_signTransaction',
           'eth_signTypedData_v1',
           'eth_signTypedData_v3',

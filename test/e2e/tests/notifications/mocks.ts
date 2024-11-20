@@ -1,26 +1,15 @@
 import { Mockttp, RequestRuleBuilder } from 'mockttp';
+import { AuthenticationController } from '@metamask/profile-sync-controller';
 import {
-  getMockAuthNonceResponse,
-  getMockAuthLoginResponse,
-  getMockAuthAccessTokenResponse,
-} from '../../../../app/scripts/controllers/authentication/mocks/mockResponses';
-import {
-  getMockUserStorageGetResponse,
-  getMockUserStoragePutResponse,
-} from '../../../../app/scripts/controllers/user-storage/mocks/mockResponses';
-import {
-  getMockFeatureAnnouncementResponse,
-  getMockBatchCreateTriggersResponse,
-  getMockBatchDeleteTriggersResponse,
-  getMockListNotificationsResponse,
-  getMockMarkNotificationsAsReadResponse,
-} from '../../../../app/scripts/controllers/metamask-notifications/mocks/mockResponses';
-import {
-  getMockRetrievePushNotificationLinksResponse,
-  getMockUpdatePushNotificationLinksResponse,
-  getMockCreateFCMRegistrationTokenResponse,
-  getMockDeleteFCMRegistrationTokenResponse,
-} from '../../../../app/scripts/controllers/push-platform-notifications/mocks/mockResponse';
+  NotificationServicesController,
+  NotificationServicesPushController,
+} from '@metamask/notification-services-controller';
+import { USER_STORAGE_FEATURE_NAMES } from '@metamask/profile-sync-controller/sdk';
+import { UserStorageMockttpController } from '../../helpers/user-storage/userStorageMockttpController';
+
+const AuthMocks = AuthenticationController.Mocks;
+const NotificationMocks = NotificationServicesController.Mocks;
+const PushMocks = NotificationServicesPushController.Mocks;
 
 type MockResponse = {
   url: string | RegExp;
@@ -29,32 +18,67 @@ type MockResponse = {
 };
 
 /**
- * E2E mock setup for notification APIs (Auth, Storage, Notifications, Push Notifications)
+ * E2E mock setup for notification APIs (Auth, UserStorage, Notifications, Push Notifications, Profile syncing)
  *
  * @param server - server obj used to mock our endpoints
+ * @param userStorageMockttpControllerInstance - optional instance of UserStorageMockttpController, useful if you need persisted user storage between tests
  */
-export function mockNotificationServices(server: Mockttp) {
+export async function mockNotificationServices(
+  server: Mockttp,
+  userStorageMockttpControllerInstance: UserStorageMockttpController = new UserStorageMockttpController(),
+) {
   // Auth
-  mockAPICall(server, getMockAuthNonceResponse());
-  mockAPICall(server, getMockAuthLoginResponse());
-  mockAPICall(server, getMockAuthAccessTokenResponse());
+  mockAPICall(server, AuthMocks.getMockAuthNonceResponse());
+  mockAPICall(server, AuthMocks.getMockAuthLoginResponse());
+  mockAPICall(server, AuthMocks.getMockAuthAccessTokenResponse());
 
   // Storage
-  mockAPICall(server, getMockUserStorageGetResponse());
-  mockAPICall(server, getMockUserStoragePutResponse());
+  if (
+    !userStorageMockttpControllerInstance?.paths.get(
+      USER_STORAGE_FEATURE_NAMES.accounts,
+    )
+  ) {
+    userStorageMockttpControllerInstance.setupPath(
+      USER_STORAGE_FEATURE_NAMES.accounts,
+      server,
+    );
+  }
+  if (
+    !userStorageMockttpControllerInstance?.paths.get(
+      USER_STORAGE_FEATURE_NAMES.networks,
+    )
+  ) {
+    userStorageMockttpControllerInstance.setupPath(
+      USER_STORAGE_FEATURE_NAMES.networks,
+      server,
+    );
+  }
+  if (
+    !userStorageMockttpControllerInstance?.paths.get(
+      USER_STORAGE_FEATURE_NAMES.notifications,
+    )
+  ) {
+    userStorageMockttpControllerInstance.setupPath(
+      USER_STORAGE_FEATURE_NAMES.notifications,
+      server,
+    );
+  }
 
   // Notifications
-  mockAPICall(server, getMockFeatureAnnouncementResponse());
-  mockAPICall(server, getMockBatchCreateTriggersResponse());
-  mockAPICall(server, getMockBatchDeleteTriggersResponse());
-  mockAPICall(server, getMockListNotificationsResponse());
-  mockAPICall(server, getMockMarkNotificationsAsReadResponse());
+  mockAPICall(server, NotificationMocks.getMockFeatureAnnouncementResponse());
+  mockAPICall(server, NotificationMocks.getMockBatchCreateTriggersResponse());
+  mockAPICall(server, NotificationMocks.getMockBatchDeleteTriggersResponse());
+  mockAPICall(server, NotificationMocks.getMockListNotificationsResponse());
+  mockAPICall(
+    server,
+    NotificationMocks.getMockMarkNotificationsAsReadResponse(),
+  );
 
   // Push Notifications
-  mockAPICall(server, getMockRetrievePushNotificationLinksResponse());
-  mockAPICall(server, getMockUpdatePushNotificationLinksResponse());
-  mockAPICall(server, getMockCreateFCMRegistrationTokenResponse());
-  mockAPICall(server, getMockDeleteFCMRegistrationTokenResponse());
+  mockAPICall(server, PushMocks.getMockRetrievePushNotificationLinksResponse());
+  mockAPICall(server, PushMocks.getMockUpdatePushNotificationLinksResponse());
+  mockAPICall(server, PushMocks.getMockCreateFCMRegistrationTokenResponse());
+  mockAPICall(server, PushMocks.getMockDeleteFCMRegistrationTokenResponse());
 }
 
 function mockAPICall(server: Mockttp, response: MockResponse) {

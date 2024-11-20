@@ -11,10 +11,12 @@ import {
 } from '../../../../store/actions';
 ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
 // eslint-disable-next-line import/order
+import { getErrorMessage } from '../../../../../shared/modules/error';
 import {
   mmiActionsFactory,
   setPersonalMessageInProgress,
 } from '../../../../store/institutional/institution-background';
+import { AccountType } from '../../../../../shared/constants/custody';
 ///: END:ONLY_INCLUDE_IF
 import {
   accountsWithSendEtherInfoSelector,
@@ -164,7 +166,7 @@ function mergeProps(stateProps, dispatchProps, ownProps) {
 
   ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
   const mmiOnSignCallback = async (_msgData) => {
-    if (accountType === 'custody') {
+    if (accountType === AccountType.CUSTODY) {
       try {
         await dispatchProps.resolvePendingApproval(_msgData.id);
         dispatchProps.completedTx(_msgData.id);
@@ -172,7 +174,7 @@ function mergeProps(stateProps, dispatchProps, ownProps) {
       } catch (err) {
         await dispatchProps.setWaitForConfirmDeepLinkDialog(true);
         await dispatchProps.showTransactionsFailedModal({
-          errorMessage: err.message,
+          errorMessage: getErrorMessage(err),
           closeNotification: true,
           operationFailed: true,
         });

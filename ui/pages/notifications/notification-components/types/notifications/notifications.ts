@@ -1,5 +1,7 @@
 import type { FC } from 'react';
-import type { Notification } from '../../../../../../app/scripts/controllers/metamask-notifications/types/notification/notification';
+import type { NotificationServicesController } from '@metamask/notification-services-controller';
+
+type Notification = NotificationServicesController.Types.INotification;
 
 /**
  * NotificationFC is the shared component interface for all notification components
@@ -38,6 +40,7 @@ type FooterOnChainNotification<N = Notification> = {
 type FooterFeatureAnnouncement<N = Notification> = {
   type: 'footer_feature_announcement';
   ExtensionLink: NotificationFC<N>;
+  ExternalLink: NotificationFC<N>;
 };
 
 /**

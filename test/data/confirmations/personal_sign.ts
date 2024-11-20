@@ -1,14 +1,17 @@
+import { CHAIN_IDS } from '@metamask/transaction-controller';
 import { SignatureRequestType } from '../../../ui/pages/confirmations/types/confirm';
 
 export const PERSONAL_SIGN_SENDER_ADDRESS =
-  '0x8eeee1781fd885ff5ddef7789486676961873d12';
+  '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc';
 
 export const unapprovedPersonalSignMsg = {
   id: '0050d5b0-c023-11ee-a0cb-3390a510a0ab',
+  chainId: CHAIN_IDS.GOERLI,
   status: 'unapproved',
   time: new Date().getTime(),
   type: 'personal_sign',
   securityProviderResponse: null,
+  chainid: '0x5',
   msgParams: {
     from: PERSONAL_SIGN_SENDER_ADDRESS,
     data: '0x4578616d706c652060706572736f6e616c5f7369676e60206d657373616765',
@@ -19,6 +22,7 @@ export const unapprovedPersonalSignMsg = {
 
 export const signatureRequestSIWE = {
   id: '210ca3b0-1ccb-11ef-b096-89c4d726ebb5',
+  chainId: CHAIN_IDS.GOERLI,
   securityAlertResponse: {
     reason: 'loading',
     result_type: 'validation_in_progress',
@@ -35,15 +39,20 @@ export const signatureRequestSIWE = {
     siwe: {
       isSIWEMessage: true,
       parsedMessage: {
-        domain: 'metamask.github.io',
         address: '0x935e73edb9ff52e23bac7f7e049a1ecd06d05477',
+        chainId: 1,
+        domain: 'metamask.github.io',
+        expirationTime: null,
+        issuedAt: '2021-09-30T16:25:24.000Z',
+        nonce: '32891757',
+        notBefore: '2022-03-17T12:45:13.610Z',
+        requestId: 'some_id',
+        scheme: null,
         statement:
           'I accept the MetaMask Terms of Service: https://community.metamask.io/tos',
         uri: 'https://metamask.github.io',
         version: '1',
-        chainId: 1,
-        nonce: '32891757',
-        issuedAt: '2021-09-30T16:25:24.000Z',
+        resources: null,
       },
     },
   },
@@ -51,6 +60,7 @@ export const signatureRequestSIWE = {
 
 export const SignatureRequestSIWEWithResources = {
   id: '210ca3b0-1ccb-11ef-b096-89c4d726ebb5',
+  chainId: CHAIN_IDS.GOERLI,
   securityAlertResponse: {
     reason: 'loading',
     result_type: 'validation_in_progress',
@@ -67,17 +77,19 @@ export const SignatureRequestSIWEWithResources = {
     siwe: {
       isSIWEMessage: true,
       parsedMessage: {
-        domain: 'metamask.github.io',
         address: '0x935e73edb9ff52e23bac7f7e043a1ecd06d05477',
+        chainId: 1,
+        domain: 'metamask.github.io',
+        expirationTime: null,
+        issuedAt: '2021-09-30T16:25:24.000Z',
+        nonce: '32891757',
+        notBefore: '2022-03-17T12:45:13.610Z',
+        requestId: 'some_id',
+        scheme: null,
         statement:
           'I accept the MetaMask Terms of Service: https://community.metamask.io/tos',
         uri: 'https://metamask.github.io',
         version: '1',
-        chainId: 1,
-        nonce: '32891757',
-        issuedAt: '2021-09-30T16:25:24.000Z',
-        notBefore: '2022-03-17T12:45:13.610Z',
-        requestId: 'some_id',
         resources: [
           'ipfs://Qme7ss3ARVgxv6rXqVPiikMJ8u2NLgmgszg13pYrDKEoiu',
           'https://example.com/my-web2-claim.json',

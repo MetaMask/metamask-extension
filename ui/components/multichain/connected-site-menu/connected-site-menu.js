@@ -137,5 +137,5 @@ ConnectedSiteMenu.propTypes = {
   /**
    *  Disable the connected site menu if the account is non-evm
    */
-  disabled: PropTypes.boolean,
+  disabled: PropTypes.bool,
 };

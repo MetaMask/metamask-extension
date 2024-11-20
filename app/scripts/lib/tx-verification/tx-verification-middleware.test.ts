@@ -4,13 +4,14 @@ import {
   EXPERIENCES_TYPE,
   FIRST_PARTY_CONTRACT_NAMES,
 } from '../../../../shared/constants/first-party-contracts';
+import { mockNetworkState } from '../../../../test/stub/networks';
 import {
   createTxVerificationMiddleware,
   TxParams,
 } from './tx-verification-middleware';
 
 const getMockNetworkController = (chainId: `0x${string}` = '0x1') =>
-  ({ state: { providerConfig: { chainId } } } as unknown as NetworkController);
+  ({ state: mockNetworkState({ chainId }) } as NetworkController);
 
 const mockTrustedSigners: Partial<Record<EXPERIENCES_TYPE, Hex>> = {
   [EXPERIENCES_TYPE.METAMASK_BRIDGE]:

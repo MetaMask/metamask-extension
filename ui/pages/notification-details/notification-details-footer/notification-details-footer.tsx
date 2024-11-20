@@ -1,4 +1,5 @@
 import React from 'react';
+import type { NotificationServicesController } from '@metamask/notification-services-controller';
 import { Box } from '../../../components/component-library';
 import {
   BlockSize,
@@ -7,7 +8,8 @@ import {
   JustifyContent,
 } from '../../../helpers/constants/design-system';
 import type { NotificationComponent } from '../../notifications/notification-components/types/notifications/notifications';
-import type { Notification } from '../../../../app/scripts/controllers/metamask-notifications/types/types';
+
+type Notification = NotificationServicesController.Types.INotification;
 
 type NotificationDetailsFooterProps = {
   footer: NotificationComponent['footer'];
@@ -33,9 +35,15 @@ export const NotificationDetailsFooter = ({
         </>
       )}
       {footer.type === 'footer_feature_announcement' && (
-        <>
+        <Box
+          display={Display.Flex}
+          gap={4}
+          flexDirection={FlexDirection.Row}
+          width={BlockSize.Full}
+        >
+          <footer.ExternalLink notification={notification} />
           <footer.ExtensionLink notification={notification} />
-        </>
+        </Box>
       )}
     </Box>
   );

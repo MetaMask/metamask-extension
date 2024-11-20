@@ -2,27 +2,32 @@ import React from 'react';
 import { useSelector } from 'react-redux';
 import { isValidAddress } from 'ethereumjs-util';
 
+import { ConfirmInfoAlertRow } from '../../../../../../components/app/confirm/info/row/alert-row/alert-row';
 import { parseTypedDataMessage } from '../../../../../../../shared/modules/transaction.utils';
+import { RowAlertKey } from '../../../../../../components/app/confirm/info/row/constants';
 import {
   ConfirmInfoRow,
   ConfirmInfoRowAddress,
   ConfirmInfoRowDivider,
   ConfirmInfoRowUrl,
 } from '../../../../../../components/app/confirm/info/row';
+import { ConfirmInfoSection } from '../../../../../../components/app/confirm/info/row/section';
 import { useI18nContext } from '../../../../../../hooks/useI18nContext';
-import { currentConfirmationSelector } from '../../../../../../selectors';
 import { SignatureRequestType } from '../../../../types/confirm';
-import { isPermitSignatureRequest } from '../../../../utils';
+import { useGetTokenStandardAndDetails } from '../../../../hooks/useGetTokenStandardAndDetails';
+import {
+  isOrderSignatureRequest,
+  isPermitSignatureRequest,
+} from '../../../../utils';
+import { useConfirmContext } from '../../../../context/confirm';
 import { selectUseTransactionSimulations } from '../../../../selectors/preferences';
 import { ConfirmInfoRowTypedSignData } from '../../row/typed-sign-data/typedSignData';
-import { ConfirmInfoSection } from '../../../../../../components/app/confirm/info/row/section';
+import { isSnapId } from '../../../../../../helpers/utils/snaps';
 import { PermitSimulation } from './permit-simulation';
 
 const TypedSignInfo: React.FC = () => {
   const t = useI18nContext();
-  const currentConfirmation = useSelector(
-    currentConfirmationSelector,
-  ) as SignatureRequestType;
+  const { currentConfirmation } = useConfirmContext<SignatureRequestType>();
   const useTransactionSimulations = useSelector(
     selectUseTransactionSimulations,
   );
@@ -37,6 +42,16 @@ const TypedSignInfo: React.FC = () => {
   } = parseTypedDataMessage(currentConfirmation.msgParams.data as string);
 
   const isPermit = isPermitSignatureRequest(currentConfirmation);
+  const isOrder = isOrderSignatureRequest(currentConfirmation);
+  const tokenContract = isPermit || isOrder ? verifyingContract : undefined;
+  const { decimalsNumber } = useGetTokenStandardAndDetails(tokenContract);
+
+  const chainId = currentConfirmation.chainId as string;
+
+  const toolTipMessage = isSnapId(currentConfirmation.msgParams.origin)
+    ? t('requestFromInfoSnap')
+    : t('requestFromInfo');
+  const msgData = currentConfirmation.msgParams?.data as string;
 
   return (
     <>
@@ -45,24 +60,39 @@ const TypedSignInfo: React.FC = () => {
         {isPermit && (
           <>
             <ConfirmInfoRow label={t('spender')}>
-              <ConfirmInfoRowAddress address={spender} />
+              <ConfirmInfoRowAddress address={spender} chainId={chainId} />
             </ConfirmInfoRow>
             <ConfirmInfoRowDivider />
           </>
         )}
-        <ConfirmInfoRow label={t('requestFrom')} tooltip={t('requestFromInfo')}>
+        <ConfirmInfoAlertRow
+          alertKey={RowAlertKey.RequestFrom}
+          ownerId={currentConfirmation.id}
+          label={t('requestFrom')}
+          tooltip={toolTipMessage}
+        >
           <ConfirmInfoRowUrl url={currentConfirmation.msgParams.origin} />
-        </ConfirmInfoRow>
+        </ConfirmInfoAlertRow>
         {isValidAddress(verifyingContract) && (
           <ConfirmInfoRow label={t('interactingWith')}>
-            <ConfirmInfoRowAddress address={verifyingContract} />
+            <ConfirmInfoRowAddress
+              address={verifyingContract}
+              chainId={chainId}
+            />
           </ConfirmInfoRow>
         )}
       </ConfirmInfoSection>
       <ConfirmInfoSection>
-        <ConfirmInfoRow label={t('message')}>
+        <ConfirmInfoRow
+          label={t('message')}
+          collapsed={isPermit && useTransactionSimulations}
+          copyEnabled
+          copyText={JSON.stringify(parseTypedDataMessage(msgData ?? {}))}
+        >
           <ConfirmInfoRowTypedSignData
-            data={currentConfirmation.msgParams?.data as string}
+            data={msgData}
+            tokenDecimals={decimalsNumber}
+            chainId={chainId}
           />
         </ConfirmInfoRow>
       </ConfirmInfoSection>

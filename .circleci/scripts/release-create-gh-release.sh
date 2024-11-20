@@ -66,7 +66,7 @@ then
     install_github_cli
 
     printf '%s\n' 'Creating GitHub Release'
-    release_body="$(awk -v version="${tag##v}" -f .circleci/scripts/show-changelog.awk CHANGELOG.md)"
+    release_body="$(awk -v version="[${tag##v}]" -f .circleci/scripts/show-changelog.awk CHANGELOG.md)"
     hub release create \
         --attach builds/metamask-chrome-*.zip \
         --attach builds-mv2/metamask-firefox-*.zip \

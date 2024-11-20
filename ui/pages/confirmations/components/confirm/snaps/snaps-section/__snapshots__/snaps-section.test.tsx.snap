@@ -1,0 +1,117 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`SnapsSection renders section for typed sign request 1`] = `
+<div>
+  <div
+    class="mm-box mm-box--margin-bottom-4 mm-box--display-flex mm-box--gap-4 mm-box--flex-direction-column"
+  >
+    <div
+      class="mm-box delineator__wrapper mm-box--display-flex mm-box--flex-direction-column mm-box--background-color-background-default mm-box--rounded-lg"
+    >
+      <div
+        class="mm-box delineator__header delineator__header--expanded mm-box--padding-top-2 mm-box--padding-right-4 mm-box--padding-bottom-0 mm-box--padding-left-4 mm-box--display-flex mm-box--justify-content-space-between mm-box--align-items-center"
+      >
+        <div
+          class="mm-box mm-box--display-flex mm-box--align-items-center"
+        >
+          <p
+            class="mm-box mm-text mm-text--body-md mm-box--color-text-default"
+          >
+            <span>
+               
+              Insights from 
+              <span
+                class="mm-box mm-text mm-text--inherit mm-text--font-weight-medium mm-box--color-inherit"
+              >
+                BIP-32 Test Snap
+              </span>
+              
+               
+            </span>
+          </p>
+        </div>
+        <span
+          class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-primary-default"
+          style="mask-image: url('./images/icons/arrow-up.svg');"
+        />
+      </div>
+      <div
+        class="mm-box mm-box--padding-top-0 mm-box--padding-right-0 mm-box--padding-bottom-0 mm-box--padding-left-0 mm-box--flex-direction-column"
+      >
+        <div
+          class="mm-box snap-ui-renderer__content mm-box--height-full"
+        >
+          <div
+            class="box snap-ui-renderer__container box--display-flex box--flex-direction-column box--height-full"
+            style="overflow-y: auto;"
+          >
+            <p
+              class="mm-box mm-text snap-ui-renderer__text mm-text--body-md mm-text--overflow-wrap-anywhere mm-box--color-inherit"
+            >
+              Hello world again!
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`SnapsSection renders section personal sign request 1`] = `
+<div>
+  <div
+    class="mm-box mm-box--margin-bottom-4 mm-box--display-flex mm-box--gap-4 mm-box--flex-direction-column"
+  >
+    <div
+      class="mm-box delineator__wrapper mm-box--display-flex mm-box--flex-direction-column mm-box--background-color-background-default mm-box--rounded-lg"
+    >
+      <div
+        class="mm-box delineator__header delineator__header--expanded mm-box--padding-top-2 mm-box--padding-right-4 mm-box--padding-bottom-0 mm-box--padding-left-4 mm-box--display-flex mm-box--justify-content-space-between mm-box--align-items-center"
+      >
+        <div
+          class="mm-box mm-box--display-flex mm-box--align-items-center"
+        >
+          <p
+            class="mm-box mm-text mm-text--body-md mm-box--color-text-default"
+          >
+            <span>
+               
+              Insights from 
+              <span
+                class="mm-box mm-text mm-text--inherit mm-text--font-weight-medium mm-box--color-inherit"
+              >
+                BIP-32 Test Snap
+              </span>
+              
+               
+            </span>
+          </p>
+        </div>
+        <span
+          class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-primary-default"
+          style="mask-image: url('./images/icons/arrow-up.svg');"
+        />
+      </div>
+      <div
+        class="mm-box mm-box--padding-top-0 mm-box--padding-right-0 mm-box--padding-bottom-0 mm-box--padding-left-0 mm-box--flex-direction-column"
+      >
+        <div
+          class="mm-box snap-ui-renderer__content mm-box--height-full"
+        >
+          <div
+            class="box snap-ui-renderer__container box--display-flex box--flex-direction-column box--height-full"
+            style="overflow-y: auto;"
+          >
+            <p
+              class="mm-box mm-text snap-ui-renderer__text mm-text--body-md mm-text--overflow-wrap-anywhere mm-box--color-inherit"
+            >
+              Hello world!
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+`;

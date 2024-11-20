@@ -52,7 +52,11 @@ async function getBuilds(branch: string, jobNames: string[]) {
 
     const artifacts = await response.json();
 
-    if (!artifacts || artifacts.length === 0) {
+    if (
+      !artifacts ||
+      artifacts.length === 0 ||
+      artifacts.message === 'Not Found'
+    ) {
       return [];
     }
 

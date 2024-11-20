@@ -55,10 +55,13 @@ export function NotificationsSettingsTypes({
     try {
       onChangeFeatureAnnouncements(!featureAnnouncementsEnabled);
       trackEvent({
-        category: MetaMetricsEventCategory.NotificationInteraction,
-        event: featureAnnouncementsEnabled
-          ? MetaMetricsEventName.FeatureAnnouncementDisabled
-          : MetaMetricsEventName.FeatureAnnouncementEnabled,
+        category: MetaMetricsEventCategory.NotificationSettings,
+        event: MetaMetricsEventName.NotificationsSettingsUpdated,
+        properties: {
+          settings_type: 'product_announcements',
+          old_value: featureAnnouncementsEnabled,
+          new_value: !featureAnnouncementsEnabled,
+        },
       });
       listNotifications();
     } catch (error) {
@@ -98,6 +101,7 @@ export function NotificationsSettingsTypes({
           onToggle={onToggleFeatureAnnouncements}
           error={errorFeatureAnnouncements}
           disabled={disabled}
+          data-testid="product-announcements-toggle"
         >
           <NotificationsSettingsType
             icon={IconName.Star}

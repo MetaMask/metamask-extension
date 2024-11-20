@@ -1,7 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { useSelector } from 'react-redux';
-
 import { EthMethod } from '@metamask/keyring-api';
 import { isEqual } from 'lodash';
 import {
@@ -13,15 +12,17 @@ import {
   ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
   getSwapsDefaultToken,
   getIsBridgeChain,
-  getIsBuyableChain,
   ///: END:ONLY_INCLUDE_IF
 } from '../../../selectors';
+///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
+import { getIsNativeTokenBuyable } from '../../../ducks/ramps';
+///: END:ONLY_INCLUDE_IF
 import { CoinOverview } from './coin-overview';
 
 const EthOverview = ({ className }) => {
   ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
   const isBridgeChain = useSelector(getIsBridgeChain);
-  const isBuyableChain = useSelector(getIsBuyableChain);
+  const isBuyableChain = useSelector(getIsNativeTokenBuyable);
   // FIXME: This causes re-renders, so use isEqual to avoid this
   const defaultSwapsToken = useSelector(getSwapsDefaultToken, isEqual);
   ///: END:ONLY_INCLUDE_IF
@@ -38,6 +39,7 @@ const EthOverview = ({ className }) => {
 
   return (
     <CoinOverview
+      account={account}
       balance={balance}
       balanceIsCached={balanceIsCached}
       className={className}

@@ -19,25 +19,20 @@ import {
   setUseSafeChainsListValidation,
   setUseExternalNameSources,
   setUseTransactionSimulations,
-  ///: BEGIN:ONLY_INCLUDE_IF(blockaid)
   setSecurityAlertsEnabled,
-  ///: END:ONLY_INCLUDE_IF
+  updateDataDeletionTaskStatus,
 } from '../../../store/actions';
 import {
-  getAllNetworks,
-  ///: BEGIN:ONLY_INCLUDE_IF(blockaid)
   getIsSecurityAlertsEnabled,
-  ///: END:ONLY_INCLUDE_IF
+  getNetworkConfigurationsByChainId,
+  getMetaMetricsDataDeletionId,
   getPetnamesEnabled,
-} from '../../../selectors';
+} from '../../../selectors/selectors';
 import { openBasicFunctionalityModal } from '../../../ducks/app/app';
 import SecurityTab from './security-tab.component';
 
 const mapStateToProps = (state) => {
-  const {
-    appState: { warning },
-    metamask,
-  } = state;
+  const { metamask } = state;
 
   const petnamesEnabled = getPetnamesEnabled(state);
 
@@ -59,12 +54,11 @@ const mapStateToProps = (state) => {
     useExternalNameSources,
   } = metamask;
 
-  const allNetworks = getAllNetworks(state);
+  const networkConfigurations = getNetworkConfigurationsByChainId(state);
 
   return {
-    warning,
     incomingTransactionsPreferences,
-    allNetworks,
+    networkConfigurations,
     participateInMetaMetrics,
     dataCollectionForMarketing,
     usePhishDetect,
@@ -80,10 +74,9 @@ const mapStateToProps = (state) => {
     useExternalNameSources,
     useExternalServices,
     petnamesEnabled,
-    ///: BEGIN:ONLY_INCLUDE_IF(blockaid)
     securityAlertsEnabled: getIsSecurityAlertsEnabled(state),
-    ///: END:ONLY_INCLUDE_IF
     useTransactionSimulations: metamask.useTransactionSimulations,
+    metaMetricsDataDeletionId: getMetaMetricsDataDeletionId(state),
   };
 };
 
@@ -122,9 +115,10 @@ const mapDispatchToProps = (dispatch) => {
     setUseTransactionSimulations: (value) => {
       return dispatch(setUseTransactionSimulations(value));
     },
-    ///: BEGIN:ONLY_INCLUDE_IF(blockaid)
+    updateDataDeletionTaskStatus: () => {
+      return updateDataDeletionTaskStatus();
+    },
     setSecurityAlertsEnabled: (value) => setSecurityAlertsEnabled(value),
-    ///: END:ONLY_INCLUDE_IF
   };
 };
 

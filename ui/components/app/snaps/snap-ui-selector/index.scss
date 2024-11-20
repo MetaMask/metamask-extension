@@ -1,0 +1,33 @@
+.snap-ui-renderer {
+  &__selector {
+    width: 100%;
+
+    & > span:first-child {
+      width: 100%;
+    }
+
+    & > span:first-child > *:first-child {
+      width: 100%;
+    }
+
+    &:hover {
+      background-color: var(--color-background-alternative-hover);
+    }
+  }
+
+  &__selector-item {
+    width: 100%;
+
+    & > span:first-child {
+      width: 100%;
+    }
+
+    & > span:first-child > *:first-child {
+      width: 100%;
+    }
+
+    &:hover {
+      background-color: var(--color-background-alternative-hover);
+    }
+  }
+}

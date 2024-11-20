@@ -141,7 +141,10 @@ export default function SnapResult({
       flexDirection={FlexDirection.Column}
       backgroundColor={BackgroundColor.backgroundAlternative}
     >
-      <SnapAuthorshipHeader snapId={targetSubjectMetadata.origin} />
+      <SnapAuthorshipHeader
+        snapId={targetSubjectMetadata.origin}
+        onCancel={onSubmit}
+      />
       <Box
         className="snap-result__content"
         paddingLeft={4}

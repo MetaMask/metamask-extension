@@ -59,6 +59,7 @@ export const AmountPill: React.FC<{
       truncatedCharLimit: 11,
       truncatedStartChars: 4,
       truncatedEndChars: 4,
+      skipCharacterInEnd: false,
     });
 
     const shortenedTokenIdPart = `#${shortenedDecimalTokenId}`;

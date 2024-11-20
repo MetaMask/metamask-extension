@@ -1,23 +1,25 @@
-import React, { useState, useCallback, useMemo, useContext } from 'react';
+import React, { useState, useCallback, useMemo } from 'react';
 
 import { useSelector } from 'react-redux';
 import { isEqual, uniqBy } from 'lodash';
-import { Tab, Tabs } from '../../../ui/tabs';
+import {
+  Token,
+  TokenListMap,
+  TokenListToken,
+} from '@metamask/assets-controllers';
+import { Hex } from '@metamask/utils';
 import {
   Modal,
   ModalContent,
   ModalOverlay,
   ModalHeader,
-  TextFieldSearch,
   Box,
-  ButtonIconSize,
-  TextFieldSearchSize,
   AvatarTokenSize,
   AvatarToken,
   Text,
+  PickerNetwork,
 } from '../../../component-library';
 import {
-  BlockSize,
   BorderRadius,
   TextVariant,
   TextAlign,
@@ -28,7 +30,6 @@ import { useI18nContext } from '../../../../hooks/useI18nContext';
 
 import { AssetType } from '../../../../../shared/constants/transaction';
 
-import { useNftsCollections } from '../../../../hooks/useNftsCollections';
 import {
   getAllTokens,
   getCurrentChainId,
@@ -47,98 +48,74 @@ import {
 import { useTokenTracker } from '../../../../hooks/useTokenTracker';
 import { getTopAssets } from '../../../../ducks/swaps/swaps';
 import { getRenderableTokenData } from '../../../../hooks/useTokensToSearch';
-import { useEqualityCheck } from '../../../../hooks/useEqualityCheck';
-import {
-  MetaMetricsEventName,
-  MetaMetricsEventCategory,
-} from '../../../../../shared/constants/metametrics';
-import { MetaMetricsContext } from '../../../../contexts/metametrics';
-import {
-  getSendAnalyticProperties,
-  getSwapsBlockedTokens,
-} from '../../../../ducks/send';
+import { getSwapsBlockedTokens } from '../../../../ducks/send';
 import { isEqualCaseInsensitive } from '../../../../../shared/modules/string-utils';
-import { Asset, Collection, Token } from './types';
+import { CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP } from '../../../../../shared/constants/network';
+import {
+  ERC20Asset,
+  NativeAsset,
+  NFT,
+  AssetWithDisplayData,
+  TokenWithBalance,
+} from './types';
+import { AssetPickerModalTabs, TabName } from './asset-picker-modal-tabs';
 import { AssetPickerModalNftTab } from './asset-picker-modal-nft-tab';
 import AssetList from './AssetList';
+import { Search } from './asset-picker-modal-search';
+import { AssetPickerModalNetwork } from './asset-picker-modal-network';
 
 type AssetPickerModalProps = {
+  header: JSX.Element | string | null;
   isOpen: boolean;
   onClose: () => void;
-  asset: Asset;
-  onAssetChange: (asset: Asset) => void;
-  sendingAssetImage?: string;
-  sendingAssetSymbol?: string;
-};
+  asset?: ERC20Asset | NativeAsset | Pick<NFT, 'type' | 'tokenId' | 'image'>;
+  onAssetChange: (
+    asset: AssetWithDisplayData<ERC20Asset> | AssetWithDisplayData<NativeAsset>,
+  ) => void;
+  /**
+   * Sending asset for UI treatments; only for dest component
+   */
+  sendingAsset?: { image: string; symbol: string } | undefined;
+  onNetworkPickerClick?: () => void;
+  /**
+   * Generator function that returns a list of tokens filtered by a predicate and sorted
+   * by a custom order.
+   */
+  customTokenListGenerator?: (
+    filterPredicate: (symbol: string, address?: string) => boolean,
+  ) => Generator<
+    AssetWithDisplayData<NativeAsset> | AssetWithDisplayData<ERC20Asset>
+  >;
+} & Pick<
+  React.ComponentProps<typeof AssetPickerModalTabs>,
+  'visibleTabs' | 'defaultActiveTabKey'
+> &
+  Pick<React.ComponentProps<typeof AssetPickerModalNetwork>, 'network'>;
 
 const MAX_UNOWNED_TOKENS_RENDERED = 30;
 
 export function AssetPickerModal({
+  header,
   isOpen,
   onClose,
   asset,
   onAssetChange,
-  sendingAssetImage,
-  sendingAssetSymbol,
+  sendingAsset,
+  network,
+  onNetworkPickerClick,
+  customTokenListGenerator,
+  ...tabProps
 }: AssetPickerModalProps) {
   const t = useI18nContext();
-  const trackEvent = useContext(MetaMetricsContext);
-  const sendAnalytics = useSelector(getSendAnalyticProperties);
 
   const [searchQuery, setSearchQuery] = useState('');
-
-  const { collections, previouslyOwnedCollection } = useNftsCollections();
-
-  const collectionsKeys = Object.keys(collections);
-
-  const collectionsData = collectionsKeys.reduce((acc: unknown[], key) => {
-    // TODO: Replace `any` with type
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const collection = (collections as any)[key];
-
-    const isMatchingQuery = collection.collectionName
-      ?.toLowerCase()
-      .includes(searchQuery.toLowerCase());
-
-    if (isMatchingQuery) {
-      acc.push(collection);
-      return acc;
-    }
-    return acc;
-  }, []);
-
-  // filter and exclude ERC1155
-  const collectionDataFiltered = (collectionsData as Collection[]).filter(
-    (collection) => collection.nfts.length > 0,
-  );
 
   const swapsBlockedTokens = useSelector(getSwapsBlockedTokens);
   const memoizedSwapsBlockedTokens = useMemo(() => {
     return new Set<string>(swapsBlockedTokens);
   }, [swapsBlockedTokens]);
 
-  const isDest = sendingAssetImage && sendingAssetSymbol;
-
-  const handleAssetChange = useCallback(
-    (token: Token) => {
-      onAssetChange(token);
-      trackEvent({
-        event: MetaMetricsEventName.sendAssetSelected,
-        category: MetaMetricsEventCategory.Send,
-        properties: {
-          ...sendAnalytics,
-          is_destination_asset_picker_modal: Boolean(isDest),
-          new_asset_symbol: token.symbol,
-          new_asset_address: token.address,
-          is_nft: false,
-        },
-      });
-      onClose();
-    },
-    [onAssetChange],
-  );
-
-  const defaultActiveTabKey = asset?.type === AssetType.NFT ? 'nfts' : 'tokens';
+  const handleAssetChange = useCallback(onAssetChange, [onAssetChange]);
 
   const chainId = useSelector(getCurrentChainId);
 
@@ -155,60 +132,84 @@ export function AssetPickerModal({
     getShouldHideZeroBalanceTokens,
   );
 
-  const detectedTokens = useSelector(getAllTokens);
+  const detectedTokens: Record<Hex, Record<string, Token[]>> = useSelector(
+    getAllTokens,
+  );
   const tokens = detectedTokens?.[chainId]?.[selectedAddress] ?? [];
 
-  const { tokensWithBalances } = useTokenTracker({
-    tokens,
-    address: selectedAddress,
-    hideZeroBalanceTokens: Boolean(shouldHideZeroBalanceTokens),
-  });
+  const { tokensWithBalances }: { tokensWithBalances: TokenWithBalance[] } =
+    useTokenTracker({
+      tokens,
+      address: selectedAddress,
+      hideZeroBalanceTokens: Boolean(shouldHideZeroBalanceTokens),
+    });
 
   // Swaps token list
-  const tokenList = useSelector(getTokenList) as Record<string, Token>;
+  const tokenList = useSelector(getTokenList) as TokenListMap;
   const topTokens = useSelector(getTopAssets, isEqual);
 
-  const usersTokens = uniqBy([...tokensWithBalances, ...tokens], 'address');
-
-  const memoizedUsersTokens = useEqualityCheck(usersTokens);
-
-  const filteredTokenList = useMemo(() => {
-    const nativeToken = {
-      address: null,
-      symbol: nativeCurrency,
-      decimals: 18,
-      image: nativeCurrencyImage,
-      balance: balanceValue,
-      type: AssetType.native,
-    };
-
-    const filteredTokens: Token[] = [];
-    // undefined would be the native token address
-    const filteredTokensAddresses = new Set<string | undefined>();
-
-    const getIsDisabled = ({ address, symbol }: Token) => {
-      const isDisabled = sendingAssetSymbol
-        ? !isEqualCaseInsensitive(sendingAssetSymbol, symbol) &&
+  const getIsDisabled = useCallback(
+    ({
+      address,
+      symbol,
+    }:
+      | TokenListToken
+      | AssetWithDisplayData<ERC20Asset>
+      | AssetWithDisplayData<NativeAsset>) => {
+      const isDisabled = sendingAsset?.symbol
+        ? !isEqualCaseInsensitive(sendingAsset.symbol, symbol) &&
           memoizedSwapsBlockedTokens.has(address || '')
         : false;
 
       return isDisabled;
-    };
+    },
+    [sendingAsset?.symbol, memoizedSwapsBlockedTokens],
+  );
 
-    function* tokenGenerator() {
-      yield nativeToken;
+  const memoizedUsersTokens: TokenWithBalance[] = useMemo(() => {
+    return uniqBy<TokenWithBalance>(
+      [...tokensWithBalances, ...tokens],
+      'address',
+    );
+  }, [tokensWithBalances, tokens]);
+
+  const tokenListGenerator = useCallback(
+    function* (
+      shouldAddToken: (symbol: string, address?: null | string) => boolean,
+    ): Generator<
+      | AssetWithDisplayData<NativeAsset>
+      | ((Token | TokenListToken) & {
+          balance?: string;
+          string?: string;
+        })
+    > {
+      const nativeToken: AssetWithDisplayData<NativeAsset> = {
+        address: null,
+        symbol: nativeCurrency,
+        decimals: 18,
+        image: nativeCurrencyImage,
+        balance: balanceValue,
+        string: undefined,
+        type: AssetType.native,
+      };
+
+      if (shouldAddToken(nativeToken.symbol, nativeToken.address)) {
+        yield nativeToken;
+      }
 
       const blockedTokens = [];
 
       for (const token of memoizedUsersTokens) {
-        yield token;
+        if (shouldAddToken(token.symbol, token.address)) {
+          yield token;
+        }
       }
 
       // topTokens should already be sorted by popularity
       for (const address of Object.keys(topTokens)) {
         const token = tokenList?.[address];
-        if (token) {
-          if (isDest && getIsDisabled(token)) {
+        if (token && shouldAddToken(token.symbol, token.address)) {
+          if (getIsDisabled(token)) {
             blockedTokens.push(token);
             continue;
           } else {
@@ -218,38 +219,68 @@ export function AssetPickerModal({
       }
 
       for (const token of Object.values(tokenList)) {
-        yield token;
+        if (shouldAddToken(token.symbol, token.address)) {
+          yield token;
+        }
       }
 
       for (const token of blockedTokens) {
         yield token;
       }
-    }
+    },
+    [
+      nativeCurrency,
+      nativeCurrencyImage,
+      balanceValue,
+      memoizedUsersTokens,
+      topTokens,
+      tokenList,
+      getIsDisabled,
+    ],
+  );
 
-    let token: Token;
-    for (token of tokenGenerator()) {
-      if (
-        token.symbol?.toLowerCase().includes(searchQuery.toLowerCase()) &&
-        !filteredTokensAddresses.has(token.address?.toLowerCase())
-      ) {
-        filteredTokensAddresses.add(token.address?.toLowerCase());
-        filteredTokens.push(
-          getRenderableTokenData(
-            token.address
-              ? {
-                  ...token,
-                  ...tokenList[token.address.toLowerCase()],
-                  type: AssetType.token,
-                }
-              : token,
-            tokenConversionRates,
-            conversionRate,
-            currentCurrency,
-            chainId,
-            tokenList,
-          ),
-        );
-      }
+  const filteredTokenList = useMemo(() => {
+    const filteredTokens: (
+      | AssetWithDisplayData<ERC20Asset>
+      | AssetWithDisplayData<NativeAsset>
+    )[] = [];
+    // undefined would be the native token address
+    const filteredTokensAddresses = new Set<string | undefined>();
+
+    // Default filter predicate for whether a token should be included in displayed list
+    const shouldAddToken = (symbol: string, address?: string | null) => {
+      const trimmedSearchQuery = searchQuery.trim();
+      return (
+        (!trimmedSearchQuery ||
+          symbol?.toLowerCase().includes(trimmedSearchQuery.toLowerCase())) &&
+        !filteredTokensAddresses.has(address?.toLowerCase())
+      );
+    };
+
+    // If filteredTokensGenerator is passed in, use it to generate the filtered tokens
+    // Otherwise use the default tokenGenerator
+    for (const token of (customTokenListGenerator ?? tokenListGenerator)(
+      shouldAddToken,
+    )) {
+      filteredTokensAddresses.add(token.address?.toLowerCase());
+      filteredTokens.push(
+        customTokenListGenerator
+          ? token
+          : getRenderableTokenData(
+              token.address
+                ? ({
+                    ...token,
+                    ...tokenList[token.address.toLowerCase()],
+                    type: AssetType.token,
+                  } as AssetWithDisplayData<ERC20Asset>)
+                : token,
+              tokenConversionRates,
+              conversionRate,
+              currentCurrency,
+              chainId,
+              tokenList,
+            ),
+      );
 
       if (filteredTokens.length > MAX_UNOWNED_TOKENS_RENDERED) {
         break;
@@ -258,49 +289,14 @@ export function AssetPickerModal({
 
     return filteredTokens;
   }, [
-    memoizedUsersTokens,
-    topTokens,
     searchQuery,
-    nativeCurrency,
-    nativeCurrencyImage,
-    balanceValue,
     tokenConversionRates,
     conversionRate,
     currentCurrency,
     chainId,
-    tokenList,
-    sendingAssetSymbol,
+    tokenListGenerator,
+    customTokenListGenerator,
   ]);
-
-  const Search = useCallback(
-    ({ isNFTSearch = false }: { isNFTSearch?: boolean }) => (
-      <Box padding={1} paddingLeft={4} paddingRight={4}>
-        <TextFieldSearch
-          borderRadius={BorderRadius.LG}
-          placeholder={t(isNFTSearch ? 'searchNfts' : 'searchTokens')}
-          value={searchQuery}
-          onChange={(e) => setSearchQuery(e.target.value)}
-          error={false}
-          autoFocus
-          autoComplete={false}
-          width={BlockSize.Full}
-          clearButtonOnClick={() => setSearchQuery('')}
-          clearButtonProps={{
-            size: ButtonIconSize.Sm,
-          }}
-          showClearButton={true}
-          className="asset-picker-modal__search-list"
-          inputProps={{
-            'data-testid': 'asset-picker-modal-search-input',
-          }}
-          endAccessory={null}
-          size={TextFieldSearchSize.Lg}
-          marginBottom={1}
-        />
-      </Box>
-    ),
-    [searchQuery],
-  );
 
   return (
     <Modal
@@ -313,82 +309,68 @@ export function AssetPickerModal({
       <ModalContent modalDialogProps={{ padding: 0 }}>
         <ModalHeader onClose={onClose}>
           <Text variant={TextVariant.headingSm} textAlign={TextAlign.Center}>
-            {t(isDest ? 'sendSelectReceiveAsset' : 'sendSelectSendAsset')}
+            {header}
           </Text>
         </ModalHeader>
-        {isDest && (
+        {sendingAsset?.image && sendingAsset?.symbol && (
           <Box
             display={Display.Flex}
             gap={1}
             alignItems={AlignItems.center}
             marginInline="auto"
-            marginBottom={4}
           >
             <AvatarToken
               borderRadius={BorderRadius.full}
-              src={sendingAssetImage}
+              src={sendingAsset.image}
               size={AvatarTokenSize.Xs}
             />
             <Text variant={TextVariant.bodySm}>
-              {t('sendingAsset', [sendingAssetSymbol])}
+              {t('sendingAsset', [sendingAsset.symbol])}
             </Text>
           </Box>
         )}
+        {onNetworkPickerClick && (
+          <Box className="network-picker">
+            <PickerNetwork
+              label={network?.name ?? 'Select network'}
+              src={
+                network?.chainId &&
+                CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP[
+                  network.chainId as keyof typeof CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP
+                ]
+              }
+              onClick={onNetworkPickerClick}
+              data-testid="multichain-asset-picker__network"
+            />
+          </Box>
+        )}
         <Box className="modal-tab__wrapper">
-          {isDest ? (
-            <>
-              <Search />
+          <AssetPickerModalTabs {...tabProps}>
+            <React.Fragment key={TabName.TOKENS}>
+              <Search
+                searchQuery={searchQuery}
+                onChange={(value) => setSearchQuery(value)}
+              />
               <AssetList
                 handleAssetChange={handleAssetChange}
-                asset={asset}
+                asset={asset?.type === AssetType.NFT ? undefined : asset}
                 tokenList={filteredTokenList}
-                sendingAssetSymbol={sendingAssetSymbol}
-                memoizedSwapsBlockedTokens={memoizedSwapsBlockedTokens}
+                isTokenDisabled={getIsDisabled}
               />
-            </>
-          ) : (
-            <Tabs
-              defaultActiveTabKey={defaultActiveTabKey}
-              tabsClassName="modal-tab__tabs"
-            >
-              {
-                // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-                // @ts-ignore
-                <Tab
-                  activeClassName="modal-tab__tab--active"
-                  className="modal-tab__tab"
-                  name={t('tokens')}
-                  tabKey="tokens"
-                >
-                  <Search />
-                  <AssetList
-                    handleAssetChange={handleAssetChange}
-                    asset={asset}
-                    tokenList={filteredTokenList}
-                    memoizedSwapsBlockedTokens={memoizedSwapsBlockedTokens}
-                  />
-                </Tab>
-              }
-
-              {
-                // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-                // @ts-ignore
-                <Tab
-                  activeClassName="modal-tab__tab--active"
-                  className="modal-tab__tab"
-                  name={t('nfts')}
-                  tabKey="nfts"
-                >
-                  <AssetPickerModalNftTab
-                    collectionDataFiltered={collectionDataFiltered}
-                    previouslyOwnedCollection={previouslyOwnedCollection}
-                    onClose={onClose}
-                    renderSearch={() => Search({ isNFTSearch: true })}
-                  />
-                </Tab>
-              }
-            </Tabs>
-          )}
+            </React.Fragment>
+            <AssetPickerModalNftTab
+              key={TabName.NFTS}
+              searchQuery={searchQuery}
+              onClose={onClose}
+              renderSearch={() => (
+                <Search
+                  isNFTSearch
+                  searchQuery={searchQuery}
+                  onChange={(value) => setSearchQuery(value)}
+                />
+              )}
+            />
+          </AssetPickerModalTabs>
         </Box>
       </ModalContent>
     </Modal>

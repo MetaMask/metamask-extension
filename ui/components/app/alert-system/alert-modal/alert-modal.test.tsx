@@ -18,6 +18,16 @@ jest.mock('../contexts/alertActionHandler', () => ({
   useAlertActionHandler: jest.fn(() => mockAlertActionHandlerProviderValue),
 }));
 
+const mockTrackAlertActionClicked = jest.fn();
+const mockTrackAlertRender = jest.fn();
+jest.mock('../contexts/alertMetricsContext', () => ({
+  useAlertMetrics: jest.fn(() => ({
+    trackAlertActionClicked: mockTrackAlertActionClicked,
+    trackInlineAlertClicked: jest.fn(),
+    trackAlertRender: mockTrackAlertRender,
+  })),
+}));
+
 describe('AlertModal', () => {
   const OWNER_ID_MOCK = '123';
   const FROM_ALERT_KEY_MOCK = 'from';
@@ -65,14 +75,6 @@ describe('AlertModal', () => {
           data: false,
           [CONTRACT_ALERT_KEY_MOCK]: false,
         },
-      },
-    },
-    confirm: {
-      currentConfirmation: {
-        id: OWNER_ID_MOCK,
-        status: 'unapproved',
-        time: new Date().getTime(),
-        type: 'personal_sign',
       },
     },
   };
@@ -145,11 +147,14 @@ describe('AlertModal', () => {
 
   it('sets the alert as confirmed when checkbox is called', () => {
     const setAlertConfirmedMock = jest.fn();
+    const dangerAlertMock = alertsMock.find(
+      (alert) => alert.key === DATA_ALERT_KEY_MOCK,
+    );
     const useAlertsSpy = jest.spyOn(useAlertsModule, 'default');
     const newMockStore = configureMockStore([])({
       ...STATE_MOCK,
       confirmAlerts: {
-        alerts: { [OWNER_ID_MOCK]: [alertsMock[1]] },
+        alerts: { [OWNER_ID_MOCK]: [dangerAlertMock] },
         confirmed: {
           [OWNER_ID_MOCK]: {
             [DATA_ALERT_KEY_MOCK]: false,
@@ -160,10 +165,10 @@ describe('AlertModal', () => {
 
     (useAlertsSpy as jest.Mock).mockReturnValue({
       setAlertConfirmed: setAlertConfirmedMock,
-      alerts: [alertsMock[1]],
+      alerts: [dangerAlertMock],
       generalAlerts: [],
-      fieldAlerts: [alertsMock[1]],
-      getFieldAlerts: () => [],
+      fieldAlerts: [dangerAlertMock],
+      getFieldAlerts: () => [dangerAlertMock],
       isAlertConfirmed: () => false,
     });
     const { getByTestId } = renderWithProvider(
@@ -231,11 +236,11 @@ describe('AlertModal', () => {
       );
 
       expect(queryByTestId('alert-modal-acknowledge-checkbox')).toBeNull();
-      expect(queryByTestId('alert-modal-button')).toBeNull();
+      expect(queryByTestId('alert-modal-button')).toBeInTheDocument();
       expect(getByText(ACTION_LABEL_MOCK)).toBeInTheDocument();
     });
 
-    it('renders acknowledge button and checkbox for non-blocking alerts', () => {
+    it('renders checkbox for non-blocking alerts', () => {
       const { getByTestId } = renderWithProvider(
         <AlertModal
           ownerId={OWNER_ID_MOCK}
@@ -248,6 +253,43 @@ describe('AlertModal', () => {
 
       expect(getByTestId('alert-modal-acknowledge-checkbox')).toBeDefined();
       expect(getByTestId('alert-modal-button')).toBeDefined();
+    });
+  });
+
+  describe('Track alert metrics', () => {
+    it('calls mockTrackAlertRender when alert modal is opened', () => {
+      const { getByText } = renderWithProvider(
+        <AlertModal
+          ownerId={OWNER_ID_MOCK}
+          onAcknowledgeClick={onAcknowledgeClickMock}
+          onClose={onCloseMock}
+          alertKey={FROM_ALERT_KEY_MOCK}
+        />,
+        mockStore,
+      );
+
+      expect(getByText(ALERT_MESSAGE_MOCK)).toBeInTheDocument();
+      expect(mockTrackAlertRender).toHaveBeenCalledWith(FROM_ALERT_KEY_MOCK);
+    });
+
+    it('calls trackAlertActionClicked when action button is clicked', () => {
+      const { getByText } = renderWithProvider(
+        <AlertModal
+          ownerId={OWNER_ID_MOCK}
+          onAcknowledgeClick={onAcknowledgeClickMock}
+          onClose={onCloseMock}
+          alertKey={CONTRACT_ALERT_KEY_MOCK}
+        />,
+        mockStore,
+      );
+
+      expect(getByText(ACTION_LABEL_MOCK)).toBeInTheDocument();
+
+      fireEvent.click(getByText(ACTION_LABEL_MOCK));
+
+      expect(mockTrackAlertActionClicked).toHaveBeenCalledWith(
+        CONTRACT_ALERT_KEY_MOCK,
+      );
     });
   });
 });

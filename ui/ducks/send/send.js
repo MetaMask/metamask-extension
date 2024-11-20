@@ -7,11 +7,12 @@ import BigNumber from 'bignumber.js';
 import { addHexPrefix, zeroAddress } from 'ethereumjs-util';
 import { cloneDeep, debounce } from 'lodash';
 import { v4 as uuidv4 } from 'uuid';
+import { providerErrors } from '@metamask/rpc-errors';
 import {
   TransactionEnvelopeType,
   TransactionType,
 } from '@metamask/transaction-controller';
-import { ethErrors } from 'eth-rpc-errors';
+import { getErrorMessage } from '../../../shared/modules/error';
 import {
   decimalToHex,
   hexToDecimal,
@@ -25,7 +26,6 @@ import {
   INSUFFICIENT_TOKENS_ERROR,
   NEGATIVE_OR_ZERO_AMOUNT_TOKENS_ERROR,
   INVALID_RECIPIENT_ADDRESS_ERROR,
-  INVALID_RECIPIENT_ADDRESS_NOT_ETH_NETWORK_ERROR,
   KNOWN_RECIPIENT_ADDRESS_WARNING,
   RECIPIENT_TYPES,
   SWAPS_NO_QUOTES,
@@ -95,11 +95,8 @@ import {
   getTokenIdParam,
 } from '../../helpers/utils/token-util';
 import {
-  IS_FLASK,
   checkExistingAddresses,
-  isDefaultMetaMaskChain,
   isOriginContractAddress,
-  isValidDomainName,
 } from '../../helpers/utils/util';
 import {
   getGasEstimateType,
@@ -111,6 +108,7 @@ import {
 import { resetDomainResolution } from '../domains';
 import {
   isBurnAddress,
+  isPossibleAddress,
   isValidHexAddress,
   toChecksumHexAddress,
 } from '../../../shared/modules/hexstring-utils';
@@ -140,7 +138,10 @@ import {
   DEFAULT_ROUTE,
 } from '../../helpers/constants/routes';
 import { fetchBlockedTokens } from '../../pages/swaps/swaps.util';
-import { getSwapAndSendQuotes } from './swap-and-send-utils';
+import {
+  getDisabledSwapAndSendNetworksFromAPI,
+  getSwapAndSendQuotes,
+} from './swap-and-send-utils';
 import {
   estimateGasLimitForSend,
   generateTransactionParams,
@@ -463,6 +464,7 @@ export const draftTransactionInitialState = {
  *  clean up AND during initialization. When a transaction is edited a new UUID
  *  is generated for it and the state of that transaction is copied into a new
  *  entry in the draftTransactions object.
+ * @property {string[]} disabledSwapAndSendNetworks - list of networks that are disabled for swap and send
  * @property {{[key: string]: DraftTransaction}} draftTransactions - An object keyed
  *  by UUID with draftTransactions as the values.
  * @property {boolean} eip1559support - tracks whether the current network
@@ -505,6 +507,7 @@ export const draftTransactionInitialState = {
 export const initialState = {
   amountMode: AMOUNT_MODES.INPUT,
   currentTransactionUUID: null,
+  disabledSwapAndSendNetworks: [],
   draftTransactions: {},
   eip1559support: false,
   gasEstimateIsLoading: true,
@@ -763,11 +766,15 @@ export const initializeSendState = createAsyncThunk(
         ? (await fetchBlockedTokens(chainId)).map((t) => t.toLowerCase())
         : [];
 
+    const disabledSwapAndSendNetworks =
+      await getDisabledSwapAndSendNetworksFromAPI();
+
     return {
       account,
       chainId: getCurrentChainId(state),
       tokens: getTokens(state),
       chainHasChanged,
+      disabledSwapAndSendNetworks,
       gasFeeEstimates,
       gasEstimateType,
       gasLimit,
@@ -980,6 +987,10 @@ const slice = createSlice({
       const draftTransaction =
         state.draftTransactions[state.currentTransactionUUID];
 
+      if (!draftTransaction) {
+        return;
+      }
+
       // use maxFeePerGas as the multiplier if working with a FEE_MARKET transaction
       // otherwise use gasPrice
       if (
@@ -1071,7 +1082,7 @@ const slice = createSlice({
       const draftTransaction =
         state.draftTransactions[state.currentTransactionUUID];
       let amount = '0x0';
-      if (draftTransaction.sendAsset.type === AssetType.token) {
+      if (draftTransaction?.sendAsset.type === AssetType.token) {
         const decimals = draftTransaction.sendAsset.details?.decimals ?? 0;
 
         const multiplier = Math.pow(10, Number(decimals));
@@ -1142,7 +1153,9 @@ const slice = createSlice({
       // if amount mode is MAX update amount to max of new asset, otherwise set
       // to zero. This will revalidate the send amount field.
       if (state.amountMode === AMOUNT_MODES.MAX) {
-        slice.caseReducers.updateAmountToMax(state);
+        // set amount mode back to input and change the send amount back to 0
+        state.amountMode = AMOUNT_MODES.INPUT;
+        slice.caseReducers.updateSendAmount(state, { payload: '0x0' });
       } else if (initialAssetSet === false) {
         if (isReceived) {
           draftTransaction.quotes = draftTransactionInitialState.quotes;
@@ -1281,7 +1294,7 @@ const slice = createSlice({
       state.gasTotalForLayer1 = action.payload;
       if (
         state.amountMode === AMOUNT_MODES.MAX &&
-        draftTransaction.sendAsset.type === AssetType.native
+        draftTransaction?.sendAsset.type === AssetType.native
       ) {
         slice.caseReducers.updateAmountToMax(state);
       }
@@ -1445,6 +1458,10 @@ const slice = createSlice({
       const draftTransaction =
         state.draftTransactions[state.currentTransactionUUID];
 
+      if (!draftTransaction) {
+        return;
+      }
+
       const amountValue = new Numeric(draftTransaction.amount.value, 16);
 
       switch (true) {
@@ -1546,6 +1563,11 @@ const slice = createSlice({
     validateGasField: (state) => {
       const draftTransaction =
         state.draftTransactions[state.currentTransactionUUID];
+
+      if (!draftTransaction) {
+        return;
+      }
+
       const insufficientFunds = !isBalanceSufficient({
         amount:
           draftTransaction.sendAsset.type === AssetType.native
@@ -1574,24 +1596,17 @@ const slice = createSlice({
           draftTransaction.recipient.error = null;
           draftTransaction.recipient.warning = null;
         } else {
-          const {
-            chainId,
-            tokens,
-            tokenAddressList,
-            isProbablyAnAssetContract,
-          } = action.payload;
+          const { tokens, tokenAddressList, isProbablyAnAssetContract } =
+            action.payload;
 
           if (
             isBurnAddress(state.recipientInput) ||
-            (!isValidHexAddress(state.recipientInput, {
-              mixedCaseUseChecksum: true,
-            }) &&
-              !IS_FLASK &&
-              !isValidDomainName(state.recipientInput))
+            (isPossibleAddress(state.recipientInput) &&
+              !isValidHexAddress(state.recipientInput, {
+                mixedCaseUseChecksum: true,
+              }))
           ) {
-            draftTransaction.recipient.error = isDefaultMetaMaskChain(chainId)
-              ? INVALID_RECIPIENT_ADDRESS_ERROR
-              : INVALID_RECIPIENT_ADDRESS_NOT_ETH_NETWORK_ERROR;
+            draftTransaction.recipient.error = INVALID_RECIPIENT_ADDRESS_ERROR;
           } else if (
             isOriginContractAddress(
               state.recipientInput,
@@ -1980,6 +1995,8 @@ const slice = createSlice({
           });
         }
         state.swapsBlockedTokens = action.payload.swapsBlockedTokens;
+        state.disabledSwapAndSendNetworks =
+          action.payload.disabledSwapAndSendNetworks;
         if (state.amountMode === AMOUNT_MODES.MAX) {
           slice.caseReducers.updateAmountToMax(state);
         }
@@ -2598,7 +2615,12 @@ export function updateSendAsset(
 
       let missingProperty = STANDARD_TO_REQUIRED_PROPERTIES[
         providedDetails.standard
-      ]?.find((property) => providedDetails[property] === undefined);
+      ]?.find((property) => {
+        if (providedDetails.collection && property === 'symbol') {
+          return providedDetails.collection[property] === undefined;
+        }
+        return providedDetails[property] === undefined;
+      });
 
       let details;
 
@@ -2635,10 +2657,9 @@ export function updateSendAsset(
             providedDetails.address,
             sendingAddress,
             providedDetails.tokenId,
-          ).catch((error) => {
+          ).catch(() => {
             // prevent infinite stuck loading state
             dispatch(hideLoadingIndication());
-            throw error;
           })),
         };
       }
@@ -2653,7 +2674,7 @@ export function updateSendAsset(
 
       if (details.standard === TokenStandard.ERC20) {
         asset.balance =
-          details.balance && details.decimals
+          details.balance && details.decimals !== undefined
             ? addHexPrefix(
                 calcTokenAmount(details.balance, details.decimals).toString(16),
               )
@@ -2686,12 +2707,13 @@ export function updateSendAsset(
               details.tokenId,
             );
           } catch (err) {
-            if (err.message.includes('Unable to verify ownership.')) {
+            const message = getErrorMessage(err);
+            if (message.includes('Unable to verify ownership.')) {
               // this would indicate that either our attempts to verify ownership failed because of network issues,
               // or, somehow a token has been added to NFTs state with an incorrect chainId.
             } else {
               // Any other error is unexpected and should be surfaced.
-              dispatch(displayWarning(err.message));
+              dispatch(displayWarning(err));
             }
           }
 
@@ -2949,7 +2971,7 @@ export function signTransaction(history) {
             await dispatch(
               rejectPendingApproval(
                 unapprovedSendTx.id,
-                ethErrors.provider.userRejectedRequest().serialize(),
+                providerErrors.userRejectedRequest().serialize(),
               ),
             );
           }
@@ -3006,6 +3028,7 @@ export function signTransaction(history) {
             { ...bestQuote.approvalNeeded, amount: '0x0' },
             {
               requireApproval: false,
+              // TODO: create new type for swap+send approvals; works as stopgap bc swaps doesn't use this type for STXs in `submitSmartTransactionHook` (via `TransactionController`)
               type: TransactionType.swapApproval,
               swaps: {
                 hasApproveTx: true,
@@ -3520,8 +3543,16 @@ export function getSwapsBlockedTokens(state) {
   return state[name].swapsBlockedTokens;
 }
 
+export const getIsSwapAndSendDisabledForNetwork = createSelector(
+  (state) => getCurrentChainId(state),
+  (state) => state[name]?.disabledSwapAndSendNetworks ?? [],
+  (chainId, disabledSwapAndSendNetworks) => {
+    return disabledSwapAndSendNetworks.includes(chainId);
+  },
+);
+
 export const getSendAnalyticProperties = createSelector(
-  (state) => state.metamask.providerConfig,
+  (state) => getProviderConfig(state),
   getCurrentDraftTransaction,
   getBestQuote,
   ({ chainId, ticker: nativeCurrencySymbol }, draftTransaction, bestQuote) => {

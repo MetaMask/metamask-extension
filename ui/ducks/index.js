@@ -1,6 +1,5 @@
 import { combineReducers } from 'redux';
 import { AlertTypes } from '../../shared/constants/alerts';
-import confirmReducer from './confirm/confirm';
 import metamaskReducer from './metamask/metamask';
 import localeMessagesReducer from './locale/locale';
 import sendReducer from './send/send';
@@ -10,7 +9,9 @@ import confirmTransactionReducer from './confirm-transaction/confirm-transaction
 import gasReducer from './gas/gas.duck';
 import { invalidCustomNetwork, unconnectedAccount } from './alerts';
 import swapsReducer from './swaps/swaps';
+import bridgeReducer from './bridge/bridge';
 import historyReducer from './history/history';
+import rampsReducer from './ramps/ramps';
 import confirmAlertsReducer from './confirm-alerts/confirm-alerts';
 
 export default combineReducers({
@@ -22,10 +23,11 @@ export default combineReducers({
   DNS: domainReducer,
   history: historyReducer,
   send: sendReducer,
-  confirm: confirmReducer,
   confirmAlerts: confirmAlertsReducer,
   confirmTransaction: confirmTransactionReducer,
   swaps: swapsReducer,
+  ramps: rampsReducer,
+  bridge: bridgeReducer,
   gas: gasReducer,
   localeMessages: localeMessagesReducer,
 });

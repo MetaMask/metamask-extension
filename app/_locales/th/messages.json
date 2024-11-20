@@ -39,9 +39,6 @@
   "approve": {
     "message": "อนุมัติ"
   },
-  "attemptingConnect": {
-    "message": "กำลังเชื่อมต่อกับบล็อกเชน"
-  },
   "attributions": {
     "message": "อ้างถึง"
   },
@@ -96,9 +93,6 @@
   "delete": {
     "message": "ลบ"
   },
-  "deleteNetwork": {
-    "message": "ลบเครือข่าย?"
-  },
   "details": {
     "message": "รายละเอียด"
   },
@@ -125,10 +119,6 @@
   },
   "fast": {
     "message": "เร็ว"
-  },
-  "fiat": {
-    "message": "เงินตรา",
-    "description": "Exchange type"
   },
   "fileImportFail": {
     "message": "นำเข้าไฟล์ไม่สำเหร็จ กดที่นี่!",
@@ -184,12 +174,6 @@
   },
   "invalidAddressRecipient": {
     "message": "แอดแดรสผู้รับไม่ถูกต้อง"
-  },
-  "invalidAddressRecipientNotEthNetwork": {
-    "message": "ไม่ใช่เครือข่าย ETH ตั้งเป็นตัวพิมพ์เล็ก"
-  },
-  "invalidBlockExplorerURL": {
-    "message": "Block Explorer URI ไม่ถูกต้อง"
   },
   "invalidRPC": {
     "message": "RPC URI ไม่ถูกต้อง"
@@ -250,9 +234,6 @@
   },
   "next": {
     "message": "ถัดไป"
-  },
-  "noAddressForName": {
-    "message": "ยังไม่มีแอดแดรสไหนตั้งในชื่อนี้"
   },
   "noTransactions": {
     "message": "ยังไม่มีรายการธุรกรรม"
@@ -385,9 +366,6 @@
   },
   "unlock": {
     "message": "ปลดล็อก"
-  },
-  "updatedWithDate": {
-    "message": "อัปเดต $1 แล้ว"
   },
   "urlErrorMsg": {
     "message": "URI ต้องมีคำนำหน้าเป็น HTTP หรือ HTTPS"

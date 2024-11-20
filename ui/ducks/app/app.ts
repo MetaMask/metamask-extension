@@ -34,6 +34,7 @@ type AppState = {
     tokenId?: string;
     ignoreErc20Token?: boolean;
   };
+  showPermittedNetworkToastOpen: boolean;
   showIpfsModalOpen: boolean;
   keyringRemovalSnapModal: {
     snapName: string;
@@ -82,7 +83,14 @@ type AppState = {
   newNftAddedMessage: string;
   removeNftMessage: string;
   newNetworkAddedName: string;
-  editedNetwork: string;
+  editedNetwork:
+    | {
+        chainId: string;
+        nickname?: string;
+        editCompleted?: boolean;
+        newNetwork?: boolean;
+      }
+    | undefined;
   newNetworkAddedConfigurationId: string;
   selectedNetworkConfigurationId: string;
   sendInputCurrencySwitched: boolean;
@@ -92,12 +100,15 @@ type AppState = {
   customTokenAmount: string;
   txId: string | null;
   accountDetailsAddress: string;
-  ///: BEGIN:ONLY_INCLUDE_IF(snaps)
+  showDeleteMetaMetricsDataModal: boolean;
+  showDataDeletionErrorModal: boolean;
   snapsInstallPrivacyWarningShown: boolean;
-  ///: END:ONLY_INCLUDE_IF
+  isAddingNewNetwork: boolean;
+  isMultiRpcOnboarding: boolean;
+  errorInSettings: string | null;
 };
 
-type AppSliceState = {
+export type AppSliceState = {
   appState: AppState;
 };
 
@@ -120,6 +131,7 @@ const initialState: AppState = {
   qrCodeData: null,
   networkDropdownOpen: false,
   importNftsModal: { open: false },
+  showPermittedNetworkToastOpen: false,
   showIpfsModalOpen: false,
   showBasicFunctionalityModal: false,
   externalServicesOnboardingToggleState: true,
@@ -165,7 +177,7 @@ const initialState: AppState = {
   newNftAddedMessage: '',
   removeNftMessage: '',
   newNetworkAddedName: '',
-  editedNetwork: '',
+  editedNetwork: undefined,
   newNetworkAddedConfigurationId: '',
   selectedNetworkConfigurationId: '',
   sendInputCurrencySwitched: false,
@@ -176,9 +188,12 @@ const initialState: AppState = {
   scrollToBottom: true,
   txId: null,
   accountDetailsAddress: '',
-  ///: BEGIN:ONLY_INCLUDE_IF(snaps)
+  showDeleteMetaMetricsDataModal: false,
+  showDataDeletionErrorModal: false,
   snapsInstallPrivacyWarningShown: false,
-  ///: END:ONLY_INCLUDE_IF
+  isAddingNewNetwork: false,
+  isMultiRpcOnboarding: false,
+  errorInSettings: null,
 };
 
 export default function reduceApp(
@@ -254,6 +269,18 @@ export default function reduceApp(
       return {
         ...appState,
         showIpfsModalOpen: false,
+      };
+
+    case actionConstants.SHOW_PERMITTED_NETWORK_TOAST_OPEN:
+      return {
+        ...appState,
+        showPermittedNetworkToastOpen: true,
+      };
+
+    case actionConstants.SHOW_PERMITTED_NETWORK_TOAST_CLOSE:
+      return {
+        ...appState,
+        showPermittedNetworkToastOpen: false,
       };
 
     case actionConstants.IMPORT_TOKENS_POPOVER_OPEN:
@@ -493,10 +520,9 @@ export default function reduceApp(
       };
     }
     case actionConstants.SET_EDIT_NETWORK: {
-      const { nickname } = action.payload;
       return {
         ...appState,
-        editedNetwork: nickname,
+        editedNetwork: action.payload,
       };
     }
     case actionConstants.SET_NEW_TOKENS_IMPORTED:
@@ -581,6 +607,42 @@ export default function reduceApp(
       return {
         ...appState,
         customTokenAmount: action.payload,
+      };
+    case actionConstants.TOGGLE_NETWORK_MENU:
+      return {
+        ...appState,
+        isAddingNewNetwork: Boolean(action.payload?.isAddingNewNetwork),
+        isMultiRpcOnboarding: Boolean(action.payload?.isMultiRpcOnboarding),
+      };
+    case actionConstants.DELETE_METAMETRICS_DATA_MODAL_OPEN:
+      return {
+        ...appState,
+        showDeleteMetaMetricsDataModal: true,
+      };
+    case actionConstants.DELETE_METAMETRICS_DATA_MODAL_CLOSE:
+      return {
+        ...appState,
+        showDeleteMetaMetricsDataModal: false,
+      };
+    case actionConstants.DATA_DELETION_ERROR_MODAL_OPEN:
+      return {
+        ...appState,
+        showDataDeletionErrorModal: true,
+      };
+    case actionConstants.DATA_DELETION_ERROR_MODAL_CLOSE:
+      return {
+        ...appState,
+        showDataDeletionErrorModal: false,
+      };
+    case actionConstants.SHOW_SETTINGS_PAGE_ERROR:
+      return {
+        ...appState,
+        errorInSettings: action.payload,
+      };
+    case actionConstants.HIDE_SETTINGS_PAGE_ERROR:
+      return {
+        ...appState,
+        errorInSettings: null,
       };
     ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
     case actionConstants.SHOW_KEYRING_SNAP_REMOVAL_RESULT:
@@ -670,6 +732,27 @@ export function setCustomTokenAmount(payload: string): PayloadAction<string> {
   return { type: actionConstants.SET_CUSTOM_TOKEN_AMOUNT, payload };
 }
 
+/**
+ * An action creator for display a error to the user in various places in the
+ * UI. It will not be cleared until a new warning replaces it or `hideWarning`
+ * is called.
+ *
+ * @param payload - The warning to show.
+ * @returns The action to display the warning.
+ */
+export function displayErrorInSettings(payload: string): PayloadAction<string> {
+  return {
+    type: actionConstants.SHOW_SETTINGS_PAGE_ERROR,
+    payload,
+  };
+}
+
+export function hideErrorInSettings() {
+  return {
+    type: actionConstants.HIDE_SETTINGS_PAGE_ERROR,
+  };
+}
+
 // Selectors
 export function getQrCodeData(state: AppSliceState): {
   type?: string | null;
@@ -690,4 +773,28 @@ export function getLedgerWebHidConnectedStatus(
 
 export function getLedgerTransportStatus(state: AppSliceState): string | null {
   return state.appState.ledgerTransportStatus;
+}
+
+export function openDeleteMetaMetricsDataModal(): Action {
+  return {
+    type: actionConstants.DELETE_METAMETRICS_DATA_MODAL_OPEN,
+  };
+}
+
+export function hideDeleteMetaMetricsDataModal(): Action {
+  return {
+    type: actionConstants.DELETE_METAMETRICS_DATA_MODAL_CLOSE,
+  };
+}
+
+export function openDataDeletionErrorModal(): Action {
+  return {
+    type: actionConstants.DATA_DELETION_ERROR_MODAL_OPEN,
+  };
+}
+
+export function hideDataDeletionErrorModal(): Action {
+  return {
+    type: actionConstants.DATA_DELETION_ERROR_MODAL_CLOSE,
+  };
 }

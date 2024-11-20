@@ -9,14 +9,15 @@ import { UserOperationController } from '@metamask/user-operation-controller';
 import { cloneDeep } from 'lodash';
 import {
   generateSecurityAlertId,
+  isChainSupported,
   validateRequestWithPPOM,
 } from '../ppom/ppom-util';
 import {
   BlockaidReason,
   BlockaidResultType,
 } from '../../../../shared/constants/security-provider';
-import { SecurityAlertResponse } from '../ppom/types';
 import { flushPromises } from '../../../../test/lib/timer-helpers';
+import { createMockInternalAccount } from '../../../../test/jest/mocks';
 import {
   AddDappTransactionRequest,
   AddTransactionOptions,
@@ -37,6 +38,11 @@ jest.mock('uuid', () => {
 });
 
 const SECURITY_ALERT_ID_MOCK = '123';
+
+const INTERNAL_ACCOUNT_ADDRESS = '0xec1adf982415d2ef5ec55899b9bfb8bc0f29251b';
+const INTERNAL_ACCOUNT = createMockInternalAccount({
+  address: INTERNAL_ACCOUNT_ADDRESS,
+});
 
 const TRANSACTION_PARAMS_MOCK: TransactionParams = {
   from: '0x1',
@@ -69,12 +75,8 @@ const TRANSACTION_REQUEST_MOCK: AddTransactionRequest = {
   transactionParams: TRANSACTION_PARAMS_MOCK,
   transactionOptions: TRANSACTION_OPTIONS_MOCK,
   waitForSubmit: false,
-} as AddTransactionRequest;
-
-const SECURITY_ALERT_RESPONSE_MOCK: SecurityAlertResponse = {
-  result_type: BlockaidResultType.Malicious,
-  reason: BlockaidReason.maliciousDomain,
-};
+  internalAccounts: [],
+} as unknown as AddTransactionRequest;
 
 function createTransactionControllerMock() {
   return {
@@ -95,10 +97,9 @@ describe('Transaction Utils', () => {
   let dappRequest: AddDappTransactionRequest;
   let transactionController: jest.Mocked<TransactionController>;
   let userOperationController: jest.Mocked<UserOperationController>;
-  ///: BEGIN:ONLY_INCLUDE_IF(blockaid)
   const validateRequestWithPPOMMock = jest.mocked(validateRequestWithPPOM);
   const generateSecurityAlertIdMock = jest.mocked(generateSecurityAlertId);
-  ///: END:ONLY_INCLUDE_IF
+  const isChainSupportedMock = jest.mocked(isChainSupported);
 
   beforeEach(() => {
     jest.resetAllMocks();
@@ -106,10 +107,8 @@ describe('Transaction Utils', () => {
     request = cloneDeep(TRANSACTION_REQUEST_MOCK);
     transactionController = createTransactionControllerMock();
     userOperationController = createUserOperationControllerMock();
-    ///: BEGIN:ONLY_INCLUDE_IF(blockaid)
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     request.ppomController = {} as any;
-    ///: END:ONLY_INCLUDE_IF
 
     transactionController.addTransaction.mockResolvedValue({
       result: Promise.resolve('testHash'),
@@ -125,6 +124,7 @@ describe('Transaction Utils', () => {
     });
 
     generateSecurityAlertIdMock.mockReturnValue(SECURITY_ALERT_ID_MOCK);
+    isChainSupportedMock.mockResolvedValue(true);
 
     request.transactionController = transactionController;
     request.userOperationController = userOperationController;
@@ -400,10 +400,6 @@ describe('Transaction Utils', () => {
 
     describe('validates using security provider', () => {
       it('adds loading response to request options', async () => {
-        validateRequestWithPPOMMock.mockResolvedValue(
-          SECURITY_ALERT_RESPONSE_MOCK,
-        );
-
         await addTransaction({
           ...request,
           securityAlertsEnabled: true,
@@ -419,34 +415,11 @@ describe('Transaction Utils', () => {
         ).toHaveBeenCalledWith(TRANSACTION_PARAMS_MOCK, {
           ...TRANSACTION_OPTIONS_MOCK,
           securityAlertResponse: {
-            reason: BlockaidReason.inProgress,
+            reason: BlockaidReason.checkingChain,
             result_type: BlockaidResultType.Loading,
             securityAlertId: SECURITY_ALERT_ID_MOCK,
           },
         });
-      });
-
-      it('updates response after validation', async () => {
-        validateRequestWithPPOMMock.mockResolvedValue(
-          SECURITY_ALERT_RESPONSE_MOCK,
-        );
-
-        await addTransaction({
-          ...request,
-          securityAlertsEnabled: true,
-          chainId: '0x1',
-        });
-
-        await flushPromises();
-
-        expect(request.updateSecurityAlertResponse).toHaveBeenCalledTimes(1);
-        expect(request.updateSecurityAlertResponse).toHaveBeenCalledWith(
-          'eth_sendTransaction',
-          SECURITY_ALERT_ID_MOCK,
-          SECURITY_ALERT_RESPONSE_MOCK,
-        );
-
-        expect(validateRequestWithPPOMMock).toHaveBeenCalledTimes(1);
       });
 
       it('unless blockaid is disabled', async () => {
@@ -470,11 +443,19 @@ describe('Transaction Utils', () => {
         expect(validateRequestWithPPOMMock).toHaveBeenCalledTimes(0);
       });
 
-      it('unless chain is not supported', async () => {
-        await addTransaction({
+      it('send to users own account', async () => {
+        const sendRequest = {
           ...request,
-          securityAlertsEnabled: true,
-          chainId: '0xF',
+          transactionParams: {
+            ...request.transactionParams,
+            to: INTERNAL_ACCOUNT_ADDRESS,
+          },
+        };
+        await addTransaction({
+          ...sendRequest,
+          securityAlertsEnabled: false,
+          chainId: '0x1',
+          internalAccounts: [INTERNAL_ACCOUNT],
         });
 
         expect(
@@ -484,7 +465,7 @@ describe('Transaction Utils', () => {
         expect(
           request.transactionController.addTransaction,
         ).toHaveBeenCalledWith(
-          TRANSACTION_PARAMS_MOCK,
+          sendRequest.transactionParams,
           TRANSACTION_OPTIONS_MOCK,
         );
 

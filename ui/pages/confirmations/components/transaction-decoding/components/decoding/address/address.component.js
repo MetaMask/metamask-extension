@@ -6,8 +6,8 @@ import { shortenAddress } from '../../../../../../../helpers/utils/util';
 import Identicon from '../../../../../../../components/ui/identicon';
 import { useI18nContext } from '../../../../../../../hooks/useI18nContext';
 import {
-  getMemoizedMetadataContractName,
   getMemoizedAddressBook,
+  getMetadataContractName,
 } from '../../../../../../../selectors';
 import NicknamePopovers from '../../../../../../../components/app/modals/nickname-popovers';
 import { COPY_OPTIONS } from '../../../../../../../../shared/constants/copy';
@@ -29,7 +29,7 @@ const Address = ({
   );
   const recipientNickname = addressBookEntryObject?.name;
   const recipientMetadataName = useSelector((state) =>
-    getMemoizedMetadataContractName(state, checksummedRecipientAddress),
+    getMetadataContractName(state, checksummedRecipientAddress),
   );
 
   const recipientToRender = addressOnly

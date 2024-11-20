@@ -1,16 +1,10 @@
+import React from 'react';
 import { renderHook } from '@testing-library/react-hooks';
-import * as reactRedux from 'react-redux';
-import sinon from 'sinon';
-import { getCurrentCurrency } from '../selectors';
-import {
-  getMultichainCurrentCurrency,
-  getMultichainIsEvm,
-  getMultichainNativeCurrency,
-} from '../selectors/multichain';
-import {
-  getConversionRate,
-  getNativeCurrency,
-} from '../ducks/metamask/metamask';
+import { Provider } from 'react-redux';
+
+import mockState from '../../test/data/mock-state.json';
+import configureStore from '../store/store';
+
 import { useCurrencyDisplay } from './useCurrencyDisplay';
 
 const tests = [
@@ -128,31 +122,29 @@ const tests = [
   },
 ];
 
+const renderUseCurrencyDisplay = (value, restProps) => {
+  const state = {
+    ...mockState,
+    metamask: {
+      ...mockState.metamask,
+      completedOnboarding: true,
+      currentCurrency: 'usd',
+      currencyRates: { ETH: { conversionRate: 280.45 } },
+    },
+  };
+
+  const wrapper = ({ children }) => (
+    <Provider store={configureStore(state)}>{children}</Provider>
+  );
+
+  return renderHook(() => useCurrencyDisplay(value, restProps), { wrapper });
+};
+
 describe('useCurrencyDisplay', () => {
   tests.forEach(({ input: { value, ...restProps }, result }) => {
     describe(`when input is { value: ${value}, decimals: ${restProps.numberOfDecimals}, denomation: ${restProps.denomination} }`, () => {
-      const stub = sinon.stub(reactRedux, 'useSelector');
-      stub.callsFake((selector) => {
-        if (selector === getMultichainIsEvm) {
-          return true;
-        } else if (
-          selector === getCurrentCurrency ||
-          selector === getMultichainCurrentCurrency
-        ) {
-          return 'usd';
-        } else if (
-          selector === getNativeCurrency ||
-          selector === getMultichainNativeCurrency
-        ) {
-          return 'ETH';
-        } else if (selector === getConversionRate) {
-          return 280.45;
-        }
-        return undefined;
-      });
-      const hookReturn = renderHook(() => useCurrencyDisplay(value, restProps));
+      const hookReturn = renderUseCurrencyDisplay(value, restProps);
       const [displayValue, parts] = hookReturn.result.current;
-      stub.restore();
       it(`should return ${result.displayValue} as displayValue`, () => {
         expect(displayValue).toStrictEqual(result.displayValue);
       });

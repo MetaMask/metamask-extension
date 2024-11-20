@@ -2,19 +2,17 @@ import { hashMessage } from '@ethersproject/hash';
 import { verifyMessage } from '@ethersproject/wallet';
 import type { NetworkController } from '@metamask/network-controller';
 import { rpcErrors } from '@metamask/rpc-errors';
-import {
+import type {
   Json,
   JsonRpcParams,
-  hasProperty,
-  isObject,
+  JsonRpcResponse,
   Hex,
 } from '@metamask/utils';
-import {
-  JsonRpcRequest,
-  JsonRpcResponse,
+import { hasProperty, isObject, JsonRpcRequest } from '@metamask/utils';
+import type {
   JsonRpcEngineEndCallback,
   JsonRpcEngineNextCallback,
-} from 'json-rpc-engine';
+} from '@metamask/json-rpc-engine';
 import {
   EXPERIENCES_TO_VERIFY,
   getExperience,
@@ -22,6 +20,9 @@ import {
   TRUSTED_SIGNERS,
 } from '../../../../shared/constants/verification';
 import { MESSAGE_TYPE } from '../../../../shared/constants/app';
+// TODO: Remove restricted import
+// eslint-disable-next-line import/no-restricted-paths
+import { getCurrentChainId } from '../../../../ui/selectors';
 
 export type TxParams = {
   chainId?: `0x${string}`;
@@ -62,7 +63,7 @@ export function createTxVerificationMiddleware(
     const chainId =
       typeof params.chainId === 'string'
         ? (params.chainId.toLowerCase() as Hex)
-        : networkController.state.providerConfig.chainId;
+        : getCurrentChainId({ metamask: networkController.state });
 
     const experienceType = getExperience(
       params.to.toLowerCase() as Hex,

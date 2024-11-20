@@ -7,11 +7,19 @@ import {
   ConfirmInfoRow,
   ConfirmInfoRowText,
 } from '../../../../../../components/app/confirm/info/row';
-
-import { DataTree } from '../dataTree';
 import { parseSanitizeTypedDataMessage } from '../../../../utils';
+import { DataTree } from '../dataTree';
 
-export const ConfirmInfoRowTypedSignData = ({ data }: { data: string }) => {
+export const ConfirmInfoRowTypedSignData = ({
+  data,
+  tokenDecimals,
+  chainId,
+}: {
+  data: string;
+  isPermit?: boolean;
+  tokenDecimals?: number;
+  chainId: string;
+}) => {
   const t = useI18nContext();
 
   if (!data) {
@@ -29,7 +37,12 @@ export const ConfirmInfoRowTypedSignData = ({ data }: { data: string }) => {
         <ConfirmInfoRowText text={primaryType} />
       </ConfirmInfoRow>
       <Box style={{ marginLeft: -8 }}>
-        <DataTree data={sanitizedMessage.value} />
+        <DataTree
+          data={sanitizedMessage.value}
+          primaryType={primaryType}
+          tokenDecimals={tokenDecimals}
+          chainId={chainId}
+        />
       </Box>
     </Box>
   );

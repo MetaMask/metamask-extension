@@ -6,96 +6,52 @@ exports[`add-ethereum-chain confirmation should match snapshot 1`] = `
     class="confirmation-page"
   >
     <div
-      class="confirmation-page__content"
+      class="mm-box confirmation-page__content mm-box--padding-4"
+      style="margin-top: 0px; overflow-y: auto;"
     >
-      <div
-        class="box box--margin-top-2 box--flex-direction-row box--justify-content-center box--display-flex"
-      >
-        <div
-          class="network-display chip chip--with-left-icon chip--border-color-border-muted chip--background-color-undefined chip--max-content"
-          data-testid="network-display"
-        >
-          <div
-            class="chip__left-icon"
-          >
-            <div
-              class="color-indicator color-indicator--filled color-indicator--color-icon-muted color-indicator--size-xs"
-              data-testid="color-icon-icon-muted"
-            >
-              <span
-                class="color-indicator__inner-circle"
-              />
-            </div>
-          </div>
-          <span
-            class="mm-box mm-text chip__label mm-text--h7 mm-box--color-text-default"
-          >
-            Test initial state
-          </span>
-        </div>
-      </div>
       <h3
         class="box box--md:margin-4 box--margin-top-1 box--margin-bottom-1 box--flex-direction-row typography typography--h3 typography--weight-bold typography--style-normal typography--align-center typography--color-text-default"
       >
-        Allow this site to add a network?
+        Update Test initial state
       </h3>
       <h6
-        class="box box--md:margin-4 box--margin-top-1 box--margin-bottom-1 box--flex-direction-row typography typography--h7 typography--weight-normal typography--style-normal typography--align-center typography--color-text-default"
+        class="box box--md:margin-4 box--margin-top-1 box--margin-bottom-1 box--flex-direction-row typography typography--h6 typography--weight-normal typography--style-normal typography--align-center typography--color-text-default"
       >
-        This will allow this network to be used within MetaMask.
-      </h6>
-      <h6
-        class="box box--margin-top-1 box--margin-bottom-1 box--display-flex box--flex-direction-column box--align-items-center typography typography--h7 typography--weight-normal typography--style-normal typography--color-text-default"
-      >
-        <b>
-          MetaMask does not verify custom networks. 
-        </b>
-        <span>
-           
-          Learn about 
-          <a
-            href="https://metamask.zendesk.com/hc/en-us/articles/4404424659995"
-            target="__blank"
-          >
-            scams and network security risks
-          </a>
-          .
-           
-        </span>
+        This site is requesting to update your default network URL. You can edit defaults and network information any time.
       </h6>
       <div
-        class="box box--margin-6 box--padding-4 box--padding-bottom-3 box--flex-direction-row box--rounded-lg box--border-color-border-muted box--border-style-solid box--border-width-1"
+        class="box box--margin-top-6 box--margin-bottom-6 box--padding-4 box--padding-bottom-3 box--flex-direction-row box--rounded-lg box--border-color-border-muted box--border-style-solid box--border-width-1"
       >
         <dl
           class="definition-list"
         >
           <dt
-            class="mm-box mm-text definition-list__term mm-text--body-sm-bold mm-box--margin-top-0 mm-box--margin-bottom-1 mm-box--color-text-default"
+            class="mm-box mm-text definition-list__term mm-text--body-md-medium mm-box--margin-top-0 mm-box--margin-bottom-1 mm-box--color-text-default"
           >
-            Network name
+            Currency symbol
             <div>
               <div
                 aria-describedby="tippy-tooltip-1"
                 class="definition-list__tooltip-wrapper"
-                data-original-title="The name associated with this network."
+                data-original-title="The ticker symbol displayed for this network’s currency."
                 data-tooltipped=""
                 style="display: inline;"
                 tabindex="0"
               >
                 <span
                   class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-default"
-                  style="mask-image: url('./images/icons/info.svg');"
+                  style="mask-image: url('./images/icons/question.svg');"
                 />
               </div>
             </div>
           </dt>
           <dd
-            class="mm-box mm-text definition-list__definition mm-text--body-sm mm-text--overflow-wrap-break-word mm-box--margin-top-0 mm-box--margin-bottom-2 mm-box--color-text-alternative"
+            class="mm-box mm-text definition-list__definition mm-text--body-md mm-text--overflow-wrap-break-word mm-box--margin-top-0 mm-box--margin-bottom-2 mm-box--color-text-alternative"
           >
-            Test chain
+            TST
           </dd>
           <dt
-            class="mm-box mm-text definition-list__term mm-text--body-sm-bold mm-box--margin-top-0 mm-box--margin-bottom-1 mm-box--color-text-default"
+            class="mm-box mm-text definition-list__term mm-text--body-md-medium mm-box--margin-top-0 mm-box--margin-bottom-1 mm-box--color-text-default"
           >
             Network URL
             <div>
@@ -109,65 +65,15 @@ exports[`add-ethereum-chain confirmation should match snapshot 1`] = `
               >
                 <span
                   class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-default"
-                  style="mask-image: url('./images/icons/info.svg');"
+                  style="mask-image: url('./images/icons/question.svg');"
                 />
               </div>
             </div>
           </dt>
           <dd
-            class="mm-box mm-text definition-list__definition mm-text--body-sm mm-text--overflow-wrap-break-word mm-box--margin-top-0 mm-box--margin-bottom-2 mm-box--color-text-alternative"
+            class="mm-box mm-text definition-list__definition mm-text--body-md mm-text--overflow-wrap-break-word mm-box--margin-top-0 mm-box--margin-bottom-2 mm-box--color-text-alternative"
           >
             https://rpcurl.test.chain
-          </dd>
-          <dt
-            class="mm-box mm-text definition-list__term mm-text--body-sm-bold mm-box--margin-top-0 mm-box--margin-bottom-1 mm-box--color-text-default"
-          >
-            Chain ID
-            <div>
-              <div
-                aria-describedby="tippy-tooltip-3"
-                class="definition-list__tooltip-wrapper"
-                data-original-title="The chain ID used to sign transactions for this network."
-                data-tooltipped=""
-                style="display: inline;"
-                tabindex="0"
-              >
-                <span
-                  class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-default"
-                  style="mask-image: url('./images/icons/info.svg');"
-                />
-              </div>
-            </div>
-          </dt>
-          <dd
-            class="mm-box mm-text definition-list__definition mm-text--body-sm mm-text--overflow-wrap-break-word mm-box--margin-top-0 mm-box--margin-bottom-2 mm-box--color-text-alternative"
-          >
-            39321
-          </dd>
-          <dt
-            class="mm-box mm-text definition-list__term mm-text--body-sm-bold mm-box--margin-top-0 mm-box--margin-bottom-1 mm-box--color-text-default"
-          >
-            Currency symbol
-            <div>
-              <div
-                aria-describedby="tippy-tooltip-4"
-                class="definition-list__tooltip-wrapper"
-                data-original-title="The ticker symbol displayed for this network’s currency."
-                data-tooltipped=""
-                style="display: inline;"
-                tabindex="0"
-              >
-                <span
-                  class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-default"
-                  style="mask-image: url('./images/icons/info.svg');"
-                />
-              </div>
-            </div>
-          </dt>
-          <dd
-            class="mm-box mm-text definition-list__definition mm-text--body-sm mm-text--overflow-wrap-break-word mm-box--margin-top-0 mm-box--margin-bottom-2 mm-box--color-text-alternative"
-          >
-            TST
           </dd>
         </dl>
         <a
@@ -175,9 +81,25 @@ exports[`add-ethereum-chain confirmation should match snapshot 1`] = `
           role="button"
           tabindex="0"
         >
-          View all details
+          See details
         </a>
       </div>
+      <h6
+        class="box box--margin-top-1 box--margin-bottom-1 box--display-flex box--flex-direction-column box--align-items-center typography typography--h6 typography--weight-normal typography--style-normal typography--color-text-default"
+      >
+        <span>
+           
+          Beware of 
+          <a
+            href="https://support.metamask.io/networks-and-sidechains/managing-networks/user-guide-custom-networks-and-sidechains/"
+            target="__blank"
+          >
+            network scams and security risks
+          </a>
+          .
+           
+        </span>
+      </h6>
     </div>
     <div
       class="confirmation-footer"

@@ -3,10 +3,10 @@
 exports[`NetworkListSearch renders search list component 1`] = `
 <div>
   <div
-    class="mm-box mm-box--padding-top-0 mm-box--padding-right-4 mm-box--padding-bottom-4 mm-box--padding-left-4"
+    class="mm-box mm-box--padding-top-0 mm-box--padding-right-4 mm-box--padding-bottom-2 mm-box--padding-left-4"
   >
     <div
-      class="mm-box mm-text-field mm-text-field--size-lg mm-text-field--focused mm-text-field--truncate mm-text-field-search mm-box--padding-right-0 mm-box--padding-left-4 mm-box--display-inline-flex mm-box--align-items-center mm-box--width-full mm-box--background-color-background-default mm-box--rounded-sm mm-box--border-width-1 box--border-style-solid"
+      class="mm-box mm-text-field mm-text-field--size-lg mm-text-field--focused mm-text-field--truncate mm-text-field-search mm-box--padding-right-0 mm-box--padding-left-4 mm-box--display-inline-flex mm-box--align-items-center mm-box--width-full mm-box--background-color-background-default mm-box--rounded-md mm-box--border-width-1 box--border-style-solid"
       data-testid="search-list"
     >
       <span

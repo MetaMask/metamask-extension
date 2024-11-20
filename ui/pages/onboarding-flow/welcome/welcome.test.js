@@ -1,5 +1,5 @@
 import React from 'react';
-import { fireEvent, screen } from '@testing-library/react';
+import { fireEvent, screen, waitFor } from '@testing-library/react';
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import initializedMockState from '../../../../test/data/mock-state.json';
@@ -108,7 +108,7 @@ describe('Onboarding Welcome Component', () => {
       );
     });
 
-    it('should set first time flow to import and route to metametrics', () => {
+    it('should set first time flow to import and route to metametrics', async () => {
       renderWithProvider(<OnboardingWelcome />, mockStore);
       const termsCheckbox = screen.getByTestId('onboarding-terms-checkbox');
       fireEvent.click(termsCheckbox);
@@ -116,9 +116,11 @@ describe('Onboarding Welcome Component', () => {
       const createWallet = screen.getByTestId('onboarding-import-wallet');
       fireEvent.click(createWallet);
 
-      expect(setTermsOfUseLastAgreed).toHaveBeenCalled();
-      expect(setFirstTimeFlowType).toHaveBeenCalledWith('import');
-      expect(mockHistoryPush).toHaveBeenCalledWith(ONBOARDING_METAMETRICS);
+      await waitFor(() => {
+        expect(setTermsOfUseLastAgreed).toHaveBeenCalled();
+        expect(setFirstTimeFlowType).toHaveBeenCalledWith('import');
+        expect(mockHistoryPush).toHaveBeenCalledWith(ONBOARDING_METAMETRICS);
+      });
     });
   });
 });

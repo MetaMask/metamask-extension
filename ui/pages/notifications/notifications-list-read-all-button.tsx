@@ -1,14 +1,11 @@
 import React, { useContext } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
+import type { NotificationServicesController } from '@metamask/notification-services-controller';
 import { MetaMetricsContext } from '../../contexts/metametrics';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../../shared/constants/metametrics';
-import type {
-  Notification,
-  MarkAsReadNotificationsParam,
-} from '../../../app/scripts/controllers/metamask-notifications/types/notification/notification';
 import { useI18nContext } from '../../hooks/useI18nContext';
 import { useMarkNotificationAsRead } from '../../hooks/metamask-notifications/useNotifications';
 import { getUnreadNotifications } from '../../selectors';
@@ -17,6 +14,10 @@ import { Box, Button, ButtonVariant } from '../../components/component-library';
 import { BlockSize } from '../../helpers/constants/design-system';
 import type { NotificationType } from './notifications';
 import { SNAP } from './snap/types/types';
+
+type Notification = NotificationServicesController.Types.INotification;
+type MarkAsReadNotificationsParam =
+  NotificationServicesController.Types.MarkAsReadNotificationsParam;
 
 export type NotificationsListReadAllButtonProps = {
   notifications: NotificationType[];
@@ -66,6 +67,7 @@ export const NotificationsListReadAllButton = ({
       paddingLeft={4}
       paddingRight={4}
       paddingTop={4}
+      paddingBottom={4}
       className="notifications__list__read__all__button"
     >
       <Button

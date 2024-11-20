@@ -35,7 +35,7 @@ async function main() {
               'Set how many times the test should be retried upon failure.',
             type: 'number',
           })
-          .option('retry-until-failure', {
+          .option('stop-after-one-failure', {
             default: false,
             description: 'Retries until the test fails',
             type: 'boolean',
@@ -73,7 +73,7 @@ async function main() {
     mmi,
     e2eTestPath,
     retries,
-    retryUntilFailure,
+    stopAfterOneFailure,
     leaveRunning,
     updateSnapshot,
     updatePrivacySnapshot,
@@ -136,12 +136,13 @@ async function main() {
       // Tests that contains `@no-mmi` will be grep (-g) and inverted (-i)
       // meaning that all tests with @no-mmi in the title will be ignored
       extraArgs.push('-g', '@no-mmi', '-i');
+      process.env.MMI = 'true';
     }
 
     const dir = 'test/test-results/e2e';
     fs.mkdir(dir, { recursive: true });
 
-    await retry({ retries, retryUntilFailure }, async () => {
+    await retry({ retries, stopAfterOneFailure }, async () => {
       await runInShell('yarn', [
         'mocha',
         `--config=${configFile}`,

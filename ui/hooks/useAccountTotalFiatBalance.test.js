@@ -6,35 +6,12 @@ import mockState from '../../test/data/mock-state.json';
 import configureStore from '../store/store';
 
 import { CHAIN_IDS } from '../../shared/constants/network';
+import { createMockInternalAccount } from '../../test/jest/mocks';
+import { mockNetworkState } from '../../test/stub/networks';
 import { useAccountTotalFiatBalance } from './useAccountTotalFiatBalance';
 
-jest.mock('./useTokenTracker', () => {
-  return {
-    useTokenTracker: () => ({
-      loading: false,
-      tokensWithBalances: [
-        {
-          address: '0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48',
-          balance: '48573',
-          balanceError: null,
-          decimals: 6,
-          image: undefined,
-          isERC721: undefined,
-          string: '0.04857',
-          symbol: 'USDC',
-        },
-        {
-          address: '0x0bc529c00C6401aEF6D220BE8C6Ea1667F6Ad93e',
-          symbol: 'YFI',
-          balance: '1409247882142934',
-          decimals: 18,
-          string: '0.001409247882142934',
-          balanceError: null,
-        },
-      ],
-      error: null,
-    }),
-  };
+const mockAccount = createMockInternalAccount({
+  address: '0x0836f5ed6b62baf60706fe3adc0ff0fd1df833da',
 });
 
 const renderUseAccountTotalFiatBalance = (address) => {
@@ -47,6 +24,12 @@ const renderUseAccountTotalFiatBalance = (address) => {
         ETH: {
           conversionRate: 1612.92,
         },
+      },
+      internalAccounts: {
+        accounts: {
+          [mockAccount.id]: mockAccount,
+        },
+        selectedAccount: mockAccount.id,
       },
       marketData: {
         [CHAIN_IDS.MAINNET]: {
@@ -64,11 +47,9 @@ const renderUseAccountTotalFiatBalance = (address) => {
           },
         },
       },
-      providerConfig: {
-        chainId: CHAIN_IDS.MAINNET,
-        ticker: 'ETH',
-      },
-      detectedTokens: {
+      ...mockNetworkState({ chainId: CHAIN_IDS.MAINNET }),
+
+      allTokens: {
         '0x1': {
           '0x0836f5ed6b62baf60706fe3adc0ff0fd1df833da': [
             {
@@ -84,6 +65,14 @@ const renderUseAccountTotalFiatBalance = (address) => {
               symbol: 'YFI',
             },
           ],
+        },
+      },
+      tokenBalances: {
+        [mockAccount.address]: {
+          [CHAIN_IDS.MAINNET]: {
+            '0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48': '0xBDBD',
+            '0x0bc529c00C6401aEF6D220BE8C6Ea1667F6Ad93e': '0x501B4176A64D6',
+          },
         },
       },
     },
@@ -102,9 +91,7 @@ describe('useAccountTotalFiatBalance', () => {
   });
 
   it('should render the correct result for account 1', () => {
-    const { result } = renderUseAccountTotalFiatBalance(
-      '0x0836f5ed6b62baf60706fe3adc0ff0fd1df833da',
-    );
+    const { result } = renderUseAccountTotalFiatBalance(mockAccount);
     expect(result.current).toStrictEqual({
       formattedFiat: '$9.41',
       totalWeiBalance: '14ba1e6a08a9ed',
@@ -114,22 +101,26 @@ describe('useAccountTotalFiatBalance', () => {
           address: '0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48',
           symbol: 'USDC',
           balance: '48573',
-          image: undefined,
-          isERC721: undefined,
           decimals: 6,
-          string: '0.04857',
+          string: 0.04857,
           balanceError: null,
+          tokenFiatAmount: '0.05',
         },
         {
           address: '0x0bc529c00C6401aEF6D220BE8C6Ea1667F6Ad93e',
           symbol: 'YFI',
           balance: '1409247882142934',
           decimals: 18,
-          string: '0.001409247882142934',
+          string: 0.00141,
           balanceError: null,
+          tokenFiatAmount: '7.52',
         },
       ],
       loading: false,
+      mergedRates: {
+        '0x0bc529c00C6401aEF6D220BE8C6Ea1667F6Ad93e': 3.304588,
+        '0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48': 0.0006189,
+      },
       orderedTokenList: [
         {
           fiatBalance: '1.85',

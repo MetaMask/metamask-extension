@@ -6,7 +6,10 @@ import {
   TextFieldSearch,
   TextFieldSearchSize,
 } from '../../../component-library';
-import { BlockSize } from '../../../../helpers/constants/design-system';
+import {
+  BlockSize,
+  BorderRadius,
+} from '../../../../helpers/constants/design-system';
 
 const NetworkListSearch = ({
   searchQuery,
@@ -20,7 +23,7 @@ const NetworkListSearch = ({
   const t = useI18nContext();
 
   return (
-    <Box paddingLeft={4} paddingRight={4} paddingBottom={4} paddingTop={0}>
+    <Box paddingLeft={4} paddingRight={4} paddingBottom={2} paddingTop={0}>
       <TextFieldSearch
         size={TextFieldSearchSize.Lg}
         width={BlockSize.Full}
@@ -35,6 +38,7 @@ const NetworkListSearch = ({
           size: ButtonIconSize.Sm,
         }}
         inputProps={{ 'data-testid': 'network-redesign-modal-search-input' }}
+        borderRadius={BorderRadius.MD}
         data-testid="search-list"
       />
     </Box>

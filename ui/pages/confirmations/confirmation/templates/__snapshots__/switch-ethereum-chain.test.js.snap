@@ -6,34 +6,9 @@ exports[`switch-ethereum-chain confirmation should match snapshot 1`] = `
     class="confirmation-page"
   >
     <div
-      class="confirmation-page__content"
+      class="mm-box confirmation-page__content mm-box--padding-4"
+      style="margin-top: 0px; overflow-y: auto;"
     >
-      <div
-        class="box box--margin-top-2 box--flex-direction-row box--justify-content-center box--display-flex"
-      >
-        <div
-          class="network-display chip chip--with-left-icon chip--border-color-border-muted chip--background-color-undefined chip--max-content"
-          data-testid="network-display"
-        >
-          <div
-            class="chip__left-icon"
-          >
-            <div
-              class="color-indicator color-indicator--filled color-indicator--color-icon-muted color-indicator--size-xs"
-              data-testid="color-icon-icon-muted"
-            >
-              <span
-                class="color-indicator__inner-circle"
-              />
-            </div>
-          </div>
-          <span
-            class="mm-box mm-text chip__label mm-text--h7 mm-box--color-text-default"
-          >
-            Test initial state
-          </span>
-        </div>
-      </div>
       <h3
         class="box box--md:margin-2 box--margin-top-1 box--margin-bottom-1 box--sm:padding-4 box--lg:padding-4 box--flex-direction-row typography typography--h3 typography--weight-normal typography--style-normal typography--align-center typography--color-text-default"
       >
@@ -117,42 +92,15 @@ exports[`switch-ethereum-chain confirmation should match snapshot 1`] = `
 </div>
 `;
 
-exports[`switch-ethereum-chain confirmation should match snapshot 2`] = `<div />`;
-
 exports[`switch-ethereum-chain confirmation should show alert if there are pending txs 1`] = `
 <div>
   <div
     class="confirmation-page"
   >
     <div
-      class="confirmation-page__content"
+      class="mm-box confirmation-page__content mm-box--padding-4"
+      style="margin-top: 0px; overflow-y: auto;"
     >
-      <div
-        class="box box--margin-top-2 box--flex-direction-row box--justify-content-center box--display-flex"
-      >
-        <div
-          class="network-display chip chip--with-left-icon chip--border-color-border-muted chip--background-color-undefined chip--max-content"
-          data-testid="network-display"
-        >
-          <div
-            class="chip__left-icon"
-          >
-            <div
-              class="color-indicator color-indicator--filled color-indicator--color-icon-muted color-indicator--size-xs"
-              data-testid="color-icon-icon-muted"
-            >
-              <span
-                class="color-indicator__inner-circle"
-              />
-            </div>
-          </div>
-          <span
-            class="mm-box mm-text chip__label mm-text--h7 mm-box--color-text-default"
-          >
-            Test initial state
-          </span>
-        </div>
-      </div>
       <h3
         class="box box--md:margin-2 box--margin-top-1 box--margin-bottom-1 box--sm:padding-4 box--lg:padding-4 box--flex-direction-row typography typography--h3 typography--weight-normal typography--style-normal typography--align-center typography--color-text-default"
       >

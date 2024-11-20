@@ -1,18 +1,18 @@
 import { ApprovalType } from '@metamask/controller-utils';
-///: BEGIN:ONLY_INCLUDE_IF(snaps)
 import { WALLET_SNAP_PERMISSION_KEY } from '@metamask/snaps-rpc-methods';
-///: END:ONLY_INCLUDE_IF
 import { isEvmAccountType } from '@metamask/keyring-api';
 import { CaveatTypes } from '../../shared/constants/permissions';
+// eslint-disable-next-line import/no-restricted-paths
+import { PermissionNames } from '../../app/scripts/controllers/permissions';
 import { getApprovalRequestsByType } from './approvals';
 import { createDeepEqualSelector } from './util';
 import {
   getInternalAccount,
   getMetaMaskAccountsOrdered,
   getOriginOfCurrentTab,
-  getSelectedInternalAccount,
   getTargetSubjectMetadata,
-} from '.';
+} from './selectors';
+import { getSelectedInternalAccount } from './accounts';
 
 // selectors
 
@@ -62,6 +62,12 @@ export function getPermittedAccounts(state, origin) {
   );
 }
 
+export function getPermittedChains(state, origin) {
+  return getChainsFromPermission(
+    getChainsPermissionFromSubject(subjectSelector(state, origin)),
+  );
+}
+
 /**
  * Selects the permitted accounts from the eth_accounts permission for the
  * origin of the current tab.
@@ -77,6 +83,14 @@ export function getPermittedAccountsForSelectedTab(state, activeTab) {
   return getPermittedAccounts(state, activeTab);
 }
 
+export function getPermittedChainsForCurrentTab(state) {
+  return getPermittedAccounts(state, getOriginOfCurrentTab(state));
+}
+
+export function getPermittedChainsForSelectedTab(state, activeTab) {
+  return getPermittedChains(state, activeTab);
+}
+
 /**
  * Returns a map of permitted accounts by origin for all origins.
  *
@@ -89,6 +103,17 @@ export function getPermittedAccountsByOrigin(state) {
     const accounts = getAccountsFromSubject(subjects[subjectKey]);
     if (accounts.length > 0) {
       acc[subjectKey] = accounts;
+    }
+    return acc;
+  }, {});
+}
+
+export function getPermittedChainsByOrigin(state) {
+  const subjects = getPermissionSubjects(state);
+  return Object.keys(subjects).reduce((acc, subjectKey) => {
+    const chains = getChainsFromSubject(subjects[subjectKey]);
+    if (chains.length > 0) {
+      acc[subjectKey] = chains;
     }
     return acc;
   }, {});
@@ -134,6 +159,15 @@ export function getConnectedSubjectsForSelectedAddress(state) {
   return connectedSubjects;
 }
 
+/**
+ *  @typedef {import('./selectors.types').AccountConnections} AccountConnections
+ */
+
+/**
+ * Retrieves the connected subjects for all addresses.
+ *
+ * @returns {AccountConnections}  The connected subjects for all addresses.
+ */
 export const getConnectedSubjectsForAllAddresses = createDeepEqualSelector(
   getPermissionSubjects,
   getSubjectMetadata,
@@ -178,7 +212,6 @@ export function getSubjectsWithPermission(state, permissionName) {
   return connectedSubjects;
 }
 
-///: BEGIN:ONLY_INCLUDE_IF(snaps)
 export function getSubjectsWithSnapPermission(state, snapId) {
   const subjects = getPermissionSubjects(state);
 
@@ -198,7 +231,6 @@ export function getSubjectsWithSnapPermission(state, snapId) {
       };
     });
 }
-///: END:ONLY_INCLUDE_IF
 
 /**
  * Returns an object mapping addresses to objects mapping origins to connected
@@ -251,11 +283,35 @@ function getAccountsPermissionFromSubject(subject = {}) {
   return subject.permissions?.eth_accounts || {};
 }
 
+function getChainsFromSubject(subject) {
+  return getChainsFromPermission(getChainsPermissionFromSubject(subject));
+}
+
+function getChainsPermissionFromSubject(subject = {}) {
+  return subject.permissions?.[PermissionNames.permittedChains] || {};
+}
+
 function getAccountsFromPermission(accountsPermission) {
   const accountsCaveat = getAccountsCaveatFromPermission(accountsPermission);
   return accountsCaveat && Array.isArray(accountsCaveat.value)
     ? accountsCaveat.value
     : [];
+}
+
+function getChainsFromPermission(chainsPermission) {
+  const chainsCaveat = getChainsCaveatFromPermission(chainsPermission);
+  return chainsCaveat && Array.isArray(chainsCaveat.value)
+    ? chainsCaveat.value
+    : [];
+}
+
+function getChainsCaveatFromPermission(chainsPermission = {}) {
+  return (
+    Array.isArray(chainsPermission.caveats) &&
+    chainsPermission.caveats.find(
+      (caveat) => caveat.type === CaveatTypes.restrictNetworkSwitching,
+    )
+  );
 }
 
 function getAccountsCaveatFromPermission(accountsPermission = {}) {
@@ -416,7 +472,6 @@ export function getLastConnectedInfo(state) {
   }, {});
 }
 
-///: BEGIN:ONLY_INCLUDE_IF(snaps)
 export function getSnapInstallOrUpdateRequests(state) {
   return Object.values(state.metamask.pendingApprovals)
     .filter(
@@ -431,7 +486,6 @@ export function getSnapInstallOrUpdateRequests(state) {
 export function getFirstSnapInstallOrUpdateRequest(state) {
   return getSnapInstallOrUpdateRequests(state)?.[0] ?? null;
 }
-///: END:ONLY_INCLUDE_IF
 
 export function getPermissionsRequests(state) {
   return getApprovalRequestsByType(

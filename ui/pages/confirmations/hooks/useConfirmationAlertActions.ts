@@ -1,6 +1,6 @@
 import { useCallback } from 'react';
 import { AlertActionKey } from '../../../components/app/confirm/info/row/constants';
-import useRamps from '../../../hooks/experiences/useRamps';
+import useRamps from '../../../hooks/ramps/useRamps/useRamps';
 import { useTransactionModalContext } from '../../../contexts/transaction-modal';
 
 const useConfirmationAlertActions = () => {

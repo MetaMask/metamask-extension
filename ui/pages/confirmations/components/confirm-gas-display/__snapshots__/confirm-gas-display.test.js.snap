@@ -37,16 +37,6 @@ exports[`ConfirmGasDisplay should match snapshot 1`] = `
                 class="mm-box mm-text mm-text--inherit mm-box--color-primary-default"
               />
             </button>
-            <div
-              class="mm-box currency-display-component mm-box--padding-inline-start-1 mm-box--display-flex mm-box--flex-wrap-wrap mm-box--align-items-center"
-              title="0.001197"
-            >
-              <span
-                class="mm-box mm-text currency-display-component__text mm-text--body-md-bold mm-text--ellipsis mm-box--color-text-default"
-              >
-                0.001197
-              </span>
-            </div>
           </div>
         </h6>
         <h6
@@ -61,6 +51,7 @@ exports[`ConfirmGasDisplay should match snapshot 1`] = `
             >
               <span
                 class="mm-box mm-text currency-display-component__text mm-text--body-md mm-text--ellipsis mm-box--color-text-alternative"
+                data-testid="account-value-and-suffix"
               >
                 0.001197
               </span>
@@ -82,12 +73,12 @@ exports[`ConfirmGasDisplay should match snapshot 1`] = `
           class="mm-box mm-box--display-flex mm-box--flex-wrap-wrap"
         >
           <p
-            class="mm-box mm-text mm-text--body-sm mm-box--padding-inline-end-1 mm-box--color-text-muted"
+            class="mm-box mm-text mm-text--body-md mm-box--padding-inline-end-1 mm-box--color-text-alternative"
           >
-            Market
+            🦊 Market
           </p>
           <p
-            class="mm-box mm-text mm-text--body-sm mm-box--color-success-default"
+            class="mm-box mm-text mm-text--body-md mm-box--color-text-default"
           >
             <span
               data-testid="gas-timing-time"
@@ -102,10 +93,10 @@ exports[`ConfirmGasDisplay should match snapshot 1`] = `
         class="mm-box mm-text transaction-detail-item__row-subText mm-text--body-sm mm-text--text-align-end mm-box--color-text-alternative"
       >
         <div
-          class="box gas-details-item__gasfee-label box--display-inline-flex box--flex-direction-row"
+          class="mm-box gas-details-item__gasfee-label mm-box--display-inline-flex"
         >
           <div
-            class="box box--flex-direction-row"
+            class="mm-box"
           >
             <p
               class="mm-box mm-text mm-text--body-sm-medium mm-box--color-text-alternative"
@@ -114,8 +105,7 @@ exports[`ConfirmGasDisplay should match snapshot 1`] = `
             </p>
           </div>
           <div
-            class="gas-details-item__currency-container"
-            paddingstart="1"
+            class="mm-box gas-details-item__currency-container mm-box--padding-inline-start-1"
           >
             <div
               class="mm-box currency-display-component mm-box--display-flex mm-box--flex-wrap-wrap mm-box--align-items-center"
@@ -123,6 +113,7 @@ exports[`ConfirmGasDisplay should match snapshot 1`] = `
             >
               <span
                 class="mm-box mm-text currency-display-component__text mm-text--body-sm mm-text--ellipsis mm-box--color-text-alternative"
+                data-testid="account-value-and-suffix"
               >
                 0.00147
               </span>

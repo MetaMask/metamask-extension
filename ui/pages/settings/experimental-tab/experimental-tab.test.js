@@ -26,14 +26,14 @@ describe('ExperimentalTab', () => {
     }).not.toThrow();
   });
 
-  it('should render multiple toggle options', () => {
+  it('renders multiple toggle options', () => {
     const { getAllByRole } = render();
     const toggle = getAllByRole('checkbox');
 
-    expect(toggle).toHaveLength(4);
+    expect(toggle).toHaveLength(9);
   });
 
-  it('should enable add account snap', async () => {
+  it('enables add account snap', async () => {
     const setAddSnapAccountEnabled = jest.fn();
     const setPetnamesEnabled = jest.fn();
     const { getByTestId } = render(
@@ -53,7 +53,7 @@ describe('ExperimentalTab', () => {
     });
   });
 
-  it('should disable petnames', async () => {
+  it('disables petnames', async () => {
     const setAddSnapAccountEnabled = jest.fn();
     const setPetnamesEnabled = jest.fn();
     const { getByTestId } = render(
@@ -73,7 +73,7 @@ describe('ExperimentalTab', () => {
     });
   });
 
-  it('should enable redesigned confirmations', async () => {
+  it('enables redesigned confirmations', async () => {
     const setRedesignedConfirmationsEnabled = jest.fn();
     const { getByTestId } = render(
       {},
@@ -88,6 +88,41 @@ describe('ExperimentalTab', () => {
 
     await waitFor(() => {
       expect(setRedesignedConfirmationsEnabled).toHaveBeenCalledWith(true);
+    });
+  });
+
+  it('enables the experimental bitcoin account feature', async () => {
+    const setBitcoinSupportEnabled = jest.fn();
+    const { getByTestId } = render(
+      {},
+      {
+        setBitcoinSupportEnabled,
+        bitcoinSupportEnabled: false,
+      },
+    );
+    const toggle = getByTestId('bitcoin-support-toggle');
+
+    // Should turn the BTC experimental toggle ON
+    fireEvent.click(toggle);
+    await waitFor(() => {
+      expect(setBitcoinSupportEnabled).toHaveBeenNthCalledWith(1, true);
+    });
+  });
+
+  it('enables the experimental solana account feature', async () => {
+    const setSolanaSupportEnabled = jest.fn();
+    const { getByTestId } = render(
+      {},
+      {
+        setSolanaSupportEnabled,
+        solanaSupportEnabled: false,
+      },
+    );
+    const toggle = getByTestId('solana-support-toggle');
+
+    fireEvent.click(toggle);
+    await waitFor(() => {
+      expect(setSolanaSupportEnabled).toHaveBeenNthCalledWith(1, true);
     });
   });
 });

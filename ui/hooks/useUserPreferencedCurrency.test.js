@@ -1,28 +1,50 @@
+import React from 'react';
 import { renderHook } from '@testing-library/react-hooks';
-import * as reactRedux from 'react-redux';
-import sinon from 'sinon';
-import {
-  getCurrentCurrency,
-  getPreferences,
-  getShouldShowFiat,
-} from '../selectors';
-import {
-  getMultichainCurrentCurrency,
-  getMultichainIsEvm,
-  getMultichainShouldShowFiat,
-} from '../selectors/multichain';
+import { Provider } from 'react-redux';
+
+import mockState from '../../test/data/mock-state.json';
+import configureStore from '../store/store';
+import { mockNetworkState } from '../../test/stub/networks';
+import { CHAIN_IDS } from '../../shared/constants/network';
 import { useUserPreferencedCurrency } from './useUserPreferencedCurrency';
 
+const renderUseUserPreferencedCurrency = (state, value, restProps) => {
+  const defaultState = {
+    ...mockState,
+    metamask: {
+      ...mockState.metamask,
+      completedOnboarding: true,
+      ...mockNetworkState({
+        chainId: state.showFiat ? CHAIN_IDS.MAINNET : CHAIN_IDS.SEPOLIA,
+        ticker: state?.nativeCurrency,
+      }),
+      currentCurrency: state.currentCurrency,
+      currencyRates: { ETH: { conversionRate: 280.45 } },
+      preferences: {
+        showFiatInTestnets: state.showFiat,
+        showNativeTokenAsMainBalance: state.showNativeTokenAsMainBalance,
+      },
+    },
+  };
+
+  const wrapper = ({ children }) => (
+    <Provider store={configureStore(defaultState)}>{children}</Provider>
+  );
+
+  return renderHook(() => useUserPreferencedCurrency(value, restProps), {
+    wrapper,
+  });
+};
 const tests = [
   {
     state: {
-      useNativeCurrencyAsPrimaryCurrency: true,
+      showNativeTokenAsMainBalance: true,
       nativeCurrency: 'ETH',
       showFiat: true,
       currentCurrency: 'usd',
     },
     params: {
-      type: 'PRIMARY',
+      showNativeOverride: true,
     },
     result: {
       currency: 'ETH',
@@ -31,13 +53,13 @@ const tests = [
   },
   {
     state: {
-      useNativeCurrencyAsPrimaryCurrency: false,
+      showNativeTokenAsMainBalance: true,
       nativeCurrency: 'ETH',
       showFiat: true,
       currentCurrency: 'usd',
     },
     params: {
-      type: 'PRIMARY',
+      showFiatOverride: true,
     },
     result: {
       currency: 'usd',
@@ -46,42 +68,26 @@ const tests = [
   },
   {
     state: {
-      useNativeCurrencyAsPrimaryCurrency: true,
+      showNativeTokenAsMainBalance: true,
       nativeCurrency: 'ETH',
       showFiat: true,
+      currentCurrency: 'usd',
     },
     params: {
-      type: 'SECONDARY',
-      fiatNumberOfDecimals: 4,
-      fiatPrefix: '-',
-    },
-    result: {
-      currency: undefined,
-      numberOfDecimals: 4,
-    },
-  },
-  {
-    state: {
-      useNativeCurrencyAsPrimaryCurrency: false,
-      nativeCurrency: 'ETH',
-      showFiat: true,
-    },
-    params: {
-      type: 'SECONDARY',
-      fiatNumberOfDecimals: 4,
-      numberOfDecimals: 3,
-      fiatPrefix: 'a',
+      type: 'PRIMARY',
+      shouldCheckShowNativeToken: true,
     },
     result: {
       currency: 'ETH',
-      numberOfDecimals: 3,
+      numberOfDecimals: 8,
     },
   },
   {
     state: {
-      useNativeCurrencyAsPrimaryCurrency: false,
+      showNativeTokenAsMainBalance: false,
       nativeCurrency: 'ETH',
-      showFiat: false,
+      showFiat: true,
+      currentCurrency: 'usd',
     },
     params: {
       type: 'PRIMARY',
@@ -93,65 +99,89 @@ const tests = [
   },
   {
     state: {
-      useNativeCurrencyAsPrimaryCurrency: false,
+      showNativeTokenAsMainBalance: false,
       nativeCurrency: 'ETH',
       showFiat: true,
+      currentCurrency: 'usd',
     },
     params: {
-      type: 'PRIMARY',
+      type: 'SECONDARY',
     },
     result: {
-      currency: undefined,
+      currency: 'usd',
       numberOfDecimals: 2,
     },
   },
   {
     state: {
-      useNativeCurrencyAsPrimaryCurrency: false,
+      showNativeTokenAsMainBalance: false,
+      nativeCurrency: 'ETH',
+      showFiat: false,
+      currentCurrency: 'usd',
+    },
+    params: {
+      type: 'SECONDARY',
+    },
+    result: {
+      currency: 'ETH',
+      numberOfDecimals: 8,
+    },
+  },
+  {
+    state: {
+      showNativeTokenAsMainBalance: true,
       nativeCurrency: 'ETH',
       showFiat: true,
+      currentCurrency: 'usd',
     },
     params: {
       type: 'PRIMARY',
     },
     result: {
-      currency: undefined,
+      currency: 'ETH',
+      numberOfDecimals: 8,
+    },
+  },
+  {
+    state: {
+      showNativeTokenAsMainBalance: true,
+      nativeCurrency: 'ETH',
+      showFiat: true,
+      currentCurrency: 'usd',
+    },
+    params: {
+      type: 'SECONDARY',
+    },
+    result: {
+      currency: 'usd',
+      numberOfDecimals: 2,
+    },
+  },
+  {
+    state: {
+      showNativeTokenAsMainBalance: true,
+      nativeCurrency: 'ETH',
+      showFiat: true,
+      currentCurrency: 'usd',
+    },
+    params: {
+      type: 'SECONDARY',
+      shouldCheckShowNativeToken: true,
+    },
+    result: {
+      currency: 'usd',
       numberOfDecimals: 2,
     },
   },
 ];
-
-function getFakeUseSelector(state) {
-  return (selector) => {
-    if (selector === getPreferences) {
-      return state;
-    } else if (selector === getMultichainIsEvm) {
-      return state.nativeCurrency === 'ETH';
-    } else if (
-      selector === getShouldShowFiat ||
-      selector === getMultichainShouldShowFiat
-    ) {
-      return state.showFiat;
-    } else if (
-      selector === getCurrentCurrency ||
-      selector === getMultichainCurrentCurrency
-    ) {
-      return state.currentCurrency;
-    }
-    return state.nativeCurrency;
-  };
-}
-
 describe('useUserPreferencedCurrency', () => {
   tests.forEach(({ params: { type, ...otherParams }, state, result }) => {
-    describe(`when showFiat is ${state.showFiat}, useNativeCurrencyAsPrimary is ${state.useNativeCurrencyAsPrimaryCurrency} and type is ${type}`, () => {
-      const stub = sinon.stub(reactRedux, 'useSelector');
-      stub.callsFake(getFakeUseSelector(state));
-
-      const { result: hookResult } = renderHook(() =>
-        useUserPreferencedCurrency(type, otherParams),
+    describe(`when showFiat is ${state.showFiat}, shouldCheckShowNativeToken is ${otherParams.shouldCheckShowNativeToken}, showNativeTokenAsMainBalance is ${state.showNativeTokenAsMainBalance} and type is ${type}`, () => {
+      const { result: hookResult } = renderUseUserPreferencedCurrency(
+        state,
+        type,
+        otherParams,
       );
-      stub.restore();
       it(`should return currency as ${
         result.currency || 'not modified by user preferences'
       }`, () => {

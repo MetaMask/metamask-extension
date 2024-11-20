@@ -1,5 +1,3 @@
-import { MethodRegistry } from 'eth-method-registry';
-import log from 'loglevel';
 import { ERC1155, ERC721 } from '@metamask/controller-utils';
 
 import {
@@ -7,81 +5,11 @@ import {
   TransactionStatus,
   TransactionType,
 } from '@metamask/transaction-controller';
+// TODO: Remove restricted import
+// eslint-disable-next-line import/no-restricted-paths
 import { addHexPrefix } from '../../../app/scripts/lib/util';
 import { TransactionGroupStatus } from '../../../shared/constants/transaction';
 import { readAddressAsContract } from '../../../shared/modules/contract-utils';
-import fetchWithCache from '../../../shared/lib/fetch-with-cache';
-
-/**
- * @typedef EthersContractCall
- * @type object
- * @property {any[]} args - The args/params to the function call.
- * An array-like object with numerical and string indices.
- * @property {string} name - The name of the function.
- * @property {string} signature - The function signature.
- * @property {string} sighash - The function signature hash.
- * @property {EthersBigNumber} value - The ETH value associated with the call.
- * @property {FunctionFragment} functionFragment - The Ethers function fragment
- * representation of the function.
- */
-
-async function getMethodFrom4Byte(fourBytePrefix) {
-  const fourByteResponse = await fetchWithCache({
-    url: `https://www.4byte.directory/api/v1/signatures/?hex_signature=${fourBytePrefix}`,
-    fetchOptions: {
-      referrerPolicy: 'no-referrer-when-downgrade',
-      body: null,
-      method: 'GET',
-      mode: 'cors',
-    },
-    functionName: 'getMethodFrom4Byte',
-  });
-  fourByteResponse.results.sort((a, b) => {
-    return new Date(a.created_at).getTime() < new Date(b.created_at).getTime()
-      ? -1
-      : 1;
-  });
-  return fourByteResponse.results[0].text_signature;
-}
-
-let registry;
-
-/**
- * Attempts to return the method data from the MethodRegistry library, the message registry library and the token abi, in that order of preference
- *
- * @param {string} fourBytePrefix - The prefix from the method code associated with the data
- * @param {boolean} allow4ByteRequests - Whether or not to allow 4byte.directory requests, toggled by the user in privacy settings
- * @returns {object}
- */
-export async function getMethodDataAsync(fourBytePrefix, allow4ByteRequests) {
-  try {
-    let fourByteSig = null;
-    if (allow4ByteRequests) {
-      fourByteSig = await getMethodFrom4Byte(fourBytePrefix).catch((e) => {
-        log.error(e);
-        return null;
-      });
-    }
-
-    if (!registry) {
-      registry = new MethodRegistry({ provider: global.ethereumProvider });
-    }
-
-    if (!fourByteSig) {
-      return {};
-    }
-
-    const parsedResult = registry.parse(fourByteSig);
-
-    return {
-      name: parsedResult.name,
-      params: parsedResult.args,
-    };
-  } catch (error) {
-    log.error(error);
-    return {};
-  }
-}
 
 /**
  * Returns four-byte method signature from data

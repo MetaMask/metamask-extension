@@ -34,18 +34,24 @@ export class Ganache {
     });
   }
 
-  async getBalance(): Promise<number> {
-    const accounts = await this.getAccounts();
+  async getBalance(address = null): Promise<number> {
     const provider = await this.getProvider();
 
-    if (!accounts?.[0] || !provider) {
+    if (!provider) {
+      console.log('No provider found');
+      return 0;
+    }
+
+    const accountToUse = address || (await this.getAccounts())?.[0];
+
+    if (!accountToUse) {
       console.log('No accounts found');
       return 0;
     }
 
     const balanceHex = await provider.request({
       method: 'eth_getBalance',
-      params: [accounts[0], 'latest'],
+      params: [accountToUse, 'latest'],
     });
     const balanceInt = parseInt(balanceHex, 16) / 10 ** 18;
 
@@ -61,6 +67,13 @@ export class Ganache {
     const fiatBalance = (balance * currencyConversionRate).toFixed(2);
 
     return Number(fiatBalance);
+  }
+
+  async setAccountBalance(address: string, balance: string) {
+    return await this.getProvider()?.request({
+      method: 'evm_setAccountBalance',
+      params: [address, balance],
+    });
   }
 
   async quit() {

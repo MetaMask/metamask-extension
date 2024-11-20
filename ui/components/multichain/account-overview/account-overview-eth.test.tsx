@@ -2,10 +2,16 @@ import React from 'react';
 import mockState from '../../../../test/data/mock-state.json';
 import configureStore from '../../../store/store';
 import { renderWithProvider } from '../../../../test/jest/rendering';
+import { setBackgroundConnection } from '../../../store/background-connection';
 import {
   AccountOverviewEth,
   AccountOverviewEthProps,
 } from './account-overview-eth';
+
+jest.mock('../../../store/actions', () => ({
+  tokenBalancesStartPolling: jest.fn().mockResolvedValue('pollingToken'),
+  tokenBalancesStopPollingByPollingToken: jest.fn(),
+}));
 
 const render = (props: AccountOverviewEthProps) => {
   const store = configureStore({
@@ -16,9 +22,12 @@ const render = (props: AccountOverviewEthProps) => {
 };
 
 describe('AccountOverviewEth', () => {
+  beforeEach(() => {
+    setBackgroundConnection({ setBridgeFeatureFlags: jest.fn() } as never);
+  });
   it('shows all tabs', () => {
     const { queryByTestId } = render({
-      defaultHomeActiveTabName: '',
+      defaultHomeActiveTabName: null,
       onTabClick: jest.fn(),
       setBasicFunctionalityModalOpen: jest.fn(),
       onSupportLinkClick: jest.fn(),

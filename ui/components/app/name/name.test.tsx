@@ -8,6 +8,8 @@ import {
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
 import { useDisplayName } from '../../../hooks/useDisplayName';
+import { mockNetworkState } from '../../../../test/stub/networks';
+import { CHAIN_IDS } from '../../../../shared/constants/network';
 import Name from './name';
 
 jest.mock('../../../hooks/useDisplayName');
@@ -19,14 +21,12 @@ jest.mock('react-redux', () => ({
 
 const ADDRESS_NO_SAVED_NAME_MOCK = '0xc0ffee254729296a45a3885639ac7e10f9d54977';
 const ADDRESS_SAVED_NAME_MOCK = '0xc0ffee254729296a45a3885639ac7e10f9d54979';
-const CHAIN_ID_MOCK = '0x1';
 const SAVED_NAME_MOCK = 'TestName';
+const VARIATION_MOCK = 'testVariation';
 
 const STATE_MOCK = {
   metamask: {
-    providerConfig: {
-      chainId: CHAIN_ID_MOCK,
-    },
+    ...mockNetworkState({ chainId: CHAIN_IDS.MAINNET }),
   },
 };
 
@@ -36,6 +36,24 @@ describe('Name', () => {
 
   beforeEach(() => {
     jest.resetAllMocks();
+  });
+
+  it('renders when no address value is passed', () => {
+    useDisplayNameMock.mockReturnValue({
+      name: null,
+      hasPetname: false,
+    });
+
+    const { container } = renderWithProvider(
+      <Name
+        type={NameType.ETHEREUM_ADDRESS}
+        value={''}
+        variation={VARIATION_MOCK}
+      />,
+      store,
+    );
+
+    expect(container).toMatchSnapshot();
   });
 
   it('renders address with no saved name', () => {
@@ -48,6 +66,7 @@ describe('Name', () => {
       <Name
         type={NameType.ETHEREUM_ADDRESS}
         value={ADDRESS_NO_SAVED_NAME_MOCK}
+        variation={VARIATION_MOCK}
       />,
       store,
     );
@@ -62,7 +81,30 @@ describe('Name', () => {
     });
 
     const { container } = renderWithProvider(
-      <Name type={NameType.ETHEREUM_ADDRESS} value={ADDRESS_SAVED_NAME_MOCK} />,
+      <Name
+        type={NameType.ETHEREUM_ADDRESS}
+        value={ADDRESS_SAVED_NAME_MOCK}
+        variation={VARIATION_MOCK}
+      />,
+      store,
+    );
+
+    expect(container).toMatchSnapshot();
+  });
+
+  it('renders address with image', () => {
+    useDisplayNameMock.mockReturnValue({
+      name: SAVED_NAME_MOCK,
+      hasPetname: true,
+      image: 'test-image',
+    });
+
+    const { container } = renderWithProvider(
+      <Name
+        type={NameType.ETHEREUM_ADDRESS}
+        value={ADDRESS_SAVED_NAME_MOCK}
+        variation={VARIATION_MOCK}
+      />,
       store,
     );
 
@@ -86,7 +128,11 @@ describe('Name', () => {
 
         renderWithProvider(
           <MetaMetricsContext.Provider value={trackEventMock}>
-            <Name type={NameType.ETHEREUM_ADDRESS} value={value} />
+            <Name
+              type={NameType.ETHEREUM_ADDRESS}
+              value={value}
+              variation={VARIATION_MOCK}
+            />
           </MetaMetricsContext.Provider>,
           store,
         );

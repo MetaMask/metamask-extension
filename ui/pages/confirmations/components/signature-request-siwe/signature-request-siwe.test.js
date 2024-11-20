@@ -2,13 +2,16 @@ import React from 'react';
 import { cloneDeep } from 'lodash';
 import { fireEvent } from '@testing-library/react';
 import { ApprovalType } from '@metamask/controller-utils';
+import { CHAIN_IDS } from '@metamask/transaction-controller';
 import mockState from '../../../../../test/data/mock-state.json';
 import { renderWithProvider } from '../../../../../test/lib/render-helpers';
 import configureStore from '../../../../store/store';
+import { mockNetworkState } from '../../../../../test/stub/networks';
 import SignatureRequestSIWE from '.';
 
 const MOCK_ORIGIN = 'https://example-dapp.website';
 const MOCK_ADDRESS = '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc';
+const CHAIN_ID_MOCK = CHAIN_IDS.GOERLI;
 
 const mockStoreInitialState = {
   metamask: {
@@ -19,6 +22,7 @@ const mockStoreInitialState = {
         name: 'Example Test Dapp',
       },
     },
+    ...mockNetworkState({ chainId: CHAIN_ID_MOCK }),
   },
 };
 
@@ -27,6 +31,8 @@ const mockShowModal = jest.fn();
 jest.mock('../../../../store/actions.ts', () => {
   return {
     showModal: () => mockShowModal,
+    getLastInteractedConfirmationInfo: jest.fn(),
+    setLastInteractedConfirmationInfo: jest.fn(),
   };
 });
 
@@ -34,6 +40,7 @@ const mockProps = {
   cancelPersonalMessage: jest.fn(),
   signPersonalMessage: jest.fn(),
   txData: {
+    chainId: CHAIN_ID_MOCK,
     msgParams: {
       from: MOCK_ADDRESS,
       data: '0x6c6f63616c686f73743a383038302077616e747320796f7520746f207369676e20696e207769746820796f757220457468657265756d206163636f756e743a0a3078466232433135303034333433393034653566343038323537386334653865313131303563463765330a0a436c69636b20746f207369676e20696e20616e642061636365707420746865205465726d73206f6620536572766963653a2068747470733a2f2f636f6d6d756e6974792e6d6574616d61736b2e696f2f746f730a0a5552493a20687474703a2f2f6c6f63616c686f73743a383038300a56657273696f6e3a20310a436861696e2049443a20310a4e6f6e63653a2053544d74364b514d7777644f58453330360a4973737565642041743a20323032322d30332d31385432313a34303a34302e3832335a0a5265736f75726365733a0a2d20697066733a2f2f516d653773733341525667787636725871565069696b4d4a3875324e4c676d67737a673133705972444b456f69750a2d2068747470733a2f2f6578616d706c652e636f6d2f6d792d776562322d636c61696d2e6a736f6e',
@@ -57,7 +64,7 @@ const mockProps = {
         },
       },
     },
-    type: ApprovalType.EthSign,
+    type: ApprovalType.PersonalSign,
   },
 };
 
@@ -180,11 +187,11 @@ describe('SignatureRequestSIWE (Sign in with Ethereum)', () => {
           transactions: [
             ...mockStoreInitialState.metamask.transactions,
             {
-              chainId: mockStoreInitialState.metamask.providerConfig.chainId,
+              chainId: CHAIN_ID_MOCK,
               status: 'unapproved',
             },
           ],
-          unapprovedMsgCount: 2,
+          unapprovedPersonalMsgCount: 2,
         },
       });
 

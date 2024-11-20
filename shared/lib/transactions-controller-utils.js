@@ -1,5 +1,6 @@
 import BigNumber from 'bignumber.js';
 import { TransactionEnvelopeType } from '@metamask/transaction-controller';
+
 import { EtherDenomination } from '../constants/common';
 import { Numeric } from '../modules/Numeric';
 import { isSwapsDefaultTokenSymbol } from '../modules/swaps.utils';
@@ -8,6 +9,9 @@ export const TOKEN_TRANSFER_LOG_TOPIC_HASH =
   '0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef';
 
 export const TRANSACTION_NO_CONTRACT_ERROR_KEY = 'transactionErrorNoContract';
+
+export const TRANSFER_SINFLE_LOG_TOPIC_HASH =
+  '0xc3d58168c5ae7397731d063d5bbf3d657854427343f4c083240f7aacaa2d0f62';
 
 export const TEN_SECONDS_IN_MILLISECONDS = 10_000;
 
@@ -30,9 +34,14 @@ export function toPrecisionWithoutTrailingZeros(n, precision) {
     .replace(/(\.[0-9]*[1-9])0*|(\.0*)/u, '$1');
 }
 
+/**
+ * @param {number|string|BigNumber} value
+ * @param {number=} decimals
+ * @returns {BigNumber}
+ */
 export function calcTokenAmount(value, decimals) {
-  const multiplier = Math.pow(10, Number(decimals || 0));
-  return new BigNumber(String(value)).div(multiplier);
+  const divisor = new BigNumber(10).pow(decimals ?? 0);
+  return new BigNumber(String(value)).div(divisor);
 }
 
 export function getSwapsTokensReceivedFromTxMeta(
@@ -43,6 +52,7 @@ export function getSwapsTokensReceivedFromTxMeta(
   tokenDecimals,
   approvalTxMeta,
   chainId,
+  precision = 6,
 ) {
   const accountAddress = txMeta?.swapAndSendRecipient ?? senderAddress;
 
@@ -97,9 +107,11 @@ export function getSwapsTokensReceivedFromTxMeta(
     )
       .minus(preTxBalanceLessGasCost)
       .toDenomination(EtherDenomination.ETH)
-      .toBase(10)
-      .round(6);
-    return ethReceived.toString();
+      .toBase(10);
+
+    return (
+      precision === null ? ethReceived : ethReceived.round(precision)
+    ).toFixed();
   }
   const txReceiptLogs = txReceipt?.logs;
   if (txReceiptLogs && txReceipt?.status !== '0x0') {
@@ -118,12 +130,14 @@ export function getSwapsTokensReceivedFromTxMeta(
         isTransferFromGivenAddress
       );
     });
-    return tokenTransferLog
-      ? toPrecisionWithoutTrailingZeros(
-          calcTokenAmount(tokenTransferLog.data, tokenDecimals).toString(10),
-          6,
-        )
-      : '';
+
+    if (tokenTransferLog) {
+      const tokenAmount = calcTokenAmount(tokenTransferLog.data, tokenDecimals);
+      return precision === null
+        ? tokenAmount.toFixed()
+        : toPrecisionWithoutTrailingZeros(tokenAmount, precision);
+    }
+    return '';
   }
   return null;
 }

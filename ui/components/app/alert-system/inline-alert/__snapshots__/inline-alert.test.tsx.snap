@@ -16,7 +16,7 @@ exports[`Inline Alert renders alert with danger severity 1`] = `
       <p
         class="mm-box mm-text mm-text--body-sm mm-box--color-inherit"
       >
-        [inlineAlert]
+        [alert]
       </p>
       <span
         class="mm-box mm-icon mm-icon--size-xs mm-box--display-inline-block mm-box--color-inherit"
@@ -43,7 +43,7 @@ exports[`Inline Alert renders alert with informative severity 1`] = `
       <p
         class="mm-box mm-text mm-text--body-sm mm-box--color-inherit"
       >
-        [inlineAlert]
+        [alert]
       </p>
       <span
         class="mm-box mm-icon mm-icon--size-xs mm-box--display-inline-block mm-box--color-inherit"
@@ -70,7 +70,7 @@ exports[`Inline Alert renders alert with warning severity 1`] = `
       <p
         class="mm-box mm-text mm-text--body-sm mm-box--color-inherit"
       >
-        [inlineAlert]
+        [alert]
       </p>
       <span
         class="mm-box mm-icon mm-icon--size-xs mm-box--display-inline-block mm-box--color-inherit"

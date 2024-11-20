@@ -2,6 +2,7 @@ const {
   openDapp,
   switchToNotificationWindow,
   withFixtures,
+  tempToggleSettingRedesignedConfirmations,
   unlockWallet,
   defaultGanacheOptions,
 } = require('../../helpers');
@@ -45,7 +46,7 @@ async function installNameLookupSnap(driver) {
 
   // Confirm Install Modal
   await driver.clickElement({
-    text: 'Install',
+    text: 'Confirm',
     tag: 'button',
   });
 
@@ -108,6 +109,7 @@ describe('Petnames - Signatures', function () {
       },
       async ({ driver }) => {
         await unlockWallet(driver);
+        await tempToggleSettingRedesignedConfirmations(driver);
         await openDapp(driver);
         await createSignatureRequest(driver, SIGNATURE_TYPE.TYPED_V3);
         await switchToNotificationWindow(driver, 3);
@@ -144,6 +146,7 @@ describe('Petnames - Signatures', function () {
       },
       async ({ driver }) => {
         await unlockWallet(driver);
+        await tempToggleSettingRedesignedConfirmations(driver);
         await openDapp(driver);
         await createSignatureRequest(driver, SIGNATURE_TYPE.TYPED_V4);
         await switchToNotificationWindow(driver, 3);
@@ -170,9 +173,7 @@ describe('Petnames - Signatures', function () {
     );
   });
 
-  // TODO(dbrans): Re-enable this test when name-lookup endowment is in stable.
-  // eslint-disable-next-line mocha/no-skipped-tests
-  it.skip('can propose names using installed snaps', async function () {
+  it('can propose names using installed snaps', async function () {
     await withFixtures(
       {
         dapp: true,
@@ -185,6 +186,7 @@ describe('Petnames - Signatures', function () {
       },
       async ({ driver }) => {
         await unlockWallet(driver);
+        await tempToggleSettingRedesignedConfirmations(driver);
         await openDapp(driver);
         await openTestSnaps(driver);
         await installNameLookupSnap(driver);

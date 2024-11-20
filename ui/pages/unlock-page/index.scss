@@ -35,14 +35,6 @@
     }
   }
 
-  &__title {
-    @include design-system.H2;
-
-    margin-top: 5px;
-    font-weight: 800;
-    color: var(--color-text-alternative);
-  }
-
   &__form {
     width: 100%;
     margin: 56px 0 8px;

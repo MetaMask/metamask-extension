@@ -57,7 +57,7 @@ export default function InlineAlert({
           size={IconSize.Sm}
         />
         <Text variant={TextVariant.bodySm} color={TextColor.inherit}>
-          {t('inlineAlert')}
+          {t('alert')}
         </Text>
         <Icon name={IconName.ArrowRight} size={IconSize.Xs} />
       </Box>

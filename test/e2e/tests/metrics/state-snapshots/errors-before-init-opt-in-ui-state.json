@@ -2,10 +2,10 @@
   "data": {
     "AuthenticationController": { "isSignedIn": "boolean" },
     "UserStorageController": { "isProfileSyncingEnabled": true },
-    "MetamaskNotificationsController": {
+    "NotificationServicesController": {
       "subscriptionAccountsSeen": "object",
       "isFeatureAnnouncementsEnabled": "boolean",
-      "isMetamaskNotificationsEnabled": "boolean",
+      "isNotificationServicesEnabled": "boolean",
       "isMetamaskNotificationsFeatureSeen": "boolean",
       "metamaskNotificationsList": "object",
       "metamaskNotificationsReadList": "object"
@@ -40,15 +40,32 @@
       "recoveryPhraseReminderLastShown": "number",
       "showTestnetMessageInDropdown": true,
       "trezorModel": null,
+      "newPrivacyPolicyToastClickedOrClosed": "boolean",
+      "newPrivacyPolicyToastShownDate": "number",
       "usedNetworks": {
         "0x1": true,
         "0xe708": true,
         "0x5": true,
         "0x539": true
       },
-      "newPrivacyPolicyToastClickedOrClosed": "boolean",
-      "newPrivacyPolicyToastShownDate": "number",
       "snapsInstallPrivacyWarningShown": true
+    },
+    "BridgeController": {
+      "bridgeState": {
+        "bridgeFeatureFlags": {
+          "extensionSupport": "boolean",
+          "srcNetworkAllowlist": {
+            "0": "string",
+            "1": "string",
+            "2": "string"
+          },
+          "destNetworkAllowlist": {
+            "0": "string",
+            "1": "string",
+            "2": "string"
+          }
+        }
+      }
     },
     "CurrencyController": {
       "currentCurrency": "usd",
@@ -74,21 +91,17 @@
       "dataCollectionForMarketing": "boolean",
       "traits": "object"
     },
+    "MetaMetricsDataDeletionController": {
+      "metaMetricsDataDeletionId": null,
+      "metaMetricsDataDeletionTimestamp": 0
+    },
     "NetworkController": {
       "selectedNetworkClientId": "string",
+      "networkConfigurations": "object",
       "networksMetadata": {
         "networkConfigurationId": { "EIPS": {}, "status": "available" }
       },
-      "providerConfig": {
-        "chainId": "0x539",
-        "nickname": "Localhost 8545",
-        "rpcPrefs": "object",
-        "rpcUrl": "string",
-        "ticker": "ETH",
-        "type": "rpc",
-        "id": "networkConfigurationId"
-      },
-      "networkConfigurations": "object"
+      "providerConfig": "object"
     },
     "OnboardingController": {
       "completedOnboarding": true,
@@ -102,6 +115,7 @@
       "currentLocale": "en",
       "useExternalServices": "boolean",
       "dismissSeedBackUpReminder": true,
+      "overrideContentSecurityPolicyHeader": true,
       "featureFlags": {},
       "forgottenPassword": false,
       "identities": "object",
@@ -115,10 +129,15 @@
         "showExtensionInFullSizeView": false,
         "showFiatInTestnets": false,
         "showTestNetworks": false,
-        "smartTransactionsOptInStatus": false,
-        "useNativeCurrencyAsPrimaryCurrency": true,
+        "smartTransactionsOptInStatus": true,
+        "showNativeTokenAsMainBalance": true,
         "petnamesEnabled": true,
-        "showTokenAutodetectModal": "boolean"
+        "isRedesignedConfirmationsDeveloperEnabled": "boolean",
+        "showConfirmationAdvancedDetails": false,
+        "tokenSortConfig": "object",
+        "tokenNetworkFilter": "object",
+        "showMultiRpcModal": "boolean",
+        "shouldShowAggregatedBalancePopover": "boolean"
       },
       "selectedAddress": "string",
       "theme": "light",
@@ -129,16 +148,18 @@
       "useTokenDetection": false,
       "useCurrencyRateCheck": true,
       "useMultiAccountBalanceChecker": true,
-      "useRequestQueue": true
+      "useRequestQueue": true,
+      "isMultiAccountBalancesEnabled": "boolean",
+      "showIncomingTransactions": "object"
     },
-    "QueuedRequestController": {
-      "queuedRequestCount": 0
-    },
+    "QueuedRequestController": { "queuedRequestCount": 0 },
     "SelectedNetworkController": { "domains": "object" },
     "SmartTransactionsController": {
       "smartTransactionsState": {
         "fees": {},
+        "feesByChainId": "object",
         "liveness": true,
+        "livenessByChainId": "object",
         "smartTransactions": "object"
       }
     },
@@ -150,6 +171,27 @@
       "detectedTokens": "object",
       "ignoredTokens": "object",
       "tokens": "object"
+    },
+    "BridgeController": {
+      "bridgeState": {
+        "bridgeFeatureFlags": {
+          "extensionSupport": "boolean",
+          "srcNetworkAllowlist": {
+            "0": "string",
+            "1": "string",
+            "2": "string"
+          },
+          "destNetworkAllowlist": {
+            "0": "string",
+            "1": "string",
+            "2": "string"
+          }
+        },
+        "destTokens": {},
+        "destTopAssets": {},
+        "srcTokens": {},
+        "srcTopAssets": {}
+      }
     },
     "TransactionController": { "transactions": "object" },
     "config": "object",

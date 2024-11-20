@@ -9,21 +9,22 @@ import {
 import { BigNumber } from 'bignumber.js';
 import { ContractExchangeRates } from '@metamask/assets-controllers';
 import { useAsyncResultOrThrow } from '../../../../hooks/useAsyncResult';
-import { getTokenStandardAndDetails } from '../../../../store/actions';
 import { TokenStandard } from '../../../../../shared/constants/transaction';
-import { getConversionRate } from '../../../../ducks/metamask/metamask';
-import { getCurrentChainId, getCurrentCurrency } from '../../../../selectors';
+import {
+  getCurrentCurrency,
+  selectConversionRateByChainId,
+} from '../../../../selectors';
 import { fetchTokenExchangeRates } from '../../../../helpers/utils/util';
+import { ERC20_DEFAULT_DECIMALS, fetchErc20Decimals } from '../../utils/token';
+
 import {
   BalanceChange,
   FIAT_UNAVAILABLE,
-  NATIVE_ASSET_IDENTIFIER,
+  NativeAssetIdentifier,
   TokenAssetIdentifier,
 } from './types';
 
 const NATIVE_DECIMALS = 18;
-
-const ERC20_DEFAULT_DECIMALS = 18;
 
 // See https://github.com/MikeMcl/bignumber.js/issues/11#issuecomment-23053776
 function convertNumberToStringWithPrecisionWarning(value: number): string {
@@ -55,25 +56,6 @@ function getAssetAmount(
       // Shift the decimal point to the left by the number of decimals.
       .shift(-decimals)
   );
-}
-
-// Fetches the decimals for the given token address.
-async function fetchErc20Decimals(address: Hex): Promise<number> {
-  try {
-    const { decimals: decStr } = await getTokenStandardAndDetails(address);
-    if (!decStr) {
-      return ERC20_DEFAULT_DECIMALS;
-    }
-    for (const radix of [10, 16]) {
-      const parsedDec = parseInt(decStr, radix);
-      if (isFinite(parsedDec)) {
-        return parsedDec;
-      }
-    }
-    return ERC20_DEFAULT_DECIMALS;
-  } catch {
-    return ERC20_DEFAULT_DECIMALS;
-  }
 }
 
 // Fetches token details for all the token addresses in the SimulationTokenBalanceChanges
@@ -114,17 +96,25 @@ async function fetchTokenFiatRates(
 function getNativeBalanceChange(
   nativeBalanceChange: SimulationBalanceChange | undefined,
   nativeFiatRate: number | undefined,
+  chainId: Hex,
 ): BalanceChange | undefined {
   if (!nativeBalanceChange) {
     return undefined;
   }
-  const asset = NATIVE_ASSET_IDENTIFIER;
+
+  const asset: NativeAssetIdentifier = {
+    chainId,
+    standard: TokenStandard.none,
+  };
+
   const amount = getAssetAmount(nativeBalanceChange, NATIVE_DECIMALS);
+
   const fiatAmount = nativeFiatRate
     ? amount
         .times(convertNumberToStringWithPrecisionWarning(nativeFiatRate))
         .toNumber()
     : FIAT_UNAVAILABLE;
+
   return { asset, amount, fiatAmount };
 }
 
@@ -133,9 +123,11 @@ function getTokenBalanceChanges(
   tokenBalanceChanges: SimulationTokenBalanceChange[],
   erc20Decimals: Record<Hex, number>,
   erc20FiatRates: Partial<Record<Hex, number>>,
+  chainId: Hex,
 ): BalanceChange[] {
   return tokenBalanceChanges.map((tokenBc) => {
     const asset: TokenAssetIdentifier = {
+      chainId,
       standard: convertStandard(tokenBc.standard),
       address: tokenBc.address.toLowerCase() as Hex,
       tokenId: tokenBc.id,
@@ -160,12 +152,18 @@ function getTokenBalanceChanges(
 }
 
 // Compiles a list of balance changes from simulation data
-export const useBalanceChanges = (
-  simulationData: SimulationData | undefined,
-): { pending: boolean; value: BalanceChange[] } => {
-  const chainId = useSelector(getCurrentChainId);
+export const useBalanceChanges = ({
+  chainId,
+  simulationData,
+}: {
+  chainId: Hex;
+  simulationData?: SimulationData;
+}): { pending: boolean; value: BalanceChange[] } => {
   const fiatCurrency = useSelector(getCurrentCurrency);
-  const nativeFiatRate = useSelector(getConversionRate);
+
+  const nativeFiatRate = useSelector((state) =>
+    selectConversionRateByChainId(state, chainId),
+  );
 
   const { nativeBalanceChange, tokenBalanceChanges = [] } =
     simulationData ?? {};
@@ -191,11 +189,14 @@ export const useBalanceChanges = (
   const nativeChange = getNativeBalanceChange(
     nativeBalanceChange,
     nativeFiatRate,
+    chainId,
   );
+
   const tokenChanges = getTokenBalanceChanges(
     tokenBalanceChanges,
     erc20Decimals.value,
     erc20FiatRates.value,
+    chainId,
   );
 
   const balanceChanges: BalanceChange[] = [

@@ -14,13 +14,14 @@ import debounce from 'debounce-stream';
 import log from 'loglevel';
 import browser from 'webextension-polyfill';
 import { storeAsStream } from '@metamask/obs-store';
-import { hasProperty, isObject } from '@metamask/utils';
-///: BEGIN:ONLY_INCLUDE_IF(snaps)
+import { isObject } from '@metamask/utils';
 import { ApprovalType } from '@metamask/controller-utils';
-///: END:ONLY_INCLUDE_IF
 import PortStream from 'extension-port-stream';
 
-import { ethErrors } from 'eth-rpc-errors';
+import { providerErrors } from '@metamask/rpc-errors';
+import { DIALOG_APPROVAL_TYPES } from '@metamask/snaps-rpc-methods';
+import { NotificationServicesController } from '@metamask/notification-services-controller';
+
 import {
   ENVIRONMENT_TYPE_POPUP,
   ENVIRONMENT_TYPE_NOTIFICATION,
@@ -43,12 +44,26 @@ import { checkForLastErrorAndLog } from '../../shared/modules/browser-runtime.ut
 import { isManifestV3 } from '../../shared/modules/mv3.utils';
 import { maskObject } from '../../shared/modules/object.utils';
 import { FIXTURE_STATE_METADATA_VERSION } from '../../test/e2e/default-fixture';
+import { getSocketBackgroundToMocha } from '../../test/e2e/background-socket/socket-background-to-mocha';
+import {
+  OffscreenCommunicationTarget,
+  OffscreenCommunicationEvents,
+} from '../../shared/constants/offscreen-communication';
+import {
+  FakeLedgerBridge,
+  FakeTrezorBridge,
+} from '../../test/stub/keyring-bridge';
+// TODO: Remove restricted import
+// eslint-disable-next-line import/no-restricted-paths
+import { getCurrentChainId } from '../../ui/selectors';
+import { addNonceToCsp } from '../../shared/modules/add-nonce-to-csp';
+import { checkURLForProviderInjection } from '../../shared/modules/provider-injection';
 import migrations from './migrations';
 import Migrator from './lib/migrator';
 import ExtensionPlatform from './platforms/extension';
 import LocalStore from './lib/local-store';
 import ReadOnlyNetworkStore from './lib/network-store';
-import { SENTRY_BACKGROUND_STATE } from './lib/setupSentry';
+import { SENTRY_BACKGROUND_STATE } from './constants/sentry-state';
 
 import createStreamSink from './lib/createStreamSink';
 import NotificationManager, {
@@ -66,19 +81,18 @@ import {
   getPlatform,
   shouldEmitDappViewedEvent,
 } from './lib/util';
-import { generateSkipOnboardingState } from './skip-onboarding';
+import { generateWalletState } from './fixtures/generate-wallet-state';
 import { createOffscreen } from './offscreen';
 
 /* eslint-enable import/first */
 
-import { TRIGGER_TYPES } from './controllers/metamask-notifications/constants/notification-schema';
+import { COOKIE_ID_MARKETING_WHITELIST_ORIGINS } from './constants/marketing-site-whitelist';
 
 // eslint-disable-next-line @metamask/design-tokens/color-no-hex
 const BADGE_COLOR_APPROVAL = '#0376C9';
 // eslint-disable-next-line @metamask/design-tokens/color-no-hex
 const BADGE_COLOR_NOTIFICATION = '#D73847';
-const BADGE_LABEL_APPROVAL = '\u22EF'; // unicode ellipsis
-const BADGE_MAX_NOTIFICATION_COUNT = 9;
+const BADGE_MAX_COUNT = 9;
 
 // Setup global hook for improved Sentry state snapshots during initialization
 const inTest = process.env.IN_TEST;
@@ -116,6 +130,10 @@ if (inTest || process.env.METAMASK_DEBUG) {
 }
 
 const phishingPageUrl = new URL(process.env.PHISHING_WARNING_PAGE_URL);
+
+// normalized (adds a trailing slash to the end of the domain if it's missing)
+// the URL once and reuse it:
+const phishingPageHref = phishingPageUrl.toString();
 
 const ONE_SECOND_IN_MILLISECONDS = 1_000;
 // Timeout for initializing phishing warning page.
@@ -186,9 +204,175 @@ const sendReadyMessageToTabs = async () => {
   }
 };
 
+/**
+ * Detects known phishing pages as soon as the browser begins to load the
+ * page. If the page is a known phishing page, the user is redirected to the
+ * phishing warning page.
+ *
+ * This detection works even if the phishing page is now a redirect to a new
+ * domain that our phishing detection system is not aware of.
+ *
+ * @param {MetamaskController} theController
+ */
+function maybeDetectPhishing(theController) {
+  async function redirectTab(tabId, url) {
+    try {
+      return await browser.tabs.update(tabId, {
+        url,
+      });
+    } catch (error) {
+      return sentry?.captureException(error);
+    }
+  }
+  // we can use the blocking API in MV2, but not in MV3
+  const isManifestV2 = !isManifestV3;
+  browser.webRequest.onBeforeRequest.addListener(
+    (details) => {
+      if (details.tabId === browser.tabs.TAB_ID_NONE) {
+        return {};
+      }
+
+      const { completedOnboarding } = theController.onboardingController.state;
+      if (!completedOnboarding) {
+        return {};
+      }
+
+      const prefState = theController.preferencesController.state;
+      if (!prefState.usePhishDetect) {
+        return {};
+      }
+
+      // ignore requests that come from our phishing warning page, as
+      // the requests may come from the "continue to site" link, so we'll
+      // actually _want_ to bypass the phishing detection. We shouldn't have to
+      // do this, because the phishing site does tell the extension that the
+      // domain it blocked it now "safe", but it does this _after_ the request
+      // begins (which would get blocked by this listener). So we have to bail
+      // on detection here.
+      // This check can be removed once  https://github.com/MetaMask/phishing-warning/issues/160
+      // is shipped.
+      if (
+        details.initiator &&
+        // compare normalized URLs
+        new URL(details.initiator).host === phishingPageUrl.host
+      ) {
+        return {};
+      }
+
+      const { hostname, href, searchParams } = new URL(details.url);
+      if (inTest) {
+        if (searchParams.has('IN_TEST_BYPASS_EARLY_PHISHING_DETECTION')) {
+          // this is a test page that needs to bypass early phishing detection
+          return {};
+        }
+      }
+
+      theController.phishingController.maybeUpdateState();
+
+      const blockedRequestResponse =
+        theController.phishingController.isBlockedRequest(details.url);
+
+      let phishingTestResponse;
+      if (details.type === 'main_frame' || details.type === 'sub_frame') {
+        phishingTestResponse = theController.phishingController.test(
+          details.url,
+        );
+      }
+
+      // if the request is not blocked, and the phishing test is not blocked, return and don't show the phishing screen
+      if (!phishingTestResponse?.result && !blockedRequestResponse.result) {
+        return {};
+      }
+
+      // Determine the block reason based on the type
+      let blockReason;
+      if (phishingTestResponse?.result && blockedRequestResponse.result) {
+        blockReason = `${phishingTestResponse.type} and ${blockedRequestResponse.type}`;
+      } else if (phishingTestResponse?.result) {
+        blockReason = phishingTestResponse.type;
+      } else {
+        blockReason = blockedRequestResponse.type;
+      }
+
+      theController.metaMetricsController.trackEvent({
+        // should we differentiate between background redirection and content script redirection?
+        event: MetaMetricsEventName.PhishingPageDisplayed,
+        category: MetaMetricsEventCategory.Phishing,
+        properties: {
+          url: hostname,
+          referrer: {
+            url: hostname,
+          },
+          reason: blockReason,
+        },
+      });
+      const querystring = new URLSearchParams({ hostname, href });
+      const redirectUrl = new URL(phishingPageHref);
+      redirectUrl.hash = querystring.toString();
+      const redirectHref = redirectUrl.toString();
+
+      // blocking is better than tab redirection, as blocking will prevent
+      // the browser from loading the page at all
+      if (isManifestV2) {
+        if (details.type === 'sub_frame') {
+          // redirect the entire tab to the
+          // phishing warning page instead.
+          redirectTab(details.tabId, redirectHref);
+          // don't let the sub_frame load at all
+          return { cancel: true };
+        }
+        // redirect the whole tab
+        return { redirectUrl: redirectHref };
+      }
+      // redirect the whole tab (even if it's a sub_frame request)
+      redirectTab(details.tabId, redirectHref);
+      return {};
+    },
+    {
+      urls: ['http://*/*', 'https://*/*'],
+    },
+    isManifestV2 ? ['blocking'] : [],
+  );
+}
+
+/**
+ * Overrides the Content-Security-Policy (CSP) header by adding a nonce to the `script-src` directive.
+ * This is a workaround for [Bug #1446231](https://bugzilla.mozilla.org/show_bug.cgi?id=1446231),
+ * which involves overriding the page CSP for inline script nodes injected by extension content scripts.
+ */
+function overrideContentSecurityPolicyHeader() {
+  // The extension url is unique per install on Firefox, so we can safely add it as a nonce to the CSP header
+  const nonce = btoa(browser.runtime.getURL('/'));
+  browser.webRequest.onHeadersReceived.addListener(
+    ({ responseHeaders, url }) => {
+      // Check whether inpage.js is going to be injected into the page or not.
+      // There is no reason to modify the headers if we are not injecting inpage.js.
+      const isInjected = checkURLForProviderInjection(new URL(url));
+
+      // Check if the user has enabled the overrideContentSecurityPolicyHeader preference
+      const isEnabled =
+        controller.preferencesController.state
+          .overrideContentSecurityPolicyHeader;
+
+      if (isInjected && isEnabled) {
+        for (const header of responseHeaders) {
+          if (header.name.toLowerCase() === 'content-security-policy') {
+            header.value = addNonceToCsp(header.value, nonce);
+          }
+        }
+      }
+
+      return { responseHeaders };
+    },
+    { types: ['main_frame', 'sub_frame'], urls: ['http://*/*', 'https://*/*'] },
+    ['blocking', 'responseHeaders'],
+  );
+}
+
 // These are set after initialization
 let connectRemote;
-let connectExternal;
+let connectExternalExtension;
+let connectExternalCaip;
 
 browser.runtime.onConnect.addListener(async (...args) => {
   // Queue up connection attempts here, waiting until after initialization
@@ -201,7 +385,13 @@ browser.runtime.onConnectExternal.addListener(async (...args) => {
   // Queue up connection attempts here, waiting until after initialization
   await isInitialized;
   // This is set in `setupController`, which is called as part of initialization
-  connectExternal(...args);
+  const port = args[0];
+
+  if (port.sender.tab?.id && process.env.BARAD_DUR) {
+    connectExternalCaip(...args);
+  } else {
+    connectExternalExtension(...args);
+  }
 });
 
 function saveTimestamp() {
@@ -232,24 +422,19 @@ function saveTimestamp() {
  * @property {object} featureFlags - An object for optional feature flags.
  * @property {boolean} welcomeScreen - True if welcome screen should be shown.
  * @property {string} currentLocale - A locale string matching the user's preferred display language.
- * @property {object} providerConfig - The current selected network provider.
- * @property {string} providerConfig.rpcUrl - The address for the RPC API, if using an RPC API.
- * @property {string} providerConfig.type - An identifier for the type of network selected, allows MetaMask to use custom provider strategies for known networks.
  * @property {string} networkStatus - Either "unknown", "available", "unavailable", or "blocked", depending on the status of the currently selected network.
  * @property {object} accounts - An object mapping lower-case hex addresses to objects with "balance" and "address" keys, both storing hex string values.
  * @property {object} accountsByChainId - An object mapping lower-case hex addresses to objects with "balance" and "address" keys, both storing hex string values keyed by chain id.
  * @property {hex} currentBlockGasLimit - The most recently seen block gas limit, in a lower case hex prefixed string.
  * @property {object} currentBlockGasLimitByChainId - The most recently seen block gas limit, in a lower case hex prefixed string keyed by chain id.
- * @property {object} unapprovedMsgs - An object of messages pending approval, mapping a unique ID to the options.
- * @property {number} unapprovedMsgCount - The number of messages in unapprovedMsgs.
  * @property {object} unapprovedPersonalMsgs - An object of messages pending approval, mapping a unique ID to the options.
  * @property {number} unapprovedPersonalMsgCount - The number of messages in unapprovedPersonalMsgs.
  * @property {object} unapprovedEncryptionPublicKeyMsgs - An object of messages pending approval, mapping a unique ID to the options.
  * @property {number} unapprovedEncryptionPublicKeyMsgCount - The number of messages in EncryptionPublicKeyMsgs.
  * @property {object} unapprovedDecryptMsgs - An object of messages pending approval, mapping a unique ID to the options.
  * @property {number} unapprovedDecryptMsgCount - The number of messages in unapprovedDecryptMsgs.
- * @property {object} unapprovedTypedMsgs - An object of messages pending approval, mapping a unique ID to the options.
- * @property {number} unapprovedTypedMsgCount - The number of messages in unapprovedTypedMsgs.
+ * @property {object} unapprovedTypedMessages - An object of messages pending approval, mapping a unique ID to the options.
+ * @property {number} unapprovedTypedMessagesCount - The number of messages in unapprovedTypedMessages.
  * @property {number} pendingApprovalCount - The number of pending request in the approval controller.
  * @property {Keyring[]} keyrings - An array of keyring descriptions, summarizing the accounts that are available for use, and what keyrings they belong to.
  * @property {string} selectedAddress - A lower case hex string of the currently selected address.
@@ -280,6 +465,14 @@ async function initialize() {
 
     let isFirstMetaMaskControllerSetup;
 
+    // We only want to start this if we are running a test build, not for the release build.
+    // `navigator.webdriver` is true if Selenium, Puppeteer, or Playwright are running.
+    // In MV3, the Service Worker sees `navigator.webdriver` as `undefined`, so this will trigger from
+    // an Offscreen Document message instead. Because it's a singleton class, it's safe to start multiple times.
+    if (process.env.IN_TEST && window.navigator?.webdriver) {
+      getSocketBackgroundToMocha();
+    }
+
     if (isManifestV3) {
       // Save the timestamp immediately and then every `SAVE_TIMESTAMP_INTERVAL`
       // miliseconds. This keeps the service worker alive.
@@ -299,16 +492,34 @@ async function initialize() {
       await browser.storage.session.set({ isFirstMetaMaskControllerSetup });
     }
 
+    const overrides = inTest
+      ? {
+          keyrings: {
+            trezorBridge: FakeTrezorBridge,
+            ledgerBridge: FakeLedgerBridge,
+          },
+        }
+      : {};
+
     setupController(
       initState,
       initLangCode,
-      {},
+      overrides,
       isFirstMetaMaskControllerSetup,
       initData.meta,
       offscreenPromise,
     );
+
+    // `setupController` sets up the `controller` object, so we can use it now:
+    maybeDetectPhishing(controller);
+
     if (!isManifestV3) {
       await loadPhishingWarningPage();
+      // Workaround for Bug #1446231 to override page CSP for inline script nodes injected by extension content scripts
+      // https://bugzilla.mozilla.org/show_bug.cgi?id=1446231
+      if (getPlatform() === PLATFORM_FIREFOX) {
+        overrideContentSecurityPolicyHeader();
+      }
     }
     await sendReadyMessageToTabs();
     log.info('MetaMask initialization complete.');
@@ -335,9 +546,7 @@ class PhishingWarningPageTimeoutError extends Error {
 async function loadPhishingWarningPage() {
   let iframe;
   try {
-    const extensionStartupPhishingPageUrl = new URL(
-      process.env.PHISHING_WARNING_PAGE_URL,
-    );
+    const extensionStartupPhishingPageUrl = new URL(phishingPageHref);
     // The `extensionStartup` hash signals to the phishing warning page that it should not bother
     // setting up streams for user interaction. Otherwise this page load would cause a console
     // error.
@@ -399,15 +608,15 @@ export async function loadStateFromPersistence() {
   // migrations
   const migrator = new Migrator({
     migrations,
-    defaultVersion: process.env.SKIP_ONBOARDING
+    defaultVersion: process.env.WITH_STATE
       ? FIXTURE_STATE_METADATA_VERSION
       : null,
   });
   migrator.on('error', console.warn);
 
-  if (process.env.SKIP_ONBOARDING) {
-    const skipOnboardingStateOverrides = await generateSkipOnboardingState();
-    firstTimeState = { ...firstTimeState, ...skipOnboardingStateOverrides };
+  if (process.env.WITH_STATE) {
+    const stateOverrides = await generateWalletState();
+    firstTimeState = { ...firstTimeState, ...stateOverrides };
   }
 
   // read from disk
@@ -468,44 +677,73 @@ export async function loadStateFromPersistence() {
  * which should only be tracked only after a user opts into metrics and connected to the dapp
  *
  * @param {string} origin - URL of visited dapp
- * @param {object} connectSitePermissions - Permission state to get connected accounts
- * @param {object} preferencesController - Preference Controller to get total created accounts
  */
-function emitDappViewedMetricEvent(
-  origin,
-  connectSitePermissions,
-  preferencesController,
-) {
+function emitDappViewedMetricEvent(origin) {
   const { metaMetricsId } = controller.metaMetricsController.state;
   if (!shouldEmitDappViewedEvent(metaMetricsId)) {
     return;
   }
 
-  // A dapp may have other permissions than eth_accounts.
-  // Since we are only interested in dapps that use Ethereum accounts, we bail out otherwise.
-  if (!hasProperty(connectSitePermissions.permissions, 'eth_accounts')) {
+  const permissions = controller.controllerMessenger.call(
+    'PermissionController:getPermissions',
+    origin,
+  );
+  const numberOfConnectedAccounts =
+    permissions?.eth_accounts?.caveats[0]?.value.length;
+  if (!numberOfConnectedAccounts) {
     return;
   }
 
-  const numberOfTotalAccounts = Object.keys(
-    preferencesController.store.getState().identities,
-  ).length;
-  const connectAccountsCollection =
-    connectSitePermissions.permissions.eth_accounts.caveats;
-  if (connectAccountsCollection) {
-    const numberOfConnectedAccounts = connectAccountsCollection[0].value.length;
-    controller.metaMetricsController.trackEvent({
-      event: MetaMetricsEventName.DappViewed,
-      category: MetaMetricsEventCategory.InpageProvider,
-      referrer: {
-        url: origin,
-      },
-      properties: {
-        is_first_visit: false,
-        number_of_accounts: numberOfTotalAccounts,
-        number_of_accounts_connected: numberOfConnectedAccounts,
-      },
-    });
+  const preferencesState = controller.controllerMessenger.call(
+    'PreferencesController:getState',
+  );
+  const numberOfTotalAccounts = Object.keys(preferencesState.identities).length;
+
+  controller.metaMetricsController.trackEvent({
+    event: MetaMetricsEventName.DappViewed,
+    category: MetaMetricsEventCategory.InpageProvider,
+    referrer: {
+      url: origin,
+    },
+    properties: {
+      is_first_visit: false,
+      number_of_accounts: numberOfTotalAccounts,
+      number_of_accounts_connected: numberOfConnectedAccounts,
+    },
+  });
+}
+
+/**
+ * Track dapp connection when loaded and permissioned
+ *
+ * @param {Port} remotePort - The port provided by a new context.
+ */
+function trackDappView(remotePort) {
+  if (!remotePort.sender || !remotePort.sender.tab || !remotePort.sender.url) {
+    return;
+  }
+  const tabId = remotePort.sender.tab.id;
+  const url = new URL(remotePort.sender.url);
+  const { origin } = url;
+
+  // store the orgin to corresponding tab so it can provide infor for onActivated listener
+  if (!Object.keys(tabOriginMapping).includes(tabId)) {
+    tabOriginMapping[tabId] = origin;
+  }
+
+  const isConnectedToDapp = controller.controllerMessenger.call(
+    'PermissionController:hasPermissions',
+    origin,
+  );
+
+  // when open a new tab, this event will trigger twice, only 2nd time is with dapp loaded
+  const isTabLoaded = remotePort.sender.tab.title !== 'New Tab';
+
+  // *** Emit DappViewed metric event when ***
+  // - refresh the dapp
+  // - open dapp in a new tab
+  if (isConnectedToDapp && isTabLoaded) {
+    emitDappViewedMetricEvent(origin);
   }
 }
 
@@ -562,13 +800,12 @@ export function setupController(
 
   setupEnsIpfsResolver({
     getCurrentChainId: () =>
-      controller.networkController.state.providerConfig.chainId,
+      getCurrentChainId({ metamask: controller.networkController.state }),
     getIpfsGateway: controller.preferencesController.getIpfsGateway.bind(
       controller.preferencesController,
     ),
     getUseAddressBarEnsResolution: () =>
-      controller.preferencesController.store.getState()
-        .useAddressBarEnsResolution,
+      controller.preferencesController.state.useAddressBarEnsResolution,
     provider: controller.provider,
   });
 
@@ -697,10 +934,10 @@ export function setupController(
       senderUrl.origin === phishingPageUrl.origin &&
       senderUrl.pathname === phishingPageUrl.pathname
     ) {
-      const portStream =
+      const portStreamForPhishingPage =
         overrides?.getPortStream?.(remotePort) || new PortStream(remotePort);
       controller.setupPhishingCommunication({
-        connectionStream: portStream,
+        connectionStream: portStreamForPhishingPage,
       });
     } else {
       // this is triggered when a new tab is opened, or origin(url) is changed
@@ -709,27 +946,7 @@ export function setupController(
         const url = new URL(remotePort.sender.url);
         const { origin } = url;
 
-        // store the orgin to corresponding tab so it can provide infor for onActivated listener
-        if (!Object.keys(tabOriginMapping).includes(tabId)) {
-          tabOriginMapping[tabId] = origin;
-        }
-        const connectSitePermissions =
-          controller.permissionController.state.subjects[origin];
-        // when the dapp is not connected, connectSitePermissions is undefined
-        const isConnectedToDapp = connectSitePermissions !== undefined;
-        // when open a new tab, this event will trigger twice, only 2nd time is with dapp loaded
-        const isTabLoaded = remotePort.sender.tab.title !== 'New Tab';
-
-        // *** Emit DappViewed metric event when ***
-        // - refresh the dapp
-        // - open dapp in a new tab
-        if (isConnectedToDapp && isTabLoaded) {
-          emitDappViewedMetricEvent(
-            origin,
-            connectSitePermissions,
-            controller.preferencesController,
-          );
-        }
+        trackDappView(remotePort);
 
         remotePort.onMessage.addListener((msg) => {
           if (
@@ -740,22 +957,53 @@ export function setupController(
           }
         });
       }
-      connectExternal(remotePort);
+      if (
+        senderUrl &&
+        COOKIE_ID_MARKETING_WHITELIST_ORIGINS.some(
+          (origin) => origin === senderUrl.origin,
+        )
+      ) {
+        const portStreamForCookieHandlerPage =
+          overrides?.getPortStream?.(remotePort) || new PortStream(remotePort);
+        controller.setUpCookieHandlerCommunication({
+          connectionStream: portStreamForCookieHandlerPage,
+        });
+      }
+      connectExternalExtension(remotePort);
     }
   };
 
   // communication with page or other extension
-  connectExternal = (remotePort) => {
+  connectExternalExtension = (remotePort) => {
     const portStream =
       overrides?.getPortStream?.(remotePort) || new PortStream(remotePort);
-    controller.setupUntrustedCommunication({
+    controller.setupUntrustedCommunicationEip1193({
+      connectionStream: portStream,
+      sender: remotePort.sender,
+    });
+  };
+
+  connectExternalCaip = async (remotePort) => {
+    if (metamaskBlockedPorts.includes(remotePort.name)) {
+      return;
+    }
+
+    // this is triggered when a new tab is opened, or origin(url) is changed
+    if (remotePort.sender && remotePort.sender.tab && remotePort.sender.url) {
+      trackDappView(remotePort);
+    }
+
+    const portStream =
+      overrides?.getPortStream?.(remotePort) || new PortStream(remotePort);
+
+    controller.setupUntrustedCommunicationCaip({
       connectionStream: portStream,
       sender: remotePort.sender,
     });
   };
 
   if (overrides?.registerConnectListeners) {
-    overrides.registerConnectListeners(connectRemote, connectExternal);
+    overrides.registerConnectListeners(connectRemote, connectExternalExtension);
   }
 
   //
@@ -805,7 +1053,16 @@ export function setupController(
     updateBadge,
   );
 
-  controller.txController.initApprovals();
+  /**
+   * Formats a count for display as a badge label.
+   *
+   * @param {number} count - The count to be formatted.
+   * @param {number} maxCount - The maximum count to display before using the '+' suffix.
+   * @returns {string} The formatted badge label.
+   */
+  function getBadgeLabel(count, maxCount) {
+    return count > maxCount ? `${maxCount}+` : String(count);
+  }
 
   /**
    * Updates the Web Extension's "badge" number, on the little fox in the toolbar.
@@ -819,12 +1076,9 @@ export function setupController(
     let badgeColor = BADGE_COLOR_APPROVAL;
 
     if (pendingApprovalCount) {
-      label = BADGE_LABEL_APPROVAL;
+      label = getBadgeLabel(pendingApprovalCount, BADGE_MAX_COUNT);
     } else if (unreadNotificationsCount > 0) {
-      label =
-        unreadNotificationsCount > BADGE_MAX_NOTIFICATION_COUNT
-          ? `${BADGE_MAX_NOTIFICATION_COUNT}+`
-          : String(unreadNotificationsCount);
+      label = getBadgeLabel(unreadNotificationsCount, BADGE_MAX_COUNT);
       badgeColor = BADGE_COLOR_NOTIFICATION;
     }
 
@@ -863,26 +1117,30 @@ export function setupController(
 
   function getUnreadNotificationsCount() {
     try {
-      const { isMetamaskNotificationsEnabled, isFeatureAnnouncementsEnabled } =
-        controller.metamaskNotificationsController.state;
+      const { isNotificationServicesEnabled, isFeatureAnnouncementsEnabled } =
+        controller.notificationServicesController.state;
 
       const snapNotificationCount = Object.values(
         controller.notificationController.state.notifications,
       ).filter((notification) => notification.readDate === null).length;
 
       const featureAnnouncementCount = isFeatureAnnouncementsEnabled
-        ? controller.metamaskNotificationsController.state.metamaskNotificationsList.filter(
+        ? controller.notificationServicesController.state.metamaskNotificationsList.filter(
             (notification) =>
               !notification.isRead &&
-              notification.type === TRIGGER_TYPES.FEATURES_ANNOUNCEMENT,
+              notification.type ===
+                NotificationServicesController.Constants.TRIGGER_TYPES
+                  .FEATURES_ANNOUNCEMENT,
           ).length
         : 0;
 
-      const walletNotificationCount = isMetamaskNotificationsEnabled
-        ? controller.metamaskNotificationsController.state.metamaskNotificationsList.filter(
+      const walletNotificationCount = isNotificationServicesEnabled
+        ? controller.notificationServicesController.state.metamaskNotificationsList.filter(
             (notification) =>
               !notification.isRead &&
-              notification.type !== TRIGGER_TYPES.FEATURES_ANNOUNCEMENT,
+              notification.type !==
+                NotificationServicesController.Constants.TRIGGER_TYPES
+                  .FEATURES_ANNOUNCEMENT,
           ).length
         : 0;
 
@@ -926,15 +1184,14 @@ export function setupController(
     Object.values(controller.approvalController.state.pendingApprovals).forEach(
       ({ id, type }) => {
         switch (type) {
-          ///: BEGIN:ONLY_INCLUDE_IF(snaps)
           case ApprovalType.SnapDialogAlert:
           case ApprovalType.SnapDialogPrompt:
+          case DIALOG_APPROVAL_TYPES.default:
             controller.approvalController.accept(id, null);
             break;
           case ApprovalType.SnapDialogConfirmation:
             controller.approvalController.accept(id, false);
             break;
-          ///: END:ONLY_INCLUDE_IF
           ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
           case SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES.confirmAccountCreation:
           case SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES.confirmAccountRemoval:
@@ -945,7 +1202,7 @@ export function setupController(
           default:
             controller.approvalController.reject(
               id,
-              ethErrors.provider.userRejectedRequest(),
+              providerErrors.userRejectedRequest(),
             );
             break;
         }
@@ -953,7 +1210,6 @@ export function setupController(
     );
   }
 
-  ///: BEGIN:ONLY_INCLUDE_IF(snaps)
   // Updates the snaps registry and check for newly blocked snaps to block if the user has at least one snap installed that isn't preinstalled.
   if (
     Object.values(controller.snapController.state.snaps).some(
@@ -962,7 +1218,6 @@ export function setupController(
   ) {
     controller.snapController.updateBlockedSnaps();
   }
-  ///: END:ONLY_INCLUDE_IF
 }
 
 //
@@ -1050,11 +1305,7 @@ function onNavigateToTab() {
         // when the dapp is not connected, connectSitePermissions is undefined
         const isConnectedToDapp = connectSitePermissions !== undefined;
         if (isConnectedToDapp) {
-          emitDappViewedMetricEvent(
-            currentOrigin,
-            connectSitePermissions,
-            controller.preferencesController,
-          );
+          emitDappViewedMetricEvent(currentOrigin);
         }
       }
     }
@@ -1070,9 +1321,24 @@ function setupSentryGetStateGlobal(store) {
 
 async function initBackground() {
   await onInstall();
-  initialize().catch(log.error);
+  try {
+    await initialize();
+    if (process.env.IN_TEST) {
+      // Send message to offscreen document
+      if (browser.offscreen) {
+        browser.runtime.sendMessage({
+          target: OffscreenCommunicationTarget.extension,
+          event: OffscreenCommunicationEvents.metamaskBackgroundReady,
+        });
+      } else {
+        window.document?.documentElement?.classList.add('controller-loaded');
+      }
+    }
+    localStore.cleanUpMostRecentRetrievedState();
+  } catch (error) {
+    log.error(error);
+  }
 }
-
 if (!process.env.SKIP_BACKGROUND_INITIALIZATION) {
   initBackground();
 }

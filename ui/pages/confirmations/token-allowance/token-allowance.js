@@ -3,6 +3,9 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import BigNumber from 'bignumber.js';
+///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
+import { showCustodianDeepLink } from '@metamask-institutional/extension';
+///: END:ONLY_INCLUDE_IF
 import Box from '../../../components/ui/box/box';
 import NetworkAccountBalanceHeader from '../../../components/app/network-account-balance-header/network-account-balance-header';
 import UrlIcon from '../../../components/ui/url-icon/url-icon';
@@ -26,10 +29,8 @@ import { PageContainerFooter } from '../../../components/ui/page-container';
 import ContractDetailsModal from '../components/contract-details-modal/contract-details-modal';
 import {
   getCustomTokenAmount,
-  getNetworkIdentifier,
   transactionFeeSelector,
   getKnownMethodData,
-  getRpcPrefsForCurrentProvider,
   getUnapprovedTxCount,
   getUnapprovedTransactions,
   getUseCurrencyRateCheck,
@@ -61,9 +62,7 @@ import {
   NUM_W_OPT_DECIMAL_COMMA_OR_DOT_REGEX,
 } from '../../../../shared/constants/tokens';
 import { isSuspiciousResponse } from '../../../../shared/modules/security-provider.utils';
-///: BEGIN:ONLY_INCLUDE_IF(blockaid)
 import BlockaidBannerAlert from '../components/security-provider-banner-alert/blockaid-banner-alert/blockaid-banner-alert';
-///: END:ONLY_INCLUDE_IF
 import { ConfirmPageContainerNavigation } from '../components/confirm-page-container';
 import { useSimulationFailureWarning } from '../hooks/useSimulationFailureWarning';
 import SimulationErrorMessage from '../components/simulation-error-message';
@@ -74,7 +73,24 @@ import { ConfirmPageContainerWarning } from '../components/confirm-page-containe
 import CustomNonce from '../components/custom-nonce';
 import FeeDetailsComponent from '../components/fee-details-component/fee-details-component';
 import { BlockaidResultType } from '../../../../shared/constants/security-provider';
-import { BlockaidUnavailableBannerAlert } from '../components/blockaid-unavailable-banner-alert/blockaid-unavailable-banner-alert';
+import { QueuedRequestsBannerAlert } from '../confirmation/components/queued-requests-banner-alert/queued-requests-banner-alert';
+
+import {
+  selectNetworkConfigurationByChainId,
+  selectNetworkIdentifierByChainId,
+  // eslint-disable-next-line import/no-duplicates
+} from '../../../selectors/selectors';
+
+///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
+// eslint-disable-next-line import/no-duplicates
+import { getAccountType } from '../../../selectors/selectors';
+import { mmiActionsFactory } from '../../../store/institutional/institution-background';
+import { showCustodyConfirmLink } from '../../../store/institutional/institution-actions';
+import {
+  AccountType,
+  CustodyStatus,
+} from '../../../../shared/constants/custody';
+///: END:ONLY_INCLUDE_IF
 
 const ALLOWED_HOSTS = ['portfolio.metamask.io'];
 
@@ -131,13 +147,30 @@ export default function TokenAllowance({
   const fromAccount = useSelector((state) =>
     getTargetAccountWithSendEtherInfo(state, userAddress),
   );
-  const networkIdentifier = useSelector(getNetworkIdentifier);
-  const rpcPrefs = useSelector(getRpcPrefsForCurrentProvider);
+
+  const { chainId } = txData;
+
+  const networkIdentifier = useSelector((state) =>
+    selectNetworkIdentifierByChainId(state, chainId),
+  );
+
+  const { blockExplorerUrls } =
+    useSelector((state) =>
+      selectNetworkConfigurationByChainId(state, chainId),
+    ) ?? {};
+
+  const blockExplorerUrl = blockExplorerUrls?.[0];
   const unapprovedTxCount = useSelector(getUnapprovedTxCount);
   const unapprovedTxs = useSelector(getUnapprovedTransactions);
   const useCurrencyRateCheck = useSelector(getUseCurrencyRateCheck);
   const nextNonce = useSelector(getNextSuggestedNonce);
   const customNonceValue = useSelector(getCustomNonceValue);
+  ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
+  const accountType = useSelector((state) =>
+    getAccountType(state, fromAccount.address),
+  );
+  const mmiActions = mmiActionsFactory();
+  ///: END:ONLY_INCLUDE_IF
 
   /**
    * We set the customSpendingCap to the dappProposedTokenAmount, if provided, rather than setting customTokenAmount
@@ -195,7 +228,9 @@ export default function TokenAllowance({
   }
 
   const fee = useSelector((state) => transactionFeeSelector(state, fullTxData));
-  const methodData = useSelector((state) => getKnownMethodData(state, data));
+  const methodData = useSelector(
+    (state) => getKnownMethodData(state, data) ?? {},
+  );
 
   const { balanceError } = useGasFeeContext();
 
@@ -224,6 +259,43 @@ export default function TokenAllowance({
       history.push(mostRecentOverviewPage);
     });
   };
+
+  ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
+  const mmiApprovalFlow = () => {
+    if (accountType === AccountType.CUSTODY) {
+      fullTxData.custodyStatus = CustodyStatus.CREATED;
+      fullTxData.metadata = fullTxData.metadata || {};
+
+      dispatch(mmiActions.setWaitForConfirmDeepLinkDialog(true));
+
+      const txId = fullTxData.id;
+      const fromAddress = fullTxData.txParams.from;
+      const closeNotification = false;
+      dispatch(updateAndApproveTx(customNonceMerge(fullTxData))).then(() => {
+        showCustodianDeepLink({
+          dispatch,
+          mmiActions,
+          txId,
+          fromAddress,
+          closeNotification,
+          onDeepLinkFetched: () => undefined,
+          onDeepLinkShown: () => {
+            dispatch(clearConfirmTransaction());
+            history.push(mostRecentOverviewPage);
+          },
+          showCustodyConfirmLink,
+        });
+        history.push(mostRecentOverviewPage);
+      });
+    } else {
+      // Non Custody accounts follow normal flow
+      dispatch(updateAndApproveTx(customNonceMerge(fullTxData))).then(() => {
+        dispatch(clearConfirmTransaction());
+        history.push(mostRecentOverviewPage);
+      });
+    }
+  };
+  ///: END:ONLY_INCLUDE_IF
 
   const handleApprove = () => {
     const { name } = methodData;
@@ -254,10 +326,16 @@ export default function TokenAllowance({
 
     dispatch(updateCustomNonce(''));
 
+    ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
+    mmiApprovalFlow();
+    ///: END:ONLY_INCLUDE_IF
+
+    ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
     dispatch(updateAndApproveTx(customNonceMerge(fullTxData))).then(() => {
       dispatch(clearConfirmTransaction());
       history.push(mostRecentOverviewPage);
     });
+    ///: END:ONLY_INCLUDE_IF
   };
 
   const handleNextClick = () => {
@@ -285,12 +363,12 @@ export default function TokenAllowance({
   };
 
   const handleNextNonce = useCallback(() => {
-    dispatch(getNextNonce());
-  }, [getNextNonce, dispatch]);
+    dispatch(getNextNonce(txData.txParams.from));
+  }, [dispatch, txData.txParams.from]);
 
   useEffect(() => {
-    dispatch(getNextNonce());
-  }, [getNextNonce, dispatch]);
+    dispatch(getNextNonce(txData.txParams.from));
+  }, [dispatch, txData.txParams.from]);
 
   const handleUpdateCustomNonce = (value) => {
     dispatch(updateCustomNonce(value));
@@ -325,7 +403,7 @@ export default function TokenAllowance({
         tokenName={tokenSymbol}
         address={tokenAddress}
         chainId={fullTxData.chainId}
-        rpcPrefs={rpcPrefs}
+        blockExplorerUrl={blockExplorerUrl}
       />
     </Box>
   );
@@ -381,17 +459,13 @@ export default function TokenAllowance({
         accountAddress={userAddress}
         chainId={fullTxData.chainId}
       />
-      {
-        ///: BEGIN:ONLY_INCLUDE_IF(blockaid)
-        <BlockaidBannerAlert
-          txData={txData}
-          marginTop={4}
-          marginLeft={4}
-          marginRight={4}
-        />
-        ///: END:ONLY_INCLUDE_IF
-      }
-      <BlockaidUnavailableBannerAlert />
+      <BlockaidBannerAlert
+        txData={txData}
+        marginTop={4}
+        marginLeft={4}
+        marginRight={4}
+      />
+      <QueuedRequestsBannerAlert />
       {isSuspiciousResponse(txData?.securityProviderResponse) && (
         <SecurityProviderBannerMessage
           securityProviderResponse={txData.securityProviderResponse}
@@ -652,7 +726,7 @@ export default function TokenAllowance({
           tokenAddress={tokenAddress}
           toAddress={toAddress}
           chainId={fullTxData.chainId}
-          rpcPrefs={rpcPrefs}
+          blockExplorerUrl={blockExplorerUrl}
         />
       )}
     </Box>

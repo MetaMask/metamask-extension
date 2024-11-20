@@ -40,14 +40,17 @@ export default function init() {
               chrome.runtime.sendMessage({
                 target: OffscreenCommunicationTarget.extension,
                 event: OffscreenCommunicationEvents.trezorDeviceConnect,
-                payload: event.payload.features.model,
+                payload: {
+                  model: event.payload.features.model,
+                  minorVersion: event.payload.features.minor_version,
+                },
               });
             }
           });
 
           TrezorConnectSDK.init({
             ...msg.params,
-            env: 'web',
+            env: 'webextension',
           }).then(() => {
             sendResponse();
           });

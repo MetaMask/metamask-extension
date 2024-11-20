@@ -15,7 +15,7 @@ export const AUTO_DETECT_TOKEN_LEARN_MORE_LINK =
 export const CONSENSYS_TERMS_OF_USE = 'https://consensys.io/terms-of-use';
 
 export const SECURITY_ALERTS_LEARN_MORE_LINK =
-  'https://support.metamask.io/hc/en-us/articles/19878220833947';
+  'https://support.metamask.io/privacy-and-security/how-to-turn-on-security-alerts/';
 
 export const TRANSACTION_SIMULATIONS_LEARN_MORE_LINK =
   'https://support.metamask.io/transactions-and-gas/transactions/simulations/';

@@ -17,6 +17,14 @@ import { AssetType } from '../../../../../../shared/constants/transaction';
 import { getSendHexDataFeatureFlagState } from '../../../../../ducks/metamask/metamask';
 import { SendPageRecipientContent } from './recipient-content';
 
+jest.mock('reselect', () => ({
+  createSelector: jest.fn(),
+}));
+
+jest.mock('../../../../../selectors/util', () => ({
+  createDeepEqualSelector: jest.fn(),
+}));
+
 jest.mock('react-redux', () => ({
   useSelector: jest.fn(),
   useDispatch: jest.fn(),
@@ -65,6 +73,7 @@ describe('SendPageRecipientContent', () => {
   const defaultProps = {
     requireContractAddressAcknowledgement: false,
     onAssetChange: onAssetChangeMock,
+    onClick: jest.fn(),
   };
 
   beforeEach(() => {

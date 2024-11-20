@@ -2,7 +2,7 @@ import {
   ETH_TOKEN_IMAGE_URL,
   TEST_ETH_TOKEN_IMAGE_URL,
   BNB_TOKEN_IMAGE_URL,
-  MATIC_TOKEN_IMAGE_URL,
+  POL_TOKEN_IMAGE_URL,
   AVAX_TOKEN_IMAGE_URL,
   CURRENCY_SYMBOLS,
   CHAIN_IDS,
@@ -49,10 +49,6 @@ export type SwapsTokenObject = {
   iconUrl: string;
 };
 
-type BlockExplorerUrlMap = {
-  [key: string]: string;
-};
-
 export const ETH_SWAPS_TOKEN_OBJECT: SwapsTokenObject = {
   symbol: CURRENCY_SYMBOLS.ETH,
   name: 'Ether',
@@ -70,11 +66,11 @@ export const BNB_SWAPS_TOKEN_OBJECT: SwapsTokenObject = {
 } as const;
 
 export const MATIC_SWAPS_TOKEN_OBJECT: SwapsTokenObject = {
-  symbol: CURRENCY_SYMBOLS.MATIC,
-  name: 'Matic',
+  symbol: CURRENCY_SYMBOLS.POL,
+  name: 'Polygon',
   address: DEFAULT_TOKEN_ADDRESS,
   decimals: 18,
-  iconUrl: MATIC_TOKEN_IMAGE_URL,
+  iconUrl: POL_TOKEN_IMAGE_URL,
 } as const;
 
 export const AVAX_SWAPS_TOKEN_OBJECT: SwapsTokenObject = {
@@ -173,17 +169,6 @@ export const SWAPS_DEV_API_V2_BASE_URL = 'https://swap.dev-api.cx.metamask.io';
 export const TOKEN_API_BASE_URL = 'https://tokens.api.cx.metamask.io';
 export const GAS_API_BASE_URL = 'https://gas.api.cx.metamask.io';
 export const GAS_DEV_API_BASE_URL = 'https://gas.uat-api.cx.metamask.io';
-
-const BSC_DEFAULT_BLOCK_EXPLORER_URL = 'https://bscscan.com/';
-const MAINNET_DEFAULT_BLOCK_EXPLORER_URL = 'https://etherscan.io/';
-const GOERLI_DEFAULT_BLOCK_EXPLORER_URL = 'https://goerli.etherscan.io/';
-const POLYGON_DEFAULT_BLOCK_EXPLORER_URL = 'https://polygonscan.com/';
-const AVALANCHE_DEFAULT_BLOCK_EXPLORER_URL = 'https://snowtrace.io/';
-const OPTIMISM_DEFAULT_BLOCK_EXPLORER_URL = 'https://optimistic.etherscan.io/';
-const ARBITRUM_DEFAULT_BLOCK_EXPLORER_URL = 'https://arbiscan.io/';
-const ZKSYNC_DEFAULT_BLOCK_EXPLORER_URL = 'https://explorer.zksync.io/';
-const LINEA_DEFAULT_BLOCK_EXPLORER_URL = 'https://lineascan.build/';
-const BASE_DEFAULT_BLOCK_EXPLORER_URL = 'https://basescan.org/';
 
 export const ALLOWED_PROD_SWAPS_CHAIN_IDS = [
   CHAIN_IDS.MAINNET,
@@ -297,20 +282,6 @@ export const SWAPS_CHAINID_DEFAULT_TOKEN_MAP = {
   [CHAIN_IDS.LINEA_MAINNET]: LINEA_SWAPS_TOKEN_OBJECT,
   [CHAIN_IDS.BASE]: BASE_SWAPS_TOKEN_OBJECT,
 } as const;
-
-export const SWAPS_CHAINID_DEFAULT_BLOCK_EXPLORER_URL_MAP: BlockExplorerUrlMap =
-  {
-    [CHAIN_IDS.BSC]: BSC_DEFAULT_BLOCK_EXPLORER_URL,
-    [CHAIN_IDS.MAINNET]: MAINNET_DEFAULT_BLOCK_EXPLORER_URL,
-    [CHAIN_IDS.POLYGON]: POLYGON_DEFAULT_BLOCK_EXPLORER_URL,
-    [CHAIN_IDS.GOERLI]: GOERLI_DEFAULT_BLOCK_EXPLORER_URL,
-    [CHAIN_IDS.AVALANCHE]: AVALANCHE_DEFAULT_BLOCK_EXPLORER_URL,
-    [CHAIN_IDS.OPTIMISM]: OPTIMISM_DEFAULT_BLOCK_EXPLORER_URL,
-    [CHAIN_IDS.ARBITRUM]: ARBITRUM_DEFAULT_BLOCK_EXPLORER_URL,
-    [CHAIN_IDS.ZKSYNC_ERA]: ZKSYNC_DEFAULT_BLOCK_EXPLORER_URL,
-    [CHAIN_IDS.LINEA_MAINNET]: LINEA_DEFAULT_BLOCK_EXPLORER_URL,
-    [CHAIN_IDS.BASE]: BASE_DEFAULT_BLOCK_EXPLORER_URL,
-  } as const;
 
 export const ETHEREUM = 'ethereum';
 export const POLYGON = 'polygon';

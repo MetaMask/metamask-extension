@@ -1,5 +1,5 @@
 import React from 'react';
-import { TRIGGER_TYPES } from '../../../../../app/scripts/controllers/metamask-notifications/constants/notification-schema';
+import { NotificationServicesController } from '@metamask/notification-services-controller';
 import { type ExtractedNotification, isOfTypeNodeGuard } from '../node-guard';
 import type { NotificationComponent } from '../types/notifications/notifications';
 import { NotificationListItemIconType } from '../../../../components/multichain/notification-list-item-icon/notification-list-item-icon';
@@ -27,8 +27,10 @@ import {
   BlockSize,
 } from '../../../../helpers/constants/design-system';
 
+const { TRIGGER_TYPES } = NotificationServicesController.Constants;
+
 type FeatureAnnouncementNotification =
-  ExtractedNotification<TRIGGER_TYPES.FEATURES_ANNOUNCEMENT>;
+  ExtractedNotification<NotificationServicesController.Constants.TRIGGER_TYPES.FEATURES_ANNOUNCEMENT>;
 const isFeatureAnnouncementNotification = isOfTypeNodeGuard([
   TRIGGER_TYPES.FEATURES_ANNOUNCEMENT,
 ]);
@@ -93,6 +95,7 @@ export const components: NotificationComponent<FeatureAnnouncementNotification> 
           <Box paddingLeft={4} paddingRight={4}>
             <Text
               variant={TextVariant.bodyMd}
+              as="div"
               dangerouslySetInnerHTML={{
                 __html: notification.data.longDescription,
               }}
@@ -110,6 +113,20 @@ export const components: NotificationComponent<FeatureAnnouncementNotification> 
             variant={ButtonVariant.Primary}
             text={notification.data.extensionLink.extensionLinkText}
             href={`/${notification.data.extensionLink.extensionLinkRoute}`}
+            id={notification.id}
+            endIconName={false}
+            // Even if the link is not external, it will open in a new tab
+            // to avoid breaking the popup
+            isExternal={true}
+          />
+        ) : null,
+      ExternalLink: ({ notification }) =>
+        notification.data.externalLink ? (
+          <NotificationDetailButton
+            notification={notification}
+            variant={ButtonVariant.Secondary}
+            text={notification.data.externalLink.externalLinkText}
+            href={`${notification.data.externalLink.externalLinkUrl}`}
             id={notification.id}
             endIconName={false}
             isExternal={true}

@@ -13,9 +13,18 @@ export function formatAmountMaxPrecision(
   locale: string,
   num: number | BigNumber,
 ): string {
-  return new Intl.NumberFormat(locale, {
-    minimumSignificantDigits: 1,
-  }).format(new BigNumber(num.toString()).toNumber());
+  const bigNumberValue = new BigNumber(num);
+  const numberOfDecimals = bigNumberValue.decimalPlaces();
+  const formattedValue = bigNumberValue.toFixed(numberOfDecimals);
+
+  const [integerPart, fractionalPart] = formattedValue.split('.');
+  const formattedIntegerPart = new Intl.NumberFormat(locale).format(
+    integerPart as unknown as number,
+  );
+
+  return fractionalPart
+    ? `${formattedIntegerPart}.${fractionalPart}`
+    : formattedIntegerPart;
 }
 
 /**
@@ -82,5 +91,10 @@ export function formatAmount(locale: string, amount: BigNumber): string {
 
   return new Intl.NumberFormat(locale, {
     maximumFractionDigits,
-  } as Intl.NumberFormatOptions).format(amount.toNumber());
+  } as Intl.NumberFormatOptions).format(
+    // string is valid parameter for format function
+    // for some reason it gives TS issue
+    // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Intl/NumberFormat/format#number
+    amount.toFixed(maximumFractionDigits) as unknown as number,
+  );
 }

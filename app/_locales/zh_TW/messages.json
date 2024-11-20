@@ -42,23 +42,6 @@
   "addContact": {
     "message": "新增合約"
   },
-  "addEthereumChainConfirmationDescription": {
-    "message": "這會允許在 MetaMask 內使用這個網路。"
-  },
-  "addEthereumChainConfirmationRisks": {
-    "message": "MetaMask 不會對自訂的網路做驗證。"
-  },
-  "addEthereumChainConfirmationRisksLearnMore": {
-    "message": "了解更多關於$1的事。",
-    "description": "$1 is a link with text that is provided by the 'addEthereumChainConfirmationRisksLearnMoreLink' key"
-  },
-  "addEthereumChainConfirmationRisksLearnMoreLink": {
-    "message": "詐騙與網路安全風險",
-    "description": "Link text for the 'addEthereumChainConfirmationRisksLearnMore' translation key"
-  },
-  "addEthereumChainConfirmationTitle": {
-    "message": "允許這個網站新增一個網路？"
-  },
   "addFriendsAndAddresses": {
     "message": "新增朋友和您信任的位址"
   },
@@ -76,18 +59,6 @@
   },
   "alertDisableTooltip": {
     "message": "這可以在「設定 > 提醒」裡變更"
-  },
-  "alertSettingsUnconnectedAccount": {
-    "message": "選擇尚未連結的帳戶瀏覽一個網站時"
-  },
-  "alertSettingsUnconnectedAccountDescription": {
-    "message": "當您瀏覽一個使用 web3 的網站，但目前選擇的帳戶沒有連結時，這個提醒會顯示在一個彈跳視窗。"
-  },
-  "alertSettingsWeb3ShimUsage": {
-    "message": "當一個網站試著使用已經移除的 window.web3 API"
-  },
-  "alertSettingsWeb3ShimUsageDescription": {
-    "message": "當您瀏覽一個嘗試使用已經移除的 window.web3 API 的網站，可能會因此故障時，這個提醒會顯示在一個彈跳視窗。"
   },
   "alerts": {
     "message": "提醒"
@@ -129,9 +100,6 @@
   },
   "assetOptions": {
     "message": "資產選項"
-  },
-  "attemptingConnect": {
-    "message": "正在嘗試連結區塊鏈。"
   },
   "attributions": {
     "message": "來源"
@@ -370,9 +338,6 @@
   "delete": {
     "message": "刪除"
   },
-  "deleteNetwork": {
-    "message": "刪除網路？"
-  },
   "details": {
     "message": "詳情"
   },
@@ -447,12 +412,6 @@
     "message": "這個 RPC 端點回傳了一個不同的鏈 ID：$1",
     "description": "$1 is the return value of eth_chainId from an RPC endpoint"
   },
-  "ensIllegalCharacter": {
-    "message": "Illegal Character for ENS."
-  },
-  "ensRegistrationError": {
-    "message": "ENS 名稱註冊錯誤"
-  },
   "ensUnknownError": {
     "message": "ENS Lookup failed."
   },
@@ -466,10 +425,6 @@
     "message": "代碼：$1",
     "description": "Displayed error code for debugging purposes. $1 is the error code"
   },
-  "errorDetails": {
-    "message": "錯誤詳細資訊",
-    "description": "Title for collapsible section that displays error details for debugging purposes"
-  },
   "errorMessage": {
     "message": "訊息：$1",
     "description": "Displayed error message for debugging purposes. $1 is the error message"
@@ -477,14 +432,6 @@
   "errorName": {
     "message": "代碼：$1",
     "description": "Displayed error name for debugging purposes. $1 is the error name"
-  },
-  "errorPageMessage": {
-    "message": "重新整理頁面然後再試一次，或從$1聯絡我們尋求支援。",
-    "description": "Message displayed on generic error page in the fullscreen or notification UI, $1 is a clickable link with text defined by the 'here' key. The link will open to a form where users can file support tickets."
-  },
-  "errorPagePopupMessage": {
-    "message": "重新開啟彈跳視窗然後再試一次，或從$1聯絡我們尋求支援。",
-    "description": "Message displayed on generic error page in the popup UI, $1 is a clickable link with text defined by the 'here' key. The link will open to a form where users can file support tickets."
   },
   "errorPageTitle": {
     "message": "MetaMask 遭遇錯誤",
@@ -523,10 +470,6 @@
   },
   "feeAssociatedRequest": {
     "message": "這個請求會附帶一筆手續費。"
-  },
-  "fiat": {
-    "message": "法定貨幣",
-    "description": "Exchange type"
   },
   "fileImportFail": {
     "message": "檔案匯入失敗？點擊這裡！",
@@ -678,12 +621,6 @@
   "invalidAddressRecipient": {
     "message": "接收位址錯誤"
   },
-  "invalidAddressRecipientNotEthNetwork": {
-    "message": "非 ETH 網路，請設定至小寫"
-  },
-  "invalidBlockExplorerURL": {
-    "message": "無效的區塊鏈瀏覽器 URL"
-  },
   "invalidChainIdTooBig": {
     "message": "無效的鏈 ID。鏈 ID 數值過大。"
   },
@@ -834,9 +771,6 @@
   "networkNameTestnet": {
     "message": "測試網路"
   },
-  "networkSettingsChainIdDescription": {
-    "message": "鏈 ID 用來簽署交易。它必須和該網路回傳的鏈 ID 一致。您可以輸入一個十進位數值或 0x 開頭的十六進位數值，但我們會顯示成十進位。"
-  },
   "networkURL": {
     "message": "網路 URL"
   },
@@ -878,9 +812,6 @@
   "noAccountsFound": {
     "message": "指定的搜尋條件找不到帳戶"
   },
-  "noAddressForName": {
-    "message": "此 ENS 尚未指定位址。"
-  },
   "noConversionRateAvailable": {
     "message": "尚未有匯率比較值"
   },
@@ -895,9 +826,6 @@
   },
   "nonceField": {
     "message": "自訂交易 nonce"
-  },
-  "nonceFieldDescription": {
-    "message": "打開此選項來在交易確認視窗中更改 nonce (交易編號)。這是一個進階功能，請小心使用。"
   },
   "nonceFieldHeading": {
     "message": "自訂 nonce"
@@ -925,9 +853,6 @@
   },
   "onboardingPinExtensionBillboardAccess": {
     "message": "Full Access"
-  },
-  "onlyAddTrustedNetworks": {
-    "message": "惡意的網路提供者可以欺騙您區塊鏈上的狀態或記錄您的網路活動。請只新增您信任的自訂網路。"
   },
   "onlyConnectTrust": {
     "message": "記住，只連線到您信任的網站。",
@@ -974,12 +899,6 @@
   "prev": {
     "message": "前一頁"
   },
-  "primaryCurrencySetting": {
-    "message": "主要貨幣"
-  },
-  "primaryCurrencySettingDescription": {
-    "message": "選擇原生來優先使用鏈上原生貨幣 (例如 ETH) 顯示金額。選擇法定貨幣來優先使用您選擇的法定貨幣顯示金額。"
-  },
   "privacyMsg": {
     "message": "隱私政策"
   },
@@ -1010,9 +929,6 @@
   },
   "receive": {
     "message": "接收"
-  },
-  "recipientAddressPlaceholder": {
-    "message": "搜尋、公開位址 (0x)、或 ENS"
   },
   "reject": {
     "message": "拒絕"
@@ -1090,13 +1006,10 @@
   "securityAndPrivacy": {
     "message": "安全＆隱私"
   },
-  "seedPhraseIntroSidebarBulletFour": {
+  "seedPhraseIntroSidebarBulletOne": {
     "message": "寫下來並且存放在不同的秘密地點。"
   },
-  "seedPhraseIntroSidebarBulletOne": {
-    "message": "儲存在密碼管理器裡"
-  },
-  "seedPhraseIntroSidebarBulletThree": {
+  "seedPhraseIntroSidebarBulletTwo": {
     "message": "存在安全保管箱裡。"
   },
   "seedPhraseIntroSidebarCopyOne": {
@@ -1269,9 +1182,6 @@
   "supportCenter": {
     "message": "造訪我們的協助中心"
   },
-  "swapSearchNameOrAddress": {
-    "message": "用名稱搜尋或貼上地址"
-  },
   "switchEthereumChainConfirmationDescription": {
     "message": "這將在 MetaMask 中將目前選擇的網路切換到剛才新增的網路："
   },
@@ -1416,14 +1326,8 @@
     "message": "無法辨識這個自訂網路。我們建議您先$1再繼續。",
     "description": "$1 is a clickable link with text defined by the 'unrecognizedChanLinkText' key. The link will open to instructions for users to validate custom network details."
   },
-  "updatedWithDate": {
-    "message": "更新時間 $1"
-  },
   "urlErrorMsg": {
     "message": "URL 需要以適當的 HTTP/HTTPS 作為開頭"
-  },
-  "urlExistsErrorMsg": {
-    "message": "URL 已經在既有的網路列表裡了"
   },
   "usePhishingDetection": {
     "message": "使用網路釣魚偵測"
@@ -1436,13 +1340,6 @@
   },
   "userName": {
     "message": "使用者名稱"
-  },
-  "verifyThisTokenOn": {
-    "message": "在 $1 驗證這個代幣的資訊",
-    "description": "Points the user to etherscan as a place they can verify information about a token. $1 is replaced with the translation for \"etherscan\""
-  },
-  "viewAllDetails": {
-    "message": "查看所有詳情"
   },
   "viewContact": {
     "message": "觀看聯絡資訊"

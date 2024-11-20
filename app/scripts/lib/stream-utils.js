@@ -18,7 +18,8 @@ export function setupMultiplex(connectionStream) {
    */
   mux.ignoreStream(EXTENSION_MESSAGES.CONNECTION_READY);
   pipeline(connectionStream, mux, connectionStream, (err) => {
-    if (err) {
+    // For context and todos related to the error message match, see https://github.com/MetaMask/metamask-extension/issues/26337
+    if (err && !err.message?.match('Premature close')) {
       console.error(err);
     }
   });

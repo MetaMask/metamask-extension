@@ -12,6 +12,7 @@
   "appState": {
     "networkDropdownOpen": false,
     "importNftsModal": { "open": false },
+    "showPermittedNetworkToastOpen": false,
     "gasIsLoading": false,
     "isLoading": false,
     "importTokensModalOpen": false,
@@ -62,11 +63,9 @@
     "currentLocale": "en"
   },
   "metamask": {
+    "accountsByChainId": {},
     "ipfsGateway": "",
     "dismissSeedBackUpReminder": false,
-    "disabledRpcMethodPreferences": {
-      "eth_sign": false
-    },
     "usePhishDetect": true,
     "participateInMetaMetrics": false,
     "gasEstimateType": "fee-market",
@@ -134,7 +133,7 @@
       "hideZeroBalanceTokens": false,
       "showFiatInTestnets": false,
       "showTestNetworks": true,
-      "useNativeCurrencyAsPrimaryCurrency": true
+      "tokenNetworkFilter": {}
     },
     "seedPhraseBackedUp": null,
     "ensResolutionsByAddress": {},
@@ -147,16 +146,23 @@
       "0x539": true
     },
     "showTestnetMessageInDropdown": true,
-    "networkConfigurations": {},
     "alertEnabledness": {
       "unconnectedAccount": true
     },
     "featureFlags": {},
     "network": "5",
-    "providerConfig": {
-      "type": "rpc",
-      "chainId": "0x5",
-      "ticker": "ETH"
+
+    "networkConfigurationsByChainId": {
+      "0x5": {
+        "nativeCurrency": "ETH",
+        "chainId": "0x5",
+        "defaultRpcEndpointIndex": 0,
+        "rpcEndpoints": [
+          {
+            "networkClientId": "goerli"
+          }
+        ]
+      }
     },
     "internalAccounts": {
       "accounts": {
@@ -173,7 +179,6 @@
           "methods": [
             "personal_sign",
             "eth_sendTransaction",
-            "eth_sign",
             "eth_signTransaction",
             "eth_signTypedData_v1",
             "eth_signTypedData_v2",
@@ -195,7 +200,6 @@
           "methods": [
             "personal_sign",
             "eth_sendTransaction",
-            "eth_sign",
             "eth_signTransaction",
             "eth_signTypedData_v1",
             "eth_signTypedData_v2",
@@ -217,7 +221,6 @@
           "methods": [
             "personal_sign",
             "eth_sendTransaction",
-            "eth_sign",
             "eth_signTransaction",
             "eth_signTypedData_v1",
             "eth_signTypedData_v2",
@@ -239,7 +242,6 @@
           "methods": [
             "personal_sign",
             "eth_sendTransaction",
-            "eth_sign",
             "eth_signTransaction",
             "eth_signTypedData_v1",
             "eth_signTypedData_v2",
@@ -393,8 +395,6 @@
         }
       }
     },
-    "unapprovedMsgs": {},
-    "unapprovedMsgCount": 0,
     "unapprovedPersonalMsgs": {},
     "unapprovedPersonalMsgCount": 0,
     "unapprovedDecryptMsgs": {},
@@ -1242,9 +1242,147 @@
     ],
     "swapsState": {}
   },
+  "ramps": {
+    "buyableChains": [
+      {
+        "active": true,
+        "chainId": 1,
+        "chainName": "Ethereum Mainnet",
+        "shortName": "Ethereum",
+        "nativeTokenSupported": true
+      },
+      {
+        "active": true,
+        "chainId": 10,
+        "chainName": "Optimism Mainnet",
+        "shortName": "Optimism",
+        "nativeTokenSupported": true
+      },
+      {
+        "active": true,
+        "chainId": 25,
+        "chainName": "Cronos Mainnet",
+        "shortName": "Cronos",
+        "nativeTokenSupported": true
+      },
+      {
+        "active": true,
+        "chainId": 56,
+        "chainName": "BNB Chain Mainnet",
+        "shortName": "BNB Chain",
+        "nativeTokenSupported": true
+      },
+      {
+        "active": true,
+        "chainId": 100,
+        "chainName": "Gnosis Mainnet",
+        "shortName": "Gnosis",
+        "nativeTokenSupported": true
+      },
+      {
+        "active": true,
+        "chainId": 137,
+        "chainName": "Polygon Mainnet",
+        "shortName": "Polygon",
+        "nativeTokenSupported": true
+      },
+      {
+        "active": true,
+        "chainId": 250,
+        "chainName": "Fantom Mainnet",
+        "shortName": "Fantom",
+        "nativeTokenSupported": true
+      },
+      {
+        "active": true,
+        "chainId": 324,
+        "chainName": "zkSync Era Mainnet",
+        "shortName": "zkSync Era",
+        "nativeTokenSupported": true
+      },
+      {
+        "active": true,
+        "chainId": 1101,
+        "chainName": "Polygon zkEVM",
+        "shortName": "Polygon zkEVM",
+        "nativeTokenSupported": true
+      },
+      {
+        "active": true,
+        "chainId": 1284,
+        "chainName": "Moonbeam Mainnet",
+        "shortName": "Moonbeam",
+        "nativeTokenSupported": true
+      },
+      {
+        "active": true,
+        "chainId": 1285,
+        "chainName": "Moonriver Mainnet",
+        "shortName": "Moonriver",
+        "nativeTokenSupported": true
+      },
+      {
+        "active": true,
+        "chainId": 8453,
+        "chainName": "Base Mainnet",
+        "shortName": "Base",
+        "nativeTokenSupported": true
+      },
+      {
+        "active": true,
+        "chainId": 42161,
+        "chainName": "Arbitrum Mainnet",
+        "shortName": "Arbitrum",
+        "nativeTokenSupported": true
+      },
+      {
+        "active": true,
+        "chainId": 42220,
+        "chainName": "Celo Mainnet",
+        "shortName": "Celo",
+        "nativeTokenSupported": false
+      },
+      {
+        "active": true,
+        "chainId": 43114,
+        "chainName": "Avalanche C-Chain Mainnet",
+        "shortName": "Avalanche C-Chain",
+        "nativeTokenSupported": true
+      },
+      {
+        "active": true,
+        "chainId": 59144,
+        "chainName": "Linea",
+        "shortName": "Linea",
+        "nativeTokenSupported": true
+      },
+      {
+        "active": true,
+        "chainId": 1313161554,
+        "chainName": "Aurora Mainnet",
+        "shortName": "Aurora",
+        "nativeTokenSupported": false
+      },
+      {
+        "active": true,
+        "chainId": 1666600000,
+        "chainName": "Harmony Mainnet (Shard 0)",
+        "shortName": "Harmony (Shard 0)",
+        "nativeTokenSupported": true
+      },
+      {
+        "active": true,
+        "chainId": 11297108109,
+        "chainName": "Palm Mainnet",
+        "shortName": "Palm",
+        "nativeTokenSupported": false
+      }
+    ]
+  },
   "send": {
     "amountMode": "INPUT",
     "currentTransactionUUID": "1-tx",
+    "disabledSwapAndSendNetworks": [],
     "draftTransactions": {
       "1-tx": {
         "amount": {

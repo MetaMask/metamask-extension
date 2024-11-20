@@ -1,14 +1,15 @@
 import { shallowEqual, useSelector } from 'react-redux';
-import { getPreferences } from '../selectors';
+import { getPreferences, getSelectedInternalAccount } from '../selectors';
 import {
   getMultichainNativeCurrency,
   getMultichainCurrentCurrency,
   getMultichainShouldShowFiat,
 } from '../selectors/multichain';
 
-import { PRIMARY, SECONDARY } from '../helpers/constants/common';
+import { PRIMARY } from '../helpers/constants/common';
 import { EtherDenomination } from '../../shared/constants/common';
 import { ETH_DEFAULT_DECIMALS } from '../constants';
+import { useMultichainSelector } from './useMultichainSelector';
 
 /**
  * Defines the shape of the options parameter for useUserPreferencedCurrency
@@ -19,6 +20,8 @@ import { ETH_DEFAULT_DECIMALS } from '../constants';
  *                                             when using ETH
  * @property {number} [fiatNumberOfDecimals] - Number of significant decimals to display
  *                                            when using fiat
+ * @property {boolean} [shouldCheckShowNativeToken] - Boolean to know if checking the setting
+ *                                                  show native token as main balance is needed
  */
 
 /**
@@ -33,22 +36,31 @@ import { ETH_DEFAULT_DECIMALS } from '../constants';
  * useUserPreferencedCurrency
  *
  * returns an object that contains what currency to use for displaying values based
- * on the user's preference settings, as well as the significant number of decimals
+ * on whether the user needs to check showNativeTokenAsMainBalance setting, as well as the significant number of decimals
  * to display based on the currency
+ *
  *
  * @param {"PRIMARY" | "SECONDARY"} type - what display type is being rendered
  * @param {UseUserPreferencedCurrencyOptions} opts - options to override default values
  * @returns {UserPreferredCurrency}
  */
 export function useUserPreferencedCurrency(type, opts = {}) {
-  const nativeCurrency = useSelector(getMultichainNativeCurrency);
+  const selectedAccount = useSelector(getSelectedInternalAccount);
+  const account = opts.account ?? selectedAccount;
+  const nativeCurrency = useMultichainSelector(
+    getMultichainNativeCurrency,
+    account,
+  );
 
-  const { useNativeCurrencyAsPrimaryCurrency } = useSelector(
+  const { showNativeTokenAsMainBalance } = useSelector(
     getPreferences,
     shallowEqual,
   );
-  const showFiat = useSelector(getMultichainShouldShowFiat);
-  const currentCurrency = useSelector(getMultichainCurrentCurrency);
+  const showFiat = useMultichainSelector(getMultichainShouldShowFiat, account);
+  const currentCurrency = useMultichainSelector(
+    getMultichainCurrentCurrency,
+    account,
+  );
 
   const fiatReturn = {
     currency: currentCurrency,
@@ -65,12 +77,13 @@ export function useUserPreferencedCurrency(type, opts = {}) {
     return nativeReturn;
   } else if (opts.showFiatOverride) {
     return fiatReturn;
-  } else if (
-    !showFiat ||
-    (type === PRIMARY && useNativeCurrencyAsPrimaryCurrency) ||
-    (type === SECONDARY && !useNativeCurrencyAsPrimaryCurrency)
-  ) {
+  } else if (!showFiat) {
     return nativeReturn;
+  } else if (
+    (opts.shouldCheckShowNativeToken && showNativeTokenAsMainBalance) ||
+    !opts.shouldCheckShowNativeToken
+  ) {
+    return type === PRIMARY ? nativeReturn : fiatReturn;
   }
-  return fiatReturn;
+  return type === PRIMARY ? fiatReturn : nativeReturn;
 }

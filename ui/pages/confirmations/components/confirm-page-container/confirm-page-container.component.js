@@ -37,20 +37,17 @@ import {
 import NetworkAccountBalanceHeader from '../../../../components/app/network-account-balance-header/network-account-balance-header';
 import SetApproveForAllWarning from '../set-approval-for-all-warning';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
-///: BEGIN:ONLY_INCLUDE_IF(snaps)
 import useTransactionInsights from '../../../../hooks/useTransactionInsights';
 import InsightWarnings from '../../../../components/app/snaps/insight-warnings';
-///: END:ONLY_INCLUDE_IF
 import {
   getAccountName,
   getAddressBookEntry,
   getInternalAccounts,
-  getIsBuyableChain,
   getMetadataContractName,
-  getNetworkIdentifier,
   getSwapsDefaultToken,
+  selectNetworkIdentifierByChainId,
 } from '../../../../selectors';
-import useRamps from '../../../../hooks/experiences/useRamps';
+import useRamps from '../../../../hooks/ramps/useRamps/useRamps';
 ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
 import { MetaMetricsContext } from '../../../../contexts/metametrics';
 import {
@@ -60,6 +57,7 @@ import {
 ///: END:ONLY_INCLUDE_IF
 
 import { BlockaidResultType } from '../../../../../shared/constants/security-provider';
+import { getIsNativeTokenBuyable } from '../../../../ducks/ramps';
 import {
   ConfirmPageContainerHeader,
   ConfirmPageContainerContent,
@@ -118,13 +116,10 @@ const ConfirmPageContainer = (props) => {
   const trackEvent = useContext(MetaMetricsContext);
   ///: END:ONLY_INCLUDE_IF
   const [collectionBalance, setCollectionBalance] = useState('0');
-  ///: BEGIN:ONLY_INCLUDE_IF(snaps)
   const [isShowingTxInsightWarnings, setIsShowingTxInsightWarnings] =
     useState(false);
-  ///: END:ONLY_INCLUDE_IF
-  const isBuyableChain = useSelector(getIsBuyableChain);
+  const isBuyableChain = useSelector(getIsNativeTokenBuyable);
   const contact = useSelector((state) => getAddressBookEntry(state, toAddress));
-  const networkIdentifier = useSelector(getNetworkIdentifier);
   const defaultToken = useSelector(getSwapsDefaultToken);
   const accountBalance = defaultToken.string;
   const internalAccounts = useSelector(getInternalAccounts);
@@ -135,10 +130,6 @@ const ConfirmPageContainer = (props) => {
     getMetadataContractName(state, toAddress),
   );
 
-  // TODO: Move useRamps hook to the confirm-transaction-base parent component.
-  // TODO: openBuyCryptoInPdapp should be passed to this component as a custom prop.
-  // We try to keep this component for layout purpose only, we need to move this hook to the confirm-transaction-base parent
-  // component once it is converted to a functional component
   const { openBuyCryptoInPdapp } = useRamps();
 
   const isSetApproveForAll =
@@ -147,8 +138,13 @@ const ConfirmPageContainer = (props) => {
   const shouldDisplayWarning =
     contentComponent && disabled && (errorKey || errorMessage);
 
-  const networkName =
-    NETWORK_TO_NAME_MAP[currentTransaction.chainId] || networkIdentifier;
+  const { chainId } = currentTransaction;
+
+  const networkIdentifier = useSelector((state) =>
+    selectNetworkIdentifierByChainId(state, chainId),
+  );
+
+  const networkName = NETWORK_TO_NAME_MAP[chainId] || networkIdentifier;
 
   const fetchCollectionBalance = useCallback(async () => {
     const tokenBalance = await fetchTokenBalance(
@@ -159,12 +155,10 @@ const ConfirmPageContainer = (props) => {
     setCollectionBalance(tokenBalance.toString() || '0');
   }, [fromAddress, tokenAddress]);
 
-  ///: BEGIN:ONLY_INCLUDE_IF(snaps)
   // As confirm-transction-base is converted to functional component
   // this code can bemoved to it.
   const insightObject = useTransactionInsights({ txData });
   const insightComponent = insightObject?.insightComponent;
-  ///: END:ONLY_INCLUDE_IF
 
   const handleSubmit = () => {
     if (isSetApproveForAll && isApprovalOrRejection) {
@@ -175,11 +169,10 @@ const ConfirmPageContainer = (props) => {
 
   // TODO: Better name
   const topLevelHandleSubmit = () => {
-    ///: BEGIN:ONLY_INCLUDE_IF(snaps)
     if (insightObject?.warnings?.length > 0) {
       return setIsShowingTxInsightWarnings(true);
     }
-    ///: END:ONLY_INCLUDE_IF
+
     return handleSubmit();
   };
 
@@ -229,6 +222,7 @@ const ConfirmPageContainer = (props) => {
                 recipientEns={toEns}
                 recipientNickname={toNickname}
                 recipientIsOwnedAccount={recipientIsOwnedAccount}
+                chainId={currentTransaction.chainId}
               />
             )}
           </ConfirmPageContainerHeader>
@@ -242,9 +236,7 @@ const ConfirmPageContainer = (props) => {
             subtitleComponent={subtitleComponent}
             detailsComponent={detailsComponent}
             dataHexComponent={dataHexComponent}
-            ///: BEGIN:ONLY_INCLUDE_IF(snaps)
             insightComponent={insightComponent}
-            ///: END:ONLY_INCLUDE_IF
             errorMessage={errorMessage}
             errorKey={errorKey}
             tokenAddress={tokenAddress}
@@ -378,9 +370,6 @@ const ConfirmPageContainer = (props) => {
             <AdvancedGasFeePopover />
           </>
         )}
-        {
-          ///: BEGIN:ONLY_INCLUDE_IF(snaps)
-        }
         {isShowingTxInsightWarnings && (
           <InsightWarnings
             warnings={insightObject.warnings}
@@ -392,9 +381,6 @@ const ConfirmPageContainer = (props) => {
             }}
           />
         )}
-        {
-          ///: END:ONLY_INCLUDE_IF
-        }
       </div>
     </GasFeeContextProvider>
   );

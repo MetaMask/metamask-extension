@@ -1,9 +1,16 @@
+import { TransactionEnvelopeType } from '@metamask/transaction-controller';
 import FixtureBuilder from '../../fixture-builder';
-import { defaultGanacheOptions, withFixtures } from '../../helpers';
+import {
+  defaultGanacheOptions,
+  defaultGanacheOptionsForType2Transactions,
+  withFixtures,
+} from '../../helpers';
+import { MockedEndpoint, Mockttp } from '../../mock-e2e';
+import { SMART_CONTRACTS } from '../../seeder/smart-contracts';
 import { Driver } from '../../webdriver/driver';
 
 export async function scrollAndConfirmAndAssertConfirm(driver: Driver) {
-  await driver.clickElement('.confirm-scroll-to-bottom__button');
+  await driver.clickElementSafe('.confirm-scroll-to-bottom__button');
   await driver.clickElement('[data-testid="confirm-footer-button"]');
 }
 
@@ -13,25 +20,84 @@ export function withRedesignConfirmationFixtures(
   // title. It's optional because it's sometimes unset.
   // eslint-disable-next-line @typescript-eslint/default-param-last
   title: string = '',
+  transactionEnvelopeType: TransactionEnvelopeType,
   testFunction: Parameters<typeof withFixtures>[1],
+  mocks?: (mockServer: Mockttp) => Promise<MockedEndpoint[]>, // Add mocks as an optional parameter
+  smartContract?: typeof SMART_CONTRACTS,
 ) {
   return withFixtures(
     {
       dapp: true,
-      driverOptions: {
-        timeOut: 20000,
-      },
+      driverOptions: { timeOut: 20000 },
       fixtures: new FixtureBuilder()
         .withPermissionControllerConnectedToTestDapp()
+        .withMetaMetricsController({
+          metaMetricsId: 'fake-metrics-id',
+          participateInMetaMetrics: true,
+        })
         .withPreferencesController({
           preferences: {
             redesignedConfirmationsEnabled: true,
+            isRedesignedConfirmationsDeveloperEnabled: true,
           },
         })
         .build(),
-      ganacheOptions: defaultGanacheOptions,
+      ganacheOptions:
+        transactionEnvelopeType === TransactionEnvelopeType.legacy
+          ? defaultGanacheOptions
+          : defaultGanacheOptionsForType2Transactions,
+      ...(smartContract && { smartContract }),
+      ...(mocks && { testSpecificMock: mocks }),
       title,
     },
     testFunction,
   );
+}
+
+async function createMockSegmentEvent(mockServer: Mockttp, eventName: string) {
+  return await mockServer
+    .forPost('https://api.segment.io/v1/batch')
+    .withJsonBodyIncluding({
+      batch: [{ type: 'track', event: eventName }],
+    })
+    .thenCallback(() => ({
+      statusCode: 200,
+    }));
+}
+
+export async function mockSignatureApproved(
+  mockServer: Mockttp,
+  withAnonEvents = false,
+) {
+  const anonEvents = withAnonEvents
+    ? [
+        await createMockSegmentEvent(mockServer, 'Signature Requested Anon'),
+        await createMockSegmentEvent(mockServer, 'Signature Approved Anon'),
+      ]
+    : [];
+
+  return [
+    await createMockSegmentEvent(mockServer, 'Signature Requested'),
+    await createMockSegmentEvent(mockServer, 'Account Details Opened'),
+    ...anonEvents,
+    await createMockSegmentEvent(mockServer, 'Signature Approved'),
+  ];
+}
+
+export async function mockSignatureRejected(
+  mockServer: Mockttp,
+  withAnonEvents = false,
+) {
+  const anonEvents = withAnonEvents
+    ? [
+        await createMockSegmentEvent(mockServer, 'Signature Requested Anon'),
+        await createMockSegmentEvent(mockServer, 'Signature Rejected Anon'),
+      ]
+    : [];
+
+  return [
+    await createMockSegmentEvent(mockServer, 'Signature Requested'),
+    await createMockSegmentEvent(mockServer, 'Signature Rejected'),
+    ...anonEvents,
+  ];
 }

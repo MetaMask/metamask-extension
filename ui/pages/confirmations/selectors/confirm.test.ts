@@ -1,20 +1,14 @@
 import { ApprovalType } from '@metamask/controller-utils';
-import { TransactionType } from '@metamask/transaction-controller';
+
 import { ConfirmMetamaskState } from '../types/confirm';
 import {
-  currentConfirmationSelector,
-  latestPendingConfirmationSelector,
+  getIsRedesignedConfirmationsDeveloperEnabled,
+  oldestPendingConfirmationSelector,
   pendingConfirmationsSelector,
 } from './confirm';
 
 describe('confirm selectors', () => {
   const mockedState: ConfirmMetamaskState = {
-    confirm: {
-      currentConfirmation: {
-        id: '1',
-        type: TransactionType.contractInteraction,
-      },
-    },
     metamask: {
       pendingApprovals: {
         '1': {
@@ -39,7 +33,7 @@ describe('confirm selectors', () => {
           id: '3',
           origin: 'origin',
           time: Date.now() - 20,
-          type: ApprovalType.EthSign,
+          type: ApprovalType.PersonalSign,
           requestData: {},
           requestState: null,
           expectsResult: false,
@@ -60,19 +54,37 @@ describe('confirm selectors', () => {
     });
   });
 
-  describe('latestPendingConfirmationSelector', () => {
-    it('should return latest pending confirmation from state', () => {
-      const result = latestPendingConfirmationSelector(mockedState);
+  describe('oldestPendingConfirmationSelector', () => {
+    it('should return oldest pending confirmation from state', () => {
+      const result = oldestPendingConfirmationSelector(mockedState);
 
-      expect(result).toStrictEqual(mockedState.metamask.pendingApprovals[2]);
+      expect(result).toStrictEqual(mockedState.metamask.pendingApprovals[3]);
     });
   });
 
-  describe('currentConfirmationSelector', () => {
-    it('should return curently active confirmation from state', () => {
-      const result = currentConfirmationSelector(mockedState);
+  describe('#getIsRedesignedConfirmationsDeveloperEnabled', () => {
+    it('returns true if redesigned confirmations developer setting is enabled', () => {
+      const mockState = {
+        metamask: {
+          preferences: {
+            isRedesignedConfirmationsDeveloperEnabled: true,
+          },
+        },
+      };
+      const result = getIsRedesignedConfirmationsDeveloperEnabled(mockState);
+      expect(result).toBe(true);
+    });
 
-      expect(result).toStrictEqual(mockedState.confirm.currentConfirmation);
+    it('returns false if redesigned confirmations developer setting is disabled', () => {
+      const mockState = {
+        metamask: {
+          preferences: {
+            isRedesignedConfirmationsDeveloperEnabled: false,
+          },
+        },
+      };
+      const result = getIsRedesignedConfirmationsDeveloperEnabled(mockState);
+      expect(result).toBe(false);
     });
   });
 });

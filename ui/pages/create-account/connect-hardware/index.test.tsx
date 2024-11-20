@@ -7,14 +7,18 @@ import {
   LedgerTransportTypes,
   HardwareDeviceNames,
 } from '../../../../shared/constants/hardware-wallets';
+import { mockNetworkState } from '../../../../test/stub/networks';
+import { CHAIN_IDS } from '../../../../shared/constants/network';
 import ConnectHardwareForm from '.';
 
 const mockConnectHardware = jest.fn();
 const mockCheckHardwareStatus = jest.fn().mockResolvedValue(false);
+const mockGetgetDeviceNameForMetric = jest.fn().mockResolvedValue('ledger');
 
 jest.mock('../../../store/actions', () => ({
   connectHardware: () => mockConnectHardware,
   checkHardwareStatus: () => mockCheckHardwareStatus,
+  getDeviceNameForMetric: () => mockGetgetDeviceNameForMetric,
 }));
 
 jest.mock('../../../selectors', () => ({
@@ -26,6 +30,10 @@ jest.mock('../../../selectors', () => ({
   getMetaMaskAccounts: () => {
     return {};
   },
+}));
+
+jest.mock('../../../ducks/bridge/selectors', () => ({
+  getAllBridgeableNetworks: () => [],
 }));
 
 const MOCK_RECENT_PAGE = '/home';
@@ -53,9 +61,7 @@ const mockProps = {
 
 const mockState = {
   metamask: {
-    providerConfig: {
-      chainId: '0x1',
-    },
+    ...mockNetworkState({ chainId: CHAIN_IDS.MAINNET }),
   },
   appState: {
     networkDropdownOpen: false,
@@ -191,7 +197,33 @@ describe('ConnectHardwareForm', () => {
         expect(getByText("D'Cent")).toBeInTheDocument();
         expect(getByText('imToken')).toBeInTheDocument();
         expect(getByText('OneKey')).toBeInTheDocument();
+        expect(getByText('Ngrave Zero')).toBeInTheDocument();
       });
+    });
+  });
+
+  describe('Select Hardware', () => {
+    it('should check link buttons for Ngrave Zero brand', async () => {
+      window.open = jest.fn();
+
+      const { getByLabelText, getByTestId } = renderWithProvider(
+        <ConnectHardwareForm {...mockProps} />,
+        mockStore,
+      );
+
+      const qrButton = getByLabelText('QRCode');
+
+      fireEvent.click(qrButton);
+
+      const buyNowButton = getByTestId('ngrave-brand-buy-now-btn');
+      expect(buyNowButton).toBeInTheDocument();
+      fireEvent.click(buyNowButton);
+      expect(window.open).toHaveBeenCalled();
+
+      const learnMoreButton = getByTestId('ngrave-brand-learn-more-btn');
+      expect(learnMoreButton).toBeInTheDocument();
+      fireEvent.click(learnMoreButton);
+      expect(window.open).toHaveBeenCalled();
     });
   });
 });

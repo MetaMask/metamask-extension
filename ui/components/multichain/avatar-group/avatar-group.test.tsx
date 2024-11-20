@@ -9,7 +9,7 @@ import { AvatarGroup } from './avatar-group';
 
 const members = [
   { symbol: 'ETH', avatarValue: './images/eth_logo.svg' },
-  { symbol: 'MATIC', avatarValue: './images/matic-token.svg' },
+  { symbol: 'MATIC', avatarValue: './images/pol-token.svg' },
   { symbol: 'OP', avatarValue: './images/optimism.svg' },
   { symbol: 'AVAX', avatarValue: './images/avax-token.svg' },
   { symbol: 'PALM', avatarValue: './images/palm.svg' },

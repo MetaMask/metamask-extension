@@ -9,6 +9,9 @@ import {
 import configureStore from '../../store/store';
 import mockState from '../../../test/data/mock-state.json';
 import { renderWithProvider } from '../../../test/jest/rendering';
+import { CHAIN_IDS } from '../../../shared/constants/network';
+import { mockNetworkState } from '../../../test/stub/networks';
+import * as util from '../../helpers/utils/util';
 import ConfirmAddSuggestedNFT from '.';
 
 const PENDING_NFT_APPROVALS = {
@@ -71,7 +74,9 @@ const renderComponent = (pendingNfts = {}) => {
     metamask: {
       ...mockState.metamask,
       pendingApprovals: pendingNfts,
-      providerConfig: { chainId: '0x1' },
+      ...mockNetworkState({
+        chainId: CHAIN_IDS.MAINNET,
+      }),
     },
     history: {
       mostRecentOverviewPage: '/',
@@ -85,23 +90,25 @@ describe('ConfirmAddSuggestedNFT Component', () => {
     jest.clearAllMocks();
   });
 
-  it('should render one suggested NFT', () => {
-    renderComponent({
-      1: {
-        id: '1',
-        origin: 'https://www.opensea.io',
-        time: 1,
-        type: ApprovalType.WatchAsset,
-        requestData: {
-          asset: {
-            address: '0x8b175474e89094c44da98b954eedeac495271d0a',
-            name: 'CryptoKitty',
-            tokenId: '15',
-            standard: 'ERC721',
+  it('should render one suggested NFT', async () => {
+    await act(async () =>
+      renderComponent({
+        1: {
+          id: '1',
+          origin: 'https://www.opensea.io',
+          time: 1,
+          type: ApprovalType.WatchAsset,
+          requestData: {
+            asset: {
+              address: '0x8b175474e89094c44da98b954eedeac495271d0a',
+              name: 'CryptoKitty',
+              tokenId: '15',
+              standard: 'ERC721',
+            },
           },
         },
-      },
-    });
+      }),
+    );
 
     expect(screen.getByText('Add suggested NFTs')).toBeInTheDocument();
     expect(screen.getByText('https://www.opensea.io')).toBeInTheDocument();
@@ -116,29 +123,35 @@ describe('ConfirmAddSuggestedNFT Component', () => {
     expect(screen.getByRole('button', { name: 'Add NFT' })).toBeInTheDocument();
   });
 
-  it('should match snapshot', () => {
-    const container = renderComponent({
-      1: {
-        id: '1',
-        origin: 'https://www.opensea.io',
-        time: 1,
-        type: ApprovalType.WatchAsset,
-        requestData: {
-          asset: {
-            address: '0x8b175474e89094c44da98b954eedeac495271d0a',
-            name: 'CryptoKitty',
-            tokenId: '15',
-            standard: 'ERC721',
+  it('should match snapshot', async () => {
+    let container;
+    await act(
+      async () =>
+        (container = renderComponent({
+          1: {
+            id: '1',
+            origin: 'https://www.opensea.io',
+            time: 1,
+            type: ApprovalType.WatchAsset,
+            requestData: {
+              asset: {
+                address: '0x8b175474e89094c44da98b954eedeac495271d0a',
+                name: 'CryptoKitty',
+                tokenId: '15',
+                standard: 'ERC721',
+              },
+            },
           },
-        },
-      },
-    });
+        })),
+    );
 
     expect(container).toMatchSnapshot();
   });
 
-  it('should render a list of suggested NFTs', () => {
-    renderComponent({ ...PENDING_NFT_APPROVALS, ...PENDING_TOKEN_APPROVALS });
+  it('should render a list of suggested NFTs', async () => {
+    await act(async () =>
+      renderComponent({ ...PENDING_NFT_APPROVALS, ...PENDING_TOKEN_APPROVALS }),
+    );
 
     for (const {
       requestData: { asset },
@@ -212,5 +225,61 @@ describe('ConfirmAddSuggestedNFT Component', () => {
         stack: expect.any(String),
       }),
     );
+  });
+
+  it('should show suggested NFTs with default image', async () => {
+    await act(async () =>
+      renderComponent({
+        1: {
+          id: '1',
+          origin: 'https://www.opensea.io',
+          time: 1,
+          type: ApprovalType.WatchAsset,
+          requestData: {
+            asset: {
+              address: '0x8b175474e89094c44da98b954eedeac495271d0a',
+              name: 'CryptoKitty',
+              tokenId: '15',
+              standard: 'ERC721',
+            },
+          },
+        },
+      }),
+    );
+
+    expect(screen.getByText('CryptoKitty')).toBeInTheDocument();
+    expect(screen.getByText(`#15`)).toBeInTheDocument();
+    expect(screen.getAllByRole('img')).toHaveLength(1);
+    const defaultImg = screen.getByTestId(`nft-default-image`);
+    expect(defaultImg).toBeInTheDocument();
+  });
+
+  it('should show suggested NFTs with image', async () => {
+    const expectedRes =
+      'https://bafybeieazx4q4ofby24w6n6ftmpad65k4u3vkavv6qnmsazwoe6gaced7m.ipfs.dweb.link/728.png';
+
+    jest.spyOn(util, 'getAssetImageURL').mockResolvedValue(expectedRes);
+    await act(async () =>
+      renderComponent({
+        1: {
+          id: '1',
+          origin: 'https://www.opensea.io',
+          time: 1,
+          type: ApprovalType.WatchAsset,
+          requestData: {
+            asset: {
+              address: '0x8b175474e89094c44da98b954eedeac495271d0a',
+              name: 'CryptoKitty',
+              tokenId: '15',
+              standard: 'ERC721',
+            },
+          },
+        },
+      }),
+    );
+
+    expect(screen.getByText('CryptoKitty')).toBeInTheDocument();
+    expect(screen.getByText(`#15`)).toBeInTheDocument();
+    expect(screen.getAllByRole('img')).toHaveLength(2);
   });
 });

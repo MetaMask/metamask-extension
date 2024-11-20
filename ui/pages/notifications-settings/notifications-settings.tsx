@@ -1,7 +1,6 @@
-import React, { useEffect, useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import { useSelector } from 'react-redux';
-import { useHistory } from 'react-router-dom';
-import type { InternalAccount } from '@metamask/keyring-api';
+import { useHistory, useLocation } from 'react-router-dom';
 import { useI18nContext } from '../../hooks/useI18nContext';
 import { NOTIFICATIONS_ROUTE } from '../../helpers/constants/routes';
 import {
@@ -26,27 +25,16 @@ import { Content, Header } from '../../components/multichain/pages/page';
 import {
   selectIsMetamaskNotificationsEnabled,
   getIsUpdatingMetamaskNotifications,
-  getIsUpdatingMetamaskNotificationsAccount,
 } from '../../selectors/metamask-notifications/metamask-notifications';
 import { getInternalAccounts } from '../../selectors';
+import { useAccountSettingsProps } from '../../hooks/metamask-notifications/useSwitchNotifications';
 import { NotificationsSettingsAllowNotifications } from './notifications-settings-allow-notifications';
 import { NotificationsSettingsTypes } from './notifications-settings-types';
 import { NotificationsSettingsPerAccount } from './notifications-settings-per-account';
 
-// Define KeyringType interface
-type KeyringType = {
-  type: string;
-};
-
-// Define AccountType interface
-type AccountType = InternalAccount & {
-  balance: string;
-  keyring: KeyringType;
-  label: string;
-};
-
 export default function NotificationsSettings() {
   const history = useHistory();
+  const location = useLocation();
   const t = useI18nContext();
 
   // Selectors
@@ -56,36 +44,26 @@ export default function NotificationsSettings() {
   const isUpdatingMetamaskNotifications = useSelector(
     getIsUpdatingMetamaskNotifications,
   );
-  const isUpdatingMetamaskNotificationsAccount = useSelector(
-    getIsUpdatingMetamaskNotificationsAccount,
-  );
-  const accounts: AccountType[] = useSelector(getInternalAccounts);
+  const accounts = useSelector(getInternalAccounts);
 
   // States
   const [loadingAllowNotifications, setLoadingAllowNotifications] =
     useState<boolean>(isUpdatingMetamaskNotifications);
-  const [updatingAccountList, setUpdatingAccountList] = useState<string[]>([]);
-  const [updatingAccount, setUpdatingAccount] = useState<boolean>(false);
 
-  useEffect(() => {
-    if (updatingAccountList.length > 0) {
-      setUpdatingAccount(true);
-    } else {
-      setUpdatingAccount(false);
-    }
-  }, [updatingAccountList]);
+  const accountAddresses = useMemo(
+    () => accounts.map((a) => a.address),
+    [accounts],
+  );
 
-  useEffect(() => {
-    if (isUpdatingMetamaskNotifications) {
-      setLoadingAllowNotifications(isUpdatingMetamaskNotifications);
-    }
-  }, [isUpdatingMetamaskNotifications]);
+  // Account Settings
+  const accountSettingsProps = useAccountSettingsProps(accountAddresses);
+  const updatingAccounts = accountSettingsProps.accountsBeingUpdated.length > 0;
+  const refetchAccountSettings = async () => {
+    await accountSettingsProps.update(accountAddresses);
+  };
 
-  useEffect(() => {
-    if (isUpdatingMetamaskNotificationsAccount) {
-      setUpdatingAccountList(isUpdatingMetamaskNotificationsAccount);
-    }
-  }, [isUpdatingMetamaskNotificationsAccount]);
+  // Previous page
+  const previousPage = location.state?.fromPage;
 
   return (
     <NotificationsPage>
@@ -95,7 +73,11 @@ export default function NotificationsSettings() {
             ariaLabel="Back"
             iconName={IconName.ArrowLeft}
             size={ButtonIconSize.Sm}
-            onClick={() => history.push(NOTIFICATIONS_ROUTE)}
+            onClick={() =>
+              previousPage
+                ? history.push(previousPage)
+                : history.push(NOTIFICATIONS_ROUTE)
+            }
           />
         }
         endAccessory={null}
@@ -108,7 +90,7 @@ export default function NotificationsSettings() {
           loading={loadingAllowNotifications}
           setLoading={setLoadingAllowNotifications}
           data-testid="notifications-settings-allow-notifications"
-          disabled={updatingAccount}
+          disabled={updatingAccounts}
         />
         <Box
           borderColor={BorderColor.borderMuted}
@@ -120,7 +102,7 @@ export default function NotificationsSettings() {
           <>
             {/* Notifications settings per types */}
             <NotificationsSettingsTypes
-              disabled={loadingAllowNotifications || updatingAccount}
+              disabled={loadingAllowNotifications || updatingAccounts}
             />
 
             {/* Notifications settings per account */}
@@ -160,8 +142,18 @@ export default function NotificationsSettings() {
                     key={account.id}
                     address={account.address}
                     name={account.metadata.name}
-                    disabled={updatingAccountList.length > 0}
-                    loading={updatingAccountList.includes(account.address)}
+                    disabledSwitch={
+                      accountSettingsProps.initialLoading || updatingAccounts
+                    }
+                    isLoading={accountSettingsProps.accountsBeingUpdated.includes(
+                      account.address,
+                    )}
+                    isEnabled={
+                      accountSettingsProps.data?.[
+                        account.address.toLowerCase()
+                      ] ?? false
+                    }
+                    refetchAccountSettings={refetchAccountSettings}
                   />
                 ))}
               </Box>

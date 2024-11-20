@@ -8,14 +8,17 @@ import {
 export type ConfirmInfoSectionProps = {
   children: React.ReactNode | string;
   noPadding?: boolean;
+  'data-testid'?: string;
 };
 
 export const ConfirmInfoSection = ({
   children,
   noPadding,
+  'data-testid': dataTestId,
 }: ConfirmInfoSectionProps) => {
   return (
     <Box
+      data-testid={dataTestId}
       backgroundColor={BackgroundColor.backgroundDefault}
       borderRadius={BorderRadius.MD}
       padding={noPadding ? 0 : 2}
