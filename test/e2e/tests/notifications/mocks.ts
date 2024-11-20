@@ -4,6 +4,7 @@ import {
   NotificationServicesController,
   NotificationServicesPushController,
 } from '@metamask/notification-services-controller';
+import { USER_STORAGE_FEATURE_NAMES } from '@metamask/profile-sync-controller/sdk';
 import { UserStorageMockttpController } from '../../helpers/user-storage/userStorageMockttpController';
 
 const AuthMocks = AuthenticationController.Mocks;
@@ -32,14 +33,35 @@ export async function mockNotificationServices(
   mockAPICall(server, AuthMocks.getMockAuthAccessTokenResponse());
 
   // Storage
-  if (!userStorageMockttpControllerInstance?.paths.get('accounts')) {
-    userStorageMockttpControllerInstance.setupPath('accounts', server);
+  if (
+    !userStorageMockttpControllerInstance?.paths.get(
+      USER_STORAGE_FEATURE_NAMES.accounts,
+    )
+  ) {
+    userStorageMockttpControllerInstance.setupPath(
+      USER_STORAGE_FEATURE_NAMES.accounts,
+      server,
+    );
   }
-  if (!userStorageMockttpControllerInstance?.paths.get('networks')) {
-    userStorageMockttpControllerInstance.setupPath('networks', server);
+  if (
+    !userStorageMockttpControllerInstance?.paths.get(
+      USER_STORAGE_FEATURE_NAMES.networks,
+    )
+  ) {
+    userStorageMockttpControllerInstance.setupPath(
+      USER_STORAGE_FEATURE_NAMES.networks,
+      server,
+    );
   }
-  if (!userStorageMockttpControllerInstance?.paths.get('notifications')) {
-    userStorageMockttpControllerInstance.setupPath('notifications', server);
+  if (
+    !userStorageMockttpControllerInstance?.paths.get(
+      USER_STORAGE_FEATURE_NAMES.notifications,
+    )
+  ) {
+    userStorageMockttpControllerInstance.setupPath(
+      USER_STORAGE_FEATURE_NAMES.notifications,
+      server,
+    );
   }
 
   // Notifications

@@ -38,6 +38,8 @@ jest.mock('../../../ducks/locale/locale', () => ({
 
 jest.mock('../../../store/actions', () => ({
   startNewDraftTransaction: jest.fn(),
+  tokenBalancesStartPolling: jest.fn().mockResolvedValue('pollingToken'),
+  tokenBalancesStopPollingByPollingToken: jest.fn(),
 }));
 
 const mockGetIntlLocale = getIntlLocale;
@@ -92,6 +94,7 @@ describe('EthOverview', () => {
       },
       preferences: {
         showNativeTokenAsMainBalance: true,
+        tokenNetworkFilter: {},
       },
       useExternalServices: true,
       useCurrencyRateCheck: true,

@@ -13,6 +13,12 @@ import { setBackgroundConnection } from '../../../store/background-connection';
 import { mockNetworkState } from '../../../../test/stub/networks';
 import AssetPage from './asset-page';
 
+jest.mock('../../../store/actions', () => ({
+  ...jest.requireActual('../../../store/actions'),
+  tokenBalancesStartPolling: jest.fn().mockResolvedValue('pollingToken'),
+  tokenBalancesStopPollingByPollingToken: jest.fn(),
+}));
+
 // Mock the price chart
 jest.mock('react-chartjs-2', () => ({ Line: () => null }));
 

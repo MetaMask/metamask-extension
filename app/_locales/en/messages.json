@@ -1343,6 +1343,10 @@
   "creatorAddress": {
     "message": "Creator address"
   },
+  "crossChainAggregatedBalancePopover": {
+    "message": "This reflects the value of all tokens you own on all networks. If you prefer seeing this value in ETH or other currencies, go to $1.",
+    "description": "$1 represents the settings page"
+  },
   "crossChainSwapsLink": {
     "message": "Swap across networks with MetaMask Portfolio"
   },
@@ -4140,6 +4144,24 @@
   },
   "permissionsPageTourTitle": {
     "message": "Connected sites are now permissions"
+  },
+  "permitSimulationChange_approve": {
+    "message": "Spending cap"
+  },
+  "permitSimulationChange_bidding": {
+    "message": "You bid"
+  },
+  "permitSimulationChange_listing": {
+    "message": "You list"
+  },
+  "permitSimulationChange_receive": {
+    "message": "You receive"
+  },
+  "permitSimulationChange_revoke": {
+    "message": "Spending cap"
+  },
+  "permitSimulationChange_transfer": {
+    "message": "You send"
   },
   "permitSimulationDetailInfo": {
     "message": "You're giving the spender permission to spend this many tokens from your account."
