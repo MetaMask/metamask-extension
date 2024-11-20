@@ -41,11 +41,13 @@ const TransactionAlerts = ({
   txData,
   isUsingPaymaster,
 }) => {
-  const dispatch = useDispatch();
-  const stxAlertIsVisible = useSelector(stxAlertIsOpen);
+  const dispatch = useDispatch(); // COMMENT TO TEST MANUAL
+  const stxAlertIsVisible = useSelector(stxAlertIsOpen); // COMMENT TO TEST MANUAL
+  // let stxAlertIsVisible = true; // UNCOMMENT TO TEST MANUAL
 
   const handleSTXAlertClose = () => {
-    dispatch(dismissSTXMigrationAlert());
+    dispatch(dismissSTXMigrationAlert()); // COMMENT TO TEST MANUAL
+    // stxAlertIsVisible = false; // UNCOMMENT TO TEST MANUAL
   };
   const {
     estimateUsed,

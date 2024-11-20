@@ -23,11 +23,12 @@ const slice = createSlice({
 
 const { actions, reducer } = slice;
 
-export default reducer;
-
 // Selectors
-export const getSTXAlertState = (state) => state[name].state;
-export const stxAlertIsOpen = (state) => state[name].state === ALERT_STATE.OPEN;
+export const getSTXAlertState = (state) => state.metamask.alerts?.[name]?.state;
+export const stxAlertIsOpen = (state) =>
+  state.metamask.alerts?.[name]?.state === ALERT_STATE.OPEN;
 
 // Actions
 export const { showSTXMigrationAlert, dismissSTXMigrationAlert } = actions;
+
+export default reducer;
