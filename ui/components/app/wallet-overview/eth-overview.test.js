@@ -100,6 +100,7 @@ describe('EthOverview', () => {
       },
       preferences: {
         showNativeTokenAsMainBalance: true,
+        tokenNetworkFilter: {},
       },
       useExternalServices: true,
       useCurrencyRateCheck: true,

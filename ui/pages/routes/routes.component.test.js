@@ -150,6 +150,7 @@ describe('Routes Component', () => {
             ...mockSendState.metamask.swapsState,
             swapsFeatureIsLive: true,
           },
+          accountsByChainId: {},
           pendingApprovals: {},
           approvalFlows: [],
           announcements: {},
@@ -161,10 +162,7 @@ describe('Routes Component', () => {
               order: 'dsc',
               sortCallback: 'stringNumeric',
             },
-            tokenNetworkFilter: {
-              [CHAIN_IDS.MAINNET]: true,
-              [CHAIN_IDS.LINEA_MAINNET]: true,
-            },
+            tokenNetworkFilter: {},
           },
           tokenBalances: {
             '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc': '0x176270e2b862e4ed3',
