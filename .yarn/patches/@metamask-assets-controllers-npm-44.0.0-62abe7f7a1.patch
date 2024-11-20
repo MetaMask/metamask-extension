@@ -1,0 +1,56 @@
+diff --git a/dist/TokensController.cjs b/dist/TokensController.cjs
+index ee0b7155c4e898e437a85ecb40decceac333f2eb..343b343b8300136756d96acac77aab8140efc95a 100644
+--- a/dist/TokensController.cjs
++++ b/dist/TokensController.cjs
+@@ -210,9 +210,13 @@ class TokensController extends base_controller_1.BaseController {
+         const releaseLock = await __classPrivateFieldGet(this, _TokensController_mutex, "f").acquire();
+         const { allTokens, ignoredTokens, allDetectedTokens } = this.state;
+         const importedTokensMap = {};
++        let interactingChainId;
++        if (networkClientId) {
++            interactingChainId = this.messagingSystem.call('NetworkController:getNetworkClientById', networkClientId).configuration.chainId;
++        }
+         // Used later to dedupe imported tokens
+         const newTokensMap = [
+-            ...(allTokens[__classPrivateFieldGet(this, _TokensController_chainId, "f")]?.[__classPrivateFieldGet(this, _TokensController_instances, "m", _TokensController_getSelectedAccount).call(this).address] || []),
++            ...(allTokens[interactingChainId ?? __classPrivateFieldGet(this, _TokensController_chainId, "f")]?.[__classPrivateFieldGet(this, _TokensController_instances, "m", _TokensController_getSelectedAccount).call(this).address] || []),
+             ...tokensToImport,
+         ].reduce((output, token) => {
+             output[token.address] = token;
+@@ -236,10 +240,6 @@ class TokensController extends base_controller_1.BaseController {
+             });
+             const newTokens = Object.values(newTokensMap);
+             const newIgnoredTokens = ignoredTokens.filter((tokenAddress) => !newTokensMap[tokenAddress.toLowerCase()]);
+-            let interactingChainId;
+-            if (networkClientId) {
+-                interactingChainId = this.messagingSystem.call('NetworkController:getNetworkClientById', networkClientId).configuration.chainId;
+-            }
+             const detectedTokensForGivenChain = interactingChainId
+                 ? allDetectedTokens?.[interactingChainId]?.[__classPrivateFieldGet(this, _TokensController_instances, "m", _TokensController_getSelectedAddress).call(this)]
+                 : [];
+@@ -267,11 +267,16 @@ class TokensController extends base_controller_1.BaseController {
+      * Ignore a batch of tokens.
+      *
+      * @param tokenAddressesToIgnore - Array of token addresses to ignore.
++     * @param networkClientId - Optional network client ID used to determine interacting chain ID.
+      */
+-    ignoreTokens(tokenAddressesToIgnore) {
++    ignoreTokens(tokenAddressesToIgnore, networkClientId) {
+         const { ignoredTokens, detectedTokens, tokens } = this.state;
+         const ignoredTokensMap = {};
+         let newIgnoredTokens = [...ignoredTokens];
++        let interactingChainId;
++        if (networkClientId) {
++            interactingChainId = this.messagingSystem.call('NetworkController:getNetworkClientById', networkClientId).configuration.chainId;
++        }
+         const checksummedTokenAddresses = tokenAddressesToIgnore.map((address) => {
+             const checksumAddress = (0, controller_utils_1.toChecksumHexAddress)(address);
+             ignoredTokensMap[address.toLowerCase()] = true;
+@@ -284,6 +289,7 @@ class TokensController extends base_controller_1.BaseController {
+             newIgnoredTokens,
+             newDetectedTokens,
+             newTokens,
++            interactingChainId,
+         });
+         this.update((state) => {
+             state.ignoredTokens = newIgnoredTokens;
