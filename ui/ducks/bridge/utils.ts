@@ -27,7 +27,7 @@ export const getTxGasEstimates = async ({
   if (networkAndAccountSupports1559) {
     const { estimatedBaseFeeGwei = '0' } = networkGasFeeEstimates;
     const hexEstimatedBaseFee = decGWEIToHexWEI(estimatedBaseFeeGwei) as Hex;
-    return await getTransaction1559GasFeeEstimates(
+    const txGasFeeEstimates = await getTransaction1559GasFeeEstimates(
       {
         ...txParams,
         chainId: hexChainId,
@@ -36,6 +36,7 @@ export const getTxGasEstimates = async ({
       hexEstimatedBaseFee,
       hexChainId,
     );
+    return txGasFeeEstimates;
   }
 
   return {
