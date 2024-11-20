@@ -70,7 +70,6 @@ ignores:
   - 'crypto-browserify' # polyfill
   - 'process' # polyfill
   - 'stream-http' # polyfill
-  - 'rimraf' # misc: install helper
   - 'json-schema-to-ts' # misc: typescript helper
   - 'https-browserify' # polyfill
   - 'path-browserify' # polyfill
@@ -81,6 +80,8 @@ ignores:
   # trezor
   - 'ts-mixer'
   - '@testing-library/dom'
+  - 'mini-css-extract-plugin'
+  - 'webpack-cli'
 
 # files depcheck should not parse
 ignorePatterns:

@@ -256,6 +256,9 @@
   "addNewBitcoinTestnetAccount": {
     "message": "एक नया Bitcoin अकाउंट जोड़ें (टैस्टनेट (testnet))"
   },
+  "addNewSolanaAccount": {
+    "message": "एक नया Solana अकाउंट जोड़ें (बीटा)"
+  },
   "addNewToken": {
     "message": "नया टोकन जोड़ें"
   },
@@ -1620,9 +1623,6 @@
   "editSpeedUpEditGasFeeModalTitle": {
     "message": "गैस फ़ीस स्पीड अप को बदलें"
   },
-  "enable": {
-    "message": "चालू करें"
-  },
   "enableAutoDetect": {
     "message": " ऑटो डिटेक्ट इनेबल करें"
   },
@@ -1699,10 +1699,6 @@
     "message": "कोड: $1",
     "description": "Displayed error code for debugging purposes. $1 is the error code"
   },
-  "errorDetails": {
-    "message": "गड़बड़ी की जानकारी",
-    "description": "Title for collapsible section that displays error details for debugging purposes"
-  },
   "errorGettingSafeChainList": {
     "message": "सेफ चेन लिस्ट पाते समय गड़बड़ी हुई, कृपया सावधानी के साथ जारी रखें।"
   },
@@ -1713,14 +1709,6 @@
   "errorName": {
     "message": "कोड: $1",
     "description": "Displayed error name for debugging purposes. $1 is the error name"
-  },
-  "errorPageMessage": {
-    "message": "पेज को दोबारा लोड करके फिर से कोशिश करें या सपोर्ट $1 से कॉन्टेक्ट करें।",
-    "description": "Message displayed on generic error page in the fullscreen or notification UI, $1 is a clickable link with text defined by the 'here' key. The link will open to a form where users can file support tickets."
-  },
-  "errorPagePopupMessage": {
-    "message": "पॉपअप को बंद करके और फिर से खोलने की कोशिश करें या $1 पर सपोर्ट से कॉन्टेक्ट करें।",
-    "description": "Message displayed on generic error page in the popup UI, $1 is a clickable link with text defined by the 'here' key. The link will open to a form where users can file support tickets."
   },
   "errorPageTitle": {
     "message": "MetaMask में कोई गड़बड़ी हुई",
@@ -4543,17 +4531,11 @@
   "signingInWith": {
     "message": "के साथ साइन इन करना"
   },
-  "simulationDetailsFailed": {
-    "message": "आपका एस्टीमेशन लोड करने में गड़बड़ी हुई।"
-  },
   "simulationDetailsFiatNotAvailable": {
     "message": "उपलब्ध नहीं है"
   },
   "simulationDetailsIncomingHeading": {
     "message": "आप पाते हैं"
-  },
-  "simulationDetailsNoBalanceChanges": {
-    "message": "आपके वॉलेट के लिए किसी बदलाव का प्रेडिक्शन नहीं किया गया है"
   },
   "simulationDetailsOutgoingHeading": {
     "message": "आप भेजते हैं"
@@ -4591,9 +4573,6 @@
   },
   "siweResources": {
     "message": "संसाधन"
-  },
-  "siweSignatureSimulationDetailInfo": {
-    "message": "आप किसी साइट पर साइन इन कर रहे हैं और आपके अकाउंट में कोई अनुमानित परिवर्तन नहीं हैं।"
   },
   "siweURI": {
     "message": "URL"
@@ -4636,25 +4615,6 @@
   },
   "smartTransactions": {
     "message": "स्मार्ट ट्रांसेक्शन"
-  },
-  "smartTransactionsBenefit1": {
-    "message": "99.5% सफलता दर"
-  },
-  "smartTransactionsBenefit2": {
-    "message": "आपका पैसा बचाता है"
-  },
-  "smartTransactionsBenefit3": {
-    "message": "रियल-टाइम अपडेट"
-  },
-  "smartTransactionsDescription": {
-    "message": "स्मार्ट ट्रांसेक्शन के साथ उच्च सफलता दर, फ्रंटरनिंग सुरक्षा और बेहतर दृश्यता अनलॉक करें।"
-  },
-  "smartTransactionsDescription2": {
-    "message": "केवल Ethereum पर उपलब्ध है। सेटिंग्स में किसी भी समय चालू करें या बंद करें। $1",
-    "description": "$1 is an external link to learn more about Smart Transactions"
-  },
-  "smartTransactionsOptItModalTitle": {
-    "message": "एनहांस्ड ट्रांसेक्शन प्रोटेक्शन"
   },
   "snapAccountCreated": {
     "message": "अकाउंट बनाया गया"

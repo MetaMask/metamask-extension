@@ -57,7 +57,6 @@ export default class SettingsTab extends PureComponent {
   static propTypes = {
     setUseBlockie: PropTypes.func,
     setCurrentCurrency: PropTypes.func,
-    warning: PropTypes.string,
     updateCurrentLocale: PropTypes.func,
     currentLocale: PropTypes.string,
     useBlockie: PropTypes.bool,
@@ -429,11 +428,8 @@ export default class SettingsTab extends PureComponent {
   }
 
   render() {
-    const { warning } = this.props;
-
     return (
       <div className="settings-page__body">
-        {warning ? <div className="settings-tab__error">{warning}</div> : null}
         {this.renderCurrentConversion()}
         {this.renderShowNativeTokenAsMainBalance()}
         {this.renderCurrentLocale()}

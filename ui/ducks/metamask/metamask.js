@@ -17,9 +17,9 @@ import {
   checkNetworkAndAccountSupports1559,
   getAddressBook,
   getSelectedNetworkClientId,
-  getSelectedInternalAccount,
   getNetworkConfigurationsByChainId,
-} from '../../selectors';
+} from '../../selectors/selectors';
+import { getSelectedInternalAccount } from '../../selectors/accounts';
 import * as actionConstants from '../../store/actionConstants';
 import { updateTransactionGasFees } from '../../store/actions';
 import { setCustomGasLimit, setCustomGasPrice } from '../gas/gas.duck';
@@ -47,7 +47,7 @@ const initialState = {
     showExtensionInFullSizeView: false,
     showFiatInTestnets: false,
     showTestNetworks: false,
-    smartTransactionsOptInStatus: false,
+    smartTransactionsOptInStatus: true,
     petnamesEnabled: true,
     featureNotificationsEnabled: false,
     privacyMode: false,
@@ -338,6 +338,15 @@ export const getNfts = (state) => {
   return allNfts?.[selectedAddress]?.[chainId] ?? [];
 };
 
+export const getNFTsByChainId = (state, chainId) => {
+  const {
+    metamask: { allNfts },
+  } = state;
+  const { address: selectedAddress } = getSelectedInternalAccount(state);
+
+  return allNfts?.[selectedAddress]?.[chainId] ?? [];
+};
+
 export const getNftContracts = (state) => {
   const {
     metamask: { allNftContracts },
@@ -358,6 +367,10 @@ export function getNativeCurrency(state) {
 export function getConversionRate(state) {
   return state.metamask.currencyRates[getProviderConfig(state).ticker]
     ?.conversionRate;
+}
+
+export function getCurrencyRates(state) {
+  return state.metamask.currencyRates;
 }
 
 export function getSendHexDataFeatureFlagState(state) {
@@ -456,6 +469,16 @@ export const getGasEstimateTypeByChainId = createSelector(
     return transactionGasFeeEstimateType ?? gasFeeControllerEstimateType;
   },
 );
+
+/**
+ * Returns the balances of imported and detected tokens across all accounts and chains.
+ *
+ * @param {*} state
+ * @returns { import('@metamask/assets-controllers').TokenBalancesControllerState['tokenBalances']}
+ */
+export function getTokenBalances(state) {
+  return state.metamask.tokenBalances;
+}
 
 export const getGasFeeEstimatesByChainId = createSelector(
   getGasFeeControllerEstimatesByChainId,
