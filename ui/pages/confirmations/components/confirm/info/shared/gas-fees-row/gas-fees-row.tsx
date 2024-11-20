@@ -30,7 +30,7 @@ export const GasFeesRow = ({
   label: string;
   tooltipText: string;
   fiatFee: string;
-  fiatFeeWith18SignificantDigits: string;
+  fiatFeeWith18SignificantDigits: string | null;
   nativeFee: string;
   'data-testid'?: string;
 }) => {

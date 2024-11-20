@@ -27,7 +27,7 @@ export const EditGasFeesRow = ({
   setShowCustomizeGasPopover,
 }: {
   fiatFee: string;
-  fiatFeeWith18SignificantDigits: string;
+  fiatFeeWith18SignificantDigits: string | null;
   nativeFee: string;
   supportsEIP1559: boolean;
   setShowCustomizeGasPopover: Dispatch<SetStateAction<boolean>>;
