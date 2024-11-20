@@ -1526,6 +1526,7 @@ export default class MetamaskController extends EventEmitter {
           `${this.approvalController.name}:acceptRequest`,
           `${this.snapController.name}:get`,
         ],
+        allowedEvents: ['NotificationServicesController:notificationsListUpdated']
       });
 
     this.snapInterfaceController = new SnapInterfaceController({
