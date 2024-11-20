@@ -1994,7 +1994,7 @@ export function addImportedTokens(
 export function ignoreTokens({
   tokensToIgnore,
   dontShowLoadingIndicator = false,
-  networkClientId = undefined,
+  networkClientId,
 }: {
   tokensToIgnore: string[];
   dontShowLoadingIndicator: boolean;
