@@ -5002,9 +5002,6 @@
   "signing": {
     "message": "Signing"
   },
-  "signingAccount": {
-    "message": "Signing Account"
-  },
   "signingInWith": {
     "message": "Signing in with"
   },
