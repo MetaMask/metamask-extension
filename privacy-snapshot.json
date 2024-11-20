@@ -29,6 +29,8 @@
   "github.com",
   "goerli.infura.io",
   "lattice.gridplus.io",
+  "linea-mainnet.infura.io",
+  "linea-sepolia.infura.io",
   "localhost:8000",
   "localhost:8545",
   "mainnet.infura.io",

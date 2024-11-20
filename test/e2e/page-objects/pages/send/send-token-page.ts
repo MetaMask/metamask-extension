@@ -12,6 +12,13 @@ class SendTokenPage {
     tag: 'button',
   };
 
+  private readonly cancelButton = {
+    text: 'Cancel',
+    tag: 'button',
+  };
+
+  private readonly assetValue = '[data-testid="account-value-and-suffix"]';
+
   private readonly ensAddressAsRecipient = '[data-testid="ens-input-selected"]';
 
   private readonly ensResolvedName =
@@ -54,6 +61,22 @@ class SendTokenPage {
   async getAssetPickerItems(): Promise<WebElement[]> {
     console.log('Retrieving asset picker items');
     return this.driver.findElements(this.tokenListButton);
+  }
+
+  async checkAccountValueAndSuffix(value: string): Promise<void> {
+    console.log(`Checking if account value and suffix is ${value}`);
+    const element = await this.driver.waitForSelector(this.assetValue);
+    const text = await element.getText();
+    assert.equal(
+      text,
+      value,
+      `Expected account value and suffix to be ${value}, got ${text}`,
+    );
+    console.log(`Account value and suffix is ${value}`);
+  }
+
+  async clickCancelButton(): Promise<void> {
+    await this.driver.clickElement(this.cancelButton);
   }
 
   async clickAssetPickerButton() {

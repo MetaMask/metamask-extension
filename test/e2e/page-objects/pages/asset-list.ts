@@ -4,13 +4,18 @@ class AssetListPage {
   private readonly driver: Driver;
 
   // Selectors
-  private readonly networksToggle = '[data-testid="sort-by-networks"]';
+
+  private readonly networksToggle = '[data-testid="network-filter"]';
+
   private readonly allNetworksOption =
     '[data-testid="network-filter-all__button"]';
+
   private readonly currentNetworkOption =
-    '[data-testid="network-filter-current__button"]';
+    '[data-testid="current-network__button"]';
+
   private readonly allNetworksTotal =
     '[data-testid="network-filter-all__total"]';
+
   private readonly currentNetworksTotal = `${this.currentNetworkOption} [data-testid="account-value-and-suffix"]`;
 
   constructor(driver: Driver) {
@@ -27,6 +32,11 @@ class AssetListPage {
     const toggle = await this.driver.findElement(this.networksToggle);
     const text = await toggle.getText();
     return text;
+  }
+
+  async clickCurrentNetworkOption(): Promise<void> {
+    console.log(`Clicking on the current network option`);
+    await this.driver.clickElement(this.currentNetworkOption);
   }
 
   async getAllNetworksOptionTotal(): Promise<string> {

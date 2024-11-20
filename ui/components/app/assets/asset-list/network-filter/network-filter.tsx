@@ -82,6 +82,7 @@ const NetworkFilter = ({ handleClose }: SortControlProps) => {
       <SelectableListItem
         isSelected={!Object.keys(tokenNetworkFilter).length}
         onClick={() => handleFilter({})}
+        testId={'all-networks'}
       >
         <Box
           display={Display.Flex}
@@ -137,6 +138,7 @@ const NetworkFilter = ({ handleClose }: SortControlProps) => {
       <SelectableListItem
         isSelected={tokenNetworkFilter[chainId]}
         onClick={() => handleFilter({ [chainId]: true })}
+        testId={'current-network'}
       >
         <Box
           display={Display.Flex}

@@ -30,6 +30,10 @@ class SettingsPage {
     css: 'h3',
   };
 
+  private readonly showFiatOnTestnetsToggle = {
+    css: '.show-fiat-on-testnets-toggle',
+  };
+
   constructor(driver: Driver) {
     this.driver = driver;
   }
@@ -42,6 +46,21 @@ class SettingsPage {
       throw e;
     }
     console.log('Settings page is loaded');
+  }
+
+  async clickAdvancedTab(): Promise<void> {
+    console.log('Clicking on Advanced tab');
+    await this.driver.clickElement({
+      css: '.tab-bar__tab__content__title',
+      text: 'Advanced',
+    });
+  }
+
+  async toggleShowFiatOnTestnets(): Promise<void> {
+    console.log('Toggling Show Fiat on Testnets setting');
+    await this.driver.clickElement(
+      '.toggle-button.show-fiat-on-testnets-toggle',
+    );
   }
 
   async closeSettingsPage(): Promise<void> {
