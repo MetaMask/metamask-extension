@@ -67,7 +67,6 @@ import {
   getMetaMetricsId,
   getParticipateInMetaMetrics,
   getDataCollectionForMarketing,
-  getNetworkConfigurationsByChainId,
 } from '../../../selectors';
 import {
   getSmartTransactionsEnabled,
@@ -229,9 +228,6 @@ export default function PrepareSwapPage({
   const loadingComplete = !fetchingQuotes && areQuotesPresent;
   const isMetaMetricsEnabled = useSelector(getParticipateInMetaMetrics);
   const isMarketingEnabled = useSelector(getDataCollectionForMarketing);
-  const networkConfigurationsByChainId = useSelector(
-    getNetworkConfigurationsByChainId,
-  );
 
   const fetchParamsFromToken = isSwapsDefaultTokenAddress(
     sourceTokenInfo?.address,
