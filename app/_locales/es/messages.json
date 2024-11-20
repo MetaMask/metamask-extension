@@ -207,23 +207,6 @@
   "addCustomNetwork": {
     "message": "Agregar red personalizada"
   },
-  "addEthereumChainConfirmationDescription": {
-    "message": "Esto permitirá que la red se utilice en MetaMask."
-  },
-  "addEthereumChainConfirmationRisks": {
-    "message": "MetaMask no verifica redes personalizadas."
-  },
-  "addEthereumChainConfirmationRisksLearnMore": {
-    "message": "Obtenga más información sobre $1.",
-    "description": "$1 is a link with text that is provided by the 'addEthereumChainConfirmationRisksLearnMoreLink' key"
-  },
-  "addEthereumChainConfirmationRisksLearnMoreLink": {
-    "message": "estafas y riesgos de seguridad de la red",
-    "description": "Link text for the 'addEthereumChainConfirmationRisksLearnMore' translation key"
-  },
-  "addEthereumChainConfirmationTitle": {
-    "message": "¿Permitir que este sitio agregue una red?"
-  },
   "addEthereumChainWarningModalHeader": {
     "message": "Agregue este proveedor de RPC solo si está seguro de que puede confiar en él. $1",
     "description": "$1 is addEthereumChainWarningModalHeaderPartTwo passed separately so that it can be bolded"
@@ -272,6 +255,9 @@
   },
   "addNewBitcoinTestnetAccount": {
     "message": "Añadir una nueva cuenta de Bitcoin (Testnet)"
+  },
+  "addNewSolanaAccount": {
+    "message": "Añadir una nueva cuenta de Solana (Beta)"
   },
   "addNewToken": {
     "message": "Agregar nuevo token"
@@ -818,10 +804,6 @@
   },
   "buyNow": {
     "message": "Comprar ahora"
-  },
-  "buyToken": {
-    "message": "Comprar $1",
-    "description": "$1 is the token symbol"
   },
   "bytes": {
     "message": "Bytes"
@@ -1638,9 +1620,6 @@
   "editSpeedUpEditGasFeeModalTitle": {
     "message": "Editar la tarifa de aceleración de gas"
   },
-  "enable": {
-    "message": "Habilitar"
-  },
   "enableAutoDetect": {
     "message": " Activar autodetección"
   },
@@ -1717,10 +1696,6 @@
     "message": "Código: $1",
     "description": "Displayed error code for debugging purposes. $1 is the error code"
   },
-  "errorDetails": {
-    "message": "Detalles del error",
-    "description": "Title for collapsible section that displays error details for debugging purposes"
-  },
   "errorGettingSafeChainList": {
     "message": "Error al obtener la lista de cadenas seguras, por favor continúe con precaución."
   },
@@ -1731,14 +1706,6 @@
   "errorName": {
     "message": "Código: $1",
     "description": "Displayed error name for debugging purposes. $1 is the error name"
-  },
-  "errorPageMessage": {
-    "message": "Vuelva a cargar la página para intentarlo de nuevo o comuníquese con soporte técnico $1.",
-    "description": "Message displayed on generic error page in the fullscreen or notification UI, $1 is a clickable link with text defined by the 'here' key. The link will open to a form where users can file support tickets."
-  },
-  "errorPagePopupMessage": {
-    "message": "Cierre la ventana emergente y vuelva a abrirla para intentarlo de nuevo o comuníquese con soporte técnico $1.",
-    "description": "Message displayed on generic error page in the popup UI, $1 is a clickable link with text defined by the 'here' key. The link will open to a form where users can file support tickets."
   },
   "errorPageTitle": {
     "message": "MetaMask encontró un error",
@@ -1897,13 +1864,6 @@
   "functionType": {
     "message": "Tipo de función"
   },
-  "fundYourWallet": {
-    "message": "Agregar fondos a su monedero"
-  },
-  "fundYourWalletDescription": {
-    "message": "Comience agregando $1 a su monedero.",
-    "description": "$1 is the token symbol"
-  },
   "gas": {
     "message": "Gas"
   },
@@ -1986,14 +1946,6 @@
   },
   "genericExplorerView": {
     "message": "Ver cuenta en $1"
-  },
-  "getStartedWithNFTs": {
-    "message": "Obtenga $1 para comprar NFT",
-    "description": "$1 is the token symbol"
-  },
-  "getStartedWithNFTsDescription": {
-    "message": "Comience con los NFT agregando $1 a su monedero.",
-    "description": "$1 is the token symbol"
   },
   "goBack": {
     "message": "Volver"
@@ -4576,17 +4528,11 @@
   "signingInWith": {
     "message": "Iniciar sesión con"
   },
-  "simulationDetailsFailed": {
-    "message": "Se produjo un error al cargar su estimación."
-  },
   "simulationDetailsFiatNotAvailable": {
     "message": "No disponible"
   },
   "simulationDetailsIncomingHeading": {
     "message": "Usted recibe"
-  },
-  "simulationDetailsNoBalanceChanges": {
-    "message": "No se prevén cambios para su monedero"
   },
   "simulationDetailsOutgoingHeading": {
     "message": "Envía"
@@ -4624,9 +4570,6 @@
   },
   "siweResources": {
     "message": "Recursos"
-  },
-  "siweSignatureSimulationDetailInfo": {
-    "message": "Está iniciando sesión en un sitio y no se prevén cambios en su cuenta."
   },
   "siweURI": {
     "message": "URL"
@@ -4669,25 +4612,6 @@
   },
   "smartTransactions": {
     "message": "Transacciones inteligentes"
-  },
-  "smartTransactionsBenefit1": {
-    "message": "Índice de éxito del 99.5%"
-  },
-  "smartTransactionsBenefit2": {
-    "message": "Le permite ahorrar dinero"
-  },
-  "smartTransactionsBenefit3": {
-    "message": "Actualizaciones en tiempo real"
-  },
-  "smartTransactionsDescription": {
-    "message": "Desbloquee índices de éxito más altos, protección contra frontrunning y mejor visibilidad con transacciones inteligentes."
-  },
-  "smartTransactionsDescription2": {
-    "message": "Solo disponible en Ethereum. Active o desactive en cualquier momento en la configuración. $1",
-    "description": "$1 is an external link to learn more about Smart Transactions"
-  },
-  "smartTransactionsOptItModalTitle": {
-    "message": "Protección mejorada de transacciones"
   },
   "snapAccountCreated": {
     "message": "Cuenta creada"
@@ -4855,9 +4779,6 @@
     "message": "Póngase en contacto con los creadores de $1 para obtener más ayuda.",
     "description": "This is shown when the insight snap throws an error. $1 is the snap name"
   },
-  "someNetworksMayPoseSecurity": {
-    "message": "Algunas redes pueden presentar riesgos de seguridad y/o privacidad. Comprenda los riesgos antes de agregar y utilizar una red."
-  },
   "somethingDoesntLookRight": {
     "message": "Algo no se ve bien, ¿cierto? $1",
     "description": "A false positive message for users to contact support. $1 is a link to the support page."
@@ -5010,14 +4931,6 @@
   },
   "stake": {
     "message": "Staking"
-  },
-  "startYourJourney": {
-    "message": "Comience su recorrido con $1",
-    "description": "$1 is the token symbol"
-  },
-  "startYourJourneyDescription": {
-    "message": "Comience con la web3 agregando $1 a su monedero.",
-    "description": "$1 is the token symbol"
   },
   "stateLogError": {
     "message": "Error al recuperar los registros de estado."
@@ -6003,9 +5916,6 @@
   },
   "viewActivity": {
     "message": "Ver actividad"
-  },
-  "viewAllDetails": {
-    "message": "Ver todos los detalles"
   },
   "viewAllQuotes": {
     "message": "ver todas las cotizaciones"

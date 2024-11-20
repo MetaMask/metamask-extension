@@ -27,9 +27,9 @@ import { useI18nContext } from '../../../hooks/useI18nContext';
 import { useCopyToClipboard } from '../../../hooks/useCopyToClipboard';
 import { getMetaMaskAccounts } from '../../../selectors';
 import { getInstitutionalConnectRequests } from '../../../ducks/institutional/institutional';
-import { getSelectedInternalAccount } from '../../../selectors/selectors';
+import { getSelectedInternalAccount } from '../../../selectors/accounts';
 import { toChecksumHexAddress } from '../../../../shared/modules/hexstring-utils';
-import { SWAPS_CHAINID_DEFAULT_BLOCK_EXPLORER_URL_MAP } from '../../../../shared/constants/swaps';
+import { CHAINID_DEFAULT_BLOCK_EXPLORER_URL_MAP } from '../../../../shared/constants/common';
 import { CHAIN_IDS } from '../../../../shared/constants/network';
 import {
   mmiActionsFactory,
@@ -43,7 +43,7 @@ import { getMostRecentOverviewPage } from '../../../ducks/history/history';
 import { shortenAddress } from '../../../helpers/utils/util';
 
 const getButtonLinkHref = ({ address }: { address: string }) => {
-  const url = SWAPS_CHAINID_DEFAULT_BLOCK_EXPLORER_URL_MAP[CHAIN_IDS.MAINNET];
+  const url = CHAINID_DEFAULT_BLOCK_EXPLORER_URL_MAP[CHAIN_IDS.MAINNET];
   return `${url}address/${address}`;
 };
 
@@ -154,6 +154,7 @@ const InteractiveReplacementTokenPage: React.FC = () => {
 
         const filteredAccounts = custodianAccounts.filter(
           (account: TokenAccount) =>
+            // @ts-expect-error metaMaskAccounts isn't a real type
             metaMaskAccounts[account.address.toLowerCase()],
         );
 
@@ -163,6 +164,7 @@ const InteractiveReplacementTokenPage: React.FC = () => {
             name: account.name,
             labels: account.labels,
             balance:
+              // @ts-expect-error metaMaskAccounts isn't a real type
               metaMaskAccounts[account.address.toLowerCase()]?.balance || 0,
           }),
         );

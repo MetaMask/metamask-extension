@@ -114,6 +114,7 @@ describe('Confirmation Signature - Permit @no-mmi', function (this: Suite) {
 });
 
 async function assertInfoValues(driver: Driver) {
+  await driver.clickElement('[data-testid="sectionCollapseButton"]');
   const origin = driver.findElement({ text: DAPP_HOST_ADDRESS });
   const contractPetName = driver.findElement({
     css: '.name__value',
@@ -126,7 +127,7 @@ async function assertInfoValues(driver: Driver) {
     css: '.name__value',
     text: '0x5B38D...eddC4',
   });
-  const value = driver.findElement({ text: '<0.000001' });
+  const value = driver.findElement({ text: '3,000' });
   const nonce = driver.findElement({ text: '0' });
   const deadline = driver.findElement({ text: '09 June 3554, 16:53' });
 

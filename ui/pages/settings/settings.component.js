@@ -20,6 +20,7 @@ import {
   ADD_NETWORK_ROUTE,
   ADD_POPULAR_CUSTOM_NETWORK,
   DEFAULT_ROUTE,
+  NOTIFICATIONS_SETTINGS_ROUTE,
 } from '../../helpers/constants/routes';
 
 import { getSettingsRoutes } from '../../helpers/utils/settings-search';
@@ -69,6 +70,7 @@ class SettingsPage extends PureComponent {
     mostRecentOverviewPage: PropTypes.string.isRequired,
     pathnameI18nKey: PropTypes.string,
     toggleNetworkMenu: PropTypes.func.isRequired,
+    useExternalServices: PropTypes.bool,
   };
 
   static contextTypes = {
@@ -290,7 +292,7 @@ class SettingsPage extends PureComponent {
   }
 
   renderTabs() {
-    const { history, currentPath } = this.props;
+    const { history, currentPath, useExternalServices } = this.props;
     const { t } = this.context;
 
     const tabs = [
@@ -326,7 +328,15 @@ class SettingsPage extends PureComponent {
       },
     ];
 
-    if (process.env.ENABLE_SETTINGS_PAGE_DEV_OPTIONS) {
+    if (useExternalServices) {
+      tabs.splice(4, 0, {
+        content: t('notifications'),
+        icon: <Icon name={IconName.Notification} />,
+        key: NOTIFICATIONS_SETTINGS_ROUTE,
+      });
+    }
+
+    if (process.env.ENABLE_SETTINGS_PAGE_DEV_OPTIONS || process.env.IN_TEST) {
       tabs.splice(-1, 0, {
         content: t('developerOptions'),
         icon: <Icon name={IconName.CodeCircle} />,
@@ -349,7 +359,12 @@ class SettingsPage extends PureComponent {
           }
           return matchPath(currentPath, { exact: true, path: key });
         }}
-        onSelect={(key) => history.push(key)}
+        onSelect={(key) =>
+          history.push({
+            pathname: key,
+            state: { fromPage: currentPath },
+          })
+        }
       />
     );
   }
@@ -395,7 +410,8 @@ class SettingsPage extends PureComponent {
         />
         <Route exact path={SECURITY_ROUTE} component={SecurityTab} />
         <Route exact path={EXPERIMENTAL_ROUTE} component={ExperimentalTab} />
-        {process.env.ENABLE_SETTINGS_PAGE_DEV_OPTIONS && (
+        {(process.env.ENABLE_SETTINGS_PAGE_DEV_OPTIONS ||
+          process.env.IN_TEST) && (
           <Route
             exact
             path={DEVELOPER_OPTIONS_ROUTE}

@@ -1,6 +1,9 @@
 const fs = require('fs');
 
 const {
+  SECURITY_PROVIDER_SUPPORTED_CHAIN_IDS_FALLBACK_LIST,
+} = require('../../shared/constants/security-provider');
+const {
   BRIDGE_DEV_API_BASE_URL,
   BRIDGE_PROD_API_BASE_URL,
 } = require('../../shared/constants/bridge');
@@ -13,6 +16,7 @@ const {
   SWAPS_API_V2_BASE_URL,
   TOKEN_API_BASE_URL,
 } = require('../../shared/constants/swaps');
+const { SECURITY_ALERTS_PROD_API_BASE_URL } = require('./tests/ppom/constants');
 const {
   DEFAULT_FEATURE_FLAGS_RESPONSE: BRIDGE_DEFAULT_FEATURE_FLAGS_RESPONSE,
 } = require('./tests/bridge/constants');
@@ -39,6 +43,8 @@ const blacklistedHosts = [
   'goerli.infura.io',
   'mainnet.infura.io',
   'sepolia.infura.io',
+  'linea-mainnet.infura.io',
+  'linea-sepolia.infura.io',
 ];
 const {
   mockEmptyStalelistAndHotlist,
@@ -103,7 +109,7 @@ const privateHostMatchers = [
 async function setupMocking(
   server,
   testSpecificMock,
-  { chainId, ethConversionInUsd = '1700' },
+  { chainId, ethConversionInUsd = 1700 },
 ) {
   const privacyReport = new Set();
   await server.forAnyRequest().thenPassThrough({
@@ -150,6 +156,30 @@ async function setupMocking(
       body: emptyHtmlPage(),
     };
   });
+
+  await server
+    .forGet(`${SECURITY_ALERTS_PROD_API_BASE_URL}/supportedChains`)
+    .thenCallback(() => {
+      return {
+        statusCode: 200,
+        json: SECURITY_PROVIDER_SUPPORTED_CHAIN_IDS_FALLBACK_LIST,
+      };
+    });
+
+  await server
+    .forPost(`${SECURITY_ALERTS_PROD_API_BASE_URL}/validate/${chainId}`)
+    .thenCallback(() => {
+      return {
+        statusCode: 200,
+        json: {
+          block: 20733513,
+          result_type: 'Benign',
+          reason: '',
+          description: '',
+          features: [],
+        },
+      };
+    });
 
   await server
     .forPost(
@@ -588,13 +618,15 @@ async function setupMocking(
   });
 
   await server
-    .forGet('https://min-api.cryptocompare.com/data/price')
-    .withQuery({ fsym: 'ETH', tsyms: 'USD' })
+    .forGet('https://min-api.cryptocompare.com/data/pricemulti')
+    .withQuery({ fsyms: 'ETH', tsyms: 'usd' })
     .thenCallback(() => {
       return {
         statusCode: 200,
         json: {
-          USD: ethConversionInUsd,
+          ETH: {
+            USD: ethConversionInUsd,
+          },
         },
       };
     });

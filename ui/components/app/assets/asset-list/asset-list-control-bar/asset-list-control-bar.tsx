@@ -1,4 +1,6 @@
-import React, { useRef, useState } from 'react';
+import React, { useMemo, useRef, useState } from 'react';
+import { useSelector } from 'react-redux';
+import { getCurrentNetwork, getPreferences } from '../../../../../selectors';
 import {
   Box,
   ButtonBase,
@@ -25,6 +27,8 @@ import {
   ENVIRONMENT_TYPE_NOTIFICATION,
   ENVIRONMENT_TYPE_POPUP,
 } from '../../../../../../shared/constants/app';
+import NetworkFilter from '../network-filter';
+import { TEST_CHAINS } from '../../../../../../shared/constants/network';
 
 type AssetListControlBarProps = {
   showTokensLinks?: boolean;
@@ -32,55 +36,120 @@ type AssetListControlBarProps = {
 
 const AssetListControlBar = ({ showTokensLinks }: AssetListControlBarProps) => {
   const t = useI18nContext();
-  const controlBarRef = useRef<HTMLDivElement>(null); // Create a ref
-  const [isPopoverOpen, setIsPopoverOpen] = useState(false);
+  const popoverRef = useRef<HTMLDivElement>(null);
+  const currentNetwork = useSelector(getCurrentNetwork);
+  const { tokenNetworkFilter } = useSelector(getPreferences);
+  const [isTokenSortPopoverOpen, setIsTokenSortPopoverOpen] = useState(false);
+  const [isNetworkFilterPopoverOpen, setIsNetworkFilterPopoverOpen] =
+    useState(false);
+
+  const allNetworksFilterShown = Object.keys(tokenNetworkFilter ?? {}).length;
+  const isTestNetwork = useMemo(() => {
+    return (TEST_CHAINS as string[]).includes(currentNetwork.chainId);
+  }, [currentNetwork.chainId, TEST_CHAINS]);
 
   const windowType = getEnvironmentType();
   const isFullScreen =
     windowType !== ENVIRONMENT_TYPE_NOTIFICATION &&
     windowType !== ENVIRONMENT_TYPE_POPUP;
 
-  const handleOpenPopover = () => {
-    setIsPopoverOpen(!isPopoverOpen);
+  const toggleTokenSortPopover = () => {
+    setIsNetworkFilterPopoverOpen(false);
+    setIsTokenSortPopoverOpen(!isTokenSortPopoverOpen);
+  };
+
+  const toggleNetworkFilterPopover = () => {
+    setIsTokenSortPopoverOpen(false);
+    setIsNetworkFilterPopoverOpen(!isNetworkFilterPopoverOpen);
   };
 
   const closePopover = () => {
-    setIsPopoverOpen(false);
+    setIsTokenSortPopoverOpen(false);
+    setIsNetworkFilterPopoverOpen(false);
   };
 
   return (
     <Box
       className="asset-list-control-bar"
-      ref={controlBarRef}
-      display={Display.Flex}
-      justifyContent={JustifyContent.spaceBetween}
       marginLeft={4}
       marginRight={4}
       paddingTop={4}
+      ref={popoverRef}
     >
-      <ButtonBase
-        data-testid="sort-by-popover-toggle"
-        className="asset-list-control-bar__button"
-        onClick={handleOpenPopover}
-        size={ButtonBaseSize.Sm}
-        endIconName={IconName.ArrowDown}
-        backgroundColor={
-          isPopoverOpen
-            ? BackgroundColor.backgroundPressed
-            : BackgroundColor.backgroundDefault
+      <Box
+        display={Display.Flex}
+        justifyContent={
+          isFullScreen ? JustifyContent.flexStart : JustifyContent.spaceBetween
         }
-        borderColor={BorderColor.borderMuted}
-        borderStyle={BorderStyle.solid}
-        color={TextColor.textDefault}
       >
-        {t('sortBy')}
-      </ButtonBase>
-      <ImportControl showTokensLinks={showTokensLinks} />
+        {process.env.PORTFOLIO_VIEW && (
+          <ButtonBase
+            data-testid="sort-by-popover-toggle"
+            className="asset-list-control-bar__button"
+            onClick={toggleNetworkFilterPopover}
+            size={ButtonBaseSize.Sm}
+            disabled={isTestNetwork}
+            endIconName={IconName.ArrowDown}
+            backgroundColor={
+              isNetworkFilterPopoverOpen
+                ? BackgroundColor.backgroundPressed
+                : BackgroundColor.backgroundDefault
+            }
+            borderColor={BorderColor.borderMuted}
+            borderStyle={BorderStyle.solid}
+            color={TextColor.textDefault}
+            marginRight={isFullScreen ? 2 : null}
+            ellipsis
+          >
+            {allNetworksFilterShown
+              ? currentNetwork?.nickname ?? t('currentNetwork')
+              : t('allNetworks')}
+          </ButtonBase>
+        )}
+
+        <ButtonBase
+          data-testid="sort-by-popover-toggle"
+          className="asset-list-control-bar__button"
+          onClick={toggleTokenSortPopover}
+          size={ButtonBaseSize.Sm}
+          endIconName={IconName.ArrowDown}
+          backgroundColor={
+            isTokenSortPopoverOpen
+              ? BackgroundColor.backgroundPressed
+              : BackgroundColor.backgroundDefault
+          }
+          borderColor={BorderColor.borderMuted}
+          borderStyle={BorderStyle.solid}
+          color={TextColor.textDefault}
+          marginRight={isFullScreen ? 2 : null}
+        >
+          {t('sortBy')}
+        </ButtonBase>
+
+        <ImportControl showTokensLinks={showTokensLinks} />
+      </Box>
+
       <Popover
         onClickOutside={closePopover}
-        isOpen={isPopoverOpen}
+        isOpen={isNetworkFilterPopoverOpen}
         position={PopoverPosition.BottomStart}
-        referenceElement={controlBarRef.current}
+        referenceElement={popoverRef.current}
+        matchWidth={!isFullScreen}
+        style={{
+          zIndex: 10,
+          display: 'flex',
+          flexDirection: 'column',
+          padding: 0,
+          minWidth: isFullScreen ? '325px' : '',
+        }}
+      >
+        <NetworkFilter handleClose={closePopover} />
+      </Popover>
+      <Popover
+        onClickOutside={closePopover}
+        isOpen={isTokenSortPopoverOpen}
+        position={PopoverPosition.BottomStart}
+        referenceElement={popoverRef.current}
         matchWidth={!isFullScreen}
         style={{
           zIndex: 10,

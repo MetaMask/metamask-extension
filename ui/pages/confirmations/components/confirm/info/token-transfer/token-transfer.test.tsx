@@ -29,6 +29,7 @@ describe('TokenTransferInfo', () => {
       <TokenTransferInfo />,
       mockStore,
     );
+
     expect(container).toMatchSnapshot();
   });
 });

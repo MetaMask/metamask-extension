@@ -51,7 +51,7 @@ export type TokenWithBalance = {
 };
 
 export type AssetListProps = {
-  onClickAsset: (arg: string) => void;
+  onClickAsset: (chainId: string, address: string) => void;
   showTokensLinks?: boolean;
 };
 
@@ -116,8 +116,8 @@ const AssetList = ({ onClickAsset, showTokensLinks }: AssetListProps) => {
       <AssetListControlBar showTokensLinks={showTokensLinks} />
       <TokenList
         nativeToken={<NativeToken onClickAsset={onClickAsset} />}
-        onTokenClick={(tokenAddress: string) => {
-          onClickAsset(tokenAddress);
+        onTokenClick={(chainId: string, tokenAddress: string) => {
+          onClickAsset(chainId, tokenAddress);
           trackEvent({
             event: MetaMetricsEventName.TokenScreenOpened,
             category: MetaMetricsEventCategory.Navigation,
@@ -164,7 +164,7 @@ const AssetList = ({ onClickAsset, showTokensLinks }: AssetListProps) => {
         <FundingMethodModal
           isOpen={showFundingMethodModal}
           onClose={() => setShowFundingMethodModal(false)}
-          title={t('selectFundingMethod')}
+          title={t('fundingMethod')}
           onClickReceive={onClickReceive}
         />
       )}

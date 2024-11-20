@@ -2,8 +2,9 @@ import React, { useMemo } from 'react';
 import { NameType } from '@metamask/name-controller';
 import { Hex } from '@metamask/utils';
 import { captureException } from '@sentry/browser';
-import { shortenString } from '../../../../../../../../helpers/utils/util';
 
+import { MetaMetricsEventLocation } from '../../../../../../../../../shared/constants/metametrics';
+import { shortenString } from '../../../../../../../../helpers/utils/util';
 import { calcTokenAmount } from '../../../../../../../../../shared/lib/transactions-controller-utils';
 import useTokenExchangeRate from '../../../../../../../../components/app/currency-input/hooks/useTokenExchangeRate';
 import { IndividualFiatDisplay } from '../../../../../simulation-details/fiat-display';
@@ -11,7 +12,8 @@ import {
   formatAmount,
   formatAmountMaxPrecision,
 } from '../../../../../simulation-details/formatAmount';
-import { useAsyncResult } from '../../../../../../../../hooks/useAsyncResult';
+import { useGetTokenStandardAndDetails } from '../../../../../../hooks/useGetTokenStandardAndDetails';
+import useTrackERC20WithoutDecimalInformation from '../../../../../../hooks/useTrackERC20WithoutDecimalInformation';
 
 import {
   Box,
@@ -25,11 +27,15 @@ import {
   Display,
   JustifyContent,
   TextAlign,
+  TextColor,
 } from '../../../../../../../../helpers/constants/design-system';
 import Name from '../../../../../../../../components/app/name/name';
-import { fetchErc20Decimals } from '../../../../../../utils/token';
+import { TokenDetailsERC20 } from '../../../../../../utils/token';
 
 type PermitSimulationValueDisplayParams = {
+  /** ID of the associated chain. */
+  chainId: Hex;
+
   /** The primaryType of the typed sign message */
   primaryType?: string;
 
@@ -45,19 +51,35 @@ type PermitSimulationValueDisplayParams = {
 
   /** The tokenId for NFT */
   tokenId?: string;
+
+  /** True if value is being credited to wallet */
+  credit?: boolean;
+
+  /** True if value is being debited to wallet */
+  debit?: boolean;
 };
 
 const PermitSimulationValueDisplay: React.FC<
   PermitSimulationValueDisplayParams
-> = ({ primaryType, tokenContract, value, tokenId }) => {
+> = ({
+  chainId,
+  primaryType,
+  tokenContract,
+  tokenId,
+  value,
+  credit,
+  debit,
+}) => {
   const exchangeRate = useTokenExchangeRate(tokenContract);
 
-  const { value: tokenDecimals } = useAsyncResult(async () => {
-    if (tokenId) {
-      return undefined;
-    }
-    return await fetchErc20Decimals(tokenContract);
-  }, [tokenContract]);
+  const tokenDetails = useGetTokenStandardAndDetails(tokenContract);
+  useTrackERC20WithoutDecimalInformation(
+    chainId,
+    tokenContract,
+    tokenDetails as TokenDetailsERC20,
+    MetaMetricsEventLocation.SignatureConfirmation,
+  );
+  const { decimalsNumber: tokenDecimals } = tokenDetails;
 
   const fiatValue = useMemo(() => {
     if (exchangeRate && value && !tokenId) {
@@ -90,6 +112,17 @@ const PermitSimulationValueDisplay: React.FC<
     return null;
   }
 
+  let valueColor = TextColor.textDefault;
+  let valueBackgroundColor = BackgroundColor.backgroundAlternative;
+
+  if (credit) {
+    valueColor = TextColor.successDefault;
+    valueBackgroundColor = BackgroundColor.successMuted;
+  } else if (debit) {
+    valueColor = TextColor.errorDefault;
+    valueBackgroundColor = BackgroundColor.errorMuted;
+  }
+
   return (
     <Box>
       <Box display={Display.Flex} justifyContent={JustifyContent.flexEnd}>
@@ -106,8 +139,9 @@ const PermitSimulationValueDisplay: React.FC<
           >
             <Text
               data-testid="simulation-token-value"
-              backgroundColor={BackgroundColor.backgroundAlternative}
+              backgroundColor={valueBackgroundColor}
               borderRadius={BorderRadius.XL}
+              color={valueColor}
               paddingInline={2}
               style={{ paddingTop: '1px', paddingBottom: '1px' }}
               textAlign={TextAlign.Center}
@@ -126,6 +160,7 @@ const PermitSimulationValueDisplay: React.FC<
         <Name
           value={tokenContract}
           type={NameType.ETHEREUM_ADDRESS}
+          variation={chainId}
           preferContractSymbol
         />
       </Box>
