@@ -60,6 +60,20 @@ function formatValue(value: string, type: NameType): string {
   }
 }
 
+export function formatName(name: string): string {
+  const MAX_NAME_CHAR_COUNT = 15;
+
+  if (!name || !name.length) {
+    return name;
+  }
+
+  if (name.length > MAX_NAME_CHAR_COUNT) {
+    return `${name.substring(0, MAX_NAME_CHAR_COUNT)}...`;
+  }
+
+  return name;
+}
+
 const Name = memo(
   ({
     value,
@@ -103,6 +117,7 @@ const Name = memo(
     }, [setModalOpen]);
 
     const formattedValue = formatValue(value, type);
+    const formattedName = formatName(name);
     const hasDisplayName = Boolean(name);
 
     return (
@@ -135,7 +150,7 @@ const Name = memo(
           )}
           {hasDisplayName ? (
             <Text className="name__name" variant={TextVariant.bodyMd}>
-              {name}
+              {formattedName}
             </Text>
           ) : (
             <Text className="name__value" variant={TextVariant.bodyMd}>

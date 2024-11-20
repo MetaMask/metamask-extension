@@ -10,7 +10,7 @@ import {
 import { useDisplayName } from '../../../hooks/useDisplayName';
 import { mockNetworkState } from '../../../../test/stub/networks';
 import { CHAIN_IDS } from '../../../../shared/constants/network';
-import Name from './name';
+import Name, { formatName } from './name';
 
 jest.mock('../../../hooks/useDisplayName');
 
@@ -147,5 +147,34 @@ describe('Name', () => {
         });
       },
     );
+  });
+});
+
+describe('formatName()', () => {
+  it('returns empty string if name is empty string', () => {
+    const TEST_NAME = '';
+
+    const actual = formatName(TEST_NAME);
+    const expected = '';
+
+    expect(actual).toEqual(expected);
+  });
+
+  it('returns whole name if it is short enough', () => {
+    const TEST_NAME = 'Short name';
+
+    const actual = formatName(TEST_NAME);
+    const expected = 'Short name';
+
+    expect(actual).toEqual(expected);
+  });
+
+  it('returns name with ellipsis if it is long enough', () => {
+    const TEST_NAME = 'Quite a long name';
+
+    const actual = formatName(TEST_NAME);
+    const expected = 'Quite a long na...';
+
+    expect(actual).toEqual(expected);
   });
 });
