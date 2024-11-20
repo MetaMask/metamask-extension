@@ -8,6 +8,9 @@ const {
   WINDOW_TITLES,
   withFixtures,
 } = require('../../helpers');
+const {
+  mockMultiNetworkBalancePolling,
+} = require('../../mock-balance-polling/mock-balance-polling');
 const { mockSecurityAlertsAPIFailed } = require('./utils');
 const { mockServerJsonRpc } = require('./mocks/mock-server-json-rpc');
 
@@ -21,13 +24,13 @@ const expectedMaliciousDescription =
 
 async function mockInfura(mockServer) {
   await mockSecurityAlertsAPIFailed(mockServer);
+  await mockMultiNetworkBalancePolling(mockServer);
   await mockServerJsonRpc(mockServer, [
     ['eth_blockNumber'],
     ['eth_call'],
     ['eth_estimateGas'],
     ['eth_feeHistory'],
     ['eth_gasPrice'],
-    ['eth_getBalance'],
     ['eth_getBlockByNumber'],
     ['eth_getCode'],
     ['eth_getTransactionCount'],

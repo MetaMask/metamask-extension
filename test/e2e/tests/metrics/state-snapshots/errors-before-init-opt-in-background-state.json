@@ -119,7 +119,8 @@
         "showConfirmationAdvancedDetails": false,
         "tokenSortConfig": "object",
         "showMultiRpcModal": "boolean",
-        "shouldShowAggregatedBalancePopover": "boolean"
+        "shouldShowAggregatedBalancePopover": "boolean",
+        "tokenNetworkFilter": "object"
       },
       "selectedAddress": "string",
       "theme": "light",
