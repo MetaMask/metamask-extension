@@ -31,8 +31,8 @@ export const useHistoricalPrices = ({
   const [loading, setLoading] = useState<boolean>(chainSupported);
   const [data, setData] = useState<HistoricalPrices>({});
 
-  if (chainSupported) {
-    useEffect(() => {
+  useEffect(() => {
+    if (chainSupported) {
       setLoading(true);
       fetchWithCache({
         url: `https://price.api.cx.metamask.io/v1/chains/${chainId}/historical-prices/${address}?vsCurrency=${currency}&timePeriod=${timeRange}`,
@@ -59,7 +59,11 @@ export const useHistoricalPrices = ({
           setData({ prices, edges });
           setLoading(false);
         });
-    }, [chainId, address, currency, timeRange]);
-  }
+    } else {
+      setData({});
+      setLoading(false);
+    }
+  }, [chainSupported, chainId, address, currency, timeRange]);
+
   return { loading, data };
 };

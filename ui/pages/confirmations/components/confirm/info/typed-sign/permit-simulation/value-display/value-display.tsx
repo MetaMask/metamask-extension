@@ -21,15 +21,16 @@ import {
 } from '../../../../../../../../components/component-library';
 import Tooltip from '../../../../../../../../components/ui/tooltip';
 import {
+  BackgroundColor,
   BlockSize,
   BorderRadius,
   Display,
   JustifyContent,
   TextAlign,
+  TextColor,
 } from '../../../../../../../../helpers/constants/design-system';
 import Name from '../../../../../../../../components/app/name/name';
 import { TokenDetailsERC20 } from '../../../../../../utils/token';
-import { getAmountColors } from '../../../utils';
 
 type PermitSimulationValueDisplayParams = {
   /** ID of the associated chain. */
@@ -111,7 +112,16 @@ const PermitSimulationValueDisplay: React.FC<
     return null;
   }
 
-  const { color, backgroundColor } = getAmountColors(credit, debit);
+  let valueColor = TextColor.textDefault;
+  let valueBackgroundColor = BackgroundColor.backgroundAlternative;
+
+  if (credit) {
+    valueColor = TextColor.successDefault;
+    valueBackgroundColor = BackgroundColor.successMuted;
+  } else if (debit) {
+    valueColor = TextColor.errorDefault;
+    valueBackgroundColor = BackgroundColor.errorMuted;
+  }
 
   return (
     <Box style={{ marginLeft: 'auto', maxWidth: '100%' }}>
@@ -129,9 +139,9 @@ const PermitSimulationValueDisplay: React.FC<
           >
             <Text
               data-testid="simulation-token-value"
-              backgroundColor={backgroundColor}
+              backgroundColor={valueBackgroundColor}
               borderRadius={BorderRadius.XL}
-              color={color}
+              color={valueColor}
               paddingInline={2}
               style={{ paddingTop: '1px', paddingBottom: '1px' }}
               textAlign={TextAlign.Center}
