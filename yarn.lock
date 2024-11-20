@@ -4873,25 +4873,25 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/accounts-controller@npm:^18.2.2":
-  version: 18.2.2
-  resolution: "@metamask/accounts-controller@npm:18.2.2"
+"@metamask/accounts-controller@npm:^19.0.0":
+  version: 19.0.0
+  resolution: "@metamask/accounts-controller@npm:19.0.0"
   dependencies:
     "@ethereumjs/util": "npm:^8.1.0"
-    "@metamask/base-controller": "npm:^7.0.1"
+    "@metamask/base-controller": "npm:^7.0.2"
     "@metamask/eth-snap-keyring": "npm:^4.3.6"
     "@metamask/keyring-api": "npm:^8.1.3"
     "@metamask/snaps-sdk": "npm:^6.5.0"
     "@metamask/snaps-utils": "npm:^8.1.1"
-    "@metamask/utils": "npm:^9.1.0"
+    "@metamask/utils": "npm:^10.0.0"
     deepmerge: "npm:^4.2.2"
     ethereum-cryptography: "npm:^2.1.2"
     immer: "npm:^9.0.6"
     uuid: "npm:^8.3.2"
   peerDependencies:
-    "@metamask/keyring-controller": ^17.0.0
+    "@metamask/keyring-controller": ^18.0.0
     "@metamask/snaps-controllers": ^9.7.0
-  checksum: 10/095be37c94a577304425f80600d4ef847c83c702ccf3d6b1591602d1fe292bdd3273131e336d6108bd713bff38812dfc4d7b21d4075669cde24e12f117f2dd81
+  checksum: 10/350ef6e96d8fd391101b3cc355b035cc521d3ad514d20db83878c6dbe4d90ec094ff7fdcf708348d2ac7abbfec673355885ebcd07bce22530db37357e94c196c
   languageName: node
   linkType: hard
 
@@ -26735,7 +26735,7 @@ __metadata:
     "@metamask-institutional/types": "npm:^1.2.0"
     "@metamask/abi-utils": "npm:^2.0.2"
     "@metamask/account-watcher": "npm:^4.1.1"
-    "@metamask/accounts-controller": "npm:^18.2.2"
+    "@metamask/accounts-controller": "npm:^19.0.0"
     "@metamask/address-book-controller": "npm:^6.0.0"
     "@metamask/announcement-controller": "npm:^7.0.0"
     "@metamask/api-specs": "npm:^0.9.3"
