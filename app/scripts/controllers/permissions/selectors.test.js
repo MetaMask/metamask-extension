@@ -180,7 +180,7 @@ describe('PermissionController selectors', () => {
       const mockAuthorization = {
         requiredScopes: {
           'eip155:1': {
-            accounts: []
+            accounts: [],
           },
         },
         optionalScopes: {},

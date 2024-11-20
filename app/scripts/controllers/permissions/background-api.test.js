@@ -2,8 +2,6 @@ import { MethodNames } from '@metamask/permission-controller';
 import {
   Caip25CaveatType,
   Caip25EndowmentPermissionName,
-  KnownNotifications,
-  KnownRpcMethods,
 } from '@metamask/multichain';
 import { RestrictedMethods } from '../../../../shared/constants/permissions';
 import { flushPromises } from '../../../../test/lib/timer-helpers';
@@ -815,8 +813,7 @@ describe('permission background API methods', () => {
         getCaveat: jest.fn().mockReturnValue({
           value: {
             requiredScopes: {
-              'eip155:1': {
-              },
+              'eip155:1': {},
             },
             optionalScopes: {
               'bip122:000000000019d6689c085ae165831e93': {

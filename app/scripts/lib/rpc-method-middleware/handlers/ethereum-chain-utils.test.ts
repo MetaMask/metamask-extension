@@ -1,7 +1,5 @@
 import { errorCodes } from '@metamask/rpc-errors';
 import {
-  KnownNotifications,
-  KnownRpcMethods,
   Caip25CaveatType,
   Caip25EndowmentPermissionName,
 } from '@metamask/multichain';
