@@ -3,10 +3,10 @@ import { Hex } from '@metamask/utils';
 import { BigNumber } from 'bignumber.js';
 import { TxData, QuoteResponse, FeeType } from '../types';
 import { isEthUsdt, getEthUsdtResetData } from '../bridge.util';
-import useHandleTx from './useHandleTx';
 import { Numeric } from '../../../../shared/modules/Numeric';
 import { ETH_USDT_ADDRESS } from '../../../../shared/constants/bridge';
 import { getBridgeERC20Allowance } from '../../../ducks/bridge/actions';
+import useHandleTx from './useHandleTx';
 
 export default function useHandleApprovalTx() {
   const { handleTx } = useHandleTx();

@@ -1,5 +1,5 @@
 import { Hex } from '@metamask/utils';
-import BigNumber from 'bignumber.js';
+import { BigNumber } from 'bignumber.js';
 import { decGWEIToHexWEI } from '../../../shared/modules/conversion.utils';
 import { Numeric } from '../../../shared/modules/Numeric';
 import { TxData } from '../../pages/bridge/types';
