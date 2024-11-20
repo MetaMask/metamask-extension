@@ -1,5 +1,6 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
+import { BigNumber } from 'bignumber.js';
 import {
   getCurrentCurrency,
   getTokenList,
@@ -15,7 +16,6 @@ import { TokenListItem } from '../../../multichain';
 import { isEqualCaseInsensitive } from '../../../../../shared/modules/string-utils';
 import { getIntlLocale } from '../../../../ducks/locale/locale';
 import { formatAmount } from '../../../../pages/confirmations/components/simulation-details/formatAmount';
-import BigNumber from 'bignumber.js';
 
 type TokenCellProps = {
   address: string;
