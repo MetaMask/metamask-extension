@@ -107,7 +107,7 @@ export const BridgeQuotesModal = ({
           ))}
         </Row>
         {/* QUOTE LIST */}
-        <Column>
+        <Column style={{ overflow: 'scroll' }}>
           {sortedQuotes.map((quote, index) => {
             const {
               totalNetworkFee,
