@@ -80,7 +80,10 @@ const useFilteredAccountTokens = (currentNetwork: { chainId: string }) => {
   return filteredAccountTokensChains;
 };
 
-export default function TokenList({ onTokenClick }: TokenListProps) {
+export default function TokenList({
+  onTokenClick,
+  nativeToken,
+}: TokenListProps) {
   const t = useI18nContext();
   const dispatch = useDispatch();
   const currentNetwork = useSelector(getCurrentNetwork);
@@ -203,6 +206,11 @@ export default function TokenList({ onTokenClick }: TokenListProps) {
       endTrace({ name: TraceName.AccountOverviewAssetListTab });
     }
   }, [sortedFilteredTokens]);
+
+  // Displays nativeToken if provided
+  if (nativeToken) {
+    return nativeToken;
+  }
 
   const loading = false;
   return loading ? (

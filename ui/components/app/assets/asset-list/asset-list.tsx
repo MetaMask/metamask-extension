@@ -14,6 +14,7 @@ import {
   ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
   getMultichainIsBitcoin,
   getMultichainSelectedAccountCachedBalanceIsZero,
+  getMultichainIsEvm,
   ///: END:ONLY_INCLUDE_IF
 } from '../../../../selectors/multichain';
 import { useCurrencyDisplay } from '../../../../hooks/useCurrencyDisplay';
@@ -34,6 +35,7 @@ import {
 import { getIsNativeTokenBuyable } from '../../../../ducks/ramps';
 ///: END:ONLY_INCLUDE_IF
 import AssetListControlBar from './asset-list-control-bar';
+import NativeToken from './native-token';
 
 export type TokenWithBalance = {
   address: string;
@@ -92,10 +94,9 @@ const AssetList = ({ onClickAsset, showTokensLinks }: AssetListProps) => {
   const isBtc = useSelector(getMultichainIsBitcoin);
   ///: END:ONLY_INCLUDE_IF
 
-  // const isEvm = useSelector(getMultichainIsEvm);
+  const isEvm = useSelector(getMultichainIsEvm);
   // NOTE: Since we can parametrize it now, we keep the original behavior
   // for EVM assets
-  // const shouldShowTokensLinks = showTokensLinks ?? isEvm;
 
   return (
     <>
@@ -109,6 +110,9 @@ const AssetList = ({ onClickAsset, showTokensLinks }: AssetListProps) => {
         )}
       <AssetListControlBar showTokensLinks={showTokensLinks} />
       <TokenList
+        nativeToken={
+          isEvm ? undefined : <NativeToken onClickAsset={onClickAsset} />
+        }
         onTokenClick={(chainId: string, tokenAddress: string) => {
           onClickAsset(chainId, tokenAddress);
           trackEvent({
