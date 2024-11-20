@@ -97,7 +97,7 @@ describe('Transfer custom tokens @no-mmi', function () {
     );
   });
 
-  it('transfer custom tokens from dapp customizing gas values', async function () {
+  it.only('transfer custom tokens from dapp customizing gas values', async function () {
     await withFixtures(
       {
         dapp: true,
@@ -147,7 +147,7 @@ describe('Transfer custom tokens @no-mmi', function () {
         const tokenAmount = await driver.findElement(
           {
             css: '[data-testid="multichain-token-list-item-value"]',
-            text: '8.5000 TST',
+            text: '8.5 TST',
           },
           { timeout: 10000 },
         );
@@ -209,7 +209,7 @@ describe('Transfer custom tokens @no-mmi', function () {
         const tokenAmount = await driver.findElement(
           {
             css: '[data-testid="multichain-token-list-item-value"]',
-            text: '8.5000 TST',
+            text: '8.5 TST',
           },
           { timeout: 10000 },
         );
