@@ -38,10 +38,10 @@ describe('Account syncing - New User @no-mmi', function () {
         },
         async ({ driver }) => {
           // Create a new wallet
-          await completeCreateNewWalletOnboardingFlow(
+          await completeCreateNewWalletOnboardingFlow({
             driver,
-            NOTIFICATIONS_TEAM_PASSWORD,
-          );
+            password: NOTIFICATIONS_TEAM_PASSWORD,
+          });
           const homePage = new HomePage(driver);
           await homePage.check_pageIsLoaded();
           await homePage.check_expectedBalanceIsDisplayed();
