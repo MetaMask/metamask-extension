@@ -1794,7 +1794,7 @@
     "message": "Ausgabenobergrenze bearbeiten"
   },
   "editSpendingCapAccountBalance": {
-    "message": "Kontostand: $1$2"
+    "message": "Kontostand: $1 $2"
   },
   "editSpendingCapDesc": {
     "message": "Geben Sie den von Ihnen gewünschten Betrag ein, der in Ihrem Namen ausgegeben werden soll."
