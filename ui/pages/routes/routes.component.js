@@ -87,7 +87,7 @@ import { DeprecatedNetworkModal } from '../settings/deprecated-network-modal/Dep
 import { MultichainMetaFoxLogo } from '../../components/multichain/app-header/multichain-meta-fox-logo';
 import NetworkConfirmationPopover from '../../components/multichain/network-list-menu/network-confirmation-popover/network-confirmation-popover';
 import { ToastMaster } from '../../components/app/toast-master/toast-master';
-// eslint-disable-next-line import/order
+import { mmLazy } from '../../helpers/utils/mm-lazy';
 import {
   isCorrectDeveloperTransactionType,
   isCorrectSignatureApprovalType,
@@ -99,7 +99,6 @@ import {
   setTheme,
   showOnboardingHeader,
 } from './utils';
-import { mmLazy } from '../../helpers/utils/mm-lazy';
 
 // Begin Lazy Routes
 const OnboardingFlow = mmLazy(() =>
@@ -115,13 +114,9 @@ const NotificationDetails = mmLazy(() => import('../notification-details'));
 const Notifications = mmLazy(() => import('../notifications'));
 const SnapList = mmLazy(() => import('../snaps/snaps-list'));
 const SnapView = mmLazy(() => import('../snaps/snap-view'));
-
-// eslint-disable-next-line -- Un-lazy this one for now
-import ConfirmTransaction from '../confirmations/confirm-transaction';
-// const ConfirmTransaction = mmLazy(() =>
-//   import('../confirmations/confirm-transaction'),
-// );
-
+const ConfirmTransaction = mmLazy(() =>
+  import('../confirmations/confirm-transaction'),
+);
 const SendPage = mmLazy(() => import('../../components/multichain/pages/send'));
 const Swaps = mmLazy(() => import('../swaps'));
 const CrossChainSwap = mmLazy(() => import('../bridge'));
