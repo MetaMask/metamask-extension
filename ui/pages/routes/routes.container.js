@@ -18,7 +18,6 @@ import {
   getSwitchedNetworkDetails,
   getNetworkToAutomaticallySwitchTo,
   getNumberOfAllUnapprovedTransactionsAndMessages,
-  getUseRequestQueue,
   getCurrentNetwork,
   getSelectedInternalAccount,
   oldestPendingConfirmationSelector,
@@ -120,7 +119,6 @@ function mapStateToProps(state) {
     switchedNetworkNeverShowMessage:
       selectSwitchedNetworkNeverShowMessage(state),
     currentExtensionPopupId: state.metamask.currentExtensionPopupId,
-    useRequestQueue: getUseRequestQueue(state),
     oldestPendingApproval,
     pendingApprovals,
     transactionsMetadata,

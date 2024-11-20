@@ -77,7 +77,6 @@ const createMockState = () => ({
     nftContracts: [],
     nfts: [],
     ...mockNetworkState({ chainId: CHAIN_IDS.MAINNET }),
-    useRequestQueue: true,
   },
   appState: {
     isLoading: false,

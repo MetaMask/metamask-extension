@@ -101,7 +101,6 @@ function onboardingFixture() {
         useTokenDetection: false,
         useCurrencyRateCheck: true,
         useMultiAccountBalanceChecker: true,
-        useRequestQueue: true,
         isMultiAccountBalancesEnabled: true,
         showIncomingTransactions: {
           [ETHERSCAN_SUPPORTED_CHAIN_IDS.MAINNET]: true,
@@ -819,15 +818,7 @@ class FixtureBuilder {
           [DAPP_ONE_URL]: '76e9cd59-d8e2-47e7-b369-9c205ccb602c',
         },
       }),
-      this.withPreferencesControllerUseRequestQueueEnabled(),
-    );
-  }
-
-  withPreferencesControllerUseRequestQueueEnabled() {
-    return merge(
-      this.withPreferencesController({
-        useRequestQueue: true,
-      }),
+      this,
     );
   }
 
