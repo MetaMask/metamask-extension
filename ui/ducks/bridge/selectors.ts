@@ -241,7 +241,7 @@ const _getQuotesWithMetadata = createDeepEqualSelector(
         sentAmount,
         totalNetworkFee,
         adjustedReturn,
-        swapRate: calcSwapRate(sentAmount.raw, toTokenAmount.raw),
+        swapRate: calcSwapRate(sentAmount.amount, toTokenAmount.amount),
         cost: calcCost(adjustedReturn.fiat, sentAmount.fiat),
       };
     });

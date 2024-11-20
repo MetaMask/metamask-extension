@@ -6,10 +6,10 @@ export type L1GasFees = {
 
 // Values derived from the quote response
 export type QuoteMetadata = {
-  totalNetworkFee: { raw: BigNumber; fiat: BigNumber | null }; // gasFees + relayerFees
-  toTokenAmount: { raw: BigNumber; fiat: BigNumber | null };
+  totalNetworkFee: { amount: BigNumber; fiat: BigNumber | null }; // gasFees + relayerFees
+  toTokenAmount: { amount: BigNumber; fiat: BigNumber | null };
   adjustedReturn: { fiat: BigNumber | null }; // destTokenAmount - totalNetworkFee
-  sentAmount: { raw: BigNumber; fiat: BigNumber | null }; // srcTokenAmount + metabridgeFee
+  sentAmount: { amount: BigNumber; fiat: BigNumber | null }; // srcTokenAmount + metabridgeFee
   swapRate: BigNumber; // destTokenAmount / sentAmount
   cost: { fiat: BigNumber | null }; // sentAmount - adjustedReturn
 };

@@ -54,7 +54,7 @@ export const calcToAmount = (
     destAsset.decimals,
   );
   return {
-    raw: normalizedDestAmount,
+    amount: normalizedDestAmount,
     fiat: exchangeRate
       ? normalizedDestAmount.mul(exchangeRate.toString())
       : null,
@@ -70,7 +70,7 @@ export const calcSentAmount = (
     srcAsset.decimals,
   );
   return {
-    raw: normalizedSentAmount,
+    amount: normalizedSentAmount,
     fiat: exchangeRate
       ? normalizedSentAmount.mul(exchangeRate.toString())
       : null,
@@ -94,7 +94,7 @@ const calcRelayerFee = (
     18,
   );
   return {
-    raw: relayerFeeInNative,
+    amount: relayerFeeInNative,
     fiat: nativeExchangeRate
       ? relayerFeeInNative.mul(nativeExchangeRate.toString())
       : null,
@@ -135,7 +135,7 @@ const calcTotalGasFee = (
     : null;
 
   return {
-    raw: gasFeesInDecEth,
+    amount: gasFeesInDecEth,
     fiat: gasFeesInUSD,
   };
 };
@@ -154,7 +154,7 @@ export const calcTotalNetworkFee = (
   );
   const normalizedRelayerFee = calcRelayerFee(bridgeQuote, nativeExchangeRate);
   return {
-    raw: normalizedGasFee.raw.plus(normalizedRelayerFee.raw),
+    amount: normalizedGasFee.amount.plus(normalizedRelayerFee.amount),
     fiat: normalizedGasFee.fiat?.plus(normalizedRelayerFee.fiat || '0') ?? null,
   };
 };

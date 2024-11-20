@@ -525,16 +525,16 @@ describe('Bridge selectors', () => {
         cost: { fiat: new BigNumber('0.15656287141025952') },
         sentAmount: {
           fiat: new BigNumber('14'),
-          raw: new BigNumber('14'),
+          amount: new BigNumber('14'),
         },
         swapRate: new BigNumber('0.998877142857142857142857142857142857'),
         toTokenAmount: {
           fiat: new BigNumber('13.8444372'),
-          raw: new BigNumber('13.98428'),
+          amount: new BigNumber('13.98428'),
         },
         totalNetworkFee: {
           fiat: new BigNumber('0.00100007141025952'),
-          raw: new BigNumber('0.00100007141025952'),
+          amount: new BigNumber('0.00100007141025952'),
         },
       };
 
@@ -592,16 +592,16 @@ describe('Bridge selectors', () => {
         cost: { fiat: new BigNumber('0.15656287141025952') },
         sentAmount: {
           fiat: new BigNumber('14'),
-          raw: new BigNumber('14'),
+          amount: new BigNumber('14'),
         },
         swapRate: new BigNumber('0.998877142857142857142857142857142857'),
         toTokenAmount: {
           fiat: new BigNumber('13.8444372'),
-          raw: new BigNumber('13.98428'),
+          amount: new BigNumber('13.98428'),
         },
         totalNetworkFee: {
           fiat: new BigNumber('0.00100007141025952'),
-          raw: new BigNumber('0.00100007141025952'),
+          amount: new BigNumber('0.00100007141025952'),
         },
       };
       expect(result.sortedQuotes).toHaveLength(2);
@@ -664,16 +664,16 @@ describe('Bridge selectors', () => {
         cost: { fiat: new BigNumber('0.15656287141025952') },
         sentAmount: {
           fiat: new BigNumber('14'),
-          raw: new BigNumber('14'),
+          amount: new BigNumber('14'),
         },
         swapRate: new BigNumber('0.998877142857142857142857142857142857'),
         toTokenAmount: {
           fiat: new BigNumber('13.8444372'),
-          raw: new BigNumber('13.98428'),
+          amount: new BigNumber('13.98428'),
         },
         totalNetworkFee: {
           fiat: new BigNumber('0.00100007141025952'),
-          raw: new BigNumber('0.00100007141025952'),
+          amount: new BigNumber('0.00100007141025952'),
         },
       };
       expect(result.sortedQuotes).toHaveLength(2);

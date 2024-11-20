@@ -305,8 +305,8 @@ const PrepareBridgePage = () => {
             testId: 'to-amount',
             readOnly: true,
             disabled: true,
-            value: activeQuote?.toTokenAmount?.raw.toFixed(2) ?? '0',
-            className: activeQuote?.toTokenAmount.raw
+            value: activeQuote?.toTokenAmount?.amount.toFixed(2) ?? '0',
+            className: activeQuote?.toTokenAmount.amount
               ? 'amount-input defined'
               : 'amount-input',
           }}

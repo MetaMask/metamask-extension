@@ -23,21 +23,21 @@ describe('Bridge quote utils', () => {
       NATIVE_TOKEN,
       '1009000000000000000',
       2521.73,
-      { raw: '1.009', fiat: '2544.42557' },
+      { amount: '1.009', fiat: '2544.42557' },
     ],
     [
       'erc20',
       ERC20_TOKEN,
       '2543140000',
       0.999781,
-      { raw: '2543.14', fiat: '2542.58305234' },
+      { amount: '2543.14', fiat: '2542.58305234' },
     ],
     [
       'erc20 with null exchange rates',
       ERC20_TOKEN,
       '2543140000',
       null,
-      { raw: '2543.14', fiat: undefined },
+      { amount: '2543.14', fiat: undefined },
     ],
   ])(
     'calcToAmount: toToken is %s',
@@ -46,7 +46,7 @@ describe('Bridge quote utils', () => {
       destAsset: { decimals: number; address: string },
       destTokenAmount: string,
       toTokenExchangeRate: number,
-      { raw, fiat }: { raw: string; fiat: string },
+      { amount, fiat }: { amount: string; fiat: string },
     ) => {
       const result = calcToAmount(
         {
@@ -55,7 +55,7 @@ describe('Bridge quote utils', () => {
         } as never,
         toTokenExchangeRate,
       );
-      expect(result.raw?.toString()).toStrictEqual(raw);
+      expect(result.amount?.toString()).toStrictEqual(amount);
       expect(result.fiat?.toString()).toStrictEqual(fiat);
     },
   );
@@ -68,7 +68,7 @@ describe('Bridge quote utils', () => {
       '1009000000000000000',
       2515.02,
       {
-        raw: '1.143217728',
+        amount: '1.143217728',
         fiat: '2875.21545027456',
       },
     ],
@@ -77,14 +77,14 @@ describe('Bridge quote utils', () => {
       ERC20_TOKEN,
       '100000000',
       0.999781,
-      { raw: '100.512', fiat: '100.489987872' },
+      { amount: '100.512', fiat: '100.489987872' },
     ],
     [
       'erc20 with null exchange rates',
       ERC20_TOKEN,
       '2543140000',
       null,
-      { raw: '2543.652', fiat: undefined },
+      { amount: '2543.652', fiat: undefined },
     ],
   ])(
     'calcSentAmount: fromToken is %s',
@@ -93,7 +93,7 @@ describe('Bridge quote utils', () => {
       srcAsset: { decimals: number; address: string },
       srcTokenAmount: string,
       fromTokenExchangeRate: number,
-      { raw, fiat }: { raw: string; fiat: string },
+      { amount, fiat }: { amount: string; fiat: string },
     ) => {
       const result = calcSentAmount(
         {
@@ -107,7 +107,7 @@ describe('Bridge quote utils', () => {
         } as never,
         fromTokenExchangeRate,
       );
-      expect(result.raw?.toString()).toStrictEqual(raw);
+      expect(result.amount?.toString()).toStrictEqual(amount);
       expect(result.fiat?.toString()).toStrictEqual(fiat);
     },
   );
@@ -119,7 +119,7 @@ describe('Bridge quote utils', () => {
       NATIVE_TOKEN,
       '1000000000000000000',
       '0x0de0b6b3a7640000',
-      { raw: '2.2351800712e-7', fiat: '0.0005626887014840304' },
+      { amount: '2.2351800712e-7', fiat: '0.0005626887014840304' },
       undefined,
     ],
     [
@@ -127,7 +127,7 @@ describe('Bridge quote utils', () => {
       ERC20_TOKEN,
       '100000000',
       '0x00',
-      { raw: '2.2351800712e-7', fiat: '0.0005626887014840304' },
+      { amount: '2.2351800712e-7', fiat: '0.0005626887014840304' },
       undefined,
     ],
     [
@@ -135,7 +135,7 @@ describe('Bridge quote utils', () => {
       ERC20_TOKEN,
       '100000000',
       '0x00',
-      { raw: '4.4703601424e-7', fiat: '0.0011253774029680608' },
+      { amount: '4.4703601424e-7', fiat: '0.0011253774029680608' },
       1092677,
     ],
     [
@@ -143,7 +143,7 @@ describe('Bridge quote utils', () => {
       ERC20_TOKEN,
       '100000000',
       '0x0de0b6b3a7640000',
-      { raw: '1.00000022351800712', fiat: '2517.4205626887014840304' },
+      { amount: '1.00000022351800712', fiat: '2517.4205626887014840304' },
       undefined,
     ],
     [
@@ -151,7 +151,7 @@ describe('Bridge quote utils', () => {
       NATIVE_TOKEN,
       '1000000000000000000',
       '0x0de1b6b3a7640000',
-      { raw: '0.000281698494717776', fiat: '0.70915342457242365792' },
+      { amount: '0.000281698494717776', fiat: '0.70915342457242365792' },
       undefined,
     ],
   ])(
@@ -161,7 +161,7 @@ describe('Bridge quote utils', () => {
       srcAsset: { decimals: number; address: string },
       srcTokenAmount: string,
       value: string,
-      { raw, fiat }: { raw: string; fiat: string },
+      { amount, fiat }: { amount: string; fiat: string },
       approvalGasLimit?: number,
     ) => {
       const feeData = { metabridge: { amount: 0 } };
@@ -177,7 +177,7 @@ describe('Bridge quote utils', () => {
         '0.0001',
         2517.42,
       );
-      expect(result.raw?.toString()).toStrictEqual(raw);
+      expect(result.amount?.toString()).toStrictEqual(amount);
       expect(result.fiat?.toString()).toStrictEqual(fiat);
     },
   );
@@ -189,7 +189,7 @@ describe('Bridge quote utils', () => {
       NATIVE_TOKEN,
       '1000000000000000000',
       '0x0de0b6b3a7640000',
-      { raw: '0.000002832228395508', fiat: '0.00712990840741974936' },
+      { amount: '0.000002832228395508', fiat: '0.00712990840741974936' },
       undefined,
     ],
     [
@@ -197,7 +197,7 @@ describe('Bridge quote utils', () => {
       ERC20_TOKEN,
       '100000000',
       '0x00',
-      { raw: '0.000002832228395508', fiat: '0.00712990840741974936' },
+      { amount: '0.000002832228395508', fiat: '0.00712990840741974936' },
       undefined,
     ],
     [
@@ -205,7 +205,7 @@ describe('Bridge quote utils', () => {
       ERC20_TOKEN,
       '100000000',
       '0x00',
-      { raw: '0.000003055746402628', fiat: '0.00769259710890377976' },
+      { amount: '0.000003055746402628', fiat: '0.00769259710890377976' },
       1092677,
     ],
     [
@@ -213,7 +213,7 @@ describe('Bridge quote utils', () => {
       ERC20_TOKEN,
       '100000000',
       '0x0de0b6b3a7640000',
-      { raw: '1.000002832228395508', fiat: '2517.42712990840741974936' },
+      { amount: '1.000002832228395508', fiat: '2517.42712990840741974936' },
       undefined,
     ],
     [
@@ -221,7 +221,7 @@ describe('Bridge quote utils', () => {
       NATIVE_TOKEN,
       '1000000000000000000',
       '0x0de1b6b3a7640000',
-      { raw: '0.000284307205106164', fiat: '0.71572064427835937688' },
+      { amount: '0.000284307205106164', fiat: '0.71572064427835937688' },
       undefined,
     ],
   ])(
@@ -231,7 +231,7 @@ describe('Bridge quote utils', () => {
       srcAsset: { decimals: number; address: string },
       srcTokenAmount: string,
       value: string,
-      { raw, fiat }: { raw: string; fiat: string },
+      { amount, fiat }: { amount: string; fiat: string },
       approvalGasLimit?: number,
     ) => {
       const feeData = { metabridge: { amount: 0 } };
@@ -248,7 +248,7 @@ describe('Bridge quote utils', () => {
         '0.0001',
         2517.42,
       );
-      expect(result.raw?.toString()).toStrictEqual(raw);
+      expect(result.amount?.toString()).toStrictEqual(amount);
       expect(result.fiat?.toString()).toStrictEqual(fiat);
     },
   );

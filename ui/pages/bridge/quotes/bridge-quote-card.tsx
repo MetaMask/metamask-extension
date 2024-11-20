@@ -80,11 +80,15 @@ export const BridgeQuoteCard = () => {
                 currency,
                 2,
               ) ??
-              formatTokenAmount(activeQuote.totalNetworkFee?.raw, ticker, 6)
+              formatTokenAmount(activeQuote.totalNetworkFee?.amount, ticker, 6)
             }
             secondaryDescription={
               activeQuote.totalNetworkFee?.fiat
-                ? formatTokenAmount(activeQuote.totalNetworkFee?.raw, ticker, 6)
+                ? formatTokenAmount(
+                    activeQuote.totalNetworkFee?.amount,
+                    ticker,
+                    6,
+                  )
                 : undefined
             }
           />

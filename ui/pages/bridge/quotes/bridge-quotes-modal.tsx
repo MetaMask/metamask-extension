@@ -158,7 +158,7 @@ export const BridgeQuotesModal = ({
                         ])
                       : t('quotedNetworkFee', [
                           formatTokenAmount(
-                            totalNetworkFee.raw,
+                            totalNetworkFee.amount,
                             nativeCurrency,
                           ),
                         ]),
@@ -169,7 +169,7 @@ export const BridgeQuotesModal = ({
                       [
                         formatFiatAmount(toTokenAmount.fiat, currency, 0) ??
                           formatTokenAmount(
-                            toTokenAmount.raw,
+                            toTokenAmount.amount,
                             destAsset.symbol,
                             0,
                           ),
