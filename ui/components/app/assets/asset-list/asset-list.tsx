@@ -13,8 +13,8 @@ import {
   getMultichainSelectedAccountCachedBalance,
   ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
   getMultichainIsBitcoin,
-  ///: END:ONLY_INCLUDE_IF
   getMultichainSelectedAccountCachedBalanceIsZero,
+  ///: END:ONLY_INCLUDE_IF
 } from '../../../../selectors/multichain';
 import { useCurrencyDisplay } from '../../../../hooks/useCurrencyDisplay';
 import { MetaMetricsContext } from '../../../../contexts/metametrics';
