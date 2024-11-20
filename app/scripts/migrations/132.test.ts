@@ -568,13 +568,13 @@ describe('migration #132', () => {
                                 `${currentScope}:0xdeadbeef`,
                                 `${currentScope}:0x999`,
                               ],
-                              },
+                            },
                             'wallet:eip155': {
                               accounts: [
                                 'wallet:eip155:0xdeadbeef',
                                 'wallet:eip155:0x999',
                               ],
-                              },
+                            },
                           },
                           isMultichainOrigin: false,
                         },
@@ -648,13 +648,13 @@ describe('migration #132', () => {
                                 `${currentScope}:0xdeadbeef`,
                                 `${currentScope}:0x999`,
                               ],
-                              },
+                            },
                             'wallet:eip155': {
                               accounts: [
                                 'wallet:eip155:0xdeadbeef',
                                 'wallet:eip155:0x999',
                               ],
-                              },
+                            },
                           },
                           isMultichainOrigin: false,
                         },
@@ -728,13 +728,13 @@ describe('migration #132', () => {
                                 'eip155:11155111:0xdeadbeef',
                                 'eip155:11155111:0x999',
                               ],
-                              },
+                            },
                             'wallet:eip155': {
                               accounts: [
                                 'wallet:eip155:0xdeadbeef',
                                 'wallet:eip155:0x999',
                               ],
-                              },
+                            },
                           },
                           isMultichainOrigin: false,
                         },
@@ -798,7 +798,7 @@ describe('migration #132', () => {
                                 'wallet:eip155:0xdeadbeef',
                                 'wallet:eip155:0x999',
                               ],
-                              },
+                            },
                           },
                           isMultichainOrigin: false,
                         },
@@ -898,13 +898,13 @@ describe('migration #132', () => {
                                 'eip155:10:0xdeadbeef',
                                 'eip155:10:0x999',
                               ],
-                              },
+                            },
                             'wallet:eip155': {
                               accounts: [
                                 'wallet:eip155:0xdeadbeef',
                                 'wallet:eip155:0x999',
                               ],
-                              },
+                            },
                           },
                           isMultichainOrigin: false,
                         },
@@ -1020,19 +1020,19 @@ describe('migration #132', () => {
                                 'eip155:10:0xdeadbeef',
                                 'eip155:10:0x999',
                               ],
-                              },
+                            },
                             'eip155:100': {
                               accounts: [
                                 'eip155:100:0xdeadbeef',
                                 'eip155:100:0x999',
                               ],
-                              },
+                            },
                             'wallet:eip155': {
                               accounts: [
                                 'wallet:eip155:0xdeadbeef',
                                 'wallet:eip155:0x999',
                               ],
-                              },
+                            },
                           },
                           isMultichainOrigin: false,
                         },
@@ -1099,10 +1099,10 @@ describe('migration #132', () => {
                           optionalScopes: {
                             [currentScope]: {
                               accounts: [`${currentScope}:0xdeadbeef`],
-                              },
+                            },
                             'wallet:eip155': {
                               accounts: ['wallet:eip155:0xdeadbeef'],
-                              },
+                            },
                           },
                           isMultichainOrigin: false,
                         },
@@ -1123,10 +1123,10 @@ describe('migration #132', () => {
                           optionalScopes: {
                             [currentScope]: {
                               accounts: [`${currentScope}:0xdeadbeef`],
-                              },
+                            },
                             'wallet:eip155': {
                               accounts: ['wallet:eip155:0xdeadbeef'],
-                              },
+                            },
                           },
                           isMultichainOrigin: false,
                         },
