@@ -49,6 +49,17 @@ jest.mock('../../store/actions', () => ({
   setTokenNetworkFilter: jest.fn(),
 }));
 
+// Mock the dispatch function
+const mockDispatch = jest.fn();
+
+jest.mock('react-redux', () => {
+  const actual = jest.requireActual('react-redux');
+  return {
+    ...actual,
+    useDispatch: () => mockDispatch,
+  };
+});
+
 jest.mock('../../ducks/bridge/actions', () => ({
   setBridgeFeatureFlags: () => jest.fn(),
 }));
