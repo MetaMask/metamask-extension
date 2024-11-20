@@ -96,13 +96,16 @@ export default function TokenCell({
   );
 
   // Format for primary amount with 5 decimal places
+  const num = Number(string);
+  const hasNonZeroDecimal = num % 1 !== 0;
+
   const primary = formatWithThreshold(
     Number(string),
     primaryThreshold,
     locale,
     {
-      minimumFractionDigits: 4,
-      maximumFractionDigits: 4,
+      minimumFractionDigits: hasNonZeroDecimal ? 4 : 0,
+      maximumFractionDigits: hasNonZeroDecimal ? 4 : 0,
     },
   );
 

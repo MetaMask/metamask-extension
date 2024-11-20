@@ -65,7 +65,6 @@ export const chainSupportsPricing = (chainId: `0x${string}`) =>
 /** The opacity components should set during transition */
 export const loadingOpacity = 0.2;
 
-// TODO: Add unit tests
 export const findAssetByAddress = (
   data: Record<string, Token[]>,
   address?: string,

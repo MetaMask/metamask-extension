@@ -3,6 +3,9 @@ import { Driver } from '../../../webdriver/driver';
 class SettingsPage {
   private readonly driver: Driver;
 
+  private readonly closeSettingsPageButton =
+    '.settings-page__header__title-container__close-button';
+
   private readonly developerOptionsButton = {
     text: 'Developer Options',
     css: '.tab-bar__tab__content__title',

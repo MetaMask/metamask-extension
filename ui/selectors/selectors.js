@@ -86,7 +86,6 @@ import {
   getLedgerTransportType,
   isAddressLedger,
   getIsUnlocked,
-  getTokenBalances,
 } from '../ducks/metamask/metamask';
 import {
   getLedgerWebHidConnectedStatus,
@@ -558,40 +557,6 @@ function getNativeTokenInfo(state, chainId) {
   }
 
   return { symbol: AssetType.native, decimals: 18, name: 'Native Token' };
-}
-
-/**
- * Based on the current account address, query for all tokens across all chain networks on that account.
- * This will eventually be exposed in a new piece of state called `tokenBalances`, which will including the new polling mechanism to stay up to date
- *
- * @param {object} state - Redux state
- * @returns {object} An array of tokens with balances for the given account. Data relationship will be chainId => balance
- */
-export function getSelectedAccountTokenBalancesAcrossChains(state) {
-  const selectedAddress = getSelectedInternalAccount(state).address;
-  const accountTokens = getSelectedAccountTokensAcrossChains(state);
-  const tokenBalances = getTokenBalances(state);
-
-  // TODO: read this from tokenBalances state
-  function generateRandomBalance(min = 10, max = 20) {
-    const factor = 100000; // 10^5 to get 5 decimal places
-    const randomValue = Math.random() * (max - min) + min;
-    return Math.floor(randomValue * factor) / factor;
-  }
-
-  const tokenBalancesByChain = {};
-
-  Object.keys(accountTokens).forEach((chainId) => {
-    tokenBalancesByChain[chainId] = {};
-
-    accountTokens[chainId].forEach((token) => {
-      const { address } = token;
-
-      tokenBalancesByChain[chainId][address] = generateRandomBalance();
-    });
-  });
-
-  return tokenBalances[selectedAddress];
 }
 
 /**
@@ -1107,6 +1072,10 @@ export function getPetnamesEnabled(state) {
   return petnamesEnabled;
 }
 
+export function getUseTransactionSimulations(state) {
+  return Boolean(state.metamask.useTransactionSimulations);
+}
+
 export function getRedesignedConfirmationsEnabled(state) {
   const { redesignedConfirmationsEnabled } = getPreferences(state);
   return redesignedConfirmationsEnabled;
@@ -1450,6 +1419,10 @@ export function getFeatureFlags(state) {
 
 export function getOriginOfCurrentTab(state) {
   return state.activeTab.origin;
+}
+
+export function getDefaultHomeActiveTabName(state) {
+  return state.metamask.defaultHomeActiveTabName;
 }
 
 export function getIpfsGateway(state) {
@@ -2348,6 +2321,58 @@ export const getAllEnabledNetworks = createDeepEqualSelector(
       },
       {},
     ),
+);
+
+export const getChainIdsToPoll = createDeepEqualSelector(
+  getPreferences,
+  getNetworkConfigurationsByChainId,
+  getCurrentChainId,
+  (preferences, networkConfigurations, currentChainId) => {
+    const { pausedChainIds = [] } = preferences;
+
+    if (!process.env.PORTFOLIO_VIEW) {
+      return [currentChainId];
+    }
+
+    return Object.keys(networkConfigurations).filter(
+      (chainId) =>
+        !TEST_CHAINS.includes(chainId) && !pausedChainIds.includes(chainId),
+    );
+  },
+);
+
+export const getNetworkClientIdsToPoll = createDeepEqualSelector(
+  getPreferences,
+  getNetworkConfigurationsByChainId,
+  getCurrentChainId,
+  (preferences, networkConfigurations, currentChainId) => {
+    const { pausedChainIds = [] } = preferences;
+
+    if (!process.env.PORTFOLIO_VIEW) {
+      const networkConfiguration = networkConfigurations[currentChainId];
+      return [
+        networkConfiguration.rpcEndpoints[
+          networkConfiguration.defaultRpcEndpointIndex
+        ].networkClientId,
+      ];
+    }
+
+    return Object.entries(networkConfigurations).reduce(
+      (acc, [chainId, network]) => {
+        if (
+          !TEST_CHAINS.includes(chainId) &&
+          !pausedChainIds.includes(chainId)
+        ) {
+          acc.push(
+            network.rpcEndpoints[network.defaultRpcEndpointIndex]
+              .networkClientId,
+          );
+        }
+        return acc;
+      },
+      [],
+    );
+  },
 );
 
 /**

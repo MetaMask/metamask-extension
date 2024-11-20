@@ -207,7 +207,7 @@ async function createERC721WalletInitiatedTransactionAndAssertDetails(
   await driver.switchToWindowWithTitle(WINDOW_TITLES.ExtensionInFullScreenView);
 
   const homePage = new HomePage(driver);
-  await homePage.goToNFTList();
+  await homePage.goToNftTab();
   await homePage.clickNFTIconOnActivityList();
 
   const nftDetailsPage = new NFTDetailsPage(driver);
@@ -296,7 +296,7 @@ async function createERC1155WalletInitiatedTransactionAndAssertDetails(
 
   await driver.switchToWindowWithTitle(WINDOW_TITLES.ExtensionInFullScreenView);
   const homePage = new HomePage(driver);
-  await homePage.goToNFTList();
+  await homePage.goToNftTab();
   await homePage.clickNFTIconOnActivityList();
 
   const nftDetailsPage = new NFTDetailsPage(driver);

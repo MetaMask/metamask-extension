@@ -45,6 +45,7 @@ import {
   getDataCollectionForMarketing,
   getMarketData,
   getNetworkConfigurationIdByChainId,
+  getCurrencyRates,
 } from '../../../selectors';
 import { getMultichainIsEvm } from '../../../selectors/multichain';
 import Tooltip from '../../ui/tooltip';
@@ -110,6 +111,7 @@ export const TokenListItem = ({
   const isMetaMetricsEnabled = useSelector(getParticipateInMetaMetrics);
   const isMarketingEnabled = useSelector(getDataCollectionForMarketing);
   const { safeChains } = useSafeChains();
+  const currencyRates = useSelector(getCurrencyRates);
 
   const decimalChainId = isEvm && parseInt(hexToDecimal(chainId), 10);
 
@@ -124,10 +126,11 @@ export const TokenListItem = ({
   // we only use this option for EVM here:
   const shouldShowPercentage = isEvm && showPercentage;
 
+  const isOriginalTokenSymbol = tokenSymbol && currencyRates[tokenSymbol];
+
   // Scam warning
-  const showScamWarning = false;
-  // TODO: debug why this scam warning is buggy on multichain
-  // !isNativeCurrency && !isOriginalTokenSymbol && shouldShowPercentage;
+  const showScamWarning =
+    isNativeCurrency && !isOriginalTokenSymbol && shouldShowPercentage;
 
   const dispatch = useDispatch();
   const [showScamWarningModal, setShowScamWarningModal] = useState(false);
@@ -386,10 +389,7 @@ export const TokenListItem = ({
                   isHidden={privacyMode}
                   length={SensitiveTextLength.Short}
                 >
-                  {primary}{' '}
-                  {isNativeCurrency || isPrimaryTokenSymbolHidden
-                    ? ''
-                    : tokenSymbol}
+                  {primary} {isPrimaryTokenSymbolHidden ? '' : tokenSymbol}
                 </SensitiveText>
               </Box>
             ) : (
@@ -419,10 +419,7 @@ export const TokenListItem = ({
                   isHidden={privacyMode}
                   length={SensitiveTextLength.Short}
                 >
-                  {primary}{' '}
-                  {isNativeCurrency || isPrimaryTokenSymbolHidden
-                    ? ''
-                    : tokenSymbol}
+                  {primary} {isPrimaryTokenSymbolHidden ? '' : tokenSymbol}
                 </SensitiveText>
               </Box>
             )}

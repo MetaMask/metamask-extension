@@ -31,17 +31,20 @@ export function calculateTokenBalance({
         new BN(decimals),
         5, // precision for native token balance
       );
+    } else {
+      balance = '0';
     }
-    return '0';
-  }
-
-  const hexBalance =
-    selectedAccountTokenBalancesAcrossChains?.[chainId]?.[address];
-  if (hexBalance && hexBalance !== '0x0') {
-    balance = stringifyBalance(
-      new BN(hexToDecimal(hexBalance)),
-      new BN(decimals),
-    );
+  } else {
+    const hexBalance =
+      selectedAccountTokenBalancesAcrossChains?.[chainId]?.[address];
+    if (hexBalance && hexBalance !== '0x0') {
+      balance = stringifyBalance(
+        new BN(hexToDecimal(hexBalance)),
+        new BN(decimals),
+      );
+    } else {
+      balance = '0';
+    }
   }
 
   return balance;
