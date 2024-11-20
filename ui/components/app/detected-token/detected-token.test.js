@@ -15,9 +15,9 @@ describe('DetectedToken', () => {
         ...testData.metamask,
         ...mockNetworkState({ chainId: CHAIN_IDS.SEPOLIA }),
         tokenBalances: {
-          '0x1': {
-            '0x514910771af9ca656af840dff83e8264ecf986ca': {
-              balance: '1000000000000000000',
+          '0x514910771af9ca656af840dff83e8264ecf986ca': {
+            '0x1': {
+              '0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48': '0x25e4bc',
             },
           },
         },

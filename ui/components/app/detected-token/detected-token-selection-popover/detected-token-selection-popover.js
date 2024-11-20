@@ -60,7 +60,6 @@ const DetectedTokenSelectionPopover = ({
 
   const onClose = () => {
     const chainIds = Object.keys(detectedTokensMultichain);
-    const chainIdForMetrics = process.env.PORTFOLIO_VIEW ? chainIds : chainId;
 
     setShowDetectedTokens(false);
     const eventTokensDetails = detectedTokens.map(
@@ -71,8 +70,10 @@ const DetectedTokenSelectionPopover = ({
       category: MetaMetricsEventCategory.Wallet,
       properties: {
         source_connection_method: MetaMetricsTokenEventSource.Detected,
-        chain_id: chainIdForMetrics,
         tokens: eventTokensDetails,
+        ...(process.env.PORTFOLIO_VIEW
+          ? { chain_ids: chainIds }
+          : { chain_id: chainId }),
       },
     });
   };
