@@ -1,5 +1,5 @@
 import React, { ReactNode, useEffect, useMemo } from 'react';
-import { shallowEqual, useSelector } from 'react-redux';
+import { shallowEqual, useSelector, useDispatch } from 'react-redux';
 import { Hex } from '@metamask/utils';
 import TokenCell from '../token-cell';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
@@ -15,6 +15,8 @@ import {
   getCurrencyRates,
   getCurrentNetwork,
   getMarketData,
+  getNetworkConfigurationIdByChainId,
+  getNewTokensImported,
   getPreferences,
   getSelectedAccount,
   getSelectedAccountNativeTokenCachedBalanceByChainId,
@@ -27,6 +29,7 @@ import { calculateTokenBalance } from '../util/calculateTokenBalance';
 import { calculateTokenFiatAmount } from '../util/calculateTokenFiatAmount';
 import { endTrace, TraceName } from '../../../../../shared/lib/trace';
 import { useTokenBalances } from '../../../../hooks/useTokenBalances';
+import { setTokenNetworkFilter } from '../../../../store/actions';
 
 type TokenListProps = {
   onTokenClick: (chainId: string, address: string) => void;
@@ -79,7 +82,9 @@ const useFilteredAccountTokens = (currentNetwork: { chainId: string }) => {
 
 export default function TokenList({ onTokenClick }: TokenListProps) {
   const t = useI18nContext();
+  const dispatch = useDispatch();
   const currentNetwork = useSelector(getCurrentNetwork);
+  const allNetworks = useSelector(getNetworkConfigurationIdByChainId);
   const { tokenSortConfig, tokenNetworkFilter, privacyMode } =
     useSelector(getPreferences);
   const selectedAccount = useSelector(getSelectedAccount);
@@ -88,6 +93,7 @@ export default function TokenList({ onTokenClick }: TokenListProps) {
     getTokenExchangeRates,
     shallowEqual,
   );
+  const newTokensImported = useSelector(getNewTokensImported);
   const selectedAccountTokensChains = useFilteredAccountTokens(currentNetwork);
 
   const { tokenBalances } = useTokenBalances();
@@ -102,6 +108,17 @@ export default function TokenList({ onTokenClick }: TokenListProps) {
   const nativeBalances: Record<Hex, Hex> = useSelector(
     getSelectedAccountNativeTokenCachedBalanceByChainId,
   ) as Record<Hex, Hex>;
+
+  // Ensure newly added networks are included in the tokenNetworkFilter
+  useEffect(() => {
+    const allNetworkFilters = Object.fromEntries(
+      Object.keys(allNetworks).map((chainId) => [chainId, true]),
+    );
+
+    if (Object.keys(tokenNetworkFilter).length > 1) {
+      dispatch(setTokenNetworkFilter(allNetworkFilters));
+    }
+  }, [Object.keys(allNetworks).length]);
 
   const consolidatedBalances = () => {
     const tokensWithBalance: TokenWithFiatAmount[] = [];
@@ -178,6 +195,7 @@ export default function TokenList({ onTokenClick }: TokenListProps) {
     currentNetwork,
     selectedAccount,
     selectedAccountTokensChains,
+    newTokensImported,
   ]);
 
   useEffect(() => {
