@@ -138,15 +138,13 @@ const PersonalSignInfo: React.FC = () => {
         >
           <ConfirmInfoRowUrl url={currentConfirmation.msgParams.origin} />
         </ConfirmInfoAlertRow>
-        {isSIWE && (
-          <ConfirmInfoAlertRow
-            alertKey={RowAlertKey.SigningInWith}
-            label={t('signingInWith')}
-            ownerId={currentConfirmation.id}
-          >
-            <ConfirmInfoRowAddress address={from} chainId={chainId} />
-          </ConfirmInfoAlertRow>
-        )}
+        <ConfirmInfoAlertRow
+          alertKey={RowAlertKey.SigningInWith}
+          label={t('signingInWith')}
+          ownerId={currentConfirmation.id}
+        >
+          <ConfirmInfoRowAddress address={from} chainId={chainId} />
+        </ConfirmInfoAlertRow>
       </ConfirmInfoSection>
       <ConfirmInfoSection>
         {isSIWE ? (

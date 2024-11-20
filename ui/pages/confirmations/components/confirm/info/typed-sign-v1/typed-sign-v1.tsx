@@ -3,6 +3,7 @@ import React from 'react';
 import { ConfirmInfoAlertRow } from '../../../../../../components/app/confirm/info/row/alert-row/alert-row';
 import {
   ConfirmInfoRow,
+  ConfirmInfoRowAddress,
   ConfirmInfoRowUrl,
 } from '../../../../../../components/app/confirm/info/row';
 import { RowAlertKey } from '../../../../../../components/app/confirm/info/row/constants';
@@ -24,6 +25,7 @@ const TypedSignV1Info: React.FC = () => {
     return null;
   }
 
+  const { from } = currentConfirmation.msgParams ?? { from: '' };
   const toolTipMessage = isSnapId(currentConfirmation.msgParams?.origin)
     ? t('requestFromInfoSnap')
     : t('requestFromInfo');
@@ -41,6 +43,13 @@ const TypedSignV1Info: React.FC = () => {
           <ConfirmInfoRowUrl
             url={currentConfirmation.msgParams?.origin ?? ''}
           />
+        </ConfirmInfoAlertRow>
+        <ConfirmInfoAlertRow
+          alertKey={RowAlertKey.SigningInWith}
+          label={t('signingInWith')}
+          ownerId={currentConfirmation.id}
+        >
+          <ConfirmInfoRowAddress address={from} chainId={chainId} />
         </ConfirmInfoAlertRow>
       </ConfirmInfoSection>
       <ConfirmInfoSection>

@@ -45,6 +45,29 @@ export const OriginRow = () => {
   );
 };
 
+export const SigningInWithRow = () => {
+  const t = useI18nContext();
+
+  const { currentConfirmation } = useConfirmContext<TransactionMeta>();
+
+  const chainId = currentConfirmation?.chainId as string;
+  const from = currentConfirmation?.txParams?.from;
+
+  if (!from) {
+    return null;
+  }
+
+  return (
+    <ConfirmInfoAlertRow
+      alertKey={RowAlertKey.SigningInWith}
+      label={t('signingInWith')}
+      ownerId={currentConfirmation.id}
+    >
+      <ConfirmInfoRowAddress address={from} chainId={chainId} />
+    </ConfirmInfoAlertRow>
+  );
+};
+
 export const RecipientRow = () => {
   const t = useI18nContext();
   const { currentConfirmation } = useConfirmContext<TransactionMeta>();
@@ -156,6 +179,7 @@ export const TransactionDetails = () => {
         <OriginRow />
         <RecipientRow />
         {showAdvancedDetails && <MethodDataRow />}
+        <SigningInWithRow />
       </ConfirmInfoSection>
       <AmountRow />
       <PaymasterRow />

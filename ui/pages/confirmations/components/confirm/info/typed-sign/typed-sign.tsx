@@ -52,6 +52,7 @@ const TypedSignInfo: React.FC = () => {
     ? t('requestFromInfoSnap')
     : t('requestFromInfo');
   const msgData = currentConfirmation.msgParams?.data as string;
+  const { from } = currentConfirmation.msgParams ?? { from: '' };
 
   return (
     <>
@@ -81,6 +82,13 @@ const TypedSignInfo: React.FC = () => {
             />
           </ConfirmInfoRow>
         )}
+        <ConfirmInfoAlertRow
+          alertKey={RowAlertKey.SigningInWith}
+          label={t('signingInWith')}
+          ownerId={currentConfirmation.id}
+        >
+          <ConfirmInfoRowAddress address={from} chainId={chainId} />
+        </ConfirmInfoAlertRow>
       </ConfirmInfoSection>
       <ConfirmInfoSection>
         <ConfirmInfoRow

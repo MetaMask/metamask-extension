@@ -1,11 +1,9 @@
-import { NameType } from '@metamask/name-controller';
 import {
   TransactionMeta,
   TransactionType,
 } from '@metamask/transaction-controller';
 import React from 'react';
 import { ConfirmInfoSection } from '../../../../../../components/app/confirm/info/row/section';
-import Name from '../../../../../../components/app/name';
 import {
   Box,
   Icon,
@@ -19,10 +17,16 @@ import {
   IconColor,
   JustifyContent,
 } from '../../../../../../helpers/constants/design-system';
+import {
+  ConfirmInfoRow,
+  ConfirmInfoRowAddress,
+} from '../../../../../../components/app/confirm/info/row';
+import { useI18nContext } from '../../../../../../hooks/useI18nContext';
 import { useConfirmContext } from '../../../../context/confirm';
 import { useDecodedTransactionData } from '../hooks/useDecodedTransactionData';
 
 export const TransactionFlowSection = () => {
+  const t = useI18nContext();
   const { currentConfirmation: transactionMeta } =
     useConfirmContext<TransactionMeta>();
 
@@ -52,22 +56,33 @@ export const TransactionFlowSection = () => {
         alignItems={AlignItems.center}
         padding={3}
       >
-        <Name
-          value={transactionMeta.txParams.from}
-          type={NameType.ETHEREUM_ADDRESS}
-          variation={chainId}
-        />
+        <ConfirmInfoRow
+          label={t('from')}
+          style={{ flexDirection: 'column', alignItems: AlignItems.flexStart }}
+        >
+          <ConfirmInfoRowAddress
+            address={transactionMeta.txParams.from}
+            chainId={chainId}
+          />
+        </ConfirmInfoRow>
         <Icon
           name={IconName.ArrowRight}
           size={IconSize.Md}
           color={IconColor.iconMuted}
         />
         {recipientAddress && (
-          <Name
-            value={recipientAddress}
-            type={NameType.ETHEREUM_ADDRESS}
-            variation={chainId}
-          />
+          <ConfirmInfoRow
+            label={t('to')}
+            style={{
+              flexDirection: 'column',
+              alignItems: AlignItems.flexStart,
+            }}
+          >
+            <ConfirmInfoRowAddress
+              address={recipientAddress}
+              chainId={chainId}
+            />
+          </ConfirmInfoRow>
         )}
       </Box>
     </ConfirmInfoSection>

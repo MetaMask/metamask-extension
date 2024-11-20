@@ -16,6 +16,7 @@ import {
   MethodDataRow,
   OriginRow,
   RecipientRow,
+  SigningInWithRow,
 } from '../../shared/transaction-details/transaction-details';
 import { getIsRevokeSetApprovalForAll } from '../../utils';
 import { useIsNFT } from '../hooks/use-is-nft';
@@ -81,6 +82,7 @@ export const ApproveDetails = ({
     <ConfirmInfoSection data-testid="confirmation__approve-details">
       <Spender isSetApprovalForAll={isSetApprovalForAll} />
       <OriginRow />
+      <SigningInWithRow />
       {showAdvancedDetails && (
         <>
           <RecipientRow />

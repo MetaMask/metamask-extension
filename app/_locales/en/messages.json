@@ -416,6 +416,12 @@
   "alertMessageAddressMismatchWarning": {
     "message": "Attackers sometimes mimic sites by making small changes to the site address. Make sure you're interacting with the intended site before you continue."
   },
+  "selectedAccountMismatch": {
+    "message": "Different account selected"
+  },
+  "alertSelectedAccountWarning": {
+    "message": "This request is for a different account than the one selected in your wallet. To use another account, connect it to the site."
+  },
   "alertMessageChangeInSimulationResults": {
     "message": "Estimated changes for this transaction have been updated. Review them closely before proceeding."
   },
@@ -4503,6 +4509,9 @@
   },
   "requestFrom": {
     "message": "Request from"
+  },
+  "signingAccount": {
+    "message": "Signing Account"
   },
   "requestFromInfo": {
     "message": "This is the site asking for your signature."
