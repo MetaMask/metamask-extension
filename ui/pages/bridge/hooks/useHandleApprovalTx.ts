@@ -1,14 +1,12 @@
 import { TransactionType } from '@metamask/transaction-controller';
 import { Hex } from '@metamask/utils';
 import { BigNumber } from 'bignumber.js';
-import { TxData } from '../types';
-import { isEthUsdt } from '../bridge.util';
+import { TxData, QuoteResponse, FeeType } from '../types';
+import { isEthUsdt, getEthUsdtResetData } from '../bridge.util';
 import useHandleTx from './useHandleTx';
 import { Numeric } from '../../../../shared/modules/Numeric';
-import { QuoteResponse, FeeType } from '../types';
 import { ETH_USDT_ADDRESS } from '../../../../shared/constants/bridge';
 import { getBridgeERC20Allowance } from '../../../ducks/bridge/actions';
-import { getEthUsdtResetData } from '../bridge.util';
 
 export default function useHandleApprovalTx() {
   const { handleTx } = useHandleTx();

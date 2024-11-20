@@ -4,6 +4,7 @@ import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import { renderHook } from '@testing-library/react-hooks';
 import { Provider } from 'react-redux';
+import { MemoryRouter, useHistory } from 'react-router-dom';
 import { createBridgeMockStore } from '../../../../test/jest/mock-store';
 import * as actions from '../../../store/actions';
 import * as selectors from '../../../selectors';
@@ -12,7 +13,6 @@ import {
   DummyQuotesWithApproval,
 } from '../../../../test/data/bridge/dummy-quotes';
 import useSubmitBridgeTransaction from './useSubmitBridgeTransaction';
-import { MemoryRouter, useHistory } from 'react-router-dom';
 
 jest.mock('react-router-dom', () => {
   const original = jest.requireActual('react-router-dom');

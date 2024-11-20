@@ -2,13 +2,15 @@ import {
   TransactionMeta,
   TransactionType,
 } from '@metamask/transaction-controller';
-import { forceUpdateMetamaskState } from '../../../store/actions';
+import { useDispatch, useSelector } from 'react-redux';
+import {
+  forceUpdateMetamaskState,
+  addTransactionAndWaitForPublish,
+} from '../../../store/actions';
 import {
   getHexMaxGasLimit,
   getTxGasEstimates,
 } from '../../../ducks/bridge/utils';
-import { addTransactionAndWaitForPublish } from '../../../store/actions';
-import { useDispatch, useSelector } from 'react-redux';
 import { getGasFeeEstimates } from '../../../ducks/metamask/metamask';
 import { checkNetworkAndAccountSupports1559 } from '../../../selectors';
 import { ChainId } from '../types';

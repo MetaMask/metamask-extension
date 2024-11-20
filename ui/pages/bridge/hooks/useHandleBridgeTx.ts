@@ -1,8 +1,8 @@
 import { BigNumber } from 'bignumber.js';
+import { TransactionType } from '@metamask/transaction-controller';
 import { Numeric } from '../../../../shared/modules/Numeric';
 import { FeeType, QuoteResponse } from '../types';
 import useHandleTx from './useHandleTx';
-import { TransactionType } from '@metamask/transaction-controller';
 
 export default function useHandleBridgeTx() {
   const { handleTx } = useHandleTx();
