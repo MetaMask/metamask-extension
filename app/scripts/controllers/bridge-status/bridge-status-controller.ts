@@ -78,7 +78,7 @@ export default class BridgeStatusController extends StaticIntervalPollingControl
     // If you close the extension, but keep the browser open, the polling continues
     // If you close the browser, the polling stops
     // Check for historyItems that do not have a status of complete and restart polling
-    this.restartPollingForIncompleteHistoryItems();
+    this.#restartPollingForIncompleteHistoryItems();
   }
 
   resetState = () => {
@@ -117,7 +117,7 @@ export default class BridgeStatusController extends StaticIntervalPollingControl
     }
   };
 
-  restartPollingForIncompleteHistoryItems = () => {
+  #restartPollingForIncompleteHistoryItems = () => {
     // Check for historyItems that do not have a status of complete and restart polling
     const { bridgeStatusState } = this.state;
     const historyItems = Object.values(bridgeStatusState.txHistory);
