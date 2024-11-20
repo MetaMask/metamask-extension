@@ -499,6 +499,13 @@ const state = {
         decimals: 18,
       },
     ],
+    tokenBalances: {
+      '0x1': {
+        '0x64a845a5b02460acf8a3d84503b0d68d028b4bb4': {
+          balance: '1000000000000000000',
+        },
+      },
+    },
     allDetectedTokens: {
       '0xaa36a7': {
         '0x9d0ba4ddac06032527b140912ec808ab9451b788': [

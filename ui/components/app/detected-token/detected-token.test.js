@@ -14,6 +14,13 @@ describe('DetectedToken', () => {
       metamask: {
         ...testData.metamask,
         ...mockNetworkState({ chainId: CHAIN_IDS.SEPOLIA }),
+        tokenBalances: {
+          '0x1': {
+            '0x514910771af9ca656af840dff83e8264ecf986ca': {
+              balance: '1000000000000000000',
+            },
+          },
+        },
       },
     });
     const props = {
