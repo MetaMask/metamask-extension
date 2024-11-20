@@ -6,7 +6,12 @@ import React, {
   useEffect,
 } from 'react';
 import PropTypes from 'prop-types';
-import { useHistory } from 'react-router-dom';
+import {
+  useHistory,
+  ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
+  useLocation,
+  ///: END:ONLY_INCLUDE_IF
+} from 'react-router-dom';
 import Fuse from 'fuse.js';
 import { useDispatch, useSelector } from 'react-redux';
 import {
@@ -81,6 +86,10 @@ import {
 } from '../../../../shared/constants/metametrics';
 import {
   CONNECT_HARDWARE_ROUTE,
+  ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
+  CONFIRMATION_V_NEXT_ROUTE,
+  SETTINGS_ROUTE,
+  ///: END:ONLY_INCLUDE_IF
   ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
   CUSTODY_ACCOUNT_ROUTE,
   ///: END:ONLY_INCLUDE_IF
@@ -247,6 +256,9 @@ export const AccountListMenu = ({
   const currentTabOrigin = useSelector(getOriginOfCurrentTab);
   const history = useHistory();
   const dispatch = useDispatch();
+  ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
+  const { pathname } = useLocation();
+  ///: END:ONLY_INCLUDE_IF
   const hiddenAddresses = useSelector(getHiddenAccountsList);
   const updatedAccountsList = useSelector(getUpdatedAndSortedAccounts);
   const filteredUpdatedAccountList = useMemo(
@@ -295,6 +307,17 @@ export const AccountListMenu = ({
   const bitcoinWalletSnapClient = useMultichainWalletSnapClient(
     WalletClientType.Bitcoin,
   );
+  const handleAccountCreation = async (network: MultichainNetworks) => {
+    // The account creation + renaming is handled by the Snap account bridge, so
+    // we need to close the current modal
+    onClose();
+    if (pathname.includes(SETTINGS_ROUTE)) {
+      // The settings route does not redirect pending confirmations. We need to redirect manually here.
+      history.push(CONFIRMATION_V_NEXT_ROUTE);
+    }
+
+    await bitcoinWalletSnapClient.createAccount(network);
+  };
   ///: END:ONLY_INCLUDE_IF
 
   ///: BEGIN:ONLY_INCLUDE_IF(solana)
@@ -302,6 +325,7 @@ export const AccountListMenu = ({
   const solanaWalletSnapClient = useMultichainWalletSnapClient(
     WalletClientType.Solana,
   );
+
   ///: END:ONLY_INCLUDE_IF
 
   const [searchQuery, setSearchQuery] = useState('');
@@ -453,14 +477,7 @@ export const AccountListMenu = ({
                         },
                       });
 
-                      // The account creation + renaming is handled by the
-                      // Snap account bridge, so we need to close the current
-                      // modal
-                      onClose();
-
-                      await bitcoinWalletSnapClient.createAccount(
-                        MultichainNetworks.BITCOIN,
-                      );
+                      await handleAccountCreation(MultichainNetworks.BITCOIN);
                     }}
                     data-testid="multichain-account-menu-popover-add-btc-account"
                   >
@@ -479,11 +496,7 @@ export const AccountListMenu = ({
                     size={ButtonLinkSize.Sm}
                     startIconName={IconName.Add}
                     onClick={async () => {
-                      // The account creation + renaming is handled by the Snap account bridge, so
-                      // we need to close the current modal
-                      onClose();
-
-                      await bitcoinWalletSnapClient.createAccount(
+                      await handleAccountCreation(
                         MultichainNetworks.BITCOIN_TESTNET,
                       );
                     }}

@@ -8,6 +8,11 @@ import {
   AccountOverviewEthProps,
 } from './account-overview-eth';
 
+jest.mock('../../../store/actions', () => ({
+  tokenBalancesStartPolling: jest.fn().mockResolvedValue('pollingToken'),
+  tokenBalancesStopPollingByPollingToken: jest.fn(),
+}));
+
 const render = (props: AccountOverviewEthProps) => {
   const store = configureStore({
     metamask: mockState.metamask,
