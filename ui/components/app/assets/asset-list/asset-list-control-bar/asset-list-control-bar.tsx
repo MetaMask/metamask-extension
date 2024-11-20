@@ -63,17 +63,16 @@ const AssetListControlBar = ({ showTokensLinks }: AssetListControlBarProps) => {
   const [isNetworkFilterPopoverOpen, setIsNetworkFilterPopoverOpen] =
     useState(false);
 
-  const isTestNetwork = useMemo(() => {
-    return (TEST_CHAINS as string[]).includes(currentNetwork.chainId);
-  }, [currentNetwork.chainId, TEST_CHAINS]);
-
   const allOpts: Record<string, boolean> = {};
   Object.keys(allNetworks).forEach((chainId) => {
     allOpts[chainId] = true;
   });
 
-  const allNetworksFilterShown =
-    Object.keys(tokenNetworkFilter).length !== Object.keys(allOpts).length;
+  const currenNetworkFilterShown =
+    Object.keys(tokenNetworkFilter ?? {}).length === 1;
+  const isTestNetwork = useMemo(() => {
+    return (TEST_CHAINS as string[]).includes(currentNetwork.chainId);
+  }, [currentNetwork.chainId, TEST_CHAINS]);
 
   useEffect(() => {
     if (isTestNetwork) {
@@ -178,7 +177,7 @@ const AssetListControlBar = ({ showTokensLinks }: AssetListControlBarProps) => {
             marginRight={isFullScreen ? 2 : null}
             ellipsis
           >
-            {allNetworksFilterShown
+            {currenNetworkFilterShown
               ? currentNetwork?.nickname ?? t('currentNetwork')
               : t('allNetworks')}
           </ButtonBase>

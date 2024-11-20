@@ -5,6 +5,9 @@ const {
   logInWithBalanceValidation,
   unlockWallet,
 } = require('../../helpers');
+const {
+  switchToNetworkFlow,
+} = require('../../page-objects/flows/network.flow');
 
 const FixtureBuilder = require('../../fixture-builder');
 
@@ -63,6 +66,20 @@ describe('Settings', function () {
         );
         await driver.delay(1000);
         assert.equal(await tokenListAmount.getText(), '$42,500.00\nUSD');
+
+        // switch to Sepolia
+        // the account list item used to always show account.balance as long as its EVM network.
+        // Now we are showing aggregated fiat balance on non testnetworks; but if it is a testnetwork we will show account.balance.
+        // The current test was running initially on localhost
+        // which is not a testnetwork resulting in the code trying to calculate the aggregated total fiat balance which shows 0.00$
+        // If this test switches to mainnet then switches back to localhost; the test will pass because switching to mainnet
+        // will make the code calculate the aggregate fiat balance on mainnet+Linea mainnet and because this account in this test
+        // has 42,500.00 native Eth on mainnet then the aggregated total fiat would be 42,500.00. When the user switches back to localhost
+        // it will show the total that the test is expecting.
+
+        // I think we can slightly modify this test to switch to Sepolia network before checking the account List item value
+        await switchToNetworkFlow(driver, 'Sepolia');
+
         await driver.clickElement('[data-testid="account-menu-icon"]');
         const accountTokenValue = await driver.waitForSelector(
           '.multichain-account-list-item .multichain-account-list-item__asset',
