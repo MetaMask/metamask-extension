@@ -180,9 +180,10 @@ exports[`AssetPage should render a native asset 1`] = `
         class="mm-box multichain-token-list-item mm-box--display-flex mm-box--gap-4 mm-box--flex-direction-column"
         data-testid="multichain-token-list-item"
       >
-        <div
-          class="mm-box multichain-token-list-item__container-cell mm-box--padding-top-2 mm-box--padding-right-4 mm-box--padding-bottom-2 mm-box--padding-left-4 mm-box--display-flex mm-box--flex-direction-row"
+        <a
+          class="mm-box multichain-token-list-item__container-cell multichain-token-list-item__container-cell--clickable mm-box--padding-top-2 mm-box--padding-right-4 mm-box--padding-bottom-2 mm-box--padding-left-4 mm-box--display-flex mm-box--flex-direction-row"
           data-testid="multichain-token-list-button"
+          href="#"
         >
           <div
             class="mm-box mm-badge-wrapper multichain-token-list-item__badge mm-box--margin-right-4 mm-box--display-inline-block"
@@ -199,7 +200,7 @@ exports[`AssetPage should render a native asset 1`] = `
                 class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xs mm-avatar-network multichain-token-list-item__badge__avatar-network mm-text--body-xs mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-full mm-box--border-color-transparent box--border-style-solid box--border-width-1"
               >
                 <img
-                  alt="Ethereum Mainnet logo"
+                  alt="static-logo"
                   class="mm-avatar-network__network-image"
                   src="./images/eth_logo.svg"
                 />
@@ -221,12 +222,14 @@ exports[`AssetPage should render a native asset 1`] = `
                 >
                   TEST
                 </span>
-                <p
-                  class="mm-box mm-text mm-text--body-md mm-text--ellipsis mm-box--color-text-alternative"
-                  data-testid="multichain-token-list-item-token-name"
+                <div
+                  class="mm-box mm-box--display-flex"
                 >
-                  TEST
-                </p>
+                  <p
+                    class="mm-box mm-text mm-text--body-sm-medium mm-text--ellipsis mm-box--color-text-default"
+                    data-testid="token-increase-decrease-percentage-0x0000000000000000000000000000000000000000"
+                  />
+                </div>
               </div>
               <div
                 class="mm-box mm-box--display-flex mm-box--flex-direction-column mm-box--align-items-flex-end mm-box--width-2/3"
@@ -234,14 +237,16 @@ exports[`AssetPage should render a native asset 1`] = `
                 <p
                   class="mm-box mm-text mm-text--body-md mm-text--font-weight-medium mm-text--text-align-end mm-box--width-2/3 mm-box--color-text-default"
                   data-testid="multichain-token-list-item-secondary-value"
-                />
+                >
+                  $0.00
+                </p>
                 <p
                   class="mm-box mm-text mm-text--body-sm-medium mm-text--text-align-end mm-box--color-text-alternative"
                   data-testid="multichain-token-list-item-value"
                 >
-                  0 TEST
+                  0
                    
-                  
+                  TEST
                 </p>
               </div>
             </div>
@@ -249,7 +254,7 @@ exports[`AssetPage should render a native asset 1`] = `
               class="mm-box mm-box--display-flex mm-box--gap-1 mm-box--flex-direction-row mm-box--justify-content-space-between"
             />
           </div>
-        </div>
+        </a>
       </div>
       <div
         class="mm-box mm-box--margin-top-2 mm-box--display-flex mm-box--gap-7 mm-box--flex-direction-column"
@@ -275,7 +280,7 @@ exports[`AssetPage should render a native asset 1`] = `
               </p>
               <a
                 class="mm-box mm-text mm-button-base asset-page__spending-caps mm-text--body-md-medium mm-button-link mm-button-link--size-auto mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-0 mm-box--padding-left-0 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-default mm-box--background-color-transparent"
-                href="https://portfolio.test/?metamaskEntry=asset_page&metametricsId=&metricsEnabled=false&marketingEnabled=false&accountAddress=0x1&tab=spending-caps"
+                href="https://portfolio.test/?metamaskEntry=asset_page&metametricsId=&metricsEnabled=false&marketingEnabled=false&accountAddress=cf8dace4-9439-4bd4-b3a8-88c821c8fcb3&tab=spending-caps"
                 rel="noopener noreferrer"
                 target="_blank"
               >
@@ -500,9 +505,10 @@ exports[`AssetPage should render an ERC20 asset without prices 1`] = `
         class="mm-box multichain-token-list-item mm-box--display-flex mm-box--gap-4 mm-box--flex-direction-column"
         data-testid="multichain-token-list-item"
       >
-        <div
-          class="mm-box multichain-token-list-item__container-cell mm-box--padding-top-2 mm-box--padding-right-4 mm-box--padding-bottom-2 mm-box--padding-left-4 mm-box--display-flex mm-box--flex-direction-row"
+        <a
+          class="mm-box multichain-token-list-item__container-cell multichain-token-list-item__container-cell--clickable mm-box--padding-top-2 mm-box--padding-right-4 mm-box--padding-bottom-2 mm-box--padding-left-4 mm-box--display-flex mm-box--flex-direction-row"
           data-testid="multichain-token-list-button"
+          href="#"
         >
           <div
             class="mm-box mm-badge-wrapper multichain-token-list-item__badge mm-box--margin-right-4 mm-box--display-inline-block"
@@ -519,7 +525,7 @@ exports[`AssetPage should render an ERC20 asset without prices 1`] = `
                 class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xs mm-avatar-network multichain-token-list-item__badge__avatar-network mm-text--body-xs mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-full mm-box--border-color-transparent box--border-style-solid box--border-width-1"
               >
                 <img
-                  alt="Ethereum Mainnet logo"
+                  alt="static-logo"
                   class="mm-avatar-network__network-image"
                   src="./images/eth_logo.svg"
                 />
@@ -556,7 +562,9 @@ exports[`AssetPage should render an ERC20 asset without prices 1`] = `
                 <p
                   class="mm-box mm-text mm-text--body-md mm-text--font-weight-medium mm-text--text-align-end mm-box--width-2/3 mm-box--color-text-default"
                   data-testid="multichain-token-list-item-secondary-value"
-                />
+                >
+                  $0.00
+                </p>
                 <p
                   class="mm-box mm-text mm-text--body-sm-medium mm-text--text-align-end mm-box--color-text-alternative"
                   data-testid="multichain-token-list-item-value"
@@ -571,7 +579,7 @@ exports[`AssetPage should render an ERC20 asset without prices 1`] = `
               class="mm-box mm-box--display-flex mm-box--gap-1 mm-box--flex-direction-row mm-box--justify-content-space-between"
             />
           </div>
-        </div>
+        </a>
       </div>
       <div
         class="mm-box mm-box--margin-top-2 mm-box--display-flex mm-box--gap-7 mm-box--flex-direction-column"
@@ -600,7 +608,7 @@ exports[`AssetPage should render an ERC20 asset without prices 1`] = `
                 </p>
                 <div>
                   <div
-                    aria-describedby="tippy-tooltip-9"
+                    aria-describedby="static-tooltip-id"
                     class=""
                     data-original-title="Copy to clipboard"
                     data-tooltipped=""
@@ -657,7 +665,7 @@ exports[`AssetPage should render an ERC20 asset without prices 1`] = `
               </p>
               <a
                 class="mm-box mm-text mm-button-base asset-page__spending-caps mm-text--body-md-medium mm-button-link mm-button-link--size-auto mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-0 mm-box--padding-left-0 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-default mm-box--background-color-transparent"
-                href="https://portfolio.test/?metamaskEntry=asset_page&metametricsId=&metricsEnabled=false&marketingEnabled=false&accountAddress=0x1&tab=spending-caps"
+                href="https://portfolio.test/?metamaskEntry=asset_page&metametricsId=&metricsEnabled=false&marketingEnabled=false&accountAddress=cf8dace4-9439-4bd4-b3a8-88c821c8fcb3&tab=spending-caps"
                 rel="noopener noreferrer"
                 target="_blank"
               >
@@ -1008,9 +1016,10 @@ exports[`AssetPage should render an ERC20 token with prices 1`] = `
         class="mm-box multichain-token-list-item mm-box--display-flex mm-box--gap-4 mm-box--flex-direction-column"
         data-testid="multichain-token-list-item"
       >
-        <div
-          class="mm-box multichain-token-list-item__container-cell mm-box--padding-top-2 mm-box--padding-right-4 mm-box--padding-bottom-2 mm-box--padding-left-4 mm-box--display-flex mm-box--flex-direction-row"
+        <a
+          class="mm-box multichain-token-list-item__container-cell multichain-token-list-item__container-cell--clickable mm-box--padding-top-2 mm-box--padding-right-4 mm-box--padding-bottom-2 mm-box--padding-left-4 mm-box--display-flex mm-box--flex-direction-row"
           data-testid="multichain-token-list-button"
+          href="#"
         >
           <div
             class="mm-box mm-badge-wrapper multichain-token-list-item__badge mm-box--margin-right-4 mm-box--display-inline-block"
@@ -1027,7 +1036,7 @@ exports[`AssetPage should render an ERC20 token with prices 1`] = `
                 class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xs mm-avatar-network multichain-token-list-item__badge__avatar-network mm-text--body-xs mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-full mm-box--border-color-transparent box--border-style-solid box--border-width-1"
               >
                 <img
-                  alt="Ethereum Mainnet logo"
+                  alt="static-logo"
                   class="mm-avatar-network__network-image"
                   src="./images/eth_logo.svg"
                 />
@@ -1064,7 +1073,9 @@ exports[`AssetPage should render an ERC20 token with prices 1`] = `
                 <p
                   class="mm-box mm-text mm-text--body-md mm-text--font-weight-medium mm-text--text-align-end mm-box--width-2/3 mm-box--color-text-default"
                   data-testid="multichain-token-list-item-secondary-value"
-                />
+                >
+                  $0.00
+                </p>
                 <p
                   class="mm-box mm-text mm-text--body-sm-medium mm-text--text-align-end mm-box--color-text-alternative"
                   data-testid="multichain-token-list-item-value"
@@ -1079,7 +1090,7 @@ exports[`AssetPage should render an ERC20 token with prices 1`] = `
               class="mm-box mm-box--display-flex mm-box--gap-1 mm-box--flex-direction-row mm-box--justify-content-space-between"
             />
           </div>
-        </div>
+        </a>
       </div>
       <div
         class="mm-box mm-box--margin-top-2 mm-box--display-flex mm-box--gap-7 mm-box--flex-direction-column"
@@ -1108,7 +1119,7 @@ exports[`AssetPage should render an ERC20 token with prices 1`] = `
                 </p>
                 <div>
                   <div
-                    aria-describedby="tippy-tooltip-10"
+                    aria-describedby="static-tooltip-id"
                     class=""
                     data-original-title="Copy to clipboard"
                     data-tooltipped=""
@@ -1165,7 +1176,7 @@ exports[`AssetPage should render an ERC20 token with prices 1`] = `
               </p>
               <a
                 class="mm-box mm-text mm-button-base asset-page__spending-caps mm-text--body-md-medium mm-button-link mm-button-link--size-auto mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-0 mm-box--padding-left-0 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-default mm-box--background-color-transparent"
-                href="https://portfolio.test/?metamaskEntry=asset_page&metametricsId=&metricsEnabled=false&marketingEnabled=false&accountAddress=0x1&tab=spending-caps"
+                href="https://portfolio.test/?metamaskEntry=asset_page&metametricsId=&metricsEnabled=false&marketingEnabled=false&accountAddress=cf8dace4-9439-4bd4-b3a8-88c821c8fcb3&tab=spending-caps"
                 rel="noopener noreferrer"
                 target="_blank"
               >
