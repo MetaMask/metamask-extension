@@ -7,11 +7,10 @@ import {
   // TODO: Remove restricted import
   // eslint-disable-next-line import/no-restricted-paths
 } from '../../../app/scripts/controllers/bridge/types';
-
 import { forceUpdateMetamaskState } from '../../store/actions';
 import { submitRequestToBackground } from '../../store/background-connection';
-import { MetaMaskReduxDispatch } from '../../store/store';
 import { QuoteRequest } from '../../pages/bridge/types';
+import { MetaMaskReduxDispatch } from '../../store/store';
 import { bridgeSlice } from './bridge';
 
 const {
@@ -85,4 +84,14 @@ export const updateQuoteRequestParams = (params: Partial<QuoteRequest>) => {
       callBridgeControllerMethod(BridgeUserAction.UPDATE_QUOTE_PARAMS, params),
     );
   };
+};
+
+export const getBridgeERC20Allowance = async (
+  contractAddress: string,
+  chainId: Hex,
+): Promise<string> => {
+  return await submitRequestToBackground(
+    BridgeBackgroundAction.GET_BRIDGE_ERC20_ALLOWANCE,
+    [contractAddress, chainId],
+  );
 };
