@@ -7,7 +7,6 @@ import {
   BridgeHistoryItem,
   StatusTypes,
 } from '../../../../shared/types/bridge-status';
-import { UseBridgeDataProps } from '../utils/useBridgeTxHistoryData';
 import { Box, Text } from '../../../components/component-library';
 import {
   BlockSize,
@@ -15,6 +14,7 @@ import {
   FlexDirection,
   TextColor,
 } from '../../../helpers/constants/design-system';
+import { UseBridgeDataProps } from '../../../hooks/bridge/useBridgeTxHistoryData';
 import Segment from './segment';
 
 const getTxIndex = (srcTxStatus: StatusTypes) => {
