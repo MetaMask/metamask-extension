@@ -6,7 +6,7 @@ import { useHistory } from 'react-router-dom';
 import { Hex } from '@metamask/utils';
 import { NetworkConfiguration } from '@metamask/network-controller';
 import {
-  getAllEnabledNetworks,
+  getNetworkConfigurationsByChainId,
   getSelectedInternalAccount,
   getTokenList,
   selectERC20TokensByChain,
@@ -31,11 +31,15 @@ const TokenAsset = ({ token, chainId }: { token: Token; chainId: Hex }) => {
   const tokenList = useSelector(getTokenList);
   const allNetworks: {
     [key: `0x${string}`]: NetworkConfiguration;
-  } = useSelector(getAllEnabledNetworks);
+  } = useSelector(getNetworkConfigurationsByChainId);
   // get the correct rpc url for the current token
-  const defaultIdx = allNetworks[chainId].defaultBlockExplorerUrlIndex;
+  const defaultIdx = allNetworks[chainId]?.defaultBlockExplorerUrlIndex;
   const currentTokenBlockExplorer =
-    allNetworks[chainId]?.blockExplorerUrls[defaultIdx ?? 0];
+    defaultIdx === undefined
+      ? null
+      : allNetworks[chainId]?.blockExplorerUrls[defaultIdx];
+
+  console.log('currentTokenBlockExplorer', currentTokenBlockExplorer);
 
   const { address: walletAddress } = useSelector(getSelectedInternalAccount);
   const erc20TokensByChain = useSelector(selectERC20TokensByChain);
