@@ -9,7 +9,7 @@ describe('NativeValueDisplay', () => {
   it('renders component correctly', async () => {
     const mockStore = configureMockStore([])(mockState);
 
-    const { container, findByText } = renderWithProvider(
+    const { findByText } = renderWithProvider(
       <NativeValueDisplay value="4321" chainId="0x1" />,
       mockStore,
     );
