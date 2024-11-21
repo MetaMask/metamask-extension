@@ -1,4 +1,5 @@
 import { Mockttp } from 'mockttp';
+import { USER_STORAGE_FEATURE_NAMES } from '@metamask/profile-sync-controller/sdk';
 import { withFixtures } from '../../../helpers';
 import FixtureBuilder from '../../../fixture-builder';
 import { mockNotificationServices } from '../mocks';
@@ -28,9 +29,13 @@ describe('Account syncing - Import With Private Key @no-mmi', function () {
           fixtures: new FixtureBuilder({ onboarding: true }).build(),
           title: this.test?.fullTitle(),
           testSpecificMock: (server: Mockttp) => {
-            userStorageMockttpController.setupPath('accounts', server, {
-              getResponse: accountsSyncMockResponse,
-            });
+            userStorageMockttpController.setupPath(
+              USER_STORAGE_FEATURE_NAMES.accounts,
+              server,
+              {
+                getResponse: accountsSyncMockResponse,
+              },
+            );
 
             return mockNotificationServices(
               server,
@@ -47,6 +52,7 @@ describe('Account syncing - Import With Private Key @no-mmi', function () {
           const homePage = new HomePage(driver);
           await homePage.check_pageIsLoaded();
           await homePage.check_expectedBalanceIsDisplayed();
+          await homePage.check_hasAccountSyncingSyncedAtLeastOnce();
 
           const header = new HeaderNavbar(driver);
           await header.check_pageIsLoaded();
@@ -75,7 +81,10 @@ describe('Account syncing - Import With Private Key @no-mmi', function () {
           fixtures: new FixtureBuilder({ onboarding: true }).build(),
           title: this.test?.fullTitle(),
           testSpecificMock: (server: Mockttp) => {
-            userStorageMockttpController.setupPath('accounts', server);
+            userStorageMockttpController.setupPath(
+              USER_STORAGE_FEATURE_NAMES.accounts,
+              server,
+            );
             return mockNotificationServices(
               server,
               userStorageMockttpController,
@@ -91,6 +100,7 @@ describe('Account syncing - Import With Private Key @no-mmi', function () {
           const homePage = new HomePage(driver);
           await homePage.check_pageIsLoaded();
           await homePage.check_expectedBalanceIsDisplayed();
+          await homePage.check_hasAccountSyncingSyncedAtLeastOnce();
 
           const header = new HeaderNavbar(driver);
           await header.check_pageIsLoaded();

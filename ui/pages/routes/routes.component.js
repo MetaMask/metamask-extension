@@ -115,9 +115,9 @@ import NftFullImage from '../../components/app/assets/nfts/nft-details/nft-full-
 import CrossChainSwap from '../bridge';
 import { ToastMaster } from '../../components/app/toast-master/toast-master';
 import {
-  REDESIGN_APPROVAL_TYPES,
-  REDESIGN_DEV_TRANSACTION_TYPES,
-} from '../confirmations/utils';
+  isCorrectDeveloperTransactionType,
+  isCorrectSignatureApprovalType,
+} from '../../../shared/lib/confirmation.utils';
 import {
   getConnectingLabel,
   hideAppHeader,
@@ -471,13 +471,12 @@ export default class Routes extends Component {
     const pendingApproval = pendingApprovals.find(
       (approval) => approval.id === confirmationId,
     );
-    const isCorrectApprovalType = REDESIGN_APPROVAL_TYPES.includes(
+    const isCorrectApprovalType = isCorrectSignatureApprovalType(
       pendingApproval?.type,
     );
-    const isCorrectDeveloperTransactionType =
-      REDESIGN_DEV_TRANSACTION_TYPES.includes(
-        transactionsMetadata[confirmationId]?.type,
-      );
+    const isCorrectTransactionType = isCorrectDeveloperTransactionType(
+      transactionsMetadata[confirmationId]?.type,
+    );
 
     let isLoadingShown =
       isLoading &&
@@ -485,7 +484,7 @@ export default class Routes extends Component {
       // In the redesigned screens, we hide the general loading spinner and the
       // loading states are on a component by component basis.
       !isCorrectApprovalType &&
-      !isCorrectDeveloperTransactionType;
+      !isCorrectTransactionType;
 
     ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
     isLoadingShown =
@@ -499,7 +498,7 @@ export default class Routes extends Component {
       // In the redesigned screens, we hide the general loading spinner and the
       // loading states are on a component by component basis.
       !isCorrectApprovalType &&
-      !isCorrectDeveloperTransactionType;
+      !isCorrectTransactionType;
     ///: END:ONLY_INCLUDE_IF
 
     return (

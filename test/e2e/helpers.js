@@ -1,4 +1,3 @@
-const { strict: assert } = require('assert');
 const path = require('path');
 const { promises: fs, writeFileSync, readFileSync } = require('fs');
 const BigNumber = require('bignumber.js');
@@ -384,106 +383,6 @@ const getWindowHandles = async (driver, handlesCount) => {
     (handle) => handle !== extension && handle !== dapp,
   );
   return { extension, dapp, popup };
-};
-
-/**
- * @deprecated Please use page object functions in `onboarding.flow.ts` and in `pages/onboarding/*`.
- * Begin the create new wallet flow on onboarding screen.
- * @param {WebDriver} driver
- */
-const onboardingBeginCreateNewWallet = async (driver) => {
-  // agree to terms of use
-  await driver.clickElement('[data-testid="onboarding-terms-checkbox"]');
-
-  // welcome
-  await driver.clickElement('[data-testid="onboarding-create-wallet"]');
-};
-
-/**
- * @deprecated Please use page object functions in `onboarding.flow.ts` and in `pages/onboarding/*`.
- * Choose either "I Agree" or "No Thanks" on the MetaMetrics onboarding screen
- * @param {WebDriver} driver
- * @param {boolean} option - true to opt into metrics, default is false
- */
-const onboardingChooseMetametricsOption = async (driver, option = false) => {
-  const optionIdentifier = option ? 'i-agree' : 'no-thanks';
-  // metrics
-  await driver.clickElement(`[data-testid="metametrics-${optionIdentifier}"]`);
-};
-
-/**
- * @deprecated Please use page object functions in `onboarding.flow.ts` and in `pages/onboarding/*`.
- * Set a password for MetaMask during onboarding
- * @param {WebDriver} driver
- * @param {string} password - Password to set
- */
-const onboardingCreatePassword = async (driver, password) => {
-  // create password
-  await driver.fill('[data-testid="create-password-new"]', password);
-  await driver.fill('[data-testid="create-password-confirm"]', password);
-  await driver.clickElement('[data-testid="create-password-terms"]');
-  await driver.clickElement('[data-testid="create-password-wallet"]');
-};
-
-/**
- * @deprecated Please use page object functions in `onboarding.flow.ts` and in `pages/onboarding/*`.
- * Choose to secure wallet, and then get recovery phrase and confirm the SRP
- * during onboarding flow.
- * @param {WebDriver} driver
- */
-const onboardingRevealAndConfirmSRP = async (driver) => {
-  // secure my wallet
-  await driver.clickElement('[data-testid="secure-wallet-recommended"]');
-
-  // reveal SRP
-  await driver.clickElement('[data-testid="recovery-phrase-reveal"]');
-
-  const revealedSeedPhrase = await driver.findElement(
-    '[data-testid="recovery-phrase-chips"]',
-  );
-
-  const recoveryPhrase = await revealedSeedPhrase.getText();
-
-  await driver.clickElement('[data-testid="recovery-phrase-next"]');
-
-  // confirm SRP
-  const words = recoveryPhrase.split(/\s*(?:[0-9)]+|\n|\.|^$|$)\s*/u);
-  const finalWords = words.filter((str) => str !== '');
-  assert.equal(finalWords.length, 12);
-
-  await driver.fill('[data-testid="recovery-phrase-input-2"]', finalWords[2]);
-  await driver.fill('[data-testid="recovery-phrase-input-3"]', finalWords[3]);
-  await driver.fill('[data-testid="recovery-phrase-input-7"]', finalWords[7]);
-
-  await driver.clickElement('[data-testid="confirm-recovery-phrase"]');
-
-  await driver.clickElementAndWaitToDisappear({
-    tag: 'button',
-    text: 'Confirm',
-  });
-};
-
-/**
- * @deprecated Please use page object functions in `onboarding.flow.ts` and in `pages/onboarding/*`.
- * Complete the onboarding flow by confirming completion. Final step before the
- * reminder to pin the extension.
- * @param {WebDriver} driver
- */
-const onboardingCompleteWalletCreation = async (driver) => {
-  // complete
-  await driver.findElement({ text: 'Congratulations', tag: 'h2' });
-  await driver.clickElement('[data-testid="onboarding-complete-done"]');
-};
-
-/**
- * @deprecated Please use page object functions in `onboarding.flow.ts` and in `pages/onboarding/*`.
- * Move through the steps of pinning extension after successful onboarding
- * @param {WebDriver} driver
- */
-const onboardingPinExtension = async (driver) => {
-  // pin extension
-  await driver.clickElement('[data-testid="pin-extension-next"]');
-  await driver.clickElement('[data-testid="pin-extension-done"]');
 };
 
 const openSRPRevealQuiz = async (driver) => {
@@ -1099,12 +998,6 @@ module.exports = {
   validateContractDetails,
   switchToNotificationWindow,
   getEventPayloads,
-  onboardingBeginCreateNewWallet,
-  onboardingChooseMetametricsOption,
-  onboardingCreatePassword,
-  onboardingRevealAndConfirmSRP,
-  onboardingCompleteWalletCreation,
-  onboardingPinExtension,
   assertInAnyOrder,
   genRandInitBal,
   openActionMenuAndStartSendFlow,
