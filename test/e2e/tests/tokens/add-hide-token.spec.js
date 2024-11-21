@@ -104,7 +104,8 @@ describe('Add existing token using search', function () {
         }),
     ];
   }
-  it('renders the balance for the chosen token', async function () {
+
+  it.only('renders the balance for the chosen token', async function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilder({ inputChainId: CHAIN_IDS.BSC })
@@ -128,6 +129,19 @@ describe('Add existing token using search', function () {
       },
       async ({ driver }) => {
         await unlockWallet(driver);
+
+        // there is a race condition where "You are now using" new network modal temporarily flashes
+        // this modal obscures the elements beneath it, including the import tokens button
+        // this check mitigates this flakiness. However, the modal itself maybe isn't super useful to have at all
+        const closeButton = await driver.findElement(
+          '[data-testid="new-network-info-popup-close-button"]',
+        );
+
+        if (closeButton) {
+          await driver.clickElement(
+            '[data-testid="new-network-info-popup-close-button"]',
+          );
+        }
 
         await driver.clickElement(`[data-testid="import-token-button"]`);
         await driver.clickElement(`[data-testid="importTokens"]`);

@@ -103,6 +103,7 @@ export default function NewNetworkInfo() {
               </Text>
             </Button>
             <Button
+              data-testid="new-network-info-popup-close-button"
               variant="primary"
               onClick={onCloseClick}
               size={ButtonPrimarySize.Md}
