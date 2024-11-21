@@ -11,6 +11,7 @@ import {
 } from '../../../helpers';
 import { SECURITY_ALERTS_PROD_API_BASE_URL } from '../constants';
 import { mockServerJsonRpc } from '../mocks/mock-server-json-rpc';
+import { mockMultiNetworkBalancePolling } from '../../../mock-balance-polling/mock-balance-polling';
 
 const bannerAlertSelector = '[data-testid="security-provider-banner-alert"]';
 const mockMaliciousAddress = '0x5fbdb2315678afecb367f032d93f642f64180aa3';
@@ -33,6 +34,7 @@ const SEND_REQUEST_BASE_MOCK = {
 };
 
 async function mockInfura(mockServer: MockttpServer): Promise<void> {
+  await mockMultiNetworkBalancePolling(mockServer);
   await mockServerJsonRpc(mockServer, [['eth_getBalance']]);
 }
 
