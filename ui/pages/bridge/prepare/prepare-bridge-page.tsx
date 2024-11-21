@@ -44,6 +44,9 @@ import { calcTokenValue } from '../../../../shared/lib/swaps-utils';
 import { BridgeQuoteCard } from '../quotes/bridge-quote-card';
 import { isValidQuoteRequest } from '../utils/quote';
 import { getProviderConfig } from '../../../../shared/modules/selectors/networks';
+import { useCrossChainSwapsEventTracker } from '../../../hooks/bridge/useCrossChainSwapsEventTracker';
+import { useRequestProperties } from '../../../hooks/bridge/events/useRequestProperties';
+import { MetaMetricsEventName } from '../../../../shared/constants/metametrics';
 import { BridgeInputGroup } from './bridge-input-group';
 
 const PrepareBridgePage = () => {
@@ -83,6 +86,9 @@ const PrepareBridgePage = () => {
     TokenBucketPriority.top,
     toChain?.chainId,
   );
+
+  const { flippedRequestProperties } = useRequestProperties();
+  const trackCrossChainSwapsEvent = useCrossChainSwapsEventTracker();
 
   const [rotateSwitchTokens, setRotateSwitchTokens] = useState(false);
 
@@ -222,6 +228,11 @@ const PrepareBridgePage = () => {
             disabled={!isValidQuoteRequest(quoteRequest, false)}
             onClick={() => {
               setRotateSwitchTokens(!rotateSwitchTokens);
+              flippedRequestProperties &&
+                trackCrossChainSwapsEvent({
+                  event: MetaMetricsEventName.InputSourceDestinationFlipped,
+                  properties: flippedRequestProperties,
+                });
               const toChainClientId =
                 toChain?.defaultRpcEndpointIndex !== undefined &&
                 toChain?.rpcEndpoints
