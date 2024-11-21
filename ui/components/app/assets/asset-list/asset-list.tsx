@@ -34,6 +34,7 @@ import {
 import { getIsNativeTokenBuyable } from '../../../../ducks/ramps';
 ///: END:ONLY_INCLUDE_IF
 import AssetListControlBar from './asset-list-control-bar';
+import NativeToken from './native-token';
 
 export type TokenWithBalance = {
   address: string;
@@ -109,6 +110,9 @@ const AssetList = ({ onClickAsset, showTokensLinks }: AssetListProps) => {
         )}
       <AssetListControlBar showTokensLinks={shouldShowTokensLinks} />
       <TokenList
+        // nativeToken is still needed to avoid breaking flask build's support for bitcoin
+        // TODO: refactor this to no longer be needed for non-evm chains
+        nativeToken={!isEvm && <NativeToken onClickAsset={onClickAsset} />}
         onTokenClick={(chainId: string, tokenAddress: string) => {
           onClickAsset(chainId, tokenAddress);
           trackEvent({
