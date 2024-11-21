@@ -181,7 +181,7 @@ describe('BtcOverview', () => {
 
     const primaryBalance = queryByTestId(BTC_OVERVIEW_PRIMARY_CURRENCY);
     expect(primaryBalance).toBeInTheDocument();
-    expect(primaryBalance).toHaveTextContent(`$${mockNonEvmBalanceUsd}usd`);
+    expect(primaryBalance).toHaveTextContent(`$${mockNonEvmBalanceUsd}USD`);
   });
 
   it('shows a spinner if balance is not available', async () => {
