@@ -3,7 +3,7 @@ import {
   endowmentCaveatSpecifications as snapsEndowmentCaveatSpecifications,
 } from '@metamask/snaps-rpc-methods';
 import {
-  Caip25CaveatFactoryFn,
+  createCaip25Caveat,
   Caip25CaveatType,
   caip25EndowmentBuilder,
 } from '@metamask/multichain';
@@ -32,7 +32,7 @@ export const PermissionNames = Object.freeze({
  * PermissionController.
  */
 export const CaveatFactories = Object.freeze({
-  [Caip25CaveatType]: Caip25CaveatFactoryFn,
+  [Caip25CaveatType]: createCaip25Caveat,
 });
 
 /**

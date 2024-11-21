@@ -851,8 +851,6 @@ describe('MetaMaskController', () => {
               requiredScopes: {},
               optionalScopes: {
                 'eip155:1': {
-                  methods: [],
-                  notifications: [],
                   accounts: ['eip155:1:0xdead', 'eip155:1:0xbeef'],
                 },
               },

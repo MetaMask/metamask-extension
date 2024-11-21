@@ -63,15 +63,11 @@ describe('PermissionController selectors', () => {
                     value: {
                       requiredScopes: {
                         'eip155:1': {
-                          methods: [],
-                          notifications: [],
                           accounts: ['eip155:1:0x1'],
                         },
                       },
                       optionalScopes: {
                         'bip122:000000000019d6689c085ae165831e93': {
-                          methods: [],
-                          notifications: [],
                           accounts: [
                             'bip122:000000000019d6689c085ae165831e93:128Lkh3S7CkDTBZ8W7BbpsN3YYizJMp8p6',
                           ],
@@ -95,8 +91,6 @@ describe('PermissionController selectors', () => {
                       requiredScopes: {},
                       optionalScopes: {
                         'eip155:1': {
-                          methods: [],
-                          notifications: [],
                           accounts: ['eip155:1:0x2'],
                         },
                       },
@@ -117,15 +111,11 @@ describe('PermissionController selectors', () => {
                     value: {
                       requiredScopes: {
                         'eip155:1': {
-                          methods: [],
-                          notifications: [],
                           accounts: ['eip155:1:0x1'],
                         },
                       },
                       optionalScopes: {
                         'eip155:1': {
-                          methods: [],
-                          notifications: [],
                           accounts: ['eip155:1:0x2'],
                         },
                       },
@@ -190,8 +180,7 @@ describe('PermissionController selectors', () => {
       const mockAuthorization = {
         requiredScopes: {
           'eip155:1': {
-            methods: ['eth_sendTransaction'],
-            notifications: [],
+            accounts: [],
           },
         },
         optionalScopes: {},
@@ -223,15 +212,11 @@ describe('PermissionController selectors', () => {
                     value: {
                       requiredScopes: {
                         'eip155:1': {
-                          methods: [],
-                          notifications: [],
                           accounts: [],
                         },
                       },
                       optionalScopes: {
                         'bip122:000000000019d6689c085ae165831e93': {
-                          methods: [],
-                          notifications: [],
                           accounts: [],
                         },
                       },
@@ -252,8 +237,6 @@ describe('PermissionController selectors', () => {
                     value: {
                       requiredScopes: {
                         'eip155:2': {
-                          methods: [],
-                          notifications: [],
                           accounts: [],
                         },
                       },
@@ -275,15 +258,11 @@ describe('PermissionController selectors', () => {
                     value: {
                       requiredScopes: {
                         'eip155:1': {
-                          methods: [],
-                          notifications: [],
                           accounts: [],
                         },
                       },
                       optionalScopes: {
                         'eip155:2': {
-                          methods: [],
-                          notifications: [],
                           accounts: [],
                         },
                       },
