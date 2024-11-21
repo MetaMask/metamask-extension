@@ -68,12 +68,13 @@ const AssetListControlBar = ({ showTokensLinks }: AssetListControlBarProps) => {
   }, [currentNetwork.chainId, TEST_CHAINS]);
 
   const allOpts: Record<string, boolean> = {};
-  Object.keys(allNetworks).forEach((chainId) => {
+  Object.keys(allNetworks || {}).forEach((chainId) => {
     allOpts[chainId] = true;
   });
 
   const allNetworksFilterShown =
-    Object.keys(tokenNetworkFilter).length !== Object.keys(allOpts).length;
+    Object.keys(tokenNetworkFilter || {}).length !==
+    Object.keys(allOpts || {}).length;
 
   useEffect(() => {
     if (isTestNetwork) {
@@ -86,7 +87,7 @@ const AssetListControlBar = ({ showTokensLinks }: AssetListControlBarProps) => {
   // We need to set the default filter for all users to be all included networks, rather than defaulting to empty object
   // This effect is to unblock and derisk in the short-term
   useEffect(() => {
-    if (Object.keys(tokenNetworkFilter).length === 0) {
+    if (Object.keys(tokenNetworkFilter || {}).length === 0) {
       dispatch(setTokenNetworkFilter(allOpts));
     }
   }, []);
@@ -162,7 +163,7 @@ const AssetListControlBar = ({ showTokensLinks }: AssetListControlBarProps) => {
       >
         {process.env.PORTFOLIO_VIEW && (
           <ButtonBase
-            data-testid="network-filter"
+            data-testid="sort-by-networks"
             variant={TextVariant.bodyMdMedium}
             className="asset-list-control-bar__button asset-list-control-bar__network_control"
             onClick={toggleNetworkFilterPopover}

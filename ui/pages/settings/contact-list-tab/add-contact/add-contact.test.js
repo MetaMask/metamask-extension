@@ -1,5 +1,5 @@
 import React from 'react';
-import { fireEvent } from '@testing-library/react';
+import { fireEvent, waitFor } from '@testing-library/react';
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import { renderWithProvider } from '../../../../../test/lib/render-helpers';
@@ -55,7 +55,7 @@ describe('AddContact component', () => {
     expect(getByText('Ethereum public address')).toBeInTheDocument();
   });
 
-  it('should validate the address correctly', () => {
+  it('should validate the address correctly', async () => {
     const store = configureMockStore(middleware)(state);
     const { getByText, getByTestId } = renderWithProvider(
       <AddContact {...props} />,
@@ -64,9 +64,10 @@ describe('AddContact component', () => {
 
     const input = getByTestId('ens-input');
     fireEvent.change(input, { target: { value: 'invalid address' } });
-    setTimeout(() => {
-      expect(getByText('Recipient address is invalid')).toBeInTheDocument();
-    }, 600);
+
+    await waitFor(() =>
+      expect(getByText('Recipient address is invalid')).toBeInTheDocument(),
+    );
   });
 
   it('should get disabled submit button when username field is empty', () => {
