@@ -2,9 +2,9 @@ import { useSelector } from 'react-redux';
 import { Hex } from '@metamask/utils';
 import { TransactionMeta } from '@metamask/transaction-controller';
 import { useHistory } from 'react-router-dom';
-import { selectBridgeHistoryForAccount } from '../../../ducks/bridge-status/selectors';
-import { CROSS_CHAIN_SWAP_TX_DETAILS_ROUTE } from '../../../helpers/constants/routes';
-import { useI18nContext } from '../../../hooks/useI18nContext';
+import { selectBridgeHistoryForAccount } from '../../ducks/bridge-status/selectors';
+import { CROSS_CHAIN_SWAP_TX_DETAILS_ROUTE } from '../../helpers/constants/routes';
+import { useI18nContext } from '../useI18nContext';
 import useBridgeChainInfo from './useBridgeChainInfo';
 
 export type UseBridgeDataProps = {

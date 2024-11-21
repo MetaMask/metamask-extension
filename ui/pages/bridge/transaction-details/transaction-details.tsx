@@ -14,7 +14,7 @@ import {
 } from '../../../components/component-library';
 import { Content, Header } from '../../../components/multichain/pages/page';
 import { selectBridgeHistoryForAccount } from '../../../ducks/bridge-status/selectors';
-import useBridgeChainInfo from '../utils/useBridgeChainInfo';
+import useBridgeChainInfo from '../../../hooks/bridge/useBridgeChainInfo';
 import {
   getNetworkConfigurationsByChainId,
   selectedAddressTxListSelector,

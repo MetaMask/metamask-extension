@@ -1,14 +1,14 @@
 import { useSelector } from 'react-redux';
 import { Hex } from '@metamask/utils';
 import { NetworkConfiguration } from '@metamask/network-controller';
-import { Numeric } from '../../../../shared/modules/Numeric';
-import { getNetworkConfigurationsByChainId } from '../../../selectors';
-import { BridgeHistoryItem } from '../../../../shared/types/bridge-status';
+import { Numeric } from '../../../shared/modules/Numeric';
+import { getNetworkConfigurationsByChainId } from '../../selectors';
+import { BridgeHistoryItem } from '../../../shared/types/bridge-status';
 import {
   CHAIN_ID_TO_CURRENCY_SYMBOL_MAP,
   NETWORK_TO_NAME_MAP,
-} from '../../../../shared/constants/network';
-import { CHAINID_DEFAULT_BLOCK_EXPLORER_URL_MAP } from '../../../../shared/constants/common';
+} from '../../../shared/constants/network';
+import { CHAINID_DEFAULT_BLOCK_EXPLORER_URL_MAP } from '../../../shared/constants/common';
 
 export type UseBridgeChainInfoProps = {
   bridgeHistoryItem?: BridgeHistoryItem;
