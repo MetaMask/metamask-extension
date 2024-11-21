@@ -23,6 +23,7 @@ import { calculateTokenFiatAmount } from '../util/calculateTokenFiatAmount';
 import { endTrace, TraceName } from '../../../../../shared/lib/trace';
 import { useTokenBalances } from '../../../../hooks/useTokenBalances';
 import { setTokenNetworkFilter } from '../../../../store/actions';
+import { useI18nContext } from '../../../../hooks/useI18nContext';
 
 type TokenListProps = {
   onTokenClick: (chainId: string, address: string) => void;
@@ -77,6 +78,7 @@ export default function TokenList({
   onTokenClick,
   nativeToken,
 }: TokenListProps) {
+  const t = useI18nContext();
   const dispatch = useDispatch();
   const currentNetwork = useSelector(getCurrentNetwork);
   const allNetworks = useSelector(getNetworkConfigurationIdByChainId);
@@ -201,7 +203,13 @@ export default function TokenList({
 
   // Displays nativeToken if provided
   if (nativeToken) {
-    return nativeToken;
+    return React.cloneElement(nativeToken as React.ReactElement);
+  }
+
+  // TODO: We can remove this string. However it will result in a huge file 50+ file diff
+  // Lets remove it in a separate PR
+  if (sortedFilteredTokens === undefined) {
+    console.log(t('loadingTokens'));
   }
 
   return (
