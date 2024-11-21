@@ -64,6 +64,7 @@ export type AssetPickerProps = {
   ) => void;
   onClick?: () => void;
   isDisabled?: boolean;
+  action?: 'send' | 'receive';
   networkProps?: Pick<
     React.ComponentProps<typeof AssetPickerModalNetwork>,
     'network' | 'networks' | 'onNetworkChange'
@@ -80,6 +81,7 @@ export function AssetPicker({
   onAssetChange,
   networkProps,
   sendingAsset,
+  action,
   onClick,
   isDisabled = false,
   visibleTabs,
@@ -141,6 +143,7 @@ export function AssetPicker({
       <AssetPickerModal
         visibleTabs={visibleTabs}
         header={header}
+        action={action}
         isOpen={showAssetPickerModal}
         onClose={() => setShowAssetPickerModal(false)}
         asset={asset}
