@@ -60,7 +60,10 @@ import {
 import Spinner from '../../ui/spinner';
 
 import { PercentageAndAmountChange } from '../../multichain/token-list-item/price/percentage-and-amount-change/percentage-and-amount-change';
-import { getMultichainIsEvm } from '../../../selectors/multichain';
+import {
+  getMultichainIsEvm,
+  getMultichainShouldShowFiat,
+} from '../../../selectors/multichain';
 import { useAccountTotalFiatBalance } from '../../../hooks/useAccountTotalFiatBalance';
 import {
   setAggregatedBalancePopoverShown,
@@ -72,6 +75,7 @@ import { useI18nContext } from '../../../hooks/useI18nContext';
 import WalletOverview from './wallet-overview';
 import CoinButtons from './coin-buttons';
 import { AggregatedPercentageOverview } from './aggregated-percentage-overview';
+import { useMultichainSelector } from '../../../hooks/useMultichainSelector';
 
 export type CoinOverviewProps = {
   balance: string;
@@ -144,9 +148,14 @@ export const CoinOverview = ({
     shouldHideZeroBalanceTokens,
   );
 
+  const shouldShowFiat = useMultichainSelector(
+    getMultichainShouldShowFiat,
+    account,
+  );
+
   const isEvm = useSelector(getMultichainIsEvm);
   const isNotAggregatedFiatBalance =
-    showNativeTokenAsMainBalance || isTestnet || !isEvm;
+    !shouldShowFiat || showNativeTokenAsMainBalance || isTestnet || !isEvm;
   let balanceToDisplay;
   if (isNotAggregatedFiatBalance) {
     balanceToDisplay = balance;
@@ -278,7 +287,9 @@ export const CoinOverview = ({
                     hideTitle
                     shouldCheckShowNativeToken
                     isAggregatedFiatOverviewBalance={
-                      !showNativeTokenAsMainBalance && !isTestnet
+                      !showNativeTokenAsMainBalance &&
+                      !isTestnet &&
+                      shouldShowFiat
                     }
                     privacyMode={privacyMode}
                   />
