@@ -26,7 +26,7 @@ import { calcTokenAmount } from '../../../shared/lib/transactions-controller-uti
 import { RequestStatus } from '../../../app/scripts/controllers/bridge/constants';
 import { BridgeState } from './bridge';
 
-type BridgeAppState = {
+export type BridgeAppState = {
   metamask: NetworkState & { bridgeState: BridgeControllerState } & {
     useExternalServices: boolean;
   };
