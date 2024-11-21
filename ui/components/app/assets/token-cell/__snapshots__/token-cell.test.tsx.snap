@@ -32,7 +32,7 @@ exports[`Token Cell should match snapshot 1`] = `
             <img
               alt="network logo"
               class="mm-avatar-network__network-image"
-              src="./images/pol-token.svg"
+              src="./images/eth_logo.svg"
             />
           </div>
         </div>
