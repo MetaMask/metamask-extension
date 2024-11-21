@@ -27,7 +27,7 @@ async function mockApis(mockServer: Mockttp): Promise<MockedEndpoint[]> {
           json: [{ fakedata: true }],
         };
       }),
-    /*     await mockServer
+    await mockServer
       .forGet('https://min-api.cryptocompare.com/data/price')
       .withQuery({ fsym: 'ETH', tsyms: 'USD' })
       .thenCallback(() => {
@@ -37,7 +37,7 @@ async function mockApis(mockServer: Mockttp): Promise<MockedEndpoint[]> {
             fakedata: 0,
           },
         };
-      }), */
+      }),
   ];
 }
 
