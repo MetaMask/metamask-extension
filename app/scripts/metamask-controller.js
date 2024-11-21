@@ -165,9 +165,9 @@ import {
   walletGetSession,
   walletRevokeSession,
   walletInvokeMethod,
-  mergeScopes,
   getEthAccounts,
   caipPermissionAdapterMiddleware,
+  getSessionScopes,
 } from '@metamask/multichain';
 import { isProduction } from '../../shared/modules/environment';
 import {
@@ -2953,13 +2953,10 @@ export default class MetamaskController extends EventEmitter {
 
         // remove any existing notification subscriptions for removed authorizations
         for (const [origin, authorization] of removedAuthorizations.entries()) {
-          const mergedScopes = mergeScopes(
-            authorization.requiredScopes,
-            authorization.optionalScopes,
-          );
+          const sessionScopes = getSessionScopes(authorization);
           // if the eth_subscription notification is in the scope and eth_subscribe is in the methods
           // then remove middleware and unsubscribe
-          Object.entries(mergedScopes).forEach(([scope, scopeObject]) => {
+          Object.entries(sessionScopes).forEach(([scope, scopeObject]) => {
             if (
               scopeObject.notifications.includes('eth_subscription') &&
               scopeObject.methods.includes('eth_subscribe')
@@ -2978,14 +2975,11 @@ export default class MetamaskController extends EventEmitter {
 
         // add new notification subscriptions for changed authorizations
         for (const [origin, authorization] of changedAuthorizations.entries()) {
-          const mergedScopes = mergeScopes(
-            authorization.requiredScopes,
-            authorization.optionalScopes,
-          );
+          const sessionScopes = getSessionScopes(authorization);
 
           // if the eth_subscription notification is in the scope and eth_subscribe is in the methods
           // then get the subscriptionManager going for that scope
-          Object.entries(mergedScopes).forEach(([scope, scopeObject]) => {
+          Object.entries(sessionScopes).forEach(([scope, scopeObject]) => {
             if (
               scopeObject.notifications.includes('eth_subscription') &&
               scopeObject.methods.includes('eth_subscribe')
@@ -6542,14 +6536,11 @@ export default class MetamaskController extends EventEmitter {
       );
 
       // add new notification subscriptions for changed authorizations
-      const mergedScopes = mergeScopes(
-        caip25Caveat.value.requiredScopes,
-        caip25Caveat.value.optionalScopes,
-      );
+      const sessionScopes = getSessionScopes(caip25Caveat.value);
 
       // if the eth_subscription notification is in the scope and eth_subscribe is in the methods
       // then get the subscriptionManager going for that scope
-      Object.entries(mergedScopes).forEach(([scope, scopeObject]) => {
+      Object.entries(sessionScopes).forEach(([scope, scopeObject]) => {
         if (
           scopeObject.notifications.includes('eth_subscription') &&
           scopeObject.methods.includes('eth_subscribe')
@@ -7426,10 +7417,7 @@ export default class MetamaskController extends EventEmitter {
         {
           method: NOTIFICATION_NAMES.sessionChanged,
           params: {
-            sessionScopes: mergeScopes(
-              newAuthorization.requiredScopes ?? {},
-              newAuthorization.optionalScopes ?? {},
-            ),
+            sessionScopes: getSessionScopes(newAuthorization),
           },
         },
         API_TYPE.CAIP_MULTICHAIN,
