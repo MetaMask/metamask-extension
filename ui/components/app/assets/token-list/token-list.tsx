@@ -2,7 +2,6 @@ import React, { ReactNode, useEffect, useMemo } from 'react';
 import { shallowEqual, useSelector, useDispatch } from 'react-redux';
 import { Hex } from '@metamask/utils';
 import TokenCell from '../token-cell';
-import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { TEST_CHAINS } from '../../../../../shared/constants/network';
 import { sortAssets } from '../util/sort';
 import {
@@ -78,7 +77,6 @@ export default function TokenList({
   onTokenClick,
   nativeToken,
 }: TokenListProps) {
-  const t = useI18nContext();
   const dispatch = useDispatch();
   const currentNetwork = useSelector(getCurrentNetwork);
   const allNetworks = useSelector(getNetworkConfigurationIdByChainId);
