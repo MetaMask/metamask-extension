@@ -1526,11 +1526,12 @@ export function getWeb3ShimUsageStateForOrigin(state, origin) {
  * objects, per the above description.
  *
  * @param {object} state - the redux state object
+ * @param {string} overrideChainId - the chainId to override the current chainId
  * @returns {SwapsEthToken} The token object representation of the currently
  * selected account's ETH balance, as expected by the Swaps API.
  */
 
-export function getSwapsDefaultToken(state, overrideChainId) {
+export function getSwapsDefaultToken(state, overrideChainId = null) {
   const selectedAccount = getSelectedAccount(state);
   const balance = selectedAccount?.balance;
   const currentChainId = getCurrentChainId(state);
