@@ -124,7 +124,7 @@ const PermitSimulationValueDisplay: React.FC<
   }
 
   return (
-    <Box style={{ marginLeft: 'auto', maxWidth: '100%' }}>
+    <Box marginLeft="auto" style={{ maxWidth: '100%' }}>
       <Box display={Display.Flex} justifyContent={JustifyContent.flexEnd}>
         <Box
           display={Display.Inline}
