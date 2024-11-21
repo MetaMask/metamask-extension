@@ -130,6 +130,7 @@ describe('Add existing token using search', function () {
         await unlockWallet(driver);
 
         await driver.clickElement(`[data-testid="import-token-button"]`);
+        await driver.clickElement(`[data-testid="importTokens"]`);
         await driver.fill('input[placeholder="Search tokens"]', 'BAT');
         await driver.clickElement({
           text: 'BAT',
