@@ -39,10 +39,10 @@ import { formatDate } from '../../../helpers/utils/util';
 import { ConfirmInfoRowDivider as Divider } from '../../../components/app/confirm/info/row';
 import { calcTokenAmount } from '../../../../shared/lib/transactions-controller-utils';
 import { useI18nContext } from '../../../hooks/useI18nContext';
+import { CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP } from '../../../../shared/constants/network';
 import TransactionDetailRow from './transaction-detail-row';
 import BridgeExplorerLinks from './bridge-explorer-links';
 import BridgeStepList from './bridge-step-list';
-import { CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP } from '../../../../shared/constants/network';
 
 const getBlockExplorerUrl = (
   networkConfiguration: NetworkConfiguration | undefined,
