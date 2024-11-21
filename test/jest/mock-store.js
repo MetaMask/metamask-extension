@@ -4,6 +4,7 @@ import { KeyringType } from '../../shared/constants/keyring';
 import { ETH_EOA_METHODS } from '../../shared/constants/eth-methods';
 import { mockNetworkState } from '../stub/networks';
 import { DEFAULT_BRIDGE_CONTROLLER_STATE } from '../../app/scripts/controllers/bridge/constants';
+import { DEFAULT_BRIDGE_STATUS_CONTROLLER_STATE } from '../../app/scripts/controllers/bridge-status/constants';
 
 export const createGetSmartTransactionFeesApiResponse = () => {
   return {
@@ -701,10 +702,19 @@ export const createSwapsMockStore = () => {
 };
 
 export const createBridgeMockStore = (
-  featureFlagOverrides = {},
-  bridgeSliceOverrides = {},
-  bridgeStateOverrides = {},
-  metamaskStateOverrides = {},
+  {
+    featureFlagOverrides = {},
+    bridgeSliceOverrides = {},
+    bridgeStateOverrides = {},
+    bridgeStatusStateOverrides = {},
+    metamaskStateOverrides = {},
+  } = {
+    featureFlagOverrides: {},
+    bridgeSliceOverrides: {},
+    bridgeStateOverrides: {},
+    bridgeStatusStateOverrides: {},
+    metamaskStateOverrides: {},
+  },
 ) => {
   const swapsStore = createSwapsMockStore();
   return {
@@ -731,6 +741,10 @@ export const createBridgeMockStore = (
         quotes: DEFAULT_BRIDGE_CONTROLLER_STATE.quotes,
         quoteRequest: DEFAULT_BRIDGE_CONTROLLER_STATE.quoteRequest,
         ...bridgeStateOverrides,
+      },
+      bridgeStatusState: {
+        ...DEFAULT_BRIDGE_STATUS_CONTROLLER_STATE,
+        ...bridgeStatusStateOverrides,
       },
     },
   };
