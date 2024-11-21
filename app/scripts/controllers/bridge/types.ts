@@ -46,6 +46,7 @@ export type BridgeControllerState = {
   quotes: (QuoteResponse & L1GasFees)[];
   quotesLastFetched?: number;
   quotesLoadingStatus?: RequestStatus;
+  quoteFetchError?: string;
   quotesRefreshCount: number;
 };
 

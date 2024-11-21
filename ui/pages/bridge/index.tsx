@@ -32,6 +32,7 @@ import { useSwapsFeatureFlags } from '../swaps/hooks/useSwapsFeatureFlags';
 import { resetBridgeState, setFromChain } from '../../ducks/bridge/actions';
 import { useGasFeeEstimates } from '../../hooks/useGasFeeEstimates';
 import { useBridgeExchangeRates } from '../../hooks/bridge/useBridgeExchangeRates';
+import { useQuoteFetchEvents } from '../../hooks/bridge/useQuoteFetchEvents';
 import PrepareBridgePage from './prepare/prepare-bridge-page';
 import { BridgeCTAButton } from './prepare/bridge-cta-button';
 
@@ -76,6 +77,8 @@ const CrossChainSwap = () => {
   useGasFeeEstimates(providerConfig?.id);
   // Needed for fetching exchange rates for tokens that have not been imported
   useBridgeExchangeRates();
+  // Emits events related to quote-fetching
+  useQuoteFetchEvents();
 
   const redirectToDefaultRoute = async () => {
     history.push({
