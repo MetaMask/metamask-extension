@@ -1,10 +1,7 @@
 import React, { useEffect, useRef, useState, useContext, useMemo } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import {
-  getCurrentNetwork,
-  getNetworkConfigurationsByChainId,
-  getPreferences,
-} from '../../../../../selectors';
+import { getCurrentNetwork, getPreferences } from '../../../../../selectors';
+import { getNetworkConfigurationsByChainId } from '../../../../../../shared/modules/selectors/networks';
 import {
   Box,
   ButtonBase,
