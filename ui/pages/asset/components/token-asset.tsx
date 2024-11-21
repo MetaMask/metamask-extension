@@ -6,7 +6,6 @@ import { useHistory } from 'react-router-dom';
 import { Hex } from '@metamask/utils';
 import { NetworkConfiguration } from '@metamask/network-controller';
 import {
-  getNetworkConfigurationsByChainId,
   getSelectedInternalAccount,
   getTokenList,
   selectERC20TokensByChain,
@@ -22,6 +21,7 @@ import {
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import { showModal } from '../../../store/actions';
 import { MetaMetricsEventCategory } from '../../../../shared/constants/metametrics';
+import { getNetworkConfigurationsByChainId } from '../../../../shared/modules/selectors/networks';
 import AssetOptions from './asset-options';
 import AssetPage from './asset-page';
 

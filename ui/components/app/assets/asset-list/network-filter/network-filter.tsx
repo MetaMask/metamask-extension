@@ -5,11 +5,11 @@ import {
   getCurrentChainId,
   getCurrentNetwork,
   getPreferences,
-  getNetworkConfigurationsByChainId,
   getChainIdsToPoll,
   getShouldHideZeroBalanceTokens,
   getSelectedAccount,
 } from '../../../../../selectors';
+import { getNetworkConfigurationsByChainId } from '../../../../../../shared/modules/selectors/networks';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import { SelectableListItem } from '../sort-control/sort-control';
 import { Text } from '../../../../component-library/text/text';

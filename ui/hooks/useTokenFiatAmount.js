@@ -7,8 +7,8 @@ import {
   getConfirmationExchangeRates,
   getMarketData,
   getCurrencyRates,
-  getNetworkConfigurationsByChainId,
 } from '../selectors';
+import { getNetworkConfigurationsByChainId } from '../../shared/modules/selectors/networks';
 import { getTokenFiatAmount } from '../helpers/utils/token-util';
 import { getConversionRate } from '../ducks/metamask/metamask';
 import { isEqualCaseInsensitive } from '../../shared/modules/string-utils';
