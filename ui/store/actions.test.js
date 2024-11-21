@@ -1009,7 +1009,9 @@ describe('Actions', () => {
       const store = mockStore();
 
       background.getApi.returns({
-        ignoreTokens: sinon.stub().callsFake((_, cb) => cb(new Error('error'))),
+        ignoreTokens: sinon
+          .stub()
+          .callsFake((_, __, cb) => cb(new Error('error'))),
         getStatePatches: sinon.stub().callsFake((cb) => cb(null, [])),
       });
 
