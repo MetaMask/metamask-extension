@@ -44,7 +44,10 @@ import { calcTokenValue } from '../../../../shared/lib/swaps-utils';
 import { BridgeQuoteCard } from '../quotes/bridge-quote-card';
 import { isValidQuoteRequest } from '../utils/quote';
 import { getProviderConfig } from '../../../../shared/modules/selectors/networks';
-import { useCrossChainSwapsEventTracker } from '../../../hooks/bridge/useCrossChainSwapsEventTracker';
+import {
+  CrossChainSwapsEventProperties,
+  useCrossChainSwapsEventTracker,
+} from '../../../hooks/bridge/useCrossChainSwapsEventTracker';
 import { useRequestProperties } from '../../../hooks/bridge/events/useRequestProperties';
 import { MetaMetricsEventName } from '../../../../shared/constants/metametrics';
 import { BridgeInputGroup } from './bridge-input-group';
@@ -133,6 +136,18 @@ const PrepareBridgePage = () => {
     debouncedUpdateQuoteRequestInController(quoteParams);
   }, Object.values(quoteParams));
 
+  const trackInputEvent = useCallback(
+    (
+      properties: CrossChainSwapsEventProperties[MetaMetricsEventName.InputChanged],
+    ) => {
+      trackCrossChainSwapsEvent({
+        event: MetaMetricsEventName.InputChanged,
+        properties,
+      });
+    },
+    [],
+  );
+
   const { search } = useLocation();
   const history = useHistory();
 
@@ -185,6 +200,11 @@ const PrepareBridgePage = () => {
             dispatch(setFromTokenInputValue(e));
           }}
           onAssetChange={(token) => {
+            token?.address &&
+              trackInputEvent({
+                input: 'token_source',
+                value: token.address,
+              });
             dispatch(setFromToken(token));
             dispatch(setFromTokenInputValue(null));
           }}
@@ -192,6 +212,13 @@ const PrepareBridgePage = () => {
             network: fromChain,
             networks: fromChains,
             onNetworkChange: (networkConfig) => {
+              trackInputEvent({
+                input: 'chain_source',
+                value: networkConfig.chainId,
+              });
+              if (networkConfig.chainId === toChain?.chainId) {
+                dispatch(setToChainId(null));
+              }
               dispatch(
                 setActiveNetwork(
                   networkConfig.rpcEndpoints[
@@ -255,12 +282,21 @@ const PrepareBridgePage = () => {
           header={t('bridgeTo')}
           token={toToken}
           onAssetChange={(token) => {
+            token?.address &&
+              trackInputEvent({
+                input: 'token_destination',
+                value: token.address,
+              });
             dispatch(setToToken(token));
           }}
           networkProps={{
             network: toChain,
             networks: toChains,
             onNetworkChange: (networkConfig) => {
+              trackInputEvent({
+                input: 'chain_destination',
+                value: networkConfig.chainId,
+              });
               dispatch(setToChainId(networkConfig.chainId));
               dispatch(setToChain(networkConfig.chainId));
             },
