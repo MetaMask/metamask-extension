@@ -22,16 +22,23 @@ describe('useTokenListPolling', () => {
     jest.clearAllMocks();
   });
 
-  it('should poll for token lists on each chain when enabled, and stop on dismount', async () => {
+  it('should poll the selected network when enabled, and stop on dismount', async () => {
     const state = {
       metamask: {
         isUnlocked: true,
         completedOnboarding: true,
         useExternalServices: true,
         useTokenDetection: true,
+        selectedNetworkClientId: 'selectedNetworkClientId',
         networkConfigurationsByChainId: {
-          '0x1': {},
-          '0x89': {},
+          '0x1': {
+            chainId: '0x1',
+            rpcEndpoints: [
+              {
+                networkClientId: 'selectedNetworkClientId',
+              },
+            ],
+          },
         },
       },
     };
@@ -43,18 +50,14 @@ describe('useTokenListPolling', () => {
 
     // Should poll each chain
     await Promise.all(mockPromises);
-    expect(tokenListStartPolling).toHaveBeenCalledTimes(2);
+    expect(tokenListStartPolling).toHaveBeenCalledTimes(1);
     expect(tokenListStartPolling).toHaveBeenCalledWith('0x1');
-    expect(tokenListStartPolling).toHaveBeenCalledWith('0x89');
 
     // Stop polling on dismount
     unmount();
-    expect(tokenListStopPollingByPollingToken).toHaveBeenCalledTimes(2);
+    expect(tokenListStopPollingByPollingToken).toHaveBeenCalledTimes(1);
     expect(tokenListStopPollingByPollingToken).toHaveBeenCalledWith(
       '0x1_token',
-    );
-    expect(tokenListStopPollingByPollingToken).toHaveBeenCalledWith(
-      '0x89_token',
     );
   });
 
