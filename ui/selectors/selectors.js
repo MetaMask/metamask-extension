@@ -2139,6 +2139,35 @@ export const getCurrentNetwork = createDeepEqualSelector(
   },
 );
 
+export const getSelectedNetwork = createDeepEqualSelector(
+  getSelectedNetworkClientId,
+  getNetworkConfigurationsByChainId,
+  (selectedNetworkClientId, networkConfigurationsByChainId) => {
+    if (selectedNetworkClientId === undefined) {
+      throw new Error('No network is selected');
+    }
+
+    // TODO: Add `networkConfigurationsByNetworkClientId` to NetworkController state so this is easier to do
+    const possibleNetworkConfiguration = Object.values(
+      networkConfigurationsByChainId,
+    ).find((networkConfiguration) => {
+      return networkConfiguration.rpcEndpoints.some((rpcEndpoint) => {
+        return rpcEndpoint.networkClientId === selectedNetworkClientId;
+      });
+    });
+    if (possibleNetworkConfiguration === undefined) {
+      throw new Error(
+        'Could not find network configuration for selected network client',
+      );
+    }
+
+    return {
+      configuration: possibleNetworkConfiguration,
+      clientId: selectedNetworkClientId,
+    };
+  },
+);
+
 export const getConnectedSitesListWithNetworkInfo = createDeepEqualSelector(
   getConnectedSitesList,
   getAllDomains,
