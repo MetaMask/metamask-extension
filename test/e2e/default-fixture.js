@@ -224,7 +224,6 @@ function defaultFixture(inputChainId = CHAIN_IDS.LOCALHOST) {
             order: 'dsc',
             sortCallback: 'stringNumeric',
           },
-          tokenNetworkFilter: {},
           shouldShowAggregatedBalancePopover: true,
           tokenNetworkFilter: {},
         },
