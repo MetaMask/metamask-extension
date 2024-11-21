@@ -155,13 +155,13 @@ import {
   NotificationServicesPushController,
   NotificationServicesController,
 } from '@metamask/notification-services-controller';
-import { isProduction } from '../../shared/modules/environment';
 import {
-  Caip25CaveatMutatorFactories,
+  Caip25CaveatMutators,
   Caip25CaveatType,
   Caip25EndowmentPermissionName,
   getEthAccounts,
 } from '@metamask/multichain';
+import { isProduction } from '../../shared/modules/environment';
 import {
   methodsRequiringNetworkSwitch,
   methodsThatCanSwitchNetworkWithoutApproval,
@@ -5078,9 +5078,9 @@ export default class MetamaskController extends EventEmitter {
     this.permissionController.updatePermissionsByCaveat(
       Caip25CaveatType,
       (existingScopes) =>
-        Caip25CaveatMutatorFactories[Caip25CaveatType].removeScope(
-          toCaipChainId('eip155', parseInt(targetChainId, 16).toString()),
+        Caip25CaveatMutators[Caip25CaveatType].removeScope(
           existingScopes,
+          toCaipChainId('eip155', parseInt(targetChainId, 16).toString()),
         ),
     );
   }
@@ -5112,9 +5112,9 @@ export default class MetamaskController extends EventEmitter {
     this.permissionController.updatePermissionsByCaveat(
       Caip25CaveatType,
       (existingScopes) =>
-        Caip25CaveatMutatorFactories[Caip25CaveatType].removeAccount(
-          targetAccount,
+        Caip25CaveatMutators[Caip25CaveatType].removeAccount(
           existingScopes,
+          targetAccount,
         ),
     );
   }

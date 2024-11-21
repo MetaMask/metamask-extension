@@ -212,8 +212,6 @@ describe('toast display', () => {
                     requiredScopes: {},
                     optionalScopes: {
                       'eip155:1': {
-                        methods: [],
-                        notifications: [],
                         accounts: [`eip155:1:${mockAccount.address}`],
                       },
                     },

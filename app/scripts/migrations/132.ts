@@ -265,8 +265,6 @@ function transformState(state: Record<string, unknown>) {
         (account) => `${scopeString}:${account}`,
       );
       scopes[scopeString] = {
-        methods: [],
-        notifications: [],
         accounts: caipAccounts,
       };
     });
