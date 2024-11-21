@@ -92,6 +92,24 @@ describe('Name', () => {
     expect(container).toMatchSnapshot();
   });
 
+  it('renders address with long saved name', () => {
+    useDisplayNameMock.mockReturnValue({
+      name: "Very long and length saved name that doesn't seem to end, really.",
+      hasPetname: true,
+    });
+
+    const { container } = renderWithProvider(
+      <Name
+        type={NameType.ETHEREUM_ADDRESS}
+        value={ADDRESS_SAVED_NAME_MOCK}
+        variation={VARIATION_MOCK}
+      />,
+      store,
+    );
+
+    expect(container).toMatchSnapshot();
+  });
+
   it('renders address with image', () => {
     useDisplayNameMock.mockReturnValue({
       name: SAVED_NAME_MOCK,
