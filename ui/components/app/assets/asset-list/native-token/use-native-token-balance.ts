@@ -12,7 +12,7 @@ import { useIsOriginalNativeTokenSymbol } from '../../../../../hooks/useIsOrigin
 import { PRIMARY, SECONDARY } from '../../../../../helpers/constants/common';
 import { useUserPreferencedCurrency } from '../../../../../hooks/useUserPreferencedCurrency';
 import { useCurrencyDisplay } from '../../../../../hooks/useCurrencyDisplay';
-import { TokenWithBalance } from '..';
+import { TokenWithBalance } from '../asset-list';
 
 export const useNativeTokenBalance = () => {
   const showFiat = useSelector(getMultichainShouldShowFiat);
