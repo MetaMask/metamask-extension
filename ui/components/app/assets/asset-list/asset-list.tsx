@@ -9,12 +9,11 @@ import {
   getSelectedAccount,
 } from '../../../../selectors';
 import {
-  // getMultichainIsEvm,
+  getMultichainIsEvm,
   getMultichainSelectedAccountCachedBalance,
   ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
   getMultichainIsBitcoin,
   getMultichainSelectedAccountCachedBalanceIsZero,
-  getMultichainIsEvm,
   ///: END:ONLY_INCLUDE_IF
 } from '../../../../selectors/multichain';
 import { useCurrencyDisplay } from '../../../../hooks/useCurrencyDisplay';
