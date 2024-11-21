@@ -22,9 +22,8 @@ describe('4byte setting', function () {
         title: this.test.fullTitle(),
       },
       async ({ driver, contractRegistry }) => {
-        const contractAddress = await contractRegistry.getContractAddress(
-          smartContract,
-        );
+        const contractAddress =
+          await contractRegistry.getContractAddress(smartContract);
         await logInWithBalanceValidation(driver);
 
         // deploy contract
@@ -58,9 +57,8 @@ describe('4byte setting', function () {
         title: this.test.fullTitle(),
       },
       async ({ driver, contractRegistry }) => {
-        const contractAddress = await contractRegistry.getContractAddress(
-          smartContract,
-        );
+        const contractAddress =
+          await contractRegistry.getContractAddress(smartContract);
         await unlockWallet(driver);
 
         // goes to the settings screen

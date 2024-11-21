@@ -226,7 +226,7 @@ const AssetPage = ({
           <Text data-testid="asset-name" color={TextColor.textAlternative}>
             {name && symbol && name !== symbol
               ? `${name} (${symbol})`
-              : name ?? symbol}
+              : (name ?? symbol)}
           </Text>
         </Box>
         {optionsButton}

@@ -93,9 +93,8 @@ async function main() {
       if (results[key]) {
         const outPath = `${out}/${dirPath}`;
         const outputDirectory = path.dirname(outPath);
-        const existingParentDirectory = await getFirstParentDirectoryThatExists(
-          outputDirectory,
-        );
+        const existingParentDirectory =
+          await getFirstParentDirectoryThatExists(outputDirectory);
         if (!(await isWritable(existingParentDirectory))) {
           throw new Error('Specified output file directory is not writable');
         }

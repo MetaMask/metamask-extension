@@ -4838,9 +4838,8 @@ export default class MetamaskController extends EventEmitter {
    * @returns {'hardware' | 'imported' | 'snap' | 'MetaMask'}
    */
   async getAccountType(address) {
-    const keyringType = await this.keyringController.getAccountKeyringType(
-      address,
-    );
+    const keyringType =
+      await this.keyringController.getAccountKeyringType(address);
     switch (keyringType) {
       case KeyringType.trezor:
       case KeyringType.lattice:
@@ -4951,9 +4950,8 @@ export default class MetamaskController extends EventEmitter {
   async addNewAccount(accountCount) {
     const oldAccounts = await this.keyringController.getAccounts();
 
-    const addedAccountAddress = await this.keyringController.addNewAccount(
-      accountCount,
-    );
+    const addedAccountAddress =
+      await this.keyringController.addNewAccount(accountCount);
 
     if (!oldAccounts.includes(addedAccountAddress)) {
       this.preferencesController.setSelectedAddress(addedAccountAddress);

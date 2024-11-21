@@ -240,9 +240,9 @@ export async function withBtcAccountSnap(
 
 export async function getQuickNodeSeenRequests(mockServer: Mockttp) {
   const seenRequests = await Promise.all(
-    (
-      await mockServer.getMockedEndpoints()
-    ).map((mockedEndpoint) => mockedEndpoint.getSeenRequests()),
+    (await mockServer.getMockedEndpoints()).map((mockedEndpoint) =>
+      mockedEndpoint.getSeenRequests(),
+    ),
   );
   return seenRequests
     .flat()

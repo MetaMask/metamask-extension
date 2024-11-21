@@ -162,9 +162,8 @@ describe('Send ETH', function () {
           title: this.test.fullTitle(),
         },
         async ({ driver, contractRegistry, ganacheServer }) => {
-          const contractAddress = await contractRegistry.getContractAddress(
-            smartContract,
-          );
+          const contractAddress =
+            await contractRegistry.getContractAddress(smartContract);
           await logInWithBalanceValidation(driver, ganacheServer);
 
           // Wait for balance to load

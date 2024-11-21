@@ -61,7 +61,7 @@ const createMessengerMock = () =>
     registerInitialEventPayload: jest.fn(),
     // TODO: Replace `any` with type
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  } as any as jest.Mocked<EncryptionPublicKeyControllerMessenger>);
+  }) as any as jest.Mocked<EncryptionPublicKeyControllerMessenger>;
 
 const createEncryptionPublicKeyManagerMock = <T>() =>
   ({
@@ -78,7 +78,7 @@ const createEncryptionPublicKeyManagerMock = <T>() =>
     },
     // TODO: Replace `any` with type
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  } as any as jest.Mocked<T>);
+  }) as any as jest.Mocked<T>;
 
 describe('EncryptionPublicKeyController', () => {
   let encryptionPublicKeyController: EncryptionPublicKeyController;

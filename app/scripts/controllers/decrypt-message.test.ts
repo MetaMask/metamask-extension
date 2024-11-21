@@ -40,7 +40,7 @@ const createMessengerMock = () =>
     call: jest.fn(),
     // TODO: Replace `any` with type
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  } as any as jest.Mocked<DecryptMessageControllerMessenger>);
+  }) as any as jest.Mocked<DecryptMessageControllerMessenger>;
 
 const createDecryptMessageManagerMock = <T>() =>
   ({
@@ -61,7 +61,7 @@ const createDecryptMessageManagerMock = <T>() =>
     },
     // TODO: Replace `any` with type
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  } as any as jest.Mocked<T>);
+  }) as any as jest.Mocked<T>;
 
 describe('DecryptMessageController', () => {
   class MockDecryptMessageController extends DecryptMessageController {
@@ -178,9 +178,8 @@ describe('DecryptMessageController', () => {
     );
     getStateMock.mockReturnValue(mockExtState);
 
-    const result = await decryptMessageController.decryptMessage(
-      messageToDecrypt,
-    );
+    const result =
+      await decryptMessageController.decryptMessage(messageToDecrypt);
 
     expect(decryptMessageManagerMock.approveMessage).toBeCalledTimes(1);
     expect(decryptMessageManagerMock.approveMessage).toBeCalledWith(
@@ -248,9 +247,8 @@ describe('DecryptMessageController', () => {
     );
     getStateMock.mockReturnValue(mockExtState);
 
-    const result = await decryptMessageController.decryptMessageInline(
-      messageToDecrypt,
-    );
+    const result =
+      await decryptMessageController.decryptMessageInline(messageToDecrypt);
 
     expect(decryptMessageManagerMock.setResult).toBeCalledTimes(1);
     expect(decryptMessageManagerMock.setResult).toBeCalledWith(
@@ -277,9 +275,8 @@ describe('DecryptMessageController', () => {
     );
     getStateMock.mockReturnValue(mockExtState);
 
-    const result = await decryptMessageController.cancelDecryptMessage(
-      messageIdMock,
-    );
+    const result =
+      await decryptMessageController.cancelDecryptMessage(messageIdMock);
 
     expect(decryptMessageManagerMock.rejectMessage).toBeCalledTimes(1);
     expect(decryptMessageManagerMock.rejectMessage).toBeCalledWith(

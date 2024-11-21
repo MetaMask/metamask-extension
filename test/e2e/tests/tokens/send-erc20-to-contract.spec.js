@@ -20,9 +20,8 @@ describe('Send ERC20 token to contract address', function () {
         title: this.test.fullTitle(),
       },
       async ({ driver, contractRegistry }) => {
-        const contractAddress = await contractRegistry.getContractAddress(
-          smartContract,
-        );
+        const contractAddress =
+          await contractRegistry.getContractAddress(smartContract);
         await unlockWallet(driver);
 
         // Send TST

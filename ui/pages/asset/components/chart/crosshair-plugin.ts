@@ -8,7 +8,7 @@ export const CrosshairPlugin = {
   id: 'crosshair',
   afterEvent(chart: CrosshairChart, { event }: { event: ChartEvent }) {
     chart.crosshairX =
-      event.type === 'mouseout' ? undefined : event.x ?? undefined;
+      event.type === 'mouseout' ? undefined : (event.x ?? undefined);
     chart.draw();
   },
   afterDraw(chart: CrosshairChart) {

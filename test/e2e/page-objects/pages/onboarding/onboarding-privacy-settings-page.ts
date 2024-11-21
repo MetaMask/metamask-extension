@@ -188,9 +188,9 @@ class OnboardingPrivacySettingsPage {
     await this.driver.clickElement(this.assetsSettings);
     await this.driver.waitForSelector(this.assetsSettingsMessage);
     await Promise.all(
-      (
-        await this.driver.findClickableElements(this.assetsPrivacyToggle)
-      ).map((toggle) => toggle.click()),
+      (await this.driver.findClickableElements(this.assetsPrivacyToggle)).map(
+        (toggle) => toggle.click(),
+      ),
     );
     await this.navigateBackToSettingsPage();
   }

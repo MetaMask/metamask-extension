@@ -183,9 +183,10 @@ describe('permission background API methods', () => {
           }),
       };
 
-      const id = await getPermissionBackgroundApiMethods(
-        permissionController,
-      ).requestAccountsPermissionWithId('foo.com');
+      const id =
+        await getPermissionBackgroundApiMethods(
+          permissionController,
+        ).requestAccountsPermissionWithId('foo.com');
 
       expect(permissionController.requestPermissions).toHaveBeenCalledTimes(1);
       expect(permissionController.requestPermissions).toHaveBeenCalledWith(
@@ -211,9 +212,10 @@ describe('permission background API methods', () => {
           }),
       };
 
-      const id = await getPermissionBackgroundApiMethods(
-        permissionController,
-      ).requestAccountsAndChainPermissionsWithId('foo.com');
+      const id =
+        await getPermissionBackgroundApiMethods(
+          permissionController,
+        ).requestAccountsAndChainPermissionsWithId('foo.com');
 
       expect(permissionController.requestPermissions).toHaveBeenCalledTimes(1);
       expect(permissionController.requestPermissions).toHaveBeenCalledWith(

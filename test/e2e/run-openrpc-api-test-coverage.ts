@@ -171,9 +171,8 @@ async function main() {
       (signTypedData4Example.params[0] as ExampleObject).value = ACCOUNT_1;
 
       // update chainId for signTypedData
-      (
-        signTypedData4Example.params[1] as ExampleObject
-      ).value.domain.chainId = 1337;
+      (signTypedData4Example.params[1] as ExampleObject).value.domain.chainId =
+        1337;
 
       // net_version missing from execution-apis. see here: https://github.com/ethereum/execution-apis/issues/540
       const netVersion: MethodObject = {

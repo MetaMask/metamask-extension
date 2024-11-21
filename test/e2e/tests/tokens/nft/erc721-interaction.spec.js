@@ -510,9 +510,8 @@ describe('ERC721 NFTs testdapp interaction', function () {
         const [func, params] = await driver.findElements(
           '.confirm-approve-content__data .confirm-approve-content__small-text',
         );
-        const proceedWithCautionIsDisplayed = await driver.isElementPresent(
-          '.dialog--error',
-        );
+        const proceedWithCautionIsDisplayed =
+          await driver.isElementPresent('.dialog--error');
         assert.equal(
           await title.getText(),
           'Revoke permission to access and transfer all of your TestDappNFTs?',

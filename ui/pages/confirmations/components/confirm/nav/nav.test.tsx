@@ -120,7 +120,7 @@ describe('ConfirmNav', () => {
       .spyOn(Actions, 'rejectPendingApproval')
       // TODO: Replace `any` with type
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      .mockImplementation(() => ({} as any));
+      .mockImplementation(() => ({}) as any);
     fireEvent.click(rejectAllButton);
     expect(rejectSpy).toHaveBeenCalledTimes(3);
   });

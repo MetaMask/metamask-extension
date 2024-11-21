@@ -175,9 +175,8 @@ describe('Add token using wallet_watchAsset', function () {
         title: this.test.fullTitle(),
       },
       async ({ driver, contractRegistry }) => {
-        const contractAddress = await contractRegistry.getContractAddress(
-          smartContract,
-        );
+        const contractAddress =
+          await contractRegistry.getContractAddress(smartContract);
         await unlockWallet(driver);
 
         await driver.openNewPage('http://127.0.0.1:8080/');
@@ -227,9 +226,8 @@ describe('Add token using wallet_watchAsset', function () {
         title: this.test.fullTitle(),
       },
       async ({ driver, contractRegistry }) => {
-        const contractAddress = await contractRegistry.getContractAddress(
-          smartContract,
-        );
+        const contractAddress =
+          await contractRegistry.getContractAddress(smartContract);
         await unlockWallet(driver);
 
         await driver.openNewPage('http://127.0.0.1:8080/');

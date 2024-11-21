@@ -31,7 +31,7 @@ const getStateChangeLabelMap = (
     [DecodingDataChangeType.Revoke]: t('permitSimulationChange_revoke'),
     [DecodingDataChangeType.Bidding]: t('permitSimulationChange_bidding'),
     [DecodingDataChangeType.Listing]: t('permitSimulationChange_listing'),
-  }[changeType]);
+  })[changeType];
 
 const StateChangeRow = ({
   stateChange,

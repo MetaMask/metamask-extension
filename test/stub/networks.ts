@@ -92,8 +92,8 @@ export const mockNetworkState = (
   const networkConfigurations = networks.map((network) => {
     const blockExplorer =
       !('blockExplorerUrl' in network) || network.blockExplorerUrl
-        ? network.blockExplorerUrl ??
-          `https://localhost/blockExplorer/${network.chainId}`
+        ? (network.blockExplorerUrl ??
+          `https://localhost/blockExplorer/${network.chainId}`)
         : undefined;
 
     const rpc =

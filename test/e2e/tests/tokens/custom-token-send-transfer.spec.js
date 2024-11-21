@@ -110,9 +110,8 @@ describe('Transfer custom tokens @no-mmi', function () {
         title: this.test.fullTitle(),
       },
       async ({ driver, contractRegistry }) => {
-        const contractAddress = await contractRegistry.getContractAddress(
-          smartContract,
-        );
+        const contractAddress =
+          await contractRegistry.getContractAddress(smartContract);
         await unlockWallet(driver);
 
         // transfer token from dapp
@@ -169,9 +168,8 @@ describe('Transfer custom tokens @no-mmi', function () {
         title: this.test.fullTitle(),
       },
       async ({ driver, contractRegistry }) => {
-        const contractAddress = await contractRegistry.getContractAddress(
-          smartContract,
-        );
+        const contractAddress =
+          await contractRegistry.getContractAddress(smartContract);
         await unlockWallet(driver);
 
         // transfer token from dapp
