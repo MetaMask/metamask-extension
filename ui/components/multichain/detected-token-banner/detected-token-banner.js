@@ -1,4 +1,4 @@
-import React, { useContext, useMemo } from 'react';
+import React, { useContext } from 'react';
 import { useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
@@ -7,9 +7,8 @@ import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
   getCurrentChainId,
   getDetectedTokensInCurrentNetwork,
+  getAllDetectedTokensForSelectedAddress,
   getPreferences,
-  getSelectedInternalAccount,
-  getAllDetectedTokens,
   getNetworkConfigurationsByChainId,
 } from '../../../selectors';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
@@ -27,8 +26,9 @@ export const DetectedTokensBanner = ({
 }) => {
   const t = useI18nContext();
   const trackEvent = useContext(MetaMetricsContext);
-  const allNetworks = useSelector(getNetworkConfigurationsByChainId);
   const { tokenNetworkFilter } = useSelector(getPreferences);
+  const allNetworks = useSelector(getNetworkConfigurationsByChainId);
+
   const allOpts = {};
   Object.keys(allNetworks || {}).forEach((chainId) => {
     allOpts[chainId] = true;
@@ -39,26 +39,10 @@ export const DetectedTokensBanner = ({
     Object.keys(allOpts || {}).length;
 
   const detectedTokens = useSelector(getDetectedTokensInCurrentNetwork);
-  const { address: selectedAddress } = useSelector(getSelectedInternalAccount);
-  const allDetectedTokens = useSelector(getAllDetectedTokens);
 
-  const { detectedTokensMultichain } = useMemo(() => {
-    const detectedTokensAllChains = Object.entries(
-      allDetectedTokens || {},
-    ).reduce((acc, [chainId, chainTokens]) => {
-      const tokensForAddress = chainTokens[selectedAddress];
-      if (tokensForAddress) {
-        acc[chainId] = tokensForAddress.map((token) => ({
-          ...token,
-          chainId,
-        }));
-      }
-      return acc;
-    }, {});
-
-    return { detectedTokensMultichain: detectedTokensAllChains };
-  }, [selectedAddress, allDetectedTokens]);
-
+  const detectedTokensMultichain = useSelector(
+    getAllDetectedTokensForSelectedAddress,
+  );
   const chainId = useSelector(getCurrentChainId);
 
   const detectedTokensDetails =
@@ -66,7 +50,7 @@ export const DetectedTokensBanner = ({
       ? Object.values(detectedTokensMultichain)
           .flat()
           .map(({ address, symbol }) => `${symbol} - ${address}`)
-      : detectedTokens?.map(({ address, symbol }) => `${symbol} - ${address}`);
+      : detectedTokens.map(({ address, symbol }) => `${symbol} - ${address}`);
 
   const totalTokens =
     process.env.PORTFOLIO_VIEW && !allNetworksFilterShown

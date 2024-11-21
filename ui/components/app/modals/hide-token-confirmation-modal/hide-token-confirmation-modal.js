@@ -26,15 +26,14 @@ function mapStateToProps(state) {
 function mapDispatchToProps(dispatch) {
   return {
     hideModal: () => dispatch(actions.hideModal()),
-    hideToken: (address, networkClientId) => {
-      dispatch(
+    hideToken: async (address, networkClientId) => {
+      await dispatch(
         actions.ignoreTokens({
           tokensToIgnore: address,
           networkClientId,
         }),
-      ).then(() => {
-        dispatch(actions.hideModal());
-      });
+      );
+      dispatch(actions.hideModal());
     },
   };
 }

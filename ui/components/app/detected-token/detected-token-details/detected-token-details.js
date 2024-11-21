@@ -14,6 +14,7 @@ import DetectedTokenAddress from '../detected-token-address/detected-token-addre
 import DetectedTokenAggregators from '../detected-token-aggregators/detected-token-aggregators';
 import { Display } from '../../../../helpers/constants/design-system';
 import {
+  getCurrentNetwork,
   getTestNetworkBackgroundColor,
   getTokenList,
 } from '../../../../selectors';
@@ -28,7 +29,7 @@ const DetectedTokenDetails = ({
   const tokenList = useSelector(getTokenList);
   const tokenData = tokenList[token.address?.toLowerCase()];
   const testNetworkBackgroundColor = useSelector(getTestNetworkBackgroundColor);
-
+  const currentNetwork = useSelector(getCurrentNetwork);
   return (
     <Box
       display={Display.Flex}
@@ -40,6 +41,7 @@ const DetectedTokenDetails = ({
           <AvatarNetwork
             size={AvatarNetworkSize.Xs}
             src={CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP[chainId]}
+            name={currentNetwork?.nickname || ''}
             backgroundColor={testNetworkBackgroundColor}
           />
         }
