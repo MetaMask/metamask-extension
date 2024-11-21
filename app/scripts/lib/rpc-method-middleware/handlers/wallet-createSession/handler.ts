@@ -6,13 +6,14 @@ import {
   setEthAccounts,
   getPermittedEthChainIds,
   setPermittedEthChainIds,
-  mergeScopes,
   bucketScopes,
   validateAndNormalizeScopes,
-  ScopesObject,
   Caip25Authorization,
-  ScopeString,
   ScopedProperties,
+  getInternalScopesObject,
+  getSessionScopes,
+  NormalizedScopesObject,
+  InternalScopeString,
 } from '@metamask/multichain';
 import {
   Caveat,
@@ -76,7 +77,7 @@ type AbstractPermissionController = PermissionController<
 async function walletCreateSessionHandler(
   req: JsonRpcRequest<Caip25Authorization> & { origin: string },
   res: JsonRpcSuccess<{
-    sessionScopes: ScopesObject;
+    sessionScopes: NormalizedScopesObject;
     sessionProperties?: Record<string, Json>;
   }>,
   _next: JsonRpcEngineNextCallback,
@@ -208,8 +209,8 @@ async function walletCreateSessionHandler(
     });
 
     let caip25CaveatValue = {
-      requiredScopes: supportedRequiredScopes,
-      optionalScopes: supportedOptionalScopes,
+      requiredScopes: getInternalScopesObject(supportedRequiredScopes),
+      optionalScopes: getInternalScopesObject(supportedOptionalScopes),
       isMultichainOrigin: true,
       // TODO: preserve sessionProperties?
     };
@@ -223,15 +224,12 @@ async function walletCreateSessionHandler(
       legacyApproval.approvedAccounts,
     );
 
-    const sessionScopes = mergeScopes(
-      caip25CaveatValue.requiredScopes,
-      caip25CaveatValue.optionalScopes,
-    );
+    const sessionScopes = getSessionScopes(caip25CaveatValue);
 
     await Promise.all(
       Object.entries(validScopedProperties).map(
         async ([scopeString, scopedProperty]) => {
-          const scope = sessionScopes[scopeString as ScopeString];
+          const scope = sessionScopes[scopeString as InternalScopeString];
           if (!scope) {
             return;
           }
