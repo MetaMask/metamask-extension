@@ -605,6 +605,7 @@ describe('Bridge selectors', () => {
         isLoading: false,
         quotesRefreshCount: 5,
         isQuoteGoingToRefresh: false,
+        quoteFetchError: undefined,
       });
     });
 
@@ -681,6 +682,7 @@ describe('Bridge selectors', () => {
         isLoading: false,
         quotesRefreshCount: 2,
         isQuoteGoingToRefresh: true,
+        quoteFetchError: undefined,
       });
     });
 
@@ -758,6 +760,7 @@ describe('Bridge selectors', () => {
         isLoading: false,
         quotesRefreshCount: 1,
         isQuoteGoingToRefresh: false,
+        quoteFetchError: undefined,
       });
     });
   });
@@ -776,6 +779,7 @@ describe('Bridge selectors', () => {
         quotesRefreshCount: undefined,
         recommendedQuote: undefined,
         sortedQuotes: [],
+        quoteFetchError: undefined,
       });
     });
 
