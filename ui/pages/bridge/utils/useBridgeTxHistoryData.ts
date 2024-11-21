@@ -18,7 +18,7 @@ export type UseBridgeDataProps = {
   };
 };
 
-export default function useBridgeData({
+export default function useBridgeTxHistoryData({
   transactionGroup,
 }: UseBridgeDataProps) {
   const t = useI18nContext();

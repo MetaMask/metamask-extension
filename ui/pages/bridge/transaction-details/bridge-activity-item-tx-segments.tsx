@@ -7,7 +7,7 @@ import {
   BridgeHistoryItem,
   StatusTypes,
 } from '../../../../shared/types/bridge-status';
-import { UseBridgeDataProps } from '../utils/useBridgeData';
+import { UseBridgeDataProps } from '../utils/useBridgeTxHistoryData';
 import { Box, Text } from '../../../components/component-library';
 import {
   BlockSize,
