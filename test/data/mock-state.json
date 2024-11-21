@@ -55,6 +55,8 @@
     }
   },
   "metamask": {
+    "allTokens": {},
+    "tokenBalances": {},
     "use4ByteResolution": true,
     "ipfsGateway": "dweb.link",
     "dismissSeedBackUpReminder": false,
@@ -379,11 +381,13 @@
       "showNativeTokenAsMainBalance": true,
       "showTestNetworks": true,
       "smartTransactionsOptInStatus": true,
+      "tokenNetworkFilter": {},
       "tokenSortConfig": {
         "key": "tokenFiatAmount",
         "order": "dsc",
         "sortCallback": "stringNumeric"
-      }
+      },
+      "tokenNetworkFilter": {}
     },
     "ensResolutionsByAddress": {},
     "isAccountMenuOpen": false,

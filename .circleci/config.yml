@@ -197,6 +197,7 @@ workflows:
           requires:
             - prep-deps
       - test-e2e-chrome-webpack:
+          <<: *develop_master_rc_only
           requires:
             - prep-build-test-webpack
             - get-changed-files-with-git-diff
@@ -205,6 +206,7 @@ workflows:
             - prep-build-test
             - get-changed-files-with-git-diff
       - test-e2e-firefox:
+          <<: *develop_master_rc_only
           requires:
             - prep-build-test-mv2
             - get-changed-files-with-git-diff
@@ -962,7 +964,7 @@ jobs:
           at: .
       - run:
           name: Install Playwright browsers
-          command: yarn exec playwright install
+          command: yarn exec playwright install chromium
       - run:
           name: Test Storybook
           command: yarn test-storybook:ci
@@ -1195,7 +1197,7 @@ jobs:
           at: .
       - run:
           name: test:e2e:single
-          command: .circleci/scripts/test-run-e2e.sh yarn test:e2e:single test/e2e/vault-decryption-chrome.spec.js --browser chrome
+          command: .circleci/scripts/test-run-e2e.sh yarn test:e2e:single test/e2e/vault-decryption-chrome.spec.ts --browser chrome
           no_output_timeout: 5m
       - store_artifacts:
           path: test-artifacts
