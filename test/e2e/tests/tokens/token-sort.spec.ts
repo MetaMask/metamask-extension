@@ -25,7 +25,8 @@ describe('Token List', function () {
   };
 
   const importToken = async (driver: Driver) => {
-    await driver.clickElement({ text: 'Import', tag: 'button' });
+    await driver.clickElement(`[data-testid="import-token-button"]`);
+    await driver.clickElement(`[data-testid="importTokens"]`);
     await clickNestedButton(driver, 'Custom token');
     await driver.fill(
       '[data-testid="import-tokens-modal-custom-address"]',

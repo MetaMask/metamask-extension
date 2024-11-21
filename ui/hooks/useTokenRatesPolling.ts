@@ -1,5 +1,6 @@
 import { useSelector } from 'react-redux';
 import {
+  getCurrentChainId,
   getMarketData,
   getNetworkConfigurationsByChainId,
   getTokenExchangeRates,
@@ -10,10 +11,17 @@ import {
   tokenRatesStartPolling,
   tokenRatesStopPollingByPollingToken,
 } from '../store/actions';
+import {
+  getCompletedOnboarding,
+  getIsUnlocked,
+} from '../ducks/metamask/metamask';
 import useMultiPolling from './useMultiPolling';
 
-const useTokenRatesPolling = ({ chainIds }: { chainIds?: string[] } = {}) => {
+const useTokenRatesPolling = () => {
   // Selectors to determine polling input
+  const completedOnboarding = useSelector(getCompletedOnboarding);
+  const isUnlocked = useSelector(getIsUnlocked);
+  const currentChainId = useSelector(getCurrentChainId);
   const useCurrencyRateCheck = useSelector(getUseCurrencyRateCheck);
   const networkConfigurations = useSelector(getNetworkConfigurationsByChainId);
 
@@ -22,12 +30,16 @@ const useTokenRatesPolling = ({ chainIds }: { chainIds?: string[] } = {}) => {
   const tokensMarketData = useSelector(getTokensMarketData);
   const marketData = useSelector(getMarketData);
 
+  const enabled = completedOnboarding && isUnlocked && useCurrencyRateCheck;
+
+  const chainIds = process.env.PORTFOLIO_VIEW
+    ? Object.keys(networkConfigurations)
+    : [currentChainId];
+
   useMultiPolling({
     startPolling: tokenRatesStartPolling,
     stopPollingByPollingToken: tokenRatesStopPollingByPollingToken,
-    input: useCurrencyRateCheck
-      ? chainIds ?? Object.keys(networkConfigurations)
-      : [],
+    input: enabled ? chainIds : [],
   });
 
   return {

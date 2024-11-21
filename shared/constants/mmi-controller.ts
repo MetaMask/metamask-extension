@@ -23,9 +23,11 @@ import { AppStateController } from '../../app/scripts/controllers/app-state-cont
 // TODO: Remove restricted import
 // eslint-disable-next-line import/no-restricted-paths
 import AccountTrackerController from '../../app/scripts/controllers/account-tracker-controller';
-// TODO: Remove restricted import
-// eslint-disable-next-line import/no-restricted-paths
-import MetaMetricsController from '../../app/scripts/controllers/metametrics';
+import MetaMetricsController, {
+  MetaMetricsControllerGetStateAction,
+  // TODO: Remove restricted import
+  // eslint-disable-next-line import/no-restricted-paths
+} from '../../app/scripts/controllers/metametrics-controller';
 
 // Unique name for the controller
 const controllerName = 'MMIController';
@@ -47,7 +49,8 @@ export type AllowedActions =
   | NetworkControllerGetStateAction
   | NetworkControllerSetActiveNetworkAction
   | NetworkControllerGetNetworkClientByIdAction
-  | NetworkControllerGetNetworkConfigurationByChainId;
+  | NetworkControllerGetNetworkConfigurationByChainId
+  | MetaMetricsControllerGetStateAction;
 
 /**
  * Messenger type for the {@link MMIController}.

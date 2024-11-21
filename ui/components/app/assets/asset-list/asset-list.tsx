@@ -13,8 +13,8 @@ import {
   getMultichainSelectedAccountCachedBalance,
   ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
   getMultichainIsBitcoin,
-  ///: END:ONLY_INCLUDE_IF
   getMultichainSelectedAccountCachedBalanceIsZero,
+  ///: END:ONLY_INCLUDE_IF
 } from '../../../../selectors/multichain';
 import { useCurrencyDisplay } from '../../../../hooks/useCurrencyDisplay';
 import { MetaMetricsContext } from '../../../../contexts/metametrics';
@@ -23,11 +23,7 @@ import {
   MetaMetricsEventName,
 } from '../../../../../shared/constants/metametrics';
 import DetectedToken from '../../detected-token/detected-token';
-import {
-  DetectedTokensBanner,
-  ImportTokenLink,
-  ReceiveModal,
-} from '../../../multichain';
+import { DetectedTokensBanner, ReceiveModal } from '../../../multichain';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { FundingMethodModal } from '../../../multichain/funding-method-modal/funding-method-modal';
 ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
@@ -51,7 +47,7 @@ export type TokenWithBalance = {
 };
 
 export type AssetListProps = {
-  onClickAsset: (arg: string) => void;
+  onClickAsset: (chainId: string, address: string) => void;
   showTokensLinks?: boolean;
 };
 
@@ -88,11 +84,10 @@ const AssetList = ({ onClickAsset, showTokensLinks }: AssetListProps) => {
     setShowReceiveModal(true);
   };
 
+  ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
   const balanceIsZero = useSelector(
     getMultichainSelectedAccountCachedBalanceIsZero,
   );
-
-  ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
   const isBuyableChain = useSelector(getIsNativeTokenBuyable);
   const shouldShowBuy = isBuyableChain && balanceIsZero;
   const isBtc = useSelector(getMultichainIsBitcoin);
@@ -113,11 +108,11 @@ const AssetList = ({ onClickAsset, showTokensLinks }: AssetListProps) => {
             margin={4}
           />
         )}
-      <AssetListControlBar showTokensLinks={showTokensLinks} />
+      <AssetListControlBar showTokensLinks={shouldShowTokensLinks} />
       <TokenList
         nativeToken={<NativeToken onClickAsset={onClickAsset} />}
-        onTokenClick={(tokenAddress: string) => {
-          onClickAsset(tokenAddress);
+        onTokenClick={(chainId: string, tokenAddress: string) => {
+          onClickAsset(chainId, tokenAddress);
           trackEvent({
             event: MetaMetricsEventName.TokenScreenOpened,
             category: MetaMetricsEventCategory.Navigation,
@@ -144,13 +139,6 @@ const AssetList = ({ onClickAsset, showTokensLinks }: AssetListProps) => {
         ) : null
         ///: END:ONLY_INCLUDE_IF
       }
-      {shouldShowTokensLinks && (
-        <ImportTokenLink
-          margin={4}
-          marginBottom={2}
-          marginTop={detectedTokens.length > 0 && !balanceIsZero ? 0 : 2}
-        />
-      )}
       {showDetectedTokens && (
         <DetectedToken setShowDetectedTokens={setShowDetectedTokens} />
       )}
