@@ -134,6 +134,7 @@ const useBridging = () => {
       history,
       metaMetricsId,
       trackEvent,
+      trackCrossChainSwapsEvent,
       isMetaMetricsEnabled,
       isMarketingEnabled,
       providerConfig,
