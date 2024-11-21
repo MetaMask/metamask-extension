@@ -55,7 +55,7 @@ describe('BTC Account - Overview', function (this: Suite) {
         });
 
         await driver.waitForSelector({
-          css: 'p',
+          tag: 'p',
           text: `${DEFAULT_BTC_BALANCE} BTC`,
         });
       },
