@@ -851,8 +851,6 @@ describe('MetaMaskController', () => {
               requiredScopes: {},
               optionalScopes: {
                 'eip155:1': {
-                  methods: [],
-                  notifications: [],
                   accounts: ['eip155:1:0xdead', 'eip155:1:0xbeef'],
                 },
               },
@@ -2669,115 +2667,6 @@ describe('MetaMaskController', () => {
         expect(
           TransactionController.prototype.updateIncomingTransactions,
         ).toHaveBeenCalledTimes(1);
-      });
-    });
-
-    describe('token list controller', () => {
-      it('stops polling if petnames, simulations, and token detection disabled', async () => {
-        expect(TokenListController.prototype.stop).not.toHaveBeenCalled();
-
-        expect(
-          TokenListController.prototype.clearingTokenListData,
-        ).not.toHaveBeenCalled();
-
-        await simulatePreferencesChange({
-          useTransactionSimulations: false,
-          useTokenDetection: false,
-          preferences: {
-            petnamesEnabled: false,
-          },
-        });
-
-        expect(TokenListController.prototype.stop).toHaveBeenCalledTimes(1);
-
-        expect(
-          TokenListController.prototype.clearingTokenListData,
-        ).toHaveBeenCalledTimes(1);
-      });
-
-      it.each([
-        [
-          'petnames',
-          {
-            preferences: { petnamesEnabled: false },
-            useTokenDetection: true,
-            useTransactionSimulations: true,
-          },
-        ],
-        [
-          'simulations',
-          {
-            preferences: { petnamesEnabled: true },
-            useTokenDetection: true,
-            useTransactionSimulations: false,
-          },
-        ],
-        [
-          'token detection',
-          {
-            preferences: { petnamesEnabled: true },
-            useTokenDetection: false,
-            useTransactionSimulations: true,
-          },
-        ],
-      ])(
-        'does not stop polling if only %s disabled',
-        async (_, preferences) => {
-          expect(TokenListController.prototype.stop).not.toHaveBeenCalled();
-
-          expect(
-            TokenListController.prototype.clearingTokenListData,
-          ).not.toHaveBeenCalled();
-
-          await simulatePreferencesChange(preferences);
-
-          expect(TokenListController.prototype.stop).not.toHaveBeenCalled();
-
-          expect(
-            TokenListController.prototype.clearingTokenListData,
-          ).not.toHaveBeenCalled();
-        },
-      );
-
-      it.each([
-        [
-          'petnames',
-          {
-            preferences: { petnamesEnabled: true },
-            useTokenDetection: false,
-            useTransactionSimulations: false,
-          },
-        ],
-        [
-          'simulations',
-          {
-            preferences: { petnamesEnabled: false },
-            useTokenDetection: false,
-            useTransactionSimulations: true,
-          },
-        ],
-        [
-          'token detection',
-          {
-            preferences: { petnamesEnabled: false },
-            useTokenDetection: true,
-            useTransactionSimulations: false,
-          },
-        ],
-      ])('starts polling if only %s enabled', async (_, preferences) => {
-        expect(TokenListController.prototype.start).not.toHaveBeenCalled();
-
-        await simulatePreferencesChange({
-          useTransactionSimulations: false,
-          useTokenDetection: false,
-          preferences: {
-            petnamesEnabled: false,
-          },
-        });
-
-        await simulatePreferencesChange(preferences);
-
-        expect(TokenListController.prototype.start).toHaveBeenCalledTimes(1);
       });
     });
 

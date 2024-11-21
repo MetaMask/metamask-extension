@@ -115,6 +115,10 @@ import NftFullImage from '../../components/app/assets/nfts/nft-details/nft-full-
 import CrossChainSwap from '../bridge';
 import { ToastMaster } from '../../components/app/toast-master/toast-master';
 import {
+  isCorrectDeveloperTransactionType,
+  isCorrectSignatureApprovalType,
+} from '../../../shared/lib/confirmation.utils';
+import {
   getConnectingLabel,
   hideAppHeader,
   isConfirmTransactionRoute,
@@ -138,6 +142,7 @@ export default class Routes extends Component {
     history: PropTypes.object,
     location: PropTypes.object,
     autoLockTimeLimit: PropTypes.number,
+    privacyMode: PropTypes.bool,
     pageChanged: PropTypes.func.isRequired,
     browserEnvironmentOs: PropTypes.string,
     browserEnvironmentBrowser: PropTypes.string,
@@ -173,6 +178,9 @@ export default class Routes extends Component {
     currentExtensionPopupId: PropTypes.number,
     useRequestQueue: PropTypes.bool,
     clearEditedNetwork: PropTypes.func.isRequired,
+    oldestPendingApproval: PropTypes.object.isRequired,
+    pendingApprovals: PropTypes.arrayOf(PropTypes.object).isRequired,
+    transactionsMetadata: PropTypes.arrayOf(PropTypes.object).isRequired,
     ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
     isShowKeyringSnapRemovalResultModal: PropTypes.bool.isRequired,
     hideShowKeyringSnapRemovalResultModal: PropTypes.func.isRequired,
@@ -355,8 +363,15 @@ export default class Routes extends Component {
           component={NftFullImage}
         />
 
-        <Authenticated path={`${ASSET_ROUTE}/:asset/:id`} component={Asset} />
-        <Authenticated path={`${ASSET_ROUTE}/:asset/`} component={Asset} />
+        <Authenticated
+          path={`${ASSET_ROUTE}/:chainId/:asset/:id`}
+          component={Asset}
+        />
+        <Authenticated
+          path={`${ASSET_ROUTE}/:chainId/:asset/`}
+          component={Asset}
+        />
+        <Authenticated path={`${ASSET_ROUTE}/:chainId`} component={Asset} />
         <Authenticated
           path={`${CONNECTIONS}/:origin`}
           component={Connections}
@@ -417,6 +432,10 @@ export default class Routes extends Component {
       switchedNetworkDetails,
       clearSwitchedNetworkDetails,
       clearEditedNetwork,
+      privacyMode,
+      oldestPendingApproval,
+      pendingApprovals,
+      transactionsMetadata,
       ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
       isShowKeyringSnapRemovalResultModal,
       hideShowKeyringSnapRemovalResultModal,
@@ -452,7 +471,27 @@ export default class Routes extends Component {
       isUnlocked &&
       !shouldShowSeedPhraseReminder;
 
-    let isLoadingShown = isLoading && completedOnboarding;
+    const paramsConfirmationId = location.pathname.split(
+      '/confirm-transaction/',
+    )[1];
+    const confirmationId = paramsConfirmationId ?? oldestPendingApproval?.id;
+    const pendingApproval = pendingApprovals.find(
+      (approval) => approval.id === confirmationId,
+    );
+    const isCorrectApprovalType = isCorrectSignatureApprovalType(
+      pendingApproval?.type,
+    );
+    const isCorrectTransactionType = isCorrectDeveloperTransactionType(
+      transactionsMetadata[confirmationId]?.type,
+    );
+
+    let isLoadingShown =
+      isLoading &&
+      completedOnboarding &&
+      // In the redesigned screens, we hide the general loading spinner and the
+      // loading states are on a component by component basis.
+      !isCorrectApprovalType &&
+      !isCorrectTransactionType;
 
     ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
     isLoadingShown =
@@ -462,7 +501,11 @@ export default class Routes extends Component {
         (confirmation) =>
           confirmation.type ===
           SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES.showSnapAccountRedirect,
-      );
+      ) &&
+      // In the redesigned screens, we hide the general loading spinner and the
+      // loading states are on a component by component basis.
+      !isCorrectApprovalType &&
+      !isCorrectTransactionType;
     ///: END:ONLY_INCLUDE_IF
 
     return (
@@ -494,7 +537,10 @@ export default class Routes extends Component {
           ///: END:ONLY_INCLUDE_IF
         }
         {isAccountMenuOpen ? (
-          <AccountListMenu onClose={() => toggleAccountMenu()} />
+          <AccountListMenu
+            onClose={() => toggleAccountMenu()}
+            privacyMode={privacyMode}
+          />
         ) : null}
         {isNetworkMenuOpen ? (
           <NetworkListMenu

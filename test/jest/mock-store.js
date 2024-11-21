@@ -3,6 +3,7 @@ import { CHAIN_IDS, CURRENCY_SYMBOLS } from '../../shared/constants/network';
 import { KeyringType } from '../../shared/constants/keyring';
 import { ETH_EOA_METHODS } from '../../shared/constants/eth-methods';
 import { mockNetworkState } from '../stub/networks';
+import { DEFAULT_BRIDGE_CONTROLLER_STATE } from '../../app/scripts/controllers/bridge/constants';
 
 export const createGetSmartTransactionFeesApiResponse = () => {
   return {
@@ -138,6 +139,7 @@ export const createSwapsMockStore = () => {
       preferences: {
         showFiatInTestnets: true,
         smartTransactionsOptInStatus: true,
+        tokenNetworkFilter: {},
         showMultiRpcModal: false,
       },
       transactions: [
@@ -726,6 +728,8 @@ export const createBridgeMockStore = (
           destNetworkAllowlist: [],
           ...featureFlagOverrides,
         },
+        quotes: DEFAULT_BRIDGE_CONTROLLER_STATE.quotes,
+        quoteRequest: DEFAULT_BRIDGE_CONTROLLER_STATE.quoteRequest,
         ...bridgeStateOverrides,
       },
     },

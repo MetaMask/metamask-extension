@@ -83,3 +83,6 @@ html-report/
 html-report-multichain/
 
 /changed-files
+
+# UI Integration tests
+test/integration/config/assets

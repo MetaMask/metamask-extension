@@ -27,6 +27,7 @@ import {
   Display,
   JustifyContent,
   TextAlign,
+  TextColor,
 } from '../../../../../../../../helpers/constants/design-system';
 import Name from '../../../../../../../../components/app/name/name';
 import { TokenDetailsERC20 } from '../../../../../../utils/token';
@@ -50,15 +51,30 @@ type PermitSimulationValueDisplayParams = {
 
   /** The tokenId for NFT */
   tokenId?: string;
+
+  /** True if value is being credited to wallet */
+  credit?: boolean;
+
+  /** True if value is being debited to wallet */
+  debit?: boolean;
 };
 
 const PermitSimulationValueDisplay: React.FC<
   PermitSimulationValueDisplayParams
-> = ({ chainId, primaryType, tokenContract, tokenId, value }) => {
+> = ({
+  chainId,
+  primaryType,
+  tokenContract,
+  tokenId,
+  value,
+  credit,
+  debit,
+}) => {
   const exchangeRate = useTokenExchangeRate(tokenContract);
 
   const tokenDetails = useGetTokenStandardAndDetails(tokenContract);
   useTrackERC20WithoutDecimalInformation(
+    chainId,
     tokenContract,
     tokenDetails as TokenDetailsERC20,
     MetaMetricsEventLocation.SignatureConfirmation,
@@ -96,6 +112,17 @@ const PermitSimulationValueDisplay: React.FC<
     return null;
   }
 
+  let valueColor = TextColor.textDefault;
+  let valueBackgroundColor = BackgroundColor.backgroundAlternative;
+
+  if (credit) {
+    valueColor = TextColor.successDefault;
+    valueBackgroundColor = BackgroundColor.successMuted;
+  } else if (debit) {
+    valueColor = TextColor.errorDefault;
+    valueBackgroundColor = BackgroundColor.errorMuted;
+  }
+
   return (
     <Box>
       <Box display={Display.Flex} justifyContent={JustifyContent.flexEnd}>
@@ -112,8 +139,9 @@ const PermitSimulationValueDisplay: React.FC<
           >
             <Text
               data-testid="simulation-token-value"
-              backgroundColor={BackgroundColor.backgroundAlternative}
+              backgroundColor={valueBackgroundColor}
               borderRadius={BorderRadius.XL}
+              color={valueColor}
               paddingInline={2}
               style={{ paddingTop: '1px', paddingBottom: '1px' }}
               textAlign={TextAlign.Center}

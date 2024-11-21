@@ -21,6 +21,7 @@ const mockSetNetworkClientIdForDomain = jest.fn();
 const mockSetActiveNetwork = jest.fn();
 const mockUpdateCustomNonce = jest.fn();
 const mockSetNextNonce = jest.fn();
+const mockSetTokenNetworkFilter = jest.fn();
 
 jest.mock('../../../store/actions.ts', () => ({
   setShowTestNetworks: () => mockSetShowTestNetworks,
@@ -30,6 +31,7 @@ jest.mock('../../../store/actions.ts', () => ({
   setNextNonce: () => mockSetNextNonce,
   setNetworkClientIdForDomain: (network, id) =>
     mockSetNetworkClientIdForDomain(network, id),
+  setTokenNetworkFilter: () => mockSetTokenNetworkFilter,
 }));
 
 const MOCK_ORIGIN = 'https://portfolio.metamask.io';
@@ -134,6 +136,10 @@ const render = ({
       selectedNetworkClientId: NETWORK_TYPES.MAINNET,
       preferences: {
         showTestNetworks,
+        tokenNetworkFilter: {
+          [CHAIN_IDS.MAINNET]: true,
+          [CHAIN_IDS.LINEA_MAINNET]: true,
+        },
       },
       useRequestQueue: true,
       domains: {
