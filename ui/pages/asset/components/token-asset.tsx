@@ -33,8 +33,10 @@ const TokenAsset = ({ token, chainId }: { token: Token; chainId: Hex }) => {
     [key: `0x${string}`]: NetworkConfiguration;
   } = useSelector(getAllEnabledNetworks);
   // get the correct rpc url for the current token
+  const defaultIdx = allNetworks[chainId].defaultBlockExplorerUrlIndex;
   const currentTokenBlockExplorer =
-    allNetworks[chainId]?.blockExplorerUrls?.[0];
+    allNetworks[chainId]?.blockExplorerUrls[defaultIdx ?? 0];
+
   const { address: walletAddress } = useSelector(getSelectedInternalAccount);
   const erc20TokensByChain = useSelector(selectERC20TokensByChain);
 
