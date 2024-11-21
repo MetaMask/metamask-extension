@@ -7,10 +7,10 @@ import {
   getAllDetectedTokensForSelectedAddress,
   getDetectedTokensInCurrentNetwork,
   getIstokenDetectionInactiveOnNonMainnetSupportedNetwork,
-  getNetworkConfigurationsByChainId,
   getPreferences,
   getSelectedAccount,
 } from '../../../../selectors';
+import { getNetworkConfigurationsByChainId } from '../../../../../shared/modules/selectors/networks';
 import {
   getMultichainIsEvm,
   getMultichainSelectedAccountCachedBalance,
