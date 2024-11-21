@@ -57,8 +57,8 @@ exports[`DecodedSimulation renders component correctly 1`] = `
         </div>
       </div>
       <div
-        class="mm-box"
-        style="margin-left: auto; max-width: 100%;"
+        class="mm-box mm-box--margin-left-auto"
+        style="max-width: 100%;"
       >
         <div
           class="mm-box mm-box--display-flex mm-box--justify-content-flex-end"

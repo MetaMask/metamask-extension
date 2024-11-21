@@ -461,8 +461,8 @@ exports[`Confirm should match snapshot for signature - typed sign - V4 - PermitB
                   class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-direction-column"
                 >
                   <div
-                    class="mm-box"
-                    style="margin-left: auto; max-width: 100%;"
+                    class="mm-box mm-box--margin-left-auto"
+                    style="max-width: 100%;"
                   >
                     <div
                       class="mm-box mm-box--display-flex mm-box--justify-content-flex-end"
@@ -514,8 +514,8 @@ exports[`Confirm should match snapshot for signature - typed sign - V4 - PermitB
                     />
                   </div>
                   <div
-                    class="mm-box"
-                    style="margin-left: auto; max-width: 100%;"
+                    class="mm-box mm-box--margin-left-auto"
+                    style="max-width: 100%;"
                   >
                     <div
                       class="mm-box mm-box--display-flex mm-box--justify-content-flex-end"
@@ -1040,8 +1040,8 @@ exports[`Confirm should match snapshot for signature - typed sign - V4 - PermitS
                   class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-direction-column"
                 >
                   <div
-                    class="mm-box"
-                    style="margin-left: auto; max-width: 100%;"
+                    class="mm-box mm-box--margin-left-auto"
+                    style="max-width: 100%;"
                   >
                     <div
                       class="mm-box mm-box--display-flex mm-box--justify-content-flex-end"
@@ -2570,8 +2570,8 @@ exports[`Confirm should match snapshot for signature - typed sign - permit 1`] =
                 style="margin-left: auto; max-width: 100%;"
               >
                 <div
-                  class="mm-box"
-                  style="margin-left: auto; max-width: 100%;"
+                  class="mm-box mm-box--margin-left-auto"
+                  style="max-width: 100%;"
                 >
                   <div
                     class="mm-box mm-box--display-flex mm-box--justify-content-flex-end"
