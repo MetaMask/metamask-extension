@@ -1,11 +1,12 @@
 import React from 'react';
-import { Box } from '../../../components/component-library';
+import { Box, Text } from '../../../components/component-library';
 import {
   JustifyContent,
   Display,
   FlexDirection,
   AlignItems,
   TextAlign,
+  TextVariant,
 } from '../../../helpers/constants/design-system';
 
 type TransactionDetailRowProps = {
@@ -20,7 +21,7 @@ export default function TransactionDetailRow({
   return (
     <Box display={Display.Flex} justifyContent={JustifyContent.spaceBetween}>
       <Box style={{ maxWidth: '40%' }} paddingRight={1}>
-        {title}
+        <Text variant={TextVariant.bodyMd}>{title}</Text>
       </Box>
       <Box
         display={Display.Flex}
@@ -32,7 +33,7 @@ export default function TransactionDetailRow({
           maxWidth: '60%',
         }}
       >
-        {value}
+        <Text variant={TextVariant.bodyMd}>{value}</Text>
       </Box>
     </Box>
   );
