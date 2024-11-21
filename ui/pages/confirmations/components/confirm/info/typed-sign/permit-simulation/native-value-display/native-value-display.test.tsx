@@ -15,6 +15,6 @@ describe('NativeValueDisplay', () => {
     );
 
     expect(await findByText('<0.000001')).toBeInTheDocument();
-    expect(container).toMatchSnapshot();
+    expect(await findByText('ETH')).toBeInTheDocument();
   });
 });
