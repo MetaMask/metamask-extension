@@ -7,6 +7,7 @@ import {
   getAllDetectedTokensForSelectedAddress,
   getDetectedTokensInCurrentNetwork,
   getIstokenDetectionInactiveOnNonMainnetSupportedNetwork,
+  getNetworkConfigurationsByChainId,
   getPreferences,
   getSelectedAccount,
 } from '../../../../selectors';
@@ -77,8 +78,17 @@ const AssetList = ({ onClickAsset, showTokensLinks }: AssetListProps) => {
   const isTokenDetectionInactiveOnNonMainnetSupportedNetwork = useSelector(
     getIstokenDetectionInactiveOnNonMainnetSupportedNetwork,
   );
+
+  const allNetworks = useSelector(getNetworkConfigurationsByChainId);
   const { tokenNetworkFilter } = useSelector(getPreferences);
-  const allNetworksFilterShown = Object.keys(tokenNetworkFilter ?? {}).length;
+  const allOpts: Record<string, boolean> = {};
+  Object.keys(allNetworks || {}).forEach((chainId) => {
+    allOpts[chainId] = true;
+  });
+
+  const allNetworksFilterShown =
+    Object.keys(tokenNetworkFilter || {}).length !==
+    Object.keys(allOpts || {}).length;
 
   const [showFundingMethodModal, setShowFundingMethodModal] = useState(false);
   const [showReceiveModal, setShowReceiveModal] = useState(false);

@@ -734,10 +734,6 @@ export const getMarketData = (state) => {
   return state.metamask.marketData;
 };
 
-export function getCurrencyRates(state) {
-  return state.metamask.currencyRates;
-}
-
 export function getAddressBook(state) {
   const chainId = getCurrentChainId(state);
   if (!state.metamask.addressBook[chainId]) {

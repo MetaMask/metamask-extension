@@ -14,6 +14,7 @@ import {
   getCurrentChainId,
   getCurrentNetwork,
   getDetectedTokensInCurrentNetwork,
+  getNetworkConfigurationsByChainId,
   getPreferences,
 } from '../../../../selectors';
 
@@ -37,8 +38,16 @@ const DetectedTokenSelectionPopover = ({
   const chainId = useSelector(getCurrentChainId);
 
   const detectedTokens = useSelector(getDetectedTokensInCurrentNetwork);
+  const allNetworks = useSelector(getNetworkConfigurationsByChainId);
   const { tokenNetworkFilter } = useSelector(getPreferences);
-  const allNetworksFilterShown = Object.keys(tokenNetworkFilter ?? {}).length;
+  const allOpts = {};
+  Object.keys(allNetworks || {}).forEach((networkId) => {
+    allOpts[networkId] = true;
+  });
+
+  const allNetworksFilterShown =
+    Object.keys(tokenNetworkFilter || {}).length !==
+    Object.keys(allOpts || {}).length;
 
   const currentNetwork = useSelector(getCurrentNetwork);
 

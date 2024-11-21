@@ -60,10 +60,16 @@ const DetectedToken = ({ setShowDetectedTokens }) => {
     getAllDetectedTokensForSelectedAddress,
   );
   const currentChainId = useSelector(getCurrentChainId);
+  const allNetworks = useSelector(getNetworkConfigurationsByChainId);
   const { tokenNetworkFilter } = useSelector(getPreferences);
-  const allNetworksFilterShown = Object.keys(tokenNetworkFilter ?? {}).length;
+  const allOpts = {};
+  Object.keys(allNetworks || {}).forEach((chainId) => {
+    allOpts[chainId] = true;
+  });
 
-  const configuration = useSelector(getNetworkConfigurationsByChainId);
+  const allNetworksFilterShown =
+    Object.keys(tokenNetworkFilter || {}).length !==
+    Object.keys(allOpts || {}).length;
 
   const totalDetectedTokens = useMemo(() => {
     return process.env.PORTFOLIO_VIEW && !allNetworksFilterShown
@@ -148,7 +154,7 @@ const DetectedToken = ({ setShowDetectedTokens }) => {
 
       const importPromises = Object.entries(tokensByChainId).map(
         async ([networkId, { tokens }]) => {
-          const chainConfig = configuration[networkId];
+          const chainConfig = allNetworks[networkId];
           const { defaultRpcEndpointIndex } = chainConfig;
           const { networkClientId: networkInstanceId } =
             chainConfig.rpcEndpoints[defaultRpcEndpointIndex];
@@ -202,7 +208,7 @@ const DetectedToken = ({ setShowDetectedTokens }) => {
 
       const promises = Object.entries(groupedByChainId).map(
         async ([chainId, tokens]) => {
-          const chainConfig = configuration[chainId];
+          const chainConfig = allNetworks[chainId];
           const { defaultRpcEndpointIndex } = chainConfig;
           const { networkClientId: networkInstanceId } =
             chainConfig.rpcEndpoints[defaultRpcEndpointIndex];

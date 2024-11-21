@@ -10,6 +10,7 @@ import {
   getPreferences,
   getSelectedInternalAccount,
   getAllDetectedTokens,
+  getNetworkConfigurationsByChainId,
 } from '../../../selectors';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import {
@@ -26,9 +27,16 @@ export const DetectedTokensBanner = ({
 }) => {
   const t = useI18nContext();
   const trackEvent = useContext(MetaMetricsContext);
+  const allNetworks = useSelector(getNetworkConfigurationsByChainId);
   const { tokenNetworkFilter } = useSelector(getPreferences);
+  const allOpts = {};
+  Object.keys(allNetworks || {}).forEach((chainId) => {
+    allOpts[chainId] = true;
+  });
 
-  const allNetworksFilterShown = Object.keys(tokenNetworkFilter ?? {}).length;
+  const allNetworksFilterShown =
+    Object.keys(tokenNetworkFilter || {}).length !==
+    Object.keys(allOpts || {}).length;
 
   const detectedTokens = useSelector(getDetectedTokensInCurrentNetwork);
   const { address: selectedAddress } = useSelector(getSelectedInternalAccount);
@@ -58,7 +66,7 @@ export const DetectedTokensBanner = ({
       ? Object.values(detectedTokensMultichain)
           .flat()
           .map(({ address, symbol }) => `${symbol} - ${address}`)
-      : detectedTokens.map(({ address, symbol }) => `${symbol} - ${address}`);
+      : detectedTokens?.map(({ address, symbol }) => `${symbol} - ${address}`);
 
   const totalTokens =
     process.env.PORTFOLIO_VIEW && !allNetworksFilterShown
