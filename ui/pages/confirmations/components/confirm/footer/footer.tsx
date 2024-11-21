@@ -66,10 +66,9 @@ function reviewAlertButtonText(
 function getButtonDisabledState(
   hasUnconfirmedDangerAlerts: boolean,
   hasDangerBlockingAlerts: boolean,
-  hasBlockingGeneralAlerts: boolean,
   disabled: boolean,
 ) {
-  if (hasDangerBlockingAlerts || hasBlockingGeneralAlerts) {
+  if (hasDangerBlockingAlerts) {
     return true;
   }
 
@@ -102,7 +101,6 @@ const ConfirmButton = ({
     fieldAlerts,
     hasUnconfirmedFieldDangerAlerts,
     unconfirmedFieldDangerAlerts,
-    hasBlockingGeneralAlerts,
   } = useAlerts(alertOwnerId);
 
   const hasDangerBlockingAlerts = fieldAlerts.some(
@@ -127,7 +125,7 @@ const ConfirmButton = ({
           onSubmit={onSubmit}
         />
       )}
-      {hasDangerAlerts || hasBlockingGeneralAlerts ? (
+      {hasDangerAlerts ? (
         <Button
           block
           danger
@@ -135,7 +133,6 @@ const ConfirmButton = ({
           disabled={getButtonDisabledState(
             hasUnconfirmedDangerAlerts,
             hasDangerBlockingAlerts,
-            hasBlockingGeneralAlerts,
             disabled,
           )}
           onClick={handleOpenConfirmModal}
@@ -191,8 +188,11 @@ const Footer = () => {
   const isPermit = isPermitSignatureRequest(currentConfirmation);
   const isPermitSimulationShown = isPermit && useTransactionSimulations;
 
+  const { hasBlockingGeneralAlerts } = useAlerts(currentConfirmation?.id);
+
   const isConfirmDisabled =
     (!isScrollToBottomCompleted && !isSIWE && !isPermitSimulationShown) ||
+    hasBlockingGeneralAlerts ||
     ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
     mmiSubmitDisabled ||
     ///: END:ONLY_INCLUDE_IF

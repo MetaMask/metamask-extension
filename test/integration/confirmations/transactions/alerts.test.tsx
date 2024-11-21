@@ -413,7 +413,7 @@ describe('Contract Interaction Confirmation Alerts', () => {
     ).toHaveTextContent('Update gas options');
   });
 
-  it.only('displays the alert for signing and submitting alerts', async () => {
+  it('displays the alert for signing and submitting alerts', async () => {
     const account =
       mockMetaMaskState.internalAccounts.accounts[
         mockMetaMaskState.internalAccounts
