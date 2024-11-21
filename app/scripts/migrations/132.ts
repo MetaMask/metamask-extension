@@ -29,21 +29,30 @@ export async function migrate(
 function transformState(
   state: Record<string, unknown>,
 ): Record<string, unknown> {
-  const preferencesControllerState = state?.PreferencesController as
-    | Record<string, unknown>
-    | undefined;
-
-  const preferences = preferencesControllerState?.preferences as
-    | Record<string, unknown>
-    | undefined;
-
-  if (isObject(preferencesControllerState) && isObject(preferences)) {
-    // `redesignedTransactionsEnabled` was previously set to `false` by default
-    // in `124.ts`
-    if (preferences.redesignedTransactionsEnabled === false) {
-      preferences.redesignedTransactionsEnabled = true;
-    }
+  if (!isObject(state?.PreferencesController)) {
+    return state;
   }
+
+  if (!isObject(state.PreferencesController?.preferences)) {
+    state.PreferencesController = {
+      ...state.PreferencesController,
+      preferences: {},
+    };
+  }
+
+  let preferencesControllerState = state.PreferencesController as Record<
+    string,
+    unknown
+  >;
+
+  const preferences = preferencesControllerState.preferences as Record<
+    string,
+    unknown
+  >;
+
+  // `redesignedTransactionsEnabled` was previously set to `false` by
+  // default in `124.ts`
+  preferences.redesignedTransactionsEnabled = true;
 
   return state;
 }

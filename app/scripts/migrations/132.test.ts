@@ -27,6 +27,25 @@ describe('migration #132', () => {
     expect(transformedState.data).toEqual(oldState);
   });
 
+  it('adds preferences property to the controller if it is not set and set the preference to true if migration runs', async () => {
+    const oldState = { PreferencesController: {} };
+
+    const expectedState = {
+      PreferencesController: {
+        preferences: {
+          redesignedTransactionsEnabled: true,
+        },
+      },
+    };
+
+    const transformedState = await migrate({
+      meta: { version: oldVersion },
+      data: oldState,
+    });
+
+    expect(transformedState.data).toEqual(expectedState);
+  });
+
   it('changes property to true if migration runs', async () => {
     const oldState = {
       PreferencesController: {
