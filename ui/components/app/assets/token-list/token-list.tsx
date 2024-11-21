@@ -74,7 +74,10 @@ const useFilteredAccountTokens = (currentNetwork: { chainId: string }) => {
   return filteredAccountTokensChains;
 };
 
-export default function TokenList({ onTokenClick }: TokenListProps) {
+export default function TokenList({
+  onTokenClick,
+  nativeToken,
+}: TokenListProps) {
   const t = useI18nContext();
   const dispatch = useDispatch();
   const currentNetwork = useSelector(getCurrentNetwork);
