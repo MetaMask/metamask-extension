@@ -2,6 +2,7 @@ import { randomUUID } from 'crypto';
 import { act, fireEvent, screen } from '@testing-library/react';
 import { ApprovalType } from '@metamask/controller-utils';
 import nock from 'nock';
+import preview from 'jest-preview';
 import mockMetaMaskState from '../../data/integration-init-state.json';
 import { integrationTestRender } from '../../../lib/render-helpers';
 import * as backgroundConnection from '../../../../ui/store/background-connection';
@@ -410,5 +411,76 @@ describe('Contract Interaction Confirmation Alerts', () => {
     expect(
       await screen.findByTestId('alert-modal-action-showGasFeeModal'),
     ).toHaveTextContent('Update gas options');
+  });
+
+  it.only('displays the alert for signing and submitting alerts', async () => {
+    const account =
+      mockMetaMaskState.internalAccounts.accounts[
+        mockMetaMaskState.internalAccounts
+          .selectedAccount as keyof typeof mockMetaMaskState.internalAccounts.accounts
+      ];
+
+    const mockedMetaMaskState =
+      getMetaMaskStateWithUnapprovedApproveTransaction(account.address);
+    const unapprovedTransaction = mockedMetaMaskState.transactions[0];
+    const signedTransaction = getUnapprovedApproveTransaction(
+      account.address,
+      randomUUID(),
+      pendingTransactionTime - 1000,
+    );
+    signedTransaction.status = 'signed';
+
+    await act(async () => {
+      await integrationTestRender({
+        preloadedState: {
+          ...mockedMetaMaskState,
+          gasEstimateType: 'none',
+          pendingApprovalCount: 2,
+          pendingApprovals: {
+            [pendingTransactionId]: {
+              id: pendingTransactionId,
+              origin: 'origin',
+              time: pendingTransactionTime,
+              type: ApprovalType.Transaction,
+              requestData: {
+                txId: pendingTransactionId,
+              },
+              requestState: null,
+              expectsResult: false,
+            },
+            [signedTransaction.id]: {
+              id: signedTransaction.id,
+              origin: 'origin',
+              time: pendingTransactionTime - 1000,
+              type: ApprovalType.Transaction,
+              requestData: {
+                txId: signedTransaction.id,
+              },
+              requestState: null,
+              expectsResult: false,
+            },
+          },
+          transactions: [unapprovedTransaction, signedTransaction],
+        },
+        backgroundConnection: backgroundConnectionMocked,
+      });
+    });
+
+    preview.debug();
+
+    const alerts = await screen.findAllByTestId('confirm-banner-alert');
+
+    expect(
+      alerts.some((alert) =>
+        alert.textContent?.includes(
+          'This transaction will only go through once your previous transaction is complete.',
+        ),
+      ),
+    ).toBe(true);
+
+    expect(
+      await screen.findByTestId('confirm-footer-button'),
+    ).toBeInTheDocument();
+    expect(await screen.findByTestId('confirm-footer-button')).toBeDisabled();
   });
 });

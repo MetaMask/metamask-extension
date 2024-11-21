@@ -65,10 +65,11 @@ function reviewAlertButtonText(
 
 function getButtonDisabledState(
   hasUnconfirmedDangerAlerts: boolean,
-  hasBlockingAlerts: boolean,
+  hasDangerBlockingAlerts: boolean,
+  hasBlockingGeneralAlerts: boolean,
   disabled: boolean,
 ) {
-  if (hasBlockingAlerts) {
+  if (hasDangerBlockingAlerts || hasBlockingGeneralAlerts) {
     return true;
   }
 
@@ -101,6 +102,7 @@ const ConfirmButton = ({
     fieldAlerts,
     hasUnconfirmedFieldDangerAlerts,
     unconfirmedFieldDangerAlerts,
+    hasBlockingGeneralAlerts,
   } = useAlerts(alertOwnerId);
 
   const hasDangerBlockingAlerts = fieldAlerts.some(
@@ -125,7 +127,7 @@ const ConfirmButton = ({
           onSubmit={onSubmit}
         />
       )}
-      {hasDangerAlerts ? (
+      {hasDangerAlerts || hasBlockingGeneralAlerts ? (
         <Button
           block
           danger
@@ -133,6 +135,7 @@ const ConfirmButton = ({
           disabled={getButtonDisabledState(
             hasUnconfirmedDangerAlerts,
             hasDangerBlockingAlerts,
+            hasBlockingGeneralAlerts,
             disabled,
           )}
           onClick={handleOpenConfirmModal}
