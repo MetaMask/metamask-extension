@@ -15,7 +15,7 @@ exports[`AssetBalanceText matches snapshot 1`] = `
     <span
       class="mm-box mm-text currency-display-component__suffix mm-text--body-sm mm-box--margin-inline-start-1 mm-box--color-textColor"
     >
-      SUFFIX
+      suffix
     </span>
   </div>
 </DocumentFragment>

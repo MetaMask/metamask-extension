@@ -341,7 +341,7 @@ exports[`remove-snap-account confirmation should match snapshot 1`] = `
                             <span
                               class="mm-box mm-text currency-display-component__suffix mm-text--inherit mm-box--margin-inline-start-1 mm-box--color-text-default"
                             >
-                              GOERLIETH
+                              GoerliETH
                             </span>
                           </div>
                         </div>
@@ -385,7 +385,7 @@ exports[`remove-snap-account confirmation should match snapshot 1`] = `
                             <span
                               class="mm-box mm-text currency-display-component__suffix mm-text--inherit mm-box--margin-inline-start-1 mm-box--color-text-default"
                             >
-                              GOERLIETH
+                              GoerliETH
                             </span>
                           </div>
                         </div>
