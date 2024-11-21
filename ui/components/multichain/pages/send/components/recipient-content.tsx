@@ -165,6 +165,7 @@ export const SendPageRecipientContent = ({
       <SendPageRow>
         <AssetPickerAmount
           header={t('sendSelectReceiveAsset')}
+          action="receive"
           asset={isSwapAllowed ? receiveAsset : sendAsset}
           sendingAsset={
             isSwapAllowed &&

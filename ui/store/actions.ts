@@ -1989,14 +1989,17 @@ export function addImportedTokens(
  *
  * @param options
  * @param options.tokensToIgnore
+ * @param options.networkClientId
  * @param options.dontShowLoadingIndicator
  */
 export function ignoreTokens({
   tokensToIgnore,
   dontShowLoadingIndicator = false,
+  networkClientId = null,
 }: {
   tokensToIgnore: string[];
   dontShowLoadingIndicator: boolean;
+  networkClientId?: NetworkClientId;
 }): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
   const _tokensToIgnore = Array.isArray(tokensToIgnore)
     ? tokensToIgnore
@@ -2007,7 +2010,10 @@ export function ignoreTokens({
       dispatch(showLoadingIndication());
     }
     try {
-      await submitRequestToBackground('ignoreTokens', [_tokensToIgnore]);
+      await submitRequestToBackground('ignoreTokens', [
+        _tokensToIgnore,
+        networkClientId,
+      ]);
     } catch (error) {
       logErrorWithMessage(error);
       dispatch(displayWarning(error));
@@ -2257,7 +2263,7 @@ export function automaticallySwitchNetwork(
  */
 export function setSwitchedNetworkDetails(switchedNetworkDetails: {
   networkClientId: string;
-  selectedTabOrigin: string;
+  selectedTabOrigin?: string;
 }): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
   return async (dispatch: MetaMaskReduxDispatch) => {
     await submitRequestToBackground('setSwitchedNetworkDetails', [

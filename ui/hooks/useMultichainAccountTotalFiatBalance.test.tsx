@@ -23,9 +23,9 @@ const mockTokenBalances = [
     address: '0x0bc529c00C6401aEF6D220BE8C6Ea1667F6Ad93e',
     symbol: 'YFI',
     balance: '1409247882142934',
+    balanceError: null,
     decimals: 18,
     string: 0.00141,
-    balanceError: null,
     tokenFiatAmount: '7.52',
   },
 ];
@@ -49,6 +49,24 @@ const renderUseMultichainAccountTotalFiatBalance = (
     metamask: {
       ...mockState.metamask,
       completedOnboarding: true,
+      allTokens: {
+        [CHAIN_IDS.MAINNET]: {
+          [mockAccount.address]: [
+            {
+              address: '0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48',
+              aggregators: [],
+              decimals: 6,
+              symbol: 'USDC',
+            },
+            {
+              address: '0x0bc529c00C6401aEF6D220BE8C6Ea1667F6Ad93e',
+              aggregators: [],
+              decimals: 18,
+              symbol: 'YFI',
+            },
+          ],
+        },
+      },
       internalAccounts: {
         accounts: {
           [mockAccount.id]: mockAccount,
@@ -92,10 +110,17 @@ const renderUseMultichainAccountTotalFiatBalance = (
           },
         },
       },
+      tokenBalances: {
+        [mockAccount.address]: {
+          [CHAIN_IDS.MAINNET]: {
+            '0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48': '0xbdbd',
+            '0x0bc529c00C6401aEF6D220BE8C6Ea1667F6Ad93e': '0x501b4176a64d6',
+          },
+        },
+      },
       ...mockNetworkState({ chainId: CHAIN_IDS.MAINNET }),
-
-      allTokens: {
-        '0x1': {
+      detectedTokens: {
+        [CHAIN_IDS.MAINNET]: {
           '0x0836f5ed6b62baf60706fe3adc0ff0fd1df833da': [
             {
               address: '0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48',
@@ -110,14 +135,6 @@ const renderUseMultichainAccountTotalFiatBalance = (
               symbol: 'YFI',
             },
           ],
-        },
-      },
-      tokenBalances: {
-        [mockAccount.address]: {
-          [CHAIN_IDS.MAINNET]: {
-            '0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48': '0xBDBD',
-            '0x0bc529c00C6401aEF6D220BE8C6Ea1667F6Ad93e': '0x501B4176A64D6',
-          },
         },
       },
     },
