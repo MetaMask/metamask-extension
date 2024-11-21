@@ -39,8 +39,6 @@ const TokenAsset = ({ token, chainId }: { token: Token; chainId: Hex }) => {
       ? null
       : allNetworks[chainId]?.blockExplorerUrls[defaultIdx];
 
-  console.log('currentTokenBlockExplorer', currentTokenBlockExplorer);
-
   const { address: walletAddress } = useSelector(getSelectedInternalAccount);
   const erc20TokensByChain = useSelector(selectERC20TokensByChain);
 
@@ -76,8 +74,9 @@ const TokenAsset = ({ token, chainId }: { token: Token; chainId: Hex }) => {
     chainId,
     '',
     walletAddress,
-    { blockExplorerUrl: currentTokenBlockExplorer },
+    { blockExplorerUrl: currentTokenBlockExplorer ?? '' },
   );
+  console.log(tokenTrackerLink);
 
   return (
     <AssetPage
