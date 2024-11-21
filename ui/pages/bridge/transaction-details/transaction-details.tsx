@@ -38,11 +38,11 @@ import {
 import { formatDate } from '../../../helpers/utils/util';
 import { ConfirmInfoRowDivider as Divider } from '../../../components/app/confirm/info/row';
 import { calcTokenAmount } from '../../../../shared/lib/transactions-controller-utils';
-import { CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP } from '../../../../shared/constants/network';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import TransactionDetailRow from './transaction-detail-row';
 import BridgeExplorerLinks from './bridge-explorer-links';
 import BridgeStepList from './bridge-step-list';
+import { CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP } from '../../../../shared/constants/network';
 
 const getBlockExplorerUrl = (
   networkConfiguration: NetworkConfiguration | undefined,
@@ -83,21 +83,14 @@ const CrossChainSwapTxDetails = () => {
   const networkConfigurationsByChainId = useSelector(
     getNetworkConfigurationsByChainId,
   );
-  const { srcNetworkConfiguration, destNetworkConfiguration } =
-    useBridgeChainInfo({
-      bridgeHistoryItem,
-    });
+  const { srcNetwork, destNetwork } = useBridgeChainInfo({
+    bridgeHistoryItem,
+  });
 
-  const srcBlockExplorerUrl = getBlockExplorerUrl(
-    srcNetworkConfiguration,
-    srcTxHash,
-  );
+  const srcBlockExplorerUrl = getBlockExplorerUrl(srcNetwork, srcTxHash);
 
   const destTxHash = bridgeHistoryItem?.status.destChain?.txHash;
-  const destBlockExplorerUrl = getBlockExplorerUrl(
-    destNetworkConfiguration,
-    destTxHash,
-  );
+  const destBlockExplorerUrl = getBlockExplorerUrl(destNetwork, destTxHash);
 
   const srcChainTxMeta = selectedAddressTxList.find(
     (tx) => tx.hash === srcTxHash,
@@ -105,13 +98,13 @@ const CrossChainSwapTxDetails = () => {
 
   const status = bridgeHistoryItem?.status.status;
 
-  const destChainIconUrl = destNetworkConfiguration
+  const destChainIconUrl = destNetwork
     ? CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP[
-        destNetworkConfiguration.chainId as keyof typeof CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP
+        destNetwork.chainId as keyof typeof CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP
       ]
     : undefined;
   const bridgeTypeDirection = t('bridgeTypeDirectionTo');
-  const bridgeTypeDestNetwork = destNetworkConfiguration?.name;
+  const bridgeTypeDestNetwork = destNetwork?.name;
 
   const data = srcChainTxMeta
     ? getTransactionBreakdownData({
@@ -160,6 +153,8 @@ const CrossChainSwapTxDetails = () => {
 
             {/* Links to block explorers */}
             <BridgeExplorerLinks
+              srcChainId={srcNetwork?.chainId}
+              destChainId={destNetwork?.chainId}
               srcBlockExplorerUrl={srcBlockExplorerUrl}
               destBlockExplorerUrl={destBlockExplorerUrl}
             />
@@ -192,11 +187,11 @@ const CrossChainSwapTxDetails = () => {
                     alignItems={AlignItems.baseline}
                   >
                     {bridgeTypeDirection}{' '}
-                    {destNetworkConfiguration && (
+                    {destNetwork && (
                       <AvatarNetwork
                         size={AvatarNetworkSize.Xs}
                         src={destChainIconUrl}
-                        name={destNetworkConfiguration?.name}
+                        name={destNetwork?.name}
                       />
                     )}
                     {bridgeTypeDestNetwork}

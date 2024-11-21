@@ -1,5 +1,6 @@
 import { NetworkConfiguration } from '@metamask/network-controller';
 import React, { useContext } from 'react';
+import { Hex } from '@metamask/utils';
 import {
   Box,
   IconName,
@@ -12,8 +13,19 @@ import {
   FlexDirection,
 } from '../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../hooks/useI18nContext';
+import { CHAINID_DEFAULT_BLOCK_EXPLORER_HUMAN_READABLE_URL_MAP } from '../../../../shared/constants/common';
 
-const getBlockExplorerName = (blockExplorerUrl: string | undefined) => {
+const getBlockExplorerName = (
+  chainId: Hex | undefined,
+  blockExplorerUrl: string | undefined,
+) => {
+  const humanReadableUrl = chainId
+    ? CHAINID_DEFAULT_BLOCK_EXPLORER_HUMAN_READABLE_URL_MAP[chainId]
+    : undefined;
+  if (humanReadableUrl) {
+    return humanReadableUrl;
+  }
+
   if (!blockExplorerUrl) {
     return undefined;
   }
@@ -42,11 +54,15 @@ export const getBlockExplorerUrl = (
 const METRICS_LOCATION = 'Activity Tab';
 
 type ExplorerLinksProps = {
+  srcChainId?: Hex;
+  destChainId?: Hex;
   srcBlockExplorerUrl?: string;
   destBlockExplorerUrl?: string;
 };
 
 export default function BridgeExplorerLinks({
+  srcChainId,
+  destChainId,
   srcBlockExplorerUrl,
   destBlockExplorerUrl,
 }: ExplorerLinksProps) {
@@ -55,10 +71,10 @@ export default function BridgeExplorerLinks({
 
   // Not sure why but the text is not being changed to white on hover, unless it's put into a variable before the render
   const srcButtonText = t('bridgeExplorerLinkViewOn', [
-    getBlockExplorerName(srcBlockExplorerUrl),
+    getBlockExplorerName(srcChainId, srcBlockExplorerUrl),
   ]);
   const destButtonText = t('bridgeExplorerLinkViewOn', [
-    getBlockExplorerName(destBlockExplorerUrl),
+    getBlockExplorerName(destChainId, destBlockExplorerUrl),
   ]);
 
   return (

@@ -30,11 +30,11 @@ export default function useBridgeData({
   // If this tx is a bridge tx, it will have a bridgeHistoryItem
   const bridgeHistoryItem = srcTxHash ? bridgeHistory[srcTxHash] : undefined;
 
-  const { destNetworkConfiguration } = useBridgeChainInfo({
+  const { destNetwork } = useBridgeChainInfo({
     bridgeHistoryItem,
   });
 
-  const destChainName = destNetworkConfiguration?.name;
+  const destChainName = destNetwork?.name;
   const bridgeTitleSuffix = destChainName
     ? t('bridgeToChain', [destChainName])
     : '';
