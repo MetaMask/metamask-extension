@@ -1343,6 +1343,10 @@
   "creatorAddress": {
     "message": "Creator address"
   },
+  "crossChainAggregatedBalancePopover": {
+    "message": "This reflects the value of all tokens you own on all networks. If you prefer seeing this value in ETH or other currencies, go to $1.",
+    "description": "$1 represents the settings page"
+  },
   "crossChainSwapsLink": {
     "message": "Swap across networks with MetaMask Portfolio"
   },
@@ -1729,6 +1733,12 @@
   },
   "dropped": {
     "message": "Dropped"
+  },
+  "duplicateContactTooltip": {
+    "message": "This contact name collides with an existing account or contact"
+  },
+  "duplicateContactWarning": {
+    "message": "You have duplicate contacts"
   },
   "edit": {
     "message": "Edit"
@@ -3023,6 +3033,9 @@
   "nameAddressLabel": {
     "message": "Address",
     "description": "Label above address field in name component modal."
+  },
+  "nameAlreadyInUse": {
+    "message": "Name is already in use"
   },
   "nameInstructionsNew": {
     "message": "If you know this address, give it a nickname to recognize it in the future.",
