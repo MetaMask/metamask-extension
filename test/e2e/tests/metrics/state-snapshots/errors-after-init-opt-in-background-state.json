@@ -338,11 +338,10 @@
     "allDetectedTokens": {}
   },
   "TxController": {
+    "lastFetchedTimestamps": "object",
     "methodData": "object",
     "submitHistory": "object",
-    "transactions": "object",
-    "lastFetchedBlockNumbers": "object",
-    "submitHistory": "object"
+    "transactions": "object"
   },
   "UserOperationController": { "userOperations": "object" },
   "UserStorageController": {

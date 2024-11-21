@@ -881,7 +881,7 @@ describe('Sentry errors', function () {
       currentPopupId: false, // Initialized as undefined
       // Part of transaction controller store, but missing from the initial
       // state
-      lastFetchedBlockNumbers: false,
+      lastFetchedTimestamps: false,
       preferences: {
         autoLockTimeLimit: true, // Initialized as undefined
         showConfirmationAdvancedDetails: true,

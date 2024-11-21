@@ -202,7 +202,7 @@
     "domains": "object",
     "logs": "object",
     "methodData": "object",
-    "lastFetchedBlockNumbers": "object",
+    "lastFetchedTimestamps": "object",
     "submitHistory": "object",
     "fiatCurrency": "usd",
     "rates": {

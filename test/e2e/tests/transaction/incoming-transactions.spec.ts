@@ -1,8 +1,8 @@
 import { Mockttp } from 'mockttp';
+import { CHAIN_IDS } from '@metamask/transaction-controller';
 import { loginWithoutBalanceValidation } from '../../page-objects/flows/login.flow';
 import HomePage from '../../page-objects/pages/homepage';
 import { Driver } from '../../webdriver/driver';
-import { CHAIN_IDS } from '@metamask/transaction-controller';
 import { DEFAULT_FIXTURE_ACCOUNT } from '../../constants';
 import { withFixtures } from '../../helpers';
 import FixtureBuilder from '../../fixture-builder';
@@ -63,11 +63,11 @@ async function mockAccountsApi(
   {
     transactions,
     startTimestamp,
-  }: { transactions?: any[]; startTimestamp?: number } = {},
+  }: { transactions?: Record<string, unknown>[]; startTimestamp?: number } = {},
 ) {
   return [
     await mockServer
-      .forGet(/https:\/\/accounts.api.cx.metamask.io\/v1\/accounts\//)
+      .forGet(/https:\/\/accounts.api.cx.metamask.io\/v1\/accounts\//u)
       .withQuery(startTimestamp ? { startTimestamp } : {})
       .thenCallback(() => ({
         statusCode: 200,
