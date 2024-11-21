@@ -65,6 +65,9 @@ class HomePage {
     tag: 'h6',
   };
 
+  private readonly activityListAction =
+    '[data-testid="activity-list-item-action"]';
+
   constructor(driver: Driver) {
     this.driver = driver;
     this.headerNavbar = new HeaderNavbar(driver);
@@ -346,6 +349,26 @@ class HomePage {
     );
     console.log(
       `Amount for transaction ${expectedNumber} is displayed as ${expectedAmount}`,
+    );
+  }
+
+  async check_txAction(expectedAction: string, expectedNumber: number = 1) {
+    const transactionActions = await this.driver.findElements(
+      this.activityListAction,
+    );
+
+    const transactionActionText = await transactionActions[
+      expectedNumber - 1
+    ].getText();
+
+    assert.equal(
+      transactionActionText,
+      expectedAction,
+      `${transactionActionText} is displayed as transaction action instead of ${expectedAction} for transaction ${expectedNumber}`,
+    );
+
+    console.log(
+      `Action for transaction ${expectedNumber} is displayed as ${expectedAction}`,
     );
   }
 }
