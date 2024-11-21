@@ -65,7 +65,8 @@ describe('useApproveTokenSimulation', () => {
 
     expect(result.current).toMatchInlineSnapshot(`
       {
-        "formattedSpendingCap": "7",
+        "formattedSpendingCap": "#7",
+        "isUnlimitedSpendingCap": false,
         "pending": undefined,
         "spendingCap": "#7",
         "value": {
@@ -132,8 +133,9 @@ describe('useApproveTokenSimulation', () => {
     expect(result.current).toMatchInlineSnapshot(`
       {
         "formattedSpendingCap": "1,000,000,000,000,000",
+        "isUnlimitedSpendingCap": true,
         "pending": undefined,
-        "spendingCap": "UNLIMITED MESSAGE",
+        "spendingCap": "1000000000000000",
         "value": {
           "data": [
             {
@@ -197,7 +199,8 @@ describe('useApproveTokenSimulation', () => {
 
     expect(result.current).toMatchInlineSnapshot(`
       {
-        "formattedSpendingCap": "0.0000000000001",
+        "formattedSpendingCap": "<0.000001",
+        "isUnlimitedSpendingCap": false,
         "pending": undefined,
         "spendingCap": "0.0000000000001",
         "value": {
