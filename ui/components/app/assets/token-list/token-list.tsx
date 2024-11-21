@@ -198,6 +198,11 @@ export default function TokenList({ onTokenClick }: TokenListProps) {
     }
   }, [sortedFilteredTokens]);
 
+  // Displays nativeToken if provided
+  if (nativeToken) {
+    return nativeToken;
+  }
+
   return (
     <div>
       {sortedFilteredTokens.map((tokenData) => (
