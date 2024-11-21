@@ -7,6 +7,7 @@ import { sortAssets } from '../util/sort';
 import {
   getCurrencyRates,
   getCurrentNetwork,
+  getIsTestnet,
   getMarketData,
   getNetworkConfigurationIdByChainId,
   getNewTokensImported,
@@ -14,6 +15,7 @@ import {
   getSelectedAccount,
   getSelectedAccountNativeTokenCachedBalanceByChainId,
   getSelectedAccountTokensAcrossChains,
+  getShowFiatInTestnets,
   getTokenExchangeRates,
 } from '../../../../selectors';
 import { getConversionRate } from '../../../../ducks/metamask/metamask';
@@ -24,6 +26,8 @@ import { endTrace, TraceName } from '../../../../../shared/lib/trace';
 import { useTokenBalances } from '../../../../hooks/useTokenBalances';
 import { setTokenNetworkFilter } from '../../../../store/actions';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
+import { useMultichainSelector } from '../../../../hooks/useMultichainSelector';
+import { getMultichainShouldShowFiat } from '../../../../selectors/multichain';
 
 type TokenListProps = {
   onTokenClick: (chainId: string, address: string) => void;
@@ -212,6 +216,18 @@ export default function TokenList({
     console.log(t('loadingTokens'));
   }
 
+  // Check if testnet
+  const isTestnet = useSelector(getIsTestnet);
+  const shouldShowFiat = useMultichainSelector(
+    getMultichainShouldShowFiat,
+    selectedAccount,
+  );
+  const isMainnet = !isTestnet;
+  // Check if show conversion is enabled
+  const showFiatInTestnets = useSelector(getShowFiatInTestnets);
+  const showFiat =
+    shouldShowFiat && (isMainnet || (isTestnet && showFiatInTestnets));
+
   return (
     <div>
       {sortedFilteredTokens.map((tokenData) => (
@@ -220,7 +236,7 @@ export default function TokenList({
           chainId={tokenData.chainId}
           address={tokenData.address}
           symbol={tokenData.symbol}
-          tokenFiatAmount={tokenData.tokenFiatAmount}
+          tokenFiatAmount={showFiat ? tokenData.tokenFiatAmount : null}
           image={tokenData?.image}
           isNative={tokenData.isNative}
           string={tokenData.string}
