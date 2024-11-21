@@ -834,7 +834,6 @@ describe('Selectors', () => {
     it('returns only non-test chain IDs', () => {
       const chainIds = selectors.getChainIdsToPoll({
         metamask: {
-          preferences: { pausedChainIds: [] },
           networkConfigurationsByChainId,
           selectedNetworkClientId: 'mainnet',
         },
@@ -844,18 +843,6 @@ describe('Selectors', () => {
         CHAIN_IDS.MAINNET,
         CHAIN_IDS.LINEA_MAINNET,
       ]);
-    });
-
-    it('does not return paused chain IDs', () => {
-      const chainIds = selectors.getChainIdsToPoll({
-        metamask: {
-          preferences: { pausedChainIds: [CHAIN_IDS.LINEA_MAINNET] },
-          networkConfigurationsByChainId,
-          selectedNetworkClientId: 'mainnet',
-        },
-      });
-      expect(Object.values(chainIds)).toHaveLength(1);
-      expect(chainIds).toStrictEqual([CHAIN_IDS.MAINNET]);
     });
   });
 
@@ -894,25 +881,12 @@ describe('Selectors', () => {
     it('returns only non-test chain IDs', () => {
       const chainIds = selectors.getNetworkClientIdsToPoll({
         metamask: {
-          preferences: { pausedChainIds: [] },
           networkConfigurationsByChainId,
           selectedNetworkClientId: 'mainnet',
         },
       });
       expect(Object.values(chainIds)).toHaveLength(2);
       expect(chainIds).toStrictEqual(['mainnet', 'linea-mainnet']);
-    });
-
-    it('does not return paused chain IDs', () => {
-      const chainIds = selectors.getNetworkClientIdsToPoll({
-        metamask: {
-          preferences: { pausedChainIds: [CHAIN_IDS.LINEA_MAINNET] },
-          networkConfigurationsByChainId,
-          selectedNetworkClientId: 'mainnet',
-        },
-      });
-      expect(Object.values(chainIds)).toHaveLength(1);
-      expect(chainIds).toStrictEqual(['mainnet']);
     });
   });
 
