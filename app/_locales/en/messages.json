@@ -501,7 +501,7 @@
     "message": "No accounts available to connect"
   },
   "allNetworks": {
-    "message": "All Networks",
+    "message": "All networks",
     "description": "Speicifies to token network filter to filter by all Networks"
   },
   "allOfYour": {
@@ -846,6 +846,10 @@
   },
   "bridge": {
     "message": "Bridge"
+  },
+  "bridgeApproval": {
+    "message": "Approve $1 for bridge",
+    "description": "Used in the transaction display list to describe a transaction that is an approve call on a token that is to be bridged. $1 is the symbol of a token that has been approved."
   },
   "bridgeCalculatingAmount": {
     "message": "Calculating..."
@@ -1379,7 +1383,7 @@
     "message": "Current language"
   },
   "currentNetwork": {
-    "message": "Current Network",
+    "message": "Current network",
     "description": "Speicifies to token network filter to filter by current Network. Will render when network nickname is not available"
   },
   "currentRpcUrlDeprecated": {
@@ -1825,6 +1829,9 @@
   },
   "editGasTooLow": {
     "message": "Unknown processing time"
+  },
+  "editInPortfolio": {
+    "message": "Edit in Portfolio"
   },
   "editNetworkLink": {
     "message": "edit the original network"
@@ -5378,6 +5385,9 @@
   "spendingCapTooltipDesc": {
     "message": "This is the amount of tokens the spender will be able to access on your behalf."
   },
+  "spendingCaps": {
+    "message": "Spending caps"
+  },
   "srpInputNumberOfWords": {
     "message": "I have a $1-word phrase",
     "description": "This is the text for each option in the dropdown where a user selects how many words their secret recovery phrase has during import. The $1 is the number of words (either 12, 15, 18, 21, or 24)."
@@ -6012,6 +6022,10 @@
   "switchedNetworkToastMessage": {
     "message": "$1 is now active on $2",
     "description": "$1 represents the account name, $2 represents the network name"
+  },
+  "switchedNetworkToastMessageNoOrigin": {
+    "message": "You're now using $1",
+    "description": "$1 represents the network name"
   },
   "switchedTo": {
     "message": "You're now using"
