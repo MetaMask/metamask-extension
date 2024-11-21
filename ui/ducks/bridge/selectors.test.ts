@@ -532,6 +532,10 @@ describe('Bridge selectors', () => {
           fiat: new BigNumber('13.8444372'),
           amount: new BigNumber('13.98428'),
         },
+        gasFee: {
+          amount: new BigNumber('7.141025952e-8'),
+          fiat: new BigNumber('7.141025952e-8'),
+        },
         totalNetworkFee: {
           fiat: new BigNumber('0.00100007141025952'),
           amount: new BigNumber('0.00100007141025952'),
@@ -598,6 +602,10 @@ describe('Bridge selectors', () => {
         toTokenAmount: {
           fiat: new BigNumber('13.8444372'),
           amount: new BigNumber('13.98428'),
+        },
+        gasFee: {
+          amount: new BigNumber('7.141025952e-8'),
+          fiat: new BigNumber('7.141025952e-8'),
         },
         totalNetworkFee: {
           fiat: new BigNumber('0.00100007141025952'),
@@ -671,6 +679,10 @@ describe('Bridge selectors', () => {
           fiat: new BigNumber('13.8444372'),
           amount: new BigNumber('13.98428'),
         },
+        gasFee: {
+          amount: new BigNumber('7.141025952e-8'),
+          fiat: new BigNumber('7.141025952e-8'),
+        },
         totalNetworkFee: {
           fiat: new BigNumber('0.00100007141025952'),
           amount: new BigNumber('0.00100007141025952'),
@@ -721,9 +733,11 @@ describe('Bridge selectors', () => {
     });
 
     it('should sort quotes by adjustedReturn', () => {
-      const state = createBridgeMockStore({
-        bridgeStateOverrides: { quotes: mockBridgeQuotesNativeErc20 },
-      });
+      const state = createBridgeMockStore(
+        {},
+        {},
+        { quotes: mockBridgeQuotesNativeErc20 },
+      );
 
       const { activeQuote, recommendedQuote, sortedQuotes } = getBridgeQuotes(
         state as never,
@@ -759,9 +773,10 @@ describe('Bridge selectors', () => {
     });
 
     it('should sort quotes by ETA', () => {
-      const state = createBridgeMockStore({
-        bridgeSliceOverrides: { sortOrder: SortOrder.ETA_ASC },
-        bridgeStateOverrides: {
+      const state = createBridgeMockStore(
+        {},
+        { sortOrder: SortOrder.ETA_ASC },
+        {
           quotes: [
             ...mockBridgeQuotesNativeErc20,
             {
@@ -774,7 +789,7 @@ describe('Bridge selectors', () => {
             },
           ],
         },
-      });
+      );
 
       const { activeQuote, recommendedQuote, sortedQuotes } = getBridgeQuotes(
         state as never,
@@ -793,9 +808,10 @@ describe('Bridge selectors', () => {
     });
 
     it('should recommend 2nd cheapest quote if ETA exceeds 1 hour', () => {
-      const state = createBridgeMockStore({
-        bridgeSliceOverrides: { sortOrder: SortOrder.COST_ASC },
-        bridgeStateOverrides: {
+      const state = createBridgeMockStore(
+        {},
+        { sortOrder: SortOrder.COST_ASC },
+        {
           quotes: [
             mockBridgeQuotesNativeErc20[1],
             {
@@ -809,7 +825,7 @@ describe('Bridge selectors', () => {
             },
           ],
         },
-      });
+      );
 
       const { activeQuote, recommendedQuote, sortedQuotes } = getBridgeQuotes(
         state as never,
@@ -831,13 +847,14 @@ describe('Bridge selectors', () => {
     });
 
     it('should recommend 2nd fastest quote if adjustedReturn is less than 80% of cheapest quote', () => {
-      const state = createBridgeMockStore({
-        bridgeSliceOverrides: {
+      const state = createBridgeMockStore(
+        {},
+        {
           sortOrder: SortOrder.ETA_ASC,
           toTokenExchangeRate: 0.998781,
           toNativeExchangeRate: 0.354073,
         },
-        bridgeStateOverrides: {
+        {
           quotes: [
             ...mockBridgeQuotesNativeErc20,
             {
@@ -851,14 +868,14 @@ describe('Bridge selectors', () => {
             },
           ],
         },
-        metamaskStateOverrides: {
+        {
           currencyRates: {
             ETH: {
               conversionRate: 2524.25,
             },
           },
         },
-      });
+      );
 
       const { activeQuote, recommendedQuote, sortedQuotes } = getBridgeQuotes(
         state as never,

@@ -5,7 +5,8 @@ import {
   calcSentAmount,
   calcSwapRate,
   calcToAmount,
-  calcTotalNetworkFee,
+  calcTotalGasFee,
+  calcRelayerFee,
   formatEtaInMinutes,
 } from './quote';
 
@@ -155,7 +156,7 @@ describe('Bridge quote utils', () => {
       undefined,
     ],
   ])(
-    'calcTotalNetworkFee: fromToken is %s',
+    'calcTotalGasFee and calcRelayerFee: fromToken is %s',
     (
       _: string,
       srcAsset: { decimals: number; address: string },
@@ -165,18 +166,17 @@ describe('Bridge quote utils', () => {
       approvalGasLimit?: number,
     ) => {
       const feeData = { metabridge: { amount: 0 } };
-      const result = calcTotalNetworkFee(
-        {
-          trade: { value, gasLimit: 1092677 },
-          approval: approvalGasLimit
-            ? { gasLimit: approvalGasLimit }
-            : undefined,
-          quote: { srcAsset, srcTokenAmount, feeData },
-        } as never,
-        '0.00010456',
-        '0.0001',
-        2517.42,
-      );
+      const quote = {
+        trade: { value, gasLimit: 1092677 },
+        approval: approvalGasLimit ? { gasLimit: approvalGasLimit } : undefined,
+        quote: { srcAsset, srcTokenAmount, feeData },
+      } as never;
+      const gasFee = calcTotalGasFee(quote, '0.00010456', '0.0001', 2517.42);
+      const relayerFee = calcRelayerFee(quote, 2517.42);
+      const result = {
+        amount: gasFee.amount.plus(relayerFee.amount),
+        fiat: gasFee.fiat?.plus(relayerFee.fiat || '0') ?? null,
+      };
       expect(result.amount?.toString()).toStrictEqual(amount);
       expect(result.fiat?.toString()).toStrictEqual(fiat);
     },
@@ -225,7 +225,7 @@ describe('Bridge quote utils', () => {
       undefined,
     ],
   ])(
-    'calcTotalNetworkFee: fromToken is %s with l1GasFee',
+    'calcTotalGasFee and calcRelayerFee: fromToken is %s with l1GasFee',
     (
       _: string,
       srcAsset: { decimals: number; address: string },
@@ -235,19 +235,18 @@ describe('Bridge quote utils', () => {
       approvalGasLimit?: number,
     ) => {
       const feeData = { metabridge: { amount: 0 } };
-      const result = calcTotalNetworkFee(
-        {
-          trade: { value, gasLimit: 1092677 },
-          approval: approvalGasLimit
-            ? { gasLimit: approvalGasLimit }
-            : undefined,
-          quote: { srcAsset, srcTokenAmount, feeData },
-          l1GasFeesInHexWei: '0x25F63418AA4',
-        } as never,
-        '0.00010456',
-        '0.0001',
-        2517.42,
-      );
+      const quote = {
+        trade: { value, gasLimit: 1092677 },
+        approval: approvalGasLimit ? { gasLimit: approvalGasLimit } : undefined,
+        quote: { srcAsset, srcTokenAmount, feeData },
+        l1GasFeesInHexWei: '0x25F63418AA4',
+      } as never;
+      const gasFee = calcTotalGasFee(quote, '0.00010456', '0.0001', 2517.42);
+      const relayerFee = calcRelayerFee(quote, 2517.42);
+      const result = {
+        amount: gasFee.amount.plus(relayerFee.amount),
+        fiat: gasFee.fiat?.plus(relayerFee.fiat || '0') ?? null,
+      };
       expect(result.amount?.toString()).toStrictEqual(amount);
       expect(result.fiat?.toString()).toStrictEqual(fiat);
     },

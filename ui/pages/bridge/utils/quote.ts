@@ -77,7 +77,7 @@ export const calcSentAmount = (
   };
 };
 
-const calcRelayerFee = (
+export const calcRelayerFee = (
   bridgeQuote: QuoteResponse,
   nativeExchangeRate?: number,
 ) => {
@@ -101,7 +101,7 @@ const calcRelayerFee = (
   };
 };
 
-const calcTotalGasFee = (
+export const calcTotalGasFee = (
   bridgeQuote: QuoteResponse & L1GasFees,
   estimatedBaseFeeInDecGwei: string,
   maxPriorityFeePerGasInDecGwei: string,
@@ -137,25 +137,6 @@ const calcTotalGasFee = (
   return {
     amount: gasFeesInDecEth,
     fiat: gasFeesInUSD,
-  };
-};
-
-export const calcTotalNetworkFee = (
-  bridgeQuote: QuoteResponse & L1GasFees,
-  estimatedBaseFeeInDecGwei: string,
-  maxPriorityFeePerGasInDecGwei: string,
-  nativeExchangeRate?: number,
-) => {
-  const normalizedGasFee = calcTotalGasFee(
-    bridgeQuote,
-    estimatedBaseFeeInDecGwei,
-    maxPriorityFeePerGasInDecGwei,
-    nativeExchangeRate,
-  );
-  const normalizedRelayerFee = calcRelayerFee(bridgeQuote, nativeExchangeRate);
-  return {
-    amount: normalizedGasFee.amount.plus(normalizedRelayerFee.amount),
-    fiat: normalizedGasFee.fiat?.plus(normalizedRelayerFee.fiat || '0') ?? null,
   };
 };
 

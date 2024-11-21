@@ -42,10 +42,11 @@ import {
 import {
   calcAdjustedReturn,
   calcCost,
+  calcRelayerFee,
   calcSentAmount,
   calcSwapRate,
   calcToAmount,
-  calcTotalNetworkFee,
+  calcTotalGasFee,
   isNativeAddress,
 } from '../../pages/bridge/utils/quote';
 import { decGWEIToHexWEI } from '../../../shared/modules/conversion.utils';
@@ -218,12 +219,17 @@ const _getQuotesWithMetadata = createDeepEqualSelector(
   ): (QuoteResponse & QuoteMetadata)[] => {
     const newQuotes = quotes.map((quote: QuoteResponse) => {
       const toTokenAmount = calcToAmount(quote.quote, toTokenExchangeRate);
-      const totalNetworkFee = calcTotalNetworkFee(
+      const gasFee = calcTotalGasFee(
         quote,
         estimatedBaseFeeInDecGwei,
         maxPriorityFeePerGasInDecGwei,
         nativeExchangeRate,
       );
+      const relayerFee = calcRelayerFee(quote, nativeExchangeRate);
+      const totalNetworkFee = {
+        amount: gasFee.amount.plus(relayerFee.amount),
+        fiat: gasFee.fiat?.plus(relayerFee.fiat || '0') ?? null,
+      };
       const sentAmount = calcSentAmount(
         quote.quote,
         isNativeAddress(quote.quote.srcAsset.address)
@@ -241,6 +247,7 @@ const _getQuotesWithMetadata = createDeepEqualSelector(
         sentAmount,
         totalNetworkFee,
         adjustedReturn,
+        gasFee,
         swapRate: calcSwapRate(sentAmount.amount, toTokenAmount.amount),
         cost: calcCost(adjustedReturn.fiat, sentAmount.fiat),
       };
