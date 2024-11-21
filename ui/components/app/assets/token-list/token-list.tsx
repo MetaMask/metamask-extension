@@ -3,12 +3,6 @@ import { shallowEqual, useSelector, useDispatch } from 'react-redux';
 import { Hex } from '@metamask/utils';
 import TokenCell from '../token-cell';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
-import { Box } from '../../../component-library';
-import {
-  AlignItems,
-  Display,
-  JustifyContent,
-} from '../../../../helpers/constants/design-system';
 import { TEST_CHAINS } from '../../../../../shared/constants/network';
 import { sortAssets } from '../util/sort';
 import {
@@ -80,7 +74,10 @@ const useFilteredAccountTokens = (currentNetwork: { chainId: string }) => {
   return filteredAccountTokensChains;
 };
 
-export default function TokenList({ onTokenClick }: TokenListProps) {
+export default function TokenList({
+  onTokenClick,
+  nativeToken,
+}: TokenListProps) {
   const t = useI18nContext();
   const dispatch = useDispatch();
   const currentNetwork = useSelector(getCurrentNetwork);
@@ -204,18 +201,12 @@ export default function TokenList({ onTokenClick }: TokenListProps) {
     }
   }, [sortedFilteredTokens]);
 
-  const loading = false;
-  return loading ? (
-    <Box
-      display={Display.Flex}
-      alignItems={AlignItems.center}
-      justifyContent={JustifyContent.center}
-      padding={7}
-      data-testid="token-list-loading-message"
-    >
-      {t('loadingTokens')}
-    </Box>
-  ) : (
+  // Displays nativeToken if provided
+  if (nativeToken) {
+    return nativeToken;
+  }
+
+  return (
     <div>
       {sortedFilteredTokens.map((tokenData) => (
         <TokenCell

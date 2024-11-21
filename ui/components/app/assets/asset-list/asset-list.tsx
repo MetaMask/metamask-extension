@@ -13,8 +13,8 @@ import {
   getMultichainSelectedAccountCachedBalance,
   ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
   getMultichainIsBitcoin,
-  ///: END:ONLY_INCLUDE_IF
   getMultichainSelectedAccountCachedBalanceIsZero,
+  ///: END:ONLY_INCLUDE_IF
 } from '../../../../selectors/multichain';
 import { useCurrencyDisplay } from '../../../../hooks/useCurrencyDisplay';
 import { MetaMetricsContext } from '../../../../contexts/metametrics';
@@ -34,6 +34,7 @@ import {
 import { getIsNativeTokenBuyable } from '../../../../ducks/ramps';
 ///: END:ONLY_INCLUDE_IF
 import AssetListControlBar from './asset-list-control-bar';
+import NativeToken from './native-token';
 
 export type TokenWithBalance = {
   address: string;
@@ -83,11 +84,10 @@ const AssetList = ({ onClickAsset, showTokensLinks }: AssetListProps) => {
     setShowReceiveModal(true);
   };
 
+  ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
   const balanceIsZero = useSelector(
     getMultichainSelectedAccountCachedBalanceIsZero,
   );
-
-  ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
   const isBuyableChain = useSelector(getIsNativeTokenBuyable);
   const shouldShowBuy = isBuyableChain && balanceIsZero;
   const isBtc = useSelector(getMultichainIsBitcoin);
@@ -108,8 +108,11 @@ const AssetList = ({ onClickAsset, showTokensLinks }: AssetListProps) => {
             margin={4}
           />
         )}
-      <AssetListControlBar showTokensLinks={showTokensLinks} />
+      <AssetListControlBar showTokensLinks={shouldShowTokensLinks} />
       <TokenList
+        // nativeToken is still needed to avoid breaking flask build's support for bitcoin
+        // TODO: refactor this to no longer be needed for non-evm chains
+        nativeToken={!isEvm && <NativeToken onClickAsset={onClickAsset} />}
         onTokenClick={(chainId: string, tokenAddress: string) => {
           onClickAsset(chainId, tokenAddress);
           trackEvent({

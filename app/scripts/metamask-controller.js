@@ -3209,7 +3209,7 @@ export default class MetamaskController extends EventEmitter {
     const { completedOnboarding } = this.onboardingController.state;
 
     let networkVersion = this.deprecatedNetworkVersions[networkClientId];
-    if (!networkVersion && completedOnboarding) {
+    if (networkVersion === undefined && completedOnboarding) {
       const ethQuery = new EthQuery(networkClient.provider);
       networkVersion = await new Promise((resolve) => {
         ethQuery.sendAsync({ method: 'net_version' }, (error, result) => {
@@ -6747,7 +6747,6 @@ export default class MetamaskController extends EventEmitter {
       this.tokenListController.stopAllPolling();
       this.tokenBalancesController.stopAllPolling();
       this.appStateController.clearPollingTokens();
-      this.tokenBalancesController.stopAllPolling();
       this.accountTrackerController.stopAllPolling();
     } catch (error) {
       console.error(error);
