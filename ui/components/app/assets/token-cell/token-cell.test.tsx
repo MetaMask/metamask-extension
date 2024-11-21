@@ -44,7 +44,7 @@ describe('Token Cell', () => {
   const mockState = {
     metamask: {
       marketData: {
-        '0x89': {
+        '0x1': {
           '0xAnotherToken': { price: 0.015 },
         },
       },
@@ -90,7 +90,7 @@ describe('Token Cell', () => {
     string: '5.000',
     currentCurrency: 'usd',
     image: '',
-    chainId: '0x89',
+    chainId: '0x1',
     tokenFiatAmount: 5,
     onClick: jest.fn(),
   };
@@ -101,7 +101,7 @@ describe('Token Cell', () => {
     string: '5000000',
     currentCurrency: 'usd',
     image: '',
-    chainId: '0x89',
+    chainId: '0x1',
     tokenFiatAmount: 5000000,
     onClick: jest.fn(),
   };
