@@ -241,6 +241,8 @@ export function destroyStreams() {
 
   extensionPort.disconnect();
   extensionPort = null;
+
+  METAMASK_EXTENSION_CONNECT_SENT = false;
 }
 
 /**
