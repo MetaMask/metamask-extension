@@ -57,6 +57,7 @@ export const SiteCellConnectionListItem = ({
         flexDirection={FlexDirection.Column}
         width={BlockSize.FiveTwelfths}
         style={{ alignSelf: 'center', flexGrow: 1 }}
+        gap={1}
       >
         <Text variant={TextVariant.bodyMd} textAlign={TextAlign.Left}>
           {title}

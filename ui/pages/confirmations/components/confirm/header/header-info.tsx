@@ -1,6 +1,5 @@
-import { TransactionType } from '@metamask/transaction-controller';
 import React, { useContext } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventLocation,
@@ -28,8 +27,6 @@ import Tooltip from '../../../../../components/ui/tooltip/tooltip';
 import { MetaMetricsContext } from '../../../../../contexts/metametrics';
 import {
   AlignItems,
-  BackgroundColor,
-  BorderRadius,
   Display,
   FlexDirection,
   FontWeight,
@@ -40,31 +37,19 @@ import {
 } from '../../../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import { getUseBlockie } from '../../../../../selectors';
-import { setConfirmationAdvancedDetailsOpen } from '../../../../../store/actions';
+import { useConfirmContext } from '../../../context/confirm';
 import { useBalance } from '../../../hooks/useBalance';
 import useConfirmationRecipientInfo from '../../../hooks/useConfirmationRecipientInfo';
-import { selectConfirmationAdvancedDetailsOpen } from '../../../selectors/preferences';
 import { SignatureRequestType } from '../../../types/confirm';
-import {
-  isSignatureTransactionType,
-  REDESIGN_DEV_TRANSACTION_TYPES,
-} from '../../../utils/confirm';
-import { useConfirmContext } from '../../../context/confirm';
+import { isSignatureTransactionType } from '../../../utils/confirm';
+import { isCorrectDeveloperTransactionType } from '../../../../../../shared/lib/confirmation.utils';
+import { AdvancedDetailsButton } from './advanced-details-button';
 
 const HeaderInfo = () => {
-  const dispatch = useDispatch();
   const trackEvent = useContext(MetaMetricsContext);
 
   const useBlockie = useSelector(getUseBlockie);
   const [showAccountInfo, setShowAccountInfo] = React.useState(false);
-
-  const showAdvancedDetails = useSelector(
-    selectConfirmationAdvancedDetailsOpen,
-  );
-
-  const setShowAdvancedDetails = (value: boolean): void => {
-    dispatch(setConfirmationAdvancedDetailsOpen(value));
-  };
 
   const { currentConfirmation } = useConfirmContext();
 
@@ -101,8 +86,8 @@ const HeaderInfo = () => {
     trackEvent(event);
   }
 
-  const isShowAdvancedDetailsToggle = REDESIGN_DEV_TRANSACTION_TYPES.includes(
-    currentConfirmation?.type as TransactionType,
+  const isShowAdvancedDetailsToggle = isCorrectDeveloperTransactionType(
+    currentConfirmation?.type,
   );
 
   return (
@@ -127,28 +112,7 @@ const HeaderInfo = () => {
             data-testid="header-info__account-details-button"
           />
         </Tooltip>
-        {isShowAdvancedDetailsToggle && (
-          <Box
-            backgroundColor={
-              showAdvancedDetails
-                ? BackgroundColor.infoMuted
-                : BackgroundColor.transparent
-            }
-            borderRadius={BorderRadius.MD}
-            marginLeft={4}
-          >
-            <ButtonIcon
-              ariaLabel={'Advanced tx details'}
-              color={IconColor.iconDefault}
-              iconName={IconName.Customize}
-              data-testid="header-advanced-details-button"
-              size={ButtonIconSize.Md}
-              onClick={() => {
-                setShowAdvancedDetails(!showAdvancedDetails);
-              }}
-            />
-          </Box>
-        )}
+        {isShowAdvancedDetailsToggle && <AdvancedDetailsButton />}
       </Box>
       <Modal
         isOpen={showAccountInfo}

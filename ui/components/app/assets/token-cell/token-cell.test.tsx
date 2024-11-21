@@ -5,7 +5,12 @@ import { fireEvent } from '@testing-library/react';
 import { useSelector } from 'react-redux';
 import { renderWithProvider } from '../../../../../test/lib/render-helpers';
 import { useTokenFiatAmount } from '../../../../hooks/useTokenFiatAmount';
-import { getTokenList } from '../../../../selectors';
+import {
+  getTokenList,
+  getPreferences,
+  getCurrentCurrency,
+  getCurrencyRates,
+} from '../../../../selectors';
 import {
   getMultichainCurrentChainId,
   getMultichainIsEvm,
@@ -85,6 +90,8 @@ describe('Token Cell', () => {
     string: '5.000',
     currentCurrency: 'usd',
     image: '',
+    chainId: '0x1',
+    tokenFiatAmount: 5,
     onClick: jest.fn(),
   };
 
@@ -94,10 +101,15 @@ describe('Token Cell', () => {
     string: '5000000',
     currentCurrency: 'usd',
     image: '',
+    chainId: '0x1',
+    tokenFiatAmount: 5000000,
     onClick: jest.fn(),
   };
   const useSelectorMock = useSelector;
   (useSelectorMock as jest.Mock).mockImplementation((selector) => {
+    if (selector === getPreferences) {
+      return { privacyMode: false };
+    }
     if (selector === getTokenList) {
       return MOCK_GET_TOKEN_LIST;
     }
@@ -109,6 +121,12 @@ describe('Token Cell', () => {
     }
     if (selector === getIntlLocale) {
       return 'en-US';
+    }
+    if (selector === getCurrentCurrency) {
+      return 'usd';
+    }
+    if (selector === getCurrencyRates) {
+      return { POL: '' };
     }
     return undefined;
   });

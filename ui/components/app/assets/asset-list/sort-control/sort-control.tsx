@@ -1,13 +1,11 @@
 import React, { ReactNode, useContext } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import classnames from 'classnames';
-import { Box, Text } from '../../../../component-library';
+import { Box } from '../../../../component-library';
 import { SortOrder, SortingCallbacksT } from '../../util/sort';
 import {
   BackgroundColor,
   BorderRadius,
-  TextColor,
-  TextVariant,
 } from '../../../../../helpers/constants/design-system';
 import { setTokenSortConfig } from '../../../../../store/actions';
 import { MetaMetricsContext } from '../../../../../contexts/metametrics';
@@ -24,7 +22,7 @@ import { getCurrencySymbol } from '../../../../../helpers/utils/common.util';
 // inspired from ui/components/multichain/network-list-item
 // should probably be broken out into component library
 type SelectableListItemProps = {
-  isSelected: boolean;
+  isSelected?: boolean;
   onClick?: React.MouseEventHandler<HTMLSpanElement>;
   testId?: string;
   children: ReactNode;
@@ -41,13 +39,11 @@ export const SelectableListItem = ({
       <Box
         data-testid={`${testId}__button`}
         className={classnames('selectable-list-item', {
-          'selectable-list-item--selected': isSelected,
+          'selectable-list-item--selected': Boolean(isSelected),
         })}
         onClick={onClick}
       >
-        <Text variant={TextVariant.bodyMdMedium} color={TextColor.textDefault}>
-          {children}
-        </Text>
+        {children}
       </Box>
       {isSelected && (
         <Box

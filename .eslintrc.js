@@ -307,8 +307,9 @@ module.exports = {
     {
       files: [
         '**/__snapshots__/*.snap',
-        'app/scripts/controllers/app-state.test.js',
+        'app/scripts/controllers/app-state-controller.test.ts',
         'app/scripts/controllers/mmi-controller.test.ts',
+        'app/scripts/controllers/alert-controller.test.ts',
         'app/scripts/metamask-controller.actions.test.js',
         'app/scripts/detect-multiple-instances.test.js',
         'app/scripts/controllers/bridge.test.ts',
@@ -316,7 +317,8 @@ module.exports = {
         'app/scripts/controllers/swaps/**/*.test.ts',
         'app/scripts/controllers/metametrics.test.js',
         'app/scripts/controllers/permissions/**/*.test.js',
-        'app/scripts/controllers/preferences.test.js',
+        'app/scripts/controllers/preferences-controller.test.ts',
+        'app/scripts/controllers/account-tracker-controller.test.ts',
         'app/scripts/lib/**/*.test.js',
         'app/scripts/metamask-controller.test.js',
         'app/scripts/migrations/*.test.js',
@@ -468,6 +470,31 @@ module.exports = {
       ],
       rules: {
         '@metamask/design-tokens/color-no-hex': 'off',
+      },
+    },
+    {
+      files: ['ui/pages/confirmations/**/*.{js,ts,tsx}'],
+      rules: {
+        'no-restricted-syntax': [
+          'error',
+          {
+            selector: `ImportSpecifier[imported.name=/${[
+              'getConversionRate',
+              'getCurrentChainId',
+              'getNativeCurrency',
+              'getNetworkIdentifier',
+              'getNftContracts',
+              'getNfts',
+              'getProviderConfig',
+              'getRpcPrefsForCurrentProvider',
+              'getUSDConversionRate',
+              'isCurrentProviderCustom',
+            ]
+              .map((method) => `(${method})`)
+              .join('|')}/]`,
+            message: 'Avoid using global network selectors in confirmations',
+          },
+        ],
       },
     },
   ],

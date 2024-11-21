@@ -45,7 +45,9 @@ import {
 } from './lib/accounts/BalancesController';
 import { BalancesTracker as MultichainBalancesTracker } from './lib/accounts/BalancesTracker';
 import { deferredPromise } from './lib/util';
-import MetaMaskController from './metamask-controller';
+import MetaMaskController, {
+  ONE_KEY_VIA_TREZOR_MINOR_VERSION,
+} from './metamask-controller';
 
 const { Ganache } = require('../../test/e2e/seeder/ganache');
 
@@ -113,22 +115,6 @@ const rpcMethodMiddlewareMock = {
   },
 };
 jest.mock('./lib/rpc-method-middleware', () => rpcMethodMiddlewareMock);
-
-jest.mock(
-  './controllers/preferences-controller',
-  () =>
-    function (...args) {
-      const PreferencesController = jest.requireActual(
-        './controllers/preferences-controller',
-      ).default;
-      const controller = new PreferencesController(...args);
-      // jest.spyOn gets hoisted to the top of this function before controller is initialized.
-      // This forces us to replace the function directly with a jest stub instead.
-      // eslint-disable-next-line jest/prefer-spy-on
-      controller.store.subscribe = jest.fn();
-      return controller;
-    },
-);
 
 const KNOWN_PUBLIC_KEY =
   '02065bc80d3d12b3688e4ad5ab1e9eda6adf24aec2518bfc21b87c99d4c5077ab0';
@@ -357,10 +343,10 @@ describe('MetaMaskController', () => {
     let metamaskController;
 
     async function simulatePreferencesChange(preferences) {
-      metamaskController.preferencesController.store.subscribe.mock.lastCall[0](
+      metamaskController.controllerMessenger.publish(
+        'PreferencesController:stateChange',
         preferences,
       );
-
       await flushPromises();
     }
 
@@ -604,8 +590,7 @@ describe('MetaMaskController', () => {
         await localMetaMaskController.submitPassword(password);
 
         const identities = Object.keys(
-          localMetaMaskController.preferencesController.store.getState()
-            .identities,
+          localMetaMaskController.preferencesController.state.identities,
         );
         const addresses =
           await localMetaMaskController.keyringController.getAccounts();
@@ -911,6 +896,73 @@ describe('MetaMaskController', () => {
         );
       });
 
+      describe('getHardwareDeviceName', () => {
+        const hdPath = "m/44'/60'/0'/0/0";
+
+        it('should return the correct device name for Ledger', async () => {
+          const deviceName = 'ledger';
+
+          const result = await metamaskController.getDeviceNameForMetric(
+            deviceName,
+            hdPath,
+          );
+          expect(result).toBe('ledger');
+        });
+
+        it('should return the correct device name for Lattice', async () => {
+          const deviceName = 'lattice';
+
+          const result = await metamaskController.getDeviceNameForMetric(
+            deviceName,
+            hdPath,
+          );
+          expect(result).toBe('lattice');
+        });
+
+        it('should return the correct device name for Trezor', async () => {
+          const deviceName = 'trezor';
+          jest
+            .spyOn(metamaskController, 'getKeyringForDevice')
+            .mockResolvedValue({
+              bridge: {
+                minorVersion: 1,
+                model: 'T',
+              },
+            });
+          const result = await metamaskController.getDeviceNameForMetric(
+            deviceName,
+            hdPath,
+          );
+          expect(result).toBe('trezor');
+        });
+
+        it('should return undefined for unknown device name', async () => {
+          const deviceName = 'unknown';
+          const result = await metamaskController.getDeviceNameForMetric(
+            deviceName,
+            hdPath,
+          );
+          expect(result).toBe(deviceName);
+        });
+
+        it('should handle special case for OneKeyDevice via Trezor', async () => {
+          const deviceName = 'trezor';
+          jest
+            .spyOn(metamaskController, 'getKeyringForDevice')
+            .mockResolvedValue({
+              bridge: {
+                model: 'T',
+                minorVersion: ONE_KEY_VIA_TREZOR_MINOR_VERSION,
+              },
+            });
+          const result = await metamaskController.getDeviceNameForMetric(
+            deviceName,
+            hdPath,
+          );
+          expect(result).toBe('OneKey via Trezor');
+        });
+      });
+
       describe('forgetDevice', () => {
         it('should throw if it receives an unknown device name', async () => {
           const result = metamaskController.forgetDevice(
@@ -937,8 +989,7 @@ describe('MetaMaskController', () => {
 
           expect(
             Object.keys(
-              metamaskController.preferencesController.store.getState()
-                .identities,
+              metamaskController.preferencesController.state.identities,
             ),
           ).not.toContain(hardwareKeyringAccount);
           expect(
@@ -2247,115 +2298,6 @@ describe('MetaMaskController', () => {
         expect(
           TransactionController.prototype.updateIncomingTransactions,
         ).toHaveBeenCalledTimes(1);
-      });
-    });
-
-    describe('token list controller', () => {
-      it('stops polling if petnames, simulations, and token detection disabled', async () => {
-        expect(TokenListController.prototype.stop).not.toHaveBeenCalled();
-
-        expect(
-          TokenListController.prototype.clearingTokenListData,
-        ).not.toHaveBeenCalled();
-
-        await simulatePreferencesChange({
-          useTransactionSimulations: false,
-          useTokenDetection: false,
-          preferences: {
-            petnamesEnabled: false,
-          },
-        });
-
-        expect(TokenListController.prototype.stop).toHaveBeenCalledTimes(1);
-
-        expect(
-          TokenListController.prototype.clearingTokenListData,
-        ).toHaveBeenCalledTimes(1);
-      });
-
-      it.each([
-        [
-          'petnames',
-          {
-            preferences: { petnamesEnabled: false },
-            useTokenDetection: true,
-            useTransactionSimulations: true,
-          },
-        ],
-        [
-          'simulations',
-          {
-            preferences: { petnamesEnabled: true },
-            useTokenDetection: true,
-            useTransactionSimulations: false,
-          },
-        ],
-        [
-          'token detection',
-          {
-            preferences: { petnamesEnabled: true },
-            useTokenDetection: false,
-            useTransactionSimulations: true,
-          },
-        ],
-      ])(
-        'does not stop polling if only %s disabled',
-        async (_, preferences) => {
-          expect(TokenListController.prototype.stop).not.toHaveBeenCalled();
-
-          expect(
-            TokenListController.prototype.clearingTokenListData,
-          ).not.toHaveBeenCalled();
-
-          await simulatePreferencesChange(preferences);
-
-          expect(TokenListController.prototype.stop).not.toHaveBeenCalled();
-
-          expect(
-            TokenListController.prototype.clearingTokenListData,
-          ).not.toHaveBeenCalled();
-        },
-      );
-
-      it.each([
-        [
-          'petnames',
-          {
-            preferences: { petnamesEnabled: true },
-            useTokenDetection: false,
-            useTransactionSimulations: false,
-          },
-        ],
-        [
-          'simulations',
-          {
-            preferences: { petnamesEnabled: false },
-            useTokenDetection: false,
-            useTransactionSimulations: true,
-          },
-        ],
-        [
-          'token detection',
-          {
-            preferences: { petnamesEnabled: false },
-            useTokenDetection: true,
-            useTransactionSimulations: false,
-          },
-        ],
-      ])('starts polling if only %s enabled', async (_, preferences) => {
-        expect(TokenListController.prototype.start).not.toHaveBeenCalled();
-
-        await simulatePreferencesChange({
-          useTransactionSimulations: false,
-          useTokenDetection: false,
-          preferences: {
-            petnamesEnabled: false,
-          },
-        });
-
-        await simulatePreferencesChange(preferences);
-
-        expect(TokenListController.prototype.start).toHaveBeenCalledTimes(1);
       });
     });
 

@@ -1,4 +1,5 @@
 import { type Locator, type Page } from '@playwright/test';
+import { Tenderly } from '../../swap/tenderly-network';
 
 export class NetworkController {
   readonly page: Page;
@@ -7,17 +8,11 @@ export class NetworkController {
 
   readonly addNetworkButton: Locator;
 
-  readonly addNetworkManuallyButton: Locator;
-
   readonly approveBtn: Locator;
 
   readonly saveBtn: Locator;
 
-  readonly switchToNetworkBtn: Locator;
-
   readonly gotItBtn: Locator;
-
-  readonly networkSearch: Locator;
 
   readonly networkName: Locator;
 
@@ -27,43 +22,72 @@ export class NetworkController {
 
   readonly networkTicker: Locator;
 
+  readonly dismissBtn: Locator;
+
+  readonly networkList: Locator;
+
+  readonly networkListEdit: Locator;
+
+  readonly rpcName: Locator;
+
+  readonly addRpcDropDown: Locator;
+
+  readonly addRpcURLBtn: Locator;
+
+  readonly addURLBtn: Locator;
+
   constructor(page: Page) {
     this.page = page;
     this.networkDisplay = this.page.getByTestId('network-display');
-    this.addNetworkButton = this.page.getByText('Add network');
-    this.addNetworkManuallyButton = this.page.getByTestId(
-      'add-network-manually',
+    this.networkList = this.page.getByTestId(
+      'network-list-item-options-button-0x1',
     );
+    this.networkListEdit = this.page.getByTestId(
+      'network-list-item-options-edit',
+    );
+    this.addNetworkButton = this.page.getByText('Add a custom network');
+    this.addRpcDropDown = this.page.getByTestId('test-add-rpc-drop-down');
+    this.addRpcURLBtn = this.page.getByRole('button', { name: 'Add RPC URL' });
+    this.addURLBtn = this.page.getByRole('button', { name: 'Add URL' });
     this.saveBtn = this.page.getByRole('button', { name: 'Save' });
     this.approveBtn = this.page.getByTestId('confirmation-submit-button');
-    this.switchToNetworkBtn = this.page.locator('button', {
-      hasText: 'Switch to',
-    });
     this.gotItBtn = this.page.getByRole('button', { name: 'Got it' });
-    this.networkSearch = this.page.locator('input[type="search"]');
     this.networkName = this.page.getByTestId('network-form-network-name');
-    this.networkRpc = this.page.getByTestId('network-form-rpc-url');
+    this.rpcName = this.page.getByTestId('rpc-name-input-test');
+    this.networkRpc = this.page.getByTestId('rpc-url-input-test');
     this.networkChainId = this.page.getByTestId('network-form-chain-id');
     this.networkTicker = this.page.getByTestId('network-form-ticker-input');
+    this.dismissBtn = this.page.getByRole('button', { name: 'Dismiss' });
   }
 
   async addCustomNetwork(options: {
     name: string;
+    rpcName: string;
     url: string;
     chainID: string;
     symbol: string;
   }) {
+    let rpcName = options.name;
     await this.networkDisplay.click();
-    await this.addNetworkButton.click();
-    await this.addNetworkManuallyButton.click();
-
-    await this.networkName.waitFor();
-    await this.networkName.fill(options.name);
+    if (options.name === Tenderly.Mainnet.name) {
+      rpcName = options.rpcName;
+      await this.networkList.click();
+      await this.networkListEdit.click();
+    } else {
+      await this.addNetworkButton.click();
+      await this.networkName.fill(rpcName);
+    }
+    await this.addRpcDropDown.click();
+    await this.addRpcURLBtn.click();
     await this.networkRpc.fill(options.url);
-    await this.networkChainId.fill(options.chainID);
+    await this.rpcName.fill(rpcName);
+    await this.addURLBtn.click();
+    if (options.name !== Tenderly.Mainnet.name) {
+      await this.networkChainId.fill(options.chainID);
+    }
     await this.networkTicker.fill(options.symbol);
-    await this.saveBtn.click();
-    await this.switchToNetworkBtn.click();
+    await this.saveBtn.waitFor({ state: 'visible' });
+    await this.saveBtn.click({ timeout: 60000 });
   }
 
   async addPopularNetwork(options: { networkName: string }) {
@@ -72,13 +96,25 @@ export class NetworkController {
     const addBtn = this.page.getByTestId(`add-network-${options.networkName}`);
     await addBtn.click();
     await this.approveBtn.click();
-    await this.switchToNetworkBtn.click();
     await this.gotItBtn.click();
   }
 
-  async selectNetwork(options: { networkName: string }) {
-    await this.networkDisplay.click();
-    await this.networkSearch.fill(options.networkName);
-    await this.page.getByText(options.networkName).click();
+  async selectNetwork(options: {
+    name: string;
+    rpcName: string;
+    url: string;
+    chainID: string;
+    symbol: string;
+  }) {
+    const currentNetwork = await this.networkDisplay.textContent();
+    if (currentNetwork !== options.name) {
+      await this.networkDisplay.click();
+      if (options.name === Tenderly.Mainnet.name) {
+        await this.page.getByText(options.rpcName).click();
+        await this.page.getByText(options.rpcName).click();
+      } else {
+        await this.page.getByTestId(options.name).click();
+      }
+    }
   }
 }

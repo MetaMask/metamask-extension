@@ -260,6 +260,9 @@ export const SendPage = () => {
         {
           event: MetaMetricsEventName.sendSwapQuoteError,
           category: MetaMetricsEventCategory.Send,
+          properties: {
+            error: swapQuotesError,
+          },
           sensitiveProperties: {
             ...sendAnalytics,
           },
@@ -376,6 +379,7 @@ export const SendPage = () => {
         {isSendFormShown && (
           <AssetPickerAmount
             error={error}
+            action="send"
             header={t('sendSelectSendAsset')}
             asset={transactionAsset}
             amount={amount}

@@ -1,18 +1,14 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 
-import { Hex } from '@metamask/utils';
 import { Box } from '../../../../../components/component-library';
 import { Toast } from '../../../../../components/multichain';
 import {
   getLastInteractedConfirmationInfo,
   setLastInteractedConfirmationInfo,
 } from '../../../../../store/actions';
-import {
-  getCurrentChainId,
-  getNetworkConfigurationsByChainId,
-} from '../../../../../selectors';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
+import { selectNetworkConfigurationByChainId } from '../../../../../selectors';
 
 const CHAIN_CHANGE_THRESHOLD_MILLISECONDS = 60 * 1000; // 1 Minute
 const TOAST_TIMEOUT_MILLISECONDS = 5 * 1000; // 5 Seconds
@@ -22,12 +18,13 @@ const NetworkChangeToastLegacy = ({
 }: {
   confirmation: { id: string; chainId: string };
 }) => {
-  const chainId = useSelector(getCurrentChainId);
-  const newChainId = confirmation?.chainId ?? chainId;
+  const newChainId = confirmation?.chainId;
   const [toastVisible, setToastVisible] = useState(false);
   const t = useI18nContext();
-  const networkConfigurations = useSelector(getNetworkConfigurationsByChainId);
-  const network = networkConfigurations[newChainId as Hex];
+
+  const network = useSelector((state) =>
+    selectNetworkConfigurationByChainId(state, newChainId),
+  );
 
   const hideToast = useCallback(() => {
     setToastVisible(false);
@@ -35,9 +32,11 @@ const NetworkChangeToastLegacy = ({
 
   useEffect(() => {
     let isMounted = true;
+
     if (!confirmation) {
       return undefined;
     }
+
     (async () => {
       const lastInteractedConfirmationInfo =
         await getLastInteractedConfirmationInfo();
@@ -71,7 +70,7 @@ const NetworkChangeToastLegacy = ({
     return () => {
       isMounted = false;
     };
-  }, [confirmation?.id, chainId]);
+  }, [confirmation?.id]);
 
   if (!toastVisible) {
     return null;

@@ -6,8 +6,10 @@ import {
 } from '../../../shared/constants/network';
 import { ALLOWED_BRIDGE_CHAIN_IDS } from '../../../shared/constants/bridge';
 import { mockNetworkState } from '../../../test/stub/networks';
+import mockErc20Erc20Quotes from '../../../test/data/bridge/mock-quotes-erc20-erc20.json';
 import {
   getAllBridgeableNetworks,
+  getBridgeQuotes,
   getFromAmount,
   getFromChain,
   getFromChains,
@@ -30,7 +32,7 @@ describe('Bridge selectors', () => {
         { srcNetworkAllowlist: [CHAIN_IDS.ARBITRUM] },
         { toChainId: '0xe708' },
         {},
-        { ...mockNetworkState(FEATURED_RPCS[0]) },
+        { ...mockNetworkState(FEATURED_RPCS[1]) },
       );
 
       const result = getFromChain(state as never);
@@ -89,7 +91,7 @@ describe('Bridge selectors', () => {
       );
       const result = getAllBridgeableNetworks(state as never);
 
-      expect(result).toHaveLength(7);
+      expect(result).toHaveLength(8);
       expect(result[0]).toStrictEqual(
         expect.objectContaining({ chainId: FEATURED_RPCS[0].chainId }),
       );
@@ -190,21 +192,19 @@ describe('Bridge selectors', () => {
         },
         {},
         {},
-        mockNetworkState(...FEATURED_RPCS, {
-          chainId: CHAIN_IDS.LINEA_MAINNET,
-        }),
+        mockNetworkState(...FEATURED_RPCS),
       );
       const result = getToChains(state as never);
 
       expect(result).toHaveLength(3);
       expect(result[0]).toStrictEqual(
-        expect.objectContaining({ chainId: CHAIN_IDS.OPTIMISM }),
+        expect.objectContaining({ chainId: CHAIN_IDS.ARBITRUM }),
       );
       expect(result[1]).toStrictEqual(
-        expect.objectContaining({ chainId: CHAIN_IDS.POLYGON }),
+        expect.objectContaining({ chainId: CHAIN_IDS.OPTIMISM }),
       );
       expect(result[2]).toStrictEqual(
-        expect.objectContaining({ chainId: CHAIN_IDS.LINEA_MAINNET }),
+        expect.objectContaining({ chainId: CHAIN_IDS.POLYGON }),
       );
     });
 
@@ -297,7 +297,9 @@ describe('Bridge selectors', () => {
         {
           ...mockNetworkState(
             ...Object.values(BUILT_IN_NETWORKS),
-            ...FEATURED_RPCS,
+            ...FEATURED_RPCS.filter(
+              (network) => network.chainId !== CHAIN_IDS.LINEA_MAINNET, // Linea mainnet is both a built in network, as well as featured RPC
+            ),
           ),
           useExternalServices: true,
         },
@@ -395,7 +397,7 @@ describe('Bridge selectors', () => {
       const state = createBridgeMockStore();
       const result = getToAmount(state as never);
 
-      expect(result).toStrictEqual('0');
+      expect(result).toStrictEqual(undefined);
     });
   });
 
@@ -489,6 +491,83 @@ describe('Bridge selectors', () => {
       const result = getFromTopAssets(state as never);
 
       expect(result).toStrictEqual([{ address: '0x00', symbol: 'TEST' }]);
+    });
+  });
+
+  describe('getBridgeQuotes', () => {
+    it('returns quote list and fetch data, insufficientBal=false,quotesRefreshCount=5', () => {
+      const state = createBridgeMockStore(
+        { extensionConfig: { maxRefreshCount: 5 } },
+        { toChainId: '0x1' },
+        {
+          quoteRequest: { insufficientBal: false },
+          quotes: mockErc20Erc20Quotes,
+          quotesFetchStatus: 1,
+          quotesRefreshCount: 5,
+          quotesLastFetched: 100,
+          srcTokens: { '0x00': { address: '0x00', symbol: 'TEST' } },
+          srcTopAssets: [{ address: '0x00', symbol: 'TEST' }],
+        },
+      );
+      const result = getBridgeQuotes(state as never);
+
+      expect(result).toStrictEqual({
+        quotes: mockErc20Erc20Quotes,
+        quotesLastFetchedMs: 100,
+        isLoading: false,
+        quotesRefreshCount: 5,
+        isQuoteGoingToRefresh: false,
+      });
+    });
+
+    it('returns quote list and fetch data, insufficientBal=false,quotesRefreshCount=2', () => {
+      const state = createBridgeMockStore(
+        { extensionConfig: { maxRefreshCount: 5 } },
+        { toChainId: '0x1' },
+        {
+          quoteRequest: { insufficientBal: false },
+          quotes: mockErc20Erc20Quotes,
+          quotesFetchStatus: 1,
+          quotesRefreshCount: 2,
+          quotesLastFetched: 100,
+          srcTokens: { '0x00': { address: '0x00', symbol: 'TEST' } },
+          srcTopAssets: [{ address: '0x00', symbol: 'TEST' }],
+        },
+      );
+      const result = getBridgeQuotes(state as never);
+
+      expect(result).toStrictEqual({
+        quotes: mockErc20Erc20Quotes,
+        quotesLastFetchedMs: 100,
+        isLoading: false,
+        quotesRefreshCount: 2,
+        isQuoteGoingToRefresh: true,
+      });
+    });
+
+    it('returns quote list and fetch data, insufficientBal=true', () => {
+      const state = createBridgeMockStore(
+        { extensionConfig: { maxRefreshCount: 5 } },
+        { toChainId: '0x1' },
+        {
+          quoteRequest: { insufficientBal: true },
+          quotes: mockErc20Erc20Quotes,
+          quotesFetchStatus: 1,
+          quotesRefreshCount: 1,
+          quotesLastFetched: 100,
+          srcTokens: { '0x00': { address: '0x00', symbol: 'TEST' } },
+          srcTopAssets: [{ address: '0x00', symbol: 'TEST' }],
+        },
+      );
+      const result = getBridgeQuotes(state as never);
+
+      expect(result).toStrictEqual({
+        quotes: mockErc20Erc20Quotes,
+        quotesLastFetchedMs: 100,
+        isLoading: false,
+        quotesRefreshCount: 1,
+        isQuoteGoingToRefresh: false,
+      });
     });
   });
 });

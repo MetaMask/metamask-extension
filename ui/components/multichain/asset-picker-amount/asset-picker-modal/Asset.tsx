@@ -1,7 +1,7 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
 import { BigNumber } from 'bignumber.js';
-import { getTokenList } from '../../../../selectors';
+import { getTokenList, getCurrentChainId } from '../../../../selectors';
 import { useTokenFiatAmount } from '../../../../hooks/useTokenFiatAmount';
 import { TokenListItem } from '../../token-list-item';
 import { isEqualCaseInsensitive } from '../../../../../shared/modules/string-utils';
@@ -22,6 +22,7 @@ export default function Asset({
 }: AssetProps) {
   const locale = useSelector(getIntlLocale);
 
+  const chainId = useSelector(getCurrentChainId);
   const tokenList = useSelector(getTokenList);
   const tokenData = address
     ? Object.values(tokenList).find(
@@ -40,18 +41,23 @@ export default function Asset({
     {},
     true,
   );
+  const formattedAmount = decimalTokenAmount
+    ? `${formatAmount(
+        locale,
+        new BigNumber(decimalTokenAmount || '0', 10),
+      )} ${symbol}`
+    : undefined;
 
   return (
     <TokenListItem
+      chainId={chainId}
       tokenSymbol={symbol}
       tokenImage={tokenImage}
-      primary={formatAmount(
-        locale,
-        new BigNumber(decimalTokenAmount || '0', 10),
-      )}
-      secondary={formattedFiat}
+      secondary={formattedAmount}
+      primary={formattedFiat}
       title={title}
       tooltipText={tooltipText}
+      isPrimaryTokenSymbolHidden
     />
   );
 }

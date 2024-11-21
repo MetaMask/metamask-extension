@@ -20,6 +20,7 @@ type PRInfo = {
     ref: string;
   };
   body: string;
+  labels: { name: string }[];
 };
 
 /**
@@ -104,12 +105,18 @@ async function gitDiff(): Promise<string> {
   return diffResult;
 }
 
+function writePrBodyToFile(prBody: string) {
+  const prBodyPath = path.resolve(CHANGED_FILES_DIR, 'pr-body.txt');
+  fs.writeFileSync(prBodyPath, prBody.trim());
+  console.log(`PR body saved to ${prBodyPath}`);
+}
+
 /**
- * Stores the output of git diff to a file.
+ * Main run function, stores the output of git diff and the body of the matching PR to a file.
  *
- * @returns Returns a promise that resolves when the git diff output is successfully stored.
+ * @returns Returns a promise that resolves when the git diff output and PR body is successfully stored.
  */
-async function storeGitDiffOutput() {
+async function storeGitDiffOutputAndPrBody() {
   try {
     // Create the directory
     // This is done first because our CirleCI config requires that this directory is present,
@@ -117,7 +124,7 @@ async function storeGitDiffOutput() {
     fs.mkdirSync(CHANGED_FILES_DIR, { recursive: true });
 
     console.log(
-      `Determining whether this run is for a PR targeting ${MAIN_BRANCH}`,
+      `Determining whether to run git diff...`,
     );
     if (!PR_NUMBER) {
       console.log('Not a PR, skipping git diff');
@@ -132,6 +139,10 @@ async function storeGitDiffOutput() {
       return;
     } else if (baseRef !== MAIN_BRANCH) {
       console.log(`This is for a PR targeting '${baseRef}', skipping git diff`);
+      writePrBodyToFile(prInfo.body);
+      return;
+    } else if (prInfo.labels.some(label => label.name === 'skip-e2e-quality-gate')) {
+      console.log('PR has the skip-e2e-quality-gate label, skipping git diff');
       return;
     }
 
@@ -142,8 +153,10 @@ async function storeGitDiffOutput() {
     // Store the output of git diff
     const outputPath = path.resolve(CHANGED_FILES_DIR, 'changed-files.txt');
     fs.writeFileSync(outputPath, diffOutput.trim());
-
     console.log(`Git diff results saved to ${outputPath}`);
+
+    writePrBodyToFile(prInfo.body);
+
     process.exit(0);
   } catch (error: any) {
     console.error('An error occurred:', error.message);
@@ -151,4 +164,4 @@ async function storeGitDiffOutput() {
   }
 }
 
-storeGitDiffOutput();
+storeGitDiffOutputAndPrBody();

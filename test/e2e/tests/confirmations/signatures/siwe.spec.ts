@@ -12,6 +12,10 @@ import {
 } from '../helpers';
 import { TestSuiteArguments } from '../transactions/shared';
 import {
+  BlockaidReason,
+  BlockaidResultType,
+} from '../../../../../shared/constants/security-provider';
+import {
   assertAccountDetailsMetrics,
   assertHeaderInfoBalance,
   assertPastedAddress,
@@ -39,11 +43,6 @@ describe('Confirmation Signature - SIWE @no-mmi', function (this: Suite) {
 
         await copyAddressAndPasteWalletAddress(driver);
         await assertPastedAddress(driver);
-        await assertAccountDetailsMetrics(
-          driver,
-          mockedEndpoints as MockedEndpoint[],
-          'personal_sign',
-        );
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
         await assertInfoValues(driver);
         await scrollAndConfirmAndAssertConfirm(driver);
@@ -51,6 +50,12 @@ describe('Confirmation Signature - SIWE @no-mmi', function (this: Suite) {
         await assertVerifiedSiweMessage(
           driver,
           '0xef8674a92d62a1876624547bdccaef6c67014ae821de18fa910fbff56577a65830f68848585b33d1f4b9ea1c3da1c1b11553b6aabe8446717daf7cd1e38a68271c',
+        );
+
+        await assertAccountDetailsMetrics(
+          driver,
+          mockedEndpoints as MockedEndpoint[],
+          'personal_sign',
         );
         await assertSignatureConfirmedMetrics({
           driver,
@@ -60,6 +65,8 @@ describe('Confirmation Signature - SIWE @no-mmi', function (this: Suite) {
             'redesigned_confirmation',
             'sign_in_with_ethereum',
           ],
+          securityAlertReason: BlockaidReason.notApplicable,
+          securityAlertResponse: BlockaidResultType.NotApplicable,
         });
       },
       mockSignatureApproved,
@@ -95,6 +102,8 @@ describe('Confirmation Signature - SIWE @no-mmi', function (this: Suite) {
             'sign_in_with_ethereum',
           ],
           location: 'confirmation',
+          securityAlertReason: BlockaidReason.notApplicable,
+          securityAlertResponse: BlockaidResultType.NotApplicable,
         });
       },
       mockSignatureRejected,
@@ -103,6 +112,7 @@ describe('Confirmation Signature - SIWE @no-mmi', function (this: Suite) {
 });
 
 async function assertInfoValues(driver: Driver) {
+  await driver.clickElement('[data-testid="sectionCollapseButton"]');
   const origin = driver.findElement({ text: DAPP_HOST_ADDRESS });
   const message = driver.findElement({
     text: 'I accept the MetaMask Terms of Service: https://community.metamask.io/tos',

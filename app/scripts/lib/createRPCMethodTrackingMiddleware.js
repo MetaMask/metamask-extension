@@ -1,5 +1,5 @@
 import { ApprovalType, detectSIWE } from '@metamask/controller-utils';
-import { errorCodes } from 'eth-rpc-errors';
+import { errorCodes } from '@metamask/rpc-errors';
 import { isValidAddress } from 'ethereumjs-util';
 import { MESSAGE_TYPE, ORIGIN_METAMASK } from '../../../shared/constants/app';
 import {
@@ -18,6 +18,7 @@ import {
   PRIMARY_TYPES_PERMIT,
 } from '../../../shared/constants/signatures';
 import { SIGNING_METHODS } from '../../../shared/constants/transaction';
+import { getErrorMessage } from '../../../shared/modules/error';
 import {
   generateSignatureUniqueId,
   getBlockaidMetricsProps,
@@ -26,7 +27,7 @@ import {
 } from '../../../ui/helpers/utils/metrics';
 // TODO: Remove restricted import
 // eslint-disable-next-line import/no-restricted-paths
-import { REDESIGN_APPROVAL_TYPES } from '../../../ui/pages/confirmations/utils/confirm';
+import { shouldUseRedesignForSignatures } from '../../../shared/lib/confirmation.utils';
 import { getSnapAndHardwareInfoForMetrics } from './snap-keyring/metrics';
 
 /**
@@ -52,6 +53,8 @@ const RATE_LIMIT_MAP = {
   [MESSAGE_TYPE.ETH_DECRYPT]: RATE_LIMIT_TYPES.NON_RATE_LIMITED,
   [MESSAGE_TYPE.ETH_GET_ENCRYPTION_PUBLIC_KEY]:
     RATE_LIMIT_TYPES.NON_RATE_LIMITED,
+  [MESSAGE_TYPE.ADD_ETHEREUM_CHAIN]: RATE_LIMIT_TYPES.NON_RATE_LIMITED,
+  [MESSAGE_TYPE.SWITCH_ETHEREUM_CHAIN]: RATE_LIMIT_TYPES.NON_RATE_LIMITED,
   [MESSAGE_TYPE.ETH_REQUEST_ACCOUNTS]: RATE_LIMIT_TYPES.TIMEOUT,
   [MESSAGE_TYPE.WALLET_REQUEST_PERMISSIONS]: RATE_LIMIT_TYPES.TIMEOUT,
   [MESSAGE_TYPE.SEND_METADATA]: RATE_LIMIT_TYPES.BLOCKED,
@@ -125,6 +128,8 @@ const EVENT_NAME_MAP = {
  */
 const TRANSFORM_PARAMS_MAP = {
   [MESSAGE_TYPE.WATCH_ASSET]: ({ type }) => ({ type }),
+  [MESSAGE_TYPE.ADD_ETHEREUM_CHAIN]: ([{ chainId }]) => ({ chainId }),
+  [MESSAGE_TYPE.SWITCH_ETHEREUM_CHAIN]: ([{ chainId }]) => ({ chainId }),
 };
 
 const rateLimitTimeoutsByMethod = {};
@@ -184,8 +189,6 @@ function finalizeSignatureFragment(
  * signature requests
  *
  * @param {object} opts - options for the rpc method tracking middleware
- * @param {Function} opts.getMetricsState - get the state of
- *  MetaMetricsController
  * @param {number} [opts.rateLimitTimeout] - time, in milliseconds, to wait before
  *  allowing another set of events to be tracked for methods rate limited by timeout.
  * @param {number} [opts.rateLimitSamplePercent] - percentage, in decimal, of events
@@ -193,6 +196,7 @@ function finalizeSignatureFragment(
  * @param {Function} opts.getAccountType
  * @param {Function} opts.getDeviceModel
  * @param {Function} opts.isConfirmationRedesignEnabled
+ * @param {Function} opts.isRedesignedConfirmationsDeveloperEnabled
  * @param {RestrictedControllerMessenger} opts.snapAndHardwareMessenger
  * @param {number} [opts.globalRateLimitTimeout] - time, in milliseconds, of the sliding
  * time window that should limit the number of method calls tracked to globalRateLimitMaxAmount.
@@ -204,7 +208,6 @@ function finalizeSignatureFragment(
  */
 
 export default function createRPCMethodTrackingMiddleware({
-  getMetricsState,
   rateLimitTimeout = 60 * 5 * 1000, // 5 minutes
   rateLimitSamplePercent = 0.001, // 0.1%
   globalRateLimitTimeout = 60 * 5 * 1000, // 5 minutes
@@ -212,6 +215,7 @@ export default function createRPCMethodTrackingMiddleware({
   getAccountType,
   getDeviceModel,
   isConfirmationRedesignEnabled,
+  isRedesignedConfirmationsDeveloperEnabled,
   snapAndHardwareMessenger,
   appStateController,
   metaMetricsController,
@@ -251,7 +255,7 @@ export default function createRPCMethodTrackingMiddleware({
     // anything. This is extra redundancy because this value is checked in
     // the metametrics controller's trackEvent method as well.
     const userParticipatingInMetaMetrics =
-      getMetricsState().participateInMetaMetrics === true;
+      metaMetricsController.state.participateInMetaMetrics === true;
 
     // Get the event type, each of which has APPROVED, REJECTED and REQUESTED
     // keys for the various events in the flow.
@@ -313,13 +317,15 @@ export default function createRPCMethodTrackingMiddleware({
             req.securityAlertResponse.description;
         }
 
-        const isConfirmationRedesign =
-          isConfirmationRedesignEnabled() &&
-          REDESIGN_APPROVAL_TYPES.find(
-            (type) => type === MESSAGE_TYPE_TO_APPROVAL_TYPE[method],
-          );
-
-        if (isConfirmationRedesign) {
+        if (
+          shouldUseRedesignForSignatures({
+            approvalType: MESSAGE_TYPE_TO_APPROVAL_TYPE[method],
+            isRedesignedSignaturesUserSettingEnabled:
+              isConfirmationRedesignEnabled(),
+            isRedesignedConfirmationsDeveloperEnabled:
+              isRedesignedConfirmationsDeveloperEnabled(),
+          })
+        ) {
           eventProperties.ui_customizations = [
             ...(eventProperties.ui_customizations || []),
             MetaMetricsEventUiCustomization.RedesignedConfirmation,
@@ -419,15 +425,20 @@ export default function createRPCMethodTrackingMiddleware({
       const location = res.error?.data?.location;
 
       let event;
+
+      const errorMessage = getErrorMessage(res.error);
+
       if (res.error?.code === errorCodes.provider.userRejectedRequest) {
         event = eventType.REJECTED;
       } else if (
         res.error?.code === errorCodes.rpc.internal &&
-        res.error?.message === 'Request rejected by user or snap.'
+        [errorMessage, res.error.message].includes(
+          'Request rejected by user or snap.',
+        )
       ) {
         // The signature was approved in MetaMask but rejected in the snap
         event = eventType.REJECTED;
-        eventProperties.status = res.error.message;
+        eventProperties.status = errorMessage;
       } else {
         event = eventType.APPROVED;
       }

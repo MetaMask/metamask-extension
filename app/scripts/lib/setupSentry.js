@@ -123,9 +123,9 @@ function getTracesSampleRate(sentryTarget) {
 
   if (flags.circleci) {
     // Report very frequently on develop branch, and never on other branches
-    // (Unless you do a [flags.sentry.tracesSampleRate: x.xx] override)
+    // (Unless you use a `flags = {"sentry": {"tracesSampleRate": x.xx}}` override)
     if (flags.circleci.branch === 'develop') {
-      return 0.03;
+      return 0.015;
     }
     return 0;
   }
@@ -134,7 +134,7 @@ function getTracesSampleRate(sentryTarget) {
     return 1.0;
   }
 
-  return 0.02;
+  return 0.01;
 }
 
 /**
@@ -238,8 +238,8 @@ function getSentryEnvironment() {
 
 function getSentryTarget() {
   if (
-    getManifestFlags().sentry?.doNotForceSentryForThisTest ||
-    (process.env.IN_TEST && !SENTRY_DSN_DEV)
+    process.env.IN_TEST &&
+    (!SENTRY_DSN_DEV || !getManifestFlags().sentry?.forceEnable)
   ) {
     return SENTRY_DSN_FAKE;
   }
@@ -272,7 +272,7 @@ async function getMetaMetricsEnabled() {
 
   if (
     METAMASK_BUILD_TYPE === 'mmi' ||
-    (flags.circleci && !flags.sentry?.doNotForceSentryForThisTest)
+    (flags.circleci && flags.sentry.forceEnable)
   ) {
     return true;
   }
@@ -424,12 +424,17 @@ export function rewriteReport(report) {
     if (!report.extra) {
       report.extra = {};
     }
-
-    report.extra.appState = appState;
-    if (browser.runtime && browser.runtime.id) {
-      report.extra.extensionId = browser.runtime.id;
+    if (!report.tags) {
+      report.tags = {};
     }
-    report.extra.installType = installType;
+
+    Object.assign(report.extra, {
+      appState,
+      installType,
+      extensionId: browser.runtime?.id,
+    });
+
+    report.tags.installType = installType;
   } catch (err) {
     log('Error rewriting report', err);
   }
