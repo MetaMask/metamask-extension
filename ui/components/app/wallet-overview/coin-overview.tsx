@@ -72,10 +72,10 @@ import {
 import { useTheme } from '../../../hooks/useTheme';
 import { getSpecificSettingsRoute } from '../../../helpers/utils/settings-search';
 import { useI18nContext } from '../../../hooks/useI18nContext';
+import { useMultichainSelector } from '../../../hooks/useMultichainSelector';
 import WalletOverview from './wallet-overview';
 import CoinButtons from './coin-buttons';
 import { AggregatedPercentageOverview } from './aggregated-percentage-overview';
-import { useMultichainSelector } from '../../../hooks/useMultichainSelector';
 
 export type CoinOverviewProps = {
   balance: string;
