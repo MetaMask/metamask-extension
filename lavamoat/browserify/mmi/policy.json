@@ -3645,6 +3645,8 @@
     },
     "@swc/helpers>tslib": {
       "globals": {
+        "AsyncIterator": true,
+        "Iterator": true,
         "SuppressedError": true,
         "define": true
       }
