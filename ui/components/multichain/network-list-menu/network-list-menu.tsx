@@ -292,7 +292,7 @@ export const NetworkListMenu = ({ onClose }: { onClose: () => void }) => {
           // however, if I am already filtered on "Current Network", we'll want to filter by the selected network when the network changes
           if (Object.keys(tokenNetworkFilter).length <= 1) {
             dispatch(setTokenNetworkFilter({ [network.chainId]: true }));
-          } else {
+          } else if (process.env.PORTFOLIO_VIEW) {
             dispatch(setTokenNetworkFilter(allOpts));
           }
 

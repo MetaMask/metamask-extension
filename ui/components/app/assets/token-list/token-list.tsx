@@ -112,12 +112,14 @@ export default function TokenList({
 
   // Ensure newly added networks are included in the tokenNetworkFilter
   useEffect(() => {
-    const allNetworkFilters = Object.fromEntries(
-      Object.keys(allNetworks).map((chainId) => [chainId, true]),
-    );
+    if (process.env.PORTFOLIO_VIEW) {
+      const allNetworkFilters = Object.fromEntries(
+        Object.keys(allNetworks).map((chainId) => [chainId, true]),
+      );
 
-    if (Object.keys(tokenNetworkFilter).length > 1) {
-      dispatch(setTokenNetworkFilter(allNetworkFilters));
+      if (Object.keys(tokenNetworkFilter).length > 1) {
+        dispatch(setTokenNetworkFilter(allNetworkFilters));
+      }
     }
   }, [Object.keys(allNetworks).length]);
 
