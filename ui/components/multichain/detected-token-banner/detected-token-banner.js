@@ -9,8 +9,8 @@ import {
   getDetectedTokensInCurrentNetwork,
   getAllDetectedTokensForSelectedAddress,
   getPreferences,
-  getNetworkConfigurationsByChainId,
 } from '../../../selectors';
+import { getNetworkConfigurationsByChainId } from '../../../../shared/modules/selectors/networks';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import {
   MetaMetricsEventCategory,

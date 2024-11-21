@@ -7,8 +7,8 @@ import {
   getEthAccounts,
   getPermittedEthChainIds,
 } from '@metamask/multichain';
+import { createDeepEqualSelector } from '../../shared/modules/selectors/util';
 import { getApprovalRequestsByType } from './approvals';
-import { createDeepEqualSelector } from './util';
 import {
   getInternalAccount,
   getMetaMaskAccountsOrdered,

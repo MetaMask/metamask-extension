@@ -1,8 +1,6 @@
 import { useSelector } from 'react-redux';
-import {
-  getNetworkConfigurationsByChainId,
-  getUseCurrencyRateCheck,
-} from '../selectors';
+import { getUseCurrencyRateCheck } from '../selectors';
+import { getNetworkConfigurationsByChainId } from '../../shared/modules/selectors/networks';
 import {
   currencyRateStartPolling,
   currencyRateStopPollingByPollingToken,
