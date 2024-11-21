@@ -201,7 +201,7 @@ export default function TokenList({
 
   // Displays nativeToken if provided
   if (nativeToken) {
-    return nativeToken;
+    return React.cloneElement(nativeToken as React.ReactElement);
   }
 
   return (
