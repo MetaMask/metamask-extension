@@ -146,6 +146,9 @@ describe('Confirmation Redesign Contract Interaction Component', function () {
               },
               useTransactionSimulations: false,
             })
+            .withAppStateController({
+              [CHAIN_IDS.OPTIMISM]: true,
+            })
             .withNetworkControllerOnOptimism()
             .build(),
           ganacheOptions: {
