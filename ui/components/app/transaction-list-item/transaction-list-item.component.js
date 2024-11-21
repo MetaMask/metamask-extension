@@ -69,7 +69,7 @@ import { MetaMetricsContext } from '../../../contexts/metametrics';
 import { ActivityListItem } from '../../multichain';
 import { abortTransactionSigning } from '../../../store/actions';
 import { getIsSmartTransaction } from '../../../../shared/modules/selectors';
-import useBridgeData from '../../../pages/bridge/utils/useBridgeData';
+import useBridgeTxHistoryData from '../../../hooks/bridge/useBridgeTxHistoryData';
 import BridgeActivityItemTxSegments from '../../../pages/bridge/transaction-details/bridge-activity-item-tx-segments';
 
 function TransactionListItemInner({
@@ -98,7 +98,7 @@ function TransactionListItemInner({
     bridgeTxHistoryItem,
     isBridgeComplete,
     showBridgeTxDetails,
-  } = useBridgeData({
+  } = useBridgeTxHistoryData({
     transactionGroup,
   });
 
