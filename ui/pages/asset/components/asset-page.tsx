@@ -18,6 +18,8 @@ import {
   getCurrencyRates,
   getSelectedAccountNativeTokenCachedBalanceByChainId,
   getSelectedAccount,
+  getIsTestnet,
+  getShowFiatInTestnets,
 } from '../../../selectors';
 import {
   Display,
@@ -49,6 +51,8 @@ import CoinButtons from '../../../components/app/wallet-overview/coin-buttons';
 import { getIsNativeTokenBuyable } from '../../../ducks/ramps';
 import { calculateTokenBalance } from '../../../components/app/assets/util/calculateTokenBalance';
 import { useTokenBalances } from '../../../hooks/useTokenBalances';
+import { useMultichainSelector } from '../../../hooks/useMultichainSelector';
+import { getMultichainShouldShowFiat } from '../../../selectors/multichain';
 import { getPortfolioUrl } from '../../../helpers/utils/portfolio';
 import AssetChart from './chart/asset-chart';
 import TokenButtons from './token-buttons';
@@ -108,6 +112,17 @@ const AssetPage = ({
 
   const marketData = useSelector(getMarketData);
   const currencyRates = useSelector(getCurrencyRates);
+
+  const isTestnet = useSelector(getIsTestnet);
+  const shouldShowFiat = useMultichainSelector(
+    getMultichainShouldShowFiat,
+    selectedAccount,
+  );
+  const isMainnet = !isTestnet;
+  // Check if show conversion is enabled
+  const showFiatInTestnets = useSelector(getShowFiatInTestnets);
+  const showFiat =
+    shouldShowFiat && (isMainnet || (isTestnet && showFiatInTestnets));
 
   const nativeBalances: Record<Hex, Hex> = useSelector(
     getSelectedAccountNativeTokenCachedBalanceByChainId,
@@ -254,7 +269,7 @@ const AssetPage = ({
           chainId={chainId}
           symbol={symbol}
           image={image}
-          tokenFiatAmount={tokenFiatAmount}
+          tokenFiatAmount={showFiat ? tokenFiatAmount : null}
           string={balance?.toString()}
         />
         <Box
