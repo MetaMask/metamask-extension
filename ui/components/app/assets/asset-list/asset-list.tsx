@@ -107,7 +107,7 @@ const AssetList = ({ onClickAsset, showTokensLinks }: AssetListProps) => {
             margin={4}
           />
         )}
-      <AssetListControlBar showTokensLinks={showTokensLinks} />
+      <AssetListControlBar showTokensLinks={shouldShowTokensLinks} />
       <TokenList
         onTokenClick={(chainId: string, tokenAddress: string) => {
           onClickAsset(chainId, tokenAddress);

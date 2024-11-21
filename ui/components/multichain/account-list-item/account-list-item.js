@@ -143,7 +143,7 @@ const AccountListItem = ({
   let balanceToTranslate;
   if (isEvmNetwork) {
     balanceToTranslate =
-      isTestnet || !process.env.PORTFOLIO_VIEW
+      shouldShowFiat || isTestnet || !process.env.PORTFOLIO_VIEW
         ? account.balance
         : totalFiatBalance;
   } else {

@@ -5,7 +5,7 @@ import { Hex } from '@metamask/utils';
 import { isEqualCaseInsensitive } from '../../../shared/modules/string-utils';
 import NftDetails from '../../components/app/assets/nfts/nft-details/nft-details';
 import { getSelectedAccountTokensAcrossChains } from '../../selectors';
-import { getNftsForChainId } from '../../ducks/metamask/metamask';
+import { getNFTsByChainId } from '../../ducks/metamask/metamask';
 import { DEFAULT_ROUTE } from '../../helpers/constants/routes';
 
 import { Token } from '../../components/app/assets/token-list/token-list';
@@ -25,7 +25,7 @@ const Asset = () => {
   }>();
   const { chainId, asset, id } = params;
 
-  const nfts = useSelector((state) => getNftsForChainId(state, chainId));
+  const nfts = useSelector((state) => getNFTsByChainId(state, chainId));
 
   const token = findAssetByAddress(selectedAccountTokensChains, asset, chainId);
 
