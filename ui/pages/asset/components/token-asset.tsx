@@ -4,8 +4,9 @@ import { useSelector, useDispatch } from 'react-redux';
 import { getTokenTrackerLink } from '@metamask/etherscan-link';
 import { useHistory } from 'react-router-dom';
 import { Hex } from '@metamask/utils';
+import { NetworkConfiguration } from '@metamask/network-controller';
 import {
-  getRpcPrefsForCurrentProvider,
+  getAllEnabledNetworks,
   getSelectedInternalAccount,
   getTokenList,
   selectERC20TokensByChain,
@@ -28,7 +29,12 @@ const TokenAsset = ({ token, chainId }: { token: Token; chainId: Hex }) => {
   const { address, symbol, isERC721 } = token;
 
   const tokenList = useSelector(getTokenList);
-  const rpcPrefs = useSelector(getRpcPrefsForCurrentProvider);
+  const allNetworks: {
+    [key: `0x${string}`]: NetworkConfiguration;
+  } = useSelector(getAllEnabledNetworks);
+  // get the correct rpc url for the current token
+  const currentTokenBlockExplorer =
+    allNetworks[chainId]?.blockExplorerUrls?.[0];
   const { address: walletAddress } = useSelector(getSelectedInternalAccount);
   const erc20TokensByChain = useSelector(selectERC20TokensByChain);
 
@@ -64,7 +70,7 @@ const TokenAsset = ({ token, chainId }: { token: Token; chainId: Hex }) => {
     chainId,
     '',
     walletAddress,
-    rpcPrefs,
+    { blockExplorerUrl: currentTokenBlockExplorer },
   );
 
   return (
