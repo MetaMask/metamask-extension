@@ -28,6 +28,7 @@ import {
   JustifyContent,
   TextAlign,
   TextVariant,
+  IconColor,
 } from '../../../helpers/constants/design-system';
 ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
 import { getPortfolioUrl } from '../../../helpers/utils/portfolio';
@@ -59,12 +60,19 @@ import {
 import Spinner from '../../ui/spinner';
 
 import { PercentageAndAmountChange } from '../../multichain/token-list-item/price/percentage-and-amount-change/percentage-and-amount-change';
-import { getMultichainIsEvm } from '../../../selectors/multichain';
+import {
+  getMultichainIsEvm,
+  getMultichainShouldShowFiat,
+} from '../../../selectors/multichain';
 import { useAccountTotalFiatBalance } from '../../../hooks/useAccountTotalFiatBalance';
-import { setAggregatedBalancePopoverShown } from '../../../store/actions';
+import {
+  setAggregatedBalancePopoverShown,
+  setPrivacyMode,
+} from '../../../store/actions';
 import { useTheme } from '../../../hooks/useTheme';
 import { getSpecificSettingsRoute } from '../../../helpers/utils/settings-search';
 import { useI18nContext } from '../../../hooks/useI18nContext';
+import { useMultichainSelector } from '../../../hooks/useMultichainSelector';
 import WalletOverview from './wallet-overview';
 import CoinButtons from './coin-buttons';
 import { AggregatedPercentageOverview } from './aggregated-percentage-overview';
@@ -128,7 +136,8 @@ export const CoinOverview = ({
 
   const shouldShowPopover = useSelector(getShouldShowAggregatedBalancePopover);
   const isTestnet = useSelector(getIsTestnet);
-  const { showFiatInTestnets } = useSelector(getPreferences);
+  const { showFiatInTestnets, privacyMode, showNativeTokenAsMainBalance } =
+    useSelector(getPreferences);
 
   const selectedAccount = useSelector(getSelectedAccount);
   const shouldHideZeroBalanceTokens = useSelector(
@@ -139,11 +148,14 @@ export const CoinOverview = ({
     shouldHideZeroBalanceTokens,
   );
 
-  const { showNativeTokenAsMainBalance } = useSelector(getPreferences);
+  const shouldShowFiat = useMultichainSelector(
+    getMultichainShouldShowFiat,
+    account,
+  );
 
   const isEvm = useSelector(getMultichainIsEvm);
   const isNotAggregatedFiatBalance =
-    showNativeTokenAsMainBalance || isTestnet || !isEvm;
+    !shouldShowFiat || showNativeTokenAsMainBalance || isTestnet || !isEvm;
   let balanceToDisplay;
   if (isNotAggregatedFiatBalance) {
     balanceToDisplay = balance;
@@ -161,6 +173,10 @@ export const CoinOverview = ({
   const handleClick = () => {
     setIsOpen(!isOpen);
     dispatch(setAggregatedBalancePopoverShown());
+  };
+
+  const handleSensitiveToggle = () => {
+    dispatch(setPrivacyMode(!privacyMode));
   };
 
   const [referenceElement, setReferenceElement] =
@@ -253,26 +269,41 @@ export const CoinOverview = ({
               ref={setBoxRef}
             >
               {balanceToDisplay ? (
-                <UserPreferencedCurrencyDisplay
-                  style={{ display: 'contents' }}
-                  account={account}
-                  className={classnames(
-                    `${classPrefix}-overview__primary-balance`,
-                    {
-                      [`${classPrefix}-overview__cached-balance`]:
-                        balanceIsCached,
-                    },
-                  )}
-                  data-testid={`${classPrefix}-overview__primary-currency`}
-                  value={balanceToDisplay}
-                  type={PRIMARY}
-                  ethNumberOfDecimals={4}
-                  hideTitle
-                  shouldCheckShowNativeToken
-                  isAggregatedFiatOverviewBalance={
-                    !showNativeTokenAsMainBalance && !isTestnet
-                  }
-                />
+                <>
+                  <UserPreferencedCurrencyDisplay
+                    style={{ display: 'contents' }}
+                    account={account}
+                    className={classnames(
+                      `${classPrefix}-overview__primary-balance`,
+                      {
+                        [`${classPrefix}-overview__cached-balance`]:
+                          balanceIsCached,
+                      },
+                    )}
+                    data-testid={`${classPrefix}-overview__primary-currency`}
+                    value={balanceToDisplay}
+                    type={PRIMARY}
+                    ethNumberOfDecimals={4}
+                    hideTitle
+                    shouldCheckShowNativeToken
+                    isAggregatedFiatOverviewBalance={
+                      !showNativeTokenAsMainBalance &&
+                      !isTestnet &&
+                      shouldShowFiat
+                    }
+                    privacyMode={privacyMode}
+                  />
+                  <ButtonIcon
+                    color={IconColor.iconAlternative}
+                    marginLeft={2}
+                    size={ButtonIconSize.Md}
+                    onClick={handleSensitiveToggle}
+                    iconName={privacyMode ? IconName.EyeSlash : IconName.Eye}
+                    justifyContent={JustifyContent.center}
+                    ariaLabel="Sensitive toggle"
+                    data-testid="sensitive-toggle"
+                  />
+                </>
               ) : (
                 <Spinner className="loading-overlay__spinner" />
               )}

@@ -6,6 +6,7 @@ import { useMemo } from 'react';
 import { useSelector } from 'react-redux';
 import { getIntlLocale } from '../../../../../../../ducks/locale/locale';
 import { SPENDING_CAP_UNLIMITED_MSG } from '../../../../../constants';
+import { toNonScientificString } from '../../hooks/use-token-values';
 import { useDecodedTransactionData } from '../../hooks/useDecodedTransactionData';
 import { useIsNFT } from './use-is-nft';
 
@@ -13,15 +14,6 @@ const UNLIMITED_THRESHOLD = 10 ** 15;
 
 function isSpendingCapUnlimited(decodedSpendingCap: number) {
   return decodedSpendingCap >= UNLIMITED_THRESHOLD;
-}
-
-function toNonScientificString(num: number): string {
-  if (num >= 10e-18) {
-    return num.toFixed(18).replace(/\.?0+$/u, '');
-  }
-
-  // keep in scientific notation
-  return num.toString();
 }
 
 export const useApproveTokenSimulation = (

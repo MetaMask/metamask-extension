@@ -1,5 +1,8 @@
 import { NameType } from '@metamask/name-controller';
-import { TransactionMeta } from '@metamask/transaction-controller';
+import {
+  TransactionMeta,
+  TransactionType,
+} from '@metamask/transaction-controller';
 import React from 'react';
 import { ConfirmInfoSection } from '../../../../../../components/app/confirm/info/row/section';
 import Name from '../../../../../../components/app/name';
@@ -26,13 +29,20 @@ export const TransactionFlowSection = () => {
 
   const { value, pending } = useDecodedTransactionData();
 
-  const recipientAddress = value?.data[0].params.find(
+  const addresses = value?.data[0].params.filter(
     (param) => param.type === 'address',
-  )?.value;
+  );
+  const recipientAddress =
+    transactionMeta.type === TransactionType.simpleSend
+      ? transactionMeta.txParams.to
+      : // sometimes there's more than one address, in which case we want the last one
+        addresses?.[addresses.length - 1].value;
 
   if (pending) {
     return <ConfirmLoader />;
   }
+
+  const { chainId } = transactionMeta;
 
   return (
     <ConfirmInfoSection data-testid="confirmation__transaction-flow">
@@ -46,6 +56,7 @@ export const TransactionFlowSection = () => {
         <Name
           value={transactionMeta.txParams.from}
           type={NameType.ETHEREUM_ADDRESS}
+          variation={chainId}
         />
         <Icon
           name={IconName.ArrowRight}
@@ -53,7 +64,11 @@ export const TransactionFlowSection = () => {
           color={IconColor.iconMuted}
         />
         {recipientAddress && (
-          <Name value={recipientAddress} type={NameType.ETHEREUM_ADDRESS} />
+          <Name
+            value={recipientAddress}
+            type={NameType.ETHEREUM_ADDRESS}
+            variation={chainId}
+          />
         )}
       </Box>
     </ConfirmInfoSection>

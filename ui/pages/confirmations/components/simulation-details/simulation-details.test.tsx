@@ -4,6 +4,7 @@ import { screen } from '@testing-library/react';
 import {
   SimulationData,
   SimulationErrorCode,
+  TransactionMeta,
 } from '@metamask/transaction-controller';
 import { BigNumber } from 'bignumber.js';
 import { renderWithProvider } from '../../../../../test/lib/render-helpers';
@@ -40,11 +41,16 @@ jest.mock('../../context/confirm', () => ({
   })),
 }));
 
-const renderSimulationDetails = (simulationData?: Partial<SimulationData>) =>
+const renderSimulationDetails = (
+  simulationData?: Partial<SimulationData>,
+  metricsOnly?: boolean,
+) =>
   renderWithProvider(
     <SimulationDetails
-      simulationData={simulationData as SimulationData}
-      transactionId="testTransactionId"
+      transaction={
+        { id: 'testTransactionId', simulationData } as TransactionMeta
+      }
+      metricsOnly={metricsOnly}
     />,
     store,
   );
@@ -142,5 +148,10 @@ describe('SimulationDetails', () => {
       }),
       {},
     );
+  });
+
+  it('does not render any UI elements when metricsOnly is true', () => {
+    const { container } = renderSimulationDetails({}, true);
+    expect(container).toBeEmptyDOMElement();
   });
 });

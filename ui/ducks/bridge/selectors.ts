@@ -8,7 +8,7 @@ import {
   getIsBridgeEnabled,
   getSwapsDefaultToken,
   SwapsEthToken,
-} from '../../selectors';
+} from '../../selectors/selectors';
 import { ALLOWED_BRIDGE_CHAIN_IDS } from '../../../shared/constants/bridge';
 import {
   BridgeControllerState,
@@ -110,7 +110,7 @@ export const getToTokens = (state: BridgeAppState) => {
 
 export const getFromToken = (
   state: BridgeAppState,
-): SwapsTokenObject | SwapsEthToken => {
+): SwapsTokenObject | SwapsEthToken | null => {
   return state.bridge.fromToken?.address
     ? state.bridge.fromToken
     : getSwapsDefaultToken(state);

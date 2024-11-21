@@ -54,6 +54,16 @@
         "conversionDate": "number",
         "conversionRate": 1700,
         "usdConversionRate": 1700
+      },
+      "LineaETH": {
+        "conversionDate": "number",
+        "conversionRate": 1700,
+        "usdConversionRate": 1700
+      },
+      "SepoliaETH": {
+        "conversionDate": "number",
+        "conversionRate": 1700,
+        "usdConversionRate": 1700
       }
     },
     "connectedStatusPopoverHasBeenShown": true,
@@ -187,7 +197,7 @@
     "lastFetchedBlockNumbers": "object",
     "submitHistory": "object",
     "fiatCurrency": "usd",
-    "rates": { "btc": { "conversionDate": 0, "conversionRate": "0" } },
+    "rates": { "btc": { "conversionDate": 0, "conversionRate": 0 } },
     "cryptocurrencies": ["btc"],
     "snaps": "object",
     "jobs": "object",
@@ -203,7 +213,6 @@
     "isSignedIn": "boolean",
     "isProfileSyncingEnabled": null,
     "isProfileSyncingUpdateLoading": "boolean",
-    "submitHistory": "object",
     "subscriptionAccountsSeen": "object",
     "isMetamaskNotificationsFeatureSeen": "boolean",
     "isNotificationServicesEnabled": "boolean",
@@ -258,12 +267,18 @@
     },
     "bridgeState": {
       "bridgeFeatureFlags": {
+        "extensionConfig": "object",
         "extensionSupport": "boolean",
         "srcNetworkAllowlist": { "0": "string", "1": "string", "2": "string" },
         "destNetworkAllowlist": { "0": "string", "1": "string", "2": "string" }
       },
       "destTokens": {},
       "destTopAssets": {},
+      "quoteRequest": {
+        "slippage": 0.5,
+        "srcTokenAddress": "0x0000000000000000000000000000000000000000"
+      },
+      "quotes": {},
       "srcTokens": {},
       "srcTopAssets": {}
     },
