@@ -68,12 +68,13 @@ const AssetListControlBar = ({ showTokensLinks }: AssetListControlBarProps) => {
   }, [currentNetwork.chainId, TEST_CHAINS]);
 
   const allOpts: Record<string, boolean> = {};
-  Object.keys(allNetworks).forEach((chainId) => {
+  Object.keys(allNetworks || {}).forEach((chainId) => {
     allOpts[chainId] = true;
   });
 
   const allNetworksFilterShown =
-    Object.keys(tokenNetworkFilter).length !== Object.keys(allOpts).length;
+    Object.keys(tokenNetworkFilter ?? {}).length !==
+    Object.keys(allOpts ?? {}).length;
 
   useEffect(() => {
     if (isTestNetwork) {
@@ -86,7 +87,7 @@ const AssetListControlBar = ({ showTokensLinks }: AssetListControlBarProps) => {
   // We need to set the default filter for all users to be all included networks, rather than defaulting to empty object
   // This effect is to unblock and derisk in the short-term
   useEffect(() => {
-    if (Object.keys(tokenNetworkFilter).length === 0) {
+    if (Object.keys(tokenNetworkFilter ?? {}).length === 0) {
       dispatch(setTokenNetworkFilter(allOpts));
     }
   }, []);
@@ -94,10 +95,10 @@ const AssetListControlBar = ({ showTokensLinks }: AssetListControlBarProps) => {
   // When a network gets added/removed we want to make sure that we switch to the filtered list of the current network
   // We only want to do this if the "Current Network" filter is selected
   useEffect(() => {
-    if (Object.keys(tokenNetworkFilter).length === 1) {
+    if (Object.keys(tokenNetworkFilter ?? {}).length === 1) {
       dispatch(setTokenNetworkFilter({ [currentNetwork.chainId]: true }));
     }
-  }, [Object.keys(allNetworks).length]);
+  }, [Object.keys(allNetworks ?? {}).length]);
 
   const windowType = getEnvironmentType();
   const isFullScreen =
