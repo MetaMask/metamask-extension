@@ -16,7 +16,7 @@ import { useSigningOrSubmittingAlerts } from './alerts/transactions/useSigningOr
 ///: END:ONLY_INCLUDE_IF
 import useConfirmationOriginAlerts from './alerts/useConfirmationOriginAlerts';
 import useBlockaidAlerts from './alerts/useBlockaidAlerts';
-import useSelectedAccountAlerts from './alerts/useSelectedAccountAlerts';
+import { useSelectedAccountAlerts } from './alerts/useSelectedAccountAlerts';
 
 function useSignatureAlerts(): Alert[] {
   const accountMismatchAlerts = useAccountMismatchAlerts();
@@ -41,7 +41,7 @@ function useTransactionAlerts(): Alert[] {
   const signingOrSubmittingAlerts = useSigningOrSubmittingAlerts();
   ///: END:ONLY_INCLUDE_IF
   const queuedConfirmationsAlerts = useQueuedConfirmationsAlerts();
-  const selectedAccountAlerts = useSelectedAccountAlerts();
+
   return useMemo(
     () => [
       ...gasEstimateFailedAlerts,
@@ -56,7 +56,6 @@ function useTransactionAlerts(): Alert[] {
       ...signingOrSubmittingAlerts,
       ///: END:ONLY_INCLUDE_IF
       ...queuedConfirmationsAlerts,
-      ...selectedAccountAlerts,
     ],
     [
       gasEstimateFailedAlerts,
@@ -80,6 +79,7 @@ export default function useConfirmationAlerts(): Alert[] {
   const confirmationOriginAlerts = useConfirmationOriginAlerts();
   const signatureAlerts = useSignatureAlerts();
   const transactionAlerts = useTransactionAlerts();
+  const selectedAccountAlerts = useSelectedAccountAlerts();
 
   return useMemo(
     () => [
@@ -87,12 +87,14 @@ export default function useConfirmationAlerts(): Alert[] {
       ...confirmationOriginAlerts,
       ...signatureAlerts,
       ...transactionAlerts,
+      ...selectedAccountAlerts,
     ],
     [
       blockaidAlerts,
       confirmationOriginAlerts,
       signatureAlerts,
       transactionAlerts,
+      selectedAccountAlerts,
     ],
   );
 }

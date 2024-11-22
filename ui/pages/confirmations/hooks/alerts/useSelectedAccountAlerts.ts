@@ -10,7 +10,7 @@ import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { SignatureRequestType } from '../../types/confirm';
 import { useConfirmContext } from '../../context/confirm';
 
-const useSelectedAccountAlerts = (): Alert[] => {
+export const useSelectedAccountAlerts = (): Alert[] => {
   const t = useI18nContext();
 
   const { currentConfirmation } = useConfirmContext();
@@ -20,7 +20,7 @@ const useSelectedAccountAlerts = (): Alert[] => {
     (currentConfirmation as SignatureRequestType)?.msgParams?.from ??
     (currentConfirmation as TransactionMeta)?.txParams?.from;
   const confirmationAccountSameAsSelectedAccount =
-    !fromAccount || fromAccount === selectedAccount?.address;
+    !fromAccount || fromAccount.toLowerCase() === selectedAccount?.address?.toLowerCase();
 
   return useMemo<Alert[]>((): Alert[] => {
     if (confirmationAccountSameAsSelectedAccount) {
@@ -38,5 +38,3 @@ const useSelectedAccountAlerts = (): Alert[] => {
     ];
   }, [confirmationAccountSameAsSelectedAccount, t]);
 };
-
-export default useSelectedAccountAlerts;
