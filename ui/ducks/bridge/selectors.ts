@@ -1,11 +1,7 @@
-import {
-  NetworkConfiguration,
-  NetworkState,
-} from '@metamask/network-controller';
+import { NetworkConfiguration } from '@metamask/network-controller';
 import { uniqBy } from 'lodash';
 import { createSelector } from 'reselect';
 import {
-  getNetworkConfigurationsByChainId,
   getIsBridgeEnabled,
   getSwapsDefaultToken,
   SwapsEthToken,
@@ -17,8 +13,12 @@ import {
   // TODO: Remove restricted import
   // eslint-disable-next-line import/no-restricted-paths
 } from '../../../app/scripts/controllers/bridge/types';
-import { createDeepEqualSelector } from '../../selectors/util';
-import { getProviderConfig } from '../metamask/metamask';
+import { createDeepEqualSelector } from '../../../shared/modules/selectors/util';
+import {
+  NetworkState,
+  getProviderConfig,
+  getNetworkConfigurationsByChainId,
+} from '../../../shared/modules/selectors/networks';
 import { SwapsTokenObject } from '../../../shared/constants/swaps';
 import { calcTokenAmount } from '../../../shared/lib/transactions-controller-utils';
 // TODO: Remove restricted import
@@ -26,8 +26,8 @@ import { calcTokenAmount } from '../../../shared/lib/transactions-controller-uti
 import { RequestStatus } from '../../../app/scripts/controllers/bridge/constants';
 import { BridgeState } from './bridge';
 
-type BridgeAppState = {
-  metamask: NetworkState & { bridgeState: BridgeControllerState } & {
+type BridgeAppState = NetworkState & {
+  metamask: { bridgeState: BridgeControllerState } & {
     useExternalServices: boolean;
   };
   bridge: BridgeState;

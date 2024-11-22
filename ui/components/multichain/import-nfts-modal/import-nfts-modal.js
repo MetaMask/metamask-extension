@@ -76,6 +76,7 @@ export const ImportNftsModal = ({ onClose }) => {
   const [disabled, setDisabled] = useState(true);
   const [nftAddFailed, setNftAddFailed] = useState(false);
   const trackEvent = useContext(MetaMetricsContext);
+
   const [nftAddressValidationError, setNftAddressValidationError] =
     useState(null);
   const [duplicateTokenIdError, setDuplicateTokenIdError] = useState(null);

@@ -1,4 +1,4 @@
-import React, { ReactNode } from 'react';
+import React from 'react';
 import {
   DecodingDataChangeType,
   DecodingDataStateChange,
@@ -102,18 +102,15 @@ const DecodedSimulation: React.FC<object> = () => {
   const chainId = currentConfirmation.chainId as Hex;
   const { decodingLoading, decodingData } = currentConfirmation;
 
-  let stateChangeFragment: ReactNode[] = [];
-  if (decodingData?.stateChanges) {
-    stateChangeFragment = decodingData.stateChanges.map(
-      (change: DecodingDataStateChange) => (
-        <StateChangeRow
-          stateChangeList={decodingData.stateChanges}
-          stateChange={change}
-          chainId={chainId}
-        />
-      ),
-    );
-  }
+  const stateChangeFragment = (decodingData?.stateChanges ?? []).map(
+    (change: DecodingDataStateChange) => (
+      <StateChangeRow
+        stateChangeList={decodingData?.stateChanges ?? []}
+        stateChange={change}
+        chainId={chainId}
+      />
+    ),
+  );
 
   return (
     <StaticSimulation
