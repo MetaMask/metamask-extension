@@ -24,6 +24,10 @@ class AssetListPage {
   async openNetworksFilter(): Promise<void> {
     console.log(`Opening the network filter`);
     await this.driver.clickElement(this.networksToggle);
+
+    await this.driver.waitForSelector(this.allNetworksOption, {
+      timeout: 5000,
+    });
   }
 
   async getNetworksFilterLabel(): Promise<string> {
@@ -36,6 +40,36 @@ class AssetListPage {
   async clickCurrentNetworkOption(): Promise<void> {
     console.log(`Clicking on the current network option`);
     await this.driver.clickElement(this.currentNetworkOption);
+
+    await this.driver.waitUntil(
+      async () => {
+        const label = await this.getNetworksFilterLabel();
+        return label !== 'All networks';
+      },
+      { timeout: 5000, interval: 100 },
+    );
+  }
+
+  async waitUntilAssetListHasItems(expectedItemsCount: number): Promise<void> {
+    console.log(`Waiting until the asset list has ${expectedItemsCount} items`);
+    await this.driver.waitUntil(
+      async () => {
+        const items = await this.getNumberOfAssets();
+        return items === expectedItemsCount;
+      },
+      { timeout: 5000, interval: 100 },
+    );
+  }
+
+  async waitUntilFilterLabelIs(label: string): Promise<void> {
+    console.log(`Waiting until the filter label is ${label}`);
+    await this.driver.waitUntil(
+      async () => {
+        const currentLabel = await this.getNetworksFilterLabel();
+        return currentLabel === label;
+      },
+      { timeout: 5000, interval: 100 },
+    );
   }
 
   async getAllNetworksOptionTotal(): Promise<string> {
@@ -76,17 +110,26 @@ class AssetListPage {
     console.log(`Selecting "All networks" from the network filter`);
     await this.driver.clickElement(this.allNetworksOption);
 
-    // TODO: Replace this with polling for text to say "All networks"
-    await this.driver.delay(2000);
+    await this.driver.waitUntil(
+      async () => {
+        const label = await this.getNetworksFilterLabel();
+        return label === 'All networks';
+      },
+      { timeout: 5000, interval: 100 },
+    );
   }
 
   async selectNetworkFilterCurrentNetwork(): Promise<void> {
     console.log(`Selecting "Current network" from the network filter`);
     await this.driver.clickElement(this.currentNetworkOption);
 
-    // TODO: Replace this with polling for text to *not* say "All networks"
-    // Don't check for specific network name as it could change based on global network chosen
-    await this.driver.delay(2000);
+    await this.driver.waitUntil(
+      async () => {
+        const label = await this.getNetworksFilterLabel();
+        return label !== 'All networks';
+      },
+      { timeout: 5000, interval: 100 },
+    );
   }
 
   async getNumberOfAssets(): Promise<number> {
@@ -95,6 +138,20 @@ class AssetListPage {
       '.multichain-token-list-item',
     );
     return assets.length;
+  }
+
+  // Added method to check if an asset is visible
+  async isAssetVisible(assetName: string): Promise<boolean> {
+    const assets = await this.driver.findElements(
+      '[data-testid="multichain-token-list-button"]',
+    );
+    for (const asset of assets) {
+      const text = await asset.getText();
+      if (text.includes(assetName)) {
+        return true;
+      }
+    }
+    return false;
   }
 }
 
