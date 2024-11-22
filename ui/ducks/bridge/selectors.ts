@@ -1,10 +1,7 @@
-import {
-  NetworkConfiguration,
-  NetworkState,
-} from '@metamask/network-controller';
+import { NetworkConfiguration } from '@metamask/network-controller';
 import { uniqBy } from 'lodash';
+import { createSelector } from 'reselect';
 import {
-  getNetworkConfigurationsByChainId,
   getIsBridgeEnabled,
   getSwapsDefaultToken,
   SwapsEthToken,
@@ -16,13 +13,21 @@ import {
   // TODO: Remove restricted import
   // eslint-disable-next-line import/no-restricted-paths
 } from '../../../app/scripts/controllers/bridge/types';
-import { createDeepEqualSelector } from '../../selectors/util';
-import { getProviderConfig } from '../metamask/metamask';
+import { createDeepEqualSelector } from '../../../shared/modules/selectors/util';
+import {
+  NetworkState,
+  getProviderConfig,
+  getNetworkConfigurationsByChainId,
+} from '../../../shared/modules/selectors/networks';
 import { SwapsTokenObject } from '../../../shared/constants/swaps';
+import { calcTokenAmount } from '../../../shared/lib/transactions-controller-utils';
+// TODO: Remove restricted import
+// eslint-disable-next-line import/no-restricted-paths
+import { RequestStatus } from '../../../app/scripts/controllers/bridge/constants';
 import { BridgeState } from './bridge';
 
-type BridgeAppState = {
-  metamask: NetworkState & { bridgeState: BridgeControllerState } & {
+type BridgeAppState = NetworkState & {
+  metamask: { bridgeState: BridgeControllerState } & {
     useExternalServices: boolean;
   };
   bridge: BridgeState;
@@ -124,9 +129,60 @@ export const getToToken = (
 
 export const getFromAmount = (state: BridgeAppState): string | null =>
   state.bridge.fromTokenInputValue;
-export const getToAmount = (_state: BridgeAppState) => {
-  return '0';
+
+export const getQuoteRequest = (state: BridgeAppState) => {
+  const { quoteRequest } = state.metamask.bridgeState;
+  return quoteRequest;
 };
+
+export const getBridgeQuotesConfig = (state: BridgeAppState) =>
+  state.metamask.bridgeState?.bridgeFeatureFlags[
+    BridgeFeatureFlagsKey.EXTENSION_CONFIG
+  ] ?? {};
+
+export const getBridgeQuotes = createSelector(
+  (state: BridgeAppState) => state.metamask.bridgeState.quotes,
+  (state: BridgeAppState) => state.metamask.bridgeState.quotesLastFetched,
+  (state: BridgeAppState) =>
+    state.metamask.bridgeState.quotesLoadingStatus === RequestStatus.LOADING,
+  (state: BridgeAppState) => state.metamask.bridgeState.quotesRefreshCount,
+  getBridgeQuotesConfig,
+  getQuoteRequest,
+  (
+    quotes,
+    quotesLastFetchedMs,
+    isLoading,
+    quotesRefreshCount,
+    { maxRefreshCount },
+    { insufficientBal },
+  ) => {
+    return {
+      quotes,
+      quotesLastFetchedMs,
+      isLoading,
+      quotesRefreshCount,
+      isQuoteGoingToRefresh: insufficientBal
+        ? false
+        : quotesRefreshCount < maxRefreshCount,
+    };
+  },
+);
+
+export const getRecommendedQuote = createSelector(
+  getBridgeQuotes,
+  ({ quotes }) => {
+    return quotes[0];
+  },
+);
+
+export const getToAmount = createSelector(getRecommendedQuote, (quote) =>
+  quote
+    ? calcTokenAmount(
+        quote.quote.destTokenAmount,
+        quote.quote.destAsset.decimals,
+      )
+    : undefined,
+);
 
 export const getIsBridgeTx = createDeepEqualSelector(
   getFromChain,

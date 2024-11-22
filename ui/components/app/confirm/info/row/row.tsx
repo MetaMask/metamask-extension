@@ -99,7 +99,7 @@ export const ConfirmInfoRow: React.FC<ConfirmInfoRowProps> = ({
         flexDirection={isCollapsible ? FlexDirection.Column : FlexDirection.Row}
         justifyContent={JustifyContent.spaceBetween}
         flexWrap={FlexWrap.Wrap}
-        alignItems={isCollapsible ? AlignItems.flexStart : AlignItems.center}
+        alignItems={AlignItems.flexStart}
         backgroundColor={BACKGROUND_COLORS[variant]}
         borderRadius={BorderRadius.LG}
         marginTop={2}
@@ -117,7 +117,7 @@ export const ConfirmInfoRow: React.FC<ConfirmInfoRowProps> = ({
         {copyEnabled && (
           <CopyIcon
             copyText={copyText ?? ''}
-            style={{ right: isCollapsible ? 32 : 0, top: 4 }}
+            style={{ right: isCollapsible ? 32 : 4, top: 4 }}
             color={IconColor.iconMuted}
           />
         )}

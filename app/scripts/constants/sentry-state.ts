@@ -119,6 +119,7 @@ export const SENTRY_BACKGROUND_STATE = {
       quotes: [],
       quotesLastFetched: true,
       quotesLoadingStatus: true,
+      quotesRefreshCount: true,
     },
   },
   CronjobController: {
@@ -223,6 +224,7 @@ export const SENTRY_BACKGROUND_STATE = {
     advancedGasFee: true,
     currentLocale: true,
     dismissSeedBackUpReminder: true,
+    overrideContentSecurityPolicyHeader: true,
     featureFlags: true,
     forgottenPassword: true,
     identities: false,
@@ -243,6 +245,7 @@ export const SENTRY_BACKGROUND_STATE = {
       showFiatInTestnets: true,
       showTestNetworks: true,
       smartTransactionsOptInStatus: true,
+      tokenNetworkFilter: {},
       showNativeTokenAsMainBalance: true,
       petnamesEnabled: true,
       showConfirmationAdvancedDetails: true,
@@ -353,6 +356,9 @@ export const SENTRY_BACKGROUND_STATE = {
       [AllProperties]: false,
     },
   },
+  TokenBalancesController: {
+    tokenBalances: false,
+  },
   TokenRatesController: {
     marketData: false,
   },
@@ -384,6 +390,8 @@ export const SENTRY_BACKGROUND_STATE = {
   UserStorageController: {
     isProfileSyncingEnabled: true,
     isProfileSyncingUpdateLoading: false,
+    hasAccountSyncingSyncedAtLeastOnce: false,
+    isAccountSyncingReadyToBeDispatched: false,
   },
   ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
   ...MMI_SENTRY_BACKGROUND_STATE,

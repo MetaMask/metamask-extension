@@ -8,6 +8,9 @@ const {
   logInWithBalanceValidation,
   WINDOW_TITLES,
 } = require('../../helpers');
+const {
+  mockMultiNetworkBalancePolling,
+} = require('../../mock-balance-polling/mock-balance-polling');
 const { SECURITY_ALERTS_PROD_API_BASE_URL } = require('./constants');
 const { mockServerJsonRpc } = require('./mocks/mock-server-json-rpc');
 
@@ -32,13 +35,13 @@ const SEND_REQUEST_BASE_MOCK = {
 };
 
 async function mockInfura(mockServer) {
+  await mockMultiNetworkBalancePolling(mockServer);
   await mockServerJsonRpc(mockServer, [
     ['eth_blockNumber'],
     ['eth_call'],
     ['eth_estimateGas'],
     ['eth_feeHistory'],
     ['eth_gasPrice'],
-    ['eth_getBalance'],
     ['eth_getBlockByNumber'],
     ['eth_getCode'],
     ['eth_getTransactionCount'],

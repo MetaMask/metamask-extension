@@ -14,7 +14,6 @@ import {
   getCompletedOnboarding,
   getConversionRate,
   getNativeCurrency,
-  getProviderConfig,
 } from '../ducks/metamask/metamask';
 // TODO: Remove restricted import
 // eslint-disable-next-line import/no-restricted-paths
@@ -23,7 +22,13 @@ import { MultichainNativeAssets } from '../../shared/constants/multichain/assets
 import {
   CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP,
   TEST_NETWORK_IDS,
+  CHAIN_IDS,
 } from '../../shared/constants/network';
+import {
+  getProviderConfig,
+  NetworkState,
+  getNetworkConfigurationsByChainId,
+} from '../../shared/modules/selectors/networks';
 import { AccountsState, getSelectedInternalAccount } from './accounts';
 import {
   getCurrentChainId,
@@ -31,7 +36,6 @@ import {
   getIsMainnet,
   getMaybeSelectedInternalAccount,
   getNativeCurrencyImage,
-  getNetworkConfigurationsByChainId,
   getSelectedAccountCachedBalance,
   getShouldShowFiat,
   getShowFiatInTestnets,
@@ -45,7 +49,10 @@ export type BalancesState = {
   metamask: BalancesControllerState;
 };
 
-export type MultichainState = AccountsState & RatesState & BalancesState;
+export type MultichainState = AccountsState &
+  RatesState &
+  BalancesState &
+  NetworkState;
 
 // TODO: Remove after updating to @metamask/network-controller 20.0.0
 export type ProviderConfigWithImageUrlAndExplorerUrl = {
@@ -316,6 +323,10 @@ export function getMultichainCurrentChainId(state: MultichainState) {
   return chainId;
 }
 
+export function isChainIdMainnet(chainId: string) {
+  return chainId === CHAIN_IDS.MAINNET;
+}
+
 export function getMultichainIsMainnet(
   state: MultichainState,
   account?: InternalAccount,
@@ -367,6 +378,13 @@ function getBtcCachedBalance(state: MultichainState) {
     : MultichainNativeAssets.BITCOIN_TESTNET;
 
   return balances?.[account.id]?.[asset]?.amount;
+}
+
+export function getImageForChainId(chainId: string) {
+  const evmChainIdKey =
+    chainId as keyof typeof CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP;
+
+  return CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP[evmChainIdKey];
 }
 
 // This selector is not compatible with `useMultichainSelector` since it uses the selected

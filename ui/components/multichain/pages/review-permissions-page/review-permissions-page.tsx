@@ -11,10 +11,10 @@ import {
   FlexDirection,
 } from '../../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
+import { getNetworkConfigurationsByChainId } from '../../../../../shared/modules/selectors/networks';
 import {
   getConnectedSitesList,
   getInternalAccounts,
-  getNetworkConfigurationsByChainId,
   getPermissionSubjects,
   getPermittedAccountsForSelectedTab,
   getPermittedChainsForSelectedTab,

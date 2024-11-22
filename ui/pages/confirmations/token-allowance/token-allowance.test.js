@@ -203,7 +203,7 @@ describe('TokenAllowancePage', () => {
       status: 'unapproved',
       originalGasEstimate: '0xea60',
       userEditedGasLimit: false,
-      chainId: '0x3',
+      chainId: CHAIN_IDS.MAINNET,
       loadingDefaults: false,
       dappSuggestedGasFees: {
         gasPrice: '0x4a817c800',
