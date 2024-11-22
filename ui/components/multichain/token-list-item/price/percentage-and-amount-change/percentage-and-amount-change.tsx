@@ -147,7 +147,5 @@ export const PercentageAndAmountChange = ({
     }
   }
 
-  console.log(formattedValue, formattedValuePrice);
-
   return renderPercentageWithNumber(formattedValue, formattedValuePrice, color);
 };
