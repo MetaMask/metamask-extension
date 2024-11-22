@@ -132,7 +132,6 @@
     "ci-rerun-from-failed": "tsx .circleci/scripts/rerun-ci-workflow-from-failed.ts"
   },
   "resolutions": {
-    "@metamask/assets-controllers": "patch:@metamask-previews/assets-controllers@44.1.0-preview-3487bcdd#.yarn/patches/@metamask-assets-controllers-npm-45.0.0-31810ece32.patch",
     "chokidar": "^3.6.0",
     "gridplus-sdk/elliptic": "^6.5.7",
     "gridplus-sdk/secp256k1": "^5.0.1",
@@ -295,7 +294,7 @@
     "@metamask/address-book-controller": "^6.0.0",
     "@metamask/announcement-controller": "^7.0.0",
     "@metamask/approval-controller": "^7.0.0",
-    "@metamask/assets-controllers": "patch:@metamask/assets-controllers@npm%3A45.0.0#~/.yarn/patches/@metamask-assets-controllers-npm-45.0.0-31810ece32.patch",
+    "@metamask/assets-controllers": "patch:@metamask/assets-controllers@npm%3A45.1.0#~/.yarn/patches/@metamask-assets-controllers-npm-45.1.0-d914c453f0.patch",
     "@metamask/base-controller": "^7.0.0",
     "@metamask/bitcoin-wallet-snap": "^0.8.2",
     "@metamask/browser-passworder": "^4.3.0",
