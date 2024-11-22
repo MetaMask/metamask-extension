@@ -10,7 +10,7 @@ import { MethodObject, OpenrpcDocument } from '@open-rpc/meta-schema';
 import JsonSchemaFakerRule from '@open-rpc/test-coverage/build/rules/json-schema-faker-rule';
 import ExamplesRule from '@open-rpc/test-coverage/build/rules/examples-rule';
 import { IOptions } from '@open-rpc/test-coverage/build/coverage';
-import { ScopeString } from '@metamask/multichain';
+import { InternalScopeString } from '@metamask/multichain';
 import { Driver, PAGES } from './webdriver/driver';
 
 import {
@@ -102,7 +102,7 @@ async function main() {
       const confirmationMethods = methodsWithConfirmations.filter(
         (m) => !ignoreMethods.includes(m),
       );
-      const scopeMap: Record<ScopeString, string[]> = {
+      const scopeMap: Record<InternalScopeString, string[]> = {
         [`eip155:${chainId}`]: ethereumMethods,
         'wallet:eip155': walletEip155Methods,
         wallet: walletRpcMethods,
