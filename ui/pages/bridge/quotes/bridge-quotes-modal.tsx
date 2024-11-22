@@ -38,6 +38,7 @@ import { useRequestMetadataProperties } from '../../../hooks/bridge/events/useRe
 import { useRequestProperties } from '../../../hooks/bridge/events/useRequestProperties';
 import { useCrossChainSwapsEventTracker } from '../../../hooks/bridge/useCrossChainSwapsEventTracker';
 import { MetaMetricsEventName } from '../../../../shared/constants/metametrics';
+import { useTradeProperties } from '../../../hooks/bridge/events/useTradeProperties';
 
 export const BridgeQuotesModal = ({
   onClose,
@@ -46,7 +47,8 @@ export const BridgeQuotesModal = ({
   const t = useI18nContext();
   const dispatch = useDispatch();
 
-  const { sortedQuotes, activeQuote } = useSelector(getBridgeQuotes);
+  const { sortedQuotes, activeQuote, recommendedQuote } =
+    useSelector(getBridgeQuotes);
   const sortOrder = useSelector(getBridgeSortOrder);
   const currency = useSelector(getCurrentCurrency);
   const nativeCurrency = useSelector(getNativeCurrency);
@@ -55,6 +57,7 @@ export const BridgeQuotesModal = ({
   const { quoteRequestProperties } = useRequestProperties();
   const requestMetadataProperties = useRequestMetadataProperties();
   const quoteListProperties = useQuoteProperties();
+  const tradeProperties = useTradeProperties();
 
   return (
     <Modal className="quotes-modal" onClose={onClose} {...modalProps}>
@@ -141,6 +144,8 @@ export const BridgeQuotesModal = ({
               quote: { destAsset, bridges, requestId },
             } = quote;
             const isQuoteActive = requestId === activeQuote?.quote.requestId;
+            const isRecommendedQuote =
+              requestId === recommendedQuote?.quote.requestId;
 
             return (
               <Row
@@ -151,6 +156,21 @@ export const BridgeQuotesModal = ({
                 }
                 onClick={() => {
                   dispatch(setSelectedQuote(quote));
+                  // Emit QuoteSelected event after dispatching setSelectedQuote
+                  quoteRequestProperties &&
+                    requestMetadataProperties &&
+                    quoteListProperties &&
+                    tradeProperties &&
+                    trackCrossChainSwapsEvent({
+                      event: MetaMetricsEventName.QuoteSelected,
+                      properties: {
+                        ...quoteRequestProperties,
+                        ...requestMetadataProperties,
+                        ...quoteListProperties,
+                        ...tradeProperties,
+                        is_best_quote: isRecommendedQuote,
+                      },
+                    });
                   onClose();
                 }}
                 paddingInline={4}
