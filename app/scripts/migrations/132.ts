@@ -5,10 +5,8 @@ import {
   PermissionSpecificationConstraint,
 } from '@metamask/permission-controller';
 import { SnapControllerState } from '@metamask/snaps-controllers';
-import { filterRemovedPermissions } from '@metamask/snaps-rpc-methods';
 import { hasProperty, isObject } from '@metamask/utils';
 import { cloneDeep } from 'lodash';
-import log from 'loglevel';
 
 type VersionedData = {
   meta: { version: number };
@@ -93,4 +91,6 @@ function transformState(state: Record<string, unknown>): void {
       ].permissions = newSnapPermissions;
     }
   });
+
+  console.log(state);
 }
