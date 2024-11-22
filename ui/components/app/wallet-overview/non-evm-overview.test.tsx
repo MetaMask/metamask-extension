@@ -17,6 +17,7 @@ import {
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
 import NonEvmOverview from './non-evm-overview';
+import useMultiPolling from '../../../hooks/useMultiPolling';
 
 // We need to mock `dispatch` since we use it for `setDefaultHomeActiveTabName`.
 const mockDispatch = jest.fn().mockReturnValue(() => jest.fn());
@@ -31,6 +32,11 @@ jest.mock('../../../store/actions', () => ({
   setDefaultHomeActiveTabName: jest.fn(),
   tokenBalancesStartPolling: jest.fn().mockResolvedValue('pollingToken'),
   tokenBalancesStopPollingByPollingToken: jest.fn(),
+}));
+
+jest.mock('../../../hooks/useMultiPolling', () => ({
+  __esModule: true,
+  default: jest.fn(),
 }));
 
 const PORTOFOLIO_URL = 'https://portfolio.test';
@@ -131,6 +137,23 @@ function makePortfolioUrl(path: string, getParams: Record<string, string>) {
 describe('NonEvmOverview', () => {
   beforeEach(() => {
     setBackgroundConnection({ setBridgeFeatureFlags: jest.fn() } as never);
+    // Clear previous mock implementations
+    (useMultiPolling as jest.Mock).mockClear();
+
+    // Mock implementation for useMultiPolling
+    (useMultiPolling as jest.Mock).mockImplementation(({ input }) => {
+      // Mock startPolling and stopPollingByPollingToken for each input
+      const startPolling = jest.fn().mockResolvedValue('mockPollingToken');
+      const stopPollingByPollingToken = jest.fn();
+
+      input.forEach((inputItem: string) => {
+        const key = JSON.stringify(inputItem);
+        // Simulate returning a unique token for each input
+        startPolling.mockResolvedValueOnce(`mockToken-${key}`);
+      });
+
+      return { startPolling, stopPollingByPollingToken };
+    });
   });
 
   it('shows the primary balance using the native token when showNativeTokenAsMainBalance if true', async () => {
@@ -153,6 +176,7 @@ describe('NonEvmOverview', () => {
           // The balances won't be available
           preferences: {
             showNativeTokenAsMainBalance: false,
+            tokenNetworkFilter: {},
           },
         },
       }),

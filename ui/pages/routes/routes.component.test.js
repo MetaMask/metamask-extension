@@ -15,6 +15,7 @@ import { useIsOriginalNativeTokenSymbol } from '../../hooks/useIsOriginalNativeT
 import { createMockInternalAccount } from '../../../test/jest/mocks';
 import { CHAIN_IDS } from '../../../shared/constants/network';
 import { mockNetworkState } from '../../../test/stub/networks';
+import useMultiPolling from '../../hooks/useMultiPolling';
 import Routes from '.';
 
 const middlewares = [thunk];
@@ -45,7 +46,19 @@ jest.mock('../../store/actions', () => ({
   hideNetworkDropdown: () => mockHideNetworkDropdown,
   tokenBalancesStartPolling: jest.fn().mockResolvedValue('pollingToken'),
   tokenBalancesStopPollingByPollingToken: jest.fn(),
+  setTokenNetworkFilter: jest.fn(),
 }));
+
+// Mock the dispatch function
+const mockDispatch = jest.fn();
+
+jest.mock('react-redux', () => {
+  const actual = jest.requireActual('react-redux');
+  return {
+    ...actual,
+    useDispatch: () => mockDispatch,
+  };
+});
 
 jest.mock('../../ducks/bridge/actions', () => ({
   setBridgeFeatureFlags: () => jest.fn(),
@@ -79,6 +92,11 @@ jest.mock(
   '../../components/app/metamask-template-renderer/safe-component-list',
 );
 
+jest.mock('../../hooks/useMultiPolling', () => ({
+  __esModule: true,
+  default: jest.fn(),
+}));
+
 const render = async (route, state) => {
   const store = configureMockStore(middlewares)({
     ...mockSendState,
@@ -97,6 +115,26 @@ const render = async (route, state) => {
 describe('Routes Component', () => {
   useIsOriginalNativeTokenSymbol.mockImplementation(() => true);
 
+  beforeEach(() => {
+    // Clear previous mock implementations
+    useMultiPolling.mockClear();
+
+    // Mock implementation for useMultiPolling
+    useMultiPolling.mockImplementation(({ input }) => {
+      // Mock startPolling and stopPollingByPollingToken for each input
+      const startPolling = jest.fn().mockResolvedValue('mockPollingToken');
+      const stopPollingByPollingToken = jest.fn();
+
+      input.forEach((inputItem) => {
+        const key = JSON.stringify(inputItem);
+        // Simulate returning a unique token for each input
+        startPolling.mockResolvedValueOnce(`mockToken-${key}`);
+      });
+
+      return { startPolling, stopPollingByPollingToken };
+    });
+  });
+
   afterEach(() => {
     mockShowNetworkDropdown.mockClear();
     mockHideNetworkDropdown.mockClear();
@@ -112,6 +150,7 @@ describe('Routes Component', () => {
             ...mockSendState.metamask.swapsState,
             swapsFeatureIsLive: true,
           },
+          accountsByChainId: {},
           pendingApprovals: {},
           approvalFlows: [],
           announcements: {},
@@ -123,6 +162,10 @@ describe('Routes Component', () => {
               order: 'dsc',
               sortCallback: 'stringNumeric',
             },
+            tokenNetworkFilter: {},
+          },
+          tokenBalances: {
+            '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc': '0x176270e2b862e4ed3',
           },
         },
         send: {
@@ -158,12 +201,27 @@ describe('toast display', () => {
     ...mockState,
     metamask: {
       ...mockState.metamask,
+      allTokens: {},
       announcements: {},
       approvalFlows: [],
       completedOnboarding: true,
       usedNetworks: [],
       pendingApprovals: {},
       pendingApprovalCount: 0,
+      preferences: {
+        tokenSortConfig: {
+          key: 'token-sort-key',
+          order: 'dsc',
+          sortCallback: 'stringNumeric',
+        },
+        tokenNetworkFilter: {
+          [CHAIN_IDS.MAINNET]: true,
+          [CHAIN_IDS.LINEA_MAINNET]: true,
+        },
+      },
+      tokenBalances: {
+        '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc': '0x176270e2b862e4ed3',
+      },
       swapsState: { swapsFeatureIsLive: true },
       newPrivacyPolicyToastShownDate: date,
     },
@@ -182,6 +240,17 @@ describe('toast display', () => {
       swapsState: { swapsFeatureIsLive: true },
       newPrivacyPolicyToastShownDate: new Date(0),
       newPrivacyPolicyToastClickedOrClosed: true,
+      preferences: {
+        tokenSortConfig: {
+          key: 'token-sort-key',
+          order: 'dsc',
+          sortCallback: 'stringNumeric',
+        },
+        tokenNetworkFilter: {
+          [CHAIN_IDS.MAINNET]: true,
+          [CHAIN_IDS.LINEA_MAINNET]: true,
+        },
+      },
       surveyLinkLastClickedOrClosed: true,
       showPrivacyPolicyToast: false,
       showSurveyToast: false,
@@ -191,6 +260,9 @@ describe('toast display', () => {
         unconnectedAccount: true,
       },
       termsOfUseLastAgreed: new Date(0).getTime(),
+      tokenBalances: {
+        '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc': '0x176270e2b862e4ed3',
+      },
       internalAccounts: {
         accounts: {
           [mockAccount.id]: mockAccount,
