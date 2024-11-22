@@ -124,7 +124,7 @@ const PermitSimulationValueDisplay: React.FC<
   }
 
   return (
-    <Box>
+    <Box marginLeft="auto" style={{ maxWidth: '100%' }}>
       <Box display={Display.Flex} justifyContent={JustifyContent.flexEnd}>
         <Box
           display={Display.Inline}
@@ -146,6 +146,8 @@ const PermitSimulationValueDisplay: React.FC<
               style={{ paddingTop: '1px', paddingBottom: '1px' }}
               textAlign={TextAlign.Center}
             >
+              {credit && '+ '}
+              {debit && '- '}
               {tokenValue !== null &&
                 shortenString(tokenValue || '', {
                   truncatedCharLimit: 15,
