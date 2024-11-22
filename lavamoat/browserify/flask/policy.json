@@ -1526,12 +1526,12 @@
         "@ethereumjs/tx>@ethereumjs/util": true,
         "@metamask/base-controller": true,
         "@metamask/browser-passworder": true,
-        "@metamask/eth-sig-util": true,
         "@metamask/keyring-controller>@metamask/eth-hd-keyring": true,
+        "@metamask/keyring-controller>@metamask/eth-sig-util": true,
         "@metamask/keyring-controller>@metamask/eth-simple-keyring": true,
-        "@metamask/keyring-controller>@metamask/utils": true,
         "@metamask/keyring-controller>ethereumjs-wallet": true,
-        "@metamask/name-controller>async-mutex": true
+        "@metamask/name-controller>async-mutex": true,
+        "@metamask/utils": true
       }
     },
     "@metamask/keyring-controller>@metamask/eth-hd-keyring": {
@@ -1562,17 +1562,18 @@
         "semver": true
       }
     },
-    "@metamask/keyring-controller>@metamask/eth-simple-keyring": {
+    "@metamask/keyring-controller>@metamask/eth-sig-util": {
       "packages": {
         "@ethereumjs/tx>@ethereumjs/util": true,
         "@ethereumjs/tx>ethereum-cryptography": true,
-        "@metamask/eth-sig-util": true,
-        "@metamask/keyring-controller>@metamask/eth-simple-keyring>@metamask/utils": true,
-        "browserify>buffer": true,
-        "crypto-browserify>randombytes": true
+        "@metamask/abi-utils": true,
+        "@metamask/eth-sig-util>tweetnacl": true,
+        "@metamask/keyring-controller>@metamask/eth-sig-util>@metamask/utils": true,
+        "@metamask/utils>@scure/base": true,
+        "browserify>buffer": true
       }
     },
-    "@metamask/keyring-controller>@metamask/eth-simple-keyring>@metamask/utils": {
+    "@metamask/keyring-controller>@metamask/eth-sig-util>@metamask/utils": {
       "globals": {
         "TextDecoder": true,
         "TextEncoder": true
@@ -1587,7 +1588,17 @@
         "semver": true
       }
     },
-    "@metamask/keyring-controller>@metamask/utils": {
+    "@metamask/keyring-controller>@metamask/eth-simple-keyring": {
+      "packages": {
+        "@ethereumjs/tx>@ethereumjs/util": true,
+        "@ethereumjs/tx>ethereum-cryptography": true,
+        "@metamask/eth-sig-util": true,
+        "@metamask/keyring-controller>@metamask/eth-simple-keyring>@metamask/utils": true,
+        "browserify>buffer": true,
+        "crypto-browserify>randombytes": true
+      }
+    },
+    "@metamask/keyring-controller>@metamask/eth-simple-keyring>@metamask/utils": {
       "globals": {
         "TextDecoder": true,
         "TextEncoder": true
