@@ -42,6 +42,8 @@ import {
 import { InterfaceState } from '@metamask/snaps-sdk';
 import { KeyringTypes } from '@metamask/keyring-controller';
 import { NotificationServicesController } from '@metamask/notification-services-controller';
+import type { NotificationServicesController } from '@metamask/notification-services-controller';
+import { USER_STORAGE_FEATURE_NAMES } from '@metamask/profile-sync-controller/sdk';
 import { Patch } from 'immer';
 import { HandlerType } from '@metamask/snaps-utils';
 import switchDirection from '../../shared/lib/switch-direction';
@@ -67,8 +69,11 @@ import {
   getInternalAccountByAddress,
   getSelectedInternalAccount,
   getInternalAccounts,
-  getSelectedNetworkClientId,
 } from '../selectors';
+import {
+  getSelectedNetworkClientId,
+  getProviderConfig,
+} from '../../shared/modules/selectors/networks';
 import {
   computeEstimatedGasLimit,
   initializeSendState,
@@ -80,10 +85,7 @@ import {
   SEND_STAGES,
 } from '../ducks/send';
 import { switchedToUnconnectedAccount } from '../ducks/alerts/unconnected-account';
-import {
-  getProviderConfig,
-  getUnconnectedAccountAlertEnabledness,
-} from '../ducks/metamask/metamask';
+import { getUnconnectedAccountAlertEnabledness } from '../ducks/metamask/metamask';
 import { toChecksumHexAddress } from '../../shared/modules/hexstring-utils';
 import {
   HardwareDeviceNames,
@@ -1970,14 +1972,17 @@ export function addImportedTokens(
  *
  * @param options
  * @param options.tokensToIgnore
+ * @param options.networkClientId
  * @param options.dontShowLoadingIndicator
  */
 export function ignoreTokens({
   tokensToIgnore,
   dontShowLoadingIndicator = false,
+  networkClientId = null,
 }: {
   tokensToIgnore: string[];
   dontShowLoadingIndicator: boolean;
+  networkClientId?: NetworkClientId;
 }): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
   const _tokensToIgnore = Array.isArray(tokensToIgnore)
     ? tokensToIgnore
@@ -1988,7 +1993,10 @@ export function ignoreTokens({
       dispatch(showLoadingIndication());
     }
     try {
-      await submitRequestToBackground('ignoreTokens', [_tokensToIgnore]);
+      await submitRequestToBackground('ignoreTokens', [
+        _tokensToIgnore,
+        networkClientId,
+      ]);
     } catch (error) {
       logErrorWithMessage(error);
       dispatch(displayWarning(error));
@@ -2238,7 +2246,7 @@ export function automaticallySwitchNetwork(
  */
 export function setSwitchedNetworkDetails(switchedNetworkDetails: {
   networkClientId: string;
-  selectedTabOrigin: string;
+  selectedTabOrigin?: string;
 }): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
   return async (dispatch: MetaMaskReduxDispatch) => {
     await submitRequestToBackground('setSwitchedNetworkDetails', [
@@ -2429,7 +2437,12 @@ export function createRetryTransaction(
 
 export function addNetwork(
   networkConfiguration: AddNetworkFields | UpdateNetworkFields,
-): ThunkAction<Promise<void>, MetaMaskReduxState, unknown, AnyAction> {
+): ThunkAction<
+  Promise<NetworkConfiguration>,
+  MetaMaskReduxState,
+  unknown,
+  AnyAction
+> {
   return async (dispatch: MetaMaskReduxDispatch) => {
     log.debug(`background.addNetwork`, networkConfiguration);
     try {
@@ -4659,6 +4672,37 @@ export async function tokenRatesStopPollingByPollingToken(
 }
 
 /**
+ * Starts polling on accountTrackerController with the networkClientId
+ *
+ * @param networkClientId - The network client ID to pull balances for.
+ * @returns polling token used to stop polling
+ */
+export async function accountTrackerStartPolling(
+  networkClientId: string,
+): Promise<string> {
+  const pollingToken = await submitRequestToBackground(
+    'accountTrackerStartPolling',
+    [networkClientId],
+  );
+  await addPollingTokenToAppState(pollingToken);
+  return pollingToken;
+}
+
+/**
+ * Stops polling on the account tracker controller.
+ *
+ * @param pollingToken - polling token to use to stop polling.
+ */
+export async function accountTrackerStopPollingByPollingToken(
+  pollingToken: string,
+) {
+  await submitRequestToBackground('accountTrackerStopPollingByPollingToken', [
+    pollingToken,
+  ]);
+  await removePollingTokenFromAppState(pollingToken);
+}
+
+/**
  * Informs the GasFeeController that the UI requires gas fee polling
  *
  * @param networkClientId - unique identifier for the network client
@@ -5638,7 +5682,7 @@ export function deleteAccountSyncingDataFromUserStorage(): ThunkAction<
     try {
       const response = await submitRequestToBackground(
         'deleteAccountSyncingDataFromUserStorage',
-        ['accounts'],
+        [USER_STORAGE_FEATURE_NAMES.accounts],
       );
       return response;
     } catch (error) {

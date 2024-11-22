@@ -118,6 +118,7 @@
         "isRedesignedConfirmationsDeveloperEnabled": "boolean",
         "showConfirmationAdvancedDetails": false,
         "tokenSortConfig": "object",
+        "tokenNetworkFilter": {},
         "showMultiRpcModal": "boolean",
         "shouldShowAggregatedBalancePopover": "boolean"
       },

@@ -22,7 +22,7 @@ import { getCurrencySymbol } from '../../../../../helpers/utils/common.util';
 // inspired from ui/components/multichain/network-list-item
 // should probably be broken out into component library
 type SelectableListItemProps = {
-  isSelected: boolean;
+  isSelected?: boolean;
   onClick?: React.MouseEventHandler<HTMLSpanElement>;
   testId?: string;
   children: ReactNode;
@@ -39,7 +39,7 @@ export const SelectableListItem = ({
       <Box
         data-testid={`${testId}__button`}
         className={classnames('selectable-list-item', {
-          'selectable-list-item--selected': isSelected,
+          'selectable-list-item--selected': Boolean(isSelected),
         })}
         onClick={onClick}
       >

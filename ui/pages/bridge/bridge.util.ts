@@ -1,4 +1,6 @@
+import { Contract } from '@ethersproject/contracts';
 import { Hex, add0x } from '@metamask/utils';
+import { abiERC20 } from '@metamask/metamask-eth-abis';
 import {
   BridgeFeatureFlagsKey,
   BridgeFeatureFlags,
@@ -8,6 +10,8 @@ import {
 import {
   BRIDGE_API_BASE_URL,
   BRIDGE_CLIENT_ID,
+  ETH_USDT_ADDRESS,
+  METABRIDGE_ETHEREUM_ADDRESS,
 } from '../../../shared/constants/bridge';
 import { MINUTE } from '../../../shared/constants/time';
 import fetchWithCache from '../../../shared/lib/fetch-with-cache';
@@ -26,6 +30,7 @@ import {
 // TODO: Remove restricted import
 // eslint-disable-next-line import/no-restricted-paths
 import { REFRESH_INTERVAL_MS } from '../../../app/scripts/controllers/bridge/constants';
+import { CHAIN_IDS } from '../../../shared/constants/network';
 import {
   BridgeAsset,
   BridgeFlag,
@@ -185,3 +190,22 @@ export async function fetchBridgeQuotes(
   });
   return filteredQuotes;
 }
+/**
+ * A function to return the txParam data for setting allowance to 0 for USDT on Ethereum
+ *
+ * @returns The txParam data that will reset allowance to 0, combine it with the approval tx params received from Bridge API
+ */
+export const getEthUsdtResetData = () => {
+  const UsdtContractInterface = new Contract(ETH_USDT_ADDRESS, abiERC20)
+    .interface;
+  const data = UsdtContractInterface.encodeFunctionData('approve', [
+    METABRIDGE_ETHEREUM_ADDRESS,
+    '0',
+  ]);
+
+  return data;
+};
+
+export const isEthUsdt = (chainId: Hex, address: string) =>
+  chainId === CHAIN_IDS.MAINNET &&
+  address.toLowerCase() === ETH_USDT_ADDRESS.toLowerCase();
