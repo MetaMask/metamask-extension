@@ -66,17 +66,6 @@ function formatEthCurrencyDisplay({
   return null;
 }
 
-function getTokenSymbolFrom(account) {
-  switch (account.type) {
-    case BtcAccountType.P2wpkh:
-      return NON_EVM_CURRENCY_SYMBOLS.BTC;
-    case SolAccountType.DataAccount:
-      return NON_EVM_CURRENCY_SYMBOLS.SOL;
-    default:
-      throw new Error(`Unsupported account type: ${account.type}`);
-  }
-}
-
 function formatNonEvmAssetCurrencyDisplay({
   tokenSymbol,
   isNativeCurrency,
@@ -177,9 +166,9 @@ export function useCurrencyDisplay(
       return displayValue;
     }
 
-    if (!isEvm && account) {
+    if (!isEvm) {
       return formatNonEvmAssetCurrencyDisplay({
-        tokenSymbol: getTokenSymbolFrom(account),
+        tokenSymbol: nativeCurrency,
         isNativeCurrency,
         isUserPreferredCurrency,
         currency,
