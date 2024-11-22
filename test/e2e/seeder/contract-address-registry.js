@@ -1,8 +1,8 @@
 /*
  * Use this class to store pre-deployed smart contract addresses of the contracts deployed to
- * a local blockchain instance ran by Ganache.
+ * a local blockchain instance.
  */
-class GanacheContractAddressRegistry {
+class ContractAddressRegistry {
   #addresses = {};
 
   /**
@@ -25,4 +25,4 @@ class GanacheContractAddressRegistry {
   }
 }
 
-module.exports = GanacheContractAddressRegistry;
+module.exports = ContractAddressRegistry;
