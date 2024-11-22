@@ -15,6 +15,7 @@ import { SelectableListItem } from '../sort-control/sort-control';
 import { Text } from '../../../../component-library/text/text';
 import {
   AlignItems,
+  BlockSize,
   Display,
   JustifyContent,
   TextColor,
@@ -108,6 +109,7 @@ const NetworkFilter = ({ handleClose }: SortControlProps) => {
         <Box
           display={Display.Flex}
           justifyContent={JustifyContent.spaceBetween}
+          width={BlockSize.Full}
         >
           <Box>
             <Text
@@ -168,6 +170,7 @@ const NetworkFilter = ({ handleClose }: SortControlProps) => {
           display={Display.Flex}
           justifyContent={JustifyContent.spaceBetween}
           alignItems={AlignItems.center}
+          width={BlockSize.Full}
         >
           <Box>
             <Text

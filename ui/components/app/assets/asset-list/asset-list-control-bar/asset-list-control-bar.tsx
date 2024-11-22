@@ -6,7 +6,9 @@ import {
   Box,
   ButtonBase,
   ButtonBaseSize,
+  Icon,
   IconName,
+  IconSize,
   Popover,
   PopoverPosition,
 } from '../../../../component-library';
@@ -198,7 +200,8 @@ const AssetListControlBar = ({ showTokensLinks }: AssetListControlBarProps) => {
               className="asset-list-control-bar__button"
               onClick={toggleTokenSortPopover}
               size={ButtonBaseSize.Sm}
-              endIconName={IconName.SwapVertical}
+              startIconName={IconName.Filter}
+              startIconProps={{ marginInlineEnd: 0 }}
               backgroundColor={
                 isTokenSortPopoverOpen
                   ? BackgroundColor.backgroundPressed
@@ -264,9 +267,15 @@ const AssetListControlBar = ({ showTokensLinks }: AssetListControlBarProps) => {
         }}
       >
         <SelectableListItem onClick={handleImport} testId="importTokens">
+          <Icon name={IconName.Add} size={IconSize.Sm} marginInlineEnd={2} />
           {t('importTokensCamelCase')}
         </SelectableListItem>
         <SelectableListItem onClick={handleRefresh} testId="refreshList">
+          <Icon
+            name={IconName.Refresh}
+            size={IconSize.Sm}
+            marginInlineEnd={2}
+          />
           {t('refreshList')}
         </SelectableListItem>
       </Popover>

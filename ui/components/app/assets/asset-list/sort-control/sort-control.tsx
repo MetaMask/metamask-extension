@@ -4,6 +4,7 @@ import classnames from 'classnames';
 import { Box, Text } from '../../../../component-library';
 import { SortOrder, SortingCallbacksT } from '../../util/sort';
 import {
+  AlignItems,
   BackgroundColor,
   BlockSize,
   BorderRadius,
@@ -50,6 +51,7 @@ export const SelectableListItem = ({
         width={BlockSize.Full}
         backgroundColor={BackgroundColor.backgroundDefault}
         display={Display.Flex}
+        alignItems={AlignItems.center}
       >
         {children}
       </Text>
