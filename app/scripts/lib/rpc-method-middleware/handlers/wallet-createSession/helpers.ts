@@ -6,7 +6,7 @@ import {
 import {
   parseScopeString,
   ScopedProperties,
-  ScopesObject,
+  NormalizedScopesObject,
 } from '@metamask/multichain';
 import { toHex } from '@metamask/controller-utils';
 import { validateAddEthereumChainParams } from '../ethereum-chain-utils';
@@ -86,8 +86,8 @@ export const validateAndAddEip3085 = async ({
 };
 
 export const processScopedProperties = (
-  requiredScopes: ScopesObject,
-  optionalScopes: ScopesObject,
+  requiredScopes: NormalizedScopesObject,
+  optionalScopes: NormalizedScopesObject,
   scopedProperties?: ScopedProperties,
   hooks = { validateScopedPropertyEip3085 },
 ): ScopedProperties => {

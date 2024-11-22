@@ -1,5 +1,5 @@
 import { RpcEndpointType } from '@metamask/network-controller';
-import { ScopeObject } from '@metamask/multichain';
+import { NormalizedScopeObject } from '@metamask/multichain';
 import * as EthereumChainUtils from '../ethereum-chain-utils';
 import {
   validateAndAddEip3085,
@@ -7,7 +7,7 @@ import {
   processScopedProperties,
 } from './helpers';
 
-const validScopeObject: ScopeObject = {
+const validScopeObject: NormalizedScopeObject = {
   methods: [],
   notifications: [],
   accounts: [],
