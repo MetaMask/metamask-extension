@@ -6,7 +6,9 @@ import {
   Box,
   ButtonBase,
   ButtonBaseSize,
+  Icon,
   IconName,
+  IconSize,
   Popover,
   PopoverPosition,
 } from '../../../../component-library';
@@ -198,7 +200,8 @@ const AssetListControlBar = ({ showTokensLinks }: AssetListControlBarProps) => {
               className="asset-list-control-bar__button"
               onClick={toggleTokenSortPopover}
               size={ButtonBaseSize.Sm}
-              endIconName={IconName.SwapVertical}
+              startIconName={IconName.Filter}
+              startIconProps={{ marginInlineEnd: 0 }}
               backgroundColor={
                 isTokenSortPopoverOpen
                   ? BackgroundColor.backgroundPressed
@@ -221,13 +224,13 @@ const AssetListControlBar = ({ showTokensLinks }: AssetListControlBarProps) => {
         isOpen={isNetworkFilterPopoverOpen}
         position={PopoverPosition.BottomStart}
         referenceElement={popoverRef.current}
-        matchWidth={!isFullScreen}
+        matchWidth={false}
         style={{
           zIndex: 10,
           display: 'flex',
           flexDirection: 'column',
           padding: 0,
-          minWidth: isFullScreen ? '325px' : '',
+          minWidth: isFullScreen ? '250px' : '',
         }}
       >
         <NetworkFilter handleClose={closePopover} />
@@ -237,13 +240,13 @@ const AssetListControlBar = ({ showTokensLinks }: AssetListControlBarProps) => {
         isOpen={isTokenSortPopoverOpen}
         position={PopoverPosition.BottomEnd}
         referenceElement={popoverRef.current}
-        matchWidth={!isFullScreen}
+        matchWidth={false}
         style={{
           zIndex: 10,
           display: 'flex',
           flexDirection: 'column',
           padding: 0,
-          minWidth: isFullScreen ? '325px' : '',
+          minWidth: isFullScreen ? '250px' : '',
         }}
       >
         <SortControl handleClose={closePopover} />
@@ -254,19 +257,25 @@ const AssetListControlBar = ({ showTokensLinks }: AssetListControlBarProps) => {
         isOpen={isImportTokensPopoverOpen}
         position={PopoverPosition.BottomEnd}
         referenceElement={popoverRef.current}
-        matchWidth={!isFullScreen}
+        matchWidth={false}
         style={{
           zIndex: 10,
           display: 'flex',
           flexDirection: 'column',
           padding: 0,
-          minWidth: isFullScreen ? '325px' : '',
+          minWidth: isFullScreen ? '158px' : '',
         }}
       >
         <SelectableListItem onClick={handleImport} testId="importTokens">
+          <Icon name={IconName.Add} size={IconSize.Sm} marginInlineEnd={2} />
           {t('importTokensCamelCase')}
         </SelectableListItem>
         <SelectableListItem onClick={handleRefresh} testId="refreshList">
+          <Icon
+            name={IconName.Refresh}
+            size={IconSize.Sm}
+            marginInlineEnd={2}
+          />
           {t('refreshList')}
         </SelectableListItem>
       </Popover>
