@@ -6,7 +6,6 @@ const {
   tempToggleSettingRedesignedTransactionConfirmations,
 } = require('../helpers');
 const FixtureBuilder = require('../fixture-builder');
-const { PAGES } = require('../webdriver/driver');
 const { TEST_SNAPS_WEBSITE_URL } = require('./enums');
 
 describe('Test Snap TxInsights', function () {

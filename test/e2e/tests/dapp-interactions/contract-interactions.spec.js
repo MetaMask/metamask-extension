@@ -9,7 +9,6 @@ const {
   clickNestedButton,
   tempToggleSettingRedesignedTransactionConfirmations,
 } = require('../../helpers');
-const { PAGES } = require('../../webdriver/driver');
 const { SMART_CONTRACTS } = require('../../seeder/smart-contracts');
 const FixtureBuilder = require('../../fixture-builder');
 

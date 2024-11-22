@@ -4,7 +4,6 @@ const {
 const {
   default: ConfirmationNavigation,
 } = require('../../page-objects/pages/confirmations/legacy/navigation');
-const { PAGES } = require('../../webdriver/driver');
 
 const {
   withFixtures,

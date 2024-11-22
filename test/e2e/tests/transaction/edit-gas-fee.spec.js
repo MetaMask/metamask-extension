@@ -3,7 +3,6 @@ const {
   createInternalTransaction,
   createDappTransaction,
 } = require('../../page-objects/flows/transaction');
-const { PAGES } = require('../../webdriver/driver');
 
 const {
   withFixtures,

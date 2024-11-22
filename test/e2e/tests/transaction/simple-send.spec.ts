@@ -1,5 +1,5 @@
 import { Suite } from 'mocha';
-import { Driver, PAGES } from '../../webdriver/driver';
+import { Driver } from '../../webdriver/driver';
 import { Ganache } from '../../seeder/ganache';
 import {
   withFixtures,

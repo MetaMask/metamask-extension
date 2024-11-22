@@ -1,4 +1,3 @@
-const { PAGES } = require('../../webdriver/driver');
 const {
   defaultGanacheOptions,
   logInWithBalanceValidation,

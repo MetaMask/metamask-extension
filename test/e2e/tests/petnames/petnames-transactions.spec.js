@@ -8,7 +8,6 @@ const {
   tempToggleSettingRedesignedTransactionConfirmations,
 } = require('../../helpers');
 const FixtureBuilder = require('../../fixture-builder');
-const { PAGES } = require('../../webdriver/driver');
 const {
   expectName,
   focusTestDapp,

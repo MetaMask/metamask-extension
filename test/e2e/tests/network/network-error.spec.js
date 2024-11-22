@@ -7,7 +7,6 @@ const {
   tempToggleSettingRedesignedTransactionConfirmations,
 } = require('../../helpers');
 const FixtureBuilder = require('../../fixture-builder');
-const { PAGES } = require('../../webdriver/driver');
 const { GAS_API_BASE_URL } = require('../../../../shared/constants/swaps');
 
 describe('Gas API fallback', function () {

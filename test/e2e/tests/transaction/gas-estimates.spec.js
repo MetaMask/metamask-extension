@@ -6,7 +6,6 @@ const {
   tempToggleSettingRedesignedTransactionConfirmations,
 } = require('../../helpers');
 const FixtureBuilder = require('../../fixture-builder');
-const { PAGES } = require('../../webdriver/driver');
 const { CHAIN_IDS } = require('../../../../shared/constants/network');
 const { GAS_API_BASE_URL } = require('../../../../shared/constants/swaps');
 

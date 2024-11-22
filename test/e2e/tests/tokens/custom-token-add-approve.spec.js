@@ -1,5 +1,4 @@
 const { strict: assert } = require('assert');
-const { PAGES } = require('../../webdriver/driver');
 const {
   clickNestedButton,
   defaultGanacheOptions,

@@ -7,7 +7,7 @@ import {
   withFixtures,
 } from '../../helpers';
 import { DEFAULT_FIXTURE_ACCOUNT } from '../../constants';
-import { Driver, PAGES } from '../../webdriver/driver';
+import { Driver } from '../../webdriver/driver';
 import { Ganache } from '../../seeder/ganache';
 import AccountListPage from '../../page-objects/pages/account-list-page';
 import FixtureBuilder from '../../fixture-builder';

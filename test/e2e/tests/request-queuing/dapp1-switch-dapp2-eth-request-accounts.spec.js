@@ -11,7 +11,6 @@ const {
   defaultGanacheOptions,
   tempToggleSettingRedesignedTransactionConfirmations,
 } = require('../../helpers');
-const { PAGES } = require('../../webdriver/driver');
 
 describe('Request Queuing Dapp 1 Send Tx -> Dapp 2 Request Accounts Tx', function () {
   describe('Old confirmation screens', function () {

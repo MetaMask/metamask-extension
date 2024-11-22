@@ -13,7 +13,6 @@ const {
   tempToggleSettingRedesignedTransactionConfirmations,
 } = require('../../helpers');
 const { SMART_CONTRACTS } = require('../../seeder/smart-contracts');
-const { PAGES } = require('../../webdriver/driver');
 
 const DEFAULT_TEST_DAPP_INCREASE_ALLOWANCE_SPENDING_CAP = '1';
 

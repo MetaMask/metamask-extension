@@ -9,7 +9,6 @@ const {
   withFixtures,
   tempToggleSettingRedesignedTransactionConfirmations,
 } = require('../../helpers');
-const { PAGES } = require('../../webdriver/driver');
 
 describe('Request Queuing Dapp 1, Switch Tx -> Dapp 2 Send Tx', function () {
   describe('Old confirmation screens', function () {

@@ -9,7 +9,6 @@ const {
   tempToggleSettingRedesignedTransactionConfirmations,
 } = require('../../helpers');
 const { SMART_CONTRACTS } = require('../../seeder/smart-contracts');
-const { PAGES } = require('../../webdriver/driver');
 
 describe('4byte setting', function () {
   it('makes a call to 4byte when the setting is on', async function () {

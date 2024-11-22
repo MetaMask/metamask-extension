@@ -1,6 +1,5 @@
 const { strict: assert } = require('assert');
 const FixtureBuilder = require('../../fixture-builder');
-const { PAGES } = require('../../webdriver/driver');
 const {
   defaultGanacheOptions,
   withFixtures,

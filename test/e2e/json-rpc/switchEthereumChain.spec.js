@@ -11,7 +11,6 @@ const {
   tempToggleSettingRedesignedTransactionConfirmations,
 } = require('../helpers');
 const FixtureBuilder = require('../fixture-builder');
-const { PAGES } = require('../webdriver/driver');
 const { isManifestV3 } = require('../../../shared/modules/mv3.utils');
 
 describe('Switch Ethereum Chain for two dapps', function () {

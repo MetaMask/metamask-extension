@@ -12,7 +12,6 @@ const {
   largeDelayMs,
   tempToggleSettingRedesignedTransactionConfirmations,
 } = require('../../helpers');
-const { PAGES } = require('../../webdriver/driver');
 
 describe('Request Queuing for Multiple Dapps and Txs on same networks', function () {
   describe('Old confirmation screens', function () {

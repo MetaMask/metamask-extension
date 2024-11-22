@@ -9,7 +9,6 @@ const {
   defaultGanacheOptions,
   tempToggleSettingRedesignedTransactionConfirmations,
 } = require('../../helpers');
-const { PAGES } = require('../../webdriver/driver');
 
 describe('Request Queuing for Multiple Dapps and Txs on different networks revokePermissions', function () {
   describe('Old confirmation screens', function () {

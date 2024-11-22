@@ -2,7 +2,6 @@ const { strict: assert } = require('assert');
 const {
   createInternalTransaction,
 } = require('../../page-objects/flows/transaction');
-const { PAGES } = require('../../webdriver/driver');
 
 const {
   defaultGanacheOptions,

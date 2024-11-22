@@ -9,7 +9,6 @@ const {
   tempToggleSettingRedesignedTransactionConfirmations,
 } = require('../../helpers');
 const FixtureBuilder = require('../../fixture-builder');
-const { PAGES } = require('../../webdriver/driver');
 
 describe('Multiple transactions', function () {
   it('creates multiple queued transactions, then confirms', async function () {

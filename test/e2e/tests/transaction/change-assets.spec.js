@@ -7,7 +7,6 @@ const {
 } = require('../../helpers');
 const FixtureBuilder = require('../../fixture-builder');
 const { SMART_CONTRACTS } = require('../../seeder/smart-contracts');
-const { PAGES } = require('../../webdriver/driver');
 const { tEn } = require('../../../lib/i18n-helpers');
 
 describe('Change assets', function () {

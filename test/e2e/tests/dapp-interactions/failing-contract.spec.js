@@ -10,7 +10,6 @@ const {
 } = require('../../helpers');
 const { SMART_CONTRACTS } = require('../../seeder/smart-contracts');
 const FixtureBuilder = require('../../fixture-builder');
-const { PAGES } = require('../../webdriver/driver');
 
 describe('Failing contract interaction ', function () {
   const smartContract = SMART_CONTRACTS.FAILING;

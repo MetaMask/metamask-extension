@@ -12,7 +12,6 @@ const {
   tempToggleSettingRedesignedTransactionConfirmations,
 } = require('../../helpers');
 const FixtureBuilder = require('../../fixture-builder');
-const { PAGES } = require('../../webdriver/driver');
 
 describe('Send ETH', function () {
   describe('from inside MetaMask', function () {
