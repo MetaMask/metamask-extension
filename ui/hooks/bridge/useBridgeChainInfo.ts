@@ -55,7 +55,7 @@ export default function useBridgeChainInfo({
     srcTxMeta,
   });
 
-  if (!bridgeHistoryItem || !hexSrcChainId || !hexDestChainId) {
+  if (!hexSrcChainId || !hexDestChainId) {
     return {
       srcNetwork: undefined,
       destNetwork: undefined,
