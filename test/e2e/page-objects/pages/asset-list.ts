@@ -72,23 +72,6 @@ class AssetListPage {
     return value;
   }
 
-  async selectNetworkFilterAllNetworks(): Promise<void> {
-    console.log(`Selecting "All networks" from the network filter`);
-    await this.driver.clickElement(this.allNetworksOption);
-
-    // TODO: Replace this with polling for text to say "All networks"
-    await this.driver.delay(2000);
-  }
-
-  async selectNetworkFilterCurrentNetwork(): Promise<void> {
-    console.log(`Selecting "Current network" from the network filter`);
-    await this.driver.clickElement(this.currentNetworkOption);
-
-    // TODO: Replace this with polling for text to *not* say "All networks"
-    // Don't check for specific network name as it could change based on global network chosen
-    await this.driver.delay(2000);
-  }
-
   async getNumberOfAssets(): Promise<number> {
     console.log(`Returning the total number of asset items in the token list`);
     const assets = await this.driver.findElements(
