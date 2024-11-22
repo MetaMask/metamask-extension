@@ -199,7 +199,6 @@ workflows:
           requires:
             - prep-deps
       - test-e2e-chrome-webpack:
-          <<: *develop_master_rc_only
           requires:
             - prep-build-test-webpack
             - get-changed-files-with-git-diff
@@ -208,7 +207,6 @@ workflows:
             - prep-build-test
             - get-changed-files-with-git-diff
       - test-e2e-firefox:
-          <<: *develop_master_rc_only
           requires:
             - prep-build-test-mv2
             - get-changed-files-with-git-diff
@@ -1074,6 +1072,8 @@ jobs:
       - run: sudo corepack enable
       - attach_workspace:
           at: .
+      # Stop job unless 'test-e2e-chrome-webpack' manifest run flag is set
+      - run: yarn tsx .circleci/scripts/check-optional-e2e-trigger.ts test-e2e-chrome-webpack
       - run:
           name: Move test build to dist
           command: mv ./dist-test-webpack ./dist
@@ -1381,6 +1381,8 @@ jobs:
       - run: sudo corepack enable
       - attach_workspace:
           at: .
+      # Stop job unless 'test-e2e-firefox' manifest run flag is set
+      - run: yarn tsx .circleci/scripts/check-optional-e2e-trigger.ts test-e2e-firefox
       - run:
           name: Move test build to dist
           command: mv ./dist-test-mv2 ./dist

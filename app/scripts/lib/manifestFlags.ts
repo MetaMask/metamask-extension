@@ -37,6 +37,10 @@ export type ManifestFlags = {
     prNumber?: number;
   };
   /**
+   * Optional CircleCI jobs that we want to explicitly trigger to run.
+   */
+  run?: string[];
+  /**
    * Sentry flags
    */
   sentry?: {
