@@ -25,6 +25,7 @@ jest.mock('@metamask/multichain', () => ({
   ...jest.requireActual('@metamask/multichain'),
   validateAndNormalizeScopes: jest.fn(),
   bucketScopes: jest.fn(),
+  getSessionScopes: jest.fn(),
 }));
 const MockMultichain = jest.mocked(Multichain);
 
@@ -131,6 +132,8 @@ describe('wallet_createSession', () => {
       supportableScopes: {},
       unsupportableScopes: {},
     });
+    MockMultichain.getSessionScopes.mockReturnValue({})
+    MockHelpers.processScopedProperties.mockReturnValue({})
   });
 
   afterEach(() => {
@@ -417,6 +420,13 @@ describe('wallet_createSession', () => {
         },
       },
     });
+    MockMultichain.getSessionScopes.mockReturnValue({
+      'eip155:1': {
+        methods: [],
+        notifications: [],
+        accounts: ['eip155:1:0x1'],
+      },
+    })
     await handler({
       ...baseRequest,
       params: {
@@ -516,25 +526,17 @@ describe('wallet_createSession', () => {
               value: {
                 requiredScopes: {
                   'eip155:5': {
-                    methods: ['eth_chainId'],
-                    notifications: ['accountsChanged'],
                     accounts: ['eip155:5:0x1', 'eip155:5:0x2'],
                   },
                 },
                 optionalScopes: {
                   'eip155:100': {
-                    methods: ['eth_sendTransaction'],
-                    notifications: ['chainChanged'],
                     accounts: ['eip155:100:0x1', 'eip155:100:0x2'],
                   },
                   'eip155:1337': {
-                    methods: KnownRpcMethods.eip155,
-                    notifications: KnownNotifications.eip155,
                     accounts: ['eip155:1337:0x1', 'eip155:1337:0x2'],
                   },
                   'wallet:eip155': {
-                    methods: [],
-                    notifications: [],
                     accounts: ['wallet:eip155:0x1', 'wallet:eip155:0x2'],
                   },
                 },
@@ -613,6 +615,23 @@ describe('wallet_createSession', () => {
         supportableScopes: {},
         unsupportableScopes: {},
       });
+    MockMultichain.getSessionScopes.mockReturnValue({
+      'eip155:5': {
+        methods: ['eth_chainId', 'net_version'],
+        notifications: ['accountsChanged', 'chainChanged'],
+        accounts: ['eip155:5:0x1', 'eip155:5:0x2'],
+      },
+      'eip155:100': {
+        methods: ['eth_sendTransaction'],
+        notifications: ['chainChanged'],
+        accounts: ['eip155:100:0x1', 'eip155:100:0x2'],
+      },
+      'wallet:eip155': {
+        methods: [],
+        notifications: [],
+        accounts: ['wallet:eip155:0x1', 'wallet:eip155:0x2'],
+      },
+    })
     requestPermissionApprovalForOrigin.mockResolvedValue({
       approvedAccounts: ['0x1', '0x2'],
       approvedChainIds: ['0x5', '0x64'], // 5, 100
@@ -663,6 +682,13 @@ describe('wallet_createSession', () => {
         supportableScopes: {},
         unsupportableScopes: {},
       });
+    MockMultichain.getSessionScopes.mockReturnValue({
+      'eip155:1': {
+        methods: [],
+        notifications: [],
+        accounts: [],
+      },
+    })
     MockHelpers.processScopedProperties.mockReturnValue({
       'eip155:1': {
         eip3085: {
