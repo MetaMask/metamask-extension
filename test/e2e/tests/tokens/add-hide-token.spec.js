@@ -118,6 +118,9 @@ describe('Add existing token using search', function () {
               },
             ],
           })
+          .withAppStateController({
+            [CHAIN_IDS.OPTIMISM]: true,
+          })
           .build(),
         ganacheOptions: {
           ...defaultGanacheOptions,

@@ -17,20 +17,23 @@ import {
   IconName,
 } from '../../components/component-library';
 import { getIsBridgeChain, getIsBridgeEnabled } from '../../selectors';
+import { getProviderConfig } from '../../../shared/modules/selectors/networks';
 import useBridging from '../../hooks/bridge/useBridging';
 import {
   Content,
   Footer,
   Header,
 } from '../../components/multichain/pages/page';
-import { getProviderConfig } from '../../ducks/metamask/metamask';
 import { resetBridgeState, setFromChain } from '../../ducks/bridge/actions';
+import { useSwapsFeatureFlags } from '../swaps/hooks/useSwapsFeatureFlags';
 import PrepareBridgePage from './prepare/prepare-bridge-page';
 import { BridgeCTAButton } from './prepare/bridge-cta-button';
 
 const CrossChainSwap = () => {
   const t = useContext(I18nContext);
 
+  // Load swaps feature flags so that we can use smart transactions
+  useSwapsFeatureFlags();
   useBridging();
 
   const history = useHistory();

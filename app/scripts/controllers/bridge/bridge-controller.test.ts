@@ -22,11 +22,27 @@ const messengerMock = {
   publish: jest.fn(),
 } as unknown as jest.Mocked<BridgeControllerMessenger>;
 
+jest.mock('@ethersproject/contracts', () => {
+  return {
+    Contract: jest.fn(() => ({
+      allowance: jest.fn(() => '100000000000000000000'),
+    })),
+  };
+});
+
+jest.mock('@ethersproject/providers', () => {
+  return {
+    Web3Provider: jest.fn(),
+  };
+});
+
 describe('BridgeController', function () {
   let bridgeController: BridgeController;
 
   beforeAll(function () {
-    bridgeController = new BridgeController({ messenger: messengerMock });
+    bridgeController = new BridgeController({
+      messenger: messengerMock,
+    });
   });
 
   beforeEach(() => {
@@ -43,6 +59,18 @@ describe('BridgeController', function () {
         'extension-support': true,
         'src-network-allowlist': [10, 534352],
         'dest-network-allowlist': [137, 42161],
+        'approval-gas-multiplier': {
+          '137': 1.1,
+          '42161': 1.2,
+          '10': 1.3,
+          '534352': 1.4,
+        },
+        'bridge-gas-multiplier': {
+          '137': 2.1,
+          '42161': 2.2,
+          '10': 2.3,
+          '534352': 2.4,
+        },
       });
     nock(BRIDGE_API_BASE_URL)
       .get('/getTokens?chainId=10')
@@ -507,7 +535,10 @@ describe('BridgeController', function () {
       bridgeController,
       'startPollingByNetworkClientId',
     );
-    messengerMock.call.mockReturnValueOnce({ address: '0x123' } as never);
+    messengerMock.call.mockReturnValue({
+      address: '0x123',
+      provider: jest.fn(),
+    } as never);
 
     bridgeController.updateBridgeQuoteRequestParams({
       srcChainId: 1,
@@ -535,5 +566,19 @@ describe('BridgeController', function () {
           DEFAULT_BRIDGE_CONTROLLER_STATE.quotesLoadingStatus,
       }),
     );
+  });
+
+  describe('getBridgeERC20Allowance', () => {
+    it('should return the atomic allowance of the ERC20 token contract', async () => {
+      messengerMock.call.mockReturnValue({
+        address: '0x123',
+        provider: jest.fn(),
+      } as never);
+      const allowance = await bridgeController.getBridgeERC20Allowance(
+        '0x1f9840a85d5af5bf1d1762f925bdaddc4201f984',
+        '0xa',
+      );
+      expect(allowance).toBe('100000000000000000000');
+    });
   });
 });

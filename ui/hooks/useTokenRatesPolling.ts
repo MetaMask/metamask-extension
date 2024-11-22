@@ -6,6 +6,7 @@ import {
   getTokensMarketData,
   getUseCurrencyRateCheck,
 } from '../selectors';
+import { getNetworkConfigurationsByChainId } from '../../shared/modules/selectors/networks';
 import {
   tokenRatesStartPolling,
   tokenRatesStopPollingByPollingToken,

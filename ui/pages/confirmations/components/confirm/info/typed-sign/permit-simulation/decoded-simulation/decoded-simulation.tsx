@@ -6,19 +6,13 @@ import {
 import { Hex } from '@metamask/utils';
 
 import { TokenStandard } from '../../../../../../../../../shared/constants/transaction';
-import {
-  Box,
-  Text,
-} from '../../../../../../../../components/component-library';
-import {
-  TextColor,
-  TextVariant,
-} from '../../../../../../../../helpers/constants/design-system';
+import { ConfirmInfoRow } from '../../../../../../../../components/app/confirm/info/row';
 import { useI18nContext } from '../../../../../../../../hooks/useI18nContext';
 import { SignatureRequestType } from '../../../../../../types/confirm';
 import { useConfirmContext } from '../../../../../../context/confirm';
 import StaticSimulation from '../../../shared/static-simulation/static-simulation';
-import PermitSimulationValueDisplay from '../value-display/value-display';
+import NativeValueDisplay from '../native-value-display/native-value-display';
+import TokenValueDisplay from '../value-display/value-display';
 
 const getStateChangeLabelMap = (
   t: ReturnType<typeof useI18nContext>,
@@ -44,17 +38,10 @@ const StateChangeRow = ({
   const { assetType, changeType, amount, contractAddress, tokenID } =
     stateChange;
   return (
-    <Box>
-      <Text
-        variant={TextVariant.bodyMdMedium}
-        color={TextColor.inherit}
-        marginLeft={2}
-      >
-        {getStateChangeLabelMap(t, changeType)}
-      </Text>
+    <ConfirmInfoRow label={getStateChangeLabelMap(t, changeType)}>
       {(assetType === TokenStandard.ERC20 ||
         assetType === TokenStandard.ERC721) && (
-        <PermitSimulationValueDisplay
+        <TokenValueDisplay
           tokenContract={contractAddress}
           value={amount}
           chainId={chainId}
@@ -63,7 +50,15 @@ const StateChangeRow = ({
           debit={changeType === DecodingDataChangeType.Transfer}
         />
       )}
-    </Box>
+      {assetType === 'NATIVE' && (
+        <NativeValueDisplay
+          value={amount}
+          chainId={chainId}
+          credit={changeType === DecodingDataChangeType.Receive}
+          debit={changeType === DecodingDataChangeType.Transfer}
+        />
+      )}
+    </ConfirmInfoRow>
   );
 };
 

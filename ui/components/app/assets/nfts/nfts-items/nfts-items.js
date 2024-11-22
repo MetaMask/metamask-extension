@@ -279,7 +279,9 @@ export default function NftsItems({
                 if (isModal) {
                   return onSendNft(nft);
                 }
-                return history.push(`${ASSET_ROUTE}/${address}/${tokenId}`);
+                return history.push(
+                  `${ASSET_ROUTE}/${currentChain.chainId}/${address}/${tokenId}`,
+                );
               };
               return (
                 <Box
