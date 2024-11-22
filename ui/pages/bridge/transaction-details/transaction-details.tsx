@@ -145,7 +145,8 @@ const CrossChainSwapTxDetails = () => {
     srcTxMeta: srcChainTxMeta,
   });
 
-  const srcBlockExplorerUrl = getBlockExplorerUrl(srcNetwork, srcTxHashOrTxId);
+  const srcTxHash = srcChainTxMeta?.hash;
+  const srcBlockExplorerUrl = getBlockExplorerUrl(srcNetwork, srcTxHash);
 
   const destTxHash = bridgeHistoryItem?.status.destChain?.txHash;
   const destBlockExplorerUrl = getBlockExplorerUrl(destNetwork, destTxHash);
