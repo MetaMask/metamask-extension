@@ -7,13 +7,13 @@ import {
 import { Hex } from '@metamask/utils';
 
 import { TokenStandard } from '../../../../../../../../../shared/constants/transaction';
+import { ConfirmInfoRow } from '../../../../../../../../components/app/confirm/info/row';
 import { useI18nContext } from '../../../../../../../../hooks/useI18nContext';
 import { SignatureRequestType } from '../../../../../../types/confirm';
 import { useConfirmContext } from '../../../../../../context/confirm';
 import StaticSimulation from '../../../shared/static-simulation/static-simulation';
 import TokenValueDisplay from '../value-display/value-display';
 import NativeValueDisplay from '../native-value-display/native-value-display';
-import { ConfirmInfoRow } from '../../../../../../../../components/app/confirm/info/row';
 
 export const getStateChangeToolip = (
   stateChangeList: DecodingDataStateChanges | null,
