@@ -354,7 +354,7 @@
     "@metamask/snaps-sdk": "^6.10.0",
     "@metamask/snaps-utils": "^8.5.2",
     "@metamask/solana-wallet-snap": "^0.1.9",
-    "@metamask/transaction-controller": "npm:@metamask-previews/transaction-controller@38.3.0-preview-de5d2fda",
+    "@metamask/transaction-controller": "npm:@metamask-previews/transaction-controller@39.1.0-preview-690da12e",
     "@metamask/user-operation-controller": "^13.0.0",
     "@metamask/utils": "^10.0.1",
     "@ngraveio/bc-ur": "^1.1.12",

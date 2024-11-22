@@ -10,7 +10,7 @@ import { switchToNetworkFlow } from '../../page-objects/flows/network.flow';
 
 const PAST_DURATION_MOCK = 1000 * 60 * 60 * 24; // 1 Day
 const TIMESTAMP_MOCK = Date.now() - PAST_DURATION_MOCK;
-const LAST_FETCHED_TIMESTAMP_MOCK = 123;
+const CURSOR_MOCK = 'test-123';
 
 const RESPONSE_STANDARD_MOCK = {
   hash: '0x1',
@@ -38,7 +38,7 @@ const RESPONSE_STANDARD_2_MOCK = {
   value: '2340000000000000000',
 };
 
-const RESPONSE_TOKEN_MOCK = {
+const RESPONSE_TOKEN_TRANSFER_MOCK = {
   ...RESPONSE_STANDARD_MOCK,
   to: '0x2',
   valueTransfers: [
@@ -53,22 +53,23 @@ const RESPONSE_TOKEN_MOCK = {
   ],
 };
 
-const RESPONSE_LAST_FETCHED_MOCK = {
+const RESPONSE_OUTGOING_MOCK = {
   ...RESPONSE_STANDARD_MOCK,
-  timeStamp: new Date((LAST_FETCHED_TIMESTAMP_MOCK + 1) * 1000).toISOString(),
+  from: DEFAULT_FIXTURE_ACCOUNT.toLowerCase(),
+  to: '0x2',
 };
 
 async function mockAccountsApi(
   mockServer: Mockttp,
   {
+    cursor,
     transactions,
-    startTimestamp,
-  }: { transactions?: Record<string, unknown>[]; startTimestamp?: number } = {},
+  }: { cursor?: string; transactions?: Record<string, unknown>[] } = {},
 ) {
   return [
     await mockServer
       .forGet(/https:\/\/accounts.api.cx.metamask.io\/v1\/accounts\//u)
-      .withQuery(startTimestamp ? { startTimestamp } : {})
+      .withQuery(cursor ? { cursor } : {})
       .thenCallback(() => ({
         statusCode: 200,
         json: {
@@ -111,7 +112,7 @@ describe('Incoming Transactions', function () {
     );
   });
 
-  it('adds token transfer incoming transactions', async function () {
+  it('ignores token transfer transactions', async function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilder()
@@ -121,7 +122,12 @@ describe('Incoming Transactions', function () {
           .build(),
         title: this.test?.fullTitle(),
         testSpecificMock: (server: Mockttp) =>
-          mockAccountsApi(server, { transactions: [RESPONSE_TOKEN_MOCK] }),
+          mockAccountsApi(server, {
+            transactions: [
+              RESPONSE_STANDARD_MOCK,
+              RESPONSE_TOKEN_TRANSFER_MOCK,
+            ],
+          }),
       },
       async ({ driver }: { driver: Driver }) => {
         await loginWithoutBalanceValidation(driver);
@@ -130,30 +136,53 @@ describe('Incoming Transactions', function () {
         const homepage = new HomePage(driver);
         await homepage.goToActivityList();
         await homepage.check_confirmedTxNumberDisplayedInActivity(1);
-
-        await homepage.check_txAction('Receive', 1);
-        await homepage.check_txAmountInActivity('4.56 ETH', 1);
       },
     );
   });
 
-  it('queries transactions using saved timestamp', async function () {
+  it('ignores outgoing transactions', async function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilder()
           .withIncomingTransactionsPreferences({
             [CHAIN_IDS.MAINNET]: true,
           })
-          .withIncomingTransactionsLastFetchedTimestamps({
-            [`${CHAIN_IDS.MAINNET}#${DEFAULT_FIXTURE_ACCOUNT.toLowerCase()}`]:
-              LAST_FETCHED_TIMESTAMP_MOCK,
+          .build(),
+        title: this.test?.fullTitle(),
+        testSpecificMock: (server: Mockttp) =>
+          mockAccountsApi(server, {
+            transactions: [RESPONSE_STANDARD_MOCK, RESPONSE_OUTGOING_MOCK],
+          }),
+      },
+      async ({ driver }: { driver: Driver }) => {
+        await loginWithoutBalanceValidation(driver);
+        await switchToNetworkFlow(driver, 'Ethereum Mainnet');
+
+        const homepage = new HomePage(driver);
+        await homepage.goToActivityList();
+        await homepage.check_confirmedTxNumberDisplayedInActivity(1);
+      },
+    );
+  });
+
+  it('queries transactions using saved cursor', async function () {
+    await withFixtures(
+      {
+        fixtures: new FixtureBuilder()
+          .withIncomingTransactionsPreferences({
+            [CHAIN_IDS.MAINNET]: true,
+          })
+          .withIncomingTransactionsCache({
+            [`accounts-api#${
+              CHAIN_IDS.MAINNET
+            }#${DEFAULT_FIXTURE_ACCOUNT.toLowerCase()}`]: CURSOR_MOCK,
           })
           .build(),
         title: this.test?.fullTitle(),
         testSpecificMock: (server: Mockttp) =>
           mockAccountsApi(server, {
-            startTimestamp: LAST_FETCHED_TIMESTAMP_MOCK + 1,
-            transactions: [RESPONSE_LAST_FETCHED_MOCK],
+            cursor: CURSOR_MOCK,
+            transactions: [RESPONSE_STANDARD_MOCK],
           }),
       },
       async ({ driver }: { driver: Driver }) => {

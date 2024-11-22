@@ -1926,6 +1926,8 @@ export default class MetamaskController extends EventEmitter {
               getCurrentChainId({ metamask: this.networkController.state })
             ] && this.onboardingController.state.completedOnboarding,
           ),
+        queryEntireHistory: false,
+        updateTransactions: false,
       },
       isMultichainEnabled: process.env.TRANSACTION_MULTICHAIN,
       isSimulationEnabled: () =>

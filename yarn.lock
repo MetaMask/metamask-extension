@@ -6625,9 +6625,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/transaction-controller@npm:@metamask-previews/transaction-controller@38.3.0-preview-de5d2fda":
-  version: 38.3.0-preview-de5d2fda
-  resolution: "@metamask-previews/transaction-controller@npm:38.3.0-preview-de5d2fda"
+"@metamask/transaction-controller@npm:@metamask-previews/transaction-controller@39.1.0-preview-690da12e":
+  version: 39.1.0-preview-690da12e
+  resolution: "@metamask-previews/transaction-controller@npm:39.1.0-preview-690da12e"
   dependencies:
     "@ethereumjs/common": "npm:^3.2.0"
     "@ethereumjs/tx": "npm:^4.2.0"
@@ -6636,7 +6636,7 @@ __metadata:
     "@ethersproject/contracts": "npm:^5.7.0"
     "@ethersproject/providers": "npm:^5.7.0"
     "@metamask/base-controller": "npm:^7.0.2"
-    "@metamask/controller-utils": "npm:^11.4.2"
+    "@metamask/controller-utils": "npm:^11.4.3"
     "@metamask/eth-query": "npm:^4.0.0"
     "@metamask/metamask-eth-abis": "npm:^3.1.1"
     "@metamask/nonce-tracker": "npm:^6.0.0"
@@ -6650,11 +6650,11 @@ __metadata:
     uuid: "npm:^8.3.2"
   peerDependencies:
     "@babel/runtime": ^7.23.9
-    "@metamask/accounts-controller": ^18.0.0
+    "@metamask/accounts-controller": ^19.0.0
     "@metamask/approval-controller": ^7.0.0
     "@metamask/gas-fee-controller": ^22.0.0
     "@metamask/network-controller": ^22.0.0
-  checksum: 10/8a58bd0e24b1bd3ff279d7be1befd4593b21efd76e4ed48c114c5d4aa20086f48b7ba3ea20ccf342ffee37bcc2d1a8bb16b75e9813ba1d0273026e929b11c0b9
+  checksum: 10/969fc76414d624293000e19c9cbf75d3033a6ce4d69b4789e44d02d42b25a44220e2a55c390c75f5ff97ebb200f3bd5811e68d66745cdfa6512d5e2ea15a40c7
   languageName: node
   linkType: hard
 
@@ -26814,7 +26814,7 @@ __metadata:
     "@metamask/solana-wallet-snap": "npm:^0.1.9"
     "@metamask/test-bundler": "npm:^1.0.0"
     "@metamask/test-dapp": "npm:8.13.0"
-    "@metamask/transaction-controller": "npm:@metamask-previews/transaction-controller@38.3.0-preview-de5d2fda"
+    "@metamask/transaction-controller": "npm:@metamask-previews/transaction-controller@39.1.0-preview-690da12e"
     "@metamask/user-operation-controller": "npm:^13.0.0"
     "@metamask/utils": "npm:^10.0.1"
     "@ngraveio/bc-ur": "npm:^1.1.12"

@@ -338,7 +338,7 @@
     "allDetectedTokens": {}
   },
   "TxController": {
-    "lastFetchedTimestamps": "object",
+    "lastFetchedBlockNumbers": "object",
     "methodData": "object",
     "submitHistory": "object",
     "transactions": "object"

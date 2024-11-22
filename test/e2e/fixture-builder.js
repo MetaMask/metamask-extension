@@ -1470,8 +1470,8 @@ class FixtureBuilder {
     });
   }
 
-  withIncomingTransactionsLastFetchedTimestamps(lastFetchedTimestamps) {
-    return this.withTransactionController({ lastFetchedTimestamps });
+  withIncomingTransactionsCache(cache) {
+    return this.withTransactionController({ lastFetchedBlockNumbers: cache });
   }
 
   build() {
