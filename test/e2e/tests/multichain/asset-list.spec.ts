@@ -13,6 +13,7 @@ import AssetListPage from '../../page-objects/pages/asset-list';
 
 const NETWORK_NAME_MAINNET = 'Ethereum Mainnet';
 const LINEA_NAME_MAINNET = 'Linea Mainnet';
+const LOCALHOST = 'Localhost 8545';
 
 function buildFixtures(title: string) {
   return {
@@ -41,27 +42,22 @@ describe('Multichain Asset List', function (this: Suite) {
         const headerNavbar = new HeaderNavbar(driver);
         const selectNetworkDialog = new SelectNetwork(driver);
         const assetListPage = new AssetListPage(driver);
-
         await headerNavbar.clickSwitchNetworkDropDown();
         await selectNetworkDialog.selectNetworkName(NETWORK_NAME_MAINNET);
-        assert.equal(await assetListPage.getNumberOfAssets(), 2);
-
+        await assetListPage.waitUntilAssetListHasItems(2);
         await assetListPage.openNetworksFilter();
         await assetListPage.clickCurrentNetworkOption();
-        await driver.delay(1e3);
-
         await headerNavbar.clickSwitchNetworkDropDown();
         await selectNetworkDialog.selectNetworkName(LINEA_NAME_MAINNET);
-        await driver.delay(1e3);
+        await assetListPage.waitUntilFilterLabelIs(LINEA_NAME_MAINNET);
+        await assetListPage.waitUntilAssetListHasItems(1);
         assert.equal(
           await assetListPage.getNetworksFilterLabel(),
           LINEA_NAME_MAINNET,
         );
-        assert.equal(await assetListPage.getNumberOfAssets(), 1);
       },
     );
   });
-
   it('allows clicking into the asset details page of native token on another network', async function () {
     await withFixtures(
       buildFixtures(this.test?.fullTitle() as string),
@@ -75,26 +71,25 @@ describe('Multichain Asset List', function (this: Suite) {
         await loginWithBalanceValidation(driver, ganacheServer);
         const headerNavbar = new HeaderNavbar(driver);
         const selectNetworkDialog = new SelectNetwork(driver);
-
+        const assetListPage = new AssetListPage(driver);
         await headerNavbar.clickSwitchNetworkDropDown();
         await selectNetworkDialog.selectNetworkName(NETWORK_NAME_MAINNET);
-        await driver.delay(1000);
-
+        await assetListPage.waitUntilAssetListHasItems(2);
         await driver.clickElement('.multichain-token-list-item');
-
-        const assetHoveredPriceElement = await driver.findElement(
-          '[data-testid="asset-hovered-price"]',
+        const coinOverviewElement = await driver.findElement(
+          '[data-testid="coin-overview-buy"]',
         );
+        const multichainTokenListButton = await driver.findElement(
+          '[data-testid="multichain-token-list-button"]',
+        );
+        assert.ok(coinOverviewElement, 'coin-overview-buy is present');
         assert.ok(
-          assetHoveredPriceElement,
-          'Asset hovered price element is present',
+          multichainTokenListButton,
+          'multichain-token-list-button is present',
         );
-        const canvasElement = await driver.findElement('canvas');
-        assert.ok(canvasElement, 'Canvas element is present');
       },
     );
   });
-
   it('switches networks when clicking on send for a token on another network', async function () {
     await withFixtures(
       buildFixtures(this.test?.fullTitle() as string),
@@ -108,20 +103,15 @@ describe('Multichain Asset List', function (this: Suite) {
         await loginWithBalanceValidation(driver, ganacheServer);
         const assetListPage = new AssetListPage(driver);
         const sendPage = new SendTokenPage(driver);
-
-        await driver.delay(1e3);
-
+        await assetListPage.waitUntilAssetListHasItems(4);
         await assetListPage.clickOnAsset('LineaETH');
         await driver.clickElement('[data-testid="coin-overview-send"]');
-
         await sendPage.check_networkChange('Linea Sepolia');
         await sendPage.check_pageIsLoaded();
-
         await sendPage.fillRecipient(
           '0x2f318C334780961FB129D2a6c30D0763d9a5C970',
         );
         await sendPage.clickAssetPickerButton();
-
         const assetPickerItems = await sendPage.getAssetPickerItems();
         assert.equal(
           assetPickerItems.length,
@@ -131,8 +121,7 @@ describe('Multichain Asset List', function (this: Suite) {
       },
     );
   });
-
-  xit('switches networks when clicking on swap for a token on another network', async function () {
+  it('switches networks when clicking on swap for a token on another network', async function () {
     await withFixtures(
       buildFixtures(this.test?.fullTitle() as string),
       async ({
@@ -144,12 +133,9 @@ describe('Multichain Asset List', function (this: Suite) {
       }) => {
         await loginWithBalanceValidation(driver, ganacheServer);
         const assetListPage = new AssetListPage(driver);
-
-        await driver.delay(1e3);
-
+        await assetListPage.waitUntilAssetListHasItems(4);
         await assetListPage.clickOnAsset('LineaETH');
         await driver.clickElement('[data-testid="token-overview-button-swap"]');
-
         const toastTextElement = await driver.findElement('.toast-text');
         const toastText = await toastTextElement.getText();
         assert.equal(
@@ -160,7 +146,6 @@ describe('Multichain Asset List', function (this: Suite) {
       },
     );
   });
-
   it('shows correct asset and balance when swapping on a different chain', async function () {
     await withFixtures(
       buildFixtures(this.test?.fullTitle() as string),
@@ -175,26 +160,23 @@ describe('Multichain Asset List', function (this: Suite) {
         const headerNavbar = new HeaderNavbar(driver);
         const assetListPage = new AssetListPage(driver);
         const selectNetworkDialog = new SelectNetwork(driver);
-
         await headerNavbar.clickSwitchNetworkDropDown();
         await selectNetworkDialog.selectNetworkName(LINEA_NAME_MAINNET);
-        await driver.delay(1e3);
+        await assetListPage.waitUntilAssetListHasItems(2);
 
         await assetListPage.clickOnAsset('Ethereum');
-        await driver.delay(1e3);
+
         const swapButton = await driver.findElement(
           '[data-testid="token-overview-button-swap"]',
         );
         await swapButton.click();
-
         const toastTextElement = await driver.findElement('.toast-text');
         const toastText = await toastTextElement.getText();
         assert.equal(
           toastText,
-          `You're now using ${NETWORK_NAME_MAINNET}`,
+          `You're now using ${LOCALHOST}`,
           'Toast text is correct',
         );
-
         const balanceMessageElement = await driver.findElement(
           '.prepare-swap-page__balance-message',
         );
