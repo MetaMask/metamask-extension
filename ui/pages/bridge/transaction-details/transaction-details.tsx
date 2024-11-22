@@ -284,52 +284,25 @@ const CrossChainSwapTxDetails = () => {
               <TransactionDetailRow
                 title={t('bridgeTxDetailsTotalGasFee')}
                 value={
-                  <>
-                    <UserPreferencedCurrencyDisplay
-                      currency={data?.nativeCurrency}
-                      denomination={EtherDenomination.ETH}
-                      numberOfDecimals={6}
-                      value={data?.hexGasTotal}
-                      type={PRIMARY}
-                    />
-                    {data?.showFiat && (
-                      <Box
-                        display={Display.Flex}
-                        justifyContent={JustifyContent.flexEnd}
-                      >
-                        <UserPreferencedCurrencyDisplay
-                          type={SECONDARY}
-                          value={data?.hexGasTotal}
-                        />
-                      </Box>
-                    )}
-                  </>
+                  <UserPreferencedCurrencyDisplay
+                    currency={data?.nativeCurrency}
+                    denomination={EtherDenomination.ETH}
+                    numberOfDecimals={6}
+                    value={data?.hexGasTotal}
+                    type={PRIMARY}
+                  />
                 }
               />
               <TransactionDetailRow
                 title={t('bridgeTxDetailsMaxFeePerGas')}
                 value={
-                  <>
-                    <UserPreferencedCurrencyDisplay
-                      currency={data?.nativeCurrency}
-                      denomination={EtherDenomination.ETH}
-                      numberOfDecimals={9}
-                      value={data?.maxFeePerGas}
-                      type={PRIMARY}
-                    />
-                    {data?.showFiat && (
-                      <Box
-                        display={Display.Flex}
-                        justifyContent={JustifyContent.flexEnd}
-                      >
-                        <UserPreferencedCurrencyDisplay
-                          currency={data?.nativeCurrency}
-                          type={SECONDARY}
-                          value={data?.maxFeePerGas}
-                        />
-                      </Box>
-                    )}
-                  </>
+                  <UserPreferencedCurrencyDisplay
+                    currency={data?.nativeCurrency}
+                    denomination={EtherDenomination.ETH}
+                    numberOfDecimals={9}
+                    value={data?.maxFeePerGas}
+                    type={PRIMARY}
+                  />
                 }
               />
             </Box>
@@ -339,19 +312,11 @@ const CrossChainSwapTxDetails = () => {
             <TransactionDetailRow
               title={t('bridgeTxDetailsTotal')}
               value={
-                <>
-                  <UserPreferencedCurrencyDisplay
-                    type={PRIMARY}
-                    value={data?.totalInHex}
-                    numberOfDecimals={data?.l1HexGasTotal ? 18 : undefined}
-                  />
-                  {data?.showFiat && (
-                    <UserPreferencedCurrencyDisplay
-                      type={SECONDARY}
-                      value={data?.totalInHex}
-                    />
-                  )}
-                </>
+                <UserPreferencedCurrencyDisplay
+                  type={PRIMARY}
+                  value={data?.totalInHex}
+                  numberOfDecimals={data?.l1HexGasTotal ? 18 : undefined}
+                />
               }
             />
 
