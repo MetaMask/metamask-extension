@@ -3,8 +3,8 @@ import { useHistory } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import { EthMethod } from '@metamask/keyring-api';
 import { isEqual } from 'lodash';
+import { getNativeTokenAddress } from '@metamask/assets-controllers';
 import { Hex } from '@metamask/utils';
-import { zeroAddress } from 'ethereumjs-util';
 import {
   getCurrentCurrency,
   getDataCollectionForMarketing,
@@ -140,7 +140,7 @@ const AssetPage = ({
   const address =
     type === AssetType.token
       ? toChecksumHexAddress(asset.address)
-      : zeroAddress();
+      : getNativeTokenAddress(chainId);
 
   const balance = calculateTokenBalance({
     isNative: type === AssetType.native,
