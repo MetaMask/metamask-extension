@@ -140,3 +140,13 @@ export const MULTICHAIN_PROVIDER_CONFIGS: Record<
     isAddressCompatible: isSolanaAddress,
   },
 };
+
+let defaultNetwork: MultichainNetworkIds | null = null;
+
+export const setDefaultNetwork = (network: MultichainNetworkIds): void => {
+  defaultNetwork = network;
+};
+
+export const getDefaultNetwork = (): MultichainNetworkIds | null => {
+  return defaultNetwork;
+};

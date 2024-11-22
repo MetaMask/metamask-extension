@@ -33,6 +33,7 @@ import {
 // eslint-disable-next-line import/no-restricted-paths
 import { getPlatform } from '../../../../app/scripts/lib/util';
 import { PLATFORM_FIREFOX } from '../../../../shared/constants/app';
+import { setDefaultNetwork, getDefaultNetwork, MultichainNetworks } from '../../../../shared/constants/multichain/networks';
 
 export default class AdvancedTab extends PureComponent {
   static contextTypes = {
@@ -70,6 +71,7 @@ export default class AdvancedTab extends PureComponent {
     autoLockTimeLimit: this.props.autoLockTimeLimit,
     autoLockTimeLimitBeforeNormalization: this.props.autoLockTimeLimit,
     lockTimeError: '',
+    defaultNetwork: getDefaultNetwork() || MultichainNetworks.BITCOIN,
   };
 
   settingsRefs = Array(
@@ -625,6 +627,46 @@ export default class AdvancedTab extends PureComponent {
     );
   }
 
+  renderDefaultNetworkSetting() {
+    const { t } = this.context;
+    const { defaultNetwork } = this.state;
+
+    return (
+      <Box
+        ref={this.settingsRefs[12]}
+        className="settings-page__content-row"
+        data-testid="advanced-setting-default-network"
+        display={Display.Flex}
+        flexDirection={FlexDirection.Column}
+      >
+        <div className="settings-page__content-item">
+          <span>{t('defaultNetwork')}</span>
+          <div className="settings-page__content-description">
+            {t('defaultNetworkDescription')}
+          </div>
+        </div>
+        <div className="settings-page__content-item">
+          <div className="settings-page__content-item-col">
+            <select
+              value={defaultNetwork}
+              onChange={(e) => {
+                const newDefaultNetwork = e.target.value;
+                setDefaultNetwork(newDefaultNetwork);
+                this.setState({ defaultNetwork: newDefaultNetwork });
+              }}
+            >
+              {Object.values(MultichainNetworks).map((network) => (
+                <option key={network} value={network}>
+                  {network}
+                </option>
+              ))}
+            </select>
+          </div>
+        </div>
+      </Box>
+    );
+  }
+
   render() {
     const { errorInSettings } = this.props;
     // When adding/removing/editing the order of renders, double-check the order of the settingsRefs. This affects settings-search.js
@@ -644,6 +686,7 @@ export default class AdvancedTab extends PureComponent {
         {this.renderAutoLockTimeLimit()}
         {this.renderUserDataBackup()}
         {this.renderDismissSeedBackupReminderControl()}
+        {this.renderDefaultNetworkSetting()}
         {getPlatform() === PLATFORM_FIREFOX
           ? this.renderOverrideContentSecurityPolicyHeader()
           : null}
