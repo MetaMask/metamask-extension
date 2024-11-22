@@ -72,12 +72,16 @@ describe('Test Snap TxInsights', function () {
             text: 'OK',
             tag: 'button',
           });
+
           // switch to test-snaps page and get accounts
           await driver.switchToWindowWithTitle(WINDOW_TITLES.TestSnaps);
+
           // click get accounts
           await driver.clickElement('#getAccounts');
+
           // switch back to MetaMask window
           await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
+
           // wait for and click next and wait for window to close
           await driver.waitForSelector({
             text: 'Connect',
