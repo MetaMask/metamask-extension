@@ -6,6 +6,9 @@ export enum BridgeFlag {
   NETWORK_DEST_ALLOWLIST = 'dest-network-allowlist',
 }
 
+type DecimalChainId = string;
+export type GasMultiplierByChainId = Record<DecimalChainId, number>;
+
 export type FeatureFlagResponse = {
   [BridgeFlag.EXTENSION_CONFIG]: {
     refreshRate: number;
@@ -89,7 +92,7 @@ export type QuoteResponse = {
   estimatedProcessingTimeInSeconds: number;
 };
 
-enum ChainId {
+export enum ChainId {
   ETH = 1,
   OPTIMISM = 10,
   BSC = 56,

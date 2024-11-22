@@ -964,7 +964,7 @@ jobs:
           at: .
       - run:
           name: Install Playwright browsers
-          command: yarn exec playwright install
+          command: yarn exec playwright install chromium
       - run:
           name: Test Storybook
           command: yarn test-storybook:ci
