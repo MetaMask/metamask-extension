@@ -36,27 +36,6 @@ const render = (
     state,
   } = options;
 
-  const state2 = {
-    ...mockState,
-    metamask: {
-      ...mockState.metamask,
-      ...state,
-      permissionHistory: {
-        mockTestDappUrl: {
-          eth_accounts: {
-            accounts: {
-              '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc': 1709225290848,
-            },
-          },
-        },
-      },
-    },
-    activeTab: {
-      origin: mockTestDappUrl,
-    },
-  };
-  console.log(JSON.stringify(state2.metamask.internalAccounts, null, 2));
-  console.log(JSON.stringify(state2.metamask.keyrings, null, 2));
   const store = configureStore({
     ...mockState,
     metamask: {
