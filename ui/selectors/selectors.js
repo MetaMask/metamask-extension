@@ -1082,6 +1082,7 @@ export function getIsTokenNetworkFilterEqualCurrentNetwork(state) {
   const chainId = getCurrentChainId(state);
   const { tokenNetworkFilter: tokenNetworkFilterValue } = getPreferences(state);
   const tokenNetworkFilter = tokenNetworkFilterValue || {};
+  console.log(chainId, tokenNetworkFilterValue, tokenNetworkFilter);
   if (
     Object.keys(tokenNetworkFilter).length === 1 &&
     Object.keys(tokenNetworkFilter)[0] === chainId
@@ -2375,6 +2376,8 @@ export const getChainIdsToPoll = createDeepEqualSelector(
   ) => {
     if (
       !process.env.PORTFOLIO_VIEW
+      // TODO: We need to poll across allchains in order to calculate the aggregate balances in the main balance as well as in all networks
+      // If we scope this to the currently filtered chain, we won't be able to compute the balances for the chains outside of the filtered one
       // !process.env.PORTFOLIO_VIEW ||
       // isTokenNetworkFilterEqualCurrentNetwork
     ) {
