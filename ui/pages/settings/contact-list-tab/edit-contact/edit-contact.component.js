@@ -21,6 +21,7 @@ import {
   Display,
   TextVariant,
 } from '../../../../helpers/constants/design-system';
+import { isDuplicateContact } from '../../../../components/app/contact-list/utils';
 
 export default class EditContact extends PureComponent {
   static contextTypes = {
@@ -28,6 +29,8 @@ export default class EditContact extends PureComponent {
   };
 
   static propTypes = {
+    addressBook: PropTypes.array,
+    internalAccounts: PropTypes.array,
     addToAddressBook: PropTypes.func,
     removeFromAddressBook: PropTypes.func,
     history: PropTypes.object,
@@ -48,7 +51,30 @@ export default class EditContact extends PureComponent {
     newName: this.props.name,
     newAddress: this.props.address,
     newMemo: this.props.memo,
-    error: '',
+    nameError: '',
+    addressError: '',
+  };
+
+  validateName = (newName) => {
+    if (newName === this.props.name) {
+      return true;
+    }
+
+    const { addressBook, internalAccounts } = this.props;
+
+    return !isDuplicateContact(addressBook, internalAccounts, newName);
+  };
+
+  handleNameChange = (e) => {
+    const newName = e.target.value;
+
+    const isValidName = this.validateName(newName);
+
+    this.setState({
+      nameError: isValidName ? null : this.context.t('nameAlreadyInUse'),
+    });
+
+    this.setState({ newName });
   };
 
   render() {
@@ -118,9 +144,10 @@ export default class EditContact extends PureComponent {
               id="nickname"
               placeholder={this.context.t('addAlias')}
               value={this.state.newName}
-              onChange={(e) => this.setState({ newName: e.target.value })}
+              onChange={this.handleNameChange}
               fullWidth
               margin="dense"
+              error={this.state.nameError}
             />
           </div>
 
@@ -132,7 +159,7 @@ export default class EditContact extends PureComponent {
               type="text"
               id="address"
               value={this.state.newAddress}
-              error={this.state.error}
+              error={this.state.addressError}
               onChange={(e) => this.setState({ newAddress: e.target.value })}
               fullWidth
               multiline
@@ -189,7 +216,9 @@ export default class EditContact extends PureComponent {
                 );
                 history.push(listRoute);
               } else {
-                this.setState({ error: this.context.t('invalidAddress') });
+                this.setState({
+                  addressError: this.context.t('invalidAddress'),
+                });
               }
             } else {
               // update name
@@ -205,12 +234,13 @@ export default class EditContact extends PureComponent {
             history.push(`${viewRoute}/${address}`);
           }}
           submitText={this.context.t('save')}
-          disabled={
+          disabled={Boolean(
             (this.state.newName === name &&
               this.state.newAddress === address &&
               this.state.newMemo === memo) ||
-            !this.state.newName.trim()
-          }
+              !this.state.newName.trim() ||
+              this.state.nameError,
+          )}
         />
       </div>
     );

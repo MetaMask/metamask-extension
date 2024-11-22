@@ -10,10 +10,10 @@ import { KeyringType } from '../../shared/constants/keyring';
 import mockState from '../../test/data/mock-state.json';
 import { CHAIN_IDS, NETWORK_TYPES } from '../../shared/constants/network';
 import { createMockInternalAccount } from '../../test/jest/mocks';
-import { getProviderConfig } from '../ducks/metamask/metamask';
 import { mockNetworkState } from '../../test/stub/networks';
 import { DeleteRegulationStatus } from '../../shared/constants/metametrics';
 import { selectSwitchedNetworkNeverShowMessage } from '../components/app/toast-master/selectors';
+import { getProviderConfig } from '../../shared/modules/selectors/networks';
 import * as selectors from './selectors';
 
 jest.mock('../../app/scripts/lib/util', () => ({
@@ -646,45 +646,6 @@ describe('Selectors', () => {
     });
   });
 
-  describe('#getNetworkConfigurationsByChainId', () => {
-    it('returns networkConfigurationsByChainId', () => {
-      const networkConfigurationsByChainId = {
-        '0xtest': {
-          chainId: '0xtest',
-          nativeCurrency: 'TEST',
-          defaultRpcEndpointUrl: 'https://mock-rpc-url-1',
-          defaultRpcEndpointIndex: 0,
-          rpcEndpoints: [
-            {
-              networkClientId: 'testNetworkConfigurationId1',
-              url: 'https://mock-rpc-url-1',
-            },
-          ],
-        },
-        '0x1337': {
-          chainId: '0x1337',
-          nativeCurrency: 'RPC',
-          defaultRpcEndpointUrl: 'https://mock-rpc-url-2',
-          defaultRpcEndpointIndex: 0,
-          rpcEndpoints: [
-            {
-              networkClientId: 'testNetworkConfigurationId2',
-              url: 'https://mock-rpc-url-2',
-            },
-          ],
-        },
-      };
-
-      expect(
-        selectors.getNetworkConfigurationsByChainId({
-          metamask: {
-            networkConfigurationsByChainId,
-          },
-        }),
-      ).toStrictEqual(networkConfigurationsByChainId);
-    });
-  });
-
   describe('#getCurrentNetwork', () => {
     it('returns built-in network configuration', () => {
       const modifiedMockState = {
@@ -873,7 +834,6 @@ describe('Selectors', () => {
     it('returns only non-test chain IDs', () => {
       const chainIds = selectors.getChainIdsToPoll({
         metamask: {
-          preferences: { pausedChainIds: [] },
           networkConfigurationsByChainId,
           selectedNetworkClientId: 'mainnet',
         },
@@ -883,18 +843,6 @@ describe('Selectors', () => {
         CHAIN_IDS.MAINNET,
         CHAIN_IDS.LINEA_MAINNET,
       ]);
-    });
-
-    it('does not return paused chain IDs', () => {
-      const chainIds = selectors.getChainIdsToPoll({
-        metamask: {
-          preferences: { pausedChainIds: [CHAIN_IDS.LINEA_MAINNET] },
-          networkConfigurationsByChainId,
-          selectedNetworkClientId: 'mainnet',
-        },
-      });
-      expect(Object.values(chainIds)).toHaveLength(1);
-      expect(chainIds).toStrictEqual([CHAIN_IDS.MAINNET]);
     });
   });
 
@@ -933,25 +881,12 @@ describe('Selectors', () => {
     it('returns only non-test chain IDs', () => {
       const chainIds = selectors.getNetworkClientIdsToPoll({
         metamask: {
-          preferences: { pausedChainIds: [] },
           networkConfigurationsByChainId,
           selectedNetworkClientId: 'mainnet',
         },
       });
       expect(Object.values(chainIds)).toHaveLength(2);
       expect(chainIds).toStrictEqual(['mainnet', 'linea-mainnet']);
-    });
-
-    it('does not return paused chain IDs', () => {
-      const chainIds = selectors.getNetworkClientIdsToPoll({
-        metamask: {
-          preferences: { pausedChainIds: [CHAIN_IDS.LINEA_MAINNET] },
-          networkConfigurationsByChainId,
-          selectedNetworkClientId: 'mainnet',
-        },
-      });
-      expect(Object.values(chainIds)).toHaveLength(1);
-      expect(chainIds).toStrictEqual(['mainnet']);
     });
   });
 
@@ -1341,24 +1276,6 @@ describe('Selectors', () => {
 
     mockState.metamask.snapsInstallPrivacyWarningShown = null;
     expect(selectors.getSnapsInstallPrivacyWarningShown(mockState)).toBe(false);
-  });
-
-  it('#getInfuraBlocked', () => {
-    let isInfuraBlocked = selectors.getInfuraBlocked(mockState);
-    expect(isInfuraBlocked).toBe(false);
-
-    const modifiedMockState = {
-      ...mockState,
-      metamask: {
-        ...mockState.metamask,
-        ...mockNetworkState({
-          chainId: CHAIN_IDS.GOERLI,
-          metadata: { status: 'blocked' },
-        }),
-      },
-    };
-    isInfuraBlocked = selectors.getInfuraBlocked(modifiedMockState);
-    expect(isInfuraBlocked).toBe(true);
   });
 
   it('#getSnapRegistryData', () => {

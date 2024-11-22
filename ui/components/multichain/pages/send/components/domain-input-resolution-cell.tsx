@@ -97,6 +97,7 @@ export const DomainInputResolutionCell = ({
       alignItems={AlignItems.center}
       paddingBottom={2}
       style={{ cursor: 'pointer' }}
+      data-testid="multichain-send-page__recipient__item"
     >
       <Tooltip title={t('suggestedBySnap', [resolvingSnap])}>
         <BadgeWrapper

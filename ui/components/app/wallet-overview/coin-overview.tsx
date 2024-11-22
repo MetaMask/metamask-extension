@@ -50,6 +50,8 @@ import {
   getTokensMarketData,
   getIsTestnet,
   getShouldShowAggregatedBalancePopover,
+  getIsTokenNetworkFilterEqualCurrentNetwork,
+  getChainIdsToPoll,
   ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
   getDataCollectionForMarketing,
   getMetaMetricsId,
@@ -60,8 +62,10 @@ import {
 import Spinner from '../../ui/spinner';
 
 import { PercentageAndAmountChange } from '../../multichain/token-list-item/price/percentage-and-amount-change/percentage-and-amount-change';
-import { getMultichainIsEvm } from '../../../selectors/multichain';
-import { useAccountTotalFiatBalance } from '../../../hooks/useAccountTotalFiatBalance';
+import {
+  getMultichainIsEvm,
+  getMultichainShouldShowFiat,
+} from '../../../selectors/multichain';
 import {
   setAggregatedBalancePopoverShown,
   setPrivacyMode,
@@ -69,9 +73,14 @@ import {
 import { useTheme } from '../../../hooks/useTheme';
 import { getSpecificSettingsRoute } from '../../../helpers/utils/settings-search';
 import { useI18nContext } from '../../../hooks/useI18nContext';
+import { useAccountTotalCrossChainFiatBalance } from '../../../hooks/useAccountTotalCrossChainFiatBalance';
+
+import { useGetFormattedTokensPerChain } from '../../../hooks/useGetFormattedTokensPerChain';
+import { useMultichainSelector } from '../../../hooks/useMultichainSelector';
 import WalletOverview from './wallet-overview';
 import CoinButtons from './coin-buttons';
 import { AggregatedPercentageOverview } from './aggregated-percentage-overview';
+import { AggregatedPercentageOverviewCrossChains } from './aggregated-percentage-overview-cross-chains';
 
 export type CoinOverviewProps = {
   account: InternalAccount;
@@ -136,21 +145,38 @@ export const CoinOverview = ({
   const { showFiatInTestnets, privacyMode, showNativeTokenAsMainBalance } =
     useSelector(getPreferences);
 
+  const isTokenNetworkFilterEqualCurrentNetwork = useSelector(
+    getIsTokenNetworkFilterEqualCurrentNetwork,
+  );
+
   const shouldHideZeroBalanceTokens = useSelector(
     getShouldHideZeroBalanceTokens,
   );
-  const { totalFiatBalance, loading } = useAccountTotalFiatBalance(
+  const allChainIDs = useSelector(getChainIdsToPoll);
+  const { formattedTokensWithBalancesPerChain } = useGetFormattedTokensPerChain(
     account,
     shouldHideZeroBalanceTokens,
+    isTokenNetworkFilterEqualCurrentNetwork,
+    allChainIDs,
+  );
+  const { totalFiatBalance } = useAccountTotalCrossChainFiatBalance(
+    account,
+    formattedTokensWithBalancesPerChain,
+  );
+
+  const shouldShowFiat = useMultichainSelector(
+    getMultichainShouldShowFiat,
+    account,
   );
 
   const isEvm = useSelector(getMultichainIsEvm);
   const isNotAggregatedFiatBalance =
-    showNativeTokenAsMainBalance || isTestnet || !isEvm;
+    !shouldShowFiat || showNativeTokenAsMainBalance || isTestnet || !isEvm;
+
   let balanceToDisplay;
   if (isNotAggregatedFiatBalance) {
     balanceToDisplay = balance;
-  } else if (!loading) {
+  } else {
     balanceToDisplay = totalFiatBalance;
   }
 
@@ -225,7 +251,13 @@ export const CoinOverview = ({
       }
       return (
         <Box className="wallet-overview__currency-wrapper">
-          <AggregatedPercentageOverview />
+          {isTokenNetworkFilterEqualCurrentNetwork ||
+          !process.env.PORTFOLIO_VIEW ? (
+            <AggregatedPercentageOverview />
+          ) : (
+            <AggregatedPercentageOverviewCrossChains />
+          )}
+
           {
             ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
             <ButtonLink
@@ -278,7 +310,9 @@ export const CoinOverview = ({
                     hideTitle
                     shouldCheckShowNativeToken
                     isAggregatedFiatOverviewBalance={
-                      !showNativeTokenAsMainBalance && !isTestnet
+                      !showNativeTokenAsMainBalance &&
+                      !isTestnet &&
+                      shouldShowFiat
                     }
                     privacyMode={privacyMode}
                   />
@@ -341,21 +375,37 @@ export const CoinOverview = ({
                   </Box>
 
                   <Text variant={TextVariant.bodySm}>
-                    {t('aggregatedBalancePopover', [
-                      <ButtonLink
-                        size={ButtonLinkSize.Inherit}
-                        textProps={{
-                          variant: TextVariant.bodyMd,
-                          alignItems: AlignItems.flexStart,
-                        }}
-                        as="a"
-                        href={`#${showNativeTokenAsMainBalanceRoute.route}`}
-                        rel="noopener noreferrer"
-                        onClick={handleClick}
-                      >
-                        {t('settings')}
-                      </ButtonLink>,
-                    ])}
+                    {process.env.PORTFOLIO_VIEW
+                      ? t('crossChainAggregatedBalancePopover', [
+                          <ButtonLink
+                            size={ButtonLinkSize.Inherit}
+                            textProps={{
+                              variant: TextVariant.bodyMd,
+                              alignItems: AlignItems.flexStart,
+                            }}
+                            as="a"
+                            href={`#${showNativeTokenAsMainBalanceRoute.route}`}
+                            rel="noopener noreferrer"
+                            onClick={handleClick}
+                          >
+                            {t('settings')}
+                          </ButtonLink>,
+                        ])
+                      : t('aggregatedBalancePopover', [
+                          <ButtonLink
+                            size={ButtonLinkSize.Inherit}
+                            textProps={{
+                              variant: TextVariant.bodyMd,
+                              alignItems: AlignItems.flexStart,
+                            }}
+                            as="a"
+                            href={`#${showNativeTokenAsMainBalanceRoute.route}`}
+                            rel="noopener noreferrer"
+                            onClick={handleClick}
+                          >
+                            {t('settings')}
+                          </ButtonLink>,
+                        ])}
                   </Text>
                 </Box>
               </Popover>
