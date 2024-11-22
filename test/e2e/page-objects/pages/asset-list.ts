@@ -7,8 +7,7 @@ class AssetListPage {
 
   private readonly networksToggle = '[data-testid="network-filter"]';
 
-  private readonly allNetworksOption =
-    '[data-testid="network-filter-all__button"]';
+  private readonly allNetworksOption = '[data-testid="all-networks__button"]';
 
   private readonly currentNetworkOption =
     '[data-testid="current-network__button"]';
@@ -46,6 +45,22 @@ class AssetListPage {
     );
     const value = await allNetworksValueElement.getText();
     return value;
+  }
+
+  async clickOnAsset(assetName: string): Promise<void> {
+    const buttons = await this.driver.findElements(
+      '[data-testid="multichain-token-list-button"]',
+    );
+
+    for (const button of buttons) {
+      const text = await button.getText();
+      if (text.includes(assetName)) {
+        await button.click();
+        return;
+      }
+    }
+
+    throw new Error(`${assetName} button not found`);
   }
 
   async getCurrentNetworksOptionTotal(): Promise<string> {

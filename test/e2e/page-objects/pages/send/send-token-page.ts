@@ -38,8 +38,20 @@ class SendTokenPage {
   private readonly tokenListButton =
     '[data-testid="multichain-token-list-button"]';
 
+  private readonly toastText = '.toast-text';
+
   constructor(driver: Driver) {
     this.driver = driver;
+  }
+
+  async check_networkChange(networkName: string): Promise<void> {
+    const toastTextElement = await this.driver.findElement(this.toastText);
+    const toastText = await toastTextElement.getText();
+    assert.equal(
+      toastText,
+      `You're now using ${networkName}`,
+      'Toast text is correct',
+    );
   }
 
   async check_pageIsLoaded(): Promise<void> {

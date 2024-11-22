@@ -1,177 +1,126 @@
 import { strict as assert } from 'assert';
 import { Suite } from 'mocha';
 import { Driver } from '../../webdriver/driver';
-import { withFixtures } from '../../helpers';
+import { withFixtures, defaultGanacheOptions } from '../../helpers';
+import { Ganache } from '../../seeder/ganache';
 import FixtureBuilder from '../../fixture-builder';
 import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
 import HeaderNavbar from '../../page-objects/pages/header-navbar';
 import SelectNetwork from '../../page-objects/pages/dialog/select-network';
-import HomePage from '../../page-objects/pages/homepage';
+import { SMART_CONTRACTS } from '../../seeder/smart-contracts';
 import SendTokenPage from '../../page-objects/pages/send/send-token-page';
 import AssetListPage from '../../page-objects/pages/asset-list';
+
+const NETWORK_NAME_MAINNET = 'Ethereum Mainnet';
+const LINEA_NAME_MAINNET = 'Linea Mainnet';
+
+function buildFixtures(title: string) {
+  return {
+    fixtures: new FixtureBuilder()
+      .withPermissionControllerConnectedToTestDapp()
+      .withTokenBalances()
+      .withTokensControllerERC20()
+      .build(),
+    ganacheOptions: defaultGanacheOptions,
+    smartContract: SMART_CONTRACTS.HST,
+    title,
+  };
+}
 
 describe('Multichain Asset List', function (this: Suite) {
   it('persists the preferred asset list preference when changing networks', async function () {
     await withFixtures(
-      {
-        fixtures: new FixtureBuilder().build(),
-        title: this.test?.fullTitle(),
-      },
-      async ({ driver }: { driver: Driver }) => {
-        await loginWithBalanceValidation(driver);
-
+      buildFixtures(this.test?.fullTitle() as string),
+      async ({
+        driver,
+        ganacheServer,
+      }: {
+        driver: Driver;
+        ganacheServer?: Ganache;
+      }) => {
+        await loginWithBalanceValidation(driver, ganacheServer);
         const headerNavbar = new HeaderNavbar(driver);
         const selectNetworkDialog = new SelectNetwork(driver);
+        const assetListPage = new AssetListPage(driver);
 
-        const accountListPage = new AssetListPage(driver);
-
-        // Ensure starts as "All networks"
-        assert.equal(
-          await accountListPage.getNetworksFilterLabel(),
-          'all networks',
-        );
-
-        // Switch to "Current Network"
-        await accountListPage.openNetworksFilter();
-        await accountListPage.selectNetworkFilterCurrentNetwork();
-        assert.equal(
-          await accountListPage.getNetworksFilterLabel(),
-          'localhost 8545',
-        );
-
-        // Switch to second network
         await headerNavbar.clickSwitchNetworkDropDown();
-        await selectNetworkDialog.selectNetworkName('Ethereum Mainnet');
+        await selectNetworkDialog.selectNetworkName(NETWORK_NAME_MAINNET);
+        assert.equal(await assetListPage.getNumberOfAssets(), 2);
 
-        // TODO: Replace this with polling for text to say "Ethereum Mainnet"
-        await driver.delay(2000);
+        await assetListPage.openNetworksFilter();
+        await assetListPage.clickCurrentNetworkOption();
+        await driver.delay(1e3);
 
-        // Ensure that preference stays the same
-        assert.equal(
-          await accountListPage.getNetworksFilterLabel(),
-          'ethereum mainnet',
-        );
-      },
-    );
-  });
-
-  it('changes the number of assets display when toggle changes', async function () {
-    await withFixtures(
-      {
-        fixtures: new FixtureBuilder().build(),
-        title: this.test?.fullTitle(),
-      },
-      async ({ driver }: { driver: Driver }) => {
-        await loginWithBalanceValidation(driver);
-
-        const headerNavbar = new HeaderNavbar(driver);
-        const selectNetworkDialog = new SelectNetwork(driver);
-
-        const accountListPage = new AssetListPage(driver);
-
-        // TODO: I feel like we shouldn't have to do this; for some reason,
-        // initializing with All accounts on the test's default network doesn't show
-        // all assets (?)
-        // Switch to second network
         await headerNavbar.clickSwitchNetworkDropDown();
-        await selectNetworkDialog.selectNetworkName('Ethereum Mainnet');
-
-        const initialNumberOfAssets = await accountListPage.getNumberOfAssets();
-        assert.equal(initialNumberOfAssets, 1);
-
-        await accountListPage.openNetworksFilter();
-        await accountListPage.selectNetworkFilterAllNetworks();
-
-        // Get the total number of assets for all networks
-        const totalNumberOfAssets = await accountListPage.getNumberOfAssets();
-
-        // Ensure more assets are shown with "All Networks" selected
-        assert.equal(totalNumberOfAssets, 2);
+        await selectNetworkDialog.selectNetworkName(LINEA_NAME_MAINNET);
+        await driver.delay(1e3);
+        assert.equal(
+          await assetListPage.getNetworksFilterLabel(),
+          LINEA_NAME_MAINNET,
+        );
+        assert.equal(await assetListPage.getNumberOfAssets(), 1);
       },
     );
   });
 
   it('allows clicking into the asset details page of native token on another network', async function () {
     await withFixtures(
-      {
-        fixtures: new FixtureBuilder().build(),
-        title: this.test?.fullTitle(),
-      },
-      async ({ driver }: { driver: Driver }) => {
-        await loginWithBalanceValidation(driver);
-
+      buildFixtures(this.test?.fullTitle() as string),
+      async ({
+        driver,
+        ganacheServer,
+      }: {
+        driver: Driver;
+        ganacheServer?: Ganache;
+      }) => {
+        await loginWithBalanceValidation(driver, ganacheServer);
         const headerNavbar = new HeaderNavbar(driver);
         const selectNetworkDialog = new SelectNetwork(driver);
-        const accountListPage = new AssetListPage(driver);
 
-        // TODO: I feel like we shouldn't have to do this; for some reason,
-        // initializing with All accounts on the test's default network doesn't show
-        // all assets (?)
-        // Switch to second network
         await headerNavbar.clickSwitchNetworkDropDown();
-        await selectNetworkDialog.selectNetworkName('Ethereum Mainnet');
+        await selectNetworkDialog.selectNetworkName(NETWORK_NAME_MAINNET);
+        await driver.delay(1000);
 
-        // Switch to All Networks
-        await accountListPage.openNetworksFilter();
-        await accountListPage.selectNetworkFilterAllNetworks();
-
-        // Click on the native token for Localhost 8545
-        // TODO: Move this to class
         await driver.clickElement('.multichain-token-list-item');
 
-        // BUG: TEST WILL FAIL HERE; presently, clicking on native token doesn't do anything
-
-        // TODO: Do some type of check that the assets page loaded properly
-        // Maybe check for the chart or same balance as the item itself?
+        const assetHoveredPriceElement = await driver.findElement(
+          '[data-testid="asset-hovered-price"]',
+        );
+        assert.ok(
+          assetHoveredPriceElement,
+          'Asset hovered price element is present',
+        );
+        const canvasElement = await driver.findElement('canvas');
+        assert.ok(canvasElement, 'Canvas element is present');
       },
     );
   });
 
   it('switches networks when clicking on send for a token on another network', async function () {
-    // TODO: Need a test fixture that has multiple tokens on different networks
-    // Ends with ensuring the global network picker says the destination network
-    // and the toast is displaying with correct text
-  });
-
-  it('switches networks when clicking on swap for a token on another network', async function () {
-    // TODO: Need a test fixture that has multiple tokens on different networks
-    // This test should more/less be the same as the previous
-  });
-
-  it('only shows tokens from the current network in send flow when "All Networks" is selected', async function () {
     await withFixtures(
-      {
-        fixtures: new FixtureBuilder().build(),
-        title: this.test?.fullTitle(),
-      },
-      async ({ driver }: { driver: Driver }) => {
-        await loginWithBalanceValidation(driver);
-
-        const headerNavbar = new HeaderNavbar(driver);
-        const homepage = new HomePage(driver);
-        const selectNetworkDialog = new SelectNetwork(driver);
-        const accountListPage = new AssetListPage(driver);
+      buildFixtures(this.test?.fullTitle() as string),
+      async ({
+        driver,
+        ganacheServer,
+      }: {
+        driver: Driver;
+        ganacheServer?: Ganache;
+      }) => {
+        await loginWithBalanceValidation(driver, ganacheServer);
+        const assetListPage = new AssetListPage(driver);
         const sendPage = new SendTokenPage(driver);
 
-        // TODO: I feel like we shouldn't have to do this; for some reason,
-        // initializing with All accounts on the test's default network doesn't show
-        // all assets (?)
-        // Switch to second network
-        await headerNavbar.clickSwitchNetworkDropDown();
-        await selectNetworkDialog.selectNetworkName('Ethereum Mainnet');
+        await driver.delay(1e3);
 
-        // Switch to All Networks
-        await accountListPage.openNetworksFilter();
-        await accountListPage.selectNetworkFilterAllNetworks();
+        await assetListPage.clickOnAsset('LineaETH');
+        await driver.clickElement('[data-testid="coin-overview-send"]');
 
-        // Veryify there are multiple assets
-        const totalNumberOfAssets = await accountListPage.getNumberOfAssets();
-        assert.equal(totalNumberOfAssets, 2);
+        await sendPage.check_networkChange('Linea Sepolia');
+        await sendPage.check_pageIsLoaded();
 
-        // Click send button and choose recipient
-        await homepage.startSendFlow();
-        sendPage.fillRecipient('0x2f318C334780961FB129D2a6c30D0763d9a5C970');
-
+        await sendPage.fillRecipient(
+          '0x2f318C334780961FB129D2a6c30D0763d9a5C970',
+        );
         await sendPage.clickAssetPickerButton();
 
         const assetPickerItems = await sendPage.getAssetPickerItems();
@@ -179,6 +128,82 @@ describe('Multichain Asset List', function (this: Suite) {
           assetPickerItems.length,
           1,
           'Only one asset should be shown in the asset picker',
+        );
+      },
+    );
+  });
+
+  xit('switches networks when clicking on swap for a token on another network', async function () {
+    await withFixtures(
+      buildFixtures(this.test?.fullTitle() as string),
+      async ({
+        driver,
+        ganacheServer,
+      }: {
+        driver: Driver;
+        ganacheServer?: Ganache;
+      }) => {
+        await loginWithBalanceValidation(driver, ganacheServer);
+        const assetListPage = new AssetListPage(driver);
+
+        await driver.delay(1e3);
+
+        await assetListPage.clickOnAsset('LineaETH');
+        await driver.clickElement('[data-testid="token-overview-button-swap"]');
+
+        const toastTextElement = await driver.findElement('.toast-text');
+        const toastText = await toastTextElement.getText();
+        assert.equal(
+          toastText,
+          "You're now using Linea Sepolia",
+          'Toast text is correct',
+        );
+      },
+    );
+  });
+
+  it('shows correct asset and balance when swapping on a different chain', async function () {
+    await withFixtures(
+      buildFixtures(this.test?.fullTitle() as string),
+      async ({
+        driver,
+        ganacheServer,
+      }: {
+        driver: Driver;
+        ganacheServer?: Ganache;
+      }) => {
+        await loginWithBalanceValidation(driver, ganacheServer);
+        const headerNavbar = new HeaderNavbar(driver);
+        const assetListPage = new AssetListPage(driver);
+        const selectNetworkDialog = new SelectNetwork(driver);
+
+        await headerNavbar.clickSwitchNetworkDropDown();
+        await selectNetworkDialog.selectNetworkName(LINEA_NAME_MAINNET);
+        await driver.delay(1e3);
+
+        await assetListPage.clickOnAsset('Ethereum');
+        await driver.delay(1e3);
+        const swapButton = await driver.findElement(
+          '[data-testid="token-overview-button-swap"]',
+        );
+        await swapButton.click();
+
+        const toastTextElement = await driver.findElement('.toast-text');
+        const toastText = await toastTextElement.getText();
+        assert.equal(
+          toastText,
+          `You're now using ${NETWORK_NAME_MAINNET}`,
+          'Toast text is correct',
+        );
+
+        const balanceMessageElement = await driver.findElement(
+          '.prepare-swap-page__balance-message',
+        );
+        const balanceMessage = await balanceMessageElement.getText();
+        assert.equal(
+          balanceMessage.replace('Max', '').trim(),
+          'Balance: 24.9956',
+          'Balance message is correct',
         );
       },
     );
