@@ -39,6 +39,15 @@ describe('useCurrencyRatePolling', () => {
               },
             ],
           },
+          '0x89': {
+            nativeCurrency: 'BNB',
+            defaultRpcEndpointIndex: 0,
+            rpcEndpoints: [
+              {
+                networkClientId: 'selectedNetworkClientId2',
+              },
+            ],
+          },
         },
       },
     };
@@ -50,13 +59,13 @@ describe('useCurrencyRatePolling', () => {
 
     await Promise.all(mockPromises);
     expect(currencyRateStartPolling).toHaveBeenCalledTimes(1);
-    expect(currencyRateStartPolling).toHaveBeenCalledWith(['ETH']);
+    expect(currencyRateStartPolling).toHaveBeenCalledWith(['ETH', 'BNB']);
 
     // Stop polling on dismount
     unmount();
     expect(currencyRateStopPollingByPollingToken).toHaveBeenCalledTimes(1);
     expect(currencyRateStopPollingByPollingToken).toHaveBeenCalledWith(
-      'ETH_rates',
+      'ETH,BNB_rates',
     );
   });
 

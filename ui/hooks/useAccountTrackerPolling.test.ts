@@ -16,13 +16,26 @@ jest.mock('../store/actions', () => ({
   accountTrackerStopPollingByPollingToken: jest.fn(),
 }));
 
+let originalPortfolioView: string | undefined;
+
 describe('useAccountTrackerPolling', () => {
   beforeEach(() => {
+    // Mock process.env.PORTFOLIO_VIEW
+    originalPortfolioView = process.env.PORTFOLIO_VIEW;
+    process.env.PORTFOLIO_VIEW = 'true'; // Set your desired mock value here
+
     mockPromises = [];
     jest.clearAllMocks();
   });
 
+  afterEach(() => {
+    // Restore the original value
+    process.env.PORTFOLIO_VIEW = originalPortfolioView;
+  });
+
   it('should poll account trackers for network client IDs when enabled and stop on dismount', async () => {
+    process.env.PORTFOLIO_VIEW = 'true';
+
     const state = {
       metamask: {
         isUnlocked: true,
@@ -38,6 +51,15 @@ describe('useAccountTrackerPolling', () => {
               },
             ],
           },
+          '0x89': {
+            chainId: '0x89',
+            defaultRpcEndpointIndex: 0,
+            rpcEndpoints: [
+              {
+                networkClientId: 'selectedNetworkClientId2',
+              },
+            ],
+          },
         },
       },
     };
@@ -49,14 +71,17 @@ describe('useAccountTrackerPolling', () => {
 
     // Should poll each client ID
     await Promise.all(mockPromises);
-    expect(accountTrackerStartPolling).toHaveBeenCalledTimes(1);
+    expect(accountTrackerStartPolling).toHaveBeenCalledTimes(2);
     expect(accountTrackerStartPolling).toHaveBeenCalledWith(
       'selectedNetworkClientId',
+    );
+    expect(accountTrackerStartPolling).toHaveBeenCalledWith(
+      'selectedNetworkClientId2',
     );
 
     // Stop polling on dismount
     unmount();
-    expect(accountTrackerStopPollingByPollingToken).toHaveBeenCalledTimes(1);
+    expect(accountTrackerStopPollingByPollingToken).toHaveBeenCalledTimes(2);
     expect(accountTrackerStopPollingByPollingToken).toHaveBeenCalledWith(
       'selectedNetworkClientId_tracking',
     );

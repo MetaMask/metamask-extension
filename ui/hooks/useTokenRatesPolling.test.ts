@@ -16,10 +16,20 @@ jest.mock('../store/actions', () => ({
   tokenRatesStopPollingByPollingToken: jest.fn(),
 }));
 
+let originalPortfolioView: string | undefined;
 describe('useTokenRatesPolling', () => {
   beforeEach(() => {
+    // Mock process.env.PORTFOLIO_VIEW
+    originalPortfolioView = process.env.PORTFOLIO_VIEW;
+    process.env.PORTFOLIO_VIEW = 'true'; // Set your desired mock value here
+
     mockPromises = [];
     jest.clearAllMocks();
+  });
+
+  afterEach(() => {
+    // Restore the original value
+    process.env.PORTFOLIO_VIEW = originalPortfolioView;
   });
 
   it('should poll token rates when enabled and stop on dismount', async () => {
@@ -38,6 +48,14 @@ describe('useTokenRatesPolling', () => {
               },
             ],
           },
+          '0x89': {
+            chainId: '0x89',
+            rpcEndpoints: [
+              {
+                networkClientId: 'selectedNetworkClientId2',
+              },
+            ],
+          },
         },
       },
     };
@@ -49,14 +67,17 @@ describe('useTokenRatesPolling', () => {
 
     // Should poll each chain
     await Promise.all(mockPromises);
-    expect(tokenRatesStartPolling).toHaveBeenCalledTimes(1);
+    expect(tokenRatesStartPolling).toHaveBeenCalledTimes(2);
     expect(tokenRatesStartPolling).toHaveBeenCalledWith('0x1');
-
+    expect(tokenRatesStartPolling).toHaveBeenCalledWith('0x89');
     // Stop polling on dismount
     unmount();
-    expect(tokenRatesStopPollingByPollingToken).toHaveBeenCalledTimes(1);
+    expect(tokenRatesStopPollingByPollingToken).toHaveBeenCalledTimes(2);
     expect(tokenRatesStopPollingByPollingToken).toHaveBeenCalledWith(
       '0x1_rates',
+    );
+    expect(tokenRatesStopPollingByPollingToken).toHaveBeenCalledWith(
+      '0x89_rates',
     );
   });
 

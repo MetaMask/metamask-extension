@@ -9,21 +9,31 @@ let mockPromises: Promise<string>[];
 
 jest.mock('../store/actions', () => ({
   tokenDetectionStartPolling: jest.fn().mockImplementation((input) => {
-    console.log('PASSING HERE ....', input);
     const promise = Promise.resolve(`${input}_detection`);
     mockPromises.push(promise);
     return promise;
   }),
   tokenDetectionStopPollingByPollingToken: jest.fn(),
 }));
+let originalPortfolioView: string | undefined;
 
 describe('useTokenDetectionPolling', () => {
   beforeEach(() => {
+    // Mock process.env.PORTFOLIO_VIEW
+    originalPortfolioView = process.env.PORTFOLIO_VIEW;
+    process.env.PORTFOLIO_VIEW = 'true'; // Set your desired mock value here
+
     mockPromises = [];
     jest.clearAllMocks();
   });
 
+  afterEach(() => {
+    // Restore the original value
+    process.env.PORTFOLIO_VIEW = originalPortfolioView;
+  });
+
   it('should poll token detection for chain IDs when enabled and stop on dismount', async () => {
+    process.env.PORTFOLIO_VIEW = 'true';
     const state = {
       metamask: {
         isUnlocked: true,
@@ -39,6 +49,14 @@ describe('useTokenDetectionPolling', () => {
               },
             ],
           },
+          '0x89': {
+            chainId: '0x89',
+            rpcEndpoints: [
+              {
+                networkClientId: 'selectedNetworkClientId2',
+              },
+            ],
+          },
         },
       },
     };
@@ -51,13 +69,13 @@ describe('useTokenDetectionPolling', () => {
     // Should poll each chain
     await Promise.all(mockPromises);
     expect(tokenDetectionStartPolling).toHaveBeenCalledTimes(1);
-    expect(tokenDetectionStartPolling).toHaveBeenCalledWith(['0x1']);
+    expect(tokenDetectionStartPolling).toHaveBeenCalledWith(['0x1', '0x89']);
 
     // Stop polling on dismount
     unmount();
     expect(tokenDetectionStopPollingByPollingToken).toHaveBeenCalledTimes(1);
     expect(tokenDetectionStopPollingByPollingToken).toHaveBeenCalledWith(
-      '0x1_detection',
+      '0x1,0x89_detection',
     );
   });
 
