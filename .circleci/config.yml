@@ -364,9 +364,6 @@ workflows:
     jobs:
       - prep-deps
       - rerun-workflows-from-failed:
-          filters:
-            branches:
-              only: develop
           requires:
             - prep-deps
 
