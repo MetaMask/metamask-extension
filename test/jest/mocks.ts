@@ -4,6 +4,7 @@ import {
   BtcMethod,
   BtcAccountType,
   InternalAccount,
+  isEvmAccountType,
 } from '@metamask/keyring-api';
 import { KeyringTypes } from '@metamask/keyring-controller';
 import { v4 as uuidv4 } from 'uuid';
@@ -286,6 +287,15 @@ export function overrideAccountsFromMockState<
     });
   }
 
+  // Compute balances for EVM addresses:
+  // FIXME: Looks like there's no `balances` type in `MetaMaskReduxState`.
+  const newBalances: Record<string, string> = {};
+  for (const account of accounts) {
+    if (isEvmAccountType(account.type)) {
+      newBalances[account.address] = '0x0';
+    }
+  }
+
   return {
     ...state,
     metamask: {
@@ -295,6 +305,7 @@ export function overrideAccountsFromMockState<
         selectedAccount: newSelectedAccount,
       },
       keyrings: newKeyrings,
+      balances: newBalances,
     },
   };
 }
