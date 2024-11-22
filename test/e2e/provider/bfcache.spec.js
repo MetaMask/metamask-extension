@@ -16,24 +16,17 @@ const triggerBFCache = async (driver) => {
     });
   `);
 
-  let attempts = 0;
-  while (attempts < 10) {
-    await driver.driver.get(`chrome://terms/`);
+  await driver.driver.get(`chrome://terms/`);
 
-    await driver.driver.navigate().back();
+  await driver.driver.navigate().back();
 
-    const restoredFromBFCache = await driver.executeScript(
-      `return window.restoredFromBFCache`,
-    );
+  const restoredFromBFCache = await driver.executeScript(
+    `return window.restoredFromBFCache`,
+  );
 
-    if (restoredFromBFCache) {
-      return;
-    }
-
-    attempts += 1;
+  if (!restoredFromBFCache) {
+    assert.fail(new Error('Failed to trigger BFCache'));
   }
-
-  assert.fail(new Error('Failed to trigger BFCache'));
 };
 
 describe('BFCache', function () {
