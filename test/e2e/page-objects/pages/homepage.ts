@@ -45,6 +45,44 @@ class HomePage {
   private readonly transactionAmountsInActivity =
     '[data-testid="transaction-list-item-primary-currency"]';
 
+  // Token tab selectors
+  private readonly assetOptionsButton = '[data-testid="asset-options__button"]';
+
+  private readonly confirmImportTokenButton =
+    '[data-testid="import-tokens-modal-import-button"]';
+
+  private readonly confirmImportTokenMessage = {
+    text: 'Would you like to import this token?',
+    tag: 'p',
+  };
+
+  private readonly hideTokenButton = '[data-testid="asset-options__hide"]';
+
+  private readonly hideTokenConfirmationButton =
+    '[data-testid="hide-token-confirmation__hide"]';
+
+  private readonly hideTokenConfirmationModalTitle = {
+    text: 'Hide token',
+    css: '.hide-token-confirmation__title',
+  };
+
+  private readonly importTokenModalTitle = { text: 'Import tokens', tag: 'h4' };
+
+  private readonly importTokensButton = '[data-testid="importTokens"]';
+
+  private readonly importTokensNextButton =
+    '[data-testid="import-tokens-button-next"]';
+
+  private readonly tokenAmountValue =
+    '[data-testid="multichain-token-list-item-value"]';
+
+  private readonly tokenLisiItem =
+    '[data-testid="multichain-token-list-button"]';
+
+  private readonly tokenOptionsButton = '[data-testid="import-token-button"]';
+
+  private readonly tokenSearchInput = 'input[placeholder="Search tokens"]';
+
   // NFT selectors
   private readonly confirmImportNftButton =
     '[data-testid="import-nfts-modal-import-button"]';
@@ -85,6 +123,10 @@ class HomePage {
     console.log('Home page is loaded');
   }
 
+  async clickNFTIconOnActivityList() {
+    await this.driver.clickElement(this.nftIconOnActivityList);
+  }
+
   async closeUseNetworkNotificationModal(): Promise<void> {
     // We need to use clickElementSafe + assertElementNotPresent as sometimes the network dialog doesn't appear, as per this issue (#25788)
     // TODO: change the 2 actions for clickElementAndWaitToDisappear, once the issue is fixed
@@ -107,8 +149,20 @@ class HomePage {
     await this.driver.clickElement(this.nftTab);
   }
 
-  async clickNFTIconOnActivityList() {
-    await this.driver.clickElement(this.nftIconOnActivityList);
+  /**
+   * Hides a token by clicking on the token name, and confirming the hide modal.
+   *
+   * @param tokenName - The name of the token to hide.
+   */
+  async hideToken(tokenName: string): Promise<void> {
+    console.log(`Hide token ${tokenName} on homepage`);
+    await this.driver.clickElement({ text: tokenName, tag: 'span' });
+    await this.driver.clickElement(this.assetOptionsButton);
+    await this.driver.clickElement(this.hideTokenButton);
+    await this.driver.waitForSelector(this.hideTokenConfirmationModalTitle);
+    await this.driver.clickElementAndWaitToDisappear(
+      this.hideTokenConfirmationButton,
+    );
   }
 
   async startSendFlow(): Promise<void> {
@@ -142,6 +196,20 @@ class HomePage {
         this.confirmImportNftButton,
       );
     }
+  }
+
+  async importTokenBySearch(tokenName: string) {
+    console.log(`Import token ${tokenName} on homepage by search`);
+    await this.driver.clickElement(this.tokenOptionsButton);
+    await this.driver.clickElement(this.importTokensButton);
+    await this.driver.waitForSelector(this.importTokenModalTitle);
+    await this.driver.fill(this.tokenSearchInput, tokenName);
+    await this.driver.clickElement({ text: tokenName, tag: 'p' });
+    await this.driver.clickElement(this.importTokensNextButton);
+    await this.driver.waitForSelector(this.confirmImportTokenMessage);
+    await this.driver.clickElementAndWaitToDisappear(
+      this.confirmImportTokenButton,
+    );
   }
 
   /**
@@ -316,6 +384,59 @@ class HomePage {
       'Check that success imported NFT message is displayed on homepage',
     );
     await this.driver.waitForSelector(this.successImportNftMessage);
+  }
+
+  /**
+   * Checks if the specified token amount is displayed in the token list.
+   *
+   * @param tokenAmount - The token amount to be checked for.
+   */
+  async check_tokenAmountIsDisplayed(tokenAmount: string): Promise<void> {
+    console.log(`Waiting for token amount ${tokenAmount} to be displayed`);
+    await this.driver.waitForSelector({
+      css: this.tokenAmountValue,
+      text: tokenAmount,
+    });
+  }
+
+  /**
+   * Checks if the specified token amount is displayed in the token details modal.
+   *
+   * @param tokenName - The name of the token to check for.
+   * @param tokenAmount - The token amount to be checked for.
+   */
+  async check_tokenAmountInTokenDetailsModal(
+    tokenName: string,
+    tokenAmount: string,
+  ): Promise<void> {
+    console.log(
+      `Check that token amount ${tokenAmount} is displayed in token details modal for token ${tokenName}`,
+    );
+    await this.driver.clickElement({
+      tag: 'span',
+      text: tokenName,
+    });
+    await this.driver.waitForSelector({
+      css: this.tokenAmountValue,
+      text: tokenAmount,
+    });
+  }
+
+  /**
+   * This function checks if the specified number of token items is displayed in the token list.
+   *
+   * @param expectedNumber - The number of token items expected to be displayed. Defaults to 1.
+   * @returns A promise that resolves if the expected number of token items is displayed.
+   */
+  async check_tokenItemNumber(expectedNumber: number = 1): Promise<void> {
+    console.log(`Waiting for ${expectedNumber} token items to be displayed`);
+    await this.driver.wait(async () => {
+      const tokenItems = await this.driver.findElements(this.tokenLisiItem);
+      return tokenItems.length === expectedNumber;
+    }, 10000);
+    console.log(
+      `Expected number of token items ${expectedNumber} is displayed.`,
+    );
   }
 
   /**
