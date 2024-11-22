@@ -68,7 +68,9 @@ async function mockAccountsApi(
 ) {
   return [
     await mockServer
-      .forGet(/https:\/\/accounts.api.cx.metamask.io\/v1\/accounts\//u)
+      .forGet(
+        `https://accounts.api.cx.metamask.io/v1/accounts/${DEFAULT_FIXTURE_ACCOUNT.toLowerCase()}/transactions`,
+      )
       .withQuery(cursor ? { cursor } : {})
       .thenCallback(() => ({
         statusCode: 200,
