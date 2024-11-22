@@ -1,6 +1,5 @@
 import { useMemo } from 'react';
 import BigNumber from 'bignumber.js';
-import { BtcAccountType, SolAccountType } from '@metamask/keyring-api';
 import { formatCurrency } from '../helpers/utils/confirm-tx.util';
 import {
   getMultichainCurrentCurrency,
@@ -10,10 +9,7 @@ import {
 } from '../selectors/multichain';
 
 import { getValueFromWeiHex } from '../../shared/modules/conversion.utils';
-import {
-  TEST_NETWORK_TICKER_MAP,
-  NON_EVM_CURRENCY_SYMBOLS,
-} from '../../shared/constants/network';
+import { TEST_NETWORK_TICKER_MAP } from '../../shared/constants/network';
 import { Numeric } from '../../shared/modules/Numeric';
 import { EtherDenomination } from '../../shared/constants/common';
 import { getTokenFiatAmount } from '../helpers/utils/token-util';
