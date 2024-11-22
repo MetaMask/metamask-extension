@@ -201,7 +201,7 @@ export const createMultichainDriverTransport = (
               data,
             }: {
               type: string;
-              data: JsonRpcResponse<unknown>;
+              data: JsonRpcResponse<Json>;
             }) => {
               if (type !== 'caip-x') {
                 return;
