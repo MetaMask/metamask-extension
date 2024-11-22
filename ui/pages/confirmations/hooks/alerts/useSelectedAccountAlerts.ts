@@ -20,7 +20,8 @@ export const useSelectedAccountAlerts = (): Alert[] => {
     (currentConfirmation as SignatureRequestType)?.msgParams?.from ??
     (currentConfirmation as TransactionMeta)?.txParams?.from;
   const confirmationAccountSameAsSelectedAccount =
-    !fromAccount || fromAccount.toLowerCase() === selectedAccount?.address?.toLowerCase();
+    !fromAccount ||
+    fromAccount.toLowerCase() === selectedAccount?.address?.toLowerCase();
 
   return useMemo<Alert[]>((): Alert[] => {
     if (confirmationAccountSameAsSelectedAccount) {
