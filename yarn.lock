@@ -6263,15 +6263,15 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/preferences-controller@npm:^15.0.0":
-  version: 15.0.0
-  resolution: "@metamask/preferences-controller@npm:15.0.0"
+"@metamask/preferences-controller@npm:^13.0.2":
+  version: 13.3.0
+  resolution: "@metamask/preferences-controller@npm:13.3.0"
   dependencies:
     "@metamask/base-controller": "npm:^7.0.2"
-    "@metamask/controller-utils": "npm:^11.4.3"
+    "@metamask/controller-utils": "npm:^11.4.2"
   peerDependencies:
-    "@metamask/keyring-controller": ^19.0.0
-  checksum: 10/886f3c789089d4b7e63108734af1ed47906ea3a10f75c755ae54d3193ca3da5ea516374745a48d202b320f9e0a422e4693b404ce6ea083fa437aab0a5a4f6f38
+    "@metamask/keyring-controller": ^17.0.0
+  checksum: 10/f93e675aaca4f76a691b205d8037d260db3dc6aefda53ff425e3a15193dda4add05c2fc0d3c36ed6baf382d7ae495519e78ab93dbde5841fe86f25dcb8c2a830
   languageName: node
   linkType: hard
 
@@ -26871,7 +26871,7 @@ __metadata:
     "@metamask/polling-controller": "npm:^10.0.1"
     "@metamask/post-message-stream": "npm:^8.0.0"
     "@metamask/ppom-validator": "npm:0.35.1"
-    "@metamask/preferences-controller": "npm:^15.0.0"
+    "@metamask/preferences-controller": "npm:^13.0.2"
     "@metamask/preinstalled-example-snap": "npm:^0.2.0"
     "@metamask/profile-sync-controller": "npm:^2.0.0"
     "@metamask/providers": "npm:^14.0.2"
