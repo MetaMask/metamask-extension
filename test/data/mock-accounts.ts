@@ -42,7 +42,7 @@ export const MOCK_ACCOUNT_BIP122_P2WPKH: InternalAccount = {
   id: 'ae247df6-3911-47f7-9e36-28e6a7d96078',
   address: 'bc1qwl8399fz829uqvqly9tcatgrgtwp3udnhxfq4k',
   options: {},
-  methods: [BtcMethod.SendMany],
+  methods: [BtcMethod.SendBitcoin],
   type: BtcAccountType.P2wpkh,
   metadata: {
     name: 'Bitcoin Account',
@@ -56,7 +56,7 @@ export const MOCK_ACCOUNT_BIP122_P2WPKH_TESTNET: InternalAccount = {
   id: 'fcdafe8b-4bdf-4e25-9051-e255b2a0af5f',
   address: 'tb1q6rmsq3vlfdhjdhtkxlqtuhhlr6pmj09y6w43g8',
   options: {},
-  methods: [BtcMethod.SendMany],
+  methods: [BtcMethod.SendBitcoin],
   type: BtcAccountType.P2wpkh,
   metadata: {
     name: 'Bitcoin Testnet Account',
