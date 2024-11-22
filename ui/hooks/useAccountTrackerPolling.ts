@@ -1,8 +1,5 @@
 import { useSelector } from 'react-redux';
-import {
-  getCurrentChainId,
-  getNetworkConfigurationsByChainId,
-} from '../selectors';
+import { getCurrentChainId } from '../selectors';
 import {
   accountTrackerStartPolling,
   accountTrackerStopPollingByPollingToken,
@@ -11,6 +8,7 @@ import {
   getCompletedOnboarding,
   getIsUnlocked,
 } from '../ducks/metamask/metamask';
+import { getNetworkConfigurationsByChainId } from '../../shared/modules/selectors/networks';
 import useMultiPolling from './useMultiPolling';
 
 const useAccountTrackerPolling = () => {
