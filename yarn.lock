@@ -6264,14 +6264,14 @@ __metadata:
   linkType: hard
 
 "@metamask/preferences-controller@npm:^13.0.2":
-  version: 13.3.0
-  resolution: "@metamask/preferences-controller@npm:13.3.0"
+  version: 13.0.3
+  resolution: "@metamask/preferences-controller@npm:13.0.3"
   dependencies:
-    "@metamask/base-controller": "npm:^7.0.2"
-    "@metamask/controller-utils": "npm:^11.4.2"
+    "@metamask/base-controller": "npm:^7.0.1"
+    "@metamask/controller-utils": "npm:^11.3.0"
   peerDependencies:
     "@metamask/keyring-controller": ^17.0.0
-  checksum: 10/f93e675aaca4f76a691b205d8037d260db3dc6aefda53ff425e3a15193dda4add05c2fc0d3c36ed6baf382d7ae495519e78ab93dbde5841fe86f25dcb8c2a830
+  checksum: 10/d922c2e603c7a1ef0301dcfc7d5b6aa0bbdd9c318f0857fbbc9e95606609ae806e69c46231288953ce443322039781404565a46fe42bdfa731c4f0da20448d32
   languageName: node
   linkType: hard
 
