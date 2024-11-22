@@ -25,7 +25,6 @@ const TypedSignV1Info: React.FC = () => {
     return null;
   }
 
-  const { from } = currentConfirmation.msgParams ?? { from: '' };
   const toolTipMessage = isSnapId(currentConfirmation.msgParams?.origin)
     ? t('requestFromInfoSnap')
     : t('requestFromInfo');

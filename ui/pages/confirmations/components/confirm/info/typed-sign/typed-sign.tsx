@@ -53,7 +53,6 @@ const TypedSignInfo: React.FC = () => {
     ? t('requestFromInfoSnap')
     : t('requestFromInfo');
   const msgData = currentConfirmation.msgParams?.data as string;
-  const { from } = currentConfirmation.msgParams ?? { from: '' };
 
   return (
     <>

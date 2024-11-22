@@ -51,9 +51,7 @@ const PersonalSignInfo: React.FC = () => {
     return null;
   }
 
-  const { from } = currentConfirmation.msgParams;
   const isSIWE = isSIWESignatureRequest(currentConfirmation);
-  const chainId = currentConfirmation.chainId as string;
   const messageText = sanitizeString(
     hexToText(currentConfirmation.msgParams?.data),
   );
