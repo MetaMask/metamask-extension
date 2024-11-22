@@ -44,8 +44,8 @@ export default function createEvmMethodsToNonEvmAccountReqFilterMiddleware({
       'AccountsController:getSelectedMultichainAccount',
     );
     if (!selectedAccount) {
-      // If the account is undefined we just skip this middleware (this should not never happen
-      // since this should use the current internal account no matter if it's EVM or not.
+      // If the account is undefined we just skip this middleware (this should never happen
+      // since it us the current internal account no matter if it's EVM or not).
       return next();
     }
 
