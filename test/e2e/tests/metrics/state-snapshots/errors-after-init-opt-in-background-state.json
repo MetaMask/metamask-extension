@@ -237,7 +237,9 @@
       "redesignedConfirmationsEnabled": true,
       "redesignedTransactionsEnabled": "boolean",
       "tokenSortConfig": "object",
-      "tokenNetworkFilter": "object",
+      "tokenNetworkFilter": {
+        "0x539": "boolean"
+      },
       "shouldShowAggregatedBalancePopover": "boolean"
     },
     "ipfsGateway": "string",
@@ -321,11 +323,7 @@
   "TokenListController": {
     "tokenList": "object",
     "tokensChainsCache": {
-      "0x1": "object",
-      "0x539": "object",
-      "0xaa36a7": "object",
-      "0xe705": "object",
-      "0xe708": "object"
+      "0x539": "object"
     },
     "preventPollingOnNetworkRestart": false
   },
@@ -340,7 +338,6 @@
   },
   "TxController": {
     "methodData": "object",
-    "submitHistory": "object",
     "transactions": "object",
     "lastFetchedBlockNumbers": "object",
     "submitHistory": "object"

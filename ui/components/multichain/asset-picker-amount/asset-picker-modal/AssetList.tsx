@@ -110,7 +110,6 @@ export default function AssetList({
                     tokenSymbol={token.symbol}
                     secondary={secondaryCurrencyValue}
                     tokenImage={token.image}
-                    isOriginalTokenSymbol={token.symbol === nativeCurrency}
                     isPrimaryTokenSymbolHidden
                   />
                 ) : (

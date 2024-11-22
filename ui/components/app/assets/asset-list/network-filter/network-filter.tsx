@@ -1,28 +1,35 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { setTokenNetworkFilter } from '../../../../../store/actions';
 import {
   getCurrentChainId,
   getCurrentNetwork,
   getPreferences,
-  getSelectedInternalAccount,
-  getShouldHideZeroBalanceTokens,
-  getNetworkConfigurationsByChainId,
   getChainIdsToPoll,
+  getShouldHideZeroBalanceTokens,
+  getSelectedAccount,
 } from '../../../../../selectors';
+import { getNetworkConfigurationsByChainId } from '../../../../../../shared/modules/selectors/networks';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import { SelectableListItem } from '../sort-control/sort-control';
 import { Text } from '../../../../component-library/text/text';
 import {
+  AlignItems,
   Display,
   JustifyContent,
   TextColor,
   TextVariant,
 } from '../../../../../helpers/constants/design-system';
 import { Box } from '../../../../component-library/box/box';
-import { AvatarNetwork } from '../../../../component-library';
+import {
+  AvatarNetwork,
+  AvatarNetworkSize,
+} from '../../../../component-library';
 import UserPreferencedCurrencyDisplay from '../../../user-preferenced-currency-display';
-import { CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP } from '../../../../../../shared/constants/network';
+import {
+  CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP,
+  TEST_CHAINS,
+} from '../../../../../../shared/constants/network';
 import { useGetFormattedTokensPerChain } from '../../../../../hooks/useGetFormattedTokensPerChain';
 import { useAccountTotalCrossChainFiatBalance } from '../../../../../hooks/useAccountTotalCrossChainFiatBalance';
 
@@ -34,9 +41,10 @@ const NetworkFilter = ({ handleClose }: SortControlProps) => {
   const t = useI18nContext();
   const dispatch = useDispatch();
   const chainId = useSelector(getCurrentChainId);
-  const selectedAccount = useSelector(getSelectedInternalAccount);
   const currentNetwork = useSelector(getCurrentNetwork);
+  const selectedAccount = useSelector(getSelectedAccount);
   const allNetworks = useSelector(getNetworkConfigurationsByChainId);
+  const [chainsToShow, setChainsToShow] = useState<string[]>([]);
   const { tokenNetworkFilter } = useSelector(getPreferences);
   const shouldHideZeroBalanceTokens = useSelector(
     getShouldHideZeroBalanceTokens,
@@ -67,9 +75,6 @@ const NetworkFilter = ({ handleClose }: SortControlProps) => {
       formattedTokensForAllNetworks,
     );
 
-  // TODO: fetch balances across networks
-  // const multiNetworkAccountBalance = useMultichainAccountBalance()
-
   const handleFilter = (chainFilters: Record<string, boolean>) => {
     dispatch(setTokenNetworkFilter(chainFilters));
 
@@ -77,11 +82,28 @@ const NetworkFilter = ({ handleClose }: SortControlProps) => {
     handleClose();
   };
 
+  useEffect(() => {
+    const testnetChains: string[] = TEST_CHAINS;
+    const mainnetChainIds = Object.keys(allNetworks || {}).filter(
+      (chain) => !testnetChains.includes(chain),
+    );
+    setChainsToShow(mainnetChainIds);
+  }, []);
+
+  const allOpts: Record<string, boolean> = {};
+  Object.keys(allNetworks || {}).forEach((chain) => {
+    allOpts[chain] = true;
+  });
+
   return (
     <>
       <SelectableListItem
-        isSelected={!Object.keys(tokenNetworkFilter).length}
-        onClick={() => handleFilter({})}
+        isSelected={
+          Object.keys(tokenNetworkFilter || {}).length ===
+          Object.keys(allNetworks || {}).length
+        }
+        onClick={() => handleFilter(allOpts)}
+        testId="network-filter-all"
       >
         <Box
           display={Display.Flex}
@@ -95,8 +117,9 @@ const NetworkFilter = ({ handleClose }: SortControlProps) => {
               {t('allNetworks')}
             </Text>
             <Text
-              variant={TextVariant.bodyMdMedium}
-              color={TextColor.textDefault}
+              variant={TextVariant.bodySmMedium}
+              color={TextColor.textAlternative}
+              data-testid="network-filter-all__total"
             >
               {/* TODO: Should query cross chain account balance */}
 
@@ -110,19 +133,20 @@ const NetworkFilter = ({ handleClose }: SortControlProps) => {
               />
             </Text>
           </Box>
-          <Box display={Display.Flex}>
-            {Object.values(allNetworks)
+          <Box display={Display.Flex} alignItems={AlignItems.center}>
+            {chainsToShow
               .slice(0, 5) // only show a max of 5 icons overlapping
-              .map((network, index) => {
+              .map((chain, index) => {
                 const networkImageUrl =
                   CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP[
-                    network.chainId as keyof typeof CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP
+                    chain as keyof typeof CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP
                   ];
                 return (
                   <AvatarNetwork
-                    key={network.chainId}
+                    key={chainId}
                     name="All"
                     src={networkImageUrl ?? undefined}
+                    size={AvatarNetworkSize.Sm}
                     // overlap the icons
                     style={{
                       marginLeft: index === 0 ? 0 : '-20px',
@@ -135,12 +159,17 @@ const NetworkFilter = ({ handleClose }: SortControlProps) => {
         </Box>
       </SelectableListItem>
       <SelectableListItem
-        isSelected={tokenNetworkFilter[chainId]}
+        isSelected={
+          tokenNetworkFilter[chainId] &&
+          Object.keys(tokenNetworkFilter || {}).length === 1
+        }
         onClick={() => handleFilter({ [chainId]: true })}
+        testId="network-filter-current"
       >
         <Box
           display={Display.Flex}
           justifyContent={JustifyContent.spaceBetween}
+          alignItems={AlignItems.center}
         >
           <Box>
             <Text

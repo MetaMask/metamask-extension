@@ -41,7 +41,7 @@ import { QuoteRequest } from '../types';
 import { calcTokenValue } from '../../../../shared/lib/swaps-utils';
 import { BridgeQuoteCard } from '../quotes/bridge-quote-card';
 import { isValidQuoteRequest } from '../utils/quote';
-import { getProviderConfig } from '../../../ducks/metamask/metamask';
+import { getProviderConfig } from '../../../../shared/modules/selectors/networks';
 import { BridgeInputGroup } from './bridge-input-group';
 
 const PrepareBridgePage = () => {
