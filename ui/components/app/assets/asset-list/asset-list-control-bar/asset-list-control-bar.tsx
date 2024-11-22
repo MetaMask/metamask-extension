@@ -221,13 +221,13 @@ const AssetListControlBar = ({ showTokensLinks }: AssetListControlBarProps) => {
         isOpen={isNetworkFilterPopoverOpen}
         position={PopoverPosition.BottomStart}
         referenceElement={popoverRef.current}
-        matchWidth={!isFullScreen}
+        matchWidth={false}
         style={{
           zIndex: 10,
           display: 'flex',
           flexDirection: 'column',
           padding: 0,
-          minWidth: isFullScreen ? '325px' : '',
+          minWidth: isFullScreen ? '250px' : '',
         }}
       >
         <NetworkFilter handleClose={closePopover} />
@@ -237,13 +237,13 @@ const AssetListControlBar = ({ showTokensLinks }: AssetListControlBarProps) => {
         isOpen={isTokenSortPopoverOpen}
         position={PopoverPosition.BottomEnd}
         referenceElement={popoverRef.current}
-        matchWidth={!isFullScreen}
+        matchWidth={false}
         style={{
           zIndex: 10,
           display: 'flex',
           flexDirection: 'column',
           padding: 0,
-          minWidth: isFullScreen ? '325px' : '',
+          minWidth: isFullScreen ? '250px' : '',
         }}
       >
         <SortControl handleClose={closePopover} />
@@ -254,13 +254,13 @@ const AssetListControlBar = ({ showTokensLinks }: AssetListControlBarProps) => {
         isOpen={isImportTokensPopoverOpen}
         position={PopoverPosition.BottomEnd}
         referenceElement={popoverRef.current}
-        matchWidth={!isFullScreen}
+        matchWidth={false}
         style={{
           zIndex: 10,
           display: 'flex',
           flexDirection: 'column',
           padding: 0,
-          minWidth: isFullScreen ? '325px' : '',
+          minWidth: isFullScreen ? '158px' : '',
         }}
       >
         <SelectableListItem onClick={handleImport} testId="importTokens">
