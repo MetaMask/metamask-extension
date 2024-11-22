@@ -23,6 +23,7 @@ import { useConfirmContext } from '../../../../context/confirm';
 import { selectUseTransactionSimulations } from '../../../../selectors/preferences';
 import { ConfirmInfoRowTypedSignData } from '../../row/typed-sign-data/typedSignData';
 import { isSnapId } from '../../../../../../helpers/utils/snaps';
+import { SigningInWithRow } from '../shared/sign-in-with-row/sign-in-with-row';
 import { PermitSimulation } from './permit-simulation';
 
 const TypedSignInfo: React.FC = () => {
@@ -82,13 +83,7 @@ const TypedSignInfo: React.FC = () => {
             />
           </ConfirmInfoRow>
         )}
-        <ConfirmInfoAlertRow
-          alertKey={RowAlertKey.SigningInWith}
-          label={t('signingInWith')}
-          ownerId={currentConfirmation.id}
-        >
-          <ConfirmInfoRowAddress address={from} chainId={chainId} />
-        </ConfirmInfoAlertRow>
+        <SigningInWithRow />
       </ConfirmInfoSection>
       <ConfirmInfoSection>
         <ConfirmInfoRow

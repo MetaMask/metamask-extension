@@ -3,7 +3,6 @@ import React from 'react';
 import { ConfirmInfoAlertRow } from '../../../../../../components/app/confirm/info/row/alert-row/alert-row';
 import {
   ConfirmInfoRow,
-  ConfirmInfoRowAddress,
   ConfirmInfoRowUrl,
 } from '../../../../../../components/app/confirm/info/row';
 import { RowAlertKey } from '../../../../../../components/app/confirm/info/row/constants';
@@ -16,6 +15,7 @@ import { useConfirmContext } from '../../../../context/confirm';
 import { ConfirmInfoRowTypedSignDataV1 } from '../../row/typed-sign-data-v1/typedSignDataV1';
 import { ConfirmInfoSection } from '../../../../../../components/app/confirm/info/row/section';
 import { isSnapId } from '../../../../../../helpers/utils/snaps';
+import { SigningInWithRow } from '../shared/sign-in-with-row/sign-in-with-row';
 
 const TypedSignV1Info: React.FC = () => {
   const t = useI18nContext();
@@ -44,13 +44,7 @@ const TypedSignV1Info: React.FC = () => {
             url={currentConfirmation.msgParams?.origin ?? ''}
           />
         </ConfirmInfoAlertRow>
-        <ConfirmInfoAlertRow
-          alertKey={RowAlertKey.SigningInWith}
-          label={t('signingInWith')}
-          ownerId={currentConfirmation.id}
-        >
-          <ConfirmInfoRowAddress address={from} chainId={chainId} />
-        </ConfirmInfoAlertRow>
+        <SigningInWithRow />
       </ConfirmInfoSection>
       <ConfirmInfoSection>
         <ConfirmInfoRow

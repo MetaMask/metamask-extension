@@ -20,6 +20,7 @@ import { ConfirmInfoRowCurrency } from '../../../../../../../components/app/conf
 import { PRIMARY } from '../../../../../../../helpers/constants/common';
 import { useUserPreferencedCurrency } from '../../../../../../../hooks/useUserPreferencedCurrency';
 import { HEX_ZERO } from '../constants';
+import { SigningInWithRow } from '../sign-in-with-row/sign-in-with-row';
 
 export const OriginRow = () => {
   const t = useI18nContext();
@@ -41,29 +42,6 @@ export const OriginRow = () => {
       tooltip={t('requestFromTransactionDescription')}
     >
       <ConfirmInfoRowUrl url={origin} />
-    </ConfirmInfoAlertRow>
-  );
-};
-
-export const SigningInWithRow = () => {
-  const t = useI18nContext();
-
-  const { currentConfirmation } = useConfirmContext<TransactionMeta>();
-
-  const chainId = currentConfirmation?.chainId as string;
-  const from = currentConfirmation?.txParams?.from;
-
-  if (!from) {
-    return null;
-  }
-
-  return (
-    <ConfirmInfoAlertRow
-      alertKey={RowAlertKey.SigningInWith}
-      label={t('signingInWith')}
-      ownerId={currentConfirmation.id}
-    >
-      <ConfirmInfoRowAddress address={from} chainId={chainId} />
     </ConfirmInfoAlertRow>
   );
 };
