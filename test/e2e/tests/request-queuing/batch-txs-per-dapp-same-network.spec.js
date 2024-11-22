@@ -50,9 +50,6 @@ describe('Request Queuing for Multiple Dapps and Txs on same networks', function
 
           await tempToggleSettingRedesignedTransactionConfirmations(driver);
 
-          // Navigate to extension home screen
-          await driver.navigate(PAGES.HOME);
-
           // Open Dapp One
           await openDapp(driver, undefined, DAPP_URL);
 

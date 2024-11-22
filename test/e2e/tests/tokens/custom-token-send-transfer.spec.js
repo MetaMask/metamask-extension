@@ -33,9 +33,6 @@ describe('Transfer custom tokens @no-mmi', function () {
 
         await tempToggleSettingRedesignedTransactionConfirmations(driver);
 
-        // Navigate to extension home screen
-        await driver.navigate(PAGES.HOME);
-
         // go to custom tokens view on extension, perform send tokens
         await driver.clickElement({
           css: '[data-testid="multichain-token-list-item-value"]',
@@ -125,9 +122,6 @@ describe('Transfer custom tokens @no-mmi', function () {
 
         await tempToggleSettingRedesignedTransactionConfirmations(driver);
 
-        // Navigate to extension home screen
-        await driver.navigate(PAGES.HOME);
-
         // transfer token from dapp
         await openDapp(driver, contractAddress);
         await driver.delay(veryLargeDelayMs);
@@ -191,9 +185,6 @@ describe('Transfer custom tokens @no-mmi', function () {
         await unlockWallet(driver);
 
         await tempToggleSettingRedesignedTransactionConfirmations(driver);
-
-        // Navigate to extension home screen
-        await driver.navigate(PAGES.HOME);
 
         // transfer token from dapp
         await openDapp(driver, contractAddress);

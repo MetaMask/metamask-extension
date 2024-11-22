@@ -36,9 +36,6 @@ describe('Navigate transactions', function () {
 
         await tempToggleSettingRedesignedTransactionConfirmations(driver);
 
-        // Navigate to extension home screen
-        await driver.navigate(PAGES.HOME);
-
         await createMultipleTransactions(driver, TRANSACTION_COUNT);
 
         const navigation = new ConfirmationNavigation(driver);
@@ -83,9 +80,6 @@ describe('Navigate transactions', function () {
 
         await tempToggleSettingRedesignedTransactionConfirmations(driver);
 
-        // Navigate to extension home screen
-        await driver.navigate(PAGES.HOME);
-
         await createMultipleTransactions(driver, TRANSACTION_COUNT);
 
         const navigation = new ConfirmationNavigation(driver);
@@ -123,9 +117,6 @@ describe('Navigate transactions', function () {
 
         await tempToggleSettingRedesignedTransactionConfirmations(driver);
 
-        // Navigate to extension home screen
-        await driver.navigate(PAGES.HOME);
-
         await createMultipleTransactions(driver, TRANSACTION_COUNT);
 
         // reject transaction
@@ -153,9 +144,6 @@ describe('Navigate transactions', function () {
 
         await tempToggleSettingRedesignedTransactionConfirmations(driver);
 
-        // Navigate to extension home screen
-        await driver.navigate(PAGES.HOME);
-
         await createMultipleTransactions(driver, TRANSACTION_COUNT);
 
         // confirm transaction
@@ -182,9 +170,6 @@ describe('Navigate transactions', function () {
         await unlockWallet(driver);
 
         await tempToggleSettingRedesignedTransactionConfirmations(driver);
-
-        // Navigate to extension home screen
-        await driver.navigate(PAGES.HOME);
 
         await createMultipleTransactions(driver, TRANSACTION_COUNT);
 

@@ -31,9 +31,6 @@ describe('Editing confirmations of dapp initiated contract interactions', functi
 
         await tempToggleSettingRedesignedTransactionConfirmations(driver);
 
-        // Navigate to extension home screen
-        await driver.navigate(PAGES.HOME);
-
         // deploy contract
         await openDapp(driver, contractAddress);
         // wait for deployed contract, calls and confirms a contract method where ETH is sent
@@ -67,9 +64,6 @@ describe('Editing confirmations of dapp initiated contract interactions', functi
         await logInWithBalanceValidation(driver);
 
         await tempToggleSettingRedesignedTransactionConfirmations(driver);
-
-        // Navigate to extension home screen
-        await driver.navigate(PAGES.HOME);
 
         await openDapp(driver);
         await driver.clickElement('#sendButton');

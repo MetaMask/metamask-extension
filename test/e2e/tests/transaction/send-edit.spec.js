@@ -24,7 +24,6 @@ describe('Editing Confirm Transaction', function () {
       async ({ driver }) => {
         await unlockWallet(driver);
         await tempToggleSettingRedesignedTransactionConfirmations(driver);
-        await driver.navigate(PAGES.HOME);
         await createInternalTransaction(driver);
 
         await driver.findElement({
@@ -101,7 +100,6 @@ describe('Editing Confirm Transaction', function () {
       async ({ driver }) => {
         await unlockWallet(driver);
         await tempToggleSettingRedesignedTransactionConfirmations(driver);
-        await driver.navigate(PAGES.HOME);
 
         await createInternalTransaction(driver);
 

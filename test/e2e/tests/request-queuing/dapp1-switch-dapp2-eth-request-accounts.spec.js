@@ -43,7 +43,6 @@ describe('Request Queuing Dapp 1 Send Tx -> Dapp 2 Request Accounts Tx', functio
           await unlockWallet(driver);
 
           await tempToggleSettingRedesignedTransactionConfirmations(driver);
-          await driver.navigate(PAGES.HOME);
 
           // Open Dapp One
           await openDapp(driver, undefined, DAPP_URL);

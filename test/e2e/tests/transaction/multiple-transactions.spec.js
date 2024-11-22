@@ -27,9 +27,6 @@ describe('Multiple transactions', function () {
 
         await tempToggleSettingRedesignedTransactionConfirmations(driver);
 
-        // Navigate to extension home screen
-        await driver.navigate(PAGES.HOME);
-
         // initiates a transaction from the dapp
         await openDapp(driver);
         // creates first transaction
@@ -93,9 +90,6 @@ describe('Multiple transactions', function () {
         await unlockWallet(driver);
 
         await tempToggleSettingRedesignedTransactionConfirmations(driver);
-
-        // Navigate to extension home screen
-        await driver.navigate(PAGES.HOME);
 
         // initiates a transaction from the dapp
         await openDapp(driver);

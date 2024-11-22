@@ -29,7 +29,6 @@ describe('Simple send eth', function (this: Suite) {
         await loginWithBalanceValidation(driver, ganacheServer);
 
         await tempToggleSettingRedesignedTransactionConfirmations(driver);
-        await driver.navigate(PAGES.HOME);
 
         await sendTransactionToAddress({
           driver,

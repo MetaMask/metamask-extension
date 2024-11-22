@@ -110,9 +110,6 @@ describe('Send ETH', function () {
 
           await tempToggleSettingRedesignedTransactionConfirmations(driver);
 
-          // Navigate to extension home screen
-          await driver.navigate(PAGES.HOME);
-
           await driver.delay(1000);
 
           await openActionMenuAndStartSendFlow(driver);
@@ -265,9 +262,6 @@ describe('Send ETH', function () {
 
             await tempToggleSettingRedesignedTransactionConfirmations(driver);
 
-            // Navigate to extension home screen
-            await driver.navigate(PAGES.HOME);
-
             // initiates a send from the dapp
             await openDapp(driver);
             await driver.clickElement({ text: 'Send', tag: 'button' });
@@ -345,9 +339,6 @@ describe('Send ETH', function () {
             await unlockWallet(driver);
 
             await tempToggleSettingRedesignedTransactionConfirmations(driver);
-
-            // Navigate to extension home screen
-            await driver.navigate(PAGES.HOME);
 
             // initiates a transaction from the dapp
             await openDapp(driver);
@@ -453,9 +444,6 @@ describe('Send ETH', function () {
             await unlockWallet(driver);
 
             await tempToggleSettingRedesignedTransactionConfirmations(driver);
-
-            // Navigate to extension home screen
-            await driver.navigate(PAGES.HOME);
 
             await driver.assertElementNotPresent('.loading-overlay__spinner');
             const balance = await driver.findElement(

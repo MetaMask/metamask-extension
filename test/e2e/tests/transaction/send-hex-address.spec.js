@@ -124,9 +124,6 @@ describe('Send ERC20 to a 40 character hexadecimal address', function () {
 
         await tempToggleSettingRedesignedTransactionConfirmations(driver);
 
-        // Navigate to extension home screen
-        await driver.navigate(PAGES.HOME);
-
         // Send TST
         await driver.clickElement(
           '[data-testid="account-overview__asset-tab"]',
@@ -190,9 +187,6 @@ describe('Send ERC20 to a 40 character hexadecimal address', function () {
         await logInWithBalanceValidation(driver, ganacheServer);
 
         await tempToggleSettingRedesignedTransactionConfirmations(driver);
-
-        // Navigate to extension home screen
-        await driver.navigate(PAGES.HOME);
 
         // Send TST
         await driver.clickElement(

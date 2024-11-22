@@ -41,9 +41,6 @@ describe('Request Queuing Switch Network on Dapp Send Tx while on different netw
 
           await tempToggleSettingRedesignedTransactionConfirmations(driver);
 
-          // Navigate to extension home screen
-          await driver.navigate(PAGES.HOME);
-
           // Open dapp
           await openDapp(driver, undefined, DAPP_URL);
 

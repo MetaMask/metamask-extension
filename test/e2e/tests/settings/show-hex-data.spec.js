@@ -82,7 +82,6 @@ describe('Check the toggle for hex data', function () {
         await logInWithBalanceValidation(driver, ganacheServer);
 
         await tempToggleSettingRedesignedTransactionConfirmations(driver);
-        await driver.navigate(PAGES.HOME);
 
         await toggleHexData(driver);
         await clickOnLogo(driver);

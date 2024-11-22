@@ -259,9 +259,6 @@ describe('Request-queue UI changes', function () {
 
           await tempToggleSettingRedesignedTransactionConfirmations(driver);
 
-          // Navigate to extension home screen
-          await driver.navigate(PAGES.HOME);
-
           // Open the first dapp
           await openDappAndSwitchChain(driver, DAPP_URL, '0x539');
 
@@ -332,9 +329,6 @@ describe('Request-queue UI changes', function () {
           await unlockWallet(driver);
 
           await tempToggleSettingRedesignedTransactionConfirmations(driver);
-
-          // Navigate to extension home screen
-          await driver.navigate(PAGES.HOME);
 
           // Open the first dapp
           await openDappAndSwitchChain(driver, DAPP_URL, '0x539');
@@ -454,9 +448,6 @@ describe('Request-queue UI changes', function () {
           await unlockWallet(driver);
 
           await tempToggleSettingRedesignedTransactionConfirmations(driver);
-
-          // Navigate to extension home screen
-          await driver.navigate(PAGES.HOME);
 
           // Open the first dapp
           await openDappAndSwitchChain(driver, DAPP_URL, '0x539');
@@ -614,9 +605,6 @@ describe('Request-queue UI changes', function () {
 
           await tempToggleSettingRedesignedTransactionConfirmations(driver);
 
-          // Navigate to extension home screen
-          await driver.navigate(PAGES.HOME);
-
           // Open the first dapp
           await openDappAndSwitchChain(driver, DAPP_URL, '0x539');
 
@@ -684,9 +672,6 @@ describe('Request-queue UI changes', function () {
           await unlockWallet(driver);
 
           await tempToggleSettingRedesignedTransactionConfirmations(driver);
-
-          // Navigate to extension home screen
-          await driver.navigate(PAGES.HOME);
 
           // Open the first dapp
           await openDappAndSwitchChain(driver, DAPP_URL, '0x539');

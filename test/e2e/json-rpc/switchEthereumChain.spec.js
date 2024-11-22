@@ -35,8 +35,6 @@ describe('Switch Ethereum Chain for two dapps', function () {
 
           await tempToggleSettingRedesignedTransactionConfirmations(driver);
 
-          await driver.navigate(PAGES.HOME);
-
           // Open settings menu button
           const accountOptionsMenuSelector =
             '[data-testid="account-options-menu-button"]';

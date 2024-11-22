@@ -47,9 +47,6 @@ describe('Request Queuing Dapp 1, Switch Tx -> Dapp 2 Send Tx', function () {
 
           await tempToggleSettingRedesignedTransactionConfirmations(driver);
 
-          // Navigate to extension home screen
-          await driver.navigate(PAGES.HOME);
-
           // Open Dapp One
           await openDapp(driver, undefined, DAPP_URL);
 
@@ -206,9 +203,6 @@ describe('Request Queuing Dapp 1, Switch Tx -> Dapp 2 Send Tx', function () {
           await unlockWallet(driver);
 
           await tempToggleSettingRedesignedTransactionConfirmations(driver);
-
-          // Navigate to extension home screen
-          await driver.navigate(PAGES.HOME);
 
           // Open Dapp One
           await openDapp(driver, undefined, DAPP_URL);

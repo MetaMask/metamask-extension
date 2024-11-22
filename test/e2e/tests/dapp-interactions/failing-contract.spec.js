@@ -33,9 +33,6 @@ describe('Failing contract interaction ', function () {
 
         await tempToggleSettingRedesignedTransactionConfirmations(driver);
 
-        // Navigate to extension home screen
-        await driver.navigate(PAGES.HOME);
-
         await openDapp(driver, contractAddress);
         let windowHandles = await driver.getAllWindowHandles();
         const extension = windowHandles[0];
@@ -101,9 +98,6 @@ describe('Failing contract interaction on non-EIP1559 network', function () {
         await unlockWallet(driver);
 
         await tempToggleSettingRedesignedTransactionConfirmations(driver);
-
-        // Navigate to extension home screen
-        await driver.navigate(PAGES.HOME);
 
         await openDapp(driver, contractAddress);
         let windowHandles = await driver.getAllWindowHandles();

@@ -41,7 +41,6 @@ describe('Increase Token Allowance', function () {
         await unlockWallet(driver);
 
         await tempToggleSettingRedesignedTransactionConfirmations(driver);
-        await driver.navigate(PAGES.HOME);
 
         const contractAddress = await contractRegistry.getContractAddress(
           smartContract,

@@ -41,9 +41,6 @@ describe('Snap Account Transfers @no-mmi', function (this: Suite) {
 
           await tempToggleSettingRedesignedTransactionConfirmations(driver);
 
-          // Navigate to extension home screen
-          await driver.navigate(PAGES.HOME);
-
           await installSnapSimpleKeyring(driver);
           const snapSimpleKeyringPage = new SnapSimpleKeyringPage(driver);
 
@@ -94,9 +91,6 @@ describe('Snap Account Transfers @no-mmi', function (this: Suite) {
           await loginWithBalanceValidation(driver, ganacheServer);
 
           await tempToggleSettingRedesignedTransactionConfirmations(driver);
-
-          // Navigate to extension home screen
-          await driver.navigate(PAGES.HOME);
 
           await installSnapSimpleKeyring(driver, false);
           const snapSimpleKeyringPage = new SnapSimpleKeyringPage(driver);
@@ -150,9 +144,6 @@ describe('Snap Account Transfers @no-mmi', function (this: Suite) {
           await loginWithBalanceValidation(driver, ganacheServer);
 
           await tempToggleSettingRedesignedTransactionConfirmations(driver);
-
-          // Navigate to extension home screen
-          await driver.navigate(PAGES.HOME);
 
           await installSnapSimpleKeyring(driver, false);
           const snapSimpleKeyringPage = new SnapSimpleKeyringPage(driver);

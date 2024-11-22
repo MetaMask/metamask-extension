@@ -43,9 +43,6 @@ describe('ERC1155 NFTs testdapp interaction', function () {
 
         await tempToggleSettingRedesignedTransactionConfirmations(driver);
 
-        // Navigate to extension home screen
-        await driver.navigate(PAGES.HOME);
-
         // Open Dapp and wait for deployed contract
         await openDapp(driver, contract);
         await driver.findClickableElement('#deployButton');
@@ -128,9 +125,6 @@ describe('ERC1155 NFTs testdapp interaction', function () {
 
         await tempToggleSettingRedesignedTransactionConfirmations(driver);
 
-        // Navigate to extension home screen
-        await driver.navigate(PAGES.HOME);
-
         await openDapp(driver, contract);
 
         await driver.fill('#batchTransferTokenIds', '1, 2, 3');
@@ -184,9 +178,6 @@ describe('ERC1155 NFTs testdapp interaction', function () {
         await unlockWallet(driver);
 
         await tempToggleSettingRedesignedTransactionConfirmations(driver);
-
-        // Navigate to extension home screen
-        await driver.navigate(PAGES.HOME);
 
         // Create a set approval for all erc1155 token request in test dapp
         await openDapp(driver, contract);
@@ -273,9 +264,6 @@ describe('ERC1155 NFTs testdapp interaction', function () {
         await unlockWallet(driver);
 
         await tempToggleSettingRedesignedTransactionConfirmations(driver);
-
-        // Navigate to extension home screen
-        await driver.navigate(PAGES.HOME);
 
         // Create a revoke approval for all erc1155 token request in test dapp
         await openDapp(driver, contract);

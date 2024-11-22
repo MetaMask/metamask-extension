@@ -28,9 +28,6 @@ describe('Send NFT', function () {
 
         await tempToggleSettingRedesignedTransactionConfirmations(driver);
 
-        // Navigate to extension home screen
-        await driver.navigate(PAGES.HOME);
-
         // Fill the send NFT form and confirm the transaction
         await driver.clickElement('[data-testid="account-overview__nfts-tab"]');
         await driver.clickElement('.nft-item__container');

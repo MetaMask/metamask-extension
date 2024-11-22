@@ -61,7 +61,6 @@ describe('Gas API fallback', function () {
         await logInWithBalanceValidation(driver, ganacheServer);
 
         await tempToggleSettingRedesignedTransactionConfirmations(driver);
-        await driver.navigate(PAGES.HOME);
 
         await openActionMenuAndStartSendFlow(driver);
         await driver.fill(

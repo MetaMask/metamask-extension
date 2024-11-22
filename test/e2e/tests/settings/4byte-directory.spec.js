@@ -31,9 +31,6 @@ describe('4byte setting', function () {
 
         await tempToggleSettingRedesignedTransactionConfirmations(driver);
 
-        // Navigate to extension home screen
-        await driver.navigate(PAGES.HOME);
-
         // deploy contract
         await openDapp(driver, contractAddress);
 
@@ -71,9 +68,6 @@ describe('4byte setting', function () {
         await unlockWallet(driver);
 
         await tempToggleSettingRedesignedTransactionConfirmations(driver);
-
-        // Navigate to extension home screen
-        await driver.navigate(PAGES.HOME);
 
         // goes to the settings screen
         await openMenuSafe(driver);

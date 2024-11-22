@@ -27,9 +27,6 @@ describe('Editing Confirm Transaction', function () {
 
         await tempToggleSettingRedesignedTransactionConfirmations(driver);
 
-        // Navigate to extension home screen
-        await driver.navigate(PAGES.HOME);
-
         await createInternalTransaction(driver);
 
         await driver.findElement({
@@ -106,8 +103,6 @@ describe('Editing Confirm Transaction', function () {
 
         await tempToggleSettingRedesignedTransactionConfirmations(driver);
 
-        // Navigate to extension home screen
-        await driver.navigate(PAGES.HOME);
         await createInternalTransaction(driver);
 
         await driver.findElement({
@@ -186,9 +181,6 @@ describe('Editing Confirm Transaction', function () {
         await unlockWallet(driver);
 
         await tempToggleSettingRedesignedTransactionConfirmations(driver);
-
-        // Navigate to extension home screen
-        await driver.navigate(PAGES.HOME);
 
         await createDappTransaction(driver, {
           maxFeePerGas: '0x2000000000',

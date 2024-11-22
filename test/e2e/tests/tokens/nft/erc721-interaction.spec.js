@@ -32,9 +32,6 @@ describe('ERC721 NFTs testdapp interaction', function () {
 
         await tempToggleSettingRedesignedTransactionConfirmations(driver);
 
-        // Navigate to extension home screen
-        await driver.navigate(PAGES.HOME);
-
         // Open Dapp and wait for deployed contract
         await openDapp(driver, contract);
         await driver.findClickableElement('#deployButton');
@@ -99,9 +96,6 @@ describe('ERC721 NFTs testdapp interaction', function () {
         await unlockWallet(driver);
 
         await tempToggleSettingRedesignedTransactionConfirmations(driver);
-
-        // Navigate to extension home screen
-        await driver.navigate(PAGES.HOME);
 
         // Open Dapp and wait for deployed contract
         await openDapp(driver, contract);
@@ -226,9 +220,6 @@ describe('ERC721 NFTs testdapp interaction', function () {
 
         await tempToggleSettingRedesignedTransactionConfirmations(driver);
 
-        // Navigate to extension home screen
-        await driver.navigate(PAGES.HOME);
-
         // Open Dapp and wait for deployed contract
         await openDapp(driver, contract);
         await driver.findClickableElement('#deployButton');
@@ -329,9 +320,6 @@ describe('ERC721 NFTs testdapp interaction', function () {
 
         await tempToggleSettingRedesignedTransactionConfirmations(driver);
 
-        // Navigate to extension home screen
-        await driver.navigate(PAGES.HOME);
-
         // Open Dapp and wait for deployed contract
         await openDapp(driver, contract);
         await driver.findClickableElement('#deployButton');
@@ -380,9 +368,6 @@ describe('ERC721 NFTs testdapp interaction', function () {
         await unlockWallet(driver);
 
         await tempToggleSettingRedesignedTransactionConfirmations(driver);
-
-        // Navigate to extension home screen
-        await driver.navigate(PAGES.HOME);
 
         // Open Dapp and wait for deployed contract
         await openDapp(driver, contract);
@@ -453,9 +438,6 @@ describe('ERC721 NFTs testdapp interaction', function () {
 
         await tempToggleSettingRedesignedTransactionConfirmations(driver);
 
-        // Navigate to extension home screen
-        await driver.navigate(PAGES.HOME);
-
         // Open Dapp and wait for deployed contract
         await openDapp(driver, contract);
         await driver.findClickableElement('#deployButton');
@@ -523,9 +505,6 @@ describe('ERC721 NFTs testdapp interaction', function () {
         await unlockWallet(driver);
 
         await tempToggleSettingRedesignedTransactionConfirmations(driver);
-
-        // Navigate to extension home screen
-        await driver.navigate(PAGES.HOME);
 
         // Open Dapp and wait for deployed contract
         await openDapp(driver, contract);

@@ -35,9 +35,6 @@ describe('Deploy contract and call contract methods', function () {
 
         await tempToggleSettingRedesignedTransactionConfirmations(driver);
 
-        // Navigate to extension home screen
-        await driver.navigate(PAGES.HOME);
-
         // deploy contract
         await openDapp(driver, contractAddress);
 

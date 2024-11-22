@@ -53,7 +53,6 @@ describe('Petnames - Transactions', function () {
         await unlockWallet(driver);
 
         await tempToggleSettingRedesignedTransactionConfirmations(driver);
-        await driver.navigate(PAGES.HOME);
 
         await openDapp(driver);
         await createDappSendTransaction(driver);
@@ -101,7 +100,6 @@ describe('Petnames - Transactions', function () {
       async ({ driver }) => {
         await unlockWallet(driver);
         await tempToggleSettingRedesignedTransactionConfirmations(driver);
-        await driver.navigate(PAGES.HOME);
 
         await createWalletSendTransaction(driver, ADDRESS_MOCK);
         await expectName(driver, ABBREVIATED_ADDRESS_MOCK, false);

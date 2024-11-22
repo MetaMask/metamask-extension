@@ -87,9 +87,6 @@ describe('Create token, approve token and approve token without gas', function (
 
         await tempToggleSettingRedesignedTransactionConfirmations(driver);
 
-        // Navigate to extension home screen
-        await driver.navigate(PAGES.HOME);
-
         // create token
         await openDapp(driver, contractAddress);
 
@@ -189,9 +186,6 @@ describe('Create token, approve token and approve token without gas', function (
         await logInWithBalanceValidation(driver, ganacheServer);
 
         await tempToggleSettingRedesignedTransactionConfirmations(driver);
-
-        // Navigate to extension home screen
-        await driver.navigate(PAGES.HOME);
 
         // create token
         await openDapp(driver, contractAddress);
@@ -330,9 +324,6 @@ describe('Create token, approve token and approve token without gas', function (
 
         await tempToggleSettingRedesignedTransactionConfirmations(driver);
 
-        // Navigate to extension home screen
-        await driver.navigate(PAGES.HOME);
-
         // create token
         await openDapp(driver, contractAddress);
         const windowHandles = await driver.getAllWindowHandles();
@@ -415,9 +406,6 @@ describe('Create token, approve token and approve token without gas', function (
         await logInWithBalanceValidation(driver, ganacheServer);
 
         await tempToggleSettingRedesignedTransactionConfirmations(driver);
-
-        // Navigate to extension home screen
-        await driver.navigate(PAGES.HOME);
 
         await openDapp(driver, contractAddress);
         const windowHandles = await driver.getAllWindowHandles();

@@ -22,7 +22,6 @@ describe('Test Snap TxInsights', function () {
           await unlockWallet(driver);
 
           await tempToggleSettingRedesignedTransactionConfirmations(driver);
-          await driver.navigate(PAGES.HOME);
 
           // navigate to test snaps page and connect
           await driver.driver.get(TEST_SNAPS_WEBSITE_URL);

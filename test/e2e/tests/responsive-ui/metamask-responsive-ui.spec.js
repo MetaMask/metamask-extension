@@ -134,9 +134,6 @@ describe('MetaMask Responsive UI', function () {
 
         await tempToggleSettingRedesignedTransactionConfirmations(driver);
 
-        // Navigate to extension home screen
-        await driver.navigate(PAGES.HOME);
-
         // Send ETH from inside MetaMask
         // starts to send a transaction
         await openActionMenuAndStartSendFlow(driver);
