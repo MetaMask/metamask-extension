@@ -24,14 +24,13 @@ import { MetaMaskReduxState } from '../../../store/store';
 import { hexToDecimal } from '../../../../shared/modules/conversion.utils';
 import UserPreferencedCurrencyDisplay from '../../../components/app/user-preferenced-currency-display/user-preferenced-currency-display.component';
 import { EtherDenomination } from '../../../../shared/constants/common';
-import { PRIMARY, SECONDARY } from '../../../helpers/constants/common';
+import { PRIMARY } from '../../../helpers/constants/common';
 import CurrencyDisplay from '../../../components/ui/currency-display/currency-display.component';
 import { StatusTypes } from '../../../../shared/types/bridge-status';
 import {
   AlignItems,
   Display,
   FlexDirection,
-  JustifyContent,
   TextColor,
   TextTransform,
 } from '../../../helpers/constants/design-system';
