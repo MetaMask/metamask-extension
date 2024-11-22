@@ -2,10 +2,8 @@ import { JsonRpcError } from '@metamask/rpc-errors';
 import {
   Caip25CaveatType,
   Caip25EndowmentPermissionName,
-  KnownRpcMethods,
-  KnownNotifications,
   Caip25Authorization,
-  ScopesObject,
+  NormalizedScopesObject,
 } from '@metamask/multichain';
 import * as Multichain from '@metamask/multichain';
 import { Json, JsonRpcRequest, JsonRpcSuccess } from '@metamask/utils';
@@ -88,7 +86,7 @@ const createMockedHandler = () => {
     jsonrpc: '2.0' as const,
     id: 0,
   } as unknown as JsonRpcSuccess<{
-    sessionScopes: ScopesObject;
+    sessionScopes: NormalizedScopesObject;
     sessionProperties?: Record<string, Json>;
   }>;
   const handler = (
@@ -132,8 +130,8 @@ describe('wallet_createSession', () => {
       supportableScopes: {},
       unsupportableScopes: {},
     });
-    MockMultichain.getSessionScopes.mockReturnValue({})
-    MockHelpers.processScopedProperties.mockReturnValue({})
+    MockMultichain.getSessionScopes.mockReturnValue({});
+    MockHelpers.processScopedProperties.mockReturnValue({});
   });
 
   afterEach(() => {
@@ -396,23 +394,6 @@ describe('wallet_createSession', () => {
   it('validates and upserts EIP 3085 scoped properties when matching sessionScope is defined', async () => {
     const { handler, findNetworkClientIdByChainId, addNetwork } =
       createMockedHandler();
-    MockMultichain.bucketScopes
-      .mockReturnValueOnce({
-        supportedScopes: {
-          'eip155:1': {
-            methods: [],
-            notifications: [],
-            accounts: ['eip155:1:0x1'],
-          },
-        },
-        supportableScopes: {},
-        unsupportableScopes: {},
-      })
-      .mockReturnValueOnce({
-        supportedScopes: {},
-        supportableScopes: {},
-        unsupportableScopes: {},
-      });
     MockHelpers.processScopedProperties.mockReturnValue({
       'eip155:1': {
         eip3085: {
@@ -426,7 +407,7 @@ describe('wallet_createSession', () => {
         notifications: [],
         accounts: ['eip155:1:0x1'],
       },
-    })
+    });
     await handler({
       ...baseRequest,
       params: {
@@ -584,37 +565,8 @@ describe('wallet_createSession', () => {
     });
   });
 
-  it('returns the session ID, properties, and merged scopes', async () => {
-    const { handler, requestPermissionApprovalForOrigin, response } =
-      createMockedHandler();
-    MockMultichain.bucketScopes
-      .mockReturnValueOnce({
-        supportedScopes: {
-          'eip155:5': {
-            methods: ['eth_chainId'],
-            notifications: ['accountsChanged'],
-            accounts: ['eip155:5:0x1'],
-          },
-        },
-        supportableScopes: {},
-        unsupportableScopes: {},
-      })
-      .mockReturnValueOnce({
-        supportedScopes: {
-          'eip155:5': {
-            methods: ['net_version'],
-            notifications: ['chainChanged', 'accountsChanged'],
-            accounts: [],
-          },
-          'eip155:100': {
-            methods: ['eth_sendTransaction'],
-            notifications: ['chainChanged'],
-            accounts: ['eip155:1:0x3'],
-          },
-        },
-        supportableScopes: {},
-        unsupportableScopes: {},
-      });
+  it('returns the session ID, properties, and session scopes', async () => {
+    const { handler, response } = createMockedHandler();
     MockMultichain.getSessionScopes.mockReturnValue({
       'eip155:5': {
         methods: ['eth_chainId', 'net_version'],
@@ -631,10 +583,6 @@ describe('wallet_createSession', () => {
         notifications: [],
         accounts: ['wallet:eip155:0x1', 'wallet:eip155:0x2'],
       },
-    })
-    requestPermissionApprovalForOrigin.mockResolvedValue({
-      approvedAccounts: ['0x1', '0x2'],
-      approvedChainIds: ['0x5', '0x64'], // 5, 100
     });
     await handler(baseRequest);
 
@@ -665,30 +613,13 @@ describe('wallet_createSession', () => {
 
   it('reverts any upserted network clients if the request fails', async () => {
     const { handler, removeNetwork, grantPermissions } = createMockedHandler();
-    MockMultichain.bucketScopes
-      .mockReturnValueOnce({
-        supportedScopes: {
-          'eip155:1': {
-            methods: [],
-            notifications: [],
-            accounts: [],
-          },
-        },
-        supportableScopes: {},
-        unsupportableScopes: {},
-      })
-      .mockReturnValueOnce({
-        supportedScopes: {},
-        supportableScopes: {},
-        unsupportableScopes: {},
-      });
     MockMultichain.getSessionScopes.mockReturnValue({
       'eip155:1': {
         methods: [],
         notifications: [],
         accounts: [],
       },
-    })
+    });
     MockHelpers.processScopedProperties.mockReturnValue({
       'eip155:1': {
         eip3085: {
