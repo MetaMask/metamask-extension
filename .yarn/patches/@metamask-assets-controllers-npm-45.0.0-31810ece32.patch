@@ -1,3 +1,39 @@
+diff --git a/dist/TokenDetectionController.cjs b/dist/TokenDetectionController.cjs
+index 8fd5efde7a3c24080f8a43f79d10300e8c271245..66f656d9a55f1154024a8c18a9fe27b4ed39a21d 100644
+--- a/dist/TokenDetectionController.cjs
++++ b/dist/TokenDetectionController.cjs
+@@ -250,17 +250,20 @@ _TokenDetectionController_intervalId = new WeakMap(), _TokenDetectionController_
+         }
+     });
+     this.messagingSystem.subscribe('AccountsController:selectedEvmAccountChange', 
+-    // TODO: Either fix this lint violation or explain why it's necessary to ignore.
+-    // eslint-disable-next-line @typescript-eslint/no-misused-promises
+-    async (selectedAccount) => {
+-        const isSelectedAccountIdChanged = __classPrivateFieldGet(this, _TokenDetectionController_selectedAccountId, "f") !== selectedAccount.id;
+-        if (isSelectedAccountIdChanged) {
+-            __classPrivateFieldSet(this, _TokenDetectionController_selectedAccountId, selectedAccount.id, "f");
+-            await __classPrivateFieldGet(this, _TokenDetectionController_instances, "m", _TokenDetectionController_restartTokenDetection).call(this, {
+-                selectedAddress: selectedAccount.address,
+-            });
+-        }
+-    });
++        // TODO: Either fix this lint violation or explain why it's necessary to ignore.
++        // eslint-disable-next-line @typescript-eslint/no-misused-promises
++        async (selectedAccount) => {
++            const { networkConfigurationsByChainId } = this.messagingSystem.call('NetworkController:getState');
++            const chainIds = Object.keys(networkConfigurationsByChainId);
++            const isSelectedAccountIdChanged = __classPrivateFieldGet(this, _TokenDetectionController_selectedAccountId, "f") !== selectedAccount.id;
++            if (isSelectedAccountIdChanged) {
++                __classPrivateFieldSet(this, _TokenDetectionController_selectedAccountId, selectedAccount.id, "f");
++                await __classPrivateFieldGet(this, _TokenDetectionController_instances, "m", _TokenDetectionController_restartTokenDetection).call(this, {
++                    selectedAddress: selectedAccount.address,
++                    chainIds,
++                });
++            }
++        });
+ }, _TokenDetectionController_stopPolling = function _TokenDetectionController_stopPolling() {
+     if (__classPrivateFieldGet(this, _TokenDetectionController_intervalId, "f")) {
+         clearInterval(__classPrivateFieldGet(this, _TokenDetectionController_intervalId, "f"));
 diff --git a/dist/assetsUtil.cjs b/dist/assetsUtil.cjs
 index 48571b8c1b78e94d88e1837e986b5f8735ac651b..61246f51500c8cab48f18296a73629fb73454caa 100644
 --- a/dist/assetsUtil.cjs
@@ -33,39 +69,3 @@ index e7eaad2cfa8b233c4fd42a51f745233a1cc5c387..bf8ec7819f678c2f185d6a85d7e3ea81
  /**
   * The list of currencies that can be supplied as the `vsCurrency` parameter to
   * the `/spot-prices` endpoint, in lowercase form.
-diff --git a/dist/TokenDetectionController.cjs b/dist/TokenDetectionController.cjs
-index 8fd5efde7a3c24080f8a43f79d10300e8c271245..a3c334ac7dd2e5698e6b54a73491b7145c2a9010 100644
---- a/dist/TokenDetectionController.cjs
-+++ b/dist/TokenDetectionController.cjs
-@@ -250,17 +250,20 @@ _TokenDetectionController_intervalId = new WeakMap(), _TokenDetectionController_
-         }
-     });
-     this.messagingSystem.subscribe('AccountsController:selectedEvmAccountChange',
--    // TODO: Either fix this lint violation or explain why it's necessary to ignore.
--    // eslint-disable-next-line @typescript-eslint/no-misused-promises
--    async (selectedAccount) => {
--        const isSelectedAccountIdChanged = __classPrivateFieldGet(this, _TokenDetectionController_selectedAccountId, "f") !== selectedAccount.id;
--        if (isSelectedAccountIdChanged) {
--            __classPrivateFieldSet(this, _TokenDetectionController_selectedAccountId, selectedAccount.id, "f");
--            await __classPrivateFieldGet(this, _TokenDetectionController_instances, "m", _TokenDetectionController_restartTokenDetection).call(this, {
--                selectedAddress: selectedAccount.address,
--            });
--        }
--    });
-+        // TODO: Either fix this lint violation or explain why it's necessary to ignore.
-+        // eslint-disable-next-line @typescript-eslint/no-misused-promises
-+        async (selectedAccount) => {
-+            const { networkConfigurationsByChainId } = this.messagingSystem.call('NetworkController:getState');
-+            const chainIds = Object.keys(networkConfigurationsByChainId);
-+            const isSelectedAccountIdChanged = __classPrivateFieldGet(this, _TokenDetectionController_selectedAccountId, "f") !== selectedAccount.id;
-+            if (isSelectedAccountIdChanged) {
-+                __classPrivateFieldSet(this, _TokenDetectionController_selectedAccountId, selectedAccount.id, "f");
-+                await __classPrivateFieldGet(this, _TokenDetectionController_instances, "m", _TokenDetectionController_restartTokenDetection).call(this, {
-+                    selectedAddress: selectedAccount.address,
-+                    chainIds,
-+                });
-+            }
-+        });
- }, _TokenDetectionController_stopPolling = function _TokenDetectionController_stopPolling() {
-     if (__classPrivateFieldGet(this, _TokenDetectionController_intervalId, "f")) {
-         clearInterval(__classPrivateFieldGet(this, _TokenDetectionController_intervalId, "f"));
