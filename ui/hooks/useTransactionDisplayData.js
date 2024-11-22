@@ -79,6 +79,10 @@ const signatureTypes = [
  * @property {boolean} subtitleContainsOrigin - true if the subtitle includes the origin of the tx
  * @property {string} title - the primary title of the tx that will be displayed in the activity list
  * @property {string} [secondaryCurrency] - the currency string to display in the secondary position
+ * @property {string} date - the formatted date of the transaction
+ * @property {string} displayedStatusKey - the key representing the displayed status of the transaction
+ * @property {boolean} isPending - indicates if the transaction is pending
+ * @property {boolean} isSubmitted - indicates if the transaction has been submitted
  */
 
 /**
@@ -366,6 +370,7 @@ export function useTransactionDisplayData(transactionGroup) {
     primarySuffix = primaryTransaction.sourceTokenSymbol; // TODO this will be undefined right now
   } else if (type === TransactionType.bridge) {
     title = t('bridge');
+    category = TransactionGroupCategory.bridge;
   } else {
     dispatch(
       captureSingleException(

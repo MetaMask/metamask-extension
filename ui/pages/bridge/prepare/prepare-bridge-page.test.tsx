@@ -27,13 +27,12 @@ describe('PrepareBridgePage', () => {
     jest
       .spyOn(reactRouterUtils, 'useSearchParams')
       .mockReturnValue([{ get: () => null }] as never);
-    const mockStore = createBridgeMockStore(
-      {
+    const mockStore = createBridgeMockStore({
+      featureFlagOverrides: {
         srcNetworkAllowlist: [CHAIN_IDS.MAINNET, CHAIN_IDS.OPTIMISM],
         destNetworkAllowlist: [CHAIN_IDS.OPTIMISM],
       },
-      {},
-    );
+    });
     const { container, getByRole, getByTestId } = renderWithProvider(
       <PrepareBridgePage />,
       configureStore(mockStore),
@@ -61,8 +60,8 @@ describe('PrepareBridgePage', () => {
     jest
       .spyOn(reactRouterUtils, 'useSearchParams')
       .mockReturnValue([{ get: () => '0x3103910' }, jest.fn()] as never);
-    const mockStore = createBridgeMockStore(
-      {
+    const mockStore = createBridgeMockStore({
+      featureFlagOverrides: {
         srcNetworkAllowlist: [CHAIN_IDS.MAINNET, CHAIN_IDS.LINEA_MAINNET],
         destNetworkAllowlist: [CHAIN_IDS.LINEA_MAINNET],
         destTokens: {
@@ -74,7 +73,7 @@ describe('PrepareBridgePage', () => {
           },
         },
       },
-      {
+      bridgeSliceOverrides: {
         fromTokenInputValue: '1',
         fromToken: { address: '0x3103910', decimals: 6 },
         toToken: {
@@ -85,7 +84,7 @@ describe('PrepareBridgePage', () => {
         },
         toChainId: CHAIN_IDS.LINEA_MAINNET,
       },
-      {
+      bridgeStateOverrides: {
         quoteRequest: {
           srcTokenAddress: '0x3103910',
           destTokenAddress: '0x1f9840a85d5af5bf1d1762f925bdaddc4201f984',
@@ -95,7 +94,7 @@ describe('PrepareBridgePage', () => {
           slippage: 0.5,
         },
       },
-    );
+    });
     const { container, getByRole, getByTestId } = renderWithProvider(
       <PrepareBridgePage />,
       configureStore(mockStore),
@@ -122,12 +121,12 @@ describe('PrepareBridgePage', () => {
   });
 
   it('should throw an error if token decimals are not defined', async () => {
-    const mockStore = createBridgeMockStore(
-      {
+    const mockStore = createBridgeMockStore({
+      featureFlagOverrides: {
         srcNetworkAllowlist: [CHAIN_IDS.MAINNET, CHAIN_IDS.LINEA_MAINNET],
         destNetworkAllowlist: [CHAIN_IDS.LINEA_MAINNET],
       },
-      {
+      bridgeSliceOverrides: {
         fromTokenInputValue: 1,
         fromToken: { address: '0x3103910' },
         toToken: {
@@ -137,8 +136,7 @@ describe('PrepareBridgePage', () => {
         },
         toChainId: CHAIN_IDS.LINEA_MAINNET,
       },
-      {},
-    );
+    });
 
     expect(() =>
       renderWithProvider(<PrepareBridgePage />, configureStore(mockStore)),

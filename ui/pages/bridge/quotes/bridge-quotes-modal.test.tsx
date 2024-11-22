@@ -10,15 +10,13 @@ import { BridgeQuotesModal } from './bridge-quotes-modal';
 
 describe('BridgeQuotesModal', () => {
   it('should render the modal', () => {
-    const mockStore = createBridgeMockStore(
-      {},
-      {},
-      {
+    const mockStore = createBridgeMockStore({
+      bridgeStateOverrides: {
         quotes: mockBridgeQuotesErc20Erc20,
         getQuotesLastFetched: Date.now(),
         quotesLoadingStatus: RequestStatus.FETCHED,
       },
-    );
+    });
 
     const { baseElement } = renderWithProvider(
       <BridgeQuotesModal

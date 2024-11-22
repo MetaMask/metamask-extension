@@ -5,7 +5,10 @@ import classnames from 'classnames';
 import { useHistory } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 
-import { TransactionStatus } from '@metamask/transaction-controller';
+import {
+  TransactionStatus,
+  TransactionType,
+} from '@metamask/transaction-controller';
 import { useTransactionDisplayData } from '../../../hooks/useTransactionDisplayData';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 
@@ -66,6 +69,8 @@ import { MetaMetricsContext } from '../../../contexts/metametrics';
 import { ActivityListItem } from '../../multichain';
 import { abortTransactionSigning } from '../../../store/actions';
 import { getIsSmartTransaction } from '../../../../shared/modules/selectors';
+import useBridgeTxHistoryData from '../../../hooks/bridge/useBridgeTxHistoryData';
+import BridgeActivityItemTxSegments from '../../../pages/bridge/transaction-details/bridge-activity-item-tx-segments';
 
 function TransactionListItemInner({
   transactionGroup,
@@ -84,6 +89,18 @@ function TransactionListItemInner({
   const testNetworkBackgroundColor = useSelector(getTestNetworkBackgroundColor);
   const isSmartTransaction = useSelector(getIsSmartTransaction);
   const dispatch = useDispatch();
+
+  // Bridge transactions
+  const isBridgeTx =
+    transactionGroup.initialTransaction.type === TransactionType.bridge;
+  const {
+    bridgeTitleSuffix,
+    bridgeTxHistoryItem,
+    isBridgeComplete,
+    showBridgeTxDetails,
+  } = useBridgeTxHistoryData({
+    transactionGroup,
+  });
 
   const {
     initialTransaction: { id },
@@ -286,9 +303,13 @@ function TransactionListItemInner({
     <>
       <ActivityListItem
         data-testid="activity-list-item"
-        onClick={toggleShowDetails}
+        onClick={
+          isBridgeTx && showBridgeTxDetails
+            ? showBridgeTxDetails
+            : toggleShowDetails
+        }
         className={className}
-        title={title}
+        title={`${title}${bridgeTitleSuffix}`}
         icon={
           ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
           isCustodian ? (
@@ -334,20 +355,27 @@ function TransactionListItemInner({
           ///: END:ONLY_INCLUDE_IF
         }
         subtitle={
-          <TransactionStatusLabel
-            statusOnly
-            isPending={isPending}
-            isEarliestNonce={isEarliestNonce}
-            error={error}
-            date={date}
-            status={displayedStatusKey}
-            ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-            custodyStatus={transactionGroup.primaryTransaction.custodyStatus}
-            custodyStatusDisplayText={
-              transactionGroup.primaryTransaction.custodyStatusDisplayText
-            }
-            ///: END:ONLY_INCLUDE_IF
-          />
+          isBridgeTx && isBridgeComplete === false ? (
+            <BridgeActivityItemTxSegments
+              bridgeTxHistoryItem={bridgeTxHistoryItem}
+              transactionGroup={transactionGroup}
+            />
+          ) : (
+            <TransactionStatusLabel
+              statusOnly
+              isPending={isPending}
+              isEarliestNonce={isEarliestNonce}
+              error={error}
+              date={date}
+              status={displayedStatusKey}
+              ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
+              custodyStatus={transactionGroup.primaryTransaction.custodyStatus}
+              custodyStatusDisplayText={
+                transactionGroup.primaryTransaction.custodyStatusDisplayText
+              }
+              ///: END:ONLY_INCLUDE_IF
+            />
+          )
         }
         rightContent={
           !isSignatureReq &&

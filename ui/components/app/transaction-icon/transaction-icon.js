@@ -21,6 +21,7 @@ const ICON_MAP = {
   [TransactionGroupCategory.signatureRequest]: IconName.SecurityTick,
   [TransactionGroupCategory.swap]: IconName.SwapHorizontal,
   [TransactionGroupCategory.swapAndSend]: IconName.Arrow2UpRight,
+  [TransactionGroupCategory.bridge]: IconName.Bridge,
 };
 
 const COLOR_MAP = {
@@ -97,5 +98,6 @@ TransactionIcon.propTypes = {
     TransactionGroupCategory.signatureRequest,
     TransactionGroupCategory.swap,
     TransactionGroupCategory.swapAndSend,
+    TransactionGroupCategory.bridge,
   ]).isRequired,
 };
