@@ -32,18 +32,23 @@ describe('Test Snap TxInsights', function () {
             text: 'Installed Snaps',
             tag: 'h2',
           });
+
           // find and scroll to the transaction-insights test snap
           const snapButton1 = await driver.findElement(
             '#connecttransaction-insights',
           );
           await driver.scrollToElement(snapButton1);
+
           // added delay for firefox (deflake)
           await driver.delayFirefox(1000);
+
           // wait for and click connect
           await driver.waitForSelector('#connecttransaction-insights');
           await driver.clickElement('#connecttransaction-insights');
+
           // switch to metamask extension
           await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
+
           // wait for and click connect
           await driver.waitForSelector({
             text: 'Connect',
@@ -53,12 +58,14 @@ describe('Test Snap TxInsights', function () {
             text: 'Connect',
             tag: 'button',
           });
+
           // wait for and click confirm
           await driver.waitForSelector({ text: 'Confirm' });
           await driver.clickElement({
             text: 'Confirm',
             tag: 'button',
           });
+
           // wait for and click ok and wait for window to close
           await driver.waitForSelector({ text: 'OK' });
           await driver.clickElementAndWaitForWindowToClose({
@@ -80,14 +87,19 @@ describe('Test Snap TxInsights', function () {
             text: 'Connect',
             tag: 'button',
           });
+
           // switch to test-snaps page
           await driver.switchToWindowWithTitle(WINDOW_TITLES.TestSnaps);
+
           // click send tx
           await driver.clickElement('#sendInsights');
+
           // delay added for rendering (deflake)
           await driver.delay(2000);
+
           // switch back to MetaMask window
           await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
+
           // wait for and switch to insight snap pane
           await driver.waitForSelector({
             text: 'Insights Example Snap',
@@ -97,6 +109,7 @@ describe('Test Snap TxInsights', function () {
             text: 'Insights Example Snap',
             tag: 'button',
           });
+
           // check that txinsightstest tab contains the right info
           await driver.waitForSelector({
             css: '.snap-ui-renderer__content',
