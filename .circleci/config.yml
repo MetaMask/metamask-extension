@@ -1198,6 +1198,7 @@ jobs:
       - run: sudo corepack enable
       - attach_workspace:
           at: .
+      - run: *check-mmi-trigger
       - run:
           name: Move test build to dist
           command: mv ./dist-test-mmi ./dist
@@ -1287,6 +1288,7 @@ jobs:
       - run: sudo corepack enable
       - attach_workspace:
           at: .
+      - run: *check-mmi-trigger
       - run:
           name: Move test build to dist
           command: mv ./dist-test-mmi ./dist
