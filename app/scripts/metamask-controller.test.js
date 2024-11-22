@@ -2307,7 +2307,7 @@ describe('MetaMaskController', () => {
         ...mockEvmAccount,
         id: '21690786-6abd-45d8-a9f0-9ff1d8ca76a1',
         type: BtcAccountType.P2wpkh,
-        methods: [BtcMethod.SendMany],
+        methods: [BtcMethod.SendBitcoin],
         address: 'bc1qar0srrr7xfkvy5l643lydnw9re59gtzzwf5mdq',
       };
 
@@ -2415,7 +2415,7 @@ describe('MetaMaskController', () => {
         ...mockEvmAccount,
         id: '21690786-6abd-45d8-a9f0-9ff1d8ca76a1',
         type: BtcAccountType.P2wpkh,
-        methods: [BtcMethod.SendMany],
+        methods: [BtcMethod.SendBitcoin],
         address: 'bc1qar0srrr7xfkvy5l643lydnw9re59gtzzwf5mdq',
         // We need to have a "Snap account" account here, since the MultichainBalancesController will
         // filter it out otherwise!

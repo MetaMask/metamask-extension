@@ -7,7 +7,7 @@ import { Provider } from 'react-redux';
 import { MemoryRouter, useHistory } from 'react-router-dom';
 import { createBridgeMockStore } from '../../../../test/jest/mock-store';
 import * as actions from '../../../store/actions';
-import * as selectors from '../../../selectors';
+import * as networks from '../../../../shared/modules/selectors/networks';
 import {
   DummyQuotesNoApproval,
   DummyQuotesWithApproval,
@@ -41,13 +41,12 @@ jest.mock('../../../store/actions', () => {
   };
 });
 
-jest.mock('../../../selectors', () => {
-  const original = jest.requireActual('../../../selectors');
+jest.mock('../../../../shared/modules/selectors/networks', () => {
+  const original = jest.requireActual(
+    '../../../../shared/modules/selectors/networks',
+  );
   return {
     ...original,
-    getIsBridgeEnabled: () => true,
-    getIsBridgeChain: () => true,
-    checkNetworkAndAccountSupports1559: () => true,
     getSelectedNetworkClientId: () => 'mainnet',
     getNetworkConfigurationsByChainId: jest.fn(() => ({
       '0x1': {
@@ -81,6 +80,16 @@ jest.mock('../../../selectors', () => {
         ],
       },
     })),
+  };
+});
+
+jest.mock('../../../selectors', () => {
+  const original = jest.requireActual('../../../selectors');
+  return {
+    ...original,
+    getIsBridgeEnabled: () => true,
+    getIsBridgeChain: () => true,
+    checkNetworkAndAccountSupports1559: () => true,
   };
 });
 
@@ -402,7 +411,7 @@ describe('ui/pages/bridge/hooks/useSubmitBridgeTransaction', () => {
       );
       const mockedGetNetworkConfigurationsByChainId =
         // @ts-expect-error this is a jest mock
-        selectors.getNetworkConfigurationsByChainId as jest.Mock;
+        networks.getNetworkConfigurationsByChainId as jest.Mock;
       mockedGetNetworkConfigurationsByChainId.mockImplementationOnce(() => ({
         '0x1': {
           blockExplorerUrls: ['https://etherscan.io'],

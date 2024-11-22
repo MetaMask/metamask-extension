@@ -1,10 +1,7 @@
 import React, { useEffect, useRef, useState, useContext, useMemo } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import {
-  getCurrentNetwork,
-  getNetworkConfigurationsByChainId,
-  getPreferences,
-} from '../../../../../selectors';
+import { getCurrentNetwork, getPreferences } from '../../../../../selectors';
+import { getNetworkConfigurationsByChainId } from '../../../../../../shared/modules/selectors/networks';
 import {
   Box,
   ButtonBase,
@@ -87,8 +84,13 @@ const AssetListControlBar = ({ showTokensLinks }: AssetListControlBarProps) => {
   // We need to set the default filter for all users to be all included networks, rather than defaulting to empty object
   // This effect is to unblock and derisk in the short-term
   useEffect(() => {
-    if (Object.keys(tokenNetworkFilter || {}).length === 0) {
+    if (
+      process.env.PORTFOLIO_VIEW &&
+      Object.keys(tokenNetworkFilter || {}).length === 0
+    ) {
       dispatch(setTokenNetworkFilter(allOpts));
+    } else {
+      dispatch(setTokenNetworkFilter({ [currentNetwork.chainId]: true }));
     }
   }, []);
 

@@ -84,17 +84,14 @@ export default function TokenCell({
     image;
 
   const secondaryThreshold = 0.01;
-
   // Format for fiat balance with currency style
-  const secondary = formatWithThreshold(
-    tokenFiatAmount,
-    secondaryThreshold,
-    locale,
-    {
-      style: 'currency',
-      currency: currentCurrency.toUpperCase(),
-    },
-  );
+  const secondary =
+    tokenFiatAmount === null
+      ? undefined
+      : formatWithThreshold(tokenFiatAmount, secondaryThreshold, locale, {
+          style: 'currency',
+          currency: currentCurrency.toUpperCase(),
+        });
 
   const primary = formatAmount(
     locale,
