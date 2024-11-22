@@ -1,4 +1,5 @@
 import { strict as assert } from 'assert';
+import { WebElement } from 'selenium-webdriver';
 import { Driver } from '../../../webdriver/driver';
 
 class SendTokenPage {
@@ -10,6 +11,13 @@ class SendTokenPage {
     text: 'Continue',
     tag: 'button',
   };
+
+  private readonly cancelButton = {
+    text: 'Cancel',
+    tag: 'button',
+  };
+
+  private readonly assetValue = '[data-testid="account-value-and-suffix"]';
 
   private readonly ensAddressAsRecipient = '[data-testid="ens-input-selected"]';
 
@@ -30,8 +38,20 @@ class SendTokenPage {
   private readonly tokenListButton =
     '[data-testid="multichain-token-list-button"]';
 
+  private readonly toastText = '.toast-text';
+
   constructor(driver: Driver) {
     this.driver = driver;
+  }
+
+  async check_networkChange(networkName: string): Promise<void> {
+    const toastTextElement = await this.driver.findElement(this.toastText);
+    const toastText = await toastTextElement.getText();
+    assert.equal(
+      toastText,
+      `You're now using ${networkName}`,
+      'Toast text is correct',
+    );
   }
 
   async check_pageIsLoaded(): Promise<void> {
@@ -48,6 +68,27 @@ class SendTokenPage {
       throw e;
     }
     console.log('Send token screen is loaded');
+  }
+
+  async getAssetPickerItems(): Promise<WebElement[]> {
+    console.log('Retrieving asset picker items');
+    return this.driver.findElements(this.tokenListButton);
+  }
+
+  async checkAccountValueAndSuffix(value: string): Promise<void> {
+    console.log(`Checking if account value and suffix is ${value}`);
+    const element = await this.driver.waitForSelector(this.assetValue);
+    const text = await element.getText();
+    assert.equal(
+      text,
+      value,
+      `Expected account value and suffix to be ${value}, got ${text}`,
+    );
+    console.log(`Account value and suffix is ${value}`);
+  }
+
+  async clickCancelButton(): Promise<void> {
+    await this.driver.clickElement(this.cancelButton);
   }
 
   async clickAssetPickerButton() {
