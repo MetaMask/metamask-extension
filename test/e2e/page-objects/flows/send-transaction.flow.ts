@@ -55,8 +55,6 @@ export const sendTransactionToAddress = async ({
  * @param params.driver - The webdriver instance.
  * @param params.recipientAddress - The recipient address.
  * @param params.amount - The amount of the asset to be sent in the transaction.
- * @param params.gasFee - The expected transaction gas fee.
- * @param params.totalFee - The expected total transaction fee.
  */
 export const sendRedesignedTransactionToAddress = async ({
   driver,
@@ -179,8 +177,6 @@ export const sendTransactionWithSnapAccount = async ({
  * @param params.driver - The webdriver instance.
  * @param params.recipientAddress - The recipient address.
  * @param params.amount - The amount of the asset to be sent in the transaction.
- * @param params.gasFee - The expected transaction gas fee.
- * @param params.totalFee - The expected total transaction fee.
  * @param params.isSyncFlow - Indicates whether synchronous approval option is on for the snap. Defaults to true.
  * @param params.approveTransaction - Indicates whether the transaction should be approved. Defaults to true.
  */

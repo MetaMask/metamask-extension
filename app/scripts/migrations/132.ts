@@ -40,7 +40,7 @@ function transformState(
     };
   }
 
-  let preferencesControllerState = state.PreferencesController as Record<
+  const preferencesControllerState = state.PreferencesController as Record<
     string,
     unknown
   >;
