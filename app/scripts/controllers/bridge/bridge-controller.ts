@@ -1,7 +1,11 @@
-import { StateMetadata } from '@metamask/base-controller';
 import { add0x, Hex } from '@metamask/utils';
 import { StaticIntervalPollingController } from '@metamask/polling-controller';
 import { NetworkClientId } from '@metamask/network-controller';
+import { StateMetadata } from '@metamask/base-controller';
+import { Contract } from '@ethersproject/contracts';
+import { abiERC20 } from '@metamask/metamask-eth-abis';
+import { Web3Provider } from '@ethersproject/providers';
+import { BigNumber } from '@ethersproject/bignumber';
 import {
   fetchBridgeFeatureFlags,
   fetchBridgeQuotes,
@@ -25,6 +29,7 @@ import {
   DEFAULT_BRIDGE_CONTROLLER_STATE,
   REFRESH_INTERVAL_MS,
   RequestStatus,
+  METABRIDGE_CHAIN_TO_ADDRESS_MAP,
 } from './constants';
 import {
   BridgeControllerState,
@@ -60,6 +65,8 @@ export default class BridgeController extends StaticIntervalPollingController<
 
     this.setIntervalLength(REFRESH_INTERVAL_MS);
 
+    this.#abortController = new AbortController();
+    // Register action handlers
     this.messagingSystem.registerActionHandler(
       `${BRIDGE_CONTROLLER_NAME}:setBridgeFeatureFlags`,
       this.setBridgeFeatureFlags.bind(this),
@@ -79,6 +86,10 @@ export default class BridgeController extends StaticIntervalPollingController<
     this.messagingSystem.registerActionHandler(
       `${BRIDGE_CONTROLLER_NAME}:resetState`,
       this.resetState.bind(this),
+    );
+    this.messagingSystem.registerActionHandler(
+      `${BRIDGE_CONTROLLER_NAME}:getBridgeERC20Allowance`,
+      this.getBridgeERC20Allowance.bind(this),
     );
   }
 
@@ -277,4 +288,29 @@ export default class BridgeController extends StaticIntervalPollingController<
       chainId,
     );
   }
+
+  /**
+   *
+   * @param contractAddress - The address of the ERC20 token contract
+   * @param chainId - The hex chain ID of the bridge network
+   * @returns The atomic allowance of the ERC20 token contract
+   */
+  getBridgeERC20Allowance = async (
+    contractAddress: string,
+    chainId: Hex,
+  ): Promise<string> => {
+    const provider = this.#getSelectedNetworkClient()?.provider;
+    if (!provider) {
+      throw new Error('No provider found');
+    }
+
+    const web3Provider = new Web3Provider(provider);
+    const contract = new Contract(contractAddress, abiERC20, web3Provider);
+    const { address: walletAddress } = this.#getSelectedAccount();
+    const allowance = await contract.allowance(
+      walletAddress,
+      METABRIDGE_CHAIN_TO_ADDRESS_MAP[chainId],
+    );
+    return BigNumber.from(allowance).toString();
+  };
 }

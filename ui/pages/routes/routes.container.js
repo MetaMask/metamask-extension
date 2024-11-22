@@ -6,7 +6,6 @@ import {
   getIsNetworkUsed,
   getNetworkIdentifier,
   getPreferences,
-  isNetworkLoading,
   getTheme,
   getIsTestnet,
   getCurrentChainId,
@@ -26,6 +25,10 @@ import {
   getUnapprovedTransactions,
   getPendingApprovals,
 } from '../../selectors';
+import {
+  isNetworkLoading,
+  getProviderConfig,
+} from '../../../shared/modules/selectors/networks';
 import {
   lockMetamask,
   hideImportNftsModal,
@@ -47,10 +50,7 @@ import {
 import { pageChanged } from '../../ducks/history/history';
 import { prepareToLeaveSwaps } from '../../ducks/swaps/swaps';
 import { getSendStage } from '../../ducks/send';
-import {
-  getIsUnlocked,
-  getProviderConfig,
-} from '../../ducks/metamask/metamask';
+import { getIsUnlocked } from '../../ducks/metamask/metamask';
 import { DEFAULT_AUTO_LOCK_TIME_LIMIT } from '../../../shared/constants/preferences';
 import { selectSwitchedNetworkNeverShowMessage } from '../../components/app/toast-master/selectors';
 import Routes from './routes.component';

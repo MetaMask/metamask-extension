@@ -238,10 +238,6 @@
       "redesignedTransactionsEnabled": "boolean",
       "tokenSortConfig": "object",
       "tokenNetworkFilter": {
-        "0x1": "boolean",
-        "0xaa36a7": "boolean",
-        "0xe705": "boolean",
-        "0xe708": "boolean",
         "0x539": "boolean"
       },
       "shouldShowAggregatedBalancePopover": "boolean"
@@ -342,7 +338,6 @@
   },
   "TxController": {
     "methodData": "object",
-    "submitHistory": "object",
     "transactions": "object",
     "lastFetchedBlockNumbers": "object",
     "submitHistory": "object"
