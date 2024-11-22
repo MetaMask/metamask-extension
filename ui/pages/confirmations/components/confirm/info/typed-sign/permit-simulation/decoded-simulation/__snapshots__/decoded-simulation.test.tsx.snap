@@ -7,7 +7,7 @@ exports[`DecodedSimulation renders component correctly 1`] = `
     data-testid="confirmation__simulation_section"
   >
     <div
-      class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-center mm-box--color-text-default mm-box--rounded-lg"
+      class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
       style="overflow-wrap: anywhere; min-height: 24px; position: relative;"
     >
       <div
@@ -40,15 +40,25 @@ exports[`DecodedSimulation renders component correctly 1`] = `
       </div>
     </div>
     <div
-      class="mm-box"
+      class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
+      style="overflow-wrap: anywhere; min-height: 24px; position: relative;"
     >
-      <p
-        class="mm-box mm-text mm-text--body-md-medium mm-box--margin-left-2 mm-box--color-inherit"
-      >
-        Spending cap
-      </p>
       <div
-        class="mm-box"
+        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+      >
+        <div
+          class="mm-box mm-box--display-flex mm-box--align-items-center"
+        >
+          <p
+            class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+          >
+            Spending cap
+          </p>
+        </div>
+      </div>
+      <div
+        class="mm-box mm-box--margin-left-auto"
+        style="max-width: 100%;"
       >
         <div
           class="mm-box mm-box--display-flex mm-box--justify-content-flex-end"
