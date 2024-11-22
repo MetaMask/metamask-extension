@@ -2178,6 +2178,10 @@ export default class MetamaskController extends EventEmitter {
     });
     this.bridgeController = new BridgeController({
       messenger: bridgeControllerMessenger,
+      // TODO: Remove once TransactionController exports this action type
+      getLayer1GasFee: this.txController.getLayer1GasFee.bind(
+        this.txController,
+      ),
     });
 
     const smartTransactionsControllerMessenger =
