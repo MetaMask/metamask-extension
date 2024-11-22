@@ -2371,11 +2371,12 @@ export const getChainIdsToPoll = createDeepEqualSelector(
   (
     networkConfigurations,
     currentChainId,
-    isTokenNetworkFilterEqualCurrentNetwork,
+    // isTokenNetworkFilterEqualCurrentNetwork,
   ) => {
     if (
-      !process.env.PORTFOLIO_VIEW ||
-      isTokenNetworkFilterEqualCurrentNetwork
+      !process.env.PORTFOLIO_VIEW
+      // !process.env.PORTFOLIO_VIEW ||
+      // isTokenNetworkFilterEqualCurrentNetwork
     ) {
       return [currentChainId];
     }
