@@ -1,15 +1,14 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import { Hex } from '@metamask/utils';
-import { getAddress } from 'ethers/lib/utils';
 import { swapsSlice } from '../swaps/swaps';
 import { SwapsTokenObject } from '../../../shared/constants/swaps';
 import { SwapsEthToken } from '../../selectors';
-import { fetchTokenExchangeRates } from '../../helpers/utils/util';
 import {
   QuoteMetadata,
   QuoteResponse,
   SortOrder,
 } from '../../pages/bridge/types';
+import { getTokenExchangeRate } from './utils';
 
 export type BridgeState = {
   toChainId: Hex | null;
@@ -35,30 +34,12 @@ const initialState: BridgeState = {
 
 export const setSrcTokenExchangeRates = createAsyncThunk(
   'bridge/setSrcTokenExchangeRates',
-  async (request: { chainId: Hex; tokenAddress: string; currency: string }) => {
-    const { chainId, tokenAddress, currency } = request;
-    const exchangeRates = await fetchTokenExchangeRates(
-      currency,
-      [tokenAddress],
-      chainId,
-    );
-    return exchangeRates?.[getAddress(tokenAddress)];
-  },
+  getTokenExchangeRate,
 );
 
 export const setDestTokenExchangeRates = createAsyncThunk(
   'bridge/setDestTokenExchangeRates',
-  async (request: { chainId: Hex; tokenAddress: string; currency: string }) => {
-    const { chainId, tokenAddress, currency } = request;
-    const exchangeRates = await fetchTokenExchangeRates(
-      currency,
-      [tokenAddress],
-      chainId,
-    );
-    return {
-      toTokenExchangeRate: exchangeRates?.[getAddress(tokenAddress)],
-    };
-  },
+  getTokenExchangeRate,
 );
 
 const bridgeSlice = createSlice({
@@ -90,7 +71,7 @@ const bridgeSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder.addCase(setDestTokenExchangeRates.fulfilled, (state, action) => {
-      state.toTokenExchangeRate = action.payload.toTokenExchangeRate ?? null;
+      state.toTokenExchangeRate = action.payload ?? null;
     });
     builder.addCase(setSrcTokenExchangeRates.fulfilled, (state, action) => {
       state.fromTokenExchangeRate = action.payload ?? null;
