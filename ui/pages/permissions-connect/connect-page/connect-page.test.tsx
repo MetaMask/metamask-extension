@@ -145,12 +145,12 @@ describe('ConnectPage', () => {
 
   it('should render a disabled confirm if current account is a non-EVM account', () => {
     // NOTE: We select the non-EVM account by default here!
-    const mockSelectedAccount = MOCK_ACCOUNT_BIP122_P2WPKH.id;
+    const mockSelectedAccountId = MOCK_ACCOUNT_BIP122_P2WPKH.id;
     const mockAccounts = [MOCK_ACCOUNT_EOA, MOCK_ACCOUNT_BIP122_P2WPKH];
     const mockAccountsState = overrideAccountsFromMockState(
       mockState,
       mockAccounts,
-      mockSelectedAccount,
+      mockSelectedAccountId,
     );
 
     const { getByText } = render({
