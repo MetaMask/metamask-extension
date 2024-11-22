@@ -8,12 +8,7 @@
     min-width: auto;
     border-radius: 8px;
     padding: 0 8px !important;
-    gap: 5px;
-    text-transform: lowercase;
-
-    span::first-letter {
-      text-transform: uppercase;
-    }
+    gap: 4px;
   }
 
   &__buttons {
