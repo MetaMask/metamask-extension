@@ -863,6 +863,9 @@
   "bridgeCalculatingAmount": {
     "message": "Calculating..."
   },
+  "bridgeDestination": {
+    "message": "Destination"
+  },
   "bridgeDontSend": {
     "message": "Bridge, don't send"
   },
@@ -883,6 +886,9 @@
   },
   "bridgeSelectTokenAndAmount": {
     "message": "Select token and amount"
+  },
+  "bridgeSource": {
+    "message": "Source"
   },
   "bridgeStepActionBridgeComplete": {
     "message": "$1 received on $2",

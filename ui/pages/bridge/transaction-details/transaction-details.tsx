@@ -104,7 +104,8 @@ const CrossChainSwapTxDetails = () => {
       ]
     : undefined;
   const bridgeTypeDirection = t('bridgeTypeDirectionTo');
-  const bridgeTypeDestNetwork = destNetwork?.name;
+  const srcNetworkName = srcNetwork?.name;
+  const destNetworkName = destNetwork?.name;
 
   const data = srcChainTxMeta
     ? getTransactionBreakdownData({
@@ -178,26 +179,41 @@ const CrossChainSwapTxDetails = () => {
                   </Text>
                 }
               />
-              <TransactionDetailRow
-                title={t('bridgeTxDetailsBridgeType')}
-                value={
-                  <Box
-                    display={Display.Flex}
-                    gap={1}
-                    alignItems={AlignItems.baseline}
-                  >
-                    {bridgeTypeDirection}{' '}
-                    {destNetwork && (
-                      <AvatarNetwork
-                        size={AvatarNetworkSize.Xs}
-                        src={destChainIconUrl}
-                        name={destNetwork?.name}
-                      />
-                    )}
-                    {bridgeTypeDestNetwork}
-                  </Box>
-                }
-              />
+
+              {status !== StatusTypes.COMPLETE && (
+                <TransactionDetailRow
+                  title={t('bridgeTxDetailsBridgeType')}
+                  value={
+                    <Box
+                      display={Display.Flex}
+                      gap={1}
+                      alignItems={AlignItems.baseline}
+                    >
+                      {bridgeTypeDirection}{' '}
+                      {destNetwork && (
+                        <AvatarNetwork
+                          size={AvatarNetworkSize.Xs}
+                          src={destChainIconUrl}
+                          name={destNetwork?.name}
+                        />
+                      )}
+                      {destNetworkName}
+                    </Box>
+                  }
+                />
+              )}
+              {status === StatusTypes.COMPLETE && (
+                <>
+                  <TransactionDetailRow
+                    title={t('bridgeSource')}
+                    value={srcNetworkName}
+                  />
+                  <TransactionDetailRow
+                    title={t('bridgeDestination')}
+                    value={destNetworkName}
+                  />
+                </>
+              )}
               <TransactionDetailRow
                 title={t('bridgeTxDetailsTimestamp')}
                 value={t('bridgeTxDetailsTimestampValue', [
