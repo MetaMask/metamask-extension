@@ -2999,8 +2999,45 @@ export default class MetamaskController extends EventEmitter {
                   });
                 },
               );
+            } else {
+              this.multichainMiddlewareManager.removeMiddlewareByScopeAndOrigin(
+                scope,
+                origin,
+              );
+              this.multichainSubscriptionManager.unsubscribeByScopeAndOrigin(
+                scope,
+                origin,
+              );
             }
           });
+
+          // TODO: could be pushed into selectors?
+          const previousAuthorization = previousValue.get(origin);
+          if (previousAuthorization) {
+            const previousSessionScopes = getSessionScopes(
+              previousAuthorization,
+            );
+
+            Object.entries(previousSessionScopes).forEach(
+              ([scope, scopeObject]) => {
+                if (!sessionScopes[scope]) {
+                  if (
+                    scopeObject.notifications.includes('eth_subscription') &&
+                    scopeObject.methods.includes('eth_subscribe')
+                  ) {
+                    this.multichainMiddlewareManager.removeMiddlewareByScopeAndOrigin(
+                      scope,
+                      origin,
+                    );
+                    this.multichainSubscriptionManager.unsubscribeByScopeAndOrigin(
+                      scope,
+                      origin,
+                    );
+                  }
+                }
+              },
+            );
+          }
 
           this._notifyAuthorizationChange(origin, authorization);
         }
