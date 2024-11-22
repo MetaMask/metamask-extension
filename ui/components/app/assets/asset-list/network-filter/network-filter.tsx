@@ -121,8 +121,6 @@ const NetworkFilter = ({ handleClose }: SortControlProps) => {
               color={TextColor.textAlternative}
               data-testid="network-filter-all__total"
             >
-              {/* TODO: Should query cross chain account balance */}
-
               <UserPreferencedCurrencyDisplay
                 value={selectedAccountBalanceForAllNetworks}
                 type="PRIMARY"
