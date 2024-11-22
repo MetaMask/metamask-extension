@@ -14,7 +14,7 @@ import {
 import { getGasFeeEstimates } from '../../../ducks/metamask/metamask';
 import { checkNetworkAndAccountSupports1559 } from '../../../selectors';
 import { ChainId } from '../types';
-import { decimalToPrefixedHex } from '../../../../shared/modules/conversion.utils';
+import { Numeric } from '../../../../shared/modules/Numeric';
 
 export default function useHandleTx() {
   const dispatch = useDispatch();
@@ -42,7 +42,10 @@ export default function useHandleTx() {
       meta: Partial<TransactionMeta>;
     };
   }) => {
-    const hexChainId = decimalToPrefixedHex(txParams.chainId);
+    const hexChainId = new Numeric(
+      txParams.chainId,
+      10,
+    ).toPrefixedHexString() as `0x${string}`;
 
     const { maxFeePerGas, maxPriorityFeePerGas } = await getTxGasEstimates({
       networkAndAccountSupports1559,

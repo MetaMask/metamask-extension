@@ -184,12 +184,6 @@ export function decimalToHex(decimal: number | string | BigNumber | BN) {
   return new Numeric(decimal, 10).toBase(16).toString();
 }
 
-export function decimalToPrefixedHex(
-  decimal: number | string | BigNumber | BN,
-): Hex {
-  return new Numeric(decimal, 10).toPrefixedHexString() as Hex;
-}
-
 export function hexToDecimal(hexValue: number | string | BigNumber | BN) {
   return new Numeric(hexValue, 16).toBase(10).toString();
 }

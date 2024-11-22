@@ -1,6 +1,7 @@
 import { StateMetadata } from '@metamask/base-controller';
 import { StaticIntervalPollingController } from '@metamask/polling-controller';
 import { Hex } from '@metamask/utils';
+import { Numeric } from '../../../../shared/modules/Numeric';
 // eslint-disable-next-line import/no-restricted-paths
 import {
   StartPollingForBridgeTxStatusArgs,
@@ -8,7 +9,6 @@ import {
   StatusTypes,
   BridgeStatusControllerState,
 } from '../../../../shared/types/bridge-status';
-import { decimalToPrefixedHex } from '../../../../shared/modules/conversion.utils';
 import {
   BRIDGE_STATUS_CONTROLLER_NAME,
   DEFAULT_BRIDGE_STATUS_CONTROLLER_STATE,
@@ -143,7 +143,9 @@ export default class BridgeStatusController extends StaticIntervalPollingControl
         refuel: Boolean(historyItem.quote.refuel),
       };
 
-      const hexSourceChainId = decimalToPrefixedHex(statusRequest.srcChainId);
+      const hexSourceChainId = new Numeric(statusRequest.srcChainId, 10)
+        .toPrefixedHexString()
+        .toLowerCase() as `0x${string}`;
       const networkClientId = this.messagingSystem.call(
         'NetworkController:findNetworkClientIdByChainId',
         hexSourceChainId,
@@ -169,7 +171,9 @@ export default class BridgeStatusController extends StaticIntervalPollingControl
       initialDestAssetBalance,
       targetContractAddress,
     } = startPollingForBridgeTxStatusArgs;
-    const hexSourceChainId = decimalToPrefixedHex(statusRequest.srcChainId);
+    const hexSourceChainId = new Numeric(statusRequest.srcChainId, 10)
+      .toPrefixedHexString()
+      .toLowerCase() as `0x${string}`;
 
     const { bridgeStatusState } = this.state;
     const { address: account } = this.#getSelectedAccount();
@@ -273,12 +277,14 @@ export default class BridgeStatusController extends StaticIntervalPollingControl
       const bridgeHistoryItem =
         this.state.bridgeStatusState.txHistory[sourceTxHash];
 
-      const hexSourceChainId = decimalToPrefixedHex(
+      const hexSourceChainId = new Numeric(
         bridgeHistoryItem.quote.srcChainId,
-      );
-      const hexDestChainId = decimalToPrefixedHex(
+        10,
+      ).toPrefixedHexString() as `0x${string}`;
+      const hexDestChainId = new Numeric(
         bridgeHistoryItem.quote.destChainId,
-      );
+        10,
+      ).toPrefixedHexString() as `0x${string}`;
 
       return (
         bridgeHistoryItem.account === address &&
