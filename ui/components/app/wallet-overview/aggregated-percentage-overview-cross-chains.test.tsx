@@ -8,11 +8,11 @@ import {
   getShouldHideZeroBalanceTokens,
   getPreferences,
   getMarketData,
-  getNetworkConfigurationsByChainId,
   getAllTokens,
   getChainIdsToPoll,
 } from '../../../selectors';
 import { useAccountTotalCrossChainFiatBalance } from '../../../hooks/useAccountTotalCrossChainFiatBalance';
+import { getNetworkConfigurationsByChainId } from '../../../../shared/modules/selectors/networks';
 import { AggregatedPercentageOverviewCrossChains } from './aggregated-percentage-overview-cross-chains';
 
 jest.mock('react-redux', () => ({
@@ -36,9 +36,12 @@ jest.mock('../../../selectors', () => ({
   getPreferences: jest.fn(),
   getShouldHideZeroBalanceTokens: jest.fn(),
   getMarketData: jest.fn(),
-  getNetworkConfigurationsByChainId: jest.fn(),
   getAllTokens: jest.fn(),
   getChainIdsToPoll: jest.fn(),
+}));
+
+jest.mock('../../../../shared/modules/selectors/networks', () => ({
+  getNetworkConfigurationsByChainId: jest.fn(),
 }));
 
 jest.mock('../../../hooks/useAccountTotalCrossChainFiatBalance', () => ({

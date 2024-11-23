@@ -863,8 +863,8 @@
   "bridgeFrom": {
     "message": "Bridge from"
   },
-  "bridgeOverallCost": {
-    "message": "Overall cost"
+  "bridgeNetCost": {
+    "message": "Net cost"
   },
   "bridgeSelectNetwork": {
     "message": "Select network"
@@ -873,7 +873,7 @@
     "message": "Select token and amount"
   },
   "bridgeTimingMinutes": {
-    "message": "$1 minutes",
+    "message": "$1 min",
     "description": "$1 is the ticker symbol of a an asset the user is being prompted to purchase"
   },
   "bridgeTimingTooltipText": {
@@ -4372,6 +4372,13 @@
   },
   "quoteRate": {
     "message": "Quote rate"
+  },
+  "quotedNetworkFee": { "message": "$1 network fee" },
+  "quotedReceiveAmount": {
+    "message": "$1 receive amount"
+  },
+  "quotedReceivingAmount": {
+    "message": "$1 receiving"
   },
   "rank": {
     "message": "Rank"
