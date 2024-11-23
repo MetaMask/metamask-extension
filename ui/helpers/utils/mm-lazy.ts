@@ -1,10 +1,15 @@
 import React from 'react';
+// eslint-disable-next-line import/no-restricted-paths
+import { getManifestFlags } from '../../../app/scripts/lib/manifestFlags';
 import { endTrace, trace, TraceName } from '../../../shared/lib/trace';
 
 type DynamicImportType = () => Promise<{ default: React.ComponentType }>;
 type ModuleWithDefaultType = {
   default: React.ComponentType;
 };
+
+// This only has to happen once per app load, so do it outside a function
+const lazyLoadSubSampleRate = getManifestFlags().sentry?.lazyLoadSubSampleRate;
 
 /**
  * A wrapper around React.lazy that adds two things:
@@ -15,19 +20,22 @@ type ModuleWithDefaultType = {
  */
 export function mmLazy(fn: DynamicImportType) {
   return React.lazy(async () => {
-    // We can't start the trace here because we don't have the component name yet, so we just hold the startTime
+    // We can't start the trace here because we don't have the componentName yet, so we just hold the startTime
     const startTime = Date.now();
 
     const importedModule = await fn();
     const { componentName, component } = parseImportedComponent(importedModule);
 
-    trace({
-      name: TraceName.LazyLoadComponent,
-      data: { componentName },
-      startTime,
-    });
+    // Only trace load time of lazy-loaded components if the manifestFlag is set, and then do it by Math.random probability
+    if (lazyLoadSubSampleRate && Math.random() < lazyLoadSubSampleRate) {
+      trace({
+        name: TraceName.LazyLoadComponent,
+        data: { componentName },
+        startTime,
+      });
 
-    endTrace({ name: TraceName.LazyLoadComponent });
+      endTrace({ name: TraceName.LazyLoadComponent });
+    }
 
     return component;
   });
@@ -37,7 +45,7 @@ export function mmLazy(fn: DynamicImportType) {
 // so I don't think TypeScript safety on `importedModule` is worth it in this function
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 function parseImportedComponent(importedModule: any): {
-  componentName: string;
+  componentName: string; // TODO: in many circumstances, the componentName gets minified
   component: ModuleWithDefaultType;
 } {
   let componentName: string;

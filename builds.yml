@@ -298,6 +298,9 @@ env:
   # Enables the notifications feature within the build:
   - NOTIFICATIONS: ''
 
+  # This will be defined if running a unit test
+  - JEST_WORKER_ID: undefined
+
   - METAMASK_RAMP_API_CONTENT_BASE_URL: https://on-ramp-content.api.cx.metamask.io
 
   ###
