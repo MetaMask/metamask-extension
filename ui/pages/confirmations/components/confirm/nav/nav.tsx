@@ -1,9 +1,7 @@
 import { providerErrors, serializeError } from '@metamask/rpc-errors';
-import React, { useCallback, useMemo } from 'react';
+import React, { useCallback } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { useHistory } from 'react-router-dom';
 
-import { ApprovalType } from '@metamask/controller-utils';
 import { QueueType } from '../../../../../../shared/constants/metametrics';
 import {
   Box,
@@ -26,52 +24,26 @@ import {
   TextColor,
   TextVariant,
 } from '../../../../../helpers/constants/design-system';
-import {
-  CONFIRM_TRANSACTION_ROUTE,
-  SIGNATURE_REQUEST_PATH,
-} from '../../../../../helpers/constants/routes';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import { pendingConfirmationsSortedSelector } from '../../../../../selectors';
 import { rejectPendingApproval } from '../../../../../store/actions';
 import { useConfirmContext } from '../../../context/confirm';
 import { useQueuedConfirmationsEvent } from '../../../hooks/useQueuedConfirmationEvents';
-import { isCorrectSignatureApprovalType } from '../../../../../../shared/lib/confirmation.utils';
+import { useConfirmationNavigation } from '../../../hooks/useConfirmationNavigation';
 
 const Nav = () => {
-  const history = useHistory();
   const t = useI18nContext();
   const dispatch = useDispatch();
-
+  const { getIndex, navigateToIndex } = useConfirmationNavigation();
   const { currentConfirmation } = useConfirmContext();
-
   const pendingConfirmations = useSelector(pendingConfirmationsSortedSelector);
+  const position = getIndex(currentConfirmation?.id);
 
-  const currentConfirmationPosition = useMemo(() => {
-    if (pendingConfirmations?.length <= 0 || !currentConfirmation) {
-      return 0;
-    }
-    return pendingConfirmations.findIndex(
-      ({ id }) => id === currentConfirmation.id,
-    );
-  }, [currentConfirmation, pendingConfirmations]);
-
-  const onNavigateToTransaction = useCallback(
-    (pos: number) => {
-      const nextConfirmation =
-        pendingConfirmations[currentConfirmationPosition + pos];
-      // todo: once all signature request pages are ported to new designs
-      // SIGNATURE_REQUEST_PATH from path below can be removed
-      // In new routing all confirmations will support
-      // "/confirm-transaction/<confirmation_id>"
-      history.replace(
-        `${CONFIRM_TRANSACTION_ROUTE}/${nextConfirmation.id}${
-          isCorrectSignatureApprovalType(nextConfirmation.type as ApprovalType)
-            ? SIGNATURE_REQUEST_PATH
-            : ''
-        }`,
-      );
+  const onNavigateButtonClick = useCallback(
+    (change: number) => {
+      navigateToIndex(position + change);
     },
-    [currentConfirmationPosition, pendingConfirmations],
+    [position, navigateToIndex],
   );
 
   const onRejectAll = useCallback(() => {
@@ -111,9 +83,9 @@ const Nav = () => {
           borderRadius={BorderRadius.full}
           className="confirm_nav__left_btn"
           color={IconColor.iconAlternative}
-          disabled={currentConfirmationPosition === 0}
+          disabled={position === 0}
           iconName={IconName.ArrowLeft}
-          onClick={() => onNavigateToTransaction(-1)}
+          onClick={() => onNavigateButtonClick(-1)}
           size={ButtonIconSize.Sm}
         />
         <Text
@@ -121,7 +93,7 @@ const Nav = () => {
           marginInline={2}
           variant={TextVariant.bodySm}
         >
-          {currentConfirmationPosition + 1} of {pendingConfirmations.length}
+          {position + 1} of {pendingConfirmations.length}
         </Text>
         <ButtonIcon
           ariaLabel="Next Confirmation"
@@ -130,11 +102,9 @@ const Nav = () => {
           borderRadius={BorderRadius.full}
           className="confirm_nav__right_btn"
           color={IconColor.iconAlternative}
-          disabled={
-            currentConfirmationPosition === pendingConfirmations.length - 1
-          }
+          disabled={position === pendingConfirmations.length - 1}
           iconName={IconName.ArrowRight}
-          onClick={() => onNavigateToTransaction(1)}
+          onClick={() => onNavigateButtonClick(1)}
           size={ButtonIconSize.Sm}
         />
       </Box>
