@@ -38,7 +38,9 @@
       "redesignedConfirmationsEnabled": true,
       "redesignedTransactionsEnabled": "boolean",
       "tokenSortConfig": "object",
-      "showMultiRpcModal": "boolean",
+      "tokenNetworkFilter": {
+        "0x539": "boolean"
+      },
       "shouldShowAggregatedBalancePopover": "boolean"
     },
     "firstTimeFlowType": "import",
@@ -174,7 +176,10 @@
     "gasEstimateType": "none",
     "nonRPCGasFeeApisDisabled": "boolean",
     "tokenList": "object",
-    "tokensChainsCache": {},
+    "tokensChainsCache": {
+      "0x539": "object"
+    },
+    "tokenBalances": "object",
     "preventPollingOnNetworkRestart": false,
     "tokens": "object",
     "ignoredTokens": "object",
@@ -198,8 +203,11 @@
     "lastFetchedBlockNumbers": "object",
     "submitHistory": "object",
     "fiatCurrency": "usd",
-    "rates": { "btc": { "conversionDate": 0, "conversionRate": 0 } },
-    "cryptocurrencies": ["btc"],
+    "rates": {
+      "btc": { "conversionDate": 0, "conversionRate": 0 },
+      "sol": { "conversionDate": 0, "conversionRate": 0 }
+    },
+    "cryptocurrencies": ["btc", "sol"],
     "snaps": "object",
     "jobs": "object",
     "database": null,
@@ -214,6 +222,8 @@
     "isSignedIn": "boolean",
     "isProfileSyncingEnabled": null,
     "isProfileSyncingUpdateLoading": "boolean",
+    "hasAccountSyncingSyncedAtLeastOnce": "boolean",
+    "isAccountSyncingReadyToBeDispatched": "boolean",
     "subscriptionAccountsSeen": "object",
     "isMetamaskNotificationsFeatureSeen": "boolean",
     "isNotificationServicesEnabled": "boolean",
@@ -280,6 +290,7 @@
         "srcTokenAddress": "0x0000000000000000000000000000000000000000"
       },
       "quotes": {},
+      "quotesRefreshCount": 0,
       "srcTokens": {},
       "srcTopAssets": {}
     },
