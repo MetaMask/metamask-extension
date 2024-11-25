@@ -14,7 +14,6 @@ async function mockApis(mockServer) {
         body: [{ fakedata: true }],
       };
     }),
-    // NOTE: Very Flaky, this endpoint is constantly failing with no reason even if the driver delay is increased
     await mockServer
       .forGet('https://token.api.cx.metamask.io/tokens/1')
       .thenCallback(() => {
