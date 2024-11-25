@@ -103,9 +103,11 @@ workflows:
   test_and_release:
     when:
       not:
-        matches:
-          pattern: /^l10n_crowdin_action$/
-          value: << pipeline.git.branch >>
+        or:
+          - matches:
+              pattern: /^l10n_crowdin_action$/
+              value: << pipeline.git.branch >>
+          - equal: [rerun-from-failed, << pipeline.schedule.name >>]
     jobs:
       - create_release_pull_request:
           <<: *rc_branch_only
@@ -176,6 +178,7 @@ workflows:
       - prep-build-test-mmi:
           requires:
             - prep-deps
+            - check-mmi-trigger
       - prep-build-test-mmi-playwright:
           requires:
             - prep-deps
@@ -358,8 +361,7 @@ workflows:
 
   rerun-from-failed:
     when:
-      condition:
-        equal: ["<< pipeline.schedule.name >>", "rerun-from-failed"]
+      equal: [rerun-from-failed, << pipeline.schedule.name >>]
     jobs:
       - prep-deps
       - rerun-workflows-from-failed:
@@ -802,6 +804,7 @@ jobs:
       - run: corepack enable
       - attach_workspace:
           at: .
+      - run: *check-mmi-trigger
       - run:
           name: Build extension for testing
           command: yarn build:test:mmi
@@ -1196,6 +1199,7 @@ jobs:
       - run: sudo corepack enable
       - attach_workspace:
           at: .
+      - run: *check-mmi-trigger
       - run:
           name: Move test build to dist
           command: mv ./dist-test-mmi ./dist
@@ -1285,6 +1289,7 @@ jobs:
       - run: sudo corepack enable
       - attach_workspace:
           at: .
+      - run: *check-mmi-trigger
       - run:
           name: Move test build to dist
           command: mv ./dist-test-mmi ./dist

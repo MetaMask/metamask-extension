@@ -2316,13 +2316,21 @@ export const getAllEnabledNetworks = createDeepEqualSelector(
 export const getChainIdsToPoll = createDeepEqualSelector(
   getNetworkConfigurationsByChainId,
   getCurrentChainId,
-  (networkConfigurations, currentChainId) => {
-    if (!process.env.PORTFOLIO_VIEW) {
+  getIsTokenNetworkFilterEqualCurrentNetwork,
+  (
+    networkConfigurations,
+    currentChainId,
+    isTokenNetworkFilterEqualCurrentNetwork,
+  ) => {
+    if (
+      !process.env.PORTFOLIO_VIEW ||
+      isTokenNetworkFilterEqualCurrentNetwork
+    ) {
       return [currentChainId];
     }
 
     return Object.keys(networkConfigurations).filter(
-      (chainId) => !TEST_CHAINS.includes(chainId),
+      (chainId) => chainId === currentChainId || !TEST_CHAINS.includes(chainId),
     );
   },
 );
@@ -2330,8 +2338,16 @@ export const getChainIdsToPoll = createDeepEqualSelector(
 export const getNetworkClientIdsToPoll = createDeepEqualSelector(
   getNetworkConfigurationsByChainId,
   getCurrentChainId,
-  (networkConfigurations, currentChainId) => {
-    if (!process.env.PORTFOLIO_VIEW) {
+  getIsTokenNetworkFilterEqualCurrentNetwork,
+  (
+    networkConfigurations,
+    currentChainId,
+    isTokenNetworkFilterEqualCurrentNetwork,
+  ) => {
+    if (
+      !process.env.PORTFOLIO_VIEW ||
+      isTokenNetworkFilterEqualCurrentNetwork
+    ) {
       const networkConfiguration = networkConfigurations[currentChainId];
       return [
         networkConfiguration.rpcEndpoints[
@@ -2342,7 +2358,7 @@ export const getNetworkClientIdsToPoll = createDeepEqualSelector(
 
     return Object.entries(networkConfigurations).reduce(
       (acc, [chainId, network]) => {
-        if (!TEST_CHAINS.includes(chainId)) {
+        if (chainId === currentChainId || !TEST_CHAINS.includes(chainId)) {
           acc.push(
             network.rpcEndpoints[network.defaultRpcEndpointIndex]
               .networkClientId,

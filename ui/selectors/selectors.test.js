@@ -834,6 +834,9 @@ describe('Selectors', () => {
     it('returns only non-test chain IDs', () => {
       const chainIds = selectors.getChainIdsToPoll({
         metamask: {
+          preferences: {
+            tokenNetworkFilter: {},
+          },
           networkConfigurationsByChainId,
           selectedNetworkClientId: 'mainnet',
         },
@@ -881,6 +884,9 @@ describe('Selectors', () => {
     it('returns only non-test chain IDs', () => {
       const chainIds = selectors.getNetworkClientIdsToPoll({
         metamask: {
+          preferences: {
+            tokenNetworkFilter: {},
+          },
           networkConfigurationsByChainId,
           selectedNetworkClientId: 'mainnet',
         },
