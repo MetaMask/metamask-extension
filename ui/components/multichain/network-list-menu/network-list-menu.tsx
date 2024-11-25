@@ -36,6 +36,7 @@ import {
   FEATURED_RPCS,
   TEST_CHAINS,
 } from '../../../../shared/constants/network';
+import { getNetworkConfigurationsByChainId } from '../../../../shared/modules/selectors/networks';
 import {
   getCurrentChainId,
   getShowTestNetworks,
@@ -44,7 +45,6 @@ import {
   getOriginOfCurrentTab,
   getUseRequestQueue,
   getEditedNetwork,
-  getNetworkConfigurationsByChainId,
   getOrderedNetworksList,
   getIsAddingNewNetwork,
   getIsMultiRpcOnboarding,

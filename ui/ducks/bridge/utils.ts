@@ -1,9 +1,11 @@
 import { Hex } from '@metamask/utils';
 import { BigNumber } from 'bignumber.js';
+import { getAddress } from 'ethers/lib/utils';
 import { decGWEIToHexWEI } from '../../../shared/modules/conversion.utils';
 import { Numeric } from '../../../shared/modules/Numeric';
 import { TxData } from '../../pages/bridge/types';
 import { getTransaction1559GasFeeEstimates } from '../../pages/swaps/swaps.util';
+import { fetchTokenExchangeRates } from '../../helpers/utils/util';
 
 // We don't need to use gas multipliers here because the gasLimit from Bridge API already included it
 export const getHexMaxGasLimit = (gasLimit: number) => {
@@ -44,4 +46,21 @@ export const getTxGasEstimates = async ({
     maxFeePerGas: undefined,
     maxPriorityFeePerGas: undefined,
   };
+};
+
+export const getTokenExchangeRate = async (request: {
+  chainId: Hex;
+  tokenAddress: string;
+  currency: string;
+}) => {
+  const { chainId, tokenAddress, currency } = request;
+  const exchangeRates = await fetchTokenExchangeRates(
+    currency,
+    [tokenAddress],
+    chainId,
+  );
+  return (
+    exchangeRates?.[tokenAddress.toLowerCase()] ??
+    exchangeRates?.[getAddress(tokenAddress)]
+  );
 };

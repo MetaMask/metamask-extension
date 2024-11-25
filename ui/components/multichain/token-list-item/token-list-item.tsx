@@ -2,7 +2,8 @@ import React, { useContext, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import classnames from 'classnames';
-import { zeroAddress } from 'ethereumjs-util';
+import { getNativeTokenAddress } from '@metamask/assets-controllers';
+import { Hex } from '@metamask/utils';
 import {
   AlignItems,
   BackgroundColor,
@@ -336,13 +337,14 @@ export const TokenListItem = ({
                 <PercentageChange
                   value={
                     isNativeCurrency
-                      ? multiChainMarketData?.[chainId]?.[zeroAddress()]
-                          ?.pricePercentChange1d
+                      ? multiChainMarketData?.[chainId]?.[
+                          getNativeTokenAddress(chainId as Hex)
+                        ]?.pricePercentChange1d
                       : tokenPercentageChange
                   }
                   address={
                     isNativeCurrency
-                      ? (zeroAddress() as `0x${string}`)
+                      ? getNativeTokenAddress(chainId as Hex)
                       : (address as `0x${string}`)
                   }
                 />

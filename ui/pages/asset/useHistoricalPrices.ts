@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 // @ts-expect-error suppress CommonJS vs ECMAScript error
 import { Point } from 'chart.js';
 import { useSelector } from 'react-redux';
+import { Hex } from '@metamask/utils';
 import fetchWithCache from '../../../shared/lib/fetch-with-cache';
 import { MINUTE } from '../../../shared/constants/time';
 import { getShouldShowFiat } from '../../selectors';
@@ -20,7 +21,7 @@ export const useHistoricalPrices = ({
   currency,
   timeRange,
 }: {
-  chainId: `0x${string}`;
+  chainId: Hex;
   address: string;
   currency: string;
   timeRange: TimeRange;

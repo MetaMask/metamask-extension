@@ -12,10 +12,12 @@ import {
   getAllDetectedTokensForSelectedAddress,
   getCurrentChainId,
   getDetectedTokensInCurrentNetwork,
-  getNetworkConfigurationsByChainId,
   getPreferences,
-  getSelectedNetworkClientId,
 } from '../../../selectors';
+import {
+  getSelectedNetworkClientId,
+  getNetworkConfigurationsByChainId,
+} from '../../../../shared/modules/selectors/networks';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 
 import {
