@@ -26,7 +26,7 @@ describe('Add account', function () {
         await completeImportSRPOnboardingFlow({ driver });
         const homePage = new HomePage(driver);
         await homePage.check_pageIsLoaded();
-        await homePage.check_ganacheBalanceIsDisplayed(ganacheServer);
+        await homePage.check_localBlockchainBalanceIsDisplayed(ganacheServer);
         const headerNavbar = new HeaderNavbar(driver);
         await headerNavbar.openAccountMenu();
 
@@ -43,7 +43,7 @@ describe('Add account', function () {
         await accountListPage.check_accountDisplayedInAccountList('Account 1');
         await accountListPage.switchToAccount('Account 1');
         await headerNavbar.check_accountLabel('Account 1');
-        await homePage.check_ganacheBalanceIsDisplayed(ganacheServer);
+        await homePage.check_localBlockchainBalanceIsDisplayed(ganacheServer);
         await sendTransactionToAccount({
           driver,
           recipientAccount: 'Account 2',
@@ -64,7 +64,7 @@ describe('Add account', function () {
 
         // Check wallet balance for both accounts
         await homePage.check_pageIsLoaded();
-        await homePage.check_ganacheBalanceIsDisplayed(ganacheServer);
+        await homePage.check_localBlockchainBalanceIsDisplayed(ganacheServer);
         await headerNavbar.openAccountMenu();
         await accountListPage.check_pageIsLoaded();
         await accountListPage.check_accountDisplayedInAccountList('Account 2');
