@@ -88,6 +88,8 @@ import { MultichainMetaFoxLogo } from '../../components/multichain/app-header/mu
 import NetworkConfirmationPopover from '../../components/multichain/network-list-menu/network-confirmation-popover/network-confirmation-popover';
 import { ToastMaster } from '../../components/app/toast-master/toast-master';
 import { mmLazy } from '../../helpers/utils/mm-lazy';
+import { InternalAccountPropType } from '../../selectors/multichain';
+import { isCurrentChainCompatibleWithAccount } from '../../../shared/lib/multichain';
 import {
   isCorrectDeveloperTransactionType,
   isCorrectSignatureApprovalType,
@@ -152,6 +154,7 @@ export default class Routes extends Component {
   static propTypes = {
     currentCurrency: PropTypes.string,
     activeTabOrigin: PropTypes.string,
+    account: InternalAccountPropType,
     setCurrentCurrencyToUSD: PropTypes.func,
     isLoading: PropTypes.bool,
     loadingMessage: PropTypes.string,
@@ -437,6 +440,7 @@ export default class Routes extends Component {
       isNetworkUsed,
       allAccountsOnNetworkAreEmpty,
       isTestNet,
+      account,
       currentChainId,
       shouldShowSeedPhraseReminder,
       isCurrentProviderCustom,
@@ -482,7 +486,8 @@ export default class Routes extends Component {
     });
     const shouldShowNetworkInfo =
       isUnlocked &&
-      currentChainId &&
+      account &&
+      isCurrentChainCompatibleWithAccount(currentChainId, account) &&
       !isTestNet &&
       !isSendRoute &&
       !isNetworkUsed &&
