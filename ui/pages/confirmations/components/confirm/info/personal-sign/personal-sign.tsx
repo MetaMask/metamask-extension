@@ -2,7 +2,6 @@ import React from 'react';
 import { useSelector } from 'react-redux';
 
 import {
-  ConfirmInfoRowAddress,
   ConfirmInfoRowText,
   ConfirmInfoRowUrl,
 } from '../../../../../../components/app/confirm/info/row';
@@ -38,6 +37,7 @@ import { useConfirmContext } from '../../../../context/confirm';
 import { selectUseTransactionSimulations } from '../../../../selectors/preferences';
 import { SignatureRequestType } from '../../../../types/confirm';
 import { isSIWESignatureRequest } from '../../../../utils';
+import { SigningInWithRow } from '../shared/sign-in-with-row/sign-in-with-row';
 import { SIWESignInfo } from './siwe-sign';
 
 const PersonalSignInfo: React.FC = () => {
@@ -51,9 +51,7 @@ const PersonalSignInfo: React.FC = () => {
     return null;
   }
 
-  const { from } = currentConfirmation.msgParams;
   const isSIWE = isSIWESignatureRequest(currentConfirmation);
-  const chainId = currentConfirmation.chainId as string;
   const messageText = sanitizeString(
     hexToText(currentConfirmation.msgParams?.data),
   );
@@ -138,15 +136,7 @@ const PersonalSignInfo: React.FC = () => {
         >
           <ConfirmInfoRowUrl url={currentConfirmation.msgParams.origin} />
         </ConfirmInfoAlertRow>
-        {isSIWE && (
-          <ConfirmInfoAlertRow
-            alertKey={RowAlertKey.SigningInWith}
-            label={t('signingInWith')}
-            ownerId={currentConfirmation.id}
-          >
-            <ConfirmInfoRowAddress address={from} chainId={chainId} />
-          </ConfirmInfoAlertRow>
-        )}
+        <SigningInWithRow />
       </ConfirmInfoSection>
       <ConfirmInfoSection>
         {isSIWE ? (
