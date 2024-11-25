@@ -380,6 +380,8 @@ function getNonEvmCachedBalance(state: MultichainState) {
   const account = getSelectedInternalAccount(state);
   const network = getMultichainCurrentNetwork(state);
 
+  // We assume that there's at least one asset type in and that is the native
+  // token for that network.
   const asset =
     MULTICHAIN_NETWORK_TO_ASSET_TYPES[
       network.chainId as MultichainNetworks
