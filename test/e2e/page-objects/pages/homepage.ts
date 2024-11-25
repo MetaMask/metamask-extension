@@ -1,5 +1,6 @@
 import { strict as assert } from 'assert';
 import { Driver } from '../../webdriver/driver';
+import { Anvil } from '../../seeder/anvil';
 import { Ganache } from '../../seeder/ganache';
 import { getCleanAppState } from '../../helpers';
 import HeaderNavbar from './header-navbar';
@@ -283,13 +284,15 @@ class HomePage {
     );
   }
 
-  async check_ganacheBalanceIsDisplayed(
-    ganacheServer?: Ganache,
+  async check_localBlockchainBalanceIsDisplayed(
+    localBlockchainServer?: Ganache | Anvil,
     address = null,
   ): Promise<void> {
     let expectedBalance: string;
-    if (ganacheServer) {
-      expectedBalance = (await ganacheServer.getBalance(address)).toString();
+    if (localBlockchainServer) {
+      expectedBalance = (
+        await localBlockchainServer.getBalance(address)
+      ).toString();
     } else {
       expectedBalance = '0';
     }

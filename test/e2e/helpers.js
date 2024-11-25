@@ -132,17 +132,15 @@ async function withFixtures(options, testSuite) {
         );
         contractRegistry = ganacheSeeder.getContractRegistry();
       } else if (anvilServer) {
-        const localNetworkSeeder = new AnvilSeeder(
-          anvilServer.getProvider(),
-        );
+        const anvilSeeder = new AnvilSeeder(anvilServer.getProvider());
         const contracts =
           smartContract instanceof Array ? smartContract : [smartContract];
         await Promise.all(
           contracts.map((contract) =>
-            localNetworkSeeder.deploySmartContract(contract),
+            anvilSeeder.deploySmartContract(contract),
           ),
         );
-        contractRegistry = localNetworkSeeder.getContractRegistry();
+        contractRegistry = anvilSeeder.getContractRegistry();
       }
     }
 
@@ -671,17 +669,17 @@ const TEST_SEED_PHRASE_TWO =
  * or after a transaction is made.
  *
  * @param {WebDriver} driver - The WebDriver instance.
- * @param {Ganache} [anvilServer] - The local server instance (optional).
+ * @param {Ganache | Anvil} [localBlockchainServer] - The local server instance (optional).
  * @param {string} [address] - The address to check the balance for (optional).
  */
 const locateAccountBalanceDOM = async (
   driver,
-  anvilServer,
+  localBlockchainServer,
   address = null,
 ) => {
   const balanceSelector = '[data-testid="eth-overview__primary-currency"]';
-  if (anvilServer) {
-    const balance = await anvilServer.getBalance(address);
+  if (localBlockchainServer) {
+    const balance = await localBlockchainServer.getBalance(address);
     await driver.waitForSelector({
       css: balanceSelector,
       text: `${balance} ETH`,
@@ -722,10 +720,10 @@ async function unlockWallet(
   }
 }
 
-const logInWithBalanceValidation = async (driver, anvilServer) => {
+const logInWithBalanceValidation = async (driver, localBlockchainServer) => {
   await unlockWallet(driver);
   // Wait for balance to load
-  await locateAccountBalanceDOM(driver, anvilServer);
+  await locateAccountBalanceDOM(driver, localBlockchainServer);
 };
 
 function roundToXDecimalPlaces(number, decimalPlaces) {
