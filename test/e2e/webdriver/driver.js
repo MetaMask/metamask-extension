@@ -771,7 +771,7 @@ class Driver {
    * Waits for a condition to be met within a given timeout period.
    *
    * @param {Function} condition - The condition to wait for. This function should return a boolean indicating whether the condition is met.
-   * @param {Object} options - Options for the wait.
+   * @param {object} options - Options for the wait.
    * @param {number} options.timeout - The maximum amount of time (in milliseconds) to wait for the condition to be met.
    * @param {number} options.interval - The interval (in milliseconds) between checks for the condition.
    * @returns {Promise<void>} A promise that resolves when the condition is met or the timeout is reached.
