@@ -2,12 +2,12 @@ import { useDispatch, useSelector } from 'react-redux';
 import { NetworkConfiguration } from '@metamask/network-controller';
 import { Numeric } from '../../../../shared/modules/Numeric';
 import { QuoteResponse } from '../types';
+import { FEATURED_RPCS } from '../../../../shared/constants/network';
+import { addToken, addNetwork } from '../../../store/actions';
 import {
   getNetworkConfigurationsByChainId,
   getSelectedNetworkClientId,
-} from '../../../selectors';
-import { FEATURED_RPCS } from '../../../../shared/constants/network';
-import { addToken, addNetwork } from '../../../store/actions';
+} from '../../../../shared/modules/selectors/networks';
 
 export default function useAddToken() {
   const dispatch = useDispatch();

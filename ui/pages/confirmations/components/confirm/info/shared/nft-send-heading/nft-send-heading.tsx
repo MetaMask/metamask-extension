@@ -17,9 +17,9 @@ import {
   TextVariant,
 } from '../../../../../../../helpers/constants/design-system';
 import { getNftImageAlt } from '../../../../../../../helpers/utils/nfts';
-import { getNetworkConfigurationsByChainId } from '../../../../../../../selectors';
 import { useConfirmContext } from '../../../../../context/confirm';
 import { useAssetDetails } from '../../../../../hooks/useAssetDetails';
+import { getNetworkConfigurationsByChainId } from '../../../../../../../../shared/modules/selectors/networks';
 
 const NFTSendHeading = () => {
   const { currentConfirmation: transactionMeta } =
