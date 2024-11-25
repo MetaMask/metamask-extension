@@ -75,7 +75,7 @@ describe('Import NFT', function () {
         await accountListPage.check_accountDisplayedInAccountList('Account 1');
         await accountListPage.switchToAccount('Account 1');
         await headerNavbar.check_accountLabel('Account 1');
-        await homepage.check_ganacheBalanceIsDisplayed(ganacheServer);
+        await homepage.check_localBlockchainBalanceIsDisplayed(ganacheServer);
         await homepage.check_nftNameIsDisplayed('TestDappNFTs');
         await homepage.check_nftImageIsDisplayed();
       },
