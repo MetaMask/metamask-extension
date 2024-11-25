@@ -128,15 +128,21 @@ class AccountListPage {
   }
 
   /**
-   * Adds a new account with a custom label.
+   * Adds a new account with an optional custom label.
    *
-   * @param customLabel - The custom label for the new account.
+   * @param customLabel - The custom label for the new account. If not provided, a default name will be used.
    */
-  async addNewAccountWithCustomLabel(customLabel: string): Promise<void> {
-    console.log(`Adding new account with custom label: ${customLabel}`);
+  async addNewAccount(customLabel?: string): Promise<void> {
+    if (customLabel) {
+      console.log(`Adding new account with custom label: ${customLabel}`);
+    } else {
+      console.log(`Adding new account with default name`);
+    }
     await this.driver.clickElement(this.createAccountButton);
     await this.driver.clickElement(this.addEthereumAccountButton);
-    await this.driver.fill(this.accountNameInput, customLabel);
+    if (customLabel) {
+      await this.driver.fill(this.accountNameInput, customLabel);
+    }
     // needed to mitigate a race condition with the state update
     // there is no condition we can wait for in the UI
     await this.driver.delay(largeDelayMs);
@@ -146,36 +152,33 @@ class AccountListPage {
   }
 
   /**
-   * Adds a new account with default next available name.
+   * Adds a new BTC account with an optional custom name.
    *
+   * @param options - Options for adding a new BTC account.
+   * @param [options.btcAccountCreationEnabled] - Indicates if the BTC account creation is expected to be enabled or disabled. Defaults to true.
+   * @param [options.accountName] - The custom name for the BTC account. Defaults to an empty string, which means the default name will be used.
    */
-  async addNewAccountWithDefaultName(): Promise<void> {
-    console.log(`Adding new account with next available name`);
-    await this.driver.clickElement(this.createAccountButton);
-    await this.driver.clickElement(this.addEthereumAccountButton);
-    // needed to mitigate a race condition with the state update
-    // there is no condition we can wait for in the UI
-    await this.driver.delay(largeDelayMs);
-    await this.driver.clickElementAndWaitToDisappear(
-      this.addAccountConfirmButton,
+  async addNewBtcAccount({
+    btcAccountCreationEnabled = true,
+    accountName = '',
+  }: {
+    btcAccountCreationEnabled?: boolean;
+    accountName?: string;
+  } = {}): Promise<void> {
+    console.log(
+      `Adding new BTC account${
+        accountName ? ` with custom name: ${accountName}` : ' with default name'
+      }`,
     );
-  }
-
-  /**
-   * Adds a new BTC account with default next available name.
-   *
-   * @param btcAccountCreationEnabled - indicates if the BTC account creation is expected to be enabled or disabled. Defaults to true.
-   */
-  async addNewBtcAccountWithDefaultName(
-    btcAccountCreationEnabled: boolean = true,
-  ): Promise<void> {
-    console.log(`Adding new BTC account with next available name`);
     await this.driver.clickElement(this.createAccountButton);
     if (btcAccountCreationEnabled) {
       await this.driver.clickElement(this.addBtcAccountButton);
       // needed to mitigate a race condition with the state update
       // there is no condition we can wait for in the UI
       await this.driver.delay(largeDelayMs);
+      if (accountName) {
+        await this.driver.fill(this.accountNameInput, accountName);
+      }
       await this.driver.clickElementAndWaitToDisappear(
         this.addAccountConfirmButton,
         // Longer timeout than usual, this reduces the flakiness

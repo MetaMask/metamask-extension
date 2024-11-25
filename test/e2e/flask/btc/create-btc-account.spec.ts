@@ -34,7 +34,9 @@ describe('Create BTC Account', function (this: Suite) {
         await headerNavbar.openAccountMenu();
         const accountListPage = new AccountListPage(driver);
         await accountListPage.check_pageIsLoaded();
-        await accountListPage.addNewBtcAccountWithDefaultName(false);
+        await accountListPage.addNewBtcAccount({
+          btcAccountCreationEnabled: false,
+        });
 
         // check the number of available accounts is 2
         await headerNavbar.openAccountMenu();
@@ -90,7 +92,7 @@ describe('Create BTC Account', function (this: Suite) {
         // Recreate account and check that the address is the same
         await headerNavbar.openAccountMenu();
         await accountListPage.check_pageIsLoaded();
-        await accountListPage.addNewBtcAccountWithDefaultName();
+        await accountListPage.addNewBtcAccount();
         await headerNavbar.check_accountLabel('Bitcoin Account');
 
         await headerNavbar.openAccountMenu();
@@ -144,7 +146,7 @@ describe('Create BTC Account', function (this: Suite) {
         await headerNavbar.check_pageIsLoaded();
         await headerNavbar.openAccountMenu();
         await accountListPage.check_pageIsLoaded();
-        await accountListPage.addNewBtcAccountWithDefaultName();
+        await accountListPage.addNewBtcAccount();
         await headerNavbar.check_accountLabel('Bitcoin Account');
 
         await headerNavbar.openAccountMenu();

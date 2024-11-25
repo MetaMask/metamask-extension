@@ -33,7 +33,7 @@ describe('Add account', function () {
         // Create new account with default name Account 2
         const accountListPage = new AccountListPage(driver);
         await accountListPage.check_pageIsLoaded();
-        await accountListPage.addNewAccountWithDefaultName();
+        await accountListPage.addNewAccount();
         await headerNavbar.check_accountLabel('Account 2');
         await homePage.check_expectedBalanceIsDisplayed();
 
@@ -93,7 +93,7 @@ describe('Add account', function () {
         // Create new account with default name Account 2
         const accountListPage = new AccountListPage(driver);
         await accountListPage.check_pageIsLoaded();
-        await accountListPage.addNewAccountWithDefaultName();
+        await accountListPage.addNewAccount();
         await headerNavbar.check_accountLabel('Account 2');
         await homePage.check_expectedBalanceIsDisplayed();
 

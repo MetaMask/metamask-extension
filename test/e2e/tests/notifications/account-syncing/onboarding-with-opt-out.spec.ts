@@ -141,7 +141,7 @@ describe('Account syncing - Opt-out Profile Sync @no-mmi', function () {
           await accountListPage.check_accountDisplayedInAccountList(
             'Account 1',
           );
-          await accountListPage.addNewAccountWithCustomLabel('New Account');
+          await accountListPage.addNewAccount('New Account');
           // Set SRP to use for retreival
           const headerNavbar = new HeaderNavbar(driver);
           await headerNavbar.check_pageIsLoaded();

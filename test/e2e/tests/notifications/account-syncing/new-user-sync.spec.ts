@@ -67,9 +67,7 @@ describe('Account syncing - New User @no-mmi', function () {
 
           // Add a second account
           await accountListPage.openAccountOptionsMenu();
-          await accountListPage.addNewAccountWithCustomLabel(
-            'My Second Account',
-          );
+          await accountListPage.addNewAccount('My Second Account');
 
           // Set SRP to use for retreival
           const headerNavbar = new HeaderNavbar(driver);
