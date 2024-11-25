@@ -54,9 +54,9 @@ import { useTokenBalances } from '../../../hooks/useTokenBalances';
 import { useMultichainSelector } from '../../../hooks/useMultichainSelector';
 import { getMultichainShouldShowFiat } from '../../../selectors/multichain';
 import { getPortfolioUrl } from '../../../helpers/utils/portfolio';
+import { hexToDecimal } from '../../../../shared/modules/conversion.utils';
 import AssetChart from './chart/asset-chart';
 import TokenButtons from './token-buttons';
-import { hexToDecimal } from '../../../../shared/modules/conversion.utils';
 
 /** Information about a native or token asset */
 export type Asset = (
