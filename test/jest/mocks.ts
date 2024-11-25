@@ -218,7 +218,7 @@ export function createMockInternalAccount({
       ];
       break;
     case BtcAccountType.P2wpkh:
-      methods = [BtcMethod.SendMany];
+      methods = [BtcMethod.SendBitcoin];
       break;
     default:
       throw new Error(`Unknown account type: ${type}`);

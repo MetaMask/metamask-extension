@@ -54,6 +54,8 @@ import {
   ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
   getMemoizedUnapprovedTemplatedConfirmations,
   ///: END:ONLY_INCLUDE_IF
+  getNetworkConfigurationIdByChainId,
+  getCurrentChainId,
 } from '../../../selectors';
 import Tooltip from '../../ui/tooltip';
 ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
@@ -82,11 +84,15 @@ import useRamps from '../../../hooks/ramps/useRamps/useRamps';
 import useBridging from '../../../hooks/bridge/useBridging';
 ///: END:ONLY_INCLUDE_IF
 import { ReceiveModal } from '../../multichain/receive-modal';
-///: BEGIN:ONLY_INCLUDE_IF(build-flask)
 import {
+  setActiveNetwork,
+  setSwitchedNetworkDetails,
+  ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
   sendMultichainTransaction,
   setDefaultHomeActiveTabName,
+  ///: END:ONLY_INCLUDE_IF
 } from '../../../store/actions';
+///: BEGIN:ONLY_INCLUDE_IF(build-flask)
 import { BITCOIN_WALLET_SNAP_ID } from '../../../../shared/lib/accounts/bitcoin-wallet-snap';
 ///: END:ONLY_INCLUDE_IF
 import {
@@ -132,6 +138,17 @@ const CoinButtons = ({
 
   const { address: selectedAddress } = account;
   const history = useHistory();
+  const networks = useSelector(getNetworkConfigurationIdByChainId) as Record<
+    string,
+    string
+  >;
+  const currentChainId = useSelector(getCurrentChainId);
+  ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
+  const currentActivityTabName = useSelector(
+    // @ts-expect-error TODO: fix state type
+    (state) => state.metamask.defaultHomeActiveTabName,
+  );
+  ///: END:ONLY_INCLUDE_IF
   ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
   const location = useLocation();
   const keyring = useSelector(getCurrentKeyring);
@@ -309,6 +326,18 @@ const CoinButtons = ({
   }, [unapprovedTemplatedConfirmations, history]);
   ///: END:ONLY_INCLUDE_IF
 
+  const setCorrectChain = useCallback(async () => {
+    if (currentChainId !== chainId) {
+      const networkConfigurationId = networks[chainId];
+      await dispatch(setActiveNetwork(networkConfigurationId));
+      await dispatch(
+        setSwitchedNetworkDetails({
+          networkClientId: networkConfigurationId,
+        }),
+      );
+    }
+  }, [currentChainId, chainId, networks, dispatch]);
+
   const handleSendOnClick = useCallback(async () => {
     trackEvent(
       {
@@ -328,25 +357,47 @@ const CoinButtons = ({
     switch (account.type) {
       ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
       case BtcAccountType.P2wpkh: {
-        await sendMultichainTransaction(
-          BITCOIN_WALLET_SNAP_ID,
-          account.id,
-          chainId as CaipChainId,
-        );
+        try {
+          // FIXME: We switch the tab before starting the send flow (we
+          // faced some inconsistencies when changing it after).
+          await dispatch(setDefaultHomeActiveTabName('activity'));
+          await sendMultichainTransaction(
+            BITCOIN_WALLET_SNAP_ID,
+            account.id,
+            chainId as CaipChainId,
+          );
+        } catch {
+          // Restore the previous tab in case of any error (see FIXME comment above).
+          await dispatch(setDefaultHomeActiveTabName(currentActivityTabName));
+        }
 
-        // We automatically switch to the activity tab once the transaction has been sent.
-        dispatch(setDefaultHomeActiveTabName('activity'));
         break;
       }
       ///: END:ONLY_INCLUDE_IF
       default: {
+        trackEvent(
+          {
+            event: MetaMetricsEventName.NavSendButtonClicked,
+            category: MetaMetricsEventCategory.Navigation,
+            properties: {
+              token_symbol: 'ETH',
+              location: 'Home',
+              text: 'Send',
+              chain_id: chainId,
+            },
+          },
+          { excludeMetaMetricsId: false },
+        );
+        await setCorrectChain();
         await dispatch(startNewDraftTransaction({ type: AssetType.native }));
         history.push(SEND_ROUTE);
       }
     }
-  }, [chainId, account]);
+  }, [chainId, account, setCorrectChain]);
 
   const handleSwapOnClick = useCallback(async () => {
+    await setCorrectChain();
+
     ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
     global.platform.openTab({
       url: `${mmiPortfolioUrl}/swap`,
@@ -376,6 +427,7 @@ const CoinButtons = ({
     }
     ///: END:ONLY_INCLUDE_IF
   }, [
+    setCorrectChain,
     isSwapsChain,
     chainId,
     ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)

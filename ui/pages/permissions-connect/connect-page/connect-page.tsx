@@ -5,10 +5,10 @@ import { NetworkConfiguration } from '@metamask/network-controller';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
   getInternalAccounts,
-  getNetworkConfigurationsByChainId,
   getSelectedInternalAccount,
   getUpdatedAndSortedAccounts,
 } from '../../../selectors';
+import { getNetworkConfigurationsByChainId } from '../../../../shared/modules/selectors/networks';
 import {
   Box,
   Button,

@@ -19,6 +19,7 @@ export type Handle = {
 export type WindowProperties = 'title' | 'url';
 
 export type ServerMochaEventEmitterType = {
+  error: [error: Error];
   openTabs: [openTabs: chrome.tabs.Tab[]];
   notFound: [openTabs: chrome.tabs.Tab[]];
 };

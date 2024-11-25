@@ -1,5 +1,7 @@
 import { MockttpServer } from 'mockttp';
 import { mockEthDaiTrade } from '../swaps/shared';
+import { mockMultiNetworkBalancePolling } from '../../mock-balance-polling/mock-balance-polling';
+import { mockServerJsonRpc } from '../ppom/mocks/mock-server-json-rpc';
 
 const STX_UUID = '0d506aaa-5e38-4cab-ad09-2039cb7a0f33';
 
@@ -288,18 +290,14 @@ const GET_TRANSACTION_BY_HASH_RESPONSE = {
 };
 
 export const mockSwapRequests = async (mockServer: MockttpServer) => {
-  await mockEthDaiTrade(mockServer);
+  await mockMultiNetworkBalancePolling(mockServer);
 
-  await mockServer
-    .forJsonRpcRequest({
-      method: 'eth_getBalance',
-      params: ['0x5cfe73b6021e818b776b421b1c4db2474086a7e1'],
-    })
-    .thenJson(200, {
-      id: 3806592044086814,
-      jsonrpc: '2.0',
-      result: '0x1bc16d674ec80000', // 2 ETH
-    });
+  await mockServerJsonRpc(mockServer, [
+    ['eth_blockNumber'],
+    ['eth_getBlockByNumber'],
+    ['eth_chainId', { result: `0x1` }],
+  ]);
+  await mockEthDaiTrade(mockServer);
 
   await mockServer
     .forPost('https://transaction.api.cx.metamask.io/networks/1/getFees')

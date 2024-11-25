@@ -3,7 +3,8 @@
 exports[`PermitSimulationValueDisplay renders component correctly 1`] = `
 <div>
   <div
-    class="mm-box"
+    class="mm-box mm-box--margin-left-auto"
+    style="max-width: 100%;"
   >
     <div
       class="mm-box mm-box--display-flex mm-box--justify-content-flex-end"
