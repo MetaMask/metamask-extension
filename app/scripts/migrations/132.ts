@@ -75,8 +75,8 @@ function transformState(state: Record<string, unknown>): void {
     return;
   }
 
-  const snaps = snapControllerState.snaps;
-  const subjects = permissionControllerState.subjects;
+  const { snaps } = snapControllerState;
+  const { subjects } = permissionControllerState;
 
   Object.keys(snaps).forEach((snapId) => {
     if (subjects[snapId]) {
