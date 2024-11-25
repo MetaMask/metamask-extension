@@ -28,10 +28,7 @@ import {
   CHAIN_ID_TOKEN_IMAGE_MAP,
 } from '../../../../shared/constants/network';
 import useLatestBalance from '../../../hooks/bridge/useLatestBalance';
-import {
-  getBridgeQuotes,
-  getRecommendedQuote,
-} from '../../../ducks/bridge/selectors';
+import { getBridgeQuotes } from '../../../ducks/bridge/selectors';
 
 const generateAssetFromToken = (
   chainId: Hex,
@@ -82,8 +79,7 @@ export const BridgeInputGroup = ({
 >) => {
   const t = useI18nContext();
 
-  const { isLoading } = useSelector(getBridgeQuotes);
-  const recommendedQuote = useSelector(getRecommendedQuote);
+  const { isLoading, activeQuote } = useSelector(getBridgeQuotes);
 
   const tokenFiatValue = useTokenFiatAmount(
     token?.address || undefined,
@@ -134,9 +130,7 @@ export const BridgeInputGroup = ({
             type={TextFieldType.Number}
             className="amount-input"
             placeholder={
-              isLoading && !recommendedQuote
-                ? t('bridgeCalculatingAmount')
-                : '0'
+              isLoading && !activeQuote ? t('bridgeCalculatingAmount') : '0'
             }
             onChange={(e) => {
               onAmountChange?.(e.target.value);
