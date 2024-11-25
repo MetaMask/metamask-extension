@@ -25,7 +25,7 @@ import type {
   AccountsControllerListMultichainAccountsAction,
 } from '@metamask/accounts-controller';
 import { MultichainNetworks } from '../../../../shared/constants/multichain/networks';
-import { NETWORK_ASSET_MAP } from '../../../../shared/constants/multichain/assets';
+import { MULTICHAIN_NETWORK_TO_ASSET_TYPES } from '../../../../shared/constants/multichain/assets';
 import { isBtcMainnetAddress } from '../../../../shared/lib/multichain';
 import { BalancesTracker } from './BalancesTracker';
 
@@ -132,7 +132,7 @@ const SOLANA_AVG_BLOCK_TIME = 400; // 400 milliseconds
 // is de-synchronized with the actual block time.
 export const BTC_BALANCES_UPDATE_TIME = BTC_AVG_BLOCK_TIME / 2;
 
-const balanceCheckIntervals = {
+const BALANCE_CHECK_INTERVALS = {
   [BtcAccountType.P2wpkh]: BTC_BALANCES_UPDATE_TIME,
   [SolAccountType.DataAccount]: SOLANA_AVG_BLOCK_TIME,
 };
@@ -207,9 +207,14 @@ export class BalancesController extends BaseController<
    * @returns The block time for the account.
    */
   #getBlockTimeFor(account: InternalAccount): number {
-    return balanceCheckIntervals[
-      account.type as BtcAccountType.P2wpkh | SolAccountType.DataAccount
-    ];
+    if (account.type in BALANCE_CHECK_INTERVALS) {
+      return BALANCE_CHECK_INTERVALS[
+        account.type as keyof typeof BALANCE_CHECK_INTERVALS
+      ];
+    }
+    throw new Error(
+      `Unsupported account type for balance tracking: ${account.type}`,
+    );
   }
 
   /**
@@ -270,7 +275,7 @@ export class BalancesController extends BaseController<
 
     if (account.metadata.snap) {
       const scope = this.#getScopeFrom(account);
-      const assetTypes = NETWORK_ASSET_MAP[scope];
+      const assetTypes = MULTICHAIN_NETWORK_TO_ASSET_TYPES[scope];
 
       partialState.balances[account.id] = await this.#getBalances(
         account.id,
@@ -332,15 +337,8 @@ export class BalancesController extends BaseController<
       // Nothing to do here for EVM accounts
       return;
     }
-    const updateTimes = {
-      [BtcAccountType.P2wpkh]: BTC_AVG_BLOCK_TIME,
-      [SolAccountType.DataAccount]: SOLANA_AVG_BLOCK_TIME,
-    };
 
-    const updateTime =
-      updateTimes[account.type as keyof typeof updateTimes] ||
-      SOLANA_AVG_BLOCK_TIME;
-    this.#tracker.track(account.id, updateTime); // NOTE: Unfortunately, we cannot update the balance right away here, because
+    this.#tracker.track(account.id, this.#getBlockTimeFor(account));
     // messenger's events are running synchronously and fetching the balance is
     // asynchronous.
     // Updating the balance here would resume at some point but the event emitter

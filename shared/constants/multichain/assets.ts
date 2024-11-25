@@ -19,7 +19,10 @@ export enum MultichainNativeAssets {
  * Maps network identifiers to their corresponding native asset types.
  * Each network is mapped to an array containing its native asset for consistency.
  */
-export const NETWORK_ASSET_MAP: Record<MultichainNetworks, CaipAssetType[]> = {
+export const MULTICHAIN_NETWORK_TO_ASSET_TYPES: Record<
+  MultichainNetworks,
+  CaipAssetType[]
+> = {
   [MultichainNetworks.SOLANA]: [MultichainNativeAssets.SOLANA],
   [MultichainNetworks.SOLANA_TESTNET]: [MultichainNativeAssets.SOLANA_TESTNET],
   [MultichainNetworks.SOLANA_DEVNET]: [MultichainNativeAssets.SOLANA_DEVNET],

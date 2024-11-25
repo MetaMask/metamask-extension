@@ -19,7 +19,7 @@ import {
 // TODO: Remove restricted import
 // eslint-disable-next-line import/no-restricted-paths
 import { BalancesControllerState } from '../../app/scripts/lib/accounts/BalancesController';
-import { NETWORK_ASSET_MAP } from '../../shared/constants/multichain/assets';
+import { MULTICHAIN_NETWORK_TO_ASSET_TYPES } from '../../shared/constants/multichain/assets';
 import {
   CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP,
   TEST_NETWORK_IDS,
@@ -380,7 +380,10 @@ function getNonEvmCachedBalance(state: MultichainState) {
   const account = getSelectedInternalAccount(state);
   const network = getMultichainCurrentNetwork(state);
 
-  const asset = NETWORK_ASSET_MAP[network.chainId as MultichainNetworks]?.[0];
+  const asset =
+    MULTICHAIN_NETWORK_TO_ASSET_TYPES[
+      network.chainId as MultichainNetworks
+    ]?.[0];
 
   return balances?.[account.id]?.[asset]?.amount;
 }
