@@ -1,5 +1,5 @@
 diff --git a/dist/assetsUtil.cjs b/dist/assetsUtil.cjs
-index c2e83cf6caee19152aa164f1333cfef7b681e900..590b6de6e9d20ca402b82ac56b0929ab8c16c932 100644
+index 48571b8c1b78e94d88e1837e986b5f8735ac651b..61246f51500c8cab48f18296a73629fb73454caa 100644
 --- a/dist/assetsUtil.cjs
 +++ b/dist/assetsUtil.cjs
 @@ -3,6 +3,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
@@ -20,7 +20,7 @@ index c2e83cf6caee19152aa164f1333cfef7b681e900..590b6de6e9d20ca402b82ac56b0929ab
      // because most cid v0s appear to be incompatible with IPFS subdomains
      return {
 diff --git a/dist/token-prices-service/codefi-v2.mjs b/dist/token-prices-service/codefi-v2.mjs
-index e7eaad2cfa8b233c4fd42a51f745233a1cc5c387..b89849c0caf7e5db3b53cf03dd5746b6b1433543 100644
+index a13403446a2376d4d905a9ef733941798da89c88..3c8229f9ea40f4c1ee760a22884e1066dac82ec7 100644
 --- a/dist/token-prices-service/codefi-v2.mjs
 +++ b/dist/token-prices-service/codefi-v2.mjs
 @@ -12,8 +12,7 @@ var __classPrivateFieldGet = (this && this.__classPrivateFieldGet) || function (

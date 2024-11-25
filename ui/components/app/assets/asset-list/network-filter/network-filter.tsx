@@ -15,6 +15,7 @@ import { SelectableListItem } from '../sort-control/sort-control';
 import { Text } from '../../../../component-library/text/text';
 import {
   AlignItems,
+  BlockSize,
   Display,
   JustifyContent,
   TextColor,
@@ -108,6 +109,7 @@ const NetworkFilter = ({ handleClose }: SortControlProps) => {
         <Box
           display={Display.Flex}
           justifyContent={JustifyContent.spaceBetween}
+          width={BlockSize.Full}
         >
           <Box>
             <Text
@@ -121,8 +123,6 @@ const NetworkFilter = ({ handleClose }: SortControlProps) => {
               color={TextColor.textAlternative}
               data-testid="network-filter-all__total"
             >
-              {/* TODO: Should query cross chain account balance */}
-
               <UserPreferencedCurrencyDisplay
                 value={selectedAccountBalanceForAllNetworks}
                 type="PRIMARY"
@@ -170,6 +170,7 @@ const NetworkFilter = ({ handleClose }: SortControlProps) => {
           display={Display.Flex}
           justifyContent={JustifyContent.spaceBetween}
           alignItems={AlignItems.center}
+          width={BlockSize.Full}
         >
           <Box>
             <Text

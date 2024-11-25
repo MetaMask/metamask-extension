@@ -4920,9 +4920,6 @@
   "simulationErrorMessageV2": {
     "message": "ガス代を見積もることができませんでした。コントラクトにエラーがある可能性があり、このトランザクションは失敗するかもしれません。"
   },
-  "simulationsSettingDescription": {
-    "message": "トランザクションを確定する前に残高の増減を予測するには、この機能をオンにします。これはトランザクションの最終的な結果を保証するものではありません。$1"
-  },
   "simulationsSettingSubHeader": {
     "message": "予測される残高の増減"
   },
