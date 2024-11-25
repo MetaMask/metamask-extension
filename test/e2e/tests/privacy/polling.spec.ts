@@ -17,6 +17,43 @@ const infuraLineaMainnetUrl =
 const infuraLineaSepoliaUrl =
   'https://linea-sepolia.infura.io/v3/00000000000000000000000000000000';
 
+const ethGetBlockByNumberResult = {
+  statusCode: 200,
+  json: {
+    jsonrpc: '2.0',
+    id: 367912711400466,
+    result: {
+      hash: '0x8f1697a1dfd439404fccc9ea370ab8ca4e1bb3465a6b74e5bf59891b909c5b86',
+      parentHash:
+        '0xc745f42de8dcb553511e5953b00220d2872c889261f606bbc6940600da3e24ad',
+      sha3Uncles:
+        '0x1dcc4de8dec75d7aab85b567b6ccd41ad312451b948a7413f0a142fd40d49347',
+      miner: '0x0000000000000000000000000000000000000000',
+      stateRoot:
+        '0x3e6f4a18a3d430fcb3748c89a32c98b7822c26ece58a28010c502af0247a5a05',
+      transactionsRoot:
+        '0x56e81f171bcc55a6ff8345e692c0f86e5b48e01b996cadc001622fb5e363b421',
+      receiptsRoot:
+        '0x56e81f171bcc55a6ff8345e692c0f86e5b48e01b996cadc001622fb5e363b421',
+      logsBloom:
+        '0x00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000',
+      difficulty: '0x1',
+      number: '0xd',
+      gasLimit: '0x1c9c380',
+      gasUsed: '0x0',
+      timestamp: '0x67409c7e',
+      extraData: '0x',
+      mixHash:
+        '0x0000000000000000000000000000000000000000000000000000000000000000',
+      nonce: '0x0000000000000000',
+      totalDifficulty: '0xe',
+      size: '0x1fd',
+      transactions: [],
+      uncles: [],
+    },
+  },
+};
+
 async function mockInfura(mockServer: Mockttp): Promise<MockedEndpoint[]> {
   const blockNumber = { value: 0 };
   return [
@@ -50,42 +87,7 @@ async function mockInfura(mockServer: Mockttp): Promise<MockedEndpoint[]> {
       .forPost(infuraMainnetUrl)
       .withBodyIncluding('eth_getBlockByNumber')
       .thenCallback(() => {
-        return {
-          statusCode: 200,
-          json: {
-            jsonrpc: '2.0',
-            id: 367912711400466,
-            result: {
-              hash: '0x8f1697a1dfd439404fccc9ea370ab8ca4e1bb3465a6b74e5bf59891b909c5b86',
-              parentHash:
-                '0xc745f42de8dcb553511e5953b00220d2872c889261f606bbc6940600da3e24ad',
-              sha3Uncles:
-                '0x1dcc4de8dec75d7aab85b567b6ccd41ad312451b948a7413f0a142fd40d49347',
-              miner: '0x0000000000000000000000000000000000000000',
-              stateRoot:
-                '0x3e6f4a18a3d430fcb3748c89a32c98b7822c26ece58a28010c502af0247a5a05',
-              transactionsRoot:
-                '0x56e81f171bcc55a6ff8345e692c0f86e5b48e01b996cadc001622fb5e363b421',
-              receiptsRoot:
-                '0x56e81f171bcc55a6ff8345e692c0f86e5b48e01b996cadc001622fb5e363b421',
-              logsBloom:
-                '0x00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000',
-              difficulty: '0x1',
-              number: '0xd',
-              gasLimit: '0x1c9c380',
-              gasUsed: '0x0',
-              timestamp: '0x67409c7e',
-              extraData: '0x',
-              mixHash:
-                '0x0000000000000000000000000000000000000000000000000000000000000000',
-              nonce: '0x0000000000000000',
-              totalDifficulty: '0xe',
-              size: '0x1fd',
-              transactions: [],
-              uncles: [],
-            },
-          },
-        };
+        return ethGetBlockByNumberResult;
       }),
     await mockServer
       .forPost(infuraMainnetUrl)
@@ -130,42 +132,7 @@ async function mockInfura(mockServer: Mockttp): Promise<MockedEndpoint[]> {
       .forPost(infuraLineaMainnetUrl)
       .withBodyIncluding('eth_getBlockByNumber')
       .thenCallback(() => {
-        return {
-          statusCode: 200,
-          json: {
-            jsonrpc: '2.0',
-            id: 367912711400466,
-            result: {
-              hash: '0x8f1697a1dfd439404fccc9ea370ab8ca4e1bb3465a6b74e5bf59891b909c5b86',
-              parentHash:
-                '0xc745f42de8dcb553511e5953b00220d2872c889261f606bbc6940600da3e24ad',
-              sha3Uncles:
-                '0x1dcc4de8dec75d7aab85b567b6ccd41ad312451b948a7413f0a142fd40d49347',
-              miner: '0x0000000000000000000000000000000000000000',
-              stateRoot:
-                '0x3e6f4a18a3d430fcb3748c89a32c98b7822c26ece58a28010c502af0247a5a05',
-              transactionsRoot:
-                '0x56e81f171bcc55a6ff8345e692c0f86e5b48e01b996cadc001622fb5e363b421',
-              receiptsRoot:
-                '0x56e81f171bcc55a6ff8345e692c0f86e5b48e01b996cadc001622fb5e363b421',
-              logsBloom:
-                '0x00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000',
-              difficulty: '0x1',
-              number: '0xd',
-              gasLimit: '0x1c9c380',
-              gasUsed: '0x0',
-              timestamp: '0x67409c7e',
-              extraData: '0x',
-              mixHash:
-                '0x0000000000000000000000000000000000000000000000000000000000000000',
-              nonce: '0x0000000000000000',
-              totalDifficulty: '0xe',
-              size: '0x1fd',
-              transactions: [],
-              uncles: [],
-            },
-          },
-        };
+        return ethGetBlockByNumberResult;
       }),
     await mockServer
       .forPost(infuraLineaMainnetUrl)
@@ -210,42 +177,7 @@ async function mockInfura(mockServer: Mockttp): Promise<MockedEndpoint[]> {
       .forPost(infuraSepoliaUrl)
       .withBodyIncluding('eth_getBlockByNumber')
       .thenCallback(() => {
-        return {
-          statusCode: 200,
-          json: {
-            jsonrpc: '2.0',
-            id: 367912711400466,
-            result: {
-              hash: '0x8f1697a1dfd439404fccc9ea370ab8ca4e1bb3465a6b74e5bf59891b909c5b86',
-              parentHash:
-                '0xc745f42de8dcb553511e5953b00220d2872c889261f606bbc6940600da3e24ad',
-              sha3Uncles:
-                '0x1dcc4de8dec75d7aab85b567b6ccd41ad312451b948a7413f0a142fd40d49347',
-              miner: '0x0000000000000000000000000000000000000000',
-              stateRoot:
-                '0x3e6f4a18a3d430fcb3748c89a32c98b7822c26ece58a28010c502af0247a5a05',
-              transactionsRoot:
-                '0x56e81f171bcc55a6ff8345e692c0f86e5b48e01b996cadc001622fb5e363b421',
-              receiptsRoot:
-                '0x56e81f171bcc55a6ff8345e692c0f86e5b48e01b996cadc001622fb5e363b421',
-              logsBloom:
-                '0x00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000',
-              difficulty: '0x1',
-              number: '0xd',
-              gasLimit: '0x1c9c380',
-              gasUsed: '0x0',
-              timestamp: '0x67409c7e',
-              extraData: '0x',
-              mixHash:
-                '0x0000000000000000000000000000000000000000000000000000000000000000',
-              nonce: '0x0000000000000000',
-              totalDifficulty: '0xe',
-              size: '0x1fd',
-              transactions: [],
-              uncles: [],
-            },
-          },
-        };
+        return ethGetBlockByNumberResult;
       }),
     await mockServer
       .forPost(infuraSepoliaUrl)
@@ -287,42 +219,7 @@ async function mockInfura(mockServer: Mockttp): Promise<MockedEndpoint[]> {
       .forPost(infuraLineaSepoliaUrl)
       .withBodyIncluding('eth_getBlockByNumber')
       .thenCallback(() => {
-        return {
-          statusCode: 200,
-          json: {
-            jsonrpc: '2.0',
-            id: 367912711400466,
-            result: {
-              hash: '0x8f1697a1dfd439404fccc9ea370ab8ca4e1bb3465a6b74e5bf59891b909c5b86',
-              parentHash:
-                '0xc745f42de8dcb553511e5953b00220d2872c889261f606bbc6940600da3e24ad',
-              sha3Uncles:
-                '0x1dcc4de8dec75d7aab85b567b6ccd41ad312451b948a7413f0a142fd40d49347',
-              miner: '0x0000000000000000000000000000000000000000',
-              stateRoot:
-                '0x3e6f4a18a3d430fcb3748c89a32c98b7822c26ece58a28010c502af0247a5a05',
-              transactionsRoot:
-                '0x56e81f171bcc55a6ff8345e692c0f86e5b48e01b996cadc001622fb5e363b421',
-              receiptsRoot:
-                '0x56e81f171bcc55a6ff8345e692c0f86e5b48e01b996cadc001622fb5e363b421',
-              logsBloom:
-                '0x00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000',
-              difficulty: '0x1',
-              number: '0xd',
-              gasLimit: '0x1c9c380',
-              gasUsed: '0x0',
-              timestamp: '0x67409c7e',
-              extraData: '0x',
-              mixHash:
-                '0x0000000000000000000000000000000000000000000000000000000000000000',
-              nonce: '0x0000000000000000',
-              totalDifficulty: '0xe',
-              size: '0x1fd',
-              transactions: [],
-              uncles: [],
-            },
-          },
-        };
+        return ethGetBlockByNumberResult;
       }),
     await mockServer
       .forPost(infuraLineaSepoliaUrl)
