@@ -339,6 +339,7 @@ export class BalancesController extends BaseController<
     }
 
     this.#tracker.track(account.id, this.#getBlockTimeFor(account));
+    // NOTE: Unfortunately, we cannot update the balance right away here, because
     // messenger's events are running synchronously and fetching the balance is
     // asynchronous.
     // Updating the balance here would resume at some point but the event emitter
