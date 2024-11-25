@@ -2,7 +2,7 @@
 import { Mockttp } from 'mockttp';
 import { openDapp, unlockWallet } from '../../../helpers';
 import { createDappTransaction } from '../../../page-objects/flows/transaction';
-import GanacheContractAddressRegistry from '../../../seeder/ganache-contract-address-registry';
+import ContractAddressRegistry from '../../../seeder/contract-address-registry';
 import { Driver } from '../../../webdriver/driver';
 import { MockedEndpoint } from '../../../mock-e2e';
 import {
@@ -146,6 +146,9 @@ describe('Confirmation Redesign Contract Interaction Component', function () {
               },
               useTransactionSimulations: false,
             })
+            .withAppStateController({
+              [CHAIN_IDS.OPTIMISM]: true,
+            })
             .withNetworkControllerOnOptimism()
             .build(),
           ganacheOptions: {
@@ -162,7 +165,7 @@ describe('Confirmation Redesign Contract Interaction Component', function () {
           await createLayer2Transaction(driver);
 
           const contractAddress = await (
-            contractRegistry as GanacheContractAddressRegistry
+            contractRegistry as ContractAddressRegistry
           ).getContractAddress(smartContract);
 
           await openDapp(driver, contractAddress);
