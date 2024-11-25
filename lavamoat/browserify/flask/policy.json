@@ -3085,11 +3085,6 @@
         "semver": true
       }
     },
-    "@metamask/solana-wallet-snap>@solana/web3.js>bs58": {
-      "packages": {
-        "@ensdomains/content-hash>multihashes>multibase>base-x": true
-      }
-    },
     "@metamask/test-bundler>@ethersproject/networks": {
       "packages": {
         "ethers>@ethersproject/logger": true
@@ -4488,9 +4483,14 @@
     },
     "ethereumjs-util>ethereum-cryptography>bs58check": {
       "packages": {
-        "@metamask/solana-wallet-snap>@solana/web3.js>bs58": true,
         "ethereumjs-util>create-hash": true,
+        "ethereumjs-util>ethereum-cryptography>bs58check>bs58": true,
         "koa>content-disposition>safe-buffer": true
+      }
+    },
+    "ethereumjs-util>ethereum-cryptography>bs58check>bs58": {
+      "packages": {
+        "@ensdomains/content-hash>multihashes>multibase>base-x": true
       }
     },
     "ethereumjs-util>ethereum-cryptography>keccak": {
