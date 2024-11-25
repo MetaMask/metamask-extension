@@ -126,6 +126,10 @@ async function main() {
             description: `Run only mmi related tests`,
             type: 'boolean',
           })
+          .option('quarantine', {
+            description: `Run only quarantine related tests`,
+            type: 'boolean',
+          })
           .option('rpc', {
             description: `run json-rpc specific e2e tests`,
             type: 'boolean',
@@ -165,6 +169,7 @@ async function main() {
     debug,
     retries,
     mmi,
+    quarantine,
     rpc,
     buildType,
     updateSnapshot,
@@ -209,6 +214,9 @@ async function main() {
   } else if (buildType === 'mmi') {
     const testDir = path.join(__dirname, 'tests');
     testPaths = [...(await getTestPathsForTestDir(testDir))];
+  } else if (buildType === 'quarantine') {
+    const testDir = path.join(__dirname, 'quarantine');
+    testPaths = await getTestPathsForTestDir(testDir);
   } else {
     const testDir = path.join(__dirname, 'tests');
     const filteredFlaskAndMainTests = featureTestsOnMain.filter((p) =>
@@ -240,6 +248,9 @@ async function main() {
   }
   if (mmi) {
     args.push('--mmi');
+  }
+  if (quarantine) {
+    args.push('--quarantine');
   }
 
   await fs.promises.mkdir('test/test-results/e2e', { recursive: true });

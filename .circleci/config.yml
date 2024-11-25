@@ -1141,6 +1141,30 @@ jobs:
       - store_test_results:
           path: test/test-results/e2e
 
+  test-e2e-quarantine-flaky:
+    executor: node-browsers-small-plus
+    parallelism: 4
+    steps:
+      - run: *shallow-git-clone-and-enable-vnc
+      - run: sudo corepack enable
+      - attach_workspace:
+          at: .
+      - run:
+          name: Move test build to dist
+          command: mv ./dist-test ./dist
+      - run:
+          name: Move test zips to builds
+          command: mv ./builds-test ./builds
+      - run:
+          name: test:e2e:chrome
+          command: .circleci/scripts/test-run-e2e.sh yarn test:e2e:chrome
+          no_output_timeout: 5m
+      - store_artifacts:
+          path: test-artifacts
+          destination: test-artifacts
+      - store_test_results:
+          path: test/test-results/e2e
+
   test-e2e-chrome-rpc:
     executor: node-browsers-medium
     parallelism: 1

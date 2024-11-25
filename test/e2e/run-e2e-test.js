@@ -29,6 +29,10 @@ async function main() {
             description: 'Run only mmi related tests',
             type: 'boolean',
           })
+          .option('quarantine', {
+            description: 'Run only quarantine related tests',
+            type: 'boolean',
+          })
           .option('retries', {
             default: 0,
             description:
@@ -71,6 +75,7 @@ async function main() {
     browser,
     debug,
     mmi,
+    quarantine,
     e2eTestPath,
     retries,
     stopAfterOneFailure,
@@ -137,6 +142,13 @@ async function main() {
       // meaning that all tests with @no-mmi in the title will be ignored
       extraArgs.push('-g', '@no-mmi', '-i');
       process.env.MMI = 'true';
+    }
+
+     // If quarantine flag is passed
+     if (quarantine) {
+      // Group tests with @quarantine in the title
+      extraArgs.push('-g', '@quarantine', '-i');
+      process.env.QUARANTINE = 'true';
     }
 
     const dir = 'test/test-results/e2e';

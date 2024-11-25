@@ -102,7 +102,9 @@ describe('Switch Ethereum Chain for two dapps', function () {
     );
   });
 
-  it('queues switchEthereumChain request from second dapp after send tx request', async function () {
+  //Quarantine this test scenario as there is an issue with the request queue setting
+  // Bug - https://github.com/MetaMask/metamask-extension/issues/28441
+  it('@quarantine queues switchEthereumChain request from second dapp after send tx request', async function () {
     await withFixtures(
       {
         dapp: true,
