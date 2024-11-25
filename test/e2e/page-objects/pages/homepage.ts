@@ -283,7 +283,7 @@ class HomePage {
     );
   }
 
-  async check_ganacheBalanceIsDisplayed(
+  async check_localBlockchainBalanceIsDisplayed(
     ganacheServer?: Ganache,
     address = null,
   ): Promise<void> {
