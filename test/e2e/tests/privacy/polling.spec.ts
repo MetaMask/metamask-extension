@@ -122,7 +122,7 @@ async function mockInfura(mockServer: Mockttp): Promise<MockedEndpoint[]> {
               result: '0x14476de',
             },
           };
-        });,
+        }),
     await mockServer
       .forPost(infuraLineaMainnetUrl)
       .withBodyIncluding('eth_getBlockByNumber')
