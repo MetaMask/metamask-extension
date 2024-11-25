@@ -9,12 +9,12 @@ describe('NativeValueDisplay', () => {
   it('renders component correctly', async () => {
     const mockStore = configureMockStore([])(mockState);
 
-    const { container, findByText } = renderWithProvider(
+    const { findByText } = renderWithProvider(
       <NativeValueDisplay value="4321" chainId="0x1" />,
       mockStore,
     );
 
     expect(await findByText('<0.000001')).toBeInTheDocument();
-    expect(container).toMatchSnapshot();
+    expect(await findByText('ETH')).toBeInTheDocument();
   });
 });
