@@ -45,12 +45,23 @@ exports[`<EditGasFeesRow /> renders component 1`] = `
       >
         0.001 ETH
       </p>
-      <p
-        class="mm-box mm-text mm-text--body-md mm-box--margin-right-2 mm-box--color-text-alternative"
-        data-testid="native-currency"
-      >
-        $1
-      </p>
+      <div>
+        <div
+          aria-describedby="tippy-tooltip-2"
+          class=""
+          data-original-title="0.001234"
+          data-tooltipped=""
+          style="display: inline;"
+          tabindex="0"
+        >
+          <p
+            class="mm-box mm-text mm-text--body-md mm-box--margin-right-2 mm-box--color-text-alternative"
+            data-testid="native-currency"
+          >
+            $1
+          </p>
+        </div>
+      </div>
       <button
         class="mm-box mm-text mm-button-base mm-button-base--size-sm mm-button-link mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-0 mm-box--padding-left-0 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-default mm-box--background-color-transparent"
         data-testid="edit-gas-fee-icon"

@@ -87,6 +87,8 @@ export const NETWORK_TYPES = {
   LINEA_MAINNET: 'linea-mainnet',
 } as const;
 
+export type NetworkTypes = (typeof NETWORK_TYPES)[keyof typeof NETWORK_TYPES];
+
 /**
  * An object containing shortcut names for any non-builtin network. We need
  * this to be able to differentiate between networks that require custom
@@ -816,6 +818,9 @@ export const CHAIN_ID_TO_ETHERS_NETWORK_NAME_MAP = {
 export const CHAIN_ID_TOKEN_IMAGE_MAP = {
   [CHAIN_IDS.MAINNET]: ETH_TOKEN_IMAGE_URL,
   [CHAIN_IDS.TEST_ETH]: TEST_ETH_TOKEN_IMAGE_URL,
+  [CHAIN_IDS.ARBITRUM]: ETH_TOKEN_IMAGE_URL,
+  [CHAIN_IDS.BASE]: ETH_TOKEN_IMAGE_URL,
+  [CHAIN_IDS.LINEA_MAINNET]: ETH_TOKEN_IMAGE_URL,
   [CHAIN_IDS.BSC]: BNB_TOKEN_IMAGE_URL,
   [CHAIN_IDS.POLYGON]: POL_TOKEN_IMAGE_URL,
   [CHAIN_IDS.AVALANCHE]: AVAX_TOKEN_IMAGE_URL,

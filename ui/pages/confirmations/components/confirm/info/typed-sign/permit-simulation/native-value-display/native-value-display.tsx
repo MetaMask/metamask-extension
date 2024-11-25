@@ -86,7 +86,7 @@ const NativeValueDisplay: React.FC<PermitSimulationValueDisplayParams> = ({
             interactive
           >
             <Text
-              data-testid="simulation-token-value"
+              data-testid="simulation-native-value-display"
               backgroundColor={backgroundColor}
               borderRadius={BorderRadius.XL}
               color={color}

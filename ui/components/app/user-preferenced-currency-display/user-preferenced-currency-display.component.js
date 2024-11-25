@@ -26,8 +26,8 @@ export default function UserPreferencedCurrencyDisplay({
   type,
   showFiat,
   showNative,
-  showCurrencySuffix,
   shouldCheckShowNativeToken,
+  showCurrencySuffix,
   privacyMode = false,
   ...restProps
 }) {

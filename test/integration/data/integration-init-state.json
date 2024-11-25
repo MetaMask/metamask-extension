@@ -784,7 +784,8 @@
     "smartTransactionsOptInStatus": true,
     "petnamesEnabled": false,
     "showConfirmationAdvancedDetails": false,
-    "showMultiRpcModal": false
+    "showMultiRpcModal": false,
+    "tokenNetworkFilter": {}
   },
   "preventPollingOnNetworkRestart": true,
   "previousAppVersion": "11.14.4",
