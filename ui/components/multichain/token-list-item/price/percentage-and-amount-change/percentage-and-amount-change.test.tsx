@@ -2,11 +2,13 @@ import React from 'react';
 import { render, screen } from '@testing-library/react';
 import '@testing-library/jest-dom';
 import { zeroAddress } from 'ethereumjs-util';
+import { MarketDataDetails } from '@metamask/assets-controllers';
 import { getIntlLocale } from '../../../../../ducks/locale/locale';
 import {
   getCurrentCurrency,
   getSelectedAccountCachedBalance,
   getTokensMarketData,
+  getCurrentChainId,
 } from '../../../../../selectors';
 import {
   getConversionRate,
@@ -26,6 +28,7 @@ jest.mock('../../../../../selectors', () => ({
   getCurrentCurrency: jest.fn(),
   getSelectedAccountCachedBalance: jest.fn(),
   getTokensMarketData: jest.fn(),
+  getCurrentChainId: jest.fn(),
 }));
 
 jest.mock('../../../../../ducks/metamask/metamask', () => ({
@@ -33,13 +36,15 @@ jest.mock('../../../../../ducks/metamask/metamask', () => ({
   getNativeCurrency: jest.fn(),
 }));
 
-const mockGetIntlLocale = getIntlLocale as unknown as jest.Mock;
-const mockGetCurrentCurrency = getCurrentCurrency as jest.Mock;
-const mockGetSelectedAccountCachedBalance =
-  getSelectedAccountCachedBalance as jest.Mock;
-const mockGetConversionRate = getConversionRate as jest.Mock;
-const mockGetNativeCurrency = getNativeCurrency as jest.Mock;
-const mockGetTokensMarketData = getTokensMarketData as jest.Mock;
+const mockGetIntlLocale = jest.mocked(getIntlLocale);
+const mockGetCurrentCurrency = jest.mocked(getCurrentCurrency);
+const mockGetSelectedAccountCachedBalance = jest.mocked(
+  getSelectedAccountCachedBalance,
+);
+const mockGetConversionRate = jest.mocked(getConversionRate);
+const mockGetNativeCurrency = jest.mocked(getNativeCurrency);
+const mockGetTokensMarketData = jest.mocked(getTokensMarketData);
+const mockGetCurrentChainId = jest.mocked(getCurrentChainId);
 
 describe('PercentageChange Component', () => {
   beforeEach(() => {
@@ -51,9 +56,9 @@ describe('PercentageChange Component', () => {
     mockGetTokensMarketData.mockReturnValue({
       [zeroAddress()]: {
         pricePercentChange1d: 2,
-      },
+      } as MarketDataDetails,
     });
-
+    mockGetCurrentChainId.mockReturnValue('0x1');
     jest.clearAllMocks();
   });
 
@@ -105,6 +110,21 @@ describe('PercentageChange Component', () => {
     render(<PercentageAndAmountChange value={-1.234} />);
     const percentageElement = screen.getByText('(+0.00%)');
     const numberElement = screen.getByText('+0.00');
+    expect(percentageElement).toBeInTheDocument();
+    expect(numberElement).toBeInTheDocument();
+  });
+
+  it('should display percentage for non-zero native tokens (MATIC)', () => {
+    mockGetTokensMarketData.mockReturnValue({
+      '0x0000000000000000000000000000000000001010': {
+        pricePercentChange1d: 2,
+      } as MarketDataDetails,
+    });
+    mockGetCurrentCurrency.mockReturnValue('POL');
+    mockGetCurrentChainId.mockReturnValue('0x89');
+    render(<PercentageAndAmountChange value={1} />);
+    const percentageElement = screen.getByText('(+1.00%)');
+    const numberElement = screen.getByText('+POL 12.21');
     expect(percentageElement).toBeInTheDocument();
     expect(numberElement).toBeInTheDocument();
   });

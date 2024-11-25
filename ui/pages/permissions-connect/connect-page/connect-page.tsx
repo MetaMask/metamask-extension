@@ -22,7 +22,7 @@ import {
   Header,
   Page,
 } from '../../../components/multichain/pages/page';
-import { SiteCell } from '../../../components/multichain/pages/review-permissions-page';
+import { SiteCell } from '../../../components/multichain/pages/review-permissions-page/site-cell/site-cell';
 import {
   BackgroundColor,
   BlockSize,
