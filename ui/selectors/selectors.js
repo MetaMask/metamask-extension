@@ -2364,6 +2364,26 @@ export const getAllEnabledNetworks = createDeepEqualSelector(
     ),
 );
 
+// USE THIS WITH CAUTION
+// Only use this selector if you are absolutely sure that your UI component needs data from _all chains_ to compute a value. Else, use getChainsIdsToPoll
+// An example of a component that should _not_ use this selector: the token list only needs to poll for chains based on the network filter, (potentially only one chain). In this case you would want to use getChainIdsToPoll
+// An example of a component that should _need_ to use this selector: Aggregated balance that needs to display regardless of network filter selection (always needs to display aggregated balance regardless of chains that are selected)
+// Leveraging this hook can cause expensive computation that is not needed in all cases, and should be optimized, where possible, to use getChainIdsToPoll instead
+export const getAllChainsToPoll = createDeepEqualSelector(
+  getNetworkConfigurationsByChainId,
+  getCurrentChainId,
+  getIsTokenNetworkFilterEqualCurrentNetwork,
+  (networkConfigurations, currentChainId) => {
+    if (!process.env.PORTFOLIO_VIEW) {
+      return [currentChainId];
+    }
+
+    return Object.keys(networkConfigurations).filter(
+      (chainId) => chainId === currentChainId || !TEST_CHAINS.includes(chainId),
+    );
+  },
+);
+
 export const getChainIdsToPoll = createDeepEqualSelector(
   getNetworkConfigurationsByChainId,
   getCurrentChainId,
@@ -2371,14 +2391,11 @@ export const getChainIdsToPoll = createDeepEqualSelector(
   (
     networkConfigurations,
     currentChainId,
-    // isTokenNetworkFilterEqualCurrentNetwork,
+    isTokenNetworkFilterEqualCurrentNetwork,
   ) => {
     if (
-      !process.env.PORTFOLIO_VIEW
-      // TODO: We need to poll across allchains in order to calculate the aggregate balances in the main balance as well as in all networks
-      // If we scope this to the currently filtered chain, we won't be able to compute the balances for the chains outside of the filtered one
-      // !process.env.PORTFOLIO_VIEW ||
-      // isTokenNetworkFilterEqualCurrentNetwork
+      !process.env.PORTFOLIO_VIEW ||
+      isTokenNetworkFilterEqualCurrentNetwork
     ) {
       return [currentChainId];
     }
