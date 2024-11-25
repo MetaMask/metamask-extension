@@ -3024,7 +3024,11 @@ export default class MetamaskController extends EventEmitter {
 
     this.controllerMessenger.subscribe(
       `${this.snapController.name}:snapInstalled`,
-      (truncatedSnap, origin) => {
+      (truncatedSnap, origin, preinstalled) => {
+        if (preinstalled) {
+          return;
+        }
+
         const snapId = truncatedSnap.id;
         const snapCategory = this._getSnapMetadata(snapId)?.category;
         this.metaMetricsController.trackEvent({
@@ -3042,7 +3046,11 @@ export default class MetamaskController extends EventEmitter {
 
     this.controllerMessenger.subscribe(
       `${this.snapController.name}:snapUpdated`,
-      (newSnap, oldVersion, origin) => {
+      (newSnap, oldVersion, origin, preinstalled) => {
+        if (preinstalled) {
+          return;
+        }
+
         const snapId = newSnap.id;
         const snapCategory = this._getSnapMetadata(snapId)?.category;
         this.metaMetricsController.trackEvent({
@@ -6089,6 +6097,12 @@ export default class MetamaskController extends EventEmitter {
             origin,
             ...args,
           ).state,
+        getInterfaceContext: (...args) =>
+          this.controllerMessenger.call(
+            'SnapInterfaceController:getInterface',
+            origin,
+            ...args,
+          ).context,
         createInterface: this.controllerMessenger.call.bind(
           this.controllerMessenger,
           'SnapInterfaceController:createInterface',
