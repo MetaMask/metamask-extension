@@ -1,7 +1,9 @@
 import React, { useMemo } from 'react';
 import { useSelector } from 'react-redux';
 
-import { zeroAddress, toChecksumAddress } from 'ethereumjs-util';
+import { toChecksumAddress } from 'ethereumjs-util';
+import { getNativeTokenAddress } from '@metamask/assets-controllers';
+import { Hex } from '@metamask/utils';
 import {
   getCurrentCurrency,
   getSelectedAccount,
@@ -89,8 +91,9 @@ export const AggregatedPercentageOverviewCrossChains = () => {
           item.tokensWithBalances,
         );
         const nativePricePercentChange1d =
-          crossChainMarketData?.[item.chainId]?.[zeroAddress()]
-            ?.pricePercentChange1d;
+          crossChainMarketData?.[item.chainId]?.[
+            getNativeTokenAddress(item.chainId as Hex)
+          ]?.pricePercentChange1d;
 
         const nativeFiat1dAgo = getCalculatedTokenAmount1dAgo(
           item.nativeFiatValue,

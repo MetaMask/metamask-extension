@@ -12,7 +12,9 @@ import {
   completeCreateNewWalletOnboardingFlow,
   completeImportSRPOnboardingFlow,
 } from '../../../page-objects/flows/onboarding.flow';
-import { getSRP, IS_ACCOUNT_SYNCING_ENABLED } from './helpers';
+import PrivacySettings from '../../../page-objects/pages/settings/privacy-settings';
+import SettingsPage from '../../../page-objects/pages/settings/settings-page';
+import { IS_ACCOUNT_SYNCING_ENABLED } from './helpers';
 
 describe('Account syncing - New User @no-mmi', function () {
   if (!IS_ACCOUNT_SYNCING_ENABLED) {
@@ -65,12 +67,24 @@ describe('Account syncing - New User @no-mmi', function () {
 
           // Add a second account
           await accountListPage.openAccountOptionsMenu();
-          await accountListPage.addNewAccountWithCustomLabel(
-            'My Second Account',
-          );
+          await accountListPage.addNewAccount('My Second Account');
 
           // Set SRP to use for retreival
-          walletSrp = await getSRP(driver, NOTIFICATIONS_TEAM_PASSWORD);
+          const headerNavbar = new HeaderNavbar(driver);
+          await headerNavbar.check_pageIsLoaded();
+          await headerNavbar.openSettingsPage();
+          const settingsPage = new SettingsPage(driver);
+          await settingsPage.check_pageIsLoaded();
+          await settingsPage.goToPrivacySettings();
+
+          const privacySettings = new PrivacySettings(driver);
+          await privacySettings.check_pageIsLoaded();
+          await privacySettings.openRevealSrpQuiz();
+          await privacySettings.completeRevealSrpQuiz();
+          await privacySettings.fillPasswordToRevealSrp(
+            NOTIFICATIONS_TEAM_PASSWORD,
+          );
+          walletSrp = await privacySettings.getSrpInRevealSrpDialog();
           if (!walletSrp) {
             throw new Error('Wallet SRP was not set');
           }

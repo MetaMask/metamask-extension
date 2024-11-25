@@ -1,27 +1,12 @@
 import classnames from 'classnames';
 import PropTypes from 'prop-types';
-import React, { Component } from 'react';
+import React, { Component, Suspense } from 'react';
 import { matchPath, Route, Switch } from 'react-router-dom';
 import IdleTimer from 'react-idle-timer';
 
-import Swaps from '../swaps';
-import ConfirmTransaction from '../confirmations/confirm-transaction';
-import Home from '../home';
-import {
-  PermissionsPage,
-  Connections,
-  ReviewPermissions,
-} from '../../components/multichain/pages';
-import Settings from '../settings';
 import Authenticated from '../../helpers/higher-order-components/authenticated';
 import Initialized from '../../helpers/higher-order-components/initialized';
-import Lock from '../lock';
 import PermissionsConnect from '../permissions-connect';
-import RestoreVaultPage from '../keychains/restore-vault';
-import RevealSeedConfirmation from '../keychains/reveal-seed';
-import ConfirmAddSuggestedTokenPage from '../confirm-add-suggested-token';
-import CreateAccountPage from '../create-account/create-account.component';
-import ConfirmAddSuggestedNftPage from '../confirm-add-suggested-nft';
 import Loading from '../../components/ui/loading-screen';
 import LoadingNetwork from '../../components/app/loading-network-screen';
 import { Modal } from '../../components/app/modals';
@@ -34,15 +19,8 @@ import {
   ImportNftsModal,
   ImportTokensModal,
 } from '../../components/multichain';
-import UnlockPage from '../unlock-page';
 import Alerts from '../../components/app/alerts';
-import Asset from '../asset';
 import OnboardingAppHeader from '../onboarding-flow/onboarding-app-header/onboarding-app-header';
-import Notifications from '../notifications';
-import NotificationsSettings from '../notifications-settings';
-import NotificationDetails from '../notification-details';
-import SnapList from '../snaps/snaps-list';
-import SnapView from '../snaps/snap-view';
 ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
 import InstitutionalEntityDonePage from '../institutional/institutional-entity-done-page';
 import InteractiveReplacementTokenNotification from '../../components/institutional/interactive-replacement-token-notification';
@@ -95,8 +73,6 @@ import {
 // TODO: Remove restricted import
 // eslint-disable-next-line import/no-restricted-paths
 import { getEnvironmentType } from '../../../app/scripts/lib/util';
-import ConfirmationPage from '../confirmations/confirmation';
-import OnboardingFlow from '../onboarding-flow/onboarding-flow';
 import QRHardwarePopover from '../../components/app/qr-hardware-popover';
 import DeprecatedNetworks from '../../components/ui/deprecated-networks/deprecated-networks';
 import NewNetworkInfo from '../../components/ui/new-network-info/new-network-info';
@@ -107,13 +83,13 @@ import { BasicConfigurationModal } from '../../components/app/basic-configuratio
 import KeyringSnapRemovalResult from '../../components/app/modals/keyring-snap-removal-modal';
 ///: END:ONLY_INCLUDE_IF
 
-import { SendPage } from '../../components/multichain/pages/send';
 import { DeprecatedNetworkModal } from '../settings/deprecated-network-modal/DeprecatedNetworkModal';
 import { MultichainMetaFoxLogo } from '../../components/multichain/app-header/multichain-meta-fox-logo';
 import NetworkConfirmationPopover from '../../components/multichain/network-list-menu/network-confirmation-popover/network-confirmation-popover';
-import NftFullImage from '../../components/app/assets/nfts/nft-details/nft-full-image';
-import CrossChainSwap from '../bridge';
 import { ToastMaster } from '../../components/app/toast-master/toast-master';
+import { mmLazy } from '../../helpers/utils/mm-lazy';
+import { InternalAccountPropType } from '../../selectors/multichain';
+import { isCurrentChainCompatibleWithAccount } from '../../../shared/lib/multichain';
 import {
   isCorrectDeveloperTransactionType,
   isCorrectSignatureApprovalType,
@@ -126,10 +102,59 @@ import {
   showOnboardingHeader,
 } from './utils';
 
+// Begin Lazy Routes
+const OnboardingFlow = mmLazy(() =>
+  import('../onboarding-flow/onboarding-flow'),
+);
+const Lock = mmLazy(() => import('../lock'));
+const UnlockPage = mmLazy(() => import('../unlock-page'));
+const RestoreVaultPage = mmLazy(() => import('../keychains/restore-vault'));
+const RevealSeedConfirmation = mmLazy(() => import('../keychains/reveal-seed'));
+const Settings = mmLazy(() => import('../settings'));
+const NotificationsSettings = mmLazy(() => import('../notifications-settings'));
+const NotificationDetails = mmLazy(() => import('../notification-details'));
+const Notifications = mmLazy(() => import('../notifications'));
+const SnapList = mmLazy(() => import('../snaps/snaps-list'));
+const SnapView = mmLazy(() => import('../snaps/snap-view'));
+const ConfirmTransaction = mmLazy(() =>
+  import('../confirmations/confirm-transaction'),
+);
+const SendPage = mmLazy(() => import('../../components/multichain/pages/send'));
+const Swaps = mmLazy(() => import('../swaps'));
+const CrossChainSwap = mmLazy(() => import('../bridge'));
+const ConfirmAddSuggestedTokenPage = mmLazy(() =>
+  import('../confirm-add-suggested-token'),
+);
+const ConfirmAddSuggestedNftPage = mmLazy(() =>
+  import('../confirm-add-suggested-nft'),
+);
+const ConfirmationPage = mmLazy(() => import('../confirmations/confirmation'));
+const CreateAccountPage = mmLazy(() =>
+  import('../create-account/create-account.component'),
+);
+const NftFullImage = mmLazy(() =>
+  import('../../components/app/assets/nfts/nft-details/nft-full-image'),
+);
+const Asset = mmLazy(() => import('../asset'));
+const PermissionsPage = mmLazy(() =>
+  import('../../components/multichain/pages/permissions-page/permissions-page'),
+);
+const Connections = mmLazy(() =>
+  import('../../components/multichain/pages/connections'),
+);
+const ReviewPermissions = mmLazy(() =>
+  import(
+    '../../components/multichain/pages/review-permissions-page/review-permissions-page'
+  ),
+);
+const Home = mmLazy(() => import('../home'));
+// End Lazy Routes
+
 export default class Routes extends Component {
   static propTypes = {
     currentCurrency: PropTypes.string,
     activeTabOrigin: PropTypes.string,
+    account: InternalAccountPropType,
     setCurrentCurrencyToUSD: PropTypes.func,
     isLoading: PropTypes.bool,
     loadingMessage: PropTypes.string,
@@ -268,122 +293,127 @@ export default class Routes extends Component {
     const RestoreVaultComponent = forgottenPassword ? Route : Initialized;
 
     const routes = (
-      <Switch>
-        <Route path={ONBOARDING_ROUTE} component={OnboardingFlow} />
-        <Route path={LOCK_ROUTE} component={Lock} exact />
-        <Initialized path={UNLOCK_ROUTE} component={UnlockPage} exact />
-        <RestoreVaultComponent
-          path={RESTORE_VAULT_ROUTE}
-          component={RestoreVaultPage}
-          exact
-        />
-        <Authenticated
-          path={REVEAL_SEED_ROUTE}
-          component={RevealSeedConfirmation}
-          exact
-        />
-        <Authenticated path={SETTINGS_ROUTE} component={Settings} />
-        <Authenticated
-          path={NOTIFICATIONS_SETTINGS_ROUTE}
-          component={NotificationsSettings}
-        />
-        <Authenticated
-          path={`${NOTIFICATIONS_ROUTE}/:uuid`}
-          component={NotificationDetails}
-        />
-        <Authenticated path={NOTIFICATIONS_ROUTE} component={Notifications} />
-        <Authenticated exact path={SNAPS_ROUTE} component={SnapList} />
-        <Authenticated path={SNAPS_VIEW_ROUTE} component={SnapView} />
-        <Authenticated
-          path={`${CONFIRM_TRANSACTION_ROUTE}/:id?`}
-          component={ConfirmTransaction}
-        />
-        <Authenticated path={SEND_ROUTE} component={SendPage} exact />
-        <Authenticated path={SWAPS_ROUTE} component={Swaps} />
-        <Authenticated
-          path={CROSS_CHAIN_SWAP_ROUTE}
-          component={CrossChainSwap}
-        />
-        <Authenticated
-          path={CONFIRM_ADD_SUGGESTED_TOKEN_ROUTE}
-          component={ConfirmAddSuggestedTokenPage}
-          exact
-        />
-        <Authenticated
-          path={CONFIRM_ADD_SUGGESTED_NFT_ROUTE}
-          component={ConfirmAddSuggestedNftPage}
-          exact
-        />
-        <Authenticated
-          path={`${CONFIRMATION_V_NEXT_ROUTE}/:id?`}
-          component={ConfirmationPage}
-        />
-        {
-          ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-        }
-        <Authenticated
-          path={CUSTODY_ACCOUNT_DONE_ROUTE}
-          component={InstitutionalEntityDonePage}
-          exact
-        />
-        <Authenticated
-          path={INSTITUTIONAL_FEATURES_DONE_ROUTE}
-          component={InstitutionalEntityDonePage}
-          exact
-        />
-        <Authenticated
-          path={CONFIRM_ADD_CUSTODIAN_TOKEN}
-          component={ConfirmAddCustodianToken}
-          exact
-        />
-        <Authenticated
-          path={INTERACTIVE_REPLACEMENT_TOKEN_PAGE}
-          component={InteractiveReplacementTokenPage}
-          exact
-        />
-        <Authenticated
-          path={CONFIRM_ADD_CUSTODIAN_TOKEN}
-          component={ConfirmAddCustodianToken}
-        />
-        <Authenticated
-          path={CUSTODY_ACCOUNT_ROUTE}
-          component={CustodyPage}
-          exact
-        />
-        {
-          ///: END:ONLY_INCLUDE_IF
-        }
-        <Authenticated path={NEW_ACCOUNT_ROUTE} component={CreateAccountPage} />
-        <Authenticated
-          path={`${CONNECT_ROUTE}/:id`}
-          component={PermissionsConnect}
-        />
-        <Authenticated
-          path={`${ASSET_ROUTE}/image/:asset/:id`}
-          component={NftFullImage}
-        />
-
-        <Authenticated
-          path={`${ASSET_ROUTE}/:chainId/:asset/:id`}
-          component={Asset}
-        />
-        <Authenticated
-          path={`${ASSET_ROUTE}/:chainId/:asset/`}
-          component={Asset}
-        />
-        <Authenticated path={`${ASSET_ROUTE}/:chainId`} component={Asset} />
-        <Authenticated
-          path={`${CONNECTIONS}/:origin`}
-          component={Connections}
-        />
-        <Authenticated path={PERMISSIONS} component={PermissionsPage} exact />
-        <Authenticated
-          path={`${REVIEW_PERMISSIONS}/:origin`}
-          component={ReviewPermissions}
-          exact
-        />
-        <Authenticated path={DEFAULT_ROUTE} component={Home} />
-      </Switch>
+      <Suspense fallback={null}>
+        {/* since the loading time is less than 200ms, we decided not to show a spinner fallback or anything */}
+        <Switch>
+          <Route path={ONBOARDING_ROUTE} component={OnboardingFlow} />
+          <Route path={LOCK_ROUTE} component={Lock} exact />
+          <Initialized path={UNLOCK_ROUTE} component={UnlockPage} exact />
+          <RestoreVaultComponent
+            path={RESTORE_VAULT_ROUTE}
+            component={RestoreVaultPage}
+            exact
+          />
+          <Authenticated
+            path={REVEAL_SEED_ROUTE}
+            component={RevealSeedConfirmation}
+            exact
+          />
+          <Authenticated path={SETTINGS_ROUTE} component={Settings} />
+          <Authenticated
+            path={NOTIFICATIONS_SETTINGS_ROUTE}
+            component={NotificationsSettings}
+          />
+          <Authenticated
+            path={`${NOTIFICATIONS_ROUTE}/:uuid`}
+            component={NotificationDetails}
+          />
+          <Authenticated path={NOTIFICATIONS_ROUTE} component={Notifications} />
+          <Authenticated exact path={SNAPS_ROUTE} component={SnapList} />
+          <Authenticated path={SNAPS_VIEW_ROUTE} component={SnapView} />
+          <Authenticated
+            path={`${CONFIRM_TRANSACTION_ROUTE}/:id?`}
+            component={ConfirmTransaction}
+          />
+          <Authenticated path={SEND_ROUTE} component={SendPage} exact />
+          <Authenticated path={SWAPS_ROUTE} component={Swaps} />
+          <Authenticated
+            path={CROSS_CHAIN_SWAP_ROUTE}
+            component={CrossChainSwap}
+          />
+          <Authenticated
+            path={CONFIRM_ADD_SUGGESTED_TOKEN_ROUTE}
+            component={ConfirmAddSuggestedTokenPage}
+            exact
+          />
+          <Authenticated
+            path={CONFIRM_ADD_SUGGESTED_NFT_ROUTE}
+            component={ConfirmAddSuggestedNftPage}
+            exact
+          />
+          <Authenticated
+            path={`${CONFIRMATION_V_NEXT_ROUTE}/:id?`}
+            component={ConfirmationPage}
+          />
+          {
+            ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
+          }
+          <Authenticated
+            path={CUSTODY_ACCOUNT_DONE_ROUTE}
+            component={InstitutionalEntityDonePage}
+            exact
+          />
+          <Authenticated
+            path={INSTITUTIONAL_FEATURES_DONE_ROUTE}
+            component={InstitutionalEntityDonePage}
+            exact
+          />
+          <Authenticated
+            path={CONFIRM_ADD_CUSTODIAN_TOKEN}
+            component={ConfirmAddCustodianToken}
+            exact
+          />
+          <Authenticated
+            path={INTERACTIVE_REPLACEMENT_TOKEN_PAGE}
+            component={InteractiveReplacementTokenPage}
+            exact
+          />
+          <Authenticated
+            path={CONFIRM_ADD_CUSTODIAN_TOKEN}
+            component={ConfirmAddCustodianToken}
+          />
+          <Authenticated
+            path={CUSTODY_ACCOUNT_ROUTE}
+            component={CustodyPage}
+            exact
+          />
+          {
+            ///: END:ONLY_INCLUDE_IF
+          }
+          <Authenticated
+            path={NEW_ACCOUNT_ROUTE}
+            component={CreateAccountPage}
+          />
+          <Authenticated
+            path={`${CONNECT_ROUTE}/:id`}
+            component={PermissionsConnect}
+          />
+          <Authenticated
+            path={`${ASSET_ROUTE}/image/:asset/:id`}
+            component={NftFullImage}
+          />
+          <Authenticated
+            path={`${ASSET_ROUTE}/:chainId/:asset/:id`}
+            component={Asset}
+          />
+          <Authenticated
+            path={`${ASSET_ROUTE}/:chainId/:asset/`}
+            component={Asset}
+          />
+          <Authenticated path={`${ASSET_ROUTE}/:chainId`} component={Asset} />
+          <Authenticated
+            path={`${CONNECTIONS}/:origin`}
+            component={Connections}
+          />
+          <Authenticated path={PERMISSIONS} component={PermissionsPage} exact />
+          <Authenticated
+            path={`${REVIEW_PERMISSIONS}/:origin`}
+            component={ReviewPermissions}
+            exact
+          />
+          <Authenticated path={DEFAULT_ROUTE} component={Home} />
+        </Switch>
+      </Suspense>
     );
 
     if (autoLockTimeLimit > 0) {
@@ -410,6 +440,7 @@ export default class Routes extends Component {
       isNetworkUsed,
       allAccountsOnNetworkAreEmpty,
       isTestNet,
+      account,
       currentChainId,
       shouldShowSeedPhraseReminder,
       isCurrentProviderCustom,
@@ -455,7 +486,8 @@ export default class Routes extends Component {
     });
     const shouldShowNetworkInfo =
       isUnlocked &&
-      currentChainId &&
+      account &&
+      isCurrentChainCompatibleWithAccount(currentChainId, account) &&
       !isTestNet &&
       !isSendRoute &&
       !isNetworkUsed &&
