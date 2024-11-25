@@ -14,6 +14,7 @@ import AssetListPage from '../../page-objects/pages/asset-list';
 const NETWORK_NAME_MAINNET = 'Ethereum Mainnet';
 const LINEA_NAME_MAINNET = 'Linea Mainnet';
 const LOCALHOST = 'Localhost 8545';
+const BALANCE_AMOUNT = '24.9956';
 
 function buildFixtures(title: string) {
   return {
@@ -183,7 +184,7 @@ describe('Multichain Asset List', function (this: Suite) {
         const balanceMessage = await balanceMessageElement.getText();
         assert.equal(
           balanceMessage.replace('Max', '').trim(),
-          'Balance: 24.9956',
+          `Balance: ${BALANCE_AMOUNT}`,
           'Balance message is correct',
         );
       },
