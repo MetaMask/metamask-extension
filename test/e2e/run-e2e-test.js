@@ -58,6 +58,10 @@ async function main() {
               'Update the privacy snapshot to include new hosts and paths',
             type: 'boolean',
           })
+          .option('solana', {
+            description: 'Run only Solana related tests',
+            type: 'boolean',
+          })
           .positional('e2e-test-path', {
             describe: 'The path for the E2E test to run.',
             type: 'string',
