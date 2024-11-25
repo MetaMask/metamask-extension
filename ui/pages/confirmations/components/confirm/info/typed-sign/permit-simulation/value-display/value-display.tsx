@@ -21,16 +21,15 @@ import {
 } from '../../../../../../../../components/component-library';
 import Tooltip from '../../../../../../../../components/ui/tooltip';
 import {
-  BackgroundColor,
   BlockSize,
   BorderRadius,
   Display,
   JustifyContent,
   TextAlign,
-  TextColor,
 } from '../../../../../../../../helpers/constants/design-system';
 import Name from '../../../../../../../../components/app/name/name';
 import { TokenDetailsERC20 } from '../../../../../../utils/token';
+import { getAmountColors } from '../../../utils';
 
 type PermitSimulationValueDisplayParams = {
   /** ID of the associated chain. */
@@ -112,19 +111,10 @@ const PermitSimulationValueDisplay: React.FC<
     return null;
   }
 
-  let valueColor = TextColor.textDefault;
-  let valueBackgroundColor = BackgroundColor.backgroundAlternative;
-
-  if (credit) {
-    valueColor = TextColor.successDefault;
-    valueBackgroundColor = BackgroundColor.successMuted;
-  } else if (debit) {
-    valueColor = TextColor.errorDefault;
-    valueBackgroundColor = BackgroundColor.errorMuted;
-  }
+  const { color, backgroundColor } = getAmountColors(credit, debit);
 
   return (
-    <Box>
+    <Box marginLeft="auto" style={{ maxWidth: '100%' }}>
       <Box display={Display.Flex} justifyContent={JustifyContent.flexEnd}>
         <Box
           display={Display.Inline}
@@ -139,13 +129,15 @@ const PermitSimulationValueDisplay: React.FC<
           >
             <Text
               data-testid="simulation-token-value"
-              backgroundColor={valueBackgroundColor}
+              backgroundColor={backgroundColor}
               borderRadius={BorderRadius.XL}
-              color={valueColor}
+              color={color}
               paddingInline={2}
               style={{ paddingTop: '1px', paddingBottom: '1px' }}
               textAlign={TextAlign.Center}
             >
+              {credit && '+ '}
+              {debit && '- '}
               {tokenValue !== null &&
                 shortenString(tokenValue || '', {
                   truncatedCharLimit: 15,

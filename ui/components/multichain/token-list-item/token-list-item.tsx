@@ -2,7 +2,8 @@ import React, { useContext, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import classnames from 'classnames';
-import { zeroAddress } from 'ethereumjs-util';
+import { getNativeTokenAddress } from '@metamask/assets-controllers';
+import { Hex } from '@metamask/utils';
 import {
   AlignItems,
   BackgroundColor,
@@ -41,14 +42,13 @@ import {
 import {
   getMetaMetricsId,
   getTestNetworkBackgroundColor,
-  getTokensMarketData,
   getParticipateInMetaMetrics,
   getDataCollectionForMarketing,
+  getMarketData,
+  getNetworkConfigurationIdByChainId,
+  getCurrencyRates,
 } from '../../../selectors';
-import {
-  getMultichainCurrentNetwork,
-  getMultichainIsEvm,
-} from '../../../selectors/multichain';
+import { getMultichainIsEvm } from '../../../selectors/multichain';
 import Tooltip from '../../ui/tooltip';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
@@ -77,10 +77,10 @@ type TokenListItemProps = {
   secondary?: string | null;
   title: string;
   tooltipText?: string;
-  chainId: string;
-  isOriginalTokenSymbol?: boolean | null;
   isNativeCurrency?: boolean;
   isStakeable?: boolean;
+  tokenChainImage?: string;
+  chainId: string;
   address?: string | null;
   showPercentage?: boolean;
   isPrimaryTokenSymbolHidden?: boolean;
@@ -96,8 +96,8 @@ export const TokenListItem = ({
   secondary,
   title,
   tooltipText,
+  tokenChainImage,
   chainId,
-  isOriginalTokenSymbol,
   isPrimaryTokenSymbolHidden = false,
   isNativeCurrency = false,
   isStakeable = false,
@@ -112,6 +112,7 @@ export const TokenListItem = ({
   const isMetaMetricsEnabled = useSelector(getParticipateInMetaMetrics);
   const isMarketingEnabled = useSelector(getDataCollectionForMarketing);
   const { safeChains } = useSafeChains();
+  const currencyRates = useSelector(getCurrencyRates);
 
   const decimalChainId = isEvm && parseInt(hexToDecimal(chainId), 10);
 
@@ -126,6 +127,8 @@ export const TokenListItem = ({
   // we only use this option for EVM here:
   const shouldShowPercentage = isEvm && showPercentage;
 
+  const isOriginalTokenSymbol = tokenSymbol && currencyRates[tokenSymbol];
+
   // Scam warning
   const showScamWarning =
     isNativeCurrency && !isOriginalTokenSymbol && shouldShowPercentage;
@@ -135,10 +138,6 @@ export const TokenListItem = ({
   const history = useHistory();
 
   const getTokenTitle = () => {
-    if (!isOriginalTokenSymbol) {
-      return title;
-    }
-    // We only consider native token symbols!
     switch (title) {
       case CURRENCY_SYMBOLS.ETH:
         return t('networkNameEthereum');
@@ -149,10 +148,10 @@ export const TokenListItem = ({
     }
   };
 
-  const tokensMarketData = useSelector(getTokensMarketData);
+  const multiChainMarketData = useSelector(getMarketData);
 
   const tokenPercentageChange = address
-    ? tokensMarketData?.[address]?.pricePercentChange1d
+    ? multiChainMarketData?.[chainId]?.[address]?.pricePercentChange1d
     : null;
 
   const tokenTitle = getTokenTitle();
@@ -212,7 +211,9 @@ export const TokenListItem = ({
     </Box>
   );
   // Used for badge icon
-  const currentNetwork = useSelector(getMultichainCurrentNetwork);
+  const allNetworks: Record<string, string> = useSelector(
+    getNetworkConfigurationIdByChainId,
+  );
   const testNetworkBackgroundColor = useSelector(getTestNetworkBackgroundColor);
 
   return (
@@ -264,8 +265,8 @@ export const TokenListItem = ({
           badge={
             <AvatarNetwork
               size={AvatarNetworkSize.Xs}
-              name={currentNetwork?.nickname || ''}
-              src={currentNetwork?.rpcPrefs?.imageUrl}
+              name={allNetworks?.[chainId] || ''}
+              src={tokenChainImage || undefined}
               backgroundColor={testNetworkBackgroundColor}
               className="multichain-token-list-item__badge__avatar-network"
             />
@@ -336,12 +337,14 @@ export const TokenListItem = ({
                 <PercentageChange
                   value={
                     isNativeCurrency
-                      ? tokensMarketData?.[zeroAddress()]?.pricePercentChange1d
+                      ? multiChainMarketData?.[chainId]?.[
+                          getNativeTokenAddress(chainId as Hex)
+                        ]?.pricePercentChange1d
                       : tokenPercentageChange
                   }
                   address={
                     isNativeCurrency
-                      ? (zeroAddress() as `0x${string}`)
+                      ? getNativeTokenAddress(chainId as Hex)
                       : (address as `0x${string}`)
                   }
                 />
@@ -388,10 +391,7 @@ export const TokenListItem = ({
                   isHidden={privacyMode}
                   length={SensitiveTextLength.Short}
                 >
-                  {primary}{' '}
-                  {isNativeCurrency || isPrimaryTokenSymbolHidden
-                    ? ''
-                    : tokenSymbol}
+                  {primary} {isPrimaryTokenSymbolHidden ? '' : tokenSymbol}
                 </SensitiveText>
               </Box>
             ) : (
@@ -421,10 +421,7 @@ export const TokenListItem = ({
                   isHidden={privacyMode}
                   length={SensitiveTextLength.Short}
                 >
-                  {primary}{' '}
-                  {isNativeCurrency || isPrimaryTokenSymbolHidden
-                    ? ''
-                    : tokenSymbol}
+                  {primary} {isPrimaryTokenSymbolHidden ? '' : tokenSymbol}
                 </SensitiveText>
               </Box>
             )}

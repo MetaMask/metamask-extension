@@ -3,12 +3,13 @@ import configureMockStore from 'redux-mock-store';
 import {
   DecodingData,
   DecodingDataChangeType,
+  DecodingDataStateChanges,
 } from '@metamask/signature-controller';
 
 import { getMockTypedSignConfirmStateForRequest } from '../../../../../../../../../test/data/confirmations/helper';
 import { renderWithConfirmContextProvider } from '../../../../../../../../../test/lib/confirmations/render-helpers';
 import { permitSignatureMsg } from '../../../../../../../../../test/data/confirmations/typed_sign';
-import PermitSimulation from './decoded-simulation';
+import PermitSimulation, { getStateChangeToolip } from './decoded-simulation';
 
 const decodingData: DecodingData = {
   stateChanges: [
@@ -21,6 +22,42 @@ const decodingData: DecodingData = {
     },
   ],
 };
+
+const decodingDataListing: DecodingDataStateChanges = [
+  {
+    assetType: 'NATIVE',
+    changeType: DecodingDataChangeType.Receive,
+    address: '',
+    amount: '900000000000000000',
+    contractAddress: '',
+  },
+  {
+    assetType: 'ERC721',
+    changeType: DecodingDataChangeType.Listing,
+    address: '',
+    amount: '',
+    contractAddress: '0xafd4896984CA60d2feF66136e57f958dCe9482d5',
+    tokenID: '2101',
+  },
+];
+
+const decodingDataBidding: DecodingDataStateChanges = [
+  {
+    assetType: 'ERC721',
+    changeType: DecodingDataChangeType.Receive,
+    address: '',
+    amount: '900000000000000000',
+    contractAddress: '',
+  },
+  {
+    assetType: 'Native',
+    changeType: DecodingDataChangeType.Bidding,
+    address: '',
+    amount: '',
+    contractAddress: '0xafd4896984CA60d2feF66136e57f958dCe9482d5',
+    tokenID: '2101',
+  },
+];
 
 describe('DecodedSimulation', () => {
   it('renders component correctly', async () => {
@@ -37,5 +74,25 @@ describe('DecodedSimulation', () => {
     );
 
     expect(container).toMatchSnapshot();
+  });
+
+  describe('getStateChangeToolip', () => {
+    it('return correct tooltip when permit is for listing NFT', async () => {
+      const tooltip = getStateChangeToolip(
+        decodingDataListing,
+        decodingDataListing?.[0],
+        (str: string) => str,
+      );
+      expect(tooltip).toBe('signature_decoding_list_nft_tooltip');
+    });
+  });
+
+  it('return correct tooltip when permit is for bidding NFT', async () => {
+    const tooltip = getStateChangeToolip(
+      decodingDataBidding,
+      decodingDataBidding?.[0],
+      (str: string) => str,
+    );
+    expect(tooltip).toBe('signature_decoding_bid_nft_tooltip');
   });
 });

@@ -5,7 +5,7 @@ import { unlockWallet, WINDOW_TITLES } from '../../../helpers';
 import { Mockttp } from '../../../mock-e2e';
 import SetApprovalForAllTransactionConfirmation from '../../../page-objects/pages/confirmations/redesign/set-approval-for-all-transaction-confirmation';
 import TestDapp from '../../../page-objects/pages/test-dapp';
-import GanacheContractAddressRegistry from '../../../seeder/ganache-contract-address-registry';
+import ContractAddressRegistry from '../../../seeder/contract-address-registry';
 import { Driver } from '../../../webdriver/driver';
 import { withRedesignConfirmationFixtures } from '../helpers';
 import { mocked4BytesSetApprovalForAll } from './erc721-revoke-set-approval-for-all-redesign';
@@ -47,12 +47,12 @@ async function mocks(server: Mockttp) {
 
 async function createTransactionAndAssertDetails(
   driver: Driver,
-  contractRegistry?: GanacheContractAddressRegistry,
+  contractRegistry?: ContractAddressRegistry,
 ) {
   await unlockWallet(driver);
 
   const contractAddress = await (
-    contractRegistry as GanacheContractAddressRegistry
+    contractRegistry as ContractAddressRegistry
   ).getContractAddress(SMART_CONTRACTS.NFTS);
 
   const testDapp = new TestDapp(driver);

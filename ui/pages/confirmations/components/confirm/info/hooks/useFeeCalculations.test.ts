@@ -21,13 +21,17 @@ describe('useFeeCalculations', () => {
 
     expect(result.current).toMatchInlineSnapshot(`
       {
-        "estimatedFeeFiat": "$0.00",
+        "estimatedFeeFiat": "< $0.01",
+        "estimatedFeeFiatWith18SignificantDigits": "0",
         "estimatedFeeNative": "0 ETH",
         "l1FeeFiat": "",
+        "l1FeeFiatWith18SignificantDigits": "",
         "l1FeeNative": "",
         "l2FeeFiat": "",
+        "l2FeeFiatWith18SignificantDigits": "",
         "l2FeeNative": "",
-        "maxFeeFiat": "$0.00",
+        "maxFeeFiat": "< $0.01",
+        "maxFeeFiatWith18SignificantDigits": "0",
         "maxFeeNative": "0 ETH",
       }
     `);
@@ -46,12 +50,16 @@ describe('useFeeCalculations', () => {
     expect(result.current).toMatchInlineSnapshot(`
       {
         "estimatedFeeFiat": "$0.04",
+        "estimatedFeeFiatWith18SignificantDigits": null,
         "estimatedFeeNative": "0.0001 ETH",
         "l1FeeFiat": "",
+        "l1FeeFiatWith18SignificantDigits": "",
         "l1FeeNative": "",
         "l2FeeFiat": "",
+        "l2FeeFiatWith18SignificantDigits": "",
         "l2FeeNative": "",
         "maxFeeFiat": "$0.07",
+        "maxFeeFiatWith18SignificantDigits": null,
         "maxFeeNative": "0.0001 ETH",
       }
     `);
@@ -72,12 +80,16 @@ describe('useFeeCalculations', () => {
     expect(result.current).toMatchInlineSnapshot(`
       {
         "estimatedFeeFiat": "$2.54",
+        "estimatedFeeFiatWith18SignificantDigits": null,
         "estimatedFeeNative": "0.0046 ETH",
         "l1FeeFiat": "$2.50",
+        "l1FeeFiatWith18SignificantDigits": null,
         "l1FeeNative": "0.0045 ETH",
         "l2FeeFiat": "$0.04",
+        "l2FeeFiatWith18SignificantDigits": null,
         "l2FeeNative": "0.0001 ETH",
         "maxFeeFiat": "$0.07",
+        "maxFeeFiatWith18SignificantDigits": null,
         "maxFeeNative": "0.0001 ETH",
       }
     `);

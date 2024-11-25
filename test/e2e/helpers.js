@@ -42,7 +42,7 @@ const convertETHToHexGwei = (eth) => convertToHexValue(eth * 10 ** 18);
 /**
  * @typedef {object} Fixtures
  * @property {import('./webdriver/driver').Driver} driver - The driver number.
- * @property {GanacheContractAddressRegistry | undefined} contractRegistry - The contract registry.
+ * @property {ContractAddressRegistry | undefined} contractRegistry - The contract registry.
  * @property {Ganache | undefined} ganacheServer - The Ganache server.
  * @property {Ganache | undefined} secondaryGanacheServer - The secondary Ganache server.
  * @property {mockttp.MockedEndpoint[]} mockedEndpoint - The mocked endpoint.

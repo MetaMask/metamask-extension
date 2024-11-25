@@ -118,9 +118,9 @@
         "isRedesignedConfirmationsDeveloperEnabled": "boolean",
         "showConfirmationAdvancedDetails": false,
         "tokenSortConfig": "object",
+        "tokenNetworkFilter": {},
         "showMultiRpcModal": "boolean",
-        "shouldShowAggregatedBalancePopover": "boolean",
-        "tokenNetworkFilter": {}
+        "shouldShowAggregatedBalancePopover": "boolean"
       },
       "selectedAddress": "string",
       "theme": "light",

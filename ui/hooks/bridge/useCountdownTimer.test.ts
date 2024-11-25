@@ -17,14 +17,11 @@ describe('useCountdownTimer', () => {
     const quotesLastFetched = Date.now();
     const { result } = renderUseCountdownTimer(
       createBridgeMockStore(
-        {},
+        { extensionConfig: { maxRefreshCount: 5, refreshRate: 40000 } },
         {},
         {
           quotesLastFetched,
           quotesRefreshCount: 0,
-          bridgeFeatureFlags: {
-            extensionConfig: { maxRefreshCount: 5, refreshRate: 40000 },
-          },
         },
       ),
     );
