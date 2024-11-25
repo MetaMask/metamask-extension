@@ -867,6 +867,7 @@ export enum MetaMetricsEventName {
   // Profile-Sync
   AccountsSyncAdded = 'Accounts Sync Added',
   AccountsSyncNameUpdated = 'Accounts Sync Name Updated',
+  AccountsSyncErroneousSituation = 'Accounts Sync Erroneous Situation',
   NetworkSyncAdded = 'Network Sync Added',
   NetworkSyncUpdated = 'Network Sync Updated',
   NetworkSyncRemoved = 'Network Sync Removed',
@@ -956,6 +957,7 @@ export enum MetaMetricsNetworkEventSource {
   Dapp = 'dapp',
   DeprecatedNetworkModal = 'deprecated_network_modal',
   NewAddNetworkFlow = 'new_add_network_flow',
+  Bridge = 'bridge',
 }
 
 export enum MetaMetricsSwapsEventSource {

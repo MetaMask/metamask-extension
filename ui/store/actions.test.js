@@ -4,6 +4,7 @@ import thunk from 'redux-thunk';
 import { EthAccountType } from '@metamask/keyring-api';
 import { TransactionStatus } from '@metamask/transaction-controller';
 import { NotificationServicesController } from '@metamask/notification-services-controller';
+import { USER_STORAGE_FEATURE_NAMES } from '@metamask/profile-sync-controller/sdk';
 // TODO: Remove restricted import
 // eslint-disable-next-line import/no-restricted-paths
 import enLocale from '../../app/_locales/en/messages.json';
@@ -1012,7 +1013,9 @@ describe('Actions', () => {
       const store = mockStore();
 
       background.getApi.returns({
-        ignoreTokens: sinon.stub().callsFake((_, cb) => cb(new Error('error'))),
+        ignoreTokens: sinon
+          .stub()
+          .callsFake((_, __, cb) => cb(new Error('error'))),
         getStatePatches: sinon.stub().callsFake((cb) => cb(null, [])),
       });
 
@@ -2621,7 +2624,11 @@ describe('Actions', () => {
       setBackgroundConnection(background.getApi());
 
       await store.dispatch(actions.deleteAccountSyncingDataFromUserStorage());
-      expect(deleteSyncingFeatureStub.calledOnceWith('accounts')).toBe(true);
+      expect(
+        deleteSyncingFeatureStub.calledOnceWith(
+          USER_STORAGE_FEATURE_NAMES.accounts,
+        ),
+      ).toBe(true);
     });
   });
 
@@ -2643,7 +2650,11 @@ describe('Actions', () => {
       setBackgroundConnection(background.getApi());
 
       await store.dispatch(actions.deleteNetworkSyncingDataFromUserStorage());
-      expect(deleteSyncingFeatureStub.calledOnceWith('networks')).toBe(true);
+      expect(
+        deleteSyncingFeatureStub.calledOnceWith(
+          USER_STORAGE_FEATURE_NAMES.networks,
+        ),
+      ).toBe(true);
     });
   });
 

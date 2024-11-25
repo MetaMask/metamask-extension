@@ -2,7 +2,7 @@ import { useSelector } from 'react-redux';
 import BN from 'bn.js';
 import { Token } from '@metamask/assets-controllers';
 import { Hex } from '@metamask/utils';
-import { getNetworkConfigurationsByChainId } from '../selectors';
+import { getNetworkConfigurationsByChainId } from '../../shared/modules/selectors/networks';
 import {
   tokenBalancesStartPolling,
   tokenBalancesStopPollingByPollingToken,
@@ -68,7 +68,11 @@ export const useTokenTracker = ({
 
 // From https://github.com/MetaMask/eth-token-tracker/blob/main/lib/util.js
 // Ensures backwards compatibility with display formatting.
-function stringifyBalance(balance: BN, bnDecimals: BN, balanceDecimals = 5) {
+export function stringifyBalance(
+  balance: BN,
+  bnDecimals: BN,
+  balanceDecimals = 5,
+) {
   if (balance.eq(new BN(0))) {
     return '0';
   }
