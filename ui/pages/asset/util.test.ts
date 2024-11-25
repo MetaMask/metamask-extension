@@ -28,7 +28,7 @@ describe('findAssetByAddress', () => {
   });
 
   it('should return undefined if address is not provided and no token without address is found', () => {
-    expect(findAssetByAddress(mockTokens, undefined, '0x1')).toBeNull();
+    expect(findAssetByAddress(mockTokens, undefined, '0x1')).toBeUndefined();
   });
 
   it('should return the token without address if address is not provided and a token without address exists', () => {
@@ -37,9 +37,9 @@ describe('findAssetByAddress', () => {
         { address: '', decimals: 18, symbol: 'NULL', name: 'Token NULL' },
       ],
     };
-    expect(
-      findAssetByAddress(tokensWithNullAddress, undefined, '0x1'),
-    ).toBeNull();
+    expect(findAssetByAddress(tokensWithNullAddress, undefined, '0x1')).toEqual(
+      { address: '', decimals: 18, name: 'Token NULL', symbol: 'NULL' },
+    );
   });
 
   it('should return the correct token when address and chainId are provided', () => {
