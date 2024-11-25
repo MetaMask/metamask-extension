@@ -234,7 +234,7 @@ async function mockInfura(mockServer: Mockttp): Promise<MockedEndpoint[]> {
       })),
   ];
 }
-
+const DELAY_UNTIL_NEXT_POLL = 20000;
 async function getAllInfuraJsonRpcRequests(
   mockedEndpoint: MockedEndpoint[],
 ): Promise<JsonRpcRequest[]> {
@@ -275,7 +275,7 @@ describe('Account Tracker API polling', function () {
         const homepage = new HomePage(driver);
         await homepage.check_pageIsLoaded();
         // Want to wait long enough  to pull requests relevant to a single loop cycle
-        await driver.delay(20000);
+        await driver.delay(DELAY_UNTIL_NEXT_POLL);
         const infuraJsonRpcRequests = await getAllInfuraJsonRpcRequests(
           mockedEndpoint,
         );
@@ -366,7 +366,7 @@ describe('Token Detection', function () {
           await loginWithoutBalanceValidation(driver);
           const homepage = new HomePage(driver);
           await homepage.check_pageIsLoaded();
-          await driver.delay(20000);
+          await driver.delay(DELAY_UNTIL_NEXT_POLL);
 
           for (const single of mockedEndpoints) {
             const requests = await single.getSeenRequests();
