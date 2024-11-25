@@ -206,10 +206,10 @@ const Header = ({ pendingConfirmation, onCancel }) => {
     getHideSnapBranding(state, origin),
   );
 
-  const { requiresNavigation } = useConfirmationNavigation();
+  const { count } = useConfirmationNavigation();
   const requiresSnapHeader = isSnapCustomUIDialog && !hideSnapBranding;
 
-  if (!requiresNavigation && !requiresSnapHeader) {
+  if (count <= 1 && !requiresSnapHeader) {
     return null;
   }
 
@@ -245,18 +245,11 @@ export default function ConfirmationPage({
   const [approvalFlowLoadingText, setApprovalFlowLoadingText] = useState(null);
 
   const { id } = useParams();
-  const pendingRoutedConfirmation = pendingConfirmations.findIndex(
+  const pendingRoutedConfirmation = pendingConfirmations.find(
     (confirmation) => confirmation.id === id,
   );
 
-  const isRoutedConfirmation = id && pendingRoutedConfirmation !== -1;
-
-  const [currentPendingConfirmation, setCurrentPendingConfirmation] = useState(
-    // Confirmations that are directly routed to get priority and will be initially shown above the current queue.
-    isRoutedConfirmation ? pendingRoutedConfirmation : 0,
-  );
-
-  const pendingConfirmation = pendingConfirmations[currentPendingConfirmation];
+  const pendingConfirmation = pendingRoutedConfirmation ?? pendingConfirmations[0];
 
   const [matchedChain, setMatchedChain] = useState({});
   const [chainFetchComplete, setChainFetchComplete] = useState(false);
@@ -367,18 +360,12 @@ export default function ConfirmationPage({
       redirectToHomeOnZeroConfirmations
     ) {
       history.push(DEFAULT_ROUTE);
-    } else if (
-      pendingConfirmations.length &&
-      pendingConfirmations.length <= currentPendingConfirmation
-    ) {
-      setCurrentPendingConfirmation(pendingConfirmations.length - 1);
     }
   }, [
     pendingConfirmations,
     approvalFlows,
     totalUnapprovedCount,
     history,
-    currentPendingConfirmation,
     redirectToHomeOnZeroConfirmations,
   ]);
 
