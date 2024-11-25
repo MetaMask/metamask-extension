@@ -1,5 +1,6 @@
 import React from 'react';
 import { act } from '@testing-library/react';
+import * as reactRouterUtils from 'react-router-dom-v5-compat';
 import { fireEvent, renderWithProvider } from '../../../../test/jest';
 import configureStore from '../../../store/store';
 import { createBridgeMockStore } from '../../../../test/jest/mock-store';
@@ -23,6 +24,9 @@ describe('PrepareBridgePage', () => {
   });
 
   it('should render the component, with initial state', async () => {
+    jest
+      .spyOn(reactRouterUtils, 'useSearchParams')
+      .mockReturnValue([{ get: () => null }] as never);
     const mockStore = createBridgeMockStore(
       {
         srcNetworkAllowlist: [CHAIN_IDS.MAINNET, CHAIN_IDS.OPTIMISM],
@@ -54,6 +58,9 @@ describe('PrepareBridgePage', () => {
   });
 
   it('should render the component, with inputs set', async () => {
+    jest
+      .spyOn(reactRouterUtils, 'useSearchParams')
+      .mockReturnValue([{ get: () => '0x3103910' }, jest.fn()] as never);
     const mockStore = createBridgeMockStore(
       {
         srcNetworkAllowlist: [CHAIN_IDS.MAINNET, CHAIN_IDS.LINEA_MAINNET],
