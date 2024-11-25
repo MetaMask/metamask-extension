@@ -22,6 +22,8 @@ import {
 } from '../../page-objects/flows/send-transaction.flow';
 
 describe('Snap Account Transfers @no-mmi', function (this: Suite) {
+  // TODO: Remove the old confirmations screen tests once migration has been complete.
+  // See: https://github.com/MetaMask/MetaMask-planning/issues/3030
   describe('Old confirmation screens', function () {
     it('can import a private key and transfer 1 ETH (sync flow)', async function () {
       await withFixtures(
