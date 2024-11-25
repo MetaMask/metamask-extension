@@ -33,6 +33,7 @@ const AssetListControlBar = ({
       disabled={!shouldShowTokensLinks}
       size={ButtonBaseSize.Sm}
       startIconName={IconName.MoreVertical}
+      startIconProps={{ marginInlineEnd: 0 }}
       backgroundColor={BackgroundColor.backgroundDefault}
       color={TextColor.textDefault}
       onClick={onClick}

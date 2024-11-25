@@ -22,7 +22,7 @@ import {
   Header,
   Page,
 } from '../../../components/multichain/pages/page';
-import { SiteCell } from '../../../components/multichain/pages/review-permissions-page';
+import { SiteCell } from '../../../components/multichain/pages/review-permissions-page/site-cell/site-cell';
 import {
   BackgroundColor,
   BlockSize,
@@ -50,7 +50,7 @@ export type ConnectPageRequest = {
   >;
 };
 
-type ConnectPageProps = {
+export type ConnectPageProps = {
   request: ConnectPageRequest;
   permissionsRequestId: string;
   rejectPermissionsRequest: (id: string) => void;
@@ -124,10 +124,11 @@ export const ConnectPage: React.FC<ConnectPageProps> = ({
   }, [accounts, internalAccounts]);
 
   const currentAccount = useSelector(getSelectedInternalAccount);
+  const currentAccountAddress = isEvmAccountType(currentAccount.type)
+    ? [currentAccount.address]
+    : []; // We do not support non-EVM accounts connections
   const defaultAccountsAddresses =
-    requestedAccounts.length > 0
-      ? requestedAccounts
-      : [currentAccount?.address];
+    requestedAccounts.length > 0 ? requestedAccounts : currentAccountAddress;
   const [selectedAccountAddresses, setSelectedAccountAddresses] = useState(
     defaultAccountsAddresses,
   );

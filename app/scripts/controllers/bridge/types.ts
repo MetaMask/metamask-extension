@@ -9,9 +9,13 @@ import {
   NetworkControllerGetSelectedNetworkClientAction,
 } from '@metamask/network-controller';
 import { SwapsTokenObject } from '../../../../shared/constants/swaps';
-// TODO: Remove restricted import
-// eslint-disable-next-line import/no-restricted-paths
-import { QuoteRequest, QuoteResponse } from '../../../../ui/pages/bridge/types';
+import {
+  L1GasFees,
+  QuoteRequest,
+  QuoteResponse,
+  // TODO: Remove restricted import
+  // eslint-disable-next-line import/no-restricted-paths
+} from '../../../../ui/pages/bridge/types';
 import BridgeController from './bridge-controller';
 import { BRIDGE_CONTROLLER_NAME, RequestStatus } from './constants';
 
@@ -39,7 +43,7 @@ export type BridgeControllerState = {
   destTokens: Record<string, SwapsTokenObject>;
   destTopAssets: { address: string }[];
   quoteRequest: Partial<QuoteRequest>;
-  quotes: QuoteResponse[];
+  quotes: (QuoteResponse & L1GasFees)[];
   quotesLastFetched?: number;
   quotesLoadingStatus?: RequestStatus;
   quotesRefreshCount: number;
