@@ -348,6 +348,10 @@ import { addDappTransaction, addTransaction } from './lib/transaction/util';
 ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
 import { addTypedMessage, addPersonalMessage } from './lib/signature/util';
 ///: END:ONLY_INCLUDE_IF
+
+///: BEGIN:ONLY_INCLUDE_IF(custodial-snap)
+import { deferPublicationHookFactory, beforeCheckPendingTransactionHookFactory } from './lib/transaction/deferred-publication-hooks';
+///: END:ONLY_INCLUDE_IF
 import { LatticeKeyringOffscreen } from './lib/offscreen-bridge/lattice-offscreen-keyring';
 import PREINSTALLED_SNAPS from './snaps/preinstalled-snaps';
 import { WeakRefObjectMap } from './lib/WeakRefObjectMap';
@@ -1964,19 +1968,11 @@ export default class MetamaskController extends EventEmitter {
       testGasFeeFlows: process.env.TEST_GAS_FEE_FLOWS,
       trace,
       hooks: {
-        ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-        afterSign: (txMeta, signedEthTx) =>
-          afterTransactionSignMMI(
-            txMeta,
-            signedEthTx,
-            this.transactionUpdateController.addTransactionToWatchList.bind(
-              this.transactionUpdateController,
-            ),
-          ),
-        beforeCheckPendingTransaction:
-          beforeCheckPendingTransactionMMI.bind(this),
-        beforePublish: beforeTransactionPublishMMI.bind(this),
-        getAdditionalSignArguments: getAdditionalSignArgumentsMMI.bind(this),
+        ///: BEGIN:ONLY_INCLUDE_IF(custodial-snap)
+        beforePublish: deferPublicationHookFactory(
+          (...args) => this.txController.updateCustodialTransaction(...args),
+         this._getMetaMaskState.bind(this)),
+        beforeCheckPendingTransactions: beforeCheckPendingTransactionHookFactory(this._getMetaMaskState.bind(this)),
         ///: END:ONLY_INCLUDE_IF
         publish: this._publishSmartTransactionHook.bind(this),
       },
@@ -7262,6 +7258,8 @@ export default class MetamaskController extends EventEmitter {
       { transactionMeta: updatedTransactionMeta },
     );
   }
+
+
 
   _publishSmartTransactionHook(transactionMeta, signedTransactionInHex) {
     const state = this._getMetaMaskState();

@@ -230,6 +230,13 @@ export function getAccountType(state) {
   return getAccountTypeForKeyring(currentKeyring);
 }
 
+export function accountRequiresPublicationDeferral(state, address) {
+  const account = getInternalAccountByAddress(state, address);
+  const { options } = account;
+
+  return Boolean(options?.custodian?.deferPublication)
+}
+
 export function getAccountTypeForKeyring(keyring) {
   if (!keyring) {
     return '';
