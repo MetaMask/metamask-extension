@@ -83,7 +83,9 @@ export class Anvil {
     });
     const balanceFormatted = Number(balanceInt) / 10 ** 18;
 
-    return balanceFormatted;
+    // Round to four decimal places, so we return the same value as ganache does
+    const balanceRounded = parseFloat(balanceFormatted.toFixed(4));
+    return balanceRounded;
   }
 
   async getFiatBalance(): Promise<number> {
