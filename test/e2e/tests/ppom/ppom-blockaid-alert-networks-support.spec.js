@@ -1,9 +1,7 @@
-const { strict: assert } = require('assert');
 const FixtureBuilder = require('../../fixture-builder');
 const {
   WINDOW_TITLES,
   defaultGanacheOptions,
-  openDapp,
   unlockWallet,
   withFixtures,
 } = require('../../helpers');
@@ -49,14 +47,15 @@ async function mockInfuraWithMaliciousResponses(mockServer) {
 }
 
 describe('PPOM Blockaid Alert - Multiple Networks Support @no-mmi', function () {
-  // eslint-disable-next-line mocha/no-skipped-tests
-  it.skip('should show banner alert after switching to another supported network', async function () {
+  it('should show banner alert after switching to another supported network', async function () {
     await withFixtures(
       {
         dapp: true,
         fixtures: new FixtureBuilder()
           .withNetworkControllerOnMainnet()
-          .withPermissionControllerConnectedToTestDapp()
+          .withPermissionControllerConnectedToTestDapp({
+            useLocalhostHostname: true,
+          })
           .withPreferencesController({
             securityAlertsEnabled: true,
           })
@@ -72,7 +71,8 @@ describe('PPOM Blockaid Alert - Multiple Networks Support @no-mmi', function () 
           'If you approve this request, you might lose your assets.';
 
         await unlockWallet(driver);
-        await openDapp(driver);
+
+        await driver.openNewPage('http://localhost:8080');
 
         // Click TestDapp button to send JSON-RPC request
         await driver.clickElement('#maliciousTradeOrder');
@@ -83,25 +83,17 @@ describe('PPOM Blockaid Alert - Multiple Networks Support @no-mmi', function () 
 
         await driver.assertElementNotPresent('.loading-indicator');
 
-        const bannerAlertSelector =
-          '[data-testid="security-provider-banner-alert"]';
-
-        let bannerAlertFoundByTitle = await driver.findElement({
-          css: bannerAlertSelector,
+        await driver.waitForSelector({
+          css: '.mm-text--body-lg-medium',
           text: expectedTitle,
         });
-        let bannerAlertText = await bannerAlertFoundByTitle.getText();
 
-        assert(
-          bannerAlertFoundByTitle,
-          `Banner alert not found. Expected Title: ${expectedTitle} \nExpected reason: approval_farming\n`,
-        );
-        assert(
-          bannerAlertText.includes(expectedDescription),
-          `Unexpected banner alert description. Expected: ${expectedDescription} \nExpected reason: approval_farming\n`,
-        );
+        await driver.waitForSelector({
+          css: '.mm-text--body-md',
+          text: expectedDescription,
+        });
 
-        await driver.clickElement({ text: 'Reject', tag: 'button' });
+        await driver.clickElement({ text: 'Cancel', tag: 'button' });
         await driver.waitUntilXWindowHandles(2);
         await driver.switchToWindowWithTitle(
           WINDOW_TITLES.ExtensionInFullScreenView,
@@ -110,20 +102,11 @@ describe('PPOM Blockaid Alert - Multiple Networks Support @no-mmi', function () 
         // switch network to arbitrum
         await driver.clickElement('[data-testid="network-display"]');
 
-        await driver.clickElement({ tag: 'button', text: 'Add network' });
-        await driver.clickElement({
-          tag: 'button',
-          text: 'Add',
-        });
+        await driver.clickElement({ tag: 'button', text: 'Add' });
 
         await driver.clickElement({ tag: 'a', text: 'See details' });
 
-        await driver.clickElement({ tag: 'button', text: 'Close' });
         await driver.clickElement({ tag: 'button', text: 'Approve' });
-        await driver.clickElement({
-          tag: 'h6',
-          text: 'Switch to Arbitrum One',
-        });
 
         await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
         // Click TestDapp button to send JSON-RPC request
@@ -133,20 +116,15 @@ describe('PPOM Blockaid Alert - Multiple Networks Support @no-mmi', function () 
         await driver.waitUntilXWindowHandles(3);
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
-        bannerAlertFoundByTitle = await driver.findElement({
-          css: bannerAlertSelector,
+        await driver.waitForSelector({
+          css: '.mm-text--body-lg-medium',
           text: expectedTitle,
         });
-        bannerAlertText = await bannerAlertFoundByTitle.getText();
 
-        assert(
-          bannerAlertFoundByTitle,
-          `Banner alert not found. Expected Title: ${expectedTitle} \nExpected reason: raw_native_token_transfer\n`,
-        );
-        assert(
-          bannerAlertText.includes(expectedDescription),
-          `Unexpected banner alert description. Expected: ${expectedDescription} \nExpected reason: raw_native_token_transfer\n`,
-        );
+        await driver.waitForSelector({
+          css: '.mm-text--body-md',
+          text: 'If you approve this request, a third party known for scams will take all your assets.',
+        });
       },
     );
   });
