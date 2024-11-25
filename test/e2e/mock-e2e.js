@@ -38,14 +38,14 @@ const AGGREGATOR_METADATA_PATH =
   'test/e2e/mock-response-data/aggregator-metadata.json';
 const TOKEN_BLOCKLIST_PATH = 'test/e2e/mock-response-data/token-blocklist.json';
 
- const blacklistedHosts = [
-   'arbitrum-mainnet.infura.io',
-   'goerli.infura.io',
-   'mainnet.infura.io',
-   'sepolia.infura.io',
-   'linea-mainnet.infura.io',
-   'linea-sepolia.infura.io',
- ];
+const blacklistedHosts = [
+  'arbitrum-mainnet.infura.io',
+  'goerli.infura.io',
+  'mainnet.infura.io',
+  'sepolia.infura.io',
+  'linea-mainnet.infura.io',
+  'linea-sepolia.infura.io',
+];
 const {
   mockEmptyStalelistAndHotlist,
 } = require('./tests/phishing-controller/mocks');
