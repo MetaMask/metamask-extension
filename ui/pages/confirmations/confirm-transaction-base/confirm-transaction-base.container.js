@@ -54,7 +54,6 @@ import {
   getUnapprovedTransactions,
   getInternalAccountByAddress,
   getApprovedAndSignedTransactions,
-  getSelectedNetworkClientId,
   getPrioritizedUnapprovedTemplatedConfirmations,
 } from '../../../selectors';
 import {
@@ -72,6 +71,7 @@ import {
   getSendToAccounts,
   findKeyringForAddress,
 } from '../../../ducks/metamask/metamask';
+import { getSelectedNetworkClientId } from '../../../../shared/modules/selectors/networks';
 import {
   addHexPrefix,
   ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
