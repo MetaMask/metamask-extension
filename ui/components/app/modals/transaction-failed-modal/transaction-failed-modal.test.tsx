@@ -2,8 +2,8 @@ import React from 'react';
 import { screen, fireEvent } from '@testing-library/react';
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
-import { renderWithProvider } from '../../../../test/lib/render-helpers';
-import testData from '../../../../.storybook/test-data';
+import { renderWithProvider } from '../../../../../test/lib/render-helpers';
+import testData from '../../../../../.storybook/test-data';
 import TransactionFailed from '.';
 
 const mockErrorMessage = 'Something went wrong';
