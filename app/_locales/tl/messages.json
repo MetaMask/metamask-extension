@@ -4920,9 +4920,6 @@
   "simulationErrorMessageV2": {
     "message": "Hindi namin nagawang tantyahin ang gas. Maaaring may error sa kontrata at maaaring mabigo ang transaksyong ito."
   },
-  "simulationsSettingDescription": {
-    "message": "I-on ito para gumawa ng pagtataya sa mga pagbabago ng balanse ng mga transaksyon bago mo kumpirmahin ang mga iyon. Hindi nito iginagarantiya ang panghuling resulta ng iyong mga transaksyon. $1"
-  },
   "simulationsSettingSubHeader": {
     "message": "Tinatayang mga pagbabago sa balanse"
   },
