@@ -4920,9 +4920,6 @@
   "simulationErrorMessageV2": {
     "message": "Wir konnten das Gas nicht schätzen. Es könnte einen Fehler im Contract geben und diese Transaktion könnte fehlschlagen."
   },
-  "simulationsSettingDescription": {
-    "message": "Schalten Sie diese Option ein, um die Saldoänderungen von Transaktionen zu schätzen, bevor Sie diese bestätigen. Dies ist keine Garantie für das endgültige Ergebnis Ihrer Transaktionen. $1"
-  },
   "simulationsSettingSubHeader": {
     "message": "Geschätzte Saldoänderungen"
   },

@@ -4920,9 +4920,6 @@
   "simulationErrorMessageV2": {
     "message": "Gaz tahmini yapamadık. Sözleşmede bir hata olabilir ve bu işlem başarısız olabilir."
   },
-  "simulationsSettingDescription": {
-    "message": "Onaylamadan önce işlemlerdeki bakiye değişikliklerini tahmin etmek için bunu açın. İşlemlerinizin nihai sonucunu garanti etmez. $1"
-  },
   "simulationsSettingSubHeader": {
     "message": "Bakiye değişikliklerini tahmin edin"
   },

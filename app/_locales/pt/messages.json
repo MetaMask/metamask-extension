@@ -4920,9 +4920,6 @@
   "simulationErrorMessageV2": {
     "message": "Não conseguimos estimar o preço do gás. Pode haver um erro no contrato, e essa transação poderá falhar."
   },
-  "simulationsSettingDescription": {
-    "message": "Ative para estimar as alterações de saldo das transações antes de confirmá-las. Isso não garante o resultado das suas transações. $1"
-  },
   "simulationsSettingSubHeader": {
     "message": "Estimar alterações de saldo"
   },

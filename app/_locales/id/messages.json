@@ -4920,9 +4920,6 @@
   "simulationErrorMessageV2": {
     "message": "Kami tidak dapat memperkirakan gas. Tampaknya ada kesalahan dalam kontrak dan transaksi ini berpotensi gagal."
   },
-  "simulationsSettingDescription": {
-    "message": "Aktifkan untuk mengestimasikan perubahan saldo transaksi sebelum Anda mengonfirmasikannya. Ini tidak menjamin hasil akhir transaksi Anda. $1"
-  },
   "simulationsSettingSubHeader": {
     "message": "Estimasikan perubahan saldo"
   },
