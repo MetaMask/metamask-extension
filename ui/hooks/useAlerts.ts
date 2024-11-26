@@ -75,9 +75,6 @@ const useAlerts = (ownerId: string) => {
       !isAlertConfirmed(alert.key) && alert.severity === Severity.Danger,
   );
 
-  const hasBlockingGeneralAlerts =
-    generalAlerts.filter((alert) => alert.isBlocking).length > 0;
-
   return {
     alerts,
     fieldAlerts,
@@ -92,7 +89,6 @@ const useAlerts = (ownerId: string) => {
     unconfirmedDangerAlerts,
     unconfirmedFieldDangerAlerts,
     hasUnconfirmedFieldDangerAlerts: unconfirmedFieldDangerAlerts.length > 0,
-    hasBlockingGeneralAlerts,
   };
 };
 

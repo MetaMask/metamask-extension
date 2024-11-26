@@ -478,6 +478,6 @@ describe('Contract Interaction Confirmation Alerts', () => {
     expect(
       await screen.findByTestId('confirm-footer-button'),
     ).toBeInTheDocument();
-    expect(await screen.findByTestId('confirm-footer-button')).toBeDisabled();
+    expect(await screen.findByTestId('confirm-footer-button')).toBeEnabled();
   });
 });

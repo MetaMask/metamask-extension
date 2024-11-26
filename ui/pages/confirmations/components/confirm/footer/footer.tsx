@@ -101,13 +101,11 @@ const ConfirmButton = ({
     fieldAlerts,
     hasUnconfirmedFieldDangerAlerts,
     unconfirmedFieldDangerAlerts,
-    hasBlockingGeneralAlerts,
   } = useAlerts(alertOwnerId);
 
-  const hasDangerBlockingAlerts =
-    fieldAlerts.some(
-      (alert) => alert.severity === Severity.Danger && alert.isBlocking,
-    ) || hasBlockingGeneralAlerts;
+  const hasDangerBlockingAlerts = fieldAlerts.some(
+    (alert) => alert.severity === Severity.Danger && alert.isBlocking,
+  );
 
   const handleCloseConfirmModal = useCallback(() => {
     setConfirmModalVisible(false);
@@ -127,7 +125,7 @@ const ConfirmButton = ({
           onSubmit={onSubmit}
         />
       )}
-      {hasDangerAlerts || hasBlockingGeneralAlerts ? (
+      {hasDangerAlerts ? (
         <Button
           block
           danger
