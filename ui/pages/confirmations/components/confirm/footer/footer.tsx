@@ -65,10 +65,10 @@ function reviewAlertButtonText(
 
 function getButtonDisabledState(
   hasUnconfirmedDangerAlerts: boolean,
-  hasDangerBlockingAlerts: boolean,
+  hasBlockingAlerts: boolean,
   disabled: boolean,
 ) {
-  if (hasDangerBlockingAlerts) {
+  if (hasBlockingAlerts) {
     return true;
   }
 
