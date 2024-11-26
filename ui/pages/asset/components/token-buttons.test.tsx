@@ -1,7 +1,7 @@
 import React from 'react';
 import { fireEvent, waitFor } from '@testing-library/react';
 import configureMockStore from 'redux-mock-store';
-import { createMemoryHistory } from 'history';
+import { useHistory } from 'react-router-dom';
 import TokenButtons from './token-buttons';
 import { mockNetworkState } from '../../../../test/stub/networks';
 import { AssetType } from '../../../../shared/constants/transaction';
@@ -10,6 +10,11 @@ import thunk from 'redux-thunk';
 import { CHAIN_IDS } from '../../../../shared/constants/network';
 import mockState from '../../../../test/data/mock-state.json';
 import * as actions from '../../../store/actions';
+
+jest.mock('react-router-dom', () => ({
+  ...jest.requireActual('react-router-dom'),
+  useHistory: jest.fn(),
+}));
 
 const token = {
   type: AssetType.token,
@@ -26,6 +31,7 @@ const token = {
 } as const;
 
 describe('TokenButtons Component', () => {
+  let mockPush: jest.Mock;
   const mockStore = {
     ...mockState,
     metamask: {
@@ -34,15 +40,18 @@ describe('TokenButtons Component', () => {
     },
   };
 
+  beforeEach(() => {
+    // Reset the mock before each test
+    mockPush = jest.fn();
+    (useHistory as jest.Mock).mockReturnValue({ push: mockPush });
+  });
+
   afterEach(() => {
     jest.restoreAllMocks();
   });
 
   it('does not redirect when setCorrectChain throws an error', async () => {
     const store = configureMockStore([thunk])(mockStore);
-
-    const history = createMemoryHistory();
-    jest.spyOn(history, 'push');
 
     jest.spyOn(actions, 'setActiveNetwork').mockImplementation(() => {
       throw new Error('setActiveNetwork mock failure');
@@ -61,8 +70,9 @@ describe('TokenButtons Component', () => {
 
     fireEvent.click(sendButton);
 
+    // Wait for asynchronous code to finish
     await waitFor(() => {
-      expect(history.push).not.toHaveBeenCalled();
+      expect(mockPush).not.toHaveBeenCalled(); // Ensure redirection did not happen
     });
 
     expect(consoleErrorSpy).toHaveBeenCalledWith(
@@ -71,11 +81,8 @@ describe('TokenButtons Component', () => {
     consoleErrorSpy.mockRestore();
   });
 
-  it('does not redirect when setCorrectChain throws an error', async () => {
+  it('does redirect when setCorrectChain succeeds', async () => {
     const store = configureMockStore([thunk])(mockStore);
-
-    const history = createMemoryHistory();
-    jest.spyOn(history, 'push');
 
     const consoleErrorSpy = jest
       .spyOn(console, 'error')
@@ -90,8 +97,9 @@ describe('TokenButtons Component', () => {
 
     fireEvent.click(sendButton);
 
+    // Wait for asynchronous code to finish
     await waitFor(() => {
-      expect(history.push).not.toHaveBeenCalled();
+      expect(mockPush).toHaveBeenCalled(); // Ensure redirection did not happen
     });
 
     expect(consoleErrorSpy).not.toHaveBeenCalled();
