@@ -101,11 +101,13 @@ const ConfirmButton = ({
     fieldAlerts,
     hasUnconfirmedFieldDangerAlerts,
     unconfirmedFieldDangerAlerts,
+    hasBlockingGeneralAlerts,
   } = useAlerts(alertOwnerId);
 
-  const hasDangerBlockingAlerts = fieldAlerts.some(
-    (alert) => alert.severity === Severity.Danger && alert.isBlocking,
-  );
+  const hasDangerBlockingAlerts =
+    fieldAlerts.some(
+      (alert) => alert.severity === Severity.Danger && alert.isBlocking,
+    ) || hasBlockingGeneralAlerts;
 
   const handleCloseConfirmModal = useCallback(() => {
     setConfirmModalVisible(false);
@@ -125,7 +127,7 @@ const ConfirmButton = ({
           onSubmit={onSubmit}
         />
       )}
-      {hasDangerAlerts ? (
+      {hasDangerAlerts || hasBlockingGeneralAlerts ? (
         <Button
           block
           danger
@@ -188,11 +190,8 @@ const Footer = () => {
   const isPermit = isPermitSignatureRequest(currentConfirmation);
   const isPermitSimulationShown = isPermit && useTransactionSimulations;
 
-  const { hasBlockingGeneralAlerts } = useAlerts(currentConfirmation?.id);
-
   const isConfirmDisabled =
     (!isScrollToBottomCompleted && !isSIWE && !isPermitSimulationShown) ||
-    hasBlockingGeneralAlerts ||
     ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
     mmiSubmitDisabled ||
     ///: END:ONLY_INCLUDE_IF
