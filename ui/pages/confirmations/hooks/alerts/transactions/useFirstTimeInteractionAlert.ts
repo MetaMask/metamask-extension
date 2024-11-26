@@ -11,7 +11,7 @@ export function useFirstTimeInteractionAlert(): Alert[] {
   const t = useI18nContext();
   const { currentConfirmation } = useConfirmContext<TransactionMeta>();
 
-  const { isFirstTimeInteraction } = currentConfirmation;
+  const { isFirstTimeInteraction } = currentConfirmation ?? {};
 
   return useMemo(() => {
     // If isFirstTimeInteraction is undefined that means it's either disabled or error in accounts API
