@@ -108,7 +108,7 @@ testSet.forEach((options) => {
         test.skip();
       }
     } else {
-      log.error(`\tERROR: Error while entering the quote. Skipping test`);
+      log.error(`\tERROR: Token balance is zero. Skipping test`);
       test.skip();
     }
   });
