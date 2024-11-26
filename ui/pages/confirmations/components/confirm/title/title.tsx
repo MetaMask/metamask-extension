@@ -4,6 +4,7 @@ import {
 } from '@metamask/transaction-controller';
 import React, { memo, useMemo } from 'react';
 
+import { TokenStandard } from '../../../../../../shared/constants/transaction';
 import GeneralAlert from '../../../../../components/app/alert-system/general-alert/general-alert';
 import { Box, Text } from '../../../../../components/component-library';
 import {
@@ -13,6 +14,7 @@ import {
 } from '../../../../../helpers/constants/design-system';
 import useAlerts from '../../../../../hooks/useAlerts';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
+import { TypedSignSignaturePrimaryTypes } from '../../../constants';
 import { useConfirmContext } from '../../../context/confirm';
 import { Confirmation, SignatureRequestType } from '../../../types/confirm';
 import { isSIWESignatureRequest } from '../../../utils';
@@ -59,6 +61,8 @@ const getTitle = (
   customSpendingCap?: string,
   isRevokeSetApprovalForAll?: boolean,
   pending?: boolean,
+  primaryType?: keyof typeof TypedSignSignaturePrimaryTypes,
+  tokenStandard?: string,
 ) => {
   if (pending) {
     return '';
@@ -75,6 +79,12 @@ const getTitle = (
       }
       return t('confirmTitleSignature');
     case TransactionType.signTypedData:
+      if (primaryType === TypedSignSignaturePrimaryTypes.PERMIT) {
+        if (tokenStandard === TokenStandard.ERC721) {
+          return t('setApprovalForAllRedesignedTitle');
+        }
+        return t('confirmTitlePermitTokens');
+      }
       return t('confirmTitleSignature');
     case TransactionType.tokenMethodApprove:
       if (isNFT) {
@@ -103,6 +113,8 @@ const getDescription = (
   customSpendingCap?: string,
   isRevokeSetApprovalForAll?: boolean,
   pending?: boolean,
+  primaryType?: keyof typeof TypedSignSignaturePrimaryTypes,
+  tokenStandard?: string,
 ) => {
   if (pending) {
     return '';
@@ -119,6 +131,12 @@ const getDescription = (
       }
       return t('confirmTitleDescSign');
     case TransactionType.signTypedData:
+      if (primaryType === TypedSignSignaturePrimaryTypes.PERMIT) {
+        if (tokenStandard === TokenStandard.ERC721) {
+          return t('confirmTitleDescApproveTransaction');
+        }
+        return t('confirmTitleDescPermitSignature');
+      }
       return t('confirmTitleDescSign');
     case TransactionType.tokenMethodApprove:
       if (isNFT) {
@@ -177,6 +195,8 @@ const ConfirmTitle: React.FC = memo(() => {
         customSpendingCap,
         isRevokeSetApprovalForAll,
         spendingCapPending || revokePending,
+        primaryType,
+        tokenStandard,
       ),
     [
       currentConfirmation,
@@ -199,6 +219,8 @@ const ConfirmTitle: React.FC = memo(() => {
         customSpendingCap,
         isRevokeSetApprovalForAll,
         spendingCapPending || revokePending,
+        primaryType,
+        tokenStandard,
       ),
     [
       currentConfirmation,

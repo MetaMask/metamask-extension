@@ -5,9 +5,9 @@ import { renderWithProvider } from '../../../../test/jest/rendering';
 import { setBackgroundConnection } from '../../../store/background-connection';
 import { CHAIN_IDS } from '../../../../shared/constants/network';
 import {
-  AccountOverviewBtc,
-  AccountOverviewBtcProps,
-} from './account-overview-btc';
+  AccountOverviewNonEvm,
+  AccountOverviewNonEvmProps,
+} from './account-overview-non-evm';
 
 jest.mock('../../../store/actions', () => ({
   tokenBalancesStartPolling: jest.fn().mockResolvedValue('pollingToken'),
@@ -26,14 +26,14 @@ jest.mock('react-redux', () => {
   };
 });
 
-const defaultProps: AccountOverviewBtcProps = {
+const defaultProps: AccountOverviewNonEvmProps = {
   defaultHomeActiveTabName: null,
   onTabClick: jest.fn(),
   setBasicFunctionalityModalOpen: jest.fn(),
   onSupportLinkClick: jest.fn(),
 };
 
-const render = (props: AccountOverviewBtcProps = defaultProps) => {
+const render = (props: AccountOverviewNonEvmProps = defaultProps) => {
   const store = configureStore({
     metamask: {
       ...mockState.metamask,
@@ -47,7 +47,7 @@ const render = (props: AccountOverviewBtcProps = defaultProps) => {
     },
   });
 
-  return renderWithProvider(<AccountOverviewBtc {...props} />, store);
+  return renderWithProvider(<AccountOverviewNonEvm {...props} />, store);
 };
 
 describe('AccountOverviewBtc', () => {
