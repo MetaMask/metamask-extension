@@ -429,7 +429,7 @@ export const mapDispatchToProps = (dispatch) => {
     fetchSmartTransactionsLiveness: () => {
       dispatch(fetchSmartTransactionsLiveness());
     },
-    getNextNonce: () => dispatch(getNextNonce()),
+    getNextNonce: (address) => dispatch(getNextNonce(address)),
     setNextNonce: (val) => dispatch(setNextNonce(val)),
     setDefaultHomeActiveTabName: (tabName) =>
       dispatch(setDefaultHomeActiveTabName(tabName)),
