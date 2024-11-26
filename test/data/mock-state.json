@@ -10,6 +10,7 @@
     "url": "https://metamask.github.io/test-dapp/"
   },
   "appState": {
+    "isAccountMenuOpen": false,
     "networkDropdownOpen": false,
     "importNftsModal": {
       "open": false
@@ -28,7 +29,8 @@
       }
     },
     "warning": null,
-    "customTokenAmount": "10"
+    "customTokenAmount": "10",
+    "confirmationExchangeRates": {}
   },
   "confirmAlerts": {
     "alerts": [],
@@ -390,7 +392,6 @@
       "tokenNetworkFilter": {}
     },
     "ensResolutionsByAddress": {},
-    "isAccountMenuOpen": false,
     "isUnlocked": true,
     "alertEnabledness": {
       "unconnectedAccount": true
