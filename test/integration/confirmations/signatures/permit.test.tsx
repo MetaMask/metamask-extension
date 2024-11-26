@@ -1,6 +1,7 @@
 import { ApprovalType } from '@metamask/controller-utils';
 import { act, fireEvent, screen, waitFor } from '@testing-library/react';
 import nock from 'nock';
+import { CHAIN_IDS } from '@metamask/transaction-controller';
 import { MESSAGE_TYPE } from '../../../../shared/constants/app';
 import {
   MetaMetricsEventCategory,
@@ -42,6 +43,7 @@ const getMetaMaskStateWithUnapprovedPermitSign = (accountAddress: string) => {
     unapprovedTypedMessages: {
       [pendingPermitId]: {
         id: pendingPermitId,
+        chainId: CHAIN_IDS.SEPOLIA,
         status: 'unapproved',
         time: pendingPermitTime,
         type: MESSAGE_TYPE.ETH_SIGN_TYPED_DATA,
@@ -101,25 +103,29 @@ describe('Permit Confirmation', () => {
       });
     });
 
-    expect(screen.getByTestId('header-account-name')).toHaveTextContent(
+    expect(await screen.findByTestId('header-account-name')).toHaveTextContent(
       accountName,
     );
-    expect(screen.getByTestId('header-network-display-name')).toHaveTextContent(
-      'Sepolia',
-    );
+    expect(
+      await screen.findByTestId('header-network-display-name'),
+    ).toHaveTextContent('Sepolia');
 
-    fireEvent.click(screen.getByTestId('header-info__account-details-button'));
+    fireEvent.click(
+      await screen.findByTestId('header-info__account-details-button'),
+    );
 
     expect(
       await screen.findByTestId(
         'confirmation-account-details-modal__account-name',
       ),
     ).toHaveTextContent(accountName);
-    expect(screen.getByTestId('address-copy-button-text')).toHaveTextContent(
-      '0x0DCD5...3E7bc',
-    );
     expect(
-      screen.getByTestId('confirmation-account-details-modal__account-balance'),
+      await screen.findByTestId('address-copy-button-text'),
+    ).toHaveTextContent('0x0DCD5...3E7bc');
+    expect(
+      await screen.findByTestId(
+        'confirmation-account-details-modal__account-balance',
+      ),
     ).toHaveTextContent('1.582717SepoliaETH');
 
     let confirmAccountDetailsModalMetricsEvent;
@@ -152,7 +158,9 @@ describe('Permit Confirmation', () => {
     );
 
     fireEvent.click(
-      screen.getByTestId('confirmation-account-details-modal__close-button'),
+      await screen.findByTestId(
+        'confirmation-account-details-modal__close-button',
+      ),
     );
 
     await waitFor(() => {
@@ -250,7 +258,7 @@ describe('Permit Confirmation', () => {
       });
     });
 
-    const simulationSection = screen.getByTestId(
+    const simulationSection = await screen.findByTestId(
       'confirmation__simulation_section',
     );
     expect(simulationSection).toBeInTheDocument();
@@ -260,9 +268,9 @@ describe('Permit Confirmation', () => {
     );
     expect(simulationSection).toHaveTextContent('Spending cap');
     expect(simulationSection).toHaveTextContent('0xCcCCc...ccccC');
-    expect(screen.getByTestId('simulation-token-value')).toHaveTextContent(
-      '30',
-    );
+    expect(
+      await screen.findByTestId('simulation-token-value'),
+    ).toHaveTextContent('30');
 
     const individualFiatDisplay = await screen.findByTestId(
       'individual-fiat-display',
@@ -301,6 +309,6 @@ describe('Permit Confirmation', () => {
       account.address,
     )})`;
 
-    expect(screen.getByText(mismatchAccountText)).toBeInTheDocument();
+    expect(await screen.findByText(mismatchAccountText)).toBeInTheDocument();
   });
 });

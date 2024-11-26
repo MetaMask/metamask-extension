@@ -105,6 +105,7 @@ type AppState = {
   snapsInstallPrivacyWarningShown: boolean;
   isAddingNewNetwork: boolean;
   isMultiRpcOnboarding: boolean;
+  errorInSettings: string | null;
 };
 
 export type AppSliceState = {
@@ -192,6 +193,7 @@ const initialState: AppState = {
   snapsInstallPrivacyWarningShown: false,
   isAddingNewNetwork: false,
   isMultiRpcOnboarding: false,
+  errorInSettings: null,
 };
 
 export default function reduceApp(
@@ -632,6 +634,16 @@ export default function reduceApp(
         ...appState,
         showDataDeletionErrorModal: false,
       };
+    case actionConstants.SHOW_SETTINGS_PAGE_ERROR:
+      return {
+        ...appState,
+        errorInSettings: action.payload,
+      };
+    case actionConstants.HIDE_SETTINGS_PAGE_ERROR:
+      return {
+        ...appState,
+        errorInSettings: null,
+      };
     ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
     case actionConstants.SHOW_KEYRING_SNAP_REMOVAL_RESULT:
       return {
@@ -718,6 +730,27 @@ export function setOnBoardedInThisUISession(
 
 export function setCustomTokenAmount(payload: string): PayloadAction<string> {
   return { type: actionConstants.SET_CUSTOM_TOKEN_AMOUNT, payload };
+}
+
+/**
+ * An action creator for display a error to the user in various places in the
+ * UI. It will not be cleared until a new warning replaces it or `hideWarning`
+ * is called.
+ *
+ * @param payload - The warning to show.
+ * @returns The action to display the warning.
+ */
+export function displayErrorInSettings(payload: string): PayloadAction<string> {
+  return {
+    type: actionConstants.SHOW_SETTINGS_PAGE_ERROR,
+    payload,
+  };
+}
+
+export function hideErrorInSettings() {
+  return {
+    type: actionConstants.HIDE_SETTINGS_PAGE_ERROR,
+  };
 }
 
 // Selectors

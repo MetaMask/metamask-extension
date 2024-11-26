@@ -53,10 +53,13 @@ import {
   getSelectedInternalAccount,
   getSelectedInternalAccountWithBalance,
   getUnapprovedTransactions,
-  getSelectedNetworkClientId,
   getIsSwapsChain,
   getUseExternalServices,
 } from '../../selectors';
+import {
+  getSelectedNetworkClientId,
+  getProviderConfig,
+} from '../../../shared/modules/selectors/networks';
 import {
   displayWarning,
   hideLoadingIndication,
@@ -101,7 +104,6 @@ import {
 import {
   getGasEstimateType,
   getNativeCurrency,
-  getProviderConfig,
   getTokens,
 } from '../metamask/metamask';
 
@@ -2615,7 +2617,12 @@ export function updateSendAsset(
 
       let missingProperty = STANDARD_TO_REQUIRED_PROPERTIES[
         providedDetails.standard
-      ]?.find((property) => providedDetails[property] === undefined);
+      ]?.find((property) => {
+        if (providedDetails.collection && property === 'symbol') {
+          return providedDetails.collection[property] === undefined;
+        }
+        return providedDetails[property] === undefined;
+      });
 
       let details;
 
@@ -2652,10 +2659,9 @@ export function updateSendAsset(
             providedDetails.address,
             sendingAddress,
             providedDetails.tokenId,
-          ).catch((error) => {
+          ).catch(() => {
             // prevent infinite stuck loading state
             dispatch(hideLoadingIndication());
-            throw error;
           })),
         };
       }

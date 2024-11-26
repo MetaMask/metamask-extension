@@ -17,6 +17,7 @@ import {
 import {
   MetaMetricsTransactionEventSource,
   MetaMetricsEventCategory,
+  MetaMetricsEventUiCustomization,
 } from '../../../../shared/constants/metametrics';
 import { TRANSACTION_ENVELOPE_TYPE_NAMES } from '../../../../shared/lib/transactions-controller-utils';
 import {
@@ -167,6 +168,7 @@ describe('Transaction metrics', () => {
       first_seen: 1624408066355,
       gas_limit: '0x7b0d',
       gas_price: '2',
+      transaction_contract_address: undefined,
       transaction_envelope_type: TRANSACTION_ENVELOPE_TYPE_NAMES.LEGACY,
       transaction_replaced: undefined,
     };
@@ -755,6 +757,72 @@ describe('Transaction metrics', () => {
       expect(
         mockTransactionMetricsRequest.finalizeEventFragment,
       ).toBeCalledWith(expectedUniqueId);
+    });
+
+    it('should create, update, finalize event fragment with transaction_contract_address', async () => {
+      mockTransactionMeta.txReceipt = {
+        gasUsed: '0x123',
+        status: '0x0',
+      };
+      mockTransactionMeta.submittedTime = 123;
+      mockTransactionMeta.status = TransactionStatus.confirmed;
+      mockTransactionMeta.type = TransactionType.contractInteraction;
+      const expectedUniqueId = 'transaction-submitted-1';
+      const properties = {
+        ...expectedProperties,
+        status: TransactionStatus.confirmed,
+        transaction_type: TransactionType.contractInteraction,
+        asset_type: AssetType.unknown,
+        ui_customizations: [
+          MetaMetricsEventUiCustomization.RedesignedConfirmation,
+        ],
+        is_smart_transaction: undefined,
+        transaction_advanced_view: undefined,
+      };
+      const sensitiveProperties = {
+        ...expectedSensitiveProperties,
+        transaction_contract_address:
+          '0x1678a085c290ebd122dc42cba69373b5953b831d',
+        completion_time: expect.any(String),
+        gas_used: '0.000000291',
+        status: METRICS_STATUS_FAILED,
+      };
+
+      await handleTransactionConfirmed(mockTransactionMetricsRequest, {
+        ...mockTransactionMeta,
+        actionId: mockActionId,
+        // TODO: Replace `any` with type
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      } as any);
+
+      expect(mockTransactionMetricsRequest.createEventFragment).toBeCalledTimes(
+        1,
+      );
+      expect(mockTransactionMetricsRequest.createEventFragment).toBeCalledWith({
+        actionId: mockActionId,
+        category: MetaMetricsEventCategory.Transactions,
+        successEvent: TransactionMetaMetricsEvent.finalized,
+        uniqueIdentifier: expectedUniqueId,
+        persist: true,
+        properties,
+        sensitiveProperties,
+      });
+      expect(mockTransactionMetricsRequest.updateEventFragment).toBeCalledTimes(
+        1,
+      );
+      expect(mockTransactionMetricsRequest.updateEventFragment).toBeCalledWith(
+        expectedUniqueId,
+        {
+          properties,
+          sensitiveProperties,
+        },
+      );
+      expect(
+        mockTransactionMetricsRequest.finalizeEventFragment,
+      ).toHaveBeenCalledTimes(1);
+      expect(
+        mockTransactionMetricsRequest.finalizeEventFragment,
+      ).toHaveBeenCalledWith(expectedUniqueId);
     });
   });
 

@@ -20,6 +20,7 @@ import { usePrevious } from '../../../../../hooks/usePrevious';
 import { useScrollRequired } from '../../../../../hooks/useScrollRequired';
 import { useConfirmContext } from '../../../context/confirm';
 import { selectConfirmationAdvancedDetailsOpen } from '../../../selectors/preferences';
+import { isCorrectDeveloperTransactionType } from '../../../../../../shared/lib/confirmation.utils';
 
 type ContentProps = {
   /**
@@ -49,6 +50,13 @@ const ScrollToBottom = ({ children }: ContentProps) => {
     offsetPxFromBottom: 0,
   });
 
+  const isTransactionRedesign = isCorrectDeveloperTransactionType(
+    currentConfirmation?.type,
+  );
+
+  const showScrollToBottom =
+    isScrollable && !isScrolledToBottom && !isTransactionRedesign;
+
   /**
    * Scroll to the top of the page when the confirmation changes. This happens
    * when we navigate through different confirmations. Also, resets hasScrolledToBottom
@@ -71,8 +79,13 @@ const ScrollToBottom = ({ children }: ContentProps) => {
   }, [currentConfirmation?.id, previousId, ref?.current]);
 
   useEffect(() => {
+    if (isTransactionRedesign) {
+      setIsScrollToBottomCompleted(true);
+      return;
+    }
+
     setIsScrollToBottomCompleted(!isScrollable || hasScrolledToBottom);
-  }, [isScrollable, hasScrolledToBottom]);
+  }, [isScrollable, hasScrolledToBottom, isTransactionRedesign]);
 
   return (
     <Box
@@ -104,7 +117,7 @@ const ScrollToBottom = ({ children }: ContentProps) => {
       >
         {children}
 
-        {isScrollable && !isScrolledToBottom && (
+        {showScrollToBottom && (
           <ButtonIcon
             className="confirm-scroll-to-bottom__button"
             onClick={scrollToBottom}

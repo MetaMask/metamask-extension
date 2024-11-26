@@ -4,6 +4,7 @@ const {
   unlockWallet,
   WINDOW_TITLES,
   generateGanacheOptions,
+  tempToggleSettingRedesignedTransactionConfirmations,
 } = require('../helpers');
 const FixtureBuilder = require('../fixture-builder');
 
@@ -67,6 +68,8 @@ describe('eth_sendTransaction', function () {
       },
       async ({ driver }) => {
         await unlockWallet(driver);
+
+        await tempToggleSettingRedesignedTransactionConfirmations(driver);
 
         // eth_sendTransaction
         await driver.openNewPage(`http://127.0.0.1:8080`);

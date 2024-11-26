@@ -1,7 +1,6 @@
 import { addHexPrefix, isHexString } from 'ethereumjs-util';
 import { createSelector } from 'reselect';
 import { mergeGasFeeEstimates } from '@metamask/transaction-controller';
-import { RpcEndpointType } from '@metamask/network-controller';
 import { AlertTypes } from '../../../shared/constants/alerts';
 import {
   GasEstimateTypes,
@@ -16,10 +15,12 @@ import {
   accountsWithSendEtherInfoSelector,
   checkNetworkAndAccountSupports1559,
   getAddressBook,
+} from '../../selectors/selectors';
+import {
+  getProviderConfig,
   getSelectedNetworkClientId,
-  getSelectedInternalAccount,
-  getNetworkConfigurationsByChainId,
-} from '../../selectors';
+} from '../../../shared/modules/selectors/networks';
+import { getSelectedInternalAccount } from '../../selectors/accounts';
 import * as actionConstants from '../../store/actionConstants';
 import { updateTransactionGasFees } from '../../store/actions';
 import { setCustomGasLimit, setCustomGasPrice } from '../gas/gas.duck';
@@ -47,7 +48,7 @@ const initialState = {
     showExtensionInFullSizeView: false,
     showFiatInTestnets: false,
     showTestNetworks: false,
-    smartTransactionsOptInStatus: false,
+    smartTransactionsOptInStatus: true,
     petnamesEnabled: true,
     featureNotificationsEnabled: false,
     privacyMode: false,
@@ -274,42 +275,6 @@ export function updateGasFees({
 
 export const getAlertEnabledness = (state) => state.metamask.alertEnabledness;
 
-/**
- * Get the provider configuration for the current selected network.
- *
- * @param {object} state - Redux state object.
- */
-export const getProviderConfig = createSelector(
-  (state) => getNetworkConfigurationsByChainId(state),
-  (state) => getSelectedNetworkClientId(state),
-  (networkConfigurationsByChainId, selectedNetworkClientId) => {
-    for (const network of Object.values(networkConfigurationsByChainId)) {
-      for (const rpcEndpoint of network.rpcEndpoints) {
-        if (rpcEndpoint.networkClientId === selectedNetworkClientId) {
-          const blockExplorerUrl =
-            network.blockExplorerUrls?.[network.defaultBlockExplorerUrlIndex];
-
-          return {
-            chainId: network.chainId,
-            ticker: network.nativeCurrency,
-            rpcPrefs: { ...(blockExplorerUrl && { blockExplorerUrl }) },
-            type:
-              rpcEndpoint.type === RpcEndpointType.Custom
-                ? 'rpc'
-                : rpcEndpoint.networkClientId,
-            ...(rpcEndpoint.type === RpcEndpointType.Custom && {
-              id: rpcEndpoint.networkClientId,
-              nickname: network.name,
-              rpcUrl: rpcEndpoint.url,
-            }),
-          };
-        }
-      }
-    }
-    return undefined; // should not be reachable
-  },
-);
-
 export const getUnconnectedAccountAlertEnabledness = (state) =>
   getAlertEnabledness(state)[AlertTypes.unconnectedAccount];
 
@@ -338,6 +303,15 @@ export const getNfts = (state) => {
   return allNfts?.[selectedAddress]?.[chainId] ?? [];
 };
 
+export const getNFTsByChainId = (state, chainId) => {
+  const {
+    metamask: { allNfts },
+  } = state;
+  const { address: selectedAddress } = getSelectedInternalAccount(state);
+
+  return allNfts?.[selectedAddress]?.[chainId] ?? [];
+};
+
 export const getNftContracts = (state) => {
   const {
     metamask: { allNftContracts },
@@ -358,6 +332,10 @@ export function getNativeCurrency(state) {
 export function getConversionRate(state) {
   return state.metamask.currencyRates[getProviderConfig(state).ticker]
     ?.conversionRate;
+}
+
+export function getCurrencyRates(state) {
+  return state.metamask.currencyRates;
 }
 
 export function getSendHexDataFeatureFlagState(state) {
@@ -456,6 +434,16 @@ export const getGasEstimateTypeByChainId = createSelector(
     return transactionGasFeeEstimateType ?? gasFeeControllerEstimateType;
   },
 );
+
+/**
+ * Returns the balances of imported and detected tokens across all accounts and chains.
+ *
+ * @param {*} state
+ * @returns { import('@metamask/assets-controllers').TokenBalancesControllerState['tokenBalances']}
+ */
+export function getTokenBalances(state) {
+  return state.metamask.tokenBalances;
+}
 
 export const getGasFeeEstimatesByChainId = createSelector(
   getGasFeeControllerEstimatesByChainId,
