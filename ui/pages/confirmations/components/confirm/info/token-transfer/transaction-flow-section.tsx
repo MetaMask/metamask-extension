@@ -31,7 +31,6 @@ export const TransactionFlowSection = () => {
   const t = useI18nContext();
   const { currentConfirmation: transactionMeta } =
     useConfirmContext<TransactionMeta>();
-  const t = useI18nContext();
 
   const { value, pending } = useDecodedTransactionData();
 
