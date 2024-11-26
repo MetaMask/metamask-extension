@@ -5,6 +5,7 @@ import * as SignatureEventFragment from '../../hooks/useSignatureEventFragment';
 import { useDecodedSignatureMetrics } from './useDecodedSignatureMetrics';
 
 describe('useDecodedSignatureMetrics', () => {
+  process.env.ENABLE_SIGNATURE_DECODING = 'true';
   it('should not call updateSignatureEventFragment if decodingLoading is true', async () => {
     const state = getMockTypedSignConfirmStateForRequest({
       ...permitSignatureMsg,
