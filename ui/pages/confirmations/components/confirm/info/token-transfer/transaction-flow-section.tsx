@@ -21,8 +21,8 @@ import {
   ConfirmInfoRow,
   ConfirmInfoRowAddress,
 } from '../../../../../../components/app/confirm/info/row';
-import { RowAlertKey } from '../../../../../../components/app/confirm/info/row/constants';
 import { ConfirmInfoAlertRow } from '../../../../../../components/app/confirm/info/row/alert-row/alert-row';
+import { RowAlertKey } from '../../../../../../components/app/confirm/info/row/constants';
 import { useI18nContext } from '../../../../../../hooks/useI18nContext';
 import { useConfirmContext } from '../../../../context/confirm';
 import { useDecodedTransactionData } from '../hooks/useDecodedTransactionData';
@@ -61,6 +61,7 @@ export const TransactionFlowSection = () => {
           alertKey={RowAlertKey.SigningInWith}
           label={t('from')}
           ownerId={transactionMeta.id}
+          style={{ flexDirection: FlexDirection.Column }}
         >
           <Box marginTop={1}>
             <ConfirmInfoRowAddress
@@ -79,7 +80,7 @@ export const TransactionFlowSection = () => {
           <ConfirmInfoRow
             label={t('to')}
             style={{
-              flexDirection: 'column',
+              flexDirection: FlexDirection.Column,
               alignItems: AlignItems.flexStart,
             }}
           >
