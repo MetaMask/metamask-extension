@@ -45,6 +45,8 @@ jest.mock('../../../hooks/useMultiPolling', () => ({
   default: jest.fn(),
 }));
 
+const selectedAccountAddress = 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3';
+
 describe('AssetPage', () => {
   const mockStore = {
     localeMessages: {
@@ -52,13 +54,17 @@ describe('AssetPage', () => {
     },
     metamask: {
       tokenList: {},
-      tokenBalances: {},
+      tokenBalances: {
+        [selectedAccountAddress]: {
+          [CHAIN_IDS.MAINNET]: {},
+        },
+      },
       marketData: {},
       allTokens: {},
       accountsByChainId: {
         '0x1': {
-          'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3': {
-            address: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
+          [selectedAccountAddress]: {
+            address: selectedAccountAddress,
             balance: '0x00',
           },
         },
@@ -80,9 +86,9 @@ describe('AssetPage', () => {
       preferences: {},
       internalAccounts: {
         accounts: {
-          'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3': {
-            address: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
-            id: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
+          [selectedAccountAddress]: {
+            address: selectedAccountAddress,
+            id: selectedAccountAddress,
             metadata: {
               name: 'Test Account',
               keyring: {
@@ -94,7 +100,7 @@ describe('AssetPage', () => {
             type: EthAccountType.Eoa,
           },
         },
-        selectedAccount: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
+        selectedAccount: selectedAccountAddress,
       },
       keyrings: [
         {
