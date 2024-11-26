@@ -420,7 +420,7 @@
     "message": "Estimated changes for this transaction have been updated. Review them closely before proceeding."
   },
   "alertMessageFirstTimeInteraction": {
-    "message": "1st interaction"
+    "message": "You're interacting with this address for the first time. Make sure that it's correct before you continue."
   },
   "alertMessageGasEstimateFailed": {
     "message": "We’re unable to provide an accurate fee and this estimate might be high. We suggest you to input a custom gas limit, but there’s a risk the transaction will still fail."
@@ -465,7 +465,7 @@
     "message": "Results have changed"
   },
   "alertReasonFirstTimeInteraction": {
-    "message": "You're interacting with this address for the first time. Make sure that it's correct before you continue."
+    "message": "1st interaction"
   },
   "alertReasonGasEstimateFailed": {
     "message": "Inaccurate fee"

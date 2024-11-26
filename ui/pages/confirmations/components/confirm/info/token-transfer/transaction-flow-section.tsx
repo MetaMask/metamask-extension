@@ -9,6 +9,7 @@ import {
   Icon,
   IconName,
   IconSize,
+  Text,
 } from '../../../../../../components/component-library';
 import {
   AlignItems,
@@ -16,6 +17,7 @@ import {
   FlexDirection,
   IconColor,
   JustifyContent,
+  TextVariant,
 } from '../../../../../../helpers/constants/design-system';
 import {
   ConfirmInfoRow,
@@ -76,12 +78,10 @@ export const TransactionFlowSection = () => {
           color={IconColor.iconMuted}
         />
         {recipientAddress && (
-          <ConfirmInfoRow
+          <ConfirmInfoAlertRow
+            alertKey={RowAlertKey.FirstTimeInteraction}
             label={t('to')}
-            style={{
-              flexDirection: 'column',
-              alignItems: AlignItems.flexStart,
-            }}
+            ownerId={transactionMeta.id}
           >
             <Box marginTop={1}>
               <ConfirmInfoRowAddress
@@ -89,7 +89,7 @@ export const TransactionFlowSection = () => {
                 chainId={chainId}
               />
             </Box>
-          </ConfirmInfoRow>
+          </ConfirmInfoAlertRow>
         )}
       </Box>
     </ConfirmInfoSection>

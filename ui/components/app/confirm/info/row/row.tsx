@@ -109,7 +109,7 @@ export const ConfirmInfoRow: React.FC<ConfirmInfoRowProps> = ({
         color={TEXT_COLORS[variant] as TextColor}
         style={{
           overflowWrap: OverflowWrap.Anywhere,
-          minHeight: '22px',
+          minHeight: '24px',
           position: 'relative',
           ...style,
         }}
