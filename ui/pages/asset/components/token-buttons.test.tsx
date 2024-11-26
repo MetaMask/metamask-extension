@@ -3,7 +3,6 @@ import { fireEvent, waitFor } from '@testing-library/react';
 import configureMockStore from 'redux-mock-store';
 import { useHistory } from 'react-router-dom';
 import thunk from 'redux-thunk';
-import TokenButtons from './token-buttons';
 import { mockNetworkState } from '../../../../test/stub/networks';
 import { AssetType } from '../../../../shared/constants/transaction';
 import { renderWithProvider } from '../../../../test/jest/rendering';
@@ -14,6 +13,7 @@ import {
   PREPARE_SWAP_ROUTE,
   SEND_ROUTE,
 } from '../../../helpers/constants/routes';
+import TokenButtons from './token-buttons';
 
 jest.mock('react-router-dom', () => ({
   ...jest.requireActual('react-router-dom'),
