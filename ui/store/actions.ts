@@ -6018,8 +6018,13 @@ function applyPatches(
 
 export async function sendMultichainTransaction(
   snapId: string,
-  account: string,
-  scope: string,
+  {
+    account,
+    scope,
+  }: {
+    account: string;
+    scope: string;
+  },
 ) {
   await handleSnapRequest({
     snapId,

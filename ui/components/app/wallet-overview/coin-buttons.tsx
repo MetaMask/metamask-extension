@@ -24,7 +24,11 @@ import {
 } from '@metamask/utils';
 
 ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
-import { BtcAccountType, InternalAccount } from '@metamask/keyring-api';
+import {
+  BtcAccountType,
+  InternalAccount,
+  SolAccountType,
+} from '@metamask/keyring-api';
 ///: END:ONLY_INCLUDE_IF
 ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
 import { ChainId } from '../../../../shared/constants/network';
@@ -93,6 +97,7 @@ import {
 } from '../../../store/actions';
 ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
 import { BITCOIN_WALLET_SNAP_ID } from '../../../../shared/lib/accounts/bitcoin-wallet-snap';
+import { SOLANA_WALLET_SNAP_ID } from '../../../../shared/lib/accounts/solana-wallet-snap';
 ///: END:ONLY_INCLUDE_IF
 import {
   getMultichainIsEvm,
@@ -115,6 +120,13 @@ type CoinButtonsProps = {
   classPrefix?: string;
   iconButtonClassName?: string;
 };
+
+///: BEGIN:ONLY_INCLUDE_IF(build-flask)
+const multichainAccountTypeToSnapId = {
+  [BtcAccountType.P2wpkh]: BITCOIN_WALLET_SNAP_ID,
+  [SolAccountType.DataAccount]: SOLANA_WALLET_SNAP_ID,
+};
+///: END:ONLY_INCLUDE_IF
 
 const CoinButtons = ({
   account,
@@ -315,7 +327,7 @@ const CoinButtons = ({
       (approval) => {
         return (
           approval.type === 'snap_dialog' &&
-          approval.origin === BITCOIN_WALLET_SNAP_ID
+          Object.values(multichainAccountTypeToSnapId).includes(approval.origin)
         );
       },
     );
@@ -356,15 +368,18 @@ const CoinButtons = ({
     );
     switch (account.type) {
       ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
-      case BtcAccountType.P2wpkh: {
+      case BtcAccountType.P2wpkh:
+      case SolAccountType.DataAccount: {
         try {
           // FIXME: We switch the tab before starting the send flow (we
           // faced some inconsistencies when changing it after).
           await dispatch(setDefaultHomeActiveTabName('activity'));
           await sendMultichainTransaction(
-            BITCOIN_WALLET_SNAP_ID,
-            account.id,
-            chainId as CaipChainId,
+            multichainAccountTypeToSnapId[account.type],
+            {
+              account: account.id,
+              scope: chainId as CaipChainId,
+            },
           );
         } catch {
           // Restore the previous tab in case of any error (see FIXME comment above).
