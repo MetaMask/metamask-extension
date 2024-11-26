@@ -15,6 +15,7 @@ const {
   veryLargeDelayMs,
   DAPP_TWO_URL,
   tempToggleSettingRedesignedTransactionConfirmations,
+  openPopupWithActiveTabOrigin,
 } = require('../../helpers');
 const { PAGES } = require('../../webdriver/driver');
 const {
@@ -190,12 +191,6 @@ async function confirmTransaction(driver) {
 async function switchToNetworkByName(driver, networkName) {
   await driver.clickElement('.mm-picker-network');
   await driver.clickElement(`[data-testid="${networkName}"]`);
-}
-
-async function openPopupWithActiveTabOrigin(driver, origin) {
-  await driver.openNewPage(
-    `${driver.extensionUrl}/${PAGES.POPUP}.html?activeTabOrigin=${origin}`,
-  );
 }
 
 async function validateBalanceAndActivity(
