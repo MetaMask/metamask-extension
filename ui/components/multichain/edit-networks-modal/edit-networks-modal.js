@@ -52,7 +52,7 @@ export const EditNetworksModal = ({
 
   useEffect(() => {
     setSelectedChainIds(defaultSelectedChainIds);
-  }, [defaultSelectedChainIds]);
+  }, [JSON.stringify(defaultSelectedChainIds)]);
 
   const selectAll = () => {
     const allNetworksChainIds = allNetworks.map(({ chainId }) => chainId);

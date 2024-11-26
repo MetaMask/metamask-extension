@@ -178,6 +178,7 @@ export const unrestrictedMethods = Object.freeze([
   'snap_createInterface',
   'snap_updateInterface',
   'snap_getInterfaceState',
+  'snap_getInterfaceContext',
   'snap_resolveInterface',
   'snap_getCurrencyRate',
   ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
