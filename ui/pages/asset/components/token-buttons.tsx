@@ -29,6 +29,9 @@ import {
   ///: END:ONLY_INCLUDE_IF
   getCurrentChainId,
   getNetworkConfigurationIdByChainId,
+  getUseRequestQueue,
+  getOriginOfCurrentTab,
+  getAllDomains,
 } from '../../../selectors';
 ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
 import useBridging from '../../../hooks/bridge/useBridging';
@@ -39,6 +42,7 @@ import {
   setActiveNetwork,
   showModal,
   setSwitchedNetworkDetails,
+  setNetworkClientIdForDomain,
 } from '../../../store/actions';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import {
@@ -78,6 +82,10 @@ const TokenButtons = ({
   // @ts-expect-error keyring type is wrong maybe?
   const usingHardwareWallet = isHardwareKeyring(keyring.type);
   ///: END:ONLY_INCLUDE_IF
+
+  const useRequestQueue = useSelector(getUseRequestQueue);
+  const selectedTabOrigin = useSelector(getOriginOfCurrentTab);
+  const domains = useSelector(getAllDomains);
 
   const currentChainId = useSelector(getCurrentChainId);
   const networks = useSelector(getNetworkConfigurationIdByChainId) as Record<
@@ -123,6 +131,7 @@ const TokenButtons = ({
   }, [token.isERC721, token.address, dispatch]);
 
   const setCorrectChain = async () => {
+    // If we aren't presently on the chain of the asset, change to it
     if (currentChainId !== token.chainId) {
       try {
         const networkConfigurationId = networks[token.chainId];
@@ -132,6 +141,19 @@ const TokenButtons = ({
             networkClientId: networkConfigurationId,
           }),
         );
+        // If presently on a dapp, communicate a change to
+        // the dapp via silent switchEthereumChain that the
+        // network has changed due to user action
+        if (
+          useRequestQueue &&
+          selectedTabOrigin &&
+          domains[selectedTabOrigin]
+        ) {
+          setNetworkClientIdForDomain(
+            selectedTabOrigin,
+            networkConfigurationId,
+          );
+        }
       } catch (err) {
         console.error(`Failed to switch chains.
         Target chainId: ${token.chainId}, Current chainId: ${currentChainId}.
