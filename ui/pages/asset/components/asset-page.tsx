@@ -153,7 +153,7 @@ const AssetPage = ({
       : getNativeTokenAddress(chainId);
 
   const tokenHexBalance =
-    selectedAccountTokenBalancesAcrossChains[chainId][address as Hex];
+    selectedAccountTokenBalancesAcrossChains?.[chainId]?.[address as Hex];
 
   const balance = calculateTokenBalance({
     isNative: type === AssetType.native,
