@@ -130,7 +130,9 @@ export default class BridgeStatusController extends StaticIntervalPollingControl
     const historyItems = Object.values(bridgeStatusState.txHistory);
     const incompleteHistoryItems = historyItems
       .filter(
-        (historyItem) => historyItem.status.status !== StatusTypes.COMPLETE,
+        (historyItem) =>
+          historyItem.status.status === StatusTypes.PENDING ||
+          historyItem.status.status === StatusTypes.UNKNOWN,
       )
       .filter((historyItem) => {
         // Check if we are already polling this tx, if so, skip restarting polling for that
