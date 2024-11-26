@@ -17,7 +17,7 @@ import {
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
 import useMultiPolling from '../../../hooks/useMultiPolling';
-import BtcOverview from './btc-overview';
+import NonEvmOverview from './non-evm-overview';
 
 // We need to mock `dispatch` since we use it for `setDefaultHomeActiveTabName`.
 const mockDispatch = jest.fn().mockReturnValue(() => jest.fn());
@@ -65,7 +65,7 @@ const mockNonEvmAccount = {
     },
   },
   options: {},
-  methods: [BtcMethod.SendMany],
+  methods: [BtcMethod.SendBitcoin],
   type: BtcAccountType.P2wpkh,
 };
 
@@ -134,7 +134,7 @@ function makePortfolioUrl(path: string, getParams: Record<string, string>) {
   return `${PORTOFOLIO_URL}/${path}?${params.toString()}`;
 }
 
-describe('BtcOverview', () => {
+describe('NonEvmOverview', () => {
   beforeEach(() => {
     setBackgroundConnection({ setBridgeFeatureFlags: jest.fn() } as never);
     // Clear previous mock implementations
@@ -156,8 +156,11 @@ describe('BtcOverview', () => {
     });
   });
 
-  it('shows the primary balance as BTC when showNativeTokenAsMainBalance if true', async () => {
-    const { queryByTestId } = renderWithProvider(<BtcOverview />, getStore());
+  it('shows the primary balance using the native token when showNativeTokenAsMainBalance if true', async () => {
+    const { queryByTestId } = renderWithProvider(
+      <NonEvmOverview />,
+      getStore(),
+    );
 
     const primaryBalance = queryByTestId(BTC_OVERVIEW_PRIMARY_CURRENCY);
     expect(primaryBalance).toBeInTheDocument();
@@ -166,7 +169,7 @@ describe('BtcOverview', () => {
 
   it('shows the primary balance as fiat when showNativeTokenAsMainBalance if false', async () => {
     const { queryByTestId } = renderWithProvider(
-      <BtcOverview />,
+      <NonEvmOverview />,
       getStore({
         metamask: {
           ...mockMetamaskStore,
@@ -186,7 +189,7 @@ describe('BtcOverview', () => {
 
   it('shows a spinner if balance is not available', async () => {
     const { container } = renderWithProvider(
-      <BtcOverview />,
+      <NonEvmOverview />,
       getStore({
         metamask: {
           ...mockMetamaskStore,
@@ -203,7 +206,10 @@ describe('BtcOverview', () => {
   });
 
   it('buttons Swap/Bridge are disabled', () => {
-    const { queryByTestId } = renderWithProvider(<BtcOverview />, getStore());
+    const { queryByTestId } = renderWithProvider(
+      <NonEvmOverview />,
+      getStore(),
+    );
 
     for (const buttonTestId of [BTC_OVERVIEW_SWAP, BTC_OVERVIEW_BRIDGE]) {
       const button = queryByTestId(buttonTestId);
@@ -213,13 +219,19 @@ describe('BtcOverview', () => {
   });
 
   it('shows the "Buy & Sell" button', () => {
-    const { queryByTestId } = renderWithProvider(<BtcOverview />, getStore());
+    const { queryByTestId } = renderWithProvider(
+      <NonEvmOverview />,
+      getStore(),
+    );
     const buyButton = queryByTestId(BTC_OVERVIEW_BUY);
     expect(buyButton).toBeInTheDocument();
   });
 
   it('"Buy & Sell" button is disabled if BTC is not buyable', () => {
-    const { queryByTestId } = renderWithProvider(<BtcOverview />, getStore());
+    const { queryByTestId } = renderWithProvider(
+      <NonEvmOverview />,
+      getStore(),
+    );
     const buyButton = queryByTestId(BTC_OVERVIEW_BUY);
 
     expect(buyButton).toBeInTheDocument();
@@ -234,7 +246,7 @@ describe('BtcOverview', () => {
     });
 
     const { queryByTestId } = renderWithProvider(
-      <BtcOverview />,
+      <NonEvmOverview />,
       storeWithBtcBuyable,
     );
 
@@ -252,7 +264,7 @@ describe('BtcOverview', () => {
     });
 
     const { queryByTestId } = renderWithProvider(
-      <BtcOverview />,
+      <NonEvmOverview />,
       storeWithBtcBuyable,
     );
 
@@ -283,7 +295,7 @@ describe('BtcOverview', () => {
     const mockTrackEvent = jest.fn();
     const { queryByTestId } = renderWithProvider(
       <MetaMetricsContext.Provider value={mockTrackEvent}>
-        <BtcOverview />
+        <NonEvmOverview />
       </MetaMetricsContext.Provider>,
       storeWithBtcBuyable,
     );
@@ -307,7 +319,10 @@ describe('BtcOverview', () => {
   });
 
   it('always show the Receive button', () => {
-    const { queryByTestId } = renderWithProvider(<BtcOverview />, getStore());
+    const { queryByTestId } = renderWithProvider(
+      <NonEvmOverview />,
+      getStore(),
+    );
     const receiveButton = queryByTestId(BTC_OVERVIEW_RECEIVE);
     expect(receiveButton).toBeInTheDocument();
   });
@@ -332,7 +347,7 @@ describe('BtcOverview', () => {
     });
 
     const { queryByTestId } = renderWithProvider(
-      <BtcOverview />,
+      <NonEvmOverview />,
       storeWithBtcBuyable,
     );
 
@@ -343,7 +358,10 @@ describe('BtcOverview', () => {
   });
 
   it('always show the Send button', () => {
-    const { queryByTestId } = renderWithProvider(<BtcOverview />, getStore());
+    const { queryByTestId } = renderWithProvider(
+      <NonEvmOverview />,
+      getStore(),
+    );
     const sendButton = queryByTestId(BTC_OVERVIEW_SEND);
     expect(sendButton).toBeInTheDocument();
     expect(sendButton).not.toBeDisabled();
@@ -353,7 +371,7 @@ describe('BtcOverview', () => {
     const mockTrackEvent = jest.fn();
     const { queryByTestId } = renderWithProvider(
       <MetaMetricsContext.Provider value={mockTrackEvent}>
-        <BtcOverview />
+        <NonEvmOverview />
       </MetaMetricsContext.Provider>,
       getStore(),
     );

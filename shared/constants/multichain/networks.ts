@@ -1,4 +1,5 @@
 import { CaipChainId } from '@metamask/utils';
+import { BtcAccountType, SolAccountType } from '@metamask/keyring-api';
 import {
   isBtcMainnetAddress,
   isBtcTestnetAddress,
@@ -32,6 +33,11 @@ export enum MultichainNetworks {
   SOLANA_DEVNET = 'solana:EtWTRABZaYq6iMfeYKouRu166VU2xqa1',
   SOLANA_TESTNET = 'solana:4uhcVJyU9pJkvQyS88uRDiswHXSCkY3z',
 }
+
+export const MULTICHAIN_ACCOUNT_TYPE_TO_MAINNET = {
+  [BtcAccountType.P2wpkh]: MultichainNetworks.BITCOIN,
+  [SolAccountType.DataAccount]: MultichainNetworks.SOLANA,
+} as const;
 
 export const BITCOIN_TOKEN_IMAGE_URL = './images/bitcoin-logo.svg';
 export const SOLANA_TOKEN_IMAGE_URL = './images/solana-logo.svg';

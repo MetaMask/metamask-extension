@@ -5,9 +5,9 @@ import {
   getCurrentChainId,
   getCurrentNetwork,
   getPreferences,
-  getChainIdsToPoll,
   getShouldHideZeroBalanceTokens,
   getSelectedAccount,
+  getAllChainsToPoll,
 } from '../../../../../selectors';
 import { getNetworkConfigurationsByChainId } from '../../../../../../shared/modules/selectors/networks';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
@@ -15,6 +15,7 @@ import { SelectableListItem } from '../sort-control/sort-control';
 import { Text } from '../../../../component-library/text/text';
 import {
   AlignItems,
+  BlockSize,
   Display,
   JustifyContent,
   TextColor,
@@ -49,7 +50,7 @@ const NetworkFilter = ({ handleClose }: SortControlProps) => {
   const shouldHideZeroBalanceTokens = useSelector(
     getShouldHideZeroBalanceTokens,
   );
-  const allChainIDs = useSelector(getChainIdsToPoll);
+  const allChainIDs = useSelector(getAllChainsToPoll);
   const { formattedTokensWithBalancesPerChain } = useGetFormattedTokensPerChain(
     selectedAccount,
     shouldHideZeroBalanceTokens,
@@ -108,6 +109,8 @@ const NetworkFilter = ({ handleClose }: SortControlProps) => {
         <Box
           display={Display.Flex}
           justifyContent={JustifyContent.spaceBetween}
+          width={BlockSize.Full}
+          gap={3}
         >
           <Box>
             <Text
@@ -121,8 +124,6 @@ const NetworkFilter = ({ handleClose }: SortControlProps) => {
               color={TextColor.textAlternative}
               data-testid="network-filter-all__total"
             >
-              {/* TODO: Should query cross chain account balance */}
-
               <UserPreferencedCurrencyDisplay
                 value={selectedAccountBalanceForAllNetworks}
                 type="PRIMARY"
@@ -169,7 +170,9 @@ const NetworkFilter = ({ handleClose }: SortControlProps) => {
         <Box
           display={Display.Flex}
           justifyContent={JustifyContent.spaceBetween}
+          gap={3}
           alignItems={AlignItems.center}
+          width={BlockSize.Full}
         >
           <Box>
             <Text
@@ -193,6 +196,7 @@ const NetworkFilter = ({ handleClose }: SortControlProps) => {
             </Text>
           </Box>
           <AvatarNetwork
+            size={AvatarNetworkSize.Sm}
             name="Current"
             src={currentNetwork?.rpcPrefs?.imageUrl}
           />

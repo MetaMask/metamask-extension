@@ -1,11 +1,13 @@
 import React from 'react';
-import { BtcOverview } from '../../app/wallet-overview';
+import { NonEvmOverview } from '../../app/wallet-overview';
 import { AccountOverviewLayout } from './account-overview-layout';
 import { AccountOverviewCommonProps } from './common';
 
-export type AccountOverviewBtcProps = AccountOverviewCommonProps;
+export type AccountOverviewNonEvmProps = AccountOverviewCommonProps;
 
-export const AccountOverviewBtc = (props: AccountOverviewBtcProps) => {
+export const AccountOverviewNonEvm = ({
+  ...props
+}: AccountOverviewNonEvmProps) => {
   return (
     <AccountOverviewLayout
       showTokens={true}
@@ -16,7 +18,7 @@ export const AccountOverviewBtc = (props: AccountOverviewBtcProps) => {
     >
       {
         ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask,build-mmi)
-        <BtcOverview />
+        <NonEvmOverview />
         ///: END:ONLY_INCLUDE_IF
       }
     </AccountOverviewLayout>

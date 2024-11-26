@@ -4920,9 +4920,6 @@
   "simulationErrorMessageV2": {
     "message": "No pudimos estimar el gas. Podría haber un error en el contrato y esta transacción podría fallar."
   },
-  "simulationsSettingDescription": {
-    "message": "Active esta opción para estimar los cambios de saldo de las transacciones antes de confirmarlas. Esto no garantiza el resultado final de sus transacciones. $1"
-  },
   "simulationsSettingSubHeader": {
     "message": "Estimar cambios de saldo"
   },

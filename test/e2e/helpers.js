@@ -5,7 +5,6 @@ const mockttp = require('mockttp');
 const detectPort = require('detect-port');
 const { difference } = require('lodash');
 const createStaticServer = require('../../development/create-static-server');
-const { tEn } = require('../lib/i18n-helpers');
 const { setupMocking } = require('./mock-e2e');
 const { Ganache } = require('./seeder/ganache');
 const FixtureServer = require('./fixture-server');
@@ -42,7 +41,7 @@ const convertETHToHexGwei = (eth) => convertToHexValue(eth * 10 ** 18);
 /**
  * @typedef {object} Fixtures
  * @property {import('./webdriver/driver').Driver} driver - The driver number.
- * @property {GanacheContractAddressRegistry | undefined} contractRegistry - The contract registry.
+ * @property {ContractAddressRegistry | undefined} contractRegistry - The contract registry.
  * @property {Ganache | undefined} ganacheServer - The Ganache server.
  * @property {Ganache | undefined} secondaryGanacheServer - The secondary Ganache server.
  * @property {mockttp.MockedEndpoint[]} mockedEndpoint - The mocked endpoint.
@@ -385,51 +384,6 @@ const getWindowHandles = async (driver, handlesCount) => {
   return { extension, dapp, popup };
 };
 
-const openSRPRevealQuiz = async (driver) => {
-  // navigate settings to reveal SRP
-  await driver.clickElement('[data-testid="account-options-menu-button"]');
-
-  // fix race condition with mmi build
-  if (process.env.MMI) {
-    await driver.waitForSelector('[data-testid="global-menu-mmi-portfolio"]');
-  }
-
-  await driver.clickElement({ text: 'Settings', tag: 'div' });
-  await driver.clickElement({ text: 'Security & privacy', tag: 'div' });
-  await driver.clickElement('[data-testid="reveal-seed-words"]');
-};
-
-/**
- * @deprecated Please use page object functions in `test/e2e/page-objects/pages/settings/privacy-settings.ts`.
- * @param driver
- */
-const completeSRPRevealQuiz = async (driver) => {
-  // start quiz
-  await driver.clickElement('[data-testid="srp-quiz-get-started"]');
-
-  // tap correct answer 1
-  await driver.clickElement('[data-testid="srp-quiz-right-answer"]');
-
-  // tap Continue 1
-  await driver.clickElement('[data-testid="srp-quiz-continue"]');
-
-  // tap correct answer 2
-  await driver.clickElement('[data-testid="srp-quiz-right-answer"]');
-
-  // tap Continue 2
-  await driver.clickElement('[data-testid="srp-quiz-continue"]');
-};
-
-const tapAndHoldToRevealSRP = async (driver) => {
-  await driver.holdMouseDownOnElement(
-    {
-      text: tEn('holdToRevealSRP'),
-      tag: 'span',
-    },
-    3000,
-  );
-};
-
 const DAPP_HOST_ADDRESS = '127.0.0.1:8080';
 const DAPP_URL = `http://${DAPP_HOST_ADDRESS}`;
 const DAPP_ONE_URL = 'http://127.0.0.1:8081';
@@ -661,30 +615,27 @@ const locateAccountBalanceDOM = async (
 const WALLET_PASSWORD = 'correct horse battery staple';
 
 /**
- * Unlock the wallet with the default password.
+ * Unlocks the wallet using the provided password.
  * This method is intended to replace driver.navigate and should not be called after driver.navigate.
  *
  * @param {WebDriver} driver - The webdriver instance
- * @param {object} options - Options for unlocking the wallet
- * @param {boolean} options.navigate - Whether to navigate to the root page prior to unlocking. Defaults to true.
- * @param {boolean} options.waitLoginSuccess - Whether to wait for the login to succeed. Defaults to true.
+ * @param {object} [options] - Options for unlocking the wallet
+ * @param {boolean} [options.navigate] - Whether to navigate to the root page prior to unlocking - defaults to true
+ * @param {boolean} [options.waitLoginSuccess] - Whether to wait for the login to succeed - defaults to true
+ * @param {string} [options.password] - Password to unlock wallet - defaults to shared WALLET_PASSWORD
  */
 async function unlockWallet(
   driver,
-  options = {
-    navigate: true,
-    waitLoginSuccess: true,
-  },
+  { navigate = true, waitLoginSuccess = true, password = WALLET_PASSWORD } = {},
 ) {
-  if (options.navigate !== false) {
+  if (navigate) {
     await driver.navigate();
   }
 
-  await driver.fill('#password', WALLET_PASSWORD);
+  await driver.fill('#password', password);
   await driver.press('#password', driver.Key.ENTER);
 
-  if (options.waitLoginSuccess !== false) {
-    // No guard is necessary here, because it goes from present to absent
+  if (waitLoginSuccess) {
     await driver.assertElementNotPresent('[data-testid="unlock-page"]');
   }
 }
@@ -872,34 +823,6 @@ async function initBundler(bundlerServer, ganacheServer, usePaymaster) {
 }
 
 /**
- * @deprecated Please use page object functions in `pages/account-list-page`.
- * @param driver
- */
-async function removeSelectedAccount(driver) {
-  await driver.clickElement('[data-testid="account-menu-icon"]');
-  await driver.clickElement(
-    '.multichain-account-list-item--selected [data-testid="account-list-item-menu-button"]',
-  );
-  await driver.clickElement('[data-testid="account-list-menu-remove"]');
-  await driver.clickElement({ text: 'Remove', tag: 'button' });
-}
-
-/**
- * @deprecated Please use page object functions in `pages/account-list-page`.
- * @param driver
- */
-async function getSelectedAccountAddress(driver) {
-  await driver.clickElement('[data-testid="account-options-menu-button"]');
-  await driver.clickElement('[data-testid="account-list-menu-details"]');
-  const accountAddress = await (
-    await driver.findElement('[data-testid="address-copy-button-text"]')
-  ).getText();
-  await driver.clickElement('.mm-box button[aria-label="Close"]');
-
-  return accountAddress;
-}
-
-/**
  * Rather than using the FixtureBuilder#withPreferencesController to set the setting
  * we need to manually set the setting because the migration #122 overrides this.
  * We should be able to remove this when we delete the redesignedConfirmationsEnabled setting.
@@ -931,6 +854,46 @@ async function tempToggleSettingRedesignedConfirmations(driver) {
   // Click redesignedConfirmationsEnabled toggle
   await driver.clickElement(
     '[data-testid="toggle-redesigned-confirmations-container"]',
+  );
+}
+
+/**
+ * Rather than using the FixtureBuilder#withPreferencesController to set the setting
+ * we need to manually set the setting because the migration #132 overrides this.
+ * We should be able to remove this when we delete the redesignedTransactionsEnabled setting.
+ *
+ * @param driver
+ */
+async function tempToggleSettingRedesignedTransactionConfirmations(driver) {
+  // Ensure we are on the extension window
+  await driver.switchToWindowWithTitle(WINDOW_TITLES.ExtensionInFullScreenView);
+
+  // Open settings menu button
+  await driver.clickElement('[data-testid="account-options-menu-button"]');
+
+  // fix race condition with mmi build
+  if (process.env.MMI) {
+    await driver.waitForSelector('[data-testid="global-menu-mmi-portfolio"]');
+  }
+
+  // Click settings from dropdown menu
+  await driver.clickElement('[data-testid="global-menu-settings"]');
+
+  // Click Experimental tab
+  const experimentalTabRawLocator = {
+    text: 'Experimental',
+    tag: 'div',
+  };
+  await driver.clickElement(experimentalTabRawLocator);
+
+  // Click redesigned transactions toggle
+  await driver.clickElement(
+    '[data-testid="toggle-redesigned-transactions-container"]',
+  );
+
+  // Close settings page
+  await driver.clickElement(
+    '.settings-page__header__title-container__close-button',
   );
 }
 
@@ -970,9 +933,6 @@ module.exports = {
   largeDelayMs,
   veryLargeDelayMs,
   withFixtures,
-  openSRPRevealQuiz,
-  completeSRPRevealQuiz,
-  tapAndHoldToRevealSRP,
   createDownloadFolder,
   openDapp,
   openDappConnectionsPage,
@@ -1004,9 +964,8 @@ module.exports = {
   getCleanAppState,
   editGasFeeForm,
   clickNestedButton,
-  removeSelectedAccount,
-  getSelectedAccountAddress,
   tempToggleSettingRedesignedConfirmations,
+  tempToggleSettingRedesignedTransactionConfirmations,
   openMenuSafe,
   sentryRegEx,
 };

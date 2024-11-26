@@ -1,8 +1,12 @@
+import { strict as assert } from 'assert';
 import { Driver } from '../../webdriver/driver';
 import { largeDelayMs } from '../../helpers';
+import messages from '../../../../app/_locales/en/messages.json';
 
 class AccountListPage {
   private readonly driver: Driver;
+
+  private readonly accountAddressText = '.qr-code__address-segments';
 
   private readonly accountListBalance =
     '[data-testid="second-currency-display"]';
@@ -24,6 +28,11 @@ class AccountListPage {
 
   private readonly addAccountConfirmButton =
     '[data-testid="submit-add-account-with-name"]';
+
+  private readonly addBtcAccountButton = {
+    text: messages.addNewBitcoinAccount.message,
+    tag: 'button',
+  };
 
   private readonly addEthereumAccountButton =
     '[data-testid="multichain-account-menu-popover-add-account"]';
@@ -93,6 +102,11 @@ class AccountListPage {
     tag: 'div',
   };
 
+  private readonly removeAccountNevermindButton = {
+    text: 'Nevermind',
+    tag: 'button',
+  };
+
   private readonly saveAccountLabelButton =
     '[data-testid="save-account-label-input"]';
 
@@ -114,15 +128,21 @@ class AccountListPage {
   }
 
   /**
-   * Adds a new account with a custom label.
+   * Adds a new account with an optional custom label.
    *
-   * @param customLabel - The custom label for the new account.
+   * @param customLabel - The custom label for the new account. If not provided, a default name will be used.
    */
-  async addNewAccountWithCustomLabel(customLabel: string): Promise<void> {
-    console.log(`Adding new account with custom label: ${customLabel}`);
+  async addNewAccount(customLabel?: string): Promise<void> {
+    if (customLabel) {
+      console.log(`Adding new account with custom label: ${customLabel}`);
+    } else {
+      console.log(`Adding new account with default name`);
+    }
     await this.driver.clickElement(this.createAccountButton);
     await this.driver.clickElement(this.addEthereumAccountButton);
-    await this.driver.fill(this.accountNameInput, customLabel);
+    if (customLabel) {
+      await this.driver.fill(this.accountNameInput, customLabel);
+    }
     // needed to mitigate a race condition with the state update
     // there is no condition we can wait for in the UI
     await this.driver.delay(largeDelayMs);
@@ -132,19 +152,47 @@ class AccountListPage {
   }
 
   /**
-   * Adds a new account with default next available name.
+   * Adds a new BTC account with an optional custom name.
    *
+   * @param options - Options for adding a new BTC account.
+   * @param [options.btcAccountCreationEnabled] - Indicates if the BTC account creation is expected to be enabled or disabled. Defaults to true.
+   * @param [options.accountName] - The custom name for the BTC account. Defaults to an empty string, which means the default name will be used.
    */
-  async addNewAccountWithDefaultName(): Promise<void> {
-    console.log(`Adding new account with next available name`);
-    await this.driver.clickElement(this.createAccountButton);
-    await this.driver.clickElement(this.addEthereumAccountButton);
-    // needed to mitigate a race condition with the state update
-    // there is no condition we can wait for in the UI
-    await this.driver.delay(largeDelayMs);
-    await this.driver.clickElementAndWaitToDisappear(
-      this.addAccountConfirmButton,
+  async addNewBtcAccount({
+    btcAccountCreationEnabled = true,
+    accountName = '',
+  }: {
+    btcAccountCreationEnabled?: boolean;
+    accountName?: string;
+  } = {}): Promise<void> {
+    console.log(
+      `Adding new BTC account${
+        accountName ? ` with custom name: ${accountName}` : ' with default name'
+      }`,
     );
+    await this.driver.clickElement(this.createAccountButton);
+    if (btcAccountCreationEnabled) {
+      await this.driver.clickElement(this.addBtcAccountButton);
+      // needed to mitigate a race condition with the state update
+      // there is no condition we can wait for in the UI
+      await this.driver.delay(largeDelayMs);
+      if (accountName) {
+        await this.driver.fill(this.accountNameInput, accountName);
+      }
+      await this.driver.clickElementAndWaitToDisappear(
+        this.addAccountConfirmButton,
+        // Longer timeout than usual, this reduces the flakiness
+        // around Bitcoin account creation (mainly required for
+        // Firefox)
+        5000,
+      );
+    } else {
+      const createButton = await this.driver.findElement(
+        this.addBtcAccountButton,
+      );
+      assert.equal(await createButton.isEnabled(), false);
+      await this.driver.clickElement(this.closeAccountModalButton);
+    }
   }
 
   /**
@@ -182,6 +230,33 @@ class AccountListPage {
   async changeAccountLabel(newLabel: string): Promise<void> {
     console.log(`Changing account label to: ${newLabel}`);
     await this.driver.clickElement(this.accountMenuButton);
+    await this.changeLabelFromAccountDetailsModal(newLabel);
+  }
+
+  /**
+   * Changes the account label from within an already opened account details modal.
+   * Note: This method assumes the account details modal is already open.
+   *
+   * Recommended usage:
+   * ```typescript
+   * await accountListPage.openAccountDetailsModal('Current Account Name');
+   * await accountListPage.changeLabelFromAccountDetailsModal('New Account Name');
+   * ```
+   *
+   * @param newLabel - The new label to set for the account
+   * @throws Will throw an error if the modal is not open when method is called
+   * @example
+   * // To rename a specific account, first open its details modal:
+   * await accountListPage.openAccountDetailsModal('Current Account Name');
+   * await accountListPage.changeLabelFromAccountDetailsModal('New Account Name');
+   *
+   * // Note: Using changeAccountLabel() alone will only work for the first account
+   */
+  async changeLabelFromAccountDetailsModal(newLabel: string): Promise<void> {
+    await this.driver.waitForSelector(this.editableLabelButton);
+    console.log(
+      `Account details modal opened, changing account label to: ${newLabel}`,
+    );
     await this.driver.clickElement(this.editableLabelButton);
     await this.driver.fill(this.editableLabelInput, newLabel);
     await this.driver.clickElement(this.saveAccountLabelButton);
@@ -193,6 +268,23 @@ class AccountListPage {
     await this.driver.clickElementAndWaitToDisappear(
       this.closeAccountModalButton,
     );
+  }
+
+  /**
+   * Get the address of the specified account.
+   *
+   * @param accountLabel - The label of the account to get the address.
+   */
+  async getAccountAddress(accountLabel: string): Promise<string> {
+    console.log(`Get account address in account list`);
+    await this.openAccountOptionsInAccountList(accountLabel);
+    await this.driver.clickElement(this.accountMenuButton);
+    await this.driver.waitForSelector(this.accountAddressText);
+    const accountAddress = await (
+      await this.driver.findElement(this.accountAddressText)
+    ).getText();
+    await this.driver.clickElement(this.closeAccountModalButton);
+    return accountAddress;
   }
 
   async hideAccount(): Promise<void> {
@@ -284,13 +376,23 @@ class AccountListPage {
    * Remove the specified account from the account list.
    *
    * @param accountLabel - The label of the account to remove.
+   * @param confirmRemoval - Whether to confirm the removal of the account. Defaults to true.
    */
-  async removeAccount(accountLabel: string): Promise<void> {
+  async removeAccount(
+    accountLabel: string,
+    confirmRemoval: boolean = true,
+  ): Promise<void> {
     console.log(`Remove account in account list`);
     await this.openAccountOptionsInAccountList(accountLabel);
     await this.driver.clickElement(this.removeAccountButton);
     await this.driver.waitForSelector(this.removeAccountMessage);
-    await this.driver.clickElement(this.removeAccountConfirmButton);
+    if (confirmRemoval) {
+      console.log('Confirm removal of account');
+      await this.driver.clickElement(this.removeAccountConfirmButton);
+    } else {
+      console.log('Click nevermind button to cancel account removal');
+      await this.driver.clickElement(this.removeAccountNevermindButton);
+    }
   }
 
   async switchToAccount(expectedLabel: string): Promise<void> {

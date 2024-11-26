@@ -1,5 +1,5 @@
 diff --git a/dist/assetsUtil.cjs b/dist/assetsUtil.cjs
-index c2e83cf6caee19152aa164f1333cfef7b681e900..590b6de6e9d20ca402b82ac56b0929ab8c16c932 100644
+index 48571b8c1b78e94d88e1837e986b5f8735ac651b..61246f51500c8cab48f18296a73629fb73454caa 100644
 --- a/dist/assetsUtil.cjs
 +++ b/dist/assetsUtil.cjs
 @@ -3,6 +3,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
@@ -20,7 +20,7 @@ index c2e83cf6caee19152aa164f1333cfef7b681e900..590b6de6e9d20ca402b82ac56b0929ab
      // because most cid v0s appear to be incompatible with IPFS subdomains
      return {
 diff --git a/dist/token-prices-service/codefi-v2.mjs b/dist/token-prices-service/codefi-v2.mjs
-index e7eaad2cfa8b233c4fd42a51f745233a1cc5c387..b89849c0caf7e5db3b53cf03dd5746b6b1433543 100644
+index a13403446a2376d4d905a9ef733941798da89c88..3c8229f9ea40f4c1ee760a22884e1066dac82ec7 100644
 --- a/dist/token-prices-service/codefi-v2.mjs
 +++ b/dist/token-prices-service/codefi-v2.mjs
 @@ -12,8 +12,7 @@ var __classPrivateFieldGet = (this && this.__classPrivateFieldGet) || function (
@@ -33,3 +33,27 @@ index e7eaad2cfa8b233c4fd42a51f745233a1cc5c387..b89849c0caf7e5db3b53cf03dd5746b6
  /**
   * The list of currencies that can be supplied as the `vsCurrency` parameter to
   * the `/spot-prices` endpoint, in lowercase form.
+diff --git a/dist/TokensController.cjs b/dist/TokensController.cjs
+index 343b343b8300136756d96acac77aab8140efc95a..69d8e2ea84d6303a3af02bd95458ef3060c76f2b 100644
+--- a/dist/TokensController.cjs
++++ b/dist/TokensController.cjs
+@@ -270,13 +270,16 @@ class TokensController extends base_controller_1.BaseController {
+      * @param networkClientId - Optional network client ID used to determine interacting chain ID.
+      */
+     ignoreTokens(tokenAddressesToIgnore, networkClientId) {
+-        const { ignoredTokens, detectedTokens, tokens } = this.state;
+-        const ignoredTokensMap = {};
+-        let newIgnoredTokens = [...ignoredTokens];
+         let interactingChainId;
+         if (networkClientId) {
+             interactingChainId = this.messagingSystem.call('NetworkController:getNetworkClientById', networkClientId).configuration.chainId;
+         }
++        const { allTokens, allDetectedTokens, allIgnoredTokens } = this.state;
++        const ignoredTokensMap = {};
++        const ignoredTokens = allIgnoredTokens[interactingChainId ?? __classPrivateFieldGet(this, _TokensController_chainId, "f")]?.[__classPrivateFieldGet(this, _TokensController_instances, "m", _TokensController_getSelectedAddress).call(this)] || [];
++        let newIgnoredTokens = [...ignoredTokens];
++        const tokens = allTokens[interactingChainId ?? __classPrivateFieldGet(this, _TokensController_chainId, "f")]?.[__classPrivateFieldGet(this, _TokensController_instances, "m", _TokensController_getSelectedAddress).call(this)] || [];
++        const detectedTokens = allDetectedTokens[interactingChainId ?? __classPrivateFieldGet(this, _TokensController_chainId, "f")]?.[__classPrivateFieldGet(this, _TokensController_instances, "m", _TokensController_getSelectedAddress).call(this)] || [];
+         const checksummedTokenAddresses = tokenAddressesToIgnore.map((address) => {
+             const checksumAddress = (0, controller_utils_1.toChecksumHexAddress)(address);
+             ignoredTokensMap[address.toLowerCase()] = true;
