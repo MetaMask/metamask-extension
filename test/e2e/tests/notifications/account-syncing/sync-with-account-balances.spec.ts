@@ -207,7 +207,7 @@ describe('Account syncing - User already has balances on multple accounts @no-mm
           );
           await accountListPage.closeAccountModal();
 
-          // Lock and unlock wallet to ensure that number of preloaded accounts have to gone up
+          // Lock and unlock wallet to ensure that number of preloaded accounts have not gone up
           await homePage.headerNavbar.lockMetaMask();
           await unlockWallet(driver, {
             password: NOTIFICATIONS_TEAM_PASSWORD,
