@@ -8,9 +8,11 @@ import {
   getToChain,
   getToToken,
   getBridgeQuotes,
+  getValidationErrors,
 } from '../../../ducks/bridge/selectors';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import useSubmitBridgeTransaction from '../hooks/useSubmitBridgeTransaction';
+import useLatestBalance from '../../../hooks/bridge/useLatestBalance';
 
 export const BridgeCTAButton = () => {
   const t = useI18nContext();
@@ -27,12 +29,31 @@ export const BridgeCTAButton = () => {
 
   const { submitBridgeTransaction } = useSubmitBridgeTransaction();
 
+  const { isNoQuotesAvailable, isInsufficientBalance } =
+    useSelector(getValidationErrors);
+
+  const { normalizedBalance } = useLatestBalance(fromToken, fromChain?.chainId);
+
   const isTxSubmittable =
-    fromToken && toToken && fromChain && toChain && fromAmount && activeQuote;
+    fromToken &&
+    toToken &&
+    fromChain &&
+    toChain &&
+    fromAmount &&
+    activeQuote &&
+    !isInsufficientBalance(normalizedBalance);
 
   const label = useMemo(() => {
     if (isLoading && !isTxSubmittable) {
       return t('swapFetchingQuotes');
+    }
+
+    if (isNoQuotesAvailable) {
+      return t('swapQuotesNotAvailableErrorTitle');
+    }
+
+    if (isInsufficientBalance(normalizedBalance)) {
+      return t('alertReasonInsufficientBalance');
     }
 
     if (!fromAmount) {
@@ -47,7 +68,14 @@ export const BridgeCTAButton = () => {
     }
 
     return t('swapSelectToken');
-  }, [isLoading, fromAmount, toToken, isTxSubmittable]);
+  }, [
+    isLoading,
+    fromAmount,
+    toToken,
+    isTxSubmittable,
+    normalizedBalance,
+    isInsufficientBalance,
+  ]);
 
   return (
     <Button
