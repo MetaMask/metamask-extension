@@ -2364,15 +2364,31 @@ export const getAllEnabledNetworks = createDeepEqualSelector(
     ),
 );
 
-// USE THIS WITH CAUTION
-// Only use this selector if you are absolutely sure that your UI component needs data from _all chains_ to compute a value. Else, use getChainsIdsToPoll
-// An example of a component that should _not_ use this selector: the token list only needs to poll for chains based on the network filter, (potentially only one chain). In this case you would want to use getChainIdsToPoll
-// An example of a component that should _need_ to use this selector: Aggregated balance that needs to display regardless of network filter selection (always needs to display aggregated balance regardless of chains that are selected)
-// Leveraging this hook can cause expensive computation that is not needed in all cases, and should be optimized, where possible, to use getChainIdsToPoll instead
+/*
+ * USE THIS WITH CAUTION
+ *
+ * Only use this selector if you are absolutely sure that your UI component needs
+ * data from _all chains_ to compute a value. Else, use `getChainIdsToPoll`.
+ *
+ * Examples:
+ * - Components that should NOT use this selector:
+ *   - Token list: This only needs to poll for chains based on the network filter
+ *     (potentially only one chain). In this case, use `getChainIdsToPoll`.
+ * - Components that SHOULD use this selector:
+ *   - Aggregated balance: This needs to display data regardless of network filter
+ *     selection (always showing aggregated balances across all chains).
+ *
+ * Key Considerations:
+ * - This selector can cause expensive computations. It should only be used when
+ *   necessary, and where possible, optimized to use `getChainIdsToPoll` instead.
+ * - Logic Overview:
+ *   - If `PORTFOLIO_VIEW` is not enabled, the selector returns only the `currentChainId`.
+ *   - Otherwise, it includes all chains from `networkConfigurations`, excluding
+ *     `TEST_CHAINS`, while ensuring the `currentChainId` is included.
+ */
 export const getAllChainsToPoll = createDeepEqualSelector(
   getNetworkConfigurationsByChainId,
   getCurrentChainId,
-  getIsTokenNetworkFilterEqualCurrentNetwork,
   (networkConfigurations, currentChainId) => {
     if (!process.env.PORTFOLIO_VIEW) {
       return [currentChainId];
