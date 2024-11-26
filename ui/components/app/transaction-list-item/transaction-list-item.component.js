@@ -93,14 +93,10 @@ function TransactionListItemInner({
   // Bridge transactions
   const isBridgeTx =
     transactionGroup.initialTransaction.type === TransactionType.bridge;
-  const {
-    bridgeTitleSuffix,
-    bridgeTxHistoryItem,
-    isBridgeComplete,
-    showBridgeTxDetails,
-  } = useBridgeTxHistoryData({
-    transactionGroup,
-  });
+  const { bridgeTxHistoryItem, isBridgeComplete, showBridgeTxDetails } =
+    useBridgeTxHistoryData({
+      transactionGroup,
+    });
 
   const {
     initialTransaction: { id },
@@ -309,7 +305,7 @@ function TransactionListItemInner({
             : toggleShowDetails
         }
         className={className}
-        title={`${title}${bridgeTitleSuffix}`}
+        title={title}
         icon={
           ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
           isCustodian ? (

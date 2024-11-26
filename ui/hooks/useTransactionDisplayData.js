@@ -35,6 +35,7 @@ import { TransactionGroupCategory } from '../../shared/constants/transaction';
 import { captureSingleException } from '../store/actions';
 import { isEqualCaseInsensitive } from '../../shared/modules/string-utils';
 import { getTokenValueParam } from '../../shared/lib/metamask-controller-utils';
+import { selectBridgeHistoryForAccount } from '../ducks/bridge-status/selectors';
 import { useI18nContext } from './useI18nContext';
 import { useTokenFiatAmount } from './useTokenFiatAmount';
 import { useUserPreferencedCurrency } from './useUserPreferencedCurrency';
@@ -43,6 +44,7 @@ import { useTokenDisplayValue } from './useTokenDisplayValue';
 import { useTokenData } from './useTokenData';
 import { useSwappedTokenValue } from './useSwappedTokenValue';
 import { useCurrentAsset } from './useCurrentAsset';
+import useBridgeChainInfo from './bridge/useBridgeChainInfo';
 
 /**
  *  There are seven types of transaction entries that are currently differentiated in the design:
@@ -106,6 +108,16 @@ export function useTransactionDisplayData(transactionGroup) {
   const detectedTokens = useSelector(getDetectedTokensInCurrentNetwork) || [];
   const tokenList = useSelector(getTokenList);
   const t = useI18nContext();
+
+  // Bridge data
+  const bridgeHistory = useSelector(selectBridgeHistoryForAccount);
+  const srcTxMetaId = transactionGroup.initialTransaction.id;
+  const bridgeHistoryItem = bridgeHistory[srcTxMetaId];
+  const { destNetwork } = useBridgeChainInfo({
+    bridgeHistoryItem,
+    srcTxMeta: transactionGroup.initialTransaction,
+  });
+  const destChainName = destNetwork?.name;
 
   const { initialTransaction, primaryTransaction } = transactionGroup;
   // initialTransaction contains the data we need to derive the primary purpose of this transaction group
@@ -367,10 +379,12 @@ export function useTransactionDisplayData(transactionGroup) {
     title = t('bridgeApproval', [primaryTransaction.sourceTokenSymbol]);
     subtitle = origin;
     subtitleContainsOrigin = true;
-    primarySuffix = primaryTransaction.sourceTokenSymbol; // TODO this will be undefined right now
+    primarySuffix = primaryTransaction.sourceTokenSymbol;
   } else if (type === TransactionType.bridge) {
-    title = t('bridge');
+    title = t('bridgeToChain', [destChainName]);
     category = TransactionGroupCategory.bridge;
+    // TODO add primaryDisplayValue,primarySuffix
+    // also secondaryDisplayValue, secondarySuffix
   } else {
     dispatch(
       captureSingleException(
