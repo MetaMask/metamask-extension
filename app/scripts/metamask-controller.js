@@ -161,7 +161,6 @@ import {
   Caip25EndowmentPermissionName,
   getEthAccounts,
 } from '@metamask/multichain';
-import { isProduction } from '../../shared/modules/environment';
 import {
   methodsRequiringNetworkSwitch,
   methodsThatCanSwitchNetworkWithoutApproval,
@@ -247,6 +246,7 @@ import { getProviderConfig } from '../../shared/modules/selectors/networks';
 import { endTrace, trace } from '../../shared/lib/trace';
 // eslint-disable-next-line import/no-restricted-paths
 import { isSnapId } from '../../ui/helpers/utils/snaps';
+import { BridgeStatusAction } from '../../shared/types/bridge-status';
 import { BalancesController as MultichainBalancesController } from './lib/accounts/BalancesController';
 import {
   ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
@@ -373,6 +373,8 @@ import {
 import createTracingMiddleware from './lib/createTracingMiddleware';
 import { PatchStore } from './lib/PatchStore';
 import { sanitizeUIState } from './lib/state-utils';
+import BridgeStatusController from './controllers/bridge-status/bridge-status-controller';
+import { BRIDGE_STATUS_CONTROLLER_NAME } from './controllers/bridge-status/constants';
 
 export const METAMASK_CONTROLLER_EVENTS = {
   // Fired after state changes that impact the extension badge (unapproved msg count)
@@ -1576,7 +1578,7 @@ export default class MetamaskController extends EventEmitter {
         },
       },
       env: {
-        isAccountSyncingEnabled: !isProduction() && isManifestV3,
+        isAccountSyncingEnabled: isManifestV3,
       },
       messenger: this.controllerMessenger.getRestricted({
         name: 'UserStorageController',
@@ -1908,6 +1910,8 @@ export default class MetamaskController extends EventEmitter {
         queryEntireHistory: false,
         updateTransactions: false,
       },
+      isFirstTimeInteractionEnabled: () =>
+        this.preferencesController.state.securityAlertsEnabled,
       isMultichainEnabled: process.env.TRANSACTION_MULTICHAIN,
       isSimulationEnabled: () =>
         this.preferencesController.state.useTransactionSimulations,
@@ -2151,6 +2155,22 @@ export default class MetamaskController extends EventEmitter {
       ),
     });
 
+    const bridgeStatusControllerMessenger =
+      this.controllerMessenger.getRestricted({
+        name: BRIDGE_STATUS_CONTROLLER_NAME,
+        allowedActions: [
+          'AccountsController:getSelectedAccount',
+          'NetworkController:getNetworkClientById',
+          'NetworkController:findNetworkClientIdByChainId',
+          'NetworkController:getState',
+        ],
+        allowedEvents: [],
+      });
+    this.bridgeStatusController = new BridgeStatusController({
+      messenger: bridgeStatusControllerMessenger,
+      state: initState.BridgeStatusController,
+    });
+
     const smartTransactionsControllerMessenger =
       this.controllerMessenger.getRestricted({
         name: 'SmartTransactionsController',
@@ -2385,6 +2405,7 @@ export default class MetamaskController extends EventEmitter {
       SignatureController: this.signatureController,
       SwapsController: this.swapsController,
       BridgeController: this.bridgeController,
+      BridgeStatusController: this.bridgeStatusController,
       EnsController: this.ensController,
       ApprovalController: this.approvalController,
       PPOMController: this.ppomController,
@@ -2986,7 +3007,11 @@ export default class MetamaskController extends EventEmitter {
 
     this.controllerMessenger.subscribe(
       `${this.snapController.name}:snapInstalled`,
-      (truncatedSnap, origin) => {
+      (truncatedSnap, origin, preinstalled) => {
+        if (preinstalled) {
+          return;
+        }
+
         const snapId = truncatedSnap.id;
         const snapCategory = this._getSnapMetadata(snapId)?.category;
         this.metaMetricsController.trackEvent({
@@ -3004,7 +3029,11 @@ export default class MetamaskController extends EventEmitter {
 
     this.controllerMessenger.subscribe(
       `${this.snapController.name}:snapUpdated`,
-      (newSnap, oldVersion, origin) => {
+      (newSnap, oldVersion, origin, preinstalled) => {
+        if (preinstalled) {
+          return;
+        }
+
         const snapId = newSnap.id;
         const snapCategory = this._getSnapMetadata(snapId)?.category;
         this.metaMetricsController.trackEvent({
@@ -3967,6 +3996,13 @@ export default class MetamaskController extends EventEmitter {
         this.controllerMessenger.call.bind(
           this.controllerMessenger,
           `${BRIDGE_CONTROLLER_NAME}:${BridgeUserAction.UPDATE_QUOTE_PARAMS}`,
+        ),
+
+      // Bridge Status
+      [BridgeStatusAction.START_POLLING_FOR_BRIDGE_TX_STATUS]:
+        this.controllerMessenger.call.bind(
+          this.controllerMessenger,
+          `${BRIDGE_STATUS_CONTROLLER_NAME}:${BridgeStatusAction.START_POLLING_FOR_BRIDGE_TX_STATUS}`,
         ),
 
       // Smart Transactions
@@ -4956,6 +4992,10 @@ export default class MetamaskController extends EventEmitter {
       this.accountsController.getSelectedAccount().address;
     this.txController.wipeTransactions(false, selectedAddress);
     this.smartTransactionsController.wipeSmartTransactions({
+      address: selectedAddress,
+      ignoreNetwork: false,
+    });
+    this.bridgeStatusController.wipeBridgeStatus({
       address: selectedAddress,
       ignoreNetwork: false,
     });
@@ -6123,6 +6163,12 @@ export default class MetamaskController extends EventEmitter {
             origin,
             ...args,
           ).state,
+        getInterfaceContext: (...args) =>
+          this.controllerMessenger.call(
+            'SnapInterfaceController:getInterface',
+            origin,
+            ...args,
+          ).context,
         createInterface: this.controllerMessenger.call.bind(
           this.controllerMessenger,
           'SnapInterfaceController:createInterface',
