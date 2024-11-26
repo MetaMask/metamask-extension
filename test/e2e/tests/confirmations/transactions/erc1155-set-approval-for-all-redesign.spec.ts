@@ -4,9 +4,9 @@ import { DAPP_URL, unlockWallet, WINDOW_TITLES } from '../../../helpers';
 import { Mockttp } from '../../../mock-e2e';
 import SetApprovalForAllTransactionConfirmation from '../../../page-objects/pages/confirmations/redesign/set-approval-for-all-transaction-confirmation';
 import TestDapp from '../../../page-objects/pages/test-dapp';
-import GanacheContractAddressRegistry from '../../../seeder/ganache-contract-address-registry';
+import ContractAddressRegistry from '../../../seeder/contract-address-registry';
 import { Driver } from '../../../webdriver/driver';
-import { withRedesignConfirmationFixtures } from '../helpers';
+import { withTransactionEnvelopeTypeFixtures } from '../helpers';
 import { TestSuiteArguments } from './shared';
 
 const { SMART_CONTRACTS } = require('../../../seeder/smart-contracts');
@@ -14,7 +14,7 @@ const { SMART_CONTRACTS } = require('../../../seeder/smart-contracts');
 describe('Confirmation Redesign ERC1155 setApprovalForAll', function () {
   describe('Submit a transaction @no-mmi', function () {
     it('Sends a type 0 transaction (Legacy)', async function () {
-      await withRedesignConfirmationFixtures(
+      await withTransactionEnvelopeTypeFixtures(
         this.test?.fullTitle(),
         TransactionEnvelopeType.legacy,
         async ({ driver, contractRegistry }: TestSuiteArguments) => {
@@ -29,7 +29,7 @@ describe('Confirmation Redesign ERC1155 setApprovalForAll', function () {
     });
 
     it('Sends a type 2 transaction (EIP1559)', async function () {
-      await withRedesignConfirmationFixtures(
+      await withTransactionEnvelopeTypeFixtures(
         this.test?.fullTitle(),
         TransactionEnvelopeType.feeMarket,
         async ({ driver, contractRegistry }: TestSuiteArguments) => {
@@ -75,12 +75,12 @@ export async function mocked4BytesSetApprovalForAll(mockServer: Mockttp) {
 
 async function createTransactionAssertDetailsAndConfirm(
   driver: Driver,
-  contractRegistry?: GanacheContractAddressRegistry,
+  contractRegistry?: ContractAddressRegistry,
 ) {
   await unlockWallet(driver);
 
   const contractAddress = await (
-    contractRegistry as GanacheContractAddressRegistry
+    contractRegistry as ContractAddressRegistry
   ).getContractAddress(SMART_CONTRACTS.NFTS);
 
   const testDapp = new TestDapp(driver);

@@ -7,9 +7,13 @@ import { Driver } from '../../../webdriver/driver';
 import {
   mockSignatureRejected,
   scrollAndConfirmAndAssertConfirm,
-  withRedesignConfirmationFixtures,
+  withTransactionEnvelopeTypeFixtures,
 } from '../helpers';
 import { TestSuiteArguments } from '../transactions/shared';
+import {
+  BlockaidReason,
+  BlockaidResultType,
+} from '../../../../../shared/constants/security-provider';
 import {
   assertSignatureRejectedMetrics,
   openDappAndTriggerSignature,
@@ -18,7 +22,7 @@ import {
 
 describe('Malicious Confirmation Signature - Bad Domain @no-mmi', function (this: Suite) {
   it('displays alert for domain binding and confirms', async function () {
-    await withRedesignConfirmationFixtures(
+    await withTransactionEnvelopeTypeFixtures(
       this.test?.fullTitle(),
       TransactionEnvelopeType.legacy,
       async ({ driver }: TestSuiteArguments) => {
@@ -41,7 +45,7 @@ describe('Malicious Confirmation Signature - Bad Domain @no-mmi', function (this
   });
 
   it('initiates and rejects from confirmation screen', async function () {
-    await withRedesignConfirmationFixtures(
+    await withTransactionEnvelopeTypeFixtures(
       this.test?.fullTitle(),
       TransactionEnvelopeType.legacy,
       async ({
@@ -80,6 +84,8 @@ describe('Malicious Confirmation Signature - Bad Domain @no-mmi', function (this
             alert_visualized: [],
             alert_visualized_count: 0,
           },
+          securityAlertReason: BlockaidReason.notApplicable,
+          securityAlertResponse: BlockaidResultType.NotApplicable,
         });
       },
       mockSignatureRejected,
@@ -87,7 +93,7 @@ describe('Malicious Confirmation Signature - Bad Domain @no-mmi', function (this
   });
 
   it('initiates and rejects from alert friction modal', async function () {
-    await withRedesignConfirmationFixtures(
+    await withTransactionEnvelopeTypeFixtures(
       this.test?.fullTitle(),
       TransactionEnvelopeType.legacy,
       async ({
@@ -130,6 +136,8 @@ describe('Malicious Confirmation Signature - Bad Domain @no-mmi', function (this
             alert_visualized: ['requestFrom'],
             alert_visualized_count: 1,
           },
+          securityAlertReason: BlockaidReason.notApplicable,
+          securityAlertResponse: BlockaidResultType.NotApplicable,
         });
       },
       mockSignatureRejected,
