@@ -2,11 +2,11 @@ import React from 'react';
 import { fireEvent, waitFor } from '@testing-library/react';
 import configureMockStore from 'redux-mock-store';
 import { useHistory } from 'react-router-dom';
+import thunk from 'redux-thunk';
 import TokenButtons from './token-buttons';
 import { mockNetworkState } from '../../../../test/stub/networks';
 import { AssetType } from '../../../../shared/constants/transaction';
 import { renderWithProvider } from '../../../../test/jest/rendering';
-import thunk from 'redux-thunk';
 import { CHAIN_IDS } from '../../../../shared/constants/network';
 import mockState from '../../../../test/data/mock-state.json';
 import * as actions from '../../../store/actions';
@@ -60,9 +60,7 @@ describe('TokenButtons Component', () => {
       throw new Error('setActiveNetwork mock failure');
     });
 
-    const consoleErrorSpy = jest
-      .spyOn(console, 'error')
-      .mockImplementation(() => {});
+    const consoleErrorSpy = jest.spyOn(console, 'error');
 
     const { getByTestId } = renderWithProvider(
       <TokenButtons token={token} />,
@@ -86,9 +84,7 @@ describe('TokenButtons Component', () => {
   it('does redirect when setCorrectChain succeeds', async () => {
     const store = configureMockStore([thunk])(mockStore);
 
-    const consoleErrorSpy = jest
-      .spyOn(console, 'error')
-      .mockImplementation(() => {});
+    const consoleErrorSpy = jest.spyOn(console, 'error');
 
     const { getByTestId } = renderWithProvider(
       <TokenButtons token={token} />,
@@ -115,9 +111,7 @@ describe('TokenButtons Component', () => {
       throw new Error('setActiveNetwork mock failure');
     });
 
-    const consoleErrorSpy = jest
-      .spyOn(console, 'error')
-      .mockImplementation(() => {});
+    const consoleErrorSpy = jest.spyOn(console, 'error');
 
     const { getByTestId } = renderWithProvider(
       <TokenButtons token={token} />,
@@ -141,9 +135,7 @@ describe('TokenButtons Component', () => {
   it('does redirect when setCorrectChain succeeds for swap button', async () => {
     const store = configureMockStore([thunk])(mockStore);
 
-    const consoleErrorSpy = jest
-      .spyOn(console, 'error')
-      .mockImplementation(() => {});
+    const consoleErrorSpy = jest.spyOn(console, 'error');
 
     const { getByTestId } = renderWithProvider(
       <TokenButtons token={token} />,
