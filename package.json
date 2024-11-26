@@ -327,7 +327,7 @@
     "@metamask/object-multiplex": "^2.0.0",
     "@metamask/obs-store": "^9.0.0",
     "@metamask/permission-controller": "^11.0.0",
-    "@metamask/permission-log-controller": "^2.0.1",
+    "@metamask/permission-log-controller": "^3.0.1",
     "@metamask/phishing-controller": "^12.3.0",
     "@metamask/polling-controller": "^10.0.1",
     "@metamask/post-message-stream": "^8.0.0",
