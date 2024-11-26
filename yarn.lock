@@ -5951,9 +5951,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/multichain@npm:^1.0.0":
-  version: 1.0.0
-  resolution: "@metamask/multichain@npm:1.0.0"
+"@metamask/multichain@npm:@metamask-previews/multichain@1.0.0-preview-8a7e499b":
+  version: 1.0.0-preview-8a7e499b
+  resolution: "@metamask-previews/multichain@npm:1.0.0-preview-8a7e499b"
   dependencies:
     "@metamask/api-specs": "npm:^0.10.12"
     "@metamask/controller-utils": "npm:^11.4.3"
@@ -5964,7 +5964,7 @@ __metadata:
   peerDependencies:
     "@metamask/network-controller": ^22.0.0
     "@metamask/permission-controller": ^11.0.0
-  checksum: 10/ec4ae86bb91a002863bf2b50900488bcb3851981d9b5e91f4d14bba05acf89dd7fce23738b11b1c5079fd3e0edc3702849e28e5ecd59b99a1f9ddedf19d3fd14
+  checksum: 10/072703b3278306c2dd52fb3e9dac3171deffa3690dd511f28bc2e23d22b75df824521ecfae0c74cf3d0b9c15498a35ad4932c8cac3bd6ffea79f771436154c50
   languageName: node
   linkType: hard
 
@@ -26883,7 +26883,7 @@ __metadata:
     "@metamask/message-manager": "npm:^10.1.0"
     "@metamask/message-signing-snap": "npm:^0.4.0"
     "@metamask/metamask-eth-abis": "npm:^3.1.1"
-    "@metamask/multichain": "npm:^1.0.0"
+    "@metamask/multichain": "npm:@metamask-previews/multichain@1.0.0-preview-8a7e499b"
     "@metamask/name-controller": "npm:^8.0.0"
     "@metamask/network-controller": "patch:@metamask/network-controller@npm%3A21.0.0#~/.yarn/patches/@metamask-network-controller-npm-21.0.0-559aa8e395.patch"
     "@metamask/notification-controller": "npm:^6.0.0"
