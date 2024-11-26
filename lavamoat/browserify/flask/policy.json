@@ -2338,6 +2338,16 @@
         "semver": true
       }
     },
+    "@metamask/remote-feature-flag-controller": {
+      "globals": {
+        "console.error": true
+      },
+      "packages": {
+        "@metamask/base-controller": true,
+        "@metamask/utils": true,
+        "cockatiel": true
+      }
+    },
     "@metamask/rpc-errors": {
       "packages": {
         "@metamask/rpc-errors>fast-safe-stringify": true,

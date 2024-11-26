@@ -42,6 +42,7 @@ import { flushPromises } from '../../test/lib/timer-helpers';
 import { ETH_EOA_METHODS } from '../../shared/constants/eth-methods';
 import { createMockInternalAccount } from '../../test/jest/mocks';
 import { mockNetworkState } from '../../test/stub/networks';
+import { ENVIRONMENT } from '../../development/build/constants';
 import { SECOND } from '../../shared/constants/time';
 import {
   BalancesController as MultichainBalancesController,
@@ -2605,6 +2606,109 @@ describe('MetaMaskController', () => {
         expect(spyBalancesTrackerUpdateBalance).toHaveBeenLastCalledWith(
           mockNonEvmAccount.id,
         );
+      });
+    });
+
+    describe('RemoteFeatureFlagController', () => {
+      let localMetamaskController;
+      let mockClientConfigApiService;
+
+      beforeEach(() => {
+        mockClientConfigApiService = {
+          fetchRemoteFeatureFlags: jest
+            .fn()
+            .mockResolvedValue({ cachedData: [] }),
+        };
+
+        localMetamaskController = new MetaMaskController({
+          showUserConfirmation: noop,
+          initLangCode: 'en_US',
+          platform: {
+            showTransactionNotification: () => undefined,
+            getVersion: () => 'foo',
+          },
+          browser: browserPolyfillMock,
+          infuraProjectId: 'foo',
+          isFirstMetaMaskControllerSetup: true,
+          initState: {
+            ...cloneDeep(firstTimeState),
+            PreferencesController: {
+              useExternalServices: false,
+            },
+          },
+        });
+      });
+
+      it('should initialize RemoteFeatureFlagController in disabled state when useExternalServices is false', async () => {
+        const { remoteFeatureFlagController, preferencesController } =
+          localMetamaskController;
+        // Check preferences state
+        expect(preferencesController.state.useExternalServices).toBe(false);
+
+        // Since disabled is true, getRemoteFeatureFlags should return empty array
+        const flags = await remoteFeatureFlagController.getRemoteFeatureFlags();
+        expect(flags).toStrictEqual([]);
+
+        // Check controller state
+        expect(remoteFeatureFlagController.state).toStrictEqual({
+          remoteFeatureFlags: [],
+          cacheTimestamp: 0,
+        });
+      });
+
+      it('should enable/disable feature flag fetching based on useExternalServices in PreferenceController', async () => {
+        const { remoteFeatureFlagController } = localMetamaskController;
+
+        // Initially disabled
+        let flags = await remoteFeatureFlagController.getRemoteFeatureFlags();
+        expect(flags).toStrictEqual([]);
+
+        // Enable external services
+        await simulatePreferencesChange({
+          useExternalServices: true,
+        });
+
+        // Mock the service to return some flags
+        const mockFlags = [{ 'test-flag': true }];
+        jest
+          .spyOn(remoteFeatureFlagController, 'getRemoteFeatureFlags')
+          .mockResolvedValueOnce(mockFlags);
+
+        // Should now fetch flags
+        flags = await remoteFeatureFlagController.getRemoteFeatureFlags();
+        expect(flags).toStrictEqual(mockFlags);
+
+        // Disable external services
+        await simulatePreferencesChange({
+          useExternalServices: false,
+        });
+
+        // Should return empty array again
+        flags = await remoteFeatureFlagController.getRemoteFeatureFlags();
+        expect(flags).toStrictEqual([]);
+      });
+    });
+
+    describe('_getConfigForRemoteFeatureFlagRequest', () => {
+      it('should return config in mapping', async () => {
+        const result =
+          await metamaskController._getConfigForRemoteFeatureFlagRequest();
+        expect(result).toStrictEqual({
+          distribution: 'main',
+          environment: 'dev',
+        });
+      });
+
+      it('should return config when not matching default mapping', async () => {
+        process.env.METAMASK_BUILD_TYPE = 'beta';
+        process.env.METAMASK_ENVIRONMENT = ENVIRONMENT.RELEASE_CANDIDATE;
+
+        const result =
+          await metamaskController._getConfigForRemoteFeatureFlagRequest();
+        expect(result).toStrictEqual({
+          distribution: 'main',
+          environment: 'rc',
+        });
       });
     });
   });

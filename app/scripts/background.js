@@ -772,7 +772,6 @@ export function setupController(
   //
   // MetaMask Controller
   //
-
   controller = new MetamaskController({
     infuraProjectId: process.env.INFURA_PROJECT_ID,
     // User confirmation callbacks:
@@ -885,12 +884,16 @@ export function setupController(
         senderUrl?.origin === `chrome-extension://${browser.runtime.id}`;
     }
 
+    controller.remoteFeatureFlagController.getRemoteFeatureFlags();
+
     if (isMetaMaskInternalProcess) {
       const portStream =
         overrides?.getPortStream?.(remotePort) || new PortStream(remotePort);
       // communication with popup
       controller.isClientOpen = true;
       controller.setupTrustedCommunication(portStream, remotePort.sender);
+      // initialize the request to fetch remote feature flags
+      controller.remoteFeatureFlagController.getRemoteFeatureFlags();
 
       if (processName === ENVIRONMENT_TYPE_POPUP) {
         openPopupCount += 1;

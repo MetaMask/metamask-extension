@@ -125,7 +125,6 @@ async function setupMocking(
   });
 
   const mockedEndpoint = await testSpecificMock(server);
-
   // Mocks below this line can be overridden by test-specific mocks
 
   // Account link
@@ -737,6 +736,21 @@ async function setupMocking(
       statusCode: 404,
     };
   });
+
+  // remote feature flags
+  await server
+    .forGet('https://client-config.api.cx.metamask.io/v1/flags')
+    .withQuery({
+      client: 'extension',
+      distribution: 'main',
+      environment: 'dev',
+    })
+    .thenCallback(() => {
+      return {
+        statusCode: 200,
+        json: [{ feature1: true, feature2: false }],
+      };
+    });
 
   /**
    * Returns an array of alphanumerically sorted hostnames that were requested

@@ -6139,6 +6139,17 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@metamask/remote-feature-flag-controller@file:../core/packages/remote-feature-flag-controller::locator=metamask-crx%40workspace%3A.":
+  version: 0.0.0
+  resolution: "@metamask/remote-feature-flag-controller@file:../core/packages/remote-feature-flag-controller#../core/packages/remote-feature-flag-controller::hash=fceb11&locator=metamask-crx%40workspace%3A."
+  dependencies:
+    "@metamask/base-controller": "npm:^7.0.2"
+    "@metamask/utils": "npm:^10.0.0"
+    cockatiel: "npm:^3.1.2"
+  checksum: 10/4cdf15ef3c2aafc3c9d9d7a224d1af72c7c06535b5d1227d509ccef9d8c240211a97b7e021f957b630473937c1107097017b7c660456c1bde1f95055ff3524b6
+  languageName: node
+  linkType: hard
+
 "@metamask/rpc-errors@npm:^6.0.0, @metamask/rpc-errors@npm:^6.2.1, @metamask/rpc-errors@npm:^6.3.0, @metamask/rpc-errors@npm:^6.3.1":
   version: 6.4.0
   resolution: "@metamask/rpc-errors@npm:6.4.0"
@@ -26552,6 +26563,7 @@ __metadata:
     "@metamask/providers": "npm:^18.2.0"
     "@metamask/queued-request-controller": "npm:^7.0.1"
     "@metamask/rate-limit-controller": "npm:^6.0.0"
+    "@metamask/remote-feature-flag-controller": "file:../core/packages/remote-feature-flag-controller"
     "@metamask/rpc-errors": "npm:^7.0.0"
     "@metamask/safe-event-emitter": "npm:^3.1.1"
     "@metamask/scure-bip39": "npm:^2.0.3"
