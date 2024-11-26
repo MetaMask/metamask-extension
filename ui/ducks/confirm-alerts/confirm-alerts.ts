@@ -1,3 +1,4 @@
+import { ReactNode } from 'react';
 import { SecurityProvider } from '../../../shared/constants/security-provider';
 import { Severity } from '../../helpers/constants/design-system';
 
@@ -36,7 +37,7 @@ export type Alert = {
   /**
    * The message is a summary of the alert details.
    */
-  message: string;
+  message: string | ReactNode;
 
   /**
    * The security provider associated with the alert.

@@ -440,9 +440,6 @@
   "alertMessageNoGasPrice": {
     "message": "We can’t move forward with this transaction until you manually update the fee."
   },
-  "alertMessagePendingTransactions": {
-    "message": "This transaction won’t go through until a previous transaction is complete. Learn how to cancel or speed up a transaction."
-  },
   "alertMessageSignInDomainMismatch": {
     "message": "The site making the request is not the site you’re signing into. This could be an attempt to steal your login credentials."
   },
@@ -745,7 +742,7 @@
   },
   "betaHeaderText": {
     "message": "This is a beta version. Please report bugs $1",
-    "description": "$1 represents the word 'here' in a hyperlink"
+    "description": "$1 represents the words 'here' in a hyperlink"
   },
   "betaMetamaskInstitutionalVersion": {
     "message": "MetaMask Institutional Beta Version"
@@ -3986,6 +3983,13 @@
   },
   "pending": {
     "message": "Pending"
+  },
+  "pendingTransactionAlertMessage": {
+    "message": "This transaction won't go through until a previous transaction is complete. Learn $1.",
+    "description": "$1 represents the words 'how to cancel or speed up a transaction' in a hyperlink"
+  },
+  "pendingTransactionAlertMessageHyperlink": {
+    "message": "how to cancel or speed up a transaction"
   },
   "pendingTransactionInfo": {
     "message": "This transaction will not process until that one is complete."

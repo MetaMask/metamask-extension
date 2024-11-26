@@ -1,14 +1,14 @@
 import { TransactionMeta } from '@metamask/transaction-controller';
 import { useMemo } from 'react';
 import { useSelector } from 'react-redux';
-
-import { submittedPendingTransactionsSelector } from '../../../../../selectors';
-import { useI18nContext } from '../../../../../hooks/useI18nContext';
+import { isCorrectDeveloperTransactionType } from '../../../../../../shared/lib/confirmation.utils';
+import { RowAlertKey } from '../../../../../components/app/confirm/info/row/constants';
 import { Alert } from '../../../../../ducks/confirm-alerts/confirm-alerts';
 import { Severity } from '../../../../../helpers/constants/design-system';
-import { RowAlertKey } from '../../../../../components/app/confirm/info/row/constants';
+import { useI18nContext } from '../../../../../hooks/useI18nContext';
+import { submittedPendingTransactionsSelector } from '../../../../../selectors';
 import { useConfirmContext } from '../../../context/confirm';
-import { isCorrectDeveloperTransactionType } from '../../../../../../shared/lib/confirmation.utils';
+import { PendingTransactionAlertMessage } from './PendingTransactionAlertMessage';
 
 export function usePendingTransactionAlerts(): Alert[] {
   const t = useI18nContext();
@@ -18,8 +18,10 @@ export function usePendingTransactionAlerts(): Alert[] {
 
   const isValidType = isCorrectDeveloperTransactionType(type);
 
-  const hasPendingTransactions =
-    isValidType && Boolean(pendingTransactions.length);
+  // const hasPendingTransactions =
+  //   isValidType && Boolean(pendingTransactions.length);
+
+  const hasPendingTransactions = true;
 
   return useMemo(() => {
     if (!hasPendingTransactions) {
@@ -30,7 +32,7 @@ export function usePendingTransactionAlerts(): Alert[] {
       {
         field: RowAlertKey.Speed,
         key: 'pendingTransactions',
-        message: t('alertMessagePendingTransactions'),
+        message: PendingTransactionAlertMessage(),
         reason: t('alertReasonPendingTransactions'),
         severity: Severity.Warning,
       },
