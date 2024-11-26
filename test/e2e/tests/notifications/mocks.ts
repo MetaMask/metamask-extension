@@ -118,6 +118,7 @@ const INFURA_URL =
 
 /**
  * Sets up mock responses for Infura balance checks and account syncing
+ *
  * @param mockServer - The Mockttp server instance
  * @param userStorageMockttpController - Controller for user storage mocks
  * @param options - Configuration options for mocking
