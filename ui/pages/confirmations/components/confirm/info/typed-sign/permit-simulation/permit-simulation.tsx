@@ -11,7 +11,7 @@ const PermitSimulation: React.FC<object> = () => {
 
   if (
     decodingData?.error ||
-    (decodingData === undefined && decodingLoading !== true)
+    (decodingData?.stateChanges === undefined && decodingLoading !== true)
   ) {
     return <DefaultSimulation />;
   }

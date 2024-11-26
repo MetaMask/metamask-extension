@@ -1,6 +1,7 @@
 import { strict as assert } from 'assert';
 import { Driver } from '../../webdriver/driver';
 import { Ganache } from '../../seeder/ganache';
+import { getCleanAppState } from '../../helpers';
 import HeaderNavbar from './header-navbar';
 
 class HomePage {
@@ -282,13 +283,15 @@ class HomePage {
     );
   }
 
-  async check_ganacheBalanceIsDisplayed(
-    ganacheServer?: Ganache,
+  async check_localBlockchainBalanceIsDisplayed(
+    localBlockchainServer?: Ganache,
     address = null,
   ): Promise<void> {
     let expectedBalance: string;
-    if (ganacheServer) {
-      expectedBalance = (await ganacheServer.getBalance(address)).toString();
+    if (localBlockchainServer) {
+      expectedBalance = (
+        await localBlockchainServer.getBalance(address)
+      ).toString();
     } else {
       expectedBalance = '0';
     }
@@ -347,6 +350,17 @@ class HomePage {
     console.log(
       `Amount for transaction ${expectedNumber} is displayed as ${expectedAmount}`,
     );
+  }
+
+  /**
+   * This function checks if account syncing has been successfully completed at least once.
+   */
+  async check_hasAccountSyncingSyncedAtLeastOnce(): Promise<void> {
+    console.log('Check if account syncing has synced at least once');
+    await this.driver.wait(async () => {
+      const uiState = await getCleanAppState(this.driver);
+      return uiState.metamask.hasAccountSyncingSyncedAtLeastOnce === true;
+    }, 10000);
   }
 }
 

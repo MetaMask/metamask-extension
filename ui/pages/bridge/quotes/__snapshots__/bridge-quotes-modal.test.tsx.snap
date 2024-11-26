@@ -33,6 +33,20 @@ exports[`BridgeQuotesModal should render the modal 1`] = `
             class="mm-box mm-header-base mm-modal-header mm-box--padding-right-4 mm-box--padding-bottom-4 mm-box--padding-left-4 mm-box--display-flex mm-box--justify-content-space-between"
           >
             <div
+              class="mm-box"
+              style="min-width: 0px;"
+            >
+              <button
+                aria-label="Back"
+                class="mm-box mm-button-icon mm-button-icon--size-sm mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-default mm-box--background-color-transparent mm-box--rounded-lg"
+              >
+                <span
+                  class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-inherit"
+                  style="mask-image: url('./images/icons/arrow-left.svg');"
+                />
+              </button>
+            </div>
+            <div
               class="mm-box mm-box--width-full"
             >
               <h4
@@ -41,23 +55,9 @@ exports[`BridgeQuotesModal should render the modal 1`] = `
                 Select a quote
               </h4>
             </div>
-            <div
-              class="mm-box mm-box--display-flex mm-box--justify-content-flex-end"
-              style="min-width: 0px;"
-            >
-              <button
-                aria-label="Close"
-                class="mm-box mm-button-icon mm-button-icon--size-sm mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-default mm-box--background-color-transparent mm-box--rounded-lg"
-              >
-                <span
-                  class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-inherit"
-                  style="mask-image: url('./images/icons/close.svg');"
-                />
-              </button>
-            </div>
           </header>
           <div
-            class="mm-box quotes-modal__column-header"
+            class="mm-box mm-container mm-container--max-width-undefined mm-box--padding-4 mm-box--sm:padding-3 mm-box--padding-bottom-1 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-nowrap mm-box--justify-content-space-between mm-box--align-items-center"
           >
             <button
               class="mm-box mm-text mm-button-base mm-button-link mm-button-link--size-auto mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-0 mm-box--padding-left-0 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-default mm-box--background-color-transparent"
@@ -65,29 +65,25 @@ exports[`BridgeQuotesModal should render the modal 1`] = `
               <span
                 class="mm-box mm-text mm-text--inherit mm-box--color-primary-default"
               >
-                <span
-                  class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-inherit"
-                  style="mask-image: url('./images/icons/arrow-2-down.svg');"
-                />
                 <p
-                  class="mm-box mm-text mm-text--body-md mm-box--color-text-default"
+                  class="mm-box mm-text mm-text--body-sm mm-box--color-primary-default"
                 >
-                  Overall cost
+                  Net cost
                 </p>
               </span>
+              <span
+                class="mm-box mm-icon mm-icon--size-xs mm-box--margin-inline-start-1 mm-box--display-inline-block mm-box--color-inherit"
+                style="mask-image: url('./images/icons/arrow-2-up.svg');"
+              />
             </button>
             <button
-              class="mm-box mm-text mm-button-base mm-button-link mm-button-link--size-auto mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-0 mm-box--padding-left-0 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-default mm-box--background-color-transparent"
+              class="mm-box mm-text mm-button-base mm-button-link mm-button-link--size-auto mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-0 mm-box--padding-left-0 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-alternative mm-box--background-color-transparent"
             >
               <span
-                class="mm-box mm-text mm-text--inherit mm-box--color-primary-default"
+                class="mm-box mm-text mm-text--inherit mm-box--color-text-alternative"
               >
-                <span
-                  class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-inherit"
-                  style="mask-image: url('./images/icons/arrow-2-down.svg');"
-                />
                 <p
-                  class="mm-box mm-text mm-text--body-md mm-box--color-text-default"
+                  class="mm-box mm-text mm-text--body-sm mm-box--color-text-alternative"
                 >
                   Time
                 </p>
@@ -95,35 +91,84 @@ exports[`BridgeQuotesModal should render the modal 1`] = `
             </button>
           </div>
           <div
-            class="mm-box quotes-modal__quotes"
+            class="mm-box mm-container mm-container--max-width-undefined mm-box--display-flex mm-box--flex-direction-column mm-box--width-full"
+            style="overflow: scroll;"
           >
             <div
-              class="mm-box quotes-modal__quotes__row"
+              class="mm-box mm-container mm-container--max-width-undefined mm-box--padding-top-3 mm-box--padding-bottom-3 mm-box--padding-inline-4 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-nowrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--background-color-primary-muted"
+              style="position: relative; height: 78px;"
             >
-              <p
-                class="mm-box mm-text mm-text--body-md mm-box--color-text-default"
+              <div
+                class="mm-box mm-container mm-container--max-width-undefined mm-box--display-flex mm-box--flex-direction-column mm-box--width-full mm-box--background-color-primary-default"
+                style="position: absolute; left: 4px; top: 4px; height: 70px; width: 4px; border-radius: 8px;"
+              />
+              <div
+                class="mm-box mm-container mm-container--max-width-undefined mm-box--display-flex mm-box--flex-direction-column mm-box--width-full"
               >
-                $0.01
-              </p>
-              <p
-                class="mm-box mm-text mm-text--body-md mm-box--color-text-default"
+                <p
+                  class="mm-box mm-text mm-text--body-md mm-box--color-text-default"
+                />
+                <p
+                  class="mm-box mm-text mm-text--body-xs-medium mm-box--color-text-alternative"
+                >
+                  $3 network fee
+                </p>
+                <p
+                  class="mm-box mm-text mm-text--body-xs-medium mm-box--color-text-alternative"
+                >
+                  14 USDC receive amount
+                </p>
+              </div>
+              <div
+                class="mm-box mm-container mm-container--max-width-undefined mm-box--display-flex mm-box--flex-direction-column mm-box--align-items-flex-end mm-box--width-full"
               >
-                1 minutes
-              </p>
+                <p
+                  class="mm-box mm-text mm-text--body-md mm-box--color-text-default"
+                >
+                  1 min
+                </p>
+                <p
+                  class="mm-box mm-text mm-text--body-xs-medium mm-box--color-text-alternative"
+                >
+                  Across
+                </p>
+              </div>
             </div>
             <div
-              class="mm-box quotes-modal__quotes__row"
+              class="mm-box mm-container mm-container--max-width-undefined mm-box--padding-top-3 mm-box--padding-bottom-3 mm-box--padding-inline-4 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-nowrap mm-box--justify-content-space-between mm-box--align-items-flex-start"
+              style="position: relative; height: 78px;"
             >
-              <p
-                class="mm-box mm-text mm-text--body-md mm-box--color-text-default"
+              <div
+                class="mm-box mm-container mm-container--max-width-undefined mm-box--display-flex mm-box--flex-direction-column mm-box--width-full"
               >
-                $0.01
-              </p>
-              <p
-                class="mm-box mm-text mm-text--body-md mm-box--color-text-default"
+                <p
+                  class="mm-box mm-text mm-text--body-md mm-box--color-text-default"
+                />
+                <p
+                  class="mm-box mm-text mm-text--body-xs-medium mm-box--color-text-alternative"
+                >
+                  $3 network fee
+                </p>
+                <p
+                  class="mm-box mm-text mm-text--body-xs-medium mm-box--color-text-alternative"
+                >
+                  14 USDC receive amount
+                </p>
+              </div>
+              <div
+                class="mm-box mm-container mm-container--max-width-undefined mm-box--display-flex mm-box--flex-direction-column mm-box--align-items-flex-end mm-box--width-full"
               >
-                26 minutes
-              </p>
+                <p
+                  class="mm-box mm-text mm-text--body-md mm-box--color-text-default"
+                >
+                  26 min
+                </p>
+                <p
+                  class="mm-box mm-text mm-text--body-xs-medium mm-box--color-text-alternative"
+                >
+                  Celercircle
+                </p>
+              </div>
             </div>
           </div>
         </section>
