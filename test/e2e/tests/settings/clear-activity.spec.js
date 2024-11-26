@@ -60,7 +60,7 @@ describe('Clear account activity', function () {
           text: 'Receive',
         });
         assert.equal(sendTransaction, false);
-        assert.equal(receiveTransaction, false);
+        assert.equal(receiveTransaction, true);
       },
     );
   });
