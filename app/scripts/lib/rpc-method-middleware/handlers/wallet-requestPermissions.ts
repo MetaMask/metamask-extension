@@ -176,7 +176,14 @@ async function requestPermissionsImplementation(
       optionalScopes: {},
       isMultichainOrigin: false,
     };
-    if (!isSnapId(origin)) {
+
+    if (isSnapId(origin)) {
+      newCaveatValue.optionalScopes = {
+        'wallet:eip155': {
+          accounts: [],
+        },
+      };
+    } else {
       newCaveatValue = setPermittedEthChainIds(
         newCaveatValue,
         legacyApproval.approvedChainIds,
