@@ -5954,23 +5954,21 @@ export default class MetamaskController extends EventEmitter {
       providerStream,
       outStream,
       (err) => {
+        // handle any middleware cleanup
+        // TODO: is this needed or does the middleware destory chain handle this?
         this.multichainMiddlewareManager.removeMiddlewareByOriginAndTabId(
           origin,
           tabId,
         );
+        // TODO: is this needed or does the middleware destory chain handle this?
         this.multichainSubscriptionManager.unsubscribeByOriginAndTabId(
           origin,
           tabId,
         );
-
-        // handle any middleware cleanup
-        engine._middleware.forEach((mid) => {
-          if (mid.destroy && typeof mid.destroy === 'function') {
-            mid.destroy();
-          }
-        });
+        engine.destroy();
         connectionId && this.removeConnection(origin, connectionId);
-        if (err) {
+        // For context and todos related to the error message match, see https://github.com/MetaMask/metamask-extension/issues/26337
+        if (err && !err.message?.match('Premature close')) {
           log.error(err);
         }
       },
