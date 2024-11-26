@@ -28,6 +28,7 @@ import {
   getToToken,
   getToTokens,
   getToTopAssets,
+  getValidationErrors,
 } from './selectors';
 
 describe('Bridge selectors', () => {
@@ -910,6 +911,105 @@ describe('Bridge selectors', () => {
       );
       expect(sortedQuotes[2]?.quote.requestId).toStrictEqual(
         '381c23bc-e3e4-48fe-bc53-257471e388ad',
+      );
+    });
+  });
+
+  describe('getValidationErrors', () => {
+    it('should return isNoQuotesAvailable=true', () => {
+      const state = createBridgeMockStore(
+        {},
+        { toChainId: '0x1' },
+        {
+          srcTokens: { '0x00': { address: '0x00', symbol: 'TEST' } },
+          srcTopAssets: [{ address: '0x00', symbol: 'TEST' }],
+          quotes: [],
+          quotesLastFetched: Date.now(),
+        },
+      );
+      const result = getValidationErrors(state as never);
+
+      expect(result.isNoQuotesAvailable).toStrictEqual(true);
+    });
+
+    it('should  return isNoQuotesAvailable=false on initial load', () => {
+      const state = createBridgeMockStore(
+        {},
+        { toChainId: '0x1' },
+        {
+          srcTokens: { '0x00': { address: '0x00', symbol: 'TEST' } },
+          srcTopAssets: [{ address: '0x00', symbol: 'TEST' }],
+          quotes: [],
+        },
+      );
+      const result = getValidationErrors(state as never);
+
+      expect(result.isNoQuotesAvailable).toStrictEqual(false);
+    });
+
+    it('should return isInsufficientBalance=true', () => {
+      const state = createBridgeMockStore(
+        {},
+        { toChainId: '0x1', fromTokenInputValue: '0.001' },
+        {
+          srcTokens: { '0x00': { address: '0x00', symbol: 'TEST' } },
+          srcTopAssets: [{ address: '0x00', symbol: 'TEST' }],
+          quotesLastFetched: Date.now(),
+        },
+      );
+      const result = getValidationErrors(state as never);
+
+      expect(
+        result.isInsufficientBalance(new BigNumber(0.00099)),
+      ).toStrictEqual(true);
+    });
+
+    it('should return isInsufficientBalance=false when there is no input amount', () => {
+      const state = createBridgeMockStore(
+        {},
+        { toChainId: '0x1' },
+        {
+          srcTokens: { '0x00': { address: '0x00', symbol: 'TEST' } },
+          srcTopAssets: [{ address: '0x00', symbol: 'TEST' }],
+          quotesLastFetched: Date.now(),
+        },
+      );
+      const result = getValidationErrors(state as never);
+
+      expect(
+        result.isInsufficientBalance(new BigNumber(0.00099)),
+      ).toStrictEqual(false);
+    });
+
+    it('should return isInsufficientBalance=false when there is no balance', () => {
+      const state = createBridgeMockStore(
+        {},
+        { toChainId: '0x1' },
+        {
+          srcTokens: { '0x00': { address: '0x00', symbol: 'TEST' } },
+          srcTopAssets: [{ address: '0x00', symbol: 'TEST' }],
+          quotesLastFetched: Date.now(),
+        },
+      );
+      const result = getValidationErrors(state as never);
+
+      expect(result.isInsufficientBalance()).toStrictEqual(false);
+    });
+
+    it('should return isInsufficientBalance=false when balance is 0', () => {
+      const state = createBridgeMockStore(
+        {},
+        { toChainId: '0x1', fromTokenInputValue: '0.001' },
+        {
+          srcTokens: { '0x00': { address: '0x00', symbol: 'TEST' } },
+          srcTopAssets: [{ address: '0x00', symbol: 'TEST' }],
+          quotesLastFetched: Date.now(),
+        },
+      );
+      const result = getValidationErrors(state as never);
+
+      expect(result.isInsufficientBalance(new BigNumber(0))).toStrictEqual(
+        true,
       );
     });
   });

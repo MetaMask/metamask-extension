@@ -375,3 +375,17 @@ export const getIsBridgeTx = createDeepEqualSelector(
       ? fromChain.chainId !== toChain.chainId
       : false,
 );
+
+export const getValidationErrors = createDeepEqualSelector(
+  getBridgeQuotes,
+  getFromAmount,
+  ({ activeQuote, quotesLastFetchedMs, isLoading }, fromAmount) => {
+    return {
+      isNoQuotesAvailable: Boolean(
+        !activeQuote && quotesLastFetchedMs && !isLoading,
+      ),
+      isInsufficientBalance: (balance?: BigNumber) =>
+        fromAmount && balance !== undefined ? balance.lt(fromAmount) : false,
+    };
+  },
+);
