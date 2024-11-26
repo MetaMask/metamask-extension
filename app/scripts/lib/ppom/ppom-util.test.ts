@@ -198,6 +198,7 @@ describe('PPOM Utils', () => {
           result_type: BlockaidResultType.Errored,
           reason: BlockaidReason.errored,
           description: 'Test Error: Test error message',
+          source: SecurityAlertSource.Local,
         },
       );
     });
@@ -219,6 +220,7 @@ describe('PPOM Utils', () => {
           result_type: BlockaidResultType.Errored,
           reason: BlockaidReason.errored,
           description: 'Test Error: Test error message',
+          source: SecurityAlertSource.Local,
         },
       );
     });
