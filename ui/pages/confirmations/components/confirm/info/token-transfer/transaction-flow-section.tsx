@@ -58,6 +58,9 @@ export const TransactionFlowSection = () => {
           alertKey={RowAlertKey.SigningInWith}
           label={t('from')}
           ownerId={transactionMeta.id}
+          style={{
+            flexDirection: FlexDirection.Column,
+          }}
         >
           <Box marginTop={1}>
             <ConfirmInfoRowAddress
@@ -77,6 +80,9 @@ export const TransactionFlowSection = () => {
             alertKey={RowAlertKey.FirstTimeInteraction}
             label={t('to')}
             ownerId={transactionMeta.id}
+            style={{
+              flexDirection: FlexDirection.Column,
+            }}
           >
             <Box marginTop={1}>
               <ConfirmInfoRowAddress
