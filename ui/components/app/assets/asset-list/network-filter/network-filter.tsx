@@ -194,6 +194,7 @@ const NetworkFilter = ({ handleClose }: SortControlProps) => {
             </Text>
           </Box>
           <AvatarNetwork
+            size={AvatarNetworkSize.Sm}
             name="Current"
             src={currentNetwork?.rpcPrefs?.imageUrl}
           />
