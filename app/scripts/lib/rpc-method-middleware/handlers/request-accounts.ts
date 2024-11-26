@@ -143,7 +143,13 @@ async function requestEthereumAccountsHandler(
     isMultichainOrigin: false,
   };
 
-  if (!isSnapId(origin)) {
+  if (isSnapId(origin)) {
+    caveatValue.optionalScopes = {
+      'wallet:eip155': {
+        accounts: [],
+      },
+    };
+  } else {
     caveatValue = setPermittedEthChainIds(
       caveatValue,
       legacyApproval.approvedChainIds,

@@ -579,14 +579,18 @@ describe('requestPermissionsHandler', () => {
       expect(MockMultichain.setPermittedEthChainIds).not.toHaveBeenCalled();
     });
 
-    it('sets the approved accounts on an empty CAIP-25 caveat with isMultichainOrigin: false if origin is snapId', async () => {
+    it('sets the approved accounts for the `wallet:eip155` scope with isMultichainOrigin: false if origin is snapId', async () => {
       const { handler } = createMockedHandler();
 
       await handler({ ...getBaseRequest(), origin: 'npm:snapm' });
       expect(MockMultichain.setEthAccounts).toHaveBeenCalledWith(
         {
           requiredScopes: {},
-          optionalScopes: {},
+          optionalScopes: {
+            'wallet:eip155': {
+              accounts: [],
+            },
+          },
           isMultichainOrigin: false,
         },
         ['0xdeadbeef'],

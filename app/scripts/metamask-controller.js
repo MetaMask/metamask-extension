@@ -201,7 +201,6 @@ import {
 } from '../../shared/constants/hardware-wallets';
 import { KeyringType } from '../../shared/constants/keyring';
 import {
-  CaveatTypes,
   RestrictedMethods,
   EndowmentPermissions,
   ExcludedSnapPermissions,
@@ -337,7 +336,6 @@ import EncryptionPublicKeyController from './controllers/encryption-public-key';
 import AppMetadataController from './controllers/app-metadata';
 
 import {
-  CaveatMutatorFactories,
   getAuthorizedScopesByOrigin,
   getCaveatSpecifications,
   getChangedAuthorizations,
@@ -5298,13 +5296,6 @@ export default class MetamaskController extends EventEmitter {
    * to third parties.
    */
   removeAllAccountPermissions(targetAccount) {
-    this.permissionController.updatePermissionsByCaveat(
-      CaveatTypes.restrictReturnedAccounts,
-      (existingAccounts) =>
-        CaveatMutatorFactories[
-          CaveatTypes.restrictReturnedAccounts
-        ].removeAccount(targetAccount, existingAccounts),
-    );
     this.permissionController.updatePermissionsByCaveat(
       Caip25CaveatType,
       (existingScopes) =>
