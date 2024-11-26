@@ -101,11 +101,21 @@ const AssetPage = ({
   const selectedAccount = useSelector(getSelectedAccount);
   const currency = useSelector(getCurrentCurrency);
   const conversionRate = useSelector(getConversionRate);
-  const isBridgeChain = useSelector(getIsBridgeChain);
   const isBuyableChain = useSelector(getIsNativeTokenBuyable);
-  const defaultSwapsToken = useSelector(getSwapsDefaultToken, isEqual);
+
+  const { chainId, type, symbol, name, image, decimals } = asset;
+
+  // These need to be specific to the asset and not the current chain
+  const defaultSwapsToken = useSelector(
+    (state) => getSwapsDefaultToken(state, chainId),
+    isEqual,
+  );
+  const isSwapsChain = useSelector((state) => getIsSwapsChain(state, chainId));
+  const isBridgeChain = useSelector((state) =>
+    getIsBridgeChain(state, chainId),
+  );
+
   const account = useSelector(getSelectedInternalAccount, isEqual);
-  const isSwapsChain = useSelector(getIsSwapsChain);
   const isSigningEnabled =
     account.methods.includes(EthMethod.SignTransaction) ||
     account.methods.includes(EthMethod.SignUserOperation);
@@ -132,7 +142,6 @@ const AssetPage = ({
   const selectedAccountTokenBalancesAcrossChains =
     tokenBalances[selectedAccount.address];
 
-  const { chainId, type, symbol, name, image, decimals } = asset;
   const isMetaMetricsEnabled = useSelector(getParticipateInMetaMetrics);
   const isMarketingEnabled = useSelector(getDataCollectionForMarketing);
   const metaMetricsId = useSelector(getMetaMetricsId);
