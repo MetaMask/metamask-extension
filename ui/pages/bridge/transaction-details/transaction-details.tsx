@@ -15,10 +15,7 @@ import {
 import { Content, Header } from '../../../components/multichain/pages/page';
 import { selectBridgeHistoryForAccount } from '../../../ducks/bridge-status/selectors';
 import useBridgeChainInfo from '../../../hooks/bridge/useBridgeChainInfo';
-import {
-  getNetworkConfigurationsByChainId,
-  selectedAddressTxListSelector,
-} from '../../../selectors';
+import { getNetworkConfigurationsByChainId } from '../../../../shared/modules/selectors/networks';
 import { getTransactionBreakdownData } from '../../../components/app/transaction-breakdown/transaction-breakdown-utils';
 import { MetaMaskReduxState } from '../../../store/store';
 import { hexToDecimal } from '../../../../shared/modules/conversion.utils';
@@ -39,6 +36,7 @@ import { ConfirmInfoRowDivider as Divider } from '../../../components/app/confir
 import { calcTokenAmount } from '../../../../shared/lib/transactions-controller-utils';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP } from '../../../../shared/constants/network';
+import { selectedAddressTxListSelector } from '../../../selectors';
 import TransactionDetailRow from './transaction-detail-row';
 import BridgeExplorerLinks from './bridge-explorer-links';
 import BridgeStepList from './bridge-step-list';
