@@ -212,7 +212,8 @@ async function walletCreateSessionHandler(
       requiredScopes: getInternalScopesObject(supportedRequiredScopes),
       optionalScopes: getInternalScopesObject(supportedOptionalScopes),
       isMultichainOrigin: true,
-      // TODO: preserve sessionProperties?
+      // NOTE: We aren't persisting sessionProperties from the CAIP-25
+      // request because we don't do anything with it yet.
     };
 
     caip25CaveatValue = setPermittedEthChainIds(
