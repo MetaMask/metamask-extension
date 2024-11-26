@@ -9,6 +9,7 @@ import {
 import { KeyringTypes } from '@metamask/keyring-controller';
 import { v4 as uuidv4 } from 'uuid';
 import { keyringTypeToName } from '@metamask/accounts-controller';
+import { Json } from '@metamask/utils';
 import {
   DraftTransaction,
   draftTransactionInitialState,
@@ -186,6 +187,7 @@ export function createMockInternalAccount({
   keyringType = KeyringTypes.hd,
   lastSelected = 0,
   snapOptions = undefined,
+  options = undefined,
 }: {
   name?: string;
   address?: string;
@@ -197,6 +199,7 @@ export function createMockInternalAccount({
     name: string;
     id: string;
   };
+  options?: Record<string, Json>;
 } = {}) {
   let methods;
 
@@ -236,7 +239,7 @@ export function createMockInternalAccount({
       snap: snapOptions,
       lastSelected,
     },
-    options: {},
+    options: options ?? {},
     methods,
     type,
   };
