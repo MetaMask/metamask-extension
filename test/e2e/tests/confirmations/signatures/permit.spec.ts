@@ -67,8 +67,6 @@ describe('Confirmation Signature - Permit @no-mmi', function (this: Suite) {
           signatureType: 'eth_signTypedData_v4',
           primaryType: 'Permit',
           uiCustomizations: ['redesigned_confirmation', 'permit'],
-          decodingChangeTypes: [],
-          decodingResponse: 'NO_CHANGE',
         });
 
         await assertVerifiedResults(driver, publicAddress);
@@ -108,8 +106,6 @@ describe('Confirmation Signature - Permit @no-mmi', function (this: Suite) {
           primaryType: 'Permit',
           uiCustomizations: ['redesigned_confirmation', 'permit'],
           location: 'confirmation',
-          decodingChangeTypes: [],
-          decodingResponse: 'NO_CHANGE',
         });
       },
       mockSignatureRejected,
