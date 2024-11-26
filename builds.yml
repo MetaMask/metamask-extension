@@ -64,6 +64,7 @@ buildTypes:
     features:
       - build-flask
       - keyring-snaps
+      - institutional-snap
     env:
       - INFURA_FLASK_PROJECT_ID
       - SEGMENT_FLASK_WRITE_KEY
@@ -138,6 +139,9 @@ features:
   solana:
     assets:
       - ./{app,shared,ui}/**/solana/**
+  institutional-snap:
+    assets:
+      - ./{app,shared,ui}/**/institutional-snap/**
 
 # Env variables that are required for all types of builds
 #

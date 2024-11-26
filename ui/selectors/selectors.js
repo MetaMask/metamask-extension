@@ -226,6 +226,14 @@ export function getAccountType(state) {
   return getAccountTypeForKeyring(currentKeyring);
 }
 
+///: BEGIN:ONLY_INCLUDE_IF(institutional-snap)
+export function accountRequiresPublicationDeferral(state, address) {
+  const account = getInternalAccountByAddress(state, address);
+  const { options } = account;
+
+  return Boolean(options?.custodian?.deferPublication);
+}
+///: END:ONLY_INCLUDE_IF
 export function getAccountTypeForKeyring(keyring) {
   if (!keyring) {
     return '';
@@ -2673,6 +2681,18 @@ export function getIsBitcoinSupportEnabled(state) {
  */
 export function getIsSolanaSupportEnabled(state) {
   return state.metamask.solanaSupportEnabled;
+}
+///: END:ONLY_INCLUDE_IF
+
+///: BEGIN:ONLY_INCLUDE_IF(institutional-snap)
+/**
+ * Get the state of the `manageInstitutionalWallets` flag.
+ *
+ * @param {*} state
+ * @returns The state of the `manageInstitutionalWallets` flag.
+ */
+export function getManageInstitutionalWallets(state) {
+  return state.metamask.manageInstitutionalWallets;
 }
 ///: END:ONLY_INCLUDE_IF
 

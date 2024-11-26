@@ -354,6 +354,13 @@ import { addDappTransaction, addTransaction } from './lib/transaction/util';
 ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
 import { addTypedMessage, addPersonalMessage } from './lib/signature/util';
 ///: END:ONLY_INCLUDE_IF
+
+///: BEGIN:ONLY_INCLUDE_IF(institutional-snap)
+import {
+  deferPublicationHookFactory,
+  beforeCheckPendingTransactionHookFactory,
+} from './lib/transaction/institutional-snap/deferred-publication-hooks';
+///: END:ONLY_INCLUDE_IF
 import { LatticeKeyringOffscreen } from './lib/offscreen-bridge/lattice-offscreen-keyring';
 import PREINSTALLED_SNAPS from './snaps/preinstalled-snaps';
 import { WeakRefObjectMap } from './lib/WeakRefObjectMap';
@@ -1992,19 +1999,15 @@ export default class MetamaskController extends EventEmitter {
       testGasFeeFlows: process.env.TEST_GAS_FEE_FLOWS,
       trace,
       hooks: {
-        ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-        afterSign: (txMeta, signedEthTx) =>
-          afterTransactionSignMMI(
-            txMeta,
-            signedEthTx,
-            this.transactionUpdateController.addTransactionToWatchList.bind(
-              this.transactionUpdateController,
-            ),
+        ///: BEGIN:ONLY_INCLUDE_IF(institutional-snap)
+        beforePublish: deferPublicationHookFactory(
+          (...args) => this.txController.updateCustodialTransaction(...args),
+          this._getMetaMaskState.bind(this),
+        ),
+        beforeCheckPendingTransactions:
+          beforeCheckPendingTransactionHookFactory(
+            this._getMetaMaskState.bind(this),
           ),
-        beforeCheckPendingTransaction:
-          beforeCheckPendingTransactionMMI.bind(this),
-        beforePublish: beforeTransactionPublishMMI.bind(this),
-        getAdditionalSignArguments: getAdditionalSignArgumentsMMI.bind(this),
         ///: END:ONLY_INCLUDE_IF
         publish: this._publishSmartTransactionHook.bind(this),
       },
@@ -3668,6 +3671,11 @@ export default class MetamaskController extends EventEmitter {
           preferencesController,
         ),
       ///: END:ONLY_INCLUDE_IF
+
+      setManageInstitutionalWallets:
+        preferencesController.setManageInstitutionalWallets.bind(
+          preferencesController,
+        ),
 
       // AccountsController
       setSelectedInternalAccount: (id) => {

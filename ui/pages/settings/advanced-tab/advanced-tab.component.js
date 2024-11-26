@@ -64,6 +64,10 @@ export default class AdvancedTab extends PureComponent {
     setShowExtensionInFullSizeView: PropTypes.func.isRequired,
     overrideContentSecurityPolicyHeader: PropTypes.bool,
     setOverrideContentSecurityPolicyHeader: PropTypes.func.isRequired,
+    ///: BEGIN:ONLY_INCLUDE_IF(institutional-snap)
+    manageInstitutionalWallets: PropTypes.bool,
+    setManageInstitutionalWallets: PropTypes.func.isRequired,
+    ///: END:ONLY_INCLUDE_IF
   };
 
   state = {
@@ -625,6 +629,42 @@ export default class AdvancedTab extends PureComponent {
     );
   }
 
+  ///: BEGIN:ONLY_INCLUDE_IF(institutional-snap)
+  renderManageInstitutionalWallets() {
+    const { t } = this.context;
+    const { manageInstitutionalWallets, setManageInstitutionalWallets } =
+      this.props;
+
+    return (
+      <Box
+        ref={this.settingsRefs[9]}
+        className="settings-page__content-row"
+        data-testid="advanced-setting-dismiss-reminder"
+        display={Display.Flex}
+        flexDirection={FlexDirection.Row}
+        justifyContent={JustifyContent.spaceBetween}
+        gap={4}
+      >
+        <div className="settings-page__content-item">
+          <span>{t('manageInstitutionalWallets')}</span>
+          <div className="settings-page__content-description">
+            {t('manageInstitutionalWalletsDescription')}
+          </div>
+        </div>
+
+        <div className="settings-page__content-item-col">
+          <ToggleButton
+            value={manageInstitutionalWallets}
+            onToggle={(value) => setManageInstitutionalWallets(!value)}
+            offLabel={t('off')}
+            onLabel={t('on')}
+          />
+        </div>
+      </Box>
+    );
+  }
+  ///: END:ONLY_INCLUDE_IF
+
   render() {
     const { errorInSettings } = this.props;
     // When adding/removing/editing the order of renders, double-check the order of the settingsRefs. This affects settings-search.js
@@ -636,6 +676,7 @@ export default class AdvancedTab extends PureComponent {
         {this.renderStateLogs()}
         {this.renderResetAccount()}
         {this.renderToggleStxOptIn()}
+        {this.renderManageInstitutionalWallets()}
         {this.renderHexDataOptIn()}
         {this.renderShowConversionInTestnets()}
         {this.renderToggleTestNetworks()}

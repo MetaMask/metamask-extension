@@ -167,6 +167,9 @@ export type PreferencesControllerState = Omit<
   enableMV3TimestampSave: boolean;
   useExternalServices: boolean;
   textDirection?: string;
+  ///: BEGIN:ONLY_INCLUDE_IF(institutional-snap)
+  manageInstitutionalWallets: boolean;
+  ///: END:ONLY_INCLUDE_IF
 };
 
 /**
@@ -281,6 +284,9 @@ export const getDefaultPreferencesControllerState =
       [ETHERSCAN_SUPPORTED_CHAIN_IDS.MOONRIVER]: true,
       [ETHERSCAN_SUPPORTED_CHAIN_IDS.GNOSIS]: true,
     },
+    ///: BEGIN:ONLY_INCLUDE_IF(institutional-snap)
+    manageInstitutionalWallets: false,
+    ///: END:ONLY_INCLUDE_IF
   });
 
 /**
@@ -457,6 +463,12 @@ const controllerMetadata = {
   },
   isMultiAccountBalancesEnabled: { persist: true, anonymous: true },
   showIncomingTransactions: { persist: true, anonymous: true },
+  ///: BEGIN:ONLY_INCLUDE_IF(institutional-snap)
+  manageInstitutionalWallets: {
+    persist: true,
+    anonymous: false,
+  },
+  ///: END:ONLY_INCLUDE_IF
 };
 
 export class PreferencesController extends BaseController<
@@ -1045,6 +1057,19 @@ export class PreferencesController extends BaseController<
       state.incomingTransactionsPreferences = updatedValue;
     });
   }
+
+  ///: BEGIN:ONLY_INCLUDE_IF(institutional-snap)
+  /**
+   * A setter for the user preference to manage institutional wallets
+   *
+   * @param manageInstitutionalWallets - User preference for managing institutional wallets.
+   */
+  setManageInstitutionalWallets(manageInstitutionalWallets: boolean): void {
+    this.update((state) => {
+      state.manageInstitutionalWallets = manageInstitutionalWallets;
+    });
+  }
+  ///: END:ONLY_INCLUDE_IF
 
   setServiceWorkerKeepAlivePreference(value: boolean): void {
     this.update((state) => {
