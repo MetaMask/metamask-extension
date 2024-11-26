@@ -1,6 +1,7 @@
 import { Hex } from '@metamask/utils';
 import { BigNumber } from 'bignumber.js';
-import { addHexPrefix, BN } from 'ethereumjs-util';
+import BN from 'bn.js';
+import { addHexPrefix } from 'ethereumjs-util';
 import { EtherDenomination } from '../constants/common';
 import { Numeric, NumericValue } from './Numeric';
 
