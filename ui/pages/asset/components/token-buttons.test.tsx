@@ -10,6 +10,10 @@ import thunk from 'redux-thunk';
 import { CHAIN_IDS } from '../../../../shared/constants/network';
 import mockState from '../../../../test/data/mock-state.json';
 import * as actions from '../../../store/actions';
+import {
+  PREPARE_SWAP_ROUTE,
+  SEND_ROUTE,
+} from '../../../helpers/constants/routes';
 
 jest.mock('react-router-dom', () => ({
   ...jest.requireActual('react-router-dom'),
@@ -41,7 +45,6 @@ describe('TokenButtons Component', () => {
   };
 
   beforeEach(() => {
-    // Reset the mock before each test
     mockPush = jest.fn();
     (useHistory as jest.Mock).mockReturnValue({ push: mockPush });
   });
@@ -70,9 +73,8 @@ describe('TokenButtons Component', () => {
 
     fireEvent.click(sendButton);
 
-    // Wait for asynchronous code to finish
     await waitFor(() => {
-      expect(mockPush).not.toHaveBeenCalled(); // Ensure redirection did not happen
+      expect(mockPush).not.toHaveBeenCalled();
     });
 
     expect(consoleErrorSpy).toHaveBeenCalledWith(
@@ -99,7 +101,61 @@ describe('TokenButtons Component', () => {
 
     // Wait for asynchronous code to finish
     await waitFor(() => {
-      expect(mockPush).toHaveBeenCalled(); // Ensure redirection did not happen
+      expect(mockPush).toHaveBeenCalledWith(SEND_ROUTE); // Ensure redirection did not happen
+    });
+
+    expect(consoleErrorSpy).not.toHaveBeenCalled();
+    consoleErrorSpy.mockRestore();
+  });
+
+  it('does not redirect when setCorrectChain throws an error for swap button', async () => {
+    const store = configureMockStore([thunk])(mockStore);
+
+    jest.spyOn(actions, 'setActiveNetwork').mockImplementation(() => {
+      throw new Error('setActiveNetwork mock failure');
+    });
+
+    const consoleErrorSpy = jest
+      .spyOn(console, 'error')
+      .mockImplementation(() => {});
+
+    const { getByTestId } = renderWithProvider(
+      <TokenButtons token={token} />,
+      store,
+    );
+
+    const swapButton = getByTestId('prepare-swap');
+
+    fireEvent.click(swapButton);
+
+    await waitFor(() => {
+      expect(mockPush).not.toHaveBeenCalled();
+    });
+
+    expect(consoleErrorSpy).toHaveBeenCalledWith(
+      expect.stringContaining(`Failed to switch chains.`),
+    );
+    consoleErrorSpy.mockRestore();
+  });
+
+  it('does redirect when setCorrectChain succeeds for swap button', async () => {
+    const store = configureMockStore([thunk])(mockStore);
+
+    const consoleErrorSpy = jest
+      .spyOn(console, 'error')
+      .mockImplementation(() => {});
+
+    const { getByTestId } = renderWithProvider(
+      <TokenButtons token={token} />,
+      store,
+    );
+
+    const swapButton = getByTestId('prepare-swap');
+
+    fireEvent.click(swapButton);
+
+    await waitFor(() => {
+      expect(mockPush).toHaveBeenCalledWith(PREPARE_SWAP_ROUTE);
     });
 
     expect(consoleErrorSpy).not.toHaveBeenCalled();
