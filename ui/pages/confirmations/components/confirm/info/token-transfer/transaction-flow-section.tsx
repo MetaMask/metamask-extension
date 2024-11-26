@@ -1,11 +1,9 @@
-import { NameType } from '@metamask/name-controller';
 import {
   TransactionMeta,
   TransactionType,
 } from '@metamask/transaction-controller';
 import React from 'react';
 import { ConfirmInfoSection } from '../../../../../../components/app/confirm/info/row/section';
-import Name from '../../../../../../components/app/name';
 import {
   Box,
   Icon,
@@ -21,6 +19,13 @@ import {
   JustifyContent,
   TextVariant,
 } from '../../../../../../helpers/constants/design-system';
+import {
+  ConfirmInfoRow,
+  ConfirmInfoRowAddress,
+} from '../../../../../../components/app/confirm/info/row';
+import { RowAlertKey } from '../../../../../../components/app/confirm/info/row/constants';
+import { ConfirmInfoAlertRow } from '../../../../../../components/app/confirm/info/row/alert-row/alert-row';
+import { useI18nContext } from '../../../../../../hooks/useI18nContext';
 import { useConfirmContext } from '../../../../context/confirm';
 import { useDecodedTransactionData } from '../hooks/useDecodedTransactionData';
 import { ConfirmInfoAlertRow } from '../../../../../../components/app/confirm/info/row/alert-row/alert-row';
@@ -28,6 +33,7 @@ import { RowAlertKey } from '../../../../../../components/app/confirm/info/row/c
 import { useI18nContext } from '../../../../../../hooks/useI18nContext';
 
 export const TransactionFlowSection = () => {
+  const t = useI18nContext();
   const { currentConfirmation: transactionMeta } =
     useConfirmContext<TransactionMeta>();
   const t = useI18nContext();
@@ -56,52 +62,41 @@ export const TransactionFlowSection = () => {
         flexDirection={FlexDirection.Row}
         justifyContent={JustifyContent.spaceBetween}
         alignItems={AlignItems.center}
-        padding={1}
       >
-        <div>
-          <Text
-            variant={TextVariant.bodyMdMedium}
-            style={{
-              marginBottom: 6,
-            }}
-          >
-            From
-          </Text>
-          <Name
-            value={transactionMeta.txParams.from}
-            type={NameType.ETHEREUM_ADDRESS}
-            variation={chainId}
-          />
-        </div>
+        <ConfirmInfoAlertRow
+          alertKey={RowAlertKey.SigningInWith}
+          label={t('from')}
+          ownerId={transactionMeta.id}
+        >
+          <Box marginTop={1}>
+            <ConfirmInfoRowAddress
+              address={transactionMeta.txParams.from}
+              chainId={chainId}
+            />
+          </Box>
+        </ConfirmInfoAlertRow>
+
         <Icon
           name={IconName.ArrowRight}
           size={IconSize.Md}
           color={IconColor.iconMuted}
         />
-        <div>
-          {recipientAddress && (
-            <>
-              <ConfirmInfoAlertRow
-                alertKey={RowAlertKey.FirstTimeInteraction}
-                label={t('to')}
-                ownerId={transactionMeta.id}
-                style={{
-                  padding: 0,
-                  margin: 0,
-                  marginBottom: 4,
-                }}
-              >
-                {/* Intentional fragment */}
-                <></>
-              </ConfirmInfoAlertRow>
-              <Name
-                value={recipientAddress}
-                type={NameType.ETHEREUM_ADDRESS}
-                variation={chainId}
+        {recipientAddress && (
+          <ConfirmInfoRow
+            label={t('to')}
+            style={{
+              flexDirection: 'column',
+              alignItems: AlignItems.flexStart,
+            }}
+          >
+            <Box marginTop={1}>
+              <ConfirmInfoRowAddress
+                address={recipientAddress}
+                chainId={chainId}
               />
-            </>
-          )}
-        </div>
+            </Box>
+          </ConfirmInfoRow>
+        )}
       </Box>
     </ConfirmInfoSection>
   );
