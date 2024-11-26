@@ -27,7 +27,6 @@ export default function useHandleTx() {
   const handleTx = async ({
     txType,
     txParams,
-    // swapsOptions,
     fieldsToAddToTxMeta,
   }: {
     txType: TransactionType.bridgeApproval | TransactionType.bridge;
@@ -39,10 +38,6 @@ export default function useHandleTx() {
       data: string;
       gasLimit: number | null;
     };
-    // swapsOptions: {
-    //   hasApproveTx: boolean;
-    //   meta: Partial<TransactionMeta>; // all fields in meta are merged with TransactionMeta downstream in TransactionController
-    // };
     fieldsToAddToTxMeta: Omit<Partial<TransactionMeta>, 'status'>; // We don't add status, so omit it to fix the type error
   }) => {
     const hexChainId = decimalToPrefixedHex(txParams.chainId);
@@ -68,7 +63,6 @@ export default function useHandleTx() {
     const txMeta = await addTransaction(finalTxParams, {
       requireApproval: false,
       type: txType,
-      // swaps: swapsOptions,
     });
 
     dispatch(updateTransaction({ ...txMeta, ...fieldsToAddToTxMeta }, true));
