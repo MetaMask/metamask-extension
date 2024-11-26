@@ -4920,9 +4920,6 @@
   "simulationErrorMessageV2": {
     "message": "Nous n’avons pas pu estimer le prix de carburant. Par conséquent, il se peut qu’il y ait une erreur dans le contrat et que cette transaction échoue."
   },
-  "simulationsSettingDescription": {
-    "message": "Activez cette option pour estimer les changements de solde des transactions avant de les confirmer. Cela ne garantit pas le résultat final de vos transactions. $1"
-  },
   "simulationsSettingSubHeader": {
     "message": "Estimer les changements de solde"
   },

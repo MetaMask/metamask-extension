@@ -4920,9 +4920,6 @@
   "simulationErrorMessageV2": {
     "message": "我们无法估算燃料。合约中可能存在错误，这笔交易可能会失败。"
   },
-  "simulationsSettingDescription": {
-    "message": "开启此选项，以便在确认交易之前估计交易余额的变化。这并不能保证交易的最终结果。$1"
-  },
   "simulationsSettingSubHeader": {
     "message": "预计余额变化"
   },

@@ -33,3 +33,27 @@ index a13403446a2376d4d905a9ef733941798da89c88..3c8229f9ea40f4c1ee760a22884e1066
  /**
   * The list of currencies that can be supplied as the `vsCurrency` parameter to
   * the `/spot-prices` endpoint, in lowercase form.
+diff --git a/dist/TokensController.cjs b/dist/TokensController.cjs
+index 343b343b8300136756d96acac77aab8140efc95a..69d8e2ea84d6303a3af02bd95458ef3060c76f2b 100644
+--- a/dist/TokensController.cjs
++++ b/dist/TokensController.cjs
+@@ -270,13 +270,16 @@ class TokensController extends base_controller_1.BaseController {
+      * @param networkClientId - Optional network client ID used to determine interacting chain ID.
+      */
+     ignoreTokens(tokenAddressesToIgnore, networkClientId) {
+-        const { ignoredTokens, detectedTokens, tokens } = this.state;
+-        const ignoredTokensMap = {};
+-        let newIgnoredTokens = [...ignoredTokens];
+         let interactingChainId;
+         if (networkClientId) {
+             interactingChainId = this.messagingSystem.call('NetworkController:getNetworkClientById', networkClientId).configuration.chainId;
+         }
++        const { allTokens, allDetectedTokens, allIgnoredTokens } = this.state;
++        const ignoredTokensMap = {};
++        const ignoredTokens = allIgnoredTokens[interactingChainId ?? __classPrivateFieldGet(this, _TokensController_chainId, "f")]?.[__classPrivateFieldGet(this, _TokensController_instances, "m", _TokensController_getSelectedAddress).call(this)] || [];
++        let newIgnoredTokens = [...ignoredTokens];
++        const tokens = allTokens[interactingChainId ?? __classPrivateFieldGet(this, _TokensController_chainId, "f")]?.[__classPrivateFieldGet(this, _TokensController_instances, "m", _TokensController_getSelectedAddress).call(this)] || [];
++        const detectedTokens = allDetectedTokens[interactingChainId ?? __classPrivateFieldGet(this, _TokensController_chainId, "f")]?.[__classPrivateFieldGet(this, _TokensController_instances, "m", _TokensController_getSelectedAddress).call(this)] || [];
+         const checksummedTokenAddresses = tokenAddressesToIgnore.map((address) => {
+             const checksumAddress = (0, controller_utils_1.toChecksumHexAddress)(address);
+             ignoredTokensMap[address.toLowerCase()] = true;

@@ -178,6 +178,7 @@ workflows:
       - prep-build-test-mmi:
           requires:
             - prep-deps
+            - check-mmi-trigger
       - prep-build-test-mmi-playwright:
           requires:
             - prep-deps
@@ -803,6 +804,7 @@ jobs:
       - run: corepack enable
       - attach_workspace:
           at: .
+      - run: *check-mmi-trigger
       - run:
           name: Build extension for testing
           command: yarn build:test:mmi
@@ -1197,6 +1199,7 @@ jobs:
       - run: sudo corepack enable
       - attach_workspace:
           at: .
+      - run: *check-mmi-trigger
       - run:
           name: Move test build to dist
           command: mv ./dist-test-mmi ./dist
@@ -1286,6 +1289,7 @@ jobs:
       - run: sudo corepack enable
       - attach_workspace:
           at: .
+      - run: *check-mmi-trigger
       - run:
           name: Move test build to dist
           command: mv ./dist-test-mmi ./dist

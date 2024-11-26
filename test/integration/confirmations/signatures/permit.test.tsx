@@ -191,9 +191,9 @@ describe('Permit Confirmation', () => {
     });
 
     await waitFor(() => {
-      expect(screen.getByText('Spending cap request')).toBeInTheDocument();
+      expect(screen.getByText('Signature request')).toBeInTheDocument();
       expect(
-        screen.getByText('This site wants permission to spend your tokens.'),
+        screen.getByText('Review request details before you confirm.'),
       ).toBeInTheDocument();
     });
   });
