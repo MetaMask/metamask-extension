@@ -4920,9 +4920,6 @@
   "simulationErrorMessageV2": {
     "message": "Chúng tôi không thể ước tính gas. Có thể đã xảy ra lỗi trong hợp đồng và giao dịch này có thể thất bại."
   },
-  "simulationsSettingDescription": {
-    "message": "Bật tính năng này để ước tính thay đổi số dư của các giao dịch trước khi bạn xác nhận. Điều này không đảm bảo cho kết quả cuối cùng của giao dịch. $1"
-  },
   "simulationsSettingSubHeader": {
     "message": "Ước tính thay đổi số dư"
   },

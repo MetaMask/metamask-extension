@@ -82,17 +82,20 @@ describe('PersonalSign Confirmation', () => {
       account.address,
     );
 
-    const { getByTestId, queryByTestId } = await integrationTestRender({
-      preloadedState: mockedMetaMaskState,
-      backgroundConnection: backgroundConnectionMocked,
-    });
+    const { findByTestId, getByTestId, queryByTestId } =
+      await integrationTestRender({
+        preloadedState: mockedMetaMaskState,
+        backgroundConnection: backgroundConnectionMocked,
+      });
 
-    expect(getByTestId('header-account-name')).toHaveTextContent(accountName);
-    expect(getByTestId('header-network-display-name')).toHaveTextContent(
+    expect(await findByTestId('header-account-name')).toHaveTextContent(
+      accountName,
+    );
+    expect(await findByTestId('header-network-display-name')).toHaveTextContent(
       'Sepolia',
     );
 
-    fireEvent.click(getByTestId('header-info__account-details-button'));
+    fireEvent.click(await findByTestId('header-info__account-details-button'));
 
     await waitFor(() => {
       expect(
@@ -101,13 +104,13 @@ describe('PersonalSign Confirmation', () => {
     });
 
     expect(
-      getByTestId('confirmation-account-details-modal__account-name'),
+      await findByTestId('confirmation-account-details-modal__account-name'),
     ).toHaveTextContent(accountName);
-    expect(getByTestId('address-copy-button-text')).toHaveTextContent(
+    expect(await findByTestId('address-copy-button-text')).toHaveTextContent(
       '0x0DCD5...3E7bc',
     );
     expect(
-      getByTestId('confirmation-account-details-modal__account-balance'),
+      await findByTestId('confirmation-account-details-modal__account-balance'),
     ).toHaveTextContent('1.582717SepoliaETH');
 
     let confirmAccountDetailsModalMetricsEvent;
@@ -137,7 +140,7 @@ describe('PersonalSign Confirmation', () => {
     );
 
     fireEvent.click(
-      getByTestId('confirmation-account-details-modal__close-button'),
+      await findByTestId('confirmation-account-details-modal__close-button'),
     );
 
     await waitFor(() => {
@@ -165,9 +168,9 @@ describe('PersonalSign Confirmation', () => {
       });
     });
 
-    expect(screen.getByText('Signature request')).toBeInTheDocument();
+    expect(await screen.findByText('Signature request')).toBeInTheDocument();
     expect(
-      screen.getByText('Review request details before you confirm.'),
+      await screen.findByText('Review request details before you confirm.'),
     ).toBeInTheDocument();
   });
 
@@ -186,7 +189,7 @@ describe('PersonalSign Confirmation', () => {
       account.address,
     );
 
-    const { getByText } = await integrationTestRender({
+    const { findByText } = await integrationTestRender({
       preloadedState: mockedMetaMaskState,
       backgroundConnection: backgroundConnectionMocked,
     });
@@ -197,6 +200,6 @@ describe('PersonalSign Confirmation', () => {
       account.address,
     )})`;
 
-    expect(getByText(mismatchAccountText)).toBeInTheDocument();
+    expect(await findByText(mismatchAccountText)).toBeInTheDocument();
   });
 });
