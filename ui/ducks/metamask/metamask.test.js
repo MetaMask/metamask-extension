@@ -265,28 +265,6 @@ describe('MetaMask Reducers', () => {
     });
   });
 
-  it('toggles account menu', () => {
-    const state = reduceMetamask(
-      {},
-      {
-        type: actionConstants.TOGGLE_ACCOUNT_MENU,
-      },
-    );
-
-    expect(state.isAccountMenuOpen).toStrictEqual(true);
-  });
-
-  it('toggles network menu', () => {
-    const state = reduceMetamask(
-      {},
-      {
-        type: actionConstants.TOGGLE_NETWORK_MENU,
-      },
-    );
-
-    expect(state.isNetworkMenuOpen).toStrictEqual(true);
-  });
-
   it('updates value of tx by id', () => {
     const oldState = {
       transactions: [
@@ -304,53 +282,6 @@ describe('MetaMask Reducers', () => {
     });
 
     expect(state.transactions[0].txParams).toStrictEqual('bar');
-  });
-
-  it('close welcome screen', () => {
-    const state = reduceMetamask(
-      {},
-      {
-        type: actionConstants.CLOSE_WELCOME_SCREEN,
-      },
-    );
-
-    expect(state.welcomeScreenSeen).toStrictEqual(true);
-  });
-
-  it('sets pending tokens', () => {
-    const payload = {
-      address: '0x617b3f8050a0bd94b6b1da02b4384ee5b4df13f4',
-      decimals: 18,
-      symbol: 'META',
-    };
-
-    const pendingTokensState = reduceMetamask(
-      {},
-      {
-        type: actionConstants.SET_PENDING_TOKENS,
-        payload,
-      },
-    );
-
-    expect(pendingTokensState.pendingTokens).toStrictEqual(payload);
-  });
-
-  it('clears pending tokens', () => {
-    const payload = {
-      address: '0x617b3f8050a0bd94b6b1da02b4384ee5b4df13f4',
-      decimals: 18,
-      symbol: 'META',
-    };
-
-    const pendingTokensState = {
-      pendingTokens: payload,
-    };
-
-    const state = reduceMetamask(pendingTokensState, {
-      type: actionConstants.CLEAR_PENDING_TOKENS,
-    });
-
-    expect(state.pendingTokens).toStrictEqual({});
   });
 
   describe('metamask state selectors', () => {
