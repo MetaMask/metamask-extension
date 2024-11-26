@@ -1,39 +1,3 @@
-diff --git a/dist/TokenDetectionController.cjs b/dist/TokenDetectionController.cjs
-index 8fd5efde7a3c24080f8a43f79d10300e8c271245..66f656d9a55f1154024a8c18a9fe27b4ed39a21d 100644
---- a/dist/TokenDetectionController.cjs
-+++ b/dist/TokenDetectionController.cjs
-@@ -250,17 +250,20 @@ _TokenDetectionController_intervalId = new WeakMap(), _TokenDetectionController_
-         }
-     });
-     this.messagingSystem.subscribe('AccountsController:selectedEvmAccountChange', 
--    // TODO: Either fix this lint violation or explain why it's necessary to ignore.
--    // eslint-disable-next-line @typescript-eslint/no-misused-promises
--    async (selectedAccount) => {
--        const isSelectedAccountIdChanged = __classPrivateFieldGet(this, _TokenDetectionController_selectedAccountId, "f") !== selectedAccount.id;
--        if (isSelectedAccountIdChanged) {
--            __classPrivateFieldSet(this, _TokenDetectionController_selectedAccountId, selectedAccount.id, "f");
--            await __classPrivateFieldGet(this, _TokenDetectionController_instances, "m", _TokenDetectionController_restartTokenDetection).call(this, {
--                selectedAddress: selectedAccount.address,
--            });
--        }
--    });
-+        // TODO: Either fix this lint violation or explain why it's necessary to ignore.
-+        // eslint-disable-next-line @typescript-eslint/no-misused-promises
-+        async (selectedAccount) => {
-+            const { networkConfigurationsByChainId } = this.messagingSystem.call('NetworkController:getState');
-+            const chainIds = Object.keys(networkConfigurationsByChainId);
-+            const isSelectedAccountIdChanged = __classPrivateFieldGet(this, _TokenDetectionController_selectedAccountId, "f") !== selectedAccount.id;
-+            if (isSelectedAccountIdChanged) {
-+                __classPrivateFieldSet(this, _TokenDetectionController_selectedAccountId, selectedAccount.id, "f");
-+                await __classPrivateFieldGet(this, _TokenDetectionController_instances, "m", _TokenDetectionController_restartTokenDetection).call(this, {
-+                    selectedAddress: selectedAccount.address,
-+                    chainIds,
-+                });
-+            }
-+        });
- }, _TokenDetectionController_stopPolling = function _TokenDetectionController_stopPolling() {
-     if (__classPrivateFieldGet(this, _TokenDetectionController_intervalId, "f")) {
-         clearInterval(__classPrivateFieldGet(this, _TokenDetectionController_intervalId, "f"));
 diff --git a/dist/assetsUtil.cjs b/dist/assetsUtil.cjs
 index 48571b8c1b78e94d88e1837e986b5f8735ac651b..61246f51500c8cab48f18296a73629fb73454caa 100644
 --- a/dist/assetsUtil.cjs
@@ -56,7 +20,7 @@ index 48571b8c1b78e94d88e1837e986b5f8735ac651b..61246f51500c8cab48f18296a73629fb
      // because most cid v0s appear to be incompatible with IPFS subdomains
      return {
 diff --git a/dist/token-prices-service/codefi-v2.mjs b/dist/token-prices-service/codefi-v2.mjs
-index e7eaad2cfa8b233c4fd42a51f745233a1cc5c387..bf8ec7819f678c2f185d6a85d7e3ea81f055a309 100644
+index a13403446a2376d4d905a9ef733941798da89c88..3c8229f9ea40f4c1ee760a22884e1066dac82ec7 100644
 --- a/dist/token-prices-service/codefi-v2.mjs
 +++ b/dist/token-prices-service/codefi-v2.mjs
 @@ -12,8 +12,7 @@ var __classPrivateFieldGet = (this && this.__classPrivateFieldGet) || function (
@@ -65,7 +29,31 @@ index e7eaad2cfa8b233c4fd42a51f745233a1cc5c387..bf8ec7819f678c2f185d6a85d7e3ea81
  import { hexToNumber } from "@metamask/utils";
 -import $cockatiel from "cockatiel";
 -const { circuitBreaker, ConsecutiveBreaker, ExponentialBackoff, handleAll, retry, wrap, CircuitState } = $cockatiel;
-+import { circuitBreaker, ConsecutiveBreaker, ExponentialBackoff, handleAll, retry, wrap, CircuitState } from "cockatiel"
++import { circuitBreaker, ConsecutiveBreaker, ExponentialBackoff, handleAll, retry, wrap, CircuitState } from "cockatiel";
  /**
   * The list of currencies that can be supplied as the `vsCurrency` parameter to
   * the `/spot-prices` endpoint, in lowercase form.
+diff --git a/dist/TokensController.cjs b/dist/TokensController.cjs
+index 343b343b8300136756d96acac77aab8140efc95a..69d8e2ea84d6303a3af02bd95458ef3060c76f2b 100644
+--- a/dist/TokensController.cjs
++++ b/dist/TokensController.cjs
+@@ -270,13 +270,16 @@ class TokensController extends base_controller_1.BaseController {
+      * @param networkClientId - Optional network client ID used to determine interacting chain ID.
+      */
+     ignoreTokens(tokenAddressesToIgnore, networkClientId) {
+-        const { ignoredTokens, detectedTokens, tokens } = this.state;
+-        const ignoredTokensMap = {};
+-        let newIgnoredTokens = [...ignoredTokens];
+         let interactingChainId;
+         if (networkClientId) {
+             interactingChainId = this.messagingSystem.call('NetworkController:getNetworkClientById', networkClientId).configuration.chainId;
+         }
++        const { allTokens, allDetectedTokens, allIgnoredTokens } = this.state;
++        const ignoredTokensMap = {};
++        const ignoredTokens = allIgnoredTokens[interactingChainId ?? __classPrivateFieldGet(this, _TokensController_chainId, "f")]?.[__classPrivateFieldGet(this, _TokensController_instances, "m", _TokensController_getSelectedAddress).call(this)] || [];
++        let newIgnoredTokens = [...ignoredTokens];
++        const tokens = allTokens[interactingChainId ?? __classPrivateFieldGet(this, _TokensController_chainId, "f")]?.[__classPrivateFieldGet(this, _TokensController_instances, "m", _TokensController_getSelectedAddress).call(this)] || [];
++        const detectedTokens = allDetectedTokens[interactingChainId ?? __classPrivateFieldGet(this, _TokensController_chainId, "f")]?.[__classPrivateFieldGet(this, _TokensController_instances, "m", _TokensController_getSelectedAddress).call(this)] || [];
+         const checksummedTokenAddresses = tokenAddressesToIgnore.map((address) => {
+             const checksumAddress = (0, controller_utils_1.toChecksumHexAddress)(address);
+             ignoredTokensMap[address.toLowerCase()] = true;

@@ -10,6 +10,7 @@ import { ConfirmInfoSection } from '../../../../../../../components/app/confirm/
 import { useI18nContext } from '../../../../../../../hooks/useI18nContext';
 import { useConfirmContext } from '../../../../../context/confirm';
 import { selectConfirmationAdvancedDetailsOpen } from '../../../../../selectors/preferences';
+import { SigningInWithRow } from '../../shared/sign-in-with-row/sign-in-with-row';
 import { useDecodedTransactionData } from '../../hooks/useDecodedTransactionData';
 import { Container } from '../../shared/transaction-data/transaction-data';
 import {
@@ -81,6 +82,7 @@ export const ApproveDetails = ({
     <ConfirmInfoSection data-testid="confirmation__approve-details">
       <Spender isSetApprovalForAll={isSetApprovalForAll} />
       <OriginRow />
+      <SigningInWithRow />
       {showAdvancedDetails && (
         <>
           <RecipientRow />

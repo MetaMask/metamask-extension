@@ -3,8 +3,8 @@ import { useHistory } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import { EthMethod } from '@metamask/keyring-api';
 import { isEqual } from 'lodash';
+import { getNativeTokenAddress } from '@metamask/assets-controllers';
 import { Hex } from '@metamask/utils';
-import { zeroAddress } from 'ethereumjs-util';
 import {
   getCurrentCurrency,
   getDataCollectionForMarketing,
@@ -54,6 +54,7 @@ import { useTokenBalances } from '../../../hooks/useTokenBalances';
 import { useMultichainSelector } from '../../../hooks/useMultichainSelector';
 import { getMultichainShouldShowFiat } from '../../../selectors/multichain';
 import { getPortfolioUrl } from '../../../helpers/utils/portfolio';
+import { hexToDecimal } from '../../../../shared/modules/conversion.utils';
 import AssetChart from './chart/asset-chart';
 import TokenButtons from './token-buttons';
 
@@ -101,11 +102,21 @@ const AssetPage = ({
   const selectedAccount = useSelector(getSelectedAccount);
   const currency = useSelector(getCurrentCurrency);
   const conversionRate = useSelector(getConversionRate);
-  const isBridgeChain = useSelector(getIsBridgeChain);
   const isBuyableChain = useSelector(getIsNativeTokenBuyable);
-  const defaultSwapsToken = useSelector(getSwapsDefaultToken, isEqual);
+
+  const { chainId, type, symbol, name, image, decimals } = asset;
+
+  // These need to be specific to the asset and not the current chain
+  const defaultSwapsToken = useSelector(
+    (state) => getSwapsDefaultToken(state, chainId),
+    isEqual,
+  );
+  const isSwapsChain = useSelector((state) => getIsSwapsChain(state, chainId));
+  const isBridgeChain = useSelector((state) =>
+    getIsBridgeChain(state, chainId),
+  );
+
   const account = useSelector(getSelectedInternalAccount, isEqual);
-  const isSwapsChain = useSelector(getIsSwapsChain);
   const isSigningEnabled =
     account.methods.includes(EthMethod.SignTransaction) ||
     account.methods.includes(EthMethod.SignUserOperation);
@@ -132,7 +143,6 @@ const AssetPage = ({
   const selectedAccountTokenBalancesAcrossChains =
     tokenBalances[selectedAccount.address];
 
-  const { chainId, type, symbol, name, image, decimals } = asset;
   const isMetaMetricsEnabled = useSelector(getParticipateInMetaMetrics);
   const isMarketingEnabled = useSelector(getDataCollectionForMarketing);
   const metaMetricsId = useSelector(getMetaMetricsId);
@@ -140,7 +150,10 @@ const AssetPage = ({
   const address =
     type === AssetType.token
       ? toChecksumHexAddress(asset.address)
-      : zeroAddress();
+      : getNativeTokenAddress(chainId);
+
+  const tokenHexBalance =
+    selectedAccountTokenBalancesAcrossChains?.[chainId]?.[address as Hex];
 
   const balance = calculateTokenBalance({
     isNative: type === AssetType.native,
@@ -178,10 +191,10 @@ const AssetPage = ({
       tokenMarketDetails.allTimeHigh > 0 ||
       tokenMarketDetails.allTimeLow > 0);
 
-  // this is needed in order to assign the correct balances to TokenButtons before sending/swapping
-  // without this, the balances we be populated as zero until the user refreshes the screen: https://github.com/MetaMask/metamask-extension/issues/28509
+  // this is needed in order to assign the correct balances to TokenButtons before navigating to send/swap screens
+
   asset.balance = {
-    value: '', // decimal value not needed
+    value: hexToDecimal(tokenHexBalance),
     display: String(balance),
     fiat: String(tokenFiatAmount),
   };

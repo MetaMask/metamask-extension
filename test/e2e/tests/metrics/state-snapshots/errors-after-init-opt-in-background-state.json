@@ -67,27 +67,24 @@
         "srcNetworkAllowlist": { "0": "string", "1": "string", "2": "string" },
         "destNetworkAllowlist": { "0": "string", "1": "string", "2": "string" }
       },
+      "srcTokens": {},
+      "srcTopAssets": {},
       "destTokens": {},
       "destTopAssets": {},
       "quoteRequest": {
-        "slippage": 0.5,
-        "srcTokenAddress": "0x0000000000000000000000000000000000000000"
+        "srcTokenAddress": "0x0000000000000000000000000000000000000000",
+        "slippage": 0.5
       },
       "quotes": {},
-      "quotesRefreshCount": 0,
-      "srcTokens": {},
-      "srcTopAssets": {}
+      "quotesRefreshCount": 0
     }
   },
+  "BridgeStatusController": { "bridgeStatusState": { "txHistory": "object" } },
   "CronjobController": { "jobs": "object" },
   "CurrencyController": {
+    "currentCurrency": "usd",
     "currencyRates": {
       "ETH": {
-        "conversionDate": "number",
-        "conversionRate": 1700,
-        "usdConversionRate": 1700
-      },
-      "LineaETH": {
         "conversionDate": "number",
         "conversionRate": 1700,
         "usdConversionRate": 1700
@@ -96,9 +93,13 @@
         "conversionDate": "number",
         "conversionRate": 1700,
         "usdConversionRate": 1700
+      },
+      "LineaETH": {
+        "conversionDate": "number",
+        "conversionRate": 1700,
+        "usdConversionRate": 1700
       }
-    },
-    "currentCurrency": "usd"
+    }
   },
   "DecryptMessageController": {
     "unapprovedDecryptMsgs": "object",
