@@ -12,7 +12,7 @@ import TokenTransferTransactionConfirmation from '../../../page-objects/pages/co
 import HomePage from '../../../page-objects/pages/homepage';
 import SendTokenPage from '../../../page-objects/pages/send/send-token-page';
 import TestDapp from '../../../page-objects/pages/test-dapp';
-import GanacheContractAddressRegistry from '../../../seeder/ganache-contract-address-registry';
+import ContractAddressRegistry from '../../../seeder/contract-address-registry';
 import { Driver } from '../../../webdriver/driver';
 import { withRedesignConfirmationFixtures } from '../helpers';
 import { TestSuiteArguments } from './shared';
@@ -115,12 +115,12 @@ export async function mockedSourcifyTokenSend(mockServer: Mockttp) {
 
 async function createWalletInitiatedTransactionAndAssertDetails(
   driver: Driver,
-  contractRegistry?: GanacheContractAddressRegistry,
+  contractRegistry?: ContractAddressRegistry,
 ) {
   await unlockWallet(driver);
 
   const contractAddress = await (
-    contractRegistry as GanacheContractAddressRegistry
+    contractRegistry as ContractAddressRegistry
   ).getContractAddress(SMART_CONTRACTS.HST);
 
   const testDapp = new TestDapp(driver);
@@ -144,8 +144,8 @@ async function createWalletInitiatedTransactionAndAssertDetails(
   await sendToPage.fillRecipient('0x2f318C334780961FB129D2a6c30D0763d9a5C970');
   await sendToPage.fillAmount('1');
 
-  await sendToPage.click_assetPickerButton();
-  await sendToPage.click_secondTokenListButton();
+  await sendToPage.clickAssetPickerButton();
+  await sendToPage.clickSecondTokenListButton();
   await sendToPage.goToNextScreen();
 
   const tokenTransferTransactionConfirmation =
@@ -160,12 +160,12 @@ async function createWalletInitiatedTransactionAndAssertDetails(
 
 async function createDAppInitiatedTransactionAndAssertDetails(
   driver: Driver,
-  contractRegistry?: GanacheContractAddressRegistry,
+  contractRegistry?: ContractAddressRegistry,
 ) {
   await unlockWallet(driver);
 
   const contractAddress = await (
-    contractRegistry as GanacheContractAddressRegistry
+    contractRegistry as ContractAddressRegistry
   ).getContractAddress(SMART_CONTRACTS.HST);
 
   const testDapp = new TestDapp(driver);

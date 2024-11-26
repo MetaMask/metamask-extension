@@ -1,7 +1,7 @@
 const fs = require('fs');
 
 const {
-  SECURITY_PROVIDER_SUPPORTED_CHAIN_IDS,
+  SECURITY_PROVIDER_SUPPORTED_CHAIN_IDS_FALLBACK_LIST,
 } = require('../../shared/constants/security-provider');
 const {
   BRIDGE_DEV_API_BASE_URL,
@@ -43,6 +43,8 @@ const blacklistedHosts = [
   'goerli.infura.io',
   'mainnet.infura.io',
   'sepolia.infura.io',
+  'linea-mainnet.infura.io',
+  'linea-sepolia.infura.io',
 ];
 const {
   mockEmptyStalelistAndHotlist,
@@ -160,7 +162,7 @@ async function setupMocking(
     .thenCallback(() => {
       return {
         statusCode: 200,
-        json: SECURITY_PROVIDER_SUPPORTED_CHAIN_IDS,
+        json: SECURITY_PROVIDER_SUPPORTED_CHAIN_IDS_FALLBACK_LIST,
       };
     });
 

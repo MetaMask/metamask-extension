@@ -1,6 +1,6 @@
 import { strict as assert } from 'assert';
 import { Driver } from '../../../webdriver/driver';
-import { TEST_SEED_PHRASE } from '../../../helpers';
+import { E2E_SRP } from '../../../default-fixture';
 
 class OnboardingSrpPage {
   private driver: Driver;
@@ -53,10 +53,25 @@ class OnboardingSrpPage {
   /**
    * Fill the SRP words with the provided seed phrase
    *
-   * @param seedPhrase - The seed phrase to fill. Defaults to TEST_SEED_PHRASE.
+   * @param seedPhrase - The seed phrase to fill. Defaults to E2E_SRP.
    */
-  async fillSrp(seedPhrase: string = TEST_SEED_PHRASE): Promise<void> {
+  async fillSrp(seedPhrase: string = E2E_SRP): Promise<void> {
     await this.driver.pasteIntoField(this.srpWord0, seedPhrase);
+  }
+
+  /**
+   * Fill the SRP words with the provided seed phrase word by word
+   *
+   * @param seedPhrase - The seed phrase to fill. Defaults to E2E_SRP.
+   */
+  async fillSrpWordByWord(seedPhrase: string = E2E_SRP): Promise<void> {
+    const words = seedPhrase.split(' ');
+    for (const word of words) {
+      await this.driver.pasteIntoField(
+        `[data-testid="import-srp__srp-word-${words.indexOf(word)}"]`,
+        word,
+      );
+    }
   }
 
   async check_confirmSrpButtonIsDisabled(): Promise<void> {

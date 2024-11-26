@@ -1,18 +1,21 @@
 import React, { useMemo } from 'react';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { Button } from '../../../components/component-library';
 import {
   getFromAmount,
   getFromChain,
   getFromToken,
-  getToAmount,
   getToChain,
   getToToken,
+  getBridgeQuotes,
 } from '../../../ducks/bridge/selectors';
 import { useI18nContext } from '../../../hooks/useI18nContext';
+import useSubmitBridgeTransaction from '../hooks/useSubmitBridgeTransaction';
 
 export const BridgeCTAButton = () => {
+  const dispatch = useDispatch();
   const t = useI18nContext();
+
   const fromToken = useSelector(getFromToken);
   const toToken = useSelector(getToToken);
 
@@ -20,25 +23,39 @@ export const BridgeCTAButton = () => {
   const toChain = useSelector(getToChain);
 
   const fromAmount = useSelector(getFromAmount);
-  const toAmount = useSelector(getToAmount);
+
+  const { isLoading, activeQuote } = useSelector(getBridgeQuotes);
+
+  const { submitBridgeTransaction } = useSubmitBridgeTransaction();
 
   const isTxSubmittable =
-    fromToken && toToken && fromChain && toChain && fromAmount && toAmount;
+    fromToken && toToken && fromChain && toChain && fromAmount && activeQuote;
 
   const label = useMemo(() => {
+    if (isLoading && !isTxSubmittable) {
+      return t('swapFetchingQuotes');
+    }
+
+    if (!fromAmount) {
+      if (!toToken) {
+        return t('bridgeSelectTokenAndAmount');
+      }
+      return t('bridgeEnterAmount');
+    }
+
     if (isTxSubmittable) {
-      return t('bridge');
+      return t('confirm');
     }
 
     return t('swapSelectToken');
-  }, [isTxSubmittable]);
+  }, [isLoading, fromAmount, toToken, isTxSubmittable]);
 
   return (
     <Button
       data-testid="bridge-cta-button"
       onClick={() => {
         if (isTxSubmittable) {
-          // dispatch tx submission
+          dispatch(submitBridgeTransaction(activeQuote));
         }
       }}
       disabled={!isTxSubmittable}

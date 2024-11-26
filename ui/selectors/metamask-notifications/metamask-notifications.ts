@@ -1,6 +1,6 @@
 import { createSelector } from 'reselect';
 import { NotificationServicesController } from '@metamask/notification-services-controller';
-import { createDeepEqualSelector } from '../util';
+import { createDeepEqualSelector } from '../../../shared/modules/selectors/util';
 
 const { TRIGGER_TYPES } = NotificationServicesController.Constants;
 

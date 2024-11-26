@@ -1,3 +1,27 @@
+import { BigNumber } from 'bignumber.js';
+
+export type L1GasFees = {
+  l1GasFeesInHexWei?: string; // l1 fees for approval and trade in hex wei, appended by controller
+};
+
+// Values derived from the quote response
+// fiat values are calculated based on the user's selected currency
+export type QuoteMetadata = {
+  gasFee: { amount: BigNumber; fiat: BigNumber | null };
+  totalNetworkFee: { amount: BigNumber; fiat: BigNumber | null }; // gasFees + relayerFees
+  toTokenAmount: { amount: BigNumber; fiat: BigNumber | null };
+  adjustedReturn: { fiat: BigNumber | null }; // destTokenAmount - totalNetworkFee
+  sentAmount: { amount: BigNumber; fiat: BigNumber | null }; // srcTokenAmount + metabridgeFee
+  swapRate: BigNumber; // destTokenAmount / sentAmount
+  cost: { fiat: BigNumber | null }; // sentAmount - adjustedReturn
+};
+
+// Sort order set by the user
+export enum SortOrder {
+  COST_ASC,
+  ETA_ASC,
+}
+
 // Types copied from Metabridge API
 export enum BridgeFlag {
   EXTENSION_CONFIG = 'extension-config',
@@ -5,6 +29,9 @@ export enum BridgeFlag {
   NETWORK_SRC_ALLOWLIST = 'src-network-allowlist',
   NETWORK_DEST_ALLOWLIST = 'dest-network-allowlist',
 }
+
+type DecimalChainId = string;
+export type GasMultiplierByChainId = Record<DecimalChainId, number>;
 
 export type FeatureFlagResponse = {
   [BridgeFlag.EXTENSION_CONFIG]: {
@@ -89,7 +116,7 @@ export type QuoteResponse = {
   estimatedProcessingTimeInSeconds: number;
 };
 
-enum ChainId {
+export enum ChainId {
   ETH = 1,
   OPTIMISM = 10,
   BSC = 56,

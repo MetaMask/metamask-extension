@@ -6,7 +6,7 @@ exports[`ConfirmInfoRowTypedSignData should match snapshot 1`] = `
     class="mm-box mm-box--width-full"
   >
     <div
-      class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-center mm-box--color-text-default mm-box--rounded-lg"
+      class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
       style="overflow-wrap: anywhere; min-height: 24px; position: relative; padding-left: 0px; padding-right: 0px;"
     >
       <div
@@ -41,7 +41,7 @@ exports[`ConfirmInfoRowTypedSignData should match snapshot 1`] = `
         class="mm-box mm-box--width-full"
       >
         <div
-          class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-center mm-box--color-text-default mm-box--rounded-lg"
+          class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
           data-testid="confirmation_data-contents-index-0"
           style="overflow-wrap: anywhere; min-height: 24px; position: relative; padding-right: 0px;"
         >
@@ -71,7 +71,6 @@ exports[`ConfirmInfoRowTypedSignData should match snapshot 1`] = `
         </div>
         <div
           class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-center mm-box--color-text-default mm-box--rounded-lg"
-          data-testid="confirmation_data-from-index-1"
           style="overflow-wrap: anywhere; min-height: 24px; position: relative; padding-right: 0px;"
         >
           <div
@@ -92,7 +91,6 @@ exports[`ConfirmInfoRowTypedSignData should match snapshot 1`] = `
           >
             <div
               class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-center mm-box--color-text-default mm-box--rounded-lg"
-              data-testid="confirmation_data-name-index-0"
               style="overflow-wrap: anywhere; min-height: 24px; position: relative; padding-right: 0px;"
             >
               <div
@@ -121,7 +119,6 @@ exports[`ConfirmInfoRowTypedSignData should match snapshot 1`] = `
             </div>
             <div
               class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-center mm-box--color-text-default mm-box--rounded-lg"
-              data-testid="confirmation_data-wallets-index-1"
               style="overflow-wrap: anywhere; min-height: 24px; position: relative; padding-right: 0px;"
             >
               <div
@@ -142,7 +139,6 @@ exports[`ConfirmInfoRowTypedSignData should match snapshot 1`] = `
               >
                 <div
                   class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-center mm-box--color-text-default mm-box--rounded-lg"
-                  data-testid="confirmation_data-0-index-0"
                   style="overflow-wrap: anywhere; min-height: 24px; position: relative; padding-right: 0px;"
                 >
                   <div
@@ -218,7 +214,6 @@ exports[`ConfirmInfoRowTypedSignData should match snapshot 1`] = `
                 </div>
                 <div
                   class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-center mm-box--color-text-default mm-box--rounded-lg"
-                  data-testid="confirmation_data-1-index-1"
                   style="overflow-wrap: anywhere; min-height: 24px; position: relative; padding-right: 0px;"
                 >
                   <div
@@ -294,7 +289,6 @@ exports[`ConfirmInfoRowTypedSignData should match snapshot 1`] = `
                 </div>
                 <div
                   class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-center mm-box--color-text-default mm-box--rounded-lg"
-                  data-testid="confirmation_data-2-index-2"
                   style="overflow-wrap: anywhere; min-height: 24px; position: relative; padding-right: 0px;"
                 >
                   <div
@@ -374,7 +368,6 @@ exports[`ConfirmInfoRowTypedSignData should match snapshot 1`] = `
         </div>
         <div
           class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-center mm-box--color-text-default mm-box--rounded-lg"
-          data-testid="confirmation_data-to-index-2"
           style="overflow-wrap: anywhere; min-height: 24px; position: relative; padding-right: 0px;"
         >
           <div
@@ -395,7 +388,6 @@ exports[`ConfirmInfoRowTypedSignData should match snapshot 1`] = `
           >
             <div
               class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-center mm-box--color-text-default mm-box--rounded-lg"
-              data-testid="confirmation_data-0-index-0"
               style="overflow-wrap: anywhere; min-height: 24px; position: relative; padding-right: 0px;"
             >
               <div
@@ -416,7 +408,6 @@ exports[`ConfirmInfoRowTypedSignData should match snapshot 1`] = `
               >
                 <div
                   class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-center mm-box--color-text-default mm-box--rounded-lg"
-                  data-testid="confirmation_data-name-index-0"
                   style="overflow-wrap: anywhere; min-height: 24px; position: relative; padding-right: 0px;"
                 >
                   <div
@@ -445,7 +436,6 @@ exports[`ConfirmInfoRowTypedSignData should match snapshot 1`] = `
                 </div>
                 <div
                   class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-center mm-box--color-text-default mm-box--rounded-lg"
-                  data-testid="confirmation_data-wallets-index-1"
                   style="overflow-wrap: anywhere; min-height: 24px; position: relative; padding-right: 0px;"
                 >
                   <div
@@ -466,7 +456,6 @@ exports[`ConfirmInfoRowTypedSignData should match snapshot 1`] = `
                   >
                     <div
                       class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-center mm-box--color-text-default mm-box--rounded-lg"
-                      data-testid="confirmation_data-0-index-0"
                       style="overflow-wrap: anywhere; min-height: 24px; position: relative; padding-right: 0px;"
                     >
                       <div
@@ -542,7 +531,6 @@ exports[`ConfirmInfoRowTypedSignData should match snapshot 1`] = `
                     </div>
                     <div
                       class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-center mm-box--color-text-default mm-box--rounded-lg"
-                      data-testid="confirmation_data-1-index-1"
                       style="overflow-wrap: anywhere; min-height: 24px; position: relative; padding-right: 0px;"
                     >
                       <div
@@ -618,7 +606,6 @@ exports[`ConfirmInfoRowTypedSignData should match snapshot 1`] = `
                     </div>
                     <div
                       class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-center mm-box--color-text-default mm-box--rounded-lg"
-                      data-testid="confirmation_data-2-index-2"
                       style="overflow-wrap: anywhere; min-height: 24px; position: relative; padding-right: 0px;"
                     >
                       <div
