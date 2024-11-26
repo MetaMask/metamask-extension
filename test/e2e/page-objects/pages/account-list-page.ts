@@ -254,6 +254,7 @@ class AccountListPage {
    */
   async changeLabelFromAccountDetailsModal(newLabel: string): Promise<void> {
     await this.driver.waitForSelector(this.editableLabelButton);
+    console.log(`Account details modal opened, changing account label to: ${newLabel}`);
     await this.driver.clickElement(this.editableLabelButton);
     await this.driver.fill(this.editableLabelInput, newLabel);
     await this.driver.clickElement(this.saveAccountLabelButton);
