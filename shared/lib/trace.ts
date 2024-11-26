@@ -10,11 +10,15 @@ import { log as sentryLogger } from '../../app/scripts/lib/setupSentry';
  */
 export enum TraceName {
   AccountList = 'Account List',
+  AccountOverviewAssetListTab = 'Account Overview Asset List Tab',
+  AccountOverviewNftsTab = 'Account Overview Nfts Tab',
+  AccountOverviewActivityTab = 'Account Overview Activity Tab',
   BackgroundConnect = 'Background Connect',
   DeveloperTest = 'Developer Test',
   FirstRender = 'First Render',
   GetState = 'Get State',
   InitialActions = 'Initial Actions',
+  LazyLoadComponent = 'Lazy Load Component',
   LoadScripts = 'Load Scripts',
   Middleware = 'Middleware',
   NestedTest1 = 'Nested Test 1',

@@ -48,6 +48,7 @@ import {
 } from './lib/accounts/BalancesController';
 import { BalancesTracker as MultichainBalancesTracker } from './lib/accounts/BalancesTracker';
 import { deferredPromise } from './lib/util';
+import { METAMASK_COOKIE_HANDLER } from './constants/stream';
 import MetaMaskController, {
   ONE_KEY_VIA_TREZOR_MINOR_VERSION,
 } from './metamask-controller';
@@ -1279,6 +1280,129 @@ describe('MetaMaskController', () => {
         expect(mockKeyring.destroy).toHaveBeenCalledTimes(1);
       });
     });
+    describe('#setupPhishingCommunication', () => {
+      beforeEach(() => {
+        jest.spyOn(metamaskController, 'safelistPhishingDomain');
+        jest.spyOn(metamaskController, 'backToSafetyPhishingWarning');
+        metamaskController.preferencesController.setUsePhishDetect(true);
+      });
+      afterEach(() => {
+        jest.clearAllMocks();
+      });
+      it('creates a phishing stream with safelistPhishingDomain and backToSafetyPhishingWarning handler', async () => {
+        const safelistPhishingDomainRequest = {
+          name: 'metamask-phishing-safelist',
+          data: {
+            id: 1,
+            method: 'safelistPhishingDomain',
+            params: ['mockHostname'],
+          },
+        };
+        const backToSafetyPhishingWarningRequest = {
+          name: 'metamask-phishing-safelist',
+          data: { id: 2, method: 'backToSafetyPhishingWarning', params: [] },
+        };
+
+        const { promise, resolve } = deferredPromise();
+        const { promise: promiseStream, resolve: resolveStream } =
+          deferredPromise();
+        const streamTest = createThroughStream((chunk, _, cb) => {
+          if (chunk.name !== 'metamask-phishing-safelist') {
+            cb();
+            return;
+          }
+          resolve();
+          cb(null, chunk);
+        });
+
+        metamaskController.setupPhishingCommunication({
+          connectionStream: streamTest,
+        });
+
+        streamTest.write(safelistPhishingDomainRequest, null, () => {
+          expect(
+            metamaskController.safelistPhishingDomain,
+          ).toHaveBeenCalledWith('mockHostname');
+        });
+        streamTest.write(backToSafetyPhishingWarningRequest, null, () => {
+          expect(
+            metamaskController.backToSafetyPhishingWarning,
+          ).toHaveBeenCalled();
+          resolveStream();
+        });
+
+        await promise;
+        streamTest.end();
+        await promiseStream;
+      });
+    });
+
+    describe('#setUpCookieHandlerCommunication', () => {
+      let localMetaMaskController;
+      beforeEach(() => {
+        localMetaMaskController = new MetaMaskController({
+          showUserConfirmation: noop,
+          encryptor: mockEncryptor,
+          initState: {
+            ...cloneDeep(firstTimeState),
+            MetaMetricsController: {
+              metaMetricsId: 'MOCK_METRICS_ID',
+              participateInMetaMetrics: true,
+              dataCollectionForMarketing: true,
+            },
+          },
+          initLangCode: 'en_US',
+          platform: {
+            showTransactionNotification: () => undefined,
+            getVersion: () => 'foo',
+          },
+          browser: browserPolyfillMock,
+          infuraProjectId: 'foo',
+          isFirstMetaMaskControllerSetup: true,
+        });
+        jest.spyOn(localMetaMaskController, 'getCookieFromMarketingPage');
+      });
+      afterEach(() => {
+        jest.clearAllMocks();
+      });
+      it('creates a cookie handler communication stream with getCookieFromMarketingPage handler', async () => {
+        const attributionRequest = {
+          name: METAMASK_COOKIE_HANDLER,
+          data: {
+            id: 1,
+            method: 'getCookieFromMarketingPage',
+            params: [{ ga_client_id: 'XYZ.ABC' }],
+          },
+        };
+
+        const { promise, resolve } = deferredPromise();
+        const { promise: promiseStream, resolve: resolveStream } =
+          deferredPromise();
+        const streamTest = createThroughStream((chunk, _, cb) => {
+          if (chunk.name !== METAMASK_COOKIE_HANDLER) {
+            cb();
+            return;
+          }
+          resolve();
+          cb(null, chunk);
+        });
+
+        localMetaMaskController.setUpCookieHandlerCommunication({
+          connectionStream: streamTest,
+        });
+
+        streamTest.write(attributionRequest, null, () => {
+          expect(
+            localMetaMaskController.getCookieFromMarketingPage,
+          ).toHaveBeenCalledWith({ ga_client_id: 'XYZ.ABC' });
+          resolveStream();
+        });
+
+        await promise;
+        streamTest.end();
+        await promiseStream;
+      });
+    });
 
     describe('#setupUntrustedCommunicationEip1193', () => {
       const mockTxParams = { from: TEST_ADDRESS };
@@ -2307,122 +2431,13 @@ describe('MetaMaskController', () => {
       });
     });
 
-    describe('token list controller', () => {
-      it('stops polling if petnames, simulations, and token detection disabled', async () => {
-        expect(TokenListController.prototype.stop).not.toHaveBeenCalled();
-
-        expect(
-          TokenListController.prototype.clearingTokenListData,
-        ).not.toHaveBeenCalled();
-
-        await simulatePreferencesChange({
-          useTransactionSimulations: false,
-          useTokenDetection: false,
-          preferences: {
-            petnamesEnabled: false,
-          },
-        });
-
-        expect(TokenListController.prototype.stop).toHaveBeenCalledTimes(1);
-
-        expect(
-          TokenListController.prototype.clearingTokenListData,
-        ).toHaveBeenCalledTimes(1);
-      });
-
-      it.each([
-        [
-          'petnames',
-          {
-            preferences: { petnamesEnabled: false },
-            useTokenDetection: true,
-            useTransactionSimulations: true,
-          },
-        ],
-        [
-          'simulations',
-          {
-            preferences: { petnamesEnabled: true },
-            useTokenDetection: true,
-            useTransactionSimulations: false,
-          },
-        ],
-        [
-          'token detection',
-          {
-            preferences: { petnamesEnabled: true },
-            useTokenDetection: false,
-            useTransactionSimulations: true,
-          },
-        ],
-      ])(
-        'does not stop polling if only %s disabled',
-        async (_, preferences) => {
-          expect(TokenListController.prototype.stop).not.toHaveBeenCalled();
-
-          expect(
-            TokenListController.prototype.clearingTokenListData,
-          ).not.toHaveBeenCalled();
-
-          await simulatePreferencesChange(preferences);
-
-          expect(TokenListController.prototype.stop).not.toHaveBeenCalled();
-
-          expect(
-            TokenListController.prototype.clearingTokenListData,
-          ).not.toHaveBeenCalled();
-        },
-      );
-
-      it.each([
-        [
-          'petnames',
-          {
-            preferences: { petnamesEnabled: true },
-            useTokenDetection: false,
-            useTransactionSimulations: false,
-          },
-        ],
-        [
-          'simulations',
-          {
-            preferences: { petnamesEnabled: false },
-            useTokenDetection: false,
-            useTransactionSimulations: true,
-          },
-        ],
-        [
-          'token detection',
-          {
-            preferences: { petnamesEnabled: false },
-            useTokenDetection: true,
-            useTransactionSimulations: false,
-          },
-        ],
-      ])('starts polling if only %s enabled', async (_, preferences) => {
-        expect(TokenListController.prototype.start).not.toHaveBeenCalled();
-
-        await simulatePreferencesChange({
-          useTransactionSimulations: false,
-          useTokenDetection: false,
-          preferences: {
-            petnamesEnabled: false,
-          },
-        });
-
-        await simulatePreferencesChange(preferences);
-
-        expect(TokenListController.prototype.start).toHaveBeenCalledTimes(1);
-      });
-    });
-
     describe('MultichainRatesController start/stop', () => {
       const mockEvmAccount = createMockInternalAccount();
       const mockNonEvmAccount = {
         ...mockEvmAccount,
         id: '21690786-6abd-45d8-a9f0-9ff1d8ca76a1',
         type: BtcAccountType.P2wpkh,
-        methods: [BtcMethod.SendMany],
+        methods: [BtcMethod.SendBitcoin],
         address: 'bc1qar0srrr7xfkvy5l643lydnw9re59gtzzwf5mdq',
       };
 
@@ -2530,7 +2545,7 @@ describe('MetaMaskController', () => {
         ...mockEvmAccount,
         id: '21690786-6abd-45d8-a9f0-9ff1d8ca76a1',
         type: BtcAccountType.P2wpkh,
-        methods: [BtcMethod.SendMany],
+        methods: [BtcMethod.SendBitcoin],
         address: 'bc1qar0srrr7xfkvy5l643lydnw9re59gtzzwf5mdq',
         // We need to have a "Snap account" account here, since the MultichainBalancesController will
         // filter it out otherwise!

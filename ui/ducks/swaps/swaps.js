@@ -65,8 +65,8 @@ import {
   isHardwareWallet,
   getHardwareWalletType,
   checkNetworkAndAccountSupports1559,
-  getSelectedNetworkClientId,
   getSelectedInternalAccount,
+  getSelectedNetwork,
 } from '../../selectors';
 import {
   getSmartTransactionsEnabled,
@@ -629,14 +629,14 @@ export const fetchQuotesAndSetQuoteState = (
 ) => {
   return async (dispatch, getState) => {
     const state = getState();
-    const chainId = getCurrentChainId(state);
+    const selectedNetwork = getSelectedNetwork(state);
     let swapsLivenessForNetwork = {
       swapsFeatureIsLive: false,
     };
     try {
       const swapsFeatureFlags = await fetchSwapsFeatureFlags();
       swapsLivenessForNetwork = getSwapsLivenessForNetwork(
-        chainId,
+        selectedNetwork.configuration.chainId,
         swapsFeatureFlags,
       );
     } catch (error) {
@@ -651,7 +651,6 @@ export const fetchQuotesAndSetQuoteState = (
 
     const fetchParams = getFetchParams(state);
     const selectedAccount = getSelectedAccount(state);
-    const networkClientId = getSelectedNetworkClientId(state);
     const balanceError = getBalanceError(state);
     const swapsDefaultToken = getSwapsDefaultToken(state);
     const fetchParamsFromToken =
@@ -698,7 +697,7 @@ export const fetchQuotesAndSetQuoteState = (
             symbol: toTokenSymbol,
             decimals: toTokenDecimals,
             image: toTokenIconUrl,
-            networkClientId,
+            networkClientId: selectedNetwork.clientId,
           },
           true,
         ),
@@ -726,7 +725,7 @@ export const fetchQuotesAndSetQuoteState = (
             symbol: fromTokenSymbol,
             decimals: fromTokenDecimals,
             image: fromTokenIconUrl,
-            networkClientId,
+            networkClientId: selectedNetwork.clientId,
           },
           true,
         ),
@@ -792,7 +791,7 @@ export const fetchQuotesAndSetQuoteState = (
             sourceTokenInfo,
             destinationTokenInfo,
             accountBalance: selectedAccount.balance,
-            chainId,
+            networkClientId: selectedNetwork.clientId,
           },
         ),
       );
@@ -898,7 +897,7 @@ export const signAndSendSwapsSmartTransaction = ({
     const { sourceTokenInfo = {}, destinationTokenInfo = {} } = metaData;
     const usedQuote = getUsedQuote(state);
     const swapsNetworkConfig = getSwapsNetworkConfig(state);
-    const chainId = getCurrentChainId(state);
+    const selectedNetwork = getSelectedNetwork(state);
 
     dispatch(
       setSmartTransactionsRefreshInterval(
@@ -949,7 +948,12 @@ export const signAndSendSwapsSmartTransaction = ({
       sensitiveProperties: swapMetaData,
     });
 
-    if (!isContractAddressValid(usedTradeTxParams.to, chainId)) {
+    if (
+      !isContractAddressValid(
+        usedTradeTxParams.to,
+        selectedNetwork.configuration.chainId,
+      )
+    ) {
       captureMessage('Invalid contract address', {
         extra: {
           token_from: swapMetaData.token_from,
@@ -994,7 +998,7 @@ export const signAndSendSwapsSmartTransaction = ({
         updatedApproveTxParams.gas = `0x${decimalToHex(
           fees.approvalTxFees?.gasLimit || 0,
         )}`;
-        updatedApproveTxParams.chainId = chainId;
+        updatedApproveTxParams.chainId = selectedNetwork.configuration.chainId;
         approvalTxUuid = await dispatch(
           signAndSendSmartTransaction({
             unsignedTransaction: updatedApproveTxParams,
@@ -1005,7 +1009,7 @@ export const signAndSendSwapsSmartTransaction = ({
       unsignedTransaction.gas = `0x${decimalToHex(
         fees.tradeTxFees?.gasLimit || 0,
       )}`;
-      unsignedTransaction.chainId = chainId;
+      unsignedTransaction.chainId = selectedNetwork.configuration.chainId;
       const uuid = await dispatch(
         signAndSendSmartTransaction({
           unsignedTransaction,

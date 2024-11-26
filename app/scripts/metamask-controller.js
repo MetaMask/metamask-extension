@@ -12,6 +12,7 @@ import {
   CodefiTokenPricesServiceV2,
   RatesController,
   fetchMultiExchangeRate,
+  TokenBalancesController,
 } from '@metamask/assets-controllers';
 import { JsonRpcEngine } from '@metamask/json-rpc-engine';
 import { createEngineStream } from '@metamask/json-rpc-middleware-stream';
@@ -236,9 +237,7 @@ import {
   TOKEN_TRANSFER_LOG_TOPIC_HASH,
   TRANSFER_SINFLE_LOG_TOPIC_HASH,
 } from '../../shared/lib/transactions-controller-utils';
-// TODO: Remove restricted import
-// eslint-disable-next-line import/no-restricted-paths
-import { getProviderConfig } from '../../ui/ducks/metamask/metamask';
+import { getProviderConfig } from '../../shared/modules/selectors/networks';
 import { endTrace, trace } from '../../shared/lib/trace';
 // eslint-disable-next-line import/no-restricted-paths
 import { isSnapId } from '../../ui/helpers/utils/snaps';
@@ -684,6 +683,7 @@ export default class MetamaskController extends EventEmitter {
         'AccountsController:selectedEvmAccountChange',
         'PreferencesController:stateChange',
         'TokenListController:stateChange',
+        'NetworkController:stateChange',
       ],
     });
     this.tokensController = new TokensController({
@@ -888,6 +888,28 @@ export default class MetamaskController extends EventEmitter {
         usdConversionRate: null,
       };
     };
+
+    const tokenBalancesMessenger = this.controllerMessenger.getRestricted({
+      name: 'TokenBalancesController',
+      allowedActions: [
+        'NetworkController:getState',
+        'NetworkController:getNetworkClientById',
+        'TokensController:getState',
+        'PreferencesController:getState',
+        'AccountsController:getSelectedAccount',
+      ],
+      allowedEvents: [
+        'PreferencesController:stateChange',
+        'TokensController:stateChange',
+        'NetworkController:stateChange',
+      ],
+    });
+
+    this.tokenBalancesController = new TokenBalancesController({
+      messenger: tokenBalancesMessenger,
+      state: initState.TokenBalancesController,
+      interval: 30000,
+    });
 
     const phishingControllerMessenger = this.controllerMessenger.getRestricted({
       name: 'PhishingController',
@@ -1498,6 +1520,9 @@ export default class MetamaskController extends EventEmitter {
           `${this.approvalController.name}:acceptRequest`,
           `${this.snapController.name}:get`,
         ],
+        allowedEvents: [
+          'NotificationServicesController:notificationsListUpdated',
+        ],
       });
 
     this.snapInterfaceController = new SnapInterfaceController({
@@ -1564,6 +1589,16 @@ export default class MetamaskController extends EventEmitter {
               event: MetaMetricsEventName.AccountsSyncNameUpdated,
               properties: {
                 profile_id: profileId,
+              },
+            });
+          },
+          onAccountSyncErroneousSituation: (profileId, situationMessage) => {
+            this.metaMetricsController.trackEvent({
+              category: MetaMetricsEventCategory.ProfileSyncing,
+              event: MetaMetricsEventName.AccountsSyncErroneousSituation,
+              properties: {
+                profile_id: profileId,
+                situation_message: situationMessage,
               },
             });
           },
@@ -1737,10 +1772,11 @@ export default class MetamaskController extends EventEmitter {
         if (!prevCompletedOnboarding && currCompletedOnboarding) {
           const { address } = this.accountsController.getSelectedAccount();
 
-          this._addAccountsWithBalance();
+          await this._addAccountsWithBalance();
 
           this.postOnboardingInitialization();
           this.triggerNetworkrequests();
+
           // execute once the token detection on the post-onboarding
           await this.tokenDetectionController.detectTokens({
             selectedAddress: address,
@@ -1987,6 +2023,11 @@ export default class MetamaskController extends EventEmitter {
         ],
       }),
       trace,
+      decodingApiUrl: process.env.DECODING_API_URL,
+      isDecodeSignatureRequestEnabled: () =>
+        this.preferencesController.state.useExternalServices === true &&
+        this.preferencesController.state.useTransactionSimulations &&
+        process.env.ENABLE_SIGNATURE_DECODING === true,
     });
 
     this.signatureController.hub.on(
@@ -2086,7 +2127,6 @@ export default class MetamaskController extends EventEmitter {
     this.swapsController = new SwapsController(
       {
         messenger: swapsControllerMessenger,
-        provider: this.provider,
         getBufferedGasLimit: async (txMeta, multiplier) => {
           const { gas: gasLimit, simulationFails } =
             await this.txController.estimateGasBuffered(
@@ -2124,6 +2164,10 @@ export default class MetamaskController extends EventEmitter {
     });
     this.bridgeController = new BridgeController({
       messenger: bridgeControllerMessenger,
+      // TODO: Remove once TransactionController exports this action type
+      getLayer1GasFee: this.txController.getLayer1GasFee.bind(
+        this.txController,
+      ),
     });
 
     const smartTransactionsControllerMessenger =
@@ -2398,6 +2442,7 @@ export default class MetamaskController extends EventEmitter {
       GasFeeController: this.gasFeeController,
       TokenListController: this.tokenListController,
       TokensController: this.tokensController,
+      TokenBalancesController: this.tokenBalancesController,
       SmartTransactionsController: this.smartTransactionsController,
       NftController: this.nftController,
       PhishingController: this.phishingController,
@@ -2453,6 +2498,7 @@ export default class MetamaskController extends EventEmitter {
         GasFeeController: this.gasFeeController,
         TokenListController: this.tokenListController,
         TokensController: this.tokensController,
+        TokenBalancesController: this.tokenBalancesController,
         SmartTransactionsController: this.smartTransactionsController,
         NftController: this.nftController,
         SelectedNetworkController: this.selectedNetworkController,
@@ -2588,31 +2634,16 @@ export default class MetamaskController extends EventEmitter {
   }
 
   triggerNetworkrequests() {
-    this.accountTrackerController.start();
-
     this.txController.startIncomingTransactionPolling([
       this.#getGlobalNetworkClientId(),
     ]);
 
     this.tokenDetectionController.enable();
-
-    const preferencesControllerState = this.preferencesController.state;
-
-    if (this.#isTokenListPollingRequired(preferencesControllerState)) {
-      this.tokenListController.start();
-    }
   }
 
   stopNetworkRequests() {
-    this.accountTrackerController.stop();
     this.txController.stopIncomingTransactionPolling();
     this.tokenDetectionController.disable();
-
-    const preferencesControllerState = this.preferencesController.state;
-
-    if (this.#isTokenListPollingRequired(preferencesControllerState)) {
-      this.tokenListController.stop();
-    }
   }
 
   resetStates(resetMethods) {
@@ -3180,7 +3211,7 @@ export default class MetamaskController extends EventEmitter {
     const { completedOnboarding } = this.onboardingController.state;
 
     let networkVersion = this.deprecatedNetworkVersions[networkClientId];
-    if (!networkVersion && completedOnboarding) {
+    if (networkVersion === undefined && completedOnboarding) {
       const ethQuery = new EthQuery(networkClient.provider);
       networkVersion = await new Promise((resolve) => {
         ethQuery.sendAsync({ method: 'net_version' }, (error, result) => {
@@ -3238,8 +3269,10 @@ export default class MetamaskController extends EventEmitter {
       nftController,
       nftDetectionController,
       currencyRateController,
+      tokenBalancesController,
       tokenDetectionController,
       ensController,
+      tokenListController,
       gasFeeController,
       metaMetricsController,
       networkController,
@@ -3255,6 +3288,7 @@ export default class MetamaskController extends EventEmitter {
       approvalController,
       phishingController,
       tokenRatesController,
+      accountTrackerController,
       // Notification Controllers
       authenticationController,
       userStorageController,
@@ -3953,6 +3987,11 @@ export default class MetamaskController extends EventEmitter {
         this.controllerMessenger,
         `${BRIDGE_CONTROLLER_NAME}:${BridgeBackgroundAction.RESET_STATE}`,
       ),
+      [BridgeBackgroundAction.GET_BRIDGE_ERC20_ALLOWANCE]:
+        this.controllerMessenger.call.bind(
+          this.controllerMessenger,
+          `${BRIDGE_CONTROLLER_NAME}:${BridgeBackgroundAction.GET_BRIDGE_ERC20_ALLOWANCE}`,
+        ),
       [BridgeUserAction.SELECT_SRC_NETWORK]: this.controllerMessenger.call.bind(
         this.controllerMessenger,
         `${BRIDGE_CONTROLLER_NAME}:${BridgeUserAction.SELECT_SRC_NETWORK}`,
@@ -4040,6 +4079,35 @@ export default class MetamaskController extends EventEmitter {
       tokenRatesStopPollingByPollingToken:
         tokenRatesController.stopPollingByPollingToken.bind(
           tokenRatesController,
+        ),
+      accountTrackerStartPolling:
+        accountTrackerController.startPollingByNetworkClientId.bind(
+          accountTrackerController,
+        ),
+      accountTrackerStopPollingByPollingToken:
+        accountTrackerController.stopPollingByPollingToken.bind(
+          accountTrackerController,
+        ),
+
+      tokenDetectionStartPolling: tokenDetectionController.startPolling.bind(
+        tokenDetectionController,
+      ),
+      tokenDetectionStopPollingByPollingToken:
+        tokenDetectionController.stopPollingByPollingToken.bind(
+          tokenDetectionController,
+        ),
+
+      tokenListStartPolling:
+        tokenListController.startPolling.bind(tokenListController),
+      tokenListStopPollingByPollingToken:
+        tokenListController.stopPollingByPollingToken.bind(tokenListController),
+
+      tokenBalancesStartPolling: tokenBalancesController.startPolling.bind(
+        tokenBalancesController,
+      ),
+      tokenBalancesStopPollingByPollingToken:
+        tokenBalancesController.stopPollingByPollingToken.bind(
+          tokenBalancesController,
         ),
 
       // GasFeeController
@@ -4391,40 +4459,49 @@ export default class MetamaskController extends EventEmitter {
   }
 
   async _addAccountsWithBalance() {
-    // Scan accounts until we find an empty one
-    const chainId = this.#getGlobalChainId();
-    const ethQuery = new EthQuery(this.provider);
-    const accounts = await this.keyringController.getAccounts();
-    let address = accounts[accounts.length - 1];
+    try {
+      // Scan accounts until we find an empty one
+      const chainId = this.#getGlobalChainId();
+      const ethQuery = new EthQuery(this.provider);
+      const accounts = await this.keyringController.getAccounts();
+      let address = accounts[accounts.length - 1];
 
-    for (let count = accounts.length; ; count++) {
-      const balance = await this.getBalance(address, ethQuery);
+      for (let count = accounts.length; ; count++) {
+        const balance = await this.getBalance(address, ethQuery);
 
-      if (balance === '0x0') {
-        // This account has no balance, so check for tokens
-        await this.tokenDetectionController.detectTokens({
-          selectedAddress: address,
-        });
+        if (balance === '0x0') {
+          // This account has no balance, so check for tokens
+          await this.tokenDetectionController.detectTokens({
+            chainIds: [chainId],
+            selectedAddress: address,
+          });
 
-        const tokens =
-          this.tokensController.state.allTokens?.[chainId]?.[address];
-        const detectedTokens =
-          this.tokensController.state.allDetectedTokens?.[chainId]?.[address];
+          const tokens =
+            this.tokensController.state.allTokens?.[chainId]?.[address];
+          const detectedTokens =
+            this.tokensController.state.allDetectedTokens?.[chainId]?.[address];
 
-        if (
-          (tokens?.length ?? 0) === 0 &&
-          (detectedTokens?.length ?? 0) === 0
-        ) {
-          // This account has no balance or tokens
-          if (count !== 1) {
-            await this.removeAccount(address);
+          if (
+            (tokens?.length ?? 0) === 0 &&
+            (detectedTokens?.length ?? 0) === 0
+          ) {
+            // This account has no balance or tokens
+            if (count !== 1) {
+              await this.removeAccount(address);
+            }
+            break;
           }
-          break;
         }
-      }
 
-      // This account has assets, so check the next one
-      address = await this.keyringController.addNewAccount(count);
+        // This account has assets, so check the next one
+        address = await this.keyringController.addNewAccount(count);
+      }
+    } catch (e) {
+      log.warn(`Failed to add accounts with balance. Error: ${e}`);
+    } finally {
+      await this.userStorageController.setIsAccountSyncingReadyToBeDispatched(
+        true,
+      );
     }
   }
 
@@ -5163,7 +5240,7 @@ export default class MetamaskController extends EventEmitter {
     securityAlertId,
     securityAlertResponse,
   ) {
-    updateSecurityAlertResponse({
+    await updateSecurityAlertResponse({
       appStateController: this.appStateController,
       method,
       securityAlertId,
@@ -5724,16 +5801,14 @@ export default class MetamaskController extends EventEmitter {
       ),
     );
 
-    const isConfirmationRedesignEnabled = () => {
-      return this.preferencesController.state.preferences
-        .redesignedConfirmationsEnabled;
-    };
-
     engine.push(
       createRPCMethodTrackingMiddleware({
         getAccountType: this.getAccountType.bind(this),
         getDeviceModel: this.getDeviceModel.bind(this),
-        isConfirmationRedesignEnabled,
+        isConfirmationRedesignEnabled:
+          this.isConfirmationRedesignEnabled.bind(this),
+        isRedesignedConfirmationsDeveloperEnabled:
+          this.isConfirmationRedesignDeveloperEnabled.bind(this),
         snapAndHardwareMessenger: this.controllerMessenger.getRestricted({
           name: 'SnapAndHardwareMessenger',
           allowedActions: [
@@ -6371,6 +6446,21 @@ export default class MetamaskController extends EventEmitter {
     });
   }
 
+  isConfirmationRedesignEnabled() {
+    return this.preferencesController.state.preferences
+      .redesignedConfirmationsEnabled;
+  }
+
+  isTransactionsRedesignEnabled() {
+    return this.preferencesController.state.preferences
+      .redesignedTransactionsEnabled;
+  }
+
+  isConfirmationRedesignDeveloperEnabled() {
+    return this.preferencesController.state.preferences
+      .isRedesignedConfirmationsDeveloperEnabled;
+  }
+
   /**
    * The chain list is fetched live at runtime, falling back to a cache.
    * This preseeds the cache at startup with a static list provided at build.
@@ -6555,12 +6645,10 @@ export default class MetamaskController extends EventEmitter {
           txHash,
         );
       },
-      getRedesignedConfirmationsEnabled: () => {
-        return this.preferencesController.getRedesignedConfirmationsEnabled;
-      },
-      getRedesignedTransactionsEnabled: () => {
-        return this.preferencesController.getRedesignedTransactionsEnabled;
-      },
+      getRedesignedConfirmationsEnabled:
+        this.isConfirmationRedesignEnabled.bind(this),
+      getRedesignedTransactionsEnabled:
+        this.isTransactionsRedesignEnabled.bind(this),
       getMethodData: (data) => {
         if (!data) {
           return null;
@@ -6578,10 +6666,8 @@ export default class MetamaskController extends EventEmitter {
           this.provider,
         );
       },
-      getIsRedesignedConfirmationsDeveloperEnabled: () => {
-        return this.preferencesController.state.preferences
-          .isRedesignedConfirmationsDeveloperEnabled;
-      },
+      getIsRedesignedConfirmationsDeveloperEnabled:
+        this.isConfirmationRedesignDeveloperEnabled.bind(this),
       getIsConfirmationAdvancedDetailsOpen: () => {
         return this.preferencesController.state.preferences
           .showConfirmationAdvancedDetails;
@@ -6676,7 +6762,11 @@ export default class MetamaskController extends EventEmitter {
       this.gasFeeController.stopAllPolling();
       this.currencyRateController.stopAllPolling();
       this.tokenRatesController.stopAllPolling();
+      this.tokenDetectionController.stopAllPolling();
+      this.tokenListController.stopAllPolling();
+      this.tokenBalancesController.stopAllPolling();
       this.appStateController.clearPollingTokens();
+      this.accountTrackerController.stopAllPolling();
     } catch (error) {
       console.error(error);
     }
@@ -6916,6 +7006,9 @@ export default class MetamaskController extends EventEmitter {
     await this._createTransactionNotifcation(transactionMeta);
     await this._updateNFTOwnership(transactionMeta);
     this._trackTransactionFailure(transactionMeta);
+    await this.tokenBalancesController.updateBalancesByChainId({
+      chainId: transactionMeta.chainId,
+    });
   }
 
   async _createTransactionNotifcation(transactionMeta) {
@@ -7211,15 +7304,6 @@ export default class MetamaskController extends EventEmitter {
     }
 
     this.tokenListController.updatePreventPollingOnNetworkRestart(!newEnabled);
-
-    if (newEnabled) {
-      log.debug('Started token list controller polling');
-      this.tokenListController.start();
-    } else {
-      log.debug('Stopped token list controller polling');
-      this.tokenListController.clearingTokenListData();
-      this.tokenListController.stop();
-    }
   }
 
   #isTokenListPollingRequired(preferencesControllerState) {

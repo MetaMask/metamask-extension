@@ -70,7 +70,7 @@ describe('Notifications Activation', () => {
 
   const clickElement = async (testId: string) => {
     await act(async () => {
-      fireEvent.click(screen.getByTestId(testId));
+      fireEvent.click(await screen.findByTestId(testId));
     });
   };
 
@@ -105,7 +105,7 @@ describe('Notifications Activation', () => {
       });
 
       await act(async () => {
-        fireEvent.click(screen.getByText('Turn on'));
+        fireEvent.click(await screen.findByText('Turn on'));
       });
 
       await waitFor(() => {
@@ -148,7 +148,7 @@ describe('Notifications Activation', () => {
 
       await act(async () => {
         fireEvent.click(
-          within(screen.getByRole('dialog')).getByRole('button', {
+          await within(screen.getByRole('dialog')).findByRole('button', {
             name: 'Close',
           }),
         );
