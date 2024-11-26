@@ -2,7 +2,6 @@ import { randomUUID } from 'crypto';
 import { act, fireEvent, screen } from '@testing-library/react';
 import { ApprovalType } from '@metamask/controller-utils';
 import nock from 'nock';
-import preview from 'jest-preview';
 import mockMetaMaskState from '../../data/integration-init-state.json';
 import { integrationTestRender } from '../../../lib/render-helpers';
 import * as backgroundConnection from '../../../../ui/store/background-connection';
@@ -467,7 +466,6 @@ describe('Contract Interaction Confirmation Alerts', () => {
     });
 
     const alerts = await screen.findAllByTestId('confirm-banner-alert');
-    preview.debug();
 
     expect(
       alerts.some((alert) =>
