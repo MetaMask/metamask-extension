@@ -3,14 +3,13 @@ import { Driver } from '../../webdriver/driver';
 class AssetListPage {
   private readonly driver: Driver;
 
-  // Selectors
-
-  private readonly networksToggle = '[data-testid="network-filter"]';
-
-  private readonly allNetworksOption = '[data-testid="all-networks__button"]';
+  private readonly allNetworksOption =
+    '[data-testid="network-filter-all__button"]';
 
   private readonly currentNetworkOption =
-    '[data-testid="current-network__button"]';
+    '[data-testid="network-filter-current__button"]';
+
+  private readonly networksToggle = '[data-testid="sort-by-networks"]';
 
   private readonly allNetworksTotal =
     '[data-testid="network-filter-all__total"]';
@@ -21,13 +20,28 @@ class AssetListPage {
     this.driver = driver;
   }
 
+  async checkNetworkFilterText(expectedText: string): Promise<void> {
+    console.log(
+      `Verify the displayed account label in header is: ${expectedText}`,
+    );
+    await this.driver.waitForSelector({
+      css: this.networksToggle,
+      text: expectedText,
+    });
+  }
+
   async openNetworksFilter(): Promise<void> {
     console.log(`Opening the network filter`);
     await this.driver.clickElement(this.networksToggle);
-
-    await this.driver.waitForSelector(this.allNetworksOption, {
-      timeout: 5000,
-    });
+    await this.driver.waitUntil(
+      async () => {
+        return await this.driver.findElement(this.allNetworksOption);
+      },
+      {
+        timeout: 5000,
+        interval: 100,
+      },
+    );
   }
 
   async getNetworksFilterLabel(): Promise<string> {

@@ -19,8 +19,6 @@ class HeaderNavbar {
 
   private readonly switchNetworkDropDown = '[data-testid="network-display"]';
 
-  private readonly networkFilter = '[data-testid="network-filter"]';
-
   constructor(driver: Driver) {
     this.driver = driver;
   }
@@ -36,16 +34,6 @@ class HeaderNavbar {
       throw e;
     }
     console.log('Header navbar is loaded');
-  }
-
-  async checkNetworkFilterText(expectedText: string): Promise<void> {
-    console.log(
-      `Verify the displayed account label in header is: ${expectedText}`,
-    );
-    await this.driver.waitForSelector({
-      css: this.networkFilter,
-      text: expectedText,
-    });
   }
 
   async lockMetaMask(): Promise<void> {

@@ -118,7 +118,7 @@ describe('Multichain Aggregated Balances', function (this: Suite) {
           EXPECTED_SEPOLIA_BALANCE_NATIVE,
           SEPOLIA_NATIVE_TOKEN,
         );
-        await headerNavbar.checkNetworkFilterText(NETWORK_NAME_SEPOLIA);
+        await assetListPage.checkNetworkFilterText(NETWORK_NAME_SEPOLIA);
 
         // Step 11: Enable fiat display on testnets in settings
         await headerNavbar.openSettingsPage();
