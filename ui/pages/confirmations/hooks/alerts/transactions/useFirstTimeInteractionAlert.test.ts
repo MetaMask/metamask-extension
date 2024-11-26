@@ -104,10 +104,10 @@ describe('useFirstTimeInteractionAlert', () => {
     ).toEqual([]);
   });
 
-  it('returns alert if firstTimeInteraction is true', () => {
+  it('returns alert if isFirstTimeInteraction is true', () => {
     const firstTimeConfirmation = {
       ...CONFIRMATION_MOCK,
-      firstTimeInteraction: true,
+      isFirstTimeInteraction: true,
     };
     const alerts = runHook({
       currentConfirmation: firstTimeConfirmation,
