@@ -620,15 +620,14 @@ const WALLET_PASSWORD = 'correct horse battery staple';
  *
  * @param {WebDriver} driver - The webdriver instance
  * @param {object} [options] - Options for unlocking the wallet
- * @param {boolean} [options.navigate=true] - Whether to navigate to the root page prior to unlocking
- * @param {boolean} [options.waitLoginSuccess=true] - Whether to wait for the login to succeed
- * @param {string} [options.password=WALLET_PASSWORD] - Password to unlock wallet
+ * @param {boolean} [options.navigate] - Whether to navigate to the root page prior to unlocking - defaults to true
+ * @param {boolean} [options.waitLoginSuccess] - Whether to wait for the login to succeed - defaults to true
+ * @param {string} [options.password] - Password to unlock wallet - defaults to shared WALLET_PASSWORD
  */
-async function unlockWallet(driver, {
-  navigate = true,
-  waitLoginSuccess = true,
-  password = WALLET_PASSWORD,
-} = {}) {
+async function unlockWallet(
+  driver,
+  { navigate = true, waitLoginSuccess = true, password = WALLET_PASSWORD } = {},
+) {
   if (navigate) {
     await driver.navigate();
   }
