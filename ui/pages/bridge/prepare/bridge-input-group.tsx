@@ -28,7 +28,11 @@ import {
   CHAIN_ID_TOKEN_IMAGE_MAP,
 } from '../../../../shared/constants/network';
 import useLatestBalance from '../../../hooks/bridge/useLatestBalance';
-import { getBridgeQuotes } from '../../../ducks/bridge/selectors';
+import {
+  getBridgeQuotes,
+  getValidationErrors,
+} from '../../../ducks/bridge/selectors';
+import { TextColor } from '../../../helpers/constants/design-system';
 
 const generateAssetFromToken = (
   chainId: Hex,
@@ -80,6 +84,7 @@ export const BridgeInputGroup = ({
   const t = useI18nContext();
 
   const { isLoading, activeQuote } = useSelector(getBridgeQuotes);
+  const { isInsufficientBalance } = useSelector(getValidationErrors);
 
   const tokenFiatValue = useTokenFiatAmount(
     token?.address || undefined,
@@ -96,10 +101,13 @@ export const BridgeInputGroup = ({
     true,
   );
 
-  const { formattedBalance } = useLatestBalance(
+  const { formattedBalance, normalizedBalance } = useLatestBalance(
     token,
     networkProps?.network?.chainId,
   );
+
+  const isAmountReadOnly =
+    amountFieldProps?.readOnly || amountFieldProps?.disabled;
 
   return (
     <Box className={className}>
@@ -140,7 +148,13 @@ export const BridgeInputGroup = ({
         </Tooltip>
       </Box>
       <Box className="prepare-bridge-page__amounts-row">
-        <Text>
+        <Text
+          color={
+            !isAmountReadOnly && isInsufficientBalance(normalizedBalance)
+              ? TextColor.errorDefault
+              : TextColor.textAlternative
+          }
+        >
           {formattedBalance ? `${t('balance')}: ${formattedBalance}` : ' '}
         </Text>
         <CurrencyDisplay
