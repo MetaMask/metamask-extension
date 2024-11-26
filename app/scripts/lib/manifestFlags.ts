@@ -32,7 +32,7 @@ export type ManifestFlags = {
      */
     nodeIndex?: number;
     /**
-     * The pull request number of the pull request the current run was triggered by
+     * The number of the pull request that triggered the current run
      */
     prNumber?: number;
   };
@@ -48,11 +48,11 @@ export type ManifestFlags = {
      * Sub-sample rate for lazy-loaded components.
      *
      * Multiply this rate by tracesSampleRate to get the actual probability of sampling the load
-     * time of for a lazy-loaded component.
+     * time of a lazy-loaded component.
      */
     lazyLoadSubSampleRate?: number;
     /**
-     * Force enable Sentry
+     * Force enable Sentry (this is typically set by individual E2E tests in spec files)
      */
     forceEnable?: boolean;
   };
