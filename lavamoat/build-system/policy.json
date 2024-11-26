@@ -1554,45 +1554,6 @@
         "browserify>deps-sort>through2>readable-stream>safe-buffer": true
       }
     },
-    "browserify>duplexer2": {
-      "packages": {
-        "browserify>duplexer2>readable-stream": true
-      }
-    },
-    "browserify>duplexer2>readable-stream": {
-      "builtin": {
-        "events.EventEmitter": true,
-        "stream": true,
-        "util": true
-      },
-      "globals": {
-        "process.browser": true,
-        "process.env.READABLE_STREAM": true,
-        "process.stderr": true,
-        "process.stdout": true,
-        "process.version.slice": true,
-        "setImmediate": true
-      },
-      "packages": {
-        "browserify>duplexer2>readable-stream>isarray": true,
-        "browserify>duplexer2>readable-stream>safe-buffer": true,
-        "browserify>duplexer2>readable-stream>string_decoder": true,
-        "pumpify>inherits": true,
-        "readable-stream-2>core-util-is": true,
-        "readable-stream-2>process-nextick-args": true,
-        "readable-stream>util-deprecate": true
-      }
-    },
-    "browserify>duplexer2>readable-stream>safe-buffer": {
-      "builtin": {
-        "buffer": true
-      }
-    },
-    "browserify>duplexer2>readable-stream>string_decoder": {
-      "packages": {
-        "browserify>duplexer2>readable-stream>safe-buffer": true
-      }
-    },
     "browserify>has": {
       "packages": {
         "browserify>has>function-bind": true
@@ -1697,7 +1658,6 @@
         "browserify>browser-resolve": true,
         "browserify>cached-path-relative": true,
         "browserify>concat-stream": true,
-        "browserify>duplexer2": true,
         "browserify>module-deps>detective": true,
         "browserify>module-deps>readable-stream": true,
         "browserify>module-deps>stream-combiner2": true,
@@ -1706,6 +1666,7 @@
         "depcheck>resolve": true,
         "loose-envify": true,
         "pumpify>inherits": true,
+        "unzipper>duplexer2": true,
         "watchify>defined": true,
         "watchify>xtend": true
       }
@@ -1752,8 +1713,8 @@
     },
     "browserify>module-deps>stream-combiner2": {
       "packages": {
-        "browserify>duplexer2": true,
-        "browserify>module-deps>stream-combiner2>readable-stream": true
+        "browserify>module-deps>stream-combiner2>readable-stream": true,
+        "unzipper>duplexer2": true
       }
     },
     "browserify>module-deps>stream-combiner2>readable-stream": {
@@ -8869,6 +8830,45 @@
       },
       "packages": {
         "terser>source-map-support": true
+      }
+    },
+    "unzipper>duplexer2": {
+      "packages": {
+        "unzipper>duplexer2>readable-stream": true
+      }
+    },
+    "unzipper>duplexer2>readable-stream": {
+      "builtin": {
+        "events.EventEmitter": true,
+        "stream": true,
+        "util": true
+      },
+      "globals": {
+        "process.browser": true,
+        "process.env.READABLE_STREAM": true,
+        "process.stderr": true,
+        "process.stdout": true,
+        "process.version.slice": true,
+        "setImmediate": true
+      },
+      "packages": {
+        "pumpify>inherits": true,
+        "readable-stream-2>core-util-is": true,
+        "readable-stream-2>process-nextick-args": true,
+        "readable-stream>util-deprecate": true,
+        "unzipper>duplexer2>readable-stream>isarray": true,
+        "unzipper>duplexer2>readable-stream>safe-buffer": true,
+        "unzipper>duplexer2>readable-stream>string_decoder": true
+      }
+    },
+    "unzipper>duplexer2>readable-stream>safe-buffer": {
+      "builtin": {
+        "buffer": true
+      }
+    },
+    "unzipper>duplexer2>readable-stream>string_decoder": {
+      "packages": {
+        "unzipper>duplexer2>readable-stream>safe-buffer": true
       }
     },
     "uri-js": {

@@ -9,6 +9,7 @@
   "scripts": {
     "webpack": "tsx ./development/webpack/launch.ts",
     "webpack:clearcache": "./development/clear-webpack-cache.js",
+    "foundryup": "tsx --tsconfig ./test/helpers/foundry/tsconfig.json ./test/helpers/foundry/foundryup.mts",
     "postinstall": "yarn webpack:clearcache",
     "env:e2e": "SEGMENT_HOST='https://api.segment.io' SEGMENT_WRITE_KEY='FAKE' yarn",
     "start": "yarn build:dev dev --apply-lavamoat=false --snow=false",
@@ -44,6 +45,7 @@
     "forwarder": "node ./development/static-server.js ./node_modules/@metamask/forwarder/dist/ --port 9010",
     "dapp-forwarder": "concurrently -k -n forwarder,dapp -p '[{time}][{name}]' 'yarn forwarder' 'yarn dapp'",
     "test:unit": "jest",
+    "anvil": "npx anvil",
     "test:unit:watch": "jest --watch",
     "test:unit:coverage": "jest --coverage",
     "test:unit:webpack": "tsx --test development/webpack/test/*.test.ts",
@@ -540,6 +542,7 @@
     "@types/serve-handler": "^6.1.4",
     "@types/sinon": "^10.0.13",
     "@types/sprintf-js": "^1",
+    "@types/unzipper": "^0",
     "@types/w3c-web-hid": "^1.0.3",
     "@types/watchify": "^3.11.1",
     "@types/webextension-polyfill": "^0.10.4",
@@ -668,6 +671,7 @@
     "style-loader": "^0.21.0",
     "stylelint": "^13.6.1",
     "superstruct": "^1.0.3",
+    "tar": "^7.4.3",
     "terser": "^5.7.0",
     "terser-webpack-plugin": "^5.3.10",
     "through2": "^4.0.2",
@@ -676,6 +680,7 @@
     "ttest": "^2.1.1",
     "typescript": "~5.4.5",
     "viem": "^2.21.8",
+    "unzipper": "^0.12.3",
     "vinyl": "^2.2.1",
     "vinyl-buffer": "^1.0.1",
     "vinyl-source-stream": "^2.0.0",
@@ -692,7 +697,7 @@
     "yargs-parser": "^21.1.1"
   },
   "engines": {
-    "node": ">= 20",
+    "node": ">20.12.0 <20.15.0 || >=20.17.0",
     "yarn": "^4.4.1"
   },
   "lavamoat": {

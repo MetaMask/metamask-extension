@@ -3,25 +3,25 @@ version: 2.1
 executors:
   node-browsers-small:
     docker:
-      - image: cimg/node:20.17-browsers
+      - image: cimg/node:20.12.0-browsers
     resource_class: small
     environment:
       NODE_OPTIONS: --max_old_space_size=2048
   node-browsers-medium:
     docker:
-      - image: cimg/node:20.17-browsers
+      - image: cimg/node:20.12.0-browsers
     resource_class: medium
     environment:
       NODE_OPTIONS: --max_old_space_size=3072
   node-linux-medium:
     machine:
-      image: ubuntu-2404:current
+      image: ubuntu-2404:2024.05.1
     resource_class: medium #// linux medium: 2 CPUs, 7.5 GB RAM, 10 credits/min
     environment:
       NODE_OPTIONS: --max_old_space_size=6144
   node-browsers-medium-plus:
     docker:
-      - image: cimg/node:20.17-browsers
+      - image: cimg/node:20.12.0-browsers
     resource_class: medium+
     environment:
       NODE_OPTIONS: --max_old_space_size=4096
@@ -104,21 +104,7 @@ commands:
     steps:
         - run:
             name: Install Foundry package for Anvil Testing Dependency
-            command: |
-              #!/bin/bash
-              set -e
-              set -u
-              set -o pipefail
-
-              # Using Foundryup Installer
-              curl -L https://foundry.paradigm.xyz | bash || true
-
-              # Add Foundry to PATH
-              echo "export PATH=${HOME}/.foundry/bin:${PATH}" >> $BASH_ENV
-              source $BASH_ENV
-
-              # Install Foundry
-              foundryup
+            command: yarn foundryup
 
 workflows:
   test_and_release:
