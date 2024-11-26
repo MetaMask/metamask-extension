@@ -1,5 +1,4 @@
 import { Mockttp } from 'mockttp';
-import { CHAIN_IDS } from '@metamask/transaction-controller';
 import { loginWithoutBalanceValidation } from '../../page-objects/flows/login.flow';
 import HomePage from '../../page-objects/pages/homepage';
 import { Driver } from '../../webdriver/driver';
@@ -8,9 +7,7 @@ import { withFixtures } from '../../helpers';
 import FixtureBuilder from '../../fixture-builder';
 import { switchToNetworkFlow } from '../../page-objects/flows/network.flow';
 
-const PAST_DURATION_MOCK = 1000 * 60 * 60 * 24; // 1 Day
-const TIMESTAMP_MOCK = Date.now() - PAST_DURATION_MOCK;
-const CURSOR_MOCK = 'test-123';
+const TIMESTAMP_MOCK = 1234;
 
 const RESPONSE_STANDARD_MOCK = {
   hash: '0x1',
@@ -36,6 +33,7 @@ const RESPONSE_STANDARD_2_MOCK = {
   ...RESPONSE_STANDARD_MOCK,
   hash: '0x2',
   value: '2340000000000000000',
+  timestamp: new Date(TIMESTAMP_MOCK - 1).toISOString(),
 };
 
 const RESPONSE_TOKEN_TRANSFER_MOCK = {
@@ -90,19 +88,13 @@ describe('Incoming Transactions', function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilder()
-          .withIncomingTransactionsPreferences({
-            [CHAIN_IDS.MAINNET]: true,
-          })
+          .withIncomingTransactionsPreferences(true)
           .build(),
         title: this.test?.fullTitle(),
         testSpecificMock: mockAccountsApi,
       },
       async ({ driver }: { driver: Driver }) => {
-        await loginWithoutBalanceValidation(driver);
-        await switchToNetworkFlow(driver, 'Ethereum Mainnet');
-
-        const homepage = new HomePage(driver);
-        await homepage.goToActivityList();
+        const homepage = await changeNetworkAndGoToActivity(driver);
         await homepage.check_confirmedTxNumberDisplayedInActivity(2);
 
         await homepage.check_txAction('Receive', 1);
@@ -118,9 +110,7 @@ describe('Incoming Transactions', function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilder()
-          .withIncomingTransactionsPreferences({
-            [CHAIN_IDS.MAINNET]: true,
-          })
+          .withIncomingTransactionsPreferences(true)
           .build(),
         title: this.test?.fullTitle(),
         testSpecificMock: (server: Mockttp) =>
@@ -132,11 +122,7 @@ describe('Incoming Transactions', function () {
           }),
       },
       async ({ driver }: { driver: Driver }) => {
-        await loginWithoutBalanceValidation(driver);
-        await switchToNetworkFlow(driver, 'Ethereum Mainnet');
-
-        const homepage = new HomePage(driver);
-        await homepage.goToActivityList();
+        const homepage = await changeNetworkAndGoToActivity(driver);
         await homepage.check_confirmedTxNumberDisplayedInActivity(1);
       },
     );
@@ -146,9 +132,7 @@ describe('Incoming Transactions', function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilder()
-          .withIncomingTransactionsPreferences({
-            [CHAIN_IDS.MAINNET]: true,
-          })
+          .withIncomingTransactionsPreferences(true)
           .build(),
         title: this.test?.fullTitle(),
         testSpecificMock: (server: Mockttp) =>
@@ -157,47 +141,58 @@ describe('Incoming Transactions', function () {
           }),
       },
       async ({ driver }: { driver: Driver }) => {
-        await loginWithoutBalanceValidation(driver);
-        await switchToNetworkFlow(driver, 'Ethereum Mainnet');
-
-        const homepage = new HomePage(driver);
-        await homepage.goToActivityList();
+        const homepage = await changeNetworkAndGoToActivity(driver);
         await homepage.check_confirmedTxNumberDisplayedInActivity(1);
       },
     );
   });
 
-  it('queries transactions using saved cursor', async function () {
+  it('does nothing if preference disabled', async function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilder()
-          .withIncomingTransactionsPreferences({
-            [CHAIN_IDS.MAINNET]: true,
-          })
-          .withIncomingTransactionsCache({
-            [`accounts-api#${
-              CHAIN_IDS.MAINNET
-            }#${DEFAULT_FIXTURE_ACCOUNT.toLowerCase()}`]: CURSOR_MOCK,
-          })
+          .withIncomingTransactionsPreferences(false)
           .build(),
         title: this.test?.fullTitle(),
-        testSpecificMock: (server: Mockttp) =>
-          mockAccountsApi(server, {
-            cursor: CURSOR_MOCK,
-            transactions: [RESPONSE_STANDARD_MOCK],
-          }),
+        testSpecificMock: mockAccountsApi,
       },
       async ({ driver }: { driver: Driver }) => {
-        await loginWithoutBalanceValidation(driver);
-        await switchToNetworkFlow(driver, 'Ethereum Mainnet');
+        const homepage = await changeNetworkAndGoToActivity(driver);
+        await driver.delay(2000);
+        await homepage.check_noTxInActivity();
+      },
+    );
+  });
 
-        const homepage = new HomePage(driver);
-        await homepage.goToActivityList();
+  it('ignores duplicate transactions already in state', async function () {
+    await withFixtures(
+      {
+        fixtures: new FixtureBuilder()
+          .withIncomingTransactionsPreferences(true)
+          .withTransactions([
+            {
+              hash: RESPONSE_STANDARD_MOCK.hash,
+              txParams: { from: RESPONSE_STANDARD_MOCK.from },
+            },
+          ])
+          .build(),
+        title: this.test?.fullTitle(),
+        testSpecificMock: mockAccountsApi,
+      },
+      async ({ driver }: { driver: Driver }) => {
+        const homepage = await changeNetworkAndGoToActivity(driver);
         await homepage.check_confirmedTxNumberDisplayedInActivity(1);
-
-        await homepage.check_txAction('Receive', 1);
-        await homepage.check_txAmountInActivity('1.23 ETH', 1);
       },
     );
   });
 });
+
+async function changeNetworkAndGoToActivity(driver: Driver) {
+  await loginWithoutBalanceValidation(driver);
+  await switchToNetworkFlow(driver, 'Ethereum Mainnet');
+
+  const homepage = new HomePage(driver);
+  await homepage.goToActivityList();
+
+  return homepage;
+}

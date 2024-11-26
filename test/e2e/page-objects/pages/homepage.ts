@@ -385,6 +385,10 @@ class HomePage {
       `Action for transaction ${expectedNumber} is displayed as ${expectedAction}`,
     );
   }
+
+  async check_noTxInActivity(): Promise<void> {
+    await this.driver.assertElementNotPresent(this.completedTransactions);
+  }
 }
 
 export default HomePage;

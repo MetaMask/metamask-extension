@@ -1477,6 +1477,12 @@ class FixtureBuilder {
     return this.withTransactionController({ lastFetchedBlockNumbers: cache });
   }
 
+  withTransactions(transactions) {
+    return this.withTransactionController({
+      transactions,
+    });
+  }
+
   build() {
     this.fixture.meta = {
       version: FIXTURE_STATE_METADATA_VERSION,
