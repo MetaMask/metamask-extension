@@ -457,12 +457,12 @@ exports[`Confirm should match snapshot for signature - typed sign - V4 - PermitB
           <h2
             class="mm-box mm-text mm-text--heading-lg mm-text--text-align-center mm-box--padding-top-4 mm-box--padding-bottom-4 mm-box--color-text-default"
           >
-            Signature request
+            Spending cap request
           </h2>
           <p
             class="mm-box mm-text mm-text--body-md mm-text--text-align-center mm-box--padding-bottom-4 mm-box--color-text-alternative"
           >
-            Review request details before you confirm.
+            This site wants permission to spend your tokens.
           </p>
           <div
             class="mm-box mm-box--margin-bottom-4 mm-box--padding-2 mm-box--background-color-background-default mm-box--rounded-md"
@@ -1111,12 +1111,12 @@ exports[`Confirm should match snapshot for signature - typed sign - V4 - PermitS
           <h2
             class="mm-box mm-text mm-text--heading-lg mm-text--text-align-center mm-box--padding-top-4 mm-box--padding-bottom-4 mm-box--color-text-default"
           >
-            Signature request
+            Spending cap request
           </h2>
           <p
             class="mm-box mm-text mm-text--body-md mm-text--text-align-center mm-box--padding-bottom-4 mm-box--color-text-alternative"
           >
-            Review request details before you confirm.
+            This site wants permission to spend your tokens.
           </p>
           <div
             class="mm-box mm-box--margin-bottom-4 mm-box--padding-2 mm-box--background-color-background-default mm-box--rounded-md"
@@ -2794,12 +2794,12 @@ exports[`Confirm should match snapshot for signature - typed sign - permit 1`] =
           <h2
             class="mm-box mm-text mm-text--heading-lg mm-text--text-align-center mm-box--padding-top-4 mm-box--padding-bottom-4 mm-box--color-text-default"
           >
-            Signature request
+            Spending cap request
           </h2>
           <p
             class="mm-box mm-text mm-text--body-md mm-text--text-align-center mm-box--padding-bottom-4 mm-box--color-text-alternative"
           >
-            Review request details before you confirm.
+            This site wants permission to spend your tokens.
           </p>
           <div
             class="mm-box mm-box--margin-bottom-4 mm-box--padding-2 mm-box--background-color-background-default mm-box--rounded-md"
