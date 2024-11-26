@@ -9,7 +9,6 @@ import {
   Icon,
   IconName,
   IconSize,
-  Text,
 } from '../../../../../../components/component-library';
 import {
   AlignItems,
@@ -17,12 +16,8 @@ import {
   FlexDirection,
   IconColor,
   JustifyContent,
-  TextVariant,
 } from '../../../../../../helpers/constants/design-system';
-import {
-  ConfirmInfoRow,
-  ConfirmInfoRowAddress,
-} from '../../../../../../components/app/confirm/info/row';
+import { ConfirmInfoRowAddress } from '../../../../../../components/app/confirm/info/row';
 import { RowAlertKey } from '../../../../../../components/app/confirm/info/row/constants';
 import { ConfirmInfoAlertRow } from '../../../../../../components/app/confirm/info/row/alert-row/alert-row';
 import { useI18nContext } from '../../../../../../hooks/useI18nContext';
