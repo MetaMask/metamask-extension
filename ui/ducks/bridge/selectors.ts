@@ -425,6 +425,14 @@ export const getValidationErrors = createDeepEqualSelector(
       },
       isInsufficientBalance: (balance?: BigNumber) =>
         fromAmount && balance !== undefined ? balance.lt(fromAmount) : false,
+      isEstimatedReturnLow:
+        activeQuote?.sentAmount?.fiat && activeQuote?.adjustedReturn?.fiat
+          ? activeQuote.adjustedReturn.fiat.lt(
+              new BigNumber(
+                BRIDGE_QUOTE_MAX_RETURN_DIFFERENCE_PERCENTAGE,
+              ).times(activeQuote.sentAmount.fiat),
+            )
+          : false,
     };
   },
 );

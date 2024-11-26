@@ -1149,5 +1149,95 @@ describe('Bridge selectors', () => {
         result.isInsufficientGasForQuote(new BigNumber('0.01100012486628785')),
       ).toStrictEqual(false);
     });
+
+    it('should return isEstimatedReturnLow=true return value is 20% less than sent funds', () => {
+      const state = createBridgeMockStore(
+        {},
+        {
+          toTokenExchangeRate: 0.798781,
+          toNativeExchangeRate: 0.354073,
+        },
+        {
+          quotes: mockBridgeQuotesNativeErc20,
+        },
+        {
+          currencyRates: {
+            ETH: {
+              conversionRate: 2524.25,
+            },
+          },
+        },
+      );
+      const result = getValidationErrors(state as never);
+
+      expect(
+        getBridgeQuotes(state as never).activeQuote?.sentAmount.fiat,
+      ).toStrictEqual(new BigNumber('25.2425'));
+      expect(
+        getBridgeQuotes(state as never).activeQuote?.totalNetworkFee.fiat,
+      ).toStrictEqual(new BigNumber('2.52456519372708012'));
+      expect(
+        getBridgeQuotes(state as never).activeQuote?.adjustedReturn.fiat,
+      ).toStrictEqual(new BigNumber('16.99676538473491988'));
+      expect(result.isEstimatedReturnLow).toStrictEqual(true);
+    });
+
+    it('should return isEstimatedReturnLow=false when return value is more than 80% of sent funds', () => {
+      const state = createBridgeMockStore(
+        {},
+        {
+          toTokenExchangeRate: 0.998781,
+          toNativeExchangeRate: 0.354073,
+        },
+        {
+          quotes: mockBridgeQuotesNativeErc20,
+        },
+        {
+          currencyRates: {
+            ETH: {
+              conversionRate: 2524.25,
+            },
+          },
+        },
+      );
+      const result = getValidationErrors(state as never);
+
+      expect(
+        getBridgeQuotes(state as never).activeQuote?.sentAmount.fiat,
+      ).toStrictEqual(new BigNumber('25.2425'));
+      expect(
+        getBridgeQuotes(state as never).activeQuote?.totalNetworkFee.fiat,
+      ).toStrictEqual(new BigNumber('2.52456519372708012'));
+      expect(
+        getBridgeQuotes(state as never).activeQuote?.adjustedReturn.fiat,
+      ).toStrictEqual(new BigNumber('21.88454578473491988'));
+      expect(result.isEstimatedReturnLow).toStrictEqual(false);
+    });
+
+    it('should return isEstimatedReturnLow=false if there are no quotes', () => {
+      const state = createBridgeMockStore(
+        {},
+        {
+          toTokenExchangeRate: 0.998781,
+          toNativeExchangeRate: 0.354073,
+        },
+        {
+          quotes: [],
+        },
+        {
+          currencyRates: {
+            ETH: {
+              conversionRate: 2524.25,
+            },
+          },
+        },
+      );
+      const result = getValidationErrors(state as never);
+
+      expect(getBridgeQuotes(state as never).activeQuote).toStrictEqual(
+        undefined,
+      );
+      expect(result.isEstimatedReturnLow).toStrictEqual(false);
+    });
   });
 });
