@@ -1054,7 +1054,7 @@ export default class MetamaskController extends EventEmitter {
         name: 'EnsController',
         allowedActions: [
           'NetworkController:getNetworkClientById',
-          'NetworkController:geState',
+          'NetworkController:getState',
         ],
         allowedEvents: [],
       }),
