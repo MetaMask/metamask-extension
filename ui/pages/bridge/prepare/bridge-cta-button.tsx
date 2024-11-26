@@ -1,5 +1,5 @@
 import React, { useMemo } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { Button } from '../../../components/component-library';
 import {
   getFromAmount,
@@ -13,7 +13,6 @@ import { useI18nContext } from '../../../hooks/useI18nContext';
 import useSubmitBridgeTransaction from '../hooks/useSubmitBridgeTransaction';
 
 export const BridgeCTAButton = () => {
-  const dispatch = useDispatch();
   const t = useI18nContext();
 
   const fromToken = useSelector(getFromToken);
@@ -55,7 +54,7 @@ export const BridgeCTAButton = () => {
       data-testid="bridge-cta-button"
       onClick={() => {
         if (isTxSubmittable) {
-          dispatch(submitBridgeTransaction(activeQuote));
+          submitBridgeTransaction(activeQuote);
         }
       }}
       disabled={!isTxSubmittable}
