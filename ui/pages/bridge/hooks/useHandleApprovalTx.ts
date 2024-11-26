@@ -45,12 +45,6 @@ export default function useHandleApprovalTx() {
         fieldsToAddToTxMeta: {
           sourceTokenSymbol: quoteResponse.quote.srcAsset.symbol,
         },
-        // swapsOptions: {
-        //   hasApproveTx: true,
-        //   meta: {
-        //     type: TransactionType.bridgeApproval,
-        //   },
-        // },
       });
     }
   };
@@ -80,13 +74,6 @@ export default function useHandleApprovalTx() {
       fieldsToAddToTxMeta: {
         sourceTokenSymbol: quoteResponse.quote.srcAsset.symbol,
       },
-      // swapsOptions: {
-      //   hasApproveTx: true,
-      //   meta: {
-      //     type: TransactionType.bridgeApproval,
-      //     sourceTokenSymbol: quoteResponse.quote.srcAsset.symbol,
-      //   },
-      // },
     });
 
     return txMeta;

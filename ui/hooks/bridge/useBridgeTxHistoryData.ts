@@ -24,8 +24,6 @@ export default function useBridgeTxHistoryData({
   const t = useI18nContext();
   const history = useHistory();
   const bridgeHistory = useSelector(selectBridgeHistoryForAccount);
-
-  // TODO use the txMetaId instead of srcTxHash
   const srcTxMetaId = transactionGroup.initialTransaction.id;
 
   // If this tx is a bridge tx and not a smart transaction, it will always have a bridgeHistoryItem
