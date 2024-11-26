@@ -1,3 +1,7 @@
+import type {
+  ContractExchangeRates,
+  Token,
+} from '@metamask/assets-controllers';
 import { AnyAction, Action } from 'redux';
 import { PayloadAction } from '@reduxjs/toolkit';
 import {
@@ -12,9 +16,11 @@ type AppState = {
   isAccountMenuOpen: boolean;
   isNetworkMenuOpen: boolean;
   nextNonce: string | null;
-  pendingTokens: Record<string, unknown>;
+  pendingTokens: {
+    [address: string]: Token & { isCustom?: boolean; unlisted?: boolean };
+  };
   welcomeScreenSeen: boolean;
-  confirmationExchangeRates: Record<string, unknown>;
+  confirmationExchangeRates: ContractExchangeRates;
   shouldClose: boolean;
   menuOpen: boolean;
   modal: {
