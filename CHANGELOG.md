@@ -6,6 +6,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [12.7.2]
+### Fixed
+- Fix message signatures for Gridplus lattice hardware wallets ([#28694](https://github.com/MetaMask/metamask-extension/pull/28694))
+
 ## [12.7.1]
 ### Fixed
 - Fix bug that could prevent security warnings from being shown on token transfer confirmations in some cases ([#28487](https://github.com/MetaMask/metamask-extension/pull/28487))
@@ -5352,7 +5356,8 @@ Update styles and spacing on the critical error page  ([#20350](https://github.c
 - Added the ability to restore accounts from seed words.
 
 
-[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v12.7.1...HEAD
+[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v12.7.2...HEAD
+[12.7.2]: https://github.com/MetaMask/metamask-extension/compare/v12.7.1...v12.7.2
 [12.7.1]: https://github.com/MetaMask/metamask-extension/compare/v12.7.0...v12.7.1
 [12.7.0]: https://github.com/MetaMask/metamask-extension/compare/v12.6.2...v12.7.0
 [12.6.2]: https://github.com/MetaMask/metamask-extension/compare/v12.6.1...v12.6.2
