@@ -2643,18 +2643,20 @@ export default class MetamaskController extends EventEmitter {
       url: 'https://swap.api.cx.metamask.io/featureFlags',
       cacheRefreshTime: MINUTE * 20,
     })
-      .then((response) => {
-        const { multiChainAssets = {} } = response;
-        const { pollInterval } = multiChainAssets;
-        // Polling interval is provided in seconds
-        if (pollInterval > 0) {
-          this.tokenBalancesController.setIntervalLength(pollInterval * SECOND);
-        }
-      })
+      .then(this.onFeatureFlagResponseReceived)
       .catch((e) => {
         // API unreachable (?)
         log.warn('Feature flag endpoint is unreachable', e);
       });
+  }
+
+  onFeatureFlagResponseReceived(response) {
+    const { multiChainAssets = {} } = response;
+    const { pollInterval } = multiChainAssets;
+    // Polling interval is provided in seconds
+    if (pollInterval > 0) {
+      this.tokenBalancesController.setIntervalLength(pollInterval * SECOND);
+    }
   }
 
   postOnboardingInitialization() {
