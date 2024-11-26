@@ -124,13 +124,19 @@ const TokenButtons = ({
 
   const setCorrectChain = async () => {
     if (currentChainId !== token.chainId) {
-      const networkConfigurationId = networks[token.chainId];
-      await dispatch(setActiveNetwork(networkConfigurationId));
-      await dispatch(
-        setSwitchedNetworkDetails({
-          networkClientId: networkConfigurationId,
-        }),
-      );
+      try {
+        const networkConfigurationId = networks[token.chainId];
+        await dispatch(setActiveNetwork(networkConfigurationId));
+        await dispatch(
+          setSwitchedNetworkDetails({
+            networkClientId: networkConfigurationId,
+          }),
+        );
+      } catch (err) {
+        console.error(`Failed to switch chains.
+        Target chainId: ${token.chainId}, Current chainId: ${currentChainId}.
+        ${err}`);
+      }
     }
   };
 
