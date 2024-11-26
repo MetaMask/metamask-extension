@@ -92,6 +92,18 @@ describe('useFirstTimeInteractionAlert', () => {
     ).toEqual([]);
   });
 
+  it('returns no alerts if firstTimeInteraction is undefined', () => {
+    const notFirstTimeConfirmation = {
+      ...TRANSACTION_META_MOCK,
+      firstTimeInteraction: undefined,
+    };
+    expect(
+      runHook({
+        currentConfirmation: notFirstTimeConfirmation,
+      }),
+    ).toEqual([]);
+  });
+
   it('returns alert if firstTimeInteraction is true', () => {
     const firstTimeConfirmation = {
       ...CONFIRMATION_MOCK,

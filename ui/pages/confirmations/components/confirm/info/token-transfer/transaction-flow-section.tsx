@@ -28,12 +28,8 @@ import { ConfirmInfoAlertRow } from '../../../../../../components/app/confirm/in
 import { useI18nContext } from '../../../../../../hooks/useI18nContext';
 import { useConfirmContext } from '../../../../context/confirm';
 import { useDecodedTransactionData } from '../hooks/useDecodedTransactionData';
-import { ConfirmInfoAlertRow } from '../../../../../../components/app/confirm/info/row/alert-row/alert-row';
-import { RowAlertKey } from '../../../../../../components/app/confirm/info/row/constants';
-import { useI18nContext } from '../../../../../../hooks/useI18nContext';
 
 export const TransactionFlowSection = () => {
-  const t = useI18nContext();
   const { currentConfirmation: transactionMeta } =
     useConfirmContext<TransactionMeta>();
   const t = useI18nContext();

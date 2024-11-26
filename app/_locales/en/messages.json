@@ -419,6 +419,9 @@
   "alertMessageChangeInSimulationResults": {
     "message": "Estimated changes for this transaction have been updated. Review them closely before proceeding."
   },
+  "alertMessageFirstTimeInteraction": {
+    "message": "1st interaction"
+  },
   "alertMessageGasEstimateFailed": {
     "message": "We’re unable to provide an accurate fee and this estimate might be high. We suggest you to input a custom gas limit, but there’s a risk the transaction will still fail."
   },
@@ -460,6 +463,9 @@
   },
   "alertReasonChangeInSimulationResults": {
     "message": "Results have changed"
+  },
+  "alertReasonFirstTimeInteraction": {
+    "message": "You're interacting with this address for the first time. Make sure that it's correct before you continue."
   },
   "alertReasonGasEstimateFailed": {
     "message": "Inaccurate fee"
@@ -2110,12 +2116,6 @@
   "fileImportFail": {
     "message": "File import not working? Click here!",
     "description": "Helps user import their account from a JSON file"
-  },
-  "firstTimeInteractionReason": {
-    "message": "You're interacting with this address for the first time. Make sure that it's correct before you continue."
-  },
-  "firstTimeInteractionTitle": {
-    "message": "1st interaction"
   },
   "flaskWelcomeUninstall": {
     "message": "you should uninstall this extension",

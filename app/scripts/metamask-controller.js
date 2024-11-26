@@ -1941,9 +1941,9 @@ export default class MetamaskController extends EventEmitter {
         queryEntireHistory: false,
         updateTransactions: false,
       },
-      isMultichainEnabled: process.env.TRANSACTION_MULTICHAIN,
       isFirstTimeInteractionEnabled: () =>
         this.preferencesController.state.securityAlertsEnabled,
+      isMultichainEnabled: process.env.TRANSACTION_MULTICHAIN,
       isSimulationEnabled: () =>
         this.preferencesController.state.useTransactionSimulations,
       messenger: transactionControllerMessenger,
