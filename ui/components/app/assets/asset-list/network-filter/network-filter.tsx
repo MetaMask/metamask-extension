@@ -5,9 +5,9 @@ import {
   getCurrentChainId,
   getCurrentNetwork,
   getPreferences,
-  getChainIdsToPoll,
   getShouldHideZeroBalanceTokens,
   getSelectedAccount,
+  getAllChainsToPoll,
 } from '../../../../../selectors';
 import { getNetworkConfigurationsByChainId } from '../../../../../../shared/modules/selectors/networks';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
@@ -50,7 +50,7 @@ const NetworkFilter = ({ handleClose }: SortControlProps) => {
   const shouldHideZeroBalanceTokens = useSelector(
     getShouldHideZeroBalanceTokens,
   );
-  const allChainIDs = useSelector(getChainIdsToPoll);
+  const allChainIDs = useSelector(getAllChainsToPoll);
   const { formattedTokensWithBalancesPerChain } = useGetFormattedTokensPerChain(
     selectedAccount,
     shouldHideZeroBalanceTokens,
