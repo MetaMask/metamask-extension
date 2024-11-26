@@ -1,6 +1,6 @@
-// eslint-disable-next-line import/no-restricted-paths
 import { TransactionMeta } from '@metamask/transaction-controller';
 // TODO fix this
+// eslint-disable-next-line import/no-restricted-paths
 import { ChainId, Quote, QuoteResponse } from '../../ui/pages/bridge/types';
 
 // All fields need to be types not interfaces, same with their children fields
