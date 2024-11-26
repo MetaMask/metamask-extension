@@ -2,7 +2,7 @@ import { useSelector } from 'react-redux';
 import { Hex } from '@metamask/utils';
 import { NetworkConfiguration } from '@metamask/network-controller';
 import { Numeric } from '../../../shared/modules/Numeric';
-import { getNetworkConfigurationsByChainId } from '../../selectors';
+import { getNetworkConfigurationsByChainId } from '../../../shared/modules/selectors/networks';
 import { BridgeHistoryItem } from '../../../shared/types/bridge-status';
 import {
   CHAIN_ID_TO_CURRENCY_SYMBOL_MAP,
