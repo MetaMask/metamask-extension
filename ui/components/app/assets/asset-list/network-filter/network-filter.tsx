@@ -110,6 +110,7 @@ const NetworkFilter = ({ handleClose }: SortControlProps) => {
           display={Display.Flex}
           justifyContent={JustifyContent.spaceBetween}
           width={BlockSize.Full}
+          gap={3}
         >
           <Box>
             <Text
@@ -169,6 +170,7 @@ const NetworkFilter = ({ handleClose }: SortControlProps) => {
         <Box
           display={Display.Flex}
           justifyContent={JustifyContent.spaceBetween}
+          gap={3}
           alignItems={AlignItems.center}
           width={BlockSize.Full}
         >
