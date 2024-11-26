@@ -9,7 +9,6 @@ import {
   Icon,
   IconName,
   IconSize,
-  Text,
 } from '../../../../../../components/component-library';
 import {
   AlignItems,
@@ -17,7 +16,6 @@ import {
   FlexDirection,
   IconColor,
   JustifyContent,
-  TextVariant,
 } from '../../../../../../helpers/constants/design-system';
 import {
   ConfirmInfoRow,
@@ -30,9 +28,9 @@ import { useConfirmContext } from '../../../../context/confirm';
 import { useDecodedTransactionData } from '../hooks/useDecodedTransactionData';
 
 export const TransactionFlowSection = () => {
+  const t = useI18nContext();
   const { currentConfirmation: transactionMeta } =
     useConfirmContext<TransactionMeta>();
-  const t = useI18nContext();
 
   const { value, pending } = useDecodedTransactionData();
 
