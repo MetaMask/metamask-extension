@@ -615,30 +615,27 @@ const locateAccountBalanceDOM = async (
 const WALLET_PASSWORD = 'correct horse battery staple';
 
 /**
- * Unlock the wallet with the default password.
+ * Unlocks the wallet using the provided password.
  * This method is intended to replace driver.navigate and should not be called after driver.navigate.
  *
  * @param {WebDriver} driver - The webdriver instance
- * @param {object} options - Options for unlocking the wallet
- * @param {boolean} options.navigate - Whether to navigate to the root page prior to unlocking. Defaults to true.
- * @param {boolean} options.waitLoginSuccess - Whether to wait for the login to succeed. Defaults to true.
+ * @param {object} [options] - Options for unlocking the wallet
+ * @param {boolean} [options.navigate] - Whether to navigate to the root page prior to unlocking - defaults to true
+ * @param {boolean} [options.waitLoginSuccess] - Whether to wait for the login to succeed - defaults to true
+ * @param {string} [options.password] - Password to unlock wallet - defaults to shared WALLET_PASSWORD
  */
 async function unlockWallet(
   driver,
-  options = {
-    navigate: true,
-    waitLoginSuccess: true,
-  },
+  { navigate = true, waitLoginSuccess = true, password = WALLET_PASSWORD } = {},
 ) {
-  if (options.navigate !== false) {
+  if (navigate) {
     await driver.navigate();
   }
 
-  await driver.fill('#password', WALLET_PASSWORD);
+  await driver.fill('#password', password);
   await driver.press('#password', driver.Key.ENTER);
 
-  if (options.waitLoginSuccess !== false) {
-    // No guard is necessary here, because it goes from present to absent
+  if (waitLoginSuccess) {
     await driver.assertElementNotPresent('[data-testid="unlock-page"]');
   }
 }
