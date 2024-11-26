@@ -63,23 +63,6 @@ const getBlockExplorerUrl = (
   return `${rootUrl}/tx/${txHash}`;
 };
 
-const getBridgeHistoryItem = (
-  srcTxHashOrTxId: string | undefined,
-  bridgeHistory: Record<string, BridgeHistoryItem>,
-  srcChainTxMeta: TransactionMeta | undefined,
-) => {
-  if (!srcTxHashOrTxId) {
-    return undefined;
-  }
-
-  const historyItemFromUrlParamHash = bridgeHistory[srcTxHashOrTxId];
-  const historyItemFromTxMetaHash = srcChainTxMeta?.hash
-    ? bridgeHistory[srcChainTxMeta?.hash]
-    : undefined;
-
-  return historyItemFromUrlParamHash || historyItemFromTxMetaHash;
-};
-
 const getBridgeAmount = ({
   bridgeHistoryItem,
   srcChainTxMeta,
@@ -119,8 +102,7 @@ const CrossChainSwapTxDetails = () => {
   const t = useI18nContext();
   const rootState = useSelector((state) => state);
   const history = useHistory();
-  // we should be able to use a srcTxHash or a txMeta.id, STX won't have txHash right away
-  const { srcTxHashOrTxId } = useParams<{ srcTxHashOrTxId: string }>();
+  const { srcTxMetaId } = useParams<{ srcTxMetaId: string }>();
   const bridgeHistory = useSelector(selectBridgeHistoryForAccount);
   const selectedAddressTxList = useSelector(
     selectedAddressTxListSelector,
@@ -131,14 +113,12 @@ const CrossChainSwapTxDetails = () => {
   );
 
   const srcChainTxMeta = selectedAddressTxList.find(
-    (tx) => tx.hash === srcTxHashOrTxId || tx.id === srcTxHashOrTxId,
+    (tx) => tx.id === srcTxMetaId,
   );
   // Even if user is still on /tx-details/txMetaId, we want to be able to show the bridge history item
-  const bridgeHistoryItem = getBridgeHistoryItem(
-    srcTxHashOrTxId,
-    bridgeHistory,
-    srcChainTxMeta,
-  );
+  const bridgeHistoryItem = srcTxMetaId
+    ? bridgeHistory[srcTxMetaId]
+    : undefined;
 
   const { srcNetwork, destNetwork } = useBridgeChainInfo({
     bridgeHistoryItem,
