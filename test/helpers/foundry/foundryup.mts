@@ -3,7 +3,7 @@
 import { join, relative } from 'node:path';
 import { homedir } from 'node:os';
 import { Dir } from 'node:fs';
-import { opendir, symlink, unlink, copyFile, rm } from 'node:fs/promises';
+import { opendir, symlink, unlink, copyFile, rm, chmod } from 'node:fs/promises';
 import { createHash } from 'node:crypto';
 import { exit, cwd } from 'node:process';
 import {
@@ -43,6 +43,7 @@ say(`fetching ${bins} ${version} for ${platform} ${arch}`);
 const ext = platform === Platform.Windows ? BinFormat.Zip : BinFormat.Tar;
 const BIN_ARCHIVE_URL = `https://github.com/${repo}/releases/download/${tag}/foundry_${version}_${platform}_${arch}.${ext}`;
 const BIN_DIR = join(cwd(), 'node_modules', '.bin');
+const GLOBAL_BIN_DIR = '/usr/local/bin'; // Directory in PATH for global binaries
 
 const url = new URL(BIN_ARCHIVE_URL);
 const cacheKey = createHash('sha256')
@@ -50,7 +51,7 @@ const cacheKey = createHash('sha256')
   .digest('hex');
 const cachePath = join(CACHE_DIR, cacheKey);
 
-// check the cache, if the cache dir exists we assume the correct files do, too
+// Check the cache, if the cache dir exists we assume the correct files do, too
 let downloadedBinaries: Dir;
 try {
   say(`checking cache`);
@@ -60,31 +61,41 @@ try {
   say(`binaries not in cache`);
   if ((e as NodeJS.ErrnoException).code === 'ENOENT') {
     say(`installing from ${url.toString()}`);
-    // directory doesn't exist, download and extract
+    // Directory doesn't exist, download and extract
     await extractFrom(url, binaries, cachePath);
     downloadedBinaries = await opendir(cachePath);
   } else {
     throw e;
   }
 }
+
 for await (const file of downloadedBinaries) {
   if (!file.isFile()) continue;
   const target = join(file.parentPath, file.name);
-  const path = join(BIN_DIR, relative(cachePath, target));
-  // clean up any existing files or symlinks
-  await unlink(path).catch(noop);
+  const localPath = join(BIN_DIR, relative(cachePath, target));
+  const globalPath = join(GLOBAL_BIN_DIR, file.name);
+
+  // Ensure the binary is executable
+  await chmod(target, 0o755);
+
+  // Clean up any existing files or symlinks
+  await unlink(localPath).catch(noop);
+  await unlink(globalPath).catch(noop);
+
   try {
-    // create new symlink
-    await symlink(target, path);
+    // Create new symlink in both local BIN_DIR and globalPath
+    await symlink(target, localPath);
+    await symlink(target, globalPath);
   } catch (e) {
     if (!(isCodedError(e) && ['EPERM', 'EXDEV'].includes(e.code))) {
       throw e;
     }
-    // symlinking can fail if its a cross-device/filesystem link, or for
-    // permissions reasons, so we'll just copy the file instead
-    await copyFile(target, path);
+    // Symlinking can fail for cross-device/filesystem links or permissions reasons
+    // Fallback: Copy the file instead
+    await copyFile(target, localPath);
+    await copyFile(target, globalPath);
   }
-  // check that it works by logging the version
+  // Check that it works by logging the version
   say(`installed - ${getVersion(target)}`);
 }
 
