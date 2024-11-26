@@ -34,10 +34,10 @@ export default class PermitConfirmation extends Confirmation {
     text: '0x581c3...45947',
   };
 
-  private nftTitle = { text: 'Withdrawal request' };
+  private nftTitle = { text: 'Signature request' };
 
   private nftDescription = {
-    text: 'This site wants permission to withdraw your NFTs',
+    text: 'Review request details before you confirm.',
   };
 
   private nftPrimaryType = { text: 'Permit' };
