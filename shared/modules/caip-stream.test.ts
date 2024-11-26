@@ -1,8 +1,5 @@
 import { Duplex, PassThrough } from 'readable-stream';
 import { createDeferredPromise } from '@metamask/utils';
-// TODO: Remove restricted import
-// eslint-disable-next-line import/no-restricted-paths
-import { deferredPromise } from '../../app/scripts/lib/util';
 import { createCaipStream } from './caip-stream';
 
 const writeToStream = async (stream: Duplex, message: unknown) => {
@@ -88,7 +85,7 @@ describe('CAIP Stream', () => {
 
       const providerStream = createCaipStream(sourceStream);
 
-      const { promise, resolve } = deferredPromise();
+      const { promise, resolve } = createDeferredPromise();
       providerStream.on('close', () => resolve?.());
 
       sourceStream.destroy();
