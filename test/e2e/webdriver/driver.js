@@ -768,6 +768,29 @@ class Driver {
   }
 
   /**
+   * Waits for a condition to be met within a given timeout period.
+   *
+   * @param {Function} condition - The condition to wait for. This function should return a boolean indicating whether the condition is met.
+   * @param {object} options - Options for the wait.
+   * @param {number} options.timeout - The maximum amount of time (in milliseconds) to wait for the condition to be met.
+   * @param {number} options.interval - The interval (in milliseconds) between checks for the condition.
+   * @returns {Promise<void>} A promise that resolves when the condition is met or the timeout is reached.
+   * @throws {Error} Throws an error if the condition is not met within the timeout period.
+   */
+  async waitUntil(condition, options) {
+    const { timeout, interval } = options;
+    const endTime = Date.now() + timeout;
+
+    while (Date.now() < endTime) {
+      if (await condition()) {
+        return true;
+      }
+      await new Promise((resolve) => setTimeout(resolve, interval));
+    }
+    throw new Error('Condition not met within timeout');
+  }
+
+  /**
    * Checks if an element that matches the given locator is present on the page.
    *
    * @param {string | object} rawLocator - Element locator
