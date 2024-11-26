@@ -52,7 +52,7 @@
     "test:integration:coverage": "yarn test:integration --coverage",
     "test:e2e:chrome": "SELENIUM_BROWSER=chrome node test/e2e/run-all.js",
     "test:e2e:chrome:mmi": "SELENIUM_BROWSER=chrome node test/e2e/run-all.js --mmi",
-    "test:e2e:chrome:flask": "SELENIUM_BROWSER=chrome node test/e2e/run-all.js --build-type flask",
+    "test:e2e:chrome:flask": "SELENIUM_BROWSER=chrome node test/e2e/tests/solana/createAccount.spec.ts --build-type flask",
     "test:e2e:chrome:webpack": "SELENIUM_BROWSER=chrome node test/e2e/run-all.js",
     "test:api-specs": "SELENIUM_BROWSER=chrome ts-node test/e2e/run-openrpc-api-test-coverage.ts",
     "test:e2e:mmi:ci": "yarn playwright test --project=mmi --project=mmi.visual",

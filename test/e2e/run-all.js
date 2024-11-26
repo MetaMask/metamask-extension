@@ -122,6 +122,10 @@ async function main() {
               'Run tests in debug mode, logging each driver interaction',
             type: 'boolean',
           })
+          .option('solana', {
+            description: `Run only Solana related tests`,
+            type: 'boolean',
+          })
           .option('mmi', {
             description: `Run only mmi related tests`,
             type: 'boolean',
@@ -165,6 +169,7 @@ async function main() {
     debug,
     retries,
     mmi,
+    solana,
     rpc,
     buildType,
     updateSnapshot,
