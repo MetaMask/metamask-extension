@@ -42,12 +42,15 @@ export default function useHandleApprovalTx() {
       await handleTx({
         txType: TransactionType.bridgeApproval,
         txParams,
-        swapsOptions: {
-          hasApproveTx: true,
-          meta: {
-            type: TransactionType.bridgeApproval,
-          },
+        fieldsToAddToTxMeta: {
+          sourceTokenSymbol: quoteResponse.quote.srcAsset.symbol,
         },
+        // swapsOptions: {
+        //   hasApproveTx: true,
+        //   meta: {
+        //     type: TransactionType.bridgeApproval,
+        //   },
+        // },
       });
     }
   };
@@ -74,13 +77,16 @@ export default function useHandleApprovalTx() {
     const txMeta = await handleTx({
       txType: TransactionType.bridgeApproval,
       txParams: approval,
-      swapsOptions: {
-        hasApproveTx: true,
-        meta: {
-          type: TransactionType.bridgeApproval,
-          sourceTokenSymbol: quoteResponse.quote.srcAsset.symbol,
-        },
+      fieldsToAddToTxMeta: {
+        sourceTokenSymbol: quoteResponse.quote.srcAsset.symbol,
       },
+      // swapsOptions: {
+      //   hasApproveTx: true,
+      //   meta: {
+      //     type: TransactionType.bridgeApproval,
+      //     sourceTokenSymbol: quoteResponse.quote.srcAsset.symbol,
+      //   },
+      // },
     });
 
     return txMeta;

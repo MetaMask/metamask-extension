@@ -1,4 +1,6 @@
 // eslint-disable-next-line import/no-restricted-paths
+import { TransactionMeta } from '@metamask/transaction-controller';
+// TODO fix this
 import { ChainId, Quote, QuoteResponse } from '../../ui/pages/bridge/types';
 
 // All fields need to be types not interfaces, same with their children fields
@@ -13,12 +15,16 @@ export enum StatusTypes {
 
 export type StatusRequest = {
   bridgeId: string; // lifi, socket, squid
-  srcTxHash: string; // lifi, socket, squid
+  srcTxHash?: string; // lifi, socket, squid, this might be undefined if this is a smart transaction (STX)
   bridge: string; // lifi, socket, squid
   srcChainId: ChainId; // lifi, socket, squid
   destChainId: ChainId; // lifi, socket, squid
   quote?: Quote; // squid
   refuel?: boolean; // lifi
+};
+
+export type StatusRequestWithSrcTxHash = StatusRequest & {
+  srcTxHash: string;
 };
 
 export type Asset = {
@@ -32,7 +38,7 @@ export type Asset = {
 
 export type SrcChainStatus = {
   chainId: ChainId;
-  txHash: string;
+  txHash?: string; // might be undefined if this is a smart transaction (STX)
   amount?: string;
   token?: Asset;
 };
@@ -105,6 +111,8 @@ export type RefuelStatusResponse = object & StatusResponse;
 export type RefuelData = object & Step;
 
 export type BridgeHistoryItem = {
+  txMetaId: string; // Need this to handle STX that might not have a txHash immediately
+  statusRequest: StatusRequest;
   quote: Quote;
   status: StatusResponse;
   startTime?: number;
@@ -130,6 +138,7 @@ export enum BridgeStatusAction {
 }
 
 export type StartPollingForBridgeTxStatusArgs = {
+  bridgeTxMeta: TransactionMeta;
   statusRequest: StatusRequest;
   quoteResponse: QuoteResponse;
   startTime?: BridgeHistoryItem['startTime'];

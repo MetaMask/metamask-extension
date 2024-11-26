@@ -25,10 +25,13 @@ export default function useBridgeTxHistoryData({
   const history = useHistory();
   const bridgeHistory = useSelector(selectBridgeHistoryForAccount);
 
-  const srcTxHash = transactionGroup.initialTransaction.hash;
+  // TODO use the txMetaId instead of srcTxHash
+  const srcTxMetaId = transactionGroup.initialTransaction.id;
 
   // If this tx is a bridge tx and not a smart transaction, it will always have a bridgeHistoryItem
-  const bridgeHistoryItem = srcTxHash ? bridgeHistory[srcTxHash] : undefined;
+  const bridgeHistoryItem = srcTxMetaId
+    ? bridgeHistory[srcTxMetaId]
+    : undefined;
 
   const { destNetwork } = useBridgeChainInfo({
     bridgeHistoryItem,
@@ -48,12 +51,8 @@ export default function useBridgeTxHistoryData({
       )
     : null;
 
-  // We should be able to use a srcTxHash or a txMeta.id, STX won't have txHash right away
-  // the txMeta.id is just a fallback, we prefer using srcTxHash
-  const srcTxHashOrTxId = srcTxHash || transactionGroup.initialTransaction.id;
-
   const showBridgeTxDetails = () => {
-    history.push(`${CROSS_CHAIN_SWAP_TX_DETAILS_ROUTE}/${srcTxHashOrTxId}`);
+    history.push(`${CROSS_CHAIN_SWAP_TX_DETAILS_ROUTE}/${srcTxMetaId}`);
   };
 
   return {

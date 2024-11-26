@@ -9,6 +9,7 @@ import {
   NetworkControllerGetStateAction,
 } from '@metamask/network-controller';
 import { AccountsControllerGetSelectedAccountAction } from '@metamask/accounts-controller';
+import { TransactionControllerGetStateAction } from '@metamask/transaction-controller';
 import {
   BridgeStatusAction,
   BridgeStatusControllerState,
@@ -37,11 +38,19 @@ type BridgeStatusControllerEvents = ControllerStateChangeEvent<
   BridgeStatusControllerState
 >;
 
+/**
+ * The external actions available to the BridgeStatusController.
+ */
 type AllowedActions =
   | NetworkControllerFindNetworkClientIdByChainIdAction
   | NetworkControllerGetStateAction
   | NetworkControllerGetNetworkClientByIdAction
-  | AccountsControllerGetSelectedAccountAction;
+  | AccountsControllerGetSelectedAccountAction
+  | TransactionControllerGetStateAction;
+
+/**
+ * The external events available to the BridgeStatusController.
+ */
 type AllowedEvents = never;
 
 /**

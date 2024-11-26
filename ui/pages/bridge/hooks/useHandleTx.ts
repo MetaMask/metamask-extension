@@ -5,7 +5,8 @@ import {
 import { useDispatch, useSelector } from 'react-redux';
 import {
   forceUpdateMetamaskState,
-  addTransactionAndWaitForPublish,
+  addTransaction,
+  updateTransaction,
 } from '../../../store/actions';
 import {
   getHexMaxGasLimit,
@@ -26,7 +27,8 @@ export default function useHandleTx() {
   const handleTx = async ({
     txType,
     txParams,
-    swapsOptions,
+    // swapsOptions,
+    fieldsToAddToTxMeta,
   }: {
     txType: TransactionType.bridgeApproval | TransactionType.bridge;
     txParams: {
@@ -37,10 +39,11 @@ export default function useHandleTx() {
       data: string;
       gasLimit: number | null;
     };
-    swapsOptions: {
-      hasApproveTx: boolean;
-      meta: Partial<TransactionMeta>; // all fields in meta are merged with TransactionMeta downstream in TransactionController
-    };
+    // swapsOptions: {
+    //   hasApproveTx: boolean;
+    //   meta: Partial<TransactionMeta>; // all fields in meta are merged with TransactionMeta downstream in TransactionController
+    // };
+    fieldsToAddToTxMeta: Omit<Partial<TransactionMeta>, 'status'>; // We don't add status, so omit it to fix the type error
   }) => {
     const hexChainId = decimalToPrefixedHex(txParams.chainId);
 
@@ -61,11 +64,14 @@ export default function useHandleTx() {
       maxPriorityFeePerGas,
     };
 
-    const txMeta = await addTransactionAndWaitForPublish(finalTxParams, {
+    // Need access to the txMeta.id, so we call addTransaction instead of addTransactionAndWaitForPublish
+    const txMeta = await addTransaction(finalTxParams, {
       requireApproval: false,
       type: txType,
-      swaps: swapsOptions,
+      // swaps: swapsOptions,
     });
+
+    dispatch(updateTransaction({ ...txMeta, ...fieldsToAddToTxMeta }, true));
 
     await forceUpdateMetamaskState(dispatch);
 
