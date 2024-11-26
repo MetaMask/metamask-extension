@@ -53,7 +53,7 @@ describe('Account syncing - User already has balances on multple accounts @no-mm
      * This test verifies the complete account syncing flow in three phases:
      * Phase 1: Initial setup, where we check that 4 accounts are shown due to balance detection even though the user storage only has 2 accounts.
      * Phase 2: Discovery of 2 more accounts after adding balances. We still expect to only see 6 even though we had 5 accounts synced in the previous test
-     * Phase 3: Verification that
+     * Phase 3: Verification that any final changes to user storage are persisted and that we don't see any extra accounts created
      */
     it('when a user has balances on more accounts than previously synced, it should be handled gracefully', async function () {
       const userStorageMockttpController = new UserStorageMockttpController();
