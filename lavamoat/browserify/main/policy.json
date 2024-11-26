@@ -794,18 +794,10 @@
     "@metamask/ens-controller": {
       "packages": {
         "@ethersproject/providers": true,
+        "@metamask/base-controller": true,
         "@metamask/controller-utils": true,
-        "@metamask/ens-controller>@metamask/base-controller": true,
         "@metamask/ens-controller>@metamask/utils": true,
         "punycode": true
-      }
-    },
-    "@metamask/ens-controller>@metamask/base-controller": {
-      "globals": {
-        "setTimeout": true
-      },
-      "packages": {
-        "immer": true
       }
     },
     "@metamask/ens-controller>@metamask/utils": {
