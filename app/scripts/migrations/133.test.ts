@@ -1,24 +1,24 @@
 import type { SmartTransaction } from '@metamask/smart-transactions-controller/dist/types';
-import migration132, { type VersionedData } from './132';
+import migration133, { type VersionedData } from './133';
 
-describe('migration #132', () => {
+describe('migration #133', () => {
   const mockSmartTransaction: SmartTransaction = {
     uuid: 'test-uuid',
   };
 
   it('should update the version metadata', async () => {
     const oldStorage: VersionedData = {
-      meta: { version: 131 },
+      meta: { version: 132 },
       data: {},
     };
 
-    const newStorage = await migration132.migrate(oldStorage);
-    expect(newStorage.meta).toStrictEqual({ version: 132 });
+    const newStorage = await migration133.migrate(oldStorage);
+    expect(newStorage.meta).toStrictEqual({ version: 133 });
   });
 
   it('should set stx opt-in to true when stx opt-in status is null', async () => {
     const oldStorage: VersionedData = {
-      meta: { version: 131 },
+      meta: { version: 132 },
       data: {
         PreferencesController: {
           smartTransactionsOptInStatus: null,
@@ -26,7 +26,7 @@ describe('migration #132', () => {
       },
     };
 
-    const newStorage = await migration132.migrate(oldStorage);
+    const newStorage = await migration133.migrate(oldStorage);
     expect(
       newStorage.data.PreferencesController?.smartTransactionsOptInStatus,
     ).toBe(true);
@@ -34,13 +34,13 @@ describe('migration #132', () => {
 
   it('should set stx opt-in to true when stx opt-in status is undefined', async () => {
     const oldStorage: VersionedData = {
-      meta: { version: 131 },
+      meta: { version: 132 },
       data: {
         PreferencesController: {},
       },
     };
 
-    const newStorage = await migration132.migrate(oldStorage);
+    const newStorage = await migration133.migrate(oldStorage);
     expect(
       newStorage.data.PreferencesController?.smartTransactionsOptInStatus,
     ).toBe(true);
@@ -48,7 +48,7 @@ describe('migration #132', () => {
 
   it('should set stx opt-in to true when stx opt-in is false and no existing smart transactions', async () => {
     const oldStorage: VersionedData = {
-      meta: { version: 131 },
+      meta: { version: 132 },
       data: {
         PreferencesController: {
           smartTransactionsOptInStatus: false,
@@ -61,7 +61,7 @@ describe('migration #132', () => {
       },
     };
 
-    const newStorage = await migration132.migrate(oldStorage);
+    const newStorage = await migration133.migrate(oldStorage);
     expect(
       newStorage.data.PreferencesController?.smartTransactionsOptInStatus,
     ).toBe(true);
@@ -69,7 +69,7 @@ describe('migration #132', () => {
 
   it('should not change stx opt-in when stx opt-in is false but has existing smart transactions', async () => {
     const oldStorage: VersionedData = {
-      meta: { version: 131 },
+      meta: { version: 132 },
       data: {
         PreferencesController: {
           smartTransactionsOptInStatus: false,
@@ -84,7 +84,7 @@ describe('migration #132', () => {
       },
     };
 
-    const newStorage = await migration132.migrate(oldStorage);
+    const newStorage = await migration133.migrate(oldStorage);
     expect(
       newStorage.data.PreferencesController?.smartTransactionsOptInStatus,
     ).toBe(false);
@@ -92,7 +92,7 @@ describe('migration #132', () => {
 
   it('should not change stx opt-in when stx opt-in is already true', async () => {
     const oldStorage: VersionedData = {
-      meta: { version: 131 },
+      meta: { version: 132 },
       data: {
         PreferencesController: {
           smartTransactionsOptInStatus: true,
@@ -100,7 +100,7 @@ describe('migration #132', () => {
       },
     };
 
-    const newStorage = await migration132.migrate(oldStorage);
+    const newStorage = await migration133.migrate(oldStorage);
     expect(
       newStorage.data.PreferencesController?.smartTransactionsOptInStatus,
     ).toBe(true);
@@ -113,13 +113,13 @@ describe('migration #132', () => {
     };
 
     const oldStorage = {
-      meta: { version: 131 },
+      meta: { version: 132 },
       data: {
         PreferencesController: 'invalid',
       },
     } as unknown as VersionedData;
 
-    await migration132.migrate(oldStorage);
+    await migration133.migrate(oldStorage);
 
     expect(sentryCaptureExceptionMock).toHaveBeenCalledTimes(1);
     expect(sentryCaptureExceptionMock).toHaveBeenCalledWith(

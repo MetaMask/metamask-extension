@@ -18,7 +18,7 @@ export type VersionedData = {
   };
 };
 
-const version = 132;
+const version = 133;
 
 function transformState(state: VersionedData['data']) {
   if (
