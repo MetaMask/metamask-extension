@@ -106,12 +106,16 @@ describe('Multichain Asset List', function (this: Suite) {
         ganacheServer?: Ganache;
       }) => {
         await loginWithBalanceValidation(driver, ganacheServer);
+        const headerNavbar = new HeaderNavbar(driver);
+        const selectNetworkDialog = new SelectNetwork(driver);
         const assetListPage = new AssetListPage(driver);
+        await headerNavbar.clickSwitchNetworkDropDown();
+        await selectNetworkDialog.selectNetworkName(NETWORK_NAME_MAINNET);
         const sendPage = new SendTokenPage(driver);
-        await assetListPage.waitUntilAssetListHasItems(4);
-        await assetListPage.clickOnAsset('LineaETH');
-        await driver.clickElement('[data-testid="coin-overview-send"]');
-        await sendPage.check_networkChange('Linea Sepolia');
+        await assetListPage.waitUntilAssetListHasItems(2);
+        await assetListPage.clickOnAsset('TST');
+        await driver.clickElement('[data-testid="eth-overview-send"]');
+        await sendPage.check_networkChange(LOCALHOST);
         await sendPage.check_pageIsLoaded();
         await sendPage.fillRecipient(
           '0x2f318C334780961FB129D2a6c30D0763d9a5C970',
@@ -120,8 +124,8 @@ describe('Multichain Asset List', function (this: Suite) {
         const assetPickerItems = await sendPage.getAssetPickerItems();
         assert.equal(
           assetPickerItems.length,
-          1,
-          'Only one asset should be shown in the asset picker',
+          2,
+          'Two assets should be shown in the asset picker',
         );
       },
     );
@@ -137,15 +141,19 @@ describe('Multichain Asset List', function (this: Suite) {
         ganacheServer?: Ganache;
       }) => {
         await loginWithBalanceValidation(driver, ganacheServer);
+        const headerNavbar = new HeaderNavbar(driver);
+        const selectNetworkDialog = new SelectNetwork(driver);
         const assetListPage = new AssetListPage(driver);
-        await assetListPage.waitUntilAssetListHasItems(4);
-        await assetListPage.clickOnAsset('LineaETH');
-        await driver.clickElement('[data-testid="token-overview-button-swap"]');
+        await headerNavbar.clickSwitchNetworkDropDown();
+        await selectNetworkDialog.selectNetworkName(NETWORK_NAME_MAINNET);
+        await assetListPage.waitUntilAssetListHasItems(2);
+        await assetListPage.clickOnAsset('TST');
+        await driver.clickElement('.mm-box > button:nth-of-type(3)');
         const toastTextElement = await driver.findElement('.toast-text');
         const toastText = await toastTextElement.getText();
         assert.equal(
           toastText,
-          "You're now using Linea Sepolia",
+          `You're now using ${LOCALHOST}`,
           'Toast text is correct',
         );
       },
