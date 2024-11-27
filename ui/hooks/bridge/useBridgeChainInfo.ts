@@ -36,9 +36,6 @@ const getSourceAndDestChainIds = ({
   };
 };
 
-/**
- * Can use either a bridgeHistoryItem or a transactionGroup to get the chain info
- */
 export type UseBridgeChainInfoProps = {
   bridgeHistoryItem?: BridgeHistoryItem;
   srcTxMeta?: TransactionMeta;
