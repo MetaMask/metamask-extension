@@ -2516,7 +2516,6 @@ export function setActiveNetworkWithError(
   return async (dispatch) => {
     log.debug(`background.setActiveNetwork: ${networkConfigurationId}`);
     try {
-      throw new Error('foo');
       await submitRequestToBackground('setActiveNetwork', [
         networkConfigurationId,
       ]);
