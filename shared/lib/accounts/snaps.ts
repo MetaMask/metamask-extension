@@ -8,7 +8,7 @@ import { SOLANA_WALLET_SNAP_ID } from './solana-wallet-snap';
  * core features (e.g. Send flow).
  *
  * @constant
- * @type {string[]}
+ * @type {SnapId[]}
  */
 const WHITELISTED_SNAPS = [BITCOIN_WALLET_SNAP_ID, SOLANA_WALLET_SNAP_ID];
 
