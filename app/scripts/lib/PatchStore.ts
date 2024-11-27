@@ -5,7 +5,7 @@ import {
 } from '@metamask/utils';
 import { Patch } from 'immer';
 import { v4 as uuid } from 'uuid';
-import { MemStoreControllersComposedState } from '../../../shared/types/metamask-controller-stores';
+import { MemStoreControllersComposedState } from '../metamask-controller-stores';
 import ComposableObservableStore from './ComposableObservableStore';
 import { sanitizeUIState } from './state-utils';
 
