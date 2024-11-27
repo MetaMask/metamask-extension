@@ -223,6 +223,12 @@ export default class BridgeStatusController extends StaticIntervalPollingControl
       // Also srcTxHash may not be available immediately for STX, so we don't want to fetch in those cases
       const historyItem = bridgeStatusState.txHistory[bridgeTxMetaId];
       const srcTxHash = this.#getSrcTxHash(bridgeTxMetaId);
+      if (!srcTxHash) {
+        return;
+      }
+
+      this.#updateSrcTxHash(bridgeTxMetaId, srcTxHash);
+
       const statusRequest = getStatusRequestWithSrcTxHash(
         historyItem.quote,
         srcTxHash,
@@ -258,8 +264,10 @@ export default class BridgeStatusController extends StaticIntervalPollingControl
     }
   };
 
-  #getSrcTxHash = (bridgeTxMetaId: string): string => {
+  #getSrcTxHash = (bridgeTxMetaId: string): string | undefined => {
     const { bridgeStatusState } = this.state;
+    // Prefer the srcTxHash from bridgeStatusState so we don't have to look up in TransactionController
+    // But it is possible to have bridgeHistoryItem in state without the srcTxHash yet when it is an STX
     const srcTxHash =
       bridgeStatusState.txHistory[bridgeTxMetaId].status.srcChain.txHash;
 
@@ -267,15 +275,23 @@ export default class BridgeStatusController extends StaticIntervalPollingControl
       return srcTxHash;
     }
 
-    // Look up in TransactionController if txMeta has been updated with the srcTxHash, if so, update it here as well
+    // Look up in TransactionController if txMeta has been updated with the srcTxHash
     const txControllerState = this.messagingSystem.call(
       'TransactionController:getState',
     );
     const txMeta = txControllerState.transactions.find(
       (tx) => tx.id === bridgeTxMetaId,
     );
+    return txMeta?.hash;
+  };
 
-    const { nextState } = this.update((_state) => {
+  #updateSrcTxHash = (bridgeTxMetaId: string, srcTxHash: string) => {
+    const { bridgeStatusState } = this.state;
+    if (bridgeStatusState.txHistory[bridgeTxMetaId].status.srcChain.txHash) {
+      return;
+    }
+
+    this.update((_state) => {
       _state.bridgeStatusState = {
         ...bridgeStatusState,
         txHistory: {
@@ -286,23 +302,13 @@ export default class BridgeStatusController extends StaticIntervalPollingControl
               ...bridgeStatusState.txHistory[bridgeTxMetaId].status,
               srcChain: {
                 ...bridgeStatusState.txHistory[bridgeTxMetaId].status.srcChain,
-                txHash: txMeta?.hash,
+                txHash: srcTxHash,
               },
             },
           },
         },
       };
     });
-
-    const nextSrcTxHash =
-      nextState.bridgeStatusState.txHistory[bridgeTxMetaId].status.srcChain
-        .txHash;
-
-    if (nextSrcTxHash) {
-      return nextSrcTxHash;
-    }
-
-    throw new Error('srcTxHash missing');
   };
 
   // Wipes the bridge status for the given address and chainId
