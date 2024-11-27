@@ -1644,7 +1644,7 @@ export default class MetamaskController extends EventEmitter {
       },
       env: {
         isAccountSyncingEnabled: false, // temporarily pausing to test network syncing in isolation
-        isNetworkSyncingEnabled: isManifestV3,
+        isNetworkSyncingEnabled: true,
       },
       messenger: this.controllerMessenger.getRestricted({
         name: 'UserStorageController',
@@ -1663,7 +1663,7 @@ export default class MetamaskController extends EventEmitter {
           'AccountsController:updateAccountMetadata',
           'NetworkController:getState',
           'NetworkController:addNetwork',
-          'NetworkController:dangerouslySetNetworkConfiguration',
+          'NetworkController:updateNetwork',
           'NetworkController:removeNetwork',
         ],
         allowedEvents: [
