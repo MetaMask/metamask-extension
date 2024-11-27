@@ -2019,6 +2019,9 @@
           }
         }
       }
+    },
+    "bridgeStatusState": {
+      "txHistory": {}
     }
   },
   "ramps": {

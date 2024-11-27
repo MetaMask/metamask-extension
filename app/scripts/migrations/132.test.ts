@@ -1,4 +1,3 @@
-import { cloneDeep } from 'lodash';
 import { migrate, version } from './132';
 
 const oldVersion = 131;
@@ -10,37 +9,65 @@ describe('migration #132', () => {
       data: {},
     };
 
-    const newStorage = await migrate(cloneDeep(oldStorage));
+    const newStorage = await migrate(oldStorage);
 
     expect(newStorage.meta).toStrictEqual({ version });
   });
 
-  describe('NotificationController', () => {
-    it('does nothing if NotificationController is not in state', async () => {
-      const oldState = {
-        OtherController: {},
-      };
+  it('does nothing if no preferences controller state is set', async () => {
+    const oldState = {
+      OtherController: {},
+    };
 
-      const transformedState = await migrate({
-        meta: { version: oldVersion },
-        data: cloneDeep(oldState),
-      });
-
-      expect(transformedState.data).toEqual(oldState);
+    const transformedState = await migrate({
+      meta: { version: oldVersion },
+      data: oldState,
     });
 
-    it('deletes the NotificationController from state', async () => {
-      const oldState = {
-        NotificationController: {},
-        OtherController: {},
-      };
+    expect(transformedState.data).toEqual(oldState);
+  });
 
-      const transformedState = await migrate({
-        meta: { version: oldVersion },
-        data: cloneDeep(oldState),
-      });
+  it('adds preferences property to the controller if it is not set and set the preference to true if migration runs', async () => {
+    const oldState = { PreferencesController: {} };
 
-      expect(transformedState.data).toEqual({ OtherController: {} });
+    const expectedState = {
+      PreferencesController: {
+        preferences: {
+          redesignedTransactionsEnabled: true,
+        },
+      },
+    };
+
+    const transformedState = await migrate({
+      meta: { version: oldVersion },
+      data: oldState,
     });
+
+    expect(transformedState.data).toEqual(expectedState);
+  });
+
+  it('changes property to true if migration runs', async () => {
+    const oldState = {
+      PreferencesController: {
+        preferences: {
+          redesignedTransactionsEnabled: false,
+        },
+      },
+    };
+
+    const expectedState = {
+      PreferencesController: {
+        preferences: {
+          redesignedTransactionsEnabled: true,
+        },
+      },
+    };
+
+    const transformedState = await migrate({
+      meta: { version: oldVersion },
+      data: oldState,
+    });
+
+    expect(transformedState.data).toEqual(expectedState);
   });
 });
