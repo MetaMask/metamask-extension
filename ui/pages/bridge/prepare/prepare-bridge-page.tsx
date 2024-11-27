@@ -2,15 +2,11 @@ import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import classnames from 'classnames';
 import { debounce } from 'lodash';
-import { Hex } from '@metamask/utils';
-import { zeroAddress } from 'ethereumjs-util';
 import { useHistory, useLocation } from 'react-router-dom';
 import {
-  setDestTokenExchangeRates,
   setFromChain,
   setFromToken,
   setFromTokenInputValue,
-  setSrcTokenExchangeRates,
   setSelectedQuote,
   setToChain,
   setToChainId,
@@ -48,16 +44,12 @@ import { calcTokenValue } from '../../../../shared/lib/swaps-utils';
 import { BridgeQuoteCard } from '../quotes/bridge-quote-card';
 import { isValidQuoteRequest } from '../utils/quote';
 import { getProviderConfig } from '../../../../shared/modules/selectors/networks';
-import { getCurrentCurrency } from '../../../selectors';
-import { SECOND } from '../../../../shared/constants/time';
 import { BridgeInputGroup } from './bridge-input-group';
 
 const PrepareBridgePage = () => {
   const dispatch = useDispatch();
 
   const t = useI18nContext();
-
-  const currency = useSelector(getCurrentCurrency);
 
   const fromToken = useSelector(getFromToken);
   const fromTokens = useSelector(getFromTokens);
@@ -135,20 +127,6 @@ const PrepareBridgePage = () => {
     debouncedUpdateQuoteRequestInController(quoteParams);
   }, Object.values(quoteParams));
 
-  const debouncedFetchFromExchangeRate = debounce(
-    (chainId: Hex, tokenAddress: string) => {
-      dispatch(setSrcTokenExchangeRates({ chainId, tokenAddress, currency }));
-    },
-    SECOND,
-  );
-
-  const debouncedFetchToExchangeRate = debounce(
-    (chainId: Hex, tokenAddress: string) => {
-      dispatch(setDestTokenExchangeRates({ chainId, tokenAddress, currency }));
-    },
-    SECOND,
-  );
-
   const { search } = useLocation();
   const history = useHistory();
 
@@ -180,7 +158,6 @@ const PrepareBridgePage = () => {
         // If there is a matching fromToken, set it as the fromToken
         const matchedToken = fromTokens[tokenAddressFromUrl];
         dispatch(setFromToken(matchedToken));
-        debouncedFetchFromExchangeRate(fromChain.chainId, matchedToken.address);
         removeTokenFromUrl();
         break;
       }
@@ -204,9 +181,6 @@ const PrepareBridgePage = () => {
           onAssetChange={(token) => {
             dispatch(setFromToken(token));
             dispatch(setFromTokenInputValue(null));
-            fromChain?.chainId &&
-              token?.address &&
-              debouncedFetchFromExchangeRate(fromChain.chainId, token.address);
           }}
           networkProps={{
             network: fromChain,
@@ -261,19 +235,6 @@ const PrepareBridgePage = () => {
               fromChain?.chainId && dispatch(setToChain(fromChain.chainId));
               fromChain?.chainId && dispatch(setToChainId(fromChain.chainId));
               dispatch(setToToken(fromToken));
-              fromChain?.chainId &&
-                fromToken?.address &&
-                debouncedFetchToExchangeRate(
-                  fromChain.chainId,
-                  fromToken.address,
-                );
-              toChain?.chainId &&
-                toToken?.address &&
-                toToken.address !== zeroAddress() &&
-                debouncedFetchFromExchangeRate(
-                  toChain.chainId,
-                  toToken.address,
-                );
             }}
           />
         </Box>
@@ -284,9 +245,6 @@ const PrepareBridgePage = () => {
           token={toToken}
           onAssetChange={(token) => {
             dispatch(setToToken(token));
-            toChain?.chainId &&
-              token?.address &&
-              debouncedFetchToExchangeRate(toChain.chainId, token.address);
           }}
           networkProps={{
             network: toChain,
