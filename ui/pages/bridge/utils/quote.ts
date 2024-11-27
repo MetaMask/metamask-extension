@@ -195,3 +195,8 @@ export const formatFiatAmount = (
   }
   return formatCurrency(amount.toString(), currency, precision);
 };
+
+export const formatProviderLabel = (
+  quote?: QuoteResponse,
+): `${string}_${string}` =>
+  `${quote?.quote.bridgeId}_${quote?.quote.bridges[0]}`;

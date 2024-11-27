@@ -33,6 +33,11 @@ import {
 } from '../../../ducks/bridge/selectors';
 import { Column, Row } from '../layout';
 import { getNativeCurrency } from '../../../ducks/metamask/metamask';
+import { useQuoteProperties } from '../../../hooks/bridge/events/useQuoteProperties';
+import { useRequestMetadataProperties } from '../../../hooks/bridge/events/useRequestMetadataProperties';
+import { useRequestProperties } from '../../../hooks/bridge/events/useRequestProperties';
+import { useCrossChainSwapsEventTracker } from '../../../hooks/bridge/useCrossChainSwapsEventTracker';
+import { MetaMetricsEventName } from '../../../../shared/constants/metametrics';
 
 export const BridgeQuotesModal = ({
   onClose,
@@ -45,6 +50,11 @@ export const BridgeQuotesModal = ({
   const sortOrder = useSelector(getBridgeSortOrder);
   const currency = useSelector(getCurrentCurrency);
   const nativeCurrency = useSelector(getNativeCurrency);
+
+  const trackCrossChainSwapsEvent = useCrossChainSwapsEventTracker();
+  const { quoteRequestProperties } = useRequestProperties();
+  const requestMetadataProperties = useRequestMetadataProperties();
+  const quoteListProperties = useQuoteProperties();
 
   return (
     <Modal className="quotes-modal" onClose={onClose} {...modalProps}>
@@ -69,7 +79,21 @@ export const BridgeQuotesModal = ({
           ].map(([sortOrderOption, label, icon]) => (
             <ButtonLink
               key={label}
-              onClick={() => dispatch(setSortOrder(sortOrderOption))}
+              onClick={() => {
+                quoteRequestProperties &&
+                  requestMetadataProperties &&
+                  quoteListProperties &&
+                  trackCrossChainSwapsEvent({
+                    event: MetaMetricsEventName.AllQuotesSorted,
+                    properties: {
+                      ...quoteRequestProperties,
+                      ...requestMetadataProperties,
+                      ...quoteListProperties,
+                      sort_order: sortOrder,
+                    },
+                  });
+                dispatch(setSortOrder(sortOrderOption));
+              }}
               startIconName={
                 sortOrder === sortOrderOption && sortOrder === SortOrder.ETA_ASC
                   ? icon

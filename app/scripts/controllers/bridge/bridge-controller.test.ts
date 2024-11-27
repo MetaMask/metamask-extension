@@ -490,6 +490,7 @@ describe('BridgeController', function () {
         quoteRequest: { ...quoteRequest, walletAddress: undefined },
         quotes: DEFAULT_BRIDGE_CONTROLLER_STATE.quotes,
         quotesLastFetched: DEFAULT_BRIDGE_CONTROLLER_STATE.quotesLastFetched,
+        quotesInitialLoadTime: undefined,
         quotesLoadingStatus:
           DEFAULT_BRIDGE_CONTROLLER_STATE.quotesLoadingStatus,
       }),
@@ -527,6 +528,7 @@ describe('BridgeController', function () {
         quotes: mockBridgeQuotesNativeErc20Eth,
         quotesLoadingStatus: 1,
         quotesRefreshCount: 1,
+        quotesInitialLoadTime: 11000,
       }),
     );
     const firstFetchTime =
@@ -543,6 +545,7 @@ describe('BridgeController', function () {
         quotes: mockBridgeQuotesNativeErc20Eth,
         quotesLoadingStatus: 1,
         quotesRefreshCount: 1,
+        quotesInitialLoadTime: 11000,
       }),
     );
     const secondFetchTime =
