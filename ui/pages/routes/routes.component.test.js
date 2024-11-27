@@ -268,15 +268,15 @@ describe('Routes Component', () => {
     };
 
     it('displays new EVM network popup for EVM accounts', async () => {
-      const { getAllByText, getByTestId } = await renderPopup(mockEvmAccount);
-
-      const networkInfo = getByTestId('new-network-info__bullet-paragraph');
+      const { getAllByText, queryByTestId } = await renderPopup(mockEvmAccount);
 
       await waitFor(() => {
         expect(getAllByText(mockNewlyAddedNetwork.name).length).toBeGreaterThan(
           0,
         );
-        expect(networkInfo).toBeInTheDocument();
+        expect(
+          queryByTestId('new-network-info__bullet-paragraph'),
+        ).not.toBeInTheDocument();
       });
     });
 
