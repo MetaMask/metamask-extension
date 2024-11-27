@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`DefaultSimulation renders component correctly 1`] = `
+exports[`PermitSimulation renders component correctly 1`] = `
 <div>
   <div
     class="mm-box mm-box--margin-bottom-4 mm-box--padding-2 mm-box--background-color-background-default mm-box--rounded-md"
@@ -129,7 +129,7 @@ exports[`DefaultSimulation renders component correctly 1`] = `
 </div>
 `;
 
-exports[`DefaultSimulation renders correctly for NFT permit 1`] = `
+exports[`PermitSimulation renders correctly for NFT permit 1`] = `
 <div>
   <div
     class="mm-box mm-box--margin-bottom-4 mm-box--padding-2 mm-box--background-color-background-default mm-box--rounded-md"
