@@ -1,6 +1,7 @@
 import { strict as assert } from 'assert';
 import { Driver } from '../../webdriver/driver';
 import { Ganache } from '../../seeder/ganache';
+import { getCleanAppState } from '../../helpers';
 import HeaderNavbar from './header-navbar';
 
 class HomePage {
@@ -60,6 +61,8 @@ class HomePage {
 
   private readonly nftTab = '[data-testid="account-overview__nfts-tab"]';
 
+  private readonly popoverCloseButton = '[data-testid="popover-close"]';
+
   private readonly successImportNftMessage = {
     text: 'NFT was successfully added!',
     tag: 'h6',
@@ -82,6 +85,11 @@ class HomePage {
       throw e;
     }
     console.log('Home page is loaded');
+  }
+
+  async closePopover(): Promise<void> {
+    console.log('Closing popover');
+    await this.driver.clickElement(this.popoverCloseButton);
   }
 
   async closeUseNetworkNotificationModal(): Promise<void> {
@@ -239,24 +247,26 @@ class HomePage {
    * Checks if the expected balance is displayed on homepage.
    *
    * @param expectedBalance - The expected balance to be displayed. Defaults to '0'.
+   * @param symbol - The symbol of the currency or token. Defaults to 'ETH'.
    */
   async check_expectedBalanceIsDisplayed(
     expectedBalance: string = '0',
+    symbol: string = 'ETH',
   ): Promise<void> {
     try {
       await this.driver.waitForSelector({
         css: this.balance,
-        text: `${expectedBalance} ETH`,
+        text: expectedBalance,
       });
     } catch (e) {
       const balance = await this.driver.waitForSelector(this.balance);
       const currentBalance = parseFloat(await balance.getText());
-      const errorMessage = `Expected balance ${expectedBalance} ETH, got balance ${currentBalance} ETH`;
+      const errorMessage = `Expected balance ${expectedBalance} ${symbol}, got balance ${currentBalance} ${symbol}`;
       console.log(errorMessage, e);
       throw e;
     }
     console.log(
-      `Expected balance ${expectedBalance} ETH is displayed on homepage`,
+      `Expected balance ${expectedBalance} ${symbol} is displayed on homepage`,
     );
   }
 
@@ -282,13 +292,15 @@ class HomePage {
     );
   }
 
-  async check_ganacheBalanceIsDisplayed(
-    ganacheServer?: Ganache,
+  async check_localBlockchainBalanceIsDisplayed(
+    localBlockchainServer?: Ganache,
     address = null,
   ): Promise<void> {
     let expectedBalance: string;
-    if (ganacheServer) {
-      expectedBalance = (await ganacheServer.getBalance(address)).toString();
+    if (localBlockchainServer) {
+      expectedBalance = (
+        await localBlockchainServer.getBalance(address)
+      ).toString();
     } else {
       expectedBalance = '0';
     }
@@ -347,6 +359,17 @@ class HomePage {
     console.log(
       `Amount for transaction ${expectedNumber} is displayed as ${expectedAmount}`,
     );
+  }
+
+  /**
+   * This function checks if account syncing has been successfully completed at least once.
+   */
+  async check_hasAccountSyncingSyncedAtLeastOnce(): Promise<void> {
+    console.log('Check if account syncing has synced at least once');
+    await this.driver.wait(async () => {
+      const uiState = await getCleanAppState(this.driver);
+      return uiState.metamask.hasAccountSyncingSyncedAtLeastOnce === true;
+    }, 10000);
   }
 }
 

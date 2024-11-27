@@ -1,11 +1,12 @@
 import { TransactionMeta } from '@metamask/transaction-controller';
 import { isHexString } from '@metamask/utils';
+import { BigNumber } from 'bignumber.js';
 import { isBoolean } from 'lodash';
 import { useMemo } from 'react';
 import { useSelector } from 'react-redux';
 import { calcTokenAmount } from '../../../../../../../../shared/lib/transactions-controller-utils';
 import { getIntlLocale } from '../../../../../../../ducks/locale/locale';
-import { SPENDING_CAP_UNLIMITED_MSG } from '../../../../../constants';
+import { formatAmount } from '../../../../simulation-details/formatAmount';
 import { useDecodedTransactionData } from '../../hooks/useDecodedTransactionData';
 import { useIsNFT } from './use-is-nft';
 
@@ -46,22 +47,26 @@ export const useApproveTokenSimulation = (
     ).toFixed();
   }, [value, decimals]);
 
+  const tokenPrefix = isNFT ? '#' : '';
+
   const formattedSpendingCap = useMemo(() => {
-    // formatting coerces small numbers to 0
-    return isNFT || parseInt(decodedSpendingCap, 10) < 1
-      ? decodedSpendingCap
-      : new Intl.NumberFormat(locale).format(parseInt(decodedSpendingCap, 10));
+    return isNFT
+      ? `${tokenPrefix}${decodedSpendingCap}`
+      : formatAmount(locale, new BigNumber(decodedSpendingCap));
   }, [decodedSpendingCap, isNFT, locale]);
 
-  const spendingCap = useMemo(() => {
+  const { spendingCap, isUnlimitedSpendingCap } = useMemo(() => {
     if (!isNFT && isSpendingCapUnlimited(parseInt(decodedSpendingCap, 10))) {
-      return SPENDING_CAP_UNLIMITED_MSG;
+      return { spendingCap: decodedSpendingCap, isUnlimitedSpendingCap: true };
     }
-    const tokenPrefix = isNFT ? '#' : '';
-    return `${tokenPrefix}${formattedSpendingCap}`;
+    return {
+      spendingCap: `${tokenPrefix}${decodedSpendingCap}`,
+      isUnlimitedSpendingCap: false,
+    };
   }, [decodedSpendingCap, formattedSpendingCap, isNFT]);
 
   return {
+    isUnlimitedSpendingCap,
     spendingCap,
     formattedSpendingCap,
     value,
