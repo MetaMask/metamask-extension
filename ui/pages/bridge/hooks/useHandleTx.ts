@@ -59,7 +59,9 @@ export default function useHandleTx() {
       maxPriorityFeePerGas,
     };
 
-    // Need access to the txMeta.id, so we call addTransaction instead of addTransactionAndWaitForPublish
+    // Need access to the txMeta.id right away so we can track it in BridgeStatusController,
+    // so we call addTransaction instead of addTransactionAndWaitForPublish
+    // if it's an STX, addTransactionAndWaitForPublish blocks until there is a txHash
     const txMeta = await addTransaction(finalTxParams, {
       requireApproval: false,
       type: txType,
