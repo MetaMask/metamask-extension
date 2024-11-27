@@ -57,7 +57,7 @@ const TypedSignInfo: React.FC = () => {
   return (
     <>
       {isPermit && useTransactionSimulations && <PermitSimulation />}
-      <ConfirmInfoSection>
+      <ConfirmInfoSection data-testid="confirmation_request-section">
         {isPermit && (
           <>
             <ConfirmInfoRow label={t('spender')}>
@@ -84,7 +84,7 @@ const TypedSignInfo: React.FC = () => {
         )}
         <SigningInWithRow />
       </ConfirmInfoSection>
-      <ConfirmInfoSection>
+      <ConfirmInfoSection data-testid="confirmation_message-section">
         <ConfirmInfoRow
           label={t('message')}
           collapsed={isPermit && useTransactionSimulations}
