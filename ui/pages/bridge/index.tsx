@@ -1,7 +1,6 @@
 import React, { useContext, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Switch, useHistory } from 'react-router-dom';
-import { zeroAddress } from 'ethereumjs-util';
 import { I18nContext } from '../../contexts/i18n';
 import { clearSwapsState } from '../../ducks/swaps/swaps';
 import {
@@ -30,12 +29,9 @@ import {
   Header,
 } from '../../components/multichain/pages/page';
 import { useSwapsFeatureFlags } from '../swaps/hooks/useSwapsFeatureFlags';
-import {
-  resetBridgeState,
-  setFromChain,
-  setSrcTokenExchangeRates,
-} from '../../ducks/bridge/actions';
+import { resetBridgeState, setFromChain } from '../../ducks/bridge/actions';
 import { useGasFeeEstimates } from '../../hooks/useGasFeeEstimates';
+import { useBridgeExchangeRates } from '../../hooks/bridge/useBridgeExchangeRates';
 import PrepareBridgePage from './prepare/prepare-bridge-page';
 import { BridgeCTAButton } from './prepare/bridge-cta-button';
 
@@ -55,15 +51,8 @@ const CrossChainSwap = () => {
   const currency = useSelector(getCurrentCurrency);
 
   useEffect(() => {
-    if (isBridgeChain && isBridgeEnabled && providerConfig && currency) {
+    if (isBridgeChain && isBridgeEnabled && providerConfig) {
       dispatch(setFromChain(providerConfig.chainId));
-      dispatch(
-        setSrcTokenExchangeRates({
-          chainId: providerConfig.chainId,
-          tokenAddress: zeroAddress(),
-          currency,
-        }),
-      );
     }
   }, [isBridgeChain, isBridgeEnabled, providerConfig, currency]);
 
@@ -85,6 +74,8 @@ const CrossChainSwap = () => {
 
   // Needed for refreshing gas estimates
   useGasFeeEstimates(providerConfig?.id);
+  // Needed for fetching exchange rates for tokens that have not been imported
+  useBridgeExchangeRates();
 
   const redirectToDefaultRoute = async () => {
     history.push({
