@@ -39,7 +39,6 @@ const isNonPermitRequestSupportedByDecodingAPI = (
 
 const TypedSignV4Simulation: React.FC<object> = () => {
   const { currentConfirmation } = useConfirmContext<SignatureRequestType>();
-  console.log(JSON.stringify(currentConfirmation));
   const isPermit = isPermitSignatureRequest(currentConfirmation);
   const supportedByDecodingAPI =
     isNonPermitRequestSupportedByDecodingAPI(currentConfirmation) || isPermit;
