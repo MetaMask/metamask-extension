@@ -6,7 +6,7 @@ import {
 } from '../../selectors';
 import { BlockSize, BorderRadius } from '../../helpers/constants/design-system';
 import { Box } from '../../components/component-library';
-import { AccountListItem } from '../../components/multichain';
+import { AccountListItem } from '../../components/multichain/account-list-item';
 import { mergeAccounts } from '../../components/multichain/account-list-menu/account-list-menu';
 import { MergedInternalAccount } from '../../selectors/selectors.types';
 

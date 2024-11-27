@@ -32,11 +32,11 @@ import {
 import { deleteExpiredNotifications } from '../../store/actions';
 import { NotificationsList } from './notifications-list';
 import { NewFeatureTag } from './NewFeatureTag';
+import { TRIGGER_TYPES } from './notification-components';
 
 export type Notification = NotificationServicesController.Types.INotification;
 
-const { TRIGGER_TYPES, TRIGGER_TYPES_WALLET_SET } =
-  NotificationServicesController.Constants;
+const { TRIGGER_TYPES_WALLET_SET } = NotificationServicesController.Constants;
 
 // NOTE - Tab filters could change once we support more notifications.
 export const enum TAB_KEYS {

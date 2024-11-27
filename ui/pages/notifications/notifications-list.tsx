@@ -1,6 +1,5 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
-import { NotificationServicesController } from '@metamask/notification-services-controller';
 import { Box } from '../../components/component-library';
 import {
   BlockSize,
@@ -12,14 +11,11 @@ import {
 import Preloader from '../../components/ui/icon/preloader/preloader-icon.component';
 import { selectIsMetamaskNotificationsEnabled } from '../../selectors/metamask-notifications/metamask-notifications';
 import { useI18nContext } from '../../hooks/useI18nContext';
-import { SnapComponent } from './notification-components/snap/snap';
 import { NotificationsPlaceholder } from './notifications-list-placeholder';
 import { NotificationsListTurnOnNotifications } from './notifications-list-turn-on-notifications';
 import { NotificationsListItem } from './notifications-list-item';
 import { type Notification, TAB_KEYS } from './notifications';
 import { NotificationsListReadAllButton } from './notifications-list-read-all-button';
-
-const { TRIGGER_TYPES } = NotificationServicesController.Constants;
 
 export type NotificationsListProps = {
   activeTab: TAB_KEYS;
@@ -67,10 +63,6 @@ function ErrorContent() {
 
 function NotificationItem(props: { notification: Notification }) {
   const { notification } = props;
-  if (notification.type === TRIGGER_TYPES.SNAP) {
-    return <SnapComponent snapNotification={notification} />;
-  }
-
   return <NotificationsListItem notification={notification} />;
 }
 
