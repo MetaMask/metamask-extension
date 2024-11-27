@@ -21,7 +21,6 @@ export default function useHandleBridgeTx() {
       .shiftedBy(quoteResponse.quote.srcAsset.decimals)
       .toString();
 
-
     const txMeta = await handleTx({
       txType: TransactionType.bridge,
       txParams: quoteResponse.trade,
@@ -45,7 +44,7 @@ export default function useHandleBridgeTx() {
         approvalTxId,
         // this is the decimal (non atomic) amount (not USD value) of source token to swap
         swapTokenValue: sentAmountDec,
-      };,
+      },
     });
 
     return txMeta;
