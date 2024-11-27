@@ -2975,10 +2975,10 @@
         "@metamask/controller-utils": true,
         "@metamask/eth-query": true,
         "@metamask/gas-fee-controller": true,
-        "@metamask/polling-controller": true,
         "@metamask/rpc-errors": true,
         "@metamask/transaction-controller": true,
-        "@metamask/user-operation-controller>@metamask/utils": true,
+        "@metamask/user-operation-controller>@metamask/polling-controller": true,
+        "@metamask/utils": true,
         "@metamask/utils>@metamask/superstruct": true,
         "bn.js": true,
         "lodash": true,
@@ -2986,19 +2986,16 @@
         "webpack>events": true
       }
     },
-    "@metamask/user-operation-controller>@metamask/utils": {
+    "@metamask/user-operation-controller>@metamask/polling-controller": {
       "globals": {
-        "TextDecoder": true,
-        "TextEncoder": true
+        "clearTimeout": true,
+        "console.error": true,
+        "setTimeout": true
       },
       "packages": {
-        "@metamask/utils>@metamask/superstruct": true,
-        "@metamask/utils>@scure/base": true,
-        "@metamask/utils>pony-cause": true,
-        "@noble/hashes": true,
-        "browserify>buffer": true,
-        "nock>debug": true,
-        "semver": true
+        "@metamask/base-controller": true,
+        "@metamask/snaps-utils>fast-json-stable-stringify": true,
+        "uuid": true
       }
     },
     "@metamask/utils": {
