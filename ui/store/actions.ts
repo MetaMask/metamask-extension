@@ -4566,7 +4566,7 @@ export async function currencyRateStartPolling(
  * for the given network client.
  * If all network clients unsubscribe, the controller stops polling.
  *
- * @param pollingToken - Poll token received from calling startPollingByNetworkClientId
+ * @param pollingToken - Poll token received from calling currencyRateStartPolling
  */
 export async function currencyRateStopPollingByPollingToken(
   pollingToken: string,
@@ -4740,7 +4740,7 @@ export async function gasFeeStartPollingByNetworkClientId(
  * for the given network client.
  * If all network clients unsubscribe, the controller stops polling.
  *
- * @param pollingToken - Poll token received from calling startPollingByNetworkClientId
+ * @param pollingToken - Poll token received from calling gasFeeStartPolling
  */
 export async function gasFeeStopPollingByPollingToken(pollingToken: string) {
   await submitRequestToBackground('gasFeeStopPollingByPollingToken', [
