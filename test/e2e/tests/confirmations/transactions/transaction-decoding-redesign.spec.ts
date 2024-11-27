@@ -10,8 +10,8 @@ import TestDapp from '../../../page-objects/pages/test-dapp';
 import { TRANSACTION_DATA_UNISWAP } from '../../../../data/confirmations/transaction-decode';
 import { Ganache } from '../../../seeder/ganache';
 import TransactionConfirmation from '../../../page-objects/pages/confirmations/redesign/transaction-confirmation';
-import { TestSuiteArguments } from './shared';
 import ContractAddressRegistry from '../../../seeder/contract-address-registry';
+import { TestSuiteArguments } from './shared';
 
 const { defaultGanacheOptions, withFixtures } = require('../../../helpers');
 const FixtureBuilder = require('../../../fixture-builder');
