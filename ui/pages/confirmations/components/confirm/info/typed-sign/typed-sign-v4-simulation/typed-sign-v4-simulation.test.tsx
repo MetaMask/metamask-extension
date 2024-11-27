@@ -1,7 +1,10 @@
 import React from 'react';
 import configureMockStore from 'redux-mock-store';
 import { act } from 'react-dom/test-utils';
-import { DecodingData, DecodingDataChangeType } from '@metamask/signature-controller';
+import {
+  DecodingData,
+  DecodingDataChangeType,
+} from '@metamask/signature-controller';
 import { waitFor } from '@testing-library/dom';
 
 import { getMockTypedSignConfirmStateForRequest } from '../../../../../../../../test/data/confirmations/helper';
@@ -129,7 +132,7 @@ describe('PermitSimulation', () => {
     const mockStore = configureMockStore([])(state);
 
     await act(async () => {
-      const { container, findByText } = renderWithConfirmContextProvider(
+      const { findByText } = renderWithConfirmContextProvider(
         <TypedSignV4Simulation />,
         mockStore,
       );
