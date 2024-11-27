@@ -1,6 +1,5 @@
 /* eslint-disable @typescript-eslint/no-require-imports, @typescript-eslint/no-var-requires */
 import { MockttpServer } from 'mockttp';
-import GanacheContractAddressRegistry from '../../../seeder/ganache-contract-address-registry';
 import {
   createDappTransaction,
   DAPP_URL,
@@ -12,6 +11,7 @@ import { TRANSACTION_DATA_UNISWAP } from '../../../../data/confirmations/transac
 import { Ganache } from '../../../seeder/ganache';
 import TransactionConfirmation from '../../../page-objects/pages/confirmations/redesign/transaction-confirmation';
 import { TestSuiteArguments } from './shared';
+import ContractAddressRegistry from '../../../seeder/contract-address-registry';
 
 const { defaultGanacheOptions, withFixtures } = require('../../../helpers');
 const FixtureBuilder = require('../../../fixture-builder');
@@ -42,7 +42,7 @@ describe('Confirmation Redesign Contract Interaction Transaction Decoding', func
         async ({ driver, contractRegistry }: TestSuiteArguments) => {
           await unlockWallet(driver);
           const contractAddress = await (
-            contractRegistry as GanacheContractAddressRegistry
+            contractRegistry as ContractAddressRegistry
           ).getContractAddress(smartContract);
 
           const testDapp = new TestDapp(driver);
@@ -83,7 +83,7 @@ describe('Confirmation Redesign Contract Interaction Transaction Decoding', func
       async ({ driver, contractRegistry }: TestSuiteArguments) => {
         await unlockWallet(driver);
         const contractAddress = await (
-          contractRegistry as GanacheContractAddressRegistry
+          contractRegistry as ContractAddressRegistry
         ).getContractAddress(smartContract);
 
         const testDapp = new TestDapp(driver);
@@ -121,7 +121,7 @@ describe('Confirmation Redesign Contract Interaction Transaction Decoding', func
       async ({ driver, contractRegistry }: TestSuiteArguments) => {
         await unlockWallet(driver);
         const contractAddress = await (
-          contractRegistry as GanacheContractAddressRegistry
+          contractRegistry as ContractAddressRegistry
         ).getContractAddress(smartContract);
 
         const testDapp = new TestDapp(driver);
