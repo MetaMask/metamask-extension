@@ -22,6 +22,7 @@ export default function useHandleBridgeTx() {
       .toString();
 
     const fieldsToAddToTxMeta = {
+      // TODO get this added to TxMeta type
       destinationChainId: new Numeric(quoteResponse.quote.destChainId, 10)
         .toPrefixedHexString()
         .toLowerCase() as `0x${string}`,
