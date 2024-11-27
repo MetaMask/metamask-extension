@@ -71,6 +71,8 @@ for await (const file of downloadedBinaries) {
   if (!file.isFile()) continue;
   const target = join(file.parentPath, file.name);
   const path = join(BIN_DIR, relative(cachePath, target));
+  console.log("TARGET ===================", target);
+  console.log("PATH ===================", path);
   // clean up any existing files or symlinks
   await unlink(path).catch(noop);
   try {
