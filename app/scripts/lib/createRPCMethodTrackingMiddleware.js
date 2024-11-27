@@ -27,7 +27,7 @@ import {
 } from '../../../ui/helpers/utils/metrics';
 // TODO: Remove restricted import
 // eslint-disable-next-line import/no-restricted-paths
-import { REDESIGN_APPROVAL_TYPES } from '../../../ui/pages/confirmations/utils/confirm';
+import { shouldUseRedesignForSignatures } from '../../../shared/lib/confirmation.utils';
 import { getSnapAndHardwareInfoForMetrics } from './snap-keyring/metrics';
 
 /**
@@ -189,8 +189,6 @@ function finalizeSignatureFragment(
  * signature requests
  *
  * @param {object} opts - options for the rpc method tracking middleware
- * @param {Function} opts.getMetricsState - get the state of
- *  MetaMetricsController
  * @param {number} [opts.rateLimitTimeout] - time, in milliseconds, to wait before
  *  allowing another set of events to be tracked for methods rate limited by timeout.
  * @param {number} [opts.rateLimitSamplePercent] - percentage, in decimal, of events
@@ -198,6 +196,7 @@ function finalizeSignatureFragment(
  * @param {Function} opts.getAccountType
  * @param {Function} opts.getDeviceModel
  * @param {Function} opts.isConfirmationRedesignEnabled
+ * @param {Function} opts.isRedesignedConfirmationsDeveloperEnabled
  * @param {RestrictedControllerMessenger} opts.snapAndHardwareMessenger
  * @param {number} [opts.globalRateLimitTimeout] - time, in milliseconds, of the sliding
  * time window that should limit the number of method calls tracked to globalRateLimitMaxAmount.
@@ -209,7 +208,6 @@ function finalizeSignatureFragment(
  */
 
 export default function createRPCMethodTrackingMiddleware({
-  getMetricsState,
   rateLimitTimeout = 60 * 5 * 1000, // 5 minutes
   rateLimitSamplePercent = 0.001, // 0.1%
   globalRateLimitTimeout = 60 * 5 * 1000, // 5 minutes
@@ -217,6 +215,7 @@ export default function createRPCMethodTrackingMiddleware({
   getAccountType,
   getDeviceModel,
   isConfirmationRedesignEnabled,
+  isRedesignedConfirmationsDeveloperEnabled,
   snapAndHardwareMessenger,
   appStateController,
   metaMetricsController,
@@ -256,7 +255,7 @@ export default function createRPCMethodTrackingMiddleware({
     // anything. This is extra redundancy because this value is checked in
     // the metametrics controller's trackEvent method as well.
     const userParticipatingInMetaMetrics =
-      getMetricsState().participateInMetaMetrics === true;
+      metaMetricsController.state.participateInMetaMetrics === true;
 
     // Get the event type, each of which has APPROVED, REJECTED and REQUESTED
     // keys for the various events in the flow.
@@ -318,13 +317,15 @@ export default function createRPCMethodTrackingMiddleware({
             req.securityAlertResponse.description;
         }
 
-        const isConfirmationRedesign =
-          isConfirmationRedesignEnabled() &&
-          REDESIGN_APPROVAL_TYPES.find(
-            (type) => type === MESSAGE_TYPE_TO_APPROVAL_TYPE[method],
-          );
-
-        if (isConfirmationRedesign) {
+        if (
+          shouldUseRedesignForSignatures({
+            approvalType: MESSAGE_TYPE_TO_APPROVAL_TYPE[method],
+            isRedesignedSignaturesUserSettingEnabled:
+              isConfirmationRedesignEnabled(),
+            isRedesignedConfirmationsDeveloperEnabled:
+              isRedesignedConfirmationsDeveloperEnabled(),
+          })
+        ) {
           eventProperties.ui_customizations = [
             ...(eventProperties.ui_customizations || []),
             MetaMetricsEventUiCustomization.RedesignedConfirmation,

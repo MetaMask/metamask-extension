@@ -3,6 +3,7 @@ import { useSelector } from 'react-redux';
 import { isEqual } from 'lodash';
 import { ChainId, hexToBN } from '@metamask/controller-utils';
 import { Hex } from '@metamask/utils';
+import { useParams } from 'react-router-dom';
 import {
   getAllTokens,
   getCurrentCurrency,
@@ -39,6 +40,8 @@ export const useTokensWithFiltering = (
   sortOrder: TokenBucketPriority = TokenBucketPriority.owned,
   chainId?: ChainId | Hex,
 ) => {
+  const { token: tokenAddressFromUrl } = useParams();
+
   // Only includes non-native tokens
   const allDetectedTokens = useSelector(getAllTokens);
   const { address: selectedAddress, balance: balanceOnActiveChain } =
@@ -123,6 +126,18 @@ export const useTokensWithFiltering = (
           yield nativeToken;
         }
 
+        if (tokenAddressFromUrl) {
+          const tokenListItem =
+            tokenList?.[tokenAddressFromUrl] ??
+            tokenList?.[tokenAddressFromUrl.toLowerCase()];
+          if (tokenListItem) {
+            const tokenWithTokenListData = buildTokenData(tokenListItem);
+            if (tokenWithTokenListData) {
+              yield tokenWithTokenListData;
+            }
+          }
+        }
+
         if (sortOrder === TokenBucketPriority.owned) {
           for (const tokenWithBalance of sortedErc20TokensWithBalances) {
             const cachedTokenData =
@@ -171,6 +186,7 @@ export const useTokensWithFiltering = (
       currentCurrency,
       chainId,
       tokenList,
+      tokenAddressFromUrl,
     ],
   );
 

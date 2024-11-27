@@ -5,21 +5,34 @@ import OnboardingSrpPage from '../pages/onboarding/onboarding-srp-page';
 import StartOnboardingPage from '../pages/onboarding/start-onboarding-page';
 import SecureWalletPage from '../pages/onboarding/secure-wallet-page';
 import OnboardingCompletePage from '../pages/onboarding/onboarding-complete-page';
+import OnboardingPrivacySettingsPage from '../pages/onboarding/onboarding-privacy-settings-page';
 import { WALLET_PASSWORD } from '../../helpers';
 import { E2E_SRP } from '../../default-fixture';
 
 /**
  * Create new wallet onboarding flow
  *
- * @param driver - The WebDriver instance.
- * @param password - The password to create. Defaults to WALLET_PASSWORD.
+ * @param options - The options object.
+ * @param options.driver - The WebDriver instance.
+ * @param [options.password] - The password to create. Defaults to WALLET_PASSWORD.
+ * @param [options.participateInMetaMetrics] - Whether to participate in MetaMetrics. Defaults to false.
+ * @param [options.needNavigateToNewPage] - Indicates whether to navigate to a new page before starting the onboarding flow. Defaults to true.
  */
-export const createNewWalletOnboardingFlow = async (
-  driver: Driver,
-  password: string = WALLET_PASSWORD,
-) => {
+export const createNewWalletOnboardingFlow = async ({
+  driver,
+  password = WALLET_PASSWORD,
+  participateInMetaMetrics = false,
+  needNavigateToNewPage = true,
+}: {
+  driver: Driver;
+  password?: string;
+  participateInMetaMetrics?: boolean;
+  needNavigateToNewPage?: boolean;
+}): Promise<void> => {
   console.log('Starting the creation of a new wallet onboarding flow');
-  await driver.navigate();
+  if (needNavigateToNewPage) {
+    await driver.navigate();
+  }
   const startOnboardingPage = new StartOnboardingPage(driver);
   await startOnboardingPage.check_pageIsLoaded();
   await startOnboardingPage.checkTermsCheckbox();
@@ -27,7 +40,11 @@ export const createNewWalletOnboardingFlow = async (
 
   const onboardingMetricsPage = new OnboardingMetricsPage(driver);
   await onboardingMetricsPage.check_pageIsLoaded();
-  await onboardingMetricsPage.clickNoThanksButton();
+  if (participateInMetaMetrics) {
+    await onboardingMetricsPage.clickIAgreeButton();
+  } else {
+    await onboardingMetricsPage.clickNoThanksButton();
+  }
 
   const onboardingPasswordPage = new OnboardingPasswordPage(driver);
   await onboardingPasswordPage.check_pageIsLoaded();
@@ -43,17 +60,20 @@ export const createNewWalletOnboardingFlow = async (
  *
  * @param options - The options object.
  * @param options.driver - The WebDriver instance.
- * @param [options.seedPhrase] - The seed phrase to import.
- * @param [options.password] - The password to use.
+ * @param [options.seedPhrase] - The seed phrase to import. Defaults to E2E_SRP.
+ * @param [options.password] - The password to use. Defaults to WALLET_PASSWORD.
+ * @param [options.fillSrpWordByWord] - Whether to fill the SRP word by word. Defaults to false.
  */
 export const importSRPOnboardingFlow = async ({
   driver,
   seedPhrase = E2E_SRP,
   password = WALLET_PASSWORD,
+  fillSrpWordByWord = false,
 }: {
   driver: Driver;
   seedPhrase?: string;
   password?: string;
+  fillSrpWordByWord?: boolean;
 }): Promise<void> => {
   console.log('Starting the import of SRP onboarding flow');
   await driver.navigate();
@@ -69,7 +89,11 @@ export const importSRPOnboardingFlow = async ({
 
   const onboardingSrpPage = new OnboardingSrpPage(driver);
   await onboardingSrpPage.check_pageIsLoaded();
-  await onboardingSrpPage.fillSrp(seedPhrase);
+  if (fillSrpWordByWord) {
+    await onboardingSrpPage.fillSrpWordByWord(seedPhrase);
+  } else {
+    await onboardingSrpPage.fillSrp(seedPhrase);
+  }
   await onboardingSrpPage.clickConfirmButton();
 
   const onboardingPasswordPage = new OnboardingPasswordPage(driver);
@@ -80,15 +104,30 @@ export const importSRPOnboardingFlow = async ({
 /**
  * Complete create new wallet onboarding flow
  *
- * @param driver - The WebDriver instance.
- * @param password - The password to use. Defaults to WALLET_PASSWORD.
+ * @param options - The options object.
+ * @param options.driver - The WebDriver instance.
+ * @param [options.password] - The password to use. Defaults to WALLET_PASSWORD.
+ * @param [options.participateInMetaMetrics] - Whether to participate in MetaMetrics. Defaults to false.
+ * @param [options.needNavigateToNewPage] - Indicates whether to navigate to a new page before starting the onboarding flow. Defaults to true.
  */
-export const completeCreateNewWalletOnboardingFlow = async (
-  driver: Driver,
-  password: string = WALLET_PASSWORD,
-) => {
+export const completeCreateNewWalletOnboardingFlow = async ({
+  driver,
+  password = WALLET_PASSWORD,
+  participateInMetaMetrics = false,
+  needNavigateToNewPage = true,
+}: {
+  driver: Driver;
+  password?: string;
+  participateInMetaMetrics?: boolean;
+  needNavigateToNewPage?: boolean;
+}): Promise<void> => {
   console.log('start to complete create new wallet onboarding flow ');
-  await createNewWalletOnboardingFlow(driver, password);
+  await createNewWalletOnboardingFlow({
+    driver,
+    password,
+    participateInMetaMetrics,
+    needNavigateToNewPage,
+  });
   const onboardingCompletePage = new OnboardingCompletePage(driver);
   await onboardingCompletePage.check_pageIsLoaded();
   await onboardingCompletePage.check_congratulationsMessageIsDisplayed();
@@ -102,22 +141,77 @@ export const completeCreateNewWalletOnboardingFlow = async (
  * @param options.driver - The WebDriver instance.
  * @param [options.seedPhrase] - The seed phrase to import. Defaults to E2E_SRP.
  * @param [options.password] - The password to use. Defaults to WALLET_PASSWORD.
+ * @param [options.fillSrpWordByWord] - Whether to fill the SRP word by word. Defaults to false.
  * @returns A promise that resolves when the onboarding flow is complete.
  */
 export const completeImportSRPOnboardingFlow = async ({
   driver,
   seedPhrase = E2E_SRP,
   password = WALLET_PASSWORD,
+  fillSrpWordByWord = false,
 }: {
   driver: Driver;
   seedPhrase?: string;
   password?: string;
+  fillSrpWordByWord?: boolean;
 }): Promise<void> => {
   console.log('Starting to complete import SRP onboarding flow');
-  await importSRPOnboardingFlow({ driver, seedPhrase, password });
+  await importSRPOnboardingFlow({
+    driver,
+    seedPhrase,
+    password,
+    fillSrpWordByWord,
+  });
 
   const onboardingCompletePage = new OnboardingCompletePage(driver);
   await onboardingCompletePage.check_pageIsLoaded();
   await onboardingCompletePage.check_walletReadyMessageIsDisplayed();
+  await onboardingCompletePage.completeOnboarding();
+};
+
+/**
+ * Complete create new wallet onboarding flow with custom privacy settings.
+ *
+ * @param options - The options object.
+ * @param options.driver - The WebDriver instance.
+ * @param options.password - The password to use. Defaults to WALLET_PASSWORD.
+ * @param options.needNavigateToNewPage - Whether to navigate to new page to start the onboarding flow. Defaults to true.
+ * @param options.toggleBasicFunctionality - Indicates if basic functionalities should be opted out. Defaults to true.
+ * @param options.toggleAssetsPrivacy - Indicates if assets privacy functionalities should be opted out. Defaults to true.
+ */
+export const completeCreateNewWalletOnboardingFlowWithCustomSettings = async ({
+  driver,
+  password = WALLET_PASSWORD,
+  needNavigateToNewPage = true,
+  toggleBasicFunctionality = true,
+  toggleAssetsPrivacy = true,
+}: {
+  driver: Driver;
+  password?: string;
+  needNavigateToNewPage?: boolean;
+  toggleBasicFunctionality?: boolean;
+  toggleAssetsPrivacy?: boolean;
+}): Promise<void> => {
+  await createNewWalletOnboardingFlow({
+    driver,
+    password,
+    needNavigateToNewPage,
+  });
+  const onboardingCompletePage = new OnboardingCompletePage(driver);
+  await onboardingCompletePage.check_pageIsLoaded();
+  await onboardingCompletePage.navigateToDefaultPrivacySettings();
+
+  const onboardingPrivacySettingsPage = new OnboardingPrivacySettingsPage(
+    driver,
+  );
+  if (toggleBasicFunctionality) {
+    await onboardingPrivacySettingsPage.toggleBasicFunctionalitySettings();
+  }
+  if (toggleAssetsPrivacy) {
+    await onboardingPrivacySettingsPage.toggleAssetsSettings();
+  }
+
+  await onboardingPrivacySettingsPage.navigateBackToOnboardingCompletePage();
+  await onboardingCompletePage.check_pageIsLoaded();
   await onboardingCompletePage.completeOnboarding();
 };

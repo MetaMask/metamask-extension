@@ -1,6 +1,7 @@
 import { strict as assert } from 'assert';
 import { Driver } from '../../webdriver/driver';
 import { Ganache } from '../../seeder/ganache';
+import { getCleanAppState } from '../../helpers';
 import HeaderNavbar from './header-navbar';
 
 class HomePage {
@@ -10,10 +11,6 @@ class HomePage {
 
   private readonly activityTab =
     '[data-testid="account-overview__activity-tab"]';
-
-  private readonly nftTab = '[data-testid="account-overview__nfts-tab"]';
-
-  private readonly nftIconOnActivityList = '[data-testid="nft-item"]';
 
   private readonly balance = '[data-testid="eth-overview__primary-currency"]';
 
@@ -48,6 +45,29 @@ class HomePage {
   private readonly transactionAmountsInActivity =
     '[data-testid="transaction-list-item-primary-currency"]';
 
+  // NFT selectors
+  private readonly confirmImportNftButton =
+    '[data-testid="import-nfts-modal-import-button"]';
+
+  private readonly importNftAddressInput = '#address';
+
+  private readonly importNftButton = '[data-testid="import-nft-button"]';
+
+  private readonly importNftModalTitle = { text: 'Import NFT', tag: 'header' };
+
+  private readonly importNftTokenIdInput = '#token-id';
+
+  private readonly nftIconOnActivityList = '[data-testid="nft-item"]';
+
+  private readonly nftTab = '[data-testid="account-overview__nfts-tab"]';
+
+  private readonly popoverCloseButton = '[data-testid="popover-close"]';
+
+  private readonly successImportNftMessage = {
+    text: 'NFT was successfully added!',
+    tag: 'h6',
+  };
+
   constructor(driver: Driver) {
     this.driver = driver;
     this.headerNavbar = new HeaderNavbar(driver);
@@ -67,6 +87,11 @@ class HomePage {
     console.log('Home page is loaded');
   }
 
+  async closePopover(): Promise<void> {
+    console.log('Closing popover');
+    await this.driver.clickElement(this.popoverCloseButton);
+  }
+
   async closeUseNetworkNotificationModal(): Promise<void> {
     // We need to use clickElementSafe + assertElementNotPresent as sometimes the network dialog doesn't appear, as per this issue (#25788)
     // TODO: change the 2 actions for clickElementAndWaitToDisappear, once the issue is fixed
@@ -84,8 +109,8 @@ class HomePage {
     await this.driver.clickElement(this.activityTab);
   }
 
-  async goToNFTList(): Promise<void> {
-    console.log(`Open NFT tab on homepage`);
+  async goToNftTab(): Promise<void> {
+    console.log(`Go to NFT tab on homepage`);
     await this.driver.clickElement(this.nftTab);
   }
 
@@ -95,6 +120,35 @@ class HomePage {
 
   async startSendFlow(): Promise<void> {
     await this.driver.clickElement(this.sendButton);
+  }
+
+  /**
+   * Imports an NFT by entering the NFT contract address and token ID
+   *
+   * @param nftContractAddress - The address of the NFT contract to import
+   * @param id - The ID of the NFT to import
+   * @param expectedErrorMessage - Expected error message if the import should fail
+   */
+  async importNft(
+    nftContractAddress: string,
+    id: string,
+    expectedErrorMessage?: string,
+  ) {
+    await this.driver.clickElement(this.importNftButton);
+    await this.driver.waitForSelector(this.importNftModalTitle);
+    await this.driver.fill(this.importNftAddressInput, nftContractAddress);
+    await this.driver.fill(this.importNftTokenIdInput, id);
+    if (expectedErrorMessage) {
+      await this.driver.clickElement(this.confirmImportNftButton);
+      await this.driver.waitForSelector({
+        tag: 'p',
+        text: expectedErrorMessage,
+      });
+    } else {
+      await this.driver.clickElementAndWaitToDisappear(
+        this.confirmImportNftButton,
+      );
+    }
   }
 
   /**
@@ -167,6 +221,11 @@ class HomePage {
     );
   }
 
+  async check_nftImageIsDisplayed(): Promise<void> {
+    console.log('Check that NFT image is displayed in NFT tab on homepage');
+    await this.driver.waitForSelector(this.nftIconOnActivityList);
+  }
+
   /**
    * Checks if the toaster message for editing a network is displayed on the homepage.
    *
@@ -188,24 +247,26 @@ class HomePage {
    * Checks if the expected balance is displayed on homepage.
    *
    * @param expectedBalance - The expected balance to be displayed. Defaults to '0'.
+   * @param symbol - The symbol of the currency or token. Defaults to 'ETH'.
    */
   async check_expectedBalanceIsDisplayed(
     expectedBalance: string = '0',
+    symbol: string = 'ETH',
   ): Promise<void> {
     try {
       await this.driver.waitForSelector({
         css: this.balance,
-        text: `${expectedBalance} ETH`,
+        text: expectedBalance,
       });
     } catch (e) {
       const balance = await this.driver.waitForSelector(this.balance);
       const currentBalance = parseFloat(await balance.getText());
-      const errorMessage = `Expected balance ${expectedBalance} ETH, got balance ${currentBalance} ETH`;
+      const errorMessage = `Expected balance ${expectedBalance} ${symbol}, got balance ${currentBalance} ${symbol}`;
       console.log(errorMessage, e);
       throw e;
     }
     console.log(
-      `Expected balance ${expectedBalance} ETH is displayed on homepage`,
+      `Expected balance ${expectedBalance} ${symbol} is displayed on homepage`,
     );
   }
 
@@ -231,17 +292,41 @@ class HomePage {
     );
   }
 
-  async check_ganacheBalanceIsDisplayed(
-    ganacheServer?: Ganache,
+  async check_localBlockchainBalanceIsDisplayed(
+    localBlockchainServer?: Ganache,
     address = null,
   ): Promise<void> {
     let expectedBalance: string;
-    if (ganacheServer) {
-      expectedBalance = (await ganacheServer.getBalance(address)).toString();
+    if (localBlockchainServer) {
+      expectedBalance = (
+        await localBlockchainServer.getBalance(address)
+      ).toString();
     } else {
       expectedBalance = '0';
     }
     await this.check_expectedBalanceIsDisplayed(expectedBalance);
+  }
+
+  /**
+   * Checks if the NFT item with the specified name is displayed in the homepage nft tab.
+   *
+   * @param nftName - The name of the NFT to check for.
+   */
+  async check_nftNameIsDisplayed(nftName: string): Promise<void> {
+    console.log(
+      `Check that NFT item ${nftName} is displayed in NFT tab on homepage`,
+    );
+    await this.driver.waitForSelector({
+      tag: 'h5',
+      text: nftName,
+    });
+  }
+
+  async check_successImportNftMessageIsDisplayed(): Promise<void> {
+    console.log(
+      'Check that success imported NFT message is displayed on homepage',
+    );
+    await this.driver.waitForSelector(this.successImportNftMessage);
   }
 
   /**
@@ -274,6 +359,17 @@ class HomePage {
     console.log(
       `Amount for transaction ${expectedNumber} is displayed as ${expectedAmount}`,
     );
+  }
+
+  /**
+   * This function checks if account syncing has been successfully completed at least once.
+   */
+  async check_hasAccountSyncingSyncedAtLeastOnce(): Promise<void> {
+    console.log('Check if account syncing has synced at least once');
+    await this.driver.wait(async () => {
+      const uiState = await getCleanAppState(this.driver);
+      return uiState.metamask.hasAccountSyncingSyncedAtLeastOnce === true;
+    }, 10000);
   }
 }
 

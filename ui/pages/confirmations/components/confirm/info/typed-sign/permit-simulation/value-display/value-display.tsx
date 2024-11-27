@@ -21,7 +21,6 @@ import {
 } from '../../../../../../../../components/component-library';
 import Tooltip from '../../../../../../../../components/ui/tooltip';
 import {
-  BackgroundColor,
   BlockSize,
   BorderRadius,
   Display,
@@ -30,6 +29,7 @@ import {
 } from '../../../../../../../../helpers/constants/design-system';
 import Name from '../../../../../../../../components/app/name/name';
 import { TokenDetailsERC20 } from '../../../../../../utils/token';
+import { getAmountColors } from '../../../utils';
 
 type PermitSimulationValueDisplayParams = {
   /** ID of the associated chain. */
@@ -50,11 +50,25 @@ type PermitSimulationValueDisplayParams = {
 
   /** The tokenId for NFT */
   tokenId?: string;
+
+  /** True if value is being credited to wallet */
+  credit?: boolean;
+
+  /** True if value is being debited to wallet */
+  debit?: boolean;
 };
 
 const PermitSimulationValueDisplay: React.FC<
   PermitSimulationValueDisplayParams
-> = ({ chainId, primaryType, tokenContract, tokenId, value }) => {
+> = ({
+  chainId,
+  primaryType,
+  tokenContract,
+  tokenId,
+  value,
+  credit,
+  debit,
+}) => {
   const exchangeRate = useTokenExchangeRate(tokenContract);
 
   const tokenDetails = useGetTokenStandardAndDetails(tokenContract);
@@ -97,8 +111,10 @@ const PermitSimulationValueDisplay: React.FC<
     return null;
   }
 
+  const { color, backgroundColor } = getAmountColors(credit, debit);
+
   return (
-    <Box>
+    <Box marginLeft="auto" style={{ maxWidth: '100%' }}>
       <Box display={Display.Flex} justifyContent={JustifyContent.flexEnd}>
         <Box
           display={Display.Inline}
@@ -113,12 +129,15 @@ const PermitSimulationValueDisplay: React.FC<
           >
             <Text
               data-testid="simulation-token-value"
-              backgroundColor={BackgroundColor.backgroundAlternative}
+              backgroundColor={backgroundColor}
               borderRadius={BorderRadius.XL}
+              color={color}
               paddingInline={2}
               style={{ paddingTop: '1px', paddingBottom: '1px' }}
               textAlign={TextAlign.Center}
             >
+              {credit && '+ '}
+              {debit && '- '}
               {tokenValue !== null &&
                 shortenString(tokenValue || '', {
                   truncatedCharLimit: 15,
