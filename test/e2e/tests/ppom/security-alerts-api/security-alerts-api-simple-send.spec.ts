@@ -1,4 +1,3 @@
-import { strict as assert } from 'assert';
 import { MockttpServer } from 'mockttp';
 import FixtureBuilder from '../../../fixture-builder';
 
@@ -126,8 +125,9 @@ describe('Security Alerts API - Simple Send @no-mmi', function () {
 
         await sendScreenToConfirmScreen(driver, mockBenignAddress, '0');
 
-        const isPresent = await driver.isElementPresent(bannerAlertSelector);
-        assert.equal(isPresent, false, `Banner alert unexpectedly found.`);
+        await driver.assertElementNotPresent('.loading-indicator');
+
+        await driver.assertElementNotPresent(bannerAlertSelector);
       },
     );
   });
@@ -159,6 +159,8 @@ describe('Security Alerts API - Simple Send @no-mmi', function () {
 
         await driver.clickElement('#maliciousRawEthButton');
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
+
+        await driver.assertElementNotPresent('.loading-indicator');
 
         await driver.waitForSelector({
           css: '.mm-text--body-lg-medium',
@@ -196,17 +198,18 @@ describe('Security Alerts API - Simple Send @no-mmi', function () {
           '0xB8c77482e45F1F44dE1745F52C74426C631bDD52',
           '1.1',
         );
-        const expectedTitle = 'Be careful';
 
-        const bannerAlert = await driver.findElement({
-          css: bannerAlertSelector,
-          text: expectedTitle,
+        await driver.assertElementNotPresent('.loading-indicator');
+
+        await driver.waitForSelector({
+          css: '.mm-text--body-lg-medium',
+          text: 'Be careful',
         });
 
-        assert(
-          bannerAlert,
-          `Banner alert not found. Expected Title: ${expectedTitle}`,
-        );
+        await driver.waitForSelector({
+          css: '.mm-text--body-md',
+          text: `Because of an error, we couldn't check for security alerts. Only continue if you trust every address involved`,
+        });
       },
     );
   });
