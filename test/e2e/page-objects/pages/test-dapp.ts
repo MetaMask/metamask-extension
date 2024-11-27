@@ -30,11 +30,6 @@ class TestDapp {
 
   private readonly depositPiggyBankContractButton = '#depositButton';
 
-  private readonly editConnectButton = {
-    text: 'Edit',
-    tag: 'button',
-  };
-
   private readonly simpleSendButton = '#sendButton';
 
   private readonly erc721MintButton = '#mintButton';
@@ -60,11 +55,6 @@ class TestDapp {
   private readonly erc721RevokeSetApprovalForAllButton = '#revokeButton';
 
   private readonly erc721SetApprovalForAllButton = '#setApprovalForAllButton';
-
-  private readonly localhostCheckbox = {
-    text: 'Localhost 8545',
-    tag: 'p',
-  };
 
   private readonly localhostNetworkMessage = {
     css: '#chainId',
