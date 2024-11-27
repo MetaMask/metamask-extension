@@ -478,6 +478,11 @@ export default class MetamaskController extends EventEmitter {
 
     this.appMetadataController = new AppMetadataController({
       state: initState.AppMetadataController,
+      messenger: this.controllerMessenger.getRestricted({
+        name: 'AppMetadataController',
+        allowedActions: [],
+        allowedEvents: [],
+      }),
       currentMigrationVersion: this.currentMigrationVersion,
       currentAppVersion: version,
     });
@@ -2457,7 +2462,7 @@ export default class MetamaskController extends EventEmitter {
     this.store.updateStructure({
       AccountsController: this.accountsController,
       AppStateController: this.appStateController.store,
-      AppMetadataController: this.appMetadataController.store,
+      AppMetadataController: this.appMetadataController,
       MultichainBalancesController: this.multichainBalancesController,
       TransactionController: this.txController,
       KeyringController: this.keyringController,
@@ -2512,7 +2517,7 @@ export default class MetamaskController extends EventEmitter {
       config: {
         AccountsController: this.accountsController,
         AppStateController: this.appStateController.store,
-        AppMetadataController: this.appMetadataController.store,
+        AppMetadataController: this.appMetadataController,
         MultichainBalancesController: this.multichainBalancesController,
         NetworkController: this.networkController,
         KeyringController: this.keyringController,
