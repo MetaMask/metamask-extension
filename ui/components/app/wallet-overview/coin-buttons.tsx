@@ -375,19 +375,6 @@ const CoinButtons = ({
       }
       ///: END:ONLY_INCLUDE_IF
       default: {
-        trackEvent(
-          {
-            event: MetaMetricsEventName.NavSendButtonClicked,
-            category: MetaMetricsEventCategory.Navigation,
-            properties: {
-              token_symbol: 'ETH',
-              location: 'Home',
-              text: 'Send',
-              chain_id: chainId,
-            },
-          },
-          { excludeMetaMetricsId: false },
-        );
         await setCorrectChain();
         await dispatch(startNewDraftTransaction({ type: AssetType.native }));
         history.push(SEND_ROUTE);
