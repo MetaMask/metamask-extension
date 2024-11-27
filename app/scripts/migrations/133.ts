@@ -6,7 +6,7 @@ type VersionedData = {
   data: Record<string, unknown>;
 };
 
-export const version = 132;
+export const version = 133;
 
 /**
  * This migration removes the notification controller from state. Previously used for

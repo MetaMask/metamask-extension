@@ -1,9 +1,9 @@
 import { cloneDeep } from 'lodash';
-import { migrate, version } from './132';
+import { migrate, version } from './133';
 
-const oldVersion = 131;
+const oldVersion = 132;
 
-describe('migration #132', () => {
+describe('migration #133', () => {
   it('updates the version metadata', async () => {
     const oldStorage = {
       meta: { version: oldVersion },
