@@ -169,7 +169,7 @@ function withRequest<ReturnValue>(
       smartTransactions: {
         expectedDeadline: 45,
         maxDeadline: 150,
-        returnTxHashAsap: false,
+        extensionReturnTxHashAsap: false,
       },
     },
     ...options,
@@ -238,7 +238,7 @@ describe('submitSmartTransactionHook', () => {
 
   it('returns a txHash asap if the feature flag requires it', async () => {
     withRequest(async ({ request }) => {
-      request.featureFlags.smartTransactions.returnTxHashAsap = true;
+      request.featureFlags.smartTransactions.extensionReturnTxHashAsap = true;
       const result = await submitSmartTransactionHook(request);
       expect(result).toEqual({ transactionHash: txHash });
     });
