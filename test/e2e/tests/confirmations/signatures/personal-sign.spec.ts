@@ -8,7 +8,7 @@ import { Driver } from '../../../webdriver/driver';
 import {
   mockSignatureApproved,
   mockSignatureRejected,
-  withRedesignConfirmationFixtures,
+  withTransactionEnvelopeTypeFixtures,
 } from '../helpers';
 import { TestSuiteArguments } from '../transactions/shared';
 import {
@@ -25,7 +25,7 @@ import {
 
 describe('Confirmation Signature - Personal Sign @no-mmi', function (this: Suite) {
   it('initiates and confirms', async function () {
-    await withRedesignConfirmationFixtures(
+    await withTransactionEnvelopeTypeFixtures(
       this.test?.fullTitle(),
       TransactionEnvelopeType.legacy,
       async ({
@@ -66,7 +66,7 @@ describe('Confirmation Signature - Personal Sign @no-mmi', function (this: Suite
   });
 
   it('initiates and rejects', async function () {
-    await withRedesignConfirmationFixtures(
+    await withTransactionEnvelopeTypeFixtures(
       this.test?.fullTitle(),
       TransactionEnvelopeType.legacy,
       async ({
