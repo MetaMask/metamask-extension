@@ -15,8 +15,8 @@ export type BridgeState = {
   fromToken: SwapsTokenObject | SwapsEthToken | null;
   toToken: SwapsTokenObject | SwapsEthToken | null;
   fromTokenInputValue: string | null;
-  fromTokenExchangeRate: number | null;
-  toTokenExchangeRate: number | null;
+  fromTokenExchangeRate: number | null; // Exchange rate from selected token to fiat
+  toTokenExchangeRate: number | null; // Exchange rate from the selected token to fiat
   sortOrder: SortOrder;
   selectedQuote: (QuoteResponse & QuoteMetadata) | null; // Alternate quote selected by user. When quotes refresh, the best match will be activated.
 };
@@ -70,6 +70,12 @@ const bridgeSlice = createSlice({
     },
   },
   extraReducers: (builder) => {
+    builder.addCase(setDestTokenExchangeRates.pending, (state) => {
+      state.toTokenExchangeRate = null;
+    });
+    builder.addCase(setSrcTokenExchangeRates.pending, (state) => {
+      state.fromTokenExchangeRate = null;
+    });
     builder.addCase(setDestTokenExchangeRates.fulfilled, (state, action) => {
       state.toTokenExchangeRate = action.payload ?? null;
     });
