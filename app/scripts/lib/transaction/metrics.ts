@@ -906,6 +906,7 @@ async function buildEventFragmentProperties({
   let transactionApprovalAmountVsBalanceRatio;
   let transactionContractAddress;
   let transactionType = TransactionType.simpleSend;
+  let transactionContractMethod4Byte;
   if (type === TransactionType.swapAndSend) {
     transactionType = TransactionType.swapAndSend;
   } else if (type === TransactionType.cancel) {
@@ -918,6 +919,10 @@ async function buildEventFragmentProperties({
     transactionType = TransactionType.contractInteraction;
     transactionContractMethod = contractMethodName;
     transactionContractAddress = transactionMeta.txParams?.to;
+    transactionContractMethod4Byte = transactionMeta.txParams?.data?.slice(
+      0,
+      10,
+    );
     if (
       transactionContractMethod === contractMethodNames.APPROVE &&
       tokenStandard === TokenStandard.ERC20
@@ -1043,6 +1048,7 @@ async function buildEventFragmentProperties({
     ui_customizations: uiCustomizations.length > 0 ? uiCustomizations : null,
     transaction_advanced_view: isAdvancedDetailsOpen,
     transaction_contract_method: transactionContractMethod,
+    transaction_contract_method_4byte: transactionContractMethod4Byte,
     ...smartTransactionMetricsProperties,
     ...swapAndSendMetricsProperties,
     // TODO: Replace `any` with type
