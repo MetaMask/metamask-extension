@@ -5,9 +5,9 @@ import {
   getCurrentChainId,
   getCurrentNetwork,
   getPreferences,
-  getChainIdsToPoll,
   getShouldHideZeroBalanceTokens,
   getSelectedAccount,
+  getAllChainsToPoll,
 } from '../../../../../selectors';
 import { getNetworkConfigurationsByChainId } from '../../../../../../shared/modules/selectors/networks';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
@@ -50,7 +50,7 @@ const NetworkFilter = ({ handleClose }: SortControlProps) => {
   const shouldHideZeroBalanceTokens = useSelector(
     getShouldHideZeroBalanceTokens,
   );
-  const allChainIDs = useSelector(getChainIdsToPoll);
+  const allChainIDs = useSelector(getAllChainsToPoll);
   const { formattedTokensWithBalancesPerChain } = useGetFormattedTokensPerChain(
     selectedAccount,
     shouldHideZeroBalanceTokens,
@@ -110,6 +110,7 @@ const NetworkFilter = ({ handleClose }: SortControlProps) => {
           display={Display.Flex}
           justifyContent={JustifyContent.spaceBetween}
           width={BlockSize.Full}
+          gap={3}
         >
           <Box>
             <Text
@@ -169,6 +170,7 @@ const NetworkFilter = ({ handleClose }: SortControlProps) => {
         <Box
           display={Display.Flex}
           justifyContent={JustifyContent.spaceBetween}
+          gap={3}
           alignItems={AlignItems.center}
           width={BlockSize.Full}
         >
@@ -194,6 +196,7 @@ const NetworkFilter = ({ handleClose }: SortControlProps) => {
             </Text>
           </Box>
           <AvatarNetwork
+            size={AvatarNetworkSize.Sm}
             name="Current"
             src={currentNetwork?.rpcPrefs?.imageUrl}
           />

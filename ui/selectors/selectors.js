@@ -1495,14 +1495,17 @@ export function getWeb3ShimUsageStateForOrigin(state, origin) {
  * objects, per the above description.
  *
  * @param {object} state - the redux state object
+ * @param {string} overrideChainId - the chainId to override the current chainId
  * @returns {SwapsEthToken} The token object representation of the currently
  * selected account's ETH balance, as expected by the Swaps API.
  */
 
-export function getSwapsDefaultToken(state) {
+export function getSwapsDefaultToken(state, overrideChainId = null) {
   const selectedAccount = getSelectedAccount(state);
   const balance = selectedAccount?.balance;
-  const chainId = getCurrentChainId(state);
+  const currentChainId = getCurrentChainId(state);
+
+  const chainId = overrideChainId ?? currentChainId;
   const defaultTokenObject = SWAPS_CHAINID_DEFAULT_TOKEN_MAP[chainId];
 
   return {
@@ -1516,8 +1519,9 @@ export function getSwapsDefaultToken(state) {
   };
 }
 
-export function getIsSwapsChain(state) {
-  const chainId = getCurrentChainId(state);
+export function getIsSwapsChain(state, overrideChainId) {
+  const currentChainId = getCurrentChainId(state);
+  const chainId = overrideChainId ?? currentChainId;
   const isNotDevelopment =
     process.env.METAMASK_ENVIRONMENT !== 'development' &&
     process.env.METAMASK_ENVIRONMENT !== 'testing';
@@ -1526,8 +1530,9 @@ export function getIsSwapsChain(state) {
     : ALLOWED_DEV_SWAPS_CHAIN_IDS.includes(chainId);
 }
 
-export function getIsBridgeChain(state) {
-  const chainId = getCurrentChainId(state);
+export function getIsBridgeChain(state, overrideChainId) {
+  const currentChainId = getCurrentChainId(state);
+  const chainId = overrideChainId ?? currentChainId;
   return ALLOWED_BRIDGE_CHAIN_IDS.includes(chainId);
 }
 
@@ -2362,6 +2367,42 @@ export const getAllEnabledNetworks = createDeepEqualSelector(
       },
       {},
     ),
+);
+
+/*
+ * USE THIS WITH CAUTION
+ *
+ * Only use this selector if you are absolutely sure that your UI component needs
+ * data from _all chains_ to compute a value. Else, use `getChainIdsToPoll`.
+ *
+ * Examples:
+ * - Components that should NOT use this selector:
+ *   - Token list: This only needs to poll for chains based on the network filter
+ *     (potentially only one chain). In this case, use `getChainIdsToPoll`.
+ * - Components that SHOULD use this selector:
+ *   - Aggregated balance: This needs to display data regardless of network filter
+ *     selection (always showing aggregated balances across all chains).
+ *
+ * Key Considerations:
+ * - This selector can cause expensive computations. It should only be used when
+ *   necessary, and where possible, optimized to use `getChainIdsToPoll` instead.
+ * - Logic Overview:
+ *   - If `PORTFOLIO_VIEW` is not enabled, the selector returns only the `currentChainId`.
+ *   - Otherwise, it includes all chains from `networkConfigurations`, excluding
+ *     `TEST_CHAINS`, while ensuring the `currentChainId` is included.
+ */
+export const getAllChainsToPoll = createDeepEqualSelector(
+  getNetworkConfigurationsByChainId,
+  getCurrentChainId,
+  (networkConfigurations, currentChainId) => {
+    if (!process.env.PORTFOLIO_VIEW) {
+      return [currentChainId];
+    }
+
+    return Object.keys(networkConfigurations).filter(
+      (chainId) => chainId === currentChainId || !TEST_CHAINS.includes(chainId),
+    );
+  },
 );
 
 export const getChainIdsToPoll = createDeepEqualSelector(
