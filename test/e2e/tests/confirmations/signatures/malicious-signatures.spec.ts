@@ -5,7 +5,7 @@ import { WINDOW_TITLES } from '../../../helpers';
 import {
   mockSignatureRejected,
   scrollAndConfirmAndAssertConfirm,
-  withRedesignConfirmationFixtures,
+  withTransactionEnvelopeTypeFixtures,
 } from '../helpers';
 import { TestSuiteArguments } from '../transactions/shared';
 import Confirmation from '../../../page-objects/pages/confirmations/redesign/confirmation';
@@ -25,7 +25,7 @@ import {
 
 describe('Malicious Confirmation Signature - Bad Domain @no-mmi', function (this: Suite) {
   it('displays alert for domain binding and confirms', async function () {
-    await withRedesignConfirmationFixtures(
+    await withTransactionEnvelopeTypeFixtures(
       this.test?.fullTitle(),
       TransactionEnvelopeType.legacy,
       async ({ driver }: TestSuiteArguments) => {
@@ -53,7 +53,7 @@ describe('Malicious Confirmation Signature - Bad Domain @no-mmi', function (this
   });
 
   it('initiates and rejects from confirmation screen', async function () {
-    await withRedesignConfirmationFixtures(
+    await withTransactionEnvelopeTypeFixtures(
       this.test?.fullTitle(),
       TransactionEnvelopeType.legacy,
       async ({
@@ -98,7 +98,7 @@ describe('Malicious Confirmation Signature - Bad Domain @no-mmi', function (this
   });
 
   it('initiates and rejects from alert friction modal', async function () {
-    await withRedesignConfirmationFixtures(
+    await withTransactionEnvelopeTypeFixtures(
       this.test?.fullTitle(),
       TransactionEnvelopeType.legacy,
       async ({
