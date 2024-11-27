@@ -4,13 +4,33 @@ import {
   TransactionStatus,
   TransactionType,
 } from '@metamask/transaction-controller';
-
-import { getMockConfirmState } from '../../../../../../test/data/confirmations/helper';
+import { useSelector } from 'react-redux';
+import { useParams } from 'react-router-dom';
 import { genUnapprovedContractInteractionConfirmation } from '../../../../../../test/data/confirmations/contract-interaction';
+import { getMockConfirmState } from '../../../../../../test/data/confirmations/helper';
 import { renderHookWithConfirmContextProvider } from '../../../../../../test/lib/confirmations/render-helpers';
-import { Severity } from '../../../../../helpers/constants/design-system';
 import { RowAlertKey } from '../../../../../components/app/confirm/info/row/constants';
+import { Severity } from '../../../../../helpers/constants/design-system';
+import {
+  getRedesignedTransactionsEnabled,
+  submittedPendingTransactionsSelector,
+} from '../../../../../selectors';
+import { PendingTransactionAlertMessage } from './PendingTransactionAlertMessage';
 import { usePendingTransactionAlerts } from './usePendingTransactionAlerts';
+
+jest.mock('react-redux', () => ({
+  ...jest.requireActual('react-redux'),
+  useSelector: jest.fn(),
+}));
+
+jest.mock('./PendingTransactionAlertMessage', () => ({
+  PendingTransactionAlertMessage: () => 'PendingTransactionAlertMessage',
+}));
+
+jest.mock('react-router-dom', () => ({
+  ...jest.requireActual('react-router-dom'),
+  useParams: jest.fn().mockReturnValue({ id: 'mock-transaction-id' }),
+}));
 
 const ACCOUNT_ADDRESS = '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc';
 const TRANSACTION_ID_MOCK = '123-456';
@@ -63,8 +83,12 @@ function runHook({
 }
 
 describe('usePendingTransactionAlerts', () => {
+  const useSelectorMock = useSelector as jest.Mock;
+
   beforeEach(() => {
     jest.resetAllMocks();
+
+    (useParams as jest.Mock).mockReturnValue({ id: 'mock-transaction-id' });
   });
 
   it('returns no alerts if no confirmation', () => {
@@ -121,6 +145,20 @@ describe('usePendingTransactionAlerts', () => {
   });
 
   it('returns alert if submitted transaction', () => {
+    useSelectorMock.mockImplementation((selector) => {
+      if (selector === submittedPendingTransactionsSelector) {
+        return [
+          { name: 'first transaction', id: '1' },
+          { name: 'second transaction', id: '2' },
+        ];
+      } else if (selector === getRedesignedTransactionsEnabled) {
+        return true;
+      } else if (selector.toString().includes('getUnapprovedTransaction')) {
+        return { type: TransactionType.contractInteraction };
+      }
+      return undefined;
+    });
+
     const alerts = runHook({
       currentConfirmation: CONFIRMATION_MOCK,
       transactions: [TRANSACTION_META_MOCK],
@@ -130,8 +168,7 @@ describe('usePendingTransactionAlerts', () => {
       {
         field: RowAlertKey.Speed,
         key: 'pendingTransactions',
-        message:
-          'This transaction won’t go through until a previous transaction is complete. Learn how to cancel or speed up a transaction.',
+        message: PendingTransactionAlertMessage(),
         reason: 'Pending transaction',
         severity: Severity.Warning,
       },

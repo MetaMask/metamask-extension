@@ -18,10 +18,8 @@ export function usePendingTransactionAlerts(): Alert[] {
 
   const isValidType = isCorrectDeveloperTransactionType(type);
 
-  // const hasPendingTransactions =
-  //   isValidType && Boolean(pendingTransactions.length);
-
-  const hasPendingTransactions = true;
+  const hasPendingTransactions =
+    isValidType && Boolean(pendingTransactions.length);
 
   return useMemo(() => {
     if (!hasPendingTransactions) {

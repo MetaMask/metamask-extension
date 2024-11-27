@@ -741,8 +741,7 @@
     "message": "Beta"
   },
   "betaHeaderText": {
-    "message": "This is a beta version. Please report bugs $1",
-    "description": "$1 represents the words 'here' in a hyperlink"
+    "message": "This is a beta version. Please report bugs $1"
   },
   "betaMetamaskInstitutionalVersion": {
     "message": "MetaMask Institutional Beta Version"
@@ -3989,7 +3988,8 @@
     "description": "$1 represents the words 'how to cancel or speed up a transaction' in a hyperlink"
   },
   "pendingTransactionAlertMessageHyperlink": {
-    "message": "how to cancel or speed up a transaction"
+    "message": "how to cancel or speed up a transaction",
+    "description": "The text for the hyperlink in the pending transaction alert message"
   },
   "pendingTransactionInfo": {
     "message": "This transaction will not process until that one is complete."

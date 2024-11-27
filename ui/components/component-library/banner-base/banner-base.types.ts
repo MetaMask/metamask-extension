@@ -31,7 +31,7 @@ export interface BannerBaseStyleUtilityProps extends StyleUtilityProps {
   /**
    * The description is the content area below BannerBase title
    */
-  description?: string;
+  description?: string | React.ReactNode;
   /**
    * Additional props to pass to the `Text` component used for the `description` text
    */
