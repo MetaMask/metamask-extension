@@ -113,7 +113,6 @@ const DecodedSimulation: React.FC<object> = () => {
     ),
   );
 
-  console.log('stateChangeFragment = ', currentConfirmation);
   return (
     <StaticSimulation
       title={t('simulationDetailsTitle')}
