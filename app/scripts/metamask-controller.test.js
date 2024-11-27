@@ -39,6 +39,7 @@ import { flushPromises } from '../../test/lib/timer-helpers';
 import { ETH_EOA_METHODS } from '../../shared/constants/eth-methods';
 import { createMockInternalAccount } from '../../test/jest/mocks';
 import { mockNetworkState } from '../../test/stub/networks';
+import { SECOND } from '../../shared/constants/time';
 import {
   BalancesController as MultichainBalancesController,
   BTC_BALANCES_UPDATE_TIME as MULTICHAIN_BALANCES_UPDATE_TIME,
@@ -2629,6 +2630,56 @@ describe('MetaMaskController', () => {
           mockNonEvmAccount.id,
         );
       });
+    });
+  });
+
+  describe('onFeatureFlagResponseReceived', () => {
+    const metamaskController = new MetaMaskController({
+      showUserConfirmation: noop,
+      encryptor: mockEncryptor,
+      initState: cloneDeep(firstTimeState),
+      initLangCode: 'en_US',
+      platform: {
+        showTransactionNotification: () => undefined,
+        getVersion: () => 'foo',
+      },
+      browser: browserPolyfillMock,
+      infuraProjectId: 'foo',
+      isFirstMetaMaskControllerSetup: true,
+    });
+
+    beforeEach(() => {
+      jest.spyOn(
+        metamaskController.tokenBalancesController,
+        'setIntervalLength',
+      );
+    });
+
+    afterEach(() => {
+      jest.clearAllMocks();
+    });
+
+    it('should not set the interval length if the pollInterval is 0', () => {
+      metamaskController.onFeatureFlagResponseReceived({
+        multiChainAssets: {
+          pollInterval: 0,
+        },
+      });
+      expect(
+        metamaskController.tokenBalancesController.setIntervalLength,
+      ).not.toHaveBeenCalled();
+    });
+
+    it('should set the interval length if the pollInterval is greater than 0', () => {
+      const pollInterval = 10;
+      metamaskController.onFeatureFlagResponseReceived({
+        multiChainAssets: {
+          pollInterval,
+        },
+      });
+      expect(
+        metamaskController.tokenBalancesController.setIntervalLength,
+      ).toHaveBeenCalledWith(pollInterval * SECOND);
     });
   });
 
