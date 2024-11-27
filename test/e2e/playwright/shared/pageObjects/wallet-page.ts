@@ -1,7 +1,7 @@
 import { type Locator, type Page } from '@playwright/test';
 
 export class WalletPage {
-  private page: Page;
+  readonly page: Page;
 
   readonly importTokensButton: Locator;
 
@@ -63,7 +63,6 @@ export class WalletPage {
   async selectSwapAction() {
     await this.swapButton.waitFor({ state: 'visible' });
     await this.swapButton.click();
-    await this.page.waitForTimeout(5000);
   }
 
   async selectActivityList() {

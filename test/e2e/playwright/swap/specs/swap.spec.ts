@@ -82,6 +82,8 @@ testSet.forEach((options) => {
     await walletPage.selectTokenWallet();
     await networkController.selectNetwork(options.network);
     await walletPage.selectSwapAction();
+    // Allow balance label to populate
+    await walletPage.page.waitForTimeout(5000);
     const quoteEntered = await swapPage.enterQuote({
       from: options.source,
       to: options.destination,
