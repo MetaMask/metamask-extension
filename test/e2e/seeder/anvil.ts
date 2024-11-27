@@ -1,5 +1,7 @@
 import { createAnvil, Anvil as AnvilType } from '@viem/anvil';
 import { createAnvilClients } from './anvil-clients';
+import { join } from 'path';
+import { execSync } from 'child_process';
 
 type Hardfork =
   | 'Frontier'
@@ -33,11 +35,27 @@ const defaultOptions = {
   port: 8545,
 };
 
+
 export class Anvil {
   #server: AnvilType | undefined;
 
   async start(opts = defaultOptions): Promise<void> {
     const options = { ...defaultOptions, ...opts };
+
+    // Determine the path to the anvil binary directory
+    const anvilBinaryDir = join(process.cwd(), 'node_modules', '.bin');
+
+    // Prepend the anvil binary directory to the PATH environment variable
+    process.env.PATH = `${anvilBinaryDir}:${process.env.PATH}`;
+
+    // Verify that the anvil binary is accessible
+    try {
+      const versionOutput = execSync('anvil --version', { encoding: 'utf-8' });
+      console.log(`Anvil version: ${versionOutput}`);
+    } catch (error) {
+      console.error('Failed to execute anvil:', error);
+      throw new Error('Anvil binary is not accessible.');
+    }
 
     this.#server = createAnvil(options);
     await this.#server.start();
