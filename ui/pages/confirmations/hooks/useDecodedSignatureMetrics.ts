@@ -5,7 +5,6 @@ import { SignatureRequestType } from '../types/confirm';
 import { useConfirmContext } from '../context/confirm';
 import { useSignatureEventFragment } from './useSignatureEventFragment';
 
-
 enum DecodingResponseType {
   Change = 'CHANGE',
   NoChange = 'NO_CHANGE',

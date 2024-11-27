@@ -1,4 +1,7 @@
-import { DecodingData, DecodingDataChangeType } from '@metamask/signature-controller';
+import {
+  DecodingData,
+  DecodingDataChangeType,
+} from '@metamask/signature-controller';
 
 import { getMockTypedSignConfirmStateForRequest } from '../../../../test/data/confirmations/helper';
 import { renderHookWithConfirmContextProvider } from '../../../../test/lib/confirmations/render-helpers';
@@ -72,7 +75,7 @@ describe('useDecodedSignatureMetrics', () => {
     const state = getMockTypedSignConfirmStateForRequest({
       ...permitSignatureMsg,
       decodingLoading: false,
-      decodingData
+      decodingData,
     });
 
     const mockUpdateSignatureEventFragment = jest.fn();
@@ -90,7 +93,7 @@ describe('useDecodedSignatureMetrics', () => {
     expect(mockUpdateSignatureEventFragment).toHaveBeenCalledTimes(1);
     expect(mockUpdateSignatureEventFragment).toHaveBeenLastCalledWith({
       properties: {
-        decoding_change_types: ["APPROVE"],
+        decoding_change_types: ['APPROVE'],
         decoding_response: 'CHANGE',
       },
     });
@@ -104,9 +107,9 @@ describe('useDecodedSignatureMetrics', () => {
         stateChanges: [],
         error: {
           type: 'SOME_ERROR',
-          message: 'some message'
-        }
-      }
+          message: 'some message',
+        },
+      },
     });
 
     const mockUpdateSignatureEventFragment = jest.fn();
