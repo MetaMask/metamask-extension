@@ -4711,10 +4711,9 @@ export async function accountTrackerStopPollingByPollingToken(
 export async function gasFeeStartPollingByNetworkClientId(
   networkClientId: string,
 ) {
-  const pollingToken = await submitRequestToBackground(
-    'gasFeeStartPollingByNetworkClientId',
-    [networkClientId],
-  );
+  const pollingToken = await submitRequestToBackground('gasFeeStartPolling', [
+    { networkClientId },
+  ]);
   await addPollingTokenToAppState(pollingToken);
   return pollingToken;
 }
