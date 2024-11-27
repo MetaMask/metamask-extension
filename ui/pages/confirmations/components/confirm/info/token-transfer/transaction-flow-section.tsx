@@ -17,12 +17,9 @@ import {
   IconColor,
   JustifyContent,
 } from '../../../../../../helpers/constants/design-system';
-import {
-  ConfirmInfoRow,
-  ConfirmInfoRowAddress,
-} from '../../../../../../components/app/confirm/info/row';
-import { RowAlertKey } from '../../../../../../components/app/confirm/info/row/constants';
+import { ConfirmInfoRowAddress } from '../../../../../../components/app/confirm/info/row';
 import { ConfirmInfoAlertRow } from '../../../../../../components/app/confirm/info/row/alert-row/alert-row';
+import { RowAlertKey } from '../../../../../../components/app/confirm/info/row/constants';
 import { useI18nContext } from '../../../../../../hooks/useI18nContext';
 import { useConfirmContext } from '../../../../context/confirm';
 import { useDecodedTransactionData } from '../hooks/useDecodedTransactionData';
@@ -61,6 +58,9 @@ export const TransactionFlowSection = () => {
           alertKey={RowAlertKey.SigningInWith}
           label={t('from')}
           ownerId={transactionMeta.id}
+          style={{
+            flexDirection: FlexDirection.Column,
+          }}
         >
           <Box marginTop={1}>
             <ConfirmInfoRowAddress
@@ -76,11 +76,12 @@ export const TransactionFlowSection = () => {
           color={IconColor.iconMuted}
         />
         {recipientAddress && (
-          <ConfirmInfoRow
+          <ConfirmInfoAlertRow
+            alertKey={RowAlertKey.FirstTimeInteraction}
             label={t('to')}
+            ownerId={transactionMeta.id}
             style={{
-              flexDirection: 'column',
-              alignItems: AlignItems.flexStart,
+              flexDirection: FlexDirection.Column,
             }}
           >
             <Box marginTop={1}>
@@ -89,7 +90,7 @@ export const TransactionFlowSection = () => {
                 chainId={chainId}
               />
             </Box>
-          </ConfirmInfoRow>
+          </ConfirmInfoAlertRow>
         )}
       </Box>
     </ConfirmInfoSection>
