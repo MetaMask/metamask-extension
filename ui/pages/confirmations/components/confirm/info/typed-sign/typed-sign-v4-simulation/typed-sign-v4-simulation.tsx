@@ -7,11 +7,17 @@ import { isPermitSignatureRequest } from '../../../../../utils';
 import { DecodedSimulation } from './decoded-simulation';
 import { PermitSimulation } from './permit-simulation';
 
-const NonPermitValidTypesSignRequestValues = {
-  domainName: 'Seaport',
-  primaryTypeList: ['BulkOrder', 'OrderComponents'],
-  versionList: ['1.4', '1.5', '1.6'],
-};
+const NonPermitValidTypesSignRequestValues = [
+  {
+    domainName: 'Seaport',
+    primaryTypeList: ['BulkOrder'],
+    versionList: ['1.4', '1.5', '1.6'],
+  },
+  {
+    domainName: 'Seaport',
+    primaryTypeList: ['OrderComponents'],
+  },
+];
 
 const isNonPermitRequestSupportedByDecodingAPI = (
   signatureRequest: SignatureRequestType,
@@ -23,19 +29,17 @@ const isNonPermitRequestSupportedByDecodingAPI = (
     (signatureRequest as SignatureRequestType).msgParams?.data as string,
   );
 
-  const { domainName, primaryTypeList, versionList } =
-    NonPermitValidTypesSignRequestValues;
-
-  return (
-    name === domainName &&
-    primaryTypeList.includes(primaryType) &&
-    (!versionList || versionList.includes(version))
+  return NonPermitValidTypesSignRequestValues.some(
+    ({ domainName, primaryTypeList, versionList }) =>
+      name === domainName &&
+      primaryTypeList.includes(primaryType) &&
+      (!versionList || versionList.includes(version)),
   );
 };
 
 const TypedSignV4Simulation: React.FC<object> = () => {
   const { currentConfirmation } = useConfirmContext<SignatureRequestType>();
-  console.log(JSON.stringify(currentConfirmation))
+  console.log(JSON.stringify(currentConfirmation));
   const isPermit = isPermitSignatureRequest(currentConfirmation);
   const supportedByDecodingAPI =
     isNonPermitRequestSupportedByDecodingAPI(currentConfirmation) || isPermit;
