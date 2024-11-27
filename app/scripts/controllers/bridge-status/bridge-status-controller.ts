@@ -6,7 +6,6 @@ import {
   StartPollingForBridgeTxStatusArgs,
   StatusTypes,
   BridgeStatusControllerState,
-  StatusRequestWithSrcTxHash,
 } from '../../../../shared/types/bridge-status';
 import { decimalToPrefixedHex } from '../../../../shared/modules/conversion.utils';
 import {
@@ -15,7 +14,7 @@ import {
   REFRESH_INTERVAL_MS,
 } from './constants';
 import { BridgeStatusControllerMessenger } from './types';
-import { fetchBridgeTxStatus, isStatusRequestWithSrcTxHash } from './utils';
+import { fetchBridgeTxStatus, getStatusRequest } from './utils';
 
 const metadata: StateMetadata<{
   bridgeStatusState: BridgeStatusControllerState;
@@ -168,7 +167,6 @@ export default class BridgeStatusController extends StaticIntervalPollingControl
     // We know it's in progress but not the exact status yet
     const txHistoryItem = {
       txMetaId: bridgeTxMeta.id,
-      statusRequest, // Attach the statusRequest to the historyItem so we can look it up and update it when srcTxHash is available
       quote: quoteResponse.quote,
       startTime,
       estimatedProcessingTimeInSeconds:
@@ -223,7 +221,9 @@ export default class BridgeStatusController extends StaticIntervalPollingControl
       // We try here because we receive 500 errors from Bridge API if we try to fetch immediately after submitting the source tx
       // Oddly mostly happens on Optimism, never on Arbitrum. By the 2nd fetch, the Bridge API responds properly.
       // Also srcTxHash may not be available immediately for STX, so we don't want to fetch in those cases
-      const statusRequest = this.#getStatusRequestWithSrcTxHash(bridgeTxMetaId);
+      const historyItem = bridgeStatusState.txHistory[bridgeTxMetaId];
+      const srcTxHash = this.#getSrcTxHash(bridgeTxMetaId);
+      const statusRequest = getStatusRequest(historyItem.quote, srcTxHash);
       const status = await fetchBridgeTxStatus(statusRequest);
 
       // No need to purge these on network change or account change, TransactionController does not purge either.
@@ -255,14 +255,13 @@ export default class BridgeStatusController extends StaticIntervalPollingControl
     }
   };
 
-  #getStatusRequestWithSrcTxHash = (
-    bridgeTxMetaId: string,
-  ): StatusRequestWithSrcTxHash => {
+  #getSrcTxHash = (bridgeTxMetaId: string): string => {
     const { bridgeStatusState } = this.state;
-    const { statusRequest } = bridgeStatusState.txHistory[bridgeTxMetaId];
+    const srcTxHash =
+      bridgeStatusState.txHistory[bridgeTxMetaId].status.srcChain.txHash;
 
-    if (isStatusRequestWithSrcTxHash(statusRequest)) {
-      return statusRequest;
+    if (srcTxHash) {
+      return srcTxHash;
     }
 
     // Look up in TransactionController if txMeta has been updated with the srcTxHash, if so, update it here as well
@@ -280,23 +279,27 @@ export default class BridgeStatusController extends StaticIntervalPollingControl
           ...bridgeStatusState.txHistory,
           [bridgeTxMetaId]: {
             ...bridgeStatusState.txHistory[bridgeTxMetaId],
-            statusRequest: {
-              ...bridgeStatusState.txHistory[bridgeTxMetaId].statusRequest,
-              srcTxHash: txMeta?.hash,
+            status: {
+              ...bridgeStatusState.txHistory[bridgeTxMetaId].status,
+              srcChain: {
+                ...bridgeStatusState.txHistory[bridgeTxMetaId].status.srcChain,
+                txHash: txMeta?.hash,
+              },
             },
           },
         },
       };
     });
 
-    const nextStatusRequest =
-      nextState.bridgeStatusState.txHistory[bridgeTxMetaId].statusRequest;
+    const nextSrcTxHash =
+      nextState.bridgeStatusState.txHistory[bridgeTxMetaId].status.srcChain
+        .txHash;
 
-    if (isStatusRequestWithSrcTxHash(nextStatusRequest)) {
-      return nextStatusRequest;
+    if (nextSrcTxHash) {
+      return nextSrcTxHash;
     }
 
-    throw new Error('StatusRequestWithSrcTxHash missing srcTxHash');
+    throw new Error('srcTxHash missing');
   };
 
   // Wipes the bridge status for the given address and chainId

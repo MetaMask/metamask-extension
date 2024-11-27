@@ -15,16 +15,12 @@ export enum StatusTypes {
 
 export type StatusRequest = {
   bridgeId: string; // lifi, socket, squid
-  srcTxHash?: string; // lifi, socket, squid, this might be undefined if this is a smart transaction (STX)
+  srcTxHash: string; // lifi, socket, squid
   bridge: string; // lifi, socket, squid
   srcChainId: ChainId; // lifi, socket, squid
   destChainId: ChainId; // lifi, socket, squid
   quote?: Quote; // squid
   refuel?: boolean; // lifi
-};
-
-export type StatusRequestWithSrcTxHash = StatusRequest & {
-  srcTxHash: string;
 };
 
 export type Asset = {
@@ -112,7 +108,6 @@ export type RefuelData = object & Step;
 
 export type BridgeHistoryItem = {
   txMetaId: string; // Need this to handle STX that might not have a txHash immediately
-  statusRequest: StatusRequest;
   quote: Quote;
   status: StatusResponse;
   startTime?: number;
