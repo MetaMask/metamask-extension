@@ -109,7 +109,7 @@ testSet.forEach((options) => {
       }
     } else {
       log.error(`\tERROR: Token balance is zero. Skipping test`);
-      test.skip();
+      test.fail();
     }
   });
 });
