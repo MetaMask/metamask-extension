@@ -67,6 +67,8 @@ export default function useHandleTx() {
       type: txType,
     });
 
+    // Note that updateTransaction doesn't actually error if you add fields that don't conform the to the txMeta type
+    // they will be there at runtime, but you just don't get any type safety checks on them
     dispatch(updateTransaction({ ...txMeta, ...fieldsToAddToTxMeta }, true));
 
     await forceUpdateMetamaskState(dispatch);
