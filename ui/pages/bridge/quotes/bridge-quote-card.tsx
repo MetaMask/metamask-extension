@@ -17,8 +17,13 @@ import { useCountdownTimer } from '../../../hooks/bridge/useCountdownTimer';
 import MascotBackgroundAnimation from '../../swaps/mascot-background-animation/mascot-background-animation';
 import { getCurrentCurrency } from '../../../selectors';
 import { getNativeCurrency } from '../../../ducks/metamask/metamask';
-import { QuoteInfoRow } from './quote-info-row';
+import { useCrossChainSwapsEventTracker } from '../../../hooks/bridge/useCrossChainSwapsEventTracker';
+import { useRequestProperties } from '../../../hooks/bridge/events/useRequestProperties';
+import { useRequestMetadataProperties } from '../../../hooks/bridge/events/useRequestMetadataProperties';
+import { useQuoteProperties } from '../../../hooks/bridge/events/useQuoteProperties';
+import { MetaMetricsEventName } from '../../../../shared/constants/metametrics';
 import { BridgeQuotesModal } from './bridge-quotes-modal';
+import { QuoteInfoRow } from './quote-info-row';
 
 export const BridgeQuoteCard = () => {
   const t = useI18nContext();
@@ -28,6 +33,11 @@ export const BridgeQuoteCard = () => {
   const ticker = useSelector(getNativeCurrency);
 
   const secondsUntilNextRefresh = useCountdownTimer();
+
+  const trackCrossChainSwapsEvent = useCrossChainSwapsEventTracker();
+  const { quoteRequestProperties } = useRequestProperties();
+  const requestMetadataProperties = useRequestMetadataProperties();
+  const quoteListProperties = useQuoteProperties();
 
   const [showAllQuotes, setShowAllQuotes] = useState(false);
 
@@ -101,6 +111,17 @@ export const BridgeQuoteCard = () => {
           <Button
             variant={ButtonVariant.Link}
             onClick={() => {
+              quoteRequestProperties &&
+                requestMetadataProperties &&
+                quoteListProperties &&
+                trackCrossChainSwapsEvent({
+                  event: MetaMetricsEventName.AllQuotesOpened,
+                  properties: {
+                    ...quoteRequestProperties,
+                    ...requestMetadataProperties,
+                    ...quoteListProperties,
+                  },
+                });
               setShowAllQuotes(true);
             }}
           >

@@ -18,8 +18,8 @@ export type QuoteMetadata = {
 
 // Sort order set by the user
 export enum SortOrder {
-  COST_ASC,
-  ETA_ASC,
+  COST_ASC = 'cost_ascending',
+  ETA_ASC = 'time_descending',
 }
 
 // Types copied from Metabridge API
