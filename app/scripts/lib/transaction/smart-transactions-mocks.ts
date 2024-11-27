@@ -1,3 +1,9 @@
+/**
+ * Mock for waitForTransactionHash. Simply replace the waitForTransactionHash
+ * with this mock so that we can debug locally without spending gas on mainnet.
+ *
+ * @returns Promise<string>
+ */
 export const mockWaitForTransactionHash: () => Promise<string> = () => {
   return new Promise((resolve) => {
     setTimeout(() => {
@@ -9,6 +15,12 @@ export const mockWaitForTransactionHash: () => Promise<string> = () => {
   });
 };
 
+/**
+ * Mock for signAndSubmitTransactions. Simply replace the signAndSubmitTransactions
+ * with this mock so that we can debug locally without spending gas on mainnet.
+ *
+ * @returns Promise<{ uuid: string; txHash?: string }>
+ */
 export const mockSignAndSubmitTransactions: () => Promise<{
   uuid: string;
   txHash?: string;
