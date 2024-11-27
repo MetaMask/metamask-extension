@@ -20,9 +20,23 @@ jest.mock('react-router-dom', () => ({
   useHistory: jest.fn(),
 }));
 
-const token = {
+const tokenPolygon = {
   type: AssetType.token,
   chainId: '0x89',
+  address: '0xF0906D83c5a0bD6b74bC9b62D7D9F2014c6525C0',
+  symbol: 'TEST',
+  decimals: 18,
+  image: '',
+  balance: {
+    value: '0',
+    display: '0',
+    fiat: '',
+  },
+} as const;
+
+const tokenEthereum = {
+  type: AssetType.token,
+  chainId: '0x1',
   address: '0xF0906D83c5a0bD6b74bC9b62D7D9F2014c6525C0',
   symbol: 'TEST',
   decimals: 18,
@@ -53,7 +67,7 @@ describe('TokenButtons Component', () => {
     jest.restoreAllMocks();
   });
 
-  it('does not redirect when setCorrectChain throws an error', async () => {
+  it('does not redirect to swap when there is a mismatched chainIds between token and network', async () => {
     const store = configureMockStore([thunk])(mockStore);
 
     jest.spyOn(actions, 'setActiveNetwork').mockImplementation(() => {
@@ -63,7 +77,7 @@ describe('TokenButtons Component', () => {
     const consoleErrorSpy = jest.spyOn(console, 'error');
 
     const { getByTestId } = renderWithProvider(
-      <TokenButtons token={token} />,
+      <TokenButtons token={tokenPolygon} />,
       store,
     );
 
@@ -81,13 +95,13 @@ describe('TokenButtons Component', () => {
     consoleErrorSpy.mockRestore();
   });
 
-  it('does redirect when setCorrectChain succeeds', async () => {
+  it('does redirect to send when there is a matched chainIds between token and network', async () => {
     const store = configureMockStore([thunk])(mockStore);
 
     const consoleErrorSpy = jest.spyOn(console, 'error');
 
     const { getByTestId } = renderWithProvider(
-      <TokenButtons token={token} />,
+      <TokenButtons token={tokenEthereum} />,
       store,
     );
 
@@ -104,7 +118,7 @@ describe('TokenButtons Component', () => {
     consoleErrorSpy.mockRestore();
   });
 
-  it('does not redirect when setCorrectChain throws an error for swap button', async () => {
+  it('does not redirect to swap when there is a mismatched chainIds between token and network', async () => {
     const store = configureMockStore([thunk])(mockStore);
 
     jest.spyOn(actions, 'setActiveNetwork').mockImplementation(() => {
@@ -114,7 +128,7 @@ describe('TokenButtons Component', () => {
     const consoleErrorSpy = jest.spyOn(console, 'error');
 
     const { getByTestId } = renderWithProvider(
-      <TokenButtons token={token} />,
+      <TokenButtons token={tokenPolygon} />,
       store,
     );
 
@@ -132,13 +146,13 @@ describe('TokenButtons Component', () => {
     consoleErrorSpy.mockRestore();
   });
 
-  it('does redirect when setCorrectChain succeeds for swap button', async () => {
+  it('does redirect to swap when there is a matched chainIds between token and network', async () => {
     const store = configureMockStore([thunk])(mockStore);
 
     const consoleErrorSpy = jest.spyOn(console, 'error');
 
     const { getByTestId } = renderWithProvider(
-      <TokenButtons token={token} />,
+      <TokenButtons token={tokenEthereum} />,
       store,
     );
 

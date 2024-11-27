@@ -328,13 +328,19 @@ const CoinButtons = ({
 
   const setCorrectChain = useCallback(async () => {
     if (currentChainId !== chainId) {
-      const networkConfigurationId = networks[chainId];
-      await dispatch(setActiveNetwork(networkConfigurationId));
-      await dispatch(
-        setSwitchedNetworkDetails({
-          networkClientId: networkConfigurationId,
-        }),
-      );
+      try {
+        const networkConfigurationId = networks[chainId];
+        await dispatch(setActiveNetwork(networkConfigurationId));
+        await dispatch(
+          setSwitchedNetworkDetails({
+            networkClientId: networkConfigurationId,
+          }),
+        );
+      } catch (err) {
+        console.error(`Failed to switch chains.
+        Target chainId: ${chainId}, Current chainId: ${currentChainId}.
+        ${err}`);
+      }
     }
   }, [currentChainId, chainId, networks, dispatch]);
 
@@ -389,6 +395,13 @@ const CoinButtons = ({
           { excludeMetaMetricsId: false },
         );
         await setCorrectChain();
+        if (chainId !== currentChainId) {
+          // TODO: Properly handle this case, for now we are stopping execution to prevent users from inadvertendly navigating to incompatible chains
+          console.error(
+            `Token/Network mismatch token: ${chainId} network: ${currentChainId}`,
+          );
+          return;
+        }
         await dispatch(startNewDraftTransaction({ type: AssetType.native }));
         history.push(SEND_ROUTE);
       }
@@ -397,7 +410,13 @@ const CoinButtons = ({
 
   const handleSwapOnClick = useCallback(async () => {
     await setCorrectChain();
-
+    if (chainId !== currentChainId) {
+      // TODO: Properly handle this case, for now we are stopping execution to prevent users from inadvertendly navigating to incompatible chains
+      console.error(
+        `Token/Network mismatch token: ${chainId} network: ${currentChainId}`,
+      );
+      return;
+    }
     ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
     global.platform.openTab({
       url: `${mmiPortfolioUrl}/swap`,
