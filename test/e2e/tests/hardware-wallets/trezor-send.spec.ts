@@ -5,7 +5,7 @@ import FixtureBuilder from '../../fixture-builder';
 import { logInWithBalanceValidation, withFixtures } from '../../helpers';
 import { KNOWN_PUBLIC_KEY_ADDRESSES } from '../../../stub/keyring-bridge';
 import HomePage from '../../page-objects/pages/homepage';
-import { sendTransactionToAddress } from '../../page-objects/flows/send-transaction.flow';
+import { sendRedesignedTransactionToAddress } from '../../page-objects/flows/send-transaction.flow';
 
 const RECIPIENT = '0x0Cc5261AB8cE458dc977078A3623E2BaDD27afD3';
 
@@ -29,12 +29,10 @@ describe('Trezor Hardware', function (this: Suite) {
           '0x100000000000000000000',
         );
         await logInWithBalanceValidation(driver);
-        await sendTransactionToAddress({
+        await sendRedesignedTransactionToAddress({
           driver,
           recipientAddress: RECIPIENT,
           amount: '1',
-          gasFee: '0.000042',
-          totalFee: '1.000042',
         });
         const homePage = new HomePage(driver);
         await homePage.check_pageIsLoaded();
