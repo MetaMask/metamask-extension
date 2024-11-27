@@ -1,3 +1,4 @@
+import { TransactionMeta } from '@metamask/transaction-controller';
 import {
   BridgeId,
   StatusResponse,
@@ -204,11 +205,15 @@ export const getMockQuote = ({
 });
 
 export const getMockStartPollingForBridgeTxStatusArgs = ({
+  txMetaId = 'bridgeTxMetaId1',
   srcTxHash = '0xsrcTxHash1',
   account = '0xaccount1',
   srcChainId = 42161,
   destChainId = 10,
 } = {}) => ({
+  bridgeTxMeta: {
+    id: txMetaId,
+  } as TransactionMeta,
   statusRequest: {
     bridgeId: 'lifi',
     srcTxHash,
@@ -239,13 +244,44 @@ export const getMockStartPollingForBridgeTxStatusArgs = ({
 });
 
 export const MockTxHistory = {
+  getInitNoSrcTxHash: ({
+    txMetaId = 'bridgeTxMetaId1',
+    account = '0xaccount1',
+    srcChainId = 42161,
+    destChainId = 10,
+  } = {}) => ({
+    [txMetaId]: {
+      txMetaId,
+      statusRequest: {
+        bridgeId: 'lifi',
+        bridge: 'across',
+        srcChainId,
+        destChainId,
+      },
+      quote: getMockQuote({ srcChainId, destChainId }),
+      startTime: 1729964825189,
+      estimatedProcessingTimeInSeconds: 15,
+      slippagePercentage: 0,
+      account,
+      targetContractAddress: '0x23981fC34e69eeDFE2BD9a0a9fCb0719Fe09DbFC',
+    },
+  }),
   getInit: ({
+    txMetaId = 'bridgeTxMetaId1',
     srcTxHash = '0xsrcTxHash1',
     account = '0xaccount1',
     srcChainId = 42161,
     destChainId = 10,
   } = {}) => ({
-    [srcTxHash]: {
+    [txMetaId]: {
+      txMetaId,
+      statusRequest: {
+        bridgeId: 'lifi',
+        srcTxHash,
+        bridge: 'across',
+        srcChainId,
+        destChainId,
+      },
       quote: getMockQuote({ srcChainId, destChainId }),
       startTime: 1729964825189,
       estimatedProcessingTimeInSeconds: 15,
@@ -255,12 +291,21 @@ export const MockTxHistory = {
     },
   }),
   getPending: ({
+    txMetaId = 'bridgeTxMetaId1',
     srcTxHash = '0xsrcTxHash1',
     account = '0xaccount1',
     srcChainId = 42161,
     destChainId = 10,
   } = {}) => ({
-    [srcTxHash]: {
+    [txMetaId]: {
+      txMetaId,
+      statusRequest: {
+        bridgeId: 'lifi',
+        srcTxHash,
+        bridge: 'across',
+        srcChainId,
+        destChainId,
+      },
       quote: getMockQuote({ srcChainId, destChainId }),
       startTime: 1729964825189,
       estimatedProcessingTimeInSeconds: 15,
@@ -274,12 +319,21 @@ export const MockTxHistory = {
     },
   }),
   getComplete: ({
+    txMetaId = 'bridgeTxMetaId1',
     srcTxHash = '0xsrcTxHash1',
     account = '0xaccount1',
     srcChainId = 42161,
     destChainId = 10,
   } = {}) => ({
-    [srcTxHash]: {
+    [txMetaId]: {
+      txMetaId,
+      statusRequest: {
+        bridgeId: 'lifi',
+        srcTxHash,
+        bridge: 'across',
+        srcChainId,
+        destChainId,
+      },
       quote: getMockQuote({ srcChainId, destChainId }),
       startTime: 1729964825189,
       estimatedProcessingTimeInSeconds: 15,

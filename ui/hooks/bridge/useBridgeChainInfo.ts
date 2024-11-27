@@ -1,5 +1,8 @@
 import { useSelector } from 'react-redux';
-import { TransactionMeta } from '@metamask/transaction-controller';
+import {
+  TransactionMeta,
+  TransactionType,
+} from '@metamask/transaction-controller';
 import { Hex } from '@metamask/utils';
 import { NetworkConfiguration } from '@metamask/network-controller';
 import { Numeric } from '../../../shared/modules/Numeric';
@@ -13,20 +16,19 @@ import { CHAINID_DEFAULT_BLOCK_EXPLORER_URL_MAP } from '../../../shared/constant
 
 const getSourceAndDestChainIds = ({
   bridgeHistoryItem,
-  srcTxMeta,
 }: UseBridgeChainInfoProps) => {
   const hexSrcChainId = bridgeHistoryItem
     ? (new Numeric(
         bridgeHistoryItem.quote.srcChainId,
         10,
       ).toPrefixedHexString() as Hex)
-    : srcTxMeta?.chainId;
+    : undefined;
   const hexDestChainId = bridgeHistoryItem
     ? (new Numeric(
         bridgeHistoryItem.quote.destChainId,
         10,
       ).toPrefixedHexString() as Hex)
-    : srcTxMeta?.destinationChainId;
+    : undefined;
 
   return {
     hexSrcChainId,
@@ -50,9 +52,15 @@ export default function useBridgeChainInfo({
     getNetworkConfigurationsByChainId,
   );
 
+  if (srcTxMeta?.type !== TransactionType.bridge) {
+    return {
+      srcNetwork: undefined,
+      destNetwork: undefined,
+    };
+  }
+
   const { hexSrcChainId, hexDestChainId } = getSourceAndDestChainIds({
     bridgeHistoryItem,
-    srcTxMeta,
   });
 
   if (!hexSrcChainId || !hexDestChainId) {
