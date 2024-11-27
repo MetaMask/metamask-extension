@@ -36,9 +36,11 @@ import {
   FEATURED_RPCS,
   TEST_CHAINS,
 } from '../../../../shared/constants/network';
-import { getNetworkConfigurationsByChainId } from '../../../../shared/modules/selectors/networks';
 import {
+  getNetworkConfigurationsByChainId,
   getCurrentChainId,
+} from '../../../../shared/modules/selectors/networks';
+import {
   getShowTestNetworks,
   getOnboardedInThisUISession,
   getShowNetworkBanner,

@@ -27,9 +27,9 @@ import {
   getIsBridgeChain,
   getCurrentKeyring,
   ///: END:ONLY_INCLUDE_IF
-  getCurrentChainId,
   getNetworkConfigurationIdByChainId,
 } from '../../../selectors';
+import { getCurrentChainId } from '../../../../shared/modules/selectors/networks';
 ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
 import useBridging from '../../../hooks/bridge/useBridging';
 ///: END:ONLY_INCLUDE_IF

@@ -55,7 +55,6 @@ import {
   getMemoizedUnapprovedTemplatedConfirmations,
   ///: END:ONLY_INCLUDE_IF
   getNetworkConfigurationIdByChainId,
-  getCurrentChainId,
 } from '../../../selectors';
 import Tooltip from '../../ui/tooltip';
 ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
@@ -100,6 +99,7 @@ import {
   getMultichainNativeCurrency,
 } from '../../../selectors/multichain';
 import { useMultichainSelector } from '../../../hooks/useMultichainSelector';
+import { getCurrentChainId } from '../../../../shared/modules/selectors/networks';
 
 type CoinButtonsProps = {
   account: InternalAccount;
