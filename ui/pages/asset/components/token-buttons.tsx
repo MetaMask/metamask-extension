@@ -241,13 +241,6 @@ const TokenButtons = ({
           );
           try {
             await setCorrectChain();
-            if (token.chainId !== currentChainId) {
-              // TODO: Properly handle this case, for now we are stopping execution to prevent users from inadvertendly navigating to incompatible chains
-              console.error(
-                `Token/Network mismatch token: ${token.chainId} network: ${currentChainId}`,
-              );
-              return;
-            }
             await dispatch(
               startNewDraftTransaction({
                 type: AssetType.token,
@@ -286,13 +279,6 @@ const TokenButtons = ({
           }
           onClick={async () => {
             await setCorrectChain();
-            if (token.chainId !== currentChainId) {
-              // TODO: Properly handle this case, for now we are stopping execution to prevent users from inadvertendly navigating to incompatible chains
-              console.error(
-                `Token/Network mismatch token: ${token.chainId} network: ${currentChainId}`,
-              );
-              return;
-            }
             ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
             global.platform.openTab({
               url: `${mmiPortfolioUrl}/swap`,
