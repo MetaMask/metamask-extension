@@ -21,6 +21,7 @@ export type VersionedData = {
 const version = 133;
 
 function transformState(state: VersionedData['data']) {
+  console.log('Migration 133 state:', JSON.stringify(state, null, 2));
   console.log('Transform state input:', state);
   if (
     !hasProperty(state, 'PreferencesController') ||
@@ -77,6 +78,7 @@ function hasExistingSmartTransactions(state: VersionedData['data']): boolean {
 const migration = {
   version,
   async migrate(originalVersionedData: VersionedData): Promise<VersionedData> {
+    console.log('Migration 133 input:', JSON.stringify(originalVersionedData, null, 2));
     console.log('Starting migration 133', originalVersionedData);
     const versionedData = cloneDeep(originalVersionedData);
     versionedData.meta.version = version;
