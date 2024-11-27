@@ -1,7 +1,10 @@
 import { Suite } from 'mocha';
 import { Driver } from '../../webdriver/driver';
 import { Anvil } from '../../seeder/anvil';
-import { withFixtures } from '../../helpers';
+import {
+  withFixtures,
+  tempToggleSettingRedesignedTransactionConfirmations,
+} from '../../helpers';
 import FixtureBuilder from '../../fixture-builder';
 import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
 import { sendTransactionToAddress } from '../../page-objects/flows/send-transaction.flow';
@@ -23,6 +26,9 @@ describe('Simple send eth', function (this: Suite) {
         anvilServer?: Anvil;
       }) => {
         await loginWithBalanceValidation(driver, anvilServer);
+
+        await tempToggleSettingRedesignedTransactionConfirmations(driver);
+
         await sendTransactionToAddress({
           driver,
           recipientAddress: '0x985c30949c92df7a0bd42e0f3e3d539ece98db24',

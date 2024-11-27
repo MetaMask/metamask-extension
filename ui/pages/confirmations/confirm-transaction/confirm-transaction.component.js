@@ -133,9 +133,7 @@ const ConfirmTransaction = () => {
   });
 
   useEffect(() => {
-    if (!totalUnapproved && !sendTo) {
-      history.replace(mostRecentOverviewPage);
-    } else {
+    if (totalUnapproved || sendTo) {
       const { txParams: { data } = {}, origin } = transaction;
 
       if (origin !== ORIGIN_METAMASK) {

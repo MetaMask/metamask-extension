@@ -8,6 +8,7 @@ const {
   unlockWallet,
   editGasFeeForm,
   WINDOW_TITLES,
+  tempToggleSettingRedesignedTransactionConfirmations,
 } = require('../../helpers');
 const FixtureBuilder = require('../../fixture-builder');
 
@@ -103,6 +104,8 @@ describe('Send ETH', function () {
         },
         async ({ driver }) => {
           await unlockWallet(driver);
+
+          await tempToggleSettingRedesignedTransactionConfirmations(driver);
 
           await driver.delay(1000);
 
@@ -252,6 +255,8 @@ describe('Send ETH', function () {
           async ({ driver }) => {
             await unlockWallet(driver);
 
+            await tempToggleSettingRedesignedTransactionConfirmations(driver);
+
             // initiates a send from the dapp
             await openDapp(driver);
             await driver.clickElement({ text: 'Send', tag: 'button' });
@@ -326,6 +331,8 @@ describe('Send ETH', function () {
           },
           async ({ driver }) => {
             await unlockWallet(driver);
+
+            await tempToggleSettingRedesignedTransactionConfirmations(driver);
 
             // initiates a transaction from the dapp
             await openDapp(driver);
@@ -429,6 +436,8 @@ describe('Send ETH', function () {
           },
           async ({ driver }) => {
             await unlockWallet(driver);
+
+            await tempToggleSettingRedesignedTransactionConfirmations(driver);
 
             await driver.assertElementNotPresent('.loading-overlay__spinner');
             const balance = await driver.findElement(

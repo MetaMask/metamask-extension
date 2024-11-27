@@ -2,6 +2,7 @@ const {
   withFixtures,
   logInWithBalanceValidation,
   openActionMenuAndStartSendFlow,
+  tempToggleSettingRedesignedTransactionConfirmations,
 } = require('../../helpers');
 const { SMART_CONTRACTS } = require('../../seeder/smart-contracts');
 const FixtureBuilder = require('../../fixture-builder');
@@ -118,6 +119,8 @@ describe('Send ERC20 to a 40 character hexadecimal address', function () {
       },
       async ({ driver, anvilServer }) => {
         await logInWithBalanceValidation(driver, anvilServer);
+        await tempToggleSettingRedesignedTransactionConfirmations(driver);
+
         // Send TST
         await driver.clickElement(
           '[data-testid="account-overview__asset-tab"]',
@@ -180,6 +183,8 @@ describe('Send ERC20 to a 40 character hexadecimal address', function () {
       },
       async ({ driver, anvilServer }) => {
         await logInWithBalanceValidation(driver, anvilServer);
+        await tempToggleSettingRedesignedTransactionConfirmations(driver);
+
         // Send TST
         await driver.clickElement(
           '[data-testid="account-overview__asset-tab"]',
