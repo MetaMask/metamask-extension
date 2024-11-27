@@ -24,11 +24,8 @@ import {
 } from '@metamask/utils';
 
 ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
-import {
-  BtcAccountType,
-  InternalAccount,
-  SolAccountType,
-} from '@metamask/keyring-api';
+import { InternalAccount, isEvmAccountType } from '@metamask/keyring-api';
+import { SnapId } from '@metamask/snaps-sdk';
 ///: END:ONLY_INCLUDE_IF
 ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
 import { ChainId } from '../../../../shared/constants/network';
@@ -96,8 +93,7 @@ import {
   ///: END:ONLY_INCLUDE_IF
 } from '../../../store/actions';
 ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
-import { BITCOIN_WALLET_SNAP_ID } from '../../../../shared/lib/accounts/bitcoin-wallet-snap';
-import { SOLANA_WALLET_SNAP_ID } from '../../../../shared/lib/accounts/solana-wallet-snap';
+import { isMultichainWalletSnap } from '../../../../shared/lib/accounts/snaps';
 ///: END:ONLY_INCLUDE_IF
 import {
   getMultichainIsEvm,
@@ -120,13 +116,6 @@ type CoinButtonsProps = {
   classPrefix?: string;
   iconButtonClassName?: string;
 };
-
-///: BEGIN:ONLY_INCLUDE_IF(build-flask)
-const multichainAccountTypeToSnapId = {
-  [BtcAccountType.P2wpkh]: BITCOIN_WALLET_SNAP_ID,
-  [SolAccountType.DataAccount]: SOLANA_WALLET_SNAP_ID,
-};
-///: END:ONLY_INCLUDE_IF
 
 const CoinButtons = ({
   account,
@@ -327,7 +316,9 @@ const CoinButtons = ({
       (approval) => {
         return (
           approval.type === 'snap_dialog' &&
-          Object.values(multichainAccountTypeToSnapId).includes(approval.origin)
+          account.metadata.snap &&
+          account.metadata.snap.id === approval.origin &&
+          isMultichainWalletSnap(account.metadata.snap.id as SnapId)
         );
       },
     );
@@ -335,7 +326,7 @@ const CoinButtons = ({
     if (templatedSnapApproval) {
       history.push(`${CONFIRMATION_V_NEXT_ROUTE}/${templatedSnapApproval.id}`);
     }
-  }, [unapprovedTemplatedConfirmations, history]);
+  }, [unapprovedTemplatedConfirmations, history, account]);
   ///: END:ONLY_INCLUDE_IF
 
   const setCorrectChain = useCallback(async () => {
@@ -366,33 +357,29 @@ const CoinButtons = ({
       },
       { excludeMetaMetricsId: false },
     );
-    switch (account.type) {
-      ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
-      case BtcAccountType.P2wpkh:
-      case SolAccountType.DataAccount: {
-        try {
-          // FIXME: We switch the tab before starting the send flow (we
-          // faced some inconsistencies when changing it after).
-          await dispatch(setDefaultHomeActiveTabName('activity'));
-          await sendMultichainTransaction(
-            multichainAccountTypeToSnapId[account.type],
-            {
-              account: account.id,
-              scope: chainId as CaipChainId,
-            },
-          );
-        } catch {
-          // Restore the previous tab in case of any error (see FIXME comment above).
-          await dispatch(setDefaultHomeActiveTabName(currentActivityTabName));
-        }
 
-        break;
+    if (isEvmAccountType(account.type)) {
+      // Native Send flow
+      await setCorrectChain();
+      await dispatch(startNewDraftTransaction({ type: AssetType.native }));
+      history.push(SEND_ROUTE);
+    } else {
+      // Non-EVM (Snap) Send flow
+      if (!account.metadata.snap) {
+        throw new Error('Non-EVM needs to be Snap accounts');
       }
-      ///: END:ONLY_INCLUDE_IF
-      default: {
-        await setCorrectChain();
-        await dispatch(startNewDraftTransaction({ type: AssetType.native }));
-        history.push(SEND_ROUTE);
+
+      try {
+        // FIXME: We switch the tab before starting the send flow (we
+        // faced some inconsistencies when changing it after).
+        await dispatch(setDefaultHomeActiveTabName('activity'));
+        await sendMultichainTransaction(account.metadata.snap.id, {
+          account: account.id,
+          scope: chainId as CaipChainId,
+        });
+      } catch {
+        // Restore the previous tab in case of any error (see FIXME comment above).
+        await dispatch(setDefaultHomeActiveTabName(currentActivityTabName));
       }
     }
   }, [chainId, account, setCorrectChain]);
