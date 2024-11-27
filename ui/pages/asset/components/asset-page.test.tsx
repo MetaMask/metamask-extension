@@ -52,9 +52,6 @@ describe('AssetPage', () => {
     localeMessages: {
       currentLocale: 'en',
     },
-    activeTab: {
-      origin: '',
-    },
     metamask: {
       tokenList: {},
       tokenBalances: {
