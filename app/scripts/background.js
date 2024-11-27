@@ -306,7 +306,7 @@ function maybeDetectPhishing(theController) {
             url: blockedUrl,
           },
           reason: blockReason,
-          requestDomain: blockedRequestResponse?.result ? hostname : undefined,
+          requestDomain: blockedRequestResponse.result ? hostname : undefined,
         },
       });
       const querystring = new URLSearchParams({ hostname, href });
