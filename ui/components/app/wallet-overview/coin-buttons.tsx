@@ -409,6 +409,7 @@ const CoinButtons = ({
   }, [chainId, account, setCorrectChain]);
 
   const handleSwapOnClick = useCallback(async () => {
+    console.log('swap');
     await setCorrectChain();
     if (chainId !== currentChainId) {
       // TODO: Properly handle this case, for now we are stopping execution to prevent users from inadvertendly navigating to incompatible chains
