@@ -18,8 +18,6 @@ import { NotificationsListItem } from './notifications-list-item';
 import { type Notification, TAB_KEYS } from './notifications';
 import { NotificationsListReadAllButton } from './notifications-list-read-all-button';
 
-const { TRIGGER_TYPES } = NotificationServicesController.Constants;
-
 export type NotificationsListProps = {
   activeTab: TAB_KEYS;
   notifications: Notification[];
