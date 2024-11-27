@@ -13,8 +13,12 @@ import { createMockInternalAccount } from '../../test/jest/mocks';
 import { mockNetworkState } from '../../test/stub/networks';
 import { DeleteRegulationStatus } from '../../shared/constants/metametrics';
 import { selectSwitchedNetworkNeverShowMessage } from '../components/app/toast-master/selectors';
-import { getProviderConfig } from '../../shared/modules/selectors/networks';
+import * as networkSelectors from '../../shared/modules/selectors/networks';
 import * as selectors from './selectors';
+
+jest.mock('../../shared/modules/selectors/networks', () => ({
+  ...jest.requireActual('../../shared/modules/selectors/networks'),
+}));
 
 jest.mock('../../app/scripts/lib/util', () => ({
   ...jest.requireActual('../../app/scripts/lib/util'),
@@ -189,7 +193,7 @@ describe('Selectors', () => {
 
       expect(selectors.getSwitchedNetworkDetails(state)).toStrictEqual({
         imageUrl: './images/eth_logo.svg',
-        nickname: getProviderConfig(state).nickname,
+        nickname: networkSelectors.getProviderConfig(state).nickname,
         origin,
       });
     });
@@ -1160,33 +1164,6 @@ describe('Selectors', () => {
     const appIsLoading = selectors.getAppIsLoading(mockState);
     expect(appIsLoading).toStrictEqual(false);
   });
-  it('#getNotifications', () => {
-    const notifications = selectors.getNotifications(mockState);
-
-    expect(notifications).toStrictEqual([
-      mockState.metamask.notifications.test,
-      mockState.metamask.notifications.test2,
-    ]);
-  });
-  it('#getReadNotificationsCount', () => {
-    const readNotificationsCount =
-      selectors.getReadNotificationsCount(mockState);
-    expect(readNotificationsCount).toStrictEqual(1);
-  });
-  it('#getUnreadNotificationsCount', () => {
-    const unreadNotificationCount =
-      selectors.getUnreadNotificationsCount(mockState);
-
-    expect(unreadNotificationCount).toStrictEqual(1);
-  });
-
-  it('#getUnreadNotifications', () => {
-    const unreadNotifications = selectors.getUnreadNotifications(mockState);
-
-    expect(unreadNotifications).toStrictEqual([
-      mockState.metamask.notifications.test,
-    ]);
-  });
 
   it('#getUseCurrencyRateCheck', () => {
     const useCurrencyRateCheck = selectors.getUseCurrencyRateCheck(mockState);
@@ -1997,7 +1974,10 @@ describe('#getConnectedSitesList', () => {
     });
 
     it('returns the token object for the overridden chainId when overrideChainId is provided', () => {
-      const getCurrentChainIdSpy = jest.spyOn(selectors, 'getCurrentChainId');
+      const getCurrentChainIdSpy = jest.spyOn(
+        networkSelectors,
+        'getCurrentChainId',
+      );
       const expectedToken = {
         symbol: 'POL',
         name: 'Polygon',
@@ -2116,7 +2096,10 @@ describe('#getConnectedSitesList', () => {
     it('respects the overrideChainId parameter', () => {
       process.env.METAMASK_ENVIRONMENT = 'production';
 
-      const getCurrentChainIdSpy = jest.spyOn(selectors, 'getCurrentChainId');
+      const getCurrentChainIdSpy = jest.spyOn(
+        networkSelectors,
+        'getCurrentChainId',
+      );
 
       const result = selectors.getIsSwapsChain(mockState, '0x89');
       expect(result).toBe(true);
@@ -2169,7 +2152,10 @@ describe('#getConnectedSitesList', () => {
     });
 
     it('respects the overrideChainId parameter', () => {
-      const getCurrentChainIdSpy = jest.spyOn(selectors, 'getCurrentChainId');
+      const getCurrentChainIdSpy = jest.spyOn(
+        networkSelectors,
+        'getCurrentChainId',
+      );
 
       const result = selectors.getIsBridgeChain(mockState, '0x89');
 

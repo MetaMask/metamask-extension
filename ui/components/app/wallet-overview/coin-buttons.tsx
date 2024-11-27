@@ -55,7 +55,6 @@ import {
   getMemoizedUnapprovedTemplatedConfirmations,
   ///: END:ONLY_INCLUDE_IF
   getNetworkConfigurationIdByChainId,
-  getCurrentChainId,
 } from '../../../selectors';
 import Tooltip from '../../ui/tooltip';
 ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
@@ -100,6 +99,7 @@ import {
   getMultichainNativeCurrency,
 } from '../../../selectors/multichain';
 import { useMultichainSelector } from '../../../hooks/useMultichainSelector';
+import { getCurrentChainId } from '../../../../shared/modules/selectors/networks';
 
 type CoinButtonsProps = {
   account: InternalAccount;
@@ -375,19 +375,6 @@ const CoinButtons = ({
       }
       ///: END:ONLY_INCLUDE_IF
       default: {
-        trackEvent(
-          {
-            event: MetaMetricsEventName.NavSendButtonClicked,
-            category: MetaMetricsEventCategory.Navigation,
-            properties: {
-              token_symbol: 'ETH',
-              location: 'Home',
-              text: 'Send',
-              chain_id: chainId,
-            },
-          },
-          { excludeMetaMetricsId: false },
-        );
         await setCorrectChain();
         await dispatch(startNewDraftTransaction({ type: AssetType.native }));
         history.push(SEND_ROUTE);

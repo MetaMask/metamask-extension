@@ -171,7 +171,6 @@
     "allNfts": "object",
     "ignoredNfts": "object"
   },
-  "NotificationController": { "notifications": "object" },
   "NotificationServicesController": {
     "subscriptionAccountsSeen": "object",
     "isMetamaskNotificationsFeatureSeen": "boolean",

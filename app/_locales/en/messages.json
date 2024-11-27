@@ -3403,6 +3403,13 @@
   "noTransactions": {
     "message": "You have no transactions"
   },
+  "noTransactionsChainIdMismatch": {
+    "message": "Please switch network to view transactions"
+  },
+  "noTransactionsNetworkName": {
+    "message": "Please switch to $1 network to view transactions",
+    "description": "$1 represents the network name"
+  },
   "noWebcamFound": {
     "message": "Your computer's webcam was not found. Please try again."
   },

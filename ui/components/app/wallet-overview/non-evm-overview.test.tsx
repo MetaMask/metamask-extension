@@ -305,6 +305,7 @@ describe('NonEvmOverview', () => {
     expect(buyButton).not.toBeDisabled();
     fireEvent.click(buyButton as HTMLElement);
 
+    expect(mockTrackEvent).toHaveBeenCalledTimes(1);
     expect(mockTrackEvent).toHaveBeenCalledWith({
       event: MetaMetricsEventName.NavBuyButtonClicked,
       category: MetaMetricsEventCategory.Navigation,
@@ -381,6 +382,7 @@ describe('NonEvmOverview', () => {
     expect(sendButton).not.toBeDisabled();
     fireEvent.click(sendButton as HTMLElement);
 
+    expect(mockTrackEvent).toHaveBeenCalledTimes(1);
     expect(mockTrackEvent).toHaveBeenCalledWith(
       {
         event: MetaMetricsEventName.NavSendButtonClicked,
