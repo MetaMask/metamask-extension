@@ -1,37 +1,26 @@
 import React, { useContext } from 'react';
+import { Token } from '@metamask/assets-controllers';
 import { useSelector } from 'react-redux';
 import { getAccountLink } from '@metamask/etherscan-link';
+import { Hex } from '@metamask/utils';
 import {
-  getCurrentChainId,
-  getCurrentCurrency,
-  getNativeCurrencyImage,
   getRpcPrefsForCurrentProvider,
-  getSelectedAccountCachedBalance,
   getSelectedInternalAccount,
-  getShouldShowFiat,
+  getNativeCurrencyForChain,
 } from '../../../selectors';
-import { useCurrencyDisplay } from '../../../hooks/useCurrencyDisplay';
-import {
-  getNativeCurrency,
-  getProviderConfig,
-} from '../../../ducks/metamask/metamask';
+import { getProviderConfig } from '../../../../shared/modules/selectors/networks';
 import { AssetType } from '../../../../shared/constants/transaction';
 import { useIsOriginalNativeTokenSymbol } from '../../../hooks/useIsOriginalNativeTokenSymbol';
 import { MetaMetricsEventCategory } from '../../../../shared/constants/metametrics';
 import { getURLHostName } from '../../../helpers/utils/util';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
-import { hexToDecimal } from '../../../../shared/modules/conversion.utils';
 import AssetOptions from './asset-options';
 import AssetPage from './asset-page';
 
-const NativeAsset = () => {
-  const nativeCurrency = useSelector(getNativeCurrency);
-  const balance = useSelector(getSelectedAccountCachedBalance);
-  const image = useSelector(getNativeCurrencyImage);
-  const showFiat = useSelector(getShouldShowFiat);
-  const currentCurrency = useSelector(getCurrentCurrency);
-  const chainId = useSelector(getCurrentChainId);
-  const { ticker, type } = useSelector(getProviderConfig) ?? {};
+const NativeAsset = ({ token, chainId }: { token: Token; chainId: Hex }) => {
+  const { symbol } = token;
+  const image = getNativeCurrencyForChain(chainId);
+  const { type } = useSelector(getProviderConfig) ?? {};
   const { address } = useSelector(getSelectedInternalAccount);
   const rpcPrefs = useSelector(getRpcPrefsForCurrentProvider);
 
@@ -39,29 +28,18 @@ const NativeAsset = () => {
   const trackEvent = useContext(MetaMetricsContext);
   const isOriginalNativeSymbol = useIsOriginalNativeTokenSymbol(
     chainId,
-    ticker,
+    symbol,
     type,
   );
-
-  const [, { value: balanceDisplay }] = useCurrencyDisplay(balance, {
-    currency: nativeCurrency,
-  });
-  const [fiatDisplay] = useCurrencyDisplay(balance, {
-    currency: currentCurrency,
-  });
 
   return (
     <AssetPage
       asset={{
         chainId,
         type: AssetType.native,
-        symbol: nativeCurrency,
+        symbol,
         image,
-        balance: {
-          value: hexToDecimal(balance),
-          display: balanceDisplay,
-          fiat: showFiat && isOriginalNativeSymbol ? fiatDisplay : undefined,
-        },
+        decimals: token.decimals,
         isOriginalNativeSymbol: isOriginalNativeSymbol === true,
       }}
       optionsButton={

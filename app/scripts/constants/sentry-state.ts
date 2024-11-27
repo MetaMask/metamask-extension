@@ -122,6 +122,11 @@ export const SENTRY_BACKGROUND_STATE = {
       quotesRefreshCount: true,
     },
   },
+  BridgeStatusController: {
+    bridgeStatusState: {
+      txHistory: false,
+    },
+  },
   CronjobController: {
     jobs: false,
   },
@@ -198,9 +203,6 @@ export const SENTRY_BACKGROUND_STATE = {
     allNfts: false,
     ignoredNfts: false,
   },
-  NotificationController: {
-    notifications: false,
-  },
   OnboardingController: {
     completedOnboarding: true,
     firstTimeFlowType: true,
@@ -245,6 +247,7 @@ export const SENTRY_BACKGROUND_STATE = {
       showFiatInTestnets: true,
       showTestNetworks: true,
       smartTransactionsOptInStatus: true,
+      tokenNetworkFilter: {},
       showNativeTokenAsMainBalance: true,
       petnamesEnabled: true,
       showConfirmationAdvancedDetails: true,
@@ -355,6 +358,9 @@ export const SENTRY_BACKGROUND_STATE = {
       [AllProperties]: false,
     },
   },
+  TokenBalancesController: {
+    tokenBalances: false,
+  },
   TokenRatesController: {
     marketData: false,
   },
@@ -386,6 +392,8 @@ export const SENTRY_BACKGROUND_STATE = {
   UserStorageController: {
     isProfileSyncingEnabled: true,
     isProfileSyncingUpdateLoading: false,
+    hasAccountSyncingSyncedAtLeastOnce: false,
+    isAccountSyncingReadyToBeDispatched: false,
   },
   ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
   ...MMI_SENTRY_BACKGROUND_STATE,

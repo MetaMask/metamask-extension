@@ -3,6 +3,9 @@ import { Driver } from '../../../webdriver/driver';
 class SettingsPage {
   private readonly driver: Driver;
 
+  private readonly closeSettingsPageButton =
+    '.settings-page__header__title-container__close-button';
+
   private readonly developerOptionsButton = {
     text: 'Developer Options',
     css: '.tab-bar__tab__content__title',
@@ -35,6 +38,40 @@ class SettingsPage {
       throw e;
     }
     console.log('Settings page is loaded');
+  }
+
+  async clickAdvancedTab(): Promise<void> {
+    console.log('Clicking on Advanced tab');
+    await this.driver.clickElement({
+      css: '.tab-bar__tab__content__title',
+      text: 'Advanced',
+    });
+  }
+
+  async toggleShowFiatOnTestnets(): Promise<void> {
+    console.log('Toggling Show Fiat on Testnets setting');
+    await this.driver.clickElement(
+      '.toggle-button.show-fiat-on-testnets-toggle',
+    );
+  }
+
+  async toggleBalanceSetting(): Promise<void> {
+    console.log('Toggling balance setting');
+    await this.driver.clickElement(
+      '.toggle-button.show-native-token-as-main-balance',
+    );
+  }
+
+  async exitSettings(): Promise<void> {
+    console.log('Exiting settings page');
+    await this.driver.clickElement(
+      '.settings-page__header__title-container__close-button',
+    );
+  }
+
+  async closeSettingsPage(): Promise<void> {
+    console.log('Closing Settings page');
+    await this.driver.clickElement(this.closeSettingsPageButton);
   }
 
   async goToDevelopOptionSettings(): Promise<void> {

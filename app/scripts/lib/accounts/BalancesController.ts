@@ -13,6 +13,7 @@ import {
   type CaipAssetType,
   type InternalAccount,
   isEvmAccountType,
+  SolAccountType,
 } from '@metamask/keyring-api';
 import type { HandleSnapRequest } from '@metamask/snaps-controllers';
 import type { SnapId } from '@metamask/snaps-sdk';
@@ -23,6 +24,8 @@ import type {
   AccountsControllerAccountRemovedEvent,
   AccountsControllerListMultichainAccountsAction,
 } from '@metamask/accounts-controller';
+import { MultichainNetworks } from '../../../../shared/constants/multichain/networks';
+import { MULTICHAIN_NETWORK_TO_ASSET_TYPES } from '../../../../shared/constants/multichain/assets';
 import { isBtcMainnetAddress } from '../../../../shared/lib/multichain';
 import { BalancesTracker } from './BalancesTracker';
 
@@ -122,13 +125,17 @@ const balancesControllerMetadata = {
   },
 };
 
-const BTC_TESTNET_ASSETS = ['bip122:000000000933ea01ad0ee984209779ba/slip44:0'];
-const BTC_MAINNET_ASSETS = ['bip122:000000000019d6689c085ae165831e93/slip44:0'];
 const BTC_AVG_BLOCK_TIME = 10 * 60 * 1000; // 10 minutes in milliseconds
+const SOLANA_AVG_BLOCK_TIME = 400; // 400 milliseconds
 
 // NOTE: We set an interval of half the average block time to mitigate when our interval
 // is de-synchronized with the actual block time.
-export const BALANCES_UPDATE_TIME = BTC_AVG_BLOCK_TIME / 2;
+export const BTC_BALANCES_UPDATE_TIME = BTC_AVG_BLOCK_TIME / 2;
+
+const BALANCE_CHECK_INTERVALS = {
+  [BtcAccountType.P2wpkh]: BTC_BALANCES_UPDATE_TIME,
+  [SolAccountType.DataAccount]: SOLANA_AVG_BLOCK_TIME,
+};
 
 /**
  * The BalancesController is responsible for fetching and caching account
@@ -165,7 +172,7 @@ export class BalancesController extends BaseController<
     // Register all non-EVM accounts into the tracker
     for (const account of this.#listAccounts()) {
       if (this.#isNonEvmAccount(account)) {
-        this.#tracker.track(account.id, BALANCES_UPDATE_TIME);
+        this.#tracker.track(account.id, this.#getBlockTimeFor(account));
       }
     }
 
@@ -194,6 +201,23 @@ export class BalancesController extends BaseController<
   }
 
   /**
+   * Gets the block time for a given account.
+   *
+   * @param account - The account to get the block time for.
+   * @returns The block time for the account.
+   */
+  #getBlockTimeFor(account: InternalAccount): number {
+    if (account.type in BALANCE_CHECK_INTERVALS) {
+      return BALANCE_CHECK_INTERVALS[
+        account.type as keyof typeof BALANCE_CHECK_INTERVALS
+      ];
+    }
+    throw new Error(
+      `Unsupported account type for balance tracking: ${account.type}`,
+    );
+  }
+
+  /**
    * Lists the multichain accounts coming from the `AccountsController`.
    *
    * @returns A list of multichain accounts.
@@ -207,15 +231,16 @@ export class BalancesController extends BaseController<
   /**
    * Lists the accounts that we should get balances for.
    *
-   * Currently, we only get balances for P2WPKH accounts, but this will change
-   * in the future when we start support other non-EVM account types.
-   *
    * @returns A list of accounts that we should get balances for.
    */
   #listAccounts(): InternalAccount[] {
     const accounts = this.#listMultichainAccounts();
 
-    return accounts.filter((account) => account.type === BtcAccountType.P2wpkh);
+    return accounts.filter(
+      (account) =>
+        account.type === SolAccountType.DataAccount ||
+        account.type === BtcAccountType.P2wpkh,
+    );
   }
 
   /**
@@ -249,12 +274,13 @@ export class BalancesController extends BaseController<
     const partialState: BalancesControllerState = { balances: {} };
 
     if (account.metadata.snap) {
+      const scope = this.#getScopeFrom(account);
+      const assetTypes = MULTICHAIN_NETWORK_TO_ASSET_TYPES[scope];
+
       partialState.balances[account.id] = await this.#getBalances(
         account.id,
         account.metadata.snap.id,
-        isBtcMainnetAddress(account.address)
-          ? BTC_MAINNET_ASSETS
-          : BTC_TESTNET_ASSETS,
+        assetTypes,
       );
     }
 
@@ -312,7 +338,7 @@ export class BalancesController extends BaseController<
       return;
     }
 
-    this.#tracker.track(account.id, BTC_AVG_BLOCK_TIME);
+    this.#tracker.track(account.id, this.#getBlockTimeFor(account));
     // NOTE: Unfortunately, we cannot update the balance right away here, because
     // messenger's events are running synchronously and fetching the balance is
     // asynchronous.
@@ -375,5 +401,34 @@ export class BalancesController extends BaseController<
           request,
         })) as Promise<Json>,
     });
+  }
+
+  /**
+   * Gets the network scope for a given account.
+   *
+   * @param account - The account to get the scope for.
+   * @returns The network scope for the account.
+   * @throws If the account type is unknown or unsupported.
+   */
+  #getScopeFrom(account: InternalAccount): MultichainNetworks {
+    // TODO: Use the new `account.scopes` once available in the `keyring-api`.
+
+    // For Bitcoin accounts, we get the scope based on the address format.
+    if (account.type === BtcAccountType.P2wpkh) {
+      if (isBtcMainnetAddress(account.address)) {
+        return MultichainNetworks.BITCOIN;
+      }
+      return MultichainNetworks.BITCOIN_TESTNET;
+    }
+
+    // For Solana accounts, we know we have a `scope` on the account's `options` bag.
+    if (account.type === SolAccountType.DataAccount) {
+      if (!account.options.scope) {
+        throw new Error('Solana account scope is undefined');
+      }
+      return account.options.scope as MultichainNetworks;
+    }
+
+    throw new Error(`Unsupported non-EVM account type: ${account.type}`);
   }
 }
