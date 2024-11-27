@@ -1,11 +1,11 @@
 const { strict: assert } = require('assert');
 const FixtureBuilder = require('../../fixture-builder');
-
 const {
   defaultGanacheOptions,
   logInWithBalanceValidation,
   sendScreenToConfirmScreen,
   WINDOW_TITLES,
+  tempToggleSettingRedesignedTransactionConfirmations,
   withFixtures,
 } = require('../../helpers');
 const {
@@ -219,6 +219,8 @@ describe('Simple Send Security Alert - Blockaid @no-mmi', function () {
 
       async ({ driver }) => {
         await logInWithBalanceValidation(driver);
+
+        await tempToggleSettingRedesignedTransactionConfirmations(driver);
 
         await sendScreenToConfirmScreen(
           driver,

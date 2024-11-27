@@ -178,6 +178,7 @@ export default class ExperimentalTab extends PureComponent<ExperimentalTabProps>
       description: t('redesignedTransactionsToggleDescription'),
       toggleValue: redesignedTransactionsEnabled,
       toggleCallback: (value) => setRedesignedTransactionsEnabled(!value),
+      toggleContainerDataTestId: 'toggle-redesigned-transactions-container',
       toggleDataTestId: 'toggle-redesigned-transactions',
       toggleOffLabel: t('off'),
       toggleOnLabel: t('on'),

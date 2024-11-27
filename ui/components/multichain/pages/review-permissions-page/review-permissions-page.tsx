@@ -54,7 +54,7 @@ import { PermissionsHeader } from '../../permissions-header/permissions-header';
 import { mergeAccounts } from '../../account-list-menu/account-list-menu';
 import { MergedInternalAccount } from '../../../../selectors/selectors.types';
 import { TEST_CHAINS } from '../../../../../shared/constants/network';
-import { SiteCell } from '.';
+import { SiteCell } from './site-cell/site-cell';
 
 export const ReviewPermissions = () => {
   const t = useI18nContext();

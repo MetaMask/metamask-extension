@@ -68,9 +68,7 @@ describe('Account syncing - Add Account @no-mmi', function () {
           await accountListPage.check_accountDisplayedInAccountList(
             'My Second Synced Account',
           );
-          await accountListPage.addNewAccountWithCustomLabel(
-            'My third account',
-          );
+          await accountListPage.addNewAccount('My third account');
         },
       );
 
@@ -175,7 +173,7 @@ describe('Account syncing - Add Account @no-mmi', function () {
           await accountListPage.check_accountDisplayedInAccountList(
             'My Second Synced Account',
           );
-          await accountListPage.addNewAccountWithDefaultName();
+          await accountListPage.addNewAccount();
         },
       );
 
