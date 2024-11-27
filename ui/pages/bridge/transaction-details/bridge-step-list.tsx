@@ -86,7 +86,7 @@ export default function BridgeStepList({
             isEdgeComplete={isEdgeComplete}
           >
             <BridgeStepDescription
-              step={step as Step}
+              step={step}
               networkConfigurationsByChainId={networkConfigurationsByChainId}
               stepStatus={displayedStepStatus}
               time={time}
