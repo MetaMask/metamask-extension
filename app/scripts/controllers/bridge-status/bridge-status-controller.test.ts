@@ -261,6 +261,7 @@ describe('BridgeStatusController', () => {
       // Start polling for 0xaccount2
       bridgeStatusController.startPollingForBridgeTxStatus(
         getMockStartPollingForBridgeTxStatusArgs({
+          txMetaId: 'bridgeTxMetaId2',
           srcTxHash: '0xsrcTxHash2',
           account: '0xaccount2',
         }),
@@ -271,10 +272,10 @@ describe('BridgeStatusController', () => {
       // Check that both accounts have a tx history entry
       expect(
         bridgeStatusController.state.bridgeStatusState.txHistory,
-      ).toHaveProperty('0xsrcTxHash1');
+      ).toHaveProperty('bridgeTxMetaId1');
       expect(
         bridgeStatusController.state.bridgeStatusState.txHistory,
-      ).toHaveProperty('0xsrcTxHash2');
+      ).toHaveProperty('bridgeTxMetaId2');
 
       // Wipe the status for 1 account only
       bridgeStatusController.wipeBridgeStatus({
@@ -334,6 +335,7 @@ describe('BridgeStatusController', () => {
         getMockStartPollingForBridgeTxStatusArgs({
           account: '0xaccount1',
           srcTxHash: '0xsrcTxHash1',
+          txMetaId: 'bridgeTxMetaId1',
           srcChainId: 42161,
           destChainId: 1,
         }),
@@ -346,6 +348,7 @@ describe('BridgeStatusController', () => {
         getMockStartPollingForBridgeTxStatusArgs({
           account: '0xaccount1',
           srcTxHash: '0xsrcTxHash2',
+          txMetaId: 'bridgeTxMetaId2',
           srcChainId: 10,
           destChainId: 123,
         }),
@@ -355,20 +358,20 @@ describe('BridgeStatusController', () => {
 
       // Check we have a tx history entry for each chainId
       expect(
-        bridgeStatusController.state.bridgeStatusState.txHistory['0xsrcTxHash1']
+        bridgeStatusController.state.bridgeStatusState.txHistory.bridgeTxMetaId1
           .quote.srcChainId,
       ).toEqual(42161);
       expect(
-        bridgeStatusController.state.bridgeStatusState.txHistory['0xsrcTxHash1']
+        bridgeStatusController.state.bridgeStatusState.txHistory.bridgeTxMetaId1
           .quote.destChainId,
       ).toEqual(1);
 
       expect(
-        bridgeStatusController.state.bridgeStatusState.txHistory['0xsrcTxHash2']
+        bridgeStatusController.state.bridgeStatusState.txHistory.bridgeTxMetaId2
           .quote.srcChainId,
       ).toEqual(10);
       expect(
-        bridgeStatusController.state.bridgeStatusState.txHistory['0xsrcTxHash2']
+        bridgeStatusController.state.bridgeStatusState.txHistory.bridgeTxMetaId2
           .quote.destChainId,
       ).toEqual(123);
 
@@ -429,6 +432,7 @@ describe('BridgeStatusController', () => {
         getMockStartPollingForBridgeTxStatusArgs({
           account: '0xaccount1',
           srcTxHash: '0xsrcTxHash1',
+          txMetaId: 'bridgeTxMetaId1',
           srcChainId: 42161,
           destChainId: 1,
         }),
@@ -441,6 +445,7 @@ describe('BridgeStatusController', () => {
         getMockStartPollingForBridgeTxStatusArgs({
           account: '0xaccount1',
           srcTxHash: '0xsrcTxHash2',
+          txMetaId: 'bridgeTxMetaId2',
           srcChainId: 10,
           destChainId: 123,
         }),
@@ -450,20 +455,20 @@ describe('BridgeStatusController', () => {
 
       // Check we have a tx history entry for each chainId
       expect(
-        bridgeStatusController.state.bridgeStatusState.txHistory['0xsrcTxHash1']
+        bridgeStatusController.state.bridgeStatusState.txHistory.bridgeTxMetaId1
           .quote.srcChainId,
       ).toEqual(42161);
       expect(
-        bridgeStatusController.state.bridgeStatusState.txHistory['0xsrcTxHash1']
+        bridgeStatusController.state.bridgeStatusState.txHistory.bridgeTxMetaId1
           .quote.destChainId,
       ).toEqual(1);
 
       expect(
-        bridgeStatusController.state.bridgeStatusState.txHistory['0xsrcTxHash2']
+        bridgeStatusController.state.bridgeStatusState.txHistory.bridgeTxMetaId2
           .quote.srcChainId,
       ).toEqual(10);
       expect(
-        bridgeStatusController.state.bridgeStatusState.txHistory['0xsrcTxHash2']
+        bridgeStatusController.state.bridgeStatusState.txHistory.bridgeTxMetaId2
           .quote.destChainId,
       ).toEqual(123);
 
