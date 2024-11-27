@@ -86,10 +86,10 @@ import useBridging from '../../../hooks/bridge/useBridging';
 import { ReceiveModal } from '../../multichain/receive-modal';
 import {
   setSwitchedNetworkDetails,
+  setActiveNetworkWithError,
   ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
   sendMultichainTransaction,
   setDefaultHomeActiveTabName,
-  setActiveNetworkWithError,
   ///: END:ONLY_INCLUDE_IF
 } from '../../../store/actions';
 ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
