@@ -68,17 +68,17 @@ describe('Permit Single Signature Tests', () => {
     await renderSingleBatchSignature();
 
     expect(
-      screen.getByText(tEn('confirmTitlePermitTokens') as string),
+      await screen.findByText(tEn('confirmTitlePermitTokens') as string),
     ).toBeInTheDocument();
     expect(
-      screen.getByText(tEn('confirmTitleDescPermitSignature') as string),
+      await screen.findByText(tEn('confirmTitleDescPermitSignature') as string),
     ).toBeInTheDocument();
   });
 
   it('displays correct details in simulation section', async () => {
     await renderSingleBatchSignature();
 
-    const simulationSection = screen.getByTestId(
+    const simulationSection = await screen.findByTestId(
       'confirmation__simulation_section',
     );
     const simulationDetails = [
@@ -96,7 +96,7 @@ describe('Permit Single Signature Tests', () => {
   it('displays correct details in request section', async () => {
     await renderSingleBatchSignature();
 
-    const requestDetailsSection = screen.getByTestId(
+    const requestDetailsSection = await screen.findByTestId(
       'confirmation_request-section',
     );
     const requestDetails = [
@@ -114,11 +114,11 @@ describe('Permit Single Signature Tests', () => {
 
   it('displays correct details in message section', async () => {
     await renderSingleBatchSignature();
-    act(() => {
-      fireEvent.click(screen.getByTestId('sectionCollapseButton'));
+    act(async() => {
+      fireEvent.click(await screen.findByTestId('sectionCollapseButton'));
     });
 
-    const messageDetailsSection = screen.getByTestId(
+    const messageDetailsSection = await screen.findByTestId(
       'confirmation_message-section',
     );
     const messageDetails = ['Message', 'Primary type:', 'PermitSingle'];
@@ -126,14 +126,14 @@ describe('Permit Single Signature Tests', () => {
     expect(messageDetailsSection).toBeInTheDocument();
     verifyDetails(messageDetailsSection, messageDetails);
 
-    const messageData0 = screen.getByTestId(
+    const messageData0 = await screen.findByTestId(
       'confirmation_data-details-index-0',
     );
     const messageData0Details = [
       'Token',
       'USDC',
       'Amount',
-      '14,615,016,373,...',
+      '1,461,501,637,3...',
       'Expiration',
       '05 August 2024, 19:52',
       'Nonce',

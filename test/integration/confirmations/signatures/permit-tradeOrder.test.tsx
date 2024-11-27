@@ -1,4 +1,4 @@
-import { act, screen } from '@testing-library/react';
+import { act, findByTestId, screen } from '@testing-library/react';
 import nock from 'nock';
 import mockMetaMaskState from '../../data/integration-init-state.json';
 import { integrationTestRender } from '../../../lib/render-helpers';
@@ -68,17 +68,17 @@ describe('Permit Trade Order Tests', () => {
     await renderTradeOrderSignature();
 
     expect(
-      screen.getByText(tEn('confirmTitleSignature') as string),
+      await screen.findByText(tEn('confirmTitleSignature') as string),
     ).toBeInTheDocument();
     expect(
-      screen.getByText(tEn('confirmTitleDescSign') as string),
+      await screen.findByText(tEn('confirmTitleDescSign') as string),
     ).toBeInTheDocument();
   });
 
   it('displays correct details in request section', async () => {
     await renderTradeOrderSignature();
 
-    const requestDetailsSection = screen.getByTestId(
+    const requestDetailsSection = await screen.findByTestId(
       'confirmation_request-section',
     );
     const requestDetails = [
@@ -94,7 +94,7 @@ describe('Permit Trade Order Tests', () => {
 
   it('displays correct details in message section', async () => {
     await renderTradeOrderSignature();
-    const messageDetailsSection = screen.getByTestId(
+    const messageDetailsSection = await screen.findByTestId(
       'confirmation_message-section',
     );
     const messageDetails = [

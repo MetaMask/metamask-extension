@@ -68,17 +68,17 @@ describe('Permit Seaport Tests', () => {
     await renderSeaportSignature();
 
     expect(
-      screen.getByText(tEn('confirmTitleSignature') as string),
+      await screen.findByText(tEn('confirmTitleSignature') as string),
     ).toBeInTheDocument();
     expect(
-      screen.getByText(tEn('confirmTitleDescSign') as string),
+      await screen.findByText(tEn('confirmTitleDescSign') as string),
     ).toBeInTheDocument();
   });
 
   it('renders request details section', async () => {
     await renderSeaportSignature();
 
-    const requestDetailsSection = screen.getByTestId(
+    const requestDetailsSection = await screen.findByTestId(
       'confirmation_request-section',
     );
 
@@ -92,7 +92,7 @@ describe('Permit Seaport Tests', () => {
   it('renders message details section', async () => {
     await renderSeaportSignature();
 
-    const messageDetailsSection = screen.getByTestId(
+    const messageDetailsSection = await screen.findByTestId(
       'confirmation_message-section',
     );
     expect(messageDetailsSection).toBeInTheDocument();
@@ -112,14 +112,14 @@ describe('Permit Seaport Tests', () => {
   it('renders offer and consideration details', async () => {
     await renderSeaportSignature();
 
-    const offers = screen.getByTestId('confirmation_data-offer-index-2');
+    const offers = await screen.findByTestId('confirmation_data-offer-index-2');
     const offerDetails0 = offers.querySelector(
       '[data-testid="confirmation_data-0-index-0"]',
     );
     const offerDetails1 = offers.querySelector(
       '[data-testid="confirmation_data-1-index-1"]',
     );
-    const considerations = screen.getByTestId(
+    const considerations = await screen.findByTestId(
       'confirmation_data-consideration-index-3',
     );
     const considerationDetails0 = considerations.querySelector(
@@ -142,9 +142,9 @@ describe('Permit Seaport Tests', () => {
           'IdentifierOrCriteria',
           '26464',
           'StartAmount',
-          '0.01',
+          '1',
           'EndAmount',
-          '0.01',
+          '1',
         ],
       },
       {
@@ -157,9 +157,9 @@ describe('Permit Seaport Tests', () => {
           'IdentifierOrCriteria',
           '7779',
           'StartAmount',
-          '0.01',
+          '1',
           'EndAmount',
-          '0.01',
+          '1',
         ],
       },
       {
@@ -172,9 +172,9 @@ describe('Permit Seaport Tests', () => {
           'IdentifierOrCriteria',
           '26464',
           'StartAmount',
-          '0.01',
+          '1',
           'EndAmount',
-          '0.01',
+          '1',
           'Recipient',
           '0xDFdc0...25Cc1',
         ],

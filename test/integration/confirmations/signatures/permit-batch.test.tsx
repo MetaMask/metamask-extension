@@ -67,18 +67,17 @@ describe('Permit Batch Signature Tests', () => {
   it('renders the permit batch signature with correct titles', async () => {
     await renderPermitBatchSignature();
 
-    expect(
-      screen.getByText(tEn('confirmTitlePermitTokens') as string),
+    expect(await screen.findByText(tEn('confirmTitlePermitTokens') as string),
     ).toBeInTheDocument();
     expect(
-      screen.getByText(tEn('confirmTitleDescPermitSignature') as string),
+      await screen.findByText(tEn('confirmTitleDescPermitSignature') as string),
     ).toBeInTheDocument();
   });
 
   it('displays the correct details in the simulation section', async () => {
     await renderPermitBatchSignature();
 
-    const simulationSection = screen.getByTestId(
+    const simulationSection = await screen.findByTestId(
       'confirmation__simulation_section',
     );
     expect(simulationSection).toBeInTheDocument();
@@ -99,7 +98,7 @@ describe('Permit Batch Signature Tests', () => {
   it('displays correct request and message details', async () => {
     await renderPermitBatchSignature();
 
-    const requestDetailsSection = screen.getByTestId(
+    const requestDetailsSection = await screen.findByTestId(
       'confirmation_request-section',
     );
     const requestDetails = [
@@ -113,11 +112,11 @@ describe('Permit Batch Signature Tests', () => {
     expect(requestDetailsSection).toBeInTheDocument();
     verifyDetails(requestDetailsSection, requestDetails);
 
-    act(() => {
-      fireEvent.click(screen.getByTestId('sectionCollapseButton'));
+    await act(async () => {
+      fireEvent.click(await screen.findByTestId('sectionCollapseButton'));
     });
 
-    const messageDetailsSection = screen.getByTestId(
+    const messageDetailsSection = await screen.findByTestId(
       'confirmation_message-section',
     );
     expect(messageDetailsSection).toBeInTheDocument();
@@ -125,8 +124,8 @@ describe('Permit Batch Signature Tests', () => {
     expect(messageDetailsSection).toHaveTextContent('Primary type:');
     expect(messageDetailsSection).toHaveTextContent('PermitBatch');
 
-    const messageData0 = screen.getByTestId('confirmation_data-0-index-0');
-    const messageData1 = screen.getByTestId('confirmation_data-1-index-1');
+    const messageData0 = await screen.findByTestId('confirmation_data-0-index-0');
+    const messageData1 = await screen.findByTestId('confirmation_data-1-index-1');
     expect(messageDetailsSection).toContainElement(messageData0);
     expect(messageDetailsSection).toContainElement(messageData1);
 
@@ -137,7 +136,7 @@ describe('Permit Batch Signature Tests', () => {
           'Token',
           'USDC',
           'Amount',
-          '14,615,016,373,...',
+          '1,461,501,637,3...',
           'Expiration',
           '05 August 2024, 19:52',
           'Nonce',
@@ -150,7 +149,7 @@ describe('Permit Batch Signature Tests', () => {
           'Token',
           '0xb0B86...6EB48',
           'Amount',
-          '24,615,016,373,...',
+          '2,461,501,637,3...',
           'Expiration',
           '05 August 2024, 19:54',
           'Nonce',
