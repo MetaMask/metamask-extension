@@ -1,5 +1,6 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
+import { NotificationServicesController } from '@metamask/notification-services-controller';
 import { Box } from '../../components/component-library';
 import {
   BlockSize,
@@ -16,6 +17,8 @@ import { NotificationsListTurnOnNotifications } from './notifications-list-turn-
 import { NotificationsListItem } from './notifications-list-item';
 import { type Notification, TAB_KEYS } from './notifications';
 import { NotificationsListReadAllButton } from './notifications-list-read-all-button';
+
+const { TRIGGER_TYPES } = NotificationServicesController.Constants;
 
 export type NotificationsListProps = {
   activeTab: TAB_KEYS;
