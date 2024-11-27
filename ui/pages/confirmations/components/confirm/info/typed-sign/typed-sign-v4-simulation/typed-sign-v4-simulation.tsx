@@ -1,13 +1,15 @@
 import React from 'react';
 
+import { PRIMARY_TYPES_PERMIT } from '../../../../../../../../shared/constants/signatures';
 import { parseTypedDataMessage } from '../../../../../../../../shared/modules/transaction.utils';
 import { SignatureRequestType } from '../../../../../types/confirm';
-import { useConfirmContext } from '../../../../../context/confirm';
 import { isPermitSignatureRequest } from '../../../../../utils';
+import { useConfirmContext } from '../../../../../context/confirm';
+import { useDecodedSignatureMetrics } from '../../../../../hooks/useDecodedSignatureMetrics';
 import { DecodedSimulation } from './decoded-simulation';
 import { PermitSimulation } from './permit-simulation';
 
-const NonPermitValidTypesSignRequestValues = [
+const NON_PERMIT_SUPPORTED_TYPES_SIGNS = [
   {
     domainName: 'Seaport',
     primaryTypeList: ['BulkOrder'],
@@ -19,29 +21,28 @@ const NonPermitValidTypesSignRequestValues = [
   },
 ];
 
-const isNonPermitRequestSupportedByDecodingAPI = (
-  signatureRequest: SignatureRequestType,
-) => {
+const isSupportedByDecodingAPI = (signatureRequest: SignatureRequestType) => {
   const {
     domain: { name, version },
     primaryType,
   } = parseTypedDataMessage(
     (signatureRequest as SignatureRequestType).msgParams?.data as string,
   );
-
-  return NonPermitValidTypesSignRequestValues.some(
+  const isPermit = PRIMARY_TYPES_PERMIT.includes(primaryType);
+  const nonPermitSupportedTypes = NON_PERMIT_SUPPORTED_TYPES_SIGNS.some(
     ({ domainName, primaryTypeList, versionList }) =>
       name === domainName &&
       primaryTypeList.includes(primaryType) &&
       (!versionList || versionList.includes(version)),
   );
+  return isPermit || nonPermitSupportedTypes;
 };
 
 const TypedSignV4Simulation: React.FC<object> = () => {
   const { currentConfirmation } = useConfirmContext<SignatureRequestType>();
   const isPermit = isPermitSignatureRequest(currentConfirmation);
-  const supportedByDecodingAPI =
-    isNonPermitRequestSupportedByDecodingAPI(currentConfirmation) || isPermit;
+  const supportedByDecodingAPI = isSupportedByDecodingAPI(currentConfirmation);
+  useDecodedSignatureMetrics();
 
   if (!supportedByDecodingAPI) {
     return null;
