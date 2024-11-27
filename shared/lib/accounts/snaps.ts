@@ -3,8 +3,9 @@ import { BITCOIN_WALLET_SNAP_ID } from "./bitcoin-wallet-snap";
 import { SOLANA_WALLET_SNAP_ID } from "./solana-wallet-snap";
 
 /**
- * A constant array that contains the IDs of whitelisted snaps.
- * These snaps are allowed to interact with the application.
+ * A constant array that contains the IDs of whitelisted multichain
+ * wallet Snaps. These Snaps can be used by the extension to implement
+ * core features (e.g. Send flow).
  *
  * @constant
  * @type {string[]}
