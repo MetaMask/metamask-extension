@@ -4,10 +4,14 @@ import {
   BridgeStatusControllerState,
   BridgeHistoryItem,
 } from '../../../shared/types/bridge-status';
-import { getCurrentChainId, getSelectedAddress } from '../../selectors';
+import { getSelectedAddress } from '../../selectors';
 import { Numeric } from '../../../shared/modules/Numeric';
+import {
+  getCurrentChainId,
+  ProviderConfigState,
+} from '../../../shared/modules/selectors/networks';
 
-export type BridgeStatusAppState = {
+export type BridgeStatusAppState = ProviderConfigState & {
   metamask: {
     bridgeStatusState: BridgeStatusControllerState;
   };
@@ -41,7 +45,8 @@ export const selectBridgeHistoryForAccount = createSelector(
  * Returns an array of sorted bridge history items for when the user's current chain is the destination chain for a bridge tx
  */
 export const selectIncomingBridgeHistory = createSelector(
-  [selectBridgeHistoryForAccount, getCurrentChainId],
+  selectBridgeHistoryForAccount,
+  getCurrentChainId,
   (bridgeHistory, currentChainId) => {
     // Get all history items with dest chain that matches current chain
     return Object.values(bridgeHistory)
