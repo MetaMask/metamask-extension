@@ -71,7 +71,7 @@ describe('useDecodedSignatureMetrics', () => {
     });
   });
 
-  it('should call updateSignatureEventFragment with correct parameters if there are no state changes', async () => {
+  it('should call updateSignatureEventFragment with correct parameters if there are state changes', async () => {
     const state = getMockTypedSignConfirmStateForRequest({
       ...permitSignatureMsg,
       decodingLoading: false,
