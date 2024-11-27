@@ -14,7 +14,7 @@ export const FINAL_NON_CONFIRMED_STATUSES = [
   TransactionStatus.rejected,
 ];
 
-export type UseBridgeDataProps = {
+export type UseBridgeTxHistoryDataProps = {
   transactionGroup: {
     hasCancelled: boolean;
     hasRetried: boolean;
@@ -25,9 +25,9 @@ export type UseBridgeDataProps = {
   };
 };
 
-export default function useBridgeTxHistoryData({
+export function useBridgeTxHistoryData({
   transactionGroup,
-}: UseBridgeDataProps) {
+}: UseBridgeTxHistoryDataProps) {
   const history = useHistory();
   const bridgeHistory = useSelector(selectBridgeHistoryForAccount);
   const txMeta = transactionGroup.initialTransaction;

@@ -69,7 +69,8 @@ import { MetaMetricsContext } from '../../../contexts/metametrics';
 import { ActivityListItem } from '../../multichain';
 import { abortTransactionSigning } from '../../../store/actions';
 import { getIsSmartTransaction } from '../../../../shared/modules/selectors';
-import useBridgeTxHistoryData, {
+import {
+  useBridgeTxHistoryData,
   FINAL_NON_CONFIRMED_STATUSES,
 } from '../../../hooks/bridge/useBridgeTxHistoryData';
 import BridgeActivityItemTxSegments from '../../../pages/bridge/transaction-details/bridge-activity-item-tx-segments';
