@@ -1,7 +1,7 @@
-import { createAnvil, Anvil as AnvilType } from '@viem/anvil';
-import { createAnvilClients } from './anvil-clients';
 import { join } from 'path';
 import { execSync } from 'child_process';
+import { createAnvil, Anvil as AnvilType } from '@viem/anvil';
+import { createAnvilClients } from './anvil-clients';
 
 type Hardfork =
   | 'Frontier'
@@ -34,7 +34,6 @@ const defaultOptions = {
     'spread raise short crane omit tent fringe mandate neglect detail suspect cradle',
   port: 8545,
 };
-
 
 export class Anvil {
   #server: AnvilType | undefined;
