@@ -3,13 +3,13 @@ version: 2.1
 executors:
   node-browsers-small:
     docker:
-      - image: cimg/node:20.17-browsers
+      - image: cimg/node:20.18-browsers
     resource_class: small
     environment:
       NODE_OPTIONS: --max_old_space_size=2048
   node-browsers-medium:
     docker:
-      - image: cimg/node:20.17-browsers
+      - image: cimg/node:20.18-browsers
     resource_class: medium
     environment:
       NODE_OPTIONS: --max_old_space_size=3072
@@ -21,7 +21,7 @@ executors:
       NODE_OPTIONS: --max_old_space_size=6144
   node-browsers-medium-plus:
     docker:
-      - image: cimg/node:20.17-browsers
+      - image: cimg/node:20.18-browsers
     resource_class: medium+
     environment:
       NODE_OPTIONS: --max_old_space_size=4096

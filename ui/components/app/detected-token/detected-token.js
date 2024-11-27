@@ -9,15 +9,15 @@ import {
   setNewTokensImported,
 } from '../../../store/actions';
 import {
-  getAllDetectedTokensForSelectedAddress,
   getCurrentChainId,
-  getDetectedTokensInCurrentNetwork,
-  getPreferences,
-} from '../../../selectors';
-import {
   getSelectedNetworkClientId,
   getNetworkConfigurationsByChainId,
 } from '../../../../shared/modules/selectors/networks';
+import {
+  getAllDetectedTokensForSelectedAddress,
+  getDetectedTokensInCurrentNetwork,
+  getPreferences,
+} from '../../../selectors';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 
 import {

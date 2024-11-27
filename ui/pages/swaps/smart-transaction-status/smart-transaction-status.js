@@ -13,10 +13,10 @@ import {
   cancelSwapsSmartTransaction,
   getUsedQuote,
 } from '../../../ducks/swaps/swaps';
+import { getCurrentChainId } from '../../../../shared/modules/selectors/networks';
 import {
   isHardwareWallet,
   getHardwareWalletType,
-  getCurrentChainId,
   getRpcPrefsForCurrentProvider,
 } from '../../../selectors';
 import {
