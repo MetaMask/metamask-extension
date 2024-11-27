@@ -203,6 +203,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - test: update notification date tests to be timezone agnostic ([#27925](https://github.com/MetaMask/metamask-extension/pull/27925))
 - fix: updated event name for site cell component ([#27981](https://github.com/MetaMask/metamask-extension/pull/27981))
 - fix(deps): gridplus-sdk@2.5.1->~2.6.0 ([#27973](https://github.com/MetaMask/metamask-extension/pull/27973))
+
+
 ## [12.7.2]
 ### Fixed
 - Fix message signatures for Gridplus lattice hardware wallets ([#28694](https://github.com/MetaMask/metamask-extension/pull/28694))
@@ -5554,9 +5556,7 @@ Update styles and spacing on the critical error page  ([#20350](https://github.c
 
 
 [Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v12.8.0...HEAD
-[12.8.0]: https://github.com/MetaMask/metamask-extension/compare/v12.7.0...v12.8.0
-[12.7.0]: https://github.com/MetaMask/metamask-extension/compare/v12.6.1...v12.7.0
-[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v12.7.2...HEAD
+[12.8.0]: https://github.com/MetaMask/metamask-extension/compare/v12.7.2...v12.8.0
 [12.7.2]: https://github.com/MetaMask/metamask-extension/compare/v12.7.1...v12.7.2
 [12.7.1]: https://github.com/MetaMask/metamask-extension/compare/v12.7.0...v12.7.1
 [12.7.0]: https://github.com/MetaMask/metamask-extension/compare/v12.6.2...v12.7.0
