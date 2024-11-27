@@ -132,7 +132,7 @@ describe('PermitSimulation', () => {
     const mockStore = configureMockStore([])(state);
 
     await act(async () => {
-      const { container, findByText } = renderWithConfirmContextProvider(
+      const { findByText } = renderWithConfirmContextProvider(
         <TypedSignV4Simulation />,
         mockStore,
       );
