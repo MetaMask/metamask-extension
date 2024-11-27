@@ -1,7 +1,7 @@
 import React from 'react';
 import { ApprovalType } from '@metamask/controller-utils';
-import ConfirmationPage from '../confirmation';
-import { PendingApproval } from './util';
+import { TemplateConfirmation } from '../template-confirmation';
+import { TemplateConfirmationWithRequest } from './util';
 
 /**
  * An approval to add a network to the wallet.<br/><br/>
@@ -10,7 +10,7 @@ import { PendingApproval } from './util';
  */
 export default {
   title: 'Pages/ConfirmationPage/AddEthereumChain',
-  component: ConfirmationPage,
+  component: TemplateConfirmation,
   argTypes: {
     redirectToHomeOnZeroConfirmations: {
       table: {
@@ -56,13 +56,30 @@ export const DefaultStory = (args) => {
   };
 
   return (
-    <PendingApproval
+    <TemplateConfirmationWithRequest
       type={ApprovalType.AddEthereumChain}
       requestData={finalArgs}
-    >
-      <ConfirmationPage />
-    </PendingApproval>
+      state={{ useSafeChainsListValidation: false }}
+    />
   );
 };
 
 DefaultStory.storyName = 'Default';
+
+export const UnsafeChain = (args) => {
+  const { blockExplorerUrl, ...finalArgs } = args;
+
+  finalArgs.rpcPrefs = {
+    blockExplorerUrl,
+  };
+
+  return (
+    <TemplateConfirmationWithRequest
+      type={ApprovalType.AddEthereumChain}
+      requestData={finalArgs}
+      state={{ useSafeChainsListValidation: true }}
+    />
+  );
+};
+
+UnsafeChain.storyName = 'Unsafe Chain';

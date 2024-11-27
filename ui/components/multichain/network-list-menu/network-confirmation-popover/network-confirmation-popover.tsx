@@ -3,7 +3,7 @@ import { useSelector } from 'react-redux';
 import { ApprovalType } from '@metamask/controller-utils';
 import { ORIGIN_METAMASK } from '@metamask/approval-controller';
 import Popover from '../../../ui/popover';
-import ConfirmationPage from '../../../../pages/confirmations/confirmation/confirmation';
+import { TemplateConfirmation } from '../../../../pages/confirmations/template-confirmation';
 import { getUnapprovedConfirmations } from '../../../../selectors';
 
 const NetworkConfirmationPopover = () => {
@@ -32,7 +32,7 @@ const NetworkConfirmationPopover = () => {
 
   return (
     <Popover data-testid="network-popover">
-      <ConfirmationPage redirectToHomeOnZeroConfirmations={false} />
+      <TemplateConfirmation redirectToHomeOnZeroConfirmations={false} />
     </Popover>
   );
 };

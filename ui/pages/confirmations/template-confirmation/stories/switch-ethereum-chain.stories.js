@@ -1,7 +1,7 @@
 import React from 'react';
 import { ApprovalType } from '@metamask/controller-utils';
-import ConfirmationPage from '../confirmation';
-import { PendingApproval } from './util';
+import { TemplateConfirmation } from '../template-confirmation';
+import { TemplateConfirmationWithRequest } from './util';
 
 /**
  * A confirmation to switch the current network in the wallet.<br/><br/>
@@ -10,7 +10,7 @@ import { PendingApproval } from './util';
  */
 export default {
   title: 'Pages/ConfirmationPage/SwitchEthereumChain',
-  component: ConfirmationPage,
+  component: TemplateConfirmation,
   argTypes: {
     redirectToHomeOnZeroConfirmations: {
       table: {
@@ -73,12 +73,10 @@ export const DefaultStory = (args) => {
   };
 
   return (
-    <PendingApproval
+    <TemplateConfirmationWithRequest
       type={ApprovalType.SwitchEthereumChain}
       requestData={finalArgs}
-    >
-      <ConfirmationPage />
-    </PendingApproval>
+    />
   );
 };
 

@@ -73,7 +73,7 @@ import {
 import {
   PRIORITY_APPROVAL_TEMPLATE_TYPES,
   TEMPLATED_CONFIRMATION_APPROVAL_TYPES,
-} from '../pages/confirmations/confirmation/templates';
+} from '../pages/confirmations/template-confirmation/templates';
 import { STATIC_MAINNET_TOKEN_LIST } from '../../shared/constants/tokens';
 import { DAY } from '../../shared/constants/time';
 import { TERMS_OF_USE_LAST_UPDATED } from '../../shared/constants/terms';

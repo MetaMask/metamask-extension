@@ -27,7 +27,7 @@ import BlockaidBannerAlert from '../security-provider-banner-alert/blockaid-bann
 import SecurityProviderBannerMessage from '../security-provider-banner-message/security-provider-banner-message';
 import { parseStandardTokenTransactionData } from '../../../../../shared/modules/transaction.utils';
 import { getTokenValueParam } from '../../../../../shared/lib/metamask-controller-utils';
-import { QueuedRequestsBannerAlert } from '../../confirmation/components/queued-requests-banner-alert';
+import { QueuedRequestsBannerAlert } from '../../template-confirmation/components/queued-requests-banner-alert';
 
 const TransactionAlerts = ({
   userAcknowledgedGasMissing,

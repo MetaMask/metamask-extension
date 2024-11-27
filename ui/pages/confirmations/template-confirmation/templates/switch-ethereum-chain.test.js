@@ -6,7 +6,7 @@ import { waitFor } from '@testing-library/react';
 import { renderWithProvider } from '../../../../../test/lib/render-helpers';
 import { MESSAGE_TYPE } from '../../../../../shared/constants/app';
 
-import Confirmation from '../confirmation';
+import { TemplateConfirmation } from '../template-confirmation';
 import { mockNetworkState } from '../../../../../test/stub/networks';
 
 jest.mock('../../../../../shared/lib/fetch-with-cache');
@@ -59,7 +59,7 @@ describe('switch-ethereum-chain confirmation', () => {
       },
     };
     const store = configureMockStore(middleware)(testStore);
-    const { container } = renderWithProvider(<Confirmation />, store);
+    const { container } = renderWithProvider(<TemplateConfirmation />, store);
     await waitFor(() => {
       expect(container.querySelector('.callout')).toBeFalsy();
       expect(container).toMatchSnapshot();
@@ -88,7 +88,7 @@ describe('switch-ethereum-chain confirmation', () => {
 
     const store = configureMockStore(middleware)(testStore);
     const { getByText, container } = renderWithProvider(
-      <Confirmation />,
+      <TemplateConfirmation />,
       store,
     );
     await waitFor(() => {

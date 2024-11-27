@@ -51,7 +51,7 @@ import SnapLegacyAuthorshipHeader from '../../../../components/app/snaps/snap-le
 import InsightWarnings from '../../../../components/app/snaps/insight-warnings';
 import { BlockaidResultType } from '../../../../../shared/constants/security-provider';
 import { NetworkChangeToastLegacy } from '../confirm/network-change-toast';
-import { QueuedRequestsBannerAlert } from '../../confirmation/components/queued-requests-banner-alert';
+import { QueuedRequestsBannerAlert } from '../../template-confirmation/components/queued-requests-banner-alert';
 
 export default class SignatureRequestOriginal extends Component {
   static contextTypes = {

@@ -6,7 +6,7 @@ import { waitFor, act } from '@testing-library/react';
 import { renderWithProvider } from '../../../../../test/lib/render-helpers';
 import { MESSAGE_TYPE } from '../../../../../shared/constants/app';
 
-import Confirmation from '../confirmation';
+import { TemplateConfirmation } from '../template-confirmation';
 import { CHAIN_IDS } from '../../../../../shared/constants/network';
 import fetchWithCache from '../../../../../shared/lib/fetch-with-cache';
 import { mockNetworkState } from '../../../../../test/stub/networks';
@@ -61,7 +61,7 @@ describe('add-ethereum-chain confirmation', () => {
       },
     };
     const store = configureMockStore(middleware)(testStore);
-    const { container } = renderWithProvider(<Confirmation />, store);
+    const { container } = renderWithProvider(<TemplateConfirmation />, store);
     await waitFor(() => {
       expect(container).toMatchSnapshot();
     });
@@ -103,7 +103,7 @@ describe('add-ethereum-chain confirmation', () => {
 
     let result;
     act(() => {
-      result = renderWithProvider(<Confirmation />, store);
+      result = renderWithProvider(<TemplateConfirmation />, store);
     });
     const { getByText } = result;
 
@@ -129,7 +129,7 @@ describe('add-ethereum-chain confirmation', () => {
       },
     };
     const store = configureMockStore(middleware)(testStore);
-    const { getByText } = renderWithProvider(<Confirmation />, store);
+    const { getByText } = renderWithProvider(<TemplateConfirmation />, store);
     await waitFor(() => {
       expect(getByText('https://rpcurl.test.chain')).toBeInTheDocument();
     });
@@ -152,7 +152,7 @@ describe('add-ethereum-chain confirmation', () => {
       },
     };
     const store = configureMockStore(middleware)(testStore);
-    const { getByText } = renderWithProvider(<Confirmation />, store);
+    const { getByText } = renderWithProvider(<TemplateConfirmation />, store);
     await waitFor(() => {
       expect(
         getByText(

@@ -165,29 +165,32 @@ const ERROR_CONNECTING_TO_RPC = {
 async function getAlerts(pendingApproval, data) {
   const alerts = [];
 
+  const {
+    chainValidation: { matchedChain },
+    chainValidation,
+  } = data;
+
   const originIsMetaMask = pendingApproval.origin === 'metamask';
   if (originIsMetaMask && Boolean(data.matchedChain)) {
     return [];
   }
 
-  if (data.matchedChain) {
+  if (matchedChain) {
     if (
-      data.matchedChain.name?.toLowerCase() !==
+      matchedChain.name?.toLowerCase() !==
       pendingApproval.requestData.chainName.toLowerCase()
     ) {
       alerts.push(MISMATCHED_NETWORK_NAME);
     }
     if (
-      data.matchedChain.nativeCurrency?.symbol?.toLowerCase() !==
+      matchedChain.nativeCurrency?.symbol?.toLowerCase() !==
       pendingApproval.requestData.ticker?.toLowerCase()
     ) {
       alerts.push(MISMATCHED_NETWORK_SYMBOL);
     }
 
     const { origin } = new URL(pendingApproval.requestData.rpcUrl);
-    if (
-      !data.matchedChain.rpc?.map((rpc) => new URL(rpc).origin).includes(origin)
-    ) {
+    if (!matchedChain.rpc?.map((rpc) => new URL(rpc).origin).includes(origin)) {
       alerts.push(MISMATCHED_NETWORK_RPC);
     }
     if (DEPRECATED_NETWORKS.includes(pendingApproval.requestData.chainId)) {
@@ -195,7 +198,7 @@ async function getAlerts(pendingApproval, data) {
     }
   }
 
-  if (!data.matchedChain && data.useSafeChainsListValidation) {
+  if (!matchedChain && chainValidation.enabled) {
     if (data.providerError) {
       alerts.push(SAFE_CHAIN_LIST_PROVIDER_ERROR);
     } else {
@@ -220,14 +223,13 @@ function getState(pendingApproval) {
 function getValues(pendingApproval, t, actions, history, data) {
   const originIsMetaMask = pendingApproval.origin === 'metamask';
   const customRpcUrl = pendingApproval.requestData.rpcUrl;
+  const { networkConfiguration } = data;
 
   let title;
   if (originIsMetaMask) {
     title = t('wantToAddThisNetwork');
-  } else if (data.existingNetworkConfiguration) {
-    title = t('updateNetworkConfirmationTitle', [
-      data.existingNetworkConfiguration.name,
-    ]);
+  } else if (networkConfiguration) {
+    title = t('updateNetworkConfirmationTitle', [networkConfiguration.name]);
   } else {
     title = t('addNetworkConfirmationTitle', [
       pendingApproval.requestData.chainName,
@@ -235,7 +237,7 @@ function getValues(pendingApproval, t, actions, history, data) {
   }
 
   let subtitle;
-  if (data.existingNetworkConfiguration) {
+  if (networkConfiguration) {
     subtitle = t('updateEthereumChainConfirmationDescription');
   } else {
     subtitle = t('multichainAddEthereumChainConfirmationDescription');

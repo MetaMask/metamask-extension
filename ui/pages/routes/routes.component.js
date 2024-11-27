@@ -128,7 +128,9 @@ const ConfirmAddSuggestedTokenPage = mmLazy(() =>
 const ConfirmAddSuggestedNftPage = mmLazy(() =>
   import('../confirm-add-suggested-nft'),
 );
-const ConfirmationPage = mmLazy(() => import('../confirmations/confirmation'));
+const TemplateConfirmation = mmLazy(() =>
+  import('../confirmations/template-confirmation'),
+);
 const CreateAccountPage = mmLazy(() =>
   import('../create-account/create-account.component'),
 );
@@ -343,7 +345,7 @@ export default class Routes extends Component {
           />
           <Authenticated
             path={`${CONFIRMATION_V_NEXT_ROUTE}/:id?`}
-            component={ConfirmationPage}
+            component={TemplateConfirmation}
           />
           {
             ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)

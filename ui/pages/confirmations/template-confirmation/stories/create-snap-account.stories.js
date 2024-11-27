@@ -1,7 +1,7 @@
 import React from 'react';
-import ConfirmationPage from '../confirmation';
+import { TemplateConfirmation } from '../template-confirmation';
 import { SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES } from '../../../../../shared/constants/app';
-import { PendingApproval } from './util';
+import { TemplateConfirmationWithRequest } from './util';
 
 /**
  * An approval to add a snap account.<br/><br/>
@@ -9,7 +9,7 @@ import { PendingApproval } from './util';
  */
 export default {
   title: 'Pages/ConfirmationPage/CreateSnapAccount',
-  component: ConfirmationPage,
+  component: TemplateConfirmation,
   argTypes: {
     redirectToHomeOnZeroConfirmations: {
       table: {
@@ -21,12 +21,10 @@ export default {
 
 export const DefaultStory = () => {
   return (
-    <PendingApproval
+    <TemplateConfirmationWithRequest
       type={SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES.confirmAccountCreation}
       requestData={{}}
-    >
-      <ConfirmationPage />
-    </PendingApproval>
+    />
   );
 };
 

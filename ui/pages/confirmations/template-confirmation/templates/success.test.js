@@ -5,7 +5,7 @@ import { waitFor } from '@testing-library/react';
 
 import { ApprovalType } from '@metamask/controller-utils';
 import { renderWithProvider } from '../../../../../test/lib/render-helpers';
-import Confirmation from '../confirmation';
+import { TemplateConfirmation } from '../template-confirmation';
 
 jest.mock('../../../../../shared/lib/fetch-with-cache');
 
@@ -57,7 +57,7 @@ describe('success template', () => {
     };
     const store = configureMockStore(middleware)(testStore);
     const { getByText, container } = renderWithProvider(
-      <Confirmation />,
+      <TemplateConfirmation />,
       store,
     );
     await waitFor(() => {

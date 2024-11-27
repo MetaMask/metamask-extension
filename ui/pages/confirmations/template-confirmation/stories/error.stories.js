@@ -1,31 +1,34 @@
 import React from 'react';
 import { ApprovalType } from '@metamask/controller-utils';
 import { isArray } from 'lodash';
-import { Display } from '../../../../helpers/constants/design-system';
+import {
+  Display,
+  FlexDirection,
+} from '../../../../helpers/constants/design-system';
 import { IconName } from '../../../../components/component-library';
-import ConfirmationPage from '../confirmation';
-import { PendingApproval } from './util';
+import { TemplateConfirmation } from '../template-confirmation';
+import { TemplateConfirmationWithRequest } from './util';
 
 /**
- * A standard success confirmation to be reused across confirmation flows with minimal code.<br/><br/>
- * Automatically displayed via the `ConfirmationPage` component when using the `ApprovalController.success` method.<br/><br/>
- * The below arguments are properties in the `ApprovalController.success` request.
+ * A standard error confirmation to be reused across confirmation flows with minimal code.<br/><br/>
+ * Automatically displayed via the `ConfirmationPage` component when using the `ApprovalController.error` method.<br/><br/>
+ * The below arguments are properties in the `ApprovalController.error` request.
  */
 export default {
-  title: 'Pages/ConfirmationPage/ResultSuccess',
-  component: ConfirmationPage,
+  title: 'Pages/ConfirmationPage/ResultError',
+  component: TemplateConfirmation,
   argTypes: {
     redirectToHomeOnZeroConfirmations: {
       table: {
         disable: true,
       },
     },
-    message: {
+    error: {
       control: 'text',
       description:
-        'The message text in the center of the page under the title.<br/><br/>Also supports result component configurations.<br/>See `header` argument for example.',
+        'The error message text in the center of the page under the title.<br/><br/>Also supports result component configurations.<br/>See `header` argument for example.',
       table: {
-        defaultValue: { summary: 'The operation completed successfully.' },
+        defaultValue: { summary: 'The operation failed.' },
       },
     },
     title: {
@@ -33,14 +36,14 @@ export default {
       description:
         'The title text in the center of the page.<br/>Can be hidden with `null`.',
       table: {
-        defaultValue: { summary: 'Success' },
+        defaultValue: { summary: 'Error' },
       },
     },
     icon: {
       control: 'text',
       description: 'The name of the icon.<br/>Can be hidden with `null`.',
       table: {
-        defaultValue: { summary: 'confirmation' },
+        defaultValue: { summary: 'warning' },
       },
     },
     header: {
@@ -64,41 +67,37 @@ export default {
 
 export const DefaultStory = (args) => {
   return (
-    <PendingApproval
-      type={ApprovalType.ResultSuccess}
+    <TemplateConfirmationWithRequest
+      type={ApprovalType.ResultError}
       requestData={{
         ...args,
         header: isArray(args.header) ? args.header : undefined,
       }}
-    >
-      <ConfirmationPage />
-    </PendingApproval>
+    />
   );
 };
 
 DefaultStory.storyName = 'Default';
 
-export const CustomMessageStory = () => {
+export const CustomErrorStory = () => {
   return (
-    <PendingApproval
-      type={ApprovalType.ResultSuccess}
-      requestData={{ message: 'Custom Message' }}
-    >
-      <ConfirmationPage />
-    </PendingApproval>
+    <TemplateConfirmationWithRequest
+      type={ApprovalType.ResultError}
+      requestData={{ error: 'Custom Error' }}
+    />
   );
 };
 
-CustomMessageStory.storyName = 'Custom Message';
+CustomErrorStory.storyName = 'Custom Error';
 
 export const TemplateStory = () => {
   return (
-    <PendingApproval
-      type={ApprovalType.ResultSuccess}
+    <TemplateConfirmationWithRequest
+      type={ApprovalType.ResultError}
       requestData={{
-        title: 'Account created',
+        title: 'Account creation failed',
         icon: IconName.UserCircleAdd,
-        message: [
+        error: [
           {
             name: 'Box',
             key: 'container',
@@ -115,7 +114,6 @@ export const TemplateStory = () => {
                 key: 'accountListItem',
                 properties: {
                   account: {
-                    address: '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc',
                     id: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
                     metadata: {
                       name: 'Test Account',
@@ -134,7 +132,8 @@ export const TemplateStory = () => {
                     type: 'eip155:eoa',
                     keyring: 'HD Key Tree',
                     label: null,
-                    name: 'Test Account',
+                    address: '0x71C7656EC7ab88b098defB751B7401B5f6d8976F',
+                    balance: '0xFFFFFFFFFFFFFFFFFF',
                   },
                 },
               },
@@ -145,13 +144,14 @@ export const TemplateStory = () => {
             key: 'description',
             properties: {
               display: Display.Flex,
+              flexDirection: FlexDirection.Column,
               style: {
                 fontSize: '14px',
                 gap: '5px',
               },
             },
             children: [
-              'Your new account is ready to use.',
+              'Your new account could not be created.',
               {
                 name: 'a',
                 key: 'link',
@@ -172,9 +172,7 @@ export const TemplateStory = () => {
           },
         ],
       }}
-    >
-      <ConfirmationPage />
-    </PendingApproval>
+    />
   );
 };
 
@@ -182,15 +180,14 @@ TemplateStory.storyName = 'Templates + Custom Icon + Custom Title';
 
 export const TemplateOnlyStory = () => {
   return (
-    <PendingApproval
-      type={ApprovalType.ResultSuccess}
+    <TemplateConfirmationWithRequest
+      type={ApprovalType.ResultError}
       requestData={{
-        message: {
+        error: {
           name: 'AccountListItem',
           key: 'accountListItem',
           properties: {
             account: {
-              address: '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc',
               id: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
               metadata: {
                 name: 'Test Account',
@@ -209,6 +206,7 @@ export const TemplateOnlyStory = () => {
               type: 'eip155:eoa',
               keyring: 'HD Key Tree',
               label: null,
+              address: '0x71C7656EC7ab88b098defB751B7401B5f6d8976F',
               balance: '0xFFFFFFFFFFFFFFFFFF',
             },
           },
@@ -216,9 +214,7 @@ export const TemplateOnlyStory = () => {
         icon: null,
         title: null,
       }}
-    >
-      <ConfirmationPage />
-    </PendingApproval>
+    />
   );
 };
 

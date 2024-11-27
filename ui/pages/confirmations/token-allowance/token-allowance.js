@@ -73,7 +73,7 @@ import { ConfirmPageContainerWarning } from '../components/confirm-page-containe
 import CustomNonce from '../components/custom-nonce';
 import FeeDetailsComponent from '../components/fee-details-component/fee-details-component';
 import { BlockaidResultType } from '../../../../shared/constants/security-provider';
-import { QueuedRequestsBannerAlert } from '../confirmation/components/queued-requests-banner-alert/queued-requests-banner-alert';
+import { QueuedRequestsBannerAlert } from '../template-confirmation/components/queued-requests-banner-alert/queued-requests-banner-alert';
 
 import {
   selectNetworkConfigurationByChainId,

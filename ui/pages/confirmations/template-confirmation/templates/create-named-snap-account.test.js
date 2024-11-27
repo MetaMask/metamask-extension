@@ -4,7 +4,7 @@ import thunk from 'redux-thunk';
 import { waitFor } from '@testing-library/react';
 
 import { KeyringTypes } from '@metamask/keyring-controller';
-import Confirmation from '../confirmation';
+import { TemplateConfirmation } from '../template-confirmation';
 import { renderWithProvider } from '../../../../../test/lib/render-helpers';
 import { SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES } from '../../../../../shared/constants/app';
 import mockState from '../../../../../test/data/mock-state.json';
@@ -106,7 +106,7 @@ const render = (approval = mockApproval) => {
     },
   };
   const store = configureMockStore(middleware)(testStore);
-  const confirmation = renderWithProvider(<Confirmation />, store);
+  const confirmation = renderWithProvider(<TemplateConfirmation />, store);
   return confirmation;
 };
 

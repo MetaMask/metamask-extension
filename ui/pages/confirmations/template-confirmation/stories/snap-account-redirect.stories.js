@@ -1,7 +1,7 @@
 import React from 'react';
-import ConfirmationPage from '../confirmation';
+import { TemplateConfirmation } from '../template-confirmation';
 import { SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES } from '../../../../../shared/constants/app';
-import { PendingApproval } from './util';
+import { TemplateConfirmationWithRequest } from './util';
 
 /**
  * An approval for a snap to redirect the user.<br/><br/>
@@ -10,7 +10,7 @@ import { PendingApproval } from './util';
  */
 export default {
   title: 'Pages/ConfirmationPage/SnapAccountRedirect',
-  component: ConfirmationPage,
+  component: TemplateConfirmation,
   argTypes: {
     redirectToHomeOnZeroConfirmations: {
       table: {
@@ -42,12 +42,10 @@ export default {
 
 export const DefaultStory = (args) => {
   return (
-    <PendingApproval
+    <TemplateConfirmationWithRequest
       type={SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES.showSnapAccountRedirect}
       requestData={args}
-    >
-      <ConfirmationPage />
-    </PendingApproval>
+    />
   );
 };
 

@@ -78,7 +78,7 @@ import { AccountType } from '../../../../../shared/constants/custody';
 import BlockaidBannerAlert from '../security-provider-banner-alert/blockaid-banner-alert/blockaid-banner-alert';
 import InsightWarnings from '../../../../components/app/snaps/insight-warnings';
 import { NetworkChangeToastLegacy } from '../confirm/network-change-toast';
-import { QueuedRequestsBannerAlert } from '../../confirmation/components/queued-requests-banner-alert';
+import { QueuedRequestsBannerAlert } from '../../template-confirmation/components/queued-requests-banner-alert';
 import Message from './signature-request-message';
 import Footer from './signature-request-footer';
 
