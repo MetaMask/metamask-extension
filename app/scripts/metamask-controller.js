@@ -198,7 +198,7 @@ import {
   ExcludedSnapEndowments,
 } from '../../shared/constants/permissions';
 import { UI_NOTIFICATIONS } from '../../shared/notifications';
-import { MILLISECOND, SECOND } from '../../shared/constants/time';
+import { MILLISECOND, MINUTE, SECOND } from '../../shared/constants/time';
 import {
   ORIGIN_METAMASK,
   POLLING_TOKEN_ENVIRONMENT_TYPES,
@@ -239,14 +239,15 @@ import {
   TOKEN_TRANSFER_LOG_TOPIC_HASH,
   TRANSFER_SINFLE_LOG_TOPIC_HASH,
 } from '../../shared/lib/transactions-controller-utils';
-// TODO: Remove restricted import
-// eslint-disable-next-line import/no-restricted-paths
-import { getCurrentChainId } from '../../ui/selectors/selectors';
-import { getProviderConfig } from '../../shared/modules/selectors/networks';
+import {
+  getCurrentChainId,
+  getProviderConfig,
+} from '../../shared/modules/selectors/networks';
 import { endTrace, trace } from '../../shared/lib/trace';
 // eslint-disable-next-line import/no-restricted-paths
 import { isSnapId } from '../../ui/helpers/utils/snaps';
 import { BridgeStatusAction } from '../../shared/types/bridge-status';
+import fetchWithCache from '../../shared/lib/fetch-with-cache';
 import { BalancesController as MultichainBalancesController } from './lib/accounts/BalancesController';
 import {
   ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
@@ -1053,10 +1054,12 @@ export default class MetamaskController extends EventEmitter {
     this.ensController = new EnsController({
       messenger: this.controllerMessenger.getRestricted({
         name: 'EnsController',
-        allowedActions: ['NetworkController:getNetworkClientById'],
+        allowedActions: [
+          'NetworkController:getNetworkClientById',
+          'NetworkController:getState',
+        ],
         allowedEvents: [],
       }),
-      provider: this.provider,
       onNetworkDidChange: networkControllerMessenger.subscribe.bind(
         networkControllerMessenger,
         'NetworkController:networkDidChange',
@@ -2597,6 +2600,29 @@ export default class MetamaskController extends EventEmitter {
     }
   }
 
+  // Provides a method for getting feature flags for the multichain
+  // initial rollout, such that we can remotely modify polling interval
+  getInfuraFeatureFlags() {
+    fetchWithCache({
+      url: 'https://swap.api.cx.metamask.io/featureFlags',
+      cacheRefreshTime: MINUTE * 20,
+    })
+      .then(this.onFeatureFlagResponseReceived)
+      .catch((e) => {
+        // API unreachable (?)
+        log.warn('Feature flag endpoint is unreachable', e);
+      });
+  }
+
+  onFeatureFlagResponseReceived(response) {
+    const { multiChainAssets = {} } = response;
+    const { pollInterval } = multiChainAssets;
+    // Polling interval is provided in seconds
+    if (pollInterval > 0) {
+      this.tokenBalancesController.setIntervalLength(pollInterval * SECOND);
+    }
+  }
+
   postOnboardingInitialization() {
     const { usePhishDetect } = this.preferencesController.state;
 
@@ -2629,6 +2655,7 @@ export default class MetamaskController extends EventEmitter {
   triggerNetworkrequests() {
     this.txController.startIncomingTransactionPolling();
     this.tokenDetectionController.enable();
+    this.getInfuraFeatureFlags();
   }
 
   stopNetworkRequests() {

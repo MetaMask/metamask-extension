@@ -9,7 +9,7 @@ import {
   permitSignatureMsg,
 } from '../../../../../../../../../test/data/confirmations/typed_sign';
 import { memoizedGetTokenStandardAndDetails } from '../../../../../../utils/token';
-import DefaultSimulation from './default-simulation';
+import PermitSimulation from './permit-simulation';
 
 jest.mock('../../../../../../../../store/actions', () => {
   return {
@@ -19,7 +19,7 @@ jest.mock('../../../../../../../../store/actions', () => {
   };
 });
 
-describe('DefaultSimulation', () => {
+describe('PermitSimulation', () => {
   afterEach(() => {
     jest.clearAllMocks();
 
@@ -33,7 +33,7 @@ describe('DefaultSimulation', () => {
 
     await act(async () => {
       const { container, findByText } = renderWithConfirmContextProvider(
-        <DefaultSimulation />,
+        <PermitSimulation />,
         mockStore,
       );
 
@@ -48,7 +48,7 @@ describe('DefaultSimulation', () => {
 
     await act(async () => {
       const { container, findByText } = renderWithConfirmContextProvider(
-        <DefaultSimulation />,
+        <PermitSimulation />,
         mockStore,
       );
 
