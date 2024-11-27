@@ -1,6 +1,6 @@
 import { SnapControllerState } from '@metamask/snaps-controllers';
 import { isSnapId, Snap } from '@metamask/snaps-utils';
-import { MemStoreControllersComposedState } from '../../../shared/types/metamask-controller-stores';
+import { MemStoreControllersComposedState } from '../metamask-controller-stores';
 
 const REMOVE_KEYS = ['snapStates', 'unencryptedSnapStates', 'vault'] as const;
 
