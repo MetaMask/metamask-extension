@@ -430,7 +430,7 @@ const AssetPage = ({
             {type === AssetType.native ? (
               <TransactionList hideTokenTransactions />
             ) : (
-              <TransactionList tokenAddress={address} />
+              <TransactionList tokenAddress={address} tokenChainId={chainId} />
             )}
           </Box>
         </Box>
