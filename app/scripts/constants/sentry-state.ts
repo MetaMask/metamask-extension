@@ -203,9 +203,6 @@ export const SENTRY_BACKGROUND_STATE = {
     allNfts: false,
     ignoredNfts: false,
   },
-  NotificationController: {
-    notifications: false,
-  },
   OnboardingController: {
     completedOnboarding: true,
     firstTimeFlowType: true,
