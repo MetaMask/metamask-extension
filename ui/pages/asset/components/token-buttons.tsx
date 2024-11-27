@@ -317,7 +317,6 @@ const TokenButtons = ({
             ///: END:ONLY_INCLUDE_IF
           }}
           label={t('swap')}
-          data-testid="prepare-swap"
           tooltipRender={null}
         />
       )}

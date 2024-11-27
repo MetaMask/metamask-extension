@@ -456,7 +456,6 @@ exports[`AssetPage should render an ERC20 asset without prices 1`] = `
         </button>
         <button
           class="icon-button token-overview__button"
-          data-testid="prepare-swap"
         >
           <div
             class="icon-button__circle"
@@ -968,7 +967,6 @@ exports[`AssetPage should render an ERC20 token with prices 1`] = `
         </button>
         <button
           class="icon-button token-overview__button"
-          data-testid="prepare-swap"
         >
           <div
             class="icon-button__circle"
