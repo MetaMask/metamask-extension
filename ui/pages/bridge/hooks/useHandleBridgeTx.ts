@@ -21,32 +21,31 @@ export default function useHandleBridgeTx() {
       .shiftedBy(quoteResponse.quote.srcAsset.decimals)
       .toString();
 
-    const fieldsToAddToTxMeta = {
-      // TODO get this added to TxMeta type
-      destinationChainId: new Numeric(quoteResponse.quote.destChainId, 10)
-        .toPrefixedHexString()
-        .toLowerCase() as `0x${string}`,
-      // estimatedBaseFee: decEstimatedBaseFee,
-
-      sourceTokenAmount: quoteResponse.quote.srcTokenAmount,
-      sourceTokenSymbol: quoteResponse.quote.srcAsset.symbol,
-      sourceTokenDecimals: quoteResponse.quote.srcAsset.decimals,
-      sourceTokenAddress: quoteResponse.quote.srcAsset.address,
-
-      destinationTokenAmount: quoteResponse.quote.destTokenAmount,
-      destinationTokenSymbol: quoteResponse.quote.destAsset.symbol,
-      destinationTokenDecimals: quoteResponse.quote.destAsset.decimals,
-      destinationTokenAddress: quoteResponse.quote.destAsset.address,
-
-      approvalTxId,
-      // this is the decimal (non atomic) amount (not USD value) of source token to swap
-      swapTokenValue: sentAmountDec,
-    };
 
     const txMeta = await handleTx({
       txType: TransactionType.bridge,
       txParams: quoteResponse.trade,
-      fieldsToAddToTxMeta,
+      fieldsToAddToTxMeta: {
+        // @ts-expect-error TODO get this added to TxMeta type
+        destinationChainId: new Numeric(quoteResponse.quote.destChainId, 10)
+          .toPrefixedHexString()
+          .toLowerCase() as `0x${string}`,
+        // estimatedBaseFee: decEstimatedBaseFee,
+
+        sourceTokenAmount: quoteResponse.quote.srcTokenAmount,
+        sourceTokenSymbol: quoteResponse.quote.srcAsset.symbol,
+        sourceTokenDecimals: quoteResponse.quote.srcAsset.decimals,
+        sourceTokenAddress: quoteResponse.quote.srcAsset.address,
+
+        destinationTokenAmount: quoteResponse.quote.destTokenAmount,
+        destinationTokenSymbol: quoteResponse.quote.destAsset.symbol,
+        destinationTokenDecimals: quoteResponse.quote.destAsset.decimals,
+        destinationTokenAddress: quoteResponse.quote.destAsset.address,
+
+        approvalTxId,
+        // this is the decimal (non atomic) amount (not USD value) of source token to swap
+        swapTokenValue: sentAmountDec,
+      };,
     });
 
     return txMeta;
