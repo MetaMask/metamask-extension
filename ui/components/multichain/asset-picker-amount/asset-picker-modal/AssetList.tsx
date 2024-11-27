@@ -1,8 +1,8 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
 import classnames from 'classnames';
+import { getCurrentChainId } from '../../../../../shared/modules/selectors/networks';
 import {
-  getCurrentChainId,
   getCurrentCurrency,
   getSelectedAccountCachedBalance,
 } from '../../../../selectors';
