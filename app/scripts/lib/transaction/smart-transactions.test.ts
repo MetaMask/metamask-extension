@@ -9,6 +9,7 @@ import SmartTransactionsController, {
 } from '@metamask/smart-transactions-controller';
 import { NetworkControllerStateChangeEvent } from '@metamask/network-controller';
 import type { SmartTransaction } from '@metamask/smart-transactions-controller/dist/types';
+import { ClientId } from '@metamask/smart-transactions-controller/dist/types';
 import { CHAIN_IDS } from '../../../../shared/constants/network';
 import { submitSmartTransactionHook } from './smart-transactions';
 import type {
@@ -107,13 +108,15 @@ function withRequest<ReturnValue>(
   });
 
   const smartTransactionsController = new SmartTransactionsController({
-    // @ts-expect-error TODO: Resolve mismatch between base-controller versions.
     messenger,
     getNonceLock: jest.fn(),
     confirmExternalTransaction: jest.fn(),
     trackMetaMetricsEvent: jest.fn(),
     getTransactions: jest.fn(),
     getMetaMetricsProps: jest.fn(),
+    clientId: ClientId.Extension,
+    getFeatureFlags: jest.fn(),
+    updateTransaction: jest.fn(),
   });
 
   jest.spyOn(smartTransactionsController, 'getFees').mockResolvedValue({
@@ -177,7 +180,6 @@ function withRequest<ReturnValue>(
 
   return fn({
     request,
-    // @ts-expect-error TODO: Resolve mismatch between base-controller versions.
     messenger,
     startFlowSpy,
     addRequestSpy,
