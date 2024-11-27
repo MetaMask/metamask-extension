@@ -327,9 +327,12 @@ describe('BridgeController', function () {
     expect(stopAllPollingSpy).toHaveBeenCalledTimes(1);
     expect(startPollingSpy).toHaveBeenCalledTimes(1);
     expect(hasSufficientBalanceSpy).toHaveBeenCalledTimes(1);
-    expect(startPollingSpy).toHaveBeenCalledWith(expect.anything(), {
-      ...quoteRequest,
-      insufficientBal: false,
+    expect(startPollingSpy).toHaveBeenCalledWith({
+      networkClientId: expect.any(String),
+      updatedQuoteRequest: {
+        ...quoteRequest,
+        insufficientBal: false,
+      },
     });
 
     expect(bridgeController.state.bridgeState).toStrictEqual(
@@ -471,9 +474,12 @@ describe('BridgeController', function () {
     expect(stopAllPollingSpy).toHaveBeenCalledTimes(1);
     expect(startPollingSpy).toHaveBeenCalledTimes(1);
     expect(hasSufficientBalanceSpy).toHaveBeenCalledTimes(1);
-    expect(startPollingSpy).toHaveBeenCalledWith(expect.anything(), {
-      ...quoteRequest,
-      insufficientBal: true,
+    expect(startPollingSpy).toHaveBeenCalledWith({
+      networkClientId: expect.any(String),
+      updatedQuoteRequest: {
+        ...quoteRequest,
+        insufficientBal: true,
+      },
     });
 
     expect(bridgeController.state.bridgeState).toStrictEqual(
@@ -660,9 +666,12 @@ describe('BridgeController', function () {
       expect(stopAllPollingSpy).toHaveBeenCalledTimes(1);
       expect(startPollingSpy).toHaveBeenCalledTimes(1);
       expect(hasSufficientBalanceSpy).toHaveBeenCalledTimes(1);
-      expect(startPollingSpy).toHaveBeenCalledWith(expect.anything(), {
-        ...quoteRequest,
-        insufficientBal: true,
+      expect(startPollingSpy).toHaveBeenCalledWith({
+        networkClientId: expect.any(String),
+        updatedQuoteRequest: {
+          ...quoteRequest,
+          insufficientBal: true,
+        },
       });
 
       expect(bridgeController.state.bridgeState).toStrictEqual(
