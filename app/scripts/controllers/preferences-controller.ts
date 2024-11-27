@@ -127,7 +127,11 @@ export type Preferences = {
 // Omitting showTestNetworks and smartTransactionsOptInStatus, as they already exists here in Preferences type
 export type PreferencesControllerState = Omit<
   PreferencesState,
-  'showTestNetworks' | 'smartTransactionsOptInStatus'
+  | 'showTestNetworks'
+  | 'smartTransactionsOptInStatus'
+  | 'privacyMode'
+  | 'tokenSortConfig'
+  | 'useMultiRpcMigration'
 > & {
   useBlockie: boolean;
   useNonceField: boolean;
@@ -135,7 +139,6 @@ export type PreferencesControllerState = Omit<
   dismissSeedBackUpReminder: boolean;
   overrideContentSecurityPolicyHeader: boolean;
   useMultiAccountBalanceChecker: boolean;
-  useSafeChainsListValidation: boolean;
   use4ByteResolution: boolean;
   useCurrencyRateCheck: boolean;
   useRequestQueue: boolean;
