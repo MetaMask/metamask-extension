@@ -127,6 +127,7 @@ async function createWalletInitiatedTransactionAndAssertDetails(
 
   await testDapp.openTestDappPage({ contractAddress, url: DAPP_URL });
 
+  await driver.delay(1000);
   await testDapp.clickERC20WatchAssetButton();
 
   await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
@@ -172,6 +173,7 @@ async function createDAppInitiatedTransactionAndAssertDetails(
 
   await testDapp.openTestDappPage({ contractAddress, url: DAPP_URL });
 
+  await driver.delay(1000);
   await testDapp.clickERC20WatchAssetButton();
 
   await driver.delay(veryLargeDelayMs);
