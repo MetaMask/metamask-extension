@@ -41,6 +41,7 @@ export type BridgeControllerState = {
   destTopAssets: { address: string }[];
   quoteRequest: Partial<QuoteRequest>;
   quotes: (QuoteResponse & L1GasFees)[];
+  quotesInitialLoadTime?: number;
   quotesLastFetched?: number;
   quotesLoadingStatus?: RequestStatus;
   quoteFetchError?: string;

@@ -35,6 +35,7 @@ export const DEFAULT_BRIDGE_CONTROLLER_STATE: BridgeControllerState = {
     srcTokenAddress: zeroAddress(),
     slippage: BRIDGE_DEFAULT_SLIPPAGE,
   },
+  quotesInitialLoadTime: undefined,
   quotes: [],
   quotesLastFetched: undefined,
   quotesLoadingStatus: undefined,
