@@ -5941,9 +5941,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/network-controller@npm:@metamask-previews/network-controller@22.0.2-preview-d1104b69":
-  version: 22.0.2-preview-d1104b69
-  resolution: "@metamask-previews/network-controller@npm:22.0.2-preview-d1104b69"
+"@metamask/network-controller@npm:@metamask-previews/network-controller@22.0.2-preview-5544fdb2":
+  version: 22.0.2-preview-5544fdb2
+  resolution: "@metamask-previews/network-controller@npm:22.0.2-preview-5544fdb2"
   dependencies:
     "@metamask/base-controller": "npm:^7.0.2"
     "@metamask/controller-utils": "npm:^11.4.3"
@@ -5962,7 +5962,7 @@ __metadata:
     reselect: "npm:^5.1.1"
     uri-js: "npm:^4.4.1"
     uuid: "npm:^8.3.2"
-  checksum: 10/db6716956b75f5ea47438fbfc3c35d470cec32fe0d59801ee607f57e614105f6bfc840e1de156a0132552bf8e7cda8359fddd9ac6054e0cd3d04a65a85f94007
+  checksum: 10/3e14cf8e1e82c6ca3ec1c631f112fb935148d73bb1d33b57bbe109d5dd18d17496ac13adfc7f1d323616cae74a997baafee8cb9799cf31a11390b2c5f72c6aec
   languageName: node
   linkType: hard
 
@@ -6306,9 +6306,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/profile-sync-controller@npm:@metamask-previews/profile-sync-controller@2.0.0-preview-d1104b69":
-  version: 2.0.0-preview-d1104b69
-  resolution: "@metamask-previews/profile-sync-controller@npm:2.0.0-preview-d1104b69"
+"@metamask/profile-sync-controller@npm:@metamask-previews/profile-sync-controller@2.0.0-preview-5544fdb2":
+  version: 2.0.0-preview-5544fdb2
+  resolution: "@metamask-previews/profile-sync-controller@npm:2.0.0-preview-5544fdb2"
   dependencies:
     "@metamask/base-controller": "npm:^7.0.2"
     "@metamask/keyring-api": "npm:^10.1.0"
@@ -6326,7 +6326,7 @@ __metadata:
     "@metamask/keyring-controller": ^19.0.0
     "@metamask/network-controller": ^22.0.0
     "@metamask/snaps-controllers": ^9.10.0
-  checksum: 10/e042a29f8155de5dc4074b5560bcd5d0fe45be99c7617738ef78cbd7dfbd06b02c575db960844858231c7beae531c3ce6d92161b51ff5a816829e63a41b88f73
+  checksum: 10/5dcf5deec8ca2de175b51a2b2e5ac8248430bd61fa50ffbca9e3c0be973403089ffbeb07d8ea1071b6d7a37b9ecf8359cedb36ca234b653ae5056c13390a6632
   languageName: node
   linkType: hard
 
@@ -26876,7 +26876,7 @@ __metadata:
     "@metamask/message-signing-snap": "npm:^0.4.0"
     "@metamask/metamask-eth-abis": "npm:^3.1.1"
     "@metamask/name-controller": "npm:^8.0.0"
-    "@metamask/network-controller": "npm:@metamask-previews/network-controller@22.0.2-preview-d1104b69"
+    "@metamask/network-controller": "npm:@metamask-previews/network-controller@22.0.2-preview-5544fdb2"
     "@metamask/notification-controller": "npm:^6.0.0"
     "@metamask/notification-services-controller": "npm:^0.14.0"
     "@metamask/object-multiplex": "npm:^2.0.0"
@@ -26890,7 +26890,7 @@ __metadata:
     "@metamask/ppom-validator": "npm:0.35.1"
     "@metamask/preferences-controller": "npm:^13.0.2"
     "@metamask/preinstalled-example-snap": "npm:^0.2.0"
-    "@metamask/profile-sync-controller": "npm:@metamask-previews/profile-sync-controller@2.0.0-preview-d1104b69"
+    "@metamask/profile-sync-controller": "npm:@metamask-previews/profile-sync-controller@2.0.0-preview-5544fdb2"
     "@metamask/providers": "npm:^14.0.2"
     "@metamask/queued-request-controller": "npm:^7.0.1"
     "@metamask/rate-limit-controller": "npm:^6.0.0"

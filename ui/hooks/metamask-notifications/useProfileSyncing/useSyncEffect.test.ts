@@ -34,9 +34,11 @@ describe('useSyncEffect()', () => {
   const arrangeAndAct = (props: { profileSyncConditionsMet: boolean }) => {
     // Arrange
     const mocks = arrangeMocks();
-    mocks.mockUseShouldProfileSync.mockReturnValue(
-      props.profileSyncConditionsMet,
-    );
+    mocks.mockUseShouldProfileSync.mockReturnValue({
+      shouldSync: props.profileSyncConditionsMet,
+      shouldSyncAccounts: props.profileSyncConditionsMet,
+      shouldSyncNetworks: props.profileSyncConditionsMet,
+    });
 
     // Act
     renderHookWithProviderTyped(() => useSyncEffect(), {});

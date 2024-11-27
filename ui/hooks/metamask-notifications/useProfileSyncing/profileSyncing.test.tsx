@@ -124,7 +124,7 @@ describe('useShouldDispatchProfileSyncing()', () => {
       () => useShouldDispatchProfileSyncing(),
       state,
     );
-    expect(hook.result.current).toBe(true);
+    expect(hook.result.current.shouldSync).toBe(true);
   });
 
   testCases.failureStateCases.forEach(({ state, failingField }) => {
@@ -134,7 +134,7 @@ describe('useShouldDispatchProfileSyncing()', () => {
         () => useShouldDispatchProfileSyncing(),
         newState,
       );
-      expect(hook.result.current).toBe(false);
+      expect(hook.result.current.shouldSync).toBe(false);
     });
   });
 });

@@ -141,9 +141,13 @@ export const useShouldDispatchProfileSyncing = () => {
       isProfileSyncingEnabled &&
       isUnlocked &&
       isSignedIn &&
-      completedOnboarding &&
-      isAccountSyncingReadyToBeDispatched,
+      completedOnboarding,
   );
 
-  return shouldDispatchProfileSyncing;
+  return {
+    shouldSync: shouldDispatchProfileSyncing,
+    shouldSyncAccounts:
+      shouldDispatchProfileSyncing && isAccountSyncingReadyToBeDispatched,
+    shouldSyncNetworks: shouldDispatchProfileSyncing,
+  };
 };

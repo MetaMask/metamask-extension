@@ -9,6 +9,7 @@ import {
 /**
  * Network Syncing - Callback used to delete synced networks
  * This is used internally in dev builds.
+ *
  * @returns callback to delete synced networks
  */
 export const useDeleteNetworkSyncingDataFromUserStorage = () => {
