@@ -5,7 +5,7 @@ import type {
   TokenRatesControllerState,
   TokensControllerState,
   RatesControllerState,
-  AccountTrackerControllerState,
+  TokenBalancesControllerState,
 } from '@metamask/assets-controllers';
 import type { KeyringControllerState } from '@metamask/keyring-controller';
 import type { AddressBookControllerState } from '@metamask/address-book-controller';
@@ -30,7 +30,7 @@ import type {
   SnapControllerState,
   SnapInterfaceControllerState,
   SnapInsightsControllerState,
-  SnapsRegistry,
+  SnapsRegistryState,
 } from '@metamask/snaps-controllers';
 import type { AccountsControllerState } from '@metamask/accounts-controller';
 
@@ -58,20 +58,27 @@ import type {
   NotificationServicesPushController,
 } from '@metamask/notification-services-controller';
 
+import { BridgeStatusControllerState } from '../../shared/types/bridge-status';
+import { DEFAULT_AUTO_LOCK_TIME_LIMIT } from '../../shared/constants/preferences';
+
 import type { BalancesController as MultichainBalancesControllerState } from './lib/accounts/BalancesController';
 import type { NetworkOrderControllerState } from './controllers/network-order';
 import type { AccountOrderControllerState } from './controllers/account-order';
-import type { PreferencesControllerState } from './controllers/preferences-controller';
+import type {
+  Preferences,
+  PreferencesControllerState,
+} from './controllers/preferences-controller';
 import type { AppStateController } from './controllers/app-state-controller';
-import type { AlertController } from './controllers/alert-controller';
+import type { AlertControllerState } from './controllers/alert-controller';
 import type { OnboardingControllerState } from './controllers/onboarding';
-import MetaMetricsController from './controllers/metametrics';
 import type { EncryptionPublicKeyControllerState } from './controllers/encryption-public-key';
 import AppMetadataController from './controllers/app-metadata';
 import type { DecryptMessageControllerState } from './controllers/decrypt-message';
 import type { SwapsControllerState } from './controllers/swaps/swaps.types';
 import type { BridgeControllerState } from './controllers/bridge/types';
 import { MetaMetricsDataDeletionState } from './controllers/metametrics-data-deletion/metametrics-data-deletion';
+import { MetaMetricsControllerState } from './controllers/metametrics-controller';
+import { AccountTrackerControllerState } from './controllers/account-tracker-controller';
 
 export type ResetOnRestartStoresComposedState = {
   AccountTracker: AccountTrackerControllerState;
@@ -81,6 +88,7 @@ export type ResetOnRestartStoresComposedState = {
   SignatureController: SignatureControllerState;
   SwapsController: SwapsControllerState;
   BridgeController: BridgeControllerState;
+  BridgeStatusController: BridgeStatusControllerState;
   EnsController: EnsControllerState;
   ApprovalController: ApprovalControllerState;
   PPOMController: PPOMState;
@@ -95,12 +103,12 @@ export type StoreControllersComposedState =
     TransactionController: TransactionControllerState;
     KeyringController: KeyringControllerState;
     PreferencesController: PreferencesControllerState;
-    MetaMetricsController: MetaMetricsController['store'];
+    MetaMetricsController: MetaMetricsControllerState;
     MetaMetricsDataDeletionController: MetaMetricsDataDeletionState;
     AddressBookController: AddressBookControllerState;
     CurrencyController: CurrencyRateState;
     NetworkController: NetworkState;
-    AlertController: AlertController['store'];
+    AlertController: AlertControllerState;
     OnboardingController: OnboardingControllerState;
     PermissionController: PermissionControllerState<PermissionConstraint>;
     PermissionLogController: PermissionLogControllerState;
@@ -111,6 +119,7 @@ export type StoreControllersComposedState =
     GasFeeController: GasFeeState;
     TokenListController: TokenListState;
     TokensController: TokensControllerState;
+    TokenBalancesController: TokenBalancesControllerState;
     SmartTransactionsController: SmartTransactionsControllerState;
     NftController: NftControllerState;
     PhishingController: PhishingControllerState;
@@ -119,7 +128,7 @@ export type StoreControllersComposedState =
     MultichainRatesController: RatesControllerState;
     SnapController: SnapControllerState;
     CronjobController: CronjobControllerState;
-    SnapsRegistry: SnapsRegistry;
+    SnapsRegistry: SnapsRegistryState;
     NotificationController: NotificationControllerState;
     SnapInterfaceController: SnapInterfaceControllerState;
     SnapInsightsController: SnapInsightsControllerState;
@@ -128,7 +137,6 @@ export type StoreControllersComposedState =
     InstitutionalFeaturesController: InstitutionalFeaturesController['store'];
     MmiConfigurationController: MmiConfigurationController['store'];
     ///: END:ONLY_INCLUDE_IF
-    PPOMController: PPOMState;
     NameController: NameControllerState;
     UserOperationController: UserOperationControllerState;
     // Notification Controllers
@@ -140,7 +148,7 @@ export type StoreControllersComposedState =
 
 export type MemStoreControllersComposedState = Omit<
   StoreControllersComposedState,
-  'PhishingController' | 'PPOMController' | 'TransactionController'
+  'PhishingController' | 'TransactionController'
 > & {
   TxController: TransactionControllerState;
   QueuedRequestController: QueuedRequestControllerState;
