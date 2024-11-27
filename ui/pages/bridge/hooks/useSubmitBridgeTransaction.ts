@@ -41,7 +41,7 @@ export default function useSubmitBridgeTransaction() {
     // Get bridge tx status
     const statusRequest = {
       bridgeId: quoteResponse.quote.bridgeId,
-      srcTxHash: bridgeTxMeta.hash,
+      srcTxHash: bridgeTxMeta.hash, // This might be undefined for STX
       bridge: quoteResponse.quote.bridges[0],
       srcChainId: quoteResponse.quote.srcChainId,
       destChainId: quoteResponse.quote.destChainId,

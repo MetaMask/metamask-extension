@@ -5,7 +5,7 @@ import {
 import fetchWithCache from '../../../../shared/lib/fetch-with-cache';
 import {
   StatusResponse,
-  StatusRequest,
+  StatusRequestWithSrcTxHash,
 } from '../../../../shared/types/bridge-status';
 // TODO fix this
 // eslint-disable-next-line import/no-restricted-paths
@@ -16,7 +16,9 @@ const CLIENT_ID_HEADER = { 'X-Client-Id': BRIDGE_CLIENT_ID };
 
 export const BRIDGE_STATUS_BASE_URL = `${BRIDGE_API_BASE_URL}/getTxStatus`;
 
-export const fetchBridgeTxStatus = async (statusRequest: StatusRequest) => {
+export const fetchBridgeTxStatus = async (
+  statusRequest: StatusRequestWithSrcTxHash,
+) => {
   // Assemble params
   const { quote, ...statusRequestNoQuote } = statusRequest;
   const statusRequestNoQuoteFormatted = Object.fromEntries(
@@ -51,10 +53,10 @@ export const fetchBridgeTxStatus = async (statusRequest: StatusRequest) => {
   return rawTxStatus;
 };
 
-export const getStatusRequest = (
+export const getStatusRequestWithSrcTxHash = (
   quote: Quote,
   srcTxHash: string,
-): StatusRequest => {
+): StatusRequestWithSrcTxHash => {
   return {
     bridgeId: quote.bridgeId,
     srcTxHash,

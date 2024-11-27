@@ -15,12 +15,16 @@ export enum StatusTypes {
 
 export type StatusRequest = {
   bridgeId: string; // lifi, socket, squid
-  srcTxHash: string; // lifi, socket, squid
+  srcTxHash?: string; // lifi, socket, squid, might be undefined for STX
   bridge: string; // lifi, socket, squid
   srcChainId: ChainId; // lifi, socket, squid
   destChainId: ChainId; // lifi, socket, squid
   quote?: Quote; // squid
   refuel?: boolean; // lifi
+};
+
+export type StatusRequestWithSrcTxHash = StatusRequest & {
+  srcTxHash: string;
 };
 
 export type Asset = {

@@ -14,7 +14,7 @@ import {
   REFRESH_INTERVAL_MS,
 } from './constants';
 import { BridgeStatusControllerMessenger } from './types';
-import { fetchBridgeTxStatus, getStatusRequest } from './utils';
+import { fetchBridgeTxStatus, getStatusRequestWithSrcTxHash } from './utils';
 
 const metadata: StateMetadata<{
   bridgeStatusState: BridgeStatusControllerState;
@@ -223,7 +223,10 @@ export default class BridgeStatusController extends StaticIntervalPollingControl
       // Also srcTxHash may not be available immediately for STX, so we don't want to fetch in those cases
       const historyItem = bridgeStatusState.txHistory[bridgeTxMetaId];
       const srcTxHash = this.#getSrcTxHash(bridgeTxMetaId);
-      const statusRequest = getStatusRequest(historyItem.quote, srcTxHash);
+      const statusRequest = getStatusRequestWithSrcTxHash(
+        historyItem.quote,
+        srcTxHash,
+      );
       const status = await fetchBridgeTxStatus(statusRequest);
 
       // No need to purge these on network change or account change, TransactionController does not purge either.
