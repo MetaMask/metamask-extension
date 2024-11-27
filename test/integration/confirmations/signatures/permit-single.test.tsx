@@ -114,7 +114,7 @@ describe('Permit Single Signature Tests', () => {
 
   it('displays correct details in message section', async () => {
     await renderSingleBatchSignature();
-    act(async() => {
+    act(async () => {
       fireEvent.click(await screen.findByTestId('sectionCollapseButton'));
     });
 

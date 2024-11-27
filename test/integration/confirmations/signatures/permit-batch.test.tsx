@@ -67,7 +67,8 @@ describe('Permit Batch Signature Tests', () => {
   it('renders the permit batch signature with correct titles', async () => {
     await renderPermitBatchSignature();
 
-    expect(await screen.findByText(tEn('confirmTitlePermitTokens') as string),
+    expect(
+      await screen.findByText(tEn('confirmTitlePermitTokens') as string),
     ).toBeInTheDocument();
     expect(
       await screen.findByText(tEn('confirmTitleDescPermitSignature') as string),
@@ -124,8 +125,12 @@ describe('Permit Batch Signature Tests', () => {
     expect(messageDetailsSection).toHaveTextContent('Primary type:');
     expect(messageDetailsSection).toHaveTextContent('PermitBatch');
 
-    const messageData0 = await screen.findByTestId('confirmation_data-0-index-0');
-    const messageData1 = await screen.findByTestId('confirmation_data-1-index-1');
+    const messageData0 = await screen.findByTestId(
+      'confirmation_data-0-index-0',
+    );
+    const messageData1 = await screen.findByTestId(
+      'confirmation_data-1-index-1',
+    );
     expect(messageDetailsSection).toContainElement(messageData0);
     expect(messageDetailsSection).toContainElement(messageData1);
 

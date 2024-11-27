@@ -1,4 +1,4 @@
-import { act, findByTestId, screen } from '@testing-library/react';
+import { act, screen } from '@testing-library/react';
 import nock from 'nock';
 import mockMetaMaskState from '../../data/integration-init-state.json';
 import { integrationTestRender } from '../../../lib/render-helpers';
