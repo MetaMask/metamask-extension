@@ -1,9 +1,18 @@
 import { useSelector } from 'react-redux';
 import { Hex } from '@metamask/utils';
-import { TransactionMeta } from '@metamask/transaction-controller';
+import {
+  TransactionMeta,
+  TransactionStatus,
+} from '@metamask/transaction-controller';
 import { useHistory } from 'react-router-dom';
 import { selectBridgeHistoryForAccount } from '../../ducks/bridge-status/selectors';
 import { CROSS_CHAIN_SWAP_TX_DETAILS_ROUTE } from '../../helpers/constants/routes';
+
+export const FINAL_NON_CONFIRMED_STATUSES = [
+  TransactionStatus.failed,
+  TransactionStatus.dropped,
+  TransactionStatus.rejected,
+];
 
 export type UseBridgeDataProps = {
   transactionGroup: {
@@ -21,7 +30,8 @@ export default function useBridgeTxHistoryData({
 }: UseBridgeDataProps) {
   const history = useHistory();
   const bridgeHistory = useSelector(selectBridgeHistoryForAccount);
-  const srcTxMetaId = transactionGroup.initialTransaction.id;
+  const txMeta = transactionGroup.initialTransaction;
+  const srcTxMetaId = txMeta.id;
   const bridgeHistoryItem = bridgeHistory[srcTxMetaId];
 
   // By complete, this means BOTH source and dest tx are confirmed
@@ -32,9 +42,13 @@ export default function useBridgeTxHistoryData({
       )
     : null;
 
-  const showBridgeTxDetails = () => {
-    history.push(`${CROSS_CHAIN_SWAP_TX_DETAILS_ROUTE}/${srcTxMetaId}`);
-  };
+  const showBridgeTxDetails = FINAL_NON_CONFIRMED_STATUSES.includes(
+    txMeta.status,
+  )
+    ? undefined
+    : () => {
+        history.push(`${CROSS_CHAIN_SWAP_TX_DETAILS_ROUTE}/${srcTxMetaId}`);
+      };
 
   return {
     bridgeTxHistoryItem: bridgeHistoryItem,
