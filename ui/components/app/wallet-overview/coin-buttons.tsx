@@ -396,13 +396,6 @@ const CoinButtons = ({
           { excludeMetaMetricsId: false },
         );
         await setCorrectChain();
-        if (chainId !== currentChainId) {
-          // TODO: Properly handle this case, for now we are stopping execution to prevent users from inadvertendly navigating to incompatible chains
-          console.error(
-            `Token/Network mismatch token: ${chainId} network: ${currentChainId}`,
-          );
-          return;
-        }
         await dispatch(startNewDraftTransaction({ type: AssetType.native }));
         history.push(SEND_ROUTE);
       }
@@ -410,15 +403,7 @@ const CoinButtons = ({
   }, [chainId, account, setCorrectChain]);
 
   const handleSwapOnClick = useCallback(async () => {
-    console.log('swap');
     await setCorrectChain();
-    if (chainId !== currentChainId) {
-      // TODO: Properly handle this case, for now we are stopping execution to prevent users from inadvertendly navigating to incompatible chains
-      console.error(
-        `Token/Network mismatch token: ${chainId} network: ${currentChainId}`,
-      );
-      return;
-    }
     ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
     global.platform.openTab({
       url: `${mmiPortfolioUrl}/swap`,
