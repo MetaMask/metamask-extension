@@ -1052,10 +1052,12 @@ export default class MetamaskController extends EventEmitter {
     this.ensController = new EnsController({
       messenger: this.controllerMessenger.getRestricted({
         name: 'EnsController',
-        allowedActions: ['NetworkController:getNetworkClientById'],
+        allowedActions: [
+          'NetworkController:getNetworkClientById',
+          'NetworkController:getState',
+        ],
         allowedEvents: [],
       }),
-      provider: this.provider,
       onNetworkDidChange: networkControllerMessenger.subscribe.bind(
         networkControllerMessenger,
         'NetworkController:networkDidChange',
@@ -4146,8 +4148,7 @@ export default class MetamaskController extends EventEmitter {
         ),
 
       // GasFeeController
-      gasFeeStartPollingByNetworkClientId:
-        gasFeeController.startPollingByNetworkClientId.bind(gasFeeController),
+      gasFeeStartPolling: gasFeeController.startPolling.bind(gasFeeController),
       gasFeeStopPollingByPollingToken:
         gasFeeController.stopPollingByPollingToken.bind(gasFeeController),
 

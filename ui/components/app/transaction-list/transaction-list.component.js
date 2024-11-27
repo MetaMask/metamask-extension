@@ -55,6 +55,7 @@ import { MetaMetricsContext } from '../../../contexts/metametrics';
 import { useMultichainSelector } from '../../../hooks/useMultichainSelector';
 import { getMultichainNetwork } from '../../../selectors/multichain';
 import { endTrace, TraceName } from '../../../../shared/lib/trace';
+import { getNetworkConfigurationsByChainId } from '../../../../shared/modules/selectors/networks';
 
 const PAGE_INCREMENT = 10;
 
@@ -140,6 +141,7 @@ export default function TransactionList({
   hideTokenTransactions,
   tokenAddress,
   boxProps,
+  tokenChainId,
 }) {
   const [limit, setLimit] = useState(PAGE_INCREMENT);
   const t = useI18nContext();
@@ -151,7 +153,16 @@ export default function TransactionList({
     nonceSortedCompletedTransactionsSelector,
   );
   const chainId = useSelector(getCurrentChainId);
+  const networkConfigurationsByChainId = useSelector(
+    getNetworkConfigurationsByChainId,
+  );
+  const networkName = networkConfigurationsByChainId[tokenChainId]?.name;
   const selectedAccount = useSelector(getSelectedAccount);
+  const isChainIdMismatch = tokenChainId && tokenChainId !== chainId;
+
+  const noTransactionsMessage = networkName
+    ? t('noTransactionsNetworkName', [networkName])
+    : t('noTransactionsChainIdMismatch');
 
   ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
   const shouldHideZeroBalanceTokens = useSelector(
@@ -383,7 +394,9 @@ export default function TransactionList({
             ) : (
               <Box className="transaction-list__empty">
                 <Box className="transaction-list__empty-text">
-                  {t('noTransactions')}
+                  {isChainIdMismatch
+                    ? noTransactionsMessage
+                    : t('noTransactions')}
                 </Box>
               </Box>
             )}
@@ -407,10 +420,12 @@ TransactionList.propTypes = {
   hideTokenTransactions: PropTypes.bool,
   tokenAddress: PropTypes.string,
   boxProps: PropTypes.object,
+  tokenChainId: PropTypes.string,
 };
 
 TransactionList.defaultProps = {
   hideTokenTransactions: false,
   tokenAddress: undefined,
   boxProps: undefined,
+  tokenChainId: null,
 };
