@@ -2,7 +2,7 @@ import React from 'react';
 
 import { SignatureRequestType } from '../../../../../types/confirm';
 import { useConfirmContext } from '../../../../../context/confirm';
-import { useDecodedSignatureMetrics } from '../../../../simulation-details/useDecodedSignatureMetrics';
+import { useDecodedSignatureMetrics } from '../../../../../hooks/useDecodedSignatureMetrics';
 import { DefaultSimulation } from './default-simulation';
 import { DecodedSimulation } from './decoded-simulation';
 

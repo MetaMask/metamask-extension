@@ -7,7 +7,7 @@ import { getMockTypedSignConfirmStateForRequest } from '../../../../../../../../
 import { renderWithConfirmContextProvider } from '../../../../../../../../test/lib/confirmations/render-helpers';
 import { permitSignatureMsg } from '../../../../../../../../test/data/confirmations/typed_sign';
 import { memoizedGetTokenStandardAndDetails } from '../../../../../utils/token';
-import * as SignatureMetrics from '../../../../simulation-details/useDecodedSignatureMetrics';
+import * as SignatureMetrics from '../../../../../hooks/useDecodedSignatureMetrics';
 import PermitSimulation from './permit-simulation';
 
 jest.mock('../../../../../../../store/actions', () => {

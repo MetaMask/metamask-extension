@@ -1,11 +1,12 @@
-import { useEffect } from 'react';
 import { DecodingDataStateChange } from '@metamask/signature-controller';
+import { useEffect } from 'react';
 
-import { SignatureRequestType } from '../../types/confirm';
-import { useConfirmContext } from '../../context/confirm';
-import { useSignatureEventFragment } from '../../hooks/useSignatureEventFragment';
+import { SignatureRequestType } from '../types/confirm';
+import { useConfirmContext } from '../context/confirm';
+import { useSignatureEventFragment } from './useSignatureEventFragment';
 
-enum DecodingResponse {
+
+enum DecodingResponseType {
   Change = 'CHANGE',
   NoChange = 'NO_CHANGE',
 }
@@ -22,8 +23,8 @@ export function useDecodedSignatureMetrics() {
   const decodingResponse =
     decodingData?.error?.type ??
     (decodingChangeTypes.length
-      ? DecodingResponse.Change
-      : DecodingResponse.NoChange);
+      ? DecodingResponseType.Change
+      : DecodingResponseType.NoChange);
 
   useEffect(() => {
     if (decodingLoading || !process.env.ENABLE_SIGNATURE_DECODING) {
