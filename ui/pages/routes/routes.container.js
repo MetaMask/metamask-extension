@@ -87,7 +87,7 @@ function mapStateToProps(state) {
   });
 
   const allNetworksFilterShown =
-    Object.keys(tokenNetworkFilter || {}).length !==
+    Object.keys(tokenNetworkFilter || {}).length ===
     Object.keys(allNetworkOpts || {}).length;
 
   return {

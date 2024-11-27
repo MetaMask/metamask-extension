@@ -248,6 +248,13 @@ describe('Routes Component', () => {
           swapsState: { swapsFeatureIsLive: false },
           announcements: {},
           pendingApprovals: {},
+          preferences: {
+            ...mockState.metamask.preferences,
+            tokenNetworkFilter: {
+              '0x1': true,
+              '0x5': true,
+            },
+          },
           termsOfUseLastAgreed: new Date('2999-03-25'),
           shouldShowSeedPhraseReminder: false,
           useExternalServices: true,
