@@ -63,12 +63,7 @@ export function NotificationsListItem({
     }
 
     history.push(`${NOTIFICATIONS_ROUTE}/${notification.id}`);
-  }, [
-    notification,
-    markNotificationAsRead,
-    dispatch,
-    history,
-  ]);
+  }, [notification, markNotificationAsRead, dispatch, history]);
 
   if (!hasNotificationComponents(notification.type)) {
     return null;

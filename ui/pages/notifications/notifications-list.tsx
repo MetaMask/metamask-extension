@@ -1,6 +1,5 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
-import { NotificationServicesController } from '@metamask/notification-services-controller';
 import { Box } from '../../components/component-library';
 import {
   BlockSize,
