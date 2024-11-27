@@ -157,7 +157,7 @@ const PermitSimulationValueDisplay: React.FC<
         />
       </Box>
       <Box>
-        {fiatValue && <IndividualFiatDisplay fiatAmount={fiatValue} shorten />}
+        {fiatValue !== undefined && <IndividualFiatDisplay fiatAmount={fiatValue} shorten />}
       </Box>
     </Box>
   );
