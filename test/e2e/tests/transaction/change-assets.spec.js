@@ -1,3 +1,5 @@
+import { it } from 'mocha';
+
 const { strict: assert } = require('assert');
 const {
   defaultGanacheOptions,
@@ -10,360 +12,721 @@ const { SMART_CONTRACTS } = require('../../seeder/smart-contracts');
 const { tEn } = require('../../../lib/i18n-helpers');
 
 describe('Change assets', function () {
-  it('sends the correct asset when switching from native currency to NFT', async function () {
-    const smartContract = SMART_CONTRACTS.NFTS;
-    await withFixtures(
-      {
-        dapp: true,
-        fixtures: new FixtureBuilder().withNftControllerERC721().build(),
-        ganacheOptions: defaultGanacheOptions,
-        smartContract,
-        title: this.test.fullTitle(),
-      },
-      async ({ driver, ganacheServer }) => {
-        await logInWithBalanceValidation(driver, ganacheServer);
+  describe('Old confirmation screens', function () {
+    it('sends the correct asset when switching from native currency to NFT', async function () {
+      const smartContract = SMART_CONTRACTS.NFTS;
+      await withFixtures(
+        {
+          dapp: true,
+          fixtures: new FixtureBuilder().withNftControllerERC721().build(),
+          ganacheOptions: defaultGanacheOptions,
+          smartContract,
+          title: this.test.fullTitle(),
+        },
+        async ({ driver, ganacheServer }) => {
+          await logInWithBalanceValidation(driver, ganacheServer);
 
-        await tempToggleSettingRedesignedTransactionConfirmations(driver);
+          await tempToggleSettingRedesignedTransactionConfirmations(driver);
 
-        // Wait for balance to load
-        await driver.delay(500);
+          // Wait for balance to load
+          await driver.delay(500);
 
-        // Click the Send button
-        await driver.clickElement('[data-testid="eth-overview-send"]');
+          // Click the Send button
+          await driver.clickElement('[data-testid="eth-overview-send"]');
 
-        // Chose a recipient
-        await driver.clickElement('.multichain-account-list-item');
+          // Chose a recipient
+          await driver.clickElement('.multichain-account-list-item');
 
-        // Populate an amount, continue
-        await driver.clickElement('[data-testid="currency-input"]');
-        await driver.press('[data-testid="currency-input"]', '2');
-        await driver.clickElement({ text: 'Continue', css: 'button' });
+          // Populate an amount, continue
+          await driver.clickElement('[data-testid="currency-input"]');
+          await driver.press('[data-testid="currency-input"]', '2');
+          await driver.clickElement({ text: 'Continue', css: 'button' });
 
-        // Validate the send amount
-        await driver.waitForSelector({
-          css: '.currency-display-component__text',
-          text: '2.000042',
-        });
+          // Validate the send amount
+          await driver.waitForSelector({
+            css: '.currency-display-component__text',
+            text: '2.000042',
+          });
 
-        // Click edit
-        await driver.clickElement(
-          '[data-testid="confirm-page-back-edit-button"]',
-        );
+          // Click edit
+          await driver.clickElement(
+            '[data-testid="confirm-page-back-edit-button"]',
+          );
 
-        // Open the Amount modal
-        await driver.clickElement('.asset-picker__symbol');
+          // Open the Amount modal
+          await driver.clickElement('.asset-picker__symbol');
 
-        // Choose an NFT instead
-        await driver.clickElement({ css: 'button', text: 'NFTs' });
-        await driver.clickElement('[data-testid="nft-default-image"]');
+          // Choose an NFT instead
+          await driver.clickElement({ css: 'button', text: 'NFTs' });
+          await driver.clickElement('[data-testid="nft-default-image"]');
 
-        // Validate that an NFT is chosen in the AssetAmountPicker
-        await driver.waitForSelector({
-          css: '.asset-picker__symbol',
-          text: 'TDN',
-        });
-        await driver.waitForSelector({ css: 'p', text: '#1' });
+          // Validate that an NFT is chosen in the AssetAmountPicker
+          await driver.waitForSelector({
+            css: '.asset-picker__symbol',
+            text: 'TDN',
+          });
+          await driver.waitForSelector({ css: 'p', text: '#1' });
 
-        // Click continue
-        await driver.assertElementNotPresent('.mm-modal-content');
-        await driver.clickElement({ text: 'Continue', css: 'button' });
+          // Click continue
+          await driver.assertElementNotPresent('.mm-modal-content');
+          await driver.clickElement({ text: 'Continue', css: 'button' });
 
-        // Ensure NFT is showing
-        await driver.waitForSelector(
-          '.confirm-page-container-summary__title img',
-        );
-        await driver.waitForSelector({ css: 'h3', text: 'Test Dapp NFTs #1' });
+          // Ensure NFT is showing
+          await driver.waitForSelector(
+            '.confirm-page-container-summary__title img',
+          );
+          await driver.waitForSelector({
+            css: 'h3',
+            text: 'Test Dapp NFTs #1',
+          });
 
-        // Send it!
-        await driver.clickElement({ text: 'Confirm', css: 'button' });
+          // Send it!
+          await driver.clickElement({ text: 'Confirm', css: 'button' });
 
-        // Ensure it was sent
-        await driver.waitForSelector({
-          css: 'p',
-          text: 'Send Test Dapp NFTs #1',
-        });
-      },
-    );
+          // Ensure it was sent
+          await driver.waitForSelector({
+            css: 'p',
+            text: 'Send Test Dapp NFTs #1',
+          });
+        },
+      );
+    });
+
+    it('sends the correct asset when switching from ERC20 to NFT', async function () {
+      const smartContract = SMART_CONTRACTS.NFTS;
+      const tokenContract = SMART_CONTRACTS.HST;
+      await withFixtures(
+        {
+          dapp: true,
+          fixtures: new FixtureBuilder()
+            .withTokensControllerERC20()
+            .withNftControllerERC721()
+            .build(),
+          ganacheOptions: defaultGanacheOptions,
+          smartContract: [smartContract, tokenContract],
+          title: this.test.fullTitle(),
+        },
+        async ({ driver, ganacheServer }) => {
+          await logInWithBalanceValidation(driver, ganacheServer);
+
+          await tempToggleSettingRedesignedTransactionConfirmations(driver);
+
+          // Click the Send button
+          await driver.clickElement({
+            css: '[data-testid="multichain-token-list-button"] span',
+            text: 'TST',
+          });
+
+          // Wait for balance to load
+          await driver.delay(500);
+
+          await driver.clickElement('[data-testid="eth-overview-send"]');
+
+          // Chose a recipient
+          await driver.clickElement('.multichain-account-list-item');
+
+          // Populate an amount, continue
+          await driver.clickElement('[data-testid="currency-input"]');
+          await driver.press('[data-testid="currency-input"]', '0');
+          await driver.clickElement({ text: 'Continue', css: 'button' });
+
+          // Validate the send amount
+          await driver.waitForSelector({
+            css: '.currency-display-component__text',
+            text: '0.00008455',
+          });
+
+          // Click edit
+          await driver.clickElement(
+            '[data-testid="confirm-page-back-edit-button"]',
+          );
+
+          // Open the Amount modal
+          await driver.clickElement('.asset-picker__symbol');
+
+          // Choose an NFT instead
+          await driver.clickElement({ css: 'button', text: 'NFTs' });
+          await driver.clickElement('[data-testid="nft-default-image"]');
+
+          // Validate that an NFT is chosen in the AssetAmountPicker
+          await driver.waitForSelector({
+            css: '.asset-picker__symbol',
+            text: 'TDN',
+          });
+          await driver.waitForSelector({ css: 'p', text: '#1' });
+
+          // Click continue
+          await driver.assertElementNotPresent('.mm-modal-content');
+          await driver.clickElement({ text: 'Continue', css: 'button' });
+
+          // Ensure NFT is showing
+          await driver.waitForSelector(
+            '.confirm-page-container-summary__title img',
+          );
+          await driver.waitForSelector({
+            css: 'h3',
+            text: 'Test Dapp NFTs #1',
+          });
+
+          // Send it!
+          await driver.clickElement({ text: 'Confirm', css: 'button' });
+
+          // Ensure it was sent
+          await driver.waitForSelector({
+            css: 'p',
+            text: 'Send Test Dapp NFTs #1',
+          });
+        },
+      );
+    });
+
+    it('sends the correct asset when switching from NFT to native currency', async function () {
+      const smartContract = SMART_CONTRACTS.NFTS;
+      await withFixtures(
+        {
+          dapp: true,
+          fixtures: new FixtureBuilder().withNftControllerERC721().build(),
+          ganacheOptions: defaultGanacheOptions,
+          smartContract,
+          title: this.test.fullTitle(),
+        },
+        async ({ driver, ganacheServer }) => {
+          await logInWithBalanceValidation(driver, ganacheServer);
+
+          await tempToggleSettingRedesignedTransactionConfirmations(driver);
+
+          // Choose the nft
+          await driver.clickElement(
+            '[data-testid="account-overview__nfts-tab"]',
+          );
+          await driver.clickElement('[data-testid="nft-default-image"]');
+          await driver.clickElement('[data-testid="nft-send-button"]');
+
+          // Chose a recipient
+          await driver.clickElement('.multichain-account-list-item');
+
+          // Validate that an NFT is chosen in the AssetAmountPicker
+          await driver.waitForSelector({
+            css: '.asset-picker__symbol',
+            text: 'TDN',
+          });
+          await driver.waitForSelector({ css: 'p', text: '#1' });
+          await driver.clickElement({ text: 'Continue', css: 'button' });
+
+          // Ensure NFT is showing
+          await driver.waitForSelector(
+            '.confirm-page-container-summary__title img',
+          );
+          await driver.waitForSelector({
+            css: 'h3',
+            text: 'Test Dapp NFTs #1',
+          });
+
+          // Click edit
+          await driver.clickElement(
+            '[data-testid="confirm-page-back-edit-button"]',
+          );
+
+          // Open the Amount modal
+          await driver.clickElement('.asset-picker__symbol');
+
+          // Choose tokens
+          await driver.clickElement({ css: 'button', text: 'Tokens' });
+          await driver.clickElement(
+            '[data-testid="multichain-token-list-button"]',
+          );
+
+          // Ensure correct token selected
+          await driver.waitForSelector({
+            css: '.asset-picker__symbol',
+            text: 'ETH',
+          });
+
+          // Populate an amount, continue
+          await driver.clickElement('[data-testid="currency-input"]');
+          await driver.press('[data-testid="currency-input"]', '2');
+          await driver.assertElementNotPresent('.mm-modal-content');
+          await driver.clickElement({ text: 'Continue', css: 'button' });
+
+          // Validate the send amount
+          await driver.waitForSelector({
+            css: '.currency-display-component__text',
+            text: '2.000042',
+          });
+
+          // Send it!
+          await driver.clickElement({ text: 'Confirm', css: 'button' });
+
+          // Ensure it was sent
+          await driver.waitForSelector({ css: 'p', text: 'Send' });
+          await driver.waitForSelector({
+            css: '[data-testid="transaction-list-item-primary-currency"]',
+            text: '-2 ETH',
+          });
+        },
+      );
+    });
+
+    it('changes to native currency when switching accounts during a NFT send', async function () {
+      const smartContract = SMART_CONTRACTS.NFTS;
+      await withFixtures(
+        {
+          dapp: true,
+          fixtures: new FixtureBuilder()
+            .withNftControllerERC721()
+            .withPreferencesController({
+              featureFlags: {
+                sendHexData: true,
+              },
+            })
+            .build(),
+          ganacheOptions: defaultGanacheOptions,
+          smartContract,
+          title: this.test.fullTitle(),
+        },
+        async ({ driver, ganacheServer }) => {
+          await logInWithBalanceValidation(driver, ganacheServer);
+
+          await tempToggleSettingRedesignedTransactionConfirmations(driver);
+
+          // Create second account
+          await driver.clickElement('[data-testid="account-menu-icon"]');
+          await driver.clickElement(
+            '[data-testid="multichain-account-menu-popover-action-button"]',
+          );
+          await driver.clickElement(
+            '[data-testid="multichain-account-menu-popover-add-account"]',
+          );
+          await driver.fill('[placeholder="Account 2"]', 'Account 2');
+          await driver.clickElement({ text: tEn('addAccount'), tag: 'button' });
+
+          // Go back to Account 1
+          await driver.clickElement('[data-testid="account-menu-icon"]');
+          await driver.clickElement({
+            css: `.multichain-account-list-item .multichain-account-list-item__account-name__button`,
+            text: 'Account 1',
+          });
+
+          // Choose the nft
+          await driver.clickElement(
+            '[data-testid="account-overview__nfts-tab"]',
+          );
+          await driver.clickElement('[data-testid="nft-default-image"]');
+          await driver.clickElement('[data-testid="nft-send-button"]');
+
+          // Chose a recipient
+          await driver.clickElement('.multichain-account-list-item');
+
+          // Validate that an NFT is chosen in the AssetAmountPicker
+          await driver.waitForSelector({
+            css: '.asset-picker__symbol',
+            text: 'TDN',
+          });
+          await driver.waitForSelector({ css: 'p', text: '#1' });
+
+          // Switch to Account 2
+          await driver.clickElement('[data-testid="send-page-account-picker"]');
+          await driver.clickElement({
+            css: `.multichain-account-list-item .multichain-account-list-item__account-name__button`,
+            text: 'Account 2',
+          });
+
+          // Ensure that the AssetPicker shows native currency and 0 value
+          await driver.waitForSelector({
+            css: '.asset-picker__symbol',
+            text: 'ETH',
+          });
+
+          // Go back to Account 1
+          await driver.clickElement('[data-testid="send-page-account-picker"]');
+          await driver.clickElement({
+            css: `.multichain-account-list-item .multichain-account-list-item__account-name__button`,
+            text: 'Account 1',
+          });
+
+          // Ensure that the AssetPicker shows native currency and 0 value
+          await driver.waitForSelector({
+            css: '.asset-picker__symbol',
+            text: 'ETH',
+          });
+
+          // Populate an amount, continue
+          await driver.clickElement('[data-testid="currency-input"]');
+          await driver.press('[data-testid="currency-input"]', '2');
+
+          // Make sure hex data is cleared after switching assets
+          const hexDataLocator = await driver.findElement(
+            '[data-testid="send-hex-textarea"]',
+          );
+          const hexDataValue = await hexDataLocator.getProperty('value');
+          assert.equal(
+            hexDataValue,
+            '',
+            'Hex data has not been cleared after switching assets.',
+          );
+
+          // Make sure gas is updated by resetting amount and hex data
+          // Note: this is needed until the race condition is fixed on the wallet level (issue #25243)
+          await driver.fill('[data-testid="currency-input"]', '2.000042');
+          await hexDataLocator.fill('0x');
+          await hexDataLocator.fill('');
+
+          // Go to the last confirmation screen
+          await driver.clickElement({ text: 'Continue', css: 'button' });
+
+          // Validate the send amount
+          await driver.waitForSelector({
+            css: '.currency-display-component__text',
+            text: '2.000042',
+          });
+        },
+      );
+    });
   });
 
-  it('sends the correct asset when switching from ERC20 to NFT', async function () {
-    const smartContract = SMART_CONTRACTS.NFTS;
-    const tokenContract = SMART_CONTRACTS.HST;
-    await withFixtures(
-      {
-        dapp: true,
-        fixtures: new FixtureBuilder()
-          .withTokensControllerERC20()
-          .withNftControllerERC721()
-          .build(),
-        ganacheOptions: defaultGanacheOptions,
-        smartContract: [smartContract, tokenContract],
-        title: this.test.fullTitle(),
-      },
-      async ({ driver, ganacheServer }) => {
-        await logInWithBalanceValidation(driver, ganacheServer);
+  describe('Redesigned confirmation screens', function () {
+    it('sends the correct asset when switching from native currency to NFT', async function () {
+      const smartContract = SMART_CONTRACTS.NFTS;
+      await withFixtures(
+        {
+          dapp: true,
+          fixtures: new FixtureBuilder().withNftControllerERC721().build(),
+          ganacheOptions: defaultGanacheOptions,
+          smartContract,
+          title: this.test.fullTitle(),
+        },
+        async ({ driver, ganacheServer }) => {
+          await logInWithBalanceValidation(driver, ganacheServer);
 
-        await tempToggleSettingRedesignedTransactionConfirmations(driver);
+          // Wait for balance to load
+          await driver.delay(500);
 
-        // Click the Send button
-        await driver.clickElement({
-          css: '[data-testid="multichain-token-list-button"] span',
-          text: 'TST',
-        });
+          // Click the Send button
+          await driver.clickElement('[data-testid="eth-overview-send"]');
 
-        // Wait for balance to load
-        await driver.delay(500);
+          // Chose a recipient
+          await driver.clickElement('.multichain-account-list-item');
 
-        await driver.clickElement('[data-testid="eth-overview-send"]');
+          // Populate an amount, continue
+          await driver.clickElement('[data-testid="currency-input"]');
+          await driver.press('[data-testid="currency-input"]', '2');
+          await driver.clickElement({ text: 'Continue', css: 'button' });
 
-        // Chose a recipient
-        await driver.clickElement('.multichain-account-list-item');
+          // Click edit
+          await driver.clickElement(
+            '[data-testid="wallet-initiated-header-back-button"]',
+          );
 
-        // Populate an amount, continue
-        await driver.clickElement('[data-testid="currency-input"]');
-        await driver.press('[data-testid="currency-input"]', '0');
-        await driver.clickElement({ text: 'Continue', css: 'button' });
+          // Open the Amount modal
+          await driver.clickElement('.asset-picker__symbol');
 
-        // Validate the send amount
-        await driver.waitForSelector({
-          css: '.currency-display-component__text',
-          text: '0.00008455',
-        });
+          // Choose an NFT instead
+          await driver.clickElement({ css: 'button', text: 'NFTs' });
+          await driver.clickElement('[data-testid="nft-default-image"]');
 
-        // Click edit
-        await driver.clickElement(
-          '[data-testid="confirm-page-back-edit-button"]',
-        );
+          // Validate that an NFT is chosen in the AssetAmountPicker
+          await driver.waitForSelector({
+            css: '.asset-picker__symbol',
+            text: 'TDN',
+          });
+          await driver.waitForSelector({ css: 'p', text: '#1' });
 
-        // Open the Amount modal
-        await driver.clickElement('.asset-picker__symbol');
+          // Click continue
+          await driver.assertElementNotPresent('.mm-modal-content');
+          await driver.clickElement({ text: 'Continue', css: 'button' });
 
-        // Choose an NFT instead
-        await driver.clickElement({ css: 'button', text: 'NFTs' });
-        await driver.clickElement('[data-testid="nft-default-image"]');
+          // Ensure NFT is showing
+          await driver.waitForSelector('[data-testid="nft-default-image"]');
+          await driver.waitForSelector({
+            css: 'h2',
+            text: 'Test Dapp NFTs #1',
+          });
 
-        // Validate that an NFT is chosen in the AssetAmountPicker
-        await driver.waitForSelector({
-          css: '.asset-picker__symbol',
-          text: 'TDN',
-        });
-        await driver.waitForSelector({ css: 'p', text: '#1' });
+          // Send it!
+          await driver.clickElement({ text: 'Confirm', css: 'button' });
 
-        // Click continue
-        await driver.assertElementNotPresent('.mm-modal-content');
-        await driver.clickElement({ text: 'Continue', css: 'button' });
+          // Ensure it was sent
+          await driver.waitForSelector({
+            css: 'p',
+            text: 'Send Test Dapp NFTs #1',
+          });
+        },
+      );
+    });
 
-        // Ensure NFT is showing
-        await driver.waitForSelector(
-          '.confirm-page-container-summary__title img',
-        );
-        await driver.waitForSelector({ css: 'h3', text: 'Test Dapp NFTs #1' });
+    it('sends the correct asset when switching from ERC20 to NFT', async function () {
+      const smartContract = SMART_CONTRACTS.NFTS;
+      const tokenContract = SMART_CONTRACTS.HST;
+      await withFixtures(
+        {
+          dapp: true,
+          fixtures: new FixtureBuilder()
+            .withTokensControllerERC20()
+            .withNftControllerERC721()
+            .build(),
+          ganacheOptions: defaultGanacheOptions,
+          smartContract: [smartContract, tokenContract],
+          title: this.test.fullTitle(),
+        },
+        async ({ driver, ganacheServer }) => {
+          await logInWithBalanceValidation(driver, ganacheServer);
 
-        // Send it!
-        await driver.clickElement({ text: 'Confirm', css: 'button' });
+          // Click the Send button
+          await driver.clickElement({
+            css: '[data-testid="multichain-token-list-button"] span',
+            text: 'TST',
+          });
 
-        // Ensure it was sent
-        await driver.waitForSelector({
-          css: 'p',
-          text: 'Send Test Dapp NFTs #1',
-        });
-      },
-    );
-  });
+          // Wait for balance to load
+          await driver.delay(500);
 
-  it('sends the correct asset when switching from NFT to native currency', async function () {
-    const smartContract = SMART_CONTRACTS.NFTS;
-    await withFixtures(
-      {
-        dapp: true,
-        fixtures: new FixtureBuilder().withNftControllerERC721().build(),
-        ganacheOptions: defaultGanacheOptions,
-        smartContract,
-        title: this.test.fullTitle(),
-      },
-      async ({ driver, ganacheServer }) => {
-        await logInWithBalanceValidation(driver, ganacheServer);
+          await driver.clickElement('[data-testid="eth-overview-send"]');
 
-        await tempToggleSettingRedesignedTransactionConfirmations(driver);
+          // Chose a recipient
+          await driver.clickElement('.multichain-account-list-item');
 
-        // Choose the nft
-        await driver.clickElement('[data-testid="account-overview__nfts-tab"]');
-        await driver.clickElement('[data-testid="nft-default-image"]');
-        await driver.clickElement('[data-testid="nft-send-button"]');
+          // Populate an amount, continue
+          await driver.clickElement('[data-testid="currency-input"]');
+          await driver.press('[data-testid="currency-input"]', '0');
+          await driver.clickElement({ text: 'Continue', css: 'button' });
 
-        // Chose a recipient
-        await driver.clickElement('.multichain-account-list-item');
+          // Click edit
+          await driver.clickElement(
+            '[data-testid="wallet-initiated-header-back-button"]',
+          );
 
-        // Validate that an NFT is chosen in the AssetAmountPicker
-        await driver.waitForSelector({
-          css: '.asset-picker__symbol',
-          text: 'TDN',
-        });
-        await driver.waitForSelector({ css: 'p', text: '#1' });
-        await driver.clickElement({ text: 'Continue', css: 'button' });
+          // Open the Amount modal
+          await driver.clickElement('.asset-picker__symbol');
 
-        // Ensure NFT is showing
-        await driver.waitForSelector(
-          '.confirm-page-container-summary__title img',
-        );
-        await driver.waitForSelector({ css: 'h3', text: 'Test Dapp NFTs #1' });
+          // Choose an NFT instead
+          await driver.clickElement({ css: 'button', text: 'NFTs' });
+          await driver.clickElement('[data-testid="nft-default-image"]');
 
-        // Click edit
-        await driver.clickElement(
-          '[data-testid="confirm-page-back-edit-button"]',
-        );
+          // Validate that an NFT is chosen in the AssetAmountPicker
+          await driver.waitForSelector({
+            css: '.asset-picker__symbol',
+            text: 'TDN',
+          });
+          await driver.waitForSelector({ css: 'p', text: '#1' });
 
-        // Open the Amount modal
-        await driver.clickElement('.asset-picker__symbol');
+          // Click continue
+          await driver.assertElementNotPresent('.mm-modal-content');
+          await driver.clickElement({ text: 'Continue', css: 'button' });
 
-        // Choose tokens
-        await driver.clickElement({ css: 'button', text: 'Tokens' });
-        await driver.clickElement(
-          '[data-testid="multichain-token-list-button"]',
-        );
+          // Ensure NFT is showing
+          await driver.waitForSelector('[data-testid="nft-default-image"]');
+          await driver.waitForSelector({
+            css: 'h2',
+            text: 'Test Dapp NFTs #1',
+          });
 
-        // Ensure correct token selected
-        await driver.waitForSelector({
-          css: '.asset-picker__symbol',
-          text: 'ETH',
-        });
+          // Send it!
+          await driver.clickElement({ text: 'Confirm', css: 'button' });
 
-        // Populate an amount, continue
-        await driver.clickElement('[data-testid="currency-input"]');
-        await driver.press('[data-testid="currency-input"]', '2');
-        await driver.assertElementNotPresent('.mm-modal-content');
-        await driver.clickElement({ text: 'Continue', css: 'button' });
+          // Ensure it was sent
+          await driver.waitForSelector({
+            css: 'p',
+            text: 'Send Test Dapp NFTs #1',
+          });
+        },
+      );
+    });
 
-        // Validate the send amount
-        await driver.waitForSelector({
-          css: '.currency-display-component__text',
-          text: '2.000042',
-        });
+    it('sends the correct asset when switching from NFT to native currency', async function () {
+      const smartContract = SMART_CONTRACTS.NFTS;
+      await withFixtures(
+        {
+          dapp: true,
+          fixtures: new FixtureBuilder().withNftControllerERC721().build(),
+          ganacheOptions: defaultGanacheOptions,
+          smartContract,
+          title: this.test.fullTitle(),
+        },
+        async ({ driver, ganacheServer }) => {
+          await logInWithBalanceValidation(driver, ganacheServer);
 
-        // Send it!
-        await driver.clickElement({ text: 'Confirm', css: 'button' });
+          // Choose the nft
+          await driver.clickElement(
+            '[data-testid="account-overview__nfts-tab"]',
+          );
+          await driver.clickElement('[data-testid="nft-default-image"]');
+          await driver.clickElement('[data-testid="nft-send-button"]');
 
-        // Ensure it was sent
-        await driver.waitForSelector({ css: 'p', text: 'Send' });
-        await driver.waitForSelector({
-          css: '[data-testid="transaction-list-item-primary-currency"]',
-          text: '-2 ETH',
-        });
-      },
-    );
-  });
+          // Chose a recipient
+          await driver.clickElement('.multichain-account-list-item');
 
-  it('changes to native currency when switching accounts during a NFT send', async function () {
-    const smartContract = SMART_CONTRACTS.NFTS;
-    await withFixtures(
-      {
-        dapp: true,
-        fixtures: new FixtureBuilder()
-          .withNftControllerERC721()
-          .withPreferencesController({
-            featureFlags: {
-              sendHexData: true,
-            },
-          })
-          .build(),
-        ganacheOptions: defaultGanacheOptions,
-        smartContract,
-        title: this.test.fullTitle(),
-      },
-      async ({ driver, ganacheServer }) => {
-        await logInWithBalanceValidation(driver, ganacheServer);
+          // Validate that an NFT is chosen in the AssetAmountPicker
+          await driver.waitForSelector({
+            css: '.asset-picker__symbol',
+            text: 'TDN',
+          });
+          await driver.waitForSelector({ css: 'p', text: '#1' });
+          await driver.clickElement({ text: 'Continue', css: 'button' });
 
-        await tempToggleSettingRedesignedTransactionConfirmations(driver);
+          // Ensure NFT is showing
+          await driver.waitForSelector('[data-testid="nft-default-image"]');
+          await driver.waitForSelector({
+            css: 'h2',
+            text: 'Test Dapp NFTs #1',
+          });
 
-        // Create second account
-        await driver.clickElement('[data-testid="account-menu-icon"]');
-        await driver.clickElement(
-          '[data-testid="multichain-account-menu-popover-action-button"]',
-        );
-        await driver.clickElement(
-          '[data-testid="multichain-account-menu-popover-add-account"]',
-        );
-        await driver.fill('[placeholder="Account 2"]', 'Account 2');
-        await driver.clickElement({ text: tEn('addAccount'), tag: 'button' });
+          // Click edit
+          await driver.clickElement(
+            '[data-testid="wallet-initiated-header-back-button"]',
+          );
 
-        // Go back to Account 1
-        await driver.clickElement('[data-testid="account-menu-icon"]');
-        await driver.clickElement({
-          css: `.multichain-account-list-item .multichain-account-list-item__account-name__button`,
-          text: 'Account 1',
-        });
+          // Open the Amount modal
+          await driver.clickElement('.asset-picker__symbol');
 
-        // Choose the nft
-        await driver.clickElement('[data-testid="account-overview__nfts-tab"]');
-        await driver.clickElement('[data-testid="nft-default-image"]');
-        await driver.clickElement('[data-testid="nft-send-button"]');
+          // Choose tokens
+          await driver.clickElement({ css: 'button', text: 'Tokens' });
+          await driver.clickElement(
+            '[data-testid="multichain-token-list-button"]',
+          );
 
-        // Chose a recipient
-        await driver.clickElement('.multichain-account-list-item');
+          // Ensure correct token selected
+          await driver.waitForSelector({
+            css: '.asset-picker__symbol',
+            text: 'ETH',
+          });
 
-        // Validate that an NFT is chosen in the AssetAmountPicker
-        await driver.waitForSelector({
-          css: '.asset-picker__symbol',
-          text: 'TDN',
-        });
-        await driver.waitForSelector({ css: 'p', text: '#1' });
+          // Populate an amount, continue
+          await driver.clickElement('[data-testid="currency-input"]');
+          await driver.press('[data-testid="currency-input"]', '2');
+          await driver.assertElementNotPresent('.mm-modal-content');
+          await driver.clickElement({ text: 'Continue', css: 'button' });
 
-        // Switch to Account 2
-        await driver.clickElement('[data-testid="send-page-account-picker"]');
-        await driver.clickElement({
-          css: `.multichain-account-list-item .multichain-account-list-item__account-name__button`,
-          text: 'Account 2',
-        });
+          // Validate the send amount
+          await driver.waitForSelector({
+            css: 'h2',
+            text: '2',
+          });
 
-        // Ensure that the AssetPicker shows native currency and 0 value
-        await driver.waitForSelector({
-          css: '.asset-picker__symbol',
-          text: 'ETH',
-        });
+          // Send it!
+          await driver.clickElement({ text: 'Confirm', css: 'button' });
 
-        // Go back to Account 1
-        await driver.clickElement('[data-testid="send-page-account-picker"]');
-        await driver.clickElement({
-          css: `.multichain-account-list-item .multichain-account-list-item__account-name__button`,
-          text: 'Account 1',
-        });
+          // Ensure it was sent
+          await driver.waitForSelector({ css: 'p', text: 'Send' });
+          await driver.waitForSelector({
+            css: '[data-testid="transaction-list-item-primary-currency"]',
+            text: '-2 ETH',
+          });
+        },
+      );
+    });
 
-        // Ensure that the AssetPicker shows native currency and 0 value
-        await driver.waitForSelector({
-          css: '.asset-picker__symbol',
-          text: 'ETH',
-        });
+    it('changes to native currency when switching accounts during a NFT send', async function () {
+      const smartContract = SMART_CONTRACTS.NFTS;
+      await withFixtures(
+        {
+          dapp: true,
+          fixtures: new FixtureBuilder()
+            .withNftControllerERC721()
+            .withPreferencesController({
+              featureFlags: {
+                sendHexData: true,
+              },
+            })
+            .build(),
+          ganacheOptions: defaultGanacheOptions,
+          smartContract,
+          title: this.test.fullTitle(),
+        },
+        async ({ driver, ganacheServer }) => {
+          await logInWithBalanceValidation(driver, ganacheServer);
 
-        // Populate an amount, continue
-        await driver.clickElement('[data-testid="currency-input"]');
-        await driver.press('[data-testid="currency-input"]', '2');
+          // Create second account
+          await driver.clickElement('[data-testid="account-menu-icon"]');
+          await driver.clickElement(
+            '[data-testid="multichain-account-menu-popover-action-button"]',
+          );
+          await driver.clickElement(
+            '[data-testid="multichain-account-menu-popover-add-account"]',
+          );
+          await driver.fill('[placeholder="Account 2"]', 'Account 2');
+          await driver.clickElement({ text: tEn('addAccount'), tag: 'button' });
 
-        // Make sure hex data is cleared after switching assets
-        const hexDataLocator = await driver.findElement(
-          '[data-testid="send-hex-textarea"]',
-        );
-        const hexDataValue = await hexDataLocator.getProperty('value');
-        assert.equal(
-          hexDataValue,
-          '',
-          'Hex data has not been cleared after switching assets.',
-        );
+          // Go back to Account 1
+          await driver.clickElement('[data-testid="account-menu-icon"]');
+          await driver.clickElement({
+            css: `.multichain-account-list-item .multichain-account-list-item__account-name__button`,
+            text: 'Account 1',
+          });
 
-        // Make sure gas is updated by resetting amount and hex data
-        // Note: this is needed until the race condition is fixed on the wallet level (issue #25243)
-        await driver.fill('[data-testid="currency-input"]', '2.000042');
-        await hexDataLocator.fill('0x');
-        await hexDataLocator.fill('');
+          // Choose the nft
+          await driver.clickElement(
+            '[data-testid="account-overview__nfts-tab"]',
+          );
+          await driver.clickElement('[data-testid="nft-default-image"]');
+          await driver.clickElement('[data-testid="nft-send-button"]');
 
-        // Go to the last confirmation screen
-        await driver.clickElement({ text: 'Continue', css: 'button' });
+          // Chose a recipient
+          await driver.clickElement('.multichain-account-list-item');
 
-        // Validate the send amount
-        await driver.waitForSelector({
-          css: '.currency-display-component__text',
-          text: '2.000042',
-        });
-      },
-    );
+          // Validate that an NFT is chosen in the AssetAmountPicker
+          await driver.waitForSelector({
+            css: '.asset-picker__symbol',
+            text: 'TDN',
+          });
+          await driver.waitForSelector({ css: 'p', text: '#1' });
+
+          // Switch to Account 2
+          await driver.clickElement('[data-testid="send-page-account-picker"]');
+          await driver.clickElement({
+            css: `.multichain-account-list-item .multichain-account-list-item__account-name__button`,
+            text: 'Account 2',
+          });
+
+          // Ensure that the AssetPicker shows native currency and 0 value
+          await driver.waitForSelector({
+            css: '.asset-picker__symbol',
+            text: 'ETH',
+          });
+
+          // Go back to Account 1
+          await driver.clickElement('[data-testid="send-page-account-picker"]');
+          await driver.clickElement({
+            css: `.multichain-account-list-item .multichain-account-list-item__account-name__button`,
+            text: 'Account 1',
+          });
+
+          // Ensure that the AssetPicker shows native currency and 0 value
+          await driver.waitForSelector({
+            css: '.asset-picker__symbol',
+            text: 'ETH',
+          });
+
+          // Populate an amount, continue
+          await driver.clickElement('[data-testid="currency-input"]');
+          await driver.press('[data-testid="currency-input"]', '2');
+
+          // Make sure hex data is cleared after switching assets
+          const hexDataLocator = await driver.findElement(
+            '[data-testid="send-hex-textarea"]',
+          );
+          const hexDataValue = await hexDataLocator.getProperty('value');
+          assert.equal(
+            hexDataValue,
+            '',
+            'Hex data has not been cleared after switching assets.',
+          );
+
+          // Make sure gas is updated by resetting amount and hex data
+          // Note: this is needed until the race condition is fixed on the wallet level (issue #25243)
+          await driver.fill('[data-testid="currency-input"]', '2.000042');
+          await hexDataLocator.fill('0x');
+          await hexDataLocator.fill('');
+
+          // Go to the last confirmation screen
+          await driver.clickElement({ text: 'Continue', css: 'button' });
+
+          // Validate the send amount
+          await driver.waitForSelector({
+            css: 'h2',
+            text: '2 ETH',
+          });
+        },
+      );
+    });
   });
 });
