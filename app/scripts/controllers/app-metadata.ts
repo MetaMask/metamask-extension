@@ -65,12 +65,12 @@ export type AppMetadataControllerEvents = AppMetadataControllerStateChangeEvent;
 /**
  * Actions that this controller is allowed to call.
  */
-export type AllowedActions = never;
+type AllowedActions = never;
 
 /**
  * Events that this controller is allowed to subscribe.
  */
-export type AllowedEvents = never;
+type AllowedEvents = never;
 
 /**
  * Messenger type for the {@link AppMetadataController}.

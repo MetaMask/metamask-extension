@@ -2,8 +2,6 @@ import { ControllerMessenger } from '@metamask/base-controller';
 import AppMetadataController, {
   getDefaultAppMetadataControllerState,
   type AppMetadataControllerOptions,
-  type AllowedActions,
-  type AllowedEvents,
 } from './app-metadata';
 
 describe('AppMetadataController', () => {
@@ -139,10 +137,7 @@ function withController<ReturnValue>(
 ): ReturnValue {
   const [options = {}, fn] = args.length === 2 ? args : [{}, args[0]];
 
-  const controllerMessenger = new ControllerMessenger<
-    AllowedActions,
-    AllowedEvents
-  >();
+  const controllerMessenger = new ControllerMessenger<never, never>();
 
   const messenger = controllerMessenger.getRestricted({
     name: 'AppMetadataController',
