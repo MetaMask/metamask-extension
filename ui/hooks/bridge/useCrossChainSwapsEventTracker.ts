@@ -47,7 +47,7 @@ export type CrossChainSwapsEventProperties = {
     QuoteFetchData;
   [MetaMetricsEventName.AllQuotesSorted]: RequestParams &
     RequestMetadata &
-    QuoteFetchData;
+    QuoteFetchData & { sort_order: SortOrder };
   [MetaMetricsEventName.QuoteSelected]: RequestParams &
     RequestMetadata &
     QuoteFetchData &
