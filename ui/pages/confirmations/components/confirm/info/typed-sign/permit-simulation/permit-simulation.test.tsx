@@ -7,6 +7,7 @@ import { getMockTypedSignConfirmStateForRequest } from '../../../../../../../../
 import { renderWithConfirmContextProvider } from '../../../../../../../../test/lib/confirmations/render-helpers';
 import { permitSignatureMsg } from '../../../../../../../../test/data/confirmations/typed_sign';
 import { memoizedGetTokenStandardAndDetails } from '../../../../../utils/token';
+import * as SignatureMetrics from '../../../../../hooks/useDecodedSignatureMetrics';
 import PermitSimulation from './permit-simulation';
 
 jest.mock('../../../../../../../store/actions', () => {
@@ -14,6 +15,7 @@ jest.mock('../../../../../../../store/actions', () => {
     getTokenStandardAndDetails: jest
       .fn()
       .mockResolvedValue({ decimals: 2, standard: 'ERC20' }),
+    updateEventFragment: jest.fn(),
   };
 });
 
@@ -41,6 +43,25 @@ describe('PermitSimulation', () => {
 
       expect(await findByText('30')).toBeInTheDocument();
       expect(container).toMatchSnapshot();
+    });
+  });
+
+  it('should call hook to register signature metrics properties', async () => {
+    const state = getMockTypedSignConfirmStateForRequest({
+      ...permitSignatureMsg,
+      decodingLoading: false,
+      decodingData: undefined,
+    });
+    const mockStore = configureMockStore([])(state);
+
+    const mockedUseDecodedSignatureMetrics = jest
+      .spyOn(SignatureMetrics, 'useDecodedSignatureMetrics')
+      .mockImplementation(() => '');
+
+    await act(async () => {
+      renderWithConfirmContextProvider(<PermitSimulation />, mockStore);
+
+      expect(mockedUseDecodedSignatureMetrics).toHaveBeenCalledTimes(1);
     });
   });
 

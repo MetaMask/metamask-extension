@@ -23,7 +23,7 @@ exports[`PermitSimulation should not render default simulation if decodingLoadin
           </p>
           <div>
             <div
-              aria-describedby="tippy-tooltip-5"
+              aria-describedby="tippy-tooltip-7"
               class=""
               data-original-title="Estimated changes are what might happen if you go through with this transaction. This is just a prediction, not a guarantee."
               data-tooltipped=""
@@ -238,7 +238,7 @@ exports[`PermitSimulation should render default simulation if decoding api retur
           </p>
           <div>
             <div
-              aria-describedby="tippy-tooltip-3"
+              aria-describedby="tippy-tooltip-5"
               class=""
               data-original-title="Estimated changes are what might happen if you go through with this transaction. This is just a prediction, not a guarantee."
               data-tooltipped=""
@@ -299,7 +299,7 @@ exports[`PermitSimulation should render default simulation if decoding api retur
                 style="min-width: 0;"
               >
                 <div
-                  aria-describedby="tippy-tooltip-4"
+                  aria-describedby="tippy-tooltip-6"
                   class=""
                   data-original-title="30"
                   data-tooltipped=""
