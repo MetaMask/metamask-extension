@@ -1,9 +1,9 @@
 import React from 'react';
-import BtcOverview from './btc-overview';
+import NonEvmOverview from './non-evm-overview';
 
 export default {
   title: 'Components/App/WalletOverview/BtcOverview',
-  component: BtcOverview,
+  component: NonEvmOverview,
   parameters: {
     docs: {
       description: {
@@ -14,6 +14,6 @@ export default {
   },
 };
 
-const Template = (args) => <BtcOverview {...args} />;
+const Template = (args) => <NonEvmOverview {...args} />;
 
 export const Default = Template.bind({});
