@@ -3,6 +3,7 @@ import { fireEvent, waitFor } from '@testing-library/react';
 import configureMockStore from 'redux-mock-store';
 import { useHistory } from 'react-router-dom';
 import thunk from 'redux-thunk';
+import { InternalEthEoaAccount } from '@metamask/keyring-api/dist/internal/types';
 import { mockNetworkState } from '../../../../test/stub/networks';
 import { renderWithProvider } from '../../../../test/jest/rendering';
 import { CHAIN_IDS } from '../../../../shared/constants/network';
@@ -13,7 +14,6 @@ import {
   SEND_ROUTE,
 } from '../../../helpers/constants/routes';
 import CoinButtons from './coin-buttons';
-import { InternalEthEoaAccount } from '@metamask/keyring-api/dist/internal/types';
 
 jest.mock('react-router-dom', () => ({
   ...jest.requireActual('react-router-dom'),
