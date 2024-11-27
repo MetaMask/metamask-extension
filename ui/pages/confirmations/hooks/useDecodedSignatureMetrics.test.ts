@@ -22,6 +22,27 @@ const decodingData: DecodingData = {
 };
 
 describe('useDecodedSignatureMetrics', () => {
+  it('should not call updateSignatureEventFragment if supportedByDecodingAPI is false', async () => {
+    const state = getMockTypedSignConfirmStateForRequest({
+      ...permitSignatureMsg,
+      decodingLoading: false,
+    });
+
+    const mockUpdateSignatureEventFragment = jest.fn();
+    jest
+      .spyOn(SignatureEventFragment, 'useSignatureEventFragment')
+      .mockImplementation(() => ({
+        updateSignatureEventFragment: mockUpdateSignatureEventFragment,
+      }));
+
+    renderHookWithConfirmContextProvider(
+      () => useDecodedSignatureMetrics(false),
+      state,
+    );
+
+    expect(mockUpdateSignatureEventFragment).toHaveBeenCalledTimes(0);
+  });
+
   it('should not call updateSignatureEventFragment if decodingLoading is true', async () => {
     const state = getMockTypedSignConfirmStateForRequest({
       ...permitSignatureMsg,
@@ -36,7 +57,7 @@ describe('useDecodedSignatureMetrics', () => {
       }));
 
     renderHookWithConfirmContextProvider(
-      () => useDecodedSignatureMetrics(),
+      () => useDecodedSignatureMetrics(true),
       state,
     );
 
@@ -57,7 +78,7 @@ describe('useDecodedSignatureMetrics', () => {
       }));
 
     renderHookWithConfirmContextProvider(
-      () => useDecodedSignatureMetrics(),
+      () => useDecodedSignatureMetrics(true),
       state,
     );
 
@@ -85,7 +106,7 @@ describe('useDecodedSignatureMetrics', () => {
       }));
 
     renderHookWithConfirmContextProvider(
-      () => useDecodedSignatureMetrics(),
+      () => useDecodedSignatureMetrics(true),
       state,
     );
 
@@ -119,7 +140,7 @@ describe('useDecodedSignatureMetrics', () => {
       }));
 
     renderHookWithConfirmContextProvider(
-      () => useDecodedSignatureMetrics(),
+      () => useDecodedSignatureMetrics(true),
       state,
     );
 

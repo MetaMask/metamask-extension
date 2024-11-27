@@ -42,7 +42,7 @@ const TypedSignV4Simulation: React.FC<object> = () => {
   const { currentConfirmation } = useConfirmContext<SignatureRequestType>();
   const isPermit = isPermitSignatureRequest(currentConfirmation);
   const supportedByDecodingAPI = isSupportedByDecodingAPI(currentConfirmation);
-  useDecodedSignatureMetrics();
+  useDecodedSignatureMetrics(supportedByDecodingAPI);
 
   if (!supportedByDecodingAPI) {
     return null;
