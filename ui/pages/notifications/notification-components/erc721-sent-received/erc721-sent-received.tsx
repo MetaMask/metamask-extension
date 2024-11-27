@@ -6,10 +6,7 @@ import { CHAIN_IDS } from '../../../../../shared/constants/network';
 import { t } from '../../../../../app/scripts/translate';
 
 import { type ExtractedNotification, isOfTypeNodeGuard } from '../node-guard';
-import {
-  NotificationComponentType,
-  type NotificationComponent,
-} from '../types/notifications/notifications';
+import type { NotificationComponent } from '../types/notifications/notifications';
 
 import { shortenAddress } from '../../../../helpers/utils/util';
 import { decimalToHex } from '../../../../../shared/modules/conversion.utils';
@@ -112,7 +109,7 @@ export const components: NotificationComponent<ERC721Notification> = {
       );
     },
     body: {
-      type: NotificationComponentType.OnChainBody,
+      type: 'body_onchain_notification',
       Image: ({ notification }) => {
         const chainId = decimalToHex(notification.chain_id);
         const { nativeCurrencyLogo, nativeCurrencyName } =
@@ -191,7 +188,7 @@ export const components: NotificationComponent<ERC721Notification> = {
     },
   },
   footer: {
-    type: NotificationComponentType.OnChainFooter,
+    type: 'footer_onchain_notification',
     ScanLink: ({ notification }) => {
       return (
         <NotificationDetailBlockExplorerButton

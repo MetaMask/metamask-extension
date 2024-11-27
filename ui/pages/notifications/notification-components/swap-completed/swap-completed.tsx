@@ -1,10 +1,7 @@
 import React from 'react';
 import { NotificationServicesController } from '@metamask/notification-services-controller';
 import { type ExtractedNotification, isOfTypeNodeGuard } from '../node-guard';
-import {
-  NotificationComponentType,
-  type NotificationComponent,
-} from '../types/notifications/notifications';
+import type { NotificationComponent } from '../types/notifications/notifications';
 import { CHAIN_IDS } from '../../../../../shared/constants/network';
 // TODO: Remove restricted import
 // eslint-disable-next-line import/no-restricted-paths
@@ -104,7 +101,7 @@ export const components: NotificationComponent<SwapCompletedNotification> = {
       />
     ),
     body: {
-      type: NotificationComponentType.OnChainBody,
+      type: 'body_onchain_notification',
       Account: ({ notification }) => {
         if (!notification.address) {
           return null;
@@ -227,7 +224,7 @@ export const components: NotificationComponent<SwapCompletedNotification> = {
     },
   },
   footer: {
-    type: NotificationComponentType.OnChainFooter,
+    type: 'footer_onchain_notification',
     ScanLink: ({ notification }) => {
       return (
         <NotificationDetailBlockExplorerButton

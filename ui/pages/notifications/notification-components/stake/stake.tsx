@@ -5,10 +5,7 @@ import { NotificationServicesController } from '@metamask/notification-services-
 import { t } from '../../../../../app/scripts/translate';
 import { CHAIN_IDS } from '../../../../../shared/constants/network';
 import { type ExtractedNotification, isOfTypeNodeGuard } from '../node-guard';
-import {
-  NotificationComponentType,
-  type NotificationComponent,
-} from '../types/notifications/notifications';
+import type { NotificationComponent } from '../types/notifications/notifications';
 
 import {
   NotificationListItem,
@@ -151,7 +148,7 @@ export const components: NotificationComponent<StakeNotification> = {
       );
     },
     body: {
-      type: NotificationComponentType.OnChainBody,
+      type: 'body_onchain_notification',
       Account: ({ notification }) => {
         if (!notification.address) {
           return null;
@@ -270,7 +267,7 @@ export const components: NotificationComponent<StakeNotification> = {
     },
   },
   footer: {
-    type: NotificationComponentType.OnChainFooter,
+    type: 'footer_onchain_notification',
     ScanLink: ({ notification }) => {
       return (
         <NotificationDetailBlockExplorerButton

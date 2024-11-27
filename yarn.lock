@@ -5932,32 +5932,33 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/notification-controller@npm:^7.0.0":
-  version: 7.0.0
-  resolution: "@metamask/notification-controller@npm:7.0.0"
+"@metamask/notification-controller@npm:^6.0.0":
+  version: 6.0.0
+  resolution: "@metamask/notification-controller@npm:6.0.0"
   dependencies:
-    "@metamask/base-controller": "npm:^7.0.1"
-    "@metamask/utils": "npm:^9.1.0"
+    "@metamask/base-controller": "npm:^6.0.0"
+    "@metamask/utils": "npm:^8.3.0"
     nanoid: "npm:^3.1.31"
-  checksum: 10/6b51f278d018a12838eaae18108b75ba0334bac1e6a1ea1cf4085d2d6af5db35ebdcd14b2b4894aba4545713e54116b4c2001b08bd601d499e48b82889416bae
+  checksum: 10/75bbbb3590e9bc4e89541eed841cf9ab5c826d668545b693ad52b30e7ef016d5705403463d8335be95c473dc373ff8eece2ec31e55d981143deed5ea0e88382d
   languageName: node
   linkType: hard
 
-"@metamask/notification-services-controller@npm:^0.7.0":
-  version: 0.7.0
-  resolution: "@metamask/notification-services-controller@npm:0.7.0"
+"@metamask/notification-services-controller@npm:^0.12.1":
+  version: 0.12.1
+  resolution: "@metamask/notification-services-controller@npm:0.12.1"
   dependencies:
     "@contentful/rich-text-html-renderer": "npm:^16.5.2"
-    "@metamask/base-controller": "npm:^7.0.1"
-    "@metamask/controller-utils": "npm:^11.3.0"
-    bignumber.js: "npm:^4.1.0"
+    "@metamask/base-controller": "npm:^7.0.2"
+    "@metamask/controller-utils": "npm:^11.4.2"
+    "@metamask/utils": "npm:^10.0.0"
+    bignumber.js: "npm:^9.1.2"
     firebase: "npm:^10.11.0"
     loglevel: "npm:^1.8.1"
     uuid: "npm:^8.3.2"
   peerDependencies:
     "@metamask/keyring-controller": ^17.0.0
     "@metamask/profile-sync-controller": ^0.0.0
-  checksum: 10/1fc72086686aeef4c72d9eb7726d086a147a4079c178a6de23269fa39a3d861c54fe6dfe79bd9b5c8bf9afa278371408092bd37f3e8f814e65c7aca3573655f5
+  checksum: 10/dd2f6e2d285dfdd5127bcf202b458a200fb0e578866c7ad73cd7d93f9b6c11bd887d040460e17a7b77885c0c18292bc864e6d417cc3ef7f107918c8987066b82
   languageName: node
   linkType: hard
 
@@ -6437,41 +6438,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-<<<<<<< HEAD
-<<<<<<< Updated upstream
-<<<<<<< HEAD
-"@metamask/snaps-rpc-methods@npm:^11.4.0":
-  version: 11.4.0
-  resolution: "@metamask/snaps-rpc-methods@npm:11.4.0"
-=======
-"@metamask/snaps-rpc-methods@npm:^11.5.0":
-=======
-"@metamask/snaps-rpc-methods@npm:^11.4.0, @metamask/snaps-rpc-methods@npm:^11.5.0":
->>>>>>> Stashed changes
-  version: 11.5.0
-  resolution: "@metamask/snaps-rpc-methods@npm:11.5.0"
->>>>>>> develop
-  dependencies:
-    "@metamask/key-tree": "npm:^9.1.2"
-    "@metamask/permission-controller": "npm:^11.0.0"
-    "@metamask/rpc-errors": "npm:^6.3.1"
-<<<<<<< HEAD
-    "@metamask/snaps-sdk": "npm:^6.8.0"
-    "@metamask/snaps-utils": "npm:^8.4.0"
-    "@metamask/superstruct": "npm:^3.1.0"
-    "@metamask/utils": "npm:^9.2.1"
-    "@noble/hashes": "npm:^1.3.1"
-  checksum: 10/3fdcd94f7e9830a85c10d46e689db1334b883c55ce62ff7dbf344010b329101c09f985b25879908e7c16c26b88f15184c64de517d4709fd0004d794d0446a348
-  languageName: node
-  linkType: hard
-
-"@metamask/snaps-sdk@npm:^6.8.0":
-  version: 6.8.0
-  resolution: "@metamask/snaps-sdk@npm:6.8.0"
-=======
-    "@metamask/snaps-sdk": "npm:^6.9.0"
-    "@metamask/snaps-utils": "npm:^8.4.1"
-=======
 "@metamask/snaps-rpc-methods@npm:^11.5.1":
   version: 11.5.1
   resolution: "@metamask/snaps-rpc-methods@npm:11.5.1"
@@ -6481,7 +6447,6 @@ __metadata:
     "@metamask/rpc-errors": "npm:^7.0.1"
     "@metamask/snaps-sdk": "npm:^6.10.0"
     "@metamask/snaps-utils": "npm:^8.5.0"
->>>>>>> develop
     "@metamask/superstruct": "npm:^3.1.0"
     "@metamask/utils": "npm:^10.0.0"
     "@noble/hashes": "npm:^1.3.1"
@@ -6489,32 +6454,16 @@ __metadata:
   languageName: node
   linkType: hard
 
-<<<<<<< HEAD
-"@metamask/snaps-sdk@npm:^6.8.0":
-  version: 6.9.0
-  resolution: "@metamask/snaps-sdk@npm:6.9.0"
->>>>>>> develop
-=======
 "@metamask/snaps-sdk@npm:^6.10.0":
   version: 6.10.0
   resolution: "@metamask/snaps-sdk@npm:6.10.0"
->>>>>>> develop
   dependencies:
     "@metamask/key-tree": "npm:^9.1.2"
     "@metamask/providers": "npm:^18.1.1"
     "@metamask/rpc-errors": "npm:^7.0.1"
     "@metamask/superstruct": "npm:^3.1.0"
-<<<<<<< HEAD
-    "@metamask/utils": "npm:^9.2.1"
-<<<<<<< HEAD
-  checksum: 10/9c2fa7517f8062f5162a8d5ad115e8e51e811aa6cc852834ec05914fe871267c6d347cdbfe67a44960898cdbe14f1e0395e9b71157fb23cf1e5620998c6f15dd
-=======
-  checksum: 10/ea2c34c4451f671acc6c3c0ad0d46e770e8b7d0741c1d78a30bc36b883f09a10e9a428b8b564ecd0171da95fdf78bb8ac0de261423a1b35de5d22852300a24ee
->>>>>>> develop
-=======
     "@metamask/utils": "npm:^10.0.0"
   checksum: 10/02f04536328a64ff1e9e48fb6b109698d6d83f42af5666a9758ccb1e7a1e67c0c2e296ef2fef419dd3d1c8f26bbf30b9f31911a1baa66f044f21cd0ecb7a11a7
->>>>>>> develop
   languageName: node
   linkType: hard
 
@@ -6549,21 +6498,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-<<<<<<< HEAD
-<<<<<<< HEAD
-"@metamask/snaps-utils@npm:^8.1.1, @metamask/snaps-utils@npm:^8.4.0":
-  version: 8.4.0
-  resolution: "@metamask/snaps-utils@npm:8.4.0"
-=======
-"@metamask/snaps-utils@npm:^8.1.1, @metamask/snaps-utils@npm:^8.3.0, @metamask/snaps-utils@npm:^8.4.0, @metamask/snaps-utils@npm:^8.4.1":
-  version: 8.4.1
-  resolution: "@metamask/snaps-utils@npm:8.4.1"
->>>>>>> develop
-=======
 "@metamask/snaps-utils@npm:^8.1.1, @metamask/snaps-utils@npm:^8.3.0, @metamask/snaps-utils@npm:^8.5.0, @metamask/snaps-utils@npm:^8.5.2":
   version: 8.5.2
   resolution: "@metamask/snaps-utils@npm:8.5.2"
->>>>>>> develop
   dependencies:
     "@babel/core": "npm:^7.23.2"
     "@babel/types": "npm:^7.23.0"
@@ -6572,17 +6509,8 @@ __metadata:
     "@metamask/permission-controller": "npm:^11.0.3"
     "@metamask/rpc-errors": "npm:^7.0.1"
     "@metamask/slip44": "npm:^4.0.0"
-<<<<<<< HEAD
-    "@metamask/snaps-registry": "npm:^3.2.1"
-<<<<<<< HEAD
-    "@metamask/snaps-sdk": "npm:^6.8.0"
-=======
-    "@metamask/snaps-sdk": "npm:^6.9.0"
->>>>>>> develop
-=======
     "@metamask/snaps-registry": "npm:^3.2.2"
     "@metamask/snaps-sdk": "npm:^6.10.0"
->>>>>>> develop
     "@metamask/superstruct": "npm:^3.1.0"
     "@metamask/utils": "npm:^10.0.0"
     "@noble/hashes": "npm:^1.3.1"
@@ -6597,13 +6525,6 @@ __metadata:
     semver: "npm:^7.5.4"
     ses: "npm:^1.1.0"
     validate-npm-package-name: "npm:^5.0.0"
-<<<<<<< HEAD
-<<<<<<< HEAD
-  checksum: 10/9948021d33f5c25e8196728dca01d75d285362393eace61f6d31a327de0ab1f0b5b4e8abf33484b94319d06bf2ccfdc101377adad1de65740c077d327d655a6b
-=======
-  checksum: 10/c68a2fe69dc835c2b996d621fd4698435475d419a85aa557aa000aae0ab7ebb68d2a52f0b28bbab94fff895ece9a94077e3910a21b16d904cff3b9419ca575b6
->>>>>>> develop
-=======
   checksum: 10/e5d1344f948473e82d71007d2570272073cf070f40aa7746692a6d5e6f02cfce66a747cf50f439d32b29a3f6588486182453b26973f0d0c1d9f47914591d5790
   languageName: node
   linkType: hard
@@ -6616,7 +6537,6 @@ __metadata:
     "@metamask/snaps-sdk": "npm:^6.9.0"
     buffer: "npm:^6.0.3"
   checksum: 10/ec540948e1b5c693b0a31a32521d84c5d3796a5d62d1dfa0986cae47483040a0381c30419af4a86b2402efa5e95283b45a5d17bb705c11a181d0c6fa70b5be60
->>>>>>> develop
   languageName: node
   linkType: hard
 
@@ -6701,20 +6621,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-<<<<<<< HEAD
-"@metamask/transaction-controller@npm:^37.0.0":
-<<<<<<< Updated upstream
-  version: 37.2.0
-  resolution: "@metamask/transaction-controller@npm:37.2.0"
-=======
-  version: 37.3.0
-  resolution: "@metamask/transaction-controller@npm:37.3.0"
->>>>>>> Stashed changes
-=======
 "@metamask/transaction-controller@npm:^38.3.0":
   version: 38.3.0
   resolution: "@metamask/transaction-controller@npm:38.3.0"
->>>>>>> develop
   dependencies:
     "@ethereumjs/common": "npm:^3.2.0"
     "@ethereumjs/tx": "npm:^4.2.0"
@@ -6739,15 +6648,9 @@ __metadata:
     "@babel/runtime": ^7.23.9
     "@metamask/accounts-controller": ^18.0.0
     "@metamask/approval-controller": ^7.0.0
-<<<<<<< HEAD
-    "@metamask/gas-fee-controller": ^20.0.0
-    "@metamask/network-controller": ^21.0.0
-  checksum: 10/314a46bdaf1a4c68fe232591d28f3f978d7ed17f19dbaa2e3cbcbc4d28d4f7fc4581d7f88446d31ced2176f4f2abf1022ae39a296cb884fd5a083181c562ee2c
-=======
     "@metamask/gas-fee-controller": ^22.0.0
     "@metamask/network-controller": ^22.0.0
   checksum: 10/f4e8e3a1a31e3e62b0d1a59bbe15ebfa4dc3e4cf077fb95c1815c00661c60ef4676046c49f57eab9749cd31d3e55ac3fed7bc247e3f5a3d459f2dcb03998633d
->>>>>>> develop
   languageName: node
   linkType: hard
 
@@ -26839,18 +26742,8 @@ __metadata:
     "@metamask/metamask-eth-abis": "npm:^3.1.1"
     "@metamask/name-controller": "npm:^8.0.0"
     "@metamask/network-controller": "patch:@metamask/network-controller@npm%3A21.0.0#~/.yarn/patches/@metamask-network-controller-npm-21.0.0-559aa8e395.patch"
-<<<<<<< Updated upstream
-<<<<<<< HEAD
-    "@metamask/notification-controller": "npm:^7.0.0"
-    "@metamask/notification-services-controller": "npm:^0.7.0"
-=======
     "@metamask/notification-controller": "npm:^6.0.0"
-    "@metamask/notification-services-controller": "npm:^0.11.0"
->>>>>>> develop
-=======
-    "@metamask/notification-controller": "npm:^7.0.0"
-    "@metamask/notification-services-controller": "npm:^0.7.0"
->>>>>>> Stashed changes
+    "@metamask/notification-services-controller": "npm:^0.12.1"
     "@metamask/object-multiplex": "npm:^2.0.0"
     "@metamask/obs-store": "npm:^9.0.0"
     "@metamask/permission-controller": "npm:^10.0.0"
@@ -26872,35 +26765,6 @@ __metadata:
     "@metamask/selected-network-controller": "npm:^18.0.2"
     "@metamask/signature-controller": "npm:^21.0.0"
     "@metamask/smart-transactions-controller": "npm:^13.0.0"
-<<<<<<< HEAD
-<<<<<<< Updated upstream
-<<<<<<< HEAD
-    "@metamask/snaps-controllers": "npm:^9.11.0"
-    "@metamask/snaps-execution-environments": "npm:^6.9.1"
-    "@metamask/snaps-rpc-methods": "npm:^11.4.0"
-    "@metamask/snaps-sdk": "npm:^6.8.0"
-    "@metamask/snaps-utils": "npm:^8.4.0"
-    "@metamask/test-bundler": "npm:^1.0.0"
-    "@metamask/test-dapp": "npm:^8.4.0"
-    "@metamask/transaction-controller": "npm:^37.0.0"
-=======
-    "@metamask/snaps-controllers": "npm:^9.11.1"
-=======
-    "@metamask/snaps-controllers": "npm:^9.11.0"
->>>>>>> Stashed changes
-    "@metamask/snaps-execution-environments": "npm:^6.9.1"
-    "@metamask/snaps-rpc-methods": "npm:^11.4.0"
-    "@metamask/snaps-sdk": "npm:^6.8.0"
-    "@metamask/snaps-utils": "npm:^8.4.0"
-    "@metamask/test-bundler": "npm:^1.0.0"
-    "@metamask/test-dapp": "npm:8.7.0"
-<<<<<<< Updated upstream
-    "@metamask/transaction-controller": "npm:^37.2.0"
->>>>>>> develop
-=======
-    "@metamask/transaction-controller": "npm:^37.0.0"
->>>>>>> Stashed changes
-=======
     "@metamask/snaps-controllers": "npm:^9.12.0"
     "@metamask/snaps-execution-environments": "npm:^6.9.2"
     "@metamask/snaps-rpc-methods": "npm:^11.5.1"
@@ -26910,7 +26774,6 @@ __metadata:
     "@metamask/test-bundler": "npm:^1.0.0"
     "@metamask/test-dapp": "npm:8.13.0"
     "@metamask/transaction-controller": "npm:^38.3.0"
->>>>>>> develop
     "@metamask/user-operation-controller": "npm:^13.0.0"
     "@metamask/utils": "npm:^10.0.1"
     "@ngraveio/bc-ur": "npm:^1.1.12"

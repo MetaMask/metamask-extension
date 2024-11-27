@@ -1,10 +1,7 @@
 import React from 'react';
 import { NotificationServicesController } from '@metamask/notification-services-controller';
 import { type ExtractedNotification, isOfTypeNodeGuard } from '../node-guard';
-import {
-  NotificationComponentType,
-  type NotificationComponent,
-} from '../types/notifications/notifications';
+import type { NotificationComponent } from '../types/notifications/notifications';
 import { NotificationListItemIconType } from '../../../../components/multichain/notification-list-item-icon/notification-list-item-icon';
 
 import {
@@ -107,7 +104,7 @@ export const components: NotificationComponent<LidoWithdrawalRequestedNotificati
         );
       },
       body: {
-        type: NotificationComponentType.OnChainBody,
+        type: 'body_onchain_notification',
         Account: ({ notification }) => {
           if (!notification.address) {
             return null;
@@ -188,7 +185,7 @@ export const components: NotificationComponent<LidoWithdrawalRequestedNotificati
       },
     },
     footer: {
-      type: NotificationComponentType.OnChainFooter,
+      type: 'footer_onchain_notification',
       ScanLink: ({ notification }) => {
         return (
           <NotificationDetailBlockExplorerButton

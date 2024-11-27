@@ -11,6 +11,7 @@ import {
 import Preloader from '../../components/ui/icon/preloader/preloader-icon.component';
 import { selectIsMetamaskNotificationsEnabled } from '../../selectors/metamask-notifications/metamask-notifications';
 import { useI18nContext } from '../../hooks/useI18nContext';
+import { SnapComponent } from './notification-components/snap/snap';
 import { NotificationsPlaceholder } from './notifications-list-placeholder';
 import { NotificationsListTurnOnNotifications } from './notifications-list-turn-on-notifications';
 import { NotificationsListItem } from './notifications-list-item';
@@ -63,6 +64,10 @@ function ErrorContent() {
 
 function NotificationItem(props: { notification: NotificationType }) {
   const { notification } = props;
+  if (notification.type === 'SNAP') {
+    return <SnapComponent snapNotification={notification} />;
+  }
+
   return <NotificationsListItem notification={notification} />;
 }
 

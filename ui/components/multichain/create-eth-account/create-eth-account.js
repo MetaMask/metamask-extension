@@ -7,7 +7,7 @@ import {
   setAccountLabel,
   getNextAvailableAccountName as getNextAvailableAccountNameFromController,
 } from '../../../store/actions';
-import { CreateAccount } from '../create-account';
+import { CreateAccount } from '..';
 
 export const CreateEthAccount = ({ onActionComplete }) => {
   const dispatch = useDispatch();

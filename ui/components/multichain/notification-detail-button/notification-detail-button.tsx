@@ -1,4 +1,5 @@
 import React, { useContext } from 'react';
+import { NotificationServicesController } from '@metamask/notification-services-controller';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import {
   MetaMetricsEventCategory,
@@ -11,9 +12,8 @@ import {
   IconName,
 } from '../../component-library';
 import { BlockSize } from '../../../helpers/constants/design-system';
-import { TRIGGER_TYPES } from '../../../pages/notifications/notification-components';
-import useSnapNavigation from '../../../hooks/snaps/useSnapNavigation';
-import { type Notification } from '../../../pages/notifications/notification-components/types/notifications/notifications';
+
+type Notification = NotificationServicesController.Types.INotification;
 
 type NotificationDetailButtonProps = {
   notification: Notification;
@@ -35,16 +35,6 @@ export const NotificationDetailButton = ({
   endIconName = true,
 }: NotificationDetailButtonProps) => {
   const trackEvent = useContext(MetaMetricsContext);
-  const { navigate } = useSnapNavigation();
-  const isMetaMaskUrl = href.startsWith('metamask:');
-
-  // this logic can be expanded once this detail button is used outside of the current use cases
-  const getClickedItem = () => {
-    if (notification.type === TRIGGER_TYPES.FEATURES_ANNOUNCEMENT) {
-      return 'block_explorer';
-    }
-    return isExternal ? 'external_link' : 'internal_link';
-  };
 
   const onClick = () => {
     trackEvent({
@@ -53,25 +43,20 @@ export const NotificationDetailButton = ({
       properties: {
         notification_id: notification.id,
         notification_type: notification.type,
-        ...(notification.type !== TRIGGER_TYPES.FEATURES_ANNOUNCEMENT &&
-          notification.type !== TRIGGER_TYPES.SNAP && {
-            chain_id: notification?.chain_id,
-          }),
-        clicked_item: getClickedItem(),
+        ...('chain_id' in notification && {
+          chain_id: notification.chain_id,
+        }),
+        clicked_item: 'block_explorer',
       },
     });
-
-    if (notification.type === TRIGGER_TYPES.SNAP && isMetaMaskUrl) {
-      navigate(href);
-    }
   };
 
   return (
     <Button
       key={id}
-      href={!isMetaMaskUrl && href ? href : undefined}
+      href={href}
       variant={variant}
-      externalLink={!isMetaMaskUrl}
+      externalLink={isExternal}
       size={ButtonSize.Lg}
       width={BlockSize.Full}
       endIconName={endIconName ? IconName.Arrow2UpRight : undefined}

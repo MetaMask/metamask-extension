@@ -1795,13 +1795,6 @@ export function getNotifications(state) {
   return notificationsSortedByDate;
 }
 
-export const getNotificationById = createDeepEqualSelector(
-  getNotifications,
-  (_, id) => id,
-  (notifications, id) =>
-    notifications.find((notification) => notification.id === id),
-);
-
 export function getUnreadNotifications(state) {
   const notifications = getNotifications(state);
 

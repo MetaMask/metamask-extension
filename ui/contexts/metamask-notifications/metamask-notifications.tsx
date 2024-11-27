@@ -1,12 +1,14 @@
 import React, { createContext, useContext, useEffect, useMemo } from 'react';
 import { useSelector } from 'react-redux';
+import type { NotificationServicesController } from '@metamask/notification-services-controller';
 import { useListNotifications } from '../../hooks/metamask-notifications/useNotifications';
 import { useAccountSyncingEffect } from '../../hooks/metamask-notifications/useProfileSyncing';
 import { selectIsProfileSyncingEnabled } from '../../selectors/metamask-notifications/profile-syncing';
 import { selectIsMetamaskNotificationsEnabled } from '../../selectors/metamask-notifications/metamask-notifications';
 import { getUseExternalServices } from '../../selectors';
 import { getIsUnlocked } from '../../ducks/metamask/metamask';
-import { type Notification } from '../../pages/notifications/notification-components/types/notifications/notifications';
+
+type Notification = NotificationServicesController.Types.INotification;
 
 type MetamaskNotificationsContextType = {
   listNotifications: () => void;

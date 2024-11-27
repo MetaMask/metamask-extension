@@ -21,7 +21,7 @@ import {
   TextVariant,
 } from '../../../helpers/constants/design-system';
 import Tooltip from '../../ui/tooltip';
-import { AvatarGroup } from '../../multichain/avatar-group';
+import { AvatarGroup } from '../../multichain';
 import { AvatarType } from '../../multichain/avatar-group/avatar-group.types';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { formatDate } from '../../../helpers/utils/util';

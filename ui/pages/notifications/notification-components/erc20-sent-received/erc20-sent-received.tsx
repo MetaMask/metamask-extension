@@ -5,10 +5,7 @@ import { NotificationServicesController } from '@metamask/notification-services-
 import { t } from '../../../../../app/scripts/translate';
 import { CHAIN_IDS } from '../../../../../shared/constants/network';
 import { type ExtractedNotification, isOfTypeNodeGuard } from '../node-guard';
-import {
-  NotificationComponentType,
-  type NotificationComponent,
-} from '../types/notifications/notifications';
+import type { NotificationComponent } from '../types/notifications/notifications';
 import { NotificationListItemIconType } from '../../../../components/multichain/notification-list-item-icon/notification-list-item-icon';
 
 import { shortenAddress } from '../../../../helpers/utils/util';
@@ -110,7 +107,7 @@ export const components: NotificationComponent<ERC20Notification> = {
       />
     ),
     body: {
-      type: NotificationComponentType.OnChainBody,
+      type: 'body_onchain_notification',
       From: ({ notification }) => (
         <NotificationDetailAddress
           side={`${t('notificationItemFrom')}${
@@ -197,7 +194,7 @@ export const components: NotificationComponent<ERC20Notification> = {
     },
   },
   footer: {
-    type: NotificationComponentType.OnChainFooter,
+    type: 'footer_onchain_notification',
     ScanLink: ({ notification }) => {
       return (
         <NotificationDetailBlockExplorerButton
