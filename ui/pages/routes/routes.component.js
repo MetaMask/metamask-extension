@@ -152,6 +152,7 @@ const Home = mmLazy(() => import('../home'));
 
 export default class Routes extends Component {
   static propTypes = {
+    allNetworksFilterShown: PropTypes.bool,
     currentCurrency: PropTypes.string,
     activeTabOrigin: PropTypes.string,
     account: InternalAccountPropType,
