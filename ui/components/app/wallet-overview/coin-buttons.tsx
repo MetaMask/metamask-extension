@@ -85,11 +85,11 @@ import useBridging from '../../../hooks/bridge/useBridging';
 ///: END:ONLY_INCLUDE_IF
 import { ReceiveModal } from '../../multichain/receive-modal';
 import {
-  setActiveNetwork,
   setSwitchedNetworkDetails,
   ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
   sendMultichainTransaction,
   setDefaultHomeActiveTabName,
+  setActiveNetworkWithError,
   ///: END:ONLY_INCLUDE_IF
 } from '../../../store/actions';
 ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
@@ -330,7 +330,7 @@ const CoinButtons = ({
     if (currentChainId !== chainId) {
       try {
         const networkConfigurationId = networks[chainId];
-        await dispatch(setActiveNetwork(networkConfigurationId));
+        await dispatch(setActiveNetworkWithError(networkConfigurationId));
         await dispatch(
           setSwitchedNetworkDetails({
             networkClientId: networkConfigurationId,
@@ -340,6 +340,7 @@ const CoinButtons = ({
         console.error(`Failed to switch chains.
         Target chainId: ${chainId}, Current chainId: ${currentChainId}.
         ${err}`);
+        throw err;
       }
     }
   }, [currentChainId, chainId, networks, dispatch]);

@@ -2510,6 +2510,23 @@ export function setActiveNetwork(
   };
 }
 
+export function setActiveNetworkWithError(
+  networkConfigurationId: string,
+): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
+  return async (dispatch) => {
+    log.debug(`background.setActiveNetwork: ${networkConfigurationId}`);
+    try {
+      await submitRequestToBackground('setActiveNetwork', [
+        networkConfigurationId,
+      ]);
+    } catch (error) {
+      logErrorWithMessage(error);
+      dispatch(displayWarning('Had a problem changing networks!'));
+      throw new Error('Had a problem changing networks!');
+    }
+  };
+}
+
 export async function setActiveNetworkConfigurationId(
   networkConfigurationId: string,
 ): Promise<undefined> {
