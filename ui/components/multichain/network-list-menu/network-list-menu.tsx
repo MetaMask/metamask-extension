@@ -29,6 +29,7 @@ import {
   updateCustomNonce,
   setNextNonce,
   setTokenNetworkFilter,
+  detectNfts,
 } from '../../../store/actions';
 import {
   CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP,
@@ -287,6 +288,7 @@ export const NetworkListMenu = ({ onClose }: { onClose: () => void }) => {
           dispatch(toggleNetworkMenu());
           dispatch(updateCustomNonce(''));
           dispatch(setNextNonce(''));
+          dispatch(detectNfts());
 
           // as a user, I don't want my network selection to force update my filter when I have "All Networks" toggled on
           // however, if I am already filtered on "Current Network", we'll want to filter by the selected network when the network changes
