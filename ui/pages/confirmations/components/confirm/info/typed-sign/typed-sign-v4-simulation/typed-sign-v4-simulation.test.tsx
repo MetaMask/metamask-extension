@@ -7,7 +7,7 @@ import { getMockTypedSignConfirmStateForRequest } from '../../../../../../../../
 import { renderWithConfirmContextProvider } from '../../../../../../../../test/lib/confirmations/render-helpers';
 import { permitSignatureMsg } from '../../../../../../../../test/data/confirmations/typed_sign';
 import { memoizedGetTokenStandardAndDetails } from '../../../../../utils/token';
-import PermitSimulation from './permit-simulation';
+import TypedSignV4Simulation from './typed-sign-v4-simulation';
 
 jest.mock('../../../../../../../store/actions', () => {
   return {
@@ -35,7 +35,7 @@ describe('PermitSimulation', () => {
 
     await act(async () => {
       const { container, findByText } = renderWithConfirmContextProvider(
-        <PermitSimulation />,
+        <TypedSignV4Simulation />,
         mockStore,
       );
 
@@ -60,7 +60,7 @@ describe('PermitSimulation', () => {
 
     await act(async () => {
       const { container, findByText } = renderWithConfirmContextProvider(
-        <PermitSimulation />,
+        <TypedSignV4Simulation />,
         mockStore,
       );
 
@@ -78,7 +78,7 @@ describe('PermitSimulation', () => {
 
     await act(async () => {
       const { container, queryByTestId } = renderWithConfirmContextProvider(
-        <PermitSimulation />,
+        <TypedSignV4Simulation />,
         mockStore,
       );
 

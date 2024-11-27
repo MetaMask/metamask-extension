@@ -8,6 +8,7 @@ import { Hex } from '@metamask/utils';
 
 import { TokenStandard } from '../../../../../../../../../shared/constants/transaction';
 import { ConfirmInfoRow } from '../../../../../../../../components/app/confirm/info/row';
+import { Text } from '../../../../../../../../components/component-library';
 import { useI18nContext } from '../../../../../../../../hooks/useI18nContext';
 import { SignatureRequestType } from '../../../../../../types/confirm';
 import { useConfirmContext } from '../../../../../../context/confirm';
@@ -112,12 +113,20 @@ const DecodedSimulation: React.FC<object> = () => {
     ),
   );
 
+  console.log('stateChangeFragment = ', currentConfirmation);
   return (
     <StaticSimulation
       title={t('simulationDetailsTitle')}
       titleTooltip={t('simulationDetailsTitleTooltip')}
-      simulationElements={stateChangeFragment}
+      simulationElements={
+        stateChangeFragment.length ? (
+          stateChangeFragment
+        ) : (
+          <Text>{t('simulationDetailsUnavailable')}</Text>
+        )
+      }
       isLoading={decodingLoading}
+      isCollapsed={decodingLoading || !stateChangeFragment.length}
     />
   );
 };
