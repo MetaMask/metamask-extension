@@ -28,6 +28,7 @@ import {
 import {
   isNetworkLoading,
   getProviderConfig,
+  getNetworkConfigurationsByChainId,
 } from '../../../shared/modules/selectors/networks';
 import {
   lockMetamask,
@@ -58,8 +59,11 @@ import Routes from './routes.component';
 function mapStateToProps(state) {
   const { activeTab, appState } = state;
   const { alertOpen, alertMessage, isLoading, loadingMessage } = appState;
-  const { autoLockTimeLimit = DEFAULT_AUTO_LOCK_TIME_LIMIT, privacyMode } =
-    getPreferences(state);
+  const {
+    autoLockTimeLimit = DEFAULT_AUTO_LOCK_TIME_LIMIT,
+    privacyMode,
+    tokenNetworkFilter,
+  } = getPreferences(state);
   const { completedOnboarding } = state.metamask;
 
   // If there is more than one connected account to activeTabOrigin,
@@ -75,10 +79,21 @@ function mapStateToProps(state) {
   const oldestPendingApproval = oldestPendingConfirmationSelector(state);
   const pendingApprovals = getPendingApprovals(state);
   const transactionsMetadata = getUnapprovedTransactions(state);
+  const allNetworks = getNetworkConfigurationsByChainId(state);
+
+  const allNetworkOpts = {};
+  Object.keys(allNetworks || {}).forEach((chainId) => {
+    allNetworkOpts[chainId] = true;
+  });
+
+  const allNetworksFilterShown =
+    Object.keys(tokenNetworkFilter || {}).length !==
+    Object.keys(allNetworkOpts || {}).length;
 
   return {
     alertOpen,
     alertMessage,
+    allNetworksFilterShown,
     account,
     activeTabOrigin,
     textDirection: state.metamask.textDirection,

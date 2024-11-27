@@ -429,6 +429,7 @@ export default class Routes extends Component {
 
   render() {
     const {
+      allNetworksFilterShown,
       isLoading,
       isUnlocked,
       alertMessage,
@@ -494,7 +495,8 @@ export default class Routes extends Component {
       !isCurrentProviderCustom &&
       completedOnboarding &&
       allAccountsOnNetworkAreEmpty &&
-      switchedNetworkDetails === null;
+      switchedNetworkDetails === null &&
+      !allNetworksFilterShown;
 
     const windowType = getEnvironmentType();
 
