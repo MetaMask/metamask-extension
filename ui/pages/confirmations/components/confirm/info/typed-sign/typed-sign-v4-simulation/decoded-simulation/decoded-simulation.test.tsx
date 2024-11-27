@@ -68,7 +68,7 @@ describe('DecodedSimulation', () => {
     });
     const mockStore = configureMockStore([])(state);
 
-    const { container, findByText } = renderWithConfirmContextProvider(
+    const { findByText } = renderWithConfirmContextProvider(
       <PermitSimulation />,
       mockStore,
     );
