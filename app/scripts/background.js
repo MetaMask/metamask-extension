@@ -53,9 +53,7 @@ import {
   FakeLedgerBridge,
   FakeTrezorBridge,
 } from '../../test/stub/keyring-bridge';
-// TODO: Remove restricted import
-// eslint-disable-next-line import/no-restricted-paths
-import { getCurrentChainId } from '../../ui/selectors';
+import { getCurrentChainId } from '../../shared/modules/selectors/networks';
 import { addNonceToCsp } from '../../shared/modules/add-nonce-to-csp';
 import { checkURLForProviderInjection } from '../../shared/modules/provider-injection';
 import migrations from './migrations';
@@ -1051,11 +1049,6 @@ export function setupController(
     updateBadge,
   );
 
-  controller.controllerMessenger.subscribe(
-    METAMASK_CONTROLLER_EVENTS.NOTIFICATIONS_STATE_CHANGE,
-    updateBadge,
-  );
-
   /**
    * Formats a count for display as a badge label.
    *
@@ -1124,8 +1117,14 @@ export function setupController(
         controller.notificationServicesController.state;
 
       const snapNotificationCount = Object.values(
-        controller.notificationController.state.notifications,
-      ).filter((notification) => notification.readDate === null).length;
+        controller.notificationServicesController.state
+          .metamaskNotificationsList,
+      ).filter(
+        (notification) =>
+          notification.type ===
+            NotificationServicesController.Constants.TRIGGER_TYPES.SNAP &&
+          notification.readDate === null,
+      ).length;
 
       const featureAnnouncementCount = isFeatureAnnouncementsEnabled
         ? controller.notificationServicesController.state.metamaskNotificationsList.filter(
@@ -1143,7 +1142,9 @@ export function setupController(
               !notification.isRead &&
               notification.type !==
                 NotificationServicesController.Constants.TRIGGER_TYPES
-                  .FEATURES_ANNOUNCEMENT,
+                  .FEATURES_ANNOUNCEMENT &&
+              notification.type !==
+                NotificationServicesController.Constants.TRIGGER_TYPES.SNAP,
           ).length
         : 0;
 

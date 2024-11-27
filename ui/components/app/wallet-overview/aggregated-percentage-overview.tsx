@@ -9,8 +9,8 @@ import {
   getShouldHideZeroBalanceTokens,
   getTokensMarketData,
   getPreferences,
-  getCurrentChainId,
 } from '../../../selectors';
+import { getCurrentChainId } from '../../../../shared/modules/selectors/networks';
 
 import { useAccountTotalFiatBalance } from '../../../hooks/useAccountTotalFiatBalance';
 // TODO: Remove restricted import

@@ -22,6 +22,7 @@ const mockSetActiveNetwork = jest.fn();
 const mockUpdateCustomNonce = jest.fn();
 const mockSetNextNonce = jest.fn();
 const mockSetTokenNetworkFilter = jest.fn();
+const mockDetectNfts = jest.fn();
 
 jest.mock('../../../store/actions.ts', () => ({
   setShowTestNetworks: () => mockSetShowTestNetworks,
@@ -32,6 +33,7 @@ jest.mock('../../../store/actions.ts', () => ({
   setNetworkClientIdForDomain: (network, id) =>
     mockSetNetworkClientIdForDomain(network, id),
   setTokenNetworkFilter: () => mockSetTokenNetworkFilter,
+  detectNfts: () => mockDetectNfts,
 }));
 
 const MOCK_ORIGIN = 'https://portfolio.metamask.io';
@@ -218,6 +220,7 @@ describe('NetworkListMenu', () => {
     expect(mockSetActiveNetwork).toHaveBeenCalled();
     expect(mockUpdateCustomNonce).toHaveBeenCalled();
     expect(mockSetNextNonce).toHaveBeenCalled();
+    expect(mockDetectNfts).toHaveBeenCalled();
   });
 
   it('shows the correct selected network when networks share the same chain ID', () => {
