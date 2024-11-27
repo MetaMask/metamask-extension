@@ -445,6 +445,7 @@ describe('EthOverview', () => {
     expect(buyButton).not.toBeDisabled();
     fireEvent.click(buyButton);
 
+    expect(mockTrackEvent).toHaveBeenCalledTimes(1);
     expect(mockTrackEvent).toHaveBeenCalledWith({
       event: MetaMetricsEventName.NavBuyButtonClicked,
       category: MetaMetricsEventCategory.Navigation,
@@ -539,6 +540,7 @@ describe('EthOverview', () => {
     expect(sendButton).not.toBeDisabled();
     fireEvent.click(sendButton);
 
+    expect(mockTrackEvent).toHaveBeenCalledTimes(1);
     expect(mockTrackEvent).toHaveBeenCalledWith(
       {
         event: MetaMetricsEventName.NavSendButtonClicked,

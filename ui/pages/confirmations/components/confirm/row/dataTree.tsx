@@ -118,6 +118,7 @@ export const DataTree = ({
           )}:`}
           style={{ paddingRight: 0 }}
           key={`tree-data-${label}-index-${i}`}
+          data-testid={`confirmation_data-${label}-index-${i}`}
         >
           {
             // eslint-disable-next-line @typescript-eslint/no-use-before-define
