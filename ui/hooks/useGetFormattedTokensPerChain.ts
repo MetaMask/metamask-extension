@@ -1,7 +1,8 @@
 import { useSelector } from 'react-redux';
 import { BN } from 'bn.js';
 import { Token } from '@metamask/assets-controllers';
-import { getAllTokens, getCurrentChainId } from '../selectors';
+import { getAllTokens } from '../selectors';
+import { getCurrentChainId } from '../../shared/modules/selectors/networks';
 import { hexToDecimal } from '../../shared/modules/conversion.utils';
 
 import { TokenWithBalance } from '../components/multichain/asset-picker-amount/asset-picker-modal/types';

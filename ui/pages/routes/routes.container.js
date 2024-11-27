@@ -2,13 +2,17 @@ import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
 import { compose } from 'redux';
 import {
+  getCurrentChainId,
+  isNetworkLoading,
+  getProviderConfig,
+} from '../../../shared/modules/selectors/networks';
+import {
   getAllAccountsOnNetworkAreEmpty,
   getIsNetworkUsed,
   getNetworkIdentifier,
   getPreferences,
   getTheme,
   getIsTestnet,
-  getCurrentChainId,
   getShouldShowSeedPhraseReminder,
   isCurrentProviderCustom,
   ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
@@ -25,10 +29,6 @@ import {
   getUnapprovedTransactions,
   getPendingApprovals,
 } from '../../selectors';
-import {
-  isNetworkLoading,
-  getProviderConfig,
-} from '../../../shared/modules/selectors/networks';
 import {
   lockMetamask,
   hideImportNftsModal,
