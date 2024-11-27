@@ -21,6 +21,7 @@ export type VersionedData = {
 const version = 133;
 
 function transformState(state: VersionedData['data']) {
+  console.log('Transform state input:', state);
   if (
     !hasProperty(state, 'PreferencesController') ||
     !isObject(state.PreferencesController)
@@ -30,19 +31,23 @@ function transformState(state: VersionedData['data']) {
         `Invalid PreferencesController state: ${typeof state.PreferencesController}`,
       ),
     );
+    console.log('Invalid PreferencesController state');
     return state;
   }
 
   const { PreferencesController } = state;
   const currentOptInStatus =
     PreferencesController?.smartTransactionsOptInStatus;
+  console.log('Current STX opt-in status:', currentOptInStatus);
 
   if (currentOptInStatus === undefined || currentOptInStatus === null) {
+    console.log('Setting null/undefined status to true');
     PreferencesController.smartTransactionsOptInStatus = true;
   } else if (
     currentOptInStatus === false &&
     !hasExistingSmartTransactions(state)
   ) {
+    console.log('Setting false status to true (no existing transactions)');
     PreferencesController.smartTransactionsOptInStatus = true;
   }
 
@@ -72,9 +77,11 @@ function hasExistingSmartTransactions(state: VersionedData['data']): boolean {
 const migration = {
   version,
   async migrate(originalVersionedData: VersionedData): Promise<VersionedData> {
+    console.log('Starting migration 133', originalVersionedData);
     const versionedData = cloneDeep(originalVersionedData);
     versionedData.meta.version = version;
     versionedData.data = transformState(versionedData.data);
+    console.log('Completed migration 133', versionedData);
     return versionedData;
   },
 };
