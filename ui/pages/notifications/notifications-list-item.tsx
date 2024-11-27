@@ -14,7 +14,6 @@ import {
 } from '../../helpers/constants/design-system';
 import { NOTIFICATIONS_ROUTE } from '../../helpers/constants/routes';
 import { useMarkNotificationAsRead } from '../../hooks/metamask-notifications/useNotifications';
-import { markNotificationsAsRead as markSnapNotificationsAsRead } from '../../store/actions';
 import {
   NotificationComponents,
   TRIGGER_TYPES,
@@ -48,18 +47,13 @@ export function NotificationsListItem({
       },
     });
 
-    // In the future will move snap notifications into the notification services controller
-    if (notification.type === TRIGGER_TYPES.SNAP) {
-      dispatch(markSnapNotificationsAsRead([notification.id]));
-    } else {
-      markNotificationAsRead([
-        {
-          id: notification.id,
-          type: notification.type,
-          isRead: notification.isRead,
-        },
-      ]);
-    }
+    markNotificationAsRead([
+      {
+        id: notification.id,
+        type: notification.type,
+        isRead: notification.isRead,
+      },
+    ]);
 
     if (
       notification.type === TRIGGER_TYPES.SNAP &&
@@ -72,7 +66,6 @@ export function NotificationsListItem({
   }, [
     notification,
     markNotificationAsRead,
-    markSnapNotificationsAsRead,
     dispatch,
     history,
   ]);
