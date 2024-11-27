@@ -60,7 +60,6 @@ const GET_BATCH_STATUS_RESPONSE_PENDING = {
     minedTx: 'not_mined',
     wouldRevertMessage: null,
     minedHash: '',
-    duplicated: false,
     timedOut: false,
     proxied: false,
     type: 'sentinel',
@@ -77,7 +76,6 @@ const GET_BATCH_STATUS_RESPONSE_SUCCESS = {
     wouldRevertMessage: null,
     minedHash:
       '0xec9d6214684d6dc191133ae4a7ec97db3e521fff9cfe5c4f48a84cb6c93a5fa5',
-    duplicated: true,
     timedOut: true,
     proxied: false,
     type: 'sentinel',
