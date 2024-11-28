@@ -71,6 +71,7 @@ import {
   SubjectType,
 } from '@metamask/permission-controller';
 import SmartTransactionsController from '@metamask/smart-transactions-controller';
+import { ClientId } from '@metamask/smart-transactions-controller/dist/types';
 import {
   METAMASK_DOMAIN,
   SelectedNetworkController,
@@ -2222,6 +2223,7 @@ export default class MetamaskController extends EventEmitter {
       });
     this.smartTransactionsController = new SmartTransactionsController({
       supportedChainIds: getAllowedSmartTransactionsChainIds(),
+      clientId: ClientId.Extension,
       getNonceLock: this.txController.getNonceLock.bind(this.txController),
       confirmExternalTransaction:
         this.txController.confirmExternalTransaction.bind(this.txController),
@@ -2233,6 +2235,13 @@ export default class MetamaskController extends EventEmitter {
       getTransactions: this.txController.getTransactions.bind(
         this.txController,
       ),
+      updateTransaction: this.txController.updateTransaction.bind(
+        this.txController,
+      ),
+      getFeatureFlags: () => {
+        const state = this._getMetaMaskState();
+        return getFeatureFlagsByChainId(state);
+      },
       getMetaMetricsProps: async () => {
         const selectedAddress =
           this.accountsController.getSelectedAccount().address;
