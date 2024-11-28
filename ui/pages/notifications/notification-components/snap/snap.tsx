@@ -35,7 +35,6 @@ import {
 import { isOfTypeNodeGuard, type ExtractedNotification } from '../node-guard';
 import { SnapIcon } from '../../../../components/app/snaps/snap-icon';
 import { useMarkNotificationAsRead } from '../../../../hooks/metamask-notifications/useNotifications';
-import { useSnapNotificationTimeouts } from '../../../../hooks/useNotificationTimeouts';
 
 type SnapNotification = ExtractedNotification<TRIGGER_TYPES.SNAP>;
 
@@ -54,11 +53,13 @@ export const components: NotificationComponent<SnapNotification> = {
 
     const handleSnapButton = () => {
       if (!notification.isRead) {
-        markNotificationAsRead([{
-          id: notification.id,
-          type: notification.type,
-          isRead: notification.isRead,
-        }])
+        markNotificationAsRead([
+          {
+            id: notification.id,
+            type: notification.type,
+            isRead: notification.isRead,
+          },
+        ]);
       }
 
       history.push(getSnapRoute(notification.data.origin));
