@@ -646,22 +646,6 @@
         "lastUpdated": "September 26, 2024"
       }
     },
-    "notifications": {
-      "test": {
-        "id": "test",
-        "origin": "local:http://localhost:8086/",
-        "createdDate": 1652967897732,
-        "readDate": null,
-        "message": "Hello, http://localhost:8086!"
-      },
-      "test2": {
-        "id": "test2",
-        "origin": "local:http://localhost:8086/",
-        "createdDate": 1652967897732,
-        "readDate": 1652967897732,
-        "message": "Hello, http://localhost:8086!"
-      }
-    },
     "accountsByChainId": {
       "0x5": {
         "0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc": {
