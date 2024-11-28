@@ -1,21 +1,24 @@
-import { strict as assert } from 'assert';
 import { TransactionEnvelopeType } from '@metamask/transaction-controller';
 import { Suite } from 'mocha';
 import { MockedEndpoint } from 'mockttp';
 import { WINDOW_TITLES } from '../../../helpers';
-import { Driver } from '../../../webdriver/driver';
 import {
   mockSignatureRejected,
   scrollAndConfirmAndAssertConfirm,
   withTransactionEnvelopeTypeFixtures,
 } from '../helpers';
 import { TestSuiteArguments } from '../transactions/shared';
+import Confirmation from '../../../page-objects/pages/confirmations/redesign/confirmation';
+import ConfirmAlertModal from '../../../page-objects/pages/dialog/confirm-alert';
 import {
   BlockaidReason,
   BlockaidResultType,
 } from '../../../../../shared/constants/security-provider';
 import {
+  assertRejectedSignature,
   assertSignatureRejectedMetrics,
+  assertVerifiedSiweMessage,
+  initializePages,
   openDappAndTriggerSignature,
   SignatureType,
 } from './signature-helpers';
@@ -26,17 +29,22 @@ describe('Malicious Confirmation Signature - Bad Domain @no-mmi', function (this
       this.test?.fullTitle(),
       TransactionEnvelopeType.legacy,
       async ({ driver }: TestSuiteArguments) => {
+        await initializePages(driver);
+        const confirmation = new Confirmation(driver);
+        const alertModal = new ConfirmAlertModal(driver);
+
         await openDappAndTriggerSignature(driver, SignatureType.SIWE_BadDomain);
 
-        await verifyAlertIsDisplayed(driver);
+        await confirmation.clickScrollToBottomButton();
+        await confirmation.clickInlineAlert();
 
-        await acknowledgeAlert(driver);
+        await alertModal.acknowledgeAlert();
 
         await scrollAndConfirmAndAssertConfirm(driver);
 
-        await confirmFromAlertModal(driver);
+        await alertModal.confirmFromAlertModal();
 
-        await assertVerifiedMessage(
+        await assertVerifiedSiweMessage(
           driver,
           '0x24e559452c37827008633f9ae50c68cdb28e33f547f795af687839b520b022e4093c38bf1dfebda875ded715f2754d458ed62a19248e5a9bd2205bd1cb66f9b51b',
         );
@@ -52,19 +60,16 @@ describe('Malicious Confirmation Signature - Bad Domain @no-mmi', function (this
         driver,
         mockedEndpoint: mockedEndpoints,
       }: TestSuiteArguments) => {
+        await initializePages(driver);
+        const confirmation = new Confirmation(driver);
+
         await openDappAndTriggerSignature(driver, SignatureType.SIWE_BadDomain);
 
-        await driver.clickElementAndWaitForWindowToClose(
-          '[data-testid="confirm-footer-cancel-button"]',
-        );
-
+        await confirmation.clickFooterCancelButtonAndAndWaitForWindowToClose();
         await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
 
-        const rejectionResult = await driver.waitForSelector({
-          css: '#siweResult',
-          text: 'Error: User rejected the request.',
-        });
-        assert.ok(rejectionResult);
+        await assertRejectedSignature();
+
         await assertSignatureRejectedMetrics({
           driver,
           mockedEndpoints: mockedEndpoints as MockedEndpoint[],
@@ -100,23 +105,21 @@ describe('Malicious Confirmation Signature - Bad Domain @no-mmi', function (this
         driver,
         mockedEndpoint: mockedEndpoints,
       }: TestSuiteArguments) => {
+        await initializePages(driver);
+        const alertModal = new ConfirmAlertModal(driver);
+
         await openDappAndTriggerSignature(driver, SignatureType.SIWE_BadDomain);
 
         await scrollAndConfirmAndAssertConfirm(driver);
 
-        await acknowledgeAlert(driver);
+        await alertModal.acknowledgeAlert();
 
-        await driver.clickElement(
-          '[data-testid="confirm-alert-modal-cancel-button"]',
-        );
+        await alertModal.rejectFromAlertModal();
+
         await driver.waitUntilXWindowHandles(2);
         await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
 
-        const rejectionResult = await driver.waitForSelector({
-          css: '#siweResult',
-          text: 'Error: User rejected the request.',
-        });
-        assert.ok(rejectionResult);
+        await assertRejectedSignature();
         await assertSignatureRejectedMetrics({
           driver,
           mockedEndpoints: mockedEndpoints as MockedEndpoint[],
@@ -144,34 +147,3 @@ describe('Malicious Confirmation Signature - Bad Domain @no-mmi', function (this
     );
   });
 });
-
-async function confirmFromAlertModal(driver: Driver) {
-  await driver.clickElement('[data-testid="alert-modal-acknowledge-checkbox"]');
-  await driver.clickElement(
-    '[data-testid="confirm-alert-modal-submit-button"]',
-  );
-}
-
-async function acknowledgeAlert(driver: Driver) {
-  await driver.clickElement('[data-testid="alert-modal-acknowledge-checkbox"]');
-  await driver.clickElement('[data-testid="alert-modal-button"]');
-}
-
-async function verifyAlertIsDisplayed(driver: Driver) {
-  await driver.clickElementSafe('.confirm-scroll-to-bottom__button');
-  await driver.waitForSelector({
-    css: '[data-testid="inline-alert"]',
-    text: 'Alert',
-  });
-  await driver.clickElement('[data-testid="inline-alert"]');
-}
-
-async function assertVerifiedMessage(driver: Driver, message: string) {
-  await driver.waitUntilXWindowHandles(2);
-  await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
-
-  await driver.waitForSelector({
-    css: '#siweResult',
-    text: message,
-  });
-}
