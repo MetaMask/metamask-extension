@@ -80,7 +80,6 @@ import { LoggingController, LogType } from '@metamask/logging-controller';
 import { PermissionLogController } from '@metamask/permission-log-controller';
 
 import { RateLimitController } from '@metamask/rate-limit-controller';
-import { NotificationController } from '@metamask/notification-controller';
 import {
   CronjobController,
   JsonSnapsRegistry,
@@ -376,6 +375,7 @@ import { sanitizeUIState } from './lib/state-utils';
 import BridgeStatusController from './controllers/bridge-status/bridge-status-controller';
 import { BRIDGE_STATUS_CONTROLLER_NAME } from './controllers/bridge-status/constants';
 
+const { TRIGGER_TYPES } = NotificationServicesController.Constants;
 export const METAMASK_CONTROLLER_EVENTS = {
   // Fired after state changes that impact the extension badge (unapproved msg count)
   // The process of updating the badge happens in app/scripts/background.js.
@@ -387,7 +387,6 @@ export const METAMASK_CONTROLLER_EVENTS = {
     'NotificationServicesController:notificationsListUpdated',
   METAMASK_NOTIFICATIONS_MARK_AS_READ:
     'NotificationServicesController:markNotificationsAsRead',
-  NOTIFICATIONS_STATE_CHANGE: 'NotificationController:stateChange',
 };
 
 // stream channels
@@ -1432,13 +1431,6 @@ export default class MetamaskController extends EventEmitter {
       },
     });
 
-    this.notificationController = new NotificationController({
-      messenger: this.controllerMessenger.getRestricted({
-        name: 'NotificationController',
-      }),
-      state: initState.NotificationController,
-    });
-
     this.rateLimitController = new RateLimitController({
       state: initState.RateLimitController,
       messenger: this.controllerMessenger.getRestricted({
@@ -1466,11 +1458,21 @@ export default class MetamaskController extends EventEmitter {
           rateLimitTimeout: 300000,
         },
         showInAppNotification: {
-          method: (origin, message) => {
+          method: (origin, args) => {
+            const { message } = args;
+
+            const notification = {
+              data: {
+                message,
+                origin,
+              },
+              type: TRIGGER_TYPES.SNAP,
+              readDate: null,
+            };
+
             this.controllerMessenger.call(
-              'NotificationController:show',
-              origin,
-              message,
+              'NotificationServicesController:updateMetamaskNotificationsList',
+              notification,
             );
 
             return null;
@@ -2485,7 +2487,6 @@ export default class MetamaskController extends EventEmitter {
       SnapController: this.snapController,
       CronjobController: this.cronjobController,
       SnapsRegistry: this.snapsRegistry,
-      NotificationController: this.notificationController,
       SnapInterfaceController: this.snapInterfaceController,
       SnapInsightsController: this.snapInsightsController,
       ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
@@ -2541,7 +2542,6 @@ export default class MetamaskController extends EventEmitter {
         SnapController: this.snapController,
         CronjobController: this.cronjobController,
         SnapsRegistry: this.snapsRegistry,
-        NotificationController: this.notificationController,
         SnapInterfaceController: this.snapInterfaceController,
         SnapInsightsController: this.snapInsightsController,
         ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
@@ -2865,7 +2865,7 @@ export default class MetamaskController extends EventEmitter {
               origin,
               'showInAppNotification',
               origin,
-              args.message,
+              args,
             ),
           updateSnapState: this.controllerMessenger.call.bind(
             this.controllerMessenger,
@@ -2909,24 +2909,6 @@ export default class MetamaskController extends EventEmitter {
         },
       ),
     };
-  }
-
-  /**
-   * Deletes the specified notifications from state.
-   *
-   * @param {string[]} ids - The notifications ids to delete.
-   */
-  dismissNotifications(ids) {
-    this.notificationController.dismiss(ids);
-  }
-
-  /**
-   * Updates the readDate attribute of the specified notifications.
-   *
-   * @param {string[]} ids - The notifications ids to mark as read.
-   */
-  markNotificationsAsRead(ids) {
-    this.notificationController.markRead(ids);
   }
 
   /**
@@ -3136,16 +3118,16 @@ export default class MetamaskController extends EventEmitter {
     this.controllerMessenger.subscribe(
       `${this.snapController.name}:snapUninstalled`,
       (truncatedSnap) => {
-        const notificationIds = Object.values(
-          this.notificationController.state.notifications,
-        ).reduce((idList, notification) => {
-          if (notification.origin === truncatedSnap.id) {
-            idList.push(notification.id);
-          }
-          return idList;
-        }, []);
+        const notificationIds = this.notificationServicesController
+          .getNotificationsByType(TRIGGER_TYPES.SNAP)
+          .filter(
+            (notification) => notification.data.origin === truncatedSnap.id,
+          )
+          .map((notification) => notification.id);
 
-        this.dismissNotifications(notificationIds);
+        this.notificationServicesController.deleteNotificationsById(
+          notificationIds,
+        );
 
         const snapId = truncatedSnap.id;
         const snapCategory = this._getSnapMetadata(snapId)?.category;
@@ -3918,8 +3900,6 @@ export default class MetamaskController extends EventEmitter {
         this.controllerMessenger,
         'SnapController:revokeDynamicPermissions',
       ),
-      dismissNotifications: this.dismissNotifications.bind(this),
-      markNotificationsAsRead: this.markNotificationsAsRead.bind(this),
       disconnectOriginFromSnap: this.controllerMessenger.call.bind(
         this.controllerMessenger,
         'SnapController:disconnectOrigin',
@@ -4258,6 +4238,14 @@ export default class MetamaskController extends EventEmitter {
         notificationServicesController.fetchAndUpdateMetamaskNotifications.bind(
           notificationServicesController,
         ),
+      deleteNotificationsById:
+        notificationServicesController.deleteNotificationsById.bind(
+          notificationServicesController,
+        ),
+      getNotificationsByType:
+        notificationServicesController.getNotificationsByType.bind(
+          notificationServicesController,
+        ),
       markMetamaskNotificationsAsRead:
         notificationServicesController.markMetamaskNotificationsAsRead.bind(
           notificationServicesController,
@@ -4486,8 +4474,6 @@ export default class MetamaskController extends EventEmitter {
 
       // Clear snap state
       this.snapController.clearState();
-      // Clear notification state
-      this.notificationController.clear();
 
       // clear accounts in AccountTrackerController
       this.accountTrackerController.clearAccounts();

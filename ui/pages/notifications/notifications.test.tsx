@@ -27,7 +27,6 @@ jest.mock(
 
 jest.mock('../../store/actions', () => ({
   ...jest.requireActual('../../store/actions'),
-  markNotificationsAsRead: jest.fn(),
   markMetamaskNotificationsAsRead: jest.fn(),
 }));
 
@@ -38,7 +37,6 @@ const initialState = {
     isMetamaskNotificationsEnabled: true,
     isFeatureAnnouncementsEnabled: true,
     metamaskNotifications: [],
-    notifications: [],
     internalAccounts: {
       accounts: [
         {
