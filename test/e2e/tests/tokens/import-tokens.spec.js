@@ -91,6 +91,13 @@ describe('Import flow', function () {
           '[data-testid="token-list-loading-message"]',
         );
 
+        await driver.assertElementNotPresent(
+          '[data-testid="token-list-loading-message"]',
+        );
+
+        await driver.clickElement('[data-testid="sort-by-networks"]');
+        await driver.clickElement('[data-testid="network-filter-current"]');
+
         const expectedTokenListElementsAreFound =
           await driver.elementCountBecomesN('.multichain-token-list-item', 4);
         assert.equal(expectedTokenListElementsAreFound, true);
