@@ -1,4 +1,5 @@
 import { StateMetadata } from '@metamask/base-controller';
+import type { NetworkClientId } from '@metamask/network-controller';
 import { StaticIntervalPollingController } from '@metamask/polling-controller';
 import { Hex } from '@metamask/utils';
 // eslint-disable-next-line import/no-restricted-paths
@@ -28,11 +29,17 @@ const metadata: StateMetadata<{
   },
 };
 
+/** The input to start polling for the {@link BridgeStatusController} */
+type BridgeStatusPollingInput = {
+  networkClientId: NetworkClientId;
+  statusRequest: StatusRequest;
+};
+
 type SrcTxHash = string;
 export type FetchBridgeTxStatusArgs = {
   statusRequest: StatusRequest;
 };
-export default class BridgeStatusController extends StaticIntervalPollingController<
+export default class BridgeStatusController extends StaticIntervalPollingController<BridgeStatusPollingInput>()<
   typeof BRIDGE_STATUS_CONTROLLER_NAME,
   { bridgeStatusState: BridgeStatusControllerState },
   BridgeStatusControllerMessenger
@@ -149,11 +156,10 @@ export default class BridgeStatusController extends StaticIntervalPollingControl
         hexSourceChainId,
       );
 
-      // We manually call startPollingByNetworkClientId() here rather than go through startPollingForBridgeTxStatus()
+      // We manually call startPolling() here rather than go through startPollingForBridgeTxStatus()
       // because we don't want to overwrite the existing historyItem in state
-      const options: FetchBridgeTxStatusArgs = { statusRequest };
       this.#pollingTokensBySrcTxHash[statusRequest.srcTxHash] =
-        this.startPollingByNetworkClientId(networkClientId, options);
+        this.startPolling({ networkClientId, statusRequest });
     });
   };
 
@@ -209,24 +215,25 @@ export default class BridgeStatusController extends StaticIntervalPollingControl
       'NetworkController:findNetworkClientIdByChainId',
       hexSourceChainId,
     );
-    this.#pollingTokensBySrcTxHash[statusRequest.srcTxHash] =
-      this.startPollingByNetworkClientId(networkClientId, { statusRequest });
+    this.#pollingTokensBySrcTxHash[statusRequest.srcTxHash] = this.startPolling(
+      { networkClientId, statusRequest },
+    );
   };
 
-  // This will be called after you call this.startPollingByNetworkClientId()
-  // The args passed in are the args you passed in to startPollingByNetworkClientId()
-  _executePoll = async (
-    _networkClientId: string,
-    fetchBridgeTxStatusArgs: FetchBridgeTxStatusArgs,
-  ) => {
-    await this.#fetchBridgeTxStatus(fetchBridgeTxStatusArgs);
+  // This will be called after you call this.startPolling()
+  // The args passed in are the args you passed in to startPolling()
+  _executePoll = async (pollingInput: BridgeStatusPollingInput) => {
+    await this.#fetchBridgeTxStatus(pollingInput);
   };
 
   #getSelectedAccount() {
     return this.messagingSystem.call('AccountsController:getSelectedAccount');
   }
 
-  #fetchBridgeTxStatus = async ({ statusRequest }: FetchBridgeTxStatusArgs) => {
+  #fetchBridgeTxStatus = async ({
+    networkClientId: _networkClientId,
+    statusRequest,
+  }: BridgeStatusPollingInput) => {
     const { bridgeStatusState } = this.state;
 
     try {
