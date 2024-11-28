@@ -5,6 +5,7 @@ import thunk from 'redux-thunk';
 import * as actions from '../../../../store/actions';
 import { renderWithProvider } from '../../../../../test/lib/render-helpers';
 import mockState from '../../../../../test/data/mock-state.json';
+import { mockNetworkState } from '../../../../../test/stub/networks';
 import HideTokenConfirmationModal from '.';
 
 const mockHistoryPush = jest.fn();
@@ -23,6 +24,13 @@ describe('Hide Token Confirmation Modal', () => {
     address: '0xTokenAddress',
     symbol: 'TKN',
     image: '',
+  };
+
+  const tokenState2 = {
+    address: '0xTokenAddress2',
+    symbol: 'TKN2',
+    image: '',
+    chainId: '0x89',
   };
 
   const tokenModalState = {
@@ -80,6 +88,49 @@ describe('Hide Token Confirmation Modal', () => {
     expect(actions.ignoreTokens).toHaveBeenCalledWith({
       tokensToIgnore: tokenState.address,
       networkClientId: 'goerli',
+    });
+  });
+
+  it('should hide token from another chain', () => {
+    const tokenModalStateWithDifferentChain = {
+      ...mockState,
+      metamask: {
+        ...mockState.metamask,
+        selectedNetworkClientId: 'bsc',
+        ...mockNetworkState({ chainId: '0x89', id: 'bsc' }),
+      },
+      appState: {
+        ...mockState.appState,
+        modal: {
+          modalState: {
+            props: {
+              history: {
+                push: mockHistoryPush,
+              },
+              token: tokenState2,
+            },
+          },
+        },
+      },
+    };
+
+    const mockStoreDifferentChain = configureMockStore([thunk])(
+      tokenModalStateWithDifferentChain,
+    );
+
+    const { queryByTestId } = renderWithProvider(
+      <HideTokenConfirmationModal />,
+      mockStoreDifferentChain,
+    );
+
+    const hideButton = queryByTestId('hide-token-confirmation__hide');
+
+    fireEvent.click(hideButton);
+
+    expect(mockHideModal).toHaveBeenCalled();
+    expect(actions.ignoreTokens).toHaveBeenCalledWith({
+      tokensToIgnore: tokenState2.address,
+      networkClientId: 'bsc',
     });
   });
 });

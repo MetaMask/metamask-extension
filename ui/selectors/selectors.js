@@ -12,6 +12,12 @@ import { NameType } from '@metamask/name-controller';
 import { TransactionStatus } from '@metamask/transaction-controller';
 import { isEvmAccountType } from '@metamask/keyring-api';
 import { RpcEndpointType } from '@metamask/network-controller';
+import {
+  getCurrentChainId,
+  getProviderConfig,
+  getSelectedNetworkClientId,
+  getNetworkConfigurationsByChainId,
+} from '../../shared/modules/selectors/networks';
 // TODO: Remove restricted import
 // eslint-disable-next-line import/no-restricted-paths
 import { addHexPrefix, getEnvironmentType } from '../../app/scripts/lib/util';
@@ -104,11 +110,6 @@ import { MultichainNativeAssets } from '../../shared/constants/multichain/assets
 import { BridgeFeatureFlagsKey } from '../../app/scripts/controllers/bridge/types';
 import { hasTransactionData } from '../../shared/modules/transaction.utils';
 import { toChecksumHexAddress } from '../../shared/modules/hexstring-utils';
-import {
-  getProviderConfig,
-  getSelectedNetworkClientId,
-  getNetworkConfigurationsByChainId,
-} from '../../shared/modules/selectors/networks';
 import { createDeepEqualSelector } from '../../shared/modules/selectors/util';
 import {
   getAllUnapprovedTransactions,
@@ -130,11 +131,6 @@ export function getNetworkIdentifier(state) {
   const { type, nickname, rpcUrl } = getProviderConfig(state);
 
   return nickname || rpcUrl || type;
-}
-
-export function getCurrentChainId(state) {
-  const { chainId } = getProviderConfig(state);
-  return chainId;
 }
 
 export function getMetaMetricsId(state) {
@@ -1495,14 +1491,17 @@ export function getWeb3ShimUsageStateForOrigin(state, origin) {
  * objects, per the above description.
  *
  * @param {object} state - the redux state object
+ * @param {string} overrideChainId - the chainId to override the current chainId
  * @returns {SwapsEthToken} The token object representation of the currently
  * selected account's ETH balance, as expected by the Swaps API.
  */
 
-export function getSwapsDefaultToken(state) {
+export function getSwapsDefaultToken(state, overrideChainId = null) {
   const selectedAccount = getSelectedAccount(state);
   const balance = selectedAccount?.balance;
-  const chainId = getCurrentChainId(state);
+  const currentChainId = getCurrentChainId(state);
+
+  const chainId = overrideChainId ?? currentChainId;
   const defaultTokenObject = SWAPS_CHAINID_DEFAULT_TOKEN_MAP[chainId];
 
   return {
@@ -1516,8 +1515,9 @@ export function getSwapsDefaultToken(state) {
   };
 }
 
-export function getIsSwapsChain(state) {
-  const chainId = getCurrentChainId(state);
+export function getIsSwapsChain(state, overrideChainId) {
+  const currentChainId = getCurrentChainId(state);
+  const chainId = overrideChainId ?? currentChainId;
   const isNotDevelopment =
     process.env.METAMASK_ENVIRONMENT !== 'development' &&
     process.env.METAMASK_ENVIRONMENT !== 'testing';
@@ -1526,8 +1526,9 @@ export function getIsSwapsChain(state) {
     : ALLOWED_DEV_SWAPS_CHAIN_IDS.includes(chainId);
 }
 
-export function getIsBridgeChain(state) {
-  const chainId = getCurrentChainId(state);
+export function getIsBridgeChain(state, overrideChainId) {
+  const currentChainId = getCurrentChainId(state);
+  const chainId = overrideChainId ?? currentChainId;
   return ALLOWED_BRIDGE_CHAIN_IDS.includes(chainId);
 }
 
@@ -1911,57 +1912,6 @@ export const getSnapInsights = createDeepEqualSelector(
   getAllSnapInsights,
   (_, id) => id,
   (insights, id) => insights?.[id],
-);
-
-/**
- * @typedef {object} Notification
- * @property {string} id - A unique identifier for the notification
- * @property {string} origin - A string identifing the snap origin
- * @property {EpochTimeStamp} createdDate - A date in epochTimeStramps, identifying when the notification was first committed
- * @property {EpochTimeStamp} readDate - A date in epochTimeStramps, identifying when the notification was read by the user
- * @property {string} message - A string containing the notification message
- */
-
-/**
- * Notifications are managed by the notification controller and referenced by
- * `state.metamask.notifications`. This function returns a list of notifications
- * the can be shown to the user.
- *
- * The returned notifications are sorted by date.
- *
- * @param {object} state - the redux state object
- * @returns {Notification[]} An array of notifications that can be shown to the user
- */
-
-export function getNotifications(state) {
-  const notifications = Object.values(state.metamask.notifications);
-
-  const notificationsSortedByDate = notifications.sort(
-    (a, b) => new Date(b.createdDate) - new Date(a.createdDate),
-  );
-  return notificationsSortedByDate;
-}
-
-export function getUnreadNotifications(state) {
-  const notifications = getNotifications(state);
-
-  const unreadNotificationCount = notifications.filter(
-    (notification) => notification.readDate === null,
-  );
-
-  return unreadNotificationCount;
-}
-
-export const getReadNotificationsCount = createSelector(
-  getNotifications,
-  (notifications) =>
-    notifications.filter((notification) => notification.readDate !== null)
-      .length,
-);
-
-export const getUnreadNotificationsCount = createSelector(
-  getUnreadNotifications,
-  (notifications) => notifications.length,
 );
 
 /**
@@ -2364,7 +2314,29 @@ export const getAllEnabledNetworks = createDeepEqualSelector(
     ),
 );
 
-export const getChainIdsToPoll = createDeepEqualSelector(
+/*
+ * USE THIS WITH CAUTION
+ *
+ * Only use this selector if you are absolutely sure that your UI component needs
+ * data from _all chains_ to compute a value. Else, use `getChainIdsToPoll`.
+ *
+ * Examples:
+ * - Components that should NOT use this selector:
+ *   - Token list: This only needs to poll for chains based on the network filter
+ *     (potentially only one chain). In this case, use `getChainIdsToPoll`.
+ * - Components that SHOULD use this selector:
+ *   - Aggregated balance: This needs to display data regardless of network filter
+ *     selection (always showing aggregated balances across all chains).
+ *
+ * Key Considerations:
+ * - This selector can cause expensive computations. It should only be used when
+ *   necessary, and where possible, optimized to use `getChainIdsToPoll` instead.
+ * - Logic Overview:
+ *   - If `PORTFOLIO_VIEW` is not enabled, the selector returns only the `currentChainId`.
+ *   - Otherwise, it includes all chains from `networkConfigurations`, excluding
+ *     `TEST_CHAINS`, while ensuring the `currentChainId` is included.
+ */
+export const getAllChainsToPoll = createDeepEqualSelector(
   getNetworkConfigurationsByChainId,
   getCurrentChainId,
   (networkConfigurations, currentChainId) => {
@@ -2373,7 +2345,29 @@ export const getChainIdsToPoll = createDeepEqualSelector(
     }
 
     return Object.keys(networkConfigurations).filter(
-      (chainId) => !TEST_CHAINS.includes(chainId),
+      (chainId) => chainId === currentChainId || !TEST_CHAINS.includes(chainId),
+    );
+  },
+);
+
+export const getChainIdsToPoll = createDeepEqualSelector(
+  getNetworkConfigurationsByChainId,
+  getCurrentChainId,
+  getIsTokenNetworkFilterEqualCurrentNetwork,
+  (
+    networkConfigurations,
+    currentChainId,
+    isTokenNetworkFilterEqualCurrentNetwork,
+  ) => {
+    if (
+      !process.env.PORTFOLIO_VIEW ||
+      isTokenNetworkFilterEqualCurrentNetwork
+    ) {
+      return [currentChainId];
+    }
+
+    return Object.keys(networkConfigurations).filter(
+      (chainId) => chainId === currentChainId || !TEST_CHAINS.includes(chainId),
     );
   },
 );
@@ -2381,8 +2375,16 @@ export const getChainIdsToPoll = createDeepEqualSelector(
 export const getNetworkClientIdsToPoll = createDeepEqualSelector(
   getNetworkConfigurationsByChainId,
   getCurrentChainId,
-  (networkConfigurations, currentChainId) => {
-    if (!process.env.PORTFOLIO_VIEW) {
+  getIsTokenNetworkFilterEqualCurrentNetwork,
+  (
+    networkConfigurations,
+    currentChainId,
+    isTokenNetworkFilterEqualCurrentNetwork,
+  ) => {
+    if (
+      !process.env.PORTFOLIO_VIEW ||
+      isTokenNetworkFilterEqualCurrentNetwork
+    ) {
       const networkConfiguration = networkConfigurations[currentChainId];
       return [
         networkConfiguration.rpcEndpoints[
@@ -2393,7 +2395,7 @@ export const getNetworkClientIdsToPoll = createDeepEqualSelector(
 
     return Object.entries(networkConfigurations).reduce(
       (acc, [chainId, network]) => {
-        if (!TEST_CHAINS.includes(chainId)) {
+        if (chainId === currentChainId || !TEST_CHAINS.includes(chainId)) {
           acc.push(
             network.rpcEndpoints[network.defaultRpcEndpointIndex]
               .networkClientId,

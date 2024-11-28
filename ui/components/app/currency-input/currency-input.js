@@ -6,12 +6,11 @@ import { BlockSize } from '../../../helpers/constants/design-system';
 import UnitInput from '../../ui/unit-input';
 import CurrencyDisplay from '../../ui/currency-display';
 import { getNativeCurrency } from '../../../ducks/metamask/metamask';
-import { getProviderConfig } from '../../../../shared/modules/selectors/networks';
 import {
+  getProviderConfig,
   getCurrentChainId,
-  getCurrentCurrency,
-  getShouldShowFiat,
-} from '../../../selectors';
+} from '../../../../shared/modules/selectors/networks';
+import { getCurrentCurrency, getShouldShowFiat } from '../../../selectors';
 import { EtherDenomination } from '../../../../shared/constants/common';
 import { Numeric } from '../../../../shared/modules/Numeric';
 import { useIsOriginalNativeTokenSymbol } from '../../../hooks/useIsOriginalNativeTokenSymbol';

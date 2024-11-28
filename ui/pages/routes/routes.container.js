@@ -2,33 +2,33 @@ import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
 import { compose } from 'redux';
 import {
+  getCurrentChainId,
+  isNetworkLoading,
+  getProviderConfig,
+} from '../../../shared/modules/selectors/networks';
+import {
   getAllAccountsOnNetworkAreEmpty,
   getIsNetworkUsed,
   getNetworkIdentifier,
   getPreferences,
   getTheme,
   getIsTestnet,
-  getCurrentChainId,
   getShouldShowSeedPhraseReminder,
   isCurrentProviderCustom,
   ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
   getUnapprovedConfirmations,
   ///: END:ONLY_INCLUDE_IF
   getShowExtensionInFullSizeView,
-  getSelectedAccount,
   getSwitchedNetworkDetails,
   getNetworkToAutomaticallySwitchTo,
   getNumberOfAllUnapprovedTransactionsAndMessages,
   getUseRequestQueue,
   getCurrentNetwork,
+  getSelectedInternalAccount,
   oldestPendingConfirmationSelector,
   getUnapprovedTransactions,
   getPendingApprovals,
 } from '../../selectors';
-import {
-  isNetworkLoading,
-  getProviderConfig,
-} from '../../../shared/modules/selectors/networks';
 import {
   lockMetamask,
   hideImportNftsModal,
@@ -64,7 +64,7 @@ function mapStateToProps(state) {
 
   // If there is more than one connected account to activeTabOrigin,
   // *BUT* the current account is not one of them, show the banner
-  const account = getSelectedAccount(state);
+  const account = getSelectedInternalAccount(state);
   const activeTabOrigin = activeTab?.origin;
   const currentNetwork = getCurrentNetwork(state);
 

@@ -61,7 +61,6 @@ import {
   getApprovalFlows,
   getCurrentNetworkTransactions,
   getIsSigningQRHardwareTransaction,
-  getNotifications,
   ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
   getPermissionSubjects,
   getFirstSnapInstallOrUpdateRequest,
@@ -106,7 +105,6 @@ import {
 import { parseSmartTransactionsError } from '../pages/swaps/swaps.util';
 import { isEqualCaseInsensitive } from '../../shared/modules/string-utils';
 import { getSmartTransactionsOptInStatusInternal } from '../../shared/modules/selectors';
-import { NOTIFICATIONS_EXPIRATION_DELAY } from '../helpers/constants/notifications';
 import {
   fetchLocale,
   loadRelativeTimeFormatLocaleData,
@@ -129,6 +127,7 @@ import {
   CaveatTypes,
   EndowmentTypes,
 } from '../../shared/constants/permissions';
+import { NOTIFICATIONS_EXPIRATION_DELAY } from '../helpers/constants/notifications';
 import * as actionConstants from './actionConstants';
 ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
 import { updateCustodyState } from './institutional/institution-actions';
@@ -1258,11 +1257,15 @@ export async function handleSnapRequest<
   return submitRequestToBackground('handleSnapRequest', [args]);
 }
 
-export function dismissNotifications(
-  ids: string[],
+export function revokeDynamicSnapPermissions(
+  snapId: string,
+  permissionNames: string[],
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
   return async (dispatch: MetaMaskReduxDispatch) => {
-    await submitRequestToBackground('dismissNotifications', [ids]);
+    await submitRequestToBackground('revokeDynamicSnapPermissions', [
+      snapId,
+      permissionNames,
+    ]);
     await forceUpdateMetamaskState(dispatch);
   };
 }
@@ -1275,7 +1278,7 @@ export function deleteExpiredNotifications(): ThunkAction<
 > {
   return async (dispatch, getState) => {
     const state = getState();
-    const notifications = getNotifications(state);
+    const notifications = state.metamask.metamaskNotificationsList;
 
     const notificationIdsToDelete = notifications
       .filter((notification) => {
@@ -1289,34 +1292,13 @@ export function deleteExpiredNotifications(): ThunkAction<
         );
       })
       .map(({ id }) => id);
+
     if (notificationIdsToDelete.length) {
-      await submitRequestToBackground('dismissNotifications', [
+      await submitRequestToBackground('deleteNotificationsById', [
         notificationIdsToDelete,
       ]);
       await forceUpdateMetamaskState(dispatch);
     }
-  };
-}
-
-export function markNotificationsAsRead(
-  ids: string[],
-): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
-  return async (dispatch: MetaMaskReduxDispatch) => {
-    await submitRequestToBackground('markNotificationsAsRead', [ids]);
-    await forceUpdateMetamaskState(dispatch);
-  };
-}
-
-export function revokeDynamicSnapPermissions(
-  snapId: string,
-  permissionNames: string[],
-): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
-  return async (dispatch: MetaMaskReduxDispatch) => {
-    await submitRequestToBackground('revokeDynamicSnapPermissions', [
-      snapId,
-      permissionNames,
-    ]);
-    await forceUpdateMetamaskState(dispatch);
   };
 }
 
@@ -2506,6 +2488,23 @@ export function setActiveNetwork(
     } catch (error) {
       logErrorWithMessage(error);
       dispatch(displayWarning('Had a problem changing networks!'));
+    }
+  };
+}
+
+export function setActiveNetworkWithError(
+  networkConfigurationId: string,
+): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
+  return async (dispatch) => {
+    log.debug(`background.setActiveNetwork: ${networkConfigurationId}`);
+    try {
+      await submitRequestToBackground('setActiveNetwork', [
+        networkConfigurationId,
+      ]);
+    } catch (error) {
+      logErrorWithMessage(error);
+      dispatch(displayWarning('Had a problem changing networks!'));
+      throw new Error('Had a problem changing networks!');
     }
   };
 }
@@ -4566,7 +4565,7 @@ export async function currencyRateStartPolling(
  * for the given network client.
  * If all network clients unsubscribe, the controller stops polling.
  *
- * @param pollingToken - Poll token received from calling startPollingByNetworkClientId
+ * @param pollingToken - Poll token received from calling currencyRateStartPolling
  */
 export async function currencyRateStopPollingByPollingToken(
   pollingToken: string,
@@ -4728,10 +4727,9 @@ export async function accountTrackerStopPollingByPollingToken(
 export async function gasFeeStartPollingByNetworkClientId(
   networkClientId: string,
 ) {
-  const pollingToken = await submitRequestToBackground(
-    'gasFeeStartPollingByNetworkClientId',
-    [networkClientId],
-  );
+  const pollingToken = await submitRequestToBackground('gasFeeStartPolling', [
+    { networkClientId },
+  ]);
   await addPollingTokenToAppState(pollingToken);
   return pollingToken;
 }
@@ -4741,7 +4739,7 @@ export async function gasFeeStartPollingByNetworkClientId(
  * for the given network client.
  * If all network clients unsubscribe, the controller stops polling.
  *
- * @param pollingToken - Poll token received from calling startPollingByNetworkClientId
+ * @param pollingToken - Poll token received from calling gasFeeStartPolling
  */
 export async function gasFeeStopPollingByPollingToken(pollingToken: string) {
   await submitRequestToBackground('gasFeeStopPollingByPollingToken', [
@@ -5619,6 +5617,32 @@ export function fetchAndUpdateMetamaskNotifications(
       const response = await submitRequestToBackground(
         'fetchAndUpdateMetamaskNotifications',
         [previewToken],
+      );
+      return response;
+    } catch (error) {
+      logErrorWithMessage(error);
+      throw error;
+    }
+  };
+}
+
+/**
+ * Deletes notifications by their id.
+ *
+ * This function sends a request to the background script to delete notifications by the passed in ids and updates the state accordingly.
+ * If the operation encounters an error, it logs the error message and rethrows the error to ensure it is handled appropriately.
+ *
+ * @param ids - The ids of the notifications to delete.
+ * @returns A thunk action that, when dispatched, attempts to delete a notification by its id.
+ */
+export function deleteNotificationsById(
+  ids: string[],
+): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
+  return async () => {
+    try {
+      const response = await submitRequestToBackground(
+        'deleteNotificationsById',
+        [ids],
       );
       return response;
     } catch (error) {
