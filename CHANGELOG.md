@@ -6,6 +6,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [12.7.2]
+### Fixed
+- Fix message signatures for Gridplus lattice hardware wallets ([#28694](https://github.com/MetaMask/metamask-extension/pull/28694))
+
+## [12.7.1]
+### Fixed
+- Fix bug that could prevent security warnings from being shown on token transfer confirmations in some cases ([#28487](https://github.com/MetaMask/metamask-extension/pull/28487))
+- Fix balance display, so that it correctly shows ETH and fiat values, when the "Show balane and token price checker" toggle is off ([#28569](https://github.com/MetaMask/metamask-extension/pull/28569))
+
 ## [12.7.0]
 ### Added
 - Added Token Network Filter UI, allowing users to filter tokens by network (behind a feature flag) ([#27884](https://github.com/MetaMask/metamask-extension/pull/27884))
@@ -41,6 +50,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Prevented scrolling to the account list item on the send page to keep the relevant UI in view ([#27934](https://github.com/MetaMask/metamask-extension/pull/27934))
 - Improved handling of network switching and adding networks to prevent issues with queued transactions ([#28090](https://github.com/MetaMask/metamask-extension/pull/28090))
 - Prevented redirect after adding a network in Onboarding Settings ([#28165](https://github.com/MetaMask/metamask-extension/pull/28165))
+
+## [12.6.2]
+### Fixed
+- Prevent QR code scanning from setting incorrect recipient addresses during the send flow by restricting the QR scanner feature to only handle simple sends, and fail on QR codes that encode more complex transaction types ([#28521](https://github.com/MetaMask/metamask-extension/pull/28521))
 
 ## [12.6.1]
 ### Fixed
@@ -5343,8 +5356,11 @@ Update styles and spacing on the critical error page  ([#20350](https://github.c
 - Added the ability to restore accounts from seed words.
 
 
-[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v12.7.0...HEAD
-[12.7.0]: https://github.com/MetaMask/metamask-extension/compare/v12.6.1...v12.7.0
+[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v12.7.2...HEAD
+[12.7.2]: https://github.com/MetaMask/metamask-extension/compare/v12.7.1...v12.7.2
+[12.7.1]: https://github.com/MetaMask/metamask-extension/compare/v12.7.0...v12.7.1
+[12.7.0]: https://github.com/MetaMask/metamask-extension/compare/v12.6.2...v12.7.0
+[12.6.2]: https://github.com/MetaMask/metamask-extension/compare/v12.6.1...v12.6.2
 [12.6.1]: https://github.com/MetaMask/metamask-extension/compare/v12.6.0...v12.6.1
 [12.6.0]: https://github.com/MetaMask/metamask-extension/compare/v12.5.1...v12.6.0
 [12.5.1]: https://github.com/MetaMask/metamask-extension/compare/v12.5.0...v12.5.1
