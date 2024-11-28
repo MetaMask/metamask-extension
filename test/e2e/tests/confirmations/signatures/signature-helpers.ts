@@ -253,6 +253,8 @@ function assertEventPropertiesMatch(
   const actualProperties = { ...event.properties };
   const expectedProps = { ...expectedProperties };
 
+  compareDecodingAPIResponse(actualProperties, expectedProps, eventName);
+
   compareSecurityAlertResponse(actualProperties, expectedProps, eventName);
 
   assert(event, `${eventName} event not found`);
@@ -285,6 +287,33 @@ function compareSecurityAlertResponse(
     delete actualProperties.security_alert_response;
     delete expectedProperties.security_alert_response;
   }
+}
+
+function compareDecodingAPIResponse(
+  actualProperties: Record<string, unknown>,
+  expectedProperties: Record<string, unknown>,
+  eventName: string,
+) {
+  if (
+    eventName === 'Signature Rejected' ||
+    eventName === 'Signature Approved'
+  ) {
+    assert.deepStrictEqual(
+      actualProperties.decoding_change_types,
+      expectedProperties.decoding_change_types,
+      `${eventName} event properties do not match: decoding_change_types is ${actualProperties.decoding_change_types}`,
+    );
+    assert.equal(
+      actualProperties.decoding_response,
+      expectedProperties.decoding_response,
+      `${eventName} event properties do not match: decoding_response is ${actualProperties.decoding_response}`,
+    );
+  }
+  // Remove the property from both objects to avoid comparison
+  delete expectedProperties.decoding_change_types;
+  delete expectedProperties.decoding_response;
+  delete actualProperties.decoding_change_types;
+  delete actualProperties.decoding_response;
 }
 
 export async function clickHeaderInfoBtn(driver: Driver) {
