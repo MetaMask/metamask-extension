@@ -158,4 +158,3 @@ export const components: NotificationComponent<SnapNotification> = {
       ) : null,
   },
 };
-=-
