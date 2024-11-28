@@ -58,3 +58,16 @@ jobs:
           if [[ $passed != "true" ]]; then
             exit 1
           fi
+
+  log-merge-group-failure:
+    name: Log merge group failure
+    # Only run this job if the merge group event fails, skip logging on forks
+    if: ${{ github.event_name == 'merge_group' && failure() && github.repository == 'MetaMask/metamask-extension' }}
+    needs:
+      - all-jobs-pass
+    uses: metamask/github-tools/.github/workflows/log-merge-group-failure.yml@16a5a57ccdd8aedf290874017d58248f4baed49a
+    secrets:
+      GOOGLE_APPLICATION_CREDENTIALS: ${{ secrets.GOOGLE_APPLICATION_CREDENTIALS }}
+      GOOGLE_SERVICE_ACCOUNT: ${{ secrets.GOOGLE_SERVICE_ACCOUNT }}
+      SPREADSHEET_ID: ${{ secrets.MQ_SPREADSHEET_ID }}
+      SHEET_NAME: ${{ secrets.MQ_SHEET_NAME }}
