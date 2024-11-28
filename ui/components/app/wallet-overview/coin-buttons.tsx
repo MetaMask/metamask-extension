@@ -365,15 +365,25 @@ const CoinButtons = ({
       { excludeMetaMetricsId: false },
     );
 
+    ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
     if (isEvmAccountType(account.type)) {
+      ///: END:ONLY_INCLUDE_IF
       // Native Send flow
       await setCorrectChain();
       await dispatch(startNewDraftTransaction({ type: AssetType.native }));
       history.push(SEND_ROUTE);
+      ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
     } else {
       // Non-EVM (Snap) Send flow
       if (!account.metadata.snap) {
         throw new Error('Non-EVM needs to be Snap accounts');
+      }
+
+      // TODO: Remove this once we want to enable all non-EVM Snaps
+      if (!isMultichainWalletSnap(account.metadata.snap.id as SnapId)) {
+        throw new Error(
+          `Non-EVM Snap is not whitelisted: ${account.metadata.snap.id}`,
+        );
       }
 
       try {
@@ -389,6 +399,7 @@ const CoinButtons = ({
         await dispatch(setDefaultHomeActiveTabName(currentActivityTabName));
       }
     }
+    ///: END:ONLY_INCLUDE_IF
   }, [chainId, account, setCorrectChain]);
 
   const handleSwapOnClick = useCallback(async () => {
