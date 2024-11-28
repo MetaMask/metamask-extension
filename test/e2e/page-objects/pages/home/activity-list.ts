@@ -1,3 +1,4 @@
+import { strict as assert } from 'assert';
 import { Driver } from '../../../webdriver/driver';
 
 class ActivityListPage {

@@ -53,7 +53,6 @@ describe('Token List', function () {
       },
       async ({ driver }: { driver: Driver }) => {
         await unlockWallet(driver);
-        throw new Error('Not implemented');
         await importToken(driver);
 
         const tokenListBeforeSorting = await driver.findElements(

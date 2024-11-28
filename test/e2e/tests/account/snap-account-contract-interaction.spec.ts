@@ -75,6 +75,7 @@ describe('Snap Account Contract interaction @no-mmi', function (this: Suite) {
         );
         const homePage = new HomePage(driver);
         await homePage.check_pageIsLoaded();
+        await homePage.goToActivityList();
         const activityList = new ActivityListPage(driver);
         await activityList.check_confirmedTxNumberDisplayedInActivity();
         await activityList.check_txAmountInActivity('-4 ETH');
