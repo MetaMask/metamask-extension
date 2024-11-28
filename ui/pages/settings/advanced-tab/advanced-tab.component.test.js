@@ -1,15 +1,17 @@
 import React from 'react';
-import { fireEvent } from '@testing-library/react';
+import { fireEvent, waitFor } from '@testing-library/react';
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import mockState from '../../../../test/data/mock-state.json';
 import { renderWithProvider } from '../../../../test/lib/render-helpers';
+import { exportAsFile } from '../../../helpers/utils/export-utils';
 import AdvancedTab from '.';
 
 const mockSetAutoLockTimeLimit = jest.fn().mockReturnValue({ type: 'TYPE' });
 const mockSetShowTestNetworks = jest.fn();
 const mockSetShowFiatConversionOnTestnetsPreference = jest.fn();
 const mockSetStxPrefEnabled = jest.fn();
+const mockDisplayErrorInSettings = jest.fn();
 
 jest.mock('../../../store/actions.ts', () => {
   return {
@@ -19,6 +21,32 @@ jest.mock('../../../store/actions.ts', () => {
       mockSetShowFiatConversionOnTestnetsPreference,
     setSmartTransactionsPreferenceEnabled: () => mockSetStxPrefEnabled,
   };
+});
+
+jest.mock('../../../ducks/app/app.ts', () => ({
+  displayErrorInSettings: () => mockDisplayErrorInSettings,
+  hideErrorInSettings: () => jest.fn(),
+}));
+
+jest.mock('../../../helpers/utils/export-utils', () => ({
+  ...jest.requireActual('../../../helpers/utils/export-utils'),
+  exportAsFile: jest
+    .fn()
+    .mockResolvedValueOnce({})
+    .mockImplementationOnce(new Error('state file error')),
+}));
+
+jest.mock('webextension-polyfill', () => ({
+  runtime: {
+    getPlatformInfo: jest.fn().mockResolvedValue('mac'),
+  },
+}));
+
+Object.defineProperty(window, 'stateHooks', {
+  value: {
+    getCleanAppState: () => mockState,
+    getLogs: () => [],
+  },
 });
 
 describe('AdvancedTab Component', () => {
@@ -103,6 +131,35 @@ describe('AdvancedTab Component', () => {
       const toggleButton = queryByTestId('settings-page-stx-opt-in-toggle');
       fireEvent.click(toggleButton);
       expect(mockSetStxPrefEnabled).toHaveBeenCalled();
+    });
+  });
+
+  describe('renderStateLogs', () => {
+    it('should render the toggle button for state log download', () => {
+      const { queryByTestId } = renderWithProvider(<AdvancedTab />, mockStore);
+      const stateLogButton = queryByTestId('advanced-setting-state-logs');
+      expect(stateLogButton).toBeInTheDocument();
+    });
+
+    it('should call exportAsFile when the toggle button is clicked', async () => {
+      const { queryByTestId } = renderWithProvider(<AdvancedTab />, mockStore);
+      const stateLogButton = queryByTestId(
+        'advanced-setting-state-logs-button',
+      );
+      fireEvent.click(stateLogButton);
+      await waitFor(() => {
+        expect(exportAsFile).toHaveBeenCalledTimes(1);
+      });
+    });
+    it('should call displayErrorInSettings when the state file download fails', async () => {
+      const { queryByTestId } = renderWithProvider(<AdvancedTab />, mockStore);
+      const stateLogButton = queryByTestId(
+        'advanced-setting-state-logs-button',
+      );
+      fireEvent.click(stateLogButton);
+      await waitFor(() => {
+        expect(mockDisplayErrorInSettings).toHaveBeenCalledTimes(1);
+      });
     });
   });
 });

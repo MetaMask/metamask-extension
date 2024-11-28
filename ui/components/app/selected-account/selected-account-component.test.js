@@ -52,13 +52,6 @@ jest.mock('../../../selectors', () => {
     getAccountType: mockGetAccountType,
     getSelectedInternalAccount: mockGetSelectedAccount,
     getCurrentChainId: jest.fn(() => '0x5'),
-    getSelectedNetworkClientId: jest.fn(() => 'goerli'),
-    getNetworkConfigurationsByChainId: jest.fn(() => ({
-      '0x5': {
-        chainId: '0x5',
-        rpcEndpoints: [{ networkClientId: 'goerli' }],
-      },
-    })),
   };
 });
 

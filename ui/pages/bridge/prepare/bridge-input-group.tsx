@@ -1,5 +1,6 @@
 import React from 'react';
 import { Hex } from '@metamask/utils';
+import { useSelector } from 'react-redux';
 import { SwapsTokenObject } from '../../../../shared/constants/swaps';
 import {
   Box,
@@ -27,6 +28,7 @@ import {
   CHAIN_ID_TOKEN_IMAGE_MAP,
 } from '../../../../shared/constants/network';
 import useLatestBalance from '../../../hooks/bridge/useLatestBalance';
+import { getBridgeQuotes } from '../../../ducks/bridge/selectors';
 
 const generateAssetFromToken = (
   chainId: Hex,
@@ -69,13 +71,15 @@ export const BridgeInputGroup = ({
   token: SwapsTokenObject | SwapsEthToken | null;
   amountFieldProps?: Pick<
     React.ComponentProps<typeof TextField>,
-    'testId' | 'autoFocus' | 'value' | 'readOnly' | 'disabled'
+    'testId' | 'autoFocus' | 'value' | 'readOnly' | 'disabled' | 'className'
   >;
 } & Pick<
   React.ComponentProps<typeof AssetPicker>,
   'networkProps' | 'header' | 'customTokenListGenerator' | 'onAssetChange'
 >) => {
   const t = useI18nContext();
+
+  const { isLoading, activeQuote } = useSelector(getBridgeQuotes);
 
   const tokenFiatValue = useTokenFiatAmount(
     token?.address || undefined,
@@ -125,7 +129,9 @@ export const BridgeInputGroup = ({
           <TextField
             type={TextFieldType.Number}
             className="amount-input"
-            placeholder="0"
+            placeholder={
+              isLoading && !activeQuote ? t('bridgeCalculatingAmount') : '0'
+            }
             onChange={(e) => {
               onAmountChange?.(e.target.value);
             }}

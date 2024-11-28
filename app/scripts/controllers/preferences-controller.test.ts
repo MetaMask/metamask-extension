@@ -733,7 +733,7 @@ describe('preferences controller', () => {
         privacyMode: false,
         showFiatInTestnets: false,
         showTestNetworks: false,
-        smartTransactionsOptInStatus: null,
+        smartTransactionsOptInStatus: true,
         useNativeCurrencyAsPrimaryCurrency: true,
         hideZeroBalanceTokens: false,
         petnamesEnabled: true,
@@ -762,7 +762,7 @@ describe('preferences controller', () => {
         showExtensionInFullSizeView: false,
         showFiatInTestnets: false,
         showTestNetworks: false,
-        smartTransactionsOptInStatus: null,
+        smartTransactionsOptInStatus: true,
         useNativeCurrencyAsPrimaryCurrency: true,
         hideZeroBalanceTokens: false,
         petnamesEnabled: true,
@@ -837,6 +837,23 @@ describe('preferences controller', () => {
     });
   });
 
+  describe('overrideContentSecurityPolicyHeader', () => {
+    it('defaults overrideContentSecurityPolicyHeader to true', () => {
+      const { controller } = setupController({});
+      expect(
+        controller.state.overrideContentSecurityPolicyHeader,
+      ).toStrictEqual(true);
+    });
+
+    it('set overrideContentSecurityPolicyHeader to false', () => {
+      const { controller } = setupController({});
+      controller.setOverrideContentSecurityPolicyHeader(false);
+      expect(
+        controller.state.overrideContentSecurityPolicyHeader,
+      ).toStrictEqual(false);
+    });
+  });
+
   describe('snapsAddSnapAccountModalDismissed', () => {
     it('defaults snapsAddSnapAccountModalDismissed to false', () => {
       const { controller } = setupController({});
@@ -851,6 +868,21 @@ describe('preferences controller', () => {
       expect(controller.state.snapsAddSnapAccountModalDismissed).toStrictEqual(
         true,
       );
+    });
+  });
+
+  describe('setSolanaSupportEnabled', () => {
+    const { controller } = setupController({});
+    it('has the default value as false', () => {
+      expect(controller.state.solanaSupportEnabled).toStrictEqual(false);
+    });
+
+    it('sets the solanaSupportEnabled property in state to true and then false', () => {
+      controller.setSolanaSupportEnabled(true);
+      expect(controller.state.solanaSupportEnabled).toStrictEqual(true);
+
+      controller.setSolanaSupportEnabled(false);
+      expect(controller.state.solanaSupportEnabled).toStrictEqual(false);
     });
   });
 });

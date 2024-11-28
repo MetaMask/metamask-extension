@@ -27,6 +27,7 @@ import { useAssetDetails } from '../hooks/useAssetDetails';
 
 export default function ConfirmTokenTransactionSwitch({ transaction }) {
   const {
+    chainId,
     txParams: { data, to: tokenAddress, from: userAddress } = {},
     layer1GasFee,
   } = transaction;
@@ -44,7 +45,7 @@ export default function ConfirmTokenTransactionSwitch({ transaction }) {
     tokenAmount,
     tokenId,
     toAddress,
-  } = useAssetDetails(tokenAddress, userAddress, data);
+  } = useAssetDetails(tokenAddress, userAddress, data, chainId);
 
   const {
     ethTransactionTotal,
@@ -221,6 +222,7 @@ export default function ConfirmTokenTransactionSwitch({ transaction }) {
 
 ConfirmTokenTransactionSwitch.propTypes = {
   transaction: PropTypes.shape({
+    chainId: PropTypes.string,
     origin: PropTypes.string,
     txParams: PropTypes.shape({
       data: PropTypes.string,

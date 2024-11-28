@@ -11,7 +11,6 @@ import {
   getGasEstimateType,
   getGasFeeEstimates,
   getNativeCurrency,
-  getProviderConfig,
 } from '../ducks/metamask/metamask';
 import {
   GasEstimateTypes,
@@ -29,10 +28,13 @@ import {
   subtractHexes,
   sumHexes,
 } from '../../shared/modules/conversion.utils';
+import {
+  getProviderConfig,
+  getCurrentChainId,
+} from '../../shared/modules/selectors/networks';
 import { getAveragePriceEstimateInHexWEI } from './custom-gas';
 import {
   checkNetworkAndAccountSupports1559,
-  getCurrentChainId,
   getMetaMaskAccounts,
   getTokenExchangeRates,
 } from './selectors';

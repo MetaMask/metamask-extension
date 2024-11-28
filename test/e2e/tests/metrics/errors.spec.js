@@ -13,6 +13,7 @@ const {
   convertToHexValue,
   logInWithBalanceValidation,
   withFixtures,
+  sentryRegEx,
 } = require('../../helpers');
 const { PAGES } = require('../../webdriver/driver');
 
@@ -181,8 +182,6 @@ function getMissingProperties(complete, object) {
 }
 
 describe('Sentry errors', function () {
-  const sentryRegEx = /^https:\/\/sentry\.io\/api\/\d+\/envelope/gu;
-
   const migrationError =
     process.env.SELENIUM_BROWSER === Browser.CHROME
       ? `"type":"TypeError","value":"Cannot read properties of undefined (reading 'version')`
@@ -877,6 +876,7 @@ describe('Sentry errors', function () {
         },
         quotesLastFetched: true,
         quotesLoadingStatus: true,
+        quotesRefreshCount: true,
       },
       currentPopupId: false, // Initialized as undefined
       // Part of transaction controller store, but missing from the initial

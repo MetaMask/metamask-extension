@@ -20,8 +20,8 @@ import {
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import { shortenAddress } from '../../../../../helpers/utils/util';
 import { getNftImageAlt } from '../../../../../helpers/utils/nfts';
+import { getCurrentChainId } from '../../../../../../shared/modules/selectors/networks';
 import {
-  getCurrentChainId,
   getCurrentCurrency,
   getCurrentNetwork,
   getIpfsGateway,
@@ -66,7 +66,7 @@ import { MetaMetricsContext } from '../../../../../contexts/metametrics';
 import { Content, Footer, Page } from '../../../../multichain/pages/page';
 import { formatCurrency } from '../../../../../helpers/utils/confirm-tx.util';
 import { getShortDateFormatterV2 } from '../../../../../pages/asset/util';
-import { SWAPS_CHAINID_DEFAULT_BLOCK_EXPLORER_URL_MAP } from '../../../../../../shared/constants/swaps';
+import { CHAINID_DEFAULT_BLOCK_EXPLORER_URL_MAP } from '../../../../../../shared/constants/common';
 import { getConversionRate } from '../../../../../ducks/metamask/metamask';
 import { Numeric } from '../../../../../../shared/modules/Numeric';
 // TODO: Remove restricted import
@@ -277,7 +277,7 @@ export default function NftDetails({ nft }: { nft: Nft }) {
       null as unknown as string, // no holderAddress
       {
         blockExplorerUrl:
-          SWAPS_CHAINID_DEFAULT_BLOCK_EXPLORER_URL_MAP[chainId] ?? null,
+          CHAINID_DEFAULT_BLOCK_EXPLORER_URL_MAP[chainId] ?? null,
       },
     );
   };
