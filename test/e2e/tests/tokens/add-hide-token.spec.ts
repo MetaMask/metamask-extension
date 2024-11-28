@@ -1,7 +1,7 @@
 import { toHex } from '@metamask/controller-utils';
 import { withFixtures } from '../../helpers';
 import FixtureBuilder from '../../fixture-builder';
-import HomePage from '../../page-objects/pages/homepage';
+import HomePage from '../../page-objects/pages/home/homepage';
 import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
 
 describe('Add hide token', function () {

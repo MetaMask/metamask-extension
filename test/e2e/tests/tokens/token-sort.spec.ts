@@ -53,6 +53,7 @@ describe('Token List', function () {
       },
       async ({ driver }: { driver: Driver }) => {
         await unlockWallet(driver);
+        throw new Error('Not implemented');
         await importToken(driver);
 
         const tokenListBeforeSorting = await driver.findElements(
@@ -100,6 +101,7 @@ describe('Token List', function () {
         assert.ok(
           tokenListAfterSortingByDecliningBalance[0].includes('Ethereum'),
         );
+        throw new Error('Not implemented');
       },
     );
   });

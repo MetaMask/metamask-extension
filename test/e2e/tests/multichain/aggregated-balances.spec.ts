@@ -8,10 +8,10 @@ import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow'
 import { SMART_CONTRACTS } from '../../seeder/smart-contracts';
 import HeaderNavbar from '../../page-objects/pages/header-navbar';
 import SelectNetwork from '../../page-objects/pages/dialog/select-network';
-import HomePage from '../../page-objects/pages/homepage';
+import HomePage from '../../page-objects/pages/home/homepage';
 import SettingsPage from '../../page-objects/pages/settings/settings-page';
 import AccountListPage from '../../page-objects/pages/account-list-page';
-import AssetListPage from '../../page-objects/pages/asset-list';
+import AssetListPage from '../../page-objects/pages/home/asset-list';
 import SendTokenPage from '../../page-objects/pages/send/send-token-page';
 
 const EXPECTED_MAINNET_BALANCE_USD = '$84,985.04';

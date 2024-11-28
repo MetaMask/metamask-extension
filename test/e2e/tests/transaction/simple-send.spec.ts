@@ -9,7 +9,8 @@ import {
 import FixtureBuilder from '../../fixture-builder';
 import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
 import { sendTransactionToAddress } from '../../page-objects/flows/send-transaction.flow';
-import HomePage from '../../page-objects/pages/homepage';
+import ActivityListPage from '../../page-objects/pages/home/activity-list';
+import HomePage from '../../page-objects/pages/home/homepage';
 
 describe('Simple send eth', function (this: Suite) {
   it('can send a simple transaction from one account to another', async function () {
@@ -39,8 +40,9 @@ describe('Simple send eth', function (this: Suite) {
         });
         const homePage = new HomePage(driver);
         await homePage.check_pageIsLoaded();
-        await homePage.check_confirmedTxNumberDisplayedInActivity();
-        await homePage.check_txAmountInActivity();
+        const activityList = new ActivityListPage(driver);
+        await activityList.check_confirmedTxNumberDisplayedInActivity();
+        await activityList.check_txAmountInActivity();
       },
     );
   });

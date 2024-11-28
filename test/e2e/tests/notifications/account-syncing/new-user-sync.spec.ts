@@ -7,7 +7,7 @@ import { NOTIFICATIONS_TEAM_PASSWORD } from '../constants';
 import { UserStorageMockttpController } from '../../../helpers/user-storage/userStorageMockttpController';
 import HeaderNavbar from '../../../page-objects/pages/header-navbar';
 import AccountListPage from '../../../page-objects/pages/account-list-page';
-import HomePage from '../../../page-objects/pages/homepage';
+import HomePage from '../../../page-objects/pages/home/homepage';
 import {
   completeCreateNewWalletOnboardingFlow,
   completeImportSRPOnboardingFlow,

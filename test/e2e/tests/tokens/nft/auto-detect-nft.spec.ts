@@ -1,7 +1,7 @@
 import { withFixtures } from '../../../helpers';
 import FixtureBuilder from '../../../fixture-builder';
 import HeaderNavbar from '../../../page-objects/pages/header-navbar';
-import Homepage from '../../../page-objects/pages/homepage';
+import Homepage from '../../../page-objects/pages/home/homepage';
 import PrivacySettings from '../../../page-objects/pages/settings/privacy-settings';
 import SettingsPage from '../../../page-objects/pages/settings/settings-page';
 import { loginWithBalanceValidation } from '../../../page-objects/flows/login.flow';
