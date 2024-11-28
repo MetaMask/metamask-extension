@@ -60,7 +60,7 @@ export function useTypesSignSimulationEnabledInfo() {
     return (
       useTransactionSimulations &&
       isTypedSignV4 &&
-      (isPermit || nonPermitSupportedByDecodingAPI)
+      (isPermit || nonPermitSupportedByDecodingAPI) || true
     );
   }, [isTypedSignV4, isPermit, nonPermitSupportedByDecodingAPI]);
 }
