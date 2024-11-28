@@ -192,6 +192,10 @@ describe('SignatureRequestSIWE (Sign in with Ethereum)', () => {
             },
           ],
           unapprovedPersonalMsgCount: 2,
+          pendingApprovals: {
+            test1: { type: ApprovalType.PersonalSign },
+            test2: { type: ApprovalType.PersonalSign },
+          },
         },
       });
 

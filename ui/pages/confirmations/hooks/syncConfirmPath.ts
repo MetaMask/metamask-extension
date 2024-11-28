@@ -7,16 +7,17 @@ import { useConfirmationNavigation } from './useConfirmationNavigation';
 const syncConfirmPath = (currentConfirmation?: Confirmation) => {
   const { navigateToId } = useConfirmationNavigation();
   const { id: paramId } = useParams<{ id: string }>();
+  const confirmationId = currentConfirmation?.id;
 
   useEffect(() => {
-    if (!currentConfirmation) {
+    if (!confirmationId) {
       return;
     }
 
     if (!paramId) {
-      navigateToId(currentConfirmation.id);
+      navigateToId(confirmationId);
     }
-  }, [currentConfirmation, paramId, navigateToId]);
+  }, [confirmationId, paramId, navigateToId]);
 };
 
 export default syncConfirmPath;

@@ -2,16 +2,20 @@ import { useCallback } from 'react';
 import { useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import { ApprovalType } from '@metamask/controller-utils';
+import { isEqual } from 'lodash';
 import { pendingConfirmationsSortedSelector } from '../selectors';
 import { TEMPLATED_CONFIRMATION_APPROVAL_TYPES } from '../confirmation/templates';
 import {
   CONFIRM_TRANSACTION_ROUTE,
-  SIGNATURE_REQUEST_PATH,
+  CONFIRMATION_V_NEXT_ROUTE,
 } from '../../../helpers/constants/routes';
-import { isCorrectSignatureApprovalType } from '../../../../shared/lib/confirmation.utils';
 
 export function useConfirmationNavigation() {
-  const pendingConfirmations = useSelector(pendingConfirmationsSortedSelector);
+  const pendingConfirmations = useSelector(
+    pendingConfirmationsSortedSelector,
+    isEqual,
+  );
+
   const history = useHistory();
 
   const getIndex = useCallback(
@@ -44,19 +48,11 @@ export function useConfirmationNavigation() {
       );
 
       if (isTemplate) {
-        history.replace(`/confirmation/${nextConfirmation.id}`);
+        history.replace(`/${CONFIRMATION_V_NEXT_ROUTE}/${nextConfirmation.id}`);
         return;
       }
 
-      let route = `${CONFIRM_TRANSACTION_ROUTE}/${nextConfirmation.id}`;
-
-      if (
-        isCorrectSignatureApprovalType(nextConfirmation.type as ApprovalType)
-      ) {
-        route += SIGNATURE_REQUEST_PATH;
-      }
-
-      history.replace(route);
+      history.replace(`${CONFIRM_TRANSACTION_ROUTE}/${nextConfirmation.id}`);
     },
     [pendingConfirmations, history],
   );

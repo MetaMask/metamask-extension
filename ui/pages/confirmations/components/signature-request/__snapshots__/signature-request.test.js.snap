@@ -37,11 +37,11 @@ exports[`Signature Request Component render should match snapshot when we are us
         <div
           class="confirm-page-container-navigation__navtext"
         >
-          0
+          1
            
           of
            
-          0
+          1
         </div>
         <div
           class="confirm-page-container-navigation__longtext"
@@ -810,11 +810,11 @@ exports[`Signature Request Component render should match snapshot when we want t
         <div
           class="confirm-page-container-navigation__navtext"
         >
-          0
+          1
            
           of
            
-          0
+          1
         </div>
         <div
           class="confirm-page-container-navigation__longtext"

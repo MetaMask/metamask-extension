@@ -37,7 +37,7 @@ exports[`Confirm Signature Request Component render should match snapshot 1`] = 
         <div
           class="confirm-page-container-navigation__navtext"
         >
-          0
+          1
            
           of
            
@@ -51,7 +51,7 @@ exports[`Confirm Signature Request Component render should match snapshot 1`] = 
       </div>
       <div
         class="confirm-page-container-navigation__container"
-        style="visibility: initial;"
+        style="visibility: hidden;"
       >
         <button
           class="confirm-page-container-navigation__arrow"
