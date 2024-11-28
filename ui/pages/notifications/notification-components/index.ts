@@ -11,18 +11,7 @@ import { components as LidoWithdrawalRequestedComponents } from './lido-withdraw
 import { components as LidoStakeReadyToBeWithdrawnComponents } from './lido-stake-ready-to-be-withdrawn/lido-stake-ready-to-be-withdrawn';
 import { components as SnapNotificationComponents } from './snap/snap';
 
-export enum SNAP_TRIGGER {
-  SNAP = 'snap',
-}
-
-export const TRIGGER_TYPES = {
-  ...NotificationServicesController.Constants.TRIGGER_TYPES,
-  ...SNAP_TRIGGER,
-};
-
-type TRIGGER_TYPES =
-  | NotificationServicesController.Constants.TRIGGER_TYPES
-  | SNAP_TRIGGER;
+export const { TRIGGER_TYPES } = NotificationServicesController.Constants;
 
 /**
  * Each notification component has a specific shape it follows.
@@ -81,5 +70,5 @@ export const NotificationComponents = {
 };
 
 export const hasNotificationComponents = (
-  t: TRIGGER_TYPES,
+  t: NotificationServicesController.Constants.TRIGGER_TYPES,
 ): t is keyof typeof NotificationComponents => t in NotificationComponents;

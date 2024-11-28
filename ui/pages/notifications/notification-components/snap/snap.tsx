@@ -1,13 +1,15 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
-import { TRIGGER_TYPES } from '@metamask/notification-services-controller/notification-services';
+import {
+  TRIGGER_TYPES,
+  type ExpandedView,
+} from '@metamask/notification-services-controller/notification-services';
 import {
   NotificationDetailButton,
   NotificationDetailTitle,
   NotificationListItemSnap,
 } from '../../../../components/multichain';
-import type { SnapNotification } from '../../snap/types/types';
 import { getSnapsMetadata } from '../../../../selectors';
 import { getSnapRoute, getSnapName } from '../../../../helpers/utils/util';
 import {
@@ -30,16 +32,35 @@ import {
   IconSize,
   Text,
 } from '../../../../components/component-library';
-import { isOfTypeNodeGuard } from '../node-guard';
+import { isOfTypeNodeGuard, type ExtractedNotification } from '../node-guard';
 import { SnapIcon } from '../../../../components/app/snaps/snap-icon';
+import { useMarkNotificationAsRead } from '../../../../hooks/metamask-notifications/useNotifications';
+import { useSnapNotificationTimeouts } from '../../../../hooks/useNotificationTimeouts';
+
+type SnapNotification = ExtractedNotification<TRIGGER_TYPES.SNAP>;
+
+type DetailedViewData = Extract<
+  SnapNotification['data'],
+  { origin: string; message: string; detailedView: ExpandedView }
+>;
 
 export const components: NotificationComponent<SnapNotification> = {
-  guardFn: isOfTypeNodeGuard(['snap' as typeof TRIGGER_TYPES.SNAP]),
+  guardFn: isOfTypeNodeGuard([TRIGGER_TYPES.SNAP]),
   item: ({ notification, onClick }) => {
     const history = useHistory();
     const snapsMetadata = useSelector(getSnapsMetadata);
     const snapsNameGetter = getSnapName(snapsMetadata);
+    const { markNotificationAsRead } = useMarkNotificationAsRead();
+
     const handleSnapButton = () => {
+      if (!notification.isRead) {
+        markNotificationAsRead([{
+          id: notification.id,
+          type: notification.type,
+          isRead: notification.isRead,
+        }])
+      }
+
       history.push(getSnapRoute(notification.data.origin));
     };
 
@@ -65,7 +86,9 @@ export const components: NotificationComponent<SnapNotification> = {
   details: {
     title: ({ notification }) => (
       <NotificationDetailTitle
-        title={notification.data.expandedView?.title as string}
+        title={
+          (notification.data as DetailedViewData).detailedView.title as string
+        }
         date={formatIsoDateString(notification.createdAt)}
       />
     ),
@@ -103,7 +126,8 @@ export const components: NotificationComponent<SnapNotification> = {
               <SnapUIRenderer
                 snapId={notification.data.origin}
                 interfaceId={
-                  notification.data.expandedView?.interfaceId as string
+                  (notification.data as DetailedViewData).detailedView
+                    .interfaceId as string
                 }
                 useDelineator={false}
                 contentBackgroundColor={BackgroundColor.backgroundDefault}
@@ -117,14 +141,21 @@ export const components: NotificationComponent<SnapNotification> = {
   footer: {
     type: NotificationComponentType.SnapFooter,
     Link: ({ notification }) =>
-      notification.data.expandedView?.footerLink ? (
+      (notification.data as DetailedViewData).detailedView.footerLink ? (
         <NotificationDetailButton
           notification={notification}
-          text={notification.data.expandedView?.footerLink.text as string}
-          href={notification.data.expandedView?.footerLink.href as string}
+          text={
+            (notification.data as DetailedViewData).detailedView.footerLink
+              ?.text as string
+          }
+          href={
+            (notification.data as DetailedViewData).detailedView.footerLink
+              ?.href as string
+          }
           id={notification.id}
           variant={ButtonVariant.Secondary}
         />
       ) : null,
   },
 };
+=-

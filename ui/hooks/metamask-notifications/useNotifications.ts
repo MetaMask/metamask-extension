@@ -3,6 +3,7 @@ import { useDispatch } from 'react-redux';
 import type { InternalAccount } from '@metamask/keyring-api';
 import log from 'loglevel';
 
+import { type MarkAsReadNotificationsParam } from '@metamask/notification-services-controller/notification-services';
 import {
   createOnChainTriggers,
   fetchAndUpdateMetamaskNotifications,
@@ -11,11 +12,6 @@ import {
   disableMetamaskNotifications,
 } from '../../store/actions';
 import { type Notification } from '../../pages/notifications/notification-components/types/notifications/notifications';
-
-export type MarkAsReadNotificationsParam = Pick<
-  Notification,
-  'id' | 'type' | 'isRead'
->[];
 
 // Define KeyringType interface
 type KeyringType = {

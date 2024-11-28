@@ -1,10 +1,7 @@
 import type { FC } from 'react';
 import type { NotificationServicesController } from '@metamask/notification-services-controller';
-import { SnapNotification } from '../../../snap/types/types';
 
-export type Notification =
-  | NotificationServicesController.Types.INotification
-  | SnapNotification;
+export type Notification = NotificationServicesController.Types.INotification;
 
 /**
  * NotificationFC is the shared component interface for all notification components

@@ -1459,12 +1459,19 @@ export default class MetamaskController extends EventEmitter {
         },
         showInAppNotification: {
           method: (origin, args) => {
-            const { message } = args;
+            const { message, title, footerLink } = args;
+
+            const detailedView = {
+              title,
+              ...(footerLink ? { footerLink } : {}),
+              interfaceId: args.content,
+            };
 
             const notification = {
               data: {
                 message,
                 origin,
+                ...(args.content ? { detailedView } : {}),
               },
               type: TRIGGER_TYPES.SNAP,
               readDate: null,

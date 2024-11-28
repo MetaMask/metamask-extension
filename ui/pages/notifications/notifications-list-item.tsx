@@ -1,6 +1,6 @@
 import React, { useContext, useCallback } from 'react';
-import { useDispatch } from 'react-redux';
 import { useHistory } from 'react-router-dom';
+import { hasProperty } from '@metamask/utils';
 import { MetaMetricsContext } from '../../contexts/metametrics';
 import {
   MetaMetricsEventCategory,
@@ -14,6 +14,7 @@ import {
 } from '../../helpers/constants/design-system';
 import { NOTIFICATIONS_ROUTE } from '../../helpers/constants/routes';
 import { useMarkNotificationAsRead } from '../../hooks/metamask-notifications/useNotifications';
+import { useSnapNotificationTimeouts } from '../../hooks/useNotificationTimeouts';
 import {
   NotificationComponents,
   TRIGGER_TYPES,
@@ -27,8 +28,8 @@ export function NotificationsListItem({
   notification: Notification;
 }) {
   const history = useHistory();
-  const dispatch = useDispatch();
   const trackEvent = useContext(MetaMetricsContext);
+  const { setNotificationTimeout } = useSnapNotificationTimeouts();
 
   const { markNotificationAsRead } = useMarkNotificationAsRead();
 
@@ -39,10 +40,9 @@ export function NotificationsListItem({
       properties: {
         notification_id: notification.id,
         notification_type: notification.type,
-        ...(notification.type !== TRIGGER_TYPES.FEATURES_ANNOUNCEMENT &&
-          notification.type !== TRIGGER_TYPES.SNAP && {
-            chain_id: notification?.chain_id,
-          }),
+        ...('chain_id' in notification && {
+          chain_id: notification?.chain_id,
+        }),
         previously_read: notification.isRead,
       },
     });
@@ -57,13 +57,13 @@ export function NotificationsListItem({
 
     if (
       notification.type === TRIGGER_TYPES.SNAP &&
-      !notification.data.expandedView
+      !hasProperty(notification.data, 'detailedView')
     ) {
-      return;
+      return setNotificationTimeout(notification.id);
     }
 
     history.push(`${NOTIFICATIONS_ROUTE}/${notification.id}`);
-  }, [notification, markNotificationAsRead, dispatch, history]);
+  }, [notification, markNotificationAsRead, history]);
 
   if (!hasNotificationComponents(notification.type)) {
     return null;
