@@ -70,9 +70,7 @@ class AssetListPage {
   }
 
   async clickOnAsset(assetName: string): Promise<void> {
-    const buttons = await this.driver.findElements(
-      '[data-testid="multichain-token-list-button"]',
-    );
+    const buttons = await this.driver.findElements(this.tokenLisiItem);
     for (const button of buttons) {
       const text = await button.getText();
       if (text.includes(assetName)) {
@@ -106,6 +104,12 @@ class AssetListPage {
     const toggle = await this.driver.findElement(this.networksToggle);
     const text = await toggle.getText();
     return text;
+  }
+
+  async getNumberOfAssets(): Promise<number> {
+    console.log(`Returning the total number of asset items in the token list`);
+    const assets = await this.driver.findElements(this.tokenLisiItem);
+    return assets.length;
   }
 
   /**
@@ -188,9 +192,7 @@ class AssetListPage {
   }
 
   async check_ifAssetIsVisible(assetName: string): Promise<boolean> {
-    const assets = await this.driver.findElements(
-      '[data-testid="multichain-token-list-button"]',
-    );
+    const assets = await this.driver.findElements(this.tokenLisiItem);
     for (const asset of assets) {
       const text = await asset.getText();
       if (text.includes(assetName)) {
@@ -255,8 +257,8 @@ class AssetListPage {
   async check_tokenItemNumber(expectedNumber: number = 1): Promise<void> {
     console.log(`Waiting for ${expectedNumber} token items to be displayed`);
     await this.driver.wait(async () => {
-      const tokenItems = await this.driver.findElements(this.tokenLisiItem);
-      return tokenItems.length === expectedNumber;
+      const tokenItemsNumber = await this.getNumberOfAssets();
+      return tokenItemsNumber === expectedNumber;
     }, 10000);
     console.log(
       `Expected number of token items ${expectedNumber} is displayed.`,
