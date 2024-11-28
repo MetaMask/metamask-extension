@@ -2339,12 +2339,8 @@
       }
     },
     "@metamask/remote-feature-flag-controller": {
-      "globals": {
-        "console.error": true
-      },
       "packages": {
         "@metamask/base-controller": true,
-        "@metamask/utils": true,
         "cockatiel": true
       }
     },

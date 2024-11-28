@@ -892,7 +892,7 @@ export function setupController(
       controller.setupTrustedCommunication(portStream, remotePort.sender);
 
       // initialize the request to fetch remote feature flags
-      controller.remoteFeatureFlagController.updateRemoteFeatureFlags();
+      initializeRemoteFeatureFlags();
 
       if (processName === ENVIRONMENT_TYPE_POPUP) {
         openPopupCount += 1;
@@ -1093,6 +1093,15 @@ export function setupController(
       }
     } catch (error) {
       console.error('Error updating browser badge:', error);
+    }
+  }
+
+  function initializeRemoteFeatureFlags() {
+    try {
+      // initialize the request to fetch remote feature flags
+      controller.remoteFeatureFlagController.updateRemoteFeatureFlags();
+    } catch (error) {
+      log.error('Error initializing remote feature flags:', error);
     }
   }
 

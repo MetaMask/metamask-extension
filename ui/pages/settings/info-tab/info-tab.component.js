@@ -29,7 +29,7 @@ import {
 
 export default class InfoTab extends PureComponent {
   static propTypes = {
-    remoteFeatureFlags: PropTypes.array,
+    remoteFeatureFlags: PropTypes.object,
   };
 
   state = {
@@ -57,7 +57,7 @@ export default class InfoTab extends PureComponent {
   componentDidMount() {
     const { t } = this.context;
     handleSettingsRefs(t, t('about'), this.settingsRefs);
-    if (this.props.remoteFeatureFlags.length > 0) {
+    if (!this.props.remoteFeatureFlags.testBooleanFlag) {
       // eslint-disable-next-line no-console
       console.log(
         'Feature flag fetched successfully',

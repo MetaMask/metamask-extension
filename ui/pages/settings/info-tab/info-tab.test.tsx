@@ -8,7 +8,7 @@ describe('InfoTab', () => {
 
     beforeEach(() => {
       const renderResult = renderWithProvider(
-        <InfoTab remoteFeatureFlags={[]} />,
+        <InfoTab remoteFeatureFlags={{}} />,
       );
       getByText = renderResult.getByText;
     });
