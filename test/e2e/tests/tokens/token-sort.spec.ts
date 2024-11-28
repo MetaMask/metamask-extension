@@ -100,7 +100,6 @@ describe('Token List', function () {
         assert.ok(
           tokenListAfterSortingByDecliningBalance[0].includes('Ethereum'),
         );
-        throw new Error('Not implemented');
       },
     );
   });
