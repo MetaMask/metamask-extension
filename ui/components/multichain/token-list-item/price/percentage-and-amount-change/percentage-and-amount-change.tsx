@@ -1,13 +1,15 @@
 import React, { useMemo } from 'react';
 import { useSelector } from 'react-redux';
 import { BigNumber } from 'bignumber.js';
-import { isHexString, zeroAddress } from 'ethereumjs-util';
+import { isHexString } from 'ethereumjs-util';
+import { getNativeTokenAddress } from '@metamask/assets-controllers';
 import { Text, Box } from '../../../../component-library';
 import {
   Display,
   TextColor,
   TextVariant,
 } from '../../../../../helpers/constants/design-system';
+import { getCurrentChainId } from '../../../../../../shared/modules/selectors/networks';
 import {
   getCurrentCurrency,
   getSelectedAccountCachedBalance,
@@ -66,10 +68,12 @@ export const PercentageAndAmountChange = ({
   const conversionRate = useSelector(getConversionRate);
   const nativeCurrency = useSelector(getNativeCurrency);
   const marketData = useSelector(getTokensMarketData);
+  const currentChainId = useSelector(getCurrentChainId);
 
   const balanceChange = useMemo(() => {
     // Extracts the 1-day percentage change in price from marketData using the zero address as a key.
-    const percentage1d = marketData?.[zeroAddress()]?.pricePercentChange1d;
+    const percentage1d =
+      marketData?.[getNativeTokenAddress(currentChainId)]?.pricePercentChange1d;
 
     // Checks if the balanceValue is in hex format. This is important for cryptocurrency balances which are often represented in hex.
     if (isHexString(balanceValue)) {

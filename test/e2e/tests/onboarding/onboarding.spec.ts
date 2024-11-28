@@ -1,5 +1,6 @@
 import {
   convertToHexValue,
+  TEST_SEED_PHRASE,
   WALLET_PASSWORD,
   withFixtures,
 } from '../../helpers';
@@ -40,7 +41,9 @@ describe('MetaMask onboarding @no-mmi', function () {
         title: this.test?.fullTitle(),
       },
       async ({ driver }: { driver: Driver }) => {
-        await completeCreateNewWalletOnboardingFlow(driver);
+        await completeCreateNewWalletOnboardingFlow({
+          driver,
+        });
         const homePage = new HomePage(driver);
         await homePage.check_pageIsLoaded();
         await homePage.check_expectedBalanceIsDisplayed();
@@ -55,7 +58,7 @@ describe('MetaMask onboarding @no-mmi', function () {
         title: this.test?.fullTitle(),
       },
       async ({ driver }: { driver: Driver }) => {
-        await completeImportSRPOnboardingFlow(driver);
+        await completeImportSRPOnboardingFlow({ driver });
         const homePage = new HomePage(driver);
         await homePage.check_pageIsLoaded();
         await homePage.check_expectedBalanceIsDisplayed();
@@ -164,7 +167,10 @@ describe('MetaMask onboarding @no-mmi', function () {
         title: this.test?.fullTitle(),
       },
       async ({ driver, secondaryGanacheServer }) => {
-        await importSRPOnboardingFlow(driver);
+        await importSRPOnboardingFlow({
+          driver,
+          seedPhrase: TEST_SEED_PHRASE,
+        });
 
         const onboardingCompletePage = new OnboardingCompletePage(driver);
         await onboardingCompletePage.check_pageIsLoaded();
@@ -192,7 +198,7 @@ describe('MetaMask onboarding @no-mmi', function () {
 
         // Check the correct balance for the custom network is displayed
         if (secondaryGanacheServer && Array.isArray(secondaryGanacheServer)) {
-          await homePage.check_ganacheBalanceIsDisplayed(
+          await homePage.check_localBlockchainBalanceIsDisplayed(
             secondaryGanacheServer[0],
           );
         } else {
@@ -209,7 +215,7 @@ describe('MetaMask onboarding @no-mmi', function () {
         title: this.test?.fullTitle(),
       },
       async ({ driver }) => {
-        await importSRPOnboardingFlow(driver);
+        await importSRPOnboardingFlow({ driver });
 
         const onboardingCompletePage = new OnboardingCompletePage(driver);
         await onboardingCompletePage.check_pageIsLoaded();

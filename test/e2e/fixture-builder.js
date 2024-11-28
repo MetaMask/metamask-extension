@@ -63,6 +63,7 @@ function onboardingFixture() {
         advancedGasFee: {},
         currentLocale: 'en',
         dismissSeedBackUpReminder: false,
+        overrideContentSecurityPolicyHeader: true,
         featureFlags: {},
         forgottenPassword: false,
         identities: {},
@@ -77,7 +78,7 @@ function onboardingFixture() {
           showFiatInTestnets: false,
           privacyMode: false,
           showTestNetworks: false,
-          smartTransactionsOptInStatus: false,
+          smartTransactionsOptInStatus: true,
           showNativeTokenAsMainBalance: true,
           petnamesEnabled: true,
           showMultiRpcModal: false,
@@ -88,6 +89,7 @@ function onboardingFixture() {
             order: 'dsc',
             sortCallback: 'stringNumeric',
           },
+          tokenNetworkFilter: {},
           shouldShowAggregatedBalancePopover: true,
         },
         useExternalServices: true,
@@ -124,7 +126,8 @@ function onboardingFixture() {
           [ETHERSCAN_SUPPORTED_CHAIN_IDS.GNOSIS]: true,
         },
         showTestNetworks: false,
-        smartTransactionsOptInStatus: false,
+        smartTransactionsOptInStatus: true,
+        tokenNetworkFilter: {},
       },
       QueuedRequestController: {
         queuedRequestCount: 0,
@@ -663,6 +666,7 @@ class FixtureBuilder {
     return this.withPreferencesController({
       preferences: {
         smartTransactionsOptInStatus: true,
+        tokenNetworkFilter: {},
       },
     });
   }

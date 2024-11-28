@@ -609,19 +609,7 @@ exports[`App Header unlocked state matches snapshot: unlocked 1`] = `
             <div
               class="mm-box"
               style="position: relative;"
-            >
-              <div
-                class="mm-box notification-list-item__unread-dot__wrapper mm-box--padding-top-0 mm-box--padding-right-0 mm-box--padding-bottom-0 mm-box--padding-left-0 mm-box--display-block mm-box--background-color-error-default mm-box--rounded-lg mm-box--border-style-none"
-                style="position: absolute; cursor: pointer; top: -5px; left: 10px; z-index: 1;"
-              >
-                <p
-                  class="mm-box mm-text notifications-tag-counter__unread-dot mm-text--body-xs mm-text--text-align-center mm-box--color-error-inverse"
-                  data-testid="notifications-tag-counter__unread-dot"
-                >
-                  1
-                </p>
-              </div>
-            </div>
+            />
             <button
               aria-label="Account options"
               class="mm-box mm-button-icon mm-button-icon--size-sm mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-default mm-box--background-color-transparent mm-box--rounded-lg"

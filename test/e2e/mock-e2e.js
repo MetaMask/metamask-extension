@@ -1,7 +1,7 @@
 const fs = require('fs');
 
 const {
-  SECURITY_PROVIDER_SUPPORTED_CHAIN_IDS,
+  SECURITY_PROVIDER_SUPPORTED_CHAIN_IDS_FALLBACK_LIST,
 } = require('../../shared/constants/security-provider');
 const {
   BRIDGE_DEV_API_BASE_URL,
@@ -43,6 +43,8 @@ const blacklistedHosts = [
   'goerli.infura.io',
   'mainnet.infura.io',
   'sepolia.infura.io',
+  'linea-mainnet.infura.io',
+  'linea-sepolia.infura.io',
 ];
 const {
   mockEmptyStalelistAndHotlist,
@@ -107,7 +109,7 @@ const privateHostMatchers = [
 async function setupMocking(
   server,
   testSpecificMock,
-  { chainId, ethConversionInUsd = '1700' },
+  { chainId, ethConversionInUsd = 1700 },
 ) {
   const privacyReport = new Set();
   await server.forAnyRequest().thenPassThrough({
@@ -160,7 +162,7 @@ async function setupMocking(
     .thenCallback(() => {
       return {
         statusCode: 200,
-        json: SECURITY_PROVIDER_SUPPORTED_CHAIN_IDS,
+        json: SECURITY_PROVIDER_SUPPORTED_CHAIN_IDS_FALLBACK_LIST,
       };
     });
 
@@ -616,13 +618,15 @@ async function setupMocking(
   });
 
   await server
-    .forGet('https://min-api.cryptocompare.com/data/price')
-    .withQuery({ fsym: 'ETH', tsyms: 'USD' })
+    .forGet('https://min-api.cryptocompare.com/data/pricemulti')
+    .withQuery({ fsyms: 'ETH', tsyms: 'usd' })
     .thenCallback(() => {
       return {
         statusCode: 200,
         json: {
-          USD: ethConversionInUsd,
+          ETH: {
+            USD: ethConversionInUsd,
+          },
         },
       };
     });
