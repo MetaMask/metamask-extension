@@ -41,7 +41,7 @@ export function NotificationsListItem({
         notification_id: notification.id,
         notification_type: notification.type,
         ...('chain_id' in notification && {
-          chain_id: notification?.chain_id,
+          chain_id: notification.chain_id,
         }),
         previously_read: notification.isRead,
       },
@@ -59,7 +59,8 @@ export function NotificationsListItem({
       notification.type === TRIGGER_TYPES.SNAP &&
       !hasProperty(notification.data, 'detailedView')
     ) {
-      return setNotificationTimeout(notification.id);
+      setNotificationTimeout(notification.id);
+      return;
     }
 
     history.push(`${NOTIFICATIONS_ROUTE}/${notification.id}`);
