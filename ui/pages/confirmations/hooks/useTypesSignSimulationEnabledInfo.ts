@@ -52,7 +52,7 @@ export function useTypesSignSimulationEnabledInfo() {
     signatureMethod === MESSAGE_TYPE.ETH_SIGN_TYPED_DATA_V3;
   const isPermit = isPermitSignatureRequest(currentConfirmation);
   const nonPermitSupportedByDecodingAPI =
-    isNonPermitSupportedByDecodingAPI(currentConfirmation);
+    isTypedSignV3V4 && isNonPermitSupportedByDecodingAPI(currentConfirmation);
 
   return useMemo(() => {
     if (!currentConfirmation) {
@@ -61,7 +61,7 @@ export function useTypesSignSimulationEnabledInfo() {
     return (
       useTransactionSimulations &&
       isTypedSignV3V4 &&
-      (isPermit || nonPermitSupportedByDecodingAPI) || true
+      (isPermit || nonPermitSupportedByDecodingAPI)
     );
   }, [isTypedSignV3V4, isPermit, nonPermitSupportedByDecodingAPI]);
 }
