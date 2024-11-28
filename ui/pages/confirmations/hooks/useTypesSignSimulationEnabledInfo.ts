@@ -46,9 +46,10 @@ export function useTypesSignSimulationEnabledInfo() {
     selectUseTransactionSimulations,
   );
 
-  const isTypedSignV4 =
-    currentConfirmation?.msgParams?.signatureMethod ===
-    MESSAGE_TYPE.ETH_SIGN_TYPED_DATA_V4;
+  const signatureMethod = currentConfirmation?.msgParams?.signatureMethod;
+  const isTypedSignV3V4 =
+    signatureMethod === MESSAGE_TYPE.ETH_SIGN_TYPED_DATA_V4 ||
+    signatureMethod === MESSAGE_TYPE.ETH_SIGN_TYPED_DATA_V3;
   const isPermit = isPermitSignatureRequest(currentConfirmation);
   const nonPermitSupportedByDecodingAPI =
     isNonPermitSupportedByDecodingAPI(currentConfirmation);
@@ -59,8 +60,8 @@ export function useTypesSignSimulationEnabledInfo() {
     }
     return (
       useTransactionSimulations &&
-      isTypedSignV4 &&
+      isTypedSignV3V4 &&
       (isPermit || nonPermitSupportedByDecodingAPI) || true
     );
-  }, [isTypedSignV4, isPermit, nonPermitSupportedByDecodingAPI]);
+  }, [isTypedSignV3V4, isPermit, nonPermitSupportedByDecodingAPI]);
 }
