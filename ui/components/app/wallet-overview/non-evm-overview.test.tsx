@@ -17,8 +17,8 @@ import {
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
 import useMultiPolling from '../../../hooks/useMultiPolling';
-import NonEvmOverview from './non-evm-overview';
 import { BITCOIN_WALLET_SNAP_ID } from '../../../../shared/lib/accounts/bitcoin-wallet-snap';
+import NonEvmOverview from './non-evm-overview';
 
 // We need to mock `dispatch` since we use it for `setDefaultHomeActiveTabName`.
 const mockDispatch = jest.fn().mockReturnValue(() => jest.fn());
