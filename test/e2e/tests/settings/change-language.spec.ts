@@ -78,7 +78,6 @@ describe('Settings - general tab @no-mmi', function (this: Suite) {
 
         // Select "Dansk" language
         await generalSettings.changeLanguage('Dansk');
-        await generalSettings.check_noLoadingOverlaySpinner();
         await driver.clickElement(selectors.advanceText);
         const advancedSettings = new AdvancedSettings(driver);
         await advancedSettings.check_pageIsLoaded();
@@ -130,7 +129,6 @@ describe('Settings - general tab @no-mmi', function (this: Suite) {
 
         // Select "Deutsch" language
         await generalSettings.changeLanguage('Deutsch');
-        await generalSettings.check_noLoadingOverlaySpinner();
         await new SettingsPage(driver).closeSettingsPage();
 
         const homepage = new Homepage(driver);
@@ -172,7 +170,6 @@ describe('Settings - general tab @no-mmi', function (this: Suite) {
 
         // Select "मानक हिन्दी" language
         await generalSettings.changeLanguage('मानक हिन्दी');
-        await generalSettings.check_noLoadingOverlaySpinner();
         await new SettingsPage(driver).closeSettingsPage();
         const homepage = new Homepage(driver);
         await homepage.check_pageIsLoaded();
@@ -215,7 +212,6 @@ describe('Settings - general tab @no-mmi', function (this: Suite) {
 
         // Select "Magyar" language
         await generalSettings.changeLanguage('Magyar');
-        await generalSettings.check_noLoadingOverlaySpinner();
         await new SettingsPage(driver).closeSettingsPage();
         const homepage = new Homepage(driver);
         await homepage.check_pageIsLoaded();
@@ -247,11 +243,9 @@ describe('Settings - general tab @no-mmi', function (this: Suite) {
         const generalSettings = new GeneralSettings(driver);
         await generalSettings.check_pageIsLoaded();
 
-        // Select "العربية" language
+        // Select "العربية" language and validate that the header text has changed
         await generalSettings.changeLanguage('العربية');
-        await generalSettings.check_noLoadingOverlaySpinner();
 
-        // Validate the header text
         const isHeaderTextChanged = await driver.isElementPresent(
           selectors.headerText,
         );

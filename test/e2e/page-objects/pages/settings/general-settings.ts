@@ -50,6 +50,7 @@ class GeneralSettings {
       text: languageToSelect,
       tag: 'option',
     });
+    await this.check_noLoadingOverlaySpinner();
   }
 
   async check_noLoadingOverlaySpinner(): Promise<void> {
