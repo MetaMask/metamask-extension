@@ -17,6 +17,7 @@ import {
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
 import useMultiPolling from '../../../hooks/useMultiPolling';
+import { BITCOIN_WALLET_SNAP_ID } from '../../../../shared/lib/accounts/bitcoin-wallet-snap';
 import NonEvmOverview from './non-evm-overview';
 
 // We need to mock `dispatch` since we use it for `setDefaultHomeActiveTabName`.
@@ -60,7 +61,7 @@ const mockNonEvmAccount = {
       type: 'Snap Keyring',
     },
     snap: {
-      id: 'btc-snap-id',
+      id: BITCOIN_WALLET_SNAP_ID,
       name: 'btc-snap-name',
     },
   },
