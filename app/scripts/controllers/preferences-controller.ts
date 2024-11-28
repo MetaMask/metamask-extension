@@ -124,7 +124,7 @@ export type Preferences = {
   shouldShowAggregatedBalancePopover: boolean;
 };
 
-// Omitting showTestNetworks and smartTransactionsOptInStatus, as they already exists here in Preferences type
+// Omitting properties that already exist in the PreferencesState, as part of the preferences property.
 export type PreferencesControllerState = Omit<
   PreferencesState,
   | 'showTestNetworks'
