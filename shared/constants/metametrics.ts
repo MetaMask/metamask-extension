@@ -594,6 +594,10 @@ export enum MetaMetricsUserTrait {
    * Identifies if the Privacy Mode is enabled
    */
   PrivacyModeEnabled = 'privacy_mode_toggle',
+  /**
+   * Identified when the user prefers to see all tokens or current network tokens in wallet list
+   */
+  NetworkFilterPreference = 'selected_network_filter',
 }
 
 /**
@@ -952,6 +956,7 @@ export enum MetaMetricsNetworkEventSource {
   Dapp = 'dapp',
   DeprecatedNetworkModal = 'deprecated_network_modal',
   NewAddNetworkFlow = 'new_add_network_flow',
+  Bridge = 'bridge',
 }
 
 export enum MetaMetricsSwapsEventSource {

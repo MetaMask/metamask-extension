@@ -28,6 +28,8 @@ import {
   showPermittedNetworkToast,
   updateCustomNonce,
   setNextNonce,
+  setTokenNetworkFilter,
+  detectNfts,
 } from '../../../store/actions';
 import {
   CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP,
@@ -36,20 +38,23 @@ import {
   TEST_CHAINS,
 } from '../../../../shared/constants/network';
 import {
+  getNetworkConfigurationsByChainId,
   getCurrentChainId,
+} from '../../../../shared/modules/selectors/networks';
+import {
   getShowTestNetworks,
   getOnboardedInThisUISession,
   getShowNetworkBanner,
   getOriginOfCurrentTab,
   getUseRequestQueue,
   getEditedNetwork,
-  getNetworkConfigurationsByChainId,
   getOrderedNetworksList,
   getIsAddingNewNetwork,
   getIsMultiRpcOnboarding,
   getAllDomains,
   getPermittedChainsForSelectedTab,
   getPermittedAccountsForSelectedTab,
+  getPreferences,
 } from '../../../selectors';
 import ToggleButton from '../../ui/toggle-button';
 import {
@@ -111,6 +116,7 @@ export const NetworkListMenu = ({ onClose }: { onClose: () => void }) => {
   const dispatch = useDispatch();
   const trackEvent = useContext(MetaMetricsContext);
 
+  const { tokenNetworkFilter } = useSelector(getPreferences);
   const showTestNetworks = useSelector(getShowTestNetworks);
   const currentChainId = useSelector(getCurrentChainId);
   const selectedTabOrigin = useSelector(getOriginOfCurrentTab);
@@ -123,6 +129,7 @@ export const NetworkListMenu = ({ onClose }: { onClose: () => void }) => {
   const completedOnboarding = useSelector(getCompletedOnboarding);
   const onboardedInThisUISession = useSelector(getOnboardedInThisUISession);
   const showNetworkBanner = useSelector(getShowNetworkBanner);
+  const allNetworks = useSelector(getNetworkConfigurationsByChainId);
   const networkConfigurations = useSelector(getNetworkConfigurationsByChainId);
   const { chainId: editingChainId, editCompleted } =
     useSelector(getEditedNetwork) ?? {};
@@ -253,6 +260,11 @@ export const NetworkListMenu = ({ onClose }: { onClose: () => void }) => {
     const canDeleteNetwork =
       isUnlocked && !isCurrentNetwork && network.chainId !== CHAIN_IDS.MAINNET;
 
+    const allOpts: Record<string, boolean> = {};
+    Object.keys(allNetworks).forEach((chainId) => {
+      allOpts[chainId] = true;
+    });
+
     return (
       <NetworkListItem
         name={network.name}
@@ -278,6 +290,15 @@ export const NetworkListMenu = ({ onClose }: { onClose: () => void }) => {
           dispatch(toggleNetworkMenu());
           dispatch(updateCustomNonce(''));
           dispatch(setNextNonce(''));
+          dispatch(detectNfts());
+
+          // as a user, I don't want my network selection to force update my filter when I have "All Networks" toggled on
+          // however, if I am already filtered on "Current Network", we'll want to filter by the selected network when the network changes
+          if (Object.keys(tokenNetworkFilter).length <= 1) {
+            dispatch(setTokenNetworkFilter({ [network.chainId]: true }));
+          } else if (process.env.PORTFOLIO_VIEW) {
+            dispatch(setTokenNetworkFilter(allOpts));
+          }
 
           if (permittedAccountAddresses.length > 0) {
             grantPermittedChain(selectedTabOrigin, network.chainId);

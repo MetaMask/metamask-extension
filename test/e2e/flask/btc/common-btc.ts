@@ -1,6 +1,6 @@
 import { Mockttp } from 'mockttp';
 import FixtureBuilder from '../../fixture-builder';
-import { withFixtures, unlockWallet } from '../../helpers';
+import { withFixtures } from '../../helpers';
 import {
   DEFAULT_BTC_ACCOUNT,
   DEFAULT_BTC_BALANCE,
@@ -11,7 +11,9 @@ import {
 } from '../../constants';
 import { MultichainNetworks } from '../../../../shared/constants/multichain/networks';
 import { Driver } from '../../webdriver/driver';
-import messages from '../../../../app/_locales/en/messages.json';
+import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
+import AccountListPage from '../../page-objects/pages/account-list-page';
+import HeaderNavbar from '../../page-objects/pages/header-navbar';
 
 const QUICKNODE_URL_REGEX = /^https:\/\/.*\.btc.*\.quiknode\.pro(\/|$)/u;
 
@@ -19,27 +21,6 @@ export enum SendFlowPlaceHolders {
   AMOUNT = 'Enter amount to send',
   RECIPIENT = 'Enter receiving address',
   LOADING = 'Preparing transaction',
-}
-
-export async function createBtcAccount(driver: Driver) {
-  await driver.clickElement('[data-testid="account-menu-icon"]');
-  await driver.clickElement(
-    '[data-testid="multichain-account-menu-popover-action-button"]',
-  );
-  await driver.clickElement({
-    text: messages.addNewBitcoinAccount.message,
-    tag: 'button',
-  });
-  await driver.clickElementAndWaitToDisappear(
-    {
-      text: 'Add account',
-      tag: 'button',
-    },
-    // Longer timeout than usual, this reduces the flakiness
-    // around Bitcoin account creation (mainly required for
-    // Firefox)
-    5000,
-  );
 }
 
 export function btcToSats(btc: number): number {
@@ -231,8 +212,12 @@ export async function withBtcAccountSnap(
       ],
     },
     async ({ driver, mockServer }: { driver: Driver; mockServer: Mockttp }) => {
-      await unlockWallet(driver);
-      await createBtcAccount(driver);
+      await loginWithBalanceValidation(driver);
+      // create one BTC account
+      await new HeaderNavbar(driver).openAccountMenu();
+      const accountListPage = new AccountListPage(driver);
+      await accountListPage.check_pageIsLoaded();
+      await accountListPage.addNewBtcAccount();
       await test(driver, mockServer);
     },
   );

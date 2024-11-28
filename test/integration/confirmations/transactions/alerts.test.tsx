@@ -129,7 +129,7 @@ describe('Contract Interaction Confirmation Alerts', () => {
       });
     });
 
-    fireEvent.click(screen.getByTestId('inline-alert'));
+    fireEvent.click(await screen.findByTestId('inline-alert'));
 
     expect(await screen.findByTestId('alert-modal')).toBeInTheDocument();
 
@@ -182,7 +182,7 @@ describe('Contract Interaction Confirmation Alerts', () => {
       });
     });
 
-    fireEvent.click(screen.getByTestId('inline-alert'));
+    fireEvent.click(await screen.findByTestId('inline-alert'));
 
     expect(await screen.findByTestId('alert-modal')).toBeInTheDocument();
 
@@ -228,7 +228,7 @@ describe('Contract Interaction Confirmation Alerts', () => {
       });
     });
 
-    fireEvent.click(screen.getByTestId('inline-alert'));
+    fireEvent.click(await screen.findByTestId('inline-alert'));
 
     expect(await screen.findByTestId('alert-modal')).toBeInTheDocument();
 
@@ -274,7 +274,7 @@ describe('Contract Interaction Confirmation Alerts', () => {
       });
     });
 
-    fireEvent.click(screen.getByTestId('inline-alert'));
+    fireEvent.click(await screen.findByTestId('inline-alert'));
 
     expect(await screen.findByTestId('alert-modal')).toBeInTheDocument();
 
@@ -349,9 +349,9 @@ describe('Contract Interaction Confirmation Alerts', () => {
       });
     });
 
-    expect(await screen.getByTestId('inline-alert')).toBeInTheDocument();
+    expect(await screen.findByTestId('inline-alert')).toBeInTheDocument();
 
-    fireEvent.click(screen.getByTestId('inline-alert'));
+    fireEvent.click(await screen.findByTestId('inline-alert'));
 
     expect(await screen.findByTestId('alert-modal')).toBeInTheDocument();
 
@@ -390,7 +390,7 @@ describe('Contract Interaction Confirmation Alerts', () => {
       });
     });
 
-    fireEvent.click(screen.getByTestId('inline-alert'));
+    fireEvent.click(await screen.findByTestId('inline-alert'));
 
     expect(await screen.findByTestId('alert-modal')).toBeInTheDocument();
 

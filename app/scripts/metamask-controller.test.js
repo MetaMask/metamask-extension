@@ -39,12 +39,14 @@ import { flushPromises } from '../../test/lib/timer-helpers';
 import { ETH_EOA_METHODS } from '../../shared/constants/eth-methods';
 import { createMockInternalAccount } from '../../test/jest/mocks';
 import { mockNetworkState } from '../../test/stub/networks';
+import { SECOND } from '../../shared/constants/time';
 import {
   BalancesController as MultichainBalancesController,
-  BALANCES_UPDATE_TIME as MULTICHAIN_BALANCES_UPDATE_TIME,
+  BTC_BALANCES_UPDATE_TIME as MULTICHAIN_BALANCES_UPDATE_TIME,
 } from './lib/accounts/BalancesController';
 import { BalancesTracker as MultichainBalancesTracker } from './lib/accounts/BalancesTracker';
 import { deferredPromise } from './lib/util';
+import { METAMASK_COOKIE_HANDLER } from './constants/stream';
 import MetaMaskController, {
   ONE_KEY_VIA_TREZOR_MINOR_VERSION,
 } from './metamask-controller';
@@ -205,8 +207,6 @@ const TEST_INTERNAL_ACCOUNT = {
   type: EthAccountType.Eoa,
 };
 
-const NOTIFICATION_ID = 'NHL8f2eSSTn9TKBamRLiU';
-
 const ALT_MAINNET_RPC_URL = 'http://localhost:8545';
 const POLYGON_RPC_URL = 'https://polygon.llamarpc.com';
 
@@ -246,17 +246,6 @@ const firstTimeState = {
         blockExplorerUrl: undefined,
       },
     ),
-  },
-  NotificationController: {
-    notifications: {
-      [NOTIFICATION_ID]: {
-        id: NOTIFICATION_ID,
-        origin: 'local:http://localhost:8086/',
-        createdDate: 1652967897732,
-        readDate: null,
-        message: 'Hello, http://localhost:8086!',
-      },
-    },
   },
   PhishingController: {
     phishingLists: [
@@ -1273,6 +1262,129 @@ describe('MetaMaskController', () => {
         expect(mockKeyring.destroy).toHaveBeenCalledTimes(1);
       });
     });
+    describe('#setupPhishingCommunication', () => {
+      beforeEach(() => {
+        jest.spyOn(metamaskController, 'safelistPhishingDomain');
+        jest.spyOn(metamaskController, 'backToSafetyPhishingWarning');
+        metamaskController.preferencesController.setUsePhishDetect(true);
+      });
+      afterEach(() => {
+        jest.clearAllMocks();
+      });
+      it('creates a phishing stream with safelistPhishingDomain and backToSafetyPhishingWarning handler', async () => {
+        const safelistPhishingDomainRequest = {
+          name: 'metamask-phishing-safelist',
+          data: {
+            id: 1,
+            method: 'safelistPhishingDomain',
+            params: ['mockHostname'],
+          },
+        };
+        const backToSafetyPhishingWarningRequest = {
+          name: 'metamask-phishing-safelist',
+          data: { id: 2, method: 'backToSafetyPhishingWarning', params: [] },
+        };
+
+        const { promise, resolve } = deferredPromise();
+        const { promise: promiseStream, resolve: resolveStream } =
+          deferredPromise();
+        const streamTest = createThroughStream((chunk, _, cb) => {
+          if (chunk.name !== 'metamask-phishing-safelist') {
+            cb();
+            return;
+          }
+          resolve();
+          cb(null, chunk);
+        });
+
+        metamaskController.setupPhishingCommunication({
+          connectionStream: streamTest,
+        });
+
+        streamTest.write(safelistPhishingDomainRequest, null, () => {
+          expect(
+            metamaskController.safelistPhishingDomain,
+          ).toHaveBeenCalledWith('mockHostname');
+        });
+        streamTest.write(backToSafetyPhishingWarningRequest, null, () => {
+          expect(
+            metamaskController.backToSafetyPhishingWarning,
+          ).toHaveBeenCalled();
+          resolveStream();
+        });
+
+        await promise;
+        streamTest.end();
+        await promiseStream;
+      });
+    });
+
+    describe('#setUpCookieHandlerCommunication', () => {
+      let localMetaMaskController;
+      beforeEach(() => {
+        localMetaMaskController = new MetaMaskController({
+          showUserConfirmation: noop,
+          encryptor: mockEncryptor,
+          initState: {
+            ...cloneDeep(firstTimeState),
+            MetaMetricsController: {
+              metaMetricsId: 'MOCK_METRICS_ID',
+              participateInMetaMetrics: true,
+              dataCollectionForMarketing: true,
+            },
+          },
+          initLangCode: 'en_US',
+          platform: {
+            showTransactionNotification: () => undefined,
+            getVersion: () => 'foo',
+          },
+          browser: browserPolyfillMock,
+          infuraProjectId: 'foo',
+          isFirstMetaMaskControllerSetup: true,
+        });
+        jest.spyOn(localMetaMaskController, 'getCookieFromMarketingPage');
+      });
+      afterEach(() => {
+        jest.clearAllMocks();
+      });
+      it('creates a cookie handler communication stream with getCookieFromMarketingPage handler', async () => {
+        const attributionRequest = {
+          name: METAMASK_COOKIE_HANDLER,
+          data: {
+            id: 1,
+            method: 'getCookieFromMarketingPage',
+            params: [{ ga_client_id: 'XYZ.ABC' }],
+          },
+        };
+
+        const { promise, resolve } = deferredPromise();
+        const { promise: promiseStream, resolve: resolveStream } =
+          deferredPromise();
+        const streamTest = createThroughStream((chunk, _, cb) => {
+          if (chunk.name !== METAMASK_COOKIE_HANDLER) {
+            cb();
+            return;
+          }
+          resolve();
+          cb(null, chunk);
+        });
+
+        localMetaMaskController.setUpCookieHandlerCommunication({
+          connectionStream: streamTest,
+        });
+
+        streamTest.write(attributionRequest, null, () => {
+          expect(
+            localMetaMaskController.getCookieFromMarketingPage,
+          ).toHaveBeenCalledWith({ ga_client_id: 'XYZ.ABC' });
+          resolveStream();
+        });
+
+        await promise;
+        streamTest.end();
+        await promiseStream;
+      });
+    });
 
     describe('#setupUntrustedCommunicationEip1193', () => {
       const mockTxParams = { from: TEST_ADDRESS };
@@ -1881,23 +1993,6 @@ describe('MetaMaskController', () => {
       });
     });
 
-    describe('markNotificationsAsRead', () => {
-      it('marks the notification as read', () => {
-        metamaskController.markNotificationsAsRead([NOTIFICATION_ID]);
-        const readNotification =
-          metamaskController.getState().notifications[NOTIFICATION_ID];
-        expect(readNotification.readDate).not.toBeNull();
-      });
-    });
-
-    describe('dismissNotifications', () => {
-      it('deletes the notification from state', () => {
-        metamaskController.dismissNotifications([NOTIFICATION_ID]);
-        const state = metamaskController.getState().notifications;
-        expect(Object.values(state)).not.toContain(NOTIFICATION_ID);
-      });
-    });
-
     describe('getTokenStandardAndDetails', () => {
       it('gets token data from the token list if available, and with a balance retrieved by fetchTokenBalance', async () => {
         const providerResultStub = {
@@ -2307,7 +2402,7 @@ describe('MetaMaskController', () => {
         ...mockEvmAccount,
         id: '21690786-6abd-45d8-a9f0-9ff1d8ca76a1',
         type: BtcAccountType.P2wpkh,
-        methods: [BtcMethod.SendMany],
+        methods: [BtcMethod.SendBitcoin],
         address: 'bc1qar0srrr7xfkvy5l643lydnw9re59gtzzwf5mdq',
       };
 
@@ -2415,7 +2510,7 @@ describe('MetaMaskController', () => {
         ...mockEvmAccount,
         id: '21690786-6abd-45d8-a9f0-9ff1d8ca76a1',
         type: BtcAccountType.P2wpkh,
-        methods: [BtcMethod.SendMany],
+        methods: [BtcMethod.SendBitcoin],
         address: 'bc1qar0srrr7xfkvy5l643lydnw9re59gtzzwf5mdq',
         // We need to have a "Snap account" account here, since the MultichainBalancesController will
         // filter it out otherwise!
@@ -2505,6 +2600,56 @@ describe('MetaMaskController', () => {
           mockNonEvmAccount.id,
         );
       });
+    });
+  });
+
+  describe('onFeatureFlagResponseReceived', () => {
+    const metamaskController = new MetaMaskController({
+      showUserConfirmation: noop,
+      encryptor: mockEncryptor,
+      initState: cloneDeep(firstTimeState),
+      initLangCode: 'en_US',
+      platform: {
+        showTransactionNotification: () => undefined,
+        getVersion: () => 'foo',
+      },
+      browser: browserPolyfillMock,
+      infuraProjectId: 'foo',
+      isFirstMetaMaskControllerSetup: true,
+    });
+
+    beforeEach(() => {
+      jest.spyOn(
+        metamaskController.tokenBalancesController,
+        'setIntervalLength',
+      );
+    });
+
+    afterEach(() => {
+      jest.clearAllMocks();
+    });
+
+    it('should not set the interval length if the pollInterval is 0', () => {
+      metamaskController.onFeatureFlagResponseReceived({
+        multiChainAssets: {
+          pollInterval: 0,
+        },
+      });
+      expect(
+        metamaskController.tokenBalancesController.setIntervalLength,
+      ).not.toHaveBeenCalled();
+    });
+
+    it('should set the interval length if the pollInterval is greater than 0', () => {
+      const pollInterval = 10;
+      metamaskController.onFeatureFlagResponseReceived({
+        multiChainAssets: {
+          pollInterval,
+        },
+      });
+      expect(
+        metamaskController.tokenBalancesController.setIntervalLength,
+      ).toHaveBeenCalledWith(pollInterval * SECOND);
     });
   });
 
