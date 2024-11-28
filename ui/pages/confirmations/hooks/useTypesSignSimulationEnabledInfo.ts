@@ -1,4 +1,3 @@
-import { useMemo } from 'react';
 import { useSelector } from 'react-redux';
 
 import { MESSAGE_TYPE } from '../../../../shared/constants/app';
@@ -54,14 +53,13 @@ export function useTypesSignSimulationEnabledInfo() {
   const nonPermitSupportedByDecodingAPI =
     isTypedSignV3V4 && isNonPermitSupportedByDecodingAPI(currentConfirmation);
 
-  return useMemo(() => {
-    if (!currentConfirmation) {
-      return undefined;
-    }
-    return (
-      useTransactionSimulations &&
-      isTypedSignV3V4 &&
-      (isPermit || nonPermitSupportedByDecodingAPI)
-    );
-  }, [isTypedSignV3V4, isPermit, nonPermitSupportedByDecodingAPI]);
+  if (!currentConfirmation) {
+    return undefined;
+  }
+
+  return (
+    useTransactionSimulations &&
+    isTypedSignV3V4 &&
+    (isPermit || nonPermitSupportedByDecodingAPI)
+  );
 }

@@ -24,7 +24,7 @@ describe('useTypesSignSimulationEnabledInfo', () => {
     expect(result.current).toBe(false);
   });
 
-  it.only('return false if request is not types sign v3 or V4', async () => {
+  it('return false if request is not types sign v3 or V4', async () => {
     const state = getMockTypedSignConfirmStateForRequest(
       unapprovedTypedSignMsgV1,
       {
