@@ -54,7 +54,7 @@ export type FeatureFlags = {
   smartTransactions: {
     expectedDeadline?: number;
     maxDeadline?: number;
-    returnTxHashAsap?: boolean;
+    extensionReturnTxHashAsap?: boolean;
   };
 };
 
@@ -83,7 +83,7 @@ class SmartTransactionHook {
     smartTransactions: {
       expectedDeadline?: number;
       maxDeadline?: number;
-      returnTxHashAsap?: boolean;
+      extensionReturnTxHashAsap?: boolean;
     };
   };
 
@@ -167,8 +167,8 @@ class SmartTransactionHook {
       if (!uuid) {
         throw new Error('No smart transaction UUID');
       }
-      const returnTxHashAsap =
-        this.#featureFlags?.smartTransactions?.returnTxHashAsap;
+      const extensionReturnTxHashAsap =
+        this.#featureFlags?.smartTransactions?.extensionReturnTxHashAsap;
       this.#addApprovalRequest({
         uuid,
       });
@@ -176,7 +176,7 @@ class SmartTransactionHook {
         uuid,
       });
       let transactionHash: string | undefined | null;
-      if (returnTxHashAsap && submitTransactionResponse?.txHash) {
+      if (extensionReturnTxHashAsap && submitTransactionResponse?.txHash) {
         transactionHash = submitTransactionResponse.txHash;
       } else {
         transactionHash = await this.#waitForTransactionHash({
