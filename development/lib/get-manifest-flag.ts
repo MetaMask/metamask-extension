@@ -83,7 +83,7 @@ async function getFlagsFromPrBody(): Promise<ManifestFlags> {
 async function getFlagsFromGitMessage(): Promise<ManifestFlags> {
   const gitMessage = (
     await exec(`git show --format='%B' --no-patch "HEAD"`)
-  ).toString();
+  ).stdout;
 
   return regexSearchForFlags(gitMessage, 'git message');
 }
