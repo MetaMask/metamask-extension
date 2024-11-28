@@ -76,7 +76,6 @@ const TokenAsset = ({ token, chainId }: { token: Token; chainId: Hex }) => {
     walletAddress,
     { blockExplorerUrl: currentTokenBlockExplorer ?? '' },
   );
-  console.log(tokenTrackerLink);
 
   return (
     <AssetPage
