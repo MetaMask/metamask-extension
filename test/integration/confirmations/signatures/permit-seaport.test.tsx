@@ -92,6 +92,8 @@ describe('Permit Seaport Tests', () => {
   it('renders message details section', async () => {
     await renderSeaportSignature();
 
+    fireEvent.click(screen.getByTestId('sectionCollapseButton'));
+
     const messageDetailsSection = await screen.findByTestId(
       'confirmation_message-section',
     );
