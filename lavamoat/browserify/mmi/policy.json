@@ -1354,6 +1354,7 @@
       "packages": {
         "@ethereumjs/tx": true,
         "@ethereumjs/tx>@ethereumjs/util": true,
+        "@metamask/eth-sig-util": true,
         "@metamask/eth-trezor-keyring>@trezor/connect-plugin-ethereum": true,
         "@metamask/eth-trezor-keyring>hdkey": true,
         "@trezor/connect-web": true,
@@ -3399,6 +3400,8 @@
     },
     "@swc/helpers>tslib": {
       "globals": {
+        "AsyncIterator": true,
+        "Iterator": true,
         "SuppressedError": true,
         "define": true
       }
