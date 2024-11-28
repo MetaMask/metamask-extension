@@ -366,14 +366,7 @@ const CoinButtons = ({
     );
 
     ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
-    if (isEvmAccountType(account.type)) {
-      ///: END:ONLY_INCLUDE_IF
-      // Native Send flow
-      await setCorrectChain();
-      await dispatch(startNewDraftTransaction({ type: AssetType.native }));
-      history.push(SEND_ROUTE);
-      ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
-    } else {
+    if (!isEvmAccountType(account.type)) {
       // Non-EVM (Snap) Send flow
       if (!account.metadata.snap) {
         throw new Error('Non-EVM needs to be Snap accounts');
@@ -398,8 +391,16 @@ const CoinButtons = ({
         // Restore the previous tab in case of any error (see FIXME comment above).
         await dispatch(setDefaultHomeActiveTabName(currentActivityTabName));
       }
+
+      // Early return, not to let the non-EVM flow slip into the native send flow.
+      return;
     }
     ///: END:ONLY_INCLUDE_IF
+
+    // Native Send flow
+    await setCorrectChain();
+    await dispatch(startNewDraftTransaction({ type: AssetType.native }));
+    history.push(SEND_ROUTE);
   }, [chainId, account, setCorrectChain]);
 
   const handleSwapOnClick = useCallback(async () => {
