@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import {
   DecodingDataChangeType,
   DecodingDataStateChange,
@@ -103,14 +103,18 @@ const DecodedSimulation: React.FC<object> = () => {
   const chainId = currentConfirmation.chainId as Hex;
   const { decodingLoading, decodingData } = currentConfirmation;
 
-  const stateChangeFragment = (decodingData?.stateChanges ?? []).map(
-    (change: DecodingDataStateChange) => (
-      <StateChangeRow
-        stateChangeList={decodingData?.stateChanges ?? []}
-        stateChange={change}
-        chainId={chainId}
-      />
-    ),
+  const stateChangeFragment = useMemo(
+    () =>
+      (decodingData?.stateChanges ?? []).map(
+        (change: DecodingDataStateChange) => (
+          <StateChangeRow
+            stateChangeList={decodingData?.stateChanges ?? []}
+            stateChange={change}
+            chainId={chainId}
+          />
+        ),
+      ),
+    [decodingData?.stateChanges],
   );
 
   return (

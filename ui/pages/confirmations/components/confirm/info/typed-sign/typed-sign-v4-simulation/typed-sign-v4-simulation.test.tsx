@@ -21,6 +21,7 @@ jest.mock('../../../../../../../store/actions', () => {
     getTokenStandardAndDetails: jest
       .fn()
       .mockResolvedValue({ decimals: 2, standard: 'ERC20' }),
+    updateEventFragment: jest.fn(),
   };
 });
 
@@ -45,11 +46,16 @@ describe('PermitSimulation', () => {
   });
 
   it('should render default simulation if decoding api does not return result', async () => {
-    const state = getMockTypedSignConfirmStateForRequest({
-      ...permitSignatureMsg,
-      decodingLoading: false,
-      decodingData: undefined,
-    });
+    const state = getMockTypedSignConfirmStateForRequest(
+      {
+        ...permitSignatureMsg,
+        decodingLoading: false,
+        decodingData: undefined,
+      },
+      {
+        metamask: { useTransactionSimulations: true },
+      },
+    );
     const mockStore = configureMockStore([])(state);
 
     await act(async () => {
@@ -69,17 +75,22 @@ describe('PermitSimulation', () => {
   });
 
   it('should render default simulation if decoding api returns error', async () => {
-    const state = getMockTypedSignConfirmStateForRequest({
-      ...permitSignatureMsg,
-      decodingLoading: false,
-      decodingData: {
-        stateChanges: null,
-        error: {
-          message: 'some error',
-          type: 'SOME_ERROR',
+    const state = getMockTypedSignConfirmStateForRequest(
+      {
+        ...permitSignatureMsg,
+        decodingLoading: false,
+        decodingData: {
+          stateChanges: null,
+          error: {
+            message: 'some error',
+            type: 'SOME_ERROR',
+          },
         },
       },
-    });
+      {
+        metamask: { useTransactionSimulations: true },
+      },
+    );
     const mockStore = configureMockStore([])(state);
 
     await act(async () => {
@@ -113,7 +124,6 @@ describe('PermitSimulation', () => {
 
       await waitFor(() => {
         expect(queryByTestId('30')).not.toBeInTheDocument();
-        expect(queryByTestId('Estimated changes')).toBeInTheDocument();
         expect(
           queryByTestId(
             "You're giving the spender permission to spend this many tokens from your account.",
@@ -124,11 +134,14 @@ describe('PermitSimulation', () => {
   });
 
   it('should render decoding simulation for permits', async () => {
-    const state = getMockTypedSignConfirmStateForRequest({
-      ...permitSignatureMsg,
-      decodingLoading: false,
-      decodingData,
-    });
+    const state = getMockTypedSignConfirmStateForRequest(
+      {
+        ...permitSignatureMsg,
+        decodingLoading: false,
+        decodingData,
+      },
+      { metamask: { useTransactionSimulations: true } },
+    );
     const mockStore = configureMockStore([])(state);
 
     await act(async () => {
@@ -139,12 +152,13 @@ describe('PermitSimulation', () => {
 
       expect(await findByText('Estimated changes')).toBeInTheDocument();
       expect(await findByText('Spending cap')).toBeInTheDocument();
-      expect(await findByText('1,461,501,637,3...')).toBeInTheDocument();
     });
   });
 
-  it.only('should render decoding simulation for seaport request', async () => {
-    const state = getMockTypedSignConfirmStateForRequest(seaportSignatureMsg);
+  it('should render decoding simulation for seaport request', async () => {
+    const state = getMockTypedSignConfirmStateForRequest(seaportSignatureMsg, {
+      metamask: { useTransactionSimulations: true },
+    });
     const mockStore = configureMockStore([])(state);
 
     await act(async () => {

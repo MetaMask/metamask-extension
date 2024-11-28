@@ -71,6 +71,7 @@ import {
   SubjectType,
 } from '@metamask/permission-controller';
 import SmartTransactionsController from '@metamask/smart-transactions-controller';
+import { ClientId } from '@metamask/smart-transactions-controller/dist/types';
 import {
   METAMASK_DOMAIN,
   SelectedNetworkController,
@@ -478,6 +479,11 @@ export default class MetamaskController extends EventEmitter {
 
     this.appMetadataController = new AppMetadataController({
       state: initState.AppMetadataController,
+      messenger: this.controllerMessenger.getRestricted({
+        name: 'AppMetadataController',
+        allowedActions: [],
+        allowedEvents: [],
+      }),
       currentMigrationVersion: this.currentMigrationVersion,
       currentAppVersion: version,
     });
@@ -2049,8 +2055,7 @@ export default class MetamaskController extends EventEmitter {
       decodingApiUrl: process.env.DECODING_API_URL,
       isDecodeSignatureRequestEnabled: () =>
         this.preferencesController.state.useExternalServices === true &&
-        this.preferencesController.state.useTransactionSimulations &&
-        process.env.ENABLE_SIGNATURE_DECODING === true,
+        this.preferencesController.state.useTransactionSimulations,
     });
 
     this.signatureController.hub.on(
@@ -2217,6 +2222,7 @@ export default class MetamaskController extends EventEmitter {
       });
     this.smartTransactionsController = new SmartTransactionsController({
       supportedChainIds: getAllowedSmartTransactionsChainIds(),
+      clientId: ClientId.Extension,
       getNonceLock: this.txController.getNonceLock.bind(this.txController),
       confirmExternalTransaction:
         this.txController.confirmExternalTransaction.bind(this.txController),
@@ -2228,6 +2234,13 @@ export default class MetamaskController extends EventEmitter {
       getTransactions: this.txController.getTransactions.bind(
         this.txController,
       ),
+      updateTransaction: this.txController.updateTransaction.bind(
+        this.txController,
+      ),
+      getFeatureFlags: () => {
+        const state = this._getMetaMaskState();
+        return getFeatureFlagsByChainId(state);
+      },
       getMetaMetricsProps: async () => {
         const selectedAddress =
           this.accountsController.getSelectedAccount().address;
@@ -2457,7 +2470,7 @@ export default class MetamaskController extends EventEmitter {
     this.store.updateStructure({
       AccountsController: this.accountsController,
       AppStateController: this.appStateController.store,
-      AppMetadataController: this.appMetadataController.store,
+      AppMetadataController: this.appMetadataController,
       MultichainBalancesController: this.multichainBalancesController,
       TransactionController: this.txController,
       KeyringController: this.keyringController,
@@ -2512,7 +2525,7 @@ export default class MetamaskController extends EventEmitter {
       config: {
         AccountsController: this.accountsController,
         AppStateController: this.appStateController.store,
-        AppMetadataController: this.appMetadataController.store,
+        AppMetadataController: this.appMetadataController,
         MultichainBalancesController: this.multichainBalancesController,
         NetworkController: this.networkController,
         KeyringController: this.keyringController,
