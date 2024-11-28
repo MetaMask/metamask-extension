@@ -285,7 +285,7 @@ env:
   # Determines if feature flagged Chain permissions
   - CHAIN_PERMISSIONS: ''
   # Determines if Portfolio View UI should be shown
-  - PORTFOLIO_VIEW: ''
+  - PORTFOLIO_VIEW: 'true'
   # Enables use of test gas fee flow to debug gas fee estimation
   - TEST_GAS_FEE_FLOWS: false
   # Temporary mechanism to enable security alerts API prior to release
