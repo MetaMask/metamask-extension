@@ -748,7 +748,7 @@ async function setupMocking(
     .thenCallback(() => {
       return {
         statusCode: 200,
-        json: [{ feature1: true, feature2: false }],
+        json: { feature1: true, feature2: false },
       };
     });
 

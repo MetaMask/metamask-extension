@@ -7,7 +7,9 @@ describe('InfoTab', () => {
     let getByText: (text: string) => HTMLElement;
 
     beforeEach(() => {
-      const renderResult = renderWithProvider(<InfoTab />);
+      const renderResult = renderWithProvider(
+        <InfoTab remoteFeatureFlags={[]} />,
+      );
       getByText = renderResult.getByText;
     });
 

@@ -71,6 +71,7 @@ class SettingsPage extends PureComponent {
     pathnameI18nKey: PropTypes.string,
     toggleNetworkMenu: PropTypes.func.isRequired,
     useExternalServices: PropTypes.bool,
+    remoteFeatureFlags: PropTypes.array,
   };
 
   static contextTypes = {
@@ -382,7 +383,13 @@ class SettingsPage extends PureComponent {
             />
           )}
         />
-        <Route exact path={ABOUT_US_ROUTE} component={InfoTab} />
+        <Route
+          exact
+          path={ABOUT_US_ROUTE}
+          render={() => (
+            <InfoTab remoteFeatureFlags={this.props.remoteFeatureFlags} />
+          )}
+        />
         <Route exact path={ADVANCED_ROUTE} component={AdvancedTab} />
         <Route
           exact

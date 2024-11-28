@@ -6141,12 +6141,12 @@ __metadata:
 
 "@metamask/remote-feature-flag-controller@file:../core/packages/remote-feature-flag-controller::locator=metamask-crx%40workspace%3A.":
   version: 0.0.0
-  resolution: "@metamask/remote-feature-flag-controller@file:../core/packages/remote-feature-flag-controller#../core/packages/remote-feature-flag-controller::hash=fceb11&locator=metamask-crx%40workspace%3A."
+  resolution: "@metamask/remote-feature-flag-controller@file:../core/packages/remote-feature-flag-controller#../core/packages/remote-feature-flag-controller::hash=b9c79c&locator=metamask-crx%40workspace%3A."
   dependencies:
     "@metamask/base-controller": "npm:^7.0.2"
     "@metamask/utils": "npm:^10.0.0"
     cockatiel: "npm:^3.1.2"
-  checksum: 10/4cdf15ef3c2aafc3c9d9d7a224d1af72c7c06535b5d1227d509ccef9d8c240211a97b7e021f957b630473937c1107097017b7c660456c1bde1f95055ff3524b6
+  checksum: 10/ca6c43b375dcc1cc2a53a8d3bbbbfabed622b43ec85fe3958f0ffff60935f0f02cea9ed3f23c3f985cfd4515c9b4c8c5a4e1210ef2208ffda867bf8f1d9d3c08
   languageName: node
   linkType: hard
 

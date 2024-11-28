@@ -28,6 +28,10 @@ import {
 } from '../../../../shared/lib/ui-utils';
 
 export default class InfoTab extends PureComponent {
+  static propTypes = {
+    remoteFeatureFlags: PropTypes.array,
+  };
+
   state = {
     version: process.env.METAMASK_VERSION,
   };
@@ -53,6 +57,13 @@ export default class InfoTab extends PureComponent {
   componentDidMount() {
     const { t } = this.context;
     handleSettingsRefs(t, t('about'), this.settingsRefs);
+    if (this.props.remoteFeatureFlags.length > 0) {
+      // eslint-disable-next-line no-console
+      console.log(
+        'Feature flag fetched successfully',
+        this.props.remoteFeatureFlags,
+      );
+    }
   }
 
   renderInfoLinks() {
