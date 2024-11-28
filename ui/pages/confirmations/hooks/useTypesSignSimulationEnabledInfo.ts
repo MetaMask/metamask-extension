@@ -1,12 +1,12 @@
 import { useMemo } from 'react';
+import { useSelector } from 'react-redux';
 
 import { MESSAGE_TYPE } from '../../../../shared/constants/app';
 import { parseTypedDataMessage } from '../../../../shared/modules/transaction.utils';
 import { SignatureRequestType } from '../types/confirm';
 import { isPermitSignatureRequest } from '../utils';
-import { useConfirmContext } from '../context/confirm';
-import { useSelector } from 'react-redux';
 import { selectUseTransactionSimulations } from '../selectors/preferences';
+import { useConfirmContext } from '../context/confirm';
 
 const NON_PERMIT_SUPPORTED_TYPES_SIGNS = [
   {
