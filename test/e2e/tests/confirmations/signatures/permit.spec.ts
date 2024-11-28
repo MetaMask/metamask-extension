@@ -120,10 +120,9 @@ describe('Confirmation Signature - Permit @no-mmi', function (this: Suite) {
       this.test?.fullTitle(),
       TransactionEnvelopeType.legacy,
       async ({ driver }: TestSuiteArguments) => {
-        await unlockWallet(driver);
-        await openDapp(driver);
-        await driver.clickElement('#signPermit');
-        await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
+        await initializePages(driver);
+        await openDappAndTriggerSignature(driver, SignatureType.Permit);
+
         const simulationSection = driver.findElement({
           text: 'Estimated changes',
         });
