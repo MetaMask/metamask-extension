@@ -18,6 +18,7 @@ class GeneralSettings {
 
   async check_pageIsLoaded(): Promise<void> {
     try {
+      await this.check_noLoadingOverlaySpinner();
       await this.driver.waitForMultipleSelectors([
         this.generalSettingsPageTitle,
         this.selectLanguageField,
