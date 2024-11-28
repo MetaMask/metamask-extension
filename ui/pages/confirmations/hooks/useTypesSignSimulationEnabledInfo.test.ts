@@ -3,7 +3,7 @@ import { renderHookWithConfirmContextProvider } from '../../../../test/lib/confi
 import {
   permitSingleSignatureMsg,
   seaportSignatureMsg,
-  unapprovedTypedSignMsgV3,
+  unapprovedTypedSignMsgV1,
 } from '../../../../test/data/confirmations/typed_sign';
 import { useTypesSignSimulationEnabledInfo } from './useTypesSignSimulationEnabledInfo';
 
@@ -24,9 +24,9 @@ describe('useTypesSignSimulationEnabledInfo', () => {
     expect(result.current).toBe(false);
   });
 
-  it('return false if request is not types sign V4', async () => {
+  it('return false if request is not types sign v3 or V4', async () => {
     const state = getMockTypedSignConfirmStateForRequest(
-      unapprovedTypedSignMsgV3,
+      unapprovedTypedSignMsgV1,
       {
         metamask: { useTransactionSimulations: true },
       },
