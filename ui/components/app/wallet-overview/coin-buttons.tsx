@@ -55,7 +55,6 @@ import {
   getMemoizedUnapprovedTemplatedConfirmations,
   ///: END:ONLY_INCLUDE_IF
   getNetworkConfigurationIdByChainId,
-  getCurrentChainId,
 } from '../../../selectors';
 import Tooltip from '../../ui/tooltip';
 ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
@@ -85,8 +84,8 @@ import useBridging from '../../../hooks/bridge/useBridging';
 ///: END:ONLY_INCLUDE_IF
 import { ReceiveModal } from '../../multichain/receive-modal';
 import {
-  setActiveNetwork,
   setSwitchedNetworkDetails,
+  setActiveNetworkWithError,
   ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
   sendMultichainTransaction,
   setDefaultHomeActiveTabName,
@@ -100,6 +99,7 @@ import {
   getMultichainNativeCurrency,
 } from '../../../selectors/multichain';
 import { useMultichainSelector } from '../../../hooks/useMultichainSelector';
+import { getCurrentChainId } from '../../../../shared/modules/selectors/networks';
 
 type CoinButtonsProps = {
   account: InternalAccount;
@@ -328,13 +328,20 @@ const CoinButtons = ({
 
   const setCorrectChain = useCallback(async () => {
     if (currentChainId !== chainId) {
-      const networkConfigurationId = networks[chainId];
-      await dispatch(setActiveNetwork(networkConfigurationId));
-      await dispatch(
-        setSwitchedNetworkDetails({
-          networkClientId: networkConfigurationId,
-        }),
-      );
+      try {
+        const networkConfigurationId = networks[chainId];
+        await dispatch(setActiveNetworkWithError(networkConfigurationId));
+        await dispatch(
+          setSwitchedNetworkDetails({
+            networkClientId: networkConfigurationId,
+          }),
+        );
+      } catch (err) {
+        console.error(`Failed to switch chains.
+        Target chainId: ${chainId}, Current chainId: ${currentChainId}.
+        ${err}`);
+        throw err;
+      }
     }
   }, [currentChainId, chainId, networks, dispatch]);
 
@@ -375,19 +382,6 @@ const CoinButtons = ({
       }
       ///: END:ONLY_INCLUDE_IF
       default: {
-        trackEvent(
-          {
-            event: MetaMetricsEventName.NavSendButtonClicked,
-            category: MetaMetricsEventCategory.Navigation,
-            properties: {
-              token_symbol: 'ETH',
-              location: 'Home',
-              text: 'Send',
-              chain_id: chainId,
-            },
-          },
-          { excludeMetaMetricsId: false },
-        );
         await setCorrectChain();
         await dispatch(startNewDraftTransaction({ type: AssetType.native }));
         history.push(SEND_ROUTE);
@@ -397,7 +391,6 @@ const CoinButtons = ({
 
   const handleSwapOnClick = useCallback(async () => {
     await setCorrectChain();
-
     ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
     global.platform.openTab({
       url: `${mmiPortfolioUrl}/swap`,
