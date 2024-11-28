@@ -1,5 +1,3 @@
-import { it } from 'mocha';
-
 const { strict: assert } = require('assert');
 const {
   defaultGanacheOptions,

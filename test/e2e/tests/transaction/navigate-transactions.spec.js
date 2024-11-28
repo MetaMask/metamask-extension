@@ -1,5 +1,6 @@
-import Confirmation from '../../page-objects/pages/confirmations/redesign/confirmation';
-
+const {
+  default: Confirmation,
+} = require('../../page-objects/pages/confirmations/redesign/confirmation');
 const {
   createDappTransaction,
 } = require('../../page-objects/flows/transaction');

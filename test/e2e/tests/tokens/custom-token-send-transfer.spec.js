@@ -1,6 +1,7 @@
-import { mockedSourcifyTokenSend } from '../confirmations/transactions/erc20-token-send-redesign.spec';
-
 const { strict: assert } = require('assert');
+const {
+  mockedSourcifyTokenSend,
+} = require('../confirmations/transactions/erc20-token-send-redesign.spec');
 const {
   withFixtures,
   defaultGanacheOptions,

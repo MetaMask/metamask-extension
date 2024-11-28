@@ -119,10 +119,10 @@ describe('Editing Confirm Transaction', function () {
           await driver.clickElement('[data-testid="edit-gas-fee-item-custom"]');
 
           // enter max fee
-          await driver.fill('[data-testid="base-fee-input"]', '8.5');
+          await driver.fill('[data-testid="base-fee-input"]', '8,5');
 
           // enter priority fee
-          await driver.fill('[data-testid="priority-fee-input"]', '8.5');
+          await driver.fill('[data-testid="priority-fee-input"]', '8,5');
 
           // save default values
           await driver.clickElement('input[type="checkbox"]');
@@ -363,6 +363,11 @@ describe('Editing Confirm Transaction', function () {
             text: '0.0008 ETH',
           });
 
+          await driver.waitForSelector({
+            css: '[data-testid="native-currency"]',
+            text: '$1.44',
+          });
+
           // confirms the transaction
           await driver.clickElement({ text: 'Confirm', tag: 'button' });
 
@@ -428,6 +433,11 @@ describe('Editing Confirm Transaction', function () {
           await driver.waitForSelector({
             css: '[data-testid="first-gas-field"]',
             text: '0.0019',
+          });
+
+          await driver.waitForSelector({
+            css: '[data-testid="native-currency"]',
+            text: '$3.15',
           });
 
           // confirms the transaction
