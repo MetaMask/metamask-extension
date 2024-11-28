@@ -2164,14 +2164,7 @@ describe('#getConnectedSitesList', () => {
     });
   });
 
-  describe('#getRemoteFeatureFlagsByName', () => {
-    it('returns null when state.metamask.remoteFeatureFlags is undefined', () => {
-      const state = {
-        metamask: {},
-      };
-      expect(selectors.getRemoteFeatureFlagsByName(state, 'testFlag')).toBeNull();
-    });
-
+  describe('#getRemoteFeatureFlags', () => {
     it('returns null when featureFlagName does not exist in remoteFeatureFlags', () => {
       const state = {
         metamask: {
@@ -2180,26 +2173,9 @@ describe('#getConnectedSitesList', () => {
           },
         },
       };
-      expect(selectors.getRemoteFeatureFlagsByName(state, 'nonExistentFlag')).toBeNull();
-    });
-
-    it('returns remoteFeatureFlags object when featureFlagName exists', () => {
-      const remoteFeatureFlags = {
-        testFlag: true,
-        otherFlag: false,
-      };
-      const state = {
-        metamask: {
-          remoteFeatureFlags,
-        },
-      };
-      expect(selectors.getRemoteFeatureFlagsByName(state, 'testFlag')).toStrictEqual(remoteFeatureFlags);
-    });
-
-    it('returns null when state is undefined', () => {
-      expect(selectors.getRemoteFeatureFlagsByName(undefined, 'testFlag')).toBeNull();
+      expect(selectors.getRemoteFeatureFlags(state)).toStrictEqual({
+        existingFlag: true,
+      });
     });
   });
 });
-
-

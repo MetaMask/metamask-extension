@@ -2904,11 +2904,8 @@ export function getMetaMetricsDataDeletionStatus(state) {
   return state.metamask.metaMetricsDataDeletionStatus;
 }
 
-export function getRemoteFeatureFlagsByName(state, featureFlagName) {
-  if (featureFlagName && state.metamask.remoteFeatureFlags?.featureFlagName) {
-    return state.metamask.remoteFeatureFlags;
-  }
-  return null;
+export function getRemoteFeatureFlags(state) {
+  return state.metamask.remoteFeatureFlags;
 }
 
 /**

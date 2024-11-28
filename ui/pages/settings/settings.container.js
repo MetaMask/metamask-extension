@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
 import {
   getAddressBookEntryOrAccountName,
-  getRemoteFeatureFlagsByName,
+  getRemoteFeatureFlags,
   getUseExternalServices,
 } from '../../selectors';
 import { ENVIRONMENT_TYPE_POPUP } from '../../../shared/constants/app';
@@ -61,7 +61,7 @@ const mapStateToProps = (state, ownProps) => {
   const {
     metamask: { currencyRates },
   } = state;
-  const remoteFeatureFlags = getRemoteFeatureFlagsByName(state);
+  const remoteFeatureFlags = getRemoteFeatureFlags(state);
   const conversionDate = currencyRates[ticker]?.conversionDate;
 
   const pathNameTail = pathname.match(/[^/]+$/u)[0];
