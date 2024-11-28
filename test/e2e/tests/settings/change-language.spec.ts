@@ -45,6 +45,15 @@ describe('Settings - general tab @no-mmi', function (this: Suite) {
         );
         assert.equal(isLanguageLabelChanged, true, 'Language did not change');
 
+        // Refresh the page and validate that the language is still Spanish
+        await driver.refresh();
+        await generalSettings.check_pageIsLoaded();
+        assert.equal(
+          await driver.isElementPresent(selectors.labelSpanish),
+          true,
+          'Language did not change after refresh',
+        );
+
         // Change language back to English and validate that the word has changed correctly
         await generalSettings.changeLanguage('English');
         const isLabelTextChanged = await driver.isElementPresent(
