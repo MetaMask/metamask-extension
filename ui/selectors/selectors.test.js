@@ -2163,4 +2163,43 @@ describe('#getConnectedSitesList', () => {
       expect(getCurrentChainIdSpy).not.toHaveBeenCalled(); // Ensure overrideChainId is used
     });
   });
+
+  describe('#getRemoteFeatureFlagsByName', () => {
+    it('returns null when state.metamask.remoteFeatureFlags is undefined', () => {
+      const state = {
+        metamask: {},
+      };
+      expect(selectors.getRemoteFeatureFlagsByName(state, 'testFlag')).toBeNull();
+    });
+
+    it('returns null when featureFlagName does not exist in remoteFeatureFlags', () => {
+      const state = {
+        metamask: {
+          remoteFeatureFlags: {
+            existingFlag: true,
+          },
+        },
+      };
+      expect(selectors.getRemoteFeatureFlagsByName(state, 'nonExistentFlag')).toBeNull();
+    });
+
+    it('returns remoteFeatureFlags object when featureFlagName exists', () => {
+      const remoteFeatureFlags = {
+        testFlag: true,
+        otherFlag: false,
+      };
+      const state = {
+        metamask: {
+          remoteFeatureFlags,
+        },
+      };
+      expect(selectors.getRemoteFeatureFlagsByName(state, 'testFlag')).toStrictEqual(remoteFeatureFlags);
+    });
+
+    it('returns null when state is undefined', () => {
+      expect(selectors.getRemoteFeatureFlagsByName(undefined, 'testFlag')).toBeNull();
+    });
+  });
 });
+
+

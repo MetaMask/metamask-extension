@@ -69,9 +69,9 @@ class SettingsPage extends PureComponent {
     isPopup: PropTypes.bool,
     mostRecentOverviewPage: PropTypes.string.isRequired,
     pathnameI18nKey: PropTypes.string,
+    tesRemoteFeatureFlag: PropTypes.bool,
     toggleNetworkMenu: PropTypes.func.isRequired,
     useExternalServices: PropTypes.bool,
-    remoteFeatureFlags: PropTypes.array,
   };
 
   static contextTypes = {
@@ -387,7 +387,7 @@ class SettingsPage extends PureComponent {
           exact
           path={ABOUT_US_ROUTE}
           render={() => (
-            <InfoTab remoteFeatureFlags={this.props.remoteFeatureFlags} />
+            <InfoTab tesRemoteFeatureFlag={this.props.tesRemoteFeatureFlag} />
           )}
         />
         <Route exact path={ADVANCED_ROUTE} component={AdvancedTab} />

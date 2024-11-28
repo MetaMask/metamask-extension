@@ -2611,17 +2611,17 @@ describe('MetaMaskController', () => {
 
     describe('RemoteFeatureFlagController', () => {
       let localMetamaskController;
-      let mockClientConfigApiService;
 
       beforeEach(() => {
-        mockClientConfigApiService = {
-          fetchRemoteFeatureFlags: jest
-            .fn()
-            .mockResolvedValue({ cachedData: [] }),
-        };
-
         localMetamaskController = new MetaMaskController({
           showUserConfirmation: noop,
+          encryptor: mockEncryptor,
+          initState: {
+            ...cloneDeep(firstTimeState),
+            PreferencesController: {
+              useExternalServices: false,
+            },
+          },
           initLangCode: 'en_US',
           platform: {
             showTransactionNotification: () => undefined,
@@ -2630,62 +2630,84 @@ describe('MetaMaskController', () => {
           browser: browserPolyfillMock,
           infuraProjectId: 'foo',
           isFirstMetaMaskControllerSetup: true,
-          initState: {
-            ...cloneDeep(firstTimeState),
-            PreferencesController: {
-              useExternalServices: false,
-            },
-          },
         });
+      });
+
+      afterEach(() => {
+        jest.clearAllMocks();
       });
 
       it('should initialize RemoteFeatureFlagController in disabled state when useExternalServices is false', async () => {
         const { remoteFeatureFlagController, preferencesController } =
           localMetamaskController;
-        // Check preferences state
+
         expect(preferencesController.state.useExternalServices).toBe(false);
-
-        // Since disabled is true, getRemoteFeatureFlags should return empty array
-        const flags = await remoteFeatureFlagController.getRemoteFeatureFlags();
-        expect(flags).toStrictEqual([]);
-
-        // Check controller state
         expect(remoteFeatureFlagController.state).toStrictEqual({
-          remoteFeatureFlags: [],
+          remoteFeatureFlags: {},
           cacheTimestamp: 0,
         });
       });
 
-      it('should enable/disable feature flag fetching based on useExternalServices in PreferenceController', async () => {
+      it('should disable feature flag fetching when useExternalServices is disabled', async () => {
         const { remoteFeatureFlagController } = localMetamaskController;
 
-        // Initially disabled
-        let flags = await remoteFeatureFlagController.getRemoteFeatureFlags();
-        expect(flags).toStrictEqual([]);
+        // First enable external services
+        await simulatePreferencesChange({
+          useExternalServices: true,
+        });
+
+        // Then disable them
+        await simulatePreferencesChange({
+          useExternalServices: false,
+        });
+
+        expect(remoteFeatureFlagController.state).toStrictEqual({
+          remoteFeatureFlags: {},
+          cacheTimestamp: 0,
+        });
+      });
+
+      it('should handle errors during feature flag updates', async () => {
+        const { remoteFeatureFlagController } = localMetamaskController;
+        const mockError = new Error('Failed to fetch');
+
+        jest
+          .spyOn(remoteFeatureFlagController, 'updateRemoteFeatureFlags')
+          .mockRejectedValue(mockError);
+
+        await simulatePreferencesChange({
+          useExternalServices: true,
+        });
+
+        expect(remoteFeatureFlagController.state).toStrictEqual({
+          remoteFeatureFlags: {},
+          cacheTimestamp: 0,
+        });
+      });
+
+      it('should maintain feature flag state across preference toggles', async () => {
+        const { remoteFeatureFlagController } = localMetamaskController;
+        const mockFlags = { testFlag: true };
+
+        jest
+          .spyOn(remoteFeatureFlagController, 'updateRemoteFeatureFlags')
+          .mockResolvedValue(mockFlags);
 
         // Enable external services
         await simulatePreferencesChange({
           useExternalServices: true,
         });
 
-        // Mock the service to return some flags
-        const mockFlags = [{ 'test-flag': true }];
-        jest
-          .spyOn(remoteFeatureFlagController, 'getRemoteFeatureFlags')
-          .mockResolvedValueOnce(mockFlags);
-
-        // Should now fetch flags
-        flags = await remoteFeatureFlagController.getRemoteFeatureFlags();
-        expect(flags).toStrictEqual(mockFlags);
-
         // Disable external services
         await simulatePreferencesChange({
           useExternalServices: false,
         });
 
-        // Should return empty array again
-        flags = await remoteFeatureFlagController.getRemoteFeatureFlags();
-        expect(flags).toStrictEqual([]);
+        // Verify state is cleared
+        expect(remoteFeatureFlagController.state).toStrictEqual({
+          remoteFeatureFlags: {},
+          cacheTimestamp: 0,
+        });
       });
     });
 

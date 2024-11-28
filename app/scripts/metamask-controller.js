@@ -2365,6 +2365,8 @@ export default class MetamaskController extends EventEmitter {
         const { useExternalServices: prevUseExternalServices } = prevState;
         const { useExternalServices: currUseExternalServices } = currState;
 
+        console.log('-----------------');
+        console.log(this.remoteFeatureFlagController.updateRemoteFeatureFlags);
         if (currUseExternalServices && !prevUseExternalServices) {
           this.remoteFeatureFlagController.enable();
           this.remoteFeatureFlagController.updateRemoteFeatureFlags();
