@@ -36,14 +36,14 @@
       "showMultiRpcModal": "boolean",
       "isRedesignedConfirmationsDeveloperEnabled": "boolean",
       "tokenSortConfig": "object",
+      "shouldShowAggregatedBalancePopover": "boolean",
       "tokenNetworkFilter": {
         "0x1": "boolean",
-        "0x539": "boolean",
         "0xaa36a7": "boolean",
         "0xe705": "boolean",
-        "0xe708": "boolean"
+        "0xe708": "boolean",
+        "0x539": "boolean"
       },
-      "shouldShowAggregatedBalancePopover": "boolean",
       "redesignedConfirmationsEnabled": true,
       "redesignedTransactionsEnabled": "boolean"
     },
@@ -181,10 +181,9 @@
     "tokenList": "object",
     "tokensChainsCache": {
       "0x1": "object",
-      "0x539": "object",
-      "0xe708": "object"
+      "0xe708": "object",
+      "0x539": "object"
     },
-    "tokenBalances": "object",
     "preventPollingOnNetworkRestart": false,
     "tokens": "object",
     "ignoredTokens": "object",
@@ -192,6 +191,7 @@
     "allTokens": {},
     "allIgnoredTokens": {},
     "allDetectedTokens": {},
+    "tokenBalances": "object",
     "smartTransactionsState": {
       "fees": {},
       "feesByChainId": "object",
@@ -240,6 +240,8 @@
     "isCheckingAccountsPresence": "boolean",
     "queuedRequestCount": 0,
     "fcmToken": "string",
+    "remoteFeatureFlags": "object",
+    "cacheTimestamp": "number",
     "accounts": "object",
     "accountsByChainId": "object",
     "marketData": "object",

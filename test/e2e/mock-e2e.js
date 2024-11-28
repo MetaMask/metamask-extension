@@ -749,7 +749,7 @@ async function setupMocking(
       return {
         ok: true,
         statusCode: 200,
-        json: { feature1: true, feature2: false },
+        json: [{ feature1: true }, { feature2: false }],
       };
     });
 
