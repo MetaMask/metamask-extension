@@ -46,11 +46,16 @@ describe('PermitSimulation', () => {
   });
 
   it('should render default simulation if decoding api does not return result', async () => {
-    const state = getMockTypedSignConfirmStateForRequest({
-      ...permitSignatureMsg,
-      decodingLoading: false,
-      decodingData: undefined,
-    });
+    const state = getMockTypedSignConfirmStateForRequest(
+      {
+        ...permitSignatureMsg,
+        decodingLoading: false,
+        decodingData: undefined,
+      },
+      {
+        metamask: { useTransactionSimulations: true },
+      },
+    );
     const mockStore = configureMockStore([])(state);
 
     await act(async () => {
@@ -70,17 +75,22 @@ describe('PermitSimulation', () => {
   });
 
   it('should render default simulation if decoding api returns error', async () => {
-    const state = getMockTypedSignConfirmStateForRequest({
-      ...permitSignatureMsg,
-      decodingLoading: false,
-      decodingData: {
-        stateChanges: null,
-        error: {
-          message: 'some error',
-          type: 'SOME_ERROR',
+    const state = getMockTypedSignConfirmStateForRequest(
+      {
+        ...permitSignatureMsg,
+        decodingLoading: false,
+        decodingData: {
+          stateChanges: null,
+          error: {
+            message: 'some error',
+            type: 'SOME_ERROR',
+          },
         },
       },
-    });
+      {
+        metamask: { useTransactionSimulations: true },
+      },
+    );
     const mockStore = configureMockStore([])(state);
 
     await act(async () => {
@@ -124,11 +134,14 @@ describe('PermitSimulation', () => {
   });
 
   it('should render decoding simulation for permits', async () => {
-    const state = getMockTypedSignConfirmStateForRequest({
-      ...permitSignatureMsg,
-      decodingLoading: false,
-      decodingData,
-    });
+    const state = getMockTypedSignConfirmStateForRequest(
+      {
+        ...permitSignatureMsg,
+        decodingLoading: false,
+        decodingData,
+      },
+      { metamask: { useTransactionSimulations: true } },
+    );
     const mockStore = configureMockStore([])(state);
 
     await act(async () => {
@@ -143,7 +156,9 @@ describe('PermitSimulation', () => {
   });
 
   it('should render decoding simulation for seaport request', async () => {
-    const state = getMockTypedSignConfirmStateForRequest(seaportSignatureMsg);
+    const state = getMockTypedSignConfirmStateForRequest(seaportSignatureMsg, {
+      metamask: { useTransactionSimulations: true },
+    });
     const mockStore = configureMockStore([])(state);
 
     await act(async () => {
