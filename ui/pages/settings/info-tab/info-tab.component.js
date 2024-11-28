@@ -57,7 +57,7 @@ export default class InfoTab extends PureComponent {
   componentDidMount() {
     const { t } = this.context;
     handleSettingsRefs(t, t('about'), this.settingsRefs);
-    if (Object.keys(this.props.remoteFeatureFlags).length > 0) {
+    if (this.props.remoteFeatureFlags.testBooleanFlag) {
       // eslint-disable-next-line no-console
       console.log(
         `Fetch remote feature flag success, eg: testBooleanFlag has value ${this.props.remoteFeatureFlags.testBooleanFlag}`,
