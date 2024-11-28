@@ -1,17 +1,10 @@
-import {
-  DecodingData,
-  DecodingDataChangeType,
-} from '@metamask/signature-controller';
-
 import { getMockTypedSignConfirmStateForRequest } from '../../../../test/data/confirmations/helper';
 import { renderHookWithConfirmContextProvider } from '../../../../test/lib/confirmations/render-helpers';
 import {
-  permitSignatureMsg,
   permitSingleSignatureMsg,
   seaportSignatureMsg,
   unapprovedTypedSignMsgV3,
 } from '../../../../test/data/confirmations/typed_sign';
-import * as SignatureEventFragment from './useSignatureEventFragment';
 import { useTypesSignSimulationEnabledInfo } from './useTypesSignSimulationEnabledInfo';
 
 describe('useTypesSignSimulationEnabledInfo', () => {
