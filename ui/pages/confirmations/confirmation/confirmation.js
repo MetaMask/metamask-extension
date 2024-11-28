@@ -195,18 +195,14 @@ function useTemplateState(pendingConfirmation) {
   return [templateState];
 }
 
-const Header = ({ pendingConfirmation, onCancel }) => {
-  const { origin } = pendingConfirmation ?? {};
-
-  const isSnapCustomUIDialog = SNAP_CUSTOM_UI_DIALOG.includes(
-    pendingConfirmation?.type,
-  );
+function Header({ confirmation, isSnapCustomUIDialog, onCancel }) {
+  const { count } = useConfirmationNavigation();
+  const { origin } = confirmation ?? {};
 
   const hideSnapBranding = useSelector((state) =>
     getHideSnapBranding(state, origin),
   );
 
-  const { count } = useConfirmationNavigation();
   const requiresSnapHeader = isSnapCustomUIDialog && !hideSnapBranding;
 
   if (count <= 1 && !requiresSnapHeader) {
@@ -221,7 +217,7 @@ const Header = ({ pendingConfirmation, onCancel }) => {
       )}
     </Box>
   );
-};
+}
 
 export default function ConfirmationPage({
   redirectToHomeOnZeroConfirmations = true,
@@ -249,7 +245,8 @@ export default function ConfirmationPage({
     (confirmation) => confirmation.id === id,
   );
 
-  const pendingConfirmation = pendingRoutedConfirmation ?? pendingConfirmations[0];
+  const pendingConfirmation =
+    pendingRoutedConfirmation ?? pendingConfirmations[0];
 
   const [matchedChain, setMatchedChain] = useState({});
   const [chainFetchComplete, setChainFetchComplete] = useState(false);
@@ -500,7 +497,8 @@ export default function ConfirmationPage({
     <ConfirmContextProvider>
       <div className="confirmation-page">
         <Header
-          pendingConfirmation={pendingConfirmation}
+          confirmation={pendingConfirmation}
+          isSnapCustomUIDialog={isSnapCustomUIDialog}
           onCancel={handleSnapDialogCancel}
         />
         <Box
