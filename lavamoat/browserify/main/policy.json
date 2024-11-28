@@ -794,18 +794,10 @@
     "@metamask/ens-controller": {
       "packages": {
         "@ethersproject/providers": true,
+        "@metamask/base-controller": true,
         "@metamask/controller-utils": true,
-        "@metamask/ens-controller>@metamask/base-controller": true,
         "@metamask/ens-controller>@metamask/utils": true,
         "punycode": true
-      }
-    },
-    "@metamask/ens-controller>@metamask/base-controller": {
-      "globals": {
-        "setTimeout": true
-      },
-      "packages": {
-        "immer": true
       }
     },
     "@metamask/ens-controller>@metamask/utils": {
@@ -842,25 +834,12 @@
         "setTimeout": true
       },
       "packages": {
-        "@metamask/eth-json-rpc-middleware>@metamask/json-rpc-engine": true,
-        "@metamask/eth-json-rpc-middleware>@metamask/rpc-errors": true,
         "@metamask/eth-json-rpc-middleware>@metamask/utils": true,
         "@metamask/eth-json-rpc-middleware>klona": true,
         "@metamask/eth-json-rpc-middleware>safe-stable-stringify": true,
-        "@metamask/eth-sig-util": true
-      }
-    },
-    "@metamask/eth-json-rpc-middleware>@metamask/json-rpc-engine": {
-      "packages": {
-        "@metamask/eth-json-rpc-middleware>@metamask/rpc-errors": true,
-        "@metamask/eth-json-rpc-middleware>@metamask/utils": true,
-        "@metamask/safe-event-emitter": true
-      }
-    },
-    "@metamask/eth-json-rpc-middleware>@metamask/rpc-errors": {
-      "packages": {
-        "@metamask/eth-json-rpc-middleware>@metamask/utils": true,
-        "@metamask/rpc-errors>fast-safe-stringify": true
+        "@metamask/eth-sig-util": true,
+        "@metamask/json-rpc-engine": true,
+        "@metamask/rpc-errors": true
       }
     },
     "@metamask/eth-json-rpc-middleware>@metamask/utils": {
@@ -1434,20 +1413,8 @@
       "packages": {
         "@metamask/controller-utils": true,
         "@metamask/eth-query": true,
-        "@metamask/gas-fee-controller>@metamask/polling-controller": true,
+        "@metamask/polling-controller": true,
         "bn.js": true,
-        "uuid": true
-      }
-    },
-    "@metamask/gas-fee-controller>@metamask/polling-controller": {
-      "globals": {
-        "clearTimeout": true,
-        "console.error": true,
-        "setTimeout": true
-      },
-      "packages": {
-        "@metamask/base-controller": true,
-        "@metamask/snaps-utils>fast-json-stable-stringify": true,
         "uuid": true
       }
     },
@@ -1686,27 +1653,10 @@
       "packages": {
         "@metamask/base-controller": true,
         "@metamask/controller-utils": true,
-        "@metamask/eth-sig-util": true,
-        "@metamask/message-manager>@metamask/utils": true,
-        "@metamask/message-manager>jsonschema": true,
+        "@metamask/utils": true,
         "browserify>buffer": true,
         "uuid": true,
         "webpack>events": true
-      }
-    },
-    "@metamask/message-manager>@metamask/utils": {
-      "globals": {
-        "TextDecoder": true,
-        "TextEncoder": true
-      },
-      "packages": {
-        "@metamask/utils>@metamask/superstruct": true,
-        "@metamask/utils>@scure/base": true,
-        "@metamask/utils>pony-cause": true,
-        "@noble/hashes": true,
-        "browserify>buffer": true,
-        "nock>debug": true,
-        "semver": true
       }
     },
     "@metamask/message-manager>jsonschema": {
@@ -1959,36 +1909,6 @@
         "unstable_autotrackMemoize": true
       }
     },
-    "@metamask/notification-controller": {
-      "packages": {
-        "@metamask/notification-controller>@metamask/base-controller": true,
-        "@metamask/notification-controller>@metamask/utils": true,
-        "@metamask/notification-controller>nanoid": true
-      }
-    },
-    "@metamask/notification-controller>@metamask/base-controller": {
-      "globals": {
-        "setTimeout": true
-      },
-      "packages": {
-        "immer": true
-      }
-    },
-    "@metamask/notification-controller>@metamask/utils": {
-      "globals": {
-        "TextDecoder": true,
-        "TextEncoder": true
-      },
-      "packages": {
-        "@metamask/utils>@metamask/superstruct": true,
-        "@metamask/utils>@scure/base": true,
-        "@metamask/utils>pony-cause": true,
-        "@noble/hashes": true,
-        "browserify>buffer": true,
-        "nock>debug": true,
-        "semver": true
-      }
-    },
     "@metamask/notification-controller>nanoid": {
       "globals": {
         "crypto.getRandomValues": true
@@ -2182,16 +2102,8 @@
     },
     "@metamask/permission-log-controller": {
       "packages": {
-        "@metamask/permission-log-controller>@metamask/base-controller": true,
+        "@metamask/base-controller": true,
         "@metamask/permission-log-controller>@metamask/utils": true
-      }
-    },
-    "@metamask/permission-log-controller>@metamask/base-controller": {
-      "globals": {
-        "setTimeout": true
-      },
-      "packages": {
-        "immer": true
       }
     },
     "@metamask/permission-log-controller>@metamask/utils": {
@@ -3033,27 +2945,15 @@
         "@metamask/controller-utils": true,
         "@metamask/eth-query": true,
         "@metamask/gas-fee-controller": true,
+        "@metamask/polling-controller": true,
         "@metamask/rpc-errors": true,
         "@metamask/transaction-controller": true,
-        "@metamask/user-operation-controller>@metamask/polling-controller": true,
         "@metamask/user-operation-controller>@metamask/utils": true,
         "@metamask/utils>@metamask/superstruct": true,
         "bn.js": true,
         "lodash": true,
         "uuid": true,
         "webpack>events": true
-      }
-    },
-    "@metamask/user-operation-controller>@metamask/polling-controller": {
-      "globals": {
-        "clearTimeout": true,
-        "console.error": true,
-        "setTimeout": true
-      },
-      "packages": {
-        "@metamask/base-controller": true,
-        "@metamask/snaps-utils>fast-json-stable-stringify": true,
-        "uuid": true
       }
     },
     "@metamask/user-operation-controller>@metamask/utils": {

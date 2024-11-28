@@ -298,10 +298,7 @@ const executePollingWithPendingStatus = async () => {
   const bridgeStatusController = new BridgeStatusController({
     messenger: getMessengerMock(),
   });
-  const startPollingByNetworkClientIdSpy = jest.spyOn(
-    bridgeStatusController,
-    'startPollingByNetworkClientId',
-  );
+  const startPollingSpy = jest.spyOn(bridgeStatusController, 'startPolling');
   const fetchBridgeTxStatusSpy = jest.spyOn(
     bridgeStatusUtils,
     'fetchBridgeTxStatus',
@@ -319,7 +316,7 @@ const executePollingWithPendingStatus = async () => {
 
   return {
     bridgeStatusController,
-    startPollingByNetworkClientIdSpy,
+    startPollingSpy,
     fetchBridgeTxStatusSpy,
   };
 };
@@ -398,12 +395,12 @@ describe('BridgeStatusController', () => {
     it('starts polling and updates the tx history when the status response is received', async () => {
       const {
         bridgeStatusController,
-        startPollingByNetworkClientIdSpy,
+        startPollingSpy,
         fetchBridgeTxStatusSpy,
       } = await executePollingWithPendingStatus();
 
       // Assertions
-      expect(startPollingByNetworkClientIdSpy).toHaveBeenCalledTimes(1);
+      expect(startPollingSpy).toHaveBeenCalledTimes(1);
       expect(fetchBridgeTxStatusSpy).toHaveBeenCalled();
       expect(bridgeStatusController.state.bridgeStatusState.txHistory).toEqual(
         MockTxHistory.getPending(),

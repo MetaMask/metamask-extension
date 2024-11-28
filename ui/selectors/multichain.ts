@@ -29,10 +29,10 @@ import {
   getProviderConfig,
   NetworkState,
   getNetworkConfigurationsByChainId,
+  getCurrentChainId,
 } from '../../shared/modules/selectors/networks';
 import { AccountsState, getSelectedInternalAccount } from './accounts';
 import {
-  getCurrentChainId,
   getCurrentCurrency,
   getIsMainnet,
   getMaybeSelectedInternalAccount,

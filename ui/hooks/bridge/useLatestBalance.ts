@@ -2,11 +2,8 @@ import { useSelector } from 'react-redux';
 import { Hex } from '@metamask/utils';
 import { Numeric } from '../../../shared/modules/Numeric';
 import { DEFAULT_PRECISION } from '../useCurrencyDisplay';
-import {
-  getCurrentChainId,
-  getSelectedInternalAccount,
-  SwapsEthToken,
-} from '../../selectors';
+import { getCurrentChainId } from '../../../shared/modules/selectors/networks';
+import { getSelectedInternalAccount, SwapsEthToken } from '../../selectors';
 import { SwapsTokenObject } from '../../../shared/constants/swaps';
 import { calcLatestSrcBalance } from '../../../shared/modules/bridge-utils/balance';
 import { useAsyncResult } from '../useAsyncResult';
