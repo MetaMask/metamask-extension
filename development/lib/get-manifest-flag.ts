@@ -81,9 +81,8 @@ async function getFlagsFromPrBody(): Promise<ManifestFlags> {
  * @returns Any manifest flags found in the commit message
  */
 async function getFlagsFromGitMessage(): Promise<ManifestFlags> {
-  const gitMessage = (
-    await exec(`git show --format='%B' --no-patch "HEAD"`)
-  ).stdout;
+  const gitMessage = (await exec(`git show --format='%B' --no-patch "HEAD"`))
+    .stdout;
 
   return regexSearchForFlags(gitMessage, 'git message');
 }
