@@ -1,7 +1,7 @@
 /* eslint-disable camelcase */
 import { useEffect, useMemo } from 'react';
 import { useSelector } from 'react-redux';
-import { MetaMetricsEventName } from '../../../../shared/constants/metametrics';
+import { MetaMetricsEventName } from '../../../shared/constants/metametrics';
 import {
   getBridgeQuotes,
   getFromAmount,
@@ -9,15 +9,15 @@ import {
   getFromToken,
   getQuoteRequest,
   getValidationErrors,
-} from '../../../ducks/bridge/selectors';
-import { useCrossChainSwapsEventTracker } from '../useCrossChainSwapsEventTracker';
-import useLatestBalance from '../useLatestBalance';
-import { SWAPS_CHAINID_DEFAULT_TOKEN_MAP } from '../../../../shared/constants/swaps';
-import { useRequestMetadataProperties } from './useRequestMetadataProperties';
-import { useRequestProperties } from './useRequestProperties';
-import { useTradeProperties } from './useTradeProperties';
-import { useConvertedUsdAmounts } from './useConvertedUsdAmounts';
-import { useQuoteProperties } from './useQuoteProperties';
+} from '../../ducks/bridge/selectors';
+import { useCrossChainSwapsEventTracker } from './useCrossChainSwapsEventTracker';
+import useLatestBalance from './useLatestBalance';
+import { SWAPS_CHAINID_DEFAULT_TOKEN_MAP } from '../../../shared/constants/swaps';
+import { useRequestMetadataProperties } from './events/useRequestMetadataProperties';
+import { useRequestProperties } from './events/useRequestProperties';
+import { useTradeProperties } from './events/useTradeProperties';
+import { useConvertedUsdAmounts } from './events/useConvertedUsdAmounts';
+import { useQuoteProperties } from './events/useQuoteProperties';
 
 // This hook is used to track cross chain swaps events related to quote-fetching
 export const useQuoteFetchEvents = () => {
