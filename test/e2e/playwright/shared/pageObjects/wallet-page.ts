@@ -80,7 +80,7 @@ export class WalletPage {
     return await this.tokenBalance.first().textContent();
   }
 
-  async waitforTokenBalance() {
-    await this.page.waitForSelector('text=/1 ETH/', { timeout: 60000 });
+  async waitforTokenBalance(balance: string) {
+    await this.page.waitForSelector(`text=/${balance}/`, { timeout: 60000 });
   }
 }

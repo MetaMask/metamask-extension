@@ -75,7 +75,7 @@ test.beforeAll(
     await networkController.addCustomNetwork(Tenderly.Mainnet);
     const account_name = await walletPage.importAccount(wallet.privateKey);
     expect(account_name).toEqual('Account 2');
-    await walletPage.waitforTokenBalance();
+    await walletPage.waitforTokenBalance('1 ETH');
   },
 );
 
