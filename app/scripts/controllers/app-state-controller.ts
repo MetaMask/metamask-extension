@@ -296,23 +296,23 @@ const controllerMetadata = {
     anonymous: true,
   },
   qrHardware: {
-    persist: true,
+    persist: false,
     anonymous: true,
   },
   nftsDropdownState: {
-    persist: true,
+    persist: false,
     anonymous: true,
   },
   usedNetworks: {
-    persist: true,
+    persist: false,
     anonymous: true,
   },
   surveyLinkLastClickedOrClosed: {
-    persist: true,
+    persist: false,
     anonymous: true,
   },
   signatureSecurityAlertResponses: {
-    persist: true,
+    persist: false,
     anonymous: true,
   },
   switchedNetworkDetails: {
