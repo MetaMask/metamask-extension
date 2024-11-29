@@ -5762,7 +5762,7 @@ __metadata:
 
 "@metamask/network-controller@patch:@metamask/network-controller@npm%3A22.0.2#~/.yarn/patches/@metamask-network-controller-npm-22.0.2-6fc65c500a.patch":
   version: 22.0.2
-  resolution: "@metamask/network-controller@patch:@metamask/network-controller@npm%3A22.0.2#~/.yarn/patches/@metamask-network-controller-npm-22.0.2-6fc65c500a.patch::version=22.0.2&hash=cc3267"
+  resolution: "@metamask/network-controller@patch:@metamask/network-controller@npm%3A22.0.2#~/.yarn/patches/@metamask-network-controller-npm-22.0.2-6fc65c500a.patch::version=22.0.2&hash=5eb093"
   dependencies:
     "@metamask/base-controller": "npm:^7.0.2"
     "@metamask/controller-utils": "npm:^11.4.3"
@@ -5781,7 +5781,7 @@ __metadata:
     reselect: "npm:^5.1.1"
     uri-js: "npm:^4.4.1"
     uuid: "npm:^8.3.2"
-  checksum: 10/63137f7f847cb59309a8f71831bd3deef0ebd2236c2f8759f9b078adf47559b0928fce2e8762b91cf4a8ff0a4e078bead3de286fa91b99d683bb6bda190581a3
+  checksum: 10/2daf9a8e1c35608e720b4bb611d84a90da58881c5b7483894dd18fc9850ceb144646314cef32c80889ac1fb71f37ed333d06e837bdb3daa0a234bc2c3af1e2dd
   languageName: node
   linkType: hard
 
