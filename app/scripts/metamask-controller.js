@@ -2897,8 +2897,7 @@ export default class MetamaskController extends EventEmitter {
             );
           },
           isOnPhishingList: (url) => {
-            const { usePhishDetect } =
-              this.preferencesController.store.getState();
+            const { usePhishDetect } = this.preferencesController.state;
 
             if (!usePhishDetect) {
               return false;
