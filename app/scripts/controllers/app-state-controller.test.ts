@@ -352,18 +352,6 @@ describe('AppStateController', () => {
     });
   });
 
-  describe('setFirstTimeUsedNetwork', () => {
-    it('updates the array of the first time used networks', async () => {
-      await withController(({ controller }) => {
-        const chainId = '0x1';
-
-        controller.setFirstTimeUsedNetwork(chainId);
-
-        expect(controller.state.usedNetworks[chainId]).toBe(true);
-      });
-    });
-  });
-
   describe('setLastInteractedConfirmationInfo', () => {
     it('sets information about last confirmation user has interacted with', async () => {
       await withController(({ controller }) => {

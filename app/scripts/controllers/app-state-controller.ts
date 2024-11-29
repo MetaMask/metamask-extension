@@ -64,7 +64,6 @@ export type AppStateControllerState = {
   hadAdvancedGasFeesSetPriorToMigration92_3: boolean;
   qrHardware: Json;
   nftsDropdownState: Json;
-  usedNetworks: Record<string, boolean>;
   surveyLinkLastClickedOrClosed: number | null;
   signatureSecurityAlertResponses: Record<string, SecurityAlertResponse>;
   // States used for displaying the changed network toast
@@ -147,11 +146,8 @@ type AppStateControllerInitState = Partial<
     AppStateControllerState,
     | 'qrHardware'
     | 'nftsDropdownState'
-    | 'usedNetworks'
-    | 'surveyLinkLastClickedOrClosed'
     | 'signatureSecurityAlertResponses'
     | 'switchedNetworkDetails'
-    | 'switchedNetworkNeverShowMessage'
     | 'currentExtensionPopupId'
   >
 >;
@@ -188,17 +184,12 @@ const getDefaultAppStateControllerState = (): AppStateControllerState => ({
   newPrivacyPolicyToastClickedOrClosed: null,
   newPrivacyPolicyToastShownDate: null,
   hadAdvancedGasFeesSetPriorToMigration92_3: false,
-  usedNetworks: {
-    '0x1': true,
-    '0x5': true,
-    '0x539': true,
-  },
   surveyLinkLastClickedOrClosed: null,
   switchedNetworkNeverShowMessage: false,
-  ...getDefaultOverrides(),
+  ...getDefaultAppStateOverrides(),
 });
 
-function getDefaultOverrides() {
+function getDefaultAppStateOverrides() {
   return {
     qrHardware: {},
     nftsDropdownState: {},
@@ -309,10 +300,6 @@ const controllerMetadata = {
     persist: false,
     anonymous: true,
   },
-  usedNetworks: {
-    persist: true,
-    anonymous: true,
-  },
   surveyLinkLastClickedOrClosed: {
     persist: true,
     anonymous: true,
@@ -390,7 +377,7 @@ export class AppStateController extends BaseController<
       state: {
         ...getDefaultAppStateControllerState(),
         ...state,
-        ...getDefaultOverrides(),
+        ...getDefaultAppStateOverrides(),
       },
       messenger,
     });
@@ -881,17 +868,6 @@ export class AppStateController extends BaseController<
   updateNftDropDownState(nftsDropdownState: Json): void {
     this.update((state) => {
       state.nftsDropdownState = nftsDropdownState;
-    });
-  }
-
-  /**
-   * Updates the array of the first time used networks
-   *
-   * @param chainId
-   */
-  setFirstTimeUsedNetwork(chainId: string): void {
-    this.update((state) => {
-      state.usedNetworks[chainId] = true;
     });
   }
 
