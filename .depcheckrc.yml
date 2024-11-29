@@ -82,6 +82,10 @@ ignores:
   - '@testing-library/dom'
   - 'mini-css-extract-plugin'
   - 'webpack-cli'
+  # Used only in storybook (ui/__mocks__/)
+  - '@metamask/eth-block-tracker'
+  - '@metamask/eth-json-rpc-infura'
+  - '@metamask/swappable-obj-proxy'
 
 # files depcheck should not parse
 ignorePatterns:
