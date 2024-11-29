@@ -25,8 +25,8 @@ export const useIsTxSubmittable = () => {
     isInsufficientGasForQuote,
   } = useSelector(getValidationErrors);
 
-  const { normalizedBalance } = useLatestBalance(fromToken, fromChain?.chainId);
-  const { normalizedBalance: nativeAssetBalance } = useLatestBalance(
+  const { balanceAmount } = useLatestBalance(fromToken, fromChain?.chainId);
+  const { balanceAmount: nativeAssetBalance } = useLatestBalance(
     fromChain?.chainId
       ? SWAPS_CHAINID_DEFAULT_TOKEN_MAP[
           fromChain.chainId as keyof typeof SWAPS_CHAINID_DEFAULT_TOKEN_MAP
@@ -42,7 +42,7 @@ export const useIsTxSubmittable = () => {
       toChain &&
       fromAmount &&
       activeQuote &&
-      !isInsufficientBalance(normalizedBalance) &&
+      !isInsufficientBalance(balanceAmount) &&
       !isInsufficientGasBalance(nativeAssetBalance) &&
       !isInsufficientGasForQuote(nativeAssetBalance),
   );

@@ -44,8 +44,8 @@ export const useQuoteFetchEvents = () => {
   const fromToken = useSelector(getFromToken);
   const fromChain = useSelector(getFromChain);
 
-  const { normalizedBalance } = useLatestBalance(fromToken, fromChain?.chainId);
-  const { normalizedBalance: nativeAssetBalance } = useLatestBalance(
+  const { balanceAmount } = useLatestBalance(fromToken, fromChain?.chainId);
+  const { balanceAmount: nativeAssetBalance } = useLatestBalance(
     fromChain?.chainId
       ? SWAPS_CHAINID_DEFAULT_TOKEN_MAP[
           fromChain.chainId as keyof typeof SWAPS_CHAINID_DEFAULT_TOKEN_MAP
@@ -71,7 +71,7 @@ export const useQuoteFetchEvents = () => {
       latestWarnings.push('insufficient_gas_balance');
     isInsufficientGasForQuote(nativeAssetBalance) &&
       latestWarnings.push('insufficient_gas_for_selected_quote');
-    isInsufficientBalance(normalizedBalance) &&
+    isInsufficientBalance(balanceAmount) &&
       latestWarnings.push('insufficient_balance');
 
     return latestWarnings;
