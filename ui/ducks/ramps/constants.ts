@@ -59,6 +59,13 @@ export const defaultBuyableChains: AggregatorNetwork[] = [
   },
   {
     active: true,
+    chainId: 747,
+    chainName: 'EVM on Flow Mainnet',
+    shortName: 'EVM on Flow',
+    nativeTokenSupported: true,
+  },
+  {
+    active: true,
     chainId: 1101,
     chainName: 'Polygon zkEVM',
     shortName: 'Polygon zkEVM',

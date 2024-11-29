@@ -115,6 +115,17 @@ export const FIXTURES_NETWORKS = {
         imageUrl: './images/zk-sync.svg',
       },
     },
+    flow: {
+      id: 'flow',
+      rpcUrl: 'https://mainnet.evm.nodes.onflow.org',
+      chainId: '0x2eb',
+      ticker: 'FLOW',
+      nickname: 'EVM on Flow',
+      rpcPrefs: {
+        blockExplorerUrl: 'https://evm.flowscan.io/',
+        imageUrl: './images/flow.svg',
+      },
+    },
     localhost: {
       id: 'localhost',
       rpcUrl: 'http://localhost:8545',
