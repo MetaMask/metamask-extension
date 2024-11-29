@@ -220,15 +220,15 @@ const controllerMetadata = {
     anonymous: true,
   },
   popupGasPollTokens: {
-    persist: true,
+    persist: false,
     anonymous: true,
   },
   notificationGasPollTokens: {
-    persist: true,
+    persist: false,
     anonymous: true,
   },
   fullScreenGasPollTokens: {
-    persist: true,
+    persist: false,
     anonymous: true,
   },
   recoveryPhraseReminderHasBeenShown: {
@@ -276,7 +276,7 @@ const controllerMetadata = {
     anonymous: true,
   },
   onboardingDate: {
-    persist: false,
+    persist: true,
     anonymous: true,
   },
   lastViewedUserSurvey: {
@@ -304,11 +304,11 @@ const controllerMetadata = {
     anonymous: true,
   },
   usedNetworks: {
-    persist: false,
+    persist: true,
     anonymous: true,
   },
   surveyLinkLastClickedOrClosed: {
-    persist: false,
+    persist: true,
     anonymous: true,
   },
   signatureSecurityAlertResponses: {
@@ -320,7 +320,7 @@ const controllerMetadata = {
     anonymous: true,
   },
   switchedNetworkNeverShowMessage: {
-    persist: false,
+    persist: true,
     anonymous: true,
   },
   currentExtensionPopupId: {
@@ -386,15 +386,8 @@ export class AppStateController extends BaseController<
         ...state,
         qrHardware: {},
         nftsDropdownState: {},
-        usedNetworks: {
-          '0x1': true,
-          '0x5': true,
-          '0x539': true,
-        },
-        surveyLinkLastClickedOrClosed: null,
         signatureSecurityAlertResponses: {},
         switchedNetworkDetails: null,
-        switchedNetworkNeverShowMessage: false,
         currentExtensionPopupId: 0,
       },
       messenger,
