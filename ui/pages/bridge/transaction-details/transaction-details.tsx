@@ -36,7 +36,6 @@ import {
 } from '../../../helpers/constants/design-system';
 import { formatDate } from '../../../helpers/utils/util';
 import { ConfirmInfoRowDivider as Divider } from '../../../components/app/confirm/info/row';
-import { calcTokenAmount } from '../../../../shared/lib/transactions-controller-utils';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP } from '../../../../shared/constants/network';
 import { selectedAddressTxListSelector } from '../../../selectors';
@@ -66,32 +65,15 @@ const getBlockExplorerUrl = (
 /**
  * @param options0
  * @param options0.bridgeHistoryItem
- * @param options0.srcChainTxMeta
  * @returns A string representing the bridge amount in decimal form
  */
 const getBridgeAmount = ({
   bridgeHistoryItem,
-  srcChainTxMeta,
 }: {
   bridgeHistoryItem?: BridgeHistoryItem;
-  srcChainTxMeta?: TransactionMeta;
 }) => {
   if (bridgeHistoryItem) {
-    return `${calcTokenAmount(
-      bridgeHistoryItem.quote.srcTokenAmount,
-      bridgeHistoryItem.quote.srcAsset.decimals,
-    ).toFixed()} ${bridgeHistoryItem.quote.srcAsset.symbol}`;
-  }
-
-  if (
-    srcChainTxMeta &&
-    srcChainTxMeta.sourceTokenAmount &&
-    srcChainTxMeta.sourceTokenDecimals
-  ) {
-    return `${calcTokenAmount(
-      srcChainTxMeta.sourceTokenAmount,
-      srcChainTxMeta.sourceTokenDecimals,
-    ).toFixed()} ${srcChainTxMeta.sourceTokenSymbol}`;
+    return bridgeHistoryItem.pricingData?.amountSent;
   }
 
   return undefined;
@@ -158,7 +140,7 @@ const CrossChainSwapTxDetails = () => {
       })
     : undefined;
 
-  const bridgeAmount = getBridgeAmount({ bridgeHistoryItem, srcChainTxMeta });
+  const bridgeAmount = getBridgeAmount({ bridgeHistoryItem });
 
   return (
     <div className="bridge">
