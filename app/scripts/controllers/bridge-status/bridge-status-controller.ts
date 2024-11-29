@@ -3,9 +3,9 @@ import { StaticIntervalPollingController } from '@metamask/polling-controller';
 import { Hex } from '@metamask/utils';
 // eslint-disable-next-line import/no-restricted-paths
 import {
-  StartPollingForBridgeTxStatusArgs,
   StatusTypes,
   BridgeStatusControllerState,
+  StartPollingForBridgeTxStatusArgsSerialized,
 } from '../../../../shared/types/bridge-status';
 import { decimalToPrefixedHex } from '../../../../shared/modules/conversion.utils';
 import {
@@ -148,7 +148,7 @@ export default class BridgeStatusController extends StaticIntervalPollingControl
   };
 
   startPollingForBridgeTxStatus = (
-    startPollingForBridgeTxStatusArgs: StartPollingForBridgeTxStatusArgs,
+    startPollingForBridgeTxStatusArgs: StartPollingForBridgeTxStatusArgsSerialized,
   ) => {
     const {
       bridgeTxMeta,
@@ -156,7 +156,6 @@ export default class BridgeStatusController extends StaticIntervalPollingControl
       quoteResponse,
       startTime,
       slippagePercentage,
-      pricingData,
       initialDestAssetBalance,
       targetContractAddress,
     } = startPollingForBridgeTxStatusArgs;
@@ -172,7 +171,9 @@ export default class BridgeStatusController extends StaticIntervalPollingControl
       estimatedProcessingTimeInSeconds:
         quoteResponse.estimatedProcessingTimeInSeconds,
       slippagePercentage,
-      pricingData,
+      pricingData: {
+        amountSent: quoteResponse.sentAmount.amount,
+      },
       initialDestAssetBalance,
       targetContractAddress,
       account,
@@ -266,7 +267,7 @@ export default class BridgeStatusController extends StaticIntervalPollingControl
 
   #getSrcTxHash = (bridgeTxMetaId: string): string | undefined => {
     const { bridgeStatusState } = this.state;
-    // Prefer the srcTxHash from bridgeStatusState so we don't have to look up in TransactionController
+    // Prefer the srcTxHash from bridgeStatusState so we don't have to l ook up in TransactionController
     // But it is possible to have bridgeHistoryItem in state without the srcTxHash yet when it is an STX
     const srcTxHash =
       bridgeStatusState.txHistory[bridgeTxMetaId].status.srcChain.txHash;

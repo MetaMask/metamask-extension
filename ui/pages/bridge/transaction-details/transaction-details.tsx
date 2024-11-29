@@ -63,6 +63,12 @@ const getBlockExplorerUrl = (
   return `${rootUrl}/tx/${txHash}`;
 };
 
+/**
+ * @param options0
+ * @param options0.bridgeHistoryItem
+ * @param options0.srcChainTxMeta
+ * @returns A string representing the bridge amount in decimal form
+ */
 const getBridgeAmount = ({
   bridgeHistoryItem,
   srcChainTxMeta,
