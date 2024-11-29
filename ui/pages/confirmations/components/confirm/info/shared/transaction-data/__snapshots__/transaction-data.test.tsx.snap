@@ -88,6 +88,7 @@ exports[`TransactionData renders decoded data with names and descriptions 1`] = 
       >
         <div
           class="mm-box mm-box--padding-left-2"
+          data-testid="advanced-details-WRAP_ETH-params"
         >
           <div
             class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
@@ -247,6 +248,7 @@ exports[`TransactionData renders decoded data with names and descriptions 1`] = 
       >
         <div
           class="mm-box mm-box--padding-left-2"
+          data-testid="advanced-details-V3_SWAP_EXACT_IN-params"
         >
           <div
             class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
@@ -618,6 +620,7 @@ exports[`TransactionData renders decoded data with names and descriptions 1`] = 
       >
         <div
           class="mm-box mm-box--padding-left-2"
+          data-testid="advanced-details-PAY_PORTION-params"
         >
           <div
             class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
@@ -833,6 +836,7 @@ exports[`TransactionData renders decoded data with names and descriptions 1`] = 
       >
         <div
           class="mm-box mm-box--padding-left-2"
+          data-testid="advanced-details-SWEEP-params"
         >
           <div
             class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
@@ -1066,6 +1070,7 @@ exports[`TransactionData renders decoded data with no names 1`] = `
     </div>
     <div
       class="mm-box mm-box--padding-left-2"
+      data-testid="advanced-details-someFunction-params"
     >
       <div
         class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
@@ -1302,6 +1307,7 @@ exports[`TransactionData renders decoded data with tuples and arrays 1`] = `
     </div>
     <div
       class="mm-box mm-box--padding-left-2"
+      data-testid="advanced-details-permit-params"
     >
       <div
         class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"

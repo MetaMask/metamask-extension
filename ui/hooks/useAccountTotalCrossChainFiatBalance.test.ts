@@ -28,6 +28,7 @@ jest.mock('../ducks/metamask/metamask', () => ({
 jest.mock('../../shared/modules/selectors/networks', () => ({
   getSelectedNetworkClientId: jest.fn(),
   getNetworkConfigurationsByChainId: jest.fn(),
+  getCurrentChainId: jest.fn(),
 }));
 
 const mockGetCurrencyRates = getCurrencyRates as jest.Mock;

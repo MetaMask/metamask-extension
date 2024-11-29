@@ -1,7 +1,8 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
 import { BigNumber } from 'bignumber.js';
-import { getTokenList, getCurrentChainId } from '../../../../selectors';
+import { getCurrentChainId } from '../../../../../shared/modules/selectors/networks';
+import { getTokenList } from '../../../../selectors';
 import { useTokenFiatAmount } from '../../../../hooks/useTokenFiatAmount';
 import { TokenListItem } from '../../token-list-item';
 import { isEqualCaseInsensitive } from '../../../../../shared/modules/string-utils';

@@ -36,8 +36,14 @@
       "showMultiRpcModal": "boolean",
       "isRedesignedConfirmationsDeveloperEnabled": "boolean",
       "tokenSortConfig": "object",
+      "tokenNetworkFilter": {
+        "0x1": "boolean",
+        "0x539": "boolean",
+        "0xaa36a7": "boolean",
+        "0xe705": "boolean",
+        "0xe708": "boolean"
+      },
       "shouldShowAggregatedBalancePopover": "boolean",
-      "tokenNetworkFilter": { "0x539": "boolean" },
       "redesignedConfirmationsEnabled": true,
       "redesignedTransactionsEnabled": "boolean"
     },
@@ -174,7 +180,12 @@
     "gasEstimateType": "none",
     "nonRPCGasFeeApisDisabled": "boolean",
     "tokenList": "object",
-    "tokensChainsCache": { "0x539": "object" },
+    "tokensChainsCache": {
+      "0x1": "object",
+      "0x539": "object",
+      "0xe708": "object"
+    },
+    "tokenBalances": "object",
     "preventPollingOnNetworkRestart": false,
     "tokens": "object",
     "ignoredTokens": "object",
@@ -182,7 +193,6 @@
     "allTokens": {},
     "allIgnoredTokens": {},
     "allDetectedTokens": {},
-    "tokenBalances": "object",
     "smartTransactionsState": {
       "fees": {},
       "feesByChainId": "object",
@@ -209,7 +219,6 @@
     "database": null,
     "lastUpdated": null,
     "databaseUnavailable": "boolean",
-    "notifications": "object",
     "interfaces": "object",
     "insights": "object",
     "names": "object",

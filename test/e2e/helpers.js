@@ -723,25 +723,32 @@ async function switchToNotificationWindow(driver) {
  * mockServer method, this method will allow getting all of the seen requests
  * for each mock in the array.
  *
- * @param {WebDriver} driver
- * @param {import('mockttp').MockedEndpoint[]} mockedEndpoints
- * @param {boolean} hasRequest
+ * @param {WebDriver} driver - The WebDriver instance.
+ * @param {import('mockttp').MockedEndpoint[]} mockedEndpoints - mockttp mocked endpoints
+ * @param {boolean} [waitWhilePending] - Wait until no requests are pending
  * @returns {Promise<import('mockttp/dist/pluggable-admin').MockttpClientResponse[]>}
  */
-async function getEventPayloads(driver, mockedEndpoints, hasRequest = true) {
-  await driver.wait(
-    async () => {
-      let isPending = true;
+async function getEventPayloads(
+  driver,
+  mockedEndpoints,
+  waitWhilePending = true,
+) {
+  if (waitWhilePending) {
+    await driver.wait(
+      async () => {
+        const pendingStatuses = await Promise.all(
+          mockedEndpoints.map((mockedEndpoint) => mockedEndpoint.isPending()),
+        );
+        const isSomethingPending = pendingStatuses.some(
+          (pendingStatus) => pendingStatus,
+        );
 
-      for (const mockedEndpoint of mockedEndpoints) {
-        isPending = await mockedEndpoint.isPending();
-      }
-
-      return isPending === !hasRequest;
-    },
-    driver.timeout,
-    true,
-  );
+        return !isSomethingPending;
+      },
+      driver.timeout,
+      true,
+    );
+  }
   const mockedRequests = [];
   for (const mockedEndpoint of mockedEndpoints) {
     mockedRequests.push(...(await mockedEndpoint.getSeenRequests()));

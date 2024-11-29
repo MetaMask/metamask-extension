@@ -47,7 +47,7 @@ describe('Token Details', function () {
 
   const openTokenDetails = async (driver: Driver) => {
     await driver.clickElement('[data-testid="account-overview__asset-tab"]');
-    const [, tkn] = await driver.findElements(
+    const [, , tkn] = await driver.findElements(
       '[data-testid="multichain-token-list-button"]',
     );
     await tkn.click();

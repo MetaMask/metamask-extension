@@ -9,8 +9,8 @@ import {
   TextColor,
   TextVariant,
 } from '../../../../../helpers/constants/design-system';
+import { getCurrentChainId } from '../../../../../../shared/modules/selectors/networks';
 import {
-  getCurrentChainId,
   getCurrentCurrency,
   getSelectedAccountCachedBalance,
   getTokensMarketData,

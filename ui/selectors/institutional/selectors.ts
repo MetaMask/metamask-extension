@@ -175,11 +175,12 @@ export function getIsCustodianSupportedChain(
     // @ts-expect-error state types don't match
     const selectedAccount = getSelectedInternalAccount(state);
     const accountType = getAccountType(state);
-    const providerConfig = getProviderConfig(state);
 
-    if (!selectedAccount || !accountType || !providerConfig) {
+    if (!selectedAccount || !accountType) {
       throw new Error('Invalid state');
     }
+
+    const providerConfig = getProviderConfig(state);
 
     if (typeof providerConfig.chainId !== 'string') {
       throw new Error('Chain ID must be a string');
