@@ -3704,8 +3704,6 @@ export default class MetamaskController extends EventEmitter {
         appStateController.setShowNetworkBanner.bind(appStateController),
       updateNftDropDownState:
         appStateController.updateNftDropDownState.bind(appStateController),
-      setFirstTimeUsedNetwork:
-        appStateController.setFirstTimeUsedNetwork.bind(appStateController),
       setSwitchedNetworkDetails:
         appStateController.setSwitchedNetworkDetails.bind(appStateController),
       clearSwitchedNetworkDetails:
