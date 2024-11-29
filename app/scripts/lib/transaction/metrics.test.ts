@@ -115,6 +115,7 @@ describe('Transaction metrics', () => {
       type: TransactionType.simpleSend,
       origin: ORIGIN_METAMASK,
       chainId: mockChainId,
+      networkClientId: 'testNetworkClientId',
       time: 1624408066355,
       defaultGasEstimates: {
         gas: '0x7b0d',
