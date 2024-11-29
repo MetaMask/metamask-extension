@@ -31,6 +31,7 @@ import {
 } from './signature-helpers';
 
 describe('Confirmation Signature - SIWE @no-mmi', function (this: Suite) {
+  this.timeout(200000); // This test is very long, so we need an unusually high timeout
   it('initiates and confirms', async function () {
     await withTransactionEnvelopeTypeFixtures(
       this.test?.fullTitle(),
