@@ -1,4 +1,4 @@
-import { act, screen } from '@testing-library/react';
+import { act, fireEvent, screen } from '@testing-library/react';
 import nock from 'nock';
 import mockMetaMaskState from '../../data/integration-init-state.json';
 import { integrationTestRender } from '../../../lib/render-helpers';
@@ -92,6 +92,8 @@ describe('Permit Seaport Tests', () => {
   it('renders message details section', async () => {
     await renderSeaportSignature();
 
+    fireEvent.click(screen.getByTestId('sectionCollapseButton'));
+
     const messageDetailsSection = await screen.findByTestId(
       'confirmation_message-section',
     );
@@ -111,6 +113,8 @@ describe('Permit Seaport Tests', () => {
 
   it('renders offer and consideration details', async () => {
     await renderSeaportSignature();
+
+    fireEvent.click(screen.getByTestId('sectionCollapseButton'));
 
     const offers = await screen.findByTestId('confirmation_data-offer-index-2');
     const offerDetails0 = offers.querySelector(
