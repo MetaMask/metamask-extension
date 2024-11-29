@@ -46,12 +46,17 @@ describe(`migration #${version}`, () => {
         },
       },
     };
+    const expectedState = {
+      AppStateController: {
+        timeoutMinutes: 0,
+      },
+    };
+
     const transformedState = await migrate({
       meta: { version: oldVersion },
       data: cloneDeep(oldState),
     });
 
-    delete oldState.AppStateController.usedNetworks;
-    expect(transformedState.data).toStrictEqual(oldState);
+    expect(transformedState.data).toStrictEqual(expectedState);
   });
 });
