@@ -21,6 +21,8 @@ export class WalletPage {
 
   readonly importAccountConfirmBtn: Locator;
 
+  readonly tokenBalance: Locator;
+
   constructor(page: Page) {
     this.page = page;
     this.swapButton = this.page.getByTestId('token-overview-button-swap');
@@ -29,6 +31,9 @@ export class WalletPage {
     this.importAccountButton = this.page.getByText('Import account');
     this.importButton = this.page.getByText('Import (');
     this.tokenTab = this.page.getByTestId('account-overview__asset-tab');
+    this.tokenBalance = this.page.getByTestId(
+      'multichain-token-list-item-value',
+    );
     this.addAccountButton = this.page.getByTestId(
       'multichain-account-menu-popover-action-button',
     );
@@ -54,6 +59,8 @@ export class WalletPage {
     await this.importAccountButton.click();
     await this.page.fill('#private-key-box', accountPK);
     await this.importAccountConfirmBtn.click();
+    await this.page.waitForTimeout(2000);
+    return await this.accountMenu.textContent();
   }
 
   async selectTokenWallet() {
@@ -63,10 +70,13 @@ export class WalletPage {
   async selectSwapAction() {
     await this.swapButton.waitFor({ state: 'visible' });
     await this.swapButton.click();
-    await this.page.waitForTimeout(10000);
   }
 
   async selectActivityList() {
     await this.activityListTab.click();
+  }
+
+  async getTokenBalance() {
+    return await this.tokenBalance.first().textContent();
   }
 }
