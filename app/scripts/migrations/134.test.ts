@@ -23,7 +23,7 @@ describe(`migration #${version}`, () => {
 
     const transformedState = await migrate({
       meta: { version: oldVersion },
-      data: oldState,
+      data: { ...oldState },
     });
 
     expect(transformedState.data).toStrictEqual(oldState);
@@ -47,7 +47,7 @@ describe(`migration #${version}`, () => {
     };
     const transformedState = await migrate({
       meta: { version: oldVersion },
-      data: oldState,
+      data: { ...oldState },
     });
 
     delete oldState.AppStateController.usedNetworks;
