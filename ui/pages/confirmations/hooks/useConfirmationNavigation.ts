@@ -11,7 +11,7 @@ import {
 } from '../../../helpers/constants/routes';
 
 export function useConfirmationNavigation() {
-  const pendingConfirmations = useSelector(
+  const confirmations = useSelector(
     pendingConfirmationsSortedSelector,
     isEqual,
   );
@@ -24,18 +24,18 @@ export function useConfirmationNavigation() {
         return 0;
       }
 
-      return pendingConfirmations.findIndex(({ id }) => id === confirmationId);
+      return confirmations.findIndex(({ id }) => id === confirmationId);
     },
-    [pendingConfirmations],
+    [confirmations],
   );
 
   const navigateToId = useCallback(
     (confirmationId?: string) => {
-      if (pendingConfirmations?.length <= 0 || !confirmationId) {
+      if (confirmations?.length <= 0 || !confirmationId) {
         return;
       }
 
-      const nextConfirmation = pendingConfirmations.find(
+      const nextConfirmation = confirmations.find(
         (confirmation) => confirmation.id === confirmationId,
       );
 
@@ -48,24 +48,24 @@ export function useConfirmationNavigation() {
       );
 
       if (isTemplate) {
-        history.replace(`/${CONFIRMATION_V_NEXT_ROUTE}/${nextConfirmation.id}`);
+        history.replace(`${CONFIRMATION_V_NEXT_ROUTE}/${confirmationId}`);
         return;
       }
 
-      history.replace(`${CONFIRM_TRANSACTION_ROUTE}/${nextConfirmation.id}`);
+      history.replace(`${CONFIRM_TRANSACTION_ROUTE}/${confirmationId}`);
     },
-    [pendingConfirmations, history],
+    [confirmations, history],
   );
 
   const navigateToIndex = useCallback(
     (index: number) => {
-      const nextConfirmation = pendingConfirmations[index];
+      const nextConfirmation = confirmations[index];
       navigateToId(nextConfirmation?.id);
     },
-    [pendingConfirmations, navigateToId],
+    [confirmations, navigateToId],
   );
 
-  const count = pendingConfirmations.length;
+  const count = confirmations.length;
 
-  return { count, getIndex, navigateToId, navigateToIndex };
+  return { confirmations, count, getIndex, navigateToId, navigateToIndex };
 }

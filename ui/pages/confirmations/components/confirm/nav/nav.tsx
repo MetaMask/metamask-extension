@@ -1,6 +1,6 @@
 import { providerErrors, serializeError } from '@metamask/rpc-errors';
 import React, { useCallback } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
 
 import { QueueType } from '../../../../../../shared/constants/metametrics';
 import {
@@ -25,7 +25,6 @@ import {
   TextVariant,
 } from '../../../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
-import { pendingConfirmationsSortedSelector } from '../../../../../selectors';
 import { rejectPendingApproval } from '../../../../../store/actions';
 import { useConfirmContext } from '../../../context/confirm';
 import { useQueuedConfirmationsEvent } from '../../../hooks/useQueuedConfirmationEvents';
@@ -34,9 +33,11 @@ import { useConfirmationNavigation } from '../../../hooks/useConfirmationNavigat
 const Nav = () => {
   const t = useI18nContext();
   const dispatch = useDispatch();
-  const { getIndex, navigateToIndex } = useConfirmationNavigation();
   const { currentConfirmation } = useConfirmContext();
-  const pendingConfirmations = useSelector(pendingConfirmationsSortedSelector);
+
+  const { confirmations, count, getIndex, navigateToIndex } =
+    useConfirmationNavigation();
+
   const position = getIndex(currentConfirmation?.id);
 
   const onNavigateButtonClick = useCallback(
@@ -47,7 +48,7 @@ const Nav = () => {
   );
 
   const onRejectAll = useCallback(() => {
-    pendingConfirmations.forEach((conf) => {
+    confirmations.forEach((conf) => {
       dispatch(
         rejectPendingApproval(
           conf.id,
@@ -55,11 +56,11 @@ const Nav = () => {
         ),
       );
     });
-  }, [pendingConfirmations]);
+  }, [confirmations]);
 
   useQueuedConfirmationsEvent(QueueType.NavigationHeader);
 
-  if (pendingConfirmations.length <= 1) {
+  if (count <= 1) {
     return null;
   }
 
@@ -93,7 +94,7 @@ const Nav = () => {
           marginInline={2}
           variant={TextVariant.bodySm}
         >
-          {position + 1} of {pendingConfirmations.length}
+          {position + 1} of {count}
         </Text>
         <ButtonIcon
           ariaLabel="Next Confirmation"
@@ -102,7 +103,7 @@ const Nav = () => {
           borderRadius={BorderRadius.full}
           className="confirm_nav__right_btn"
           color={IconColor.iconAlternative}
-          disabled={position === pendingConfirmations.length - 1}
+          disabled={position === count - 1}
           iconName={IconName.ArrowRight}
           onClick={() => onNavigateButtonClick(1)}
           size={ButtonIconSize.Sm}
