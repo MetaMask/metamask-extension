@@ -271,6 +271,10 @@ export const SENTRY_BACKGROUND_STATE = {
     enableMV3TimestampSave: true,
   },
   FeatureFlagController: {},
+  RemoteFeatureFlagController: {
+    remoteFeatureFlags: {},
+    cacheTimestamp: 0,
+  },
   NotificationServicesPushController: {
     fcmToken: false,
   },
