@@ -107,11 +107,48 @@ export async function mockSignatureApproved(
     await createMockSegmentEvent(mockServer, 'Account Details Opened'),
     ...anonEvents,
     await createMockSegmentEvent(mockServer, 'Signature Approved'),
+  ];
+}
+
+export async function mockSignatureApprovedWithDecoding(
+  mockServer: Mockttp,
+  withAnonEvents = false,
+) {
+  const anonEvents = withAnonEvents
+    ? [
+        await createMockSegmentEvent(mockServer, 'Signature Requested Anon'),
+        await createMockSegmentEvent(mockServer, 'Signature Approved Anon'),
+      ]
+    : [];
+
+  return [
+    await createMockSegmentEvent(mockServer, 'Signature Requested'),
+    await createMockSegmentEvent(mockServer, 'Account Details Opened'),
+    ...anonEvents,
+    await createMockSegmentEvent(mockServer, 'Signature Approved'),
     await createMockSignatureDecodingEvent(mockServer),
   ];
 }
 
 export async function mockSignatureRejected(
+  mockServer: Mockttp,
+  withAnonEvents = false,
+) {
+  const anonEvents = withAnonEvents
+    ? [
+        await createMockSegmentEvent(mockServer, 'Signature Requested Anon'),
+        await createMockSegmentEvent(mockServer, 'Signature Rejected Anon'),
+      ]
+    : [];
+
+  return [
+    await createMockSegmentEvent(mockServer, 'Signature Requested'),
+    await createMockSegmentEvent(mockServer, 'Signature Rejected'),
+    ...anonEvents,
+  ];
+}
+
+export async function mockSignatureRejectedWithDecoding(
   mockServer: Mockttp,
   withAnonEvents = false,
 ) {
