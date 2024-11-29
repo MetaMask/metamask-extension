@@ -7422,11 +7422,11 @@ export default class MetamaskController extends EventEmitter {
   _getConfigForRemoteFeatureFlagRequest() {
     const distribution =
       buildTypeMappingForRemoteFeatureFlag[process.env.METAMASK_BUILD_TYPE] ||
-      'main';
+      DistributionType.main;
     const environment =
       environmentMappingForRemoteFeatureFlag[
         process.env.METAMASK_ENVIRONMENT
-      ] || 'dev';
+      ] || EnvironmentType.Development;
     return { distribution, environment };
   }
 
