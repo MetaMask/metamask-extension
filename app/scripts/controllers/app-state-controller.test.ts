@@ -374,17 +374,6 @@ describe('AppStateController', () => {
     });
   });
 
-  describe('setFirstTimeUsedNetwork', () => {
-    it('updates the array of the first time used networks', () => {
-      const chainId = '0x1';
-
-      appStateController.setFirstTimeUsedNetwork(chainId);
-      expect(appStateController.store.getState().usedNetworks[chainId]).toBe(
-        true,
-      );
-    });
-  });
-
   describe('setLastInteractedConfirmationInfo', () => {
     it('sets information about last confirmation user has interacted with', () => {
       const lastInteractedConfirmationInfo = {

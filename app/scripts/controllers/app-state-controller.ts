@@ -62,7 +62,6 @@ export type AppStateControllerState = {
   hadAdvancedGasFeesSetPriorToMigration92_3: boolean;
   qrHardware: Json;
   nftsDropdownState: Json;
-  usedNetworks: Record<string, boolean>;
   surveyLinkLastClickedOrClosed: number | null;
   signatureSecurityAlertResponses: Record<string, SecurityAlertResponse>;
   // States used for displaying the changed network toast
@@ -138,7 +137,6 @@ type AppStateControllerInitState = Partial<
     AppStateControllerState,
     | 'qrHardware'
     | 'nftsDropdownState'
-    | 'usedNetworks'
     | 'surveyLinkLastClickedOrClosed'
     | 'signatureSecurityAlertResponses'
     | 'switchedNetworkDetails'
@@ -184,11 +182,6 @@ const getDefaultAppStateControllerState = (
   ...initState,
   qrHardware: {},
   nftsDropdownState: {},
-  usedNetworks: {
-    '0x1': true,
-    '0x5': true,
-    '0x539': true,
-  },
   surveyLinkLastClickedOrClosed: null,
   signatureSecurityAlertResponses: {},
   switchedNetworkDetails: null,
@@ -702,19 +695,6 @@ export class AppStateController extends EventEmitter {
     this.store.updateState({
       nftsDropdownState,
     });
-  }
-
-  /**
-   * Updates the array of the first time used networks
-   *
-   * @param chainId
-   */
-  setFirstTimeUsedNetwork(chainId: string): void {
-    const currentState = this.store.getState();
-    const { usedNetworks } = currentState;
-    usedNetworks[chainId] = true;
-
-    this.store.updateState({ usedNetworks });
   }
 
   ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)

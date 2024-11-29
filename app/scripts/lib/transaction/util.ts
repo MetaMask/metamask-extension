@@ -46,7 +46,7 @@ type BaseAddTransactionRequest = {
 };
 
 type FinalAddTransactionRequest = BaseAddTransactionRequest & {
-  transactionOptions: AddTransactionOptions;
+  transactionOptions: Partial<AddTransactionOptions>;
 };
 
 export type AddTransactionRequest = FinalAddTransactionRequest & {
@@ -66,7 +66,7 @@ export async function addDappTransaction(
   const { id: actionId, method, origin } = dappRequest;
   const { securityAlertResponse, traceContext } = dappRequest;
 
-  const transactionOptions: AddTransactionOptions = {
+  const transactionOptions: Partial<AddTransactionOptions> = {
     actionId,
     method,
     origin,
@@ -143,10 +143,11 @@ async function addTransactionWithController(
     transactionParams,
     networkClientId,
   } = request;
+
   const { result, transactionMeta } =
     await transactionController.addTransaction(transactionParams, {
       ...transactionOptions,
-      ...(process.env.TRANSACTION_MULTICHAIN ? { networkClientId } : {}),
+      networkClientId,
     });
 
   return {

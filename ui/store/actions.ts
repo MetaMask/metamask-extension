@@ -1129,7 +1129,6 @@ export function updateAndApproveTx(
 
 export async function getTransactions(
   filters: {
-    filterToCurrentNetwork?: boolean;
     searchCriteria?: Partial<TransactionMeta> & Partial<TransactionParams>;
   } = {},
 ): Promise<TransactionMeta[]> {
@@ -5200,10 +5199,6 @@ export function setUseTransactionSimulations(val: boolean): void {
   } catch (error) {
     logErrorWithMessage(error);
   }
-}
-
-export function setFirstTimeUsedNetwork(chainId: string) {
-  return submitRequestToBackground('setFirstTimeUsedNetwork', [chainId]);
 }
 
 // QR Hardware Wallets
