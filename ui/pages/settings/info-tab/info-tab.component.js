@@ -29,7 +29,7 @@ import {
 
 export default class InfoTab extends PureComponent {
   static propTypes = {
-    remoteFeatureFlags: PropTypes.object,
+    remoteFeatureFlags: PropTypes.object.isRequired,
   };
 
   state = {

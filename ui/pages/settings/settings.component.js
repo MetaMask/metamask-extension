@@ -69,7 +69,7 @@ class SettingsPage extends PureComponent {
     isPopup: PropTypes.bool,
     mostRecentOverviewPage: PropTypes.string.isRequired,
     pathnameI18nKey: PropTypes.string,
-    remoteFeatureFlags: PropTypes.object,
+    remoteFeatureFlags: PropTypes.object.isRequired,
     toggleNetworkMenu: PropTypes.func.isRequired,
     useExternalServices: PropTypes.bool,
   };

@@ -107,6 +107,9 @@ import { AccountsController } from '@metamask/accounts-controller';
 import {
   RemoteFeatureFlagController,
   ClientConfigApiService,
+  ClientType,
+  DistributionType,
+  EnvironmentType,
 } from '@metamask/remote-feature-flag-controller';
 
 ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
@@ -399,14 +402,14 @@ const PHISHING_SAFELIST = 'metamask-phishing-safelist';
 export const ONE_KEY_VIA_TREZOR_MINOR_VERSION = 99;
 
 const environmentMappingForRemoteFeatureFlag = {
-  [ENVIRONMENT.DEVELOPMENT]: 'dev',
-  [ENVIRONMENT.RELEASE_CANDIDATE]: 'rc',
-  [ENVIRONMENT.PRODUCTION]: 'prod',
+  [ENVIRONMENT.DEVELOPMENT]: EnvironmentType.Development,
+  [ENVIRONMENT.RELEASE_CANDIDATE]: EnvironmentType.ReleaseCandidate,
+  [ENVIRONMENT.PRODUCTION]: EnvironmentType.Production,
 };
 
 const buildTypeMappingForRemoteFeatureFlag = {
-  flask: 'flask',
-  main: 'main',
+  flask: DistributionType.main,
+  main: DistributionType.flask,
 };
 
 export default class MetamaskController extends EventEmitter {
@@ -2384,7 +2387,7 @@ export default class MetamaskController extends EventEmitter {
       clientConfigApiService: new ClientConfigApiService({
         fetch: globalThis.fetch.bind(globalThis),
         config: {
-          client: 'extension',
+          client: ClientType.Extension,
           distribution:
             this._getConfigForRemoteFeatureFlagRequest().distribution,
           environment: this._getConfigForRemoteFeatureFlagRequest().environment,

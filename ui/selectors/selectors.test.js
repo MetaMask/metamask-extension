@@ -2165,7 +2165,7 @@ describe('#getConnectedSitesList', () => {
   });
 
   describe('#getRemoteFeatureFlags', () => {
-    it('returns null when featureFlagName does not exist in remoteFeatureFlags', () => {
+    it('returns remoteFeatureFlags in state', () => {
       const state = {
         metamask: {
           remoteFeatureFlags: {

@@ -1095,7 +1095,7 @@ export function setupController(
     }
   }
 
-    /**
+  /**
    * Initializes remote feature flags by making a request to fetch them from the clientConfigApi.
    * This function is called when MM is during internal process.
    * If the request fails, the error will be logged but won't interrupt extension initialization.
