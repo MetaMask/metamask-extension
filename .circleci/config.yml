@@ -166,6 +166,7 @@ workflows:
           requires:
             - prep-deps
       - prep-build-test-webpack:
+          <<: *develop_master_rc_only
           requires:
             - prep-deps
       - prep-build-test-flask:
