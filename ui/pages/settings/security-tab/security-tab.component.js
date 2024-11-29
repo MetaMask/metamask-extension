@@ -381,14 +381,15 @@ export default class SecurityTab extends PureComponent {
           <ToggleButton
             value={dataCollectionForMarketing}
             onToggle={(value) => {
-              setDataCollectionForMarketing(!value);
+              const newMarketingConsent = Boolean(!value);
+              setDataCollectionForMarketing(newMarketingConsent);
               if (participateInMetaMetrics) {
                 this.context.trackEvent({
                   category: MetaMetricsEventCategory.Settings,
                   event: MetaMetricsEventName.AnalyticsPreferenceSelected,
                   properties: {
                     is_metrics_opted_in: true,
-                    has_marketing_consent: false,
+                    has_marketing_consent: Boolean(newMarketingConsent),
                     location: 'Settings',
                   },
                 });
