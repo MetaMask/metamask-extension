@@ -7,7 +7,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ## [12.9.0]
-### Uncategorized
+### Fixed
 - fix: SIWE e2e test timing out and breaking ci ([#28801](https://github.com/MetaMask/metamask-extension/pull/28801))
 - fix: has_marketing_consent flag on metametrics ([#28795](https://github.com/MetaMask/metamask-extension/pull/28795))
 - chore: Bump `@metamask/eth-token-tracker` from v8 to v9 ([#28754](https://github.com/MetaMask/metamask-extension/pull/28754))
