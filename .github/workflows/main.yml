@@ -4,7 +4,7 @@ on:
   push:
     branches:
       - main
-      - master
+      - stable
   pull_request:
     types:
       - opened

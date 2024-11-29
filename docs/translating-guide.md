@@ -10,7 +10,7 @@ The MetaMask browser extension supports new translations added in the form of ne
 - Inside that folder there should be a `messages.json`.
 - An easy way to start your translation is to first **make a copy** of `app/_locales/en/messages.json` (the English translation), and then **translate the `message` key** for each in-app message.
 - **The `description` key** is just to add context for what the translation is about, it **does not need to be translated**.
-- Add the language to the [locales index](https://github.com/MetaMask/metamask-extension/blob/master/app/_locales/index.json) `app/_locales/index.json`
+- Add the language to the [locales index](https://github.com/MetaMask/metamask-extension/blob/s/app/_locales/index.json) `app/_locales/index.json`
 
 
 That's it! When MetaMask is loaded on a computer with that language set as the system language, they will see your translation instead of the default one.

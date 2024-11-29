@@ -46,4 +46,4 @@ Steps to mark a full pass of QA complete.
 * Copy public key to clipboard
 * Export private key
 
-* Explore changes in master, target features that have been changed and break.
+* Explore changes in stable, target features that have been changed and break.
