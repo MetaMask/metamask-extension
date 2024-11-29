@@ -63,6 +63,7 @@ export class WalletPage {
   async selectSwapAction() {
     await this.swapButton.waitFor({ state: 'visible' });
     await this.swapButton.click();
+    await this.page.waitForTimeout(10000);
   }
 
   async selectActivityList() {

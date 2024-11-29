@@ -70,7 +70,7 @@ export class SwapPage {
       this.swapFromDropDown.click();
       await this.selectTokenFromList(options.from);
     }
-/*
+
     const balanceString = await this.page
       .locator('[class*="balance"]')
       .first()
@@ -82,7 +82,7 @@ export class SwapPage {
         return false;
       }
     }
-*/
+
     // Enter Swap Quantity
     await this.tokenQty.fill(options.qty);
     this.swapQty = options.qty;

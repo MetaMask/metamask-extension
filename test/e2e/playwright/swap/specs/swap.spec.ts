@@ -81,9 +81,10 @@ testSet.forEach((options) => {
   test(`should swap ${options.type} token ${options.source} to ${options.destination} on ${options.network.name}'`, async () => {
     await walletPage.selectTokenWallet();
     await networkController.selectNetwork(options.network);
-    await walletPage.selectSwapAction();
-    // Allow balance label to populate
     await walletPage.page.waitForTimeout(5000);
+    await walletPage.selectSwapAction();
+    await walletPage.page.waitForTimeout(5000);
+    // Allow balance label to populate
     const quoteEntered = await swapPage.enterQuote({
       from: options.source,
       to: options.destination,
@@ -110,8 +111,8 @@ testSet.forEach((options) => {
         test.skip();
       }
     } else {
-      log.error(`\tERROR: Token balance is zero. Skipping test`);
-      //test.skip();
+      log.error(`\tERROR: Error while entering the quote. Skipping test`);
+      test.skip();
     }
   });
 });
