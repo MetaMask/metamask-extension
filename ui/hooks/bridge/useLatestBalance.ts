@@ -59,7 +59,7 @@ const useLatestBalance = (
             .round(DEFAULT_PRECISION)
             .toString()
         : undefined,
-    normalizedBalance:
+    balanceAmount:
       token && latestBalance
         ? calcTokenAmount(latestBalance.toString(), tokenDecimals)
         : undefined,
