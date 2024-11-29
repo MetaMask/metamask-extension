@@ -161,7 +161,7 @@ describe('Multichain Asset List', function (this: Suite) {
       },
     );
   });
-  it.only('shows correct asset and balance when swapping on a different chain', async function () {
+  it('shows correct asset and balance when swapping on a different chain', async function () {
     await withFixtures(
       buildFixtures(this.test?.fullTitle() as string),
       async ({
