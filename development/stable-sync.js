@@ -1,9 +1,9 @@
 #!/usr/bin/env node
 
 // USAGE:
-// Simply run `yarn master-sync` from any branch.
-// This will create/update a local master-sync branch
-// and get it in the state needed for a master-sync PR
+// Simply run `yarn stable-sync` from any branch.
+// This will create/update a local stable-sync branch
+// and get it in the state needed for a stable-sync PR
 // Once the script successfully completes, you just
 // need to push the branch to the remote repo. This will
 // likely require a `git push --force`
@@ -12,7 +12,7 @@ const { promisify } = require('util');
 const exec = promisify(require('child_process').exec);
 
 async function runGitCommands() {
-  const branchName = 'master-sync';
+  const branchName = 'stable-sync';
 
   try {
     try {
@@ -47,8 +47,8 @@ async function runGitCommands() {
     await exec('git fetch');
     console.log('Executed: git fetch');
 
-    await exec('git reset --hard origin/master');
-    console.log('Executed: git reset --hard origin/master');
+    await exec('git reset --hard origin/stable');
+    console.log('Executed: git reset --hard origin/stable');
 
     try {
       await exec('git merge origin/main');
@@ -76,11 +76,11 @@ async function runGitCommands() {
     await exec('git checkout origin/main -- .');
     console.log('Executed: git checkout origin/main -- .');
 
-    await exec('git checkout origin/master -- CHANGELOG.md');
-    console.log('Executed: git checkout origin/master -- CHANGELOG.md');
+    await exec('git checkout origin/stable -- CHANGELOG.md');
+    console.log('Executed: git checkout origin/stable -- CHANGELOG.md');
 
     const { stdout: packageJsonContent } = await exec(
-      'git show origin/master:package.json',
+      'git show origin/stable:package.json',
     );
     const packageJson = JSON.parse(packageJsonContent);
     const packageVersion = packageJson.version;
@@ -91,10 +91,10 @@ async function runGitCommands() {
     await exec('git add .');
     console.log('Executed: git add .');
 
-    await exec('git commit -m "Merge origin/main into master-sync"');
+    await exec('git commit -m "Merge origin/main into stable-sync"');
     console.log('Executed: git commit');
 
-    console.log('Your local master-sync branch is now ready to become a PR.');
+    console.log('Your local stable-sync branch is now ready to become a PR.');
     console.log('You likely now need to do `git push --force`');
   } catch (error) {
     console.error(`Error: ${error.message}`);

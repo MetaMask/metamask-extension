@@ -9,7 +9,7 @@ if [ -z "$CIRCLE_PULL_REQUEST" ] || [ -z "$GITHUB_TOKEN" ]; then
   exit 0
 fi
 
-if [[ $CIRCLE_BRANCH = 'main' || $CIRCLE_BRANCH = 'master' || $CIRCLE_BRANCH =~ ^Version-v[0-9.]* ]]; then
+if [[ $CIRCLE_BRANCH = 'main' || $CIRCLE_BRANCH = 'stable' || $CIRCLE_BRANCH =~ ^Version-v[0-9.]* ]]; then
   echo "Long-running branch detected, running MMI tests."
   echo "run_mmi_tests=true" > mmi_trigger.env
   exit 0

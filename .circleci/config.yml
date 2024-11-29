@@ -45,12 +45,12 @@ rc_branch_only: &rc_branch_only
       only:
         - /^Version-v(\d+)[.](\d+)[.](\d+)/
 
-main_master_rc_only: &main_master_rc_only
+main_stable_rc_only: &main_stable_rc_only
   filters:
     branches:
       only:
         - main
-        - master
+        - stable
         - /^Version-v(\d+)[.](\d+)[.](\d+)/
 
 aliases:
@@ -124,7 +124,7 @@ workflows:
           filters:
             branches:
               ignore:
-                - master
+                - stable
       - test-deps-audit:
           requires:
             - prep-deps
@@ -174,7 +174,7 @@ workflows:
           requires:
             - prep-deps
       - prep-build-test-flask-mv2:
-          <<: *main_master_rc_only
+          <<: *main_stable_rc_only
           requires:
             - prep-deps
       - prep-build-test-mmi:
@@ -202,7 +202,7 @@ workflows:
           requires:
             - prep-deps
       - test-e2e-chrome-webpack:
-          <<: *main_master_rc_only
+          <<: *main_stable_rc_only
           requires:
             - prep-build-test-webpack
             - get-changed-files-with-git-diff
@@ -211,7 +211,7 @@ workflows:
             - prep-build-test
             - get-changed-files-with-git-diff
       - test-e2e-firefox:
-          <<: *main_master_rc_only
+          <<: *main_stable_rc_only
           requires:
             - prep-build-test-mv2
             - get-changed-files-with-git-diff
@@ -231,7 +231,7 @@ workflows:
             - prep-build-test-flask
             - get-changed-files-with-git-diff
       - test-e2e-firefox-flask:
-          <<: *main_master_rc_only
+          <<: *main_stable_rc_only
           requires:
             - prep-build-test-flask-mv2
       - test-e2e-chrome-mmi:
@@ -339,7 +339,7 @@ workflows:
       - job-publish-release:
           filters:
             branches:
-              only: master
+              only: stable
           requires:
             - prep-deps
             - prep-build
@@ -407,7 +407,7 @@ jobs:
           condition:
             not:
               matches:
-                pattern: /^master$/
+                pattern: /^stable$/
                 value: << pipeline.git.branch >>
           steps:
             - run:
@@ -481,7 +481,7 @@ jobs:
 
   # This job is used for the e2e quality gate.
   # It must be run before any job which uses the run-all.js script.
-  # The job is skipped in main, master or RC branches.
+  # The job is skipped in main, stable or RC branches.
   get-changed-files-with-git-diff:
     executor: node-browsers-small
     steps:
@@ -562,7 +562,7 @@ jobs:
           condition:
             not:
               matches:
-                pattern: /^master$/
+                pattern: /^stable$/
                 value: << pipeline.git.branch >>
           steps:
             - run:
@@ -571,7 +571,7 @@ jobs:
       - when:
           condition:
             matches:
-              pattern: /^master$/
+              pattern: /^stable$/
               value: << pipeline.git.branch >>
           steps:
             - run:
@@ -599,7 +599,7 @@ jobs:
           condition:
             not:
               matches:
-                pattern: /^master$/
+                pattern: /^stable$/
                 value: << pipeline.git.branch >>
           steps:
             - run:
@@ -608,7 +608,7 @@ jobs:
       - when:
           condition:
             matches:
-              pattern: /^master$/
+              pattern: /^stable$/
               value: << pipeline.git.branch >>
           steps:
             - run:
@@ -642,7 +642,7 @@ jobs:
           condition:
             not:
               matches:
-                pattern: /^master$/
+                pattern: /^stable$/
                 value: << pipeline.git.branch >>
           steps:
             - run:
@@ -651,7 +651,7 @@ jobs:
       - when:
           condition:
             matches:
-              pattern: /^master$/
+              pattern: /^stable$/
               value: << pipeline.git.branch >>
           steps:
             - run:
@@ -686,7 +686,7 @@ jobs:
           condition:
             not:
               matches:
-                pattern: /^master$/
+                pattern: /^stable$/
                 value: << pipeline.git.branch >>
           steps:
             - run:
@@ -695,7 +695,7 @@ jobs:
       - when:
           condition:
             matches:
-              pattern: /^master$/
+              pattern: /^stable$/
               value: << pipeline.git.branch >>
           steps:
             - run:
@@ -727,7 +727,7 @@ jobs:
           condition:
             not:
               matches:
-                pattern: /^master$/
+                pattern: /^stable$/
                 value: << pipeline.git.branch >>
           steps:
             - run:
@@ -736,7 +736,7 @@ jobs:
       - when:
           condition:
             matches:
-              pattern: /^master$/
+              pattern: /^stable$/
               value: << pipeline.git.branch >>
           steps:
             - run:
