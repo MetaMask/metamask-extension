@@ -5201,10 +5201,6 @@ export function setUseTransactionSimulations(val: boolean): void {
   }
 }
 
-export function setFirstTimeUsedNetwork(chainId: string) {
-  return submitRequestToBackground('setFirstTimeUsedNetwork', [chainId]);
-}
-
 // QR Hardware Wallets
 export async function submitQRHardwareCryptoHDKey(cbor: Hex) {
   await submitRequestToBackground('submitQRHardwareCryptoHDKey', [cbor]);

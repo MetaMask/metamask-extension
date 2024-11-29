@@ -8,7 +8,6 @@ import {
 } from '../../../shared/modules/selectors/networks';
 import {
   getAllAccountsOnNetworkAreEmpty,
-  getIsNetworkUsed,
   getNetworkIdentifier,
   getPreferences,
   getTheme,
@@ -95,7 +94,6 @@ function mapStateToProps(state) {
     providerType: getProviderConfig(state).type,
     theme: getTheme(state),
     sendStage: getSendStage(state),
-    isNetworkUsed: getIsNetworkUsed(state),
     allAccountsOnNetworkAreEmpty: getAllAccountsOnNetworkAreEmpty(state),
     isTestNet: getIsTestnet(state),
     showExtensionInFullSizeView: getShowExtensionInFullSizeView(state),
