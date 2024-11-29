@@ -159,7 +159,7 @@ type AppStateControllerInitState = Partial<
 export type AppStateControllerOptions = {
   addUnlockListener: (callback: () => void) => void;
   isUnlocked: () => boolean;
-  state?: AppStateControllerInitState;
+  state?: Partial<AppStateControllerInitState>;
   onInactiveTimeout?: () => void;
   messenger: AppStateControllerMessenger;
   extension: Browser;
