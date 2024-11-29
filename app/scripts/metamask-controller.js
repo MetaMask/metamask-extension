@@ -1465,19 +1465,19 @@ export default class MetamaskController extends EventEmitter {
         },
         showInAppNotification: {
           method: (origin, args) => {
-            const { message, title, footerLink } = args;
+            const { message, title, footerLink, interfaceId } = args;
 
             const detailedView = {
               title,
               ...(footerLink ? { footerLink } : {}),
-              interfaceId: args.content,
+              interfaceId,
             };
 
             const notification = {
               data: {
                 message,
                 origin,
-                ...(args.content ? { detailedView } : {}),
+                ...(interfaceId ? { detailedView } : {}),
               },
               type: TRIGGER_TYPES.SNAP,
               readDate: null,
@@ -2912,8 +2912,7 @@ export default class MetamaskController extends EventEmitter {
             );
           },
           isOnPhishingList: (url) => {
-            const { usePhishDetect } =
-              this.preferencesController.store.getState();
+            const { usePhishDetect } = this.preferencesController.state;
 
             if (!usePhishDetect) {
               return false;
