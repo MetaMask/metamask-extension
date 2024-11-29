@@ -117,6 +117,9 @@ PATH_NAME_MAP[SRP_REMINDER] = 'Secret Recovery Phrase Reminder';
 export const SEND_ROUTE = '/send';
 PATH_NAME_MAP[SEND_ROUTE] = 'Send Page';
 
+export const BANK_ROUTE = '/bank';
+PATH_NAME_MAP[BANK_ROUTE] = 'Bank Page';
+
 export const CONNECTIONS = '/connections';
 PATH_NAME_MAP[CONNECTIONS] = 'Connections';
 

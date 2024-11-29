@@ -144,6 +144,7 @@ features:
 # env object supports both declarations (- FOO), and definitions (- FOO: BAR).
 # Variables that were declared have to be defined somewhere in the load chain before usage
 env:
+  - BUF_BIGINT_DISABLE: false
   - ACCOUNTS_USE_DEV_APIS: false
   - BRIDGE_USE_DEV_APIS: false
   - SWAPS_USE_DEV_APIS: false

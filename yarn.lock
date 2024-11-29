@@ -1691,6 +1691,25 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@connectrpc/connect-web@npm:^1.6.1":
+  version: 1.6.1
+  resolution: "@connectrpc/connect-web@npm:1.6.1"
+  peerDependencies:
+    "@bufbuild/protobuf": ^1.10.0
+    "@connectrpc/connect": 1.6.1
+  checksum: 10/85207d343a4c173ff34711bb0f11157825f6463e2cc4dc8cb4dd84a2928836b4633f837bc24344d6a2bdef8f62d3f217807a0f5959dd32c4a75adb1bfee7e720
+  languageName: node
+  linkType: hard
+
+"@connectrpc/connect@npm:^1.6.1":
+  version: 1.6.1
+  resolution: "@connectrpc/connect@npm:1.6.1"
+  peerDependencies:
+    "@bufbuild/protobuf": ^1.10.0
+  checksum: 10/4eaf2744076f7542661f660d2588ff11512e9826ca10548a0d911e5520a177b06e28239779c8c056b92d2db4c5708f9f135f4f8c09ec4d5d76087f28d7e37c2d
+  languageName: node
+  linkType: hard
+
 "@contentful/rich-text-html-renderer@npm:^16.5.2":
   version: 16.6.8
   resolution: "@contentful/rich-text-html-renderer@npm:16.6.8"
@@ -26465,6 +26484,8 @@ __metadata:
     "@babel/register": "npm:^7.25.9"
     "@babel/runtime": "patch:@babel/runtime@npm%3A7.25.9#~/.yarn/patches/@babel-runtime-npm-7.25.9-fe8c62510a.patch"
     "@blockaid/ppom_release": "npm:^1.5.3"
+    "@connectrpc/connect": "npm:^1.6.1"
+    "@connectrpc/connect-web": "npm:^1.6.1"
     "@ensdomains/content-hash": "npm:^2.5.7"
     "@ethereumjs/tx": "npm:^4.1.1"
     "@ethersproject/abi": "npm:^5.6.4"

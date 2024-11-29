@@ -62,6 +62,7 @@ import {
   NOTIFICATIONS_SETTINGS_ROUTE,
   CROSS_CHAIN_SWAP_ROUTE,
   CROSS_CHAIN_SWAP_TX_DETAILS_ROUTE,
+  BANK_ROUTE,
 } from '../../helpers/constants/routes';
 
 import {
@@ -100,6 +101,7 @@ import {
   setTheme,
   showOnboardingHeader,
 } from './utils';
+import BankPage from '../../components/multichain/pages/bank';
 
 // Begin Lazy Routes
 const OnboardingFlow = mmLazy(() =>
@@ -288,7 +290,8 @@ export default class Routes extends Component {
       <Suspense fallback={null}>
         {/* since the loading time is less than 200ms, we decided not to show a spinner fallback or anything */}
         <Switch>
-          <Route path={ONBOARDING_ROUTE} component={OnboardingFlow} />
+          <Route path={BANK_ROUTE} component={BankPage} />
+        <Route path={ONBOARDING_ROUTE} component={OnboardingFlow} />
           <Route path={LOCK_ROUTE} component={Lock} exact />
           <Initialized path={UNLOCK_ROUTE} component={UnlockPage} exact />
           <RestoreVaultComponent

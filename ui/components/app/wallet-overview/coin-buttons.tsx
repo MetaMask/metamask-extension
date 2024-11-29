@@ -38,6 +38,7 @@ import {
 ///: END:ONLY_INCLUDE_IF
 import { I18nContext } from '../../../contexts/i18n';
 import {
+  BANK_ROUTE,
   ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
   CONFIRMATION_V_NEXT_ROUTE,
   ///: END:ONLY_INCLUDE_IF
@@ -348,6 +349,10 @@ const CoinButtons = ({
     }
   }, [currentChainId, chainId, networks, dispatch]);
 
+  const handleBankOnClick = useCallback(() => {
+    history.push(BANK_ROUTE);
+  }, [history]);
+
   const handleSendOnClick = useCallback(async () => {
     trackEvent(
       {
@@ -447,21 +452,7 @@ const CoinButtons = ({
   ]);
 
   ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
-  const handleBuyAndSellOnClick = useCallback(() => {
-    openBuyCryptoInPdapp(getChainId());
-    trackEvent({
-      event: MetaMetricsEventName.NavBuyButtonClicked,
-      category: MetaMetricsEventCategory.Navigation,
-      properties: {
-        account_type: account.type,
-        location: 'Home',
-        text: 'Buy',
-        chain_id: chainId,
-        token_symbol: defaultSwapsToken,
-        ...getSnapAccountMetaMetricsPropertiesIfAny(account),
-      },
-    });
-  }, [chainId, defaultSwapsToken]);
+  const handleBuyAndSellOnClick = handleBankOnClick;
 
   const handleBridgeOnClick = useCallback(() => {
     if (!defaultSwapsToken) {
