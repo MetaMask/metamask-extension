@@ -107,7 +107,7 @@ export async function mockSignatureApproved(
     await createMockSegmentEvent(mockServer, 'Account Details Opened'),
     ...anonEvents,
     await createMockSegmentEvent(mockServer, 'Signature Approved'),
-    await createMockSignatureDecodingEvent(mockServer),
+    // await createMockSignatureDecodingEvent(mockServer),
   ];
 }
 
@@ -125,7 +125,7 @@ export async function mockSignatureRejected(
   return [
     await createMockSegmentEvent(mockServer, 'Signature Requested'),
     await createMockSegmentEvent(mockServer, 'Signature Rejected'),
-    await createMockSignatureDecodingEvent(mockServer),
+    // await createMockSignatureDecodingEvent(mockServer),
     ...anonEvents,
   ];
 }
