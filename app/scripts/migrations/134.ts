@@ -9,7 +9,7 @@ type VersionedData = {
 export const version = 134;
 
 /**
- * This migration removes `providerConfig` from the network controller state.
+ * This migration removes `usedNetworks` from `AppStateController` state.
  *
  * @param originalVersionedData - Versioned MetaMask extension state, exactly what we persist to dist.
  * @param originalVersionedData.meta - State metadata.

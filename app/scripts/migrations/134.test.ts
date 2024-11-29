@@ -15,7 +15,7 @@ describe(`migration #${version}`, () => {
     expect(newStorage.meta).toStrictEqual({ version });
   });
 
-  it('Does nothing if `usedNetworks` is not in the AppStateController state', async () => {
+  it('Does nothing if `usedNetworks` is not in the `AppStateController` state', async () => {
     const oldState = {
       AppStateController: {
         timeoutMinutes: 0,
@@ -30,7 +30,7 @@ describe(`migration #${version}`, () => {
     expect(transformedState.data).toStrictEqual(oldState);
   });
 
-  it('Removes `usedNetworks` from the AppStateController state', async () => {
+  it('Removes `usedNetworks` from the `AppStateController` state', async () => {
     const oldState: {
       AppStateController: {
         timeoutMinutes: number;
