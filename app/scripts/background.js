@@ -891,7 +891,6 @@ export function setupController(
       controller.isClientOpen = true;
       controller.setupTrustedCommunication(portStream, remotePort.sender);
 
-      // initialize the request to fetch remote feature flags
       initializeRemoteFeatureFlags();
 
       if (processName === ENVIRONMENT_TYPE_POPUP) {
@@ -1096,10 +1095,17 @@ export function setupController(
     }
   }
 
-  function initializeRemoteFeatureFlags() {
+    /**
+   * Initializes remote feature flags by making a request to fetch them from the clientConfigApi.
+   * This function is called when MM is during internal process.
+   * If the request fails, the error will be logged but won't interrupt extension initialization.
+   *
+   * @returns {Promise<void>} A promise that resolves when the remote feature flags have been updated.
+   */
+  async function initializeRemoteFeatureFlags() {
     try {
       // initialize the request to fetch remote feature flags
-      controller.remoteFeatureFlagController.updateRemoteFeatureFlags();
+      await controller.remoteFeatureFlagController.updateRemoteFeatureFlags();
     } catch (error) {
       log.error('Error initializing remote feature flags:', error);
     }
