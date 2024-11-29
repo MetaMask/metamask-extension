@@ -1,7 +1,12 @@
 import { TransactionMeta } from '@metamask/transaction-controller';
 // TODO fix this
-// eslint-disable-next-line import/no-restricted-paths
-import { ChainId, Quote, QuoteResponse } from '../../ui/pages/bridge/types';
+import {
+  ChainId,
+  Quote,
+  QuoteMetadata,
+  QuoteResponse,
+  // eslint-disable-next-line import/no-restricted-paths
+} from '../../ui/pages/bridge/types';
 
 // All fields need to be types not interfaces, same with their children fields
 // o/w you get a type error
@@ -119,13 +124,15 @@ export type BridgeHistoryItem = {
   slippagePercentage: number;
   completionTime?: number;
   pricingData?: {
-    quotedGasInUsd: number;
-    quotedReturnInUsd: number;
-    amountSentInUsd: number;
-    quotedRefuelSrcAmountInUsd?: number;
-    quotedRefuelDestAmountInUsd?: number;
+    amountSent: string; // This is from QuoteMetadata.sentAmount.amount, accounts for the MM fees
+
+    quotedGasInUsd?: string;
+    quotedReturnInUsd?: string;
+    amountSentInUsd?: string;
+    quotedRefuelSrcAmountInUsd?: string;
+    quotedRefuelDestAmountInUsd?: string;
   };
-  initialDestAssetBalance?: number;
+  initialDestAssetBalance?: string;
   targetContractAddress?: string;
   account: string;
 };
@@ -136,16 +143,25 @@ export enum BridgeStatusAction {
   GET_STATE = 'getState',
 }
 
+// The BigNumber values are serialized to strings
+export type QuoteMetadataSerialized = {
+  sentAmount: { amount: string; fiat: string | null };
+};
+
 export type StartPollingForBridgeTxStatusArgs = {
   bridgeTxMeta: TransactionMeta;
   statusRequest: StatusRequest;
-  quoteResponse: QuoteResponse;
+  quoteResponse: QuoteResponse & QuoteMetadata;
   startTime?: BridgeHistoryItem['startTime'];
   slippagePercentage: BridgeHistoryItem['slippagePercentage'];
-  pricingData?: BridgeHistoryItem['pricingData'];
   initialDestAssetBalance?: BridgeHistoryItem['initialDestAssetBalance'];
   targetContractAddress?: BridgeHistoryItem['targetContractAddress'];
 };
+
+export type StartPollingForBridgeTxStatusArgsSerialized =
+  StartPollingForBridgeTxStatusArgs & {
+    quoteResponse: QuoteResponse & QuoteMetadataSerialized;
+  };
 
 export type SourceChainTxMetaId = string;
 
