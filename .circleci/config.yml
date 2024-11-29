@@ -107,7 +107,9 @@ workflows:
           - matches:
               pattern: /^l10n_crowdin_action$/
               value: << pipeline.git.branch >>
-          - equal: [rerun-from-failed, << pipeline.schedule.name >>]
+          - matches:
+              pattern: /^rerun-from-failed.*/
+              value: << pipeline.schedule.name >>
     jobs:
       - create_release_pull_request:
           <<: *rc_branch_only
@@ -361,7 +363,9 @@ workflows:
 
   rerun-from-failed:
     when:
-      equal: [rerun-from-failed, << pipeline.schedule.name >>]
+      matches:
+        pattern: /^rerun-from-failed.*/
+        value: << pipeline.schedule.name >>
     jobs:
       - prep-deps
       - rerun-workflows-from-failed:
