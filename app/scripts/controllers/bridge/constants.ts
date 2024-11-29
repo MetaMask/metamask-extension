@@ -1,13 +1,15 @@
 import { zeroAddress } from 'ethereumjs-util';
 import { Hex } from '@metamask/utils';
-import { METABRIDGE_ETHEREUM_ADDRESS } from '../../../../shared/constants/bridge';
+import {
+  BRIDGE_DEFAULT_SLIPPAGE,
+  METABRIDGE_ETHEREUM_ADDRESS,
+} from '../../../../shared/constants/bridge';
 import { CHAIN_IDS } from '../../../../shared/constants/network';
 import { BridgeControllerState, BridgeFeatureFlagsKey } from './types';
 
 export const BRIDGE_CONTROLLER_NAME = 'BridgeController';
 export const REFRESH_INTERVAL_MS = 30 * 1000;
 const DEFAULT_MAX_REFRESH_COUNT = 5;
-const DEFAULT_SLIPPAGE = 0.5;
 
 export enum RequestStatus {
   LOADING,
@@ -32,7 +34,7 @@ export const DEFAULT_BRIDGE_CONTROLLER_STATE: BridgeControllerState = {
   quoteRequest: {
     walletAddress: undefined,
     srcTokenAddress: zeroAddress(),
-    slippage: DEFAULT_SLIPPAGE,
+    slippage: BRIDGE_DEFAULT_SLIPPAGE,
   },
   quotes: [],
   quotesLastFetched: undefined,
