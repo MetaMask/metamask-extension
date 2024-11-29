@@ -13,7 +13,6 @@ import AssetListPage from '../../page-objects/pages/asset-list';
 
 const NETWORK_NAME_MAINNET = 'Ethereum Mainnet';
 const LINEA_NAME_MAINNET = 'Linea Mainnet';
-const LOCALHOST = 'Localhost 8545';
 const POLYGON_NAME_MAINNET = 'Polygon';
 const BALANCE_AMOUNT = '24.9956';
 
