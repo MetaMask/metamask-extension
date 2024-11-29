@@ -1,26 +1,35 @@
+diff --git a/PATCH.txt b/PATCH.txt
+new file mode 100644
+index 0000000000000000000000000000000000000000..ce3b18534f055ee00aa5821793f855fd300fb72c
+--- /dev/null
++++ b/PATCH.txt
+@@ -0,0 +1,4 @@
++We remove lookupNetwork from initializeProvider in the network controller to prevent network requests before user onboarding is completed.
++The network lookup is done after onboarding is completed, and when the extension reloads if onboarding has been completed.
++This patch is part of a temporary fix that will be reverted soon to make way for a more permanent solution. https://github.com/MetaMask/metamask-extension/pull/23005
++You can see the changes before compilation on this branch: https://github.com/MetaMask/core/compare/pnf/ext-23622-review?expand=1
+\ No newline at end of file
 diff --git a/dist/NetworkController.cjs b/dist/NetworkController.cjs
-index b85de6f29620feecf6f1e395f3d25c96fb10f204..112d61761d000906d4fa7b4ace687ac67f501b9e 100644
+index b85de6f29620feecf6f1e395f3d25c96fb10f204..68c894de3975ab917e8320b5937b19a9b3ddd4ca 100644
 --- a/dist/NetworkController.cjs
 +++ b/dist/NetworkController.cjs
-@@ -408,7 +408,7 @@ class NetworkController extends base_controller_1.BaseController {
+@@ -408,7 +408,6 @@ class NetworkController extends base_controller_1.BaseController {
       */
      async initializeProvider() {
          __classPrivateFieldGet(this, _NetworkController_instances, "m", _NetworkController_applyNetworkSelection).call(this, this.state.selectedNetworkClientId);
 -        await this.lookupNetwork();
-+        // await this.lookupNetwork();
      }
      /**
       * Refreshes the network meta with EIP-1559 support and the network status
 diff --git a/dist/NetworkController.mjs b/dist/NetworkController.mjs
-index 966da694324513857dc6766590a4c965dedc2e3d..e268f1fa8f5461fc4d00441823eef3dfd3eff7d7 100644
+index 966da694324513857dc6766590a4c965dedc2e3d..eb2fe95f9d77fa781d2bce97b7007d4676a3bede 100644
 --- a/dist/NetworkController.mjs
 +++ b/dist/NetworkController.mjs
-@@ -383,7 +383,7 @@ export class NetworkController extends BaseController {
+@@ -383,7 +383,6 @@ export class NetworkController extends BaseController {
       */
      async initializeProvider() {
          __classPrivateFieldGet(this, _NetworkController_instances, "m", _NetworkController_applyNetworkSelection).call(this, this.state.selectedNetworkClientId);
 -        await this.lookupNetwork();
-+        // await this.lookupNetwork();
      }
      /**
       * Refreshes the network meta with EIP-1559 support and the network status
