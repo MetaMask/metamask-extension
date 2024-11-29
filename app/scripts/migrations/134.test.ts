@@ -1,3 +1,4 @@
+import { cloneDeep } from 'lodash';
 import { migrate, version } from './134';
 
 const oldVersion = 133;
@@ -23,7 +24,7 @@ describe(`migration #${version}`, () => {
 
     const transformedState = await migrate({
       meta: { version: oldVersion },
-      data: { ...oldState },
+      data: cloneDeep(oldState),
     });
 
     expect(transformedState.data).toStrictEqual(oldState);
@@ -47,7 +48,7 @@ describe(`migration #${version}`, () => {
     };
     const transformedState = await migrate({
       meta: { version: oldVersion },
-      data: { ...oldState },
+      data: cloneDeep(oldState),
     });
 
     delete oldState.AppStateController.usedNetworks;
