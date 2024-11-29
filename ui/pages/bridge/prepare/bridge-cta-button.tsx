@@ -36,7 +36,7 @@ export const BridgeCTAButton = () => {
   const { isNoQuotesAvailable, isInsufficientBalance } =
     useSelector(getValidationErrors);
 
-  const { normalizedBalance } = useLatestBalance(fromToken, fromChain?.chainId);
+  const { balanceAmount } = useLatestBalance(fromToken, fromChain?.chainId);
 
   const isTxSubmittable = useIsTxSubmittable();
   const trackCrossChainSwapsEvent = useCrossChainSwapsEventTracker();
@@ -53,7 +53,7 @@ export const BridgeCTAButton = () => {
       return t('swapQuotesNotAvailableErrorTitle');
     }
 
-    if (isInsufficientBalance(normalizedBalance)) {
+    if (isInsufficientBalance(balanceAmount)) {
       return t('alertReasonInsufficientBalance');
     }
 
@@ -74,7 +74,7 @@ export const BridgeCTAButton = () => {
     fromAmount,
     toToken,
     isTxSubmittable,
-    normalizedBalance,
+    balanceAmount,
     isInsufficientBalance,
   ]);
 

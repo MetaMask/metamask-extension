@@ -101,7 +101,7 @@ export const BridgeInputGroup = ({
     true,
   );
 
-  const { formattedBalance, normalizedBalance } = useLatestBalance(
+  const { formattedBalance, balanceAmount } = useLatestBalance(
     token,
     networkProps?.network?.chainId,
   );
@@ -150,7 +150,7 @@ export const BridgeInputGroup = ({
       <Box className="prepare-bridge-page__amounts-row">
         <Text
           color={
-            !isAmountReadOnly && isInsufficientBalance(normalizedBalance)
+            !isAmountReadOnly && isInsufficientBalance(balanceAmount)
               ? TextColor.errorDefault
               : TextColor.textAlternative
           }
