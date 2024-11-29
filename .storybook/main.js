@@ -62,6 +62,19 @@ module.exports = {
     config.resolve.alias['./useNftCollectionsMetadata'] = require.resolve(
       '../ui/__mocks__/useNftCollectionsMetadata.js',
     );
+    // Import within network-controller crashes storybook.
+    config.resolve.alias['@metamask/eth-block-tracker'] = require.resolve(
+      '../ui/__mocks__/eth-block-tracker.js',
+    );
+    config.resolve.alias['@metamask/eth-json-rpc-infura'] = require.resolve(
+      '../ui/__mocks__/eth-json-rpc-infura.js',
+    );
+    config.resolve.alias['@metamask/eth-json-rpc-middleware'] = require.resolve(
+      '../ui/__mocks__/eth-json-rpc-middleware.js',
+    );
+    config.resolve.alias['@metamask/swappable-obj-proxy'] = require.resolve(
+      '../ui/__mocks__/swappable-obj-proxy.js',
+    );
     config.resolve.fallback = {
       child_process: false,
       constants: false,
