@@ -34,6 +34,7 @@ function transformState(
     isObject(state.AppStateController) &&
     hasProperty(state.AppStateController, 'usedNetworks')
   ) {
+    console.log('Removing usedNetworks from AppStateController');
     delete state.AppStateController.usedNetworks;
   }
   return state;
