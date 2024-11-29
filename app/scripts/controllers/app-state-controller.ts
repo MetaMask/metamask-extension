@@ -188,19 +188,25 @@ const getDefaultAppStateControllerState = (): AppStateControllerState => ({
   newPrivacyPolicyToastClickedOrClosed: null,
   newPrivacyPolicyToastShownDate: null,
   hadAdvancedGasFeesSetPriorToMigration92_3: false,
-  qrHardware: {},
-  nftsDropdownState: {},
   usedNetworks: {
     '0x1': true,
     '0x5': true,
     '0x539': true,
   },
   surveyLinkLastClickedOrClosed: null,
-  signatureSecurityAlertResponses: {},
-  switchedNetworkDetails: null,
   switchedNetworkNeverShowMessage: false,
-  currentExtensionPopupId: 0,
+  ...getDefaultOverrides(),
 });
+
+function getDefaultOverrides() {
+  return {
+    qrHardware: {},
+    nftsDropdownState: {},
+    signatureSecurityAlertResponses: {},
+    switchedNetworkDetails: null,
+    currentExtensionPopupId: 0,
+  };
+}
 
 const controllerMetadata = {
   timeoutMinutes: {
@@ -384,11 +390,7 @@ export class AppStateController extends BaseController<
       state: {
         ...getDefaultAppStateControllerState(),
         ...state,
-        qrHardware: {},
-        nftsDropdownState: {},
-        signatureSecurityAlertResponses: {},
-        switchedNetworkDetails: null,
-        currentExtensionPopupId: 0,
+        ...getDefaultOverrides(),
       },
       messenger,
     });
