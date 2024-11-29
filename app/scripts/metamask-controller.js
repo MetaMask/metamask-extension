@@ -2380,8 +2380,8 @@ export default class MetamaskController extends EventEmitter {
     this.remoteFeatureFlagController = new RemoteFeatureFlagController({
       messenger: this.controllerMessenger.getRestricted({
         name: 'RemoteFeatureFlagController',
-        allowedActions: ['PreferencesController:getState'],
-        allowedEvents: ['PreferencesController:stateChange'],
+        allowedActions: [],
+        allowedEvents: [],
       }),
       disabled: !this.preferencesController.state.useExternalServices,
       clientConfigApiService: new ClientConfigApiService({
