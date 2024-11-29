@@ -67,8 +67,8 @@ export function useTokenFiatAmount(
   );
 
   const tokenConversionRate = chainId
-    ? currencyRates[networkConfigurationsByChainId[chainId].nativeCurrency]
-        .conversionRate
+    ? currencyRates?.[networkConfigurationsByChainId[chainId]?.nativeCurrency]
+        ?.conversionRate
     : conversionRate;
 
   const currentCurrency = useSelector(getCurrentCurrency);

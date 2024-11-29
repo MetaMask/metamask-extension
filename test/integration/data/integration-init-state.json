@@ -1165,7 +1165,7 @@
         "smartTransactions": {
           "expectedDeadline": 45,
           "maxDeadline": 150,
-          "returnTxHashAsap": false
+          "extensionReturnTxHashAsap": false
         }
       },
       "linea": {
@@ -2052,15 +2052,6 @@
   "useSafeChainsListValidation": true,
   "useTokenDetection": false,
   "useTransactionSimulations": true,
-  "usedNetworks": {
-    "0xaa36a7": {
-      "rpcUrl": "https://sepolia.infura.io/v3/dummy_key",
-      "chainId": "0xaa36a7",
-      "nickname": "Sepolia Test Network",
-      "ticker": "ETH",
-      "blockExplorerUrl": "https://sepolia.etherscan.io"
-    }
-  },
   "userOperations": {},
   "versionFileETag": "W/\"598946a37f16c5b882a0bebbadf4509f\"",
   "versionInfo": [],

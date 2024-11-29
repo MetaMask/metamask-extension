@@ -21,7 +21,10 @@ import {
 } from '@metamask/keyring-api';
 import { ControllerMessenger } from '@metamask/base-controller';
 import { LoggingController, LogType } from '@metamask/logging-controller';
-import { TransactionController } from '@metamask/transaction-controller';
+import {
+  CHAIN_IDS,
+  TransactionController,
+} from '@metamask/transaction-controller';
 import {
   RatesController,
   TokenListController,
@@ -1206,7 +1209,10 @@ describe('MetaMaskController', () => {
         ).toHaveBeenCalledTimes(1);
         expect(
           metamaskController.txController.wipeTransactions,
-        ).toHaveBeenCalledWith(false, selectedAddressMock);
+        ).toHaveBeenCalledWith({
+          address: selectedAddressMock,
+          chainId: CHAIN_IDS.MAINNET,
+        });
         expect(
           metamaskController.smartTransactionsController.wipeSmartTransactions,
         ).toHaveBeenCalledWith({

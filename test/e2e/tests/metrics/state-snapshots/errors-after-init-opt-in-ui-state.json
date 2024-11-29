@@ -36,8 +36,14 @@
       "showMultiRpcModal": "boolean",
       "isRedesignedConfirmationsDeveloperEnabled": "boolean",
       "tokenSortConfig": "object",
+      "tokenNetworkFilter": {
+        "0x1": "boolean",
+        "0x539": "boolean",
+        "0xaa36a7": "boolean",
+        "0xe705": "boolean",
+        "0xe708": "boolean"
+      },
       "shouldShowAggregatedBalancePopover": "boolean",
-      "tokenNetworkFilter": { "0x539": "boolean" },
       "redesignedConfirmationsEnabled": true,
       "redesignedTransactionsEnabled": "boolean"
     },
@@ -89,7 +95,6 @@
     "nftsDropdownState": {},
     "termsOfUseLastAgreed": "number",
     "qrHardware": {},
-    "usedNetworks": { "0x1": true, "0x5": true, "0x539": true },
     "snapsInstallPrivacyWarningShown": true,
     "surveyLinkLastClickedOrClosed": "object",
     "signatureSecurityAlertResponses": "object",
@@ -174,7 +179,12 @@
     "gasEstimateType": "none",
     "nonRPCGasFeeApisDisabled": "boolean",
     "tokenList": "object",
-    "tokensChainsCache": { "0x539": "object" },
+    "tokensChainsCache": {
+      "0x1": "object",
+      "0x539": "object",
+      "0xe708": "object"
+    },
+    "tokenBalances": "object",
     "preventPollingOnNetworkRestart": false,
     "tokens": "object",
     "ignoredTokens": "object",
@@ -182,7 +192,6 @@
     "allTokens": {},
     "allIgnoredTokens": {},
     "allDetectedTokens": {},
-    "tokenBalances": "object",
     "smartTransactionsState": {
       "fees": {},
       "feesByChainId": "object",
