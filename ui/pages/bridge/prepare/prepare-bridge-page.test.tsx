@@ -75,7 +75,10 @@ describe('PrepareBridgePage', () => {
       },
       bridgeSliceOverrides: {
         fromTokenInputValue: '1',
-        fromToken: { address: '0x3103910', decimals: 6 },
+        fromToken: {
+          address: '0x1f9840a85d5af5bf1d1762f925bdaddc4201f984',
+          decimals: 6,
+        },
         toToken: {
           iconUrl: 'http://url',
           symbol: 'UNI',
@@ -86,7 +89,7 @@ describe('PrepareBridgePage', () => {
       },
       bridgeStateOverrides: {
         quoteRequest: {
-          srcTokenAddress: '0x3103910',
+          srcTokenAddress: '0x1f9840a85d5af5bf1d1762f925bdaddc4201f984',
           destTokenAddress: '0x1f9840a85d5af5bf1d1762f925bdaddc4201f984',
           srcChainId: 1,
           destChainId: 10,
