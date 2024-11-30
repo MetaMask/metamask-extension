@@ -10,9 +10,9 @@ import {
   getQuoteRequest,
   getValidationErrors,
 } from '../../ducks/bridge/selectors';
+import { SWAPS_CHAINID_DEFAULT_TOKEN_MAP } from '../../../shared/constants/swaps';
 import { useCrossChainSwapsEventTracker } from './useCrossChainSwapsEventTracker';
 import useLatestBalance from './useLatestBalance';
-import { SWAPS_CHAINID_DEFAULT_TOKEN_MAP } from '../../../shared/constants/swaps';
 import { useRequestMetadataProperties } from './events/useRequestMetadataProperties';
 import { useRequestProperties } from './events/useRequestProperties';
 import { useTradeProperties } from './events/useTradeProperties';
