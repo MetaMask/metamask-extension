@@ -97,7 +97,7 @@ exports[`PrepareBridgePage should render the component, with initial state 1`] =
           class="mm-box prepare-bridge-page__amounts-row"
         >
           <p
-            class="mm-box mm-text mm-text--body-md mm-box--color-text-default"
+            class="mm-box mm-text mm-text--body-md mm-box--color-text-alternative"
           >
              
           </p>
@@ -182,7 +182,7 @@ exports[`PrepareBridgePage should render the component, with initial state 1`] =
           class="mm-box prepare-bridge-page__amounts-row"
         >
           <p
-            class="mm-box mm-text mm-text--body-md mm-box--color-text-default"
+            class="mm-box mm-text mm-text--body-md mm-box--color-text-alternative"
           >
              
           </p>
@@ -308,7 +308,7 @@ exports[`PrepareBridgePage should render the component, with inputs set 1`] = `
           class="mm-box prepare-bridge-page__amounts-row"
         >
           <p
-            class="mm-box mm-text mm-text--body-md mm-box--color-text-default"
+            class="mm-box mm-text mm-text--body-md mm-box--color-text-alternative"
           >
              
           </p>
@@ -437,7 +437,7 @@ exports[`PrepareBridgePage should render the component, with inputs set 1`] = `
           class="mm-box prepare-bridge-page__amounts-row"
         >
           <p
-            class="mm-box mm-text mm-text--body-md mm-box--color-text-default"
+            class="mm-box mm-text mm-text--body-md mm-box--color-text-alternative"
           >
              
           </p>
