@@ -722,7 +722,7 @@ export const createBridgeMockStore = (
     ...swapsStore,
     bridge: {
       toChainId: null,
-      sortOrder: 0,
+      sortOrder: 'cost_ascending',
       ...bridgeSliceOverrides,
     },
     metamask: {
