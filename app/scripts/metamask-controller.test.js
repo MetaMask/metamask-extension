@@ -2712,7 +2712,7 @@ describe('MetaMaskController', () => {
     });
 
     describe('_getConfigForRemoteFeatureFlagRequest', () => {
-      it('should return config in mapping', async () => {
+      it('returns config in mapping', async () => {
         const result =
           await metamaskController._getConfigForRemoteFeatureFlagRequest();
         expect(result).toStrictEqual({
@@ -2721,7 +2721,7 @@ describe('MetaMaskController', () => {
         });
       });
 
-      it('should return config when not matching default mapping', async () => {
+      it('returna config when not matching default mapping', async () => {
         process.env.METAMASK_BUILD_TYPE = 'beta';
         process.env.METAMASK_ENVIRONMENT = ENVIRONMENT.RELEASE_CANDIDATE;
 

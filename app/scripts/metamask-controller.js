@@ -408,8 +408,8 @@ const environmentMappingForRemoteFeatureFlag = {
 };
 
 const buildTypeMappingForRemoteFeatureFlag = {
-  flask: DistributionType.main,
-  main: DistributionType.flask,
+  flask: DistributionType.Flask,
+  main: DistributionType.Main,
 };
 
 export default class MetamaskController extends EventEmitter {
@@ -7422,11 +7422,11 @@ export default class MetamaskController extends EventEmitter {
   _getConfigForRemoteFeatureFlagRequest() {
     const distribution =
       buildTypeMappingForRemoteFeatureFlag[process.env.METAMASK_BUILD_TYPE] ||
-      'main';
+      DistributionType.Main;
     const environment =
       environmentMappingForRemoteFeatureFlag[
         process.env.METAMASK_ENVIRONMENT
-      ] || 'dev';
+      ] || EnvironmentType.Development;
     return { distribution, environment };
   }
 
