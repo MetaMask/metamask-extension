@@ -225,12 +225,6 @@ describe('Routes Component', () => {
             },
             selectedAccount: account.id,
           },
-          usedNetworks: {
-            '0x1': true,
-            '0x5': true,
-            '0x539': true,
-            [mockNewlyAddedNetwork.chainId]: false,
-          },
           networkConfigurationsByChainId: {
             ...mockState.metamask.networkConfigurationsByChainId,
             [mockNewlyAddedNetwork.chainId]: mockNewlyAddedNetwork,
@@ -312,7 +306,6 @@ describe('toast display', () => {
       announcements: {},
       approvalFlows: [],
       completedOnboarding: true,
-      usedNetworks: [],
       pendingApprovals: {},
       pendingApprovalCount: 0,
       preferences: {
@@ -341,7 +334,6 @@ describe('toast display', () => {
       announcements: {},
       approvalFlows: [],
       completedOnboarding: true,
-      usedNetworks: [],
       pendingApprovals: {},
       pendingApprovalCount: 0,
       swapsState: { swapsFeatureIsLive: true },

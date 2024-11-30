@@ -6431,9 +6431,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/transaction-controller@npm:^40.1.0":
-  version: 40.1.0
-  resolution: "@metamask/transaction-controller@npm:40.1.0"
+"@metamask/transaction-controller@npm:^41.0.0":
+  version: 41.0.0
+  resolution: "@metamask/transaction-controller@npm:41.0.0"
   dependencies:
     "@ethereumjs/common": "npm:^3.2.0"
     "@ethereumjs/tx": "npm:^4.2.0"
@@ -6460,7 +6460,7 @@ __metadata:
     "@metamask/approval-controller": ^7.0.0
     "@metamask/gas-fee-controller": ^22.0.0
     "@metamask/network-controller": ^22.0.0
-  checksum: 10/1057af5b0da2d51e46e7568fc0e7fdbe6aed34a013cf56a5a35ad694cbedcb726a5823bbe70b980d1dc9560138acf9d82ac5f0e06f7d17e11b46abacd466dc42
+  checksum: 10/67a00b2eade35fc4e635a6bcbbcd847b3986b3bdcc9730ff2c8f81234df18ed11149203c13d6bad616e859f7e25879efab36b6dc4be05a4e747b4280ae2f300d
   languageName: node
   linkType: hard
 
@@ -26566,7 +26566,7 @@ __metadata:
     "@metamask/solana-wallet-snap": "npm:^0.1.9"
     "@metamask/test-bundler": "npm:^1.0.0"
     "@metamask/test-dapp": "npm:8.13.0"
-    "@metamask/transaction-controller": "npm:^40.1.0"
+    "@metamask/transaction-controller": "npm:^41.0.0"
     "@metamask/user-operation-controller": "npm:^16.0.0"
     "@metamask/utils": "npm:^10.0.1"
     "@ngraveio/bc-ur": "npm:^1.1.12"
