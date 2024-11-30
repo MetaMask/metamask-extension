@@ -10,7 +10,7 @@ const PR_NUMBER =
   process.env.CIRCLE_PR_NUMBER ||
   process.env.CIRCLE_PULL_REQUEST?.split('/').pop();
 
-const MAIN_BRANCH = 'develop';
+const MAIN_BRANCH = 'skip-ci-for-some-files';
 const SOURCE_BRANCH = `refs/pull/${PR_NUMBER}/head`;
 
 const CHANGED_FILES_DIR = 'changed-files';
@@ -72,7 +72,7 @@ async function fetchUntilMergeBaseFound() {
     await fetchWithDepth(depth);
 
     try {
-      await exec(`git merge-base origin/HEAD HEAD`);
+      await exec(`git merge-base origin/${MAIN_BRANCH} HEAD`);
       return;
     } catch (error: unknown) {
       if (error instanceof Error && 'code' in error) {
@@ -97,7 +97,7 @@ async function fetchUntilMergeBaseFound() {
 async function gitDiff(): Promise<string> {
   await fetchUntilMergeBaseFound();
   const { stdout: diffResult } = await exec(
-    `git diff --name-only "origin/HEAD...${SOURCE_BRANCH}"`,
+    `git diff --name-only "origin/${MAIN_BRANCH}...${SOURCE_BRANCH}"`,
   );
   if (!diffResult) {
     throw new Error('Unable to get diff after full checkout.');
