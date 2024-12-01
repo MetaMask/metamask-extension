@@ -22,6 +22,8 @@ import { getExtractIdentifier } from './utils/utils';
 import { NotificationDetailsHeader } from './notification-details-header/notification-details-header';
 import { NotificationDetailsBody } from './notification-details-body/notification-details-body';
 import { NotificationDetailsFooter } from './notification-details-footer/notification-details-footer';
+import { TRIGGER_TYPES } from '@metamask/notification-services-controller/notification-services';
+import { useSnapNotificationTimeouts } from '../../hooks/useNotificationTimeouts';
 
 function useModalNavigation() {
   const history = useHistory();
@@ -47,6 +49,8 @@ function useNotificationByPath() {
 
 function useEffectOnNotificationView(notificationData?: Notification) {
   const { markNotificationAsRead } = useMarkNotificationAsRead();
+  const { setNotificationTimeout } = useSnapNotificationTimeouts();
+
   useEffect(() => {
     if (notificationData) {
       markNotificationAsRead([
@@ -57,6 +61,12 @@ function useEffectOnNotificationView(notificationData?: Notification) {
         },
       ]);
     }
+
+    return () => {
+      if (notificationData?.type === TRIGGER_TYPES.SNAP) {
+        setNotificationTimeout(notificationData.id);
+      }
+    };
   }, [markNotificationAsRead, notificationData]);
 }
 
