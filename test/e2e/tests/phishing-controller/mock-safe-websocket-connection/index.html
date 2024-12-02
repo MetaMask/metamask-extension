@@ -8,20 +8,22 @@
         constructor(url) {
           this.url = url;
           this.readyState = 0;
-
-          console.log(`MockWebSocket: Attempting to connect to ${url}`);
-
           // Simulate connection behavior
           setTimeout(() => {
-            if (url.includes('blocked.example.com')) {
-              window.location.href = `http://localhost:9999/#hostname=${url}&href=${encodeURIComponent(
-                url,
-              )}`;
-            } else {
-              this.readyState = 1;
-              if (this.onopen) {
-                this.onopen();
+            try {
+              const { hostname } = new URL(url);
+              if (hostname === 'safe.example.com') {
+                window.location.href = `http://localhost:9999/#hostname=${url}&href=${encodeURIComponent(
+                  url,
+                )}`;
+              } else {
+                this.readyState = 1; // OPEN
+                if (this.onopen) {
+                  this.onopen();
+                }
               }
+            } catch (error) {
+              console.error('Invalid URL:', url);
             }
           }, 100);
         }
@@ -30,7 +32,6 @@
           if (this.readyState !== 1) {
             throw new Error('WebSocket is not open');
           }
-          console.log(`MockWebSocket: Sent message: ${message}`);
           setTimeout(() => {
             if (this.onmessage) {
               this.onmessage({ data: `Echo: ${message}` });

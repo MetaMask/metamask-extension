@@ -13,15 +13,20 @@
 
           // Simulate connection behavior
           setTimeout(() => {
-            if (url.includes('blocked.example.com')) {
-              window.location.href = `http://localhost:9999/#hostname=${url}&href=${encodeURIComponent(
-                url,
-              )}`;
-            } else {
-              this.readyState = 1;
-              if (this.onopen) {
-                this.onopen();
+            try {
+              const { hostname } = new URL(url);
+              if (hostname === 'blocked.example.com') {
+                window.location.href = `http://localhost:9999/#hostname=${url}&href=${encodeURIComponent(
+                  url,
+                )}`;
+              } else {
+                this.readyState = 1; // OPEN
+                if (this.onopen) {
+                  this.onopen();
+                }
               }
+            } catch (error) {
+              console.error('Invalid URL:', url);
             }
           }, 100);
         }
