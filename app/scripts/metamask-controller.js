@@ -2594,7 +2594,6 @@ export default class MetamaskController extends EventEmitter {
       SnapController: this.snapController.state,
       CronjobController: this.cronjobController.state,
       SnapsRegistry: this.snapsRegistry.state,
-      NotificationController: this.notificationController.state,
       SnapInterfaceController: this.snapInterfaceController.state,
       SnapInsightsController: this.snapInsightsController.state,
       ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
@@ -2651,7 +2650,6 @@ export default class MetamaskController extends EventEmitter {
       SnapController: this.snapController.state,
       CronjobController: this.cronjobController.state,
       SnapsRegistry: this.snapsRegistry,
-      NotificationController: this.notificationController.state,
       SnapInterfaceController: this.snapInterfaceController.state,
       SnapInsightsController: this.snapInsightsController.state,
       ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
