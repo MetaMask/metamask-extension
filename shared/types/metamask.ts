@@ -24,7 +24,6 @@ import type { SmartTransactionsControllerState } from '@metamask/smart-transacti
 import type { SelectedNetworkControllerState } from '@metamask/selected-network-controller';
 import type { LoggingControllerState } from '@metamask/logging-controller';
 import type { PermissionLogControllerState } from '@metamask/permission-log-controller';
-import type { NotificationControllerState } from '@metamask/notification-controller';
 import type {
   CronjobControllerState,
   SnapControllerState,
@@ -58,8 +57,6 @@ import type {
   NotificationServicesPushController,
 } from '@metamask/notification-services-controller';
 
-import { BridgeStatusControllerState } from './bridge-status';
-
 import type { BalancesController as MultichainBalancesControllerState } from '../../app/scripts/lib/accounts/BalancesController';
 import type { NetworkOrderControllerState } from '../../app/scripts/controllers/network-order';
 import type { AccountOrderControllerState } from '../../app/scripts/controllers/account-order';
@@ -75,6 +72,8 @@ import type { BridgeControllerState } from '../../app/scripts/controllers/bridge
 import { MetaMetricsDataDeletionState } from '../../app/scripts/controllers/metametrics-data-deletion/metametrics-data-deletion';
 import { MetaMetricsControllerState } from '../../app/scripts/controllers/metametrics-controller';
 import { AccountTrackerControllerState } from '../../app/scripts/controllers/account-tracker-controller';
+
+import { BridgeStatusControllerState } from './bridge-status';
 
 export type ResetOnRestartStoresComposedState = {
   AccountTracker: AccountTrackerControllerState;
@@ -125,7 +124,6 @@ export type StoreControllersComposedState =
     SnapController: SnapControllerState;
     CronjobController: CronjobControllerState;
     SnapsRegistry: SnapsRegistryState;
-    NotificationController: NotificationControllerState;
     SnapInterfaceController: SnapInterfaceControllerState;
     SnapInsightsController: SnapInsightsControllerState;
     ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
