@@ -125,6 +125,8 @@ workflows:
             branches:
               ignore:
                 - master
+          requires:
+            - prep-deps
       - test-deps-audit:
           requires:
             - prep-deps
@@ -491,7 +493,7 @@ jobs:
           at: .
       - run:
           name: Get changed files with git diff
-          command: npx tsx .circleci/scripts/git-diff-default-branch.ts
+          command: yarn git-diff-default-branch
       - persist_to_workspace:
           root: .
           paths:
