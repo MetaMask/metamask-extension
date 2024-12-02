@@ -3984,11 +3984,11 @@
     "message": "Pending"
   },
   "pendingTransactionAlertMessage": {
-    "message": "This transaction won't go through until a previous transaction is complete. Learn $1.",
+    "message": "This transaction won't go through until a previous transaction is complete. $1",
     "description": "$1 represents the words 'how to cancel or speed up a transaction' in a hyperlink"
   },
   "pendingTransactionAlertMessageHyperlink": {
-    "message": "how to cancel or speed up a transaction",
+    "message": "Learn how to cancel or speed up a transaction.",
     "description": "The text for the hyperlink in the pending transaction alert message"
   },
   "pendingTransactionInfo": {
