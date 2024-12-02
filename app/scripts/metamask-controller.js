@@ -5984,16 +5984,6 @@ export default class MetamaskController extends EventEmitter {
       outStream,
       (err) => {
         // handle any middleware cleanup
-        // TODO: is this needed or does the middleware destory chain handle this?
-        this.multichainMiddlewareManager.removeMiddlewareByOriginAndTabId(
-          origin,
-          tabId,
-        );
-        // TODO: is this needed or does the middleware destory chain handle this?
-        this.multichainSubscriptionManager.unsubscribeByOriginAndTabId(
-          origin,
-          tabId,
-        );
         engine.destroy();
         connectionId && this.removeConnection(origin, connectionId);
         // For context and todos related to the error message match, see https://github.com/MetaMask/metamask-extension/issues/26337
