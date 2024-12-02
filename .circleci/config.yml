@@ -451,7 +451,7 @@ jobs:
           command: yarn --version > /tmp/YARN_VERSION
       - run:
           name: Save Foundry version
-          command: node -e "process.stdout.write(require('./package.json').foundry)" > /tmp/FOUNDRY_VERSION
+          command: node -e "process.stdout.write(require('./package.json').foundryup.version)" > /tmp/FOUNDRY_VERSION
       - restore_cache:
           keys:
             # First try to get the specific cache for the checksum of the yarn.lock file.
