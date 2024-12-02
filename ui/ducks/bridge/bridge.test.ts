@@ -260,7 +260,7 @@ describe('Ducks - Bridge', () => {
       expect(newState).toStrictEqual({
         toChainId: null,
         toTokenExchangeRate: 0.356628,
-        sortOrder: 0,
+        sortOrder: 'cost_ascending',
       });
     });
 
@@ -305,7 +305,7 @@ describe('Ducks - Bridge', () => {
       expect(newState).toStrictEqual({
         toChainId: null,
         toTokenExchangeRate: 0.999881,
-        sortOrder: 0,
+        sortOrder: 'cost_ascending',
       });
     });
   });
