@@ -1,7 +1,7 @@
-import { Driver } from '../../webdriver/driver';
-import { largeDelayMs, regularDelayMs } from '../../helpers';
 import messages from '../../../../app/_locales/en/messages.json';
 import { ACCOUNT_TYPE } from '../../constants';
+import { largeDelayMs, regularDelayMs } from '../../helpers';
+import { Driver } from '../../webdriver/driver';
 
 class AccountListPage {
   private readonly driver: Driver;

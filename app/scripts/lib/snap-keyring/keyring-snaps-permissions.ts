@@ -1,8 +1,8 @@
-import {
-  SubjectType,
-  SubjectMetadataController,
-} from '@metamask/permission-controller';
 import { KeyringRpcMethod } from '@metamask/keyring-api';
+import {
+  SubjectMetadataController,
+  SubjectType,
+} from '@metamask/permission-controller';
 
 /**
  * The origins of the Portfolio dapp.
@@ -35,6 +35,7 @@ const METAMASK_ALLOWED_METHODS: string[] = [
   KeyringRpcMethod.SubmitRequest,
   KeyringRpcMethod.ApproveRequest,
   KeyringRpcMethod.RejectRequest,
+  KeyringRpcMethod.ListAccountTransactions,
 ];
 
 /**
@@ -55,6 +56,7 @@ const WEBSITE_ALLOWED_METHODS: string[] = [
   KeyringRpcMethod.SubmitRequest,
   KeyringRpcMethod.ApproveRequest,
   KeyringRpcMethod.RejectRequest,
+  KeyringRpcMethod.ListAccountTransactions,
 ];
 
 /**
@@ -74,6 +76,7 @@ const PORTFOLIO_ALLOWED_METHODS: string[] = [
   KeyringRpcMethod.SubmitRequest,
   KeyringRpcMethod.ApproveRequest,
   KeyringRpcMethod.RejectRequest,
+  KeyringRpcMethod.ListAccountTransactions,
 ];
 
 /**

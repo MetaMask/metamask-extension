@@ -1,11 +1,11 @@
 import { Mockttp } from 'mockttp';
-import { withFixtures } from '../../helpers';
-import { Driver } from '../../webdriver/driver';
-import HeaderNavbar from '../../page-objects/pages/header-navbar';
-import AccountListPage from '../../page-objects/pages/account-list-page';
-import FixtureBuilder from '../../fixture-builder';
 import { ACCOUNT_TYPE } from '../../constants';
+import FixtureBuilder from '../../fixture-builder';
+import { withFixtures } from '../../helpers';
 import { loginWithoutBalanceValidation } from '../../page-objects/flows/login.flow';
+import AccountListPage from '../../page-objects/pages/account-list-page';
+import HeaderNavbar from '../../page-objects/pages/header-navbar';
+import { Driver } from '../../webdriver/driver';
 
 const SOLANA_URL_REGEX =
   /^https:\/\/(solana-mainnet\.infura\.io|api\.devnet\.solana\.com)/u;
