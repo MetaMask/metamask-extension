@@ -11,7 +11,6 @@ import {
 import * as actionConstants from '../../store/actionConstants';
 
 type AppState = {
-  isInitialized: boolean;
   customNonceValue: string;
   isAccountMenuOpen: boolean;
   isNetworkMenuOpen: boolean;
@@ -128,7 +127,6 @@ export type AppSliceState = {
 
 // default state
 const initialState: AppState = {
-  isInitialized: false,
   customNonceValue: '',
   isAccountMenuOpen: false,
   isNetworkMenuOpen: false,
@@ -275,7 +273,6 @@ export default function reduceApp(
     case actionConstants.RESET_ONBOARDING: {
       return {
         ...appState,
-        isInitialized: false,
         welcomeScreenSeen: false,
       };
     }
