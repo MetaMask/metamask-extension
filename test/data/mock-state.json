@@ -11,6 +11,8 @@
   },
   "appState": {
     "isAccountMenuOpen": false,
+    "confirmationExchangeRates": {},
+    "customTokenAmount": "10",
     "networkDropdownOpen": false,
     "importNftsModal": {
       "open": false
@@ -28,9 +30,7 @@
         "name": null
       }
     },
-    "warning": null,
-    "customTokenAmount": "10",
-    "confirmationExchangeRates": {}
+    "warning": null
   },
   "confirmAlerts": {
     "alerts": [],
@@ -388,8 +388,7 @@
         "key": "tokenFiatAmount",
         "order": "dsc",
         "sortCallback": "stringNumeric"
-      },
-      "tokenNetworkFilter": {}
+      }
     },
     "ensResolutionsByAddress": {},
     "isUnlocked": true,
