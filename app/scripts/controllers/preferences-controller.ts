@@ -406,6 +406,12 @@ const controllerMetadata = {
   preferences: {
     persist: true,
     anonymous: true,
+    properties: {
+      smartTransactionsOptInStatus: {
+        persist: true,
+        anonymous: true,
+      },
+    },
   },
   ipfsGateway: {
     persist: true,

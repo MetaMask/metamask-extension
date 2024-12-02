@@ -22,7 +22,7 @@ export const version = 135;
 
 function transformState(state: VersionedData['data']) {
   console.log('Migration 135 state:', JSON.stringify(state, null, 2));
-  console.log('Transform state input:', state);
+  console.log('Migration 135, Transform state input:', state);
   if (
     !hasProperty(state, 'PreferencesController') ||
     !isObject(state.PreferencesController)
@@ -32,26 +32,26 @@ function transformState(state: VersionedData['data']) {
         `Invalid PreferencesController state: ${typeof state.PreferencesController}`,
       ),
     );
-    console.log('Invalid PreferencesController state');
+    console.log('Migration 135 - Invalid PreferencesController');
     return state;
   }
 
   const { PreferencesController } = state;
   const currentOptInStatus =
     PreferencesController?.smartTransactionsOptInStatus;
-  console.log('Current STX opt-in status:', currentOptInStatus);
+    console.log('Migration 135 - Current STX Status:', currentOptInStatus);
 
   if (currentOptInStatus === undefined || currentOptInStatus === null) {
-    console.log('Setting null/undefined status to true');
+    console.log('Migration 135 - Setting null/undefined status to true');
     PreferencesController.smartTransactionsOptInStatus = true;
   } else if (
     currentOptInStatus === false &&
     !hasExistingSmartTransactions(state)
   ) {
-    console.log('Setting false status to true (no existing transactions)');
+    console.log('Migration 135 - Setting false status to true (no existing transactions)');
     PreferencesController.smartTransactionsOptInStatus = true;
   }
-
+  console.log('Migration 135 - Final State:', JSON.stringify(state, null, 2));
   return state;
 }
 
