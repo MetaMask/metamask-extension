@@ -129,7 +129,8 @@
     "update-mock-cdn": "node test/e2e/mock-cdn/update-mock-cdn-files.js",
     "attributions:check": "./development/attributions-check.sh",
     "attributions:generate": "./development/generate-attributions.sh",
-    "ci-rerun-from-failed": "tsx .circleci/scripts/rerun-ci-workflow-from-failed.ts"
+    "ci-rerun-from-failed": "tsx .circleci/scripts/rerun-ci-workflow-from-failed.ts",
+    "git-diff-default-branch": "tsx .circleci/scripts/git-diff-default-branch.ts"
   },
   "resolutions": {
     "chokidar": "^3.6.0",

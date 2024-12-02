@@ -491,7 +491,7 @@ jobs:
           at: .
       - run:
           name: Get changed files with git diff
-          command: npx tsx .circleci/scripts/git-diff-develop.ts
+          command: yarn git-diff-default-branch
       - persist_to_workspace:
           root: .
           paths:
