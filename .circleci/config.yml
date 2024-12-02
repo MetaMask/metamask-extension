@@ -172,6 +172,7 @@ workflows:
           requires:
             - prep-deps
       - prep-build-test-flask-mv2:
+          <<: *develop_master_rc_only
           requires:
             - prep-deps
       - prep-build-test-mmi:
@@ -199,6 +200,7 @@ workflows:
           requires:
             - prep-deps
       - test-e2e-chrome-webpack:
+          <<: *develop_master_rc_only
           requires:
             - prep-build-test-webpack
             - get-changed-files-with-git-diff
@@ -207,6 +209,7 @@ workflows:
             - prep-build-test
             - get-changed-files-with-git-diff
       - test-e2e-firefox:
+          <<: *develop_master_rc_only
           requires:
             - prep-build-test-mv2
             - get-changed-files-with-git-diff
@@ -226,6 +229,7 @@ workflows:
             - prep-build-test-flask
             - get-changed-files-with-git-diff
       - test-e2e-firefox-flask:
+          <<: *develop_master_rc_only
           requires:
             - prep-build-test-flask-mv2
       - test-e2e-chrome-mmi:
