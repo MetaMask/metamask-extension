@@ -456,7 +456,7 @@ const controllerMetadata = {
   showIncomingTransactions: { persist: true, anonymous: true },
   smartTransactionsOptInStatus: {
     persist: true,
-    anonymous: true,
+    anonymous: false,
   },
 };
 
