@@ -78,12 +78,15 @@ function hasExistingSmartTransactions(state: VersionedData['data']): boolean {
 const migration = {
   version,
   async migrate(originalVersionedData: VersionedData): Promise<VersionedData> {
-    console.log('Migration 133 input:', JSON.stringify(originalVersionedData, null, 2));
-    console.log('Starting migration 133', originalVersionedData);
+    console.log('=== MIGRATION 133 START ===');
+    console.log('Original version:', originalVersionedData.meta.version);
+    console.log('Original data:', JSON.stringify(originalVersionedData.data, null, 2));
     const versionedData = cloneDeep(originalVersionedData);
+    console.log('STX status before:', versionedData.data?.PreferencesController?.smartTransactionsOptInStatus);
     versionedData.meta.version = version;
     versionedData.data = transformState(versionedData.data);
-    console.log('Completed migration 133', versionedData);
+    console.log('STX status after:', versionedData.data?.PreferencesController?.smartTransactionsOptInStatus);
+    console.log('=== MIGRATION 133 END ===');
     return versionedData;
   },
 };
