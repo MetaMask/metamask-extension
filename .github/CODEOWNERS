@@ -7,9 +7,9 @@
 # follows all policies or without full understanding of the impact of
 # those changes on build, release and publishing outcomes.
 
-*                                    @MetaMask/extension-devs
-development/                         @MetaMask/extension-devs @kumavis
-lavamoat/                            @MetaMask/extension-devs @MetaMask/supply-chain
+*                                    @MetaMask/extension-platform
+development/                         @MetaMask/extension-platform
+lavamoat/                            @MetaMask/extension-platform @MetaMask/supply-chain
 
 # The offscreen.ts script file that is included in the offscreen document html
 # file is responsible, at present, for loading the snaps execution environment
@@ -28,7 +28,7 @@ offscreen/scripts/offscreen.ts       @MetaMask/snaps-devs
 # empower our CI steps. ANY addition of orbs to our CircleCI config
 # should be brought to the attention of engineering leadership for
 # discussion
-.circleci/                           @MetaMask/library-admins @kumavis
+.circleci/                           @MetaMask/extension-security-team
 
 # The privacy-snapshot.json file includes a list of all hosts that the
 # extension communicates with during the E2E test suite runs. It is not a
@@ -49,7 +49,7 @@ privacy-snapshot.json                @MetaMask/extension-privacy-reviewers
 
 # For now, restricting approvals inside the .devcontainer folder to devs
 # who were involved with the Codespaces project.
-.devcontainer/                       @MetaMask/library-admins @HowardBraham @plasmacorral
+.devcontainer/                       @MetaMask/extension-security-team @HowardBraham
 
 # Confirmations team to own code for confirmations on UI.
 app/scripts/lib/ppom                    @MetaMask/confirmations
