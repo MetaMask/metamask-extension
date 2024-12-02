@@ -8,7 +8,7 @@ import { NotificationsListReadAllButton } from './notifications-list-read-all-bu
 const mockStore = configureStore([thunk]);
 const store = mockStore({
   metamask: {
-    notifications: [],
+    metamaskNotificationsList: [],
   },
 });
 

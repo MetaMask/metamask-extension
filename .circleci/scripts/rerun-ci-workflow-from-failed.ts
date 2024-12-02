@@ -59,7 +59,7 @@ interface WorkflowStatusResponse {
  * Note: the API returns the first 20 workflows by default.
  * If we wanted to get older workflows, we would need to use the 'page-token' we would get in the first response
  * and perform a subsequent request with the 'page-token' parameter.
- * This seems unnecessary as of today, as the amount of daily PRs merged to develop is not that high.
+ * This seems unnecessary as of today, as the amount of daily PRs merged to main is not that high.
  *
  * @returns {Promise<WorkflowItem[]>} A promise that resolves to an array of workflow items.
  * @throws Will throw an error if the CircleCI token is not defined or if the HTTP request fails.
@@ -177,7 +177,7 @@ async function rerunWorkflowById(workflowId: string) {
 }
 
 /**
- * Re-runs failed CircleCI workflows from develop branch.
+ * Re-runs failed CircleCI workflows from main branch.
  * The workflow will only be re-runed if:
  *   1. It has the status of 'failed'
  *   2. It has only been run once
@@ -187,8 +187,8 @@ async function rerunWorkflowById(workflowId: string) {
  * @throws Will throw an error if fetching the workflows or re-running a workflow fails.
  */
 async function rerunFailedWorkflowsFromDevelop() {
-  console.log('Getting Circle Ci workflows from develop branch...');
-  const workflows = await getCircleCiWorkflowsByBranch('develop');
+  console.log('Getting Circle Ci workflows from main branch...');
+  const workflows = await getCircleCiWorkflowsByBranch('main');
 
   console.log('Assessing if any of the workflows needs to be rerun...');
   for (const item of workflows) {
