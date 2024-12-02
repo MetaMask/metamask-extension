@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>E2E Test Dapp</title>
+    <link rel="icon" href="data:," />
+    <script>
+      class MockWebSocket {
+        constructor(url) {
+          this.url = url;
+          this.readyState = 0;
+
+          console.log(`MockWebSocket: Attempting to connect to ${url}`);
+
+          // Simulate connection behavior
+          setTimeout(() => {
+            if (url.includes('blocked.example.com')) {
+              window.location.href = `http://localhost:9999/#hostname=${url}&href=${encodeURIComponent(
+                url,
+              )}`;
+            } else {
+              this.readyState = 1;
+              if (this.onopen) {
+                this.onopen();
+              }
+            }
+          }, 100);
+        }
+
+        send(message) {
+          if (this.readyState !== 1) {
+            throw new Error('WebSocket is not open');
+          }
+          console.log(`MockWebSocket: Sent message: ${message}`);
+          setTimeout(() => {
+            if (this.onmessage) {
+              this.onmessage({ data: `Echo: ${message}` });
+            }
+          }, 50);
+        }
+
+        close() {
+          this.readyState = 3;
+          if (this.onclose) {
+            this.onclose();
+          }
+          console.log('MockWebSocket: Connection closed');
+        }
+      }
+
+      window.WebSocket = MockWebSocket;
+
+      function testWebSocketConnection(url) {
+        try {
+          const socket = new WebSocket(url);
+          socket.onopen = () => {
+            console.log('WebSocket connection opened');
+            socket.send('Hello, server!');
+          };
+          socket.onerror = (error) => {
+            console.error('WebSocket error:', error.message);
+          };
+          socket.onmessage = (event) => {
+            console.log('Message received:', event.data);
+          };
+          socket.onclose = () => {
+            console.log('WebSocket connection closed');
+          };
+        } catch (error) {
+          console.error('WebSocket creation failed:', error);
+        }
+      }
+
+      testWebSocketConnection('wss://safe.example.com');
+    </script>
+  </head>
+  <body>
+    <h1>Mock Safe WebSocket Test</h1>
+  </body>
+</html>

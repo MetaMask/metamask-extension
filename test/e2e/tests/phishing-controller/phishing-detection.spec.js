@@ -315,6 +315,89 @@ describe('Phishing Detection', function () {
     );
   });
 
+  it('should block a website that makes a WebSocket connection to a malicious c2 site', async function () {
+    const blockedDomain = 'blocked.example.com';
+    const testPageURL = 'http://localhost:8080';
+
+    await withFixtures(
+      {
+        fixtures: new FixtureBuilder().build(),
+        ganacheOptions: defaultGanacheOptions,
+        title: this.test.fullTitle(),
+        testSpecificMock: async (mockServer) => {
+          await setupPhishingDetectionMocks(mockServer, {
+            blockProvider: BlockProvider.MetaMask,
+            c2DomainBlocklist: [
+              'ffd6df34371d7cfc68aef89e124bc84ea874d573d5979290fc22d59a73ae8539',
+            ],
+          });
+        },
+        dapp: true,
+        dappPaths: [
+          './tests/phishing-controller/mock-malicious-websocket-connection',
+        ],
+      },
+      async ({ driver }) => {
+        await unlockWallet(driver);
+
+        await driver.openNewPage(testPageURL);
+
+        await driver.switchToWindowWithTitle(
+          'MetaMask Phishing Detection',
+          10000,
+        );
+
+        await driver.waitForSelector({
+          testId: 'unsafe-continue-loaded',
+        });
+
+        await driver.clickElement({
+          text: 'Back to safety',
+        });
+
+        const currentUrl = await driver.getCurrentUrl();
+        const expectedPortfolioUrl = `https://portfolio.metamask.io/?metamaskEntry=phishing_page_portfolio_button`;
+
+        assert.equal(currentUrl, expectedPortfolioUrl);
+      },
+    );
+  });
+
+  it('should not block a website that makes a safe WebSocket connection', async function () {
+    const testPageURL = 'http://localhost:8080/';
+
+    await withFixtures(
+      {
+        fixtures: new FixtureBuilder().build(),
+        ganacheOptions: defaultGanacheOptions,
+        title: this.test.fullTitle(),
+        testSpecificMock: async (mockServer) => {
+          await setupPhishingDetectionMocks(mockServer, {
+            blockProvider: BlockProvider.MetaMask,
+            c2DomainBlocklist: [
+              'ffd6df34371d7cfc68aef89e124bc84ea874d573d5979290fc22d59a73ae8539', // malicious c2 domain
+            ],
+          });
+        },
+        dapp: true,
+        dappPaths: [
+          './tests/phishing-controller/mock-safe-websocket-connection',
+        ],
+      },
+      async ({ driver }) => {
+        await unlockWallet(driver);
+
+        await driver.openNewPage(testPageURL);
+
+        await driver.wait(until.titleIs(WINDOW_TITLES.TestDApp), 10000);
+
+        const currentUrl = await driver.getCurrentUrl();
+
+        assert.equal(currentUrl, testPageURL);
+      },
+    );
+  });
+
   describe('Phishing redirect protections', function () {
     /**
      * Status codes 305 (via Location header) and 306 (Set-Proxy) header do not
