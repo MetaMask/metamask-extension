@@ -109,7 +109,9 @@ const NativeValueDisplay: React.FC<PermitSimulationValueDisplayParams> = ({
         <AssetPill asset={{ chainId, standard: TokenStandard.none }} />
       </Box>
       <Box>
-        {fiatValue && <IndividualFiatDisplay fiatAmount={fiatValue} shorten />}
+        {fiatValue !== undefined && (
+          <IndividualFiatDisplay fiatAmount={fiatValue} shorten />
+        )}
       </Box>
     </Box>
   );

@@ -10,7 +10,7 @@ enum DecodingResponseType {
   NoChange = 'NO_CHANGE',
 }
 
-export function useDecodedSignatureMetrics() {
+export function useDecodedSignatureMetrics(supportedByDecodingAPI: boolean) {
   const { updateSignatureEventFragment } = useSignatureEventFragment();
   const { currentConfirmation } = useConfirmContext<SignatureRequestType>();
   const { decodingLoading, decodingData } = currentConfirmation;
@@ -26,7 +26,7 @@ export function useDecodedSignatureMetrics() {
       : DecodingResponseType.NoChange);
 
   useEffect(() => {
-    if (decodingLoading || !process.env.ENABLE_SIGNATURE_DECODING) {
+    if (decodingLoading || !supportedByDecodingAPI) {
       return;
     }
 

@@ -18,10 +18,10 @@ import {
   generateERC1155TransferData,
   getAssetTransferData,
 } from '../../pages/confirmations/send/send.utils';
+import { getCurrentChainId } from '../../../shared/modules/selectors/networks';
 import {
   checkNetworkAndAccountSupports1559,
   getConfirmationExchangeRates,
-  getCurrentChainId,
   getGasPriceInHexWei,
   getTokenExchangeRates,
 } from '../../selectors';

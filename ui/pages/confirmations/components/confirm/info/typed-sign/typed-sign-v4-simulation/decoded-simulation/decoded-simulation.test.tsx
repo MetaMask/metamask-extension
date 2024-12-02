@@ -68,12 +68,27 @@ describe('DecodedSimulation', () => {
     });
     const mockStore = configureMockStore([])(state);
 
-    const { container } = renderWithConfirmContextProvider(
+    const { findByText } = renderWithConfirmContextProvider(
       <PermitSimulation />,
       mockStore,
     );
 
-    expect(container).toMatchSnapshot();
+    expect(await findByText('Estimated changes')).toBeInTheDocument();
+    expect(await findByText('Spending cap')).toBeInTheDocument();
+    expect(await findByText('1,461,501,637,3...')).toBeInTheDocument();
+  });
+
+  it('renders unavailable message if no state change is returned', async () => {
+    const state = getMockTypedSignConfirmStateForRequest(permitSignatureMsg);
+    const mockStore = configureMockStore([])(state);
+
+    const { findByText } = renderWithConfirmContextProvider(
+      <PermitSimulation />,
+      mockStore,
+    );
+
+    expect(await findByText('Estimated changes')).toBeInTheDocument();
+    expect(await findByText('Unavailable')).toBeInTheDocument();
   });
 
   describe('getStateChangeToolip', () => {

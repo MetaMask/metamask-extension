@@ -29,10 +29,9 @@ import {
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 
 import { AssetType } from '../../../../../shared/constants/transaction';
-
+import { getCurrentChainId } from '../../../../../shared/modules/selectors/networks';
 import {
   getAllTokens,
-  getCurrentChainId,
   getCurrentCurrency,
   getNativeCurrencyImage,
   getSelectedAccountCachedBalance,

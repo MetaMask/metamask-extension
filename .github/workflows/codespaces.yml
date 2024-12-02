@@ -4,7 +4,7 @@ on:
   push:
     branches:
       - 'codespaces**'
-      - 'develop'
+      - 'main'
     paths:
       - '**/yarn.lock'
 
