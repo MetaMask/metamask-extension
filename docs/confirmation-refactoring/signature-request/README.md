@@ -6,35 +6,35 @@ This document details the plan to refactor and cleanup Signature Request pages i
 
 1. Simple ETH Signature
 
-   <img src="https://raw.githubusercontent.com/MetaMask/metamask-extension/develop/docs/confirmation-refactoring/signature-request/eth_sign.png" width="150"/>
+   <img src="https://raw.githubusercontent.com/MetaMask/metamask-extension/main/docs/confirmation-refactoring/signature-request/eth_sign.png" width="150"/>
 
 1. Personal Signature
 
-   <img src="https://raw.githubusercontent.com/MetaMask/metamask-extension/develop/docs/confirmation-refactoring/signature-request/personal_sign.png" width="150"/>
+   <img src="https://raw.githubusercontent.com/MetaMask/metamask-extension/main/docs/confirmation-refactoring/signature-request/personal_sign.png" width="150"/>
 
 1. Typed Data - V1
 
-   <img src="https://raw.githubusercontent.com/MetaMask/metamask-extension/develop/docs/confirmation-refactoring/signature-request/v1.png" width="150"/>
+   <img src="https://raw.githubusercontent.com/MetaMask/metamask-extension/main/docs/confirmation-refactoring/signature-request/v1.png" width="150"/>
 
 1. Typed Data - V3
 
-   <img src="https://raw.githubusercontent.com/MetaMask/metamask-extension/develop/docs/confirmation-refactoring/signature-request/v3.png" width="150"/>
+   <img src="https://raw.githubusercontent.com/MetaMask/metamask-extension/main/docs/confirmation-refactoring/signature-request/v3.png" width="150"/>
 
 1. Typed Data - V4
 
-   <img src="https://raw.githubusercontent.com/MetaMask/metamask-extension/develop/docs/confirmation-refactoring/signature-request/v4.png" width="150"/>
+   <img src="https://raw.githubusercontent.com/MetaMask/metamask-extension/main/docs/confirmation-refactoring/signature-request/v4.png" width="150"/>
 
 1. SIWE Signature
 
-   <img src="https://raw.githubusercontent.com/MetaMask/metamask-extension/develop/docs/confirmation-refactoring/signature-request/siwe.png" width="150"/>
+   <img src="https://raw.githubusercontent.com/MetaMask/metamask-extension/main/docs/confirmation-refactoring/signature-request/siwe.png" width="150"/>
 
 ## The current flow of control for Signature Request looks like:
 
-![Signature Request Flow -  Current](https://raw.githubusercontent.com/MetaMask/metamask-extension/develop/docs/confirmation-refactoring/signature-request/signature_request_old.png)
+![Signature Request Flow -  Current](https://raw.githubusercontent.com/MetaMask/metamask-extension/main/docs/confirmation-refactoring/signature-request/signature_request_old.png)
 
 ## The proposed flow of control:
 
-![Signature Request Flow -  Proposed](https://raw.githubusercontent.com/MetaMask/metamask-extension/develop/docs/confirmation-refactoring/signature-request/signature_request_proposed.png)
+![Signature Request Flow -  Proposed](https://raw.githubusercontent.com/MetaMask/metamask-extension/main/docs/confirmation-refactoring/signature-request/signature_request_proposed.png)
 
 ## Proposed Refactoring:
 
@@ -44,9 +44,9 @@ There are many areas in above flow where the code can be improved upon to cleanu
 
    Currently we have 3 different message managers:
 
-   - [MessageManager](https://github.com/MetaMask/metamask-extension/blob/develop/app/scripts/lib/message-manager.js)
-   - [PersonalMessageManager](https://github.com/MetaMask/metamask-extension/blob/develop/app/scripts/lib/personal-message-manager.js)
-   - [TypedMessageManager](https://github.com/MetaMask/metamask-extension/blob/develop/app/scripts/lib/typed-message-manager.js)
+   - [MessageManager](https://github.com/MetaMask/metamask-extension/blob/main/app/scripts/lib/message-manager.js)
+   - [PersonalMessageManager](https://github.com/MetaMask/metamask-extension/blob/main/app/scripts/lib/personal-message-manager.js)
+   - [TypedMessageManager](https://github.com/MetaMask/metamask-extension/blob/main/app/scripts/lib/typed-message-manager.js)
 
    Above message managers handle different types of message requests sent by DAPP. There is a lot of code duplication between the 3 classes.
 
@@ -56,14 +56,14 @@ There are many areas in above flow where the code can be improved upon to cleanu
 
    Current navigation to Signature Request pages is un-necessarily complicated. It can be simplified to great extent.
 
-   - To the navigation code in [Home](https://github.com/MetaMask/metamask-extension/blob/develop/ui/pages/home/home.component.js#L181) component add condition to check if there are unapproved messages and route to path `/singature-request`.
-   - In [Routes](https://github.com/MetaMask/metamask-extension/blob/develop/ui/pages/routes/routes.component.js) component render pages/confirm-signature-request for path `/singature-request`.
-   - Refactor out [conf-tx.js](https://github.com/MetaMask/metamask-extension/blob/develop/ui/pages/confirm-transaction/conf-tx.js) into pages/confirm-signature-request component. [#17240](https://github.com/MetaMask/metamask-extension/issues/17240)
+   - To the navigation code in [Home](https://github.com/MetaMask/metamask-extension/blob/main/ui/pages/home/home.component.js#L181) component add condition to check if there are unapproved messages and route to path `/singature-request`.
+   - In [Routes](https://github.com/MetaMask/metamask-extension/blob/main/ui/pages/routes/routes.component.js) component render pages/confirm-signature-request for path `/singature-request`.
+   - Refactor out [conf-tx.js](https://github.com/MetaMask/metamask-extension/blob/main/ui/pages/confirm-transaction/conf-tx.js) into pages/confirm-signature-request component. [#17240](https://github.com/MetaMask/metamask-extension/issues/17240)
 
-3. ### Refactoring in [conf-tx.js](https://github.com/MetaMask/metamask-extension/blob/develop/ui/pages/confirm-transaction/conf-tx.js)
+3. ### Refactoring in [conf-tx.js](https://github.com/MetaMask/metamask-extension/blob/main/ui/pages/confirm-transaction/conf-tx.js)
 
-   - [conf-tx.js](https://github.com/MetaMask/metamask-extension/blob/develop/ui/pages/confirm-transaction/conf-tx.js) to be renamed to `pages/confirm-signature-request component`
-   - Get rid of [confirm-transaction](https://github.com/MetaMask/metamask-extension/blob/develop/ui/pages/confirm-transaction/confirm-transaction.component.js) component from signature request routing. Thus, we need to ensure that any required logic from the component is extracted into a reusable hook and included in pages/confirm-signature-request.
+   - [conf-tx.js](https://github.com/MetaMask/metamask-extension/blob/main/ui/pages/confirm-transaction/conf-tx.js) to be renamed to `pages/confirm-signature-request component`
+   - Get rid of [confirm-transaction](https://github.com/MetaMask/metamask-extension/blob/main/ui/pages/confirm-transaction/confirm-transaction.component.js) component from signature request routing. Thus, we need to ensure that any required logic from the component is extracted into a reusable hook and included in pages/confirm-signature-request.
    - Convert to functional react component and use selectors to get state and get rid of `mapStateToProps`. [#17239](https://github.com/MetaMask/metamask-extension/issues/17239)
    - Various callbacks to `sign message`, `cancel request`, etc for different types of messages can be moved to respective child components.
    - On component `mount/update` if there are no unapproved messages redirect to `mostRecentlyOverviewedPage` as [here](https://github.com/MetaMask/metamask-extension/blob/76a2a9bb8b6ea04025328d36404ac3b59121dfc8/ui/app/pages/confirm-transaction/conf-tx.js#L187).
@@ -74,12 +74,12 @@ There are many areas in above flow where the code can be improved upon to cleanu
 
    There are 3 different signature request components responsible to render different signature request pages:
 
-   1. [signature-request-original](https://github.com/MetaMask/metamask-extension/tree/develop/ui/components/app/signature-request-original) - ETH sign, personal sign, sign typed data V1
-   2. [signature-request](https://github.com/MetaMask/metamask-extension/tree/develop/ui/components/app/signature-request) - Sign typed data V3, V4
-   3. [signature-request-siwe](https://github.com/MetaMask/metamask-extension/tree/develop/ui/components/app/signature-request-siwe) - SignatureRequestSIWE (Sign-In with Ethereum)
+   1. [signature-request-original](https://github.com/MetaMask/metamask-extension/tree/main/ui/components/app/signature-request-original) - ETH sign, personal sign, sign typed data V1
+   2. [signature-request](https://github.com/MetaMask/metamask-extension/tree/main/ui/components/app/signature-request) - Sign typed data V3, V4
+   3. [signature-request-siwe](https://github.com/MetaMask/metamask-extension/tree/main/ui/components/app/signature-request-siwe) - SignatureRequestSIWE (Sign-In with Ethereum)
 
    All, the signature request pages (except SIWE) are very similar, the differing part in these pages is the message section.
-   And there is a lot of code duplication between components - [signature-request-original](https://github.com/MetaMask/metamask-extension/tree/develop/ui/components/app/signature-request-original) and [signature-request](https://github.com/MetaMask/metamask-extension/tree/develop/ui/components/app/signature-request).
+   And there is a lot of code duplication between components - [signature-request-original](https://github.com/MetaMask/metamask-extension/tree/main/ui/components/app/signature-request-original) and [signature-request](https://github.com/MetaMask/metamask-extension/tree/main/ui/components/app/signature-request).
 
 5. ### Refactoring in signature-request-original
 
@@ -89,12 +89,12 @@ There are many areas in above flow where the code can be improved upon to cleanu
    - Move this [metrics event](https://github.com/MetaMask/metamask-extension/blob/71a0bc8b3ff94478e61294c815770e6bc12a72f5/ui/app/components/app/signature-request-original/signature-request-original.component.js#L50) to pages/confirm-signature-request as it is applicable to all the signature requests types.
    - Header or we can say upper half of the page of all signature request pages (except SIWE) are very similar, this can be extracted into a reusable component used across both signature-request-original and signature-request:
 
-     <img src="https://raw.githubusercontent.com/MetaMask/metamask-extension/develop/docs/confirmation-refactoring/signature-request/header.png" width="150"/>
+     <img src="https://raw.githubusercontent.com/MetaMask/metamask-extension/main/docs/confirmation-refactoring/signature-request/header.png" width="150"/>
 
    - [LedgerInstructions](https://github.com/MetaMask/metamask-extension/blob/e07ec9dcf3d3f341f83e6b29a29d30edaf7f5b5b/ui/components/app/signature-request-original/signature-request-original.component.js#L312) can also be moved to the header.
    - Create a reuable footer component and use it across all confirmation pages. [#17237](https://github.com/MetaMask/metamask-extension/issues/17237)
 
-     <img src="https://raw.githubusercontent.com/MetaMask/metamask-extension/develop/docs/confirmation-refactoring/signature-request/footer.png" width="150"/>
+     <img src="https://raw.githubusercontent.com/MetaMask/metamask-extension/main/docs/confirmation-refactoring/signature-request/footer.png" width="150"/>
 
    - Create a reusable component for Cancel All requests for use across signature request pages [Code](https://github.com/MetaMask/metamask-extension/blob/e07ec9dcf3d3f341f83e6b29a29d30edaf7f5b5b/ui/components/app/signature-request-original/signature-request-original.component.js#L326).
    - Extract [getNetrowkName](https://github.com/MetaMask/metamask-extension/blob/e07ec9dcf3d3f341f83e6b29a29d30edaf7f5b5b/ui/components/app/signature-request-original/signature-request-original.component.js#L60) into a reusable hook / utility method.
