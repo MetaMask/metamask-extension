@@ -1,6 +1,7 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
 import classnames from 'classnames';
+import { NetworkConfiguration } from '@metamask/network-controller';
 import { getCurrentChainId } from '../../../../../shared/modules/selectors/networks';
 import {
   getCurrentCurrency,
@@ -18,6 +19,8 @@ import {
   FlexWrap,
 } from '../../../../helpers/constants/design-system';
 import { TokenListItem } from '../..';
+import LoadingScreen from '../../../ui/loading-screen';
+import { useI18nContext } from '../../../../hooks/useI18nContext';
 import AssetComponent from './Asset';
 import { AssetWithDisplayData, ERC20Asset, NativeAsset } from './types';
 
@@ -33,6 +36,8 @@ type AssetListProps = {
   isTokenDisabled?: (
     token: AssetWithDisplayData<ERC20Asset> | AssetWithDisplayData<NativeAsset>,
   ) => boolean;
+  network?: NetworkConfiguration;
+  isTokenListLoading?: boolean;
 };
 
 export default function AssetList({
@@ -40,13 +45,19 @@ export default function AssetList({
   asset,
   tokenList,
   isTokenDisabled,
+  network,
+  isTokenListLoading = false,
 }: AssetListProps) {
+  const t = useI18nContext();
   const selectedToken = asset?.address;
 
   const chainId = useSelector(getCurrentChainId);
   const nativeCurrency = useSelector(getNativeCurrency);
   const balanceValue = useSelector(getSelectedAccountCachedBalance);
   const currentCurrency = useSelector(getCurrentCurrency);
+
+  const isSelectedNetworkActive =
+    !network?.chainId || chainId === network?.chainId;
 
   const [primaryCurrencyValue] = useCurrencyDisplay(balanceValue, {
     currency: currentCurrency,
@@ -59,6 +70,12 @@ export default function AssetList({
 
   return (
     <Box className="tokens-main-view-modal">
+      {isTokenListLoading && (
+        <LoadingScreen
+          loadingMessage={t('loadingTokenList')}
+          showLoadingSpinner
+        />
+      )}
       {tokenList.map((token) => {
         const tokenAddress = token.address?.toLowerCase();
         const isSelected = tokenAddress === selectedToken?.toLowerCase();
@@ -69,7 +86,7 @@ export default function AssetList({
             padding={0}
             gap={0}
             margin={0}
-            key={token.symbol}
+            key={`${token.symbol}-${tokenAddress ?? ''}`}
             backgroundColor={
               isSelected
                 ? BackgroundColor.primaryMuted
@@ -106,9 +123,15 @@ export default function AssetList({
                   <TokenListItem
                     chainId={chainId}
                     title={token.symbol}
-                    primary={primaryCurrencyValue}
+                    primary={
+                      isSelectedNetworkActive ? primaryCurrencyValue : undefined
+                    }
                     tokenSymbol={token.symbol}
-                    secondary={secondaryCurrencyValue}
+                    secondary={
+                      isSelectedNetworkActive
+                        ? secondaryCurrencyValue
+                        : undefined
+                    }
                     tokenImage={token.image}
                     isPrimaryTokenSymbolHidden
                   />

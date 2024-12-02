@@ -49,6 +49,10 @@ import {
 const ELLIPSIFY_LENGTH = 13; // 6 (start) + 4 (end) + 3 (...)
 
 export type AssetPickerProps = {
+  children?: (
+    onClick: () => void,
+    networkImageSrc?: string,
+  ) => React.ReactElement; // Overrides default button
   asset?:
     | ERC20Asset
     | NativeAsset
@@ -67,15 +71,24 @@ export type AssetPickerProps = {
   action?: 'send' | 'receive';
   networkProps?: Pick<
     React.ComponentProps<typeof AssetPickerModalNetwork>,
-    'network' | 'networks' | 'onNetworkChange'
+    | 'network'
+    | 'networks'
+    | 'onNetworkChange'
+    | 'shouldDisableNetwork'
+    | 'header'
   >;
 } & Pick<
   React.ComponentProps<typeof AssetPickerModal>,
-  'visibleTabs' | 'header' | 'sendingAsset' | 'customTokenListGenerator'
+  | 'visibleTabs'
+  | 'header'
+  | 'sendingAsset'
+  | 'customTokenListGenerator'
+  | 'isTokenListLoading'
 >;
 
 // A component that lets the user pick from a list of assets.
 export function AssetPicker({
+  children,
   header,
   asset,
   onAssetChange,
@@ -86,6 +99,7 @@ export function AssetPicker({
   isDisabled = false,
   visibleTabs,
   customTokenListGenerator,
+  isTokenListLoading = false,
 }: AssetPickerProps) {
   ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
   const t = useI18nContext();
@@ -122,7 +136,22 @@ export function AssetPicker({
     return undefined;
   };
 
+  const networkImageSrc =
+    selectedNetwork?.chainId &&
+    CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP[
+      selectedNetwork.chainId as keyof typeof CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP
+    ];
+
   const [isSelectingNetwork, setIsSelectingNetwork] = useState(false);
+
+  const handleButtonClick = () => {
+    if (networkProps && !networkProps.network) {
+      setIsSelectingNetwork(true);
+    } else {
+      setShowAssetPickerModal(true);
+    }
+    onClick?.();
+  };
 
   return (
     <>
@@ -146,6 +175,7 @@ export function AssetPicker({
         action={action}
         isOpen={showAssetPickerModal}
         onClose={() => setShowAssetPickerModal(false)}
+        onBack={networkProps ? () => setIsSelectingNetwork(true) : undefined}
         asset={asset}
         onAssetChange={(
           token:
@@ -169,37 +199,31 @@ export function AssetPicker({
           asset?.type === AssetType.NFT ? TabName.NFTS : TabName.TOKENS
         }
         customTokenListGenerator={customTokenListGenerator}
+        isTokenListLoading={isTokenListLoading}
       />
 
-      <ButtonBase
-        data-testid="asset-picker-button"
-        className="asset-picker"
-        disabled={isDisabled}
-        display={Display.Flex}
-        alignItems={AlignItems.center}
-        gap={2}
-        padding={2}
-        paddingLeft={2}
-        paddingRight={2}
-        justifyContent={isNFT ? JustifyContent.spaceBetween : undefined}
-        backgroundColor={BackgroundColor.transparent}
-        onClick={() => {
-          if (networkProps && !networkProps.network) {
-            setIsSelectingNetwork(true);
-          } else {
-            setShowAssetPickerModal(true);
-          }
-          onClick?.();
-        }}
-        endIconName={IconName.ArrowDown}
-        endIconProps={{
-          color: IconColor.iconDefault,
-          marginInlineStart: 0,
-          display: isDisabled ? Display.None : Display.InlineBlock,
-        }}
-        title={handleAssetPickerTitle()}
-      >
-        {asset ? (
+      {children?.(handleButtonClick, networkImageSrc) || (
+        <ButtonBase
+          data-testid="asset-picker-button"
+          className="asset-picker"
+          disabled={isDisabled}
+          display={Display.Flex}
+          alignItems={AlignItems.center}
+          gap={2}
+          padding={2}
+          paddingLeft={2}
+          paddingRight={2}
+          justifyContent={isNFT ? JustifyContent.spaceBetween : undefined}
+          backgroundColor={BackgroundColor.transparent}
+          onClick={handleButtonClick}
+          endIconName={IconName.ArrowDown}
+          endIconProps={{
+            color: IconColor.iconDefault,
+            marginInlineStart: 0,
+            display: isDisabled ? Display.None : Display.InlineBlock,
+          }}
+          title={handleAssetPickerTitle()}
+        >
           <Box display={Display.Flex} alignItems={AlignItems.center} gap={3}>
             <Box display={Display.Flex}>
               <BadgeWrapper
@@ -207,12 +231,7 @@ export function AssetPicker({
                   <AvatarNetwork
                     size={AvatarNetworkSize.Xs}
                     name={selectedNetwork?.name ?? ''}
-                    src={
-                      selectedNetwork?.chainId &&
-                      CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP[
-                        selectedNetwork.chainId as keyof typeof CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP
-                      ]
-                    }
+                    src={networkImageSrc}
                     backgroundColor={
                       Object.entries({
                         [GOERLI_DISPLAY_NAME]: BackgroundColor.goerli,
@@ -269,12 +288,8 @@ export function AssetPicker({
               )}
             </Tooltip>
           </Box>
-        ) : (
-          <Text className="asset-picker__fallback" variant={TextVariant.bodyMd}>
-            {t('swapSelectToken')}
-          </Text>
-        )}
-      </ButtonBase>
+        </ButtonBase>
+      )}
     </>
   );
 }
