@@ -316,7 +316,6 @@ describe('Phishing Detection', function () {
   });
 
   it('should block a website that makes a WebSocket connection to a malicious c2 site', async function () {
-    const blockedDomain = 'blocked.example.com';
     const testPageURL = 'http://localhost:8080';
 
     await withFixtures(
@@ -328,7 +327,7 @@ describe('Phishing Detection', function () {
           await setupPhishingDetectionMocks(mockServer, {
             blockProvider: BlockProvider.MetaMask,
             c2DomainBlocklist: [
-              'ffd6df34371d7cfc68aef89e124bc84ea874d573d5979290fc22d59a73ae8539',
+              'ffd6df34371d7cfc68aef89e124bc84ea874d573d5979290fc22d59a73ae8539', // malicious c2 domain
             ],
           });
         },
