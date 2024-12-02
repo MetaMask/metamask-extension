@@ -1,6 +1,6 @@
 import { ok } from 'node:assert';
 import { execSync } from 'node:child_process';
-import { createWriteStream } from 'node:fs';
+import { createReadStream, createWriteStream, writeSync } from 'node:fs';
 import { rename, mkdir, rm } from 'node:fs/promises';
 import {
   Agent as HttpAgent,
@@ -13,10 +13,12 @@ import { argv, stdout } from 'node:process';
 import { arch, platform } from 'node:os';
 import { Stream } from 'node:stream';
 import { pipeline } from 'node:stream/promises';
+import { createHash } from 'node:crypto';
 import { extract as extractTar } from 'tar';
-import { Source, Open as Unzip } from 'unzipper';
+import { Source, Open as Unzip, Entry } from 'unzipper';
 import { InferredOptionTypes } from 'yargs';
 import yargs from 'yargs/yargs';
+import { Minipass } from 'minipass';
 
 export function noop() {}
 
@@ -38,10 +40,25 @@ export enum Binary {
   Chisel = 'chisel',
 }
 
+export enum Arch {
+  Amd64 = 'amd64',
+  Arm64 = 'arm64',
+}
+
 type Options = ReturnType<typeof getOptions>;
 type OptionsKeys = keyof Options;
 type ParsedOptions = {
   [key in OptionsKeys]: InferredOptionTypes<Options>[key];
+};
+
+export type Checksums = {
+  algorithm: string;
+  binaries: Record<Binary, Record<`${Platform}-${Arch}`, string>>;
+};
+
+export type PlatformArchChecksums = {
+  algorithm: string;
+  binaries: Record<Binary, string>;
 };
 
 export function parseArgs(args: string[] = argv.slice(2)) {
@@ -61,7 +78,9 @@ export function parseArgs(args: string[] = argv.slice(2)) {
     // enable ENV parsing, which allows the user to specify foundryup options
     // via environment variables prefixed with `FOUNDRYUP_`
     .env('FOUNDRYUP')
-    .command(['$0', 'install'], 'Install foundry binaries', getOptions())
+    .command(['$0', 'install'], 'Install foundry binaries', (yargs) => {
+      yargs.options(getOptions()).pkgConf('foundryup');
+    })
     .command('cache', '', (yargs) => {
       yargs.command('clean', 'Remove the shared cache files').demandCommand();
     })
@@ -94,6 +113,19 @@ function getOptions() {
       choices: Object.values(Binary) as Binary[],
       coerce: (values: Binary[]): Binary[] => [...new Set(values)], // Remove duplicates
     },
+    checksums: {
+      alias: 'c',
+      description: 'JSON object containing checksums for the binaries.',
+      coerce: (rawChecksums: string | Checksums): Checksums => {
+        try {
+          return typeof rawChecksums === 'string'
+            ? JSON.parse(rawChecksums)
+            : rawChecksums;
+        } catch {
+          throw new Error('Invalid checksums');
+        }
+      },
+    },
     repo: {
       alias: 'r',
       description: 'Specify the repository',
@@ -120,7 +152,7 @@ function getOptions() {
       alias: 'a',
       description: 'Specify the architecture',
       default: getSystemArch(),
-      choices: ['amd64', 'arm64'] as const,
+      choices: Object.values(Arch) as Arch[],
     },
     platform: {
       alias: 'p',
@@ -132,11 +164,11 @@ function getOptions() {
   };
 }
 
-function getSystemArch(): 'amd64' | 'arm64' {
+function getSystemArch(): Arch {
   const architecture = arch();
   if (architecture.startsWith('arm')) {
     // if `arm*`, use `arm64`
-    return 'arm64';
+    return Arch.Arm64;
   } else if (architecture === 'x64') {
     // if `x64`, it _might_ be amd64 running via Rosetta on Apple Silicon
     // (arm64). we can check this by running `sysctl.proc_translated` and
@@ -145,12 +177,12 @@ function getSystemArch(): 'amd64' | 'arm64' {
     // binaries native to the system for better performance.
     try {
       if (execSync('sysctl -n sysctl.proc_translated 2>/dev/null')[0] === 1) {
-        return 'arm64';
+        return Arch.Arm64;
       }
     } catch {} // if `sysctl` check fails, assume native `amd64`
   }
 
-  return 'amd64'; // Default for all other architectures
+  return Arch.Amd64; // Default for all other architectures
 }
 
 export function printBanner() {
@@ -190,7 +222,12 @@ export function say(message: string) {
  * @param dir The destination directory
  * @returns The list of binaries extracted
  */
-export async function extractFrom(url: URL, binaries: string[], dir: string) {
+export async function extractFrom(
+  url: URL,
+  binaries: string[],
+  dir: string,
+  checksums: { algorithm: string; binaries: Record<Binary, string> } | null,
+) {
   const extract = url.pathname.toLowerCase().endsWith(BinFormat.Tar)
     ? extractFromTar
     : extractFromZip;
@@ -205,13 +242,36 @@ export async function extractFrom(url: URL, binaries: string[], dir: string) {
     await rm(tempDir, rmOpts);
     // make the temporary directory to extract the binaries to
     await mkdir(tempDir, { recursive: true });
-    const downloads = await extract(url, binaries, tempDir);
+    const downloads = await extract(
+      url,
+      binaries,
+      tempDir,
+      checksums?.algorithm,
+    );
     ok(downloads.length === binaries.length, 'Failed to extract all binaries');
+
+    const paths: string[] = [];
+    for (const { path, binary, checksum } of downloads) {
+      if (checksums) {
+        // check the target's checksum matches the expected checksum
+        say(`verifying checksum for ${binary}`);
+        const expected = checksums.binaries[binary as Binary];
+        if (checksum !== expected) {
+          throw new Error(
+            `checksum mismatch for ${binary}, expected ${expected}, got ${checksum}`,
+          );
+        } else {
+          say(`checksum verified for ${binary}`);
+        }
+      }
+      // add the *final* path to the list of binaries
+      paths.push(join(dir, relative(tempDir, path)));
+    }
 
     // everything has been extracted; move the files to their final destination
     await rename(tempDir, dir);
     // return the list of extracted binaries
-    return downloads.map((file) => join(dir, relative(tempDir, file)));
+    return paths;
   } catch (e) {
     // if things fail for any reason try to clean up a bit. it is very important
     // to not leave `dir` behind, as its existence is a signal that the binaries
@@ -227,14 +287,47 @@ export async function extractFrom(url: URL, binaries: string[], dir: string) {
  * @param url The URL of the archive to extract the binaries from
  * @param binaries The list of binaries to extract
  * @param dir The destination directory
+ * @param checksumAlgorithm The checksum algorithm to use
  * @returns The list of binaries extracted
  */
-async function extractFromTar(url: URL, binaries: string[], dir: string) {
-  const downloads: string[] = [];
+async function extractFromTar(
+  url: URL,
+  binaries: string[],
+  dir: string,
+  checksumAlgorithm?: string,
+) {
+  const downloads: {
+    path: string;
+    binary: string;
+    checksum?: string;
+  }[] = [];
   await pipeline(
     startDownload(url),
-    extractTar({ cwd: dir }, binaries).on('entry', ({ absolute }) =>
-      downloads.push(absolute),
+    extractTar(
+      {
+        cwd: dir,
+        transform: (entry) => {
+          if (checksumAlgorithm) {
+            const hash = createHash(checksumAlgorithm);
+            const passThrough = new Minipass({ async: true });
+            passThrough.pipe(hash);
+            passThrough.on('end', () => {
+              downloads.push({
+                path: entry.absolute!,
+                binary: entry.path,
+                checksum: hash.digest('hex'),
+              });
+            });
+            return passThrough;
+          } else {
+            downloads.push({
+              path: entry.absolute!,
+              binary: entry.path,
+            });
+          }
+        },
+      },
+      binaries,
     ),
   );
   return downloads;
@@ -246,9 +339,15 @@ async function extractFromTar(url: URL, binaries: string[], dir: string) {
  * @param url The URL of the archive to extract the binaries from
  * @param binaries The list of binaries to extract
  * @param dir  The destination directory
+ * @param checksumAlgorithm The checksum algorithm to use
  * @returns The list of binaries extracted
  */
-async function extractFromZip(url: URL, binaries: string[], dir: string) {
+async function extractFromZip(
+  url: URL,
+  binaries: string[],
+  dir: string,
+  checksumAlgorithm?: string,
+) {
   const agent = new (url.protocol === 'http:' ? HttpAgent : HttpsAgent)({
     keepAlive: true,
   });
@@ -275,10 +374,31 @@ async function extractFromZip(url: URL, binaries: string[], dir: string) {
     binaries.includes(basename(path, extname(path))),
   );
   return await Promise.all(
-    filtered.map(async ({ stream, path }) => {
+    filtered.map(async ({ path, stream }) => {
       const dest = join(dir, path);
-      await pipeline(stream(), createWriteStream(dest));
-      return dest;
+      const entry = stream();
+      const destStream = createWriteStream(dest);
+      if (checksumAlgorithm) {
+        const hash = createHash(checksumAlgorithm);
+        const hashStream = async function* (source: Entry) {
+          for await (const chunk of source) {
+            hash.update(chunk);
+            yield chunk;
+          }
+        };
+        await pipeline(entry, hashStream, destStream);
+        return {
+          path: dest,
+          binary: basename(path, extname(path)),
+          checksum: hash.digest('hex'),
+        };
+      } else {
+        await pipeline(entry, destStream);
+        return {
+          path: dest,
+          binary: basename(path, extname(path)),
+        };
+      }
     }),
   );
 }
@@ -390,4 +510,30 @@ export function isCodedError(
   return (
     error instanceof Error && 'code' in error && typeof error.code === 'string'
   );
+}
+
+/**
+ * Transforms the CLI checksum object into a platform+arch-specific checksum
+ * object.
+ *
+ * @param checksums The CLI checksum object
+ * @param platform The build platform
+ * @param arch The build architecture
+ * @returns
+ */
+export function transformChecksums(
+  checksums: Checksums | undefined,
+  platform: Platform,
+  arch: Arch,
+): PlatformArchChecksums | null {
+  if (!checksums) return null;
+
+  const key = `${platform}-${arch}` as const;
+  return {
+    algorithm: checksums.algorithm,
+    binaries: Object.entries(checksums.binaries).reduce(
+      (acc, [name, record]) => ((acc[name as Binary] = record[key]), acc),
+      {} as Record<Binary, string>,
+    ),
+  };
 }

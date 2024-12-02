@@ -10,7 +10,7 @@
     "webpack": "tsx ./development/webpack/launch.ts",
     "webpack:clearcache": "./development/clear-webpack-cache.js",
     "foundryup": "tsx --tsconfig ./test/helpers/foundry/tsconfig.json ./test/helpers/foundry/foundryup.mts",
-    "postinstall": "yarn webpack:clearcache && yarn foundryup --binaries anvil --version \"$(node -e \"process.stdout.write(require('./package.json').foundry)\")\"",
+    "postinstall": "yarn webpack:clearcache && yarn foundryup",
     "env:e2e": "SEGMENT_HOST='https://api.segment.io' SEGMENT_WRITE_KEY='FAKE' yarn",
     "start": "yarn build:dev dev --apply-lavamoat=false --snow=false",
     "start:with-state": "node ./app/scripts/start-with-wallet-state.mjs",
@@ -621,6 +621,7 @@
     "lockfile-lint": "^4.10.6",
     "loose-envify": "^1.4.0",
     "mini-css-extract-plugin": "^2.9.1",
+    "minipass": "^7.1.2",
     "mocha": "^10.2.0",
     "mocha-junit-reporter": "^2.2.1",
     "mockttp": "^3.10.1",
@@ -760,5 +761,22 @@
     }
   },
   "packageManager": "yarn@4.5.1",
-  "foundry": "nightly-31dd1f77fd9156d09836486d97963cec7f555343"
+  "foundryup": {
+    "binaries": [
+      "anvil"
+    ],
+    "checksums": {
+      "algorithm": "sha256",
+      "binaries": {
+        "anvil": {
+          "darwin-amd64": "6ad1c31bb8bc8c78551792ad538028385eb5a44d105f9af40ddeb1b75c1327b1",
+          "darwin-arm64": "cbb36860b2e08a7d5a35bec430904a1dc0319602ac0923017b81d9a8ffdcc5b0",
+          "linux-amd64": "56054e7d59547beb6adacbb9060a58595a8c5cca185f946317334ece509e0433",
+          "linux-arm64": "16494ae631d8ef73944abaaaa756661c1d43bbfc7642e7fff0a0d807d6d143c4",
+          "win32-amd64": "2034bdf35023e59c5dc06d6717a8eb2cede1204dbc60fd2507564422f03dceb3"
+        }
+      }
+    },
+    "version": "nightly-31dd1f77fd9156d09836486d97963cec7f555343"
+  }
 }

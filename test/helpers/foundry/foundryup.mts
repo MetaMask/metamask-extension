@@ -17,6 +17,7 @@ import {
   parseArgs,
   isCodedError,
   noop,
+  transformChecksums,
 } from './helpers.mts';
 
 const parsedArgs = parseArgs();
@@ -38,6 +39,7 @@ const {
   arch,
   platform,
   binaries,
+  checksums,
 } = parsedArgs.options;
 
 printBanner();
@@ -65,7 +67,8 @@ try {
   if ((e as NodeJS.ErrnoException).code === 'ENOENT') {
     say(`installing from ${url.toString()}`);
     // directory doesn't exist, download and extract
-    await extractFrom(url, binaries, cachePath);
+    const platformChecksums = transformChecksums(checksums, platform, arch);
+    await extractFrom(url, binaries, cachePath, platformChecksums);
     downloadedBinaries = await opendir(cachePath);
   } else {
     throw e;

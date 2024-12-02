@@ -27070,6 +27070,7 @@ __metadata:
     lottie-web: "npm:^5.12.2"
     luxon: "npm:^3.2.1"
     mini-css-extract-plugin: "npm:^2.9.1"
+    minipass: "npm:^7.1.2"
     mocha: "npm:^10.2.0"
     mocha-junit-reporter: "npm:^2.2.1"
     mockttp: "npm:^3.10.1"
