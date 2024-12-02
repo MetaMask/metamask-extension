@@ -119,10 +119,10 @@ describe('Editing Confirm Transaction', function () {
           await driver.clickElement('[data-testid="edit-gas-fee-item-custom"]');
 
           // enter max fee
-          await driver.fill('[data-testid="base-fee-input"]', '8,5');
+          await driver.fill('[data-testid="base-fee-input"]', '8.5');
 
           // enter priority fee
-          await driver.fill('[data-testid="priority-fee-input"]', '8,5');
+          await driver.fill('[data-testid="priority-fee-input"]', '8.5');
 
           // save default values
           await driver.clickElement('input[type="checkbox"]');
