@@ -192,7 +192,7 @@ class AssetListPage {
   }
 
   async check_ifAssetIsVisible(assetName: string): Promise<boolean> {
-    const assets = await this.driver.findElements(this.tokenLisiItem);
+    const assets = await this.driver.findElements(this.tokenListItem);
     for (const asset of assets) {
       const text = await asset.getText();
       if (text.includes(assetName)) {
