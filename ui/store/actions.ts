@@ -1129,7 +1129,6 @@ export function updateAndApproveTx(
 
 export async function getTransactions(
   filters: {
-    filterToCurrentNetwork?: boolean;
     searchCriteria?: Partial<TransactionMeta> & Partial<TransactionParams>;
   } = {},
 ): Promise<TransactionMeta[]> {
@@ -5202,10 +5201,6 @@ export function setUseTransactionSimulations(val: boolean): void {
   }
 }
 
-export function setFirstTimeUsedNetwork(chainId: string) {
-  return submitRequestToBackground('setFirstTimeUsedNetwork', [chainId]);
-}
-
 // QR Hardware Wallets
 export async function submitQRHardwareCryptoHDKey(cbor: Hex) {
   await submitRequestToBackground('submitQRHardwareCryptoHDKey', [cbor]);
@@ -6035,8 +6030,13 @@ function applyPatches(
 
 export async function sendMultichainTransaction(
   snapId: string,
-  account: string,
-  scope: string,
+  {
+    account,
+    scope,
+  }: {
+    account: string;
+    scope: string;
+  },
 ) {
   await handleSnapRequest({
     snapId,
