@@ -4,6 +4,7 @@ import {
   StatusResponse,
   StatusTypes,
   ActionTypes,
+  StartPollingForBridgeTxStatusArgsSerialized,
 } from '../../../../shared/types/bridge-status';
 
 export const MockStatusResponse = {
@@ -210,7 +211,7 @@ export const getMockStartPollingForBridgeTxStatusArgs = ({
   account = '0xaccount1',
   srcChainId = 42161,
   destChainId = 10,
-} = {}) => ({
+} = {}): StartPollingForBridgeTxStatusArgsSerialized => ({
   bridgeTxMeta: {
     id: txMetaId,
   } as TransactionMeta,
@@ -235,10 +236,10 @@ export const getMockStartPollingForBridgeTxStatusArgs = ({
     },
     approval: null,
     estimatedProcessingTimeInSeconds: 15,
+    sentAmount: { amount: '1.234', fiat: null },
   },
   startTime: 1729964825189,
   slippagePercentage: 0,
-  pricingData: undefined,
   initialDestAssetBalance: undefined,
   targetContractAddress: '0x23981fC34e69eeDFE2BD9a0a9fCb0719Fe09DbFC',
 });
@@ -258,6 +259,8 @@ export const MockTxHistory = {
       slippagePercentage: 0,
       account,
       targetContractAddress: '0x23981fC34e69eeDFE2BD9a0a9fCb0719Fe09DbFC',
+      initialDestAssetBalance: undefined,
+      pricingData: { amountSent: '1.234' },
     },
   }),
   getInit: ({
@@ -274,6 +277,8 @@ export const MockTxHistory = {
       slippagePercentage: 0,
       account,
       targetContractAddress: '0x23981fC34e69eeDFE2BD9a0a9fCb0719Fe09DbFC',
+      initialDestAssetBalance: undefined,
+      pricingData: { amountSent: '1.234' },
     },
   }),
   getPending: ({
@@ -295,6 +300,8 @@ export const MockTxHistory = {
         srcChainId,
       }),
       targetContractAddress: '0x23981fC34e69eeDFE2BD9a0a9fCb0719Fe09DbFC',
+      initialDestAssetBalance: undefined,
+      pricingData: { amountSent: '1.234' },
     },
   }),
   getComplete: ({
@@ -313,6 +320,8 @@ export const MockTxHistory = {
       account,
       status: MockStatusResponse.getComplete({ srcTxHash }),
       targetContractAddress: '0x23981fC34e69eeDFE2BD9a0a9fCb0719Fe09DbFC',
+      initialDestAssetBalance: undefined,
+      pricingData: { amountSent: '1.234' },
     },
   }),
 };

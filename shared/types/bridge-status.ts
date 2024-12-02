@@ -158,10 +158,12 @@ export type StartPollingForBridgeTxStatusArgs = {
   targetContractAddress?: BridgeHistoryItem['targetContractAddress'];
 };
 
-export type StartPollingForBridgeTxStatusArgsSerialized =
-  StartPollingForBridgeTxStatusArgs & {
-    quoteResponse: QuoteResponse & QuoteMetadataSerialized;
-  };
+export type StartPollingForBridgeTxStatusArgsSerialized = Omit<
+  StartPollingForBridgeTxStatusArgs,
+  'quoteResponse'
+> & {
+  quoteResponse: QuoteResponse & QuoteMetadataSerialized;
+};
 
 export type SourceChainTxMetaId = string;
 
