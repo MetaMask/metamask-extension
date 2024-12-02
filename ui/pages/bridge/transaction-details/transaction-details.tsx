@@ -91,6 +91,11 @@ const getBridgeAmount = ({
   return undefined;
 };
 
+/**
+ * @param status - The status of the bridge history item
+ * @param bridgeHistoryItem - The bridge history item
+ * @returns Whether the bridge history item is delayed
+ */
 export const getIsDelayed = (
   status: StatusTypes,
   bridgeHistoryItem?: BridgeHistoryItem,
