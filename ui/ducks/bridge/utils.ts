@@ -100,6 +100,7 @@ export const tokenAmountToFiat = (
   exchangeRate: number,
 ) =>
   new Numeric(amount, 10)
+    // Stringify exchangeRate before applying conversion to avoid floating point issues
     .applyConversionRate(new BigNumber(exchangeRate.toString(), 10))
     .toNumber();
 
