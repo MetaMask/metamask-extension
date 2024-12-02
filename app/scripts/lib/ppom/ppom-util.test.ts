@@ -6,14 +6,19 @@ import {
   TransactionParams,
   normalizeTransactionParams,
 } from '@metamask/transaction-controller';
-import { SignatureController } from '@metamask/signature-controller';
-import type { PersonalMessage } from '@metamask/message-manager';
+import {
+  SignatureController,
+  SignatureRequest,
+} from '@metamask/signature-controller';
+import { Hex } from '@metamask/utils';
 import {
   BlockaidReason,
   BlockaidResultType,
+  LOADING_SECURITY_ALERT_RESPONSE,
+  SECURITY_ALERT_RESPONSE_CHAIN_NOT_SUPPORTED,
   SecurityAlertSource,
 } from '../../../../shared/constants/security-provider';
-import { AppStateController } from '../../controllers/app-state';
+import { AppStateController } from '../../controllers/app-state-controller';
 import {
   generateSecurityAlertId,
   isChainSupported,
@@ -30,7 +35,7 @@ jest.mock('@metamask/transaction-controller', () => ({
 
 const SECURITY_ALERT_ID_MOCK = '1234-5678';
 const TRANSACTION_ID_MOCK = '123';
-const CHAIN_ID_MOCK = '0x1';
+const CHAIN_ID_MOCK = '0x1' as Hex;
 
 const REQUEST_MOCK = {
   method: 'eth_signTypedData_v4',
@@ -43,6 +48,7 @@ const SECURITY_ALERT_RESPONSE_MOCK: SecurityAlertResponse = {
   result_type: 'success',
   reason: 'success',
   source: SecurityAlertSource.Local,
+  securityAlertId: SECURITY_ALERT_ID_MOCK,
 };
 
 const TRANSACTION_PARAMS_MOCK_1: TransactionParams = {
@@ -108,6 +114,15 @@ describe('PPOM Utils', () => {
   );
   let isSecurityAlertsEnabledMock: jest.SpyInstance;
 
+  const updateSecurityAlertResponseMock = jest.fn();
+
+  const validateRequestWithPPOMOptionsBase = {
+    request: REQUEST_MOCK,
+    securityAlertId: SECURITY_ALERT_ID_MOCK,
+    chainId: CHAIN_ID_MOCK,
+    updateSecurityAlertResponse: updateSecurityAlertResponseMock,
+  };
+
   beforeEach(() => {
     jest.resetAllMocks();
     jest.spyOn(console, 'error').mockImplementation(() => undefined);
@@ -117,7 +132,7 @@ describe('PPOM Utils', () => {
   });
 
   describe('validateRequestWithPPOM', () => {
-    it('returns response from validation with PPOM instance via controller', async () => {
+    it('updates response from validation with PPOM instance via controller', async () => {
       const ppom = createPPOMMock();
       const ppomController = createPPOMControllerMock();
 
@@ -127,23 +142,39 @@ describe('PPOM Utils', () => {
         (callback) => callback(ppom as any) as any,
       );
 
-      const response = await validateRequestWithPPOM({
+      await validateRequestWithPPOM({
+        ...validateRequestWithPPOMOptionsBase,
         ppomController,
-        request: REQUEST_MOCK,
-        securityAlertId: SECURITY_ALERT_ID_MOCK,
-        chainId: CHAIN_ID_MOCK,
       });
-
-      expect(response).toStrictEqual({
-        ...SECURITY_ALERT_RESPONSE_MOCK,
-        securityAlertId: SECURITY_ALERT_ID_MOCK,
-      });
+      expect(updateSecurityAlertResponseMock).toHaveBeenCalledWith(
+        REQUEST_MOCK.method,
+        SECURITY_ALERT_ID_MOCK,
+        {
+          ...SECURITY_ALERT_RESPONSE_MOCK,
+          securityAlertId: SECURITY_ALERT_ID_MOCK,
+        },
+      );
 
       expect(ppom.validateJsonRpc).toHaveBeenCalledTimes(1);
       expect(ppom.validateJsonRpc).toHaveBeenCalledWith(REQUEST_MOCK);
     });
 
-    it('returns error response if validation with PPOM instance throws', async () => {
+    it('updates securityAlertResponse with loading state', async () => {
+      const ppomController = createPPOMControllerMock();
+
+      await validateRequestWithPPOM({
+        ...validateRequestWithPPOMOptionsBase,
+        ppomController,
+      });
+
+      expect(updateSecurityAlertResponseMock).toHaveBeenCalledWith(
+        REQUEST_MOCK.method,
+        SECURITY_ALERT_ID_MOCK,
+        LOADING_SECURITY_ALERT_RESPONSE,
+      );
+    });
+
+    it('updates error response if validation with PPOM instance throws', async () => {
       const ppom = createPPOMMock();
       const ppomController = createPPOMControllerMock();
 
@@ -155,37 +186,41 @@ describe('PPOM Utils', () => {
           callback(ppom as any) as any,
       );
 
-      const response = await validateRequestWithPPOM({
+      await validateRequestWithPPOM({
+        ...validateRequestWithPPOMOptionsBase,
         ppomController,
-        request: REQUEST_MOCK,
-        securityAlertId: SECURITY_ALERT_ID_MOCK,
-        chainId: CHAIN_ID_MOCK,
       });
 
-      expect(response).toStrictEqual({
-        result_type: BlockaidResultType.Errored,
-        reason: BlockaidReason.errored,
-        description: 'Test Error: Test error message',
-      });
+      expect(updateSecurityAlertResponseMock).toHaveBeenCalledWith(
+        validateRequestWithPPOMOptionsBase.request.method,
+        SECURITY_ALERT_ID_MOCK,
+        {
+          result_type: BlockaidResultType.Errored,
+          reason: BlockaidReason.errored,
+          description: 'Test Error: Test error message',
+        },
+      );
     });
 
-    it('returns error response if controller throws', async () => {
+    it('updates error response if controller throws', async () => {
       const ppomController = createPPOMControllerMock();
 
       ppomController.usePPOM.mockRejectedValue(createErrorMock());
 
-      const response = await validateRequestWithPPOM({
+      await validateRequestWithPPOM({
+        ...validateRequestWithPPOMOptionsBase,
         ppomController,
-        request: REQUEST_MOCK,
-        securityAlertId: SECURITY_ALERT_ID_MOCK,
-        chainId: CHAIN_ID_MOCK,
       });
 
-      expect(response).toStrictEqual({
-        result_type: BlockaidResultType.Errored,
-        reason: BlockaidReason.errored,
-        description: 'Test Error: Test error message',
-      });
+      expect(updateSecurityAlertResponseMock).toHaveBeenCalledWith(
+        validateRequestWithPPOMOptionsBase.request.method,
+        SECURITY_ALERT_ID_MOCK,
+        {
+          result_type: BlockaidResultType.Errored,
+          reason: BlockaidReason.errored,
+          description: 'Test Error: Test error message',
+        },
+      );
     });
 
     it('normalizes request if method is eth_sendTransaction', async () => {
@@ -207,10 +242,9 @@ describe('PPOM Utils', () => {
       };
 
       await validateRequestWithPPOM({
+        ...validateRequestWithPPOMOptionsBase,
         ppomController,
         request,
-        securityAlertId: SECURITY_ALERT_ID_MOCK,
-        chainId: CHAIN_ID_MOCK,
       });
 
       expect(ppom.validateJsonRpc).toHaveBeenCalledTimes(1);
@@ -222,6 +256,23 @@ describe('PPOM Utils', () => {
       expect(normalizeTransactionParamsMock).toHaveBeenCalledTimes(1);
       expect(normalizeTransactionParamsMock).toHaveBeenCalledWith(
         TRANSACTION_PARAMS_MOCK_1,
+      );
+    });
+
+    it('updates response indicating chain is not supported', async () => {
+      const ppomController = {} as PPOMController;
+      const CHAIN_ID_UNSUPPORTED_MOCK = '0x2';
+
+      await validateRequestWithPPOM({
+        ...validateRequestWithPPOMOptionsBase,
+        ppomController,
+        chainId: CHAIN_ID_UNSUPPORTED_MOCK,
+      });
+
+      expect(updateSecurityAlertResponseMock).toHaveBeenCalledWith(
+        validateRequestWithPPOMOptionsBase.request.method,
+        SECURITY_ALERT_ID_MOCK,
+        SECURITY_ALERT_RESPONSE_CHAIN_NOT_SUPPORTED,
       );
     });
   });
@@ -246,7 +297,7 @@ describe('PPOM Utils', () => {
             ...SECURITY_ALERT_RESPONSE_MOCK,
             securityAlertId: SECURITY_ALERT_ID_MOCK,
           },
-        } as unknown as PersonalMessage,
+        } as unknown as SignatureRequest,
       });
 
       await updateSecurityAlertResponse({
@@ -316,10 +367,9 @@ describe('PPOM Utils', () => {
       const ppomController = createPPOMControllerMock();
 
       await validateRequestWithPPOM({
+        ...validateRequestWithPPOMOptionsBase,
         ppomController,
         request,
-        securityAlertId: SECURITY_ALERT_ID_MOCK,
-        chainId: CHAIN_ID_MOCK,
       });
 
       expect(ppomController.usePPOM).not.toHaveBeenCalled();
@@ -343,10 +393,9 @@ describe('PPOM Utils', () => {
         .mockRejectedValue(new Error('Test Error'));
 
       await validateRequestWithPPOM({
+        ...validateRequestWithPPOMOptionsBase,
         ppomController,
         request,
-        securityAlertId: SECURITY_ALERT_ID_MOCK,
-        chainId: CHAIN_ID_MOCK,
       });
 
       expect(ppomController.usePPOM).toHaveBeenCalledTimes(1);

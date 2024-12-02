@@ -1,10 +1,12 @@
-import React, { useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import {
   AlignItems,
+  BlockSize,
   Display,
   FlexDirection,
   IconColor,
+  JustifyContent,
   TextColor,
   TextVariant,
 } from '../../../helpers/constants/design-system';
@@ -26,11 +28,14 @@ import {
   IconSize,
 } from '../../component-library';
 import { NetworkListItem } from '..';
-import { getURLHost } from '../../../helpers/utils/util';
 import { CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP } from '../../../../shared/constants/network';
+import {
+  MetaMetricsEventCategory,
+  MetaMetricsEventName,
+} from '../../../../shared/constants/metametrics';
+import { MetaMetricsContext } from '../../../contexts/metametrics';
 
 export const EditNetworksModal = ({
-  activeTabOrigin,
   nonTestNetworks,
   testNetworks,
   defaultSelectedChainIds,
@@ -38,7 +43,7 @@ export const EditNetworksModal = ({
   onSubmit,
 }) => {
   const t = useI18nContext();
-
+  const trackEvent = useContext(MetaMetricsContext);
   const allNetworks = [...nonTestNetworks, ...testNetworks];
 
   const [selectedChainIds, setSelectedChainIds] = useState(
@@ -75,7 +80,8 @@ export const EditNetworksModal = ({
   const checked = allAreSelected();
   const isIndeterminate = !checked && selectedChainIds.length > 0;
 
-  const hostName = getURLHost(activeTabOrigin);
+  const defaultChainIdsSet = new Set(defaultSelectedChainIds);
+  const selectedChainIdsSet = new Set(selectedChainIds);
 
   return (
     <Modal
@@ -94,7 +100,11 @@ export const EditNetworksModal = ({
         >
           {t('editNetworksTitle')}
         </ModalHeader>
-        <ModalBody paddingLeft={0} paddingRight={0}>
+        <ModalBody
+          paddingLeft={0}
+          paddingRight={0}
+          className="edit-networks-modal__body"
+        >
           <Box padding={4}>
             <Checkbox
               label={t('selectAll')}
@@ -138,69 +148,86 @@ export const EditNetworksModal = ({
               showEndAccessory={false}
             />
           ))}
-          <ModalFooter>
-            {selectedChainIds.length === 0 ? (
+        </ModalBody>
+        <ModalFooter>
+          {selectedChainIds.length === 0 ? (
+            <Box
+              display={Display.Flex}
+              flexDirection={FlexDirection.Column}
+              gap={4}
+              alignItems={AlignItems.center}
+              width={BlockSize.Full}
+            >
               <Box
                 display={Display.Flex}
-                flexDirection={FlexDirection.Column}
-                gap={4}
+                gap={1}
+                alignItems={AlignItems.center}
+                justifyContent={JustifyContent.center}
               >
-                <Box
-                  display={Display.Flex}
-                  gap={1}
-                  alignItems={AlignItems.center}
+                <Icon
+                  name={IconName.Danger}
+                  size={IconSize.Sm}
+                  color={IconColor.errorDefault}
+                />
+                <Text
+                  variant={TextVariant.bodySm}
+                  color={TextColor.errorDefault}
                 >
-                  <Icon
-                    name={IconName.Danger}
-                    size={IconSize.Xs}
-                    color={IconColor.errorDefault}
-                  />
-                  <Text
-                    variant={TextVariant.bodySm}
-                    color={TextColor.errorDefault}
-                  >
-                    {t('disconnectMessage', [hostName])}
-                  </Text>
-                </Box>
-                <ButtonPrimary
-                  data-testid="disconnect-chains-button"
-                  onClick={() => {
-                    onSubmit([]);
-                    onClose();
-                  }}
-                  size={ButtonPrimarySize.Lg}
-                  block
-                  danger
-                >
-                  {t('disconnect')}
-                </ButtonPrimary>
+                  {t('disconnectMessage')}
+                </Text>
               </Box>
-            ) : (
               <ButtonPrimary
-                data-testid="connect-more-chains-button"
+                data-testid="disconnect-chains-button"
                 onClick={() => {
                   onSubmit(selectedChainIds);
+                  // Get networks that are in `selectedChainIds` but not in `defaultSelectedChainIds`
+                  const addedNetworks = selectedChainIds.filter(
+                    (chainId) => !defaultChainIdsSet.has(chainId),
+                  );
+
+                  // Get networks that are in `defaultSelectedChainIds` but not in `selectedChainIds`
+                  const removedNetworks = defaultSelectedChainIds.filter(
+                    (chainId) => !selectedChainIdsSet.has(chainId),
+                  );
+
+                  trackEvent({
+                    category: MetaMetricsEventCategory.Permissions,
+                    event: MetaMetricsEventName.UpdatePermissionedNetworks,
+                    properties: {
+                      addedNetworks: addedNetworks.length,
+                      removedNetworks: removedNetworks.length,
+                      location: 'Edit Networks Modal',
+                    },
+                  });
                   onClose();
                 }}
                 size={ButtonPrimarySize.Lg}
                 block
+                danger
               >
-                {t('update')}
+                {t('disconnect')}
               </ButtonPrimary>
-            )}
-          </ModalFooter>
-        </ModalBody>
+            </Box>
+          ) : (
+            <ButtonPrimary
+              data-testid="connect-more-chains-button"
+              onClick={() => {
+                onSubmit(selectedChainIds);
+                onClose();
+              }}
+              size={ButtonPrimarySize.Lg}
+              block
+            >
+              {t('update')}
+            </ButtonPrimary>
+          )}
+        </ModalFooter>
       </ModalContent>
     </Modal>
   );
 };
 
 EditNetworksModal.propTypes = {
-  /**
-   * Origin for the active tab.
-   */
-  activeTabOrigin: PropTypes.string,
-
   /**
    * Array of network objects representing available non-test networks to choose from.
    */

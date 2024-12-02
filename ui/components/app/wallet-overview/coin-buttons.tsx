@@ -1,4 +1,11 @@
-import React, { useCallback, useContext, useState } from 'react';
+import React, {
+  useCallback,
+  useContext,
+  useState,
+  ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
+  useEffect,
+  ///: END:ONLY_INCLUDE_IF
+} from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import {
   useHistory,
@@ -16,6 +23,10 @@ import {
   CaipChainId,
 } from '@metamask/utils';
 
+///: BEGIN:ONLY_INCLUDE_IF(build-flask)
+import { InternalAccount, isEvmAccountType } from '@metamask/keyring-api';
+import { SnapId } from '@metamask/snaps-sdk';
+///: END:ONLY_INCLUDE_IF
 ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
 import { ChainId } from '../../../../shared/constants/network';
 ///: END:ONLY_INCLUDE_IF
@@ -27,8 +38,11 @@ import {
 ///: END:ONLY_INCLUDE_IF
 import { I18nContext } from '../../../contexts/i18n';
 import {
+  ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
+  CONFIRMATION_V_NEXT_ROUTE,
+  ///: END:ONLY_INCLUDE_IF
   ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
-  BUILD_QUOTE_ROUTE,
+  PREPARE_SWAP_ROUTE,
   ///: END:ONLY_INCLUDE_IF
   SEND_ROUTE,
 } from '../../../helpers/constants/routes';
@@ -38,7 +52,10 @@ import {
   getCurrentKeyring,
   ///: END:ONLY_INCLUDE_IF
   getUseExternalServices,
-  getSelectedAccount,
+  ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
+  getMemoizedUnapprovedTemplatedConfirmations,
+  ///: END:ONLY_INCLUDE_IF
+  getNetworkConfigurationIdByChainId,
 } from '../../../selectors';
 import Tooltip from '../../ui/tooltip';
 ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
@@ -67,20 +84,26 @@ import useRamps from '../../../hooks/ramps/useRamps/useRamps';
 import useBridging from '../../../hooks/bridge/useBridging';
 ///: END:ONLY_INCLUDE_IF
 import { ReceiveModal } from '../../multichain/receive-modal';
-
-const CoinButtons = ({
-  chainId,
-  trackingLocation,
-  isSwapsChain,
-  isSigningEnabled,
-  ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
-  isBridgeChain,
-  isBuyableChain,
-  defaultSwapsToken,
+import {
+  setSwitchedNetworkDetails,
+  setActiveNetworkWithError,
+  ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
+  sendMultichainTransaction,
+  setDefaultHomeActiveTabName,
   ///: END:ONLY_INCLUDE_IF
-  classPrefix = 'coin',
-  iconButtonClassName = '',
-}: {
+} from '../../../store/actions';
+///: BEGIN:ONLY_INCLUDE_IF(build-flask)
+import { isMultichainWalletSnap } from '../../../../shared/lib/accounts/snaps';
+///: END:ONLY_INCLUDE_IF
+import {
+  getMultichainIsEvm,
+  getMultichainNativeCurrency,
+} from '../../../selectors/multichain';
+import { useMultichainSelector } from '../../../hooks/useMultichainSelector';
+import { getCurrentChainId } from '../../../../shared/modules/selectors/networks';
+
+type CoinButtonsProps = {
+  account: InternalAccount;
   chainId: `0x${string}` | CaipChainId | number;
   trackingLocation: string;
   isSwapsChain: boolean;
@@ -92,20 +115,56 @@ const CoinButtons = ({
   ///: END:ONLY_INCLUDE_IF
   classPrefix?: string;
   iconButtonClassName?: string;
-}) => {
+};
+
+const CoinButtons = ({
+  account,
+  chainId,
+  trackingLocation,
+  isSwapsChain,
+  isSigningEnabled,
+  ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
+  isBridgeChain,
+  isBuyableChain,
+  defaultSwapsToken,
+  ///: END:ONLY_INCLUDE_IF
+  classPrefix = 'coin',
+  iconButtonClassName = '',
+}: CoinButtonsProps) => {
   const t = useContext(I18nContext);
   const dispatch = useDispatch();
 
   const trackEvent = useContext(MetaMetricsContext);
   const [showReceiveModal, setShowReceiveModal] = useState(false);
 
-  const { address: selectedAddress } = useSelector(getSelectedAccount);
+  const { address: selectedAddress } = account;
   const history = useHistory();
+  const networks = useSelector(getNetworkConfigurationIdByChainId) as Record<
+    string,
+    string
+  >;
+  const currentChainId = useSelector(getCurrentChainId);
+  ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
+  const currentActivityTabName = useSelector(
+    // @ts-expect-error TODO: fix state type
+    (state) => state.metamask.defaultHomeActiveTabName,
+  );
+  ///: END:ONLY_INCLUDE_IF
   ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
   const location = useLocation();
   const keyring = useSelector(getCurrentKeyring);
   const usingHardwareWallet = isHardwareKeyring(keyring?.type);
   ///: END:ONLY_INCLUDE_IF
+
+  // Initially, those events were using a "ETH" as `token_symbol`, so we keep this behavior
+  // for EVM, no matter the currently selected native token (e.g. SepoliaETH if you are on Sepolia
+  // network).
+  const isEvm = useMultichainSelector(getMultichainIsEvm, account);
+  const multichainNativeToken = useMultichainSelector(
+    getMultichainNativeCurrency,
+    account,
+  );
+  const nativeToken = isEvm ? 'ETH' : multichainNativeToken;
 
   const isExternalServicesEnabled = useSelector(getUseExternalServices);
 
@@ -155,6 +214,23 @@ const CoinButtons = ({
     return toHex(chainId) as ChainId;
   };
   ///: END:ONLY_INCLUDE_IF
+
+  const getSnapAccountMetaMetricsPropertiesIfAny = (
+    internalAccount: InternalAccount,
+  ): { snap_id?: string } => {
+    // Some accounts might be Snap accounts, in this case we add some extra properties
+    // to the metrics:
+    const snapId = internalAccount.metadata.snap?.id;
+    if (snapId) {
+      return {
+        snap_id: snapId,
+      };
+    }
+
+    // If the account is not a Snap account or that we could not get the Snap ID for
+    // some reason, we don't add any extra property.
+    return {};
+  };
 
   ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
   const mmiPortfolioEnabled = useSelector(getMmiPortfolioEnabled);
@@ -230,25 +306,105 @@ const CoinButtons = ({
   const { openBridgeExperience } = useBridging();
   ///: END:ONLY_INCLUDE_IF
 
+  ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
+  const unapprovedTemplatedConfirmations = useSelector(
+    getMemoizedUnapprovedTemplatedConfirmations,
+  );
+
+  useEffect(() => {
+    const templatedSnapApproval = unapprovedTemplatedConfirmations.find(
+      (approval) => {
+        return (
+          approval.type === 'snap_dialog' &&
+          account.metadata.snap &&
+          account.metadata.snap.id === approval.origin &&
+          isMultichainWalletSnap(account.metadata.snap.id as SnapId)
+        );
+      },
+    );
+
+    if (templatedSnapApproval) {
+      history.push(`${CONFIRMATION_V_NEXT_ROUTE}/${templatedSnapApproval.id}`);
+    }
+  }, [unapprovedTemplatedConfirmations, history, account]);
+  ///: END:ONLY_INCLUDE_IF
+
+  const setCorrectChain = useCallback(async () => {
+    if (currentChainId !== chainId) {
+      try {
+        const networkConfigurationId = networks[chainId];
+        await dispatch(setActiveNetworkWithError(networkConfigurationId));
+        await dispatch(
+          setSwitchedNetworkDetails({
+            networkClientId: networkConfigurationId,
+          }),
+        );
+      } catch (err) {
+        console.error(`Failed to switch chains.
+        Target chainId: ${chainId}, Current chainId: ${currentChainId}.
+        ${err}`);
+        throw err;
+      }
+    }
+  }, [currentChainId, chainId, networks, dispatch]);
+
   const handleSendOnClick = useCallback(async () => {
     trackEvent(
       {
         event: MetaMetricsEventName.NavSendButtonClicked,
         category: MetaMetricsEventCategory.Navigation,
         properties: {
-          token_symbol: 'ETH',
+          account_type: account.type,
+          token_symbol: nativeToken,
           location: 'Home',
           text: 'Send',
           chain_id: chainId,
+          ...getSnapAccountMetaMetricsPropertiesIfAny(account),
         },
       },
       { excludeMetaMetricsId: false },
     );
+
+    ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
+    if (!isEvmAccountType(account.type)) {
+      // Non-EVM (Snap) Send flow
+      if (!account.metadata.snap) {
+        throw new Error('Non-EVM needs to be Snap accounts');
+      }
+
+      // TODO: Remove this once we want to enable all non-EVM Snaps
+      if (!isMultichainWalletSnap(account.metadata.snap.id as SnapId)) {
+        throw new Error(
+          `Non-EVM Snap is not whitelisted: ${account.metadata.snap.id}`,
+        );
+      }
+
+      try {
+        // FIXME: We switch the tab before starting the send flow (we
+        // faced some inconsistencies when changing it after).
+        await dispatch(setDefaultHomeActiveTabName('activity'));
+        await sendMultichainTransaction(account.metadata.snap.id, {
+          account: account.id,
+          scope: chainId as CaipChainId,
+        });
+      } catch {
+        // Restore the previous tab in case of any error (see FIXME comment above).
+        await dispatch(setDefaultHomeActiveTabName(currentActivityTabName));
+      }
+
+      // Early return, not to let the non-EVM flow slip into the native send flow.
+      return;
+    }
+    ///: END:ONLY_INCLUDE_IF
+
+    // Native Send flow
+    await setCorrectChain();
     await dispatch(startNewDraftTransaction({ type: AssetType.native }));
     history.push(SEND_ROUTE);
-  }, [chainId]);
+  }, [chainId, account, setCorrectChain]);
 
   const handleSwapOnClick = useCallback(async () => {
+    await setCorrectChain();
     ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
     global.platform.openTab({
       url: `${mmiPortfolioUrl}/swap`,
@@ -270,14 +426,15 @@ const CoinButtons = ({
       dispatch(setSwapsFromToken(defaultSwapsToken));
       if (usingHardwareWallet) {
         if (global.platform.openExtensionInBrowser) {
-          global.platform.openExtensionInBrowser(BUILD_QUOTE_ROUTE);
+          global.platform.openExtensionInBrowser(PREPARE_SWAP_ROUTE);
         }
       } else {
-        history.push(BUILD_QUOTE_ROUTE);
+        history.push(PREPARE_SWAP_ROUTE);
       }
     }
     ///: END:ONLY_INCLUDE_IF
   }, [
+    setCorrectChain,
     isSwapsChain,
     chainId,
     ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
@@ -296,10 +453,12 @@ const CoinButtons = ({
       event: MetaMetricsEventName.NavBuyButtonClicked,
       category: MetaMetricsEventCategory.Navigation,
       properties: {
+        account_type: account.type,
         location: 'Home',
         text: 'Buy',
         chain_id: chainId,
         token_symbol: defaultSwapsToken,
+        ...getSnapAccountMetaMetricsPropertiesIfAny(account),
       },
     });
   }, [chainId, defaultSwapsToken]);

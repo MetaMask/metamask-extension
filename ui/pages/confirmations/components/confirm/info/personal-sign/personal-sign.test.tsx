@@ -10,6 +10,8 @@ import {
 } from '../../../../../../../test/data/confirmations/helper';
 import { renderWithConfirmContextProvider } from '../../../../../../../test/lib/confirmations/render-helpers';
 import { signatureRequestSIWE } from '../../../../../../../test/data/confirmations/personal_sign';
+import * as utils from '../../../../utils';
+import * as snapUtils from '../../../../../../helpers/utils/snaps';
 import PersonalSignInfo from './personal-sign';
 
 jest.mock(
@@ -20,6 +22,29 @@ jest.mock(
     })),
   }),
 );
+
+jest.mock('../../../../utils', () => {
+  const originalUtils = jest.requireActual('../../../../utils');
+  return {
+    ...originalUtils,
+    isSIWESignatureRequest: jest.fn().mockReturnValue(false),
+  };
+});
+
+jest.mock('../../../../../../../node_modules/@metamask/snaps-utils', () => {
+  const originalUtils = jest.requireActual(
+    '../../../../../../../node_modules/@metamask/snaps-utils',
+  );
+  return {
+    ...originalUtils,
+    stripSnapPrefix: jest.fn().mockReturnValue('@metamask/examplesnap'),
+    getSnapPrefix: jest.fn().mockReturnValue('npm:'),
+  };
+});
+
+jest.mock('../../../../../../helpers/utils/snaps', () => ({
+  isSnapId: jest.fn(),
+}));
 
 describe('PersonalSignInfo', () => {
   it('renders correctly for personal sign request', () => {
@@ -62,6 +87,7 @@ describe('PersonalSignInfo', () => {
   });
 
   it('display signing in from for SIWE request', () => {
+    (utils.isSIWESignatureRequest as jest.Mock).mockReturnValue(true);
     const state =
       getMockPersonalSignConfirmStateForRequest(signatureRequestSIWE);
     const mockStore = configureMockStore([])(state);
@@ -73,6 +99,7 @@ describe('PersonalSignInfo', () => {
   });
 
   it('display simulation for SIWE request if preference useTransactionSimulations is enabled', () => {
+    (utils.isSIWESignatureRequest as jest.Mock).mockReturnValue(true);
     const state = getMockPersonalSignConfirmStateForRequest(
       signatureRequestSIWE,
       {
@@ -87,5 +114,74 @@ describe('PersonalSignInfo', () => {
       mockStore,
     );
     expect(getByText('Estimated changes')).toBeDefined();
+  });
+
+  it('does not display tooltip text when isSIWE is true', async () => {
+    const state =
+      getMockPersonalSignConfirmStateForRequest(signatureRequestSIWE); // isSIWE is true
+
+    (utils.isSIWESignatureRequest as jest.Mock).mockReturnValue(true);
+    const mockStore = configureMockStore([])(state);
+    const { queryByText, getByText } = renderWithConfirmContextProvider(
+      <PersonalSignInfo />,
+      mockStore,
+    );
+
+    const requestFromLabel = getByText('Request from');
+    await requestFromLabel.dispatchEvent(
+      new MouseEvent('mouseenter', { bubbles: true }),
+    );
+
+    expect(
+      queryByText('This is the site asking for your signature.'),
+    ).toBeNull();
+    expect(
+      queryByText('This is the Snap asking for your signature.'),
+    ).toBeNull();
+  });
+
+  it('displays "requestFromInfoSnap" tooltip when isSIWE is false and origin is a snap', async () => {
+    const state =
+      getMockPersonalSignConfirmStateForRequest(signatureRequestSIWE);
+
+    (utils.isSIWESignatureRequest as jest.Mock).mockReturnValue(false);
+    (snapUtils.isSnapId as jest.Mock).mockReturnValue(true);
+
+    const mockStore = configureMockStore([])(state);
+    const { queryByText, getByText } = renderWithConfirmContextProvider(
+      <PersonalSignInfo />,
+      mockStore,
+    );
+
+    const requestFromLabel = getByText('Request from');
+    await requestFromLabel.dispatchEvent(
+      new MouseEvent('mouseenter', { bubbles: true }),
+    );
+
+    expect(
+      queryByText('This is the Snap asking for your signature.'),
+    ).toBeDefined();
+  });
+
+  it('displays "requestFromInfo" tooltip when isSIWE is false and origin is not a snap', async () => {
+    const state =
+      getMockPersonalSignConfirmStateForRequest(signatureRequestSIWE);
+    (utils.isSIWESignatureRequest as jest.Mock).mockReturnValue(false);
+    (snapUtils.isSnapId as jest.Mock).mockReturnValue(true);
+
+    const mockStore = configureMockStore([])(state);
+    const { getByText, queryByText } = renderWithConfirmContextProvider(
+      <PersonalSignInfo />,
+      mockStore,
+    );
+
+    const requestFromLabel = getByText('Request from');
+    await requestFromLabel.dispatchEvent(
+      new MouseEvent('mouseenter', { bubbles: true }),
+    );
+
+    expect(
+      queryByText('This is the site asking for your signature.'),
+    ).toBeDefined();
   });
 });

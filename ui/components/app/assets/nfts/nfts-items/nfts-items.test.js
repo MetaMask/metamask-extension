@@ -92,7 +92,9 @@ describe('NFTs Item Component', () => {
     }
 
     const firstNft = nfts[0];
-    const nftRoute = `/asset/${firstNft.address}/${firstNft.tokenId}`;
+    const nftRoute = `/asset/${toHex(5)}/${firstNft.address}/${
+      firstNft.tokenId
+    }`;
 
     expect(mockHistoryPush).toHaveBeenCalledWith(nftRoute);
   });

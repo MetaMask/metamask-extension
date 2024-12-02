@@ -6,6 +6,7 @@ const {
   logInWithBalanceValidation,
   openActionMenuAndStartSendFlow,
   withFixtures,
+  tempToggleSettingRedesignedTransactionConfirmations,
 } = require('../../helpers');
 const FixtureBuilder = require('../../fixture-builder');
 
@@ -21,6 +22,7 @@ describe('MetaMask Responsive UI', function () {
       },
       async ({ driver }) => {
         await driver.navigate();
+
         // agree to terms of use
         await driver.clickElement('[data-testid="onboarding-terms-checkbox"]');
 
@@ -72,10 +74,10 @@ describe('MetaMask Responsive UI', function () {
         await driver.clickElement('[data-testid="pin-extension-done"]');
         await driver.assertElementNotPresent('.loading-overlay__spinner');
         // assert balance
-        const balance = await driver.findElement(
-          '[data-testid="eth-overview__primary-currency"]',
-        );
-        assert.ok(/^0\sETH$/u.test(await balance.getText()));
+        await driver.waitForSelector({
+          css: '[data-testid="eth-overview__primary-currency"]',
+          text: '0',
+        });
       },
     );
   });
@@ -93,11 +95,14 @@ describe('MetaMask Responsive UI', function () {
         await driver.navigate();
 
         // Import Secret Recovery Phrase
-        const restoreSeedLink = await driver.findClickableElement(
-          '.unlock-page__link',
-        );
-        assert.equal(await restoreSeedLink.getText(), 'Forgot password?');
-        await restoreSeedLink.click();
+        await driver.waitForSelector({
+          tag: 'span',
+          text: 'Localhost 8545',
+        });
+        await driver.clickElement({
+          css: '.unlock-page__link',
+          text: 'Forgot password?',
+        });
 
         await driver.pasteIntoField(
           '[data-testid="import-srp__srp-word-0"]',
@@ -125,6 +130,8 @@ describe('MetaMask Responsive UI', function () {
       },
       async ({ driver, ganacheServer }) => {
         await logInWithBalanceValidation(driver, ganacheServer);
+
+        await tempToggleSettingRedesignedTransactionConfirmations(driver);
 
         // Send ETH from inside MetaMask
         // starts to send a transaction

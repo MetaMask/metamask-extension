@@ -8,6 +8,7 @@ import { renderWithProvider, MOCKS, CONSTANTS } from '../../../test/jest';
 import { createBridgeMockStore } from '../../../test/jest/mock-store';
 import CrossChainSwap from '.';
 
+const mockResetBridgeState = jest.fn();
 const middleware = [thunk];
 setBackgroundConnection({
   resetPostFetchState: jest.fn(),
@@ -15,15 +16,14 @@ setBackgroundConnection({
   setSwapsLiveness: jest.fn(() => true),
   setSwapsTokens: jest.fn(),
   setSwapsTxGasPrice: jest.fn(),
-  gasFeeStartPollingByNetworkClientId: jest
-    .fn()
-    .mockResolvedValue('pollingToken'),
+  gasFeeStartPolling: jest.fn().mockResolvedValue('pollingToken'),
   gasFeeStopPollingByPollingToken: jest.fn(),
   getNetworkConfigurationByNetworkClientId: jest
     .fn()
     .mockResolvedValue({ chainId: '0x1' }),
   setBridgeFeatureFlags: jest.fn(),
   selectSrcNetwork: jest.fn(),
+  resetState: () => mockResetBridgeState(),
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
 } as any);
 
@@ -64,8 +64,6 @@ describe('Bridge', () => {
 
   it('renders the component with initial props', async () => {
     const swapsMockStore = createBridgeMockStore({ extensionSupport: true });
-    swapsMockStore.metamask.swapsState.swapsFeatureFlags.swapRedesign.extensionActive =
-      true;
     const store = configureMockStore(middleware)(swapsMockStore);
 
     const { container, getByText } = renderWithProvider(
@@ -75,5 +73,6 @@ describe('Bridge', () => {
 
     expect(getByText('Bridge')).toBeInTheDocument();
     expect(container).toMatchSnapshot();
+    expect(mockResetBridgeState).toHaveBeenCalledTimes(1);
   });
 });

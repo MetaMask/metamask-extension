@@ -16,12 +16,14 @@ export type SnapInsightProps = {
   snapId: string;
   interfaceId: string;
   loading: boolean;
+  isExpanded?: boolean | undefined;
 };
 
 export const SnapInsight: React.FunctionComponent<SnapInsightProps> = ({
   snapId,
   interfaceId,
   loading,
+  isExpanded,
 }) => {
   const t = useI18nContext();
   const { name: snapName } = useSelector((state) =>
@@ -57,6 +59,7 @@ export const SnapInsight: React.FunctionComponent<SnapInsightProps> = ({
     <Delineator
       headerComponent={headerComponent}
       isLoading={loading}
+      isExpanded={isExpanded}
       contentBoxProps={
         loading
           ? undefined

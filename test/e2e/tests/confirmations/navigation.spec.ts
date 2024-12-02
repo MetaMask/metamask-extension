@@ -8,11 +8,11 @@ import {
   WINDOW_TITLES,
 } from '../../helpers';
 import { Driver } from '../../webdriver/driver';
-import { withRedesignConfirmationFixtures } from './helpers';
+import { withTransactionEnvelopeTypeFixtures } from './helpers';
 
 describe('Navigation Signature - Different signature types', function (this: Suite) {
   it('initiates and queues multiple signatures and confirms', async function () {
-    await withRedesignConfirmationFixtures(
+    await withTransactionEnvelopeTypeFixtures(
       this.test?.fullTitle(),
       TransactionEnvelopeType.legacy,
       async ({ driver }: { driver: Driver }) => {
@@ -52,7 +52,7 @@ describe('Navigation Signature - Different signature types', function (this: Sui
   });
 
   it('initiates and queues a mix of signatures and transactions and navigates', async function () {
-    await withRedesignConfirmationFixtures(
+    await withTransactionEnvelopeTypeFixtures(
       this.test?.fullTitle(),
       TransactionEnvelopeType.legacy,
       async ({ driver }: { driver: Driver }) => {
@@ -66,10 +66,15 @@ describe('Navigation Signature - Different signature types', function (this: Sui
           '[data-testid="confirm-nav__next-confirmation"]',
         );
 
-        // Verify Transaction Sending ETH is displayed
-        await verifyTransaction(driver, 'Sending ETH');
+        // Verify simple send transaction is displayed
+        await driver.waitForSelector({
+          tag: 'h3',
+          text: 'Transfer request',
+        });
 
-        await driver.clickElement('[data-testid="next-page"]');
+        await driver.clickElement(
+          '[data-testid="confirm-nav__next-confirmation"]',
+        );
 
         // Verify Sign Typed Data v3 confirmation is displayed
         await verifySignedTypeV3Confirmation(driver);
@@ -78,10 +83,15 @@ describe('Navigation Signature - Different signature types', function (this: Sui
           '[data-testid="confirm-nav__previous-confirmation"]',
         );
 
-        // Verify Sign Typed Data v3 confirmation is displayed
-        await verifyTransaction(driver, 'Sending ETH');
+        // Verify simple send transaction is displayed
+        await driver.waitForSelector({
+          tag: 'h3',
+          text: 'Transfer request',
+        });
 
-        await driver.clickElement('[data-testid="previous-page"]');
+        await driver.clickElement(
+          '[data-testid="confirm-nav__previous-confirmation"]',
+        );
 
         // Verify Sign Typed Data v3 confirmation is displayed
         await verifySignTypedData(driver);
@@ -90,7 +100,7 @@ describe('Navigation Signature - Different signature types', function (this: Sui
   });
 
   it('initiates multiple signatures and rejects all', async function () {
-    await withRedesignConfirmationFixtures(
+    await withTransactionEnvelopeTypeFixtures(
       this.test?.fullTitle(),
       TransactionEnvelopeType.legacy,
       async ({ driver }: { driver: Driver }) => {
@@ -178,14 +188,4 @@ async function queueSignaturesAndTransactions(driver: Driver) {
   await driver.clickElement('#signTypedDataV3');
   await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
   await driver.waitForSelector(By.xpath("//div[normalize-space(.)='1 of 3']"));
-}
-
-async function verifyTransaction(
-  driver: Driver,
-  expectedTransactionType: string,
-) {
-  await driver.waitForSelector({
-    tag: 'span',
-    text: expectedTransactionType,
-  });
 }

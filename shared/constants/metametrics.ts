@@ -1,5 +1,17 @@
+import { Json } from '@metamask/utils';
 import type { EnvironmentType } from './app';
 import { LedgerTransportTypes } from './hardware-wallets';
+
+type JsonWithUndefined =
+  | null
+  | boolean
+  | number
+  | string
+  | undefined
+  | Json[]
+  | {
+      [prop: string]: Json;
+    };
 
 /**
  * Used to attach context of where the user was at in the application when the
@@ -39,7 +51,7 @@ export type MetaMetricsReferrerObject = {
  * function, but still provides the consumer a way to override these values if
  * necessary.
  */
-type MetaMetricsContext = {
+export type MetaMetricsContext = {
   /**
    * Application metadata.
    */
@@ -65,6 +77,10 @@ type MetaMetricsContext = {
    * The dapp that triggered an interaction (MetaMask only).
    */
   referrer?: MetaMetricsReferrerObject;
+  /**
+   * The marketing campaign cookie ID.
+   */
+  marketingCampaignCookieId?: string | null;
 };
 
 export type MetaMetricsEventPayload = {
@@ -79,7 +95,7 @@ export type MetaMetricsEventPayload = {
   /**
    * The action ID to deduplicate event requests from the UI.
    */
-  actionId?: number;
+  actionId?: string;
   /**
    * The type of environment this event occurred in. Defaults to the background
    * process type.
@@ -88,13 +104,14 @@ export type MetaMetricsEventPayload = {
   /**
    * Custom values to track. Keys in this object must be `snake_case`.
    */
-  properties?: object;
+  properties?: Record<string, Json>;
+
   /**
    * Sensitive values to track. These properties will be sent in an additional
    * event that excludes the user's `metaMetricsId`. Keys in this object must be
    * in `snake_case`.
    */
-  sensitiveProperties?: object;
+  sensitiveProperties?: Record<string, Json>;
   /**
    * Amount of currency that the event creates in revenue for MetaMask.
    */
@@ -116,6 +133,21 @@ export type MetaMetricsEventPayload = {
    * The origin of the dapp that triggered this event.
    */
   referrer?: MetaMetricsReferrerObject;
+  /*
+   * The unique identifier for the event.
+   */
+  uniqueIdentifier?: string;
+  /**
+   * Whether the event is a duplicate of an anonymized event.
+   */
+  isDuplicateAnonymizedEvent?: boolean;
+};
+
+export type UnsanitizedMetaMetricsEventPayload = Omit<
+  MetaMetricsEventPayload,
+  'properties'
+> & {
+  properties?: Record<string, JsonWithUndefined>;
 };
 
 export type MetaMetricsEventOptions = {
@@ -146,6 +178,10 @@ export type MetaMetricsEventOptions = {
    * as not conforming to our schema.
    */
   matomoEvent?: boolean;
+  /**
+   * Values that can used in the "properties" tracking object as keys,
+   */
+  contextPropsIntoEventProperties?: string | string[];
 };
 
 export type MetaMetricsEventFragment = {
@@ -189,13 +225,13 @@ export type MetaMetricsEventFragment = {
   /**
    * Custom values to track. Keys in this object must be `snake_case`.
    */
-  properties?: object;
+  properties?: Record<string, Json>;
   /**
    * Sensitive values to track. These properties will be sent in an additional
    * event that excludes the user's `metaMetricsId`. Keys in this object must be
    * in `snake_case`.
    */
-  sensitiveProperties?: object;
+  sensitiveProperties?: Record<string, Json>;
   /**
    * Amount of currency that the event creates in revenue for MetaMask.
    */
@@ -223,6 +259,25 @@ export type MetaMetricsEventFragment = {
    * to avoid unnecessary lookups and reduce accidental duplication.
    */
   uniqueIdentifier?: string;
+  /*
+   * The event id.
+   */
+  id: string;
+  /*
+   * The environment type.
+   */
+  environmentType?: string;
+  /*
+   * The event name.
+   */
+  event?: string;
+
+  /**
+   * HACK: "transaction-submitted-<id>" fragment hack
+   * If this is true and the fragment is found as an abandoned fragment,
+   * then delete the fragment instead of finalizing it.
+   */
+  canDeleteIfAbandoned?: boolean;
 };
 
 /**
@@ -245,11 +300,38 @@ export type SegmentEventPayload = {
   /**
    * Properties to attach to the event.
    */
-  properties: object;
+  properties: {
+    params?: Record<string, string>;
+    legacy_event?: boolean;
+    locale: string;
+    chain_id: string;
+    environment_type?: string;
+    revenue?: number;
+    value?: number;
+    currency?: string;
+    category?: string;
+  };
   /**
    * The context the event occurred in.
    */
   context: MetaMetricsContext;
+  /**
+   * The message id
+   */
+  messageId?: string;
+
+  /**
+   * The timestamp of the event.
+   */
+  timestamp?: string;
+  /*
+   * The event name.
+   */
+  name?: string;
+  /*
+   * The user trais
+   */
+  traits?: MetaMetricsUserTraits;
 };
 
 /**
@@ -259,18 +341,18 @@ export type MetaMetricsPagePayload = {
   /**
    * The name of the page that was viewed.
    */
-  name: string;
+  name?: string;
   /**
    * The variadic parts of the page URL.
    *
    * Example: If the route is `/asset/:asset` and the path is `/asset/ETH`,
    * the `params` property would be `{ asset: 'ETH' }`.
    */
-  params?: object;
+  params?: Record<string, string>;
   /**
    * The environment type that the page was viewed in.
    */
-  environmentType: EnvironmentType;
+  environmentType?: EnvironmentType;
   /**
    * The details of the page.
    */
@@ -279,6 +361,10 @@ export type MetaMetricsPagePayload = {
    * The dapp that triggered the page view.
    */
   referrer?: MetaMetricsReferrerObject;
+  /**
+   * The action ID of the page view.
+   */
+  actionId?: string;
 };
 
 export type MetaMetricsPageOptions = {
@@ -315,7 +401,7 @@ export type MetaMetricsUserTraits = {
   /**
    * Does the user have the Autodetect NFTs feature enabled?
    */
-  nft_autodetection_enabled?: number;
+  nft_autodetection_enabled?: boolean;
   /**
    * A number representing the number of identities (accounts) added to the
    * user's wallet.
@@ -355,9 +441,29 @@ export type MetaMetricsUserTraits = {
    */
   token_detection_enabled?: boolean;
   /**
+   * Does the user have a selected currency in the settings
+   */
+  current_currency?: string;
+  /**
+   * Does the user have show native token as main balance enabled.
+   */
+  show_native_token_as_main_balance?: boolean;
+  /**
    * Does the user have native currency enabled?
    */
   use_native_as_primary_currency?: boolean;
+  /**
+   * Does the user opt in for metrics
+   */
+  is_metrics_opted_in?: boolean;
+  /**
+   * Does the user accepted marketing consent
+   */
+  has_marketing_consent?: boolean;
+  /**
+   * The date the extension was installed.
+   */
+  install_date_ext?: string;
   /**
    * Whether the security provider feature has been enabled.
    */
@@ -366,7 +472,7 @@ export type MetaMetricsUserTraits = {
   /**
    * The address of the MMI account in question
    */
-  mmi_account_address?: string;
+  mmi_account_address?: string | null;
   /**
    * What is the MMI extension ID
    */
@@ -376,6 +482,14 @@ export type MetaMetricsUserTraits = {
    */
   mmi_is_custodian?: boolean;
   ///: END:ONLY_INCLUDE_IF
+  /**
+   * Does the user change the token sort order on the asset list
+   */
+  token_sort_preference?: string;
+  /**
+   * The number of petname addresses
+   */
+  petname_addresses_count?: number;
 };
 
 export enum MetaMetricsUserTrait {
@@ -476,6 +590,14 @@ export enum MetaMetricsUserTrait {
    * Identified when the user changes token sort order on asset-list
    */
   TokenSortPreference = 'token_sort_preference',
+  /**
+   * Identifies if the Privacy Mode is enabled
+   */
+  PrivacyModeEnabled = 'privacy_mode_toggle',
+  /**
+   * Identified when the user prefers to see all tokens or current network tokens in wallet list
+   */
+  NetworkFilterPreference = 'selected_network_filter',
 }
 
 /**
@@ -513,6 +635,7 @@ export enum MetaMetricsEventName {
   AccountRenamed = 'Account Renamed',
   AccountsSyncAdded = 'Accounts Sync Added',
   AccountsSyncNameUpdated = 'Accounts Sync Name Updated',
+  AccountsSyncErroneousSituation = 'Accounts Sync Erroneous Situation',
   ActivityDetailsOpened = 'Activity Details Opened',
   ActivityDetailsClosed = 'Activity Details Closed',
   AnalyticsPreferenceSelected = 'Analytics Preference Selected',
@@ -524,6 +647,7 @@ export enum MetaMetricsEventName {
   BridgeLinkClicked = 'Bridge Link Clicked',
   BitcoinSupportToggled = 'Bitcoin Support Toggled',
   BitcoinTestnetSupportToggled = 'Bitcoin Testnet Support Toggled',
+  SolanaSupportToggled = 'Solana Support Toggled',
   CurrentCurrency = 'Current Currency',
   DappViewed = 'Dapp Viewed',
   DecryptionApproved = 'Decryption Approved',
@@ -562,6 +686,10 @@ export enum MetaMetricsEventName {
   NavConnectedSitesOpened = 'Connected Sites Opened',
   NavMainMenuOpened = 'Main Menu Opened',
   NavPermissionsOpened = 'Permissions Opened',
+  UpdatePermissionedNetworks = 'Update Permissioned Networks',
+  UpdatePermissionedAccounts = 'Update Permissioned Accounts',
+  ViewPermissionedNetworks = 'View Permissioned Networks',
+  ViewPermissionedAccounts = 'View Permissioned Accounts',
   NavNetworkMenuOpened = 'Network Menu Opened',
   NavSettingsOpened = 'Settings Opened',
   NavAccountSwitched = 'Account Switched',
@@ -597,6 +725,7 @@ export enum MetaMetricsEventName {
   PetnameModalOpened = 'Petname Modal Opened',
   PetnameUpdated = 'Petname Updated',
   PhishingPageDisplayed = 'Phishing Page Displayed',
+  ProceedAnywayClicked = 'Proceed Anyway Clicked',
   PortfolioLinkClicked = 'Portfolio Link Clicked',
   ProviderMethodCalled = 'Provider Method Called',
   PublicAddressCopied = 'Public Address Copied',
@@ -738,7 +867,8 @@ export enum MetaMetricsEventName {
   sendFlowExited = 'Send Flow Exited',
   sendRecipientSelected = 'Send Recipient Selected',
   sendSwapQuoteError = 'Send Swap Quote Error',
-  sendSwapQuoteFetched = 'Send Swap Quote Fetched',
+  sendSwapQuoteRequested = 'Send Swap Quote Requested',
+  sendSwapQuoteReceived = 'Send Swap Quote Received',
   sendTokenModalOpened = 'Send Token Modal Opened',
 }
 
@@ -757,6 +887,7 @@ export enum QueueType {
 }
 
 export enum MetaMetricsEventAccountImportType {
+  // eslint-disable-next-line @typescript-eslint/no-shadow
   Json = 'json',
   PrivateKey = 'private_key',
   Srp = 'srp',
@@ -782,6 +913,8 @@ export enum MetaMetricsEventCategory {
   NotificationsActivationFlow = 'Notifications Activation Flow',
   NotificationSettings = 'Notification Settings',
   Petnames = 'Petnames',
+  // eslint-disable-next-line @typescript-eslint/no-shadow
+  Permissions = 'Permissions',
   Phishing = 'Phishing',
   ProfileSyncing = 'Profile Syncing',
   PushNotifications = 'Notifications',
@@ -823,6 +956,7 @@ export enum MetaMetricsNetworkEventSource {
   Dapp = 'dapp',
   DeprecatedNetworkModal = 'deprecated_network_modal',
   NewAddNetworkFlow = 'new_add_network_flow',
+  Bridge = 'bridge',
 }
 
 export enum MetaMetricsSwapsEventSource {

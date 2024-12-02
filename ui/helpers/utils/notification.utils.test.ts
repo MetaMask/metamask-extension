@@ -9,7 +9,7 @@ import {
 describe('formatMenuItemDate', () => {
   beforeAll(() => {
     jest.useFakeTimers();
-    jest.setSystemTime(new Date('2024-06-07T09:40:00Z'));
+    jest.setSystemTime(new Date(Date.UTC(2024, 5, 7, 9, 40, 0))); // 2024-06-07T09:40:00Z
   });
 
   afterAll(() => {
@@ -28,7 +28,7 @@ describe('formatMenuItemDate', () => {
 
     // assert 1 hour ago
     assertToday((testDate) => {
-      testDate.setHours(testDate.getHours() - 1);
+      testDate.setUTCHours(testDate.getUTCHours() - 1);
       return testDate;
     });
   });
@@ -42,14 +42,14 @@ describe('formatMenuItemDate', () => {
 
     // assert exactly 1 day ago
     assertYesterday((testDate) => {
-      testDate.setDate(testDate.getDate() - 1);
+      testDate.setUTCDate(testDate.getUTCDate() - 1);
     });
 
     // assert almost a day ago, but was still yesterday
     // E.g. if Today way 09:40AM, but date to test was 23 hours ago (yesterday at 10:40AM), we still want to to show yesterday
     assertYesterday((testDate) => {
-      testDate.setDate(testDate.getDate() - 1);
-      testDate.setHours(testDate.getHours() + 1);
+      testDate.setUTCDate(testDate.getUTCDate() - 1);
+      testDate.setUTCHours(testDate.getUTCHours() + 1);
     });
   });
 
@@ -62,18 +62,18 @@ describe('formatMenuItemDate', () => {
 
     // assert exactly 1 month ago
     assertMonthsAgo((testDate) => {
-      testDate.setMonth(testDate.getMonth() - 1);
+      testDate.setUTCMonth(testDate.getUTCMonth() - 1);
     });
 
     // assert 2 months ago
     assertMonthsAgo((testDate) => {
-      testDate.setMonth(testDate.getMonth() - 2);
+      testDate.setUTCMonth(testDate.getUTCMonth() - 2);
     });
 
     // assert almost a month ago (where it is a new month, but not 30 days)
     assertMonthsAgo(() => {
       // jest mock date is set in july, so we will test with month may
-      return new Date('2024-05-20T09:40:00Z');
+      return new Date(Date.UTC(2024, 4, 20, 9, 40, 0)); // 2024-05-20T09:40:00Z
     });
   });
 
@@ -86,18 +86,18 @@ describe('formatMenuItemDate', () => {
 
     // assert exactly 1 year ago
     assertYearsAgo((testDate) => {
-      testDate.setFullYear(testDate.getFullYear() - 1);
+      testDate.setUTCFullYear(testDate.getUTCFullYear() - 1);
     });
 
     // assert 2 years ago
     assertYearsAgo((testDate) => {
-      testDate.setFullYear(testDate.getFullYear() - 2);
+      testDate.setUTCFullYear(testDate.getUTCFullYear() - 2);
     });
 
     // assert almost a year ago (where it is a new year, but not 365 days ago)
     assertYearsAgo(() => {
       // jest mock date is set in 2024, so we will test with year 2023
-      return new Date('2023-11-20T09:40:00Z');
+      return new Date(Date.UTC(2023, 10, 20, 9, 40, 0)); // 2023-11-20T09:40:00Z
     });
   });
 });

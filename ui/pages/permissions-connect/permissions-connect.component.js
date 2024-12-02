@@ -1,7 +1,7 @@
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import { Switch, Route } from 'react-router-dom';
-import { ethErrors, serializeError } from 'eth-rpc-errors';
+import { providerErrors, serializeError } from '@metamask/rpc-errors';
 import { SubjectType } from '@metamask/permission-controller';
 // TODO: Remove restricted import
 // eslint-disable-next-line import/no-restricted-paths
@@ -41,10 +41,12 @@ function getDefaultSelectedAccounts(currentAddress, permissionsRequest) {
     return new Set(
       requestedAccounts
         .map((address) => address.toLowerCase())
+        // We only consider EVM accounts here (used for `eth_requestAccounts` or `eth_accounts`)
         .filter(isEthAddress),
     );
   }
 
+  // We only consider EVM accounts here (used for `eth_requestAccounts` or `eth_accounts`)
   return new Set(isEthAddress(currentAddress) ? [currentAddress] : []);
 }
 
@@ -443,7 +445,7 @@ export default class PermissionConnect extends Component {
                   rejectSnapInstall={(requestId) => {
                     rejectPendingApproval(
                       requestId,
-                      serializeError(ethErrors.provider.userRejectedRequest()),
+                      serializeError(providerErrors.userRejectedRequest()),
                     );
                     this.setState({ permissionsApproved: true });
                   }}
@@ -469,7 +471,7 @@ export default class PermissionConnect extends Component {
                   rejectSnapUpdate={(requestId) => {
                     rejectPendingApproval(
                       requestId,
-                      serializeError(ethErrors.provider.userRejectedRequest()),
+                      serializeError(providerErrors.userRejectedRequest()),
                     );
                     this.setState({ permissionsApproved: false });
                   }}

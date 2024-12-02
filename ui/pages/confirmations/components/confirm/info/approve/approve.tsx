@@ -3,10 +3,8 @@ import {
   TransactionType,
 } from '@metamask/transaction-controller';
 import React, { useState } from 'react';
-import { useSelector } from 'react-redux';
 import { useConfirmContext } from '../../../../context/confirm';
 import { useAssetDetails } from '../../../../hooks/useAssetDetails';
-import { selectConfirmationAdvancedDetailsOpen } from '../../../../selectors/preferences';
 import { AdvancedDetails } from '../shared/advanced-details/advanced-details';
 import { ConfirmLoader } from '../shared/confirm-loader/confirm-loader';
 import { GasFeesSection } from '../shared/gas-fees-section/gas-fees-section';
@@ -20,13 +18,8 @@ import { RevokeStaticSimulation } from './revoke-static-simulation/revoke-static
 import { SpendingCap } from './spending-cap/spending-cap';
 
 const ApproveInfo = () => {
-  const { currentConfirmation: transactionMeta } = useConfirmContext() as {
-    currentConfirmation: TransactionMeta;
-  };
-
-  const showAdvancedDetails = useSelector(
-    selectConfirmationAdvancedDetailsOpen,
-  );
+  const { currentConfirmation: transactionMeta } =
+    useConfirmContext<TransactionMeta>();
 
   const { isNFT } = useIsNFT(transactionMeta);
 
@@ -37,6 +30,7 @@ const ApproveInfo = () => {
     transactionMeta.txParams.to,
     transactionMeta.txParams.from,
     transactionMeta.txParams.data,
+    transactionMeta.chainId,
   );
 
   const { spendingCap, pending } = useApproveTokenSimulation(
@@ -70,7 +64,7 @@ const ApproveInfo = () => {
         />
       )}
       <GasFeesSection />
-      {showAdvancedDetails && <AdvancedDetails />}
+      <AdvancedDetails />
       <EditSpendingCapModal
         isOpenEditSpendingCapModal={isOpenEditSpendingCapModal}
         setIsOpenEditSpendingCapModal={setIsOpenEditSpendingCapModal}

@@ -64,7 +64,6 @@ export default class SecurityTab extends PureComponent {
   };
 
   static propTypes = {
-    warning: PropTypes.string,
     history: PropTypes.object,
     openSeaEnabled: PropTypes.bool,
     setOpenSeaEnabled: PropTypes.func,
@@ -382,14 +381,15 @@ export default class SecurityTab extends PureComponent {
           <ToggleButton
             value={dataCollectionForMarketing}
             onToggle={(value) => {
-              setDataCollectionForMarketing(!value);
+              const newMarketingConsent = Boolean(!value);
+              setDataCollectionForMarketing(newMarketingConsent);
               if (participateInMetaMetrics) {
                 this.context.trackEvent({
                   category: MetaMetricsEventCategory.Settings,
                   event: MetaMetricsEventName.AnalyticsPreferenceSelected,
                   properties: {
                     is_metrics_opted_in: true,
-                    has_marketing_consent: false,
+                    has_marketing_consent: Boolean(newMarketingConsent),
                     location: 'Settings',
                   },
                 });
@@ -1131,7 +1131,6 @@ export default class SecurityTab extends PureComponent {
 
   render() {
     const {
-      warning,
       petnamesEnabled,
       dataCollectionForMarketing,
       setDataCollectionForMarketing,
@@ -1144,8 +1143,6 @@ export default class SecurityTab extends PureComponent {
         {showDataCollectionDisclaimer
           ? this.renderDataCollectionWarning()
           : null}
-
-        {warning && <div className="settings-tab__error">{warning}</div>}
         <span className="settings-page__security-tab-sub-header__bold">
           {this.context.t('security')}
         </span>

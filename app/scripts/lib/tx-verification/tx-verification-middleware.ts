@@ -2,14 +2,17 @@ import { hashMessage } from '@ethersproject/hash';
 import { verifyMessage } from '@ethersproject/wallet';
 import type { NetworkController } from '@metamask/network-controller';
 import { rpcErrors } from '@metamask/rpc-errors';
-import type { Json, JsonRpcParams, Hex } from '@metamask/utils';
-import { hasProperty, isObject } from '@metamask/utils';
 import type {
+  Json,
+  JsonRpcParams,
   JsonRpcResponse,
+  Hex,
+} from '@metamask/utils';
+import { hasProperty, isObject, JsonRpcRequest } from '@metamask/utils';
+import type {
   JsonRpcEngineEndCallback,
   JsonRpcEngineNextCallback,
-} from 'json-rpc-engine';
-import { JsonRpcRequest } from 'json-rpc-engine';
+} from '@metamask/json-rpc-engine';
 import {
   EXPERIENCES_TO_VERIFY,
   getExperience,
@@ -17,9 +20,7 @@ import {
   TRUSTED_SIGNERS,
 } from '../../../../shared/constants/verification';
 import { MESSAGE_TYPE } from '../../../../shared/constants/app';
-// TODO: Remove restricted import
-// eslint-disable-next-line import/no-restricted-paths
-import { getCurrentChainId } from '../../../../ui/selectors';
+import { getCurrentChainId } from '../../../../shared/modules/selectors/networks';
 
 export type TxParams = {
   chainId?: `0x${string}`;

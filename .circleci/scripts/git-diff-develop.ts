@@ -10,7 +10,7 @@ const PR_NUMBER =
   process.env.CIRCLE_PR_NUMBER ||
   process.env.CIRCLE_PULL_REQUEST?.split('/').pop();
 
-const MAIN_BRANCH = 'develop';
+const MAIN_BRANCH = 'main';
 const SOURCE_BRANCH = `refs/pull/${PR_NUMBER}/head`;
 
 const CHANGED_FILES_DIR = 'changed-files';
@@ -20,6 +20,7 @@ type PRInfo = {
     ref: string;
   };
   body: string;
+  labels: { name: string }[];
 };
 
 /**
@@ -123,7 +124,7 @@ async function storeGitDiffOutputAndPrBody() {
     fs.mkdirSync(CHANGED_FILES_DIR, { recursive: true });
 
     console.log(
-      `Determining whether this run is for a PR targeting ${MAIN_BRANCH}`,
+      `Determining whether to run git diff...`,
     );
     if (!PR_NUMBER) {
       console.log('Not a PR, skipping git diff');
@@ -139,6 +140,9 @@ async function storeGitDiffOutputAndPrBody() {
     } else if (baseRef !== MAIN_BRANCH) {
       console.log(`This is for a PR targeting '${baseRef}', skipping git diff`);
       writePrBodyToFile(prInfo.body);
+      return;
+    } else if (prInfo.labels.some(label => label.name === 'skip-e2e-quality-gate')) {
+      console.log('PR has the skip-e2e-quality-gate label, skipping git diff');
       return;
     }
 

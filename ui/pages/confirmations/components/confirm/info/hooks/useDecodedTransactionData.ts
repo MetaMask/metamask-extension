@@ -10,18 +10,24 @@ import { DecodedTransactionDataResponse } from '../../../../../../../shared/type
 import { useConfirmContext } from '../../../../context/confirm';
 import { hasTransactionData } from '../../../../../../../shared/modules/transaction.utils';
 
-export function useDecodedTransactionData(): AsyncResult<
-  DecodedTransactionDataResponse | undefined
-> {
+export function useDecodedTransactionData(
+  transactionTypeFilter?: string,
+): AsyncResult<DecodedTransactionDataResponse | undefined> {
   const { currentConfirmation } = useConfirmContext<TransactionMeta>();
 
+  const currentTransactionType = currentConfirmation?.type;
   const chainId = currentConfirmation?.chainId as Hex;
   const contractAddress = currentConfirmation?.txParams?.to as Hex;
   const transactionData = currentConfirmation?.txParams?.data as Hex;
   const transactionTo = currentConfirmation?.txParams?.to as Hex;
 
   return useAsyncResult(async () => {
-    if (!hasTransactionData(transactionData) || !transactionTo) {
+    if (
+      !hasTransactionData(transactionData) ||
+      !transactionTo ||
+      (transactionTypeFilter &&
+        currentTransactionType !== transactionTypeFilter)
+    ) {
       return undefined;
     }
 

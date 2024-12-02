@@ -3,7 +3,7 @@
 exports[`SnapUIAddress renders Bitcoin address 1`] = `
 <div>
   <div
-    class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--align-items-center"
+    class="mm-box snap-ui-renderer__address mm-box--display-flex mm-box--gap-2 mm-box--align-items-center"
   >
     <div
       style="display: flex;"
@@ -46,6 +46,7 @@ exports[`SnapUIAddress renders Bitcoin address 1`] = `
     </div>
     <p
       class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
+      style="line-break: anywhere;"
     >
       128Lkh3...Mp8p6
     </p>
@@ -56,7 +57,7 @@ exports[`SnapUIAddress renders Bitcoin address 1`] = `
 exports[`SnapUIAddress renders Bitcoin address with blockie 1`] = `
 <div>
   <div
-    class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--align-items-center"
+    class="mm-box snap-ui-renderer__address mm-box--display-flex mm-box--gap-2 mm-box--align-items-center"
   >
     <img
       alt=""
@@ -67,6 +68,7 @@ exports[`SnapUIAddress renders Bitcoin address with blockie 1`] = `
     />
     <p
       class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
+      style="line-break: anywhere;"
     >
       128Lkh3...Mp8p6
     </p>
@@ -77,7 +79,7 @@ exports[`SnapUIAddress renders Bitcoin address with blockie 1`] = `
 exports[`SnapUIAddress renders Cosmos address 1`] = `
 <div>
   <div
-    class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--align-items-center"
+    class="mm-box snap-ui-renderer__address mm-box--display-flex mm-box--gap-2 mm-box--align-items-center"
   >
     <div
       style="display: flex;"
@@ -120,6 +122,7 @@ exports[`SnapUIAddress renders Cosmos address 1`] = `
     </div>
     <p
       class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
+      style="line-break: anywhere;"
     >
       cosmos1...6hdc0
     </p>
@@ -130,7 +133,7 @@ exports[`SnapUIAddress renders Cosmos address 1`] = `
 exports[`SnapUIAddress renders Cosmos address with blockie 1`] = `
 <div>
   <div
-    class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--align-items-center"
+    class="mm-box snap-ui-renderer__address mm-box--display-flex mm-box--gap-2 mm-box--align-items-center"
   >
     <img
       alt=""
@@ -141,6 +144,7 @@ exports[`SnapUIAddress renders Cosmos address with blockie 1`] = `
     />
     <p
       class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
+      style="line-break: anywhere;"
     >
       cosmos1...6hdc0
     </p>
@@ -151,7 +155,7 @@ exports[`SnapUIAddress renders Cosmos address with blockie 1`] = `
 exports[`SnapUIAddress renders Ethereum address 1`] = `
 <div>
   <div
-    class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--align-items-center"
+    class="mm-box snap-ui-renderer__address mm-box--display-flex mm-box--gap-2 mm-box--align-items-center"
   >
     <div
       style="display: flex;"
@@ -194,6 +198,7 @@ exports[`SnapUIAddress renders Ethereum address 1`] = `
     </div>
     <p
       class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
+      style="line-break: anywhere;"
     >
       0xab16a...Bfcdb
     </p>
@@ -204,7 +209,7 @@ exports[`SnapUIAddress renders Ethereum address 1`] = `
 exports[`SnapUIAddress renders Ethereum address with blockie 1`] = `
 <div>
   <div
-    class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--align-items-center"
+    class="mm-box snap-ui-renderer__address mm-box--display-flex mm-box--gap-2 mm-box--align-items-center"
   >
     <img
       alt=""
@@ -215,6 +220,7 @@ exports[`SnapUIAddress renders Ethereum address with blockie 1`] = `
     />
     <p
       class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
+      style="line-break: anywhere;"
     >
       0xab16a...Bfcdb
     </p>
@@ -225,7 +231,7 @@ exports[`SnapUIAddress renders Ethereum address with blockie 1`] = `
 exports[`SnapUIAddress renders Hedera address 1`] = `
 <div>
   <div
-    class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--align-items-center"
+    class="mm-box snap-ui-renderer__address mm-box--display-flex mm-box--gap-2 mm-box--align-items-center"
   >
     <div
       style="display: flex;"
@@ -268,6 +274,7 @@ exports[`SnapUIAddress renders Hedera address 1`] = `
     </div>
     <p
       class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
+      style="line-break: anywhere;"
     >
       0.0.123...zbhlt
     </p>
@@ -278,7 +285,7 @@ exports[`SnapUIAddress renders Hedera address 1`] = `
 exports[`SnapUIAddress renders Hedera address with blockie 1`] = `
 <div>
   <div
-    class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--align-items-center"
+    class="mm-box snap-ui-renderer__address mm-box--display-flex mm-box--gap-2 mm-box--align-items-center"
   >
     <img
       alt=""
@@ -289,6 +296,7 @@ exports[`SnapUIAddress renders Hedera address with blockie 1`] = `
     />
     <p
       class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
+      style="line-break: anywhere;"
     >
       0.0.123...zbhlt
     </p>
@@ -299,7 +307,7 @@ exports[`SnapUIAddress renders Hedera address with blockie 1`] = `
 exports[`SnapUIAddress renders Polkadot address 1`] = `
 <div>
   <div
-    class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--align-items-center"
+    class="mm-box snap-ui-renderer__address mm-box--display-flex mm-box--gap-2 mm-box--align-items-center"
   >
     <div
       style="display: flex;"
@@ -342,6 +350,7 @@ exports[`SnapUIAddress renders Polkadot address 1`] = `
     </div>
     <p
       class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
+      style="line-break: anywhere;"
     >
       5hmuyxw...egmfy
     </p>
@@ -352,7 +361,7 @@ exports[`SnapUIAddress renders Polkadot address 1`] = `
 exports[`SnapUIAddress renders Polkadot address with blockie 1`] = `
 <div>
   <div
-    class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--align-items-center"
+    class="mm-box snap-ui-renderer__address mm-box--display-flex mm-box--gap-2 mm-box--align-items-center"
   >
     <img
       alt=""
@@ -363,6 +372,7 @@ exports[`SnapUIAddress renders Polkadot address with blockie 1`] = `
     />
     <p
       class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
+      style="line-break: anywhere;"
     >
       5hmuyxw...egmfy
     </p>
@@ -373,7 +383,7 @@ exports[`SnapUIAddress renders Polkadot address with blockie 1`] = `
 exports[`SnapUIAddress renders Starknet address 1`] = `
 <div>
   <div
-    class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--align-items-center"
+    class="mm-box snap-ui-renderer__address mm-box--display-flex mm-box--gap-2 mm-box--align-items-center"
   >
     <div
       style="display: flex;"
@@ -416,6 +426,7 @@ exports[`SnapUIAddress renders Starknet address 1`] = `
     </div>
     <p
       class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
+      style="line-break: anywhere;"
     >
       0x02dd1...0ab57
     </p>
@@ -426,7 +437,7 @@ exports[`SnapUIAddress renders Starknet address 1`] = `
 exports[`SnapUIAddress renders Starknet address with blockie 1`] = `
 <div>
   <div
-    class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--align-items-center"
+    class="mm-box snap-ui-renderer__address mm-box--display-flex mm-box--gap-2 mm-box--align-items-center"
   >
     <img
       alt=""
@@ -437,6 +448,7 @@ exports[`SnapUIAddress renders Starknet address with blockie 1`] = `
     />
     <p
       class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
+      style="line-break: anywhere;"
     >
       0x02dd1...0ab57
     </p>
@@ -447,7 +459,7 @@ exports[`SnapUIAddress renders Starknet address with blockie 1`] = `
 exports[`SnapUIAddress renders legacy Ethereum address 1`] = `
 <div>
   <div
-    class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--align-items-center"
+    class="mm-box snap-ui-renderer__address mm-box--display-flex mm-box--gap-2 mm-box--align-items-center"
   >
     <div
       style="display: flex;"
@@ -490,6 +502,7 @@ exports[`SnapUIAddress renders legacy Ethereum address 1`] = `
     </div>
     <p
       class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
+      style="line-break: anywhere;"
     >
       0xab16a...Bfcdb
     </p>

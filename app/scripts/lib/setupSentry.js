@@ -86,7 +86,12 @@ function getClientOptions() {
     integrations: [
       Sentry.dedupeIntegration(),
       Sentry.extraErrorDataIntegration(),
-      Sentry.browserTracingIntegration(),
+      Sentry.browserTracingIntegration({
+        shouldCreateSpanForRequest: (url) => {
+          // Do not create spans for outgoing requests to a 'sentry.io' domain.
+          return !url.match(/^https?:\/\/([\w\d.@-]+\.)?sentry\.io(\/|$)/u);
+        },
+      }),
       filterEvents({ getMetaMetricsEnabled, log }),
     ],
     release: RELEASE,
@@ -122,10 +127,10 @@ function getTracesSampleRate(sentryTarget) {
   }
 
   if (flags.circleci) {
-    // Report very frequently on develop branch, and never on other branches
+    // Report very frequently on main branch, and never on other branches
     // (Unless you use a `flags = {"sentry": {"tracesSampleRate": x.xx}}` override)
-    if (flags.circleci.branch === 'develop') {
-      return 0.03;
+    if (flags.circleci.branch === 'main') {
+      return 0.015;
     }
     return 0;
   }
@@ -134,7 +139,7 @@ function getTracesSampleRate(sentryTarget) {
     return 1.0;
   }
 
-  return 0.02;
+  return 0.01;
 }
 
 /**
@@ -238,8 +243,8 @@ function getSentryEnvironment() {
 
 function getSentryTarget() {
   if (
-    !getManifestFlags().sentry?.forceEnable ||
-    (process.env.IN_TEST && !SENTRY_DSN_DEV)
+    process.env.IN_TEST &&
+    (!SENTRY_DSN_DEV || !getManifestFlags().sentry?.forceEnable)
   ) {
     return SENTRY_DSN_FAKE;
   }
@@ -424,12 +429,17 @@ export function rewriteReport(report) {
     if (!report.extra) {
       report.extra = {};
     }
-
-    report.extra.appState = appState;
-    if (browser.runtime && browser.runtime.id) {
-      report.extra.extensionId = browser.runtime.id;
+    if (!report.tags) {
+      report.tags = {};
     }
-    report.extra.installType = installType;
+
+    Object.assign(report.extra, {
+      appState,
+      installType,
+      extensionId: browser.runtime?.id,
+    });
+
+    report.tags.installType = installType;
   } catch (err) {
     log('Error rewriting report', err);
   }

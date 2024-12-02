@@ -223,11 +223,12 @@
     "showExtensionInFullSizeView": false,
     "showFiatInTestnets": false,
     "showTestNetworks": false,
-    "smartTransactionsOptInStatus": null,
+    "smartTransactionsOptInStatus": true,
     "hideZeroBalanceTokens": false,
     "petnamesEnabled": true,
     "redesignedConfirmationsEnabled": true,
-    "featureNotificationsEnabled": false
+    "featureNotificationsEnabled": false,
+    "privacyMode": false
   },
   "preventPollingOnNetworkRestart": false,
   "previousAppVersion": "",
@@ -462,7 +463,6 @@
   "useSafeChainsListValidation": true,
   "useTokenDetection": true,
   "useTransactionSimulations": true,
-  "usedNetworks": { "0x1": true, "0x5": true, "0x539": true },
   "userOperations": {},
   "versionFileETag": "",
   "versionInfo": [],

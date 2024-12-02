@@ -22,6 +22,8 @@ export const RevokeSetApprovalForAllStaticSimulation = ({
   const { currentConfirmation: transactionMeta } =
     useConfirmContext<TransactionMeta>();
 
+  const { chainId } = transactionMeta;
+
   const nftsRow = (
     <ConfirmInfoRow label={t('nfts')}>
       <Box style={{ marginLeft: 'auto', maxWidth: '100%' }}>
@@ -30,6 +32,7 @@ export const RevokeSetApprovalForAllStaticSimulation = ({
             value={transactionMeta.txParams.to as string}
             type={NameType.ETHEREUM_ADDRESS}
             preferContractSymbol
+            variation={chainId}
           />
         </Box>
       </Box>
@@ -44,6 +47,7 @@ export const RevokeSetApprovalForAllStaticSimulation = ({
             value={spender}
             type={NameType.ETHEREUM_ADDRESS}
             preferContractSymbol
+            variation={chainId}
           />
         </Box>
       </Box>

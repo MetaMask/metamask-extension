@@ -37,7 +37,28 @@ describe('Import flow', function () {
   it('allows importing multiple tokens from search', async function () {
     await withFixtures(
       {
-        fixtures: new FixtureBuilder().withNetworkControllerOnMainnet().build(),
+        fixtures: new FixtureBuilder()
+          .withNetworkControllerOnMainnet()
+          .withTokensController({
+            tokenList: [
+              {
+                name: 'Chain Games',
+                symbol: 'CHAIN',
+                address: '0xc4c2614e694cf534d407ee49f8e44d125e4681c4',
+              },
+              {
+                address: '0x7051faed0775f664a0286af4f75ef5ed74e02754',
+                symbol: 'CHANGE',
+                name: 'ChangeX',
+              },
+              {
+                name: 'Chai',
+                symbol: 'CHAI',
+                address: '0x06af07097c9eeb7fd685c692751d5c66db49c215',
+              },
+            ],
+          })
+          .build(),
         ganacheOptions: defaultGanacheOptions,
         title: this.test.fullTitle(),
         testSpecificMock: mockPriceFetch,
@@ -48,6 +69,7 @@ describe('Import flow', function () {
         await driver.assertElementNotPresent('.loading-overlay');
 
         await driver.clickElement('[data-testid="import-token-button"]');
+        await driver.clickElement('[data-testid="importTokens"]');
 
         await driver.fill('input[placeholder="Search tokens"]', 'cha');
 
@@ -68,6 +90,13 @@ describe('Import flow', function () {
         await driver.assertElementNotPresent(
           '[data-testid="token-list-loading-message"]',
         );
+
+        await driver.assertElementNotPresent(
+          '[data-testid="token-list-loading-message"]',
+        );
+
+        await driver.clickElement('[data-testid="sort-by-networks"]');
+        await driver.clickElement('[data-testid="network-filter-current"]');
 
         const expectedTokenListElementsAreFound =
           await driver.elementCountBecomesN('.multichain-token-list-item', 4);

@@ -3,6 +3,8 @@ import { CHAIN_IDS, CURRENCY_SYMBOLS } from '../../shared/constants/network';
 import { KeyringType } from '../../shared/constants/keyring';
 import { ETH_EOA_METHODS } from '../../shared/constants/eth-methods';
 import { mockNetworkState } from '../stub/networks';
+import { DEFAULT_BRIDGE_CONTROLLER_STATE } from '../../app/scripts/controllers/bridge/constants';
+import { BRIDGE_PREFERRED_GAS_ESTIMATE } from '../../shared/constants/bridge';
 
 export const createGetSmartTransactionFeesApiResponse = () => {
   return {
@@ -138,6 +140,7 @@ export const createSwapsMockStore = () => {
       preferences: {
         showFiatInTestnets: true,
         smartTransactionsOptInStatus: true,
+        tokenNetworkFilter: {},
         showMultiRpcModal: false,
       },
       transactions: [
@@ -390,14 +393,10 @@ export const createSwapsMockStore = () => {
             smartTransactions: {
               expectedDeadline: 45,
               maxDeadline: 150,
-              returnTxHashAsap: false,
+              extensionReturnTxHashAsap: false,
             },
           },
           smartTransactions: {
-            mobileActive: true,
-            extensionActive: true,
-          },
-          swapRedesign: {
             mobileActive: true,
             extensionActive: true,
           },
@@ -713,6 +712,7 @@ export const createBridgeMockStore = (
     ...swapsStore,
     bridge: {
       toChainId: null,
+      sortOrder: 0,
       ...bridgeSliceOverrides,
     },
     metamask: {
@@ -721,6 +721,16 @@ export const createBridgeMockStore = (
         { chainId: CHAIN_IDS.MAINNET },
         { chainId: CHAIN_IDS.LINEA_MAINNET },
       ),
+      gasFeeEstimates: {
+        estimatedBaseFee: '0.00010456',
+        [BRIDGE_PREFERRED_GAS_ESTIMATE]: {
+          suggestedMaxFeePerGas: '0.00018456',
+          suggestedMaxPriorityFeePerGas: '0.0001',
+        },
+      },
+      currencyRates: {
+        ETH: { conversionRate: 2524.25 },
+      },
       ...metamaskStateOverrides,
       bridgeState: {
         ...(swapsStore.metamask.bridgeState ?? {}),
@@ -730,6 +740,8 @@ export const createBridgeMockStore = (
           destNetworkAllowlist: [],
           ...featureFlagOverrides,
         },
+        quotes: DEFAULT_BRIDGE_CONTROLLER_STATE.quotes,
+        quoteRequest: DEFAULT_BRIDGE_CONTROLLER_STATE.quoteRequest,
         ...bridgeStateOverrides,
       },
     },

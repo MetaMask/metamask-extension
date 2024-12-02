@@ -1,12 +1,14 @@
 import { TransactionMeta } from '@metamask/transaction-controller';
 import React from 'react';
 import { useSelector } from 'react-redux';
+import { TEST_CHAINS } from '../../../../../../../../shared/constants/network';
 import {
   AvatarToken,
   AvatarTokenSize,
   Box,
   Text,
 } from '../../../../../../../components/component-library';
+import Tooltip from '../../../../../../../components/ui/tooltip';
 import {
   AlignItems,
   BackgroundColor,
@@ -17,55 +19,75 @@ import {
   TextVariant,
 } from '../../../../../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../../../../../hooks/useI18nContext';
-import { getWatchedToken } from '../../../../../../../selectors';
-import { MultichainState } from '../../../../../../../selectors/multichain';
+import { getPreferences } from '../../../../../../../selectors';
 import { useConfirmContext } from '../../../../../context/confirm';
-import { useTokenImage } from '../../hooks/use-token-image';
 import { useTokenValues } from '../../hooks/use-token-values';
+import { useTokenDetails } from '../../hooks/useTokenDetails';
+import { ConfirmLoader } from '../confirm-loader/confirm-loader';
 
 const SendHeading = () => {
   const t = useI18nContext();
   const { currentConfirmation: transactionMeta } =
     useConfirmContext<TransactionMeta>();
-  const selectedToken = useSelector((state: MultichainState) =>
-    getWatchedToken(transactionMeta)(state),
+  const { tokenImage, tokenSymbol } = useTokenDetails(transactionMeta);
+  const {
+    decodedTransferValue,
+    displayTransferValue,
+    fiatDisplayValue,
+    pending,
+  } = useTokenValues(transactionMeta);
+
+  type TestNetChainId = (typeof TEST_CHAINS)[number];
+  const isTestnet = TEST_CHAINS.includes(
+    transactionMeta.chainId as TestNetChainId,
   );
-  const { tokenImage } = useTokenImage(transactionMeta, selectedToken);
-  const { tokenBalance, fiatDisplayValue } = useTokenValues(
-    transactionMeta,
-    selectedToken,
-  );
+  const { showFiatInTestnets } = useSelector(getPreferences);
 
   const TokenImage = (
     <AvatarToken
       src={tokenImage}
-      name={selectedToken?.symbol}
+      name={tokenSymbol !== t('unknown') && tokenSymbol}
       size={AvatarTokenSize.Xl}
       backgroundColor={
-        selectedToken?.symbol
-          ? BackgroundColor.backgroundDefault
-          : BackgroundColor.overlayDefault
+        tokenSymbol === t('unknown')
+          ? BackgroundColor.overlayDefault
+          : BackgroundColor.backgroundDefault
       }
       color={
-        selectedToken?.symbol ? TextColor.textDefault : TextColor.textMuted
+        tokenSymbol === t('unknown')
+          ? TextColor.textMuted
+          : TextColor.textDefault
       }
     />
   );
 
-  const TokenValue = (
-    <>
+  const TokenValue =
+    displayTransferValue === decodedTransferValue ? (
       <Text
         variant={TextVariant.headingLg}
         color={TextColor.inherit}
         marginTop={3}
-      >{`${tokenBalance || ''} ${selectedToken?.symbol || t('unknown')}`}</Text>
-      {fiatDisplayValue && (
-        <Text variant={TextVariant.bodyMd} color={TextColor.textAlternative}>
-          {fiatDisplayValue}
-        </Text>
-      )}
-    </>
-  );
+      >{`${displayTransferValue} ${tokenSymbol}`}</Text>
+    ) : (
+      <Tooltip title={decodedTransferValue} position="right">
+        <Text
+          variant={TextVariant.headingLg}
+          color={TextColor.inherit}
+          marginTop={3}
+        >{`${displayTransferValue} ${tokenSymbol}`}</Text>
+      </Tooltip>
+    );
+
+  const TokenFiatValue = Boolean(fiatDisplayValue) &&
+    (!isTestnet || showFiatInTestnets) && (
+      <Text variant={TextVariant.bodyMd} color={TextColor.textAlternative}>
+        {fiatDisplayValue}
+      </Text>
+    );
+
+  if (pending) {
+    return <ConfirmLoader />;
+  }
 
   return (
     <Box
@@ -73,10 +95,11 @@ const SendHeading = () => {
       flexDirection={FlexDirection.Column}
       justifyContent={JustifyContent.center}
       alignItems={AlignItems.center}
-      paddingTop={4}
+      padding={4}
     >
       {TokenImage}
       {TokenValue}
+      {TokenFiatValue}
     </Box>
   );
 };

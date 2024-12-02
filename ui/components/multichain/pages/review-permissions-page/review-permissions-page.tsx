@@ -11,10 +11,10 @@ import {
   FlexDirection,
 } from '../../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
+import { getNetworkConfigurationsByChainId } from '../../../../../shared/modules/selectors/networks';
 import {
   getConnectedSitesList,
   getInternalAccounts,
-  getNetworkConfigurationsByChainId,
   getPermissionSubjects,
   getPermittedAccountsForSelectedTab,
   getPermittedChainsForSelectedTab,
@@ -54,7 +54,7 @@ import { PermissionsHeader } from '../../permissions-header/permissions-header';
 import { mergeAccounts } from '../../account-list-menu/account-list-menu';
 import { MergedInternalAccount } from '../../../../selectors/selectors.types';
 import { TEST_CHAINS } from '../../../../../shared/constants/network';
-import { SiteCell } from '.';
+import { SiteCell } from './site-cell/site-cell';
 
 export const ReviewPermissions = () => {
   const t = useI18nContext();
@@ -195,7 +195,6 @@ export const ReviewPermissions = () => {
               onSelectChainIds={handleSelectChainIds}
               selectedAccountAddresses={connectedAccountAddresses}
               selectedChainIds={connectedChainIds}
-              activeTabOrigin={activeTabOrigin}
             />
           ) : (
             <NoConnectionContent />
@@ -265,14 +264,18 @@ export const ReviewPermissions = () => {
                 </Button>
               </Box>
             ) : (
-              <ButtonPrimary
-                size={ButtonPrimarySize.Lg}
-                block
-                data-test-id="no-connections-button"
-                onClick={requestAccountsAndChainPermissions}
-              >
-                {t('connectAccounts')}
-              </ButtonPrimary>
+              <>
+                {connectedAccountAddresses.length > 0 ? (
+                  <ButtonPrimary
+                    size={ButtonPrimarySize.Lg}
+                    block
+                    data-test-id="no-connections-button"
+                    onClick={requestAccountsAndChainPermissions}
+                  >
+                    {t('connectAccounts')}
+                  </ButtonPrimary>
+                ) : null}
+              </>
             )}
           </>
         </Footer>

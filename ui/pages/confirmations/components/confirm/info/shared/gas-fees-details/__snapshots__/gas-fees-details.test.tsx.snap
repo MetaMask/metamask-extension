@@ -3,7 +3,7 @@
 exports[`<GasFeesDetails /> renders component for gas fees section 1`] = `
 <div>
   <div
-    class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-center mm-box--color-text-default mm-box--rounded-lg"
+    class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
     data-testid="edit-gas-fees-row"
     style="overflow-wrap: anywhere; min-height: 24px; position: relative; background: transparent;"
   >
@@ -67,7 +67,7 @@ exports[`<GasFeesDetails /> renders component for gas fees section 1`] = `
     </div>
   </div>
   <div
-    class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-center mm-box--color-text-default mm-box--rounded-lg"
+    class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
     data-testid="gas-fee-details-speed"
     style="overflow-wrap: anywhere; min-height: 24px; position: relative; background: transparent;"
   >

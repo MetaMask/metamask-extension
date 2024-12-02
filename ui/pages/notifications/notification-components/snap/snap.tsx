@@ -1,32 +1,55 @@
 import React, { useContext } from 'react';
-import { useSelector, useDispatch } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
+import { NotificationServicesController } from '@metamask/notification-services-controller';
+import { TRIGGER_TYPES } from '@metamask/notification-services-controller/notification-services';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../../../../shared/constants/metametrics';
 import { MetaMetricsContext } from '../../../../contexts/metametrics';
 import { NotificationListItemSnap } from '../../../../components/multichain';
-import type { SnapNotification } from '../../snap/types/types';
 import { getSnapsMetadata } from '../../../../selectors';
-import { markNotificationsAsRead } from '../../../../store/actions';
 import { getSnapRoute, getSnapName } from '../../../../helpers/utils/util';
+import { useMarkNotificationAsRead } from '../../../../hooks/metamask-notifications/useNotifications';
+import { useSnapNotificationTimeouts } from '../../../../hooks/useNotificationTimeouts';
+
+export type SnapNotification = Extract<
+  NotificationServicesController.Types.INotification,
+  { type: TRIGGER_TYPES.SNAP }
+>;
 
 type SnapComponentProps = {
   snapNotification: SnapNotification;
 };
 
 export const SnapComponent = ({ snapNotification }: SnapComponentProps) => {
-  const dispatch = useDispatch();
   const history = useHistory();
   const trackEvent = useContext(MetaMetricsContext);
+  const { markNotificationAsRead } = useMarkNotificationAsRead();
+  const { setNotificationTimeout } = useSnapNotificationTimeouts();
 
   const snapsMetadata = useSelector(getSnapsMetadata);
 
   const snapsNameGetter = getSnapName(snapsMetadata);
 
+  const handleUnreadNotification = () => {
+    markNotificationAsRead([
+      {
+        id: snapNotification.id,
+        type: snapNotification.type,
+        isRead: snapNotification.isRead,
+      },
+    ]);
+
+    setNotificationTimeout(snapNotification.id);
+  };
+
   const handleSnapClick = () => {
-    dispatch(markNotificationsAsRead([snapNotification.id]));
+    if (!snapNotification.isRead) {
+      handleUnreadNotification();
+    }
+
     trackEvent({
       category: MetaMetricsEventCategory.NotificationInteraction,
       event: MetaMetricsEventName.NotificationClicked,
@@ -39,7 +62,9 @@ export const SnapComponent = ({ snapNotification }: SnapComponentProps) => {
   };
 
   const handleSnapButton = () => {
-    dispatch(markNotificationsAsRead([snapNotification.id]));
+    if (!snapNotification.isRead) {
+      handleUnreadNotification();
+    }
     trackEvent({
       category: MetaMetricsEventCategory.NotificationInteraction,
       event: MetaMetricsEventName.NotificationClicked,

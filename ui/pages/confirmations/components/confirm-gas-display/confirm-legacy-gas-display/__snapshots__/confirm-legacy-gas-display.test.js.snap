@@ -51,6 +51,7 @@ exports[`ConfirmLegacyGasDisplay should match snapshot 1`] = `
             >
               <span
                 class="mm-box mm-text currency-display-component__text mm-text--inherit mm-text--ellipsis mm-box--color-text-default"
+                data-testid="account-value-and-suffix"
               >
                 0.000021
               </span>
@@ -67,6 +68,7 @@ exports[`ConfirmLegacyGasDisplay should match snapshot 1`] = `
             >
               <span
                 class="mm-box mm-text currency-display-component__text mm-text--body-md-bold mm-text--ellipsis mm-box--color-text-default"
+                data-testid="account-value-and-suffix"
               >
                 0.000021
               </span>
@@ -100,6 +102,7 @@ exports[`ConfirmLegacyGasDisplay should match snapshot 1`] = `
           >
             <span
               class="mm-box mm-text currency-display-component__text mm-text--inherit mm-text--ellipsis mm-box--color-text-default"
+              data-testid="account-value-and-suffix"
             >
               0.000021
             </span>
@@ -115,5 +118,3 @@ exports[`ConfirmLegacyGasDisplay should match snapshot 1`] = `
   </div>
 </div>
 `;
-
-exports[`ConfirmLegacyGasDisplay should match snapshot 2`] = `<div />`;

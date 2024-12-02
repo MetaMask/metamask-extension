@@ -248,10 +248,6 @@ describe('NFT Items', () => {
     jest.clearAllMocks();
   });
 
-  function delay(ms) {
-    return new Promise((resolve) => setTimeout(resolve, ms));
-  }
-
   describe('NFTs Detection Notice', () => {
     it('should render the NFTs Detection Notice when currently selected network is Mainnet and nft detection is set to false and user has nfts', () => {
       render({
@@ -372,26 +368,6 @@ describe('NFT Items', () => {
       fireEvent.click(screen.queryByText('Enable autodetect'));
       expect(historyPushMock).toHaveBeenCalledTimes(1);
       expect(historyPushMock).toHaveBeenCalledWith(SECURITY_ROUTE);
-    });
-  });
-
-  describe('NFT Tab Ramps Card', () => {
-    it('shows the ramp card when user balance is zero', async () => {
-      const { queryByText } = render({
-        selectedAddress: ACCOUNT_1,
-        balance: '0x0',
-      });
-      // wait for spinner to be removed
-      await delay(3000);
-      expect(queryByText('Get ETH to buy NFTs')).toBeInTheDocument();
-    });
-
-    it('does not show the ramp card when the account has a balance', () => {
-      const { queryByText } = render({
-        selectedAddress: ACCOUNT_1,
-        balance: ETH_BALANCE,
-      });
-      expect(queryByText('Get ETH to buy NFTs')).not.toBeInTheDocument();
     });
   });
 });

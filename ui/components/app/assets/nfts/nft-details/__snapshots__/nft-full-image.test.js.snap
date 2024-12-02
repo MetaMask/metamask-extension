@@ -80,5 +80,3 @@ exports[`NFT full image should match snapshot 1`] = `
   </div>
 </div>
 `;
-
-exports[`NFT full image should match snapshot 2`] = `<div />`;

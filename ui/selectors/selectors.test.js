@@ -1,18 +1,24 @@
-import { deepClone } from '@metamask/snaps-utils';
 import { ApprovalType } from '@metamask/controller-utils';
-import { EthAccountType, EthMethod } from '@metamask/keyring-api';
+import {
+  BtcAccountType,
+  EthAccountType,
+  EthMethod,
+} from '@metamask/keyring-api';
+import { deepClone } from '@metamask/snaps-utils';
 import { TransactionStatus } from '@metamask/transaction-controller';
-import mockState from '../../test/data/mock-state.json';
 import { KeyringType } from '../../shared/constants/keyring';
+import mockState from '../../test/data/mock-state.json';
 import { CHAIN_IDS, NETWORK_TYPES } from '../../shared/constants/network';
-import { SURVEY_DATE, SURVEY_GMT } from '../helpers/constants/survey';
-import { PRIVACY_POLICY_DATE } from '../helpers/constants/privacy-policy';
 import { createMockInternalAccount } from '../../test/jest/mocks';
-import { ETH_EOA_METHODS } from '../../shared/constants/eth-methods';
-import { getProviderConfig } from '../ducks/metamask/metamask';
 import { mockNetworkState } from '../../test/stub/networks';
 import { DeleteRegulationStatus } from '../../shared/constants/metametrics';
+import { selectSwitchedNetworkNeverShowMessage } from '../components/app/toast-master/selectors';
+import * as networkSelectors from '../../shared/modules/selectors/networks';
 import * as selectors from './selectors';
+
+jest.mock('../../shared/modules/selectors/networks', () => ({
+  ...jest.requireActual('../../shared/modules/selectors/networks'),
+}));
 
 jest.mock('../../app/scripts/lib/util', () => ({
   ...jest.requireActual('../../app/scripts/lib/util'),
@@ -34,6 +40,21 @@ const modifyStateWithHWKeyring = (keyring) => {
   ].metadata.keyring.type = keyring;
 
   return modifiedState;
+};
+
+const mockAccountsState = (accounts) => {
+  const accountsMap = accounts.reduce((map, account) => {
+    map[account.id] = account;
+    return map;
+  }, {});
+
+  return {
+    metamask: {
+      internalAccounts: {
+        accounts: accountsMap,
+      },
+    },
+  };
 };
 
 describe('Selectors', () => {
@@ -58,49 +79,6 @@ describe('Selectors', () => {
       expect(
         selectors.getSelectedAddress({ metamask: { internalAccounts } }),
       ).toStrictEqual(mockInternalAccount.address);
-    });
-  });
-
-  describe('#getSelectedInternalAccount', () => {
-    it('returns undefined if selectedAccount is undefined', () => {
-      expect(
-        selectors.getSelectedInternalAccount({
-          metamask: {
-            internalAccounts: {
-              accounts: {},
-              selectedAccount: '',
-            },
-          },
-        }),
-      ).toBeUndefined();
-    });
-
-    it('returns selectedAccount', () => {
-      const mockInternalAccount = {
-        address: '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc',
-        id: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
-        metadata: {
-          name: 'Test Account',
-          keyring: {
-            type: 'HD Key Tree',
-          },
-        },
-        options: {},
-        methods: ETH_EOA_METHODS,
-        type: EthAccountType.Eoa,
-      };
-      expect(
-        selectors.getSelectedInternalAccount({
-          metamask: {
-            internalAccounts: {
-              accounts: {
-                [mockInternalAccount.id]: mockInternalAccount,
-              },
-              selectedAccount: mockInternalAccount.id,
-            },
-          },
-        }),
-      ).toStrictEqual(mockInternalAccount);
     });
   });
 
@@ -139,14 +117,6 @@ describe('Selectors', () => {
     });
   });
 
-  describe('#getInternalAccounts', () => {
-    it('returns a list of internal accounts', () => {
-      expect(selectors.getInternalAccounts(mockState)).toStrictEqual(
-        Object.values(mockState.metamask.internalAccounts.accounts),
-      );
-    });
-  });
-
   describe('#getInternalAccount', () => {
     it("returns undefined if the account doesn't exist", () => {
       expect(
@@ -168,10 +138,10 @@ describe('Selectors', () => {
     });
   });
 
-  describe('#getNeverShowSwitchedNetworkMessage', () => {
+  describe('#selectSwitchedNetworkNeverShowMessage', () => {
     it('returns the correct value', () => {
       expect(
-        selectors.getNeverShowSwitchedNetworkMessage({
+        selectSwitchedNetworkNeverShowMessage({
           metamask: { switchedNetworkNeverShowMessage: true },
         }),
       ).toStrictEqual(true);
@@ -223,7 +193,7 @@ describe('Selectors', () => {
 
       expect(selectors.getSwitchedNetworkDetails(state)).toStrictEqual({
         imageUrl: './images/eth_logo.svg',
-        nickname: getProviderConfig(state).nickname,
+        nickname: networkSelectors.getProviderConfig(state).nickname,
         origin,
       });
     });
@@ -680,45 +650,6 @@ describe('Selectors', () => {
     });
   });
 
-  describe('#getNetworkConfigurationsByChainId', () => {
-    it('returns networkConfigurationsByChainId', () => {
-      const networkConfigurationsByChainId = {
-        '0xtest': {
-          chainId: '0xtest',
-          nativeCurrency: 'TEST',
-          defaultRpcEndpointUrl: 'https://mock-rpc-url-1',
-          defaultRpcEndpointIndex: 0,
-          rpcEndpoints: [
-            {
-              networkClientId: 'testNetworkConfigurationId1',
-              url: 'https://mock-rpc-url-1',
-            },
-          ],
-        },
-        '0x1337': {
-          chainId: '0x1337',
-          nativeCurrency: 'RPC',
-          defaultRpcEndpointUrl: 'https://mock-rpc-url-2',
-          defaultRpcEndpointIndex: 0,
-          rpcEndpoints: [
-            {
-              networkClientId: 'testNetworkConfigurationId2',
-              url: 'https://mock-rpc-url-2',
-            },
-          ],
-        },
-      };
-
-      expect(
-        selectors.getNetworkConfigurationsByChainId({
-          metamask: {
-            networkConfigurationsByChainId,
-          },
-        }),
-      ).toStrictEqual(networkConfigurationsByChainId);
-    });
-  });
-
   describe('#getCurrentNetwork', () => {
     it('returns built-in network configuration', () => {
       const modifiedMockState = {
@@ -872,6 +803,103 @@ describe('Selectors', () => {
     });
   });
 
+  describe('#getChainIdsToPoll', () => {
+    const networkConfigurationsByChainId = {
+      [CHAIN_IDS.MAINNET]: {
+        chainId: CHAIN_IDS.MAINNET,
+        defaultRpcEndpointIndex: 0,
+        rpcEndpoints: [{ networkClientId: 'mainnet' }],
+      },
+      [CHAIN_IDS.LINEA_MAINNET]: {
+        chainId: CHAIN_IDS.LINEA_MAINNET,
+        defaultRpcEndpointIndex: 0,
+        rpcEndpoints: [{ networkClientId: 'linea-mainnet' }],
+      },
+      [CHAIN_IDS.SEPOLIA]: {
+        chainId: CHAIN_IDS.SEPOLIA,
+        defaultRpcEndpointIndex: 0,
+        rpcEndpoints: [{ networkClientId: 'sepolia' }],
+      },
+      [CHAIN_IDS.LINEA_SEPOLIA]: {
+        chainId: CHAIN_IDS.LINEA_SEPOLIA,
+        defaultRpcEndpointIndex: 0,
+        rpcEndpoints: [{ networkClientId: 'linea-sepolia' }],
+      },
+    };
+
+    beforeEach(() => {
+      process.env.PORTFOLIO_VIEW = 'true';
+    });
+
+    afterEach(() => {
+      process.env.PORTFOLIO_VIEW = undefined;
+    });
+
+    it('returns only non-test chain IDs', () => {
+      const chainIds = selectors.getChainIdsToPoll({
+        metamask: {
+          preferences: {
+            tokenNetworkFilter: {},
+          },
+          networkConfigurationsByChainId,
+          selectedNetworkClientId: 'mainnet',
+        },
+      });
+      expect(Object.values(chainIds)).toHaveLength(2);
+      expect(chainIds).toStrictEqual([
+        CHAIN_IDS.MAINNET,
+        CHAIN_IDS.LINEA_MAINNET,
+      ]);
+    });
+  });
+
+  describe('#getNetworkClientIdsToPoll', () => {
+    const networkConfigurationsByChainId = {
+      [CHAIN_IDS.MAINNET]: {
+        chainId: CHAIN_IDS.MAINNET,
+        defaultRpcEndpointIndex: 0,
+        rpcEndpoints: [{ networkClientId: 'mainnet' }],
+      },
+      [CHAIN_IDS.LINEA_MAINNET]: {
+        chainId: CHAIN_IDS.LINEA_MAINNET,
+        defaultRpcEndpointIndex: 0,
+        rpcEndpoints: [{ networkClientId: 'linea-mainnet' }],
+      },
+      [CHAIN_IDS.SEPOLIA]: {
+        chainId: CHAIN_IDS.SEPOLIA,
+        defaultRpcEndpointIndex: 0,
+        rpcEndpoints: [{ networkClientId: 'sepolia' }],
+      },
+      [CHAIN_IDS.LINEA_SEPOLIA]: {
+        chainId: CHAIN_IDS.LINEA_SEPOLIA,
+        defaultRpcEndpointIndex: 0,
+        rpcEndpoints: [{ networkClientId: 'linea-sepolia' }],
+      },
+    };
+
+    beforeEach(() => {
+      process.env.PORTFOLIO_VIEW = 'true';
+    });
+
+    afterEach(() => {
+      process.env.PORTFOLIO_VIEW = undefined;
+    });
+
+    it('returns only non-test chain IDs', () => {
+      const chainIds = selectors.getNetworkClientIdsToPoll({
+        metamask: {
+          preferences: {
+            tokenNetworkFilter: {},
+          },
+          networkConfigurationsByChainId,
+          selectedNetworkClientId: 'mainnet',
+        },
+      });
+      expect(Object.values(chainIds)).toHaveLength(2);
+      expect(chainIds).toStrictEqual(['mainnet', 'linea-mainnet']);
+    });
+  });
+
   describe('#isHardwareWallet', () => {
     it('returns false if it is not a HW wallet', () => {
       const mockStateWithImported = modifyStateWithHWKeyring(
@@ -953,28 +981,6 @@ describe('Selectors', () => {
       expect(selectors.getHardwareWalletType(mockStateWithTrezor)).toBe(
         KeyringType.trezor,
       );
-    });
-  });
-
-  it('returns selected internalAccount', () => {
-    expect(selectors.getSelectedInternalAccount(mockState)).toStrictEqual({
-      address: '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc',
-      id: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
-      metadata: {
-        name: 'Test Account',
-        keyring: {
-          type: 'HD Key Tree',
-        },
-      },
-      options: {},
-      methods: [
-        'personal_sign',
-        'eth_signTransaction',
-        'eth_signTypedData_v1',
-        'eth_signTypedData_v3',
-        'eth_signTypedData_v4',
-      ],
-      type: 'eip155:eoa',
     });
   });
 
@@ -1158,33 +1164,6 @@ describe('Selectors', () => {
     const appIsLoading = selectors.getAppIsLoading(mockState);
     expect(appIsLoading).toStrictEqual(false);
   });
-  it('#getNotifications', () => {
-    const notifications = selectors.getNotifications(mockState);
-
-    expect(notifications).toStrictEqual([
-      mockState.metamask.notifications.test,
-      mockState.metamask.notifications.test2,
-    ]);
-  });
-  it('#getReadNotificationsCount', () => {
-    const readNotificationsCount =
-      selectors.getReadNotificationsCount(mockState);
-    expect(readNotificationsCount).toStrictEqual(1);
-  });
-  it('#getUnreadNotificationsCount', () => {
-    const unreadNotificationCount =
-      selectors.getUnreadNotificationsCount(mockState);
-
-    expect(unreadNotificationCount).toStrictEqual(1);
-  });
-
-  it('#getUnreadNotifications', () => {
-    const unreadNotifications = selectors.getUnreadNotifications(mockState);
-
-    expect(unreadNotifications).toStrictEqual([
-      mockState.metamask.notifications.test,
-    ]);
-  });
 
   it('#getUseCurrencyRateCheck', () => {
     const useCurrencyRateCheck = selectors.getUseCurrencyRateCheck(mockState);
@@ -1282,24 +1261,6 @@ describe('Selectors', () => {
     expect(selectors.getSnapsInstallPrivacyWarningShown(mockState)).toBe(false);
   });
 
-  it('#getInfuraBlocked', () => {
-    let isInfuraBlocked = selectors.getInfuraBlocked(mockState);
-    expect(isInfuraBlocked).toBe(false);
-
-    const modifiedMockState = {
-      ...mockState,
-      metamask: {
-        ...mockState.metamask,
-        ...mockNetworkState({
-          chainId: CHAIN_IDS.GOERLI,
-          metadata: { status: 'blocked' },
-        }),
-      },
-    };
-    isInfuraBlocked = selectors.getInfuraBlocked(modifiedMockState);
-    expect(isInfuraBlocked).toBe(true);
-  });
-
   it('#getSnapRegistryData', () => {
     const mockSnapId = 'npm:@metamask/test-snap-bip44';
     expect(selectors.getSnapRegistryData(mockState, mockSnapId)).toStrictEqual(
@@ -1387,194 +1348,6 @@ describe('Selectors', () => {
     });
   });
 
-  describe('#getShowSurveyToast', () => {
-    const realDateNow = Date.now;
-
-    afterEach(() => {
-      Date.now = realDateNow;
-    });
-
-    it('shows the survey link when not yet seen and within time bounds', () => {
-      Date.now = () =>
-        new Date(`${SURVEY_DATE} 12:25:00 ${SURVEY_GMT}`).getTime();
-      const result = selectors.getShowSurveyToast({
-        metamask: {
-          surveyLinkLastClickedOrClosed: null,
-        },
-      });
-      expect(result).toStrictEqual(true);
-    });
-
-    it('does not show the survey link when seen and within time bounds', () => {
-      Date.now = () =>
-        new Date(`${SURVEY_DATE} 12:25:00 ${SURVEY_GMT}`).getTime();
-      const result = selectors.getShowSurveyToast({
-        metamask: {
-          surveyLinkLastClickedOrClosed: 123456789,
-        },
-      });
-      expect(result).toStrictEqual(false);
-    });
-
-    it('does not show the survey link before time bounds', () => {
-      Date.now = () =>
-        new Date(`${SURVEY_DATE} 11:25:00 ${SURVEY_GMT}`).getTime();
-      const result = selectors.getShowSurveyToast({
-        metamask: {
-          surveyLinkLastClickedOrClosed: null,
-        },
-      });
-      expect(result).toStrictEqual(false);
-    });
-
-    it('does not show the survey link after time bounds', () => {
-      Date.now = () =>
-        new Date(`${SURVEY_DATE} 14:25:00 ${SURVEY_GMT}`).getTime();
-      const result = selectors.getShowSurveyToast({
-        metamask: {
-          surveyLinkLastClickedOrClosed: null,
-        },
-      });
-      expect(result).toStrictEqual(false);
-    });
-  });
-
-  describe('#getShowPrivacyPolicyToast', () => {
-    let dateNowSpy;
-
-    describe('mock one day after', () => {
-      beforeEach(() => {
-        const dayAfterPolicyDate = new Date(PRIVACY_POLICY_DATE);
-        dayAfterPolicyDate.setDate(dayAfterPolicyDate.getDate() + 1);
-
-        dateNowSpy = jest
-          .spyOn(Date, 'now')
-          .mockReturnValue(dayAfterPolicyDate.getTime());
-      });
-
-      afterEach(() => {
-        dateNowSpy.mockRestore();
-      });
-
-      it('shows the privacy policy toast when not yet seen, on or after the policy date, and onboardingDate is before the policy date', () => {
-        const result = selectors.getShowPrivacyPolicyToast({
-          metamask: {
-            newPrivacyPolicyToastClickedOrClosed: null,
-            onboardingDate: new Date(PRIVACY_POLICY_DATE).setDate(
-              new Date(PRIVACY_POLICY_DATE).getDate() - 2,
-            ),
-          },
-        });
-        expect(result).toBe(true);
-      });
-
-      it('does not show the privacy policy toast when seen, even if on or after the policy date and onboardingDate is before the policy date', () => {
-        const result = selectors.getShowPrivacyPolicyToast({
-          metamask: {
-            newPrivacyPolicyToastClickedOrClosed: true,
-            onboardingDate: new Date(PRIVACY_POLICY_DATE).setDate(
-              new Date(PRIVACY_POLICY_DATE).getDate() - 2,
-            ),
-          },
-        });
-        expect(result).toBe(false);
-      });
-
-      it('shows the privacy policy toast when not yet seen, on or after the policy date, and onboardingDate is not set', () => {
-        const result = selectors.getShowPrivacyPolicyToast({
-          metamask: {
-            newPrivacyPolicyToastClickedOrClosed: null,
-            onboardingDate: null,
-          },
-        });
-        expect(result).toBe(true);
-      });
-    });
-
-    describe('mock same day', () => {
-      beforeEach(() => {
-        dateNowSpy = jest
-          .spyOn(Date, 'now')
-          .mockReturnValue(new Date(PRIVACY_POLICY_DATE).getTime());
-      });
-
-      afterEach(() => {
-        dateNowSpy.mockRestore();
-      });
-
-      it('shows the privacy policy toast when not yet seen, on or after the policy date, and onboardingDate is before the policy date', () => {
-        const result = selectors.getShowPrivacyPolicyToast({
-          metamask: {
-            newPrivacyPolicyToastClickedOrClosed: null,
-            onboardingDate: new Date(PRIVACY_POLICY_DATE).setDate(
-              new Date(PRIVACY_POLICY_DATE).getDate() - 2,
-            ),
-          },
-        });
-        expect(result).toBe(true);
-      });
-
-      it('does not show the privacy policy toast when seen, even if on or after the policy date and onboardingDate is before the policy date', () => {
-        const result = selectors.getShowPrivacyPolicyToast({
-          metamask: {
-            newPrivacyPolicyToastClickedOrClosed: true,
-            onboardingDate: new Date(PRIVACY_POLICY_DATE).setDate(
-              new Date(PRIVACY_POLICY_DATE).getDate() - 2,
-            ),
-          },
-        });
-        expect(result).toBe(false);
-      });
-
-      it('shows the privacy policy toast when not yet seen, on or after the policy date, and onboardingDate is not set', () => {
-        const result = selectors.getShowPrivacyPolicyToast({
-          metamask: {
-            newPrivacyPolicyToastClickedOrClosed: null,
-            onboardingDate: null,
-          },
-        });
-        expect(result).toBe(true);
-      });
-    });
-
-    describe('mock day before', () => {
-      beforeEach(() => {
-        const dayBeforePolicyDate = new Date(PRIVACY_POLICY_DATE);
-        dayBeforePolicyDate.setDate(dayBeforePolicyDate.getDate() - 1);
-
-        dateNowSpy = jest
-          .spyOn(Date, 'now')
-          .mockReturnValue(dayBeforePolicyDate.getTime());
-      });
-
-      afterEach(() => {
-        dateNowSpy.mockRestore();
-      });
-
-      it('does not show the privacy policy toast before the policy date', () => {
-        const result = selectors.getShowPrivacyPolicyToast({
-          metamask: {
-            newPrivacyPolicyToastClickedOrClosed: null,
-            onboardingDate: new Date(PRIVACY_POLICY_DATE).setDate(
-              new Date(PRIVACY_POLICY_DATE).getDate() - 2,
-            ),
-          },
-        });
-        expect(result).toBe(false);
-      });
-
-      it('does not show the privacy policy toast before the policy date even if onboardingDate is not set', () => {
-        const result = selectors.getShowPrivacyPolicyToast({
-          metamask: {
-            newPrivacyPolicyToastClickedOrClosed: null,
-            onboardingDate: null,
-          },
-        });
-        expect(result).toBe(false);
-      });
-    });
-  });
-
   it('#getUpdatedAndSortedAccounts', () => {
     const pinnedAccountState = {
       ...mockState,
@@ -1645,6 +1418,7 @@ describe('Selectors', () => {
         balance: '0x0',
         id: '07c2cfec-36c9-46c4-8115-3836d3ac9047',
         metadata: {
+          importTime: 0,
           name: 'Test Account 2',
           keyring: {
             type: 'HD Key Tree',
@@ -1669,6 +1443,7 @@ describe('Selectors', () => {
         balance: '0x0',
         id: '784225f4-d30b-4e77-a900-c8bbce735b88',
         metadata: {
+          importTime: 0,
           name: 'Test Account 3',
           keyring: {
             type: 'HD Key Tree',
@@ -1692,6 +1467,7 @@ describe('Selectors', () => {
         address: '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc',
         id: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
         metadata: {
+          importTime: 0,
           name: 'Test Account',
           keyring: {
             type: 'HD Key Tree',
@@ -1717,6 +1493,7 @@ describe('Selectors', () => {
         address: '0xc42edfcc21ed14dda456aa0756c153f7985d8813',
         id: '15e69915-2a1a-4019-93b3-916e11fd432f',
         metadata: {
+          importTime: 0,
           name: 'Ledger Hardware 2',
           keyring: {
             type: 'Ledger Hardware',
@@ -1744,8 +1521,10 @@ describe('Selectors', () => {
           keyring: {
             type: 'Snap Keyring',
           },
+          importTime: 0,
           name: 'Snap Account 1',
           snap: {
+            enabled: true,
             id: 'snap-id',
             name: 'snap-name',
           },
@@ -1766,6 +1545,7 @@ describe('Selectors', () => {
       {
         id: '694225f4-d30b-4e77-a900-c8bbce735b42',
         metadata: {
+          importTime: 0,
           name: 'Test Account 4',
           keyring: {
             type: 'Custody test',
@@ -2078,6 +1858,309 @@ describe('#getConnectedSitesList', () => {
           },
         }),
       ).toStrictEqual('INITIALIZED');
+    });
+  });
+
+  describe('getEvmInternalAccounts', () => {
+    const account1 = createMockInternalAccount({
+      keyringType: KeyringType.hd,
+    });
+    const account2 = createMockInternalAccount({
+      type: EthAccountType.Erc4337,
+      keyringType: KeyringType.snap,
+    });
+    const account3 = createMockInternalAccount({
+      keyringType: KeyringType.imported,
+    });
+    const account4 = createMockInternalAccount({
+      keyringType: KeyringType.ledger,
+    });
+    const account5 = createMockInternalAccount({
+      keyringType: KeyringType.trezor,
+    });
+    const nonEvmAccount1 = createMockInternalAccount({
+      type: BtcAccountType.P2wpkh,
+      keyringType: KeyringType.snap,
+    });
+    const nonEvmAccount2 = createMockInternalAccount({
+      type: BtcAccountType.P2wpkh,
+      keyringType: KeyringType.snap,
+    });
+
+    const evmAccounts = [account1, account2, account3, account4, account5];
+
+    it('returns all EVM accounts when only EVM accounts are present', () => {
+      const state = mockAccountsState(evmAccounts);
+      expect(selectors.getEvmInternalAccounts(state)).toStrictEqual(
+        evmAccounts,
+      );
+    });
+
+    it('only returns EVM accounts when there are non-EVM accounts', () => {
+      const state = mockAccountsState([
+        ...evmAccounts,
+        nonEvmAccount1,
+        nonEvmAccount2,
+      ]);
+      expect(selectors.getEvmInternalAccounts(state)).toStrictEqual(
+        evmAccounts,
+      );
+    });
+
+    it('returns an empty array when there are no EVM accounts', () => {
+      const state = mockAccountsState([nonEvmAccount1, nonEvmAccount2]);
+      expect(selectors.getEvmInternalAccounts(state)).toStrictEqual([]);
+    });
+  });
+
+  describe('getSelectedEvmInternalAccount', () => {
+    const account1 = createMockInternalAccount({
+      lastSelected: 1,
+    });
+    const account2 = createMockInternalAccount({
+      lastSelected: 2,
+    });
+    const account3 = createMockInternalAccount({
+      lastSelected: 3,
+    });
+    const nonEvmAccount1 = createMockInternalAccount({
+      type: BtcAccountType.P2wpkh,
+      keyringType: KeyringType.snap,
+      lastSelected: 4,
+    });
+    const nonEvmAccount2 = createMockInternalAccount({
+      type: BtcAccountType.P2wpkh,
+      keyringType: KeyringType.snap,
+      lastSelected: 5,
+    });
+
+    it('returns the last selected EVM account', () => {
+      const state = mockAccountsState([account1, account2, account3]);
+      expect(selectors.getSelectedEvmInternalAccount(state)).toBe(account3);
+    });
+
+    it('returns the last selected EVM account when there are non-EVM accounts', () => {
+      const state = mockAccountsState([
+        account1,
+        account2,
+        account3,
+        nonEvmAccount1,
+        nonEvmAccount2,
+      ]);
+      expect(selectors.getSelectedEvmInternalAccount(state)).toBe(account3);
+    });
+
+    it('returns `undefined` if there are no EVM accounts', () => {
+      const state = mockAccountsState([nonEvmAccount1, nonEvmAccount2]);
+      expect(selectors.getSelectedEvmInternalAccount(state)).toBe(undefined);
+    });
+  });
+
+  describe('getSwapsDefaultToken', () => {
+    it('returns the token object for the current chainId when no overrideChainId is provided', () => {
+      const expectedToken = {
+        symbol: 'ETH',
+        name: 'Ether',
+        address: '0x0000000000000000000000000000000000000000',
+        decimals: 18,
+        balance: '966987986469506564059',
+        string: '966.988',
+        iconUrl: './images/black-eth-logo.svg',
+      };
+
+      const result = selectors.getSwapsDefaultToken(mockState);
+
+      expect(result).toStrictEqual(expectedToken);
+    });
+
+    it('returns the token object for the overridden chainId when overrideChainId is provided', () => {
+      const getCurrentChainIdSpy = jest.spyOn(
+        networkSelectors,
+        'getCurrentChainId',
+      );
+      const expectedToken = {
+        symbol: 'POL',
+        name: 'Polygon',
+        address: '0x0000000000000000000000000000000000000000',
+        decimals: 18,
+        balance: '966987986469506564059',
+        string: '966.988',
+        iconUrl: './images/pol-token.svg',
+      };
+
+      const result = selectors.getSwapsDefaultToken(
+        mockState,
+        CHAIN_IDS.POLYGON,
+      );
+
+      expect(result).toStrictEqual(expectedToken);
+      expect(getCurrentChainIdSpy).not.toHaveBeenCalled(); // Ensure overrideChainId is used
+    });
+  });
+
+  describe('getIsSwapsChain', () => {
+    it('returns true for an allowed chainId in production environment', () => {
+      process.env.METAMASK_ENVIRONMENT = 'production';
+
+      const state = {
+        ...mockState,
+        metamask: {
+          ...mockState.metamask,
+          selectedNetworkClientId: 'testNetworkConfigurationId', // corresponds to mainnet RPC in mockState
+        },
+      };
+
+      const result = selectors.getIsSwapsChain(state);
+
+      expect(result).toBe(true);
+    });
+
+    it('returns true for an allowed chainId in development environment', () => {
+      process.env.METAMASK_ENVIRONMENT = 'development';
+
+      const state = {
+        ...mockState,
+        metamask: {
+          ...mockState.metamask,
+          selectedNetworkClientId: 'goerli',
+        },
+      };
+
+      const result = selectors.getIsSwapsChain(state);
+
+      expect(result).toBe(true);
+    });
+
+    it('returns false for a disallowed chainId in production environment', () => {
+      process.env.METAMASK_ENVIRONMENT = 'production';
+
+      const state = {
+        ...mockState,
+        metamask: {
+          ...mockState.metamask,
+          selectedNetworkClientId: 'fooChain', // corresponds to mainnet RPC in mockState
+          networkConfigurationsByChainId: {
+            '0x8080': {
+              chainId: '0x8080',
+              name: 'Custom Mainnet RPC',
+              nativeCurrency: 'ETH',
+              defaultRpcEndpointIndex: 0,
+              rpcEndpoints: [
+                {
+                  type: 'custom',
+                  url: 'https://testrpc.com',
+                  networkClientId: 'fooChain',
+                },
+              ],
+            },
+          },
+        },
+      };
+
+      const result = selectors.getIsSwapsChain(state);
+
+      expect(result).toBe(false);
+    });
+
+    it('returns false for a disallowed chainId in development environment', () => {
+      process.env.METAMASK_ENVIRONMENT = 'development';
+
+      const state = {
+        ...mockState,
+        metamask: {
+          ...mockState.metamask,
+          selectedNetworkClientId: 'fooChain', // corresponds to mainnet RPC in mockState
+          networkConfigurationsByChainId: {
+            '0x8080': {
+              chainId: '0x8080',
+              name: 'Custom Mainnet RPC',
+              nativeCurrency: 'ETH',
+              defaultRpcEndpointIndex: 0,
+              rpcEndpoints: [
+                {
+                  type: 'custom',
+                  url: 'https://testrpc.com',
+                  networkClientId: 'fooChain',
+                },
+              ],
+            },
+          },
+        },
+      };
+
+      const result = selectors.getIsSwapsChain(state);
+
+      expect(result).toBe(false);
+    });
+
+    it('respects the overrideChainId parameter', () => {
+      process.env.METAMASK_ENVIRONMENT = 'production';
+
+      const getCurrentChainIdSpy = jest.spyOn(
+        networkSelectors,
+        'getCurrentChainId',
+      );
+
+      const result = selectors.getIsSwapsChain(mockState, '0x89');
+      expect(result).toBe(true);
+      expect(getCurrentChainIdSpy).not.toHaveBeenCalled(); // Ensure overrideChainId is used
+    });
+  });
+
+  describe('getIsBridgeChain', () => {
+    it('returns true for an allowed bridge chainId', () => {
+      const state = {
+        ...mockState,
+        metamask: {
+          ...mockState.metamask,
+          selectedNetworkClientId: 'testNetworkConfigurationId', // corresponds to mainnet RPC in mockState
+        },
+      };
+
+      const result = selectors.getIsBridgeChain(state);
+
+      expect(result).toBe(true);
+    });
+
+    it('returns false for a disallowed bridge chainId', () => {
+      const state = {
+        ...mockState,
+        metamask: {
+          ...mockState.metamask,
+          selectedNetworkClientId: 'fooChain', // corresponds to mainnet RPC in mockState
+          networkConfigurationsByChainId: {
+            '0x8080': {
+              chainId: '0x8080',
+              name: 'Custom Mainnet RPC',
+              nativeCurrency: 'ETH',
+              defaultRpcEndpointIndex: 0,
+              rpcEndpoints: [
+                {
+                  type: 'custom',
+                  url: 'https://testrpc.com',
+                  networkClientId: 'fooChain',
+                },
+              ],
+            },
+          },
+        },
+      };
+
+      const result = selectors.getIsBridgeChain(state);
+
+      expect(result).toBe(false);
+    });
+
+    it('respects the overrideChainId parameter', () => {
+      const getCurrentChainIdSpy = jest.spyOn(
+        networkSelectors,
+        'getCurrentChainId',
+      );
+
+      const result = selectors.getIsBridgeChain(mockState, '0x89');
+
+      expect(result).toBe(true);
+      expect(getCurrentChainIdSpy).not.toHaveBeenCalled(); // Ensure overrideChainId is used
     });
   });
 });

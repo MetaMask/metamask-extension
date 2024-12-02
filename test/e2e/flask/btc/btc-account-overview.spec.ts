@@ -1,4 +1,5 @@
 import { Suite } from 'mocha';
+import { DEFAULT_BTC_BALANCE } from '../../constants';
 import { withBtcAccountSnap } from './common-btc';
 
 describe('BTC Account - Overview', function (this: Suite) {
@@ -14,7 +15,7 @@ describe('BTC Account - Overview', function (this: Suite) {
         await driver.waitForSelector({
           text: 'Send',
           tag: 'button',
-          css: '[disabled]',
+          css: '[data-testid="coin-overview-send"]',
         });
 
         await driver.waitForSelector({
@@ -36,6 +37,27 @@ describe('BTC Account - Overview', function (this: Suite) {
         await driver.findClickableElement(
           '[data-testid="coin-overview-receive"]',
         );
+      },
+    );
+  });
+
+  it('has balance', async function () {
+    await withBtcAccountSnap(
+      { title: this.test?.fullTitle() },
+      async (driver) => {
+        await driver.waitForSelector({
+          testId: 'account-value-and-suffix',
+          text: `${DEFAULT_BTC_BALANCE}`,
+        });
+        await driver.waitForSelector({
+          css: '.currency-display-component__suffix',
+          text: 'BTC',
+        });
+
+        await driver.waitForSelector({
+          tag: 'p',
+          text: `${DEFAULT_BTC_BALANCE} BTC`,
+        });
       },
     );
   });

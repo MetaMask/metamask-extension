@@ -26,7 +26,6 @@ import {
   getTotalUnapprovedCount,
   getUnapprovedTemplatedConfirmations,
   getWeb3ShimUsageStateForOrigin,
-  getInfuraBlocked,
   getShowWhatsNewPopup,
   getSortedAnnouncementsToShow,
   getShowRecoveryPhraseReminder,
@@ -51,8 +50,7 @@ import {
   getAccountType,
   ///: END:ONLY_INCLUDE_IF
 } from '../../selectors';
-import { getIsSmartTransactionsOptInModalAvailable } from '../../../shared/modules/selectors';
-
+import { getInfuraBlocked } from '../../../shared/modules/selectors/networks';
 import {
   closeNotificationPopup,
   setConnectedStatusPopoverHasBeenShown,
@@ -223,8 +221,6 @@ const mapStateToProps = (state) => {
     custodianDeepLink: getCustodianDeepLink(state),
     accountType: getAccountType(state),
     ///: END:ONLY_INCLUDE_IF
-    isSmartTransactionsOptInModalAvailable:
-      getIsSmartTransactionsOptInModalAvailable(state),
     showMultiRpcModal: state.metamask.preferences.showMultiRpcModal,
   };
 };

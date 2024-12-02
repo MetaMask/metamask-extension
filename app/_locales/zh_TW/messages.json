@@ -42,23 +42,6 @@
   "addContact": {
     "message": "新增合約"
   },
-  "addEthereumChainConfirmationDescription": {
-    "message": "這會允許在 MetaMask 內使用這個網路。"
-  },
-  "addEthereumChainConfirmationRisks": {
-    "message": "MetaMask 不會對自訂的網路做驗證。"
-  },
-  "addEthereumChainConfirmationRisksLearnMore": {
-    "message": "了解更多關於$1的事。",
-    "description": "$1 is a link with text that is provided by the 'addEthereumChainConfirmationRisksLearnMoreLink' key"
-  },
-  "addEthereumChainConfirmationRisksLearnMoreLink": {
-    "message": "詐騙與網路安全風險",
-    "description": "Link text for the 'addEthereumChainConfirmationRisksLearnMore' translation key"
-  },
-  "addEthereumChainConfirmationTitle": {
-    "message": "允許這個網站新增一個網路？"
-  },
   "addFriendsAndAddresses": {
     "message": "新增朋友和您信任的位址"
   },
@@ -442,10 +425,6 @@
     "message": "代碼：$1",
     "description": "Displayed error code for debugging purposes. $1 is the error code"
   },
-  "errorDetails": {
-    "message": "錯誤詳細資訊",
-    "description": "Title for collapsible section that displays error details for debugging purposes"
-  },
   "errorMessage": {
     "message": "訊息：$1",
     "description": "Displayed error message for debugging purposes. $1 is the error message"
@@ -453,14 +432,6 @@
   "errorName": {
     "message": "代碼：$1",
     "description": "Displayed error name for debugging purposes. $1 is the error name"
-  },
-  "errorPageMessage": {
-    "message": "重新整理頁面然後再試一次，或從$1聯絡我們尋求支援。",
-    "description": "Message displayed on generic error page in the fullscreen or notification UI, $1 is a clickable link with text defined by the 'here' key. The link will open to a form where users can file support tickets."
-  },
-  "errorPagePopupMessage": {
-    "message": "重新開啟彈跳視窗然後再試一次，或從$1聯絡我們尋求支援。",
-    "description": "Message displayed on generic error page in the popup UI, $1 is a clickable link with text defined by the 'here' key. The link will open to a form where users can file support tickets."
   },
   "errorPageTitle": {
     "message": "MetaMask 遭遇錯誤",
@@ -1211,9 +1182,6 @@
   "supportCenter": {
     "message": "造訪我們的協助中心"
   },
-  "swapSearchNameOrAddress": {
-    "message": "用名稱搜尋或貼上地址"
-  },
   "switchEthereumChainConfirmationDescription": {
     "message": "這將在 MetaMask 中將目前選擇的網路切換到剛才新增的網路："
   },
@@ -1372,13 +1340,6 @@
   },
   "userName": {
     "message": "使用者名稱"
-  },
-  "verifyThisTokenOn": {
-    "message": "在 $1 驗證這個代幣的資訊",
-    "description": "Points the user to etherscan as a place they can verify information about a token. $1 is replaced with the translation for \"etherscan\""
-  },
-  "viewAllDetails": {
-    "message": "查看所有詳情"
   },
   "viewContact": {
     "message": "觀看聯絡資訊"

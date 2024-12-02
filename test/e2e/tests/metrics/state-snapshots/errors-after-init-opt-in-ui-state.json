@@ -30,16 +30,22 @@
       "showExtensionInFullSizeView": false,
       "showFiatInTestnets": false,
       "showTestNetworks": false,
-      "smartTransactionsOptInStatus": false,
+      "smartTransactionsOptInStatus": true,
       "showNativeTokenAsMainBalance": true,
       "petnamesEnabled": true,
       "showMultiRpcModal": "boolean",
       "isRedesignedConfirmationsDeveloperEnabled": "boolean",
-      "redesignedConfirmationsEnabled": true,
-      "redesignedTransactionsEnabled": "boolean",
       "tokenSortConfig": "object",
-      "showMultiRpcModal": "boolean",
-      "shouldShowAggregatedBalancePopover": "boolean"
+      "tokenNetworkFilter": {
+        "0x1": "boolean",
+        "0x539": "boolean",
+        "0xaa36a7": "boolean",
+        "0xe705": "boolean",
+        "0xe708": "boolean"
+      },
+      "shouldShowAggregatedBalancePopover": "boolean",
+      "redesignedConfirmationsEnabled": true,
+      "redesignedTransactionsEnabled": "boolean"
     },
     "firstTimeFlowType": "import",
     "completedOnboarding": true,
@@ -50,6 +56,16 @@
     "nextNonce": null,
     "currencyRates": {
       "ETH": {
+        "conversionDate": "number",
+        "conversionRate": 1700,
+        "usdConversionRate": 1700
+      },
+      "SepoliaETH": {
+        "conversionDate": "number",
+        "conversionRate": 1700,
+        "usdConversionRate": 1700
+      },
+      "LineaETH": {
         "conversionDate": "number",
         "conversionRate": 1700,
         "usdConversionRate": 1700
@@ -79,7 +95,6 @@
     "nftsDropdownState": {},
     "termsOfUseLastAgreed": "number",
     "qrHardware": {},
-    "usedNetworks": { "0x1": true, "0x5": true, "0x539": true },
     "snapsInstallPrivacyWarningShown": true,
     "surveyLinkLastClickedOrClosed": "object",
     "signatureSecurityAlertResponses": "object",
@@ -104,6 +119,7 @@
     "useNonceField": false,
     "usePhishDetect": true,
     "dismissSeedBackUpReminder": true,
+    "overrideContentSecurityPolicyHeader": true,
     "useMultiAccountBalanceChecker": true,
     "useSafeChainsListValidation": true,
     "useTokenDetection": true,
@@ -132,6 +148,8 @@
     "useTransactionSimulations": true,
     "enableMV3TimestampSave": true,
     "useExternalServices": "boolean",
+    "isMultiAccountBalancesEnabled": "boolean",
+    "showIncomingTransactions": "object",
     "metaMetricsId": "fake-metrics-id",
     "marketingCampaignCookieId": null,
     "eventsBeforeMetricsOptIn": "object",
@@ -161,7 +179,12 @@
     "gasEstimateType": "none",
     "nonRPCGasFeeApisDisabled": "boolean",
     "tokenList": "object",
-    "tokensChainsCache": {},
+    "tokensChainsCache": {
+      "0x1": "object",
+      "0x539": "object",
+      "0xe708": "object"
+    },
+    "tokenBalances": "object",
     "preventPollingOnNetworkRestart": false,
     "tokens": "object",
     "ignoredTokens": "object",
@@ -171,7 +194,9 @@
     "allDetectedTokens": {},
     "smartTransactionsState": {
       "fees": {},
+      "feesByChainId": "object",
       "liveness": true,
+      "livenessByChainId": "object",
       "smartTransactions": "object"
     },
     "allNftContracts": "object",
@@ -183,14 +208,16 @@
     "lastFetchedBlockNumbers": "object",
     "submitHistory": "object",
     "fiatCurrency": "usd",
-    "rates": { "btc": { "conversionDate": 0, "conversionRate": "0" } },
-    "cryptocurrencies": ["btc"],
+    "rates": {
+      "btc": { "conversionDate": 0, "conversionRate": 0 },
+      "sol": { "conversionDate": 0, "conversionRate": 0 }
+    },
+    "cryptocurrencies": ["btc", "sol"],
     "snaps": "object",
     "jobs": "object",
     "database": null,
     "lastUpdated": null,
     "databaseUnavailable": "boolean",
-    "notifications": "object",
     "interfaces": "object",
     "insights": "object",
     "names": "object",
@@ -199,7 +226,8 @@
     "isSignedIn": "boolean",
     "isProfileSyncingEnabled": null,
     "isProfileSyncingUpdateLoading": "boolean",
-    "submitHistory": "object",
+    "hasAccountSyncingSyncedAtLeastOnce": "boolean",
+    "isAccountSyncingReadyToBeDispatched": "boolean",
     "subscriptionAccountsSeen": "object",
     "isMetamaskNotificationsFeatureSeen": "boolean",
     "isNotificationServicesEnabled": "boolean",
@@ -219,6 +247,7 @@
     "unapprovedDecryptMsgCount": 0,
     "unapprovedEncryptionPublicKeyMsgs": "object",
     "unapprovedEncryptionPublicKeyMsgCount": 0,
+    "signatureRequests": "object",
     "unapprovedPersonalMsgs": "object",
     "unapprovedTypedMessages": "object",
     "unapprovedPersonalMsgCount": 0,
@@ -253,15 +282,23 @@
     },
     "bridgeState": {
       "bridgeFeatureFlags": {
+        "extensionConfig": "object",
         "extensionSupport": "boolean",
         "srcNetworkAllowlist": { "0": "string", "1": "string", "2": "string" },
         "destNetworkAllowlist": { "0": "string", "1": "string", "2": "string" }
       },
+      "srcTokens": {},
+      "srcTopAssets": {},
       "destTokens": {},
       "destTopAssets": {},
-      "srcTokens": {},
-      "srcTopAssets": {}
+      "quoteRequest": {
+        "srcTokenAddress": "0x0000000000000000000000000000000000000000",
+        "slippage": 0.5
+      },
+      "quotes": {},
+      "quotesRefreshCount": 0
     },
+    "bridgeStatusState": { "txHistory": "object" },
     "ensEntries": "object",
     "ensResolutionsByAddress": "object",
     "pendingApprovals": "object",

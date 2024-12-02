@@ -1,7 +1,8 @@
-import { errorCodes } from 'eth-rpc-errors';
+import { errorCodes } from '@metamask/rpc-errors';
 import { detectSIWE } from '@metamask/controller-utils';
+import { ControllerMessenger } from '@metamask/base-controller';
 
-import MetaMetricsController from '../controllers/metametrics';
+import MetaMetricsController from '../controllers/metametrics-controller';
 import { MESSAGE_TYPE } from '../../../shared/constants/app';
 import {
   MetaMetricsEventCategory,
@@ -17,14 +18,12 @@ import {
   permitSignatureMsg,
   orderSignatureMsg,
 } from '../../../test/data/confirmations/typed_sign';
+import { getDefaultPreferencesControllerState } from '../controllers/preferences-controller';
 import { createSegmentMock } from './segment';
 import createRPCMethodTrackingMiddleware from './createRPCMethodTrackingMiddleware';
 
 const MOCK_ID = '123';
 const expectedUniqueIdentifier = `signature-${MOCK_ID}`;
-
-const metricsState = { participateInMetaMetrics: null };
-const getMetricsState = () => metricsState;
 
 const expectedMetametricsEventUndefinedProps = {
   actionId: undefined,
@@ -54,25 +53,54 @@ const appStateController = {
   },
 };
 
+const controllerMessenger = new ControllerMessenger();
+
+controllerMessenger.registerActionHandler(
+  'PreferencesController:getState',
+  () => ({
+    ...getDefaultPreferencesControllerState(),
+    currentLocale: 'en_US',
+  }),
+);
+
+controllerMessenger.registerActionHandler(
+  'NetworkController:getState',
+  jest.fn().mockReturnValue({
+    selectedNetworkClientId: 'selectedNetworkClientId',
+  }),
+);
+
+controllerMessenger.registerActionHandler(
+  'NetworkController:getNetworkClientById',
+  jest.fn().mockReturnValue({
+    configuration: {
+      chainId: '0x1338',
+    },
+  }),
+);
+
 const metaMetricsController = new MetaMetricsController({
-  segment: createSegmentMock(2, 10000),
-  getCurrentChainId: () => '0x1338',
-  onNetworkDidChange: jest.fn(),
-  preferencesStore: {
-    subscribe: jest.fn(),
-    getState: jest.fn(() => ({
-      currentLocale: 'en_US',
-      preferences: {},
-    })),
-  },
-  version: '0.0.1',
-  environment: 'test',
-  initState: {
-    participateInMetaMetrics: true,
+  state: {
+    participateInMetaMetrics: null,
     metaMetricsId: '0xabc',
     fragments: {},
     events: {},
   },
+  messenger: controllerMessenger.getRestricted({
+    name: 'MetaMetricsController',
+    allowedActions: [
+      'PreferencesController:getState',
+      'NetworkController:getState',
+      'NetworkController:getNetworkClientById',
+    ],
+    allowedEvents: [
+      'PreferencesController:stateChange',
+      'NetworkController:networkDidChange',
+    ],
+  }),
+  segment: createSegmentMock(2),
+  version: '0.0.1',
+  environment: 'test',
   extension: {
     runtime: {
       id: 'testid',
@@ -83,7 +111,6 @@ const metaMetricsController = new MetaMetricsController({
 
 const createHandler = (opts) =>
   createRPCMethodTrackingMiddleware({
-    getMetricsState,
     rateLimitTimeout: 1000,
     rateLimitSamplePercent: 0.1,
     globalRateLimitTimeout: 0,
@@ -91,6 +118,7 @@ const createHandler = (opts) =>
     appStateController,
     metaMetricsController,
     isConfirmationRedesignEnabled: () => false,
+    isRedesignedConfirmationsDeveloperEnabled: () => false,
     ...opts,
   });
 
@@ -144,7 +172,7 @@ describe('createRPCMethodTrackingMiddleware', () => {
   });
   afterEach(() => {
     jest.resetAllMocks();
-    metricsState.participateInMetaMetrics = null;
+    metaMetricsController.setParticipateInMetaMetrics(null);
   });
 
   describe('before participateInMetaMetrics is set', () => {
@@ -168,7 +196,7 @@ describe('createRPCMethodTrackingMiddleware', () => {
 
   describe('participateInMetaMetrics is set to false', () => {
     beforeEach(() => {
-      metricsState.participateInMetaMetrics = false;
+      metaMetricsController.setParticipateInMetaMetrics(false);
     });
 
     it('should not track an event for a signature request', async () => {
@@ -190,8 +218,20 @@ describe('createRPCMethodTrackingMiddleware', () => {
   });
 
   describe('participateInMetaMetrics is set to true', () => {
+    const originalEnableConfirmationRedesign =
+      process.env.ENABLE_CONFIRMATION_REDESIGN;
+
     beforeEach(() => {
-      metricsState.participateInMetaMetrics = true;
+      metaMetricsController.setParticipateInMetaMetrics(true);
+    });
+
+    beforeAll(() => {
+      process.env.ENABLE_CONFIRMATION_REDESIGN = 'false';
+    });
+
+    afterAll(() => {
+      process.env.ENABLE_CONFIRMATION_REDESIGN =
+        originalEnableConfirmationRedesign;
     });
 
     it(`should immediately track a ${MetaMetricsEventName.SignatureRequested} event`, async () => {
@@ -884,6 +924,34 @@ describe('createRPCMethodTrackingMiddleware', () => {
           },
         },
         { type: 'ERC20' },
+      ],
+      [
+        'only the chain ID',
+        'wallet_addEthereumChain',
+        [
+          {
+            chainId: '0x64',
+            chainName: 'Gnosis',
+            rpcUrls: ['https://rpc.gnosischain.com'],
+            iconUrls: [
+              'https://xdaichain.com/fake/example/url/xdai.svg',
+              'https://xdaichain.com/fake/example/url/xdai.png',
+            ],
+            nativeCurrency: {
+              name: 'XDAI',
+              symbol: 'XDAI',
+              decimals: 18,
+            },
+            blockExplorerUrls: ['https://blockscout.com/poa/xdai/'],
+          },
+        ],
+        { chainId: '0x64' },
+      ],
+      [
+        'only the chain ID',
+        'wallet_switchEthereumChain',
+        [{ chainId: '0x123' }],
+        { chainId: '0x123' },
       ],
     ])(
       `should include %s in the '%s' tracked events params property`,

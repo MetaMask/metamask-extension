@@ -35,6 +35,7 @@ module.exports = {
     '<rootDir>/development/**/*.test.(js|ts|tsx)',
     '<rootDir>/test/unit-global/**/*.test.(js|ts|tsx)',
     '<rootDir>/test/e2e/helpers.test.js',
+    '<rootDir>/test/e2e/helpers/**/*.test.(js|ts|tsx)',
   ],
   testPathIgnorePatterns: ['<rootDir>/development/webpack/'],
   testTimeout: 5500,

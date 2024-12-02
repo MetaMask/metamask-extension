@@ -3,34 +3,41 @@ import { Driver } from '../../webdriver/driver';
 class HeaderNavbar {
   private driver: Driver;
 
-  private accountMenuButton: string;
+  private readonly accountMenuButton = '[data-testid="account-menu-icon"]';
 
-  private accountOptionMenu: string;
+  private readonly threeDotMenuButton =
+    '[data-testid="account-options-menu-button"]';
 
-  private lockMetaMaskButton: string;
+  private readonly accountSnapButton = { text: 'Snaps', tag: 'div' };
 
-  private mmiPortfolioButton: string;
+  private readonly lockMetaMaskButton = '[data-testid="global-menu-lock"]';
 
-  private settingsButton: string;
+  private readonly mmiPortfolioButton =
+    '[data-testid="global-menu-mmi-portfolio"]';
 
-  private accountSnapButton: object;
+  private readonly settingsButton = '[data-testid="global-menu-settings"]';
+
+  private readonly switchNetworkDropDown = '[data-testid="network-display"]';
 
   constructor(driver: Driver) {
     this.driver = driver;
-    this.accountMenuButton = '[data-testid="account-menu-icon"]';
-    this.accountOptionMenu = '[data-testid="account-options-menu-button"]';
-    this.lockMetaMaskButton = '[data-testid="global-menu-lock"]';
-    this.mmiPortfolioButton = '[data-testid="global-menu-mmi-portfolio"]';
-    this.settingsButton = '[data-testid="global-menu-settings"]';
-    this.accountSnapButton = { text: 'Snaps', tag: 'div' };
+  }
+
+  async check_pageIsLoaded(): Promise<void> {
+    try {
+      await this.driver.waitForMultipleSelectors([
+        this.accountMenuButton,
+        this.threeDotMenuButton,
+      ]);
+    } catch (e) {
+      console.log('Timeout while waiting for header navbar to be loaded', e);
+      throw e;
+    }
+    console.log('Header navbar is loaded');
   }
 
   async lockMetaMask(): Promise<void> {
-    await this.driver.clickElement(this.accountOptionMenu);
-    // fix race condition with mmi build
-    if (process.env.MMI) {
-      await this.driver.waitForSelector(this.mmiPortfolioButton);
-    }
+    await this.openThreeDotMenu();
     await this.driver.clickElement(this.lockMetaMaskButton);
   }
 
@@ -38,20 +45,37 @@ class HeaderNavbar {
     await this.driver.clickElement(this.accountMenuButton);
   }
 
+  async openThreeDotMenu(): Promise<void> {
+    console.log('Open account options menu');
+    await this.driver.clickElement(this.threeDotMenuButton);
+    // fix race condition with mmi build
+    if (process.env.MMI) {
+      await this.driver.waitForSelector(this.mmiPortfolioButton);
+    }
+  }
+
   async openSnapListPage(): Promise<void> {
     console.log('Open account snap page');
-    await this.driver.clickElement(this.accountOptionMenu);
+    await this.openThreeDotMenu();
     await this.driver.clickElement(this.accountSnapButton);
   }
 
   async openSettingsPage(): Promise<void> {
     console.log('Open settings page');
-    await this.driver.clickElement(this.accountOptionMenu);
-    // fix race condition with mmi build
-    if (process.env.MMI) {
-      await this.driver.waitForSelector(this.mmiPortfolioButton);
-    }
+    await this.openThreeDotMenu();
     await this.driver.clickElement(this.settingsButton);
+  }
+
+  async clickSwitchNetworkDropDown(): Promise<void> {
+    console.log(`Click switch network menu`);
+    await this.driver.clickElement(this.switchNetworkDropDown);
+  }
+
+  async check_currentSelectedNetwork(networkName: string): Promise<void> {
+    console.log(`Validate the Switch network to ${networkName}`);
+    await this.driver.waitForSelector(
+      `button[data-testid="network-display"][aria-label="Network Menu ${networkName}"]`,
+    );
   }
 
   /**

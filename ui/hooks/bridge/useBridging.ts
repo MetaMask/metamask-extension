@@ -1,10 +1,7 @@
 import { useCallback, useContext, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
-import {
-  setBridgeFeatureFlags,
-  setFromChain,
-} from '../../ducks/bridge/actions';
+import { setBridgeFeatureFlags } from '../../ducks/bridge/actions';
 import {
   ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
   getCurrentKeyring,
@@ -31,9 +28,8 @@ import {
 ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
 import { isHardwareKeyring } from '../../helpers/utils/hardware';
 import { getPortfolioUrl } from '../../helpers/utils/portfolio';
-import { setSwapsFromToken } from '../../ducks/swaps/swaps';
 import { SwapsTokenObject } from '../../../shared/constants/swaps';
-import { getProviderConfig } from '../../ducks/metamask/metamask';
+import { getProviderConfig } from '../../../shared/modules/selectors/networks';
 ///: END:ONLY_INCLUDE_IF
 
 const useBridging = () => {
@@ -46,6 +42,7 @@ const useBridging = () => {
   const isMarketingEnabled = useSelector(getDataCollectionForMarketing);
   const providerConfig = useSelector(getProviderConfig);
   const keyring = useSelector(getCurrentKeyring);
+  // @ts-expect-error keyring type is wrong maybe?
   const usingHardwareWallet = isHardwareKeyring(keyring.type);
 
   const isBridgeSupported = useSelector(getIsBridgeEnabled);
@@ -54,13 +51,6 @@ const useBridging = () => {
   useEffect(() => {
     dispatch(setBridgeFeatureFlags());
   }, [dispatch, setBridgeFeatureFlags]);
-
-  useEffect(() => {
-    isBridgeChain &&
-      isBridgeSupported &&
-      providerConfig &&
-      dispatch(setFromChain(providerConfig.chainId));
-  }, []);
 
   const openBridgeExperience = useCallback(
     (
@@ -83,9 +73,6 @@ const useBridging = () => {
             chain_id: providerConfig.chainId,
           },
         });
-        dispatch(
-          setSwapsFromToken({ ...token, address: token.address.toLowerCase() }),
-        );
         if (usingHardwareWallet && global.platform.openExtensionInBrowser) {
           global.platform.openExtensionInBrowser(
             PREPARE_SWAP_ROUTE,
@@ -93,7 +80,9 @@ const useBridging = () => {
             false,
           );
         } else {
-          history.push(CROSS_CHAIN_SWAP_ROUTE + PREPARE_SWAP_ROUTE);
+          history.push(
+            `${CROSS_CHAIN_SWAP_ROUTE}${PREPARE_SWAP_ROUTE}?token=${token.address.toLowerCase()}`,
+          );
         }
       } else {
         const portfolioUrl = getPortfolioUrl(
@@ -124,7 +113,6 @@ const useBridging = () => {
     [
       isBridgeSupported,
       isBridgeChain,
-      setSwapsFromToken,
       dispatch,
       usingHardwareWallet,
       history,

@@ -4,17 +4,20 @@ import TokenList from '../token-list';
 import { PRIMARY } from '../../../../helpers/constants/common';
 import { useUserPreferencedCurrency } from '../../../../hooks/useUserPreferencedCurrency';
 import {
+  getAllDetectedTokensForSelectedAddress,
   getDetectedTokensInCurrentNetwork,
   getIstokenDetectionInactiveOnNonMainnetSupportedNetwork,
+  getPreferences,
   getSelectedAccount,
 } from '../../../../selectors';
+import { getNetworkConfigurationsByChainId } from '../../../../../shared/modules/selectors/networks';
 import {
   getMultichainIsEvm,
   getMultichainSelectedAccountCachedBalance,
   ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
   getMultichainIsBitcoin,
-  ///: END:ONLY_INCLUDE_IF
   getMultichainSelectedAccountCachedBalanceIsZero,
+  ///: END:ONLY_INCLUDE_IF
 } from '../../../../selectors/multichain';
 import { useCurrencyDisplay } from '../../../../hooks/useCurrencyDisplay';
 import { MetaMetricsContext } from '../../../../contexts/metametrics';
@@ -23,11 +26,7 @@ import {
   MetaMetricsEventName,
 } from '../../../../../shared/constants/metametrics';
 import DetectedToken from '../../detected-token/detected-token';
-import {
-  DetectedTokensBanner,
-  ImportTokenLink,
-  ReceiveModal,
-} from '../../../multichain';
+import { DetectedTokensBanner, ReceiveModal } from '../../../multichain';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { FundingMethodModal } from '../../../multichain/funding-method-modal/funding-method-modal';
 ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
@@ -51,7 +50,7 @@ export type TokenWithBalance = {
 };
 
 export type AssetListProps = {
-  onClickAsset: (arg: string) => void;
+  onClickAsset: (chainId: string, address: string) => void;
   showTokensLinks?: boolean;
 };
 
@@ -80,6 +79,17 @@ const AssetList = ({ onClickAsset, showTokensLinks }: AssetListProps) => {
     getIstokenDetectionInactiveOnNonMainnetSupportedNetwork,
   );
 
+  const allNetworks = useSelector(getNetworkConfigurationsByChainId);
+  const { tokenNetworkFilter } = useSelector(getPreferences);
+  const allOpts: Record<string, boolean> = {};
+  Object.keys(allNetworks || {}).forEach((chainId) => {
+    allOpts[chainId] = true;
+  });
+
+  const allNetworksFilterShown =
+    Object.keys(tokenNetworkFilter || {}).length !==
+    Object.keys(allOpts || {}).length;
+
   const [showFundingMethodModal, setShowFundingMethodModal] = useState(false);
   const [showReceiveModal, setShowReceiveModal] = useState(false);
 
@@ -88,11 +98,10 @@ const AssetList = ({ onClickAsset, showTokensLinks }: AssetListProps) => {
     setShowReceiveModal(true);
   };
 
+  ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
   const balanceIsZero = useSelector(
     getMultichainSelectedAccountCachedBalanceIsZero,
   );
-
-  ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
   const isBuyableChain = useSelector(getIsNativeTokenBuyable);
   const shouldShowBuy = isBuyableChain && balanceIsZero;
   const isBtc = useSelector(getMultichainIsBitcoin);
@@ -103,21 +112,37 @@ const AssetList = ({ onClickAsset, showTokensLinks }: AssetListProps) => {
   // for EVM assets
   const shouldShowTokensLinks = showTokensLinks ?? isEvm;
 
+  const detectedTokensMultichain = useSelector(
+    getAllDetectedTokensForSelectedAddress,
+  );
+
+  const totalTokens =
+    process.env.PORTFOLIO_VIEW && !allNetworksFilterShown
+      ? (Object.values(detectedTokensMultichain).reduce(
+          // @ts-expect-error TS18046: 'tokenArray' is of type 'unknown'
+          (count, tokenArray) => count + tokenArray.length,
+          0,
+        ) as number)
+      : detectedTokens.length;
+
   return (
     <>
-      {detectedTokens.length > 0 &&
-        !isTokenDetectionInactiveOnNonMainnetSupportedNetwork && (
-          <DetectedTokensBanner
-            className=""
-            actionButtonOnClick={() => setShowDetectedTokens(true)}
-            margin={4}
-          />
-        )}
-      <AssetListControlBar showTokensLinks={showTokensLinks} />
+      {totalTokens &&
+      totalTokens > 0 &&
+      !isTokenDetectionInactiveOnNonMainnetSupportedNetwork ? (
+        <DetectedTokensBanner
+          className=""
+          actionButtonOnClick={() => setShowDetectedTokens(true)}
+          margin={4}
+        />
+      ) : null}
+      <AssetListControlBar showTokensLinks={shouldShowTokensLinks} />
       <TokenList
-        nativeToken={<NativeToken onClickAsset={onClickAsset} />}
-        onTokenClick={(tokenAddress: string) => {
-          onClickAsset(tokenAddress);
+        // nativeToken is still needed to avoid breaking flask build's support for bitcoin
+        // TODO: refactor this to no longer be needed for non-evm chains
+        nativeToken={!isEvm && <NativeToken onClickAsset={onClickAsset} />}
+        onTokenClick={(chainId: string, tokenAddress: string) => {
+          onClickAsset(chainId, tokenAddress);
           trackEvent({
             event: MetaMetricsEventName.TokenScreenOpened,
             category: MetaMetricsEventCategory.Navigation,
@@ -144,13 +169,6 @@ const AssetList = ({ onClickAsset, showTokensLinks }: AssetListProps) => {
         ) : null
         ///: END:ONLY_INCLUDE_IF
       }
-      {shouldShowTokensLinks && (
-        <ImportTokenLink
-          margin={4}
-          marginBottom={2}
-          marginTop={detectedTokens.length > 0 && !balanceIsZero ? 0 : 2}
-        />
-      )}
       {showDetectedTokens && (
         <DetectedToken setShowDetectedTokens={setShowDetectedTokens} />
       )}
@@ -164,7 +182,7 @@ const AssetList = ({ onClickAsset, showTokensLinks }: AssetListProps) => {
         <FundingMethodModal
           isOpen={showFundingMethodModal}
           onClose={() => setShowFundingMethodModal(false)}
-          title={t('selectFundingMethod')}
+          title={t('fundingMethod')}
           onClickReceive={onClickReceive}
         />
       )}

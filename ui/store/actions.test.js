@@ -4,6 +4,7 @@ import thunk from 'redux-thunk';
 import { EthAccountType } from '@metamask/keyring-api';
 import { TransactionStatus } from '@metamask/transaction-controller';
 import { NotificationServicesController } from '@metamask/notification-services-controller';
+import { USER_STORAGE_FEATURE_NAMES } from '@metamask/profile-sync-controller/sdk';
 // TODO: Remove restricted import
 // eslint-disable-next-line import/no-restricted-paths
 import enLocale from '../../app/_locales/en/messages.json';
@@ -477,6 +478,50 @@ describe('Actions', () => {
 
       await expect(
         store.dispatch(actions.checkHardwareStatus()),
+      ).rejects.toThrow('error');
+
+      expect(store.getActions()).toStrictEqual(expectedActions);
+    });
+  });
+
+  describe('#getDeviceNameForMetric', () => {
+    const deviceName = 'ledger';
+    const hdPath = "m/44'/60'/0'/0/0";
+
+    afterEach(() => {
+      sinon.restore();
+    });
+
+    it('calls getDeviceNameForMetric in background', async () => {
+      const store = mockStore();
+
+      const mockGetDeviceName = background.getDeviceNameForMetric.callsFake(
+        (_, __, cb) => cb(),
+      );
+
+      setBackgroundConnection(background);
+
+      await store.dispatch(actions.getDeviceNameForMetric(deviceName, hdPath));
+      expect(mockGetDeviceName.callCount).toStrictEqual(1);
+    });
+
+    it('shows loading indicator and displays error', async () => {
+      const store = mockStore();
+
+      background.getDeviceNameForMetric.callsFake((_, __, cb) =>
+        cb(new Error('error')),
+      );
+
+      setBackgroundConnection(background);
+
+      const expectedActions = [
+        { type: 'SHOW_LOADING_INDICATION', payload: undefined },
+        { type: 'DISPLAY_WARNING', payload: 'error' },
+        { type: 'HIDE_LOADING_INDICATION' },
+      ];
+
+      await expect(
+        store.dispatch(actions.getDeviceNameForMetric(deviceName, hdPath)),
       ).rejects.toThrow('error');
 
       expect(store.getActions()).toStrictEqual(expectedActions);
@@ -968,7 +1013,9 @@ describe('Actions', () => {
       const store = mockStore();
 
       background.getApi.returns({
-        ignoreTokens: sinon.stub().callsFake((_, cb) => cb(new Error('error'))),
+        ignoreTokens: sinon
+          .stub()
+          .callsFake((_, __, cb) => cb(new Error('error'))),
         getStatePatches: sinon.stub().callsFake((cb) => cb(null, [])),
       });
 
@@ -2214,7 +2261,7 @@ describe('Actions', () => {
 
       const fetchAndUpdateMetamaskNotificationsStub = sinon
         .stub()
-        .callsFake((cb) => cb());
+        .callsFake((_, cb) => cb());
       const forceUpdateMetamaskStateStub = sinon.stub().callsFake((cb) => cb());
 
       background.getApi.returns({
@@ -2236,7 +2283,7 @@ describe('Actions', () => {
 
       const fetchAndUpdateMetamaskNotificationsStub = sinon
         .stub()
-        .callsFake((cb) => cb(error));
+        .callsFake((_, cb) => cb(error));
       const forceUpdateMetamaskStateStub = sinon
         .stub()
         .callsFake((cb) => cb(error));
@@ -2561,7 +2608,9 @@ describe('Actions', () => {
 
       await store.dispatch(actions.deleteAccountSyncingDataFromUserStorage());
       expect(
-        deleteAccountSyncingDataFromUserStorageStub.calledOnceWith('accounts'),
+        deleteAccountSyncingDataFromUserStorageStub.calledOnceWith(
+          USER_STORAGE_FEATURE_NAMES.accounts,
+        ),
       ).toBe(true);
     });
   });

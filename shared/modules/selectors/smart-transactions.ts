@@ -1,25 +1,22 @@
+import { createSelector } from 'reselect';
 import {
   getAllowedSmartTransactionsChainIds,
   SKIP_STX_RPC_URL_CHECK_CHAIN_IDS,
 } from '../../constants/smartTransactions';
 import {
-  getCurrentChainId,
   getCurrentNetwork,
   accountSupportsSmartTx,
-  getSelectedAccount,
+  getPreferences,
   // TODO: Remove restricted import
   // eslint-disable-next-line import/no-restricted-paths
 } from '../../../ui/selectors/selectors'; // TODO: Migrate shared selectors to this file.
 import { isProduction } from '../environment';
-
-// TODO: Remove restricted import
-// eslint-disable-next-line import/no-restricted-paths
-import { MultichainState } from '../../../ui/selectors/multichain';
+import { getCurrentChainId, NetworkState } from './networks';
 
 type SmartTransactionsMetaMaskState = {
   metamask: {
     preferences: {
-      smartTransactionsOptInStatus?: boolean | null;
+      smartTransactionsOptInStatus?: boolean;
     };
     internalAccounts: {
       selectedAccount: string;
@@ -41,7 +38,7 @@ type SmartTransactionsMetaMaskState = {
           smartTransactions: {
             expectedDeadline?: number;
             maxDeadline?: number;
-            returnTxHashAsap?: boolean;
+            extensionReturnTxHashAsap?: boolean;
           };
         };
         smartTransactions: {
@@ -56,22 +53,67 @@ type SmartTransactionsMetaMaskState = {
   };
 };
 
-export const getSmartTransactionsOptInStatus = (
-  state: SmartTransactionsMetaMaskState,
-): boolean | null => {
-  return state.metamask.preferences?.smartTransactionsOptInStatus ?? null;
-};
+/**
+ * Returns the user's explicit opt-in status for the smart transactions feature.
+ * This should only be used for reading the user's internal opt-in status, and
+ * not for determining if the smart transactions user preference is enabled.
+ *
+ * To determine if the smart transactions user preference is enabled, use
+ * getSmartTransactionsPreferenceEnabled instead.
+ *
+ * @param state - The state object.
+ * @returns true if the user has explicitly opted in, false if they have opted out,
+ * or null if they have not explicitly opted in or out.
+ */
+export const getSmartTransactionsOptInStatusInternal = createSelector(
+  getPreferences,
+  (preferences: { smartTransactionsOptInStatus?: boolean }): boolean => {
+    return preferences?.smartTransactionsOptInStatus ?? true;
+  },
+);
+
+/**
+ * Returns the user's explicit opt-in status for the smart transactions feature.
+ * This should only be used for metrics collection, and not for determining if the
+ * smart transactions user preference is enabled.
+ *
+ * To determine if the smart transactions user preference is enabled, use
+ * getSmartTransactionsPreferenceEnabled instead.
+ *
+ * @param state - The state object.
+ * @returns true if the user has explicitly opted in, false if they have opted out,
+ * or null if they have not explicitly opted in or out.
+ */
+export const getSmartTransactionsOptInStatusForMetrics = createSelector(
+  getSmartTransactionsOptInStatusInternal,
+  (optInStatus: boolean): boolean => optInStatus,
+);
+
+/**
+ * Returns the user's preference for the smart transactions feature.
+ * Defaults to `true` if the user has not set a preference.
+ *
+ * @param state
+ * @returns
+ */
+export const getSmartTransactionsPreferenceEnabled = createSelector(
+  getSmartTransactionsOptInStatusInternal,
+  (optInStatus: boolean): boolean => {
+    // In the absence of an explicit opt-in or opt-out,
+    // the Smart Transactions toggle is enabled.
+    const DEFAULT_SMART_TRANSACTIONS_ENABLED = true;
+    return optInStatus ?? DEFAULT_SMART_TRANSACTIONS_ENABLED;
+  },
+);
 
 export const getCurrentChainSupportsSmartTransactions = (
-  state: SmartTransactionsMetaMaskState,
+  state: NetworkState,
 ): boolean => {
   const chainId = getCurrentChainId(state);
   return getAllowedSmartTransactionsChainIds().includes(chainId);
 };
 
-const getIsAllowedRpcUrlForSmartTransactions = (
-  state: SmartTransactionsMetaMaskState,
-) => {
+const getIsAllowedRpcUrlForSmartTransactions = (state: NetworkState) => {
   const chainId = getCurrentChainId(state);
   if (!isProduction() || SKIP_STX_RPC_URL_CHECK_CHAIN_IDS.includes(chainId)) {
     // Allow any STX RPC URL in development and testing environments or for specific chain IDs.
@@ -86,32 +128,8 @@ const getIsAllowedRpcUrlForSmartTransactions = (
   return rpcUrl?.hostname?.endsWith('.infura.io');
 };
 
-/**
- * Checks if the selected account has a non-zero balance.
- *
- * @param state - The state object containing account information.
- * @returns true if the selected account has a non-zero balance, otherwise false.
- */
-const hasNonZeroBalance = (state: SmartTransactionsMetaMaskState) => {
-  const selectedAccount = getSelectedAccount(
-    state as unknown as MultichainState,
-  );
-  return BigInt(selectedAccount?.balance || '0x0') > 0n;
-};
-
-export const getIsSmartTransactionsOptInModalAvailable = (
-  state: SmartTransactionsMetaMaskState,
-) => {
-  return (
-    getCurrentChainSupportsSmartTransactions(state) &&
-    getIsAllowedRpcUrlForSmartTransactions(state) &&
-    getSmartTransactionsOptInStatus(state) === null &&
-    hasNonZeroBalance(state)
-  );
-};
-
 export const getSmartTransactionsEnabled = (
-  state: SmartTransactionsMetaMaskState,
+  state: SmartTransactionsMetaMaskState & NetworkState,
 ): boolean => {
   const supportedAccount = accountSupportsSmartTx(state);
   // TODO: Create a new proxy service only for MM feature flags.
@@ -130,9 +148,12 @@ export const getSmartTransactionsEnabled = (
 };
 
 export const getIsSmartTransaction = (
-  state: SmartTransactionsMetaMaskState,
+  state: SmartTransactionsMetaMaskState & NetworkState,
 ): boolean => {
-  const smartTransactionsOptInStatus = getSmartTransactionsOptInStatus(state);
+  const smartTransactionsPreferenceEnabled =
+    getSmartTransactionsPreferenceEnabled(state);
   const smartTransactionsEnabled = getSmartTransactionsEnabled(state);
-  return Boolean(smartTransactionsOptInStatus && smartTransactionsEnabled);
+  return Boolean(
+    smartTransactionsPreferenceEnabled && smartTransactionsEnabled,
+  );
 };

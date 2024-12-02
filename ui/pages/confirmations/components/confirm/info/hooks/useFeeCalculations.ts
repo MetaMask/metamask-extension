@@ -8,14 +8,17 @@ import {
   addHexes,
   decGWEIToHexWEI,
   decimalToHex,
-  getEthConversionFromWeiHex,
   getValueFromWeiHex,
   multiplyHexes,
 } from '../../../../../../../shared/modules/conversion.utils';
-import { getConversionRate } from '../../../../../../ducks/metamask/metamask';
+import { Numeric } from '../../../../../../../shared/modules/Numeric';
 import { useFiatFormatter } from '../../../../../../hooks/useFiatFormatter';
 import { useGasFeeEstimates } from '../../../../../../hooks/useGasFeeEstimates';
-import { getCurrentCurrency } from '../../../../../../selectors';
+import {
+  getCurrentCurrency,
+  selectConversionRateByChainId,
+} from '../../../../../../selectors';
+import { getMultichainNetwork } from '../../../../../../selectors/multichain';
 import { HEX_ZERO } from '../shared/constants';
 import { useEIP1559TxFees } from './useEIP1559TxFees';
 import { useSupportsEIP1559 } from './useSupportsEIP1559';
@@ -24,36 +27,62 @@ import { useTransactionGasFeeEstimate } from './useTransactionGasFeeEstimate';
 const EMPTY_FEE = '';
 const EMPTY_FEES = {
   currentCurrencyFee: EMPTY_FEE,
+  currentCurrencyFeeWith18SignificantDigits: EMPTY_FEE,
   nativeCurrencyFee: EMPTY_FEE,
 };
 
 export function useFeeCalculations(transactionMeta: TransactionMeta) {
   const currentCurrency = useSelector(getCurrentCurrency);
-  const conversionRate = useSelector(getConversionRate);
+  const { chainId } = transactionMeta;
   const fiatFormatter = useFiatFormatter();
+
+  const conversionRate = useSelector((state) =>
+    selectConversionRateByChainId(state, chainId),
+  );
+
+  const multichainNetwork = useSelector(getMultichainNetwork);
+  const ticker = multichainNetwork?.network?.ticker;
 
   const getFeesFromHex = useCallback(
     (hexFee: string) => {
-      const nativeCurrencyFee =
-        getEthConversionFromWeiHex({
+      const nativeCurrencyFee = `${
+        getValueFromWeiHex({
           value: hexFee,
           fromCurrency: EtherDenomination.GWEI,
           numberOfDecimals: 4,
-        }) || `0 ${EtherDenomination.ETH}`;
+        }) || 0
+      } ${ticker}`;
 
-      const currentCurrencyFee = fiatFormatter(
-        Number(
-          getValueFromWeiHex({
-            value: hexFee,
-            conversionRate,
-            fromCurrency: EtherDenomination.GWEI,
-            toCurrency: currentCurrency,
-            numberOfDecimals: 2,
-          }),
-        ),
+      const decimalCurrentCurrencyFee = Number(
+        getValueFromWeiHex({
+          value: hexFee,
+          conversionRate,
+          fromCurrency: EtherDenomination.GWEI,
+          toCurrency: currentCurrency,
+          numberOfDecimals: 2,
+        }),
       );
 
-      return { currentCurrencyFee, nativeCurrencyFee };
+      let currentCurrencyFee, currentCurrencyFeeWith18SignificantDigits;
+      if (decimalCurrentCurrencyFee === 0) {
+        currentCurrencyFee = `< ${fiatFormatter(0.01)}`;
+        currentCurrencyFeeWith18SignificantDigits = getValueFromWeiHex({
+          value: hexFee,
+          conversionRate,
+          fromCurrency: EtherDenomination.GWEI,
+          toCurrency: currentCurrency,
+          numberOfDecimals: 18,
+        });
+      } else {
+        currentCurrencyFee = fiatFormatter(decimalCurrentCurrencyFee);
+        currentCurrencyFeeWith18SignificantDigits = null;
+      }
+
+      return {
+        currentCurrencyFee,
+        currentCurrencyFeeWith18SignificantDigits,
+        nativeCurrencyFee,
+      };
     },
     [conversionRate, currentCurrency, fiatFormatter],
   );
@@ -88,10 +117,7 @@ export function useFeeCalculations(transactionMeta: TransactionMeta) {
   );
 
   // Max fee
-  const gasLimit =
-    transactionMeta?.dappSuggestedGasFees?.gas ||
-    transactionMeta?.txParams?.gas ||
-    HEX_ZERO;
+  const gasLimit = transactionMeta?.txParams?.gas || HEX_ZERO;
   const gasPrice = transactionMeta?.txParams?.gasPrice || HEX_ZERO;
 
   const maxFee = useMemo(() => {
@@ -101,8 +127,12 @@ export function useFeeCalculations(transactionMeta: TransactionMeta) {
     );
   }, [supportsEIP1559, maxFeePerGas, gasLimit, gasPrice]);
 
-  const { currentCurrencyFee: maxFeeFiat, nativeCurrencyFee: maxFeeNative } =
-    getFeesFromHex(maxFee);
+  const {
+    currentCurrencyFee: maxFeeFiat,
+    currentCurrencyFeeWith18SignificantDigits:
+      maxFeeFiatWith18SignificantDigits,
+    nativeCurrencyFee: maxFeeNative,
+  } = getFeesFromHex(maxFee);
 
   // Estimated fee
   const estimatedFees = useMemo(() => {
@@ -114,10 +144,20 @@ export function useFeeCalculations(transactionMeta: TransactionMeta) {
     }
 
     // Logic for any network without L1 and L2 fee components
-    const minimumFeePerGas = addHexes(
+    let minimumFeePerGas = addHexes(
       decGWEIToHexWEI(estimatedBaseFee) || HEX_ZERO,
       decimalToHex(maxPriorityFeePerGas),
     );
+
+    // `minimumFeePerGas` should never be higher than the `maxFeePerGas`
+    if (
+      new Numeric(minimumFeePerGas, 16).greaterThan(
+        decimalToHex(maxFeePerGas),
+        16,
+      )
+    ) {
+      minimumFeePerGas = decimalToHex(maxFeePerGas);
+    }
 
     const estimatedFee = multiplyHexes(
       supportsEIP1559 ? (minimumFeePerGas as Hex) : (gasPrice as Hex),
@@ -125,16 +165,29 @@ export function useFeeCalculations(transactionMeta: TransactionMeta) {
     );
 
     return getFeesFromHex(estimatedFee);
-  }, [gasFeeEstimate, transactionMeta, estimatedBaseFee, getFeesFromHex]);
+  }, [
+    gasFeeEstimate,
+    transactionMeta,
+    estimatedBaseFee,
+    maxPriorityFeePerGas,
+    getFeesFromHex,
+  ]);
 
   return {
     estimatedFeeFiat: estimatedFees.currentCurrencyFee,
+    estimatedFeeFiatWith18SignificantDigits:
+      estimatedFees.currentCurrencyFeeWith18SignificantDigits,
     estimatedFeeNative: estimatedFees.nativeCurrencyFee,
     l1FeeFiat: feesL1.currentCurrencyFee,
+    l1FeeFiatWith18SignificantDigits:
+      feesL1.currentCurrencyFeeWith18SignificantDigits,
     l1FeeNative: feesL1.nativeCurrencyFee,
     l2FeeFiat: feesL2.currentCurrencyFee,
+    l2FeeFiatWith18SignificantDigits:
+      feesL2.currentCurrencyFeeWith18SignificantDigits,
     l2FeeNative: feesL2.nativeCurrencyFee,
     maxFeeFiat,
+    maxFeeFiatWith18SignificantDigits,
     maxFeeNative,
   };
 }

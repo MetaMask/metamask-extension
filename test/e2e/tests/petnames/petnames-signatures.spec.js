@@ -46,7 +46,7 @@ async function installNameLookupSnap(driver) {
 
   // Confirm Install Modal
   await driver.clickElement({
-    text: 'Install',
+    text: 'Confirm',
     tag: 'button',
   });
 
@@ -173,9 +173,7 @@ describe('Petnames - Signatures', function () {
     );
   });
 
-  // TODO(dbrans): Re-enable this test when name-lookup endowment is in stable.
-  // eslint-disable-next-line mocha/no-skipped-tests
-  it.skip('can propose names using installed snaps', async function () {
+  it('can propose names using installed snaps', async function () {
     await withFixtures(
       {
         dapp: true,

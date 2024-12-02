@@ -1,5 +1,5 @@
 import { TransactionMeta } from '@metamask/transaction-controller';
-import { ethErrors, serializeError } from 'eth-rpc-errors';
+import { providerErrors, serializeError } from '@metamask/rpc-errors';
 import React, { useCallback, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { ConfirmAlertModal } from '../../../../../components/app/alert-system/confirm-alert-modal';
@@ -34,13 +34,13 @@ import { selectUseTransactionSimulations } from '../../../selectors/preferences'
 import {
   isPermitSignatureRequest,
   isSIWESignatureRequest,
-  REDESIGN_DEV_TRANSACTION_TYPES,
 } from '../../../utils';
 import { useConfirmContext } from '../../../context/confirm';
 import { getConfirmationSender } from '../utils';
 import { MetaMetricsEventLocation } from '../../../../../../shared/constants/metametrics';
 import { Alert } from '../../../../../ducks/confirm-alerts/confirm-alerts';
 import { Severity } from '../../../../../helpers/constants/design-system';
+import { isCorrectDeveloperTransactionType } from '../../../../../../shared/lib/confirmation.utils';
 
 export type OnCancelHandler = ({
   location,
@@ -201,7 +201,7 @@ const Footer = () => {
         return;
       }
 
-      const error = ethErrors.provider.userRejectedRequest();
+      const error = providerErrors.userRejectedRequest();
       error.data = { location };
 
       dispatch(
@@ -218,9 +218,10 @@ const Footer = () => {
       return;
     }
 
-    const isTransactionConfirmation = REDESIGN_DEV_TRANSACTION_TYPES.find(
-      (type) => type === currentConfirmation?.type,
+    const isTransactionConfirmation = isCorrectDeveloperTransactionType(
+      currentConfirmation?.type,
     );
+
     if (isTransactionConfirmation) {
       const mergeTxDataWithNonce = (transactionData: TransactionMeta) =>
         customNonceValue

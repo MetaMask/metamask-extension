@@ -13,7 +13,6 @@ import TermsOfUsePopup from '../../components/app/terms-of-use-popup';
 import RecoveryPhraseReminder from '../../components/app/recovery-phrase-reminder';
 import WhatsNewPopup from '../../components/app/whats-new-popup';
 import { FirstTimeFlowType } from '../../../shared/constants/onboarding';
-import SmartTransactionsOptInModal from '../smart-transactions/components/smart-transactions-opt-in-modal';
 ///: END:ONLY_INCLUDE_IF
 import HomeNotification from '../../components/app/home-notification';
 import MultipleNotifications from '../../components/app/multiple-notifications';
@@ -62,8 +61,7 @@ import {
   CONNECTED_ROUTE,
   CONNECTED_ACCOUNTS_ROUTE,
   AWAITING_SWAP_ROUTE,
-  BUILD_QUOTE_ROUTE,
-  VIEW_QUOTE_ROUTE,
+  PREPARE_SWAP_ROUTE,
   CONFIRMATION_V_NEXT_ROUTE,
   ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
   ONBOARDING_SECURE_YOUR_WALLET_ROUTE,
@@ -156,7 +154,6 @@ export default class Home extends PureComponent {
     hideWhatsNewPopup: PropTypes.func.isRequired,
     announcementsToShow: PropTypes.bool.isRequired,
     onboardedInThisUISession: PropTypes.bool,
-    isSmartTransactionsOptInModalAvailable: PropTypes.bool.isRequired,
     showMultiRpcModal: PropTypes.bool.isRequired,
     ///: END:ONLY_INCLUDE_IF
     newNetworkAddedConfigurationId: PropTypes.string,
@@ -328,10 +325,8 @@ export default class Home extends PureComponent {
     const canRedirect = !isNotification && !stayOnHomePage;
     if (canRedirect && showAwaitingSwapScreen) {
       history.push(AWAITING_SWAP_ROUTE);
-    } else if (canRedirect && haveSwapsQuotes) {
-      history.push(VIEW_QUOTE_ROUTE);
-    } else if (canRedirect && swapsFetchParams) {
-      history.push(BUILD_QUOTE_ROUTE);
+    } else if (canRedirect && (haveSwapsQuotes || swapsFetchParams)) {
+      history.push(PREPARE_SWAP_ROUTE);
     } else if (firstPermissionsRequestId) {
       history.push(`${CONNECT_ROUTE}/${firstPermissionsRequestId}`);
     } else if (pendingConfirmationsPrioritized.length > 0) {
@@ -940,7 +935,6 @@ export default class Home extends PureComponent {
       announcementsToShow,
       firstTimeFlowType,
       newNetworkAddedConfigurationId,
-      isSmartTransactionsOptInModalAvailable,
       showMultiRpcModal,
       ///: END:ONLY_INCLUDE_IF
     } = this.props;
@@ -959,20 +953,11 @@ export default class Home extends PureComponent {
       !process.env.IN_TEST &&
       !newNetworkAddedConfigurationId;
 
-    const showSmartTransactionsOptInModal =
-      canSeeModals && isSmartTransactionsOptInModalAvailable;
-
     const showWhatsNew =
-      canSeeModals &&
-      announcementsToShow &&
-      showWhatsNewPopup &&
-      !showSmartTransactionsOptInModal;
+      canSeeModals && announcementsToShow && showWhatsNewPopup;
 
     const showMultiRpcEditModal =
-      canSeeModals &&
-      showMultiRpcModal &&
-      !showSmartTransactionsOptInModal &&
-      !showWhatsNew;
+      canSeeModals && showMultiRpcModal && !showWhatsNew;
 
     const showTermsOfUse =
       completedOnboarding && !onboardedInThisUISession && showTermsOfUsePopup;
@@ -994,11 +979,6 @@ export default class Home extends PureComponent {
           {
             ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
           }
-          <SmartTransactionsOptInModal
-            isOpen={showSmartTransactionsOptInModal}
-            hideWhatsNewPopup={hideWhatsNewPopup}
-          />
-
           {showMultiRpcEditModal && <MultiRpcEditModal />}
           {showWhatsNew ? <WhatsNewPopup onClose={hideWhatsNewPopup} /> : null}
           {!showWhatsNew && showRecoveryPhraseReminder ? (

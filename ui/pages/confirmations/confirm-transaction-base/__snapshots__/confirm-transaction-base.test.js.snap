@@ -264,6 +264,7 @@ exports[`Confirm Transaction Base should match snapshot 1`] = `
             >
               <span
                 class="mm-box mm-text currency-display-component__text mm-text--inherit mm-text--ellipsis mm-box--color-text-default"
+                data-testid="account-value-and-suffix"
               >
                 0.0001
               </span>
@@ -336,12 +337,12 @@ exports[`Confirm Transaction Base should match snapshot 1`] = `
                     </div>
                   </div>
                 </div>
+                <p
+                  class="mm-box mm-text mm-text--body-md mm-box--color-text-default"
+                >
+                  No changes
+                </p>
               </div>
-              <p
-                class="mm-box mm-text mm-text--body-md mm-box--color-text-alternative"
-              >
-                No changes predicted for your wallet
-              </p>
             </div>
             <div
               class="transaction-detail"
@@ -407,6 +408,7 @@ exports[`Confirm Transaction Base should match snapshot 1`] = `
                             >
                               <span
                                 class="mm-box mm-text currency-display-component__text mm-text--body-md-bold mm-text--ellipsis mm-box--color-text-default"
+                                data-testid="account-value-and-suffix"
                               >
                                 0.000021
                               </span>
@@ -440,6 +442,7 @@ exports[`Confirm Transaction Base should match snapshot 1`] = `
                           >
                             <span
                               class="mm-box mm-text currency-display-component__text mm-text--inherit mm-text--ellipsis mm-box--color-text-default"
+                              data-testid="account-value-and-suffix"
                             >
                               0.000021
                             </span>

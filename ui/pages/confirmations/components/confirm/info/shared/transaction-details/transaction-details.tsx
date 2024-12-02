@@ -20,6 +20,7 @@ import { ConfirmInfoRowCurrency } from '../../../../../../../components/app/conf
 import { PRIMARY } from '../../../../../../../helpers/constants/common';
 import { useUserPreferencedCurrency } from '../../../../../../../hooks/useUserPreferencedCurrency';
 import { HEX_ZERO } from '../constants';
+import { SigningInWithRow } from '../sign-in-with-row/sign-in-with-row';
 
 export const OriginRow = () => {
   const t = useI18nContext();
@@ -56,13 +57,18 @@ export const RecipientRow = () => {
     return null;
   }
 
+  const { chainId } = currentConfirmation;
+
   return (
     <ConfirmInfoRow
       data-testid="transaction-details-recipient-row"
       label={t('interactingWith')}
       tooltip={t('interactingWithTransactionDescription')}
     >
-      <ConfirmInfoRowAddress address={currentConfirmation.txParams.to} />
+      <ConfirmInfoRowAddress
+        address={currentConfirmation.txParams.to}
+        chainId={chainId}
+      />
     </ConfirmInfoRow>
   );
 };
@@ -115,7 +121,7 @@ const PaymasterRow = () => {
   const t = useI18nContext();
   const { currentConfirmation } = useConfirmContext<TransactionMeta>();
 
-  const { id: userOperationId } = currentConfirmation ?? {};
+  const { id: userOperationId, chainId } = currentConfirmation ?? {};
   const isUserOperation = Boolean(currentConfirmation?.isUserOperation);
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -134,7 +140,7 @@ const PaymasterRow = () => {
         label={t('confirmFieldPaymaster')}
         tooltip={t('confirmFieldTooltipPaymaster')}
       >
-        <ConfirmInfoRowAddress address={paymasterAddress} />
+        <ConfirmInfoRowAddress address={paymasterAddress} chainId={chainId} />
       </ConfirmInfoRow>
     </ConfirmInfoSection>
   );
@@ -151,6 +157,7 @@ export const TransactionDetails = () => {
         <OriginRow />
         <RecipientRow />
         {showAdvancedDetails && <MethodDataRow />}
+        <SigningInWithRow />
       </ConfirmInfoSection>
       <AmountRow />
       <PaymasterRow />
