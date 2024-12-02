@@ -108,7 +108,7 @@ class AssetListPage {
 
   async getNumberOfAssets(): Promise<number> {
     console.log(`Returning the total number of asset items in the token list`);
-    const assets = await this.driver.findElements(this.tokenLisiItem);
+    const assets = await this.driver.findElements(this.tokenListItem);
     return assets.length;
   }
 
