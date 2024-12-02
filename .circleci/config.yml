@@ -1749,7 +1749,7 @@ jobs:
           command: echo 'whew - everything passed!'
 
   check-mmi-trigger:
-    executor: node-browsers-medium
+    executor: node-browsers-small
     steps:
       - checkout
       - run:
