@@ -15,7 +15,7 @@ executors:
       NODE_OPTIONS: --max_old_space_size=3072
   node-linux-medium:
     machine:
-      image: ubuntu-2404:current
+      image: ubuntu-2404:2024.05.1
     resource_class: medium #// linux medium: 2 CPUs, 7.5 GB RAM, 10 credits/min
     environment:
       NODE_OPTIONS: --max_old_space_size=6144
