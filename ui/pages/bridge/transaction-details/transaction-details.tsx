@@ -91,16 +91,16 @@ const getBridgeAmount = ({
   return undefined;
 };
 
-const getIsDelayed = (
+export const getIsDelayed = (
   status: StatusTypes,
   bridgeHistoryItem?: BridgeHistoryItem,
 ) => {
-  return (
+  return Boolean(
     status === StatusTypes.PENDING &&
-    bridgeHistoryItem?.startTime &&
-    Date.now() >
-      bridgeHistoryItem.startTime +
-        bridgeHistoryItem.estimatedProcessingTimeInSeconds * 1000
+      bridgeHistoryItem?.startTime &&
+      Date.now() >
+        bridgeHistoryItem.startTime +
+          bridgeHistoryItem.estimatedProcessingTimeInSeconds * 1000,
   );
 };
 
