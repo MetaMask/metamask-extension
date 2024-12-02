@@ -202,7 +202,7 @@ const _getBridgeFeesPerGas = createSelector(
 export const getBridgeSortOrder = (state: BridgeAppState) =>
   state.bridge.sortOrder;
 
-export const getFromConversionRate = createSelector(
+export const getFromTokenConversionRate = createSelector(
   getFromChain,
   getMarketData,
   getFromToken,
@@ -237,7 +237,7 @@ export const getFromConversionRate = createSelector(
 
 // A dest network can be selected before it's imported
 // The cached exchange rate won't be available so the rate from the bridge state is used
-export const getToConversionRate = createDeepEqualSelector(
+export const getToTokenConversionRate = createDeepEqualSelector(
   getToChain,
   getMarketData,
   getToToken,
@@ -266,8 +266,8 @@ export const getToConversionRate = createDeepEqualSelector(
 
 const _getQuotesWithMetadata = createDeepEqualSelector(
   (state) => state.metamask.bridgeState.quotes,
-  getToConversionRate,
-  getFromConversionRate,
+  getToTokenConversionRate,
+  getFromTokenConversionRate,
   getConversionRate,
   _getBridgeFeesPerGas,
   (
@@ -457,7 +457,7 @@ export const getFromAmountInFiat = createSelector(
   getFromToken,
   getFromChain,
   _getValidatedSrcAmount,
-  getFromConversionRate,
+  getFromTokenConversionRate,
   (
     fromToken,
     fromChain,
