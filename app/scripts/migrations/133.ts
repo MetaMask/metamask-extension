@@ -18,7 +18,7 @@ export type VersionedData = {
   };
 };
 
-const version = 133;
+export const version = 133;
 
 function transformState(state: VersionedData['data']) {
   console.log('Migration 133 state:', JSON.stringify(state, null, 2));
