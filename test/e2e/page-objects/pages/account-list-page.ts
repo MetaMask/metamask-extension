@@ -3,6 +3,12 @@ import { Driver } from '../../webdriver/driver';
 import { largeDelayMs } from '../../helpers';
 import messages from '../../../../app/_locales/en/messages.json';
 
+enum AccountType {
+  SOLANA = 'solana',
+  ETHEREUM = 'ethereum',
+  IMPORTED = 'imported',
+}
+
 class AccountListPage {
   private readonly driver: Driver;
 
@@ -34,6 +40,11 @@ class AccountListPage {
 
   private readonly addBtcAccountButton = {
     text: messages.addNewBitcoinAccount.message,
+    tag: 'button',
+  };
+
+  private readonly addSolanaAccountButton = {
+    text: messages.addNewSolanaAccount.message,
     tag: 'button',
   };
 
@@ -152,6 +163,50 @@ class AccountListPage {
     await this.driver.clickElementAndWaitToDisappear(
       this.addAccountConfirmButton,
     );
+  }
+
+  /**
+   * Adds a new SOLANA account with an optional custom name.
+   *
+   * @param options - Options for adding a new BTC account.
+   * @param [options.solanaAccountCreationEnabled] - Indicates if the BTC account creation is expected to be enabled or disabled. Defaults to true.
+   * @param [options.accountName] - The custom name for the BTC account. Defaults to an empty string, which means the default name will be used.
+   */
+  async addNewSolanaAccount({
+    solanaAccountCreationEnabled = true,
+    accountName = '',
+  }: {
+    solanaAccountCreationEnabled?: boolean;
+    accountName?: string;
+  } = {}): Promise<void> {
+    console.log(
+      `Adding new BTC account${
+        accountName ? ` with custom name: ${accountName}` : ' with default name'
+      }`,
+    );
+    await this.driver.clickElement(this.createAccountButton);
+    if (solanaAccountCreationEnabled) {
+      await this.driver.clickElement(this.addSolanaAccountButton);
+      // needed to mitigate a race condition with the state update
+      // there is no condition we can wait for in the UI
+      await this.driver.delay(largeDelayMs);
+      if (accountName) {
+        await this.driver.fill(this.accountNameInput, accountName);
+      }
+      await this.driver.clickElementAndWaitToDisappear(
+        this.addAccountConfirmButton,
+        // Longer timeout than usual, this reduces the flakiness
+        // around Bitcoin account creation (mainly required for
+        // Firefox)
+        5000,
+      );
+    } else {
+      const createButton = await this.driver.findElement(
+        this.addBtcAccountButton,
+      );
+      assert.equal(await createButton.isEnabled(), false);
+      await this.driver.clickElement(this.closeAccountModalButton);
+    }
   }
 
   /**
@@ -562,6 +617,19 @@ class AccountListPage {
     );
     await this.openAccountOptionsInAccountList(accountLabel);
     await this.driver.assertElementNotPresent(this.removeAccountButton);
+  }
+  /**
+   * Checks if an account label is displayed in the account menu.
+   *
+   * @param expectedLabel - The label text to check for.
+   * @returns Promise that resolves to true if the label is displayed, false otherwise.
+   */
+
+  async isLabelDisplayed(expectedLabel: string): Promise<boolean> {
+    return await this.driver.isElementPresentAndVisible({
+      css: 'button',
+      text: expectedLabel,
+    });
   }
 }
 

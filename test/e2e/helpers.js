@@ -920,6 +920,13 @@ async function openMenuSafe(driver) {
   }
 }
 
+async function enableExperimentalMode(driver) {
+  await openMenuSafe(driver);
+  await driver.clickElement('[data-testid="global-menu-settings"]');
+  await driver.clickElement('[data-testid="experimental-toggle-div"]');
+  await driver.clickElement({ text: 'Experimental', tag: 'button' });
+}
+
 const sentryRegEx = /^https:\/\/sentry\.io\/api\/\d+\/envelope/gu;
 
 module.exports = {
