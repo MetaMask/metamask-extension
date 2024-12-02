@@ -91,6 +91,19 @@ const getBridgeAmount = ({
   return undefined;
 };
 
+const getIsDelayed = (
+  status: StatusTypes,
+  bridgeHistoryItem: BridgeHistoryItem,
+) => {
+  return (
+    status === StatusTypes.PENDING &&
+    bridgeHistoryItem.startTime &&
+    Date.now() >
+      bridgeHistoryItem.startTime +
+        bridgeHistoryItem.estimatedProcessingTimeInSeconds * 1000
+  );
+};
+
 const StatusToColorMap: Record<StatusTypes, TextColor> = {
   [StatusTypes.PENDING]: TextColor.warningDefault,
   [StatusTypes.COMPLETE]: TextColor.successDefault,
@@ -154,8 +167,7 @@ const CrossChainSwapTxDetails = () => {
     : undefined;
 
   const bridgeAmount = getBridgeAmount({ bridgeHistoryItem });
-
-  const isDelayed = true;
+  const isDelayed = getIsDelayed(status, bridgeHistoryItem);
 
   return (
     <div className="bridge">
