@@ -93,11 +93,11 @@ const getBridgeAmount = ({
 
 const getIsDelayed = (
   status: StatusTypes,
-  bridgeHistoryItem: BridgeHistoryItem,
+  bridgeHistoryItem?: BridgeHistoryItem,
 ) => {
   return (
     status === StatusTypes.PENDING &&
-    bridgeHistoryItem.startTime &&
+    bridgeHistoryItem?.startTime &&
     Date.now() >
       bridgeHistoryItem.startTime +
         bridgeHistoryItem.estimatedProcessingTimeInSeconds * 1000
@@ -196,15 +196,12 @@ const CrossChainSwapTxDetails = () => {
                 title={t('bridgeTxDetailsDelayedTitle')}
                 severity={BannerAlertSeverity.Warning}
               >
-                <Text>
-                  {t('bridgeTxDetailsDelayedDescription')}{' '}
+                <Text display={Display.Flex} alignItems={AlignItems.center}>
+                  {t('bridgeTxDetailsDelayedDescription')}&nbsp;
                   <ButtonLink
+                    externalLink
+                    href={SUPPORT_REQUEST_LINK}
                     onClick={() => {
-                      global.platform.openTab({
-                        url:
-                          SUPPORT_REQUEST_LINK ||
-                          'https://support.metamask.io/',
-                      });
                       trackEvent(
                         {
                           category: MetaMetricsEventCategory.Home,
@@ -224,6 +221,7 @@ const CrossChainSwapTxDetails = () => {
                   >
                     {t('bridgeTxDetailsDelayedDescriptionSupport')}
                   </ButtonLink>
+                  .
                 </Text>
               </BannerAlert>
             )}
