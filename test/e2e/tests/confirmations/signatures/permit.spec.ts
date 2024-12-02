@@ -7,8 +7,8 @@ import { Ganache } from '../../../seeder/ganache';
 import { Driver } from '../../../webdriver/driver';
 import {
   mockPermitDecoding,
-  mockSignatureApproved,
-  mockSignatureRejected,
+  mockSignatureApprovedWithDecoding,
+  mockSignatureRejectedWithDecoding,
   scrollAndConfirmAndAssertConfirm,
   withTransactionEnvelopeTypeFixtures,
 } from '../helpers';
@@ -75,7 +75,7 @@ describe('Confirmation Signature - Permit @no-mmi', function (this: Suite) {
 
         await assertVerifiedResults(driver, publicAddress);
       },
-      mockSignatureApproved,
+      mockSignatureApprovedWithDecoding,
     );
   });
 
@@ -111,7 +111,7 @@ describe('Confirmation Signature - Permit @no-mmi', function (this: Suite) {
           decodingResponse: 'CHANGE',
         });
       },
-      mockSignatureRejected,
+      mockSignatureRejectedWithDecoding,
     );
   });
 
