@@ -46,7 +46,7 @@ class AssetListPage {
   private readonly tokenAmountValue =
     '[data-testid="multichain-token-list-item-value"]';
 
-  private readonly tokenLisiItem =
+  private readonly tokenListItem =
     '[data-testid="multichain-token-list-button"]';
 
   private readonly tokenOptionsButton = '[data-testid="import-token-button"]';
