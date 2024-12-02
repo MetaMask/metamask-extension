@@ -38,7 +38,7 @@ type SmartTransactionsMetaMaskState = {
           smartTransactions: {
             expectedDeadline?: number;
             maxDeadline?: number;
-            returnTxHashAsap?: boolean;
+            extensionReturnTxHashAsap?: boolean;
           };
         };
         smartTransactions: {

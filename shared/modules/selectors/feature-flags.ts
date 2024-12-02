@@ -11,7 +11,7 @@ type FeatureFlagsMetaMaskState = {
           smartTransactions: {
             expectedDeadline?: number;
             maxDeadline?: number;
-            returnTxHashAsap?: boolean;
+            extensionReturnTxHashAsap?: boolean;
           };
         };
       };

@@ -21,7 +21,10 @@ import {
 } from '@metamask/keyring-api';
 import { ControllerMessenger } from '@metamask/base-controller';
 import { LoggingController, LogType } from '@metamask/logging-controller';
-import { TransactionController } from '@metamask/transaction-controller';
+import {
+  CHAIN_IDS,
+  TransactionController,
+} from '@metamask/transaction-controller';
 import {
   RatesController,
   TokenListController,
@@ -214,8 +217,6 @@ const TEST_INTERNAL_ACCOUNT = {
   type: EthAccountType.Eoa,
 };
 
-const NOTIFICATION_ID = 'NHL8f2eSSTn9TKBamRLiU';
-
 const ALT_MAINNET_RPC_URL = 'http://localhost:8545';
 const POLYGON_RPC_URL = 'https://polygon.llamarpc.com';
 
@@ -255,17 +256,6 @@ const firstTimeState = {
         blockExplorerUrl: undefined,
       },
     ),
-  },
-  NotificationController: {
-    notifications: {
-      [NOTIFICATION_ID]: {
-        id: NOTIFICATION_ID,
-        origin: 'local:http://localhost:8086/',
-        createdDate: 1652967897732,
-        readDate: null,
-        message: 'Hello, http://localhost:8086!',
-      },
-    },
   },
   PhishingController: {
     phishingLists: [
@@ -1584,7 +1574,10 @@ describe('MetaMaskController', () => {
         ).toHaveBeenCalledTimes(1);
         expect(
           metamaskController.txController.wipeTransactions,
-        ).toHaveBeenCalledWith(false, selectedAddressMock);
+        ).toHaveBeenCalledWith({
+          address: selectedAddressMock,
+          chainId: CHAIN_IDS.MAINNET,
+        });
         expect(
           metamaskController.smartTransactionsController.wipeSmartTransactions,
         ).toHaveBeenCalledWith({
@@ -2597,23 +2590,6 @@ describe('MetaMaskController', () => {
           metamaskController.accountTrackerController.syncWithAddresses,
         ).toHaveBeenCalledWith(accounts);
         expect(metamaskController.getState()).toStrictEqual(oldState);
-      });
-    });
-
-    describe('markNotificationsAsRead', () => {
-      it('marks the notification as read', () => {
-        metamaskController.markNotificationsAsRead([NOTIFICATION_ID]);
-        const readNotification =
-          metamaskController.getState().notifications[NOTIFICATION_ID];
-        expect(readNotification.readDate).not.toBeNull();
-      });
-    });
-
-    describe('dismissNotifications', () => {
-      it('deletes the notification from state', () => {
-        metamaskController.dismissNotifications([NOTIFICATION_ID]);
-        const state = metamaskController.getState().notifications;
-        expect(Object.values(state)).not.toContain(NOTIFICATION_ID);
       });
     });
 
