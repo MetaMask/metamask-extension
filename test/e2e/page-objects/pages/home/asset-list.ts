@@ -70,7 +70,7 @@ class AssetListPage {
   }
 
   async clickOnAsset(assetName: string): Promise<void> {
-    const buttons = await this.driver.findElements(this.tokenLisiItem);
+    const buttons = await this.driver.findElements(this.tokenListItem);
     for (const button of buttons) {
       const text = await button.getText();
       if (text.includes(assetName)) {
