@@ -1,5 +1,6 @@
-import type { SmartTransaction } from '@metamask/smart-transactions-controller/dist/types';
-import migration133, { type VersionedData } from './133';
+import { SmartTransaction } from '@metamask/smart-transactions-controller/dist/types';
+import { migrate, version } from './133';
+import { VersionedData } from './133';
 
 describe('migration #133', () => {
   const mockSmartTransaction: SmartTransaction = {
@@ -12,7 +13,7 @@ describe('migration #133', () => {
       data: {},
     };
 
-    const newStorage = await migration133.migrate(oldStorage);
+    const newStorage = await migrate(oldStorage);
     expect(newStorage.meta).toStrictEqual({ version: 133 });
   });
 
@@ -26,7 +27,7 @@ describe('migration #133', () => {
       },
     };
 
-    const newStorage = await migration133.migrate(oldStorage);
+    const newStorage = await migrate(oldStorage);
     expect(
       newStorage.data.PreferencesController?.smartTransactionsOptInStatus,
     ).toBe(true);
@@ -40,7 +41,7 @@ describe('migration #133', () => {
       },
     };
 
-    const newStorage = await migration133.migrate(oldStorage);
+    const newStorage = await migrate(oldStorage);
     expect(
       newStorage.data.PreferencesController?.smartTransactionsOptInStatus,
     ).toBe(true);
@@ -61,7 +62,7 @@ describe('migration #133', () => {
       },
     };
 
-    const newStorage = await migration133.migrate(oldStorage);
+    const newStorage = await migrate(oldStorage);
     expect(
       newStorage.data.PreferencesController?.smartTransactionsOptInStatus,
     ).toBe(true);
@@ -84,7 +85,7 @@ describe('migration #133', () => {
       },
     };
 
-    const newStorage = await migration133.migrate(oldStorage);
+    const newStorage = await migrate(oldStorage);
     expect(
       newStorage.data.PreferencesController?.smartTransactionsOptInStatus,
     ).toBe(false);
@@ -100,7 +101,7 @@ describe('migration #133', () => {
       },
     };
 
-    const newStorage = await migration133.migrate(oldStorage);
+    const newStorage = await migrate(oldStorage);
     expect(
       newStorage.data.PreferencesController?.smartTransactionsOptInStatus,
     ).toBe(true);
@@ -119,7 +120,7 @@ describe('migration #133', () => {
       },
     } as unknown as VersionedData;
 
-    await migration133.migrate(oldStorage);
+    const newStorage = await migrate(oldStorage);
 
     expect(sentryCaptureExceptionMock).toHaveBeenCalledTimes(1);
     expect(sentryCaptureExceptionMock).toHaveBeenCalledWith(
