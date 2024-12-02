@@ -310,7 +310,6 @@ const state = {
     connectedAccounts: ['0x64a845a5b02460acf8a3d84503b0d68d028b4bb4'],
     isInitialized: true,
     isUnlocked: true,
-    isAccountMenuOpen: false,
     rpcUrl: 'https://rawtestrpc.metamask.io/',
     internalAccounts: {
       accounts: {
@@ -677,8 +676,6 @@ const state = {
         ],
       },
     ],
-    pendingTokens: {},
-    customNonceValue: '',
     send: {
       gasLimit: '0xcb28',
       gasPrice: null,
@@ -702,7 +699,6 @@ const state = {
     },
     useBlockie: false,
     featureFlags: {},
-    welcomeScreenSeen: false,
     currentLocale: 'en',
     preferences: {
       showNativeTokenAsMainBalance: true,
@@ -730,7 +726,6 @@ const state = {
       },
     },
     participateInMetaMetrics: true,
-    nextNonce: 71,
     connectedStatusPopoverHasBeenShown: true,
     swapsWelcomeMessageHasBeenShown: true,
     defaultHomeActiveTabName: 'Tokens',
@@ -1629,6 +1624,11 @@ const state = {
     openSeaEnabled: true,
   },
   appState: {
+    isAccountMenuOpen: false,
+    welcomeScreenSeen: false,
+    pendingTokens: {},
+    customNonceValue: '',
+    nextNonce: 71,
     shouldClose: false,
     menuOpen: false,
     modal: {
