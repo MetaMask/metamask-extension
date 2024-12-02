@@ -299,6 +299,22 @@ class FixtureBuilder {
     });
   }
 
+  withNetworkControllerOnPolygon() {
+    return this.withNetworkController({
+      networkConfigurations: {
+        networkConfigurationId: {
+          chainId: CHAIN_IDS.POLYGON,
+          nickname: 'Polygon Mainnet',
+          rpcPrefs: {},
+          rpcUrl: 'https://mainnet.infura.io',
+          ticker: 'ETH',
+          networkConfigurationId: 'networkConfigurationId',
+          id: 'networkConfigurationId',
+        },
+      },
+    });
+  }
+
   withNetworkControllerDoubleGanache() {
     const ganacheNetworks = mockNetworkStateOld({
       id: '76e9cd59-d8e2-47e7-b369-9c205ccb602c',
