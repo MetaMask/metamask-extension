@@ -3,9 +3,9 @@ import { useSelector } from 'react-redux';
 import {
   getBridgeQuotes,
   getFromAmountInFiat,
-  getFromConversionRate,
+  getFromTokenConversionRate,
   getQuoteRequest,
-  getToConversionRate,
+  getToTokenConversionRate,
   getFromAmount,
 } from '../../../ducks/bridge/selectors';
 import { getCurrentCurrency, getUSDConversionRate } from '../../../selectors';
@@ -22,8 +22,8 @@ export const useConvertedUsdAmounts = () => {
   const { activeQuote } = useSelector(getBridgeQuotes);
   const fromAmountInputValueInFiat = useSelector(getFromAmountInFiat);
   const fromAmountInputValue = useSelector(getFromAmount);
-  const fromTokenConversionRate = useSelector(getFromConversionRate);
-  const toTokenConversionRate = useSelector(getToConversionRate);
+  const fromTokenConversionRate = useSelector(getFromTokenConversionRate);
+  const toTokenConversionRate = useSelector(getToTokenConversionRate);
   const currency = useSelector(getCurrentCurrency);
   const nativeToUsdRate = useSelector(getUSDConversionRate);
 
