@@ -26,6 +26,7 @@ import { updateTransactionGasFees } from '../../store/actions';
 import { setCustomGasLimit, setCustomGasPrice } from '../gas/gas.duck';
 
 const initialState = {
+  isInitialized: false,
   isUnlocked: false,
   internalAccounts: { accounts: {}, selectedAccount: '' },
   transactions: [],
@@ -153,6 +154,7 @@ export default function reduceMetamask(state = initialState, action) {
     case actionConstants.RESET_ONBOARDING: {
       return {
         ...metamaskState,
+        isInitialized: false,
         completedOnboarding: false,
         firstTimeFlowType: null,
         isUnlocked: false,
