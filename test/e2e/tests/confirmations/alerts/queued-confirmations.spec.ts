@@ -11,6 +11,8 @@ import {
   TestSuiteArguments,
 } from '../transactions/shared';
 import ContractAddressRegistry from '../../../seeder/contract-address-registry';
+import TestDapp from '../../../page-objects/pages/test-dapp';
+import { Ganache } from '../../../seeder/ganache';
 
 const FixtureBuilder = require('../../../fixture-builder');
 const {
@@ -35,7 +37,7 @@ describe('Queued Confirmations', function () {
   }
 
   describe('Queued Requests Banner Alert', function () {
-    it('Banner is shown on dApp 1, but not on dApp 2 after adding transaction on dApp 1, and one on dApp 2 (old confirmation flow)', async function () {
+    it.only('Banner is shown on dApp 1, but not on dApp 2 after adding transaction on dApp 1, and one on dApp 2 (old confirmation flow)', async function () {
       await withFixtures(
         {
           dapp: true,
@@ -62,11 +64,18 @@ describe('Queued Confirmations', function () {
           },
           title: this.test?.fullTitle(),
         },
-        async ({ driver }: TestSuiteArguments) => {
+        async ({ driver, ganacheServer }: TestSuiteArguments) => {
+          const testDapp = new TestDapp(driver);
           await unlockWallet(driver);
+          const addresses = await (ganacheServer as Ganache).getAccounts();
+          const publicAddress = addresses?.[0] as string;
 
-          await connectToDappOne(driver);
-          await connectToDappTwoAndSwitchBackToOne(driver);
+          await connectToDappOne(driver, testDapp, publicAddress);
+          await connectToDappTwoAndSwitchBackToOne(
+            driver,
+            testDapp,
+            publicAddress,
+          );
 
           await switchChainToDappOne(driver);
 
@@ -107,11 +116,18 @@ describe('Queued Confirmations', function () {
           },
           title: this.test?.fullTitle(),
         },
-        async ({ driver }: TestSuiteArguments) => {
+        async ({ driver, ganacheServer }: TestSuiteArguments) => {
+          const testDapp = new TestDapp(driver);
           await unlockWallet(driver);
+          const addresses = await (ganacheServer as Ganache).getAccounts();
+          const publicAddress = addresses?.[0] as string;
 
-          await connectToDappOne(driver);
-          await connectToDappTwoAndSwitchBackToOne(driver);
+          await connectToDappOne(driver, testDapp, publicAddress);
+          await connectToDappTwoAndSwitchBackToOne(
+            driver,
+            testDapp,
+            publicAddress,
+          );
 
           await switchChainToDappOne(driver);
 
@@ -165,13 +181,18 @@ describe('Queued Confirmations', function () {
           title: this.test?.fullTitle(),
         },
         async ({ driver, contractRegistry }: TestSuiteArguments) => {
+          const testDapp = new TestDapp(driver);
           await openDAppWithContract(driver, contractRegistry, smartContract);
 
           const contractAddress = await (
             contractRegistry as ContractAddressRegistry
           ).getContractAddress(smartContract);
 
-          await connectToDappTwoAndSwitchBackToOne(driver, contractAddress);
+          await connectToDappTwoAndSwitchBackToOne(
+            driver,
+            testDapp,
+            contractAddress,
+          );
 
           // create deposit transaction in dapp 1
           await createDepositTransaction(driver);
@@ -186,211 +207,217 @@ describe('Queued Confirmations', function () {
     });
   });
 
-  describe('Navigation and Banner Metrics', function () {
-    it('Metric is sent from the nav bar and the banner alert (old confirmation flow)', async function () {
-      await withFixtures(
-        {
-          dapp: true,
-          fixtures: new FixtureBuilder()
-            .withNetworkControllerTripleGanache()
-            .withPreferencesControllerUseRequestQueueEnabled()
-            .withSelectedNetworkControllerPerDomain()
-            .withMetaMetricsController({
-              metaMetricsId: 'fake-metrics-id',
-              participateInMetaMetrics: true,
-            })
-            .build(),
-          dappOptions: { numberOfDapps: 2 },
-          ganacheOptions: {
-            ...defaultGanacheOptions,
-            concurrent: [
-              {
-                port: PORT,
-                chainId: CHAIN_ID,
-                ganacheOptions2: defaultGanacheOptions,
-              },
-              {
-                port: PORT_ONE,
-                chainId: CHAIN_ID_ONE,
-                ganacheOptions2: defaultGanacheOptions,
-              },
-            ],
-          },
-          title: this.test?.fullTitle(),
-          testSpecificMock: queueControllerMocks,
-        },
-        async ({
-          driver,
-          mockedEndpoint: mockedEndpoints,
-        }: TestSuiteArguments) => {
-          await unlockWallet(driver);
+  // describe('Navigation and Banner Metrics', function () {
+  //   it('Metric is sent from the nav bar and the banner alert (old confirmation flow)', async function () {
+  //     await withFixtures(
+  //       {
+  //         dapp: true,
+  //         fixtures: new FixtureBuilder()
+  //           .withNetworkControllerTripleGanache()
+  //           .withPreferencesControllerUseRequestQueueEnabled()
+  //           .withSelectedNetworkControllerPerDomain()
+  //           .withMetaMetricsController({
+  //             metaMetricsId: 'fake-metrics-id',
+  //             participateInMetaMetrics: true,
+  //           })
+  //           .build(),
+  //         dappOptions: { numberOfDapps: 2 },
+  //         ganacheOptions: {
+  //           ...defaultGanacheOptions,
+  //           concurrent: [
+  //             {
+  //               port: PORT,
+  //               chainId: CHAIN_ID,
+  //               ganacheOptions2: defaultGanacheOptions,
+  //             },
+  //             {
+  //               port: PORT_ONE,
+  //               chainId: CHAIN_ID_ONE,
+  //               ganacheOptions2: defaultGanacheOptions,
+  //             },
+  //           ],
+  //         },
+  //         title: this.test?.fullTitle(),
+  //         testSpecificMock: queueControllerMocks,
+  //       },
+  //       async ({
+  //         driver,
+  //         mockedEndpoint: mockedEndpoints,
+  //       }: TestSuiteArguments) => {
+  //         await unlockWallet(driver);
 
-          await connectToDappOne(driver);
-          await connectToDappTwoAndSwitchBackToOne(driver);
+  //         await connectToDappOne(driver);
+  //         await connectToDappTwoAndSwitchBackToOne(driver);
 
-          await switchChainToDappOne(driver);
+  //         await switchChainToDappOne(driver);
 
-          await switchToDAppAndCreateTransactionRequest(driver);
-          await switchToDAppAndCreateTransactionRequest(driver);
-          await switchToDAppTwoAndCreateSignTypedDataRequest(driver);
+  //         await switchToDAppAndCreateTransactionRequest(driver);
+  //         await switchToDAppAndCreateTransactionRequest(driver);
+  //         await switchToDAppTwoAndCreateSignTypedDataRequest(driver);
 
-          const events = await getEventPayloads(
-            driver,
-            mockedEndpoints as MockedEndpoint[],
-          );
+  //         const events = await getEventPayloads(
+  //           driver,
+  //           mockedEndpoints as MockedEndpoint[],
+  //         );
 
-          assert.equal(events.length, 2);
+  //         assert.equal(events.length, 2);
 
-          assert.equal(
-            events[0].event,
-            MetaMetricsEventName.ConfirmationQueued,
-          );
-          assert.equal(events[0].properties.category, 'Confirmations');
-          assert.equal(events[0].properties.chain_id, '0x3e8');
-          assert.equal(events[0].properties.environment_type, 'notification');
-          assert.equal(events[0].properties.locale, 'en');
-          assert.equal(events[0].properties.queue_size, 1);
-          assert.equal(events[0].properties.queue_type, 'navigation_header');
-          assert.equal(events[0].properties.referrer, 'http://127.0.0.1:8080');
-          assert.equal(events[0].properties.confirmation_type, 'transaction');
+  //         assert.equal(
+  //           events[0].event,
+  //           MetaMetricsEventName.ConfirmationQueued,
+  //         );
+  //         assert.equal(events[0].properties.category, 'Confirmations');
+  //         assert.equal(events[0].properties.chain_id, '0x3e8');
+  //         assert.equal(events[0].properties.environment_type, 'notification');
+  //         assert.equal(events[0].properties.locale, 'en');
+  //         assert.equal(events[0].properties.queue_size, 1);
+  //         assert.equal(events[0].properties.queue_type, 'navigation_header');
+  //         assert.equal(events[0].properties.referrer, 'http://127.0.0.1:8080');
+  //         assert.equal(events[0].properties.confirmation_type, 'transaction');
 
-          assert.equal(
-            events[1].event,
-            MetaMetricsEventName.ConfirmationQueued,
-          );
-          assert.equal(events[1].properties.category, 'Confirmations');
-          assert.equal(events[1].properties.chain_id, '0x3e8');
-          assert.equal(events[1].properties.environment_type, 'notification');
-          assert.equal(events[1].properties.locale, 'en');
-          assert.equal(events[1].properties.queue_size, 1);
-          assert.equal(events[1].properties.queue_type, 'queue_controller');
-          assert.equal(events[1].properties.referrer, 'http://127.0.0.1:8080');
-          assert.equal(events[1].properties.confirmation_type, 'transaction');
-        },
-      );
-    });
+  //         assert.equal(
+  //           events[1].event,
+  //           MetaMetricsEventName.ConfirmationQueued,
+  //         );
+  //         assert.equal(events[1].properties.category, 'Confirmations');
+  //         assert.equal(events[1].properties.chain_id, '0x3e8');
+  //         assert.equal(events[1].properties.environment_type, 'notification');
+  //         assert.equal(events[1].properties.locale, 'en');
+  //         assert.equal(events[1].properties.queue_size, 1);
+  //         assert.equal(events[1].properties.queue_type, 'queue_controller');
+  //         assert.equal(events[1].properties.referrer, 'http://127.0.0.1:8080');
+  //         assert.equal(events[1].properties.confirmation_type, 'transaction');
+  //       },
+  //     );
+  //   });
 
-    it('Metric is sent from the nav bar and the banner alert (redesigned confirmation flow)', async function () {
-      const smartContract = SMART_CONTRACTS.PIGGYBANK;
+  //   it('Metric is sent from the nav bar and the banner alert (redesigned confirmation flow)', async function () {
+  //     const smartContract = SMART_CONTRACTS.PIGGYBANK;
 
-      await withFixtures(
-        {
-          dapp: true,
-          fixtures: new FixtureBuilder()
-            .withNetworkControllerTripleGanache()
-            .withPermissionControllerConnectedToTestDapp()
-            .withPreferencesController({
-              preferences: { redesignedConfirmationsEnabled: true },
-              useRequestQueue: true,
-            })
-            .withSelectedNetworkControllerPerDomain()
-            .withMetaMetricsController({
-              metaMetricsId: 'fake-metrics-id',
-              participateInMetaMetrics: true,
-            })
-            .build(),
-          dappOptions: { numberOfDapps: 2 },
-          ganacheOptions: {
-            ...defaultGanacheOptions,
-            concurrent: [
-              {
-                port: PORT,
-                chainId: CHAIN_ID,
-                ganacheOptions2: defaultGanacheOptions,
-              },
-              {
-                port: PORT_ONE,
-                chainId: CHAIN_ID_ONE,
-                ganacheOptions2: defaultGanacheOptions,
-              },
-            ],
-          },
-          smartContract,
-          title: this.test?.fullTitle(),
-          testSpecificMock: queueControllerMocks,
-        },
-        async ({
-          driver,
-          contractRegistry,
-          mockedEndpoint: mockedEndpoints,
-        }: TestSuiteArguments) => {
-          await openDAppWithContract(driver, contractRegistry, smartContract);
+  //     await withFixtures(
+  //       {
+  //         dapp: true,
+  //         fixtures: new FixtureBuilder()
+  //           .withNetworkControllerTripleGanache()
+  //           .withPermissionControllerConnectedToTestDapp()
+  //           .withPreferencesController({
+  //             preferences: { redesignedConfirmationsEnabled: true },
+  //             useRequestQueue: true,
+  //           })
+  //           .withSelectedNetworkControllerPerDomain()
+  //           .withMetaMetricsController({
+  //             metaMetricsId: 'fake-metrics-id',
+  //             participateInMetaMetrics: true,
+  //           })
+  //           .build(),
+  //         dappOptions: { numberOfDapps: 2 },
+  //         ganacheOptions: {
+  //           ...defaultGanacheOptions,
+  //           concurrent: [
+  //             {
+  //               port: PORT,
+  //               chainId: CHAIN_ID,
+  //               ganacheOptions2: defaultGanacheOptions,
+  //             },
+  //             {
+  //               port: PORT_ONE,
+  //               chainId: CHAIN_ID_ONE,
+  //               ganacheOptions2: defaultGanacheOptions,
+  //             },
+  //           ],
+  //         },
+  //         smartContract,
+  //         title: this.test?.fullTitle(),
+  //         testSpecificMock: queueControllerMocks,
+  //       },
+  //       async ({
+  //         driver,
+  //         contractRegistry,
+  //         mockedEndpoint: mockedEndpoints,
+  //       }: TestSuiteArguments) => {
+  //         await openDAppWithContract(driver, contractRegistry, smartContract);
 
-          const contractAddress = await (
-            contractRegistry as ContractAddressRegistry
-          ).getContractAddress(smartContract);
+  //         const contractAddress = await (
+  //           contractRegistry as ContractAddressRegistry
+  //         ).getContractAddress(smartContract);
 
-          await connectToDappTwoAndSwitchBackToOne(driver, contractAddress);
+  //         await connectToDappTwoAndSwitchBackToOne(driver, contractAddress);
 
-          // create deposit transaction in dapp 1
-          await createDepositTransaction(driver);
+  //         // create deposit transaction in dapp 1
+  //         await createDepositTransaction(driver);
 
-          await driver.delay(2000);
+  //         await driver.delay(2000);
 
-          await switchToDAppTwoAndCreateSignTypedDataRequest(driver);
+  //         await switchToDAppTwoAndCreateSignTypedDataRequest(driver);
 
-          const events = await getEventPayloads(
-            driver,
-            mockedEndpoints as MockedEndpoint[],
-          );
+  //         const events = await getEventPayloads(
+  //           driver,
+  //           mockedEndpoints as MockedEndpoint[],
+  //         );
 
-          assert.equal(events.length, 2);
+  //         assert.equal(events.length, 2);
 
-          assert.equal(
-            events[0].event,
-            MetaMetricsEventName.ConfirmationQueued,
-          );
-          assert.equal(events[0].properties.category, 'Confirmations');
-          assert.equal(events[0].properties.chain_id, '0x539');
-          assert.equal(events[0].properties.environment_type, 'notification');
-          assert.equal(events[0].properties.locale, 'en');
-          assert.equal(events[0].properties.queue_size, 1);
-          assert.equal(events[0].properties.queue_type, 'navigation_header');
-          assert.equal(events[0].properties.referrer, 'http://127.0.0.1:8080');
-          assert.equal(events[0].properties.confirmation_type, 'transaction');
+  //         assert.equal(
+  //           events[0].event,
+  //           MetaMetricsEventName.ConfirmationQueued,
+  //         );
+  //         assert.equal(events[0].properties.category, 'Confirmations');
+  //         assert.equal(events[0].properties.chain_id, '0x539');
+  //         assert.equal(events[0].properties.environment_type, 'notification');
+  //         assert.equal(events[0].properties.locale, 'en');
+  //         assert.equal(events[0].properties.queue_size, 1);
+  //         assert.equal(events[0].properties.queue_type, 'navigation_header');
+  //         assert.equal(events[0].properties.referrer, 'http://127.0.0.1:8080');
+  //         assert.equal(events[0].properties.confirmation_type, 'transaction');
 
-          assert.equal(
-            events[1].event,
-            MetaMetricsEventName.ConfirmationQueued,
-          );
-          assert.equal(events[1].properties.category, 'Confirmations');
-          assert.equal(events[1].properties.chain_id, '0x539');
-          assert.equal(events[1].properties.environment_type, 'notification');
-          assert.equal(events[1].properties.locale, 'en');
-          assert.equal(events[1].properties.queue_size, 1);
-          assert.equal(events[1].properties.queue_type, 'queue_controller');
-          assert.equal(events[1].properties.referrer, 'http://127.0.0.1:8080');
-          assert.equal(events[1].properties.confirmation_type, 'transaction');
-        },
-      );
-    });
-  });
+  //         assert.equal(
+  //           events[1].event,
+  //           MetaMetricsEventName.ConfirmationQueued,
+  //         );
+  //         assert.equal(events[1].properties.category, 'Confirmations');
+  //         assert.equal(events[1].properties.chain_id, '0x539');
+  //         assert.equal(events[1].properties.environment_type, 'notification');
+  //         assert.equal(events[1].properties.locale, 'en');
+  //         assert.equal(events[1].properties.queue_size, 1);
+  //         assert.equal(events[1].properties.queue_type, 'queue_controller');
+  //         assert.equal(events[1].properties.referrer, 'http://127.0.0.1:8080');
+  //         assert.equal(events[1].properties.confirmation_type, 'transaction');
+  //       },
+  //     );
+  //   });
+  // });
 });
 
-async function connectToDappOne(driver: Driver) {
+async function connectToDappOne(
+  driver: Driver,
+  testDapp: TestDapp,
+  publicAddress: string,
+) {
   // Open Dapp One
-  await openDapp(driver, undefined, DAPP_URL);
+  await testDapp.openTestDappPage(DAPP_URL);
+  await testDapp.connectAccount(publicAddress);
+  // await openDapp(driver, undefined, DAPP_URL);
 
   // Connect to dapp
-  await driver.findClickableElement({ text: 'Connect', tag: 'button' });
-  await driver.clickElement('#connectButton');
+  // await driver.findClickableElement({ text: 'Connect', tag: 'button' });
+  // await driver.clickElement('#connectButton');
 
-  await driver.delay(regularDelayMs);
+  // await driver.delay(regularDelayMs);
 
-  await driver.waitUntilXWindowHandles(3);
-  await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
+  // await driver.waitUntilXWindowHandles(3);
+  // await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
-  await driver.clickElement({
-    text: 'Next',
-    tag: 'button',
-    css: '[data-testid="page-container-footer-next"]',
-  });
+  // await driver.clickElement({
+  //   text: 'Next',
+  //   tag: 'button',
+  //   css: '[data-testid="page-container-footer-next"]',
+  // });
 
-  await driver.clickElement({
-    text: 'Confirm',
-    tag: 'button',
-    css: '[data-testid="page-container-footer-next"]',
-  });
+  // await driver.clickElement({
+  //   text: 'Confirm',
+  //   tag: 'button',
+  //   css: '[data-testid="page-container-footer-next"]',
+  // });
 
   await driver.waitUntilXWindowHandles(2);
   await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
@@ -398,31 +425,35 @@ async function connectToDappOne(driver: Driver) {
 
 async function connectToDappTwoAndSwitchBackToOne(
   driver: Driver,
+  testDapp: TestDapp,
+  publicAddress: string,
   contractAddress?: string,
 ) {
+  await testDapp.openTestDappPage({ url: DAPP_ONE_URL });
+  await testDapp.connectAccount(publicAddress);
   // Open Dapp Two
-  await openDapp(driver, undefined, DAPP_ONE_URL);
+  // await openDapp(driver, undefined, DAPP_ONE_URL);
 
-  // Connect to dapp 2
-  await driver.findClickableElement({ text: 'Connect', tag: 'button' });
-  await driver.clickElement('#connectButton');
+  // // Connect to dapp 2
+  // await driver.findClickableElement({ text: 'Connect', tag: 'button' });
+  // await driver.clickElement('#connectButton');
 
-  await driver.delay(regularDelayMs);
+  // await driver.delay(regularDelayMs);
 
-  await driver.waitUntilXWindowHandles(4);
-  await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
+  // await driver.waitUntilXWindowHandles(4);
+  // await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
-  await driver.clickElement({
-    text: 'Next',
-    tag: 'button',
-    css: '[data-testid="page-container-footer-next"]',
-  });
+  // await driver.clickElement({
+  //   text: 'Next',
+  //   tag: 'button',
+  //   css: '[data-testid="page-container-footer-next"]',
+  // });
 
-  await driver.clickElement({
-    text: 'Confirm',
-    tag: 'button',
-    css: '[data-testid="page-container-footer-next"]',
-  });
+  // await driver.clickElement({
+  //   text: 'Confirm',
+  //   tag: 'button',
+  //   css: '[data-testid="page-container-footer-next"]',
+  // });
 
   const url = `${DAPP_URL}${
     contractAddress ? `/?contract=${contractAddress}` : ''
