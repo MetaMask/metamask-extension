@@ -1,13 +1,15 @@
 import { strict as assert } from 'assert';
 import { MockedEndpoint } from 'mockttp';
-import { Key } from 'selenium-webdriver/lib/input';
 import {
   WINDOW_TITLES,
   getEventPayloads,
-  openDapp,
   unlockWallet,
 } from '../../../helpers';
 import { Driver } from '../../../webdriver/driver';
+import TestDapp from '../../../page-objects/pages/test-dapp';
+import { DAPP_URL } from '../../../constants';
+import Confirmation from '../../../page-objects/pages/confirmations/redesign/confirmation';
+import AccountDetailsModal from '../../../page-objects/pages/confirmations/redesign/accountDetailsModal';
 import {
   BlockaidReason,
   BlockaidResultType,
@@ -62,6 +64,14 @@ const signatureAnonProperties = {
   eip712_domain_version: '1',
   eip712_domain_name: 'Ether Mail',
 };
+
+let testDapp: TestDapp;
+let accountDetailsModal: AccountDetailsModal;
+
+export async function initializePages(driver: Driver) {
+  testDapp = new TestDapp(driver);
+  accountDetailsModal = new AccountDetailsModal(driver);
+}
 
 /**
  * Generates expected signature metric properties
@@ -243,6 +253,8 @@ function assertEventPropertiesMatch(
   const actualProperties = { ...event.properties };
   const expectedProps = { ...expectedProperties };
 
+  compareDecodingAPIResponse(actualProperties, expectedProps, eventName);
+
   compareSecurityAlertResponse(actualProperties, expectedProps, eventName);
 
   assert(event, `${eventName} event not found`);
@@ -277,41 +289,57 @@ function compareSecurityAlertResponse(
   }
 }
 
-export async function clickHeaderInfoBtn(driver: Driver) {
-  await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
-
-  const accountDetailsButton = await driver.findElement(
-    '[data-testid="header-info__account-details-button"]',
-  );
-  await accountDetailsButton.sendKeys(Key.RETURN);
+function compareDecodingAPIResponse(
+  actualProperties: Record<string, unknown>,
+  expectedProperties: Record<string, unknown>,
+  eventName: string,
+) {
+  if (
+    eventName === 'Signature Rejected' ||
+    eventName === 'Signature Approved'
+  ) {
+    assert.deepStrictEqual(
+      actualProperties.decoding_change_types,
+      expectedProperties.decoding_change_types,
+      `${eventName} event properties do not match: decoding_change_types is ${actualProperties.decoding_change_types}`,
+    );
+    assert.equal(
+      actualProperties.decoding_response,
+      expectedProperties.decoding_response,
+      `${eventName} event properties do not match: decoding_response is ${actualProperties.decoding_response}`,
+    );
+  }
+  // Remove the property from both objects to avoid comparison
+  delete expectedProperties.decoding_change_types;
+  delete expectedProperties.decoding_response;
+  delete actualProperties.decoding_change_types;
+  delete actualProperties.decoding_response;
 }
 
-export async function assertHeaderInfoBalance(driver: Driver) {
-  await driver.waitForSelector({
-    css: '[data-testid="confirmation-account-details-modal__account-balance"]',
-    text: `${WALLET_ETH_BALANCE} ETH`,
-  });
+export async function clickHeaderInfoBtn(driver: Driver) {
+  const confirmation = new Confirmation(driver);
+  await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
+  confirmation.clickHeaderAccountDetailsButton();
+}
+
+export async function assertHeaderInfoBalance() {
+  accountDetailsModal.assertHeaderInfoBalance(WALLET_ETH_BALANCE);
 }
 
 export async function copyAddressAndPasteWalletAddress(driver: Driver) {
-  await driver.clickElement('[data-testid="address-copy-button-text"]');
+  await accountDetailsModal.clickAddressCopyButton();
   await driver.delay(500); // Added delay to avoid error Element is not clickable at point (x,y) because another element obscures it, happens as soon as the mouse hovers over the close button
-  await driver.clickElement(
-    '[data-testid="confirmation-account-details-modal__close-button"]',
-  );
+  await accountDetailsModal.clickAccountDetailsModalCloseButton();
   await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
-  await driver.findElement('#eip747ContractAddress');
-  await driver.pasteFromClipboardIntoField('#eip747ContractAddress');
+  await testDapp.pasteIntoEip747ContractAddressInput();
 }
 
-export async function assertPastedAddress(driver: Driver) {
-  const formFieldEl = await driver.findElement('#eip747ContractAddress');
-  assert.equal(await formFieldEl.getAttribute('value'), WALLET_ADDRESS);
+export async function assertPastedAddress() {
+  await testDapp.assertEip747ContractAddressInputValue(WALLET_ADDRESS);
 }
 
-export async function triggerSignature(driver: Driver, type: string) {
-  await driver.clickElement(type);
-  await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
+export async function assertRejectedSignature() {
+  testDapp.assertUserRejectedRequest();
 }
 
 export async function openDappAndTriggerSignature(
@@ -319,13 +347,55 @@ export async function openDappAndTriggerSignature(
   type: string,
 ) {
   await unlockWallet(driver);
-  await openDapp(driver);
-  await triggerSignature(driver, type);
+  await testDapp.openTestDappPage({ url: DAPP_URL });
+  await triggerSignature(type);
+  await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 }
 
 export async function openDappAndTriggerDeploy(driver: Driver) {
   await unlockWallet(driver);
-  await openDapp(driver);
+  await testDapp.openTestDappPage({ url: DAPP_URL });
   await driver.clickElement('#deployNFTsButton');
   await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
+}
+
+export async function triggerSignature(type: string) {
+  switch (type) {
+    case SignatureType.PersonalSign:
+      await testDapp.clickPersonalSign();
+      break;
+    case SignatureType.Permit:
+      await testDapp.clickPermit();
+      break;
+    case SignatureType.SignTypedData:
+      await testDapp.clickSignTypedData();
+      break;
+    case SignatureType.SignTypedDataV3:
+      await testDapp.clickSignTypedDatav3();
+      break;
+    case SignatureType.SignTypedDataV4:
+      await testDapp.clickSignTypedDatav4();
+      break;
+    case SignatureType.SIWE:
+      await testDapp.clickSiwe();
+      break;
+    case SignatureType.SIWE_BadDomain:
+      await testDapp.clickSwieBadDomain();
+      break;
+    case SignatureType.NFTPermit:
+      await testDapp.clickERC721Permit();
+      break;
+    default:
+      throw new Error('Invalid signature type');
+  }
+}
+
+export async function assertVerifiedSiweMessage(
+  driver: Driver,
+  message: string,
+) {
+  await driver.waitUntilXWindowHandles(2);
+  await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
+
+  await testDapp.check_successSiwe(message);
 }
