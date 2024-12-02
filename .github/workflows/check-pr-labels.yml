@@ -2,7 +2,7 @@ name: Check PR has required labels
 on:
   pull_request:
     branches:
-      - develop
+      - main
     types:
       - opened
       - reopened
