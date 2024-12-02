@@ -17,6 +17,7 @@ export const initialMetamaskState: Omit<
   isInitialized: false,
   KeyringController: {
     isUnlocked: false,
+    keyrings: [],
   },
   AccountsController: {
     internalAccounts: { accounts: {}, selectedAccount: '' },
@@ -28,6 +29,10 @@ export const initialMetamaskState: Omit<
   AddressBookController: {
     addressBook: {},
   },
+  ApprovalController: {
+    pendingApprovals: {},
+    approvalFlows: [],
+  },
   CurrencyController: {
     currencyRates: {
       ETH: {
@@ -37,12 +42,26 @@ export const initialMetamaskState: Omit<
       },
     },
   },
+  ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
+  CustodyController: {
+    custodyAccountDetails: {},
+  },
+  ///: END:ONLY_INCLUDE_IF
+  DecryptMessageController: {
+    unapprovedDecryptMsgs: {},
+  },
+  GasFeeController: {
+    gasFeeEstimates: {},
+    gasEstimateType: 'none',
+  },
   MetaMetricsController: {
     participateInMetaMetrics: null,
     dataCollectionForMarketing: null,
   },
   NetworkController: {
+    selectedNetworkClientId: '',
     networkConfigurationsByChainId: {},
+    networksMetadata: {},
   },
   OnboardingController: {
     firstTimeFlowType: null,
@@ -54,6 +73,7 @@ export const initialMetamaskState: Omit<
     featureFlags: {},
     currentLocale: '',
     knownMethodData: {},
+    ledgerTransportType: undefined,
     preferences: {
       autoLockTimeLimit: DEFAULT_AUTO_LOCK_TIME_LIMIT,
       showExtensionInFullSizeView: false,
@@ -65,6 +85,10 @@ export const initialMetamaskState: Omit<
       privacyMode: false,
       showMultiRpcModal: false,
     } as Preferences,
+  },
+  SignatureController: {
+    unapprovedPersonalMsgs: {},
+    unapprovedTypedMessages: {},
   },
   TokensController: {
     allTokens: {},
