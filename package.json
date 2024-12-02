@@ -333,7 +333,7 @@
     "@metamask/post-message-stream": "^8.0.0",
     "@metamask/ppom-validator": "0.35.1",
     "@metamask/preinstalled-example-snap": "^0.2.0",
-    "@metamask/profile-sync-controller": "^2.0.0",
+    "@metamask/profile-sync-controller": "patch:@metamask/profile-sync-controller@npm%3A2.0.0#~/.yarn/patches/@metamask-profile-sync-controller-npm-2.0.0-02e028ab48.patch",
     "@metamask/providers": "^14.0.2",
     "@metamask/queued-request-controller": "^7.0.1",
     "@metamask/rate-limit-controller": "^6.0.0",

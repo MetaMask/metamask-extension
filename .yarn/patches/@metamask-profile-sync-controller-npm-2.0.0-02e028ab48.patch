@@ -1,0 +1,24 @@
+diff --git a/dist/controllers/authentication/AuthenticationController.cjs b/dist/controllers/authentication/AuthenticationController.cjs
+index cc9a5e8cf810a7369414e88b035894286499b3fe..5c6bcb39164cc625cc834be1dd3cae5936ef682c 100644
+--- a/dist/controllers/authentication/AuthenticationController.cjs
++++ b/dist/controllers/authentication/AuthenticationController.cjs
+@@ -72,7 +72,6 @@ class AuthenticationController extends base_controller_1.BaseController {
+         return accessToken;
+     }
+     performSignOut() {
+-        __classPrivateFieldGet(this, _AuthenticationController_instances, "m", _AuthenticationController_assertLoggedIn).call(this);
+         this.update((state) => {
+             state.isSignedIn = false;
+             state.sessionData = undefined;
+diff --git a/dist/controllers/authentication/AuthenticationController.mjs b/dist/controllers/authentication/AuthenticationController.mjs
+index 16fd8750844d2f8cc5b54676e5c94a42185cf287..803c60c5895d99cdf2da737011759882ffc47384 100644
+--- a/dist/controllers/authentication/AuthenticationController.mjs
++++ b/dist/controllers/authentication/AuthenticationController.mjs
+@@ -69,7 +69,6 @@ class AuthenticationController extends BaseController {
+         return accessToken;
+     }
+     performSignOut() {
+-        __classPrivateFieldGet(this, _AuthenticationController_instances, "m", _AuthenticationController_assertLoggedIn).call(this);
+         this.update((state) => {
+             state.isSignedIn = false;
+             state.sessionData = undefined;
