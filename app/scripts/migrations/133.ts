@@ -75,20 +75,17 @@ function hasExistingSmartTransactions(state: VersionedData['data']): boolean {
   );
 }
 
-const migration = {
-  version,
-  async migrate(originalVersionedData: VersionedData): Promise<VersionedData> {
-    console.log('=== MIGRATION 133 START ===');
-    console.log('Original version:', originalVersionedData.meta.version);
-    console.log('Original data:', JSON.stringify(originalVersionedData.data, null, 2));
-    const versionedData = cloneDeep(originalVersionedData);
-    console.log('STX status before:', versionedData.data?.PreferencesController?.smartTransactionsOptInStatus);
-    versionedData.meta.version = version;
-    versionedData.data = transformState(versionedData.data);
-    console.log('STX status after:', versionedData.data?.PreferencesController?.smartTransactionsOptInStatus);
-    console.log('=== MIGRATION 133 END ===');
-    return versionedData;
-  },
-};
-
-export default migration;
+export async function migrate(
+  originalVersionedData: VersionedData,
+): Promise<VersionedData> {
+  console.log('=== MIGRATION 133 START ===');
+  console.log('Original version:', originalVersionedData.meta.version);
+  console.log('Original data:', JSON.stringify(originalVersionedData.data, null, 2));
+  const versionedData = cloneDeep(originalVersionedData);
+  console.log('STX status before:', versionedData.data?.PreferencesController?.smartTransactionsOptInStatus);
+  versionedData.meta.version = version;
+  transformState(versionedData.data);
+  console.log('STX status after:', versionedData.data?.PreferencesController?.smartTransactionsOptInStatus);
+  console.log('=== MIGRATION 133 END ===');
+  return versionedData;
+}
