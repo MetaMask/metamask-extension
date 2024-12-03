@@ -72,6 +72,7 @@ export function useDisableMetametrics(): {
 } {
   const dispatch = useDispatch();
   const isProfileSyncingEnabled = useSelector(selectIsProfileSyncingEnabled);
+  const isUserSignedIn = useSelector(selectIsSignedIn);
 
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
@@ -82,7 +83,7 @@ export function useDisableMetametrics(): {
     setError(null);
 
     try {
-      if (isProfileSyncingEnabled) {
+      if (isProfileSyncingEnabled && isUserSignedIn) {
         await dispatch(performSignOut());
       }
       await dispatch(setParticipateInMetaMetrics(false));
