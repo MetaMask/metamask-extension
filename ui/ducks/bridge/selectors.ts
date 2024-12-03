@@ -450,7 +450,7 @@ const _getValidatedSrcAmount = createSelector(
     state.metamask.bridgeState.quoteRequest.srcTokenAmount,
   (fromToken, srcTokenAmount) =>
     srcTokenAmount && fromToken?.decimals
-      ? calcTokenAmount(srcTokenAmount, Number(fromToken.decimals)).toFixed()
+      ? calcTokenAmount(srcTokenAmount, Number(fromToken.decimals)).toString()
       : null,
 );
 
