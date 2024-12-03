@@ -32,7 +32,6 @@ const useRamps = (
 
   const getBuyURI = useCallback(
     (_chainId: Hex | CaipChainId) => {
-      console.log('using url: ', process.env.PORTFOLIO_URL);
       try {
         const params = new URLSearchParams();
         params.set('metamaskEntry', metamaskEntry);
