@@ -38,8 +38,12 @@ import {
   isTokenBalanceSufficient,
 } from '../../pages/confirmations/send/send.utils';
 import {
-  getAdvancedInlineGasShown,
   getCurrentChainId,
+  getSelectedNetworkClientId,
+  getProviderConfig,
+} from '../../../shared/modules/selectors/networks';
+import {
+  getAdvancedInlineGasShown,
   getGasPriceInHexWei,
   getIsMainnet,
   getTargetAccount,
@@ -56,10 +60,6 @@ import {
   getIsSwapsChain,
   getUseExternalServices,
 } from '../../selectors';
-import {
-  getSelectedNetworkClientId,
-  getProviderConfig,
-} from '../../../shared/modules/selectors/networks';
 import {
   displayWarning,
   hideLoadingIndication,

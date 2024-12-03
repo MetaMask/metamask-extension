@@ -272,10 +272,7 @@ describe('BridgeController', function () {
   it('updateBridgeQuoteRequestParams should trigger quote polling if request is valid', async function () {
     jest.useFakeTimers();
     const stopAllPollingSpy = jest.spyOn(bridgeController, 'stopAllPolling');
-    const startPollingByNetworkClientIdSpy = jest.spyOn(
-      bridgeController,
-      'startPollingByNetworkClientId',
-    );
+    const startPollingSpy = jest.spyOn(bridgeController, 'startPolling');
     const hasSufficientBalanceSpy = jest
       .spyOn(balanceUtils, 'hasSufficientBalance')
       .mockResolvedValue(true);
@@ -328,15 +325,15 @@ describe('BridgeController', function () {
     await bridgeController.updateBridgeQuoteRequestParams(quoteParams);
 
     expect(stopAllPollingSpy).toHaveBeenCalledTimes(1);
-    expect(startPollingByNetworkClientIdSpy).toHaveBeenCalledTimes(1);
+    expect(startPollingSpy).toHaveBeenCalledTimes(1);
     expect(hasSufficientBalanceSpy).toHaveBeenCalledTimes(1);
-    expect(startPollingByNetworkClientIdSpy).toHaveBeenCalledWith(
-      expect.anything(),
-      {
+    expect(startPollingSpy).toHaveBeenCalledWith({
+      networkClientId: expect.anything(),
+      updatedQuoteRequest: {
         ...quoteRequest,
         insufficientBal: false,
       },
-    );
+    });
 
     expect(bridgeController.state.bridgeState).toStrictEqual(
       expect.objectContaining({
@@ -430,10 +427,7 @@ describe('BridgeController', function () {
   it('updateBridgeQuoteRequestParams should only poll once if insufficientBal=true', async function () {
     jest.useFakeTimers();
     const stopAllPollingSpy = jest.spyOn(bridgeController, 'stopAllPolling');
-    const startPollingByNetworkClientIdSpy = jest.spyOn(
-      bridgeController,
-      'startPollingByNetworkClientId',
-    );
+    const startPollingSpy = jest.spyOn(bridgeController, 'startPolling');
     const hasSufficientBalanceSpy = jest
       .spyOn(balanceUtils, 'hasSufficientBalance')
       .mockResolvedValue(false);
@@ -478,15 +472,15 @@ describe('BridgeController', function () {
     await bridgeController.updateBridgeQuoteRequestParams(quoteParams);
 
     expect(stopAllPollingSpy).toHaveBeenCalledTimes(1);
-    expect(startPollingByNetworkClientIdSpy).toHaveBeenCalledTimes(1);
+    expect(startPollingSpy).toHaveBeenCalledTimes(1);
     expect(hasSufficientBalanceSpy).toHaveBeenCalledTimes(1);
-    expect(startPollingByNetworkClientIdSpy).toHaveBeenCalledWith(
-      expect.anything(),
-      {
+    expect(startPollingSpy).toHaveBeenCalledWith({
+      networkClientId: expect.anything(),
+      updatedQuoteRequest: {
         ...quoteRequest,
         insufficientBal: true,
       },
-    );
+    });
 
     expect(bridgeController.state.bridgeState).toStrictEqual(
       expect.objectContaining({
@@ -556,10 +550,7 @@ describe('BridgeController', function () {
 
   it('updateBridgeQuoteRequestParams should not trigger quote polling if request is invalid', function () {
     const stopAllPollingSpy = jest.spyOn(bridgeController, 'stopAllPolling');
-    const startPollingByNetworkClientIdSpy = jest.spyOn(
-      bridgeController,
-      'startPollingByNetworkClientId',
-    );
+    const startPollingSpy = jest.spyOn(bridgeController, 'startPolling');
     messengerMock.call.mockReturnValue({
       address: '0x123',
       provider: jest.fn(),
@@ -573,7 +564,7 @@ describe('BridgeController', function () {
     });
 
     expect(stopAllPollingSpy).toHaveBeenCalledTimes(1);
-    expect(startPollingByNetworkClientIdSpy).not.toHaveBeenCalled();
+    expect(startPollingSpy).not.toHaveBeenCalled();
 
     expect(bridgeController.state.bridgeState).toStrictEqual(
       expect.objectContaining({
@@ -638,10 +629,7 @@ describe('BridgeController', function () {
     ) => {
       jest.useFakeTimers();
       const stopAllPollingSpy = jest.spyOn(bridgeController, 'stopAllPolling');
-      const startPollingByNetworkClientIdSpy = jest.spyOn(
-        bridgeController,
-        'startPollingByNetworkClientId',
-      );
+      const startPollingSpy = jest.spyOn(bridgeController, 'startPolling');
       const hasSufficientBalanceSpy = jest
         .spyOn(balanceUtils, 'hasSufficientBalance')
         .mockResolvedValue(false);
@@ -676,15 +664,15 @@ describe('BridgeController', function () {
       await bridgeController.updateBridgeQuoteRequestParams(quoteParams);
 
       expect(stopAllPollingSpy).toHaveBeenCalledTimes(1);
-      expect(startPollingByNetworkClientIdSpy).toHaveBeenCalledTimes(1);
+      expect(startPollingSpy).toHaveBeenCalledTimes(1);
       expect(hasSufficientBalanceSpy).toHaveBeenCalledTimes(1);
-      expect(startPollingByNetworkClientIdSpy).toHaveBeenCalledWith(
-        expect.anything(),
-        {
+      expect(startPollingSpy).toHaveBeenCalledWith({
+        networkClientId: expect.anything(),
+        updatedQuoteRequest: {
           ...quoteRequest,
           insufficientBal: true,
         },
-      );
+      });
 
       expect(bridgeController.state.bridgeState).toStrictEqual(
         expect.objectContaining({

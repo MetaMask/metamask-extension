@@ -13,6 +13,9 @@ import { Tab, Tabs } from '../../ui/tabs';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
   getCurrentChainId,
+  getSelectedNetworkClientId,
+} from '../../../../shared/modules/selectors/networks';
+import {
   getInternalAccounts,
   getIsDynamicTokenListAvailable,
   getIsMainnet,
@@ -27,7 +30,6 @@ import {
   getTestNetworkBackgroundColor,
   getTokenExchangeRates,
 } from '../../../selectors';
-import { getSelectedNetworkClientId } from '../../../../shared/modules/selectors/networks';
 import {
   addImportedTokens,
   clearPendingTokens,
