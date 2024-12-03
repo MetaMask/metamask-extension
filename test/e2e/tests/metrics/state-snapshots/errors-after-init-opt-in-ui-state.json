@@ -175,11 +175,7 @@
     "nonRPCGasFeeApisDisabled": "boolean",
     "tokenList": "object",
     "tokensChainsCache": {
-      "0x1": "object",
-      "0x539": "object",
-      "0xaa36a7": "object",
-      "0xe705": "object",
-      "0xe708": "object"
+      "0x539": "object"
     },
     "preventPollingOnNetworkRestart": false,
     "tokens": "object",
