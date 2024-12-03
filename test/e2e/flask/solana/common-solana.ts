@@ -8,6 +8,8 @@ import {
   DEFAULT_BTC_TRANSACTION_ID,
   DEFAULT_BTC_CONVERSION_RATE,
   SATS_IN_1_BTC,
+  DEFAULT_SOL_CONVERSION_RATE,
+  DEFAULT_SOLANA_ACCOUNT,
 } from '../../constants';
 import { MultichainNetworks } from '../../../../shared/constants/multichain/networks';
 import { Driver } from '../../webdriver/driver';
@@ -23,13 +25,13 @@ export enum SendFlowPlaceHolders {
   LOADING = 'Preparing transaction',
 }
 
-export async function createBtcAccount(driver: Driver) {
+export async function createSolanaAccount(driver: Driver) {
   await driver.clickElement('[data-testid="account-menu-icon"]');
   await driver.clickElement(
     '[data-testid="multichain-account-menu-popover-action-button"]',
   );
   await driver.clickElement({
-    text: messages.addNewBitcoinAccount.message,
+    text: messages.addNewSolanaAccount.message,
     tag: 'button',
   });
   await driver.clickElementAndWaitToDisappear(
@@ -44,19 +46,19 @@ export async function createBtcAccount(driver: Driver) {
   );
 }
 
-export function btcToSats(btc: number): number {
+export function solanaToSats(btc: number): number {
   // Watchout, we're not using BigNumber(s) here (but that's ok for test purposes)
   return btc * SATS_IN_1_BTC;
 }
 
-export async function mockBtcBalanceQuote(
+export async function mockSolanaBalanceQuote(
   mockServer: Mockttp,
-  address: string = DEFAULT_BTC_ACCOUNT,
+  address: string = DEFAULT_SOLANA_ACCOUNT,
 ) {
   return await mockServer
     .forPost(QUICKNODE_URL_REGEX)
     .withJsonBodyIncluding({
-      method: 'bb_getaddress',
+      method: 'getBalance',
     })
     .thenCallback(() => {
       return {
@@ -64,7 +66,7 @@ export async function mockBtcBalanceQuote(
         json: {
           result: {
             address,
-            balance: btcToSats(DEFAULT_BTC_BALANCE).toString(), // Converts from BTC to sats
+            balance: solanaToSats(DEFAULT_BTC_BALANCE).toString(), // Converts from BTC to sats
             totalReceived: '0',
             totalSent: '0',
             unconfirmedBalance: '0',
@@ -137,7 +139,7 @@ export async function mockGetUTXO(mockServer: Mockttp) {
             {
               txid: DEFAULT_BTC_TRANSACTION_ID,
               vout: 0,
-              value: btcToSats(DEFAULT_BTC_BALANCE).toString(),
+              value: solanaToSats(DEFAULT_BTC_BALANCE).toString(),
               height: 101100110,
               confirmations: 6,
             },
@@ -170,7 +172,7 @@ export async function mockRatesCall(mockServer: Mockttp) {
     .thenCallback(() => {
       return {
         statusCode: 200,
-        json: { SOL: { USD: DEFAULT_BTC_CONVERSION_RATE } },
+        json: { SOL: { USD: DEFAULT_SOL_CONVERSION_RATE } },
       };
     });
 }
@@ -192,9 +194,9 @@ export async function mockRampsDynamicFeatureFlag(
         networks: [
           {
             active: true,
-            chainId: MultichainNetworks.BITCOIN,
-            chainName: 'Bitcoin',
-            shortName: 'Bitcoin',
+            chainId: MultichainNetworks.SOLANA,
+            chainName: 'Solana',
+            shortName: 'Solana',
             nativeTokenSupported: true,
             isEvm: false,
           },
@@ -221,15 +223,15 @@ export async function withSolanaAccountSnap(
       dapp: true,
       testSpecificMock: async (mockServer: Mockttp) => [
         await mockRatesCall(mockServer),
-        await mockBtcBalanceQuote(mockServer),
+        await mockSolanaBalanceQuote(mockServer),
         // See: PROD_RAMP_API_BASE_URL
-        await mockRampsDynamicFeatureFlag(mockServer, 'api'),
+        //await mockRampsDynamicFeatureFlag(mockServer, 'api'),
         // See: UAT_RAMP_API_BASE_URL
-        await mockRampsDynamicFeatureFlag(mockServer, 'uat-api'),
-        await mockMempoolInfo(mockServer),
-        await mockBtcFeeCallQuote(mockServer),
-        await mockGetUTXO(mockServer),
-        await mockSendTransaction(mockServer),
+        //await mockRampsDynamicFeatureFlag(mockServer, 'uat-api'),
+       // await mockMempoolInfo(mockServer),
+        //await mockBtcFeeCallQuote(mockServer),
+        //await mockGetUTXO(mockServer),
+        //await mockSendTransaction(mockServer),
       ],
     },
     async ({ driver, mockServer }: { driver: Driver; mockServer: Mockttp }) => {
@@ -238,8 +240,7 @@ export async function withSolanaAccountSnap(
       await headerComponen.openAccountMenu();
       const accountListPage = new AccountListPage(driver);
       await accountListPage.openAddAccountModal();
-      await driver.delay(20000);
-      await accountListPage.addNewAccountWithCustomLabel('Solana Account', AccountType.SOLANA);
+      await accountListPage.addNewAccountWithCustomLabel('Solana account', AccountType.SOLANA);
       await test(driver, mockServer);
     },
   );
