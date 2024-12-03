@@ -15,8 +15,8 @@ export type BridgeState = {
   fromToken: SwapsTokenObject | SwapsEthToken | null;
   toToken: SwapsTokenObject | SwapsEthToken | null;
   fromTokenInputValue: string | null;
-  fromTokenExchangeRate: number | null; // Exchange rate from selected token to fiat
-  toTokenExchangeRate: number | null; // Exchange rate from the selected token to fiat
+  fromTokenExchangeRate: number | null; // Exchange rate from selected token to the default currency (can be fiat or crypto)
+  toTokenExchangeRate: number | null; // Exchange rate from the selected token to the default currency (can be fiat or crypto)
   sortOrder: SortOrder;
   selectedQuote: (QuoteResponse & QuoteMetadata) | null; // Alternate quote selected by user. When quotes refresh, the best match will be activated.
 };

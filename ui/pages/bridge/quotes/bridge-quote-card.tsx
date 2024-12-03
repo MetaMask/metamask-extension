@@ -86,14 +86,14 @@ export const BridgeQuoteCard = () => {
             tooltipText={t('bridgeTotalFeesTooltipText')}
             description={
               formatFiatAmount(
-                activeQuote.totalNetworkFee?.fiat,
+                activeQuote.totalNetworkFee?.valueInCurrency,
                 currency,
                 2,
               ) ??
               formatTokenAmount(activeQuote.totalNetworkFee?.amount, ticker, 6)
             }
             secondaryDescription={
-              activeQuote.totalNetworkFee?.fiat
+              activeQuote.totalNetworkFee?.valueInCurrency
                 ? formatTokenAmount(
                     activeQuote.totalNetworkFee?.amount,
                     ticker,
