@@ -1332,6 +1332,14 @@ export default class MetamaskController extends EventEmitter {
         ],
       }),
       state: initState.SelectedNetworkController,
+      useRequestQueuePreference:
+        this.preferencesController.state.useRequestQueue,
+      onPreferencesStateChange: (listener) => {
+        preferencesMessenger.subscribe(
+          'PreferencesController:stateChange',
+          listener,
+        );
+      },
       domainProxyMap: new WeakRefObjectMap(),
     });
 

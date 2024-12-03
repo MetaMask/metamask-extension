@@ -5062,7 +5062,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/controller-utils@npm:^11.0.0, @metamask/controller-utils@npm:^11.3.0, @metamask/controller-utils@npm:^11.4.4":
+"@metamask/controller-utils@npm:^11.0.0, @metamask/controller-utils@npm:^11.3.0, @metamask/controller-utils@npm:^11.4.2, @metamask/controller-utils@npm:^11.4.4":
   version: 11.4.4
   resolution: "@metamask/controller-utils@npm:11.4.4"
   dependencies:
@@ -6021,20 +6021,20 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/queued-request-controller@npm:^8.0.1":
-  version: 8.0.1
-  resolution: "@metamask/queued-request-controller@npm:8.0.1"
+"@metamask/queued-request-controller@npm:^7.0.1":
+  version: 7.0.1
+  resolution: "@metamask/queued-request-controller@npm:7.0.1"
   dependencies:
     "@metamask/base-controller": "npm:^7.0.2"
-    "@metamask/controller-utils": "npm:^11.4.4"
+    "@metamask/controller-utils": "npm:^11.4.2"
     "@metamask/json-rpc-engine": "npm:^10.0.1"
     "@metamask/rpc-errors": "npm:^7.0.1"
     "@metamask/swappable-obj-proxy": "npm:^2.2.0"
     "@metamask/utils": "npm:^10.0.0"
   peerDependencies:
     "@metamask/network-controller": ^22.0.0
-    "@metamask/selected-network-controller": ^20.0.0
-  checksum: 10/189c484af925397a506b304bd351cdca3759fe2cd893ad7c4c687d759416b1aa47aba91af40b6523401e0be05b4cef2ea1a8164980f15b4a7ee41930df0d0599
+    "@metamask/selected-network-controller": ^19.0.0
+  checksum: 10/e5b16b3dc2fa0dcf74a81b5046abb65bc05da3802ee891b5a59a80b980301c790cf949d72adba00ead6f5b3d2eaac40694308297f7dc08eb5e5f05b5a68bbf57
   languageName: node
   linkType: hard
 
@@ -6097,18 +6097,18 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/selected-network-controller@npm:^20.0.1":
-  version: 20.0.1
-  resolution: "@metamask/selected-network-controller@npm:20.0.1"
+"@metamask/selected-network-controller@npm:^19.0.0":
+  version: 19.0.0
+  resolution: "@metamask/selected-network-controller@npm:19.0.0"
   dependencies:
-    "@metamask/base-controller": "npm:^7.0.2"
-    "@metamask/json-rpc-engine": "npm:^10.0.1"
+    "@metamask/base-controller": "npm:^7.0.1"
+    "@metamask/json-rpc-engine": "npm:^10.0.0"
     "@metamask/swappable-obj-proxy": "npm:^2.2.0"
     "@metamask/utils": "npm:^10.0.0"
   peerDependencies:
     "@metamask/network-controller": ^22.0.0
     "@metamask/permission-controller": ^11.0.0
-  checksum: 10/3e99db1a7b2390624ac953bd7195e4010cf61e21f20a2c36449a6cca2abcfb5280b6c0e3ac3a365f8b6281ea7f115b19be95fb55ddfc4e37ba6a5a71089a75c9
+  checksum: 10/738a1c749f442b732c279c7446e0db2cc7d72fa03fd485da15121559077bb6ffeaa3233435a028f4ea69015a40ca35ba66972dc0fd3a7f61a7ea5eee43df30a6
   languageName: node
   linkType: hard
 
@@ -26473,13 +26473,13 @@ __metadata:
     "@metamask/preinstalled-example-snap": "npm:^0.2.0"
     "@metamask/profile-sync-controller": "npm:^3.0.0"
     "@metamask/providers": "npm:^18.2.0"
-    "@metamask/queued-request-controller": "npm:^8.0.1"
+    "@metamask/queued-request-controller": "npm:^7.0.1"
     "@metamask/rate-limit-controller": "npm:^6.0.0"
     "@metamask/remote-feature-flag-controller": "npm:^1.1.0"
     "@metamask/rpc-errors": "npm:^7.0.0"
     "@metamask/safe-event-emitter": "npm:^3.1.1"
     "@metamask/scure-bip39": "npm:^2.0.3"
-    "@metamask/selected-network-controller": "npm:^20.0.1"
+    "@metamask/selected-network-controller": "npm:^19.0.0"
     "@metamask/signature-controller": "npm:^23.0.1"
     "@metamask/smart-transactions-controller": "npm:^15.0.0"
     "@metamask/snaps-controllers": "npm:^9.14.0"
