@@ -1,7 +1,7 @@
 import React from 'react';
 import { render, fireEvent, waitFor } from '@testing-library/react';
 import { useModalProps } from '../../../../hooks/useModalProps';
-import { useDisableProfileSyncing } from '../../../../hooks/metamask-notifications/useProfileSyncing';
+import { useDisableProfileSyncing } from '../../../../hooks/identity/useProfileSyncing';
 import { I18nContext } from '../../../../contexts/i18n';
 import ConfirmTurnOffProfileSyncing from './confirm-turn-off-profile-syncing';
 
