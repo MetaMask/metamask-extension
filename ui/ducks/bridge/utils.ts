@@ -68,6 +68,9 @@ const fetchTokenExchangeRates = async (
   );
 };
 
+// This fetches the exchange rate for a token in a given currency. This is only called when the exchange
+// rate is not available in the TokenRatesController, which happens when the selected token has not been
+// imported into the wallet
 export const getTokenExchangeRate = async (request: {
   chainId: Hex;
   tokenAddress: string;
@@ -85,6 +88,7 @@ export const getTokenExchangeRate = async (request: {
   return exchangeRate;
 };
 
+// This extracts a token's exchange rate from the marketData state object
 export const exchangeRateFromMarketData = (
   chainId: string,
   tokenAddress: string,
