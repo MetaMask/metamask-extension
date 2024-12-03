@@ -176,6 +176,7 @@ const jsonData = JSON.stringify({
     customNetworkListEnabled: false,
     textDirection: 'auto',
     useRequestQueue: true,
+    manageInstitutionalWallets: false,
   },
   internalAccounts: {
     accounts: {

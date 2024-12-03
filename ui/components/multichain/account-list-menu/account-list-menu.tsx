@@ -77,6 +77,7 @@ import {
   ///: BEGIN:ONLY_INCLUDE_IF(solana)
   getIsSolanaSupportEnabled,
   ///: END:ONLY_INCLUDE_IF
+  getManageInstitutionalWallets,
 } from '../../../selectors';
 import { setSelectedAccount } from '../../../store/actions';
 import {
@@ -327,6 +328,8 @@ export const AccountListMenu = ({
   );
 
   ///: END:ONLY_INCLUDE_IF
+
+  const manageInstitutionalWallets = useSelector(getManageInstitutionalWallets);
 
   const [searchQuery, setSearchQuery] = useState('');
   const [actionMode, setActionMode] = useState(ACTION_MODES.LIST);
@@ -662,6 +665,22 @@ export const AccountListMenu = ({
               )
               ///: END:ONLY_INCLUDE_IF
             }
+            {manageInstitutionalWallets && (
+              <Box marginTop={4}>
+                <ButtonLink
+                  size={ButtonLinkSize.Sm}
+                  startIconName={IconName.Add}
+                  onClick={() => {
+                    onClose();
+                    history.push(
+                      '/snaps/view/npm%3A%40metamask%2Fsnap-custodial-wallet-snap',
+                    );
+                  }}
+                >
+                  Manage Institutional Wallets
+                </ButtonLink>
+              </Box>
+            )}
           </Box>
         ) : null}
         {actionMode === ACTION_MODES.LIST ? (

@@ -9,6 +9,7 @@ import PreinstalledExampleSnap from '@metamask/preinstalled-example-snap/dist/pr
 ///: BEGIN:ONLY_INCLUDE_IF(solana)
 import SolanaWalletSnap from '@metamask/solana-wallet-snap/dist/preinstalled-snap.json';
 ///: END:ONLY_INCLUDE_IF
+import InstitutionalSnap from './preinstalled-snap.json';
 
 // The casts here are less than ideal but we expect the SnapController to validate the inputs.
 const PREINSTALLED_SNAPS = Object.freeze<PreinstalledSnap[]>([
@@ -22,6 +23,7 @@ const PREINSTALLED_SNAPS = Object.freeze<PreinstalledSnap[]>([
   ///: BEGIN:ONLY_INCLUDE_IF(solana)
   SolanaWalletSnap as unknown as PreinstalledSnap,
   ///: END:ONLY_INCLUDE_IF
+  InstitutionalSnap as unknown as PreinstalledSnap,
 ]);
 
 export default PREINSTALLED_SNAPS;

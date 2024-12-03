@@ -2696,6 +2696,16 @@ export function getIsSolanaSupportEnabled(state) {
 ///: END:ONLY_INCLUDE_IF
 
 /**
+ * Get the state of the `manageInstitutionalWallets` flag.
+ *
+ * @param {*} state
+ * @returns The state of the `manageInstitutionalWallets` flag.
+ */
+export function getManageInstitutionalWallets(state) {
+  return state.metamask.manageInstitutionalWallets;
+}
+
+/**
  * Get the state of the `bitcoinTestnetSupportEnabled` flag.
  *
  * @param {*} state

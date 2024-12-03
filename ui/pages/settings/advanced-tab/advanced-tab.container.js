@@ -15,6 +15,7 @@ import {
   setSmartTransactionsPreferenceEnabled,
   setUseNonceField,
   showModal,
+  setManageInstitutionalWallets,
 } from '../../../store/actions';
 import { getSmartTransactionsPreferenceEnabled } from '../../../../shared/modules/selectors';
 import {
@@ -33,6 +34,7 @@ export const mapStateToProps = (state) => {
     useNonceField,
     dismissSeedBackUpReminder,
     overrideContentSecurityPolicyHeader,
+    manageInstitutionalWallets,
   } = metamask;
   const {
     showFiatInTestnets,
@@ -52,6 +54,7 @@ export const mapStateToProps = (state) => {
     useNonceField,
     dismissSeedBackUpReminder,
     overrideContentSecurityPolicyHeader,
+    manageInstitutionalWallets,
   };
 };
 
@@ -86,6 +89,9 @@ export const mapDispatchToProps = (dispatch) => {
     },
     setOverrideContentSecurityPolicyHeader: (value) => {
       return dispatch(setOverrideContentSecurityPolicyHeader(value));
+    },
+    setManageInstitutionalWallets: (value) => {
+      return dispatch(setManageInstitutionalWallets(value));
     },
   };
 };
