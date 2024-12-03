@@ -43,7 +43,7 @@ export function useTokenFiatAmount(
   );
 
   const contractMarketData = chainId
-    ? Object.entries(allMarketData[chainId]).reduce(
+    ? Object.entries(allMarketData[chainId] || {}).reduce(
         (acc, [address, marketData]) => {
           acc[address] = marketData?.price ?? null;
           return acc;
