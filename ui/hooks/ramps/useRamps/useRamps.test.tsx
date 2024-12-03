@@ -30,13 +30,6 @@ describe('useRamps', () => {
     });
   });
 
-  const originalEnv = process.env;
-
-  afterEach(() => {
-    // Reset process.env after each test case
-    process.env = originalEnv;
-  });
-
   it('should default the metamask entry param when opening the buy crypto URL', () => {
     const metaMaskEntry = 'ext_buy_sell_button';
     const mockChainId = '0x1';
@@ -121,7 +114,7 @@ describe('useRamps', () => {
     const buyURI = result.current.getBuyURI('0x1');
     expect(buyURI).toBe('https://portfolio.metamask.io/buy');
 
-    process.env.PORTFOLIO_URL = originalPortfolioUrl; // Restore the original value
+    process.env.PORTFOLIO_URL = originalPortfolioUrl;
     jest.resetModules();
   });
 });
