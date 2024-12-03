@@ -1,6 +1,6 @@
-import { ok } from 'node:assert';
+import { ok } from 'node:assert/strict';
 import { execSync } from 'node:child_process';
-import { createReadStream, createWriteStream, writeSync } from 'node:fs';
+import { createWriteStream } from 'node:fs';
 import { rename, mkdir, rm } from 'node:fs/promises';
 import {
   Agent as HttpAgent,
@@ -15,51 +15,26 @@ import { Stream } from 'node:stream';
 import { pipeline } from 'node:stream/promises';
 import { createHash } from 'node:crypto';
 import { extract as extractTar } from 'tar';
-import { Source, Open as Unzip, Entry } from 'unzipper';
-import { InferredOptionTypes } from 'yargs';
+import { Open as Unzip, type Source, type Entry } from 'unzipper';
 import yargs from 'yargs/yargs';
 import { Minipass } from 'minipass';
+import {
+  type BinariesTuple,
+  type Checksums,
+  type PlatformArchChecksums,
+  Architecture,
+  Extension,
+  Binary,
+  Platform,
+  ParsedOptions,
+  ArchitecturesTuple,
+  PlatformsTuple,
+  DownloadOptions,
+} from './types.mts';
 
 export function noop() {}
 
-export enum BinFormat {
-  Zip = 'zip',
-  Tar = 'tar.gz',
-}
-
-export enum Platform {
-  Windows = 'win32',
-  Linux = 'linux',
-  Mac = 'darwin',
-}
-
-export enum Binary {
-  Anvil = 'anvil',
-  Forge = 'forge',
-  Cast = 'cast',
-  Chisel = 'chisel',
-}
-
-export enum Arch {
-  Amd64 = 'amd64',
-  Arm64 = 'arm64',
-}
-
-type Options = ReturnType<typeof getOptions>;
-type OptionsKeys = keyof Options;
-type ParsedOptions = {
-  [key in OptionsKeys]: InferredOptionTypes<Options>[key];
-};
-
-export type Checksums = {
-  algorithm: string;
-  binaries: Record<Binary, Record<`${Platform}-${Arch}`, string>>;
-};
-
-export type PlatformArchChecksums = {
-  algorithm: string;
-  binaries: Record<Binary, string>;
-};
+const Binaries = Object.values(Binary) as BinariesTuple;
 
 export function parseArgs(args: string[] = argv.slice(2)) {
   const { $0, _, ...parsed } = yargs()
@@ -96,21 +71,24 @@ export function parseArgs(args: string[] = argv.slice(2)) {
     case 'install':
       return {
         command: 'install',
-        options: parsed as ParsedOptions,
+        options: parsed as ParsedOptions<ReturnType<typeof getOptions>>,
       } as const;
   }
   throw new Error(`Unknown command: '${command}'`);
 }
 
-function getOptions() {
+function getOptions(
+  defaultPlatform = platform(),
+  defaultArch = normalizeSystemArchitecture(),
+) {
   return {
     binaries: {
       alias: 'b',
       type: 'array' as const,
       multiple: true,
       description: 'Specify the binaries to install',
-      default: [Binary.Anvil],
-      choices: Object.values(Binary) as Binary[],
+      default: Binaries,
+      choices: Binaries,
       coerce: (values: Binary[]): Binary[] => [...new Set(values)], // Remove duplicates
     },
     checksums: {
@@ -151,24 +129,32 @@ function getOptions() {
     arch: {
       alias: 'a',
       description: 'Specify the architecture',
-      default: getSystemArch(),
-      choices: Object.values(Arch) as Arch[],
+      // if `defaultArch` is not a supported Architecture yargs will throw an error
+      default: defaultArch as Architecture,
+      choices: Object.values(Architecture) as ArchitecturesTuple,
     },
     platform: {
       alias: 'p',
       description: 'Specify the platform',
-      // if `platform()` is not a supported Platform yargs will throw an error
-      default: platform() as Platform,
-      choices: Object.values(Platform) as Platform[],
+      // if `defaultPlatform` is not a supported Platform yargs will throw an error
+      default: defaultPlatform as Platform,
+      choices: Object.values(Platform) as PlatformsTuple,
     },
   };
 }
 
-function getSystemArch(): Arch {
-  const architecture = arch();
+/**
+ * Returns the system architecture, normalized to one of the supported
+ * {@link Architecture} values.
+ * @param architecture
+ * @returns
+ */
+function normalizeSystemArchitecture(
+  architecture: string = arch(),
+): Architecture {
   if (architecture.startsWith('arm')) {
     // if `arm*`, use `arm64`
-    return Arch.Arm64;
+    return Architecture.Arm64;
   } else if (architecture === 'x64') {
     // if `x64`, it _might_ be amd64 running via Rosetta on Apple Silicon
     // (arm64). we can check this by running `sysctl.proc_translated` and
@@ -177,12 +163,12 @@ function getSystemArch(): Arch {
     // binaries native to the system for better performance.
     try {
       if (execSync('sysctl -n sysctl.proc_translated 2>/dev/null')[0] === 1) {
-        return Arch.Arm64;
+        return Architecture.Arm64;
       }
     } catch {} // if `sysctl` check fails, assume native `amd64`
   }
 
-  return Arch.Amd64; // Default for all other architectures
+  return Architecture.Amd64; // Default for all other architectures
 }
 
 export function printBanner() {
@@ -228,7 +214,7 @@ export async function extractFrom(
   dir: string,
   checksums: { algorithm: string; binaries: Record<Binary, string> } | null,
 ) {
-  const extract = url.pathname.toLowerCase().endsWith(BinFormat.Tar)
+  const extract = url.pathname.toLowerCase().endsWith(Extension.Tar)
     ? extractFromTar
     : extractFromZip;
   // write all files to a temporary directory first, then rename to the final
@@ -403,13 +389,6 @@ async function extractFromZip(
   );
 }
 
-type DownloadOptions = {
-  method?: 'GET' | 'HEAD';
-  headers?: Record<string, string>;
-  agent?: HttpsAgent | HttpAgent;
-  maxRedirects?: number;
-};
-
 /**
  * Starts a download from the given URL.
  *
@@ -422,7 +401,7 @@ function startDownload(
   url: URL,
   options: DownloadOptions = {},
   redirects: number = 0,
-): DownloadStream {
+) {
   const MAX_REDIRECTS = options.maxRedirects ?? 5;
   const request = url.protocol === 'http:' ? httpRequest : httpsRequest;
   const stream = new DownloadStream();
@@ -496,11 +475,15 @@ export function getVersion(binPath: string): Buffer {
   try {
     return execSync(`${binPath} --version`).subarray(0, -1); // ignore newline
   } catch (error: unknown) {
-    const msg = `Failed to get version for ${binPath}`;
+    const msg = `Failed to get version for ${binPath}
+
+Your selected platform or architecture may be incorrect, or the binary may not
+support your system. If you believe this is an error, please report it.`;
     if (error instanceof Error) {
-      throw new Error(`${msg}: ${error.message}`);
+      error.message = `${msg}\n\n${error.message}`;
+      throw error;
     }
-    throw new Error(msg);
+    throw new AggregateError([new Error(msg), error]);
   }
 }
 
@@ -524,7 +507,7 @@ export function isCodedError(
 export function transformChecksums(
   checksums: Checksums | undefined,
   platform: Platform,
-  arch: Arch,
+  arch: Architecture,
 ): PlatformArchChecksums | null {
   if (!checksums) return null;
 

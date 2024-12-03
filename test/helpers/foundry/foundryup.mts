@@ -8,8 +8,6 @@ import { createHash } from 'node:crypto';
 import { exit, cwd } from 'node:process';
 import { parse as parseYaml } from 'yaml';
 import {
-  BinFormat,
-  Platform,
   extractFrom,
   getVersion,
   printBanner,
@@ -19,6 +17,7 @@ import {
   noop,
   transformChecksums,
 } from './helpers.mts';
+import { Extension, Platform } from './types.mts';
 
 const parsedArgs = parseArgs();
 
@@ -46,7 +45,7 @@ printBanner();
 const bins = binaries.join(', ');
 say(`fetching ${bins} ${version} for ${platform} ${arch}`);
 
-const ext = platform === Platform.Windows ? BinFormat.Zip : BinFormat.Tar;
+const ext = platform === Platform.Windows ? Extension.Zip : Extension.Tar;
 const BIN_ARCHIVE_URL = `https://github.com/${repo}/releases/download/${tag}/foundry_${version}_${platform}_${arch}.${ext}`;
 const BIN_DIR = join(cwd(), 'node_modules', '.bin');
 
@@ -74,6 +73,7 @@ try {
     throw e;
   }
 }
+
 for await (const file of downloadedBinaries) {
   if (!file.isFile()) continue;
   const target = join(file.parentPath, file.name);

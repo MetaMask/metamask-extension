@@ -669,7 +669,7 @@
     "terser-webpack-plugin": "^5.3.10",
     "through2": "^4.0.2",
     "ts-node": "^10.9.2",
-    "tsx": "^4.7.1",
+    "tsx": "^4.19.2",
     "ttest": "^2.1.1",
     "typescript": "~5.4.5",
     "unzipper": "^0.12.3",
