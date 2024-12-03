@@ -6484,10 +6484,6 @@
   "wrongNetworkName": {
     "message": "हमारे रिकॉर्ड के अनुसार, नेटवर्क का नाम इस चेन ID से ठीक से मेल नहीं खा सकता है।"
   },
-  "xOfYPending": {
-    "message": "$2 में से $1 लंबित",
-    "description": "$1 and $2 are intended to be two numbers, where $2 is a total number of pending confirmations, and $1 is a count towards that total"
-  },
   "yes": {
     "message": "हां"
   },

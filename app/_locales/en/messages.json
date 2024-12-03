@@ -6699,10 +6699,6 @@
   "wrongNetworkName": {
     "message": "According to our records, the network name may not correctly match this chain ID."
   },
-  "xOfYPending": {
-    "message": "$1 of $2 pending",
-    "description": "$1 and $2 are intended to be two numbers, where $2 is a total number of pending confirmations, and $1 is a count towards that total"
-  },
   "yes": {
     "message": "Yes"
   },
