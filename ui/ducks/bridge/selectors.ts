@@ -279,7 +279,10 @@ const _getQuotesWithMetadata = createDeepEqualSelector(
     { estimatedBaseFeeInDecGwei, maxPriorityFeePerGasInDecGwei },
   ): (QuoteResponse & QuoteMetadata)[] => {
     const newQuotes = quotes.map((quote: QuoteResponse) => {
-      const toTokenAmount = calcToAmount(quote.quote, toTokenExchangeRate.fiat);
+      const toTokenAmount = calcToAmount(
+        quote.quote,
+        toTokenExchangeRate.valueInCurrency,
+      );
       const gasFee = calcTotalGasFee(
         quote,
         estimatedBaseFeeInDecGwei,
@@ -289,15 +292,17 @@ const _getQuotesWithMetadata = createDeepEqualSelector(
       const relayerFee = calcRelayerFee(quote, nativeExchangeRate);
       const totalNetworkFee = {
         amount: gasFee.amount.plus(relayerFee.amount),
-        fiat: gasFee.fiat?.plus(relayerFee.fiat || '0') ?? null,
+        valueInCurrency:
+          gasFee.valueInCurrency?.plus(relayerFee.valueInCurrency || '0') ??
+          null,
       };
       const sentAmount = calcSentAmount(
         quote.quote,
-        fromTokenExchangeRate.fiat,
+        fromTokenExchangeRate.valueInCurrency,
       );
       const adjustedReturn = calcAdjustedReturn(
-        toTokenAmount.fiat,
-        totalNetworkFee.fiat,
+        toTokenAmount.valueInCurrency,
+        totalNetworkFee.valueInCurrency,
       );
 
       return {
@@ -308,7 +313,10 @@ const _getQuotesWithMetadata = createDeepEqualSelector(
         adjustedReturn,
         gasFee,
         swapRate: calcSwapRate(sentAmount.amount, toTokenAmount.amount),
-        cost: calcCost(adjustedReturn.fiat, sentAmount.fiat),
+        cost: calcCost(
+          adjustedReturn.valueInCurrency,
+          sentAmount.valueInCurrency,
+        ),
       };
     });
 
@@ -329,7 +337,11 @@ const _getSortedQuotesWithMetadata = createDeepEqualSelector(
         );
       case SortOrder.COST_ASC:
       default:
-        return orderBy(quotesWithMetadata, ({ cost }) => cost.fiat, 'asc');
+        return orderBy(
+          quotesWithMetadata,
+          ({ cost }) => cost.valueInCurrency,
+          'asc',
+        );
     }
   },
 );
@@ -344,7 +356,7 @@ const _getRecommendedQuote = createDeepEqualSelector(
 
     const bestReturnValue = BigNumber.max(
       sortedQuotesWithMetadata.map(
-        ({ adjustedReturn }) => adjustedReturn.fiat ?? 0,
+        ({ adjustedReturn }) => adjustedReturn.valueInCurrency ?? 0,
       ),
     );
 
@@ -364,7 +376,7 @@ const _getRecommendedQuote = createDeepEqualSelector(
     return (
       sortedQuotesWithMetadata.find((quote) => {
         return sortOrder === SortOrder.ETA_ASC
-          ? isFastestQuoteValueReasonable(quote.adjustedReturn.fiat)
+          ? isFastestQuoteValueReasonable(quote.adjustedReturn.valueInCurrency)
           : isBestPricedQuoteETAReasonable(
               quote.estimatedProcessingTimeInSeconds,
             );
@@ -460,7 +472,7 @@ export const getFromAmountInFiat = createSelector(
     fromToken,
     fromChain,
     validatedSrcAmount,
-    { fiat: fromTokenToFiatExchangeRate },
+    { valueInCurrency: fromTokenToFiatExchangeRate },
   ) => {
     if (fromToken?.symbol && fromChain?.chainId && validatedSrcAmount) {
       if (fromTokenToFiatExchangeRate) {
@@ -512,11 +524,12 @@ export const getValidationErrors = createDeepEqualSelector(
       isInsufficientBalance: (balance?: BigNumber) =>
         fromAmount && balance !== undefined ? balance.lt(fromAmount) : false,
       isEstimatedReturnLow:
-        activeQuote?.sentAmount?.fiat && activeQuote?.adjustedReturn?.fiat
-          ? activeQuote.adjustedReturn.fiat.lt(
+        activeQuote?.sentAmount?.valueInCurrency &&
+        activeQuote?.adjustedReturn?.valueInCurrency
+          ? activeQuote.adjustedReturn.valueInCurrency.lt(
               new BigNumber(
                 BRIDGE_QUOTE_MAX_RETURN_DIFFERENCE_PERCENTAGE,
-              ).times(activeQuote.sentAmount.fiat),
+              ).times(activeQuote.sentAmount.valueInCurrency),
             )
           : false,
     };

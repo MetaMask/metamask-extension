@@ -193,12 +193,17 @@ export const BridgeQuotesModal = ({
                 )}
                 <Column>
                   <Text variant={TextVariant.bodyMd}>
-                    {cost.fiat && formatFiatAmount(cost.fiat, currency, 0)}
+                    {cost.valueInCurrency &&
+                      formatFiatAmount(cost.valueInCurrency, currency, 0)}
                   </Text>
                   {[
-                    totalNetworkFee?.fiat
+                    totalNetworkFee?.valueInCurrency
                       ? t('quotedNetworkFee', [
-                          formatFiatAmount(totalNetworkFee.fiat, currency, 0),
+                          formatFiatAmount(
+                            totalNetworkFee.valueInCurrency,
+                            currency,
+                            0,
+                          ),
                         ])
                       : t('quotedNetworkFee', [
                           formatTokenAmount(
@@ -211,7 +216,11 @@ export const BridgeQuotesModal = ({
                         ? 'quotedReceivingAmount'
                         : 'quotedReceiveAmount',
                       [
-                        formatFiatAmount(toTokenAmount.fiat, currency, 0) ??
+                        formatFiatAmount(
+                          toTokenAmount.valueInCurrency,
+                          currency,
+                          0,
+                        ) ??
                           formatTokenAmount(
                             toTokenAmount.amount,
                             destAsset.symbol,

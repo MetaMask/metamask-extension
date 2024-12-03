@@ -58,7 +58,7 @@ export const calcToAmount = (
   );
   return {
     amount: normalizedDestAmount,
-    fiat: exchangeRate
+    valueInCurrency: exchangeRate
       ? normalizedDestAmount.mul(exchangeRate.toString())
       : null,
   };
@@ -74,7 +74,7 @@ export const calcSentAmount = (
   );
   return {
     amount: normalizedSentAmount,
-    fiat: exchangeRate
+    valueInCurrency: exchangeRate
       ? normalizedSentAmount.mul(exchangeRate.toString())
       : null,
   };
@@ -98,7 +98,7 @@ export const calcRelayerFee = (
   );
   return {
     amount: relayerFeeInNative,
-    fiat: nativeExchangeRate
+    valueInCurrency: nativeExchangeRate
       ? relayerFeeInNative.mul(nativeExchangeRate.toString())
       : null,
   };
@@ -139,7 +139,7 @@ export const calcTotalGasFee = (
 
   return {
     amount: gasFeesInDecEth,
-    fiat: gasFeesInUSD,
+    valueInCurrency: gasFeesInUSD,
   };
 };
 
@@ -147,7 +147,7 @@ export const calcAdjustedReturn = (
   destTokenAmountInFiat: BigNumber | null,
   totalNetworkFeeInFiat: BigNumber | null,
 ) => ({
-  fiat:
+  valueInCurrency:
     destTokenAmountInFiat && totalNetworkFeeInFiat
       ? destTokenAmountInFiat.minus(totalNetworkFeeInFiat)
       : null,
@@ -162,7 +162,7 @@ export const calcCost = (
   adjustedReturnInFiat: BigNumber | null,
   sentAmountInFiat: BigNumber | null,
 ) => ({
-  fiat:
+  valueInCurrency:
     adjustedReturnInFiat && sentAmountInFiat
       ? sentAmountInFiat.minus(adjustedReturnInFiat)
       : null,

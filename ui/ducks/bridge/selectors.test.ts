@@ -585,24 +585,24 @@ describe('Bridge selectors', () => {
 
       const recommendedQuoteMetadata = {
         adjustedReturn: {
-          fiat: expect.any(Object),
+          valueInCurrency: expect.any(Object),
         },
-        cost: { fiat: new BigNumber('0.15656287141025952') },
+        cost: { valueInCurrency: new BigNumber('0.15656287141025952') },
         sentAmount: {
-          fiat: new BigNumber('14'),
+          valueInCurrency: new BigNumber('14'),
           amount: new BigNumber('14'),
         },
         swapRate: new BigNumber('0.998877142857142857142857142857142857'),
         toTokenAmount: {
-          fiat: new BigNumber('13.8444372'),
+          valueInCurrency: new BigNumber('13.8444372'),
           amount: new BigNumber('13.98428'),
         },
         gasFee: {
           amount: new BigNumber('7.141025952e-8'),
-          fiat: new BigNumber('7.141025952e-8'),
+          valueInCurrency: new BigNumber('7.141025952e-8'),
         },
         totalNetworkFee: {
-          fiat: new BigNumber('0.00100007141025952'),
+          valueInCurrency: new BigNumber('0.00100007141025952'),
           amount: new BigNumber('0.00100007141025952'),
         },
       };
@@ -674,31 +674,31 @@ describe('Bridge selectors', () => {
 
       const recommendedQuoteMetadata = {
         adjustedReturn: {
-          fiat: new BigNumber('13.843437128589739081572'),
+          valueInCurrency: new BigNumber('13.843437128589739081572'),
         },
-        cost: { fiat: new BigNumber('0.156562871410260918428') },
+        cost: { valueInCurrency: new BigNumber('0.156562871410260918428') },
         sentAmount: {
-          fiat: new BigNumber('14'),
+          valueInCurrency: new BigNumber('14'),
           amount: new BigNumber('14'),
         },
         swapRate: new BigNumber('0.998877142857142857142857142857142857'),
         toTokenAmount: {
-          fiat: new BigNumber('13.844437199999998601572'),
+          valueInCurrency: new BigNumber('13.844437199999998601572'),
           amount: new BigNumber('13.98428'),
         },
         gasFee: {
           amount: new BigNumber('7.141025952e-8'),
-          fiat: new BigNumber('7.141025952e-8'),
+          valueInCurrency: new BigNumber('7.141025952e-8'),
         },
         totalNetworkFee: {
-          fiat: new BigNumber('0.00100007141025952'),
+          valueInCurrency: new BigNumber('0.00100007141025952'),
           amount: new BigNumber('0.00100007141025952'),
         },
       };
       expect(result.sortedQuotes).toHaveLength(2);
       const EXPECTED_SORTED_COSTS = [
-        { fiat: new BigNumber('0.156562871410260918428') },
-        { fiat: new BigNumber('0.33900008283534602') },
+        { valueInCurrency: new BigNumber('0.156562871410260918428') },
+        { valueInCurrency: new BigNumber('0.33900008283534602') },
       ];
       result.sortedQuotes.forEach((quote, idx) => {
         expect(quote.cost).toStrictEqual(EXPECTED_SORTED_COSTS[idx]);
@@ -768,31 +768,31 @@ describe('Bridge selectors', () => {
 
       const recommendedQuoteMetadata = {
         adjustedReturn: {
-          fiat: new BigNumber('13.84343712858974048'),
+          valueInCurrency: new BigNumber('13.84343712858974048'),
         },
-        cost: { fiat: new BigNumber('0.15656287141025952') },
+        cost: { valueInCurrency: new BigNumber('0.15656287141025952') },
         sentAmount: {
-          fiat: new BigNumber('14'),
+          valueInCurrency: new BigNumber('14'),
           amount: new BigNumber('14'),
         },
         swapRate: new BigNumber('0.998877142857142857142857142857142857'),
         toTokenAmount: {
-          fiat: new BigNumber('13.8444372'),
+          valueInCurrency: new BigNumber('13.8444372'),
           amount: new BigNumber('13.98428'),
         },
         gasFee: {
           amount: new BigNumber('7.141025952e-8'),
-          fiat: new BigNumber('7.141025952e-8'),
+          valueInCurrency: new BigNumber('7.141025952e-8'),
         },
         totalNetworkFee: {
-          fiat: new BigNumber('0.00100007141025952'),
+          valueInCurrency: new BigNumber('0.00100007141025952'),
           amount: new BigNumber('0.00100007141025952'),
         },
       };
       expect(result.sortedQuotes).toHaveLength(2);
       const EXPECTED_SORTED_COSTS = [
-        { fiat: new BigNumber('0.15656287141025952') },
-        { fiat: new BigNumber('0.33900008283534464') },
+        { valueInCurrency: new BigNumber('0.15656287141025952') },
+        { valueInCurrency: new BigNumber('0.33900008283534464') },
       ];
       result.sortedQuotes.forEach((quote, idx) => {
         expect(quote.cost).toStrictEqual(EXPECTED_SORTED_COSTS[idx]);
@@ -1009,15 +1009,19 @@ describe('Bridge selectors', () => {
       expect(recommendedQuote?.quote.requestId).toStrictEqual(
         '4277a368-40d7-4e82-aa67-74f29dc5f98a',
       );
-      expect(sentAmount?.fiat?.toString()).toStrictEqual('25.2425');
-      expect(totalNetworkFee?.fiat?.toString()).toStrictEqual(
+      expect(sentAmount?.valueInCurrency?.toString()).toStrictEqual('25.2425');
+      expect(totalNetworkFee?.valueInCurrency?.toString()).toStrictEqual(
         '2.52459306428938562',
       );
-      expect(toTokenAmount?.fiat?.toString()).toStrictEqual('24.226654664163');
-      expect(adjustedReturn?.fiat?.toString()).toStrictEqual(
+      expect(toTokenAmount?.valueInCurrency?.toString()).toStrictEqual(
+        '24.226654664163',
+      );
+      expect(adjustedReturn?.valueInCurrency?.toString()).toStrictEqual(
         '21.70206159987361438',
       );
-      expect(cost?.fiat?.toString()).toStrictEqual('3.54043840012638562');
+      expect(cost?.valueInCurrency?.toString()).toStrictEqual(
+        '3.54043840012638562',
+      );
       expect(sortedQuotes).toHaveLength(3);
       expect(sortedQuotes[0]?.quote.requestId).toStrictEqual('fastestQuote');
       expect(sortedQuotes[1]?.quote.requestId).toStrictEqual(
@@ -1320,13 +1324,15 @@ describe('Bridge selectors', () => {
       const result = getValidationErrors(state as never);
 
       expect(
-        getBridgeQuotes(state as never).activeQuote?.sentAmount.fiat,
+        getBridgeQuotes(state as never).activeQuote?.sentAmount.valueInCurrency,
       ).toStrictEqual(new BigNumber('25.2425'));
       expect(
-        getBridgeQuotes(state as never).activeQuote?.totalNetworkFee.fiat,
+        getBridgeQuotes(state as never).activeQuote?.totalNetworkFee
+          .valueInCurrency,
       ).toStrictEqual(new BigNumber('2.52456519372708012'));
       expect(
-        getBridgeQuotes(state as never).activeQuote?.adjustedReturn.fiat,
+        getBridgeQuotes(state as never).activeQuote?.adjustedReturn
+          .valueInCurrency,
       ).toStrictEqual(new BigNumber('16.99676538473491988'));
       expect(result.isEstimatedReturnLow).toStrictEqual(true);
     });
@@ -1367,13 +1373,15 @@ describe('Bridge selectors', () => {
       const result = getValidationErrors(state as never);
 
       expect(
-        getBridgeQuotes(state as never).activeQuote?.sentAmount.fiat,
+        getBridgeQuotes(state as never).activeQuote?.sentAmount.valueInCurrency,
       ).toStrictEqual(new BigNumber('25.2425'));
       expect(
-        getBridgeQuotes(state as never).activeQuote?.totalNetworkFee.fiat,
+        getBridgeQuotes(state as never).activeQuote?.totalNetworkFee
+          .valueInCurrency,
       ).toStrictEqual(new BigNumber('2.52456519372708012'));
       expect(
-        getBridgeQuotes(state as never).activeQuote?.adjustedReturn.fiat,
+        getBridgeQuotes(state as never).activeQuote?.adjustedReturn
+          .valueInCurrency,
       ).toStrictEqual(new BigNumber('21.88454578473491988'));
       expect(result.isEstimatedReturnLow).toStrictEqual(false);
     });
