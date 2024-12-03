@@ -20,7 +20,7 @@ import {
 } from '../../../helpers/constants/design-system';
 import {
   formatEtaInMinutes,
-  formatFiatAmount,
+  formatCurrencyAmount,
   formatTokenAmount,
 } from '../utils/quote';
 import { useI18nContext } from '../../../hooks/useI18nContext';
@@ -194,12 +194,12 @@ export const BridgeQuotesModal = ({
                 <Column>
                   <Text variant={TextVariant.bodyMd}>
                     {cost.valueInCurrency &&
-                      formatFiatAmount(cost.valueInCurrency, currency, 0)}
+                      formatCurrencyAmount(cost.valueInCurrency, currency, 0)}
                   </Text>
                   {[
                     totalNetworkFee?.valueInCurrency
                       ? t('quotedNetworkFee', [
-                          formatFiatAmount(
+                          formatCurrencyAmount(
                             totalNetworkFee.valueInCurrency,
                             currency,
                             0,
@@ -216,7 +216,7 @@ export const BridgeQuotesModal = ({
                         ? 'quotedReceivingAmount'
                         : 'quotedReceiveAmount',
                       [
-                        formatFiatAmount(
+                        formatCurrencyAmount(
                           toTokenAmount.valueInCurrency,
                           currency,
                           0,

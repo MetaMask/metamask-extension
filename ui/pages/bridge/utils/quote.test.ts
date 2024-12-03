@@ -290,13 +290,13 @@ describe('Bridge quote utils', () => {
     'calcAdjustedReturn: valueInCurrency amounts are %s',
     (
       _: string,
-      destTokenAmountInFiat: BigNumber,
-      totalNetworkFeeInFiat: BigNumber,
+      destTokenAmountInCurrency: BigNumber,
+      totalNetworkFeeInCurrency: BigNumber,
       valueInCurrency: string,
     ) => {
       const result = calcAdjustedReturn(
-        destTokenAmountInFiat,
-        totalNetworkFeeInFiat,
+        destTokenAmountInCurrency,
+        totalNetworkFeeInCurrency,
       );
       expect(result.valueInCurrency).toStrictEqual(valueInCurrency);
     },

@@ -9,7 +9,7 @@ import {
 import { getBridgeQuotes } from '../../../ducks/bridge/selectors';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
-  formatFiatAmount,
+  formatCurrencyAmount,
   formatTokenAmount,
   formatEtaInMinutes,
 } from '../utils/quote';
@@ -85,7 +85,7 @@ export const BridgeQuoteCard = () => {
             label={t('totalFees')}
             tooltipText={t('bridgeTotalFeesTooltipText')}
             description={
-              formatFiatAmount(
+              formatCurrencyAmount(
                 activeQuote.totalNetworkFee?.valueInCurrency,
                 currency,
                 2,
