@@ -673,7 +673,7 @@ export const AccountListMenu = ({
                   onClick={() => {
                     onClose();
                     history.push(
-                      '/snaps/view/npm%3A%40metamask%2Fsnap-custodial-wallet-snap',
+                      '/snaps/view/npm%3A%40metamask%2Fsnap-institutional-wallet-snap',
                     );
                   }}
                 >
