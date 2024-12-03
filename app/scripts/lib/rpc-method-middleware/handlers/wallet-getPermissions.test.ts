@@ -163,7 +163,7 @@ describe('getPermissionsHandler', () => {
     it('gets the lastSelected sorted permissioned eth accounts for the origin', async () => {
       const { handler, getAccounts } = createMockedHandler();
       await handler(baseRequest);
-      expect(getAccounts).toHaveBeenCalled();
+      expect(getAccounts).toHaveBeenCalledWith(true);
     });
 
     it('returns the permissions with an eth_accounts permission if some eth accounts are permissioned', async () => {
