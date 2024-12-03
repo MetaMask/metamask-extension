@@ -199,7 +199,7 @@ export async function withSolanaAccountSnap(
       title,
       dapp: true,
       testSpecificMock: async (mockServer: Mockttp) => [
-        await mockRatesCall(mockServer),
+        /*await mockRatesCall(mockServer),
         await mockBtcBalanceQuote(mockServer),
         // See: PROD_RAMP_API_BASE_URL
         await mockRampsDynamicFeatureFlag(mockServer, 'api'),
@@ -208,7 +208,7 @@ export async function withSolanaAccountSnap(
         await mockMempoolInfo(mockServer),
         await mockBtcFeeCallQuote(mockServer),
         await mockGetUTXO(mockServer),
-        await mockSendTransaction(mockServer),
+        await mockSendTransaction(mockServer),*/
       ],
     },
     async ({ driver, mockServer }: { driver: Driver; mockServer: Mockttp }) => {

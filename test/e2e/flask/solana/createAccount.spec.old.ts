@@ -8,25 +8,26 @@ import {
   withFixtures,
 } from '../../helpers';
 import { Driver } from '../../webdriver/driver';
+import { withSolanaAccountSnap } from './common-solana';
+import { withBtcAccountSnap } from '../btc/common-btc';
 
 describe('BTC Experimental Settings', function (this: Suite) {
   it('will show `Add a new Solana account (Beta)` option when setting is enabled', async function () {
-    await withFixtures(
+    await withBtcAccountSnap(
       {
-        fixtures: new FixtureBuilder().build(),
-        ganacheOptions: defaultGanacheOptions,
         title: this.test?.fullTitle(),
       },
-      async ({ driver }: { driver: Driver }) => {
+      async (driver: Driver) => {
         await unlockWallet(driver);
         await driver.clickElement(
           '[data-testid="account-options-menu-button"]',
         );
+        await driver.delay(60000);
         await driver.clickElement({ text: 'Settings', tag: 'div' });
         await driver.clickElement({ text: 'Experimental', tag: 'div' });
 
         await driver.waitForSelector({
-          text: messages.bitcoinSupportToggleTitle.message,
+          text: messages.solanaSupportToggleTitle.message,
           tag: 'span',
         });
 

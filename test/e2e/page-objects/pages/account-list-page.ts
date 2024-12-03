@@ -174,16 +174,17 @@ class AccountListPage {
    */
   async addNewSolanaAccount({
     solanaAccountCreationEnabled = true,
-    accountName = '',
+    accountName = 'Solana account',
   }: {
     solanaAccountCreationEnabled?: boolean;
     accountName?: string;
   } = {}): Promise<void> {
     console.log(
-      `Adding new BTC account${
+      `Adding new Solana account${
         accountName ? ` with custom name: ${accountName}` : ' with default name'
       }`,
     );
+    await this.driver.delay(10000);
     await this.driver.clickElement(this.createAccountButton);
     if (solanaAccountCreationEnabled) {
       await this.driver.clickElement(this.addSolanaAccountButton);
