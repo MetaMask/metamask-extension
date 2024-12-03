@@ -47,6 +47,7 @@ export const NetworkListItem = ({
   onEditClick,
   onRpcEndpointClick,
   startAccessory,
+  endAccessory,
   showEndAccessory = true,
   disabled = false,
 }: {
@@ -62,6 +63,7 @@ export const NetworkListItem = ({
   onEditClick?: () => void;
   focus?: boolean;
   startAccessory?: ReactNode;
+  endAccessory?: ReactNode;
   showEndAccessory?: boolean;
   disabled?: boolean;
 }) => {
@@ -208,15 +210,17 @@ export const NetworkListItem = ({
       </Box>
 
       {renderButton()}
-      {showEndAccessory ? (
-        <NetworkListItemMenu
-          anchorElement={networkListItemMenuElement}
-          isOpen={networkOptionsMenuOpen}
-          onDeleteClick={onDeleteClick}
-          onEditClick={onEditClick}
-          onClose={() => setNetworkOptionsMenuOpen(false)}
-        />
-      ) : null}
+      {showEndAccessory
+        ? endAccessory ?? (
+            <NetworkListItemMenu
+              anchorElement={networkListItemMenuElement}
+              isOpen={networkOptionsMenuOpen}
+              onDeleteClick={onDeleteClick}
+              onEditClick={onEditClick}
+              onClose={() => setNetworkOptionsMenuOpen(false)}
+            />
+          )
+        : null}
     </Box>
   );
 };
@@ -259,7 +263,11 @@ NetworkListItem.propTypes = {
    */
   startAccessory: PropTypes.node,
   /**
-   * Represents if we need to show menu option
+   * Represents end accessory
+   */
+  endAccessory: PropTypes.node,
+  /**
+   * Represents if we need to show menu option or endAccessory
    */
   showEndAccessory: PropTypes.bool,
 };
