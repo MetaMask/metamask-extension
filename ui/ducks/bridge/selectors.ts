@@ -56,7 +56,7 @@ import {
 import { decGWEIToHexWEI } from '../../../shared/modules/conversion.utils';
 import { calcTokenAmount } from '../../../shared/lib/transactions-controller-utils';
 import {
-  exchangeRatesFromNativeAndFiatRates,
+  exchangeRatesFromNativeAndCurrencyRates,
   exchangeRateFromMarketData,
   tokenPriceInNativeAsset,
 } from './utils';
@@ -215,7 +215,7 @@ export const getFromTokenConversionRate = createSelector(
     marketData,
     fromToken,
     nativeToUsdRate,
-    nativeToFiatRate,
+    nativeToCurrencyRate,
     fromTokenExchangeRate,
   ) => {
     if (fromChain?.chainId && fromToken && marketData) {
@@ -224,15 +224,16 @@ export const getFromTokenConversionRate = createSelector(
           fromChain.chainId,
           fromToken.address,
           marketData,
-        ) ?? tokenPriceInNativeAsset(fromTokenExchangeRate, nativeToFiatRate);
+        ) ??
+        tokenPriceInNativeAsset(fromTokenExchangeRate, nativeToCurrencyRate);
 
-      return exchangeRatesFromNativeAndFiatRates(
+      return exchangeRatesFromNativeAndCurrencyRates(
         tokenToNativeAssetRate,
-        nativeToFiatRate,
+        nativeToCurrencyRate,
         nativeToUsdRate,
       );
     }
-    return exchangeRatesFromNativeAndFiatRates();
+    return exchangeRatesFromNativeAndCurrencyRates();
   },
 );
 
@@ -250,18 +251,21 @@ export const getToTokenConversionRate = createDeepEqualSelector(
     if (toChain?.chainId && toToken && marketData) {
       const { chainId } = toChain;
 
-      const nativeToFiatRate = selectConversionRateByChainId(state, chainId);
+      const nativeToCurrencyRate = selectConversionRateByChainId(
+        state,
+        chainId,
+      );
       const nativeToUsdRate = getUSDConversionRateByChainId(chainId)(state);
       const tokenToNativeAssetRate =
         exchangeRateFromMarketData(chainId, toToken.address, marketData) ??
-        tokenPriceInNativeAsset(toTokenExchangeRate, nativeToFiatRate);
-      return exchangeRatesFromNativeAndFiatRates(
+        tokenPriceInNativeAsset(toTokenExchangeRate, nativeToCurrencyRate);
+      return exchangeRatesFromNativeAndCurrencyRates(
         tokenToNativeAssetRate,
-        nativeToFiatRate,
+        nativeToCurrencyRate,
         nativeToUsdRate,
       );
     }
-    return exchangeRatesFromNativeAndFiatRates();
+    return exchangeRatesFromNativeAndCurrencyRates();
   },
 );
 
@@ -361,10 +365,10 @@ const _getRecommendedQuote = createDeepEqualSelector(
     );
 
     const isFastestQuoteValueReasonable = (
-      adjustedReturnInFiat: BigNumber | null,
+      adjustedReturnInCurrency: BigNumber | null,
     ) =>
-      adjustedReturnInFiat
-        ? adjustedReturnInFiat
+      adjustedReturnInCurrency
+        ? adjustedReturnInCurrency
             .div(bestReturnValue)
             .gte(BRIDGE_QUOTE_MAX_RETURN_DIFFERENCE_PERCENTAGE)
         : true;
@@ -463,7 +467,7 @@ const _getValidatedSrcAmount = createSelector(
       : null,
 );
 
-export const getFromAmountInFiat = createSelector(
+export const getFromAmountInCurrency = createSelector(
   getFromToken,
   getFromChain,
   _getValidatedSrcAmount,
@@ -472,12 +476,12 @@ export const getFromAmountInFiat = createSelector(
     fromToken,
     fromChain,
     validatedSrcAmount,
-    { valueInCurrency: fromTokenToFiatExchangeRate },
+    { valueInCurrency: fromTokenToCurrencyExchangeRate },
   ) => {
     if (fromToken?.symbol && fromChain?.chainId && validatedSrcAmount) {
-      if (fromTokenToFiatExchangeRate) {
+      if (fromTokenToCurrencyExchangeRate) {
         return new BigNumber(validatedSrcAmount).mul(
-          new BigNumber(fromTokenToFiatExchangeRate.toString() ?? 1),
+          new BigNumber(fromTokenToCurrencyExchangeRate.toString() ?? 1),
         );
       }
     }

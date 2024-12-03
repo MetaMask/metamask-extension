@@ -99,7 +99,7 @@ export const exchangeRateFromMarketData = (
     marketData?.[chainId]?.[getAddress(tokenAddress) as Hex]
   )?.price;
 
-export const tokenAmountToFiat = (
+export const tokenAmountToCurrency = (
   amount: string | BigNumber,
   exchangeRate: number,
 ) =>
@@ -110,22 +110,22 @@ export const tokenAmountToFiat = (
 
 export const tokenPriceInNativeAsset = (
   tokenExchangeRate?: number | null,
-  nativeToFiatRate?: number | null,
+  nativeToCurrencyRate?: number | null,
 ) => {
-  return tokenExchangeRate && nativeToFiatRate
-    ? tokenExchangeRate / nativeToFiatRate
+  return tokenExchangeRate && nativeToCurrencyRate
+    ? tokenExchangeRate / nativeToCurrencyRate
     : null;
 };
 
-export const exchangeRatesFromNativeAndFiatRates = (
+export const exchangeRatesFromNativeAndCurrencyRates = (
   tokenToNativeAssetRate?: number | null,
-  nativeToFiatRate?: number | null,
+  nativeToCurrencyRate?: number | null,
   nativeToUsdRate?: number | null,
 ) => {
   return {
     valueInCurrency:
-      tokenToNativeAssetRate && nativeToFiatRate
-        ? tokenToNativeAssetRate * nativeToFiatRate
+      tokenToNativeAssetRate && nativeToCurrencyRate
+        ? tokenToNativeAssetRate * nativeToCurrencyRate
         : null,
     usd:
       tokenToNativeAssetRate && nativeToUsdRate
