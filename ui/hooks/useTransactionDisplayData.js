@@ -37,6 +37,7 @@ import { isEqualCaseInsensitive } from '../../shared/modules/string-utils';
 import { getTokenValueParam } from '../../shared/lib/metamask-controller-utils';
 import { selectBridgeHistoryForAccount } from '../ducks/bridge-status/selectors';
 import { calcTokenAmount } from '../../shared/lib/transactions-controller-utils';
+import { useBridgeTokenDisplayCurrencyAmount } from '../pages/bridge/hooks/useBridgeTokenValue';
 import { useI18nContext } from './useI18nContext';
 import { useTokenFiatAmount } from './useTokenFiatAmount';
 import { useUserPreferencedCurrency } from './useUserPreferencedCurrency';
@@ -258,6 +259,9 @@ export function useTransactionDisplayData(transactionGroup) {
     isViewingReceivedTokenFromSwap,
   } = useSwappedTokenValue(transactionGroup, currentAsset);
 
+  const { displayCurrencyAmount: bridgeDisplayCurrencyAmount } =
+    useBridgeTokenDisplayCurrencyAmount(transactionGroup);
+
   if (signatureTypes.includes(type)) {
     category = TransactionGroupCategory.signatureRequest;
     title = t('signatureRequest');
@@ -391,6 +395,7 @@ export function useTransactionDisplayData(transactionGroup) {
       primaryTransaction.sourceTokenAmount,
       primaryTransaction.sourceTokenDecimals,
     );
+    secondaryDisplayValue = bridgeDisplayCurrencyAmount;
   } else {
     dispatch(
       captureSingleException(
