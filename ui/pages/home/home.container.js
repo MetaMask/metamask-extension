@@ -1,6 +1,7 @@
 import { compose } from 'redux';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
+import { ApprovalType } from '@metamask/controller-utils';
 ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
 import { showCustodianDeepLink } from '@metamask-institutional/extension';
 import {
@@ -156,6 +157,7 @@ const mapStateToProps = (state) => {
     SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES.showNameSnapAccount,
     SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES.showSnapAccountRedirect,
     ///: END:ONLY_INCLUDE_IF
+    ApprovalType.AddEthereumChain,
   ]);
 
   const TEMPORARY_DISABLE_WHATS_NEW = true;
