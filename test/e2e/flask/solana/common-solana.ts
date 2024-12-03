@@ -216,7 +216,7 @@ export async function withSolanaAccountSnap(
     {
       fixtures: new FixtureBuilder()
         .withPreferencesControllerAndFeatureFlag({
-          solanaSupportEnabled: solanaSupportEnabled ?? true,
+          solanaSupportEnabled: true,
         })
         .build(),
       title,

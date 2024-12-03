@@ -5,7 +5,7 @@ import SolanaWalletSnap from '@metamask/solana-wallet-snap/dist/preinstalled-sna
 
 // export const SOLANA_WALLET_SNAP_ID: SnapId = SolanaWalletSnap.snapId as SnapId;
 export const SOLANA_WALLET_SNAP_ID: SnapId =
-  'local:http://localhost:8080' as SnapId;
+  SolanaWalletSnap.snapId as SnapId;
 
 export const SOLANA_WALLET_NAME: string =
   SolanaWalletSnap.manifest.proposedName;
