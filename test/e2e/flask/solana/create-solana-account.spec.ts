@@ -9,7 +9,7 @@ describe('Create Solana Account', function (this: Suite) {
       async (driver) => {
         const headerNavbar = new HeaderNavbar(driver);
         await headerNavbar.check_pageIsLoaded();
-        await headerNavbar.check_accountLabel('Solana account');
+        await headerNavbar.check_accountLabel('Solana Account 0');
       },
     );
   });

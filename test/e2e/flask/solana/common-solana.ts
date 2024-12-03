@@ -216,7 +216,7 @@ export async function withSolanaAccountSnap(
     {
       fixtures: new FixtureBuilder()
         .withPreferencesControllerAndFeatureFlag({
-          solanaSupportEnabled: true,
+          solanaSupportEnabled: solanaSupportEnabled ?? true,
         })
         .build(),
       title,
@@ -240,7 +240,7 @@ export async function withSolanaAccountSnap(
       await headerComponen.openAccountMenu();
       const accountListPage = new AccountListPage(driver);
       await accountListPage.openAddAccountModal();
-      await accountListPage.addNewAccountWithCustomLabel('Solana account', AccountType.SOLANA);
+      await accountListPage.addNewSolanaAccount();
       await test(driver, mockServer);
     },
   );

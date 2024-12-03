@@ -1,13 +1,9 @@
 import { strict as assert } from 'assert';
-import messages from '../../../../app/_locales/en/messages.json';
-import { largeDelayMs } from '../../helpers';
 import { Driver } from '../../webdriver/driver';
+import { largeDelayMs } from '../../helpers';
+import messages from '../../../../app/_locales/en/messages.json';
+import { th } from '../../../../.storybook/locales';
 
-export enum AccountType {
-  ETHEREUM = 'ethereum',
-  SOLANA = 'solana',
-  IMPORTED = 'imported',
-}
 class AccountListPage {
   private readonly driver: Driver;
 
@@ -42,11 +38,13 @@ class AccountListPage {
     tag: 'button',
   };
 
+  private readonly addSolanaAccountButton = {
+    text: messages.addNewSolanaAccount.message,
+    tag: 'button',
+  };
+
   private readonly addEthereumAccountButton =
     '[data-testid="multichain-account-menu-popover-add-account"]';
-
-  private readonly addSolanaccountButton =
-    '[data-testid="multichain-account-menu-popover-add-solana-account"]';
 
   private readonly addImportedAccountButton =
     '[data-testid="multichain-account-menu-popover-add-imported-account"]';
@@ -163,41 +161,6 @@ class AccountListPage {
   }
 
   /**
-   * Adds a new account with a custom label.
-   *
-   * @param customLabel - The custom label for the new account.
-   * @param accountType
-   */
-  async addNewAccountWithCustomLabel(
-    customLabel: string,
-    accountType: AccountType,
-  ): Promise<void> {
-    console.log(`Adding new account with custom label: ${customLabel}`);
-    // await this.driver.clickElement(this.createAccountButton);
-    await this.driver.delay(20000);
-    switch (accountType) {
-      case AccountType.ETHEREUM:
-        await this.driver.clickElement(this.addEthereumAccountButton);
-        break;
-      case AccountType.SOLANA:
-        await this.driver.clickElement(this.addSolanaccountButton);
-        break;
-      case AccountType.IMPORTED:
-        await this.driver.clickElement(this.addImportedAccountButton);
-        break;
-      default:
-        throw new Error(`Unsupported account type: ${accountType}`);
-    }
-    await this.driver.fill(this.accountNameInput, customLabel);
-    // needed to mitigate a race condition with the state update
-    // there is no condition we can wait for in the UI
-    await this.driver.delay(largeDelayMs);
-    await this.driver.clickElementAndWaitToDisappear(
-      this.addAccountConfirmButton,
-    );
-  }
-
-  /**
    * Adds a new BTC account with an optional custom name.
    *
    * @param options - Options for adding a new BTC account.
@@ -265,6 +228,41 @@ class AccountListPage {
       await this.driver.clickElementAndWaitToDisappear(
         this.importAccountConfirmButton,
       );
+    }
+  }
+
+  async addNewSolanaAccount({
+    solanaAccountCreationEnabled: solanaAccountCreationEnabled = true,
+    accountName = '',
+  }: {
+    solanaAccountCreationEnabled?: boolean;
+    accountName?: string;
+  } = {}): Promise<void> {
+    console.log(
+      `Adding new Solana account${
+        accountName ? ` with custom name: ${accountName}` : ' with default name'
+      }`,
+    );
+    if (solanaAccountCreationEnabled) {
+      await this.driver.clickElement(this.addSolanaAccountButton);
+      // needed to mitigate a race condition with the state update
+      // there is no condition we can wait for in the UI
+      if (accountName) {
+        await this.driver.fill(this.accountNameInput, accountName);
+      }
+      await this.driver.clickElementAndWaitToDisappear(
+        this.addAccountConfirmButton,
+        // Longer timeout than usual, this reduces the flakiness
+        // around Bitcoin account creation (mainly required for
+        // Firefox)
+        5000,
+      );
+    } else {
+      const createButton = await this.driver.findElement(
+        this.addSolanaAccountButton,
+      );
+      assert.equal(await createButton.isEnabled(), false);
+      await this.driver.clickElement(this.closeAccountModalButton);
     }
   }
 
