@@ -139,8 +139,8 @@ export type StartPollingForBridgeTxStatusArgs = {
   targetContractAddress?: BridgeHistoryItem['targetContractAddress'];
 };
 
-export type SourceChainTxHash = string;
+export type SourceChainTxMetaId = string;
 
 export type BridgeStatusControllerState = {
-  txHistory: Record<SourceChainTxHash, BridgeHistoryItem>;
+  txHistory: Record<SourceChainTxMetaId, BridgeHistoryItem>;
 };
