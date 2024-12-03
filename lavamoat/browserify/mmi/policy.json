@@ -2440,6 +2440,12 @@
         "semver": true
       }
     },
+    "@metamask/remote-feature-flag-controller": {
+      "packages": {
+        "@metamask/base-controller": true,
+        "cockatiel": true
+      }
+    },
     "@metamask/rpc-errors": {
       "packages": {
         "@metamask/rpc-errors>fast-safe-stringify": true,
