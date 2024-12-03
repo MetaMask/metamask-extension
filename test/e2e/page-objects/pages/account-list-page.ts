@@ -450,6 +450,7 @@ class AccountListPage {
     if (confirmRemoval) {
       console.log('Confirm removal of account');
       await this.driver.clickElement(this.removeAccountConfirmButton);
+
     } else {
       console.log('Click nevermind button to cancel account removal');
       await this.driver.clickElement(this.removeAccountNevermindButton);
