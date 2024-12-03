@@ -10,13 +10,15 @@ import {
   MetaMetricsTokenEventSource,
 } from '../../../../../shared/constants/metametrics';
 import {
-  getAllDetectedTokensForSelectedAddress,
   getCurrentChainId,
+  getNetworkConfigurationsByChainId,
+} from '../../../../../shared/modules/selectors/networks';
+import {
+  getAllDetectedTokensForSelectedAddress,
   getCurrentNetwork,
   getDetectedTokensInCurrentNetwork,
   getPreferences,
 } from '../../../../selectors';
-import { getNetworkConfigurationsByChainId } from '../../../../../shared/modules/selectors/networks';
 
 import Popover from '../../../ui/popover';
 import Box from '../../../ui/box';

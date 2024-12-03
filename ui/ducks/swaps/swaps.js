@@ -56,12 +56,12 @@ import {
   getValueFromWeiHex,
   hexWEIToDecGWEI,
 } from '../../../shared/modules/conversion.utils';
+import { getCurrentChainId } from '../../../shared/modules/selectors/networks';
 import {
   getSelectedAccount,
   getTokenExchangeRates,
   getUSDConversionRate,
   getSwapsDefaultToken,
-  getCurrentChainId,
   isHardwareWallet,
   getHardwareWalletType,
   checkNetworkAndAccountSupports1559,
@@ -589,6 +589,7 @@ export const fetchSwapsLivenessAndFeatureFlags = () => {
         await dispatch(fetchSmartTransactionsLiveness());
         const transactions = await getTransactions({
           searchCriteria: {
+            chainId,
             from: getSelectedInternalAccount(state)?.address,
           },
         });

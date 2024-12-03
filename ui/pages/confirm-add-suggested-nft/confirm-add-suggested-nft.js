@@ -27,8 +27,8 @@ import {
   Box,
   Text,
 } from '../../components/component-library';
+import { getCurrentChainId } from '../../../shared/modules/selectors/networks';
 import {
-  getCurrentChainId,
   getRpcPrefsForCurrentProvider,
   getSuggestedNfts,
   getIpfsGateway,
