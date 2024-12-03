@@ -196,11 +196,6 @@ function defaultFixture(inputChainId = CHAIN_IDS.LOCALHOST) {
             lastSelected: 1665507600000,
             name: 'Account 1',
           },
-          '0x09781764c08de8ca82e156bbf156a3ca217c7950': {
-            address: '0x09781764c08de8ca82e156bbf156a3ca217c7950',
-            lastSelected: 1665507800000,
-            name: 'Account 2',
-          },
         },
         ipfsGateway: 'dweb.link',
         knownMethodData: {},
