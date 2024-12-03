@@ -36,6 +36,7 @@ import { captureSingleException } from '../store/actions';
 import { isEqualCaseInsensitive } from '../../shared/modules/string-utils';
 import { getTokenValueParam } from '../../shared/lib/metamask-controller-utils';
 import { selectBridgeHistoryForAccount } from '../ducks/bridge-status/selectors';
+import { calcTokenAmount } from '../../shared/lib/transactions-controller-utils';
 import { useI18nContext } from './useI18nContext';
 import { useTokenFiatAmount } from './useTokenFiatAmount';
 import { useUserPreferencedCurrency } from './useUserPreferencedCurrency';
@@ -383,8 +384,13 @@ export function useTransactionDisplayData(transactionGroup) {
   } else if (type === TransactionType.bridge) {
     title = t('bridgeToChain', [destChainName || '']);
     category = TransactionGroupCategory.bridge;
-    // TODO add primaryDisplayValue,primarySuffix
-    // also secondaryDisplayValue, secondarySuffix
+    // TODO also secondaryDisplayValue, secondarySuffix
+
+    primarySuffix = primaryTransaction.sourceTokenSymbol;
+    primaryDisplayValue = calcTokenAmount(
+      primaryTransaction.sourceTokenAmount,
+      primaryTransaction.sourceTokenDecimals,
+    );
   } else {
     dispatch(
       captureSingleException(
