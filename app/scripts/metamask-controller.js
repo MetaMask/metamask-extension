@@ -146,7 +146,7 @@ import {
 import { Interface } from '@ethersproject/abi';
 import { abiERC1155, abiERC721 } from '@metamask/metamask-eth-abis';
 import { isEvmAccountType } from '@metamask/keyring-api';
-import { isValidHexAddress, toCaipChainId } from '@metamask/utils';
+import { toCaipChainId } from '@metamask/utils';
 import {
   AuthenticationController,
   UserStorageController,
@@ -5061,11 +5061,7 @@ export default class MetamaskController extends EventEmitter {
     );
   }
 
-  async getAllEvmAccountsSorted() {
-    // We only consider EVM addresses here, hence the filtering:
-    const accounts = (await this.keyringController.getAccounts()).filter(
-      isValidHexAddress,
-    );
+  sortAccountsByLastSelected(accounts) {
     const internalAccounts = this.accountsController.listAccounts();
 
     return accounts.sort((firstAddress, secondAddress) => {
@@ -5109,14 +5105,15 @@ export default class MetamaskController extends EventEmitter {
   }
 
   /**
-   * Gets the permitted accounts for the specified origin. Returns an empty
-   * array if no accounts are permitted.
+   * Gets the sorted permitted accounts for the specified origin. Returns an empty
+   * array if no accounts are permitted or the wallet is locked.
    *
    * @param {string} origin - The origin whose exposed accounts to retrieve.
+   * @param {boolean} ignoreLock - If accounts should be returned even if the wallet is locked.
    * @returns {Promise<string[]>} The origin's permitted accounts, or an empty
    * array.
    */
-  getPermittedAccounts(origin) {
+  getPermittedAccounts(origin, ignoreLock) {
     let caveat;
     try {
       caveat = this.permissionController.getCaveat(
@@ -5127,19 +5124,17 @@ export default class MetamaskController extends EventEmitter {
     } catch (err) {
       // noop
     }
+
     if (!caveat) {
       return [];
     }
 
-    return getEthAccounts(caveat.value);
-  }
+    if (!this.isUnlocked() && !ignoreLock) {
+      return [];
+    }
 
-  async getPermittedAccountsSorted(origin) {
-    const permittedAccounts = this.getPermittedAccounts(origin);
-    const allEvmAccounts = await this.getAllEvmAccountsSorted();
-    return allEvmAccounts.filter((account) =>
-      permittedAccounts.includes(account),
-    );
+    const ethAccounts = getEthAccounts(caveat.value);
+    return this.sortAccountsByLastSelected(ethAccounts);
   }
 
   /**
@@ -5958,7 +5953,7 @@ export default class MetamaskController extends EventEmitter {
     // middleware.
     engine.push(
       createEthAccountsMethodMiddleware({
-        getAccounts: this.getPermittedAccountsSorted.bind(this, origin),
+        getAccounts: this.getPermittedAccounts.bind(this, origin),
       }),
     );
 
@@ -6021,7 +6016,7 @@ export default class MetamaskController extends EventEmitter {
           this.metaMetricsController,
         ),
         // Permission-related
-        getAccounts: this.getPermittedAccountsSorted.bind(this, origin),
+        getAccounts: this.getPermittedAccounts.bind(this, origin),
         getPermissionsForOrigin: this.permissionController.getPermissions.bind(
           this.permissionController,
           origin,
@@ -6476,7 +6471,7 @@ export default class MetamaskController extends EventEmitter {
         method: NOTIFICATION_NAMES.unlockStateChanged,
         params: {
           isUnlocked: true,
-          accounts: await this.getPermittedAccountsSorted(origin),
+          accounts: await this.getPermittedAccounts(origin),
         },
       };
     });
@@ -7062,7 +7057,7 @@ export default class MetamaskController extends EventEmitter {
               newAccounts
             : // If the length is 2 or greater, we have to execute
               // `eth_accounts` vi this method.
-              await this.getPermittedAccountsSorted(origin),
+              await this.getPermittedAccounts(origin),
       });
     }
 
