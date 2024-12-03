@@ -144,12 +144,12 @@ export const calcTotalGasFee = (
 };
 
 export const calcAdjustedReturn = (
-  destTokenAmountInFiat: BigNumber | null,
-  totalNetworkFeeInFiat: BigNumber | null,
+  destTokenAmountInCurrency: BigNumber | null,
+  totalNetworkFeeInCurrency: BigNumber | null,
 ) => ({
   valueInCurrency:
-    destTokenAmountInFiat && totalNetworkFeeInFiat
-      ? destTokenAmountInFiat.minus(totalNetworkFeeInFiat)
+    destTokenAmountInCurrency && totalNetworkFeeInCurrency
+      ? destTokenAmountInCurrency.minus(totalNetworkFeeInCurrency)
       : null,
 });
 
@@ -159,12 +159,12 @@ export const calcSwapRate = (
 ) => destTokenAmount.div(sentAmount);
 
 export const calcCost = (
-  adjustedReturnInFiat: BigNumber | null,
-  sentAmountInFiat: BigNumber | null,
+  adjustedReturnInCurrency: BigNumber | null,
+  sentAmountInCurrency: BigNumber | null,
 ) => ({
   valueInCurrency:
-    adjustedReturnInFiat && sentAmountInFiat
-      ? sentAmountInFiat.minus(adjustedReturnInFiat)
+    adjustedReturnInCurrency && sentAmountInCurrency
+      ? sentAmountInCurrency.minus(adjustedReturnInCurrency)
       : null,
 });
 
@@ -177,7 +177,7 @@ export const formatTokenAmount = (
   precision: number = 2,
 ) => `${amount.toFixed(precision)} ${symbol}`;
 
-export const formatFiatAmount = (
+export const formatCurrencyAmount = (
   amount: BigNumber | null,
   currency: string,
   precision: number = DEFAULT_PRECISION,
