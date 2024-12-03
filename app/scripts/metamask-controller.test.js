@@ -28,6 +28,9 @@ import {
 import {
   RatesController,
   TokenListController,
+  MultichainBalancesController,
+  BalancesTracker as MultichainBalancesTracker,
+  BALANCE_UPDATE_INTERVALS as MULTICHAIN_BALANCES_UPDATE_TIME,
 } from '@metamask/assets-controllers';
 import ObjectMultiplex from '@metamask/object-multiplex';
 import { TrezorKeyring } from '@metamask/eth-trezor-keyring';
@@ -43,11 +46,6 @@ import { ETH_EOA_METHODS } from '../../shared/constants/eth-methods';
 import { createMockInternalAccount } from '../../test/jest/mocks';
 import { mockNetworkState } from '../../test/stub/networks';
 import { SECOND } from '../../shared/constants/time';
-import {
-  BalancesController as MultichainBalancesController,
-  BTC_BALANCES_UPDATE_TIME as MULTICHAIN_BALANCES_UPDATE_TIME,
-} from './lib/accounts/BalancesController';
-import { BalancesTracker as MultichainBalancesTracker } from './lib/accounts/BalancesTracker';
 import { deferredPromise } from './lib/util';
 import { METAMASK_COOKIE_HANDLER } from './constants/stream';
 import MetaMaskController, {
@@ -2593,7 +2591,9 @@ describe('MetaMaskController', () => {
         );
 
         // Wait for "block time", so balances will have to be refreshed
-        jest.advanceTimersByTime(MULTICHAIN_BALANCES_UPDATE_TIME);
+        jest.advanceTimersByTime(
+          MULTICHAIN_BALANCES_UPDATE_TIME[BtcAccountType.P2wpkh],
+        );
 
         // Check that we tried to fetch the balances more than once
         // NOTE: For now, this method might be called a lot more than just twice, but this

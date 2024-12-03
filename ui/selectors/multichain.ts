@@ -1,6 +1,9 @@
 import PropTypes from 'prop-types';
 import { InternalAccount, isEvmAccountType } from '@metamask/keyring-api';
-import type { RatesControllerState } from '@metamask/assets-controllers';
+import type {
+  MultichainBalancesControllerState,
+  RatesControllerState,
+} from '@metamask/assets-controllers';
 import { CaipChainId, Hex, KnownCaipNamespace } from '@metamask/utils';
 import { createSelector } from 'reselect';
 import { NetworkType } from '@metamask/controller-utils';
@@ -18,7 +21,6 @@ import {
 } from '../ducks/metamask/metamask';
 // TODO: Remove restricted import
 // eslint-disable-next-line import/no-restricted-paths
-import { BalancesControllerState } from '../../app/scripts/lib/accounts/BalancesController';
 import { MULTICHAIN_NETWORK_TO_ASSET_TYPES } from '../../shared/constants/multichain/assets';
 import {
   CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP,
@@ -47,7 +49,7 @@ export type RatesState = {
 };
 
 export type BalancesState = {
-  metamask: BalancesControllerState;
+  metamask: MultichainBalancesControllerState;
 };
 
 export type MultichainState = AccountsState &

@@ -68,7 +68,7 @@ export const useMultichainAccountTotalFiatBalance = (
 
   if (!balances[account.id]?.[asset]) {
     // FIXME: We might try to get the balance for a created account, but the
-    // BalancesController might not have updated it yet!
+    // MultichainBalancesController might not have updated it yet!
     return EMPTY_VALUES;
   }
   const { amount: balance } = balances[account.id][asset];
