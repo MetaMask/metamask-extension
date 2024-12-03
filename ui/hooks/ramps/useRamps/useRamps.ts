@@ -22,7 +22,6 @@ export enum RampsMetaMaskEntry {
   BtcBanner = 'ext_buy_banner_btc',
 }
 
-const portfolioUrl = process.env.PORTFOLIO_URL;
 const useRamps = (
   metamaskEntry: RampsMetaMaskEntry = RampsMetaMaskEntry.BuySellButton,
 ): IUseRamps => {
@@ -33,6 +32,7 @@ const useRamps = (
 
   const getBuyURI = useCallback(
     (_chainId: Hex | CaipChainId) => {
+      console.log('using url: ', process.env.PORTFOLIO_URL);
       try {
         const params = new URLSearchParams();
         params.set('metamaskEntry', metamaskEntry);
@@ -45,7 +45,10 @@ const useRamps = (
           params.set('marketingEnabled', String(isMarketingEnabled));
         }
 
-        return `${portfolioUrl}/buy?${params.toString()}`;
+        const url = new URL(process.env.PORTFOLIO_URL || '');
+        url.pathname = 'buy';
+        url.search = params.toString();
+        return url.toString();
       } catch {
         return 'https://portfolio.metamask.io/buy';
       }
