@@ -273,16 +273,13 @@ const _getQuotesWithMetadata = createDeepEqualSelector(
   _getBridgeFeesPerGas,
   (
     quotes,
-    { fiat: toTokenToFiatExchangeRate },
-    { fiat: fromTokenToFiatExchangeRate },
+    toTokenExchangeRate,
+    fromTokenExchangeRate,
     nativeExchangeRate,
     { estimatedBaseFeeInDecGwei, maxPriorityFeePerGasInDecGwei },
   ): (QuoteResponse & QuoteMetadata)[] => {
     const newQuotes = quotes.map((quote: QuoteResponse) => {
-      const toTokenAmount = calcToAmount(
-        quote.quote,
-        toTokenToFiatExchangeRate,
-      );
+      const toTokenAmount = calcToAmount(quote.quote, toTokenExchangeRate.fiat);
       const gasFee = calcTotalGasFee(
         quote,
         estimatedBaseFeeInDecGwei,
@@ -296,7 +293,7 @@ const _getQuotesWithMetadata = createDeepEqualSelector(
       };
       const sentAmount = calcSentAmount(
         quote.quote,
-        fromTokenToFiatExchangeRate,
+        fromTokenExchangeRate.fiat,
       );
       const adjustedReturn = calcAdjustedReturn(
         toTokenAmount.fiat,
