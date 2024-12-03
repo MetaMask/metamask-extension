@@ -123,7 +123,7 @@ export const exchangeRatesFromNativeAndFiatRates = (
   nativeToUsdRate?: number | null,
 ) => {
   return {
-    fiat:
+    valueInCurrency:
       tokenToNativeAssetRate && nativeToFiatRate
         ? tokenToNativeAssetRate * nativeToFiatRate
         : null,

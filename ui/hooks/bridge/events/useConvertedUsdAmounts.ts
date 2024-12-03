@@ -14,8 +14,8 @@ import { tokenAmountToFiat } from '../../../ducks/bridge/utils';
 const USD_CURRENCY_CODE = 'usd';
 
 // This hook is used to get the converted USD amounts for the bridge trade
-// It returns fiat values if the user's selected currency is USD
-// Otherwise, it converts the fiat values to USD using the exchange rates
+// It returns the converted token value if the user's selected currency is USD
+// Otherwise, it converts the token amounts to USD using the exchange rates
 // If the amount's usd value is not available, it defaults to 0
 export const useConvertedUsdAmounts = () => {
   const { srcTokenAddress, destTokenAddress } = useSelector(getQuoteRequest);
@@ -36,7 +36,7 @@ export const useConvertedUsdAmounts = () => {
   )?.toLowerCase();
 
   const fromAmountInFiat =
-    activeQuote?.sentAmount?.fiat ?? fromAmountInputValueInFiat;
+    activeQuote?.sentAmount?.valueInCurrency ?? fromAmountInputValueInFiat;
   const fromAmount = fromAmountInputValue ?? activeQuote?.sentAmount.amount;
 
   const isCurrencyUsd = currency.toLowerCase() === USD_CURRENCY_CODE;
@@ -55,14 +55,14 @@ export const useConvertedUsdAmounts = () => {
     // the gas token and convert the quoted gas amount to usd
     usd_quoted_gas:
       (isCurrencyUsd
-        ? activeQuote?.gasFee.fiat?.toNumber()
+        ? activeQuote?.gasFee.valueInCurrency?.toNumber()
         : activeQuote?.gasFee.amount &&
           tokenAmountToFiat(activeQuote.gasFee.amount, nativeToUsdRate)) || 0,
     // If user's selected currency is not usd, use usd exchange rates for
     // the dest asset and convert the dest amount to usd
     usd_quoted_return:
       (isCurrencyUsd
-        ? activeQuote?.toTokenAmount?.fiat?.toNumber()
+        ? activeQuote?.toTokenAmount?.valueInCurrency?.toNumber()
         : activeQuote?.toTokenAmount?.amount &&
           toTokenAddress &&
           toTokenConversionRate.usd &&
