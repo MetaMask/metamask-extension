@@ -484,7 +484,6 @@ class FixtureBuilder {
                     'eip155:1337': {
                       accounts: [
                         `eip155:1337:${selectedAccount.toLowerCase()}`,
-                        'eip155:1337:0x09781764c08de8ca82e156bbf156a3ca217c7950',
                       ],
                     },
                   },
