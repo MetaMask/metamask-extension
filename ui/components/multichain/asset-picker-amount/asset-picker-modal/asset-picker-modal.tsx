@@ -29,10 +29,9 @@ import {
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 
 import { AssetType } from '../../../../../shared/constants/transaction';
-
+import { getCurrentChainId } from '../../../../../shared/modules/selectors/networks';
 import {
   getAllTokens,
-  getCurrentChainId,
   getCurrentCurrency,
   getNativeCurrencyImage,
   getSelectedAccountCachedBalance,
@@ -68,6 +67,7 @@ type AssetPickerModalProps = {
   header: JSX.Element | string | null;
   isOpen: boolean;
   onClose: () => void;
+  action?: 'send' | 'receive';
   asset?: ERC20Asset | NativeAsset | Pick<NFT, 'type' | 'tokenId' | 'image'>;
   onAssetChange: (
     asset: AssetWithDisplayData<ERC20Asset> | AssetWithDisplayData<NativeAsset>,
@@ -102,6 +102,7 @@ export function AssetPickerModal({
   onAssetChange,
   sendingAsset,
   network,
+  action,
   onNetworkPickerClick,
   customTokenListGenerator,
   ...tabProps
@@ -262,6 +263,10 @@ export function AssetPickerModal({
     for (const token of (customTokenListGenerator ?? tokenListGenerator)(
       shouldAddToken,
     )) {
+      if (action === 'send' && token.balance === undefined) {
+        continue;
+      }
+
       filteredTokensAddresses.add(token.address?.toLowerCase());
       filteredTokens.push(
         customTokenListGenerator

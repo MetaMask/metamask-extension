@@ -90,7 +90,6 @@ export const SENTRY_BACKGROUND_STATE = {
     termsOfUseLastAgreed: true,
     timeoutMinutes: true,
     trezorModel: true,
-    usedNetworks: true,
   },
   MultichainBalancesController: {
     balances: false,
@@ -120,6 +119,11 @@ export const SENTRY_BACKGROUND_STATE = {
       quotesLastFetched: true,
       quotesLoadingStatus: true,
       quotesRefreshCount: true,
+    },
+  },
+  BridgeStatusController: {
+    bridgeStatusState: {
+      txHistory: false,
     },
   },
   CronjobController: {
@@ -198,9 +202,6 @@ export const SENTRY_BACKGROUND_STATE = {
     allNfts: false,
     ignoredNfts: false,
   },
-  NotificationController: {
-    notifications: false,
-  },
   OnboardingController: {
     completedOnboarding: true,
     firstTimeFlowType: true,
@@ -268,6 +269,10 @@ export const SENTRY_BACKGROUND_STATE = {
     useRequestQueue: true,
     useTransactionSimulations: true,
     enableMV3TimestampSave: true,
+  },
+  RemoteFeatureFlagController: {
+    remoteFeatureFlags: true,
+    cacheTimestamp: false,
   },
   NotificationServicesPushController: {
     fcmToken: false,

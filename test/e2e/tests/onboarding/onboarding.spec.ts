@@ -7,7 +7,7 @@ import {
 import { Driver } from '../../webdriver/driver';
 import FixtureBuilder from '../../fixture-builder';
 import { FirstTimeFlowType } from '../../../../shared/constants/onboarding';
-import HomePage from '../../page-objects/pages/homepage';
+import HomePage from '../../page-objects/pages/home/homepage';
 import OnboardingCompletePage from '../../page-objects/pages/onboarding/onboarding-complete-page';
 import OnboardingMetricsPage from '../../page-objects/pages/onboarding/onboarding-metrics-page';
 import OnboardingPasswordPage from '../../page-objects/pages/onboarding/onboarding-password-page';
@@ -198,7 +198,7 @@ describe('MetaMask onboarding @no-mmi', function () {
 
         // Check the correct balance for the custom network is displayed
         if (secondaryGanacheServer && Array.isArray(secondaryGanacheServer)) {
-          await homePage.check_ganacheBalanceIsDisplayed(
+          await homePage.check_localBlockchainBalanceIsDisplayed(
             secondaryGanacheServer[0],
           );
         } else {

@@ -85,4 +85,69 @@ describe('TransactionList', () => {
       },
     });
   });
+
+  it('renders TransactionList component and shows Chain ID mismatch text if network name is not available', () => {
+    const store = configureStore(defaultState);
+
+    const { getByText } = renderWithProvider(
+      <MetaMetricsContext.Provider value={mockTrackEvent}>
+        <TransactionList tokenChainId="0x89" />
+      </MetaMetricsContext.Provider>,
+      store,
+    );
+    expect(
+      getByText('Please switch network to view transactions'),
+    ).toBeInTheDocument();
+  });
+
+  it('renders TransactionList component and shows network name text', () => {
+    const defaultState2 = {
+      metamask: {
+        ...mockState.metamask,
+        selectedNetworkClientId: 'mainnet',
+        networkConfigurationsByChainId: {
+          '0x1': {
+            blockExplorerUrls: [],
+            chainId: '0x1',
+            defaultRpcEndpointIndex: 0,
+            name: 'Mainnet',
+            nativeCurrency: 'ETH',
+            rpcEndpoints: [
+              {
+                networkClientId: 'mainnet',
+                type: 'infura',
+                url: 'https://mainnet.infura.io/v3/{infuraProjectId}',
+              },
+            ],
+          },
+          '0xe708': {
+            blockExplorerUrls: [],
+            chainId: '0xe708',
+            defaultRpcEndpointIndex: 0,
+            name: 'Linea Mainnet',
+            nativeCurrency: 'ETH',
+            rpcEndpoints: [
+              {
+                networkClientId: 'linea-mainnet',
+                type: 'infura',
+                url: 'https://linea-mainnet.infura.io/v3/{infuraProjectId}',
+              },
+            ],
+          },
+        },
+        transactions: [],
+      },
+    };
+    const store = configureStore(defaultState2);
+
+    const { getByText } = renderWithProvider(
+      <MetaMetricsContext.Provider value={mockTrackEvent}>
+        <TransactionList tokenChainId="0xe708" />
+      </MetaMetricsContext.Provider>,
+      store,
+    );
+    expect(
+      getByText('Please switch to Linea Mainnet network to view transactions'),
+    ).toBeInTheDocument();
+  });
 });

@@ -1,4 +1,7 @@
 import { zeroAddress } from 'ethereumjs-util';
+import { Hex } from '@metamask/utils';
+import { METABRIDGE_ETHEREUM_ADDRESS } from '../../../../shared/constants/bridge';
+import { CHAIN_IDS } from '../../../../shared/constants/network';
 import { BridgeControllerState, BridgeFeatureFlagsKey } from './types';
 
 export const BRIDGE_CONTROLLER_NAME = 'BridgeController';
@@ -35,4 +38,8 @@ export const DEFAULT_BRIDGE_CONTROLLER_STATE: BridgeControllerState = {
   quotesLastFetched: undefined,
   quotesLoadingStatus: undefined,
   quotesRefreshCount: 0,
+};
+
+export const METABRIDGE_CHAIN_TO_ADDRESS_MAP: Record<Hex, string> = {
+  [CHAIN_IDS.MAINNET]: METABRIDGE_ETHEREUM_ADDRESS,
 };

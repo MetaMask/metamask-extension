@@ -4,10 +4,13 @@ import TokenList from '../token-list';
 import { PRIMARY } from '../../../../helpers/constants/common';
 import { useUserPreferencedCurrency } from '../../../../hooks/useUserPreferencedCurrency';
 import {
+  getAllDetectedTokensForSelectedAddress,
   getDetectedTokensInCurrentNetwork,
   getIstokenDetectionInactiveOnNonMainnetSupportedNetwork,
+  getPreferences,
   getSelectedAccount,
 } from '../../../../selectors';
+import { getNetworkConfigurationsByChainId } from '../../../../../shared/modules/selectors/networks';
 import {
   getMultichainIsEvm,
   getMultichainSelectedAccountCachedBalance,
@@ -76,6 +79,17 @@ const AssetList = ({ onClickAsset, showTokensLinks }: AssetListProps) => {
     getIstokenDetectionInactiveOnNonMainnetSupportedNetwork,
   );
 
+  const allNetworks = useSelector(getNetworkConfigurationsByChainId);
+  const { tokenNetworkFilter } = useSelector(getPreferences);
+  const allOpts: Record<string, boolean> = {};
+  Object.keys(allNetworks || {}).forEach((chainId) => {
+    allOpts[chainId] = true;
+  });
+
+  const allNetworksFilterShown =
+    Object.keys(tokenNetworkFilter || {}).length !==
+    Object.keys(allOpts || {}).length;
+
   const [showFundingMethodModal, setShowFundingMethodModal] = useState(false);
   const [showReceiveModal, setShowReceiveModal] = useState(false);
 
@@ -98,19 +112,35 @@ const AssetList = ({ onClickAsset, showTokensLinks }: AssetListProps) => {
   // for EVM assets
   const shouldShowTokensLinks = showTokensLinks ?? isEvm;
 
+  const detectedTokensMultichain = useSelector(
+    getAllDetectedTokensForSelectedAddress,
+  );
+
+  const totalTokens =
+    process.env.PORTFOLIO_VIEW && !allNetworksFilterShown
+      ? (Object.values(detectedTokensMultichain).reduce(
+          // @ts-expect-error TS18046: 'tokenArray' is of type 'unknown'
+          (count, tokenArray) => count + tokenArray.length,
+          0,
+        ) as number)
+      : detectedTokens.length;
+
   return (
     <>
-      {detectedTokens.length > 0 &&
-        !isTokenDetectionInactiveOnNonMainnetSupportedNetwork && (
-          <DetectedTokensBanner
-            className=""
-            actionButtonOnClick={() => setShowDetectedTokens(true)}
-            margin={4}
-          />
-        )}
+      {totalTokens &&
+      totalTokens > 0 &&
+      !isTokenDetectionInactiveOnNonMainnetSupportedNetwork ? (
+        <DetectedTokensBanner
+          className=""
+          actionButtonOnClick={() => setShowDetectedTokens(true)}
+          margin={4}
+        />
+      ) : null}
       <AssetListControlBar showTokensLinks={shouldShowTokensLinks} />
       <TokenList
-        nativeToken={<NativeToken onClickAsset={onClickAsset} />}
+        // nativeToken is still needed to avoid breaking flask build's support for bitcoin
+        // TODO: refactor this to no longer be needed for non-evm chains
+        nativeToken={!isEvm && <NativeToken onClickAsset={onClickAsset} />}
         onTokenClick={(chainId: string, tokenAddress: string) => {
           onClickAsset(chainId, tokenAddress);
           trackEvent({

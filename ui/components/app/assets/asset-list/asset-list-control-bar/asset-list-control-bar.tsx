@@ -1,15 +1,14 @@
 import React, { useEffect, useRef, useState, useContext, useMemo } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import {
-  getCurrentNetwork,
-  getNetworkConfigurationsByChainId,
-  getPreferences,
-} from '../../../../../selectors';
+import { getCurrentNetwork, getPreferences } from '../../../../../selectors';
+import { getNetworkConfigurationsByChainId } from '../../../../../../shared/modules/selectors/networks';
 import {
   Box,
   ButtonBase,
   ButtonBaseSize,
+  Icon,
   IconName,
+  IconSize,
   Popover,
   PopoverPosition,
 } from '../../../../component-library';
@@ -68,12 +67,13 @@ const AssetListControlBar = ({ showTokensLinks }: AssetListControlBarProps) => {
   }, [currentNetwork.chainId, TEST_CHAINS]);
 
   const allOpts: Record<string, boolean> = {};
-  Object.keys(allNetworks).forEach((chainId) => {
+  Object.keys(allNetworks || {}).forEach((chainId) => {
     allOpts[chainId] = true;
   });
 
   const allNetworksFilterShown =
-    Object.keys(tokenNetworkFilter).length !== Object.keys(allOpts).length;
+    Object.keys(tokenNetworkFilter || {}).length !==
+    Object.keys(allOpts || {}).length;
 
   useEffect(() => {
     if (isTestNetwork) {
@@ -86,8 +86,13 @@ const AssetListControlBar = ({ showTokensLinks }: AssetListControlBarProps) => {
   // We need to set the default filter for all users to be all included networks, rather than defaulting to empty object
   // This effect is to unblock and derisk in the short-term
   useEffect(() => {
-    if (Object.keys(tokenNetworkFilter).length === 0) {
+    if (
+      process.env.PORTFOLIO_VIEW &&
+      Object.keys(tokenNetworkFilter || {}).length === 0
+    ) {
       dispatch(setTokenNetworkFilter(allOpts));
+    } else {
+      dispatch(setTokenNetworkFilter({ [currentNetwork.chainId]: true }));
     }
   }, []);
 
@@ -162,7 +167,7 @@ const AssetListControlBar = ({ showTokensLinks }: AssetListControlBarProps) => {
       >
         {process.env.PORTFOLIO_VIEW && (
           <ButtonBase
-            data-testid="network-filter"
+            data-testid="sort-by-networks"
             variant={TextVariant.bodyMdMedium}
             className="asset-list-control-bar__button asset-list-control-bar__network_control"
             onClick={toggleNetworkFilterPopover}
@@ -195,7 +200,8 @@ const AssetListControlBar = ({ showTokensLinks }: AssetListControlBarProps) => {
               className="asset-list-control-bar__button"
               onClick={toggleTokenSortPopover}
               size={ButtonBaseSize.Sm}
-              endIconName={IconName.SwapVertical}
+              startIconName={IconName.Filter}
+              startIconProps={{ marginInlineEnd: 0 }}
               backgroundColor={
                 isTokenSortPopoverOpen
                   ? BackgroundColor.backgroundPressed
@@ -218,13 +224,13 @@ const AssetListControlBar = ({ showTokensLinks }: AssetListControlBarProps) => {
         isOpen={isNetworkFilterPopoverOpen}
         position={PopoverPosition.BottomStart}
         referenceElement={popoverRef.current}
-        matchWidth={!isFullScreen}
+        matchWidth={false}
         style={{
           zIndex: 10,
           display: 'flex',
           flexDirection: 'column',
           padding: 0,
-          minWidth: isFullScreen ? '325px' : '',
+          minWidth: isFullScreen ? '250px' : '',
         }}
       >
         <NetworkFilter handleClose={closePopover} />
@@ -234,13 +240,13 @@ const AssetListControlBar = ({ showTokensLinks }: AssetListControlBarProps) => {
         isOpen={isTokenSortPopoverOpen}
         position={PopoverPosition.BottomEnd}
         referenceElement={popoverRef.current}
-        matchWidth={!isFullScreen}
+        matchWidth={false}
         style={{
           zIndex: 10,
           display: 'flex',
           flexDirection: 'column',
           padding: 0,
-          minWidth: isFullScreen ? '325px' : '',
+          minWidth: isFullScreen ? '250px' : '',
         }}
       >
         <SortControl handleClose={closePopover} />
@@ -251,19 +257,25 @@ const AssetListControlBar = ({ showTokensLinks }: AssetListControlBarProps) => {
         isOpen={isImportTokensPopoverOpen}
         position={PopoverPosition.BottomEnd}
         referenceElement={popoverRef.current}
-        matchWidth={!isFullScreen}
+        matchWidth={false}
         style={{
           zIndex: 10,
           display: 'flex',
           flexDirection: 'column',
           padding: 0,
-          minWidth: isFullScreen ? '325px' : '',
+          minWidth: isFullScreen ? '158px' : '',
         }}
       >
         <SelectableListItem onClick={handleImport} testId="importTokens">
+          <Icon name={IconName.Add} size={IconSize.Sm} marginInlineEnd={2} />
           {t('importTokensCamelCase')}
         </SelectableListItem>
         <SelectableListItem onClick={handleRefresh} testId="refreshList">
+          <Icon
+            name={IconName.Refresh}
+            size={IconSize.Sm}
+            marginInlineEnd={2}
+          />
           {t('refreshList')}
         </SelectableListItem>
       </Popover>

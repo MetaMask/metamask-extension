@@ -116,4 +116,41 @@ describe('Settings', function () {
       },
     );
   });
+
+  it('Should show crypto value when price checker setting is off', async function () {
+    await withFixtures(
+      {
+        fixtures: new FixtureBuilder()
+          .withConversionRateEnabled()
+          .withShowFiatTestnetEnabled()
+          .withPreferencesControllerShowNativeTokenAsMainBalanceDisabled()
+          .withConversionRateDisabled()
+          .build(),
+        ganacheOptions: defaultGanacheOptions,
+        title: this.test.fullTitle(),
+        testSpecificMock: mockInfuraResponses,
+      },
+      async ({ driver }) => {
+        await unlockWallet(driver);
+
+        await driver.clickElement('[data-testid="popover-close"]');
+        await driver.clickElement(
+          '[data-testid="account-overview__asset-tab"]',
+        );
+
+        const tokenListAmount = await driver.findElement(
+          '.eth-overview__primary-container',
+        );
+        await driver.delay(1000);
+        assert.equal(await tokenListAmount.getText(), '25\nETH');
+
+        await driver.clickElement('[data-testid="account-menu-icon"]');
+        const accountTokenValue = await driver.waitForSelector(
+          '.multichain-account-list-item .multichain-account-list-item__asset',
+        );
+
+        assert.equal(await accountTokenValue.getText(), '25ETH');
+      },
+    );
+  });
 });

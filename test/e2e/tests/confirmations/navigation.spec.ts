@@ -8,11 +8,11 @@ import {
   WINDOW_TITLES,
 } from '../../helpers';
 import { Driver } from '../../webdriver/driver';
-import { withRedesignConfirmationFixtures } from './helpers';
+import { withTransactionEnvelopeTypeFixtures } from './helpers';
 
 describe('Navigation Signature - Different signature types', function (this: Suite) {
   it('initiates and queues multiple signatures and confirms', async function () {
-    await withRedesignConfirmationFixtures(
+    await withTransactionEnvelopeTypeFixtures(
       this.test?.fullTitle(),
       TransactionEnvelopeType.legacy,
       async ({ driver }: { driver: Driver }) => {
@@ -52,7 +52,7 @@ describe('Navigation Signature - Different signature types', function (this: Sui
   });
 
   it('initiates and queues a mix of signatures and transactions and navigates', async function () {
-    await withRedesignConfirmationFixtures(
+    await withTransactionEnvelopeTypeFixtures(
       this.test?.fullTitle(),
       TransactionEnvelopeType.legacy,
       async ({ driver }: { driver: Driver }) => {
@@ -100,7 +100,7 @@ describe('Navigation Signature - Different signature types', function (this: Sui
   });
 
   it('initiates multiple signatures and rejects all', async function () {
-    await withRedesignConfirmationFixtures(
+    await withTransactionEnvelopeTypeFixtures(
       this.test?.fullTitle(),
       TransactionEnvelopeType.legacy,
       async ({ driver }: { driver: Driver }) => {

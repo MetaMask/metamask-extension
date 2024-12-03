@@ -27,6 +27,7 @@ import { useTransactionGasFeeEstimate } from './useTransactionGasFeeEstimate';
 const EMPTY_FEE = '';
 const EMPTY_FEES = {
   currentCurrencyFee: EMPTY_FEE,
+  currentCurrencyFeeWith18SignificantDigits: EMPTY_FEE,
   nativeCurrencyFee: EMPTY_FEE,
 };
 
@@ -52,19 +53,36 @@ export function useFeeCalculations(transactionMeta: TransactionMeta) {
         }) || 0
       } ${ticker}`;
 
-      const currentCurrencyFee = fiatFormatter(
-        Number(
-          getValueFromWeiHex({
-            value: hexFee,
-            conversionRate,
-            fromCurrency: EtherDenomination.GWEI,
-            toCurrency: currentCurrency,
-            numberOfDecimals: 2,
-          }),
-        ),
+      const decimalCurrentCurrencyFee = Number(
+        getValueFromWeiHex({
+          value: hexFee,
+          conversionRate,
+          fromCurrency: EtherDenomination.GWEI,
+          toCurrency: currentCurrency,
+          numberOfDecimals: 2,
+        }),
       );
 
-      return { currentCurrencyFee, nativeCurrencyFee };
+      let currentCurrencyFee, currentCurrencyFeeWith18SignificantDigits;
+      if (decimalCurrentCurrencyFee === 0) {
+        currentCurrencyFee = `< ${fiatFormatter(0.01)}`;
+        currentCurrencyFeeWith18SignificantDigits = getValueFromWeiHex({
+          value: hexFee,
+          conversionRate,
+          fromCurrency: EtherDenomination.GWEI,
+          toCurrency: currentCurrency,
+          numberOfDecimals: 18,
+        });
+      } else {
+        currentCurrencyFee = fiatFormatter(decimalCurrentCurrencyFee);
+        currentCurrencyFeeWith18SignificantDigits = null;
+      }
+
+      return {
+        currentCurrencyFee,
+        currentCurrencyFeeWith18SignificantDigits,
+        nativeCurrencyFee,
+      };
     },
     [conversionRate, currentCurrency, fiatFormatter],
   );
@@ -109,8 +127,12 @@ export function useFeeCalculations(transactionMeta: TransactionMeta) {
     );
   }, [supportsEIP1559, maxFeePerGas, gasLimit, gasPrice]);
 
-  const { currentCurrencyFee: maxFeeFiat, nativeCurrencyFee: maxFeeNative } =
-    getFeesFromHex(maxFee);
+  const {
+    currentCurrencyFee: maxFeeFiat,
+    currentCurrencyFeeWith18SignificantDigits:
+      maxFeeFiatWith18SignificantDigits,
+    nativeCurrencyFee: maxFeeNative,
+  } = getFeesFromHex(maxFee);
 
   // Estimated fee
   const estimatedFees = useMemo(() => {
@@ -153,12 +175,19 @@ export function useFeeCalculations(transactionMeta: TransactionMeta) {
 
   return {
     estimatedFeeFiat: estimatedFees.currentCurrencyFee,
+    estimatedFeeFiatWith18SignificantDigits:
+      estimatedFees.currentCurrencyFeeWith18SignificantDigits,
     estimatedFeeNative: estimatedFees.nativeCurrencyFee,
     l1FeeFiat: feesL1.currentCurrencyFee,
+    l1FeeFiatWith18SignificantDigits:
+      feesL1.currentCurrencyFeeWith18SignificantDigits,
     l1FeeNative: feesL1.nativeCurrencyFee,
     l2FeeFiat: feesL2.currentCurrencyFee,
+    l2FeeFiatWith18SignificantDigits:
+      feesL2.currentCurrencyFeeWith18SignificantDigits,
     l2FeeNative: feesL2.nativeCurrencyFee,
     maxFeeFiat,
+    maxFeeFiatWith18SignificantDigits,
     maxFeeNative,
   };
 }

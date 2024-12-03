@@ -123,19 +123,19 @@ describe('useBridging', () => {
     // @ts-expect-error This is missing from the Mocha type definitions
     it.each([
       [
-        '/cross-chain/swaps/prepare-swap-page',
+        '/cross-chain/swaps/prepare-swap-page?token=0x0000000000000000000000000000000000000000',
         ETH_SWAPS_TOKEN_OBJECT,
         'Home',
         undefined,
       ],
       [
-        '/cross-chain/swaps/prepare-swap-page',
+        '/cross-chain/swaps/prepare-swap-page?token=0x0000000000000000000000000000000000000000',
         ETH_SWAPS_TOKEN_OBJECT,
         MetaMetricsSwapsEventSource.TokenView,
         '&token=native',
       ],
       [
-        '/cross-chain/swaps/prepare-swap-page',
+        '/cross-chain/swaps/prepare-swap-page?token=0x00232f2jksdauo',
         {
           iconUrl: 'https://icon.url',
           symbol: 'TEST',
@@ -174,7 +174,7 @@ describe('useBridging', () => {
 
         result.current.openBridgeExperience(location, token, urlSuffix);
 
-        expect(mockDispatch.mock.calls).toHaveLength(2);
+        expect(mockDispatch.mock.calls).toHaveLength(1);
         expect(mockHistoryPush.mock.calls).toHaveLength(1);
         expect(mockHistoryPush).toHaveBeenCalledWith(expectedUrl);
         expect(openTabSpy).not.toHaveBeenCalled();
