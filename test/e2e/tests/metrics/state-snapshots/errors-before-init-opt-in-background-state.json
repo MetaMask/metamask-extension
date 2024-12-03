@@ -114,6 +114,7 @@
         "tokenSortConfig": "object",
         "tokenNetworkFilter": {},
         "showMultiRpcModal": "boolean",
+        "showBaseNetworkToast": "boolean",
         "shouldShowAggregatedBalancePopover": "boolean"
       },
       "selectedAddress": "string",

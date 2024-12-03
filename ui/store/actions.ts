@@ -3150,6 +3150,10 @@ export function setShowMultiRpcModal(value: boolean) {
   return setPreference('showMultiRpcModal', value);
 }
 
+export function setShowBaseNetworkToast(value: boolean) {
+  return setPreference('showBaseNetworkToast', value);
+}
+
 export function setAutoLockTimeLimit(value: number | null) {
   return setPreference('autoLockTimeLimit', value);
 }

@@ -35,6 +35,9 @@ import {
   addPermittedAccount,
   clearSwitchedNetworkDetails,
   hidePermittedNetworkToast,
+  setEditedNetwork,
+  setShowBaseNetworkToast,
+  toggleNetworkMenu,
 } from '../../../store/actions';
 import {
   AvatarAccount,
@@ -45,6 +48,11 @@ import {
 } from '../../component-library';
 import { Toast, ToastContainer } from '../../multichain';
 import { SurveyToast } from '../../ui/survey-toast';
+import {
+  BASE_DISPLAY_NAME,
+  BASE_TOKEN_IMAGE_URL,
+  CHAIN_IDS,
+} from '../../../../shared/constants/network';
 import {
   selectNftDetectionEnablementToast,
   selectShowConnectAccountToast,
@@ -77,6 +85,7 @@ export function ToastMaster() {
         <SurveyToastMayDelete />
         <PrivacyPolicyToast />
         <SwitchedNetworkToast />
+        <BaseNetworkToast />
         <NftEnablementToast />
         <PermittedNetworkToast />
       </ToastContainer>
@@ -251,6 +260,44 @@ function SwitchedNetworkToast() {
         actionText={t('switchedNetworkToastDecline')}
         onActionClick={setSwitchedNetworkNeverShowMessage}
         onClose={() => dispatch(clearSwitchedNetworkDetails())}
+      />
+    )
+  );
+}
+
+function BaseNetworkToast() {
+  const t = useI18nContext();
+  const dispatch = useDispatch();
+
+  const showBaseNetworkToast = useSelector(
+    (state) => state.metamask.preferences.showBaseNetworkToast,
+  );
+
+  return (
+    showBaseNetworkToast && (
+      <Toast
+        key="switched-network-toast"
+        startAdornment={
+          <AvatarNetwork
+            size={AvatarAccountSize.Md}
+            borderColor={BorderColor.transparent}
+            src={BASE_TOKEN_IMAGE_URL}
+            name={BASE_DISPLAY_NAME}
+          />
+        }
+        text={t('baseNetworkToastMessage')}
+        actionText={t('seeDetails')}
+        onActionClick={() => {
+          dispatch(toggleNetworkMenu());
+          dispatch(
+            setEditedNetwork({
+              chainId: CHAIN_IDS.BASE,
+              nickname: BASE_DISPLAY_NAME,
+            }),
+          );
+        }}
+        hasLink={false}
+        onClose={() => dispatch(setShowBaseNetworkToast(false))}
       />
     )
   );

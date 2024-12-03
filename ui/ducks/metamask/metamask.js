@@ -53,6 +53,7 @@ const initialState = {
     featureNotificationsEnabled: false,
     privacyMode: false,
     showMultiRpcModal: false,
+    showBaseNetworkToast: false,
   },
   firstTimeFlowType: null,
   completedOnboarding: false,

@@ -112,6 +112,7 @@ export type Preferences = {
   redesignedTransactionsEnabled: boolean;
   featureNotificationsEnabled: boolean;
   showMultiRpcModal: boolean;
+  showBaseNetworkToast: boolean;
   privacyMode: boolean;
   isRedesignedConfirmationsDeveloperEnabled: boolean;
   showConfirmationAdvancedDetails: boolean;
@@ -227,6 +228,7 @@ export const getDefaultPreferencesControllerState =
       isRedesignedConfirmationsDeveloperEnabled: false,
       showConfirmationAdvancedDetails: false,
       showMultiRpcModal: false,
+      showBaseNetworkToast: false,
       privacyMode: false,
       shouldShowAggregatedBalancePopover: true, // by default user should see popover;
       tokenSortConfig: {

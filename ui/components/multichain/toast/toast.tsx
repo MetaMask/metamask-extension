@@ -1,10 +1,18 @@
 import React, { useEffect, useState } from 'react';
 import { ThemeType } from '../../../../shared/constants/preferences';
-import { BannerBase, Box, ButtonLink, Text } from '../../component-library';
+import {
+  BannerBase,
+  Box,
+  ButtonBase,
+  ButtonLink,
+  Text,
+} from '../../component-library';
 import {
   BorderRadius,
   Display,
   TextVariant,
+  BackgroundColor,
+  BorderColor,
 } from '../../../helpers/constants/design-system';
 
 export const ToastContainer = ({
@@ -17,6 +25,7 @@ export const Toast = ({
   startAdornment,
   text,
   actionText,
+  hasLink = true,
   onActionClick,
   onClose,
   borderRadius,
@@ -29,6 +38,7 @@ export const Toast = ({
   startAdornment: React.ReactNode | React.ReactNode[];
   text: string;
   actionText?: string;
+  hasLink?: boolean;
   onActionClick?: () => void;
   onClose: () => void;
   borderRadius?: BorderRadius;
@@ -76,9 +86,23 @@ export const Toast = ({
           <Text className="toast-text" variant={textVariant}>
             {text}
           </Text>
-          {actionText && onActionClick ? (
-            <ButtonLink onClick={onActionClick}>{actionText}</ButtonLink>
-          ) : null}
+          {actionText && onActionClick && (
+            <>
+              {hasLink ? (
+                <ButtonLink onClick={onActionClick}>{actionText}</ButtonLink>
+              ) : (
+                <Box paddingTop={2}>
+                  <ButtonBase
+                    backgroundColor={BackgroundColor.transparent}
+                    borderColor={BorderColor.borderDefault}
+                    onClick={onActionClick}
+                  >
+                    {actionText}
+                  </ButtonBase>
+                </Box>
+              )}
+            </>
+          )}
         </Box>
       </Box>
     </BannerBase>

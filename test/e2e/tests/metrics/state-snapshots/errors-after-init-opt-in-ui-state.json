@@ -34,6 +34,7 @@
       "showNativeTokenAsMainBalance": true,
       "petnamesEnabled": true,
       "showMultiRpcModal": "boolean",
+      "showBaseNetworkToast": "boolean",
       "isRedesignedConfirmationsDeveloperEnabled": "boolean",
       "tokenSortConfig": "object",
       "tokenNetworkFilter": {

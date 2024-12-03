@@ -744,6 +744,7 @@ describe('preferences controller', () => {
         isRedesignedConfirmationsDeveloperEnabled: false,
         showConfirmationAdvancedDetails: false,
         showMultiRpcModal: false,
+        showBaseNetworkToast: false,
         showNativeTokenAsMainBalance: false,
         tokenSortConfig: {
           key: 'tokenFiatAmount',
@@ -774,6 +775,7 @@ describe('preferences controller', () => {
         isRedesignedConfirmationsDeveloperEnabled: false,
         showConfirmationAdvancedDetails: true,
         showMultiRpcModal: false,
+        showBaseNetworkToast: false,
         showNativeTokenAsMainBalance: false,
         tokenSortConfig: {
           key: 'tokenFiatAmount',

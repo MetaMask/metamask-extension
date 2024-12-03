@@ -211,6 +211,7 @@ function defaultFixture(inputChainId = CHAIN_IDS.LOCALHOST) {
           showNativeTokenAsMainBalance: true,
           petnamesEnabled: true,
           showMultiRpcModal: false,
+          showBaseNetworkToast: false,
           isRedesignedConfirmationsDeveloperEnabled: false,
           showConfirmationAdvancedDetails: false,
           tokenSortConfig: {
