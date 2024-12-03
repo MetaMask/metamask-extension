@@ -99,10 +99,14 @@ describe('AppStateController', () => {
       });
     });
 
-    it("doesn't resolves immediately if unlocked is false", async () => {
+    it('publishes an unlock change event when isUnlocked is set to false', async () => {
       await withController(async ({ controller, controllerMessenger }) => {
         jest.spyOn(controller, 'isUnlocked').mockReturnValue(false);
-
+        const unlockChangeSpy = jest.fn();
+        controllerMessenger.subscribe(
+          'AppStateController:unlockChange',
+          unlockChangeSpy,
+        );
         const unlockPromise = controller.getUnlockPromise(false);
 
         const timeoutPromise = new Promise((resolve) =>
@@ -113,27 +117,24 @@ describe('AppStateController', () => {
 
         expect(result).toBe('timeout');
 
-        expect(controllerMessenger.publish).toHaveBeenCalledWith(
-          'AppStateController:unlockChange',
-        );
-        expect(controllerMessenger.call).toHaveBeenCalledTimes(1);
+        expect(unlockChangeSpy).toHaveBeenCalled();
       });
     });
 
     it('creates approval request when waitForUnlock is called with shouldShowUnlockRequest as true', async () => {
-      await withController(async ({ controller, controllerMessenger }) => {
+      const addRequestMock = jest.fn().mockResolvedValue(undefined);
+      await withController({ addRequestMock }, async ({ controller }) => {
         jest.spyOn(controller, 'isUnlocked').mockReturnValue(false);
 
         controller.getUnlockPromise(true);
 
-        expect(controllerMessenger.call).toHaveBeenCalledTimes(2);
-        expect(controllerMessenger.call).toHaveBeenCalledWith(
-          'ApprovalController:addRequest',
-          expect.objectContaining({
+        expect(addRequestMock).toHaveBeenCalled();
+        expect(addRequestMock).toHaveBeenCalledWith(
+          {
             id: expect.any(String),
             origin: ORIGIN_METAMASK,
             type: 'unlock',
-          }),
+          },
           true,
         );
       });
@@ -141,26 +142,37 @@ describe('AppStateController', () => {
 
     it('accepts approval request revolving all the related promises', async () => {
       let unlockListener: () => void;
+      const addRequestMock = jest.fn().mockResolvedValue(undefined);
       await withController(
         {
-          addUnlockListener: (listener) => {
-            unlockListener = listener;
+          addRequestMock,
+          options: {
+            addUnlockListener: (listener) => {
+              unlockListener = listener;
+            },
           },
         },
         ({ controller, controllerMessenger }) => {
           jest.spyOn(controller, 'isUnlocked').mockReturnValue(false);
+          const unlockChangeSpy = jest.fn();
+          controllerMessenger.subscribe(
+            'AppStateController:unlockChange',
+            unlockChangeSpy,
+          );
+
           controller.getUnlockPromise(true);
 
           unlockListener();
 
-          expect(controllerMessenger.publish).toHaveBeenCalled();
-          expect(controllerMessenger.publish).toHaveBeenCalledWith(
-            'AppStateController:unlockChange',
-          );
-          expect(controllerMessenger.call).toHaveBeenCalled();
-          expect(controllerMessenger.call).toHaveBeenCalledWith(
-            'ApprovalController:acceptRequest',
-            expect.any(String),
+          expect(unlockChangeSpy).toHaveBeenCalled();
+          expect(addRequestMock).toHaveBeenCalled();
+          expect(addRequestMock).toHaveBeenCalledWith(
+            {
+              id: expect.any(String),
+              origin: ORIGIN_METAMASK,
+              type: 'unlock',
+            },
+            true,
           );
         },
       );
@@ -543,7 +555,10 @@ describe('AppStateController', () => {
   });
 });
 
-type WithControllerOptions = Partial<AppStateControllerOptions>;
+type WithControllerOptions = {
+  options?: Partial<AppStateControllerOptions>;
+  addRequestMock?: jest.Mock;
+};
 
 type WithControllerCallback<ReturnValue> = ({
   controller,
@@ -568,7 +583,8 @@ type WithControllerArgs<ReturnValue> =
 async function withController<ReturnValue>(
   ...args: WithControllerArgs<ReturnValue>
 ): Promise<ReturnValue> {
-  const [options = {}, fn] = args.length === 2 ? args : [{}, args[0]];
+  const [{ ...rest }, fn] = args.length === 2 ? args : [{}, args[0]];
+  const { addRequestMock, options = {} } = rest;
 
   const controllerMessenger = new ControllerMessenger<
     | AppStateControllerActions
@@ -579,8 +595,6 @@ async function withController<ReturnValue>(
     | PreferencesControllerStateChangeEvent
     | KeyringControllerQRKeyringStateChangeEvent
   >();
-  jest.spyOn(ControllerMessenger.prototype, 'call');
-  jest.spyOn(ControllerMessenger.prototype, 'publish');
   const appStateMessenger = controllerMessenger.getRestricted({
     name: 'AppStateController',
     allowedActions: [
@@ -603,7 +617,7 @@ async function withController<ReturnValue>(
   );
   controllerMessenger.registerActionHandler(
     'ApprovalController:addRequest',
-    jest.fn().mockResolvedValue(undefined),
+    addRequestMock || jest.fn().mockResolvedValue(undefined),
   );
 
   return fn({

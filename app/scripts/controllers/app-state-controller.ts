@@ -186,10 +186,10 @@ const getDefaultAppStateControllerState = (): AppStateControllerState => ({
   hadAdvancedGasFeesSetPriorToMigration92_3: false,
   surveyLinkLastClickedOrClosed: null,
   switchedNetworkNeverShowMessage: false,
-  ...getDefaultAppStateOverrides(),
+  ...getInitialStateOverrides(),
 });
 
-function getDefaultAppStateOverrides() {
+function getInitialStateOverrides() {
   return {
     qrHardware: {},
     nftsDropdownState: {},
@@ -377,7 +377,7 @@ export class AppStateController extends BaseController<
       state: {
         ...getDefaultAppStateControllerState(),
         ...state,
-        ...getDefaultAppStateOverrides(),
+        ...getInitialStateOverrides(),
       },
       messenger,
     });
