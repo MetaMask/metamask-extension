@@ -15,7 +15,7 @@ executors:
       NODE_OPTIONS: --max_old_space_size=3072
   node-linux-medium:
     machine:
-      image: ubuntu-2404:current
+      image: ubuntu-2404:2024.05.1
     resource_class: medium #// linux medium: 2 CPUs, 7.5 GB RAM, 10 credits/min
     environment:
       NODE_OPTIONS: --max_old_space_size=6144
@@ -125,6 +125,8 @@ workflows:
             branches:
               ignore:
                 - master
+          requires:
+            - prep-deps
       - test-deps-audit:
           requires:
             - prep-deps
@@ -491,7 +493,7 @@ jobs:
           at: .
       - run:
           name: Get changed files with git diff
-          command: npx tsx .circleci/scripts/git-diff-develop.ts
+          command: yarn git-diff-default-branch
       - persist_to_workspace:
           root: .
           paths:
