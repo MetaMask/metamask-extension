@@ -14,7 +14,7 @@ describe('Create/Remove Solana Account', function (this: Suite) {
       },
     );
   });
-  it.only('Remove Solana account', async function () {
+  it('Remove Solana account', async function () {
     await withSolanaAccountSnap(
       { title: this.test?.fullTitle() },
       async (driver) => {
@@ -30,8 +30,12 @@ describe('Create/Remove Solana Account', function (this: Suite) {
         await accountListPage.removeAccount('Solana Account 0', true);
         // check the number of accounts. it should be 1.
         await headerNavbar.openAccountMenu();
-
-        await accountListPage.check_numberOfAvailableAccounts(1);
+        try {
+          await accountListPage.check_numberOfAvailableAccounts(1);
+        } catch (error) {
+          console.error('Error checking number of available accounts:', error);
+          throw error; // Re-throw the error to fail the test
+        }
       },
     );
   });

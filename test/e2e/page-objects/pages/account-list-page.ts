@@ -583,12 +583,15 @@ class AccountListPage {
     console.log(
       `Verify the number of accounts in the account menu is: ${expectedNumberOfAccounts}`,
     );
+    await this.driver.waitForSelector(this.accountListItem);
     await this.driver.wait(async () => {
+      await this.driver.delay(500);
       const internalAccounts = await this.driver.findElements(
-        this.accountListItem,
+        this.accountListItem
       );
+      console.log(`Number of accounts: ${internalAccounts.length} is equal to ${expectedNumberOfAccounts}? ${internalAccounts.length === expectedNumberOfAccounts}`);
       return internalAccounts.length === expectedNumberOfAccounts;
-    }, 20000);
+    }, 20000, true);
   }
 
   /**
