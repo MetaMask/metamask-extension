@@ -109,7 +109,7 @@ export type AppStateControllerStateChangeEvent = ControllerStateChangeEvent<
   AppStateControllerState
 >;
 
-export type AppStateControllerUnlockChange = {
+export type AppStateControllerUnlockChangeEvent = {
   type: 'AppStateController:unlockChange';
   payload: [];
 };
@@ -119,7 +119,7 @@ export type AppStateControllerUnlockChange = {
  */
 export type AppStateControllerEvents =
   | AppStateControllerStateChangeEvent
-  | AppStateControllerUnlockChange;
+  | AppStateControllerUnlockChangeEvent;
 
 /**
  * Events that this controller is allowed to subscribe.

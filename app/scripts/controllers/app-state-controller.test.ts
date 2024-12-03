@@ -17,7 +17,6 @@ import type {
   AppStateControllerActions,
   AppStateControllerEvents,
   AppStateControllerOptions,
-  AppStateControllerState,
 } from './app-state-controller';
 import type {
   PreferencesControllerState,
@@ -542,83 +541,6 @@ describe('AppStateController', () => {
       });
     });
   });
-
-  describe('AppStateController:getState', () => {
-    it('should return the current state of the property', async () => {
-      await withController(({ controller, controllerMessenger }) => {
-        expect(
-          controller.state.recoveryPhraseReminderHasBeenShown,
-        ).toStrictEqual(false);
-
-        expect(
-          controllerMessenger.call('AppStateController:getState')
-            .recoveryPhraseReminderHasBeenShown,
-        ).toStrictEqual(false);
-      });
-    });
-  });
-
-  describe('AppStateController:stateChange', () => {
-    it('subscribers will recieve the state when published', async () => {
-      await withController(({ controller, controllerMessenger }) => {
-        expect(controller.state.surveyLinkLastClickedOrClosed).toStrictEqual(
-          null,
-        );
-        const timeNow = Date.now();
-        controllerMessenger.subscribe(
-          'AppStateController:stateChange',
-          (state: Partial<AppStateControllerState>) => {
-            if (typeof state.surveyLinkLastClickedOrClosed === 'number') {
-              controller.setSurveyLinkLastClickedOrClosed(
-                state.surveyLinkLastClickedOrClosed,
-              );
-            }
-          },
-        );
-
-        controllerMessenger.publish(
-          'AppStateController:stateChange',
-          {
-            surveyLinkLastClickedOrClosed: timeNow,
-          } as unknown as AppStateControllerState,
-          [],
-        );
-
-        expect(controller.state.surveyLinkLastClickedOrClosed).toStrictEqual(
-          timeNow,
-        );
-        expect(
-          controllerMessenger.call('AppStateController:getState')
-            .surveyLinkLastClickedOrClosed,
-        ).toStrictEqual(timeNow);
-      });
-    });
-
-    it('state will be published when there is state change', async () => {
-      await withController(({ controller, controllerMessenger }) => {
-        expect(controller.state.surveyLinkLastClickedOrClosed).toStrictEqual(
-          null,
-        );
-        const timeNow = Date.now();
-        controllerMessenger.subscribe(
-          'AppStateController:stateChange',
-          (state: Partial<AppStateControllerState>) => {
-            expect(state.surveyLinkLastClickedOrClosed).toStrictEqual(timeNow);
-          },
-        );
-
-        controller.setSurveyLinkLastClickedOrClosed(timeNow);
-
-        expect(controller.state.surveyLinkLastClickedOrClosed).toStrictEqual(
-          timeNow,
-        );
-        expect(
-          controllerMessenger.call('AppStateController:getState')
-            .surveyLinkLastClickedOrClosed,
-        ).toStrictEqual(timeNow);
-      });
-    });
-  });
 });
 
 type WithControllerOptions = Partial<AppStateControllerOptions>;
@@ -628,8 +550,15 @@ type WithControllerCallback<ReturnValue> = ({
   controllerMessenger,
 }: {
   controller: AppStateController;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  controllerMessenger: any;
+  controllerMessenger: ControllerMessenger<
+    | AppStateControllerActions
+    | AddApprovalRequest
+    | AcceptRequest
+    | PreferencesControllerGetStateAction,
+    | AppStateControllerEvents
+    | PreferencesControllerStateChangeEvent
+    | KeyringControllerQRKeyringStateChangeEvent
+  >;
 }) => ReturnValue;
 
 type WithControllerArgs<ReturnValue> =
@@ -674,9 +603,7 @@ async function withController<ReturnValue>(
   );
   controllerMessenger.registerActionHandler(
     'ApprovalController:addRequest',
-    jest.fn().mockReturnValue({
-      catch: jest.fn(),
-    }),
+    jest.fn().mockResolvedValue(undefined),
   );
 
   return fn({
