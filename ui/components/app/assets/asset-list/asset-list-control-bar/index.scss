@@ -1,10 +1,35 @@
 .asset-list-control-bar {
-  padding-top: 8px;
-  padding-bottom: 8px;
+  padding-top: 4px;
+  padding-bottom: 4px;
 
   &__button {
-    // using percentage here to allow for full network name to show when full screen, but ellipsize on extension view
     max-width: 35%;
+  }
+
+  &__network_control {
+    justify-content: space-between;
+    min-width: 185px;
+    border-radius: 8px;
+    padding: 0 8px !important;
+    gap: 5px;
+    text-transform: lowercase;
+
+    span::first-letter {
+      text-transform: uppercase;
+    }
+  }
+
+  &__buttons {
+    display: flex;
+    justify-content: flex-end;
+
+    & .asset-list-control-bar__button {
+      width: 32px;
+      min-width: 32px;
+      margin: 0;
+      border-radius: 8px;
+      padding: 0;
+    }
   }
 
   &__button:hover {

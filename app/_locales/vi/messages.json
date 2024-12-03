@@ -256,6 +256,9 @@
   "addNewBitcoinTestnetAccount": {
     "message": "Thêm tài khoản Bitcoin mới (Mạng thử nghiệm)"
   },
+  "addNewSolanaAccount": {
+    "message": "Thêm tài khoản Solana mới (Beta)"
+  },
   "addNewToken": {
     "message": "Thêm token mới"
   },
@@ -1620,9 +1623,6 @@
   "editSpeedUpEditGasFeeModalTitle": {
     "message": "Chỉnh sửa phí gas tăng tốc"
   },
-  "enable": {
-    "message": "Bật"
-  },
   "enableAutoDetect": {
     "message": " Bật tự động phát hiện"
   },
@@ -1699,10 +1699,6 @@
     "message": "Mã: $1",
     "description": "Displayed error code for debugging purposes. $1 is the error code"
   },
-  "errorDetails": {
-    "message": "Chi tiết về lỗi",
-    "description": "Title for collapsible section that displays error details for debugging purposes"
-  },
   "errorGettingSafeChainList": {
     "message": "Lỗi khi lấy danh sách chuỗi an toàn, vui lòng tiếp tục một cách thận trọng."
   },
@@ -1713,14 +1709,6 @@
   "errorName": {
     "message": "Mã: $1",
     "description": "Displayed error name for debugging purposes. $1 is the error name"
-  },
-  "errorPageMessage": {
-    "message": "Hãy thử lại bằng cách tải lại trang hoặc liên hệ với bộ phận hỗ trợ $1.",
-    "description": "Message displayed on generic error page in the fullscreen or notification UI, $1 is a clickable link with text defined by the 'here' key. The link will open to a form where users can file support tickets."
-  },
-  "errorPagePopupMessage": {
-    "message": "Hãy thử lại bằng cách đóng và mở lại cửa sổ bật lên hoặc liên hệ với bộ phận hỗ trợ $1.",
-    "description": "Message displayed on generic error page in the popup UI, $1 is a clickable link with text defined by the 'here' key. The link will open to a form where users can file support tickets."
   },
   "errorPageTitle": {
     "message": "MetaMask đã gặp lỗi",
@@ -4543,17 +4531,11 @@
   "signingInWith": {
     "message": "Đăng nhập bằng"
   },
-  "simulationDetailsFailed": {
-    "message": "Đã xảy ra lỗi khi tải kết quả ước tính."
-  },
   "simulationDetailsFiatNotAvailable": {
     "message": "Không có sẵn"
   },
   "simulationDetailsIncomingHeading": {
     "message": "Bạn nhận được"
-  },
-  "simulationDetailsNoBalanceChanges": {
-    "message": "Ví của bạn dự kiến không có thay đổi nào"
   },
   "simulationDetailsOutgoingHeading": {
     "message": "Bạn gửi"
@@ -4591,9 +4573,6 @@
   },
   "siweResources": {
     "message": "Tài nguyên"
-  },
-  "siweSignatureSimulationDetailInfo": {
-    "message": "Bạn đang đăng nhập vào một trang web và dự kiến không có thay đổi nào đối với tài khoản của bạn."
   },
   "siweURI": {
     "message": "URL"
@@ -4636,25 +4615,6 @@
   },
   "smartTransactions": {
     "message": "Giao dịch thông minh"
-  },
-  "smartTransactionsBenefit1": {
-    "message": "Tỷ lệ thành công 99,5%"
-  },
-  "smartTransactionsBenefit2": {
-    "message": "Tiết kiệm tiền của bạn"
-  },
-  "smartTransactionsBenefit3": {
-    "message": "Cập nhật theo thời gian thực"
-  },
-  "smartTransactionsDescription": {
-    "message": "Đạt tỷ lệ thành công cao hơn, bảo vệ chống hành vi lợi dụng thông tin biết trước và khả năng hiển thị tốt hơn với Giao dịch thông minh."
-  },
-  "smartTransactionsDescription2": {
-    "message": "Chỉ có sẵn trên Ethereum. Có thể bật/tắt bất cứ lúc nào trong phần Cài đặt. $1",
-    "description": "$1 is an external link to learn more about Smart Transactions"
-  },
-  "smartTransactionsOptItModalTitle": {
-    "message": "Tăng cường bảo vệ giao dịch"
   },
   "snapAccountCreated": {
     "message": "Tài khoản đã được tạo"

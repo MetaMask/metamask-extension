@@ -93,10 +93,10 @@ exports[`ConfirmGasDisplay should match snapshot 1`] = `
         class="mm-box mm-text transaction-detail-item__row-subText mm-text--body-sm mm-text--text-align-end mm-box--color-text-alternative"
       >
         <div
-          class="box gas-details-item__gasfee-label box--display-inline-flex box--flex-direction-row"
+          class="mm-box gas-details-item__gasfee-label mm-box--display-inline-flex"
         >
           <div
-            class="box box--flex-direction-row"
+            class="mm-box"
           >
             <p
               class="mm-box mm-text mm-text--body-sm-medium mm-box--color-text-alternative"
@@ -105,8 +105,7 @@ exports[`ConfirmGasDisplay should match snapshot 1`] = `
             </p>
           </div>
           <div
-            class="gas-details-item__currency-container"
-            paddingstart="1"
+            class="mm-box gas-details-item__currency-container mm-box--padding-inline-start-1"
           >
             <div
               class="mm-box currency-display-component mm-box--display-flex mm-box--flex-wrap-wrap mm-box--align-items-center"

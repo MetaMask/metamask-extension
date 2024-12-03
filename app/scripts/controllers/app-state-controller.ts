@@ -26,6 +26,7 @@ import {
 import { DEFAULT_AUTO_LOCK_TIME_LIMIT } from '../../../shared/constants/preferences';
 import { LastInteractedConfirmationInfo } from '../../../shared/types/confirm';
 import { SecurityAlertResponse } from '../lib/ppom/types';
+import { AccountOverviewTabKey } from '../../../shared/constants/app-state';
 import type {
   Preferences,
   PreferencesControllerGetStateAction,
@@ -35,7 +36,7 @@ import type {
 export type AppStateControllerState = {
   timeoutMinutes: number;
   connectedStatusPopoverHasBeenShown: boolean;
-  defaultHomeActiveTabName: string | null;
+  defaultHomeActiveTabName: AccountOverviewTabKey | null;
   browserEnvironment: Record<string, string>;
   popupGasPollTokens: string[];
   notificationGasPollTokens: string[];
@@ -326,7 +327,9 @@ export class AppStateController extends EventEmitter {
    *
    * @param defaultHomeActiveTabName - the tab name
    */
-  setDefaultHomeActiveTabName(defaultHomeActiveTabName: string | null): void {
+  setDefaultHomeActiveTabName(
+    defaultHomeActiveTabName: AccountOverviewTabKey | null,
+  ): void {
     this.store.updateState({
       defaultHomeActiveTabName,
     });

@@ -6,10 +6,10 @@ import {
 } from '@metamask/transaction-controller';
 import { BigNumber } from 'bignumber.js';
 import { TokenStandard } from '../../../../../shared/constants/transaction';
-import { getConversionRate } from '../../../../ducks/metamask/metamask';
 import { getTokenStandardAndDetails } from '../../../../store/actions';
 import { fetchTokenExchangeRates } from '../../../../helpers/utils/util';
 import { memoizedGetTokenStandardAndDetails } from '../../utils/token';
+import { selectConversionRateByChainId } from '../../../../selectors';
 import { useBalanceChanges } from './useBalanceChanges';
 import { FIAT_UNAVAILABLE } from './types';
 
@@ -17,13 +17,10 @@ jest.mock('react-redux', () => ({
   useSelector: jest.fn((selector) => selector()),
 }));
 
-jest.mock('../../../../ducks/metamask/metamask', () => ({
-  getConversionRate: jest.fn(),
-}));
-
 jest.mock('../../../../selectors', () => ({
   getCurrentChainId: jest.fn(),
   getCurrentCurrency: jest.fn(),
+  selectConversionRateByChainId: jest.fn(),
 }));
 
 jest.mock('../../../../helpers/utils/util', () => ({
@@ -34,7 +31,9 @@ jest.mock('../../../../store/actions', () => ({
   getTokenStandardAndDetails: jest.fn(),
 }));
 
-const mockGetConversionRate = getConversionRate as jest.Mock;
+const mockSelectConversionRateByChainId = jest.mocked(
+  selectConversionRateByChainId,
+);
 const mockGetTokenStandardAndDetails = getTokenStandardAndDetails as jest.Mock;
 const mockFetchTokenExchangeRates = fetchTokenExchangeRates as jest.Mock;
 
@@ -85,7 +84,7 @@ describe('useBalanceChanges', () => {
       }
       return Promise.reject(new Error('Unable to determine token standard'));
     });
-    mockGetConversionRate.mockReturnValue(ETH_TO_FIAT_RATE);
+    mockSelectConversionRateByChainId.mockReturnValue(ETH_TO_FIAT_RATE);
     mockFetchTokenExchangeRates.mockResolvedValue({
       [ERC20_TOKEN_ADDRESS_1_MOCK]: ERC20_TO_FIAT_RATE_1_MOCK,
       [ERC20_TOKEN_ADDRESS_2_MOCK]: ERC20_TO_FIAT_RATE_2_MOCK,
@@ -344,7 +343,7 @@ describe('useBalanceChanges', () => {
     });
 
     it('handles native fiat rate with more than 15 significant digits', async () => {
-      mockGetConversionRate.mockReturnValue(0.1234567890123456);
+      mockSelectConversionRateByChainId.mockReturnValue(0.1234567890123456);
       const { result, waitForNextUpdate } = setupHook({
         ...dummyBalanceChange,
         difference: DIFFERENCE_ETH_MOCK,
@@ -357,7 +356,7 @@ describe('useBalanceChanges', () => {
     });
 
     it('handles unavailable native fiat rate', async () => {
-      mockGetConversionRate.mockReturnValue(null);
+      mockSelectConversionRateByChainId.mockReturnValue(null);
       const { result, waitForNextUpdate } = setupHook({
         ...dummyBalanceChange,
         difference: DIFFERENCE_ETH_MOCK,

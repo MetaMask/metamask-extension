@@ -1,4 +1,7 @@
+import { TransactionMeta } from '@metamask/transaction-controller';
 import React from 'react';
+import { useSelector } from 'react-redux';
+import { TEST_CHAINS } from '../../../../../../../../shared/constants/network';
 import {
   ConfirmInfoRow,
   ConfirmInfoRowVariant,
@@ -12,6 +15,8 @@ import {
   TextAlign,
   TextColor,
 } from '../../../../../../../helpers/constants/design-system';
+import { getPreferences } from '../../../../../../../selectors';
+import { useConfirmContext } from '../../../../../context/confirm';
 
 export const GasFeesRow = ({
   label,
@@ -26,6 +31,15 @@ export const GasFeesRow = ({
   nativeFee: string;
   'data-testid'?: string;
 }) => {
+  const { currentConfirmation: transactionMeta } =
+    useConfirmContext<TransactionMeta>();
+
+  type TestNetChainId = (typeof TEST_CHAINS)[number];
+  const isTestnet = TEST_CHAINS.includes(
+    transactionMeta?.chainId as TestNetChainId,
+  );
+  const { showFiatInTestnets } = useSelector(getPreferences);
+
   return (
     <ConfirmInfoRow
       data-testid={dataTestId}
@@ -44,7 +58,9 @@ export const GasFeesRow = ({
         <Text marginRight={1} color={TextColor.textDefault}>
           {nativeFee}
         </Text>
-        <Text color={TextColor.textAlternative}>{fiatFee}</Text>
+        {(!isTestnet || showFiatInTestnets) && (
+          <Text color={TextColor.textAlternative}>{fiatFee}</Text>
+        )}
       </Box>
     </ConfirmInfoRow>
   );

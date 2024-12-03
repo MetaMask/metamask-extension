@@ -424,12 +424,17 @@ export function rewriteReport(report) {
     if (!report.extra) {
       report.extra = {};
     }
-
-    report.extra.appState = appState;
-    if (browser.runtime && browser.runtime.id) {
-      report.extra.extensionId = browser.runtime.id;
+    if (!report.tags) {
+      report.tags = {};
     }
-    report.extra.installType = installType;
+
+    Object.assign(report.extra, {
+      appState,
+      installType,
+      extensionId: browser.runtime?.id,
+    });
+
+    report.tags.installType = installType;
   } catch (err) {
     log('Error rewriting report', err);
   }

@@ -50,7 +50,7 @@ export const IndividualFiatDisplay: React.FC<{
   }
 
   if (fiatAmount === FIAT_UNAVAILABLE) {
-    return <FiatNotAvailableDisplay />;
+    return null;
   }
   const absFiat = Math.abs(fiatAmount);
   const fiatDisplayValue = fiatFormatter(absFiat, { shorten });

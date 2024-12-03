@@ -13,7 +13,7 @@ exports[`TransactionData renders decoded data with names and descriptions 1`] = 
       <button
         aria-label="copy-button"
         class="mm-box mm-button-icon mm-button-icon--size-sm mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-muted mm-box--background-color-transparent mm-box--rounded-lg"
-        style="cursor: pointer; position: absolute; right: 0px; top: 4px;"
+        style="cursor: pointer; position: absolute; right: 4px; top: 4px;"
       >
         <span
           class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-inherit"
@@ -57,6 +57,15 @@ exports[`TransactionData renders decoded data with names and descriptions 1`] = 
       <div
         class="mm-box mm-box--display-flex"
       >
+        <button
+          aria-label="expand"
+          class="mm-box mm-button-icon mm-button-icon--size-sm expandIcon expanded mm-box--margin-left-1 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-default mm-box--background-color-transparent mm-box--rounded-lg"
+        >
+          <span
+            class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-inherit"
+            style="mask-image: url('./images/icons/arrow-down.svg');"
+          />
+        </button>
         <div
           class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center mm-box--min-width-0"
           data-testid="advanced-details-data-function"
@@ -68,15 +77,6 @@ exports[`TransactionData renders decoded data with names and descriptions 1`] = 
             WRAP_ETH
           </p>
         </div>
-        <button
-          aria-label="expand"
-          class="mm-box mm-button-icon mm-button-icon--size-sm expandIcon expanded mm-box--margin-left-1 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-default mm-box--background-color-transparent mm-box--rounded-lg"
-        >
-          <span
-            class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-inherit"
-            style="mask-image: url('./images/icons/arrow-left.svg');"
-          />
-        </button>
       </div>
     </div>
     <div
@@ -216,6 +216,15 @@ exports[`TransactionData renders decoded data with names and descriptions 1`] = 
       <div
         class="mm-box mm-box--display-flex"
       >
+        <button
+          aria-label="expand"
+          class="mm-box mm-button-icon mm-button-icon--size-sm expandIcon expanded mm-box--margin-left-1 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-default mm-box--background-color-transparent mm-box--rounded-lg"
+        >
+          <span
+            class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-inherit"
+            style="mask-image: url('./images/icons/arrow-down.svg');"
+          />
+        </button>
         <div
           class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center mm-box--min-width-0"
           data-testid="advanced-details-data-function"
@@ -227,15 +236,6 @@ exports[`TransactionData renders decoded data with names and descriptions 1`] = 
             V3_SWAP_EXACT_IN
           </p>
         </div>
-        <button
-          aria-label="expand"
-          class="mm-box mm-button-icon mm-button-icon--size-sm expandIcon expanded mm-box--margin-left-1 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-default mm-box--background-color-transparent mm-box--rounded-lg"
-        >
-          <span
-            class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-inherit"
-            style="mask-image: url('./images/icons/arrow-left.svg');"
-          />
-        </button>
       </div>
     </div>
     <div
@@ -587,6 +587,15 @@ exports[`TransactionData renders decoded data with names and descriptions 1`] = 
       <div
         class="mm-box mm-box--display-flex"
       >
+        <button
+          aria-label="expand"
+          class="mm-box mm-button-icon mm-button-icon--size-sm expandIcon expanded mm-box--margin-left-1 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-default mm-box--background-color-transparent mm-box--rounded-lg"
+        >
+          <span
+            class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-inherit"
+            style="mask-image: url('./images/icons/arrow-down.svg');"
+          />
+        </button>
         <div
           class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center mm-box--min-width-0"
           data-testid="advanced-details-data-function"
@@ -598,15 +607,6 @@ exports[`TransactionData renders decoded data with names and descriptions 1`] = 
             PAY_PORTION
           </p>
         </div>
-        <button
-          aria-label="expand"
-          class="mm-box mm-button-icon mm-button-icon--size-sm expandIcon expanded mm-box--margin-left-1 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-default mm-box--background-color-transparent mm-box--rounded-lg"
-        >
-          <span
-            class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-inherit"
-            style="mask-image: url('./images/icons/arrow-left.svg');"
-          />
-        </button>
       </div>
     </div>
     <div
@@ -802,6 +802,15 @@ exports[`TransactionData renders decoded data with names and descriptions 1`] = 
       <div
         class="mm-box mm-box--display-flex"
       >
+        <button
+          aria-label="expand"
+          class="mm-box mm-button-icon mm-button-icon--size-sm expandIcon expanded mm-box--margin-left-1 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-default mm-box--background-color-transparent mm-box--rounded-lg"
+        >
+          <span
+            class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-inherit"
+            style="mask-image: url('./images/icons/arrow-down.svg');"
+          />
+        </button>
         <div
           class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center mm-box--min-width-0"
           data-testid="advanced-details-data-function"
@@ -813,15 +822,6 @@ exports[`TransactionData renders decoded data with names and descriptions 1`] = 
             SWEEP
           </p>
         </div>
-        <button
-          aria-label="expand"
-          class="mm-box mm-button-icon mm-button-icon--size-sm expandIcon expanded mm-box--margin-left-1 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-default mm-box--background-color-transparent mm-box--rounded-lg"
-        >
-          <span
-            class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-inherit"
-            style="mask-image: url('./images/icons/arrow-left.svg');"
-          />
-        </button>
       </div>
     </div>
     <div
@@ -1011,7 +1011,7 @@ exports[`TransactionData renders decoded data with no names 1`] = `
       <button
         aria-label="copy-button"
         class="mm-box mm-button-icon mm-button-icon--size-sm mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-muted mm-box--background-color-transparent mm-box--rounded-lg"
-        style="cursor: pointer; position: absolute; right: 0px; top: 4px;"
+        style="cursor: pointer; position: absolute; right: 4px; top: 4px;"
       >
         <span
           class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-inherit"
@@ -1231,7 +1231,7 @@ exports[`TransactionData renders decoded data with tuples and arrays 1`] = `
       <button
         aria-label="copy-button"
         class="mm-box mm-button-icon mm-button-icon--size-sm mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-muted mm-box--background-color-transparent mm-box--rounded-lg"
-        style="cursor: pointer; position: absolute; right: 0px; top: 4px;"
+        style="cursor: pointer; position: absolute; right: 4px; top: 4px;"
       >
         <span
           class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-inherit"
@@ -2293,7 +2293,7 @@ exports[`TransactionData renders raw hexadecimal if no decoded data 1`] = `
       <button
         aria-label="copy-button"
         class="mm-box mm-button-icon mm-button-icon--size-sm mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-muted mm-box--background-color-transparent mm-box--rounded-lg"
-        style="cursor: pointer; position: absolute; right: 0px; top: 4px;"
+        style="cursor: pointer; position: absolute; right: 4px; top: 4px;"
       >
         <span
           class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-inherit"

@@ -49,6 +49,13 @@ export const setBridgeFeatureFlags = () => {
   };
 };
 
+export const resetBridgeState = () => {
+  return async (dispatch: MetaMaskReduxDispatch) => {
+    dispatch(resetInputFields());
+    dispatch(callBridgeControllerMethod(BridgeBackgroundAction.RESET_STATE));
+  };
+};
+
 // User actions
 export const setFromChain = (chainId: Hex) => {
   return async (dispatch: MetaMaskReduxDispatch) => {

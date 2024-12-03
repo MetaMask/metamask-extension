@@ -30,7 +30,7 @@
       "showExtensionInFullSizeView": false,
       "showFiatInTestnets": false,
       "showTestNetworks": false,
-      "smartTransactionsOptInStatus": false,
+      "smartTransactionsOptInStatus": true,
       "showNativeTokenAsMainBalance": true,
       "petnamesEnabled": true,
       "showMultiRpcModal": "boolean",
@@ -115,6 +115,7 @@
     "useNonceField": false,
     "usePhishDetect": true,
     "dismissSeedBackUpReminder": true,
+    "overrideContentSecurityPolicyHeader": true,
     "useMultiAccountBalanceChecker": true,
     "useSafeChainsListValidation": true,
     "useTokenDetection": true,
@@ -173,7 +174,9 @@
     "gasEstimateType": "none",
     "nonRPCGasFeeApisDisabled": "boolean",
     "tokenList": "object",
-    "tokensChainsCache": {},
+    "tokensChainsCache": {
+      "0x539": "object"
+    },
     "preventPollingOnNetworkRestart": false,
     "tokens": "object",
     "ignoredTokens": "object",
@@ -197,8 +200,11 @@
     "lastFetchedBlockNumbers": "object",
     "submitHistory": "object",
     "fiatCurrency": "usd",
-    "rates": { "btc": { "conversionDate": 0, "conversionRate": 0 } },
-    "cryptocurrencies": ["btc"],
+    "rates": {
+      "btc": { "conversionDate": 0, "conversionRate": 0 },
+      "sol": { "conversionDate": 0, "conversionRate": 0 }
+    },
+    "cryptocurrencies": ["btc", "sol"],
     "snaps": "object",
     "jobs": "object",
     "database": null,
@@ -279,6 +285,7 @@
         "srcTokenAddress": "0x0000000000000000000000000000000000000000"
       },
       "quotes": {},
+      "quotesRefreshCount": 0,
       "srcTokens": {},
       "srcTopAssets": {}
     },

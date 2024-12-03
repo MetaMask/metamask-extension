@@ -15,6 +15,7 @@ import MetaMetricsProviderStorybook from './metametrics';
 import testData from './test-data.js';
 import { Router } from 'react-router-dom';
 import { createBrowserHistory } from 'history';
+import { MemoryRouter } from 'react-router-dom';
 import { setBackgroundConnection } from '../ui/store/background-connection';
 import { metamaskStorybookTheme } from './metamask-storybook-theme';
 import { DocsContainer } from '@storybook/addon-docs';
@@ -147,7 +148,7 @@ const metamaskDecorator = (story, context) => {
 
   return (
     <Provider store={store}>
-      <Router history={history}>
+      <MemoryRouter>
         <MetaMetricsProviderStorybook>
           <AlertMetricsProvider
             metrics={{
@@ -165,7 +166,7 @@ const metamaskDecorator = (story, context) => {
             </I18nProvider>
           </AlertMetricsProvider>
         </MetaMetricsProviderStorybook>
-      </Router>
+      </MemoryRouter>
     </Provider>
   );
 };

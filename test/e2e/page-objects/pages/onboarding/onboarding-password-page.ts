@@ -52,30 +52,26 @@ class OnboardingPasswordPage {
   /**
    * Create a password for new imported wallet
    *
-   * @param newPassword - The new password to create. Defaults to WALLET_PASSWORD.
-   * @param confirmPassword - The confirm password to create. Defaults to WALLET_PASSWORD.
+   * @param password - The password to create. Defaults to WALLET_PASSWORD.
    */
   async createImportedWalletPassword(
-    newPassword: string = WALLET_PASSWORD,
-    confirmPassword: string = WALLET_PASSWORD,
+    password: string = WALLET_PASSWORD,
   ): Promise<void> {
     console.log('Create password for new imported wallet');
-    await this.fillWalletPassword(newPassword, confirmPassword);
+    await this.fillWalletPassword(password, password);
     await this.driver.clickElementAndWaitToDisappear(this.importWalletButton);
   }
 
   /**
    * Create a password for new created wallet
    *
-   * @param newPassword - The new password to create. Defaults to WALLET_PASSWORD.
-   * @param confirmPassword - The confirm password to create. Defaults to WALLET_PASSWORD.
+   * @param password - The new password to create. Defaults to WALLET_PASSWORD.
    */
   async createWalletPassword(
-    newPassword: string = WALLET_PASSWORD,
-    confirmPassword: string = WALLET_PASSWORD,
+    password: string = WALLET_PASSWORD,
   ): Promise<void> {
     console.log('Create password for new created wallet');
-    await this.fillWalletPassword(newPassword, confirmPassword);
+    await this.fillWalletPassword(password, password);
     await this.driver.clickElementAndWaitToDisappear(this.createWalletButton);
   }
 

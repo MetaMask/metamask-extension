@@ -483,7 +483,7 @@ exports[`<ApproveInfo /> renders component for approve request 1`] = `
           class="mm-box mm-text mm-text--body-md mm-box--margin-right-2 mm-box--color-text-alternative"
           data-testid="native-currency"
         >
-          $0.04
+          $0.08
         </p>
         <button
           class="mm-box mm-text mm-button-base mm-button-base--size-sm mm-button-link mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-0 mm-box--padding-left-0 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-default mm-box--background-color-transparent"
@@ -582,12 +582,12 @@ exports[`<ApproveInfo /> renders component for approve request 1`] = `
         <p
           class="mm-box mm-text mm-text--body-md mm-box--margin-right-1 mm-box--color-text-default"
         >
-          0.0011 ETH
+          0.0023 ETH
         </p>
         <p
           class="mm-box mm-text mm-text--body-md mm-box--color-text-alternative"
         >
-          $0.60
+          $1.26
         </p>
       </div>
     </div>
@@ -652,7 +652,7 @@ exports[`<ApproveInfo /> renders component for approve request 1`] = `
       <button
         aria-label="copy-button"
         class="mm-box mm-button-icon mm-button-icon--size-sm mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-muted mm-box--background-color-transparent mm-box--rounded-lg"
-        style="cursor: pointer; position: absolute; right: 0px; top: 4px;"
+        style="cursor: pointer; position: absolute; right: 4px; top: 4px;"
       >
         <span
           class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-inherit"

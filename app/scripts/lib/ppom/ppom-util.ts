@@ -13,7 +13,7 @@ import {
   BlockaidResultType,
   LOADING_SECURITY_ALERT_RESPONSE,
   SECURITY_ALERT_RESPONSE_CHAIN_NOT_SUPPORTED,
-  SECURITY_PROVIDER_SUPPORTED_CHAIN_IDS,
+  SECURITY_PROVIDER_SUPPORTED_CHAIN_IDS_FALLBACK_LIST,
   SecurityAlertSource,
 } from '../../../../shared/constants/security-provider';
 import { SIGNING_METHODS } from '../../../../shared/constants/transaction';
@@ -146,7 +146,7 @@ export function handlePPOMError(
 }
 
 export async function isChainSupported(chainId: Hex): Promise<boolean> {
-  let supportedChainIds = SECURITY_PROVIDER_SUPPORTED_CHAIN_IDS;
+  let supportedChainIds = SECURITY_PROVIDER_SUPPORTED_CHAIN_IDS_FALLBACK_LIST;
 
   try {
     if (isSecurityAlertsAPIEnabled()) {

@@ -117,7 +117,7 @@ import {
   getOrderedConnectedAccountsForConnectedDapp,
   getSubjectMetadata,
 } from './permissions';
-import { getSelectedInternalAccount } from './accounts';
+import { getSelectedInternalAccount, getInternalAccounts } from './accounts';
 import { createDeepEqualSelector } from './util';
 import { getMultichainBalances, getMultichainNetwork } from './multichain';
 
@@ -371,10 +371,6 @@ export function getSelectedInternalAccountWithBalance(state) {
   return selectedAccountWithBalance;
 }
 
-export function getInternalAccounts(state) {
-  return Object.values(state.metamask.internalAccounts.accounts);
-}
-
 export function getInternalAccount(state, accountId) {
   return state.metamask.internalAccounts.accounts[accountId];
 }
@@ -582,9 +578,25 @@ export const getTokenExchangeRates = (state) => {
   );
 };
 
+/**
+ * Get market data for tokens on the current chain
+ *
+ * @param state
+ * @returns {Record<Hex, import('@metamask/assets-controllers').MarketDataDetails>}
+ */
 export const getTokensMarketData = (state) => {
   const chainId = getCurrentChainId(state);
   return state.metamask.marketData?.[chainId];
+};
+
+/**
+ * Get market data for tokens across all chains
+ *
+ * @param state
+ * @returns {Record<Hex, Record<Hex, import('@metamask/assets-controllers').MarketDataDetails>>}
+ */
+export const getMarketData = (state) => {
+  return state.metamask.marketData;
 };
 
 export function getAddressBook(state) {
@@ -700,6 +712,73 @@ export const getNetworkConfigurationsByChainId = createDeepEqualSelector(
   (networkConfigurationsByChainId) => networkConfigurationsByChainId,
 );
 
+/**
+ * @type (state: any, chainId: string) => import('@metamask/network-controller').NetworkConfiguration
+ */
+export const selectNetworkConfigurationByChainId = createSelector(
+  getNetworkConfigurationsByChainId,
+  (_state, chainId) => chainId,
+  (networkConfigurationsByChainId, chainId) =>
+    networkConfigurationsByChainId[chainId],
+);
+
+export const selectDefaultRpcEndpointByChainId = createSelector(
+  selectNetworkConfigurationByChainId,
+  (networkConfiguration) => {
+    if (!networkConfiguration) {
+      return undefined;
+    }
+
+    const { defaultRpcEndpointIndex, rpcEndpoints } = networkConfiguration;
+    return rpcEndpoints[defaultRpcEndpointIndex];
+  },
+);
+
+/**
+ * @type (state: any, chainId: string) => number | undefined
+ */
+export const selectConversionRateByChainId = createSelector(
+  selectNetworkConfigurationByChainId,
+  (state) => state,
+  (networkConfiguration, state) => {
+    if (!networkConfiguration) {
+      return undefined;
+    }
+
+    const { nativeCurrency } = networkConfiguration;
+    return state.metamask.currencyRates[nativeCurrency]?.conversionRate;
+  },
+);
+
+export const selectNftsByChainId = createSelector(
+  getSelectedInternalAccount,
+  (state) => state.metamask.allNfts,
+  (_state, chainId) => chainId,
+  (selectedAccount, nfts, chainId) => {
+    return nfts?.[selectedAccount.address]?.[chainId] ?? [];
+  },
+);
+
+export const selectNftContractsByChainId = createSelector(
+  getSelectedInternalAccount,
+  (state) => state.metamask.allNftContracts,
+  (_state, chainId) => chainId,
+  (selectedAccount, nftContracts, chainId) => {
+    return nftContracts?.[selectedAccount.address]?.[chainId] ?? [];
+  },
+);
+
+export const selectNetworkIdentifierByChainId = createSelector(
+  selectNetworkConfigurationByChainId,
+  selectDefaultRpcEndpointByChainId,
+  (networkConfiguration, defaultRpcEndpoint) => {
+    const { name: nickname } = networkConfiguration ?? {};
+    const { url: rpcUrl, networkClientId } = defaultRpcEndpoint ?? {};
+
+    return nickname || rpcUrl || networkClientId;
+  },
+);
+
 export function getRequestingNetworkInfo(state, chainIds) {
   // If chainIds is undefined, set it to an empty array
   let processedChainIds = chainIds === undefined ? [] : chainIds;
@@ -719,16 +798,6 @@ export function getRequestingNetworkInfo(state, chainIds) {
       flattenedChainIds.includes(network.chainId),
   );
 }
-
-/**
- * @type (state: any, chainId: string) => import('@metamask/network-controller').NetworkConfiguration
- */
-export const selectNetworkConfigurationByChainId = createSelector(
-  getNetworkConfigurationsByChainId,
-  (_state, chainId) => chainId,
-  (networkConfigurationsByChainId, chainId) =>
-    networkConfigurationsByChainId[chainId],
-);
 
 /**
  * Provides information about the last network change if present
@@ -883,6 +952,10 @@ export function getShowTestNetworks(state) {
 export function getPetnamesEnabled(state) {
   const { petnamesEnabled = true } = getPreferences(state);
   return petnamesEnabled;
+}
+
+export function getUseTransactionSimulations(state) {
+  return Boolean(state.metamask.useTransactionSimulations);
 }
 
 export function getRedesignedConfirmationsEnabled(state) {
@@ -1228,6 +1301,10 @@ export function getFeatureFlags(state) {
 
 export function getOriginOfCurrentTab(state) {
   return state.activeTab.origin;
+}
+
+export function getDefaultHomeActiveTabName(state) {
+  return state.metamask.defaultHomeActiveTabName;
 }
 
 export function getIpfsGateway(state) {
@@ -2339,6 +2416,18 @@ export function getIsWatchEthereumAccountEnabled(state) {
 export function getIsBitcoinSupportEnabled(state) {
   return state.metamask.bitcoinSupportEnabled;
 }
+
+///: BEGIN:ONLY_INCLUDE_IF(solana)
+/**
+ * Get the state of the `solanaSupportEnabled` flag.
+ *
+ * @param {*} state
+ * @returns The state of the `solanaSupportEnabled` flag.
+ */
+export function getIsSolanaSupportEnabled(state) {
+  return state.metamask.solanaSupportEnabled;
+}
+///: END:ONLY_INCLUDE_IF
 
 /**
  * Get the state of the `bitcoinTestnetSupportEnabled` flag.

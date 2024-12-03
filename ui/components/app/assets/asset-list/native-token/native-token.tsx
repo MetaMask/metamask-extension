@@ -43,7 +43,8 @@ const NativeToken = ({ onClickAsset }: AssetListProps) => {
 
   return (
     <TokenListItem
-      onClick={() => onClickAsset(nativeCurrency)}
+      chainId={chainId}
+      onClick={() => onClickAsset(chainId, nativeCurrency)}
       title={nativeCurrency}
       primary={string}
       tokenSymbol={symbol}

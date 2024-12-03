@@ -172,22 +172,27 @@ describe('Bridge utils', () => {
       (fetchWithCache as jest.Mock).mockResolvedValue(
         mockBridgeQuotesNativeErc20,
       );
+      const { signal } = new AbortController();
 
-      const result = await fetchBridgeQuotes({
-        walletAddress: '0x123',
-        srcChainId: 1,
-        destChainId: 10,
-        srcTokenAddress: zeroAddress(),
-        destTokenAddress: zeroAddress(),
-        srcTokenAmount: '20000',
-        slippage: 0.5,
-      });
+      const result = await fetchBridgeQuotes(
+        {
+          walletAddress: '0x123',
+          srcChainId: 1,
+          destChainId: 10,
+          srcTokenAddress: zeroAddress(),
+          destTokenAddress: zeroAddress(),
+          srcTokenAmount: '20000',
+          slippage: 0.5,
+        },
+        signal,
+      );
 
       expect(fetchWithCache).toHaveBeenCalledWith({
         url: 'https://bridge.api.cx.metamask.io/getQuote?walletAddress=0x123&srcChainId=1&destChainId=10&srcTokenAddress=0x0000000000000000000000000000000000000000&destTokenAddress=0x0000000000000000000000000000000000000000&srcTokenAmount=20000&slippage=0.5&insufficientBal=false&resetApproval=false',
         fetchOptions: {
           method: 'GET',
           headers: { 'X-Client-Id': 'extension' },
+          signal,
         },
         cacheOptions: { cacheRefreshTime: 0 },
         functionName: 'fetchBridgeQuotes',
@@ -202,22 +207,27 @@ describe('Bridge utils', () => {
         { ...mockBridgeQuotesErc20Erc20[0], approval: null },
         { ...mockBridgeQuotesErc20Erc20[0], trade: null },
       ]);
+      const { signal } = new AbortController();
 
-      const result = await fetchBridgeQuotes({
-        walletAddress: '0x123',
-        srcChainId: 1,
-        destChainId: 10,
-        srcTokenAddress: zeroAddress(),
-        destTokenAddress: zeroAddress(),
-        srcTokenAmount: '20000',
-        slippage: 0.5,
-      });
+      const result = await fetchBridgeQuotes(
+        {
+          walletAddress: '0x123',
+          srcChainId: 1,
+          destChainId: 10,
+          srcTokenAddress: zeroAddress(),
+          destTokenAddress: zeroAddress(),
+          srcTokenAmount: '20000',
+          slippage: 0.5,
+        },
+        signal,
+      );
 
       expect(fetchWithCache).toHaveBeenCalledWith({
         url: 'https://bridge.api.cx.metamask.io/getQuote?walletAddress=0x123&srcChainId=1&destChainId=10&srcTokenAddress=0x0000000000000000000000000000000000000000&destTokenAddress=0x0000000000000000000000000000000000000000&srcTokenAmount=20000&slippage=0.5&insufficientBal=false&resetApproval=false',
         fetchOptions: {
           method: 'GET',
           headers: { 'X-Client-Id': 'extension' },
+          signal,
         },
         cacheOptions: { cacheRefreshTime: 0 },
         functionName: 'fetchBridgeQuotes',
@@ -251,22 +261,27 @@ describe('Bridge utils', () => {
           },
         },
       ]);
+      const { signal } = new AbortController();
 
-      const result = await fetchBridgeQuotes({
-        walletAddress: '0x123',
-        srcChainId: 1,
-        destChainId: 10,
-        srcTokenAddress: zeroAddress(),
-        destTokenAddress: zeroAddress(),
-        srcTokenAmount: '20000',
-        slippage: 0.5,
-      });
+      const result = await fetchBridgeQuotes(
+        {
+          walletAddress: '0x123',
+          srcChainId: 1,
+          destChainId: 10,
+          srcTokenAddress: zeroAddress(),
+          destTokenAddress: zeroAddress(),
+          srcTokenAmount: '20000',
+          slippage: 0.5,
+        },
+        signal,
+      );
 
       expect(fetchWithCache).toHaveBeenCalledWith({
         url: 'https://bridge.api.cx.metamask.io/getQuote?walletAddress=0x123&srcChainId=1&destChainId=10&srcTokenAddress=0x0000000000000000000000000000000000000000&destTokenAddress=0x0000000000000000000000000000000000000000&srcTokenAmount=20000&slippage=0.5&insufficientBal=false&resetApproval=false',
         fetchOptions: {
           method: 'GET',
           headers: { 'X-Client-Id': 'extension' },
+          signal,
         },
         cacheOptions: { cacheRefreshTime: 0 },
         functionName: 'fetchBridgeQuotes',

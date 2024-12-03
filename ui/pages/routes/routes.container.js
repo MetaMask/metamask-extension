@@ -22,6 +22,9 @@ import {
   getNumberOfAllUnapprovedTransactionsAndMessages,
   getUseRequestQueue,
   getCurrentNetwork,
+  oldestPendingConfirmationSelector,
+  getUnapprovedTransactions,
+  getPendingApprovals,
 } from '../../selectors';
 import {
   lockMetamask,
@@ -69,6 +72,10 @@ function mapStateToProps(state) {
     getNetworkToAutomaticallySwitchTo(state);
   const switchedNetworkDetails = getSwitchedNetworkDetails(state);
 
+  const oldestPendingApproval = oldestPendingConfirmationSelector(state);
+  const pendingApprovals = getPendingApprovals(state);
+  const transactionsMetadata = getUnapprovedTransactions(state);
+
   return {
     alertOpen,
     alertMessage,
@@ -114,6 +121,9 @@ function mapStateToProps(state) {
       selectSwitchedNetworkNeverShowMessage(state),
     currentExtensionPopupId: state.metamask.currentExtensionPopupId,
     useRequestQueue: getUseRequestQueue(state),
+    oldestPendingApproval,
+    pendingApprovals,
+    transactionsMetadata,
     ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
     isShowKeyringSnapRemovalResultModal:
       state.appState.showKeyringRemovalSnapModal,

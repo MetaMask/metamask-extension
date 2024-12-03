@@ -9,7 +9,7 @@ import {
 } from './account-overview-btc';
 
 const defaultProps: AccountOverviewBtcProps = {
-  defaultHomeActiveTabName: '',
+  defaultHomeActiveTabName: null,
   onTabClick: jest.fn(),
   setBasicFunctionalityModalOpen: jest.fn(),
   onSupportLinkClick: jest.fn(),

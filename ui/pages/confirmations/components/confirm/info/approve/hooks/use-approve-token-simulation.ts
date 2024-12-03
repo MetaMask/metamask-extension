@@ -1,12 +1,11 @@
 import { TransactionMeta } from '@metamask/transaction-controller';
 import { isHexString } from '@metamask/utils';
-import { BigNumber } from 'bignumber.js';
 import { isBoolean } from 'lodash';
 import { useMemo } from 'react';
 import { useSelector } from 'react-redux';
+import { calcTokenAmount } from '../../../../../../../../shared/lib/transactions-controller-utils';
 import { getIntlLocale } from '../../../../../../../ducks/locale/locale';
 import { SPENDING_CAP_UNLIMITED_MSG } from '../../../../../constants';
-import { toNonScientificString } from '../../hooks/use-token-values';
 import { useDecodedTransactionData } from '../../hooks/useDecodedTransactionData';
 import { useIsNFT } from './use-is-nft';
 
@@ -27,7 +26,7 @@ export const useApproveTokenSimulation = (
 
   const decodedSpendingCap = useMemo(() => {
     if (!value) {
-      return 0;
+      return '0';
     }
 
     const paramIndex = value.data[0].params.findIndex(
@@ -38,23 +37,24 @@ export const useApproveTokenSimulation = (
         !isBoolean(param.value),
     );
     if (paramIndex === -1) {
-      return 0;
+      return '0';
     }
 
-    return new BigNumber(value.data[0].params[paramIndex].value.toString())
-      .dividedBy(new BigNumber(10).pow(Number(decimals)))
-      .toNumber();
+    return calcTokenAmount(
+      value.data[0].params[paramIndex].value,
+      Number(decimals),
+    ).toFixed();
   }, [value, decimals]);
 
   const formattedSpendingCap = useMemo(() => {
     // formatting coerces small numbers to 0
-    return isNFT || decodedSpendingCap < 1
-      ? toNonScientificString(decodedSpendingCap)
-      : new Intl.NumberFormat(locale).format(decodedSpendingCap);
+    return isNFT || parseInt(decodedSpendingCap, 10) < 1
+      ? decodedSpendingCap
+      : new Intl.NumberFormat(locale).format(parseInt(decodedSpendingCap, 10));
   }, [decodedSpendingCap, isNFT, locale]);
 
   const spendingCap = useMemo(() => {
-    if (!isNFT && isSpendingCapUnlimited(decodedSpendingCap)) {
+    if (!isNFT && isSpendingCapUnlimited(parseInt(decodedSpendingCap, 10))) {
       return SPENDING_CAP_UNLIMITED_MSG;
     }
     const tokenPrefix = isNFT ? '#' : '';

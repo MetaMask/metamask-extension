@@ -12,9 +12,8 @@ import StaticSimulation from '../../shared/static-simulation/static-simulation';
 export const RevokeStaticSimulation = () => {
   const t = useI18nContext();
 
-  const { currentConfirmation: transactionMeta } = useConfirmContext() as {
-    currentConfirmation: TransactionMeta;
-  };
+  const { currentConfirmation: transactionMeta } =
+    useConfirmContext<TransactionMeta>();
 
   const { chainId } = transactionMeta;
 

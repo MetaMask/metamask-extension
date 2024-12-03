@@ -12,6 +12,7 @@ import {
   CONFIRMATION_V_NEXT_ROUTE,
   CONNECT_ROUTE,
   CONNECTIONS,
+  CROSS_CHAIN_SWAP_ROUTE,
   NOTIFICATIONS_ROUTE,
   ONBOARDING_ROUTE,
   ONBOARDING_UNLOCK_ROUTE,
@@ -193,6 +194,16 @@ export function hideAppHeader(props) {
     }),
   );
   if (isSnapsHome) {
+    return true;
+  }
+
+  const isCrossChainSwapsPage = Boolean(
+    matchPath(location.pathname, {
+      path: `${CROSS_CHAIN_SWAP_ROUTE}`,
+      exact: false,
+    }),
+  );
+  if (isCrossChainSwapsPage) {
     return true;
   }
 

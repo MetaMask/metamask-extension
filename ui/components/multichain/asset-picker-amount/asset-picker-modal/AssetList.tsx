@@ -2,6 +2,7 @@ import React from 'react';
 import { useSelector } from 'react-redux';
 import classnames from 'classnames';
 import {
+  getCurrentChainId,
   getCurrentCurrency,
   getSelectedAccountCachedBalance,
 } from '../../../../selectors';
@@ -42,6 +43,7 @@ export default function AssetList({
 }: AssetListProps) {
   const selectedToken = asset?.address;
 
+  const chainId = useSelector(getCurrentChainId);
   const nativeCurrency = useSelector(getNativeCurrency);
   const balanceValue = useSelector(getSelectedAccountCachedBalance);
   const currentCurrency = useSelector(getCurrentCurrency);
@@ -102,6 +104,7 @@ export default function AssetList({
               <Box marginInlineStart={2}>
                 {token.type === AssetType.native ? (
                   <TokenListItem
+                    chainId={chainId}
                     title={token.symbol}
                     primary={primaryCurrencyValue}
                     tokenSymbol={token.symbol}

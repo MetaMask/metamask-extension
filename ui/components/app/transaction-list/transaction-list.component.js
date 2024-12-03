@@ -4,6 +4,7 @@ import React, {
   useCallback,
   Fragment,
   useContext,
+  useEffect,
 } from 'react';
 import PropTypes from 'prop-types';
 import { useSelector } from 'react-redux';
@@ -53,6 +54,7 @@ import { getMultichainAccountUrl } from '../../../helpers/utils/multichain/block
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import { useMultichainSelector } from '../../../hooks/useMultichainSelector';
 import { getMultichainNetwork } from '../../../selectors/multichain';
+import { endTrace, TraceName } from '../../../../shared/lib/trace';
 
 const PAGE_INCREMENT = 10;
 
@@ -258,6 +260,11 @@ export default function TransactionList({
   // Check if the current account is a bitcoin account
   const isBitcoinAccount = useSelector(isSelectedInternalAccountBtc);
   const trackEvent = useContext(MetaMetricsContext);
+
+  useEffect(() => {
+    endTrace({ name: TraceName.AccountOverviewActivityTab });
+  }, []);
+
   const multichainNetwork = useMultichainSelector(
     getMultichainNetwork,
     selectedAccount,

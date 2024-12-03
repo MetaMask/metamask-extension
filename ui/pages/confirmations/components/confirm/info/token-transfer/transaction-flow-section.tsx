@@ -21,7 +21,6 @@ import {
 } from '../../../../../../helpers/constants/design-system';
 import { useConfirmContext } from '../../../../context/confirm';
 import { useDecodedTransactionData } from '../hooks/useDecodedTransactionData';
-import { ConfirmLoader } from '../shared/confirm-loader/confirm-loader';
 
 export const TransactionFlowSection = () => {
   const { currentConfirmation: transactionMeta } =
@@ -39,7 +38,7 @@ export const TransactionFlowSection = () => {
         addresses?.[addresses.length - 1].value;
 
   if (pending) {
-    return <ConfirmLoader />;
+    return null;
   }
 
   const { chainId } = transactionMeta;

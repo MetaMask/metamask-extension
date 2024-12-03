@@ -1,5 +1,7 @@
 import React, { useCallback, useContext, useMemo } from 'react';
+import { useDispatch } from 'react-redux';
 import { useHistory } from 'react-router-dom';
+import { endTrace, trace } from '../../../../shared/lib/trace';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { ASSET_ROUTE } from '../../../helpers/constants/routes';
 import {
@@ -7,10 +9,7 @@ import {
   SUPPORT_LINK,
   ///: END:ONLY_INCLUDE_IF
 } from '../../../../shared/lib/ui-utils';
-import {
-  MetaMetricsEventCategory,
-  MetaMetricsEventName,
-} from '../../../../shared/constants/metametrics';
+import { MetaMetricsEventCategory } from '../../../../shared/constants/metametrics';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import NftsTab from '../../app/assets/nfts/nfts-tab';
 import AssetList from '../../app/assets/asset-list';
@@ -37,6 +36,12 @@ import {
 ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
 import InstitutionalHomeFooter from '../../../pages/home/institutional/institutional-home-footer';
 ///: END:ONLY_INCLUDE_IF
+import {
+  ACCOUNT_OVERVIEW_TAB_KEY_TO_METAMETRICS_EVENT_NAME_MAP,
+  ACCOUNT_OVERVIEW_TAB_KEY_TO_TRACE_NAME_MAP,
+  AccountOverviewTabKey,
+} from '../../../../shared/constants/app-state';
+import { detectNfts } from '../../../store/actions';
 import { AccountOverviewCommonProps } from './common';
 
 export type AccountOverviewTabsProps = AccountOverviewCommonProps & {
@@ -60,6 +65,7 @@ export const AccountOverviewTabs = ({
   const history = useHistory();
   const t = useI18nContext();
   const trackEvent = useContext(MetaMetricsContext);
+  const dispatch = useDispatch();
 
   const tabProps = useMemo(
     () => ({
@@ -69,24 +75,24 @@ export const AccountOverviewTabs = ({
     [],
   );
 
-  const getEventFromTabName = (tabName: string) => {
-    switch (tabName) {
-      case 'nfts':
-        return MetaMetricsEventName.NftScreenOpened;
-      case 'activity':
-        return MetaMetricsEventName.ActivityScreenOpened;
-      default:
-        return MetaMetricsEventName.TokenScreenOpened;
-    }
-  };
-
   const handleTabClick = useCallback(
-    (tabName: string) => {
+    (tabName: AccountOverviewTabKey) => {
       onTabClick(tabName);
+      if (tabName === AccountOverviewTabKey.Nfts) {
+        dispatch(detectNfts());
+      }
       trackEvent({
         category: MetaMetricsEventCategory.Home,
-        event: getEventFromTabName(tabName),
+        event: ACCOUNT_OVERVIEW_TAB_KEY_TO_METAMETRICS_EVENT_NAME_MAP[tabName],
       });
+      if (defaultHomeActiveTabName) {
+        endTrace({
+          name: ACCOUNT_OVERVIEW_TAB_KEY_TO_TRACE_NAME_MAP[
+            defaultHomeActiveTabName
+          ],
+        });
+      }
+      trace({ name: ACCOUNT_OVERVIEW_TAB_KEY_TO_TRACE_NAME_MAP[tabName] });
     },
     [onTabClick],
   );
@@ -143,7 +149,9 @@ export const AccountOverviewTabs = ({
             <Box marginTop={2}>
               <AssetList
                 showTokensLinks={showTokensLinks ?? true}
-                onClickAsset={(asset: string) =>
+                // TODO: chainID to be incorporated in unified asset list
+                // eslint-disable-next-line @typescript-eslint/no-unused-vars
+                onClickAsset={(chainId: string, asset: string) =>
                   history.push(`${ASSET_ROUTE}/${asset}`)
                 }
               />

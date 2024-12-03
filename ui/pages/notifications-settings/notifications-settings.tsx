@@ -1,7 +1,6 @@
 import React, { useMemo, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { useHistory, useLocation } from 'react-router-dom';
-import type { InternalAccount } from '@metamask/keyring-api';
 import { useI18nContext } from '../../hooks/useI18nContext';
 import { NOTIFICATIONS_ROUTE } from '../../helpers/constants/routes';
 import {
@@ -33,18 +32,6 @@ import { NotificationsSettingsAllowNotifications } from './notifications-setting
 import { NotificationsSettingsTypes } from './notifications-settings-types';
 import { NotificationsSettingsPerAccount } from './notifications-settings-per-account';
 
-// Define KeyringType interface
-type KeyringType = {
-  type: string;
-};
-
-// Define AccountType interface
-type AccountType = InternalAccount & {
-  balance: string;
-  keyring: KeyringType;
-  label: string;
-};
-
 export default function NotificationsSettings() {
   const history = useHistory();
   const location = useLocation();
@@ -57,7 +44,7 @@ export default function NotificationsSettings() {
   const isUpdatingMetamaskNotifications = useSelector(
     getIsUpdatingMetamaskNotifications,
   );
-  const accounts: AccountType[] = useSelector(getInternalAccounts);
+  const accounts = useSelector(getInternalAccounts);
 
   // States
   const [loadingAllowNotifications, setLoadingAllowNotifications] =

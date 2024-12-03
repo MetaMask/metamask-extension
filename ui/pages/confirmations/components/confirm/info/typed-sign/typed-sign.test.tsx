@@ -16,6 +16,7 @@ import {
   unapprovedTypedSignMsgV3,
 } from '../../../../../../../test/data/confirmations/typed_sign';
 import { renderWithConfirmContextProvider } from '../../../../../../../test/lib/confirmations/render-helpers';
+import * as snapUtils from '../../../../../../helpers/utils/snaps';
 import TypedSignInfo from './typed-sign';
 
 jest.mock(
@@ -32,6 +33,21 @@ jest.mock('../../../../../../store/actions', () => {
     getTokenStandardAndDetails: jest.fn().mockResolvedValue({ decimals: 2 }),
   };
 });
+
+jest.mock('../../../../../../../node_modules/@metamask/snaps-utils', () => {
+  const originalUtils = jest.requireActual(
+    '../../../../../../../node_modules/@metamask/snaps-utils',
+  );
+  return {
+    ...originalUtils,
+    stripSnapPrefix: jest.fn().mockReturnValue('@metamask/examplesnap'),
+    getSnapPrefix: jest.fn().mockReturnValue('npm:'),
+  };
+});
+
+jest.mock('../../../../../../helpers/utils/snaps', () => ({
+  isSnapId: jest.fn(),
+}));
 
 describe('TypedSignInfo', () => {
   it('renders origin for typed sign data request', () => {
@@ -126,5 +142,51 @@ describe('TypedSignInfo', () => {
       mockStore,
     );
     expect(container).toMatchSnapshot();
+  });
+
+  it('displays "requestFromInfoSnap" tooltip when origin is a snap', async () => {
+    const mockState = getMockTypedSignConfirmStateForRequest({
+      id: '123',
+      type: TransactionType.signTypedData,
+      chainId: '0x5',
+    });
+    (snapUtils.isSnapId as jest.Mock).mockReturnValue(true);
+    const mockStore = configureMockStore([])(mockState);
+    const { queryByText } = renderWithConfirmContextProvider(
+      <TypedSignInfo />,
+      mockStore,
+    );
+
+    const requestFromLabel = queryByText('Request from');
+
+    await requestFromLabel?.dispatchEvent(
+      new MouseEvent('mouseenter', { bubbles: true }),
+    );
+    expect(
+      queryByText('This is the Snap asking for your signature.'),
+    ).toBeDefined();
+  });
+
+  it('displays "requestFromInfo" tooltip when origin is not a snap', async () => {
+    const mockState = getMockTypedSignConfirmStateForRequest({
+      id: '123',
+      type: TransactionType.signTypedData,
+      chainId: '0x5',
+    });
+    (snapUtils.isSnapId as jest.Mock).mockReturnValue(false);
+    const mockStore = configureMockStore([])(mockState);
+    const { queryByText } = renderWithConfirmContextProvider(
+      <TypedSignInfo />,
+      mockStore,
+    );
+
+    const requestFromLabel = queryByText('Request from');
+
+    await requestFromLabel?.dispatchEvent(
+      new MouseEvent('mouseenter', { bubbles: true }),
+    );
+    expect(
+      queryByText('This is the site asking for your signature.'),
+    ).toBeDefined();
   });
 });

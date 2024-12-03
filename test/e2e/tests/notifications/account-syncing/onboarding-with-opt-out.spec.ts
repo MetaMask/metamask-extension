@@ -1,12 +1,5 @@
 import { Mockttp } from 'mockttp';
-import {
-  withFixtures,
-  defaultGanacheOptions,
-  completeImportSRPOnboardingFlow,
-  importSRPOnboardingFlow,
-  onboardingCompleteWalletCreationWithOptOut,
-  completeCreateNewWalletOnboardingFlowWithOptOut,
-} from '../../../helpers';
+import { withFixtures } from '../../../helpers';
 import FixtureBuilder from '../../../fixture-builder';
 import { mockNotificationServices } from '../mocks';
 import {
@@ -14,10 +7,18 @@ import {
   NOTIFICATIONS_TEAM_SEED_PHRASE,
 } from '../constants';
 import { UserStorageMockttpController } from '../../../helpers/user-storage/userStorageMockttpController';
-import HeaderNavbar from '../../../page-objects/pages/header-navbar';
 import AccountListPage from '../../../page-objects/pages/account-list-page';
-import { accountsSyncMockResponse } from './mockData';
+import HeaderNavbar from '../../../page-objects/pages/header-navbar';
+import HomePage from '../../../page-objects/pages/homepage';
+import OnboardingCompletePage from '../../../page-objects/pages/onboarding/onboarding-complete-page';
+import OnboardingPrivacySettingsPage from '../../../page-objects/pages/onboarding/onboarding-privacy-settings-page';
+import {
+  createNewWalletOnboardingFlow,
+  importSRPOnboardingFlow,
+  completeImportSRPOnboardingFlow,
+} from '../../../page-objects/flows/onboarding.flow';
 import { getSRP, IS_ACCOUNT_SYNCING_ENABLED } from './helpers';
+import { accountsSyncMockResponse } from './mockData';
 
 describe('Account syncing - Opt-out Profile Sync @no-mmi', function () {
   if (!IS_ACCOUNT_SYNCING_ENABLED) {
@@ -31,7 +32,6 @@ describe('Account syncing - Opt-out Profile Sync @no-mmi', function () {
       await withFixtures(
         {
           fixtures: new FixtureBuilder({ onboarding: true }).build(),
-          ganacheOptions: defaultGanacheOptions,
           title: this.test?.fullTitle(),
           testSpecificMock: (server: Mockttp) => {
             // Mocks are still set up to ensure that requests are not matched
@@ -45,19 +45,25 @@ describe('Account syncing - Opt-out Profile Sync @no-mmi', function () {
           },
         },
         async ({ driver }) => {
-          await driver.navigate();
-          await importSRPOnboardingFlow(
+          await importSRPOnboardingFlow({
             driver,
-            NOTIFICATIONS_TEAM_SEED_PHRASE,
-            NOTIFICATIONS_TEAM_PASSWORD,
-          );
-
-          await onboardingCompleteWalletCreationWithOptOut(driver, {
-            isNewWallet: false,
-            basicFunctionality: false,
-            profileSync: true,
-            assets: false,
+            seedPhrase: NOTIFICATIONS_TEAM_SEED_PHRASE,
+            password: NOTIFICATIONS_TEAM_PASSWORD,
           });
+          const onboardingCompletePage = new OnboardingCompletePage(driver);
+          await onboardingCompletePage.check_pageIsLoaded();
+          await onboardingCompletePage.navigateToDefaultPrivacySettings();
+
+          const onboardingPrivacySettingsPage =
+            new OnboardingPrivacySettingsPage(driver);
+          await onboardingPrivacySettingsPage.toggleBasicFunctionalitySettings();
+          await onboardingPrivacySettingsPage.navigateBackToOnboardingCompletePage();
+          await onboardingCompletePage.check_pageIsLoaded();
+          await onboardingCompletePage.completeOnboarding();
+
+          const homePage = new HomePage(driver);
+          await homePage.check_pageIsLoaded();
+          await homePage.check_expectedBalanceIsDisplayed();
 
           const header = new HeaderNavbar(driver);
           await header.check_pageIsLoaded();
@@ -85,7 +91,6 @@ describe('Account syncing - Opt-out Profile Sync @no-mmi', function () {
       await withFixtures(
         {
           fixtures: new FixtureBuilder({ onboarding: true }).build(),
-          ganacheOptions: defaultGanacheOptions,
           title: this.test?.fullTitle(),
           testSpecificMock: (server: Mockttp) => {
             // Mocks are still set up to ensure that requests are not matched
@@ -97,17 +102,24 @@ describe('Account syncing - Opt-out Profile Sync @no-mmi', function () {
           },
         },
         async ({ driver }) => {
-          await driver.navigate();
-          await completeCreateNewWalletOnboardingFlowWithOptOut(
+          await createNewWalletOnboardingFlow({
             driver,
-            NOTIFICATIONS_TEAM_PASSWORD,
-            {
-              isNewWallet: true,
-              basicFunctionality: false,
-              profileSync: true,
-              assets: false,
-            },
-          );
+            password: NOTIFICATIONS_TEAM_PASSWORD,
+          });
+          const onboardingCompletePage = new OnboardingCompletePage(driver);
+          await onboardingCompletePage.check_pageIsLoaded();
+          await onboardingCompletePage.navigateToDefaultPrivacySettings();
+
+          const onboardingPrivacySettingsPage =
+            new OnboardingPrivacySettingsPage(driver);
+          await onboardingPrivacySettingsPage.toggleBasicFunctionalitySettings();
+          await onboardingPrivacySettingsPage.navigateBackToOnboardingCompletePage();
+          await onboardingCompletePage.check_pageIsLoaded();
+          await onboardingCompletePage.completeOnboarding();
+
+          const homePage = new HomePage(driver);
+          await homePage.check_pageIsLoaded();
+          await homePage.check_expectedBalanceIsDisplayed();
 
           const header = new HeaderNavbar(driver);
           await header.check_pageIsLoaded();
@@ -120,7 +132,6 @@ describe('Account syncing - Opt-out Profile Sync @no-mmi', function () {
             'Account 1',
           );
           await accountListPage.addNewAccountWithCustomLabel('New Account');
-
           // Set SRP to use for retreival
           walletSrp = await getSRP(driver, NOTIFICATIONS_TEAM_PASSWORD);
           if (!walletSrp) {
@@ -132,7 +143,6 @@ describe('Account syncing - Opt-out Profile Sync @no-mmi', function () {
       await withFixtures(
         {
           fixtures: new FixtureBuilder({ onboarding: true }).build(),
-          ganacheOptions: defaultGanacheOptions,
           title: this.test?.fullTitle(),
           testSpecificMock: (server: Mockttp) => {
             // Mocks are still set up to ensure that requests are not matched
@@ -144,12 +154,14 @@ describe('Account syncing - Opt-out Profile Sync @no-mmi', function () {
           },
         },
         async ({ driver }) => {
-          await driver.navigate();
-          await completeImportSRPOnboardingFlow(
+          await completeImportSRPOnboardingFlow({
             driver,
-            walletSrp,
-            NOTIFICATIONS_TEAM_PASSWORD,
-          );
+            seedPhrase: walletSrp,
+            password: NOTIFICATIONS_TEAM_PASSWORD,
+          });
+          const homePage = new HomePage(driver);
+          await homePage.check_pageIsLoaded();
+          await homePage.check_expectedBalanceIsDisplayed();
 
           const header = new HeaderNavbar(driver);
           await header.check_pageIsLoaded();
