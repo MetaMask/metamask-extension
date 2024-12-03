@@ -6,7 +6,6 @@ import {
   Display,
   FlexDirection,
   JustifyContent,
-  Size,
   TextAlign,
   TextColor,
   TextVariant,
@@ -25,7 +24,13 @@ import {
   detectNfts,
   showImportNftsModal,
 } from '../../../../../store/actions';
-import { Box, ButtonLink, IconName, Text } from '../../../../component-library';
+import {
+  Box,
+  ButtonLink,
+  ButtonLinkSize,
+  IconName,
+  Text,
+} from '../../../../component-library';
 import NFTsDetectionNoticeNFTsTab from '../nfts-detection-notice-nfts-tab/nfts-detection-notice-nfts-tab';
 import NftsItems from '../nfts-items';
 ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
@@ -119,7 +124,7 @@ export default function NftsTab() {
             <NFTsDetectionNoticeNFTsTab />
           </Box>
         ) : null}
-        {hasAnyNfts > 0 || previouslyOwnedCollection.nfts.length > 0 ? (
+        {hasAnyNfts || previouslyOwnedCollection.nfts.length > 0 ? (
           <Box>
             <NftsItems
               collections={collections}
@@ -159,7 +164,7 @@ export default function NftsTab() {
                 <Text
                   color={TextColor.textMuted}
                   variant={TextVariant.headingSm}
-                  align={TextAlign.Center}
+                  textAlign={TextAlign.Center}
                   as="h4"
                 >
                   {t('noNFTs')}
@@ -167,7 +172,7 @@ export default function NftsTab() {
                 {
                   ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
                   <ButtonLink
-                    size={Size.MD}
+                    size={ButtonLinkSize.Md}
                     href={ZENDESK_URLS.NFT_TOKENS}
                     externalLink
                   >
@@ -189,11 +194,11 @@ export default function NftsTab() {
           marginBottom={2}
         >
           <ButtonLink
-            size={Size.MD}
+            size={ButtonLinkSize.Md}
             data-testid="import-nft-button"
             startIconName={IconName.Add}
             onClick={() => {
-              dispatch(showImportNftsModal());
+              dispatch(showImportNftsModal({}));
             }}
           >
             {t('importNFT')}
@@ -206,7 +211,7 @@ export default function NftsTab() {
               >
                 {isMainnet && !useNftDetection ? (
                   <ButtonLink
-                    size={Size.MD}
+                    size={ButtonLinkSize.Md}
                     startIconName={IconName.Setting}
                     data-testid="refresh-list-button"
                     onClick={onEnableAutoDetect}
@@ -215,7 +220,7 @@ export default function NftsTab() {
                   </ButtonLink>
                 ) : (
                   <ButtonLink
-                    size={Size.MD}
+                    size={ButtonLinkSize.Md}
                     startIconName={IconName.Refresh}
                     data-testid="refresh-list-button"
                     onClick={onRefresh}
