@@ -44,7 +44,10 @@ const useRamps = (
         params.set('marketingEnabled', String(isMarketingEnabled));
       }
 
-      return `${portfolioUrl}/buy?${params.toString()}`;
+      const url = new URL(portfolioUrl || '');
+      url.pathname = 'buy';
+      url.search = params.toString();
+      return url.toString();
     },
     [metaMetricsId],
   );
