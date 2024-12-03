@@ -273,7 +273,7 @@ export const SENTRY_BACKGROUND_STATE = {
   FeatureFlagController: {},
   RemoteFeatureFlagController: {
     remoteFeatureFlags: true,
-    cacheTimestamp: true,
+    cacheTimestamp: false,
   },
   NotificationServicesPushController: {
     fcmToken: false,
