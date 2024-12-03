@@ -33,21 +33,22 @@ const useRamps = (
 
   const getBuyURI = useCallback(
     (_chainId: Hex | CaipChainId) => {
-      const params = new URLSearchParams();
-      params.set('metamaskEntry', metamaskEntry);
-      params.set('chainId', _chainId);
-      if (metaMetricsId) {
-        params.set('metametricsId', metaMetricsId);
-      }
-      params.set('metricsEnabled', String(isMetaMetricsEnabled));
-      if (isMarketingEnabled) {
-        params.set('marketingEnabled', String(isMarketingEnabled));
-      }
+      try {
+        const params = new URLSearchParams();
+        params.set('metamaskEntry', metamaskEntry);
+        params.set('chainId', _chainId);
+        if (metaMetricsId) {
+          params.set('metametricsId', metaMetricsId);
+        }
+        params.set('metricsEnabled', String(isMetaMetricsEnabled));
+        if (isMarketingEnabled) {
+          params.set('marketingEnabled', String(isMarketingEnabled));
+        }
 
-      const url = new URL(portfolioUrl || '');
-      url.pathname = 'buy';
-      url.search = params.toString();
-      return url.toString();
+        return `${portfolioUrl}/buy?${params.toString()}`;
+      } catch {
+        return 'https://portfolio.metamask.io/buy';
+      }
     },
     [metaMetricsId],
   );
