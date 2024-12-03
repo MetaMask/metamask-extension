@@ -9,7 +9,7 @@ jest.mock('../../../../hooks/useModalProps', () => ({
   useModalProps: jest.fn(),
 }));
 
-jest.mock('../../../../hooks/metamask-notifications/useProfileSyncing', () => ({
+jest.mock('../../../../hooks/identity/useProfileSyncing', () => ({
   useDisableProfileSyncing: jest.fn(),
 }));
 
