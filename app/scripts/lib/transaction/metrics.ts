@@ -1048,7 +1048,6 @@ async function buildEventFragmentProperties({
     ui_customizations: uiCustomizations.length > 0 ? uiCustomizations : null,
     transaction_advanced_view: isAdvancedDetailsOpen,
     transaction_contract_method: transactionContractMethod,
-    transaction_contract_method_4byte: transactionContractMethod4Byte,
     ...smartTransactionMetricsProperties,
     ...swapAndSendMetricsProperties,
     // TODO: Replace `any` with type
@@ -1077,6 +1076,7 @@ async function buildEventFragmentProperties({
     gas_limit: gasLimit,
     transaction_replaced: transactionReplaced,
     transaction_contract_address: transactionContractAddress,
+    transaction_contract_method_4byte: transactionContractMethod4Byte,
     ...extraParams,
     ...gasParamsInGwei,
     // TODO: Replace `any` with type
