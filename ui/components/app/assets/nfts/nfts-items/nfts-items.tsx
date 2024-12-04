@@ -14,6 +14,8 @@ import {
   FlexWrap,
   BlockSize,
   FlexDirection,
+  TextColor,
+  TextVariant,
 } from '../../../../../helpers/constants/design-system';
 import { ENVIRONMENT_TYPE_POPUP } from '../../../../../../shared/constants/app';
 // TODO: Remove restricted import
@@ -80,18 +82,10 @@ type NftItemCollection = {
 
 export type NftItemI = {
   address: Hex;
-  attributes: NftItemAttributes[];
-  collection: NftItemCollection;
   description: string;
-  favorite: boolean;
   image: string;
   imageOriginal: string;
-  imageThumbnail: string;
-  isCurrentlyOwned: string;
   name: string;
-  rarityRank: number;
-  rarityScore: number;
-  standard: string;
   tokenId: number;
   ipfsImageUpdated: string;
   tokenURI: string;
@@ -307,13 +301,13 @@ export default function NftsItems({
                 collectionImage={collectionImage}
                 collectionName={collectionName}
               />
-              <Typography
-                color={Color.textDefault}
-                variant={TypographyVariant.H5}
+              <Text
+                color={TextColor.textDefault}
+                variant={TextVariant.headingLg}
                 margin={2}
               >
                 {`${collectionName ?? t('unknownCollection')} (${nfts.length})`}
-              </Typography>
+              </Text>
             </Box>
             <Box alignItems={AlignItems.flexEnd}>
               <Icon
