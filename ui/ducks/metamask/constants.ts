@@ -1,6 +1,9 @@
 import { NameType } from '@metamask/name-controller';
 import { getDefaultPreferencesControllerState } from '../../../app/scripts/controllers/preferences-controller';
-import type { BackgroundStateProxy, MemStoreControllersComposedState } from '../../../app/scripts/metamask-controller-stores';
+import type {
+  BackgroundStateProxy,
+  MemStoreControllersComposedState,
+} from '../../../shared/types/metamask';
 import {
   DEFAULT_AUTO_LOCK_TIME_LIMIT,
   ThemeType,
