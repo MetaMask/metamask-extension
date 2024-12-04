@@ -3560,7 +3560,9 @@ export default class MetamaskController extends EventEmitter {
       updateNetwork: this.networkController.updateNetwork.bind(
         this.networkController,
       ),
-      removeNetwork: this.removeNetwork.bind(this),
+      removeNetwork: this.networkController.removeNetwork.bind(
+        this.networkController,
+      ),
       getCurrentNetworkEIP1559Compatibility:
         this.networkController.getEIP1559Compatibility.bind(
           this.networkController,
@@ -5212,12 +5214,6 @@ export default class MetamaskController extends EventEmitter {
           toCaipChainId('eip155', parseInt(targetChainId, 16).toString()),
         ),
     );
-  }
-
-  removeNetwork(chainId) {
-    this.removeAllChainIdPermissions(chainId);
-
-    this.networkController.removeNetwork(chainId);
   }
 
   /**
