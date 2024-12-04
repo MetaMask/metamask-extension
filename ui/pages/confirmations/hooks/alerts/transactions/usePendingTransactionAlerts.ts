@@ -30,7 +30,7 @@ export function usePendingTransactionAlerts(): Alert[] {
       {
         field: RowAlertKey.Speed,
         key: 'pendingTransactions',
-        message: PendingTransactionAlertMessage(),
+        content: PendingTransactionAlertMessage(),
         reason: t('alertReasonPendingTransactions'),
         severity: Severity.Warning,
       },

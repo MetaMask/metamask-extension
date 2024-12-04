@@ -164,15 +164,14 @@ function AlertDetails({
     >
       {customDetails ?? (
         <Box>
-          {typeof selectedAlert.message === 'string' ? (
+          {Boolean(selectedAlert.content) && selectedAlert.content}
+          {Boolean(selectedAlert.message) && (
             <Text
               variant={TextVariant.bodyMd}
               data-testid="alert-modal__selected-alert"
             >
               {selectedAlert.message}
             </Text>
-          ) : (
-            selectedAlert.message
           )}
           {selectedAlert.alertDetails?.length ? (
             <Text variant={TextVariant.bodyMdBold} marginTop={1}>
