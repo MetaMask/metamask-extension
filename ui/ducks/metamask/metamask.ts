@@ -31,7 +31,7 @@ import { getSelectedInternalAccount } from '../../selectors/accounts';
 import * as actionConstants from '../../store/actionConstants';
 import { updateTransactionGasFees } from '../../store/actions';
 import { setCustomGasLimit, setCustomGasPrice } from '../gas/gas.duck';
-import { CombinedBackgroundAndReduxState } from '../../store/store';
+import { MetaMaskReduxState } from '../../store/store';
 import type { BackgroundStateProxy } from '../../../shared/types/metamask';
 import { initialMetamaskState } from './constants';
 
@@ -376,16 +376,14 @@ function getGasFeeControllerEstimatesByChainId(
 }
 
 function getTransactionGasFeeEstimates(
-  state: MetamaskSliceState &
-    Pick<CombinedBackgroundAndReduxState, 'confirmTransaction'>,
+  state: MetamaskSliceState & Pick<MetaMaskReduxState, 'confirmTransaction'>,
 ) {
   const transactionMetadata = state.confirmTransaction?.txData;
   return transactionMetadata?.gasFeeEstimates;
 }
 
 function getTransactionGasFeeEstimatesByChainId(
-  state: MetamaskSliceState &
-    Pick<CombinedBackgroundAndReduxState, 'confirmTransaction'>,
+  state: MetamaskSliceState & Pick<MetaMaskReduxState, 'confirmTransaction'>,
   chainId: Hex,
 ) {
   const transactionMetadata = state.confirmTransaction?.txData;
@@ -483,8 +481,7 @@ export function getEstimatedGasFeeTimeBoundsByChainId(
 }
 
 export function getIsGasEstimatesLoading(
-  state: MetamaskSliceState &
-    Pick<CombinedBackgroundAndReduxState, 'confirmTransaction'>,
+  state: MetamaskSliceState & Pick<MetaMaskReduxState, 'confirmTransaction'>,
 ) {
   const networkAndAccountSupports1559 =
     checkNetworkAndAccountSupports1559(state);
@@ -506,8 +503,7 @@ export function getIsGasEstimatesLoading(
 }
 
 export function getIsGasEstimatesLoadingByChainId(
-  state: MetamaskSliceState &
-    Pick<CombinedBackgroundAndReduxState, 'confirmTransaction'>,
+  state: MetamaskSliceState & Pick<MetaMaskReduxState, 'confirmTransaction'>,
   { chainId, networkClientId }: { chainId: Hex; networkClientId: string },
 ) {
   const networkAndAccountSupports1559 = checkNetworkAndAccountSupports1559(
@@ -532,8 +528,7 @@ export function getIsGasEstimatesLoadingByChainId(
 }
 
 export function getIsNetworkBusyByChainId(
-  state: MetamaskSliceState &
-    Pick<CombinedBackgroundAndReduxState, 'confirmTransaction'>,
+  state: MetamaskSliceState & Pick<MetaMaskReduxState, 'confirmTransaction'>,
   chainId: Hex,
 ) {
   const gasFeeEstimates = getGasFeeEstimatesByChainId(state, chainId);

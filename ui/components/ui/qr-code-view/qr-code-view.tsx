@@ -8,7 +8,7 @@ import { isHexPrefixed } from 'ethereumjs-util';
 import { normalizeSafeAddress } from '../../../../app/scripts/lib/multichain/address';
 import { Box, Icon, IconName, IconSize, Text } from '../../component-library';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
-import type { CombinedBackgroundAndReduxState } from '../../../store/store';
+import type { MetaMaskReduxState } from '../../../store/store';
 import {
   AlignItems,
   Display,
@@ -25,7 +25,7 @@ import {
 } from '../../../../shared/constants/metametrics';
 import { useCopyToClipboard } from '../../../hooks/useCopyToClipboard';
 
-function mapStateToProps(state: CombinedBackgroundAndReduxState) {
+function mapStateToProps(state: MetaMaskReduxState) {
   const { buyView, warning } = state.appState;
   return {
     buyView,
@@ -41,7 +41,7 @@ function QrCodeView({
   accountName,
 }: {
   Qr: { message: string; data: string };
-  warning: null | string;
+  warning: string | null | undefined;
   accountName?: string;
 }) {
   const trackEvent = useContext(MetaMetricsContext);
