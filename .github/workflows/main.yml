@@ -32,12 +32,17 @@ jobs:
     name: Run tests
     uses: ./.github/workflows/run-tests.yml
 
+  wait-for-circleci-workflow-status:
+    name: Wait for CircleCI workflow status
+    uses: ./.github/workflows/wait-for-circleci-workflow-status.yml
+
   all-jobs-completed:
     name: All jobs completed
     runs-on: ubuntu-latest
     needs:
       - check-workflows
       - run-tests
+      - wait-for-circleci-workflow-status
     outputs:
       PASSED: ${{ steps.set-output.outputs.PASSED }}
     steps:
