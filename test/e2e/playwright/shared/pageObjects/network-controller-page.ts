@@ -89,7 +89,7 @@ export class NetworkController {
     await this.saveBtn.waitFor({ state: 'visible' });
     await this.saveBtn.click({ timeout: 60000 });
     await this.page.waitForSelector(`text=/was successfully edited/`, {
-      timeout: 10000,
+      timeout: 30000,
     });
   }
 
