@@ -5310,11 +5310,6 @@ __metadata:
     hdkey: "npm:^2.1.0"
   checksum: 10/665769f368dcfa18532e67691a2aaa44a330c0bbbf8a0371f4f7e82e85f58e8c95a7a0004439f04db5306b4e60bcb6be82ee6b256834047fd8514adccc3ed525
   languageName: node
-  linkType: hard
-
-"@metamask/eth-query@npm:^4.0.0":
-  version: 4.0.0
-  resolution: "@metamask/eth-query@npm:4.0.0"
   dependencies:
     json-rpc-random-id: "npm:^1.0.0"
     xtend: "npm:^4.0.1"
