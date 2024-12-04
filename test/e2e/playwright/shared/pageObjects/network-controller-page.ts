@@ -91,7 +91,6 @@ export class NetworkController {
     await this.page.waitForSelector(`text=/was successfully edited/`, {
       timeout: 30000,
     });
-    await this.page.waitForTimeout(10000);
   }
 
   async addPopularNetwork(options: { networkName: string }) {
