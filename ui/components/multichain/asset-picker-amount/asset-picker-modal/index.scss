@@ -67,9 +67,10 @@
 
   .network-picker {
     display: flex;
-    justify-content: center;
+    justify-content: flex-start;
     align-items: center;
     padding-top: 4px;
+    padding-left: 16px;
 
     button: {
       background: var(--color-background-alternative);
