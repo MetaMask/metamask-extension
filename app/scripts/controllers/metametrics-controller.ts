@@ -72,6 +72,7 @@ import Analytics from '../lib/segment/analytics';
 import { ENVIRONMENT } from '../../../development/build/constants';
 ///: END:ONLY_INCLUDE_IF
 
+import { BackgroundStateProxy } from '../../../shared/types/metamask';
 import type {
   PreferencesControllerState,
   PreferencesControllerGetStateAction,
@@ -1004,7 +1005,7 @@ export default class MetaMetricsController extends BaseController<
     }
   }
 
-  handleMetaMaskStateUpdate(newState: MetaMaskState): void {
+  handleMetaMaskStateUpdate(newState: BackgroundStateProxy): void {
     const userTraits = this._buildUserTraitsObject(newState);
     if (userTraits) {
       this.identify(userTraits);
@@ -1169,7 +1170,7 @@ export default class MetaMetricsController extends BaseController<
    * @returns traits that have changed since last update
    */
   _buildUserTraitsObject(
-    metamaskState: MetaMaskState,
+    metamaskState: BackgroundStateProxy,
   ): Partial<MetaMetricsUserTraits> | null {
     ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
     const mmiAccountAddress =
@@ -1299,11 +1300,13 @@ export default class MetaMetricsController extends BaseController<
    *
    * @param allNfts
    */
-  #getAllNFTsFlattened = memoize((allNfts: MetaMaskState['allNfts'] = {}) => {
-    return Object.values(allNfts).reduce((result: Nft[], chainNFTs) => {
-      return result.concat(...Object.values(chainNFTs));
-    }, []);
-  });
+  #getAllNFTsFlattened = memoize(
+    (allNfts: BackgroundStateProxy['NftController']['allNfts'] = {}) => {
+      return Object.values(allNfts).reduce((result: Nft[], chainNFTs) => {
+        return result.concat(...Object.values(chainNFTs));
+      }, []);
+    },
+  );
 
   /**
    * Returns the number of unique NFT addresses the user
@@ -1312,7 +1315,7 @@ export default class MetaMetricsController extends BaseController<
    * @param allNfts
    */
   #getAllUniqueNFTAddressesLength(
-    allNfts: MetaMaskState['allNfts'] = {},
+    allNfts: BackgroundStateProxy['NftController']['allNfts'] = {},
   ): number {
     const allNFTAddresses = this.#getAllNFTsFlattened(allNfts).map(
       (nft) => nft.address,
@@ -1325,7 +1328,9 @@ export default class MetaMetricsController extends BaseController<
    * @param allTokens
    * @returns number of unique token addresses
    */
-  #getNumberOfTokens(allTokens: MetaMaskState['allTokens']): number {
+  #getNumberOfTokens(
+    allTokens: BackgroundStateProxy['TokensController']['allTokens'],
+  ): number {
     return Object.values(allTokens).reduce((result, accountsByChain) => {
       return result + sum(Object.values(accountsByChain).map(size));
     }, 0);
@@ -1549,8 +1554,9 @@ export default class MetaMetricsController extends BaseController<
    *
    * @param metamaskState
    */
-  #getPetnameAddressCount(metamaskState: MetaMaskState): number {
-    const addressNames = metamaskState.names?.[NameType.ETHEREUM_ADDRESS] ?? {};
+  #getPetnameAddressCount(metamaskState: BackgroundStateProxy): number {
+    const addressNames =
+      metamaskState.NameController.names?.[NameType.ETHEREUM_ADDRESS] ?? {};
 
     return Object.keys(addressNames).reduce((totalCount, address) => {
       const addressEntry = addressNames[address];
