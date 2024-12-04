@@ -39,7 +39,7 @@ export const text: UIComponentFactory<TextElement> = ({
       params,
     ),
     props: {
-      variant: TextVariant.bodyMd,
+      variant: element.props.size === 'sm' ? TextVariant.bodySm : TextVariant.bodyMd,
       overflowWrap: OverflowWrap.Anywhere,
       color: getTextColor(),
       className: 'snap-ui-renderer__text',
