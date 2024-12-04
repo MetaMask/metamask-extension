@@ -10,9 +10,10 @@ import { TextProps } from '../text';
 // eslint-disable-next-line @typescript-eslint/consistent-type-definitions
 export interface PickerNetworkStyleUtilityProps extends StyleUtilityProps {
   /**
-   * The src accepts the string of the image to be rendered
+   * The src accepts the string of the image to be rendered or a list of strings
+   * to be rendered together
    */
-  src?: string;
+  src?: string | string[];
   /**
    * An additional className to apply to the PickerNetwork.
    */

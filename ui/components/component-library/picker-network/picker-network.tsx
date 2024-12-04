@@ -7,6 +7,7 @@ import {
   IconColor,
   BackgroundColor,
   Display,
+  BorderColor,
 } from '../../../helpers/constants/design-system';
 import {
   AvatarNetwork,
@@ -36,6 +37,8 @@ export const PickerNetwork: PickerNetworkComponent = React.forwardRef(
     }: PickerNetworkProps<C>,
     ref?: PolymorphicRef<C>,
   ) => {
+    const avatarList = (typeof src === 'string' ? [src] : src) ?? [];
+
     return (
       <Box
         className={classnames('mm-picker-network', className)}
@@ -50,14 +53,25 @@ export const PickerNetwork: PickerNetworkComponent = React.forwardRef(
         display={Display.Flex}
         {...(props as BoxProps<C>)}
       >
-        <AvatarNetwork
-          className="mm-picker-network__avatar-network"
-          src={src}
-          name={label}
-          size={AvatarNetworkSize.Xs}
-          {...avatarNetworkProps}
-        />
-        <Text as="span" ellipsis variant={TextVariant.bodySm} {...labelProps}>
+        {avatarList.map((avatarSrc, index) => (
+          <AvatarNetwork
+            key={`${avatarSrc}-picker-network`}
+            className="mm-picker-network__avatar-network"
+            src={avatarSrc}
+            name={label}
+            size={AvatarNetworkSize.Xxs}
+            borderRadius={BorderRadius.MD}
+            borderWidth={2}
+            borderColor={BorderColor.backgroundDefault}
+            style={{
+              zIndex: index + 1,
+              marginLeft: index === 0 ? 0 : '-14px',
+            }}
+            {...avatarNetworkProps}
+          />
+        ))}
+
+        <Text ellipsis variant={TextVariant.bodySm} {...labelProps}>
           {label}
         </Text>
         <Icon
