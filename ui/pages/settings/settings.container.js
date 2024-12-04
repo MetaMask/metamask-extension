@@ -3,6 +3,7 @@ import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
 import {
   getAddressBookEntryOrAccountName,
+  getRemoteFeatureFlags,
   getUseExternalServices,
 } from '../../selectors';
 import { ENVIRONMENT_TYPE_POPUP } from '../../../shared/constants/app';
@@ -60,7 +61,7 @@ const mapStateToProps = (state, ownProps) => {
   const {
     metamask: { currencyRates },
   } = state;
-
+  const remoteFeatureFlags = getRemoteFeatureFlags(state);
   const conversionDate = currencyRates[ticker]?.conversionDate;
 
   const pathNameTail = pathname.match(/[^/]+$/u)[0];
@@ -113,6 +114,7 @@ const mapStateToProps = (state, ownProps) => {
     isPopup,
     mostRecentOverviewPage: getMostRecentOverviewPage(state),
     pathnameI18nKey,
+    remoteFeatureFlags,
     useExternalServices,
   };
 };

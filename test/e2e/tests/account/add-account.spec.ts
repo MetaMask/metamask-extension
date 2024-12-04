@@ -10,8 +10,9 @@ import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow'
 import { completeImportSRPOnboardingFlow } from '../../page-objects/flows/onboarding.flow';
 import { sendTransactionToAccount } from '../../page-objects/flows/send-transaction.flow';
 import AccountListPage from '../../page-objects/pages/account-list-page';
+import ActivityListPage from '../../page-objects/pages/home/activity-list';
 import HeaderNavbar from '../../page-objects/pages/header-navbar';
-import HomePage from '../../page-objects/pages/homepage';
+import HomePage from '../../page-objects/pages/home/homepage';
 import LoginPage from '../../page-objects/pages/login-page';
 import ResetPasswordPage from '../../page-objects/pages/reset-password-page';
 
@@ -57,8 +58,9 @@ describe('Add account', function () {
           totalFee: '2.800042',
         });
         await homePage.check_pageIsLoaded();
-        await homePage.check_confirmedTxNumberDisplayedInActivity();
-        await homePage.check_txAmountInActivity('-2.8 ETH');
+        const activityList = new ActivityListPage(driver);
+        await activityList.check_confirmedTxNumberDisplayedInActivity();
+        await activityList.check_txAmountInActivity('-2.8 ETH');
 
         // Lock wallet and recover via SRP in "forget password" option
         await headerNavbar.lockMetaMask();
