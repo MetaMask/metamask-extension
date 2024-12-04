@@ -87,6 +87,8 @@ export const NETWORK_TYPES = {
   LINEA_MAINNET: 'linea-mainnet',
 } as const;
 
+export type NetworkTypes = (typeof NETWORK_TYPES)[keyof typeof NETWORK_TYPES];
+
 /**
  * An object containing shortcut names for any non-builtin network. We need
  * this to be able to differentiate between networks that require custom
@@ -153,6 +155,8 @@ export const CHAIN_IDS = {
   ARBITRUM_SEPOLIA: '0x66eee',
   NEAR: '0x18d',
   NEAR_TESTNET: '0x18e',
+  GRAVITY_ALPHA_MAINNET: '0x659',
+  GRAVITY_ALPHA_TESTNET_SEPOLIA: '0x34c1',
 } as const;
 
 export const CHAINLIST_CHAIN_IDS_MAP = {
@@ -209,6 +213,8 @@ export const CHAINLIST_CHAIN_IDS_MAP = {
   FILECOIN: '0x13a',
   NUMBERS: '0x290b',
   APE: '0x8173',
+  GRAVITY_ALPHA_MAINNET: '0x659',
+  GRAVITY_ALPHA_TESTNET_SEPOLIA: '0x34c1',
 } as const;
 
 // To add a deprecation warning to a network, add it to the array
@@ -295,7 +301,6 @@ export const CURRENCY_SYMBOLS = {
   AVALANCHE: 'AVAX',
   BNB: 'BNB',
   BUSD: 'BUSD',
-  BTC: 'BTC', // Do we wanna mix EVM and non-EVM here?
   CELO: 'CELO',
   DAI: 'DAI',
   GNOSIS: 'XDAI',
@@ -316,8 +321,15 @@ export const CURRENCY_SYMBOLS = {
   ONE: 'ONE',
 } as const;
 
+// Non-EVM currency symbols
+export const NON_EVM_CURRENCY_SYMBOLS = {
+  BTC: 'BTC',
+  SOL: 'SOL',
+} as const;
+
 const CHAINLIST_CURRENCY_SYMBOLS_MAP = {
   ...CURRENCY_SYMBOLS,
+  ...NON_EVM_CURRENCY_SYMBOLS,
   BASE: 'ETH',
   LINEA_MAINNET: 'ETH',
   OPBNB: 'BNB',
@@ -454,6 +466,8 @@ export const NUMBERS_TOKEN_IMAGE_URL = './images/numbers-token.png';
 export const SEI_IMAGE_URL = './images/sei.svg';
 export const NEAR_IMAGE_URL = './images/near.svg';
 export const APE_IMAGE_URL = './images/ape.svg';
+export const GRAVITY_ALPHA_MAINNET_IMAGE_URL = './images/gravity.svg';
+export const GRAVITY_ALPHA_TESTNET_SEPOLIA_IMAGE_URL = './images/gravity.svg';
 
 export const INFURA_PROVIDER_TYPES = [
   NETWORK_TYPES.MAINNET,
@@ -792,6 +806,10 @@ export const CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP = {
   [CHAINLIST_CHAIN_IDS_MAP.BASE]: BASE_TOKEN_IMAGE_URL,
   [CHAINLIST_CHAIN_IDS_MAP.NUMBERS]: NUMBERS_MAINNET_IMAGE_URL,
   [CHAINLIST_CHAIN_IDS_MAP.SEI]: SEI_IMAGE_URL,
+  [CHAINLIST_CHAIN_IDS_MAP.GRAVITY_ALPHA_MAINNET]:
+    GRAVITY_ALPHA_MAINNET_IMAGE_URL,
+  [CHAINLIST_CHAIN_IDS_MAP.GRAVITY_ALPHA_TESTNET_SEPOLIA]:
+    GRAVITY_ALPHA_TESTNET_SEPOLIA_IMAGE_URL,
 } as const;
 
 export const CHAIN_ID_TO_ETHERS_NETWORK_NAME_MAP = {
@@ -806,6 +824,9 @@ export const CHAIN_ID_TO_ETHERS_NETWORK_NAME_MAP = {
 export const CHAIN_ID_TOKEN_IMAGE_MAP = {
   [CHAIN_IDS.MAINNET]: ETH_TOKEN_IMAGE_URL,
   [CHAIN_IDS.TEST_ETH]: TEST_ETH_TOKEN_IMAGE_URL,
+  [CHAIN_IDS.ARBITRUM]: ETH_TOKEN_IMAGE_URL,
+  [CHAIN_IDS.BASE]: ETH_TOKEN_IMAGE_URL,
+  [CHAIN_IDS.LINEA_MAINNET]: ETH_TOKEN_IMAGE_URL,
   [CHAIN_IDS.BSC]: BNB_TOKEN_IMAGE_URL,
   [CHAIN_IDS.POLYGON]: POL_TOKEN_IMAGE_URL,
   [CHAIN_IDS.AVALANCHE]: AVAX_TOKEN_IMAGE_URL,
@@ -824,6 +845,9 @@ export const CHAIN_ID_TOKEN_IMAGE_MAP = {
   [CHAIN_IDS.MOONBEAM]: MOONBEAM_TOKEN_IMAGE_URL,
   [CHAINLIST_CHAIN_IDS_MAP.IOTEX_MAINNET]: IOTEX_TOKEN_IMAGE_URL,
   [CHAINLIST_CHAIN_IDS_MAP.APE_MAINNET]: APE_TOKEN_IMAGE_URL,
+  [CHAIN_IDS.GRAVITY_ALPHA_MAINNET]: GRAVITY_ALPHA_MAINNET_IMAGE_URL,
+  [CHAIN_IDS.GRAVITY_ALPHA_TESTNET_SEPOLIA]:
+    GRAVITY_ALPHA_TESTNET_SEPOLIA_IMAGE_URL,
 } as const;
 
 export const INFURA_BLOCKED_KEY = 'countryBlocked';

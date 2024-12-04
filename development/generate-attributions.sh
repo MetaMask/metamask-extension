@@ -27,6 +27,13 @@ main() {
   # relative to the project root irrespective of where this script was run.
   cd "${PROJECT_DIRECTORY}"
 
+  # Remove allow-scripts plugin.
+  # Allow-scripts won't run correctly after a production-only install because the configuration
+  # includes exact paths to each dependency, and those paths can change in a production-only
+  # install because of the hoisting algorithm.
+  # We don't need postinstall scripts to run in order to generate attributions anyway.
+  yarn plugin remove @yarnpkg/plugin-allow-scripts
+
   # Instruct Yarn to only install production dependencies
   yarn workspaces focus --production
 
@@ -38,7 +45,9 @@ main() {
 
   # Check if the script is running in a CI environment (GitHub Actions sets the CI variable to true)
   if [ -z "${CI:-}" ]; then
-    # If not running in CI, restore development dependencies
+    # If not running in CI, restore the allow-scripts plugin and development dependencies.
+    cd "${PROJECT_DIRECTORY}"
+    git checkout -- .yarnrc.yml .yarn
     yarn
   fi
 }

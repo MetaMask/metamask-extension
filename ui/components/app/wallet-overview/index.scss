@@ -9,6 +9,10 @@
   flex-direction: column;
   width: 100%;
 
+  &-fullscreen {
+    align-items: center;
+  }
+
   &__balance {
     flex: 1;
     display: flex;
@@ -16,6 +20,10 @@
     flex-direction: column;
     align-items: start;
     width: 100%;
+
+    .wallet-overview-fullscreen > & {
+      align-items: center;
+    }
   }
 
   &__icon_button {

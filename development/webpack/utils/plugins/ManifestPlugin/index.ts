@@ -93,11 +93,6 @@ export class ManifestPlugin<Z extends boolean> {
     '.txt',
     '.wasm',
     '.vtt', // very slow to process?
-    // ttf is disabled as some were getting corrupted during compression. You
-    // can test this by uncommenting it, running with --zip, and then unzipping
-    // the resulting zip file. If it is still broken the unzip operation will
-    // show an error.
-    // '.ttf',
     '.wav',
     '.xml',
   ]);

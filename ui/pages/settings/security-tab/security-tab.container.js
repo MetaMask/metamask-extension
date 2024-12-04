@@ -24,18 +24,15 @@ import {
 } from '../../../store/actions';
 import {
   getIsSecurityAlertsEnabled,
-  getNetworkConfigurationsByChainId,
   getMetaMetricsDataDeletionId,
   getPetnamesEnabled,
-} from '../../../selectors';
+} from '../../../selectors/selectors';
+import { getNetworkConfigurationsByChainId } from '../../../../shared/modules/selectors/networks';
 import { openBasicFunctionalityModal } from '../../../ducks/app/app';
 import SecurityTab from './security-tab.component';
 
 const mapStateToProps = (state) => {
-  const {
-    appState: { warning },
-    metamask,
-  } = state;
+  const { metamask } = state;
 
   const petnamesEnabled = getPetnamesEnabled(state);
 
@@ -60,7 +57,6 @@ const mapStateToProps = (state) => {
   const networkConfigurations = getNetworkConfigurationsByChainId(state);
 
   return {
-    warning,
     incomingTransactionsPreferences,
     networkConfigurations,
     participateInMetaMetrics,

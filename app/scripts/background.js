@@ -53,9 +53,9 @@ import {
   FakeLedgerBridge,
   FakeTrezorBridge,
 } from '../../test/stub/keyring-bridge';
-// TODO: Remove restricted import
-// eslint-disable-next-line import/no-restricted-paths
-import { getCurrentChainId } from '../../ui/selectors';
+import { getCurrentChainId } from '../../shared/modules/selectors/networks';
+import { addNonceToCsp } from '../../shared/modules/add-nonce-to-csp';
+import { checkURLForProviderInjection } from '../../shared/modules/provider-injection';
 import migrations from './migrations';
 import Migrator from './lib/migrator';
 import ExtensionPlatform from './platforms/extension';
@@ -284,12 +284,14 @@ function maybeDetectPhishing(theController) {
 
       // Determine the block reason based on the type
       let blockReason;
+      let blockedUrl = hostname;
       if (phishingTestResponse?.result && blockedRequestResponse.result) {
         blockReason = `${phishingTestResponse.type} and ${blockedRequestResponse.type}`;
       } else if (phishingTestResponse?.result) {
         blockReason = phishingTestResponse.type;
       } else {
         blockReason = blockedRequestResponse.type;
+        blockedUrl = details.initiator;
       }
 
       theController.metaMetricsController.trackEvent({
@@ -297,11 +299,12 @@ function maybeDetectPhishing(theController) {
         event: MetaMetricsEventName.PhishingPageDisplayed,
         category: MetaMetricsEventCategory.Phishing,
         properties: {
-          url: hostname,
+          url: blockedUrl,
           referrer: {
-            url: hostname,
+            url: blockedUrl,
           },
           reason: blockReason,
+          requestDomain: blockedRequestResponse.result ? hostname : undefined,
         },
       });
       const querystring = new URLSearchParams({ hostname, href });
@@ -330,6 +333,40 @@ function maybeDetectPhishing(theController) {
       urls: ['http://*/*', 'https://*/*'],
     },
     isManifestV2 ? ['blocking'] : [],
+  );
+}
+
+/**
+ * Overrides the Content-Security-Policy (CSP) header by adding a nonce to the `script-src` directive.
+ * This is a workaround for [Bug #1446231](https://bugzilla.mozilla.org/show_bug.cgi?id=1446231),
+ * which involves overriding the page CSP for inline script nodes injected by extension content scripts.
+ */
+function overrideContentSecurityPolicyHeader() {
+  // The extension url is unique per install on Firefox, so we can safely add it as a nonce to the CSP header
+  const nonce = btoa(browser.runtime.getURL('/'));
+  browser.webRequest.onHeadersReceived.addListener(
+    ({ responseHeaders, url }) => {
+      // Check whether inpage.js is going to be injected into the page or not.
+      // There is no reason to modify the headers if we are not injecting inpage.js.
+      const isInjected = checkURLForProviderInjection(new URL(url));
+
+      // Check if the user has enabled the overrideContentSecurityPolicyHeader preference
+      const isEnabled =
+        controller.preferencesController.state
+          .overrideContentSecurityPolicyHeader;
+
+      if (isInjected && isEnabled) {
+        for (const header of responseHeaders) {
+          if (header.name.toLowerCase() === 'content-security-policy') {
+            header.value = addNonceToCsp(header.value, nonce);
+          }
+        }
+      }
+
+      return { responseHeaders };
+    },
+    { types: ['main_frame', 'sub_frame'], urls: ['http://*/*', 'https://*/*'] },
+    ['blocking', 'responseHeaders'],
   );
 }
 
@@ -479,6 +516,11 @@ async function initialize() {
 
     if (!isManifestV3) {
       await loadPhishingWarningPage();
+      // Workaround for Bug #1446231 to override page CSP for inline script nodes injected by extension content scripts
+      // https://bugzilla.mozilla.org/show_bug.cgi?id=1446231
+      if (getPlatform() === PLATFORM_FIREFOX) {
+        overrideContentSecurityPolicyHeader();
+      }
     }
     await sendReadyMessageToTabs();
     log.info('MetaMask initialization complete.');
@@ -730,7 +772,6 @@ export function setupController(
   //
   // MetaMask Controller
   //
-
   controller = new MetamaskController({
     infuraProjectId: process.env.INFURA_PROJECT_ID,
     // User confirmation callbacks:
@@ -849,6 +890,8 @@ export function setupController(
       // communication with popup
       controller.isClientOpen = true;
       controller.setupTrustedCommunication(portStream, remotePort.sender);
+
+      initializeRemoteFeatureFlags();
 
       if (processName === ENVIRONMENT_TYPE_POPUP) {
         openPopupCount += 1;
@@ -1007,11 +1050,6 @@ export function setupController(
     updateBadge,
   );
 
-  controller.controllerMessenger.subscribe(
-    METAMASK_CONTROLLER_EVENTS.NOTIFICATIONS_STATE_CHANGE,
-    updateBadge,
-  );
-
   /**
    * Formats a count for display as a badge label.
    *
@@ -1057,6 +1095,22 @@ export function setupController(
     }
   }
 
+  /**
+   * Initializes remote feature flags by making a request to fetch them from the clientConfigApi.
+   * This function is called when MM is during internal process.
+   * If the request fails, the error will be logged but won't interrupt extension initialization.
+   *
+   * @returns {Promise<void>} A promise that resolves when the remote feature flags have been updated.
+   */
+  async function initializeRemoteFeatureFlags() {
+    try {
+      // initialize the request to fetch remote feature flags
+      await controller.remoteFeatureFlagController.updateRemoteFeatureFlags();
+    } catch (error) {
+      log.error('Error initializing remote feature flags:', error);
+    }
+  }
+
   function getPendingApprovalCount() {
     try {
       let pendingApprovalCount =
@@ -1080,8 +1134,14 @@ export function setupController(
         controller.notificationServicesController.state;
 
       const snapNotificationCount = Object.values(
-        controller.notificationController.state.notifications,
-      ).filter((notification) => notification.readDate === null).length;
+        controller.notificationServicesController.state
+          .metamaskNotificationsList,
+      ).filter(
+        (notification) =>
+          notification.type ===
+            NotificationServicesController.Constants.TRIGGER_TYPES.SNAP &&
+          notification.readDate === null,
+      ).length;
 
       const featureAnnouncementCount = isFeatureAnnouncementsEnabled
         ? controller.notificationServicesController.state.metamaskNotificationsList.filter(
@@ -1099,7 +1159,9 @@ export function setupController(
               !notification.isRead &&
               notification.type !==
                 NotificationServicesController.Constants.TRIGGER_TYPES
-                  .FEATURES_ANNOUNCEMENT,
+                  .FEATURES_ANNOUNCEMENT &&
+              notification.type !==
+                NotificationServicesController.Constants.TRIGGER_TYPES.SNAP,
           ).length
         : 0;
 

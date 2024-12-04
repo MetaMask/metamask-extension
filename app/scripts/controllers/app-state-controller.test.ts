@@ -5,6 +5,7 @@ import {
   ORIGIN_METAMASK,
   POLLING_TOKEN_ENVIRONMENT_TYPES,
 } from '../../../shared/constants/app';
+import { AccountOverviewTabKey } from '../../../shared/constants/app-state';
 import { AppStateController } from './app-state-controller';
 import type {
   AllowedActions,
@@ -209,9 +210,11 @@ describe('AppStateController', () => {
 
   describe('setDefaultHomeActiveTabName', () => {
     it('sets the default home tab name', () => {
-      appStateController.setDefaultHomeActiveTabName('testTabName');
+      appStateController.setDefaultHomeActiveTabName(
+        AccountOverviewTabKey.Activity,
+      );
       expect(appStateController.store.getState().defaultHomeActiveTabName).toBe(
-        'testTabName',
+        AccountOverviewTabKey.Activity,
       );
     });
   });
@@ -368,17 +371,6 @@ describe('AppStateController', () => {
 
       appStateController.setCurrentPopupId(popupId);
       expect(appStateController.getCurrentPopupId()).toBe(popupId);
-    });
-  });
-
-  describe('setFirstTimeUsedNetwork', () => {
-    it('updates the array of the first time used networks', () => {
-      const chainId = '0x1';
-
-      appStateController.setFirstTimeUsedNetwork(chainId);
-      expect(appStateController.store.getState().usedNetworks[chainId]).toBe(
-        true,
-      );
     });
   });
 

@@ -19,7 +19,7 @@ import { getConfirmationSender } from '../pages/confirmations/components/confirm
 import { toChecksumHexAddress } from '../../shared/modules/hexstring-utils';
 import { getSmartTransactionsEnabled } from '../../shared/modules/selectors';
 import { CHAIN_ID_TO_RPC_URL_MAP } from '../../shared/constants/network';
-import { getProviderConfig } from '../ducks/metamask/metamask';
+import { getProviderConfig } from '../../shared/modules/selectors/networks';
 
 type MMITransactionMeta = TransactionMeta & {
   txParams: { from: string };
@@ -34,9 +34,9 @@ export function useMMICustodySendTransaction() {
   const accountType = useSelector(getAccountType);
   const mostRecentOverviewPage = useSelector(getMostRecentOverviewPage);
 
-  const { currentConfirmation } = useConfirmContext() as unknown as {
-    currentConfirmation: TransactionMeta | undefined;
-  };
+  const { currentConfirmation } = useConfirmContext<
+    TransactionMeta | undefined
+  >();
   const { from } = getConfirmationSender(currentConfirmation);
   const fromChecksumHexAddress = toChecksumHexAddress(from || '');
 

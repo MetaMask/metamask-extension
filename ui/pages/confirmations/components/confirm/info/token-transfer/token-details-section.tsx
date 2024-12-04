@@ -26,8 +26,10 @@ import {
   TextVariant,
 } from '../../../../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../../../../hooks/useI18nContext';
-import { getNetworkConfigurationsByChainId } from '../../../../../../selectors';
+import { getNetworkConfigurationsByChainId } from '../../../../../../../shared/modules/selectors/networks';
 import { useConfirmContext } from '../../../../context/confirm';
+import { selectConfirmationAdvancedDetailsOpen } from '../../../../selectors/preferences';
+import { useBalanceChanges } from '../../../simulation-details/useBalanceChanges';
 
 export const TokenDetailsSection = () => {
   const t = useI18nContext();
@@ -37,6 +39,20 @@ export const TokenDetailsSection = () => {
   const { chainId } = transactionMeta;
   const networkConfigurations = useSelector(getNetworkConfigurationsByChainId);
   const networkName = networkConfigurations[chainId].name;
+
+  const showAdvancedDetails = useSelector(
+    selectConfirmationAdvancedDetailsOpen,
+  );
+
+  const isSimulationError = Boolean(
+    transactionMeta.simulationData?.error?.code,
+  );
+  const balanceChangesResult = useBalanceChanges({
+    chainId,
+    simulationData: transactionMeta.simulationData,
+  });
+  const balanceChanges = balanceChangesResult.value;
+  const isSimulationEmpty = balanceChanges.length === 0;
 
   const networkRow = (
     <ConfirmInfoRow label={t('transactionFlowNetwork')}>
@@ -49,7 +65,7 @@ export const TokenDetailsSection = () => {
       >
         <AvatarNetwork
           borderColor={BorderColor.backgroundDefault}
-          size={AvatarNetworkSize.Sm}
+          size={AvatarNetworkSize.Xs}
           src={
             CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP[
               chainId as keyof typeof CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP
@@ -64,14 +80,18 @@ export const TokenDetailsSection = () => {
     </ConfirmInfoRow>
   );
 
-  const tokenRow = transactionMeta.type !== TransactionType.simpleSend && (
-    <ConfirmInfoRow label={t('interactingWith')}>
-      <ConfirmInfoRowAddress
-        address={transactionMeta.txParams.to as string}
-        chainId={chainId}
-      />
-    </ConfirmInfoRow>
-  );
+  const tokenRow = transactionMeta.type !== TransactionType.simpleSend &&
+    (showAdvancedDetails || isSimulationEmpty || isSimulationError) && (
+      <ConfirmInfoRow
+        label={t('interactingWith')}
+        tooltip={t('interactingWithTransactionDescription')}
+      >
+        <ConfirmInfoRowAddress
+          address={transactionMeta.txParams.to as string}
+          chainId={chainId}
+        />
+      </ConfirmInfoRow>
+    );
 
   return (
     <ConfirmInfoSection data-testid="confirmation__transaction-flow">

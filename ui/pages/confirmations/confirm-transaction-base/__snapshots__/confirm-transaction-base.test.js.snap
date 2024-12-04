@@ -337,12 +337,12 @@ exports[`Confirm Transaction Base should match snapshot 1`] = `
                     </div>
                   </div>
                 </div>
+                <p
+                  class="mm-box mm-text mm-text--body-md mm-box--color-text-default"
+                >
+                  No changes
+                </p>
               </div>
-              <p
-                class="mm-box mm-text mm-text--body-md mm-box--color-text-alternative"
-              >
-                No changes predicted for your wallet
-              </p>
             </div>
             <div
               class="transaction-detail"

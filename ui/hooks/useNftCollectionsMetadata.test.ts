@@ -16,10 +16,6 @@ jest.mock('react-redux', () => ({
   useSelector: (selector: any) => selector(),
 }));
 
-jest.mock('../selectors', () => ({
-  getCurrentChainId: jest.fn(),
-}));
-
 jest.mock('../store/actions', () => ({
   getNFTContractInfo: jest.fn(),
   getTokenStandardAndDetails: jest.fn(),

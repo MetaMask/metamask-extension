@@ -49,6 +49,7 @@ type AssetPickerAmountProps = OverridingUnion<
     asset: Asset;
     amount: Amount;
     isAmountLoading?: boolean;
+    action?: 'send' | 'receive';
     error?: string;
     /**
      * Callback for when the amount changes; disables the input when undefined
@@ -65,6 +66,7 @@ export const AssetPickerAmount = ({
   asset,
   amount,
   onAmountChange,
+  action,
   isAmountLoading,
   error: passedError,
   ...assetPickerProps
@@ -210,7 +212,11 @@ export const AssetPickerAmount = ({
         paddingTop={asset.details?.standard === TokenStandard.ERC721 ? 4 : 1}
         paddingBottom={asset.details?.standard === TokenStandard.ERC721 ? 4 : 1}
       >
-        <AssetPicker asset={standardizedAsset} {...assetPickerProps} />
+        <AssetPicker
+          action={action}
+          asset={standardizedAsset}
+          {...assetPickerProps}
+        />
         <SwappableCurrencyInput
           onAmountChange={onAmountChange ? handleChange : undefined}
           assetType={asset.type}

@@ -3,6 +3,7 @@ import {
   getCaipNamespaceFromAddress,
   isBtcMainnetAddress,
   isBtcTestnetAddress,
+  isSolanaAddress,
 } from './multichain';
 
 const BTC_MAINNET_ADDRESSES = [
@@ -61,10 +62,24 @@ describe('multichain', () => {
     );
   });
 
+  describe('isSolanaAddress', () => {
+    // @ts-expect-error This is missing from the Mocha type definitions
+    it.each(SOL_ADDRESSES)(
+      'returns true if address is a valid Solana address: %s',
+      (address: string) => {
+        expect(isSolanaAddress(address)).toBe(true);
+      },
+    );
+
+    it('should return false for invalid Solana addresses', () => {
+      expect(isSolanaAddress('invalid')).toBe(false);
+    });
+  });
+
   describe('getChainTypeFromAddress', () => {
     // @ts-expect-error This is missing from the Mocha type definitions
     it.each([...BTC_MAINNET_ADDRESSES, ...BTC_TESTNET_ADDRESSES])(
-      'returns ChainType.Bitcoin for bitcoin address: %s',
+      'returns KnownCaipNamespace.Bitcoin for bitcoin address: %s',
       (address: string) => {
         expect(getCaipNamespaceFromAddress(address)).toBe(
           KnownCaipNamespace.Bip122,
@@ -74,7 +89,7 @@ describe('multichain', () => {
 
     // @ts-expect-error This is missing from the Mocha type definitions
     it.each(ETH_ADDRESSES)(
-      'returns ChainType.Ethereum for ethereum address: %s',
+      'returns KnownCaipNamespace.Ethereum for ethereum address: %s',
       (address: string) => {
         expect(getCaipNamespaceFromAddress(address)).toBe(
           KnownCaipNamespace.Eip155,
@@ -84,10 +99,10 @@ describe('multichain', () => {
 
     // @ts-expect-error This is missing from the Mocha type definitions
     it.each(SOL_ADDRESSES)(
-      'returns ChainType.Ethereum for non-supported address: %s',
+      'returns KnownCaipNamespace.Solana for non-supported address: %s',
       (address: string) => {
         expect(getCaipNamespaceFromAddress(address)).toBe(
-          KnownCaipNamespace.Eip155,
+          KnownCaipNamespace.Solana,
         );
       },
     );

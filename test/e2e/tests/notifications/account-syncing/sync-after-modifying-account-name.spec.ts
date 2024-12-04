@@ -1,9 +1,6 @@
 import { Mockttp } from 'mockttp';
-import {
-  withFixtures,
-  defaultGanacheOptions,
-  completeImportSRPOnboardingFlow,
-} from '../../../helpers';
+import { USER_STORAGE_FEATURE_NAMES } from '@metamask/profile-sync-controller/sdk';
+import { withFixtures } from '../../../helpers';
 import FixtureBuilder from '../../../fixture-builder';
 import { mockNotificationServices } from '../mocks';
 import {
@@ -13,6 +10,8 @@ import {
 import { UserStorageMockttpController } from '../../../helpers/user-storage/userStorageMockttpController';
 import HeaderNavbar from '../../../page-objects/pages/header-navbar';
 import AccountListPage from '../../../page-objects/pages/account-list-page';
+import HomePage from '../../../page-objects/pages/home/homepage';
+import { completeImportSRPOnboardingFlow } from '../../../page-objects/flows/onboarding.flow';
 import { accountsSyncMockResponse } from './mockData';
 import { IS_ACCOUNT_SYNCING_ENABLED } from './helpers';
 
@@ -27,12 +26,15 @@ describe('Account syncing - Rename Accounts @no-mmi', function () {
       await withFixtures(
         {
           fixtures: new FixtureBuilder({ onboarding: true }).build(),
-          ganacheOptions: defaultGanacheOptions,
           title: this.test?.fullTitle(),
           testSpecificMock: (server: Mockttp) => {
-            userStorageMockttpController.setupPath('accounts', server, {
-              getResponse: accountsSyncMockResponse,
-            });
+            userStorageMockttpController.setupPath(
+              USER_STORAGE_FEATURE_NAMES.accounts,
+              server,
+              {
+                getResponse: accountsSyncMockResponse,
+              },
+            );
 
             return mockNotificationServices(
               server,
@@ -41,12 +43,15 @@ describe('Account syncing - Rename Accounts @no-mmi', function () {
           },
         },
         async ({ driver }) => {
-          await driver.navigate();
-          await completeImportSRPOnboardingFlow(
+          await completeImportSRPOnboardingFlow({
             driver,
-            NOTIFICATIONS_TEAM_SEED_PHRASE,
-            NOTIFICATIONS_TEAM_PASSWORD,
-          );
+            seedPhrase: NOTIFICATIONS_TEAM_SEED_PHRASE,
+            password: NOTIFICATIONS_TEAM_PASSWORD,
+          });
+          const homePage = new HomePage(driver);
+          await homePage.check_pageIsLoaded();
+          await homePage.check_expectedBalanceIsDisplayed();
+          await homePage.check_hasAccountSyncingSyncedAtLeastOnce();
 
           const header = new HeaderNavbar(driver);
           await header.check_pageIsLoaded();
@@ -71,10 +76,12 @@ describe('Account syncing - Rename Accounts @no-mmi', function () {
       await withFixtures(
         {
           fixtures: new FixtureBuilder({ onboarding: true }).build(),
-          ganacheOptions: defaultGanacheOptions,
           title: this.test?.fullTitle(),
           testSpecificMock: (server: Mockttp) => {
-            userStorageMockttpController.setupPath('accounts', server);
+            userStorageMockttpController.setupPath(
+              USER_STORAGE_FEATURE_NAMES.accounts,
+              server,
+            );
             return mockNotificationServices(
               server,
               userStorageMockttpController,
@@ -82,12 +89,15 @@ describe('Account syncing - Rename Accounts @no-mmi', function () {
           },
         },
         async ({ driver }) => {
-          await driver.navigate();
-          await completeImportSRPOnboardingFlow(
+          await completeImportSRPOnboardingFlow({
             driver,
-            NOTIFICATIONS_TEAM_SEED_PHRASE,
-            NOTIFICATIONS_TEAM_PASSWORD,
-          );
+            seedPhrase: NOTIFICATIONS_TEAM_SEED_PHRASE,
+            password: NOTIFICATIONS_TEAM_PASSWORD,
+          });
+          const homePage = new HomePage(driver);
+          await homePage.check_pageIsLoaded();
+          await homePage.check_expectedBalanceIsDisplayed();
+          await homePage.check_hasAccountSyncingSyncedAtLeastOnce();
 
           const header = new HeaderNavbar(driver);
           await header.check_pageIsLoaded();

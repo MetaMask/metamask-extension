@@ -49,16 +49,10 @@ jest.mock('../../../selectors', () => {
   const mockGetSelectedAccount = jest.fn(() => mockSelectedAccount);
 
   return {
+    getSelectedAddress: jest.fn(() => '0xselectedaddress'),
     getAccountType: mockGetAccountType,
     getSelectedInternalAccount: mockGetSelectedAccount,
     getCurrentChainId: jest.fn(() => '0x5'),
-    getSelectedNetworkClientId: jest.fn(() => 'goerli'),
-    getNetworkConfigurationsByChainId: jest.fn(() => ({
-      '0x5': {
-        chainId: '0x5',
-        rpcEndpoints: [{ networkClientId: 'goerli' }],
-      },
-    })),
   };
 });
 
@@ -111,7 +105,7 @@ describe('SelectedAccount Component', () => {
 
     const tooltipTitle = await waitFor(() =>
       container.querySelector(
-        '[data-original-title="This account is not set up for use with goerli"]',
+        '[data-original-title="This account is not set up for use with Goerli"]',
       ),
     );
 

@@ -26,7 +26,6 @@ import {
   getTotalUnapprovedCount,
   getUnapprovedTemplatedConfirmations,
   getWeb3ShimUsageStateForOrigin,
-  getInfuraBlocked,
   getShowWhatsNewPopup,
   getSortedAnnouncementsToShow,
   getShowRecoveryPhraseReminder,
@@ -51,7 +50,7 @@ import {
   getAccountType,
   ///: END:ONLY_INCLUDE_IF
 } from '../../selectors';
-
+import { getInfuraBlocked } from '../../../shared/modules/selectors/networks';
 import {
   closeNotificationPopup,
   setConnectedStatusPopoverHasBeenShown,
@@ -222,10 +221,6 @@ const mapStateToProps = (state) => {
     custodianDeepLink: getCustodianDeepLink(state),
     accountType: getAccountType(state),
     ///: END:ONLY_INCLUDE_IF
-
-    // Set to false to prevent the opt-in modal from showing.
-    // TODO(dbrans): Remove opt-in modal once default opt-in is stable.
-    isSmartTransactionsOptInModalAvailable: false,
     showMultiRpcModal: state.metamask.preferences.showMultiRpcModal,
   };
 };

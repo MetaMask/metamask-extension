@@ -1,17 +1,20 @@
 import { Mockttp } from 'mockttp';
-import {
-  withFixtures,
-  defaultGanacheOptions,
-  completeImportSRPOnboardingFlow,
-  completeCreateNewWalletOnboardingFlow,
-} from '../../../helpers';
+import { USER_STORAGE_FEATURE_NAMES } from '@metamask/profile-sync-controller/sdk';
+import { withFixtures } from '../../../helpers';
 import FixtureBuilder from '../../../fixture-builder';
 import { mockNotificationServices } from '../mocks';
 import { NOTIFICATIONS_TEAM_PASSWORD } from '../constants';
 import { UserStorageMockttpController } from '../../../helpers/user-storage/userStorageMockttpController';
 import HeaderNavbar from '../../../page-objects/pages/header-navbar';
 import AccountListPage from '../../../page-objects/pages/account-list-page';
-import { getSRP, IS_ACCOUNT_SYNCING_ENABLED } from './helpers';
+import HomePage from '../../../page-objects/pages/home/homepage';
+import {
+  completeCreateNewWalletOnboardingFlow,
+  completeImportSRPOnboardingFlow,
+} from '../../../page-objects/flows/onboarding.flow';
+import PrivacySettings from '../../../page-objects/pages/settings/privacy-settings';
+import SettingsPage from '../../../page-objects/pages/settings/settings-page';
+import { IS_ACCOUNT_SYNCING_ENABLED } from './helpers';
 
 describe('Account syncing - New User @no-mmi', function () {
   if (!IS_ACCOUNT_SYNCING_ENABLED) {
@@ -26,10 +29,12 @@ describe('Account syncing - New User @no-mmi', function () {
       await withFixtures(
         {
           fixtures: new FixtureBuilder({ onboarding: true }).build(),
-          ganacheOptions: defaultGanacheOptions,
           title: this.test?.fullTitle(),
           testSpecificMock: (server: Mockttp) => {
-            userStorageMockttpController.setupPath('accounts', server);
+            userStorageMockttpController.setupPath(
+              USER_STORAGE_FEATURE_NAMES.accounts,
+              server,
+            );
 
             return mockNotificationServices(
               server,
@@ -38,13 +43,15 @@ describe('Account syncing - New User @no-mmi', function () {
           },
         },
         async ({ driver }) => {
-          await driver.navigate();
-
           // Create a new wallet
-          await completeCreateNewWalletOnboardingFlow(
+          await completeCreateNewWalletOnboardingFlow({
             driver,
-            NOTIFICATIONS_TEAM_PASSWORD,
-          );
+            password: NOTIFICATIONS_TEAM_PASSWORD,
+          });
+          const homePage = new HomePage(driver);
+          await homePage.check_pageIsLoaded();
+          await homePage.check_expectedBalanceIsDisplayed();
+          await homePage.check_hasAccountSyncingSyncedAtLeastOnce();
 
           // Open account menu and validate 1 account is shown
           const header = new HeaderNavbar(driver);
@@ -60,12 +67,24 @@ describe('Account syncing - New User @no-mmi', function () {
 
           // Add a second account
           await accountListPage.openAccountOptionsMenu();
-          await accountListPage.addNewAccountWithCustomLabel(
-            'My Second Account',
-          );
+          await accountListPage.addNewAccount('My Second Account');
 
           // Set SRP to use for retreival
-          walletSrp = await getSRP(driver, NOTIFICATIONS_TEAM_PASSWORD);
+          const headerNavbar = new HeaderNavbar(driver);
+          await headerNavbar.check_pageIsLoaded();
+          await headerNavbar.openSettingsPage();
+          const settingsPage = new SettingsPage(driver);
+          await settingsPage.check_pageIsLoaded();
+          await settingsPage.goToPrivacySettings();
+
+          const privacySettings = new PrivacySettings(driver);
+          await privacySettings.check_pageIsLoaded();
+          await privacySettings.openRevealSrpQuiz();
+          await privacySettings.completeRevealSrpQuiz();
+          await privacySettings.fillPasswordToRevealSrp(
+            NOTIFICATIONS_TEAM_PASSWORD,
+          );
+          walletSrp = await privacySettings.getSrpInRevealSrpDialog();
           if (!walletSrp) {
             throw new Error('Wallet SRP was not set');
           }
@@ -75,10 +94,12 @@ describe('Account syncing - New User @no-mmi', function () {
       await withFixtures(
         {
           fixtures: new FixtureBuilder({ onboarding: true }).build(),
-          ganacheOptions: defaultGanacheOptions,
           title: this.test?.fullTitle(),
           testSpecificMock: (server: Mockttp) => {
-            userStorageMockttpController.setupPath('accounts', server);
+            userStorageMockttpController.setupPath(
+              USER_STORAGE_FEATURE_NAMES.accounts,
+              server,
+            );
             return mockNotificationServices(
               server,
               userStorageMockttpController,
@@ -86,14 +107,16 @@ describe('Account syncing - New User @no-mmi', function () {
           },
         },
         async ({ driver }) => {
-          await driver.navigate();
-
           // Onboard with import flow using SRP from new account created above
-          await completeImportSRPOnboardingFlow(
+          await completeImportSRPOnboardingFlow({
             driver,
-            walletSrp,
-            NOTIFICATIONS_TEAM_PASSWORD,
-          );
+            seedPhrase: walletSrp,
+            password: NOTIFICATIONS_TEAM_PASSWORD,
+          });
+          const homePage = new HomePage(driver);
+          await homePage.check_pageIsLoaded();
+          await homePage.check_expectedBalanceIsDisplayed();
+          await homePage.check_hasAccountSyncingSyncedAtLeastOnce();
 
           // Open account menu and validate the 2 accounts have been retrieved
           const header = new HeaderNavbar(driver);

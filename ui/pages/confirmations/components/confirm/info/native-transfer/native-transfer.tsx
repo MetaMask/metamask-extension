@@ -19,14 +19,16 @@ const NativeTransferInfo = () => {
     <>
       <NativeSendHeading />
       <TransactionFlowSection />
-      {!isWalletInitiated && (
+      {
         <ConfirmInfoSection noPadding>
           <SimulationDetails
             transaction={transactionMeta}
             isTransactionsRedesign
+            enableMetrics
+            metricsOnly={isWalletInitiated}
           />
         </ConfirmInfoSection>
-      )}
+      }
       <TokenDetailsSection />
       <GasFeesSection />
       <AdvancedDetails />

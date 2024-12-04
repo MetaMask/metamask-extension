@@ -41,12 +41,16 @@ jest.mock('../../context/confirm', () => ({
   })),
 }));
 
-const renderSimulationDetails = (simulationData?: Partial<SimulationData>) =>
+const renderSimulationDetails = (
+  simulationData?: Partial<SimulationData>,
+  metricsOnly?: boolean,
+) =>
   renderWithProvider(
     <SimulationDetails
       transaction={
         { id: 'testTransactionId', simulationData } as TransactionMeta
       }
+      metricsOnly={metricsOnly}
     />,
     store,
   );
@@ -101,17 +105,13 @@ describe('SimulationDetails', () => {
     renderSimulationDetails({
       error: { message: 'Unknown error' },
     });
-    expect(
-      screen.getByText(/error loading your estimation/u),
-    ).toBeInTheDocument();
+    expect(screen.getByText(/Unavailable/u)).toBeInTheDocument();
   });
 
   it('renders empty content when there are no balance changes', () => {
     renderSimulationDetails({});
 
-    expect(
-      screen.getByText(/No changes predicted for your wallet/u),
-    ).toBeInTheDocument();
+    expect(screen.getByText(/No changes/u)).toBeInTheDocument();
   });
 
   it('passes the correct properties to BalanceChangeList components', () => {
@@ -144,5 +144,10 @@ describe('SimulationDetails', () => {
       }),
       {},
     );
+  });
+
+  it('does not render any UI elements when metricsOnly is true', () => {
+    const { container } = renderSimulationDetails({}, true);
+    expect(container).toBeEmptyDOMElement();
   });
 });

@@ -4,9 +4,9 @@ import { BigNumber } from 'bignumber.js';
 import { isBoolean } from 'lodash';
 import { useMemo } from 'react';
 import { useSelector } from 'react-redux';
+import { calcTokenAmount } from '../../../../../../../../shared/lib/transactions-controller-utils';
 import { getIntlLocale } from '../../../../../../../ducks/locale/locale';
-import { SPENDING_CAP_UNLIMITED_MSG } from '../../../../../constants';
-import { toNonScientificString } from '../../hooks/use-token-values';
+import { formatAmount } from '../../../../simulation-details/formatAmount';
 import { useDecodedTransactionData } from '../../hooks/useDecodedTransactionData';
 import { useIsNFT } from './use-is-nft';
 
@@ -27,7 +27,7 @@ export const useApproveTokenSimulation = (
 
   const decodedSpendingCap = useMemo(() => {
     if (!value) {
-      return 0;
+      return '0';
     }
 
     const paramIndex = value.data[0].params.findIndex(
@@ -38,30 +38,35 @@ export const useApproveTokenSimulation = (
         !isBoolean(param.value),
     );
     if (paramIndex === -1) {
-      return 0;
+      return '0';
     }
 
-    return new BigNumber(value.data[0].params[paramIndex].value.toString())
-      .dividedBy(new BigNumber(10).pow(Number(decimals)))
-      .toNumber();
+    return calcTokenAmount(
+      value.data[0].params[paramIndex].value,
+      Number(decimals),
+    ).toFixed();
   }, [value, decimals]);
 
+  const tokenPrefix = isNFT ? '#' : '';
+
   const formattedSpendingCap = useMemo(() => {
-    // formatting coerces small numbers to 0
-    return isNFT || decodedSpendingCap < 1
-      ? toNonScientificString(decodedSpendingCap)
-      : new Intl.NumberFormat(locale).format(decodedSpendingCap);
+    return isNFT
+      ? `${tokenPrefix}${decodedSpendingCap}`
+      : formatAmount(locale, new BigNumber(decodedSpendingCap));
   }, [decodedSpendingCap, isNFT, locale]);
 
-  const spendingCap = useMemo(() => {
-    if (!isNFT && isSpendingCapUnlimited(decodedSpendingCap)) {
-      return SPENDING_CAP_UNLIMITED_MSG;
+  const { spendingCap, isUnlimitedSpendingCap } = useMemo(() => {
+    if (!isNFT && isSpendingCapUnlimited(parseInt(decodedSpendingCap, 10))) {
+      return { spendingCap: decodedSpendingCap, isUnlimitedSpendingCap: true };
     }
-    const tokenPrefix = isNFT ? '#' : '';
-    return `${tokenPrefix}${formattedSpendingCap}`;
+    return {
+      spendingCap: `${tokenPrefix}${decodedSpendingCap}`,
+      isUnlimitedSpendingCap: false,
+    };
   }, [decodedSpendingCap, formattedSpendingCap, isNFT]);
 
   return {
+    isUnlimitedSpendingCap,
     spendingCap,
     formattedSpendingCap,
     value,

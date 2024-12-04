@@ -1,6 +1,7 @@
 import { Hex } from '@metamask/utils';
 import { BigNumber } from 'bignumber.js';
-import { addHexPrefix, BN } from 'ethereumjs-util';
+import BN from 'bn.js';
+import { addHexPrefix } from 'ethereumjs-util';
 import { EtherDenomination } from '../constants/common';
 import { Numeric, NumericValue } from './Numeric';
 
@@ -182,6 +183,12 @@ export function hexWEIToDecGWEI(value: number | string | BigNumber | BN) {
 
 export function decimalToHex(decimal: number | string | BigNumber | BN) {
   return new Numeric(decimal, 10).toBase(16).toString();
+}
+
+export function decimalToPrefixedHex(
+  decimal: number | string | BigNumber | BN,
+): Hex {
+  return new Numeric(decimal, 10).toPrefixedHexString() as Hex;
 }
 
 export function hexToDecimal(hexValue: number | string | BigNumber | BN) {

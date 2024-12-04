@@ -26,6 +26,7 @@ import {
 import { DEFAULT_AUTO_LOCK_TIME_LIMIT } from '../../../shared/constants/preferences';
 import { LastInteractedConfirmationInfo } from '../../../shared/types/confirm';
 import { SecurityAlertResponse } from '../lib/ppom/types';
+import { AccountOverviewTabKey } from '../../../shared/constants/app-state';
 import type {
   Preferences,
   PreferencesControllerGetStateAction,
@@ -35,7 +36,7 @@ import type {
 export type AppStateControllerState = {
   timeoutMinutes: number;
   connectedStatusPopoverHasBeenShown: boolean;
-  defaultHomeActiveTabName: string | null;
+  defaultHomeActiveTabName: AccountOverviewTabKey | null;
   browserEnvironment: Record<string, string>;
   popupGasPollTokens: string[];
   notificationGasPollTokens: string[];
@@ -61,7 +62,6 @@ export type AppStateControllerState = {
   hadAdvancedGasFeesSetPriorToMigration92_3: boolean;
   qrHardware: Json;
   nftsDropdownState: Json;
-  usedNetworks: Record<string, boolean>;
   surveyLinkLastClickedOrClosed: number | null;
   signatureSecurityAlertResponses: Record<string, SecurityAlertResponse>;
   // States used for displaying the changed network toast
@@ -137,7 +137,6 @@ type AppStateControllerInitState = Partial<
     AppStateControllerState,
     | 'qrHardware'
     | 'nftsDropdownState'
-    | 'usedNetworks'
     | 'surveyLinkLastClickedOrClosed'
     | 'signatureSecurityAlertResponses'
     | 'switchedNetworkDetails'
@@ -183,11 +182,6 @@ const getDefaultAppStateControllerState = (
   ...initState,
   qrHardware: {},
   nftsDropdownState: {},
-  usedNetworks: {
-    '0x1': true,
-    '0x5': true,
-    '0x539': true,
-  },
   surveyLinkLastClickedOrClosed: null,
   signatureSecurityAlertResponses: {},
   switchedNetworkDetails: null,
@@ -326,7 +320,9 @@ export class AppStateController extends EventEmitter {
    *
    * @param defaultHomeActiveTabName - the tab name
    */
-  setDefaultHomeActiveTabName(defaultHomeActiveTabName: string | null): void {
+  setDefaultHomeActiveTabName(
+    defaultHomeActiveTabName: AccountOverviewTabKey | null,
+  ): void {
     this.store.updateState({
       defaultHomeActiveTabName,
     });
@@ -699,19 +695,6 @@ export class AppStateController extends EventEmitter {
     this.store.updateState({
       nftsDropdownState,
     });
-  }
-
-  /**
-   * Updates the array of the first time used networks
-   *
-   * @param chainId
-   */
-  setFirstTimeUsedNetwork(chainId: string): void {
-    const currentState = this.store.getState();
-    const { usedNetworks } = currentState;
-    usedNetworks[chainId] = true;
-
-    this.store.updateState({ usedNetworks });
   }
 
   ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
