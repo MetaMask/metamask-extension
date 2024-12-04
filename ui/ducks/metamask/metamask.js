@@ -23,7 +23,7 @@ import { getSelectedInternalAccount } from '../../selectors/accounts';
 import * as actionConstants from '../../store/actionConstants';
 import { updateTransactionGasFees } from '../../store/actions';
 import { setCustomGasLimit, setCustomGasPrice } from '../gas/gas.duck';
-import { initialMetamaskState } from '../../../app/scripts/metamask-controller-stores';
+import { initialMetamaskState } from './constants';
 
 /**
  * Temporary types for this slice so that inferrence of MetaMask state tree can
