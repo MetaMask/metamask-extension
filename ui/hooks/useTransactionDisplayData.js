@@ -37,7 +37,7 @@ import { isEqualCaseInsensitive } from '../../shared/modules/string-utils';
 import { getTokenValueParam } from '../../shared/lib/metamask-controller-utils';
 import { selectBridgeHistoryForAccount } from '../ducks/bridge-status/selectors';
 import { calcTokenAmount } from '../../shared/lib/transactions-controller-utils';
-import { useBridgeTokenDisplayCurrencyAmount } from '../pages/bridge/hooks/useBridgeTokenValue';
+import { useBridgeTokenDisplayCurrencyAmount } from '../pages/bridge/hooks/useBridgeDisplayCurrencyAmount';
 import { useI18nContext } from './useI18nContext';
 import { useTokenFiatAmount } from './useTokenFiatAmount';
 import { useUserPreferencedCurrency } from './useUserPreferencedCurrency';
