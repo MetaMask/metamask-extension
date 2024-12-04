@@ -58,23 +58,23 @@ import type {
   NotificationServicesPushController,
 } from '@metamask/notification-services-controller';
 
-import { BridgeStatusControllerState } from '../../shared/types/bridge-status';
+import { BridgeStatusControllerState } from './bridge-status';
 
-import type { BalancesController as MultichainBalancesControllerState } from './lib/accounts/BalancesController';
-import type { NetworkOrderControllerState } from './controllers/network-order';
-import type { AccountOrderControllerState } from './controllers/account-order';
-import type { PreferencesControllerState } from './controllers/preferences-controller';
-import type { AppStateControllerState } from './controllers/app-state-controller';
-import type { AlertControllerState } from './controllers/alert-controller';
-import type { OnboardingControllerState } from './controllers/onboarding';
-import type { EncryptionPublicKeyControllerState } from './controllers/encryption-public-key';
-import type { AppMetadataControllerState } from './controllers/app-metadata';
-import type { DecryptMessageControllerState } from './controllers/decrypt-message';
-import type { SwapsControllerState } from './controllers/swaps/swaps.types';
-import type { BridgeControllerState } from './controllers/bridge/types';
-import { MetaMetricsDataDeletionState } from './controllers/metametrics-data-deletion/metametrics-data-deletion';
-import { MetaMetricsControllerState } from './controllers/metametrics-controller';
-import { AccountTrackerControllerState } from './controllers/account-tracker-controller';
+import type { BalancesController as MultichainBalancesControllerState } from '../../app/scripts/lib/accounts/BalancesController';
+import type { NetworkOrderControllerState } from '../../app/scripts/controllers/network-order';
+import type { AccountOrderControllerState } from '../../app/scripts/controllers/account-order';
+import type { PreferencesControllerState } from '../../app/scripts/controllers/preferences-controller';
+import type { AppStateControllerState } from '../../app/scripts/controllers/app-state-controller';
+import type { AlertControllerState } from '../../app/scripts/controllers/alert-controller';
+import type { OnboardingControllerState } from '../../app/scripts/controllers/onboarding';
+import type { EncryptionPublicKeyControllerState } from '../../app/scripts/controllers/encryption-public-key';
+import type { AppMetadataControllerState } from '../../app/scripts/controllers/app-metadata';
+import type { DecryptMessageControllerState } from '../../app/scripts/controllers/decrypt-message';
+import type { SwapsControllerState } from '../../app/scripts/controllers/swaps/swaps.types';
+import type { BridgeControllerState } from '../../app/scripts/controllers/bridge/types';
+import { MetaMetricsDataDeletionState } from '../../app/scripts/controllers/metametrics-data-deletion/metametrics-data-deletion';
+import { MetaMetricsControllerState } from '../../app/scripts/controllers/metametrics-controller';
+import { AccountTrackerControllerState } from '../../app/scripts/controllers/account-tracker-controller';
 
 export type ResetOnRestartStoresComposedState = {
   AccountTracker: AccountTrackerControllerState;

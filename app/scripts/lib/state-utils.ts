@@ -1,12 +1,10 @@
 import { SnapControllerState } from '@metamask/snaps-controllers';
 import { isSnapId, Snap } from '@metamask/snaps-utils';
-import { MemStoreControllersComposedState } from '../metamask-controller-stores';
+import { MemStoreControllersComposedState as BackgroundState } from '../../../shared/types/metamask';
 
 const REMOVE_KEYS = ['snapStates', 'unencryptedSnapStates', 'vault'] as const;
 
-export function sanitizeUIState(
-  state: MemStoreControllersComposedState,
-): MemStoreControllersComposedState {
+export function sanitizeUIState(state: BackgroundState): BackgroundState {
   const newState = { ...state };
 
   for (const key of REMOVE_KEYS) {
@@ -22,7 +20,7 @@ export function sanitizeUIState(
   return newState;
 }
 
-function sanitizeSnapData(state: MemStoreControllersComposedState) {
+function sanitizeSnapData(state: BackgroundState) {
   const snapsData: SnapControllerState['snaps'] | undefined =
     state.SnapController.snaps;
 
