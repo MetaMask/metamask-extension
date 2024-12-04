@@ -79,6 +79,6 @@ export class WalletPage {
   }
 
   async waitforTokenBalance(balance: string) {
-    await this.page.waitForSelector(`text=/${balance}/`, { timeout: 180000 });
+    await this.page.waitForSelector(`text=/${balance}/`, { timeout: 60000 });
   }
 }
