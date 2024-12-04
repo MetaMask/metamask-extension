@@ -5161,7 +5161,10 @@ export default class MetamaskController extends EventEmitter {
 
   /**
    * Gets the sorted permitted accounts for the specified origin. Returns an empty
-   * array if no accounts are permitted or the wallet is locked.
+   * array if no accounts are permitted or the wallet is locked. Returns any permitted
+   * accounts if the wallet is locked and `ignoreLock` is true. This lock bypass is needed
+   * for the eth_requestAccounts and wallet_getPermission handlers which respectively either
+   * handle locked wallet behavior internally or ignore it entirely.
    *
    * @param {string} origin - The origin whose exposed accounts to retrieve.
    * @param {boolean} ignoreLock - If accounts should be returned even if the wallet is locked.
