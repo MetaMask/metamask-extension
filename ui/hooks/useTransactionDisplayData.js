@@ -36,8 +36,7 @@ import { captureSingleException } from '../store/actions';
 import { isEqualCaseInsensitive } from '../../shared/modules/string-utils';
 import { getTokenValueParam } from '../../shared/lib/metamask-controller-utils';
 import { selectBridgeHistoryForAccount } from '../ducks/bridge-status/selectors';
-import { calcTokenAmount } from '../../shared/lib/transactions-controller-utils';
-import { useBridgeTokenDisplayCurrencyAmount } from '../pages/bridge/hooks/useBridgeTokenValue';
+import { useBridgeTokenDisplayData } from '../pages/bridge/hooks/useBridgeTokenValue';
 import { useI18nContext } from './useI18nContext';
 import { useTokenFiatAmount } from './useTokenFiatAmount';
 import { useUserPreferencedCurrency } from './useUserPreferencedCurrency';
@@ -259,8 +258,7 @@ export function useTransactionDisplayData(transactionGroup) {
     isViewingReceivedTokenFromSwap,
   } = useSwappedTokenValue(transactionGroup, currentAsset);
 
-  const { displayCurrencyAmount: bridgeDisplayCurrencyAmount } =
-    useBridgeTokenDisplayCurrencyAmount(transactionGroup);
+  const bridgeTokenDisplayData = useBridgeTokenDisplayData(transactionGroup);
 
   if (signatureTypes.includes(type)) {
     category = TransactionGroupCategory.signatureRequest;
@@ -387,15 +385,10 @@ export function useTransactionDisplayData(transactionGroup) {
     primarySuffix = primaryTransaction.sourceTokenSymbol;
   } else if (type === TransactionType.bridge) {
     title = t('bridgeToChain', [destChainName || '']);
-    category = TransactionGroupCategory.bridge;
-    // TODO also secondaryDisplayValue, secondarySuffix
-
-    primarySuffix = primaryTransaction.sourceTokenSymbol;
-    primaryDisplayValue = calcTokenAmount(
-      primaryTransaction.sourceTokenAmount,
-      primaryTransaction.sourceTokenDecimals,
-    );
-    secondaryDisplayValue = bridgeDisplayCurrencyAmount;
+    category = bridgeTokenDisplayData.category;
+    primarySuffix = bridgeTokenDisplayData.sourceTokenSymbol;
+    primaryDisplayValue = bridgeTokenDisplayData.sourceTokenAmount;
+    secondaryDisplayValue = bridgeTokenDisplayData.displayCurrencyAmount;
   } else {
     dispatch(
       captureSingleException(
