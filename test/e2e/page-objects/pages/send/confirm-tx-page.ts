@@ -9,17 +9,20 @@ class ConfirmTxPage {
 
   private transactionFee: string;
 
-  private editFee: object;
+  private editFeeLegacyDesign: object;
+
+  private editFeeRedesign: string;
 
   constructor(driver: Driver) {
     this.driver = driver;
     this.confirmButton = '[data-testid="page-container-footer-next"]';
     this.transactionFee = '[data-testid="confirm-gas-display"]';
     this.totalFee = '[data-testid="confirm-page-total-amount"]';
-    this.editFee = {
+    this.editFeeLegacyDesign = {
            text: 'Edit',
            tag: 'button'
-    }
+    };
+    this.editFeeRedesign = '[data-testid="edit-gas-fee-icon"]';
   }
 
   /**
@@ -59,9 +62,13 @@ class ConfirmTxPage {
     console.log('Click confirm button to confirm transaction');
     await this.driver.clickElement(this.confirmButton);
   }
-  async openEditFeeModal(): Promise<void> {
+  async openEditFeeModal(confirmationsRedesign: boolean = true): Promise<void> {
     console.log('Click edit fee button to open edit fee modal');
-    await this.driver.clickElement(this.editFee);
+    if (confirmationsRedesign) {
+      await this.driver.clickElement(this.editFeeRedesign);
+    } else {
+      await this.driver.clickElement(this.editFeeLegacyDesign);
+    }
   }
 }
 

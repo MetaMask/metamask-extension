@@ -5,6 +5,7 @@ import { Driver } from '../../webdriver/driver';
 import FixtureBuilder from '../../fixture-builder';
 import { loginWithoutBalanceValidation } from '../../page-objects/flows/login.flow';
 import HomePage from '../../page-objects/pages/home/homepage';
+import ActivityListPage from '../../page-objects/pages/home/activity-list';
 import SendTokenPage from '../../page-objects/pages/send/send-token-page';
 import ConfirmTxPage from '../../page-objects/pages/send/confirm-tx-page';
 import { mockServerJsonRpc } from '../ppom/mocks/mock-server-json-rpc';
@@ -29,6 +30,8 @@ describe('ENS', function (this: Suite) {
   const supportsInterfaceSignature: string = '0x01ffc9a7';
   const addressSignature: string = '0x3b3b57de';
   const sampleEnsDomain: string = 'test.eth';
+  const infuraUrl: string =
+  'https://mainnet.infura.io/v3/00000000000000000000000000000000';
 
   async function mockInfura(mockServer: MockttpServer): Promise<void> {
     await mockServer
@@ -43,17 +46,6 @@ describe('ENS', function (this: Suite) {
         },
       }));
 
-    await mockServer
-      .forPost(infuraUrl)
-      .withJsonBodyIncluding({ method: 'eth_getBalance' })
-      .thenCallback(() => ({
-        statusCode: 200,
-        json: {
-          jsonrpc: '2.0',
-          id: '1111111111111111',
-          result: '0xDE0B6B3A7640000', // 1 ETH in hex
-        },
-      }));
 
     await mockServer
       .forPost(infuraUrl)
@@ -67,16 +59,6 @@ describe('ENS', function (this: Suite) {
         },
       }));
     await mockMultiNetworkBalancePolling(mockServer);
-
-      await mockServer
-      .forPost(infuraUrl)
-      .withJsonBodyIncluding({ method: 'net_version' })
-      .thenCallback(() => {
-        return {
-          statusCode: 200,
-          json: { id: 8262367391254633, jsonrpc: '2.0', result: '1' },
-        };
-      });
 
     await mockServerJsonRpc(mockServer, [
       ['eth_blockNumber'],
@@ -120,30 +102,6 @@ describe('ENS', function (this: Suite) {
           ],
           result: `0x000000000000000000000000${sampleAddress}`,
         },
-      ],
-      [
-        'eth_call',
-        {
-          params: [
-            {
-              to: '0xb1f8e55c7f64d203c1400b9d8555d050f94adf39',
-              data: '0xf0002ea90000000000000000000000000000000000000000000000000000000000000040000000000000000000000000000000000000000000000000000000000000008000000000000000000000000000000000000000000000000000000000000000010000000000000000000000005cfe73b6021e818b776b421b1c4db2474086a7e100000000000000000000000000000000000000000000000000000000000000010000000000000000000000000000000000000000000000000000000000000000',
-            },
-          ],
-          result: '0x1',
-        }
-      ],
-      [
-        'eth_call',
-        {
-          params: [
-            {
-              to: '0xb1f8e55c7f64d203c1400b9d8555d050f94adf39',
-              data: '0xf0002ea900000000000000000000000000000000000000000000000000000000000000400000000000000000000000000000000000000000000000000000000000000060000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000010000000000000000000000000000000000000000000000000000000000000000',
-            },
-          ],
-          result: '0x1',
-        }
       ],
       [
         'eth_call',
@@ -214,22 +172,8 @@ describe('ENS', function (this: Suite) {
       [
         'eth_getCode',
         {
-          params: [`0x${mockResolver}`, 'latest'],
-          result: '0x', // Assuming the contract code is empty
-        },
-      ],
-      [
-        'eth_getCode',
-        {
           params: [`0x1111111111111111111111111111111111111111`, '0x1'],
           result: '0x1', // Assuming the contract code is empty
-        },
-      ],
-      [
-        'eth_getTransactionCount',
-        {
-          params: [`0x${mockResolver}`, 'latest'],
-          result: '0x1', // Assuming the transaction count is 1
         },
       ],
       [
@@ -310,12 +254,12 @@ describe('ENS', function (this: Suite) {
          // Confirm the transaction
          const confirmTxPage = new ConfirmTxPage(driver);
 
-         await confirmTxPage.openEditFeeModal();
-
          await confirmTxPage.check_pageIsLoaded(
           '0.000042',
           '0.100042'
       );
+
+         await confirmTxPage.openEditFeeModal();
 
          // Edit gas fee form
          await editGasFeeForm(driver, '21000', '100');
@@ -329,7 +273,8 @@ describe('ENS', function (this: Suite) {
 
          await driver.delay(50000);
 
-         await homepage.check_confirmedTxNumberDisplayedInActivity();
+         const activityList = new ActivityListPage(driver);
+         await activityList.check_confirmedTxNumberDisplayedInActivity();
       },
     );
   });
