@@ -24,8 +24,10 @@ package.json
 yarn.lock
 app/scripts/metamask-controller.js
 
-# LavaMoat policy changes are reviewed by either the extension platform team or
-# the supply chain team.
+# LavaMoat policy changes can highlight security risks. Teams are encouraged to
+# audit these changes on their own, and leave their analysis in a comment.
+# These codeowners will review this analysis, and review the policy changes in
+# further detail if warranted.
 lavamoat/                            @MetaMask/extension-platform @MetaMask/supply-chain
 
 # The offscreen.ts script file that is included in the offscreen document html
