@@ -141,7 +141,6 @@ import {
 import { UserOperationController } from '@metamask/user-operation-controller';
 
 import {
-  TransactionController,
   TransactionStatus,
   TransactionType,
 } from '@metamask/transaction-controller';
@@ -164,6 +163,7 @@ import {
   NotificationServicesPushController,
   NotificationServicesController,
 } from '@metamask/notification-services-controller';
+import { createProjectLogger } from '@metamask/utils';
 import {
   methodsRequiringNetworkSwitch,
   methodsThatCanSwitchNetworkWithoutApproval,
@@ -231,11 +231,8 @@ import { isManifestV3 } from '../../shared/modules/mv3.utils';
 import { convertNetworkId } from '../../shared/modules/network.utils';
 import {
   getIsSmartTransaction,
-  isHardwareWallet,
   getFeatureFlagsByChainId,
-  getCurrentChainSupportsSmartTransactions,
   getHardwareWalletType,
-  getSmartTransactionsPreferenceEnabled,
 } from '../../shared/modules/selectors';
 import { createCaipStream } from '../../shared/modules/caip-stream';
 import { BaseUrl } from '../../shared/constants/urls';
@@ -255,25 +252,8 @@ import {
   ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
   handleMMITransactionUpdate,
   ///: END:ONLY_INCLUDE_IF
-  handleTransactionAdded,
-  handleTransactionApproved,
-  handleTransactionFailed,
-  handleTransactionConfirmed,
-  handleTransactionDropped,
-  handleTransactionRejected,
-  handleTransactionSubmitted,
-  handlePostTransactionBalanceUpdate,
   createTransactionEventFragmentWithTxId,
 } from './lib/transaction/metrics';
-///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-import {
-  afterTransactionSign as afterTransactionSignMMI,
-  beforeCheckPendingTransaction as beforeCheckPendingTransactionMMI,
-  beforeTransactionPublish as beforeTransactionPublishMMI,
-  getAdditionalSignArguments as getAdditionalSignArgumentsMMI,
-} from './lib/transaction/mmi-hooks';
-///: END:ONLY_INCLUDE_IF
-import { submitSmartTransactionHook } from './lib/transaction/smart-transactions';
 ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
 import { keyringSnapPermissionsBuilder } from './lib/snap-keyring/keyring-snaps-permissions';
 ///: END:ONLY_INCLUDE_IF
@@ -380,6 +360,10 @@ import { PatchStore } from './lib/PatchStore';
 import { sanitizeUIState } from './lib/state-utils';
 import BridgeStatusController from './controllers/bridge-status/bridge-status-controller';
 import { BRIDGE_STATUS_CONTROLLER_NAME } from './controllers/bridge-status/constants';
+import { TransactionControllerInit } from './controller-init/transaction-controller-init';
+import { ControllerName } from './controller-init/controller-init';
+
+const debugLog = createProjectLogger('metamask-controller');
 
 const { TRIGGER_TYPES } = NotificationServicesController.Constants;
 export const METAMASK_CONTROLLER_EVENTS = {
@@ -449,15 +433,6 @@ export default class MetamaskController extends EventEmitter {
 
     this.controllerMessenger = new ControllerMessenger();
 
-    this.loggingController = new LoggingController({
-      messenger: this.controllerMessenger.getRestricted({
-        name: 'LoggingController',
-        allowedActions: [],
-        allowedEvents: [],
-      }),
-      state: initState.LoggingController,
-    });
-
     // instance of a class that wraps the extension's storage local API.
     this.localStoreApiWrapper = opts.localStore;
 
@@ -477,1421 +452,2112 @@ export default class MetamaskController extends EventEmitter {
     // lock to ensure only one vault created at once
     this.createVaultMutex = new Mutex();
 
-    this.extension.runtime.onInstalled.addListener((details) => {
-      if (details.reason === 'update') {
-        if (version === '8.1.0') {
-          this.platform.openExtensionInBrowser();
+    const loggingControllerInit = () => {
+      this.loggingController = new LoggingController({
+        messenger: this.controllerMessenger.getRestricted({
+          name: 'LoggingController',
+          allowedActions: [],
+          allowedEvents: [],
+        }),
+        state: initState.LoggingController,
+      });
+
+      this.extension.runtime.onInstalled.addListener((details) => {
+        if (details.reason === 'update') {
+          if (version === '8.1.0') {
+            this.platform.openExtensionInBrowser();
+          }
+          this.loggingController.add({
+            type: LogType.GenericLog,
+            data: {
+              event: LOG_EVENT.VERSION_UPDATE,
+              previousVersion: details.previousVersion,
+              version,
+            },
+          });
         }
-        this.loggingController.add({
-          type: LogType.GenericLog,
-          data: {
-            event: LOG_EVENT.VERSION_UPDATE,
-            previousVersion: details.previousVersion,
-            version,
-          },
-        });
-      }
-    });
+      });
 
-    this.appMetadataController = new AppMetadataController({
-      state: initState.AppMetadataController,
-      messenger: this.controllerMessenger.getRestricted({
-        name: 'AppMetadataController',
-        allowedActions: [],
-        allowedEvents: [],
-      }),
-      currentMigrationVersion: this.currentMigrationVersion,
-      currentAppVersion: version,
-    });
-
-    // next, we will initialize the controllers
-    // controller initialization order matters
-    const clearPendingConfirmations = () => {
-      this.encryptionPublicKeyController.clearUnapproved();
-      this.decryptMessageController.clearUnapproved();
-      this.signatureController.clearUnapproved();
-      this.approvalController.clear(providerErrors.userRejectedRequest());
+      return this.loggingController;
     };
 
-    this.approvalController = new ApprovalController({
-      messenger: this.controllerMessenger.getRestricted({
-        name: 'ApprovalController',
-      }),
-      showApprovalRequest: opts.showUserConfirmation,
-      typesExcludedFromRateLimiting: [
-        ApprovalType.PersonalSign,
-        ApprovalType.EthSignTypedData,
-        ApprovalType.Transaction,
-        ApprovalType.WatchAsset,
-        ApprovalType.EthGetEncryptionPublicKey,
-        ApprovalType.EthDecrypt,
-      ],
-    });
+    const appMetadataControllerInit = () => {
+      this.appMetadataController = new AppMetadataController({
+        state: initState.AppMetadataController,
+        messenger: this.controllerMessenger.getRestricted({
+          name: 'AppMetadataController',
+          allowedActions: [],
+          allowedEvents: [],
+        }),
+        currentMigrationVersion: this.currentMigrationVersion,
+        currentAppVersion: version,
+      });
 
-    this.queuedRequestController = new QueuedRequestController({
-      messenger: this.controllerMessenger.getRestricted({
-        name: 'QueuedRequestController',
-        allowedActions: [
-          'NetworkController:getState',
-          'NetworkController:setActiveNetwork',
-          'SelectedNetworkController:getNetworkClientIdForDomain',
+      // next, we will initialize the controllers
+      // controller initialization order matters
+      this.clearPendingConfirmations = () => {
+        this.encryptionPublicKeyController.clearUnapproved();
+        this.decryptMessageController.clearUnapproved();
+        this.signatureController.clearUnapproved();
+        this.approvalController.clear(providerErrors.userRejectedRequest());
+      };
+
+      return this.appMetadataController;
+    };
+
+    const approvalControllerInit = () => {
+      return (this.approvalController = new ApprovalController({
+        messenger: this.controllerMessenger.getRestricted({
+          name: 'ApprovalController',
+        }),
+        showApprovalRequest: opts.showUserConfirmation,
+        typesExcludedFromRateLimiting: [
+          ApprovalType.PersonalSign,
+          ApprovalType.EthSignTypedData,
+          ApprovalType.Transaction,
+          ApprovalType.WatchAsset,
+          ApprovalType.EthGetEncryptionPublicKey,
+          ApprovalType.EthDecrypt,
         ],
-        allowedEvents: ['SelectedNetworkController:stateChange'],
-      }),
-      shouldRequestSwitchNetwork: ({ method }) =>
-        methodsRequiringNetworkSwitch.includes(method),
-      canRequestSwitchNetworkWithoutApproval: ({ method }) =>
-        methodsThatCanSwitchNetworkWithoutApproval.includes(method),
-      clearPendingConfirmations,
-      showApprovalRequest: () => {
-        if (this.approvalController.getTotalApprovalCount() > 0) {
-          opts.showUserConfirmation();
-        }
-      },
-    });
+      }));
+    };
+
+    const queuedRequestControllerInit = () => {
+      return (this.queuedRequestController = new QueuedRequestController({
+        messenger: this.controllerMessenger.getRestricted({
+          name: 'QueuedRequestController',
+          allowedActions: [
+            'NetworkController:getState',
+            'NetworkController:setActiveNetwork',
+            'SelectedNetworkController:getNetworkClientIdForDomain',
+          ],
+          allowedEvents: ['SelectedNetworkController:stateChange'],
+        }),
+        shouldRequestSwitchNetwork: ({ method }) =>
+          methodsRequiringNetworkSwitch.includes(method),
+        canRequestSwitchNetworkWithoutApproval: ({ method }) =>
+          methodsThatCanSwitchNetworkWithoutApproval.includes(method),
+        clearPendingConfirmations: this.clearPendingConfirmations,
+        showApprovalRequest: () => {
+          if (this.approvalController.getTotalApprovalCount() > 0) {
+            opts.showUserConfirmation();
+          }
+        },
+      }));
+    };
 
     ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-    this.mmiConfigurationController = new MmiConfigurationController({
-      initState: initState.MmiConfigurationController,
-      mmiConfigurationServiceUrl: process.env.MMI_CONFIGURATION_SERVICE_URL,
-    });
+    const mmiConfigurationControllerInit = () => {
+      return (this.mmiConfigurationController = new MmiConfigurationController({
+        initState: initState.MmiConfigurationController,
+        mmiConfigurationServiceUrl: process.env.MMI_CONFIGURATION_SERVICE_URL,
+      }));
+    };
     ///: END:ONLY_INCLUDE_IF
 
-    const networkControllerMessenger = this.controllerMessenger.getRestricted({
-      name: 'NetworkController',
-    });
-
-    let initialNetworkControllerState = initState.NetworkController;
-    if (!initialNetworkControllerState) {
-      initialNetworkControllerState = getDefaultNetworkControllerState();
-
-      const networks =
-        initialNetworkControllerState.networkConfigurationsByChainId;
-
-      // Note: Consider changing `getDefaultNetworkControllerState`
-      // on the controller side to include some of these tweaks.
-      networks[CHAIN_IDS.MAINNET].name = MAINNET_DISPLAY_NAME;
-      delete networks[CHAIN_IDS.GOERLI];
-      delete networks[CHAIN_IDS.LINEA_GOERLI];
-
-      Object.values(networks).forEach((network) => {
-        const id = network.rpcEndpoints[0].networkClientId;
-        network.blockExplorerUrls = [BlockExplorerUrl[id]];
-        network.defaultBlockExplorerUrlIndex = 0;
+    const networkControllerInit = () => {
+      this.networkControllerMessenger = this.controllerMessenger.getRestricted({
+        name: 'NetworkController',
       });
 
-      let network;
-      if (process.env.IN_TEST) {
-        network = {
-          chainId: CHAIN_IDS.LOCALHOST,
-          name: 'Localhost 8545',
-          nativeCurrency: 'ETH',
-          blockExplorerUrls: [],
-          defaultRpcEndpointIndex: 0,
-          rpcEndpoints: [
-            {
-              networkClientId: 'networkConfigurationId',
-              url: 'http://localhost:8545',
-              type: 'custom',
-            },
-          ],
-        };
-        networks[CHAIN_IDS.LOCALHOST] = network;
-      } else if (
-        process.env.METAMASK_DEBUG ||
-        process.env.METAMASK_ENVIRONMENT === 'test'
-      ) {
-        network = networks[CHAIN_IDS.SEPOLIA];
-      } else {
-        network = networks[CHAIN_IDS.MAINNET];
+      let initialNetworkControllerState = initState.NetworkController;
+      if (!initialNetworkControllerState) {
+        initialNetworkControllerState = getDefaultNetworkControllerState();
+
+        const networks =
+          initialNetworkControllerState.networkConfigurationsByChainId;
+
+        // Note: Consider changing `getDefaultNetworkControllerState`
+        // on the controller side to include some of these tweaks.
+        networks[CHAIN_IDS.MAINNET].name = MAINNET_DISPLAY_NAME;
+        delete networks[CHAIN_IDS.GOERLI];
+        delete networks[CHAIN_IDS.LINEA_GOERLI];
+
+        Object.values(networks).forEach((network) => {
+          const id = network.rpcEndpoints[0].networkClientId;
+          network.blockExplorerUrls = [BlockExplorerUrl[id]];
+          network.defaultBlockExplorerUrlIndex = 0;
+        });
+
+        let network;
+        if (process.env.IN_TEST) {
+          network = {
+            chainId: CHAIN_IDS.LOCALHOST,
+            name: 'Localhost 8545',
+            nativeCurrency: 'ETH',
+            blockExplorerUrls: [],
+            defaultRpcEndpointIndex: 0,
+            rpcEndpoints: [
+              {
+                networkClientId: 'networkConfigurationId',
+                url: 'http://localhost:8545',
+                type: 'custom',
+              },
+            ],
+          };
+          networks[CHAIN_IDS.LOCALHOST] = network;
+        } else if (
+          process.env.METAMASK_DEBUG ||
+          process.env.METAMASK_ENVIRONMENT === 'test'
+        ) {
+          network = networks[CHAIN_IDS.SEPOLIA];
+        } else {
+          network = networks[CHAIN_IDS.MAINNET];
+        }
+
+        initialNetworkControllerState.selectedNetworkClientId =
+          network.rpcEndpoints[network.defaultRpcEndpointIndex].networkClientId;
       }
 
-      initialNetworkControllerState.selectedNetworkClientId =
-        network.rpcEndpoints[network.defaultRpcEndpointIndex].networkClientId;
-    }
+      this.networkController = new NetworkController({
+        messenger: this.networkControllerMessenger,
+        state: initialNetworkControllerState,
+        infuraProjectId: opts.infuraProjectId,
+      });
+      this.networkController.initializeProvider();
+      this.provider =
+        this.networkController.getProviderAndBlockTracker().provider;
+      this.blockTracker =
+        this.networkController.getProviderAndBlockTracker().blockTracker;
+      this.deprecatedNetworkVersions = {};
 
-    this.networkController = new NetworkController({
-      messenger: networkControllerMessenger,
-      state: initialNetworkControllerState,
-      infuraProjectId: opts.infuraProjectId,
-    });
-    this.networkController.initializeProvider();
-    this.provider =
-      this.networkController.getProviderAndBlockTracker().provider;
-    this.blockTracker =
-      this.networkController.getProviderAndBlockTracker().blockTracker;
-    this.deprecatedNetworkVersions = {};
+      return this.networkController;
+    };
 
-    const accountsControllerMessenger = this.controllerMessenger.getRestricted({
-      name: 'AccountsController',
-      allowedEvents: [
-        'SnapController:stateChange',
-        'KeyringController:accountRemoved',
-        'KeyringController:stateChange',
-      ],
-      allowedActions: [
-        'KeyringController:getAccounts',
-        'KeyringController:getKeyringsByType',
-        'KeyringController:getKeyringForAccount',
-      ],
-    });
+    const accountsControllerInit = () => {
+      const accountsControllerMessenger =
+        this.controllerMessenger.getRestricted({
+          name: 'AccountsController',
+          allowedEvents: [
+            'SnapController:stateChange',
+            'KeyringController:accountRemoved',
+            'KeyringController:stateChange',
+          ],
+          allowedActions: [
+            'KeyringController:getAccounts',
+            'KeyringController:getKeyringsByType',
+            'KeyringController:getKeyringForAccount',
+          ],
+        });
 
-    this.accountsController = new AccountsController({
-      messenger: accountsControllerMessenger,
-      state: initState.AccountsController,
-    });
+      return (this.accountsController = new AccountsController({
+        messenger: accountsControllerMessenger,
+        state: initState.AccountsController,
+      }));
+    };
 
-    const preferencesMessenger = this.controllerMessenger.getRestricted({
-      name: 'PreferencesController',
-      allowedActions: [
-        'AccountsController:setSelectedAccount',
-        'AccountsController:getSelectedAccount',
-        'AccountsController:getAccountByAddress',
-        'AccountsController:setAccountName',
-        'NetworkController:getState',
-      ],
-      allowedEvents: ['AccountsController:stateChange'],
-    });
-
-    this.preferencesController = new PreferencesController({
-      state: {
-        currentLocale: opts.initLangCode ?? '',
-        ...initState.PreferencesController,
-      },
-      messenger: preferencesMessenger,
-    });
-
-    const tokenListMessenger = this.controllerMessenger.getRestricted({
-      name: 'TokenListController',
-      allowedActions: ['NetworkController:getNetworkClientById'],
-      allowedEvents: ['NetworkController:stateChange'],
-    });
-
-    this.tokenListController = new TokenListController({
-      chainId: this.#getGlobalChainId({
-        metamask: this.networkController.state,
-      }),
-      preventPollingOnNetworkRestart: !this.#isTokenListPollingRequired(
-        this.preferencesController.state,
-      ),
-      messenger: tokenListMessenger,
-      state: initState.TokenListController,
-    });
-
-    const assetsContractControllerMessenger =
-      this.controllerMessenger.getRestricted({
-        name: 'AssetsContractController',
+    const preferencesControllerInit = () => {
+      this.preferencesMessenger = this.controllerMessenger.getRestricted({
+        name: 'PreferencesController',
         allowedActions: [
-          'NetworkController:getNetworkClientById',
-          'NetworkController:getNetworkConfigurationByNetworkClientId',
-          'NetworkController:getSelectedNetworkClient',
+          'AccountsController:setSelectedAccount',
+          'AccountsController:getSelectedAccount',
+          'AccountsController:getAccountByAddress',
+          'AccountsController:setAccountName',
           'NetworkController:getState',
         ],
-        allowedEvents: [
-          'PreferencesController:stateChange',
-          'NetworkController:networkDidChange',
-        ],
+        allowedEvents: ['AccountsController:stateChange'],
       });
-    this.assetsContractController = new AssetsContractController({
-      messenger: assetsContractControllerMessenger,
-      chainId: this.#getGlobalChainId(),
-    });
 
-    const tokensControllerMessenger = this.controllerMessenger.getRestricted({
-      name: 'TokensController',
-      allowedActions: [
-        'ApprovalController:addRequest',
-        'NetworkController:getNetworkClientById',
-        'AccountsController:getSelectedAccount',
-        'AccountsController:getAccount',
-      ],
-      allowedEvents: [
-        'NetworkController:networkDidChange',
-        'AccountsController:selectedEvmAccountChange',
-        'PreferencesController:stateChange',
-        'TokenListController:stateChange',
-        'NetworkController:stateChange',
-      ],
-    });
-    this.tokensController = new TokensController({
-      state: initState.TokensController,
-      provider: this.provider,
-      messenger: tokensControllerMessenger,
-      chainId: this.#getGlobalChainId(),
-    });
+      return (this.preferencesController = new PreferencesController({
+        state: {
+          currentLocale: opts.initLangCode ?? '',
+          ...initState.PreferencesController,
+        },
+        messenger: this.preferencesMessenger,
+      }));
+    };
 
-    const nftControllerMessenger = this.controllerMessenger.getRestricted({
-      name: 'NftController',
-      allowedEvents: [
-        'PreferencesController:stateChange',
-        'NetworkController:networkDidChange',
-        'AccountsController:selectedEvmAccountChange',
-      ],
-      allowedActions: [
-        `${this.approvalController.name}:addRequest`,
-        `${this.networkController.name}:getNetworkClientById`,
-        'AccountsController:getSelectedAccount',
-        'AccountsController:getAccount',
-        'AssetsContractController:getERC721AssetName',
-        'AssetsContractController:getERC721AssetSymbol',
-        'AssetsContractController:getERC721TokenURI',
-        'AssetsContractController:getERC721OwnerOf',
-        'AssetsContractController:getERC1155BalanceOf',
-        'AssetsContractController:getERC1155TokenURI',
-      ],
-    });
-    this.nftController = new NftController({
-      state: initState.NftController,
-      messenger: nftControllerMessenger,
-      chainId: this.#getGlobalChainId(),
-      onNftAdded: ({ address, symbol, tokenId, standard, source }) =>
-        this.metaMetricsController.trackEvent({
-          event: MetaMetricsEventName.NftAdded,
-          category: MetaMetricsEventCategory.Wallet,
-          sensitiveProperties: {
-            token_contract_address: address,
-            token_symbol: symbol,
-            token_id: tokenId,
-            token_standard: standard,
-            asset_type: AssetType.NFT,
-            source,
-          },
+    const tokenListControllerInit = () => {
+      const tokenListMessenger = this.controllerMessenger.getRestricted({
+        name: 'TokenListController',
+        allowedActions: ['NetworkController:getNetworkClientById'],
+        allowedEvents: ['NetworkController:stateChange'],
+      });
+
+      return (this.tokenListController = new TokenListController({
+        chainId: this.#getGlobalChainId({
+          metamask: this.networkController.state,
         }),
-    });
+        preventPollingOnNetworkRestart: !this.#isTokenListPollingRequired(
+          this.preferencesController.state,
+        ),
+        messenger: tokenListMessenger,
+        state: initState.TokenListController,
+      }));
+    };
 
-    this.nftController.setApiKey(process.env.OPENSEA_KEY);
+    const assetsControllerInit = () => {
+      const assetsContractControllerMessenger =
+        this.controllerMessenger.getRestricted({
+          name: 'AssetsContractController',
+          allowedActions: [
+            'NetworkController:getNetworkClientById',
+            'NetworkController:getNetworkConfigurationByNetworkClientId',
+            'NetworkController:getSelectedNetworkClient',
+            'NetworkController:getState',
+          ],
+          allowedEvents: [
+            'PreferencesController:stateChange',
+            'NetworkController:networkDidChange',
+          ],
+        });
 
-    const nftDetectionControllerMessenger =
-      this.controllerMessenger.getRestricted({
-        name: 'NftDetectionController',
-        allowedEvents: [
-          'NetworkController:stateChange',
-          'PreferencesController:stateChange',
-        ],
+      return (this.assetsContractController = new AssetsContractController({
+        messenger: assetsContractControllerMessenger,
+        chainId: this.#getGlobalChainId(),
+      }));
+    };
+
+    const tokensControllerInit = () => {
+      const tokensControllerMessenger = this.controllerMessenger.getRestricted({
+        name: 'TokensController',
         allowedActions: [
           'ApprovalController:addRequest',
-          'NetworkController:getState',
           'NetworkController:getNetworkClientById',
           'AccountsController:getSelectedAccount',
-        ],
-      });
-
-    this.nftDetectionController = new NftDetectionController({
-      messenger: nftDetectionControllerMessenger,
-      chainId: this.#getGlobalChainId(),
-      getOpenSeaApiKey: () => this.nftController.openSeaApiKey,
-      getBalancesInSingleCall:
-        this.assetsContractController.getBalancesInSingleCall.bind(
-          this.assetsContractController,
-        ),
-      addNft: this.nftController.addNft.bind(this.nftController),
-      getNftState: () => this.nftController.state,
-      // added this to track previous value of useNftDetection, should be true on very first initializing of controller[]
-      disabled: !this.preferencesController.state.useNftDetection,
-    });
-
-    const metaMetricsControllerMessenger =
-      this.controllerMessenger.getRestricted({
-        name: 'MetaMetricsController',
-        allowedActions: [
-          'PreferencesController:getState',
-          'NetworkController:getState',
-          'NetworkController:getNetworkClientById',
+          'AccountsController:getAccount',
         ],
         allowedEvents: [
-          'PreferencesController:stateChange',
           'NetworkController:networkDidChange',
-        ],
-      });
-    this.metaMetricsController = new MetaMetricsController({
-      state: initState.MetaMetricsController,
-      messenger: metaMetricsControllerMessenger,
-      segment,
-      version: process.env.METAMASK_VERSION,
-      environment: process.env.METAMASK_ENVIRONMENT,
-      extension: this.extension,
-      captureException,
-    });
-
-    this.on('update', (update) => {
-      this.metaMetricsController.handleMetaMaskStateUpdate(update);
-    });
-
-    const dataDeletionService = new DataDeletionService();
-    const metaMetricsDataDeletionMessenger =
-      this.controllerMessenger.getRestricted({
-        name: 'MetaMetricsDataDeletionController',
-        allowedActions: ['MetaMetricsController:getState'],
-        allowedEvents: [],
-      });
-    this.metaMetricsDataDeletionController =
-      new MetaMetricsDataDeletionController({
-        dataDeletionService,
-        messenger: metaMetricsDataDeletionMessenger,
-        state: initState.metaMetricsDataDeletionController,
-      });
-
-    const gasFeeMessenger = this.controllerMessenger.getRestricted({
-      name: 'GasFeeController',
-      allowedActions: [
-        'NetworkController:getEIP1559Compatibility',
-        'NetworkController:getNetworkClientById',
-        'NetworkController:getState',
-      ],
-      allowedEvents: ['NetworkController:stateChange'],
-    });
-
-    const gasApiBaseUrl = process.env.SWAPS_USE_DEV_APIS
-      ? GAS_DEV_API_BASE_URL
-      : GAS_API_BASE_URL;
-
-    this.gasFeeController = new GasFeeController({
-      state: initState.GasFeeController,
-      interval: 10000,
-      messenger: gasFeeMessenger,
-      clientId: SWAPS_CLIENT_ID,
-      getProvider: () =>
-        this.networkController.getProviderAndBlockTracker().provider,
-      onNetworkDidChange: (eventHandler) => {
-        networkControllerMessenger.subscribe(
-          'NetworkController:networkDidChange',
-          () => eventHandler(this.networkController.state),
-        );
-      },
-      getCurrentNetworkEIP1559Compatibility:
-        this.networkController.getEIP1559Compatibility.bind(
-          this.networkController,
-        ),
-      getCurrentAccountEIP1559Compatibility:
-        this.getCurrentAccountEIP1559Compatibility.bind(this),
-      legacyAPIEndpoint: `${gasApiBaseUrl}/networks/<chain_id>/gasPrices`,
-      EIP1559APIEndpoint: `${gasApiBaseUrl}/networks/<chain_id>/suggestedGasFees`,
-      getCurrentNetworkLegacyGasAPICompatibility: () => {
-        const chainId = this.#getGlobalChainId();
-        return chainId === CHAIN_IDS.BSC;
-      },
-      getChainId: () => this.#getGlobalChainId(),
-    });
-
-    this.appStateController = new AppStateController({
-      addUnlockListener: this.on.bind(this, 'unlock'),
-      isUnlocked: this.isUnlocked.bind(this),
-      initState: initState.AppStateController,
-      onInactiveTimeout: () => this.setLocked(),
-      messenger: this.controllerMessenger.getRestricted({
-        name: 'AppStateController',
-        allowedActions: [
-          `${this.approvalController.name}:addRequest`,
-          `${this.approvalController.name}:acceptRequest`,
-          `PreferencesController:getState`,
-        ],
-        allowedEvents: [
-          `KeyringController:qrKeyringStateChange`,
+          'AccountsController:selectedEvmAccountChange',
           'PreferencesController:stateChange',
-        ],
-      }),
-      extension: this.extension,
-    });
-
-    const currencyRateMessenger = this.controllerMessenger.getRestricted({
-      name: 'CurrencyRateController',
-      allowedActions: [`${this.networkController.name}:getNetworkClientById`],
-    });
-    this.currencyRateController = new CurrencyRateController({
-      includeUsdRate: true,
-      messenger: currencyRateMessenger,
-      state: initState.CurrencyController,
-    });
-    const initialFetchMultiExchangeRate =
-      this.currencyRateController.fetchMultiExchangeRate.bind(
-        this.currencyRateController,
-      );
-    this.currencyRateController.fetchMultiExchangeRate = (...args) => {
-      if (this.preferencesController.state.useCurrencyRateCheck) {
-        return initialFetchMultiExchangeRate(...args);
-      }
-      return {
-        conversionRate: null,
-        usdConversionRate: null,
-      };
-    };
-
-    const tokenBalancesMessenger = this.controllerMessenger.getRestricted({
-      name: 'TokenBalancesController',
-      allowedActions: [
-        'NetworkController:getState',
-        'NetworkController:getNetworkClientById',
-        'TokensController:getState',
-        'PreferencesController:getState',
-        'AccountsController:getSelectedAccount',
-      ],
-      allowedEvents: [
-        'PreferencesController:stateChange',
-        'TokensController:stateChange',
-        'NetworkController:stateChange',
-      ],
-    });
-
-    this.tokenBalancesController = new TokenBalancesController({
-      messenger: tokenBalancesMessenger,
-      state: initState.TokenBalancesController,
-      interval: 30000,
-    });
-
-    const phishingControllerMessenger = this.controllerMessenger.getRestricted({
-      name: 'PhishingController',
-    });
-
-    this.phishingController = new PhishingController({
-      messenger: phishingControllerMessenger,
-      state: initState.PhishingController,
-      hotlistRefreshInterval: process.env.IN_TEST ? 5 * SECOND : undefined,
-      stalelistRefreshInterval: process.env.IN_TEST ? 30 * SECOND : undefined,
-    });
-
-    this.ppomController = new PPOMController({
-      messenger: this.controllerMessenger.getRestricted({
-        name: 'PPOMController',
-        allowedEvents: [
+          'TokenListController:stateChange',
           'NetworkController:stateChange',
-          'NetworkController:networkDidChange',
         ],
-        allowedActions: ['NetworkController:getNetworkClientById'],
-      }),
-      storageBackend: new IndexedDBPPOMStorage('PPOMDB', 1),
-      provider: this.provider,
-      ppomProvider: {
-        PPOM: PPOMModule.PPOM,
-        ppomInit: () => PPOMModule.default(process.env.PPOM_URI),
-      },
-      state: initState.PPOMController,
-      chainId: this.#getGlobalChainId(),
-      securityAlertsEnabled:
-        this.preferencesController.state.securityAlertsEnabled,
-      onPreferencesChange: preferencesMessenger.subscribe.bind(
-        preferencesMessenger,
-        'PreferencesController:stateChange',
-      ),
-      cdnBaseUrl: process.env.BLOCKAID_FILE_CDN,
-      blockaidPublicKey: process.env.BLOCKAID_PUBLIC_KEY,
-    });
+      });
 
-    const announcementMessenger = this.controllerMessenger.getRestricted({
-      name: 'AnnouncementController',
-    });
+      return (this.tokensController = new TokensController({
+        state: initState.TokensController,
+        provider: this.provider,
+        messenger: tokensControllerMessenger,
+        chainId: this.#getGlobalChainId(),
+      }));
+    };
 
-    this.announcementController = new AnnouncementController({
-      messenger: announcementMessenger,
-      allAnnouncements: UI_NOTIFICATIONS,
-      state: initState.AnnouncementController,
-    });
-
-    const networkOrderMessenger = this.controllerMessenger.getRestricted({
-      name: 'NetworkOrderController',
-      allowedEvents: ['NetworkController:stateChange'],
-    });
-    this.networkOrderController = new NetworkOrderController({
-      messenger: networkOrderMessenger,
-      state: initState.NetworkOrderController,
-    });
-
-    const accountOrderMessenger = this.controllerMessenger.getRestricted({
-      name: 'AccountOrderController',
-    });
-    this.accountOrderController = new AccountOrderController({
-      messenger: accountOrderMessenger,
-      state: initState.AccountOrderController,
-    });
-
-    const multichainBalancesControllerMessenger =
-      this.controllerMessenger.getRestricted({
-        name: 'BalancesController',
+    const nftControllerInit = () => {
+      const nftControllerMessenger = this.controllerMessenger.getRestricted({
+        name: 'NftController',
         allowedEvents: [
-          'AccountsController:accountAdded',
-          'AccountsController:accountRemoved',
+          'PreferencesController:stateChange',
+          'NetworkController:networkDidChange',
+          'AccountsController:selectedEvmAccountChange',
         ],
         allowedActions: [
-          'AccountsController:listMultichainAccounts',
-          'SnapController:handleRequest',
+          `${this.approvalController.name}:addRequest`,
+          `${this.networkController.name}:getNetworkClientById`,
+          'AccountsController:getSelectedAccount',
+          'AccountsController:getAccount',
+          'AssetsContractController:getERC721AssetName',
+          'AssetsContractController:getERC721AssetSymbol',
+          'AssetsContractController:getERC721TokenURI',
+          'AssetsContractController:getERC721OwnerOf',
+          'AssetsContractController:getERC1155BalanceOf',
+          'AssetsContractController:getERC1155TokenURI',
         ],
       });
 
-    this.multichainBalancesController = new MultichainBalancesController({
-      messenger: multichainBalancesControllerMessenger,
-      state: initState.MultichainBalancesController,
-    });
-
-    const multichainRatesControllerMessenger =
-      this.controllerMessenger.getRestricted({
-        name: 'RatesController',
+      this.nftController = new NftController({
+        state: initState.NftController,
+        messenger: nftControllerMessenger,
+        chainId: this.#getGlobalChainId(),
+        onNftAdded: ({ address, symbol, tokenId, standard, source }) =>
+          this.metaMetricsController.trackEvent({
+            event: MetaMetricsEventName.NftAdded,
+            category: MetaMetricsEventCategory.Wallet,
+            sensitiveProperties: {
+              token_contract_address: address,
+              token_symbol: symbol,
+              token_id: tokenId,
+              token_standard: standard,
+              asset_type: AssetType.NFT,
+              source,
+            },
+          }),
       });
-    this.multichainRatesController = new RatesController({
-      state: initState.MultichainRatesController,
-      messenger: multichainRatesControllerMessenger,
-      includeUsdRate: true,
-      fetchMultiExchangeRate,
-    });
 
-    const tokenRatesMessenger = this.controllerMessenger.getRestricted({
-      name: 'TokenRatesController',
-      allowedActions: [
-        'TokensController:getState',
-        'NetworkController:getNetworkClientById',
-        'NetworkController:getState',
-        'AccountsController:getAccount',
-        'AccountsController:getSelectedAccount',
-      ],
-      allowedEvents: [
-        'NetworkController:stateChange',
-        'AccountsController:selectedEvmAccountChange',
-        'PreferencesController:stateChange',
-        'TokensController:stateChange',
-      ],
-    });
+      this.nftController.setApiKey(process.env.OPENSEA_KEY);
 
-    // token exchange rate tracker
-    this.tokenRatesController = new TokenRatesController({
-      state: initState.TokenRatesController,
-      messenger: tokenRatesMessenger,
-      tokenPricesService: new CodefiTokenPricesServiceV2(),
-      disabled: !this.preferencesController.state.useCurrencyRateCheck,
-    });
+      return this.nftController;
+    };
 
-    this.controllerMessenger.subscribe(
-      'PreferencesController:stateChange',
-      previousValueComparator((prevState, currState) => {
-        const { useCurrencyRateCheck: prevUseCurrencyRateCheck } = prevState;
-        const { useCurrencyRateCheck: currUseCurrencyRateCheck } = currState;
-        if (currUseCurrencyRateCheck && !prevUseCurrencyRateCheck) {
-          this.tokenRatesController.enable();
-        } else if (!currUseCurrencyRateCheck && prevUseCurrencyRateCheck) {
-          this.tokenRatesController.disable();
-        }
-      }, this.preferencesController.state),
-    );
+    const nftDetectionControllerInit = () => {
+      const nftDetectionControllerMessenger =
+        this.controllerMessenger.getRestricted({
+          name: 'NftDetectionController',
+          allowedEvents: [
+            'NetworkController:stateChange',
+            'PreferencesController:stateChange',
+          ],
+          allowedActions: [
+            'ApprovalController:addRequest',
+            'NetworkController:getState',
+            'NetworkController:getNetworkClientById',
+            'AccountsController:getSelectedAccount',
+          ],
+        });
 
-    this.ensController = new EnsController({
-      messenger: this.controllerMessenger.getRestricted({
-        name: 'EnsController',
+      return (this.nftDetectionController = new NftDetectionController({
+        messenger: nftDetectionControllerMessenger,
+        chainId: this.#getGlobalChainId(),
+        getOpenSeaApiKey: () => this.nftController.openSeaApiKey,
+        getBalancesInSingleCall:
+          this.assetsContractController.getBalancesInSingleCall.bind(
+            this.assetsContractController,
+          ),
+        addNft: this.nftController.addNft.bind(this.nftController),
+        getNftState: () => this.nftController.state,
+        // added this to track previous value of useNftDetection, should be true on very first initializing of controller[]
+        disabled: !this.preferencesController.state.useNftDetection,
+      }));
+    };
+
+    const metaMetricsControllerInit = () => {
+      const metaMetricsControllerMessenger =
+        this.controllerMessenger.getRestricted({
+          name: 'MetaMetricsController',
+          allowedActions: [
+            'PreferencesController:getState',
+            'NetworkController:getState',
+            'NetworkController:getNetworkClientById',
+          ],
+          allowedEvents: [
+            'PreferencesController:stateChange',
+            'NetworkController:networkDidChange',
+          ],
+        });
+      this.metaMetricsController = new MetaMetricsController({
+        state: initState.MetaMetricsController,
+        messenger: metaMetricsControllerMessenger,
+        segment,
+        version: process.env.METAMASK_VERSION,
+        environment: process.env.METAMASK_ENVIRONMENT,
+        extension: this.extension,
+        captureException,
+      });
+
+      this.on('update', (update) => {
+        this.metaMetricsController.handleMetaMaskStateUpdate(update);
+      });
+
+      return this.metaMetricsController;
+    };
+
+    const metaMetricsDataDeletionControllerInit = () => {
+      const dataDeletionService = new DataDeletionService();
+      const metaMetricsDataDeletionMessenger =
+        this.controllerMessenger.getRestricted({
+          name: 'MetaMetricsDataDeletionController',
+          allowedActions: ['MetaMetricsController:getState'],
+          allowedEvents: [],
+        });
+
+      return (this.metaMetricsDataDeletionController =
+        new MetaMetricsDataDeletionController({
+          dataDeletionService,
+          messenger: metaMetricsDataDeletionMessenger,
+          state: initState.metaMetricsDataDeletionController,
+        }));
+    };
+
+    const gasFeeControllerInit = () => {
+      const gasFeeMessenger = this.controllerMessenger.getRestricted({
+        name: 'GasFeeController',
         allowedActions: [
+          'NetworkController:getEIP1559Compatibility',
           'NetworkController:getNetworkClientById',
           'NetworkController:getState',
         ],
-        allowedEvents: [],
-      }),
-      onNetworkDidChange: networkControllerMessenger.subscribe.bind(
-        networkControllerMessenger,
-        'NetworkController:networkDidChange',
-      ),
-    });
-
-    const onboardingControllerMessenger =
-      this.controllerMessenger.getRestricted({
-        name: 'OnboardingController',
-        allowedActions: [],
-        allowedEvents: [],
+        allowedEvents: ['NetworkController:stateChange'],
       });
-    this.onboardingController = new OnboardingController({
-      messenger: onboardingControllerMessenger,
-      state: initState.OnboardingController,
-    });
 
-    let additionalKeyrings = [keyringBuilderFactory(QRHardwareKeyring)];
+      const gasApiBaseUrl = process.env.SWAPS_USE_DEV_APIS
+        ? GAS_DEV_API_BASE_URL
+        : GAS_API_BASE_URL;
 
-    const keyringOverrides = this.opts.overrides?.keyrings;
-
-    if (isManifestV3 === false) {
-      const additionalKeyringTypes = [
-        keyringOverrides?.lattice || LatticeKeyring,
-        QRHardwareKeyring,
-      ];
-
-      const additionalBridgedKeyringTypes = [
-        {
-          keyring: keyringOverrides?.trezor || TrezorKeyring,
-          bridge: keyringOverrides?.trezorBridge || TrezorConnectBridge,
+      return (this.gasFeeController = new GasFeeController({
+        state: initState.GasFeeController,
+        interval: 10000,
+        messenger: gasFeeMessenger,
+        clientId: SWAPS_CLIENT_ID,
+        getProvider: () =>
+          this.networkController.getProviderAndBlockTracker().provider,
+        onNetworkDidChange: (eventHandler) => {
+          this.networkControllerMessenger.subscribe(
+            'NetworkController:networkDidChange',
+            () => eventHandler(this.networkController.state),
+          );
         },
-        {
-          keyring: keyringOverrides?.ledger || LedgerKeyring,
-          bridge: keyringOverrides?.ledgerBridge || LedgerIframeBridge,
-        },
-      ];
-
-      additionalKeyrings = additionalKeyringTypes.map((keyringType) =>
-        keyringBuilderFactory(keyringType),
-      );
-
-      additionalBridgedKeyringTypes.forEach((keyringType) =>
-        additionalKeyrings.push(
-          hardwareKeyringBuilderFactory(
-            keyringType.keyring,
-            keyringType.bridge,
-          ),
-        ),
-      );
-    } else {
-      additionalKeyrings.push(
-        hardwareKeyringBuilderFactory(
-          TrezorKeyring,
-          keyringOverrides?.trezorBridge || TrezorOffscreenBridge,
-        ),
-        hardwareKeyringBuilderFactory(
-          LedgerKeyring,
-          keyringOverrides?.ledgerBridge || LedgerOffscreenBridge,
-        ),
-        keyringBuilderFactory(LatticeKeyringOffscreen),
-      );
-    }
-
-    ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-    for (const custodianType of Object.keys(CUSTODIAN_TYPES)) {
-      additionalKeyrings.push(
-        mmiKeyringBuilderFactory(CUSTODIAN_TYPES[custodianType].keyringClass, {
-          mmiConfigurationController: this.mmiConfigurationController,
-          captureException,
-        }),
-      );
-    }
-    ///: END:ONLY_INCLUDE_IF
-
-    ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
-    const snapKeyringBuildMessenger = this.controllerMessenger.getRestricted({
-      name: 'SnapKeyringBuilder',
-      allowedActions: [
-        'ApprovalController:addRequest',
-        'ApprovalController:acceptRequest',
-        'ApprovalController:rejectRequest',
-        'ApprovalController:startFlow',
-        'ApprovalController:endFlow',
-        'ApprovalController:showSuccess',
-        'ApprovalController:showError',
-        'PhishingController:test',
-        'PhishingController:maybeUpdateState',
-        'KeyringController:getAccounts',
-        'AccountsController:setSelectedAccount',
-        'AccountsController:getAccountByAddress',
-        'AccountsController:setAccountName',
-      ],
-    });
-
-    const getSnapController = () => this.snapController;
-
-    // Necessary to persist the keyrings and update the accounts both within the keyring controller and accounts controller
-    const persistAndUpdateAccounts = async () => {
-      await this.keyringController.persistAllKeyrings();
-      await this.accountsController.updateAccounts();
-    };
-
-    const getSnapName = (id) => {
-      if (!id) {
-        return null;
-      }
-
-      const currentLocale = this.getLocale();
-      const { snaps } = this.snapController.state;
-      const snap = snaps[id];
-
-      if (!snap) {
-        return stripSnapPrefix(id);
-      }
-
-      if (snap.localizationFiles) {
-        const localizedManifest = getLocalizedSnapManifest(
-          snap.manifest,
-          currentLocale,
-          snap.localizationFiles,
-        );
-        return localizedManifest.proposedName;
-      }
-
-      return snap.manifest.proposedName;
-    };
-
-    const isSnapPreinstalled = (id) => {
-      return PREINSTALLED_SNAPS.some((snap) => snap.snapId === id);
-    };
-
-    additionalKeyrings.push(
-      snapKeyringBuilder(
-        snapKeyringBuildMessenger,
-        getSnapController,
-        persistAndUpdateAccounts,
-        (address) => this.removeAccount(address),
-        this.metaMetricsController.trackEvent.bind(this.metaMetricsController),
-        getSnapName,
-        isSnapPreinstalled,
-      ),
-    );
-
-    ///: END:ONLY_INCLUDE_IF
-
-    const keyringControllerMessenger = this.controllerMessenger.getRestricted({
-      name: 'KeyringController',
-    });
-
-    this.keyringController = new KeyringController({
-      cacheEncryptionKey: true,
-      keyringBuilders: additionalKeyrings,
-      state: initState.KeyringController,
-      encryptor: opts.encryptor || encryptorFactory(600_000),
-      messenger: keyringControllerMessenger,
-    });
-
-    this.controllerMessenger.subscribe('KeyringController:unlock', () =>
-      this._onUnlock(),
-    );
-    this.controllerMessenger.subscribe('KeyringController:lock', () =>
-      this._onLock(),
-    );
-
-    this.controllerMessenger.subscribe(
-      'KeyringController:stateChange',
-      (state) => {
-        this._onKeyringControllerUpdate(state);
-      },
-    );
-
-    this.permissionController = new PermissionController({
-      messenger: this.controllerMessenger.getRestricted({
-        name: 'PermissionController',
-        allowedActions: [
-          `${this.approvalController.name}:addRequest`,
-          `${this.approvalController.name}:hasRequest`,
-          `${this.approvalController.name}:acceptRequest`,
-          `${this.approvalController.name}:rejectRequest`,
-          `SnapController:getPermitted`,
-          `SnapController:install`,
-          `SubjectMetadataController:getSubjectMetadata`,
-        ],
-      }),
-      state: initState.PermissionController,
-      caveatSpecifications: getCaveatSpecifications({
-        getInternalAccounts: this.accountsController.listAccounts.bind(
-          this.accountsController,
-        ),
-        findNetworkClientIdByChainId:
-          this.networkController.findNetworkClientIdByChainId.bind(
+        getCurrentNetworkEIP1559Compatibility:
+          this.networkController.getEIP1559Compatibility.bind(
             this.networkController,
           ),
-      }),
-      permissionSpecifications: {
-        ...getPermissionSpecifications({
+        getCurrentAccountEIP1559Compatibility:
+          this.getCurrentAccountEIP1559Compatibility.bind(this),
+        legacyAPIEndpoint: `${gasApiBaseUrl}/networks/<chain_id>/gasPrices`,
+        EIP1559APIEndpoint: `${gasApiBaseUrl}/networks/<chain_id>/suggestedGasFees`,
+        getCurrentNetworkLegacyGasAPICompatibility: () => {
+          const chainId = this.#getGlobalChainId();
+          return chainId === CHAIN_IDS.BSC;
+        },
+        getChainId: () => this.#getGlobalChainId(),
+      }));
+    };
+
+    const appStateControllerInit = () => {
+      return (this.appStateController = new AppStateController({
+        addUnlockListener: this.on.bind(this, 'unlock'),
+        isUnlocked: this.isUnlocked.bind(this),
+        initState: initState.AppStateController,
+        onInactiveTimeout: () => this.setLocked(),
+        messenger: this.controllerMessenger.getRestricted({
+          name: 'AppStateController',
+          allowedActions: [
+            `${this.approvalController.name}:addRequest`,
+            `${this.approvalController.name}:acceptRequest`,
+            `PreferencesController:getState`,
+          ],
+          allowedEvents: [
+            `KeyringController:qrKeyringStateChange`,
+            'PreferencesController:stateChange',
+          ],
+        }),
+        extension: this.extension,
+      }));
+    };
+
+    const currencyRateControllerInit = () => {
+      const currencyRateMessenger = this.controllerMessenger.getRestricted({
+        name: 'CurrencyRateController',
+        allowedActions: [`${this.networkController.name}:getNetworkClientById`],
+      });
+
+      this.currencyRateController = new CurrencyRateController({
+        includeUsdRate: true,
+        messenger: currencyRateMessenger,
+        state: initState.CurrencyController,
+      });
+
+      const initialFetchMultiExchangeRate =
+        this.currencyRateController.fetchMultiExchangeRate.bind(
+          this.currencyRateController,
+        );
+
+      this.currencyRateController.fetchMultiExchangeRate = (...args) => {
+        if (this.preferencesController.state.useCurrencyRateCheck) {
+          return initialFetchMultiExchangeRate(...args);
+        }
+        return {
+          conversionRate: null,
+          usdConversionRate: null,
+        };
+      };
+
+      return this.currencyRateController;
+    };
+
+    const tokenBalancesControllerInit = () => {
+      const tokenBalancesMessenger = this.controllerMessenger.getRestricted({
+        name: 'TokenBalancesController',
+        allowedActions: [
+          'NetworkController:getState',
+          'NetworkController:getNetworkClientById',
+          'TokensController:getState',
+          'PreferencesController:getState',
+          'AccountsController:getSelectedAccount',
+        ],
+        allowedEvents: [
+          'PreferencesController:stateChange',
+          'TokensController:stateChange',
+          'NetworkController:stateChange',
+        ],
+      });
+
+      return (this.tokenBalancesController = new TokenBalancesController({
+        messenger: tokenBalancesMessenger,
+        state: initState.TokenBalancesController,
+        interval: 30000,
+      }));
+    };
+
+    const phishingControllerInit = () => {
+      const phishingControllerMessenger =
+        this.controllerMessenger.getRestricted({
+          name: 'PhishingController',
+        });
+
+      return (this.phishingController = new PhishingController({
+        messenger: phishingControllerMessenger,
+        state: initState.PhishingController,
+        hotlistRefreshInterval: process.env.IN_TEST ? 5 * SECOND : undefined,
+        stalelistRefreshInterval: process.env.IN_TEST ? 30 * SECOND : undefined,
+      }));
+    };
+
+    const ppomControllerInit = () => {
+      return (this.ppomController = new PPOMController({
+        messenger: this.controllerMessenger.getRestricted({
+          name: 'PPOMController',
+          allowedEvents: [
+            'NetworkController:stateChange',
+            'NetworkController:networkDidChange',
+          ],
+          allowedActions: ['NetworkController:getNetworkClientById'],
+        }),
+        storageBackend: new IndexedDBPPOMStorage('PPOMDB', 1),
+        provider: this.provider,
+        ppomProvider: {
+          PPOM: PPOMModule.PPOM,
+          ppomInit: () => PPOMModule.default(process.env.PPOM_URI),
+        },
+        state: initState.PPOMController,
+        chainId: this.#getGlobalChainId(),
+        securityAlertsEnabled:
+          this.preferencesController.state.securityAlertsEnabled,
+        onPreferencesChange: this.preferencesMessenger.subscribe.bind(
+          this.preferencesMessenger,
+          'PreferencesController:stateChange',
+        ),
+        cdnBaseUrl: process.env.BLOCKAID_FILE_CDN,
+        blockaidPublicKey: process.env.BLOCKAID_PUBLIC_KEY,
+      }));
+    };
+
+    const announcementControllerInit = () => {
+      const announcementMessenger = this.controllerMessenger.getRestricted({
+        name: 'AnnouncementController',
+      });
+
+      return (this.announcementController = new AnnouncementController({
+        messenger: announcementMessenger,
+        allAnnouncements: UI_NOTIFICATIONS,
+        state: initState.AnnouncementController,
+      }));
+    };
+
+    const networkOrderControllerInit = () => {
+      const networkOrderMessenger = this.controllerMessenger.getRestricted({
+        name: 'NetworkOrderController',
+        allowedEvents: ['NetworkController:stateChange'],
+      });
+
+      return (this.networkOrderController = new NetworkOrderController({
+        messenger: networkOrderMessenger,
+        state: initState.NetworkOrderController,
+      }));
+    };
+
+    const accountOrderControllerInit = () => {
+      const accountOrderMessenger = this.controllerMessenger.getRestricted({
+        name: 'AccountOrderController',
+      });
+
+      return (this.accountOrderController = new AccountOrderController({
+        messenger: accountOrderMessenger,
+        state: initState.AccountOrderController,
+      }));
+    };
+
+    const multichainBalancesControllerInit = () => {
+      const multichainBalancesControllerMessenger =
+        this.controllerMessenger.getRestricted({
+          name: 'BalancesController',
+          allowedEvents: [
+            'AccountsController:accountAdded',
+            'AccountsController:accountRemoved',
+          ],
+          allowedActions: [
+            'AccountsController:listMultichainAccounts',
+            'SnapController:handleRequest',
+          ],
+        });
+
+      return (this.multichainBalancesController =
+        new MultichainBalancesController({
+          messenger: multichainBalancesControllerMessenger,
+          state: initState.MultichainBalancesController,
+        }));
+    };
+
+    const multichainRatesControllerInit = () => {
+      const multichainRatesControllerMessenger =
+        this.controllerMessenger.getRestricted({
+          name: 'RatesController',
+        });
+
+      return (this.multichainRatesController = new RatesController({
+        state: initState.MultichainRatesController,
+        messenger: multichainRatesControllerMessenger,
+        includeUsdRate: true,
+        fetchMultiExchangeRate,
+      }));
+    };
+
+    const tokenRatesControllerInit = () => {
+      const tokenRatesMessenger = this.controllerMessenger.getRestricted({
+        name: 'TokenRatesController',
+        allowedActions: [
+          'TokensController:getState',
+          'NetworkController:getNetworkClientById',
+          'NetworkController:getState',
+          'AccountsController:getAccount',
+          'AccountsController:getSelectedAccount',
+        ],
+        allowedEvents: [
+          'NetworkController:stateChange',
+          'AccountsController:selectedEvmAccountChange',
+          'PreferencesController:stateChange',
+          'TokensController:stateChange',
+        ],
+      });
+
+      // token exchange rate tracker
+      this.tokenRatesController = new TokenRatesController({
+        state: initState.TokenRatesController,
+        messenger: tokenRatesMessenger,
+        tokenPricesService: new CodefiTokenPricesServiceV2(),
+        disabled: !this.preferencesController.state.useCurrencyRateCheck,
+      });
+
+      this.controllerMessenger.subscribe(
+        'PreferencesController:stateChange',
+        previousValueComparator((prevState, currState) => {
+          const { useCurrencyRateCheck: prevUseCurrencyRateCheck } = prevState;
+          const { useCurrencyRateCheck: currUseCurrencyRateCheck } = currState;
+          if (currUseCurrencyRateCheck && !prevUseCurrencyRateCheck) {
+            this.tokenRatesController.enable();
+          } else if (!currUseCurrencyRateCheck && prevUseCurrencyRateCheck) {
+            this.tokenRatesController.disable();
+          }
+        }, this.preferencesController.state),
+      );
+
+      return this.tokenRatesController;
+    };
+
+    const ensControllerInit = () => {
+      return (this.ensController = new EnsController({
+        messenger: this.controllerMessenger.getRestricted({
+          name: 'EnsController',
+          allowedActions: [
+            'NetworkController:getNetworkClientById',
+            'NetworkController:getState',
+          ],
+          allowedEvents: [],
+        }),
+        onNetworkDidChange: this.networkControllerMessenger.subscribe.bind(
+          this.networkControllerMessenger,
+          'NetworkController:networkDidChange',
+        ),
+      }));
+    };
+
+    const onboardingControllerInit = () => {
+      const onboardingControllerMessenger =
+        this.controllerMessenger.getRestricted({
+          name: 'OnboardingController',
+          allowedActions: [],
+          allowedEvents: [],
+        });
+
+      return (this.onboardingController = new OnboardingController({
+        messenger: onboardingControllerMessenger,
+        state: initState.OnboardingController,
+      }));
+    };
+
+    const keyringControllerInit = () => {
+      let additionalKeyrings = [keyringBuilderFactory(QRHardwareKeyring)];
+
+      const keyringOverrides = this.opts.overrides?.keyrings;
+
+      if (isManifestV3 === false) {
+        const additionalKeyringTypes = [
+          keyringOverrides?.lattice || LatticeKeyring,
+          QRHardwareKeyring,
+        ];
+
+        const additionalBridgedKeyringTypes = [
+          {
+            keyring: keyringOverrides?.trezor || TrezorKeyring,
+            bridge: keyringOverrides?.trezorBridge || TrezorConnectBridge,
+          },
+          {
+            keyring: keyringOverrides?.ledger || LedgerKeyring,
+            bridge: keyringOverrides?.ledgerBridge || LedgerIframeBridge,
+          },
+        ];
+
+        additionalKeyrings = additionalKeyringTypes.map((keyringType) =>
+          keyringBuilderFactory(keyringType),
+        );
+
+        additionalBridgedKeyringTypes.forEach((keyringType) =>
+          additionalKeyrings.push(
+            hardwareKeyringBuilderFactory(
+              keyringType.keyring,
+              keyringType.bridge,
+            ),
+          ),
+        );
+      } else {
+        additionalKeyrings.push(
+          hardwareKeyringBuilderFactory(
+            TrezorKeyring,
+            keyringOverrides?.trezorBridge || TrezorOffscreenBridge,
+          ),
+          hardwareKeyringBuilderFactory(
+            LedgerKeyring,
+            keyringOverrides?.ledgerBridge || LedgerOffscreenBridge,
+          ),
+          keyringBuilderFactory(LatticeKeyringOffscreen),
+        );
+      }
+
+      ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
+      for (const custodianType of Object.keys(CUSTODIAN_TYPES)) {
+        additionalKeyrings.push(
+          mmiKeyringBuilderFactory(
+            CUSTODIAN_TYPES[custodianType].keyringClass,
+            {
+              mmiConfigurationController: this.mmiConfigurationController,
+              captureException,
+            },
+          ),
+        );
+      }
+      ///: END:ONLY_INCLUDE_IF
+
+      ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
+      const snapKeyringBuildMessenger = this.controllerMessenger.getRestricted({
+        name: 'SnapKeyringBuilder',
+        allowedActions: [
+          'ApprovalController:addRequest',
+          'ApprovalController:acceptRequest',
+          'ApprovalController:rejectRequest',
+          'ApprovalController:startFlow',
+          'ApprovalController:endFlow',
+          'ApprovalController:showSuccess',
+          'ApprovalController:showError',
+          'PhishingController:test',
+          'PhishingController:maybeUpdateState',
+          'KeyringController:getAccounts',
+          'AccountsController:setSelectedAccount',
+          'AccountsController:getAccountByAddress',
+          'AccountsController:setAccountName',
+        ],
+      });
+
+      const getSnapController = () => this.snapController;
+
+      // Necessary to persist the keyrings and update the accounts both within the keyring controller and accounts controller
+      const persistAndUpdateAccounts = async () => {
+        await this.keyringController.persistAllKeyrings();
+        await this.accountsController.updateAccounts();
+      };
+
+      const getSnapName = (id) => {
+        if (!id) {
+          return null;
+        }
+
+        const currentLocale = this.getLocale();
+        const { snaps } = this.snapController.state;
+        const snap = snaps[id];
+
+        if (!snap) {
+          return stripSnapPrefix(id);
+        }
+
+        if (snap.localizationFiles) {
+          const localizedManifest = getLocalizedSnapManifest(
+            snap.manifest,
+            currentLocale,
+            snap.localizationFiles,
+          );
+          return localizedManifest.proposedName;
+        }
+
+        return snap.manifest.proposedName;
+      };
+
+      const isSnapPreinstalled = (id) => {
+        return PREINSTALLED_SNAPS.some((snap) => snap.snapId === id);
+      };
+
+      additionalKeyrings.push(
+        snapKeyringBuilder(
+          snapKeyringBuildMessenger,
+          getSnapController,
+          persistAndUpdateAccounts,
+          (address) => this.removeAccount(address),
+          this.metaMetricsController.trackEvent.bind(
+            this.metaMetricsController,
+          ),
+          getSnapName,
+          isSnapPreinstalled,
+        ),
+      );
+
+      ///: END:ONLY_INCLUDE_IF
+
+      const keyringControllerMessenger = this.controllerMessenger.getRestricted(
+        {
+          name: 'KeyringController',
+        },
+      );
+
+      this.keyringController = new KeyringController({
+        cacheEncryptionKey: true,
+        keyringBuilders: additionalKeyrings,
+        state: initState.KeyringController,
+        encryptor: opts.encryptor || encryptorFactory(600_000),
+        messenger: keyringControllerMessenger,
+      });
+
+      this.controllerMessenger.subscribe('KeyringController:unlock', () =>
+        this._onUnlock(),
+      );
+      this.controllerMessenger.subscribe('KeyringController:lock', () =>
+        this._onLock(),
+      );
+
+      this.controllerMessenger.subscribe(
+        'KeyringController:stateChange',
+        (state) => {
+          this._onKeyringControllerUpdate(state);
+        },
+      );
+
+      return this.keyringController;
+    };
+
+    const permissionControllerInit = () => {
+      this.permissionController = new PermissionController({
+        messenger: this.controllerMessenger.getRestricted({
+          name: 'PermissionController',
+          allowedActions: [
+            `${this.approvalController.name}:addRequest`,
+            `${this.approvalController.name}:hasRequest`,
+            `${this.approvalController.name}:acceptRequest`,
+            `${this.approvalController.name}:rejectRequest`,
+            `SnapController:getPermitted`,
+            `SnapController:install`,
+            `SubjectMetadataController:getSubjectMetadata`,
+          ],
+        }),
+        state: initState.PermissionController,
+        caveatSpecifications: getCaveatSpecifications({
           getInternalAccounts: this.accountsController.listAccounts.bind(
             this.accountsController,
           ),
-          getAllAccounts: this.keyringController.getAccounts.bind(
-            this.keyringController,
-          ),
-          captureKeyringTypesWithMissingIdentities: (
-            internalAccounts = [],
-            accounts = [],
-          ) => {
-            const accountsMissingIdentities = accounts.filter(
-              (address) =>
-                !internalAccounts.some(
-                  (account) =>
-                    account.address.toLowerCase() === address.toLowerCase(),
-                ),
-            );
-            const keyringTypesWithMissingIdentities =
-              accountsMissingIdentities.map((address) =>
-                this.keyringController.getAccountKeyringType(address),
-              );
-
-            const internalAccountCount = internalAccounts.length;
-
-            const accountTrackerCount = Object.keys(
-              this.accountTrackerController.state.accounts || {},
-            ).length;
-
-            captureException(
-              new Error(
-                `Attempt to get permission specifications failed because their were ${accounts.length} accounts, but ${internalAccountCount} identities, and the ${keyringTypesWithMissingIdentities} keyrings included accounts with missing identities. Meanwhile, there are ${accountTrackerCount} accounts in the account tracker.`,
-              ),
-            );
-          },
+          findNetworkClientIdByChainId:
+            this.networkController.findNetworkClientIdByChainId.bind(
+              this.networkController,
+            ),
         }),
-        ...this.getSnapPermissionSpecifications(),
-      },
-      unrestrictedMethods,
-    });
+        permissionSpecifications: {
+          ...getPermissionSpecifications({
+            getInternalAccounts: this.accountsController.listAccounts.bind(
+              this.accountsController,
+            ),
+            getAllAccounts: this.keyringController.getAccounts.bind(
+              this.keyringController,
+            ),
+            captureKeyringTypesWithMissingIdentities: (
+              internalAccounts = [],
+              accounts = [],
+            ) => {
+              const accountsMissingIdentities = accounts.filter(
+                (address) =>
+                  !internalAccounts.some(
+                    (account) =>
+                      account.address.toLowerCase() === address.toLowerCase(),
+                  ),
+              );
+              const keyringTypesWithMissingIdentities =
+                accountsMissingIdentities.map((address) =>
+                  this.keyringController.getAccountKeyringType(address),
+                );
 
-    this.selectedNetworkController = new SelectedNetworkController({
-      messenger: this.controllerMessenger.getRestricted({
-        name: 'SelectedNetworkController',
-        allowedActions: [
-          'NetworkController:getNetworkClientById',
-          'NetworkController:getState',
-          'NetworkController:getSelectedNetworkClient',
-          'PermissionController:hasPermissions',
-          'PermissionController:getSubjectNames',
-        ],
-        allowedEvents: [
-          'NetworkController:stateChange',
-          'PermissionController:stateChange',
-        ],
-      }),
-      state: initState.SelectedNetworkController,
-      useRequestQueuePreference:
-        this.preferencesController.state.useRequestQueue,
-      onPreferencesStateChange: (listener) => {
-        preferencesMessenger.subscribe(
-          'PreferencesController:stateChange',
-          listener,
-        );
-      },
-      domainProxyMap: new WeakRefObjectMap(),
-    });
+              const internalAccountCount = internalAccounts.length;
 
-    this.permissionLogController = new PermissionLogController({
-      messenger: this.controllerMessenger.getRestricted({
-        name: 'PermissionLogController',
-      }),
-      restrictedMethods: new Set(Object.keys(RestrictedMethods)),
-      state: initState.PermissionLogController,
-    });
+              const accountTrackerCount = Object.keys(
+                this.accountTrackerController.state.accounts || {},
+              ).length;
 
-    this.subjectMetadataController = new SubjectMetadataController({
-      messenger: this.controllerMessenger.getRestricted({
-        name: 'SubjectMetadataController',
-        allowedActions: [`${this.permissionController.name}:hasPermissions`],
-      }),
-      state: initState.SubjectMetadataController,
-      subjectCacheLimit: 100,
-    });
+              captureException(
+                new Error(
+                  `Attempt to get permission specifications failed because their were ${accounts.length} accounts, but ${internalAccountCount} identities, and the ${keyringTypesWithMissingIdentities} keyrings included accounts with missing identities. Meanwhile, there are ${accountTrackerCount} accounts in the account tracker.`,
+                ),
+              );
+            },
+          }),
+          ...this.getSnapPermissionSpecifications(),
+        },
+        unrestrictedMethods,
+      });
 
-    const shouldUseOffscreenExecutionService =
-      isManifestV3 &&
-      typeof chrome !== 'undefined' &&
-      // eslint-disable-next-line no-undef
-      typeof chrome.offscreen !== 'undefined';
-
-    const snapExecutionServiceArgs = {
-      messenger: this.controllerMessenger.getRestricted({
-        name: 'ExecutionService',
-      }),
-      setupSnapProvider: this.setupSnapProvider.bind(this),
+      return this.permissionController;
     };
 
-    this.snapExecutionService =
-      shouldUseOffscreenExecutionService === false
-        ? new IframeExecutionService({
-            ...snapExecutionServiceArgs,
-            iframeUrl: new URL(process.env.IFRAME_EXECUTION_ENVIRONMENT_URL),
-          })
-        : new OffscreenExecutionService({
-            ...snapExecutionServiceArgs,
-            offscreenPromise: this.offscreenPromise,
-          });
-
-    const snapControllerMessenger = this.controllerMessenger.getRestricted({
-      name: 'SnapController',
-      allowedEvents: [
-        'ExecutionService:unhandledError',
-        'ExecutionService:outboundRequest',
-        'ExecutionService:outboundResponse',
-      ],
-      allowedActions: [
-        `${this.permissionController.name}:getEndowments`,
-        `${this.permissionController.name}:getPermissions`,
-        `${this.permissionController.name}:hasPermission`,
-        `${this.permissionController.name}:hasPermissions`,
-        `${this.permissionController.name}:requestPermissions`,
-        `${this.permissionController.name}:revokeAllPermissions`,
-        `${this.permissionController.name}:revokePermissions`,
-        `${this.permissionController.name}:revokePermissionForAllSubjects`,
-        `${this.permissionController.name}:getSubjectNames`,
-        `${this.permissionController.name}:updateCaveat`,
-        `${this.approvalController.name}:addRequest`,
-        `${this.approvalController.name}:updateRequestState`,
-        `${this.permissionController.name}:grantPermissions`,
-        `${this.subjectMetadataController.name}:getSubjectMetadata`,
-        `${this.subjectMetadataController.name}:addSubjectMetadata`,
-        'ExecutionService:executeSnap',
-        'ExecutionService:getRpcRequestHandler',
-        'ExecutionService:terminateSnap',
-        'ExecutionService:terminateAllSnaps',
-        'ExecutionService:handleRpcRequest',
-        'SnapsRegistry:get',
-        'SnapsRegistry:getMetadata',
-        'SnapsRegistry:update',
-        'SnapsRegistry:resolveVersion',
-        `SnapInterfaceController:createInterface`,
-        `SnapInterfaceController:getInterface`,
-      ],
-    });
-
-    const allowLocalSnaps = process.env.ALLOW_LOCAL_SNAPS;
-    const requireAllowlist = process.env.REQUIRE_SNAPS_ALLOWLIST;
-    const rejectInvalidPlatformVersion =
-      process.env.REJECT_INVALID_SNAPS_PLATFORM_VERSION;
-
-    this.snapController = new SnapController({
-      environmentEndowmentPermissions: Object.values(EndowmentPermissions),
-      excludedPermissions: {
-        ...ExcludedSnapPermissions,
-        ...ExcludedSnapEndowments,
-      },
-      closeAllConnections: this.removeAllConnections.bind(this),
-      state: initState.SnapController,
-      messenger: snapControllerMessenger,
-      featureFlags: {
-        dappsCanUpdateSnaps: true,
-        allowLocalSnaps,
-        requireAllowlist,
-        rejectInvalidPlatformVersion,
-      },
-      encryptor: encryptorFactory(600_000),
-      getMnemonic: this.getPrimaryKeyringMnemonic.bind(this),
-      preinstalledSnaps: PREINSTALLED_SNAPS,
-      getFeatureFlags: () => {
-        return {
-          disableSnaps:
-            this.preferencesController.state.useExternalServices === false,
-        };
-      },
-    });
-
-    this.rateLimitController = new RateLimitController({
-      state: initState.RateLimitController,
-      messenger: this.controllerMessenger.getRestricted({
-        name: 'RateLimitController',
-      }),
-      implementations: {
-        showNativeNotification: {
-          method: (origin, message) => {
-            const subjectMetadataState = this.controllerMessenger.call(
-              'SubjectMetadataController:getState',
-            );
-
-            const originMetadata = subjectMetadataState.subjectMetadata[origin];
-
-            this.platform
-              ._showNotification(originMetadata?.name ?? origin, message)
-              .catch((error) => {
-                log.error('Failed to create notification', error);
-              });
-
-            return null;
-          },
-          // 2 calls per 5 minutes
-          rateLimitCount: 2,
-          rateLimitTimeout: 300000,
-        },
-        showInAppNotification: {
-          method: (origin, args) => {
-            const { message } = args;
-
-            const notification = {
-              data: {
-                message,
-                origin,
-              },
-              type: TRIGGER_TYPES.SNAP,
-              readDate: null,
-            };
-
-            this.controllerMessenger.call(
-              'NotificationServicesController:updateMetamaskNotificationsList',
-              notification,
-            );
-
-            return null;
-          },
-          // 5 calls per minute
-          rateLimitCount: 5,
-          rateLimitTimeout: 60000,
-        },
-      },
-    });
-    const cronjobControllerMessenger = this.controllerMessenger.getRestricted({
-      name: 'CronjobController',
-      allowedEvents: [
-        'SnapController:snapInstalled',
-        'SnapController:snapUpdated',
-        'SnapController:snapUninstalled',
-        'SnapController:snapEnabled',
-        'SnapController:snapDisabled',
-      ],
-      allowedActions: [
-        `${this.permissionController.name}:getPermissions`,
-        'SnapController:handleRequest',
-        'SnapController:getAll',
-      ],
-    });
-    this.cronjobController = new CronjobController({
-      state: initState.CronjobController,
-      messenger: cronjobControllerMessenger,
-    });
-
-    const snapsRegistryMessenger = this.controllerMessenger.getRestricted({
-      name: 'SnapsRegistry',
-      allowedEvents: [],
-      allowedActions: [],
-    });
-
-    this.snapsRegistry = new JsonSnapsRegistry({
-      state: initState.SnapsRegistry,
-      messenger: snapsRegistryMessenger,
-      refetchOnAllowlistMiss: requireAllowlist,
-      url: {
-        registry: 'https://acl.execution.metamask.io/latest/registry.json',
-        signature: 'https://acl.execution.metamask.io/latest/signature.json',
-      },
-      publicKey:
-        '0x025b65308f0f0fb8bc7f7ff87bfc296e0330eee5d3c1d1ee4a048b2fd6a86fa0a6',
-    });
-
-    const snapInterfaceControllerMessenger =
-      this.controllerMessenger.getRestricted({
-        name: 'SnapInterfaceController',
-        allowedActions: [
-          `${this.phishingController.name}:maybeUpdateState`,
-          `${this.phishingController.name}:testOrigin`,
-          `${this.approvalController.name}:hasRequest`,
-          `${this.approvalController.name}:acceptRequest`,
-          `${this.snapController.name}:get`,
-        ],
-        allowedEvents: [
-          'NotificationServicesController:notificationsListUpdated',
-        ],
-      });
-
-    this.snapInterfaceController = new SnapInterfaceController({
-      state: initState.SnapInterfaceController,
-      messenger: snapInterfaceControllerMessenger,
-    });
-
-    const snapInsightsControllerMessenger =
-      this.controllerMessenger.getRestricted({
-        name: 'SnapInsightsController',
-        allowedActions: [
-          `${this.snapController.name}:handleRequest`,
-          `${this.snapController.name}:getAll`,
-          `${this.permissionController.name}:getPermissions`,
-          `${this.snapInterfaceController.name}:deleteInterface`,
-        ],
-        allowedEvents: [
-          `TransactionController:unapprovedTransactionAdded`,
-          `TransactionController:transactionStatusUpdated`,
-          `SignatureController:stateChange`,
-        ],
-      });
-
-    this.snapInsightsController = new SnapInsightsController({
-      state: initState.SnapInsightsController,
-      messenger: snapInsightsControllerMessenger,
-    });
-
-    // Notification Controllers
-    this.authenticationController = new AuthenticationController.Controller({
-      state: initState.AuthenticationController,
-      messenger: this.controllerMessenger.getRestricted({
-        name: 'AuthenticationController',
-        allowedActions: [
-          'KeyringController:getState',
-          'SnapController:handleRequest',
-        ],
-        allowedEvents: ['KeyringController:lock', 'KeyringController:unlock'],
-      }),
-      metametrics: {
-        getMetaMetricsId: () => this.metaMetricsController.getMetaMetricsId(),
-        agent: 'extension',
-      },
-    });
-
-    this.userStorageController = new UserStorageController.Controller({
-      getMetaMetricsState: () =>
-        this.metaMetricsController.state.participateInMetaMetrics ?? false,
-      state: initState.UserStorageController,
-      config: {
-        accountSyncing: {
-          onAccountAdded: (profileId) => {
-            this.metaMetricsController.trackEvent({
-              category: MetaMetricsEventCategory.ProfileSyncing,
-              event: MetaMetricsEventName.AccountsSyncAdded,
-              properties: {
-                profile_id: profileId,
-              },
-            });
-          },
-          onAccountNameUpdated: (profileId) => {
-            this.metaMetricsController.trackEvent({
-              category: MetaMetricsEventCategory.ProfileSyncing,
-              event: MetaMetricsEventName.AccountsSyncNameUpdated,
-              properties: {
-                profile_id: profileId,
-              },
-            });
-          },
-          onAccountSyncErroneousSituation: (profileId, situationMessage) => {
-            this.metaMetricsController.trackEvent({
-              category: MetaMetricsEventCategory.ProfileSyncing,
-              event: MetaMetricsEventName.AccountsSyncErroneousSituation,
-              properties: {
-                profile_id: profileId,
-                situation_message: situationMessage,
-              },
-            });
-          },
-        },
-      },
-      env: {
-        isAccountSyncingEnabled: isManifestV3,
-      },
-      messenger: this.controllerMessenger.getRestricted({
-        name: 'UserStorageController',
-        allowedActions: [
-          'KeyringController:getState',
-          'KeyringController:addNewAccount',
-          'SnapController:handleRequest',
-          'AuthenticationController:getBearerToken',
-          'AuthenticationController:getSessionProfile',
-          'AuthenticationController:isSignedIn',
-          'AuthenticationController:performSignOut',
-          'AuthenticationController:performSignIn',
-          'NotificationServicesController:disableNotificationServices',
-          'NotificationServicesController:selectIsNotificationServicesEnabled',
-          'AccountsController:listAccounts',
-          'AccountsController:updateAccountMetadata',
-        ],
-        allowedEvents: [
-          'KeyringController:lock',
-          'KeyringController:unlock',
-          'AccountsController:accountAdded',
-          'AccountsController:accountRenamed',
-        ],
-      }),
-    });
-
-    const notificationServicesPushControllerMessenger =
-      this.controllerMessenger.getRestricted({
-        name: 'NotificationServicesPushController',
-        allowedActions: ['AuthenticationController:getBearerToken'],
-        allowedEvents: [],
-      });
-    this.notificationServicesPushController =
-      new NotificationServicesPushController.Controller({
-        messenger: notificationServicesPushControllerMessenger,
-        state: initState.NotificationServicesPushController,
-        env: {
-          apiKey: process.env.FIREBASE_API_KEY ?? '',
-          authDomain: process.env.FIREBASE_AUTH_DOMAIN ?? '',
-          storageBucket: process.env.FIREBASE_STORAGE_BUCKET ?? '',
-          projectId: process.env.FIREBASE_PROJECT_ID ?? '',
-          messagingSenderId: process.env.FIREBASE_MESSAGING_SENDER_ID ?? '',
-          appId: process.env.FIREBASE_APP_ID ?? '',
-          measurementId: process.env.FIREBASE_MEASUREMENT_ID ?? '',
-          vapidKey: process.env.VAPID_KEY ?? '',
-        },
-        config: {
-          isPushEnabled: isManifestV3,
-          platform: 'extension',
-          onPushNotificationReceived,
-          onPushNotificationClicked,
-        },
-      });
-    notificationServicesPushControllerMessenger.subscribe(
-      'NotificationServicesPushController:onNewNotifications',
-      (notification) => {
-        this.metaMetricsController.trackEvent({
-          category: MetaMetricsEventCategory.PushNotifications,
-          event: MetaMetricsEventName.PushNotificationReceived,
-          properties: {
-            notification_id: notification.id,
-            notification_type: notification.type,
-            chain_id: notification?.chain_id,
-          },
-        });
-      },
-    );
-    notificationServicesPushControllerMessenger.subscribe(
-      'NotificationServicesPushController:pushNotificationClicked',
-      (notification) => {
-        this.metaMetricsController.trackEvent({
-          category: MetaMetricsEventCategory.PushNotifications,
-          event: MetaMetricsEventName.PushNotificationClicked,
-          properties: {
-            notification_id: notification.id,
-            notification_type: notification.type,
-            chain_id: notification?.chain_id,
-          },
-        });
-      },
-    );
-
-    this.notificationServicesController =
-      new NotificationServicesController.Controller({
+    const selectedNetworkControllerInit = () => {
+      return (this.selectedNetworkController = new SelectedNetworkController({
         messenger: this.controllerMessenger.getRestricted({
-          name: 'NotificationServicesController',
+          name: 'SelectedNetworkController',
           allowedActions: [
-            'KeyringController:getAccounts',
-            'KeyringController:getState',
-            'AuthenticationController:getBearerToken',
-            'AuthenticationController:isSignedIn',
-            'UserStorageController:enableProfileSyncing',
-            'UserStorageController:getStorageKey',
-            'UserStorageController:performGetStorage',
-            'UserStorageController:performSetStorage',
-            'NotificationServicesPushController:enablePushNotifications',
-            'NotificationServicesPushController:disablePushNotifications',
-            'NotificationServicesPushController:subscribeToPushNotifications',
-            'NotificationServicesPushController:updateTriggerPushNotifications',
+            'NetworkController:getNetworkClientById',
+            'NetworkController:getState',
+            'NetworkController:getSelectedNetworkClient',
+            'PermissionController:hasPermissions',
+            'PermissionController:getSubjectNames',
           ],
           allowedEvents: [
-            'KeyringController:stateChange',
-            'KeyringController:lock',
-            'KeyringController:unlock',
-            'NotificationServicesPushController:onNewNotifications',
+            'NetworkController:stateChange',
+            'PermissionController:stateChange',
           ],
         }),
-        state: initState.NotificationServicesController,
-        env: {
-          isPushIntegrated: isManifestV3,
-          featureAnnouncements: {
-            platform: 'extension',
-            spaceId: process.env.CONTENTFUL_ACCESS_SPACE_ID ?? '',
-            accessToken: process.env.CONTENTFUL_ACCESS_TOKEN ?? '',
+        state: initState.SelectedNetworkController,
+        useRequestQueuePreference:
+          this.preferencesController.state.useRequestQueue,
+        onPreferencesStateChange: (listener) => {
+          this.preferencesMessenger.subscribe(
+            'PreferencesController:stateChange',
+            listener,
+          );
+        },
+        domainProxyMap: new WeakRefObjectMap(),
+      }));
+    };
+
+    const permissionLogControllerInit = () => {
+      return (this.permissionLogController = new PermissionLogController({
+        messenger: this.controllerMessenger.getRestricted({
+          name: 'PermissionLogController',
+        }),
+        restrictedMethods: new Set(Object.keys(RestrictedMethods)),
+        state: initState.PermissionLogController,
+      }));
+    };
+
+    const subjectMetadataControllerInit = () => {
+      return (this.subjectMetadataController = new SubjectMetadataController({
+        messenger: this.controllerMessenger.getRestricted({
+          name: 'SubjectMetadataController',
+          allowedActions: [`${this.permissionController.name}:hasPermissions`],
+        }),
+        state: initState.SubjectMetadataController,
+        subjectCacheLimit: 100,
+      }));
+    };
+
+    const snapControllerInit = () => {
+      const shouldUseOffscreenExecutionService =
+        isManifestV3 &&
+        typeof chrome !== 'undefined' &&
+        // eslint-disable-next-line no-undef
+        typeof chrome.offscreen !== 'undefined';
+
+      const snapExecutionServiceArgs = {
+        messenger: this.controllerMessenger.getRestricted({
+          name: 'ExecutionService',
+        }),
+        setupSnapProvider: this.setupSnapProvider.bind(this),
+      };
+
+      this.snapExecutionService =
+        shouldUseOffscreenExecutionService === false
+          ? new IframeExecutionService({
+              ...snapExecutionServiceArgs,
+              iframeUrl: new URL(process.env.IFRAME_EXECUTION_ENVIRONMENT_URL),
+            })
+          : new OffscreenExecutionService({
+              ...snapExecutionServiceArgs,
+              offscreenPromise: this.offscreenPromise,
+            });
+
+      const snapControllerMessenger = this.controllerMessenger.getRestricted({
+        name: 'SnapController',
+        allowedEvents: [
+          'ExecutionService:unhandledError',
+          'ExecutionService:outboundRequest',
+          'ExecutionService:outboundResponse',
+        ],
+        allowedActions: [
+          `${this.permissionController.name}:getEndowments`,
+          `${this.permissionController.name}:getPermissions`,
+          `${this.permissionController.name}:hasPermission`,
+          `${this.permissionController.name}:hasPermissions`,
+          `${this.permissionController.name}:requestPermissions`,
+          `${this.permissionController.name}:revokeAllPermissions`,
+          `${this.permissionController.name}:revokePermissions`,
+          `${this.permissionController.name}:revokePermissionForAllSubjects`,
+          `${this.permissionController.name}:getSubjectNames`,
+          `${this.permissionController.name}:updateCaveat`,
+          `${this.approvalController.name}:addRequest`,
+          `${this.approvalController.name}:updateRequestState`,
+          `${this.permissionController.name}:grantPermissions`,
+          `${this.subjectMetadataController.name}:getSubjectMetadata`,
+          `${this.subjectMetadataController.name}:addSubjectMetadata`,
+          'ExecutionService:executeSnap',
+          'ExecutionService:getRpcRequestHandler',
+          'ExecutionService:terminateSnap',
+          'ExecutionService:terminateAllSnaps',
+          'ExecutionService:handleRpcRequest',
+          'SnapsRegistry:get',
+          'SnapsRegistry:getMetadata',
+          'SnapsRegistry:update',
+          'SnapsRegistry:resolveVersion',
+          `SnapInterfaceController:createInterface`,
+          `SnapInterfaceController:getInterface`,
+        ],
+      });
+
+      const allowLocalSnaps = process.env.ALLOW_LOCAL_SNAPS;
+      this.requireAllowlist = process.env.REQUIRE_SNAPS_ALLOWLIST;
+      const rejectInvalidPlatformVersion =
+        process.env.REJECT_INVALID_SNAPS_PLATFORM_VERSION;
+
+      return (this.snapController = new SnapController({
+        environmentEndowmentPermissions: Object.values(EndowmentPermissions),
+        excludedPermissions: {
+          ...ExcludedSnapPermissions,
+          ...ExcludedSnapEndowments,
+        },
+        closeAllConnections: this.removeAllConnections.bind(this),
+        state: initState.SnapController,
+        messenger: snapControllerMessenger,
+        featureFlags: {
+          dappsCanUpdateSnaps: true,
+          allowLocalSnaps,
+          requireAllowlist: this.requireAllowlist,
+          rejectInvalidPlatformVersion,
+        },
+        encryptor: encryptorFactory(600_000),
+        getMnemonic: this.getPrimaryKeyringMnemonic.bind(this),
+        preinstalledSnaps: PREINSTALLED_SNAPS,
+        getFeatureFlags: () => {
+          return {
+            disableSnaps:
+              this.preferencesController.state.useExternalServices === false,
+          };
+        },
+      }));
+    };
+
+    const rateLimitControllerInit = () => {
+      return (this.rateLimitController = new RateLimitController({
+        state: initState.RateLimitController,
+        messenger: this.controllerMessenger.getRestricted({
+          name: 'RateLimitController',
+        }),
+        implementations: {
+          showNativeNotification: {
+            method: (origin, message) => {
+              const subjectMetadataState = this.controllerMessenger.call(
+                'SubjectMetadataController:getState',
+              );
+
+              const originMetadata =
+                subjectMetadataState.subjectMetadata[origin];
+
+              this.platform
+                ._showNotification(originMetadata?.name ?? origin, message)
+                .catch((error) => {
+                  log.error('Failed to create notification', error);
+                });
+
+              return null;
+            },
+            // 2 calls per 5 minutes
+            rateLimitCount: 2,
+            rateLimitTimeout: 300000,
           },
+          showInAppNotification: {
+            method: (origin, args) => {
+              const { message } = args;
+
+              const notification = {
+                data: {
+                  message,
+                  origin,
+                },
+                type: TRIGGER_TYPES.SNAP,
+                readDate: null,
+              };
+
+              this.controllerMessenger.call(
+                'NotificationServicesController:updateMetamaskNotificationsList',
+                notification,
+              );
+
+              return null;
+            },
+            // 5 calls per minute
+            rateLimitCount: 5,
+            rateLimitTimeout: 60000,
+          },
+        },
+      }));
+    };
+
+    const cronJobControllerInit = () => {
+      const cronjobControllerMessenger = this.controllerMessenger.getRestricted(
+        {
+          name: 'CronjobController',
+          allowedEvents: [
+            'SnapController:snapInstalled',
+            'SnapController:snapUpdated',
+            'SnapController:snapUninstalled',
+            'SnapController:snapEnabled',
+            'SnapController:snapDisabled',
+          ],
+          allowedActions: [
+            `${this.permissionController.name}:getPermissions`,
+            'SnapController:handleRequest',
+            'SnapController:getAll',
+          ],
+        },
+      );
+
+      return (this.cronjobController = new CronjobController({
+        state: initState.CronjobController,
+        messenger: cronjobControllerMessenger,
+      }));
+    };
+
+    const snapInterfaceControllerInit = () => {
+      const snapsRegistryMessenger = this.controllerMessenger.getRestricted({
+        name: 'SnapsRegistry',
+        allowedEvents: [],
+        allowedActions: [],
+      });
+
+      this.snapsRegistry = new JsonSnapsRegistry({
+        state: initState.SnapsRegistry,
+        messenger: snapsRegistryMessenger,
+        refetchOnAllowlistMiss: this.requireAllowlist,
+        url: {
+          registry: 'https://acl.execution.metamask.io/latest/registry.json',
+          signature: 'https://acl.execution.metamask.io/latest/signature.json',
+        },
+        publicKey:
+          '0x025b65308f0f0fb8bc7f7ff87bfc296e0330eee5d3c1d1ee4a048b2fd6a86fa0a6',
+      });
+
+      const snapInterfaceControllerMessenger =
+        this.controllerMessenger.getRestricted({
+          name: 'SnapInterfaceController',
+          allowedActions: [
+            `${this.phishingController.name}:maybeUpdateState`,
+            `${this.phishingController.name}:testOrigin`,
+            `${this.approvalController.name}:hasRequest`,
+            `${this.approvalController.name}:acceptRequest`,
+            `${this.snapController.name}:get`,
+          ],
+          allowedEvents: [
+            'NotificationServicesController:notificationsListUpdated',
+          ],
+        });
+
+      return (this.snapInterfaceController = new SnapInterfaceController({
+        state: initState.SnapInterfaceController,
+        messenger: snapInterfaceControllerMessenger,
+      }));
+    };
+
+    const snapInsightsControllerInit = () => {
+      const snapInsightsControllerMessenger =
+        this.controllerMessenger.getRestricted({
+          name: 'SnapInsightsController',
+          allowedActions: [
+            `${this.snapController.name}:handleRequest`,
+            `${this.snapController.name}:getAll`,
+            `${this.permissionController.name}:getPermissions`,
+            `${this.snapInterfaceController.name}:deleteInterface`,
+          ],
+          allowedEvents: [
+            `TransactionController:unapprovedTransactionAdded`,
+            `TransactionController:transactionStatusUpdated`,
+            `SignatureController:stateChange`,
+          ],
+        });
+
+      return (this.snapInsightsController = new SnapInsightsController({
+        state: initState.SnapInsightsController,
+        messenger: snapInsightsControllerMessenger,
+      }));
+    };
+
+    const authenticationControllerInit = () => {
+      return (this.authenticationController =
+        new AuthenticationController.Controller({
+          state: initState.AuthenticationController,
+          messenger: this.controllerMessenger.getRestricted({
+            name: 'AuthenticationController',
+            allowedActions: [
+              'KeyringController:getState',
+              'SnapController:handleRequest',
+            ],
+            allowedEvents: [
+              'KeyringController:lock',
+              'KeyringController:unlock',
+            ],
+          }),
+          metametrics: {
+            getMetaMetricsId: () =>
+              this.metaMetricsController.getMetaMetricsId(),
+            agent: 'extension',
+          },
+        }));
+    };
+
+    const userStorageControllerInit = () => {
+      return (this.userStorageController = new UserStorageController.Controller(
+        {
+          getMetaMetricsState: () =>
+            this.metaMetricsController.state.participateInMetaMetrics ?? false,
+          state: initState.UserStorageController,
+          config: {
+            accountSyncing: {
+              onAccountAdded: (profileId) => {
+                this.metaMetricsController.trackEvent({
+                  category: MetaMetricsEventCategory.ProfileSyncing,
+                  event: MetaMetricsEventName.AccountsSyncAdded,
+                  properties: {
+                    profile_id: profileId,
+                  },
+                });
+              },
+              onAccountNameUpdated: (profileId) => {
+                this.metaMetricsController.trackEvent({
+                  category: MetaMetricsEventCategory.ProfileSyncing,
+                  event: MetaMetricsEventName.AccountsSyncNameUpdated,
+                  properties: {
+                    profile_id: profileId,
+                  },
+                });
+              },
+              onAccountSyncErroneousSituation: (
+                profileId,
+                situationMessage,
+              ) => {
+                this.metaMetricsController.trackEvent({
+                  category: MetaMetricsEventCategory.ProfileSyncing,
+                  event: MetaMetricsEventName.AccountsSyncErroneousSituation,
+                  properties: {
+                    profile_id: profileId,
+                    situation_message: situationMessage,
+                  },
+                });
+              },
+            },
+          },
+          env: {
+            isAccountSyncingEnabled: isManifestV3,
+          },
+          messenger: this.controllerMessenger.getRestricted({
+            name: 'UserStorageController',
+            allowedActions: [
+              'KeyringController:getState',
+              'KeyringController:addNewAccount',
+              'SnapController:handleRequest',
+              'AuthenticationController:getBearerToken',
+              'AuthenticationController:getSessionProfile',
+              'AuthenticationController:isSignedIn',
+              'AuthenticationController:performSignOut',
+              'AuthenticationController:performSignIn',
+              'NotificationServicesController:disableNotificationServices',
+              'NotificationServicesController:selectIsNotificationServicesEnabled',
+              'AccountsController:listAccounts',
+              'AccountsController:updateAccountMetadata',
+            ],
+            allowedEvents: [
+              'KeyringController:lock',
+              'KeyringController:unlock',
+              'AccountsController:accountAdded',
+              'AccountsController:accountRenamed',
+            ],
+          }),
+        },
+      ));
+    };
+
+    const notificationServicesPushControllerInit = () => {
+      const notificationServicesPushControllerMessenger =
+        this.controllerMessenger.getRestricted({
+          name: 'NotificationServicesPushController',
+          allowedActions: ['AuthenticationController:getBearerToken'],
+          allowedEvents: [],
+        });
+
+      this.notificationServicesPushController =
+        new NotificationServicesPushController.Controller({
+          messenger: notificationServicesPushControllerMessenger,
+          state: initState.NotificationServicesPushController,
+          env: {
+            apiKey: process.env.FIREBASE_API_KEY ?? '',
+            authDomain: process.env.FIREBASE_AUTH_DOMAIN ?? '',
+            storageBucket: process.env.FIREBASE_STORAGE_BUCKET ?? '',
+            projectId: process.env.FIREBASE_PROJECT_ID ?? '',
+            messagingSenderId: process.env.FIREBASE_MESSAGING_SENDER_ID ?? '',
+            appId: process.env.FIREBASE_APP_ID ?? '',
+            measurementId: process.env.FIREBASE_MEASUREMENT_ID ?? '',
+            vapidKey: process.env.VAPID_KEY ?? '',
+          },
+          config: {
+            isPushEnabled: isManifestV3,
+            platform: 'extension',
+            onPushNotificationReceived,
+            onPushNotificationClicked,
+          },
+        });
+
+      notificationServicesPushControllerMessenger.subscribe(
+        'NotificationServicesPushController:onNewNotifications',
+        (notification) => {
+          this.metaMetricsController.trackEvent({
+            category: MetaMetricsEventCategory.PushNotifications,
+            event: MetaMetricsEventName.PushNotificationReceived,
+            properties: {
+              notification_id: notification.id,
+              notification_type: notification.type,
+              chain_id: notification?.chain_id,
+            },
+          });
+        },
+      );
+
+      notificationServicesPushControllerMessenger.subscribe(
+        'NotificationServicesPushController:pushNotificationClicked',
+        (notification) => {
+          this.metaMetricsController.trackEvent({
+            category: MetaMetricsEventCategory.PushNotifications,
+            event: MetaMetricsEventName.PushNotificationClicked,
+            properties: {
+              notification_id: notification.id,
+              notification_type: notification.type,
+              chain_id: notification?.chain_id,
+            },
+          });
+        },
+      );
+
+      return this.notificationServicesPushController;
+    };
+
+    const notificationServicesControllerInit = () => {
+      return (this.notificationServicesController =
+        new NotificationServicesController.Controller({
+          messenger: this.controllerMessenger.getRestricted({
+            name: 'NotificationServicesController',
+            allowedActions: [
+              'KeyringController:getAccounts',
+              'KeyringController:getState',
+              'AuthenticationController:getBearerToken',
+              'AuthenticationController:isSignedIn',
+              'UserStorageController:enableProfileSyncing',
+              'UserStorageController:getStorageKey',
+              'UserStorageController:performGetStorage',
+              'UserStorageController:performSetStorage',
+              'NotificationServicesPushController:enablePushNotifications',
+              'NotificationServicesPushController:disablePushNotifications',
+              'NotificationServicesPushController:subscribeToPushNotifications',
+              'NotificationServicesPushController:updateTriggerPushNotifications',
+            ],
+            allowedEvents: [
+              'KeyringController:stateChange',
+              'KeyringController:lock',
+              'KeyringController:unlock',
+              'NotificationServicesPushController:onNewNotifications',
+            ],
+          }),
+          state: initState.NotificationServicesController,
+          env: {
+            isPushIntegrated: isManifestV3,
+            featureAnnouncements: {
+              platform: 'extension',
+              spaceId: process.env.CONTENTFUL_ACCESS_SPACE_ID ?? '',
+              accessToken: process.env.CONTENTFUL_ACCESS_TOKEN ?? '',
+            },
+          },
+        }));
+    };
+
+    const accountTrackerControllerInit = () => {
+      // account tracker watches balances, nonces, and any code at their address
+      this.accountTrackerController = new AccountTrackerController({
+        state: { accounts: {} },
+        messenger: this.controllerMessenger.getRestricted({
+          name: 'AccountTrackerController',
+          allowedActions: [
+            'AccountsController:getSelectedAccount',
+            'NetworkController:getState',
+            'NetworkController:getNetworkClientById',
+            'OnboardingController:getState',
+            'PreferencesController:getState',
+          ],
+          allowedEvents: [
+            'AccountsController:selectedEvmAccountChange',
+            'OnboardingController:stateChange',
+            'KeyringController:accountRemoved',
+          ],
+        }),
+        provider: this.provider,
+        blockTracker: this.blockTracker,
+        getNetworkIdentifier: (providerConfig) => {
+          const { type, rpcUrl } =
+            providerConfig ??
+            getProviderConfig({
+              metamask: this.networkController.state,
+            });
+          return type === NETWORK_TYPES.RPC ? rpcUrl : type;
         },
       });
 
-    // account tracker watches balances, nonces, and any code at their address
-    this.accountTrackerController = new AccountTrackerController({
-      state: { accounts: {} },
-      messenger: this.controllerMessenger.getRestricted({
-        name: 'AccountTrackerController',
-        allowedActions: [
-          'AccountsController:getSelectedAccount',
-          'NetworkController:getState',
-          'NetworkController:getNetworkClientById',
-          'OnboardingController:getState',
-          'PreferencesController:getState',
-        ],
-        allowedEvents: [
-          'AccountsController:selectedEvmAccountChange',
-          'OnboardingController:stateChange',
-          'KeyringController:accountRemoved',
-        ],
-      }),
-      provider: this.provider,
-      blockTracker: this.blockTracker,
-      getNetworkIdentifier: (providerConfig) => {
-        const { type, rpcUrl } =
-          providerConfig ??
-          getProviderConfig({
-            metamask: this.networkController.state,
-          });
-        return type === NETWORK_TYPES.RPC ? rpcUrl : type;
-      },
-    });
+      this.controllerMessenger.subscribe(
+        `${this.onboardingController.name}:stateChange`,
+        previousValueComparator(async (prevState, currState) => {
+          const { completedOnboarding: prevCompletedOnboarding } = prevState;
+          const { completedOnboarding: currCompletedOnboarding } = currState;
+          if (!prevCompletedOnboarding && currCompletedOnboarding) {
+            const { address } = this.accountsController.getSelectedAccount();
 
-    // start and stop polling for balances based on activeControllerConnections
-    this.on('controllerConnectionChanged', (activeControllerConnections) => {
-      const { completedOnboarding } = this.onboardingController.state;
-      if (activeControllerConnections > 0 && completedOnboarding) {
-        this.triggerNetworkrequests();
-      } else {
-        this.stopNetworkRequests();
-      }
-    });
+            await this._addAccountsWithBalance();
 
-    this.controllerMessenger.subscribe(
-      `${this.onboardingController.name}:stateChange`,
-      previousValueComparator(async (prevState, currState) => {
-        const { completedOnboarding: prevCompletedOnboarding } = prevState;
-        const { completedOnboarding: currCompletedOnboarding } = currState;
-        if (!prevCompletedOnboarding && currCompletedOnboarding) {
-          const { address } = this.accountsController.getSelectedAccount();
+            this.postOnboardingInitialization();
+            this.triggerNetworkrequests();
 
-          await this._addAccountsWithBalance();
+            // execute once the token detection on the post-onboarding
+            await this.tokenDetectionController.detectTokens({
+              selectedAddress: address,
+            });
+          }
+        }, this.onboardingController.state),
+      );
 
-          this.postOnboardingInitialization();
+      // start and stop polling for balances based on activeControllerConnections
+      this.on('controllerConnectionChanged', (activeControllerConnections) => {
+        const { completedOnboarding } = this.onboardingController.state;
+        if (activeControllerConnections > 0 && completedOnboarding) {
           this.triggerNetworkrequests();
-
-          // execute once the token detection on the post-onboarding
-          await this.tokenDetectionController.detectTokens({
-            selectedAddress: address,
-          });
+        } else {
+          this.stopNetworkRequests();
         }
-      }, this.onboardingController.state),
-    );
+      });
 
-    const tokenDetectionControllerMessenger =
-      this.controllerMessenger.getRestricted({
-        name: 'TokenDetectionController',
+      // ensure AccountTrackerController updates balances after network change
+      this.networkControllerMessenger.subscribe(
+        'NetworkController:networkDidChange',
+        () => {
+          this.accountTrackerController.updateAccounts();
+        },
+      );
+
+      return this.accountTrackerController;
+    };
+
+    const tokenDetectionControllerInit = () => {
+      const tokenDetectionControllerMessenger =
+        this.controllerMessenger.getRestricted({
+          name: 'TokenDetectionController',
+          allowedActions: [
+            'AccountsController:getAccount',
+            'AccountsController:getSelectedAccount',
+            'KeyringController:getState',
+            'NetworkController:getNetworkClientById',
+            'NetworkController:getNetworkConfigurationByNetworkClientId',
+            'NetworkController:getState',
+            'PreferencesController:getState',
+            'TokenListController:getState',
+            'TokensController:getState',
+            'TokensController:addDetectedTokens',
+          ],
+          allowedEvents: [
+            'AccountsController:selectedEvmAccountChange',
+            'KeyringController:lock',
+            'KeyringController:unlock',
+            'NetworkController:networkDidChange',
+            'PreferencesController:stateChange',
+            'TokenListController:stateChange',
+          ],
+        });
+
+      return (this.tokenDetectionController = new TokenDetectionController({
+        messenger: tokenDetectionControllerMessenger,
+        getBalancesInSingleCall:
+          this.assetsContractController.getBalancesInSingleCall.bind(
+            this.assetsContractController,
+          ),
+        trackMetaMetricsEvent: this.metaMetricsController.trackEvent.bind(
+          this.metaMetricsController,
+        ),
+        useAccountsAPI: true,
+        platform: 'extension',
+      }));
+    };
+
+    const addressBookControllerInit = () => {
+      const addressBookControllerMessenger =
+        this.controllerMessenger.getRestricted({
+          name: 'AddressBookController',
+          allowedActions: [],
+          allowedEvents: [],
+        });
+
+      return (this.addressBookController = new AddressBookController({
+        messenger: addressBookControllerMessenger,
+        state: initState.AddressBookController,
+      }));
+    };
+
+    const alertControllerInit = () => {
+      return (this.alertController = new AlertController({
+        state: initState.AlertController,
+        messenger: this.controllerMessenger.getRestricted({
+          name: 'AlertController',
+          allowedEvents: ['AccountsController:selectedAccountChange'],
+          allowedActions: ['AccountsController:getSelectedAccount'],
+        }),
+      }));
+    };
+
+    ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
+    const custodyControllerInit = () => {
+      return (this.custodyController = new CustodyController({
+        initState: initState.CustodyController,
+        captureException,
+      }));
+    };
+
+    const institutionalFeaturesControllerInit = () => {
+      return (this.institutionalFeaturesController =
+        new InstitutionalFeaturesController({
+          initState: initState.InstitutionalFeaturesController,
+          showConfirmRequest: opts.showUserConfirmation,
+        }));
+    };
+
+    const transactionUpdateControllerInit = () => {
+      return (this.transactionUpdateController =
+        new TransactionUpdateController({
+          initState: initState.TransactionUpdateController,
+          getCustodyKeyring: this.getCustodyKeyringIfExists.bind(this),
+          mmiConfigurationController: this.mmiConfigurationController,
+          captureException,
+        }));
+    };
+    ///: END:ONLY_INCLUDE_IF
+
+    const decryptMessageControllerInit = () => {
+      return (this.decryptMessageController = new DecryptMessageController({
+        getState: this.getState.bind(this),
+        messenger: this.controllerMessenger.getRestricted({
+          name: 'DecryptMessageController',
+          allowedActions: [
+            `${this.approvalController.name}:addRequest`,
+            `${this.approvalController.name}:acceptRequest`,
+            `${this.approvalController.name}:rejectRequest`,
+            `${this.keyringController.name}:decryptMessage`,
+          ],
+        }),
+        metricsEvent: this.metaMetricsController.trackEvent.bind(
+          this.metaMetricsController,
+        ),
+      }));
+    };
+
+    const encryptionPublicKeyControllerInit = () => {
+      return (this.encryptionPublicKeyController =
+        new EncryptionPublicKeyController({
+          messenger: this.controllerMessenger.getRestricted({
+            name: 'EncryptionPublicKeyController',
+            allowedActions: [
+              `${this.approvalController.name}:addRequest`,
+              `${this.approvalController.name}:acceptRequest`,
+              `${this.approvalController.name}:rejectRequest`,
+            ],
+          }),
+          getEncryptionPublicKey:
+            this.keyringController.getEncryptionPublicKey.bind(
+              this.keyringController,
+            ),
+          getAccountKeyringType:
+            this.keyringController.getAccountKeyringType.bind(
+              this.keyringController,
+            ),
+          getState: this.getState.bind(this),
+          metricsEvent: this.metaMetricsController.trackEvent.bind(
+            this.metaMetricsController,
+          ),
+        }));
+    };
+
+    const signatureControllerInit = () => {
+      this.signatureController = new SignatureController({
+        messenger: this.controllerMessenger.getRestricted({
+          name: 'SignatureController',
+          allowedActions: [
+            `${this.approvalController.name}:addRequest`,
+            `${this.keyringController.name}:signMessage`,
+            `${this.keyringController.name}:signPersonalMessage`,
+            `${this.keyringController.name}:signTypedMessage`,
+            `${this.loggingController.name}:add`,
+            `${this.networkController.name}:getNetworkClientById`,
+          ],
+        }),
+        trace,
+        decodingApiUrl: process.env.DECODING_API_URL,
+        isDecodeSignatureRequestEnabled: () =>
+          this.preferencesController.state.useExternalServices === true &&
+          this.preferencesController.state.useTransactionSimulations,
+      });
+
+      this.signatureController.hub.on(
+        'cancelWithReason',
+        ({ message, reason }) => {
+          this.metaMetricsController.trackEvent({
+            event: reason,
+            category: MetaMetricsEventCategory.Transactions,
+            properties: {
+              action: 'Sign Request',
+              type: message.type,
+            },
+          });
+        },
+      );
+
+      return this.signatureController;
+    };
+
+    ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
+    const mmiControllerInit = (request) => {
+      const transactionMetricsRequest = this.getTransactionMetricsRequest();
+
+      const mmiControllerMessenger = this.controllerMessenger.getRestricted({
+        name: 'MMIController',
         allowedActions: [
-          'AccountsController:getAccount',
+          'AccountsController:getAccountByAddress',
+          'AccountsController:setAccountName',
+          'AccountsController:listAccounts',
           'AccountsController:getSelectedAccount',
-          'KeyringController:getState',
-          'NetworkController:getNetworkClientById',
-          'NetworkController:getNetworkConfigurationByNetworkClientId',
+          'AccountsController:setSelectedAccount',
+          'MetaMetricsController:getState',
           'NetworkController:getState',
-          'PreferencesController:getState',
-          'TokenListController:getState',
-          'TokensController:getState',
-          'TokensController:addDetectedTokens',
-        ],
-        allowedEvents: [
-          'AccountsController:selectedEvmAccountChange',
-          'KeyringController:lock',
-          'KeyringController:unlock',
-          'NetworkController:networkDidChange',
-          'PreferencesController:stateChange',
-          'TokenListController:stateChange',
+          'NetworkController:setActiveNetwork',
         ],
       });
 
-    this.tokenDetectionController = new TokenDetectionController({
-      messenger: tokenDetectionControllerMessenger,
-      getBalancesInSingleCall:
-        this.assetsContractController.getBalancesInSingleCall.bind(
-          this.assetsContractController,
-        ),
-      trackMetaMetricsEvent: this.metaMetricsController.trackEvent.bind(
-        this.metaMetricsController,
-      ),
-      useAccountsAPI: true,
-      platform: 'extension',
-    });
+      const txController = request.getController(
+        ControllerName.TransactionController,
+      );
 
-    const addressBookControllerMessenger =
-      this.controllerMessenger.getRestricted({
-        name: 'AddressBookController',
-        allowedActions: [],
+      return (this.mmiController = new MMIController({
+        messenger: mmiControllerMessenger,
+        mmiConfigurationController: this.mmiConfigurationController,
+        keyringController: this.keyringController,
+        appStateController: this.appStateController,
+        transactionUpdateController: this.transactionUpdateController,
+        custodyController: this.custodyController,
+        getState: this.getState.bind(this),
+        getPendingNonce: this.getPendingNonce.bind(this),
+        accountTrackerController: this.accountTrackerController,
+        networkController: this.networkController,
+        metaMetricsController: this.metaMetricsController,
+        permissionController: this.permissionController,
+        signatureController: this.signatureController,
+        platform: this.platform,
+        extension: this.extension,
+        getTransactions: txController.getTransactions.bind(txController),
+        setTxStatusSigned: (id) =>
+          txController.updateCustodialTransaction(id, {
+            status: TransactionStatus.signed,
+          }),
+        setTxStatusSubmitted: (id) =>
+          txController.updateCustodialTransaction(id, {
+            status: TransactionStatus.submitted,
+          }),
+        setTxStatusFailed: (id, reason) =>
+          txController.updateCustodialTransaction(id, {
+            status: TransactionStatus.failed,
+            errorMessage: reason,
+          }),
+        trackTransactionEvents: handleMMITransactionUpdate.bind(
+          null,
+          transactionMetricsRequest,
+        ),
+        updateTransaction: (txMeta, note) =>
+          txController.updateTransaction(txMeta, note),
+        updateTransactionHash: (id, hash) =>
+          txController.updateCustodialTransaction(id, { hash }),
+        setChannelId: (channelId) =>
+          this.institutionalFeaturesController.setChannelId(channelId),
+        setConnectionRequest: (payload) =>
+          this.institutionalFeaturesController.setConnectionRequest(payload),
+      }));
+    };
+    ///: END:ONLY_INCLUDE_IF
+
+    const swapsControllerInit = (request) => {
+      const swapsControllerMessenger = this.controllerMessenger.getRestricted({
+        name: 'SwapsController',
+        // TODO: allow these internal calls once GasFeeController and TransactionController
+        // export these action types and register its action handlers
+        // allowedActions: [
+        //   'GasFeeController:getEIP1559GasFeeEstimates',
+        //   'TransactionController:getLayer1GasFee',
+        // ],
+        allowedActions: [
+          'NetworkController:getState',
+          'NetworkController:getNetworkClientById',
+          'TokenRatesController:getState',
+        ],
         allowedEvents: [],
       });
 
-    this.addressBookController = new AddressBookController({
-      messenger: addressBookControllerMessenger,
-      state: initState.AddressBookController,
+      const txController = request.getController(
+        ControllerName.TransactionController,
+      );
+
+      return (this.swapsController = new SwapsController(
+        {
+          messenger: swapsControllerMessenger,
+          getBufferedGasLimit: async (txMeta, multiplier) => {
+            const { gas: gasLimit, simulationFails } =
+              await txController.estimateGasBuffered(
+                txMeta.txParams,
+                multiplier,
+                this.#getGlobalNetworkClientId(),
+              );
+
+            return { gasLimit, simulationFails };
+          },
+          // TODO: Remove once GasFeeController exports this action type
+          getEIP1559GasFeeEstimates:
+            this.gasFeeController.fetchGasFeeEstimates.bind(
+              this.gasFeeController,
+            ),
+          // TODO: Remove once TransactionController exports this action type
+          getLayer1GasFee: txController.getLayer1GasFee.bind(txController),
+          trackMetaMetricsEvent: this.metaMetricsController.trackEvent.bind(
+            this.metaMetricsController,
+          ),
+        },
+        initState.SwapsController,
+      ));
+    };
+
+    const bridgeControllerInit = (request) => {
+      const bridgeControllerMessenger = this.controllerMessenger.getRestricted({
+        name: BRIDGE_CONTROLLER_NAME,
+        allowedActions: [
+          'AccountsController:getSelectedAccount',
+          'NetworkController:getSelectedNetworkClient',
+          'NetworkController:findNetworkClientIdByChainId',
+        ],
+        allowedEvents: [],
+      });
+
+      const txController = request.getController(
+        ControllerName.TransactionController,
+      );
+
+      return (this.bridgeController = new BridgeController({
+        messenger: bridgeControllerMessenger,
+        // TODO: Remove once TransactionController exports this action type
+        getLayer1GasFee: txController.getLayer1GasFee.bind(txController),
+      }));
+    };
+
+    const bridgeStatusControllerInit = () => {
+      const bridgeStatusControllerMessenger =
+        this.controllerMessenger.getRestricted({
+          name: BRIDGE_STATUS_CONTROLLER_NAME,
+          allowedActions: [
+            'AccountsController:getSelectedAccount',
+            'NetworkController:getNetworkClientById',
+            'NetworkController:findNetworkClientIdByChainId',
+            'NetworkController:getState',
+          ],
+          allowedEvents: [],
+        });
+
+      return (this.bridgeStatusController = new BridgeStatusController({
+        messenger: bridgeStatusControllerMessenger,
+        state: initState.BridgeStatusController,
+      }));
+    };
+
+    const smartTransactionsControllerInit = (request) => {
+      const smartTransactionsControllerMessenger =
+        this.controllerMessenger.getRestricted({
+          name: 'SmartTransactionsController',
+          allowedActions: ['NetworkController:getNetworkClientById'],
+          allowedEvents: ['NetworkController:stateChange'],
+        });
+
+      const txController = request.getController(
+        ControllerName.TransactionController,
+      );
+
+      return (this.smartTransactionsController =
+        new SmartTransactionsController({
+          supportedChainIds: getAllowedSmartTransactionsChainIds(),
+          clientId: ClientId.Extension,
+          getNonceLock: (address) =>
+            txController.getNonceLock(
+              address,
+              this.#getGlobalNetworkClientId(),
+            ),
+          confirmExternalTransaction:
+            txController.confirmExternalTransaction.bind(txController),
+          trackMetaMetricsEvent: this.metaMetricsController.trackEvent.bind(
+            this.metaMetricsController,
+          ),
+          state: initState.SmartTransactionsController,
+          messenger: smartTransactionsControllerMessenger,
+          getTransactions: txController.getTransactions.bind(txController),
+          updateTransaction: txController.updateTransaction.bind(txController),
+          getFeatureFlags: () => {
+            const state = this._getMetaMaskState();
+            return getFeatureFlagsByChainId(state);
+          },
+          getMetaMetricsProps: async () => {
+            const selectedAddress =
+              this.accountsController.getSelectedAccount().address;
+            const accountHardwareType = await getHardwareWalletType(
+              this._getMetaMaskState(),
+            );
+            const accountType = await this.getAccountType(selectedAddress);
+            const deviceModel = await this.getDeviceModel(selectedAddress);
+            return {
+              accountHardwareType,
+              accountType,
+              deviceModel,
+            };
+          },
+        }));
+    };
+
+    const nameControllerInit = () => {
+      const isExternalNameSourcesEnabled = () =>
+        this.preferencesController.state.useExternalNameSources;
+
+      this.nameController = new NameController({
+        messenger: this.controllerMessenger.getRestricted({
+          name: 'NameController',
+          allowedActions: [],
+        }),
+        providers: [
+          new ENSNameProvider({
+            reverseLookup: this.ensController.reverseResolveAddress.bind(
+              this.ensController,
+            ),
+          }),
+          new EtherscanNameProvider({
+            isEnabled: isExternalNameSourcesEnabled,
+          }),
+          new TokenNameProvider({ isEnabled: isExternalNameSourcesEnabled }),
+          new LensNameProvider({ isEnabled: isExternalNameSourcesEnabled }),
+          new SnapsNameProvider({
+            messenger: this.controllerMessenger.getRestricted({
+              name: 'SnapsNameProvider',
+              allowedActions: [
+                'SnapController:getAll',
+                'SnapController:get',
+                'SnapController:handleRequest',
+                'PermissionController:getState',
+              ],
+            }),
+          }),
+        ],
+        state: initState.NameController,
+      });
+
+      const petnamesBridgeMessenger = this.controllerMessenger.getRestricted({
+        name: 'PetnamesBridge',
+        allowedEvents: [
+          'NameController:stateChange',
+          'AccountsController:stateChange',
+          'AddressBookController:stateChange',
+        ],
+        allowedActions: ['AccountsController:listAccounts'],
+      });
+
+      new AddressBookPetnamesBridge({
+        addressBookController: this.addressBookController,
+        nameController: this.nameController,
+        messenger: petnamesBridgeMessenger,
+      }).init();
+
+      new AccountIdentitiesPetnamesBridge({
+        nameController: this.nameController,
+        messenger: petnamesBridgeMessenger,
+      }).init();
+
+      return this.nameController;
+    };
+
+    const userOperationControllerInit = () => {
+      this.userOperationController = new UserOperationController({
+        entrypoint: process.env.EIP_4337_ENTRYPOINT,
+        getGasFeeEstimates: this.gasFeeController.fetchGasFeeEstimates.bind(
+          this.gasFeeController,
+        ),
+        messenger: this.controllerMessenger.getRestricted({
+          name: 'UserOperationController',
+          allowedActions: [
+            'ApprovalController:addRequest',
+            'NetworkController:getNetworkClientById',
+            'KeyringController:prepareUserOperation',
+            'KeyringController:patchUserOperation',
+            'KeyringController:signUserOperation',
+          ],
+        }),
+        state: initState.UserOperationController,
+      });
+
+      this.userOperationController.hub.on(
+        'user-operation-added',
+        this._onUserOperationAdded.bind(this),
+      );
+
+      this.userOperationController.hub.on(
+        'transaction-updated',
+        this._onUserOperationTransactionUpdated.bind(this),
+      );
+
+      // clear unapproved transactions and messages when the network will change
+      this.networkControllerMessenger.subscribe(
+        'NetworkController:networkWillChange',
+        this.clearPendingConfirmations.bind(this),
+      );
+
+      return this.userOperationController;
+    };
+
+    const remoteFeatureFlagControllerInit = () => {
+      this.remoteFeatureFlagController = new RemoteFeatureFlagController({
+        messenger: this.controllerMessenger.getRestricted({
+          name: 'RemoteFeatureFlagController',
+          allowedActions: [],
+          allowedEvents: [],
+        }),
+        disabled: !this.preferencesController.state.useExternalServices,
+        clientConfigApiService: new ClientConfigApiService({
+          fetch: globalThis.fetch.bind(globalThis),
+          config: {
+            client: ClientType.Extension,
+            distribution:
+              this._getConfigForRemoteFeatureFlagRequest().distribution,
+            environment:
+              this._getConfigForRemoteFeatureFlagRequest().environment,
+          },
+        }),
+      });
+
+      // RemoteFeatureFlagController has subscription for preferences changes
+      this.controllerMessenger.subscribe(
+        'PreferencesController:stateChange',
+        previousValueComparator((prevState, currState) => {
+          const { useExternalServices: prevUseExternalServices } = prevState;
+          const { useExternalServices: currUseExternalServices } = currState;
+          if (currUseExternalServices && !prevUseExternalServices) {
+            this.remoteFeatureFlagController.enable();
+            this.remoteFeatureFlagController.updateRemoteFeatureFlags();
+          } else if (!currUseExternalServices && prevUseExternalServices) {
+            this.remoteFeatureFlagController.disable();
+          }
+        }, this.preferencesController.state),
+      );
+
+      return this.remoteFeatureFlagController;
+    };
+
+    const controllerInitObjects = [
+      loggingControllerInit,
+      appMetadataControllerInit,
+      approvalControllerInit,
+      queuedRequestControllerInit,
+      ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
+      mmiConfigurationControllerInit,
+      ///: END:ONLY_INCLUDE_IF
+      networkControllerInit,
+      accountsControllerInit,
+      preferencesControllerInit,
+      tokenListControllerInit,
+      assetsControllerInit,
+      tokensControllerInit,
+      nftControllerInit,
+      nftDetectionControllerInit,
+      metaMetricsControllerInit,
+      metaMetricsDataDeletionControllerInit,
+      gasFeeControllerInit,
+      appStateControllerInit,
+      currencyRateControllerInit,
+      tokenBalancesControllerInit,
+      phishingControllerInit,
+      ppomControllerInit,
+      announcementControllerInit,
+      networkOrderControllerInit,
+      accountOrderControllerInit,
+      multichainBalancesControllerInit,
+      multichainRatesControllerInit,
+      tokenRatesControllerInit,
+      ensControllerInit,
+      onboardingControllerInit,
+      keyringControllerInit,
+      permissionControllerInit,
+      selectedNetworkControllerInit,
+      permissionLogControllerInit,
+      subjectMetadataControllerInit,
+      snapControllerInit,
+      rateLimitControllerInit,
+      cronJobControllerInit,
+      snapInterfaceControllerInit,
+      snapInsightsControllerInit,
+      authenticationControllerInit,
+      userStorageControllerInit,
+      notificationServicesPushControllerInit,
+      notificationServicesControllerInit,
+      accountTrackerControllerInit,
+      tokenDetectionControllerInit,
+      addressBookControllerInit,
+      alertControllerInit,
+      ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
+      custodyControllerInit,
+      institutionalFeaturesControllerInit,
+      transactionUpdateControllerInit,
+      ///: END:ONLY_INCLUDE_IF
+      new TransactionControllerInit(),
+      decryptMessageControllerInit,
+      encryptionPublicKeyControllerInit,
+      signatureControllerInit,
+      ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
+      mmiControllerInit,
+      ///: END:ONLY_INCLUDE_IF
+      swapsControllerInit,
+      bridgeControllerInit,
+      bridgeStatusControllerInit,
+      smartTransactionsControllerInit,
+      nameControllerInit,
+      userOperationControllerInit,
+      remoteFeatureFlagControllerInit,
+    ];
+
+    const controllersByName = this.#initControllers({
+      initState,
+      initObjects: controllerInitObjects,
     });
 
-    this.alertController = new AlertController({
-      state: initState.AlertController,
-      messenger: this.controllerMessenger.getRestricted({
-        name: 'AlertController',
-        allowedEvents: ['AccountsController:selectedAccountChange'],
-        allowedActions: ['AccountsController:getSelectedAccount'],
-      }),
-    });
+    this.txController = controllersByName[ControllerName.TransactionController];
 
-    ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-    this.custodyController = new CustodyController({
-      initState: initState.CustodyController,
-      captureException,
-    });
-    this.institutionalFeaturesController = new InstitutionalFeaturesController({
-      initState: initState.InstitutionalFeaturesController,
-      showConfirmRequest: opts.showUserConfirmation,
-    });
-    this.transactionUpdateController = new TransactionUpdateController({
-      initState: initState.TransactionUpdateController,
-      getCustodyKeyring: this.getCustodyKeyringIfExists.bind(this),
-      mmiConfigurationController: this.mmiConfigurationController,
-      captureException,
-    });
-    ///: END:ONLY_INCLUDE_IF
+    this.controllerMessenger.subscribe(
+      'TransactionController:transactionStatusUpdated',
+      ({ transactionMeta }) => {
+        this._onFinishedTransaction(transactionMeta);
+      },
+    );
 
     this.backup = new Backup({
       preferencesController: this.preferencesController,
@@ -1901,498 +2567,6 @@ export default class MetamaskController extends EventEmitter {
       trackMetaMetricsEvent: this.metaMetricsController.trackEvent.bind(
         this.metaMetricsController,
       ),
-    });
-
-    // This gets used as a ...spread parameter in two places: new TransactionController() and createRPCMethodTrackingMiddleware()
-    this.snapAndHardwareMetricsParams = {
-      getSelectedAccount: this.accountsController.getSelectedAccount.bind(
-        this.accountsController,
-      ),
-      getAccountType: this.getAccountType.bind(this),
-      getDeviceModel: this.getDeviceModel.bind(this),
-      snapAndHardwareMessenger: this.controllerMessenger.getRestricted({
-        name: 'SnapAndHardwareMessenger',
-        allowedActions: [
-          'KeyringController:getKeyringForAccount',
-          'SnapController:get',
-          'AccountsController:getSelectedAccount',
-        ],
-      }),
-    };
-
-    const transactionControllerMessenger =
-      this.controllerMessenger.getRestricted({
-        name: 'TransactionController',
-        allowedActions: [
-          `${this.approvalController.name}:addRequest`,
-          'NetworkController:findNetworkClientIdByChainId',
-          'NetworkController:getNetworkClientById',
-          'AccountsController:getSelectedAccount',
-        ],
-        allowedEvents: [`NetworkController:stateChange`],
-      });
-
-    this.txController = new TransactionController({
-      getCurrentNetworkEIP1559Compatibility:
-        this.networkController.getEIP1559Compatibility.bind(
-          this.networkController,
-        ),
-      getCurrentAccountEIP1559Compatibility:
-        this.getCurrentAccountEIP1559Compatibility.bind(this),
-      getExternalPendingTransactions:
-        this.getExternalPendingTransactions.bind(this),
-      getGasFeeEstimates: this.gasFeeController.fetchGasFeeEstimates.bind(
-        this.gasFeeController,
-      ),
-      getNetworkClientRegistry:
-        this.networkController.getNetworkClientRegistry.bind(
-          this.networkController,
-        ),
-      getNetworkState: () => this.networkController.state,
-      getPermittedAccounts: this.getPermittedAccounts.bind(this),
-      getSavedGasFees: () => {
-        const globalChainId = this.#getGlobalChainId();
-        return this.preferencesController.state.advancedGasFee[globalChainId];
-      },
-      incomingTransactions: {
-        etherscanApiKeysByChainId: {
-          [CHAIN_IDS.MAINNET]: process.env.ETHERSCAN_API_KEY,
-          [CHAIN_IDS.SEPOLIA]: process.env.ETHERSCAN_API_KEY,
-        },
-        includeTokenTransfers: false,
-        isEnabled: () =>
-          this.preferencesController.state.incomingTransactionsPreferences?.[
-            this.#getGlobalChainId()
-          ] && this.onboardingController.state.completedOnboarding,
-        queryEntireHistory: false,
-        updateTransactions: false,
-      },
-      isFirstTimeInteractionEnabled: () =>
-        this.preferencesController.state.securityAlertsEnabled,
-      isSimulationEnabled: () =>
-        this.preferencesController.state.useTransactionSimulations,
-      messenger: transactionControllerMessenger,
-      pendingTransactions: {
-        isResubmitEnabled: () => {
-          const state = this._getMetaMaskState();
-          return !(
-            getSmartTransactionsPreferenceEnabled(state) &&
-            getCurrentChainSupportsSmartTransactions(state)
-          );
-        },
-      },
-      testGasFeeFlows: process.env.TEST_GAS_FEE_FLOWS,
-      trace,
-      hooks: {
-        ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-        afterSign: (txMeta, signedEthTx) =>
-          afterTransactionSignMMI(
-            txMeta,
-            signedEthTx,
-            this.transactionUpdateController.addTransactionToWatchList.bind(
-              this.transactionUpdateController,
-            ),
-          ),
-        beforeCheckPendingTransaction:
-          beforeCheckPendingTransactionMMI.bind(this),
-        beforePublish: beforeTransactionPublishMMI.bind(this),
-        getAdditionalSignArguments: getAdditionalSignArgumentsMMI.bind(this),
-        ///: END:ONLY_INCLUDE_IF
-        publish: this._publishSmartTransactionHook.bind(this),
-      },
-      sign: (...args) => this.keyringController.signTransaction(...args),
-      state: initState.TransactionController,
-    });
-
-    this._addTransactionControllerListeners();
-
-    this.decryptMessageController = new DecryptMessageController({
-      getState: this.getState.bind(this),
-      messenger: this.controllerMessenger.getRestricted({
-        name: 'DecryptMessageController',
-        allowedActions: [
-          `${this.approvalController.name}:addRequest`,
-          `${this.approvalController.name}:acceptRequest`,
-          `${this.approvalController.name}:rejectRequest`,
-          `${this.keyringController.name}:decryptMessage`,
-        ],
-      }),
-      metricsEvent: this.metaMetricsController.trackEvent.bind(
-        this.metaMetricsController,
-      ),
-    });
-
-    this.encryptionPublicKeyController = new EncryptionPublicKeyController({
-      messenger: this.controllerMessenger.getRestricted({
-        name: 'EncryptionPublicKeyController',
-        allowedActions: [
-          `${this.approvalController.name}:addRequest`,
-          `${this.approvalController.name}:acceptRequest`,
-          `${this.approvalController.name}:rejectRequest`,
-        ],
-      }),
-      getEncryptionPublicKey:
-        this.keyringController.getEncryptionPublicKey.bind(
-          this.keyringController,
-        ),
-      getAccountKeyringType: this.keyringController.getAccountKeyringType.bind(
-        this.keyringController,
-      ),
-      getState: this.getState.bind(this),
-      metricsEvent: this.metaMetricsController.trackEvent.bind(
-        this.metaMetricsController,
-      ),
-    });
-
-    this.signatureController = new SignatureController({
-      messenger: this.controllerMessenger.getRestricted({
-        name: 'SignatureController',
-        allowedActions: [
-          `${this.approvalController.name}:addRequest`,
-          `${this.keyringController.name}:signMessage`,
-          `${this.keyringController.name}:signPersonalMessage`,
-          `${this.keyringController.name}:signTypedMessage`,
-          `${this.loggingController.name}:add`,
-          `${this.networkController.name}:getNetworkClientById`,
-        ],
-      }),
-      trace,
-      decodingApiUrl: process.env.DECODING_API_URL,
-      isDecodeSignatureRequestEnabled: () =>
-        this.preferencesController.state.useExternalServices === true &&
-        this.preferencesController.state.useTransactionSimulations,
-    });
-
-    this.signatureController.hub.on(
-      'cancelWithReason',
-      ({ message, reason }) => {
-        this.metaMetricsController.trackEvent({
-          event: reason,
-          category: MetaMetricsEventCategory.Transactions,
-          properties: {
-            action: 'Sign Request',
-            type: message.type,
-          },
-        });
-      },
-    );
-
-    ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-    const transactionMetricsRequest = this.getTransactionMetricsRequest();
-
-    const mmiControllerMessenger = this.controllerMessenger.getRestricted({
-      name: 'MMIController',
-      allowedActions: [
-        'AccountsController:getAccountByAddress',
-        'AccountsController:setAccountName',
-        'AccountsController:listAccounts',
-        'AccountsController:getSelectedAccount',
-        'AccountsController:setSelectedAccount',
-        'MetaMetricsController:getState',
-        'NetworkController:getState',
-        'NetworkController:setActiveNetwork',
-      ],
-    });
-
-    this.mmiController = new MMIController({
-      messenger: mmiControllerMessenger,
-      mmiConfigurationController: this.mmiConfigurationController,
-      keyringController: this.keyringController,
-      appStateController: this.appStateController,
-      transactionUpdateController: this.transactionUpdateController,
-      custodyController: this.custodyController,
-      getState: this.getState.bind(this),
-      getPendingNonce: this.getPendingNonce.bind(this),
-      accountTrackerController: this.accountTrackerController,
-      networkController: this.networkController,
-      metaMetricsController: this.metaMetricsController,
-      permissionController: this.permissionController,
-      signatureController: this.signatureController,
-      platform: this.platform,
-      extension: this.extension,
-      getTransactions: this.txController.getTransactions.bind(
-        this.txController,
-      ),
-      setTxStatusSigned: (id) =>
-        this.txController.updateCustodialTransaction(id, {
-          status: TransactionStatus.signed,
-        }),
-      setTxStatusSubmitted: (id) =>
-        this.txController.updateCustodialTransaction(id, {
-          status: TransactionStatus.submitted,
-        }),
-      setTxStatusFailed: (id, reason) =>
-        this.txController.updateCustodialTransaction(id, {
-          status: TransactionStatus.failed,
-          errorMessage: reason,
-        }),
-      trackTransactionEvents: handleMMITransactionUpdate.bind(
-        null,
-        transactionMetricsRequest,
-      ),
-      updateTransaction: (txMeta, note) =>
-        this.txController.updateTransaction(txMeta, note),
-      updateTransactionHash: (id, hash) =>
-        this.txController.updateCustodialTransaction(id, { hash }),
-      setChannelId: (channelId) =>
-        this.institutionalFeaturesController.setChannelId(channelId),
-      setConnectionRequest: (payload) =>
-        this.institutionalFeaturesController.setConnectionRequest(payload),
-    });
-    ///: END:ONLY_INCLUDE_IF
-
-    const swapsControllerMessenger = this.controllerMessenger.getRestricted({
-      name: 'SwapsController',
-      // TODO: allow these internal calls once GasFeeController and TransactionController
-      // export these action types and register its action handlers
-      // allowedActions: [
-      //   'GasFeeController:getEIP1559GasFeeEstimates',
-      //   'TransactionController:getLayer1GasFee',
-      // ],
-      allowedActions: [
-        'NetworkController:getState',
-        'NetworkController:getNetworkClientById',
-        'TokenRatesController:getState',
-      ],
-      allowedEvents: [],
-    });
-
-    this.swapsController = new SwapsController(
-      {
-        messenger: swapsControllerMessenger,
-        getBufferedGasLimit: async (txMeta, multiplier) => {
-          const { gas: gasLimit, simulationFails } =
-            await this.txController.estimateGasBuffered(
-              txMeta.txParams,
-              multiplier,
-              this.#getGlobalNetworkClientId(),
-            );
-
-          return { gasLimit, simulationFails };
-        },
-        // TODO: Remove once GasFeeController exports this action type
-        getEIP1559GasFeeEstimates:
-          this.gasFeeController.fetchGasFeeEstimates.bind(
-            this.gasFeeController,
-          ),
-        // TODO: Remove once TransactionController exports this action type
-        getLayer1GasFee: this.txController.getLayer1GasFee.bind(
-          this.txController,
-        ),
-        trackMetaMetricsEvent: this.metaMetricsController.trackEvent.bind(
-          this.metaMetricsController,
-        ),
-      },
-      initState.SwapsController,
-    );
-
-    const bridgeControllerMessenger = this.controllerMessenger.getRestricted({
-      name: BRIDGE_CONTROLLER_NAME,
-      allowedActions: [
-        'AccountsController:getSelectedAccount',
-        'NetworkController:getSelectedNetworkClient',
-        'NetworkController:findNetworkClientIdByChainId',
-      ],
-      allowedEvents: [],
-    });
-    this.bridgeController = new BridgeController({
-      messenger: bridgeControllerMessenger,
-      // TODO: Remove once TransactionController exports this action type
-      getLayer1GasFee: this.txController.getLayer1GasFee.bind(
-        this.txController,
-      ),
-    });
-
-    const bridgeStatusControllerMessenger =
-      this.controllerMessenger.getRestricted({
-        name: BRIDGE_STATUS_CONTROLLER_NAME,
-        allowedActions: [
-          'AccountsController:getSelectedAccount',
-          'NetworkController:getNetworkClientById',
-          'NetworkController:findNetworkClientIdByChainId',
-          'NetworkController:getState',
-        ],
-        allowedEvents: [],
-      });
-    this.bridgeStatusController = new BridgeStatusController({
-      messenger: bridgeStatusControllerMessenger,
-      state: initState.BridgeStatusController,
-    });
-
-    const smartTransactionsControllerMessenger =
-      this.controllerMessenger.getRestricted({
-        name: 'SmartTransactionsController',
-        allowedActions: ['NetworkController:getNetworkClientById'],
-        allowedEvents: ['NetworkController:stateChange'],
-      });
-    this.smartTransactionsController = new SmartTransactionsController({
-      supportedChainIds: getAllowedSmartTransactionsChainIds(),
-      clientId: ClientId.Extension,
-      getNonceLock: (address) =>
-        this.txController.getNonceLock(
-          address,
-          this.#getGlobalNetworkClientId(),
-        ),
-      confirmExternalTransaction:
-        this.txController.confirmExternalTransaction.bind(this.txController),
-      trackMetaMetricsEvent: this.metaMetricsController.trackEvent.bind(
-        this.metaMetricsController,
-      ),
-      state: initState.SmartTransactionsController,
-      messenger: smartTransactionsControllerMessenger,
-      getTransactions: this.txController.getTransactions.bind(
-        this.txController,
-      ),
-      updateTransaction: this.txController.updateTransaction.bind(
-        this.txController,
-      ),
-      getFeatureFlags: () => {
-        const state = this._getMetaMaskState();
-        return getFeatureFlagsByChainId(state);
-      },
-      getMetaMetricsProps: async () => {
-        const selectedAddress =
-          this.accountsController.getSelectedAccount().address;
-        const accountHardwareType = await getHardwareWalletType(
-          this._getMetaMaskState(),
-        );
-        const accountType = await this.getAccountType(selectedAddress);
-        const deviceModel = await this.getDeviceModel(selectedAddress);
-        return {
-          accountHardwareType,
-          accountType,
-          deviceModel,
-        };
-      },
-    });
-
-    const isExternalNameSourcesEnabled = () =>
-      this.preferencesController.state.useExternalNameSources;
-
-    this.nameController = new NameController({
-      messenger: this.controllerMessenger.getRestricted({
-        name: 'NameController',
-        allowedActions: [],
-      }),
-      providers: [
-        new ENSNameProvider({
-          reverseLookup: this.ensController.reverseResolveAddress.bind(
-            this.ensController,
-          ),
-        }),
-        new EtherscanNameProvider({ isEnabled: isExternalNameSourcesEnabled }),
-        new TokenNameProvider({ isEnabled: isExternalNameSourcesEnabled }),
-        new LensNameProvider({ isEnabled: isExternalNameSourcesEnabled }),
-        new SnapsNameProvider({
-          messenger: this.controllerMessenger.getRestricted({
-            name: 'SnapsNameProvider',
-            allowedActions: [
-              'SnapController:getAll',
-              'SnapController:get',
-              'SnapController:handleRequest',
-              'PermissionController:getState',
-            ],
-          }),
-        }),
-      ],
-      state: initState.NameController,
-    });
-
-    const petnamesBridgeMessenger = this.controllerMessenger.getRestricted({
-      name: 'PetnamesBridge',
-      allowedEvents: [
-        'NameController:stateChange',
-        'AccountsController:stateChange',
-        'AddressBookController:stateChange',
-      ],
-      allowedActions: ['AccountsController:listAccounts'],
-    });
-
-    new AddressBookPetnamesBridge({
-      addressBookController: this.addressBookController,
-      nameController: this.nameController,
-      messenger: petnamesBridgeMessenger,
-    }).init();
-
-    new AccountIdentitiesPetnamesBridge({
-      nameController: this.nameController,
-      messenger: petnamesBridgeMessenger,
-    }).init();
-
-    this.userOperationController = new UserOperationController({
-      entrypoint: process.env.EIP_4337_ENTRYPOINT,
-      getGasFeeEstimates: this.gasFeeController.fetchGasFeeEstimates.bind(
-        this.gasFeeController,
-      ),
-      messenger: this.controllerMessenger.getRestricted({
-        name: 'UserOperationController',
-        allowedActions: [
-          'ApprovalController:addRequest',
-          'NetworkController:getNetworkClientById',
-          'KeyringController:prepareUserOperation',
-          'KeyringController:patchUserOperation',
-          'KeyringController:signUserOperation',
-        ],
-      }),
-      state: initState.UserOperationController,
-    });
-
-    this.userOperationController.hub.on(
-      'user-operation-added',
-      this._onUserOperationAdded.bind(this),
-    );
-
-    this.userOperationController.hub.on(
-      'transaction-updated',
-      this._onUserOperationTransactionUpdated.bind(this),
-    );
-
-    // ensure AccountTrackerController updates balances after network change
-    networkControllerMessenger.subscribe(
-      'NetworkController:networkDidChange',
-      () => {
-        this.accountTrackerController.updateAccounts();
-      },
-    );
-
-    // clear unapproved transactions and messages when the network will change
-    networkControllerMessenger.subscribe(
-      'NetworkController:networkWillChange',
-      clearPendingConfirmations.bind(this),
-    );
-
-    // RemoteFeatureFlagController has subscription for preferences changes
-    this.controllerMessenger.subscribe(
-      'PreferencesController:stateChange',
-      previousValueComparator((prevState, currState) => {
-        const { useExternalServices: prevUseExternalServices } = prevState;
-        const { useExternalServices: currUseExternalServices } = currState;
-        if (currUseExternalServices && !prevUseExternalServices) {
-          this.remoteFeatureFlagController.enable();
-          this.remoteFeatureFlagController.updateRemoteFeatureFlags();
-        } else if (!currUseExternalServices && prevUseExternalServices) {
-          this.remoteFeatureFlagController.disable();
-        }
-      }, this.preferencesController.state),
-    );
-
-    // Initialize RemoteFeatureFlagController
-    this.remoteFeatureFlagController = new RemoteFeatureFlagController({
-      messenger: this.controllerMessenger.getRestricted({
-        name: 'RemoteFeatureFlagController',
-        allowedActions: [],
-        allowedEvents: [],
-      }),
-      disabled: !this.preferencesController.state.useExternalServices,
-      clientConfigApiService: new ClientConfigApiService({
-        fetch: globalThis.fetch.bind(globalThis),
-        config: {
-          client: ClientType.Extension,
-          distribution:
-            this._getConfigForRemoteFeatureFlagRequest().distribution,
-          environment: this._getConfigForRemoteFeatureFlagRequest().environment,
-        },
-      }),
     });
 
     this.metamaskMiddleware = createMetamaskMiddleware({
@@ -6563,13 +6737,6 @@ export default class MetamaskController extends EventEmitter {
   // MISCELLANEOUS
   //=============================================================================
 
-  getExternalPendingTransactions(address) {
-    return this.smartTransactionsController.getTransactions({
-      addressFrom: address,
-      status: 'pending',
-    });
-  }
-
   isConfirmationRedesignEnabled() {
     return this.preferencesController.state.preferences
       .redesignedConfirmationsEnabled;
@@ -6650,83 +6817,6 @@ export default class MetamaskController extends EventEmitter {
       error.name = 'TestError';
       throw error;
     });
-  }
-
-  /**
-   * A method for setting TransactionController event listeners
-   */
-  _addTransactionControllerListeners() {
-    const transactionMetricsRequest = this.getTransactionMetricsRequest();
-
-    this.controllerMessenger.subscribe(
-      'TransactionController:postTransactionBalanceUpdated',
-      handlePostTransactionBalanceUpdate.bind(null, transactionMetricsRequest),
-    );
-
-    this.controllerMessenger.subscribe(
-      'TransactionController:unapprovedTransactionAdded',
-      (transactionMeta) =>
-        handleTransactionAdded(transactionMetricsRequest, { transactionMeta }),
-    );
-
-    this.controllerMessenger.subscribe(
-      'TransactionController:transactionApproved',
-      handleTransactionApproved.bind(null, transactionMetricsRequest),
-    );
-
-    this.controllerMessenger.subscribe(
-      'TransactionController:transactionDropped',
-      handleTransactionDropped.bind(null, transactionMetricsRequest),
-    );
-
-    this.controllerMessenger.subscribe(
-      'TransactionController:transactionConfirmed',
-      handleTransactionConfirmed.bind(null, transactionMetricsRequest),
-    );
-
-    this.controllerMessenger.subscribe(
-      'TransactionController:transactionFailed',
-      handleTransactionFailed.bind(null, transactionMetricsRequest),
-    );
-
-    this.controllerMessenger.subscribe(
-      'TransactionController:transactionNewSwap',
-      ({ transactionMeta }) =>
-        // TODO: This can be called internally by the TransactionController
-        // since Swaps Controller registers this action handler
-        this.controllerMessenger.call(
-          'SwapsController:setTradeTxId',
-          transactionMeta.id,
-        ),
-    );
-
-    this.controllerMessenger.subscribe(
-      'TransactionController:transactionNewSwapApproval',
-      ({ transactionMeta }) =>
-        // TODO: This can be called internally by the TransactionController
-        // since Swaps Controller registers this action handler
-        this.controllerMessenger.call(
-          'SwapsController:setApproveTxId',
-          transactionMeta.id,
-        ),
-    );
-
-    this.controllerMessenger.subscribe(
-      'TransactionController:transactionRejected',
-      handleTransactionRejected.bind(null, transactionMetricsRequest),
-    );
-
-    this.controllerMessenger.subscribe(
-      'TransactionController:transactionSubmitted',
-      handleTransactionSubmitted.bind(null, transactionMetricsRequest),
-    );
-
-    this.controllerMessenger.subscribe(
-      'TransactionController:transactionStatusUpdated',
-      ({ transactionMeta }) => {
-        this._onFinishedTransaction(transactionMeta);
-      },
-    );
   }
 
   getTransactionMetricsRequest() {
@@ -7393,26 +7483,6 @@ export default class MetamaskController extends EventEmitter {
     );
   }
 
-  _publishSmartTransactionHook(transactionMeta, signedTransactionInHex) {
-    const state = this._getMetaMaskState();
-    const isSmartTransaction = getIsSmartTransaction(state);
-    if (!isSmartTransaction) {
-      // Will cause TransactionController to publish to the RPC provider as normal.
-      return { transactionHash: undefined };
-    }
-    const featureFlags = getFeatureFlagsByChainId(state);
-    return submitSmartTransactionHook({
-      transactionMeta,
-      signedTransactionInHex,
-      transactionController: this.txController,
-      smartTransactionsController: this.smartTransactionsController,
-      controllerMessenger: this.controllerMessenger,
-      isSmartTransaction,
-      isHardwareWallet: isHardwareWallet(state),
-      featureFlags,
-    });
-  }
-
   _getMetaMaskState() {
     return {
       metamask: this.getState(),
@@ -7472,5 +7542,48 @@ export default class MetamaskController extends EventEmitter {
    */
   #getGlobalNetworkClientId() {
     return this.networkController.state.selectedNetworkClientId;
+  }
+
+  #initControllers({ initObjects, initState }) {
+    debugLog('Initializing controllers', initObjects.length);
+
+    const controllersByName = {};
+
+    const initRequest = {
+      controllerMessenger: this.controllerMessenger,
+      getController: this.#getController.bind(this, controllersByName),
+      getGlobalChainId: this.#getGlobalChainId.bind(this),
+      getPermittedAccounts: this.getPermittedAccounts.bind(this),
+      getStateUI: this._getMetaMaskState.bind(this),
+      getTransactionMetricsRequest:
+        this.getTransactionMetricsRequest.bind(this),
+      persistedState: initState,
+    };
+
+    initObjects.forEach((initObject) => {
+      const controller = initObject.init
+        ? initObject.init(initRequest)
+        : initObject(initRequest);
+
+      const { name } = controller;
+
+      controllersByName[name] = controller;
+
+      debugLog('Initialized controller', name);
+    });
+
+    return controllersByName;
+  }
+
+  #getController(controllersByName, name) {
+    const controller = controllersByName[name];
+
+    if (!controller) {
+      throw new Error(
+        `Controller requested before it was initialized: ${name}`,
+      );
+    }
+
+    return controller;
   }
 }
