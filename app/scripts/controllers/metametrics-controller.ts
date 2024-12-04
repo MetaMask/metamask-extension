@@ -779,13 +779,14 @@ export default class MetaMetricsController extends BaseController<
     const query: {
       mmi?: string;
       env?: string;
-      av?: string;
-    } = {};
+      av: string;
+    } = {
+      av: this.version,
+    };
     if (participateInMetaMetrics) {
       // We only want to track these things if a user opted into metrics.
       query.mmi = Buffer.from(metaMetricsId).toString('base64');
       query.env = this.#environment;
-      query.av = this.version;
     }
     const queryString = new URLSearchParams(query);
 
