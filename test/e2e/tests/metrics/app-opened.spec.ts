@@ -1,6 +1,11 @@
 import { strict as assert } from 'assert';
 import { Mockttp } from 'mockttp';
-import { withFixtures, getEventPayloads, unlockWallet } from '../../helpers';
+import {
+  withFixtures,
+  getEventPayloads,
+  unlockWallet,
+  connectToDapp,
+} from '../../helpers';
 import FixtureBuilder from '../../fixture-builder';
 
 /**
@@ -8,7 +13,7 @@ import FixtureBuilder from '../../fixture-builder';
  * these tests are run.
  *
  * @param mockServer - The mock server instance.
- * @returns
+ * @returns The mocked endpoints
  */
 async function mockSegment(mockServer: Mockttp) {
   return [
@@ -65,6 +70,33 @@ describe('App Opened metric @no-mmi', function () {
 
         const events = await getEventPayloads(driver, mockedEndpoints);
         assert.equal(events.length, 0);
+      },
+    );
+  });
+
+  it('should send AppOpened metric when dapp opens MetaMask', async function () {
+    await withFixtures(
+      {
+        dapp: true,
+        fixtures: new FixtureBuilder()
+          .withMetaMetricsController({
+            metaMetricsId: 'fake-metrics-fd20',
+            participateInMetaMetrics: true,
+          })
+          .build(),
+        title: this.test?.fullTitle(),
+        testSpecificMock: mockSegment,
+      },
+      async ({ driver, mockedEndpoint: mockedEndpoints }) => {
+        await unlockWallet(driver);
+
+        // Connect to dapp which will trigger MetaMask to open
+        await connectToDapp(driver);
+
+        // Wait for events to be tracked
+        const events = await getEventPayloads(driver, mockedEndpoints);
+        assert.equal(events.length, 1);
+        assert.equal(events[0].properties.category, 'App');
       },
     );
   });
