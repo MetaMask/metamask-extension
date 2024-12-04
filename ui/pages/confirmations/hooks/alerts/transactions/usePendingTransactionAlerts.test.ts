@@ -168,7 +168,7 @@ describe('usePendingTransactionAlerts', () => {
       {
         field: RowAlertKey.Speed,
         key: 'pendingTransactions',
-        message: PendingTransactionAlertMessage(),
+        content: PendingTransactionAlertMessage(),
         reason: 'Pending transaction',
         severity: Severity.Warning,
       },
