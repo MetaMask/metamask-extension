@@ -484,6 +484,41 @@ class FixtureBuilder {
                     'eip155:1337': {
                       accounts: [
                         `eip155:1337:${selectedAccount.toLowerCase()}`,
+                      ],
+                    },
+                  },
+                  isMultichainOrigin: false,
+                },
+              },
+            ],
+            id: 'ZaqPEWxyhNCJYACFw93jE',
+            date: 1664388714636,
+            invoker: DAPP_URL,
+            parentCapability: 'endowment:caip25',
+          },
+        },
+      },
+    };
+    return this.withPermissionController({
+      subjects,
+    });
+  }
+
+  withPermissionControllerConnectedToTestDappWithTwoAccounts() {
+    const subjects = {
+      [DAPP_URL]: {
+        origin: DAPP_URL,
+        permissions: {
+          'endowment:caip25': {
+            caveats: [
+              {
+                type: 'authorizedScopes',
+                value: {
+                  requiredScopes: {},
+                  optionalScopes: {
+                    'eip155:1337': {
+                      accounts: [
+                        'eip155:1337:0x5cfe73b6021e818b776b421b1c4db2474086a7e1',
                         'eip155:1337:0x09781764c08de8ca82e156bbf156a3ca217c7950',
                       ],
                     },
@@ -553,7 +588,6 @@ class FixtureBuilder {
                     'eip155:1337': {
                       accounts: [
                         'eip155:1337:0x5cfe73b6021e818b776b421b1c4db2474086a7e1',
-                        'eip155:1337:0x09781764c08de8ca82e156bbf156a3ca217c7950',
                       ],
                     },
                   },
@@ -581,7 +615,6 @@ class FixtureBuilder {
                     'eip155:1338': {
                       accounts: [
                         'eip155:1338:0x5cfe73b6021e818b776b421b1c4db2474086a7e1',
-                        'eip155:1338:0x09781764c08de8ca82e156bbf156a3ca217c7950',
                       ],
                     },
                   },

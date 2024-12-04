@@ -836,63 +836,102 @@ describe('MetaMaskController', () => {
         ).toStrictEqual([]);
       });
 
-      it('returns the eth accounts from the CAIP-25 permission', async () => {
-        jest
-          .spyOn(metamaskController.permissionController, 'getCaveat')
-          .mockReturnValue({
-            value: {
-              requiredScopes: {},
-              optionalScopes: {
-                'eip155:1': {
-                  accounts: ['eip155:1:0xdead', 'eip155:1:0xbeef'],
+      describe('the wallet is locked', () => {
+        beforeEach(() => {
+          jest.spyOn(metamaskController, 'isUnlocked').mockReturnValue(false);
+        });
+
+        it('returns empty array if there is a CAIP-25 permission for the origin and ignoreLock is false', async () => {
+          jest
+            .spyOn(metamaskController.permissionController, 'getCaveat')
+            .mockReturnValue({
+              value: {
+                requiredScopes: {},
+                optionalScopes: {
+                  'eip155:1': {
+                    accounts: ['eip155:1:0xdead', 'eip155:1:0xbeef'],
+                  },
                 },
               },
-            },
-          });
+            });
 
-        expect(
-          metamaskController.getPermittedAccounts('test.com'),
-        ).toStrictEqual(['0xdead', '0xbeef']);
-      });
-    });
+          expect(
+            metamaskController.getPermittedAccounts('test.com', false),
+          ).toStrictEqual([]);
+        });
 
-    describe('#getPermittedAccountsSorted', () => {
-      it('gets the permitted accounts for the origin', async () => {
-        jest
-          .spyOn(metamaskController, 'getPermittedAccounts')
-          .mockReturnValue([]);
+        it('returns accounts if there is a CAIP-25 permission for the origin and ignoreLock is true', async () => {
+          jest
+            .spyOn(metamaskController.permissionController, 'getCaveat')
+            .mockReturnValue({
+              value: {
+                requiredScopes: {},
+                optionalScopes: {
+                  'eip155:1': {
+                    accounts: ['eip155:1:0xdead', 'eip155:1:0xbeef'],
+                  },
+                },
+              },
+            });
+          jest
+            .spyOn(metamaskController, 'sortAccountsByLastSelected')
+            .mockReturnValue(['not_empty']);
 
-        await metamaskController.getPermittedAccountsSorted('test.com');
-
-        expect(metamaskController.getPermittedAccounts).toHaveBeenCalledWith(
-          'test.com',
-        );
-      });
-
-      it('gets all evm accounts sorted by most recently used', async () => {
-        jest
-          .spyOn(metamaskController, 'getPermittedAccounts')
-          .mockReturnValue([]);
-        jest
-          .spyOn(metamaskController, 'getAllEvmAccountsSorted')
-          .mockResolvedValue([]);
-
-        await metamaskController.getPermittedAccountsSorted('test.com');
-
-        expect(metamaskController.getAllEvmAccountsSorted).toHaveBeenCalled();
+          expect(
+            metamaskController.getPermittedAccounts('test.com', true),
+          ).toStrictEqual(['not_empty']);
+        });
       });
 
-      it('returns the permitted accounts for the origin sorted by most recently used', async () => {
-        jest
-          .spyOn(metamaskController, 'getPermittedAccounts')
-          .mockReturnValue(['0x1', '0x3', '0x5']);
-        jest
-          .spyOn(metamaskController, 'getAllEvmAccountsSorted')
-          .mockResolvedValue([]);
+      describe('the wallet is unlocked', () => {
+        beforeEach(() => {
+          jest.spyOn(metamaskController, 'isUnlocked').mockReturnValue(true);
+        });
 
-        await metamaskController.getPermittedAccountsSorted('test.com');
+        it('sorts the eth accounts from the CAIP-25 permission', async () => {
+          jest
+            .spyOn(metamaskController.permissionController, 'getCaveat')
+            .mockReturnValue({
+              value: {
+                requiredScopes: {},
+                optionalScopes: {
+                  'eip155:1': {
+                    accounts: ['eip155:1:0xdead', 'eip155:1:0xbeef'],
+                  },
+                },
+              },
+            });
+          jest
+            .spyOn(metamaskController, 'sortAccountsByLastSelected')
+            .mockReturnValue([]);
 
-        expect(metamaskController.getAllEvmAccountsSorted).toHaveBeenCalled();
+          metamaskController.getPermittedAccounts('test.com');
+          expect(
+            metamaskController.sortAccountsByLastSelected,
+          ).toHaveBeenCalledWith(['0xdead', '0xbeef']);
+        });
+
+        it('returns the sorted eth accounts from the CAIP-25 permission', async () => {
+          jest
+            .spyOn(metamaskController.permissionController, 'getCaveat')
+            .mockReturnValue({
+              value: {
+                requiredScopes: {},
+                optionalScopes: {
+                  'eip155:1': {
+                    accounts: ['eip155:1:0xdead', 'eip155:1:0xbeef'],
+                  },
+                },
+              },
+            });
+          jest
+            .spyOn(metamaskController, 'sortAccountsByLastSelected')
+            .mockReturnValue(['0xbeef', '0xdead']);
+
+          expect(
+            metamaskController.getPermittedAccounts('test.com'),
+          ).toStrictEqual(['0xbeef', '0xdead']);
+        });
       });
     });
 
@@ -957,8 +996,8 @@ describe('MetaMaskController', () => {
       });
     });
 
-    describe('#getAllEvmAccountsSorted', () => {
-      it('returns the keyring accounts in lastSelected order', async () => {
+    describe('#sortAccountsByLastSelected', () => {
+      it('returns the keyring accounts in lastSelected order', () => {
         jest
           .spyOn(metamaskController.accountsController, 'listAccounts')
           .mockReturnValueOnce([
@@ -1019,21 +1058,18 @@ describe('MetaMaskController', () => {
             },
           ]);
         jest
-          .spyOn(metamaskController.keyringController, 'getAccounts')
-          .mockResolvedValueOnce([
-            '0x7A2Bd22810088523516737b4Dc238A4bC37c23F2',
-            '0x7152f909e5EB3EF198f17e5Cb087c5Ced88294e3',
-            '0xDe70d2FF1995DC03EF1a3b584e3ae14da020C616',
-            '0x04eBa9B766477d8eCA77F5f0e67AE1863C95a7E3',
-          ]);
-        jest
           .spyOn(metamaskController, 'captureKeyringTypesWithMissingIdentities')
           .mockImplementation(() => {
             // noop
           });
 
         expect(
-          await metamaskController.getAllEvmAccountsSorted(),
+          metamaskController.sortAccountsByLastSelected([
+            '0x7A2Bd22810088523516737b4Dc238A4bC37c23F2',
+            '0x7152f909e5EB3EF198f17e5Cb087c5Ced88294e3',
+            '0xDe70d2FF1995DC03EF1a3b584e3ae14da020C616',
+            '0x04eBa9B766477d8eCA77F5f0e67AE1863C95a7E3',
+          ]),
         ).toStrictEqual([
           '0xDe70d2FF1995DC03EF1a3b584e3ae14da020C616',
           '0x04eBa9B766477d8eCA77F5f0e67AE1863C95a7E3',
@@ -1042,7 +1078,7 @@ describe('MetaMaskController', () => {
         ]);
       });
 
-      it('throws if a keyring account is missing an address (case 1)', async () => {
+      it('throws if a keyring account is missing an address (case 1)', () => {
         const internalAccounts = [
           {
             address: '0x7152f909e5EB3EF198f17e5Cb087c5Ced88294e3',
@@ -1077,21 +1113,18 @@ describe('MetaMaskController', () => {
           .spyOn(metamaskController.accountsController, 'listAccounts')
           .mockReturnValueOnce(internalAccounts);
         jest
-          .spyOn(metamaskController.keyringController, 'getAccounts')
-          .mockResolvedValueOnce([
-            '0x7A2Bd22810088523516737b4Dc238A4bC37c23F2',
-            '0x7152f909e5EB3EF198f17e5Cb087c5Ced88294e3',
-            '0xDe70d2FF1995DC03EF1a3b584e3ae14da020C616',
-          ]);
-        jest
           .spyOn(metamaskController, 'captureKeyringTypesWithMissingIdentities')
           .mockImplementation(() => {
             // noop
           });
 
-        await expect(() =>
-          metamaskController.getAllEvmAccountsSorted(),
-        ).rejects.toThrow(
+        expect(() =>
+          metamaskController.sortAccountsByLastSelected([
+            '0x7A2Bd22810088523516737b4Dc238A4bC37c23F2',
+            '0x7152f909e5EB3EF198f17e5Cb087c5Ced88294e3',
+            '0xDe70d2FF1995DC03EF1a3b584e3ae14da020C616',
+          ]),
+        ).toThrow(
           'Missing identity for address: "0x7A2Bd22810088523516737b4Dc238A4bC37c23F2".',
         );
         expect(
@@ -1103,7 +1136,7 @@ describe('MetaMaskController', () => {
         ]);
       });
 
-      it('throws if a keyring account is missing an address (case 2)', async () => {
+      it('throws if a keyring account is missing an address (case 2)', () => {
         const internalAccounts = [
           {
             address: '0x7A2Bd22810088523516737b4Dc238A4bC37c23F2',
@@ -1138,21 +1171,18 @@ describe('MetaMaskController', () => {
           .spyOn(metamaskController.accountsController, 'listAccounts')
           .mockReturnValueOnce(internalAccounts);
         jest
-          .spyOn(metamaskController.keyringController, 'getAccounts')
-          .mockResolvedValueOnce([
-            '0x7A2Bd22810088523516737b4Dc238A4bC37c23F2',
-            '0x7152f909e5EB3EF198f17e5Cb087c5Ced88294e3',
-            '0xDe70d2FF1995DC03EF1a3b584e3ae14da020C616',
-          ]);
-        jest
           .spyOn(metamaskController, 'captureKeyringTypesWithMissingIdentities')
           .mockImplementation(() => {
             // noop
           });
 
-        await expect(() =>
-          metamaskController.getAllEvmAccountsSorted(),
-        ).rejects.toThrow(
+        expect(() =>
+          metamaskController.sortAccountsByLastSelected([
+            '0x7A2Bd22810088523516737b4Dc238A4bC37c23F2',
+            '0x7152f909e5EB3EF198f17e5Cb087c5Ced88294e3',
+            '0xDe70d2FF1995DC03EF1a3b584e3ae14da020C616',
+          ]),
+        ).toThrow(
           'Missing identity for address: "0x7152f909e5EB3EF198f17e5Cb087c5Ced88294e3".',
         );
         expect(

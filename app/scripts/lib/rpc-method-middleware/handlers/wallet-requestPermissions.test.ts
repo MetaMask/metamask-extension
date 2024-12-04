@@ -109,7 +109,7 @@ const createMockedHandler = () => {
     approvedChainIds: ['0x1', '0x5'],
     approvedAccounts: ['0xdeadbeef'],
   });
-  const getAccounts = jest.fn().mockResolvedValue([]);
+  const getAccounts = jest.fn().mockReturnValue([]);
   const response: PendingJsonRpcResponse<Json> = {
     jsonrpc: '2.0' as const,
     id: 0,
@@ -697,7 +697,7 @@ describe('requestPermissionsHandler', () => {
 
     it('returns both eth_accounts and permittedChains permissions in addition to other permissions that were granted if origin is not snapId', async () => {
       const { handler, getAccounts, response } = createMockedHandler();
-      getAccounts.mockResolvedValue(['0xdeadbeef']);
+      getAccounts.mockReturnValue(['0xdeadbeef']);
 
       await handler(getBaseRequest());
       expect(response.result).toStrictEqual([
@@ -731,7 +731,7 @@ describe('requestPermissionsHandler', () => {
 
     it('returns only eth_accounts permissions in addition to other permissions that were granted if origin is snapId', async () => {
       const { handler, getAccounts, response } = createMockedHandler();
-      getAccounts.mockResolvedValue(['0xdeadbeef']);
+      getAccounts.mockReturnValue(['0xdeadbeef']);
 
       await handler({ ...getBaseRequest(), origin: 'npm:snap' });
       expect(response.result).toStrictEqual([
