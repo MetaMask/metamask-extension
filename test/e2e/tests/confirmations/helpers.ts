@@ -11,7 +11,7 @@ import { Driver } from '../../webdriver/driver';
 import Confirmation from '../../page-objects/pages/confirmations/redesign/confirmation';
 
 export const DECODING_E2E_API_URL =
-  'https://qtgdj2huxh.execute-api.us-east-2.amazonaws.com/uat/v1';
+  'https://signature-insights.api.cx.metamask.io/v1';
 
 export async function scrollAndConfirmAndAssertConfirm(driver: Driver) {
   const confirmation = new Confirmation(driver);
