@@ -92,6 +92,7 @@ export class NetworkController {
       timeout: 30000,
     });
     await this.networkDisplay.click();
+    await this.networkList.waitFor({ state: 'visible' });
     await this.page.getByTestId('Ethereum Mainnet').click();
   }
 
