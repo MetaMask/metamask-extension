@@ -101,6 +101,8 @@ class SmartTransactionHook {
 
   #txParams: TransactionParams;
 
+  #shouldShowStatusPage: boolean;
+
   constructor(request: SubmitSmartTransactionRequest) {
     const {
       transactionMeta,
@@ -123,11 +125,11 @@ class SmartTransactionHook {
     this.#isDapp = transactionMeta.origin !== ORIGIN_METAMASK;
     this.#chainId = transactionMeta.chainId;
     this.#txParams = transactionMeta.txParams;
+    this.#shouldShowStatusPage =
+      transactionMeta.type !== TransactionType.bridge;
   }
 
   async submit() {
-    const shouldShowStatusPage =
-      this.#transactionMeta.type !== TransactionType.bridge;
     const isUnsupportedTransactionTypeForSmartTransaction = this
       .#transactionMeta?.type
       ? [TransactionType.swapAndSend, TransactionType.swapApproval].includes(
@@ -144,7 +146,7 @@ class SmartTransactionHook {
       return useRegularTransactionSubmit;
     }
 
-    if (shouldShowStatusPage) {
+    if (this.#shouldShowStatusPage) {
       const { id: approvalFlowId } = await this.#controllerMessenger.call(
         'ApprovalController:startFlow',
       );
@@ -175,7 +177,7 @@ class SmartTransactionHook {
       const extensionReturnTxHashAsap =
         this.#featureFlags?.smartTransactions?.extensionReturnTxHashAsap;
 
-      if (shouldShowStatusPage) {
+      if (this.#shouldShowStatusPage) {
         this.#addApprovalRequest({
           uuid,
         });
@@ -205,7 +207,7 @@ class SmartTransactionHook {
   }
 
   #onApproveOrReject() {
-    if (this.#approvalFlowEnded) {
+    if (!this.#shouldShowStatusPage || this.#approvalFlowEnded) {
       return;
     }
     this.#approvalFlowEnded = true;
