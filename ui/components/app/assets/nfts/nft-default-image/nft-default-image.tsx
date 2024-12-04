@@ -1,5 +1,4 @@
 import React from 'react';
-import PropTypes from 'prop-types';
 import classnames from 'classnames';
 import { useDispatch } from 'react-redux';
 import {
@@ -12,7 +11,15 @@ import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import { ButtonLink, Box } from '../../../../component-library';
 import { showIpfsModal } from '../../../../../store/actions';
 
-export default function NftDefaultImage({ className, clickable }) {
+interface NftDefaultImageProps {
+  className: string;
+  clickable: boolean;
+}
+
+export default function NftDefaultImage({
+  className,
+  clickable,
+}: NftDefaultImageProps) {
   const t = useI18nContext();
   const dispatch = useDispatch();
 
@@ -24,15 +31,15 @@ export default function NftDefaultImage({ className, clickable }) {
         'nft-default--clickable': clickable,
       })}
       display={Display.Flex}
-      alignItems={AlignItems.Center}
-      justifyContent={JustifyContent.Center}
+      alignItems={AlignItems.center}
+      justifyContent={JustifyContent.center}
       borderRadius={BorderRadius.LG}
     >
       {clickable && (
         <ButtonLink
           block
           className="nft-default__button"
-          onClick={(e) => {
+          onClick={(e: { stopPropagation: () => void }) => {
             e.stopPropagation();
             dispatch(showIpfsModal());
           }}
@@ -43,15 +50,3 @@ export default function NftDefaultImage({ className, clickable }) {
     </Box>
   );
 }
-
-NftDefaultImage.propTypes = {
-  /**
-   * Controls the css class for the cursor hover
-   * It determines if we need to show the button on default image or not
-   */
-  clickable: PropTypes.bool,
-  /**
-   * An additional className to apply to the NFT default image
-   */
-  className: PropTypes.string,
-};

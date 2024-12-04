@@ -5,7 +5,13 @@ import { BannerAlert } from '../../../../component-library';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import { SECURITY_ROUTE } from '../../../../../helpers/constants/routes';
 
-export default function NftsDetectionNoticeImportNFTs({ onActionButtonClick }) {
+interface NftsDetectionNoticeImportNFTsProps {
+  onActionButtonClick: () => void;
+}
+
+export default function NftsDetectionNoticeImportNFTs({
+  onActionButtonClick,
+}: NftsDetectionNoticeImportNFTsProps) {
   const t = useI18nContext();
   const history = useHistory();
 

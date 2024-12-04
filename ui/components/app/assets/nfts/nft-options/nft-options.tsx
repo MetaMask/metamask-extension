@@ -1,38 +1,45 @@
 import React, { useContext, useRef, useState } from 'react';
 import PropTypes from 'prop-types';
-
 import { I18nContext } from '../../../../../contexts/i18n';
 import { Menu, MenuItem } from '../../../../ui/menu';
 import {
+  Box,
   ButtonIcon,
   ButtonIconSize,
   IconName,
 } from '../../../../component-library';
-import { Color } from '../../../../../helpers/constants/design-system';
+import { IconColor } from '../../../../../helpers/constants/design-system';
 
-const NftOptions = ({ onRemove, onViewOnOpensea }) => {
+interface NftOptionsProps {
+  onRemove: () => void;
+  onViewOnOpensea: () => void;
+}
+
+const NftOptions = ({ onRemove, onViewOnOpensea }: NftOptionsProps) => {
   const t = useContext(I18nContext);
   const [nftOptionsOpen, setNftOptionsOpen] = useState(false);
-  const ref = useRef(false);
+  const ref = useRef<HTMLElement | null>(null);
 
   return (
-    <div ref={ref}>
+    <Box ref={ref}>
       <ButtonIcon
         iconName={IconName.MoreVertical}
         data-testid="nft-options__button"
         onClick={() => setNftOptionsOpen(true)}
-        color={Color.textDefault}
+        color={IconColor.iconDefault}
         size={ButtonIconSize.Sm}
         ariaLabel={t('nftOptions')}
       />
 
       {nftOptionsOpen ? (
+        // TODO: Menu is deprecated, use Popover instead
         <Menu
           data-testid="close-nft-options-menu"
           anchorElement={ref.current}
           onHide={() => setNftOptionsOpen(false)}
         >
           {onViewOnOpensea ? (
+            // @ts-ignore
             <MenuItem
               iconName={IconName.Export}
               data-testid="nft-options__view-on-opensea"
@@ -44,6 +51,7 @@ const NftOptions = ({ onRemove, onViewOnOpensea }) => {
               {t('viewOnOpensea')}
             </MenuItem>
           ) : null}
+          {/* @ts-ignore */}
           <MenuItem
             iconName={IconName.Trash}
             data-testid="nft-item-remove"
@@ -56,7 +64,7 @@ const NftOptions = ({ onRemove, onViewOnOpensea }) => {
           </MenuItem>
         </Menu>
       ) : null}
-    </div>
+    </Box>
   );
 };
 
