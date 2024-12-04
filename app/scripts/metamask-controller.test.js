@@ -860,7 +860,7 @@ describe('MetaMaskController', () => {
           ).toStrictEqual([]);
         });
 
-        it('returns some accounts if there is a CAIP-25 permission for the origin and ignoreLock is true', async () => {
+        it('returns accounts if there is a CAIP-25 permission for the origin and ignoreLock is true', async () => {
           jest
             .spyOn(metamaskController.permissionController, 'getCaveat')
             .mockReturnValue({
