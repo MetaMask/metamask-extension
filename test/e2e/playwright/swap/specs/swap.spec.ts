@@ -83,7 +83,9 @@ testSet.forEach((options) => {
     await walletPage.selectTokenWallet();
     await networkController.selectNetwork(options.network);
     const balance = await walletPage.getTokenBalance();
-    if (balance === '0 ETH') test.skip();
+    if (balance === '0 ETH') {
+      test.skip();
+    }
 
     await walletPage.selectSwapAction();
     // Allow balance label to populate
