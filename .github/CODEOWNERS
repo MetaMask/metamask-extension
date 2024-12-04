@@ -94,7 +94,7 @@ ui/pages/swaps                                        @MetaMask/swaps-engineers
 app/scripts/controllers/swaps                         @MetaMask/swaps-engineers
 
 # Ramps team to own code for the ramps folder
-**/ramps/**                                           @MetaMask/ramp-dev-team
+**/ramps/**                                           @MetaMask/ramp
 
 # Snaps
 **/snaps/**                          @MetaMask/snaps-devs
