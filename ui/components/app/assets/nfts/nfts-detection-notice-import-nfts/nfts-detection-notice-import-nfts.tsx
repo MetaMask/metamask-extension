@@ -5,9 +5,9 @@ import { BannerAlert } from '../../../../component-library';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import { SECURITY_ROUTE } from '../../../../../helpers/constants/routes';
 
-interface NftsDetectionNoticeImportNFTsProps {
+type NftsDetectionNoticeImportNFTsProps = {
   onActionButtonClick: () => void;
-}
+};
 
 export default function NftsDetectionNoticeImportNFTs({
   onActionButtonClick,

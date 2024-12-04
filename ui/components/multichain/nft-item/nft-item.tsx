@@ -20,7 +20,7 @@ import {
   getTestNetworkBackgroundColor,
 } from '../../../selectors';
 
-interface NftItemProps {
+type NftItemProps = {
   alt: string;
   src: string;
   networkName: string;
@@ -29,7 +29,7 @@ interface NftItemProps {
   isIpfsURL: boolean;
   clickable: boolean;
   badgeWrapperClassname?: string;
-}
+};
 
 export const NftItem = ({
   alt,

@@ -2,18 +2,18 @@ import React, { useContext, useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import { isEqual } from 'lodash';
-import Box from '../../../../ui/box';
+import { Hex } from '@metamask/utils';
 import Typography from '../../../../ui/typography/typography';
 import {
   Color,
   TypographyVariant,
   JustifyContent,
-  FLEX_DIRECTION,
   AlignItems,
-  DISPLAY,
-  BLOCK_SIZES,
-  FLEX_WRAP,
   IconColor,
+  Display,
+  FlexWrap,
+  BlockSize,
+  FlexDirection,
 } from '../../../../../helpers/constants/design-system';
 import { ENVIRONMENT_TYPE_POPUP } from '../../../../../../shared/constants/app';
 // TODO: Remove restricted import
@@ -35,7 +35,7 @@ import { updateNftDropDownState } from '../../../../../store/actions';
 import { usePrevious } from '../../../../../hooks/usePrevious';
 import { getNftsDropdownState } from '../../../../../ducks/metamask/metamask';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
-import { Icon, IconName, Text } from '../../../../component-library';
+import { Box, Icon, IconName, Text } from '../../../../component-library';
 import { NftItem } from '../../../../multichain/nft-item';
 import {
   getSendAnalyticProperties,
@@ -49,7 +49,6 @@ import {
 } from '../../../../../../shared/constants/metametrics';
 import { isEqualCaseInsensitive } from '../../../../../../shared/modules/string-utils';
 import { CollectionImageComponent } from './collection-image.component';
-import { Hex } from '@metamask/utils';
 
 type NftCollections = Record<Hex, NftCollection>;
 
@@ -65,15 +64,6 @@ type NftItemAttributes = Record<string, string | number | boolean | null>;
 type NftItemCollection = {
   contractDeployedAt: string;
   creator: Hex;
-  floorAsk: {
-    id: null | number | string;
-    maker: null | Hex;
-    price: null | string | number;
-    // @ts-ignore
-    source: any;
-    validFrom: null | string;
-    validUntil: null | string;
-  };
   id: Hex;
   imageUrl: string;
   isNsfw: boolean;
@@ -82,23 +72,13 @@ type NftItemCollection = {
   name: string;
   openseaVerificationStatus: 'requested' | 'not_requested';
   ownerCount: number;
-  // @ts-ignore
-  royalties?: any[];
   royaltiesBps?: number;
   slug: string;
   symbol: string;
   tokenCount: string;
-  topBid?: {
-    id: null | Hex;
-    maker: null | Hex;
-    price: null | string | number;
-    sourceDomain: string;
-    validFrom: null | string | number;
-    validUntil: null;
-  };
 };
 
-export interface NftItemI {
+export type NftItemI = {
   address: Hex;
   attributes: NftItemAttributes[];
   collection: NftItemCollection;
@@ -113,38 +93,32 @@ export interface NftItemI {
   rarityScore: number;
   standard: string;
   tokenId: number;
-  topBid?: {
-    id: null | Hex;
-    price: null | number | string;
-    // @ts-ignore
-    source: any;
-  };
   ipfsImageUpdated: string;
   tokenURI: string;
-}
+};
 
 const width = (isModal: boolean) => {
   const env = getEnvironmentType() === ENVIRONMENT_TYPE_POPUP;
 
   if (isModal) {
-    return BLOCK_SIZES.ONE_THIRD;
+    return BlockSize.OneThird;
   }
   if (env === Boolean(ENVIRONMENT_TYPE_POPUP)) {
-    return BLOCK_SIZES.ONE_THIRD;
+    return BlockSize.OneThird;
   }
-  return BLOCK_SIZES.ONE_SIXTH;
+  return BlockSize.OneSixth;
 };
 
 const PREVIOUSLY_OWNED_KEY = 'previouslyOwned';
 
-interface NftsItemsProps {
+type NftsItemsProps = {
   collections: NftCollections;
   previouslyOwnedCollection: any;
   isModal: boolean;
   onCloseModal: () => void;
   showTokenId: boolean;
   displayPreviouslyOwnedCollection: boolean;
-}
+};
 
 export default function NftsItems({
   collections = {} as NftCollections,
@@ -320,7 +294,7 @@ export default function NftsItems({
         >
           <Box
             marginBottom={2}
-            display={DISPLAY.FLEX}
+            display={Display.Flex}
             alignItems={AlignItems.center}
             justifyContent={JustifyContent.spaceBetween}
             className="nfts-items__collection-accordion-title"
@@ -351,7 +325,7 @@ export default function NftsItems({
         </button>
 
         {isExpanded ? (
-          <Box display={DISPLAY.FLEX} flexWrap={FLEX_WRAP.WRAP} gap={4}>
+          <Box display={Display.Flex} flexWrap={FlexWrap.Wrap} gap={4}>
             {nfts.map((nft, i) => {
               const { image, address, tokenId, name, imageOriginal, tokenURI } =
                 nft;
@@ -407,7 +381,7 @@ export default function NftsItems({
         paddingBottom={6}
         paddingLeft={4}
         paddingRight={4}
-        flexDirection={FLEX_DIRECTION.COLUMN}
+        flexDirection={FlexDirection.Column}
       >
         <>
           {collectionsKeys.map((key) => {

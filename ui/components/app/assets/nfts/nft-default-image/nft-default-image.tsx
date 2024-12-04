@@ -11,10 +11,10 @@ import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import { ButtonLink, Box } from '../../../../component-library';
 import { showIpfsModal } from '../../../../../store/actions';
 
-interface NftDefaultImageProps {
+type NftDefaultImageProps = {
   className: string;
   clickable: boolean;
-}
+};
 
 export default function NftDefaultImage({
   className,

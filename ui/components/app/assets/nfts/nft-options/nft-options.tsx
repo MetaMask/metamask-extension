@@ -10,10 +10,10 @@ import {
 } from '../../../../component-library';
 import { IconColor } from '../../../../../helpers/constants/design-system';
 
-interface NftOptionsProps {
+type NftOptionsProps = {
   onRemove: () => void;
   onViewOnOpensea: () => void;
-}
+};
 
 const NftOptions = ({ onRemove, onViewOnOpensea }: NftOptionsProps) => {
   const t = useContext(I18nContext);
@@ -39,7 +39,6 @@ const NftOptions = ({ onRemove, onViewOnOpensea }: NftOptionsProps) => {
           onHide={() => setNftOptionsOpen(false)}
         >
           {onViewOnOpensea ? (
-            // @ts-ignore
             <MenuItem
               iconName={IconName.Export}
               data-testid="nft-options__view-on-opensea"
@@ -51,7 +50,6 @@ const NftOptions = ({ onRemove, onViewOnOpensea }: NftOptionsProps) => {
               {t('viewOnOpensea')}
             </MenuItem>
           ) : null}
-          {/* @ts-ignore */}
           <MenuItem
             iconName={IconName.Trash}
             data-testid="nft-item-remove"
