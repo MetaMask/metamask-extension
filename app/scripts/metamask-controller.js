@@ -6529,7 +6529,7 @@ export default class MetamaskController extends EventEmitter {
         method: NOTIFICATION_NAMES.unlockStateChanged,
         params: {
           isUnlocked: true,
-          accounts: await this.getPermittedAccounts(origin),
+          accounts: this.getPermittedAccounts(origin),
         },
       };
     });
