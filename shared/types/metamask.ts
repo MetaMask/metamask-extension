@@ -1,3 +1,6 @@
+/* eslint-disable import/no-restricted-paths */
+/** Circular dependencies in this file should not have any performance impact, since all imports/exports are types that are stripped at runtime */
+
 import type {
   CurrencyRateState,
   NftControllerState,
