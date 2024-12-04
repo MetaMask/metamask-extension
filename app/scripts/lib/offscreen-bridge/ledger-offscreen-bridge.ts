@@ -1,5 +1,9 @@
 import { LedgerBridge } from '@metamask/eth-ledger-bridge-keyring';
 import {
+  LedgerSignTypedDataParams,
+  LedgerSignTypedDataResponse,
+} from '@metamask/eth-ledger-bridge-keyring/dist/ledger-bridge';
+import {
   LedgerAction,
   OffscreenCommunicationEvents,
   OffscreenCommunicationTarget,
@@ -161,11 +165,9 @@ export class LedgerOffscreenBridge
     });
   }
 
-  deviceSignTypedData(params: {
-    hdPath: string;
-    domainSeparatorHex: string;
-    hashStructMessageHex: string;
-  }) {
+  deviceSignTypedData(
+    params: LedgerSignTypedDataParams,
+  ): Promise<LedgerSignTypedDataResponse> {
     return new Promise<{
       v: number;
       s: string;
