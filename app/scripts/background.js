@@ -747,39 +747,46 @@ function trackDappView(remotePort) {
     emitDappViewedMetricEvent(origin);
   }
 }
+
 /**
- * Emit event of App opeened,
- * which should only be tracked only after a user opts into metrics.
- *
+ * Emit App Opened event
  */
 function emitAppOpenedMetricEvent() {
-  const { metaMetricsId, participateInMetaMetrics } = controller.metaMetricsController.state;
+  const { metaMetricsId, participateInMetaMetrics } =
+    controller.metaMetricsController.state;
+
+  // Skip if user hasn't opted into metrics
   if (metaMetricsId === null && !participateInMetaMetrics) {
     return;
   }
-  console.log('tracking app opened...')
+
   controller.metaMetricsController.trackEvent({
     event: MetaMetricsEventName.AppOpened,
     category: MetaMetricsEventCategory.App,
   });
 }
+
 /**
- * Track every time the application is opened
+ * This function checks if the app is being opened
+ * and emits an event only if no other UI instances are currently open.
  *
- * @param {string} environement - The environment in which the app is openeing on..
+ * @param {string} environment - The environment type where the app is opening
  */
-function trackAppOpened(environement) {
+function trackAppOpened(environment) {
+  // List of valid environment types to track
   const environmentTypeList = [
     ENVIRONMENT_TYPE_POPUP,
     ENVIRONMENT_TYPE_NOTIFICATION,
     ENVIRONMENT_TYPE_FULLSCREEN,
   ];
-  const isFullscreenOpen = Object.values(openMetamaskTabsIDs).every(
-    (value) => value === true,
-  );
-  const isAnyUiCurrentlyOpen =
+
+  // Check if any UI instances are currently open
+  const isFullscreenOpen = Object.values(openMetamaskTabsIDs).some(Boolean);
+  const isAlreadyOpen =
     isFullscreenOpen || notificationIsOpen || openPopupCount > 0;
-  if (!isAnyUiCurrentlyOpen && environmentTypeList.includes(environement)) {
+
+  // Only emit event if no UI is open and environment is valid
+  if (!isAlreadyOpen && environmentTypeList.includes(environment)) {
     emitAppOpenedMetricEvent();
   }
 }
