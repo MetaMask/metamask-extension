@@ -11,6 +11,8 @@ import mockState from '../../../../../test/data/mock-state.json';
 import * as txUtil from '../../../../../shared/modules/transaction.utils';
 import * as metamaskControllerUtils from '../../../../../shared/lib/metamask-controller-utils';
 import { mockNetworkState } from '../../../../../test/stub/networks';
+import { AlertTypes } from '../../../../../shared/constants/alerts';
+import { ALERT_STATE } from '../../../../ducks/alerts/enums';
 import TransactionAlerts from './transaction-alerts';
 
 jest.mock('../../../../selectors/transactions', () => {
@@ -33,6 +35,11 @@ const STATE_MOCK = {
     ...mockNetworkState({
       chainId: CHAIN_ID_MOCK,
     }),
+    alerts: {
+      stxMigration: {
+        state: ALERT_STATE.OPEN,
+      },
+    },
   },
 };
 
@@ -556,5 +563,44 @@ describe('TransactionAlerts', () => {
         getByText('The gas for this transaction will be paid by a paymaster.'),
       ).toBeInTheDocument();
     });
+  });
+});
+
+describe('STX Migration Alert', () => {
+  it('should show STX banner when stxAlertIsOpen is true', () => {
+    const { getByTestId } = render({
+      componentProps: {
+        txData: {
+          chainId: CHAIN_ID_MOCK,
+          txParams: { value: '0x1' },
+        },
+      },
+    });
+    expect(getByTestId('stx-banner-alert')).toBeInTheDocument();
+  });
+
+  it('should not show STX banner when stxAlertIsOpen is false', () => {
+    const closedState = {
+      ...STATE_MOCK,
+      metamask: {
+        ...STATE_MOCK.metamask,
+        alerts: {
+          [AlertTypes.stxMigration]: {
+            state: ALERT_STATE.CLOSED,
+          },
+        },
+      },
+    };
+    const store = configureStore(closedState);
+    const { queryByTestId } = renderWithProvider(
+      <TransactionAlerts
+        txData={{
+          chainId: CHAIN_ID_MOCK,
+          txParams: { value: '0x1' },
+        }}
+      />,
+      store,
+    );
+    expect(queryByTestId('stx-banner-alert')).not.toBeInTheDocument();
   });
 });

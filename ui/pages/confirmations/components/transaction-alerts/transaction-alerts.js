@@ -5,6 +5,7 @@ import { TransactionType } from '@metamask/transaction-controller';
 import { PriorityLevels } from '../../../../../shared/constants/gas';
 import { useGasFeeContext } from '../../../../contexts/gasFee';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
+import { STXBannerAlert } from '../stx-banner-alert';
 import {
   BannerAlert,
   ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
@@ -81,6 +82,7 @@ const TransactionAlerts = ({
   return (
     <div className="transaction-alerts">
       <BlockaidBannerAlert txData={txData} />
+      <STXBannerAlert />
       {isSuspiciousResponse(txData?.securityProviderResponse) && (
         <SecurityProviderBannerMessage
           securityProviderResponse={txData.securityProviderResponse}

@@ -49,6 +49,8 @@ const ZENDESK_URLS = {
     'https://support.metamask.io/networks-and-sidechains/managing-networks/verifying-custom-network-information/',
   NETWORK_DEPRECATED:
     'https://support.metamask.io/networks-and-sidechains/eth-on-testnets/',
+  SMART_TRANSACTIONS_LEARN_MORE:
+    'https://support.metamask.io/transactions-and-gas/transactions/smart-transactions/',
 };
 
 export default ZENDESK_URLS;
