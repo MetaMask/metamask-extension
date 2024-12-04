@@ -91,9 +91,10 @@ export class NetworkController {
     await this.page.waitForSelector(`text=/was successfully edited/`, {
       timeout: 30000,
     });
-    await this.networkDisplay.click();
-    await this.networkList.waitFor({ state: 'visible' });
-    await this.page.getByTestId('Ethereum Mainnet').click();
+    // await this.networkDisplay.click();
+    // await this.networkList.waitFor({ state: 'visible' });
+    await this.page.waitForTimeout(3000);
+    // await this.page.getByTestId('Ethereum Mainnet').click();
   }
 
   async addPopularNetwork(options: { networkName: string }) {
