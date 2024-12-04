@@ -69,7 +69,7 @@ ui/selectors/institutional           @MetaMask/mmi
 # Slack handle: @metamask-design-system-team | Slack channel: #metamask-design-system
 ui/components/component-library      @MetaMask/design-system-engineers
 
-# The Notifications team is responsible for code related to notifications,
+# The Notifications team is responsible for code related to notifications
 
 # Controllers
 **/controllers/metamask-notifications/**            @MetaMask/notifications
