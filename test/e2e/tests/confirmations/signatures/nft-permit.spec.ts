@@ -5,8 +5,8 @@ import { WINDOW_TITLES } from '../../../helpers';
 import { Ganache } from '../../../seeder/ganache';
 import { Driver } from '../../../webdriver/driver';
 import {
-  mockSignatureApproved,
-  mockSignatureRejected,
+  mockSignatureApprovedWithDecoding,
+  mockSignatureRejectedWithDecoding,
   scrollAndConfirmAndAssertConfirm,
   withTransactionEnvelopeTypeFixtures,
 } from '../helpers';
@@ -72,11 +72,13 @@ describe('Confirmation Signature - NFT Permit @no-mmi', function (this: Suite) {
           signatureType: 'eth_signTypedData_v4',
           primaryType: 'Permit',
           uiCustomizations: ['redesigned_confirmation', 'permit'],
+          decodingChangeTypes: ['RECEIVE', 'LISTING'],
+          decodingResponse: 'CHANGE',
         });
 
         await assertVerifiedResults(driver, publicAddress);
       },
-      mockSignatureApproved,
+      mockSignatureApprovedWithDecoding,
     );
   });
 
@@ -113,9 +115,11 @@ describe('Confirmation Signature - NFT Permit @no-mmi', function (this: Suite) {
           primaryType: 'Permit',
           uiCustomizations: ['redesigned_confirmation', 'permit'],
           location: 'confirmation',
+          decodingChangeTypes: ['RECEIVE', 'LISTING'],
+          decodingResponse: 'CHANGE',
         });
       },
-      mockSignatureRejected,
+      mockSignatureRejectedWithDecoding,
     );
   });
 });

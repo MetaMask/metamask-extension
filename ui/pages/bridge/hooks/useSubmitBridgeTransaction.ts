@@ -1,9 +1,11 @@
 import { useDispatch } from 'react-redux';
 import { zeroAddress } from 'ethereumjs-util';
 import { useHistory } from 'react-router-dom';
+import { TransactionMeta } from '@metamask/transaction-controller';
 import { QuoteResponse } from '../types';
 import { DEFAULT_ROUTE } from '../../../helpers/constants/routes';
 import { setDefaultHomeActiveTabName } from '../../../store/actions';
+import { startPollingForBridgeTxStatus } from '../../../ducks/bridge-status/actions';
 import useAddToken from './useAddToken';
 import useHandleApprovalTx from './useHandleApprovalTx';
 import useHandleBridgeTx from './useHandleBridgeTx';
@@ -17,18 +19,39 @@ export default function useSubmitBridgeTransaction() {
 
   const submitBridgeTransaction = async (quoteResponse: QuoteResponse) => {
     // Execute transaction(s)
-    let approvalTxId: string | undefined;
+    let approvalTxMeta: TransactionMeta | undefined;
     if (quoteResponse?.approval) {
-      approvalTxId = await handleApprovalTx({
+      approvalTxMeta = await handleApprovalTx({
         approval: quoteResponse.approval,
         quoteResponse,
       });
     }
 
-    await handleBridgeTx({
+    const bridgeTxMeta = await handleBridgeTx({
       quoteResponse,
-      approvalTxId,
+      approvalTxId: approvalTxMeta?.id,
     });
+
+    // Get bridge tx status
+    if (bridgeTxMeta.hash) {
+      const statusRequest = {
+        bridgeId: quoteResponse.quote.bridgeId,
+        srcTxHash: bridgeTxMeta.hash,
+        bridge: quoteResponse.quote.bridges[0],
+        srcChainId: quoteResponse.quote.srcChainId,
+        destChainId: quoteResponse.quote.destChainId,
+        quote: quoteResponse.quote,
+        refuel: Boolean(quoteResponse.quote.refuel),
+      };
+      dispatch(
+        startPollingForBridgeTxStatus({
+          statusRequest,
+          quoteResponse,
+          slippagePercentage: 0, // TODO pull this from redux/bridgecontroller once it's implemented. currently hardcoded in quoteRequest.slippage right now
+          startTime: bridgeTxMeta.time,
+        }),
+      );
+    }
 
     // Add tokens if not the native gas token
     if (quoteResponse.quote.srcAsset.address !== zeroAddress()) {

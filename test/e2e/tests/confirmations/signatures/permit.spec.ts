@@ -1,3 +1,4 @@
+import { strict as assert } from 'assert';
 import { TransactionEnvelopeType } from '@metamask/transaction-controller';
 import { Suite } from 'mocha';
 import { MockedEndpoint } from 'mockttp';
@@ -5,8 +6,9 @@ import { openDapp, unlockWallet, WINDOW_TITLES } from '../../../helpers';
 import { Ganache } from '../../../seeder/ganache';
 import { Driver } from '../../../webdriver/driver';
 import {
-  mockSignatureApproved,
-  mockSignatureRejected,
+  mockPermitDecoding,
+  mockSignatureApprovedWithDecoding,
+  mockSignatureRejectedWithDecoding,
   scrollAndConfirmAndAssertConfirm,
   withTransactionEnvelopeTypeFixtures,
 } from '../helpers';
@@ -67,11 +69,13 @@ describe('Confirmation Signature - Permit @no-mmi', function (this: Suite) {
           signatureType: 'eth_signTypedData_v4',
           primaryType: 'Permit',
           uiCustomizations: ['redesigned_confirmation', 'permit'],
+          decodingChangeTypes: ['RECEIVE', 'LISTING'],
+          decodingResponse: 'CHANGE',
         });
 
         await assertVerifiedResults(driver, publicAddress);
       },
-      mockSignatureApproved,
+      mockSignatureApprovedWithDecoding,
     );
   });
 
@@ -103,9 +107,37 @@ describe('Confirmation Signature - Permit @no-mmi', function (this: Suite) {
           primaryType: 'Permit',
           uiCustomizations: ['redesigned_confirmation', 'permit'],
           location: 'confirmation',
+          decodingChangeTypes: ['RECEIVE', 'LISTING'],
+          decodingResponse: 'CHANGE',
         });
       },
-      mockSignatureRejected,
+      mockSignatureRejectedWithDecoding,
+    );
+  });
+
+  it('display decoding information if available', async function () {
+    await withTransactionEnvelopeTypeFixtures(
+      this.test?.fullTitle(),
+      TransactionEnvelopeType.legacy,
+      async ({ driver }: TestSuiteArguments) => {
+        await initializePages(driver);
+        await openDappAndTriggerSignature(driver, SignatureType.Permit);
+
+        const simulationSection = driver.findElement({
+          text: 'Estimated changes',
+        });
+        const receiveChange = driver.findElement({ text: 'You receive' });
+        const listChange = driver.findElement({ text: 'You list' });
+        const listChangeValue = driver.findElement({ text: '#2101' });
+
+        assert.ok(await simulationSection, 'Estimated changes');
+        assert.ok(await receiveChange, 'You receive');
+        assert.ok(await listChange, 'You list');
+        assert.ok(await listChangeValue, '#2101');
+
+        await driver.delay(10000);
+      },
+      mockPermitDecoding,
     );
   });
 });

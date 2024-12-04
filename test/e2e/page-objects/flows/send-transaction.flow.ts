@@ -1,4 +1,4 @@
-import HomePage from '../pages/homepage';
+import HomePage from '../pages/home/homepage';
 import ConfirmTxPage from '../pages/send/confirm-tx-page';
 import SendTokenPage from '../pages/send/send-token-page';
 import { Driver } from '../../webdriver/driver';

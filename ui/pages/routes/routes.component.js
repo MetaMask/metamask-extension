@@ -61,6 +61,7 @@ import {
   NOTIFICATIONS_ROUTE,
   NOTIFICATIONS_SETTINGS_ROUTE,
   CROSS_CHAIN_SWAP_ROUTE,
+  CROSS_CHAIN_SWAP_TX_DETAILS_ROUTE,
 } from '../../helpers/constants/routes';
 
 import {
@@ -86,6 +87,7 @@ import { DeprecatedNetworkModal } from '../settings/deprecated-network-modal/Dep
 import { MultichainMetaFoxLogo } from '../../components/multichain/app-header/multichain-meta-fox-logo';
 import { ToastMaster } from '../../components/app/toast-master/toast-master';
 import { mmLazy } from '../../helpers/utils/mm-lazy';
+import CrossChainSwapTxDetails from '../bridge/transaction-details/transaction-details';
 import {
   isCorrectDeveloperTransactionType,
   isCorrectSignatureApprovalType,
@@ -316,6 +318,11 @@ export default class Routes extends Component {
           />
           <Authenticated path={SEND_ROUTE} component={SendPage} exact />
           <Authenticated path={SWAPS_ROUTE} component={Swaps} />
+          <Authenticated
+            path={`${CROSS_CHAIN_SWAP_TX_DETAILS_ROUTE}/:srcTxHash`}
+            component={CrossChainSwapTxDetails}
+            exact
+          />
           <Authenticated
             path={CROSS_CHAIN_SWAP_ROUTE}
             component={CrossChainSwap}

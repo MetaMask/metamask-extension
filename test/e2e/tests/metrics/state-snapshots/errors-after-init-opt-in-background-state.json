@@ -45,7 +45,6 @@
     "nftsDropdownState": {},
     "termsOfUseLastAgreed": "number",
     "qrHardware": {},
-    "usedNetworks": { "0x1": true, "0x5": true, "0x539": true },
     "snapsInstallPrivacyWarningShown": true,
     "surveyLinkLastClickedOrClosed": "object",
     "signatureSecurityAlertResponses": "object",
@@ -234,17 +233,17 @@
       "petnamesEnabled": true,
       "showMultiRpcModal": "boolean",
       "isRedesignedConfirmationsDeveloperEnabled": "boolean",
-      "redesignedConfirmationsEnabled": true,
-      "redesignedTransactionsEnabled": "boolean",
       "tokenSortConfig": "object",
+      "shouldShowAggregatedBalancePopover": "boolean",
       "tokenNetworkFilter": {
         "0x1": "boolean",
-        "0x539": "boolean",
         "0xaa36a7": "boolean",
         "0xe705": "boolean",
-        "0xe708": "boolean"
+        "0xe708": "boolean",
+        "0x539": "boolean"
       },
-      "shouldShowAggregatedBalancePopover": "boolean"
+      "redesignedConfirmationsEnabled": true,
+      "redesignedTransactionsEnabled": "boolean"
     },
     "ipfsGateway": "string",
     "isIpfsGatewayEnabled": "boolean",
@@ -261,6 +260,10 @@
     "showIncomingTransactions": "object"
   },
   "QueuedRequestController": { "queuedRequestCount": 0 },
+  "RemoteFeatureFlagController": {
+    "remoteFeatureFlags": { "feature1": true, "feature2": false },
+    "cacheTimestamp": "number"
+  },
   "SelectedNetworkController": { "domains": "object" },
   "SignatureController": {
     "signatureRequests": "object",
@@ -321,15 +324,13 @@
       "swapsFeatureFlags": {}
     }
   },
-  "TokenBalancesController": {
-    "tokenBalances": "object"
-  },
+  "TokenBalancesController": { "tokenBalances": "object" },
   "TokenListController": {
     "tokenList": "object",
     "tokensChainsCache": {
       "0x1": "object",
-      "0x539": "object",
-      "0xe708": "object"
+      "0xe708": "object",
+      "0x539": "object"
     },
     "preventPollingOnNetworkRestart": false
   },

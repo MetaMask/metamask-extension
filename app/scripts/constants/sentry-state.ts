@@ -90,7 +90,6 @@ export const SENTRY_BACKGROUND_STATE = {
     termsOfUseLastAgreed: true,
     timeoutMinutes: true,
     trezorModel: true,
-    usedNetworks: true,
   },
   MultichainBalancesController: {
     balances: false,
@@ -270,6 +269,10 @@ export const SENTRY_BACKGROUND_STATE = {
     useRequestQueue: true,
     useTransactionSimulations: true,
     enableMV3TimestampSave: true,
+  },
+  RemoteFeatureFlagController: {
+    remoteFeatureFlags: true,
+    cacheTimestamp: false,
   },
   NotificationServicesPushController: {
     fcmToken: false,

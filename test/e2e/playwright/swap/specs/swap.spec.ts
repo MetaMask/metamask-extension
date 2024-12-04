@@ -1,5 +1,5 @@
 import { ethers } from 'ethers';
-import { test } from '@playwright/test';
+import { test, expect } from '@playwright/test';
 import log from 'loglevel';
 
 import { ChromeExtensionPage } from '../../shared/pageObjects/extension-page';
@@ -73,7 +73,9 @@ test.beforeAll(
     walletPage = new WalletPage(page);
 
     await networkController.addCustomNetwork(Tenderly.Mainnet);
-    await walletPage.importAccount(wallet.privateKey);
+    const accountName = await walletPage.importAccount(wallet.privateKey);
+    expect(accountName).toEqual('Account 2');
+    await walletPage.waitforTokenBalance('1 ETH');
   },
 );
 
@@ -82,6 +84,8 @@ testSet.forEach((options) => {
     await walletPage.selectTokenWallet();
     await networkController.selectNetwork(options.network);
     await walletPage.selectSwapAction();
+    // Allow balance label to populate
+    await walletPage.page.waitForTimeout(3000);
     const quoteEntered = await swapPage.enterQuote({
       from: options.source,
       to: options.destination,
