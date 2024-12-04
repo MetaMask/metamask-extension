@@ -31,6 +31,10 @@ const useTokenListPolling = () => {
     useExternalServices &&
     (useTokenDetection || petnamesEnabled || useTransactionSimulations);
 
+  const chainIds = process.env.PORTFOLIO_VIEW
+    ? Object.keys(networkConfigurations)
+    : [currentChainId];
+
   useMultiPolling({
     startPolling: tokenListStartPolling,
     stopPollingByPollingToken: tokenListStopPollingByPollingToken,

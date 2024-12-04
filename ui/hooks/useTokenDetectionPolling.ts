@@ -18,6 +18,10 @@ const useTokenDetectionPolling = () => {
 
   const enabled = completedOnboarding && isUnlocked && useTokenDetection;
 
+  const chainIds = process.env.PORTFOLIO_VIEW
+    ? Object.keys(networkConfigurations)
+    : [currentChainId];
+
   useMultiPolling({
     startPolling: tokenDetectionStartPolling,
     stopPollingByPollingToken: tokenDetectionStopPollingByPollingToken,

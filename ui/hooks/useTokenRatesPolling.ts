@@ -20,6 +20,7 @@ const useTokenRatesPolling = () => {
   // Selectors to determine polling input
   const completedOnboarding = useSelector(getCompletedOnboarding);
   const isUnlocked = useSelector(getIsUnlocked);
+  const currentChainId = useSelector(getCurrentChainId);
   const useCurrencyRateCheck = useSelector(getUseCurrencyRateCheck);
   const chainIds = useSelector(getChainIdsToPoll);
 
@@ -29,6 +30,10 @@ const useTokenRatesPolling = () => {
   const marketData = useSelector(getMarketData);
 
   const enabled = completedOnboarding && isUnlocked && useCurrencyRateCheck;
+
+  const chainIds = process.env.PORTFOLIO_VIEW
+    ? Object.keys(networkConfigurations)
+    : [currentChainId];
 
   useMultiPolling({
     startPolling: tokenRatesStartPolling,
