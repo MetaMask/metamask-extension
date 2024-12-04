@@ -11,8 +11,10 @@ export function sanitizeUIState(
 
   for (const key of REMOVE_KEYS) {
     if (key === 'vault') {
-      delete newState.KeyringController[key];
-    } else {
+      if (key in newState.KeyringController) {
+        delete newState.KeyringController[key];
+      }
+    } else if (key in newState.SnapController) {
       delete newState.SnapController[key];
     }
   }
