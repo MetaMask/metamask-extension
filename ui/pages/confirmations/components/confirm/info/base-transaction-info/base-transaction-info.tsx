@@ -18,13 +18,11 @@ const BaseTransactionInfo = () => {
 
   return (
     <>
-      <ConfirmInfoSection noPadding>
-        <SimulationDetails
-          transaction={transactionMeta}
-          isTransactionsRedesign
-          enableMetrics
-        />
-      </ConfirmInfoSection>
+      <SimulationDetails
+        transaction={transactionMeta}
+        isTransactionsRedesign
+        enableMetrics
+      />
       <TransactionDetails />
       <GasFeesSection />
       <AdvancedDetails />

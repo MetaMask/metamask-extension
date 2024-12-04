@@ -19,16 +19,12 @@ const TokenTransferInfo = () => {
     <>
       <SendHeading />
       <TransactionFlowSection />
-      {
-        <ConfirmInfoSection noPadding>
-          <SimulationDetails
-            transaction={transactionMeta}
-            isTransactionsRedesign
-            enableMetrics
-            metricsOnly={isWalletInitiated}
-          />
-        </ConfirmInfoSection>
-      }
+      <SimulationDetails
+        transaction={transactionMeta}
+        isTransactionsRedesign
+        enableMetrics
+        metricsOnly={isWalletInitiated}
+      />
       <TokenDetailsSection />
       <GasFeesSection />
       <AdvancedDetails />
