@@ -37,7 +37,8 @@ export const PickerNetwork: PickerNetworkComponent = React.forwardRef(
     }: PickerNetworkProps<C>,
     ref?: PolymorphicRef<C>,
   ) => {
-    const avatarList = (typeof src === 'string' ? [src] : src) ?? [];
+    // const avatarList = (typeof src === 'string' || !src ? [src] : src) ?? [];
+    const avatarList = typeof src === 'string' || !src ? [src] : src;
 
     return (
       <Box
@@ -59,7 +60,7 @@ export const PickerNetwork: PickerNetworkComponent = React.forwardRef(
             className="mm-picker-network__avatar-network"
             src={avatarSrc}
             name={label}
-            size={AvatarNetworkSize.Xxs}
+            size={AvatarNetworkSize.Sm}
             borderRadius={BorderRadius.MD}
             borderWidth={2}
             borderColor={BorderColor.backgroundDefault}
