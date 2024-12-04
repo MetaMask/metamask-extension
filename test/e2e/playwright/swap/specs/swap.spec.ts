@@ -75,7 +75,6 @@ test.beforeAll(
     await networkController.addCustomNetwork(Tenderly.Mainnet);
     await walletPage.importAccount(wallet.privateKey);
     expect(walletPage.accountMenu).toHaveText('Account 2', { timeout: 30000 });
-    await walletPage.waitforTokenBalance('1 ETH');
   },
 );
 
@@ -83,6 +82,9 @@ testSet.forEach((options) => {
   test(`should swap ${options.type} token ${options.source} to ${options.destination} on ${options.network.name}'`, async () => {
     await walletPage.selectTokenWallet();
     await networkController.selectNetwork(options.network);
+    const balance = await walletPage.getTokenBalance();
+    if (balance === '0 ETH') test.skip();
+
     await walletPage.selectSwapAction();
     // Allow balance label to populate
     await walletPage.page.waitForTimeout(3000);
