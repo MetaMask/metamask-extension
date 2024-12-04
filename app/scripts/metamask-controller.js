@@ -5163,7 +5163,7 @@ export default class MetamaskController extends EventEmitter {
    * Gets the sorted permitted accounts for the specified origin. Returns an empty
    * array if no accounts are permitted or the wallet is locked. Returns any permitted
    * accounts if the wallet is locked and `ignoreLock` is true. This lock bypass is needed
-   * for the `eth_requestAccounts` & `wallet_getPermission` handlers both of which  
+   * for the `eth_requestAccounts` & `wallet_getPermission` handlers both of which
    * return permissioned accounts to the dapp when the wallet is locked.
    *
    * @param {string} origin - The origin whose exposed accounts to retrieve.
