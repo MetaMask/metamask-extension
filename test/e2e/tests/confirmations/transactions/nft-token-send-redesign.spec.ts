@@ -10,13 +10,14 @@ import { Mockttp } from '../../../mock-e2e';
 import WatchAssetConfirmation from '../../../page-objects/pages/confirmations/legacy/watch-asset-confirmation';
 import TokenTransferTransactionConfirmation from '../../../page-objects/pages/confirmations/redesign/token-transfer-confirmation';
 import TransactionConfirmation from '../../../page-objects/pages/confirmations/redesign/transaction-confirmation';
-import HomePage from '../../../page-objects/pages/homepage';
+import HomePage from '../../../page-objects/pages/home/homepage';
+import NFTListPage from '../../../page-objects/pages/home/nft-list';
 import NFTDetailsPage from '../../../page-objects/pages/nft-details-page';
 import SendTokenPage from '../../../page-objects/pages/send/send-token-page';
 import TestDapp from '../../../page-objects/pages/test-dapp';
 import ContractAddressRegistry from '../../../seeder/contract-address-registry';
 import { Driver } from '../../../webdriver/driver';
-import { withRedesignConfirmationFixtures } from '../helpers';
+import { withTransactionEnvelopeTypeFixtures } from '../helpers';
 import { TestSuiteArguments } from './shared';
 
 const { SMART_CONTRACTS } = require('../../../seeder/smart-contracts');
@@ -27,7 +28,7 @@ describe('Confirmation Redesign Token Send @no-mmi', function () {
   describe('ERC721', function () {
     describe('Wallet initiated', async function () {
       it('Sends a type 0 transaction (Legacy)', async function () {
-        await withRedesignConfirmationFixtures(
+        await withTransactionEnvelopeTypeFixtures(
           this.test?.fullTitle(),
           TransactionEnvelopeType.legacy,
           async ({ driver, contractRegistry }: TestSuiteArguments) => {
@@ -42,7 +43,7 @@ describe('Confirmation Redesign Token Send @no-mmi', function () {
       });
 
       it('Sends a type 2 transaction (EIP1559)', async function () {
-        await withRedesignConfirmationFixtures(
+        await withTransactionEnvelopeTypeFixtures(
           this.test?.fullTitle(),
           TransactionEnvelopeType.feeMarket,
           async ({ driver, contractRegistry }: TestSuiteArguments) => {
@@ -59,7 +60,7 @@ describe('Confirmation Redesign Token Send @no-mmi', function () {
 
     describe('dApp initiated', async function () {
       it('Sends a type 0 transaction (Legacy)', async function () {
-        await withRedesignConfirmationFixtures(
+        await withTransactionEnvelopeTypeFixtures(
           this.test?.fullTitle(),
           TransactionEnvelopeType.legacy,
           async ({ driver, contractRegistry }: TestSuiteArguments) => {
@@ -74,7 +75,7 @@ describe('Confirmation Redesign Token Send @no-mmi', function () {
       });
 
       it('Sends a type 2 transaction (EIP1559)', async function () {
-        await withRedesignConfirmationFixtures(
+        await withTransactionEnvelopeTypeFixtures(
           this.test?.fullTitle(),
           TransactionEnvelopeType.feeMarket,
           async ({ driver, contractRegistry }: TestSuiteArguments) => {
@@ -93,7 +94,7 @@ describe('Confirmation Redesign Token Send @no-mmi', function () {
   describe('ERC1155', function () {
     describe('Wallet initiated', async function () {
       it('Sends a type 0 transaction (Legacy)', async function () {
-        await withRedesignConfirmationFixtures(
+        await withTransactionEnvelopeTypeFixtures(
           this.test?.fullTitle(),
           TransactionEnvelopeType.legacy,
           async ({ driver, contractRegistry }: TestSuiteArguments) => {
@@ -108,7 +109,7 @@ describe('Confirmation Redesign Token Send @no-mmi', function () {
       });
 
       it('Sends a type 2 transaction (EIP1559)', async function () {
-        await withRedesignConfirmationFixtures(
+        await withTransactionEnvelopeTypeFixtures(
           this.test?.fullTitle(),
           TransactionEnvelopeType.feeMarket,
           async ({ driver, contractRegistry }: TestSuiteArguments) => {
@@ -206,9 +207,8 @@ async function createERC721WalletInitiatedTransactionAndAssertDetails(
 
   await driver.switchToWindowWithTitle(WINDOW_TITLES.ExtensionInFullScreenView);
 
-  const homePage = new HomePage(driver);
-  await homePage.goToNftTab();
-  await homePage.clickNFTIconOnActivityList();
+  await new HomePage(driver).goToNftTab();
+  await new NFTListPage(driver).clickNFTIconOnActivityList();
 
   const nftDetailsPage = new NFTDetailsPage(driver);
   await nftDetailsPage.clickNFTSendButton();
@@ -295,9 +295,8 @@ async function createERC1155WalletInitiatedTransactionAndAssertDetails(
   await watchAssetConfirmation.clickFooterConfirmButton();
 
   await driver.switchToWindowWithTitle(WINDOW_TITLES.ExtensionInFullScreenView);
-  const homePage = new HomePage(driver);
-  await homePage.goToNftTab();
-  await homePage.clickNFTIconOnActivityList();
+  await new HomePage(driver).goToNftTab();
+  await new NFTListPage(driver).clickNFTIconOnActivityList();
 
   const nftDetailsPage = new NFTDetailsPage(driver);
   await nftDetailsPage.clickNFTSendButton();

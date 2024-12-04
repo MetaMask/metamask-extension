@@ -11,7 +11,7 @@ exports[`<TransactionFlowSection /> renders correctly 1`] = `
     >
       <div
         class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
-        style="overflow-wrap: anywhere; min-height: 24px; position: relative; background: transparent;"
+        style="overflow-wrap: anywhere; min-height: 24px; position: relative; background: transparent; flex-direction: column;"
       >
         <div
           class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start mm-box--color-text-default"
@@ -36,10 +36,11 @@ exports[`<TransactionFlowSection /> renders correctly 1`] = `
               class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
             >
               <div
-                class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xs mm-avatar-account mm-text--body-xs mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-full mm-box--border-color-transparent box--border-style-solid box--border-width-1"
+                class=""
               >
                 <div
-                  class="mm-avatar-account__jazzicon"
+                  class="identicon"
+                  style="height: 16px; width: 16px; border-radius: 8px;"
                 >
                   <div
                     style="border-radius: 50px; overflow: hidden; padding: 0px; margin: 0px; width: 16px; height: 16px; display: inline-block; background: rgb(24, 100, 242);"
@@ -94,10 +95,10 @@ exports[`<TransactionFlowSection /> renders correctly 1`] = `
       />
       <div
         class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
-        style="overflow-wrap: anywhere; min-height: 24px; position: relative; flex-direction: column; align-items: flex-start;"
+        style="overflow-wrap: anywhere; min-height: 24px; position: relative; background: transparent; flex-direction: column;"
       >
         <div
-          class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+          class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start mm-box--color-text-default"
         >
           <div
             class="mm-box mm-box--display-flex mm-box--align-items-center"
@@ -119,10 +120,11 @@ exports[`<TransactionFlowSection /> renders correctly 1`] = `
               class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
             >
               <div
-                class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xs mm-avatar-account mm-text--body-xs mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-full mm-box--border-color-transparent box--border-style-solid box--border-width-1"
+                class=""
               >
                 <div
-                  class="mm-avatar-account__jazzicon"
+                  class="identicon"
+                  style="height: 16px; width: 16px; border-radius: 8px;"
                 >
                   <div
                     style="border-radius: 50px; overflow: hidden; padding: 0px; margin: 0px; width: 16px; height: 16px; display: inline-block; background: rgb(242, 194, 2);"

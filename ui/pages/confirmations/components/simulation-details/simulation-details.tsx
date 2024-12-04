@@ -110,10 +110,7 @@ const HeaderWithAlert = ({ transactionId }: { transactionId: string }) => {
         paddingLeft: 0,
         paddingRight: 0,
       }}
-    >
-      {/* Intentional fragment */}
-      <></>
-    </ConfirmInfoAlertRow>
+    />
   );
 };
 

@@ -54,6 +54,7 @@ import { useTokenBalances } from '../../../hooks/useTokenBalances';
 import { useMultichainSelector } from '../../../hooks/useMultichainSelector';
 import { getMultichainShouldShowFiat } from '../../../selectors/multichain';
 import { getPortfolioUrl } from '../../../helpers/utils/portfolio';
+import { hexToDecimal } from '../../../../shared/modules/conversion.utils';
 import AssetChart from './chart/asset-chart';
 import TokenButtons from './token-buttons';
 
@@ -151,6 +152,9 @@ const AssetPage = ({
       ? toChecksumHexAddress(asset.address)
       : getNativeTokenAddress(chainId);
 
+  const tokenHexBalance =
+    selectedAccountTokenBalancesAcrossChains?.[chainId]?.[address as Hex];
+
   const balance = calculateTokenBalance({
     isNative: type === AssetType.native,
     chainId,
@@ -187,10 +191,10 @@ const AssetPage = ({
       tokenMarketDetails.allTimeHigh > 0 ||
       tokenMarketDetails.allTimeLow > 0);
 
-  // this is needed in order to assign the correct balances to TokenButtons before sending/swapping
-  // without this, the balances we be populated as zero until the user refreshes the screen: https://github.com/MetaMask/metamask-extension/issues/28509
+  // this is needed in order to assign the correct balances to TokenButtons before navigating to send/swap screens
+
   asset.balance = {
-    value: '', // decimal value not needed
+    value: hexToDecimal(tokenHexBalance),
     display: String(balance),
     fiat: String(tokenFiatAmount),
   };
@@ -424,9 +428,9 @@ const AssetPage = ({
               {t('yourActivity')}
             </Text>
             {type === AssetType.native ? (
-              <TransactionList hideTokenTransactions />
+              <TransactionList hideTokenTransactions tokenChainId={chainId} />
             ) : (
-              <TransactionList tokenAddress={address} />
+              <TransactionList tokenAddress={address} tokenChainId={chainId} />
             )}
           </Box>
         </Box>

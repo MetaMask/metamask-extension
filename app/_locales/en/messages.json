@@ -419,6 +419,9 @@
   "alertMessageChangeInSimulationResults": {
     "message": "Estimated changes for this transaction have been updated. Review them closely before proceeding."
   },
+  "alertMessageFirstTimeInteraction": {
+    "message": "You're interacting with this address for the first time. Make sure that it's correct before you continue."
+  },
   "alertMessageGasEstimateFailed": {
     "message": "We’re unable to provide an accurate fee and this estimate might be high. We suggest you to input a custom gas limit, but there’s a risk the transaction will still fail."
   },
@@ -460,6 +463,9 @@
   },
   "alertReasonChangeInSimulationResults": {
     "message": "Results have changed"
+  },
+  "alertReasonFirstTimeInteraction": {
+    "message": "1st interaction"
   },
   "alertReasonGasEstimateFailed": {
     "message": "Inaccurate fee"
@@ -857,11 +863,17 @@
   "bridgeCalculatingAmount": {
     "message": "Calculating..."
   },
+  "bridgeDestination": {
+    "message": "Destination"
+  },
   "bridgeDontSend": {
     "message": "Bridge, don't send"
   },
   "bridgeEnterAmount": {
     "message": "Enter amount"
+  },
+  "bridgeExplorerLinkViewOn": {
+    "message": "View on $1"
   },
   "bridgeFrom": {
     "message": "Bridge from"
@@ -875,6 +887,25 @@
   "bridgeSelectTokenAndAmount": {
     "message": "Select token and amount"
   },
+  "bridgeSource": {
+    "message": "Source"
+  },
+  "bridgeStepActionBridgeComplete": {
+    "message": "$1 received on $2",
+    "description": "$1 is the amount of the destination asset, $2 is the name of the destination network"
+  },
+  "bridgeStepActionBridgePending": {
+    "message": "Receiving $1 on $2",
+    "description": "$1 is the amount of the destination asset, $2 is the name of the destination network"
+  },
+  "bridgeStepActionSwapComplete": {
+    "message": "Swapped $1 for $2",
+    "description": "$1 is the amount of the source asset, $2 is the amount of the destination asset"
+  },
+  "bridgeStepActionSwapPending": {
+    "message": "Swapping $1 for $2",
+    "description": "$1 is the amount of the source asset, $2 is the amount of the destination asset"
+  },
   "bridgeTimingMinutes": {
     "message": "$1 min",
     "description": "$1 is the ticker symbol of a an asset the user is being prompted to purchase"
@@ -885,8 +916,54 @@
   "bridgeTo": {
     "message": "Bridge to"
   },
+  "bridgeToChain": {
+    "message": " to $1"
+  },
   "bridgeTotalFeesTooltipText": {
     "message": "This includes gas fees (paid to crypto miners) and relayer fees (paid to power complex services like bridging).\nFees are based on network traffic and transaction complexity. MetaMask does not profit from either fee."
+  },
+  "bridgeTxDetailsBaseFee": {
+    "message": "Base fee (GWEI)"
+  },
+  "bridgeTxDetailsBridgeAmount": {
+    "message": "Bridge amount"
+  },
+  "bridgeTxDetailsBridgeType": {
+    "message": "Bridge type"
+  },
+  "bridgeTxDetailsGasLimit": {
+    "message": "Gas limit (units)"
+  },
+  "bridgeTxDetailsGasUsed": {
+    "message": "Gas used (units)"
+  },
+  "bridgeTxDetailsMaxFeePerGas": {
+    "message": "Max fee per gas"
+  },
+  "bridgeTxDetailsNonce": {
+    "message": "Nonce"
+  },
+  "bridgeTxDetailsPriorityFee": {
+    "message": "Priority fee (GWEI)"
+  },
+  "bridgeTxDetailsStatus": {
+    "message": "Status"
+  },
+  "bridgeTxDetailsTimestamp": {
+    "message": "Time stamp"
+  },
+  "bridgeTxDetailsTimestampValue": {
+    "message": "$1 at $2",
+    "description": "$1 is the date, $2 is the time"
+  },
+  "bridgeTxDetailsTotal": {
+    "message": "Total"
+  },
+  "bridgeTxDetailsTotalGasFee": {
+    "message": "Total gas fee"
+  },
+  "bridgeTypeDirectionTo": {
+    "message": "To"
   },
   "browserNotSupported": {
     "message": "Your browser is not supported..."
@@ -3199,6 +3276,9 @@
   "networkNamePolygon": {
     "message": "Polygon"
   },
+  "networkNameSolana": {
+    "message": "Solana"
+  },
   "networkNameTestnet": {
     "message": "Testnet"
   },
@@ -3393,6 +3473,13 @@
   },
   "noTransactions": {
     "message": "You have no transactions"
+  },
+  "noTransactionsChainIdMismatch": {
+    "message": "Please switch network to view transactions"
+  },
+  "noTransactionsNetworkName": {
+    "message": "Please switch to $1 network to view transactions",
+    "description": "$1 represents the network name"
   },
   "noWebcamFound": {
     "message": "Your computer's webcam was not found. Please try again."
@@ -4744,7 +4831,7 @@
     "message": "Security alerts"
   },
   "securityAlertsDescription": {
-    "message": "This feature alerts you to malicious activity by actively reviewing transaction and signature requests. $1",
+    "message": "This feature alerts you to malicious or unusual activity by actively reviewing transaction and signature requests. $1",
     "description": "Link to learn more about security alerts"
   },
   "securityAndPrivacy": {

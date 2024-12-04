@@ -11,6 +11,9 @@ class AccountListPage {
   private readonly accountListBalance =
     '[data-testid="second-currency-display"]';
 
+  private readonly accountValueAndSuffix =
+    '[data-testid="account-value-and-suffix"]';
+
   private readonly accountListItem =
     '.multichain-account-menu-popover__list--menu-item';
 
@@ -230,6 +233,33 @@ class AccountListPage {
   async changeAccountLabel(newLabel: string): Promise<void> {
     console.log(`Changing account label to: ${newLabel}`);
     await this.driver.clickElement(this.accountMenuButton);
+    await this.changeLabelFromAccountDetailsModal(newLabel);
+  }
+
+  /**
+   * Changes the account label from within an already opened account details modal.
+   * Note: This method assumes the account details modal is already open.
+   *
+   * Recommended usage:
+   * ```typescript
+   * await accountListPage.openAccountDetailsModal('Current Account Name');
+   * await accountListPage.changeLabelFromAccountDetailsModal('New Account Name');
+   * ```
+   *
+   * @param newLabel - The new label to set for the account
+   * @throws Will throw an error if the modal is not open when method is called
+   * @example
+   * // To rename a specific account, first open its details modal:
+   * await accountListPage.openAccountDetailsModal('Current Account Name');
+   * await accountListPage.changeLabelFromAccountDetailsModal('New Account Name');
+   *
+   * // Note: Using changeAccountLabel() alone will only work for the first account
+   */
+  async changeLabelFromAccountDetailsModal(newLabel: string): Promise<void> {
+    await this.driver.waitForSelector(this.editableLabelButton);
+    console.log(
+      `Account details modal opened, changing account label to: ${newLabel}`,
+    );
     await this.driver.clickElement(this.editableLabelButton);
     await this.driver.fill(this.editableLabelInput, newLabel);
     await this.driver.clickElement(this.saveAccountLabelButton);
@@ -316,6 +346,23 @@ class AccountListPage {
     await this.driver.clickElement(
       `button[data-testid="account-list-item-menu-button"][aria-label="${accountLabel} Options"]`,
     );
+  }
+
+  /**
+   * Checks that the account value and suffix is displayed in the account list.
+   *
+   * @param expectedValueAndSuffix - The expected value and suffix to check.
+   */
+  async check_accountValueAndSuffixDisplayed(
+    expectedValueAndSuffix: string,
+  ): Promise<void> {
+    console.log(
+      `Check that account value and suffix ${expectedValueAndSuffix} is displayed in account list`,
+    );
+    await this.driver.waitForSelector({
+      css: this.accountValueAndSuffix,
+      text: expectedValueAndSuffix,
+    });
   }
 
   async openAccountOptionsMenu(): Promise<void> {

@@ -8,8 +8,8 @@ import {
   getShouldHideZeroBalanceTokens,
   getTokensMarketData,
   getPreferences,
-  getCurrentChainId,
 } from '../../../selectors';
+import { getCurrentChainId } from '../../../../shared/modules/selectors/networks';
 import { useAccountTotalFiatBalance } from '../../../hooks/useAccountTotalFiatBalance';
 import { AggregatedPercentageOverview } from './aggregated-percentage-overview';
 
@@ -27,6 +27,9 @@ jest.mock('../../../selectors', () => ({
   getPreferences: jest.fn(),
   getShouldHideZeroBalanceTokens: jest.fn(),
   getTokensMarketData: jest.fn(),
+}));
+
+jest.mock('../../../../shared/modules/selectors/networks', () => ({
   getCurrentChainId: jest.fn(),
 }));
 

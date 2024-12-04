@@ -1,18 +1,20 @@
-import {
-  withFixtures,
-  WALLET_PASSWORD,
-  defaultGanacheOptions,
-} from '../../helpers';
 import { E2E_SRP } from '../../default-fixture';
 import FixtureBuilder from '../../fixture-builder';
-import AccountListPage from '../../page-objects/pages/account-list-page';
-import HeaderNavbar from '../../page-objects/pages/header-navbar';
-import HomePage from '../../page-objects/pages/homepage';
-import LoginPage from '../../page-objects/pages/login-page';
-import ResetPasswordPage from '../../page-objects/pages/reset-password-page';
+import {
+  WALLET_PASSWORD,
+  defaultGanacheOptions,
+  tempToggleSettingRedesignedTransactionConfirmations,
+  withFixtures,
+} from '../../helpers';
 import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
 import { completeImportSRPOnboardingFlow } from '../../page-objects/flows/onboarding.flow';
 import { sendTransactionToAccount } from '../../page-objects/flows/send-transaction.flow';
+import AccountListPage from '../../page-objects/pages/account-list-page';
+import ActivityListPage from '../../page-objects/pages/home/activity-list';
+import HeaderNavbar from '../../page-objects/pages/header-navbar';
+import HomePage from '../../page-objects/pages/home/homepage';
+import LoginPage from '../../page-objects/pages/login-page';
+import ResetPasswordPage from '../../page-objects/pages/reset-password-page';
 
 describe('Add account', function () {
   it('should not affect public address when using secret recovery phrase to recover account with non-zero balance @no-mmi', async function () {
@@ -24,17 +26,21 @@ describe('Add account', function () {
       },
       async ({ driver, ganacheServer }) => {
         await completeImportSRPOnboardingFlow({ driver });
+
+        await tempToggleSettingRedesignedTransactionConfirmations(driver);
+
         const homePage = new HomePage(driver);
         await homePage.check_pageIsLoaded();
         await homePage.check_localBlockchainBalanceIsDisplayed(ganacheServer);
         const headerNavbar = new HeaderNavbar(driver);
         await headerNavbar.openAccountMenu();
 
-        // Create new account with default name Account 2
+        // Create new account with default name `newAccountName`
+        const newAccountName = 'Account 2';
         const accountListPage = new AccountListPage(driver);
         await accountListPage.check_pageIsLoaded();
         await accountListPage.addNewAccount();
-        await headerNavbar.check_accountLabel('Account 2');
+        await headerNavbar.check_accountLabel(newAccountName);
         await homePage.check_expectedBalanceIsDisplayed();
 
         // Switch back to the first account and transfer some balance to 2nd account so they will not be removed after recovering SRP
@@ -46,14 +52,15 @@ describe('Add account', function () {
         await homePage.check_localBlockchainBalanceIsDisplayed(ganacheServer);
         await sendTransactionToAccount({
           driver,
-          recipientAccount: 'Account 2',
+          recipientAccount: newAccountName,
           amount: '2.8',
           gasFee: '0.000042',
           totalFee: '2.800042',
         });
         await homePage.check_pageIsLoaded();
-        await homePage.check_confirmedTxNumberDisplayedInActivity();
-        await homePage.check_txAmountInActivity('-2.8 ETH');
+        const activityList = new ActivityListPage(driver);
+        await activityList.check_confirmedTxNumberDisplayedInActivity();
+        await activityList.check_txAmountInActivity('-2.8 ETH');
 
         // Lock wallet and recover via SRP in "forget password" option
         await headerNavbar.lockMetaMask();
@@ -67,9 +74,11 @@ describe('Add account', function () {
         await homePage.check_localBlockchainBalanceIsDisplayed(ganacheServer);
         await headerNavbar.openAccountMenu();
         await accountListPage.check_pageIsLoaded();
-        await accountListPage.check_accountDisplayedInAccountList('Account 2');
-        await accountListPage.switchToAccount('Account 2');
-        await headerNavbar.check_accountLabel('Account 2');
+        await accountListPage.check_accountDisplayedInAccountList(
+          newAccountName,
+        );
+        await accountListPage.switchToAccount(newAccountName);
+        await headerNavbar.check_accountLabel(newAccountName);
         await homePage.check_expectedBalanceIsDisplayed('2.8');
       },
     );

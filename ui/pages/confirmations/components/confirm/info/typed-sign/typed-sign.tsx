@@ -1,5 +1,4 @@
 import React from 'react';
-import { useSelector } from 'react-redux';
 import { isValidAddress } from 'ethereumjs-util';
 
 import { ConfirmInfoAlertRow } from '../../../../../../components/app/confirm/info/row/alert-row/alert-row';
@@ -20,18 +19,16 @@ import {
   isPermitSignatureRequest,
 } from '../../../../utils';
 import { useConfirmContext } from '../../../../context/confirm';
-import { selectUseTransactionSimulations } from '../../../../selectors/preferences';
+import { useTypesSignSimulationEnabledInfo } from '../../../../hooks/useTypesSignSimulationEnabledInfo';
 import { ConfirmInfoRowTypedSignData } from '../../row/typed-sign-data/typedSignData';
 import { isSnapId } from '../../../../../../helpers/utils/snaps';
 import { SigningInWithRow } from '../shared/sign-in-with-row/sign-in-with-row';
-import { PermitSimulation } from './permit-simulation';
+import { TypedSignV4Simulation } from './typed-sign-v4-simulation';
 
 const TypedSignInfo: React.FC = () => {
   const t = useI18nContext();
   const { currentConfirmation } = useConfirmContext<SignatureRequestType>();
-  const useTransactionSimulations = useSelector(
-    selectUseTransactionSimulations,
-  );
+  const isSimulationSupported = useTypesSignSimulationEnabledInfo();
 
   if (!currentConfirmation?.msgParams) {
     return null;
@@ -56,8 +53,8 @@ const TypedSignInfo: React.FC = () => {
 
   return (
     <>
-      {isPermit && useTransactionSimulations && <PermitSimulation />}
-      <ConfirmInfoSection>
+      {isSimulationSupported && <TypedSignV4Simulation />}
+      <ConfirmInfoSection data-testid="confirmation_request-section">
         {isPermit && (
           <>
             <ConfirmInfoRow label={t('spender')}>
@@ -84,10 +81,10 @@ const TypedSignInfo: React.FC = () => {
         )}
         <SigningInWithRow />
       </ConfirmInfoSection>
-      <ConfirmInfoSection>
+      <ConfirmInfoSection data-testid="confirmation_message-section">
         <ConfirmInfoRow
           label={t('message')}
-          collapsed={isPermit && useTransactionSimulations}
+          collapsed={isSimulationSupported}
           copyEnabled
           copyText={JSON.stringify(parseTypedDataMessage(msgData ?? {}))}
         >

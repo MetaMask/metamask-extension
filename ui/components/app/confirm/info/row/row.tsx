@@ -33,7 +33,7 @@ export enum ConfirmInfoRowVariant {
 
 export type ConfirmInfoRowProps = {
   label: string;
-  children: React.ReactNode | string;
+  children?: React.ReactNode | string;
   tooltip?: string;
   variant?: ConfirmInfoRowVariant;
   style?: React.CSSProperties;
@@ -169,6 +169,7 @@ export const ConfirmInfoRow: React.FC<ConfirmInfoRowProps> = ({
           </Box>
         </Box>
         {expanded &&
+          children &&
           (typeof children === 'string' ? (
             <Text marginRight={copyEnabled ? 3 : 0} color={TextColor.inherit}>
               {children}
