@@ -244,6 +244,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - fix: Error handling for the state log download failure ([#26999](https://github.com/MetaMask/metamask-extension/pull/26999))
 - feat: Upgrade alert controller to base controller v2 ([#28054](https://github.com/MetaMask/metamask-extension/pull/28054))
 - chore: improve token lookup performance in `useAccountTotalFiatBalance` ([#28233](https://github.com/MetaMask/metamask-extension/pull/28233))
+
 ## [12.8.0]
 ### Added
 - Added multi-chain polling for token prices ([#28158](https://github.com/MetaMask/metamask-extension/pull/28158))
@@ -5656,8 +5657,7 @@ Update styles and spacing on the critical error page  ([#20350](https://github.c
 
 
 [Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v12.9.0...HEAD
-[12.9.0]: https://github.com/MetaMask/metamask-extension/compare/v12.7.2...v12.9.0
-[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v12.8.0...HEAD
+[12.9.0]: https://github.com/MetaMask/metamask-extension/compare/v12.8.0...v12.9.0
 [12.8.0]: https://github.com/MetaMask/metamask-extension/compare/v12.7.2...v12.8.0
 [12.7.2]: https://github.com/MetaMask/metamask-extension/compare/v12.7.1...v12.7.2
 [12.7.1]: https://github.com/MetaMask/metamask-extension/compare/v12.7.0...v12.7.1
