@@ -3,14 +3,14 @@ import {
   BtcAccountType,
   InternalAccount,
 } from '@metamask/keyring-api';
-import { AccountsControllerState } from '@metamask/accounts-controller';
 import {
   isBtcMainnetAddress,
   isBtcTestnetAddress,
 } from '../../shared/lib/multichain';
+import type { BackgroundStateProxy } from '../../shared/types/metamask';
 
-export type AccountsState = {
-  metamask: AccountsControllerState;
+type AccountsState = {
+  metamask: Pick<BackgroundStateProxy, 'AccountsController'>;
 };
 
 function isBtcAccount(account: InternalAccount) {
@@ -20,12 +20,15 @@ function isBtcAccount(account: InternalAccount) {
 }
 
 export function getInternalAccounts(state: AccountsState) {
-  return Object.values(state.metamask.internalAccounts.accounts);
+  return Object.values(
+    state.metamask.AccountsController.internalAccounts.accounts,
+  );
 }
 
 export function getSelectedInternalAccount(state: AccountsState) {
-  const accountId = state.metamask.internalAccounts.selectedAccount;
-  return state.metamask.internalAccounts.accounts[accountId];
+  const accountId =
+    state.metamask.AccountsController.internalAccounts.selectedAccount;
+  return state.metamask.AccountsController.internalAccounts.accounts[accountId];
 }
 
 export function isSelectedInternalAccountEth(state: AccountsState) {

@@ -8,25 +8,36 @@ import { NetworkStatus } from '../../constants/network';
 import { createDeepEqualSelector } from './util';
 
 export type NetworkState = {
-  metamask: InternalNetworkState;
+  metamask: { NetworkController: InternalNetworkState };
 };
 
 export type NetworkConfigurationsState = {
   metamask: {
-    networkConfigurations: Record<string, NetworkConfiguration>;
+    NetworkController: {
+      networkConfigurations: Record<string, NetworkConfiguration>;
+    };
   };
 };
 
 export type SelectedNetworkClientIdState = {
-  metamask: Pick<InternalNetworkState, 'selectedNetworkClientId'>;
+  metamask: {
+    NetworkController: Pick<InternalNetworkState, 'selectedNetworkClientId'>;
+  };
 };
 
 export type NetworkConfigurationsByChainIdState = {
-  metamask: Pick<InternalNetworkState, 'networkConfigurationsByChainId'>;
+  metamask: {
+    NetworkController: Pick<
+      InternalNetworkState,
+      'networkConfigurationsByChainId'
+    >;
+  };
 };
 
 export type NetworksMetadataState = {
-  metamask: Pick<InternalNetworkState, 'networksMetadata'>;
+  metamask: {
+    NetworkController: Pick<InternalNetworkState, 'networksMetadata'>;
+  };
 };
 
 export type ProviderConfigState = NetworkConfigurationsByChainIdState &
@@ -34,14 +45,14 @@ export type ProviderConfigState = NetworkConfigurationsByChainIdState &
 
 export const getNetworkConfigurationsByChainId = createDeepEqualSelector(
   (state: NetworkConfigurationsByChainIdState) =>
-    state.metamask.networkConfigurationsByChainId,
+    state.metamask.NetworkController.networkConfigurationsByChainId,
   (networkConfigurationsByChainId) => networkConfigurationsByChainId,
 );
 
 export function getSelectedNetworkClientId(
   state: SelectedNetworkClientIdState,
 ) {
-  return state.metamask.selectedNetworkClientId;
+  return state.metamask.NetworkController.selectedNetworkClientId;
 }
 
 /**
@@ -85,12 +96,6 @@ export const getProviderConfig = createSelector(
   },
 );
 
-export function getNetworkConfigurations(
-  state: NetworkConfigurationsState,
-): Record<string, NetworkConfiguration> {
-  return state.metamask.networkConfigurations;
-}
-
 /**
  * Returns true if the currently selected network is inaccessible or whether no
  * provider has been set yet for the currently selected network.
@@ -101,8 +106,8 @@ export function isNetworkLoading(state: NetworkState) {
   const selectedNetworkClientId = getSelectedNetworkClientId(state);
   return (
     selectedNetworkClientId &&
-    state.metamask.networksMetadata[selectedNetworkClientId].status !==
-      NetworkStatus.Available
+    state.metamask.NetworkController.networksMetadata[selectedNetworkClientId]
+      .status !== NetworkStatus.Available
   );
 }
 
@@ -110,8 +115,9 @@ export function getInfuraBlocked(
   state: SelectedNetworkClientIdState & NetworksMetadataState,
 ) {
   return (
-    state.metamask.networksMetadata[getSelectedNetworkClientId(state)]
-      .status === NetworkStatus.Blocked
+    state.metamask.NetworkController.networksMetadata[
+      getSelectedNetworkClientId(state)
+    ].status === NetworkStatus.Blocked
   );
 }
 
