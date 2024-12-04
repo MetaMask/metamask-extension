@@ -129,7 +129,8 @@
     "update-mock-cdn": "node test/e2e/mock-cdn/update-mock-cdn-files.js",
     "attributions:check": "./development/attributions-check.sh",
     "attributions:generate": "./development/generate-attributions.sh",
-    "ci-rerun-from-failed": "tsx .circleci/scripts/rerun-ci-workflow-from-failed.ts"
+    "ci-rerun-from-failed": "tsx .circleci/scripts/rerun-ci-workflow-from-failed.ts",
+    "git-diff-default-branch": "tsx .circleci/scripts/git-diff-default-branch.ts"
   },
   "resolutions": {
     "chokidar": "^3.6.0",
@@ -336,6 +337,7 @@
     "@metamask/providers": "^18.2.0",
     "@metamask/queued-request-controller": "^7.0.1",
     "@metamask/rate-limit-controller": "^6.0.0",
+    "@metamask/remote-feature-flag-controller": "^1.1.0",
     "@metamask/rpc-errors": "^7.0.0",
     "@metamask/safe-event-emitter": "^3.1.1",
     "@metamask/scure-bip39": "^2.0.3",

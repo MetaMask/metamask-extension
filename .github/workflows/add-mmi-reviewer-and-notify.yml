@@ -3,7 +3,7 @@ name: Notify MMI team via Slack
 on:
   pull_request_target:
     branches:
-      - develop
+      - main
     types:
       - opened
       - reopened
