@@ -5074,6 +5074,26 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@metamask/controller-utils@npm:^11.4.4":
+  version: 11.4.4
+  resolution: "@metamask/controller-utils@npm:11.4.4"
+  dependencies:
+    "@ethereumjs/util": "npm:^8.1.0"
+    "@metamask/eth-query": "npm:^4.0.0"
+    "@metamask/ethjs-unit": "npm:^0.3.0"
+    "@metamask/utils": "npm:^10.0.0"
+    "@spruceid/siwe-parser": "npm:2.1.0"
+    "@types/bn.js": "npm:^5.1.5"
+    bignumber.js: "npm:^9.1.2"
+    bn.js: "npm:^5.2.1"
+    eth-ens-namehash: "npm:^2.0.8"
+    fast-deep-equal: "npm:^3.1.3"
+  peerDependencies:
+    "@babel/runtime": ^7.0.0
+  checksum: 10/0833800d4733f52fbf232efedc97ce66603430fd20ec10e71e6dc4c23295b3b59cc3c8109b86b8039b9ae0c0d2428815428924c367b88f9ea6013152a86d862b
+  languageName: node
+  linkType: hard
+
 "@metamask/design-tokens@npm:^4.0.0":
   version: 4.0.0
   resolution: "@metamask/design-tokens@npm:4.0.0"
@@ -5336,7 +5356,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/eth-sig-util@npm:^7.0.0, @metamask/eth-sig-util@npm:^7.0.1, @metamask/eth-sig-util@npm:^7.0.3":
+"@metamask/eth-sig-util@npm:^7.0.0, @metamask/eth-sig-util@npm:^7.0.3":
   version: 7.0.3
   resolution: "@metamask/eth-sig-util@npm:7.0.3"
   dependencies:
@@ -5361,6 +5381,20 @@ __metadata:
     ethereum-cryptography: "npm:^2.1.2"
     tweetnacl: "npm:^1.0.3"
   checksum: 10/5de92bc59df31bcf417ecbdfd2b47f15c21b29454f45108513c55d9c005b7cb51373e9d254bd97533603ab7c7758fdf8fc5159612f366b05f92ebe5beb6d75d8
+  languageName: node
+  linkType: hard
+
+"@metamask/eth-sig-util@npm:^8.1.0":
+  version: 8.1.0
+  resolution: "@metamask/eth-sig-util@npm:8.1.0"
+  dependencies:
+    "@ethereumjs/util": "npm:^8.1.0"
+    "@metamask/abi-utils": "npm:^2.0.4"
+    "@metamask/utils": "npm:^9.0.0"
+    "@scure/base": "npm:~1.1.3"
+    ethereum-cryptography: "npm:^2.1.2"
+    tweetnacl: "npm:^1.0.3"
+  checksum: 10/6e8abca5c0431ca8e0a3b6c3654cf864bf54a484c2888ebc639e6a44767564c45e25da77664e55ffc65b3abbec55902813d4a57d85ffc097706cffd1c9d37dde
   languageName: node
   linkType: hard
 
@@ -6202,15 +6236,15 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/signature-controller@npm:^23.0.0":
-  version: 23.0.0
-  resolution: "@metamask/signature-controller@npm:23.0.0"
+"@metamask/signature-controller@npm:@metamask-previews/signature-controller@23.0.1-preview-175f4f5d":
+  version: 23.0.1-preview-175f4f5d
+  resolution: "@metamask-previews/signature-controller@npm:23.0.1-preview-175f4f5d"
   dependencies:
     "@metamask/base-controller": "npm:^7.0.2"
-    "@metamask/controller-utils": "npm:^11.4.3"
-    "@metamask/eth-sig-util": "npm:^8.0.0"
+    "@metamask/controller-utils": "npm:^11.4.4"
+    "@metamask/eth-sig-util": "npm:^8.1.0"
     "@metamask/utils": "npm:^10.0.0"
-    jsonschema: "npm:^1.2.4"
+    jsonschema: "npm:^1.4.1"
     lodash: "npm:^4.17.21"
     uuid: "npm:^8.3.2"
   peerDependencies:
@@ -6218,7 +6252,7 @@ __metadata:
     "@metamask/keyring-controller": ^19.0.0
     "@metamask/logging-controller": ^6.0.0
     "@metamask/network-controller": ^22.0.0
-  checksum: 10/5e2fda2d89dd3433f00028da0fa7743a6934b72f33fc0e4803dafa98702b9bdd9d093a326060d5480e6eb065c6b4cc1dc3e39382c00702f28b5a6061e8f105bf
+  checksum: 10/d17160b74b0ca99cf6c1777f85ac06e2e89b2dcaaf3fac121b18cbd646d675a0be4fc854e0b993397c3cf2efb6127fb2a4fb0e252a872c2bc08d39d1fd9d1374
   languageName: node
   linkType: hard
 
@@ -24760,6 +24794,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"jsonschema@npm:^1.4.1":
+  version: 1.4.1
+  resolution: "jsonschema@npm:1.4.1"
+  checksum: 10/d7a188da7a3100a2caa362b80e98666d46607b7a7153aac405b8e758132961911c6df02d444d4700691330874e21a62639f550e856b21ddd28423690751ca9c6
+  languageName: node
+  linkType: hard
+
 "jsonwebtoken@npm:^9.0.0":
   version: 9.0.0
   resolution: "jsonwebtoken@npm:9.0.0"
@@ -26525,7 +26566,7 @@ __metadata:
     "@metamask/eth-json-rpc-provider": "npm:^4.1.6"
     "@metamask/eth-ledger-bridge-keyring": "npm:^5.0.1"
     "@metamask/eth-query": "npm:^4.0.0"
-    "@metamask/eth-sig-util": "npm:^7.0.1"
+    "@metamask/eth-sig-util": "npm:^8.1.0"
     "@metamask/eth-snap-keyring": "npm:^5.0.1"
     "@metamask/eth-token-tracker": "npm:^9.0.0"
     "@metamask/eth-trezor-keyring": "npm:^3.1.3"
