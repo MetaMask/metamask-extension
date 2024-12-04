@@ -1,7 +1,9 @@
-import { StoreEnhancer } from 'redux';
+import { Reducer, StoreEnhancer } from 'redux';
 import { configureStore as baseConfigureStore } from '@reduxjs/toolkit';
 import devtoolsEnhancer from 'remote-redux-devtools';
 import rootReducer from '../ducks';
+import { AppSliceState } from '../ducks/app/app';
+import { MetamaskSliceState } from '../ducks/metamask/metamask';
 
 /**
  * This interface is temporary and is copied from the message-manager.js file
@@ -32,22 +34,20 @@ export type MessagesIndexedById = {
 
 type RootReducerReturnType = ReturnType<typeof rootReducer>;
 
-export type CombinedBackgroundAndReduxState = RootReducerReturnType & {
+/**
+ * `ReduxState` overrides incorrectly typed properties of `RootReducerReturnType`, and is only intended to be used as an input for `configureStore`.
+ * The `MetaMaskReduxState` type (derived from the returned output of `configureStore`) is to be used consistently as the single source-of-truth and representation of Redux state shape.
+ *
+ * Redux slice reducers that are passed an `AnyAction`-type `action` parameter are inferred to have a return type of `never`.
+ * TODO: Supply exhaustive action types to all Redux slices (specifically `metamask` and `appState`)
+ */
+type ReduxState = {
   activeTab: {
     origin: string;
   };
-  metamask: RootReducerReturnType['metamask'];
-  appState: RootReducerReturnType['appState'];
-  send: RootReducerReturnType['send'];
-  DNS: RootReducerReturnType['DNS'];
-  history: RootReducerReturnType['history'];
-  confirmAlerts: RootReducerReturnType['confirmAlerts'];
-  confirmTransaction: RootReducerReturnType['confirmTransaction'];
-  swaps: RootReducerReturnType['swaps'];
-  bridge: RootReducerReturnType['bridge'];
-  gas: RootReducerReturnType['gas'];
-  localeMessages: RootReducerReturnType['localeMessages'];
-};
+  metamask: MetamaskSliceState['metamask'];
+  appState: AppSliceState['appState'];
+} & Omit<RootReducerReturnType, 'activeTab' | 'metamask' | 'appState'>;
 
 // TODO: Replace `any` with type
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -68,7 +68,7 @@ export default function configureStore(preloadedState: any) {
   }
 
   return baseConfigureStore({
-    reducer: rootReducer as () => CombinedBackgroundAndReduxState,
+    reducer: rootReducer as unknown as Reducer<ReduxState>,
     middleware: (getDefaultMiddleware) =>
       getDefaultMiddleware({
         /**
