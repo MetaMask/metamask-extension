@@ -57,7 +57,7 @@ export type QuoteRequest = {
   destWalletAddress?: string;
   srcChainId: ChainId;
   destChainId: ChainId;
-  srcTokenAddress: string;
+  srcTokenAddress: string; // This is the amount sent
   destTokenAddress: string;
   srcTokenAmount: string;
   slippage: number;
@@ -97,6 +97,8 @@ export type Quote = {
   requestId: string;
   srcChainId: ChainId;
   srcAsset: BridgeAsset;
+  // This is amount sent - metabridge fee, however, some tokens have a fee of 0
+  // So sometimes it's equal to amount sent
   srcTokenAmount: string;
   destChainId: ChainId;
   destAsset: BridgeAsset;

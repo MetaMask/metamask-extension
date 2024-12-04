@@ -4,6 +4,8 @@ import { getCurrentChainId } from '../../../../shared/modules/selectors/networks
 import { useTokenFiatAmount } from '../../../hooks/useTokenFiatAmount';
 import { calcTokenAmount } from '../../../../shared/lib/transactions-controller-utils';
 import { TransactionGroupCategory } from '../../../../shared/constants/transaction';
+import { selectBridgeHistoryForAccount } from '../../../ducks/bridge-status/selectors';
+import { BridgeHistoryItem } from '../../../../shared/types/bridge-status';
 
 /**
  * A Bridge transaction group's primaryTransaction contains details of the swap,
@@ -12,18 +14,15 @@ import { TransactionGroupCategory } from '../../../../shared/constants/transacti
 export function useBridgeTokenDisplayData(transactionGroup: TransactionGroup) {
   const { primaryTransaction } = transactionGroup;
   const chainId = useSelector(getCurrentChainId);
+  const bridgeHistory = useSelector(selectBridgeHistoryForAccount);
 
-  const tokenAmount = primaryTransaction.sourceTokenAmount
-    ? calcTokenAmount(
-        primaryTransaction.sourceTokenAmount,
-        primaryTransaction.sourceTokenDecimals,
-      ).toString()
-    : undefined;
+  const bridgeHistoryItem: BridgeHistoryItem | undefined =
+    bridgeHistory[primaryTransaction.id];
 
   // Display currency can be fiat or a token
   const displayCurrencyAmount = useTokenFiatAmount(
     primaryTransaction.sourceTokenAddress,
-    tokenAmount,
+    bridgeHistoryItem?.pricingData?.amountSent,
     primaryTransaction.sourceTokenSymbol,
     {},
     true,
@@ -34,9 +33,6 @@ export function useBridgeTokenDisplayData(transactionGroup: TransactionGroup) {
     category: TransactionGroupCategory.bridge,
     displayCurrencyAmount,
     sourceTokenSymbol: primaryTransaction.sourceTokenSymbol,
-    sourceTokenAmount: calcTokenAmount(
-      primaryTransaction.sourceTokenAmount || 0,
-      primaryTransaction.sourceTokenDecimals,
-    ),
+    sourceTokenAmountSent: bridgeHistoryItem?.pricingData?.amountSent,
   };
 }

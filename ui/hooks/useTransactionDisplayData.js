@@ -387,7 +387,7 @@ export function useTransactionDisplayData(transactionGroup) {
     title = t('bridgeToChain', [destChainName || '']);
     category = bridgeTokenDisplayData.category;
     primarySuffix = bridgeTokenDisplayData.sourceTokenSymbol;
-    primaryDisplayValue = bridgeTokenDisplayData.sourceTokenAmount;
+    primaryDisplayValue = bridgeTokenDisplayData.sourceTokenAmountSent;
     secondaryDisplayValue = bridgeTokenDisplayData.displayCurrencyAmount;
   } else {
     dispatch(
