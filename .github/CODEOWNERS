@@ -1,4 +1,6 @@
 # Lines starting with '#' are comments.
+
+# GUIDELINES:
 # Each line is a file pattern followed by one or more owners.
 # Owners bear a responsibility to the organization and the users of this
 # application. Repository administrators have the ability to merge pull
@@ -7,8 +9,23 @@
 # follows all policies or without full understanding of the impact of
 # those changes on build, release and publishing outcomes.
 
+# All files are owned by extension platform by default.
 *                                    @MetaMask/extension-platform
-development/                         @MetaMask/extension-platform
+
+# These files/directories are intentionally left unassigned because they are
+# reviewed/checked during the release process:
+attribution.txt
+CHANGELOG.md
+
+# These files/directories are intentionally left unassigned because they are
+# changed frequently by many teams:
+coverage.json
+package.json
+yarn.lock
+app/scripts/metamask-controller.js
+
+# LavaMoat policy changes are reviewed by either the extension platform team or
+# the supply chain team.
 lavamoat/                            @MetaMask/extension-platform @MetaMask/supply-chain
 
 # The offscreen.ts script file that is included in the offscreen document html
@@ -45,7 +62,7 @@ privacy-snapshot.json                @MetaMask/extension-privacy-reviewers
 # of contributors. Modifications to this file result in a modification of
 # that agreement and can only be approved by those with the knowledge
 # and responsibility to publish libraries under the MetaMask name.
-.github/CODEOWNERS                   @MetaMask/extension-privacy-reviewers
+.github/CODEOWNERS                   @MetaMask/extension-security-team
 
 # For now, restricting approvals inside the .devcontainer folder to devs
 # who were involved with the Codespaces project.
