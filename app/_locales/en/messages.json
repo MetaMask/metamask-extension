@@ -4829,6 +4829,12 @@
   "searchTokens": {
     "message": "Search tokens"
   },
+  "searchTokensByNameOrAddress": {
+    "message": "Search tokens by name or address"
+  },
+  "searchTokensOnNetwork": {
+    "message": "Search tokens on $1"
+  },
   "secretRecoveryPhrase": {
     "message": "Secret Recovery Phrase"
   },
