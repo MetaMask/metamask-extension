@@ -93,6 +93,9 @@ app/scripts/lib/snap-keyring         @MetaMask/accounts-engineers
 ui/pages/swaps                                        @MetaMask/swaps-engineers
 app/scripts/controllers/swaps                         @MetaMask/swaps-engineers
 
+# Ramps team to own code for the ramps folder
+**/ramps/**                                           @MetaMask/ramp-dev-team
+
 # Snaps
 **/snaps/**                          @MetaMask/snaps-devs
 shared/constants/permissions.ts      @MetaMask/snaps-devs
