@@ -55,10 +55,12 @@ describe('Onboaring Flow Switch Component', () => {
 
   it('should route to unlock when with appropriate state', () => {
     const mockState = {
+      appState: {
+        isInitialized: true,
+      },
       metamask: {
         seedPhraseBackedUp: null,
         isUnlocked: false,
-        isInitialized: true,
       },
     };
 
@@ -70,10 +72,12 @@ describe('Onboaring Flow Switch Component', () => {
 
   it('should route to welcome route when not initialized', () => {
     const mockState = {
+      appState: {
+        isInitialized: false,
+      },
       metamask: {
         seedPhraseBackedUp: null,
         isUnlocked: false,
-        isInitialized: false,
       },
     };
 

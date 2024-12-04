@@ -9,6 +9,7 @@ import * as actionConstants from '../../store/actionConstants';
 import { ETH_EOA_METHODS } from '../../../shared/constants/eth-methods';
 import { CHAIN_IDS } from '../../../shared/constants/network';
 import { mockNetworkState } from '../../../test/stub/networks';
+import reduceApp from '../app/app';
 import reduceMetamask, {
   getBlockGasLimit,
   getConversionRate,
@@ -53,9 +54,14 @@ describe('MetaMask Reducers', () => {
   const mergeGasFeeEstimatesMock = jest.mocked(mergeGasFeeEstimates);
 
   const mockState = {
-    metamask: reduceMetamask(
+    appState: reduceApp(
       {
         isInitialized: true,
+      },
+      {},
+    ),
+    metamask: reduceMetamask(
+      {
         isUnlocked: true,
         featureFlags: { sendHexData: true },
         internalAccounts: {

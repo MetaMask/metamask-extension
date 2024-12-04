@@ -20,10 +20,10 @@ import {
 } from '../../../helpers/constants/routes';
 import {
   getCompletedOnboarding,
-  getIsInitialized,
   getIsUnlocked,
   getSeedPhraseBackedUp,
 } from '../../../ducks/metamask/metamask';
+import { getIsInitialized } from '../../../ducks/app/app';
 
 export default function OnboardingFlowSwitch() {
   /* eslint-disable prefer-const */

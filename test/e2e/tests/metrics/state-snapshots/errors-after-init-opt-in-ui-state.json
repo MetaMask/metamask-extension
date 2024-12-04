@@ -2,6 +2,7 @@
   "DNS": "object",
   "activeTab": "object",
   "appState": {
+    "isInitialized": false,
     "customNonceValue": "",
     "isAccountMenuOpen": false,
     "isNetworkMenuOpen": false,
@@ -74,7 +75,6 @@
   "invalidCustomNetwork": "object",
   "localeMessages": "object",
   "metamask": {
-    "isInitialized": true,
     "isUnlocked": true,
     "internalAccounts": { "accounts": "object", "selectedAccount": "string" },
     "transactions": "object",

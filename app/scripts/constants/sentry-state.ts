@@ -419,6 +419,8 @@ export const SENTRY_UI_STATE = {
   gas: true,
   history: true,
   appState: {
+    // This property comes from the background but isn't in controller state
+    isInitialized: true,
     customNonceValue: true,
     isAccountMenuOpen: true,
     isNetworkMenuOpen: true,
@@ -429,8 +431,6 @@ export const SENTRY_UI_STATE = {
   },
   metamask: {
     ...flattenedBackgroundStateMask,
-    // This property comes from the background but isn't in controller state
-    isInitialized: true,
     useSafeChainsListValidation: true,
     watchEthereumAccountEnabled: false,
     bitcoinSupportEnabled: false,

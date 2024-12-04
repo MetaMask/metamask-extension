@@ -308,7 +308,6 @@ const state = {
       },
     ],
     connectedAccounts: ['0x64a845a5b02460acf8a3d84503b0d68d028b4bb4'],
-    isInitialized: true,
     isUnlocked: true,
     rpcUrl: 'https://rawtestrpc.metamask.io/',
     internalAccounts: {
@@ -1624,6 +1623,7 @@ const state = {
     openSeaEnabled: true,
   },
   appState: {
+    isInitialized: true,
     isAccountMenuOpen: false,
     welcomeScreenSeen: false,
     pendingTokens: {},
