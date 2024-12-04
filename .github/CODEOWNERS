@@ -13,7 +13,7 @@
 *                                    @MetaMask/extension-platform
 
 # These files/directories are intentionally left unassigned because they are
-# reviewed/checked during the release process:
+# reviewed/validated during the release process:
 attribution.txt
 CHANGELOG.md
 
