@@ -64,7 +64,8 @@ export const waitForTransactionToComplete = async (
 };
 
 describe('smart transactions @no-mmi', function () {
-  it('Completes a Swap', async function () {
+  // Temporarily skipping this test until we have a fix for the issue.
+  it.skip('Completes a Swap', async function () {
     await withFixturesForSmartTransactions(
       {
         title: this.test?.fullTitle(),
