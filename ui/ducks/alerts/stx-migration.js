@@ -1,5 +1,6 @@
 import { createSlice } from '@reduxjs/toolkit';
 import { AlertTypes } from '../../../shared/constants/alerts';
+import * as actionConstants from '../../store/actionConstants';
 import { ALERT_STATE } from './enums';
 
 const name = AlertTypes.stxMigration;
@@ -17,6 +18,13 @@ const slice = createSlice({
     },
     dismissSTXMigrationAlert: (state) => {
       state.state = ALERT_STATE.CLOSED;
+    },
+  },
+  extraReducers: {
+    [actionConstants.UPDATE_METAMASK_STATE]: (state, action) => {
+      if (action.value?.preferences?.smartTransactionsOptInStatus === true) {
+        state.state = ALERT_STATE.OPEN;
+      }
     },
   },
 });
