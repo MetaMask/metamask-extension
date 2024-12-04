@@ -36,7 +36,7 @@ import { captureSingleException } from '../store/actions';
 import { isEqualCaseInsensitive } from '../../shared/modules/string-utils';
 import { getTokenValueParam } from '../../shared/lib/metamask-controller-utils';
 import { selectBridgeHistoryForAccount } from '../ducks/bridge-status/selectors';
-import { useBridgeTokenDisplayData } from '../pages/bridge/hooks/useBridgeTokenValue';
+import { useBridgeTokenDisplayData } from '../pages/bridge/hooks/useBridgeTokenDisplayData';
 import { useI18nContext } from './useI18nContext';
 import { useTokenFiatAmount } from './useTokenFiatAmount';
 import { useUserPreferencedCurrency } from './useUserPreferencedCurrency';
