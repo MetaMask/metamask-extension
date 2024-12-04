@@ -11,8 +11,10 @@ export function sanitizeUIState(
 
   for (const key of REMOVE_KEYS) {
     if (key === 'vault') {
-      delete newState.KeyringController[key];
-    } else {
+      if (newState.KeyringController && key in newState.KeyringController) {
+        delete newState.KeyringController[key];
+      }
+    } else if (newState.SnapController && key in newState.SnapController) {
       delete newState.SnapController[key];
     }
   }
@@ -37,7 +39,7 @@ function sanitizeSnapData(state: BackgroundStateProxy) {
       acc[snap.id] = stripLargeSnapData(snap) as Snap;
     }
     return acc;
-  }, {} as never);
+  }, {});
 }
 
 function stripLargeSnapData(snapData: Snap): Partial<Snap> {
