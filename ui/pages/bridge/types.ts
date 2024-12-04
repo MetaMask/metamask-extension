@@ -57,9 +57,9 @@ export type QuoteRequest = {
   destWalletAddress?: string;
   srcChainId: ChainId;
   destChainId: ChainId;
-  srcTokenAddress: string; // This is the amount sent
+  srcTokenAddress: string;
   destTokenAddress: string;
-  srcTokenAmount: string;
+  srcTokenAmount: string; // This is the amount sent
   slippage: number;
   aggIds?: string[];
   bridgeIds?: string[];
