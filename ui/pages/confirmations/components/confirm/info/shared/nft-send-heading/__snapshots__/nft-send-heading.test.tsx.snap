@@ -17,7 +17,7 @@ exports[`<NFTSendHeading /> renders component 1`] = `
           class="mm-box mm-badge-wrapper nft-item__badge-wrapper mm-box--display-block"
         >
           <div
-            class="mm-box nft-item__default-image nft-default mm-box--display-flex mm-box--rounded-lg"
+            class="mm-box nft-item__default-image nft-default mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--rounded-lg"
             data-testid="nft-default-image"
             tabindex="0"
           />
