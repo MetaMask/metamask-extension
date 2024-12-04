@@ -7,7 +7,6 @@ import {
   NetworkCongestionThresholds,
 } from '../../../shared/constants/gas';
 import { KeyringType } from '../../../shared/constants/keyring';
-import { DEFAULT_AUTO_LOCK_TIME_LIMIT } from '../../../shared/constants/preferences';
 import { decGWEIToHexWEI } from '../../../shared/modules/conversion.utils';
 import { stripHexPrefix } from '../../../shared/modules/hexstring-utils';
 import { isEqualCaseInsensitive } from '../../../shared/modules/string-utils';
@@ -24,61 +23,26 @@ import { getSelectedInternalAccount } from '../../selectors/accounts';
 import * as actionConstants from '../../store/actionConstants';
 import { updateTransactionGasFees } from '../../store/actions';
 import { setCustomGasLimit, setCustomGasPrice } from '../gas/gas.duck';
-
-const initialState = {
-  isInitialized: false,
-  isUnlocked: false,
-  internalAccounts: { accounts: {}, selectedAccount: '' },
-  transactions: [],
-  networkConfigurations: {},
-  addressBook: [],
-  useBlockie: false,
-  featureFlags: {},
-  currentLocale: '',
-  currentBlockGasLimit: '',
-  currentBlockGasLimitByChainId: {},
-  preferences: {
-    autoLockTimeLimit: DEFAULT_AUTO_LOCK_TIME_LIMIT,
-    showExtensionInFullSizeView: false,
-    showFiatInTestnets: false,
-    showTestNetworks: false,
-    smartTransactionsOptInStatus: true,
-    petnamesEnabled: true,
-    featureNotificationsEnabled: false,
-    privacyMode: false,
-    showMultiRpcModal: false,
-  },
-  firstTimeFlowType: null,
-  completedOnboarding: false,
-  knownMethodData: {},
-  use4ByteResolution: true,
-  participateInMetaMetrics: null,
-  dataCollectionForMarketing: null,
-  currencyRates: {
-    ETH: {
-      conversionRate: null,
-    },
-  },
-};
+import { initialMetamaskState } from '../../../app/scripts/metamask-controller-stores';
 
 /**
  * Temporary types for this slice so that inferrence of MetaMask state tree can
  * occur
  *
- * @param {typeof initialState} state - State
+ * @param {typeof initialMetamaskState} state - State
  * @param {any} action
- * @returns {typeof initialState}
+ * @returns {typeof initialMetamaskState}
  */
-export default function reduceMetamask(state = initialState, action) {
-  // I don't think we should be spreading initialState into this. Once the
-  // state tree has begun by way of the first reduce call the initialState is
+export default function reduceMetamask(state = initialMetamaskState, action) {
+  // I don't think we should be spreading initialMetamaskState into this. Once the
+  // state tree has begun by way of the first reduce call the initialMetamaskState is
   // set. The only time it should be used again is if we reset the state with a
-  // deliberate action. However, our tests are *relying upon the initialState
+  // deliberate action. However, our tests are *relying upon the initialMetamaskState
   // tree above to be spread into the reducer as a way of hydrating the state
   // for this slice*. I attempted to remove this and it caused nearly 40 test
   // failures. We are going to refactor this slice anyways, possibly removing
   // it so we will fix this issue when that time comes.
-  const metamaskState = { ...initialState, ...state };
+  const metamaskState = { ...initialMetamaskState, ...state };
   switch (action.type) {
     case actionConstants.UPDATE_METAMASK_STATE:
       return { ...metamaskState, ...action.value };
