@@ -7115,7 +7115,7 @@ export default class MetamaskController extends EventEmitter {
               newAccounts
             : // If the length is 2 or greater, we have to execute
               // `eth_accounts` vi this method.
-              await this.getPermittedAccounts(origin),
+              this.getPermittedAccounts(origin),
       });
     }
 
