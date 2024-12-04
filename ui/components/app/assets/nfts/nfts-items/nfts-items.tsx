@@ -3,10 +3,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import { isEqual } from 'lodash';
 import { Hex } from '@metamask/utils';
-import Typography from '../../../../ui/typography/typography';
 import {
-  Color,
-  TypographyVariant,
   JustifyContent,
   AlignItems,
   IconColor,
@@ -62,25 +59,7 @@ type NftCollection = {
   isPreviouslyOwnedCollection: boolean;
 };
 
-type NftItemAttributes = Record<string, string | number | boolean | null>;
-type NftItemCollection = {
-  contractDeployedAt: string;
-  creator: Hex;
-  id: Hex;
-  imageUrl: string;
-  isNsfw: boolean;
-  isSpam: boolean;
-  metadataDisabled: boolean;
-  name: string;
-  openseaVerificationStatus: 'requested' | 'not_requested';
-  ownerCount: number;
-  royaltiesBps?: number;
-  slug: string;
-  symbol: string;
-  tokenCount: string;
-};
-
-export type NftItemI = {
+type NftItemI = {
   address: Hex;
   description: string;
   image: string;
@@ -89,6 +68,15 @@ export type NftItemI = {
   tokenId: number;
   ipfsImageUpdated: string;
   tokenURI: string;
+};
+
+type NftsItemsProps = {
+  collections: NftCollections;
+  previouslyOwnedCollection: NftCollection;
+  isModal: boolean;
+  onCloseModal: () => void;
+  showTokenId: boolean;
+  displayPreviouslyOwnedCollection: boolean;
 };
 
 const width = (isModal: boolean) => {
@@ -105,18 +93,9 @@ const width = (isModal: boolean) => {
 
 const PREVIOUSLY_OWNED_KEY = 'previouslyOwned';
 
-type NftsItemsProps = {
-  collections: NftCollections;
-  previouslyOwnedCollection: any;
-  isModal: boolean;
-  onCloseModal: () => void;
-  showTokenId: boolean;
-  displayPreviouslyOwnedCollection: boolean;
-};
-
 export default function NftsItems({
   collections = {} as NftCollections,
-  previouslyOwnedCollection = {},
+  previouslyOwnedCollection,
   isModal = false,
   onCloseModal,
   showTokenId = false,
@@ -150,7 +129,7 @@ export default function NftsItems({
         Object.keys(nftsDropdownState?.[selectedAddress]?.[chainId]).length ===
           0)
     ) {
-      const initState: Record<string, {}> = {};
+      const initState: Record<string, unknown> = {};
       collectionsKeys.forEach((key: string) => {
         initState[key] = true;
       });
@@ -321,8 +300,7 @@ export default function NftsItems({
         {isExpanded ? (
           <Box display={Display.Flex} flexWrap={FlexWrap.Wrap} gap={4}>
             {nfts.map((nft, i) => {
-              const { image, address, tokenId, name, imageOriginal, tokenURI } =
-                nft;
+              const { image, address, tokenId, imageOriginal, tokenURI } = nft;
               const nftImageAlt = getNftImageAlt(nft);
               const isImageHosted =
                 image?.startsWith('https:') || image?.startsWith('http:');

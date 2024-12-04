@@ -94,10 +94,7 @@ export const NftItem = ({
             name={networkName}
             src={networkSrc}
             borderWidth={2}
-            /* We are using BackgroundColor.backgroundDefault here because
-             * there is no equivalent BorderColor to get the "cutout" effect
-             */
-            // @ts-ignore
+            // @ts-expect-error: We are using BackgroundColor.backgroundDefault here because there is no equivalent BorderColor to get the "cutout" effect
             borderColor={BackgroundColor.backgroundDefault}
           />
         }
