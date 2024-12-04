@@ -105,7 +105,7 @@ async function requestPermissionsImplementation(
     getPermissionsForOrigin: () => ReturnType<
       AbstractPermissionController['getPermissions']
     >;
-    getAccounts: () => Promise<string[]>;
+    getAccounts: () => string[];
   },
 ) {
   const { origin, params } = req;
@@ -233,7 +233,7 @@ async function requestPermissionsImplementation(
 
     // We cannot derive ethAccounts directly from the CAIP-25 permission
     // because the accounts will not be in order of lastSelected
-    const ethAccounts = await getAccounts();
+    const ethAccounts = getAccounts();
 
     grantedPermissions[RestrictedMethods.eth_accounts] = {
       ...caip25Endowment,

@@ -2369,13 +2369,13 @@ export default class MetamaskController extends EventEmitter {
       },
       version,
       // account mgmt
-      getAccounts: async ({ origin: innerOrigin }) => {
+      getAccounts: ({ origin: innerOrigin }) => {
         if (innerOrigin === ORIGIN_METAMASK) {
           const selectedAddress =
             this.accountsController.getSelectedAccount().address;
           return selectedAddress ? [selectedAddress] : [];
         } else if (this.isUnlocked()) {
-          return await this.getPermittedAccounts(innerOrigin);
+          return this.getPermittedAccounts(innerOrigin);
         }
         return []; // changing this is a breaking change
       },
@@ -3251,7 +3251,7 @@ export default class MetamaskController extends EventEmitter {
 
     return {
       isUnlocked: this.isUnlocked(),
-      accounts: await this.getPermittedAccounts(origin),
+      accounts: this.getPermittedAccounts(origin),
       ...providerNetworkState,
     };
   }
@@ -6524,12 +6524,12 @@ export default class MetamaskController extends EventEmitter {
    * account(s) are currently accessible, if any.
    */
   _onUnlock() {
-    this.notifyAllConnections(async (origin) => {
+    this.notifyAllConnections((origin) => {
       return {
         method: NOTIFICATION_NAMES.unlockStateChanged,
         params: {
           isUnlocked: true,
-          accounts: await this.getPermittedAccounts(origin),
+          accounts: this.getPermittedAccounts(origin),
         },
       };
     });
@@ -7102,7 +7102,7 @@ export default class MetamaskController extends EventEmitter {
     await this.txController.updateIncomingTransactions();
   }
 
-  async _notifyAccountsChange(origin, newAccounts) {
+  _notifyAccountsChange(origin, newAccounts) {
     if (this.isUnlocked()) {
       this.notifyConnections(origin, {
         method: NOTIFICATION_NAMES.accountsChanged,
@@ -7115,7 +7115,7 @@ export default class MetamaskController extends EventEmitter {
               newAccounts
             : // If the length is 2 or greater, we have to execute
               // `eth_accounts` vi this method.
-              await this.getPermittedAccounts(origin),
+              this.getPermittedAccounts(origin),
       });
     }
 

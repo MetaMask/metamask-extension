@@ -875,11 +875,11 @@ describe('MetaMaskController', () => {
             });
           jest
             .spyOn(metamaskController, 'sortAccountsByLastSelected')
-            .mockResolvedValue(['not_empty']);
+            .mockReturnValue(['not_empty']);
 
           expect(
             metamaskController.getPermittedAccounts('test.com', true),
-          ).not.toStrictEqual([]);
+          ).toStrictEqual(['not_empty']);
         });
       });
 
