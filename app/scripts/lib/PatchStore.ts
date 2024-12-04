@@ -1,7 +1,7 @@
 import { createProjectLogger, getKnownPropertyNames } from '@metamask/utils';
 import { Patch } from 'immer';
 import { v4 as uuid } from 'uuid';
-import { MemStoreControllersComposedState as BackgroundState } from '../../../shared/types/metamask';
+import type { BackgroundStateProxy } from '../../../shared/types/metamask';
 import ComposableObservableStore from './ComposableObservableStore';
 import { sanitizeUIState } from './state-utils';
 
@@ -16,8 +16,8 @@ export class PatchStore {
 
   private listener: (request: {
     controllerKey: string;
-    oldState: BackgroundState;
-    newState: BackgroundState;
+    oldState: BackgroundStateProxy;
+    newState: BackgroundStateProxy;
   }) => void;
 
   constructor(observableStore: ComposableObservableStore) {
@@ -52,8 +52,8 @@ export class PatchStore {
     newState,
   }: {
     controllerKey: string;
-    oldState: BackgroundState;
-    newState: BackgroundState;
+    oldState: BackgroundStateProxy;
+    newState: BackgroundStateProxy;
   }) {
     const sanitizedNewState = sanitizeUIState(newState);
     const patches = this._generatePatches(oldState, sanitizedNewState);
@@ -81,10 +81,10 @@ export class PatchStore {
   }
 
   private _generatePatches(
-    oldState: BackgroundState,
-    newState: BackgroundState,
+    oldState: BackgroundStateProxy,
+    newState: BackgroundStateProxy,
   ): Patch[] {
-    return getKnownPropertyNames<keyof BackgroundState>(newState).reduce<
+    return getKnownPropertyNames<keyof BackgroundStateProxy>(newState).reduce<
       Patch[]
     >((patches, controllerName) => {
       Object.keys(oldState[controllerName]).forEach((key) => {

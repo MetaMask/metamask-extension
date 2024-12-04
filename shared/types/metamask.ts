@@ -147,3 +147,7 @@ export type MemStoreControllersComposedState = Omit<
   TxController: TransactionControllerState;
   QueuedRequestController: QueuedRequestControllerState;
 };
+
+export type BackgroundStateProxy = {
+  isInitialized: boolean;
+} & MemStoreControllersComposedState;
