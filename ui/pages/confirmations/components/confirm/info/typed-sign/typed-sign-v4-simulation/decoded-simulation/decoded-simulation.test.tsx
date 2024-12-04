@@ -41,6 +41,23 @@ const decodingDataListing: DecodingDataStateChanges = [
   },
 ];
 
+const decodingDataListingERC1155: DecodingDataStateChanges = [
+  {
+    assetType: 'NATIVE',
+    changeType: DecodingDataChangeType.Receive,
+    address: '',
+    amount: '900000000000000000',
+    contractAddress: '',
+  },
+  {
+    assetType: 'ERC1155',
+    changeType: DecodingDataChangeType.Listing,
+    address: '',
+    amount: '',
+    contractAddress: '0xafd4896984CA60d2feF66136e57f958dCe9482d5',
+    tokenID: '2233',
+  },
+];
 const decodingDataBidding: DecodingDataStateChanges = [
   {
     assetType: 'ERC721',
@@ -76,6 +93,44 @@ describe('DecodedSimulation', () => {
     expect(await findByText('Estimated changes')).toBeInTheDocument();
     expect(await findByText('Spending cap')).toBeInTheDocument();
     expect(await findByText('1,461,501,637,3...')).toBeInTheDocument();
+  });
+
+  it('render correctly for ERC712 token', async () => {
+    const state = getMockTypedSignConfirmStateForRequest({
+      ...permitSignatureMsg,
+      decodingLoading: false,
+      decodingData: { stateChanges: decodingDataListing },
+    });
+    const mockStore = configureMockStore([])(state);
+
+    const { findByText } = renderWithConfirmContextProvider(
+      <PermitSimulation />,
+      mockStore,
+    );
+
+    expect(await findByText('Estimated changes')).toBeInTheDocument();
+    expect(await findByText('You receive')).toBeInTheDocument();
+    expect(await findByText('You list')).toBeInTheDocument();
+    expect(await findByText('#2101')).toBeInTheDocument();
+  });
+
+  it('render correctly for ERC1155 token', async () => {
+    const state = getMockTypedSignConfirmStateForRequest({
+      ...permitSignatureMsg,
+      decodingLoading: false,
+      decodingData: { stateChanges: decodingDataListingERC1155 },
+    });
+    const mockStore = configureMockStore([])(state);
+
+    const { findByText } = renderWithConfirmContextProvider(
+      <PermitSimulation />,
+      mockStore,
+    );
+
+    expect(await findByText('Estimated changes')).toBeInTheDocument();
+    expect(await findByText('You receive')).toBeInTheDocument();
+    expect(await findByText('You list')).toBeInTheDocument();
+    expect(await findByText('#2233')).toBeInTheDocument();
   });
 
   it('renders unavailable message if no state change is returned', async () => {
