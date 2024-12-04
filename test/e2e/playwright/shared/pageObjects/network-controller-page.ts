@@ -88,6 +88,9 @@ export class NetworkController {
     await this.networkTicker.fill(options.symbol);
     await this.saveBtn.waitFor({ state: 'visible' });
     await this.saveBtn.click({ timeout: 60000 });
+    await this.page.waitForSelector(`text=/was successfully edited/`, {
+      timeout: 10000,
+    });
   }
 
   async addPopularNetwork(options: { networkName: string }) {
