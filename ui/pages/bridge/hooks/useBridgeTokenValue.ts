@@ -7,9 +7,6 @@ import { calcTokenAmount } from '../../../../shared/lib/transactions-controller-
 /**
  * A Bridge transaction group's primaryTransaction contains details of the swap,
  * including the source (from) and destination (to) token type (ETH, DAI, etc..)
- *
- * @param {TransactionGroup} transactionGroup - Group of transactions by nonce
- * @returns {DisplayCurrencyAmount}
  */
 export function useBridgeTokenDisplayCurrencyAmount(
   transactionGroup: TransactionGroup,
