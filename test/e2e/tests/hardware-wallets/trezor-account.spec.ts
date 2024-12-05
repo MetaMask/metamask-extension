@@ -5,7 +5,7 @@ import { KNOWN_PUBLIC_KEY_ADDRESSES } from '../../../stub/keyring-bridge';
 import AccountListPage from '../../page-objects/pages/account-list-page';
 import ConnectHardwareWalletPage from '../../page-objects/pages/hardware-wallet/connect-hardware-wallet-page';
 import HeaderNavbar from '../../page-objects/pages/header-navbar';
-import HomePage from '../../page-objects/pages/homepage';
+import HomePage from '../../page-objects/pages/home/homepage';
 import SelectTrezorAccountPage from '../../page-objects/pages/hardware-wallet/select-trezor-account-page';
 import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
 

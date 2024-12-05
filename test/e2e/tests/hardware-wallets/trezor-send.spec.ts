@@ -4,7 +4,7 @@ import { Ganache } from '../../seeder/ganache';
 import FixtureBuilder from '../../fixture-builder';
 import { logInWithBalanceValidation, withFixtures } from '../../helpers';
 import { KNOWN_PUBLIC_KEY_ADDRESSES } from '../../../stub/keyring-bridge';
-import HomePage from '../../page-objects/pages/homepage';
+import HomePage from '../../page-objects/pages/home/homepage';
 import { sendRedesignedTransactionToAddress } from '../../page-objects/flows/send-transaction.flow';
 
 const RECIPIENT = '0x0Cc5261AB8cE458dc977078A3623E2BaDD27afD3';
