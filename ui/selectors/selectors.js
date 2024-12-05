@@ -1940,7 +1940,7 @@ function getAllowedAnnouncementIds(state) {
 
 /**
  * Announcements are managed by the announcement controller and referenced by
- * `state.metamask.announcements`. This function returns a list of announcements
+ * `state.metamask.AnnouncementController.announcements`. This function returns a list of announcements
  * the can be shown to the user. This list includes all announcements that do not
  * have a truthy `isShown` property.
  *
@@ -1951,7 +1951,9 @@ function getAllowedAnnouncementIds(state) {
  */
 
 export function getSortedAnnouncementsToShow(state) {
-  const announcements = Object.values(state.metamask.announcements);
+  const announcements = Object.values(
+    state.metamask.AnnouncementController.announcements,
+  );
   const allowedAnnouncementIds = getAllowedAnnouncementIds(state);
   const announcementsToShow = announcements.filter(
     (announcement) =>
