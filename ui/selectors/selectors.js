@@ -968,7 +968,7 @@ export function getTotalUnapprovedCount(state) {
 }
 
 export function getQueuedRequestCount(state) {
-  return state.metamask.queuedRequestCount ?? 0;
+  return state.metamask.QueuedRequestController.queuedRequestCount ?? 0;
 }
 
 export function getTotalUnapprovedMessagesCount(state) {
