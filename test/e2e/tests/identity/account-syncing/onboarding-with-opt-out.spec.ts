@@ -45,10 +45,7 @@ describe('Account syncing - Opt-out Profile Sync @no-mmi', function () {
                 getResponse: accountsSyncMockResponse,
               },
             );
-            return mockIdentityServices(
-              server,
-              userStorageMockttpController,
-            );
+            return mockIdentityServices(server, userStorageMockttpController);
           },
         },
         async ({ driver }) => {
@@ -105,10 +102,7 @@ describe('Account syncing - Opt-out Profile Sync @no-mmi', function () {
               USER_STORAGE_FEATURE_NAMES.accounts,
               server,
             );
-            return mockIdentityServices(
-              server,
-              userStorageMockttpController,
-            );
+            return mockIdentityServices(server, userStorageMockttpController);
           },
         },
         async ({ driver }) => {
@@ -154,9 +148,7 @@ describe('Account syncing - Opt-out Profile Sync @no-mmi', function () {
           await privacySettings.check_pageIsLoaded();
           await privacySettings.openRevealSrpQuiz();
           await privacySettings.completeRevealSrpQuiz();
-          await privacySettings.fillPasswordToRevealSrp(
-            IDENTITY_TEAM_PASSWORD,
-          );
+          await privacySettings.fillPasswordToRevealSrp(IDENTITY_TEAM_PASSWORD);
           walletSrp = await privacySettings.getSrpInRevealSrpDialog();
           if (!walletSrp) {
             throw new Error('Wallet SRP was not set');
@@ -174,10 +166,7 @@ describe('Account syncing - Opt-out Profile Sync @no-mmi', function () {
               USER_STORAGE_FEATURE_NAMES.accounts,
               server,
             );
-            return mockIdentityServices(
-              server,
-              userStorageMockttpController,
-            );
+            return mockIdentityServices(server, userStorageMockttpController);
           },
         },
         async ({ driver }) => {

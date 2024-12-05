@@ -35,10 +35,7 @@ describe('Account syncing - Onboarding @no-mmi', function () {
                 getResponse: accountsSyncMockResponse,
               },
             );
-            return mockIdentityServices(
-              server,
-              userStorageMockttpController,
-            );
+            return mockIdentityServices(server, userStorageMockttpController);
           },
         },
         async ({ driver }) => {

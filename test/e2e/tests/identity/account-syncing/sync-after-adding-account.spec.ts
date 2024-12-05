@@ -36,10 +36,7 @@ describe('Account syncing - Add Account @no-mmi', function () {
               },
             );
 
-            return mockIdentityServices(
-              server,
-              userStorageMockttpController,
-            );
+            return mockIdentityServices(server, userStorageMockttpController);
           },
         },
         async ({ driver }) => {
@@ -81,10 +78,7 @@ describe('Account syncing - Add Account @no-mmi', function () {
               USER_STORAGE_FEATURE_NAMES.accounts,
               server,
             );
-            return mockIdentityServices(
-              server,
-              userStorageMockttpController,
-            );
+            return mockIdentityServices(server, userStorageMockttpController);
           },
         },
         async ({ driver }) => {
@@ -141,10 +135,7 @@ describe('Account syncing - Add Account @no-mmi', function () {
               },
             );
 
-            return mockIdentityServices(
-              server,
-              userStorageMockttpController,
-            );
+            return mockIdentityServices(server, userStorageMockttpController);
           },
         },
         async ({ driver }) => {
@@ -186,10 +177,7 @@ describe('Account syncing - Add Account @no-mmi', function () {
               USER_STORAGE_FEATURE_NAMES.accounts,
               server,
             );
-            return mockIdentityServices(
-              server,
-              userStorageMockttpController,
-            );
+            return mockIdentityServices(server, userStorageMockttpController);
           },
         },
         async ({ driver }) => {
