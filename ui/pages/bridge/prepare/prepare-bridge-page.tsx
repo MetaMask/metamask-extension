@@ -240,6 +240,7 @@ const PrepareBridgePage = () => {
             autoFocus: true,
             value: fromAmount || undefined,
           }}
+          isMultiselectEnabled={true}
         />
 
         <Box className="prepare-bridge-page__switch-tokens">
