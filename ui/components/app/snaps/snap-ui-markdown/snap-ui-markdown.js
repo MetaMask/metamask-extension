@@ -17,7 +17,7 @@ import {
 } from '../../../component-library';
 import SnapLinkWarning from '../snap-link-warning';
 
-export const Paragraph = (props) => (
+const Paragraph = (props) => (
   <Text
     {...props}
     variant={TextVariant.bodyMd}
