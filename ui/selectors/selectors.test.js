@@ -320,16 +320,18 @@ describe('Selectors', () => {
             rpcEndpoints: [
               {
                 url: 'https://testrpc.com',
-                networkClientId: mockState.metamask.selectedNetworkClientId,
+                networkClientId:
+                  mockState.metamask.NetworkController.selectedNetworkClientId,
               },
             ],
           },
         },
         queuedRequestCount: 0,
         transactions: [],
-        selectedNetworkClientId: mockState.metamask.selectedNetworkClientId,
+        selectedNetworkClientId:
+          mockState.metamask.NetworkController.selectedNetworkClientId,
         // networkConfigurations:
-        //   mockState.metamask.networkConfigurationsByChainId,
+        //   mockState.metamask.NetworkController.networkConfigurationsByChainId,
       },
     };
 

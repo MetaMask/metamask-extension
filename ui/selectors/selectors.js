@@ -821,7 +821,7 @@ export function getGasIsLoading(state) {
 }
 
 export const getNetworkConfigurationIdByChainId = createDeepEqualSelector(
-  (state) => state.metamask.networkConfigurationsByChainId,
+  (state) => state.metamask.NetworkController.networkConfigurationsByChainId,
   (networkConfigurationsByChainId) =>
     Object.entries(networkConfigurationsByChainId).reduce(
       (acc, [_chainId, network]) => {

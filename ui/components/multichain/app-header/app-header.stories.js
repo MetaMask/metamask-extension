@@ -23,12 +23,18 @@ const customNetworkUnlockedData = {
   ...testData,
   metamask: {
     ...testData.metamask,
-    preferences: {
-      showTestNetworks: true,
+    PreferencesController: {
+      preferences: {
+        showTestNetworks: true,
+      },
     },
-    isUnlocked: true,
-    networkConfigurations: {
-      ...testData.metamask.networkConfigurations,
+    KeyringController: {
+      isUnlocked: true,
+    },
+    NetworkController: {
+      networkConfigurations: {
+        ...testData.metamask.NetworkController.networkConfigurations,
+      },
     },
   },
 };
@@ -43,7 +49,7 @@ const customNetworkLockedData = {
     },
     isUnlocked: false,
     networkConfigurations: {
-      ...testData.metamask.networkConfigurations,
+      ...testData.metamask.NetworkController.networkConfigurations,
     },
   },
 };

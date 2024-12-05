@@ -16,31 +16,37 @@ const customNetworkStore = configureStore({
   ...testData,
   metamask: {
     ...testData.metamask,
-    preferences: {
-      showTestNetworks: true,
+    PreferencesController: {
+      preferences: {
+        showTestNetworks: true,
+      },
     },
-    orderedNetworkList: [],
-    networkConfigurations: {
-      ...testData.metamask.networkConfigurations,
-      ...{
-        'test-networkConfigurationId-1': {
-          chainId: CHAIN_IDS.OPTIMISM,
-          nickname: OPTIMISM_DISPLAY_NAME,
-          rpcUrl: `https://optimism-mainnet.infura.io/v3`,
-          ticker: CURRENCY_SYMBOLS.ETH,
-          rpcPrefs: {
-            blockExplorerUrl: 'https://optimistic.etherscan.io/',
-            imageUrl: OPTIMISM_TOKEN_IMAGE_URL,
+    NetworkOrderController: {
+      orderedNetworkList: [],
+    },
+    NetworkController: {
+      networkConfigurations: {
+        ...testData.metamask.NetworkController.networkConfigurations,
+        ...{
+          'test-networkConfigurationId-1': {
+            chainId: CHAIN_IDS.OPTIMISM,
+            nickname: OPTIMISM_DISPLAY_NAME,
+            rpcUrl: `https://optimism-mainnet.infura.io/v3`,
+            ticker: CURRENCY_SYMBOLS.ETH,
+            rpcPrefs: {
+              blockExplorerUrl: 'https://optimistic.etherscan.io/',
+              imageUrl: OPTIMISM_TOKEN_IMAGE_URL,
+            },
           },
-        },
-        'test-networkConfigurationId-2': {
-          chainId: CHAIN_IDS.ZKSYNC_ERA,
-          nickname: ZK_SYNC_ERA_DISPLAY_NAME,
-          rpcUrl: `https://mainnet.era.zksync.io`,
-          ticker: CURRENCY_SYMBOLS.ETH,
-          rpcPrefs: {
-            blockExplorerUrl: 'https://explorer.zksync.io/',
-            imageUrl: ZK_SYNC_ERA_TOKEN_IMAGE_URL,
+          'test-networkConfigurationId-2': {
+            chainId: CHAIN_IDS.ZKSYNC_ERA,
+            nickname: ZK_SYNC_ERA_DISPLAY_NAME,
+            rpcUrl: `https://mainnet.era.zksync.io`,
+            ticker: CURRENCY_SYMBOLS.ETH,
+            rpcPrefs: {
+              blockExplorerUrl: 'https://explorer.zksync.io/',
+              imageUrl: ZK_SYNC_ERA_TOKEN_IMAGE_URL,
+            },
           },
         },
       },

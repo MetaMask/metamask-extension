@@ -33,7 +33,7 @@ const render = (
   });
 
   const networks = Object.values(
-    mockState.metamask.networkConfigurationsByChainId,
+    mockState.metamask.NetworkController.networkConfigurationsByChainId,
   ).map(({ chainId, name }) => ({ chainId, name }));
 
   return renderWithProvider(

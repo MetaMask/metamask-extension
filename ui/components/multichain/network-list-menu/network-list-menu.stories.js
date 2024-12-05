@@ -20,7 +20,7 @@ const customNetworkStore = configureStore({
     },
     orderedNetworkList: [],
     networkConfigurations: {
-      ...testData.metamask.networkConfigurations,
+      ...testData.metamask.NetworkController.networkConfigurations,
       ...{
         'test-networkConfigurationId-3': {
           rpcUrl: 'https://testrpc.com',
