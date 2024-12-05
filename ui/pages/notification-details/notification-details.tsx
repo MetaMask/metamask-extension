@@ -67,7 +67,7 @@ function useEffectOnNotificationView(notificationData?: Notification) {
         setNotificationTimeout(notificationData.id);
       }
     };
-  }, [markNotificationAsRead, notificationData]);
+  }, []);
 }
 
 export default function NotificationDetails() {
