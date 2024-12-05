@@ -1,6 +1,10 @@
 import { createProjectLogger } from '@metamask/utils';
+import {
+  ActionConstraint,
+  ControllerMessenger,
+  EventConstraint,
+} from '@metamask/base-controller';
 import { ControllerInit, ControllerInitRequest, ControllerName } from './types';
-import { ActionConstraint, ControllerMessenger, EventConstraint } from '@metamask/base-controller';
 
 const log = createProjectLogger('controller-init');
 
@@ -37,11 +41,11 @@ export function initControllers({
       ...initRequest,
       getController: (name: ControllerName) =>
         getController(controllersByName, name),
-      getMessenger:
-        () => initInstance.getMessengerCallback?.()?.(controllerMessenger),
+      getMessenger: () =>
+        initInstance.getMessengerCallback?.()?.(controllerMessenger),
     };
 
-    const controller = Boolean(initInstance.init)
+    const controller = initInstance.init
       ? initInstance.init(finalInitRequest)
       : initFunction(finalInitRequest);
 
