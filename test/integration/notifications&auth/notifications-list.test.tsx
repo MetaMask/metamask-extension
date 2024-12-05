@@ -46,11 +46,11 @@ const getStateWithTwoUnreadNotifications = () => {
     ...state,
     metamaskNotificationsList: [
       {
-        ...state.metamaskNotificationsList[0],
+        ...state.NotificationServicesController.metamaskNotificationsList[0],
         isRead: false,
       },
       {
-        ...state.metamaskNotificationsList[1],
+        ...state.NotificationServicesController.metamaskNotificationsList[1],
         isRead: false,
       },
     ],

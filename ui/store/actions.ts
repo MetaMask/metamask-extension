@@ -1279,7 +1279,8 @@ export function deleteExpiredNotifications(): ThunkAction<
 > {
   return async (dispatch, getState) => {
     const state = getState();
-    const notifications = state.metamask.metamaskNotificationsList;
+    const notifications =
+      state.metamask.NotificationServicesController.metamaskNotificationsList;
 
     const notificationIdsToDelete = notifications
       .filter((notification) => {
