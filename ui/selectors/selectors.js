@@ -420,20 +420,19 @@ export function getMetaMaskAccountBalances(state) {
 export function getMetaMaskCachedBalances(state) {
   const chainId = getCurrentChainId(state);
 
-  if (state.metamask.accountsByChainId?.[chainId]) {
-    return Object.entries(state.metamask.accountsByChainId[chainId]).reduce(
-      (accumulator, [key, value]) => {
-        accumulator[key] = value.balance;
-        return accumulator;
-      },
-      {},
-    );
+  if (state.metamask.AccountTracker.accountsByChainId?.[chainId]) {
+    return Object.entries(
+      state.metamask.AccountTracker.accountsByChainId[chainId],
+    ).reduce((accumulator, [key, value]) => {
+      accumulator[key] = value.balance;
+      return accumulator;
+    }, {});
   }
   return {};
 }
 
 export function getCrossChainMetaMaskCachedBalances(state) {
-  const allAccountsByChainId = state.metamask.accountsByChainId;
+  const allAccountsByChainId = state.metamask.AccountTracker.accountsByChainId;
   return Object.keys(allAccountsByChainId).reduce((acc, topLevelKey) => {
     acc[topLevelKey] = Object.keys(allAccountsByChainId[topLevelKey]).reduce(
       (innerAcc, innerKey) => {

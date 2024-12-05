@@ -460,7 +460,7 @@ describe('Multichain Selectors', () => {
   describe('getMultichainSelectedAccountCachedBalanceIsZero', () => {
     it('returns true if the selected EVM account has a zero balance', () => {
       const state = getEvmState();
-      state.metamask.accountsByChainId['0x1'][
+      state.metamask.AccountTracker.accountsByChainId['0x1'][
         MOCK_ACCOUNT_EOA.address
       ].balance = '0x00';
       expect(getMultichainSelectedAccountCachedBalanceIsZero(state)).toBe(true);
@@ -468,7 +468,7 @@ describe('Multichain Selectors', () => {
 
     it('returns false if the selected EVM account has a non-zero balance', () => {
       const state = getEvmState();
-      state.metamask.accountsByChainId['0x1'][
+      state.metamask.AccountTracker.accountsByChainId['0x1'][
         MOCK_ACCOUNT_EOA.address
       ].balance = '3';
       expect(getMultichainSelectedAccountCachedBalanceIsZero(state)).toBe(

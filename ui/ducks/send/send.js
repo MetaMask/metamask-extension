@@ -597,7 +597,7 @@ export const computeEstimatedGasLimit = createAsyncThunk(
     ) {
       const gasLimit = await estimateGasLimitForSend({
         gasPrice: draftTransaction.gas.gasPrice,
-        blockGasLimit: metamask.currentBlockGasLimit,
+        blockGasLimit: metamask.AccountTracker.currentBlockGasLimit,
         selectedAddress: selectedAccount.address,
         sendToken: draftTransaction.sendAsset.details,
         to: draftTransaction.recipient.address?.toLowerCase(),
@@ -734,7 +734,7 @@ export const initializeSendState = createAsyncThunk(
       // required gas. If this value isn't nullish, set it as the new gasLimit
       const estimatedGasLimit = await estimateGasLimitForSend({
         gasPrice,
-        blockGasLimit: metamask.currentBlockGasLimit,
+        blockGasLimit: metamask.AccountTracker.currentBlockGasLimit,
         selectedAddress: getSender(state),
         sendToken: draftTransaction.sendAsset.details,
         to: draftTransaction.recipient.address.toLowerCase(),
