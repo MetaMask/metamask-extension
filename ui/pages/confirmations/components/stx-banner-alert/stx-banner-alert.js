@@ -25,8 +25,7 @@ const STXBannerAlert = () => {
   console.log('=== STX BANNER COMPONENT END ===');
 
   const t = useI18nContext();
-  // eslint-disable-next-line no-alert, no-undef
-  alert(`STX Banner mounted: shouldShow = ${shouldShow}`); // Temporary debug
+
   if (!shouldShow) {
     return null;
   }

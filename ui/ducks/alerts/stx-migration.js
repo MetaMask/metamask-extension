@@ -23,6 +23,8 @@ const slice = createSlice({
   extraReducers: {
     [actionConstants.UPDATE_METAMASK_STATE]: (state, action) => {
       console.log('=== STX ALERT REDUCER ===');
+      console.log('Action Type:', actionConstants.UPDATE_METAMASK_STATE); // Log the constant
+      console.log('Incoming Action Type:', action.type); // Compare with incoming
       console.log('Current state:', state.state);
       console.log('Action:', action.type);
       console.log('Action value:', action.value);
