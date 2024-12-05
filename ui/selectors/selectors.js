@@ -598,7 +598,7 @@ export function getSelectedAccountCachedBalance(state) {
 }
 
 export function getAllTokens(state) {
-  return state.metamask.allTokens;
+  return state.metamask.TokensController.allTokens;
 }
 
 /**
@@ -2540,11 +2540,13 @@ export function getIsDynamicTokenListAvailable(state) {
 export function getDetectedTokensInCurrentNetwork(state) {
   const currentChainId = getCurrentChainId(state);
   const { address: selectedAddress } = getSelectedInternalAccount(state);
-  return state.metamask.allDetectedTokens?.[currentChainId]?.[selectedAddress];
+  return state.metamask.TokensController.allDetectedTokens?.[currentChainId]?.[
+    selectedAddress
+  ];
 }
 
 export function getAllDetectedTokens(state) {
-  return state.metamask.allDetectedTokens;
+  return state.metamask.TokensController.allDetectedTokens;
 }
 
 /**
@@ -2563,7 +2565,7 @@ export function getAllDetectedTokensForSelectedAddress(state) {
   const { address: selectedAddress } = getSelectedInternalAccount(state);
 
   const tokensByChainId = Object.entries(
-    state.metamask.allDetectedTokens || {},
+    state.metamask.TokensController.allDetectedTokens || {},
   ).reduce((acc, [chainId, chainTokens]) => {
     const tokensForAddress = chainTokens[selectedAddress];
     if (tokensForAddress) {
