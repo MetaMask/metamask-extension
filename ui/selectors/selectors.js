@@ -1205,7 +1205,7 @@ export const rawStateSelector = (state) => state;
  * @returns Object - Containing verified Snaps from the Directory.
  */
 const selectVerifiedSnapsRegistry = (state) =>
-  state.metamask.database?.verifiedSnaps;
+  state.metamask.SnapsRegistry.database?.verifiedSnaps;
 
 /**
  * Input selector providing a way to pass a snapId as an argument.
@@ -1222,7 +1222,8 @@ const selectSnapId = (_state, snapId) => snapId;
  * @param state - Redux state object.
  * @returns Object - Installed Snaps.
  */
-export const selectInstalledSnaps = (state) => state.metamask.snaps;
+export const selectInstalledSnaps = (state) =>
+  state.metamask.SnapController.snaps;
 
 /**
  * Retrieve registry data for requested Snap.
@@ -1338,7 +1339,8 @@ export const getMemoizedUnapprovedTemplatedConfirmations =
  * @param state - Redux state object.
  * @returns the Snap interfaces.
  */
-const getInterfaces = (state) => state.metamask.interfaces;
+const getInterfaces = (state) =>
+  state.metamask.SnapInterfaceController.interfaces;
 
 /**
  * Input selector providing a way to pass a Snap interface ID as an argument.
@@ -1778,7 +1780,7 @@ export const getMemoizedUnapprovedTypedMessages = createDeepEqualSelector(
 );
 
 export function getSnaps(state) {
-  return state.metamask.snaps;
+  return state.metamask.SnapController.snaps;
 }
 
 export function getLocale(state) {
@@ -1915,7 +1917,7 @@ export const getNotifySnaps = createDeepEqualSelector(
 );
 
 function getAllSnapInsights(state) {
-  return state.metamask.insights;
+  return state.metamask.SnapInsightsController.insights;
 }
 
 export const getSnapInsights = createDeepEqualSelector(
