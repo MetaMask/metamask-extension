@@ -129,12 +129,15 @@ export function AssetPicker({
     networkProps?.network ??
     (currentNetwork?.chainId && allNetworks[currentNetwork.chainId]);
 
+  const allNetworksToUse = networkProps?.networks ?? Object.values(allNetworks);
   const { balanceByChainId } = useMultichainBalances();
   // This is used to determine which tokens to display when isMultiselectEnabled=true
   const [selectedChainIds, setSelectedChainIds] = useState<string[]>(
-    (networkProps?.networks ?? Object.values(allNetworks))
-      ?.map(({ chainId }) => chainId)
-      .sort((a, b) => balanceByChainId[b] - balanceByChainId[a]) ?? [],
+    isMultiselectEnabled
+      ? allNetworksToUse
+          ?.map(({ chainId }) => chainId)
+          .sort((a, b) => balanceByChainId[b] - balanceByChainId[a]) ?? []
+      : [],
   );
   const [isSelectingNetwork, setIsSelectingNetwork] = useState(false);
 
@@ -176,7 +179,20 @@ export function AssetPicker({
             setShowAssetPickerModal(true);
           }}
           isMultiselectEnabled={isMultiselectEnabled}
-          onMultiselectSubmit={setSelectedChainIds}
+          onMultiselectSubmit={(chainIds: string[]) => {
+            setSelectedChainIds(chainIds);
+            // If there is only 1 selected network switch to that network to populate tokens
+            if (
+              chainIds.length === 1 &&
+              chainIds[0] !== currentNetwork?.chainId
+            ) {
+              if (networkProps?.onNetworkChange) {
+                networkProps.onNetworkChange(
+                  allNetworks[chainIds[0] as keyof typeof allNetworks],
+                );
+              }
+            }
+          }}
           selectedChainIds={selectedChainIds}
           {...networkProps}
         />
@@ -197,10 +213,10 @@ export function AssetPicker({
         ) => {
           // If isMultiselectEnabled=true, update the network when a token is selected
           if (isMultiselectEnabled) {
-            const networkFromToken =
-              token.chainId &&
-              allNetworks[token.chainId as keyof typeof allNetworks];
-            if (networkProps?.onNetworkChange) {
+            const networkFromToken = token.chainId
+              ? allNetworks[token.chainId as keyof typeof allNetworks]
+              : undefined;
+            if (networkProps?.onNetworkChange && networkFromToken) {
               networkProps.onNetworkChange(networkFromToken);
             } else {
               // TODO set active network
@@ -210,6 +226,21 @@ export function AssetPicker({
           setShowAssetPickerModal(false);
         }}
         isMultiselectEnabled={isMultiselectEnabled}
+        isTokenInSelectedChain={(tokenChainId?: string) => {
+          if (!tokenChainId) {
+            return true;
+          }
+          if (isMultiselectEnabled) {
+            if (selectedChainIds.includes(tokenChainId)) {
+              return true;
+            }
+            return false;
+          }
+          if (networkProps?.network?.chainId === tokenChainId) {
+            return true;
+          }
+          return false;
+        }}
         sendingAsset={sendingAsset}
         network={networkProps?.network ? networkProps.network : undefined}
         onNetworkPickerClick={

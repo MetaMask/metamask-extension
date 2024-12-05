@@ -8,6 +8,7 @@ import {
   TokenListToken,
 } from '@metamask/assets-controllers';
 import { Hex } from '@metamask/utils';
+import { zeroAddress } from 'ethereumjs-util';
 import {
   Modal,
   ModalContent,
@@ -53,6 +54,7 @@ import {
   CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP,
   NETWORK_TO_NAME_MAP,
 } from '../../../../../shared/constants/network';
+import { useMultichainBalances } from '../../../../hooks/useMultichainBalances';
 import {
   ERC20Asset,
   NativeAsset,
@@ -91,11 +93,15 @@ type AssetPickerModalProps = {
     AssetWithDisplayData<NativeAsset> | AssetWithDisplayData<ERC20Asset>
   >;
   isTokenListLoading?: boolean;
+  isTokenInSelectedChain: (tokenChainId?: string) => boolean;
 } & Pick<
   React.ComponentProps<typeof AssetPickerModalTabs>,
   'visibleTabs' | 'defaultActiveTabKey'
 > &
-  Pick<React.ComponentProps<typeof AssetPickerModalNetwork>, 'network'>;
+  Pick<
+    React.ComponentProps<typeof AssetPickerModalNetwork>,
+    'network' | 'isMultiselectEnabled'
+  >;
 
 const MAX_UNOWNED_TOKENS_RENDERED = 30;
 
@@ -112,6 +118,8 @@ export function AssetPickerModal({
   onNetworkPickerClick,
   customTokenListGenerator,
   isTokenListLoading = false,
+  isMultiselectEnabled,
+  isTokenInSelectedChain,
   ...tabProps
 }: AssetPickerModalProps) {
   const t = useI18nContext();
@@ -152,6 +160,9 @@ export function AssetPickerModal({
       hideZeroBalanceTokens: Boolean(shouldHideZeroBalanceTokens),
     });
 
+  const { assetsWithBalance: multichainTokensWithBalance } =
+    useMultichainBalances();
+
   // Swaps token list
   const tokenList = useSelector(getTokenList) as TokenListMap;
   const topTokens = useSelector(getTopAssets, isEqual);
@@ -183,10 +194,15 @@ export function AssetPickerModal({
 
   const tokenListGenerator = useCallback(
     function* (
-      shouldAddToken: (symbol: string, address?: null | string) => boolean,
+      shouldAddToken: (
+        symbol: string,
+        address?: null | string,
+        tokenChainId?: string,
+      ) => boolean,
     ): Generator<
       | AssetWithDisplayData<NativeAsset>
       | ((Token | TokenListToken) & {
+          chainId: string;
           balance?: string;
           string?: string;
         })
@@ -198,6 +214,7 @@ export function AssetPickerModal({
         image: nativeCurrencyImage,
         balance: balanceValue,
         string: undefined,
+        chainId,
         type: AssetType.native,
       };
 
@@ -207,9 +224,18 @@ export function AssetPickerModal({
 
       const blockedTokens = [];
 
+      // Yield multichain tokens with balances
+      if (isMultiselectEnabled) {
+        for (const token of multichainTokensWithBalance) {
+          if (shouldAddToken(token.symbol, token.address, token.chainId)) {
+            yield token;
+          }
+        }
+      }
+
       for (const token of memoizedUsersTokens) {
         if (shouldAddToken(token.symbol, token.address)) {
-          yield token;
+          yield { ...token, chainId };
         }
       }
 
@@ -221,19 +247,19 @@ export function AssetPickerModal({
             blockedTokens.push(token);
             continue;
           } else {
-            yield token;
+            yield { ...token, chainId };
           }
         }
       }
 
       for (const token of Object.values(tokenList)) {
         if (shouldAddToken(token.symbol, token.address)) {
-          yield token;
+          yield { ...token, chainId };
         }
       }
 
       for (const token of blockedTokens) {
-        yield token;
+        yield { ...token, chainId };
       }
     },
     [
@@ -244,6 +270,8 @@ export function AssetPickerModal({
       topTokens,
       tokenList,
       getIsDisabled,
+      isMultiselectEnabled,
+      multichainTokensWithBalance,
     ],
   );
 
@@ -252,16 +280,28 @@ export function AssetPickerModal({
       | AssetWithDisplayData<ERC20Asset>
       | AssetWithDisplayData<NativeAsset>
     )[] = [];
-    // undefined would be the native token address
+    // List of token identifiers formatted like `chainId:address`
     const filteredTokensAddresses = new Set<string | undefined>();
+    const getTokenKey = (address?: string | null, tokenChainId?: string) =>
+      `${address?.toLowerCase() ?? zeroAddress()}:${tokenChainId ?? chainId}`;
 
     // Default filter predicate for whether a token should be included in displayed list
-    const shouldAddToken = (symbol: string, address?: string | null) => {
-      const trimmedSearchQuery = searchQuery.trim();
+    const shouldAddToken = (
+      symbol: string,
+      address?: string | null,
+      tokenChainId?: string,
+    ) => {
+      const trimmedSearchQuery = searchQuery.trim().toLowerCase();
+      const isMatchedBySearchQuery = Boolean(
+        !trimmedSearchQuery ||
+          symbol?.toLowerCase().includes(trimmedSearchQuery) ||
+          address?.toLowerCase().includes(trimmedSearchQuery),
+      );
+
       return (
-        (!trimmedSearchQuery ||
-          symbol?.toLowerCase().includes(trimmedSearchQuery.toLowerCase())) &&
-        !filteredTokensAddresses.has(address?.toLowerCase())
+        isTokenInSelectedChain(tokenChainId) &&
+        isMatchedBySearchQuery &&
+        !filteredTokensAddresses.has(getTokenKey(address, tokenChainId))
       );
     };
 
@@ -274,7 +314,7 @@ export function AssetPickerModal({
         continue;
       }
 
-      filteredTokensAddresses.add(token.address?.toLowerCase());
+      filteredTokensAddresses.add(getTokenKey(token.address, token.chainId));
       filteredTokens.push(
         customTokenListGenerator
           ? token
@@ -289,7 +329,7 @@ export function AssetPickerModal({
               tokenConversionRates,
               conversionRate,
               currentCurrency,
-              chainId,
+              token.chainId,
               tokenList,
             ),
       );
@@ -308,6 +348,8 @@ export function AssetPickerModal({
     chainId,
     tokenListGenerator,
     customTokenListGenerator,
+    isMultiselectEnabled,
+    isTokenInSelectedChain,
   ]);
 
   return (
