@@ -41,7 +41,7 @@ const baseRequest = {
 const createMockedHandler = () => {
   const next = jest.fn();
   const end = jest.fn();
-  const getAccounts = jest.fn().mockResolvedValue([]);
+  const getAccounts = jest.fn().mockReturnValue([]);
   const getUnlockPromise = jest.fn();
   const requestPermissionApprovalForOrigin = jest.fn().mockResolvedValue({
     approvedChainIds: ['0x1', '0x5'],
@@ -107,13 +107,13 @@ describe('requestEthereumAccountsHandler', () => {
     const { handler, getAccounts } = createMockedHandler();
 
     await handler(baseRequest);
-    expect(getAccounts).toHaveBeenCalled();
+    expect(getAccounts).toHaveBeenCalledWith(true);
   });
 
   describe('eip155 account permissions exist', () => {
     it('waits for the wallet to unlock', async () => {
       const { handler, getUnlockPromise, getAccounts } = createMockedHandler();
-      getAccounts.mockResolvedValue(['0xdead', '0xbeef']);
+      getAccounts.mockReturnValue(['0xdead', '0xbeef']);
 
       await handler(baseRequest);
       expect(getUnlockPromise).toHaveBeenCalledWith(true);
@@ -121,7 +121,7 @@ describe('requestEthereumAccountsHandler', () => {
 
     it('returns the accounts', async () => {
       const { handler, response, getAccounts } = createMockedHandler();
-      getAccounts.mockResolvedValue(['0xdead', '0xbeef']);
+      getAccounts.mockReturnValue(['0xdead', '0xbeef']);
 
       await handler(baseRequest);
       expect(response.result).toStrictEqual(['0xdead', '0xbeef']);
@@ -132,7 +132,7 @@ describe('requestEthereumAccountsHandler', () => {
         createMockedHandler();
       const { promise, resolve } = deferredPromise();
       getUnlockPromise.mockReturnValue(promise);
-      getAccounts.mockResolvedValue(['0xdead', '0xbeef']);
+      getAccounts.mockReturnValue(['0xdead', '0xbeef']);
 
       handler(baseRequest);
       expect(response).toStrictEqual({
@@ -285,8 +285,8 @@ describe('requestEthereumAccountsHandler', () => {
     it('returns the newly granted and properly ordered eth accounts', async () => {
       const { handler, getAccounts, response } = createMockedHandler();
       getAccounts
-        .mockResolvedValueOnce([])
-        .mockResolvedValueOnce(['0xdead', '0xbeef']);
+        .mockReturnValueOnce([])
+        .mockReturnValueOnce(['0xdead', '0xbeef']);
 
       await handler(baseRequest);
       expect(response.result).toStrictEqual(['0xdead', '0xbeef']);
@@ -296,8 +296,8 @@ describe('requestEthereumAccountsHandler', () => {
     it('emits the dapp viewed metrics event', async () => {
       const { handler, getAccounts, sendMetrics } = createMockedHandler();
       getAccounts
-        .mockResolvedValueOnce([])
-        .mockResolvedValueOnce(['0xdead', '0xbeef']);
+        .mockReturnValueOnce([])
+        .mockReturnValueOnce(['0xdead', '0xbeef']);
 
       await handler(baseRequest);
       expect(sendMetrics).toHaveBeenCalledWith({

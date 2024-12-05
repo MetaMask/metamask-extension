@@ -101,6 +101,13 @@ import {
 } from '@metamask/controller-utils';
 
 import { AccountsController } from '@metamask/accounts-controller';
+import {
+  RemoteFeatureFlagController,
+  ClientConfigApiService,
+  ClientType,
+  DistributionType,
+  EnvironmentType,
+} from '@metamask/remote-feature-flag-controller';
 
 ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
 import {
@@ -146,7 +153,6 @@ import {
 import { Interface } from '@ethersproject/abi';
 import { abiERC1155, abiERC721 } from '@metamask/metamask-eth-abis';
 import { isEvmAccountType } from '@metamask/keyring-api';
-import { isValidHexAddress } from '@metamask/utils';
 import {
   AuthenticationController,
   UserStorageController,
@@ -254,6 +260,7 @@ import { endTrace, trace } from '../../shared/lib/trace';
 // eslint-disable-next-line import/no-restricted-paths
 import { isSnapId } from '../../ui/helpers/utils/snaps';
 import { BridgeStatusAction } from '../../shared/types/bridge-status';
+import { ENVIRONMENT } from '../../development/build/constants';
 import fetchWithCache from '../../shared/lib/fetch-with-cache';
 import { BalancesController as MultichainBalancesController } from './lib/accounts/BalancesController';
 import {
@@ -398,6 +405,7 @@ export const METAMASK_CONTROLLER_EVENTS = {
   UPDATE_BADGE: 'updateBadge',
   // TODO: Add this and similar enums to the `controllers` repo and export them
   APPROVAL_STATE_CHANGE: 'ApprovalController:stateChange',
+  APP_STATE_UNLOCK_CHANGE: 'AppStateController:unlockChange',
   QUEUED_REQUEST_STATE_CHANGE: 'QueuedRequestController:stateChange',
   METAMASK_NOTIFICATIONS_LIST_UPDATED:
     'NotificationServicesController:notificationsListUpdated',
@@ -416,6 +424,17 @@ const PHISHING_SAFELIST = 'metamask-phishing-safelist';
 
 // OneKey devices can connect to Metamask using Trezor USB transport. They use a specific device minor version (99) to differentiate between genuine Trezor and OneKey devices.
 export const ONE_KEY_VIA_TREZOR_MINOR_VERSION = 99;
+
+const environmentMappingForRemoteFeatureFlag = {
+  [ENVIRONMENT.DEVELOPMENT]: EnvironmentType.Development,
+  [ENVIRONMENT.RELEASE_CANDIDATE]: EnvironmentType.ReleaseCandidate,
+  [ENVIRONMENT.PRODUCTION]: EnvironmentType.Production,
+};
+
+const buildTypeMappingForRemoteFeatureFlag = {
+  flask: DistributionType.Flask,
+  main: DistributionType.Main,
+};
 
 export default class MetamaskController extends EventEmitter {
   /**
@@ -893,7 +912,7 @@ export default class MetamaskController extends EventEmitter {
     this.appStateController = new AppStateController({
       addUnlockListener: this.on.bind(this, 'unlock'),
       isUnlocked: this.isUnlocked.bind(this),
-      initState: initState.AppStateController,
+      state: initState.AppStateController,
       onInactiveTimeout: () => this.setLocked(),
       messenger: this.controllerMessenger.getRestricted({
         name: 'AppStateController',
@@ -2194,6 +2213,7 @@ export default class MetamaskController extends EventEmitter {
           'NetworkController:getNetworkClientById',
           'NetworkController:findNetworkClientIdByChainId',
           'NetworkController:getState',
+          'TransactionController:getState',
         ],
         allowedEvents: [],
       });
@@ -2344,6 +2364,40 @@ export default class MetamaskController extends EventEmitter {
       clearPendingConfirmations.bind(this),
     );
 
+    // RemoteFeatureFlagController has subscription for preferences changes
+    this.controllerMessenger.subscribe(
+      'PreferencesController:stateChange',
+      previousValueComparator((prevState, currState) => {
+        const { useExternalServices: prevUseExternalServices } = prevState;
+        const { useExternalServices: currUseExternalServices } = currState;
+        if (currUseExternalServices && !prevUseExternalServices) {
+          this.remoteFeatureFlagController.enable();
+          this.remoteFeatureFlagController.updateRemoteFeatureFlags();
+        } else if (!currUseExternalServices && prevUseExternalServices) {
+          this.remoteFeatureFlagController.disable();
+        }
+      }, this.preferencesController.state),
+    );
+
+    // Initialize RemoteFeatureFlagController
+    this.remoteFeatureFlagController = new RemoteFeatureFlagController({
+      messenger: this.controllerMessenger.getRestricted({
+        name: 'RemoteFeatureFlagController',
+        allowedActions: [],
+        allowedEvents: [],
+      }),
+      disabled: !this.preferencesController.state.useExternalServices,
+      clientConfigApiService: new ClientConfigApiService({
+        fetch: globalThis.fetch.bind(globalThis),
+        config: {
+          client: ClientType.Extension,
+          distribution:
+            this._getConfigForRemoteFeatureFlagRequest().distribution,
+          environment: this._getConfigForRemoteFeatureFlagRequest().environment,
+        },
+      }),
+    });
+
     this.metamaskMiddleware = createMetamaskMiddleware({
       static: {
         eth_syncing: false,
@@ -2351,13 +2405,13 @@ export default class MetamaskController extends EventEmitter {
       },
       version,
       // account mgmt
-      getAccounts: async ({ origin: innerOrigin }) => {
+      getAccounts: ({ origin: innerOrigin }) => {
         if (innerOrigin === ORIGIN_METAMASK) {
           const selectedAddress =
             this.accountsController.getSelectedAccount().address;
           return selectedAddress ? [selectedAddress] : [];
         } else if (this.isUnlocked()) {
-          return await this.getPermittedAccounts(innerOrigin);
+          return this.getPermittedAccounts(innerOrigin);
         }
         return []; // changing this is a breaking change
       },
@@ -2456,7 +2510,7 @@ export default class MetamaskController extends EventEmitter {
 
     this.store.updateStructure({
       AccountsController: this.accountsController,
-      AppStateController: this.appStateController.store,
+      AppStateController: this.appStateController,
       AppMetadataController: this.appMetadataController,
       MultichainBalancesController: this.multichainBalancesController,
       TransactionController: this.txController,
@@ -2505,13 +2559,14 @@ export default class MetamaskController extends EventEmitter {
       NotificationServicesController: this.notificationServicesController,
       NotificationServicesPushController:
         this.notificationServicesPushController,
+      RemoteFeatureFlagController: this.remoteFeatureFlagController,
       ...resetOnRestartStore,
     });
 
     this.memStore = new ComposableObservableStore({
       config: {
         AccountsController: this.accountsController,
-        AppStateController: this.appStateController.store,
+        AppStateController: this.appStateController,
         AppMetadataController: this.appMetadataController,
         MultichainBalancesController: this.multichainBalancesController,
         NetworkController: this.networkController,
@@ -2560,6 +2615,7 @@ export default class MetamaskController extends EventEmitter {
         QueuedRequestController: this.queuedRequestController,
         NotificationServicesPushController:
           this.notificationServicesPushController,
+        RemoteFeatureFlagController: this.remoteFeatureFlagController,
         ...resetOnRestartStore,
       },
       controllerMessenger: this.controllerMessenger,
@@ -2906,6 +2962,8 @@ export default class MetamaskController extends EventEmitter {
             this.controllerMessenger,
             'SnapInterfaceController:getInterface',
           ),
+          // We don't currently use special cryptography for the extension client.
+          getClientCryptography: () => ({}),
           ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
           getSnapKeyring: this.getSnapKeyring.bind(this),
           ///: END:ONLY_INCLUDE_IF
@@ -3342,7 +3400,7 @@ export default class MetamaskController extends EventEmitter {
 
     return {
       isUnlocked: this.isUnlocked(),
-      accounts: await this.getPermittedAccounts(origin),
+      accounts: this.getPermittedAccounts(origin),
       ...providerNetworkState,
     };
   }
@@ -3651,7 +3709,9 @@ export default class MetamaskController extends EventEmitter {
       updateNetwork: this.networkController.updateNetwork.bind(
         this.networkController,
       ),
-      removeNetwork: this.removeNetwork.bind(this),
+      removeNetwork: this.networkController.removeNetwork.bind(
+        this.networkController,
+      ),
       getCurrentNetworkEIP1559Compatibility:
         this.networkController.getEIP1559Compatibility.bind(
           this.networkController,
@@ -5207,11 +5267,7 @@ export default class MetamaskController extends EventEmitter {
     );
   }
 
-  async getAllEvmAccountsSorted() {
-    // We only consider EVM addresses here, hence the filtering:
-    const accounts = (await this.keyringController.getAccounts()).filter(
-      isValidHexAddress,
-    );
+  sortAccountsByLastSelected(accounts) {
     const internalAccounts = this.accountsController.listAccounts();
 
     return accounts.sort((firstAddress, secondAddress) => {
@@ -5255,14 +5311,18 @@ export default class MetamaskController extends EventEmitter {
   }
 
   /**
-   * Gets the permitted accounts for the specified origin. Returns an empty
-   * array if no accounts are permitted.
+   * Gets the sorted permitted accounts for the specified origin. Returns an empty
+   * array if no accounts are permitted or the wallet is locked. Returns any permitted
+   * accounts if the wallet is locked and `ignoreLock` is true. This lock bypass is needed
+   * for the `eth_requestAccounts` & `wallet_getPermission` handlers both of which
+   * return permissioned accounts to the dapp when the wallet is locked.
    *
    * @param {string} origin - The origin whose exposed accounts to retrieve.
+   * @param {boolean} ignoreLock - If accounts should be returned even if the wallet is locked.
    * @returns {Promise<string[]>} The origin's permitted accounts, or an empty
    * array.
    */
-  getPermittedAccounts(origin) {
+  getPermittedAccounts(origin, ignoreLock) {
     let caveat;
     try {
       caveat = this.permissionController.getCaveat(
@@ -5273,19 +5333,17 @@ export default class MetamaskController extends EventEmitter {
     } catch (err) {
       // noop
     }
+
     if (!caveat) {
       return [];
     }
 
-    return getEthAccounts(caveat.value);
-  }
+    if (!this.isUnlocked() && !ignoreLock) {
+      return [];
+    }
 
-  async getPermittedAccountsSorted(origin) {
-    const permittedAccounts = this.getPermittedAccounts(origin);
-    const allEvmAccounts = await this.getAllEvmAccountsSorted();
-    return allEvmAccounts.filter((account) =>
-      permittedAccounts.includes(account),
-    );
+    const ethAccounts = getEthAccounts(caveat.value);
+    return this.sortAccountsByLastSelected(ethAccounts);
   }
 
   /**
@@ -5303,16 +5361,6 @@ export default class MetamaskController extends EventEmitter {
           scopeString,
         ),
     );
-  }
-
-  removeNetwork(chainId) {
-    const scope = `eip155:${parseInt(chainId, 16)}`;
-    this.multichainSubscriptionManager.unsubscribeByScope(scope);
-    this.multichainMiddlewareManager.removeMiddlewareByScope(scope);
-
-    this.removeAllScopePermissions(scope);
-
-    this.networkController.removeNetwork(chainId);
   }
 
   /**
@@ -6034,8 +6082,6 @@ export default class MetamaskController extends EventEmitter {
       useRequestQueue: this.preferencesController.getUseRequestQueue.bind(
         this.preferencesController,
       ),
-      // TODO: Should this be made async in queued-request-controller package?
-      // Doing so allows us to DRY up getPermittedAcounts and getPermittedAccountsSorted
       shouldEnqueueRequest: (request) => {
         return methodsThatShouldBeEnqueued.includes(request.method);
       },
@@ -6122,7 +6168,7 @@ export default class MetamaskController extends EventEmitter {
     // middleware.
     engine.push(
       createEthAccountsMethodMiddleware({
-        getAccounts: this.getPermittedAccountsSorted.bind(this, origin),
+        getAccounts: this.getPermittedAccounts.bind(this, origin),
       }),
     );
 
@@ -6185,7 +6231,7 @@ export default class MetamaskController extends EventEmitter {
           this.metaMetricsController,
         ),
         // Permission-related
-        getAccounts: this.getPermittedAccountsSorted.bind(this, origin),
+        getAccounts: this.getPermittedAccounts.bind(this, origin),
         getPermissionsForOrigin: this.permissionController.getPermissions.bind(
           this.permissionController,
           origin,
@@ -6898,12 +6944,12 @@ export default class MetamaskController extends EventEmitter {
    * account(s) are currently accessible, if any.
    */
   _onUnlock() {
-    this.notifyAllConnections(async (origin) => {
+    this.notifyAllConnections((origin) => {
       return {
         method: NOTIFICATION_NAMES.unlockStateChanged,
         params: {
           isUnlocked: true,
-          accounts: await this.getPermittedAccountsSorted(origin),
+          accounts: this.getPermittedAccounts(origin),
         },
       };
     }, API_TYPE.EIP1193);
@@ -7315,7 +7361,7 @@ export default class MetamaskController extends EventEmitter {
     const appStatePollingTokenType =
       POLLING_TOKEN_ENVIRONMENT_TYPES[environmentType];
     const pollingTokensToDisconnect =
-      this.appStateController.store.getState()[appStatePollingTokenType];
+      this.appStateController.state[appStatePollingTokenType];
     pollingTokensToDisconnect.forEach((pollingToken) => {
       this.gasFeeController.stopPollingByPollingToken(pollingToken);
       this.currencyRateController.stopPollingByPollingToken(pollingToken);
@@ -7479,7 +7525,7 @@ export default class MetamaskController extends EventEmitter {
     await this.txController.updateIncomingTransactions();
   }
 
-  async _notifyAccountsChange(origin, newAccounts) {
+  _notifyAccountsChange(origin, newAccounts) {
     if (this.isUnlocked()) {
       this.notifyConnections(
         origin,
@@ -7494,7 +7540,7 @@ export default class MetamaskController extends EventEmitter {
                 newAccounts
               : // If the length is 2 or greater, we have to execute
                 // `eth_accounts` vi this method.
-                await this.getPermittedAccountsSorted(origin),
+                this.getPermittedAccounts(origin),
         },
         API_TYPE.EIP1193,
       );
@@ -7851,6 +7897,17 @@ export default class MetamaskController extends EventEmitter {
     return {
       metamask: this.getState(),
     };
+  }
+
+  _getConfigForRemoteFeatureFlagRequest() {
+    const distribution =
+      buildTypeMappingForRemoteFeatureFlag[process.env.METAMASK_BUILD_TYPE] ||
+      DistributionType.Main;
+    const environment =
+      environmentMappingForRemoteFeatureFlag[
+        process.env.METAMASK_ENVIRONMENT
+      ] || EnvironmentType.Development;
+    return { distribution, environment };
   }
 
   #checkTokenListPolling(currentState, previousState) {

@@ -2,15 +2,15 @@ import { Mockttp } from 'mockttp';
 import { USER_STORAGE_FEATURE_NAMES } from '@metamask/profile-sync-controller/sdk';
 import { withFixtures } from '../../../helpers';
 import FixtureBuilder from '../../../fixture-builder';
-import { mockNotificationServices } from '../mocks';
+import { mockIdentityServices } from '../mocks';
 import {
-  NOTIFICATIONS_TEAM_PASSWORD,
-  NOTIFICATIONS_TEAM_SEED_PHRASE,
+  IDENTITY_TEAM_PASSWORD,
+  IDENTITY_TEAM_SEED_PHRASE,
 } from '../constants';
-import { UserStorageMockttpController } from '../../../helpers/user-storage/userStorageMockttpController';
+import { UserStorageMockttpController } from '../../../helpers/identity/user-storage/userStorageMockttpController';
 import HeaderNavbar from '../../../page-objects/pages/header-navbar';
 import AccountListPage from '../../../page-objects/pages/account-list-page';
-import HomePage from '../../../page-objects/pages/homepage';
+import HomePage from '../../../page-objects/pages/home/homepage';
 import { completeImportSRPOnboardingFlow } from '../../../page-objects/flows/onboarding.flow';
 import { accountsSyncMockResponse } from './mockData';
 import { IS_ACCOUNT_SYNCING_ENABLED } from './helpers';
@@ -36,17 +36,14 @@ describe('Account syncing - Add Account @no-mmi', function () {
               },
             );
 
-            return mockNotificationServices(
-              server,
-              userStorageMockttpController,
-            );
+            return mockIdentityServices(server, userStorageMockttpController);
           },
         },
         async ({ driver }) => {
           await completeImportSRPOnboardingFlow({
             driver,
-            seedPhrase: NOTIFICATIONS_TEAM_SEED_PHRASE,
-            password: NOTIFICATIONS_TEAM_PASSWORD,
+            seedPhrase: IDENTITY_TEAM_SEED_PHRASE,
+            password: IDENTITY_TEAM_PASSWORD,
           });
           const homePage = new HomePage(driver);
           await homePage.check_pageIsLoaded();
@@ -81,17 +78,14 @@ describe('Account syncing - Add Account @no-mmi', function () {
               USER_STORAGE_FEATURE_NAMES.accounts,
               server,
             );
-            return mockNotificationServices(
-              server,
-              userStorageMockttpController,
-            );
+            return mockIdentityServices(server, userStorageMockttpController);
           },
         },
         async ({ driver }) => {
           await completeImportSRPOnboardingFlow({
             driver,
-            seedPhrase: NOTIFICATIONS_TEAM_SEED_PHRASE,
-            password: NOTIFICATIONS_TEAM_PASSWORD,
+            seedPhrase: IDENTITY_TEAM_SEED_PHRASE,
+            password: IDENTITY_TEAM_PASSWORD,
           });
           const homePage = new HomePage(driver);
           await homePage.check_pageIsLoaded();
@@ -141,17 +135,14 @@ describe('Account syncing - Add Account @no-mmi', function () {
               },
             );
 
-            return mockNotificationServices(
-              server,
-              userStorageMockttpController,
-            );
+            return mockIdentityServices(server, userStorageMockttpController);
           },
         },
         async ({ driver }) => {
           await completeImportSRPOnboardingFlow({
             driver,
-            seedPhrase: NOTIFICATIONS_TEAM_SEED_PHRASE,
-            password: NOTIFICATIONS_TEAM_PASSWORD,
+            seedPhrase: IDENTITY_TEAM_SEED_PHRASE,
+            password: IDENTITY_TEAM_PASSWORD,
           });
           const homePage = new HomePage(driver);
           await homePage.check_pageIsLoaded();
@@ -186,17 +177,14 @@ describe('Account syncing - Add Account @no-mmi', function () {
               USER_STORAGE_FEATURE_NAMES.accounts,
               server,
             );
-            return mockNotificationServices(
-              server,
-              userStorageMockttpController,
-            );
+            return mockIdentityServices(server, userStorageMockttpController);
           },
         },
         async ({ driver }) => {
           await completeImportSRPOnboardingFlow({
             driver,
-            seedPhrase: NOTIFICATIONS_TEAM_SEED_PHRASE,
-            password: NOTIFICATIONS_TEAM_PASSWORD,
+            seedPhrase: IDENTITY_TEAM_SEED_PHRASE,
+            password: IDENTITY_TEAM_PASSWORD,
           });
           const homePage = new HomePage(driver);
           await homePage.check_pageIsLoaded();

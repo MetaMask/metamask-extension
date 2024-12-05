@@ -67,7 +67,7 @@ const createMockedHandler = () => {
   );
   const getAccounts = jest
     .fn()
-    .mockResolvedValue(['0x1', '0x2', '0x3', '0xdeadbeef']);
+    .mockReturnValue(['0x1', '0x2', '0x3', '0xdeadbeef']);
   const response: PendingJsonRpcResponse<Json> = {
     jsonrpc: '2.0' as const,
     id: 0,
@@ -143,7 +143,7 @@ describe('getPermissionsHandler', () => {
   describe('CAIP-25 endowment permissions has been granted', () => {
     it('returns the permissions with the CAIP-25 permission removed', async () => {
       const { handler, getAccounts, response } = createMockedHandler();
-      getAccounts.mockResolvedValue([]);
+      getAccounts.mockReturnValue([]);
       await handler(baseRequest);
       expect(response.result).toStrictEqual([
         {
@@ -163,7 +163,7 @@ describe('getPermissionsHandler', () => {
     it('gets the lastSelected sorted permissioned eth accounts for the origin', async () => {
       const { handler, getAccounts } = createMockedHandler();
       await handler(baseRequest);
-      expect(getAccounts).toHaveBeenCalled();
+      expect(getAccounts).toHaveBeenCalledWith(true);
     });
 
     it('returns the permissions with an eth_accounts permission if some eth accounts are permissioned', async () => {
@@ -217,7 +217,7 @@ describe('getPermissionsHandler', () => {
 
     it('returns the permissions with a permittedChains permission if some eip155 chainIds are permissioned', async () => {
       const { handler, getAccounts, response } = createMockedHandler();
-      getAccounts.mockResolvedValue([]);
+      getAccounts.mockReturnValue([]);
       MockMultichain.getPermittedEthChainIds.mockReturnValue(['0x1', '0x64']);
 
       await handler(baseRequest);
@@ -248,7 +248,7 @@ describe('getPermissionsHandler', () => {
 
     it('returns the permissions with a eth_accounts and permittedChains permission if some eip155 accounts and chainIds are permissioned', async () => {
       const { handler, getAccounts, response } = createMockedHandler();
-      getAccounts.mockResolvedValue(['0x1', '0x2', '0xdeadbeef']);
+      getAccounts.mockReturnValue(['0x1', '0x2', '0xdeadbeef']);
       MockMultichain.getPermittedEthChainIds.mockReturnValue(['0x1', '0x64']);
 
       await handler(baseRequest);

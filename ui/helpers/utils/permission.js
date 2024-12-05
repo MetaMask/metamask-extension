@@ -8,6 +8,7 @@ import {
   getSnapDerivationPathName,
 } from '@metamask/snaps-utils';
 import { isNonEmptyArray } from '@metamask/controller-utils';
+import { Caip25EndowmentPermissionName } from '@metamask/multichain';
 import {
   RestrictedMethods,
   EndowmentPermissions,
@@ -50,12 +51,7 @@ function getSnapNameComponent(snapName) {
 }
 
 export const PERMISSION_DESCRIPTIONS = deepFreeze({
-  [RestrictedMethods.eth_accounts]: ({ t }) => ({
-    label: t('permission_ethereumAccounts'),
-    leftIcon: IconName.Eye,
-    weight: PermissionWeight.eth_accounts,
-  }),
-  [EndowmentPermissions['endowment:caip25']]: ({ t }) => ({
+  [Caip25EndowmentPermissionName]: ({ t }) => ({
     label: t('permission_ethereumAccounts'),
     leftIcon: IconName.Eye,
     weight: PermissionWeight.eth_accounts,

@@ -10,7 +10,7 @@ const PR_NUMBER =
   process.env.CIRCLE_PR_NUMBER ||
   process.env.CIRCLE_PULL_REQUEST?.split('/').pop();
 
-const MAIN_BRANCH = 'main';
+const GITHUB_DEFAULT_BRANCH = 'main';
 const SOURCE_BRANCH = `refs/pull/${PR_NUMBER}/head`;
 
 const CHANGED_FILES_DIR = 'changed-files';
@@ -48,7 +48,7 @@ async function getPrInfo(): Promise<PRInfo | null> {
  */
 async function fetchWithDepth(depth: number): Promise<boolean> {
   try {
-    await exec(`git fetch --depth ${depth} origin "${MAIN_BRANCH}"`);
+    await exec(`git fetch --depth ${depth} origin "${GITHUB_DEFAULT_BRANCH}"`);
     await exec(
       `git fetch --depth ${depth} origin "${SOURCE_BRANCH}:${SOURCE_BRANCH}"`,
     );
@@ -84,7 +84,7 @@ async function fetchUntilMergeBaseFound() {
       }
     }
   }
-  await exec(`git fetch --unshallow origin "${MAIN_BRANCH}"`);
+  await exec(`git fetch --unshallow origin "${GITHUB_DEFAULT_BRANCH}"`);
 }
 
 /**
@@ -137,7 +137,7 @@ async function storeGitDiffOutputAndPrBody() {
     if (!baseRef) {
       console.log('Not a PR, skipping git diff');
       return;
-    } else if (baseRef !== MAIN_BRANCH) {
+    } else if (baseRef !== GITHUB_DEFAULT_BRANCH) {
       console.log(`This is for a PR targeting '${baseRef}', skipping git diff`);
       writePrBodyToFile(prInfo.body);
       return;

@@ -11,7 +11,7 @@ import { MESSAGE_TYPE } from '../../../../../shared/constants/app';
 import { HandlerWrapper } from './types';
 
 type EthAccountsHandlerOptions = {
-  getAccounts: () => Promise<string[]>;
+  getAccounts: () => string[];
 };
 
 type EthAccountsConstraint<Params extends JsonRpcParams = JsonRpcParams> = {
@@ -53,6 +53,6 @@ async function ethAccountsHandler<Params extends JsonRpcParams = JsonRpcParams>(
   end: JsonRpcEngineEndCallback,
   { getAccounts }: EthAccountsHandlerOptions,
 ): Promise<void> {
-  res.result = await getAccounts();
+  res.result = getAccounts();
   return end();
 }
