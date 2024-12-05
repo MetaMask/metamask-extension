@@ -33,9 +33,21 @@ const slice = createSlice({
   },
   extraReducers: {
     [actionConstants.UPDATE_METAMASK_STATE]: (state, action) => {
-      if (action.value?.preferences?.smartTransactionsOptInStatus === true) {
+      console.log('=== STX ALERT STATE UPDATE ===');
+      console.log('Current state:', state.state);
+      console.log('Alert Enabledness:', action.value?.alertEnabledness);
+      console.log(
+        'STX Status:',
+        action.value?.preferences?.smartTransactionsOptInStatus,
+      );
+      if (
+        action.value?.preferences?.smartTransactionsOptInStatus === true &&
+        action.value?.alertEnabledness?.[AlertTypes.stxMigration] !== false
+      ) {
         state.state = ALERT_STATE.OPEN;
+        console.log('Setting state to OPEN');
       }
+      console.log('=== STX ALERT STATE UPDATE END ===');
     },
   },
 });
