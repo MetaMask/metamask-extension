@@ -168,7 +168,7 @@ describe('Contract Interaction Confirmation Alerts', () => {
       getMetaMaskStateWithUnapprovedApproveTransaction(account.address);
 
     const transactions = {
-      ...mockedMetaMaskState.transactions[0],
+      ...mockedMetaMaskState.TxController.transactions[0],
       simulationFails: {
         reason: 'Internal JSON-RPC error.',
         debug: {
@@ -221,7 +221,7 @@ describe('Contract Interaction Confirmation Alerts', () => {
 
     const mockedMetaMaskState =
       getMetaMaskStateWithUnapprovedApproveTransaction(account.address);
-    const transaction = mockedMetaMaskState.transactions[0];
+    const transaction = mockedMetaMaskState.TxController.transactions[0];
     transaction.txParams.gas = '0x0';
 
     await act(async () => {
@@ -266,7 +266,7 @@ describe('Contract Interaction Confirmation Alerts', () => {
     const mockedMetaMaskState =
       getMetaMaskStateWithUnapprovedApproveTransaction(account.address);
 
-    const transaction = mockedMetaMaskState.transactions[0];
+    const transaction = mockedMetaMaskState.TxController.transactions[0];
     transaction.gasFeeEstimates.type = 'none';
 
     await act(async () => {
@@ -311,7 +311,8 @@ describe('Contract Interaction Confirmation Alerts', () => {
 
     const mockedMetaMaskState =
       getMetaMaskStateWithUnapprovedApproveTransaction(account.address);
-    const unapprovedTransaction = mockedMetaMaskState.transactions[0];
+    const unapprovedTransaction =
+      mockedMetaMaskState.TxController.transactions[0];
     const submittedTransaction = getUnapprovedApproveTransaction(
       account.address,
       randomUUID(),
@@ -382,7 +383,7 @@ describe('Contract Interaction Confirmation Alerts', () => {
     const mockedMetaMaskState =
       getMetaMaskStateWithUnapprovedApproveTransaction(account.address);
 
-    const transaction = mockedMetaMaskState.transactions[0];
+    const transaction = mockedMetaMaskState.TxController.transactions[0];
     transaction.defaultGasEstimates.estimateType = 'low';
     transaction.userFeeLevel = 'low';
 

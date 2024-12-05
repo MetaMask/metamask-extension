@@ -3576,7 +3576,8 @@ describe('Send Slice', () => {
             timeToFetchQuotes: null,
             transactionType: '0x0',
             userInputHexData:
-              editTransactionState.metamask.transactions[0].txParams.data,
+              editTransactionState.metamask.TxController.transactions[0]
+                .txParams.data,
           },
         });
         expect(actionResult[2].type).toStrictEqual('SHOW_LOADING_INDICATION');
@@ -3806,7 +3807,8 @@ describe('Send Slice', () => {
           timeToFetchQuotes: null,
           transactionType: '0x0',
           userInputHexData:
-            editTransactionState.metamask.transactions[0].txParams.data,
+            editTransactionState.metamask.TxController.transactions[0].txParams
+              .data,
         },
       });
       expect(actionResult[2].type).toStrictEqual('SHOW_LOADING_INDICATION');

@@ -663,7 +663,7 @@ export function hasTransactionPendingApprovals(state) {
 }
 
 export function selectTransactionMetadata(state, transactionId) {
-  return state.metamask.transactions.find(
+  return state.metamask.TxController.transactions.find(
     (transaction) => transaction.id === transactionId,
   );
 }

@@ -281,7 +281,7 @@ describe('MetaMask Reducers', () => {
       value: 'bar',
     });
 
-    expect(state.transactions[0].txParams).toStrictEqual('bar');
+    expect(state.TxController.transactions[0].txParams).toStrictEqual('bar');
   });
 
   describe('metamask state selectors', () => {
