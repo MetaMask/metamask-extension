@@ -9,11 +9,11 @@ import {
   hideLoadingIndication,
 } from '../../../store/actions';
 
-import { selectIsSignedIn } from '../../../selectors/metamask-notifications/authentication';
+import { selectIsSignedIn } from '../../../selectors/identity/authentication';
 import {
   selectIsAccountSyncingReadyToBeDispatched,
   selectIsProfileSyncingEnabled,
-} from '../../../selectors/metamask-notifications/profile-syncing';
+} from '../../../selectors/identity/profile-syncing';
 import { getUseExternalServices } from '../../../selectors';
 import {
   getIsUnlocked,
