@@ -131,13 +131,13 @@ export const incomingTxListSelector = createDeepEqualSelector(
 );
 
 export const unapprovedPersonalMsgsSelector = (state) =>
-  state.metamask.unapprovedPersonalMsgs;
+  state.metamask.SignatureController.PersonalMsgs;
 export const unapprovedDecryptMsgsSelector = (state) =>
   state.metamask.DecryptMessageController.unapprovedDecryptMsgs;
 export const unapprovedEncryptionPublicKeyMsgsSelector = (state) =>
   state.metamask.EncryptionPublicKeyController.EncryptionPublicKeyMsgs;
 export const unapprovedTypedMessagesSelector = (state) =>
-  state.metamask.unapprovedTypedMessages;
+  state.metamask.SignatureController.TypedMessages;
 
 export const smartTransactionsListSelector = (state) => {
   const { address: selectedAddress } = getSelectedInternalAccount(state);

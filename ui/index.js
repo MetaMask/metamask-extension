@@ -161,10 +161,10 @@ export async function setupInitialStore(
   // if unconfirmed txs, start on txConf page
   const unapprovedTxsAll = txHelper(
     unapprovedTxs,
-    metamaskState.unapprovedPersonalMsgs,
+    metamaskState.SignatureController.PersonalMsgs,
     metamaskState.DecryptMessageController.unapprovedDecryptMsgs,
     metamaskState.EncryptionPublicKeyController.EncryptionPublicKeyMsgs,
-    metamaskState.unapprovedTypedMessages,
+    metamaskState.SignatureController.TypedMessages,
     metamaskState.networkId,
     getCurrentChainId({ metamask: metamaskState }),
   );

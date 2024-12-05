@@ -1768,12 +1768,12 @@ export const getMemoizedTxId = createDeepEqualSelector(
 );
 
 export const getMemoizedUnapprovedPersonalMessages = createDeepEqualSelector(
-  (state) => state.metamask.unapprovedPersonalMsgs,
+  (state) => state.metamask.SignatureController.PersonalMsgs,
   (unapprovedPersonalMsgs) => unapprovedPersonalMsgs,
 );
 
 export const getMemoizedUnapprovedTypedMessages = createDeepEqualSelector(
-  (state) => state.metamask.unapprovedTypedMessages,
+  (state) => state.metamask.SignatureController.TypedMessages,
   (unapprovedTypedMessages) => unapprovedTypedMessages,
 );
 
@@ -2014,9 +2014,9 @@ export function getNumberOfAllUnapprovedTransactionsAndMessages(state) {
   const allUnapprovedMessages = {
     ...unapprovedTxs,
     ...state.metamask.DecryptMessageController.unapprovedDecryptMsgs,
-    ...state.metamask.unapprovedPersonalMsgs,
+    ...state.metamask.SignatureController.PersonalMsgs,
     ...state.metamask.EncryptionPublicKeyController.EncryptionPublicKeyMsgs,
-    ...state.metamask.unapprovedTypedMessages,
+    ...state.metamask.SignatureController.TypedMessages,
   };
   const numUnapprovedMessages = Object.keys(allUnapprovedMessages).length;
   return numUnapprovedMessages + queuedRequestCount;

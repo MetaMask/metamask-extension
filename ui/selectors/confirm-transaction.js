@@ -46,13 +46,13 @@ import {
 
 const unapprovedTxsSelector = (state) => getUnapprovedTransactions(state);
 const unapprovedPersonalMsgsSelector = (state) =>
-  state.metamask.unapprovedPersonalMsgs;
+  state.metamask.SignatureController.PersonalMsgs;
 const unapprovedDecryptMsgsSelector = (state) =>
   state.metamask.DecryptMessageController.unapprovedDecryptMsgs;
 const unapprovedEncryptionPublicKeyMsgsSelector = (state) =>
   state.metamask.EncryptionPublicKeyController.EncryptionPublicKeyMsgs;
 const unapprovedTypedMessagesSelector = (state) =>
-  state.metamask.unapprovedTypedMessages;
+  state.metamask.SignatureController.TypedMessages;
 
 export const unconfirmedTransactionsListSelector = createSelector(
   unapprovedTxsSelector,
@@ -109,10 +109,10 @@ export const unconfirmedTransactionsHashSelector = createSelector(
 
     return {
       ...filteredUnapprovedTxs,
-      ...unapprovedPersonalMsgs,
+      ...SignatureController.PersonalMsgs,
       ...DecryptMessageController.unapprovedDecryptMsgs,
       ...EncryptionPublicKeyController.EncryptionPublicKeyMsgs,
-      ...unapprovedTypedMessages,
+      ...SignatureController.TypedMessages,
     };
   },
 );
@@ -129,10 +129,10 @@ export const unconfirmedMessagesHashSelector = createSelector(
     unapprovedTypedMessages = {},
   ) => {
     return {
-      ...unapprovedPersonalMsgs,
+      ...SignatureController.PersonalMsgs,
       ...DecryptMessageController.unapprovedDecryptMsgs,
       ...EncryptionPublicKeyController.EncryptionPublicKeyMsgs,
-      ...unapprovedTypedMessages,
+      ...SignatureController.TypedMessages,
     };
   },
 );
