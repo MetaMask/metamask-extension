@@ -20,7 +20,7 @@ const getMetamask = (state: AppState) => state.metamask;
  */
 export const selectIsSignedIn = createSelector(
   [getMetamask],
-  (metamask) => metamask.isSignedIn,
+  (metamask) => metamask.AuthenticationController.isSignedIn,
 );
 
 /**
