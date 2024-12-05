@@ -163,7 +163,7 @@ export async function setupInitialStore(
     unapprovedTxs,
     metamaskState.unapprovedPersonalMsgs,
     metamaskState.DecryptMessageController.unapprovedDecryptMsgs,
-    metamaskState.unapprovedEncryptionPublicKeyMsgs,
+    metamaskState.EncryptionPublicKeyController.EncryptionPublicKeyMsgs,
     metamaskState.unapprovedTypedMessages,
     metamaskState.networkId,
     getCurrentChainId({ metamask: metamaskState }),

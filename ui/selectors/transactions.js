@@ -135,7 +135,7 @@ export const unapprovedPersonalMsgsSelector = (state) =>
 export const unapprovedDecryptMsgsSelector = (state) =>
   state.metamask.DecryptMessageController.unapprovedDecryptMsgs;
 export const unapprovedEncryptionPublicKeyMsgsSelector = (state) =>
-  state.metamask.unapprovedEncryptionPublicKeyMsgs;
+  state.metamask.EncryptionPublicKeyController.EncryptionPublicKeyMsgs;
 export const unapprovedTypedMessagesSelector = (state) =>
   state.metamask.unapprovedTypedMessages;
 
