@@ -104,6 +104,13 @@ import {
 } from '@metamask/controller-utils';
 
 import { AccountsController } from '@metamask/accounts-controller';
+import {
+  RemoteFeatureFlagController,
+  ClientConfigApiService,
+  ClientType,
+  DistributionType,
+  EnvironmentType,
+} from '@metamask/remote-feature-flag-controller';
 
 ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
 import {
@@ -241,6 +248,7 @@ import { endTrace, trace } from '../../shared/lib/trace';
 // eslint-disable-next-line import/no-restricted-paths
 import { isSnapId } from '../../ui/helpers/utils/snaps';
 import { BridgeStatusAction } from '../../shared/types/bridge-status';
+import { ENVIRONMENT } from '../../development/build/constants';
 import fetchWithCache from '../../shared/lib/fetch-with-cache';
 import { BalancesController as MultichainBalancesController } from './lib/accounts/BalancesController';
 import {
@@ -380,6 +388,7 @@ export const METAMASK_CONTROLLER_EVENTS = {
   UPDATE_BADGE: 'updateBadge',
   // TODO: Add this and similar enums to the `controllers` repo and export them
   APPROVAL_STATE_CHANGE: 'ApprovalController:stateChange',
+  APP_STATE_UNLOCK_CHANGE: 'AppStateController:unlockChange',
   QUEUED_REQUEST_STATE_CHANGE: 'QueuedRequestController:stateChange',
   METAMASK_NOTIFICATIONS_LIST_UPDATED:
     'NotificationServicesController:notificationsListUpdated',
@@ -392,6 +401,17 @@ const PHISHING_SAFELIST = 'metamask-phishing-safelist';
 
 // OneKey devices can connect to Metamask using Trezor USB transport. They use a specific device minor version (99) to differentiate between genuine Trezor and OneKey devices.
 export const ONE_KEY_VIA_TREZOR_MINOR_VERSION = 99;
+
+const environmentMappingForRemoteFeatureFlag = {
+  [ENVIRONMENT.DEVELOPMENT]: EnvironmentType.Development,
+  [ENVIRONMENT.RELEASE_CANDIDATE]: EnvironmentType.ReleaseCandidate,
+  [ENVIRONMENT.PRODUCTION]: EnvironmentType.Production,
+};
+
+const buildTypeMappingForRemoteFeatureFlag = {
+  flask: DistributionType.Flask,
+  main: DistributionType.Main,
+};
 
 export default class MetamaskController extends EventEmitter {
   /**
@@ -857,7 +877,7 @@ export default class MetamaskController extends EventEmitter {
     this.appStateController = new AppStateController({
       addUnlockListener: this.on.bind(this, 'unlock'),
       isUnlocked: this.isUnlocked.bind(this),
-      initState: initState.AppStateController,
+      state: initState.AppStateController,
       onInactiveTimeout: () => this.setLocked(),
       messenger: this.controllerMessenger.getRestricted({
         name: 'AppStateController',
@@ -2349,6 +2369,40 @@ export default class MetamaskController extends EventEmitter {
       clearPendingConfirmations.bind(this),
     );
 
+    // RemoteFeatureFlagController has subscription for preferences changes
+    this.controllerMessenger.subscribe(
+      'PreferencesController:stateChange',
+      previousValueComparator((prevState, currState) => {
+        const { useExternalServices: prevUseExternalServices } = prevState;
+        const { useExternalServices: currUseExternalServices } = currState;
+        if (currUseExternalServices && !prevUseExternalServices) {
+          this.remoteFeatureFlagController.enable();
+          this.remoteFeatureFlagController.updateRemoteFeatureFlags();
+        } else if (!currUseExternalServices && prevUseExternalServices) {
+          this.remoteFeatureFlagController.disable();
+        }
+      }, this.preferencesController.state),
+    );
+
+    // Initialize RemoteFeatureFlagController
+    this.remoteFeatureFlagController = new RemoteFeatureFlagController({
+      messenger: this.controllerMessenger.getRestricted({
+        name: 'RemoteFeatureFlagController',
+        allowedActions: [],
+        allowedEvents: [],
+      }),
+      disabled: !this.preferencesController.state.useExternalServices,
+      clientConfigApiService: new ClientConfigApiService({
+        fetch: globalThis.fetch.bind(globalThis),
+        config: {
+          client: ClientType.Extension,
+          distribution:
+            this._getConfigForRemoteFeatureFlagRequest().distribution,
+          environment: this._getConfigForRemoteFeatureFlagRequest().environment,
+        },
+      }),
+    });
+
     this.metamaskMiddleware = createMetamaskMiddleware({
       static: {
         eth_syncing: false,
@@ -2466,7 +2520,7 @@ export default class MetamaskController extends EventEmitter {
 
     this.store.updateStructure({
       AccountsController: this.accountsController,
-      AppStateController: this.appStateController.store,
+      AppStateController: this.appStateController,
       AppMetadataController: this.appMetadataController,
       MultichainBalancesController: this.multichainBalancesController,
       TransactionController: this.txController,
@@ -2515,13 +2569,14 @@ export default class MetamaskController extends EventEmitter {
       NotificationServicesController: this.notificationServicesController,
       NotificationServicesPushController:
         this.notificationServicesPushController,
+      RemoteFeatureFlagController: this.remoteFeatureFlagController,
       ...resetOnRestartStore,
     });
 
     this.memStore = new ComposableObservableStore({
       config: {
         AccountsController: this.accountsController,
-        AppStateController: this.appStateController.store,
+        AppStateController: this.appStateController,
         AppMetadataController: this.appMetadataController,
         MultichainBalancesController: this.multichainBalancesController,
         NetworkController: this.networkController,
@@ -2570,6 +2625,7 @@ export default class MetamaskController extends EventEmitter {
         QueuedRequestController: this.queuedRequestController,
         NotificationServicesPushController:
           this.notificationServicesPushController,
+        RemoteFeatureFlagController: this.remoteFeatureFlagController,
         ...resetOnRestartStore,
       },
       controllerMessenger: this.controllerMessenger,
@@ -2924,6 +2980,8 @@ export default class MetamaskController extends EventEmitter {
             this.controllerMessenger,
             'SnapInterfaceController:getInterface',
           ),
+          // We don't currently use special cryptography for the extension client.
+          getClientCryptography: () => ({}),
           ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
           getSnapKeyring: this.getSnapKeyring.bind(this),
           ///: END:ONLY_INCLUDE_IF
@@ -6866,7 +6924,7 @@ export default class MetamaskController extends EventEmitter {
     const appStatePollingTokenType =
       POLLING_TOKEN_ENVIRONMENT_TYPES[environmentType];
     const pollingTokensToDisconnect =
-      this.appStateController.store.getState()[appStatePollingTokenType];
+      this.appStateController.state[appStatePollingTokenType];
     pollingTokensToDisconnect.forEach((pollingToken) => {
       this.gasFeeController.stopPollingByPollingToken(pollingToken);
       this.currencyRateController.stopPollingByPollingToken(pollingToken);
@@ -7377,6 +7435,17 @@ export default class MetamaskController extends EventEmitter {
     return {
       metamask: this.getState(),
     };
+  }
+
+  _getConfigForRemoteFeatureFlagRequest() {
+    const distribution =
+      buildTypeMappingForRemoteFeatureFlag[process.env.METAMASK_BUILD_TYPE] ||
+      DistributionType.Main;
+    const environment =
+      environmentMappingForRemoteFeatureFlag[
+        process.env.METAMASK_ENVIRONMENT
+      ] || EnvironmentType.Development;
+    return { distribution, environment };
   }
 
   #checkTokenListPolling(currentState, previousState) {
