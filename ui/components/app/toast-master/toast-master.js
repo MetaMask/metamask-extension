@@ -283,35 +283,33 @@ function BaseNetworkToast() {
     showBaseNetworkToastPreference &&
     (!isCurrentNetworkFilerSelected ||
       currentNetwork?.chainId === CHAIN_IDS.BASE);
-  return (
-    showBaseNetworkToast && (
-      <Toast
-        key="switched-network-toast"
-        startAdornment={
-          <AvatarNetwork
-            size={AvatarAccountSize.Md}
-            borderColor={BorderColor.transparent}
-            src={BASE_TOKEN_IMAGE_URL}
-            name={BASE_DISPLAY_NAME}
-          />
-        }
-        text={t('baseNetworkToastMessage')}
-        actionText={t('seeDetails')}
-        onActionClick={() => {
-          dispatch(setShowBaseNetworkToast(false));
-          dispatch(toggleNetworkMenu());
-          dispatch(
-            setEditedNetwork({
-              chainId: CHAIN_IDS.BASE,
-              nickname: BASE_DISPLAY_NAME,
-            }),
-          );
-        }}
-        hasLink={false}
-        onClose={() => dispatch(setShowBaseNetworkToast(false))}
-      />
-    )
-  );
+  return showBaseNetworkToast ? (
+    <Toast
+      key="switched-network-toast"
+      startAdornment={
+        <AvatarNetwork
+          size={AvatarAccountSize.Md}
+          borderColor={BorderColor.transparent}
+          src={BASE_TOKEN_IMAGE_URL}
+          name={BASE_DISPLAY_NAME}
+        />
+      }
+      text={t('baseNetworkToastMessage')}
+      actionText={t('seeDetails')}
+      onActionClick={() => {
+        dispatch(setShowBaseNetworkToast(false));
+        dispatch(toggleNetworkMenu());
+        dispatch(
+          setEditedNetwork({
+            chainId: CHAIN_IDS.BASE,
+            nickname: BASE_DISPLAY_NAME,
+          }),
+        );
+      }}
+      hasLink={false}
+      onClose={() => dispatch(setShowBaseNetworkToast(false))}
+    />
+  ) : null;
 }
 
 function NftEnablementToast() {
