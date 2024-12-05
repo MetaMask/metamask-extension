@@ -18,7 +18,7 @@ export type BridgeStatusAppState = ProviderConfigState & {
 };
 
 export const selectBridgeStatusState = (state: BridgeStatusAppState) =>
-  state.metamask.bridgeStatusState;
+  state.metamask.BridgeStatusController.bridgeStatusState;
 
 /**
  * Returns a mapping of srcTxMetaId to txHistoryItem for the selected address
