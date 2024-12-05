@@ -76,7 +76,7 @@ import {
   ControllerInit,
   ControllerInitRequest,
   ControllerName,
-} from './controller-init';
+} from './types';
 
 type MessengerActions =
   | ApprovalControllerActions

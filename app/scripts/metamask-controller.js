@@ -361,7 +361,7 @@ import { sanitizeUIState } from './lib/state-utils';
 import BridgeStatusController from './controllers/bridge-status/bridge-status-controller';
 import { BRIDGE_STATUS_CONTROLLER_NAME } from './controllers/bridge-status/constants';
 import { TransactionControllerInit } from './controller-init/transaction-controller-init';
-import { ControllerName } from './controller-init/controller-init';
+import { ControllerName } from './controller-init/types';
 
 const debugLog = createProjectLogger('metamask-controller');
 
