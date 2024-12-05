@@ -26,6 +26,7 @@ import { useI18nContext } from '../../../hooks/useI18nContext';
 import { usePrevious } from '../../../hooks/usePrevious';
 import {
   getCurrentNetwork,
+  getIsTokenNetworkFilterEqualCurrentNetwork,
   getOriginOfCurrentTab,
   getSelectedAccount,
   getSwitchedNetworkDetails,
@@ -269,10 +270,19 @@ function BaseNetworkToast() {
   const t = useI18nContext();
   const dispatch = useDispatch();
 
-  const showBaseNetworkToast = useSelector(
+  const isCurrentNetworkFilerSelected = useSelector(
+    getIsTokenNetworkFilterEqualCurrentNetwork,
+  );
+
+  const currentNetwork = useSelector(getCurrentNetwork);
+  const showBaseNetworkToastPreference = useSelector(
     (state) => state.metamask.preferences.showBaseNetworkToast,
   );
 
+  const showBaseNetworkToast =
+    showBaseNetworkToastPreference &&
+    (!isCurrentNetworkFilerSelected ||
+      currentNetwork?.chainId === CHAIN_IDS.BASE);
   return (
     showBaseNetworkToast && (
       <Toast
