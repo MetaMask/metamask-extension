@@ -59,9 +59,10 @@ const validateGasPrice = (
   if (supportsEIP1559 && isFeeMarketGasEstimate) {
     return undefined;
   }
+
   if (
     (!supportsEIP1559 || transaction?.txParams?.gasPrice) &&
-    bnLessThan(gasPrice, 0)
+    bnLessThan(gasPrice || 0, 0)
   ) {
     return GAS_FORM_ERRORS.GAS_PRICE_TOO_LOW;
   }
