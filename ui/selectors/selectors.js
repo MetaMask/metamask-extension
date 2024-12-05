@@ -2641,7 +2641,7 @@ export function getUseRequestQueue(state) {
  * @returns Boolean
  */
 export function getIsSecurityAlertsEnabled(state) {
-  return state.metamask.securityAlertsEnabled;
+  return state.metamask.PPOMController.securityAlertsEnabled;
 }
 
 ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
