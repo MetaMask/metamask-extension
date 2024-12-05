@@ -436,7 +436,10 @@ describe('Multichain Selectors', () => {
         asset: MultichainNativeAssets;
       }) => {
         const state = getNonEvmState(account);
-        const balance = state.metamask.balances[account.id][asset].amount;
+        const balance =
+          state.metamask.MultichainBalancesController.balances[account.id][
+            asset
+          ].amount;
 
         state.metamask.AccountsController.internalAccounts.selectedAccount =
           account.id;
@@ -478,17 +481,17 @@ describe('Multichain Selectors', () => {
 
     it('returns true if the selected non-EVM account has a zero balance', () => {
       const state = getNonEvmState(MOCK_ACCOUNT_BIP122_P2WPKH);
-      state.metamask.balances[MOCK_ACCOUNT_BIP122_P2WPKH.id][
-        MultichainNativeAssets.BITCOIN
-      ].amount = '0.00000000';
+      state.metamask.MultichainBalancesController.balances[
+        MOCK_ACCOUNT_BIP122_P2WPKH.id
+      ][MultichainNativeAssets.BITCOIN].amount = '0.00000000';
       expect(getMultichainSelectedAccountCachedBalanceIsZero(state)).toBe(true);
     });
 
     it('returns false if the selected non-EVM account has a non-zero balance', () => {
       const state = getNonEvmState(MOCK_ACCOUNT_BIP122_P2WPKH);
-      state.metamask.balances[MOCK_ACCOUNT_BIP122_P2WPKH.id][
-        MultichainNativeAssets.BITCOIN
-      ].amount = '1.00000000';
+      state.metamask.MultichainBalancesController.balances[
+        MOCK_ACCOUNT_BIP122_P2WPKH.id
+      ][MultichainNativeAssets.BITCOIN].amount = '1.00000000';
       expect(getMultichainSelectedAccountCachedBalanceIsZero(state)).toBe(
         false,
       );

@@ -368,7 +368,7 @@ export function getMultichainIsTestnet(
 export function getMultichainBalances(
   state: MultichainState,
 ): BalancesState['metamask']['balances'] {
-  return state.metamask.balances;
+  return state.metamask.MultichainBalancesController.balances;
 }
 
 export const getMultichainCoinRates = (state: MultichainState) => {

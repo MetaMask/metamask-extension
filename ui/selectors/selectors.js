@@ -283,7 +283,7 @@ export const getMetaMaskAccounts = createSelector(
         if (balances?.[internalAccount.address]) {
           account = {
             ...account,
-            ...balances[internalAccount.address],
+            ...MultichainBalancesController.balances[internalAccount.address],
           };
         }
       } else {
