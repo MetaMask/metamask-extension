@@ -3,6 +3,7 @@ import { RpcEndpointType } from '@metamask/network-controller';
 import { cloneDeep } from 'lodash';
 import {
   allowedInfuraHosts,
+  infuraChainIdsTestNets,
   infuraProjectId,
 } from '../../../shared/constants/network';
 
@@ -41,9 +42,10 @@ function transformState(state: Record<string, unknown>) {
   ) {
     const { networkConfigurationsByChainId } = state.NetworkController;
 
-    // Check if at least one network uses an Infura RPC endpoint
-    const usesInfura = Object.values(networkConfigurationsByChainId).some(
-      (networkConfig) => {
+    // Check if at least one network uses an Infura RPC endpoint, excluding testnets
+    const usesInfura = Object.entries(networkConfigurationsByChainId)
+      .filter(([chainId]) => !infuraChainIdsTestNets.includes(chainId))
+      .some(([, networkConfig]) => {
         if (
           !isObject(networkConfig) ||
           !Array.isArray(networkConfig.rpcEndpoints) ||
@@ -72,8 +74,7 @@ function transformState(state: Record<string, unknown>) {
         } catch {
           return false;
         }
-      },
-    );
+      });
 
     if (!usesInfura) {
       // If no Infura endpoints are used, return the state unchanged
