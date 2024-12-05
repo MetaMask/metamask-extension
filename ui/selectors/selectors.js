@@ -2879,15 +2879,15 @@ export function getUseCurrencyRateCheck(state) {
 }
 
 export function getNames(state) {
-  return state.metamask.names || {};
+  return state.metamask.NameController.names || {};
 }
 
 export function getEthereumAddressNames(state) {
-  return state.metamask.names?.[NameType.ETHEREUM_ADDRESS] || {};
+  return state.metamask.NameController.names?.[NameType.ETHEREUM_ADDRESS] || {};
 }
 
 export function getNameSources(state) {
-  return state.metamask.nameSources || {};
+  return state.metamask.NameController.nameSources || {};
 }
 
 export function getShowDeleteMetaMetricsDataModal(state) {

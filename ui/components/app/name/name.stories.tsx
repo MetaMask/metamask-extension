@@ -145,9 +145,9 @@ export const SavedNameStory = {
     type: NameType.ETHEREUM_ADDRESS,
     variation: VARIATION_MOCK,
     state: (state) => {
-      state.metamask.names[NameType.ETHEREUM_ADDRESS][ADDRESS_MOCK][
-        VARIATION_MOCK
-      ].name = NAME_MOCK;
+      state.metamask.NameController.names[NameType.ETHEREUM_ADDRESS][
+        ADDRESS_MOCK
+      ][VARIATION_MOCK].name = NAME_MOCK;
     },
   },
 };
