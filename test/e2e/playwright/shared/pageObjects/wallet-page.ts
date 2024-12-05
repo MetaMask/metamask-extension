@@ -59,8 +59,6 @@ export class WalletPage {
     await this.importAccountButton.click();
     await this.page.fill('#private-key-box', accountPK);
     await this.importAccountConfirmBtn.click();
-    await this.page.waitForTimeout(2000);
-    return await this.accountMenu.textContent();
   }
 
   async selectTokenWallet() {
