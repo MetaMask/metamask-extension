@@ -1,5 +1,5 @@
 import React from 'react';
-import { Text } from '../../../../../components/component-library';
+import { ButtonLink, Text } from '../../../../../components/component-library';
 import {
   TextColor,
   TextVariant,
@@ -17,16 +17,15 @@ export const PendingTransactionAlertMessage = () => {
       data-testid="alert-modal__selected-alert"
     >
       {t('pendingTransactionAlertMessage', [
-        <Text color={TextColor.primaryDefault}>
-          <a
-            href={ZENDESK_URLS.SPEEDUP_CANCEL}
-            key="link"
-            target="_blank"
-            rel="noreferrer noopener"
-          >
-            {t('pendingTransactionAlertMessageHyperlink')}
-          </a>
-        </Text>,
+        <ButtonLink
+          href={ZENDESK_URLS.SPEEDUP_CANCEL}
+          key="link"
+          target="_blank"
+          rel="noreferrer noopener"
+          color={TextColor.primaryDefault}
+        >
+          {t('pendingTransactionAlertMessageHyperlink')}
+        </ButtonLink>,
       ])}
     </Text>
   );

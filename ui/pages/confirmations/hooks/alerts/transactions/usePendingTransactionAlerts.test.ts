@@ -89,6 +89,13 @@ describe('usePendingTransactionAlerts', () => {
     jest.resetAllMocks();
 
     (useParams as jest.Mock).mockReturnValue({ id: 'mock-transaction-id' });
+
+    useSelectorMock.mockImplementation((selector) => {
+      if (selector.toString().includes('pendingApprovalsSortedSelector')) {
+        return [];
+      }
+      return undefined;
+    });
   });
 
   it('returns no alerts if no confirmation', () => {
@@ -155,6 +162,10 @@ describe('usePendingTransactionAlerts', () => {
         return true;
       } else if (selector.toString().includes('getUnapprovedTransaction')) {
         return { type: TransactionType.contractInteraction };
+      } else if (
+        selector.toString().includes('pendingApprovalsSortedSelector')
+      ) {
+        return [];
       }
       return undefined;
     });
