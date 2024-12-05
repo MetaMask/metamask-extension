@@ -161,6 +161,7 @@ describe('Transaction metrics', () => {
       ui_customizations: ['redesigned_confirmation'],
       transaction_advanced_view: undefined,
       transaction_contract_method: undefined,
+      transaction_internal_id: '1',
     };
 
     expectedSensitiveProperties = {

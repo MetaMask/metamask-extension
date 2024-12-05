@@ -792,6 +792,7 @@ async function buildEventFragmentProperties({
     finalApprovalAmount,
     securityProviderResponse,
     simulationFails,
+    id,
   } = transactionMeta;
   const query = new EthQuery(transactionMetricsRequest.provider);
   const source = referrer === ORIGIN_METAMASK ? 'user' : 'dapp';
@@ -906,6 +907,7 @@ async function buildEventFragmentProperties({
   let transactionApprovalAmountVsBalanceRatio;
   let transactionContractAddress;
   let transactionType = TransactionType.simpleSend;
+  let transactionContractMethod4Byte;
   if (type === TransactionType.swapAndSend) {
     transactionType = TransactionType.swapAndSend;
   } else if (type === TransactionType.cancel) {
@@ -918,6 +920,10 @@ async function buildEventFragmentProperties({
     transactionType = TransactionType.contractInteraction;
     transactionContractMethod = contractMethodName;
     transactionContractAddress = transactionMeta.txParams?.to;
+    transactionContractMethod4Byte = transactionMeta.txParams?.data?.slice(
+      0,
+      10,
+    );
     if (
       transactionContractMethod === contractMethodNames.APPROVE &&
       tokenStandard === TokenStandard.ERC20
@@ -1038,6 +1044,7 @@ async function buildEventFragmentProperties({
     token_standard: tokenStandard,
     transaction_type: transactionType,
     transaction_speed_up: type === TransactionType.retry,
+    transaction_internal_id: id,
     ...blockaidProperties,
     // ui_customizations must come after ...blockaidProperties
     ui_customizations: uiCustomizations.length > 0 ? uiCustomizations : null,
@@ -1071,6 +1078,7 @@ async function buildEventFragmentProperties({
     gas_limit: gasLimit,
     transaction_replaced: transactionReplaced,
     transaction_contract_address: transactionContractAddress,
+    transaction_contract_method_4byte: transactionContractMethod4Byte,
     ...extraParams,
     ...gasParamsInGwei,
     // TODO: Replace `any` with type

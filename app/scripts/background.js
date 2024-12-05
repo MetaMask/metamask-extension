@@ -1021,8 +1021,8 @@ export function setupController(
     METAMASK_CONTROLLER_EVENTS.UPDATE_BADGE,
     updateBadge,
   );
-  controller.appStateController.on(
-    METAMASK_CONTROLLER_EVENTS.UPDATE_BADGE,
+  controller.controllerMessenger.subscribe(
+    METAMASK_CONTROLLER_EVENTS.APP_STATE_UNLOCK_CHANGE,
     updateBadge,
   );
 
