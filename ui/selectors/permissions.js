@@ -34,7 +34,7 @@ export const getPermissionSubjectsDeepEqual = createDeepEqualSelector(
  * @returns {object} The subject metadata object.
  */
 export const getSubjectMetadataDeepEqual = createDeepEqualSelector(
-  (state) => state.metamask.subjectMetadata,
+  (state) => state.metamask.SubjectMetadataController.subjectMetadata,
   (metadata) => metadata,
 );
 
@@ -120,7 +120,7 @@ export function getPermittedChainsByOrigin(state) {
 }
 
 export function getSubjectMetadata(state) {
-  return state.metamask.subjectMetadata;
+  return state.metamask.SubjectMetadataController.subjectMetadata;
 }
 
 /**
