@@ -53,9 +53,7 @@ import {
   FakeLedgerBridge,
   FakeTrezorBridge,
 } from '../../test/stub/keyring-bridge';
-// TODO: Remove restricted import
-// eslint-disable-next-line import/no-restricted-paths
-import { getCurrentChainId } from '../../ui/selectors';
+import { getCurrentChainId } from '../../shared/modules/selectors/networks';
 import { addNonceToCsp } from '../../shared/modules/add-nonce-to-csp';
 import { checkURLForProviderInjection } from '../../shared/modules/provider-injection';
 import migrations from './migrations';
@@ -286,12 +284,14 @@ function maybeDetectPhishing(theController) {
 
       // Determine the block reason based on the type
       let blockReason;
+      let blockedUrl = hostname;
       if (phishingTestResponse?.result && blockedRequestResponse.result) {
         blockReason = `${phishingTestResponse.type} and ${blockedRequestResponse.type}`;
       } else if (phishingTestResponse?.result) {
         blockReason = phishingTestResponse.type;
       } else {
         blockReason = blockedRequestResponse.type;
+        blockedUrl = details.initiator;
       }
 
       theController.metaMetricsController.trackEvent({
@@ -299,11 +299,12 @@ function maybeDetectPhishing(theController) {
         event: MetaMetricsEventName.PhishingPageDisplayed,
         category: MetaMetricsEventCategory.Phishing,
         properties: {
-          url: hostname,
+          url: blockedUrl,
           referrer: {
-            url: hostname,
+            url: blockedUrl,
           },
           reason: blockReason,
+          requestDomain: blockedRequestResponse.result ? hostname : undefined,
         },
       });
       const querystring = new URLSearchParams({ hostname, href });
@@ -771,7 +772,6 @@ export function setupController(
   //
   // MetaMask Controller
   //
-
   controller = new MetamaskController({
     infuraProjectId: process.env.INFURA_PROJECT_ID,
     // User confirmation callbacks:
@@ -890,6 +890,8 @@ export function setupController(
       // communication with popup
       controller.isClientOpen = true;
       controller.setupTrustedCommunication(portStream, remotePort.sender);
+
+      initializeRemoteFeatureFlags();
 
       if (processName === ENVIRONMENT_TYPE_POPUP) {
         openPopupCount += 1;
@@ -1023,8 +1025,8 @@ export function setupController(
     METAMASK_CONTROLLER_EVENTS.UPDATE_BADGE,
     updateBadge,
   );
-  controller.appStateController.on(
-    METAMASK_CONTROLLER_EVENTS.UPDATE_BADGE,
+  controller.controllerMessenger.subscribe(
+    METAMASK_CONTROLLER_EVENTS.APP_STATE_UNLOCK_CHANGE,
     updateBadge,
   );
 
@@ -1045,11 +1047,6 @@ export function setupController(
 
   controller.controllerMessenger.subscribe(
     METAMASK_CONTROLLER_EVENTS.METAMASK_NOTIFICATIONS_MARK_AS_READ,
-    updateBadge,
-  );
-
-  controller.controllerMessenger.subscribe(
-    METAMASK_CONTROLLER_EVENTS.NOTIFICATIONS_STATE_CHANGE,
     updateBadge,
   );
 
@@ -1098,6 +1095,22 @@ export function setupController(
     }
   }
 
+  /**
+   * Initializes remote feature flags by making a request to fetch them from the clientConfigApi.
+   * This function is called when MM is during internal process.
+   * If the request fails, the error will be logged but won't interrupt extension initialization.
+   *
+   * @returns {Promise<void>} A promise that resolves when the remote feature flags have been updated.
+   */
+  async function initializeRemoteFeatureFlags() {
+    try {
+      // initialize the request to fetch remote feature flags
+      await controller.remoteFeatureFlagController.updateRemoteFeatureFlags();
+    } catch (error) {
+      log.error('Error initializing remote feature flags:', error);
+    }
+  }
+
   function getPendingApprovalCount() {
     try {
       let pendingApprovalCount =
@@ -1121,8 +1134,14 @@ export function setupController(
         controller.notificationServicesController.state;
 
       const snapNotificationCount = Object.values(
-        controller.notificationController.state.notifications,
-      ).filter((notification) => notification.readDate === null).length;
+        controller.notificationServicesController.state
+          .metamaskNotificationsList,
+      ).filter(
+        (notification) =>
+          notification.type ===
+            NotificationServicesController.Constants.TRIGGER_TYPES.SNAP &&
+          notification.readDate === null,
+      ).length;
 
       const featureAnnouncementCount = isFeatureAnnouncementsEnabled
         ? controller.notificationServicesController.state.metamaskNotificationsList.filter(
@@ -1140,7 +1159,9 @@ export function setupController(
               !notification.isRead &&
               notification.type !==
                 NotificationServicesController.Constants.TRIGGER_TYPES
-                  .FEATURES_ANNOUNCEMENT,
+                  .FEATURES_ANNOUNCEMENT &&
+              notification.type !==
+                NotificationServicesController.Constants.TRIGGER_TYPES.SNAP,
           ).length
         : 0;
 

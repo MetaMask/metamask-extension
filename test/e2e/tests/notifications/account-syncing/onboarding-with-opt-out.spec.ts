@@ -10,7 +10,7 @@ import {
 import { UserStorageMockttpController } from '../../../helpers/user-storage/userStorageMockttpController';
 import AccountListPage from '../../../page-objects/pages/account-list-page';
 import HeaderNavbar from '../../../page-objects/pages/header-navbar';
-import HomePage from '../../../page-objects/pages/homepage';
+import HomePage from '../../../page-objects/pages/home/homepage';
 import OnboardingCompletePage from '../../../page-objects/pages/onboarding/onboarding-complete-page';
 import OnboardingPrivacySettingsPage from '../../../page-objects/pages/onboarding/onboarding-privacy-settings-page';
 import {

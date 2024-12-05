@@ -45,13 +45,13 @@ import {
   getSmartTransactionFees,
   getCurrentSmartTransactionsEnabled,
 } from '../../../ducks/swaps/swaps';
+import { getCurrentChainId } from '../../../../shared/modules/selectors/networks';
 import {
   conversionRateSelector,
   getSelectedAccount,
   getCurrentCurrency,
   getTokenExchangeRates,
   getSwapsDefaultToken,
-  getCurrentChainId,
   isHardwareWallet,
   getHardwareWalletType,
   checkNetworkAndAccountSupports1559,
