@@ -1077,6 +1077,57 @@ export const FEATURED_RPCS: AddNetworkFields[] = [
   },
 ];
 
+export const allowedInfuraHosts = [
+  // Ethereum
+  'mainnet.infura.io',
+  'holesky.infura.io',
+  'sepolia.infura.io',
+  // Linea
+  'linea-mainnet.infura.io',
+  'linea-sepolia.infura.io',
+  // Polygon
+  'polygon-mainnet.infura.io',
+  'polygon-amoy.infura.io',
+  // Base
+  'base-mainnet.infura.io',
+  'base-sepolia.infura.io',
+  // Blast
+  'blast-mainnet.infura.io',
+  'blast-sepolia.infura.io',
+  // Optimism
+  'optimism-mainnet.infura.io',
+  'optimism-sepolia.infura.io',
+  // Arbitrum
+  'arbitrum-mainnet.infura.io',
+  'arbitrum-sepolia.infura.io',
+  // Palm
+  'palm-mainnet.infura.io',
+  'palm-testnet.infura.io',
+  // Avalanche
+  'avalanche-mainnet.infura.io',
+  'avalanche-fuji.infura.io',
+  // Celo
+  'celo-mainnet.infura.io',
+  'celo-alfajores.infura.io',
+  // ZKSync
+  'zksync-mainnet.infura.io',
+  'zksync-sepolia.infura.io',
+  // BSC
+  'bsc-mainnet.infura.io',
+  'bsc-testnet.infura.io',
+  // Mantle
+  'mantle-mainnet.infura.io',
+  'mantle-sepolia.infura.io',
+  // OPBNB
+  'opbnb-mainnet.infura.io',
+  'opbnb-testnet.infura.io',
+  // Scroll
+  'scroll-mainnet.infura.io',
+  'scroll-sepolia.infura.io',
+  // Unichain
+  'unichain-sepolia.infura.io',
+];
+
 /**
  * Represents the availability state of the currently selected network.
  */

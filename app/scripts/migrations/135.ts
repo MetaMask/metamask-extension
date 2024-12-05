@@ -1,6 +1,9 @@
 import { hasProperty, isObject } from '@metamask/utils';
 import { cloneDeep } from 'lodash';
-import { infuraProjectId } from '../../../shared/constants/network';
+import {
+  allowedInfuraHosts,
+  infuraProjectId,
+} from '../../../shared/constants/network';
 import { RpcEndpointType } from '@metamask/network-controller';
 
 export const version = 135;
@@ -64,7 +67,7 @@ function transformState(state: Record<string, unknown>) {
           const urlHost = new URL(defaultRpcEndpoint.url).host;
           return (
             defaultRpcEndpoint.type === RpcEndpointType.Infura ||
-            urlHost.endsWith('infura.io')
+            allowedInfuraHosts.includes(urlHost)
           );
         } catch {
           return false;
