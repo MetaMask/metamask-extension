@@ -90,14 +90,15 @@ describe('ReviewQuote', () => {
 
   it('renders text for token approval', () => {
     const state = createSwapsMockStore();
-    state.metamask.swapsState.quotes.TEST_AGG_2.approvalNeeded = {
-      data: '0x095ea7b300000000000000000000000095e6f48254609a6ee006f7d493c8e5fb97094cef0000000000000000000000000000000000000000004a817c7ffffffdabf41c00',
-      to: '0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2',
-      amount: '0',
-      from: '0x2369267687A84ac7B494daE2f1542C40E37f4455',
-      gas: '12',
-      gasPrice: '34',
-    };
+    state.metamask.SwapsController.swapsState.quotes.TEST_AGG_2.approvalNeeded =
+      {
+        data: '0x095ea7b300000000000000000000000095e6f48254609a6ee006f7d493c8e5fb97094cef0000000000000000000000000000000000000000004a817c7ffffffdabf41c00',
+        to: '0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2',
+        amount: '0',
+        from: '0x2369267687A84ac7B494daE2f1542C40E37f4455',
+        gas: '12',
+        gasPrice: '34',
+      };
     const store = configureMockStore(middleware)(state);
     const props = createProps();
     const { getByText } = renderWithProvider(<ReviewQuote {...props} />, store);
@@ -115,7 +116,7 @@ describe('ReviewQuote', () => {
 
   it('renders the component with gas included quotes', () => {
     const state = createSwapsMockStore();
-    state.metamask.swapsState.quotes.TEST_AGG_2.isGasIncludedTrade = true;
+    state.metamask.SwapsController.swapsState.quotes.TEST_AGG_2.isGasIncludedTrade = true;
     state.metamask.marketData[CHAIN_IDS.MAINNET][
       '0x6B175474E89094C44Da98b954EedeAC495271d0F' // DAI token contract address.
     ] = {
@@ -188,7 +189,7 @@ describe('ReviewQuote', () => {
     });
 
     it('with trade and approve transactions', async () => {
-      smartDisabled1559State.metamask.swapsState.quotes.TEST_AGG_2.approvalNeeded =
+      smartDisabled1559State.metamask.SwapsController.swapsState.quotes.TEST_AGG_2.approvalNeeded =
         {
           data: '0x095ea7b300000000000000000000000095e6f48254609a6ee006f7d493c8e5fb97094cef0000000000000000000000000000000000000000004a817c7ffffffdabf41c00',
           to: '0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2',

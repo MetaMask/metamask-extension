@@ -209,7 +209,7 @@ describe('PrepareSwapPage', () => {
     mockStore.metamask.providerConfig = {
       chainId: '0x1',
     };
-    mockStore.metamask.swapsState.quotes = [];
+    mockStore.metamask.SwapsController.swapsState.quotes = [];
     const store = configureMockStore(middleware)(mockStore);
 
     const props = createProps();
@@ -230,7 +230,7 @@ describe('PrepareSwapPage', () => {
       chainId: '0x1',
     };
     expect(
-      Object.keys(mockStore.metamask.swapsState.quotes).length,
+      Object.keys(mockStore.metamask.SwapsController.swapsState.quotes).length,
     ).toBeDefined();
     const store = configureMockStore(middleware)(mockStore);
 
@@ -252,7 +252,7 @@ describe('PrepareSwapPage', () => {
       chainId: '0x539', // swaps testnet
     };
     expect(
-      Object.keys(mockStore.metamask.swapsState.quotes).length,
+      Object.keys(mockStore.metamask.SwapsController.swapsState.quotes).length,
     ).toBeDefined();
 
     const store = configureMockStore(middleware)(mockStore);

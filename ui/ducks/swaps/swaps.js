@@ -319,10 +319,10 @@ export function shouldShowCustomPriceTooLowWarning(state) {
 
 // Background selectors
 
-const getSwapsState = (state) => state.metamask.swapsState;
+const getSwapsState = (state) => state.metamask.SwapsController.swapsState;
 
 export const getSwapsFeatureIsLive = (state) =>
-  state.metamask.swapsState.swapsFeatureIsLive;
+  state.metamask.SwapsController.swapsState.swapsFeatureIsLive;
 
 export const getSmartTransactionsError = (state) =>
   state.appState.smartTransactionsError;
@@ -337,35 +337,37 @@ export const getCurrentSmartTransactionsEnabled = (state) => {
 };
 
 export const getSwapsQuoteRefreshTime = (state) =>
-  state.metamask.swapsState.swapsQuoteRefreshTime;
+  state.metamask.SwapsController.swapsState.swapsQuoteRefreshTime;
 
 export const getSwapsQuotePrefetchingRefreshTime = (state) =>
-  state.metamask.swapsState.swapsQuotePrefetchingRefreshTime;
+  state.metamask.SwapsController.swapsState.swapsQuotePrefetchingRefreshTime;
 
 export const getBackgroundSwapRouteState = (state) =>
-  state.metamask.swapsState.routeState;
+  state.metamask.SwapsController.swapsState.routeState;
 
 export const getCustomSwapsGas = (state) =>
-  state.metamask.swapsState.customMaxGas;
+  state.metamask.SwapsController.swapsState.customMaxGas;
 
 export const getCustomSwapsGasPrice = (state) =>
-  state.metamask.swapsState.customGasPrice;
+  state.metamask.SwapsController.swapsState.customGasPrice;
 
 export const getCustomMaxFeePerGas = (state) =>
-  state.metamask.swapsState.customMaxFeePerGas;
+  state.metamask.SwapsController.swapsState.customMaxFeePerGas;
 
 export const getCustomMaxPriorityFeePerGas = (state) =>
-  state.metamask.swapsState.customMaxPriorityFeePerGas;
+  state.metamask.SwapsController.swapsState.customMaxPriorityFeePerGas;
 
 export const getSwapsUserFeeLevel = (state) =>
-  state.metamask.swapsState.swapsUserFeeLevel;
+  state.metamask.SwapsController.swapsState.swapsUserFeeLevel;
 
-export const getFetchParams = (state) => state.metamask.swapsState.fetchParams;
+export const getFetchParams = (state) =>
+  state.metamask.SwapsController.swapsState.fetchParams;
 
-export const getQuotes = (state) => state.metamask.swapsState.quotes;
+export const getQuotes = (state) =>
+  state.metamask.SwapsController.swapsState.quotes;
 
 export const getQuotesLastFetched = (state) =>
-  state.metamask.swapsState.quotesLastFetched;
+  state.metamask.SwapsController.swapsState.quotesLastFetched;
 
 export const getSelectedQuote = (state) => {
   const { selectedAggId, quotes } = getSwapsState(state);
@@ -377,7 +379,8 @@ export const getSwapsErrorKey = (state) => getSwapsState(state)?.errorKey;
 export const getShowQuoteLoadingScreen = (state) =>
   state.swaps.showQuoteLoadingScreen;
 
-export const getSwapsTokens = (state) => state.metamask.swapsState.tokens;
+export const getSwapsTokens = (state) =>
+  state.metamask.SwapsController.swapsState.tokens;
 
 export const getSwapsWelcomeMessageSeenStatus = (state) =>
   state.metamask.swapsWelcomeMessageHasBeenShown;
@@ -387,9 +390,11 @@ export const getTopQuote = (state) => {
   return quotes[topAggId];
 };
 
-export const getApproveTxId = (state) => state.metamask.swapsState.approveTxId;
+export const getApproveTxId = (state) =>
+  state.metamask.SwapsController.swapsState.approveTxId;
 
-export const getTradeTxId = (state) => state.metamask.swapsState.tradeTxId;
+export const getTradeTxId = (state) =>
+  state.metamask.SwapsController.swapsState.tradeTxId;
 
 export const getUsedQuote = (state) =>
   getSelectedQuote(state) || getTopQuote(state);
@@ -454,7 +459,7 @@ export const getSwapsNetworkConfig = (state) => {
     swapsStxBatchStatusRefreshTime,
     swapsStxStatusDeadline,
     swapsStxMaxFeeMultiplier,
-  } = state.metamask.swapsState;
+  } = state.metamask.SwapsController.swapsState;
   return {
     quoteRefreshTime: swapsQuoteRefreshTime,
     quotePrefetchingRefreshTime: swapsQuotePrefetchingRefreshTime,
