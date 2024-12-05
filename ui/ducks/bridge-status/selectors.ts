@@ -1,7 +1,7 @@
 import { createSelector } from 'reselect';
 import { Hex } from '@metamask/utils';
 import {
-  BridgeStatusControllerState,
+  BridgeStatusState,
   BridgeHistoryItem,
 } from '../../../shared/types/bridge-status';
 import { getSelectedAddress } from '../../selectors';
@@ -13,7 +13,7 @@ import {
 
 export type BridgeStatusAppState = ProviderConfigState & {
   metamask: {
-    bridgeStatusState: BridgeStatusControllerState;
+    bridgeStatusState: BridgeStatusState;
   };
 };
 
