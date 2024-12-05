@@ -167,6 +167,10 @@ export type StartPollingForBridgeTxStatusArgsSerialized = Omit<
 
 export type SourceChainTxMetaId = string;
 
-export type BridgeStatusControllerState = {
+export type BridgeStatusState = {
   txHistory: Record<SourceChainTxMetaId, BridgeHistoryItem>;
+};
+
+export type BridgeStatusControllerState = {
+  bridgeStatusState: BridgeStatusState;
 };
