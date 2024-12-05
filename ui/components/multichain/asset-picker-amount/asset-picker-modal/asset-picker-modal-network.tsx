@@ -34,6 +34,7 @@ import { NetworkListItem } from '../../network-list-item';
 import { getNetworkConfigurationsByChainId } from '../../../../../shared/modules/selectors/networks';
 import { getCurrentCurrency } from '../../../../selectors';
 import { formatCurrency } from '../../../../helpers/utils/confirm-tx.util';
+import { useMultichainBalances } from '../../../../hooks/useMultichainBalances';
 
 /**
  * AssetPickerModalNetwork component displays a modal for selecting a network in the asset picker.
@@ -81,10 +82,15 @@ export const AssetPickerModalNetwork = ({
   const t = useI18nContext();
   ///: END:ONLY_INCLUDE_IF
 
+  const { balanceByChainId } = useMultichainBalances();
+
   const allNetworks = useSelector(getNetworkConfigurationsByChainId);
   const currency = useSelector(getCurrentCurrency);
   const networksList = useMemo(
-    () => networks ?? Object.values(allNetworks) ?? [],
+    () =>
+      (networks ?? Object.values(allNetworks) ?? []).sort(
+        (a, b) => balanceByChainId[b.chainId] - balanceByChainId[a.chainId],
+      ),
     [],
   );
 
