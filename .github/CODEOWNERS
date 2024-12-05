@@ -22,7 +22,10 @@ CHANGELOG.md
 coverage.json
 package.json
 yarn.lock
+app/_locales
 app/scripts/metamask-controller.js
+app/scripts/metamask-controller.test.js
+app/scripts/metamask-controller.actions.test.js
 
 # LavaMoat policy changes can highlight security risks. Teams are encouraged to
 # audit these changes on their own, and leave their analysis in a comment.
