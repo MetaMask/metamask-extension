@@ -710,6 +710,9 @@
   "baseFee": {
     "message": "Base fee"
   },
+  "baseNetworkToastMessage": {
+    "message": "We’ve updated the default RPC for Base to make your experience more reliable."
+  },
   "basic": {
     "message": "Basic"
   },
@@ -6121,9 +6124,6 @@
   },
   "switchToThisAccount": {
     "message": "Switch to this account"
-  },
-  "baseNetworkToastMessage": {
-    "message": "We’ve updated the default RPC for Base to make your experience more reliable."
   },
   "switchedNetworkToastDecline": {
     "message": "Don't show again"
