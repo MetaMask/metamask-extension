@@ -71,8 +71,4 @@ export class PPOMControllerInit extends ControllerInit<
       blockaidPublicKey: process.env.BLOCKAID_PUBLIC_KEY as string,
     });
   }
-
-  override getMemStateKey(_controller: PPOMController): string | undefined {
-    return undefined;
-  }
 }
