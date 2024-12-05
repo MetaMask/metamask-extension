@@ -6,6 +6,7 @@ import { Box } from '../../../components/component-library';
 import {
   BridgeHistoryItem,
   StatusTypes,
+  Step,
 } from '../../../../shared/types/bridge-status';
 import { formatDate } from '../../../helpers/utils/util';
 import BridgeStepDescription, {
@@ -29,7 +30,7 @@ const getTime = (
 };
 
 type BridgeStepsProps = {
-  bridgeHistoryItem: BridgeHistoryItem;
+  bridgeHistoryItem?: BridgeHistoryItem;
   srcChainTxMeta?: TransactionMeta;
   networkConfigurationsByChainId: Record<Hex, NetworkConfiguration>;
 };
@@ -39,9 +40,9 @@ export default function BridgeStepList({
   srcChainTxMeta,
   networkConfigurationsByChainId,
 }: BridgeStepsProps) {
-  const { steps } = bridgeHistoryItem.quote;
+  const steps = bridgeHistoryItem?.quote.steps || [];
   const stepStatuses = steps.map((step) =>
-    getStepStatus(bridgeHistoryItem, step, srcChainTxMeta),
+    getStepStatus({ bridgeHistoryItem, step: step as Step, srcChainTxMeta }),
   );
 
   return (
@@ -71,8 +72,8 @@ export default function BridgeStepList({
           getTime(
             i,
             i === steps.length - 1,
-            bridgeHistoryItem.startTime,
-            bridgeHistoryItem.estimatedProcessingTimeInSeconds,
+            bridgeHistoryItem?.startTime || srcChainTxMeta?.time,
+            bridgeHistoryItem?.estimatedProcessingTimeInSeconds || 0,
           ),
           'hh:mm a',
         );
