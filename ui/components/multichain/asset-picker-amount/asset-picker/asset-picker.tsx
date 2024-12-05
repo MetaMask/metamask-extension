@@ -69,6 +69,7 @@ export type AssetPickerProps = {
   onClick?: () => void;
   isDisabled?: boolean;
   action?: 'send' | 'receive';
+  isMultiselectEnabled?: boolean;
   networkProps?: Pick<
     React.ComponentProps<typeof AssetPickerModalNetwork>,
     | 'network'
@@ -100,6 +101,7 @@ export function AssetPicker({
   visibleTabs,
   customTokenListGenerator,
   isTokenListLoading = false,
+  isMultiselectEnabled = false,
 }: AssetPickerProps) {
   ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
   const t = useI18nContext();
@@ -126,6 +128,14 @@ export function AssetPicker({
     networkProps?.network ??
     (currentNetwork?.chainId && allNetworks[currentNetwork.chainId]);
 
+  // This is used to determine which tokens to display when isMultiselectEnabled=true
+  const [selectedChainIds, setSelectedChainIds] = useState<string[]>(
+    (networkProps?.networks ?? Object.values(allNetworks))?.map(
+      ({ chainId }) => chainId,
+    ) ?? [],
+  );
+  const [isSelectingNetwork, setIsSelectingNetwork] = useState(false);
+
   const handleAssetPickerTitle = (): string | undefined => {
     ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
     if (isDisabled) {
@@ -141,8 +151,6 @@ export function AssetPicker({
     CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP[
       selectedNetwork.chainId as keyof typeof CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP
     ];
-
-  const [isSelectingNetwork, setIsSelectingNetwork] = useState(false);
 
   const handleButtonClick = () => {
     if (networkProps && !networkProps.network) {
@@ -165,6 +173,9 @@ export function AssetPicker({
             setIsSelectingNetwork(false);
             setShowAssetPickerModal(true);
           }}
+          isMultiselectEnabled={isMultiselectEnabled}
+          onMultiselectSubmit={setSelectedChainIds}
+          selectedChainIds={selectedChainIds}
           {...networkProps}
         />
       )}
@@ -182,9 +193,21 @@ export function AssetPicker({
             | AssetWithDisplayData<ERC20Asset>
             | AssetWithDisplayData<NativeAsset>,
         ) => {
+          // If isMultiselectEnabled=true, update the network when a token is selected
+          if (isMultiselectEnabled) {
+            const networkFromToken =
+              token.chainId &&
+              allNetworks[token.chainId as keyof typeof allNetworks];
+            if (networkProps?.onNetworkChange) {
+              networkProps.onNetworkChange(networkFromToken);
+            } else {
+              // TODO set active network
+            }
+          }
           onAssetChange(token);
           setShowAssetPickerModal(false);
         }}
+        isMultiselectEnabled={isMultiselectEnabled}
         sendingAsset={sendingAsset}
         network={networkProps?.network ? networkProps.network : undefined}
         onNetworkPickerClick={
