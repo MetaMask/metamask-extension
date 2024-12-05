@@ -21,6 +21,7 @@ import {
   ADD_POPULAR_CUSTOM_NETWORK,
   DEFAULT_ROUTE,
   NOTIFICATIONS_SETTINGS_ROUTE,
+  SNAP_SETTINGS_ROUTE,
 } from '../../helpers/constants/routes';
 
 import { getSettingsRoutes } from '../../helpers/utils/settings-search';
@@ -31,6 +32,7 @@ import {
   IconName,
   Box,
   Text,
+  IconSize,
 } from '../../components/component-library';
 import {
   AlignItems,
@@ -44,6 +46,8 @@ import MetafoxLogo from '../../components/ui/metafox-logo';
 // eslint-disable-next-line import/no-restricted-paths
 import { getEnvironmentType } from '../../../app/scripts/lib/util';
 import { ENVIRONMENT_TYPE_POPUP } from '../../../shared/constants/app';
+import { SnapIcon } from '../../components/app/snaps/snap-icon';
+import { SnapSettingsRenderer } from '../../components/app/snaps/snap-settings-page';
 import SettingsTab from './settings-tab';
 import AdvancedTab from './advanced-tab';
 import InfoTab from './info-tab';
@@ -70,6 +74,9 @@ class SettingsPage extends PureComponent {
     mostRecentOverviewPage: PropTypes.string.isRequired,
     pathnameI18nKey: PropTypes.string,
     remoteFeatureFlags: PropTypes.object.isRequired,
+    settingsPageSnapsIds: PropTypes.array,
+    snapNameGetter: PropTypes.func,
+    snapSettingsTitle: PropTypes.string,
     toggleNetworkMenu: PropTypes.func.isRequired,
     useExternalServices: PropTypes.bool,
   };
@@ -121,6 +128,7 @@ class SettingsPage extends PureComponent {
     const { searchResults, isSearchList, searchText } = this.state;
     const { t } = this.context;
     const isPopup = getEnvironmentType() === ENVIRONMENT_TYPE_POPUP;
+    console.log('plop');
 
     return (
       <div
@@ -210,12 +218,15 @@ class SettingsPage extends PureComponent {
 
   renderTitle() {
     const { t } = this.context;
-    const { isPopup, pathnameI18nKey, addressName } = this.props;
+    const { isPopup, pathnameI18nKey, addressName, snapSettingsTitle } =
+      this.props;
     let titleText;
     if (isPopup && addressName) {
       titleText = t('details');
     } else if (pathnameI18nKey && isPopup) {
       titleText = t(pathnameI18nKey);
+    } else if (snapSettingsTitle) {
+      titleText = snapSettingsTitle;
     } else {
       titleText = t('settings');
     }
@@ -293,8 +304,23 @@ class SettingsPage extends PureComponent {
   }
 
   renderTabs() {
-    const { history, currentPath, useExternalServices } = this.props;
+    const {
+      history,
+      currentPath,
+      useExternalServices,
+      settingsPageSnapsIds,
+      snapNameGetter,
+    } = this.props;
     const { t } = this.context;
+
+    const snapsSettings = settingsPageSnapsIds.map((snapId) => {
+      const snapName = snapNameGetter(snapId);
+      return {
+        content: snapName,
+        icon: <SnapIcon snapId={snapId} avatarSize={IconSize.Md} />,
+        key: `${SNAP_SETTINGS_ROUTE}/${encodeURIComponent(snapId)}`,
+      };
+    });
 
     const tabs = [
       {
@@ -302,6 +328,7 @@ class SettingsPage extends PureComponent {
         icon: <Icon name={IconName.Setting} />,
         key: GENERAL_ROUTE,
       },
+      ...snapsSettings,
       {
         content: t('advanced'),
         icon: <i className="fas fa-sliders-h" />,
@@ -389,6 +416,10 @@ class SettingsPage extends PureComponent {
           render={() => (
             <InfoTab remoteFeatureFlags={this.props.remoteFeatureFlags} />
           )}
+        />
+        <Route
+          path={`${SNAP_SETTINGS_ROUTE}/:snapId`}
+          component={SnapSettingsRenderer}
         />
         <Route exact path={ADVANCED_ROUTE} component={AdvancedTab} />
         <Route
