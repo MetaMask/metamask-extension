@@ -18,7 +18,7 @@ export const BadgeWrapper: BadgeWrapperComponent = React.forwardRef(
       children,
       badge,
       badgeContainerProps,
-      position = BadgeWrapperPosition.topRight,
+      position = BadgeWrapperPosition.bottomRight,
       positionObj,
       anchorElementShape = BadgeWrapperAnchorElementShape.circular,
       className = '',
