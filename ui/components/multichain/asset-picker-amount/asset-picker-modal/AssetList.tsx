@@ -21,6 +21,7 @@ import {
 import { TokenListItem } from '../..';
 import LoadingScreen from '../../../ui/loading-screen';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
+import { CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP } from '../../../../../shared/constants/network';
 import AssetComponent from './Asset';
 import { AssetWithDisplayData, ERC20Asset, NativeAsset } from './types';
 
@@ -78,7 +79,9 @@ export default function AssetList({
       )}
       {tokenList.map((token) => {
         const tokenAddress = token.address?.toLowerCase();
-        const isSelected = tokenAddress === selectedToken?.toLowerCase();
+        const isSelected =
+          tokenAddress === selectedToken?.toLowerCase() &&
+          token.chainId === network?.chainId;
         const isDisabled = isTokenDisabled?.(token) ?? false;
 
         return (
@@ -86,7 +89,7 @@ export default function AssetList({
             padding={0}
             gap={0}
             margin={0}
-            key={`${token.symbol}-${tokenAddress ?? ''}`}
+            key={`${token.symbol}-${tokenAddress ?? ''}-${token.chainId}`}
             backgroundColor={
               isSelected
                 ? BackgroundColor.primaryMuted
@@ -119,25 +122,26 @@ export default function AssetList({
               alignItems={AlignItems.center}
             >
               <Box marginInlineStart={2}>
-                {token.type === AssetType.native ? (
+                {token.type === AssetType.native &&
+                token.chainId === chainId &&
+                isSelectedNetworkActive ? (
+                  // Only use this component for the native token of the active network
                   <TokenListItem
-                    chainId={chainId}
+                    chainId={token.chainId}
                     title={token.symbol}
-                    primary={
-                      isSelectedNetworkActive ? primaryCurrencyValue : undefined
-                    }
+                    primary={primaryCurrencyValue}
                     tokenSymbol={token.symbol}
-                    secondary={
-                      isSelectedNetworkActive
-                        ? secondaryCurrencyValue
-                        : undefined
-                    }
+                    secondary={secondaryCurrencyValue}
                     tokenImage={token.image}
                     isPrimaryTokenSymbolHidden
+                    tokenChainImage={
+                      CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP[
+                        token.chainId as keyof typeof CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP
+                      ]
+                    }
                   />
                 ) : (
                   <AssetComponent
-                    key={token.address}
                     {...token}
                     tooltipText={
                       isDisabled ? 'swapTokenNotAvailable' : undefined
