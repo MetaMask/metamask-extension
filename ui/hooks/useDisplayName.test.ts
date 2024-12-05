@@ -72,7 +72,7 @@ describe('useDisplayName', () => {
   }
 
   function mockWatchedNFTName(value: string, variation: string, name: string) {
-    state.metamask.allNftContracts = {
+    state.metamask.NftController.allNftContracts = {
       '0x123': {
         [variation]: [{ address: value, name }],
       },

@@ -11,7 +11,8 @@ const selectedAddress =
   mockState.metamask.AccountsController.internalAccounts.accounts[
     mockState.metamask.AccountsController.internalAccounts.selectedAccount
   ].address;
-const nfts = mockState.metamask.allNfts[selectedAddress][toHex(5)];
+const nfts =
+  mockState.metamask.NftController.allNfts[selectedAddress][toHex(5)];
 const mockAsset = nfts[0].address;
 const mockId = nfts[0].tokenId;
 jest.mock('react-router-dom', () => {

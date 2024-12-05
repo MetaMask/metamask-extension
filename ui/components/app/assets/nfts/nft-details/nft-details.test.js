@@ -61,7 +61,8 @@ describe('NFT Details', () => {
     mockState.metamask.AccountsController.internalAccounts.accounts[
       mockState.metamask.AccountsController.internalAccounts.selectedAccount
     ].address;
-  const nfts = mockState.metamask.allNfts[selectedAddress][toHex(5)];
+  const nfts =
+    mockState.metamask.NftController.allNfts[selectedAddress][toHex(5)];
 
   const props = {
     nft: nfts[5],

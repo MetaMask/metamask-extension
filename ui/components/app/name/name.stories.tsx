@@ -191,7 +191,7 @@ export const DefaultWatchedNFTNameStory = {
     type: NameType.ETHEREUM_ADDRESS,
     variation: VARIATION_MOCK,
     state: (state) => {
-      state.metamask.allNftContracts = {
+      state.metamask.NftController.allNftContracts = {
         '0x123': {
           [VARIATION_MOCK]: [
             {

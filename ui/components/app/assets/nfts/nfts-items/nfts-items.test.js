@@ -29,7 +29,9 @@ const mockSelectedInternalAccount =
 
 describe('NFTs Item Component', () => {
   const nfts =
-    mockState.metamask.allNfts[mockSelectedInternalAccount.address][toHex(5)];
+    mockState.metamask.NftController.allNfts[
+      mockSelectedInternalAccount.address
+    ][toHex(5)];
   const props = {
     collections: {
       '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc': {

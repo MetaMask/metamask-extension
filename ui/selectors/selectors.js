@@ -875,7 +875,7 @@ export const selectConversionRateByChainId = createSelector(
 
 export const selectNftsByChainId = createSelector(
   getSelectedInternalAccount,
-  (state) => state.metamask.allNfts,
+  (state) => state.metamask.NftController.allNfts,
   (_state, chainId) => chainId,
   (selectedAccount, nfts, chainId) => {
     return nfts?.[selectedAccount.address]?.[chainId] ?? [];
@@ -884,7 +884,7 @@ export const selectNftsByChainId = createSelector(
 
 export const selectNftContractsByChainId = createSelector(
   getSelectedInternalAccount,
-  (state) => state.metamask.allNftContracts,
+  (state) => state.metamask.NftController.allNftContracts,
   (_state, chainId) => chainId,
   (selectedAccount, nftContracts, chainId) => {
     return nftContracts?.[selectedAccount.address]?.[chainId] ?? [];
