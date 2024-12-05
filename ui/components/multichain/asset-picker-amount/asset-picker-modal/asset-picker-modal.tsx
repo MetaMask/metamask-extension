@@ -404,6 +404,7 @@ export function AssetPickerModal({
               <Search
                 searchQuery={searchQuery}
                 onChange={(value) => setSearchQuery(value)}
+                autoFocus={false}
               />
               <AssetList
                 network={network}
