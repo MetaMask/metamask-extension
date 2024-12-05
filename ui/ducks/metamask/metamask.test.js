@@ -234,7 +234,7 @@ describe('MetaMask Reducers', () => {
       type: actionConstants.LOCK_METAMASK,
     });
 
-    expect(lockMetaMask.isUnlocked).toStrictEqual(false);
+    expect(lockMetaMask.KeyringController.isUnlocked).toStrictEqual(false);
   });
 
   it('sets account label', () => {

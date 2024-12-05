@@ -404,7 +404,7 @@ export function getNumberOfTokens(state) {
 }
 
 export function getMetaMaskKeyrings(state) {
-  return state.metamask.keyrings;
+  return state.metamask.KeyringController.keyrings;
 }
 
 /**
