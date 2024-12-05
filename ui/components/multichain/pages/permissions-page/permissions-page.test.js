@@ -6,7 +6,7 @@ import { mockNetworkState } from '../../../../../test/stub/networks';
 import { CHAIN_IDS } from '../../../../../shared/constants/network';
 import { PermissionsPage } from './permissions-page';
 
-mockState.metamask.subjectMetadata = {
+mockState.metamask.SubjectMetadataController.subjectMetadata = {
   'https://metamask.github.io': {
     iconUrl: 'https://metamask.github.io/test-dapp/metamask-fox.svg',
     name: 'E2E Test Dapp',
@@ -31,7 +31,7 @@ mockState.metamask.subjectMetadata = {
   },
 };
 
-mockState.metamask.subjects = {
+mockState.metamask.PermissionController.subjects = {
   'https://metamask.github.io': {
     origin: 'https://metamask.github.io',
     permissions: {
@@ -51,7 +51,7 @@ mockState.metamask.subjects = {
   },
 };
 
-mockState.metamask.snaps = {
+mockState.metamask.SnapController.snaps = {
   'npm:@metamask/testSnap1': {
     id: 'npm:@metamask/testSnap1',
     origin: 'npm:@metamask/testSnap1',
@@ -92,7 +92,9 @@ let store = configureStore({
   ...mockState,
   metamask: {
     ...mockState.metamask,
-    ...mockNetworkState({ chainId: CHAIN_IDS.MAINNET, id: 'mainnet' }),
+    NetworkController: {
+      ...mockNetworkState({ chainId: CHAIN_IDS.MAINNET, id: 'mainnet' }),
+    },
   },
 });
 
@@ -109,9 +111,9 @@ describe('All Connections', () => {
     });
 
     it('renders no connections message when user has no connections', () => {
-      mockState.metamask.snaps = {};
-      mockState.metamask.subjectMetadata = {};
-      mockState.metamask.subjects = {};
+      mockState.metamask.SnapController.snaps = {};
+      mockState.metamask.SubjectMetadataController.subjectMetadata = {};
+      mockState.metamask.PermissionController.subjects = {};
       store = configureStore(mockState);
       const { getByTestId } = renderWithProvider(<PermissionsPage />, store);
       expect(getByTestId('no-connections')).toBeInTheDocument();

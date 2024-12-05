@@ -23,7 +23,7 @@ import { getSelectedInternalAccount } from './accounts';
  * @returns {object} The permissions subjects object.
  */
 export const getPermissionSubjectsDeepEqual = createDeepEqualSelector(
-  (state) => state.metamask.subjects || {},
+  (state) => state.metamask.PermissionController.subjects || {},
   (subjects) => subjects,
 );
 
@@ -45,7 +45,7 @@ export const getSubjectMetadataDeepEqual = createDeepEqualSelector(
  * @returns {object} The permissions subjects object.
  */
 export function getPermissionSubjects(state) {
-  return state.metamask.subjects || {};
+  return state.metamask.PermissionController.subjects || {};
 }
 
 /**
@@ -324,7 +324,7 @@ function getAccountsCaveatFromPermission(accountsPermission = {}) {
 }
 
 function subjectSelector(state, origin) {
-  return origin && state.metamask.subjects?.[origin];
+  return origin && state.metamask.PermissionController.subjects?.[origin];
 }
 
 export function getAccountToConnectToActiveTab(state) {
