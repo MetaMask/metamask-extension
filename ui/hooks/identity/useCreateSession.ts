@@ -4,8 +4,8 @@ import log from 'loglevel';
 import {
   selectIsSignedIn,
   selectParticipateInMetaMetrics,
-} from '../../selectors/metamask-notifications/authentication';
-import { selectIsProfileSyncingEnabled } from '../../selectors/metamask-notifications/profile-syncing';
+} from '../../selectors/identity/authentication';
+import { selectIsProfileSyncingEnabled } from '../../selectors/identity/profile-syncing';
 import { performSignIn, disableProfileSyncing } from '../../store/actions';
 
 /**

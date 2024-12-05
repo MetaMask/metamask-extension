@@ -6,7 +6,7 @@ import FixtureBuilder from '../../fixture-builder';
 import AdvancedSettings from '../../page-objects/pages/settings/advanced-settings';
 import GeneralSettings from '../../page-objects/pages/settings/general-settings';
 import HeaderNavbar from '../../page-objects/pages/header-navbar';
-import Homepage from '../../page-objects/pages/homepage';
+import Homepage from '../../page-objects/pages/home/homepage';
 import SendTokenPage from '../../page-objects/pages/send/send-token-page';
 import SettingsPage from '../../page-objects/pages/settings/settings-page';
 import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';

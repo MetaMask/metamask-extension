@@ -20,6 +20,12 @@ class Confirmation {
     text: 'Alert',
   };
 
+  private nextPageButton: RawLocator;
+
+  private previousPageButton: RawLocator;
+
+  private navigationTitle: RawLocator;
+
   constructor(driver: Driver) {
     this.driver = driver;
 
@@ -28,6 +34,10 @@ class Confirmation {
     this.headerAccountDetailsButton =
       '[data-testid="header-info__account-details-button"]';
     this.footerCancelButton = '[data-testid="confirm-footer-cancel-button"]';
+    this.nextPageButton = '[data-testid="confirm-nav__next-confirmation"]';
+    this.previousPageButton =
+      '[data-testid="confirm-nav__previous-confirmation"]';
+    this.navigationTitle = '[data-testid="confirm-page-nav-position"]';
   }
 
   async clickScrollToBottomButton() {
@@ -57,6 +67,29 @@ class Confirmation {
 
   async clickInlineAlert() {
     await this.driver.clickElement(this.inlineAlertButton);
+  }
+
+  async clickNextPage(): Promise<void> {
+    await this.driver.clickElement(this.nextPageButton);
+  }
+
+  async clickPreviousPage(): Promise<void> {
+    await this.driver.clickElement(this.previousPageButton);
+  }
+
+  async check_pageNumbers(
+    currentPage: number,
+    totalPages: number,
+  ): Promise<void> {
+    try {
+      await this.driver.findElement({
+        css: this.navigationTitle,
+        text: `${currentPage} of ${totalPages}`,
+      });
+    } catch (e) {
+      console.log('Timeout while waiting for navigation page numbers', e);
+      throw e;
+    }
   }
 }
 
