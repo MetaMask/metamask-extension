@@ -1618,13 +1618,16 @@ export function updateMetamaskState(
 
     // track when gasFeeEstimates change
     if (
-      isEqual(currentState.gasFeeEstimates, newState.gasFeeEstimates) === false
+      isEqual(
+        currentState.GasFeeController.gasFeeEstimates,
+        newState.GasFeeController.gasFeeEstimates,
+      ) === false
     ) {
       dispatch({
         type: actionConstants.GAS_FEE_ESTIMATES_UPDATED,
         payload: {
-          gasFeeEstimates: newState.gasFeeEstimates,
-          gasEstimateType: newState.gasEstimateType,
+          gasFeeEstimates: newState.GasFeeController.gasFeeEstimates,
+          gasEstimateType: newState.GasFeeController.gasEstimateType,
         },
       });
     }
