@@ -1,4 +1,5 @@
 const CIRCLE_TOKEN = process.env.API_V2_TOKEN;
+const GITHUB_DEFAULT_BRANCH = 'main';
 
 interface Actor {
   login: string;
@@ -177,7 +178,7 @@ async function rerunWorkflowById(workflowId: string) {
 }
 
 /**
- * Re-runs failed CircleCI workflows from main branch.
+ * Re-runs failed CircleCI workflows from default branch.
  * The workflow will only be re-runed if:
  *   1. It has the status of 'failed'
  *   2. It has only been run once
@@ -186,9 +187,9 @@ async function rerunWorkflowById(workflowId: string) {
  *
  * @throws Will throw an error if fetching the workflows or re-running a workflow fails.
  */
-async function rerunFailedWorkflowsFromDevelop() {
+async function rerunFailedWorkflowsFromDefaultBranch() {
   console.log('Getting Circle Ci workflows from main branch...');
-  const workflows = await getCircleCiWorkflowsByBranch('main');
+  const workflows = await getCircleCiWorkflowsByBranch(GITHUB_DEFAULT_BRANCH);
 
   console.log('Assessing if any of the workflows needs to be rerun...');
   for (const item of workflows) {
@@ -204,7 +205,7 @@ async function rerunFailedWorkflowsFromDevelop() {
   console.log('Task completed successfully!');
 }
 
-rerunFailedWorkflowsFromDevelop()
+rerunFailedWorkflowsFromDefaultBranch()
   .catch((error) => {
     console.error(error);
     process.exitCode = 1;

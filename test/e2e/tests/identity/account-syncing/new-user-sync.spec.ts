@@ -2,12 +2,12 @@ import { Mockttp } from 'mockttp';
 import { USER_STORAGE_FEATURE_NAMES } from '@metamask/profile-sync-controller/sdk';
 import { withFixtures } from '../../../helpers';
 import FixtureBuilder from '../../../fixture-builder';
-import { mockNotificationServices } from '../mocks';
-import { NOTIFICATIONS_TEAM_PASSWORD } from '../constants';
-import { UserStorageMockttpController } from '../../../helpers/user-storage/userStorageMockttpController';
+import { mockIdentityServices } from '../mocks';
+import { IDENTITY_TEAM_PASSWORD } from '../constants';
+import { UserStorageMockttpController } from '../../../helpers/identity/user-storage/userStorageMockttpController';
 import HeaderNavbar from '../../../page-objects/pages/header-navbar';
 import AccountListPage from '../../../page-objects/pages/account-list-page';
-import HomePage from '../../../page-objects/pages/homepage';
+import HomePage from '../../../page-objects/pages/home/homepage';
 import {
   completeCreateNewWalletOnboardingFlow,
   completeImportSRPOnboardingFlow,
@@ -36,17 +36,14 @@ describe('Account syncing - New User @no-mmi', function () {
               server,
             );
 
-            return mockNotificationServices(
-              server,
-              userStorageMockttpController,
-            );
+            return mockIdentityServices(server, userStorageMockttpController);
           },
         },
         async ({ driver }) => {
           // Create a new wallet
           await completeCreateNewWalletOnboardingFlow({
             driver,
-            password: NOTIFICATIONS_TEAM_PASSWORD,
+            password: IDENTITY_TEAM_PASSWORD,
           });
           const homePage = new HomePage(driver);
           await homePage.check_pageIsLoaded();
@@ -81,9 +78,7 @@ describe('Account syncing - New User @no-mmi', function () {
           await privacySettings.check_pageIsLoaded();
           await privacySettings.openRevealSrpQuiz();
           await privacySettings.completeRevealSrpQuiz();
-          await privacySettings.fillPasswordToRevealSrp(
-            NOTIFICATIONS_TEAM_PASSWORD,
-          );
+          await privacySettings.fillPasswordToRevealSrp(IDENTITY_TEAM_PASSWORD);
           walletSrp = await privacySettings.getSrpInRevealSrpDialog();
           if (!walletSrp) {
             throw new Error('Wallet SRP was not set');
@@ -100,10 +95,7 @@ describe('Account syncing - New User @no-mmi', function () {
               USER_STORAGE_FEATURE_NAMES.accounts,
               server,
             );
-            return mockNotificationServices(
-              server,
-              userStorageMockttpController,
-            );
+            return mockIdentityServices(server, userStorageMockttpController);
           },
         },
         async ({ driver }) => {
@@ -111,7 +103,7 @@ describe('Account syncing - New User @no-mmi', function () {
           await completeImportSRPOnboardingFlow({
             driver,
             seedPhrase: walletSrp,
-            password: NOTIFICATIONS_TEAM_PASSWORD,
+            password: IDENTITY_TEAM_PASSWORD,
           });
           const homePage = new HomePage(driver);
           await homePage.check_pageIsLoaded();
