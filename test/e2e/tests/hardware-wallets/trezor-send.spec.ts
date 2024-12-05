@@ -4,6 +4,7 @@ import { Ganache } from '../../seeder/ganache';
 import FixtureBuilder from '../../fixture-builder';
 import { logInWithBalanceValidation, withFixtures } from '../../helpers';
 import { KNOWN_PUBLIC_KEY_ADDRESSES } from '../../../stub/keyring-bridge';
+import ActivityListPage from '../../page-objects/pages/home/activity-list';
 import HomePage from '../../page-objects/pages/home/homepage';
 import { sendRedesignedTransactionToAddress } from '../../page-objects/flows/send-transaction.flow';
 
@@ -36,8 +37,9 @@ describe('Trezor Hardware', function (this: Suite) {
         });
         const homePage = new HomePage(driver);
         await homePage.check_pageIsLoaded();
-        await homePage.check_confirmedTxNumberDisplayedInActivity();
-        await homePage.check_txAmountInActivity();
+        const activityList = new ActivityListPage(driver);
+        await activityList.check_confirmedTxNumberDisplayedInActivity();
+        await activityList.check_txAmountInActivity();
       },
     );
   });
