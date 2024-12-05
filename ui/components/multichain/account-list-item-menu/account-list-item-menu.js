@@ -130,7 +130,10 @@ export const AccountListItemMenu = ({
   }, [handleClickOutside]);
 
   const handlePinning = (address) => {
-    const updatedPinnedAccountList = [...pinnedAccountList, address];
+    const updatedPinnedAccountList = [
+      ...AccountOrderController.pinnedAccountList,
+      address,
+    ];
     dispatch(updateAccountsList(updatedPinnedAccountList));
   };
 
@@ -142,7 +145,10 @@ export const AccountListItemMenu = ({
   };
 
   const handleHidding = (address) => {
-    const updatedHiddenAccountList = [...hiddenAccountList, address];
+    const updatedHiddenAccountList = [
+      ...AccountOrderController.hiddenAccountList,
+      address,
+    ];
     if (pinnedAccountList.includes(address)) {
       handleUnpinning(address);
     }

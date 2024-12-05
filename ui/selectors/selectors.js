@@ -1974,11 +1974,11 @@ export function getOrderedNetworksList(state) {
 }
 
 export function getPinnedAccountsList(state) {
-  return state.metamask.pinnedAccountList;
+  return state.metamask.AccountOrderController.pinnedAccountList;
 }
 
 export function getHiddenAccountsList(state) {
-  return state.metamask.hiddenAccountList;
+  return state.metamask.AccountOrderController.hiddenAccountList;
 }
 
 export function getShowRecoveryPhraseReminder(state) {
