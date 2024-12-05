@@ -15,12 +15,6 @@ const slice = createSlice({
   name,
   initialState,
   reducers: {
-    showSTXMigrationAlert: (state) => {
-      state.state = ALERT_STATE.OPEN;
-    },
-    dismissSTXMigrationAlert: (state) => {
-      state.state = ALERT_STATE.CLOSED;
-    },
     disableAlertRequested: (state) => {
       state.state = ALERT_STATE.LOADING;
     },
@@ -31,30 +25,20 @@ const slice = createSlice({
       state.state = ALERT_STATE.ERROR;
     },
   },
-  extraReducers: {
-    [actionConstants.UPDATE_METAMASK_STATE]: (state, action) => {
-      console.log('=== STX ALERT STATE UPDATE ===');
-      console.log('Current state:', state.state);
-      console.log('Alert Enabledness:', action.value?.alertEnabledness);
-      console.log(
-        'STX Status:',
-        action.value?.preferences?.smartTransactionsOptInStatus,
-      );
+  extraReducers: (builder) => {
+    builder.addCase(actionConstants.UPDATE_METAMASK_STATE, (state, action) => {
       if (
         action.value?.preferences?.smartTransactionsOptInStatus === true &&
         action.value?.alertEnabledness?.[AlertTypes.stxMigration] !== false
       ) {
         state.state = ALERT_STATE.OPEN;
-        console.log('Setting state to OPEN');
       }
-      console.log('=== STX ALERT STATE UPDATE END ===');
-    },
+    });
   },
 });
 
 const { actions, reducer } = slice;
 
-export const getSTXAlertState = (state) => state[name]?.state;
 export const stxAlertIsOpen = (state) =>
   state[name]?.state === ALERT_STATE.OPEN;
 
@@ -69,12 +53,16 @@ export const {
 export const dismissAndDisableAlert = () => {
   return async (dispatch) => {
     try {
+      // Show loading state
       await dispatch(disableAlertRequested());
-      await setAlertEnabledness(name, false);
+      // Set alert enabledness to false (persistent setting)
+      await setAlertEnabledness(AlertTypes.stxMigration, false);
+      // Mark alert as successfully disabled
       await dispatch(disableAlertSucceeded());
     } catch (error) {
-      console.error(error);
+      console.error('Failed to disable STX Migration alert:', error);
       captureException(error);
+      // Show an error state
       await dispatch(disableAlertFailed());
     }
   };

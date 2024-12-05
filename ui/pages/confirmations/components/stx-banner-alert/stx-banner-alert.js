@@ -9,19 +9,15 @@ import {
 } from '../../../../components/component-library';
 import {
   stxAlertIsOpen,
-  dismissSTXMigrationAlert,
+  dismissAndDisableAlert,
 } from '../../../../ducks/alerts/stx-migration';
 import ZENDESK_URLS from '../../../../helpers/constants/zendesk-url';
 
 const STXBannerAlert = () => {
   const dispatch = useDispatch();
   const shouldShow = useSelector(stxAlertIsOpen);
-  const fullState = useSelector((state) => state);
-
-  console.log('=== STX BANNER ===');
-  console.log('Full Redux State:', fullState);
-  console.log('shouldShow:', shouldShow);
-  console.log('=== STX BANNER END ===');
+  // const fullState = useSelector((state) => state);
+  // console.log(fullState)
 
   const t = useI18nContext();
 
@@ -34,8 +30,7 @@ const STXBannerAlert = () => {
       severity={BannerAlertSeverity.Info}
       onClose={() => {
         console.log('Dismiss clicked');
-        dispatch(dismissSTXMigrationAlert());
-        console.log('Dismiss action dispatched');
+        dispatch(dismissAndDisableAlert());
       }}
       data-testid="stx-banner-alert"
     >
@@ -43,7 +38,7 @@ const STXBannerAlert = () => {
         {t('smartTransactionsEnabledMessage')}
         <ButtonLink
           href={ZENDESK_URLS.SMART_TRANSACTIONS_LEARN_MORE}
-          onClick={() => dispatch(dismissSTXMigrationAlert())}
+          onClick={() => dispatch(dismissAndDisableAlert())}
           externalLink
         >
           {t('smartTransactionsLearnMore')}
