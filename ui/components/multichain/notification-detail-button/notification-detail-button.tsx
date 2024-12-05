@@ -77,7 +77,13 @@ export const NotificationDetailButton = ({
 
   return (
     <>
-      <SnapLinkWarning isOpen={isOpen} onClose={handleModalClose} url={href} />
+      {notification.type === TRIGGER_TYPES.SNAP && (
+        <SnapLinkWarning
+          isOpen={isOpen}
+          onClose={handleModalClose}
+          url={href}
+        />
+      )}
       <Button
         key={id}
         href={!isMetaMaskUrl && href ? href : undefined}
