@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import React, { useContext, useState } from 'react';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import {
   MetaMetricsEventCategory,
@@ -14,6 +14,7 @@ import { BlockSize } from '../../../helpers/constants/design-system';
 import { TRIGGER_TYPES } from '../../../pages/notifications/notification-components';
 import useSnapNavigation from '../../../hooks/snaps/useSnapNavigation';
 import { type Notification } from '../../../pages/notifications/notification-components/types/notifications/notifications';
+import SnapLinkWarning from '../../app/snaps/snap-link-warning';
 
 type NotificationDetailButtonProps = {
   notification: Notification;
@@ -37,6 +38,11 @@ export const NotificationDetailButton = ({
   const trackEvent = useContext(MetaMetricsContext);
   const { navigate } = useSnapNavigation();
   const isMetaMaskUrl = href.startsWith('metamask:');
+  const [isOpen, setIsOpen] = useState(false);
+
+  const handleModalClose = () => {
+    setIsOpen(false);
+  };
 
   // this logic can be expanded once this detail button is used outside of the current use cases
   const getClickedItem = () => {
@@ -60,23 +66,30 @@ export const NotificationDetailButton = ({
       },
     });
 
-    if (notification.type === TRIGGER_TYPES.SNAP && isMetaMaskUrl) {
-      navigate(href);
+    if (notification.type === TRIGGER_TYPES.SNAP) {
+      if (isMetaMaskUrl) {
+        navigate(href);
+      } else {
+        setIsOpen(true);
+      }
     }
   };
 
   return (
-    <Button
-      key={id}
-      href={!isMetaMaskUrl && href ? href : undefined}
-      variant={variant}
-      externalLink={isExternal || !isMetaMaskUrl}
-      size={ButtonSize.Lg}
-      width={BlockSize.Full}
-      endIconName={endIconName ? IconName.Arrow2UpRight : undefined}
-      onClick={onClick}
-    >
-      {text}
-    </Button>
+    <>
+      <SnapLinkWarning isOpen={isOpen} onClose={handleModalClose} url={href} />
+      <Button
+        key={id}
+        href={!isMetaMaskUrl && href ? href : undefined}
+        variant={variant}
+        externalLink={isExternal || !isMetaMaskUrl}
+        size={ButtonSize.Lg}
+        width={BlockSize.Full}
+        endIconName={endIconName ? IconName.Arrow2UpRight : undefined}
+        onClick={onClick}
+      >
+        {text}
+      </Button>
+    </>
   );
 };

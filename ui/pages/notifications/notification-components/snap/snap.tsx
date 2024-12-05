@@ -24,7 +24,6 @@ import {
   Display,
   FlexDirection,
   FontWeight,
-  OverflowWrap,
 } from '../../../../helpers/constants/design-system';
 import {
   Box,
@@ -35,6 +34,7 @@ import {
 import { isOfTypeNodeGuard, type ExtractedNotification } from '../node-guard';
 import { SnapIcon } from '../../../../components/app/snaps/snap-icon';
 import { useMarkNotificationAsRead } from '../../../../hooks/metamask-notifications/useNotifications';
+import { SnapUIMarkdown } from '../../../../components/app/snaps/snap-ui-markdown';
 
 type SnapNotification = ExtractedNotification<TRIGGER_TYPES.SNAP>;
 
@@ -119,9 +119,9 @@ export const components: NotificationComponent<SnapNotification> = {
                   {snapsNameGetter(snapId)}
                 </Text>
               </Box>
-              <Text overflowWrap={OverflowWrap.Normal}>
+              <SnapUIMarkdown markdown>
                 {notification.data.message}
-              </Text>
+              </SnapUIMarkdown>
             </Box>
             <Box paddingLeft={1} paddingRight={1}>
               <SnapUIRenderer

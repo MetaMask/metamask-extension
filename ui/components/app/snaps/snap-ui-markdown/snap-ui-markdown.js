@@ -17,7 +17,7 @@ import {
 } from '../../../component-library';
 import SnapLinkWarning from '../snap-link-warning';
 
-const Paragraph = (props) => (
+export const Paragraph = (props) => (
   <Text
     {...props}
     variant={TextVariant.bodyMd}
@@ -69,7 +69,14 @@ export const SnapUIMarkdown = ({ children, markdown }) => {
         components={{
           p: Paragraph,
           a: ({ children: value, href }) => (
-            <Link onClick={() => handleLinkClick(href)}>{value ?? href}</Link>
+            <Link
+              onClick={(e) => {
+                e.stopPropagation();
+                handleLinkClick(href);
+              }}
+            >
+              {value ?? href}
+            </Link>
           ),
         }}
       >
