@@ -66,7 +66,7 @@ type Account = {
 export type AccountTrackerControllerState = {
   accounts: Record<string, Account | Record<string, never>>;
   currentBlockGasLimit: string;
-  accountsByChainId: Record<string, AccountTrackerControllerState['accounts']>;
+  accountsByChainId: Record<Hex, AccountTrackerControllerState['accounts']>;
   currentBlockGasLimitByChainId: Record<Hex, string>;
 };
 

@@ -60,7 +60,7 @@ export type AppStateControllerState = {
   // prior to Migration 92.3 where we split out the setting to support
   // multiple networks.
   hadAdvancedGasFeesSetPriorToMigration92_3: boolean;
-  qrHardware: Json;
+  qrHardware: Json & { sign: { request: unknown } };
   nftsDropdownState: Json;
   surveyLinkLastClickedOrClosed: number | null;
   signatureSecurityAlertResponses: Record<string, SecurityAlertResponse>;
