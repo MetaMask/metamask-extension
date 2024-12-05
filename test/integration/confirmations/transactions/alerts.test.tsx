@@ -28,41 +28,47 @@ const getMetaMaskStateWithUnapprovedApproveTransaction = (
 ) => {
   return {
     ...mockMetaMaskState,
-    preferences: {
-      ...mockMetaMaskState.preferences,
-      redesignedConfirmationsEnabled: true,
-    },
-    pendingApprovals: {
-      [pendingTransactionId]: {
-        id: pendingTransactionId,
-        origin: 'origin',
-        time: pendingTransactionTime,
-        type: ApprovalType.Transaction,
-        requestData: {
-          txId: pendingTransactionId,
+    PreferencesController: {
+      preferences: {
+        ...mockMetaMaskState.PreferencesController.preferences,
+        redesignedConfirmationsEnabled: true,
+      },
+      knownMethodData: {
+        '0x3b4b1381': {
+          name: 'Mint NFTs',
+          params: [
+            {
+              type: 'uint256',
+            },
+          ],
         },
-        requestState: null,
-        expectsResult: false,
       },
     },
-    pendingApprovalCount: 1,
-    knownMethodData: {
-      '0x3b4b1381': {
-        name: 'Mint NFTs',
-        params: [
-          {
-            type: 'uint256',
+    ApprovalController: {
+      pendingApprovals: {
+        [pendingTransactionId]: {
+          id: pendingTransactionId,
+          origin: 'origin',
+          time: pendingTransactionTime,
+          type: ApprovalType.Transaction,
+          requestData: {
+            txId: pendingTransactionId,
           },
-        ],
+          requestState: null,
+          expectsResult: false,
+        },
       },
+      pendingApprovalCount: 1,
     },
-    transactions: [
-      getUnapprovedApproveTransaction(
-        accountAddress,
-        pendingTransactionId,
-        pendingTransactionTime,
-      ),
-    ],
+    TxController: {
+      transactions: [
+        getUnapprovedApproveTransaction(
+          accountAddress,
+          pendingTransactionId,
+          pendingTransactionTime,
+        ),
+      ],
+    },
   };
 };
 

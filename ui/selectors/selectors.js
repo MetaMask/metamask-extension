@@ -1061,7 +1061,7 @@ export function getIsNonStandardEthChain(state) {
 }
 
 export function getPreferences({ metamask }) {
-  return metamask.preferences;
+  return metamask.PreferencesController.preferences;
 }
 
 export function getSendInputCurrencySwitched({ appState }) {
@@ -1091,7 +1091,9 @@ export function getIsTokenNetworkFilterEqualCurrentNetwork(state) {
 }
 
 export function getUseTransactionSimulations(state) {
-  return Boolean(state.metamask.useTransactionSimulations);
+  return Boolean(
+    state.metamask.PreferencesController.useTransactionSimulations,
+  );
 }
 
 export function getRedesignedConfirmationsEnabled(state) {
@@ -1147,12 +1149,16 @@ export function getShouldHideZeroBalanceTokens(state) {
 }
 
 export function getAdvancedInlineGasShown(state) {
-  return Boolean(state.metamask.featureFlags.advancedInlineGas);
+  return Boolean(
+    state.metamask.PreferencesController.featureFlags.advancedInlineGas,
+  );
 }
 
 export function getUseNonceField(state) {
   const isSmartTransaction = getIsSmartTransaction(state);
-  return Boolean(!isSmartTransaction && state.metamask.useNonceField);
+  return Boolean(
+    !isSmartTransaction && state.metamask.PreferencesController.useNonceField,
+  );
 }
 
 export function getCustomNonceValue(state) {
@@ -1432,7 +1438,7 @@ export function getKnownMethodData(state, data) {
 }
 
 export function getFeatureFlags(state) {
-  return state.metamask.featureFlags;
+  return state.metamask.PreferencesController.featureFlags;
 }
 
 export function getOriginOfCurrentTab(state) {
@@ -1444,11 +1450,11 @@ export function getDefaultHomeActiveTabName(state) {
 }
 
 export function getIpfsGateway(state) {
-  return state.metamask.ipfsGateway;
+  return state.metamask.PreferencesController.ipfsGateway;
 }
 
 export function getUseExternalServices(state) {
-  return state.metamask.useExternalServices;
+  return state.metamask.PreferencesController.useExternalServices;
 }
 
 export function getUSDConversionRate(state) {
@@ -1776,7 +1782,7 @@ export function getSnaps(state) {
 }
 
 export function getLocale(state) {
-  return state.metamask.currentLocale;
+  return state.metamask.PreferencesController.currentLocale;
 }
 
 export const getSnap = createDeepEqualSelector(
@@ -2207,7 +2213,7 @@ export function getShowAccountBanner(state) {
  * @returns Boolean
  */
 export function getUseTokenDetection(state) {
-  return Boolean(state.metamask.useTokenDetection);
+  return Boolean(state.metamask.PreferencesController.useTokenDetection);
 }
 
 /**
@@ -2217,7 +2223,7 @@ export function getUseTokenDetection(state) {
  * @returns Boolean
  */
 export function getUseNftDetection(state) {
-  return Boolean(state.metamask.useNftDetection);
+  return Boolean(state.metamask.PreferencesController.useNftDetection);
 }
 
 /**
@@ -2227,7 +2233,7 @@ export function getUseNftDetection(state) {
  * @returns Boolean
  */
 export function getUseBlockie(state) {
-  return Boolean(state.metamask.useBlockie);
+  return Boolean(state.metamask.PreferencesController.useBlockie);
 }
 
 /**
@@ -2237,7 +2243,7 @@ export function getUseBlockie(state) {
  * @returns Boolean
  */
 export function getOpenSeaEnabled(state) {
-  return Boolean(state.metamask.openSeaEnabled);
+  return Boolean(state.metamask.PreferencesController.openSeaEnabled);
 }
 
 /**
@@ -2247,7 +2253,7 @@ export function getOpenSeaEnabled(state) {
  * @returns Boolean
  */
 export function getTheme(state) {
-  return state.metamask.theme;
+  return state.metamask.PreferencesController.theme;
 }
 
 export function doesAddressRequireLedgerHidConnection(state, address) {
@@ -2437,7 +2443,9 @@ export function getAdvancedGasFeeValues(state) {
   // transaction being modified to be available to all callsites and either
   // pass it in to the selector as a second parameter, or access it at the
   // callsite.
-  return state.metamask.advancedGasFee[getCurrentChainId(state)];
+  return state.metamask.PreferencesController.advancedGasFee[
+    getCurrentChainId(state)
+  ];
 }
 
 /**
@@ -2631,7 +2639,7 @@ export function getIstokenDetectionInactiveOnNonMainnetSupportedNetwork(state) {
  * @returns Boolean
  */
 export function getUseRequestQueue(state) {
-  return state.metamask.useRequestQueue;
+  return state.metamask.PreferencesController.useRequestQueue;
 }
 
 /**
@@ -2875,7 +2883,7 @@ export function getShowFiatInTestnets(state) {
  * @returns Boolean
  */
 export function getUseCurrencyRateCheck(state) {
-  return Boolean(state.metamask.useCurrencyRateCheck);
+  return Boolean(state.metamask.PreferencesController.useCurrencyRateCheck);
 }
 
 export function getNames(state) {

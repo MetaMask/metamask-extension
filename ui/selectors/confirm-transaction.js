@@ -137,7 +137,7 @@ export const unconfirmedMessagesHashSelector = createSelector(
   },
 );
 export const use4ByteResolutionSelector = (state) =>
-  state.metamask.use4ByteResolution;
+  state.metamask.PreferencesController.use4ByteResolution;
 export const currentCurrencySelector = (state) =>
   state.metamask.CurrencyController.currentCurrency;
 export const conversionRateSelector = (state) =>

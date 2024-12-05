@@ -33,7 +33,7 @@ describe('ConfirmInfoRowAddress', () => {
       metamask: {
         ...mockState.metamask,
         preferences: {
-          ...mockState.metamask.preferences,
+          ...mockState.metamask.PreferencesController.preferences,
           petnamesEnabled: true,
         },
       },
@@ -50,7 +50,7 @@ describe('ConfirmInfoRowAddress', () => {
         metamask: {
           ...mockState.metamask,
           preferences: {
-            ...mockState.metamask.preferences,
+            ...mockState.metamask.PreferencesController.preferences,
             petnamesEnabled: false,
           },
           internalAccounts: {
@@ -80,7 +80,7 @@ describe('ConfirmInfoRowAddress', () => {
         metamask: {
           ...mockState.metamask,
           preferences: {
-            ...mockState.metamask.preferences,
+            ...mockState.metamask.PreferencesController.preferences,
             petnamesEnabled: false,
           },
           ...mockNetworkState({ chainId: CHAIN_IDS.MAINNET }),

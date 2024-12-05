@@ -105,7 +105,7 @@ const generateUseSelectorRouter = (opts) => (selector) => {
   } else if (selector === getCurrentNetwork) {
     return { nickname: 'Ethereum Mainnet' };
   } else if (selector === getPreferences) {
-    return opts.preferences ?? {};
+    return opts.PreferencesController.preferences ?? {};
   } else if (selector === getShouldShowFiat) {
     return opts.shouldShowFiat ?? false;
   } else if (selector === getTokens) {

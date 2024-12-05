@@ -28,40 +28,46 @@ const getMetaMaskStateWithUnapprovedPersonalSign = (accountAddress: string) => {
   const pendingPersonalSignTime = new Date().getTime();
   return {
     ...mockMetaMaskState,
-    preferences: {
-      ...mockMetaMaskState.preferences,
-      redesignedConfirmationsEnabled: true,
+    PreferencesController: {
+      preferences: {
+        ...mockMetaMaskState.PreferencesController.preferences,
+        redesignedConfirmationsEnabled: true,
+      },
     },
-    unapprovedPersonalMsgs: {
-      [pendingPersonalSignId]: {
-        id: pendingPersonalSignId,
-        chainId: CHAIN_IDS.SEPOLIA,
-        status: 'unapproved',
-        time: pendingPersonalSignTime,
-        type: MESSAGE_TYPE.PERSONAL_SIGN,
-        securityProviderResponse: null,
-        msgParams: {
-          from: accountAddress,
-          data: '0x4578616d706c652060706572736f6e616c5f7369676e60206d657373616765',
-          origin: 'https://metamask.github.io',
-          siwe: { isSIWEMessage: false, parsedMessage: null },
-          signatureMethod: ApprovalType.PersonalSign,
+    SignatureController: {
+      unapprovedPersonalMsgs: {
+        [pendingPersonalSignId]: {
+          id: pendingPersonalSignId,
+          chainId: CHAIN_IDS.SEPOLIA,
+          status: 'unapproved',
+          time: pendingPersonalSignTime,
+          type: MESSAGE_TYPE.PERSONAL_SIGN,
+          securityProviderResponse: null,
+          msgParams: {
+            from: accountAddress,
+            data: '0x4578616d706c652060706572736f6e616c5f7369676e60206d657373616765',
+            origin: 'https://metamask.github.io',
+            siwe: { isSIWEMessage: false, parsedMessage: null },
+            signatureMethod: ApprovalType.PersonalSign,
+          },
         },
       },
+      unapprovedPersonalMsgCount: 1,
     },
-    unapprovedPersonalMsgCount: 1,
-    pendingApprovals: {
-      [pendingPersonalSignId]: {
-        id: pendingPersonalSignId,
-        origin: 'origin',
-        time: pendingPersonalSignTime,
-        type: ApprovalType.PersonalSign,
-        requestData: {},
-        requestState: null,
-        expectsResult: false,
+    ApprovalControlelr: {
+      pendingApprovals: {
+        [pendingPersonalSignId]: {
+          id: pendingPersonalSignId,
+          origin: 'origin',
+          time: pendingPersonalSignTime,
+          type: ApprovalType.PersonalSign,
+          requestData: {},
+          requestState: null,
+          expectsResult: false,
+        },
       },
+      pendingApprovalCount: 1,
     },
-    pendingApprovalCount: 1,
   };
 };
 

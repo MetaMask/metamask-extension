@@ -77,18 +77,24 @@ export const getMetaMaskStateWithUnapprovedPermitSign = (
 
   return {
     ...mockMetaMaskState,
-    preferences: {
-      ...mockMetaMaskState.preferences,
-      redesignedConfirmationsEnabled: true,
+    PreferencesController: {
+      preferences: {
+        ...mockMetaMaskState.PreferencesController.preferences,
+        redesignedConfirmationsEnabled: true,
+      },
     },
-    unapprovedTypedMessages: {
-      [pendingPermitId]: unapprovedTypedMessage,
+    SignatureController: {
+      unapprovedTypedMessages: {
+        [pendingPermitId]: unapprovedTypedMessage,
+      },
+      unapprovedTypedMessagesCount: 1,
     },
-    unapprovedTypedMessagesCount: 1,
-    pendingApprovals: {
-      [pendingPermitId]: pendingApproval,
+    ApprovalController: {
+      pendingApprovals: {
+        [pendingPermitId]: pendingApproval,
+      },
+      pendingApprovalCount: 1,
     },
-    pendingApprovalCount: 1,
   };
 };
 

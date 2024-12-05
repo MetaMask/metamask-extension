@@ -28,7 +28,7 @@ export const getMockTypedSignConfirmState = (
     ...mockState.metamask,
     ...args.metamask,
     preferences: {
-      ...mockState.metamask.preferences,
+      ...mockState.metamask.PreferencesController.preferences,
       redesignedTransactionsEnabled: true,
       redesignedConfirmationsEnabled: true,
       isRedesignedConfirmationsDeveloperEnabled: true,
@@ -55,7 +55,7 @@ export const getMockTypedSignConfirmStateForRequest = (
     ...mockState.metamask,
     ...args.metamask,
     preferences: {
-      ...mockState.metamask.preferences,
+      ...mockState.metamask.PreferencesController.preferences,
       redesignedTransactionsEnabled: true,
       redesignedConfirmationsEnabled: true,
       isRedesignedConfirmationsDeveloperEnabled: true,
@@ -81,7 +81,7 @@ export const getMockPersonalSignConfirmState = (
     ...mockState.metamask,
     ...args.metamask,
     preferences: {
-      ...mockState.metamask.preferences,
+      ...mockState.metamask.PreferencesController.preferences,
       redesignedTransactionsEnabled: true,
       redesignedConfirmationsEnabled: true,
       isRedesignedConfirmationsDeveloperEnabled: true,
@@ -108,7 +108,7 @@ export const getMockPersonalSignConfirmStateForRequest = (
     ...mockState.metamask,
     ...args.metamask,
     preferences: {
-      ...mockState.metamask.preferences,
+      ...mockState.metamask.PreferencesController.preferences,
       redesignedTransactionsEnabled: true,
       redesignedConfirmationsEnabled: true,
       isRedesignedConfirmationsDeveloperEnabled: true,
@@ -132,8 +132,11 @@ export const getMockConfirmState = (args: RootState = { metamask: {} }) => ({
     ...mockState.metamask,
     ...args.metamask,
     preferences: {
-      ...mockState.metamask.preferences,
-      ...(args.metamask?.preferences as Record<string, unknown>),
+      ...mockState.metamask.PreferencesController.preferences,
+      ...(args.metamask?.PreferencesController.preferences as Record<
+        string,
+        unknown
+      >),
       redesignedTransactionsEnabled: true,
       redesignedConfirmationsEnabled: true,
       isRedesignedConfirmationsDeveloperEnabled: true,

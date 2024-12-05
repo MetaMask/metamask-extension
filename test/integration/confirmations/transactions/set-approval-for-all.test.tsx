@@ -37,7 +37,7 @@ const getMetaMaskStateWithUnapprovedSetApprovalForAllTransaction = (opts?: {
   return {
     ...mockMetaMaskState,
     preferences: {
-      ...mockMetaMaskState.preferences,
+      ...mockMetaMaskState.PreferencesController.preferences,
       redesignedConfirmationsEnabled: true,
       showConfirmationAdvancedDetails: opts?.showAdvanceDetails ?? false,
     },

@@ -43,9 +43,11 @@ const getLocaleContext = (currentLocaleMessages, enLocaleMessages) => {
 
 export async function getErrorHtml(errorKey, supportLink, metamaskState) {
   let response, preferredLocale;
-  if (metamaskState?.currentLocale) {
-    preferredLocale = metamaskState.currentLocale;
-    response = await setupLocale(metamaskState.currentLocale);
+  if (metamaskState?.PreferencesController.currentLocale) {
+    preferredLocale = metamaskState.PreferencesController.currentLocale;
+    response = await setupLocale(
+      metamaskState.PreferencesController.currentLocale,
+    );
   } else {
     preferredLocale = await getFirstPreferredLangCode();
     response = await setupLocale(preferredLocale);

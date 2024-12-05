@@ -11,7 +11,7 @@ const store = configureStore({
   metamask: {
     ...mockState.metamask,
     preferences: {
-      ...mockState.metamask.preferences,
+      ...mockState.metamask.PreferencesController.preferences,
       showNativeTokenAsMainBalance: false,
     },
   },

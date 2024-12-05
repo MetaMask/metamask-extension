@@ -31,7 +31,7 @@ const render = (props: AccountOverviewEthProps) => {
     metamask: {
       ...mockState.metamask,
       preferences: {
-        ...mockState.metamask.preferences,
+        ...mockState.metamask.PreferencesController.preferences,
         tokenNetworkFilter: {
           [CHAIN_IDS.MAINNET]: true,
           [CHAIN_IDS.LINEA_MAINNET]: true,

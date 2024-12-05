@@ -45,7 +45,7 @@ describe('TokenInput Component', () => {
         metamask: {
           ...mockState.metamask,
           preferences: {
-            ...mockState.metamask.preferences,
+            ...mockState.metamask.PreferencesController.preferences,
             showFiatInTestnets: true,
           },
         },
@@ -71,7 +71,7 @@ describe('TokenInput Component', () => {
             },
           },
           preferences: {
-            ...mockState.metamask.preferences,
+            ...mockState.metamask.PreferencesController.preferences,
             showFiatInTestnets: true,
           },
           ...mockNetworkState({ chainId: CHAIN_IDS.POLYGON }),
@@ -93,7 +93,7 @@ describe('TokenInput Component', () => {
         metamask: {
           ...mockState.metamask,
           preferences: {
-            ...mockState.metamask.preferences,
+            ...mockState.metamask.PreferencesController.preferences,
             showFiatInTestnets: true,
           },
         },

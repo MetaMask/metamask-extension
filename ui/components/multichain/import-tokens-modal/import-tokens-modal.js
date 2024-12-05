@@ -122,7 +122,7 @@ export const ImportTokensModal = ({ onClose }) => {
 
   const tokenList = useSelector(getTokenList);
   const useTokenDetection = useSelector(
-    ({ metamask }) => metamask.useTokenDetection,
+    ({ metamask }) => metamask.PreferencesController.useTokenDetection,
   );
   const networkName = useSelector(getTokenDetectionSupportNetworkByChainId);
   const nativeCurrency = useSelector(getNativeCurrency);
