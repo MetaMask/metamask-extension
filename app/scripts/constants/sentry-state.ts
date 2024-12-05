@@ -403,15 +403,6 @@ export const SENTRY_BACKGROUND_STATE = {
   ///: END:ONLY_INCLUDE_IF
 };
 
-const flattenedBackgroundStateMask = Object.values(
-  SENTRY_BACKGROUND_STATE,
-).reduce((partialBackgroundState, controllerState: object) => {
-  return {
-    ...partialBackgroundState,
-    ...controllerState,
-  };
-}, {});
-
 // This describes the subset of Redux state attached to errors sent to Sentry
 // These properties have some potential to be useful for debugging, and they do
 // not contain any identifiable information.
@@ -428,21 +419,27 @@ export const SENTRY_UI_STATE = {
     confirmationExchangeRates: true,
   },
   metamask: {
-    ...flattenedBackgroundStateMask,
     // This property comes from the background but isn't in controller state
     isInitialized: true,
-    useSafeChainsListValidation: true,
-    watchEthereumAccountEnabled: false,
-    bitcoinSupportEnabled: false,
-    bitcoinTestnetSupportEnabled: false,
-    ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
-    addSnapAccountEnabled: false,
-    snapsAddSnapAccountModalDismissed: false,
-    ///: END:ONLY_INCLUDE_IF
-    switchedNetworkDetails: false,
-    switchedNetworkNeverShowMessage: false,
-    newPrivacyPolicyToastClickedOrClosed: false,
-    newPrivacyPolicyToastShownDate: false,
+    ...SENTRY_BACKGROUND_STATE,
+    PreferencesController: {
+      ...SENTRY_BACKGROUND_STATE.PreferencesController,
+      useSafeChainsListValidation: true,
+      watchEthereumAccountEnabled: false,
+      bitcoinSupportEnabled: false,
+      bitcoinTestnetSupportEnabled: false,
+      ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
+      addSnapAccountEnabled: false,
+      snapsAddSnapAccountModalDismissed: false,
+      ///: END:ONLY_INCLUDE_IF
+    },
+    AppStateController: {
+      ...SENTRY_BACKGROUND_STATE.AppStateController,
+      switchedNetworkDetails: false,
+      switchedNetworkNeverShowMessage: false,
+      newPrivacyPolicyToastClickedOrClosed: false,
+      newPrivacyPolicyToastShownDate: false,
+    },
   },
   unconnectedAccount: true,
 };
