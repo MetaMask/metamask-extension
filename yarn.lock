@@ -5936,9 +5936,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/ppom-validator@npm:0.35.1":
-  version: 0.35.1
-  resolution: "@metamask/ppom-validator@npm:0.35.1"
+"@metamask/ppom-validator@npm:0.36.0":
+  version: 0.36.0
+  resolution: "@metamask/ppom-validator@npm:0.36.0"
   dependencies:
     "@metamask/base-controller": "npm:^7.0.1"
     "@metamask/controller-utils": "npm:^11.3.0"
@@ -5949,8 +5949,8 @@ __metadata:
     eslint-plugin-n: "npm:^16.6.2"
     json-rpc-random-id: "npm:^1.0.1"
   peerDependencies:
-    "@metamask/network-controller": ^21.0.0
-  checksum: 10/3dd37ced473a78e4b7847c61b6c6fb1e2ae4865dee67de9574462fd618dc5ea7be46874f12ff18383702c46c9c07c32dbac00be2e6ad26cb45a3dcc4ffa09ab7
+    "@metamask/network-controller": ^22.0.0
+  checksum: 10/6819ed45e9fadaa2078db37fc9c50bcedfd8564cd955a97c4dbcde6516210380e3a215c2740ebb8b24b24d9bd92e52e036b80037443a96b7f2f12b4932af34cc
   languageName: node
   linkType: hard
 
@@ -26466,7 +26466,7 @@ __metadata:
     "@metamask/phishing-warning": "npm:^4.1.0"
     "@metamask/polling-controller": "npm:^12.0.1"
     "@metamask/post-message-stream": "npm:^8.0.0"
-    "@metamask/ppom-validator": "npm:0.35.1"
+    "@metamask/ppom-validator": "npm:0.36.0"
     "@metamask/preferences-controller": "npm:^14.0.0"
     "@metamask/preinstalled-example-snap": "npm:^0.2.0"
     "@metamask/profile-sync-controller": "npm:^2.0.0"
