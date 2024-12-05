@@ -46,9 +46,15 @@ function transformState(state: Record<string, unknown>) {
         networkConfig.rpcEndpoints.some(
           (endpoint) =>
             isObject(endpoint) &&
-            (endpoint.type === RpcEndpointType.Infura ||
-              (typeof endpoint.url === 'string' &&
-                endpoint.url.includes('infura.io'))),
+            typeof endpoint.url === 'string' &&
+            (() => {
+              try {
+                const urlHost = new URL(endpoint.url).host;
+                return urlHost === 'infura.io';
+              } catch (e) {
+                return false;
+              }
+            })(),
         ),
     );
 
