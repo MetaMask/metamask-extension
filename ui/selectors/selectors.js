@@ -134,7 +134,7 @@ export function getNetworkIdentifier(state) {
 }
 
 export function getMetaMetricsId(state) {
-  const { metaMetricsId } = state.metamask;
+  const { metaMetricsId } = state.metamask.MetaMetricsController;
   return metaMetricsId;
 }
 
@@ -147,12 +147,14 @@ export function isCurrentProviderCustom(state) {
 }
 
 export function getCurrentQRHardwareState(state) {
-  const { qrHardware } = state.metamask;
+  const { qrHardware } = state.metamask.AppStateController;
   return qrHardware || {};
 }
 
 export function getIsSigningQRHardwareTransaction(state) {
-  return state.metamask.qrHardware?.sign?.request !== undefined;
+  return (
+    state.metamask.AppStateController.qrHardware?.sign?.request !== undefined
+  );
 }
 
 export function getCurrentKeyring(state) {
@@ -399,7 +401,7 @@ export const getInternalAccountsSortedByKeyring = createSelector(
 );
 
 export function getNumberOfTokens(state) {
-  const { tokens } = state.metamask;
+  const { tokens } = state.metamask.TokensController;
   return tokens ? tokens.length : 0;
 }
 
@@ -414,7 +416,7 @@ export function getMetaMaskKeyrings(state) {
  * @returns {object} A map of account addresses to account objects (which includes the account balance)
  */
 export function getMetaMaskAccountBalances(state) {
-  return state.metamask.accounts;
+  return state.metamask.AccountTracker.accounts;
 }
 
 export function getMetaMaskCachedBalances(state) {
@@ -453,7 +455,7 @@ export function getCrossChainMetaMaskCachedBalances(state) {
  * @returns {object} An object of tokens with balances for the given account. Data relationship will be chainId => balance
  */
 export function getSelectedAccountNativeTokenCachedBalanceByChainId(state) {
-  const { accountsByChainId } = state.metamask;
+  const { accountsByChainId } = state.metamask.AccountTracker;
   const { address: selectedAddress } = getSelectedInternalAccount(state);
 
   const balancesByChainId = {};
@@ -473,7 +475,7 @@ export function getSelectedAccountNativeTokenCachedBalanceByChainId(state) {
  * @returns {object} An object mapping chain IDs to arrays of tokens (including native tokens) with balances.
  */
 export function getSelectedAccountTokensAcrossChains(state) {
-  const { allTokens } = state.metamask;
+  const { allTokens } = state.metamask.TokensController;
   const selectedAddress = getSelectedInternalAccount(state).address;
 
   const tokensByChain = {};
@@ -523,7 +525,7 @@ export function getSelectedAccountTokensAcrossChains(state) {
  * @returns {object} Native token information
  */
 function getNativeTokenInfo(state, chainId) {
-  const { networkConfigurationsByChainId } = state.metamask;
+  const { networkConfigurationsByChainId } = state.metamask.NetworkController;
 
   const networkConfig = networkConfigurationsByChainId?.[chainId];
 
@@ -531,19 +533,6 @@ function getNativeTokenInfo(state, chainId) {
     const symbol = networkConfig.nativeCurrency || AssetType.native;
     const decimals = 18;
     const name = networkConfig.name || 'Native Token';
-
-    return {
-      symbol,
-      decimals,
-      name,
-    };
-  }
-
-  const { provider } = state.metamask;
-  if (provider?.chainId === chainId) {
-    const symbol = provider.ticker || AssetType.native;
-    const decimals = provider.nativeCurrency?.decimals || 18;
-    const name = provider.nickname || 'Native Token';
 
     return {
       symbol,
@@ -931,7 +920,7 @@ export function getRequestingNetworkInfo(state, chainIds) {
  * @returns An object with information about the network with the given networkClientId
  */
 export function getSwitchedNetworkDetails(state) {
-  const { switchedNetworkDetails } = state.metamask;
+  const { switchedNetworkDetails } = state.metamask.AppStateController;
   const networkConfigurations = getNetworkConfigurationsByChainId(state);
 
   if (switchedNetworkDetails) {
@@ -979,7 +968,7 @@ export function getTotalUnapprovedMessagesCount(state) {
     unapprovedDecryptMsgCount = 0,
     unapprovedEncryptionPublicKeyMsgCount = 0,
     unapprovedTypedMessagesCount = 0,
-  } = state.metamask;
+  } = state.metamask.SignatureController;
 
   return (
     unapprovedPersonalMsgCount +
@@ -991,7 +980,7 @@ export function getTotalUnapprovedMessagesCount(state) {
 
 export function getTotalUnapprovedSignatureRequestCount(state) {
   const { unapprovedPersonalMsgCount = 0, unapprovedTypedMessagesCount = 0 } =
-    state.metamask;
+    state.metamask.SignatureController;
 
   return unapprovedPersonalMsgCount + unapprovedTypedMessagesCount;
 }
@@ -1425,7 +1414,8 @@ export function getRpcPrefsForCurrentProvider(state) {
 }
 
 export function getKnownMethodData(state, data) {
-  const { knownMethodData, use4ByteResolution } = state.metamask;
+  const { knownMethodData, use4ByteResolution } =
+    state.metamask.PreferencesController;
 
   if (!use4ByteResolution || !hasTransactionData(data)) {
     return null;
@@ -1450,7 +1440,7 @@ export function getOriginOfCurrentTab(state) {
 }
 
 export function getDefaultHomeActiveTabName(state) {
-  return state.metamask.defaultHomeActiveTabName;
+  return state.metamask.AppStateController.defaultHomeActiveTabName;
 }
 
 export function getIpfsGateway(state) {
@@ -1997,7 +1987,7 @@ export function getShowRecoveryPhraseReminder(state) {
   const {
     recoveryPhraseReminderLastShown,
     recoveryPhraseReminderHasBeenShown,
-  } = state.metamask;
+  } = state.metamask.AppStateController;
 
   const currentTime = new Date().getTime();
   const frequency = recoveryPhraseReminderHasBeenShown ? DAY * 90 : DAY * 2;
@@ -2167,7 +2157,7 @@ export function getNetworkToAutomaticallySwitchTo(state) {
 }
 
 export function getShowTermsOfUse(state) {
-  const { termsOfUseLastAgreed } = state.metamask;
+  const { termsOfUseLastAgreed } = state.metamask.AppStateController;
 
   if (!termsOfUseLastAgreed) {
     return true;
@@ -2179,11 +2169,11 @@ export function getShowTermsOfUse(state) {
 }
 
 export function getLastViewedUserSurvey(state) {
-  return state.metamask.lastViewedUserSurvey;
+  return state.metamask.AppStateController.lastViewedUserSurvey;
 }
 
 export function getShowOutdatedBrowserWarning(state) {
-  const { outdatedBrowserWarningLastShown } = state.metamask;
+  const { outdatedBrowserWarningLastShown } = state.metamask.AppStateController;
   if (!outdatedBrowserWarningLastShown) {
     return true;
   }
@@ -2192,23 +2182,23 @@ export function getShowOutdatedBrowserWarning(state) {
 }
 
 export function getOnboardingDate(state) {
-  return state.metamask.onboardingDate;
+  return state.metamask.AppStateController.onboardingDate;
 }
 
 export function getShowBetaHeader(state) {
-  return state.metamask.showBetaHeader;
+  return state.metamask.AppStateController.showBetaHeader;
 }
 
 export function getShowPermissionsTour(state) {
-  return state.metamask.showPermissionsTour;
+  return state.metamask.AppStateController.showPermissionsTour;
 }
 
 export function getShowNetworkBanner(state) {
-  return state.metamask.showNetworkBanner;
+  return state.metamask.AppStateController.showNetworkBanner;
 }
 
 export function getShowAccountBanner(state) {
-  return state.metamask.showAccountBanner;
+  return state.metamask.AppStateController.showAccountBanner;
 }
 /**
  * To get the useTokenDetection flag which determines whether a static or dynamic token list is used
@@ -2666,12 +2656,12 @@ export function getIsSecurityAlertsEnabled(state) {
  * @returns The state of the `addSnapAccountEnabled` flag.
  */
 export function getIsAddSnapAccountEnabled(state) {
-  return state.metamask.addSnapAccountEnabled;
+  return state.metamask.PreferencesController.addSnapAccountEnabled;
 }
 ///: END:ONLY_INCLUDE_IF
 
 export function getIsWatchEthereumAccountEnabled(state) {
-  return state.metamask.watchEthereumAccountEnabled;
+  return state.metamask.PreferencesController.watchEthereumAccountEnabled;
 }
 
 /**
@@ -2681,7 +2671,7 @@ export function getIsWatchEthereumAccountEnabled(state) {
  * @returns The state of the `bitcoinSupportEnabled` flag.
  */
 export function getIsBitcoinSupportEnabled(state) {
-  return state.metamask.bitcoinSupportEnabled;
+  return state.metamask.PreferencesController.bitcoinSupportEnabled;
 }
 
 ///: BEGIN:ONLY_INCLUDE_IF(solana)
@@ -2692,7 +2682,7 @@ export function getIsBitcoinSupportEnabled(state) {
  * @returns The state of the `solanaSupportEnabled` flag.
  */
 export function getIsSolanaSupportEnabled(state) {
-  return state.metamask.solanaSupportEnabled;
+  return state.metamask.PreferencesController.solanaSupportEnabled;
 }
 ///: END:ONLY_INCLUDE_IF
 
@@ -2703,7 +2693,7 @@ export function getIsSolanaSupportEnabled(state) {
  * @returns The state of the `bitcoinTestnetSupportEnabled` flag.
  */
 export function getIsBitcoinTestnetSupportEnabled(state) {
-  return state.metamask.bitcoinTestnetSupportEnabled;
+  return state.metamask.PreferencesController.bitcoinTestnetSupportEnabled;
 }
 
 export function getIsCustomNetwork(state) {
@@ -2874,7 +2864,7 @@ export function getExternalServicesOnboardingToggleState(state) {
 }
 
 export const useSafeChainsListValidationSelector = (state) => {
-  return state.metamask.useSafeChainsListValidation;
+  return state.metamask.PreferencesController.useSafeChainsListValidation;
 };
 
 export function getShowFiatInTestnets(state) {
@@ -2921,7 +2911,8 @@ export function getMetaMetricsDataDeletionTimestamp(state) {
 }
 
 export function getMetaMetricsDataDeletionStatus(state) {
-  return state.metamask.metaMetricsDataDeletionStatus;
+  return state.metamask.MetaMetricsDataDeletionController
+    .metaMetricsDataDeletionStatus;
 }
 
 export function getRemoteFeatureFlags(state) {
@@ -2970,7 +2961,7 @@ export function getSnapsList(state) {
  * @returns True if popover has been shown, false otherwise.
  */
 export function getSnapsInstallPrivacyWarningShown(state) {
-  const { snapsInstallPrivacyWarningShown } = state.metamask;
+  const { snapsInstallPrivacyWarningShown } = state.metamask.AppStateController;
 
   if (
     snapsInstallPrivacyWarningShown === undefined ||
@@ -2984,13 +2975,14 @@ export function getSnapsInstallPrivacyWarningShown(state) {
 
 ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
 export function getsnapsAddSnapAccountModalDismissed(state) {
-  const { snapsAddSnapAccountModalDismissed } = state.metamask;
+  const { snapsAddSnapAccountModalDismissed } =
+    state.metamask.PreferencesController;
 
   return snapsAddSnapAccountModalDismissed;
 }
 
 export function getSnapRegistry(state) {
-  const { snapRegistryList } = state.metamask;
+  const { snapRegistryList } = state.metamask.PreferencesController;
   return snapRegistryList;
 }
 
