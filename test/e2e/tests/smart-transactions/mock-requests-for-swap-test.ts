@@ -11,7 +11,6 @@ const GET_FEES_REQUEST_INCLUDES = {
       from: '0x5cfe73b6021e818b776b421b1c4db2474086a7e1',
       to: '0x881D40237659C251811CEC9c364ef91dC08D300C',
       value: '0x1bc16d674ec80000',
-      gas: '0xf4240',
       nonce: '0x0',
     },
   ],
