@@ -86,6 +86,8 @@ export const AssetPickerModalNetwork = ({
 
   const allNetworks = useSelector(getNetworkConfigurationsByChainId);
   const currency = useSelector(getCurrentCurrency);
+  // Use the networks prop if it is provided, otherwise use all available networks
+  // Sort the networks by balance in descending order
   const networksList = useMemo(
     () =>
       (networks ?? Object.values(allNetworks) ?? []).sort(
@@ -94,6 +96,8 @@ export const AssetPickerModalNetwork = ({
     [],
   );
 
+  // Tracks the selection/checked state of each network
+  // Initialized with the selectedChainIds if provided
   const [checkedChainIds, setCheckedChainIds] = useState<
     Record<string, boolean>
   >(
@@ -115,6 +119,7 @@ export const AssetPickerModalNetwork = ({
     }));
   };
 
+  // Toggles all networks to be checked or unchecked
   const handleToggleAllNetworks = () => {
     setCheckedChainIds(
       Object.keys(checkedChainIds)?.reduce(
@@ -126,6 +131,7 @@ export const AssetPickerModalNetwork = ({
       ),
     );
   };
+
   return (
     <Modal
       isOpen={isOpen}
@@ -208,6 +214,7 @@ export const AssetPickerModalNetwork = ({
                     ] ?? name
                   }
                   selected={
+                    // If multiselect is enabled, the checkbox indicates selection
                     isMultiselectEnabled ? false : network?.chainId === chainId
                   }
                   onClick={() => {

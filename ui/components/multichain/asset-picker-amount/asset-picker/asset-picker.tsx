@@ -152,11 +152,13 @@ export function AssetPicker({
     return undefined;
   };
 
-  const networkImageSrc =
-    selectedNetwork?.chainId &&
+  const getNetworkImageUrl = (chainId: string) =>
     CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP[
-      selectedNetwork.chainId as keyof typeof CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP
+      chainId as keyof typeof CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP
     ];
+
+  const networkImageSrc =
+    selectedNetwork?.chainId && getNetworkImageUrl(selectedNetwork.chainId);
 
   const handleButtonClick = () => {
     if (networkProps && !networkProps.network) {
@@ -236,14 +238,12 @@ export function AssetPicker({
             | AssetWithDisplayData<NativeAsset>,
         ) => {
           // If isMultiselectEnabled=true, update the network when a token is selected
-          if (isMultiselectEnabled) {
+          if (isMultiselectEnabled && networkProps?.onNetworkChange) {
             const networkFromToken = token.chainId
               ? allNetworks[token.chainId as keyof typeof allNetworks]
               : undefined;
-            if (networkProps?.onNetworkChange && networkFromToken) {
+            if (networkFromToken) {
               networkProps.onNetworkChange(networkFromToken);
-            } else {
-              // TODO set active network
             }
           }
           onAssetChange(token);
@@ -255,10 +255,7 @@ export function AssetPicker({
             return true;
           }
           if (isMultiselectEnabled) {
-            if (selectedChainIds.includes(tokenChainId)) {
-              return true;
-            }
-            return false;
+            return selectedChainIds.includes(tokenChainId);
           }
           if (networkProps?.network?.chainId === tokenChainId) {
             return true;
@@ -270,14 +267,7 @@ export function AssetPicker({
         networkPickerProps={{
           label: getNetworkPickerLabel(),
           src: isMultiselectEnabled
-            ? selectedChainIds
-                .map(
-                  (c) =>
-                    CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP[
-                      c as keyof typeof CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP
-                    ],
-                )
-                .reverse()
+            ? selectedChainIds.map(getNetworkImageUrl).reverse()
             : undefined,
         }}
         onNetworkPickerClick={
@@ -295,6 +285,7 @@ export function AssetPicker({
         isTokenListLoading={isTokenListLoading}
       />
 
+      {/** If a child prop is passed in, use it as the trigger button instead of the default */}
       {children?.(handleButtonClick, networkImageSrc) || (
         <ButtonBase
           data-testid="asset-picker-button"

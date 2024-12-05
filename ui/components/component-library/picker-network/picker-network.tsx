@@ -37,7 +37,6 @@ export const PickerNetwork: PickerNetworkComponent = React.forwardRef(
     }: PickerNetworkProps<C>,
     ref?: PolymorphicRef<C>,
   ) => {
-    // const avatarList = (typeof src === 'string' || !src ? [src] : src) ?? [];
     const avatarList = typeof src === 'string' || !src ? [src] : src;
 
     return (
