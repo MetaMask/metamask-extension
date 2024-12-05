@@ -963,7 +963,7 @@ export function getCurrentCurrency(state) {
 }
 
 export function getTotalUnapprovedCount(state) {
-  return state.metamask.pendingApprovalCount ?? 0;
+  return state.metamask.ApprovalController.pendingApprovalCount ?? 0;
 }
 
 export function getQueuedRequestCount(state) {
@@ -999,7 +999,7 @@ export function getUnapprovedTxCount(state) {
 }
 
 export const getUnapprovedConfirmations = createDeepEqualSelector(
-  (state) => state.metamask.pendingApprovals || {},
+  (state) => state.metamask.ApprovalController.pendingApprovals || {},
   (pendingApprovals) => Object.values(pendingApprovals),
 );
 

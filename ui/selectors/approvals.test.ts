@@ -64,7 +64,9 @@ describe('approval selectors', () => {
     it('should return existing approval flows', () => {
       const result = getApprovalFlows(mockedState);
 
-      expect(result).toStrictEqual(mockedState.metamask.approvalFlows);
+      expect(result).toStrictEqual(
+        mockedState.metamask.ApprovalController.approvalFlows,
+      );
     });
   });
 
@@ -73,7 +75,7 @@ describe('approval selectors', () => {
       const result = getPendingApprovals(mockedState);
 
       expect(result).toStrictEqual(
-        Object.values(mockedState.metamask.pendingApprovals),
+        Object.values(mockedState.metamask.ApprovalController.pendingApprovals),
       );
     });
   });
@@ -83,7 +85,7 @@ describe('approval selectors', () => {
       const result = getPendingApprovals(mockedState);
 
       expect(result).toStrictEqual(
-        Object.values(mockedState.metamask.pendingApprovals),
+        Object.values(mockedState.metamask.ApprovalController.pendingApprovals),
       );
     });
   });

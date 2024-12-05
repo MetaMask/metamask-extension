@@ -18,7 +18,7 @@ export function hasPendingApprovals(
   ) => boolean,
 ) {
   const pendingApprovalRequests = Object.values(
-    state.metamask.pendingApprovals,
+    state.metamask.ApprovalController.pendingApprovals,
   ).filter(({ type }) => approvalTypes.includes(type as ApprovalType));
 
   if (predicate) {
@@ -36,7 +36,7 @@ export const getApprovalRequestsByType = (
   ) => boolean,
 ) => {
   const pendingApprovalRequests = Object.values(
-    state.metamask.pendingApprovals,
+    state.metamask.ApprovalController.pendingApprovals,
   ).filter(({ type }) => type === approvalType);
 
   if (predicate) {
@@ -47,11 +47,13 @@ export const getApprovalRequestsByType = (
 };
 
 export function getApprovalFlows(state: ApprovalsMetaMaskState) {
-  return state.metamask.approvalFlows;
+  return state.metamask.ApprovalController.approvalFlows;
 }
 
 export function getPendingApprovals(state: ApprovalsMetaMaskState) {
-  return Object.values(state.metamask.pendingApprovals ?? []);
+  return Object.values(
+    state.metamask.ApprovalController.pendingApprovals ?? [],
+  );
 }
 
 export function pendingApprovalsSortedSelector(state: ApprovalsMetaMaskState) {

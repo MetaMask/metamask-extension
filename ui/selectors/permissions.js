@@ -473,7 +473,7 @@ export function getLastConnectedInfo(state) {
 }
 
 export function getSnapInstallOrUpdateRequests(state) {
-  return Object.values(state.metamask.pendingApprovals)
+  return Object.values(state.metamask.ApprovalController.pendingApprovals)
     .filter(
       ({ type }) =>
         type === 'wallet_installSnap' ||
@@ -504,9 +504,9 @@ export function getPermissions(state, origin) {
 }
 
 export function getRequestState(state, id) {
-  return state.metamask.pendingApprovals[id]?.requestState;
+  return state.metamask.ApprovalController.pendingApprovals[id]?.requestState;
 }
 
 export function getRequestType(state, id) {
-  return state.metamask.pendingApprovals[id]?.type;
+  return state.metamask.ApprovalController.pendingApprovals[id]?.type;
 }
