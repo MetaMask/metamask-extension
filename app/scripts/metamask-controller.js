@@ -2558,7 +2558,7 @@ export default class MetamaskController extends EventEmitter {
       PPOMController: this.ppomController.state,
     };
 
-    const storeControllersComposedState = {
+    this.store.updateStructure({
       AccountsController: this.accountsController.state,
       AppStateController: this.appStateController.state,
       AppMetadataController: this.appMetadataController.state,
@@ -2601,75 +2601,74 @@ export default class MetamaskController extends EventEmitter {
         this.institutionalFeaturesController.store,
       MmiConfigurationController: this.mmiConfigurationController.store,
       ///: END:ONLY_INCLUDE_IF
-      PPOMController: this.ppomController.state,
       NameController: this.nameController.state,
       UserOperationController: this.userOperationController.state,
       // Notification Controllers
       AuthenticationController: this.authenticationController.state,
       UserStorageController: this.userStorageController.state,
       NotificationServicesController: this.notificationServicesController.state,
-      NotificationServicesPushController:
-        this.notificationServicesPushController,
-      RemoteFeatureFlagController: this.remoteFeatureFlagController,
-      ...resetOnRestartStore,
-    };
-    this.store.updateStructure(storeControllersComposedState);
-
-    const memStoreControllersComposedState = {
-      AccountsController: this.accountsController.state,
-      AppStateController: this.appStateController.state,
-      AppMetadataController: this.appMetadataController.state,
-      MultichainBalancesController: this.multichainBalancesController.state,
-      NetworkController: this.networkController.state,
-      KeyringController: this.keyringController.state,
-      PreferencesController: this.preferencesController.state,
-      MetaMetricsController: this.metaMetricsController.state,
-      MetaMetricsDataDeletionController:
-        this.metaMetricsDataDeletionController.state,
-      AddressBookController: this.addressBookController.state,
-      CurrencyController: this.currencyRateController.state,
-      AlertController: this.alertController.state,
-      OnboardingController: this.onboardingController.state,
-      PermissionController: this.permissionController.state,
-      PermissionLogController: this.permissionLogController.state,
-      SubjectMetadataController: this.subjectMetadataController.state,
-      AnnouncementController: this.announcementController.state,
-      NetworkOrderController: this.networkOrderController.state,
-      AccountOrderController: this.accountOrderController.state,
-      GasFeeController: this.gasFeeController.state,
-      TokenListController: this.tokenListController.state,
-      TokensController: this.tokensController.state,
-      TokenBalancesController: this.tokenBalancesController.state,
-      SmartTransactionsController: this.smartTransactionsController.state,
-      NftController: this.nftController.state,
-      SelectedNetworkController: this.selectedNetworkController.state,
-      LoggingController: this.loggingController.state,
-      TxController: this.txController.state,
-      MultichainRatesController: this.multichainRatesController.state,
-      SnapController: this.snapController.state,
-      CronjobController: this.cronjobController.state,
-      SnapsRegistry: this.snapsRegistry,
-      SnapInterfaceController: this.snapInterfaceController.state,
-      SnapInsightsController: this.snapInsightsController.state,
-      ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-      CustodyController: this.custodyController.store,
-      InstitutionalFeaturesController:
-        this.institutionalFeaturesController.store,
-      MmiConfigurationController: this.mmiConfigurationController.store,
-      ///: END:ONLY_INCLUDE_IF
-      NameController: this.nameController.state,
-      UserOperationController: this.userOperationController.state,
-      // Notification Controllers
-      AuthenticationController: this.authenticationController.state,
-      UserStorageController: this.userStorageController.state,
-      NotificationServicesController: this.notificationServicesController.state,
-      QueuedRequestController: this.queuedRequestController.state,
       NotificationServicesPushController:
         this.notificationServicesPushController.state,
+      RemoteFeatureFlagController: this.remoteFeatureFlagController.state,
       ...resetOnRestartStore,
-    };
+    });
+
     this.memStore = new ComposableObservableStore({
-      config: memStoreControllersComposedState,
+      config: {
+        AccountsController: this.accountsController.state,
+        AppStateController: this.appStateController.state,
+        AppMetadataController: this.appMetadataController.state,
+        MultichainBalancesController: this.multichainBalancesController.state,
+        NetworkController: this.networkController.state,
+        KeyringController: this.keyringController.state,
+        PreferencesController: this.preferencesController.state,
+        MetaMetricsController: this.metaMetricsController.state,
+        MetaMetricsDataDeletionController:
+          this.metaMetricsDataDeletionController.state,
+        AddressBookController: this.addressBookController.state,
+        CurrencyController: this.currencyRateController.state,
+        AlertController: this.alertController.state,
+        OnboardingController: this.onboardingController.state,
+        PermissionController: this.permissionController.state,
+        PermissionLogController: this.permissionLogController.state,
+        SubjectMetadataController: this.subjectMetadataController.state,
+        AnnouncementController: this.announcementController.state,
+        NetworkOrderController: this.networkOrderController.state,
+        AccountOrderController: this.accountOrderController.state,
+        GasFeeController: this.gasFeeController.state,
+        TokenListController: this.tokenListController.state,
+        TokensController: this.tokensController.state,
+        TokenBalancesController: this.tokenBalancesController.state,
+        SmartTransactionsController: this.smartTransactionsController.state,
+        NftController: this.nftController.state,
+        SelectedNetworkController: this.selectedNetworkController.state,
+        LoggingController: this.loggingController.state,
+        TxController: this.txController.state,
+        MultichainRatesController: this.multichainRatesController.state,
+        SnapController: this.snapController.state,
+        CronjobController: this.cronjobController.state,
+        SnapsRegistry: this.snapsRegistry.state,
+        SnapInterfaceController: this.snapInterfaceController.state,
+        SnapInsightsController: this.snapInsightsController.state,
+        ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
+        CustodyController: this.custodyController.store,
+        InstitutionalFeaturesController:
+          this.institutionalFeaturesController.store,
+        MmiConfigurationController: this.mmiConfigurationController.store,
+        ///: END:ONLY_INCLUDE_IF
+        NameController: this.nameController.state,
+        UserOperationController: this.userOperationController.state,
+        // Notification Controllers
+        AuthenticationController: this.authenticationController.state,
+        UserStorageController: this.userStorageController.state,
+        NotificationServicesController:
+          this.notificationServicesController.state,
+        QueuedRequestController: this.queuedRequestController.state,
+        NotificationServicesPushController:
+          this.notificationServicesPushController.state,
+        RemoteFeatureFlagController: this.remoteFeatureFlagController.state,
+        ...resetOnRestartStore,
+      },
       controllerMessenger: this.controllerMessenger,
     });
 
