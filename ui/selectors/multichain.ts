@@ -372,7 +372,7 @@ export function getMultichainBalances(
 }
 
 export const getMultichainCoinRates = (state: MultichainState) => {
-  return state.metamask.rates;
+  return state.metamask.MultichainRatesController.rates;
 };
 
 function getNonEvmCachedBalance(state: MultichainState) {
