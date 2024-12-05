@@ -32,7 +32,7 @@ const getTestPathsForTestDir = async (testDir) => {
 };
 
 // Quality Gate Retries
-const RETRIES_FOR_NEW_OR_CHANGED_TESTS = 5;
+const RETRIES_FOR_NEW_OR_CHANGED_TESTS = 4;
 
 /**
  * Runs the quality gate logic to filter and append changed or new tests if present.

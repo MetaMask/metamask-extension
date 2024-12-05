@@ -24,10 +24,8 @@ import {
 } from '../../../../helpers/constants/design-system';
 import { AssetType } from '../../../../../shared/constants/transaction';
 import { AssetPickerModal } from '../asset-picker-modal/asset-picker-modal';
-import {
-  getCurrentNetwork,
-  getNetworkConfigurationsByChainId,
-} from '../../../../selectors';
+import { getNetworkConfigurationsByChainId } from '../../../../../shared/modules/selectors/networks';
+import { getCurrentNetwork } from '../../../../selectors';
 import Tooltip from '../../../ui/tooltip';
 import { LARGE_SYMBOL_LENGTH } from '../constants';
 ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)

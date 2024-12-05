@@ -112,18 +112,18 @@ export default function TokenList({
 
   // Ensure newly added networks are included in the tokenNetworkFilter
   useEffect(() => {
-    const allNetworkFilters = Object.fromEntries(
-      Object.keys(allNetworks).map((chainId) => [chainId, true]),
-    );
-
-    if (Object.keys(tokenNetworkFilter).length > 1) {
-      dispatch(setTokenNetworkFilter(allNetworkFilters));
+    if (process.env.PORTFOLIO_VIEW) {
+      const allNetworkFilters = Object.fromEntries(
+        Object.keys(allNetworks).map((chainId) => [chainId, true]),
+      );
+      if (Object.keys(tokenNetworkFilter || {}).length > 1) {
+        dispatch(setTokenNetworkFilter(allNetworkFilters));
+      }
     }
   }, [Object.keys(allNetworks).length]);
 
   const consolidatedBalances = () => {
     const tokensWithBalance: TokenWithFiatAmount[] = [];
-
     Object.entries(selectedAccountTokensChains).forEach(
       ([stringChainKey, tokens]) => {
         const chainId = stringChainKey as Hex;

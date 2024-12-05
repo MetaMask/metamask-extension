@@ -87,6 +87,8 @@ export const NETWORK_TYPES = {
   LINEA_MAINNET: 'linea-mainnet',
 } as const;
 
+export type NetworkTypes = (typeof NETWORK_TYPES)[keyof typeof NETWORK_TYPES];
+
 /**
  * An object containing shortcut names for any non-builtin network. We need
  * this to be able to differentiate between networks that require custom
@@ -299,7 +301,6 @@ export const CURRENCY_SYMBOLS = {
   AVALANCHE: 'AVAX',
   BNB: 'BNB',
   BUSD: 'BUSD',
-  BTC: 'BTC', // Do we wanna mix EVM and non-EVM here?
   CELO: 'CELO',
   DAI: 'DAI',
   GNOSIS: 'XDAI',
@@ -320,8 +321,15 @@ export const CURRENCY_SYMBOLS = {
   ONE: 'ONE',
 } as const;
 
+// Non-EVM currency symbols
+export const NON_EVM_CURRENCY_SYMBOLS = {
+  BTC: 'BTC',
+  SOL: 'SOL',
+} as const;
+
 const CHAINLIST_CURRENCY_SYMBOLS_MAP = {
   ...CURRENCY_SYMBOLS,
+  ...NON_EVM_CURRENCY_SYMBOLS,
   BASE: 'ETH',
   LINEA_MAINNET: 'ETH',
   OPBNB: 'BNB',

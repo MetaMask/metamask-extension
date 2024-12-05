@@ -2,7 +2,8 @@ import React, { useContext, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import classnames from 'classnames';
-import { zeroAddress } from 'ethereumjs-util';
+import { getNativeTokenAddress } from '@metamask/assets-controllers';
+import { Hex } from '@metamask/utils';
 import {
   AlignItems,
   BackgroundColor,
@@ -55,7 +56,10 @@ import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
-import { CURRENCY_SYMBOLS } from '../../../../shared/constants/network';
+import {
+  CURRENCY_SYMBOLS,
+  NON_EVM_CURRENCY_SYMBOLS,
+} from '../../../../shared/constants/network';
 import { hexToDecimal } from '../../../../shared/modules/conversion.utils';
 
 import { NETWORKS_ROUTE } from '../../../helpers/constants/routes';
@@ -140,8 +144,10 @@ export const TokenListItem = ({
     switch (title) {
       case CURRENCY_SYMBOLS.ETH:
         return t('networkNameEthereum');
-      case CURRENCY_SYMBOLS.BTC:
+      case NON_EVM_CURRENCY_SYMBOLS.BTC:
         return t('networkNameBitcoin');
+      case NON_EVM_CURRENCY_SYMBOLS.SOL:
+        return t('networkNameSolana');
       default:
         return title;
     }
@@ -336,13 +342,14 @@ export const TokenListItem = ({
                 <PercentageChange
                   value={
                     isNativeCurrency
-                      ? multiChainMarketData?.[chainId]?.[zeroAddress()]
-                          ?.pricePercentChange1d
+                      ? multiChainMarketData?.[chainId]?.[
+                          getNativeTokenAddress(chainId as Hex)
+                        ]?.pricePercentChange1d
                       : tokenPercentageChange
                   }
                   address={
                     isNativeCurrency
-                      ? (zeroAddress() as `0x${string}`)
+                      ? getNativeTokenAddress(chainId as Hex)
                       : (address as `0x${string}`)
                   }
                 />

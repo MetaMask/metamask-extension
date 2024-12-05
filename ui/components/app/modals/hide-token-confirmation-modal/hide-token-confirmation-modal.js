@@ -12,7 +12,7 @@ import {
 import {
   getCurrentChainId,
   getNetworkConfigurationsByChainId,
-} from '../../../../selectors';
+} from '../../../../../shared/modules/selectors/networks';
 
 function mapStateToProps(state) {
   return {

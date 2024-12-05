@@ -7,11 +7,11 @@ import React, {
 } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import classnames from 'classnames';
-import { zeroAddress } from 'ethereumjs-util';
 import { CaipChainId } from '@metamask/utils';
 import type { Hex } from '@metamask/utils';
 
 import { InternalAccount } from '@metamask/keyring-api';
+import { getNativeTokenAddress } from '@metamask/assets-controllers';
 import {
   Box,
   ButtonIcon,
@@ -231,7 +231,10 @@ export const CoinOverview = ({
         return (
           <Box className="wallet-overview__currency-wrapper">
             <PercentageAndAmountChange
-              value={tokensMarketData?.[zeroAddress()]?.pricePercentChange1d}
+              value={
+                tokensMarketData?.[getNativeTokenAddress(chainId as Hex)]
+                  ?.pricePercentChange1d
+              }
             />
             {
               ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)

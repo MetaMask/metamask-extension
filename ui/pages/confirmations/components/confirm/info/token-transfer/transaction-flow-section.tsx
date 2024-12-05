@@ -1,11 +1,9 @@
-import { NameType } from '@metamask/name-controller';
 import {
   TransactionMeta,
   TransactionType,
 } from '@metamask/transaction-controller';
 import React from 'react';
 import { ConfirmInfoSection } from '../../../../../../components/app/confirm/info/row/section';
-import Name from '../../../../../../components/app/name';
 import {
   Box,
   Icon,
@@ -19,10 +17,15 @@ import {
   IconColor,
   JustifyContent,
 } from '../../../../../../helpers/constants/design-system';
+import { ConfirmInfoRowAddress } from '../../../../../../components/app/confirm/info/row';
+import { ConfirmInfoAlertRow } from '../../../../../../components/app/confirm/info/row/alert-row/alert-row';
+import { RowAlertKey } from '../../../../../../components/app/confirm/info/row/constants';
+import { useI18nContext } from '../../../../../../hooks/useI18nContext';
 import { useConfirmContext } from '../../../../context/confirm';
 import { useDecodedTransactionData } from '../hooks/useDecodedTransactionData';
 
 export const TransactionFlowSection = () => {
+  const t = useI18nContext();
   const { currentConfirmation: transactionMeta } =
     useConfirmContext<TransactionMeta>();
 
@@ -50,24 +53,44 @@ export const TransactionFlowSection = () => {
         flexDirection={FlexDirection.Row}
         justifyContent={JustifyContent.spaceBetween}
         alignItems={AlignItems.center}
-        padding={3}
       >
-        <Name
-          value={transactionMeta.txParams.from}
-          type={NameType.ETHEREUM_ADDRESS}
-          variation={chainId}
-        />
+        <ConfirmInfoAlertRow
+          alertKey={RowAlertKey.SigningInWith}
+          label={t('from')}
+          ownerId={transactionMeta.id}
+          style={{
+            flexDirection: FlexDirection.Column,
+          }}
+        >
+          <Box marginTop={1}>
+            <ConfirmInfoRowAddress
+              address={transactionMeta.txParams.from}
+              chainId={chainId}
+            />
+          </Box>
+        </ConfirmInfoAlertRow>
+
         <Icon
           name={IconName.ArrowRight}
           size={IconSize.Md}
           color={IconColor.iconMuted}
         />
         {recipientAddress && (
-          <Name
-            value={recipientAddress}
-            type={NameType.ETHEREUM_ADDRESS}
-            variation={chainId}
-          />
+          <ConfirmInfoAlertRow
+            alertKey={RowAlertKey.FirstTimeInteraction}
+            label={t('to')}
+            ownerId={transactionMeta.id}
+            style={{
+              flexDirection: FlexDirection.Column,
+            }}
+          >
+            <Box marginTop={1}>
+              <ConfirmInfoRowAddress
+                address={recipientAddress}
+                chainId={chainId}
+              />
+            </Box>
+          </ConfirmInfoAlertRow>
         )}
       </Box>
     </ConfirmInfoSection>

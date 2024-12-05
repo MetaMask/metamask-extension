@@ -79,7 +79,7 @@ exports[`Name renders address with long saved name 1`] = `
       <p
         class="mm-box mm-text name__name mm-text--body-md mm-box--color-text-default"
       >
-        Very long and l...
+        Very long an...
       </p>
     </div>
   </div>

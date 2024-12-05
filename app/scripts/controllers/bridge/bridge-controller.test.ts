@@ -1,4 +1,6 @@
 import nock from 'nock';
+import { BigNumber } from 'bignumber.js';
+import { add0x } from '@metamask/utils';
 import { BRIDGE_API_BASE_URL } from '../../../../shared/constants/bridge';
 import { CHAIN_IDS } from '../../../../shared/constants/network';
 import { SWAPS_API_V2_BASE_URL } from '../../../../shared/constants/swaps';
@@ -7,6 +9,13 @@ import { flushPromises } from '../../../../test/lib/timer-helpers';
 // eslint-disable-next-line import/no-restricted-paths
 import * as bridgeUtil from '../../../../ui/pages/bridge/bridge.util';
 import * as balanceUtils from '../../../../shared/modules/bridge-utils/balance';
+import mockBridgeQuotesErc20Native from '../../../../test/data/bridge/mock-quotes-erc20-native.json';
+import mockBridgeQuotesNativeErc20 from '../../../../test/data/bridge/mock-quotes-native-erc20.json';
+import mockBridgeQuotesNativeErc20Eth from '../../../../test/data/bridge/mock-quotes-native-erc20-eth.json';
+// TODO: Remove restricted import
+// eslint-disable-next-line import/no-restricted-paths
+import { QuoteResponse } from '../../../../ui/pages/bridge/types';
+import { decimalToHex } from '../../../../shared/modules/conversion.utils';
 import BridgeController from './bridge-controller';
 import { BridgeControllerMessenger } from './types';
 import { DEFAULT_BRIDGE_CONTROLLER_STATE } from './constants';
@@ -35,6 +44,7 @@ jest.mock('@ethersproject/providers', () => {
     Web3Provider: jest.fn(),
   };
 });
+const getLayer1GasFeeMock = jest.fn();
 
 describe('BridgeController', function () {
   let bridgeController: BridgeController;
@@ -42,6 +52,7 @@ describe('BridgeController', function () {
   beforeAll(function () {
     bridgeController = new BridgeController({
       messenger: messengerMock,
+      getLayer1GasFee: getLayer1GasFeeMock,
     });
   });
 
@@ -261,10 +272,7 @@ describe('BridgeController', function () {
   it('updateBridgeQuoteRequestParams should trigger quote polling if request is valid', async function () {
     jest.useFakeTimers();
     const stopAllPollingSpy = jest.spyOn(bridgeController, 'stopAllPolling');
-    const startPollingByNetworkClientIdSpy = jest.spyOn(
-      bridgeController,
-      'startPollingByNetworkClientId',
-    );
+    const startPollingSpy = jest.spyOn(bridgeController, 'startPolling');
     const hasSufficientBalanceSpy = jest
       .spyOn(balanceUtils, 'hasSufficientBalance')
       .mockResolvedValue(true);
@@ -278,7 +286,7 @@ describe('BridgeController', function () {
       .mockImplementationOnce(async () => {
         return await new Promise((resolve) => {
           return setTimeout(() => {
-            resolve([1, 2, 3] as never);
+            resolve(mockBridgeQuotesNativeErc20Eth as never);
           }, 5000);
         });
       });
@@ -286,7 +294,10 @@ describe('BridgeController', function () {
     fetchBridgeQuotesSpy.mockImplementationOnce(async () => {
       return await new Promise((resolve) => {
         return setTimeout(() => {
-          resolve([5, 6, 7] as never);
+          resolve([
+            ...mockBridgeQuotesNativeErc20Eth,
+            ...mockBridgeQuotesNativeErc20Eth,
+          ] as never);
         }, 10000);
       });
     });
@@ -314,15 +325,15 @@ describe('BridgeController', function () {
     await bridgeController.updateBridgeQuoteRequestParams(quoteParams);
 
     expect(stopAllPollingSpy).toHaveBeenCalledTimes(1);
-    expect(startPollingByNetworkClientIdSpy).toHaveBeenCalledTimes(1);
+    expect(startPollingSpy).toHaveBeenCalledTimes(1);
     expect(hasSufficientBalanceSpy).toHaveBeenCalledTimes(1);
-    expect(startPollingByNetworkClientIdSpy).toHaveBeenCalledWith(
-      expect.anything(),
-      {
+    expect(startPollingSpy).toHaveBeenCalledWith({
+      networkClientId: expect.anything(),
+      updatedQuoteRequest: {
         ...quoteRequest,
         insufficientBal: false,
       },
-    );
+    });
 
     expect(bridgeController.state.bridgeState).toStrictEqual(
       expect.objectContaining({
@@ -363,7 +374,7 @@ describe('BridgeController', function () {
     expect(bridgeController.state.bridgeState).toEqual(
       expect.objectContaining({
         quoteRequest: { ...quoteRequest, insufficientBal: false },
-        quotes: [1, 2, 3],
+        quotes: mockBridgeQuotesNativeErc20Eth,
         quotesLoadingStatus: 1,
       }),
     );
@@ -377,7 +388,10 @@ describe('BridgeController', function () {
     expect(bridgeController.state.bridgeState).toEqual(
       expect.objectContaining({
         quoteRequest: { ...quoteRequest, insufficientBal: false },
-        quotes: [5, 6, 7],
+        quotes: [
+          ...mockBridgeQuotesNativeErc20Eth,
+          ...mockBridgeQuotesNativeErc20Eth,
+        ],
         quotesLoadingStatus: 1,
         quotesRefreshCount: 2,
       }),
@@ -394,7 +408,10 @@ describe('BridgeController', function () {
     expect(bridgeController.state.bridgeState).toEqual(
       expect.objectContaining({
         quoteRequest: { ...quoteRequest, insufficientBal: false },
-        quotes: [5, 6, 7],
+        quotes: [
+          ...mockBridgeQuotesNativeErc20Eth,
+          ...mockBridgeQuotesNativeErc20Eth,
+        ],
         quotesLoadingStatus: 2,
         quotesRefreshCount: 3,
       }),
@@ -404,15 +421,13 @@ describe('BridgeController', function () {
     );
 
     expect(hasSufficientBalanceSpy).toHaveBeenCalledTimes(1);
+    expect(getLayer1GasFeeMock).not.toHaveBeenCalled();
   });
 
   it('updateBridgeQuoteRequestParams should only poll once if insufficientBal=true', async function () {
     jest.useFakeTimers();
     const stopAllPollingSpy = jest.spyOn(bridgeController, 'stopAllPolling');
-    const startPollingByNetworkClientIdSpy = jest.spyOn(
-      bridgeController,
-      'startPollingByNetworkClientId',
-    );
+    const startPollingSpy = jest.spyOn(bridgeController, 'startPolling');
     const hasSufficientBalanceSpy = jest
       .spyOn(balanceUtils, 'hasSufficientBalance')
       .mockResolvedValue(false);
@@ -426,7 +441,7 @@ describe('BridgeController', function () {
       .mockImplementationOnce(async () => {
         return await new Promise((resolve) => {
           return setTimeout(() => {
-            resolve([1, 2, 3] as never);
+            resolve(mockBridgeQuotesNativeErc20Eth as never);
           }, 5000);
         });
       });
@@ -434,7 +449,10 @@ describe('BridgeController', function () {
     fetchBridgeQuotesSpy.mockImplementation(async () => {
       return await new Promise((resolve) => {
         return setTimeout(() => {
-          resolve([5, 6, 7] as never);
+          resolve([
+            ...mockBridgeQuotesNativeErc20Eth,
+            ...mockBridgeQuotesNativeErc20Eth,
+          ] as never);
         }, 10000);
       });
     });
@@ -454,15 +472,15 @@ describe('BridgeController', function () {
     await bridgeController.updateBridgeQuoteRequestParams(quoteParams);
 
     expect(stopAllPollingSpy).toHaveBeenCalledTimes(1);
-    expect(startPollingByNetworkClientIdSpy).toHaveBeenCalledTimes(1);
+    expect(startPollingSpy).toHaveBeenCalledTimes(1);
     expect(hasSufficientBalanceSpy).toHaveBeenCalledTimes(1);
-    expect(startPollingByNetworkClientIdSpy).toHaveBeenCalledWith(
-      expect.anything(),
-      {
+    expect(startPollingSpy).toHaveBeenCalledWith({
+      networkClientId: expect.anything(),
+      updatedQuoteRequest: {
         ...quoteRequest,
         insufficientBal: true,
       },
-    );
+    });
 
     expect(bridgeController.state.bridgeState).toStrictEqual(
       expect.objectContaining({
@@ -503,7 +521,7 @@ describe('BridgeController', function () {
     expect(bridgeController.state.bridgeState).toEqual(
       expect.objectContaining({
         quoteRequest: { ...quoteRequest, insufficientBal: true },
-        quotes: [1, 2, 3],
+        quotes: mockBridgeQuotesNativeErc20Eth,
         quotesLoadingStatus: 1,
         quotesRefreshCount: 1,
       }),
@@ -519,7 +537,7 @@ describe('BridgeController', function () {
     expect(bridgeController.state.bridgeState).toEqual(
       expect.objectContaining({
         quoteRequest: { ...quoteRequest, insufficientBal: true },
-        quotes: [1, 2, 3],
+        quotes: mockBridgeQuotesNativeErc20Eth,
         quotesLoadingStatus: 1,
         quotesRefreshCount: 1,
       }),
@@ -527,14 +545,12 @@ describe('BridgeController', function () {
     const secondFetchTime =
       bridgeController.state.bridgeState.quotesLastFetched;
     expect(secondFetchTime).toStrictEqual(firstFetchTime);
+    expect(getLayer1GasFeeMock).not.toHaveBeenCalled();
   });
 
   it('updateBridgeQuoteRequestParams should not trigger quote polling if request is invalid', function () {
     const stopAllPollingSpy = jest.spyOn(bridgeController, 'stopAllPolling');
-    const startPollingByNetworkClientIdSpy = jest.spyOn(
-      bridgeController,
-      'startPollingByNetworkClientId',
-    );
+    const startPollingSpy = jest.spyOn(bridgeController, 'startPolling');
     messengerMock.call.mockReturnValue({
       address: '0x123',
       provider: jest.fn(),
@@ -548,7 +564,7 @@ describe('BridgeController', function () {
     });
 
     expect(stopAllPollingSpy).toHaveBeenCalledTimes(1);
-    expect(startPollingByNetworkClientIdSpy).not.toHaveBeenCalled();
+    expect(startPollingSpy).not.toHaveBeenCalled();
 
     expect(bridgeController.state.bridgeState).toStrictEqual(
       expect.objectContaining({
@@ -574,6 +590,7 @@ describe('BridgeController', function () {
         address: '0x123',
         provider: jest.fn(),
       } as never);
+
       const allowance = await bridgeController.getBridgeERC20Allowance(
         '0x1f9840a85d5af5bf1d1762f925bdaddc4201f984',
         '0xa',
@@ -581,4 +598,140 @@ describe('BridgeController', function () {
       expect(allowance).toBe('100000000000000000000');
     });
   });
+
+  // @ts-expect-error This is missing from the Mocha type definitions
+  it.each([
+    [
+      'should append l1GasFees if srcChain is 10 and srcToken is erc20',
+      mockBridgeQuotesErc20Native,
+      add0x(decimalToHex(new BigNumber('2608710388388').mul(2).toFixed())),
+      12,
+    ],
+    [
+      'should append l1GasFees if srcChain is 10 and srcToken is native',
+      mockBridgeQuotesNativeErc20,
+      add0x(decimalToHex(new BigNumber('2608710388388').toFixed())),
+      2,
+    ],
+    [
+      'should not append l1GasFees if srcChain is not 10',
+      mockBridgeQuotesNativeErc20Eth,
+      undefined,
+      0,
+    ],
+  ])(
+    'updateBridgeQuoteRequestParams: %s',
+    async (
+      _: string,
+      quoteResponse: QuoteResponse[],
+      l1GasFeesInHexWei: string,
+      getLayer1GasFeeMockCallCount: number,
+    ) => {
+      jest.useFakeTimers();
+      const stopAllPollingSpy = jest.spyOn(bridgeController, 'stopAllPolling');
+      const startPollingSpy = jest.spyOn(bridgeController, 'startPolling');
+      const hasSufficientBalanceSpy = jest
+        .spyOn(balanceUtils, 'hasSufficientBalance')
+        .mockResolvedValue(false);
+      messengerMock.call.mockReturnValue({
+        address: '0x123',
+        provider: jest.fn(),
+      } as never);
+      getLayer1GasFeeMock.mockResolvedValue('0x25F63418AA4');
+
+      const fetchBridgeQuotesSpy = jest
+        .spyOn(bridgeUtil, 'fetchBridgeQuotes')
+        .mockImplementationOnce(async () => {
+          return await new Promise((resolve) => {
+            return setTimeout(() => {
+              resolve(quoteResponse as never);
+            }, 1000);
+          });
+        });
+
+      const quoteParams = {
+        srcChainId: 10,
+        destChainId: 1,
+        srcTokenAddress: '0x4200000000000000000000000000000000000006',
+        destTokenAddress: '0x0000000000000000000000000000000000000000',
+        srcTokenAmount: '991250000000000000',
+      };
+      const quoteRequest = {
+        ...quoteParams,
+        slippage: 0.5,
+        walletAddress: '0x123',
+      };
+      await bridgeController.updateBridgeQuoteRequestParams(quoteParams);
+
+      expect(stopAllPollingSpy).toHaveBeenCalledTimes(1);
+      expect(startPollingSpy).toHaveBeenCalledTimes(1);
+      expect(hasSufficientBalanceSpy).toHaveBeenCalledTimes(1);
+      expect(startPollingSpy).toHaveBeenCalledWith({
+        networkClientId: expect.anything(),
+        updatedQuoteRequest: {
+          ...quoteRequest,
+          insufficientBal: true,
+        },
+      });
+
+      expect(bridgeController.state.bridgeState).toStrictEqual(
+        expect.objectContaining({
+          quoteRequest: { ...quoteRequest, walletAddress: undefined },
+          quotes: DEFAULT_BRIDGE_CONTROLLER_STATE.quotes,
+          quotesLastFetched: DEFAULT_BRIDGE_CONTROLLER_STATE.quotesLastFetched,
+          quotesLoadingStatus:
+            DEFAULT_BRIDGE_CONTROLLER_STATE.quotesLoadingStatus,
+        }),
+      );
+
+      // // Loading state
+      jest.advanceTimersByTime(500);
+      await flushPromises();
+      expect(fetchBridgeQuotesSpy).toHaveBeenCalledTimes(1);
+      expect(fetchBridgeQuotesSpy).toHaveBeenCalledWith(
+        {
+          ...quoteRequest,
+          insufficientBal: true,
+        },
+        expect.any(AbortSignal),
+      );
+      expect(
+        bridgeController.state.bridgeState.quotesLastFetched,
+      ).toStrictEqual(undefined);
+
+      expect(bridgeController.state.bridgeState).toEqual(
+        expect.objectContaining({
+          quoteRequest: { ...quoteRequest, insufficientBal: true },
+          quotes: [],
+          quotesLoadingStatus: 0,
+        }),
+      );
+
+      // After first fetch
+      jest.advanceTimersByTime(1500);
+      await flushPromises();
+      const { quotes } = bridgeController.state.bridgeState;
+      expect(bridgeController.state.bridgeState).toEqual(
+        expect.objectContaining({
+          quoteRequest: { ...quoteRequest, insufficientBal: true },
+          quotesLoadingStatus: 1,
+          quotesRefreshCount: 1,
+        }),
+      );
+      quotes.forEach((quote) => {
+        const expectedQuote = l1GasFeesInHexWei
+          ? { ...quote, l1GasFeesInHexWei }
+          : quote;
+        expect(quote).toStrictEqual(expectedQuote);
+      });
+
+      const firstFetchTime =
+        bridgeController.state.bridgeState.quotesLastFetched ?? 0;
+      expect(firstFetchTime).toBeGreaterThan(0);
+
+      expect(getLayer1GasFeeMock).toHaveBeenCalledTimes(
+        getLayer1GasFeeMockCallCount,
+      );
+    },
+  );
 });

@@ -11,7 +11,11 @@ import { forceUpdateMetamaskState } from '../../store/actions';
 import { submitRequestToBackground } from '../../store/background-connection';
 import { QuoteRequest } from '../../pages/bridge/types';
 import { MetaMaskReduxDispatch } from '../../store/store';
-import { bridgeSlice } from './bridge';
+import {
+  bridgeSlice,
+  setDestTokenExchangeRates,
+  setSrcTokenExchangeRates,
+} from './bridge';
 
 const {
   setToChainId,
@@ -19,6 +23,8 @@ const {
   setToToken,
   setFromTokenInputValue,
   resetInputFields,
+  setSortOrder,
+  setSelectedQuote,
 } = bridgeSlice.actions;
 
 export {
@@ -27,6 +33,10 @@ export {
   setToToken,
   setFromToken,
   setFromTokenInputValue,
+  setDestTokenExchangeRates,
+  setSrcTokenExchangeRates,
+  setSortOrder,
+  setSelectedQuote,
 };
 
 const callBridgeControllerMethod = <T>(

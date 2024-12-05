@@ -3,25 +3,25 @@ version: 2.1
 executors:
   node-browsers-small:
     docker:
-      - image: cimg/node:20.17-browsers
+      - image: cimg/node:20.18-browsers
     resource_class: small
     environment:
       NODE_OPTIONS: --max_old_space_size=2048
   node-browsers-medium:
     docker:
-      - image: cimg/node:20.17-browsers
+      - image: cimg/node:20.18-browsers
     resource_class: medium
     environment:
       NODE_OPTIONS: --max_old_space_size=3072
   node-linux-medium:
     machine:
-      image: ubuntu-2404:current
+      image: ubuntu-2404:2024.05.1
     resource_class: medium #// linux medium: 2 CPUs, 7.5 GB RAM, 10 credits/min
     environment:
       NODE_OPTIONS: --max_old_space_size=6144
   node-browsers-medium-plus:
     docker:
-      - image: cimg/node:20.17-browsers
+      - image: cimg/node:20.18-browsers
     resource_class: medium+
     environment:
       NODE_OPTIONS: --max_old_space_size=4096
@@ -45,11 +45,11 @@ rc_branch_only: &rc_branch_only
       only:
         - /^Version-v(\d+)[.](\d+)[.](\d+)/
 
-develop_master_rc_only: &develop_master_rc_only
+main_master_rc_only: &main_master_rc_only
   filters:
     branches:
       only:
-        - develop
+        - main
         - master
         - /^Version-v(\d+)[.](\d+)[.](\d+)/
 
@@ -103,9 +103,13 @@ workflows:
   test_and_release:
     when:
       not:
-        matches:
-          pattern: /^l10n_crowdin_action$/
-          value: << pipeline.git.branch >>
+        or:
+          - matches:
+              pattern: /^l10n_crowdin_action$/
+              value: << pipeline.git.branch >>
+          - matches:
+              pattern: /^rerun-from-failed.*/
+              value: << pipeline.schedule.name >>
     jobs:
       - create_release_pull_request:
           <<: *rc_branch_only
@@ -121,6 +125,8 @@ workflows:
             branches:
               ignore:
                 - master
+          requires:
+            - prep-deps
       - test-deps-audit:
           requires:
             - prep-deps
@@ -170,12 +176,13 @@ workflows:
           requires:
             - prep-deps
       - prep-build-test-flask-mv2:
-          <<: *develop_master_rc_only
+          <<: *main_master_rc_only
           requires:
             - prep-deps
       - prep-build-test-mmi:
           requires:
             - prep-deps
+            - check-mmi-trigger
       - prep-build-test-mmi-playwright:
           requires:
             - prep-deps
@@ -197,7 +204,7 @@ workflows:
           requires:
             - prep-deps
       - test-e2e-chrome-webpack:
-          <<: *develop_master_rc_only
+          <<: *main_master_rc_only
           requires:
             - prep-build-test-webpack
             - get-changed-files-with-git-diff
@@ -206,7 +213,7 @@ workflows:
             - prep-build-test
             - get-changed-files-with-git-diff
       - test-e2e-firefox:
-          <<: *develop_master_rc_only
+          <<: *main_master_rc_only
           requires:
             - prep-build-test-mv2
             - get-changed-files-with-git-diff
@@ -226,7 +233,7 @@ workflows:
             - prep-build-test-flask
             - get-changed-files-with-git-diff
       - test-e2e-firefox-flask:
-          <<: *develop_master_rc_only
+          <<: *main_master_rc_only
           requires:
             - prep-build-test-flask-mv2
       - test-e2e-chrome-mmi:
@@ -247,7 +254,7 @@ workflows:
           filters:
             branches:
               only:
-                - develop
+                - main
                 - /^Version-v(\d+)[.](\d+)[.](\d+)/
           requires:
             - prep-build
@@ -346,15 +353,29 @@ workflows:
       - job-publish-storybook:
           filters:
             branches:
-              only: develop
+              only: main
           requires:
             - prep-build-storybook
       - job-publish-ts-migration-dashboard:
           filters:
             branches:
-              only: develop
+              only: main
           requires:
             - prep-build-ts-migration-dashboard
+
+  rerun-from-failed:
+    when:
+      matches:
+        pattern: /^rerun-from-failed.*/
+        value: << pipeline.schedule.name >>
+    jobs:
+      - prep-deps
+      - rerun-workflows-from-failed:
+          filters:
+            branches:
+              only: main
+          requires:
+            - prep-deps
 
   locales_only:
     when:
@@ -462,7 +483,7 @@ jobs:
 
   # This job is used for the e2e quality gate.
   # It must be run before any job which uses the run-all.js script.
-  # The job is skipped in develop, master or RC branches.
+  # The job is skipped in main, master or RC branches.
   get-changed-files-with-git-diff:
     executor: node-browsers-small
     steps:
@@ -472,7 +493,7 @@ jobs:
           at: .
       - run:
           name: Get changed files with git diff
-          command: npx tsx .circleci/scripts/git-diff-develop.ts
+          command: yarn git-diff-default-branch
       - persist_to_workspace:
           root: .
           paths:
@@ -789,6 +810,7 @@ jobs:
       - run: corepack enable
       - attach_workspace:
           at: .
+      - run: *check-mmi-trigger
       - run:
           name: Build extension for testing
           command: yarn build:test:mmi
@@ -929,6 +951,17 @@ jobs:
           root: .
           paths:
             - development/ts-migration-dashboard/build/final
+
+  rerun-workflows-from-failed:
+    executor: node-browsers-small
+    steps:
+      - run: *shallow-git-clone-and-enable-vnc
+      - run: sudo corepack enable
+      - attach_workspace:
+          at: .
+      - run:
+          name: Rerun workflows from failed
+          command: yarn ci-rerun-from-failed
 
   test-yarn-dedupe:
     executor: node-browsers-small
@@ -1172,6 +1205,7 @@ jobs:
       - run: sudo corepack enable
       - attach_workspace:
           at: .
+      - run: *check-mmi-trigger
       - run:
           name: Move test build to dist
           command: mv ./dist-test-mmi ./dist
@@ -1261,6 +1295,7 @@ jobs:
       - run: sudo corepack enable
       - attach_workspace:
           at: .
+      - run: *check-mmi-trigger
       - run:
           name: Move test build to dist
           command: mv ./dist-test-mmi ./dist
@@ -1306,7 +1341,7 @@ jobs:
           template: basic_fail_1
           channel: C01LUJL3T98
       - slack/notify:
-          branch_pattern: develop
+          branch_pattern: main
           event: fail
           mentions: <@antonio.regadas>, @ramon.acitores134
           template: basic_fail_1
@@ -1716,7 +1751,7 @@ jobs:
           command: echo 'whew - everything passed!'
 
   check-mmi-trigger:
-    executor: node-browsers-medium
+    executor: node-browsers-small
     steps:
       - checkout
       - run:

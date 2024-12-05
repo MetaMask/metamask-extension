@@ -166,6 +166,7 @@ export type MetaMaskState = {
   currentCurrency: string;
   preferences: {
     privacyMode: PreferencesControllerState['preferences']['privacyMode'];
+    tokenNetworkFilter: string[];
   };
   ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
   custodyAccountDetails: {
@@ -583,7 +584,6 @@ export default class MetaMetricsController extends BaseController<
       : {};
 
     this.update((state) => {
-      // @ts-expect-error this is caused by a bug in Immer, not being able to handle recursive types like Json
       state.fragments[id] = merge(additionalFragmentProps, fragment);
     });
 
@@ -1233,6 +1233,9 @@ export default class MetaMetricsController extends BaseController<
         metamaskState.tokenSortConfig?.key || '',
       [MetaMetricsUserTrait.PrivacyModeEnabled]:
         metamaskState.preferences.privacyMode,
+      [MetaMetricsUserTrait.NetworkFilterPreference]: Object.keys(
+        metamaskState.preferences.tokenNetworkFilter || {},
+      ),
     };
 
     if (!previousUserTraits) {

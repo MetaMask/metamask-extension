@@ -10,11 +10,13 @@ import {
   MetaMetricsTokenEventSource,
 } from '../../../../../shared/constants/metametrics';
 import {
-  getAllDetectedTokensForSelectedAddress,
   getCurrentChainId,
+  getNetworkConfigurationsByChainId,
+} from '../../../../../shared/modules/selectors/networks';
+import {
+  getAllDetectedTokensForSelectedAddress,
   getCurrentNetwork,
   getDetectedTokensInCurrentNetwork,
-  getNetworkConfigurationsByChainId,
   getPreferences,
 } from '../../../../selectors';
 

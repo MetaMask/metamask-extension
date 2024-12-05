@@ -26,7 +26,7 @@ import {
   TextVariant,
 } from '../../../../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../../../../hooks/useI18nContext';
-import { getNetworkConfigurationsByChainId } from '../../../../../../selectors';
+import { getNetworkConfigurationsByChainId } from '../../../../../../../shared/modules/selectors/networks';
 import { useConfirmContext } from '../../../../context/confirm';
 import { selectConfirmationAdvancedDetailsOpen } from '../../../../selectors/preferences';
 import { useBalanceChanges } from '../../../simulation-details/useBalanceChanges';

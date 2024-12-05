@@ -73,6 +73,7 @@
     "shellcheck",
     "SIWE",
     "sourcemaps",
+    "Sourcify",
     "sprintf",
     "testcase",
     "TESTFILES",

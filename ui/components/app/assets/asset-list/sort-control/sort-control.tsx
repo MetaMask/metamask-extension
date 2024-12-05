@@ -1,11 +1,15 @@
 import React, { ReactNode, useContext } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import classnames from 'classnames';
-import { Box } from '../../../../component-library';
+import { Box, Text } from '../../../../component-library';
 import { SortOrder, SortingCallbacksT } from '../../util/sort';
 import {
+  AlignItems,
   BackgroundColor,
+  BlockSize,
   BorderRadius,
+  Display,
+  TextVariant,
 } from '../../../../../helpers/constants/design-system';
 import { setTokenSortConfig } from '../../../../../store/actions';
 import { MetaMetricsContext } from '../../../../../contexts/metametrics';
@@ -36,15 +40,21 @@ export const SelectableListItem = ({
 }: SelectableListItemProps) => {
   return (
     <Box className="selectable-list-item-wrapper" data-testid={testId}>
-      <Box
+      <Text
         data-testid={`${testId}__button`}
         className={classnames('selectable-list-item', {
           'selectable-list-item--selected': Boolean(isSelected),
         })}
         onClick={onClick}
+        variant={TextVariant.bodyMd}
+        as="button"
+        width={BlockSize.Full}
+        backgroundColor={BackgroundColor.backgroundDefault}
+        display={Display.Flex}
+        alignItems={AlignItems.center}
       >
         {children}
-      </Box>
+      </Text>
       {isSelected && (
         <Box
           className="selectable-list-item__selected-indicator"

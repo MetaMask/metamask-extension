@@ -6,10 +6,12 @@ import classNames from 'classnames';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
   getCurrentChainId,
+  getNetworkConfigurationsByChainId,
+} from '../../../../shared/modules/selectors/networks';
+import {
   getDetectedTokensInCurrentNetwork,
   getAllDetectedTokensForSelectedAddress,
   getPreferences,
-  getNetworkConfigurationsByChainId,
 } from '../../../selectors';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import {
