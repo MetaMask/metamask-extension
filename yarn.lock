@@ -4911,9 +4911,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/assets-controllers@npm:@metamask-previews/assets-controllers@45.1.1-preview-9e30e90a":
-  version: 45.1.1-preview-9e30e90a
-  resolution: "@metamask-previews/assets-controllers@npm:45.1.1-preview-9e30e90a"
+"@metamask/assets-controllers@npm:@metamask-previews/assets-controllers@45.1.1-preview-e1a582c9":
+  version: 45.1.1-preview-e1a582c9
+  resolution: "@metamask-previews/assets-controllers@npm:45.1.1-preview-e1a582c9"
   dependencies:
     "@ethereumjs/util": "npm:^8.1.0"
     "@ethersproject/abi": "npm:^5.7.0"
@@ -4950,7 +4950,7 @@ __metadata:
     "@metamask/preferences-controller": ^15.0.0
     "@metamask/providers": ^18.1.0
     webextension-polyfill: ^0.10.0 || ^0.11.0 || ^0.12.0
-  checksum: 10/c6eab284af480f3938d5d40fafcf93e2e161f16cf41f150c2fd2943e6998a7d961cf58278b3ba945a57b59ab86d16220707b805f53f4c80ec43fc219af967c4a
+  checksum: 10/78c29c858e83b593708bfa18d4ff0008ceb4b1af7df772855d770c42ead85b5986b9768ef79faa012016494c0710ec92308570efd00cd516af44ff421d55edfc
   languageName: node
   linkType: hard
 
