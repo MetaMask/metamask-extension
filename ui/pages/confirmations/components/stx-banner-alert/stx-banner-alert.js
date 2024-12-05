@@ -16,8 +16,17 @@ import ZENDESK_URLS from '../../../../helpers/constants/zendesk-url';
 const STXBannerAlert = () => {
   const dispatch = useDispatch();
   const shouldShow = useSelector(stxAlertIsOpen);
-  const t = useI18nContext();
+  console.log('=== STX BANNER COMPONENT ===');
+  console.log('shouldShow:', shouldShow);
+  console.log(
+    'Current state:',
+    useSelector((state) => state.metamask.alerts?.stxMigration),
+  );
+  console.log('=== STX BANNER COMPONENT END ===');
 
+  const t = useI18nContext();
+  // eslint-disable-next-line no-alert, no-undef
+  alert(`STX Banner mounted: shouldShow = ${shouldShow}`); // Temporary debug
   if (!shouldShow) {
     return null;
   }

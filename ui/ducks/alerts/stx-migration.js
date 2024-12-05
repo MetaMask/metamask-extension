@@ -22,9 +22,19 @@ const slice = createSlice({
   },
   extraReducers: {
     [actionConstants.UPDATE_METAMASK_STATE]: (state, action) => {
+      console.log('=== STX ALERT REDUCER ===');
+      console.log('Current state:', state.state);
+      console.log('Action:', action.type);
+      console.log('Action value:', action.value);
+      console.log(
+        'STX status:',
+        action.value?.preferences?.smartTransactionsOptInStatus,
+      );
       if (action.value?.preferences?.smartTransactionsOptInStatus === true) {
         state.state = ALERT_STATE.OPEN;
+        console.log('Alert state changed to:', ALERT_STATE.OPEN);
       }
+      console.log('=== STX ALERT REDUCER END ===');
     },
   },
 });
