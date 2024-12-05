@@ -9,24 +9,6 @@
 # follows all policies or without full understanding of the impact of
 # those changes on build, release and publishing outcomes.
 
-# All files are owned by extension platform by default.
-*                                    @MetaMask/extension-platform
-
-# These files/directories are intentionally left unassigned because they are
-# reviewed/validated during the release process:
-attribution.txt
-CHANGELOG.md
-
-# These files/directories are intentionally left unassigned because they are
-# changed frequently by many teams:
-coverage.json
-package.json
-yarn.lock
-app/_locales
-app/scripts/metamask-controller.js
-app/scripts/metamask-controller.test.js
-app/scripts/metamask-controller.actions.test.js
-
 # LavaMoat policy changes can highlight security risks. Teams are encouraged to
 # audit these changes on their own, and leave their analysis in a comment.
 # These codeowners will review this analysis, and review the policy changes in
