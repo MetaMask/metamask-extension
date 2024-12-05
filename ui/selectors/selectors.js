@@ -626,7 +626,7 @@ export const selectAllTokensFlat = createSelector(
  * @returns Object - Installed Snaps.
  */
 export function getAllDomains(state) {
-  return state.metamask.domains;
+  return state.metamask.SelectedNetworkController.domains;
 }
 
 export const getConfirmationExchangeRates = (state) => {

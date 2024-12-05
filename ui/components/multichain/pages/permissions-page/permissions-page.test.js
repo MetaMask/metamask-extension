@@ -81,7 +81,7 @@ mockState.metamask.SnapController.snaps = {
   },
 };
 
-mockState.metamask.domains = {
+mockState.metamask.SelectedNetworkController.domains = {
   'https://metamask.github.io': 'mainnet',
   'npm:@metamask/testSnap1': 'mainnet',
   'npm:@metamask/testSnap2': 'mainnet',
