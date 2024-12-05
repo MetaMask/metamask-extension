@@ -256,20 +256,10 @@ export function getMultichainNativeCurrency(
 
 export function getMultichainCurrentCurrency(
   state: MultichainState,
-  account?: InternalAccount,
+  _account?: InternalAccount,
 ) {
   const currentCurrency = getCurrentCurrency(state);
-
-  if (getMultichainIsEvm(state, account)) {
-    return currentCurrency;
-  }
-
-  // For non-EVM:
-  // To mimic `getCurrentCurrency` we only consider fiat values, otherwise we
-  // fallback to the current ticker symbol value
-  return currentCurrency && currentCurrency.toLowerCase() === 'usd'
-    ? 'usd'
-    : getMultichainProviderConfig(state, account).ticker;
+  return currentCurrency;
 }
 
 export function getMultichainCurrencyImage(
@@ -375,9 +365,12 @@ export const getMultichainCoinRates = (state: MultichainState) => {
   return state.metamask.rates;
 };
 
-function getNonEvmCachedBalance(state: MultichainState) {
+function getNonEvmCachedBalance(
+  state: MultichainState,
+  account?: InternalAccount,
+) {
   const balances = getMultichainBalances(state);
-  const account = getSelectedInternalAccount(state);
+  const selectedAccount = account ?? getSelectedInternalAccount(state);
   const network = getMultichainCurrentNetwork(state);
 
   // We assume that there's at least one asset type in and that is the native
@@ -387,7 +380,7 @@ function getNonEvmCachedBalance(state: MultichainState) {
       network.chainId as MultichainNetworks
     ]?.[0];
 
-  return balances?.[account.id]?.[asset]?.amount;
+  return balances?.[selectedAccount.id]?.[asset]?.amount ?? 0;
 }
 
 export function getImageForChainId(chainId: string) {

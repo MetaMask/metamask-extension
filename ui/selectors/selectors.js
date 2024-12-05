@@ -104,7 +104,7 @@ import {
 import { BackgroundColor } from '../helpers/constants/design-system';
 import { NOTIFICATION_DROP_LEDGER_FIREFOX } from '../../shared/notifications';
 import { ENVIRONMENT_TYPE_POPUP } from '../../shared/constants/app';
-import { MultichainNativeAssets } from '../../shared/constants/multichain/assets';
+import { MULTICHAIN_NETWORK_TO_ASSET_TYPES } from '../../shared/constants/multichain/assets';
 // TODO: Remove restricted import
 // eslint-disable-next-line import/no-restricted-paths
 import { BridgeFeatureFlagsKey } from '../../app/scripts/controllers/bridge/types';
@@ -291,7 +291,7 @@ export const getMetaMaskAccounts = createSelector(
           ...account,
           balance:
             multichainBalances?.[internalAccount.id]?.[
-              MultichainNativeAssets[multichainNetwork.chainId]
+              MULTICHAIN_NETWORK_TO_ASSET_TYPES[multichainNetwork.chainId]
             ]?.amount ?? '0',
         };
       }
