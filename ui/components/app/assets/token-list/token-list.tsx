@@ -116,8 +116,7 @@ export default function TokenList({
       const allNetworkFilters = Object.fromEntries(
         Object.keys(allNetworks).map((chainId) => [chainId, true]),
       );
-
-      if (Object.keys(tokenNetworkFilter).length > 1) {
+      if (Object.keys(tokenNetworkFilter || {}).length > 1) {
         dispatch(setTokenNetworkFilter(allNetworkFilters));
       }
     }
@@ -125,7 +124,6 @@ export default function TokenList({
 
   const consolidatedBalances = () => {
     const tokensWithBalance: TokenWithFiatAmount[] = [];
-
     Object.entries(selectedAccountTokensChains).forEach(
       ([stringChainKey, tokens]) => {
         const chainId = stringChainKey as Hex;
