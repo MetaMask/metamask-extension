@@ -1179,9 +1179,9 @@
         "@ethereumjs/tx": true,
         "@metamask/eth-snap-keyring>@metamask/eth-sig-util": true,
         "@metamask/eth-snap-keyring>@metamask/keyring-api": true,
+        "@metamask/eth-snap-keyring>@metamask/keyring-snap-internal-client": true,
         "@metamask/eth-snap-keyring>@metamask/utils": true,
         "@metamask/eth-snap-keyring>uuid": true,
-        "@metamask/keyring-snap-client": true,
         "@metamask/utils>@metamask/superstruct": true,
         "webpack>events": true
       }
@@ -1206,6 +1206,11 @@
         "@metamask/eth-snap-keyring>uuid": true,
         "@metamask/keyring-api>bech32": true,
         "@metamask/utils>@metamask/superstruct": true
+      }
+    },
+    "@metamask/eth-snap-keyring>@metamask/keyring-snap-internal-client": {
+      "packages": {
+        "@metamask/keyring-snap-client": true
       }
     },
     "@metamask/eth-snap-keyring>@metamask/utils": {
@@ -1585,7 +1590,23 @@
         "URL": true
       },
       "packages": {
+        "@metamask/keyring-api>@metamask/keyring-utils>@metamask/utils": true,
         "@metamask/utils>@metamask/superstruct": true
+      }
+    },
+    "@metamask/keyring-api>@metamask/keyring-utils>@metamask/utils": {
+      "globals": {
+        "TextDecoder": true,
+        "TextEncoder": true
+      },
+      "packages": {
+        "@metamask/utils>@metamask/superstruct": true,
+        "@metamask/utils>@scure/base": true,
+        "@metamask/utils>pony-cause": true,
+        "@noble/hashes": true,
+        "browserify>buffer": true,
+        "nock>debug": true,
+        "semver": true
       }
     },
     "@metamask/keyring-api>@metamask/utils": {
@@ -1733,49 +1754,9 @@
         "ethereumjs-util>rlp": true
       }
     },
-    "@metamask/keyring-internal-api": {
-      "packages": {
-        "@metamask/keyring-api>@metamask/keyring-utils": true,
-        "@metamask/keyring-internal-api>@metamask/keyring-api": true,
-        "@metamask/keyring-internal-api>@metamask/utils": true,
-        "@metamask/utils>@metamask/superstruct": true
-      }
-    },
-    "@metamask/keyring-internal-api>@metamask/keyring-api": {
-      "globals": {
-        "URL": true
-      },
-      "packages": {
-        "@metamask/keyring-api>bech32": true,
-        "@metamask/keyring-internal-api>@metamask/utils": true,
-        "@metamask/keyring-internal-api>@metamask/utils>uuid": true,
-        "@metamask/utils>@metamask/superstruct": true
-      }
-    },
-    "@metamask/keyring-internal-api>@metamask/utils": {
-      "globals": {
-        "TextDecoder": true,
-        "TextEncoder": true
-      },
-      "packages": {
-        "@metamask/utils>@metamask/superstruct": true,
-        "@metamask/utils>@scure/base": true,
-        "@metamask/utils>pony-cause": true,
-        "@noble/hashes": true,
-        "browserify>buffer": true,
-        "nock>debug": true,
-        "semver": true
-      }
-    },
-    "@metamask/keyring-internal-api>@metamask/utils>uuid": {
-      "globals": {
-        "crypto": true
-      }
-    },
     "@metamask/keyring-snap-client": {
       "packages": {
         "@metamask/keyring-api>@metamask/keyring-utils": true,
-        "@metamask/keyring-internal-api": true,
         "@metamask/keyring-snap-client>@metamask/keyring-api": true,
         "@metamask/keyring-snap-client>uuid": true,
         "@metamask/utils>@metamask/superstruct": true
