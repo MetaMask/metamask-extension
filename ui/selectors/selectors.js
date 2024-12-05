@@ -1460,7 +1460,7 @@ export function getCurrencyRates(state) {
 }
 
 export function getWeb3ShimUsageStateForOrigin(state, origin) {
-  return state.metamask.web3ShimUsageOrigins[origin];
+  return state.metamask.AlertController.web3ShimUsageOrigins[origin];
 }
 
 /**
