@@ -1664,7 +1664,6 @@ const state = {
     isLoading: false,
     warning: null,
     buyView: {},
-    gasIsLoading: false,
     defaultHdPaths: {
       trezor: "m/44'/60'/0'/0",
       ledger: "m/44'/60'/0'/0/0",

@@ -1084,11 +1084,6 @@ describe('Selectors', () => {
     );
   });
 
-  it('#getGasIsLoading', () => {
-    const gasIsLoading = selectors.getGasIsLoading(mockState);
-    expect(gasIsLoading).toStrictEqual(false);
-  });
-
   it('#getCurrentCurrency', () => {
     const currentCurrency = selectors.getCurrentCurrency(mockState);
     expect(currentCurrency).toStrictEqual('usd');
