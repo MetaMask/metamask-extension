@@ -27,11 +27,11 @@ const store = configureStore({
       },
     },
     marketData: {
-      ...mockState.metamask.marketData,
+      ...mockState.metamask.TokenRatesController.marketData,
       '0x1': {
-        ...mockState.metamask.marketData['0x1'],
-        '0x0bc529c00c6401aef6d220be8c6ea1667f6ad93e': { price: 0.01 }
-      }
+        ...mockState.metamask.TokenRatesController.marketData['0x1'],
+        '0x0bc529c00c6401aef6d220be8c6ea1667f6ad93e': { price: 0.01 },
+      },
     },
     tokens: [
       {

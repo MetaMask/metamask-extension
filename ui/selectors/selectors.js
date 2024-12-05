@@ -673,7 +673,8 @@ export function getTargetAccount(state, targetAddress) {
 
 export const getTokenExchangeRates = (state) => {
   const chainId = getCurrentChainId(state);
-  const contractMarketData = state.metamask.marketData?.[chainId] ?? {};
+  const contractMarketData =
+    state.metamask.TokenRatesController.marketData?.[chainId] ?? {};
   return Object.entries(contractMarketData).reduce(
     (acc, [address, marketData]) => {
       acc[address] = marketData?.price ?? null;
@@ -684,7 +685,8 @@ export const getTokenExchangeRates = (state) => {
 };
 
 export const getCrossChainTokenExchangeRates = (state) => {
-  const contractMarketData = state.metamask.marketData ?? {};
+  const contractMarketData =
+    state.metamask.TokenRatesController.marketData ?? {};
 
   return Object.keys(contractMarketData).reduce((acc, topLevelKey) => {
     acc[topLevelKey] = Object.keys(contractMarketData[topLevelKey]).reduce(
@@ -707,11 +709,11 @@ export const getCrossChainTokenExchangeRates = (state) => {
  */
 export const getTokensMarketData = (state) => {
   const chainId = getCurrentChainId(state);
-  return state.metamask.marketData?.[chainId];
+  return state.metamask.TokenRatesController.marketData?.[chainId];
 };
 
 export const getMarketData = (state) => {
-  return state.metamask.marketData;
+  return state.metamask.TokenRatesController.marketData;
 };
 
 export function getAddressBook(state) {

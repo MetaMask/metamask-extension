@@ -12,9 +12,9 @@ const createStore = ({ sendInputCurrencySwitched }: Record<string, boolean>) =>
     metamask: {
       ...mockSendState.metamask,
       marketData: {
-        ...mockSendState.metamask.marketData,
+        ...mockSendState.metamask.TokenRatesController.marketData,
         '0x5': {
-          ...mockSendState.metamask.marketData['0x5'],
+          ...mockSendState.metamask.TokenRatesController.marketData['0x5'],
           '0x0bc529c00c6401aef6d220be8c6ea1667f6ad93e': { price: 2 },
         },
       },
