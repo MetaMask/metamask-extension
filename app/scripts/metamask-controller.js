@@ -2546,13 +2546,20 @@ export default class MetamaskController extends EventEmitter {
       remoteFeatureFlagControllerInit,
     ];
 
-    const { controllersByName, controllerApi } = this.#initControllers({
+    const {
+      controllerApi,
+      controllerMemState,
+      controllerPersistedState,
+      controllersByName,
+    } = this.#initControllers({
       initState,
       initObjects: controllerInitObjects,
     });
 
-    this.controllersByName = controllersByName;
     this.controllerApi = controllerApi;
+    this.controllerMemState = controllerMemState;
+    this.controllerPersistedState = controllerPersistedState;
+    this.controllersByName = controllersByName;
 
     // Backwards compatibility for existing references
     this.txController = controllersByName[ControllerName.TransactionController];
@@ -2694,7 +2701,6 @@ export default class MetamaskController extends EventEmitter {
       AppStateController: this.appStateController,
       AppMetadataController: this.appMetadataController,
       MultichainBalancesController: this.multichainBalancesController,
-      TransactionController: this.txController,
       KeyringController: this.keyringController,
       PreferencesController: this.preferencesController,
       MetaMetricsController: this.metaMetricsController,
@@ -2742,6 +2748,7 @@ export default class MetamaskController extends EventEmitter {
         this.notificationServicesPushController,
       RemoteFeatureFlagController: this.remoteFeatureFlagController,
       ...resetOnRestartStore,
+      ...controllerPersistedState,
     });
 
     this.memStore = new ComposableObservableStore({
@@ -2774,7 +2781,6 @@ export default class MetamaskController extends EventEmitter {
         NftController: this.nftController,
         SelectedNetworkController: this.selectedNetworkController,
         LoggingController: this.loggingController,
-        TxController: this.txController,
         MultichainRatesController: this.multichainRatesController,
         SnapController: this.snapController,
         CronjobController: this.cronjobController,
@@ -2798,6 +2804,7 @@ export default class MetamaskController extends EventEmitter {
           this.notificationServicesPushController,
         RemoteFeatureFlagController: this.remoteFeatureFlagController,
         ...resetOnRestartStore,
+        ...controllerMemState,
       },
       controllerMessenger: this.controllerMessenger,
     });
@@ -7516,6 +7523,8 @@ export default class MetamaskController extends EventEmitter {
 
     const controllersByName = {};
     let controllerApi = {};
+    const controllerPersistedState = {};
+    const controllerMemState = {};
 
     const initRequest = {
       controllerMessenger: this.controllerMessenger,
@@ -7549,12 +7558,29 @@ export default class MetamaskController extends EventEmitter {
         ...api,
       };
 
-      debugLog('Initialized controller API', name, { api: Object.keys(api) });
+      const persistedStateKey = initObject.getPersistedStateKey?.(controller);
+      const memStateKey = initObject.getMemStateKey?.(controller);
+
+      if (persistedStateKey) {
+        controllerPersistedState[persistedStateKey] = controller;
+      }
+
+      if (memStateKey) {
+        controllerMemState[memStateKey] = controller;
+      }
+
+      debugLog('Initialized controller', name, {
+        api: Object.keys(api),
+        persistedStateKey,
+        memStateKey,
+      });
     }
 
     return {
-      controllersByName,
       controllerApi,
+      controllerMemState,
+      controllerPersistedState,
+      controllersByName,
     };
   }
 

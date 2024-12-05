@@ -1,8 +1,8 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import {
   SavedGasFees,
   TransactionController,
   TransactionControllerPostTransactionBalanceUpdatedEvent,
+  TransactionControllerState,
   TransactionControllerTransactionApprovedEvent,
   TransactionControllerTransactionConfirmedEvent,
   TransactionControllerTransactionDroppedEvent,
@@ -63,11 +63,13 @@ import {
   handleTransactionFailed,
   handleTransactionRejected,
   handleTransactionSubmitted,
+  TransactionMetricsRequest,
 } from '../lib/transaction/metrics';
 import {
   SwapsControllerSetApproveTxIdAction,
   SwapsControllerSetTradeTxIdAction,
 } from '../controllers/swaps/swaps.types';
+import { NetworkState } from '../../../shared/modules/selectors/networks';
 import {
   ControllerGetApiRequest,
   ControllerGetApiResponse,
@@ -181,8 +183,14 @@ export class TransactionControllerInit extends ControllerInit<TransactionControl
       pendingTransactions: {
         isResubmitEnabled: () =>
           !(
-            getSmartTransactionsPreferenceEnabled(getStateUI()) &&
-            getCurrentChainSupportsSmartTransactions(getStateUI())
+            getSmartTransactionsPreferenceEnabled(
+              getStateUI() as Parameters<
+                typeof getSmartTransactionsPreferenceEnabled
+              >[0],
+            ) &&
+            getCurrentChainSupportsSmartTransactions(
+              getStateUI() as NetworkState,
+            )
           ),
       },
       testGasFeeFlows: Boolean(process.env.TEST_GAS_FEE_FLOWS),
@@ -208,7 +216,7 @@ export class TransactionControllerInit extends ControllerInit<TransactionControl
           // @ts-expect-error Missing types
           this.#publishSmartTransactionHook(
             controller,
-            smartTransactionsController,
+            smartTransactionsController(),
             controllerMessenger,
             getStateUI(),
             ...args,
@@ -216,7 +224,7 @@ export class TransactionControllerInit extends ControllerInit<TransactionControl
       },
       // @ts-expect-error Missing types
       sign: (...args) => keyringController().signTransaction(...args),
-      state: persistedState.TransactionController,
+      state: persistedState.TransactionController as TransactionControllerState,
     });
 
     this.#addTransactionControllerListeners(
@@ -249,6 +257,12 @@ export class TransactionControllerInit extends ControllerInit<TransactionControl
       updateTransactionSendFlowHistory:
         controller.updateTransactionSendFlowHistory.bind(controller),
     };
+  }
+
+  override getMemStateKey(
+    _controller: TransactionController,
+  ): string | undefined {
+    return 'TxController';
   }
 
   #getControllers(request: ControllerInitRequest) {
@@ -288,18 +302,22 @@ export class TransactionControllerInit extends ControllerInit<TransactionControl
     transactionController: TransactionController,
     smartTransactionsController: SmartTransactionsController,
     controllerMessenger: ControllerMessenger<ActionConstraint, EventConstraint>,
-    uiState: any,
+    uiState: unknown,
     transactionMeta: TransactionMeta,
     signedTransactionInHex: Hex,
   ) {
-    const isSmartTransaction = getIsSmartTransaction(uiState);
+    const isSmartTransaction = getIsSmartTransaction(
+      uiState as Parameters<typeof getIsSmartTransaction>[0],
+    );
 
     if (!isSmartTransaction) {
       // Will cause TransactionController to publish to the RPC provider as normal.
       return { transactionHash: undefined };
     }
 
-    const featureFlags = getFeatureFlagsByChainId(uiState);
+    const featureFlags = getFeatureFlagsByChainId(
+      uiState as Parameters<typeof getFeatureFlagsByChainId>[0],
+    );
 
     return submitSmartTransactionHook({
       transactionMeta,
@@ -309,7 +327,9 @@ export class TransactionControllerInit extends ControllerInit<TransactionControl
       // @ts-expect-error Missing types
       controllerMessenger,
       isSmartTransaction,
-      isHardwareWallet: isHardwareWallet(uiState),
+      isHardwareWallet: isHardwareWallet(
+        uiState as Parameters<typeof isHardwareWallet>,
+      ),
       // @ts-expect-error Missing types
       featureFlags,
     });
@@ -327,7 +347,7 @@ export class TransactionControllerInit extends ControllerInit<TransactionControl
 
   #addTransactionControllerListeners(
     controllerMessenger: Messenger,
-    getTransactionMetricsRequest: () => any,
+    getTransactionMetricsRequest: () => TransactionMetricsRequest,
   ) {
     const transactionMetricsRequest = getTransactionMetricsRequest();
 

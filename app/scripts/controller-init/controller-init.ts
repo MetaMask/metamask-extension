@@ -1,12 +1,9 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import {
   ActionConstraint,
-  BaseController,
   ControllerMessenger,
   EventConstraint,
 } from '@metamask/base-controller';
-
-type StateUI = { metamask: any } & Record<string, any>;
+import { TransactionMetricsRequest } from '../lib/transaction/metrics';
 
 export enum ControllerName {
   GasFeeController = 'GasFeeController',
@@ -33,26 +30,35 @@ export type ControllerInitRequest = {
     options?: { suppressUnauthorizedError?: boolean },
   ): Promise<string[]>;
 
-  getStateUI: () => StateUI;
+  getStateUI: () => unknown & { metamask: unknown };
 
-  getTransactionMetricsRequest(): any;
+  getTransactionMetricsRequest(): TransactionMetricsRequest;
 
-  persistedState: Record<string, any>;
+  persistedState: Record<string, unknown>;
 };
 
-export type ControllerGetApiRequest<T extends BaseController<any, any, any>> = {
+export type ControllerGetApiRequest<T> = {
   controller: T;
-  getFlatState: () => any;
+  getFlatState: () => unknown;
 };
 
-export type ControllerApi = (...args: any[]) => any;
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export type ControllerApi = (...args: any[]) => unknown;
 
 export type ControllerGetApiResponse = Record<string, ControllerApi>;
 
-export abstract class ControllerInit<T extends BaseController<any, any, any>> {
+export abstract class ControllerInit<T extends { name: string }> {
   abstract init(request: ControllerInitRequest): T;
 
   getApi(_request: ControllerGetApiRequest<T>): ControllerGetApiResponse {
     return {};
+  }
+
+  getPersistedStateKey(controller: T): string | undefined {
+    return controller.name;
+  }
+
+  getMemStateKey(controller: T): string | undefined {
+    return controller.name;
   }
 }
