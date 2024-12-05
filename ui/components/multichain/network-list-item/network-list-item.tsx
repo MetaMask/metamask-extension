@@ -50,6 +50,7 @@ export const NetworkListItem = ({
   endAccessory,
   showEndAccessory = true,
   disabled = false,
+  variant,
 }: {
   name: string;
   iconSrc?: string;
@@ -66,6 +67,7 @@ export const NetworkListItem = ({
   endAccessory?: ReactNode;
   showEndAccessory?: boolean;
   disabled?: boolean;
+  variant?: TextVariant;
 }) => {
   const t = useI18nContext();
   const networkRef = useRef<HTMLInputElement>(null);
@@ -157,26 +159,24 @@ export const NetworkListItem = ({
           alignItems={AlignItems.center}
           data-testid={name}
         >
-          <Text
-            ref={networkRef}
-            color={TextColor.textDefault}
-            backgroundColor={BackgroundColor.transparent}
-            ellipsis
-            onKeyDown={handleKeyPress}
-            tabIndex={0} // Enable keyboard focus
+          <Tooltip
+            title={name}
+            position="bottom"
+            wrapperClassName="multichain-network-list-item__tooltip"
+            disabled={name?.length <= MAXIMUM_CHARACTERS_WITHOUT_TOOLTIP}
           >
-            {name?.length > MAXIMUM_CHARACTERS_WITHOUT_TOOLTIP ? (
-              <Tooltip
-                title={name}
-                position="bottom"
-                wrapperClassName="multichain-network-list-item__tooltip"
-              >
-                {name}
-              </Tooltip>
-            ) : (
-              name
-            )}
-          </Text>
+            <Text
+              ref={networkRef}
+              color={TextColor.textDefault}
+              backgroundColor={BackgroundColor.transparent}
+              variant={variant ?? TextVariant.bodyMd}
+              ellipsis
+              onKeyDown={handleKeyPress}
+              tabIndex={0} // Enable keyboard focus
+            >
+              {name}
+            </Text>
+          </Tooltip>
         </Box>
         {rpcEndpoint && (
           <Box
