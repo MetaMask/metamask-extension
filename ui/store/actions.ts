@@ -68,6 +68,7 @@ import {
   getInternalAccountByAddress,
   getSelectedInternalAccount,
   getInternalAccounts,
+  getMetaMaskKeyrings,
 } from '../selectors';
 import {
   getSelectedNetworkClientId,
@@ -238,6 +239,37 @@ export function createNewVaultAndRestore(
   };
 }
 
+export function createNewVaultAndRestoreFromMnemonic(
+  mnemonic: string,
+): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
+  return (dispatch: MetaMaskReduxDispatch) => {
+    dispatch(showLoadingIndication());
+    log.debug(`background.createNewVaultAndRestoreFromMnemonic`);
+
+    return new Promise<void>((resolve, reject) => {
+      callBackgroundMethod(
+        'createNewVaultAndRestoreFromMnemonic',
+        [mnemonic],
+        (err) => {
+          if (err) {
+            reject(err);
+            return;
+          }
+          resolve();
+        },
+      );
+    })
+      .then(() => {
+        dispatch(hideLoadingIndication());
+      })
+      .catch((err) => {
+        dispatch(displayWarning(err));
+        dispatch(hideLoadingIndication());
+        return Promise.reject(err);
+      });
+  };
+}
+
 export function createNewVaultAndGetSeedPhrase(
   password: string,
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
@@ -245,8 +277,11 @@ export function createNewVaultAndGetSeedPhrase(
     dispatch(showLoadingIndication());
 
     try {
+      console.log('createNewVaultAndGetSeedPhrase HERE');
       await createNewVault(password);
+      console.log('getSeedPhrase');
       const seedPhrase = await getSeedPhrase(password);
+      console.log('seedPhrase: ', seedPhrase);
       return seedPhrase;
     } catch (error) {
       dispatch(displayWarning(error));
@@ -458,10 +493,24 @@ export function addNewAccount(): ThunkAction<
 > {
   log.debug(`background.addNewAccount`);
   return async (dispatch, getState) => {
-    const oldAccounts = getInternalAccounts(getState()).filter(
-      (internalAccount) =>
-        internalAccount.metadata.keyring.type === KeyringTypes.hd,
-    );
+    const selectedAccount = getSelectedInternalAccount(getState());
+    const keyrings = getMetaMaskKeyrings(getState());
+    // find keyring containing selected account
+    let oldAccounts: string[];
+    for (const keyring of keyrings) {
+      // Already found old accounts
+      if (oldAccounts?.length) {
+        break;
+      }
+      if (keyring.type === KeyringTypes.hd) {
+        const keyringAccounts = keyring.accounts;
+        if (keyringAccounts.includes(selectedAccount.address)) {
+          oldAccounts = keyringAccounts;
+          break;
+        }
+      }
+    }
+
     dispatch(showLoadingIndication());
 
     let addedAccountAddress;

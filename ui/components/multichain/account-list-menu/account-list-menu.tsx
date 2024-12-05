@@ -135,6 +135,7 @@ import {
   SOLANA_WALLET_SNAP_ID,
 } from '../../../../shared/lib/accounts/solana-wallet-snap';
 ///: END:ONLY_INCLUDE_IF
+import ImportSRP from '../import-srp/import-srp';
 import { HiddenAccountList } from './hidden-account-list';
 
 const ACTION_MODES = {
@@ -154,6 +155,7 @@ const ACTION_MODES = {
   ///: END:ONLY_INCLUDE_IF
   // Displays the import account form controls
   IMPORT: 'import',
+  IMPORT_SRP: 'import-srp',
 };
 
 /**
@@ -435,6 +437,24 @@ export const AccountListMenu = ({
             />
           </Box>
         ) : null}
+        {actionMode === ACTION_MODES.IMPORT_SRP ? (
+          <Box
+            paddingLeft={4}
+            paddingRight={4}
+            paddingBottom={4}
+            paddingTop={0}
+          >
+            <ImportSRP
+              onActionComplete={(confirmed) => {
+                if (confirmed) {
+                  onClose();
+                } else {
+                  setActionMode(ACTION_MODES.LIST);
+                }
+              }}
+            />
+          </Box>
+        ) : null}
         {/* Add / Import / Hardware Menu */}
         {actionMode === ACTION_MODES.MENU ? (
           <Box padding={4}>
@@ -456,6 +476,18 @@ export const AccountListMenu = ({
                 data-testid="multichain-account-menu-popover-add-account"
               >
                 {t('addNewAccount')}
+              </ButtonLink>
+            </Box>
+            <Box>
+              <ButtonLink
+                size={ButtonLinkSize.Sm}
+                startIconName={IconName.Import}
+                onClick={() => {
+                  setActionMode(ACTION_MODES.IMPORT_SRP);
+                }}
+                data-testid="multichain-account-menu-popover-import-srp"
+              >
+               Import Secret Recovery Phrase
               </ButtonLink>
             </Box>
             {
