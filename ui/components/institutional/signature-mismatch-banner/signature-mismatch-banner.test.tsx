@@ -35,7 +35,7 @@ const address = '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc';
 const render = ({ currentConfirmationProps = {} } = {}) => {
   const internalAccounts = {
     accounts: {
-      ...mockState.metamask.internalAccounts.accounts,
+      ...mockState.metamask.AccountsController.internalAccounts.accounts,
       [selectedAccount.id]: selectedAccount,
     },
     selectedAccount: selectedAccount.id,

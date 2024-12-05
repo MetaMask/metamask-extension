@@ -144,9 +144,9 @@ describe('Contract Deployment Confirmation', () => {
 
   it('displays the header account modal with correct data', async () => {
     const account =
-      mockMetaMaskState.internalAccounts.accounts[
-        mockMetaMaskState.internalAccounts
-          .selectedAccount as keyof typeof mockMetaMaskState.internalAccounts.accounts
+      mockMetaMaskState.AccountsController.internalAccounts.accounts[
+        mockMetaMaskState.AccountsController.internalAccounts
+          .selectedAccount as keyof typeof mockMetaMaskState.AccountsController.internalAccounts.accounts
       ];
 
     const accountName = account.metadata.name;
@@ -233,9 +233,9 @@ describe('Contract Deployment Confirmation', () => {
 
   it('displays the transaction details section', async () => {
     const account =
-      mockMetaMaskState.internalAccounts.accounts[
-        mockMetaMaskState.internalAccounts
-          .selectedAccount as keyof typeof mockMetaMaskState.internalAccounts.accounts
+      mockMetaMaskState.AccountsController.internalAccounts.accounts[
+        mockMetaMaskState.AccountsController.internalAccounts
+          .selectedAccount as keyof typeof mockMetaMaskState.AccountsController.internalAccounts.accounts
       ];
 
     const mockedMetaMaskState =
@@ -316,9 +316,9 @@ describe('Contract Deployment Confirmation', () => {
     );
 
     const account =
-      mockMetaMaskState.internalAccounts.accounts[
-        mockMetaMaskState.internalAccounts
-          .selectedAccount as keyof typeof mockMetaMaskState.internalAccounts.accounts
+      mockMetaMaskState.AccountsController.internalAccounts.accounts[
+        mockMetaMaskState.AccountsController.internalAccounts
+          .selectedAccount as keyof typeof mockMetaMaskState.AccountsController.internalAccounts.accounts
       ];
 
     const mockedMetaMaskState =
@@ -355,9 +355,9 @@ describe('Contract Deployment Confirmation', () => {
     );
 
     const account =
-      mockMetaMaskState.internalAccounts.accounts[
-        mockMetaMaskState.internalAccounts
-          .selectedAccount as keyof typeof mockMetaMaskState.internalAccounts.accounts
+      mockMetaMaskState.AccountsController.internalAccounts.accounts[
+        mockMetaMaskState.AccountsController.internalAccounts
+          .selectedAccount as keyof typeof mockMetaMaskState.AccountsController.internalAccounts.accounts
       ];
 
     const mockedMetaMaskState =

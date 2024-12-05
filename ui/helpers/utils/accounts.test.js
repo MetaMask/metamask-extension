@@ -16,7 +16,7 @@ import {
 } from './accounts';
 
 const mockAccounts = Object.values(
-  mockState.metamask.internalAccounts.accounts,
+  mockState.metamask.AccountsController.internalAccounts.accounts,
 );
 
 const mockLocalization = { t: jest.fn().mockReturnValue('Account') };

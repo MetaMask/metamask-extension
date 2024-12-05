@@ -10,9 +10,9 @@ import {
 import mockMetaMaskState from '../../data/integration-init-state.json';
 
 const notificationsAccountAddress =
-  mockMetaMaskState.internalAccounts.accounts[
-    mockMetaMaskState.internalAccounts
-      .selectedAccount as keyof typeof mockMetaMaskState.internalAccounts.accounts
+  mockMetaMaskState.AccountsController.internalAccounts.accounts[
+    mockMetaMaskState.AccountsController.internalAccounts
+      .selectedAccount as keyof typeof mockMetaMaskState.AccountsController.internalAccounts.accounts
   ].address;
 
 export const ethSentNotification = processNotification(

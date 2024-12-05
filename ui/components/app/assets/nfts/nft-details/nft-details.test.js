@@ -58,8 +58,8 @@ jest.mock('../../../../../store/actions.ts', () => ({
 describe('NFT Details', () => {
   const mockStore = configureMockStore([thunk])(mockState);
   const selectedAddress =
-    mockState.metamask.internalAccounts.accounts[
-      mockState.metamask.internalAccounts.selectedAccount
+    mockState.metamask.AccountsController.internalAccounts.accounts[
+      mockState.metamask.AccountsController.internalAccounts.selectedAccount
     ].address;
   const nfts = mockState.metamask.allNfts[selectedAddress][toHex(5)];
 

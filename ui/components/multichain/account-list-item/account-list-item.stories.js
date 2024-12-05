@@ -10,14 +10,15 @@ import { AccountListItem, AccountListItemMenuTypes } from '.';
 const store = configureStore(testData);
 
 const [chaosId, simpleId, hardwareId] = Object.keys(
-  testData.metamask.internalAccounts.accounts,
+  testData.metamask.AccountsController.internalAccounts.accounts,
 );
 
 const SIMPLE_ACCOUNT = {
-  ...testData.metamask.internalAccounts.accounts[simpleId],
+  ...testData.metamask.AccountsController.internalAccounts.accounts[simpleId],
   balance: '0x152387ad22c3f0',
   metadata: {
-    ...testData.metamask.internalAccounts.accounts[simpleId].metadata,
+    ...testData.metamask.AccountsController.internalAccounts.accounts[simpleId]
+      .metadata,
     keyring: {
       type: 'HD Key Tree',
     },
@@ -29,9 +30,11 @@ const SIMPLE_ACCOUNT = {
 };
 
 const HARDWARE_ACCOUNT = {
-  ...testData.metamask.internalAccounts.accounts[hardwareId],
+  ...testData.metamask.AccountsController.internalAccounts.accounts[hardwareId],
   metadata: {
-    ...testData.metamask.internalAccounts.accounts[hardwareId].metadata,
+    ...testData.metamask.AccountsController.internalAccounts.accounts[
+      hardwareId
+    ].metadata,
     keyring: {
       type: 'Ledger Hardware',
     },
@@ -44,7 +47,7 @@ const HARDWARE_ACCOUNT = {
 };
 
 const CHAOS_ACCOUNT = {
-  ...testData.metamask.internalAccounts.accounts[chaosId],
+  ...testData.metamask.AccountsController.internalAccounts.accounts[chaosId],
   label: 'Chaos Account 1',
   keyring: {
     type: 'Simple Key Pair',
@@ -53,7 +56,7 @@ const CHAOS_ACCOUNT = {
 };
 
 const SNAP_ACCOUNT = {
-  ...testData.metamask.internalAccounts.accounts[
+  ...testData.metamask.AccountsController.internalAccounts.accounts[
     '784225f4-d30b-4e77-a900-c8bbce735b88'
   ],
   metadata: {

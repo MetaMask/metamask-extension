@@ -31,7 +31,9 @@ describe('Accounts Selectors', () => {
   describe('#getInternalAccounts', () => {
     it('returns a list of internal accounts', () => {
       expect(getInternalAccounts(mockState as AccountsState)).toStrictEqual(
-        Object.values(mockState.metamask.internalAccounts.accounts),
+        Object.values(
+          mockState.metamask.AccountsController.internalAccounts.accounts,
+        ),
       );
     });
   });
@@ -124,7 +126,7 @@ describe('Accounts Selectors', () => {
       ({ id, isEth }: { id: string; isEth: boolean }) => {
         const state = MOCK_STATE;
 
-        state.metamask.internalAccounts.selectedAccount = id;
+        state.metamask.AccountsController.internalAccounts.selectedAccount = id;
         expect(isSelectedInternalAccountEth(state)).toBe(isEth);
       },
     );
@@ -132,7 +134,7 @@ describe('Accounts Selectors', () => {
     it('returns false if no account is selected', () => {
       const state = MOCK_STATE;
 
-      state.metamask.internalAccounts.selectedAccount = '';
+      state.metamask.AccountsController.internalAccounts.selectedAccount = '';
       expect(isSelectedInternalAccountEth(MOCK_STATE)).toBe(false);
     });
   });
@@ -156,7 +158,7 @@ describe('Accounts Selectors', () => {
       ({ id, isBtc }: { id: string; isBtc: boolean }) => {
         const state = MOCK_STATE;
 
-        state.metamask.internalAccounts.selectedAccount = id;
+        state.metamask.AccountsController.internalAccounts.selectedAccount = id;
         expect(isSelectedInternalAccountBtc(state)).toBe(isBtc);
       },
     );
@@ -164,7 +166,7 @@ describe('Accounts Selectors', () => {
     it('returns false if none account is selected', () => {
       const state = MOCK_STATE;
 
-      state.metamask.internalAccounts.selectedAccount = '';
+      state.metamask.AccountsController.internalAccounts.selectedAccount = '';
       expect(isSelectedInternalAccountBtc(MOCK_STATE)).toBe(false);
     });
   });

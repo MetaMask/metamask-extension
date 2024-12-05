@@ -475,7 +475,7 @@ describe('EthOverview', () => {
           metamask: {
             ...mockStore.metamask,
             internalAccounts: {
-              ...mockStore.metamask.internalAccounts,
+              ...mockStore.metamask.AccountsController.internalAccounts,
               accounts: {
                 [mockEvmAccount1.id]: {
                   ...mockEvmAccount1,

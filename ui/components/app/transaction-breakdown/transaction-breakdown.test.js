@@ -26,7 +26,7 @@ describe('TransactionBreakdown', () => {
       preferences: {},
       ...mockNetworkState({ chainId: CHAIN_IDS.MAINNET }),
 
-      internalAccounts: mockState.metamask.internalAccounts,
+      internalAccounts: mockState.metamask.AccountsController.internalAccounts,
       completedOnboarding: true,
     },
   });

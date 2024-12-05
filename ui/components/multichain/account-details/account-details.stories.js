@@ -3,7 +3,7 @@ import testData from '../../../../.storybook/test-data';
 import { AccountDetails } from '.';
 
 const { address } = Object.values(
-  testData.metamask.internalAccounts.accounts,
+  testData.metamask.AccountsController.internalAccounts.accounts,
 )[1];
 
 export default {

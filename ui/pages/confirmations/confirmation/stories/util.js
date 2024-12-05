@@ -50,7 +50,7 @@ const STORE_MOCK = {
     },
     tokenList: {},
     accounts: testData.metamask.accounts,
-    internalAccounts: testData.metamask.internalAccounts,
+    internalAccounts: testData.metamask.AccountsController.internalAccounts,
     accountsByChainId: testData.metamask.accountsByChainId,
     snaps: {
       'npm:@test/test-snap': {

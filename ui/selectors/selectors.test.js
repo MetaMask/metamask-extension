@@ -35,8 +35,8 @@ jest.mock('../../shared/modules/network.utils', () => {
 
 const modifyStateWithHWKeyring = (keyring) => {
   const modifiedState = deepClone(mockState);
-  modifiedState.metamask.internalAccounts.accounts[
-    modifiedState.metamask.internalAccounts.selectedAccount
+  modifiedState.metamask.AccountsController.internalAccounts.accounts[
+    modifiedState.metamask.AccountsController.internalAccounts.selectedAccount
   ].metadata.keyring.type = keyring;
 
   return modifiedState;
@@ -97,9 +97,8 @@ describe('Selectors', () => {
               internalAccounts: {
                 accounts: {
                   'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3': {
-                    ...mockState.metamask.internalAccounts.accounts[
-                      'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3'
-                    ],
+                    ...mockState.metamask.AccountsController.internalAccounts
+                      .accounts['cf8dace4-9439-4bd4-b3a8-88c821c8fcb3'],
                     methods: [
                       ...Object.values(EthMethod).filter(
                         (method) => method !== EthMethod.SignTransaction,
@@ -131,7 +130,7 @@ describe('Selectors', () => {
           'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
         ),
       ).toStrictEqual(
-        mockState.metamask.internalAccounts.accounts[
+        mockState.metamask.AccountsController.internalAccounts.accounts[
           'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3'
         ],
       );

@@ -3,7 +3,7 @@ import testData from '../../../../../../.storybook/test-data';
 import SignatureRequestSIWEHeader from '.';
 
 const primaryAccount = Object.values(
-  testData.metamask.internalAccounts.accounts,
+  testData.metamask.AccountsController.internalAccounts.accounts,
 )[0];
 const subjectMetadata = {
   iconUrl: '/images/logo/metamask-fox.svg',

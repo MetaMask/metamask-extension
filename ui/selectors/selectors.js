@@ -322,17 +322,18 @@ export function getSelectedAddress(state) {
 }
 
 export function getInternalAccountByAddress(state, address) {
-  return Object.values(state.metamask.internalAccounts.accounts).find(
-    (account) => isEqualCaseInsensitive(account.address, address),
-  );
+  return Object.values(
+    state.metamask.AccountsController.internalAccounts.accounts,
+  ).find((account) => isEqualCaseInsensitive(account.address, address));
 }
 
 export function getMaybeSelectedInternalAccount(state) {
   // Same as `getSelectedInternalAccount`, but might potentially be `undefined`:
   // - This might happen during the onboarding
-  const accountId = state.metamask.internalAccounts?.selectedAccount;
+  const accountId =
+    state.metamask.AccountsController.internalAccounts?.selectedAccount;
   return accountId
-    ? state.metamask.internalAccounts?.accounts[accountId]
+    ? state.metamask.AccountsController.internalAccounts?.accounts[accountId]
     : undefined;
 }
 
@@ -354,7 +355,7 @@ export function getSelectedInternalAccountWithBalance(state) {
 }
 
 export function getInternalAccount(state, accountId) {
-  return state.metamask.internalAccounts.accounts[accountId];
+  return state.metamask.AccountsController.internalAccounts.accounts[accountId];
 }
 
 export const getEvmInternalAccounts = createSelector(

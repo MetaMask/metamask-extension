@@ -46,7 +46,8 @@ describe('Redux actionConstants', () => {
 
       const resultingState = reducers(initialState, action);
       expect(
-        resultingState.metamask.internalAccounts.accounts.mockid.metadata.name,
+        resultingState.metamask.AccountsController.internalAccounts.accounts
+          .mockid.metadata.name,
       ).toStrictEqual(action.value.label);
     });
   });

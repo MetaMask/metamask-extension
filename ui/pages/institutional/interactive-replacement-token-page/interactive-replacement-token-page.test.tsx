@@ -122,9 +122,9 @@ const render = ({ newState = {} } = {}) => {
       },
 
       internalAccounts: {
-        ...mockState.metamask.internalAccounts,
+        ...mockState.metamask.AccountsController.internalAccounts,
         accounts: {
-          ...mockState.metamask.internalAccounts.accounts,
+          ...mockState.metamask.AccountsController.internalAccounts.accounts,
           [mockSelectedInternalAccount.id]: mockSelectedInternalAccount,
         },
       },

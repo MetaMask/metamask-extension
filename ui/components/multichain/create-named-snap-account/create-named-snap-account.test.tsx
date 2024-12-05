@@ -67,9 +67,9 @@ const render = (
       ...mockState.metamask,
       completedOnboarding: true,
       internalAccounts: {
-        ...mockState.metamask.internalAccounts,
+        ...mockState.metamask.AccountsController.internalAccounts,
         accounts: {
-          ...mockState.metamask.internalAccounts.accounts,
+          ...mockState.metamask.AccountsController.internalAccounts.accounts,
           [mockSnapAccount1.id]: {
             ...mockSnapAccount1,
             metadata: {

@@ -186,9 +186,9 @@ describe('AccountListMenu', () => {
       metamask: {
         ...mockState.metamask,
         internalAccounts: {
-          ...mockState.metamask.internalAccounts,
+          ...mockState.metamask.AccountsController.internalAccounts,
           accounts: {
-            ...mockState.metamask.internalAccounts.accounts,
+            ...mockState.metamask.AccountsController.internalAccounts.accounts,
             'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3': {
               address: '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc',
               id: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
@@ -469,11 +469,10 @@ describe('AccountListMenu', () => {
         },
         internalAccounts: {
           accounts: {
-            ...mockState.metamask.internalAccounts.accounts,
+            ...mockState.metamask.AccountsController.internalAccounts.accounts,
             'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3': {
-              ...mockState.metamask.internalAccounts.accounts[
-                'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3'
-              ],
+              ...mockState.metamask.AccountsController.internalAccounts
+                .accounts['cf8dace4-9439-4bd4-b3a8-88c821c8fcb3'],
               metadata: {
                 name: 'Snap Account',
                 keyring: {
@@ -499,11 +498,10 @@ describe('AccountListMenu', () => {
       metamask: {
         internalAccounts: {
           accounts: {
-            ...mockState.metamask.internalAccounts.accounts,
+            ...mockState.metamask.AccountsController.internalAccounts.accounts,
             'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3': {
-              ...mockState.metamask.internalAccounts.accounts[
-                'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3'
-              ],
+              ...mockState.metamask.AccountsController.internalAccounts
+                .accounts['cf8dace4-9439-4bd4-b3a8-88c821c8fcb3'],
               metadata: {
                 name: 'Snap Account',
                 keyring: {

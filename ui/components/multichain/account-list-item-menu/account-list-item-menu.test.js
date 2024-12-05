@@ -20,7 +20,7 @@ jest.mock('../../../store/actions', () => {
 });
 
 const account = {
-  ...mockState.metamask.internalAccounts.accounts[
+  ...mockState.metamask.AccountsController.internalAccounts.accounts[
     'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3'
   ],
 };
@@ -66,7 +66,7 @@ describe('AccountListItem', () => {
     });
 
     const newAccount = {
-      ...mockState.metamask.internalAccounts.accounts[
+      ...mockState.metamask.AccountsController.internalAccounts.accounts[
         '694225f4-d30b-4e77-a900-c8bbce735b42'
       ],
       balance: '0x152387ad22c3f0',

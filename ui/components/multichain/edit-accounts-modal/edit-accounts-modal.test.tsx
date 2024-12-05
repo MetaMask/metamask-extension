@@ -37,7 +37,7 @@ const render = (
   });
 
   const accounts = Object.values(
-    mockState.metamask.internalAccounts.accounts,
+    mockState.metamask.AccountsController.internalAccounts.accounts,
   ) as unknown as MergedInternalAccount[];
 
   return renderWithProvider(

@@ -157,7 +157,7 @@ describe('Multichain Selectors', () => {
     it('returns an EVM network provider if user is not onboarded', () => {
       const state = getEvmState();
       state.metamask.completedOnboarding = false;
-      state.metamask.internalAccounts.selectedAccount = '';
+      state.metamask.AccountsController.internalAccounts.selectedAccount = '';
 
       const network = getMultichainNetwork(state);
       expect(network.isEvmNetwork).toBe(true);
@@ -438,7 +438,8 @@ describe('Multichain Selectors', () => {
         const state = getNonEvmState(account);
         const balance = state.metamask.balances[account.id][asset].amount;
 
-        state.metamask.internalAccounts.selectedAccount = account.id;
+        state.metamask.AccountsController.internalAccounts.selectedAccount =
+          account.id;
         expect(getMultichainSelectedAccountCachedBalance(state)).toBe(balance);
       },
     );

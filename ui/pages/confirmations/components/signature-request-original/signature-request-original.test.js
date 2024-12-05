@@ -68,9 +68,10 @@ const props = {
 const render = ({ txData = props.txData, selectedAccount } = {}) => {
   const internalAccounts = {
     accounts: {
-      ...mockState.metamask.internalAccounts.accounts,
+      ...mockState.metamask.AccountsController.internalAccounts.accounts,
     },
-    selectedAccount: mockState.metamask.internalAccounts.selectedAccount,
+    selectedAccount:
+      mockState.metamask.AccountsController.internalAccounts.selectedAccount,
   };
 
   if (selectedAccount) {

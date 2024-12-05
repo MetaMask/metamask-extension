@@ -27,9 +27,9 @@ const btcState = {
   metamask: {
     ...mockState.metamask,
     internalAccounts: {
-      ...mockState.metamask.internalAccounts,
+      ...mockState.metamask.AccountsController.internalAccounts,
       accounts: {
-        ...mockState.metamask.internalAccounts.accounts,
+        ...mockState.metamask.AccountsController.internalAccounts.accounts,
         [MOCK_ACCOUNT_BIP122_P2WPKH.id]: MOCK_ACCOUNT_BIP122_P2WPKH,
       },
       selectedAccount: MOCK_ACCOUNT_BIP122_P2WPKH.id,

@@ -105,9 +105,9 @@ describe('Contract Interaction Confirmation Alerts', () => {
 
   it('displays the alert when network is busy', async () => {
     const account =
-      mockMetaMaskState.internalAccounts.accounts[
-        mockMetaMaskState.internalAccounts
-          .selectedAccount as keyof typeof mockMetaMaskState.internalAccounts.accounts
+      mockMetaMaskState.AccountsController.internalAccounts.accounts[
+        mockMetaMaskState.AccountsController.internalAccounts
+          .selectedAccount as keyof typeof mockMetaMaskState.AccountsController.internalAccounts.accounts
       ];
 
     const mockedMetaMaskState =
@@ -153,9 +153,9 @@ describe('Contract Interaction Confirmation Alerts', () => {
 
   it('displays the alert when gas estimate fails', async () => {
     const account =
-      mockMetaMaskState.internalAccounts.accounts[
-        mockMetaMaskState.internalAccounts
-          .selectedAccount as keyof typeof mockMetaMaskState.internalAccounts.accounts
+      mockMetaMaskState.AccountsController.internalAccounts.accounts[
+        mockMetaMaskState.AccountsController.internalAccounts
+          .selectedAccount as keyof typeof mockMetaMaskState.AccountsController.internalAccounts.accounts
       ];
 
     const mockedMetaMaskState =
@@ -208,9 +208,9 @@ describe('Contract Interaction Confirmation Alerts', () => {
 
   it('displays the alert for insufficient gas', async () => {
     const account =
-      mockMetaMaskState.internalAccounts.accounts[
-        mockMetaMaskState.internalAccounts
-          .selectedAccount as keyof typeof mockMetaMaskState.internalAccounts.accounts
+      mockMetaMaskState.AccountsController.internalAccounts.accounts[
+        mockMetaMaskState.AccountsController.internalAccounts
+          .selectedAccount as keyof typeof mockMetaMaskState.AccountsController.internalAccounts.accounts
       ];
 
     const mockedMetaMaskState =
@@ -252,9 +252,9 @@ describe('Contract Interaction Confirmation Alerts', () => {
 
   it('displays the alert for no gas price', async () => {
     const account =
-      mockMetaMaskState.internalAccounts.accounts[
-        mockMetaMaskState.internalAccounts
-          .selectedAccount as keyof typeof mockMetaMaskState.internalAccounts.accounts
+      mockMetaMaskState.AccountsController.internalAccounts.accounts[
+        mockMetaMaskState.AccountsController.internalAccounts
+          .selectedAccount as keyof typeof mockMetaMaskState.AccountsController.internalAccounts.accounts
       ];
 
     const mockedMetaMaskState =
@@ -298,9 +298,9 @@ describe('Contract Interaction Confirmation Alerts', () => {
 
   it('displays the alert for pending transactions', async () => {
     const account =
-      mockMetaMaskState.internalAccounts.accounts[
-        mockMetaMaskState.internalAccounts
-          .selectedAccount as keyof typeof mockMetaMaskState.internalAccounts.accounts
+      mockMetaMaskState.AccountsController.internalAccounts.accounts[
+        mockMetaMaskState.AccountsController.internalAccounts
+          .selectedAccount as keyof typeof mockMetaMaskState.AccountsController.internalAccounts.accounts
       ];
 
     const mockedMetaMaskState =
@@ -368,9 +368,9 @@ describe('Contract Interaction Confirmation Alerts', () => {
 
   it('displays the alert for gas fees too low', async () => {
     const account =
-      mockMetaMaskState.internalAccounts.accounts[
-        mockMetaMaskState.internalAccounts
-          .selectedAccount as keyof typeof mockMetaMaskState.internalAccounts.accounts
+      mockMetaMaskState.AccountsController.internalAccounts.accounts[
+        mockMetaMaskState.AccountsController.internalAccounts
+          .selectedAccount as keyof typeof mockMetaMaskState.AccountsController.internalAccounts.accounts
       ];
 
     const mockedMetaMaskState =

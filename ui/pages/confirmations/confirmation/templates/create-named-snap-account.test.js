@@ -66,9 +66,9 @@ const mockBaseStore = {
       },
     },
     internalAccounts: {
-      ...mockState.metamask.internalAccounts,
+      ...mockState.metamask.AccountsController.internalAccounts,
       accounts: {
-        ...mockState.metamask.internalAccounts.accounts,
+        ...mockState.metamask.AccountsController.internalAccounts.accounts,
         [mockTemporaryAccount.id]: mockTemporaryAccount,
       },
     },

@@ -22,9 +22,9 @@ const backgroundConnectionMocked = {
 
 const renderSeaportSignature = async () => {
   const account =
-    mockMetaMaskState.internalAccounts.accounts[
-      mockMetaMaskState.internalAccounts
-        .selectedAccount as keyof typeof mockMetaMaskState.internalAccounts.accounts
+    mockMetaMaskState.AccountsController.internalAccounts.accounts[
+      mockMetaMaskState.AccountsController.internalAccounts
+        .selectedAccount as keyof typeof mockMetaMaskState.AccountsController.internalAccounts.accounts
     ];
 
   const mockedMetaMaskState = getMetaMaskStateWithUnapprovedPermitSign(

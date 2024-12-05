@@ -334,7 +334,7 @@ describe('NonEvmOverview', () => {
       metamask: {
         ...mockMetamaskStore,
         internalAccounts: {
-          ...mockMetamaskStore.internalAccounts,
+          ...mockMetamaskStore.AccountsController.internalAccounts,
           accounts: {
             [mockNonEvmAccount.id]: {
               ...mockNonEvmAccount,

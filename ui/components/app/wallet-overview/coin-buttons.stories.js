@@ -2,7 +2,8 @@ import React from 'react';
 import testData from '../../../../.storybook/test-data';
 import CoinButtons from './coin-buttons';
 
-const { accounts, selectedAccount } = testData.metamask.internalAccounts;
+const { accounts, selectedAccount } =
+  testData.metamask.AccountsController.internalAccounts;
 
 export default {
   title: 'Components/App/WalletOverview/CoinButtons',

@@ -246,16 +246,16 @@ describe('MetaMask Reducers', () => {
       },
     });
 
-    expect(state.internalAccounts).toStrictEqual({
-      ...mockState.metamask.internalAccounts,
+    expect(state.AccountsController.internalAccounts).toStrictEqual({
+      ...mockState.metamask.AccountsController.internalAccounts,
       accounts: {
-        ...mockState.metamask.internalAccounts.accounts,
+        ...mockState.metamask.AccountsController.internalAccounts.accounts,
         'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3': {
-          ...mockState.metamask.internalAccounts.accounts[
+          ...mockState.metamask.AccountsController.internalAccounts.accounts[
             'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3'
           ],
           metadata: {
-            ...mockState.metamask.internalAccounts.accounts[
+            ...mockState.metamask.AccountsController.internalAccounts.accounts[
               'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3'
             ].metadata,
             name: 'test label',

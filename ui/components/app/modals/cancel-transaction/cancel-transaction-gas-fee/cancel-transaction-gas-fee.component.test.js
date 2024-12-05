@@ -13,7 +13,7 @@ describe('CancelTransactionGasFee Component', () => {
       currencyRates: {},
       preferences: {},
       completedOnboarding: true,
-      internalAccounts: mockState.metamask.internalAccounts,
+      internalAccounts: mockState.metamask.AccountsController.internalAccounts,
     },
   };
 

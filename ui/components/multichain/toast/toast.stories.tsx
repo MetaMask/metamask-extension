@@ -5,7 +5,7 @@ import { BorderColor } from '../../../helpers/constants/design-system';
 import { Toast } from '.';
 
 const [chaosAccount] = Object.values(
-  testData.metamask.internalAccounts.accounts,
+  testData.metamask.AccountsController.internalAccounts.accounts,
 );
 
 const CHAOS_ACCOUNT = {

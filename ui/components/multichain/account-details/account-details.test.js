@@ -23,7 +23,7 @@ jest.mock('../../../store/actions.ts');
 
 describe('AccountDetails', () => {
   const account = Object.values(
-    mockState.metamask.internalAccounts.accounts,
+    mockState.metamask.AccountsController.internalAccounts.accounts,
   )[0];
   const { address } = account;
   const mockSetAccountDetailsAddress = jest.fn();

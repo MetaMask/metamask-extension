@@ -15,7 +15,7 @@ import { mockNetworkState } from '../../../../test/stub/networks';
 import { AccountListItem, AccountListItemMenuTypes } from '.';
 
 const mockAccount = {
-  ...mockState.metamask.internalAccounts.accounts[
+  ...mockState.metamask.AccountsController.internalAccounts.accounts[
     'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3'
   ],
   balance: '0x152387ad22c3f0',
@@ -44,7 +44,7 @@ const render = (props = {}, state = {}) => {
       completedOnboarding: true,
       internalAccounts: {
         accounts: {
-          ...mockState.metamask.internalAccounts.accounts,
+          ...mockState.metamask.AccountsController.internalAccounts.accounts,
           [mockAccount.id]: mockAccount,
           [mockNonEvmAccount.id]: mockNonEvmAccount,
         },

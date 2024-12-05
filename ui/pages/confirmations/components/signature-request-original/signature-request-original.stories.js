@@ -12,7 +12,7 @@ import SignatureRequestOriginal from './signature-request-original.component';
 const CHAIN_ID_MOCK = CHAIN_IDS.MAINNET;
 
 const [MOCK_PRIMARY_ACCOUNT, MOCK_SECONDARY_ACCOUNT] = Object.values(
-  testData.metamask.internalAccounts.accounts,
+  testData.metamask.AccountsController.internalAccounts.accounts,
 );
 
 const MOCK_SIGN_DATA = JSON.stringify({

@@ -51,9 +51,9 @@ const render = (args = defaultArgs) => {
       ...mockState.metamask,
       completedOnboarding: true,
       internalAccounts: {
-        ...mockState.metamask.internalAccounts,
+        ...mockState.metamask.AccountsController.internalAccounts,
         accounts: {
-          ...mockState.metamask.internalAccounts.accounts,
+          ...mockState.metamask.AccountsController.internalAccounts.accounts,
           ...defaultArgs.accounts.reduce((acc, account) => {
             acc[account.id] = account;
             return acc;

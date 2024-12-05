@@ -39,9 +39,9 @@ describe('Permit Confirmation', () => {
 
   it('displays the header account modal with correct data', async () => {
     const account =
-      mockMetaMaskState.internalAccounts.accounts[
-        mockMetaMaskState.internalAccounts
-          .selectedAccount as keyof typeof mockMetaMaskState.internalAccounts.accounts
+      mockMetaMaskState.AccountsController.internalAccounts.accounts[
+        mockMetaMaskState.AccountsController.internalAccounts
+          .selectedAccount as keyof typeof mockMetaMaskState.AccountsController.internalAccounts.accounts
       ];
 
     const accountName = account.metadata.name;
@@ -128,9 +128,9 @@ describe('Permit Confirmation', () => {
 
   it('displays the expected title data', async () => {
     const account =
-      mockMetaMaskState.internalAccounts.accounts[
-        mockMetaMaskState.internalAccounts
-          .selectedAccount as keyof typeof mockMetaMaskState.internalAccounts.accounts
+      mockMetaMaskState.AccountsController.internalAccounts.accounts[
+        mockMetaMaskState.AccountsController.internalAccounts
+          .selectedAccount as keyof typeof mockMetaMaskState.AccountsController.internalAccounts.accounts
       ];
 
     const mockedMetaMaskState = getMetaMaskStateWithUnapprovedPermitSign(
@@ -187,9 +187,9 @@ describe('Permit Confirmation', () => {
       });
 
     const account =
-      mockMetaMaskState.internalAccounts.accounts[
-        mockMetaMaskState.internalAccounts
-          .selectedAccount as keyof typeof mockMetaMaskState.internalAccounts.accounts
+      mockMetaMaskState.AccountsController.internalAccounts.accounts[
+        mockMetaMaskState.AccountsController.internalAccounts
+          .selectedAccount as keyof typeof mockMetaMaskState.AccountsController.internalAccounts.accounts
       ];
 
     const mockedMetaMaskState = getMetaMaskStateWithUnapprovedPermitSign(
@@ -239,13 +239,13 @@ describe('Permit Confirmation', () => {
 
   it('displays the MMI header warning when account signing is not the same as the account selected', async () => {
     const account =
-      mockMetaMaskState.internalAccounts.accounts[
+      mockMetaMaskState.AccountsController.internalAccounts.accounts[
         '07c2cfec-36c9-46c4-8115-3836d3ac9047'
       ];
     const selectedAccount =
-      mockMetaMaskState.internalAccounts.accounts[
-        mockMetaMaskState.internalAccounts
-          .selectedAccount as keyof typeof mockMetaMaskState.internalAccounts.accounts
+      mockMetaMaskState.AccountsController.internalAccounts.accounts[
+        mockMetaMaskState.AccountsController.internalAccounts
+          .selectedAccount as keyof typeof mockMetaMaskState.AccountsController.internalAccounts.accounts
       ];
 
     const mockedMetaMaskState = getMetaMaskStateWithUnapprovedPermitSign(
