@@ -74,7 +74,7 @@ export const components: NotificationComponent<SnapNotification> = {
         title={{
           items: [
             {
-              text: snapsNameGetter(notification.data.origin) ?? 'Unknown Snap',
+              text: snapsNameGetter(notification.data.origin),
             },
           ],
         }}
