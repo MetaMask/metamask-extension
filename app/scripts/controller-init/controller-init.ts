@@ -6,6 +6,8 @@ import {
   EventConstraint,
 } from '@metamask/base-controller';
 
+type StateUI = { metamask: any } & Record<string, any>;
+
 export enum ControllerName {
   GasFeeController = 'GasFeeController',
   KeyringController = 'KeyringController',
@@ -16,10 +18,6 @@ export enum ControllerName {
   SmartTransactionsController = 'SmartTransactionsController',
   TransactionController = 'TransactionController',
   TransactionUpdateController = 'TransactionUpdateController',
-}
-
-export abstract class ControllerInit<T extends BaseController<any, any, any>> {
-  public abstract init(request: ControllerInitRequest): T;
 }
 
 export type ControllerInitRequest = {
@@ -35,9 +33,26 @@ export type ControllerInitRequest = {
     options?: { suppressUnauthorizedError?: boolean },
   ): Promise<string[]>;
 
-  getStateUI: () => { metamask: any } & Record<string, any>;
+  getStateUI: () => StateUI;
 
   getTransactionMetricsRequest(): any;
 
   persistedState: Record<string, any>;
 };
+
+export type ControllerGetApiRequest<T extends BaseController<any, any, any>> = {
+  controller: T;
+  getFlatState: () => any;
+};
+
+export type ControllerApi = (...args: any[]) => any;
+
+export type ControllerGetApiResponse = Record<string, ControllerApi>;
+
+export abstract class ControllerInit<T extends BaseController<any, any, any>> {
+  abstract init(request: ControllerInitRequest): T;
+
+  getApi(_request: ControllerGetApiRequest<T>): ControllerGetApiResponse {
+    return {};
+  }
+}

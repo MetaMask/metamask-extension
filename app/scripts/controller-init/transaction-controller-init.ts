@@ -69,6 +69,8 @@ import {
   SwapsControllerSetTradeTxIdAction,
 } from '../controllers/swaps/swaps.types';
 import {
+  ControllerGetApiRequest,
+  ControllerGetApiResponse,
   ControllerInit,
   ControllerInitRequest,
   ControllerName,
@@ -117,7 +119,9 @@ export class TransactionControllerInit extends ControllerInit<TransactionControl
       onboardingController,
       preferencesController,
       smartTransactionsController,
+      ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
       transactionUpdateController,
+      ///: END:ONLY_INCLUDE_IF
     } = this.#getControllers(request);
 
     const transactionControllerMessenger = controllerMessenger.getRestricted({
@@ -191,7 +195,7 @@ export class TransactionControllerInit extends ControllerInit<TransactionControl
             txMeta,
             signedEthTx,
             transactionUpdateController().addTransactionToWatchList.bind(
-              transactionUpdateController,
+              transactionUpdateController(),
             ),
           ),
         beforeCheckPendingTransaction:
@@ -221,6 +225,30 @@ export class TransactionControllerInit extends ControllerInit<TransactionControl
     );
 
     return controller;
+  }
+
+  override getApi(
+    request: ControllerGetApiRequest<TransactionController>,
+  ): ControllerGetApiResponse {
+    const { controller } = request;
+
+    return {
+      abortTransactionSigning:
+        controller.abortTransactionSigning.bind(controller),
+      createCancelTransaction: this.#createCancelTransaction.bind(
+        this,
+        request,
+      ),
+      getLayer1GasFee: controller.getLayer1GasFee.bind(controller),
+      getTransactions: controller.getTransactions.bind(controller),
+      updateEditableParams: controller.updateEditableParams.bind(controller),
+      updatePreviousGasParams:
+        controller.updatePreviousGasParams.bind(controller),
+      updateTransactionGasFees:
+        controller.updateTransactionGasFees.bind(controller),
+      updateTransactionSendFlowHistory:
+        controller.updateTransactionSendFlowHistory.bind(controller),
+    };
   }
 
   #getControllers(request: ControllerInitRequest) {
@@ -366,5 +394,13 @@ export class TransactionControllerInit extends ControllerInit<TransactionControl
       'TransactionController:transactionSubmitted',
       handleTransactionSubmitted.bind(null, transactionMetricsRequest),
     );
+  }
+
+  async #createCancelTransaction(
+    request: ControllerGetApiRequest<TransactionController>,
+    ...args: Parameters<TransactionController['stopTransaction']>
+  ) {
+    await request.controller.stopTransaction(...args);
+    return request.getFlatState();
   }
 }

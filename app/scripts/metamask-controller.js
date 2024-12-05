@@ -2545,11 +2545,15 @@ export default class MetamaskController extends EventEmitter {
       remoteFeatureFlagControllerInit,
     ];
 
-    const controllersByName = this.#initControllers({
+    const { controllersByName, controllerApi } = this.#initControllers({
       initState,
       initObjects: controllerInitObjects,
     });
 
+    this.controllersByName = controllersByName;
+    this.controllerApi = controllerApi;
+
+    // Backwards compatibility for existing references
     this.txController = controllersByName[ControllerName.TransactionController];
 
     this.controllerMessenger.subscribe(
@@ -3965,7 +3969,6 @@ export default class MetamaskController extends EventEmitter {
       updateTransaction: txController.updateTransaction.bind(txController),
       approveTransactionsWithSameNonce:
         txController.approveTransactionsWithSameNonce.bind(txController),
-      createCancelTransaction: this.createCancelTransaction.bind(this),
       createSpeedUpTransaction: this.createSpeedUpTransaction.bind(this),
       estimateGas: this.estimateGas.bind(this),
       estimateGasFee: txController.estimateGasFee.bind(txController),
@@ -3994,21 +3997,6 @@ export default class MetamaskController extends EventEmitter {
           null,
           this.getTransactionMetricsRequest(),
         ),
-      getTransactions: this.txController.getTransactions.bind(
-        this.txController,
-      ),
-      updateEditableParams: this.txController.updateEditableParams.bind(
-        this.txController,
-      ),
-      updateTransactionGasFees:
-        txController.updateTransactionGasFees.bind(txController),
-      updateTransactionSendFlowHistory:
-        txController.updateTransactionSendFlowHistory.bind(txController),
-      updatePreviousGasParams:
-        txController.updatePreviousGasParams.bind(txController),
-      abortTransactionSigning:
-        txController.abortTransactionSigning.bind(txController),
-      getLayer1GasFee: txController.getLayer1GasFee.bind(txController),
 
       // decryptMessageController
       decryptMessage: this.decryptMessageController.decryptMessage.bind(
@@ -5451,29 +5439,6 @@ export default class MetamaskController extends EventEmitter {
   //=============================================================================
 
   /**
-   * Allows a user to attempt to cancel a previously submitted transaction
-   * by creating a new transaction.
-   *
-   * @param {number} originalTxId - the id of the txMeta that you want to
-   * attempt to cancel
-   * @param {import(
-   *  './controllers/transactions'
-   * ).CustomGasSettings} [customGasSettings] - overrides to use for gas params
-   * instead of allowing this method to generate them
-   * @param options
-   * @returns {object} MetaMask state
-   */
-  async createCancelTransaction(originalTxId, customGasSettings, options) {
-    await this.txController.stopTransaction(
-      originalTxId,
-      customGasSettings,
-      options,
-    );
-    const state = this.getState();
-    return state;
-  }
-
-  /**
    * Allows a user to attempt to speed up a previously submitted transaction
    * by creating a new transaction.
    *
@@ -5809,6 +5774,7 @@ export default class MetamaskController extends EventEmitter {
         handleUpdate();
       },
       getStatePatches: () => patchStore.flushPendingPatches(),
+      ...this.controllerApi,
     };
 
     this.on('update', handleUpdate);
@@ -7548,6 +7514,7 @@ export default class MetamaskController extends EventEmitter {
     debugLog('Initializing controllers', initObjects.length);
 
     const controllersByName = {};
+    let controllerApi = {};
 
     const initRequest = {
       controllerMessenger: this.controllerMessenger,
@@ -7560,7 +7527,7 @@ export default class MetamaskController extends EventEmitter {
       persistedState: initState,
     };
 
-    initObjects.forEach((initObject) => {
+    for (const initObject of initObjects) {
       const controller = initObject.init
         ? initObject.init(initRequest)
         : initObject(initRequest);
@@ -7569,10 +7536,25 @@ export default class MetamaskController extends EventEmitter {
 
       controllersByName[name] = controller;
 
-      debugLog('Initialized controller', name);
-    });
+      const getApiRequest = {
+        controller,
+        getFlatState: this.getState.bind(this),
+      };
 
-    return controllersByName;
+      const api = initObject.getApi?.(getApiRequest) ?? {};
+
+      controllerApi = {
+        ...controllerApi,
+        ...api,
+      };
+
+      debugLog('Initialized controller API', name, { api: Object.keys(api) });
+    }
+
+    return {
+      controllersByName,
+      controllerApi,
+    };
   }
 
   #getController(controllersByName, name) {
