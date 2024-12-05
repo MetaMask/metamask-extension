@@ -223,6 +223,7 @@
     "showExtensionInFullSizeView": false,
     "showFiatInTestnets": false,
     "showTestNetworks": false,
+    "showBaseNetworkToast": false,
     "smartTransactionsOptInStatus": true,
     "hideZeroBalanceTokens": false,
     "petnamesEnabled": true,
