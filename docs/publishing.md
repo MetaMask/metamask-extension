@@ -30,9 +30,9 @@ In the case that a new release has sensitive changes that cannot be fully verifi
 
 ## Building
 
-While we develop on the main `develop` branch, our production version is maintained on the `master` branch.
+While we develop on the `main` branch, our production version is maintained on the `master` branch.
 
-With each pull request, the @MetaMaskBot will comment with a build of that new pull request, so after bumping the version on `develop`, open a pull request against `master`, and once the pull request is reviewed and merged, you can download those builds for publication.
+With each pull request, the @MetaMaskBot will comment with a build of that new pull request, so after bumping the version on `main`, open a pull request against `master`, and once the pull request is reviewed and merged, you can download those builds for publication.
 
 ## Publishing
 
@@ -45,7 +45,7 @@ With each pull request, the @MetaMaskBot will comment with a build of that new p
 
 ## Hotfix Differences
 
-Our `develop` branch is usually not yet fully tested for quality assurance, and so should be treated as if it is in an unstable state.
+Our `main` branch is usually not yet fully tested for quality assurance, and so should be treated as if it is in an unstable state.
 
 For this reason, when an urgent change is needed in production, its pull request should:
 
@@ -53,4 +53,4 @@ For this reason, when an urgent change is needed in production, its pull request
 - Use a hotfix tag.
 - Should be proposed against the `master` branch.
 
-The version and changelog bump should then be made off the `master` branch, and then merged to `develop` to bring the two branches back into sync. Further time can be saved by incorporating the version/changelog bump into the PR against `master`, since we rely on @MetaMaskBot to run tests before merging.
+The version and changelog bump should then be made off the `master` branch, and then merged to `main` to bring the two branches back into sync. Further time can be saved by incorporating the version/changelog bump into the PR against `master`, since we rely on @MetaMaskBot to run tests before merging.

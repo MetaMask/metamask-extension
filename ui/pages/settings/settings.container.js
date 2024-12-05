@@ -3,6 +3,7 @@ import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
 import {
   getAddressBookEntryOrAccountName,
+  getRemoteFeatureFlags,
   getUseExternalServices,
 } from '../../selectors';
 import { ENVIRONMENT_TYPE_POPUP } from '../../../shared/constants/app';
@@ -32,7 +33,7 @@ import {
   ADD_NETWORK_ROUTE,
   ADD_POPULAR_CUSTOM_NETWORK,
 } from '../../helpers/constants/routes';
-import { getProviderConfig } from '../../ducks/metamask/metamask';
+import { getProviderConfig } from '../../../shared/modules/selectors/networks';
 import { toggleNetworkMenu } from '../../store/actions';
 import Settings from './settings.component';
 
@@ -60,7 +61,7 @@ const mapStateToProps = (state, ownProps) => {
   const {
     metamask: { currencyRates },
   } = state;
-
+  const remoteFeatureFlags = getRemoteFeatureFlags(state);
   const conversionDate = currencyRates[ticker]?.conversionDate;
 
   const pathNameTail = pathname.match(/[^/]+$/u)[0];
@@ -113,6 +114,7 @@ const mapStateToProps = (state, ownProps) => {
     isPopup,
     mostRecentOverviewPage: getMostRecentOverviewPage(state),
     pathnameI18nKey,
+    remoteFeatureFlags,
     useExternalServices,
   };
 };

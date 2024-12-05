@@ -61,7 +61,7 @@ exports[`BridgeQuoteCard should render the recommended quote 1`] = `
           <p
             class="mm-box mm-text mm-text--body-md mm-box--color-text-default"
           >
-            1 minutes
+            1 min
           </p>
         </div>
       </div>
@@ -90,7 +90,7 @@ exports[`BridgeQuoteCard should render the recommended quote 1`] = `
           <p
             class="mm-box mm-text mm-text--body-md mm-box--color-text-default"
           >
-            1 USDC = 0.9989 USDC
+            1 USDC = 1.00 USDC
           </p>
         </div>
       </div>
@@ -131,13 +131,13 @@ Fees are based on network traffic and transaction complexity. MetaMask does not 
             <p
               class="mm-box mm-text mm-text--body-md mm-box--color-text-default"
             >
-              0.01 ETH
+              0.001000 ETH
             </p>
           </div>
           <p
             class="mm-box mm-text mm-text--body-md mm-box--color-text-default"
           >
-            $0.01
+            $2.52
           </p>
         </div>
       </div>
@@ -234,7 +234,7 @@ exports[`BridgeQuoteCard should render the recommended quote while loading new q
           <p
             class="mm-box mm-text mm-text--body-md mm-box--color-text-default"
           >
-            1 minutes
+            1 min
           </p>
         </div>
       </div>
@@ -263,7 +263,7 @@ exports[`BridgeQuoteCard should render the recommended quote while loading new q
           <p
             class="mm-box mm-text mm-text--body-md mm-box--color-text-default"
           >
-            1 ETH = 2465.4630 USDC
+            1 ETH = 2443.89 USDC
           </p>
         </div>
       </div>
@@ -304,13 +304,13 @@ Fees are based on network traffic and transaction complexity. MetaMask does not 
             <p
               class="mm-box mm-text mm-text--body-md mm-box--color-text-default"
             >
-              0.01 ETH
+              0.001000 ETH
             </p>
           </div>
           <p
             class="mm-box mm-text mm-text--body-md mm-box--color-text-default"
           >
-            $0.01
+            $2.52
           </p>
         </div>
       </div>

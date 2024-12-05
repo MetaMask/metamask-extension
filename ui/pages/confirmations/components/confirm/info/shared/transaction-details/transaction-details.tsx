@@ -20,6 +20,7 @@ import { ConfirmInfoRowCurrency } from '../../../../../../../components/app/conf
 import { PRIMARY } from '../../../../../../../helpers/constants/common';
 import { useUserPreferencedCurrency } from '../../../../../../../hooks/useUserPreferencedCurrency';
 import { HEX_ZERO } from '../constants';
+import { SigningInWithRow } from '../sign-in-with-row/sign-in-with-row';
 
 export const OriginRow = () => {
   const t = useI18nContext();
@@ -156,6 +157,7 @@ export const TransactionDetails = () => {
         <OriginRow />
         <RecipientRow />
         {showAdvancedDetails && <MethodDataRow />}
+        <SigningInWithRow />
       </ConfirmInfoSection>
       <AmountRow />
       <PaymasterRow />

@@ -43,16 +43,12 @@ import {
   // TODO: Remove restricted import
   // eslint-disable-next-line import/no-restricted-paths
 } from '../../../../ui/helpers/utils/metrics';
-import {
-  REDESIGN_DEV_TRANSACTION_TYPES,
-  REDESIGN_USER_TRANSACTION_TYPES,
-  // TODO: Remove restricted import
-  // eslint-disable-next-line import/no-restricted-paths
-} from '../../../../ui/pages/confirmations/utils';
+
 import {
   getSnapAndHardwareInfoForMetrics,
   type SnapAndHardwareMessenger,
 } from '../snap-keyring/metrics';
+import { shouldUseRedesignForTransactions } from '../../../../shared/lib/confirmation.utils';
 
 export type TransactionMetricsRequest = {
   createEventFragment: (
@@ -796,6 +792,7 @@ async function buildEventFragmentProperties({
     finalApprovalAmount,
     securityProviderResponse,
     simulationFails,
+    id,
   } = transactionMeta;
   const query = new EthQuery(transactionMetricsRequest.provider);
   const source = referrer === ORIGIN_METAMASK ? 'user' : 'dapp';
@@ -910,6 +907,7 @@ async function buildEventFragmentProperties({
   let transactionApprovalAmountVsBalanceRatio;
   let transactionContractAddress;
   let transactionType = TransactionType.simpleSend;
+  let transactionContractMethod4Byte;
   if (type === TransactionType.swapAndSend) {
     transactionType = TransactionType.swapAndSend;
   } else if (type === TransactionType.cancel) {
@@ -922,6 +920,10 @@ async function buildEventFragmentProperties({
     transactionType = TransactionType.contractInteraction;
     transactionContractMethod = contractMethodName;
     transactionContractAddress = transactionMeta.txParams?.to;
+    transactionContractMethod4Byte = transactionMeta.txParams?.data?.slice(
+      0,
+      10,
+    );
     if (
       transactionContractMethod === contractMethodNames.APPROVE &&
       tokenStandard === TokenStandard.ERC20
@@ -996,23 +998,15 @@ async function buildEventFragmentProperties({
   if (simulationFails) {
     uiCustomizations.push(MetaMetricsEventUiCustomization.GasEstimationFailed);
   }
-  const isRedesignedConfirmationsDeveloperSettingEnabled =
-    transactionMetricsRequest.getIsRedesignedConfirmationsDeveloperEnabled() ||
-    process.env.ENABLE_CONFIRMATION_REDESIGN === 'true';
 
-  const isRedesignedTransactionsUserSettingEnabled =
-    transactionMetricsRequest.getRedesignedTransactionsEnabled();
-
-  if (
-    (isRedesignedConfirmationsDeveloperSettingEnabled &&
-      REDESIGN_DEV_TRANSACTION_TYPES.includes(
-        transactionMeta.type as TransactionType,
-      )) ||
-    (isRedesignedTransactionsUserSettingEnabled &&
-      REDESIGN_USER_TRANSACTION_TYPES.includes(
-        transactionMeta.type as TransactionType,
-      ))
-  ) {
+  const isRedesignedForTransaction = shouldUseRedesignForTransactions({
+    transactionMetadataType: transactionMeta.type as TransactionType,
+    isRedesignedTransactionsUserSettingEnabled:
+      transactionMetricsRequest.getRedesignedTransactionsEnabled(),
+    isRedesignedConfirmationsDeveloperEnabled:
+      transactionMetricsRequest.getIsRedesignedConfirmationsDeveloperEnabled(),
+  });
+  if (isRedesignedForTransaction) {
     uiCustomizations.push(
       MetaMetricsEventUiCustomization.RedesignedConfirmation,
     );
@@ -1050,6 +1044,7 @@ async function buildEventFragmentProperties({
     token_standard: tokenStandard,
     transaction_type: transactionType,
     transaction_speed_up: type === TransactionType.retry,
+    transaction_internal_id: id,
     ...blockaidProperties,
     // ui_customizations must come after ...blockaidProperties
     ui_customizations: uiCustomizations.length > 0 ? uiCustomizations : null,
@@ -1083,6 +1078,7 @@ async function buildEventFragmentProperties({
     gas_limit: gasLimit,
     transaction_replaced: transactionReplaced,
     transaction_contract_address: transactionContractAddress,
+    transaction_contract_method_4byte: transactionContractMethod4Byte,
     ...extraParams,
     ...gasParamsInGwei,
     // TODO: Replace `any` with type

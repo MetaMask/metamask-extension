@@ -10,7 +10,7 @@ import {
 } from '../../helpers/mock-server';
 import EditNetworkModal from '../../page-objects/pages/dialog/edit-network';
 import HeaderNavbar from '../../page-objects/pages/header-navbar';
-import HomePage from '../../page-objects/pages/homepage';
+import HomePage from '../../page-objects/pages/home/homepage';
 import OnboardingCompletePage from '../../page-objects/pages/onboarding/onboarding-complete-page';
 import OnboardingPrivacySettingsPage from '../../page-objects/pages/onboarding/onboarding-privacy-settings-page';
 import SelectNetwork from '../../page-objects/pages/dialog/select-network';
@@ -83,7 +83,7 @@ describe('MultiRpc:', function (this: Suite) {
         await completeImportSRPOnboardingFlow({ driver });
         const homePage = new HomePage(driver);
         await homePage.check_pageIsLoaded();
-        await homePage.check_ganacheBalanceIsDisplayed(ganacheServer);
+        await homePage.check_localBlockchainBalanceIsDisplayed(ganacheServer);
 
         await new HeaderNavbar(driver).clickSwitchNetworkDropDown();
         const selectNetworkDialog = new SelectNetwork(driver);

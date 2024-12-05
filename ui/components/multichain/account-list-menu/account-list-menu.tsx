@@ -17,6 +17,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import {
   BtcAccountType,
   EthAccountType,
+  SolAccountType,
   ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
   InternalAccount,
   KeyringAccountType,
@@ -232,6 +233,7 @@ export const AccountListMenu = ({
     EthAccountType.Eoa,
     EthAccountType.Erc4337,
     BtcAccountType.P2wpkh,
+    SolAccountType.DataAccount,
   ],
 }: AccountListMenuProps) => {
   const t = useI18nContext();

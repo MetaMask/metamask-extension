@@ -115,6 +115,7 @@ describe('Transaction metrics', () => {
       type: TransactionType.simpleSend,
       origin: ORIGIN_METAMASK,
       chainId: mockChainId,
+      networkClientId: 'testNetworkClientId',
       time: 1624408066355,
       defaultGasEstimates: {
         gas: '0x7b0d',
@@ -160,6 +161,7 @@ describe('Transaction metrics', () => {
       ui_customizations: ['redesigned_confirmation'],
       transaction_advanced_view: undefined,
       transaction_contract_method: undefined,
+      transaction_internal_id: '1',
     };
 
     expectedSensitiveProperties = {

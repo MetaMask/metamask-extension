@@ -69,6 +69,7 @@ describe('Import flow', function () {
         await driver.assertElementNotPresent('.loading-overlay');
 
         await driver.clickElement('[data-testid="import-token-button"]');
+        await driver.clickElement('[data-testid="importTokens"]');
 
         await driver.fill('input[placeholder="Search tokens"]', 'cha');
 
@@ -89,6 +90,13 @@ describe('Import flow', function () {
         await driver.assertElementNotPresent(
           '[data-testid="token-list-loading-message"]',
         );
+
+        await driver.assertElementNotPresent(
+          '[data-testid="token-list-loading-message"]',
+        );
+
+        await driver.clickElement('[data-testid="sort-by-networks"]');
+        await driver.clickElement('[data-testid="network-filter-current"]');
 
         const expectedTokenListElementsAreFound =
           await driver.elementCountBecomesN('.multichain-token-list-item', 4);

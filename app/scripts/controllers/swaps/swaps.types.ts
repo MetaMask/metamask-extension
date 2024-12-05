@@ -1,13 +1,12 @@
-import { ExternalProvider, JsonRpcFetchFunc } from '@ethersproject/providers';
 import { TokenRatesControllerGetStateAction } from '@metamask/assets-controllers';
 import {
   ControllerGetStateAction,
   ControllerStateChangeEvent,
   RestrictedControllerMessenger,
 } from '@metamask/base-controller';
-import type { ChainId } from '@metamask/controller-utils';
 import { GasFeeState } from '@metamask/gas-fee-controller';
 import {
+  NetworkClientId,
   NetworkControllerGetNetworkClientByIdAction,
   NetworkControllerGetStateAction,
 } from '@metamask/network-controller';
@@ -312,7 +311,7 @@ export type FetchTradesInfoParams = {
 };
 
 export type FetchTradesInfoParamsMetadata = {
-  chainId: ChainId;
+  networkClientId: NetworkClientId;
   sourceTokenInfo: {
     address: string;
     symbol: string;
@@ -348,11 +347,10 @@ export type SwapsControllerOptions = {
     },
     factor: number,
   ) => Promise<{ gasLimit: string; simulationFails: boolean }>;
-  provider: ExternalProvider | JsonRpcFetchFunc;
   fetchTradesInfo: typeof defaultFetchTradesInfo;
   getLayer1GasFee: (params: {
     transactionParams: TransactionParams;
-    chainId: ChainId;
+    networkClientId: NetworkClientId;
   }) => Promise<string>;
   getEIP1559GasFeeEstimates: () => Promise<GasFeeState>;
   trackMetaMetricsEvent: (event: {

@@ -1,5 +1,6 @@
 import Bowser from 'bowser';
-import { BN, toChecksumAddress } from 'ethereumjs-util';
+import BN from 'bn.js';
+import { toChecksumAddress } from 'ethereumjs-util';
 import { CHAIN_IDS } from '../../../shared/constants/network';
 import { addHexPrefixToObjectValues } from '../../../shared/lib/swaps-utils';
 import { toPrecisionWithoutTrailingZeros } from '../../../shared/lib/transactions-controller-utils';
