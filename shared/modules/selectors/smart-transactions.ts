@@ -11,46 +11,17 @@ import {
   // eslint-disable-next-line import/no-restricted-paths
 } from '../../../ui/selectors/selectors'; // TODO: Migrate shared selectors to this file.
 import { isProduction } from '../environment';
+import { BackgroundStateProxy } from '../../types/metamask';
 import { getCurrentChainId, NetworkState } from './networks';
 
 type SmartTransactionsMetaMaskState = {
-  metamask: {
-    preferences: {
-      smartTransactionsOptInStatus?: boolean;
-    };
-    internalAccounts: {
-      selectedAccount: string;
-      accounts: {
-        [key: string]: {
-          metadata: {
-            keyring: {
-              type: string;
-            };
-          };
-        };
-      };
-    };
-    swapsState: {
-      swapsFeatureFlags: {
-        ethereum: {
-          extensionActive: boolean;
-          mobileActive: boolean;
-          smartTransactions: {
-            expectedDeadline?: number;
-            maxDeadline?: number;
-            extensionReturnTxHashAsap?: boolean;
-          };
-        };
-        smartTransactions: {
-          extensionActive: boolean;
-          mobileActive: boolean;
-        };
-      };
-    };
-    smartTransactionsState: {
-      liveness: boolean;
-    };
-  };
+  metamask: Pick<
+    BackgroundStateProxy,
+    | 'PreferencesController'
+    | 'AccountsController'
+    | 'SwapsController'
+    | 'SmartTransactionsController'
+  >;
 };
 
 /**
@@ -134,10 +105,10 @@ export const getSmartTransactionsEnabled = (
   const supportedAccount = accountSupportsSmartTx(state);
   // TODO: Create a new proxy service only for MM feature flags.
   const smartTransactionsFeatureFlagEnabled =
-    state.metamask.swapsState?.swapsFeatureFlags?.smartTransactions
-      ?.extensionActive;
+    state.metamask.SwapsController.swapsState?.swapsFeatureFlags
+      ?.smartTransactions?.extensionActive;
   const smartTransactionsLiveness =
-    state.metamask.smartTransactionsState?.liveness;
+    state.metamask.SmartTransactionsController.smartTransactionsState?.liveness;
   return Boolean(
     getCurrentChainSupportsSmartTransactions(state) &&
       getIsAllowedRpcUrlForSmartTransactions(state) &&

@@ -248,8 +248,8 @@ export function createMockInternalAccount({
 export const getSelectedInternalAccountFromMockState = (
   state: MetaMaskReduxState,
 ): InternalAccount => {
-  return state.metamask.internalAccounts.accounts[
-    state.metamask.internalAccounts.selectedAccount
+  return state.metamask.AccountsController.internalAccounts.accounts[
+    state.metamask.AccountsController.internalAccounts.selectedAccount
   ];
 };
 
@@ -265,7 +265,7 @@ export function overrideAccountsFromMockState<
   const newSelectedAccount = selectedAccountId ?? newFirstAccountId ?? '';
   const newInternalAccounts = accounts.reduce(
     (
-      acc: MetaMaskReduxState['metamask']['internalAccounts']['accounts'],
+      acc: MetaMaskReduxState['metamask']['AccountsController']['internalAccounts']['accounts'],
       account,
     ) => {
       acc[account.id] = account;
@@ -276,8 +276,9 @@ export function overrideAccountsFromMockState<
 
   // Re-create the keyring mapping too, since some selectors are using their internal
   // account list.
-  const newKeyrings: MetaMaskReduxState['metamask']['keyrings'] = [];
-  for (const keyring of state.metamask.keyrings) {
+  const newKeyrings: MetaMaskReduxState['metamask']['KeyringController']['keyrings'] =
+    [];
+  for (const keyring of state.metamask.KeyringController.keyrings) {
     const newAccountsForKeyring = [];
     for (const account of accounts) {
       if (account.metadata.keyring.type === keyring.type) {

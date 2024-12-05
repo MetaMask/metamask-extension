@@ -4,6 +4,7 @@ import { it as jestIt } from '@jest/globals';
 import { createSwapsMockStore } from '../../../test/jest';
 import { CHAIN_IDS } from '../../constants/network';
 import { mockNetworkState } from '../../../test/stub/networks';
+import { BackgroundStateProxy } from '../../types/metamask';
 import {
   getSmartTransactionsOptInStatusForMetrics,
   getCurrentChainSupportsSmartTransactions,
@@ -16,55 +17,65 @@ describe('Selectors', () => {
   const createMockState = () => {
     return {
       metamask: {
-        preferences: {
-          smartTransactionsOptInStatus: true,
+        PreferencesController: {
+          preferences: {
+            smartTransactionsOptInStatus: true,
+          },
         },
-        internalAccounts: {
-          selectedAccount: 'account1',
+        AccountsController: {
+          internalAccounts: {
+            selectedAccount: 'account1',
+            accounts: {
+              account1: {
+                metadata: {
+                  keyring: {
+                    type: 'Hardware',
+                  },
+                },
+                address: '0x123',
+                type: 'eip155:eoa',
+              },
+            },
+          },
           accounts: {
-            account1: {
-              metadata: {
-                keyring: {
-                  type: 'Hardware',
+            '0x123': {
+              address: '0x123',
+              balance: '0x15f6f0b9d4f8d000',
+            },
+          },
+        },
+        SwapsController: {
+          swapsState: {
+            swapsFeatureFlags: {
+              ethereum: {
+                extensionActive: true,
+                mobileActive: false,
+                smartTransactions: {
+                  expectedDeadline: 45,
+                  maxDeadline: 150,
+                  extensionReturnTxHashAsap: false,
                 },
               },
-              address: '0x123',
-              type: 'eip155:eoa',
-            },
-          },
-        },
-        accounts: {
-          '0x123': {
-            address: '0x123',
-            balance: '0x15f6f0b9d4f8d000',
-          },
-        },
-        swapsState: {
-          swapsFeatureFlags: {
-            ethereum: {
-              extensionActive: true,
-              mobileActive: false,
               smartTransactions: {
-                expectedDeadline: 45,
-                maxDeadline: 150,
-                extensionReturnTxHashAsap: false,
+                extensionActive: true,
+                mobileActive: false,
               },
             },
-            smartTransactions: {
-              extensionActive: true,
-              mobileActive: false,
-            },
           },
         },
-        smartTransactionsState: {
-          liveness: true,
+        SmartTransactionsController: {
+          smartTransactionsState: {
+            liveness: true,
+          },
         },
-        ...mockNetworkState({
-          id: 'network-configuration-id-1',
-          chainId: CHAIN_IDS.MAINNET,
-          rpcUrl: 'https://mainnet.infura.io/v3/',
-        }),
-      },
+        NetworkController: {
+          ...mockNetworkState({
+            id: 'network-configuration-id-1',
+            chainId: CHAIN_IDS.MAINNET,
+            rpcUrl: 'https://mainnet.infura.io/v3/',
+          }),
+        },
+      } as unknown as BackgroundStateProxy,
     };
   };
 
@@ -72,8 +83,10 @@ describe('Selectors', () => {
     const createMockOptInStatusState = (status: boolean) => {
       return {
         metamask: {
-          preferences: {
-            smartTransactionsOptInStatus: status,
+          PreferencesController: {
+            preferences: {
+              smartTransactionsOptInStatus: status,
+            },
           },
         },
       };
@@ -140,7 +153,9 @@ describe('Selectors', () => {
           ...state,
           metamask: {
             ...state.metamask,
-            ...mockNetworkState({ chainId: CHAIN_IDS.POLYGON }),
+            NetworkController: {
+              ...mockNetworkState({ chainId: CHAIN_IDS.POLYGON }),
+            },
           },
         };
         const result = getCurrentChainSupportsSmartTransactions(newState);
@@ -162,7 +177,7 @@ describe('Selectors', () => {
       'returns false if feature flag is disabled, not a HW and is Ethereum network',
       () => {
         const state = createSwapsMockStore();
-        state.metamask.swapsState.swapsFeatureFlags.smartTransactions.extensionActive =
+        state.metamask.SwapsController.swapsState.swapsFeatureFlags.smartTransactions.extensionActive =
           false;
         expect(getSmartTransactionsEnabled(state)).toBe(false);
       },
@@ -172,7 +187,8 @@ describe('Selectors', () => {
       'returns false if feature flag is enabled, not a HW, STX liveness is false and is Ethereum network',
       () => {
         const state = createSwapsMockStore();
-        state.metamask.smartTransactionsState.liveness = false;
+        state.metamask.SmartTransactionsController.smartTransactionsState.liveness =
+          false;
         expect(getSmartTransactionsEnabled(state)).toBe(false);
       },
     );
@@ -185,20 +201,22 @@ describe('Selectors', () => {
           ...state,
           metamask: {
             ...state.metamask,
-            internalAccounts: {
-              ...state.metamask.internalAccounts,
-              selectedAccount: 'account2',
-              accounts: {
-                account2: {
-                  metadata: {
-                    keyring: {
-                      type: 'Trezor Hardware',
+            AccountsController: {
+              internalAccounts: {
+                ...state.metamask.AccountsController.internalAccounts,
+                selectedAccount: 'account2',
+                accounts: {
+                  account2: {
+                    metadata: {
+                      keyring: {
+                        type: 'Trezor Hardware',
+                      },
                     },
                   },
                 },
               },
             },
-          },
+          } as unknown as BackgroundStateProxy,
         };
         expect(getSmartTransactionsEnabled(newState)).toBe(true);
       },
@@ -242,8 +260,10 @@ describe('Selectors', () => {
           ...state,
           metamask: {
             ...state.metamask,
-            ...mockNetworkState({ chainId: CHAIN_IDS.LINEA_MAINNET }),
-          },
+            NetworkController: {
+              ...mockNetworkState({ chainId: CHAIN_IDS.LINEA_MAINNET }),
+            },
+          } as unknown as BackgroundStateProxy,
         };
         expect(getSmartTransactionsEnabled(newState)).toBe(false);
       },
@@ -251,9 +271,20 @@ describe('Selectors', () => {
 
     jestIt('returns false if a snap account is used', () => {
       const state = createSwapsMockStore();
-      state.metamask.internalAccounts.selectedAccount =
-        '36eb02e0-7925-47f0-859f-076608f09b69';
-      expect(getSmartTransactionsEnabled(state)).toBe(false);
+      const newState = {
+        ...state,
+        metamask: {
+          ...state.metamask,
+          AccountsController: {
+            ...state.metamask.AccountsController,
+            internalAccounts: {
+              ...state.metamask.AccountsController.internalAccounts,
+              selectedAccount: '36eb02e0-7925-47f0-859f-076608f09b69',
+            },
+          },
+        } as unknown as BackgroundStateProxy,
+      };
+      expect(getSmartTransactionsEnabled(newState)).toBe(false);
     });
   });
 
@@ -273,9 +304,12 @@ describe('Selectors', () => {
         ...state,
         metamask: {
           ...state.metamask,
-          preferences: {
-            ...state.metamask.preferences,
-            smartTransactionsOptInStatus: false,
+          PreferencesController: {
+            ...state.metamask.PreferencesController,
+            preferences: {
+              ...state.metamask.PreferencesController.preferences,
+              smartTransactionsOptInStatus: false,
+            },
           },
         },
       };
@@ -289,21 +323,23 @@ describe('Selectors', () => {
         ...state,
         metamask: {
           ...state.metamask,
-          swapsState: {
-            ...state.metamask.swapsState,
-            swapsFeatureFlags: {
-              ethereum: {
-                extensionActive: true,
-                mobileActive: false,
-                smartTransactions: {
-                  expectedDeadline: 45,
-                  maxDeadline: 150,
-                  extensionReturnTxHashAsap: false,
+          SwapsController: {
+            swapsState: {
+              ...state.metamask.SwapsController.swapsState,
+              swapsFeatureFlags: {
+                ethereum: {
+                  extensionActive: true,
+                  mobileActive: false,
+                  smartTransactions: {
+                    expectedDeadline: 45,
+                    maxDeadline: 150,
+                    extensionReturnTxHashAsap: false,
+                  },
                 },
-              },
-              smartTransactions: {
-                extensionActive: false,
-                mobileActive: false,
+                smartTransactions: {
+                  extensionActive: false,
+                  mobileActive: false,
+                },
               },
             },
           },

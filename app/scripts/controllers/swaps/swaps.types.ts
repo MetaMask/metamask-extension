@@ -50,7 +50,10 @@ export type SwapsControllerState = {
     swapsStxStatusDeadline?: number;
     swapsStxGetTransactionsRefreshTime: number;
     swapsStxMaxFeeMultiplier: number;
-    swapsFeatureFlags: Record<string, boolean>;
+    swapsFeatureFlags: Record<
+      string,
+      Record<string, boolean | Record<string, number | boolean>>
+    >;
   };
 };
 
