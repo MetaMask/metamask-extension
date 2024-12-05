@@ -201,5 +201,54 @@ describe('migration #135', () => {
           .defaultRpcEndpointIndex,
       ).toEqual(0);
     });
+
+    it('does nothing if Linea mainnet is excluded', async () => {
+      const oldState = {
+        NetworkController: {
+          networkConfigurationsByChainId: {
+            [BASE_CHAIN_ID]: {
+              rpcEndpoints: [
+                {
+                  url: 'https://mainnet.base.org',
+                  type: 'custom',
+                },
+              ],
+              defaultRpcEndpointIndex: 0,
+            },
+            '0x1': {
+              rpcEndpoints: [
+                {
+                  url: `https://mainnet.infura.io/v3/${infuraProjectId}`,
+                  type: 'infura',
+                },
+              ],
+              defaultRpcEndpointIndex: 0,
+            },
+            '0x13881': {
+              rpcEndpoints: [
+                {
+                  url: 'https://rpc.goerli.linea.io',
+                  type: 'custom',
+                },
+              ],
+              defaultRpcEndpointIndex: 0,
+            },
+          },
+        },
+      };
+
+      const transformedState = await migrate({
+        meta: { version: oldVersion },
+        data: cloneDeep(oldState),
+      });
+
+      const updatedNetworkController = transformedState.data
+        .NetworkController as NetworkState;
+
+      expect(
+        updatedNetworkController.networkConfigurationsByChainId['0x13881']
+          .rpcEndpoints[0].url,
+      ).toEqual('https://rpc.goerli.linea.io');
+    });
   });
 });
