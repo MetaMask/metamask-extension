@@ -40,6 +40,8 @@ export const NotificationDetailButton = ({
   const isMetaMaskUrl = href.startsWith('metamask:');
   const [isOpen, setIsOpen] = useState(false);
 
+  const isSnapNotification = notification.type === TRIGGER_TYPES.SNAP;
+
   const handleModalClose = () => {
     setIsOpen(false);
   };
@@ -66,7 +68,7 @@ export const NotificationDetailButton = ({
       },
     });
 
-    if (notification.type === TRIGGER_TYPES.SNAP) {
+    if (isSnapNotification) {
       if (isMetaMaskUrl) {
         navigate(href);
       } else {
@@ -77,7 +79,7 @@ export const NotificationDetailButton = ({
 
   return (
     <>
-      {notification.type === TRIGGER_TYPES.SNAP && (
+      {isSnapNotification && (
         <SnapLinkWarning
           isOpen={isOpen}
           onClose={handleModalClose}
@@ -86,7 +88,7 @@ export const NotificationDetailButton = ({
       )}
       <Button
         key={id}
-        href={!isMetaMaskUrl && href ? href : undefined}
+        href={!isSnapNotification && href ? href : undefined}
         variant={variant}
         externalLink={isExternal || !isMetaMaskUrl}
         size={ButtonSize.Lg}
