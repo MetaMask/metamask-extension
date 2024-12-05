@@ -320,7 +320,7 @@ export default class Routes extends Component {
           <Authenticated path={SEND_ROUTE} component={SendPage} exact />
           <Authenticated path={SWAPS_ROUTE} component={Swaps} />
           <Authenticated
-            path={`${CROSS_CHAIN_SWAP_TX_DETAILS_ROUTE}/:srcTxHash`}
+            path={`${CROSS_CHAIN_SWAP_TX_DETAILS_ROUTE}/:srcTxMetaId`}
             component={CrossChainSwapTxDetails}
             exact
           />
