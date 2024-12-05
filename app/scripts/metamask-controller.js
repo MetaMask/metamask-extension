@@ -2937,7 +2937,7 @@ export default class MetamaskController extends EventEmitter {
               title,
               footerLink,
             };
-            this.controllerMessenger.call(
+            return this.controllerMessenger.call(
               'RateLimitController:call',
               origin,
               'showInAppNotification',
