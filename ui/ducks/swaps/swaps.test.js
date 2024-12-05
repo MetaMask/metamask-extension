@@ -644,9 +644,8 @@ describe('Ducks - Swaps', () => {
     it('returns current smart transactions', () => {
       const state = createSwapsMockStore();
       expect(swaps.getCurrentSmartTransactions(state)).toMatchObject(
-        state.metamask.smartTransactionsState.smartTransactions[
-          CHAIN_IDS.MAINNET
-        ],
+        state.metamask.SmartTransactionsController.smartTransactionsState
+          .smartTransactions[CHAIN_IDS.MAINNET],
       );
     });
   });
@@ -666,7 +665,7 @@ describe('Ducks - Swaps', () => {
       const state = createSwapsMockStore();
       const smartTransactionFees = swaps.getSmartTransactionFees(state);
       expect(smartTransactionFees).toMatchObject(
-        state.metamask.smartTransactionsState.fees,
+        state.metamask.SmartTransactionsController.smartTransactionsState.fees,
       );
     });
 
@@ -705,7 +704,8 @@ describe('Ducks - Swaps', () => {
       const state = createSwapsMockStore();
       const smartTransactionFees = swaps.getSmartTransactionEstimatedGas(state);
       expect(smartTransactionFees).toBe(
-        state.metamask.smartTransactionsState.estimatedGas,
+        state.metamask.SmartTransactionsController.smartTransactionsState
+          .estimatedGas,
       );
     });
   });

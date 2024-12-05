@@ -143,9 +143,10 @@ describe('Transaction Selectors', () => {
 
     it('returns an empty array if there are no smart transactions in state', () => {
       const state = createState();
-      state.metamask.smartTransactionsState.smartTransactions = {
-        [CHAIN_IDS.MAINNET]: [],
-      };
+      state.metamask.SmartTransactionsController.smartTransactionsState.smartTransactions =
+        {
+          [CHAIN_IDS.MAINNET]: [],
+        };
 
       const result = smartTransactionsListSelector(state);
 

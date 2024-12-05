@@ -421,9 +421,8 @@ export const getApproveTxParams = (state) => {
 };
 
 export const getCurrentSmartTransactions = (state) => {
-  return state.metamask.smartTransactionsState?.smartTransactions?.[
-    getCurrentChainId(state)
-  ];
+  return state.metamask.SmartTransactionsController.smartTransactionsState
+    ?.smartTransactions?.[getCurrentChainId(state)];
 };
 
 export const getPendingSmartTransactions = (state) => {
@@ -439,7 +438,8 @@ export const getPendingSmartTransactions = (state) => {
 export const getSmartTransactionFees = (state) => {
   const usedQuote = getUsedQuote(state);
   if (!usedQuote?.isGasIncludedTrade) {
-    return state.metamask.smartTransactionsState?.fees;
+    return state.metamask.SmartTransactionsController.smartTransactionsState
+      ?.fees;
   }
   return {
     approvalTxFees: usedQuote.approvalTxFees,
@@ -448,7 +448,8 @@ export const getSmartTransactionFees = (state) => {
 };
 
 export const getSmartTransactionEstimatedGas = (state) => {
-  return state.metamask.smartTransactionsState?.estimatedGas;
+  return state.metamask.SmartTransactionsController.smartTransactionsState
+    ?.estimatedGas;
 };
 
 export const getSwapsNetworkConfig = (state) => {

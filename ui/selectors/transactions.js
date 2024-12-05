@@ -141,7 +141,7 @@ export const unapprovedTypedMessagesSelector = (state) =>
 
 export const smartTransactionsListSelector = (state) => {
   const { address: selectedAddress } = getSelectedInternalAccount(state);
-  return state.metamask.smartTransactionsState?.smartTransactions?.[
+  return state.metamask.SmartTransactionsController.smartTransactionsState?.smartTransactions?.[
     getCurrentChainId(state)
   ]
     ?.filter((smartTransaction) => {
