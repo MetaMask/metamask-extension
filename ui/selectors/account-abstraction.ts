@@ -8,7 +8,7 @@ export type AccountAbstractionState = {
 };
 
 export function getUserOperations(state: AccountAbstractionState) {
-  return state.metamask.userOperations || {};
+  return state.metamask.UserOperationController.userOperations || {};
 }
 
 export const selectUserOperationMetadata = createSelector(
