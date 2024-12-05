@@ -45,6 +45,7 @@ import {
   GOERLI_DISPLAY_NAME,
   SEPOLIA_DISPLAY_NAME,
 } from '../../../../../shared/constants/network';
+import { useMultichainBalances } from '../../../../hooks/useMultichainBalances';
 
 const ELLIPSIFY_LENGTH = 13; // 6 (start) + 4 (end) + 3 (...)
 
@@ -128,11 +129,12 @@ export function AssetPicker({
     networkProps?.network ??
     (currentNetwork?.chainId && allNetworks[currentNetwork.chainId]);
 
+  const { balanceByChainId } = useMultichainBalances();
   // This is used to determine which tokens to display when isMultiselectEnabled=true
   const [selectedChainIds, setSelectedChainIds] = useState<string[]>(
-    (networkProps?.networks ?? Object.values(allNetworks))?.map(
-      ({ chainId }) => chainId,
-    ) ?? [],
+    (networkProps?.networks ?? Object.values(allNetworks))
+      ?.map(({ chainId }) => chainId)
+      .sort((a, b) => balanceByChainId[b] - balanceByChainId[a]) ?? [],
   );
   const [isSelectingNetwork, setIsSelectingNetwork] = useState(false);
 
