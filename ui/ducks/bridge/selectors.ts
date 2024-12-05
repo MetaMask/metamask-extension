@@ -196,7 +196,7 @@ export const getBridgeSortOrder = (state: BridgeAppState) =>
 // A dest network can be selected before it's imported
 // The cached exchange rate won't be available so the rate from the bridge state is used
 const _getToTokenExchangeRate = createSelector(
-  (state) => state.metamask.currencyRates,
+  (state) => state.metamask.CurrencyController.currencyRates,
   (state: BridgeAppState) => state.bridge.toTokenExchangeRate,
   getToChain,
   getToToken,

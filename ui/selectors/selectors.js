@@ -868,7 +868,8 @@ export const selectConversionRateByChainId = createSelector(
     }
 
     const { nativeCurrency } = networkConfiguration;
-    return state.metamask.currencyRates[nativeCurrency]?.conversionRate;
+    return state.metamask.CurrencyController.currencyRates[nativeCurrency]
+      ?.conversionRate;
   },
 );
 
@@ -959,7 +960,7 @@ export function getNftIsStillFetchingIndication(state) {
 }
 
 export function getCurrentCurrency(state) {
-  return state.metamask.currentCurrency;
+  return state.metamask.CurrencyController.currentCurrency;
 }
 
 export function getTotalUnapprovedCount(state) {
@@ -1451,12 +1452,13 @@ export function getUseExternalServices(state) {
 }
 
 export function getUSDConversionRate(state) {
-  return state.metamask.currencyRates[getProviderConfig(state).ticker]
-    ?.usdConversionRate;
+  return state.metamask.CurrencyController.currencyRates[
+    getProviderConfig(state).ticker
+  ]?.usdConversionRate;
 }
 
 export function getCurrencyRates(state) {
-  return state.metamask.currencyRates;
+  return state.metamask.CurrencyController.currencyRates;
 }
 
 export function getWeb3ShimUsageStateForOrigin(state, origin) {

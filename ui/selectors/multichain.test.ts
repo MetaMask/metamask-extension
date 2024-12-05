@@ -264,14 +264,14 @@ describe('Multichain Selectors', () => {
       (currency: string) => {
         const state = getEvmState();
 
-        state.metamask.currentCurrency = currency;
+        state.metamask.CurrencyController.currentCurrency = currency;
         expect(getCurrentCurrency(state)).toBe(currency);
         expect(getMultichainCurrentCurrency(state)).toBe(currency);
       },
     );
 
     it('fallbacks to ticker as currency if account is non-EVM (bip122:*)', () => {
-      const state = getNonEvmState(); // .currentCurrency = 'ETH'
+      const state = getNonEvmState(); // .CurrencyController.currentCurrency = 'ETH'
 
       const bip122ProviderConfig = getBip122ProviderConfig();
       expect(getCurrentCurrency(state).toLowerCase()).not.toBe('usd');
