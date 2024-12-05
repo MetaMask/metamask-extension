@@ -3,6 +3,7 @@ import {
   ControllerMessenger,
   EventConstraint,
 } from '@metamask/base-controller';
+import { Provider } from '@metamask/network-controller';
 import { TransactionMetricsRequest } from '../lib/transaction/metrics';
 
 export enum ControllerName {
@@ -11,6 +12,7 @@ export enum ControllerName {
   NetworkController = 'NetworkController',
   OnboardingController = 'OnboardingController',
   PermissionController = 'PermissionController',
+  PPOMController = 'PPOMController',
   PreferencesController = 'PreferencesController',
   SmartTransactionsController = 'SmartTransactionsController',
   TransactionController = 'TransactionController',
@@ -32,6 +34,9 @@ export type ControllerInitRequest<
     origin: string,
     options?: { suppressUnauthorizedError?: boolean },
   ): Promise<string[]>;
+
+  /** @deprecated */
+  getProvider: () => Provider;
 
   getStateUI: () => unknown & { metamask: unknown };
 

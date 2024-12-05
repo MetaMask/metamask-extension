@@ -122,7 +122,6 @@ import { CustodyController } from '@metamask-institutional/custody-controller';
 import { TransactionUpdateController } from '@metamask-institutional/transaction-update';
 ///: END:ONLY_INCLUDE_IF
 import { SignatureController } from '@metamask/signature-controller';
-import { PPOMController } from '@metamask/ppom-validator';
 import { wordlist } from '@metamask/scure-bip39/dist/wordlists/english';
 
 import {
@@ -262,7 +261,6 @@ import { SnapsNameProvider } from './lib/SnapsNameProvider';
 import { AddressBookPetnamesBridge } from './lib/AddressBookPetnamesBridge';
 import { AccountIdentitiesPetnamesBridge } from './lib/AccountIdentitiesPetnamesBridge';
 import { createPPOMMiddleware } from './lib/ppom/ppom-middleware';
-import * as PPOMModule from './lib/ppom/ppom';
 import {
   onMessageReceived,
   checkForMultipleVersionsRunning,
@@ -322,7 +320,6 @@ import {
 import { MetaMetricsDataDeletionController } from './controllers/metametrics-data-deletion/metametrics-data-deletion';
 import { DataDeletionService } from './services/data-deletion-service';
 import createRPCMethodTrackingMiddleware from './lib/createRPCMethodTrackingMiddleware';
-import { IndexedDBPPOMStorage } from './lib/ppom/indexed-db-backend';
 import { updateCurrentLocale } from './translate';
 import { TrezorOffscreenBridge } from './lib/offscreen-bridge/trezor-offscreen-bridge';
 import { LedgerOffscreenBridge } from './lib/offscreen-bridge/ledger-offscreen-bridge';
@@ -362,6 +359,7 @@ import BridgeStatusController from './controllers/bridge-status/bridge-status-co
 import { BRIDGE_STATUS_CONTROLLER_NAME } from './controllers/bridge-status/constants';
 import { TransactionControllerInit } from './controller-init/transaction-controller-init';
 import { ControllerName } from './controller-init/types';
+import { PPOMControllerInit } from './controller-init/ppom-controller-init';
 
 const debugLog = createProjectLogger('metamask-controller');
 
@@ -992,35 +990,6 @@ export default class MetamaskController extends EventEmitter {
         state: initState.PhishingController,
         hotlistRefreshInterval: process.env.IN_TEST ? 5 * SECOND : undefined,
         stalelistRefreshInterval: process.env.IN_TEST ? 30 * SECOND : undefined,
-      }));
-    };
-
-    const ppomControllerInit = () => {
-      return (this.ppomController = new PPOMController({
-        messenger: this.controllerMessenger.getRestricted({
-          name: 'PPOMController',
-          allowedEvents: [
-            'NetworkController:stateChange',
-            'NetworkController:networkDidChange',
-          ],
-          allowedActions: ['NetworkController:getNetworkClientById'],
-        }),
-        storageBackend: new IndexedDBPPOMStorage('PPOMDB', 1),
-        provider: this.provider,
-        ppomProvider: {
-          PPOM: PPOMModule.PPOM,
-          ppomInit: () => PPOMModule.default(process.env.PPOM_URI),
-        },
-        state: initState.PPOMController,
-        chainId: this.#getGlobalChainId(),
-        securityAlertsEnabled:
-          this.preferencesController.state.securityAlertsEnabled,
-        onPreferencesChange: this.preferencesMessenger.subscribe.bind(
-          this.preferencesMessenger,
-          'PreferencesController:stateChange',
-        ),
-        cdnBaseUrl: process.env.BLOCKAID_FILE_CDN,
-        blockaidPublicKey: process.env.BLOCKAID_PUBLIC_KEY,
       }));
     };
 
@@ -2498,7 +2467,7 @@ export default class MetamaskController extends EventEmitter {
       currencyRateControllerInit,
       tokenBalancesControllerInit,
       phishingControllerInit,
-      ppomControllerInit,
+      new PPOMControllerInit(),
       announcementControllerInit,
       networkOrderControllerInit,
       accountOrderControllerInit,
@@ -2562,6 +2531,7 @@ export default class MetamaskController extends EventEmitter {
     this.controllersByName = controllersByName;
 
     // Backwards compatibility for existing references
+    this.ppomController = controllersByName[ControllerName.PPOMController];
     this.txController = controllersByName[ControllerName.TransactionController];
 
     this.controllerMessenger.subscribe(
@@ -2693,7 +2663,6 @@ export default class MetamaskController extends EventEmitter {
       BridgeStatusController: this.bridgeStatusController,
       EnsController: this.ensController,
       ApprovalController: this.approvalController,
-      PPOMController: this.ppomController,
     };
 
     this.store.updateStructure({
@@ -2737,7 +2706,6 @@ export default class MetamaskController extends EventEmitter {
         this.institutionalFeaturesController.store,
       MmiConfigurationController: this.mmiConfigurationController.store,
       ///: END:ONLY_INCLUDE_IF
-      PPOMController: this.ppomController,
       NameController: this.nameController,
       UserOperationController: this.userOperationController,
       // Notification Controllers
@@ -7531,6 +7499,7 @@ export default class MetamaskController extends EventEmitter {
       getController: this.#getController.bind(this, controllersByName),
       getGlobalChainId: this.#getGlobalChainId.bind(this),
       getPermittedAccounts: this.getPermittedAccounts.bind(this),
+      getProvider: () => this.provider,
       getStateUI: this._getMetaMaskState.bind(this),
       getTransactionMetricsRequest:
         this.getTransactionMetricsRequest.bind(this),
