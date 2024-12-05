@@ -77,7 +77,8 @@ export const getAllBridgeableNetworks = createDeepEqualSelector(
 
 export const getFromChains = createDeepEqualSelector(
   getAllBridgeableNetworks,
-  (state: BridgeAppState) => state.metamask.bridgeState?.bridgeFeatureFlags,
+  (state: BridgeAppState) =>
+    state.metamask.BridgeController.bridgeState?.bridgeFeatureFlags,
   (allBridgeableNetworks, bridgeFeatureFlags) =>
     allBridgeableNetworks.filter(({ chainId }) =>
       bridgeFeatureFlags[BridgeFeatureFlagsKey.NETWORK_SRC_ALLOWLIST].includes(
@@ -101,7 +102,8 @@ export const getFromChain = createDeepEqualSelector(
 export const getToChains = createDeepEqualSelector(
   getFromChain,
   getAllBridgeableNetworks,
-  (state: BridgeAppState) => state.metamask.bridgeState?.bridgeFeatureFlags,
+  (state: BridgeAppState) =>
+    state.metamask.BridgeController.bridgeState?.bridgeFeatureFlags,
   (
     fromChain,
     allBridgeableNetworks,
@@ -125,19 +127,23 @@ export const getToChain = createDeepEqualSelector(
 );
 
 export const getFromTokens = (state: BridgeAppState) => {
-  return state.metamask.bridgeState.srcTokens ?? {};
+  return state.metamask.BridgeController.bridgeState.srcTokens ?? {};
 };
 
 export const getFromTopAssets = (state: BridgeAppState) => {
-  return state.metamask.bridgeState.srcTopAssets ?? [];
+  return state.metamask.BridgeController.bridgeState.srcTopAssets ?? [];
 };
 
 export const getToTopAssets = (state: BridgeAppState) => {
-  return state.bridge.toChainId ? state.metamask.bridgeState.destTopAssets : [];
+  return state.bridge.toChainId
+    ? state.metamask.BridgeController.bridgeState.destTopAssets
+    : [];
 };
 
 export const getToTokens = (state: BridgeAppState) => {
-  return state.bridge.toChainId ? state.metamask.bridgeState.destTokens : {};
+  return state.bridge.toChainId
+    ? state.metamask.BridgeController.bridgeState.destTokens
+    : {};
 };
 
 export const getFromToken = (
@@ -158,12 +164,12 @@ export const getFromAmount = (state: BridgeAppState): string | null =>
   state.bridge.fromTokenInputValue;
 
 export const getQuoteRequest = (state: BridgeAppState) => {
-  const { quoteRequest } = state.metamask.bridgeState;
+  const { quoteRequest } = state.metamask.BridgeController.bridgeState;
   return quoteRequest;
 };
 
 export const getBridgeQuotesConfig = (state: BridgeAppState) =>
-  state.metamask.bridgeState?.bridgeFeatureFlags[
+  state.metamask.BridgeController.bridgeState?.bridgeFeatureFlags[
     BridgeFeatureFlagsKey.EXTENSION_CONFIG
   ] ?? {};
 
@@ -205,7 +211,7 @@ const _getToTokenExchangeRate = createSelector(
 );
 
 const _getQuotesWithMetadata = createDeepEqualSelector(
-  (state) => state.metamask.bridgeState.quotes,
+  (state) => state.metamask.BridgeController.bridgeState.quotes,
   _getToTokenExchangeRate,
   (state: BridgeAppState) => state.bridge.fromTokenExchangeRate,
   getConversionRate,
@@ -320,7 +326,8 @@ const _getQuoteIdentifier = ({ quote }: QuoteResponse & L1GasFees) =>
   `${quote.bridgeId}-${quote.bridges[0]}-${quote.steps.length}`;
 
 const _getSelectedQuote = createSelector(
-  (state: BridgeAppState) => state.metamask.bridgeState.quotesRefreshCount,
+  (state: BridgeAppState) =>
+    state.metamask.BridgeController.bridgeState.quotesRefreshCount,
   (state: BridgeAppState) => state.bridge.selectedQuote,
   _getSortedQuotesWithMetadata,
   (quotesRefreshCount, selectedQuote, sortedQuotesWithMetadata) =>
@@ -338,10 +345,12 @@ export const getBridgeQuotes = createSelector(
   _getSortedQuotesWithMetadata,
   _getRecommendedQuote,
   _getSelectedQuote,
-  (state) => state.metamask.bridgeState.quotesLastFetched,
+  (state) => state.metamask.BridgeController.bridgeState.quotesLastFetched,
   (state) =>
-    state.metamask.bridgeState.quotesLoadingStatus === RequestStatus.LOADING,
-  (state: BridgeAppState) => state.metamask.bridgeState.quotesRefreshCount,
+    state.metamask.BridgeController.bridgeState.quotesLoadingStatus ===
+    RequestStatus.LOADING,
+  (state: BridgeAppState) =>
+    state.metamask.BridgeController.bridgeState.quotesRefreshCount,
   getBridgeQuotesConfig,
   getQuoteRequest,
   (
