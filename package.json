@@ -282,7 +282,7 @@
     "@metamask-institutional/transaction-update": "^0.2.6",
     "@metamask-institutional/types": "^1.2.0",
     "@metamask/abi-utils": "^2.0.2",
-    "@metamask/account-watcher": "^4.1.1",
+    "@metamask/account-watcher": "^4.1.2",
     "@metamask/accounts-controller": "^20.0.0",
     "@metamask/address-book-controller": "^6.0.0",
     "@metamask/announcement-controller": "^7.0.0",
