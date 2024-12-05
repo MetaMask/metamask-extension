@@ -1,4 +1,5 @@
-import React from 'react';
+import React, { useState } from 'react';
+import { Carousel } from 'react-responsive-carousel';
 import { Box } from '../../component-library';
 import {
   AccountOverviewTabsProps,
@@ -13,89 +14,86 @@ export const AccountOverviewLayout = ({
   children,
   ...tabsProps
 }: AccountOverviewLayoutProps) => {
+  const [selectedIndex, setSelectedIndex] = useState(0);
+  const [slides, setSlides] = useState(['slide', 'slide', 'slide']);
+
+  const renderSlide = (name: string, id: number) => {
+    switch (name) {
+      case 'slide':
+        return (
+          <CarouselSlide
+            id={id}
+            key={id}
+            onClose={(idToRemove) => {
+              setSlides((prevSlides) =>
+                prevSlides.filter((_, i) => i !== idToRemove),
+              );
+              setSelectedIndex(0);
+            }}
+          />
+        );
+      default:
+        return <div />;
+    }
+  };
+
   return (
     <>
       <div className="account-overview__balance-wrapper">{children}</div>
-      <Carousel />
+      {slides.length > 0 && (
+        <Carousel
+          selectedItem={selectedIndex}
+          showThumbs={false}
+          showStatus={false}
+          showArrows={false}
+          onChange={(index: number) => setSelectedIndex(index)}
+          interval={2e3}
+          autoPlay
+          swipeable
+        >
+          {slides.map(renderSlide)}
+        </Carousel>
+      )}
       <AccountOverviewTabs {...tabsProps}></AccountOverviewTabs>
     </>
   );
 };
 
-function Carousel() {
-  return (
-    <Box
-      style={{
-        height: '89px',
-        padding: '0 16px',
-      }}
-    >
-      <CarouselSlide />
-      <Box
-        style={{
-          height: '30px',
-          width: '100%',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          gap: '8px',
-        }}
-      >
-        <Box
-          style={{
-            width: '6px',
-            height: '6px',
-            borderRadius: '50%',
-            backgroundColor: '#848C96',
-          }}
-        />
-        <Box
-          style={{
-            width: '6px',
-            height: '6px',
-            borderRadius: '50%',
-            backgroundColor: 'white',
-          }}
-        />
-        <Box
-          style={{
-            width: '6px',
-            height: '6px',
-            borderRadius: '50%',
-            backgroundColor: '#848C96',
-          }}
-        />
-      </Box>
-    </Box>
-  );
-}
-
-function CarouselSlide() {
+function CarouselSlide({
+  id,
+  onClose,
+}: {
+  id: number;
+  onClose: (id: number) => void;
+}) {
   return (
     <Box
       style={{
         height: '59px',
+        margin: '0 20px 35px 20px',
         backgroundColor: '#2E3033',
         border: '1px solid #858B9A33',
         borderRadius: '8px',
-        overflow: 'hidden',
         position: 'relative',
+        overflow: 'visible',
+        textAlign: 'left',
       }}
     >
       <Box
         style={{
-          backgroundColor: 'red',
           position: 'absolute',
-          left: '5px',
-          top: '0',
-          height: '61px',
+          backgroundColor: 'red',
+          left: '10px',
+          top: '-1px',
+          zIndex: 2,
+          height: 'calc(100% + 2px)',
           width: '60px',
         }}
       />
       <Box
         style={{
           position: 'absolute',
-          left: '80px',
+          left: '90px',
           height: '100%',
           display: 'flex',
           flexDirection: 'column',
@@ -121,6 +119,7 @@ function CarouselSlide() {
         </span>
       </Box>
       <Box
+        onClick={() => onClose(id)}
         style={{
           position: 'absolute',
           top: '12px',
