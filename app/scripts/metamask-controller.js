@@ -7486,6 +7486,7 @@ export default class MetamaskController extends EventEmitter {
 
   #initControllers({ initObjects, initState }) {
     const initRequest = {
+      getFlatState: this.getState.bind(this),
       getGlobalChainId: this.#getGlobalChainId.bind(this),
       getPermittedAccounts: this.getPermittedAccounts.bind(this),
       getProvider: () => this.provider,
