@@ -53,7 +53,7 @@ export function getFirstTimeFlowTypeRouteAfterMetaMetricsOptIn(state) {
 }
 
 export const getFirstTimeFlowType = (state) => {
-  return state.metamask.firstTimeFlowType;
+  return state.metamask.OnboardingController.firstTimeFlowType;
 };
 
 export const getOnboardingInitiator = (state) => {

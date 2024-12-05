@@ -156,7 +156,7 @@ describe('Multichain Selectors', () => {
 
     it('returns an EVM network provider if user is not onboarded', () => {
       const state = getEvmState();
-      state.metamask.completedOnboarding = false;
+      state.metamask.OnboardingController.completedOnboarding = false;
       state.metamask.AccountsController.internalAccounts.selectedAccount = '';
 
       const network = getMultichainNetwork(state);
