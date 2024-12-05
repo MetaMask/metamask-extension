@@ -85,7 +85,11 @@ type AssetPickerModalProps = {
    * by a custom order.
    */
   customTokenListGenerator?: (
-    filterPredicate: (symbol: string, address?: string) => boolean,
+    filterPredicate: (
+      symbol: string,
+      address?: null | string,
+      chainId?: string,
+    ) => boolean,
   ) => Generator<
     AssetWithDisplayData<NativeAsset> | AssetWithDisplayData<ERC20Asset>
   >;
