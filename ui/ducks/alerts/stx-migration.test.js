@@ -1,69 +1,75 @@
-import { createSlice } from '@reduxjs/toolkit';
-import { captureException } from '@sentry/browser';
 import { AlertTypes } from '../../../shared/constants/alerts';
-import { setAlertEnabledness } from '../../store/actions';
 import * as actionConstants from '../../store/actionConstants';
 import { ALERT_STATE } from './enums';
-
-const name = AlertTypes.stxMigration;
-
-const initialState = {
-  state: ALERT_STATE.CLOSED,
-};
-
-const slice = createSlice({
-  name,
-  initialState,
-  reducers: {
-    showSTXMigrationAlert: (state) => {
-      state.state = ALERT_STATE.OPEN;
-    },
-    dismissSTXMigrationAlert: (state) => {
-      state.state = ALERT_STATE.CLOSED;
-    },
-    disableAlertRequested: (state) => {
-      state.state = ALERT_STATE.LOADING;
-    },
-    disableAlertSucceeded: (state) => {
-      state.state = ALERT_STATE.CLOSED;
-    },
-    disableAlertFailed: (state) => {
-      state.state = ALERT_STATE.ERROR;
-    },
-  },
-  extraReducers: {
-    [actionConstants.UPDATE_METAMASK_STATE]: (state, action) => {
-      if (action.value?.preferences?.smartTransactionsOptInStatus === true) {
-        state.state = ALERT_STATE.OPEN;
-      }
-    },
-  },
-});
-
-const { actions, reducer } = slice;
-
-export const getSTXAlertState = (state) => state[name]?.state;
-export const stxAlertIsOpen = (state) =>
-  state[name]?.state === ALERT_STATE.OPEN;
-
-export const {
+import reducer, {
   showSTXMigrationAlert,
   dismissSTXMigrationAlert,
-  disableAlertRequested,
-  disableAlertSucceeded,
-  disableAlertFailed,
-} = actions;
+  stxAlertIsOpen,
+} from './stx-migration';
 
-export const dismissAndDisableAlert = () => {
-  return async (dispatch) => {
-    try {
-      await dispatch(disableAlertRequested());
-      await setAlertEnabledness(name, false);
-      await dispatch(disableAlertSucceeded());
-    } catch (error) {
-      console.error(error);
-      captureException(error);
-      await dispatch(disableAlertFailed());
-    }
+describe('STX Migration Alert', () => {
+  const mockState = {
+    metamask: {
+      alerts: {
+        [AlertTypes.stxMigration]: {
+          state: ALERT_STATE.OPEN,
+        },
+      },
+    },
   };
-};
+
+  it('should initialize with CLOSED state', () => {
+    const result = reducer(undefined, {});
+    expect(result.state).toStrictEqual(ALERT_STATE.CLOSED);
+  });
+
+  it('should handle showSTXMigrationAlert', () => {
+    const result = reducer(
+      { state: ALERT_STATE.CLOSED },
+      showSTXMigrationAlert(),
+    );
+    expect(result.state).toStrictEqual(ALERT_STATE.OPEN);
+  });
+
+  it('should handle dismissSTXMigrationAlert', () => {
+    const result = reducer(
+      { state: ALERT_STATE.OPEN },
+      dismissSTXMigrationAlert(),
+    );
+    expect(result.state).toStrictEqual(ALERT_STATE.CLOSED);
+  });
+
+  it('opens alert when smartTransactionsOptInStatus becomes true', () => {
+    const result = reducer(
+      { state: ALERT_STATE.CLOSED },
+      {
+        type: actionConstants.UPDATE_METAMASK_STATE,
+        value: {
+          preferences: {
+            smartTransactionsOptInStatus: true,
+          },
+        },
+      },
+    );
+    expect(result.state).toStrictEqual(ALERT_STATE.OPEN);
+  });
+
+  describe('stxAlertIsOpen selector', () => {
+    it('should return true when alert is open', () => {
+      expect(stxAlertIsOpen(mockState)).toBe(true);
+    });
+
+    it('should return false when alert is closed', () => {
+      const closedState = {
+        metamask: {
+          alerts: {
+            [AlertTypes.stxMigration]: {
+              state: ALERT_STATE.CLOSED,
+            },
+          },
+        },
+      };
+      expect(stxAlertIsOpen(closedState)).toBe(false);
+    });
+  });
+});
