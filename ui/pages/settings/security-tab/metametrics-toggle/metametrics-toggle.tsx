@@ -5,9 +5,9 @@ import { MetaMetricsContext } from '../../../../contexts/metametrics';
 import {
   useEnableMetametrics,
   useDisableMetametrics,
-} from '../../../../hooks/metamask-notifications/useMetametrics';
-import { selectIsProfileSyncingEnabled } from '../../../../selectors/metamask-notifications/profile-syncing';
-import { selectParticipateInMetaMetrics } from '../../../../selectors/metamask-notifications/authentication';
+} from '../../../../hooks/identity/useMetametrics';
+import { selectIsProfileSyncingEnabled } from '../../../../selectors/identity/profile-syncing';
+import { selectParticipateInMetaMetrics } from '../../../../selectors/identity/authentication';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,

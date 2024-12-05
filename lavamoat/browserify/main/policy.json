@@ -2471,27 +2471,15 @@
       }
     },
     "@metamask/snaps-sdk>@metamask/key-tree": {
+      "globals": {
+        "crypto.subtle": true
+      },
       "packages": {
         "@metamask/message-signing-snap>@noble/curves": true,
         "@metamask/scure-bip39": true,
-        "@metamask/snaps-sdk>@metamask/key-tree>@metamask/utils": true,
+        "@metamask/utils": true,
         "@metamask/utils>@scure/base": true,
         "@noble/hashes": true
-      }
-    },
-    "@metamask/snaps-sdk>@metamask/key-tree>@metamask/utils": {
-      "globals": {
-        "TextDecoder": true,
-        "TextEncoder": true
-      },
-      "packages": {
-        "@metamask/utils>@metamask/superstruct": true,
-        "@metamask/utils>@scure/base": true,
-        "@metamask/utils>pony-cause": true,
-        "@noble/hashes": true,
-        "browserify>buffer": true,
-        "nock>debug": true,
-        "semver": true
       }
     },
     "@metamask/snaps-utils": {

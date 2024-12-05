@@ -3,6 +3,11 @@ async function rejectSignatureOrTransactionRequest(driver) {
   await driver.delay(3000);
 }
 
+async function rejectRedesignedSignatureOrTransactionRequest(driver) {
+  await driver.clickElement({ text: 'Cancel', tag: 'button' });
+  await driver.delay(3000);
+}
+
 async function focusTestDapp(driver) {
   const windowHandles = await driver.getAllWindowHandles();
   await driver.switchToWindowWithTitle('E2E Test Dapp', windowHandles);
@@ -49,6 +54,7 @@ async function saveName(driver, value, name, proposedName) {
 
 module.exports = {
   rejectSignatureOrTransactionRequest,
+  rejectRedesignedSignatureOrTransactionRequest,
   focusTestDapp,
   expectName,
   clickName,
