@@ -6,6 +6,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [12.8.1]
+
 ## [12.8.0]
 ### Added
 - Added multi-chain polling for token prices ([#28158](https://github.com/MetaMask/metamask-extension/pull/28158))
@@ -5417,7 +5419,8 @@ Update styles and spacing on the critical error page  ([#20350](https://github.c
 - Added the ability to restore accounts from seed words.
 
 
-[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v12.8.0...HEAD
+[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v12.8.1...HEAD
+[12.8.1]: https://github.com/MetaMask/metamask-extension/compare/v12.8.0...v12.8.1
 [12.8.0]: https://github.com/MetaMask/metamask-extension/compare/v12.7.2...v12.8.0
 [12.7.2]: https://github.com/MetaMask/metamask-extension/compare/v12.7.1...v12.7.2
 [12.7.1]: https://github.com/MetaMask/metamask-extension/compare/v12.7.0...v12.7.1
