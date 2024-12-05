@@ -20,7 +20,7 @@ const getMetamask = (state: AppState) => state.metamask;
  */
 export const selectIsProfileSyncingEnabled = createSelector(
   [getMetamask],
-  (metamask) => metamask.isProfileSyncingEnabled,
+  (metamask) => metamask.UserStorageController.isProfileSyncingEnabled,
 );
 
 /**
@@ -35,7 +35,7 @@ export const selectIsProfileSyncingEnabled = createSelector(
 export const selectIsProfileSyncingUpdateLoading = createSelector(
   [getMetamask],
   (metamask) => {
-    return metamask.isProfileSyncingUpdateLoading;
+    return metamask.UserStorageController.isProfileSyncingUpdateLoading;
   },
 );
 
@@ -52,6 +52,6 @@ export const selectIsProfileSyncingUpdateLoading = createSelector(
 export const selectIsAccountSyncingReadyToBeDispatched = createSelector(
   [getMetamask],
   (metamask) => {
-    return metamask.isAccountSyncingReadyToBeDispatched;
+    return metamask.UserStorageController.isAccountSyncingReadyToBeDispatched;
   },
 );
