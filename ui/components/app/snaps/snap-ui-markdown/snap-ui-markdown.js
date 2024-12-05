@@ -16,6 +16,7 @@ import {
   Text,
 } from '../../../component-library';
 import SnapLinkWarning from '../snap-link-warning';
+import useSnapNavigation from '../../../../hooks/snaps/useSnapNavigation';
 
 const Paragraph = (props) => (
   <Text
@@ -27,27 +28,41 @@ const Paragraph = (props) => (
   />
 );
 
-const Link = ({ onClick, children, ...rest }) => (
-  <ButtonLink
-    {...rest}
-    as="a"
-    onClick={onClick}
-    externalLink
-    size={ButtonLinkSize.Inherit}
-    display={Display.Inline}
-    className="snap-ui-markdown__link"
-  >
-    {children}
-    <Icon name={IconName.Export} size={IconSize.Inherit} marginLeft={1} />
-  </ButtonLink>
-);
+const Link = ({ onClick, children, isMetaMaskUrl, ...rest }) => {
+  return (
+    <ButtonLink
+      {...rest}
+      as="a"
+      onClick={onClick}
+      externalLink={!isMetaMaskUrl}
+      size={ButtonLinkSize.Inherit}
+      display={Display.Inline}
+      className="snap-ui-markdown__link"
+    >
+      {children}
+      {!isMetaMaskUrl && (
+        <Icon name={IconName.Export} size={IconSize.Inherit} marginLeft={1} />
+      )}
+    </ButtonLink>
+  );
+};
+
+const isMetaMaskUrl = (href) => href.startsWith('metamask:');
 
 export const SnapUIMarkdown = ({ children, markdown }) => {
   const [redirectUrl, setRedirectUrl] = useState(undefined);
+  const { navigate } = useSnapNavigation();
 
   if (markdown === false) {
     return <Paragraph>{children}</Paragraph>;
   }
+
+  const linkTransformer = (href) => {
+    if (isMetaMaskUrl(href)) {
+      return href;
+    }
+    return ReactMarkdown.uriTransformer(href);
+  };
 
   const handleLinkClick = (url) => {
     setRedirectUrl(url);
@@ -66,18 +81,26 @@ export const SnapUIMarkdown = ({ children, markdown }) => {
       />
       <ReactMarkdown
         allowedElements={['p', 'strong', 'em', 'a']}
+        transformLinkUri={linkTransformer}
         components={{
           p: Paragraph,
-          a: ({ children: value, href }) => (
-            <Link
-              onClick={(e) => {
-                e.stopPropagation();
-                handleLinkClick(href);
-              }}
-            >
-              {value ?? href}
-            </Link>
-          ),
+          a: ({ children: value, href }) => {
+            return (
+              <Link
+                onClick={(e) => {
+                  e.stopPropagation();
+                  if (isMetaMaskUrl(href)) {
+                    navigate(href);
+                  } else {
+                    handleLinkClick(href);
+                  }
+                }}
+                isMetaMaskUrl={isMetaMaskUrl(href)}
+              >
+                {value ?? href}
+              </Link>
+            );
+          },
         }}
       >
         {children}
@@ -94,4 +117,5 @@ SnapUIMarkdown.propTypes = {
 Link.propTypes = {
   onClick: PropTypes.func,
   children: PropTypes.node,
+  isMetaMaskUrl: PropTypes.bool,
 };
