@@ -162,7 +162,7 @@ export async function setupInitialStore(
   const unapprovedTxsAll = txHelper(
     unapprovedTxs,
     metamaskState.unapprovedPersonalMsgs,
-    metamaskState.unapprovedDecryptMsgs,
+    metamaskState.DecryptMessageController.unapprovedDecryptMsgs,
     metamaskState.unapprovedEncryptionPublicKeyMsgs,
     metamaskState.unapprovedTypedMessages,
     metamaskState.networkId,

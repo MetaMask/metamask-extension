@@ -2007,7 +2007,7 @@ export function getNumberOfAllUnapprovedTransactionsAndMessages(state) {
 
   const allUnapprovedMessages = {
     ...unapprovedTxs,
-    ...state.metamask.unapprovedDecryptMsgs,
+    ...state.metamask.DecryptMessageController.unapprovedDecryptMsgs,
     ...state.metamask.unapprovedPersonalMsgs,
     ...state.metamask.unapprovedEncryptionPublicKeyMsgs,
     ...state.metamask.unapprovedTypedMessages,

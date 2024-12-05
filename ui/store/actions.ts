@@ -723,7 +723,9 @@ export function decryptMsgInline(
     }
 
     const newState = await forceUpdateMetamaskState(dispatch);
-    return newState.unapprovedDecryptMsgs[decryptedMsgData.metamaskId];
+    return newState.DecryptMessageController.unapprovedDecryptMsgs[
+      decryptedMsgData.metamaskId
+    ];
   };
 }
 

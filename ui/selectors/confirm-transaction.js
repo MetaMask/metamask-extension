@@ -48,7 +48,7 @@ const unapprovedTxsSelector = (state) => getUnapprovedTransactions(state);
 const unapprovedPersonalMsgsSelector = (state) =>
   state.metamask.unapprovedPersonalMsgs;
 const unapprovedDecryptMsgsSelector = (state) =>
-  state.metamask.unapprovedDecryptMsgs;
+  state.metamask.DecryptMessageController.unapprovedDecryptMsgs;
 const unapprovedEncryptionPublicKeyMsgsSelector = (state) =>
   state.metamask.unapprovedEncryptionPublicKeyMsgs;
 const unapprovedTypedMessagesSelector = (state) =>
@@ -110,7 +110,7 @@ export const unconfirmedTransactionsHashSelector = createSelector(
     return {
       ...filteredUnapprovedTxs,
       ...unapprovedPersonalMsgs,
-      ...unapprovedDecryptMsgs,
+      ...DecryptMessageController.unapprovedDecryptMsgs,
       ...unapprovedEncryptionPublicKeyMsgs,
       ...unapprovedTypedMessages,
     };
@@ -130,7 +130,7 @@ export const unconfirmedMessagesHashSelector = createSelector(
   ) => {
     return {
       ...unapprovedPersonalMsgs,
-      ...unapprovedDecryptMsgs,
+      ...DecryptMessageController.unapprovedDecryptMsgs,
       ...unapprovedEncryptionPublicKeyMsgs,
       ...unapprovedTypedMessages,
     };
