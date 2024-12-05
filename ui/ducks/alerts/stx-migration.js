@@ -1,5 +1,7 @@
 import { createSlice } from '@reduxjs/toolkit';
+import { captureException } from '@sentry/browser';
 import { AlertTypes } from '../../../shared/constants/alerts';
+import { setAlertEnabledness } from '../../store/actions';
 import * as actionConstants from '../../store/actionConstants';
 import { ALERT_STATE } from './enums';
 
@@ -17,32 +19,53 @@ const slice = createSlice({
       state.state = ALERT_STATE.OPEN;
     },
     dismissSTXMigrationAlert: (state) => {
-      console.log('Dismiss action received in reducer');
       state.state = ALERT_STATE.CLOSED;
-      console.log('State updated to:', state.state);
+    },
+    disableAlertRequested: (state) => {
+      state.state = ALERT_STATE.LOADING;
+    },
+    disableAlertSucceeded: (state) => {
+      state.state = ALERT_STATE.CLOSED;
+    },
+    disableAlertFailed: (state) => {
+      state.state = ALERT_STATE.ERROR;
     },
   },
   extraReducers: {
     [actionConstants.UPDATE_METAMASK_STATE]: (state, action) => {
-      console.log('=== STX REDUCER ===');
-      console.log('STX Alert State:', state?.state);
       if (action.value?.preferences?.smartTransactionsOptInStatus === true) {
         state.state = ALERT_STATE.OPEN;
-        console.log('Alert state changed to:', ALERT_STATE.OPEN);
       }
-      console.log('=== STX REDUCER END ===');
     },
   },
 });
 
 const { actions, reducer } = slice;
 
-// Selectors
-export const getSTXAlertState = (state) => state.metamask.alerts?.[name]?.state;
+export const getSTXAlertState = (state) => state[name]?.state;
 export const stxAlertIsOpen = (state) =>
-  state.stxMigration?.state === ALERT_STATE.OPEN;
+  state[name]?.state === ALERT_STATE.OPEN;
 
-// Actions
-export const { showSTXMigrationAlert, dismissSTXMigrationAlert } = actions;
+export const {
+  showSTXMigrationAlert,
+  dismissSTXMigrationAlert,
+  disableAlertRequested,
+  disableAlertSucceeded,
+  disableAlertFailed,
+} = actions;
+
+export const dismissAndDisableAlert = () => {
+  return async (dispatch) => {
+    try {
+      await dispatch(disableAlertRequested());
+      await setAlertEnabledness(name, false);
+      await dispatch(disableAlertSucceeded());
+    } catch (error) {
+      console.error(error);
+      captureException(error);
+      await dispatch(disableAlertFailed());
+    }
+  };
+};
 
 export default reducer;

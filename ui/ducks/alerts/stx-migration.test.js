@@ -1,22 +1,36 @@
 import { AlertTypes } from '../../../shared/constants/alerts';
 import * as actionConstants from '../../store/actionConstants';
-import { ALERT_STATE } from './enums';
+import configureStore from '../../store/store';
+import { setAlertEnabledness } from '../../store/actions';
 import reducer, {
   showSTXMigrationAlert,
   dismissSTXMigrationAlert,
+  dismissAndDisableAlert,
   stxAlertIsOpen,
 } from './stx-migration';
+import { ALERT_STATE } from './enums';
+
+jest.mock('../../store/actions', () => ({
+  setAlertEnabledness: jest.fn().mockResolvedValue(),
+}));
+
+jest.mock('../../../store/store', () => {
+  return jest.fn().mockImplementation((state) => ({
+    getState: () => state,
+    dispatch: jest.fn(),
+  }));
+});
 
 describe('STX Migration Alert', () => {
   const mockState = {
-    metamask: {
-      alerts: {
-        [AlertTypes.stxMigration]: {
-          state: ALERT_STATE.OPEN,
-        },
-      },
+    [AlertTypes.stxMigration]: {
+      state: ALERT_STATE.OPEN,
     },
   };
+
+  beforeEach(() => {
+    jest.clearAllMocks();
+  });
 
   it('should initialize with CLOSED state', () => {
     const result = reducer(undefined, {});
@@ -61,15 +75,61 @@ describe('STX Migration Alert', () => {
 
     it('should return false when alert is closed', () => {
       const closedState = {
-        metamask: {
-          alerts: {
-            [AlertTypes.stxMigration]: {
-              state: ALERT_STATE.CLOSED,
-            },
-          },
+        [AlertTypes.stxMigration]: {
+          state: ALERT_STATE.CLOSED,
         },
       };
       expect(stxAlertIsOpen(closedState)).toBe(false);
+    });
+  });
+
+  describe('dismissAndDisableAlert', () => {
+    it('should update alert state and preferences when disabling alert', async () => {
+      const store = configureStore(mockState);
+      await store.dispatch(dismissAndDisableAlert());
+
+      expect(setAlertEnabledness).toHaveBeenCalledWith(
+        AlertTypes.stxMigration,
+        false,
+      );
+      expect(store.dispatch).toHaveBeenCalledWith(
+        expect.objectContaining({
+          type: expect.stringContaining('disableAlertSucceeded'),
+        }),
+      );
+    });
+
+    it('should handle errors when disabling alert fails', async () => {
+      const error = new Error('Failed to disable alert');
+      setAlertEnabledness.mockRejectedValueOnce(error);
+
+      const store = configureStore(mockState);
+      await store.dispatch(dismissAndDisableAlert());
+
+      expect(store.dispatch).toHaveBeenCalledWith(
+        expect.objectContaining({
+          type: expect.stringContaining('disableAlertFailed'),
+        }),
+      );
+    });
+
+    it('should transition through loading state', async () => {
+      const store = configureStore(mockState);
+      const dispatchPromise = store.dispatch(dismissAndDisableAlert());
+
+      expect(store.dispatch).toHaveBeenCalledWith(
+        expect.objectContaining({
+          type: expect.stringContaining('disableAlertRequested'),
+        }),
+      );
+
+      await dispatchPromise;
+
+      expect(store.dispatch).toHaveBeenCalledWith(
+        expect.objectContaining({
+          type: expect.stringContaining('disableAlertSucceeded'),
+        }),
+      );
     });
   });
 });
