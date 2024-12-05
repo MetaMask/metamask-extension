@@ -489,6 +489,18 @@ export const AccountListMenu = ({
                 {t('addNewAccount')}
               </ButtonLink>
             </Box>
+            <Box>
+              <ButtonLink
+                size={ButtonLinkSize.Sm}
+                startIconName={IconName.Import}
+                onClick={() => {
+                  setActionMode(ACTION_MODES.IMPORT_SRP);
+                }}
+                data-testid="multichain-account-menu-popover-import-srp"
+              >
+               Import Secret Recovery Phrase
+              </ButtonLink>
+            </Box>
             {
               ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
               bitcoinSupportEnabled && (

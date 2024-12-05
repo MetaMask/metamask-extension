@@ -306,8 +306,11 @@ export function createNewVaultAndGetSeedPhrase(
     dispatch(showLoadingIndication());
 
     try {
+      console.log('createNewVaultAndGetSeedPhrase HERE');
       await createNewVault(password);
+      console.log('getSeedPhrase');
       const seedPhrase = await getSeedPhrase(password);
+      console.log('seedPhrase: ', seedPhrase);
       return seedPhrase;
     } catch (error) {
       dispatch(displayWarning(error));

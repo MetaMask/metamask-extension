@@ -4605,6 +4605,7 @@ export default class MetamaskController extends EventEmitter {
   async createNewVaultAndKeychain(password) {
     const releaseLock = await this.createVaultMutex.acquire();
     try {
+      console.log('createNewVaultAndKeychain');
       return await this.keyringController.createNewVaultAndKeychain(password);
     } finally {
       releaseLock();
@@ -5227,6 +5228,7 @@ export default class MetamaskController extends EventEmitter {
    */
   async addNewAccount(accountCount, keyringIndex) {
     const oldAccounts = await this.keyringController.getAccounts();
+    const selectedAccount = this.accountsController.getSelectedAccount();
 
     const addedAccountAddress = await this.keyringController.addNewAccount(
       accountCount,
