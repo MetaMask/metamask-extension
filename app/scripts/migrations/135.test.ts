@@ -32,7 +32,55 @@ describe('migration #135', () => {
       expect(transformedState.data).toEqual(oldState);
     });
 
-    it('replaces "https://mainnet.base.org" with "base-mainnet.infura.io" when it exists', async () => {
+    it('does nothing if no Infura RPC endpoints are used', async () => {
+      const oldState = {
+        NetworkController: {
+          networkConfigurationsByChainId: {
+            '0x1': {
+              rpcEndpoints: [
+                {
+                  url: 'https://custom.rpc',
+                  type: 'custom',
+                },
+              ],
+            },
+          },
+        },
+      };
+
+      const transformedState = await migrate({
+        meta: { version: oldVersion },
+        data: cloneDeep(oldState),
+      });
+
+      expect(transformedState.data).toEqual(oldState);
+    });
+
+    it('does nothing if Base network configuration is missing', async () => {
+      const oldState = {
+        NetworkController: {
+          networkConfigurationsByChainId: {
+            '0x1': {
+              rpcEndpoints: [
+                {
+                  url: `https://mainnet.infura.io/v3/${infuraProjectId}`,
+                  type: 'infura',
+                },
+              ],
+            },
+          },
+        },
+      };
+
+      const transformedState = await migrate({
+        meta: { version: oldVersion },
+        data: cloneDeep(oldState),
+      });
+
+      expect(transformedState.data).toEqual(oldState);
+    });
+
+    it('replaces "https://mainnet.base.org" if at least one Infura endpoint exists', async () => {
       const oldState = {
         NetworkController: {
           networkConfigurationsByChainId: {
@@ -41,10 +89,17 @@ describe('migration #135', () => {
                 {
                   url: 'https://mainnet.base.org',
                   type: 'custom',
-                  networkClientId: 'base-mainnet',
                 },
               ],
               defaultRpcEndpointIndex: 0,
+            },
+            '0x1': {
+              rpcEndpoints: [
+                {
+                  url: `https://mainnet.infura.io/v3/${infuraProjectId}`,
+                  type: 'infura',
+                },
+              ],
             },
           },
         },
@@ -73,7 +128,6 @@ describe('migration #135', () => {
                 {
                   url: 'https://other.rpc',
                   type: 'custom',
-                  networkClientId: 'other-mainnet',
                 },
               ],
               defaultRpcEndpointIndex: 0,
@@ -105,7 +159,6 @@ describe('migration #135', () => {
                 {
                   url: 'https://mainnet.base.org',
                   type: 'custom',
-                  networkClientId: 'base-mainnet',
                 },
               ],
               defaultRpcEndpointIndex: 0,

@@ -1,13 +1,15 @@
 import { hasProperty, isObject } from '@metamask/utils';
 import { cloneDeep } from 'lodash';
 import { infuraProjectId } from '../../../shared/constants/network';
+import { RpcEndpointType } from '@metamask/network-controller';
 
 export const version = 135;
 const BASE_CHAIN_ID = '0x2105';
 
 /**
  * Replace all occurrences of "https://mainnet.base.org" with
- * "https://base-mainnet.infura.io/v3/${infuraProjectId}" in the Base network configuration.
+ * "https://base-mainnet.infura.io/v3/${infuraProjectId}" in the Base network configuration,
+ * if the user already relies on at least one Infura RPC endpoint.
  *
  * @param originalVersionedData - Versioned MetaMask extension state, exactly
  * what we persist to dist.
@@ -36,6 +38,25 @@ function transformState(state: Record<string, unknown>) {
   ) {
     const { networkConfigurationsByChainId } = state.NetworkController;
 
+    // Check if at least one network uses an Infura RPC endpoint
+    const usesInfura = Object.values(networkConfigurationsByChainId).some(
+      (networkConfig) =>
+        isObject(networkConfig) &&
+        Array.isArray(networkConfig.rpcEndpoints) &&
+        networkConfig.rpcEndpoints.some(
+          (endpoint) =>
+            isObject(endpoint) &&
+            (endpoint.type === RpcEndpointType.Infura ||
+              (typeof endpoint.url === 'string' &&
+                endpoint.url.includes('infura.io'))),
+        ),
+    );
+
+    if (!usesInfura) {
+      // If no Infura endpoints are used, return the state unchanged
+      return state;
+    }
+
     // Check for Base network configuration (chainId 8453 / 0x2105)
     const baseNetworkConfig = networkConfigurationsByChainId[BASE_CHAIN_ID];
     if (isObject(baseNetworkConfig)) {
@@ -43,7 +64,6 @@ function transformState(state: Record<string, unknown>) {
 
       if (Array.isArray(rpcEndpoints)) {
         // Find the first occurrence of "https://mainnet.base.org"
-        // rpc URL are Unique so we can use findIndex
         const index = rpcEndpoints.findIndex(
           (endpoint) =>
             isObject(endpoint) && endpoint.url === 'https://mainnet.base.org',
