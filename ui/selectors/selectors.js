@@ -2919,7 +2919,7 @@ export function getMetaMetricsDataDeletionStatus(state) {
 }
 
 export function getRemoteFeatureFlags(state) {
-  return state.metamask.remoteFeatureFlags;
+  return state.metamask.RemoteFeatureFlagController.remoteFeatureFlags;
 }
 
 /**
