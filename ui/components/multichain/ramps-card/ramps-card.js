@@ -2,11 +2,20 @@ import React, { useCallback, useContext, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { useSelector } from 'react-redux';
 import classnames from 'classnames';
-import { Box, Text, ButtonBase } from '../../component-library';
+import {
+  Box,
+  Text,
+  ButtonBase,
+  IconName,
+  ButtonIconSize,
+  ButtonIcon,
+} from '../../component-library';
 import {
   BorderRadius,
   Display,
   FlexDirection,
+  IconColor,
+  JustifyContent,
   TextVariant,
 } from '../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../hooks/useI18nContext';
@@ -120,9 +129,20 @@ export const RampsCard = ({ variant, handleOnClick }) => {
             ${darkenGradient}, ${gradient}`,
       }}
     >
-      <Text className="ramps-card__title" variant={TextVariant.headingSm}>
-        {t(title)}
-      </Text>
+      <Box display={Display.Flex} justifyContent={JustifyContent.spaceBetween}>
+        <Text className="ramps-card__title" variant={TextVariant.headingSm}>
+          {t(title)}
+        </Text>
+        <ButtonIcon
+          color={IconColor.infoInverse}
+          iconName={IconName.Close}
+          size={ButtonIconSize.Sm}
+          ariaLabel={t('close')}
+          onClick={() => {
+            console.log('close me!');
+          }}
+        />
+      </Box>
       <Text className="ramps-card__body">{t(body)}</Text>
       <ButtonBase
         className="ramps-card__cta-button"
