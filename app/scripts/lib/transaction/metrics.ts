@@ -906,6 +906,7 @@ async function buildEventFragmentProperties({
   let transactionApprovalAmountVsBalanceRatio;
   let transactionContractAddress;
   let transactionType = TransactionType.simpleSend;
+  let transactionContractMethod4Byte;
   if (type === TransactionType.swapAndSend) {
     transactionType = TransactionType.swapAndSend;
   } else if (type === TransactionType.cancel) {
@@ -918,6 +919,10 @@ async function buildEventFragmentProperties({
     transactionType = TransactionType.contractInteraction;
     transactionContractMethod = contractMethodName;
     transactionContractAddress = transactionMeta.txParams?.to;
+    transactionContractMethod4Byte = transactionMeta.txParams?.data?.slice(
+      0,
+      10,
+    );
     if (
       transactionContractMethod === contractMethodNames.APPROVE &&
       tokenStandard === TokenStandard.ERC20
@@ -1071,6 +1076,7 @@ async function buildEventFragmentProperties({
     gas_limit: gasLimit,
     transaction_replaced: transactionReplaced,
     transaction_contract_address: transactionContractAddress,
+    transaction_contract_method_4byte: transactionContractMethod4Byte,
     ...extraParams,
     ...gasParamsInGwei,
     // TODO: Replace `any` with type
