@@ -86,7 +86,7 @@ type MessengerActions =
   | SwapsControllerSetTradeTxIdAction
   | SwapsControllerSetApproveTxIdAction;
 
-type MessengerEvent =
+type MessengerEvents =
   | TransactionControllerPostTransactionBalanceUpdatedEvent
   | TransactionControllerUnapprovedTransactionAddedEvent
   | TransactionControllerTransactionApprovedEvent
@@ -100,19 +100,22 @@ type MessengerEvent =
   | TransactionControllerTransactionNewSwapApprovalEvent
   | NetworkControllerStateChangeEvent;
 
-type Messenger = ControllerMessenger<MessengerActions, MessengerEvent>;
-
-export class TransactionControllerInit extends ControllerInit<TransactionController> {
-  public init(request: ControllerInitRequest): TransactionController {
+export class TransactionControllerInit extends ControllerInit<
+  TransactionController,
+  MessengerActions,
+  MessengerEvents
+> {
+  public init(
+    request: ControllerInitRequest<MessengerActions, MessengerEvents>,
+  ): TransactionController {
     const {
+      controllerMessenger,
       getGlobalChainId,
       getPermittedAccounts,
       getStateUI,
       getTransactionMetricsRequest,
       persistedState,
     } = request;
-
-    const controllerMessenger = request.controllerMessenger as Messenger;
 
     const {
       gasFeeController,
@@ -141,7 +144,7 @@ export class TransactionControllerInit extends ControllerInit<TransactionControl
       getCurrentNetworkEIP1559Compatibility: () =>
         networkController().getEIP1559Compatibility() as Promise<boolean>,
       getCurrentAccountEIP1559Compatibility: async () => true,
-      // @ts-expect-error Missing types
+      // @ts-expect-error Mismatched types
       getExternalPendingTransactions: (address) =>
         this.#getExternalPendingTransactions(
           smartTransactionsController(),
@@ -153,7 +156,7 @@ export class TransactionControllerInit extends ControllerInit<TransactionControl
       getNetworkClientRegistry:
         networkController().getNetworkClientRegistry.bind(networkController()),
       getNetworkState: () => networkController().state,
-      // @ts-expect-error Missing types
+      // @ts-expect-error Mismatched types
       getPermittedAccounts: getPermittedAccounts.bind(this),
       getSavedGasFees: () => {
         const globalChainId = getGlobalChainId();
@@ -169,7 +172,7 @@ export class TransactionControllerInit extends ControllerInit<TransactionControl
         includeTokenTransfers: false,
         isEnabled: () =>
           preferencesController().state.incomingTransactionsPreferences?.[
-            // @ts-expect-error Missing types
+            // @ts-expect-error Mismatched types
             getGlobalChainId()
           ] && onboardingController().state.completedOnboarding,
         queryEntireHistory: false,
@@ -194,7 +197,7 @@ export class TransactionControllerInit extends ControllerInit<TransactionControl
           ),
       },
       testGasFeeFlows: Boolean(process.env.TEST_GAS_FEE_FLOWS),
-      // @ts-expect-error Missing types
+      // @ts-expect-error Mismatched types
       trace,
       hooks: {
         ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
@@ -211,9 +214,9 @@ export class TransactionControllerInit extends ControllerInit<TransactionControl
         beforePublish: beforeTransactionPublishMMI.bind(this),
         getAdditionalSignArguments: getAdditionalSignArgumentsMMI.bind(this),
         ///: END:ONLY_INCLUDE_IF
-        // @ts-expect-error Missing types
+        // @ts-expect-error Mismatched types
         publish: (...args) =>
-          // @ts-expect-error Missing types
+          // @ts-expect-error Mismatched types
           this.#publishSmartTransactionHook(
             controller,
             smartTransactionsController(),
@@ -222,7 +225,7 @@ export class TransactionControllerInit extends ControllerInit<TransactionControl
             ...args,
           ),
       },
-      // @ts-expect-error Missing types
+      // @ts-expect-error Mismatched types
       sign: (...args) => keyringController().signTransaction(...args),
       state: persistedState.TransactionController as TransactionControllerState,
     });
@@ -265,7 +268,9 @@ export class TransactionControllerInit extends ControllerInit<TransactionControl
     return 'TxController';
   }
 
-  #getControllers(request: ControllerInitRequest) {
+  #getControllers(
+    request: ControllerInitRequest<MessengerActions, MessengerEvents>,
+  ) {
     return {
       gasFeeController: () =>
         request.getController<GasFeeController>(
@@ -324,13 +329,13 @@ export class TransactionControllerInit extends ControllerInit<TransactionControl
       signedTransactionInHex,
       transactionController,
       smartTransactionsController,
-      // @ts-expect-error Missing types
+      // @ts-expect-error Mismatched types
       controllerMessenger,
       isSmartTransaction,
       isHardwareWallet: isHardwareWallet(
         uiState as Parameters<typeof isHardwareWallet>,
       ),
-      // @ts-expect-error Missing types
+      // @ts-expect-error Mismatched types
       featureFlags,
     });
   }
@@ -346,7 +351,7 @@ export class TransactionControllerInit extends ControllerInit<TransactionControl
   }
 
   #addTransactionControllerListeners(
-    controllerMessenger: Messenger,
+    controllerMessenger: ControllerMessenger<MessengerActions, MessengerEvents>,
     getTransactionMetricsRequest: () => TransactionMetricsRequest,
   ) {
     const transactionMetricsRequest = getTransactionMetricsRequest();
@@ -374,7 +379,7 @@ export class TransactionControllerInit extends ControllerInit<TransactionControl
 
     controllerMessenger.subscribe(
       'TransactionController:transactionConfirmed',
-      // @ts-expect-error Missing types
+      // @ts-expect-error Mismatched types
       handleTransactionConfirmed.bind(null, transactionMetricsRequest),
     );
 

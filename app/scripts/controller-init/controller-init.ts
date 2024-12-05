@@ -17,8 +17,11 @@ export enum ControllerName {
   TransactionUpdateController = 'TransactionUpdateController',
 }
 
-export type ControllerInitRequest = {
-  controllerMessenger: ControllerMessenger<ActionConstraint, EventConstraint>;
+export type ControllerInitRequest<
+  MessengerActions extends ActionConstraint,
+  MessengerEvents extends EventConstraint,
+> = {
+  controllerMessenger: ControllerMessenger<MessengerActions, MessengerEvents>;
 
   getController<T>(name: ControllerName): T;
 
@@ -37,8 +40,8 @@ export type ControllerInitRequest = {
   persistedState: Record<string, unknown>;
 };
 
-export type ControllerGetApiRequest<T> = {
-  controller: T;
+export type ControllerGetApiRequest<ControllerType> = {
+  controller: ControllerType;
   getFlatState: () => unknown;
 };
 
@@ -47,18 +50,26 @@ export type ControllerApi = (...args: any[]) => unknown;
 
 export type ControllerGetApiResponse = Record<string, ControllerApi>;
 
-export abstract class ControllerInit<T extends { name: string }> {
-  abstract init(request: ControllerInitRequest): T;
+export abstract class ControllerInit<
+  ControllerType extends { name: string },
+  MessengerActions extends ActionConstraint,
+  MessengerEvents extends EventConstraint,
+> {
+  abstract init(
+    request: ControllerInitRequest<MessengerActions, MessengerEvents>,
+  ): ControllerType;
 
-  getApi(_request: ControllerGetApiRequest<T>): ControllerGetApiResponse {
+  getApi(
+    _request: ControllerGetApiRequest<ControllerType>,
+  ): ControllerGetApiResponse {
     return {};
   }
 
-  getPersistedStateKey(controller: T): string | undefined {
+  getPersistedStateKey(controller: ControllerType): string | undefined {
     return controller.name;
   }
 
-  getMemStateKey(controller: T): string | undefined {
+  getMemStateKey(controller: ControllerType): string | undefined {
     return controller.name;
   }
 }
