@@ -117,14 +117,15 @@ const AssetList = ({ onClickAsset, showTokensLinks }: AssetListProps) => {
   );
 
   const totalTokens =
-    process.env.PORTFOLIO_VIEW && !allNetworksFilterShown
+    process.env.PORTFOLIO_VIEW &&
+    !allNetworksFilterShown &&
+    detectedTokensMultichain
       ? (Object.values(detectedTokensMultichain).reduce(
           // @ts-expect-error TS18046: 'tokenArray' is of type 'unknown'
           (count, tokenArray) => count + tokenArray.length,
           0,
         ) as number)
       : detectedTokens.length;
-
   return (
     <>
       {totalTokens &&

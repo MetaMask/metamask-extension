@@ -1,8 +1,8 @@
 import { useState, useCallback } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import log from 'loglevel';
-import { selectIsSignedIn } from '../../selectors/metamask-notifications/authentication';
-import { selectIsProfileSyncingEnabled } from '../../selectors/metamask-notifications/profile-syncing';
+import { selectIsSignedIn } from '../../selectors/identity/authentication';
+import { selectIsProfileSyncingEnabled } from '../../selectors/identity/profile-syncing';
 import {
   performSignOut,
   performSignIn,
