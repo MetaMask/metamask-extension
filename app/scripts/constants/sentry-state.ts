@@ -209,7 +209,6 @@ export const SENTRY_BACKGROUND_STATE = {
     seedPhraseBackedUp: true,
   },
   PPOMController: {
-    securityAlertsEnabled: false,
     storageMetadata: [],
     versionInfo: [],
   },
@@ -223,6 +222,7 @@ export const SENTRY_BACKGROUND_STATE = {
   PhishingController: {},
   PreferencesController: {
     advancedGasFee: true,
+    securityAlertsEnabled: false,
     currentLocale: true,
     dismissSeedBackUpReminder: true,
     overrideContentSecurityPolicyHeader: true,
