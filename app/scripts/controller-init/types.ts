@@ -1,8 +1,3 @@
-import {
-  ActionConstraint,
-  ControllerMessenger,
-  EventConstraint,
-} from '@metamask/base-controller';
 import { Provider } from '@metamask/network-controller';
 import { TransactionMetricsRequest } from '../lib/transaction/metrics';
 
@@ -19,16 +14,15 @@ export enum ControllerName {
   TransactionUpdateController = 'TransactionUpdateController',
 }
 
-export type ControllerInitRequest<
-  MessengerActions extends ActionConstraint,
-  MessengerEvents extends EventConstraint,
-> = {
-  controllerMessenger: ControllerMessenger<MessengerActions, MessengerEvents>;
-
+export type ControllerInitRequest<MessengerType> = {
   getController<T>(name: ControllerName): T;
+
+  getFlatState(): unknown;
 
   /** @deprecated */
   getGlobalChainId(): string;
+
+  getMessenger(): MessengerType;
 
   getPermittedAccounts(
     origin: string,
@@ -57,12 +51,12 @@ export type ControllerGetApiResponse = Record<string, ControllerApi>;
 
 export abstract class ControllerInit<
   ControllerType extends { name: string },
-  MessengerActions extends ActionConstraint,
-  MessengerEvents extends EventConstraint,
+  MessengerType,
 > {
-  abstract init(
-    request: ControllerInitRequest<MessengerActions, MessengerEvents>,
-  ): ControllerType;
+  abstract init(request: ControllerInitRequest<MessengerType>): ControllerType;
+
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  abstract getMessengerCallback(): (controllerMessenger: any) => MessengerType;
 
   getApi(
     _request: ControllerGetApiRequest<ControllerType>,

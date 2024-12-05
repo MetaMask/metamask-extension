@@ -162,7 +162,6 @@ import {
   NotificationServicesPushController,
   NotificationServicesController,
 } from '@metamask/notification-services-controller';
-import { createProjectLogger } from '@metamask/utils';
 import {
   methodsRequiringNetworkSwitch,
   methodsThatCanSwitchNetworkWithoutApproval,
@@ -357,11 +356,10 @@ import { PatchStore } from './lib/PatchStore';
 import { sanitizeUIState } from './lib/state-utils';
 import BridgeStatusController from './controllers/bridge-status/bridge-status-controller';
 import { BRIDGE_STATUS_CONTROLLER_NAME } from './controllers/bridge-status/constants';
-import { TransactionControllerInit } from './controller-init/transaction-controller-init';
+import { TransactionControllerInit } from './controller-init/confirmations/transaction-controller-init';
 import { ControllerName } from './controller-init/types';
-import { PPOMControllerInit } from './controller-init/ppom-controller-init';
-
-const debugLog = createProjectLogger('metamask-controller');
+import { PPOMControllerInit } from './controller-init/confirmations/ppom-controller-init';
+import { initControllers } from './controller-init/utils';
 
 const { TRIGGER_TYPES } = NotificationServicesController.Constants;
 export const METAMASK_CONTROLLER_EVENTS = {
@@ -7487,16 +7485,7 @@ export default class MetamaskController extends EventEmitter {
   }
 
   #initControllers({ initObjects, initState }) {
-    debugLog('Initializing controllers', initObjects.length);
-
-    const controllersByName = {};
-    let controllerApi = {};
-    const controllerPersistedState = {};
-    const controllerMemState = {};
-
     const initRequest = {
-      controllerMessenger: this.controllerMessenger,
-      getController: this.#getController.bind(this, controllersByName),
       getGlobalChainId: this.#getGlobalChainId.bind(this),
       getPermittedAccounts: this.getPermittedAccounts.bind(this),
       getProvider: () => this.provider,
@@ -7506,62 +7495,10 @@ export default class MetamaskController extends EventEmitter {
       persistedState: initState,
     };
 
-    for (const initObject of initObjects) {
-      const controller = initObject.init
-        ? initObject.init(initRequest)
-        : initObject(initRequest);
-
-      const { name } = controller;
-
-      controllersByName[name] = controller;
-
-      const getApiRequest = {
-        controller,
-        getFlatState: this.getState.bind(this),
-      };
-
-      const api = initObject.getApi?.(getApiRequest) ?? {};
-
-      controllerApi = {
-        ...controllerApi,
-        ...api,
-      };
-
-      const persistedStateKey = initObject.getPersistedStateKey?.(controller);
-      const memStateKey = initObject.getMemStateKey?.(controller);
-
-      if (persistedStateKey) {
-        controllerPersistedState[persistedStateKey] = controller;
-      }
-
-      if (memStateKey) {
-        controllerMemState[memStateKey] = controller;
-      }
-
-      debugLog('Initialized controller', name, {
-        api: Object.keys(api),
-        persistedStateKey,
-        memStateKey,
-      });
-    }
-
-    return {
-      controllerApi,
-      controllerMemState,
-      controllerPersistedState,
-      controllersByName,
-    };
-  }
-
-  #getController(controllersByName, name) {
-    const controller = controllersByName[name];
-
-    if (!controller) {
-      throw new Error(
-        `Controller requested before it was initialized: ${name}`,
-      );
-    }
-
-    return controller;
+    return initControllers({
+      controllerMessenger: this.controllerMessenger,
+      initObjects,
+      initRequest,
+    });
   }
 }

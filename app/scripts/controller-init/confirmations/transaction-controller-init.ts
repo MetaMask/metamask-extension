@@ -1,26 +1,11 @@
 import {
   SavedGasFees,
   TransactionController,
-  TransactionControllerPostTransactionBalanceUpdatedEvent,
+  TransactionControllerMessenger,
   TransactionControllerState,
-  TransactionControllerTransactionApprovedEvent,
-  TransactionControllerTransactionConfirmedEvent,
-  TransactionControllerTransactionDroppedEvent,
-  TransactionControllerTransactionFailedEvent,
-  TransactionControllerTransactionNewSwapApprovalEvent,
-  TransactionControllerTransactionNewSwapEvent,
-  TransactionControllerTransactionRejectedEvent,
-  TransactionControllerTransactionStatusUpdatedEvent,
-  TransactionControllerTransactionSubmittedEvent,
-  TransactionControllerUnapprovedTransactionAddedEvent,
   TransactionMeta,
 } from '@metamask/transaction-controller';
-import {
-  NetworkController,
-  NetworkControllerFindNetworkClientIdByChainIdAction,
-  NetworkControllerGetNetworkClientByIdAction,
-  NetworkControllerStateChangeEvent,
-} from '@metamask/network-controller';
+import { NetworkController } from '@metamask/network-controller';
 import { TransactionUpdateController } from '@metamask-institutional/transaction-update';
 import SmartTransactionsController from '@metamask/smart-transactions-controller';
 import { SmartTransactionStatuses } from '@metamask/smart-transactions-controller/dist/types';
@@ -32,27 +17,25 @@ import {
   ControllerMessenger,
   EventConstraint,
 } from '@metamask/base-controller';
-import { AccountsControllerGetSelectedAccountAction } from '@metamask/accounts-controller';
-import { ApprovalControllerActions } from '@metamask/approval-controller';
-import { PreferencesController } from '../controllers/preferences-controller';
+import { PreferencesController } from '../../controllers/preferences-controller';
 import {
   getCurrentChainSupportsSmartTransactions,
   getFeatureFlagsByChainId,
   getIsSmartTransaction,
   getSmartTransactionsPreferenceEnabled,
   isHardwareWallet,
-} from '../../../shared/modules/selectors';
-import { submitSmartTransactionHook } from '../lib/transaction/smart-transactions';
-import { CHAIN_IDS } from '../../../shared/constants/network';
-import { trace } from '../../../shared/lib/trace';
-import OnboardingController from '../controllers/onboarding';
+} from '../../../../shared/modules/selectors';
+import { submitSmartTransactionHook } from '../../lib/transaction/smart-transactions';
+import { CHAIN_IDS } from '../../../../shared/constants/network';
+import { trace } from '../../../../shared/lib/trace';
+import OnboardingController from '../../controllers/onboarding';
 ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
 import {
   afterTransactionSign as afterTransactionSignMMI,
   beforeCheckPendingTransaction as beforeCheckPendingTransactionMMI,
   beforeTransactionPublish as beforeTransactionPublishMMI,
   getAdditionalSignArguments as getAdditionalSignArgumentsMMI,
-} from '../lib/transaction/mmi-hooks';
+} from '../../lib/transaction/mmi-hooks';
 ///: END:ONLY_INCLUDE_IF
 import {
   handlePostTransactionBalanceUpdate,
@@ -64,54 +47,31 @@ import {
   handleTransactionRejected,
   handleTransactionSubmitted,
   TransactionMetricsRequest,
-} from '../lib/transaction/metrics';
-import {
-  SwapsControllerSetApproveTxIdAction,
-  SwapsControllerSetTradeTxIdAction,
-} from '../controllers/swaps/swaps.types';
-import { NetworkState } from '../../../shared/modules/selectors/networks';
+} from '../../lib/transaction/metrics';
+import { NetworkState } from '../../../../shared/modules/selectors/networks';
 import {
   ControllerGetApiRequest,
   ControllerGetApiResponse,
   ControllerInit,
   ControllerInitRequest,
   ControllerName,
-} from './types';
-
-type MessengerActions =
-  | ApprovalControllerActions
-  | NetworkControllerFindNetworkClientIdByChainIdAction
-  | NetworkControllerGetNetworkClientByIdAction
-  | AccountsControllerGetSelectedAccountAction
-  | SwapsControllerSetTradeTxIdAction
-  | SwapsControllerSetApproveTxIdAction;
-
-type MessengerEvents =
-  | TransactionControllerPostTransactionBalanceUpdatedEvent
-  | TransactionControllerUnapprovedTransactionAddedEvent
-  | TransactionControllerTransactionApprovedEvent
-  | TransactionControllerTransactionDroppedEvent
-  | TransactionControllerTransactionConfirmedEvent
-  | TransactionControllerTransactionFailedEvent
-  | TransactionControllerTransactionRejectedEvent
-  | TransactionControllerTransactionSubmittedEvent
-  | TransactionControllerTransactionStatusUpdatedEvent
-  | TransactionControllerTransactionNewSwapEvent
-  | TransactionControllerTransactionNewSwapApprovalEvent
-  | NetworkControllerStateChangeEvent;
+} from '../types';
+import {
+  getTransactionControllerMessenger,
+  TransactionControllerInitMessenger,
+} from '../messengers/transaction-controller-messenger';
 
 export class TransactionControllerInit extends ControllerInit<
   TransactionController,
-  MessengerActions,
-  MessengerEvents
+  TransactionControllerInitMessenger
 > {
   public init(
-    request: ControllerInitRequest<MessengerActions, MessengerEvents>,
+    request: ControllerInitRequest<TransactionControllerInitMessenger>,
   ): TransactionController {
     const {
-      controllerMessenger,
       getGlobalChainId,
       getPermittedAccounts,
+      getMessenger,
       getStateUI,
       getTransactionMetricsRequest,
       persistedState,
@@ -129,16 +89,7 @@ export class TransactionControllerInit extends ControllerInit<
       ///: END:ONLY_INCLUDE_IF
     } = this.#getControllers(request);
 
-    const transactionControllerMessenger = controllerMessenger.getRestricted({
-      name: 'TransactionController',
-      allowedActions: [
-        `ApprovalController:addRequest`,
-        'NetworkController:findNetworkClientIdByChainId',
-        'NetworkController:getNetworkClientById',
-        'AccountsController:getSelectedAccount',
-      ],
-      allowedEvents: [`NetworkController:stateChange`],
-    });
+    const controllerMessenger = getMessenger();
 
     const controller = new TransactionController({
       getCurrentNetworkEIP1559Compatibility: () =>
@@ -182,7 +133,7 @@ export class TransactionControllerInit extends ControllerInit<
         preferencesController().state.securityAlertsEnabled,
       isSimulationEnabled: () =>
         preferencesController().state.useTransactionSimulations,
-      messenger: transactionControllerMessenger,
+      messenger: controllerMessenger as TransactionControllerMessenger,
       pendingTransactions: {
         isResubmitEnabled: () =>
           !(
@@ -238,6 +189,10 @@ export class TransactionControllerInit extends ControllerInit<
     return controller;
   }
 
+  getMessengerCallback() {
+    return getTransactionControllerMessenger;
+  }
+
   override getApi(
     request: ControllerGetApiRequest<TransactionController>,
   ): ControllerGetApiResponse {
@@ -269,7 +224,7 @@ export class TransactionControllerInit extends ControllerInit<
   }
 
   #getControllers(
-    request: ControllerInitRequest<MessengerActions, MessengerEvents>,
+    request: ControllerInitRequest<TransactionControllerInitMessenger>,
   ) {
     return {
       gasFeeController: () =>
@@ -351,7 +306,7 @@ export class TransactionControllerInit extends ControllerInit<
   }
 
   #addTransactionControllerListeners(
-    controllerMessenger: ControllerMessenger<MessengerActions, MessengerEvents>,
+    controllerMessenger: TransactionControllerInitMessenger,
     getTransactionMetricsRequest: () => TransactionMetricsRequest,
   ) {
     const transactionMetricsRequest = getTransactionMetricsRequest();

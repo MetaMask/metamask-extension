@@ -1,56 +1,39 @@
-import {
-  NetworkControllerGetNetworkClientByIdAction,
-  NetworkControllerNetworkDidChangeEvent,
-  NetworkControllerStateChangeEvent,
-} from '@metamask/network-controller';
 import { PPOMController } from '@metamask/ppom-validator';
+import { PreferencesController } from '@metamask/preferences-controller';
+import { IndexedDBPPOMStorage } from '../../lib/ppom/indexed-db-backend';
+import * as PPOMModule from '../../lib/ppom/ppom';
 import {
-  PreferencesController,
-  PreferencesControllerStateChangeEvent,
-} from '@metamask/preferences-controller';
-import { IndexedDBPPOMStorage } from '../lib/ppom/indexed-db-backend';
-import * as PPOMModule from '../lib/ppom/ppom';
-import { ControllerInit, ControllerInitRequest, ControllerName } from './types';
-
-type MessengerActions = NetworkControllerGetNetworkClientByIdAction;
-
-type MessengerEvents =
-  | NetworkControllerStateChangeEvent
-  | NetworkControllerNetworkDidChangeEvent
-  | PreferencesControllerStateChangeEvent;
+  ControllerInit,
+  ControllerInitRequest,
+  ControllerName,
+} from '../types';
+import {
+  getPPOMControllerMessenger,
+  PPOMControllerInitMessenger,
+} from '../messengers/ppom-controller-messenger';
 
 export class PPOMControllerInit extends ControllerInit<
   PPOMController,
-  MessengerActions,
-  MessengerEvents
+  PPOMControllerInitMessenger
 > {
-  public init(
-    request: ControllerInitRequest<MessengerActions, MessengerEvents>,
-  ) {
+  init(request: ControllerInitRequest<PPOMControllerInitMessenger>) {
     const {
-      controllerMessenger,
       getController,
       getGlobalChainId,
+      getMessenger,
       getProvider,
       persistedState,
     } = request;
-
-    const messenger = controllerMessenger.getRestricted({
-      name: 'PPOMController',
-      allowedEvents: [
-        'NetworkController:stateChange',
-        'NetworkController:networkDidChange',
-      ],
-      allowedActions: ['NetworkController:getNetworkClientById'],
-    });
 
     const preferencesController = () =>
       getController<PreferencesController>(
         ControllerName.PreferencesController,
       );
 
+    const controllerMessenger = getMessenger();
+
     return new PPOMController({
-      messenger,
+      messenger: controllerMessenger,
       storageBackend: new IndexedDBPPOMStorage('PPOMDB', 1),
       provider: getProvider(),
       ppomProvider: {
@@ -70,5 +53,9 @@ export class PPOMControllerInit extends ControllerInit<
       cdnBaseUrl: process.env.BLOCKAID_FILE_CDN as string,
       blockaidPublicKey: process.env.BLOCKAID_PUBLIC_KEY as string,
     });
+  }
+
+  getMessengerCallback() {
+    return getPPOMControllerMessenger;
   }
 }

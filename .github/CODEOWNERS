@@ -52,8 +52,7 @@ privacy-snapshot.json                @MetaMask/extension-privacy-reviewers
 .devcontainer/                       @MetaMask/extension-security-team @HowardBraham
 
 # Confirmations team to own code for confirmations on UI.
-app/scripts/controller-init/ppom-controller-init.*                @MetaMask/confirmations
-app/scripts/controller-init/transaction-controller-init.*         @MetaMask/confirmations
+app/scripts/controller-init/confirmations                         @MetaMask/confirmations
 app/scripts/lib/ppom                                              @MetaMask/confirmations
 app/scripts/lib/signature                                         @MetaMask/confirmations
 app/scripts/lib/transaction/decode                                @MetaMask/confirmations
