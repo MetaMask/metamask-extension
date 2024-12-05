@@ -28,7 +28,7 @@ import NFTsDetectionNoticeNFTsTab from '../../../app/assets/nfts/nfts-detection-
 import { useNftsCollections } from '../../../../hooks/useNftsCollections';
 import { Collection, NFT } from './types';
 
-type PreviouslyOwnedCollections = {
+export type PreviouslyOwnedCollections = {
   collectionName: string;
   nfts: NFT[];
 };

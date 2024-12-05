@@ -12,7 +12,7 @@ import { IconColor } from '../../../../../helpers/constants/design-system';
 
 type NftOptionsProps = {
   onRemove: () => void;
-  onViewOnOpensea: () => void;
+  onViewOnOpensea?: () => void;
 };
 
 const NftOptions = ({ onRemove, onViewOnOpensea }: NftOptionsProps) => {

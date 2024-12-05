@@ -14,7 +14,7 @@ export type NFT = {
   address: string;
   description: string | null;
   favorite: boolean;
-  image: string | null;
+  image?: string;
   isCurrentlyOwned: boolean;
   name: string | null;
   standard: TokenStandard;
@@ -22,6 +22,8 @@ export type NFT = {
   tokenURI?: string;
   type: AssetType.NFT;
   symbol?: string;
+  imageOriginal?: string;
+  ipfsImageUpdated?: string;
 };
 
 /**

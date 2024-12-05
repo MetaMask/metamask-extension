@@ -48,35 +48,19 @@ import {
 } from '../../../../../../shared/constants/metametrics';
 import { isEqualCaseInsensitive } from '../../../../../../shared/modules/string-utils';
 import { CollectionImageComponent } from './collection-image.component';
-
-type NftCollections = Record<Hex, NftCollection>;
-
-type NftCollection = {
-  key: string | Hex;
-  nfts: NftItemI[];
-  collectionName: string;
-  collectionImage: string;
-  isPreviouslyOwnedCollection: boolean;
-};
-
-type NftItemI = {
-  address: Hex;
-  description: string;
-  image: string;
-  imageOriginal: string;
-  name: string;
-  tokenId: number;
-  ipfsImageUpdated: string;
-  tokenURI: string;
-};
+import {
+  Collection,
+  NFT,
+} from '../../../../multichain/asset-picker-amount/asset-picker-modal/types';
+import { PreviouslyOwnedCollections } from '../../../../multichain/asset-picker-amount/asset-picker-modal/asset-picker-modal-nft-tab';
 
 type NftsItemsProps = {
-  collections: NftCollections;
-  previouslyOwnedCollection: NftCollection;
-  isModal: boolean;
-  onCloseModal: () => void;
-  showTokenId: boolean;
-  displayPreviouslyOwnedCollection: boolean;
+  collections: Record<Hex, Collection>;
+  previouslyOwnedCollection: PreviouslyOwnedCollections;
+  isModal?: boolean;
+  onCloseModal?: () => void;
+  showTokenId?: boolean;
+  displayPreviouslyOwnedCollection?: boolean;
 };
 
 const width = (isModal: boolean) => {
@@ -94,7 +78,7 @@ const width = (isModal: boolean) => {
 const PREVIOUSLY_OWNED_KEY = 'previouslyOwned';
 
 export default function NftsItems({
-  collections = {} as NftCollections,
+  collections,
   previouslyOwnedCollection,
   isModal = false,
   onCloseModal,
@@ -102,7 +86,7 @@ export default function NftsItems({
   displayPreviouslyOwnedCollection = true,
 }: NftsItemsProps) {
   const dispatch = useDispatch();
-  const collectionsKeys: Hex[] = Object.keys(collections) as Hex[];
+  const collectionsKeys = Object.keys(collections);
   const nftsDropdownState = useSelector(getNftsDropdownState);
   const previousCollectionKeys = usePrevious(collectionsKeys);
   const { address: selectedAddress } = useSelector(getSelectedInternalAccount);
@@ -115,7 +99,7 @@ export default function NftsItems({
   const t = useI18nContext();
   const ipfsGateway = useSelector(getIpfsGateway);
 
-  const [updatedNfts, setUpdatedNfts] = useState<NftItemI[]>([]);
+  const [updatedNfts, setUpdatedNfts] = useState<NFT[]>([]);
 
   const trackEvent = useContext(MetaMetricsContext);
   const sendAnalytics = useSelector(getSendAnalyticProperties);
@@ -153,7 +137,7 @@ export default function NftsItems({
     dispatch,
   ]);
 
-  const getAssetImageUrlAndUpdate = async (image: string, nft: NftItemI) => {
+  const getAssetImageUrlAndUpdate = async (image: string, nft: NFT) => {
     const nftImage = await getAssetImageURL(image, ipfsGateway);
     const updatedNFt = {
       ...nft,
@@ -163,9 +147,10 @@ export default function NftsItems({
   };
 
   useEffect(() => {
-    const promisesArr: Promise<NftItemI>[] = [];
+    const promisesArr: Promise<NFT>[] = [];
     const modifyItems = async () => {
       for (const key of collectionsKeys) {
+        // @ts-expect-error: We want to index the collections keys by hex
         const { nfts } = collections[key];
         for (const singleNft of nfts) {
           const { image, imageOriginal } = singleNft;
@@ -204,7 +189,7 @@ export default function NftsItems({
     dispatch(updateNftDropDownState(newState));
   };
 
-  const onSendNft = async (nft: NftItemI) => {
+  const onSendNft = async (nft: NFT) => {
     trackEvent(
       {
         event: MetaMetricsEventName.sendAssetSelected,
@@ -229,7 +214,7 @@ export default function NftsItems({
       }),
     );
     history.push(SEND_ROUTE);
-    onCloseModal();
+    onCloseModal && onCloseModal();
   };
 
   const renderCollection = ({
@@ -237,11 +222,11 @@ export default function NftsItems({
     collectionName,
     collectionImage,
     key,
-  }: NftCollection) => {
+  }: Collection & { key: Hex }) => {
     if (!nfts.length) {
       return null;
     }
-    const getSource = (isImageHosted: boolean, nft: NftItemI) => {
+    const getSource = (isImageHosted: boolean, nft: NFT) => {
       if (!isImageHosted) {
         const found = updatedNfts.find(
           (elm) =>
@@ -305,7 +290,7 @@ export default function NftsItems({
               const isImageHosted =
                 image?.startsWith('https:') || image?.startsWith('http:');
 
-              const source = getSource(isImageHosted, nft);
+              const source = isImageHosted ? getSource(isImageHosted, nft) : '';
 
               const isIpfsURL = (
                 imageOriginal ??
@@ -356,7 +341,7 @@ export default function NftsItems({
         flexDirection={FlexDirection.Column}
       >
         <>
-          {collectionsKeys.map((key) => {
+          {collectionsKeys.map((key: Hex) => {
             const { nfts, collectionName, collectionImage } = collections[key];
 
             return renderCollection({

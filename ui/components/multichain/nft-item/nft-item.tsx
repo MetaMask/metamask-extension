@@ -22,12 +22,14 @@ import {
 
 type NftItemProps = {
   alt: string;
-  src: string;
+  src?: string;
+  name?: string;
+  tokenId?: string;
   networkName: string;
   networkSrc?: string;
-  onClick: () => void;
-  isIpfsURL: boolean;
-  clickable: boolean;
+  onClick?: () => void;
+  isIpfsURL?: boolean;
+  clickable?: boolean;
   badgeWrapperClassname?: string;
 };
 
@@ -79,7 +81,7 @@ export const NftItem = ({
           'nft-item__badge-wrapper',
           badgeWrapperClassname,
           {
-            'nft-item__badge-wrapper__clickable': clickable,
+            'nft-item__badge-wrapper__clickable': Boolean(clickable),
           },
         )}
         anchorElementShape={BadgeWrapperAnchorElementShape.circular}

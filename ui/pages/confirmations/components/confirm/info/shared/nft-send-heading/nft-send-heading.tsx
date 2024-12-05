@@ -55,7 +55,7 @@ const NFTSendHeading = () => {
   const TokenImage = (
     <Box style={{ width: '48px' }}>
       <NftItem
-        src={tokenImage}
+        src={tokenImage ?? ''}
         alt={image && nftImageAlt ? nftImageAlt : ''}
         name={assetName}
         tokenId={assetTokenId || ''}

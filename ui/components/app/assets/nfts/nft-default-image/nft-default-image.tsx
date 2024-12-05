@@ -13,7 +13,7 @@ import { showIpfsModal } from '../../../../../store/actions';
 
 type NftDefaultImageProps = {
   className: string;
-  clickable: boolean;
+  clickable?: boolean;
 };
 
 export default function NftDefaultImage({
@@ -28,7 +28,7 @@ export default function NftDefaultImage({
       tabIndex={0}
       data-testid="nft-default-image"
       className={classnames(className, 'nft-default', {
-        'nft-default--clickable': clickable,
+        'nft-default--clickable': Boolean(clickable),
       })}
       display={Display.Flex}
       alignItems={AlignItems.center}
