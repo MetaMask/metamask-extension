@@ -13,7 +13,7 @@ import browser from 'webextension-polyfill';
 
 import Eth from '@metamask/ethjs';
 import EthQuery from '@metamask/eth-query';
-import StreamProvider from 'web3-stream-provider';
+import { StreamProvider } from '@metamask/providers';
 import log from 'loglevel';
 // TODO: Remove restricted import
 // eslint-disable-next-line import/no-restricted-paths
