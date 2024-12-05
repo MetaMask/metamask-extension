@@ -5199,6 +5199,9 @@
   "simulationsSettingSubHeader": {
     "message": "Estimate balance changes"
   },
+  "singleNetwork": {
+    "message": "1 network"
+  },
   "siweIssued": {
     "message": "Issued"
   },
@@ -5427,6 +5430,9 @@
   },
   "solanaSupportToggleTitle": {
     "message": "Enable \"Add a new Solana account (Beta)\""
+  },
+  "someNetworks": {
+    "message": "$1 networks"
   },
   "somethingDoesntLookRight": {
     "message": "Something doesn't look right? $1",
