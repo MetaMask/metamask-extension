@@ -1,10 +1,10 @@
 import { hasProperty, isObject } from '@metamask/utils';
+import { RpcEndpointType } from '@metamask/network-controller';
 import { cloneDeep } from 'lodash';
 import {
   allowedInfuraHosts,
   infuraProjectId,
 } from '../../../shared/constants/network';
-import { RpcEndpointType } from '@metamask/network-controller';
 
 export const version = 135;
 const BASE_CHAIN_ID = '0x2105';
