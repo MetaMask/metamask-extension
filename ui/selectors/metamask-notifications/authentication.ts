@@ -2,8 +2,11 @@ import { createSelector } from 'reselect';
 import type { AuthenticationController } from '@metamask/profile-sync-controller';
 
 type AppState = {
-  metamask: AuthenticationController.AuthenticationControllerState & {
-    participateInMetaMetrics: boolean;
+  metamask: {
+    AuthenticationController: AuthenticationController.AuthenticationControllerState;
+    MetaMetricsController: {
+      participateInMetaMetrics: boolean;
+    };
   };
 };
 
@@ -34,7 +37,7 @@ export const selectIsSignedIn = createSelector(
  */
 export const selectParticipateInMetaMetrics = createSelector(
   [getMetamask],
-  (metamask) => metamask.participateInMetaMetrics,
+  (metamask) => metamask.MetaMetricsController.participateInMetaMetrics,
 );
 
 /**
@@ -48,5 +51,5 @@ export const selectParticipateInMetaMetrics = createSelector(
  */
 export const selectSessionData = createSelector(
   [getMetamask],
-  (metamask) => metamask.sessionData,
+  (metamask) => metamask.AuthenticationController.sessionData,
 );

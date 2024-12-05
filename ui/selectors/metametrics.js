@@ -1,15 +1,16 @@
 import { createSelector } from 'reselect';
 
-export const selectFragments = (state) => state.metamask.fragments;
+export const selectFragments = (state) =>
+  state.metamask.MetaMetricsController.fragments;
 
 export const getDataCollectionForMarketing = (state) =>
-  state.metamask.dataCollectionForMarketing;
+  state.metamask.MetaMetricsController.dataCollectionForMarketing;
 
 export const getParticipateInMetaMetrics = (state) =>
-  Boolean(state.metamask.participateInMetaMetrics);
+  Boolean(state.metamask.MetaMetricsController.participateInMetaMetrics);
 
 export const getLatestMetricsEventTimestamp = (state) =>
-  state.metamask.latestNonAnonymousEventTimestamp;
+  state.metamask.MetaMetricsController.latestNonAnonymousEventTimestamp;
 
 export const selectFragmentBySuccessEvent = createSelector(
   selectFragments,
