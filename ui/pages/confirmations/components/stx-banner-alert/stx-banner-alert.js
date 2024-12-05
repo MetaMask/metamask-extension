@@ -16,13 +16,12 @@ import ZENDESK_URLS from '../../../../helpers/constants/zendesk-url';
 const STXBannerAlert = () => {
   const dispatch = useDispatch();
   const shouldShow = useSelector(stxAlertIsOpen);
-  console.log('=== STX BANNER COMPONENT ===');
+  const fullState = useSelector((state) => state);
+
+  console.log('=== STX BANNER ===');
+  console.log('Full Redux State:', fullState);
   console.log('shouldShow:', shouldShow);
-  console.log(
-    'Current state:',
-    useSelector((state) => state.metamask.alerts?.stxMigration),
-  );
-  console.log('=== STX BANNER COMPONENT END ===');
+  console.log('=== STX BANNER END ===');
 
   const t = useI18nContext();
 
@@ -33,7 +32,11 @@ const STXBannerAlert = () => {
   return (
     <BannerAlert
       severity={BannerAlertSeverity.Info}
-      onClose={() => dispatch(dismissSTXMigrationAlert())}
+      onClose={() => {
+        console.log('Dismiss clicked');
+        dispatch(dismissSTXMigrationAlert());
+        console.log('Dismiss action dispatched');
+      }}
       data-testid="stx-banner-alert"
     >
       <Text as="p">
