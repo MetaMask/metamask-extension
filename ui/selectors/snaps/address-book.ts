@@ -18,7 +18,7 @@ export type AddressBookMetaMaskState = {
  * @returns The full address book.
  */
 export const getFullAddressBook = (state: AddressBookMetaMaskState) =>
-  state.metamask.addressBook;
+  state.metamask.AddressBookController.addressBook;
 
 /**
  * Get the memoized full address book.

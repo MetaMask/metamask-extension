@@ -716,10 +716,12 @@ export const getMarketData = (state) => {
 
 export function getAddressBook(state) {
   const chainId = getCurrentChainId(state);
-  if (!state.metamask.addressBook[chainId]) {
+  if (!state.metamask.AddressBookController.addressBook[chainId]) {
     return [];
   }
-  return Object.values(state.metamask.addressBook[chainId]);
+  return Object.values(
+    state.metamask.AddressBookController.addressBook[chainId],
+  );
 }
 
 export function getEnsResolutionByAddress(state, address) {

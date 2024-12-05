@@ -1570,9 +1570,13 @@ export function updateMetamaskState(
     }
 
     const newAddressBook =
-      newState.addressBook?.[newProviderConfig?.chainId] ?? {};
+      newState.AddressBookController.addressBook?.[
+        newProviderConfig?.chainId
+      ] ?? {};
     const oldAddressBook =
-      currentState.addressBook?.[providerConfig?.chainId] ?? {};
+      currentState.AddressBookController.addressBook?.[
+        providerConfig?.chainId
+      ] ?? {};
     // TODO: Replace `any` with type
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const newAccounts: { [address: string]: Record<string, any> } =
