@@ -50,10 +50,7 @@ import { getTopAssets } from '../../../../ducks/swaps/swaps';
 import { getRenderableTokenData } from '../../../../hooks/useTokensToSearch';
 import { getSwapsBlockedTokens } from '../../../../ducks/send';
 import { isEqualCaseInsensitive } from '../../../../../shared/modules/string-utils';
-import {
-  CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP,
-  NETWORK_TO_NAME_MAP,
-} from '../../../../../shared/constants/network';
+import { CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP } from '../../../../../shared/constants/network';
 import { useMultichainBalances } from '../../../../hooks/useMultichainBalances';
 import {
   ERC20Asset,
@@ -94,6 +91,7 @@ type AssetPickerModalProps = {
   >;
   isTokenListLoading?: boolean;
   isTokenInSelectedChain: (tokenChainId?: string) => boolean;
+  networkPickerProps: React.ComponentProps<typeof PickerNetwork>;
 } & Pick<
   React.ComponentProps<typeof AssetPickerModalTabs>,
   'visibleTabs' | 'defaultActiveTabKey'
@@ -120,6 +118,7 @@ export function AssetPickerModal({
   isTokenListLoading = false,
   isMultiselectEnabled,
   isTokenInSelectedChain,
+  networkPickerProps,
   ...tabProps
 }: AssetPickerModalProps) {
   const t = useI18nContext();
@@ -386,19 +385,13 @@ export function AssetPickerModal({
         {onNetworkPickerClick && (
           <Box className="network-picker">
             <PickerNetwork
-              label={
-                (network?.chainId &&
-                  NETWORK_TO_NAME_MAP[
-                    network.chainId as keyof typeof NETWORK_TO_NAME_MAP
-                  ]) ??
-                network?.name ??
-                'Select network'
-              }
+              label={networkPickerProps.label}
               src={
-                network?.chainId &&
-                CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP[
-                  network.chainId as keyof typeof CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP
-                ]
+                networkPickerProps.src ??
+                (network?.chainId &&
+                  CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP[
+                    network.chainId as keyof typeof CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP
+                  ])
               }
               onClick={onNetworkPickerClick}
               data-testid="multichain-asset-picker__network"

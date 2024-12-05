@@ -43,6 +43,7 @@ import { AssetPickerModalNetwork } from '../asset-picker-modal/asset-picker-moda
 import {
   CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP,
   GOERLI_DISPLAY_NAME,
+  NETWORK_TO_NAME_MAP,
   SEPOLIA_DISPLAY_NAME,
 } from '../../../../../shared/constants/network';
 import { useMultichainBalances } from '../../../../hooks/useMultichainBalances';
@@ -166,6 +167,29 @@ export function AssetPicker({
     onClick?.();
   };
 
+  const getNetworkPickerLabel = () => {
+    if (!isMultiselectEnabled) {
+      return (
+        (selectedNetwork?.chainId &&
+          NETWORK_TO_NAME_MAP[
+            selectedNetwork.chainId as keyof typeof NETWORK_TO_NAME_MAP
+          ]) ??
+        selectedNetwork?.name ??
+        t('bridgeSelectNetwork')
+      );
+    }
+    switch (selectedChainIds.length) {
+      case allNetworksToUse.length:
+        return t('allNetworks');
+      case 1:
+        return t('singleNetwork');
+      case 0:
+        return t('bridgeSelectNetwork');
+      default:
+        return t('someNetworks', [selectedChainIds.length]);
+    }
+  };
+
   return (
     <>
       {networkProps && (
@@ -243,6 +267,19 @@ export function AssetPicker({
         }}
         sendingAsset={sendingAsset}
         network={networkProps?.network ? networkProps.network : undefined}
+        networkPickerProps={{
+          label: getNetworkPickerLabel(),
+          src: isMultiselectEnabled
+            ? selectedChainIds
+                .map(
+                  (c) =>
+                    CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP[
+                      c as keyof typeof CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP
+                    ],
+                )
+                .reverse()
+            : undefined,
+        }}
         onNetworkPickerClick={
           networkProps
             ? () => {
