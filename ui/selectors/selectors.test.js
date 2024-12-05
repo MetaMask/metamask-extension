@@ -2163,4 +2163,19 @@ describe('#getConnectedSitesList', () => {
       expect(getCurrentChainIdSpy).not.toHaveBeenCalled(); // Ensure overrideChainId is used
     });
   });
+
+  describe('#getRemoteFeatureFlags', () => {
+    it('returns remoteFeatureFlags in state', () => {
+      const state = {
+        metamask: {
+          remoteFeatureFlags: {
+            existingFlag: true,
+          },
+        },
+      };
+      expect(selectors.getRemoteFeatureFlags(state)).toStrictEqual({
+        existingFlag: true,
+      });
+    });
+  });
 });
