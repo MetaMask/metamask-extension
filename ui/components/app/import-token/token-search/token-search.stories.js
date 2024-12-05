@@ -16,7 +16,12 @@ export default {
 };
 
 export const DefaultStory = (args) => {
-  return <TokenSearch {...args} tokenList={testData.metamask.tokenList} />;
+  return (
+    <TokenSearch
+      {...args}
+      tokenList={testData.metamask.TokenListController.tokenList}
+    />
+  );
 };
 
 DefaultStory.storyName = 'Default';

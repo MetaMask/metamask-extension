@@ -1597,12 +1597,12 @@ export const getMemoizedAddressBook = createDeepEqualSelector(
 );
 
 export const selectERC20TokensByChain = createDeepEqualSelector(
-  (state) => state.metamask.tokensChainsCache,
+  (state) => state.metamask.TokenListController.tokensChainsCache,
   (erc20TokensByChain) => erc20TokensByChain,
 );
 
 export const selectERC20Tokens = createDeepEqualSelector(
-  (state) => state.metamask.tokenList,
+  (state) => state.metamask.TokenListController.tokenList,
   (erc20Tokens) => erc20Tokens,
 );
 

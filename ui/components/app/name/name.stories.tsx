@@ -163,7 +163,7 @@ export const DefaultTokenNameStory = {
     type: NameType.ETHEREUM_ADDRESS,
     variation: VARIATION_MOCK,
     state: (state) => {
-      state.metamask.tokensChainsCache = {
+      state.metamask.TokenListController.tokensChainsCache = {
         [VARIATION_MOCK]: {
           data: {
             [ADDRESS_MOCK]: {

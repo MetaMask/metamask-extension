@@ -58,7 +58,7 @@ describe('useDisplayName', () => {
     symbol: string,
     image: string,
   ) {
-    state.metamask.tokensChainsCache = {
+    state.metamask.TokenListController.tokensChainsCache = {
       [variation]: {
         data: {
           [value]: {
