@@ -1970,7 +1970,7 @@ export function getSortedAnnouncementsToShow(state) {
  * @returns {{networkId: string}[]}
  */
 export function getOrderedNetworksList(state) {
-  return state.metamask.orderedNetworkList;
+  return state.metamask.NetworkOrderController.orderedNetworkList;
 }
 
 export function getPinnedAccountsList(state) {
