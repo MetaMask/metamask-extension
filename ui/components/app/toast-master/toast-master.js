@@ -288,6 +288,7 @@ function BaseNetworkToast() {
         text={t('baseNetworkToastMessage')}
         actionText={t('seeDetails')}
         onActionClick={() => {
+          dispatch(setShowBaseNetworkToast(false));
           dispatch(toggleNetworkMenu());
           dispatch(
             setEditedNetwork({

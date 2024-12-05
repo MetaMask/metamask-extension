@@ -245,6 +245,7 @@ export const SENTRY_BACKGROUND_STATE = {
       showExtensionInFullSizeView: true,
       showFiatInTestnets: true,
       showTestNetworks: true,
+      showBaseNetworkToast: false,
       smartTransactionsOptInStatus: true,
       tokenNetworkFilter: {},
       showNativeTokenAsMainBalance: true,

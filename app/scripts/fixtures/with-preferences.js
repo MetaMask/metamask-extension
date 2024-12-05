@@ -4,6 +4,7 @@ export const FIXTURES_PREFERENCES = {
     showExtensionInFullSizeView: false,
     showFiatInTestnets: true,
     showTestNetworks: true,
+    showBaseNetworkToast: false,
     smartTransactionsOptInStatus: true,
     useNativeCurrencyAsPrimaryCurrency: true,
     petnamesEnabled: true,

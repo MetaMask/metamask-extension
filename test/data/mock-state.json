@@ -380,6 +380,7 @@
       "showFiatInTestnets": false,
       "showNativeTokenAsMainBalance": true,
       "showTestNetworks": true,
+      "showBaseNetworkToast": false,
       "smartTransactionsOptInStatus": true,
       "tokenNetworkFilter": {},
       "tokenSortConfig": {

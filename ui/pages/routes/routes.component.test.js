@@ -174,6 +174,7 @@ describe('Routes Component', () => {
               sortCallback: 'stringNumeric',
             },
             tokenNetworkFilter: {},
+            showBaseNetworkToast: false,
           },
           tokenBalances: {
             '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc': '0x176270e2b862e4ed3',
@@ -309,6 +310,7 @@ describe('toast display', () => {
       pendingApprovals: {},
       pendingApprovalCount: 0,
       preferences: {
+        showBaseNetworkToast: false,
         tokenSortConfig: {
           key: 'token-sort-key',
           order: 'dsc',
@@ -340,6 +342,7 @@ describe('toast display', () => {
       newPrivacyPolicyToastShownDate: new Date(0),
       newPrivacyPolicyToastClickedOrClosed: true,
       preferences: {
+        showBaseNetworkToast: false,
         tokenSortConfig: {
           key: 'token-sort-key',
           order: 'dsc',

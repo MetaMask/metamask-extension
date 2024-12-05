@@ -133,6 +133,7 @@
       "hideZeroBalanceTokens": false,
       "showFiatInTestnets": false,
       "showTestNetworks": true,
+      "showBaseNetworkToast": false,
       "tokenNetworkFilter": {}
     },
     "seedPhraseBackedUp": null,
