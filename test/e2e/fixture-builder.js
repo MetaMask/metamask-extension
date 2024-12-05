@@ -236,6 +236,12 @@ class FixtureBuilder {
     });
   }
 
+  withUseBasicFunctionalityDisabled() {
+    return this.withPreferencesController({
+      useExternalServices: false,
+    });
+  }
+
   withGasFeeController(data) {
     merge(this.fixture.data.GasFeeController, data);
     return this;
