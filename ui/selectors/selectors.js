@@ -725,8 +725,8 @@ export function getAddressBook(state) {
 }
 
 export function getEnsResolutionByAddress(state, address) {
-  if (state.metamask.ensResolutionsByAddress[address]) {
-    return state.metamask.ensResolutionsByAddress[address];
+  if (state.metamask.EnsController.ensResolutionsByAddress[address]) {
+    return state.metamask.EnsController.ensResolutionsByAddress[address];
   }
 
   const entry =

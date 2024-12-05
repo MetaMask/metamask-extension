@@ -3444,7 +3444,7 @@ export function getRecipient(state) {
     };
   }
   const checksummedAddress = toChecksumHexAddress(draft.recipient.address);
-  if (state.metamask.ensResolutionsByAddress) {
+  if (state.metamask.EnsController.ensResolutionsByAddress) {
     return {
       ...draft.recipient,
       nickname:
