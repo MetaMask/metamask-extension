@@ -1,6 +1,5 @@
 /* eslint-disable import/no-restricted-paths */
 /** Circular dependencies in this file should not have any performance impact, since all imports/exports are types that are stripped at runtime */
-
 import type {
   CurrencyRateState,
   NftControllerState,
@@ -23,6 +22,7 @@ import type {
   PermissionControllerState,
   SubjectMetadataControllerState,
 } from '@metamask/permission-controller';
+import type { RemoteFeatureFlagControllerState } from '@metamask/remote-feature-flag-controller';
 import type { SmartTransactionsControllerState } from '@metamask/smart-transactions-controller';
 import type { SelectedNetworkControllerState } from '@metamask/selected-network-controller';
 import type { LoggingControllerState } from '@metamask/logging-controller';
@@ -35,7 +35,6 @@ import type {
   SnapsRegistryState,
 } from '@metamask/snaps-controllers';
 import type { AccountsControllerState } from '@metamask/accounts-controller';
-
 ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
 import type { MmiConfigurationController } from '@metamask-institutional/custody-keyring';
 import type { InstitutionalFeaturesController } from '@metamask-institutional/institutional-features';
@@ -43,13 +42,9 @@ import type { CustodyController } from '@metamask-institutional/custody-controll
 ///: END:ONLY_INCLUDE_IF
 import type { SignatureControllerState } from '@metamask/signature-controller';
 import type { PPOMState } from '@metamask/ppom-validator';
-
 import type { NameControllerState } from '@metamask/name-controller';
-
 import type { QueuedRequestControllerState } from '@metamask/queued-request-controller';
-
 import type { UserOperationControllerState } from '@metamask/user-operation-controller';
-
 import type { TransactionControllerState } from '@metamask/transaction-controller';
 import type {
   AuthenticationController,
@@ -72,11 +67,10 @@ import type { AppMetadataControllerState } from '../../app/scripts/controllers/a
 import type { DecryptMessageControllerState } from '../../app/scripts/controllers/decrypt-message';
 import type { SwapsControllerState } from '../../app/scripts/controllers/swaps/swaps.types';
 import type { BridgeControllerState } from '../../app/scripts/controllers/bridge/types';
-import { MetaMetricsDataDeletionState } from '../../app/scripts/controllers/metametrics-data-deletion/metametrics-data-deletion';
-import { MetaMetricsControllerState } from '../../app/scripts/controllers/metametrics-controller';
-import { AccountTrackerControllerState } from '../../app/scripts/controllers/account-tracker-controller';
-
-import { BridgeStatusControllerState } from './bridge-status';
+import type { MetaMetricsDataDeletionState } from '../../app/scripts/controllers/metametrics-data-deletion/metametrics-data-deletion';
+import type { MetaMetricsControllerState } from '../../app/scripts/controllers/metametrics-controller';
+import type { AccountTrackerControllerState } from '../../app/scripts/controllers/account-tracker-controller';
+import type { BridgeStatusControllerState } from './bridge-status';
 
 export type ResetOnRestartStoresComposedState = {
   AccountTracker: AccountTrackerControllerState;
@@ -141,6 +135,7 @@ export type StoreControllersComposedState =
     UserStorageController: UserStorageController.UserStorageControllerState;
     NotificationServicesController: NotificationServicesController.NotificationServicesControllerState;
     NotificationServicesPushController: NotificationServicesPushController.NotificationServicesPushControllerState;
+    RemoteFeatureFlagController: RemoteFeatureFlagControllerState;
   };
 
 export type MemStoreControllersComposedState = Omit<
