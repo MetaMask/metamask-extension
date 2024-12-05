@@ -283,7 +283,7 @@ export const getMetaMaskAccounts = createSelector(
         if (balances?.[internalAccount.address]) {
           account = {
             ...account,
-            ...MultichainBalancesController.balances[internalAccount.address],
+            ...balances[internalAccount.address],
           };
         }
       } else {
@@ -2899,11 +2899,11 @@ export function getShowDataDeletionErrorModal(state) {
 }
 
 export function getMetaMetricsDataDeletionId(state) {
-  return state.metamask.metaMetricsDataDeletionId;
+  return state.metamask.MetaMetricsDataDeletionController.Id;
 }
 
 export function getMetaMetricsDataDeletionTimestamp(state) {
-  return state.metamask.metaMetricsDataDeletionTimestamp;
+  return state.metamask.MetaMetricsDataDeletionController.Timestamp;
 }
 
 export function getMetaMetricsDataDeletionStatus(state) {
