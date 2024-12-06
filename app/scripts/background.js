@@ -388,12 +388,12 @@ browser.runtime.onConnectExternal.addListener(async (...args) => {
   // Queue up connection attempts here, waiting until after initialization
   await isInitialized;
   // This is set in `setupController`, which is called as part of initialization
-  const port = args[0];
 
   ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-mmi)
   connectExternalExtension(...args);
   ///: END:ONLY_INCLUDE_IF
   ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
+  const port = args[0];
   if (port.sender.tab?.id) {
     connectExternalCaip(...args);
   } else {
