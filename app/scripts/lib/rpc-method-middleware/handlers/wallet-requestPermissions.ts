@@ -163,11 +163,11 @@ async function requestPermissionsImplementation(
       !haveLegacyPermissions) ||
     Object.keys(requestedPermissions).length > 0
   ) {
-    const [_grantedPermissions] = await requestPermissionsForOrigin(
+    const [frozenGrantedPermissions] = await requestPermissionsForOrigin(
       requestedPermissions,
     );
     // permissions are frozen and must be cloned before modified
-    grantedPermissions = { ..._grantedPermissions };
+    grantedPermissions = { ...frozenGrantedPermissions };
   }
 
   if (legacyApproval) {
