@@ -741,6 +741,12 @@ export const createBridgeMockStore = (
       currencyRates: {
         ETH: { conversionRate: 2524.25 },
       },
+      allTokens: {},
+      tokenBalances: {
+        '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc': {
+          '0x5': {},
+        },
+      },
       ...metamaskStateOverrides,
       bridgeState: {
         ...(swapsStore.metamask.bridgeState ?? {}),
