@@ -1,12 +1,12 @@
 import { useHistory } from 'react-router-dom';
+import { ApprovalType } from '@metamask/controller-utils';
 import { renderHookWithProvider } from '../../../../test/lib/render-helpers';
-import { useConfirmationNavigation } from './useConfirmationNavigation';
 import mockState from '../../../../test/data/mock-state.json';
 import {
   CONFIRM_TRANSACTION_ROUTE,
   CONFIRMATION_V_NEXT_ROUTE,
 } from '../../../helpers/constants/routes';
-import { ApprovalType } from '@metamask/controller-utils';
+import { useConfirmationNavigation } from './useConfirmationNavigation';
 
 jest.mock('react-router-dom', () => ({
   ...jest.requireActual('react-router-dom'),
