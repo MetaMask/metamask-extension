@@ -2,9 +2,7 @@ import { BorderColor } from '../../../helpers/constants/design-system';
 import { AvatarTokenSize } from '../../component-library';
 import type { StyleUtilityProps } from '../../component-library/box';
 
-// TODO: Convert to a `type` in a future major version.
-// eslint-disable-next-line @typescript-eslint/consistent-type-definitions
-export interface AvatarGroupProps extends StyleUtilityProps {
+export type AvatarGroupProps = StyleUtilityProps & {
   /** * Additional class name for the AvatarGroup component */
   className?: string;
   /** * Limit to show only a certain number of tokens and extras in Text */
@@ -22,9 +20,10 @@ export interface AvatarGroupProps extends StyleUtilityProps {
   size?: AvatarTokenSize;
   /** * Border Color of Avatar Tokens */
   borderColor?: BorderColor;
-}
+};
 
 export enum AvatarType {
   TOKEN = 'TOKEN',
   ACCOUNT = 'ACCOUNT',
+  NETWORK = 'NETWORK',
 }
