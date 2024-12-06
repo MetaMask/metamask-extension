@@ -84,27 +84,6 @@ export default class ComposableObservableStore extends ObservableStore {
     this.updateState(initialState);
   }
 
-  /**
-   * Merges all child store state into a single object rather than
-   * returning an object keyed by child store class name
-   *
-   * @returns {object} Object containing merged child store state
-   */
-  getFlatState() {
-    if (!this.config) {
-      return {};
-    }
-    let flatState = {};
-    for (const key of Object.keys(this.config)) {
-      const controller = this.config[key];
-      const state = controller.getState
-        ? controller.getState()
-        : controller.state;
-      flatState = { ...flatState, ...state };
-    }
-    return flatState;
-  }
-
   #onStateChange(controllerKey, newState) {
     const oldState = this.getState()[controllerKey];
 
