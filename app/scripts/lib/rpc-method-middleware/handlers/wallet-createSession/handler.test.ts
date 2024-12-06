@@ -519,9 +519,6 @@ describe('wallet_createSession', () => {
                   'eip155:1337': {
                     accounts: ['eip155:1337:0x1', 'eip155:1337:0x2'],
                   },
-                  'wallet:eip155': {
-                    accounts: ['wallet:eip155:0x1', 'wallet:eip155:0x2'],
-                  },
                 },
                 isMultichainOrigin: true,
               },
