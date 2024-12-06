@@ -26,19 +26,22 @@ import {
 } from '../../../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import { rejectPendingApproval } from '../../../../../store/actions';
-import { useConfirmContext } from '../../../context/confirm';
 import { useQueuedConfirmationsEvent } from '../../../hooks/useQueuedConfirmationEvents';
 import { useConfirmationNavigation } from '../../../hooks/useConfirmationNavigation';
+import { useConfirmContext } from '../../../context/confirm';
 
-const Nav = () => {
+export type NavProps = {
+  confirmationId?: string;
+};
+
+export const Nav = ({ confirmationId }: NavProps) => {
   const t = useI18nContext();
   const dispatch = useDispatch();
-  const { currentConfirmation } = useConfirmContext();
 
   const { confirmations, count, getIndex, navigateToIndex } =
     useConfirmationNavigation();
 
-  const position = getIndex(currentConfirmation?.id);
+  const position = getIndex(confirmationId);
 
   const onNavigateButtonClick = useCallback(
     (change: number) => {
@@ -127,4 +130,7 @@ const Nav = () => {
   );
 };
 
-export default Nav;
+export const ConfirmNav = () => {
+  const { currentConfirmation } = useConfirmContext();
+  return <Nav confirmationId={currentConfirmation?.id} />;
+};

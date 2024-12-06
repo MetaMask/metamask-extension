@@ -54,15 +54,10 @@ import MultiRpcEditModal from '../../components/app/multi-rpc-edit-modal/multi-r
 ///: END:ONLY_INCLUDE_IF
 import {
   RESTORE_VAULT_ROUTE,
-  CONFIRM_TRANSACTION_ROUTE,
-  CONFIRM_ADD_SUGGESTED_TOKEN_ROUTE,
-  CONFIRM_ADD_SUGGESTED_NFT_ROUTE,
-  CONNECT_ROUTE,
   CONNECTED_ROUTE,
   CONNECTED_ACCOUNTS_ROUTE,
   AWAITING_SWAP_ROUTE,
   PREPARE_SWAP_ROUTE,
-  CONFIRMATION_V_NEXT_ROUTE,
   ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
   ONBOARDING_SECURE_YOUR_WALLET_ROUTE,
   ///: END:ONLY_INCLUDE_IF
@@ -80,6 +75,7 @@ import {
 } from '../../../shared/lib/ui-utils';
 import { AccountOverview } from '../../components/multichain/account-overview';
 import { setEditedNetwork } from '../../store/actions';
+import { navigateToConfirmation } from '../confirmations/hooks/useConfirmationNavigation';
 ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
 import { AccountType } from '../../../shared/constants/custody';
 ///: END:ONLY_INCLUDE_IF
@@ -176,9 +172,6 @@ export default class Home extends PureComponent {
     originOfCurrentTab: PropTypes.string,
     disableWeb3ShimUsageAlert: PropTypes.func.isRequired,
     pendingConfirmations: PropTypes.arrayOf(PropTypes.object).isRequired,
-    pendingConfirmationsPrioritized: PropTypes.arrayOf(PropTypes.object)
-      .isRequired,
-    hasApprovalFlows: PropTypes.bool.isRequired,
     infuraBlocked: PropTypes.bool.isRequired,
     setRecoveryPhraseReminderHasBeenShown: PropTypes.func.isRequired,
     setRecoveryPhraseReminderLastShown: PropTypes.func.isRequired,
@@ -302,19 +295,13 @@ export default class Home extends PureComponent {
 
   checkStatusAndNavigate() {
     const {
-      firstPermissionsRequestId,
       history,
       isNotification,
-      hasTransactionPendingApprovals,
-      hasWatchTokenPendingApprovals,
-      hasWatchNftPendingApprovals,
       haveSwapsQuotes,
       showAwaitingSwapScreen,
       swapsFetchParams,
       location,
       pendingConfirmations,
-      pendingConfirmationsPrioritized,
-      hasApprovalFlows,
     } = this.props;
     const stayOnHomePage = Boolean(location?.state?.stayOnHomePage);
 
@@ -327,18 +314,12 @@ export default class Home extends PureComponent {
       history.push(AWAITING_SWAP_ROUTE);
     } else if (canRedirect && (haveSwapsQuotes || swapsFetchParams)) {
       history.push(PREPARE_SWAP_ROUTE);
-    } else if (firstPermissionsRequestId) {
-      history.push(`${CONNECT_ROUTE}/${firstPermissionsRequestId}`);
-    } else if (pendingConfirmationsPrioritized.length > 0) {
-      history.push(CONFIRMATION_V_NEXT_ROUTE);
-    } else if (hasTransactionPendingApprovals) {
-      history.push(CONFIRM_TRANSACTION_ROUTE);
-    } else if (hasWatchTokenPendingApprovals) {
-      history.push(CONFIRM_ADD_SUGGESTED_TOKEN_ROUTE);
-    } else if (hasWatchNftPendingApprovals) {
-      history.push(CONFIRM_ADD_SUGGESTED_NFT_ROUTE);
-    } else if (pendingConfirmations.length > 0 || hasApprovalFlows) {
-      history.push(CONFIRMATION_V_NEXT_ROUTE);
+    } else if (pendingConfirmations.length) {
+      navigateToConfirmation(
+        pendingConfirmations[0].id,
+        pendingConfirmations,
+        history,
+      );
     }
     ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
     this.checkInstitutionalConnectRequest();

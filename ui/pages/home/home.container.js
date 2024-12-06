@@ -24,7 +24,6 @@ import {
   getIsMainnet,
   getOriginOfCurrentTab,
   getTotalUnapprovedCount,
-  getUnapprovedTemplatedConfirmations,
   getWeb3ShimUsageStateForOrigin,
   getShowWhatsNewPopup,
   getSortedAnnouncementsToShow,
@@ -46,6 +45,7 @@ import {
   getQueuedRequestCount,
   getEditedNetwork,
   getPrioritizedUnapprovedTemplatedConfirmations,
+  pendingConfirmationsSortedSelector,
   ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
   getAccountType,
   ///: END:ONLY_INCLUDE_IF
@@ -114,7 +114,7 @@ const mapStateToProps = (state) => {
   const totalUnapprovedAndQueuedRequestCount =
     totalUnapprovedCount + queuedRequestCount;
   const swapsEnabled = getSwapsFeatureIsLive(state);
-  const pendingConfirmations = getUnapprovedTemplatedConfirmations(state);
+  const pendingConfirmations = pendingConfirmationsSortedSelector(state);
   const pendingConfirmationsPrioritized =
     getPrioritizedUnapprovedTemplatedConfirmations(state);
 

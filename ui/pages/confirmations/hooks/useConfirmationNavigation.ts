@@ -3,11 +3,16 @@ import { useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import { ApprovalType } from '@metamask/controller-utils';
 import { isEqual } from 'lodash';
+import { ApprovalRequest } from '@metamask/approval-controller';
+import { Json } from '@metamask/utils';
 import { pendingConfirmationsSortedSelector } from '../selectors';
 import { TEMPLATED_CONFIRMATION_APPROVAL_TYPES } from '../confirmation/templates';
 import {
+  CONFIRM_ADD_SUGGESTED_NFT_ROUTE,
+  CONFIRM_ADD_SUGGESTED_TOKEN_ROUTE,
   CONFIRM_TRANSACTION_ROUTE,
   CONFIRMATION_V_NEXT_ROUTE,
+  CONNECT_ROUTE,
   SIGNATURE_REQUEST_PATH,
 } from '../../../helpers/constants/routes';
 import { isSignatureTransactionType } from '../utils';
@@ -33,38 +38,7 @@ export function useConfirmationNavigation() {
 
   const navigateToId = useCallback(
     (confirmationId?: string) => {
-      if (confirmations?.length <= 0 || !confirmationId) {
-        return;
-      }
-
-      const nextConfirmation = confirmations.find(
-        (confirmation) => confirmation.id === confirmationId,
-      );
-
-      if (!nextConfirmation) {
-        return;
-      }
-
-      const type = nextConfirmation.type as ApprovalType;
-      const isTemplate = TEMPLATED_CONFIRMATION_APPROVAL_TYPES.includes(type);
-
-      if (isTemplate) {
-        history.replace(`${CONFIRMATION_V_NEXT_ROUTE}/${confirmationId}`);
-        return;
-      }
-
-      const isSignature = isSignatureTransactionType(nextConfirmation);
-
-      if (isSignature) {
-        history.replace(
-          `${CONFIRM_TRANSACTION_ROUTE}/${confirmationId}${SIGNATURE_REQUEST_PATH}`,
-        );
-        return;
-      }
-
-      if (type === ApprovalType.Transaction) {
-        history.replace(`${CONFIRM_TRANSACTION_ROUTE}/${confirmationId}`);
-      }
+      navigateToConfirmation(confirmationId, confirmations, history);
     },
     [confirmations, history],
   );
@@ -80,4 +54,62 @@ export function useConfirmationNavigation() {
   const count = confirmations.length;
 
   return { confirmations, count, getIndex, navigateToId, navigateToIndex };
+}
+
+export function navigateToConfirmation(
+  confirmationId: string | undefined,
+  confirmations: ApprovalRequest<Record<string, Json>>[],
+  history: ReturnType<typeof useHistory>,
+) {
+  if (confirmations?.length <= 0 || !confirmationId) {
+    return;
+  }
+
+  const nextConfirmation = confirmations.find(
+    (confirmation) => confirmation.id === confirmationId,
+  );
+
+  if (!nextConfirmation) {
+    return;
+  }
+
+  const type = nextConfirmation.type as ApprovalType;
+  const isTemplate = TEMPLATED_CONFIRMATION_APPROVAL_TYPES.includes(type);
+
+  if (isTemplate) {
+    history.replace(`${CONFIRMATION_V_NEXT_ROUTE}/${confirmationId}`);
+    return;
+  }
+
+  const isSignature = isSignatureTransactionType(nextConfirmation);
+
+  if (isSignature) {
+    history.replace(
+      `${CONFIRM_TRANSACTION_ROUTE}/${confirmationId}${SIGNATURE_REQUEST_PATH}`,
+    );
+    return;
+  }
+
+  if (type === ApprovalType.Transaction) {
+    history.replace(`${CONFIRM_TRANSACTION_ROUTE}/${confirmationId}`);
+    return;
+  }
+
+  if (type === ApprovalType.WalletRequestPermissions) {
+    history.push(`${CONNECT_ROUTE}/${confirmationId}`);
+    return;
+  }
+
+  const tokenId = (
+    nextConfirmation?.requestData?.asset as Record<string, unknown>
+  )?.tokenId as string;
+
+  if (type === ApprovalType.WatchAsset && !tokenId) {
+    history.replace(`${CONFIRM_ADD_SUGGESTED_TOKEN_ROUTE}`);
+    return;
+  }
+
+  if (type === ApprovalType.WatchAsset && tokenId) {
+    history.replace(`${CONFIRM_ADD_SUGGESTED_NFT_ROUTE}`);
+  }
 }

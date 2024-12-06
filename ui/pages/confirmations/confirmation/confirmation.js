@@ -211,7 +211,7 @@ function Header({ confirmation, isSnapCustomUIDialog, onCancel }) {
 
   return (
     <Box style={{ width: '100%' }}>
-      <Nav />
+      <Nav confirmationId={confirmation?.id} />
       {requiresSnapHeader && (
         <SnapAuthorshipHeader snapId={origin} onCancel={onCancel} />
       )}
