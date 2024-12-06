@@ -317,7 +317,7 @@ export default function NftDetails({ nft }: { nft: Nft }) {
 
   // eslint-disable-next-line @typescript-eslint/ban-ts-comment
   // @ts-ignore
-  const nftItemSrc: string | undefined = Boolean(isImageHosted) ? image : nftImageURL;
+  const nftItemSrc: string | undefined = isImageHosted ? image : nftImageURL;
 
   return (
     <Page>
