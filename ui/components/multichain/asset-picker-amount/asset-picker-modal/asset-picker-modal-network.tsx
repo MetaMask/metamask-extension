@@ -164,45 +164,45 @@ export const AssetPickerModalNetwork = ({
         >
           {header ?? t('bridgeSelectNetwork')}
         </ModalHeader>
-        <Box className="multichain-asset-picker__network-list">
+        {isMultiselectEnabled && (
+          <Box display={Display.Flex} padding={4}>
+            <Checkbox
+              isIndeterminate={Object.values(checkedChainIds).every((v) => v)}
+              iconProps={{
+                name: Object.values(checkedChainIds).some((v) => !v)
+                  ? IconName.MinusBold
+                  : IconName.Add,
+                color: IconColor.primaryInverse,
+                backgroundColor: BackgroundColor.primaryDefault,
+              }}
+              isChecked
+              onChange={() => {
+                handleToggleAllNetworks();
+              }}
+            />
+            <ButtonLink
+              variant={TextVariant.bodyMdMedium}
+              onClick={() => {
+                handleToggleAllNetworks();
+              }}
+              style={{
+                alignSelf: AlignItems.flexStart,
+                paddingInline: 16,
+              }}
+            >
+              {t('selectAll')}
+            </ButtonLink>
+          </Box>
+        )}
+        <Box
+          className="multichain-asset-picker__network-list"
+          display={Display.Flex}
+        >
           <Box
-            style={{
-              gridColumnStart: 1,
-              gridColumnEnd: 3,
-            }}
             display={Display.Flex}
             flexDirection={FlexDirection.Column}
-            height={BlockSize.Full}
+            width={BlockSize.Full}
           >
-            {isMultiselectEnabled && (
-              <Box display={Display.Flex} padding={4}>
-                <Checkbox
-                  isIndeterminate={Object.values(checkedChainIds).every(
-                    (v) => v,
-                  )}
-                  iconProps={{
-                    name: Object.values(checkedChainIds).some((v) => !v)
-                      ? IconName.MinusBold
-                      : IconName.Add,
-                    color: IconColor.primaryInverse,
-                    backgroundColor: BackgroundColor.primaryDefault,
-                  }}
-                  isChecked
-                  onChange={() => {
-                    handleToggleAllNetworks();
-                  }}
-                />
-                <ButtonLink
-                  variant={TextVariant.bodyMdMedium}
-                  onClick={() => {
-                    handleToggleAllNetworks();
-                  }}
-                  style={{ alignSelf: AlignItems.flexStart, paddingInline: 16 }}
-                >
-                  {t('selectAll')}
-                </ButtonLink>
-              </Box>
-            )}
             {networksList.map((networkConfig) => {
               const { name, chainId } = networkConfig;
               return (
