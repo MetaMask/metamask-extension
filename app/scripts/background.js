@@ -373,7 +373,9 @@ function overrideContentSecurityPolicyHeader() {
 // These are set after initialization
 let connectRemote;
 let connectExternalExtension;
+///: BEGIN:ONLY_INCLUDE_IF(build-flask)
 let connectExternalCaip;
+///: END:ONLY_INCLUDE_IF
 
 browser.runtime.onConnect.addListener(async (...args) => {
   // Queue up connection attempts here, waiting until after initialization
@@ -986,6 +988,7 @@ export function setupController(
     });
   };
 
+  ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
   connectExternalCaip = async (remotePort) => {
     if (metamaskBlockedPorts.includes(remotePort.name)) {
       return;
@@ -1004,6 +1007,7 @@ export function setupController(
       sender: remotePort.sender,
     });
   };
+  ///: END:ONLY_INCLUDE_IF
 
   if (overrides?.registerConnectListeners) {
     overrides.registerConnectListeners(connectRemote, connectExternalExtension);
