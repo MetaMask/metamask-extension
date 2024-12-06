@@ -30,7 +30,10 @@ import {
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 
 import { AssetType } from '../../../../../shared/constants/transaction';
-import { getCurrentChainId } from '../../../../../shared/modules/selectors/networks';
+import {
+  getCurrentChainId,
+  getNetworkConfigurationsByChainId,
+} from '../../../../../shared/modules/selectors/networks';
 import {
   getAllTokens,
   getCurrentCurrency,
@@ -50,8 +53,13 @@ import { getTopAssets } from '../../../../ducks/swaps/swaps';
 import { getRenderableTokenData } from '../../../../hooks/useTokensToSearch';
 import { getSwapsBlockedTokens } from '../../../../ducks/send';
 import { isEqualCaseInsensitive } from '../../../../../shared/modules/string-utils';
-import { CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP } from '../../../../../shared/constants/network';
+import {
+  CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP,
+  NETWORK_TO_NAME_MAP,
+} from '../../../../../shared/constants/network';
 import { useMultichainBalances } from '../../../../hooks/useMultichainBalances';
+import { AvatarGroup } from '../../avatar-group';
+import { AvatarType } from '../../avatar-group/avatar-group.types';
 import {
   ERC20Asset,
   NativeAsset,
@@ -94,15 +102,13 @@ type AssetPickerModalProps = {
     AssetWithDisplayData<NativeAsset> | AssetWithDisplayData<ERC20Asset>
   >;
   isTokenListLoading?: boolean;
-  isTokenInSelectedChain: (tokenChainId?: string) => boolean;
-  networkPickerProps: React.ComponentProps<typeof PickerNetwork>;
 } & Pick<
   React.ComponentProps<typeof AssetPickerModalTabs>,
   'visibleTabs' | 'defaultActiveTabKey'
 > &
   Pick<
     React.ComponentProps<typeof AssetPickerModalNetwork>,
-    'network' | 'isMultiselectEnabled'
+    'network' | 'networks' | 'isMultiselectEnabled' | 'selectedChainIds'
   >;
 
 const MAX_UNOWNED_TOKENS_RENDERED = 30;
@@ -116,13 +122,13 @@ export function AssetPickerModal({
   onAssetChange,
   sendingAsset,
   network,
+  networks,
   action,
   onNetworkPickerClick,
   customTokenListGenerator,
   isTokenListLoading = false,
   isMultiselectEnabled,
-  isTokenInSelectedChain,
-  networkPickerProps,
+  selectedChainIds,
   ...tabProps
 }: AssetPickerModalProps) {
   const t = useI18nContext();
@@ -348,12 +354,39 @@ export function AssetPickerModal({
     tokenConversionRates,
     conversionRate,
     currentCurrency,
-    chainId,
+    currentChainId,
     tokenListGenerator,
     customTokenListGenerator,
     isMultiselectEnabled,
-    isTokenInSelectedChain,
   ]);
+
+  const getNetworkImageUrl = (networkChainId: string) =>
+    CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP[
+      networkChainId as keyof typeof CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP
+    ];
+
+  const getNetworkPickerLabel = () => {
+    if (!isMultiselectEnabled) {
+      return (
+        (selectedNetwork?.chainId &&
+          NETWORK_TO_NAME_MAP[
+            selectedNetwork.chainId as keyof typeof NETWORK_TO_NAME_MAP
+          ]) ??
+        selectedNetwork?.name ??
+        t('bridgeSelectNetwork')
+      );
+    }
+    switch (selectedChainIds?.length) {
+      case allNetworksToUse.length:
+        return t('allNetworks');
+      case 1:
+        return t('singleNetwork');
+      case 0:
+        return t('bridgeSelectNetwork');
+      default:
+        return t('someNetworks', [selectedChainIds?.length]);
+    }
+  };
 
   return (
     <Modal
@@ -389,13 +422,26 @@ export function AssetPickerModal({
         {onNetworkPickerClick && (
           <Box className="network-picker">
             <PickerNetwork
-              label={networkPickerProps.label}
+              label={getNetworkPickerLabel()}
               src={
-                networkPickerProps.src ??
-                (network?.chainId &&
-                  CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP[
-                    network.chainId as keyof typeof CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP
-                  ])
+                network?.chainId
+                  ? getNetworkImageUrl(network.chainId)
+                  : undefined
+              }
+              avatarComponent={
+                isMultiselectEnabled && selectedChainIds ? (
+                  <AvatarGroup
+                    limit={2}
+                    members={selectedChainIds.map((c) => ({
+                      avatarValue: getNetworkImageUrl(c),
+                      symbol:
+                        NETWORK_TO_NAME_MAP[
+                          c as keyof typeof NETWORK_TO_NAME_MAP
+                        ],
+                    }))}
+                    avatarType={AvatarType.NETWORK}
+                  />
+                ) : undefined
               }
               onClick={onNetworkPickerClick}
               data-testid="multichain-asset-picker__network"
