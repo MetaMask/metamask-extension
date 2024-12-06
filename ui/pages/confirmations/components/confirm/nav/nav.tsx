@@ -120,6 +120,7 @@ const Nav = () => {
           color={TextColor.textAlternative}
           marginInline={2}
           variant={TextVariant.bodySm}
+          data-testid="confirm-page-nav-position"
         >
           {currentConfirmationPosition + 1} of {pendingConfirmations.length}
         </Text>
