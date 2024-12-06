@@ -1,12 +1,12 @@
 import { cloneDeep } from 'lodash';
 import { NetworkState } from '@metamask/network-controller';
 import { infuraProjectId } from '../../../shared/constants/network';
-import { migrate, version } from './135';
+import { migrate, version } from './131.1';
 
-const oldVersion = 134;
+const oldVersion = 131;
 const BASE_CHAIN_ID = '0x2105';
 
-describe('migration #135', () => {
+describe('migration #131.1', () => {
   it('updates the version metadata', async () => {
     const oldStorage = {
       meta: { version: oldVersion },

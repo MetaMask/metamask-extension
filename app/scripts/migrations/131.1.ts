@@ -8,7 +8,7 @@ import {
   infuraProjectId,
 } from '../../../shared/constants/network';
 
-export const version = 135;
+export const version = 131.1;
 const BASE_CHAIN_ID = '0x2105';
 
 /**
