@@ -6,9 +6,9 @@ export const DEFAULT_FEATURE_FLAGS_RESPONSE: FeatureFlagResponse = {
     maxRefreshCount: 5,
     support: false,
     chains: {
-      "1": { isActiveSrc: true, isActiveDest: true },
-      "42161": { isActiveSrc: true, isActiveDest: true },
-      "59144": { isActiveSrc: true, isActiveDest: true },
+      '1': { isActiveSrc: true, isActiveDest: true },
+      '42161': { isActiveSrc: true, isActiveDest: true },
+      '59144': { isActiveSrc: true, isActiveDest: true },
     },
   },
 };

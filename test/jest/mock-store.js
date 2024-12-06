@@ -749,7 +749,7 @@ export const createBridgeMockStore = (
           extensionConfig: {
             support: false,
             chains: {},
-            ...featureFlagOverrides['extensionConfig'],
+            ...featureFlagOverrides.extensionConfig,
           },
         },
         quotes: DEFAULT_BRIDGE_CONTROLLER_STATE.quotes,

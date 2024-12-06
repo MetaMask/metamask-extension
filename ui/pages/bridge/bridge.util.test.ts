@@ -104,17 +104,17 @@ describe('Bridge utils', () => {
     it('should use fallback bridge feature flags if response is unexpected', async () => {
       const mockResponse = {
         'extension-config': {
-          'refreshRate': 3,
-          'maxRefreshCount': 1,
-          'support': 25,
-          'chains': {
-            'a': {
-              'isActiveSrc': 1,
-              'isActiveDest': 'test',
+          refreshRate: 3,
+          maxRefreshCount: 1,
+          support: 25,
+          chains: {
+            a: {
+              isActiveSrc: 1,
+              isActiveDest: 'test',
             },
             '2': {
-              'isActiveSrc': 'test',
-              'isActiveDest': 2,
+              isActiveSrc: 'test',
+              isActiveDest: 2,
             },
           },
         },

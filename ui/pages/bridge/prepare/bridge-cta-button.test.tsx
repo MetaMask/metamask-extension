@@ -13,7 +13,7 @@ describe('BridgeCTAButton', () => {
   it("should render the component's initial state", () => {
     const mockStore = createBridgeMockStore({
       featureFlagOverrides: {
-        'extensionConfig': {
+        extensionConfig: {
           chains: {
             [CHAIN_IDS.MAINNET]: { isActiveSrc: true, isActiveDest: false },
             [CHAIN_IDS.OPTIMISM]: { isActiveSrc: true, isActiveDest: true },
@@ -36,11 +36,14 @@ describe('BridgeCTAButton', () => {
   it('should render the component when amount is missing', () => {
     const mockStore = createBridgeMockStore({
       featureFlagOverrides: {
-        'extensionConfig': {
+        extensionConfig: {
           chains: {
             [CHAIN_IDS.MAINNET]: { isActiveSrc: true, isActiveDest: false },
             [CHAIN_IDS.OPTIMISM]: { isActiveSrc: true, isActiveDest: false },
-            [CHAIN_IDS.LINEA_MAINNET]: { isActiveSrc: false, isActiveDest: true },
+            [CHAIN_IDS.LINEA_MAINNET]: {
+              isActiveSrc: false,
+              isActiveDest: true,
+            },
           },
         },
       },
@@ -63,11 +66,14 @@ describe('BridgeCTAButton', () => {
   it('should render the component when amount and dest token is missing', () => {
     const mockStore = createBridgeMockStore({
       featureFlagOverrides: {
-        'extensionConfig': {
+        extensionConfig: {
           chains: {
             [CHAIN_IDS.MAINNET]: { isActiveSrc: true, isActiveDest: false },
             [CHAIN_IDS.OPTIMISM]: { isActiveSrc: true, isActiveDest: false },
-            [CHAIN_IDS.LINEA_MAINNET]: { isActiveSrc: false, isActiveDest: true },
+            [CHAIN_IDS.LINEA_MAINNET]: {
+              isActiveSrc: false,
+              isActiveDest: true,
+            },
           },
         },
       },
@@ -90,11 +96,14 @@ describe('BridgeCTAButton', () => {
   it('should render the component when tx is submittable', () => {
     const mockStore = createBridgeMockStore({
       featureFlagOverrides: {
-        'extensionConfig': {
+        extensionConfig: {
           chains: {
             [CHAIN_IDS.MAINNET]: { isActiveSrc: true, isActiveDest: false },
             [CHAIN_IDS.OPTIMISM]: { isActiveSrc: true, isActiveDest: false },
-            [CHAIN_IDS.LINEA_MAINNET]: { isActiveSrc: false, isActiveDest: true },
+            [CHAIN_IDS.LINEA_MAINNET]: {
+              isActiveSrc: false,
+              isActiveDest: true,
+            },
           },
         },
       },
@@ -122,7 +131,7 @@ describe('BridgeCTAButton', () => {
   it('should disable the component when quotes are loading and there are no existing quotes', () => {
     const mockStore = createBridgeMockStore({
       featureFlagOverrides: {
-        'extensionConfig': {
+        extensionConfig: {
           chains: {
             [CHAIN_IDS.MAINNET]: {
               isActiveSrc: true,
@@ -163,7 +172,7 @@ describe('BridgeCTAButton', () => {
   it('should enable the component when quotes are loading and there are existing quotes', () => {
     const mockStore = createBridgeMockStore({
       featureFlagOverrides: {
-        'extensionConfig': {
+        extensionConfig: {
           chains: {
             [CHAIN_IDS.MAINNET]: {
               isActiveSrc: true,

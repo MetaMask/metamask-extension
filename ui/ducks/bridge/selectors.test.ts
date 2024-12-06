@@ -72,7 +72,7 @@ describe('Bridge selectors', () => {
         featureFlagOverrides: {
           extensionConfig: {
             chains: {
-              ['0xe708']: { isActiveSrc: false, isActiveDest: true },
+              '0xe708': { isActiveSrc: false, isActiveDest: true },
             },
           },
         },
@@ -171,7 +171,10 @@ describe('Bridge selectors', () => {
           extensionConfig: {
             chains: {
               [CHAIN_IDS.MAINNET]: { isActiveSrc: true, isActiveDest: false },
-              [CHAIN_IDS.LINEA_MAINNET]: { isActiveSrc: true, isActiveDest: false },
+              [CHAIN_IDS.LINEA_MAINNET]: {
+                isActiveSrc: true,
+                isActiveDest: false,
+              },
               [CHAIN_IDS.OPTIMISM]: { isActiveSrc: true, isActiveDest: false },
               [CHAIN_IDS.POLYGON]: { isActiveSrc: true, isActiveDest: false },
             },
@@ -205,7 +208,10 @@ describe('Bridge selectors', () => {
           extensionConfig: {
             chains: {
               [CHAIN_IDS.ARBITRUM]: { isActiveSrc: false, isActiveDest: true },
-              [CHAIN_IDS.LINEA_MAINNET]: { isActiveSrc: false, isActiveDest: true },
+              [CHAIN_IDS.LINEA_MAINNET]: {
+                isActiveSrc: false,
+                isActiveDest: true,
+              },
               [CHAIN_IDS.OPTIMISM]: { isActiveSrc: false, isActiveDest: true },
               [CHAIN_IDS.POLYGON]: { isActiveSrc: false, isActiveDest: true },
             },
@@ -244,8 +250,8 @@ describe('Bridge selectors', () => {
           extensionConfig: {
             support: false,
             chains: {
-              ['0x1']: { isActiveSrc: true, isActiveDest: false },
-              ['0x38']: { isActiveSrc: false, isActiveDest: true },
+              '0x1': { isActiveSrc: true, isActiveDest: false },
+              '0x38': { isActiveSrc: false, isActiveDest: true },
             },
           },
         },
@@ -266,7 +272,7 @@ describe('Bridge selectors', () => {
           extensionConfig: {
             support: true,
             chains: {
-              ['0x1']: { isActiveSrc: true, isActiveDest: true },
+              '0x1': { isActiveSrc: true, isActiveDest: true },
             },
           },
         },
@@ -287,7 +293,7 @@ describe('Bridge selectors', () => {
           extensionConfig: {
             support: true,
             chains: {
-              ['0x1']: { isActiveSrc: true, isActiveDest: true },
+              '0x1': { isActiveSrc: true, isActiveDest: true },
             },
           },
         },
@@ -308,8 +314,8 @@ describe('Bridge selectors', () => {
           extensionConfig: {
             support: true,
             chains: {
-              ['0x1']: { isActiveSrc: true, isActiveDest: false },
-              ['0x38']: { isActiveSrc: false, isActiveDest: true },
+              '0x1': { isActiveSrc: true, isActiveDest: false },
+              '0x38': { isActiveSrc: false, isActiveDest: true },
             },
           },
         },
@@ -330,8 +336,8 @@ describe('Bridge selectors', () => {
           extensionConfig: {
             support: true,
             chains: {
-              ['0x1']: { isActiveSrc: true, isActiveDest: false },
-              ['0x38']: { isActiveSrc: false, isActiveDest: true },
+              '0x1': { isActiveSrc: true, isActiveDest: false },
+              '0x38': { isActiveSrc: false, isActiveDest: true },
             },
           },
         },
