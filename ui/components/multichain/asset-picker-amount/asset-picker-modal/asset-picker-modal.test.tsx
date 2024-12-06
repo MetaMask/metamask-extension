@@ -322,7 +322,7 @@ describe('AssetPickerModal', () => {
     expect(modalTitle).toBeInTheDocument();
 
     expect(getAllByRole('img')).toHaveLength(2);
-    const modalContent = getByText('Network name');
+    const modalContent = getByText('Ethereum Mainnet');
     expect(modalContent).toBeInTheDocument();
   });
 

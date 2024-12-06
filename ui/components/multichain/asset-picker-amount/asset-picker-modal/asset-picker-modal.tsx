@@ -8,6 +8,7 @@ import {
   TokenListToken,
 } from '@metamask/assets-controllers';
 import { Hex } from '@metamask/utils';
+import { zeroAddress } from 'ethereumjs-util';
 import {
   Modal,
   ModalContent,
@@ -50,6 +51,7 @@ import { getRenderableTokenData } from '../../../../hooks/useTokensToSearch';
 import { getSwapsBlockedTokens } from '../../../../ducks/send';
 import { isEqualCaseInsensitive } from '../../../../../shared/modules/string-utils';
 import { CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP } from '../../../../../shared/constants/network';
+import { useMultichainBalances } from '../../../../hooks/useMultichainBalances';
 import {
   ERC20Asset,
   NativeAsset,
@@ -68,6 +70,7 @@ type AssetPickerModalProps = {
   isOpen: boolean;
   onClose: () => void;
   action?: 'send' | 'receive';
+  onBack?: () => void;
   asset?: ERC20Asset | NativeAsset | Pick<NFT, 'type' | 'tokenId' | 'image'>;
   onAssetChange: (
     asset: AssetWithDisplayData<ERC20Asset> | AssetWithDisplayData<NativeAsset>,
@@ -82,15 +85,25 @@ type AssetPickerModalProps = {
    * by a custom order.
    */
   customTokenListGenerator?: (
-    filterPredicate: (symbol: string, address?: string) => boolean,
+    filterPredicate: (
+      symbol: string,
+      address?: null | string,
+      chainId?: string,
+    ) => boolean,
   ) => Generator<
     AssetWithDisplayData<NativeAsset> | AssetWithDisplayData<ERC20Asset>
   >;
+  isTokenListLoading?: boolean;
+  isTokenInSelectedChain: (tokenChainId?: string) => boolean;
+  networkPickerProps: React.ComponentProps<typeof PickerNetwork>;
 } & Pick<
   React.ComponentProps<typeof AssetPickerModalTabs>,
   'visibleTabs' | 'defaultActiveTabKey'
 > &
-  Pick<React.ComponentProps<typeof AssetPickerModalNetwork>, 'network'>;
+  Pick<
+    React.ComponentProps<typeof AssetPickerModalNetwork>,
+    'network' | 'isMultiselectEnabled'
+  >;
 
 const MAX_UNOWNED_TOKENS_RENDERED = 30;
 
@@ -98,6 +111,7 @@ export function AssetPickerModal({
   header,
   isOpen,
   onClose,
+  onBack,
   asset,
   onAssetChange,
   sendingAsset,
@@ -105,6 +119,10 @@ export function AssetPickerModal({
   action,
   onNetworkPickerClick,
   customTokenListGenerator,
+  isTokenListLoading = false,
+  isMultiselectEnabled,
+  isTokenInSelectedChain,
+  networkPickerProps,
   ...tabProps
 }: AssetPickerModalProps) {
   const t = useI18nContext();
@@ -145,6 +163,9 @@ export function AssetPickerModal({
       hideZeroBalanceTokens: Boolean(shouldHideZeroBalanceTokens),
     });
 
+  const { assetsWithBalance: multichainTokensWithBalance } =
+    useMultichainBalances();
+
   // Swaps token list
   const tokenList = useSelector(getTokenList) as TokenListMap;
   const topTokens = useSelector(getTopAssets, isEqual);
@@ -176,10 +197,15 @@ export function AssetPickerModal({
 
   const tokenListGenerator = useCallback(
     function* (
-      shouldAddToken: (symbol: string, address?: null | string) => boolean,
+      shouldAddToken: (
+        symbol: string,
+        address?: null | string,
+        tokenChainId?: string,
+      ) => boolean,
     ): Generator<
       | AssetWithDisplayData<NativeAsset>
       | ((Token | TokenListToken) & {
+          chainId: string;
           balance?: string;
           string?: string;
         })
@@ -191,6 +217,7 @@ export function AssetPickerModal({
         image: nativeCurrencyImage,
         balance: balanceValue,
         string: undefined,
+        chainId,
         type: AssetType.native,
       };
 
@@ -200,9 +227,18 @@ export function AssetPickerModal({
 
       const blockedTokens = [];
 
+      // Yield multichain tokens with balances
+      if (isMultiselectEnabled) {
+        for (const token of multichainTokensWithBalance) {
+          if (shouldAddToken(token.symbol, token.address, token.chainId)) {
+            yield token;
+          }
+        }
+      }
+
       for (const token of memoizedUsersTokens) {
         if (shouldAddToken(token.symbol, token.address)) {
-          yield token;
+          yield { ...token, chainId };
         }
       }
 
@@ -214,19 +250,19 @@ export function AssetPickerModal({
             blockedTokens.push(token);
             continue;
           } else {
-            yield token;
+            yield { ...token, chainId };
           }
         }
       }
 
       for (const token of Object.values(tokenList)) {
         if (shouldAddToken(token.symbol, token.address)) {
-          yield token;
+          yield { ...token, chainId };
         }
       }
 
       for (const token of blockedTokens) {
-        yield token;
+        yield { ...token, chainId };
       }
     },
     [
@@ -237,6 +273,8 @@ export function AssetPickerModal({
       topTokens,
       tokenList,
       getIsDisabled,
+      isMultiselectEnabled,
+      multichainTokensWithBalance,
     ],
   );
 
@@ -245,16 +283,28 @@ export function AssetPickerModal({
       | AssetWithDisplayData<ERC20Asset>
       | AssetWithDisplayData<NativeAsset>
     )[] = [];
-    // undefined would be the native token address
+    // List of token identifiers formatted like `chainId:address`
     const filteredTokensAddresses = new Set<string | undefined>();
+    const getTokenKey = (address?: string | null, tokenChainId?: string) =>
+      `${address?.toLowerCase() ?? zeroAddress()}:${tokenChainId ?? chainId}`;
 
     // Default filter predicate for whether a token should be included in displayed list
-    const shouldAddToken = (symbol: string, address?: string | null) => {
-      const trimmedSearchQuery = searchQuery.trim();
+    const shouldAddToken = (
+      symbol: string,
+      address?: string | null,
+      tokenChainId?: string,
+    ) => {
+      const trimmedSearchQuery = searchQuery.trim().toLowerCase();
+      const isMatchedBySearchQuery = Boolean(
+        !trimmedSearchQuery ||
+          symbol?.toLowerCase().includes(trimmedSearchQuery) ||
+          address?.toLowerCase().includes(trimmedSearchQuery),
+      );
+
       return (
-        (!trimmedSearchQuery ||
-          symbol?.toLowerCase().includes(trimmedSearchQuery.toLowerCase())) &&
-        !filteredTokensAddresses.has(address?.toLowerCase())
+        isTokenInSelectedChain(tokenChainId) &&
+        isMatchedBySearchQuery &&
+        !filteredTokensAddresses.has(getTokenKey(address, tokenChainId))
       );
     };
 
@@ -267,7 +317,7 @@ export function AssetPickerModal({
         continue;
       }
 
-      filteredTokensAddresses.add(token.address?.toLowerCase());
+      filteredTokensAddresses.add(getTokenKey(token.address, token.chainId));
       filteredTokens.push(
         customTokenListGenerator
           ? token
@@ -282,7 +332,7 @@ export function AssetPickerModal({
               tokenConversionRates,
               conversionRate,
               currentCurrency,
-              chainId,
+              token.chainId,
               tokenList,
             ),
       );
@@ -301,6 +351,8 @@ export function AssetPickerModal({
     chainId,
     tokenListGenerator,
     customTokenListGenerator,
+    isMultiselectEnabled,
+    isTokenInSelectedChain,
   ]);
 
   return (
@@ -312,7 +364,7 @@ export function AssetPickerModal({
     >
       <ModalOverlay />
       <ModalContent modalDialogProps={{ padding: 0 }}>
-        <ModalHeader onClose={onClose}>
+        <ModalHeader onClose={onClose} onBack={asset ? undefined : onBack}>
           <Text variant={TextVariant.headingSm} textAlign={TextAlign.Center}>
             {header}
           </Text>
@@ -337,12 +389,13 @@ export function AssetPickerModal({
         {onNetworkPickerClick && (
           <Box className="network-picker">
             <PickerNetwork
-              label={network?.name ?? 'Select network'}
+              label={networkPickerProps.label}
               src={
-                network?.chainId &&
-                CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP[
-                  network.chainId as keyof typeof CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP
-                ]
+                networkPickerProps.src ??
+                (network?.chainId &&
+                  CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP[
+                    network.chainId as keyof typeof CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP
+                  ])
               }
               onClick={onNetworkPickerClick}
               data-testid="multichain-asset-picker__network"
@@ -355,12 +408,15 @@ export function AssetPickerModal({
               <Search
                 searchQuery={searchQuery}
                 onChange={(value) => setSearchQuery(value)}
+                autoFocus={false}
               />
               <AssetList
+                network={network}
                 handleAssetChange={handleAssetChange}
                 asset={asset?.type === AssetType.NFT ? undefined : asset}
                 tokenList={filteredTokenList}
                 isTokenDisabled={getIsDisabled}
+                isTokenListLoading={isTokenListLoading}
               />
             </React.Fragment>
             <AssetPickerModalNftTab
