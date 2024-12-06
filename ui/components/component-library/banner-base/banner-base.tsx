@@ -36,6 +36,7 @@ export const BannerBase: BannerBaseComponent = React.forwardRef(
       actionButtonOnClick,
       actionButtonProps,
       startAccessory,
+      fullHeightAccessory,
       onClose,
       closeButtonProps,
       ...props
@@ -51,7 +52,10 @@ export const BannerBase: BannerBaseComponent = React.forwardRef(
         gap={2}
         backgroundColor={BackgroundColor.backgroundDefault}
         borderRadius={BorderRadius.SM}
-        padding={3}
+        padding={fullHeightAccessory ? 0 : 3}
+        paddingLeft={fullHeightAccessory ? 3 : 0}
+        paddingRight={fullHeightAccessory ? 3 : 0}
+        position={fullHeightAccessory ? 'relative' : undefined}
         {...(props as BoxProps<C>)}
       >
         {startAccessory && <>{startAccessory}</>}
