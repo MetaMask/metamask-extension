@@ -1,16 +1,20 @@
 import { SnapControllerState } from '@metamask/snaps-controllers';
-import { Snap } from '@metamask/snaps-utils';
+import { isSnapId, Snap } from '@metamask/snaps-utils';
+import { MemStoreControllersComposedState } from '../../../shared/types/metamask-controller-stores';
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-type FlattenedUIState = Record<string, any>;
+const REMOVE_KEYS = ['snapStates', 'unencryptedSnapStates', 'vault'] as const;
 
-const REMOVE_KEYS = ['snapStates', 'unencryptedSnapStates', 'vault'];
-
-export function sanitizeUIState(state: FlattenedUIState): FlattenedUIState {
+export function sanitizeUIState(
+  state: MemStoreControllersComposedState,
+): MemStoreControllersComposedState {
   const newState = { ...state };
 
   for (const key of REMOVE_KEYS) {
-    delete newState[key];
+    if (key === 'vault') {
+      delete newState.KeyringController[key];
+    } else {
+      delete newState.SnapController[key];
+    }
   }
 
   sanitizeSnapData(newState);
@@ -18,17 +22,22 @@ export function sanitizeUIState(state: FlattenedUIState): FlattenedUIState {
   return newState;
 }
 
-function sanitizeSnapData(state: FlattenedUIState) {
-  const snapsData = state.snaps as SnapControllerState['snaps'] | undefined;
+function sanitizeSnapData(state: MemStoreControllersComposedState) {
+  const snapsData: SnapControllerState['snaps'] | undefined =
+    state.SnapController.snaps;
 
   if (!snapsData) {
     return;
   }
 
-  state.snaps = Object.values(snapsData).reduce((acc, snap) => {
-    acc[snap.id] = stripLargeSnapData(snap) as Snap;
+  state.SnapController.snaps = Object.values(snapsData).reduce<
+    SnapControllerState['snaps']
+  >((acc, snap) => {
+    if (isSnapId(snap.id)) {
+      acc[snap.id] = stripLargeSnapData(snap) as Snap;
+    }
     return acc;
-  }, {} as SnapControllerState['snaps']);
+  }, {} as never);
 }
 
 function stripLargeSnapData(snapData: Snap): Partial<Snap> {
