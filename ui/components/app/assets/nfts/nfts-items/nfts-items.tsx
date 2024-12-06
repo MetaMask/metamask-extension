@@ -13,7 +13,6 @@ import {
   FlexDirection,
   TextColor,
   TextVariant,
-  TypographyVariant,
 } from '../../../../../helpers/constants/design-system';
 import { ENVIRONMENT_TYPE_POPUP } from '../../../../../../shared/constants/app';
 // TODO: Remove restricted import
