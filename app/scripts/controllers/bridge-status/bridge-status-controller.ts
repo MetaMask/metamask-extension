@@ -6,19 +6,18 @@ import {
   StatusTypes,
   BridgeStatusControllerState,
   StartPollingForBridgeTxStatusArgsSerialized,
+  BridgeStatusState,
 } from '../../../../shared/types/bridge-status';
 import { decimalToPrefixedHex } from '../../../../shared/modules/conversion.utils';
 import {
   BRIDGE_STATUS_CONTROLLER_NAME,
-  DEFAULT_BRIDGE_STATUS_CONTROLLER_STATE,
+  DEFAULT_BRIDGE_STATUS_STATE,
   REFRESH_INTERVAL_MS,
 } from './constants';
 import { BridgeStatusControllerMessenger } from './types';
 import { fetchBridgeTxStatus, getStatusRequestWithSrcTxHash } from './utils';
 
-const metadata: StateMetadata<{
-  bridgeStatusState: BridgeStatusControllerState;
-}> = {
+const metadata: StateMetadata<BridgeStatusControllerState> = {
   // We want to persist the bridge status state so that we can show the proper data for the Activity list
   // basically match the behavior of TransactionController
   bridgeStatusState: {
@@ -36,7 +35,7 @@ export type FetchBridgeTxStatusArgs = {
 };
 export default class BridgeStatusController extends StaticIntervalPollingController<BridgeStatusPollingInput>()<
   typeof BRIDGE_STATUS_CONTROLLER_NAME,
-  { bridgeStatusState: BridgeStatusControllerState },
+  BridgeStatusControllerState,
   BridgeStatusControllerMessenger
 > {
   #pollingTokensByTxMetaId: Record<SrcTxMetaId, string> = {};
@@ -46,9 +45,9 @@ export default class BridgeStatusController extends StaticIntervalPollingControl
     state,
   }: {
     messenger: BridgeStatusControllerMessenger;
-    state?: Partial<{
-      bridgeStatusState: BridgeStatusControllerState;
-    }>;
+    state?: {
+      bridgeStatusState?: Partial<BridgeStatusState>;
+    };
   }) {
     super({
       name: BRIDGE_STATUS_CONTROLLER_NAME,
@@ -58,7 +57,7 @@ export default class BridgeStatusController extends StaticIntervalPollingControl
       state: {
         ...state,
         bridgeStatusState: {
-          ...DEFAULT_BRIDGE_STATUS_CONTROLLER_STATE,
+          ...DEFAULT_BRIDGE_STATUS_STATE,
           ...state?.bridgeStatusState,
         },
       },
@@ -86,7 +85,7 @@ export default class BridgeStatusController extends StaticIntervalPollingControl
   resetState = () => {
     this.update((_state) => {
       _state.bridgeStatusState = {
-        ...DEFAULT_BRIDGE_STATUS_CONTROLLER_STATE,
+        ...DEFAULT_BRIDGE_STATUS_STATE,
       };
     });
   };
@@ -102,7 +101,7 @@ export default class BridgeStatusController extends StaticIntervalPollingControl
     if (ignoreNetwork) {
       this.update((_state) => {
         _state.bridgeStatusState = {
-          ...DEFAULT_BRIDGE_STATUS_CONTROLLER_STATE,
+          ...DEFAULT_BRIDGE_STATUS_STATE,
         };
       });
     } else {
