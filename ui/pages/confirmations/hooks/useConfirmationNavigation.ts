@@ -8,7 +8,9 @@ import { TEMPLATED_CONFIRMATION_APPROVAL_TYPES } from '../confirmation/templates
 import {
   CONFIRM_TRANSACTION_ROUTE,
   CONFIRMATION_V_NEXT_ROUTE,
+  SIGNATURE_REQUEST_PATH,
 } from '../../../helpers/constants/routes';
+import { isSignatureTransactionType } from '../utils';
 
 export function useConfirmationNavigation() {
   const confirmations = useSelector(
@@ -43,16 +45,26 @@ export function useConfirmationNavigation() {
         return;
       }
 
-      const isTemplate = TEMPLATED_CONFIRMATION_APPROVAL_TYPES.includes(
-        nextConfirmation.type as ApprovalType,
-      );
+      const type = nextConfirmation.type as ApprovalType;
+      const isTemplate = TEMPLATED_CONFIRMATION_APPROVAL_TYPES.includes(type);
 
       if (isTemplate) {
         history.replace(`${CONFIRMATION_V_NEXT_ROUTE}/${confirmationId}`);
         return;
       }
 
-      history.replace(`${CONFIRM_TRANSACTION_ROUTE}/${confirmationId}`);
+      const isSignature = isSignatureTransactionType(nextConfirmation);
+
+      if (isSignature) {
+        history.replace(
+          `${CONFIRM_TRANSACTION_ROUTE}/${confirmationId}${SIGNATURE_REQUEST_PATH}`,
+        );
+        return;
+      }
+
+      if (type === ApprovalType.Transaction) {
+        history.replace(`${CONFIRM_TRANSACTION_ROUTE}/${confirmationId}`);
+      }
     },
     [confirmations, history],
   );
