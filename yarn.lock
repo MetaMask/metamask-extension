@@ -5056,25 +5056,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/controller-utils@npm:^11.0.0, @metamask/controller-utils@npm:^11.1.0, @metamask/controller-utils@npm:^11.2.0, @metamask/controller-utils@npm:^11.3.0, @metamask/controller-utils@npm:^11.4.0, @metamask/controller-utils@npm:^11.4.1, @metamask/controller-utils@npm:^11.4.2, @metamask/controller-utils@npm:^11.4.3":
-  version: 11.4.3
-  resolution: "@metamask/controller-utils@npm:11.4.3"
-  dependencies:
-    "@ethereumjs/util": "npm:^8.1.0"
-    "@metamask/eth-query": "npm:^4.0.0"
-    "@metamask/ethjs-unit": "npm:^0.3.0"
-    "@metamask/utils": "npm:^10.0.0"
-    "@spruceid/siwe-parser": "npm:2.1.0"
-    "@types/bn.js": "npm:^5.1.5"
-    bignumber.js: "npm:^9.1.2"
-    bn.js: "npm:^5.2.1"
-    eth-ens-namehash: "npm:^2.0.8"
-    fast-deep-equal: "npm:^3.1.3"
-  checksum: 10/5703b0721daf679cf44affc690f2b313e40893b64b0aafaf203e69ee51438197cc3634ef7094145f580a8a8aaadcb79026b2fbd4065c1bb4a8c26627a2c4c69a
-  languageName: node
-  linkType: hard
-
-"@metamask/controller-utils@npm:^11.4.4":
+"@metamask/controller-utils@npm:^11.0.0, @metamask/controller-utils@npm:^11.1.0, @metamask/controller-utils@npm:^11.2.0, @metamask/controller-utils@npm:^11.3.0, @metamask/controller-utils@npm:^11.4.0, @metamask/controller-utils@npm:^11.4.1, @metamask/controller-utils@npm:^11.4.2, @metamask/controller-utils@npm:^11.4.3, @metamask/controller-utils@npm:^11.4.4":
   version: 11.4.4
   resolution: "@metamask/controller-utils@npm:11.4.4"
   dependencies:
