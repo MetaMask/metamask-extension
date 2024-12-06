@@ -16,19 +16,16 @@ export const getHexMaxGasLimit = (gasLimit: number) => {
 };
 export const getTxGasEstimates = async ({
   networkAndAccountSupports1559,
-  networkGasFeeEstimates,
+  estimatedBaseFee,
   txParams,
   hexChainId,
 }: {
   networkAndAccountSupports1559: boolean;
-  networkGasFeeEstimates: {
-    estimatedBaseFee: string;
-  };
+  estimatedBaseFee: string; // estimatedBaseFee is in GWEI
   txParams: TxData;
   hexChainId: Hex;
 }) => {
   if (networkAndAccountSupports1559) {
-    const { estimatedBaseFee = '0' } = networkGasFeeEstimates; // estimatedBaseFee is in GWEI
     const hexEstimatedBaseFee = decGWEIToHexWEI(estimatedBaseFee) as Hex;
     const txGasFeeEstimates = await getTransaction1559GasFeeEstimates(
       {

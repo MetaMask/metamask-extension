@@ -47,7 +47,7 @@ export default function useHandleTx() {
 
     const { maxFeePerGas, maxPriorityFeePerGas } = await getTxGasEstimates({
       networkAndAccountSupports1559,
-      networkGasFeeEstimates,
+      estimatedBaseFee: networkGasFeeEstimates.estimatedBaseFee,
       txParams,
       hexChainId,
     });
