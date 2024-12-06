@@ -1,14 +1,17 @@
 import React, { useContext, useRef, useState } from 'react';
-import PropTypes from 'prop-types';
 import { I18nContext } from '../../../../../contexts/i18n';
-import { Menu, MenuItem } from '../../../../ui/menu';
 import {
   Box,
   ButtonIcon,
   ButtonIconSize,
+  Icon,
   IconName,
+  IconSize,
+  Popover,
+  PopoverPosition,
 } from '../../../../component-library';
 import { IconColor } from '../../../../../helpers/constants/design-system';
+import { SelectableListItem } from '../../asset-list/sort-control/sort-control';
 
 type NftOptionsProps = {
   onRemove: () => void;
@@ -20,6 +23,11 @@ const NftOptions = ({ onRemove, onViewOnOpensea }: NftOptionsProps) => {
   const [nftOptionsOpen, setNftOptionsOpen] = useState(false);
   const ref = useRef<HTMLElement | null>(null);
 
+  const closePopover = () => {
+    setNftOptionsOpen(false);
+    onViewOnOpensea && onViewOnOpensea();
+  };
+
   return (
     <Box ref={ref}>
       <ButtonIcon
@@ -30,47 +38,48 @@ const NftOptions = ({ onRemove, onViewOnOpensea }: NftOptionsProps) => {
         size={ButtonIconSize.Sm}
         ariaLabel={t('nftOptions')}
       />
-
-      {nftOptionsOpen ? (
-        // TODO: Menu is deprecated, use Popover instead
-        <Menu
-          data-testid="close-nft-options-menu"
-          anchorElement={ref.current}
-          onHide={() => setNftOptionsOpen(false)}
-        >
-          {onViewOnOpensea ? (
-            // @ts-ignore: need to update deprecated menu to popover
-            <MenuItem
-              iconName={IconName.Export}
-              data-testid="nft-options__view-on-opensea"
-              onClick={() => {
-                setNftOptionsOpen(false);
-                onViewOnOpensea();
-              }}
-            >
-              {t('viewOnOpensea')}
-            </MenuItem>
-          ) : null}
-          {/* @ts-ignore: need to update deprecated menu to popover */}
-          <MenuItem
-            iconName={IconName.Trash}
-            data-testid="nft-item-remove"
+      <Popover
+        onClickOutside={closePopover}
+        isOpen={nftOptionsOpen}
+        position={PopoverPosition.BottomEnd}
+        referenceElement={ref.current}
+        matchWidth={false}
+        style={{
+          zIndex: 10,
+          display: 'flex',
+          flexDirection: 'column',
+          padding: 0,
+        }}
+      >
+        {onViewOnOpensea ? (
+          <SelectableListItem
+            data-testid="nft-options__view-on-opensea"
             onClick={() => {
               setNftOptionsOpen(false);
-              onRemove();
+              onViewOnOpensea();
             }}
           >
-            {t('removeNFT')}
-          </MenuItem>
-        </Menu>
-      ) : null}
+            <Icon
+              name={IconName.Export}
+              size={IconSize.Sm}
+              marginInlineEnd={2}
+            />
+            {t('viewOnOpensea')}
+          </SelectableListItem>
+        ) : null}
+        <SelectableListItem
+          data-testid="nft-item-remove"
+          onClick={() => {
+            setNftOptionsOpen(false);
+            onRemove();
+          }}
+        >
+          <Icon name={IconName.Trash} size={IconSize.Sm} marginInlineEnd={2} />
+          {t('removeNFT')}
+        </SelectableListItem>
+      </Popover>
     </Box>
   );
-};
-
-NftOptions.propTypes = {
-  onRemove: PropTypes.func.isRequired,
-  onViewOnOpensea: PropTypes.func,
 };
 
 export default NftOptions;
