@@ -15,6 +15,7 @@ It's essential to ensure that PRs have the appropriate labels before they are co
 
 ### Optional labels:
 - **regression-main**: This label can manually be added to a bug report issue at the time of its creation if the bug is present on the development branch, i.e., `main`, but is not yet released in production.
+- **feature-branch-bug**: This label can manually be added to a bug report issue at the time of its creation if the bug is present on a feature branch, i.e., before merging to `main`.
 - **needs-qa**: If the PR includes a new features, complex testing steps, or large refactors, this label must be added to indicated PR requires a full manual QA prior being merged and added to a release.
 
 ### Labels prohibited when PR needs to be merged:
