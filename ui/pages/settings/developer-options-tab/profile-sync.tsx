@@ -17,7 +17,7 @@ import {
   JustifyContent,
   AlignItems,
 } from '../../../helpers/constants/design-system';
-import { useDeleteAccountSyncingDataFromUserStorage } from '../../../hooks/metamask-notifications/useProfileSyncing';
+import { useDeleteAccountSyncingDataFromUserStorage } from '../../../hooks/identity/useProfileSyncing';
 
 const AccountSyncDeleteDataFromUserStorage = () => {
   const [hasDeletedAccountSyncEntries, setHasDeletedAccountSyncEntries] =
