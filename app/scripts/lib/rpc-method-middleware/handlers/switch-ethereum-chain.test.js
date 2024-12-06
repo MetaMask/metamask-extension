@@ -65,7 +65,7 @@ describe('switchEthereumChainHandler', () => {
     jest.clearAllMocks();
   });
 
-  it('returns null if the current chain id for the domain matches the chainId in the params', async () => {
+  it('returns null and does not try to switch the network if the current chain id for the domain matches the chainId in the params', async () => {
     const { end, response, handler } = createMockedHandler();
     await handler({
       origin: 'example.com',
