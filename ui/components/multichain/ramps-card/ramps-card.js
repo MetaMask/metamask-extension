@@ -162,6 +162,7 @@ export const RampsCard = ({ variant, handleOnClick }) => {
           {t(title)}
         </Text>
         <ButtonIcon
+          data-testid="ramp-card-close-btn"
           color={IconColor.infoInverse}
           iconName={IconName.Close}
           size={ButtonIconSize.Sm}
