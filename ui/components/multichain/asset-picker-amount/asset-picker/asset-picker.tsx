@@ -24,8 +24,10 @@ import {
 } from '../../../../helpers/constants/design-system';
 import { AssetType } from '../../../../../shared/constants/transaction';
 import { AssetPickerModal } from '../asset-picker-modal/asset-picker-modal';
-import { getNetworkConfigurationsByChainId } from '../../../../../shared/modules/selectors/networks';
-import { getCurrentNetwork } from '../../../../selectors';
+import {
+  getCurrentChainId,
+  getNetworkConfigurationsByChainId,
+} from '../../../../../shared/modules/selectors/networks';
 import Tooltip from '../../../ui/tooltip';
 import { LARGE_SYMBOL_LENGTH } from '../constants';
 ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
@@ -43,7 +45,6 @@ import { AssetPickerModalNetwork } from '../asset-picker-modal/asset-picker-moda
 import {
   CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP,
   GOERLI_DISPLAY_NAME,
-  NETWORK_TO_NAME_MAP,
   SEPOLIA_DISPLAY_NAME,
 } from '../../../../../shared/constants/network';
 import { useMultichainBalances } from '../../../../hooks/useMultichainBalances';
@@ -124,8 +125,9 @@ export function AssetPicker({
       : symbol;
 
   // Badge details
-  const currentNetwork = useSelector(getCurrentNetwork);
+  const currentChainId = useSelector(getCurrentChainId);
   const allNetworks = useSelector(getNetworkConfigurationsByChainId);
+  const currentNetwork = allNetworks[currentChainId];
   const selectedNetwork =
     networkProps?.network ??
     (currentNetwork?.chainId && allNetworks[currentNetwork.chainId]);
@@ -152,13 +154,11 @@ export function AssetPicker({
     return undefined;
   };
 
-  const getNetworkImageUrl = (chainId: string) =>
-    CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP[
-      chainId as keyof typeof CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP
-    ];
-
   const networkImageSrc =
-    selectedNetwork?.chainId && getNetworkImageUrl(selectedNetwork.chainId);
+    selectedNetwork?.chainId &&
+    CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP[
+      selectedNetwork.chainId as keyof typeof CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP
+    ];
 
   const handleButtonClick = () => {
     if (networkProps && !networkProps.network) {
@@ -167,29 +167,6 @@ export function AssetPicker({
       setShowAssetPickerModal(true);
     }
     onClick?.();
-  };
-
-  const getNetworkPickerLabel = () => {
-    if (!isMultiselectEnabled) {
-      return (
-        (selectedNetwork?.chainId &&
-          NETWORK_TO_NAME_MAP[
-            selectedNetwork.chainId as keyof typeof NETWORK_TO_NAME_MAP
-          ]) ??
-        selectedNetwork?.name ??
-        t('bridgeSelectNetwork')
-      );
-    }
-    switch (selectedChainIds.length) {
-      case allNetworksToUse.length:
-        return t('allNetworks');
-      case 1:
-        return t('singleNetwork');
-      case 0:
-        return t('bridgeSelectNetwork');
-      default:
-        return t('someNetworks', [selectedChainIds.length]);
-    }
   };
 
   return (
@@ -250,26 +227,10 @@ export function AssetPicker({
           setShowAssetPickerModal(false);
         }}
         isMultiselectEnabled={isMultiselectEnabled}
-        isTokenInSelectedChain={(tokenChainId?: string) => {
-          if (!tokenChainId) {
-            return true;
-          }
-          if (isMultiselectEnabled) {
-            return selectedChainIds.includes(tokenChainId);
-          }
-          if (networkProps?.network?.chainId === tokenChainId) {
-            return true;
-          }
-          return false;
-        }}
         sendingAsset={sendingAsset}
-        network={networkProps?.network ? networkProps.network : undefined}
-        networkPickerProps={{
-          label: getNetworkPickerLabel(),
-          src: isMultiselectEnabled
-            ? selectedChainIds.map(getNetworkImageUrl).reverse()
-            : undefined,
-        }}
+        network={networkProps?.network}
+        networks={networkProps?.networks}
+        selectedChainIds={selectedChainIds}
         onNetworkPickerClick={
           networkProps
             ? () => {
