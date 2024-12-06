@@ -22,6 +22,7 @@ import {
   getFromTokens,
   getFromTopAssets,
   getQuoteRequest,
+  getSlippage,
   getToChain,
   getToChains,
   getToToken,
@@ -75,6 +76,7 @@ const PrepareBridgePage = () => {
   const fromAmount = useSelector(getFromAmount);
 
   const providerConfig = useSelector(getProviderConfig);
+  const slippage = useSelector(getSlippage);
 
   const quoteRequest = useSelector(getQuoteRequest);
   const { activeQuote } = useSelector(getBridgeQuotes);
@@ -117,6 +119,7 @@ const PrepareBridgePage = () => {
       // Otherwise quotes get filtered out by the bridge-api when the wallet's real
       // balance is less than the tenderly balance
       insufficientBal: Boolean(providerConfig?.rpcUrl?.includes('tenderly')),
+      slippage,
     }),
     [
       fromToken,
@@ -125,6 +128,7 @@ const PrepareBridgePage = () => {
       toChain?.chainId,
       fromAmount,
       providerConfig,
+      slippage,
     ],
   );
 

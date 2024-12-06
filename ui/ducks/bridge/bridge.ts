@@ -8,6 +8,7 @@ import {
   QuoteResponse,
   SortOrder,
 } from '../../pages/bridge/types';
+import { BRIDGE_DEFAULT_SLIPPAGE } from '../../../shared/constants/bridge';
 import { getTokenExchangeRate } from './utils';
 
 export type BridgeState = {
@@ -20,6 +21,7 @@ export type BridgeState = {
   sortOrder: SortOrder;
   selectedQuote: (QuoteResponse & QuoteMetadata) | null; // Alternate quote selected by user. When quotes refresh, the best match will be activated.
   wasTxDeclined: boolean; // Whether the user declined the transaction. Relevant for hardware wallets.
+  slippage: number;
 };
 
 const initialState: BridgeState = {
@@ -32,6 +34,7 @@ const initialState: BridgeState = {
   sortOrder: SortOrder.COST_ASC,
   selectedQuote: null,
   wasTxDeclined: false,
+  slippage: BRIDGE_DEFAULT_SLIPPAGE,
 };
 
 export const setSrcTokenExchangeRates = createAsyncThunk(
@@ -72,6 +75,9 @@ const bridgeSlice = createSlice({
     },
     setWasTxDeclined: (state, action) => {
       state.wasTxDeclined = action.payload;
+    },
+    setSlippage: (state, action) => {
+      state.slippage = action.payload;
     },
   },
   extraReducers: (builder) => {

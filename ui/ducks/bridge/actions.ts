@@ -26,6 +26,7 @@ const {
   setSortOrder,
   setSelectedQuote,
   setWasTxDeclined,
+  setSlippage,
 } = bridgeSlice.actions;
 
 export {
@@ -39,6 +40,7 @@ export {
   setSortOrder,
   setSelectedQuote,
   setWasTxDeclined,
+  setSlippage,
 };
 
 const callBridgeControllerMethod = <T>(

@@ -173,6 +173,8 @@ export const getToToken = (
 export const getFromAmount = (state: BridgeAppState): string | null =>
   state.bridge.fromTokenInputValue;
 
+export const getSlippage = (state: BridgeAppState) => state.bridge.slippage;
+
 export const getQuoteRequest = (state: BridgeAppState) => {
   const { quoteRequest } = state.metamask.bridgeState;
   return quoteRequest;
