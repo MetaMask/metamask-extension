@@ -743,6 +743,9 @@
   "beCareful": {
     "message": "Be careful"
   },
+  "bestPrice": {
+    "message": "Best price"
+  },
   "beta": {
     "message": "Beta"
   },
@@ -915,12 +918,12 @@
     "message": "Swapping $1 for $2",
     "description": "$1 is the amount of the source asset, $2 is the amount of the destination asset"
   },
+  "bridgeTerms": {
+    "message": "Terms"
+  },
   "bridgeTimingMinutes": {
     "message": "$1 min",
     "description": "$1 is the ticker symbol of a an asset the user is being prompted to purchase"
-  },
-  "bridgeTimingTooltipText": {
-    "message": "This is the estimated time it will take for the bridging to be complete."
   },
   "bridgeTo": {
     "message": "Bridge to"
@@ -969,6 +972,9 @@
   "bridgeTxDetailsYouSent": {
     "message": "You sent"
   },
+  "bridging": {
+    "message": "Bridging"
+  },
   "browserNotSupported": {
     "message": "Your browser is not supported..."
   },
@@ -977,6 +983,9 @@
   },
   "builtAroundTheWorld": {
     "message": "MetaMask is designed and built around the world."
+  },
+  "bulletpoint": {
+    "message": "·"
   },
   "busy": {
     "message": "Busy"
@@ -2111,9 +2120,6 @@
   "estimatedFeeTooltip": {
     "message": "Amount paid to process the transaction on network."
   },
-  "estimatedTime": {
-    "message": "Estimated time"
-  },
   "ethGasPriceFetchWarning": {
     "message": "Backup gas price is provided as the main gas estimation service is unavailable right now."
   },
@@ -2490,6 +2496,12 @@
   },
   "holdToRevealUnlockedLabel": {
     "message": "hold to reveal circle unlocked"
+  },
+  "howQuotesWork": {
+    "message": "How quotes work"
+  },
+  "howQuotesWorkExplanation": {
+    "message": "This quote has the best return of the quotes we searched. This is based on the swap rate, which includes bridging fees and a $1% MetaMask fee, minus gas fees. Gas fees depend on how busy the network is and how complex the transaction is."
   },
   "id": {
     "message": "ID"
@@ -3238,6 +3250,9 @@
   },
   "networkFee": {
     "message": "Network fee"
+  },
+  "networkFees": {
+    "message": "Network fees"
   },
   "networkIsBusy": {
     "message": "Network is busy. Gas prices are high and estimates are less accurate."
@@ -4482,11 +4497,12 @@
   "quotedReceiveAmount": {
     "message": "$1 receive amount"
   },
-  "quotedReceivingAmount": {
-    "message": "$1 receiving"
-  },
+  "quotedTotalCost": { "message": "$1 total cost" },
   "rank": {
     "message": "Rank"
+  },
+  "rateIncludesMMFee": {
+    "message": "Rate includes $1% fee"
   },
   "reAddAccounts": {
     "message": "re-add any other accounts"
@@ -6684,7 +6700,7 @@
     "message": "View activity"
   },
   "viewAllQuotes": {
-    "message": "view all quotes"
+    "message": "More quotes"
   },
   "viewContact": {
     "message": "View contact"
