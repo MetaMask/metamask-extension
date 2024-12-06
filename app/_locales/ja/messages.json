@@ -4032,12 +4032,6 @@
   "permissionsPageEmptySubContent": {
     "message": "ここには、インストールされたSnapや接続されたサイトに付与したアクセス許可が表示されます。"
   },
-  "permissionsPageTourDescription": {
-    "message": "これは、接続されたサイトやインストールされたSnapに付与したアクセス許可を管理するための、コントロールパネルです。"
-  },
-  "permissionsPageTourTitle": {
-    "message": "「接続済みのサイト」が「アクセス許可」に変更されました"
-  },
   "permitSimulationDetailInfo": {
     "message": "この数量のトークンをアカウントから転送する権限を使用者に付与しようとしています。"
   },

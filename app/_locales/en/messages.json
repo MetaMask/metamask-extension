@@ -4236,12 +4236,6 @@
   "permissionsPageEmptySubContent": {
     "message": "This is where you can see the permissions you've given to installed Snaps or connected sites."
   },
-  "permissionsPageTourDescription": {
-    "message": "This is your control panel for managing permissions given to connected sites and installed Snaps."
-  },
-  "permissionsPageTourTitle": {
-    "message": "Connected sites are now permissions"
-  },
   "permitSimulationChange_approve": {
     "message": "Spending cap"
   },
@@ -4463,7 +4457,9 @@
   "quoteRate": {
     "message": "Quote rate"
   },
-  "quotedNetworkFee": { "message": "$1 network fee" },
+  "quotedNetworkFee": {
+    "message": "$1 network fee"
+  },
   "quotedReceiveAmount": {
     "message": "$1 receive amount"
   },
