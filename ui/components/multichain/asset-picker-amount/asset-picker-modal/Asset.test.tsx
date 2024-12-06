@@ -69,6 +69,7 @@ describe('Asset', () => {
         balance="10000000000000000000"
         decimals={18}
         tooltipText="tooltip"
+        chainId="0x1"
       />,
     );
 
