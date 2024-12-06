@@ -59,7 +59,6 @@ export default function useHandleTx() {
       value: txParams.value,
       data: txParams.data,
       chainId: hexChainId,
-      gasLimit: maxGasLimit,
       gas: maxGasLimit,
       maxFeePerGas,
       maxPriorityFeePerGas,
