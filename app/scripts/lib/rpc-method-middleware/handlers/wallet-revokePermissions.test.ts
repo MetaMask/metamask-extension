@@ -89,7 +89,7 @@ describe('revokePermissionsHandler', () => {
     );
   });
 
-  it('returns an error if params only the CAIP-25 permission is specified', () => {
+  it('returns an error if params only contains the CAIP-25 permission', () => {
     const { handler, end } = createMockedHandler();
 
     const emptyRequest = {
