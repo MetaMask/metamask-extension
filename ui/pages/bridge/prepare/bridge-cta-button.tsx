@@ -13,6 +13,7 @@ import {
   getBridgeQuotes,
   getValidationErrors,
   getBridgeQuotesConfig,
+  getWasTxDeclined,
 } from '../../../ducks/bridge/selectors';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import useSubmitBridgeTransaction from '../hooks/useSubmitBridgeTransaction';
@@ -55,6 +56,8 @@ export const BridgeCTAButton = () => {
     isInsufficientGasBalance: isInsufficientGasBalance_,
     isInsufficientGasForQuote: isInsufficientGasForQuote_,
   } = useSelector(getValidationErrors);
+
+  const wasTxDeclined = useSelector(getWasTxDeclined);
 
   const { balanceAmount } = useLatestBalance(fromToken, fromChain?.chainId);
   const { balanceAmount: nativeAssetBalance } = useLatestBalance(
@@ -99,6 +102,9 @@ export const BridgeCTAButton = () => {
   }, [isQuoteGoingToRefresh, quotesRefreshCount]);
 
   const label = useMemo(() => {
+    if (wasTxDeclined) {
+      return t('youDeclinedTheTransaction');
+    }
     if (isQuoteExpired) {
       return t('bridgeQuoteExpired');
     }
@@ -138,9 +144,10 @@ export const BridgeCTAButton = () => {
     isQuoteExpired,
     isInsufficientGasBalance,
     isInsufficientGasForQuote,
+    wasTxDeclined,
   ]);
 
-  return activeQuote ? (
+  return activeQuote && !wasTxDeclined ? (
     <ButtonPrimary
       width={BlockSize.Full}
       size={activeQuote ? ButtonPrimarySize.Md : ButtonPrimarySize.Lg}

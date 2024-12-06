@@ -1,8 +1,15 @@
-import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import React, {
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import classnames from 'classnames';
 import { debounce } from 'lodash';
 import { useHistory, useLocation } from 'react-router-dom';
+import { BigNumber } from 'bignumber.js';
 import {
   setFromChain,
   setFromToken,
@@ -12,6 +19,7 @@ import {
   setToChainId,
   setToToken,
   updateQuoteRequestParams,
+  resetBridgeState,
 } from '../../../ducks/bridge/actions';
 import {
   getBridgeQuotes,
@@ -20,7 +28,6 @@ import {
   getFromChains,
   getFromToken,
   getFromTokens,
-  getFromTopAssets,
   getQuoteRequest,
   getSlippage,
   getToChain,
@@ -29,21 +36,39 @@ import {
   getToTokens,
   getToTopAssets,
   getWasTxDeclined,
+  getFromAmountInCurrency,
+  getValidationErrors,
+  getBridgeQuotesConfig,
 } from '../../../ducks/bridge/selectors';
 import {
+  BannerAlert,
+  BannerAlertSeverity,
   Box,
   ButtonIcon,
   IconName,
+  PopoverPosition,
+  Text,
 } from '../../../components/component-library';
-import { BlockSize } from '../../../helpers/constants/design-system';
+import {
+  BackgroundColor,
+  BlockSize,
+  Display,
+  FlexDirection,
+  IconColor,
+  JustifyContent,
+  TextAlign,
+  TextColor,
+  TextVariant,
+} from '../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../hooks/useI18nContext';
+import { SWAPS_CHAINID_DEFAULT_TOKEN_MAP } from '../../../../shared/constants/swaps';
 import { useTokensWithFiltering } from '../../../hooks/useTokensWithFiltering';
 import { setActiveNetwork } from '../../../store/actions';
 import { hexToDecimal } from '../../../../shared/modules/conversion.utils';
 import { QuoteRequest } from '../types';
 import { calcTokenValue } from '../../../../shared/lib/swaps-utils';
 import { BridgeQuoteCard } from '../quotes/bridge-quote-card';
-import { isValidQuoteRequest } from '../utils/quote';
+import { formatTokenAmount, isValidQuoteRequest } from '../utils/quote';
 import { getProviderConfig } from '../../../../shared/modules/selectors/networks';
 import {
   CrossChainSwapsEventProperties,
@@ -52,8 +77,16 @@ import {
 import { useRequestProperties } from '../../../hooks/bridge/events/useRequestProperties';
 import { MetaMetricsEventName } from '../../../../shared/constants/metametrics';
 import { isNetworkAdded } from '../../../ducks/bridge/utils';
+import { Footer } from '../../../components/multichain/pages/page';
+import MascotBackgroundAnimation from '../../swaps/mascot-background-animation/mascot-background-animation';
+import { Column, Row, Tooltip } from '../layout';
+import useRamps from '../../../hooks/ramps/useRamps/useRamps';
+import { getNativeCurrency } from '../../../ducks/metamask/metamask';
+import useLatestBalance from '../../../hooks/bridge/useLatestBalance';
+import { useCountdownTimer } from '../../../hooks/bridge/useCountdownTimer';
 import { useBridgeTokens } from '../../../hooks/bridge/useBridgeTokens';
 import { BridgeInputGroup } from './bridge-input-group';
+import { BridgeCTAButton } from './bridge-cta-button';
 
 const PrepareBridgePage = () => {
   const dispatch = useDispatch();
@@ -61,12 +94,18 @@ const PrepareBridgePage = () => {
   const t = useI18nContext();
 
   const fromToken = useSelector(getFromToken);
-  const fromTokens = useSelector(getFromTokens);
-  const fromTopAssets = useSelector(getFromTopAssets);
+  const {
+    fromTokens,
+    fromTopAssets,
+    isLoading: isFromTokensLoading,
+  } = useSelector(getFromTokens);
 
   const toToken = useSelector(getToToken);
-  const toTokens = useSelector(getToTokens);
-  const toTopAssets = useSelector(getToTopAssets);
+  const {
+    toTokens,
+    toTopAssets,
+    isLoading: isToTokensLoading,
+  } = useSelector(getToTokens);
 
   const fromChains = useSelector(getFromChains);
   const toChains = useSelector(getToChains);
@@ -74,12 +113,16 @@ const PrepareBridgePage = () => {
   const toChain = useSelector(getToChain);
 
   const fromAmount = useSelector(getFromAmount);
+  const fromAmountInFiat = useSelector(getFromAmountInCurrency);
 
   const providerConfig = useSelector(getProviderConfig);
   const slippage = useSelector(getSlippage);
 
   const quoteRequest = useSelector(getQuoteRequest);
-  const { activeQuote } = useSelector(getBridgeQuotes);
+  const { isLoading, activeQuote, isQuoteGoingToRefresh } =
+    useSelector(getBridgeQuotes);
+
+  const { refreshRate } = useSelector(getBridgeQuotesConfig);
 
   const wasTxDeclined = useSelector(getWasTxDeclined);
 
@@ -102,13 +145,22 @@ const PrepareBridgePage = () => {
 
   const [rotateSwitchTokens, setRotateSwitchTokens] = useState(false);
 
+  useEffect(() => {
+    // Reset controller and inputs on load
+    dispatch(resetBridgeState());
+  }, []);
+
   const quoteParams = useMemo(
     () => ({
       srcTokenAddress: fromToken?.address,
       destTokenAddress: toToken?.address || undefined,
       srcTokenAmount:
-        fromAmount && fromAmount !== '' && fromToken?.decimals
-          ? calcTokenValue(fromAmount, fromToken.decimals).toString()
+        fromAmount && fromToken?.decimals
+          ? calcTokenValue(
+              // Treat empty or incomplete amount as 0 to reject NaN
+              ['', '.'].includes(fromAmount) ? '0' : fromAmount,
+              fromToken.decimals,
+            ).toFixed()
           : undefined,
       srcChainId: fromChain?.chainId
         ? Number(hexToDecimal(fromChain.chainId))
@@ -199,72 +251,106 @@ const PrepareBridgePage = () => {
   }, [fromChain, fromToken, fromTokens, search]);
 
   return (
-    <div className="prepare-bridge-page">
-      <Box className="prepare-bridge-page__content">
-        <BridgeInputGroup
-          className="bridge-box"
-          header={t('swapSelectToken')}
-          token={fromToken}
-          onAmountChange={(e) => {
-            dispatch(setFromTokenInputValue(e));
-          }}
-          onAssetChange={(token) => {
-            token?.address &&
-              trackInputEvent({
-                input: 'token_source',
-                value: token.address,
-              });
-            dispatch(setFromToken(token));
+    <Column className="prepare-bridge-page" gap={8}>
+      <BridgeInputGroup
+        header={t('bridgeFrom')}
+        token={fromToken}
+        onAmountChange={(e) => {
+          dispatch(setFromTokenInputValue(e));
+        }}
+        onAssetChange={(token) => {
+          dispatch(setFromToken(token));
+          dispatch(setFromTokenInputValue(null));
+          token?.address &&
+            trackInputEvent({
+              input: 'token_source',
+              value: token.address,
+            });
+          dispatch(setFromToken(token));
+          dispatch(setFromTokenInputValue(null));
+        }}
+        networkProps={{
+          network: fromChain,
+          networks: fromChains,
+          onNetworkChange: (networkConfig) => {
+            trackInputEvent({
+              input: 'chain_source',
+              value: networkConfig.chainId,
+            });
+            if (networkConfig.chainId === toChain?.chainId) {
+              dispatch(setToChainId(null));
+            }
+            if (isNetworkAdded(networkConfig)) {
+              dispatch(
+                setActiveNetwork(
+                  networkConfig.rpcEndpoints[
+                    networkConfig.defaultRpcEndpointIndex
+                  ].networkClientId,
+                ),
+              );
+            }
+            dispatch(setFromChain(networkConfig.chainId));
+            dispatch(setFromToken(null));
             dispatch(setFromTokenInputValue(null));
-          }}
-          networkProps={{
-            network: fromChain,
-            networks: fromChains,
-            onNetworkChange: (networkConfig) => {
-              trackInputEvent({
-                input: 'chain_source',
-                value: networkConfig.chainId,
-              });
-              if (networkConfig.chainId === toChain?.chainId) {
-                dispatch(setToChainId(null));
-              }
-              if (isNetworkAdded(networkConfig)) {
-                dispatch(
-                  setActiveNetwork(
-                    networkConfig.rpcEndpoints[
-                      networkConfig.defaultRpcEndpointIndex
-                    ].networkClientId,
-                  ),
-                );
-              }
-              dispatch(setFromChain(networkConfig.chainId));
-              dispatch(setFromToken(null));
-              dispatch(setFromTokenInputValue(null));
-            },
-            header: t('bridgeFrom'),
-          }}
-          customTokenListGenerator={
-            fromTokens && fromTopAssets ? fromTokenListGenerator : undefined
-          }
-          amountFieldProps={{
-            testId: 'from-amount',
-            autoFocus: true,
-            value: fromAmount || undefined,
-          }}
-          isMultiselectEnabled={true}
-        />
+          },
+          header: t('yourNetworks'),
+        }}
+        isMultiselectEnabled
+        customTokenListGenerator={
+          fromTokens && fromTopAssets ? fromTokenListGenerator : undefined
+        }
+        onMaxButtonClick={(value: string) => {
+          dispatch(setFromTokenInputValue(value));
+        }}
+        amountInFiat={fromAmountInFiat}
+        amountFieldProps={{
+          testId: 'from-amount',
+          autoFocus: true,
+          value: fromAmount || undefined,
+        }}
+        isTokenListLoading={isFromTokensLoading}
+      />
 
-        <Box className="prepare-bridge-page__switch-tokens">
+      <Column
+        height={BlockSize.Full}
+        paddingTop={8}
+        backgroundColor={BackgroundColor.backgroundAlternativeSoft}
+        style={{
+          position: 'relative',
+        }}
+      >
+        <Box
+          className="prepare-bridge-page__switch-tokens"
+          display={Display.Flex}
+          backgroundColor={BackgroundColor.backgroundAlternativeSoft}
+          style={{
+            position: 'absolute',
+            top: 'calc(-20px + 1px)',
+            right: 'calc(50% - 20px)',
+            border: '2px solid var(--color-background-default)',
+            borderRadius: '100%',
+            opacity: 1,
+            width: 40,
+            height: 40,
+            justifyContent: JustifyContent.center,
+          }}
+        >
           <ButtonIcon
             iconProps={{
               className: classnames({
                 rotate: rotateSwitchTokens,
               }),
             }}
-            width={BlockSize.Full}
+            style={{
+              alignSelf: 'center',
+              borderRadius: '100%',
+              width: '100%',
+              height: '100%',
+            }}
             data-testid="switch-tokens"
             ariaLabel="switch-tokens"
             iconName={IconName.Arrow2Down}
+            color={IconColor.iconAlternativeSoft}
             disabled={!isValidQuoteRequest(quoteRequest, false)}
             onClick={() => {
               setRotateSwitchTokens(!rotateSwitchTokens);
@@ -291,7 +377,6 @@ const PrepareBridgePage = () => {
         </Box>
 
         <BridgeInputGroup
-          className="bridge-box"
           header={t('swapSelectToken')}
           token={toToken}
           onAssetChange={(token) => {
@@ -314,25 +399,106 @@ const PrepareBridgePage = () => {
               dispatch(setToChain(networkConfig.chainId));
             },
             header: t('bridgeTo'),
+            shouldDisableNetwork: ({ chainId }) =>
+              chainId === fromChain?.chainId,
           }}
           customTokenListGenerator={
             toChain && toTokens && toTopAssets
               ? toTokenListGenerator
               : fromTokenListGenerator
           }
+          amountInFiat={
+            activeQuote?.toTokenAmount?.valueInCurrency || undefined
+          }
           amountFieldProps={{
             testId: 'to-amount',
             readOnly: true,
             disabled: true,
             value: activeQuote?.toTokenAmount?.amount.toFixed() ?? '0',
-            className: activeQuote?.toTokenAmount.amount
+            autoFocus: false,
+            className: activeQuote?.toTokenAmount?.amount
               ? 'amount-input defined'
               : 'amount-input',
           }}
+          isTokenListLoading={isToTokensLoading}
         />
-      </Box>
-      {!wasTxDeclined && <BridgeQuoteCard />}
-    </div>
+        <Column height={BlockSize.Full} justifyContent={JustifyContent.center}>
+          {isLoading && !activeQuote ? (
+            <>
+              <Text
+                textAlign={TextAlign.Center}
+                color={TextColor.textAlternativeSoft}
+              >
+                {t('swapFetchingQuotes')}
+              </Text>
+              <MascotBackgroundAnimation height="64" width="64" />
+            </>
+          ) : null}
+        </Column>
+
+        <Row padding={6}>
+          <Column
+            gap={3}
+            className={activeQuote ? 'highlight' : ''}
+            style={{
+              paddingBottom: activeQuote?.approval ? 16 : 'revert-layer',
+              paddingTop: activeQuote?.approval ? 16 : undefined,
+              paddingInline: 16,
+              position: 'relative',
+              overflow: 'hidden',
+            }}
+          >
+            {activeQuote && isQuoteGoingToRefresh && (
+              <Row
+                style={{
+                  position: 'absolute',
+                  left: 0,
+                  top: 0,
+                  width: `calc(100% * (${refreshRate} - ${millisecondsUntilNextRefresh}) / ${refreshRate})`,
+                  height: 4,
+                  maxWidth: '100%',
+                  transition: 'width 1s linear',
+                }}
+                backgroundColor={BackgroundColor.primaryMuted}
+              />
+            )}
+            {!wasTxDeclined && <BridgeQuoteCard />}
+            <Footer padding={0} flexDirection={FlexDirection.Column} gap={2}>
+              <BridgeCTAButton />
+              {activeQuote?.approval && fromAmount && fromToken ? (
+                <Row justifyContent={JustifyContent.center} gap={1}>
+                  <Text
+                    color={TextColor.textAlternativeSoft}
+                    variant={TextVariant.bodyXs}
+                    textAlign={TextAlign.Center}
+                  >
+                    {t('willApproveAmountForBridging', [
+                      formatTokenAmount(
+                        new BigNumber(fromAmount),
+                        fromToken.symbol,
+                      ),
+                    ])}
+                  </Text>
+                  {fromAmount && (
+                    <Tooltip
+                      display={Display.InlineBlock}
+                      position={PopoverPosition.Top}
+                      offset={[-48, 8]}
+                      title={t('grantExactAccess')}
+                    >
+                      {t('bridgeApprovalWarning', [
+                        fromAmount,
+                        fromToken.symbol,
+                      ])}
+                    </Tooltip>
+                  )}
+                </Row>
+              ) : null}
+            </Footer>
+          </Column>
+        </Row>
+      </Column>
+    </Column>
   );
 };
 
