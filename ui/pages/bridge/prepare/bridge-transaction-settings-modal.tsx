@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import {
   Button,
@@ -56,14 +56,6 @@ export const BridgeTransactionSettingsModal = ({
       : slippage,
   );
   const [showCustomButton, setShowCustomButton] = useState(true);
-  const inputRef = useRef<HTMLInputElement | null>(null);
-
-  useEffect(() => {
-    if (inputRef.current) {
-      inputRef.current.value = customSlippage?.toString() ?? '';
-      inputRef.current.focus();
-    }
-  }, [customSlippage]);
 
   return (
     <Modal isOpen={isOpen} onClose={onClose} className="bridge-settings-modal">
@@ -87,7 +79,9 @@ export const BridgeTransactionSettingsModal = ({
                 <Button
                   key={hardcodedSlippage}
                   size={ButtonSize.Sm}
-                  onClick={() => {
+                  onClick={(e: React.MouseEvent<HTMLAnchorElement>) => {
+                    e.preventDefault();
+                    e.stopPropagation();
                     setLocalSlippage(hardcodedSlippage);
                     setCustomSlippage(undefined);
                   }}
@@ -120,7 +114,7 @@ export const BridgeTransactionSettingsModal = ({
                 </Button>
               );
             })}
-            {showCustomButton ? (
+            {showCustomButton && (
               <Button
                 size={ButtonSize.Sm}
                 variant={ButtonVariant.Secondary}
@@ -135,9 +129,10 @@ export const BridgeTransactionSettingsModal = ({
                     ? BackgroundColor.backgroundDefault
                     : BackgroundColor.primaryMuted
                 }
-                onClick={() => {
+                onClick={(e: React.MouseEvent<HTMLAnchorElement>) => {
+                  e.preventDefault();
+                  e.stopPropagation();
                   setShowCustomButton(false);
-                  inputRef?.current?.focus();
                 }}
               >
                 <Text
@@ -152,22 +147,31 @@ export const BridgeTransactionSettingsModal = ({
                     : `${customSlippage}%`}
                 </Text>
               </Button>
-            ) : (
+            )}
+            {!showCustomButton && (
               <TextField
                 borderColor={BorderColor.primaryDefault}
                 borderWidth={2}
                 borderRadius={BorderRadius.pill}
-                inputRef={inputRef}
                 type={TextFieldType.Text}
                 value={customSlippage}
                 onChange={(e) => {
                   // Remove characters that are not numbers or decimal points if rendering a controlled or pasted value
                   const cleanedValue = e.target.value.replace(/[^0-9.]+/gu, '');
                   setLocalSlippage(undefined);
-                  setCustomSlippage(Number(cleanedValue));
+                  setCustomSlippage(
+                    cleanedValue.length > 0 ? Number(cleanedValue) : undefined,
+                  );
                 }}
                 autoFocus={true}
-                onBlur={() => setShowCustomButton(true)}
+                onBlur={() => {
+                  console.log('====blur');
+                  setShowCustomButton(true);
+                }}
+                onFocus={() => {
+                  console.log('====focus');
+                  setShowCustomButton(false);
+                }}
                 onKeyPress={(e?: React.KeyboardEvent<HTMLDivElement>) => {
                   // Only allow numbers and at most one decimal point
                   if (

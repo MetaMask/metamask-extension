@@ -86,14 +86,13 @@
     .dark {
       box-shadow: 0px 0px 2px 0px #18191B, 0px 0px 16px 0px #18191B;
     }
-
   }
 }
 
 .bridge-settings-modal {
   .mm-button-secondary {
     &:hover {
-      background-color: revert-layer;
+      background-color: var(--color-background-default-hover)
     }
   }
 
