@@ -5,6 +5,7 @@ import { NetworkConfiguration } from '@metamask/network-controller';
 import { getCurrentChainId } from '../../../../../shared/modules/selectors/networks';
 import {
   getCurrentCurrency,
+  getCurrentNetwork,
   getSelectedAccountCachedBalance,
 } from '../../../../selectors';
 import { getNativeCurrency } from '../../../../ducks/metamask/metamask';
@@ -50,15 +51,20 @@ export default function AssetList({
   isTokenListLoading = false,
 }: AssetListProps) {
   const t = useI18nContext();
-  const selectedToken = asset?.address;
+  const selectedTokenAddress = asset?.address;
+
+  const currentNetwork = useSelector(getCurrentNetwork);
+  // If a network is provided, display tokens in that network
+  // Otherwise, assume tokens in the current network are displayed
+  const networkToUse = network ?? currentNetwork;
+  // This indicates whether tokens in the wallet's active network are displayed
+  const isSelectedNetworkActive =
+    networkToUse.chainId === currentNetwork.chainId;
 
   const chainId = useSelector(getCurrentChainId);
   const nativeCurrency = useSelector(getNativeCurrency);
   const balanceValue = useSelector(getSelectedAccountCachedBalance);
   const currentCurrency = useSelector(getCurrentCurrency);
-
-  const isSelectedNetworkActive =
-    !network?.chainId || chainId === network?.chainId;
 
   const [primaryCurrencyValue] = useCurrencyDisplay(balanceValue, {
     currency: currentCurrency,
@@ -79,9 +85,16 @@ export default function AssetList({
       )}
       {tokenList.map((token) => {
         const tokenAddress = token.address?.toLowerCase();
-        const isSelected =
-          tokenAddress === selectedToken?.toLowerCase() &&
-          token.chainId === network?.chainId;
+
+        const isMatchingChainId = token.chainId === networkToUse?.chainId;
+        const isMatchingAddress =
+          // the native asset can have an undefined, null, '', or zero address
+          (token.type === AssetType.native &&
+            !token.address &&
+            !selectedTokenAddress) ||
+          tokenAddress === selectedTokenAddress?.toLowerCase();
+        const isSelected = isMatchingChainId && isMatchingAddress;
+
         const isDisabled = isTokenDisabled?.(token) ?? false;
 
         return (
