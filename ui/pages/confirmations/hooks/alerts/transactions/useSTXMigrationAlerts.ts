@@ -5,6 +5,7 @@ import { Severity } from '../../../../../helpers/constants/design-system';
 import { Alert } from '../../../../../ducks/confirm-alerts/confirm-alerts';
 import { stxAlertIsOpen, dismissAndDisableAlert } from '../../../../../ducks/alerts/stx-migration';
 import ZENDESK_URLS from '../../../../../helpers/constants/zendesk-url';
+import { RowAlertKey } from '../../../../../components/app/confirm/info/row/constants';
 
 export function useSTXMigrationAlerts(): Alert[] {
   const t = useI18nContext();
@@ -22,14 +23,17 @@ export function useSTXMigrationAlerts(): Alert[] {
           {
             key: 'learnMore',
             label: t('smartTransactionsLearnMore'),
-            url: ZENDESK_URLS.SMART_TRANSACTIONS_LEARN_MORE,
+            onClick: () => {
+              window.open(ZENDESK_URLS.SMART_TRANSACTIONS_LEARN_MORE, '_blank');
+              dispatch(dismissAndDisableAlert());
+            },
           },
         ],
+        field: RowAlertKey.FirstTimeInteraction,
         isBlocking: false,
         key: 'stxMigration',
         message: t('smartTransactionsEnabledMessage'),
-        severity: Severity.Info,
-        onClose: () => dispatch(dismissAndDisableAlert()),
+        severity: Severity.Warning,
       },
     ];
   }, [shouldShow, t, dispatch]);
