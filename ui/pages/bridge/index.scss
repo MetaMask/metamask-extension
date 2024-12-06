@@ -31,3 +31,40 @@
     }
   }
 }
+
+// TODO add to design-tokens package
+.mm-avatar-base--size-xxs {
+  --size: 12px;
+}
+
+[data-theme='light'],
+.light {
+  --color-background-alternative-soft: #F9FAFB;
+  --color-text-alternative-soft: #6A737D;
+  --color-icon-alternative-soft: #6A737D;
+}
+
+[data-theme='dark'],
+.dark {
+  --color-background-alternative-soft: #1f2124;
+  --color-text-alternative-soft: #848c96;
+  --color-icon-alternative-soft: #848c96;
+}
+
+.mm-box--color-text-alternative-soft {
+  color: var(--color-text-alternative-soft);
+}
+
+.mm-box--color-icon-alternative-soft {
+  color: var(--color-icon-alternative-soft);
+}
+
+.mm-box--background-color-background-alternative-soft {
+  background-color: var(--color-background-alternative-soft);
+}
+
+.bridge__container {
+  height: 100%;
+  min-width: 360px;
+  max-width: 480px;
+}
