@@ -15,8 +15,8 @@ import { CaveatTypes } from '../../../../../shared/constants/permissions';
 import { PermissionNames } from '../../../controllers/permissions';
 
 export function validateChainId(chainId) {
-  const _chainId = typeof chainId === 'string' ? chainId.toLowerCase() : '';
-  if (!isPrefixedFormattedHexString(_chainId)) {
+  const lowercasedChainId = typeof chainId === 'string' ? chainId.toLowerCase() : null;
+  if (lowercasedChainId !== null && !isPrefixedFormattedHexString(lowercasedChainId)) {
     throw rpcErrors.invalidParams({
       message: `Expected 0x-prefixed, unpadded, non-zero hexadecimal string 'chainId'. Received:\n${chainId}`,
     });
