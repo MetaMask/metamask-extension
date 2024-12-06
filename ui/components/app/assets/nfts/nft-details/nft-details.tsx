@@ -113,7 +113,9 @@ export default function NftDetails({ nft }: { nft: Nft }) {
   const isImageHosted =
     image?.startsWith('https:') || image?.startsWith('http:');
   const nftImageURL: string | undefined = useGetAssetImageUrl(
-    imageOriginal ?? image,
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-ignore
+    imageOriginal ? image : undefined,
     ipfsGateway,
   );
 
@@ -313,7 +315,9 @@ export default function NftDetails({ nft }: { nft: Nft }) {
     return `${text.slice(0, chars)}...${text.slice(-chars)}`;
   };
 
-  const nftItemSrc: string | undefined = isImageHosted ? image : nftImageURL;
+  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+  // @ts-ignore
+  const nftItemSrc: string | undefined = Boolean(isImageHosted) ? image : nftImageURL;
 
   return (
     <Page>
