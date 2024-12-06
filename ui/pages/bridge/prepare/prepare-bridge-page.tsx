@@ -143,6 +143,8 @@ const PrepareBridgePage = () => {
   const { flippedRequestProperties } = useRequestProperties();
   const trackCrossChainSwapsEvent = useCrossChainSwapsEventTracker();
 
+  const millisecondsUntilNextRefresh = useCountdownTimer();
+
   const [rotateSwitchTokens, setRotateSwitchTokens] = useState(false);
 
   useEffect(() => {
