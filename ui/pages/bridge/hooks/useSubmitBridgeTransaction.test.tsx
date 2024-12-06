@@ -36,6 +36,7 @@ jest.mock('../../../store/actions', () => {
   return {
     ...original,
     addTransaction: jest.fn(),
+    addTransactionAndWaitForPublish: jest.fn(),
     addToken: jest.fn().mockImplementation(original.addToken),
     addNetwork: jest.fn().mockImplementation(original.addNetwork),
   };
@@ -178,11 +179,20 @@ describe('ui/pages/bridge/hooks/useSubmitBridgeTransaction', () => {
           id: 'txMetaId-01',
         };
       });
+      const mockAddTransactionAndWaitForPublish = jest.fn(() => {
+        return {
+          id: 'txMetaId-02',
+        };
+      });
 
       // For some reason, setBackgroundConnection does not work, gets hung up on the promise, so mock this way instead
       (actions.addTransaction as jest.Mock).mockImplementation(
         mockAddTransaction,
       );
+      (actions.addTransactionAndWaitForPublish as jest.Mock).mockImplementation(
+        mockAddTransactionAndWaitForPublish,
+      );
+
       const store = makeMockStore();
       const { result } = renderHook(() => useSubmitBridgeTransaction(), {
         wrapper: makeWrapper(store),
@@ -194,7 +204,7 @@ describe('ui/pages/bridge/hooks/useSubmitBridgeTransaction', () => {
       );
 
       // Assert
-      expect(mockAddTransaction).toHaveBeenNthCalledWith(
+      expect(mockAddTransactionAndWaitForPublish).toHaveBeenNthCalledWith(
         1,
         {
           chainId: '0x1',
