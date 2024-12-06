@@ -80,16 +80,17 @@ const PrepareBridgePage = () => {
   const quoteRequest = useSelector(getQuoteRequest);
   const { activeQuote } = useSelector(getBridgeQuotes);
 
+  const tokenAddressAllowlistByChainId = useBridgeTokens();
   const fromTokenListGenerator = useTokensWithFiltering(
     fromTokens,
     fromTopAssets,
-    TokenBucketPriority.owned,
+    tokenAddressAllowlistByChainId,
     fromChain?.chainId,
   );
   const toTokenListGenerator = useTokensWithFiltering(
     toTokens,
     toTopAssets,
-    TokenBucketPriority.top,
+    tokenAddressAllowlistByChainId,
     toChain?.chainId,
   );
 
