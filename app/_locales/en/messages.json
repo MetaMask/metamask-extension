@@ -2988,6 +2988,12 @@
   "low": {
     "message": "Low"
   },
+  "lowEstimatedReturnTooltipMessage": {
+    "message": "Either your rate or your fees are less favorable than usual. It looks like you'll get back less than $1% of the amount you’re bridging."
+  },
+  "lowEstimatedReturnTooltipTitle": {
+    "message": "Low estimated return"
+  },
   "lowGasSettingToolTipMessage": {
     "message": "Use $1 to wait for a cheaper price. Time estimates are much less accurate as prices are somewhat unpredictable.",
     "description": "$1 is key 'low' separated here so that it can be passed in with bold font-weight"
