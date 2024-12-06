@@ -3,11 +3,15 @@ import { ApprovalType } from '@metamask/controller-utils';
 import { renderHookWithProvider } from '../../../../test/lib/render-helpers';
 import mockState from '../../../../test/data/mock-state.json';
 import {
+  CONFIRM_ADD_SUGGESTED_NFT_ROUTE,
+  CONFIRM_ADD_SUGGESTED_TOKEN_ROUTE,
   CONFIRM_TRANSACTION_ROUTE,
   CONFIRMATION_V_NEXT_ROUTE,
+  CONNECT_ROUTE,
   SIGNATURE_REQUEST_PATH,
 } from '../../../helpers/constants/routes';
 import { useConfirmationNavigation } from './useConfirmationNavigation';
+import { Json } from '@metamask/utils';
 
 jest.mock('react-router-dom', () => ({
   ...jest.requireActual('react-router-dom'),
@@ -21,14 +25,22 @@ jest.mock('../confirmation/templates', () => ({
 const APPROVAL_ID_MOCK = '123-456';
 const APPROVAL_ID_2_MOCK = '456-789';
 
-function renderHook(approvalType: ApprovalType) {
+function renderHook(approvalType: ApprovalType, requestData?: Json) {
   const { result } = renderHookWithProvider(() => useConfirmationNavigation(), {
     ...mockState,
     metamask: {
       ...mockState.metamask,
       pendingApprovals: {
-        [APPROVAL_ID_MOCK]: { id: APPROVAL_ID_MOCK, type: approvalType },
-        [APPROVAL_ID_2_MOCK]: { id: APPROVAL_ID_2_MOCK, type: approvalType },
+        [APPROVAL_ID_MOCK]: {
+          id: APPROVAL_ID_MOCK,
+          type: approvalType,
+          requestData,
+        },
+        [APPROVAL_ID_2_MOCK]: {
+          id: APPROVAL_ID_2_MOCK,
+          type: approvalType,
+          requestData,
+        },
       },
     },
   });
@@ -46,7 +58,7 @@ describe('useConfirmationNavigation', () => {
   });
 
   describe('navigateToId', () => {
-    it('navigates to transaction route if confirmation is transaction', () => {
+    it('navigates to transaction route', () => {
       const result = renderHook(ApprovalType.Transaction);
 
       result.navigateToId(APPROVAL_ID_MOCK);
@@ -57,7 +69,7 @@ describe('useConfirmationNavigation', () => {
       );
     });
 
-    it('navigates to signature route if confirmation is signature', () => {
+    it('navigates to signature route', () => {
       const result = renderHook(ApprovalType.EthSignTypedData);
 
       result.navigateToId(APPROVAL_ID_MOCK);
@@ -68,7 +80,7 @@ describe('useConfirmationNavigation', () => {
       );
     });
 
-    it('navigates to template route if confirmation is template', () => {
+    it('navigates to template route', () => {
       const result = renderHook(ApprovalType.AddEthereumChain);
 
       result.navigateToId(APPROVAL_ID_MOCK);
@@ -76,6 +88,41 @@ describe('useConfirmationNavigation', () => {
       expect(history.replace).toHaveBeenCalledTimes(1);
       expect(history.replace).toHaveBeenCalledWith(
         `${CONFIRMATION_V_NEXT_ROUTE}/${APPROVAL_ID_MOCK}`,
+      );
+    });
+
+    it('navigates to connect route', () => {
+      const result = renderHook(ApprovalType.WalletRequestPermissions);
+
+      result.navigateToId(APPROVAL_ID_MOCK);
+
+      expect(history.replace).toHaveBeenCalledTimes(1);
+      expect(history.replace).toHaveBeenCalledWith(
+        `${CONNECT_ROUTE}/${APPROVAL_ID_MOCK}`,
+      );
+    });
+
+    it('navigates to add token route if no token ID', () => {
+      const result = renderHook(ApprovalType.WatchAsset);
+
+      result.navigateToId(APPROVAL_ID_MOCK);
+
+      expect(history.replace).toHaveBeenCalledTimes(1);
+      expect(history.replace).toHaveBeenCalledWith(
+        `${CONFIRM_ADD_SUGGESTED_TOKEN_ROUTE}`,
+      );
+    });
+
+    it('navigates to add NFT route if token ID', () => {
+      const result = renderHook(ApprovalType.WatchAsset, {
+        asset: { tokenId: '123' },
+      });
+
+      result.navigateToId(APPROVAL_ID_MOCK);
+
+      expect(history.replace).toHaveBeenCalledTimes(1);
+      expect(history.replace).toHaveBeenCalledWith(
+        `${CONFIRM_ADD_SUGGESTED_NFT_ROUTE}`,
       );
     });
 

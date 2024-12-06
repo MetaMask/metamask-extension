@@ -124,9 +124,6 @@ export default class Home extends PureComponent {
   static propTypes = {
     history: PropTypes.object,
     forgottenPassword: PropTypes.bool,
-    hasTransactionPendingApprovals: PropTypes.bool.isRequired,
-    hasWatchTokenPendingApprovals: PropTypes.bool,
-    hasWatchNftPendingApprovals: PropTypes.bool,
     setConnectedStatusPopoverHasBeenShown: PropTypes.func,
     ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
     shouldShowSeedPhraseReminder: PropTypes.bool.isRequired,
@@ -154,7 +151,6 @@ export default class Home extends PureComponent {
     ///: END:ONLY_INCLUDE_IF
     newNetworkAddedConfigurationId: PropTypes.string,
     isNotification: PropTypes.bool.isRequired,
-    firstPermissionsRequestId: PropTypes.string,
     // This prop is used in the `shouldCloseNotificationPopup` function
     // eslint-disable-next-line react/no-unused-prop-types
     totalUnapprovedCount: PropTypes.number.isRequired,
@@ -222,14 +218,11 @@ export default class Home extends PureComponent {
 
     const {
       closeNotificationPopup,
-      firstPermissionsRequestId,
       haveSwapsQuotes,
       isNotification,
+      pendingConfirmations,
       showAwaitingSwapScreen,
-      hasWatchTokenPendingApprovals,
-      hasWatchNftPendingApprovals,
       swapsFetchParams,
-      hasTransactionPendingApprovals,
       location,
     } = this.props;
     const stayOnHomePage = Boolean(location?.state?.stayOnHomePage);
@@ -238,10 +231,7 @@ export default class Home extends PureComponent {
       this.state.notificationClosing = true;
       closeNotificationPopup();
     } else if (
-      firstPermissionsRequestId ||
-      hasTransactionPendingApprovals ||
-      hasWatchTokenPendingApprovals ||
-      hasWatchNftPendingApprovals ||
+      pendingConfirmations.length ||
       (!isNotification &&
         !stayOnHomePage &&
         (showAwaitingSwapScreen || haveSwapsQuotes || swapsFetchParams))

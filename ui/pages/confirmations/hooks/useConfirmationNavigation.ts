@@ -96,7 +96,7 @@ export function navigateToConfirmation(
   }
 
   if (type === ApprovalType.WalletRequestPermissions) {
-    history.push(`${CONNECT_ROUTE}/${confirmationId}`);
+    history.replace(`${CONNECT_ROUTE}/${confirmationId}`);
     return;
   }
 

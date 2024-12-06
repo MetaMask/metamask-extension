@@ -36,15 +36,12 @@ import {
   getNewTokensImported,
   getShouldShowSeedPhraseReminder,
   getRemoveNftMessage,
-  getSuggestedTokens,
-  getSuggestedNfts,
   getApprovalFlows,
   getNewTokensImportedError,
   hasPendingApprovals,
   getSelectedInternalAccount,
   getQueuedRequestCount,
   getEditedNetwork,
-  getPrioritizedUnapprovedTemplatedConfirmations,
   pendingConfirmationsSortedSelector,
   ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
   getAccountType,
@@ -92,7 +89,6 @@ import {
   AlertTypes,
   Web3ShimUsageAlertStates,
 } from '../../../shared/constants/alerts';
-import { hasTransactionPendingApprovals } from '../../selectors/transactions';
 import Home from './home.component';
 
 const mapStateToProps = (state) => {
@@ -115,8 +111,6 @@ const mapStateToProps = (state) => {
     totalUnapprovedCount + queuedRequestCount;
   const swapsEnabled = getSwapsFeatureIsLive(state);
   const pendingConfirmations = pendingConfirmationsSortedSelector(state);
-  const pendingConfirmationsPrioritized =
-    getPrioritizedUnapprovedTemplatedConfirmations(state);
 
   ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
   const institutionalConnectRequests = getInstitutionalConnectRequests(state);
@@ -145,10 +139,6 @@ const mapStateToProps = (state) => {
     getWeb3ShimUsageStateForOrigin(state, originOfCurrentTab) ===
       Web3ShimUsageAlertStates.recorded;
 
-  const hasWatchTokenPendingApprovals = getSuggestedTokens(state).length > 0;
-
-  const hasWatchNftPendingApprovals = getSuggestedNfts(state).length > 0;
-
   const hasAllowedPopupRedirectApprovals = hasPendingApprovals(state, [
     ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
     SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES.confirmAccountCreation,
@@ -167,10 +157,7 @@ const mapStateToProps = (state) => {
     useExternalServices: getUseExternalServices(state),
     isBasicConfigurationModalOpen: appState.showBasicFunctionalityModal,
     forgottenPassword,
-    hasWatchTokenPendingApprovals,
-    hasWatchNftPendingApprovals,
     swapsEnabled,
-    hasTransactionPendingApprovals: hasTransactionPendingApprovals(state),
     shouldShowSeedPhraseReminder: getShouldShowSeedPhraseReminder(state),
     isPopup,
     isNotification,
@@ -192,7 +179,6 @@ const mapStateToProps = (state) => {
     originOfCurrentTab,
     shouldShowWeb3ShimUsageNotification,
     pendingConfirmations,
-    pendingConfirmationsPrioritized,
     infuraBlocked: getInfuraBlocked(state),
     announcementsToShow: getSortedAnnouncementsToShow(state).length > 0,
     showWhatsNewPopup,
