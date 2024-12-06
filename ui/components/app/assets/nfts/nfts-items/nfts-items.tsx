@@ -13,6 +13,7 @@ import {
   FlexDirection,
   TextColor,
   TextVariant,
+  TypographyVariant,
 } from '../../../../../helpers/constants/design-system';
 import { ENVIRONMENT_TYPE_POPUP } from '../../../../../../shared/constants/app';
 // TODO: Remove restricted import
@@ -85,7 +86,6 @@ export default function NftsItems({
   showTokenId = false,
   displayPreviouslyOwnedCollection = true,
 }: NftsItemsProps) {
-  console.log('Collections: ', collections);
   const dispatch = useDispatch();
   const collectionsKeys = Object.keys(collections);
   const nftsDropdownState = useSelector(getNftsDropdownState);
@@ -261,6 +261,7 @@ export default function NftsItems({
             className="nfts-items__collection-accordion-title"
           >
             <Box
+              display={Display.Flex}
               alignItems={AlignItems.center}
               className="nfts-items__collection-header"
             >
@@ -270,7 +271,7 @@ export default function NftsItems({
               />
               <Text
                 color={TextColor.textDefault}
-                variant={TextVariant.headingLg}
+                variant={TextVariant.headingSm}
                 margin={2}
               >
                 {`${collectionName ?? t('unknownCollection')} (${nfts.length})`}
