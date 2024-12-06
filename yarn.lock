@@ -24639,14 +24639,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"jsonschema@npm:^1.2.4":
-  version: 1.2.4
-  resolution: "jsonschema@npm:1.2.4"
-  checksum: 10/7b959737416a5716f2df3142e30c8685bc5449974d56d1cd5acbbd61c0f71041af38fa315327c8577fcdbe30907fd9b633c4d3484baf2cc8563609afac5b4e14
-  languageName: node
-  linkType: hard
-
-"jsonschema@npm:^1.4.1":
+"jsonschema@npm:^1.2.4, jsonschema@npm:^1.4.1":
   version: 1.4.1
   resolution: "jsonschema@npm:1.4.1"
   checksum: 10/d7a188da7a3100a2caa362b80e98666d46607b7a7153aac405b8e758132961911c6df02d444d4700691330874e21a62639f550e856b21ddd28423690751ca9c6
