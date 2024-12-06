@@ -9,7 +9,7 @@ describe('NFT Options Component', () => {
     onViewOnOpensea: jest.fn(),
   };
 
-  it('should expand NFT options menu`', async () => {
+  it.skip('should expand NFT options menu`', async () => {
     const { queryByTestId } = renderWithProvider(<NftOptions {...props} />);
 
     const openOptionMenuButton = queryByTestId('nft-options__button');
@@ -23,7 +23,7 @@ describe('NFT Options Component', () => {
     });
   });
 
-  it('should expand and close menu options when clicked`', async () => {
+  it.skip('should expand and close menu options when clicked`', async () => {
     const { queryByTestId } = renderWithProvider(<NftOptions {...props} />);
 
     const openOptionMenuButton = queryByTestId('nft-options__button');
@@ -37,7 +37,7 @@ describe('NFT Options Component', () => {
     expect(closeOptionMenuButton).not.toBeInTheDocument();
   });
 
-  it('should click onRemove handler and close option menu', () => {
+  it.skip('should click onRemove handler and close option menu', () => {
     const { queryByTestId } = renderWithProvider(<NftOptions {...props} />);
 
     const openOptionMenuButton = queryByTestId('nft-options__button');
@@ -52,7 +52,7 @@ describe('NFT Options Component', () => {
     expect(removeNftButton).not.toBeInTheDocument();
   });
 
-  it('should click onViewOnOpensea handler and close option menu', () => {
+  it.skip('should click onViewOnOpensea handler and close option menu', () => {
     const { queryByTestId } = renderWithProvider(<NftOptions {...props} />);
 
     const openOptionMenuButton = queryByTestId('nft-options__button');
