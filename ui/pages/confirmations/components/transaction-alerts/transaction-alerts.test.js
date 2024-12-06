@@ -35,11 +35,9 @@ const STATE_MOCK = {
     ...mockNetworkState({
       chainId: CHAIN_ID_MOCK,
     }),
-    alerts: {
-      stxMigration: {
-        state: ALERT_STATE.OPEN,
-      },
-    },
+  },
+  [AlertTypes.stxMigration]: {
+    state: ALERT_STATE.OPEN,
   },
 };
 
@@ -589,6 +587,9 @@ describe('STX Migration Alert', () => {
             state: ALERT_STATE.CLOSED,
           },
         },
+      },
+      [AlertTypes.stxMigration]: {
+        state: ALERT_STATE.CLOSED,
       },
     };
     const store = configureStore(closedState);
