@@ -11,7 +11,8 @@ import { Numeric } from '../../../../shared/modules/Numeric';
 import { EtherDenomination } from '../../../../shared/constants/common';
 import { DEFAULT_PRECISION } from '../../../hooks/useCurrencyDisplay';
 
-export const isNativeAddress = (address?: string) => address === zeroAddress();
+export const isNativeAddress = (address?: string | null) =>
+  address === zeroAddress() || address === '' || !address;
 
 export const isValidQuoteRequest = (
   partialRequest: Partial<QuoteRequest>,
@@ -173,9 +174,9 @@ export const formatEtaInMinutes = (estimatedProcessingTimeInSeconds: number) =>
 
 export const formatTokenAmount = (
   amount: BigNumber,
-  symbol: string,
-  precision: number = 2,
-) => `${amount.toFixed(precision)} ${symbol}`;
+  symbol: string = '',
+  precision: number = DEFAULT_PRECISION,
+) => [amount.toFixed(precision), symbol].join(' ').trim();
 
 export const formatCurrencyAmount = (
   amount: BigNumber | null,

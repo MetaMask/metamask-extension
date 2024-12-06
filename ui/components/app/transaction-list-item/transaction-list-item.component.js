@@ -329,7 +329,6 @@ function TransactionListItemInner({
             ///: END:ONLY_INCLUDE_IF
             <BadgeWrapper
               anchorElementShape={BadgeWrapperAnchorElementShape.circular}
-              positionObj={{ top: -4, right: -4 }}
               display={Display.Block}
               badge={
                 <AvatarNetwork
@@ -338,7 +337,6 @@ function TransactionListItemInner({
                   size={AvatarNetworkSize.Xs}
                   name={currentChain?.nickname}
                   src={currentChain?.rpcPrefs?.imageUrl}
-                  borderWidth={1}
                   borderColor={BackgroundColor.backgroundDefault}
                   backgroundColor={testNetworkBackgroundColor}
                 />

@@ -117,15 +117,19 @@ export const BridgeQuotesModal = ({
               color={
                 sortOrder === sortOrderOption
                   ? TextColor.primaryDefault
-                  : TextColor.textAlternative
+                  : TextColor.textAlternativeSoft
               }
             >
               <Text
-                variant={TextVariant.bodySm}
+                variant={
+                  sortOrder === sortOrderOption
+                    ? TextVariant.bodySmMedium
+                    : TextVariant.bodySm
+                }
                 color={
                   sortOrder === sortOrderOption
                     ? TextColor.primaryDefault
-                    : TextColor.textAlternative
+                    : TextColor.textAlternativeSoft
                 }
               >
                 {label}
@@ -198,47 +202,40 @@ export const BridgeQuotesModal = ({
                   </Text>
                   {[
                     totalNetworkFee?.valueInCurrency
-                      ? t('quotedNetworkFee', [
+                      ? t('quotedTotalCost', [
                           formatCurrencyAmount(
                             totalNetworkFee.valueInCurrency,
                             currency,
                             0,
                           ),
                         ])
-                      : t('quotedNetworkFee', [
+                      : t('quotedTotalCost', [
                           formatTokenAmount(
                             totalNetworkFee.amount,
                             nativeCurrency,
                           ),
                         ]),
-                    t(
-                      sortOrder === SortOrder.ETA_ASC
-                        ? 'quotedReceivingAmount'
-                        : 'quotedReceiveAmount',
-                      [
-                        formatCurrencyAmount(
-                          toTokenAmount.valueInCurrency,
-                          currency,
+                    t('quotedReceiveAmount', [
+                      formatCurrencyAmount(
+                        toTokenAmount.valueInCurrency,
+                        currency,
+                        0,
+                      ) ??
+                        formatTokenAmount(
+                          toTokenAmount.amount,
+                          destAsset.symbol,
                           0,
-                        ) ??
-                          formatTokenAmount(
-                            toTokenAmount.amount,
-                            destAsset.symbol,
-                            0,
-                          ),
-                      ],
-                    ),
-                  ]
-                    [sortOrder === SortOrder.ETA_ASC ? 'reverse' : 'slice']()
-                    .map((content) => (
-                      <Text
-                        key={content}
-                        variant={TextVariant.bodyXsMedium}
-                        color={TextColor.textAlternative}
-                      >
-                        {content}
-                      </Text>
-                    ))}
+                        ),
+                    ]),
+                  ].map((content) => (
+                    <Text
+                      key={content}
+                      variant={TextVariant.bodyXsMedium}
+                      color={TextColor.textAlternative}
+                    >
+                      {content}
+                    </Text>
+                  ))}
                 </Column>
                 <Column alignItems={AlignItems.flexEnd}>
                   <Text variant={TextVariant.bodyMd}>

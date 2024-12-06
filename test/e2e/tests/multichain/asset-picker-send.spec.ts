@@ -88,7 +88,7 @@ describe('AssetPickerSendFlow @no-mmi', function () {
         await searchInputField.sendKeys('CHZ');
 
         // check that CHZ is disabled
-        const [, tkn] = await driver.findElements(
+        const [tkn] = await driver.findElements(
           '[data-testid="multichain-token-list-button"]',
         );
 

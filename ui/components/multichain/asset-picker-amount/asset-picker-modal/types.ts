@@ -1,5 +1,4 @@
 import { Token, TokenListToken } from '@metamask/assets-controllers';
-import { Hex } from '@metamask/utils';
 import type {
   AssetType,
   TokenStandard,
@@ -9,6 +8,7 @@ import {
   CHAIN_ID_TO_CURRENCY_SYMBOL_MAP,
   CHAIN_ID_TOKEN_IMAGE_MAP,
 } from '../../../../../shared/constants/network';
+import { TokenWithFiatAmount } from '../../../app/assets/token-list/token-list';
 
 export type NFT = {
   address: string;
@@ -35,7 +35,7 @@ export type ERC20Asset = Pick<TokenListToken, 'address' | 'symbol'> & {
 };
 export type NativeAsset = {
   type: AssetType.native;
-  address?: null;
+  address?: null | string;
   image: typeof CHAIN_ID_TOKEN_IMAGE_MAP extends Record<string, infer V>
     ? V
     : never; // only allow wallet's hardcoded images
@@ -48,9 +48,12 @@ export type NativeAsset = {
  * ERC20Asset or NativeAsset, plus additional fields for display purposes in the Asset component
  */
 export type AssetWithDisplayData<T extends ERC20Asset | NativeAsset> = T & {
-  balance: T['type'] extends AssetType.token ? string : Hex; // raw balance
+  balance: string; // raw balance
   string: string | undefined; // normalized balance as a stringified number
-} & Pick<TokenListToken, 'decimals'>;
+} & Pick<TokenListToken, 'decimals'> & {
+    tokenFiatAmount?: TokenWithFiatAmount['tokenFiatAmount'];
+    chainId: TokenWithFiatAmount['chainId'];
+  };
 
 export type Collection = {
   collectionName: string;
