@@ -47,12 +47,12 @@ import {
   MetaMetricsEventName,
 } from '../../../../../../shared/constants/metametrics';
 import { isEqualCaseInsensitive } from '../../../../../../shared/modules/string-utils';
-import { CollectionImageComponent } from './collection-image.component';
 import {
   Collection,
   NFT,
 } from '../../../../multichain/asset-picker-amount/asset-picker-modal/types';
 import { PreviouslyOwnedCollections } from '../../../../multichain/asset-picker-amount/asset-picker-modal/asset-picker-modal-nft-tab';
+import { CollectionImageComponent } from './collection-image.component';
 
 type NftsItemsProps = {
   collections: Record<Hex, Collection>;
