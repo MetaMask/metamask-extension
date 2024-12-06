@@ -41,7 +41,10 @@ export const isValidQuoteRequest = (
         partialRequest[field as keyof typeof partialRequest] !== undefined &&
         !isNaN(Number(partialRequest[field as keyof typeof partialRequest])) &&
         partialRequest[field as keyof typeof partialRequest] !== null,
-    )
+    ) &&
+    (requireAmount
+      ? Boolean((partialRequest.srcTokenAmount ?? '').match(/^[1-9]\d*$/u))
+      : true)
   );
 };
 
@@ -55,7 +58,7 @@ export const calcToAmount = (
   );
   return {
     amount: normalizedDestAmount,
-    fiat: exchangeRate
+    valueInCurrency: exchangeRate
       ? normalizedDestAmount.mul(exchangeRate.toString())
       : null,
   };
@@ -71,7 +74,7 @@ export const calcSentAmount = (
   );
   return {
     amount: normalizedSentAmount,
-    fiat: exchangeRate
+    valueInCurrency: exchangeRate
       ? normalizedSentAmount.mul(exchangeRate.toString())
       : null,
   };
@@ -95,7 +98,7 @@ export const calcRelayerFee = (
   );
   return {
     amount: relayerFeeInNative,
-    fiat: nativeExchangeRate
+    valueInCurrency: nativeExchangeRate
       ? relayerFeeInNative.mul(nativeExchangeRate.toString())
       : null,
   };
@@ -136,17 +139,17 @@ export const calcTotalGasFee = (
 
   return {
     amount: gasFeesInDecEth,
-    fiat: gasFeesInUSD,
+    valueInCurrency: gasFeesInUSD,
   };
 };
 
 export const calcAdjustedReturn = (
-  destTokenAmountInFiat: BigNumber | null,
-  totalNetworkFeeInFiat: BigNumber | null,
+  destTokenAmountInCurrency: BigNumber | null,
+  totalNetworkFeeInCurrency: BigNumber | null,
 ) => ({
-  fiat:
-    destTokenAmountInFiat && totalNetworkFeeInFiat
-      ? destTokenAmountInFiat.minus(totalNetworkFeeInFiat)
+  valueInCurrency:
+    destTokenAmountInCurrency && totalNetworkFeeInCurrency
+      ? destTokenAmountInCurrency.minus(totalNetworkFeeInCurrency)
       : null,
 });
 
@@ -156,12 +159,12 @@ export const calcSwapRate = (
 ) => destTokenAmount.div(sentAmount);
 
 export const calcCost = (
-  adjustedReturnInFiat: BigNumber | null,
-  sentAmountInFiat: BigNumber | null,
+  adjustedReturnInCurrency: BigNumber | null,
+  sentAmountInCurrency: BigNumber | null,
 ) => ({
-  fiat:
-    adjustedReturnInFiat && sentAmountInFiat
-      ? sentAmountInFiat.minus(adjustedReturnInFiat)
+  valueInCurrency:
+    adjustedReturnInCurrency && sentAmountInCurrency
+      ? sentAmountInCurrency.minus(adjustedReturnInCurrency)
       : null,
 });
 
@@ -174,7 +177,7 @@ export const formatTokenAmount = (
   precision: number = 2,
 ) => `${amount.toFixed(precision)} ${symbol}`;
 
-export const formatFiatAmount = (
+export const formatCurrencyAmount = (
   amount: BigNumber | null,
   currency: string,
   precision: number = DEFAULT_PRECISION,
@@ -192,3 +195,8 @@ export const formatFiatAmount = (
   }
   return formatCurrency(amount.toString(), currency, precision);
 };
+
+export const formatProviderLabel = (
+  quote?: QuoteResponse,
+): `${string}_${string}` =>
+  `${quote?.quote.bridgeId}_${quote?.quote.bridges[0]}`;

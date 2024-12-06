@@ -232,6 +232,7 @@ PATH_NAME_MAP[
 ] = 'Encryption Public Key Request Page';
 
 export const CROSS_CHAIN_SWAP_ROUTE = '/cross-chain';
+PATH_NAME_MAP[CROSS_CHAIN_SWAP_ROUTE] = 'Prepare Cross Chain Swap Page';
 export const CROSS_CHAIN_SWAP_TX_DETAILS_ROUTE = '/cross-chain/tx-details';
 
 export const SWAPS_ROUTE = '/swaps';
