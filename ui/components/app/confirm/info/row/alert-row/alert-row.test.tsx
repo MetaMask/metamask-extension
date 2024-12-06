@@ -92,10 +92,8 @@ describe('AlertRow', () => {
     });
 
     describe('display row only when there is an alert', () => {
-      it('does not render when displayWhenAlert is true and there is an alert', () => {
+      it('does not render when displayWhenAlert is true and there is no alert', () => {
         const { queryByTestId } = renderAlertRow({
-          alertKey: KEY_ALERT_KEY_MOCK,
-          ownerId: OWNER_ID_MOCK,
           displayWhenAlert: true,
         });
         expect(queryByTestId('inline-alert')).toBeNull();
