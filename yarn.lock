@@ -6073,9 +6073,8 @@ __metadata:
   linkType: hard
 
 "@metamask/selected-network-controller@npm:^20.0.0":
-  version: 20.0.0
-  resolution: "@metamask/selected-network-controller@npm:20.0.0"
-
+  version: 20.0.1
+  resolution: "@metamask/selected-network-controller@npm:20.0.1"
   dependencies:
     "@metamask/base-controller": "npm:^7.0.2"
     "@metamask/json-rpc-engine": "npm:^10.0.1"
@@ -6084,8 +6083,7 @@ __metadata:
   peerDependencies:
     "@metamask/network-controller": ^22.0.0
     "@metamask/permission-controller": ^11.0.0
-  checksum: 10/8a6318254a541feb4121dcac9def486ba5f0749544edd26563c5a3b79c8d0d245d807839f032b8e7f77879bbb87582637a25e6b121ed5877ceb2a619c76f0cb1
-72fa03fd485da15121559077bb6ffeaa3233435a028f4ea69015a40ca35ba66972dc0fd3a7f61a7ea5eee43df30a6
+  checksum: 10/3e99db1a7b2390624ac953bd7195e4010cf61e21f20a2c36449a6cca2abcfb5280b6c0e3ac3a365f8b6281ea7f115b19be95fb55ddfc4e37ba6a5a71089a75c9
   languageName: node
   linkType: hard
 
