@@ -277,7 +277,7 @@ function TransactionListItemInner({
   ]);
   const currentChain = useSelector(getCurrentNetwork);
   let showCancelButton =
-    !hasCancelled && isPending && !isUnapproved && !isSubmitting;
+    !hasCancelled && isPending && !isUnapproved && !isSubmitting && !isBridgeTx;
 
   ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
   showCancelButton = showCancelButton && !isCustodian;
@@ -406,16 +406,21 @@ function TransactionListItemInner({
           )
         }
       >
-        <Box paddingTop={4} className="transaction-list-item__pending-actions">
-          {showCancelButton && (
-            <CancelButton
-              data-testid="cancel-button"
-              transaction={transactionGroup.primaryTransaction}
-              cancelTransaction={cancelTransaction}
-            />
-          )}
-          {speedUpButton}
-        </Box>
+        {Boolean(showCancelButton || speedUpButton) && (
+          <Box
+            paddingTop={4}
+            className="transaction-list-item__pending-actions"
+          >
+            {showCancelButton && (
+              <CancelButton
+                data-testid="cancel-button"
+                transaction={transactionGroup.primaryTransaction}
+                cancelTransaction={cancelTransaction}
+              />
+            )}
+            {speedUpButton}
+          </Box>
+        )}
         {
           ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
           <a {...debugTransactionMeta} className="test-transaction-meta" />
@@ -452,7 +457,8 @@ function TransactionListItemInner({
             !isCustodian &&
             ///: END:ONLY_INCLUDE_IF
             isPending &&
-            !hasCancelled
+            !hasCancelled &&
+            !isBridgeTx
           }
           transactionStatus={() => (
             <TransactionStatusLabel
