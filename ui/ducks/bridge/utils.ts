@@ -21,14 +21,15 @@ export const getTxGasEstimates = async ({
   hexChainId,
 }: {
   networkAndAccountSupports1559: boolean;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  networkGasFeeEstimates: any;
+  networkGasFeeEstimates: {
+    estimatedBaseFee: string;
+  };
   txParams: TxData;
   hexChainId: Hex;
 }) => {
   if (networkAndAccountSupports1559) {
-    const { estimatedBaseFeeGwei = '0' } = networkGasFeeEstimates;
-    const hexEstimatedBaseFee = decGWEIToHexWEI(estimatedBaseFeeGwei) as Hex;
+    const { estimatedBaseFee = '0' } = networkGasFeeEstimates; // estimatedBaseFee is in GWEI
+    const hexEstimatedBaseFee = decGWEIToHexWEI(estimatedBaseFee) as Hex;
     const txGasFeeEstimates = await getTransaction1559GasFeeEstimates(
       {
         ...txParams,
