@@ -12,7 +12,7 @@ import { loginWithoutBalanceValidation } from '../../page-objects/flows/login.fl
 import TestDapp from '../../page-objects/pages/test-dapp';
 import { createDappTransaction } from '../../page-objects/flows/transaction';
 import { TestSnaps } from '../../page-objects/pages/test-snaps';
-import { Navigation } from '../../page-objects/pages/confirmations/redesign/navigation';
+import Confirmation from '../../page-objects/pages/confirmations/redesign/confirmation';
 import { withTransactionEnvelopeTypeFixtures } from './helpers';
 
 describe('Confirmation Navigation', function (this: Suite) {
@@ -146,24 +146,24 @@ describe('Confirmation Navigation', function (this: Suite) {
         await createDappTransaction(driver);
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
-        const navigation = new Navigation(driver);
-        await navigation.check_currentPosition(1, 3);
+        const confirmation = new Confirmation(driver);
+        await confirmation.check_pageNumbers(1, 3);
         await driver.waitForSelector({ text: 'Confirmation Dialog' });
 
-        await navigation.clickNavigationNextButton();
-        await navigation.check_currentPosition(2, 3);
+        await confirmation.clickNextPage();
+        await confirmation.check_pageNumbers(2, 3);
         await driver.waitForSelector({ text: 'Signature request' });
 
-        await navigation.clickNavigationNextButton();
-        await navigation.check_currentPosition(3, 3);
+        await confirmation.clickNextPage();
+        await confirmation.check_pageNumbers(3, 3);
         await driver.waitForSelector({ text: 'Transfer request' });
 
-        await navigation.clickNavigationPreviousButton();
-        await navigation.check_currentPosition(2, 3);
+        await confirmation.clickPreviousPage();
+        await confirmation.check_pageNumbers(2, 3);
         await driver.waitForSelector({ text: 'Signature request' });
 
-        await navigation.clickNavigationPreviousButton();
-        await navigation.check_currentPosition(1, 3);
+        await confirmation.clickPreviousPage();
+        await confirmation.check_pageNumbers(1, 3);
         await driver.waitForSelector({ text: 'Confirmation Dialog' });
       },
     );

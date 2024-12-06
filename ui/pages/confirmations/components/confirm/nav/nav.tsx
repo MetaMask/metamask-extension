@@ -93,7 +93,7 @@ const Nav = () => {
           color={TextColor.textAlternative}
           marginInline={2}
           variant={TextVariant.bodySm}
-          data-testid="confirm-nav__position"
+          data-testid="confirm-page-nav-position"
         >
           {position + 1} of {count}
         </Text>

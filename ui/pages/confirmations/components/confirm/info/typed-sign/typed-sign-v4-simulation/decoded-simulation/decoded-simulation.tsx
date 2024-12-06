@@ -75,7 +75,8 @@ const StateChangeRow = ({
       tooltip={tooltip}
     >
       {(assetType === TokenStandard.ERC20 ||
-        assetType === TokenStandard.ERC721) && (
+        assetType === TokenStandard.ERC721 ||
+        assetType === TokenStandard.ERC1155) && (
         <TokenValueDisplay
           tokenContract={contractAddress}
           value={amount}

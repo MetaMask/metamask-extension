@@ -1,4 +1,9 @@
 import { ControllerMessenger } from '@metamask/base-controller';
+import type {
+  AcceptRequest,
+  AddApprovalRequest,
+} from '@metamask/approval-controller';
+import { KeyringControllerQRKeyringStateChangeEvent } from '@metamask/keyring-controller';
 import { Browser } from 'webextension-polyfill';
 import {
   ENVIRONMENT_TYPE_POPUP,
@@ -6,15 +11,18 @@ import {
   POLLING_TOKEN_ENVIRONMENT_TYPES,
 } from '../../../shared/constants/app';
 import { AccountOverviewTabKey } from '../../../shared/constants/app-state';
+import { MINUTE } from '../../../shared/constants/time';
 import { AppStateController } from './app-state-controller';
 import type {
-  AllowedActions,
-  AllowedEvents,
   AppStateControllerActions,
   AppStateControllerEvents,
-  AppStateControllerState,
+  AppStateControllerOptions,
 } from './app-state-controller';
-import { PreferencesControllerState } from './preferences-controller';
+import type {
+  PreferencesControllerState,
+  PreferencesControllerGetStateAction,
+  PreferencesControllerStateChangeEvent,
+} from './preferences-controller';
 
 jest.mock('webextension-polyfill');
 
@@ -24,12 +32,6 @@ jest.mock('../../../shared/modules/mv3.utils', () => ({
     return mockIsManifestV3();
   },
 }));
-
-let appStateController: AppStateController;
-let controllerMessenger: ControllerMessenger<
-  AppStateControllerActions | AllowedActions,
-  AppStateControllerEvents | AllowedEvents
->;
 
 const extensionMock = {
   alarms: {
@@ -43,680 +45,590 @@ const extensionMock = {
 } as unknown as jest.Mocked<Browser>;
 
 describe('AppStateController', () => {
-  const createAppStateController = (
-    initState: Partial<AppStateControllerState> = {},
-  ): {
-    appStateController: AppStateController;
-    controllerMessenger: typeof controllerMessenger;
-  } => {
-    controllerMessenger = new ControllerMessenger();
-    jest.spyOn(ControllerMessenger.prototype, 'call');
-    const appStateMessenger = controllerMessenger.getRestricted({
-      name: 'AppStateController',
-      allowedActions: [
-        `ApprovalController:addRequest`,
-        `ApprovalController:acceptRequest`,
-        `PreferencesController:getState`,
-      ],
-      allowedEvents: [
-        `PreferencesController:stateChange`,
-        `KeyringController:qrKeyringStateChange`,
-      ],
-    });
-    controllerMessenger.registerActionHandler(
-      'PreferencesController:getState',
-      jest.fn().mockReturnValue({
-        preferences: {
-          autoLockTimeLimit: 0,
-        },
-      }),
-    );
-    controllerMessenger.registerActionHandler(
-      'ApprovalController:addRequest',
-      jest.fn().mockReturnValue({
-        catch: jest.fn(),
-      }),
-    );
-    appStateController = new AppStateController({
-      addUnlockListener: jest.fn(),
-      isUnlocked: jest.fn(() => true),
-      initState,
-      onInactiveTimeout: jest.fn(),
-      messenger: appStateMessenger,
-      extension: extensionMock,
-    });
-
-    return { appStateController, controllerMessenger };
-  };
-
-  const createIsUnlockedMock = (isUnlocked: boolean) => {
-    return jest
-      .spyOn(
-        appStateController as unknown as { isUnlocked: () => boolean },
-        'isUnlocked',
-      )
-      .mockReturnValue(isUnlocked);
-  };
-
-  beforeEach(() => {
-    ({ appStateController } = createAppStateController());
-  });
-
   describe('setOutdatedBrowserWarningLastShown', () => {
-    it('sets the last shown time', () => {
-      ({ appStateController } = createAppStateController());
-      const timestamp: number = Date.now();
+    it('sets the last shown time', async () => {
+      await withController(({ controller }) => {
+        const timestamp: number = Date.now();
 
-      appStateController.setOutdatedBrowserWarningLastShown(timestamp);
+        controller.setOutdatedBrowserWarningLastShown(timestamp);
 
-      expect(
-        appStateController.store.getState().outdatedBrowserWarningLastShown,
-      ).toStrictEqual(timestamp);
+        expect(controller.state.outdatedBrowserWarningLastShown).toStrictEqual(
+          timestamp,
+        );
+      });
     });
 
-    it('sets outdated browser warning last shown timestamp', () => {
-      const lastShownTimestamp: number = Date.now();
-      ({ appStateController } = createAppStateController());
-      const updateStateSpy = jest.spyOn(
-        appStateController.store,
-        'updateState',
-      );
+    it('sets outdated browser warning last shown timestamp', async () => {
+      await withController(({ controller }) => {
+        const lastShownTimestamp: number = Date.now();
 
-      appStateController.setOutdatedBrowserWarningLastShown(lastShownTimestamp);
+        controller.setOutdatedBrowserWarningLastShown(lastShownTimestamp);
 
-      expect(updateStateSpy).toHaveBeenCalledTimes(1);
-      expect(updateStateSpy).toHaveBeenCalledWith({
-        outdatedBrowserWarningLastShown: lastShownTimestamp,
+        expect(controller.state.outdatedBrowserWarningLastShown).toStrictEqual(
+          lastShownTimestamp,
+        );
       });
-
-      updateStateSpy.mockRestore();
     });
   });
 
   describe('getUnlockPromise', () => {
     it('waits for unlock if the extension is locked', async () => {
-      ({ appStateController } = createAppStateController());
-      const isUnlockedMock = createIsUnlockedMock(false);
-      const waitForUnlockSpy = jest.spyOn(appStateController, 'waitForUnlock');
+      await withController(({ controller }) => {
+        const isUnlockedMock = jest
+          .spyOn(controller, 'isUnlocked')
+          .mockReturnValue(false);
+        expect(controller.waitingForUnlock).toHaveLength(0);
 
-      appStateController.getUnlockPromise(true);
-      expect(isUnlockedMock).toHaveBeenCalled();
-      expect(waitForUnlockSpy).toHaveBeenCalledWith(expect.any(Function), true);
+        controller.getUnlockPromise(true);
+        expect(isUnlockedMock).toHaveBeenCalled();
+        expect(controller.waitingForUnlock).toHaveLength(1);
+      });
     });
 
     it('resolves immediately if the extension is already unlocked', async () => {
-      ({ appStateController } = createAppStateController());
-      const isUnlockedMock = createIsUnlockedMock(true);
+      await withController(async ({ controller }) => {
+        const isUnlockedMock = jest
+          .spyOn(controller, 'isUnlocked')
+          .mockReturnValue(true);
 
-      await expect(
-        appStateController.getUnlockPromise(false),
-      ).resolves.toBeUndefined();
+        await expect(
+          controller.getUnlockPromise(false),
+        ).resolves.toBeUndefined();
 
-      expect(isUnlockedMock).toHaveBeenCalled();
+        expect(isUnlockedMock).toHaveBeenCalled();
+      });
     });
-  });
 
-  describe('waitForUnlock', () => {
-    it('resolves immediately if already unlocked', async () => {
-      const emitSpy = jest.spyOn(appStateController, 'emit');
-      const resolveFn: () => void = jest.fn();
-      appStateController.waitForUnlock(resolveFn, false);
-      expect(emitSpy).toHaveBeenCalledWith('updateBadge');
-      expect(controllerMessenger.call).toHaveBeenCalledTimes(1);
+    it('publishes an unlock change event when isUnlocked is set to false', async () => {
+      await withController(async ({ controller, controllerMessenger }) => {
+        jest.spyOn(controller, 'isUnlocked').mockReturnValue(false);
+        const unlockChangeSpy = jest.fn();
+        controllerMessenger.subscribe(
+          'AppStateController:unlockChange',
+          unlockChangeSpy,
+        );
+        const unlockPromise = controller.getUnlockPromise(false);
+
+        const timeoutPromise = new Promise((resolve) =>
+          setTimeout(() => resolve('timeout'), 100),
+        );
+
+        const result = await Promise.race([unlockPromise, timeoutPromise]);
+
+        expect(result).toBe('timeout');
+
+        expect(unlockChangeSpy).toHaveBeenCalled();
+      });
     });
 
     it('creates approval request when waitForUnlock is called with shouldShowUnlockRequest as true', async () => {
-      createIsUnlockedMock(false);
+      const addRequestMock = jest.fn().mockResolvedValue(undefined);
+      await withController({ addRequestMock }, async ({ controller }) => {
+        jest.spyOn(controller, 'isUnlocked').mockReturnValue(false);
 
-      const resolveFn: () => void = jest.fn();
-      appStateController.waitForUnlock(resolveFn, true);
+        controller.getUnlockPromise(true);
 
-      expect(controllerMessenger.call).toHaveBeenCalledTimes(2);
-      expect(controllerMessenger.call).toHaveBeenCalledWith(
-        'ApprovalController:addRequest',
-        expect.objectContaining({
-          id: expect.any(String),
-          origin: ORIGIN_METAMASK,
-          type: 'unlock',
-        }),
-        true,
-      );
+        expect(addRequestMock).toHaveBeenCalled();
+        expect(addRequestMock).toHaveBeenCalledWith(
+          {
+            id: expect.any(String),
+            origin: ORIGIN_METAMASK,
+            type: 'unlock',
+          },
+          true,
+        );
+      });
     });
-  });
 
-  describe('handleUnlock', () => {
-    beforeEach(() => {
-      createIsUnlockedMock(false);
-    });
-    afterEach(() => {
-      jest.clearAllMocks();
-    });
     it('accepts approval request revolving all the related promises', async () => {
-      const emitSpy = jest.spyOn(appStateController, 'emit');
-      const resolveFn: () => void = jest.fn();
-      appStateController.waitForUnlock(resolveFn, true);
+      let unlockListener: () => void;
+      const addRequestMock = jest.fn().mockResolvedValue(undefined);
+      await withController(
+        {
+          addRequestMock,
+          options: {
+            addUnlockListener: (listener) => {
+              unlockListener = listener;
+            },
+          },
+        },
+        ({ controller, controllerMessenger }) => {
+          jest.spyOn(controller, 'isUnlocked').mockReturnValue(false);
+          const unlockChangeSpy = jest.fn();
+          controllerMessenger.subscribe(
+            'AppStateController:unlockChange',
+            unlockChangeSpy,
+          );
 
-      appStateController.handleUnlock();
+          controller.getUnlockPromise(true);
 
-      expect(emitSpy).toHaveBeenCalled();
-      expect(emitSpy).toHaveBeenCalledWith('updateBadge');
-      expect(controllerMessenger.call).toHaveBeenCalled();
-      expect(controllerMessenger.call).toHaveBeenCalledWith(
-        'ApprovalController:acceptRequest',
-        expect.any(String),
+          unlockListener();
+
+          expect(unlockChangeSpy).toHaveBeenCalled();
+          expect(addRequestMock).toHaveBeenCalled();
+          expect(addRequestMock).toHaveBeenCalledWith(
+            {
+              id: expect.any(String),
+              origin: ORIGIN_METAMASK,
+              type: 'unlock',
+            },
+            true,
+          );
+        },
       );
     });
   });
 
   describe('setDefaultHomeActiveTabName', () => {
-    it('sets the default home tab name', () => {
-      appStateController.setDefaultHomeActiveTabName(
-        AccountOverviewTabKey.Activity,
-      );
-      expect(appStateController.store.getState().defaultHomeActiveTabName).toBe(
-        AccountOverviewTabKey.Activity,
-      );
+    it('sets the default home tab name', async () => {
+      await withController(({ controller }) => {
+        controller.setDefaultHomeActiveTabName(AccountOverviewTabKey.Activity);
+
+        expect(controller.state.defaultHomeActiveTabName).toBe(
+          AccountOverviewTabKey.Activity,
+        );
+      });
     });
   });
 
   describe('setConnectedStatusPopoverHasBeenShown', () => {
-    it('sets connected status popover as shown', () => {
-      appStateController.setConnectedStatusPopoverHasBeenShown();
-      expect(
-        appStateController.store.getState().connectedStatusPopoverHasBeenShown,
-      ).toBe(true);
+    it('sets connected status popover as shown', async () => {
+      await withController(({ controller }) => {
+        controller.setConnectedStatusPopoverHasBeenShown();
+
+        expect(controller.state.connectedStatusPopoverHasBeenShown).toBe(true);
+      });
     });
   });
 
   describe('setRecoveryPhraseReminderHasBeenShown', () => {
-    it('sets recovery phrase reminder as shown', () => {
-      appStateController.setRecoveryPhraseReminderHasBeenShown();
-      expect(
-        appStateController.store.getState().recoveryPhraseReminderHasBeenShown,
-      ).toBe(true);
+    it('sets recovery phrase reminder as shown', async () => {
+      await withController(({ controller }) => {
+        controller.setRecoveryPhraseReminderHasBeenShown();
+
+        expect(controller.state.recoveryPhraseReminderHasBeenShown).toBe(true);
+      });
     });
   });
 
   describe('setRecoveryPhraseReminderLastShown', () => {
-    it('sets the last shown time of recovery phrase reminder', () => {
-      const timestamp: number = Date.now();
-      appStateController.setRecoveryPhraseReminderLastShown(timestamp);
+    it('sets the last shown time of recovery phrase reminder', async () => {
+      await withController(({ controller }) => {
+        const timestamp = Date.now();
+        controller.setRecoveryPhraseReminderLastShown(timestamp);
 
-      expect(
-        appStateController.store.getState().recoveryPhraseReminderLastShown,
-      ).toBe(timestamp);
+        expect(controller.state.recoveryPhraseReminderLastShown).toBe(
+          timestamp,
+        );
+      });
     });
   });
 
   describe('setLastActiveTime', () => {
-    it('sets the last active time to the current time', () => {
-      const spy = jest.spyOn(
-        appStateController as unknown as { _resetTimer: () => void },
-        '_resetTimer',
-      );
-      appStateController.setLastActiveTime();
+    it('sets the timer if timeoutMinutes is set', async () => {
+      await withController(({ controller, controllerMessenger }) => {
+        const timeout = Date.now();
+        controllerMessenger.publish(
+          'PreferencesController:stateChange',
+          {
+            preferences: { autoLockTimeLimit: timeout },
+          } as unknown as PreferencesControllerState,
+          [],
+        );
+        jest.spyOn(global, 'setTimeout');
 
-      expect(spy).toHaveBeenCalled();
+        controller.setLastActiveTime();
+
+        expect(setTimeout).toHaveBeenCalledWith(
+          expect.any(Function),
+          timeout * MINUTE,
+        );
+      });
     });
 
-    it('sets the timer if timeoutMinutes is set', () => {
-      const timeout = Date.now();
-      controllerMessenger.publish(
-        'PreferencesController:stateChange',
-        {
-          preferences: { autoLockTimeLimit: timeout },
-        } as unknown as PreferencesControllerState,
-        [],
-      );
-      const spy = jest.spyOn(
-        appStateController as unknown as { _resetTimer: () => void },
-        '_resetTimer',
-      );
-      appStateController.setLastActiveTime();
+    it("doesn't set the timer if timeoutMinutes is not set", async () => {
+      await withController(({ controller }) => {
+        jest.spyOn(global, 'setTimeout');
 
-      expect(spy).toHaveBeenCalled();
+        controller.setLastActiveTime();
+
+        expect(setTimeout).toHaveBeenCalledTimes(0);
+      });
     });
   });
 
   describe('setBrowserEnvironment', () => {
-    it('sets the current browser and OS environment', () => {
-      appStateController.setBrowserEnvironment('Windows', 'Chrome');
-      expect(
-        appStateController.store.getState().browserEnvironment,
-      ).toStrictEqual({
-        os: 'Windows',
-        browser: 'Chrome',
+    it('sets the current browser and OS environment', async () => {
+      await withController(({ controller }) => {
+        controller.setBrowserEnvironment('Windows', 'Chrome');
+
+        expect(controller.state.browserEnvironment).toStrictEqual({
+          os: 'Windows',
+          browser: 'Chrome',
+        });
       });
     });
   });
 
   describe('addPollingToken', () => {
-    it('adds a pollingToken for a given environmentType', () => {
-      const pollingTokenType =
-        POLLING_TOKEN_ENVIRONMENT_TYPES[ENVIRONMENT_TYPE_POPUP];
-      appStateController.addPollingToken('token1', pollingTokenType);
-      expect(appStateController.store.getState()[pollingTokenType]).toContain(
-        'token1',
-      );
+    it('adds a pollingToken for a given environmentType', async () => {
+      await withController(({ controller }) => {
+        const pollingTokenType =
+          POLLING_TOKEN_ENVIRONMENT_TYPES[ENVIRONMENT_TYPE_POPUP];
+        controller.addPollingToken('token1', pollingTokenType);
+
+        expect(controller.state[pollingTokenType]).toContain('token1');
+      });
     });
   });
 
   describe('removePollingToken', () => {
-    it('removes a pollingToken for a given environmentType', () => {
-      const pollingTokenType =
-        POLLING_TOKEN_ENVIRONMENT_TYPES[ENVIRONMENT_TYPE_POPUP];
-      appStateController.addPollingToken('token1', pollingTokenType);
-      appStateController.removePollingToken('token1', pollingTokenType);
-      expect(
-        appStateController.store.getState()[pollingTokenType],
-      ).not.toContain('token1');
+    it('removes a pollingToken for a given environmentType', async () => {
+      await withController(({ controller }) => {
+        const pollingTokenType =
+          POLLING_TOKEN_ENVIRONMENT_TYPES[ENVIRONMENT_TYPE_POPUP];
+
+        controller.addPollingToken('token1', pollingTokenType);
+        controller.removePollingToken('token1', pollingTokenType);
+
+        expect(controller.state[pollingTokenType]).not.toContain('token1');
+      });
     });
   });
 
   describe('clearPollingTokens', () => {
-    it('clears all pollingTokens', () => {
-      appStateController.addPollingToken('token1', 'popupGasPollTokens');
-      appStateController.addPollingToken('token2', 'notificationGasPollTokens');
-      appStateController.addPollingToken('token3', 'fullScreenGasPollTokens');
-      appStateController.clearPollingTokens();
+    it('clears all pollingTokens', async () => {
+      await withController(({ controller }) => {
+        controller.addPollingToken('token1', 'popupGasPollTokens');
+        controller.addPollingToken('token2', 'notificationGasPollTokens');
+        controller.addPollingToken('token3', 'fullScreenGasPollTokens');
+        controller.clearPollingTokens();
 
-      expect(
-        appStateController.store.getState().popupGasPollTokens,
-      ).toStrictEqual([]);
-      expect(
-        appStateController.store.getState().notificationGasPollTokens,
-      ).toStrictEqual([]);
-      expect(
-        appStateController.store.getState().fullScreenGasPollTokens,
-      ).toStrictEqual([]);
+        expect(controller.state.popupGasPollTokens).toStrictEqual([]);
+        expect(controller.state.notificationGasPollTokens).toStrictEqual([]);
+        expect(controller.state.fullScreenGasPollTokens).toStrictEqual([]);
+      });
     });
   });
 
   describe('setShowTestnetMessageInDropdown', () => {
-    it('sets whether the testnet dismissal link should be shown in the network dropdown', () => {
-      appStateController.setShowTestnetMessageInDropdown(true);
-      expect(
-        appStateController.store.getState().showTestnetMessageInDropdown,
-      ).toBe(true);
+    it('sets whether the testnet dismissal link should be shown in the network dropdown', async () => {
+      await withController(({ controller }) => {
+        controller.setShowTestnetMessageInDropdown(true);
 
-      appStateController.setShowTestnetMessageInDropdown(false);
-      expect(
-        appStateController.store.getState().showTestnetMessageInDropdown,
-      ).toBe(false);
+        expect(controller.state.showTestnetMessageInDropdown).toBe(true);
+
+        controller.setShowTestnetMessageInDropdown(false);
+
+        expect(controller.state.showTestnetMessageInDropdown).toBe(false);
+      });
     });
   });
 
   describe('setShowBetaHeader', () => {
-    it('sets whether the beta notification heading on the home page', () => {
-      appStateController.setShowBetaHeader(true);
-      expect(appStateController.store.getState().showBetaHeader).toBe(true);
+    it('sets whether the beta notification heading on the home page', async () => {
+      await withController(({ controller }) => {
+        controller.setShowBetaHeader(true);
 
-      appStateController.setShowBetaHeader(false);
-      expect(appStateController.store.getState().showBetaHeader).toBe(false);
+        expect(controller.state.showBetaHeader).toBe(true);
+
+        controller.setShowBetaHeader(false);
+
+        expect(controller.state.showBetaHeader).toBe(false);
+      });
     });
   });
 
   describe('setCurrentPopupId', () => {
-    it('sets the currentPopupId in the appState', () => {
-      const popupId = 12345;
+    it('sets the currentPopupId in the appState', async () => {
+      await withController(({ controller }) => {
+        const popupId = 12345;
 
-      appStateController.setCurrentPopupId(popupId);
-      expect(appStateController.store.getState().currentPopupId).toBe(popupId);
+        controller.setCurrentPopupId(popupId);
+
+        expect(controller.state.currentPopupId).toBe(popupId);
+      });
     });
   });
 
   describe('getCurrentPopupId', () => {
-    it('retrieves the currentPopupId saved in the appState', () => {
-      const popupId = 54321;
+    it('retrieves the currentPopupId saved in the appState', async () => {
+      await withController(({ controller }) => {
+        const popupId = 54321;
 
-      appStateController.setCurrentPopupId(popupId);
-      expect(appStateController.getCurrentPopupId()).toBe(popupId);
+        controller.setCurrentPopupId(popupId);
+
+        expect(controller.getCurrentPopupId()).toBe(popupId);
+      });
     });
   });
 
   describe('setLastInteractedConfirmationInfo', () => {
-    it('sets information about last confirmation user has interacted with', () => {
-      const lastInteractedConfirmationInfo = {
-        id: '123',
-        chainId: '0x1',
-        timestamp: new Date().getTime(),
-      };
-      appStateController.setLastInteractedConfirmationInfo(
-        lastInteractedConfirmationInfo,
-      );
-      expect(appStateController.getLastInteractedConfirmationInfo()).toBe(
-        lastInteractedConfirmationInfo,
-      );
+    it('sets information about last confirmation user has interacted with', async () => {
+      await withController(({ controller }) => {
+        const lastInteractedConfirmationInfo = {
+          id: '123',
+          chainId: '0x1',
+          timestamp: new Date().getTime(),
+        };
 
-      appStateController.setLastInteractedConfirmationInfo(undefined);
-      expect(appStateController.getLastInteractedConfirmationInfo()).toBe(
-        undefined,
-      );
+        controller.setLastInteractedConfirmationInfo(
+          lastInteractedConfirmationInfo,
+        );
+
+        expect(controller.getLastInteractedConfirmationInfo()).toBe(
+          lastInteractedConfirmationInfo,
+        );
+
+        controller.setLastInteractedConfirmationInfo(undefined);
+
+        expect(controller.getLastInteractedConfirmationInfo()).toBe(undefined);
+      });
     });
   });
 
   describe('setSnapsInstallPrivacyWarningShownStatus', () => {
-    it('updates the status of snaps install privacy warning', () => {
-      ({ appStateController } = createAppStateController());
-      const updateStateSpy = jest.spyOn(
-        appStateController.store,
-        'updateState',
-      );
+    it('updates the status of snaps install privacy warning', async () => {
+      await withController(({ controller }) => {
+        controller.setSnapsInstallPrivacyWarningShownStatus(true);
 
-      appStateController.setSnapsInstallPrivacyWarningShownStatus(true);
-
-      expect(updateStateSpy).toHaveBeenCalledTimes(1);
-      expect(updateStateSpy).toHaveBeenCalledWith({
-        snapsInstallPrivacyWarningShown: true,
+        expect(controller.state.snapsInstallPrivacyWarningShown).toStrictEqual(
+          true,
+        );
       });
-
-      updateStateSpy.mockRestore();
     });
   });
 
   describe('institutional', () => {
-    it('set the interactive replacement token with a url and the old refresh token', () => {
-      ({ appStateController } = createAppStateController());
-      const updateStateSpy = jest.spyOn(
-        appStateController.store,
-        'updateState',
-      );
+    it('set the interactive replacement token with a url and the old refresh token', async () => {
+      await withController(({ controller }) => {
+        const mockParams = {
+          url: 'https://example.com',
+          oldRefreshToken: 'old',
+        };
 
-      const mockParams = {
-        url: 'https://example.com',
-        oldRefreshToken: 'old',
-      };
+        controller.showInteractiveReplacementTokenBanner(mockParams);
 
-      appStateController.showInteractiveReplacementTokenBanner(mockParams);
-
-      expect(updateStateSpy).toHaveBeenCalledTimes(1);
-      expect(updateStateSpy).toHaveBeenCalledWith({
-        interactiveReplacementToken: mockParams,
+        expect(controller.state.interactiveReplacementToken).toStrictEqual(
+          mockParams,
+        );
       });
-
-      updateStateSpy.mockRestore();
     });
 
-    it('set the setCustodianDeepLink with the fromAddress and custodyId', () => {
-      ({ appStateController } = createAppStateController());
-      const updateStateSpy = jest.spyOn(
-        appStateController.store,
-        'updateState',
-      );
+    it('set the setCustodianDeepLink with the fromAddress and custodyId', async () => {
+      await withController(({ controller }) => {
+        const mockParams = {
+          fromAddress: '0x',
+          custodyId: 'custodyId',
+        };
 
-      const mockParams = {
-        fromAddress: '0x',
-        custodyId: 'custodyId',
-      };
+        controller.setCustodianDeepLink(mockParams);
 
-      appStateController.setCustodianDeepLink(mockParams);
-
-      expect(updateStateSpy).toHaveBeenCalledTimes(1);
-      expect(updateStateSpy).toHaveBeenCalledWith({
-        custodianDeepLink: mockParams,
+        expect(controller.state.custodianDeepLink).toStrictEqual(mockParams);
       });
-
-      updateStateSpy.mockRestore();
     });
 
-    it('set the setNoteToTraderMessage with a message', () => {
-      ({ appStateController } = createAppStateController());
-      const updateStateSpy = jest.spyOn(
-        appStateController.store,
-        'updateState',
-      );
+    it('set the setNoteToTraderMessage with a message', async () => {
+      await withController(({ controller }) => {
+        const mockParams = 'some message';
 
-      const mockParams = 'some message';
+        controller.setNoteToTraderMessage(mockParams);
 
-      appStateController.setNoteToTraderMessage(mockParams);
-
-      expect(updateStateSpy).toHaveBeenCalledTimes(1);
-      expect(updateStateSpy).toHaveBeenCalledWith({
-        noteToTraderMessage: mockParams,
+        expect(controller.state.noteToTraderMessage).toStrictEqual(mockParams);
       });
-
-      updateStateSpy.mockRestore();
     });
   });
 
   describe('setSurveyLinkLastClickedOrClosed', () => {
-    it('set the surveyLinkLastClickedOrClosed time', () => {
-      ({ appStateController } = createAppStateController());
-      const updateStateSpy = jest.spyOn(
-        appStateController.store,
-        'updateState',
-      );
+    it('set the surveyLinkLastClickedOrClosed time', async () => {
+      await withController(({ controller }) => {
+        const mockParams = Date.now();
 
-      const mockParams = Date.now();
+        controller.setSurveyLinkLastClickedOrClosed(mockParams);
 
-      appStateController.setSurveyLinkLastClickedOrClosed(mockParams);
-
-      expect(updateStateSpy).toHaveBeenCalledTimes(1);
-      expect(updateStateSpy).toHaveBeenCalledWith({
-        surveyLinkLastClickedOrClosed: mockParams,
+        expect(controller.state.surveyLinkLastClickedOrClosed).toStrictEqual(
+          mockParams,
+        );
       });
-
-      updateStateSpy.mockRestore();
     });
   });
 
   describe('setOnboardingDate', () => {
-    it('set the onboardingDate', () => {
-      ({ appStateController } = createAppStateController());
-      const updateStateSpy = jest.spyOn(
-        appStateController.store,
-        'updateState',
-      );
+    it('set the onboardingDate', async () => {
+      await withController(({ controller }) => {
+        const mockDateNow = 1620000000000;
+        jest.spyOn(Date, 'now').mockReturnValue(mockDateNow);
 
-      appStateController.setOnboardingDate();
+        controller.setOnboardingDate();
 
-      expect(updateStateSpy).toHaveBeenCalledTimes(1);
-
-      updateStateSpy.mockRestore();
+        expect(controller.state.onboardingDate).toStrictEqual(mockDateNow);
+      });
     });
   });
 
   describe('setLastViewedUserSurvey', () => {
-    it('set the lastViewedUserSurvey with id 1', () => {
-      ({ appStateController } = createAppStateController());
-      const updateStateSpy = jest.spyOn(
-        appStateController.store,
-        'updateState',
-      );
+    it('set the lastViewedUserSurvey with id 1', async () => {
+      await withController(({ controller }) => {
+        const mockParams = 1;
 
-      const mockParams = 1;
+        controller.setLastViewedUserSurvey(mockParams);
 
-      appStateController.setLastViewedUserSurvey(mockParams);
-
-      expect(updateStateSpy).toHaveBeenCalledTimes(1);
-      expect(updateStateSpy).toHaveBeenCalledWith({
-        lastViewedUserSurvey: mockParams,
+        expect(controller.state.lastViewedUserSurvey).toStrictEqual(mockParams);
       });
-
-      updateStateSpy.mockRestore();
     });
   });
 
   describe('setNewPrivacyPolicyToastClickedOrClosed', () => {
-    it('set the newPrivacyPolicyToastClickedOrClosed to true', () => {
-      ({ appStateController } = createAppStateController());
-      const updateStateSpy = jest.spyOn(
-        appStateController.store,
-        'updateState',
-      );
+    it('set the newPrivacyPolicyToastClickedOrClosed to true', async () => {
+      await withController(({ controller }) => {
+        controller.setNewPrivacyPolicyToastClickedOrClosed();
 
-      appStateController.setNewPrivacyPolicyToastClickedOrClosed();
-
-      expect(updateStateSpy).toHaveBeenCalledTimes(1);
-      expect(
-        appStateController.store.getState()
-          .newPrivacyPolicyToastClickedOrClosed,
-      ).toStrictEqual(true);
-
-      updateStateSpy.mockRestore();
+        expect(
+          controller.state.newPrivacyPolicyToastClickedOrClosed,
+        ).toStrictEqual(true);
+      });
     });
   });
 
   describe('setNewPrivacyPolicyToastShownDate', () => {
-    it('set the newPrivacyPolicyToastShownDate', () => {
-      ({ appStateController } = createAppStateController());
-      const updateStateSpy = jest.spyOn(
-        appStateController.store,
-        'updateState',
-      );
+    it('set the newPrivacyPolicyToastShownDate', async () => {
+      await withController(({ controller }) => {
+        const mockParams = Date.now();
 
-      const mockParams = Date.now();
+        controller.setNewPrivacyPolicyToastShownDate(mockParams);
 
-      appStateController.setNewPrivacyPolicyToastShownDate(mockParams);
-
-      expect(updateStateSpy).toHaveBeenCalledTimes(1);
-      expect(updateStateSpy).toHaveBeenCalledWith({
-        newPrivacyPolicyToastShownDate: mockParams,
+        expect(controller.state.newPrivacyPolicyToastShownDate).toStrictEqual(
+          mockParams,
+        );
       });
-      expect(
-        appStateController.store.getState().newPrivacyPolicyToastShownDate,
-      ).toStrictEqual(mockParams);
-
-      updateStateSpy.mockRestore();
     });
   });
 
   describe('setTermsOfUseLastAgreed', () => {
-    it('set the termsOfUseLastAgreed timestamp', () => {
-      ({ appStateController } = createAppStateController());
-      const updateStateSpy = jest.spyOn(
-        appStateController.store,
-        'updateState',
-      );
+    it('set the termsOfUseLastAgreed timestamp', async () => {
+      await withController(({ controller }) => {
+        const mockParams = Date.now();
 
-      const mockParams = Date.now();
+        controller.setTermsOfUseLastAgreed(mockParams);
 
-      appStateController.setTermsOfUseLastAgreed(mockParams);
-
-      expect(updateStateSpy).toHaveBeenCalledTimes(1);
-      expect(updateStateSpy).toHaveBeenCalledWith({
-        termsOfUseLastAgreed: mockParams,
+        expect(controller.state.termsOfUseLastAgreed).toStrictEqual(mockParams);
       });
-      expect(
-        appStateController.store.getState().termsOfUseLastAgreed,
-      ).toStrictEqual(mockParams);
-
-      updateStateSpy.mockRestore();
     });
   });
 
   describe('onPreferencesStateChange', () => {
-    it('should update the timeoutMinutes with the autoLockTimeLimit', () => {
-      ({ appStateController, controllerMessenger } =
-        createAppStateController());
-      const timeout = Date.now();
+    it('should update the timeoutMinutes with the autoLockTimeLimit', async () => {
+      await withController(({ controller, controllerMessenger }) => {
+        const timeout = Date.now();
 
-      controllerMessenger.publish(
-        'PreferencesController:stateChange',
-        {
-          preferences: { autoLockTimeLimit: timeout },
-        } as unknown as PreferencesControllerState,
-        [],
-      );
+        controllerMessenger.publish(
+          'PreferencesController:stateChange',
+          {
+            preferences: { autoLockTimeLimit: timeout },
+          } as unknown as PreferencesControllerState,
+          [],
+        );
 
-      expect(appStateController.store.getState().timeoutMinutes).toStrictEqual(
-        timeout,
-      );
+        expect(controller.state.timeoutMinutes).toStrictEqual(timeout);
+      });
     });
   });
 
   describe('isManifestV3', () => {
-    it('creates alarm when isManifestV3 is true', () => {
+    it('creates alarm when isManifestV3 is true', async () => {
       mockIsManifestV3.mockReturnValue(true);
-      ({ appStateController } = createAppStateController());
+      await withController(({ controller, controllerMessenger }) => {
+        const timeout = Date.now();
+        controllerMessenger.publish(
+          'PreferencesController:stateChange',
+          {
+            preferences: { autoLockTimeLimit: timeout },
+          } as unknown as PreferencesControllerState,
+          [],
+        );
+        controller.setLastActiveTime();
 
-      const timeout = Date.now();
-      controllerMessenger.publish(
-        'PreferencesController:stateChange',
-        {
-          preferences: { autoLockTimeLimit: timeout },
-        } as unknown as PreferencesControllerState,
-        [],
-      );
-      const spy = jest.spyOn(
-        appStateController as unknown as { _resetTimer: () => void },
-        '_resetTimer',
-      );
-      appStateController.setLastActiveTime();
-
-      expect(spy).toHaveBeenCalled();
-      expect(extensionMock.alarms.clear).toHaveBeenCalled();
-      expect(extensionMock.alarms.onAlarm.addListener).toHaveBeenCalled();
-    });
-  });
-
-  describe('AppStateController:getState', () => {
-    it('should return the current state of the property', () => {
-      expect(
-        appStateController.store.getState().recoveryPhraseReminderHasBeenShown,
-      ).toStrictEqual(false);
-      expect(
-        controllerMessenger.call('AppStateController:getState')
-          .recoveryPhraseReminderHasBeenShown,
-      ).toStrictEqual(false);
-    });
-  });
-
-  describe('AppStateController:stateChange', () => {
-    it('subscribers will recieve the state when published', () => {
-      expect(
-        appStateController.store.getState().surveyLinkLastClickedOrClosed,
-      ).toStrictEqual(null);
-      const timeNow = Date.now();
-      controllerMessenger.subscribe(
-        'AppStateController:stateChange',
-        (state: Partial<AppStateControllerState>) => {
-          if (typeof state.surveyLinkLastClickedOrClosed === 'number') {
-            appStateController.setSurveyLinkLastClickedOrClosed(
-              state.surveyLinkLastClickedOrClosed,
-            );
-          }
-        },
-      );
-
-      controllerMessenger.publish(
-        'AppStateController:stateChange',
-        {
-          surveyLinkLastClickedOrClosed: timeNow,
-        } as unknown as AppStateControllerState,
-        [],
-      );
-
-      expect(
-        appStateController.store.getState().surveyLinkLastClickedOrClosed,
-      ).toStrictEqual(timeNow);
-      expect(
-        controllerMessenger.call('AppStateController:getState')
-          .surveyLinkLastClickedOrClosed,
-      ).toStrictEqual(timeNow);
-    });
-
-    it('state will be published when there is state change', () => {
-      expect(
-        appStateController.store.getState().surveyLinkLastClickedOrClosed,
-      ).toStrictEqual(null);
-      const timeNow = Date.now();
-      controllerMessenger.subscribe(
-        'AppStateController:stateChange',
-        (state: Partial<AppStateControllerState>) => {
-          expect(state.surveyLinkLastClickedOrClosed).toStrictEqual(timeNow);
-        },
-      );
-
-      appStateController.setSurveyLinkLastClickedOrClosed(timeNow);
-
-      expect(
-        appStateController.store.getState().surveyLinkLastClickedOrClosed,
-      ).toStrictEqual(timeNow);
-      expect(
-        controllerMessenger.call('AppStateController:getState')
-          .surveyLinkLastClickedOrClosed,
-      ).toStrictEqual(timeNow);
+        expect(extensionMock.alarms.clear).toHaveBeenCalled();
+        expect(extensionMock.alarms.onAlarm.addListener).toHaveBeenCalled();
+      });
     });
   });
 });
+
+type WithControllerOptions = {
+  options?: Partial<AppStateControllerOptions>;
+  addRequestMock?: jest.Mock;
+};
+
+type WithControllerCallback<ReturnValue> = ({
+  controller,
+  controllerMessenger,
+}: {
+  controller: AppStateController;
+  controllerMessenger: ControllerMessenger<
+    | AppStateControllerActions
+    | AddApprovalRequest
+    | AcceptRequest
+    | PreferencesControllerGetStateAction,
+    | AppStateControllerEvents
+    | PreferencesControllerStateChangeEvent
+    | KeyringControllerQRKeyringStateChangeEvent
+  >;
+}) => ReturnValue;
+
+type WithControllerArgs<ReturnValue> =
+  | [WithControllerCallback<ReturnValue>]
+  | [WithControllerOptions, WithControllerCallback<ReturnValue>];
+
+async function withController<ReturnValue>(
+  ...args: WithControllerArgs<ReturnValue>
+): Promise<ReturnValue> {
+  const [{ ...rest }, fn] = args.length === 2 ? args : [{}, args[0]];
+  const { addRequestMock, options = {} } = rest;
+
+  const controllerMessenger = new ControllerMessenger<
+    | AppStateControllerActions
+    | AddApprovalRequest
+    | AcceptRequest
+    | PreferencesControllerGetStateAction,
+    | AppStateControllerEvents
+    | PreferencesControllerStateChangeEvent
+    | KeyringControllerQRKeyringStateChangeEvent
+  >();
+  const appStateMessenger = controllerMessenger.getRestricted({
+    name: 'AppStateController',
+    allowedActions: [
+      `ApprovalController:addRequest`,
+      `ApprovalController:acceptRequest`,
+      `PreferencesController:getState`,
+    ],
+    allowedEvents: [
+      `PreferencesController:stateChange`,
+      `KeyringController:qrKeyringStateChange`,
+    ],
+  });
+  controllerMessenger.registerActionHandler(
+    'PreferencesController:getState',
+    jest.fn().mockReturnValue({
+      preferences: {
+        autoLockTimeLimit: 0,
+      },
+    }),
+  );
+  controllerMessenger.registerActionHandler(
+    'ApprovalController:addRequest',
+    addRequestMock || jest.fn().mockResolvedValue(undefined),
+  );
+
+  return fn({
+    controller: new AppStateController({
+      addUnlockListener: jest.fn(),
+      isUnlocked: jest.fn(() => true),
+      onInactiveTimeout: jest.fn(),
+      messenger: appStateMessenger,
+      extension: extensionMock,
+      ...options,
+    }),
+    controllerMessenger,
+  });
+}

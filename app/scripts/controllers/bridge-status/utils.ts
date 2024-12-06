@@ -5,15 +5,20 @@ import {
 import fetchWithCache from '../../../../shared/lib/fetch-with-cache';
 import {
   StatusResponse,
-  StatusRequest,
+  StatusRequestWithSrcTxHash,
 } from '../../../../shared/types/bridge-status';
+// TODO fix this
+// eslint-disable-next-line import/no-restricted-paths
+import { Quote } from '../../../../ui/pages/bridge/types';
 import { validateResponse, validators } from './validators';
 
 const CLIENT_ID_HEADER = { 'X-Client-Id': BRIDGE_CLIENT_ID };
 
 export const BRIDGE_STATUS_BASE_URL = `${BRIDGE_API_BASE_URL}/getTxStatus`;
 
-export const fetchBridgeTxStatus = async (statusRequest: StatusRequest) => {
+export const fetchBridgeTxStatus = async (
+  statusRequest: StatusRequestWithSrcTxHash,
+) => {
   // Assemble params
   const { quote, ...statusRequestNoQuote } = statusRequest;
   const statusRequestNoQuoteFormatted = Object.fromEntries(
@@ -46,4 +51,19 @@ export const fetchBridgeTxStatus = async (statusRequest: StatusRequest) => {
 
   // Return
   return rawTxStatus;
+};
+
+export const getStatusRequestWithSrcTxHash = (
+  quote: Quote,
+  srcTxHash: string,
+): StatusRequestWithSrcTxHash => {
+  return {
+    bridgeId: quote.bridgeId,
+    srcTxHash,
+    bridge: quote.bridges[0],
+    srcChainId: quote.srcChainId,
+    destChainId: quote.destChainId,
+    quote,
+    refuel: Boolean(quote.refuel),
+  };
 };
