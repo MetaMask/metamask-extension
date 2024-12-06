@@ -54,6 +54,7 @@ const Confirm = () => (
           <Page className="confirm_wrapper">
             <Nav />
             <Header />
+            <STXMigrationToast />
             <ScrollToBottom>
               {
                 ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
@@ -73,7 +74,6 @@ const Confirm = () => (
             </ScrollToBottom>
             <Footer />
             <NetworkChangeToast />
-            <STXMigrationToast />
           </Page>
         </ConfirmAlerts>
       </GasFeeContextProviderWrapper>

@@ -5,6 +5,7 @@ import { Toast } from '../../../../../components/multichain';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import { stxAlertIsOpen, dismissAndDisableAlert } from '../../../../../ducks/alerts/stx-migration';
 import ZENDESK_URLS from '../../../../../helpers/constants/zendesk-url';
+import { Display } from '../../../../../helpers/constants/design-system';
 
 const STXMigrationToastLegacy = () => {
   const [toastVisible, setToastVisible] = useState(false);
@@ -39,7 +40,17 @@ const STXMigrationToastLegacy = () => {
   }
 
   return (
-    <Box className="toast_wrapper">
+    <Box
+      className="stx-migration-toast_wrapper"
+      display={Display.Flex}
+      style={{
+        position: 'absolute',
+        top: 0,
+        left: 0,
+        right: 0,
+        zIndex: 1
+      }}
+    >
       <Toast
         onClose={hideToast}
         text={t('smartTransactionsEnabledMessage')}
