@@ -408,7 +408,7 @@ export function AssetPickerModal({
               <Search
                 searchQuery={searchQuery}
                 onChange={(value) => setSearchQuery(value)}
-                autoFocus={false}
+                autoFocus={!isMultiselectEnabled}
               />
               <AssetList
                 network={network}
