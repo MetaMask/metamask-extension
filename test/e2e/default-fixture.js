@@ -113,6 +113,7 @@ function defaultFixture(inputChainId = CHAIN_IDS.LOCALHOST) {
           '__FIXTURE_SUBSTITUTION__currentDateInMilliseconds',
         showTestnetMessageInDropdown: true,
         trezorModel: null,
+        isRampCardClosed: false,
         newPrivacyPolicyToastClickedOrClosed: true,
         newPrivacyPolicyToastShownDate: Date.now(),
         snapsInstallPrivacyWarningShown: true,
