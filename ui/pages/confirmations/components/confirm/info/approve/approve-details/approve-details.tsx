@@ -82,7 +82,7 @@ export const ApproveDetails = ({
     <ConfirmInfoSection data-testid="confirmation__approve-details">
       <Spender isSetApprovalForAll={isSetApprovalForAll} />
       <OriginRow />
-      <SigningInWithRow />
+      {!isSetApprovalForAll && <SigningInWithRow />}
       {showAdvancedDetails && (
         <>
           <RecipientRow />
