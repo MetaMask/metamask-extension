@@ -388,11 +388,16 @@ browser.runtime.onConnectExternal.addListener(async (...args) => {
   // This is set in `setupController`, which is called as part of initialization
   const port = args[0];
 
-  if (port.sender.tab?.id && process.env.BARAD_DUR) {
+  ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-mmi)
+  connectExternalExtension(...args);
+  ///: END:ONLY_INCLUDE_IF
+  ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
+  if (port.sender.tab?.id) {
     connectExternalCaip(...args);
   } else {
     connectExternalExtension(...args);
   }
+  ///: END:ONLY_INCLUDE_IF
 });
 
 function saveTimestamp() {
