@@ -97,10 +97,10 @@ export const SENTRY_BACKGROUND_STATE = {
   BridgeController: {
     bridgeState: {
       bridgeFeatureFlags: {
-        extensionConfig: false,
-        extensionSupport: false,
-        destNetworkAllowlist: [],
-        srcNetworkAllowlist: [],
+        extensionConfig: {
+          support: false,
+          chains: {},
+        },
       },
       destTokens: {},
       destTopAssets: [],

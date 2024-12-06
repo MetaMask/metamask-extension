@@ -29,8 +29,18 @@ describe('PrepareBridgePage', () => {
       .mockReturnValue([{ get: () => null }] as never);
     const mockStore = createBridgeMockStore({
       featureFlagOverrides: {
-        srcNetworkAllowlist: [CHAIN_IDS.MAINNET, CHAIN_IDS.OPTIMISM],
-        destNetworkAllowlist: [CHAIN_IDS.OPTIMISM],
+        extensionConfig: {
+          chains: {
+            [CHAIN_IDS.MAINNET]: {
+              isActiveSrc: true,
+              isActiveDest: false,
+            },
+            [CHAIN_IDS.OPTIMISM]: {
+              isActiveSrc: true,
+              isActiveDest: true,
+            },
+          },
+        },
       },
     });
     const { container, getByRole, getByTestId } = renderWithProvider(
@@ -62,8 +72,19 @@ describe('PrepareBridgePage', () => {
       .mockReturnValue([{ get: () => '0x3103910' }, jest.fn()] as never);
     const mockStore = createBridgeMockStore({
       featureFlagOverrides: {
-        srcNetworkAllowlist: [CHAIN_IDS.MAINNET, CHAIN_IDS.LINEA_MAINNET],
-        destNetworkAllowlist: [CHAIN_IDS.LINEA_MAINNET],
+        extensionConfig: {
+          support: true,
+          chains: {
+            [CHAIN_IDS.MAINNET]: {
+              isActiveSrc: true,
+              isActiveDest: false,
+            },
+            [CHAIN_IDS.LINEA_MAINNET]: {
+              isActiveSrc: true,
+              isActiveDest: true,
+            },
+          },
+        },
         destTokens: {
           '0x1f9840a85d5af5bf1d1762f925bdaddc4201f984': {
             iconUrl: 'http://url',
@@ -123,8 +144,18 @@ describe('PrepareBridgePage', () => {
   it('should throw an error if token decimals are not defined', async () => {
     const mockStore = createBridgeMockStore({
       featureFlagOverrides: {
-        srcNetworkAllowlist: [CHAIN_IDS.MAINNET, CHAIN_IDS.LINEA_MAINNET],
-        destNetworkAllowlist: [CHAIN_IDS.LINEA_MAINNET],
+        extensionConfig: {
+          chains: {
+            [CHAIN_IDS.MAINNET]: {
+              isActiveSrc: true,
+              isActiveDest: false,
+            },
+            [CHAIN_IDS.LINEA_MAINNET]: {
+              isActiveSrc: true,
+              isActiveDest: true,
+            },
+          },
+        },
       },
       bridgeSliceOverrides: {
         fromTokenInputValue: 1,

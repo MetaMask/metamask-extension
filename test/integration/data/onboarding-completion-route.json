@@ -59,7 +59,9 @@
   "approvalFlows": [],
   "bridgeState": {
     "bridgeFeatureFlags": {
-      "extensionSupport": false
+      "extensionConfig": {
+        "support": false
+      }
     }
   },
   "browserEnvironment": { "os": "mac", "browser": "firefox" },

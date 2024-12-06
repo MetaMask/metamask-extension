@@ -66,10 +66,26 @@ describe('BridgeController', function () {
         'extension-config': {
           refreshRate: 3,
           maxRefreshCount: 3,
+          support: true,
+          chains: {
+            '10': {
+              isActiveSrc: true,
+              isActiveDest: false,
+            },
+            '534352': {
+              isActiveSrc: true,
+              isActiveDest: false,
+            },
+            '137': {
+              isActiveSrc: false,
+              isActiveDest: true,
+            },
+            '42161': {
+              isActiveSrc: false,
+              isActiveDest: true,
+            },
+          },
         },
-        'extension-support': true,
-        'src-network-allowlist': [10, 534352],
-        'dest-network-allowlist': [137, 42161],
         'approval-gas-multiplier': {
           '137': 1.1,
           '42161': 1.2,
@@ -114,12 +130,16 @@ describe('BridgeController', function () {
 
   it('setBridgeFeatureFlags should fetch and set the bridge feature flags', async function () {
     const expectedFeatureFlagsResponse = {
-      extensionSupport: true,
-      destNetworkAllowlist: [CHAIN_IDS.POLYGON, CHAIN_IDS.ARBITRUM],
-      srcNetworkAllowlist: [CHAIN_IDS.OPTIMISM, CHAIN_IDS.SCROLL],
       extensionConfig: {
         maxRefreshCount: 3,
         refreshRate: 3,
+        support: true,
+        chains: {
+          [CHAIN_IDS.OPTIMISM]: { isActiveSrc: true, isActiveDest: false },
+          [CHAIN_IDS.SCROLL]: { isActiveSrc: true, isActiveDest: false },
+          [CHAIN_IDS.POLYGON]: { isActiveSrc: false, isActiveDest: true },
+          [CHAIN_IDS.ARBITRUM]: { isActiveSrc: false, isActiveDest: true },
+        },
       },
     };
     expect(bridgeController.state).toStrictEqual(EMPTY_INIT_STATE);

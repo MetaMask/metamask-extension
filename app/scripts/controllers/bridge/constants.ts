@@ -20,10 +20,9 @@ export const DEFAULT_BRIDGE_CONTROLLER_STATE: BridgeControllerState = {
     [BridgeFeatureFlagsKey.EXTENSION_CONFIG]: {
       refreshRate: REFRESH_INTERVAL_MS,
       maxRefreshCount: DEFAULT_MAX_REFRESH_COUNT,
+      support: false,
+      chains: {},
     },
-    [BridgeFeatureFlagsKey.EXTENSION_SUPPORT]: false,
-    [BridgeFeatureFlagsKey.NETWORK_SRC_ALLOWLIST]: [],
-    [BridgeFeatureFlagsKey.NETWORK_DEST_ALLOWLIST]: [],
   },
   srcTokens: {},
   srcTopAssets: [],
