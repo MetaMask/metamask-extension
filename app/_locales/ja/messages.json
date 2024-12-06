@@ -434,9 +434,6 @@
   "alertMessageNoGasPrice": {
     "message": "手数料を手動で更新するまでこのトランザクションを進めることができません。"
   },
-  "alertMessagePendingTransactions": {
-    "message": "前のトランザクションが完了するまでこのトランザクションを実行できません。トランザクションをキャンセルするか加速させる方法をご覧ください。"
-  },
   "alertMessageSignInDomainMismatch": {
     "message": "要求元のサイトはサインインしようとしているサイトではありません。ログイン情報を盗もうとしている可能性があります。"
   },

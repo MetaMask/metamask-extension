@@ -434,9 +434,6 @@
   "alertMessageNoGasPrice": {
     "message": "Wir können mit dieser Transaktion nicht fortfahren, bis Sie die Gebühr manuell aktualisieren."
   },
-  "alertMessagePendingTransactions": {
-    "message": "Diese Transaktion wird erst dann durchgeführt, wenn eine vorherige Transaktion abgeschlossen ist. Erfahren Sie, wie Sie eine Transaktion abbrechen oder beschleunigen können."
-  },
   "alertMessageSignInDomainMismatch": {
     "message": "Die Website, die die Anfrage stellt, ist nicht die Website, bei der Sie sich anmelden. Dies könnte ein Versuch sein, Ihre Anmeldedaten zu stehlen."
   },

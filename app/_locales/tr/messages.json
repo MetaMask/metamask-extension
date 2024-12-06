@@ -434,9 +434,6 @@
   "alertMessageNoGasPrice": {
     "message": "Siz ücreti manuel olarak güncelleyene dek bu işleme devam edemiyoruz."
   },
-  "alertMessagePendingTransactions": {
-    "message": "Önceki bir işlem tamamlanana dek bu işlem gerçekleşmeyecektir. Bir işlemi nasıl iptal edeceğinizi veya hızlandıracağınızı öğrenin."
-  },
   "alertMessageSignInDomainMismatch": {
     "message": "Talepte bulunan site giriş yaptığınız site değil. Bu durum oturum açma bilgilerinizi çalma teşebbüsü olabilir."
   },

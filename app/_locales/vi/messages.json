@@ -434,9 +434,6 @@
   "alertMessageNoGasPrice": {
     "message": "Chúng tôi không thể tiếp tục giao dịch này cho đến khi bạn cập nhật phí thủ công."
   },
-  "alertMessagePendingTransactions": {
-    "message": "Giao dịch này sẽ không được thực hiện cho đến khi giao dịch trước đó hoàn tất. Tìm hiểu cách hủy hoặc đẩy nhanh giao dịch."
-  },
   "alertMessageSignInDomainMismatch": {
     "message": "Trang web đưa ra yêu cầu không phải là trang web bạn đang đăng nhập. Đây có thể là một nỗ lực đánh cắp thông tin đăng nhập của bạn."
   },

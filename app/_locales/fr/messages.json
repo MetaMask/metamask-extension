@@ -434,9 +434,6 @@
   "alertMessageNoGasPrice": {
     "message": "Nous ne pouvons pas valider cette transaction tant que vous n’avez pas mis à jour manuellement les frais."
   },
-  "alertMessagePendingTransactions": {
-    "message": "La transaction précédente doit être finalisée avant que celle-ci ne soit traitée. Découvrez comment vous pouvez annuler ou accélérer une transaction."
-  },
   "alertMessageSignInDomainMismatch": {
     "message": "Le site auquel vous êtes en train de vous connecter n’est pas le site à l’origine de la demande. Il pourrait s’agir d’une tentative de vol de vos identifiants de connexion."
   },

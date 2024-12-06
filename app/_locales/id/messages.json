@@ -434,9 +434,6 @@
   "alertMessageNoGasPrice": {
     "message": "Kami tidak dapat melanjutkan transaksi ini hingga Anda memperbarui biayanya secara manual."
   },
-  "alertMessagePendingTransactions": {
-    "message": "Transaksi ini tidak akan dilanjutkan hingga transaksi sebelumnya selesai. Pelajari cara membatalkan atau mempercepat transaksi."
-  },
   "alertMessageSignInDomainMismatch": {
     "message": "Situs yang membuat permintaan bukanlah situs yang Anda masuki. Ini dapat merupakan upaya untuk mencuri kredensial login Anda."
   },

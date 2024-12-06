@@ -434,9 +434,6 @@
   "alertMessageNoGasPrice": {
     "message": "수수료를 직접 업데이트할 때까지는 이 트랜잭션을 진행할 수 없습니다."
   },
-  "alertMessagePendingTransactions": {
-    "message": "이 트랜잭션은 이전 트랜잭션이 완료될 때까지 진행되지 않습니다. 트랜잭션을 취소하거나 속도를 올리는 법을 알아보세요."
-  },
   "alertMessageSignInDomainMismatch": {
     "message": "요청을 보낸 사이트에 로그인되어 있지 않습니다. 이는 로그인 정보를 도용하려는 시도일 수 있습니다."
   },

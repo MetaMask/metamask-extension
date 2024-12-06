@@ -434,9 +434,6 @@
   "alertMessageNoGasPrice": {
     "message": "您手动更新费用后，我们才能继续进行此交易。"
   },
-  "alertMessagePendingTransactions": {
-    "message": "上一笔交易完成后，此交易才能继续进行。了解如何取消或加快交易。"
-  },
   "alertMessageSignInDomainMismatch": {
     "message": "提出请求的网站不是您正在登录的网站。这可能试图窃取您的登录凭据。"
   },

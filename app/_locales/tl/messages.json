@@ -434,9 +434,6 @@
   "alertMessageNoGasPrice": {
     "message": "Hindi tayo makakapagpatuloy sa transaksyong ito hanggang sa manwal mong i-update ang bayad."
   },
-  "alertMessagePendingTransactions": {
-    "message": "Hindi magpapatuloy ang transaksyong ito hanggang makumpleto ang naunang transaksyon. Alamin kung paano kanselahin o pabilisin ang transaksyon."
-  },
   "alertMessageSignInDomainMismatch": {
     "message": "Ang site na humihiling ay hindi ang site kung saan ka nagsa-signin. Ito ay maaring isang pagtatangka para nakawin ang iyong mga kredensiyal sa pag-login."
   },
