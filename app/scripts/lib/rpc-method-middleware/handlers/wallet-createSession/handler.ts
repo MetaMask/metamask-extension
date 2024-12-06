@@ -132,6 +132,9 @@ async function walletCreateSessionHandler(
       scopedProperties as ScopedProperties,
     );
 
+    const supportedRequiredScopesObjects = filterScopeObjectsSupported(normalizedRequiredScopes)
+    const supportedOptionalScopesObjects = filterScopeObjectsSupported(normalizedOptionalScopes)
+
     const existsNetworkClientForChainId = (chainId: Hex) => {
       try {
         hooks.findNetworkClientIdByChainId(chainId);
@@ -146,14 +149,11 @@ async function walletCreateSessionHandler(
       return Boolean(validScopedProperties?.[scopeString]?.eip3085);
     };
 
-    const supportedRequiredScopeObjects = filterScopeObjectsSupported(normalizedRequiredScopes)
-    const supportedOptionalScopeObjects = filterScopeObjectsSupported(normalizedOptionalScopes)
-
     const {
       supportedScopes: supportedRequiredScopes,
       supportableScopes: supportableRequiredScopes,
       unsupportableScopes: unsupportableRequiredScopes,
-    } = bucketScopes(supportedRequiredScopeObjects, {
+    } = bucketScopes(supportedRequiredScopesObjects, {
       isChainIdSupported: existsNetworkClientForChainId,
       isChainIdSupportable: existsEip3085ForChainId,
     });
@@ -162,7 +162,7 @@ async function walletCreateSessionHandler(
       supportedScopes: supportedOptionalScopes,
       supportableScopes: supportableOptionalScopes,
       unsupportableScopes: unsupportableOptionalScopes,
-    } = bucketScopes(supportedOptionalScopeObjects, {
+    } = bucketScopes(supportedOptionalScopesObjects, {
       isChainIdSupported: existsNetworkClientForChainId,
       isChainIdSupportable: existsEip3085ForChainId,
     });

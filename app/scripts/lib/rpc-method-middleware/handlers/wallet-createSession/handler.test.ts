@@ -24,6 +24,7 @@ jest.mock('@metamask/multichain', () => ({
   validateAndNormalizeScopes: jest.fn(),
   bucketScopes: jest.fn(),
   getSessionScopes: jest.fn(),
+  filterScopeObjectsSupported: jest.fn(),
 }));
 const MockMultichain = jest.mocked(Multichain);
 
@@ -131,6 +132,7 @@ describe('wallet_createSession', () => {
       unsupportableScopes: {},
     });
     MockMultichain.getSessionScopes.mockReturnValue({});
+    MockMultichain.filterScopeObjectsSupported.mockImplementation((scopesObject) => scopesObject)
     MockHelpers.processScopedProperties.mockReturnValue({});
   });
 
