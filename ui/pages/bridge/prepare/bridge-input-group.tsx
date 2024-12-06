@@ -32,33 +32,7 @@ import {
   getBridgeQuotes,
   getValidationErrors,
 } from '../../../ducks/bridge/selectors';
-import { TextColor } from '../../../helpers/constants/design-system';
-
-const generateAssetFromToken = (
-  chainId: Hex,
-  tokenDetails: SwapsTokenObject | SwapsEthToken,
-): ERC20Asset | NativeAsset => {
-  if ('iconUrl' in tokenDetails && tokenDetails.address !== zeroAddress()) {
-    return {
-      type: AssetType.token,
-      image: tokenDetails.iconUrl,
-      symbol: tokenDetails.symbol,
-      address: tokenDetails.address,
-    };
-  }
-
-  return {
-    type: AssetType.native,
-    image:
-      CHAIN_ID_TOKEN_IMAGE_MAP[
-        chainId as keyof typeof CHAIN_ID_TOKEN_IMAGE_MAP
-      ],
-    symbol:
-      CHAIN_ID_TO_CURRENCY_SYMBOL_MAP[
-        chainId as keyof typeof CHAIN_ID_TO_CURRENCY_SYMBOL_MAP
-      ],
-  };
-};
+import { BridgeToken } from '../types';
 
 export const BridgeInputGroup = ({
   className,
@@ -72,7 +46,7 @@ export const BridgeInputGroup = ({
 }: {
   className: string;
   onAmountChange?: (value: string) => void;
-  token: SwapsTokenObject | SwapsEthToken | null;
+  token: BridgeToken | null;
   amountFieldProps?: Pick<
     React.ComponentProps<typeof TextField>,
     'testId' | 'autoFocus' | 'value' | 'readOnly' | 'disabled' | 'className'
