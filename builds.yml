@@ -276,8 +276,6 @@ env:
   - NODE_DEBUG: ''
   # Used by react-devtools-core
   - EDITOR_URL: ''
-  # Determines if Barad Dur features should be used
-  - BARAD_DUR: ''
   # Determines if feature flagged Chain permissions
   - CHAIN_PERMISSIONS: ''
   # Determines if Portfolio View UI should be shown
