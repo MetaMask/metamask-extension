@@ -511,7 +511,6 @@ const generateGanacheOptions = ({
 
 // Edit priority gas fee form
 const editGasFeeForm = async (driver, gasLimit, gasPrice) => {
-  await driver.delay(veryLargeDelayMs);
   const inputs = await driver.findElements('input[type="number"]');
   const gasLimitInput = inputs[0];
   const gasPriceInput = inputs[1];

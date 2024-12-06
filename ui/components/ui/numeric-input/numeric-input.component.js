@@ -30,7 +30,7 @@ export default function NumericInput({
         type="number"
         value={value}
         onKeyDown={(e) => {
-          if (!allowDecimals && e.key === '.') {
+          if (!allowDecimals && (e.key === '.' || e.key === ',')) {
             e.preventDefault();
           }
         }}
