@@ -39,6 +39,7 @@ import { getConversionRate, getGasFeeEstimates } from '../metamask/metamask';
 import { RequestStatus } from '../../../app/scripts/controllers/bridge/constants';
 import {
   L1GasFees,
+  BridgeToken,
   QuoteMetadata,
   QuoteResponse,
   SortOrder,
@@ -53,6 +54,7 @@ import {
   calcEstimatedAndMaxTotalGasFee,
   isNativeAddress,
 } from '../../pages/bridge/utils/quote';
+import { AssetType } from '../../../shared/constants/transaction';
 import { decGWEIToHexWEI } from '../../../shared/modules/conversion.utils';
 import { calcTokenAmount } from '../../../shared/lib/transactions-controller-utils';
 import {
@@ -164,9 +166,7 @@ export const getFromToken = (
     : getSwapsDefaultToken(state);
 };
 
-export const getToToken = (
-  state: BridgeAppState,
-): SwapsTokenObject | SwapsEthToken | null => {
+export const getToToken = (state: BridgeAppState): BridgeToken => {
   return state.bridge.toToken;
 };
 
