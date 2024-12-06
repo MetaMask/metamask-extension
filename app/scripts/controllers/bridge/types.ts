@@ -18,15 +18,11 @@ import {
 } from '../../../../ui/pages/bridge/types';
 import BridgeController from './bridge-controller';
 import { BRIDGE_CONTROLLER_NAME, RequestStatus } from './constants';
+import { ChainConfiguration } from '../../../../shared/types/bridge';
 
 export enum BridgeFeatureFlagsKey {
   EXTENSION_CONFIG = 'extensionConfig',
 }
-
-export type ChainConfiguration = {
-  isActiveSrc: boolean;
-  isActiveDest: boolean;
-};
 
 export type BridgeFeatureFlags = {
   [BridgeFeatureFlagsKey.EXTENSION_CONFIG]: {

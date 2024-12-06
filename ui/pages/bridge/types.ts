@@ -1,5 +1,5 @@
 import { BigNumber } from 'bignumber.js';
-import { ChainConfiguration } from '../../../app/scripts/controllers/bridge/types';
+import { ChainConfiguration } from '../../../shared/types/bridge';
 
 export type L1GasFees = {
   l1GasFeesInHexWei?: string; // l1 fees for approval and trade in hex wei, appended by controller
