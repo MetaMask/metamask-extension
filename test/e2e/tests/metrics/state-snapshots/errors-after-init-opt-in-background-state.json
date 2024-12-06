@@ -39,7 +39,7 @@
     "trezorModel": null,
     "onboardingDate": null,
     "lastViewedUserSurvey": null,
-    "isRampCardClosed": "boolean",
+    "isRampCardClosed": false,
     "newPrivacyPolicyToastClickedOrClosed": "boolean",
     "newPrivacyPolicyToastShownDate": "number",
     "hadAdvancedGasFeesSetPriorToMigration92_3": false,

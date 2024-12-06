@@ -40,7 +40,7 @@
       "recoveryPhraseReminderLastShown": "number",
       "showTestnetMessageInDropdown": true,
       "trezorModel": null,
-      "isRampCardClosed": "boolean",
+      "isRampCardClosed": false,
       "newPrivacyPolicyToastClickedOrClosed": "boolean",
       "newPrivacyPolicyToastShownDate": "number",
       "snapsInstallPrivacyWarningShown": true
