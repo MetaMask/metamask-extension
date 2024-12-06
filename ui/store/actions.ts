@@ -1066,6 +1066,44 @@ export async function addTransactionAndWaitForPublish(
   );
 }
 
+/**
+ * Wrapper around the promisifedBackground to create a new unapproved
+ * transaction in the background and return the newly created txMeta.
+ * This method does not show errors or route to a confirmation page
+ *
+ * @param txParams - the transaction parameters
+ * @param options - Additional options for the transaction.
+ * @param options.method
+ * @param options.requireApproval - Whether the transaction requires approval.
+ * @param options.swaps - Options specific to swaps transactions.
+ * @param options.swaps.hasApproveTx - Whether the swap required an approval transaction.
+ * @param options.swaps.meta - Additional transaction metadata required by swaps.
+ * @param options.type
+ * @returns
+ */
+export async function addTransaction(
+  txParams: TransactionParams,
+  options: {
+    method?: string;
+    requireApproval?: boolean;
+    swaps?: { hasApproveTx?: boolean; meta?: Record<string, unknown> };
+    type?: TransactionType;
+  },
+): Promise<TransactionMeta> {
+  log.debug('background.addTransaction');
+
+  const actionId = generateActionId();
+
+  return await submitRequestToBackground<TransactionMeta>('addTransaction', [
+    txParams,
+    {
+      ...options,
+      origin: ORIGIN_METAMASK,
+      actionId,
+    },
+  ]);
+}
+
 export function updateAndApproveTx(
   txMeta: TransactionMeta,
   dontShowLoadingIndicator: boolean,

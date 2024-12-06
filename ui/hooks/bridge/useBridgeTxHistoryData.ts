@@ -1,13 +1,20 @@
 import { useSelector } from 'react-redux';
 import { Hex } from '@metamask/utils';
-import { TransactionMeta } from '@metamask/transaction-controller';
+import {
+  TransactionMeta,
+  TransactionStatus,
+} from '@metamask/transaction-controller';
 import { useHistory } from 'react-router-dom';
 import { selectBridgeHistoryForAccount } from '../../ducks/bridge-status/selectors';
 import { CROSS_CHAIN_SWAP_TX_DETAILS_ROUTE } from '../../helpers/constants/routes';
-import { useI18nContext } from '../useI18nContext';
-import useBridgeChainInfo from './useBridgeChainInfo';
 
-export type UseBridgeDataProps = {
+export const FINAL_NON_CONFIRMED_STATUSES = [
+  TransactionStatus.failed,
+  TransactionStatus.dropped,
+  TransactionStatus.rejected,
+];
+
+export type UseBridgeTxHistoryDataProps = {
   transactionGroup: {
     hasCancelled: boolean;
     hasRetried: boolean;
@@ -18,26 +25,14 @@ export type UseBridgeDataProps = {
   };
 };
 
-export default function useBridgeTxHistoryData({
+export function useBridgeTxHistoryData({
   transactionGroup,
-}: UseBridgeDataProps) {
-  const t = useI18nContext();
+}: UseBridgeTxHistoryDataProps) {
   const history = useHistory();
   const bridgeHistory = useSelector(selectBridgeHistoryForAccount);
-
-  const srcTxHash = transactionGroup.initialTransaction.hash;
-
-  // If this tx is a bridge tx, it will have a bridgeHistoryItem
-  const bridgeHistoryItem = srcTxHash ? bridgeHistory[srcTxHash] : undefined;
-
-  const { destNetwork } = useBridgeChainInfo({
-    bridgeHistoryItem,
-  });
-
-  const destChainName = destNetwork?.name;
-  const bridgeTitleSuffix = destChainName
-    ? t('bridgeToChain', [destChainName])
-    : '';
+  const txMeta = transactionGroup.initialTransaction;
+  const srcTxMetaId = txMeta.id;
+  const bridgeHistoryItem = bridgeHistory[srcTxMetaId];
 
   // By complete, this means BOTH source and dest tx are confirmed
   const isBridgeComplete = bridgeHistoryItem
@@ -47,14 +42,15 @@ export default function useBridgeTxHistoryData({
       )
     : null;
 
-  const showBridgeTxDetails = srcTxHash
-    ? () => {
-        history.push(`${CROSS_CHAIN_SWAP_TX_DETAILS_ROUTE}/${srcTxHash}`);
-      }
-    : null;
+  const showBridgeTxDetails = FINAL_NON_CONFIRMED_STATUSES.includes(
+    txMeta.status,
+  )
+    ? undefined
+    : () => {
+        history.push(`${CROSS_CHAIN_SWAP_TX_DETAILS_ROUTE}/${srcTxMetaId}`);
+      };
 
   return {
-    bridgeTitleSuffix,
     bridgeTxHistoryItem: bridgeHistoryItem,
     isBridgeComplete,
     showBridgeTxDetails,
