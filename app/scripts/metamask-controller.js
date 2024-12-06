@@ -6527,7 +6527,9 @@ export default class MetamaskController extends EventEmitter {
         addNetwork: this.networkController.addNetwork.bind(
           this.networkController,
         ),
-        removeNetwork: this.removeNetwork.bind(this),
+        removeNetwork: this.networkController.removeNetwork.bind(
+          this.networkController,
+        ),
         requestPermissionApprovalForOrigin:
           this.requestPermissionApprovalForOrigin.bind(this, origin),
         sendMetrics: this.metaMetricsController.trackEvent.bind(
