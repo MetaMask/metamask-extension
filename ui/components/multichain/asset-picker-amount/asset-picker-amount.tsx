@@ -112,7 +112,7 @@ export const AssetPickerAmount = ({
   const [isFocused, setIsFocused] = useState(false);
   const [isNFTInputChanged, setIsTokenInputChanged] = useState(false);
   const nftImageURL = useGetAssetImageUrl(
-    asset?.details?.image ?? null,
+    asset?.details?.image ?? undefined,
     ipfsGateway,
   );
 

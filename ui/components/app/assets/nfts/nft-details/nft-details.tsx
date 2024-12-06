@@ -1,5 +1,4 @@
 import React, { useEffect, useContext } from 'react';
-import PropTypes from 'prop-types';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import { isEqual } from 'lodash';
@@ -113,7 +112,12 @@ export default function NftDetails({ nft }: { nft: Nft }) {
   const isIpfsURL = nftSrcUrl?.startsWith('ipfs:');
   const isImageHosted =
     image?.startsWith('https:') || image?.startsWith('http:');
-  const nftImageURL = useGetAssetImageUrl(imageOriginal ?? image, ipfsGateway);
+  const nftImageURL: string | undefined = useGetAssetImageUrl(
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-ignore
+    imageOriginal ? image : undefined,
+    ipfsGateway,
+  );
 
   const hasFloorAskPrice = Boolean(
     collection?.floorAsk?.price?.amount?.usd &&
@@ -311,6 +315,10 @@ export default function NftDetails({ nft }: { nft: Nft }) {
     return `${text.slice(0, chars)}...${text.slice(-chars)}`;
   };
 
+  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+  // @ts-ignore
+  const nftItemSrc: string | undefined = isImageHosted ? image : nftImageURL;
+
   return (
     <Page>
       <Content className="nft-details__content">
@@ -330,7 +338,7 @@ export default function NftDetails({ nft }: { nft: Nft }) {
             onViewOnOpensea={
               openSeaLink
                 ? () => global.platform.openTab({ url: openSeaLink })
-                : null
+                : undefined
             }
             onRemove={onRemove}
           />
@@ -343,10 +351,8 @@ export default function NftDetails({ nft }: { nft: Nft }) {
         >
           <Box className="nft-details__nft-item">
             <NftItem
-              src={isImageHosted ? image : nftImageURL}
+              src={nftItemSrc}
               alt={image ? nftImageAlt : ''}
-              name={name}
-              tokenId={tokenId}
               networkName={currentChain.nickname ?? ''}
               networkSrc={currentChain.rpcPrefs?.imageUrl}
               isIpfsURL={isIpfsURL}
@@ -847,106 +853,3 @@ export default function NftDetails({ nft }: { nft: Nft }) {
     </Page>
   );
 }
-
-NftDetails.propTypes = {
-  nft: PropTypes.shape({
-    address: PropTypes.string.isRequired,
-    tokenId: PropTypes.string.isRequired,
-    isCurrentlyOwned: PropTypes.bool,
-    name: PropTypes.string,
-    description: PropTypes.string,
-    image: PropTypes.string,
-    standard: PropTypes.string,
-    imageThumbnail: PropTypes.string,
-    imagePreview: PropTypes.string,
-    imageOriginal: PropTypes.string,
-    rarityRank: PropTypes.string,
-
-    creator: PropTypes.shape({
-      address: PropTypes.string,
-      config: PropTypes.string,
-      profile_img_url: PropTypes.string,
-    }),
-    attributes: PropTypes.arrayOf(
-      PropTypes.shape({
-        key: PropTypes.string,
-        value: PropTypes.string,
-      }),
-    ),
-    lastSale: PropTypes.shape({
-      timestamp: PropTypes.string,
-      orderSource: PropTypes.string,
-      price: PropTypes.shape({
-        amount: PropTypes.shape({
-          native: PropTypes.string,
-          decimal: PropTypes.string,
-          usd: PropTypes.string,
-        }),
-        currency: PropTypes.shape({
-          symbol: PropTypes.string,
-        }),
-      }),
-    }),
-    topBid: PropTypes.shape({
-      source: PropTypes.shape({
-        id: PropTypes.string,
-        domain: PropTypes.string,
-        name: PropTypes.string,
-        icon: PropTypes.string,
-        url: PropTypes.string,
-      }),
-      price: PropTypes.shape({
-        amount: PropTypes.shape({
-          native: PropTypes.string,
-          decimal: PropTypes.string,
-          usd: PropTypes.string,
-        }),
-        currency: PropTypes.shape({
-          symbol: PropTypes.string,
-        }),
-      }),
-    }),
-    collection: PropTypes.shape({
-      openseaVerificationStatus: PropTypes.string,
-      tokenCount: PropTypes.string,
-      name: PropTypes.string,
-      ownerCount: PropTypes.string,
-      creator: PropTypes.string,
-      symbol: PropTypes.string,
-      contractDeployedAt: PropTypes.string,
-      floorAsk: PropTypes.shape({
-        sourceDomain: PropTypes.string,
-        source: PropTypes.shape({
-          id: PropTypes.string,
-          domain: PropTypes.string,
-          name: PropTypes.string,
-          icon: PropTypes.string,
-          url: PropTypes.string,
-        }),
-        price: PropTypes.shape({
-          amount: PropTypes.shape({
-            native: PropTypes.string,
-            decimal: PropTypes.string,
-            usd: PropTypes.string,
-          }),
-          currency: PropTypes.shape({
-            symbol: PropTypes.string,
-          }),
-        }),
-      }),
-      topBid: PropTypes.shape({
-        sourceDomain: PropTypes.string,
-        price: PropTypes.shape({
-          amount: PropTypes.shape({
-            native: PropTypes.string,
-            decimal: PropTypes.string,
-            usd: PropTypes.string,
-          }),
-          currency: PropTypes.shape({
-            symbol: PropTypes.string,
-          }),
-        }),
-      }),
-    }),
-  }),
-};
