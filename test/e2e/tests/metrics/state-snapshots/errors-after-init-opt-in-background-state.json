@@ -63,7 +63,20 @@
       "bridgeFeatureFlags": {
         "extensionConfig": {
           "support": "boolean",
-          "chains": "object"
+          "chains": {
+            "0": {
+              "isActiveSrc": "boolean",
+              "isActiveDest": "boolean"
+            },
+            "1": {
+              "isActiveSrc": "boolean",
+              "isActiveDest": "boolean"
+            },
+            "2": {
+              "isActiveSrc": "boolean",
+              "isActiveDest": "boolean"
+            }
+          }
         }
       },
       "srcTokens": {},
