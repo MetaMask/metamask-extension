@@ -7,11 +7,13 @@ import { RowAlertKey } from '../../../../../../../components/app/confirm/info/ro
 import { useI18nContext } from '../../../../../../../hooks/useI18nContext';
 import { useConfirmContext } from '../../../../../context/confirm';
 import { SignatureRequestType } from '../../../../../types/confirm';
+import { isSIWESignatureRequest } from '../../../../../utils';
 
 export const SigningInWithRow = () => {
   const t = useI18nContext();
 
   const { currentConfirmation } = useConfirmContext();
+  const isSIWE = isSIWESignatureRequest(currentConfirmation);
 
   const chainId = currentConfirmation?.chainId as string;
   const from =
@@ -25,8 +27,9 @@ export const SigningInWithRow = () => {
   return (
     <ConfirmInfoAlertRow
       alertKey={RowAlertKey.SigningInWith}
-      label={t('signingInWith')}
+      label={isSIWE ? t('signingInWith') : t('signingWith')}
       ownerId={currentConfirmation.id}
+      displayWhenAlert={!isSIWE}
     >
       <ConfirmInfoRowAddress address={from} chainId={chainId} />
     </ConfirmInfoAlertRow>

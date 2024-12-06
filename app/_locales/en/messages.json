@@ -5125,6 +5125,9 @@
   "signingInWith": {
     "message": "Signing in with"
   },
+  "signingWith": {
+    "message": "Signing with"
+  },
   "simulationApproveHeading": {
     "message": "Withdraw"
   },

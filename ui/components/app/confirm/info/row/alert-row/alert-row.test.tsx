@@ -91,6 +91,24 @@ describe('AlertRow', () => {
       expect(queryByTestId('inline-alert')).toBeNull();
     });
 
+    describe('display row only when there is an alert', () => {
+      it('does not render when displayWhenAlert is true and there is no alert', () => {
+        const { queryByTestId } = renderAlertRow({
+          displayWhenAlert: true,
+        });
+        expect(queryByTestId('inline-alert')).toBeNull();
+      });
+
+      it('renders when displayWhenAlert is false and there is an alert', () => {
+        const { getByTestId } = renderAlertRow({
+          alertKey: KEY_ALERT_KEY_MOCK,
+          ownerId: OWNER_ID_MOCK,
+          displayWhenAlert: false,
+        });
+        expect(getByTestId('inline-alert')).toBeDefined();
+      });
+    });
+
     describe('Modal visibility', () => {
       it('show when clicked in the inline alert', () => {
         const { getByTestId } = renderAlertRow({
