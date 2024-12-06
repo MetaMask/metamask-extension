@@ -875,7 +875,7 @@
     "message": "Bridge, don't send"
   },
   "bridgeEnterAmount": {
-    "message": "Enter amount"
+    "message": "Select amount"
   },
   "bridgeExplorerLinkViewOn": {
     "message": "View on $1"
