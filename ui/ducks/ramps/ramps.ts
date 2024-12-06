@@ -8,21 +8,6 @@ import { getMultichainIsBitcoin } from '../../selectors/multichain';
 import { MultichainNetworks } from '../../../shared/constants/multichain/networks';
 import { defaultBuyableChains } from './constants';
 import { AggregatorNetwork } from './types';
-import { ThunkAction } from 'redux-thunk';
-import {
-  MetaMaskReduxDispatch,
-  MetaMaskReduxState,
-} from '../../store/store.ts';
-import { AnyAction } from 'redux';
-import log from 'loglevel';
-import {
-  callBackgroundMethod,
-  submitRequestToBackground,
-} from '../../store/background-connection.ts';
-import {
-  displayWarning,
-  forceUpdateMetamaskState,
-} from '../../store/actions.ts';
 
 export const fetchBuyableChains = createAsyncThunk(
   'ramps/fetchBuyableChains',
