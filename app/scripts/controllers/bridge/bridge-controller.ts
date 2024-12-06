@@ -57,7 +57,13 @@ const metadata: StateMetadata<{ bridgeState: BridgeControllerState }> = {
 
 const RESET_STATE_ABORT_MESSAGE = 'Reset controller state';
 
-export default class BridgeController extends StaticIntervalPollingController<
+/** The input to start polling for the {@link BridgeController} */
+type BridgePollingInput = {
+  networkClientId: NetworkClientId;
+  updatedQuoteRequest: QuoteRequest;
+};
+
+export default class BridgeController extends StaticIntervalPollingController<BridgePollingInput>()<
   typeof BRIDGE_CONTROLLER_NAME,
   { bridgeState: BridgeControllerState },
   BridgeControllerMessenger
@@ -120,11 +126,8 @@ export default class BridgeController extends StaticIntervalPollingController<
     this.#getLayer1GasFee = getLayer1GasFee;
   }
 
-  _executePoll = async (
-    _: NetworkClientId,
-    updatedQuoteRequest: QuoteRequest,
-  ) => {
-    await this.#fetchBridgeQuotes(updatedQuoteRequest);
+  _executePoll = async (pollingInput: BridgePollingInput) => {
+    await this.#fetchBridgeQuotes(pollingInput);
   };
 
   updateBridgeQuoteRequestParams = async (
@@ -162,10 +165,13 @@ export default class BridgeController extends StaticIntervalPollingController<
         !(await this.#hasSufficientBalance(updatedQuoteRequest));
 
       const networkClientId = this.#getSelectedNetworkClientId(srcChainIdInHex);
-      this.startPollingByNetworkClientId(networkClientId, {
-        ...updatedQuoteRequest,
-        walletAddress,
-        insufficientBal,
+      this.startPolling({
+        networkClientId,
+        updatedQuoteRequest: {
+          ...updatedQuoteRequest,
+          walletAddress,
+          insufficientBal,
+        },
       });
     }
   };
@@ -221,10 +227,13 @@ export default class BridgeController extends StaticIntervalPollingController<
     await this.#setTokens(chainId, 'destTokens');
   };
 
-  #fetchBridgeQuotes = async (request: QuoteRequest) => {
+  #fetchBridgeQuotes = async ({
+    networkClientId: _networkClientId,
+    updatedQuoteRequest,
+  }: BridgePollingInput) => {
     this.#abortController?.abort('New quote request');
     this.#abortController = new AbortController();
-    if (request.srcChainId === request.destChainId) {
+    if (updatedQuoteRequest.srcChainId === updatedQuoteRequest.destChainId) {
       return;
     }
     const { bridgeState } = this.state;
@@ -232,7 +241,7 @@ export default class BridgeController extends StaticIntervalPollingController<
       _state.bridgeState = {
         ...bridgeState,
         quotesLoadingStatus: RequestStatus.LOADING,
-        quoteRequest: request,
+        quoteRequest: updatedQuoteRequest,
       };
     });
     const { maxRefreshCount } =
@@ -241,14 +250,15 @@ export default class BridgeController extends StaticIntervalPollingController<
 
     try {
       const quotes = await fetchBridgeQuotes(
-        request,
+        updatedQuoteRequest,
         this.#abortController.signal,
       );
 
       // Stop polling if the maximum number of refreshes has been reached
       if (
-        (request.insufficientBal && newQuotesRefreshCount >= 1) ||
-        (!request.insufficientBal && newQuotesRefreshCount >= maxRefreshCount)
+        (updatedQuoteRequest.insufficientBal && newQuotesRefreshCount >= 1) ||
+        (!updatedQuoteRequest.insufficientBal &&
+          newQuotesRefreshCount >= maxRefreshCount)
       ) {
         this.stopAllPolling();
       }

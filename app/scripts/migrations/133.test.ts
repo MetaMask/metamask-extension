@@ -1,76 +1,46 @@
+import { cloneDeep } from 'lodash';
 import { migrate, version } from './133';
 
 const oldVersion = 132;
 
-describe(`migration #${version}`, () => {
+describe('migration #133', () => {
   it('updates the version metadata', async () => {
     const oldStorage = {
       meta: { version: oldVersion },
       data: {},
     };
-    const newStorage = await migrate(oldStorage);
+
+    const newStorage = await migrate(cloneDeep(oldStorage));
+
     expect(newStorage.meta).toStrictEqual({ version });
   });
-  describe(`migration #${version}`, () => {
-    it('removes the useRequestQueue preference', async () => {
-      const oldStorage = {
-        meta: { version: oldVersion },
-        data: {
-          PreferencesController: {
-            preferences: {
-              useRequestQueue: true,
-            },
-          },
-        },
-      };
-      const expectedData = {
-        PreferencesController: {
-          preferences: {},
-        },
-      };
-      const newStorage = await migrate(oldStorage);
 
-      expect(newStorage.data).toStrictEqual(expectedData);
+  describe('NotificationController', () => {
+    it('does nothing if NotificationController is not in state', async () => {
+      const oldState = {
+        OtherController: {},
+      };
+
+      const transformedState = await migrate({
+        meta: { version: oldVersion },
+        data: cloneDeep(oldState),
+      });
+
+      expect(transformedState.data).toEqual(oldState);
     });
 
-    it('does nothing if the preferences does not have a useRequestQueue preference', async () => {
-      const oldStorage = {
+    it('deletes the NotificationController from state', async () => {
+      const oldState = {
+        NotificationController: {},
+        OtherController: {},
+      };
+
+      const transformedState = await migrate({
         meta: { version: oldVersion },
-        data: {
-          PreferencesController: {
-            preferences: {},
-          },
-        },
-      };
+        data: cloneDeep(oldState),
+      });
 
-      const newStorage = await migrate(oldStorage);
-
-      expect(newStorage.data).toStrictEqual(oldStorage.data);
-    });
-
-    it('does nothing to other preferences if they exist without a useRequestQueue preference', async () => {
-      const oldStorage = {
-        meta: { version: oldVersion },
-        data: {
-          PreferencesController: {
-            preferences: {
-              existingPreference: true,
-            },
-          },
-        },
-      };
-
-      const expectedData = {
-        PreferencesController: {
-          preferences: {
-            existingPreference: true,
-          },
-        },
-      };
-
-      const newStorage = await migrate(oldStorage);
-
-      expect(newStorage.data).toStrictEqual(expectedData);
+      expect(transformedState.data).toEqual({ OtherController: {} });
     });
   });
 });

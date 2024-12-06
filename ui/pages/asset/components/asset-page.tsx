@@ -428,9 +428,9 @@ const AssetPage = ({
               {t('yourActivity')}
             </Text>
             {type === AssetType.native ? (
-              <TransactionList hideTokenTransactions />
+              <TransactionList hideTokenTransactions tokenChainId={chainId} />
             ) : (
-              <TransactionList tokenAddress={address} />
+              <TransactionList tokenAddress={address} tokenChainId={chainId} />
             )}
           </Box>
         </Box>
