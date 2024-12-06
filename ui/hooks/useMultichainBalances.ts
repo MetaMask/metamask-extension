@@ -1,6 +1,6 @@
 import { useMemo } from 'react';
 import { useSelector } from 'react-redux';
-import { useTokenBalances } from './useTokenBalances';
+import { Hex } from '@metamask/utils';
 import {
   getCurrencyRates,
   getMarketData,
@@ -13,7 +13,6 @@ import {
   ChainAddressMarketData,
   Token,
 } from '../components/app/assets/token-list/token-list';
-import { Hex } from '@metamask/utils';
 import { calculateTokenFiatAmount } from '../components/app/assets/util/calculateTokenFiatAmount';
 import { calculateTokenBalance } from '../components/app/assets/util/calculateTokenBalance';
 import {
@@ -27,6 +26,7 @@ import {
   NativeAsset,
 } from '../components/multichain/asset-picker-amount/asset-picker-modal/types';
 import { AssetType } from '../../shared/constants/transaction';
+import { useTokenBalances } from './useTokenBalances';
 
 const useFilteredAccountTokens = () => {
   const selectedAccountTokensChains: Record<string, Token[]> = useSelector(
