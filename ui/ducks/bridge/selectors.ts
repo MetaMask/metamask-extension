@@ -271,8 +271,8 @@ export const getToTokenConversionRate = createDeepEqualSelector(
   },
 );
 
-const _getQuotesWithMetadata = createDeepEqualSelector(
-  (state) => state.metamask.bridgeState.quotes,
+const _getQuotesWithMetadata = createSelector(
+  (state: BridgeAppState) => state.metamask.bridgeState.quotes,
   getToTokenConversionRate,
   getFromTokenConversionRate,
   getConversionRate,
@@ -330,7 +330,7 @@ const _getQuotesWithMetadata = createDeepEqualSelector(
   },
 );
 
-const _getSortedQuotesWithMetadata = createDeepEqualSelector(
+const _getSortedQuotesWithMetadata = createSelector(
   _getQuotesWithMetadata,
   getBridgeSortOrder,
   (quotesWithMetadata, sortOrder) => {
@@ -341,53 +341,13 @@ const _getSortedQuotesWithMetadata = createDeepEqualSelector(
           (quote) => quote.estimatedProcessingTimeInSeconds,
           'asc',
         );
-      case SortOrder.COST_ASC:
       default:
         return orderBy(
           quotesWithMetadata,
-          ({ cost }) => cost.valueInCurrency,
+          ({ cost }) => cost.valueInCurrency?.toNumber(),
           'asc',
         );
     }
-  },
-);
-
-const _getRecommendedQuote = createDeepEqualSelector(
-  _getSortedQuotesWithMetadata,
-  getBridgeSortOrder,
-  (sortedQuotesWithMetadata, sortOrder) => {
-    if (!sortedQuotesWithMetadata.length) {
-      return undefined;
-    }
-
-    const bestReturnValue = BigNumber.max(
-      sortedQuotesWithMetadata.map(
-        ({ adjustedReturn }) => adjustedReturn.valueInCurrency ?? 0,
-      ),
-    );
-
-    const isFastestQuoteValueReasonable = (
-      adjustedReturnInCurrency: BigNumber | null,
-    ) =>
-      adjustedReturnInCurrency
-        ? adjustedReturnInCurrency
-            .div(bestReturnValue)
-            .gte(BRIDGE_QUOTE_MAX_RETURN_DIFFERENCE_PERCENTAGE)
-        : true;
-
-    const isBestPricedQuoteETAReasonable = (
-      estimatedProcessingTimeInSeconds: number,
-    ) => estimatedProcessingTimeInSeconds < BRIDGE_QUOTE_MAX_ETA_SECONDS;
-
-    return (
-      sortedQuotesWithMetadata.find((quote) => {
-        return sortOrder === SortOrder.ETA_ASC
-          ? isFastestQuoteValueReasonable(quote.adjustedReturn.valueInCurrency)
-          : isBestPricedQuoteETAReasonable(
-              quote.estimatedProcessingTimeInSeconds,
-            );
-      }) ?? sortedQuotesWithMetadata[0]
-    );
   },
 );
 
@@ -413,7 +373,6 @@ const _getSelectedQuote = createSelector(
 
 export const getBridgeQuotes = createSelector(
   _getSortedQuotesWithMetadata,
-  _getRecommendedQuote,
   _getSelectedQuote,
   (state) => state.metamask.bridgeState.quotesLastFetched,
   (state) =>
@@ -425,7 +384,6 @@ export const getBridgeQuotes = createSelector(
   getQuoteRequest,
   (
     sortedQuotesWithMetadata,
-    recommendedQuote,
     selectedQuote,
     quotesLastFetchedMs,
     isLoading,
@@ -436,8 +394,8 @@ export const getBridgeQuotes = createSelector(
     { insufficientBal },
   ) => ({
     sortedQuotes: sortedQuotesWithMetadata,
-    recommendedQuote,
-    activeQuote: selectedQuote ?? recommendedQuote,
+    recommendedQuote: sortedQuotesWithMetadata[0],
+    activeQuote: selectedQuote ?? sortedQuotesWithMetadata[0],
     quotesLastFetchedMs,
     isLoading,
     quoteFetchError,
