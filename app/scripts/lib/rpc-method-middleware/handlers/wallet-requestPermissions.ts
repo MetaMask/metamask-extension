@@ -199,7 +199,7 @@ async function requestPermissionsImplementation(
     let caip25Endowment = permissions[Caip25EndowmentPermissionName];
     const existingCaveatValue = caip25Endowment?.caveats?.find(
       ({ type }) => type === Caip25CaveatType,
-    )?.value as Caip25CaveatValue;
+    )?.value as Caip25CaveatValue | undefined;
     if (existingCaveatValue) {
       if (existingCaveatValue.isMultichainOrigin) {
         return end(
