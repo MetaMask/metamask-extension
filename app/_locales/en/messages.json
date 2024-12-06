@@ -1535,6 +1535,9 @@
     "message": "Use $1 to customize the gas price. This can be confusing if you aren’t familiar. Interact at your own risk.",
     "description": "$1 is key 'advanced' (text: 'Advanced') separated here so that it can be passed in with bold font-weight"
   },
+  "customSlippage": {
+    "message": "Custom"
+  },
   "customSpendLimit": {
     "message": "Custom spend limit"
   },
