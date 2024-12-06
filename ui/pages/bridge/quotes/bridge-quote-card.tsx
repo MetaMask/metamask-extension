@@ -15,8 +15,10 @@ import {
 } from '../utils/quote';
 import { useCountdownTimer } from '../../../hooks/bridge/useCountdownTimer';
 import MascotBackgroundAnimation from '../../swaps/mascot-background-animation/mascot-background-animation';
-import { getCurrentCurrency } from '../../../selectors';
-import { getNativeCurrency } from '../../../ducks/metamask/metamask';
+import {
+  getCurrentCurrency,
+  getNativeCurrency,
+} from '../../../ducks/metamask/metamask';
 import { QuoteInfoRow } from './quote-info-row';
 import { BridgeQuotesModal } from './bridge-quotes-modal';
 

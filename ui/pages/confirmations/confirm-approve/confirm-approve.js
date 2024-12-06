@@ -12,10 +12,12 @@ import { getTokenApprovedParam } from '../../../helpers/utils/token-util';
 import { readAddressAsContract } from '../../../../shared/modules/contract-utils';
 import { GasFeeContextProvider } from '../../../contexts/gasFee';
 import { TransactionModalContextProvider } from '../../../contexts/transaction-modal';
-import { isAddressLedger } from '../../../ducks/metamask/metamask';
+import {
+  isAddressLedger,
+  getCurrentCurrency,
+} from '../../../ducks/metamask/metamask';
 import ConfirmContractInteraction from '../confirm-contract-interaction';
 import {
-  getCurrentCurrency,
   getSubjectMetadata,
   getUseNonceField,
   getCustomNonceValue,

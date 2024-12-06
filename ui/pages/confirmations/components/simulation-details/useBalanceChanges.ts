@@ -10,13 +10,11 @@ import { BigNumber } from 'bignumber.js';
 import { ContractExchangeRates } from '@metamask/assets-controllers';
 import { useAsyncResultOrThrow } from '../../../../hooks/useAsyncResult';
 import { TokenStandard } from '../../../../../shared/constants/transaction';
-import {
-  getCurrentCurrency,
-  selectConversionRateByChainId,
-} from '../../../../selectors';
+import { getCurrentCurrency } from '../../../../ducks/metamask/metamask';
 import { fetchTokenExchangeRates } from '../../../../helpers/utils/util';
 import { ERC20_DEFAULT_DECIMALS, fetchErc20Decimals } from '../../utils/token';
 
+import { selectConversionRateByChainId } from '../../../../selectors';
 import {
   BalanceChange,
   FIAT_UNAVAILABLE,

@@ -18,7 +18,8 @@ import {
   MetaMetricsEventName,
   MetaMetricsUserTrait,
 } from '../../../../../../shared/constants/metametrics';
-import { getCurrentCurrency, getPreferences } from '../../../../../selectors';
+import { getPreferences } from '../../../../../selectors';
+import { getCurrentCurrency } from '../../../../../ducks/metamask/metamask';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import { getCurrencySymbol } from '../../../../../helpers/utils/common.util';
 

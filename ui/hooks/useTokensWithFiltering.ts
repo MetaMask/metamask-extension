@@ -6,12 +6,14 @@ import { Hex } from '@metamask/utils';
 import { useParams } from 'react-router-dom';
 import {
   getAllTokens,
-  getCurrentCurrency,
   getSelectedInternalAccountWithBalance,
   getShouldHideZeroBalanceTokens,
   getTokenExchangeRates,
 } from '../selectors';
-import { getConversionRate } from '../ducks/metamask/metamask';
+import {
+  getCurrentCurrency,
+  getConversionRate,
+} from '../ducks/metamask/metamask';
 import {
   SWAPS_CHAINID_DEFAULT_TOKEN_MAP,
   SwapsTokenObject,

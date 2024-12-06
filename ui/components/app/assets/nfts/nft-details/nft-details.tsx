@@ -21,11 +21,7 @@ import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import { shortenAddress } from '../../../../../helpers/utils/util';
 import { getNftImageAlt } from '../../../../../helpers/utils/nfts';
 import { getCurrentChainId } from '../../../../../../shared/modules/selectors/networks';
-import {
-  getCurrentCurrency,
-  getCurrentNetwork,
-  getIpfsGateway,
-} from '../../../../../selectors';
+import { getCurrentNetwork, getIpfsGateway } from '../../../../../selectors';
 import {
   ASSET_ROUTE,
   DEFAULT_ROUTE,
@@ -67,7 +63,10 @@ import { Content, Footer, Page } from '../../../../multichain/pages/page';
 import { formatCurrency } from '../../../../../helpers/utils/confirm-tx.util';
 import { getShortDateFormatterV2 } from '../../../../../pages/asset/util';
 import { CHAINID_DEFAULT_BLOCK_EXPLORER_URL_MAP } from '../../../../../../shared/constants/common';
-import { getConversionRate } from '../../../../../ducks/metamask/metamask';
+import {
+  getConversionRate,
+  getCurrentCurrency,
+} from '../../../../../ducks/metamask/metamask';
 import { Numeric } from '../../../../../../shared/modules/Numeric';
 // TODO: Remove restricted import
 // eslint-disable-next-line import/no-restricted-paths
