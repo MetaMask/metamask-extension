@@ -81,7 +81,7 @@ describe('switchEthereumChainHandler', () => {
     expect(EthChainUtils.switchChain).not.toHaveBeenCalled();
   });
 
-  it('throws an error if unable to find a network matching the chainId in the params', async () => {
+  it('throws an error and does not try to switch the network if unable to find a network matching the chainId in the params', async () => {
     const { mocks, end, handler } = createMockedHandler();
     mocks.getCurrentChainIdForDomain.mockReturnValue('0x1');
     mocks.getNetworkConfigurationByChainId.mockReturnValue(undefined);
