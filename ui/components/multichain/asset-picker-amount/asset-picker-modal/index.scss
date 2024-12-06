@@ -1,10 +1,12 @@
 @use "design-system";
 
 .multichain-asset-picker__network-modal {
-  overflow-y: auto;
-
   .mm-modal-content__dialog {
-    overflow-y: scroll;
+    overflow: hidden;
+  }
+
+  .multichain-asset-picker__network-list {
+    overflow-y: auto;
   }
 }
 
