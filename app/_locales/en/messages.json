@@ -975,6 +975,12 @@
   "bridgeTxDetailsYouSent": {
     "message": "You sent"
   },
+  "bridgeValidationInsufficientGasMessage": {
+    "message": "You don't have enough $1 to pay the gas fee for this bridge. Enter a smaller amount or buy more $1."
+  },
+  "bridgeValidationInsufficientGasTitle": {
+    "message": "More $1 needed for gas"
+  },
   "bridging": {
     "message": "Bridging"
   },
@@ -3491,6 +3497,9 @@
   },
   "noNetworksFound": {
     "message": "No networks found for the given search query"
+  },
+  "noOptionsAvailableMessage": {
+    "message": "This trade route isn't available right now. Try changing the amount, network, or token and we'll find the best option."
   },
   "noSnaps": {
     "message": "You don't have any snaps installed."
