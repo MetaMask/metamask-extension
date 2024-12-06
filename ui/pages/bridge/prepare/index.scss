@@ -35,15 +35,6 @@
       font-weight: 400;
       font-size: 36px;
       padding: 0;
-
-      &:focus,
-      &:focus-visible {
-        outline: none;
-      }
-    }
-
-    .mm-text-field--focused {
-      outline: none;
     }
   }
 
