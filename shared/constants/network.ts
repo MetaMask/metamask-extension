@@ -125,8 +125,18 @@ export const CHAIN_IDS = {
   HARMONY: '0x63564c40',
   PALM: '0x2a15c308d',
   SEPOLIA: '0xaa36a7',
+  HOLESKY: '0x4268',
   LINEA_GOERLI: '0xe704',
   LINEA_SEPOLIA: '0xe705',
+  AMOY: '0x13882',
+  BASE_SEPOLIA: '0x14a34',
+  BLAST_SEPOLIA: '0xa0c71fd',
+  OPTIMISM_SEPOLIA: '0xaa37dc',
+  PALM_TESTNET: '0x2a15c3083',
+  CELO_TESTNET: '0xaef3',
+  ZK_SYNC_ERA_TESTNET: '0x12c',
+  MANTA_SEPOLIA: '0x138b',
+  UNICHAIN_SEPOLIA: '0x515',
   LINEA_MAINNET: '0xe708',
   AURORA: '0x4e454152',
   MOONBEAM: '0x504',
@@ -1056,7 +1066,7 @@ export const FEATURED_RPCS: AddNetworkFields[] = [
     nativeCurrency: CURRENCY_SYMBOLS.ETH,
     rpcEndpoints: [
       {
-        url: `https://mainnet.base.org`,
+        url: `https://base-mainnet.infura.io/v3/${infuraProjectId}`,
         type: RpcEndpointType.Custom,
       },
     ],
@@ -1064,6 +1074,58 @@ export const FEATURED_RPCS: AddNetworkFields[] = [
     blockExplorerUrls: ['https://basescan.org'],
     defaultBlockExplorerUrlIndex: 0,
   },
+];
+
+export const infuraChainIdsTestNets: string[] = [
+  CHAIN_IDS.SEPOLIA,
+  CHAIN_IDS.HOLESKY,
+  CHAIN_IDS.LINEA_SEPOLIA,
+  CHAIN_IDS.AMOY,
+  CHAIN_IDS.BASE_SEPOLIA,
+  CHAIN_IDS.OPTIMISM_SEPOLIA,
+  CHAIN_IDS.ARBITRUM_SEPOLIA,
+  CHAIN_IDS.PALM_TESTNET,
+  CHAIN_IDS.AVALANCHE_TESTNET,
+  CHAIN_IDS.CELO_TESTNET,
+  CHAIN_IDS.ZK_SYNC_ERA_TESTNET,
+  CHAIN_IDS.BSC_TESTNET,
+  CHAIN_IDS.MANTA_SEPOLIA,
+  CHAIN_IDS.OPBNB_TESTNET,
+  CHAIN_IDS.SCROLL_SEPOLIA,
+  CHAIN_IDS.UNICHAIN_SEPOLIA,
+];
+
+export const allowedInfuraHosts = [
+  // Ethereum
+  'mainnet.infura.io',
+  // Linea
+  'linea-mainnet.infura.io',
+  // Polygon
+  'polygon-mainnet.infura.io',
+  // Base
+  'base-mainnet.infura.io',
+  // Blast
+  'blast-mainnet.infura.io',
+  // Optimism
+  'optimism-mainnet.infura.io',
+  // Arbitrum
+  'arbitrum-mainnet.infura.io',
+  // Palm
+  'palm-mainnet.infura.io',
+  // Avalanche
+  'avalanche-mainnet.infura.io',
+  // Celo
+  'celo-mainnet.infura.io',
+  // ZKSync
+  'zksync-mainnet.infura.io',
+  // BSC
+  'bsc-mainnet.infura.io',
+  // Mantle
+  'mantle-mainnet.infura.io',
+  // OPBNB
+  'opbnb-mainnet.infura.io',
+  // Scroll
+  'scroll-mainnet.infura.io',
 ];
 
 /**
