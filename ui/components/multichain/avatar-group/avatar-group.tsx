@@ -10,9 +10,15 @@ import {
   AvatarAccount,
   AvatarAccountSize,
   AvatarAccountVariant,
+  AvatarNetwork,
+  AvatarNetworkSize,
+  AvatarBase,
+  AvatarBaseSize,
 } from '../../component-library';
 import {
   AlignItems,
+  BackgroundColor,
+  BorderColor,
   BorderRadius,
   Display,
   TextColor,
@@ -50,22 +56,33 @@ export const AvatarGroup: React.FC<AvatarGroupProps> = ({
       data-testid="avatar-group"
       gap={1}
     >
-      <Box display={Display.Flex}>
+      <Box display={Display.Flex} alignItems={AlignItems.center}>
         {visibleMembers.map((member, i) => {
           return (
             <Box
-              borderRadius={BorderRadius.full}
+              borderRadius={
+                avatarType === AvatarType.NETWORK
+                  ? BorderRadius.MD
+                  : BorderRadius.full
+              }
+              borderColor={
+                avatarType === AvatarType.NETWORK
+                  ? BorderColor.backgroundDefault
+                  : undefined
+              }
+              borderWidth={avatarType === AvatarType.NETWORK ? 1 : undefined}
               key={i}
               style={{ marginLeft: i === 0 ? '0' : marginLeftValue }}
             >
-              {avatarType === AvatarType.TOKEN ? (
+              {avatarType === AvatarType.TOKEN && (
                 <AvatarToken
                   src={member.avatarValue}
                   name={member.symbol}
                   size={size}
                   borderColor={borderColor}
                 />
-              ) : (
+              )}
+              {avatarType === AvatarType.ACCOUNT && (
                 <AvatarAccount
                   size={AvatarAccountSize.Xs}
                   address={member.avatarValue}
@@ -77,11 +94,32 @@ export const AvatarGroup: React.FC<AvatarGroupProps> = ({
                   borderColor={borderColor}
                 />
               )}
+              {avatarType === AvatarType.NETWORK && (
+                <AvatarNetwork
+                  src={member.avatarValue}
+                  name={member.symbol ?? ''}
+                  size={AvatarNetworkSize.Xs}
+                />
+              )}
             </Box>
           );
         })}
+        {avatarType === AvatarType.NETWORK && showTag && (
+          <AvatarBase
+            backgroundColor={BackgroundColor.overlayAlternative}
+            borderRadius={BorderRadius.MD}
+            style={{ marginLeft: marginLeftValue }}
+            borderWidth={1}
+            borderColor={BorderColor.backgroundDefault}
+            size={AvatarBaseSize.Xs}
+          >
+            <Text color={TextColor.overlayInverse} style={{ fontSize: 8 }}>
+              {tagValue}
+            </Text>
+          </AvatarBase>
+        )}
       </Box>
-      {showTag ? (
+      {showTag && avatarType !== AvatarType.NETWORK ? (
         <Box>
           <Text variant={TextVariant.bodySm} color={TextColor.textAlternative}>
             {tagValue}
