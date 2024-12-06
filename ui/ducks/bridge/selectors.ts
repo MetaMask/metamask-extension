@@ -493,14 +493,14 @@ export const getFromAmountInCurrency = createSelector(
 
 export const getValidationErrors = createDeepEqualSelector(
   getBridgeQuotes,
-  getFromAmount,
   _getValidatedSrcAmount,
   getFromToken,
+  getFromAmount,
   (
     { activeQuote, quotesLastFetchedMs, isLoading },
-    fromAmount,
     validatedSrcAmount,
     fromToken,
+    fromTokenInputValue,
   ) => {
     return {
       isNoQuotesAvailable: Boolean(
@@ -517,7 +517,7 @@ export const getValidationErrors = createDeepEqualSelector(
       },
       // Shown after fetching quotes
       isInsufficientGasForQuote: (balance?: BigNumber) => {
-        if (balance && activeQuote && fromToken) {
+        if (balance && activeQuote && fromToken && fromTokenInputValue) {
           return isNativeAddress(fromToken.address)
             ? balance
                 .sub(activeQuote.totalNetworkFee.amount)
@@ -528,10 +528,13 @@ export const getValidationErrors = createDeepEqualSelector(
         return false;
       },
       isInsufficientBalance: (balance?: BigNumber) =>
-        fromAmount && balance !== undefined ? balance.lt(fromAmount) : false,
+        validatedSrcAmount && balance !== undefined
+          ? balance.lt(validatedSrcAmount)
+          : false,
       isEstimatedReturnLow:
         activeQuote?.sentAmount?.valueInCurrency &&
-        activeQuote?.adjustedReturn?.valueInCurrency
+        activeQuote?.adjustedReturn?.valueInCurrency &&
+        fromTokenInputValue
           ? activeQuote.adjustedReturn.valueInCurrency.lt(
               new BigNumber(
                 BRIDGE_QUOTE_MAX_RETURN_DIFFERENCE_PERCENTAGE,
