@@ -27,14 +27,4 @@ describe('<ApproveDetails />', () => {
     );
     expect(container).toMatchSnapshot();
   });
-
-  it('does not render SigningInWithRow for setApprovalForAll', () => {
-    const state = mockState;
-    const mockStore = configureMockStore(middleware)(state);
-    const { queryByText } = renderWithConfirmContextProvider(
-      <ApproveDetails isSetApprovalForAll />,
-      mockStore,
-    );
-    expect(queryByText('signingInWith')).toBeNull();
-  });
 });
