@@ -101,6 +101,7 @@ export const BridgeInputGroup = ({
     <Column paddingInline={6} gap={1}>
       <Row gap={4}>
         <TextField
+          inputProps={{ disableStateStyles: true }}
           style={{
             minWidth: 96,
             maxWidth: 190,
