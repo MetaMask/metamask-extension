@@ -14,6 +14,7 @@ import {
   getSessionScopes,
   NormalizedScopesObject,
   InternalScopeString,
+  filterScopeObjectsSupported,
 } from '@metamask/multichain';
 import {
   Caveat,
@@ -131,6 +132,13 @@ async function walletCreateSessionHandler(
       scopedProperties as ScopedProperties,
     );
 
+    const supportedRequiredScopesObjects = filterScopeObjectsSupported(
+      normalizedRequiredScopes,
+    );
+    const supportedOptionalScopesObjects = filterScopeObjectsSupported(
+      normalizedOptionalScopes,
+    );
+
     const existsNetworkClientForChainId = (chainId: Hex) => {
       try {
         hooks.findNetworkClientIdByChainId(chainId);
@@ -149,7 +157,7 @@ async function walletCreateSessionHandler(
       supportedScopes: supportedRequiredScopes,
       supportableScopes: supportableRequiredScopes,
       unsupportableScopes: unsupportableRequiredScopes,
-    } = bucketScopes(normalizedRequiredScopes, {
+    } = bucketScopes(supportedRequiredScopesObjects, {
       isChainIdSupported: existsNetworkClientForChainId,
       isChainIdSupportable: existsEip3085ForChainId,
     });
@@ -158,7 +166,7 @@ async function walletCreateSessionHandler(
       supportedScopes: supportedOptionalScopes,
       supportableScopes: supportableOptionalScopes,
       unsupportableScopes: unsupportableOptionalScopes,
-    } = bucketScopes(normalizedOptionalScopes, {
+    } = bucketScopes(supportedOptionalScopesObjects, {
       isChainIdSupported: existsNetworkClientForChainId,
       isChainIdSupportable: existsEip3085ForChainId,
     });
