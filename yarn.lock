@@ -5298,9 +5298,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/eth-ledger-bridge-keyring@npm:@metamask-previews/eth-ledger-bridge-keyring@7.0.0-e345222":
-  version: 7.0.0-e345222
-  resolution: "@metamask-previews/eth-ledger-bridge-keyring@npm:7.0.0-e345222"
+"@metamask/eth-ledger-bridge-keyring@npm:@metamask-previews/eth-ledger-bridge-keyring@7.0.0-dde1dbb":
+  version: 7.0.0-dde1dbb
+  resolution: "@metamask-previews/eth-ledger-bridge-keyring@npm:7.0.0-dde1dbb"
   dependencies:
     "@ethereumjs/rlp": "npm:^5.0.2"
     "@ethereumjs/tx": "npm:^4.2.0"
@@ -5308,7 +5308,7 @@ __metadata:
     "@ledgerhq/hw-app-eth": "npm:^6.39.0"
     "@metamask/eth-sig-util": "npm:^8.0.0"
     hdkey: "npm:^2.1.0"
-  checksum: 10/76b883d0fe5d55716635a99564be1ad96597d21e98ad524fca5961e3d342ee26ccb51633c3ca807db90fef9a0b969b77a8451f34e01f875afe1916299a05dedc
+  checksum: 10/0f17efca4e42354170a5119757f86a103a0f0713b97718121c4a132a4a3803abb9749058ec9aef2c0fbcc50a78ef468f0c287e177480cd9362335ae47513350b
   languageName: node
   linkType: hard
 
