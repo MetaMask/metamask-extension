@@ -357,8 +357,9 @@ function connectToAccountManager(connectionStream) {
  * @param {PortDuplexStream} connectionStream - PortStream instance establishing a background connection
  */
 function setupWeb3Connection(connectionStream) {
-  const providerStream = new StreamProvider();
-  providerStream.pipe(connectionStream).pipe(providerStream);
+  const providerStream = new StreamProvider(connectionStream, {
+    jsonRpcStreamName: 'metamask-provider',
+  });
   connectionStream.on('error', console.error.bind(console));
   providerStream.on('error', console.error.bind(console));
   global.ethereumProvider = providerStream;
