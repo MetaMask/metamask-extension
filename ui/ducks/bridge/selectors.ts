@@ -6,19 +6,17 @@ import { orderBy, uniqBy } from 'lodash';
 import { createSelector } from 'reselect';
 import { GasFeeEstimates } from '@metamask/gas-fee-controller';
 import { BigNumber } from 'bignumber.js';
+import { calcTokenAmount } from '@metamask/notification-services-controller/push-services';
 import {
   getIsBridgeEnabled,
   getMarketData,
-  getSwapsDefaultToken,
   getUSDConversionRate,
   getUSDConversionRateByChainId,
   selectConversionRateByChainId,
-  SwapsEthToken,
 } from '../../selectors/selectors';
 import {
   ALLOWED_BRIDGE_CHAIN_IDS,
   BRIDGE_PREFERRED_GAS_ESTIMATE,
-  BRIDGE_QUOTE_MAX_ETA_SECONDS,
   BRIDGE_QUOTE_MAX_RETURN_DIFFERENCE_PERCENTAGE,
 } from '../../../shared/constants/bridge';
 import {
@@ -28,11 +26,11 @@ import {
   // eslint-disable-next-line import/no-restricted-paths
 } from '../../../app/scripts/controllers/bridge/types';
 import { createDeepEqualSelector } from '../../../shared/modules/selectors/util';
+import { SWAPS_CHAINID_DEFAULT_TOKEN_MAP } from '../../../shared/constants/swaps';
 import {
   getProviderConfig,
   getNetworkConfigurationsByChainId,
 } from '../../../shared/modules/selectors/networks';
-import { SwapsTokenObject } from '../../../shared/constants/swaps';
 import { getConversionRate, getGasFeeEstimates } from '../metamask/metamask';
 // TODO: Remove restricted import
 // eslint-disable-next-line import/no-restricted-paths
@@ -56,7 +54,6 @@ import {
 } from '../../pages/bridge/utils/quote';
 import { AssetType } from '../../../shared/constants/transaction';
 import { decGWEIToHexWEI } from '../../../shared/modules/conversion.utils';
-import { calcTokenAmount } from '../../../shared/lib/transactions-controller-utils';
 import {
   exchangeRatesFromNativeAndCurrencyRates,
   exchangeRateFromMarketData,
@@ -117,18 +114,11 @@ export const getFromChain = createDeepEqualSelector(
 );
 
 export const getToChains = createDeepEqualSelector(
-  getFromChain,
   getAllBridgeableNetworks,
   (state: BridgeAppState) => state.metamask.bridgeState?.bridgeFeatureFlags,
-  (
-    fromChain,
-    allBridgeableNetworks,
-    bridgeFeatureFlags,
-  ): NetworkConfiguration[] =>
+  (allBridgeableNetworks, bridgeFeatureFlags): NetworkConfiguration[] =>
     allBridgeableNetworks.filter(
       ({ chainId }) =>
-        fromChain?.chainId &&
-        chainId !== fromChain.chainId &&
         bridgeFeatureFlags[BridgeFeatureFlagsKey.EXTENSION_CONFIG].chains[
           chainId
         ]?.isActiveDest,
@@ -141,30 +131,57 @@ export const getToChain = createDeepEqualSelector(
   (toChains, toChainId): NetworkConfiguration | undefined =>
     toChains.find(({ chainId }) => chainId === toChainId),
 );
+export const getFromTokens = createDeepEqualSelector(
+  (state: BridgeAppState) => state.metamask.bridgeState.srcTokens,
+  (state: BridgeAppState) => state.metamask.bridgeState.srcTopAssets,
+  (state: BridgeAppState) =>
+    state.metamask.bridgeState.srcTokensLoadingStatus === RequestStatus.LOADING,
+  (fromTokens, fromTopAssets, isLoading) => {
+    return {
+      isLoading,
+      fromTokens: fromTokens ?? {},
+      fromTopAssets: fromTopAssets ?? [],
+    };
+  },
+);
 
-export const getFromTokens = (state: BridgeAppState) => {
-  return state.metamask.bridgeState.srcTokens ?? {};
-};
+export const getToTokens = createDeepEqualSelector(
+  (state: BridgeAppState) => state.metamask.bridgeState.destTokens,
+  (state: BridgeAppState) => state.metamask.bridgeState.destTopAssets,
+  (state: BridgeAppState) =>
+    state.metamask.bridgeState.destTokensLoadingStatus ===
+    RequestStatus.LOADING,
+  (toTokens, toTopAssets, isLoading) => {
+    return {
+      isLoading,
+      toTokens: toTokens ?? {},
+      toTopAssets: toTopAssets ?? [],
+    };
+  },
+);
 
-export const getFromTopAssets = (state: BridgeAppState) => {
-  return state.metamask.bridgeState.srcTopAssets ?? [];
-};
-
-export const getToTopAssets = (state: BridgeAppState) => {
-  return state.bridge.toChainId ? state.metamask.bridgeState.destTopAssets : [];
-};
-
-export const getToTokens = (state: BridgeAppState) => {
-  return state.bridge.toChainId ? state.metamask.bridgeState.destTokens : {};
-};
-
-export const getFromToken = (
-  state: BridgeAppState,
-): SwapsTokenObject | SwapsEthToken | null => {
-  return state.bridge.fromToken?.address
-    ? state.bridge.fromToken
-    : getSwapsDefaultToken(state);
-};
+export const getFromToken = createSelector(
+  (state: BridgeAppState) => state.bridge.fromToken,
+  getFromChain,
+  (fromToken, fromChain): BridgeToken => {
+    if (!fromChain?.chainId) {
+      return null;
+    }
+    return fromToken?.address
+      ? fromToken
+      : {
+          ...SWAPS_CHAINID_DEFAULT_TOKEN_MAP[
+            fromChain.chainId as keyof typeof SWAPS_CHAINID_DEFAULT_TOKEN_MAP
+          ],
+          chainId: fromChain.chainId,
+          image:
+            SWAPS_CHAINID_DEFAULT_TOKEN_MAP[
+              fromChain.chainId as keyof typeof SWAPS_CHAINID_DEFAULT_TOKEN_MAP
+            ].iconUrl,
+          type: AssetType.native,
+        };
+  },
+);
 
 export const getToToken = (state: BridgeAppState): BridgeToken => {
   return state.bridge.toToken;
