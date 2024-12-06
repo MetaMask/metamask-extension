@@ -3,9 +3,9 @@ import {
   EthMethod,
   BtcMethod,
   BtcAccountType,
-  InternalAccount,
   isEvmAccountType,
 } from '@metamask/keyring-api';
+import { InternalAccount } from '@metamask/keyring-internal-api';
 import { KeyringTypes } from '@metamask/keyring-controller';
 import { v4 as uuidv4 } from 'uuid';
 import { keyringTypeToName } from '@metamask/accounts-controller';
