@@ -132,7 +132,9 @@ describe('wallet_createSession', () => {
       unsupportableScopes: {},
     });
     MockMultichain.getSessionScopes.mockReturnValue({});
-    MockMultichain.filterScopeObjectsSupported.mockImplementation((scopesObject) => scopesObject)
+    MockMultichain.filterScopeObjectsSupported.mockImplementation(
+      (scopesObject) => scopesObject,
+    );
     MockHelpers.processScopedProperties.mockReturnValue({});
   });
 
@@ -244,6 +246,58 @@ describe('wallet_createSession', () => {
     await handler(baseRequest);
     expect(end).toHaveBeenCalledWith(
       new Error('failed to process scoped properties'),
+    );
+  });
+
+  it('filters the required scopesObjects', async () => {
+    const { handler } = createMockedHandler();
+    MockMultichain.validateAndNormalizeScopes.mockReturnValue({
+      normalizedRequiredScopes: {
+        'eip155:1': {
+          methods: ['eth_chainId'],
+          notifications: ['accountsChanged', 'chainChanged'],
+          accounts: ['eip155:1:0x1', 'eip155:1:0x2'],
+        },
+      },
+      normalizedOptionalScopes: {},
+    });
+    await handler(baseRequest);
+
+    expect(MockMultichain.filterScopeObjectsSupported).toHaveBeenNthCalledWith(
+      1,
+      {
+        'eip155:1': {
+          methods: ['eth_chainId'],
+          notifications: ['accountsChanged', 'chainChanged'],
+          accounts: ['eip155:1:0x1', 'eip155:1:0x2'],
+        },
+      },
+    );
+  });
+
+  it('filters the optional scopesObjects', async () => {
+    const { handler } = createMockedHandler();
+    MockMultichain.validateAndNormalizeScopes.mockReturnValue({
+      normalizedRequiredScopes: {},
+      normalizedOptionalScopes: {
+        'eip155:1': {
+          methods: ['eth_chainId'],
+          notifications: ['accountsChanged', 'chainChanged'],
+          accounts: ['eip155:1:0x1', 'eip155:1:0x2'],
+        },
+      },
+    });
+    await handler(baseRequest);
+
+    expect(MockMultichain.filterScopeObjectsSupported).toHaveBeenNthCalledWith(
+      2,
+      {
+        'eip155:1': {
+          methods: ['eth_chainId'],
+          notifications: ['accountsChanged', 'chainChanged'],
+          accounts: ['eip155:1:0x1', 'eip155:1:0x2'],
+        },
+      },
     );
   });
 

@@ -132,8 +132,12 @@ async function walletCreateSessionHandler(
       scopedProperties as ScopedProperties,
     );
 
-    const supportedRequiredScopesObjects = filterScopeObjectsSupported(normalizedRequiredScopes)
-    const supportedOptionalScopesObjects = filterScopeObjectsSupported(normalizedOptionalScopes)
+    const supportedRequiredScopesObjects = filterScopeObjectsSupported(
+      normalizedRequiredScopes,
+    );
+    const supportedOptionalScopesObjects = filterScopeObjectsSupported(
+      normalizedOptionalScopes,
+    );
 
     const existsNetworkClientForChainId = (chainId: Hex) => {
       try {
