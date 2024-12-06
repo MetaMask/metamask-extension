@@ -1541,7 +1541,7 @@ export const getIsBridgeEnabled = createSelector(
   (bridgeFeatureFlags, shouldUseExternalServices) => {
     return (
       (shouldUseExternalServices &&
-        bridgeFeatureFlags?.[BridgeFeatureFlagsKey.EXTENSION_SUPPORT]) ??
+        bridgeFeatureFlags?.[BridgeFeatureFlagsKey.EXTENSION_CONFIG]?.support) ??
       false
     );
   },
