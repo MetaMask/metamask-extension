@@ -142,7 +142,11 @@ export function AssetPickerModal({
 
   const handleAssetChange = useCallback(onAssetChange, [onAssetChange]);
 
-  const chainId = useSelector(getCurrentChainId);
+  const currentChainId = useSelector(getCurrentChainId);
+  const allNetworks = useSelector(getNetworkConfigurationsByChainId);
+  const selectedNetwork =
+    network ?? (currentChainId && allNetworks[currentChainId]);
+  const allNetworksToUse = networks ?? Object.values(allNetworks);
 
   const nativeCurrencyImage = useSelector(getNativeCurrencyImage);
   const nativeCurrency = useSelector(getNativeCurrency);
@@ -160,7 +164,7 @@ export function AssetPickerModal({
   const detectedTokens: Record<Hex, Record<string, Token[]>> = useSelector(
     getAllTokens,
   );
-  const tokens = detectedTokens?.[chainId]?.[selectedAddress] ?? [];
+  const tokens = detectedTokens?.[currentChainId]?.[selectedAddress] ?? [];
 
   const { tokensWithBalances }: { tokensWithBalances: TokenWithBalance[] } =
     useTokenTracker({
@@ -223,11 +227,17 @@ export function AssetPickerModal({
         image: nativeCurrencyImage,
         balance: balanceValue,
         string: undefined,
-        chainId,
+        chainId: currentChainId,
         type: AssetType.native,
       };
 
-      if (shouldAddToken(nativeToken.symbol, nativeToken.address)) {
+      if (
+        shouldAddToken(
+          nativeToken.symbol,
+          nativeToken.address,
+          nativeToken.chainId,
+        )
+      ) {
         yield nativeToken;
       }
 
@@ -243,32 +253,35 @@ export function AssetPickerModal({
       }
 
       for (const token of memoizedUsersTokens) {
-        if (shouldAddToken(token.symbol, token.address)) {
-          yield { ...token, chainId };
+        if (shouldAddToken(token.symbol, token.address, currentChainId)) {
+          yield { ...token, chainId: currentChainId };
         }
       }
 
       // topTokens should already be sorted by popularity
       for (const address of Object.keys(topTokens)) {
         const token = tokenList?.[address];
-        if (token && shouldAddToken(token.symbol, token.address)) {
+        if (
+          token &&
+          shouldAddToken(token.symbol, token.address, currentChainId)
+        ) {
           if (getIsDisabled(token)) {
             blockedTokens.push(token);
             continue;
           } else {
-            yield { ...token, chainId };
+            yield { ...token, chainId: currentChainId };
           }
         }
       }
 
       for (const token of Object.values(tokenList)) {
-        if (shouldAddToken(token.symbol, token.address)) {
-          yield { ...token, chainId };
+        if (shouldAddToken(token.symbol, token.address, currentChainId)) {
+          yield { ...token, chainId: currentChainId };
         }
       }
 
       for (const token of blockedTokens) {
-        yield { ...token, chainId };
+        yield { ...token, chainId: currentChainId };
       }
     },
     [
@@ -292,7 +305,9 @@ export function AssetPickerModal({
     // List of token identifiers formatted like `chainId:address`
     const filteredTokensAddresses = new Set<string | undefined>();
     const getTokenKey = (address?: string | null, tokenChainId?: string) =>
-      `${address?.toLowerCase() ?? zeroAddress()}:${tokenChainId ?? chainId}`;
+      `${address?.toLowerCase() ?? zeroAddress()}:${
+        tokenChainId ?? currentChainId
+      }`;
 
     // Default filter predicate for whether a token should be included in displayed list
     const shouldAddToken = (
@@ -306,11 +321,14 @@ export function AssetPickerModal({
           symbol?.toLowerCase().includes(trimmedSearchQuery) ||
           address?.toLowerCase().includes(trimmedSearchQuery),
       );
+      const isTokenInSelectedChain = isMultiselectEnabled
+        ? tokenChainId && selectedChainIds?.includes(tokenChainId)
+        : selectedNetwork?.chainId === tokenChainId;
 
-      return (
-        isTokenInSelectedChain(tokenChainId) &&
-        isMatchedBySearchQuery &&
-        !filteredTokensAddresses.has(getTokenKey(address, tokenChainId))
+      return Boolean(
+        isTokenInSelectedChain &&
+          isMatchedBySearchQuery &&
+          !filteredTokensAddresses.has(getTokenKey(address, tokenChainId)),
       );
     };
 
@@ -358,6 +376,9 @@ export function AssetPickerModal({
     tokenListGenerator,
     customTokenListGenerator,
     isMultiselectEnabled,
+    selectedChainIds,
+    isMultiselectEnabled,
+    selectedNetwork,
   ]);
 
   const getNetworkImageUrl = (networkChainId: string) =>
@@ -424,8 +445,8 @@ export function AssetPickerModal({
             <PickerNetwork
               label={getNetworkPickerLabel()}
               src={
-                network?.chainId
-                  ? getNetworkImageUrl(network.chainId)
+                selectedNetwork?.chainId
+                  ? getNetworkImageUrl(selectedNetwork.chainId)
                   : undefined
               }
               avatarComponent={
