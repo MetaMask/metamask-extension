@@ -42,15 +42,16 @@ export function useTokenFiatAmount(
     shallowEqual,
   );
 
-  const contractMarketData = chainId
-    ? Object.entries(allMarketData[chainId]).reduce(
-        (acc, [address, marketData]) => {
-          acc[address] = marketData?.price ?? null;
-          return acc;
-        },
-        {},
-      )
-    : null;
+  const contractMarketData =
+    chainId && allMarketData[chainId]
+      ? Object.entries(allMarketData[chainId]).reduce(
+          (acc, [address, marketData]) => {
+            acc[address] = marketData?.price ?? null;
+            return acc;
+          },
+          {},
+        )
+      : null;
 
   const tokenMarketData = chainId ? contractMarketData : contractExchangeRates;
 
