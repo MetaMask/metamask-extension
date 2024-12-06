@@ -20,7 +20,7 @@ export const BadgeWrapper: BadgeWrapperComponent = React.forwardRef(
       badgeContainerProps,
       position = BadgeWrapperPosition.bottomRight,
       positionObj,
-      anchorElementShape = BadgeWrapperAnchorElementShape.circular,
+      anchorElementShape = BadgeWrapperAnchorElementShape.rectangular,
       className = '',
       ...props
     }: BadgeWrapperProps<C>,
