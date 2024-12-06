@@ -37,7 +37,6 @@ import {
 } from '../../../components/component-library';
 import { BlockSize } from '../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../hooks/useI18nContext';
-import { TokenBucketPriority } from '../../../../shared/constants/swaps';
 import { useTokensWithFiltering } from '../../../hooks/useTokensWithFiltering';
 import { setActiveNetwork } from '../../../store/actions';
 import { hexToDecimal } from '../../../../shared/modules/conversion.utils';
@@ -53,6 +52,7 @@ import {
 import { useRequestProperties } from '../../../hooks/bridge/events/useRequestProperties';
 import { MetaMetricsEventName } from '../../../../shared/constants/metametrics';
 import { isNetworkAdded } from '../../../ducks/bridge/utils';
+import { useBridgeTokens } from '../../../hooks/bridge/useBridgeTokens';
 import { BridgeInputGroup } from './bridge-input-group';
 
 const PrepareBridgePage = () => {
@@ -83,16 +83,17 @@ const PrepareBridgePage = () => {
 
   const wasTxDeclined = useSelector(getWasTxDeclined);
 
+  const tokenAddressAllowlistByChainId = useBridgeTokens();
   const fromTokenListGenerator = useTokensWithFiltering(
     fromTokens,
     fromTopAssets,
-    TokenBucketPriority.owned,
+    tokenAddressAllowlistByChainId,
     fromChain?.chainId,
   );
   const toTokenListGenerator = useTokensWithFiltering(
     toTokens,
     toTopAssets,
-    TokenBucketPriority.top,
+    tokenAddressAllowlistByChainId,
     toChain?.chainId,
   );
 

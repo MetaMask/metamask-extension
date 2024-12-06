@@ -33,6 +33,7 @@ import {
   getValidationErrors,
 } from '../../../ducks/bridge/selectors';
 import { TextColor } from '../../../helpers/constants/design-system';
+import { BridgeToken } from '../types';
 
 const generateAssetFromToken = (
   chainId: Hex,
@@ -75,7 +76,7 @@ export const BridgeInputGroup = ({
 }: {
   className: string;
   onAmountChange?: (value: string) => void;
-  token: SwapsTokenObject | SwapsEthToken | null;
+  token: BridgeToken | null;
   amountFieldProps?: Pick<
     React.ComponentProps<typeof TextField>,
     'testId' | 'autoFocus' | 'value' | 'readOnly' | 'disabled' | 'className'
