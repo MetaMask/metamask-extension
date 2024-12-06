@@ -406,6 +406,12 @@ const controllerMetadata = {
   preferences: {
     persist: true,
     anonymous: true,
+    properties: {
+      smartTransactionsOptInStatus: {
+        persist: true,
+        anonymous: true,
+      },
+    },
   },
   ipfsGateway: {
     persist: true,
@@ -457,6 +463,10 @@ const controllerMetadata = {
   },
   isMultiAccountBalancesEnabled: { persist: true, anonymous: true },
   showIncomingTransactions: { persist: true, anonymous: true },
+  smartTransactionsOptInStatus: {
+    persist: true,
+    anonymous: true,
+  },
 };
 
 export class PreferencesController extends BaseController<
@@ -925,11 +935,14 @@ export class PreferencesController extends BaseController<
     preference: keyof Preferences,
     value: Preferences[typeof preference],
   ): Preferences {
+    console.log('Setting preference:', { preference, value });
     const currentPreferences = this.getPreferences();
+    console.log('Current preferences:', currentPreferences);
     const updatedPreferences = {
       ...currentPreferences,
       [preference]: value,
     };
+    console.log('Updated preferences:', updatedPreferences);
 
     this.update((state) => {
       state.preferences = updatedPreferences;

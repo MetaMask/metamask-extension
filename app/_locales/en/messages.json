@@ -6815,5 +6815,11 @@
   },
   "zeroGasPriceOnSpeedUpError": {
     "message": "Zero gas price on speed up"
+  },
+  "smartTransactionsEnabledMessage": {
+    "message": "You're now protected with MetaMask Smart Transactions"
+  },
+  "smartTransactionsLearnMore": {
+    "message": "Learn more"
   }
 }
