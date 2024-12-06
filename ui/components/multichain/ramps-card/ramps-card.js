@@ -33,6 +33,7 @@ import useRamps, {
 } from '../../../hooks/ramps/useRamps/useRamps';
 import { ORIGIN_METAMASK } from '../../../../shared/constants/app';
 import { getCurrentLocale } from '../../../ducks/locale/locale';
+import { submitRequestToBackground } from '../../../store/background-connection';
 
 const darkenGradient =
   'linear-gradient(rgba(0, 0, 0, 0.12),rgba(0, 0, 0, 0.12))';
@@ -87,6 +88,10 @@ export const RampsCard = ({ variant, handleOnClick }) => {
   const { chainId, nickname } = useSelector(getMultichainCurrentNetwork);
   const { symbol } = useSelector(getMultichainDefaultToken);
 
+  const isRampsCardClosed = useSelector(
+    (state) => state.metamask.isRampCardClosed,
+  );
+
   useEffect(() => {
     trackEvent({
       event: MetaMetricsEventName.EmptyBuyBannerDisplayed,
@@ -116,6 +121,29 @@ export const RampsCard = ({ variant, handleOnClick }) => {
     });
   }, [chainId, openBuyCryptoInPdapp, symbol, trackEvent, variant]);
 
+  const onClose = useCallback(() => {
+    trackEvent({
+      event: MetaMetricsEventName.EmptyBuyBannerClosed,
+      category: MetaMetricsEventCategory.Navigation,
+      properties: {
+        location: `${variant} tab`,
+        chain_id: chainId,
+        token_symbol: symbol,
+      },
+    });
+
+    submitRequestToBackground('setRampCardClosed')?.catch((error) => {
+      console.error(
+        'Error caught in setRampCardClosed submitRequestToBackground',
+        error,
+      );
+    });
+  }, [chainId, symbol, trackEvent, variant]);
+
+  if (isRampsCardClosed) {
+    return null;
+  }
+
   return (
     <Box
       className={classnames('ramps-card', `ramps-card-${variant}`)}
@@ -138,9 +166,7 @@ export const RampsCard = ({ variant, handleOnClick }) => {
           iconName={IconName.Close}
           size={ButtonIconSize.Sm}
           ariaLabel={t('close')}
-          onClick={() => {
-            console.log('close me!');
-          }}
+          onClick={onClose}
         />
       </Box>
       <Text className="ramps-card__body">{t(body)}</Text>

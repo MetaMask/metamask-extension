@@ -338,6 +338,7 @@ describe('toast display', () => {
       pendingApprovalCount: 0,
       swapsState: { swapsFeatureIsLive: true },
       newPrivacyPolicyToastShownDate: new Date(0),
+      isRampCardClosed: false,
       newPrivacyPolicyToastClickedOrClosed: true,
       preferences: {
         tokenSortConfig: {

@@ -655,6 +655,7 @@ export enum MetaMetricsEventName {
   DecryptionRequested = 'Decryption Requested',
   DisablingNotifications = 'Notifications Disabled',
   EmptyBuyBannerDisplayed = 'Empty Buy Banner Displayed',
+  EmptyBuyBannerClosed = 'Empty Buy Banner Closed',
   EmptyBuyBannerClicked = 'Empty Buy Banner Clicked',
   EmptyReceiveBannerDisplayed = 'Empty Receive Banner Displayed',
   EmptyReceiveBannerClicked = 'Empty Receive Banner Clicked',
