@@ -8,6 +8,7 @@ import {
   QuoteResponse,
   SortOrder,
 } from '../../pages/bridge/types';
+import { BRIDGE_DEFAULT_SLIPPAGE } from '../../../shared/constants/bridge';
 import { getTokenExchangeRate } from './utils';
 
 export type BridgeState = {
@@ -19,6 +20,7 @@ export type BridgeState = {
   toTokenExchangeRate: number | null; // Exchange rate from the selected token to the default currency (can be fiat or crypto)
   sortOrder: SortOrder;
   selectedQuote: (QuoteResponse & QuoteMetadata) | null; // Alternate quote selected by user. When quotes refresh, the best match will be activated.
+  slippage: number;
 };
 
 const initialState: BridgeState = {
@@ -30,6 +32,7 @@ const initialState: BridgeState = {
   toTokenExchangeRate: null,
   sortOrder: SortOrder.COST_ASC,
   selectedQuote: null,
+  slippage: BRIDGE_DEFAULT_SLIPPAGE,
 };
 
 export const setSrcTokenExchangeRates = createAsyncThunk(
@@ -67,6 +70,9 @@ const bridgeSlice = createSlice({
     },
     setSelectedQuote: (state, action) => {
       state.selectedQuote = action.payload;
+    },
+    setSlippage: (state, action) => {
+      state.slippage = action.payload;
     },
   },
   extraReducers: (builder) => {
