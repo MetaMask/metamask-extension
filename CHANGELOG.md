@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ## [12.8.1]
+### Fixed
+- Update default Base rpc to https://base-mainnet.infura.io/ ([#28974](https://github.com/MetaMask/metamask-extension/pull/28974))
 
 ## [12.8.0]
 ### Added
