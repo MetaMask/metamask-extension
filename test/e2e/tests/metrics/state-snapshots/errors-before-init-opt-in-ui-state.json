@@ -44,29 +44,6 @@
       "newPrivacyPolicyToastShownDate": "number",
       "snapsInstallPrivacyWarningShown": true
     },
-    "BridgeController": {
-      "bridgeState": {
-        "bridgeFeatureFlags": {
-          "extensionConfig": {
-            "support": "boolean",
-            "chains": {
-              "0": {
-                "isActiveSrc": "boolean",
-                "isActiveDest": "boolean"
-              },
-              "1": {
-                "isActiveSrc": "boolean",
-                "isActiveDest": "boolean"
-              },
-              "2": {
-                "isActiveSrc": "boolean",
-                "isActiveDest": "boolean"
-              }
-            }
-          }
-        }
-      }
-    },
     "CurrencyController": {
       "currentCurrency": "usd",
       "currencyRates": {
@@ -176,20 +153,13 @@
       "bridgeState": {
         "bridgeFeatureFlags": {
           "extensionConfig": {
+            "maxRefreshCount": "number",
+            "refreshRate": "number",
             "support": "boolean",
             "chains": {
-              "0": {
-                "isActiveSrc": "boolean",
-                "isActiveDest": "boolean"
-              },
-              "1": {
-                "isActiveSrc": "boolean",
-                "isActiveDest": "boolean"
-              },
-              "2": {
-                "isActiveSrc": "boolean",
-                "isActiveDest": "boolean"
-              }
+              "0x1": "object",
+              "0xa": "object",
+              "0xe708": "object"
             }
           }
         },

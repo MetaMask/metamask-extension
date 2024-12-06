@@ -285,6 +285,8 @@
     "bridgeState": {
       "bridgeFeatureFlags": {
         "extensionConfig": {
+          "maxRefreshCount": "number",
+          "refreshRate": "number",
           "support": "boolean",
           "chains": {
             "0x1": "object",
