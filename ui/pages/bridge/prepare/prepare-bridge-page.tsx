@@ -122,6 +122,18 @@ const PrepareBridgePage = () => {
 
   const { refreshRate } = useSelector(getBridgeQuotesConfig);
 
+  const ticker = useSelector(getNativeCurrency);
+  const { isNoQuotesAvailable, isInsufficientGasForQuote } =
+    useSelector(getValidationErrors);
+  const { openBuyCryptoInPdapp } = useRamps();
+
+  const { balanceAmount: nativeAssetBalance } = useLatestBalance(
+    SWAPS_CHAINID_DEFAULT_TOKEN_MAP[
+      fromChain?.chainId as keyof typeof SWAPS_CHAINID_DEFAULT_TOKEN_MAP
+    ],
+    fromChain?.chainId,
+  );
+
   const tokenAddressAllowlistByChainId = useBridgeTokens();
   const fromTokenListGenerator = useTokensWithFiltering(
     fromTokens,
@@ -147,6 +159,17 @@ const PrepareBridgePage = () => {
     // Reset controller and inputs on load
     dispatch(resetBridgeState());
   }, []);
+
+  const scrollRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (isInsufficientGasForQuote(nativeAssetBalance)) {
+      scrollRef.current?.scrollIntoView({
+        behavior: 'smooth',
+        block: 'start',
+      });
+    }
+  }, [isInsufficientGasForQuote(nativeAssetBalance)]);
 
   const quoteParams = useMemo(
     () => ({
@@ -495,6 +518,32 @@ const PrepareBridgePage = () => {
             </Footer>
           </Column>
         </Row>
+        {isNoQuotesAvailable && (
+          <BannerAlert
+            marginInline={4}
+            marginBottom={10}
+            severity={BannerAlertSeverity.Danger}
+            description={t('noOptionsAvailableMessage')}
+            textAlign={TextAlign.Left}
+          />
+        )}
+        {!isLoading &&
+          activeQuote &&
+          isInsufficientGasForQuote(nativeAssetBalance) && (
+            <BannerAlert
+              ref={scrollRef}
+              marginInline={4}
+              marginBottom={3}
+              title={t('bridgeValidationInsufficientGasTitle', [ticker])}
+              severity={BannerAlertSeverity.Danger}
+              description={t('bridgeValidationInsufficientGasMessage', [
+                ticker,
+              ])}
+              textAlign={TextAlign.Left}
+              actionButtonLabel={t('buyMoreAsset', [ticker])}
+              actionButtonOnClick={() => openBuyCryptoInPdapp()}
+            />
+          )}
       </Column>
     </Column>
   );
