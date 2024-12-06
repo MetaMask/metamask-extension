@@ -287,18 +287,9 @@
         "extensionConfig": {
           "support": "boolean",
           "chains": {
-            "0": {
-              "isActiveSrc": "boolean",
-              "isActiveDest": "boolean"
-            },
-            "1": {
-              "isActiveSrc": "boolean",
-              "isActiveDest": "boolean"
-            },
-            "2": {
-              "isActiveSrc": "boolean",
-              "isActiveDest": "boolean"
-            }
+            "0x1": "object",
+            "0xa4b1": "object",
+            "0xe708": "object"
           }
         }
       },
