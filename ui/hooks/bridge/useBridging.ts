@@ -31,6 +31,9 @@ import { isHardwareKeyring } from '../../helpers/utils/hardware';
 import { getPortfolioUrl } from '../../helpers/utils/portfolio';
 import { SwapsTokenObject } from '../../../shared/constants/swaps';
 import { getProviderConfig } from '../../../shared/modules/selectors/networks';
+// eslint-disable-next-line import/no-restricted-paths
+import { getEnvironmentType } from '../../../app/scripts/lib/util';
+import { ENVIRONMENT_TYPE_FULLSCREEN } from '../../../shared/constants/app';
 import { useCrossChainSwapsEventTracker } from './useCrossChainSwapsEventTracker';
 ///: END:ONLY_INCLUDE_IF
 
@@ -89,16 +92,18 @@ const useBridging = () => {
             chain_id: providerConfig.chainId,
           },
         });
-        if (usingHardwareWallet && global.platform.openExtensionInBrowser) {
-          global.platform.openExtensionInBrowser(
-            PREPARE_SWAP_ROUTE,
-            null,
-            false,
-          );
+        const environmentType = getEnvironmentType();
+        const environmentTypeIsFullScreen =
+          environmentType === ENVIRONMENT_TYPE_FULLSCREEN;
+        const bridgeRoute = `${CROSS_CHAIN_SWAP_ROUTE}${PREPARE_SWAP_ROUTE}?token=${token.address.toLowerCase()}`;
+        if (
+          usingHardwareWallet &&
+          global.platform.openExtensionInBrowser &&
+          !environmentTypeIsFullScreen
+        ) {
+          global.platform.openExtensionInBrowser(bridgeRoute);
         } else {
-          history.push(
-            `${CROSS_CHAIN_SWAP_ROUTE}${PREPARE_SWAP_ROUTE}?token=${token.address.toLowerCase()}`,
-          );
+          history.push(bridgeRoute);
         }
       } else {
         const portfolioUrl = getPortfolioUrl(
