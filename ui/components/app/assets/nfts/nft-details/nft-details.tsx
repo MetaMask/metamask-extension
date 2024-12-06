@@ -112,7 +112,10 @@ export default function NftDetails({ nft }: { nft: Nft }) {
   const isIpfsURL = nftSrcUrl?.startsWith('ipfs:');
   const isImageHosted =
     image?.startsWith('https:') || image?.startsWith('http:');
-  const nftImageURL = useGetAssetImageUrl(imageOriginal ?? image, ipfsGateway);
+  const nftImageURL: string | undefined = useGetAssetImageUrl(
+    imageOriginal ?? image,
+    ipfsGateway,
+  );
 
   const hasFloorAskPrice = Boolean(
     collection?.floorAsk?.price?.amount?.usd &&
@@ -310,6 +313,8 @@ export default function NftDetails({ nft }: { nft: Nft }) {
     return `${text.slice(0, chars)}...${text.slice(-chars)}`;
   };
 
+  const nftItemSrc: string | undefined = isImageHosted ? image : nftImageURL;
+
   return (
     <Page>
       <Content className="nft-details__content">
@@ -342,7 +347,7 @@ export default function NftDetails({ nft }: { nft: Nft }) {
         >
           <Box className="nft-details__nft-item">
             <NftItem
-              src={isImageHosted ? image : nftImageURL}
+              src={nftItemSrc}
               alt={image ? nftImageAlt : ''}
               networkName={currentChain.nickname ?? ''}
               networkSrc={currentChain.rpcPrefs?.imageUrl}
