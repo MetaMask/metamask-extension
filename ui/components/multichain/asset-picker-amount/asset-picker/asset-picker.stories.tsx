@@ -123,7 +123,7 @@ export const NetworksStory = ({ isOpen }: { isOpen: boolean }) => {
         networks: [
           {
             chainId: '0x1',
-            name: 'Mainnet',
+            name: 'Mainnet Name That Is Very Long',
             blockExplorerUrls: [],
             defaultRpcEndpointIndex: 0,
             rpcEndpoints: [
@@ -149,7 +149,23 @@ export const NetworksStory = ({ isOpen }: { isOpen: boolean }) => {
             ],
             nativeCurrency: 'ETH',
           },
+          {
+            chainId: CHAIN_IDS.LINEA_MAINNET,
+            name: 'Linea Mainnet Test Name',
+            blockExplorerUrls: [],
+            defaultRpcEndpointIndex: 0,
+            rpcEndpoints: [
+              {
+                networkClientId: 'test3',
+                url: 'https://linea.infura.io/v3/',
+                type: RpcEndpointType.Custom,
+              },
+            ],
+            nativeCurrency: 'ETH',
+          },
         ],
+        shouldDisableNetwork: (networkConfig) =>
+          networkConfig.chainId === CHAIN_IDS.LINEA_MAINNET,
         onNetworkChange: () => ({}),
       }}
       visibleTabs={[TabName.TOKENS]}

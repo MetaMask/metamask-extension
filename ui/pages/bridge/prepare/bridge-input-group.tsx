@@ -64,6 +64,7 @@ export const BridgeInputGroup = ({
   onAmountChange,
   networkProps,
   customTokenListGenerator,
+  isMultiselectEnabled,
   amountFieldProps = {},
 }: {
   className: string;
@@ -75,7 +76,11 @@ export const BridgeInputGroup = ({
   >;
 } & Pick<
   React.ComponentProps<typeof AssetPicker>,
-  'networkProps' | 'header' | 'customTokenListGenerator' | 'onAssetChange'
+  | 'networkProps'
+  | 'header'
+  | 'customTokenListGenerator'
+  | 'onAssetChange'
+  | 'isMultiselectEnabled'
 >) => {
   const t = useI18nContext();
 
@@ -115,6 +120,7 @@ export const BridgeInputGroup = ({
           onAssetChange={onAssetChange}
           networkProps={networkProps}
           customTokenListGenerator={customTokenListGenerator}
+          isMultiselectEnabled={isMultiselectEnabled}
         />
         <Tooltip
           containerClassName="amount-tooltip"

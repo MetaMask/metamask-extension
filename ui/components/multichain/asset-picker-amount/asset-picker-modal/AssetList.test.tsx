@@ -10,6 +10,7 @@ import { useUserPreferencedCurrency } from '../../../../hooks/useUserPreferenced
 import { useCurrencyDisplay } from '../../../../hooks/useCurrencyDisplay';
 import { AssetType } from '../../../../../shared/constants/transaction';
 import { CHAIN_ID_TOKEN_IMAGE_MAP } from '../../../../../shared/constants/network';
+import { getCurrentChainId } from '../../../../../shared/modules/selectors/networks';
 import AssetList from './AssetList';
 import { AssetWithDisplayData, ERC20Asset, NativeAsset } from './types';
 
@@ -55,6 +56,7 @@ describe('AssetList', () => {
       string: '10',
       decimals: 18,
       balance: '0',
+      chainId: '0x1',
     },
     {
       address: '0xToken2',
@@ -64,6 +66,7 @@ describe('AssetList', () => {
       string: '20',
       decimals: 6,
       balance: '10',
+      chainId: '0x1',
     },
     {
       address: null,
@@ -73,6 +76,7 @@ describe('AssetList', () => {
       string: '30',
       decimals: 18,
       balance: '0x121',
+      chainId: '0x1',
     },
   ];
   const primaryCurrency = 'USD';
@@ -110,6 +114,12 @@ describe('AssetList', () => {
   });
 
   it('should render the token list', () => {
+    (useSelector as jest.Mock).mockImplementation((selector) => {
+      if (selector === getCurrentChainId) {
+        return '0x1';
+      }
+      return undefined;
+    });
     render(
       <AssetList
         handleAssetChange={handleAssetChangeMock}
