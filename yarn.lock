@@ -6191,15 +6191,15 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/signature-controller@npm:^23.0.0":
-  version: 23.0.0
-  resolution: "@metamask/signature-controller@npm:23.0.0"
+"@metamask/signature-controller@npm:^23.1.0":
+  version: 23.1.0
+  resolution: "@metamask/signature-controller@npm:23.1.0"
   dependencies:
     "@metamask/base-controller": "npm:^7.0.2"
-    "@metamask/controller-utils": "npm:^11.4.3"
+    "@metamask/controller-utils": "npm:^11.4.4"
     "@metamask/eth-sig-util": "npm:^8.0.0"
     "@metamask/utils": "npm:^10.0.0"
-    jsonschema: "npm:^1.2.4"
+    jsonschema: "npm:^1.4.1"
     lodash: "npm:^4.17.21"
     uuid: "npm:^8.3.2"
   peerDependencies:
@@ -6207,7 +6207,7 @@ __metadata:
     "@metamask/keyring-controller": ^19.0.0
     "@metamask/logging-controller": ^6.0.0
     "@metamask/network-controller": ^22.0.0
-  checksum: 10/5e2fda2d89dd3433f00028da0fa7743a6934b72f33fc0e4803dafa98702b9bdd9d093a326060d5480e6eb065c6b4cc1dc3e39382c00702f28b5a6061e8f105bf
+  checksum: 10/2f97e6412bc3a3a13aa2106dfd679500680881918a6e3e2621d4e225e6380df7a01218f7ce26747575b09c85d8ac8be2f5029240339b28fc6d849fad480c5b72
   languageName: node
   linkType: hard
 
@@ -24742,10 +24742,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"jsonschema@npm:^1.2.4":
-  version: 1.2.4
-  resolution: "jsonschema@npm:1.2.4"
-  checksum: 10/7b959737416a5716f2df3142e30c8685bc5449974d56d1cd5acbbd61c0f71041af38fa315327c8577fcdbe30907fd9b633c4d3484baf2cc8563609afac5b4e14
+"jsonschema@npm:^1.2.4, jsonschema@npm:^1.4.1":
+  version: 1.4.1
+  resolution: "jsonschema@npm:1.4.1"
+  checksum: 10/d7a188da7a3100a2caa362b80e98666d46607b7a7153aac405b8e758132961911c6df02d444d4700691330874e21a62639f550e856b21ddd28423690751ca9c6
   languageName: node
   linkType: hard
 
@@ -26556,7 +26556,7 @@ __metadata:
     "@metamask/safe-event-emitter": "npm:^3.1.1"
     "@metamask/scure-bip39": "npm:^2.0.3"
     "@metamask/selected-network-controller": "npm:^18.0.2"
-    "@metamask/signature-controller": "npm:^23.0.0"
+    "@metamask/signature-controller": "npm:^23.1.0"
     "@metamask/smart-transactions-controller": "npm:^15.0.0"
     "@metamask/snaps-controllers": "npm:^9.14.0"
     "@metamask/snaps-execution-environments": "npm:^6.10.0"
