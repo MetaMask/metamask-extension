@@ -55,7 +55,7 @@ privacy-snapshot.json                @MetaMask/extension-privacy-reviewers
 # who were involved with the Codespaces project.
 .devcontainer/                       @MetaMask/extension-security-team @HowardBraham
 
-# Confirmations team owns all confirmations UI + Transactions, Signatures and UserOps business logic (controllers, lib, etc) as well as petnames.
+# Confirmations
 app/scripts/controllers/decrypt-message*               @MetaMask/confirmations
 app/scripts/controllers/encryption-publick-key*        @MetaMask/confirmations
 app/scripts/lib/middleware/pending*                    @MetaMask/confirmations
@@ -125,29 +125,28 @@ ui/selectors/custom-gas*                               @MetaMask/confirmations
 ui/selectors/signatures*                               @MetaMask/confirmations
 ui/selectors/transactions*                             @MetaMask/confirmations
 
-# Confirmations Integration and E2E tests (keeping those commented out for now)
-#
-# app/scripts/fixtures/with-confirmed-transactions.js    @MetaMask/confirmations
-# test/data/confirmations                                @MetaMask/confirmations
-# test/data/mock-pending-transaction-data.js             @MetaMask/confirmations
-# test/data/transaction-data.json                        @MetaMask/confirmations
-# test/e2e/flask/user-operations*                        @MetaMask/confirmations
-# test/e2e/json-rpc/switchEthereumChain.spec.js          @MetaMask/confirmations
-# test/e2e/mock-cdn*                                     @MetaMask/confirmations
-# test/e2e/page-objects/flows/send-transaction.flow.ts   @MetaMask/confirmations
-# test/e2e/page-objects/flows/sign.flow.ts               @MetaMask/confirmations
-# test/e2e/page-objects/flows/transaction.ts             @MetaMask/confirmations
-# test/e2e/page-objects/pages/confirmations              @MetaMask/confirmations
-# test/e2e/page-objects/pages/dialog/confirm-alert.ts    @MetaMask/confirmations
-# test/e2e/tests/confirmations                           @MetaMask/confirmations
-# test/e2e/tests/petnames                                @MetaMask/confirmations
-# test/e2e/tests/ppom                                    @MetaMask/confirmations
-# test/e2e/tests/signature                               @MetaMask/confirmations
-# test/e2e/tests/simulation-details                      @MetaMask/confirmations
-# test/e2e/tests/transaction                             @MetaMask/confirmations
-# test/e2e/bundler*                                      @MetaMask/confirmations
-# test/integration/confirmations                         @MetaMask/confirmations
-# test/lib/confirmations                                 @MetaMask/confirmations
+# Confirmations Integration and E2E tests
+app/scripts/fixtures/with-confirmed-transactions.js    @MetaMask/confirmations
+test/data/confirmations                                @MetaMask/confirmations
+test/data/mock-pending-transaction-data.js             @MetaMask/confirmations
+test/data/transaction-data.json                        @MetaMask/confirmations
+test/e2e/flask/user-operations*                        @MetaMask/confirmations
+test/e2e/json-rpc/switchEthereumChain.spec.js          @MetaMask/confirmations
+test/e2e/mock-cdn*                                     @MetaMask/confirmations
+test/e2e/page-objects/flows/send-transaction.flow.ts   @MetaMask/confirmations
+test/e2e/page-objects/flows/sign.flow.ts               @MetaMask/confirmations
+test/e2e/page-objects/flows/transaction.ts             @MetaMask/confirmations
+test/e2e/page-objects/pages/confirmations              @MetaMask/confirmations
+test/e2e/page-objects/pages/dialog/confirm-alert.ts    @MetaMask/confirmations
+test/e2e/tests/confirmations                           @MetaMask/confirmations
+test/e2e/tests/petnames                                @MetaMask/confirmations
+test/e2e/tests/ppom                                    @MetaMask/confirmations
+test/e2e/tests/signature                               @MetaMask/confirmations
+test/e2e/tests/simulation-details                      @MetaMask/confirmations
+test/e2e/tests/transaction                             @MetaMask/confirmations
+test/e2e/bundler*                                      @MetaMask/confirmations
+test/integration/confirmations                         @MetaMask/confirmations
+test/lib/confirmations                                 @MetaMask/confirmations
 
 
 # MMI team is responsible for code related with Institutioanl version of MetaMask
