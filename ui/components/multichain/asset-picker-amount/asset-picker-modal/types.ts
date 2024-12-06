@@ -56,7 +56,7 @@ export type AssetWithDisplayData<T extends ERC20Asset | NativeAsset> = T & {
 
 export type Collection = {
   collectionName: string;
-  collectionImage: string | null;
+  collectionImage: string | undefined;
   nfts: NFT[];
 };
 

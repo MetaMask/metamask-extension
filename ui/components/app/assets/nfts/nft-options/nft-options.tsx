@@ -39,6 +39,7 @@ const NftOptions = ({ onRemove, onViewOnOpensea }: NftOptionsProps) => {
           onHide={() => setNftOptionsOpen(false)}
         >
           {onViewOnOpensea ? (
+            // @ts-ignore: need to update deprecated menu to popover
             <MenuItem
               iconName={IconName.Export}
               data-testid="nft-options__view-on-opensea"
@@ -50,6 +51,7 @@ const NftOptions = ({ onRemove, onViewOnOpensea }: NftOptionsProps) => {
               {t('viewOnOpensea')}
             </MenuItem>
           ) : null}
+          {/* @ts-ignore: need to update deprecated menu to popover */}
           <MenuItem
             iconName={IconName.Trash}
             data-testid="nft-item-remove"

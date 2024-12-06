@@ -55,7 +55,7 @@ import { PreviouslyOwnedCollections } from '../../../../multichain/asset-picker-
 import { CollectionImageComponent } from './collection-image.component';
 
 type NftsItemsProps = {
-  collections: Record<Hex, Collection>;
+  collections: Record<string, Collection>;
   previouslyOwnedCollection: PreviouslyOwnedCollections;
   isModal?: boolean;
   onCloseModal?: () => void;
@@ -85,6 +85,7 @@ export default function NftsItems({
   showTokenId = false,
   displayPreviouslyOwnedCollection = true,
 }: NftsItemsProps) {
+  console.log('Collections: ', collections);
   const dispatch = useDispatch();
   const collectionsKeys = Object.keys(collections);
   const nftsDropdownState = useSelector(getNftsDropdownState);
@@ -137,7 +138,10 @@ export default function NftsItems({
     dispatch,
   ]);
 
-  const getAssetImageUrlAndUpdate = async (image: string, nft: NFT) => {
+  const getAssetImageUrlAndUpdate = async (
+    image: string | undefined,
+    nft: NFT,
+  ) => {
     const nftImage = await getAssetImageURL(image, ipfsGateway);
     const updatedNFt = {
       ...nft,
@@ -150,7 +154,6 @@ export default function NftsItems({
     const promisesArr: Promise<NFT>[] = [];
     const modifyItems = async () => {
       for (const key of collectionsKeys) {
-        // @ts-expect-error: We want to index the collections keys by hex
         const { nfts } = collections[key];
         for (const singleNft of nfts) {
           const { image, imageOriginal } = singleNft;
@@ -222,7 +225,7 @@ export default function NftsItems({
     collectionName,
     collectionImage,
     key,
-  }: Collection & { key: Hex }) => {
+  }: Collection & { key: string; isPreviouslyOwnedCollection: boolean }) => {
     if (!nfts.length) {
       return null;
     }
@@ -341,7 +344,7 @@ export default function NftsItems({
         flexDirection={FlexDirection.Column}
       >
         <>
-          {collectionsKeys.map((key: Hex) => {
+          {collectionsKeys.map((key: string) => {
             const { nfts, collectionName, collectionImage } = collections[key];
 
             return renderCollection({

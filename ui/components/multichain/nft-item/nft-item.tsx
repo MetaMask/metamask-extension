@@ -22,7 +22,7 @@ import {
 
 type NftItemProps = {
   alt: string;
-  src?: string;
+  src?: string | null;
   name?: string;
   tokenId?: string;
   networkName: string;

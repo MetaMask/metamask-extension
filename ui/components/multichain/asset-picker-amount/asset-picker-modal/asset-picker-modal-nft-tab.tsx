@@ -100,6 +100,7 @@ export function AssetPickerModalNftTab({
       <Box className="modal-tab__main-view">
         {renderSearch()}
         <NftsItems
+          // @ts-expect-error: Do we want a mapping or an array?
           collections={collectionDataFiltered}
           previouslyOwnedCollection={previouslyOwnedCollection}
           isModal={true}
