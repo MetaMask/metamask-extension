@@ -29,10 +29,12 @@ export type NFT = {
  * Since token interfaces can vary between experiences (i.e. send vs bridge,
  * these fields need to be set before passing an asset to the AssetPicker
  */
-export type ERC20Asset = Pick<TokenListToken, 'address' | 'symbol'> & {
+export type ERC20Asset = {
   type: AssetType.token;
   image: string;
-};
+} & Pick<TokenListToken, 'address' | 'symbol'> &
+  Pick<TokenWithFiatAmount, 'chainId'>;
+
 export type NativeAsset = {
   type: AssetType.native;
   address?: null | string;
@@ -42,7 +44,7 @@ export type NativeAsset = {
   symbol: typeof CHAIN_ID_TO_CURRENCY_SYMBOL_MAP extends Record<string, infer V>
     ? V
     : never; // only allow wallet's hardcoded symbols
-};
+} & Pick<TokenWithFiatAmount, 'chainId'>;
 
 /**
  * ERC20Asset or NativeAsset, plus additional fields for display purposes in the Asset component
@@ -52,7 +54,6 @@ export type AssetWithDisplayData<T extends ERC20Asset | NativeAsset> = T & {
   string: string | undefined; // normalized balance as a stringified number
 } & Pick<TokenListToken, 'decimals'> & {
     tokenFiatAmount?: TokenWithFiatAmount['tokenFiatAmount'];
-    chainId: TokenWithFiatAmount['chainId'];
   };
 
 export type Collection = {
