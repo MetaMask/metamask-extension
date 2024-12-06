@@ -19,6 +19,23 @@ class TransactionConfirmation extends Confirmation {
 
   private advancedDetailsHexData: RawLocator;
 
+  private readonly confirmTransactionTitle = { text: 'Transaction request', tag: 'h2' };
+
+  private readonly editGasButton = '[data-testid="edit-gas-fee-icon"]';
+
+  private readonly firstGasField = '[data-testid="first-gas-field"]';
+
+  private readonly gasFieldInputs = 'input[type="number"]'
+
+  private readonly editGasFormSaveButton = { text: 'Save', tag: 'button' };
+
+  private readonly confirmTransactionButton = '[data-testid="confirm-footer-button"]';
+
+  private editGasFormTitle = {
+    tag: 'header',
+    text: 'Edit priority',
+  };
+
   constructor(driver: Driver) {
     super(driver);
 
@@ -45,6 +62,26 @@ class TransactionConfirmation extends Confirmation {
       '[data-testid="advanced-details-transaction-hex"]';
   }
 
+  async check_pageIsLoaded(expectedGasFee: string,): Promise<void> {
+    try {
+      await this.driver.waitForMultipleSelectors([
+        this.confirmTransactionTitle,
+        this.editGasButton,
+        {
+          css: this.firstGasField,
+          text: `${expectedGasFee} ETH`,
+        }
+      ]);
+    } catch (e) {
+      console.log(
+        'Timeout while waiting for Transaction confirmation page to be loaded',
+        e,
+      );
+      throw e;
+    }
+    console.log('Transaction confirmation page is loaded');
+  }
+
   async check_walletInitiatedHeadingTitle() {
     await this.driver.waitForSelector(this.walletInitiatedHeadingTitle);
   }
@@ -55,6 +92,27 @@ class TransactionConfirmation extends Confirmation {
 
   async clickAdvancedDetailsButton() {
     await this.driver.clickElement(this.advancedDetailsButton);
+  }
+
+  async confirmTx() {
+    await this.driver.clickElementAndWaitToDisappear(this.confirmTransactionButton);
+  }
+
+  /**
+   * Edit the gas fee for the transaction
+   * @param gasLimit - The gas limit for the transaction
+   * @param gasPrice - The gas price for the transaction
+   */
+  async editGasFee(gasLimit: string, gasPrice: string) {
+    console.log('Editing gas fee with gas limit:', gasLimit, 'and gas price:', gasPrice);
+    await this.driver.clickElement(this.editGasButton);
+    await this.driver.waitForSelector(this.editGasFormTitle);
+    const inputs = await this.driver.findElements(this.gasFieldInputs);
+    await inputs[0].clear();
+    await inputs[0].sendKeys(gasLimit);
+    await inputs[1].clear();
+    await inputs[1].sendKeys(gasPrice);
+    await this.driver.clickElementAndWaitToDisappear(this.editGasFormSaveButton);
   }
 
   async verifyAdvancedDetailsIsDisplayed(type: string) {

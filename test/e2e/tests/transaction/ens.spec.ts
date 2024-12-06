@@ -7,7 +7,7 @@ import { loginWithoutBalanceValidation } from '../../page-objects/flows/login.fl
 import HomePage from '../../page-objects/pages/home/homepage';
 import ActivityListPage from '../../page-objects/pages/home/activity-list';
 import SendTokenPage from '../../page-objects/pages/send/send-token-page';
-import ConfirmTxPage from '../../page-objects/pages/send/confirm-tx-page';
+import TransactionConfirmation from '../../page-objects/pages/confirmations/redesign/transaction-confirmation';
 import { mockServerJsonRpc } from '../ppom/mocks/mock-server-json-rpc';
 import { mockMultiNetworkBalancePolling } from '../../mock-balance-polling/mock-balance-polling';
 
@@ -218,7 +218,6 @@ describe('ENS', function (this: Suite) {
 
 
       async ({ driver }: { driver: Driver }) => {
-        await driver.delay(10000);
 
         await loginWithoutBalanceValidation(driver);
 
@@ -252,27 +251,15 @@ describe('ENS', function (this: Suite) {
          await sendToPage.goToNextScreen();
 
          // Confirm the transaction
-         const confirmTxPage = new ConfirmTxPage(driver);
-
-         await confirmTxPage.check_pageIsLoaded(
-          '0.000042',
-          '0.100042'
-      );
-
-         await confirmTxPage.openEditFeeModal();
+         const confirmTxPage = new TransactionConfirmation(driver);
+         await confirmTxPage.check_pageIsLoaded('0.2379');
 
          // Edit gas fee form
-         await editGasFeeForm(driver, '21000', '100');
-
-         await confirmTxPage.check_pageIsLoaded(
-          '0.0021',
-          '0.1021'
-      );
-
+         await confirmTxPage.editGasFee('21000', '100');
+         await confirmTxPage.check_pageIsLoaded('0.0021');
          await confirmTxPage.confirmTx();
 
-         await driver.delay(50000);
-
+         await new HomePage(driver).check_pageIsLoaded();
          const activityList = new ActivityListPage(driver);
          await activityList.check_confirmedTxNumberDisplayedInActivity();
       },
