@@ -14,7 +14,7 @@ It's essential to ensure that PRs have the appropriate labels before they are co
 - **regression-RC-x.y.z**: This label is manually added to a bug report issue by release engineers when a bug is found during release regerssion testing phase. The `x.y.z` in the label represents the release candidate (RC) version in which the bug's been discovered.
 
 ### Optional labels:
-- **regression-develop**: This label can manually be added to a bug report issue at the time of its creation if the bug is present on the development branch, i.e., `develop`, but is not yet released in production.
+- **regression-main**: This label can manually be added to a bug report issue at the time of its creation if the bug is present on the development branch, i.e., `main`, but is not yet released in production.
 - **needs-qa**: If the PR includes a new features, complex testing steps, or large refactors, this label must be added to indicated PR requires a full manual QA prior being merged and added to a release.
 
 ### Labels prohibited when PR needs to be merged:

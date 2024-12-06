@@ -10,7 +10,7 @@ const PR_NUMBER =
   process.env.CIRCLE_PR_NUMBER ||
   process.env.CIRCLE_PULL_REQUEST?.split('/').pop();
 
-const MAIN_BRANCH = 'develop';
+const MAIN_BRANCH = 'main';
 const SOURCE_BRANCH = `refs/pull/${PR_NUMBER}/head`;
 
 const CHANGED_FILES_DIR = 'changed-files';

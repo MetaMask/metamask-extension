@@ -45,12 +45,12 @@ rc_branch_only: &rc_branch_only
       only:
         - /^Version-v(\d+)[.](\d+)[.](\d+)/
 
-develop_master_rc_only: &develop_master_rc_only
+main_stable_rc_only: &main_stable_rc_only
   filters:
     branches:
       only:
-        - develop
-        - master
+        - main
+        - stable
         - /^Version-v(\d+)[.](\d+)[.](\d+)/
 
 aliases:
@@ -120,7 +120,7 @@ workflows:
           filters:
             branches:
               ignore:
-                - master
+                - stable
       - test-deps-audit:
           requires:
             - prep-deps
@@ -170,7 +170,7 @@ workflows:
           requires:
             - prep-deps
       - prep-build-test-flask-mv2:
-          <<: *develop_master_rc_only
+          <<: *main_stable_rc_only
           requires:
             - prep-deps
       - prep-build-test-mmi:
@@ -197,7 +197,7 @@ workflows:
           requires:
             - prep-deps
       - test-e2e-chrome-webpack:
-          <<: *develop_master_rc_only
+          <<: *main_stable_rc_only
           requires:
             - prep-build-test-webpack
             - get-changed-files-with-git-diff
@@ -206,7 +206,7 @@ workflows:
             - prep-build-test
             - get-changed-files-with-git-diff
       - test-e2e-firefox:
-          <<: *develop_master_rc_only
+          <<: *main_stable_rc_only
           requires:
             - prep-build-test-mv2
             - get-changed-files-with-git-diff
@@ -226,7 +226,7 @@ workflows:
             - prep-build-test-flask
             - get-changed-files-with-git-diff
       - test-e2e-firefox-flask:
-          <<: *develop_master_rc_only
+          <<: *main_stable_rc_only
           requires:
             - prep-build-test-flask-mv2
       - test-e2e-chrome-mmi:
@@ -247,7 +247,7 @@ workflows:
           filters:
             branches:
               only:
-                - develop
+                - main
                 - /^Version-v(\d+)[.](\d+)[.](\d+)/
           requires:
             - prep-build
@@ -334,7 +334,7 @@ workflows:
       - job-publish-release:
           filters:
             branches:
-              only: master
+              only: stable
           requires:
             - prep-deps
             - prep-build
@@ -346,13 +346,13 @@ workflows:
       - job-publish-storybook:
           filters:
             branches:
-              only: develop
+              only: main
           requires:
             - prep-build-storybook
       - job-publish-ts-migration-dashboard:
           filters:
             branches:
-              only: develop
+              only: main
           requires:
             - prep-build-ts-migration-dashboard
 
@@ -388,7 +388,7 @@ jobs:
           condition:
             not:
               matches:
-                pattern: /^master$/
+                pattern: /^stable$/
                 value: << pipeline.git.branch >>
           steps:
             - run:
@@ -462,7 +462,7 @@ jobs:
 
   # This job is used for the e2e quality gate.
   # It must be run before any job which uses the run-all.js script.
-  # The job is skipped in develop, master or RC branches.
+  # The job is skipped in main, stable or RC branches.
   get-changed-files-with-git-diff:
     executor: node-browsers-small
     steps:
@@ -543,7 +543,7 @@ jobs:
           condition:
             not:
               matches:
-                pattern: /^master$/
+                pattern: /^stable$/
                 value: << pipeline.git.branch >>
           steps:
             - run:
@@ -552,7 +552,7 @@ jobs:
       - when:
           condition:
             matches:
-              pattern: /^master$/
+              pattern: /^stable$/
               value: << pipeline.git.branch >>
           steps:
             - run:
@@ -580,7 +580,7 @@ jobs:
           condition:
             not:
               matches:
-                pattern: /^master$/
+                pattern: /^stable$/
                 value: << pipeline.git.branch >>
           steps:
             - run:
@@ -589,7 +589,7 @@ jobs:
       - when:
           condition:
             matches:
-              pattern: /^master$/
+              pattern: /^stable$/
               value: << pipeline.git.branch >>
           steps:
             - run:
@@ -623,7 +623,7 @@ jobs:
           condition:
             not:
               matches:
-                pattern: /^master$/
+                pattern: /^stable$/
                 value: << pipeline.git.branch >>
           steps:
             - run:
@@ -632,7 +632,7 @@ jobs:
       - when:
           condition:
             matches:
-              pattern: /^master$/
+              pattern: /^stable$/
               value: << pipeline.git.branch >>
           steps:
             - run:
@@ -667,7 +667,7 @@ jobs:
           condition:
             not:
               matches:
-                pattern: /^master$/
+                pattern: /^stable$/
                 value: << pipeline.git.branch >>
           steps:
             - run:
@@ -676,7 +676,7 @@ jobs:
       - when:
           condition:
             matches:
-              pattern: /^master$/
+              pattern: /^stable$/
               value: << pipeline.git.branch >>
           steps:
             - run:
@@ -708,7 +708,7 @@ jobs:
           condition:
             not:
               matches:
-                pattern: /^master$/
+                pattern: /^stable$/
                 value: << pipeline.git.branch >>
           steps:
             - run:
@@ -717,7 +717,7 @@ jobs:
       - when:
           condition:
             matches:
-              pattern: /^master$/
+              pattern: /^stable$/
               value: << pipeline.git.branch >>
           steps:
             - run:
@@ -1306,7 +1306,7 @@ jobs:
           template: basic_fail_1
           channel: C01LUJL3T98
       - slack/notify:
-          branch_pattern: develop
+          branch_pattern: main
           event: fail
           mentions: <@antonio.regadas>, @ramon.acitores134
           template: basic_fail_1
