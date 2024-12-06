@@ -1,72 +1,40 @@
 @use "design-system";
 
 .prepare-bridge-page {
-  display: flex;
-  flex-flow: column;
   flex: 1;
-  width: 100%;
-  gap: 24px;
+  .mm-text-field {
+    background-color: inherit;
 
-  &__content {
-    display: flex;
-    flex-direction: column;
-    padding: 16px 0 16px 0;
-    border-radius: 8px;
-    border: 1px solid var(--color-border-muted);
+    &--focused {
+      outline: none;
+    }
   }
 
-  .bridge-box {
-    display: flex;
-    flex-direction: column;
-    gap: 4px;
-    justify-content: center;
-    padding: 8px 16px 8px 16px;
-  }
-
-  &__input-row {
-    display: flex;
-    flex-direction: row;
-    justify-content: space-between;
-    width: 298px;
-    gap: 16px;
-
-    input[type="number"]::-webkit-inner-spin-button {
-      -webkit-appearance: none;
-      -moz-appearance: none;
-      display: none;
-    }
-
-    input[type="number"]:hover::-webkit-inner-spin-button {
-      -webkit-appearance: none;
-      -moz-appearance: none;
-      display: none;
-    }
-
-    .mm-text-field {
-      background-color: inherit;
-
-      &--focused {
-        outline: none;
-      }
-    }
-
-    .defined {
+  .defined {
+    & > .mm-input--disabled, p {
       opacity: 1;
-
-      & > .mm-input--disabled {
-        opacity: 1;
-      }
     }
+  }
+
+  .mm-select-button__content {
+    max-height: 100%;
+    overflow: hidden;
   }
 
   .amount-input {
     border: none;
+    padding: 0;
+    width: 100%;
+    gap: 4px;
+    height: fit-content;
+    font-weight: 400;
+    font-size: 36px;
 
     input {
-      text-align: right;
-      padding-right: 0;
-      font-size: 24px;
-      font-weight: 700;
+      text-align: left;
+      font-weight: 400;
+      font-size: 36px;
+      padding: 0;
 
       &:focus,
       &:focus-visible {
@@ -79,66 +47,8 @@
     }
   }
 
-  &__amounts-row {
-    display: flex;
-    flex-direction: row;
-    justify-content: space-between;
-    width: 298px;
-    height: 22px;
-
-    p,
-    span {
-      color: var(--color-text-alternative);
-      font-size: 12px;
-    }
-  }
-
-  .asset-picker {
-    border: 1px solid var(--color-border-muted);
-    height: 40px;
-    min-width: fit-content;
-    max-width: fit-content;
-    background-color: inherit;
-
-    p {
-      font-size: 14px;
-      font-weight: 500;
-    }
-
-    .mm-avatar-token {
-      height: 24px;
-      width: 24px;
-      border: 1px solid var(--color-border-muted);
-    }
-
-    .mm-badge-wrapper__badge-container .mm-avatar-base {
-      height: 10px;
-      width: 10px;
-      border: none;
-    }
-  }
-
   &__switch-tokens {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-
-    &::before,
-    &::after {
-      content: '';
-      border-top: 1px solid var(--color-border-muted);
-      flex-grow: 1;
-    }
-
     button {
-      border-radius: 50%;
-      padding: 10px;
-      border: 1px solid var(--color-border-muted);
-      transition: all 0.3s ease-in-out;
-      cursor: pointer;
-      width: 40px;
-      height: 40px;
-
       &:hover:enabled {
         background: var(--color-background-default-hover);
 
@@ -161,10 +71,32 @@
     }
 
     .mm-icon {
-      color: var(--color-icon-alternative);
       transition: all 0.3s ease-in-out;
     }
-  }  
+  }
+
+  .mascot-background-animation__animation {
+    margin-top: 24px;
+    margin-bottom: 16px;
+  }
+
+  .highlight {
+    padding: 16px;
+    background: var(--color-background-default);
+    border: none;
+    border-radius: 8px;
+
+    [data-theme='light'],
+    .light {
+      box-shadow: 0px 0px 2px 0px #E2E4E9, 0px 0px 16px 0px rgba(226, 228, 233, 0.16);
+    }
+
+    [data-theme='dark'],
+    .dark {
+      box-shadow: 0px 0px 2px 0px #18191B, 0px 0px 16px 0px #18191B;
+    }
+
+  }
 }
 
 .bridge-settings-modal {
