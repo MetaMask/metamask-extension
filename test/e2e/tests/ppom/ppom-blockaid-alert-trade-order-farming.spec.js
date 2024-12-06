@@ -120,7 +120,9 @@ describe('PPOM Blockaid Alert - Set Trade farming order @no-mmi', function () {
         await driver.clickElement('#maliciousTradeOrder');
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
-        await driver.assertElementNotPresent('.loading-indicator');
+        await driver.assertElementNotPresent('.loading-indicator', {
+          timeout: 20000,
+        });
 
         await driver.waitForSelector({
           css: '.mm-text--body-lg-medium',

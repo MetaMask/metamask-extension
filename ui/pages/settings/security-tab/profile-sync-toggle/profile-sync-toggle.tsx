@@ -5,7 +5,7 @@ import { MetaMetricsContext } from '../../../../contexts/metametrics';
 import {
   useEnableProfileSyncing,
   useDisableProfileSyncing,
-} from '../../../../hooks/metamask-notifications/useProfileSyncing';
+} from '../../../../hooks/identity/useProfileSyncing';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
@@ -13,7 +13,7 @@ import {
 import {
   selectIsProfileSyncingEnabled,
   selectIsProfileSyncingUpdateLoading,
-} from '../../../../selectors/metamask-notifications/profile-syncing';
+} from '../../../../selectors/identity/profile-syncing';
 import { selectIsMetamaskNotificationsEnabled } from '../../../../selectors/metamask-notifications/metamask-notifications';
 import { showModal } from '../../../../store/actions';
 import { Box, Text } from '../../../../components/component-library';
