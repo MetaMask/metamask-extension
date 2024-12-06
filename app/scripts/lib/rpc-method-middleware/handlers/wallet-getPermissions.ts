@@ -62,9 +62,7 @@ async function getPermissionsImplementation(
 ) {
   const permissions = { ...getPermissionsForOrigin() };
   const caip25Endowment = permissions[Caip25EndowmentPermissionName];
-  const caip25CaveatValue = caip25Endowment?.caveats?.find(
-    ({ type }) => type === Caip25CaveatType,
-  )?.value as Caip25CaveatValue;
+  )?.value as Caip25CaveatValue | undefined;
   delete permissions[Caip25EndowmentPermissionName];
 
   if (caip25CaveatValue) {
