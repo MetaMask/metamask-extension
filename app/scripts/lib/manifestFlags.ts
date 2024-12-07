@@ -1,17 +1,59 @@
 import browser from 'webextension-polyfill';
 
+/**
+ * Flags that we use to control runtime behavior of the extension. Typically
+ * used for E2E tests.
+ *
+ * These flags are added to `manifest.json` for runtime querying.
+ */
 export type ManifestFlags = {
+  /**
+   * CircleCI metadata for the current run
+   */
   circleci?: {
+    /**
+     * Whether CircleCI manifest flags are enabled.
+     */
     enabled: boolean;
+    /**
+     * The name of the branch that triggered the current run on CircleCI
+     */
     branch?: string;
+    /**
+     * The current CircleCI build number
+     */
     buildNum?: number;
+    /**
+     * The name of the CircleCI job currently running
+     */
     job?: string;
+    /**
+     * For jobs with CircleCI parallelism enabled, this is the index of the current machine.
+     */
     nodeIndex?: number;
+    /**
+     * The number of the pull request that triggered the current run
+     */
     prNumber?: number;
   };
+  /**
+   * Sentry flags
+   */
   sentry?: {
+    /**
+     * Override the performance trace sample rate
+     */
     tracesSampleRate?: number;
-    lazyLoadSubSampleRate?: number; // multiply by tracesSampleRate to get the actual probability
+    /**
+     * Sub-sample rate for lazy-loaded components.
+     *
+     * Multiply this rate by tracesSampleRate to get the actual probability of sampling the load
+     * time of a lazy-loaded component.
+     */
+    lazyLoadSubSampleRate?: number;
+    /**
+     * Force enable Sentry (this is typically set by individual E2E tests in spec files)
+     */
     forceEnable?: boolean;
   };
 };
