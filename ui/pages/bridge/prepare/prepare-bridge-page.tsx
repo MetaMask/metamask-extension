@@ -304,6 +304,7 @@ const PrepareBridgePage = () => {
             });
             if (networkConfig.chainId === toChain?.chainId) {
               dispatch(setToChainId(null));
+              dispatch(setToToken(null));
             }
             if (isNetworkAdded(networkConfig)) {
               dispatch(
