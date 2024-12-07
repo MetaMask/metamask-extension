@@ -8,6 +8,7 @@ import EthChainUtils from './ethereum-chain-utils';
 
 jest.mock('./ethereum-chain-utils', () => ({
   ...jest.requireActual('./ethereum-chain-utils'),
+  validateSwitchEthereumChainParams: jest.fn(),
   switchChain: jest.fn(),
 }));
 
@@ -61,8 +62,45 @@ const createMockedHandler = () => {
 };
 
 describe('switchEthereumChainHandler', () => {
+  beforeEach(() => {
+    EthChainUtils.validateSwitchEthereumChainParams.mockImplementation((request) => {
+      return request.params[0].chainId
+    })
+  })
+
   afterEach(() => {
     jest.clearAllMocks();
+  });
+
+  it('should validate the request params', async () => {
+    const { handler } = createMockedHandler();
+
+    const request = {
+      origin: 'example.com',
+      params: [{
+        foo: true
+      }],
+    }
+
+    await handler(request);
+
+    expect(EthChainUtils.validateSwitchEthereumChainParams).toHaveBeenCalledWith(request)
+  });
+
+  it('should return an error if request params validation fails', async () => {
+    const { end, handler } = createMockedHandler();
+    EthChainUtils.validateSwitchEthereumChainParams.mockImplementation(() => {
+      throw new Error('failed to validate params')
+    })
+
+    await handler({
+      origin: 'example.com',
+      params: [{}],
+    });
+
+    expect(end).toHaveBeenCalledWith(
+      new Error('failed to validate params')
+    );
   });
 
   it('returns null and does not try to switch the network if the current chain id for the domain matches the chainId in the params', async () => {
@@ -133,43 +171,6 @@ describe('switchEthereumChainHandler', () => {
           mocks.requestPermissionApprovalForOrigin,
         grantPermissions: mocks.grantPermissions,
       },
-    );
-  });
-
-  it('should return an error if an unexpected parameter is provided', async () => {
-    const { end, handler } = createMockedHandler();
-
-    const unexpectedParam = 'unexpected';
-
-    await handler({
-      origin: 'example.com',
-      params: [
-        {
-          chainId: createMockMainnetConfiguration().chainId,
-          [unexpectedParam]: 'parameter',
-        },
-      ],
-    });
-
-    expect(end).toHaveBeenCalledWith(
-      rpcErrors.invalidParams({
-        message: `Received unexpected keys on object parameter. Unsupported keys:\n${unexpectedParam}`,
-      }),
-    );
-  });
-
-  it('should return error for invalid chainId', async () => {
-    const { handler, end } = createMockedHandler();
-
-    await handler({
-      origin: 'example.com',
-      params: [{ chainId: 'invalid_chain_id' }],
-    });
-
-    expect(end).toHaveBeenCalledWith(
-      rpcErrors.invalidParams({
-        message: `Expected 0x-prefixed, unpadded, non-zero hexadecimal string 'chainId'. Received:\ninvalid_chain_id`,
-      }),
     );
   });
 });

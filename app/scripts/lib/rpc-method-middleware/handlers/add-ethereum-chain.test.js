@@ -5,6 +5,7 @@ import EthChainUtils from './ethereum-chain-utils';
 
 jest.mock('./ethereum-chain-utils', () => ({
   ...jest.requireActual('./ethereum-chain-utils'),
+  validateAddEthereumChainParams: jest.fn(),
   switchChain: jest.fn(),
 }));
 
@@ -96,9 +97,57 @@ const createMockedHandler = () => {
 };
 
 describe('addEthereumChainHandler', () => {
+  beforeEach(() => {
+    EthChainUtils.validateAddEthereumChainParams.mockImplementation((params) => {
+      const { chainId, chainName, blockExplorerUrls, rpcUrls, nativeCurrency} = params;
+      return {
+        chainId,
+        chainName,
+        firstValidBlockExplorerUrl: blockExplorerUrls[0] ?? null,
+        firstValidRPCUrl: rpcUrls[0],
+        ticker: nativeCurrency.symbol,
+      }
+    })
+  })
+
   afterEach(() => {
     jest.clearAllMocks();
   });
+
+  it('should validate the request params', async () => {
+    const { handler } = createMockedHandler();
+
+    const request = {
+      origin: 'example.com',
+      params: [{
+        foo: true
+      }],
+    }
+
+    await handler(request);
+
+    expect(EthChainUtils.validateAddEthereumChainParams).toHaveBeenCalledWith(request.params[0])
+  });
+
+
+  it('should return an error if request params validation fails', async () => {
+    const { end, handler } = createMockedHandler();
+    EthChainUtils.validateAddEthereumChainParams.mockImplementation(() => {
+      throw new Error('failed to validate params')
+    })
+
+    await handler({
+      origin: 'example.com',
+      params: [{}],
+    });
+
+    expect(end).toHaveBeenCalledWith(
+      rpcErrors.invalidParams(
+        new Error('failed to validate params')
+      ),
+    );
+  });
+
 
   it('creates a new network configuration for the given chainid and switches to it if no networkConfigurations with the same chainId exist', async () => {
     const nonInfuraConfiguration = createMockNonInfuraConfiguration();
@@ -233,37 +282,6 @@ describe('addEthereumChainHandler', () => {
         },
       );
     });
-  });
-
-  it('should return an error if an unexpected parameter is provided', async () => {
-    const { end, handler } = createMockedHandler();
-
-    const unexpectedParam = 'unexpected';
-
-    await handler({
-      origin: 'example.com',
-      params: [
-        {
-          chainId: createMockNonInfuraConfiguration().chainId,
-          chainName: createMockNonInfuraConfiguration().nickname,
-          rpcUrls: [createMockNonInfuraConfiguration().rpcUrl],
-          nativeCurrency: {
-            symbol: createMockNonInfuraConfiguration().ticker,
-            decimals: 18,
-          },
-          blockExplorerUrls: [
-            createMockNonInfuraConfiguration().blockExplorerUrls[0],
-          ],
-          [unexpectedParam]: 'parameter',
-        },
-      ],
-    });
-
-    expect(end).toHaveBeenCalledWith(
-      rpcErrors.invalidParams({
-        message: `Received unexpected keys on object parameter. Unsupported keys:\n${unexpectedParam}`,
-      }),
-    );
   });
 
   it('should return an error if nativeCurrency.symbol does not match an existing network with the same chainId', async () => {
