@@ -121,17 +121,17 @@
     "message": "เร็ว"
   },
   "fileImportFail": {
-    "message": "นำเข้าไฟล์ไม่สำเหร็จ กดที่นี่!",
+    "message": "นำเข้าไฟล์ไม่สำเร็จ คลิกที่นี่!",
     "description": "Helps user import their account from a JSON file"
   },
   "from": {
     "message": "จาก"
   },
   "gasLimit": {
-    "message": "วงเงินแก็ส"
+    "message": "ขีดจำกัดค่าแก๊ส"
   },
   "gasLimitTooLow": {
-    "message": "วงเงินแก็สต้องอย่างน้อย 21000"
+    "message": "ขีดจำกัดค่าแก๊สต้องมีค่าขั้นต่ำ 21000"
   },
   "gasPrice": {
     "message": "ราคาแก๊ส (GWEI)"
@@ -157,7 +157,7 @@
     "message": "นำเข้าบัญชี"
   },
   "importAccountMsg": {
-    "message": "บัญชีที่นำเข้าจะไม่ถูกรวมกับบัญชีที่สร้างด้วยคำเเริ่มต้นบนเมต้ามาร์สในตอนแรก เรียนรู้เพิ่มเติมเกี่ยวกับบัญชีที่นำเข้า"
+    "message": "บัญชีที่นำเข้าจะไม่สัมพันธ์กับวลีกู้คืนรหัส MetaMask ของคุณ เรียนรู้เพิ่มเติมเกี่ยวกับบัญชีที่นำเข้า"
   },
   "imported": {
     "message": "นำเข้าเรียบร้อย",
@@ -170,10 +170,10 @@
     "message": "โทเค็นไม่เพียงพอ"
   },
   "invalidAddress": {
-    "message": "แอดแดรสไม่ถูกต้อง"
+    "message": "ที่อยู่ไม่ถูกต้อง"
   },
   "invalidAddressRecipient": {
-    "message": "แอดแดรสผู้รับไม่ถูกต้อง"
+    "message": "ที่อยู่ผู้รับไม่ถูกต้อง"
   },
   "invalidRPC": {
     "message": "RPC URI ไม่ถูกต้อง"
@@ -249,7 +249,7 @@
     "description": "For importing an account from a private key"
   },
   "personalAddressDetected": {
-    "message": "ตรวจพบแอดแดรสส่วนตัวแล้ว ใส่แอดแดรสสัญญาโทเค็น"
+    "message": "ตรวจพบที่อยู่ส่วนตัวแล้ว ใส่ที่อยู่สัญญาโทเค็น"
   },
   "privacyMsg": {
     "message": "นโยบายสความเป็นส่วนตัว"
@@ -323,7 +323,7 @@
     "message": "บันทึกของสถานะ"
   },
   "stateLogsDescription": {
-    "message": "บันทึกของสถานะประกอบด้วยแอดแดรสสาธารณะและธุรกรรมที่ส่ง"
+    "message": "บันทึกสถานะมีที่อยู่บัญชีสาธารณะของคุณและธุรกรรมที่ส่ง"
   },
   "supportCenter": {
     "message": "ไปที่ศูนย์สนับสนุนของเรา"
