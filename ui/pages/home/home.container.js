@@ -19,8 +19,6 @@ import { getInstitutionalConnectRequests } from '../../ducks/institutional/insti
 import {
   activeTabHasPermissions,
   getUseExternalServices,
-  getFirstPermissionRequest,
-  getFirstSnapInstallOrUpdateRequest,
   getIsMainnet,
   getOriginOfCurrentTab,
   getTotalUnapprovedCount,
@@ -120,17 +118,6 @@ const mapStateToProps = (state) => {
   const isPopup = envType === ENVIRONMENT_TYPE_POPUP;
   const isNotification = envType === ENVIRONMENT_TYPE_NOTIFICATION;
 
-  let firstPermissionsRequest, firstPermissionsRequestId;
-  firstPermissionsRequest = getFirstPermissionRequest(state);
-  firstPermissionsRequestId = firstPermissionsRequest?.metadata.id || null;
-
-  // getFirstPermissionRequest should be updated with snap update logic once we hit main extension release
-
-  if (!firstPermissionsRequest) {
-    firstPermissionsRequest = getFirstSnapInstallOrUpdateRequest(state);
-    firstPermissionsRequestId = firstPermissionsRequest?.metadata.id || null;
-  }
-
   const originOfCurrentTab = getOriginOfCurrentTab(state);
   const shouldShowWeb3ShimUsageNotification =
     isPopup &&
@@ -163,7 +150,6 @@ const mapStateToProps = (state) => {
     isNotification,
     dataCollectionForMarketing,
     selectedAddress,
-    firstPermissionsRequestId,
     totalUnapprovedCount,
     totalUnapprovedAndQueuedRequestCount,
     participateInMetaMetrics,

@@ -17,6 +17,13 @@ import {
 } from '../../../helpers/constants/routes';
 import { isSignatureTransactionType } from '../utils';
 
+const CONNECT_APPROVAL_TYPES = [
+  ApprovalType.WalletRequestPermissions,
+  'wallet_installSnap',
+  'wallet_updateSnap',
+  'wallet_installSnapResult',
+];
+
 export function useConfirmationNavigation() {
   const confirmations = useSelector(
     pendingConfirmationsSortedSelector,
@@ -95,7 +102,7 @@ export function navigateToConfirmation(
     return;
   }
 
-  if (type === ApprovalType.WalletRequestPermissions) {
+  if (CONNECT_APPROVAL_TYPES.includes(type)) {
     history.replace(`${CONNECT_ROUTE}/${confirmationId}`);
     return;
   }
