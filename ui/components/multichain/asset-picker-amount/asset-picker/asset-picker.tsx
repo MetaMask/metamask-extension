@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import {
   AvatarTokenSize,
@@ -143,6 +143,13 @@ export function AssetPicker({
       : [],
   );
   const [isSelectingNetwork, setIsSelectingNetwork] = useState(false);
+
+  useEffect(() => {
+    const newChainId = networkProps?.network?.chainId;
+    newChainId &&
+      !selectedChainIds.includes(newChainId) &&
+      setSelectedChainIds((c) => [...c, newChainId]);
+  }, [networkProps?.network?.chainId]);
 
   const handleAssetPickerTitle = (): string | undefined => {
     ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)

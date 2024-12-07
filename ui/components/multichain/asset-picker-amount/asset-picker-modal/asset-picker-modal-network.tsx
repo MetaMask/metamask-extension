@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 
 import { useSelector } from 'react-redux';
 import { NetworkConfiguration } from '@metamask/network-controller';
@@ -111,6 +111,22 @@ export const AssetPickerModalNetwork = ({
       {},
     ) ?? {},
   );
+
+  // Reset checkedChainIds if selectedChainIds change in parent component
+  useEffect(() => {
+    networksList &&
+      setCheckedChainIds(
+        networksList.reduce(
+          (acc, { chainId }) => ({
+            ...acc,
+            [chainId]: selectedChainIds
+              ? selectedChainIds.includes(chainId)
+              : false,
+          }),
+          {},
+        ),
+      );
+  }, [networksList, selectedChainIds]);
 
   const handleToggleNetwork = (chainId: string) => {
     setCheckedChainIds((prev) => ({
