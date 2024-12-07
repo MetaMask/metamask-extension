@@ -1,6 +1,10 @@
 import { createSelector } from 'reselect';
-import { CaveatTypes } from '../../../../shared/constants/permissions';
-import { PermissionNames } from './specifications';
+import {
+  Caip25CaveatType,
+  Caip25EndowmentPermissionName,
+  getEthAccounts,
+  getPermittedEthChainIds,
+} from '@metamask/multichain';
 
 /**
  * This file contains selectors for PermissionController selector event
@@ -26,14 +30,14 @@ export const getPermittedAccountsByOrigin = createSelector(
   getSubjects,
   (subjects) => {
     return Object.values(subjects).reduce((originToAccountsMap, subject) => {
-      const caveats = subject.permissions?.eth_accounts?.caveats || [];
+      const caveats =
+        subject.permissions?.[Caip25EndowmentPermissionName]?.caveats || [];
 
-      const caveat = caveats.find(
-        ({ type }) => type === CaveatTypes.restrictReturnedAccounts,
-      );
+      const caveat = caveats.find(({ type }) => type === Caip25CaveatType);
 
       if (caveat) {
-        originToAccountsMap.set(subject.origin, caveat.value);
+        const ethAccounts = getEthAccounts(caveat.value);
+        originToAccountsMap.set(subject.origin, ethAccounts);
       }
       return originToAccountsMap;
     }, new Map());
@@ -52,14 +56,13 @@ export const getPermittedChainsByOrigin = createSelector(
   (subjects) => {
     return Object.values(subjects).reduce((originToChainsMap, subject) => {
       const caveats =
-        subject.permissions?.[PermissionNames.permittedChains]?.caveats || [];
+        subject.permissions?.[Caip25EndowmentPermissionName]?.caveats || [];
 
-      const caveat = caveats.find(
-        ({ type }) => type === CaveatTypes.restrictNetworkSwitching,
-      );
+      const caveat = caveats.find(({ type }) => type === Caip25CaveatType);
 
       if (caveat) {
-        originToChainsMap.set(subject.origin, caveat.value);
+        const ethChainIds = getPermittedEthChainIds(caveat.value);
+        originToChainsMap.set(subject.origin, ethChainIds);
       }
       return originToChainsMap;
     }, new Map());
@@ -108,4 +111,38 @@ export const diffMap = (currentMap, previousMap) => {
     changedMap.set(origin, currentMap.get(origin));
   }
   return changedMap;
+};
+
+/**
+ *
+ * @param {Map<string, Caip25Authorization>} newAuthorizationsMap - The new origin:authorization map.
+ * @param {Map<string, Caip25Authorization>} [previousAuthorizationsMap] - The previous origin:authorization map.
+ * @returns {Map<string, Caip25Authorization>} The origin:authorization map of changed authorizations.
+ */
+export const getRemovedAuthorizations = (
+  newAuthorizationsMap,
+  previousAuthorizationsMap,
+) => {
+  const removedAuthorizations = new Map();
+
+  // If there are no previous authorizations, there are no removed authorizations.
+  // OR If the new authorizations map is the same as the previous authorizations map,
+  // there are no removed authorizations
+  if (
+    previousAuthorizationsMap === undefined ||
+    newAuthorizationsMap === previousAuthorizationsMap
+  ) {
+    return removedAuthorizations;
+  }
+
+  const previousOrigins = new Set([...previousAuthorizationsMap.keys()]);
+  for (const origin of newAuthorizationsMap.keys()) {
+    previousOrigins.delete(origin);
+  }
+
+  for (const origin of previousOrigins.keys()) {
+    removedAuthorizations.set(origin, previousAuthorizationsMap.get(origin));
+  }
+
+  return removedAuthorizations;
 };

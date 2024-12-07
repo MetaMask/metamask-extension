@@ -14,7 +14,7 @@ describe('eth_accounts', function () {
           .withKeyringControllerAdditionalAccountVault()
           .withPreferencesControllerAdditionalAccountIdentities()
           .withAccountsControllerAdditionalAccountIdentities()
-          .withPermissionControllerConnectedToTestDapp()
+          .withPermissionControllerConnectedToTestDappWithTwoAccounts()
           .build(),
         ganacheOptions: defaultGanacheOptions,
         title: this.test?.fullTitle(),
