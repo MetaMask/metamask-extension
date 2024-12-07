@@ -168,6 +168,7 @@ export default class Home extends PureComponent {
     originOfCurrentTab: PropTypes.string,
     disableWeb3ShimUsageAlert: PropTypes.func.isRequired,
     pendingConfirmations: PropTypes.arrayOf(PropTypes.object).isRequired,
+    hasApprovalFlows: PropTypes.bool.isRequired,
     infuraBlocked: PropTypes.bool.isRequired,
     setRecoveryPhraseReminderHasBeenShown: PropTypes.func.isRequired,
     setRecoveryPhraseReminderLastShown: PropTypes.func.isRequired,
@@ -292,6 +293,7 @@ export default class Home extends PureComponent {
       swapsFetchParams,
       location,
       pendingConfirmations,
+      hasApprovalFlows,
     } = this.props;
     const stayOnHomePage = Boolean(location?.state?.stayOnHomePage);
 
@@ -308,6 +310,7 @@ export default class Home extends PureComponent {
       navigateToConfirmation(
         pendingConfirmations[0].id,
         pendingConfirmations,
+        hasApprovalFlows,
         history,
       );
     }

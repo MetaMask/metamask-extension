@@ -1,6 +1,7 @@
 import { useHistory } from 'react-router-dom';
 import { ApprovalType } from '@metamask/controller-utils';
 import { Json } from '@metamask/utils';
+import { ApprovalFlowState } from '@metamask/approval-controller';
 import { renderHookWithProvider } from '../../../../test/lib/render-helpers';
 import mockState from '../../../../test/data/mock-state.json';
 import {
@@ -27,7 +28,11 @@ jest.mock('../confirmation/templates', () => ({
 const APPROVAL_ID_MOCK = '123-456';
 const APPROVAL_ID_2_MOCK = '456-789';
 
-function renderHook(approvalType: ApprovalType, requestData?: Json) {
+function renderHook(
+  approvalType: ApprovalType,
+  requestData?: Json,
+  approvalFlows?: ApprovalFlowState[],
+) {
   const { result } = renderHookWithProvider(() => useConfirmationNavigation(), {
     ...mockState,
     metamask: {
@@ -44,6 +49,7 @@ function renderHook(approvalType: ApprovalType, requestData?: Json) {
           requestData,
         },
       },
+      approvalFlows,
     },
   });
 
@@ -90,6 +96,17 @@ describe('useConfirmationNavigation', () => {
       expect(history.replace).toHaveBeenCalledTimes(1);
       expect(history.replace).toHaveBeenCalledWith(
         `${CONFIRMATION_V_NEXT_ROUTE}/${APPROVAL_ID_MOCK}`,
+      );
+    });
+
+    it('navigates to template route if approval flow', () => {
+      const result = renderHook(undefined as never, undefined, [{} as never]);
+
+      result.navigateToId(undefined);
+
+      expect(history.replace).toHaveBeenCalledTimes(1);
+      expect(history.replace).toHaveBeenCalledWith(
+        `${CONFIRMATION_V_NEXT_ROUTE}`,
       );
     });
 

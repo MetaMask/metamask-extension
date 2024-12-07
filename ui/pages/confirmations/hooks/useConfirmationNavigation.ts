@@ -18,6 +18,7 @@ import {
   SIGNATURE_REQUEST_PATH,
 } from '../../../helpers/constants/routes';
 import { isSignatureTransactionType } from '../utils';
+import { getApprovalFlows } from '../../../selectors';
 
 const CONNECT_APPROVAL_TYPES = [
   ApprovalType.WalletRequestPermissions,
@@ -32,6 +33,7 @@ export function useConfirmationNavigation() {
     isEqual,
   );
 
+  const approvalFlows = useSelector(getApprovalFlows);
   const history = useHistory();
 
   const getIndex = useCallback(
@@ -47,7 +49,12 @@ export function useConfirmationNavigation() {
 
   const navigateToId = useCallback(
     (confirmationId?: string) => {
-      navigateToConfirmation(confirmationId, confirmations, history);
+      navigateToConfirmation(
+        confirmationId,
+        confirmations,
+        Boolean(approvalFlows?.length),
+        history,
+      );
     },
     [confirmations, history],
   );
@@ -68,8 +75,14 @@ export function useConfirmationNavigation() {
 export function navigateToConfirmation(
   confirmationId: string | undefined,
   confirmations: ApprovalRequest<Record<string, Json>>[],
+  hasApprovalFlows: boolean,
   history: ReturnType<typeof useHistory>,
 ) {
+  if (hasApprovalFlows) {
+    history.replace(`${CONFIRMATION_V_NEXT_ROUTE}`);
+    return;
+  }
+
   if (confirmations?.length <= 0 || !confirmationId) {
     return;
   }
@@ -83,9 +96,8 @@ export function navigateToConfirmation(
   }
 
   const type = nextConfirmation.type as ApprovalType;
-  const isTemplate = TEMPLATED_CONFIRMATION_APPROVAL_TYPES.includes(type);
 
-  if (isTemplate) {
+  if (TEMPLATED_CONFIRMATION_APPROVAL_TYPES.includes(type)) {
     history.replace(`${CONFIRMATION_V_NEXT_ROUTE}/${confirmationId}`);
     return;
   }
