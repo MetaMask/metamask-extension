@@ -25,7 +25,6 @@ export default function useHandleBridgeTx() {
       txType: TransactionType.bridge,
       txParams: quoteResponse.trade,
       fieldsToAddToTxMeta: {
-        // @ts-expect-error TODO get this added to TxMeta type
         destinationChainId: new Numeric(quoteResponse.quote.destChainId, 10)
           .toPrefixedHexString()
           .toLowerCase() as `0x${string}`,

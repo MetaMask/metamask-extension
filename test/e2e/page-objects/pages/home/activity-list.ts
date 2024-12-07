@@ -19,6 +19,9 @@ class ActivityListPage {
   private readonly transactionAmountsInActivity =
     '[data-testid="transaction-list-item-primary-currency"]';
 
+  private readonly activityListAction =
+    '[data-testid="activity-list-item-action"]';
+
   constructor(driver: Driver) {
     this.driver = driver;
   }
@@ -123,6 +126,30 @@ class ActivityListPage {
     console.log(
       `Amount for transaction ${expectedNumber} is displayed as ${expectedAmount}`,
     );
+  }
+
+  async check_txAction(expectedAction: string, expectedNumber: number = 1) {
+    const transactionActions = await this.driver.findElements(
+      this.activityListAction,
+    );
+
+    const transactionActionText = await transactionActions[
+      expectedNumber - 1
+    ].getText();
+
+    assert.equal(
+      transactionActionText,
+      expectedAction,
+      `${transactionActionText} is displayed as transaction action instead of ${expectedAction} for transaction ${expectedNumber}`,
+    );
+
+    console.log(
+      `Action for transaction ${expectedNumber} is displayed as ${expectedAction}`,
+    );
+  }
+
+  async check_noTxInActivity(): Promise<void> {
+    await this.driver.assertElementNotPresent(this.completedTransactions);
   }
 }
 
