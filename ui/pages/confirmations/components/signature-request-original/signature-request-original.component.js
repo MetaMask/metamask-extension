@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import classnames from 'classnames';
 import { ObjectInspector } from 'react-inspector';
 import { providerErrors, serializeError } from '@metamask/rpc-errors';
 import { SubjectType } from '@metamask/permission-controller';
@@ -16,10 +15,9 @@ import {
 } from '../../../../helpers/utils/util';
 import { isSuspiciousResponse } from '../../../../../shared/modules/security-provider.utils';
 import SiteOrigin from '../../../../components/ui/site-origin';
-import Typography from '../../../../components/ui/typography/typography';
 import { PageContainerFooter } from '../../../../components/ui/page-container';
 import {
-  TypographyVariant,
+  TextVariant,
   FontWeight,
   TextAlign,
   TextColor,
@@ -28,7 +26,6 @@ import {
   IconColor,
   Display,
   BlockSize,
-  TextVariant,
   BackgroundColor,
   ///: END:ONLY_INCLUDE_IF
 } from '../../../../helpers/constants/design-system';
@@ -199,24 +196,28 @@ export default class SignatureRequestOriginal extends Component {
             )
           }
         </div>
-        <Typography
+        <Text
           className="request-signature__content__title"
-          variant={TypographyVariant.H3}
-          fontWeight={FontWeight.Bold}
+          variant={TextVariant.headingMd}
         >
           {this.context.t('sigRequest')}
-        </Typography>
-        <Typography
+        </Text>
+        <Text
           className="request-signature__content__subtitle"
-          variant={TypographyVariant.H7}
           color={TextColor.textAlternative}
-          align={TextAlign.Center}
-          margin={12}
-          marginTop={3}
+          textAlign={TextAlign.Center}
+          margin={4}
         >
           {this.context.t('signatureRequestGuidance')}
-        </Typography>
-        <div className={classnames('request-signature__notice')}>{notice}</div>
+        </Text>
+        <Text
+          className="request-signature__notice"
+          color={TextColor.textAlternative}
+          textAlign={TextAlign.Center}
+          marginBottom={4}
+        >
+          {notice}
+        </Text>
         <div className="request-signature__rows">
           {rows.map(({ name, value }, index) => {
             if (typeof value === 'boolean') {
@@ -228,12 +229,15 @@ export default class SignatureRequestOriginal extends Component {
                 className="request-signature__row"
                 key={`request-signature-row-${index}`}
               >
-                <div className="request-signature__row-title">
+                <Text className="request-signature__row-title">
                   {sanitizeString(`${name}:`)}
-                </div>
-                <div className="request-signature__row-value">
+                </Text>
+                <Text
+                  variant={TextVariant.bodySm}
+                  className="request-signature__row-value"
+                >
                   {sanitizeString(value)}
-                </div>
+                </Text>
               </div>
             );
           })}
