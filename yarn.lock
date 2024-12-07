@@ -6328,9 +6328,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/transaction-controller@npm:@metamask-previews/transaction-controller@41.0.0-preview-2eec965c":
-  version: 41.0.0-preview-2eec965c
-  resolution: "@metamask-previews/transaction-controller@npm:41.0.0-preview-2eec965c"
+"@metamask/transaction-controller@npm:^42.0.0":
+  version: 42.0.0
+  resolution: "@metamask/transaction-controller@npm:42.0.0"
   dependencies:
     "@ethereumjs/common": "npm:^3.2.0"
     "@ethereumjs/tx": "npm:^4.2.0"
@@ -6339,7 +6339,7 @@ __metadata:
     "@ethersproject/contracts": "npm:^5.7.0"
     "@ethersproject/providers": "npm:^5.7.0"
     "@metamask/base-controller": "npm:^7.0.2"
-    "@metamask/controller-utils": "npm:^11.4.3"
+    "@metamask/controller-utils": "npm:^11.4.4"
     "@metamask/eth-query": "npm:^4.0.0"
     "@metamask/metamask-eth-abis": "npm:^3.1.1"
     "@metamask/nonce-tracker": "npm:^6.0.0"
@@ -6352,12 +6352,13 @@ __metadata:
     lodash: "npm:^4.17.21"
     uuid: "npm:^8.3.2"
   peerDependencies:
-    "@babel/runtime": ^7.23.9
+    "@babel/runtime": ^7.0.0
     "@metamask/accounts-controller": ^20.0.0
     "@metamask/approval-controller": ^7.0.0
+    "@metamask/eth-block-tracker": ">=9"
     "@metamask/gas-fee-controller": ^22.0.0
     "@metamask/network-controller": ^22.0.0
-  checksum: 10/5c3aa9f7edd3f27302293a0b1c3ac48b705f9d56c22f759d9103a91df68aaf0464950df3aa37ad958401a868459604cc1e7abc18c353c97bbca379493d4e802e
+  checksum: 10/73c510803a720b4c1da0b82f1279a404a9b11c4ab76f8e5e4378c65d5d08bbb32c52062abfe319476cc3f5e2623a8987775c4524e55aa94002af73d73721b869
   languageName: node
   linkType: hard
 
@@ -26464,7 +26465,7 @@ __metadata:
     "@metamask/solana-wallet-snap": "npm:^0.1.9"
     "@metamask/test-bundler": "npm:^1.0.0"
     "@metamask/test-dapp": "npm:8.13.0"
-    "@metamask/transaction-controller": "npm:@metamask-previews/transaction-controller@41.0.0-preview-2eec965c"
+    "@metamask/transaction-controller": "npm:^42.0.0"
     "@metamask/user-operation-controller": "npm:^19.0.0"
     "@metamask/utils": "npm:^10.0.1"
     "@ngraveio/bc-ur": "npm:^1.1.12"
