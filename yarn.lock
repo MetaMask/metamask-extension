@@ -33156,7 +33156,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"secp256k1@npm:^4.0.0, secp256k1@npm:^4.0.1, secp256k1@npm:^4.0.4":
+"secp256k1@npm:4.0.4, secp256k1@npm:^4.0.4":
   version: 4.0.4
   resolution: "secp256k1@npm:4.0.4"
   dependencies:
