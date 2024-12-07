@@ -5,7 +5,6 @@ import { ApprovalType } from '@metamask/controller-utils';
 import { isEqual } from 'lodash';
 import { ApprovalRequest } from '@metamask/approval-controller';
 import { Json } from '@metamask/utils';
-import { pendingConfirmationsSortedSelector } from '../selectors';
 import { TEMPLATED_CONFIRMATION_APPROVAL_TYPES } from '../confirmation/templates';
 import {
   CONFIRM_ADD_SUGGESTED_NFT_ROUTE,
@@ -18,7 +17,10 @@ import {
   SIGNATURE_REQUEST_PATH,
 } from '../../../helpers/constants/routes';
 import { isSignatureTransactionType } from '../utils';
-import { getApprovalFlows } from '../../../selectors';
+import {
+  getApprovalFlows,
+  pendingApprovalsSortedSelector,
+} from '../../../selectors';
 
 const CONNECT_APPROVAL_TYPES = [
   ApprovalType.WalletRequestPermissions,
@@ -28,10 +30,7 @@ const CONNECT_APPROVAL_TYPES = [
 ];
 
 export function useConfirmationNavigation() {
-  const confirmations = useSelector(
-    pendingConfirmationsSortedSelector,
-    isEqual,
-  );
+  const confirmations = useSelector(pendingApprovalsSortedSelector, isEqual);
 
   const approvalFlows = useSelector(getApprovalFlows);
   const history = useHistory();

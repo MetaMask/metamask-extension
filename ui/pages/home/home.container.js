@@ -40,7 +40,7 @@ import {
   getSelectedInternalAccount,
   getQueuedRequestCount,
   getEditedNetwork,
-  pendingConfirmationsSortedSelector,
+  pendingApprovalsSortedSelector,
   ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
   getAccountType,
   ///: END:ONLY_INCLUDE_IF
@@ -108,7 +108,7 @@ const mapStateToProps = (state) => {
   const totalUnapprovedAndQueuedRequestCount =
     totalUnapprovedCount + queuedRequestCount;
   const swapsEnabled = getSwapsFeatureIsLive(state);
-  const pendingConfirmations = pendingConfirmationsSortedSelector(state);
+  const pendingApprovals = pendingApprovalsSortedSelector(state);
 
   ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
   const institutionalConnectRequests = getInstitutionalConnectRequests(state);
@@ -164,7 +164,7 @@ const mapStateToProps = (state) => {
     isMainnet: getIsMainnet(state),
     originOfCurrentTab,
     shouldShowWeb3ShimUsageNotification,
-    pendingConfirmations,
+    pendingApprovals,
     infuraBlocked: getInfuraBlocked(state),
     announcementsToShow: getSortedAnnouncementsToShow(state).length > 0,
     showWhatsNewPopup,

@@ -46,9 +46,11 @@ describe('confirm selectors', () => {
   describe('pendingConfirmationsSelector', () => {
     it('should return pending confirmations from state', () => {
       const result = pendingConfirmationsSelector(mockedState);
-      expect(result).toStrictEqual(
-        Object.values(mockedState.metamask.pendingApprovals),
-      );
+
+      expect(result).toStrictEqual([
+        mockedState.metamask.pendingApprovals[2],
+        mockedState.metamask.pendingApprovals[3],
+      ]);
     });
   });
 

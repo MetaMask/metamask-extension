@@ -167,7 +167,7 @@ export default class Home extends PureComponent {
     setWeb3ShimUsageAlertDismissed: PropTypes.func.isRequired,
     originOfCurrentTab: PropTypes.string,
     disableWeb3ShimUsageAlert: PropTypes.func.isRequired,
-    pendingConfirmations: PropTypes.arrayOf(PropTypes.object).isRequired,
+    pendingApprovals: PropTypes.arrayOf(PropTypes.object).isRequired,
     hasApprovalFlows: PropTypes.bool.isRequired,
     infuraBlocked: PropTypes.bool.isRequired,
     setRecoveryPhraseReminderHasBeenShown: PropTypes.func.isRequired,
@@ -221,7 +221,7 @@ export default class Home extends PureComponent {
       closeNotificationPopup,
       haveSwapsQuotes,
       isNotification,
-      pendingConfirmations,
+      pendingApprovals,
       showAwaitingSwapScreen,
       swapsFetchParams,
       location,
@@ -232,7 +232,7 @@ export default class Home extends PureComponent {
       this.state.notificationClosing = true;
       closeNotificationPopup();
     } else if (
-      pendingConfirmations.length ||
+      pendingApprovals.length ||
       (!isNotification &&
         !stayOnHomePage &&
         (showAwaitingSwapScreen || haveSwapsQuotes || swapsFetchParams))
@@ -292,7 +292,7 @@ export default class Home extends PureComponent {
       showAwaitingSwapScreen,
       swapsFetchParams,
       location,
-      pendingConfirmations,
+      pendingApprovals,
       hasApprovalFlows,
     } = this.props;
     const stayOnHomePage = Boolean(location?.state?.stayOnHomePage);
@@ -306,10 +306,10 @@ export default class Home extends PureComponent {
       history.push(AWAITING_SWAP_ROUTE);
     } else if (canRedirect && (haveSwapsQuotes || swapsFetchParams)) {
       history.push(PREPARE_SWAP_ROUTE);
-    } else if (pendingConfirmations.length) {
+    } else if (pendingApprovals.length) {
       navigateToConfirmation(
-        pendingConfirmations[0].id,
-        pendingConfirmations,
+        pendingApprovals[0].id,
+        pendingApprovals,
         hasApprovalFlows,
         history,
       );

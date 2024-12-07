@@ -6,7 +6,6 @@ import { useParams } from 'react-router-dom';
 import {
   ApprovalsMetaMaskState,
   getIsRedesignedConfirmationsDeveloperEnabled,
-  getMemoizedUnapprovedTemplatedConfirmations,
   getRedesignedConfirmationsEnabled,
   getRedesignedTransactionsEnabled,
   getUnapprovedTransaction,
@@ -57,10 +56,6 @@ const useCurrentConfirmation = () => {
     selectUnapprovedMessage(state, confirmationId),
   );
 
-  const templateConfirmation = useSelector(
-    getMemoizedUnapprovedTemplatedConfirmations,
-  ).find((confirmation) => confirmation.id === confirmationId);
-
   const useRedesignedForSignatures = shouldUseRedesignForSignatures({
     approvalType: pendingApproval?.type as ApprovalType,
     isRedesignedSignaturesUserSettingEnabled,
@@ -74,9 +69,7 @@ const useCurrentConfirmation = () => {
   });
 
   const shouldUseRedesign =
-    useRedesignedForSignatures ||
-    useRedesignedForTransaction ||
-    templateConfirmation;
+    useRedesignedForSignatures || useRedesignedForTransaction;
 
   return useMemo(() => {
     if (!shouldUseRedesign) {
@@ -84,15 +77,10 @@ const useCurrentConfirmation = () => {
     }
 
     const currentConfirmation =
-      transactionMetadata ?? signatureMessage ?? templateConfirmation;
+      transactionMetadata ?? signatureMessage ?? undefined;
 
     return { currentConfirmation };
-  }, [
-    transactionMetadata,
-    signatureMessage,
-    shouldUseRedesign,
-    templateConfirmation,
-  ]);
+  }, [transactionMetadata, signatureMessage, shouldUseRedesign]);
 };
 
 export default useCurrentConfirmation;
