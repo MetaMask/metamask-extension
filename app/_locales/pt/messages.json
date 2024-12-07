@@ -6484,10 +6484,6 @@
   "wrongNetworkName": {
     "message": "De acordo com os nossos registros, o nome da rede pode não corresponder a esta ID de cadeia."
   },
-  "xOfYPending": {
-    "message": "$1 de $2 pendente(s)",
-    "description": "$1 and $2 are intended to be two numbers, where $2 is a total number of pending confirmations, and $1 is a count towards that total"
-  },
   "yes": {
     "message": "Sim"
   },

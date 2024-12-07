@@ -6484,10 +6484,6 @@
   "wrongNetworkName": {
     "message": "기록에 따르면 네트워크 이름이 이 체인 ID와 일치하지 않습니다."
   },
-  "xOfYPending": {
-    "message": "$1/$2개 보류 중",
-    "description": "$1 and $2 are intended to be two numbers, where $2 is a total number of pending confirmations, and $1 is a count towards that total"
-  },
   "yes": {
     "message": "예"
   },

@@ -9,8 +9,7 @@ import { renderWithConfirmContextProvider } from '../../../../../../test/lib/con
 import { fireEvent } from '../../../../../../test/jest';
 import * as Actions from '../../../../../store/actions';
 import configureStore from '../../../../../store/store';
-
-import Nav from './nav';
+import { ConfirmNav } from './nav';
 
 jest.mock('react-redux', () => ({
   ...jest.requireActual('react-redux'),
@@ -82,7 +81,7 @@ const render = () => {
     }),
   );
 
-  return renderWithConfirmContextProvider(<Nav />, store);
+  return renderWithConfirmContextProvider(<ConfirmNav />, store);
 };
 
 describe('ConfirmNav', () => {

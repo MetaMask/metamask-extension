@@ -6484,10 +6484,6 @@
   "wrongNetworkName": {
     "message": "弊社の記録によると、ネットワーク名がこのチェーンIDと正しく一致していない可能性があります。"
   },
-  "xOfYPending": {
-    "message": "$2件中$1件が保留中",
-    "description": "$1 and $2 are intended to be two numbers, where $2 is a total number of pending confirmations, and $1 is a count towards that total"
-  },
   "yes": {
     "message": "はい"
   },
