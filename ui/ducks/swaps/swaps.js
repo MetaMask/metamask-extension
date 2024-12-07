@@ -56,12 +56,12 @@ import {
   getValueFromWeiHex,
   hexWEIToDecGWEI,
 } from '../../../shared/modules/conversion.utils';
+import { getCurrentChainId } from '../../../shared/modules/selectors/networks';
 import {
   getSelectedAccount,
   getTokenExchangeRates,
   getUSDConversionRate,
   getSwapsDefaultToken,
-  getCurrentChainId,
   isHardwareWallet,
   getHardwareWalletType,
   checkNetworkAndAccountSupports1559,

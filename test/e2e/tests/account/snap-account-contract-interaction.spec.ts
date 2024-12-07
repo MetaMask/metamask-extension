@@ -10,8 +10,9 @@ import {
   WINDOW_TITLES,
 } from '../../helpers';
 import { SMART_CONTRACTS } from '../../seeder/smart-contracts';
+import ActivityListPage from '../../page-objects/pages/home/activity-list';
 import HeaderNavbar from '../../page-objects/pages/header-navbar';
-import HomePage from '../../page-objects/pages/homepage';
+import HomePage from '../../page-objects/pages/home/homepage';
 import SnapSimpleKeyringPage from '../../page-objects/pages/snap-simple-keyring-page';
 import TestDapp from '../../page-objects/pages/test-dapp';
 import { installSnapSimpleKeyring } from '../../page-objects/flows/snap-simple-keyring.flow';
@@ -75,8 +76,9 @@ describe('Snap Account Contract interaction @no-mmi', function (this: Suite) {
         const homePage = new HomePage(driver);
         await homePage.check_pageIsLoaded();
         await homePage.goToActivityList();
-        await homePage.check_confirmedTxNumberDisplayedInActivity();
-        await homePage.check_txAmountInActivity('-4 ETH');
+        const activityList = new ActivityListPage(driver);
+        await activityList.check_confirmedTxNumberDisplayedInActivity();
+        await activityList.check_txAmountInActivity('-4 ETH');
       },
     );
   });

@@ -1,11 +1,12 @@
 import { Mockttp } from 'mockttp';
 import { loginWithoutBalanceValidation } from '../../page-objects/flows/login.flow';
-import HomePage from '../../page-objects/pages/homepage';
 import { Driver } from '../../webdriver/driver';
 import { DEFAULT_FIXTURE_ACCOUNT } from '../../constants';
 import { withFixtures } from '../../helpers';
 import FixtureBuilder from '../../fixture-builder';
 import { switchToNetworkFlow } from '../../page-objects/flows/network.flow';
+import HomePage from '../../page-objects/pages/home/homepage';
+import ActivityListPage from '../../page-objects/pages/home/activity-list';
 
 const TIMESTAMP_MOCK = 1234;
 
@@ -94,14 +95,14 @@ describe('Incoming Transactions', function () {
         testSpecificMock: mockAccountsApi,
       },
       async ({ driver }: { driver: Driver }) => {
-        const homepage = await changeNetworkAndGoToActivity(driver);
-        await homepage.check_confirmedTxNumberDisplayedInActivity(2);
+        const activityList = await changeNetworkAndGoToActivity(driver);
+        await activityList.check_confirmedTxNumberDisplayedInActivity(2);
 
-        await homepage.check_txAction('Receive', 1);
-        await homepage.check_txAmountInActivity('1.23 ETH', 1);
+        await activityList.check_txAction('Receive', 1);
+        await activityList.check_txAmountInActivity('1.23 ETH', 1);
 
-        await homepage.check_txAction('Receive', 2);
-        await homepage.check_txAmountInActivity('2.34 ETH', 2);
+        await activityList.check_txAction('Receive', 2);
+        await activityList.check_txAmountInActivity('2.34 ETH', 2);
       },
     );
   });
@@ -122,8 +123,8 @@ describe('Incoming Transactions', function () {
           }),
       },
       async ({ driver }: { driver: Driver }) => {
-        const homepage = await changeNetworkAndGoToActivity(driver);
-        await homepage.check_confirmedTxNumberDisplayedInActivity(1);
+        const activityList = await changeNetworkAndGoToActivity(driver);
+        await activityList.check_confirmedTxNumberDisplayedInActivity(1);
       },
     );
   });
@@ -141,8 +142,8 @@ describe('Incoming Transactions', function () {
           }),
       },
       async ({ driver }: { driver: Driver }) => {
-        const homepage = await changeNetworkAndGoToActivity(driver);
-        await homepage.check_confirmedTxNumberDisplayedInActivity(1);
+        const activityList = await changeNetworkAndGoToActivity(driver);
+        await activityList.check_confirmedTxNumberDisplayedInActivity(1);
       },
     );
   });
@@ -157,9 +158,9 @@ describe('Incoming Transactions', function () {
         testSpecificMock: mockAccountsApi,
       },
       async ({ driver }: { driver: Driver }) => {
-        const homepage = await changeNetworkAndGoToActivity(driver);
+        const activityList = await changeNetworkAndGoToActivity(driver);
         await driver.delay(2000);
-        await homepage.check_noTxInActivity();
+        await activityList.check_noTxInActivity();
       },
     );
   });
@@ -180,8 +181,8 @@ describe('Incoming Transactions', function () {
         testSpecificMock: mockAccountsApi,
       },
       async ({ driver }: { driver: Driver }) => {
-        const homepage = await changeNetworkAndGoToActivity(driver);
-        await homepage.check_confirmedTxNumberDisplayedInActivity(1);
+        const activityList = await changeNetworkAndGoToActivity(driver);
+        await activityList.check_confirmedTxNumberDisplayedInActivity(1);
       },
     );
   });
@@ -194,5 +195,5 @@ async function changeNetworkAndGoToActivity(driver: Driver) {
   const homepage = new HomePage(driver);
   await homepage.goToActivityList();
 
-  return homepage;
+  return new ActivityListPage(driver);
 }

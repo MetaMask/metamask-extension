@@ -27,18 +27,18 @@ import {
   getIsBridgeChain,
   getCurrentKeyring,
   ///: END:ONLY_INCLUDE_IF
-  getCurrentChainId,
   getNetworkConfigurationIdByChainId,
 } from '../../../selectors';
+import { getCurrentChainId } from '../../../../shared/modules/selectors/networks';
 ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
 import useBridging from '../../../hooks/bridge/useBridging';
 ///: END:ONLY_INCLUDE_IF
 
 import { INVALID_ASSET_TYPE } from '../../../helpers/constants/error-keys';
 import {
-  setActiveNetwork,
   showModal,
   setSwitchedNetworkDetails,
+  setActiveNetworkWithError,
 } from '../../../store/actions';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import {
@@ -123,14 +123,22 @@ const TokenButtons = ({
   }, [token.isERC721, token.address, dispatch]);
 
   const setCorrectChain = async () => {
+    // If we aren't presently on the chain of the asset, change to it
     if (currentChainId !== token.chainId) {
-      const networkConfigurationId = networks[token.chainId];
-      await dispatch(setActiveNetwork(networkConfigurationId));
-      await dispatch(
-        setSwitchedNetworkDetails({
-          networkClientId: networkConfigurationId,
-        }),
-      );
+      try {
+        const networkConfigurationId = networks[token.chainId];
+        await dispatch(setActiveNetworkWithError(networkConfigurationId));
+        await dispatch(
+          setSwitchedNetworkDetails({
+            networkClientId: networkConfigurationId,
+          }),
+        );
+      } catch (err) {
+        console.error(`Failed to switch chains.
+        Target chainId: ${token.chainId}, Current chainId: ${currentChainId}.
+        ${err}`);
+        throw err;
+      }
     }
   };
 
@@ -271,7 +279,6 @@ const TokenButtons = ({
           }
           onClick={async () => {
             await setCorrectChain();
-
             ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
             global.platform.openTab({
               url: `${mmiPortfolioUrl}/swap`,
