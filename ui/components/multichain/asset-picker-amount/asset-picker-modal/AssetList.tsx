@@ -134,7 +134,7 @@ export default function AssetList({
               flexWrap={FlexWrap.NoWrap}
               alignItems={AlignItems.center}
             >
-              <Box marginInlineStart={selectedTokenAddress ? 2 : 0}>
+              <Box marginInlineStart={0}>
                 {token.type === AssetType.native &&
                 token.chainId === chainId &&
                 isSelectedNetworkActive ? (
