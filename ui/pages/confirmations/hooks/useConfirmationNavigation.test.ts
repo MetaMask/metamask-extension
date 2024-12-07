@@ -9,6 +9,8 @@ import {
   CONFIRM_TRANSACTION_ROUTE,
   CONFIRMATION_V_NEXT_ROUTE,
   CONNECT_ROUTE,
+  DECRYPT_MESSAGE_REQUEST_PATH,
+  ENCRYPTION_PUBLIC_KEY_REQUEST_PATH,
   SIGNATURE_REQUEST_PATH,
 } from '../../../helpers/constants/routes';
 import { useConfirmationNavigation } from './useConfirmationNavigation';
@@ -123,6 +125,28 @@ describe('useConfirmationNavigation', () => {
       expect(history.replace).toHaveBeenCalledTimes(1);
       expect(history.replace).toHaveBeenCalledWith(
         `${CONFIRM_ADD_SUGGESTED_NFT_ROUTE}`,
+      );
+    });
+
+    it('navigates to encrypt route', () => {
+      const result = renderHook(ApprovalType.EthGetEncryptionPublicKey);
+
+      result.navigateToId(APPROVAL_ID_MOCK);
+
+      expect(history.replace).toHaveBeenCalledTimes(1);
+      expect(history.replace).toHaveBeenCalledWith(
+        `${CONFIRM_TRANSACTION_ROUTE}/${APPROVAL_ID_MOCK}${ENCRYPTION_PUBLIC_KEY_REQUEST_PATH}`,
+      );
+    });
+
+    it('navigates to decrypt route', () => {
+      const result = renderHook(ApprovalType.EthDecrypt);
+
+      result.navigateToId(APPROVAL_ID_MOCK);
+
+      expect(history.replace).toHaveBeenCalledTimes(1);
+      expect(history.replace).toHaveBeenCalledWith(
+        `${CONFIRM_TRANSACTION_ROUTE}/${APPROVAL_ID_MOCK}${DECRYPT_MESSAGE_REQUEST_PATH}`,
       );
     });
 

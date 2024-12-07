@@ -13,6 +13,8 @@ import {
   CONFIRM_TRANSACTION_ROUTE,
   CONFIRMATION_V_NEXT_ROUTE,
   CONNECT_ROUTE,
+  DECRYPT_MESSAGE_REQUEST_PATH,
+  ENCRYPTION_PUBLIC_KEY_REQUEST_PATH,
   SIGNATURE_REQUEST_PATH,
 } from '../../../helpers/constants/routes';
 import { isSignatureTransactionType } from '../utils';
@@ -88,9 +90,7 @@ export function navigateToConfirmation(
     return;
   }
 
-  const isSignature = isSignatureTransactionType(nextConfirmation);
-
-  if (isSignature) {
+  if (isSignatureTransactionType(nextConfirmation)) {
     history.replace(
       `${CONFIRM_TRANSACTION_ROUTE}/${confirmationId}${SIGNATURE_REQUEST_PATH}`,
     );
@@ -99,6 +99,20 @@ export function navigateToConfirmation(
 
   if (type === ApprovalType.Transaction) {
     history.replace(`${CONFIRM_TRANSACTION_ROUTE}/${confirmationId}`);
+    return;
+  }
+
+  if (type === ApprovalType.EthDecrypt) {
+    history.replace(
+      `${CONFIRM_TRANSACTION_ROUTE}/${confirmationId}${DECRYPT_MESSAGE_REQUEST_PATH}`,
+    );
+    return;
+  }
+
+  if (type === ApprovalType.EthGetEncryptionPublicKey) {
+    history.replace(
+      `${CONFIRM_TRANSACTION_ROUTE}/${confirmationId}${ENCRYPTION_PUBLIC_KEY_REQUEST_PATH}`,
+    );
     return;
   }
 

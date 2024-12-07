@@ -15,6 +15,7 @@ import {
 import {
   AlignItems,
   BackgroundColor,
+  BlockSize,
   BorderRadius,
   Display,
   FlexDirection,
@@ -75,6 +76,7 @@ export const Nav = ({ confirmationId }: NavProps) => {
       flexDirection={FlexDirection.Row}
       justifyContent={JustifyContent.spaceBetween}
       padding={3}
+      width={BlockSize.Full}
       style={{
         zIndex: 2,
       }}
