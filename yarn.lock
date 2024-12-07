@@ -18585,10 +18585,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"eth-chainlist@npm:~0.0.498":
-  version: 0.0.519
-  resolution: "eth-chainlist@npm:0.0.519"
-  checksum: 10/c9767c64e58d140d04e6fcca9589c50edab48a5c57a62f2c749279574a9ab3e13784b05ab4c05c7b020fe8421769bc4119bd7a904df040fbb076827aaac3de23
+"eth-chainlist@npm:~0.0.559":
+  version: 0.0.559
+  resolution: "eth-chainlist@npm:0.0.559"
+  checksum: 10/063b8addd79160049bd92835e2cc704ce771ab94a60e4b7afe2622535a08f2ad75532fc84a5fc3b12a378aeeb22895559d3b7ef2a5d0cc8d67bf8682de3fcfd9
   languageName: node
   linkType: hard
 
@@ -26605,7 +26605,7 @@ __metadata:
     eslint-plugin-react-hooks: "npm:^4.2.0"
     eslint-plugin-storybook: "npm:^0.6.15"
     eta: "npm:^3.2.0"
-    eth-chainlist: "npm:~0.0.498"
+    eth-chainlist: "npm:~0.0.559"
     eth-ens-namehash: "npm:^2.0.8"
     eth-lattice-keyring: "npm:^0.12.4"
     eth-method-registry: "npm:^4.0.0"
