@@ -9,6 +9,7 @@ import {
   FlexDirection,
   FlexWrap,
   FontWeight,
+  JustifyContent,
   TextAlign,
   TextColor,
   TextVariant,
@@ -69,11 +70,11 @@ export const ActivityListItem = ({
         <Box
           display={Display.InlineFlex}
           width={BlockSize.Full}
+          justifyContent={JustifyContent.spaceBetween}
           className="activity-list-item__content-container"
         >
           <Box
             display={Display.InlineFlex}
-            width={[BlockSize.OneThird, BlockSize.SevenTwelfths]}
             flexDirection={FlexDirection.Column}
             className="activity-list-item__detail-container"
           >
@@ -113,7 +114,6 @@ export const ActivityListItem = ({
           {rightContent && (
             <Box
               display={Display.InlineFlex}
-              width={BlockSize.Full}
               height={BlockSize.Min}
               flexDirection={FlexDirection.Column}
               alignItems={AlignItems.flexEnd}

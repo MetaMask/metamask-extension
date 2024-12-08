@@ -63,6 +63,7 @@
     "currentLocale": "en"
   },
   "metamask": {
+    "accountsByChainId": {},
     "ipfsGateway": "",
     "dismissSeedBackUpReminder": false,
     "usePhishDetect": true,
@@ -131,18 +132,14 @@
     "preferences": {
       "hideZeroBalanceTokens": false,
       "showFiatInTestnets": false,
-      "showTestNetworks": true
+      "showTestNetworks": true,
+      "tokenNetworkFilter": {}
     },
     "seedPhraseBackedUp": null,
     "ensResolutionsByAddress": {},
     "isAccountMenuOpen": false,
     "isUnlocked": true,
     "completedOnboarding": true,
-    "usedNetworks": {
-      "0x1": true,
-      "0x5": true,
-      "0x539": true
-    },
     "showTestnetMessageInDropdown": true,
     "alertEnabledness": {
       "unconnectedAccount": true

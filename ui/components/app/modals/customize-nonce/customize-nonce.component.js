@@ -27,7 +27,9 @@ const CustomizeNonce = ({
   updateCustomNonce,
   getNextNonce,
 }) => {
-  const [customNonce, setCustomNonce] = useState('');
+  const defaultNonce =
+    customNonceValue || (typeof nextNonce === 'number' && nextNonce.toString());
+  const [customNonce, setCustomNonce] = useState(defaultNonce);
   const t = useI18nContext();
 
   return (
@@ -107,10 +109,7 @@ const CustomizeNonce = ({
               type="number"
               data-testid="custom-nonce-input"
               min="0"
-              placeholder={
-                customNonceValue ||
-                (typeof nextNonce === 'number' && nextNonce.toString())
-              }
+              placeholder={defaultNonce}
               onChange={(e) => {
                 setCustomNonce(e.target.value);
               }}

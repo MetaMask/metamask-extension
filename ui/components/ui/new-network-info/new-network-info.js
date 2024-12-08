@@ -3,7 +3,7 @@ import { useSelector } from 'react-redux';
 import { TOKEN_API_METASWAP_CODEFI_URL } from '../../../../shared/constants/tokens';
 import fetchWithCache from '../../../../shared/lib/fetch-with-cache';
 import { I18nContext } from '../../../contexts/i18n';
-import { getProviderConfig } from '../../../ducks/metamask/metamask';
+import { getProviderConfig } from '../../../../shared/modules/selectors/networks';
 import {
   AlignItems,
   BackgroundColor,
@@ -24,7 +24,6 @@ import {
   getParticipateInMetaMetrics,
   getDataCollectionForMarketing,
 } from '../../../selectors';
-import { setFirstTimeUsedNetwork } from '../../../store/actions';
 import {
   PickerNetwork,
   Text,
@@ -56,7 +55,6 @@ export default function NewNetworkInfo() {
 
   const onCloseClick = () => {
     setShowPopup(false);
-    setFirstTimeUsedNetwork(providerConfig.chainId);
   };
 
   const checkTokenDetection = useCallback(async () => {

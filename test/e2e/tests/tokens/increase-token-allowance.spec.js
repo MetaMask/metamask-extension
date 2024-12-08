@@ -10,6 +10,7 @@ const {
   ACCOUNT_2,
   WINDOW_TITLES,
   clickNestedButton,
+  tempToggleSettingRedesignedTransactionConfirmations,
 } = require('../../helpers');
 const { SMART_CONTRACTS } = require('../../seeder/smart-contracts');
 
@@ -37,6 +38,8 @@ describe('Increase Token Allowance', function () {
         const additionalSpendingCap = '1';
 
         await unlockWallet(driver);
+
+        await tempToggleSettingRedesignedTransactionConfirmations(driver);
 
         const contractAddress = await contractRegistry.getContractAddress(
           smartContract,

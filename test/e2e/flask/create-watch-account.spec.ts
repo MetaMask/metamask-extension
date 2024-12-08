@@ -164,7 +164,10 @@ describe('Account-watcher snap', function (this: Suite) {
       },
       {
         input: ACCOUNT_1,
-        message: `Unknown snap error: Account address '${ACCOUNT_1}' already exists`,
+        // FIXME: Watchout, the Snap bridge will lower-case EVM addresses, even in some error messages, this is
+        // a mistake, and we might wanna re-change that later, see:
+        // - https://github.com/MetaMask/accounts/pull/90/files#r1848713364
+        message: `Unknown snap error: Account address '${ACCOUNT_1.toLowerCase()}' already exists`,
         description: 'existing address',
       },
     ];

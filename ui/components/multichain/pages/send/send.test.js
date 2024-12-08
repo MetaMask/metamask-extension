@@ -89,6 +89,7 @@ const baseStore = {
     },
   },
   metamask: {
+    accountsByChainId: {},
     permissionHistory: {},
     transactions: [
       {
@@ -168,6 +169,7 @@ const baseStore = {
     tokens: [],
     preferences: {
       showFiatInTestnets: true,
+      tokenNetworkFilter: {},
     },
     currentCurrency: 'USD',
     nativeCurrency: 'ETH',

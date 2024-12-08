@@ -54,11 +54,11 @@ import {
   getLatestAddedTokenTo,
   getUsedQuote,
 } from '../../../ducks/swaps/swaps';
+import { getCurrentChainId } from '../../../../shared/modules/selectors/networks';
 import {
   getSwapsDefaultToken,
   getTokenExchangeRates,
   getCurrentCurrency,
-  getCurrentChainId,
   getRpcPrefsForCurrentProvider,
   getTokenList,
   isHardwareWallet,

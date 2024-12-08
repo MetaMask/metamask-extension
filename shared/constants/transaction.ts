@@ -113,6 +113,11 @@ export enum TransactionGroupCategory {
    * Transaction group representing a token swap through MetaMask Swaps, where the final token is sent to another address.
    */
   swapAndSend = 'swapAndSend',
+  /**
+   * Transaction group representing a token bridge through MetaMask Bridge,
+   * where the final token is sent to another chain.
+   */
+  bridge = 'bridge',
 }
 
 /**

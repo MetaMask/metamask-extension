@@ -7,7 +7,6 @@ import EditableLabel from '../../ui/editable-label/editable-label';
 
 import { setAccountLabel } from '../../../store/actions';
 import {
-  getCurrentChainId,
   getHardwareWalletType,
   getInternalAccountByAddress,
 } from '../../../selectors';
@@ -30,6 +29,7 @@ import {
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
 import { useI18nContext } from '../../../hooks/useI18nContext';
+import { getCurrentChainId } from '../../../../shared/modules/selectors/networks';
 
 export const AccountDetailsDisplay = ({
   accounts,

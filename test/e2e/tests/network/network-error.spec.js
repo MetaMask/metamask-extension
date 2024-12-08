@@ -4,6 +4,7 @@ const {
   logInWithBalanceValidation,
   openActionMenuAndStartSendFlow,
   generateGanacheOptions,
+  tempToggleSettingRedesignedTransactionConfirmations,
 } = require('../../helpers');
 const FixtureBuilder = require('../../fixture-builder');
 const { GAS_API_BASE_URL } = require('../../../../shared/constants/swaps');
@@ -57,6 +58,8 @@ describe('Gas API fallback', function () {
       },
       async ({ driver, ganacheServer }) => {
         await logInWithBalanceValidation(driver, ganacheServer);
+
+        await tempToggleSettingRedesignedTransactionConfirmations(driver);
 
         await openActionMenuAndStartSendFlow(driver);
         await driver.fill(
