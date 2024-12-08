@@ -170,17 +170,19 @@ function AlertDetails({
           >
             {selectedAlert.message}
           </Text>
-          {selectedAlert.alertDetails?.length ? (
+          {Array.isArray(selectedAlert.alertDetails) &&
+          selectedAlert.alertDetails?.length ? (
             <Text variant={TextVariant.bodyMdBold} marginTop={1}>
               {t('alertModalDetails')}
             </Text>
           ) : null}
           <Box as="ul" className="alert-modal__alert-details" paddingLeft={6}>
-            {selectedAlert.alertDetails?.map((detail, index) => (
-              <Box as="li" key={`${selectedAlert.key}-detail-${index}`}>
-                <Text variant={TextVariant.bodyMd}>{detail}</Text>
-              </Box>
-            ))}
+            {Array.isArray(selectedAlert.alertDetails) &&
+              selectedAlert.alertDetails?.map((detail, index) => (
+                <Box as="li" key={`${selectedAlert.key}-detail-${index}`}>
+                  <Text variant={TextVariant.bodyMd}>{detail}</Text>
+                </Box>
+              ))}
           </Box>
         </Box>
       )}

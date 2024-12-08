@@ -13,4 +13,5 @@ export enum AlertActionKey {
   Buy = 'buy',
   ShowAdvancedGasFeeModal = 'showAdvancedGasModal',
   ShowGasFeeModal = 'showGasFeeModal',
+  OnCloseSmartTransactionsDismissBanner = 'onCloseSmartTransactionsDismissBanner',
 }

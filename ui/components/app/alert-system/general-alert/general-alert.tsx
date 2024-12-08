@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useCallback } from 'react';
 import {
   BannerAlert,
   Box,
@@ -19,6 +19,7 @@ import ZENDESK_URLS from '../../../../helpers/constants/zendesk-url';
 import { getBannerAlertSeverity } from '../utils';
 import { AlertProvider } from '../alert-provider';
 import { AlertSeverity } from '../../../../ducks/confirm-alerts/confirm-alerts';
+import { useAlertActionHandler } from '../contexts/alertActionHandler';
 
 export type GeneralAlertProps = {
   description: string;
@@ -28,6 +29,7 @@ export type GeneralAlertProps = {
   reportUrl?: string;
   severity: AlertSeverity;
   title?: string;
+  actions?: { key: string; label: string }[];
 };
 
 function ReportLink({
@@ -77,26 +79,28 @@ function AlertDetails({
     <Box marginTop={1}>
       <Disclosure title={t('seeDetails')} variant={DisclosureVariant.Arrow}>
         {details instanceof Array ? (
-          <Box as="ul" className="alert-modal__alert-details" paddingLeft={6}>
-            {details.map((detail, index) => (
-              <Box as="li" key={`disclosure-detail-${index}`}>
-                <Text
-                  variant={TextVariant.bodyMdMedium}
-                  fontWeight={FontWeight.Normal}
-                >
-                  {detail}
-                </Text>
-              </Box>
-            ))}
+          <Box>
+            <Box as="ul" className="alert-modal__alert-details" paddingLeft={6}>
+              {details.map((detail, index) => (
+                <Box as="li" key={`disclosure-detail-${index}`}>
+                  <Text
+                    variant={TextVariant.bodyMdMedium}
+                    fontWeight={FontWeight.Normal}
+                  >
+                    {detail}
+                  </Text>
+                </Box>
+              ))}
+            </Box>
+            <ReportLink
+              reportUrl={reportUrl}
+              provider={provider}
+              onClickSupportLink={onClickSupportLink}
+            />
           </Box>
         ) : (
           details
         )}
-        <ReportLink
-          reportUrl={reportUrl}
-          provider={provider}
-          onClickSupportLink={onClickSupportLink}
-        />
       </Disclosure>
     </Box>
   );
@@ -110,13 +114,28 @@ function GeneralAlert({
   severity,
   title,
   reportUrl,
+  actions,
   ...props
 }: GeneralAlertProps) {
+  const { processAction } = useAlertActionHandler();
+
+  const actionClose = actions?.find((action) =>
+    action.key.startsWith('onClose'),
+  );
+
+  const handleClick = useCallback(() => {
+    if (!actionClose) {
+      return;
+    }
+    processAction(actionClose.key);
+  }, [actions, processAction]);
+
   return (
     <BannerAlert
       title={title}
       severity={getBannerAlertSeverity(severity)}
       description={description}
+      onClose={actionClose ? handleClick : undefined}
       {...props}
     >
       <AlertDetails
