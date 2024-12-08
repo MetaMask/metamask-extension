@@ -416,6 +416,9 @@
   "alertMessageAddressMismatchWarning": {
     "message": "Minsan ginagaya ng mga umaatake ang mga site sa pamamagitan ng paggawa ng maliliit na pagbabago sa address ng site. Tiyaking nakikipag-ugnayan ka sa nilalayong site bago ka magpatuloy."
   },
+  "alertMessageChangeInSimulationResults": {
+    "message": "Na-update na ang mga tinatayang pagbabago para sa transaksyong ito. Suriin ang mga ito nang mabuti bago magpatuloy."
+  },
   "alertMessageGasEstimateFailed": {
     "message": "Hindi kami makapagbigay ng tumpak na bayad at ang pagtantiya na ito ay maaaring mataas. Iminumungkahi namin na maglagay ka ng naka-custom na gas limit, ngunit may panganib na mabigo pa rin ang transaksyon."
   },
@@ -454,6 +457,9 @@
   },
   "alertModalReviewAllAlerts": {
     "message": "Suriin ang lahat ng alerto"
+  },
+  "alertReasonChangeInSimulationResults": {
+    "message": "Nabago ang mga resulta"
   },
   "alertReasonGasEstimateFailed": {
     "message": "Hindi tumpak na bayad"
@@ -837,8 +843,14 @@
   "bridge": {
     "message": "Bridge"
   },
+  "bridgeCalculatingAmount": {
+    "message": "Nagkakalkula..."
+  },
   "bridgeDontSend": {
     "message": "Bridge, huwag ipadala"
+  },
+  "bridgeEnterAmount": {
+    "message": "Ilagay ang halaga"
   },
   "bridgeFrom": {
     "message": "I-bridge mula sa"
@@ -846,8 +858,17 @@
   "bridgeSelectNetwork": {
     "message": "Pumili ng network"
   },
+  "bridgeSelectTokenAndAmount": {
+    "message": "Piliin ang token at halaga"
+  },
+  "bridgeTimingTooltipText": {
+    "message": "Ito ang tinatayang tagal para makumpleto ang pag-bridge."
+  },
   "bridgeTo": {
     "message": "I-bridge papunta sa"
+  },
+  "bridgeTotalFeesTooltipText": {
+    "message": "Kasama rito ang mga bayad sa gas (binabayaran sa mga crypto miner) at mga bayad sa tagapaghatid (binabayaran sa mga serbisyo ng power complex gaya ng pag-bridge).\nNakabatay ang mga bayad sa trapiko sa network at kung paano kakumplikado ang transaksyon. Hindi kumikita ang MetaMask sa anumang bayad."
   },
   "browserNotSupported": {
     "message": "Hindi sinusuportahan ang iyong browser..."
@@ -1159,6 +1180,14 @@
   "connectedWithAccountName": {
     "message": "Nakakonekta sa $1",
     "description": "$1 represents account name"
+  },
+  "connectedWithNetwork": {
+    "message": "$1 (na) network ang konektado",
+    "description": "$1 represents network length"
+  },
+  "connectedWithNetworkName": {
+    "message": "Konektado sa $1",
+    "description": "$1 represents network name"
   },
   "connecting": {
     "message": "Kumokonekta"
@@ -1493,6 +1522,9 @@
   "dcent": {
     "message": "D'Cent"
   },
+  "debitCreditPurchaseOptions": {
+    "message": "Mga opsyon sa pagbili gamit ang debit o credit card"
+  },
   "decimal": {
     "message": "Decimal na token"
   },
@@ -1802,6 +1834,9 @@
   "editSpendingCapError": {
     "message": "Ang cap sa paggastos ay hindi maaaring lumampas sa $1 (na) decimal digit. Alisin ang mga decimal digit para magpatuloy."
   },
+  "editSpendingCapSpecialCharError": {
+    "message": "Maglagay lang ng mga numero"
+  },
   "enableAutoDetect": {
     "message": " Paganahin ang autodetect"
   },
@@ -1904,9 +1939,41 @@
     "message": "Code: $1",
     "description": "Displayed error name for debugging purposes. $1 is the error name"
   },
+  "errorPageContactSupport": {
+    "message": "Makipag-ugnayan sa Suporta",
+    "description": "Button for contact MM support"
+  },
+  "errorPageDescribeUsWhatHappened": {
+    "message": "Ilarawan kung ano ang nangyari",
+    "description": "Button for submitting report to sentry"
+  },
+  "errorPageInfo": {
+    "message": "Hindi puwedeng ipakita ang impormasyon mo. Huwag mag-alala, ligtas ang wallet at mga pondo mo.",
+    "description": "Information banner shown in the error page"
+  },
+  "errorPageMessageTitle": {
+    "message": "Mensahe ng error",
+    "description": "Title for description, which is displayed for debugging purposes"
+  },
+  "errorPageSentryFormTitle": {
+    "message": "Ilarawan kung ano ang nangyari",
+    "description": "In sentry feedback form, The title at the top of the feedback form."
+  },
+  "errorPageSentryMessagePlaceholder": {
+    "message": "Matutulungan mo kaming ayusin ang problema kapag nagbahagi ka ng mga detalye gaya ng kung paano namin mare-reproduce ang bug.",
+    "description": "In sentry feedback form, The placeholder for the feedback description input field."
+  },
+  "errorPageSentrySuccessMessageText": {
+    "message": "Salamat! Susuriin namin ito sa lalong madaling panahon.",
+    "description": "In sentry feedback form, The message displayed after a successful feedback submission."
+  },
   "errorPageTitle": {
     "message": "Nagkaroon ng error sa MetaMask",
     "description": "Title of generic error page"
+  },
+  "errorPageTryAgain": {
+    "message": "Subukan ulit",
+    "description": "Button for try again"
   },
   "errorStack": {
     "message": "Stack:",
@@ -1924,6 +1991,9 @@
   },
   "estimatedFeeTooltip": {
     "message": "Halaga na binayaran para iproseso ang transaksyon sa network."
+  },
+  "estimatedTime": {
+    "message": "Tinatayang oras"
   },
   "ethGasPriceFetchWarning": {
     "message": "Ang backup na presyo ng gas ay ibinigay dahil ang pangunahing serbisyo ng pagtantya ng gas ay hindi available sa ngayon."
@@ -2069,6 +2139,9 @@
   },
   "functionType": {
     "message": "Uri ng Function"
+  },
+  "fundingMethod": {
+    "message": "Paraan ng pagpopondo"
   },
   "gas": {
     "message": "Gas"
@@ -3724,6 +3797,12 @@
   "outdatedBrowserNotification": {
     "message": "Hindi na updated ang iyong browser. Kapag hindi mo inupdate ang iyong browser, hindi ka makakakuha ng mga security patch at bagong feature mula sa MetaMask."
   },
+  "overrideContentSecurityPolicyHeader": {
+    "message": "Override Content-Security-Policy header"
+  },
+  "overrideContentSecurityPolicyHeaderDescription": {
+    "message": "Isang solusyon ang opsyon na ito para sa isang karaniwang isyu sa Firefox, kung saan pinipigilan ng Content-Security-Policy header ng isang dapp ang extension na mag-load nang tama. Hindi inirerekomenda ang hindi pagpapagana sa opsyon na ito maliban na lang kung kinakailangan para sa pagtutugma ng partikular na web page."
+  },
   "padlock": {
     "message": "Padlock"
   },
@@ -4395,6 +4474,9 @@
   "requestFromInfo": {
     "message": "Ito ang site na humihiling ng iyong pirma."
   },
+  "requestFromInfoSnap": {
+    "message": "Ito ang Snap na humihiling ng iyong pirma."
+  },
   "requestFromTransactionDescription": {
     "message": "Ito ang site na humihiling ng iyong kumpirmasyon."
   },
@@ -4416,6 +4498,10 @@
   "requestingForAccount": {
     "message": "Hinihiling para sa $1",
     "description": "Name of Account"
+  },
+  "requestingForNetwork": {
+    "message": "Humihiling ng $1",
+    "description": "Name of Network"
   },
   "requestsAwaitingAcknowledgement": {
     "message": "mga kahilingang hinihintay na tanggapin"
@@ -4895,6 +4981,9 @@
   "simulationDetailsIncomingHeading": {
     "message": "Natanggap mo"
   },
+  "simulationDetailsNoChanges": {
+    "message": "Walang pagbabago"
+  },
   "simulationDetailsOutgoingHeading": {
     "message": "Nagpadala ka"
   },
@@ -4916,6 +5005,9 @@
   },
   "simulationDetailsTransactionReverted": {
     "message": "Ang transaksyon na ito ay malamang na mabigo"
+  },
+  "simulationDetailsUnavailable": {
+    "message": "Hindi available"
   },
   "simulationErrorMessageV2": {
     "message": "Hindi namin nagawang tantyahin ang gas. Maaaring may error sa kontrata at maaaring mabigo ang transaksyong ito."
@@ -5142,6 +5234,15 @@
   "snapsUIError": {
     "message": "Makipag-ugnayan sa mga tagalikha ng $1 para sa karagdagang suporta.",
     "description": "This is shown when the insight snap throws an error. $1 is the snap name"
+  },
+  "solanaSupportSectionTitle": {
+    "message": "Solana"
+  },
+  "solanaSupportToggleDescription": {
+    "message": "Kapag in-on ang feature na ito, magkakaroon ka ng opsyon na magdagdag ng Solana Account sa MetaMask extension mo mula sa dati mo nang Lihim na Parirala sa Pagbawi. Isa itong eksperimental na Beta feature kaya gamitin ito nang may pag-iingat."
+  },
+  "solanaSupportToggleTitle": {
+    "message": "Paganahin ang \"Magdagdag ng bagong Solana account (Beta)\""
   },
   "somethingDoesntLookRight": {
     "message": "Mayroon bang hindi tama? $1",
@@ -5801,6 +5902,10 @@
   "swapTokenVerifiedOn1SourceTitle": {
     "message": "Potensyal na hindi tunay na token"
   },
+  "swapTokenVerifiedSources": {
+    "message": "Kinumpirma ng $1 (na) pinagmulan. I-verify sa $2.",
+    "description": "$1 the number of sources that have verified the token, $2 points the user to a block explorer as a place they can verify information about the token."
+  },
   "swapTooManyDecimalsError": {
     "message": "Ang $1 ay nagpapahintulot sa hanggang $2 na decimal",
     "description": "$1 is a token symbol and $2 is the max. number of decimals allowed for the token"
@@ -5918,6 +6023,12 @@
   "tips": {
     "message": "Mga Tip"
   },
+  "tipsForUsingAWallet": {
+    "message": "Mga tip sa paggamit ng wallet"
+  },
+  "tipsForUsingAWalletDescription": {
+    "message": "Kapag nagdagdag ka ng mga token, magkakaroon ka ng mas maraming paraan para magamit ang web3."
+  },
   "to": {
     "message": "Para kay/sa"
   },
@@ -5970,6 +6081,9 @@
   "tokenList": {
     "message": "Mga listahan ng token"
   },
+  "tokenMarketplace": {
+    "message": "Marketplace ng token"
+  },
   "tokenScamSecurityRisk": {
     "message": "mga panloloko sa token at panganib sa seguridad"
   },
@@ -6006,6 +6120,9 @@
   },
   "total": {
     "message": "Kabuuan"
+  },
+  "totalFees": {
+    "message": "Kabuuang bayad"
   },
   "totalVolume": {
     "message": "Kabuuang volume"
