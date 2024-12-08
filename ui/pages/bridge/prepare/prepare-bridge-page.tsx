@@ -423,6 +423,7 @@ const PrepareBridgePage = () => {
               });
               dispatch(setToChainId(networkConfig.chainId));
               dispatch(setToChain(networkConfig.chainId));
+              dispatch(setToToken(null));
             },
             header: t('bridgeTo'),
             shouldDisableNetwork: ({ chainId }) =>
