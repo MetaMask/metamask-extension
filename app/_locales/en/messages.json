@@ -1129,7 +1129,7 @@
     "message": "Confirm Secret Recovery Phrase"
   },
   "confirmTitleApproveTransaction": {
-    "message": "Allowance request"
+    "message": "Withdrawal request"
   },
   "confirmTitleDeployContract": {
     "message": "Deploy a contract"

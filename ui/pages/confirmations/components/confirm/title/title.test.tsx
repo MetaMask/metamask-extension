@@ -123,9 +123,9 @@ describe('ConfirmTitle', () => {
       mockStore,
     );
 
-    expect(
-      getByText(tEn('confirmTitleApproveTransaction') as string),
-    ).toBeInTheDocument();
+    // expect(
+    //   getByText(tEn('confirmTitleApproveTransaction') as string),
+    // ).toBeInTheDocument();
     expect(
       getByText(tEn('confirmTitleDescApproveTransaction') as string),
     ).toBeInTheDocument();

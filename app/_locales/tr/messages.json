@@ -1012,9 +1012,6 @@
   "confirmRecoveryPhrase": {
     "message": "Gizli Kurtarma İfadesini Onayla"
   },
-  "confirmTitleApproveTransaction": {
-    "message": "Ödenek talebi"
-  },
   "confirmTitleDeployContract": {
     "message": "Bir sözleşme kurulumu gerçekleştirin"
   },
