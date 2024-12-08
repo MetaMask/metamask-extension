@@ -355,7 +355,7 @@ export const TokenListItem = ({
                 />
               ) : (
                 <Text
-                  variant={TextVariant.bodyMd}
+                  variant={TextVariant.bodySmMedium}
                   color={TextColor.textAlternative}
                   data-testid="multichain-token-list-item-token-name"
                   ellipsis
