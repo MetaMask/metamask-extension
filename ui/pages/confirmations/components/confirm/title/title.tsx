@@ -88,7 +88,7 @@ const getTitle = (
       return t('confirmTitleSignature');
     case TransactionType.tokenMethodApprove:
       if (isNFT) {
-        // return t('confirmTitleApproveTransaction');
+        return t('confirmTitleApproveTransaction');
       }
       if (customSpendingCap === '0') {
         return t('confirmTitleRevokeApproveTransaction');
