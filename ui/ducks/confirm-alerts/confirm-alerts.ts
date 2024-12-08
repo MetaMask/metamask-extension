@@ -15,7 +15,7 @@ export type Alert = {
   /**
    * Additional details about the alert.
    */
-  alertDetails?: string[];
+  alertDetails?: string[] | React.ReactNode;
 
   /**
    * The field associated with the alert.
