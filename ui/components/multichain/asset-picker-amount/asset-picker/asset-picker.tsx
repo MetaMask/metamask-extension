@@ -181,9 +181,7 @@ export function AssetPicker({
       {networkProps && (
         <AssetPickerModalNetwork
           isOpen={isSelectingNetwork}
-          onClose={() => {
-            setIsSelectingNetwork(false);
-          }}
+          onClose={() => setIsSelectingNetwork(false)}
           onBack={() => {
             setIsSelectingNetwork(false);
             setShowAssetPickerModal(true);
@@ -214,7 +212,6 @@ export function AssetPicker({
         action={action}
         isOpen={showAssetPickerModal}
         onClose={() => setShowAssetPickerModal(false)}
-        onBack={networkProps ? () => setIsSelectingNetwork(true) : undefined}
         asset={asset}
         onAssetChange={(
           token:
