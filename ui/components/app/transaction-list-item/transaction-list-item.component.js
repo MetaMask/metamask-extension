@@ -69,7 +69,10 @@ import { MetaMetricsContext } from '../../../contexts/metametrics';
 import { ActivityListItem } from '../../multichain';
 import { abortTransactionSigning } from '../../../store/actions';
 import { getIsSmartTransaction } from '../../../../shared/modules/selectors';
-import useBridgeTxHistoryData from '../../../hooks/bridge/useBridgeTxHistoryData';
+import {
+  useBridgeTxHistoryData,
+  FINAL_NON_CONFIRMED_STATUSES,
+} from '../../../hooks/bridge/useBridgeTxHistoryData';
 import BridgeActivityItemTxSegments from '../../../pages/bridge/transaction-details/bridge-activity-item-tx-segments';
 
 function TransactionListItemInner({
@@ -93,14 +96,10 @@ function TransactionListItemInner({
   // Bridge transactions
   const isBridgeTx =
     transactionGroup.initialTransaction.type === TransactionType.bridge;
-  const {
-    bridgeTitleSuffix,
-    bridgeTxHistoryItem,
-    isBridgeComplete,
-    showBridgeTxDetails,
-  } = useBridgeTxHistoryData({
-    transactionGroup,
-  });
+  const { bridgeTxHistoryItem, isBridgeComplete, showBridgeTxDetails } =
+    useBridgeTxHistoryData({
+      transactionGroup,
+    });
 
   const {
     initialTransaction: { id },
@@ -309,7 +308,7 @@ function TransactionListItemInner({
             : toggleShowDetails
         }
         className={className}
-        title={`${title}${bridgeTitleSuffix}`}
+        title={title}
         icon={
           ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
           isCustodian ? (
@@ -355,7 +354,9 @@ function TransactionListItemInner({
           ///: END:ONLY_INCLUDE_IF
         }
         subtitle={
-          isBridgeTx && isBridgeComplete === false ? (
+          !FINAL_NON_CONFIRMED_STATUSES.includes(status) &&
+          isBridgeTx &&
+          !isBridgeComplete ? (
             <BridgeActivityItemTxSegments
               bridgeTxHistoryItem={bridgeTxHistoryItem}
               transactionGroup={transactionGroup}

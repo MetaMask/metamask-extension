@@ -1481,12 +1481,19 @@ export default class MetamaskController extends EventEmitter {
         },
         showInAppNotification: {
           method: (origin, args) => {
-            const { message } = args;
+            const { message, title, footerLink, interfaceId } = args;
+
+            const detailedView = {
+              title,
+              ...(footerLink ? { footerLink } : {}),
+              interfaceId,
+            };
 
             const notification = {
               data: {
                 message,
                 origin,
+                ...(interfaceId ? { detailedView } : {}),
               },
               type: TRIGGER_TYPES.SNAP,
               readDate: null,
@@ -2212,6 +2219,7 @@ export default class MetamaskController extends EventEmitter {
           'NetworkController:getNetworkClientById',
           'NetworkController:findNetworkClientIdByChainId',
           'NetworkController:getState',
+          'TransactionController:getState',
         ],
         allowedEvents: [],
       });
@@ -2922,14 +2930,22 @@ export default class MetamaskController extends EventEmitter {
               origin,
               args.message,
             ),
-          showInAppNotification: (origin, args) =>
-            this.controllerMessenger.call(
+          showInAppNotification: (origin, args) => {
+            const { message, title, footerLink } = args;
+            const notificationArgs = {
+              interfaceId: args.content,
+              message,
+              title,
+              footerLink,
+            };
+            return this.controllerMessenger.call(
               'RateLimitController:call',
               origin,
               'showInAppNotification',
               origin,
-              args,
-            ),
+              notificationArgs,
+            );
+          },
           updateSnapState: this.controllerMessenger.call.bind(
             this.controllerMessenger,
             'SnapController:updateSnapState',
