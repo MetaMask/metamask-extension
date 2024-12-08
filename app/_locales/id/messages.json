@@ -1012,9 +1012,6 @@
   "confirmRecoveryPhrase": {
     "message": "Konfirmasikan Frasa Pemulihan Rahasia"
   },
-  "confirmTitleApproveTransaction": {
-    "message": "Permintaan izin"
-  },
   "confirmTitleDeployContract": {
     "message": "Terapkan kontrak"
   },

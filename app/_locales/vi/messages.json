@@ -1012,9 +1012,6 @@
   "confirmRecoveryPhrase": {
     "message": "Xác nhận Cụm từ khôi phục bí mật"
   },
-  "confirmTitleApproveTransaction": {
-    "message": "Yêu cầu cho phép"
-  },
   "confirmTitleDeployContract": {
     "message": "Triển khai hợp đồng"
   },
