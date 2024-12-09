@@ -3,7 +3,7 @@
 exports[`Security Provider Banner Alert should match snapshot 1`] = `
 <div>
   <div
-    class="mm-box mm-banner-base mm-banner-alert mm-banner-alert--severity-danger mm-box--padding-3 mm-box--padding-left-2 mm-box--display-flex mm-box--gap-2 mm-box--background-color-error-muted mm-box--rounded-sm"
+    class="mm-box mm-banner-base mm-banner-alert mm-banner-alert--severity-danger mm-box--padding-3 mm-box--padding-right-0 mm-box--padding-left-2 mm-box--display-flex mm-box--gap-2 mm-box--background-color-error-muted mm-box--rounded-sm"
     data-testid="security-provider-banner-alert"
   >
     <span
@@ -87,7 +87,7 @@ exports[`Security Provider Banner Alert should match snapshot 1`] = `
 exports[`Security Provider Banner Alert should render disclosure component if no details were provided 1`] = `
 <div>
   <div
-    class="mm-box mm-banner-base mm-banner-alert mm-banner-alert--severity-danger mm-box--padding-3 mm-box--padding-left-2 mm-box--display-flex mm-box--gap-2 mm-box--background-color-error-muted mm-box--rounded-sm"
+    class="mm-box mm-banner-base mm-banner-alert mm-banner-alert--severity-danger mm-box--padding-3 mm-box--padding-right-0 mm-box--padding-left-2 mm-box--display-flex mm-box--gap-2 mm-box--background-color-error-muted mm-box--rounded-sm"
     data-testid="security-provider-banner-alert"
   >
     <span

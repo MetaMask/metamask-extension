@@ -2,7 +2,7 @@
 
 exports[`Blockaid Banner Alert should render 'danger' UI when securityAlertResponse.result_type is 'Malicious 1`] = `
 <div
-  class="mm-box mm-banner-base mm-banner-alert mm-banner-alert--severity-danger mm-box--padding-3 mm-box--padding-left-2 mm-box--display-flex mm-box--gap-2 mm-box--background-color-error-muted mm-box--rounded-sm"
+  class="mm-box mm-banner-base mm-banner-alert mm-banner-alert--severity-danger mm-box--padding-3 mm-box--padding-right-0 mm-box--padding-left-2 mm-box--display-flex mm-box--gap-2 mm-box--background-color-error-muted mm-box--rounded-sm"
   data-testid="security-provider-banner-alert"
 >
   <span
@@ -99,7 +99,7 @@ exports[`Blockaid Banner Alert should render 'danger' UI when securityAlertRespo
 
 exports[`Blockaid Banner Alert should render 'warning' UI when securityAlertResponse.result_type is 'Error 1`] = `
 <div
-  class="mm-box mm-banner-base mm-banner-alert mm-banner-alert--severity-warning mm-box--padding-3 mm-box--padding-left-2 mm-box--display-flex mm-box--gap-2 mm-box--background-color-warning-muted mm-box--rounded-sm"
+  class="mm-box mm-banner-base mm-banner-alert mm-banner-alert--severity-warning mm-box--padding-3 mm-box--padding-right-0 mm-box--padding-left-2 mm-box--display-flex mm-box--gap-2 mm-box--background-color-warning-muted mm-box--rounded-sm"
   data-testid="security-provider-banner-alert"
 >
   <span
@@ -196,7 +196,7 @@ exports[`Blockaid Banner Alert should render 'warning' UI when securityAlertResp
 
 exports[`Blockaid Banner Alert should render 'warning' UI when securityAlertResponse.result_type is 'Warning 1`] = `
 <div
-  class="mm-box mm-banner-base mm-banner-alert mm-banner-alert--severity-warning mm-box--padding-3 mm-box--padding-left-2 mm-box--display-flex mm-box--gap-2 mm-box--background-color-warning-muted mm-box--rounded-sm"
+  class="mm-box mm-banner-base mm-banner-alert mm-banner-alert--severity-warning mm-box--padding-3 mm-box--padding-right-0 mm-box--padding-left-2 mm-box--display-flex mm-box--gap-2 mm-box--background-color-warning-muted mm-box--rounded-sm"
   data-testid="security-provider-banner-alert"
 >
   <span
@@ -294,7 +294,7 @@ exports[`Blockaid Banner Alert should render 'warning' UI when securityAlertResp
 exports[`Blockaid Banner Alert should render details section even when features is not provided 1`] = `
 <div>
   <div
-    class="mm-box mm-banner-base mm-banner-alert mm-banner-alert--severity-warning mm-box--padding-3 mm-box--padding-left-2 mm-box--display-flex mm-box--gap-2 mm-box--background-color-warning-muted mm-box--rounded-sm"
+    class="mm-box mm-banner-base mm-banner-alert mm-banner-alert--severity-warning mm-box--padding-3 mm-box--padding-right-0 mm-box--padding-left-2 mm-box--display-flex mm-box--gap-2 mm-box--background-color-warning-muted mm-box--rounded-sm"
     data-testid="security-provider-banner-alert"
   >
     <span
@@ -393,7 +393,7 @@ exports[`Blockaid Banner Alert should render details section even when features 
 exports[`Blockaid Banner Alert should render details when provided 1`] = `
 <div>
   <div
-    class="mm-box mm-banner-base mm-banner-alert mm-banner-alert--severity-warning mm-box--padding-3 mm-box--padding-left-2 mm-box--display-flex mm-box--gap-2 mm-box--background-color-warning-muted mm-box--rounded-sm"
+    class="mm-box mm-banner-base mm-banner-alert mm-banner-alert--severity-warning mm-box--padding-3 mm-box--padding-right-0 mm-box--padding-left-2 mm-box--display-flex mm-box--gap-2 mm-box--background-color-warning-muted mm-box--rounded-sm"
     data-testid="security-provider-banner-alert"
   >
     <span
@@ -504,7 +504,7 @@ exports[`Blockaid Banner Alert should render details when provided 1`] = `
 exports[`Blockaid Banner Alert should render link to report url 1`] = `
 <div>
   <div
-    class="mm-box mm-banner-base mm-banner-alert mm-banner-alert--severity-warning mm-box--padding-3 mm-box--padding-left-2 mm-box--display-flex mm-box--gap-2 mm-box--background-color-warning-muted mm-box--rounded-sm"
+    class="mm-box mm-banner-base mm-banner-alert mm-banner-alert--severity-warning mm-box--padding-3 mm-box--padding-right-0 mm-box--padding-left-2 mm-box--display-flex mm-box--gap-2 mm-box--background-color-warning-muted mm-box--rounded-sm"
     data-testid="security-provider-banner-alert"
   >
     <span
