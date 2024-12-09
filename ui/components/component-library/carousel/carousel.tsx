@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import classnames from 'classnames';
 import { Carousel as ResponsiveCarousel } from 'react-responsive-carousel';
 import { Box, BannerBase } from '..';
@@ -8,6 +8,8 @@ import {
   AlignItems,
   TextVariant,
   FontWeight,
+  BackgroundColor,
+  BorderColor,
 } from '../../../helpers/constants/design-system';
 import type { CarouselProps } from './carousel.types';
 
@@ -24,13 +26,10 @@ const WIDTH_VALUES = {
 };
 
 const BANNER_STYLES = {
-  BACKGROUND_COLOR: '#2E3033',
-  BORDER_COLOR: '#858B9A33',
   HEIGHT: '59px',
 };
 
 const ACCESSORY_STYLES = {
-  BACKGROUND_COLOR: 'red',
   WIDTH: '60px',
 };
 
@@ -49,13 +48,44 @@ export const Carousel = React.forwardRef(
       emulateTouch = true,
       centerMode = true,
       swipeable = true,
-      slides,
+      slides: initialSlides,
       className,
       onClose,
       ...props
     }: CarouselProps,
     ref: React.Ref<HTMLDivElement>,
   ) => {
+    const [slides, setSlides] = useState(initialSlides);
+    const [selectedIndex, setSelectedIndex] = useState(selectedItem);
+
+    const handleClose = (slideId: string) => {
+      const currentSlideIndex = slides.findIndex(
+        (slide) => slide.id === slideId,
+      );
+      const newSelectedIndex =
+        currentSlideIndex === 0 ? 0 : currentSlideIndex - 1;
+
+      setSlides((prevSlides) =>
+        prevSlides.filter((slide) => slide.id !== slideId),
+      );
+      setSelectedIndex(newSelectedIndex);
+
+      if (onClose) {
+        onClose(slideId);
+      }
+    };
+
+    const handleChange = (index: number) => {
+      setSelectedIndex(index);
+      if (onChange) {
+        onChange(index);
+      }
+    };
+
+    if (slides.length === 0) {
+      return null;
+    }
+
     return (
       <Box
         className={classnames('mm-carousel', className || '')}
@@ -63,9 +93,9 @@ export const Carousel = React.forwardRef(
         {...(props as BoxProps<'div'>)}
       >
         <ResponsiveCarousel
-          selectedItem={selectedItem}
+          selectedItem={selectedIndex}
           showArrows={showArrows}
-          onChange={onChange}
+          onChange={handleChange}
           showStatus={showStatus}
           autoPlay={autoPlay}
           swipeScrollTolerance={swipeScrollTolerance}
@@ -103,15 +133,16 @@ export const Carousel = React.forwardRef(
                 fontWeight: FontWeight.Medium,
                 marginLeft: 2,
               }}
+              backgroundColor={BackgroundColor.backgroundAlternative}
+              borderColor={BorderColor.borderMuted}
+              borderWidth={1}
               descriptionProps={{
                 variant: TextVariant.bodyXs,
                 fontWeight: FontWeight.Normal,
                 marginLeft: 2,
               }}
-              onClose={onClose ? () => onClose(slide.id) : undefined}
+              onClose={handleClose ? () => handleClose(slide.id) : undefined}
               style={{
-                backgroundColor: BANNER_STYLES.BACKGROUND_COLOR,
-                border: `1px solid ${BANNER_STYLES.BORDER_COLOR}`,
                 height: BANNER_STYLES.HEIGHT,
                 margin: getSlideMargin(index, slides.length),
                 width: getSlideWidth(slides.length),
