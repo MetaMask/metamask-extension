@@ -10,7 +10,7 @@ import HeaderNavbar from '../../page-objects/pages/header-navbar';
 import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
 
 describe('Lattice hardware wallet @no-mmi', function (this: Suite) {
-  it('connects to lattice hardware wallet', async function () {
+  it('lattice page rendering validation', async function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilder().build(),
