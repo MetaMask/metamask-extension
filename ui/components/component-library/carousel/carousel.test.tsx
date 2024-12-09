@@ -94,4 +94,104 @@ describe('Carousel', () => {
       width: '96%',
     });
   });
+
+  it('should render loading state correctly', () => {
+    const { container } = render(<Carousel slides={mockSlides} isLoading />);
+
+    const loadingCarousel = container.querySelector('.mm-carousel__loading');
+    expect(loadingCarousel).toBeDefined();
+
+    const skeletonSlides = container.querySelectorAll('.mm-carousel-slide');
+    expect(skeletonSlides).toHaveLength(3); // Default shows 3 skeleton slides
+  });
+
+  it('should handle slide click with href', () => {
+    const mockOpenTab = jest.fn();
+    global.platform = { openTab: mockOpenTab };
+
+    const slidesWithHref = [
+      {
+        ...mockSlides[0],
+        href: 'https://example.com',
+      },
+    ];
+
+    const { container } = render(<Carousel slides={slidesWithHref} />);
+
+    const slide = container.querySelector('.mm-carousel-slide');
+    fireEvent.click(slide);
+
+    expect(mockOpenTab).toHaveBeenCalledWith({ url: 'https://example.com' });
+  });
+
+  it('should handle slide click with onClick', () => {
+    const mockOnClick = jest.fn();
+    const slidesWithClick = [
+      {
+        ...mockSlides[0],
+        onClick: mockOnClick,
+      },
+    ];
+
+    const { container } = render(<Carousel slides={slidesWithClick} />);
+
+    const slide = container.querySelector('.mm-carousel-slide');
+    fireEvent.click(slide);
+
+    expect(mockOnClick).toHaveBeenCalled();
+  });
+
+  it('should not show close button for undismissable slides', () => {
+    const undismissableSlides = [
+      {
+        ...mockSlides[0],
+        undismissable: true,
+      },
+      mockSlides[1],
+    ];
+
+    const { container } = render(
+      <Carousel slides={undismissableSlides} onClose={() => undefined} />,
+    );
+
+    const closeButtons = container.querySelectorAll(
+      '.mm-carousel-slide__close-button',
+    );
+    expect(closeButtons).toHaveLength(1); // Only one dismissable slide
+  });
+
+  it('should limit the number of slides to MAX_SLIDES', () => {
+    const manySlides = [
+      ...mockSlides,
+      {
+        id: '3',
+        title: 'Slide 3',
+        description: 'Description 3',
+        image: 'image3.jpg',
+      },
+      {
+        id: '4',
+        title: 'Slide 4',
+        description: 'Description 4',
+        image: 'image4.jpg',
+      },
+      {
+        id: '5',
+        title: 'Slide 5',
+        description: 'Description 5',
+        image: 'image5.jpg',
+      },
+      {
+        id: '6',
+        title: 'Slide 6',
+        description: 'Description 6',
+        image: 'image6.jpg',
+      },
+    ];
+
+    const { container } = render(<Carousel slides={manySlides} />);
+
+    const visibleSlides = container.querySelectorAll('.mm-carousel-slide');
+    expect(visibleSlides).toHaveLength(5); // MAX_SLIDES is 5
+  });
 });
