@@ -18,11 +18,8 @@ import {
   IconName,
 } from '../../components/component-library';
 import { getProviderConfig } from '../../../shared/modules/selectors/networks';
-import {
-  getCurrentCurrency,
-  getIsBridgeChain,
-  getIsBridgeEnabled,
-} from '../../selectors';
+import { getCurrentCurrency } from '../../ducks/metamask/metamask';
+import { getIsBridgeChain, getIsBridgeEnabled } from '../../selectors';
 import useBridging from '../../hooks/bridge/useBridging';
 import {
   Content,

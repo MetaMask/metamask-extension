@@ -15,12 +15,12 @@ import {
 import { PRIMARY } from '../../../helpers/constants/common';
 import {
   contractExchangeRateSelector,
-  getCurrentCurrency,
   getSelectedInternalAccount,
   selectConversionRateByChainId,
   selectNetworkConfigurationByChainId,
   selectNftContractsByChainId,
 } from '../../../selectors';
+import { getCurrentCurrency } from '../../../ducks/metamask/metamask';
 import { TokenStandard } from '../../../../shared/constants/transaction';
 import {
   getWeiHexFromDecimalValue,
