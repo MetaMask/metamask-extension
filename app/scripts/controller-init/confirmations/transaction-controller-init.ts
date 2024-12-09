@@ -74,12 +74,12 @@ export class TransactionControllerInit extends ControllerInit<
     >,
   ): TransactionController {
     const {
-      getControllerMessenger,
+      controllerMessenger,
       getGlobalChainId,
-      getInitMessenger,
       getPermittedAccounts,
       getStateUI,
       getTransactionMetricsRequest,
+      initMessenger,
       persistedState,
     } = request;
 
@@ -94,9 +94,6 @@ export class TransactionControllerInit extends ControllerInit<
       transactionUpdateController,
       ///: END:ONLY_INCLUDE_IF
     } = this.#getControllers(request);
-
-    const controllerMessenger = getControllerMessenger();
-    const initMessenger = getInitMessenger();
 
     const controller = new TransactionController({
       getCurrentNetworkEIP1559Compatibility: () =>
@@ -140,7 +137,7 @@ export class TransactionControllerInit extends ControllerInit<
         preferencesController().state.securityAlertsEnabled,
       isSimulationEnabled: () =>
         preferencesController().state.useTransactionSimulations,
-      messenger: controllerMessenger as TransactionControllerMessenger,
+      messenger: controllerMessenger,
       pendingTransactions: {
         isResubmitEnabled: () =>
           !(

@@ -30,8 +30,25 @@ type InitInstance = ControllerInit<
 
 type InitObject = InitFunction | InitInstance;
 
+class LegacyControllerInit extends ControllerInit<
+  Controller,
+  BaseRestrictedControllerMessenger,
+  BaseRestrictedControllerMessenger
+> {
+  #fn: InitFunction;
+
+  constructor(fn: InitFunction) {
+    super();
+    this.#fn = fn;
+  }
+
+  init(_request: BaseInitRequest): Controller {
+    return this.#fn(_request);
+  }
+}
+
 export function initControllers({
-  controllerMessenger,
+  controllerMessenger: controllerMessengerBase,
   initObjects,
   initRequest,
 }: {
@@ -39,34 +56,39 @@ export function initControllers({
   initObjects: InitObject[];
   initRequest: Omit<
     BaseInitRequest,
-    'getController' | 'getControllerMessenger' | 'getInitMessenger'
+    'getController' | 'controllerMessenger' | 'initMessenger'
   >;
 }) {
   log('Initializing controllers', initObjects.length);
+
+  const initInstances = initObjects.map((initObject) =>
+    initObject instanceof ControllerInit
+      ? initObject
+      : new LegacyControllerInit(initObject),
+  );
 
   const controllersByName: Record<string, Controller> = {};
   const controllerPersistedState: Record<string, unknown> = {};
   const controllerMemState: Record<string, unknown> = {};
   const controllerApi = {};
 
-  for (const initObject of initObjects) {
-    const initInstance = initObject as InitInstance;
-    const initFunction = initObject as InitFunction;
+  const getController = <T>(name: ControllerName) =>
+    getControllerOrThrow<T>(controllersByName, name);
+
+  for (const initInstance of initInstances) {
+    const messengerCallback = initInstance.getControllerMessengerCallback();
+    const initCallback = initInstance.getInitMessengerCallback();
+    const controllerMessenger = messengerCallback?.(controllerMessengerBase);
+    const initMessenger = initCallback?.(controllerMessengerBase);
 
     const finalInitRequest: BaseInitRequest = {
       ...initRequest,
-      getController: (name: ControllerName) =>
-        getController(controllersByName, name),
-      getControllerMessenger: () =>
-        initInstance.getControllerMessengerCallback?.()?.(controllerMessenger),
-      getInitMessenger: () =>
-        initInstance.getInitMessengerCallback?.()?.(controllerMessenger),
+      controllerMessenger,
+      getController,
+      initMessenger,
     };
 
-    const controller = initInstance.init
-      ? initInstance.init(finalInitRequest)
-      : initFunction(finalInitRequest);
-
+    const controller = initInstance.init(finalInitRequest);
     const { name } = controller;
 
     controllersByName[name] = controller;
@@ -76,7 +98,7 @@ export function initControllers({
       getFlatState: initRequest.getFlatState,
     };
 
-    const api = initInstance.getApi?.(getApiRequest) ?? {};
+    const api = initInstance.getApi(getApiRequest);
 
     Object.defineProperties(controllerApi, api);
 
@@ -106,7 +128,7 @@ export function initControllers({
   };
 }
 
-function getController<T>(
+function getControllerOrThrow<T>(
   controllersByName: Record<ControllerName, Controller>,
   name: ControllerName,
 ): T {

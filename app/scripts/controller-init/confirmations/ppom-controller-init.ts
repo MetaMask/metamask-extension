@@ -28,11 +28,11 @@ export class PPOMControllerInit extends ControllerInit<
     >,
   ) {
     const {
+      controllerMessenger,
       getController,
-      getControllerMessenger,
       getGlobalChainId,
-      getInitMessenger,
       getProvider,
+      initMessenger,
       persistedState,
     } = request;
 
@@ -40,9 +40,6 @@ export class PPOMControllerInit extends ControllerInit<
       getController<PreferencesController>(
         ControllerName.PreferencesController,
       );
-
-    const controllerMessenger = getControllerMessenger();
-    const initMessenger = getInitMessenger();
 
     return new PPOMController({
       messenger: controllerMessenger,
