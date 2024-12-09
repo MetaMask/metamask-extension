@@ -43,35 +43,28 @@ export const Carousel = React.forwardRef(
       emulateTouch = true,
       centerMode = true,
       swipeable = true,
-      slides: initialSlides,
+      slides = [],
       className,
       onClose,
       ...props
     }: CarouselProps,
     ref: React.Ref<HTMLDivElement>,
   ) => {
-    const [slides, setSlides] = useState(initialSlides);
     const [selectedIndex, setSelectedIndex] = useState(selectedItem);
 
     const handleClose = (slideId: string) => {
-      setSlides((prevSlides) => {
-        const currentSlideIndex = prevSlides.findIndex(
-          (slide) => slide.id === slideId,
-        );
+      const currentSlideIndex = slides.findIndex(
+        (slide) => slide.id === slideId,
+      );
 
-        let newSelectedIndex = selectedIndex;
-        if (
-          currentSlideIndex === prevSlides.length - 1 &&
-          prevSlides.length > 1
-        ) {
-          newSelectedIndex = currentSlideIndex - 1;
-        } else if (currentSlideIndex < selectedIndex) {
-          newSelectedIndex = selectedIndex - 1;
-        }
+      let newSelectedIndex = selectedIndex;
+      if (currentSlideIndex === slides.length - 1 && slides.length > 1) {
+        newSelectedIndex = currentSlideIndex - 1;
+      } else if (currentSlideIndex < selectedIndex) {
+        newSelectedIndex = selectedIndex - 1;
+      }
 
-        setSelectedIndex(newSelectedIndex);
-        return prevSlides.filter((slide) => slide.id !== slideId);
-      });
+      setSelectedIndex(newSelectedIndex);
 
       if (onClose) {
         onClose(slideId);

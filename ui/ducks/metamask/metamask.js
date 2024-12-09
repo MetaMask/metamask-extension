@@ -66,32 +66,7 @@ const initialState = {
       conversionRate: null,
     },
   },
-  slides: [
-    {
-      id: '1',
-      title: 'Lorem ipsum',
-      description: 'Dolor sit amet, consectetur',
-      image: 'https://via.placeholder.com/150',
-    },
-    {
-      id: '2',
-      title: 'Lorem ipsum',
-      description: 'Dolor sit amet, consectetur',
-      image: 'https://via.placeholder.com/150',
-    },
-    {
-      id: '3',
-      title: 'Lorem ipsum',
-      description: 'Dolor sit amet, consectetur',
-      image: 'https://via.placeholder.com/150',
-    },
-    {
-      id: '4',
-      title: 'Lorem ipsum',
-      description: 'Dolor sit amet, consectetur',
-      image: 'https://via.placeholder.com/150',
-    },
-  ],
+  slides: [],
 };
 
 /**

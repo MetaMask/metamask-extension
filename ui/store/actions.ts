@@ -921,6 +921,22 @@ export async function restoreUserData(jsonString: Json): Promise<true> {
   return true;
 }
 
+export function updateSlides(
+  slides,
+): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
+  return async (dispatch) => {
+    try {
+      dispatch({
+        type: actionConstants.SET_SLIDES,
+        slides,
+      });
+    } catch (error) {
+      logErrorWithMessage(error);
+      throw error;
+    }
+  };
+}
+
 export function removeSlide(
   id: string,
 ): ThunkAction<Promise<void>, MetaMaskReduxState, unknown, AnyAction> {
