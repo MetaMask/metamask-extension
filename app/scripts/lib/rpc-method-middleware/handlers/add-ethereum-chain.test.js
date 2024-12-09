@@ -203,9 +203,12 @@ describe('addEthereumChainHandler', () => {
 
   describe('if a networkConfiguration for the given chainId already exists', () => {
     describe('if the proposed networkConfiguration has a different rpcUrl from the one already in state', () => {
-      it('create a new networkConfiguration and switches to it', async () => {
+      it('updates the network with a new networkConfiguration and switches to it', async () => {
         const { mocks, end, handler } = createMockedHandler();
         mocks.getCurrentChainIdForDomain.mockReturnValue(CHAIN_IDS.SEPOLIA);
+        mocks.getNetworkConfigurationByChainId.mockReturnValue(
+          createMockMainnetConfiguration(),
+        );
 
         await handler({
           origin: 'example.com',
@@ -223,6 +226,30 @@ describe('addEthereumChainHandler', () => {
           ],
         });
 
+        expect(mocks.updateNetwork).toHaveBeenCalledWith(
+          '0x1',
+          {
+            blockExplorerUrls: ['https://etherscan.io'],
+            chainId: '0x1',
+            defaultBlockExplorerUrlIndex: 0,
+            defaultRpcEndpointIndex: 1,
+            name: 'Ethereum Mainnet',
+            nativeCurrency: 'ETH',
+            rpcEndpoints: [
+              {
+                networkClientId: 'mainnet',
+                type: 'infura',
+                url: 'https://mainnet.infura.io/v3/',
+              },
+              {
+                name: 'Ethereum Mainnet',
+                type: 'custom',
+                url: 'https://eth.llamarpc.com',
+              },
+            ],
+          },
+          undefined,
+        );
         expect(EthChainUtils.switchChain).toHaveBeenCalledTimes(1);
         expect(EthChainUtils.switchChain).toHaveBeenCalledWith(
           {},
@@ -246,7 +273,7 @@ describe('addEthereumChainHandler', () => {
     });
 
     describe('if the proposed networkConfiguration does not have a different rpcUrl from the one already in state', () => {
-      it('should switch to the existing networkConfiguration if one already exists for the given chain id', async () => {
+      it('should only switch to the existing networkConfiguration if one already exists for the given chain id', async () => {
         const { mocks, end, handler } = createMockedHandler();
         mocks.getCurrentChainIdForDomain.mockReturnValue(CHAIN_IDS.MAINNET);
         mocks.getNetworkConfigurationByChainId.mockReturnValue(
@@ -271,6 +298,8 @@ describe('addEthereumChainHandler', () => {
           ],
         });
 
+        expect(mocks.addNetwork).not.toHaveBeenCalled();
+        expect(mocks.updateNetwork).not.toHaveBeenCalled();
         expect(EthChainUtils.switchChain).toHaveBeenCalledTimes(1);
         expect(EthChainUtils.switchChain).toHaveBeenCalledWith(
           {},
