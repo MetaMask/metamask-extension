@@ -478,6 +478,16 @@ describe('AppStateController', () => {
     });
   });
 
+  describe('setRampCardClosed', () => {
+    it('set isRampCardClosed to true', async () => {
+      await withController(({ controller }) => {
+        controller.setRampCardClosed();
+
+        expect(controller.state.isRampCardClosed).toStrictEqual(true);
+      });
+    });
+  });
+
   describe('setNewPrivacyPolicyToastClickedOrClosed', () => {
     it('set the newPrivacyPolicyToastClickedOrClosed to true', async () => {
       await withController(({ controller }) => {
