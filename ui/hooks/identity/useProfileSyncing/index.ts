@@ -4,6 +4,7 @@ export {
   useSetIsProfileSyncingEnabled,
 } from './profileSyncing';
 export {
-  useAccountSyncingEffect,
+  useAccountSyncing,
+  useShouldDispatchAccountSyncing,
   useDeleteAccountSyncingDataFromUserStorage,
 } from './accountSyncing';

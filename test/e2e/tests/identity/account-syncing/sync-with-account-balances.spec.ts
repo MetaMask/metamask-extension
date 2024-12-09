@@ -3,10 +3,10 @@ import { unlockWallet, withFixtures } from '../../../helpers';
 import FixtureBuilder from '../../../fixture-builder';
 import { mockInfuraAndAccountSync } from '../mocks';
 import {
-  NOTIFICATIONS_TEAM_PASSWORD,
-  NOTIFICATIONS_TEAM_SEED_PHRASE,
+  IDENTITY_TEAM_PASSWORD,
+  IDENTITY_TEAM_SEED_PHRASE,
 } from '../constants';
-import { UserStorageMockttpController } from '../../../helpers/user-storage/userStorageMockttpController';
+import { UserStorageMockttpController } from '../../../helpers/identity/user-storage/userStorageMockttpController';
 import HeaderNavbar from '../../../page-objects/pages/header-navbar';
 import AccountListPage from '../../../page-objects/pages/account-list-page';
 import HomePage from '../../../page-objects/pages/home/homepage';
@@ -81,8 +81,8 @@ describe('Account syncing - User already has balances on multple accounts @no-mm
           // Complete initial setup with provided seed phrase
           await completeImportSRPOnboardingFlow({
             driver,
-            seedPhrase: NOTIFICATIONS_TEAM_SEED_PHRASE,
-            password: NOTIFICATIONS_TEAM_PASSWORD,
+            seedPhrase: IDENTITY_TEAM_SEED_PHRASE,
+            password: IDENTITY_TEAM_PASSWORD,
           });
 
           // Verify initial state and balance
@@ -132,8 +132,8 @@ describe('Account syncing - User already has balances on multple accounts @no-mm
           // Complete setup again for new session
           await completeImportSRPOnboardingFlow({
             driver,
-            seedPhrase: NOTIFICATIONS_TEAM_SEED_PHRASE,
-            password: NOTIFICATIONS_TEAM_PASSWORD,
+            seedPhrase: IDENTITY_TEAM_SEED_PHRASE,
+            password: IDENTITY_TEAM_PASSWORD,
           });
 
           const homePage = new HomePage(driver);
@@ -185,8 +185,8 @@ describe('Account syncing - User already has balances on multple accounts @no-mm
           // Complete setup for final verification
           await completeImportSRPOnboardingFlow({
             driver,
-            seedPhrase: NOTIFICATIONS_TEAM_SEED_PHRASE,
-            password: NOTIFICATIONS_TEAM_PASSWORD,
+            seedPhrase: IDENTITY_TEAM_SEED_PHRASE,
+            password: IDENTITY_TEAM_PASSWORD,
           });
 
           const homePage = new HomePage(driver);
@@ -210,7 +210,7 @@ describe('Account syncing - User already has balances on multple accounts @no-mm
           // Lock and unlock wallet to ensure that number of preloaded accounts have not gone up
           await homePage.headerNavbar.lockMetaMask();
           await unlockWallet(driver, {
-            password: NOTIFICATIONS_TEAM_PASSWORD,
+            password: IDENTITY_TEAM_PASSWORD,
             waitLoginSuccess: true,
             navigate: true,
           });
