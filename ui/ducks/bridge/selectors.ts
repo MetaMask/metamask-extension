@@ -1,4 +1,5 @@
 import {
+  AddNetworkFields,
   NetworkConfiguration,
   NetworkState,
 } from '@metamask/network-controller';
@@ -54,6 +55,7 @@ import {
 } from '../../pages/bridge/utils/quote';
 import { AssetType } from '../../../shared/constants/transaction';
 import { decGWEIToHexWEI } from '../../../shared/modules/conversion.utils';
+import { FEATURED_RPCS } from '../../../shared/constants/network';
 import {
   exchangeRatesFromNativeAndCurrencyRates,
   exchangeRateFromMarketData,
@@ -116,8 +118,11 @@ export const getFromChain = createDeepEqualSelector(
 export const getToChains = createDeepEqualSelector(
   getAllBridgeableNetworks,
   (state: BridgeAppState) => state.metamask.bridgeState?.bridgeFeatureFlags,
-  (allBridgeableNetworks, bridgeFeatureFlags): NetworkConfiguration[] =>
-    allBridgeableNetworks.filter(
+  (
+    allBridgeableNetworks,
+    bridgeFeatureFlags,
+  ): (AddNetworkFields | NetworkConfiguration)[] =>
+    uniqBy([...allBridgeableNetworks, ...FEATURED_RPCS], 'chainId').filter(
       ({ chainId }) =>
         bridgeFeatureFlags[BridgeFeatureFlagsKey.EXTENSION_CONFIG].chains[
           chainId
@@ -128,9 +133,10 @@ export const getToChains = createDeepEqualSelector(
 export const getToChain = createDeepEqualSelector(
   getToChains,
   (state: BridgeAppState) => state.bridge.toChainId,
-  (toChains, toChainId): NetworkConfiguration | undefined =>
+  (toChains, toChainId): NetworkConfiguration | AddNetworkFields | undefined =>
     toChains.find(({ chainId }) => chainId === toChainId),
 );
+
 export const getFromTokens = createDeepEqualSelector(
   (state: BridgeAppState) => state.metamask.bridgeState.srcTokens,
   (state: BridgeAppState) => state.metamask.bridgeState.srcTopAssets,
