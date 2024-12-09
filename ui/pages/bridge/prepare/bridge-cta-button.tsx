@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { useSelector } from 'react-redux';
 import {
   ButtonPrimary,
@@ -12,6 +12,7 @@ import {
   getToToken,
   getBridgeQuotes,
   getValidationErrors,
+  getBridgeQuotesConfig,
 } from '../../../ducks/bridge/selectors';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import useSubmitBridgeTransaction from '../hooks/useSubmitBridgeTransaction';
@@ -41,7 +42,9 @@ export const BridgeCTAButton = () => {
 
   const fromAmount = useSelector(getFromAmount);
 
-  const { isLoading, activeQuote } = useSelector(getBridgeQuotes);
+  const { isLoading, activeQuote, isQuoteGoingToRefresh, quotesRefreshCount } =
+    useSelector(getBridgeQuotes);
+  const { maxRefreshCount, refreshRate } = useSelector(getBridgeQuotesConfig);
 
   const { submitBridgeTransaction } = useSubmitBridgeTransaction();
 
@@ -78,7 +81,28 @@ export const BridgeCTAButton = () => {
   const isInsufficientGasForQuote =
     isInsufficientGasForQuote_(nativeAssetBalance);
 
+  const [isQuoteExpired, setIsQuoteExpired] = useState(false);
+  useEffect(() => {
+    let timeout: NodeJS.Timeout;
+    // Reset the isQuoteExpired if quote fethching restarts
+    if (quotesRefreshCount === 0) {
+      setIsQuoteExpired(false);
+      return () => clearTimeout(timeout);
+    }
+    // After the last quote refresh, set a timeout to expire the quote and disable the CTA
+    if (quotesRefreshCount >= maxRefreshCount && !isQuoteGoingToRefresh) {
+      timeout = setTimeout(() => {
+        setIsQuoteExpired(true);
+      }, refreshRate);
+    }
+    return () => clearTimeout(timeout);
+  }, [isQuoteGoingToRefresh, quotesRefreshCount]);
+
   const label = useMemo(() => {
+    if (isQuoteExpired) {
+      return t('bridgeQuoteExpired');
+    }
+
     if (isLoading && !isTxSubmittable) {
       return '';
     }
@@ -113,6 +137,7 @@ export const BridgeCTAButton = () => {
     isInsufficientBalance,
     isInsufficientGasBalance,
     isInsufficientGasForQuote,
+    isQuoteExpired,
   ]);
 
   return activeQuote ? (
@@ -139,7 +164,7 @@ export const BridgeCTAButton = () => {
           submitBridgeTransaction(activeQuote);
         }
       }}
-      disabled={!isTxSubmittable || isSubmitting}
+      disabled={!isTxSubmittable || isSubmitting || isQuoteExpired}
     >
       {label}
     </ButtonPrimary>
