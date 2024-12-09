@@ -379,8 +379,16 @@ export function getMultichainBalances(
 
 export function getMultichainTransactions(
   state: MultichainState,
-): TransactionsState['metamask']['transactions'] {
-  return state.metamask.transactions;
+): TransactionsState['metamask']['nonEvmTransactions'] {
+  return state.metamask.nonEvmTransactions;
+}
+
+export function getSelectedAccountMultichainTransactions(
+  state: MultichainState,
+) {
+  const selectedAccount = getSelectedInternalAccount(state);
+
+  return state.metamask.nonEvmTransactions[selectedAccount.id];
 }
 
 export const getMultichainCoinRates = (state: MultichainState) => {

@@ -53,7 +53,7 @@ export type PaginationOptions = {
  * State used by the {@link MultichainTransactionsController} to cache account balances.
  */
 export type MultichainTransactionsControllerState = {
-  transactions: {
+  nonEvmTransactions: {
     [accountId: string]: {
       data: Transaction[];
       next: string | null;
@@ -66,7 +66,7 @@ export type MultichainTransactionsControllerState = {
  * Default state of the {@link MultichainTransactionsController}.
  */
 export const defaultState: MultichainTransactionsControllerState = {
-  transactions: {},
+  nonEvmTransactions: {},
 };
 
 /**
@@ -142,7 +142,7 @@ export type AllowedEvents =
  * the `anonymous` flag.
  */
 const MultichainTransactionsControllerMetadata = {
-  transactions: {
+  nonEvmTransactions: {
     persist: true,
     anonymous: false,
   },
@@ -261,7 +261,7 @@ export class MultichainTransactionsController extends BaseController<
           next: response.next,
           lastUpdated: Date.now(),
         };
-        state.transactions[account.id] = entry as any;
+        state.nonEvmTransactions[account.id] = entry as any;
       });
     }
   }
@@ -277,18 +277,126 @@ export class MultichainTransactionsController extends BaseController<
     data: Transaction[];
     next: string | null;
   }> {
-    // @ts-expect-error Will exist in the future
-    return await this.#getClient(snapId).listAccountTransactions(
-      accountId,
-      pagination,
-    );
+    // return await this.#getClient(snapId).listAccountTransactions(
+    //   accountId,
+    //   pagination,
+    // );
+
+    // Return dummy data for development
+    return {
+      data: [
+        {
+          id: "3iUgGUsTWLccvLV5naiZRTbDwDb8t6FTtQA2nybUDDiBUWbAZdZth4A1HBYvCsHVRf1NkcjsApqo63XbaPV1icd8",
+          timestamp: 1733736433,
+          chain: "solana:EtWTRABZaYq6iMfeYKouRu166VU2xqa1",
+          status: "confirmed",
+          type: "send",
+          account: "b9d0a1ff-8880-4507-ac80-63eff8e4e9e6",
+          from: [
+            {
+              address: "BLw3RweJmfbTapJRgnPRvd962YDjFYAnVGd1p5hmZ5tP",
+              asset: {
+                fungible: true,
+                type: "slip44:501",
+                unit: "SOL",
+                amount: "0.02"
+              }
+            }
+          ],
+          to: [
+            {
+              address: "FvS1p2dQnhWNrHyuVpJRU5mkYRkSTrubXHs4XrAn3PGo",
+              asset: {
+                fungible: true,
+                type: "slip44:501",
+                unit: "SOL",
+                amount: "0.02"
+              }
+            }
+          ],
+          fees: [
+            {
+              type: "base",
+              asset: {
+                fungible: true,
+                type: "solana:EtWTRABZaYq6iMfeYKouRu166VU2xqa1/slip44:501",
+                unit: "SOL",
+                amount: "0.0001"
+              }
+            },
+            {
+              type: "priority",
+              asset: {
+                fungible: true,
+                type: "solana:EtWTRABZaYq6iMfeYKouRu166VU2xqa1/slip44:501",
+                unit: "SOL",
+                amount: "0.0001"
+              }
+            }
+          ],
+          events: []
+        },
+        {
+          id: "3vEa4BBZKGS5L54xBuxvyKjrMEsZSr8vqGG8VrfDDirQbr6BbMTJJUwSE5fxiGkRNyNqBi1QZD1T4GbEwqaAnETJ",
+          timestamp: 1733735551,
+          chain: "solana:EtWTRABZaYq6iMfeYKouRu166VU2xqa1",
+          status: "confirmed",
+          type: "receive",
+          account: "b9d0a1ff-8880-4507-ac80-63eff8e4e9e6",
+          from: [
+            {
+              address: "BLw3RweJmfbTapJRgnPRvd962YDjFYAnVGd1p5hmZ5tP",
+              asset: {
+                fungible: true,
+                type: "slip44:501",
+                unit: "SOL",
+                amount: "2"
+              }
+            }
+          ],
+          to: [
+            {
+              address: "FvS1p2dQnhWNrHyuVpJRU5mkYRkSTrubXHs4XrAn3PGo",
+              asset: {
+                fungible: true,
+                type: "slip44:501",
+                unit: "SOL",
+                amount: "2"
+              }
+            }
+          ],
+          fees: [
+            {
+              type: "base",
+              asset: {
+                fungible: true,
+                type: "solana:EtWTRABZaYq6iMfeYKouRu166VU2xqa1/slip44:501",
+                unit: "SOL",
+                amount: "0.0001"
+              }
+            },
+            {
+              type: "priority",
+              asset: {
+                fungible: true,
+                type: "solana:EtWTRABZaYq6iMfeYKouRu166VU2xqa1/slip44:501",
+                unit: "SOL",
+                amount: "0.0001"
+              }
+            }
+          ],
+          events: []
+        }
+      ],
+      next: null,
+    };
   }
 
   /**
    * Gets transactions for a specific account
    */
   getTransactions(accountId: string): Transaction[] {
-    return this.state.transactions[accountId]?.data ?? [];
+    return this.state.nonEvmTransactions[accountId]?.data ?? [];
   }
 
   /**
@@ -382,9 +490,9 @@ export class MultichainTransactionsController extends BaseController<
       this.#tracker.untrack(accountId);
     }
 
-    if (accountId in this.state.transactions) {
+    if (accountId in this.state.nonEvmTransactions) {
       this.update((state: Draft<MultichainTransactionsControllerState>) => {
-        delete state.transactions[accountId];
+        delete state.nonEvmTransactions[accountId];
       });
     }
   }

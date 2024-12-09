@@ -36,7 +36,13 @@ import {
   ButtonVariant,
   IconName,
   Text,
+  BadgeWrapper,
+  AvatarNetwork,
 } from '../../component-library';
+import TransactionIcon from '../transaction-icon';
+import TransactionStatusLabel from '../transaction-status-label/transaction-status-label';
+import { capitalize } from 'lodash';
+
 import {
   Display,
   TextColor,
@@ -51,14 +57,18 @@ import {
 } from '../../multichain/ramps-card/ramps-card';
 import { getIsNativeTokenBuyable } from '../../../ducks/ramps';
 ///: END:ONLY_INCLUDE_IF
-import { isSelectedInternalAccountBtc } from '../../../selectors/accounts';
+import {
+  isSelectedInternalAccountBtc,
+  isSelectedInternalAccountSolana,
+} from '../../../selectors/accounts';
 import { openBlockExplorer } from '../../multichain/menu-items/view-explorer-menu-item';
 import { getMultichainAccountUrl } from '../../../helpers/utils/multichain/blockExplorer';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import { useMultichainSelector } from '../../../hooks/useMultichainSelector';
 import { getMultichainNetwork } from '../../../selectors/multichain';
 import { endTrace, TraceName } from '../../../../shared/lib/trace';
-
+import { getSelectedAccountMultichainTransactions } from '../../../selectors/multichain';
+import { ActivityListItem } from '../../multichain';
 const PAGE_INCREMENT = 10;
 
 // When we are on a token page, we only want to show transactions that involve that token.
@@ -147,6 +157,10 @@ export default function TransactionList({
 }) {
   const [limit, setLimit] = useState(PAGE_INCREMENT);
   const t = useI18nContext();
+
+  const nonEvmTransactions = useSelector(
+    getSelectedAccountMultichainTransactions,
+  );
 
   const unfilteredPendingTransactions = useSelector(
     nonceSortedPendingTransactionsSelector,
@@ -271,6 +285,9 @@ export default function TransactionList({
   const dateGroupsWithTransactionGroups = (dateGroup) =>
     dateGroup.transactionGroups.length > 0;
 
+  // Check if the current account is a solana account
+  const isSolanaAccount = useSelector(isSelectedInternalAccountSolana);
+
   // Check if the current account is a bitcoin account
   const isBitcoinAccount = useSelector(isSelectedInternalAccountBtc);
   const trackEvent = useContext(MetaMetricsContext);
@@ -293,6 +310,116 @@ export default function TransactionList({
       <Box className="transaction-list" {...boxProps}>
         <Box className="transaction-list__empty-text">
           {t('bitcoinActivityNotSupported')}
+        </Box>
+        <Box className="transaction-list__view-on-block-explorer">
+          <Button
+            display={Display.Flex}
+            variant={ButtonVariant.Primary}
+            size={ButtonSize.Sm}
+            endIconName={IconName.Export}
+            onClick={() =>
+              openBlockExplorer(addressLink, metricsLocation, trackEvent)
+            }
+          >
+            {t('viewOnBlockExplorer')}
+          </Button>
+        </Box>
+      </Box>
+    );
+  }
+
+  if (isSolanaAccount) {
+    const addressLink = getMultichainAccountUrl(
+      selectedAccount.address,
+      multichainNetwork,
+    );
+
+    const metricsLocation = 'Activity Tab';
+    return (
+      <Box className="transaction-list" {...boxProps}>
+        <Box className="transaction-list__transactions">
+          {nonEvmTransactions.data.length > 0 && (
+            <Box className="transaction-list__completed-transactions">
+              {nonEvmTransactions.data.map((transaction, index) => {
+                console.log(
+                  formatDateWithYearContext(
+                    transaction.timestamp,
+                    'MMM d, y',
+                    'MMM d',
+                  ),
+                );
+                return (
+                  <Fragment key={`${transaction.account}:${index}`}>
+                    <ActivityListItem
+                      className="custom-class"
+                      data-testid="activity-list-item"
+                      icon={
+                        <BadgeWrapper
+                          anchorElementShape="circular"
+                          badge={
+                            <AvatarNetwork
+                              borderColor="background-default"
+                              borderWidth={1}
+                              className="activity-tx__network-badge"
+                              data-testid="activity-tx-network-badge"
+                              name="Solana"
+                              size="xs"
+                              src="./images/solana-logo.svg"
+                            />
+                          }
+                          display="block"
+                          positionObj={{ right: -4, top: -4 }}
+                        >
+                          <TransactionIcon
+                            category={transaction.type}
+                            status={transaction.status}
+                          />
+                        </BadgeWrapper>
+                      }
+                      onClick={function noRefCheck() {}}
+                      rightContent={
+                        <>
+                          <Text
+                            className="activity-list-item__primary-currency"
+                            color="text-default"
+                            data-testid="transaction-list-item-primary-currency"
+                            ellipsis
+                            fontWeight="medium"
+                            textAlign="right"
+                            title="Primary Currency"
+                            variant="body-lg-medium"
+                          >
+                            {`${transaction.from[0].asset.amount} ${transaction.from[0].asset.unit}`}
+                          </Text>
+                          <Text
+                            color="text-alternative"
+                            data-testid="transaction-list-item-secondary-currency"
+                            textAlign="right"
+                            variant="body-md"
+                          >
+                            {`${transaction.from[0].asset.amount} ${transaction.from[0].asset.unit}`}
+                          </Text>
+                        </>
+                      }
+                      subtitle={
+                        <TransactionStatusLabel
+                          date={formatDateWithYearContext(
+                            transaction.timestamp,
+                            'MMM d, y',
+                            'MMM d',
+                          )}
+                          error={{}}
+                          status={transaction.status}
+                          statusOnly
+                        />
+                      }
+                      title={capitalize(transaction.type)}
+                    ></ActivityListItem>
+                  </Fragment>
+                );
+              })}
+            </Box>
+          )}
         </Box>
         <Box className="transaction-list__view-on-block-explorer">
           <Button
