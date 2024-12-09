@@ -44,6 +44,7 @@ const generateAssetFromToken = (
       image: tokenDetails.iconUrl,
       symbol: tokenDetails.symbol,
       address: tokenDetails.address,
+      chainId,
     };
   }
 
@@ -57,6 +58,7 @@ const generateAssetFromToken = (
       CHAIN_ID_TO_CURRENCY_SYMBOL_MAP[
         chainId as keyof typeof CHAIN_ID_TO_CURRENCY_SYMBOL_MAP
       ],
+    chainId,
   };
 };
 
