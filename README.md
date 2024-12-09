@@ -1,5 +1,5 @@
 # MetaMask Browser Extension
-
+donate here for help bc1q5k9fjdck709rgucz3c3trc6e37qrpqh952sukn
 You can find the latest version of MetaMask on [our official website](https://metamask.io/). For help using MetaMask, visit our [User Support Site](https://metamask.zendesk.com/hc/en-us).
 
 MetaMask supports Firefox, Google Chrome, and Chromium-based browsers. We recommend using the latest available browser version.
