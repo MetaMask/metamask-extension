@@ -1,7 +1,10 @@
 import React, { useEffect, useMemo, useState } from 'react';
 
 import { useSelector } from 'react-redux';
-import { NetworkConfiguration } from '@metamask/network-controller';
+import {
+  AddNetworkFields,
+  NetworkConfiguration,
+} from '@metamask/network-controller';
 import { IconName } from '@metamask/snaps-sdk/jsx';
 import {
   Display,
@@ -39,7 +42,7 @@ import { NETWORK_TO_SHORT_NETWORK_NAME_MAP } from '../../../../../shared/constan
  *
  * @param props
  * @param props.isOpen - Determines whether the modal is open or not.
- * @param props.network - The currently selected network, not necessarily the active wallet network.
+ * @param props.network - The currently selected network, not necessarily the active wallet network, and possibly not imported yet.
  * @param props.networks - The list of selectable networks.
  * @param props.onNetworkChange - The callback function to handle network change.
  * @param props.onClose - The callback function to handle modal close.
@@ -65,10 +68,12 @@ export const AssetPickerModalNetwork = ({
   selectedChainIds,
 }: {
   isOpen: boolean;
-  network?: NetworkConfiguration;
-  networks?: NetworkConfiguration[];
-  onNetworkChange: (network: NetworkConfiguration) => void;
-  shouldDisableNetwork?: (network: NetworkConfiguration) => boolean;
+  network?: NetworkConfiguration | AddNetworkFields;
+  networks?: (NetworkConfiguration | AddNetworkFields)[];
+  onNetworkChange: (network: NetworkConfiguration | AddNetworkFields) => void;
+  shouldDisableNetwork?: (
+    network: NetworkConfiguration | AddNetworkFields,
+  ) => boolean;
   onClose: () => void;
   onBack: () => void;
   header?: JSX.Element | string | null;

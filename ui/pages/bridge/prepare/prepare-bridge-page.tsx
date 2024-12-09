@@ -50,6 +50,7 @@ import {
 } from '../../../hooks/bridge/useCrossChainSwapsEventTracker';
 import { useRequestProperties } from '../../../hooks/bridge/events/useRequestProperties';
 import { MetaMetricsEventName } from '../../../../shared/constants/metametrics';
+import { isNetworkAdded } from '../../../ducks/bridge/utils';
 import { BridgeInputGroup } from './bridge-input-group';
 
 const PrepareBridgePage = () => {
@@ -219,13 +220,15 @@ const PrepareBridgePage = () => {
               if (networkConfig.chainId === toChain?.chainId) {
                 dispatch(setToChainId(null));
               }
-              dispatch(
-                setActiveNetwork(
-                  networkConfig.rpcEndpoints[
-                    networkConfig.defaultRpcEndpointIndex
-                  ].networkClientId,
-                ),
-              );
+              if (isNetworkAdded(networkConfig)) {
+                dispatch(
+                  setActiveNetwork(
+                    networkConfig.rpcEndpoints[
+                      networkConfig.defaultRpcEndpointIndex
+                    ].networkClientId,
+                  ),
+                );
+              }
               dispatch(setFromChain(networkConfig.chainId));
               dispatch(setFromToken(null));
               dispatch(setFromTokenInputValue(null));
