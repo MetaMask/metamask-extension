@@ -49,8 +49,15 @@ jobs:
           Xvfb -ac :99 -screen 0 1280x1024x16 &
           export DISPLAY=:99
 
-      - name: Debugging with tmate
-        uses: ./.github/actions/actions-tmate
+      # - name: Debugging with tmate
+      #   uses: ./.github/actions/actions-tmate
 
       - name: Run the benchmark
         run: yarn benchmark:chrome --out test-artifacts/chrome/benchmark/pageload.json --retries 2
+
+      - name: 'Upload Artifact'
+        uses: actions/upload-artifact@v4
+        with:
+          name: pageload
+          path: test-artifacts/chrome/benchmark/pageload.json
+          retention-days: 5
