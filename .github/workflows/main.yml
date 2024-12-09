@@ -36,13 +36,18 @@ jobs:
     name: Wait for CircleCI workflow status
     uses: ./.github/workflows/wait-for-circleci-workflow-status.yml
 
+  trigger-failure:
+    name: Trigger failure
+    runs-on: ubuntu-latest
+    steps:
+      - name: Trigger failure
+        run: exit 1
+
   all-jobs-completed:
     name: All jobs completed
     runs-on: ubuntu-latest
     needs:
-      - check-workflows
-      - run-tests
-      - wait-for-circleci-workflow-status
+      - trigger-failure
     outputs:
       PASSED: ${{ steps.set-output.outputs.PASSED }}
     steps:
@@ -67,7 +72,7 @@ jobs:
   log-merge-group-failure:
     name: Log merge group failure
     # Only run this job if the merge group event fails, skip logging on forks
-    if: ${{ github.event_name == 'merge_group' && failure() && !github.event.repository.fork }}
+    if: ${{ failure() && !github.event.repository.fork }}
     needs:
       - all-jobs-pass
     uses: metamask/github-tools/.github/workflows/log-merge-group-failure.yml@157864e9ccff308a89d670c3e1a47199a3cc2507
