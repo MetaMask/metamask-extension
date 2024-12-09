@@ -93,7 +93,7 @@ export default class ReadOnlyNetworkStore extends BaseStore {
     if (!this.mostRecentRetrievedState) {
       this.mostRecentRetrievedState = this.#state;
     }
-    return this.#state ?? this.generateFirstTimeState();
+    return this.#state?.data ? this.#state : this.generateFirstTimeState();
   }
 
   /**
