@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import { useSelector } from 'react-redux';
 import { useHistory, useParams } from 'react-router-dom';
 import { NetworkConfiguration } from '@metamask/network-controller';
@@ -6,9 +6,12 @@ import { TransactionMeta } from '@metamask/transaction-controller';
 import {
   AvatarNetwork,
   AvatarNetworkSize,
+  BannerAlert,
+  BannerAlertSeverity,
   Box,
   ButtonIcon,
   ButtonIconSize,
+  ButtonLink,
   IconName,
   Text,
 } from '../../../components/component-library';
@@ -21,9 +24,15 @@ import { MetaMaskReduxState } from '../../../store/store';
 import { hexToDecimal } from '../../../../shared/modules/conversion.utils';
 import UserPreferencedCurrencyDisplay from '../../../components/app/user-preferenced-currency-display/user-preferenced-currency-display.component';
 import { EtherDenomination } from '../../../../shared/constants/common';
-import { PRIMARY } from '../../../helpers/constants/common';
+import {
+  PRIMARY,
+  SUPPORT_REQUEST_LINK,
+} from '../../../helpers/constants/common';
 import CurrencyDisplay from '../../../components/ui/currency-display/currency-display.component';
-import { StatusTypes } from '../../../../shared/types/bridge-status';
+import {
+  BridgeHistoryItem,
+  StatusTypes,
+} from '../../../../shared/types/bridge-status';
 import {
   AlignItems,
   Display,
@@ -33,10 +42,15 @@ import {
 } from '../../../helpers/constants/design-system';
 import { formatDate } from '../../../helpers/utils/util';
 import { ConfirmInfoRowDivider as Divider } from '../../../components/app/confirm/info/row';
-import { calcTokenAmount } from '../../../../shared/lib/transactions-controller-utils';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP } from '../../../../shared/constants/network';
 import { selectedAddressTxListSelector } from '../../../selectors';
+import {
+  MetaMetricsContextProp,
+  MetaMetricsEventCategory,
+  MetaMetricsEventName,
+} from '../../../../shared/constants/metametrics';
+import { MetaMetricsContext } from '../../../contexts/metametrics';
 import TransactionDetailRow from './transaction-detail-row';
 import BridgeExplorerLinks from './bridge-explorer-links';
 import BridgeStepList from './bridge-step-list';
@@ -60,6 +74,41 @@ const getBlockExplorerUrl = (
   return `${rootUrl}/tx/${txHash}`;
 };
 
+/**
+ * @param options0
+ * @param options0.bridgeHistoryItem
+ * @returns A string representing the bridge amount in decimal form
+ */
+const getBridgeAmount = ({
+  bridgeHistoryItem,
+}: {
+  bridgeHistoryItem?: BridgeHistoryItem;
+}) => {
+  if (bridgeHistoryItem) {
+    return bridgeHistoryItem.pricingData?.amountSent;
+  }
+
+  return undefined;
+};
+
+/**
+ * @param status - The status of the bridge history item
+ * @param bridgeHistoryItem - The bridge history item
+ * @returns Whether the bridge history item is delayed
+ */
+export const getIsDelayed = (
+  status: StatusTypes,
+  bridgeHistoryItem?: BridgeHistoryItem,
+) => {
+  return Boolean(
+    status === StatusTypes.PENDING &&
+      bridgeHistoryItem?.startTime &&
+      Date.now() >
+        bridgeHistoryItem.startTime +
+          bridgeHistoryItem.estimatedProcessingTimeInSeconds * 1000,
+  );
+};
+
 const StatusToColorMap: Record<StatusTypes, TextColor> = {
   [StatusTypes.PENDING]: TextColor.warningDefault,
   [StatusTypes.COMPLETE]: TextColor.successDefault,
@@ -69,31 +118,41 @@ const StatusToColorMap: Record<StatusTypes, TextColor> = {
 
 const CrossChainSwapTxDetails = () => {
   const t = useI18nContext();
+  const trackEvent = useContext(MetaMetricsContext);
   const rootState = useSelector((state) => state);
   const history = useHistory();
-  const { srcTxHash } = useParams<{ srcTxHash: string }>();
+  const { srcTxMetaId } = useParams<{ srcTxMetaId: string }>();
   const bridgeHistory = useSelector(selectBridgeHistoryForAccount);
   const selectedAddressTxList = useSelector(
     selectedAddressTxListSelector,
   ) as TransactionMeta[];
-  const bridgeHistoryItem = srcTxHash ? bridgeHistory[srcTxHash] : undefined;
+
   const networkConfigurationsByChainId = useSelector(
     getNetworkConfigurationsByChainId,
   );
+
+  const srcChainTxMeta = selectedAddressTxList.find(
+    (tx) => tx.id === srcTxMetaId,
+  );
+  // Even if user is still on /tx-details/txMetaId, we want to be able to show the bridge history item
+  const bridgeHistoryItem = srcTxMetaId
+    ? bridgeHistory[srcTxMetaId]
+    : undefined;
+
   const { srcNetwork, destNetwork } = useBridgeChainInfo({
     bridgeHistoryItem,
+    srcTxMeta: srcChainTxMeta,
   });
 
+  const srcTxHash = srcChainTxMeta?.hash;
   const srcBlockExplorerUrl = getBlockExplorerUrl(srcNetwork, srcTxHash);
 
   const destTxHash = bridgeHistoryItem?.status.destChain?.txHash;
   const destBlockExplorerUrl = getBlockExplorerUrl(destNetwork, destTxHash);
 
-  const srcChainTxMeta = selectedAddressTxList.find(
-    (tx) => tx.hash === srcTxHash,
-  );
-
-  const status = bridgeHistoryItem?.status.status;
+  const status = bridgeHistoryItem
+    ? bridgeHistoryItem?.status.status
+    : StatusTypes.PENDING;
 
   const destChainIconUrl = destNetwork
     ? CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP[
@@ -112,12 +171,8 @@ const CrossChainSwapTxDetails = () => {
       })
     : undefined;
 
-  const bridgeAmount = bridgeHistoryItem
-    ? `${calcTokenAmount(
-        bridgeHistoryItem.quote.srcTokenAmount,
-        bridgeHistoryItem.quote.srcAsset.decimals,
-      ).toFixed()} ${bridgeHistoryItem.quote.srcAsset.symbol}`
-    : undefined;
+  const bridgeAmount = getBridgeAmount({ bridgeHistoryItem });
+  const isDelayed = getIsDelayed(status, bridgeHistoryItem);
 
   return (
     <div className="bridge">
@@ -141,13 +196,51 @@ const CrossChainSwapTxDetails = () => {
             flexDirection={FlexDirection.Column}
             gap={4}
           >
-            {status !== StatusTypes.COMPLETE && bridgeHistoryItem && (
-              <BridgeStepList
-                bridgeHistoryItem={bridgeHistoryItem}
-                srcChainTxMeta={srcChainTxMeta}
-                networkConfigurationsByChainId={networkConfigurationsByChainId}
-              />
+            {isDelayed && (
+              <BannerAlert
+                title={t('bridgeTxDetailsDelayedTitle')}
+                severity={BannerAlertSeverity.Warning}
+              >
+                <Text display={Display.Flex} alignItems={AlignItems.center}>
+                  {t('bridgeTxDetailsDelayedDescription')}&nbsp;
+                  <ButtonLink
+                    externalLink
+                    href={SUPPORT_REQUEST_LINK}
+                    onClick={() => {
+                      trackEvent(
+                        {
+                          category: MetaMetricsEventCategory.Home,
+                          event: MetaMetricsEventName.SupportLinkClicked,
+                          properties: {
+                            url: SUPPORT_REQUEST_LINK,
+                            location: 'Bridge Tx Details',
+                          },
+                        },
+                        {
+                          contextPropsIntoEventProperties: [
+                            MetaMetricsContextProp.PageTitle,
+                          ],
+                        },
+                      );
+                    }}
+                  >
+                    {t('bridgeTxDetailsDelayedDescriptionSupport')}
+                  </ButtonLink>
+                  .
+                </Text>
+              </BannerAlert>
             )}
+
+            {status !== StatusTypes.COMPLETE &&
+              (bridgeHistoryItem || srcChainTxMeta) && (
+                <BridgeStepList
+                  bridgeHistoryItem={bridgeHistoryItem}
+                  srcChainTxMeta={srcChainTxMeta}
+                  networkConfigurationsByChainId={
+                    networkConfigurationsByChainId
+                  }
+                />
+              )}
 
             {/* Links to block explorers */}
             <BridgeExplorerLinks
@@ -156,7 +249,6 @@ const CrossChainSwapTxDetails = () => {
               srcBlockExplorerUrl={srcBlockExplorerUrl}
               destBlockExplorerUrl={destBlockExplorerUrl}
             />
-
             <Divider />
 
             {/* General tx details */}

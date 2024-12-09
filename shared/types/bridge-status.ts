@@ -1,5 +1,12 @@
-// eslint-disable-next-line import/no-restricted-paths
-import { ChainId, Quote, QuoteResponse } from '../../ui/pages/bridge/types';
+import { TransactionMeta } from '@metamask/transaction-controller';
+// TODO fix this
+import {
+  ChainId,
+  Quote,
+  QuoteMetadata,
+  QuoteResponse,
+  // eslint-disable-next-line import/no-restricted-paths
+} from '../../ui/pages/bridge/types';
 
 // All fields need to be types not interfaces, same with their children fields
 // o/w you get a type error
@@ -13,12 +20,16 @@ export enum StatusTypes {
 
 export type StatusRequest = {
   bridgeId: string; // lifi, socket, squid
-  srcTxHash: string; // lifi, socket, squid
+  srcTxHash?: string; // lifi, socket, squid, might be undefined for STX
   bridge: string; // lifi, socket, squid
   srcChainId: ChainId; // lifi, socket, squid
   destChainId: ChainId; // lifi, socket, squid
   quote?: Quote; // squid
   refuel?: boolean; // lifi
+};
+
+export type StatusRequestWithSrcTxHash = StatusRequest & {
+  srcTxHash: string;
 };
 
 export type Asset = {
@@ -32,7 +43,7 @@ export type Asset = {
 
 export type SrcChainStatus = {
   chainId: ChainId;
-  txHash: string;
+  txHash?: string; // might be undefined if this is a smart transaction (STX)
   amount?: string;
   token?: Asset;
 };
@@ -105,20 +116,23 @@ export type RefuelStatusResponse = object & StatusResponse;
 export type RefuelData = object & Step;
 
 export type BridgeHistoryItem = {
+  txMetaId: string; // Need this to handle STX that might not have a txHash immediately
   quote: Quote;
   status: StatusResponse;
-  startTime?: number;
+  startTime?: number; // timestamp in ms
   estimatedProcessingTimeInSeconds: number;
   slippagePercentage: number;
   completionTime?: number;
   pricingData?: {
-    quotedGasInUsd: number;
-    quotedReturnInUsd: number;
-    amountSentInUsd: number;
-    quotedRefuelSrcAmountInUsd?: number;
-    quotedRefuelDestAmountInUsd?: number;
+    amountSent: string; // This is from QuoteMetadata.sentAmount.amount, accounts for the MM fees
+
+    quotedGasInUsd?: string;
+    quotedReturnInUsd?: string;
+    amountSentInUsd?: string;
+    quotedRefuelSrcAmountInUsd?: string;
+    quotedRefuelDestAmountInUsd?: string;
   };
-  initialDestAssetBalance?: number;
+  initialDestAssetBalance?: string;
   targetContractAddress?: string;
   account: string;
 };
@@ -129,14 +143,26 @@ export enum BridgeStatusAction {
   GET_STATE = 'getState',
 }
 
+// The BigNumber values are serialized to strings
+export type QuoteMetadataSerialized = {
+  sentAmount: { amount: string; fiat: string | null };
+};
+
 export type StartPollingForBridgeTxStatusArgs = {
+  bridgeTxMeta: TransactionMeta;
   statusRequest: StatusRequest;
-  quoteResponse: QuoteResponse;
+  quoteResponse: QuoteResponse & QuoteMetadata;
   startTime?: BridgeHistoryItem['startTime'];
   slippagePercentage: BridgeHistoryItem['slippagePercentage'];
-  pricingData?: BridgeHistoryItem['pricingData'];
   initialDestAssetBalance?: BridgeHistoryItem['initialDestAssetBalance'];
   targetContractAddress?: BridgeHistoryItem['targetContractAddress'];
+};
+
+export type StartPollingForBridgeTxStatusArgsSerialized = Omit<
+  StartPollingForBridgeTxStatusArgs,
+  'quoteResponse'
+> & {
+  quoteResponse: QuoteResponse & QuoteMetadataSerialized;
 };
 
 export type SourceChainTxMetaId = string;

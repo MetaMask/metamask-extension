@@ -917,7 +917,7 @@
     "message": "Bridge to"
   },
   "bridgeToChain": {
-    "message": " to $1"
+    "message": "Bridge to $1"
   },
   "bridgeTotalFeesTooltipText": {
     "message": "This includes gas fees (paid to crypto miners) and relayer fees (paid to power complex services like bridging).\nFees are based on network traffic and transaction complexity. MetaMask does not profit from either fee."
@@ -930,6 +930,15 @@
   },
   "bridgeTxDetailsBridgeType": {
     "message": "Bridge type"
+  },
+  "bridgeTxDetailsDelayedDescription": {
+    "message": "Reach out to"
+  },
+  "bridgeTxDetailsDelayedDescriptionSupport": {
+    "message": "MetaMask Support"
+  },
+  "bridgeTxDetailsDelayedTitle": {
+    "message": "Has it been longer than 3 hours?"
   },
   "bridgeTxDetailsGasLimit": {
     "message": "Gas limit (units)"
@@ -5124,6 +5133,9 @@
   },
   "signingInWith": {
     "message": "Signing in with"
+  },
+  "signingWith": {
+    "message": "Signing with"
   },
   "simulationApproveHeading": {
     "message": "Withdraw"
