@@ -18,7 +18,7 @@ export type ConfirmInfoAlertRowProps = ConfirmInfoRowProps & {
   alertKey: string;
   ownerId: string;
   /** Determines whether to display the row only when an alert is present. */
-  displayWhenAlert?: boolean;
+  isShownWithAlertsOnly?: boolean;
 };
 
 function getAlertTextColors(
@@ -43,7 +43,7 @@ export const ConfirmInfoAlertRow = ({
   alertKey,
   ownerId,
   variant,
-  displayWhenAlert = false,
+  isShownWithAlertsOnly = false,
   ...rowProperties
 }: ConfirmInfoAlertRowProps) => {
   const { trackInlineAlertClicked } = useAlertMetrics();
@@ -71,7 +71,7 @@ export const ConfirmInfoAlertRow = ({
     variant,
   };
 
-  if (displayWhenAlert && !hasFieldAlert) {
+  if (isShownWithAlertsOnly && !hasFieldAlert) {
     return null;
   }
 

@@ -29,7 +29,7 @@ export const SigningInWithRow = () => {
       alertKey={RowAlertKey.SigningInWith}
       label={isSIWE ? t('signingInWith') : t('signingWith')}
       ownerId={currentConfirmation.id}
-      displayWhenAlert={!isSIWE}
+      isShownWithAlertsOnly={!isSIWE}
     >
       <ConfirmInfoRowAddress address={from} chainId={chainId} />
     </ConfirmInfoAlertRow>
