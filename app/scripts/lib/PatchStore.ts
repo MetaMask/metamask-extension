@@ -1,4 +1,4 @@
-import { createProjectLogger } from '@metamask/utils';
+import { createProjectLogger, getKnownPropertyNames } from '@metamask/utils';
 import { Patch } from 'immer';
 import { v4 as uuid } from 'uuid';
 import type { BackgroundStateProxy } from '../../../shared/types/metamask';
@@ -15,7 +15,7 @@ export class PatchStore {
   private pendingPatches: Map<string, Patch> = new Map();
 
   private listener: (request: {
-    controllerKey: keyof BackgroundStateProxy;
+    controllerKey?: keyof BackgroundStateProxy;
     oldState: BackgroundStateProxy;
     newState: BackgroundStateProxy;
   }) => void;
@@ -52,7 +52,7 @@ export class PatchStore {
     oldState,
     newState,
   }: {
-    controllerKey: keyof BackgroundStateProxy;
+    controllerKey?: keyof BackgroundStateProxy;
     oldState: BackgroundStateProxy;
     newState: BackgroundStateProxy;
   }) {
@@ -90,25 +90,39 @@ export class PatchStore {
     oldState,
     newState,
   }: {
-    controllerKey: keyof BackgroundStateProxy;
+    controllerKey?: keyof BackgroundStateProxy;
     oldState: BackgroundStateProxy;
     newState: BackgroundStateProxy;
   }): Patch[] {
-    return Object.keys(newState[controllerKey]).reduce<Patch[]>(
-      (patches, key) => {
-        const oldData = oldState[controllerKey][key];
-        const newData = newState[controllerKey][key];
+    return controllerKey
+      ? getKnownPropertyNames(newState[controllerKey]).reduce<Patch[]>(
+          (patches, key) => {
+            const oldData = oldState[controllerKey][key];
+            const newData = newState[controllerKey][key];
 
-        if (oldData !== newData) {
-          patches.push({
-            op: 'replace' as const,
-            path: [controllerKey, key],
-            value: newData,
-          });
-        }
-        return patches;
-      },
-      [],
-    );
+            if (oldData !== newData) {
+              patches.push({
+                op: 'replace' as const,
+                path: [controllerKey, String(key)],
+                value: newData,
+              });
+            }
+            return patches;
+          },
+          [],
+        )
+      : getKnownPropertyNames(newState).reduce<Patch[]>((patches, key) => {
+          const oldData = oldState[key];
+          const newData = newState[key];
+
+          if (oldData !== newData) {
+            patches.push({
+              op: 'replace' as const,
+              path: [key],
+              value: newData,
+            });
+          }
+          return patches;
+        }, []);
   }
 }
