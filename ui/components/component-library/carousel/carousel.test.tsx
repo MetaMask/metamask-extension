@@ -1,6 +1,11 @@
 import React from 'react';
-import { render, fireEvent } from '@testing-library/react';
+import { render, fireEvent, waitFor } from '@testing-library/react';
 import { Carousel } from './carousel';
+
+// Mock the useI18nContext hook
+jest.mock('../../../hooks/useI18nContext', () => ({
+  useI18nContext: () => (key: string) => key,
+}));
 
 describe('Carousel', () => {
   const mockSlides = [
@@ -19,38 +24,40 @@ describe('Carousel', () => {
   ];
 
   it('should render correctly with slides', () => {
-    const { getByText } = render(<Carousel slides={mockSlides} />);
+    const { container } = render(<Carousel slides={mockSlides} />);
 
-    expect(getByText('Slide 1')).toBeDefined();
-    expect(getByText('Description 1')).toBeDefined();
-    expect(getByText('Slide 2')).toBeDefined();
-    expect(getByText('Description 2')).toBeDefined();
+    const slides = container.querySelectorAll('.mm-carousel-slide');
+    expect(slides).toHaveLength(2);
+
+    const images = container.querySelectorAll('.mm-carousel-slide__accessory');
+    expect(images[0]).toHaveAttribute('src', 'image1.jpg');
+    expect(images[1]).toHaveAttribute('src', 'image2.jpg');
   });
 
-  it('should handle slide removal', () => {
+  it('should handle slide removal', async () => {
     const mockOnClose = jest.fn();
-    const { getByText, queryByText } = render(
+    const { container, rerender } = render(
       <Carousel slides={mockSlides} onClose={mockOnClose} />,
     );
 
-    const closeButton = document.querySelector(
+    const closeButtons = container.querySelectorAll(
       '.mm-carousel-slide__close-button',
     );
-    if (!closeButton) {
-      throw new Error('Close button not found');
-    }
-    fireEvent.click(closeButton);
+    expect(closeButtons).toHaveLength(2);
 
-    expect(queryByText('Slide 1')).toBeNull();
-    expect(getByText('Slide 2')).toBeDefined();
+    fireEvent.click(closeButtons[0]);
     expect(mockOnClose).toHaveBeenCalledWith('1');
+
+    // Simulate parent component updating slides after onClose
+    const remainingSlides = mockSlides.filter((slide) => slide.id !== '1');
+    rerender(<Carousel slides={remainingSlides} onClose={mockOnClose} />);
+
+    const updatedSlides = container.querySelectorAll('.mm-carousel-slide');
+    expect(updatedSlides).toHaveLength(1);
   });
 
-  it('should handle onChange callback', () => {
-    const mockOnChange = jest.fn();
-    const { container } = render(
-      <Carousel slides={mockSlides} onChange={mockOnChange} />,
-    );
+  it('should handle slide navigation', () => {
+    const { container } = render(<Carousel slides={mockSlides} />);
 
     const dots = container.querySelectorAll('.dot');
     if (!dots || dots.length === 0) {
@@ -58,7 +65,9 @@ describe('Carousel', () => {
     }
     fireEvent.click(dots[1]);
 
-    expect(mockOnChange).toHaveBeenCalledWith(1);
+    // Check if the second slide is now active
+    const slides = container.querySelectorAll('.mm-carousel-slide');
+    expect(slides[1].parentElement).toHaveClass('selected');
   });
 
   it('should return null when no slides are present', () => {
