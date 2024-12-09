@@ -101,8 +101,9 @@ describe('Ethereum Chain Utils', () => {
     });
 
     describe('with no existing CAIP-25 permission', () => {
-      it('requests a switch chain approval', async () => {
+      it('requests a switch chain approval if isAddFlow: false', async () => {
         const { mocks, switchChain } = createMockedSwitchChain();
+        mocks.isAddFlow = false;
         await switchChain('example.com', '0x1', 'mainnet', 'approvalFlowId');
 
         expect(mocks.requestPermissionApprovalForOrigin).toHaveBeenCalledWith({
