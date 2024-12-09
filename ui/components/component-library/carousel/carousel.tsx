@@ -33,7 +33,7 @@ const MAX_SLIDES = 5;
 
 export const Carousel = React.forwardRef(
   (
-    { slides = [], onClose, isLoading = false, ...props }: CarouselProps,
+    { slides = [], isLoading = false, onClose, ...props }: CarouselProps,
     ref: React.Ref<HTMLDivElement>,
   ) => {
     const [selectedIndex, setSelectedIndex] = useState(0);

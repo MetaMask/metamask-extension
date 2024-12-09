@@ -6,33 +6,11 @@ export default {
   title: 'Components/ComponentLibrary/Carousel',
   component: Carousel,
   argTypes: {
-    selectedItem: {
-      control: 'number',
+    slides: {
+      control: 'object',
     },
-    showArrows: {
-      control: 'boolean',
-    },
-    showStatus: {
-      control: 'boolean',
-    },
-    autoPlay: {
-      control: 'boolean',
-    },
-    swipeScrollTolerance: {
-      control: 'number',
-    },
-    centerSlidePercentage: {
-      control: 'number',
-    },
-    axis: {
-      options: ['horizontal', 'vertical'],
-      control: 'select',
-    },
-    centerMode: {
-      control: 'boolean',
-    },
-    swipeable: {
-      control: 'boolean',
+    onClose: {
+      control: 'function',
     },
   },
 } as Meta<typeof Carousel>;
@@ -67,45 +45,7 @@ const Template: Story = {
 export const DefaultStory: Story = {
   ...Template,
   args: {
-    selectedItem: 0,
-    showArrows: false,
-    showStatus: false,
-    autoPlay: false,
-    swipeScrollTolerance: 5,
-    centerMode: true,
-    swipeable: true,
-  },
-};
-
-export const WithArrows: Story = {
-  ...Template,
-  args: {
-    ...DefaultStory.args,
-    showArrows: true,
-  },
-};
-
-export const SingleSlide: Story = {
-  ...Template,
-  args: {
-    ...DefaultStory.args,
-    slides: [mockSlides[0]],
-  },
-};
-
-export const AutoPlay: Story = {
-  ...Template,
-  args: {
-    ...DefaultStory.args,
-    autoPlay: true,
-  },
-};
-
-export const VerticalAxis: Story = {
-  ...Template,
-  args: {
-    ...DefaultStory.args,
-    axis: 'vertical',
+    slides: mockSlides,
   },
 };
 
@@ -114,5 +54,13 @@ export const WithCloseButton: Story = {
   args: {
     ...DefaultStory.args,
     onClose: (id: string) => console.log(`Closing slide with id: ${id}`),
+  },
+};
+
+export const SingleSlide: Story = {
+  ...Template,
+  args: {
+    ...DefaultStory.args,
+    slides: [mockSlides[0]],
   },
 };
