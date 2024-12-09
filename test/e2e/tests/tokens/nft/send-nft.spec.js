@@ -80,7 +80,7 @@ describe('Send NFT', function () {
         // Go back to NFTs tab and check the imported NFT is shown as previously owned
         await driver.clickElement('[data-testid="account-overview__nfts-tab"]');
         const previouslyOwnedNft = await driver.findElement({
-          css: 'h5',
+          css: 'h4',
           text: 'Previously Owned',
         });
         assert.equal(await previouslyOwnedNft.isDisplayed(), true);
@@ -139,7 +139,7 @@ describe('Send NFT', function () {
         await driver.clickElement('[data-testid="account-overview__nfts-tab"]');
 
         const previouslyOwnedNft = await driver.findElement({
-          css: 'h5',
+          css: 'h4',
           text: 'Previously Owned',
         });
         assert.equal(await previouslyOwnedNft.isDisplayed(), true);
