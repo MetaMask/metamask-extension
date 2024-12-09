@@ -235,6 +235,12 @@ class FixtureBuilder {
     });
   }
 
+  withUseBasicFunctionalityDisabled() {
+    return this.withPreferencesController({
+      useExternalServices: false,
+    });
+  }
+
   withGasFeeController(data) {
     merge(this.fixture.data.GasFeeController, data);
     return this;
@@ -289,6 +295,22 @@ class FixtureBuilder {
         networkConfigurationId: {
           chainId: CHAIN_IDS.OPTIMISM,
           nickname: 'Localhost 8545',
+          rpcPrefs: {},
+          rpcUrl: 'https://mainnet.infura.io',
+          ticker: 'ETH',
+          networkConfigurationId: 'networkConfigurationId',
+          id: 'networkConfigurationId',
+        },
+      },
+    });
+  }
+
+  withNetworkControllerOnPolygon() {
+    return this.withNetworkController({
+      networkConfigurations: {
+        networkConfigurationId: {
+          chainId: CHAIN_IDS.POLYGON,
+          nickname: 'Polygon Mainnet',
           rpcPrefs: {},
           rpcUrl: 'https://mainnet.infura.io',
           ticker: 'ETH',

@@ -1,9 +1,11 @@
 import { useDispatch } from 'react-redux';
 import { zeroAddress } from 'ethereumjs-util';
 import { useHistory } from 'react-router-dom';
-import { QuoteResponse } from '../types';
+import { TransactionMeta } from '@metamask/transaction-controller';
+import { QuoteMetadata, QuoteResponse } from '../types';
 import { DEFAULT_ROUTE } from '../../../helpers/constants/routes';
 import { setDefaultHomeActiveTabName } from '../../../store/actions';
+import { startPollingForBridgeTxStatus } from '../../../ducks/bridge-status/actions';
 import useAddToken from './useAddToken';
 import useHandleApprovalTx from './useHandleApprovalTx';
 import useHandleBridgeTx from './useHandleBridgeTx';
@@ -15,20 +17,48 @@ export default function useSubmitBridgeTransaction() {
   const { handleApprovalTx } = useHandleApprovalTx();
   const { handleBridgeTx } = useHandleBridgeTx();
 
-  const submitBridgeTransaction = async (quoteResponse: QuoteResponse) => {
+  const submitBridgeTransaction = async (
+    quoteResponse: QuoteResponse & QuoteMetadata,
+  ) => {
     // Execute transaction(s)
-    let approvalTxId: string | undefined;
+    let approvalTxMeta: TransactionMeta | undefined;
     if (quoteResponse?.approval) {
-      approvalTxId = await handleApprovalTx({
+      // This will never be an STX
+      approvalTxMeta = await handleApprovalTx({
         approval: quoteResponse.approval,
         quoteResponse,
       });
     }
 
-    await handleBridgeTx({
+    // Route user to activity tab on Home page
+    // Do it ahead of time because otherwise STX waits for a txHash on TransactionType.bridge and that can take a while
+    await dispatch(setDefaultHomeActiveTabName('activity'));
+    history.push(DEFAULT_ROUTE);
+
+    const bridgeTxMeta = await handleBridgeTx({
       quoteResponse,
-      approvalTxId,
+      approvalTxId: approvalTxMeta?.id,
     });
+
+    // Get bridge tx status
+    const statusRequest = {
+      bridgeId: quoteResponse.quote.bridgeId,
+      srcTxHash: bridgeTxMeta.hash, // This might be undefined for STX
+      bridge: quoteResponse.quote.bridges[0],
+      srcChainId: quoteResponse.quote.srcChainId,
+      destChainId: quoteResponse.quote.destChainId,
+      quote: quoteResponse.quote,
+      refuel: Boolean(quoteResponse.quote.refuel),
+    };
+    dispatch(
+      startPollingForBridgeTxStatus({
+        bridgeTxMeta,
+        statusRequest,
+        quoteResponse,
+        slippagePercentage: 0, // TODO pull this from redux/bridgecontroller once it's implemented. currently hardcoded in quoteRequest.slippage right now
+        startTime: bridgeTxMeta.time,
+      }),
+    );
 
     // Add tokens if not the native gas token
     if (quoteResponse.quote.srcAsset.address !== zeroAddress()) {
@@ -37,10 +67,6 @@ export default function useSubmitBridgeTransaction() {
     if (quoteResponse.quote.destAsset.address !== zeroAddress()) {
       await addDestToken(quoteResponse);
     }
-
-    // Route user to activity tab on Home page
-    await dispatch(setDefaultHomeActiveTabName('activity'));
-    history.push(DEFAULT_ROUTE);
   };
 
   return {

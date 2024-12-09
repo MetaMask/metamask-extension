@@ -1,6 +1,4 @@
-import type { NotificationServicesController } from '@metamask/notification-services-controller';
-
-type Notification = NotificationServicesController.Types.INotification;
+import { type Notification } from './types/notifications/notifications';
 
 export type ExtractedNotification<NodeType> = Extract<
   Notification,
