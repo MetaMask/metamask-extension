@@ -9,52 +9,53 @@ import { getMockConfirmState } from '../../../../../../test/data/confirmations/h
 import { renderHookWithConfirmContextProvider } from '../../../../../../test/lib/confirmations/render-helpers';
 import { Severity } from '../../../../../helpers/constants/design-system';
 import { RowAlertKey } from '../../../../../components/app/confirm/info/row/constants';
-import { genUnapprovedContractInteractionConfirmation } from '../../../../../../test/data/confirmations/contract-interaction';
 import { useFirstTimeInteractionAlert } from './useFirstTimeInteractionAlert';
 
 const ACCOUNT_ADDRESS = '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc';
 const TRANSACTION_ID_MOCK = '123-456';
 
-const CONFIRMATION_MOCK = genUnapprovedContractInteractionConfirmation({
-  chainId: '0x5',
-}) as TransactionMeta;
-
 const TRANSACTION_META_MOCK = {
   id: TRANSACTION_ID_MOCK,
   chainId: '0x5',
   networkClientId: 'testNetworkClientId',
-  status: TransactionStatus.submitted,
+  status: TransactionStatus.unapproved,
   type: TransactionType.contractInteraction,
   txParams: {
     from: ACCOUNT_ADDRESS,
   },
   time: new Date().getTime() - 10000,
-  firstTimeInteraction: true,
 } as TransactionMeta;
 
 function runHook({
   currentConfirmation,
-  transactions = [],
+  internalAccountAddresses,
 }: {
   currentConfirmation?: TransactionMeta;
-  transactions?: TransactionMeta[];
+  internalAccountAddresses?: string[];
 } = {}) {
-  let pendingApprovals = {};
-  if (currentConfirmation) {
-    pendingApprovals = {
-      [currentConfirmation.id as string]: {
-        id: currentConfirmation.id,
-        type: ApprovalType.Transaction,
-      },
-    };
-    transactions.push(currentConfirmation);
-  }
+  const pendingApprovals = currentConfirmation
+    ? {
+        [currentConfirmation.id as string]: {
+          id: currentConfirmation.id,
+          type: ApprovalType.Transaction,
+        },
+      }
+    : {};
+
+  const transactions = currentConfirmation ? [currentConfirmation] : [];
+
+  const internalAccounts = {
+    accounts: internalAccountAddresses?.map((address) => ({ address })) ?? [],
+  };
+
   const state = getMockConfirmState({
     metamask: {
+      internalAccounts,
       pendingApprovals,
       transactions,
     },
   });
+
   const response = renderHookWithConfirmContextProvider(
     useFirstTimeInteractionAlert,
     state,
@@ -72,19 +73,10 @@ describe('useFirstTimeInteractionAlert', () => {
     expect(runHook()).toEqual([]);
   });
 
-  it('returns no alerts if no transactions', () => {
-    expect(
-      runHook({
-        currentConfirmation: CONFIRMATION_MOCK,
-        transactions: [],
-      }),
-    ).toEqual([]);
-  });
-
   it('returns no alerts if firstTimeInteraction is false', () => {
     const notFirstTimeConfirmation = {
       ...TRANSACTION_META_MOCK,
-      firstTimeInteraction: false,
+      isFirstTimeInteraction: false,
     };
     expect(
       runHook({
@@ -96,7 +88,7 @@ describe('useFirstTimeInteractionAlert', () => {
   it('returns no alerts if firstTimeInteraction is undefined', () => {
     const notFirstTimeConfirmation = {
       ...TRANSACTION_META_MOCK,
-      firstTimeInteraction: undefined,
+      isFirstTimeInteraction: undefined,
     };
     expect(
       runHook({
@@ -105,9 +97,43 @@ describe('useFirstTimeInteractionAlert', () => {
     ).toEqual([]);
   });
 
+  it('returns no alerts if transaction destination is internal account', () => {
+    const firstTimeConfirmation = {
+      ...TRANSACTION_META_MOCK,
+      isFirstTimeInteraction: true,
+      txParams: {
+        ...TRANSACTION_META_MOCK.txParams,
+        to: ACCOUNT_ADDRESS,
+      },
+    };
+    expect(
+      runHook({
+        currentConfirmation: firstTimeConfirmation,
+        internalAccountAddresses: [ACCOUNT_ADDRESS],
+      }),
+    ).toEqual([]);
+  });
+
+  it('returns no alerts if transaction destination is internal account with different case', () => {
+    const firstTimeConfirmation = {
+      ...TRANSACTION_META_MOCK,
+      isFirstTimeInteraction: true,
+      txParams: {
+        ...TRANSACTION_META_MOCK.txParams,
+        to: ACCOUNT_ADDRESS.toLowerCase(),
+      },
+    };
+    expect(
+      runHook({
+        currentConfirmation: firstTimeConfirmation,
+        internalAccountAddresses: [ACCOUNT_ADDRESS.toUpperCase()],
+      }),
+    ).toEqual([]);
+  });
+
   it('returns alert if isFirstTimeInteraction is true', () => {
     const firstTimeConfirmation = {
-      ...CONFIRMATION_MOCK,
+      ...TRANSACTION_META_MOCK,
       isFirstTimeInteraction: true,
     };
     const alerts = runHook({
