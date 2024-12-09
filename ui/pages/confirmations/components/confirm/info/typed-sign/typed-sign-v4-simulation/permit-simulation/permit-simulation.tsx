@@ -56,11 +56,9 @@ const PermitSimulation: React.FC<object> = () => {
   const TokenDetail = ({
     token,
     amount,
-    i,
   }: {
     token: Hex | string;
     amount: number | string;
-    i: number;
   }) => (
     <PermitSimulationValueDisplay
       primaryType={primaryType}
@@ -88,7 +86,12 @@ const PermitSimulation: React.FC<object> = () => {
                 { token, amount }: { token: string; amount: string },
                 i: number,
               ) => (
-                <TokenDetail token={token} amount={amount} i={i} key={`${token}-${i}`} />
+                <TokenDetail
+                  token={token}
+                  amount={amount}
+                  i={i}
+                  key={`${token}-${i}`}
+                />
               ),
             )}
           </Box>
