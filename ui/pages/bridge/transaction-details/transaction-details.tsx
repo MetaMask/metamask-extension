@@ -23,7 +23,10 @@ import UserPreferencedCurrencyDisplay from '../../../components/app/user-prefere
 import { EtherDenomination } from '../../../../shared/constants/common';
 import { PRIMARY } from '../../../helpers/constants/common';
 import CurrencyDisplay from '../../../components/ui/currency-display/currency-display.component';
-import { StatusTypes } from '../../../../shared/types/bridge-status';
+import {
+  BridgeHistoryItem,
+  StatusTypes,
+} from '../../../../shared/types/bridge-status';
 import {
   AlignItems,
   Display,
@@ -33,7 +36,6 @@ import {
 } from '../../../helpers/constants/design-system';
 import { formatDate } from '../../../helpers/utils/util';
 import { ConfirmInfoRowDivider as Divider } from '../../../components/app/confirm/info/row';
-import { calcTokenAmount } from '../../../../shared/lib/transactions-controller-utils';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP } from '../../../../shared/constants/network';
 import { selectedAddressTxListSelector } from '../../../selectors';
@@ -60,6 +62,23 @@ const getBlockExplorerUrl = (
   return `${rootUrl}/tx/${txHash}`;
 };
 
+/**
+ * @param options0
+ * @param options0.bridgeHistoryItem
+ * @returns A string representing the bridge amount in decimal form
+ */
+const getBridgeAmount = ({
+  bridgeHistoryItem,
+}: {
+  bridgeHistoryItem?: BridgeHistoryItem;
+}) => {
+  if (bridgeHistoryItem) {
+    return bridgeHistoryItem.pricingData?.amountSent;
+  }
+
+  return undefined;
+};
+
 const StatusToColorMap: Record<StatusTypes, TextColor> = {
   [StatusTypes.PENDING]: TextColor.warningDefault,
   [StatusTypes.COMPLETE]: TextColor.successDefault,
@@ -71,29 +90,38 @@ const CrossChainSwapTxDetails = () => {
   const t = useI18nContext();
   const rootState = useSelector((state) => state);
   const history = useHistory();
-  const { srcTxHash } = useParams<{ srcTxHash: string }>();
+  const { srcTxMetaId } = useParams<{ srcTxMetaId: string }>();
   const bridgeHistory = useSelector(selectBridgeHistoryForAccount);
   const selectedAddressTxList = useSelector(
     selectedAddressTxListSelector,
   ) as TransactionMeta[];
-  const bridgeHistoryItem = srcTxHash ? bridgeHistory[srcTxHash] : undefined;
+
   const networkConfigurationsByChainId = useSelector(
     getNetworkConfigurationsByChainId,
   );
+
+  const srcChainTxMeta = selectedAddressTxList.find(
+    (tx) => tx.id === srcTxMetaId,
+  );
+  // Even if user is still on /tx-details/txMetaId, we want to be able to show the bridge history item
+  const bridgeHistoryItem = srcTxMetaId
+    ? bridgeHistory[srcTxMetaId]
+    : undefined;
+
   const { srcNetwork, destNetwork } = useBridgeChainInfo({
     bridgeHistoryItem,
+    srcTxMeta: srcChainTxMeta,
   });
 
+  const srcTxHash = srcChainTxMeta?.hash;
   const srcBlockExplorerUrl = getBlockExplorerUrl(srcNetwork, srcTxHash);
 
   const destTxHash = bridgeHistoryItem?.status.destChain?.txHash;
   const destBlockExplorerUrl = getBlockExplorerUrl(destNetwork, destTxHash);
 
-  const srcChainTxMeta = selectedAddressTxList.find(
-    (tx) => tx.hash === srcTxHash,
-  );
-
-  const status = bridgeHistoryItem?.status.status;
+  const status = bridgeHistoryItem
+    ? bridgeHistoryItem?.status.status
+    : StatusTypes.PENDING;
 
   const destChainIconUrl = destNetwork
     ? CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP[
@@ -112,12 +140,7 @@ const CrossChainSwapTxDetails = () => {
       })
     : undefined;
 
-  const bridgeAmount = bridgeHistoryItem
-    ? `${calcTokenAmount(
-        bridgeHistoryItem.quote.srcTokenAmount,
-        bridgeHistoryItem.quote.srcAsset.decimals,
-      ).toFixed()} ${bridgeHistoryItem.quote.srcAsset.symbol}`
-    : undefined;
+  const bridgeAmount = getBridgeAmount({ bridgeHistoryItem });
 
   return (
     <div className="bridge">
@@ -141,13 +164,16 @@ const CrossChainSwapTxDetails = () => {
             flexDirection={FlexDirection.Column}
             gap={4}
           >
-            {status !== StatusTypes.COMPLETE && bridgeHistoryItem && (
-              <BridgeStepList
-                bridgeHistoryItem={bridgeHistoryItem}
-                srcChainTxMeta={srcChainTxMeta}
-                networkConfigurationsByChainId={networkConfigurationsByChainId}
-              />
-            )}
+            {status !== StatusTypes.COMPLETE &&
+              (bridgeHistoryItem || srcChainTxMeta) && (
+                <BridgeStepList
+                  bridgeHistoryItem={bridgeHistoryItem}
+                  srcChainTxMeta={srcChainTxMeta}
+                  networkConfigurationsByChainId={
+                    networkConfigurationsByChainId
+                  }
+                />
+              )}
 
             {/* Links to block explorers */}
             <BridgeExplorerLinks
@@ -156,7 +182,6 @@ const CrossChainSwapTxDetails = () => {
               srcBlockExplorerUrl={srcBlockExplorerUrl}
               destBlockExplorerUrl={destBlockExplorerUrl}
             />
-
             <Divider />
 
             {/* General tx details */}

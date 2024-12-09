@@ -388,6 +388,7 @@ export const METAMASK_CONTROLLER_EVENTS = {
   UPDATE_BADGE: 'updateBadge',
   // TODO: Add this and similar enums to the `controllers` repo and export them
   APPROVAL_STATE_CHANGE: 'ApprovalController:stateChange',
+  APP_STATE_UNLOCK_CHANGE: 'AppStateController:unlockChange',
   QUEUED_REQUEST_STATE_CHANGE: 'QueuedRequestController:stateChange',
   METAMASK_NOTIFICATIONS_LIST_UPDATED:
     'NotificationServicesController:notificationsListUpdated',
@@ -876,7 +877,7 @@ export default class MetamaskController extends EventEmitter {
     this.appStateController = new AppStateController({
       addUnlockListener: this.on.bind(this, 'unlock'),
       isUnlocked: this.isUnlocked.bind(this),
-      initState: initState.AppStateController,
+      state: initState.AppStateController,
       onInactiveTimeout: () => this.setLocked(),
       messenger: this.controllerMessenger.getRestricted({
         name: 'AppStateController',
@@ -1480,12 +1481,19 @@ export default class MetamaskController extends EventEmitter {
         },
         showInAppNotification: {
           method: (origin, args) => {
-            const { message } = args;
+            const { message, title, footerLink, interfaceId } = args;
+
+            const detailedView = {
+              title,
+              ...(footerLink ? { footerLink } : {}),
+              interfaceId,
+            };
 
             const notification = {
               data: {
                 message,
                 origin,
+                ...(interfaceId ? { detailedView } : {}),
               },
               type: TRIGGER_TYPES.SNAP,
               readDate: null,
@@ -2211,6 +2219,7 @@ export default class MetamaskController extends EventEmitter {
           'NetworkController:getNetworkClientById',
           'NetworkController:findNetworkClientIdByChainId',
           'NetworkController:getState',
+          'TransactionController:getState',
         ],
         allowedEvents: [],
       });
@@ -2512,7 +2521,7 @@ export default class MetamaskController extends EventEmitter {
 
     this.store.updateStructure({
       AccountsController: this.accountsController,
-      AppStateController: this.appStateController.store,
+      AppStateController: this.appStateController,
       AppMetadataController: this.appMetadataController,
       MultichainBalancesController: this.multichainBalancesController,
       TransactionController: this.txController,
@@ -2568,7 +2577,7 @@ export default class MetamaskController extends EventEmitter {
     this.memStore = new ComposableObservableStore({
       config: {
         AccountsController: this.accountsController,
-        AppStateController: this.appStateController.store,
+        AppStateController: this.appStateController,
         AppMetadataController: this.appMetadataController,
         MultichainBalancesController: this.multichainBalancesController,
         NetworkController: this.networkController,
@@ -2921,14 +2930,22 @@ export default class MetamaskController extends EventEmitter {
               origin,
               args.message,
             ),
-          showInAppNotification: (origin, args) =>
-            this.controllerMessenger.call(
+          showInAppNotification: (origin, args) => {
+            const { message, title, footerLink } = args;
+            const notificationArgs = {
+              interfaceId: args.content,
+              message,
+              title,
+              footerLink,
+            };
+            return this.controllerMessenger.call(
               'RateLimitController:call',
               origin,
               'showInAppNotification',
               origin,
-              args,
-            ),
+              notificationArgs,
+            );
+          },
           updateSnapState: this.controllerMessenger.call.bind(
             this.controllerMessenger,
             'SnapController:updateSnapState',
@@ -2964,6 +2981,8 @@ export default class MetamaskController extends EventEmitter {
             this.controllerMessenger,
             'SnapInterfaceController:getInterface',
           ),
+          // We don't currently use special cryptography for the extension client.
+          getClientCryptography: () => ({}),
           ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
           getSnapKeyring: this.getSnapKeyring.bind(this),
           ///: END:ONLY_INCLUDE_IF
@@ -6906,7 +6925,7 @@ export default class MetamaskController extends EventEmitter {
     const appStatePollingTokenType =
       POLLING_TOKEN_ENVIRONMENT_TYPES[environmentType];
     const pollingTokensToDisconnect =
-      this.appStateController.store.getState()[appStatePollingTokenType];
+      this.appStateController.state[appStatePollingTokenType];
     pollingTokensToDisconnect.forEach((pollingToken) => {
       this.gasFeeController.stopPollingByPollingToken(pollingToken);
       this.currencyRateController.stopPollingByPollingToken(pollingToken);

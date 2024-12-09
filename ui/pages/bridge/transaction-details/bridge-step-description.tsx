@@ -117,11 +117,19 @@ const getSwapActionText = (
       ]);
 };
 
-export const getStepStatus = (
-  bridgeHistoryItem: BridgeHistoryItem,
-  step: Step,
-  srcChainTxMeta?: TransactionMeta,
-) => {
+export const getStepStatus = ({
+  bridgeHistoryItem,
+  step,
+  srcChainTxMeta,
+}: {
+  bridgeHistoryItem?: BridgeHistoryItem;
+  step: Step;
+  srcChainTxMeta?: TransactionMeta;
+}) => {
+  if (!bridgeHistoryItem) {
+    return StatusTypes.UNKNOWN;
+  }
+
   if (step.action === ActionTypes.SWAP) {
     return getSwapActionStatus(bridgeHistoryItem, step, srcChainTxMeta);
   } else if (step.action === ActionTypes.BRIDGE) {
