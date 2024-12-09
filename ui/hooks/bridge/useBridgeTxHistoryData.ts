@@ -14,15 +14,17 @@ export const FINAL_NON_CONFIRMED_STATUSES = [
   TransactionStatus.rejected,
 ];
 
+export type TransactionGroup = {
+  hasCancelled: boolean;
+  hasRetried: boolean;
+  initialTransaction: TransactionMeta;
+  nonce: Hex;
+  primaryTransaction: TransactionMeta;
+  transactions: TransactionMeta[];
+};
+
 export type UseBridgeTxHistoryDataProps = {
-  transactionGroup: {
-    hasCancelled: boolean;
-    hasRetried: boolean;
-    initialTransaction: TransactionMeta;
-    nonce: Hex;
-    primaryTransaction: TransactionMeta;
-    transactions: TransactionMeta[];
-  };
+  transactionGroup: TransactionGroup;
 };
 
 export function useBridgeTxHistoryData({
