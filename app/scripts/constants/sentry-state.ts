@@ -418,11 +418,7 @@ const flattenedBackgroundStateMask = Object.values(
 export const SENTRY_UI_STATE = {
   gas: true,
   history: true,
-  metamask: {
-    ...flattenedBackgroundStateMask,
-    // This property comes from the background but isn't in controller state
-    isInitialized: true,
-    // These properties are in the `metamask` slice but not in the background state
+  appState: {
     customNonceValue: true,
     isAccountMenuOpen: true,
     isNetworkMenuOpen: true,
@@ -430,6 +426,11 @@ export const SENTRY_UI_STATE = {
     pendingTokens: false,
     welcomeScreenSeen: true,
     confirmationExchangeRates: true,
+  },
+  metamask: {
+    ...flattenedBackgroundStateMask,
+    // This property comes from the background but isn't in controller state
+    isInitialized: true,
     useSafeChainsListValidation: true,
     watchEthereumAccountEnabled: false,
     bitcoinSupportEnabled: false,
