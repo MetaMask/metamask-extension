@@ -1,20 +1,32 @@
 import PropTypes from 'prop-types';
 import React from 'react';
 import { useDispatch } from 'react-redux';
-import { useI18nContext } from '../../../hooks/useI18nContext';
-import * as actions from '../../../store/actions';
-import { Text, Box, ButtonPrimary } from '../../component-library';
-import { Textarea, TextareaResize } from '../../component-library/textarea';
+import { isValidMnemonic } from '@ethersproject/hdnode';
+import { useI18nContext } from '../../../../hooks/useI18nContext';
+import * as actions from '../../../../store/actions';
+import {
+  Text,
+  Box,
+  ButtonPrimary,
+  BannerAlert,
+} from '../../../component-library';
+import { Textarea, TextareaResize } from '../../../component-library/textarea';
 import {
   TextVariant,
   BlockSize,
   Display,
   FlexDirection,
-} from '../../../helpers/constants/design-system';
+  Severity,
+} from '../../../../helpers/constants/design-system';
 
-export default function SRPImportView({ onActionComplete }) {
+const hasUpperCase = (draftSrp) => {
+  return draftSrp !== draftSrp.toLowerCase();
+};
+
+export function ImportSRP({ onActionComplete }) {
   const t = useI18nContext();
   const dispatch = useDispatch();
+  const [srpError, setSrpError] = React.useState('');
   const [secretRecoveryPhrase, setSecretRecoveryPhrase] = React.useState('');
 
   async function importWallet() {
@@ -43,8 +55,26 @@ export default function SRPImportView({ onActionComplete }) {
           rows={2}
           width={BlockSize.Full}
           resize={TextareaResize.None}
+          paddingTop={3}
+          paddingBottom={3}
+          placeholder={t('importSRPPlaceholder')}
           onChange={(event) => {
-            setSecretRecoveryPhrase(event.target.value);
+            const currentSRP = event.target.value;
+            setSecretRecoveryPhrase(currentSRP);
+            let newSrpError = '';
+            const draftSrp = currentSRP.join(' ').trim();
+
+            if (draftSrp.some((word) => word !== '')) {
+              if (draftSrp.some((word) => word === '')) {
+                newSrpError = t('seedPhraseReq');
+              } else if (hasUpperCase(draftSrp)) {
+                newSrpError = t('invalidSeedPhraseCaseSensitive');
+              } else if (!isValidMnemonic(draftSrp)) {
+                newSrpError = t('invalidSeedPhrase');
+              }
+            }
+
+            setSrpError(newSrpError);
           }}
         />
       </Box>
@@ -52,10 +82,10 @@ export default function SRPImportView({ onActionComplete }) {
       <Box width={BlockSize.Full} marginTop={4}>
         <ButtonPrimary
           width={BlockSize.Full}
+          disabled={!secretRecoveryPhrase.trim()}
           onClick={async () => {
             try {
-              const result = await importWallet();
-              console.log('result', result);
+              await importWallet();
               onActionComplete(true);
               dispatch(actions.showAlert(t('importWalletSuccess')));
               setTimeout((_) => {
@@ -69,11 +99,14 @@ export default function SRPImportView({ onActionComplete }) {
           {t('importWallet')}
         </ButtonPrimary>
       </Box>
+      {srpError ? (
+        <BannerAlert severity={Severity.Danger} description={srpError} />
+      ) : null}
     </Box>
   );
 }
 
-SRPImportView.propTypes = {
+ImportSRP.propTypes = {
   /**
    * Executes when the srp is imported
    */
