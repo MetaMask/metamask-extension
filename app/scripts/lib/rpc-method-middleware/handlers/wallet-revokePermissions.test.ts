@@ -198,7 +198,15 @@ describe('revokePermissionsHandler', () => {
   it('revokes permissions other than eth_accounts, permittedChains, CAIP-25 if specified', () => {
     const { handler, revokePermissionsForOrigin } = createMockedHandler();
 
-    handler(baseRequest);
+    handler({
+      ...baseRequest,
+      params: [
+        {
+          [Caip25EndowmentPermissionName]: {},
+          otherPermission: {},
+        },
+      ],
+    });
     expect(revokePermissionsForOrigin).toHaveBeenCalledWith([
       'otherPermission',
     ]);
