@@ -179,7 +179,9 @@ export const getActionTitle = (
       return t('addAccount');
     ///: END:ONLY_INCLUDE_IF
     case ACTION_MODES.IMPORT:
-      return t('importAccount');
+      return t('importPrivateKey');
+    case ACTION_MODES.IMPORT_SRP:
+      return t('importSecretRecoveryPhrase');
     default:
       return t('selectAnAccount');
   }
@@ -445,18 +447,6 @@ export const AccountListMenu = ({
                 {t('addNewAccount')}
               </ButtonLink>
             </Box>
-            <Box>
-              <ButtonLink
-                size={ButtonLinkSize.Sm}
-                startIconName={IconName.Import}
-                onClick={() => {
-                  setActionMode(ACTION_MODES.IMPORT_SRP);
-                }}
-                data-testid="multichain-account-menu-popover-import-srp"
-              >
-               Import Secret Recovery Phrase
-              </ButtonLink>
-            </Box>
             {
               ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
               bitcoinSupportEnabled && (
@@ -548,6 +538,18 @@ export const AccountListMenu = ({
               <ButtonLink
                 size={ButtonLinkSize.Sm}
                 startIconName={IconName.Import}
+                onClick={() => {
+                  setActionMode(ACTION_MODES.IMPORT_SRP);
+                }}
+                data-testid="multichain-account-menu-popover-import-srp"
+              >
+                {t('importSecretRecoveryPhrase')}
+              </ButtonLink>
+            </Box>
+            <Box marginTop={4}>
+              <ButtonLink
+                size={ButtonLinkSize.Sm}
+                startIconName={IconName.Import}
                 data-testid="multichain-account-menu-popover-add-imported-account"
                 onClick={() => {
                   trackEvent({
@@ -561,7 +563,7 @@ export const AccountListMenu = ({
                   setActionMode(ACTION_MODES.IMPORT);
                 }}
               >
-                {t('importAccount')}
+                {t('importPrivateKey')}
               </ButtonLink>
             </Box>
             <Box marginTop={4}>

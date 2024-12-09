@@ -4601,7 +4601,6 @@ export default class MetamaskController extends EventEmitter {
   async createNewVaultAndKeychain(password) {
     const releaseLock = await this.createVaultMutex.acquire();
     try {
-      console.log('createNewVaultAndKeychain');
       return await this.keyringController.createNewVaultAndKeychain(password);
     } finally {
       releaseLock();
@@ -4612,15 +4611,16 @@ export default class MetamaskController extends EventEmitter {
    * Creates a new vault and restores from a mnemonic.
    *
    * @param {string} mnemonic
-   * @returns {object} newKeyring
+   * @returns {object} newAccount
    */
   async createNewVaultAndRestoreFromMnemonic(mnemonic) {
     const releaseLock = await this.createVaultMutex.acquire();
     try {
-      const newKeyring = await this.keyringController.createKeyringFromMnemonic(
+      const newAccount = await this.keyringController.createKeyringFromMnemonic(
         mnemonic,
       );
-      return newKeyring;
+      this.preferencesController.setSelectedAddress(newAccount);
+      return newAccount;
     } finally {
       releaseLock();
     }
@@ -5163,15 +5163,15 @@ export default class MetamaskController extends EventEmitter {
    * Adds a new account to the default (first) HD seed phrase Keyring.
    *
    * @param {number} accountCount
+   * @param {string} keyringId
    * @returns {Promise<string>} The address of the newly-created account.
    */
-  async addNewAccount(accountCount) {
+  async addNewAccount(accountCount, keyringId) {
     const oldAccounts = await this.keyringController.getAccounts();
-    const selectedAccount = this.accountsController.getSelectedAccount();
 
     const addedAccountAddress = await this.keyringController.addNewAccount(
       accountCount,
-      selectedAccount.address,
+      keyringId,
     );
 
     if (!oldAccounts.includes(addedAccountAddress)) {
