@@ -28,6 +28,12 @@ const setup = (options: { localMock?: { get?: unknown } | false } = {}) => {
   return new ExtensionStore({ migrator });
 };
 describe('ExtensionStore', () => {
+  beforeEach(() => {
+    global.sentry = {
+      captureException: jest.fn(),
+    };
+  });
+
   afterEach(() => {
     jest.resetModules();
     jest.clearAllMocks();

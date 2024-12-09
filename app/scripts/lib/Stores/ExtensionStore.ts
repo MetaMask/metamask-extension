@@ -126,7 +126,7 @@ export class ExtensionStore extends BaseStore {
         this.mostRecentRetrievedState = null;
         this.stateCorruptionDetected = true;
 
-        sentry.captureMessage('Empty/corrupted vault found');
+        global.sentry?.captureMessage('Empty/corrupted vault found');
 
         // If the data is missing, but we have a record of it existing at some
         // point return an empty object, return the fallback state tree from
@@ -138,7 +138,7 @@ export class ExtensionStore extends BaseStore {
       return result;
     } catch (err) {
       this.stateCorruptionDetected = true;
-      log.error('error getting state from local store:', err);
+      global.sentry?.captureException(err);
       // If we get an error trying to read the state, this indicated some kind
       // of corruption or fault of the storage mechanism and we should fallback
       // to the process for handling corrupted state.
