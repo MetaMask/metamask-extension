@@ -163,7 +163,7 @@ describe('ERC721 Approve Confirmation', () => {
     });
 
     expect(
-      await screen.findByText(tEn('confirmTitleApproveTransaction') as string),
+      await screen.findByText(tEn('confirmTitleApproveTransactionNFT') as string),
     ).toBeInTheDocument();
     expect(
       await screen.findByText(

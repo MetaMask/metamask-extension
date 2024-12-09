@@ -1128,7 +1128,7 @@
   "confirmRecoveryPhrase": {
     "message": "Confirm Secret Recovery Phrase"
   },
-  "confirmTitleApproveTransaction": {
+  "confirmTitleApproveTransactionNFT": {
     "message": "Withdrawal request"
   },
   "confirmTitleDeployContract": {
