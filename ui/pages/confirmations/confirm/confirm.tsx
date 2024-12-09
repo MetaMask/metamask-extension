@@ -54,7 +54,9 @@ const Confirm = () => (
           <Page className="confirm_wrapper">
             <Nav />
             <Header />
-            <STXBannerAlert />
+            <div className="transaction-alerts">
+              <STXBannerAlert />
+            </div>
             <ScrollToBottom>
               {
                 ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
