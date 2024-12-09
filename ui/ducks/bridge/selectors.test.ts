@@ -34,7 +34,13 @@ describe('Bridge selectors', () => {
   describe('getFromChain', () => {
     it('returns the fromChain from the state', () => {
       const state = createBridgeMockStore({
-        featureFlagOverrides: { srcNetworkAllowlist: [CHAIN_IDS.ARBITRUM] },
+        featureFlagOverrides: {
+          extensionConfig: {
+            chains: {
+              [CHAIN_IDS.ARBITRUM]: { isActiveSrc: true, isActiveDest: false },
+            },
+          },
+        },
         bridgeSliceOverrides: { toChainId: '0xe708' },
         metamaskStateOverrides: {
           ...mockNetworkState(FEATURED_RPCS[1]),
@@ -63,7 +69,13 @@ describe('Bridge selectors', () => {
   describe('getToChain', () => {
     it('returns the toChain from the state', () => {
       const state = createBridgeMockStore({
-        featureFlagOverrides: { destNetworkAllowlist: ['0xe708'] },
+        featureFlagOverrides: {
+          extensionConfig: {
+            chains: {
+              '0xe708': { isActiveSrc: false, isActiveDest: true },
+            },
+          },
+        },
         bridgeSliceOverrides: { toChainId: '0xe708' },
       });
 
@@ -156,12 +168,17 @@ describe('Bridge selectors', () => {
     it('excludes disabled chains from options', () => {
       const state = createBridgeMockStore({
         featureFlagOverrides: {
-          srcNetworkAllowlist: [
-            CHAIN_IDS.MAINNET,
-            CHAIN_IDS.LINEA_MAINNET,
-            CHAIN_IDS.OPTIMISM,
-            CHAIN_IDS.POLYGON,
-          ],
+          extensionConfig: {
+            chains: {
+              [CHAIN_IDS.MAINNET]: { isActiveSrc: true, isActiveDest: false },
+              [CHAIN_IDS.LINEA_MAINNET]: {
+                isActiveSrc: true,
+                isActiveDest: false,
+              },
+              [CHAIN_IDS.OPTIMISM]: { isActiveSrc: true, isActiveDest: false },
+              [CHAIN_IDS.POLYGON]: { isActiveSrc: true, isActiveDest: false },
+            },
+          },
         },
         bridgeSliceOverrides: { toChainId: CHAIN_IDS.LINEA_MAINNET },
       });
@@ -188,12 +205,17 @@ describe('Bridge selectors', () => {
     it('excludes selected providerConfig and disabled chains from options', () => {
       const state = createBridgeMockStore({
         featureFlagOverrides: {
-          destNetworkAllowlist: [
-            CHAIN_IDS.ARBITRUM,
-            CHAIN_IDS.LINEA_MAINNET,
-            CHAIN_IDS.OPTIMISM,
-            CHAIN_IDS.POLYGON,
-          ],
+          extensionConfig: {
+            chains: {
+              [CHAIN_IDS.ARBITRUM]: { isActiveSrc: false, isActiveDest: true },
+              [CHAIN_IDS.LINEA_MAINNET]: {
+                isActiveSrc: false,
+                isActiveDest: true,
+              },
+              [CHAIN_IDS.OPTIMISM]: { isActiveSrc: false, isActiveDest: true },
+              [CHAIN_IDS.POLYGON]: { isActiveSrc: false, isActiveDest: true },
+            },
+          },
         },
         metamaskStateOverrides: {
           ...mockNetworkState(...FEATURED_RPCS),
@@ -225,9 +247,13 @@ describe('Bridge selectors', () => {
     it('returns false if bridge is not enabled', () => {
       const state = createBridgeMockStore({
         featureFlagOverrides: {
-          extensionSupport: false,
-          srcNetworkAllowlist: ['0x1'],
-          destNetworkAllowlist: ['0x38'],
+          extensionConfig: {
+            support: false,
+            chains: {
+              '0x1': { isActiveSrc: true, isActiveDest: false },
+              '0x38': { isActiveSrc: false, isActiveDest: true },
+            },
+          },
         },
         bridgeSliceOverrides: { toChainId: '0x38' },
         metamaskStateOverrides: {
@@ -243,9 +269,12 @@ describe('Bridge selectors', () => {
     it('returns false if toChainId is null', () => {
       const state = createBridgeMockStore({
         featureFlagOverrides: {
-          extensionSupport: true,
-          srcNetworkAllowlist: ['0x1'],
-          destNetworkAllowlist: ['0x1'],
+          extensionConfig: {
+            support: true,
+            chains: {
+              '0x1': { isActiveSrc: true, isActiveDest: true },
+            },
+          },
         },
         bridgeSliceOverrides: { toChainId: null },
         metamaskStateOverrides: {
@@ -261,9 +290,12 @@ describe('Bridge selectors', () => {
     it('returns false if fromChain and toChainId have the same chainId', () => {
       const state = createBridgeMockStore({
         featureFlagOverrides: {
-          extensionSupport: true,
-          srcNetworkAllowlist: ['0x1'],
-          destNetworkAllowlist: ['0x1'],
+          extensionConfig: {
+            support: true,
+            chains: {
+              '0x1': { isActiveSrc: true, isActiveDest: true },
+            },
+          },
         },
         bridgeSliceOverrides: { toChainId: '0x1' },
         metamaskStateOverrides: {
@@ -279,9 +311,13 @@ describe('Bridge selectors', () => {
     it('returns false if useExternalServices is not enabled', () => {
       const state = createBridgeMockStore({
         featureFlagOverrides: {
-          extensionSupport: true,
-          srcNetworkAllowlist: ['0x1'],
-          destNetworkAllowlist: ['0x38'],
+          extensionConfig: {
+            support: true,
+            chains: {
+              '0x1': { isActiveSrc: true, isActiveDest: false },
+              '0x38': { isActiveSrc: false, isActiveDest: true },
+            },
+          },
         },
         bridgeSliceOverrides: { toChainId: '0x38' },
         metamaskStateOverrides: {
@@ -297,9 +333,13 @@ describe('Bridge selectors', () => {
     it('returns true if bridge is enabled and fromChain and toChainId have different chainIds', () => {
       const state = createBridgeMockStore({
         featureFlagOverrides: {
-          extensionSupport: true,
-          srcNetworkAllowlist: ['0x1'],
-          destNetworkAllowlist: ['0x38'],
+          extensionConfig: {
+            support: true,
+            chains: {
+              '0x1': { isActiveSrc: true, isActiveDest: false },
+              '0x38': { isActiveSrc: false, isActiveDest: true },
+            },
+          },
         },
         bridgeSliceOverrides: { toChainId: '0x38' },
         metamaskStateOverrides: {

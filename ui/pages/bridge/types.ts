@@ -1,4 +1,5 @@
 import { BigNumber } from 'bignumber.js';
+import { ChainConfiguration } from '../../../shared/types/bridge';
 
 export type L1GasFees = {
   l1GasFeesInHexWei?: string; // l1 fees for approval and trade in hex wei, appended by controller
@@ -25,9 +26,6 @@ export enum SortOrder {
 // Types copied from Metabridge API
 export enum BridgeFlag {
   EXTENSION_CONFIG = 'extension-config',
-  EXTENSION_SUPPORT = 'extension-support',
-  NETWORK_SRC_ALLOWLIST = 'src-network-allowlist',
-  NETWORK_DEST_ALLOWLIST = 'dest-network-allowlist',
 }
 
 type DecimalChainId = string;
@@ -37,10 +35,9 @@ export type FeatureFlagResponse = {
   [BridgeFlag.EXTENSION_CONFIG]: {
     refreshRate: number;
     maxRefreshCount: number;
+    support: boolean;
+    chains: Record<number, ChainConfiguration>;
   };
-  [BridgeFlag.EXTENSION_SUPPORT]: boolean;
-  [BridgeFlag.NETWORK_SRC_ALLOWLIST]: number[];
-  [BridgeFlag.NETWORK_DEST_ALLOWLIST]: number[];
 };
 
 export type BridgeAsset = {

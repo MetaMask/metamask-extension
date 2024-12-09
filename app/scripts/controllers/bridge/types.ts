@@ -16,24 +16,21 @@ import {
   // TODO: Remove restricted import
   // eslint-disable-next-line import/no-restricted-paths
 } from '../../../../ui/pages/bridge/types';
+import { ChainConfiguration } from '../../../../shared/types/bridge';
 import BridgeController from './bridge-controller';
 import { BRIDGE_CONTROLLER_NAME, RequestStatus } from './constants';
 
 export enum BridgeFeatureFlagsKey {
   EXTENSION_CONFIG = 'extensionConfig',
-  EXTENSION_SUPPORT = 'extensionSupport',
-  NETWORK_SRC_ALLOWLIST = 'srcNetworkAllowlist',
-  NETWORK_DEST_ALLOWLIST = 'destNetworkAllowlist',
 }
 
 export type BridgeFeatureFlags = {
   [BridgeFeatureFlagsKey.EXTENSION_CONFIG]: {
     refreshRate: number;
     maxRefreshCount: number;
+    support: boolean;
+    chains: Record<Hex, ChainConfiguration>;
   };
-  [BridgeFeatureFlagsKey.EXTENSION_SUPPORT]: boolean;
-  [BridgeFeatureFlagsKey.NETWORK_SRC_ALLOWLIST]: Hex[];
-  [BridgeFeatureFlagsKey.NETWORK_DEST_ALLOWLIST]: Hex[];
 };
 
 export type BridgeControllerState = {

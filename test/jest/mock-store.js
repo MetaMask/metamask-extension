@@ -745,10 +745,12 @@ export const createBridgeMockStore = (
       bridgeState: {
         ...(swapsStore.metamask.bridgeState ?? {}),
         bridgeFeatureFlags: {
-          extensionSupport: false,
-          srcNetworkAllowlist: [],
-          destNetworkAllowlist: [],
           ...featureFlagOverrides,
+          extensionConfig: {
+            support: false,
+            chains: {},
+            ...featureFlagOverrides.extensionConfig,
+          },
         },
         quotes: DEFAULT_BRIDGE_CONTROLLER_STATE.quotes,
         quoteRequest: DEFAULT_BRIDGE_CONTROLLER_STATE.quoteRequest,
