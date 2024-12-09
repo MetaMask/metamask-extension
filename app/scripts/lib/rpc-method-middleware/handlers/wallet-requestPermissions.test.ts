@@ -177,6 +177,7 @@ describe('requestPermissionsHandler', () => {
 
     await handler({
       ...getBaseRequest(),
+      origin: 'http://test.com',
       params: [
         {
           [RestrictedMethods.eth_accounts]: {
@@ -200,6 +201,7 @@ describe('requestPermissionsHandler', () => {
 
     await handler({
       ...getBaseRequest(),
+      origin: 'http://test.com',
       params: [
         {
           [PermissionNames.permittedChains]: {
@@ -233,6 +235,7 @@ describe('requestPermissionsHandler', () => {
 
     await handler({
       ...getBaseRequest(),
+      origin: 'http://test.com',
       params: [
         {
           [RestrictedMethods.eth_accounts]: {
@@ -540,7 +543,10 @@ describe('requestPermissionsHandler', () => {
     it('sets the approved chainIds on an empty CAIP-25 caveat with isMultichainOrigin: false if origin is not snapId', async () => {
       const { handler } = createMockedHandler();
 
-      await handler(getBaseRequest());
+      await handler({
+        ...getBaseRequest(),
+        origin: 'http://test.com',
+      });
       expect(MockMultichain.setPermittedEthChainIds).toHaveBeenCalledWith(
         {
           requiredScopes: {},
@@ -560,7 +566,10 @@ describe('requestPermissionsHandler', () => {
         isMultichainOrigin: false,
       });
 
-      await handler(getBaseRequest());
+      await handler({
+        ...getBaseRequest(),
+        origin: 'http://test.com',
+      });
       expect(MockMultichain.setEthAccounts).toHaveBeenCalledWith(
         {
           requiredScopes: {},
@@ -699,7 +708,10 @@ describe('requestPermissionsHandler', () => {
       const { handler, getAccounts, response } = createMockedHandler();
       getAccounts.mockReturnValue(['0xdeadbeef']);
 
-      await handler(getBaseRequest());
+      await handler({
+        ...getBaseRequest(),
+        origin: 'http://test.com',
+      });
       expect(response.result).toStrictEqual([
         {
           caveats: [{ value: { foo: 'bar' } }],

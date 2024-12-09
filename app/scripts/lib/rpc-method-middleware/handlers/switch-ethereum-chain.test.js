@@ -1,4 +1,4 @@
-import { providerErrors, rpcErrors } from '@metamask/rpc-errors';
+import { providerErrors } from '@metamask/rpc-errors';
 import {
   CHAIN_IDS,
   NETWORK_TYPES,
