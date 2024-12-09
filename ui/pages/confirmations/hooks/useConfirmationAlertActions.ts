@@ -3,7 +3,7 @@ import { useDispatch } from 'react-redux';
 import { AlertActionKey } from '../../../components/app/confirm/info/row/constants';
 import useRamps from '../../../hooks/ramps/useRamps/useRamps';
 import { useTransactionModalContext } from '../../../contexts/transaction-modal';
-import { dismissAndDisableAlert } from '../../../ducks/alerts/unconnected-account';
+import { dismissAndDisableAlert } from '../../../ducks/alerts/stx-migration';
 
 const useConfirmationAlertActions = () => {
   const { openBuyCryptoInPdapp } = useRamps();
