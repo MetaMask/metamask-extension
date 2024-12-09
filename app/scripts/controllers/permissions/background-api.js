@@ -1,5 +1,8 @@
 import nanoid from 'nanoid';
-import { MethodNames } from '@metamask/permission-controller';
+import {
+  MethodNames,
+  PermissionDoesNotExistError,
+} from '@metamask/permission-controller';
 import {
   Caip25CaveatType,
   Caip25EndowmentPermissionName,
@@ -29,7 +32,12 @@ export function getPermissionBackgroundApiMethods({
         Caip25CaveatType,
       );
     } catch (err) {
-      // noop
+      if (err instanceof PermissionDoesNotExistError) {
+        // suppress expected error in case that the origin
+        // does not have the target permission yet
+      } else {
+        throw err;
+      }
     }
 
     if (!caip25Caveat) {
@@ -66,7 +74,12 @@ export function getPermissionBackgroundApiMethods({
         Caip25CaveatType,
       );
     } catch (err) {
-      // noop
+      if (err instanceof PermissionDoesNotExistError) {
+        // suppress expected error in case that the origin
+        // does not have the target permission yet
+      } else {
+        throw err;
+      }
     }
 
     if (!caip25Caveat) {
@@ -116,7 +129,12 @@ export function getPermissionBackgroundApiMethods({
           Caip25CaveatType,
         );
       } catch (err) {
-        // noop
+        if (err instanceof PermissionDoesNotExistError) {
+          // suppress expected error in case that the origin
+          // does not have the target permission yet
+        } else {
+          throw err;
+        }
       }
 
       if (!caip25Caveat) {
@@ -167,7 +185,12 @@ export function getPermissionBackgroundApiMethods({
           Caip25CaveatType,
         );
       } catch (err) {
-        // noop
+        if (err instanceof PermissionDoesNotExistError) {
+          // suppress expected error in case that the origin
+          // does not have the target permission yet
+        } else {
+          throw err;
+        }
       }
 
       if (!caip25Caveat) {
