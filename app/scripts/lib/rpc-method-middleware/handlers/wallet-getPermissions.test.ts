@@ -140,7 +140,8 @@ describe('getPermissionsHandler', () => {
 
   describe('CAIP-25 endowment permissions has been granted', () => {
     it('returns the permissions with the CAIP-25 permission removed', async () => {
-      const { handler, getAccounts, getPermissionsForOrigin, response } = createMockedHandler();
+      const { handler, getAccounts, getPermissionsForOrigin, response } =
+        createMockedHandler();
       getPermissionsForOrigin.mockReturnValue(
         Object.freeze({
           [Caip25EndowmentPermissionName]: {
@@ -262,8 +263,8 @@ describe('getPermissionsHandler', () => {
               },
             ],
           },
-        })
-      )
+        }),
+      );
       await handler(baseRequest);
       expect(MockMultichain.getPermittedEthChainIds).toHaveBeenCalledWith({
         requiredScopes: {
