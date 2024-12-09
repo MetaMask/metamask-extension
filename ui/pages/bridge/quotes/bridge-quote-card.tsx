@@ -37,11 +37,11 @@ import {
   TextVariant,
 } from '../../../helpers/constants/design-system';
 import { Row, Column, Tooltip } from '../layout';
-import { BRIDGE_MM_FEE_RATE } from '../../../../shared/constants/bridge';
 import {
-  CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP,
-  NETWORK_TO_NAME_MAP,
-} from '../../../../shared/constants/network';
+  BRIDGE_MM_FEE_RATE,
+  NETWORK_TO_SHORT_NETWORK_NAME_MAP,
+} from '../../../../shared/constants/bridge';
+import { CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP } from '../../../../shared/constants/network';
 import { decimalToPrefixedHex } from '../../../../shared/modules/conversion.utils';
 import { TERMS_OF_USE_LINK } from '../../../../shared/constants/terms';
 import { BridgeQuotesModal } from './bridge-quotes-modal';
@@ -133,10 +133,10 @@ export const BridgeQuoteCard = () => {
                 />
                 <Text>
                   {
-                    NETWORK_TO_NAME_MAP[
+                    NETWORK_TO_SHORT_NETWORK_NAME_MAP[
                       decimalToPrefixedHex(
                         activeQuote.quote.srcChainId,
-                      ) as keyof typeof NETWORK_TO_NAME_MAP
+                      ) as keyof typeof NETWORK_TO_SHORT_NETWORK_NAME_MAP
                     ].split(' ')[0]
                   }
                 </Text>
@@ -155,10 +155,10 @@ export const BridgeQuoteCard = () => {
                 />
                 <Text>
                   {
-                    NETWORK_TO_NAME_MAP[
+                    NETWORK_TO_SHORT_NETWORK_NAME_MAP[
                       decimalToPrefixedHex(
                         activeQuote.quote.destChainId,
-                      ) as keyof typeof NETWORK_TO_NAME_MAP
+                      ) as keyof typeof NETWORK_TO_SHORT_NETWORK_NAME_MAP
                     ].split(' ')[0]
                   }
                 </Text>
