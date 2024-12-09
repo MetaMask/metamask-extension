@@ -1,12 +1,164 @@
 import { waitFor } from '@testing-library/react';
-import { act } from '@testing-library/react-hooks';
 import { renderHookWithProviderTyped } from '../../../../test/lib/render-helpers';
 import * as actions from '../../../store/actions';
+import { MetamaskIdentityProvider } from '../../../contexts/identity';
 import {
-  useAccountSyncingEffect,
+  useAccountSyncing,
   useDeleteAccountSyncingDataFromUserStorage,
+  useShouldDispatchAccountSyncing,
 } from './accountSyncing';
-import * as ProfileSyncModule from './profileSyncing';
+
+type ArrangeMocksMetamaskStateOverrides = {
+  isSignedIn?: boolean;
+  isProfileSyncingEnabled?: boolean;
+  isUnlocked?: boolean;
+  useExternalServices?: boolean;
+  completedOnboarding?: boolean;
+  isAccountSyncingReadyToBeDispatched?: boolean;
+};
+
+const initialMetamaskState: ArrangeMocksMetamaskStateOverrides = {
+  isSignedIn: false,
+  isProfileSyncingEnabled: false,
+  isUnlocked: true,
+  useExternalServices: true,
+  completedOnboarding: true,
+  isAccountSyncingReadyToBeDispatched: true,
+};
+
+const arrangeMockState = (
+  metamaskStateOverrides?: ArrangeMocksMetamaskStateOverrides,
+) => {
+  const state = {
+    metamask: {
+      ...initialMetamaskState,
+      ...metamaskStateOverrides,
+    },
+  };
+
+  return { state };
+};
+
+describe('useShouldDispatchAccountSyncing()', () => {
+  const testCases = (() => {
+    const properties = [
+      'isSignedIn',
+      'isProfileSyncingEnabled',
+      'isUnlocked',
+      'useExternalServices',
+      'completedOnboarding',
+      'isAccountSyncingReadyToBeDispatched',
+    ] as const;
+    const baseState = {
+      isSignedIn: true,
+      isProfileSyncingEnabled: true,
+      isUnlocked: true,
+      useExternalServices: true,
+      completedOnboarding: true,
+      isAccountSyncingReadyToBeDispatched: true,
+    };
+
+    const failureStateCases: {
+      state: ArrangeMocksMetamaskStateOverrides;
+      failingField: string;
+    }[] = [];
+
+    // Generate test cases by toggling each property
+    properties.forEach((property) => {
+      const state = { ...baseState, [property]: false };
+      failureStateCases.push({ state, failingField: property });
+    });
+
+    const successTestCase = { state: baseState };
+
+    return { successTestCase, failureStateCases };
+  })();
+
+  it('should return true if all conditions are met', () => {
+    const { state } = arrangeMockState(testCases.successTestCase.state);
+    const hook = renderHookWithProviderTyped(
+      () => useShouldDispatchAccountSyncing(),
+      state,
+      undefined,
+      MetamaskIdentityProvider,
+    );
+    expect(hook.result.current).toBe(true);
+  });
+
+  testCases.failureStateCases.forEach(({ state, failingField }) => {
+    it(`should return false if not all conditions are met [${failingField} = false]`, () => {
+      const { state: newState } = arrangeMockState(state);
+      const hook = renderHookWithProviderTyped(
+        () => useShouldDispatchAccountSyncing(),
+        newState,
+        undefined,
+        MetamaskIdentityProvider,
+      );
+      expect(hook.result.current).toBe(false);
+    });
+  });
+});
+
+describe('useAccountSyncing', () => {
+  const arrangeMocks = () => {
+    const mockSyncAccountsAction = jest.spyOn(
+      actions,
+      'syncInternalAccountsWithUserStorage',
+    );
+    return {
+      mockSyncAccountsAction,
+    };
+  };
+
+  const arrangeAndAct = (
+    stateOverrides: ArrangeMocksMetamaskStateOverrides = initialMetamaskState,
+  ) => {
+    const mocks = arrangeMocks();
+    const { state } = arrangeMockState(stateOverrides);
+
+    const { result } = renderHookWithProviderTyped(
+      () => useAccountSyncing(),
+      state,
+      undefined,
+      MetamaskIdentityProvider,
+    );
+    const { dispatchAccountSyncing, shouldDispatchAccountSyncing } =
+      result.current;
+
+    return { mocks, dispatchAccountSyncing, shouldDispatchAccountSyncing };
+  };
+
+  it('should dispatch if conditions are met', async () => {
+    const { mocks, dispatchAccountSyncing, shouldDispatchAccountSyncing } =
+      arrangeAndAct({
+        isSignedIn: true,
+        isProfileSyncingEnabled: true,
+        isUnlocked: true,
+        useExternalServices: true,
+        completedOnboarding: true,
+        isAccountSyncingReadyToBeDispatched: true,
+      });
+
+    await dispatchAccountSyncing();
+
+    await waitFor(() => {
+      expect(mocks.mockSyncAccountsAction).toHaveBeenCalled();
+      expect(shouldDispatchAccountSyncing).toBe(true);
+    });
+  });
+
+  it('should not dispatch conditions are not met', async () => {
+    const { mocks, dispatchAccountSyncing, shouldDispatchAccountSyncing } =
+      arrangeAndAct();
+
+    await dispatchAccountSyncing();
+
+    await waitFor(() => {
+      expect(mocks.mockSyncAccountsAction).not.toHaveBeenCalled();
+      expect(shouldDispatchAccountSyncing).toBe(false);
+    });
+  });
+});
 
 describe('useDeleteAccountSyncingDataFromUserStorage()', () => {
   it('should dispatch account sync data deletion', async () => {
@@ -17,54 +169,13 @@ describe('useDeleteAccountSyncingDataFromUserStorage()', () => {
 
     const { result } = renderHookWithProviderTyped(
       () => useDeleteAccountSyncingDataFromUserStorage(),
-      {},
+      arrangeMockState().state,
+      undefined,
+      MetamaskIdentityProvider,
     );
 
-    await act(async () => {
-      await result.current.dispatchDeleteAccountData();
-    });
+    await result.current.dispatchDeleteAccountSyncingData();
 
     expect(mockDeleteAccountSyncAction).toHaveBeenCalled();
-  });
-});
-
-describe('useAccountSyncingEffect', () => {
-  const arrangeMocks = () => {
-    const mockUseShouldProfileSync = jest.spyOn(
-      ProfileSyncModule,
-      'useShouldDispatchProfileSyncing',
-    );
-    const mockSyncAccountsAction = jest.spyOn(
-      actions,
-      'syncInternalAccountsWithUserStorage',
-    );
-    return {
-      mockUseShouldProfileSync,
-      mockSyncAccountsAction,
-    };
-  };
-
-  const arrangeAndAct = (props: { profileSyncConditionsMet: boolean }) => {
-    const mocks = arrangeMocks();
-    mocks.mockUseShouldProfileSync.mockReturnValue(
-      props.profileSyncConditionsMet,
-    );
-
-    renderHookWithProviderTyped(() => useAccountSyncingEffect(), {});
-    return mocks;
-  };
-
-  it('should run effect if profile sync conditions are met', async () => {
-    const mocks = arrangeAndAct({ profileSyncConditionsMet: true });
-    await waitFor(() => {
-      expect(mocks.mockSyncAccountsAction).toHaveBeenCalled();
-    });
-  });
-
-  it('should not run effect if profile sync conditions are not met', async () => {
-    const mocks = arrangeAndAct({ profileSyncConditionsMet: false });
-    await waitFor(() => {
-      expect(mocks.mockSyncAccountsAction).not.toHaveBeenCalled();
-    });
   });
 });
