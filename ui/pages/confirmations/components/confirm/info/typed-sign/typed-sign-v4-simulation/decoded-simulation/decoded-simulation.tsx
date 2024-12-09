@@ -60,12 +60,12 @@ const StateChangeRow = ({
   stateChangeList,
   stateChange,
   chainId,
-  displayLabel,
+  shouldDisplayLabel,
 }: {
   stateChangeList: DecodingDataStateChanges | null;
   stateChange: DecodingDataStateChange;
   chainId: Hex;
-  displayLabel: boolean;
+  shouldDisplayLabel: boolean;
 }) => {
   const t = useI18nContext();
   const { assetType, changeType, amount, contractAddress, tokenID } =
@@ -73,7 +73,7 @@ const StateChangeRow = ({
   const tooltip = getStateChangeToolip(stateChangeList, stateChange, t);
   return (
     <ConfirmInfoRow
-      label={displayLabel ? getStateChangeLabelMap(t, changeType) : ''}
+      label={shouldDisplayLabel ? getStateChangeLabelMap(t, changeType) : ''}
       tooltip={tooltip}
     >
       {(assetType === TokenStandard.ERC20 ||
@@ -109,11 +109,8 @@ const DecodedSimulation: React.FC<object> = () => {
   const stateChangeFragment = useMemo(() => {
     const stateChangesGrouped: Record<string, DecodingDataStateChange[]> = (
       decodingData?.stateChanges ?? []
-    ).reduce(
-      (
-        result: Record<string, DecodingDataStateChange[]>,
-        stateChange: DecodingDataStateChange,
-      ) => {
+    ).reduce<Record<string, DecodingDataStateChange[]>>(
+      (result, stateChange) => {
         result[stateChange.changeType] = [
           ...(result[stateChange.changeType] ?? []),
           stateChange,
@@ -123,21 +120,16 @@ const DecodedSimulation: React.FC<object> = () => {
       {},
     );
 
-    return Object.entries(stateChangesGrouped)
-      .map(([_, changeList]) =>
-        changeList.map((change: DecodingDataStateChange, index: number) => (
-          <StateChangeRow
-            stateChangeList={decodingData?.stateChanges ?? []}
-            stateChange={change}
-            chainId={chainId}
-            displayLabel={index === 0}
-          />
-        )),
-      )
-      .reduce(
-        (result, stateChangeGroup) => [...result, ...stateChangeGroup],
-        [],
-      );
+    return Object.entries(stateChangesGrouped).flatMap(([_, changeList]) =>
+      changeList.map((change: DecodingDataStateChange, index: number) => (
+        <StateChangeRow
+          stateChangeList={decodingData?.stateChanges ?? []}
+          stateChange={change}
+          chainId={chainId}
+          shouldDisplayLabel={index === 0}
+        />
+      )),
+    );
   }, [decodingData?.stateChanges]);
 
   return (
