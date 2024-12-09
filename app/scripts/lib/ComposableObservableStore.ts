@@ -1,5 +1,12 @@
 import { ObservableStore } from '@metamask/obs-store';
-import { getPersistentState } from '@metamask/base-controller';
+import {
+  ActionConstraint,
+  ControllerMessenger,
+  EventConstraint,
+  getPersistentState,
+} from '@metamask/base-controller';
+import { MemStoreControllersComposedState } from '../../../shared/types/metamask';
+import { getKnownPropertyNames } from '@metamask/utils';
 
 /**
  * @typedef {import('@metamask/base-controller').ControllerMessenger} ControllerMessenger
@@ -9,7 +16,7 @@ import { getPersistentState } from '@metamask/base-controller';
  * An ObservableStore that can composes a flat
  * structure of child stores based on configuration
  */
-export default class ComposableObservableStore extends ObservableStore {
+export default class ComposableObservableStore extends ObservableStore<MemStoreControllersComposedState> {
   /**
    * Describes which stores are being composed. The key is the name of the
    * store, and the value is either an ObserableStore, or a controller that
@@ -18,7 +25,9 @@ export default class ComposableObservableStore extends ObservableStore {
    *
    * @type {Record<string, object>}
    */
-  config = {};
+  config: Partial<MemStoreControllersComposedState> = {};
+  controllerMessenger: ControllerMessenger<ActionConstraint, EventConstraint>;
+  persist: boolean;
 
   /**
    * Create a new store
@@ -31,7 +40,17 @@ export default class ComposableObservableStore extends ObservableStore {
    * @param {object} [options.state] - The initial store state
    * @param {boolean} [options.persist] - Whether or not to apply the persistence for v2 controllers
    */
-  constructor({ config, controllerMessenger, state, persist }) {
+  constructor({
+    config,
+    controllerMessenger,
+    state,
+    persist,
+  }: {
+    config: MemStoreControllersComposedState;
+    controllerMessenger: ControllerMessenger<ActionConstraint, EventConstraint>;
+    state: MemStoreControllersComposedState;
+    persist: boolean;
+  }) {
     super(state);
     this.persist = persist;
     this.controllerMessenger = controllerMessenger;
@@ -48,43 +67,56 @@ export default class ComposableObservableStore extends ObservableStore {
    *   ObserableStore, or a controller that extends one of the two base
    *   controllers in the `@metamask/base-controller` package.
    */
-  updateStructure(config) {
+  updateStructure(config: MemStoreControllersComposedState) {
     this.config = config;
     this.removeAllListeners();
     const initialState = {};
-    for (const key of Object.keys(config)) {
-      if (!config[key]) {
-        throw new Error(`Undefined '${key}'`);
+    for (const controllerKey of getKnownPropertyNames(config)) {
+      if (!config[controllerKey]) {
+        throw new Error(`Undefined '${controllerKey}'`);
       }
-      const store = config[key];
+      const store = config[controllerKey];
       if (store.subscribe) {
-        config[key].subscribe((state) => {
-          this.#onStateChange(key, state);
-        });
+        config[controllerKey].subscribe(
+          (
+            state: MemStoreControllersComposedState[keyof MemStoreControllersComposedState],
+          ) => {
+            this.#onStateChange(controllerKey, state);
+          },
+        );
       } else {
-        this.controllerMessenger.subscribe(
-          `${store.name}:stateChange`,
-          (state) => {
+        this.controllerMessenger.subscribe<`${typeof controllerKey}:stateChange`>(
+          `${controllerKey}:stateChange`,
+          // @ts-expect-error TODO: Fix `handler` being typed as `never` by defining `Global{Actions,Events}` types and supplying them to `MetamaskController['controllerMessenger']`
+          (
+            state: MemStoreControllersComposedState[keyof MemStoreControllersComposedState],
+          ) => {
             let updatedState = state;
             if (this.persist) {
-              updatedState = getPersistentState(state, config[key].metadata);
+              updatedState = getPersistentState(
+                state,
+                config[controllerKey].metadata,
+              );
             }
-            this.#onStateChange(key, updatedState);
+            this.#onStateChange(controllerKey, updatedState);
           },
         );
       }
 
-      const initialStoreState = store.state ?? store.getState?.();
+      const initialState = 'subscribe' in store ? store.getState?.() : store;
 
-      initialState[key] =
-        this.persist && config[key].metadata
-          ? getPersistentState(initialStoreState, config[key].metadata)
-          : initialStoreState;
+      initialState[controllerKey] =
+        this.persist && config[controllerKey].metadata
+          ? getPersistentState(initialState, config[controllerKey].metadata)
+          : initialState;
     }
     this.updateState(initialState);
   }
 
-  #onStateChange(controllerKey, newState) {
+  #onStateChange(
+    controllerKey: keyof MemStoreControllersComposedState,
+    newState: MemStoreControllersComposedState[keyof MemStoreControllersComposedState],
+  ) {
     const oldState = this.getState()[controllerKey];
 
     this.updateState({ [controllerKey]: newState });
