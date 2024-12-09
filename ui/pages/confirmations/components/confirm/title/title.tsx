@@ -43,6 +43,7 @@ function ConfirmBannerAlert({ ownerId }: { ownerId: string }) {
             provider={alert.provider}
             details={alert.alertDetails}
             reportUrl={alert.reportUrl}
+            children={alert.content}
           />
         </Box>
       ))}
