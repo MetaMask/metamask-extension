@@ -1,4 +1,7 @@
-import { MethodNames } from '@metamask/permission-controller';
+import {
+  MethodNames,
+  PermissionDoesNotExistError,
+} from '@metamask/permission-controller';
 import {
   Caip25CaveatType,
   Caip25EndowmentPermissionName,
@@ -36,7 +39,9 @@ describe('permission background API methods', () => {
 
     it('throws an error if there is no existing CAIP-25 caveat', () => {
       const permissionController = {
-        getCaveat: jest.fn(),
+        getCaveat: jest.fn().mockImplementation(() => {
+          throw new PermissionDoesNotExistError();
+        }),
       };
 
       expect(() =>
@@ -48,6 +53,20 @@ describe('permission background API methods', () => {
           `Cannot add account permissions for origin "foo.com": no permission currently exists for this origin.`,
         ),
       );
+    });
+
+    it('throws an error if getCaveat fails unexpectedly', () => {
+      const permissionController = {
+        getCaveat: jest.fn().mockImplementation(() => {
+          throw new Error('unexpected getCaveat error');
+        }),
+      };
+
+      expect(() =>
+        getPermissionBackgroundApiMethods({
+          permissionController,
+        }).addPermittedAccount('foo.com', '0x1'),
+      ).toThrow(new Error(`unexpected getCaveat error`));
     });
 
     it('calls updateCaveat with the account added', () => {
@@ -150,7 +169,9 @@ describe('permission background API methods', () => {
 
     it('throws an error if there is no existing CAIP-25 caveat', () => {
       const permissionController = {
-        getCaveat: jest.fn(),
+        getCaveat: jest.fn().mockImplementation(() => {
+          throw new PermissionDoesNotExistError();
+        }),
       };
 
       expect(() =>
@@ -162,6 +183,20 @@ describe('permission background API methods', () => {
           `Cannot add account permissions for origin "foo.com": no permission currently exists for this origin.`,
         ),
       );
+    });
+
+    it('throws an error if getCaveat fails unexpectedly', () => {
+      const permissionController = {
+        getCaveat: jest.fn().mockImplementation(() => {
+          throw new Error('unexpected getCaveat error');
+        }),
+      };
+
+      expect(() =>
+        getPermissionBackgroundApiMethods({
+          permissionController,
+        }).addPermittedAccounts('foo.com', ['0x1']),
+      ).toThrow(new Error(`unexpected getCaveat error`));
     });
 
     it('calls updateCaveat with the accounts added to only eip155 scopes and all accounts for eip155 scopes synced', () => {
@@ -267,7 +302,9 @@ describe('permission background API methods', () => {
 
     it('throws an error if there is no existing CAIP-25 caveat', () => {
       const permissionController = {
-        getCaveat: jest.fn(),
+        getCaveat: jest.fn().mockImplementation(() => {
+          throw new PermissionDoesNotExistError();
+        }),
       };
 
       expect(() =>
@@ -279,6 +316,20 @@ describe('permission background API methods', () => {
           `Cannot remove account "0x1": No permissions exist for origin "foo.com".`,
         ),
       );
+    });
+
+    it('throws an error if getCaveat fails unexpectedly', () => {
+      const permissionController = {
+        getCaveat: jest.fn().mockImplementation(() => {
+          throw new Error('unexpected getCaveat error');
+        }),
+      };
+
+      expect(() =>
+        getPermissionBackgroundApiMethods({
+          permissionController,
+        }).removePermittedAccount('foo.com', '0x1'),
+      ).toThrow(new Error(`unexpected getCaveat error`));
     });
 
     it('does nothing if the account being removed does not exist', () => {
@@ -524,7 +575,9 @@ describe('permission background API methods', () => {
 
     it('throws an error if there is no existing CAIP-25 caveat', () => {
       const permissionController = {
-        getCaveat: jest.fn(),
+        getCaveat: jest.fn().mockImplementation(() => {
+          throw new PermissionDoesNotExistError();
+        }),
       };
 
       expect(() =>
@@ -536,6 +589,20 @@ describe('permission background API methods', () => {
           `Cannot add chain permissions for origin "foo.com": no permission currently exists for this origin.`,
         ),
       );
+    });
+
+    it('throws an error if getCaveat fails unexpectedly', () => {
+      const permissionController = {
+        getCaveat: jest.fn().mockImplementation(() => {
+          throw new Error('unexpected getCaveat error');
+        }),
+      };
+
+      expect(() =>
+        getPermissionBackgroundApiMethods({
+          permissionController,
+        }).addPermittedChain('foo.com', '0x1'),
+      ).toThrow(new Error(`unexpected getCaveat error`));
     });
 
     it('calls updateCaveat with the chain added and all eip155 accounts synced', () => {
@@ -626,7 +693,9 @@ describe('permission background API methods', () => {
 
     it('throws an error if there is no existing CAIP-25 caveat', () => {
       const permissionController = {
-        getCaveat: jest.fn(),
+        getCaveat: jest.fn().mockImplementation(() => {
+          throw new PermissionDoesNotExistError();
+        }),
       };
 
       expect(() =>
@@ -638,6 +707,20 @@ describe('permission background API methods', () => {
           `Cannot add chain permissions for origin "foo.com": no permission currently exists for this origin.`,
         ),
       );
+    });
+
+    it('throws an error if getCaveat fails unexpectedly', () => {
+      const permissionController = {
+        getCaveat: jest.fn().mockImplementation(() => {
+          throw new Error('unexpected getCaveat error');
+        }),
+      };
+
+      expect(() =>
+        getPermissionBackgroundApiMethods({
+          permissionController,
+        }).addPermittedChains('foo.com', ['0x1']),
+      ).toThrow(new Error(`unexpected getCaveat error`));
     });
 
     it('calls updateCaveat with the chains added and all eip155 accounts synced', () => {
@@ -731,7 +814,9 @@ describe('permission background API methods', () => {
 
     it('throws an error if there is no existing CAIP-25 caveat', () => {
       const permissionController = {
-        getCaveat: jest.fn(),
+        getCaveat: jest.fn().mockImplementation(() => {
+          throw new PermissionDoesNotExistError();
+        }),
       };
 
       expect(() =>
@@ -743,6 +828,20 @@ describe('permission background API methods', () => {
           `Cannot remove permission for chainId "0x1": No permissions exist for origin "foo.com".`,
         ),
       );
+    });
+
+    it('throws an error if getCaveat fails unexpectedly', () => {
+      const permissionController = {
+        getCaveat: jest.fn().mockImplementation(() => {
+          throw new Error('unexpected getCaveat error');
+        }),
+      };
+
+      expect(() =>
+        getPermissionBackgroundApiMethods({
+          permissionController,
+        }).removePermittedChain('foo.com', '0x1'),
+      ).toThrow(new Error(`unexpected getCaveat error`));
     });
 
     it('does nothing if the chain being removed does not exist', () => {

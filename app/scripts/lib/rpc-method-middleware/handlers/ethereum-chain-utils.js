@@ -15,20 +15,24 @@ import { CaveatTypes } from '../../../../../shared/constants/permissions';
 import { PermissionNames } from '../../../controllers/permissions';
 
 export function validateChainId(chainId) {
-  const _chainId = typeof chainId === 'string' ? chainId.toLowerCase() : '';
-  if (!isPrefixedFormattedHexString(_chainId)) {
+  const lowercasedChainId =
+    typeof chainId === 'string' ? chainId.toLowerCase() : null;
+  if (
+    lowercasedChainId !== null &&
+    !isPrefixedFormattedHexString(lowercasedChainId)
+  ) {
     throw rpcErrors.invalidParams({
       message: `Expected 0x-prefixed, unpadded, non-zero hexadecimal string 'chainId'. Received:\n${chainId}`,
     });
   }
 
-  if (!isSafeChainId(parseInt(_chainId, 16))) {
+  if (!isSafeChainId(parseInt(chainId, 16))) {
     throw rpcErrors.invalidParams({
-      message: `Invalid chain ID "${_chainId}": numerical value greater than max safe value. Received:\n${chainId}`,
+      message: `Invalid chain ID "${lowercasedChainId}": numerical value greater than max safe value. Received:\n${chainId}`,
     });
   }
 
-  return _chainId;
+  return lowercasedChainId;
 }
 
 export function validateSwitchEthereumChainParams(req) {
@@ -158,8 +162,28 @@ export function validateAddEthereumChainParams(params) {
   };
 }
 
+/**
+ * Switches the active network for the origin if already permitted
+ * otherwise requests approval to update permission first.
+ *
+ * @param response - The JSON RPC request's response object.
+ * @param end - The JSON RPC request's end callback.
+ * @param {string} origin - The origin for the request.
+ * @param {string} chainId - The chainId being switched to.
+ * @param {string} networkClientId - The network client being switched to.
+ * @param {string} [approvalFlowId] - The optional approval flow ID to handle.
+ * @param {object} hooks - The hooks object.
+ * @param {boolean} hooks.isAddFlow - The boolean determining if this call originates from wallet_addEthereumChain.
+ * @param {Function} hooks.setActiveNetwork - The callback to change the current network for the origin.
+ * @param {Function} hooks.endApprovalFlow - The optional callback to end the approval flow when approvalFlowId is provided.
+ * @param {Function} hooks.getCaveat - The callback to get the CAIP-25 caveat for the origin.
+ * @param {Function} hooks.requestPermissionApprovalForOrigin - The callback to prompt the user for permission approval.
+ * @param {Function} hooks.updateCaveat - The callback to update the CAIP-25 caveat value.
+ * @param {Function} hooks.grantPermissions - The callback to grant a CAIP-25 permission when one does not already exist.
+ * @returns a null response on success or an error if user rejects an approval when isAddFlow is false or on unexpected errors.
+ */
 export async function switchChain(
-  res,
+  response,
   end,
   origin,
   chainId,
@@ -255,7 +279,7 @@ export async function switchChain(
     }
 
     await setActiveNetwork(networkClientId);
-    res.result = null;
+    response.result = null;
   } catch (error) {
     // We don't want to return an error if user rejects the request
     // and this is a chained switch request after wallet_addEthereumChain.
@@ -266,7 +290,7 @@ export async function switchChain(
       error.code === errorCodes.provider.userRejectedRequest &&
       approvalFlowId
     ) {
-      res.result = null;
+      response.result = null;
       return end();
     }
     return end(error);

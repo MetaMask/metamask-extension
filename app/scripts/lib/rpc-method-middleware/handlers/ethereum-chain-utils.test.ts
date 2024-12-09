@@ -1,4 +1,4 @@
-import { errorCodes } from '@metamask/rpc-errors';
+import { errorCodes, rpcErrors } from '@metamask/rpc-errors';
 import {
   Caip25CaveatType,
   Caip25EndowmentPermissionName,
@@ -25,7 +25,7 @@ describe('Ethereum Chain Utils', () => {
       origin: string,
       chainId: Hex,
       networkClientId: string,
-      approvalFlowId: string | null,
+      approvalFlowId?: string,
     ) =>
       EthChainUtils.switchChain(
         response,
@@ -101,8 +101,9 @@ describe('Ethereum Chain Utils', () => {
     });
 
     describe('with no existing CAIP-25 permission', () => {
-      it('requests a switch chain approval', async () => {
+      it('requests a switch chain approval if isAddFlow: false', async () => {
         const { mocks, switchChain } = createMockedSwitchChain();
+        mocks.isAddFlow = false;
         await switchChain('example.com', '0x1', 'mainnet', 'approvalFlowId');
 
         expect(mocks.requestPermissionApprovalForOrigin).toHaveBeenCalledWith({
@@ -350,5 +351,99 @@ describe('Ethereum Chain Utils', () => {
         });
       },
     );
+  });
+
+  describe('validateAddEthereumChainParams', () => {
+    it('throws an error if an unexpected parameter is provided', () => {
+      const unexpectedParam = 'unexpected';
+
+      expect(() => {
+        EthChainUtils.validateAddEthereumChainParams({
+          chainId: '0x1',
+          chainName: 'Mainnet',
+          rpcUrls: ['https://test.com/rpc'],
+          nativeCurrency: {
+            symbol: 'ETH',
+            decimals: 18,
+          },
+          blockExplorerUrls: ['https://explorer.test.com/'],
+          [unexpectedParam]: 'parameter',
+        });
+      }).toThrow(
+        rpcErrors.invalidParams({
+          message: `Received unexpected keys on object parameter. Unsupported keys:\n${unexpectedParam}`,
+        }),
+      );
+    });
+
+    it('returns a flattened version of params if it is valid', () => {
+      expect(
+        EthChainUtils.validateAddEthereumChainParams({
+          chainId: '0x1',
+          chainName: 'Mainnet',
+          rpcUrls: ['https://test.com/rpc'],
+          nativeCurrency: {
+            symbol: 'ETH',
+            decimals: 18,
+          },
+          blockExplorerUrls: ['https://explorer.test.com/'],
+        }),
+      ).toStrictEqual({
+        chainId: '0x1',
+        chainName: 'Mainnet',
+        firstValidBlockExplorerUrl: 'https://explorer.test.com/',
+        firstValidRPCUrl: 'https://test.com/rpc',
+        ticker: 'ETH',
+      });
+    });
+  });
+
+  describe('validateSwitchEthereumChainParams', () => {
+    it('throws an error if an unexpected parameter is provided', () => {
+      const unexpectedParam = 'unexpected';
+
+      expect(() => {
+        EthChainUtils.validateSwitchEthereumChainParams({
+          params: [
+            {
+              chainId: '0x1',
+              [unexpectedParam]: 'parameter',
+            },
+          ],
+        });
+      }).toThrow(
+        rpcErrors.invalidParams({
+          message: `Received unexpected keys on object parameter. Unsupported keys:\n${unexpectedParam}`,
+        }),
+      );
+    });
+
+    it('throws an error for invalid chainId', async () => {
+      expect(() => {
+        EthChainUtils.validateSwitchEthereumChainParams({
+          params: [
+            {
+              chainId: 'invalid_chain_id',
+            },
+          ],
+        });
+      }).toThrow(
+        rpcErrors.invalidParams({
+          message: `Expected 0x-prefixed, unpadded, non-zero hexadecimal string 'chainId'. Received:\ninvalid_chain_id`,
+        }),
+      );
+    });
+
+    it('returns the chainId if it is valid', () => {
+      expect(
+        EthChainUtils.validateSwitchEthereumChainParams({
+          params: [
+            {
+              chainId: '0x1',
+            },
+          ],
+        }),
+      ).toStrictEqual('0x1');
+    });
   });
 });

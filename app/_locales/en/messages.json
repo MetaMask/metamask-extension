@@ -931,6 +931,15 @@
   "bridgeTxDetailsBridgeType": {
     "message": "Bridge type"
   },
+  "bridgeTxDetailsDelayedDescription": {
+    "message": "Reach out to"
+  },
+  "bridgeTxDetailsDelayedDescriptionSupport": {
+    "message": "MetaMask Support"
+  },
+  "bridgeTxDetailsDelayedTitle": {
+    "message": "Has it been longer than 3 hours?"
+  },
   "bridgeTxDetailsGasLimit": {
     "message": "Gas limit (units)"
   },
@@ -5124,6 +5133,9 @@
   },
   "signingInWith": {
     "message": "Signing in with"
+  },
+  "signingWith": {
+    "message": "Signing with"
   },
   "simulationApproveHeading": {
     "message": "Withdraw"

@@ -22,7 +22,7 @@ jest.mock('@metamask/multichain', () => ({
 }));
 const MockMultichain = jest.mocked(Multichain);
 
-const getBaseRequest = () => ({
+const getBaseRequest = (overrides = {}) => ({
   jsonrpc: '2.0' as const,
   id: 0,
   method: 'wallet_requestPermissions',
@@ -35,6 +35,7 @@ const getBaseRequest = () => ({
       otherPermission: {},
     },
   ],
+  ...overrides,
 });
 
 const createMockedHandler = () => {
@@ -161,10 +162,7 @@ describe('requestPermissionsHandler', () => {
   it('returns an error if params is malformed', async () => {
     const { handler, end } = createMockedHandler();
 
-    const malformedRequest = {
-      ...getBaseRequest(),
-      params: [],
-    };
+    const malformedRequest = getBaseRequest({ params: [] });
     await handler(malformedRequest);
     expect(end).toHaveBeenCalledWith(
       invalidParams({ data: { request: malformedRequest } }),
@@ -175,16 +173,18 @@ describe('requestPermissionsHandler', () => {
     const { handler, requestPermissionApprovalForOrigin } =
       createMockedHandler();
 
-    await handler({
-      ...getBaseRequest(),
-      params: [
-        {
-          [RestrictedMethods.eth_accounts]: {
-            foo: 'bar',
+    await handler(
+      getBaseRequest({
+        origin: 'http://test.com',
+        params: [
+          {
+            [RestrictedMethods.eth_accounts]: {
+              foo: 'bar',
+            },
           },
-        },
-      ],
-    });
+        ],
+      }),
+    );
 
     expect(requestPermissionApprovalForOrigin).toHaveBeenCalledWith({
       [RestrictedMethods.eth_accounts]: {
@@ -198,21 +198,23 @@ describe('requestPermissionsHandler', () => {
     const { handler, requestPermissionApprovalForOrigin } =
       createMockedHandler();
 
-    await handler({
-      ...getBaseRequest(),
-      params: [
-        {
-          [PermissionNames.permittedChains]: {
-            caveats: [
-              {
-                type: CaveatTypes.restrictNetworkSwitching,
-                value: ['0x64'],
-              },
-            ],
+    await handler(
+      getBaseRequest({
+        origin: 'http://test.com',
+        params: [
+          {
+            [PermissionNames.permittedChains]: {
+              caveats: [
+                {
+                  type: CaveatTypes.restrictNetworkSwitching,
+                  value: ['0x64'],
+                },
+              ],
+            },
           },
-        },
-      ],
-    });
+        ],
+      }),
+    );
 
     expect(requestPermissionApprovalForOrigin).toHaveBeenCalledWith({
       [RestrictedMethods.eth_accounts]: {},
@@ -231,24 +233,26 @@ describe('requestPermissionsHandler', () => {
     const { handler, requestPermissionApprovalForOrigin } =
       createMockedHandler();
 
-    await handler({
-      ...getBaseRequest(),
-      params: [
-        {
-          [RestrictedMethods.eth_accounts]: {
-            foo: 'bar',
+    await handler(
+      getBaseRequest({
+        origin: 'http://test.com',
+        params: [
+          {
+            [RestrictedMethods.eth_accounts]: {
+              foo: 'bar',
+            },
+            [PermissionNames.permittedChains]: {
+              caveats: [
+                {
+                  type: CaveatTypes.restrictNetworkSwitching,
+                  value: ['0x64'],
+                },
+              ],
+            },
           },
-          [PermissionNames.permittedChains]: {
-            caveats: [
-              {
-                type: CaveatTypes.restrictNetworkSwitching,
-                value: ['0x64'],
-              },
-            ],
-          },
-        },
-      ],
-    });
+        ],
+      }),
+    );
 
     expect(requestPermissionApprovalForOrigin).toHaveBeenCalledWith({
       [RestrictedMethods.eth_accounts]: {
@@ -269,17 +273,18 @@ describe('requestPermissionsHandler', () => {
     const { handler, requestPermissionApprovalForOrigin } =
       createMockedHandler();
 
-    await handler({
-      ...getBaseRequest(),
-      origin: 'npm:snap',
-      params: [
-        {
-          [RestrictedMethods.eth_accounts]: {
-            foo: 'bar',
+    await handler(
+      getBaseRequest({
+        origin: 'npm:snap',
+        params: [
+          {
+            [RestrictedMethods.eth_accounts]: {
+              foo: 'bar',
+            },
           },
-        },
-      ],
-    });
+        ],
+      }),
+    );
 
     expect(requestPermissionApprovalForOrigin).toHaveBeenCalledWith({
       [RestrictedMethods.eth_accounts]: {
@@ -292,22 +297,23 @@ describe('requestPermissionsHandler', () => {
     const { handler, requestPermissionApprovalForOrigin } =
       createMockedHandler();
 
-    await handler({
-      ...getBaseRequest(),
-      origin: 'npm:snap',
-      params: [
-        {
-          [PermissionNames.permittedChains]: {
-            caveats: [
-              {
-                type: CaveatTypes.restrictNetworkSwitching,
-                value: ['0x64'],
-              },
-            ],
+    await handler(
+      getBaseRequest({
+        origin: 'npm:snap',
+        params: [
+          {
+            [PermissionNames.permittedChains]: {
+              caveats: [
+                {
+                  type: CaveatTypes.restrictNetworkSwitching,
+                  value: ['0x64'],
+                },
+              ],
+            },
           },
-        },
-      ],
-    });
+        ],
+      }),
+    );
 
     expect(requestPermissionApprovalForOrigin).toHaveBeenCalledWith({
       [RestrictedMethods.eth_accounts]: {},
@@ -318,25 +324,26 @@ describe('requestPermissionsHandler', () => {
     const { handler, requestPermissionApprovalForOrigin } =
       createMockedHandler();
 
-    await handler({
-      ...getBaseRequest(),
-      origin: 'npm:snap',
-      params: [
-        {
-          [RestrictedMethods.eth_accounts]: {
-            foo: 'bar',
+    await handler(
+      getBaseRequest({
+        origin: 'npm:snap',
+        params: [
+          {
+            [RestrictedMethods.eth_accounts]: {
+              foo: 'bar',
+            },
+            [PermissionNames.permittedChains]: {
+              caveats: [
+                {
+                  type: CaveatTypes.restrictNetworkSwitching,
+                  value: ['0x64'],
+                },
+              ],
+            },
           },
-          [PermissionNames.permittedChains]: {
-            caveats: [
-              {
-                type: CaveatTypes.restrictNetworkSwitching,
-                value: ['0x64'],
-              },
-            ],
-          },
-        },
-      ],
-    });
+        ],
+      }),
+    );
 
     expect(requestPermissionApprovalForOrigin).toHaveBeenCalledWith({
       [RestrictedMethods.eth_accounts]: {
@@ -348,15 +355,16 @@ describe('requestPermissionsHandler', () => {
   it('requests other permissions in params from the PermissionController, but ignores CAIP-25 if specified', async () => {
     const { handler, requestPermissionsForOrigin } = createMockedHandler();
 
-    await handler({
-      ...getBaseRequest(),
-      params: [
-        {
-          [Caip25EndowmentPermissionName]: {},
-          otherPermission: {},
-        },
-      ],
-    });
+    await handler(
+      getBaseRequest({
+        params: [
+          {
+            [Caip25EndowmentPermissionName]: {},
+            otherPermission: {},
+          },
+        ],
+      }),
+    );
     expect(requestPermissionsForOrigin).toHaveBeenCalledWith({
       otherPermission: {},
     });
@@ -365,15 +373,16 @@ describe('requestPermissionsHandler', () => {
   it('requests other permissions in params from the PermissionController, but ignores eth_accounts if specified', async () => {
     const { handler, requestPermissionsForOrigin } = createMockedHandler();
 
-    await handler({
-      ...getBaseRequest(),
-      params: [
-        {
-          [RestrictedMethods.eth_accounts]: {},
-          otherPermission: {},
-        },
-      ],
-    });
+    await handler(
+      getBaseRequest({
+        params: [
+          {
+            [RestrictedMethods.eth_accounts]: {},
+            otherPermission: {},
+          },
+        ],
+      }),
+    );
     expect(requestPermissionsForOrigin).toHaveBeenCalledWith({
       otherPermission: {},
     });
@@ -382,15 +391,16 @@ describe('requestPermissionsHandler', () => {
   it('requests other permissions in params from the PermissionController, but ignores permittedChains if specified', async () => {
     const { handler, requestPermissionsForOrigin } = createMockedHandler();
 
-    await handler({
-      ...getBaseRequest(),
-      params: [
-        {
-          [PermissionNames.permittedChains]: {},
-          otherPermission: {},
-        },
-      ],
-    });
+    await handler(
+      getBaseRequest({
+        params: [
+          {
+            [PermissionNames.permittedChains]: {},
+            otherPermission: {},
+          },
+        ],
+      }),
+    );
     expect(requestPermissionsForOrigin).toHaveBeenCalledWith({
       otherPermission: {},
     });
@@ -399,74 +409,79 @@ describe('requestPermissionsHandler', () => {
   it('does not request permissions from the PermissionController when only eth_accounts is provided in params', async () => {
     const { handler, requestPermissionsForOrigin } = createMockedHandler();
 
-    await handler({
-      ...getBaseRequest(),
-      params: [
-        {
-          [RestrictedMethods.eth_accounts]: {},
-        },
-      ],
-    });
+    await handler(
+      getBaseRequest({
+        params: [
+          {
+            [RestrictedMethods.eth_accounts]: {},
+          },
+        ],
+      }),
+    );
     expect(requestPermissionsForOrigin).not.toHaveBeenCalled();
   });
 
   it('does not request permissions from the PermissionController when only permittedChains is provided in params', async () => {
     const { handler, requestPermissionsForOrigin } = createMockedHandler();
 
-    await handler({
-      ...getBaseRequest(),
-      params: [
-        {
-          [PermissionNames.permittedChains]: {},
-        },
-      ],
-    });
+    await handler(
+      getBaseRequest({
+        params: [
+          {
+            [PermissionNames.permittedChains]: {},
+          },
+        ],
+      }),
+    );
     expect(requestPermissionsForOrigin).not.toHaveBeenCalled();
   });
 
   it('does not request permissions from the PermissionController when both eth_accounts and permittedChains are provided in params', async () => {
     const { handler, requestPermissionsForOrigin } = createMockedHandler();
 
-    await handler({
-      ...getBaseRequest(),
-      params: [
-        {
-          [RestrictedMethods.eth_accounts]: {},
-          [PermissionNames.permittedChains]: {
-            caveats: [
-              {
-                type: CaveatTypes.restrictNetworkSwitching,
-                value: ['0x64'],
-              },
-            ],
+    await handler(
+      getBaseRequest({
+        params: [
+          {
+            [RestrictedMethods.eth_accounts]: {},
+            [PermissionNames.permittedChains]: {
+              caveats: [
+                {
+                  type: CaveatTypes.restrictNetworkSwitching,
+                  value: ['0x64'],
+                },
+              ],
+            },
           },
-        },
-      ],
-    });
+        ],
+      }),
+    );
     expect(requestPermissionsForOrigin).not.toHaveBeenCalled();
   });
 
   it('requests empty permissions from the PermissionController when only CAIP-25 permission is provided in params', async () => {
     const { handler, requestPermissionsForOrigin } = createMockedHandler();
 
-    await handler({
-      ...getBaseRequest(),
-      params: [
-        {
-          [Caip25EndowmentPermissionName]: {},
-        },
-      ],
-    });
+    await handler(
+      getBaseRequest({
+        params: [
+          {
+            [Caip25EndowmentPermissionName]: {},
+          },
+        ],
+      }),
+    );
     expect(requestPermissionsForOrigin).toHaveBeenCalledWith({});
   });
 
   it('requests empty permissions from the PermissionController when no permissions are provided in params', async () => {
     const { handler, requestPermissionsForOrigin } = createMockedHandler();
 
-    await handler({
-      ...getBaseRequest(),
-      params: [{}],
-    });
+    await handler(
+      getBaseRequest({
+        params: [{}],
+      }),
+    );
     expect(requestPermissionsForOrigin).toHaveBeenCalledWith({});
   });
 
@@ -474,14 +489,15 @@ describe('requestPermissionsHandler', () => {
     const { handler, updateCaveat, grantPermissions, getPermissionsForOrigin } =
       createMockedHandler();
 
-    await handler({
-      ...getBaseRequest(),
-      params: [
-        {
-          otherPermission: {},
-        },
-      ],
-    });
+    await handler(
+      getBaseRequest({
+        params: [
+          {
+            otherPermission: {},
+          },
+        ],
+      }),
+    );
     expect(getPermissionsForOrigin).not.toHaveBeenCalled();
     expect(updateCaveat).not.toHaveBeenCalled();
     expect(grantPermissions).not.toHaveBeenCalled();
@@ -490,14 +506,15 @@ describe('requestPermissionsHandler', () => {
   it('returns the granted permissions if eth_accounts and permittedChains approvals were not requested', async () => {
     const { handler, response } = createMockedHandler();
 
-    await handler({
-      ...getBaseRequest(),
-      params: [
-        {
-          otherPermission: {},
-        },
-      ],
-    });
+    await handler(
+      getBaseRequest({
+        params: [
+          {
+            otherPermission: {},
+          },
+        ],
+      }),
+    );
     expect(response.result).toStrictEqual([
       {
         caveats: [{ value: { foo: 'bar' } }],
@@ -520,14 +537,15 @@ describe('requestPermissionsHandler', () => {
     );
 
     try {
-      await handler({
-        ...getBaseRequest(),
-        params: [
-          {
-            [RestrictedMethods.eth_accounts]: {},
-          },
-        ],
-      });
+      await handler(
+        getBaseRequest({
+          params: [
+            {
+              [RestrictedMethods.eth_accounts]: {},
+            },
+          ],
+        }),
+      );
     } catch (err) {
       // noop
     }
@@ -540,7 +558,11 @@ describe('requestPermissionsHandler', () => {
     it('sets the approved chainIds on an empty CAIP-25 caveat with isMultichainOrigin: false if origin is not snapId', async () => {
       const { handler } = createMockedHandler();
 
-      await handler(getBaseRequest());
+      await handler(
+        getBaseRequest({
+          origin: 'http://test.com',
+        }),
+      );
       expect(MockMultichain.setPermittedEthChainIds).toHaveBeenCalledWith(
         {
           requiredScopes: {},
@@ -560,7 +582,11 @@ describe('requestPermissionsHandler', () => {
         isMultichainOrigin: false,
       });
 
-      await handler(getBaseRequest());
+      await handler(
+        getBaseRequest({
+          origin: 'http://test.com',
+        }),
+      );
       expect(MockMultichain.setEthAccounts).toHaveBeenCalledWith(
         {
           requiredScopes: {},
@@ -575,14 +601,14 @@ describe('requestPermissionsHandler', () => {
     it('does not set the approved chainIds on an empty CAIP-25 caveat if origin is snapId', async () => {
       const { handler } = createMockedHandler();
 
-      await handler({ ...getBaseRequest(), origin: 'npm:snapm' });
+      await handler(getBaseRequest({ origin: 'npm:snap' }));
       expect(MockMultichain.setPermittedEthChainIds).not.toHaveBeenCalled();
     });
 
     it('sets the approved accounts for the `wallet:eip155` scope with isMultichainOrigin: false if origin is snapId', async () => {
       const { handler } = createMockedHandler();
 
-      await handler({ ...getBaseRequest(), origin: 'npm:snapm' });
+      await handler(getBaseRequest({ origin: 'npm:snap' }));
       expect(MockMultichain.setEthAccounts).toHaveBeenCalledWith(
         {
           requiredScopes: {},
@@ -699,7 +725,11 @@ describe('requestPermissionsHandler', () => {
       const { handler, getAccounts, response } = createMockedHandler();
       getAccounts.mockReturnValue(['0xdeadbeef']);
 
-      await handler(getBaseRequest());
+      await handler(
+        getBaseRequest({
+          origin: 'http://test.com',
+        }),
+      );
       expect(response.result).toStrictEqual([
         {
           caveats: [{ value: { foo: 'bar' } }],

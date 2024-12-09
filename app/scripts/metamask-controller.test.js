@@ -36,6 +36,7 @@ import {
   Caip25CaveatType,
   Caip25EndowmentPermissionName,
 } from '@metamask/multichain';
+import { PermissionDoesNotExistError } from '@metamask/permission-controller';
 import { createTestProviderTools } from '../../test/stub/provider';
 import { HardwareDeviceNames } from '../../shared/constants/hardware-wallets';
 import { KeyringType } from '../../shared/constants/keyring';
@@ -828,12 +829,24 @@ describe('MetaMaskController', () => {
         jest
           .spyOn(metamaskController.permissionController, 'getCaveat')
           .mockImplementation(() => {
-            throw new Error('no caveat');
+            throw new PermissionDoesNotExistError();
           });
 
         expect(
           metamaskController.getPermittedAccounts('test.com'),
         ).toStrictEqual([]);
+      });
+
+      it('throws an error if getCaveat fails unexpectedly', async () => {
+        jest
+          .spyOn(metamaskController.permissionController, 'getCaveat')
+          .mockImplementation(() => {
+            throw new Error('unexpected getCaveat error');
+          });
+
+        expect(() => {
+          metamaskController.getPermittedAccounts('test.com');
+        }).toThrow(new Error(`unexpected getCaveat error`));
       });
 
       describe('the wallet is locked', () => {

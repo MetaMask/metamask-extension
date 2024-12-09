@@ -163,11 +163,11 @@ async function requestPermissionsImplementation(
       !haveLegacyPermissions) ||
     Object.keys(requestedPermissions).length > 0
   ) {
-    const [_grantedPermissions] = await requestPermissionsForOrigin(
+    const [frozenGrantedPermissions] = await requestPermissionsForOrigin(
       requestedPermissions,
     );
     // permissions are frozen and must be cloned before modified
-    grantedPermissions = { ..._grantedPermissions };
+    grantedPermissions = { ...frozenGrantedPermissions };
   }
 
   if (legacyApproval) {
@@ -199,7 +199,7 @@ async function requestPermissionsImplementation(
     let caip25Endowment = permissions[Caip25EndowmentPermissionName];
     const existingCaveatValue = caip25Endowment?.caveats?.find(
       ({ type }) => type === Caip25CaveatType,
-    )?.value as Caip25CaveatValue;
+    )?.value as Caip25CaveatValue | undefined;
     if (existingCaveatValue) {
       if (existingCaveatValue.isMultichainOrigin) {
         return end(
@@ -260,6 +260,8 @@ async function requestPermissionsImplementation(
     }
   }
 
-  res.result = Object.values(grantedPermissions) as Json;
+  res.result = Object.values(grantedPermissions).filter(
+    (value) => value !== undefined,
+  ) as Json;
   return end();
 }

@@ -1,5 +1,8 @@
 import nanoid from 'nanoid';
-import { MethodNames } from '@metamask/permission-controller';
+import {
+  MethodNames,
+  PermissionDoesNotExistError,
+} from '@metamask/permission-controller';
 import {
   Caip25CaveatType,
   Caip25EndowmentPermissionName,
@@ -29,7 +32,12 @@ export function getPermissionBackgroundApiMethods({
         Caip25CaveatType,
       );
     } catch (err) {
-      // noop
+      if (err instanceof PermissionDoesNotExistError) {
+        // suppress expected error in case that the origin
+        // does not have the target permission yet
+      } else {
+        throw err;
+      }
     }
 
     if (!caip25Caveat) {
@@ -66,7 +74,12 @@ export function getPermissionBackgroundApiMethods({
         Caip25CaveatType,
       );
     } catch (err) {
-      // noop
+      if (err instanceof PermissionDoesNotExistError) {
+        // suppress expected error in case that the origin
+        // does not have the target permission yet
+      } else {
+        throw err;
+      }
     }
 
     if (!caip25Caveat) {
@@ -75,7 +88,9 @@ export function getPermissionBackgroundApiMethods({
       );
     }
 
-    // get the list of permitted eth accounts before we modify the permitted chains and potentially lose some
+    // In the case that the new set of permitted eth chainIds does not overlap at all with
+    // the old set, we will lose context of the permitted eth accounts if we drop
+    // the old set of eth scopes without first noting which eth accounts are permitted first.
     const ethAccounts = getEthAccounts(caip25Caveat.value);
 
     const ethChainIds = getPermittedEthChainIds(caip25Caveat.value);
@@ -116,7 +131,12 @@ export function getPermissionBackgroundApiMethods({
           Caip25CaveatType,
         );
       } catch (err) {
-        // noop
+        if (err instanceof PermissionDoesNotExistError) {
+          // suppress expected error in case that the origin
+          // does not have the target permission yet
+        } else {
+          throw err;
+        }
       }
 
       if (!caip25Caveat) {
@@ -167,7 +187,12 @@ export function getPermissionBackgroundApiMethods({
           Caip25CaveatType,
         );
       } catch (err) {
-        // noop
+        if (err instanceof PermissionDoesNotExistError) {
+          // suppress expected error in case that the origin
+          // does not have the target permission yet
+        } else {
+          throw err;
+        }
       }
 
       if (!caip25Caveat) {
