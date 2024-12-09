@@ -1,14 +1,13 @@
-import { Driver } from '../../../webdriver/driver';
-import HomePage from '../home/homepage';
+import HomePage from './homepage';
 
 class BitcoinHomepage extends HomePage {
-
-  protected readonly balance = '[data-testid="coin-overview__primary-currency"]';
+  protected readonly balance =
+    '[data-testid="coin-overview__primary-currency"]';
 
   private readonly bridgeButton = {
     text: 'Bridge',
     tag: 'button',
-  }
+  };
 
   private readonly buySellButton = '[data-testid="coin-overview-buy"]';
 
@@ -19,11 +18,7 @@ class BitcoinHomepage extends HomePage {
   private readonly swapButton = {
     text: 'Swap',
     tag: 'button',
-  }
-
-  constructor(driver: Driver) {
-    super(driver);
-  }
+  };
 
   async check_pageIsLoaded(): Promise<void> {
     try {
@@ -55,13 +50,15 @@ class BitcoinHomepage extends HomePage {
    *
    * @param expectedBalance - The expected bitcoin balance to be displayed. Defaults to '0'.
    */
-    async check_expectedBitcoinBalanceIsDisplayed(
-      expectedBalance: number = 0,
-    ): Promise<void> {
-      console.log(`Check if expected bitcoin balance is displayed: ${expectedBalance} BTC`);
-      await this.driver.waitForSelector({
+  async check_expectedBitcoinBalanceIsDisplayed(
+    expectedBalance: number = 0,
+  ): Promise<void> {
+    console.log(
+      `Check if expected bitcoin balance is displayed: ${expectedBalance} BTC`,
+    );
+    await this.driver.waitForSelector({
       css: this.balance,
-      text: expectedBalance + 'BTC',
+      text: `${expectedBalance}BTC`,
     });
   }
 

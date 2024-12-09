@@ -11,7 +11,8 @@ class HomePage {
   private readonly activityTab =
     '[data-testid="account-overview__activity-tab"]';
 
-  protected readonly balance: string = '[data-testid="eth-overview__primary-currency"]';
+  protected readonly balance: string =
+    '[data-testid="eth-overview__primary-currency"]';
 
   private readonly basicFunctionalityOffWarningMessage = {
     text: 'Basic functionality is off',

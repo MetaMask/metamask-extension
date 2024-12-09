@@ -1,8 +1,8 @@
 import { strict as assert } from 'assert';
 import { Suite } from 'mocha';
 import { DEFAULT_BTC_BALANCE } from '../../constants';
-import { withBtcAccountSnap } from './common-btc';
 import BitcoinHomepage from '../../page-objects/pages/home/bitcoin-homepage';
+import { withBtcAccountSnap } from './common-btc';
 
 describe('BTC Account - Overview', function (this: Suite) {
   it('has portfolio button enabled for BTC accounts', async function () {
@@ -27,7 +27,9 @@ describe('BTC Account - Overview', function (this: Suite) {
       async (driver) => {
         const homePage = new BitcoinHomepage(driver);
         await homePage.check_pageIsLoaded();
-        await homePage.check_expectedBitcoinBalanceIsDisplayed(DEFAULT_BTC_BALANCE);
+        await homePage.check_expectedBitcoinBalanceIsDisplayed(
+          DEFAULT_BTC_BALANCE,
+        );
       },
     );
   });

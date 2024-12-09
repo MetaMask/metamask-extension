@@ -159,11 +159,6 @@ class TestDapp {
     tag: 'h2',
   };
 
-  private readonly updateNetworkButton = {
-    text: 'Update',
-    tag: 'button',
-  };
-
   private readonly userRejectedRequestMessage = {
     tag: 'span',
     text: 'Error: User rejected the request.',
@@ -270,23 +265,40 @@ class TestDapp {
   /**
    * Connect account to test dapp.
    *
-   * @param publicAddress - The public address to connect to test dapp.
+   * @param options - Options for connecting account to test dapp.
+   * @param [options.connectAccountButtonEnabled] - Indicates if the connect account button should be enabled.
+   * @param options.publicAddress - The public address to connect to test dapp.
    */
-  async connectAccount(publicAddress: string) {
+  async connectAccount({
+    connectAccountButtonEnabled = true,
+    publicAddress,
+  }: {
+    connectAccountButtonEnabled?: boolean;
+    publicAddress?: string;
+  }) {
     console.log('Connect account to test dapp');
     await this.driver.clickElement(this.connectAccountButton);
     await this.driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
     await this.driver.waitForSelector(this.connectMetaMaskMessage);
+    if (connectAccountButtonEnabled) {
+      await this.driver.clickElementAndWaitForWindowToClose(
+        this.confirmDialogButton,
+      );
+    } else {
+      const confirmConnectDialogButton = await this.driver.findElement(
+        this.confirmDialogButton,
+      );
+      assert.equal(await confirmConnectDialogButton.isEnabled(), false);
+    }
 
-    await this.driver.clickElementAndWaitForWindowToClose(
-      this.confirmDialogButton,
-    );
-    await this.driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
-    await this.driver.waitForSelector({
-      css: this.connectedAccount,
-      text: publicAddress.toLowerCase(),
-    });
-    await this.driver.waitForSelector(this.localhostNetworkMessage);
+    if (publicAddress) {
+      await this.driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
+      await this.driver.waitForSelector({
+        css: this.connectedAccount,
+        text: publicAddress.toLowerCase(),
+      });
+      await this.driver.waitForSelector(this.localhostNetworkMessage);
+    }
   }
 
   async createDepositTransaction() {
