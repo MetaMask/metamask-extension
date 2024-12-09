@@ -35,7 +35,7 @@ const STXBannerAlert = () => {
       data-testid="stx-banner-alert"
     >
       <Text as="p">
-        {t('smartTransactionsEnabledMessage')}
+        {t('smartTransactionsEnabled')}
         <ButtonLink
           href={ZENDESK_URLS.SMART_TRANSACTIONS_LEARN_MORE}
           onClick={() => dispatch(dismissAndDisableAlert())}

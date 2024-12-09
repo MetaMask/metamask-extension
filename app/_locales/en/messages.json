@@ -6819,7 +6819,7 @@
   "zeroGasPriceOnSpeedUpError": {
     "message": "Zero gas price on speed up"
   },
-  "smartTransactionsEnabledMessage": {
+  "smartTransactionsEnabled": {
     "message": "You're now protected with MetaMask Smart Transactions"
   }
 }

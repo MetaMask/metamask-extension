@@ -35,7 +35,7 @@ export function useSTXMigrationAlerts(): Alert[] {
         field: RowAlertKey.FirstTimeInteraction,
         isBlocking: false,
         key: 'stxMigration',
-        message: t('smartTransactionsEnabledMessage'),
+        message: t('smartTransactionsEnabled'),
         severity: Severity.Warning,
       },
     ];

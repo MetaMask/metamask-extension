@@ -37,9 +37,7 @@ describe('STXBannerAlert', () => {
     renderWithProvider(<STXBannerAlert />, store);
 
     expect(screen.getByTestId('stx-banner-alert')).toBeInTheDocument();
-    expect(
-      screen.getByText('smartTransactionsEnabledMessage'),
-    ).toBeInTheDocument();
+    expect(screen.getByText('smartTransactionsEnabled')).toBeInTheDocument();
     expect(screen.getByText('learnMoreUpperCase')).toBeInTheDocument();
   });
 
