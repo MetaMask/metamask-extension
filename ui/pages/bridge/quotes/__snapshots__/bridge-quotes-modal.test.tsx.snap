@@ -116,7 +116,7 @@ exports[`BridgeQuotesModal should render the modal 1`] = `
                 <p
                   class="mm-box mm-text mm-text--body-xs-medium mm-box--color-text-alternative"
                 >
-                  14 USDC receive amount
+                  13.98 USDC receive amount
                 </p>
               </div>
               <div
@@ -152,7 +152,7 @@ exports[`BridgeQuotesModal should render the modal 1`] = `
                 <p
                   class="mm-box mm-text mm-text--body-xs-medium mm-box--color-text-alternative"
                 >
-                  14 USDC receive amount
+                  13.8 USDC receive amount
                 </p>
               </div>
               <div
