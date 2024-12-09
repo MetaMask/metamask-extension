@@ -322,15 +322,8 @@ async function withFixtures(options, testSuite) {
       }
 
       if (webSocketServer) {
-        await new Promise((resolve, reject) => {
-          webSocketServer.close((err) => {
-            if (err) {
-              console.error('Error closing WebSocket server:', err);
-              return reject(err);
-            }
-            console.log('WebSocket server closed');
-            return resolve();
-          });
+        webSocketServer.close(() => {
+          console.log('WebSocket server closed');
         });
       }
 
