@@ -125,7 +125,6 @@ let uiIsTriggering = false;
 const openMetamaskTabsIDs = {};
 const requestAccountTabIds = {};
 let controller;
-let versionedData;
 const tabOriginMapping = {};
 
 if (inTest || process.env.METAMASK_DEBUG) {
@@ -616,12 +615,12 @@ export async function loadStateFromPersistence() {
 
   // read from disk
   // first from preferred, async API:
-  versionedData = await localStore.get();
+  const preMigrationVersionedData = await localStore.get();
 
   // report migration errors to sentry
   migrator.on('error', (err) => {
     // get vault structure without secrets
-    const vaultStructure = getObjStructure(versionedData);
+    const vaultStructure = getObjStructure(preMigrationVersionedData);
     sentry.captureException(err, {
       // "extra" key is required by Sentry
       extra: { vaultStructure },
@@ -629,7 +628,7 @@ export async function loadStateFromPersistence() {
   });
 
   // migrate data
-  versionedData = await migrator.migrateData(versionedData);
+  const versionedData = await migrator.migrateData(preMigrationVersionedData);
   if (!versionedData) {
     throw new Error('MetaMask - migrator returned undefined');
   } else if (!isObject(versionedData.meta)) {
