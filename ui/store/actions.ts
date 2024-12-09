@@ -3077,14 +3077,12 @@ export function setPreference(
   AnyAction
 > {
   return (dispatch: MetaMaskReduxDispatch) => {
-    console.log('setPreference called:', { preference, value });
     showLoading && dispatch(showLoadingIndication());
     return new Promise<TemporaryPreferenceFlagDef>((resolve, reject) => {
       callBackgroundMethod<TemporaryPreferenceFlagDef>(
         'setPreference',
         [preference, value],
         (err, updatedPreferences) => {
-          console.log('setPreference result:', { err, updatedPreferences });
           showLoading && dispatch(hideLoadingIndication());
           if (err) {
             dispatch(displayWarning(err));
@@ -3171,10 +3169,8 @@ export function setSmartTransactionsPreferenceEnabled(
   value: boolean,
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
   return async (dispatch, getState) => {
-    console.log('Setting STX preference:', value);
     const smartTransactionsOptInStatus =
       getSmartTransactionsOptInStatusInternal(getState());
-    console.log('Current STX status:', smartTransactionsOptInStatus);
     trackMetaMetricsEvent({
       category: MetaMetricsEventCategory.Settings,
       event: MetaMetricsEventName.SettingsUpdated,
@@ -3185,7 +3181,6 @@ export function setSmartTransactionsPreferenceEnabled(
     });
     await dispatch(setPreference('smartTransactionsOptInStatus', value));
     await forceUpdateMetamaskState(dispatch);
-    console.log('After dispatch:', getSmartTransactionsOptInStatusInternal(getState()));
   };
 }
 

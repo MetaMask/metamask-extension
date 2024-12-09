@@ -17,7 +17,7 @@ import { Info } from '../components/confirm/info';
 import { LedgerInfo } from '../components/confirm/ledger-info';
 import { Nav } from '../components/confirm/nav';
 import { NetworkChangeToast } from '../components/confirm/network-change-toast';
-import STXMigrationToast from '../components/confirm/stx-migration-toast';
+import { STXBannerAlert } from '../components/stx-banner-alert';
 import { PluggableSection } from '../components/confirm/pluggable-section';
 import ScrollToBottom from '../components/confirm/scroll-to-bottom';
 import { Title } from '../components/confirm/title';
@@ -54,7 +54,7 @@ const Confirm = () => (
           <Page className="confirm_wrapper">
             <Nav />
             <Header />
-            <STXMigrationToast />
+            <STXBannerAlert />
             <ScrollToBottom>
               {
                 ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
