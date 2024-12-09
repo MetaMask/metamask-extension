@@ -2548,11 +2548,20 @@
   "importNFTTokenIdToolTip": {
     "message": "An NFT's ID is a unique identifier since no two NFTs are alike. Again, on OpenSea this number is under 'Details'. Make a note of it, or copy it onto your clipboard."
   },
+  "importPrivateKey": {
+    "message": "Import Private Key"
+  },
+  "importSecretRecoveryPhrase": {
+    "message": "Import Secret Recovery Phrase"
+  },
   "importSelectedTokens": {
     "message": "Import selected tokens?"
   },
   "importSelectedTokensDescription": {
     "message": "Only the tokens you've selected will appear in your wallet. You can always import hidden tokens later by searching for them."
+  },
+  "importSRPDescription": {
+    "message": "Enter your wallet's secret recovery phrase. You can import any Ethereum, Solana, or Bitcoin secret recovery phrase."
   },
   "importTokenQuestion": {
     "message": "Import token?"
@@ -2565,6 +2574,12 @@
   },
   "importTokensError": {
     "message": "We could not import the tokens. Please try again later."
+  },
+  "importWallet": {
+    "message": "Import wallet"
+  },
+  "importWalletSuccess": {
+    "message": "Wallet successfully imported"
   },
   "importWithCount": {
     "message": "Import $1",
