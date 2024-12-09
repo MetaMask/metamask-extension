@@ -136,7 +136,7 @@ import {
 } from '../../../../shared/lib/accounts/solana-wallet-snap';
 ///: END:ONLY_INCLUDE_IF
 ///: BEGIN:ONLY_INCLUDE_IF(multi-srp)
-import ImportSRP from '../import-srp/import-srp';
+import { ImportSRP } from '../multi-srp/import-srp';
 ///: END:ONLY_INCLUDE_IF
 import { HiddenAccountList } from './hidden-account-list';
 
@@ -445,26 +445,29 @@ export const AccountListMenu = ({
             />
           </Box>
         ) : null}
-        ///: BEGIN:ONLY_INCLUDE_IF(multi-srp)
-        {actionMode === ACTION_MODES.IMPORT_SRP ? (
-          <Box
-            paddingLeft={4}
-            paddingRight={4}
-            paddingBottom={4}
-            paddingTop={0}
-          >
-            <ImportSRP
-              onActionComplete={(confirmed) => {
-                if (confirmed) {
-                  onClose();
-                } else {
-                  setActionMode(ACTION_MODES.LIST);
-                }
-              }}
-            />
-          </Box>
-        ) : null}
-        ///: END:ONLY_INCLUDE_IF
+        {
+          ///: BEGIN:ONLY_INCLUDE_IF(multi-srp)
+          actionMode === ACTION_MODES.IMPORT_SRP && (
+            <Box
+              paddingLeft={4}
+              paddingRight={4}
+              paddingBottom={4}
+              paddingTop={0}
+            >
+              <ImportSRP
+                onActionComplete={(confirmed: boolean) => {
+                  if (confirmed) {
+                    onClose();
+                  } else {
+                    setActionMode(ACTION_MODES.LIST);
+                  }
+                }}
+              />
+            </Box>
+          )
+          ///: END:ONLY_INCLUDE_IF
+        }
+
         {/* Add / Import / Hardware Menu */}
         {actionMode === ACTION_MODES.MENU ? (
           <Box padding={4}>
@@ -575,20 +578,22 @@ export const AccountListMenu = ({
               )
               ///: END:ONLY_INCLUDE_IF
             }
-            ///: BEGIN:ONLY_INCLUDE_IF(multi-srp)
-            <Box marginTop={4}>
-              <ButtonLink
-                size={ButtonLinkSize.Sm}
-                startIconName={IconName.Import}
-                onClick={() => {
-                  setActionMode(ACTION_MODES.IMPORT_SRP);
-                }}
-                data-testid="multichain-account-menu-popover-import-srp"
-              >
-                {t('importSecretRecoveryPhrase')}
-              </ButtonLink>
-            </Box>
-            ///: END:ONLY_INCLUDE_IF
+            {
+              ///: BEGIN:ONLY_INCLUDE_IF(multi-srp)
+              <Box marginTop={4}>
+                <ButtonLink
+                  size={ButtonLinkSize.Sm}
+                  startIconName={IconName.Import}
+                  onClick={() => {
+                    setActionMode(ACTION_MODES.IMPORT_SRP);
+                  }}
+                  data-testid="multichain-account-menu-popover-import-srp"
+                >
+                  {t('importSecretRecoveryPhrase')}
+                </ButtonLink>
+              </Box>
+              ///: END:ONLY_INCLUDE_IF
+            }
             <Box marginTop={4}>
               <ButtonLink
                 size={ButtonLinkSize.Sm}

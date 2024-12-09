@@ -64,6 +64,7 @@ buildTypes:
     features:
       - build-flask
       - keyring-snaps
+      - multi-srp
     env:
       - INFURA_FLASK_PROJECT_ID
       - SEGMENT_FLASK_WRITE_KEY
@@ -138,6 +139,9 @@ features:
   solana:
     assets:
       - ./{app,shared,ui}/**/solana/**
+  multi-srp:
+    assets:
+      - ./{app,shared,ui}/**/multi-srp/**
 
 # Env variables that are required for all types of builds
 #
