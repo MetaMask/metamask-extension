@@ -1033,9 +1033,6 @@
   "confirmRecoveryPhrase": {
     "message": "Confirmer la phrase secrète de récupération"
   },
-  "confirmTitleApproveTransaction": {
-    "message": "Demande de provision"
-  },
   "confirmTitleDeployContract": {
     "message": "Déployer un contrat"
   },

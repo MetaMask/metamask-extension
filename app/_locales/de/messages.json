@@ -1033,9 +1033,6 @@
   "confirmRecoveryPhrase": {
     "message": "Geheime Wiederherstellungsphrase bestätigen"
   },
-  "confirmTitleApproveTransaction": {
-    "message": "Bewilligungsanfrage"
-  },
   "confirmTitleDeployContract": {
     "message": "Einen Kontrakt nutzen"
   },

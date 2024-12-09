@@ -1033,9 +1033,6 @@
   "confirmRecoveryPhrase": {
     "message": "Επιβεβαιώστε τη Μυστική Φράση Ανάκτησης"
   },
-  "confirmTitleApproveTransaction": {
-    "message": "Αίτημα χορήγησης άδειας"
-  },
   "confirmTitleDeployContract": {
     "message": "Ανάπτυξη συμβολαίου"
   },
