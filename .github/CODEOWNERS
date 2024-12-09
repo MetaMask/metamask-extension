@@ -1,4 +1,6 @@
 # Lines starting with '#' are comments.
+
+# GUIDELINES:
 # Each line is a file pattern followed by one or more owners.
 # Owners bear a responsibility to the organization and the users of this
 # application. Repository administrators have the ability to merge pull
@@ -7,9 +9,11 @@
 # follows all policies or without full understanding of the impact of
 # those changes on build, release and publishing outcomes.
 
-*                                    @MetaMask/extension-platform
-development/                         @MetaMask/extension-platform
-lavamoat/                            @MetaMask/extension-platform @MetaMask/supply-chain
+# LavaMoat policy changes can highlight security risks. Teams are encouraged to
+# audit these changes on their own, and leave their analysis in a comment.
+# These codeowners will review this analysis, and review the policy changes in
+# further detail if warranted.
+lavamoat/                            @MetaMask/extension-devs @MetaMask/supply-chain
 
 # The offscreen.ts script file that is included in the offscreen document html
 # file is responsible, at present, for loading the snaps execution environment
@@ -45,7 +49,7 @@ privacy-snapshot.json                @MetaMask/extension-privacy-reviewers
 # of contributors. Modifications to this file result in a modification of
 # that agreement and can only be approved by those with the knowledge
 # and responsibility to publish libraries under the MetaMask name.
-.github/CODEOWNERS                   @MetaMask/extension-privacy-reviewers
+.github/CODEOWNERS                   @MetaMask/extension-security-team
 
 # For now, restricting approvals inside the .devcontainer folder to devs
 # who were involved with the Codespaces project.
@@ -96,6 +100,9 @@ app/scripts/lib/snap-keyring         @MetaMask/accounts-engineers
 # Swaps team to own code for the swaps folder
 ui/pages/swaps                                        @MetaMask/swaps-engineers
 app/scripts/controllers/swaps                         @MetaMask/swaps-engineers
+
+# Ramps team to own code for the ramps folder
+**/ramps/**                                           @MetaMask/ramp
 
 # Snaps
 **/snaps/**                          @MetaMask/snaps-devs
