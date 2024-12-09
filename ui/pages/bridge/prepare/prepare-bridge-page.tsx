@@ -131,14 +131,22 @@ const PrepareBridgePage = () => {
   const locale = useSelector(getLocale);
 
   const ticker = useSelector(getNativeCurrency);
-  const { isNoQuotesAvailable, isInsufficientGasForQuote } =
-    useSelector(getValidationErrors);
+  const {
+    isNoQuotesAvailable,
+    isInsufficientGasForQuote,
+    isInsufficientBalance,
+  } = useSelector(getValidationErrors);
   const { openBuyCryptoInPdapp } = useRamps();
 
   const { balanceAmount: nativeAssetBalance } = useLatestBalance(
     SWAPS_CHAINID_DEFAULT_TOKEN_MAP[
       fromChain?.chainId as keyof typeof SWAPS_CHAINID_DEFAULT_TOKEN_MAP
     ],
+    fromChain?.chainId,
+  );
+
+  const { balanceAmount: srcTokenBalance } = useLatestBalance(
+    fromToken,
     fromChain?.chainId,
   );
 
@@ -574,6 +582,7 @@ const PrepareBridgePage = () => {
         )}
         {!isLoading &&
           activeQuote &&
+          !isInsufficientBalance(srcTokenBalance) &&
           isInsufficientGasForQuote(nativeAssetBalance) && (
             <BannerAlert
               ref={scrollRef}
