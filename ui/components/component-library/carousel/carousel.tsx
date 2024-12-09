@@ -59,16 +59,24 @@ export const Carousel = React.forwardRef(
     const [selectedIndex, setSelectedIndex] = useState(selectedItem);
 
     const handleClose = (slideId: string) => {
-      const currentSlideIndex = slides.findIndex(
-        (slide) => slide.id === slideId,
-      );
-      const newSelectedIndex =
-        currentSlideIndex === 0 ? 0 : currentSlideIndex - 1;
+      setSlides((prevSlides) => {
+        const currentSlideIndex = prevSlides.findIndex(
+          (slide) => slide.id === slideId,
+        );
 
-      setSlides((prevSlides) =>
-        prevSlides.filter((slide) => slide.id !== slideId),
-      );
-      setSelectedIndex(newSelectedIndex);
+        let newSelectedIndex = selectedIndex;
+        if (
+          currentSlideIndex === prevSlides.length - 1 &&
+          prevSlides.length > 1
+        ) {
+          newSelectedIndex = currentSlideIndex - 1;
+        } else if (currentSlideIndex < selectedIndex) {
+          newSelectedIndex = selectedIndex - 1;
+        }
+
+        setSelectedIndex(newSelectedIndex);
+        return prevSlides.filter((slide) => slide.id !== slideId);
+      });
 
       if (onClose) {
         onClose(slideId);
@@ -99,7 +107,9 @@ export const Carousel = React.forwardRef(
           showStatus={showStatus}
           autoPlay={autoPlay}
           swipeScrollTolerance={swipeScrollTolerance}
-          centerSlidePercentage={centerSlidePercentage}
+          centerSlidePercentage={
+            centerSlidePercentage || getCenterSlidePercentage(slides.length)
+          }
           axis={axis}
           preventMovementUntilSwipeScrollTolerance={
             preventMovementUntilSwipeScrollTolerance
@@ -182,4 +192,8 @@ function getSlideWidth(totalSlides: number) {
   return totalSlides === 1
     ? WIDTH_VALUES.SINGLE_SLIDE
     : WIDTH_VALUES.MULTIPLE_SLIDES;
+}
+
+function getCenterSlidePercentage(totalSlides: number) {
+  return totalSlides === 1 ? 92 : 90;
 }
