@@ -2,6 +2,7 @@ import React from 'react';
 import { render, screen, fireEvent } from '@testing-library/react';
 import { useSelector } from 'react-redux';
 import {
+  getCurrentNetwork,
   getPreferences,
   getSelectedAccountCachedBalance,
 } from '../../../../selectors';
@@ -118,6 +119,9 @@ describe('AssetList', () => {
       if (selector === getCurrentChainId) {
         return '0x1';
       }
+      if (selector === getCurrentNetwork) {
+        return { chainId: '0x1' };
+      }
       return undefined;
     });
     render(
@@ -127,6 +131,7 @@ describe('AssetList', () => {
           type: AssetType.native,
           image: CHAIN_ID_TOKEN_IMAGE_MAP['0x1'],
           symbol: 'ETH',
+          chainId: '0x1',
         }}
         tokenList={tokenList}
       />,
@@ -144,6 +149,7 @@ describe('AssetList', () => {
           type: AssetType.native,
           image: CHAIN_ID_TOKEN_IMAGE_MAP['0x1'],
           symbol: 'ETH',
+          chainId: '0x1',
         }}
         tokenList={tokenList}
       />,
@@ -176,6 +182,7 @@ describe('AssetList', () => {
           type: AssetType.native,
           image: CHAIN_ID_TOKEN_IMAGE_MAP['0x1'],
           symbol: 'ETH',
+          chainId: '0x1',
         }}
         tokenList={tokenList}
         isTokenDisabled={(token) => token.address === '0xToken1'}
