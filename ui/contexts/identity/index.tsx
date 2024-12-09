@@ -1,17 +1,5 @@
-import React, { createContext, useContext, useEffect } from 'react';
+import React, { useEffect } from 'react';
 import { useAccountSyncing } from '../../hooks/identity/useProfileSyncing';
-
-const MetamaskIdentityContext = createContext(undefined);
-
-export const useMetamaskIdentityContext = () => {
-  const context = useContext(MetamaskIdentityContext);
-  if (!context) {
-    throw new Error(
-      'useMetamaskIdentityContext must be used within a MetamaskIdentityProvider',
-    );
-  }
-  return context;
-};
 
 export const MetamaskIdentityProvider: React.FC = ({ children }) => {
   const { dispatchAccountSyncing, shouldDispatchAccountSyncing } =
@@ -23,9 +11,5 @@ export const MetamaskIdentityProvider: React.FC = ({ children }) => {
     }
   }, [shouldDispatchAccountSyncing, dispatchAccountSyncing]);
 
-  return (
-    <MetamaskIdentityContext.Provider value={undefined}>
-      {children}
-    </MetamaskIdentityContext.Provider>
-  );
+  return <>{children}</>;
 };

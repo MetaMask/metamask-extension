@@ -18,8 +18,8 @@ type ArrangeMocksMetamaskStateOverrides = {
 };
 
 const initialMetamaskState: ArrangeMocksMetamaskStateOverrides = {
-  isSignedIn: false,
-  isProfileSyncingEnabled: false,
+  isSignedIn: true,
+  isProfileSyncingEnabled: true,
   isUnlocked: true,
   useExternalServices: true,
   completedOnboarding: true,
@@ -85,18 +85,23 @@ describe('useShouldDispatchAccountSyncing()', () => {
     expect(hook.result.current).toBe(true);
   });
 
-  testCases.failureStateCases.forEach(({ state, failingField }) => {
-    it(`should return false if not all conditions are met [${failingField} = false]`, () => {
-      const { state: newState } = arrangeMockState(state);
+  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+  // @ts-ignore
+  it.each(testCases.failureStateCases)(
+    'should return false if not all conditions are met [%s = false]',
+    ({
+      state: failureState,
+    }: (typeof testCases)['failureStateCases'][number]) => {
+      const { state } = arrangeMockState(failureState);
       const hook = renderHookWithProviderTyped(
         () => useShouldDispatchAccountSyncing(),
-        newState,
+        state,
         undefined,
         MetamaskIdentityProvider,
       );
       expect(hook.result.current).toBe(false);
-    });
-  });
+    },
+  );
 });
 
 describe('useAccountSyncing', () => {
@@ -130,14 +135,7 @@ describe('useAccountSyncing', () => {
 
   it('should dispatch if conditions are met', async () => {
     const { mocks, dispatchAccountSyncing, shouldDispatchAccountSyncing } =
-      arrangeAndAct({
-        isSignedIn: true,
-        isProfileSyncingEnabled: true,
-        isUnlocked: true,
-        useExternalServices: true,
-        completedOnboarding: true,
-        isAccountSyncingReadyToBeDispatched: true,
-      });
+      arrangeAndAct();
 
     await dispatchAccountSyncing();
 
@@ -149,7 +147,7 @@ describe('useAccountSyncing', () => {
 
   it('should not dispatch conditions are not met', async () => {
     const { mocks, dispatchAccountSyncing, shouldDispatchAccountSyncing } =
-      arrangeAndAct();
+      arrangeAndAct({ isAccountSyncingReadyToBeDispatched: false });
 
     await dispatchAccountSyncing();
 
