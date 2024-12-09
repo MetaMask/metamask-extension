@@ -138,7 +138,7 @@ export const BridgeQuoteCard = () => {
                       decimalToPrefixedHex(
                         activeQuote.quote.srcChainId,
                       ) as keyof typeof NETWORK_TO_SHORT_NETWORK_NAME_MAP
-                    ].split(' ')[0]
+                    ]
                   }
                 </Text>
                 <Icon name={IconName.Arrow2Right} size={IconSize.Xs} />
@@ -160,7 +160,7 @@ export const BridgeQuoteCard = () => {
                       decimalToPrefixedHex(
                         activeQuote.quote.destChainId,
                       ) as keyof typeof NETWORK_TO_SHORT_NETWORK_NAME_MAP
-                    ].split(' ')[0]
+                    ]
                   }
                 </Text>
               </Row>
