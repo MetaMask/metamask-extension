@@ -1,7 +1,8 @@
 import React from 'react';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { Carousel } from '../../component-library';
 import { getSlides } from '../../../ducks/metamask/metamask';
+import { removeSlide } from '../../../store/actions';
 import {
   AccountOverviewTabsProps,
   AccountOverviewTabs,
@@ -16,11 +17,16 @@ export const AccountOverviewLayout = ({
   ...tabsProps
 }: AccountOverviewLayoutProps) => {
   const slides = useSelector(getSlides);
+  const dispatch = useDispatch();
+
+  const handleRemoveSlide = (id: string) => {
+    dispatch(removeSlide(id));
+  };
 
   return (
     <>
       <div className="account-overview__balance-wrapper">{children}</div>
-      <Carousel slides={slides} />
+      <Carousel slides={slides} onClose={handleRemoveSlide} />
       <AccountOverviewTabs {...tabsProps}></AccountOverviewTabs>
     </>
   );
