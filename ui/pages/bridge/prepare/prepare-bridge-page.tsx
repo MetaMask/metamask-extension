@@ -264,7 +264,9 @@ const PrepareBridgePage = () => {
       case fromTokens[tokenAddressFromUrl]?.address?.toLowerCase(): {
         // If there is a matching fromToken, set it as the fromToken
         const matchedToken = fromTokens[tokenAddressFromUrl];
-        dispatch(setFromToken(matchedToken));
+        dispatch(
+          setFromToken({ ...matchedToken, image: matchedToken.iconUrl }),
+        );
         removeTokenFromUrl();
         break;
       }
