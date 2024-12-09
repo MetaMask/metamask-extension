@@ -119,8 +119,9 @@ export const useMultichainBalances = () => {
               ...sharedFields,
               image:
                 token.image ||
-                erc20TokensByChain[chainId]?.data?.[token.address.toLowerCase()]
-                  ?.iconUrl,
+                erc20TokensByChain?.[chainId]?.data?.[
+                  token.address.toLowerCase()
+                ]?.iconUrl,
               address: token.address,
               type: AssetType.token,
             });
