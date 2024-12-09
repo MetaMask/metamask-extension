@@ -4,6 +4,7 @@ const BigNumber = require('bignumber.js');
 const mockttp = require('mockttp');
 const detectPort = require('detect-port');
 const { difference } = require('lodash');
+const WebSocket = require('ws');
 const createStaticServer = require('../../development/create-static-server');
 const { setupMocking } = require('./mock-e2e');
 const { Ganache } = require('./seeder/ganache');
@@ -77,6 +78,7 @@ async function withFixtures(options, testSuite) {
     usePaymaster,
     ethConversionInUsd,
     manifestFlags,
+    enableWebSocketServer = false,
   } = options;
 
   const fixtureServer = new FixtureServer();
@@ -91,6 +93,8 @@ async function withFixtures(options, testSuite) {
   let numberOfDapps = dapp ? 1 : 0;
   const dappServer = [];
   const phishingPageServer = new PhishingWarningPageServer();
+
+  let webSocketServer;
 
   if (!disableServerMochaToBackground) {
     getServerMochaToBackground();
@@ -115,6 +119,16 @@ async function withFixtures(options, testSuite) {
         ),
       );
       contractRegistry = ganacheSeeder.getContractRegistry();
+    }
+
+    if (enableWebSocketServer) {
+      webSocketServer = new WebSocket.Server({ port: 8081, host: '0.0.0.0' });
+
+      webSocketServer.on('connection', function connection(ws) {
+        ws.on('message', function incoming(message) {
+          ws.send('Hello, client! I am the server.', message);
+        });
+      });
     }
 
     await fixtureServer.start();
@@ -305,6 +319,12 @@ async function withFixtures(options, testSuite) {
       await fixtureServer.stop();
       if (ganacheServer) {
         await ganacheServer.quit();
+      }
+
+      if (webSocketServer) {
+        webSocketServer.close(() => {
+          console.log('WebSocket server closed');
+        });
       }
 
       if (ganacheOptions?.concurrent) {
@@ -637,6 +657,48 @@ async function unlockWallet(
 
   if (waitLoginSuccess) {
     await driver.assertElementNotPresent('[data-testid="unlock-page"]');
+  }
+}
+
+/**
+ * Simulates a WebSocket connection by executing a script in the browser context.
+ *
+ * @param {WebDriver} driver - The WebDriver instance.
+ * @param {string} hostname - The hostname to connect to.
+ */
+async function createWebSocketConnection(driver, hostname) {
+  try {
+    await driver.executeScript(async (wsHostname) => {
+      const url = `ws://${wsHostname}:8081`;
+
+      const socket = new WebSocket(url);
+
+      socket.onopen = () => {
+        console.log('WebSocket connection opened');
+        socket.send('Hello, server!');
+      };
+
+      socket.onerror = (error) => {
+        console.error(
+          'WebSocket error:',
+          error.message || 'Connection blocked',
+        );
+      };
+
+      socket.onmessage = (event) => {
+        console.log('Message received from server:', event.data);
+      };
+
+      socket.onclose = () => {
+        console.log('WebSocket connection closed');
+      };
+    }, hostname);
+  } catch (error) {
+    console.error(
+      `Failed to execute WebSocket connection script for ws://${hostname}:8081`,
+      error,
+    );
+    throw error;
   }
 }
 
@@ -975,4 +1037,5 @@ module.exports = {
   tempToggleSettingRedesignedTransactionConfirmations,
   openMenuSafe,
   sentryRegEx,
+  createWebSocketConnection,
 };
