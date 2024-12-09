@@ -143,6 +143,7 @@ import SwapsFooter from '../swaps-footer';
 import SelectedToken from '../selected-token/selected-token';
 import ListWithSearch from '../list-with-search/list-with-search';
 import { CHAIN_IDS } from '../../../../shared/constants/network';
+import { STXBannerAlert } from '../../confirmations/components/stx-banner-alert';
 import QuotesLoadingAnimation from './quotes-loading-animation';
 import ReviewQuote from './review-quote';
 
@@ -822,6 +823,7 @@ export default function PrepareSwapPage({
         {tokenForImport && isImportTokenModalOpen && (
           <ImportToken isOpen {...importTokenProps} />
         )}
+        <STXBannerAlert />
         <Modal
           onClose={onSwapToClose}
           isOpen={isSwapToOpen}
