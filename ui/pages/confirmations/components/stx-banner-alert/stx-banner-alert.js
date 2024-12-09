@@ -41,7 +41,7 @@ const STXBannerAlert = () => {
           onClick={() => dispatch(dismissAndDisableAlert())}
           externalLink
         >
-          {t('smartTransactionsLearnMore')}
+          {t('learnMore')}
         </ButtonLink>
       </Text>
     </BannerAlert>
