@@ -15,20 +15,24 @@ import { CaveatTypes } from '../../../../../shared/constants/permissions';
 import { PermissionNames } from '../../../controllers/permissions';
 
 export function validateChainId(chainId) {
-  const lowercasedChainId = typeof chainId === 'string' ? chainId.toLowerCase() : null;
-  if (lowercasedChainId !== null && !isPrefixedFormattedHexString(lowercasedChainId)) {
+  const lowercasedChainId =
+    typeof chainId === 'string' ? chainId.toLowerCase() : null;
+  if (
+    lowercasedChainId !== null &&
+    !isPrefixedFormattedHexString(lowercasedChainId)
+  ) {
     throw rpcErrors.invalidParams({
       message: `Expected 0x-prefixed, unpadded, non-zero hexadecimal string 'chainId'. Received:\n${chainId}`,
     });
   }
 
-  if (!isSafeChainId(parseInt(_chainId, 16))) {
+  if (!isSafeChainId(parseInt(chainId, 16))) {
     throw rpcErrors.invalidParams({
-      message: `Invalid chain ID "${_chainId}": numerical value greater than max safe value. Received:\n${chainId}`,
+      message: `Invalid chain ID "${lowercasedChainId}": numerical value greater than max safe value. Received:\n${chainId}`,
     });
   }
 
-  return _chainId;
+  return lowercasedChainId;
 }
 
 export function validateSwitchEthereumChainParams(req) {
