@@ -83,7 +83,7 @@ import { getNativeCurrency } from '../../../ducks/metamask/metamask';
 import useLatestBalance from '../../../hooks/bridge/useLatestBalance';
 import { useCountdownTimer } from '../../../hooks/bridge/useCountdownTimer';
 import { useBridgeTokens } from '../../../hooks/bridge/useBridgeTokens';
-import { getCurrentKeyring } from '../../../selectors';
+import { getCurrentKeyring, getLocale } from '../../../selectors';
 import { isHardwareKeyring } from '../../../helpers/utils/hardware';
 import { BridgeInputGroup } from './bridge-input-group';
 import { BridgeCTAButton } from './bridge-cta-button';
@@ -127,6 +127,7 @@ const PrepareBridgePage = () => {
   const keyring = useSelector(getCurrentKeyring);
   // @ts-expect-error keyring type is wrong maybe?
   const isUsingHardwareWallet = isHardwareKeyring(keyring.type);
+  const locale = useSelector(getLocale);
 
   const ticker = useSelector(getNativeCurrency);
   const { isNoQuotesAvailable, isInsufficientGasForQuote } =
@@ -445,7 +446,9 @@ const PrepareBridgePage = () => {
             testId: 'to-amount',
             readOnly: true,
             disabled: true,
-            value: activeQuote?.toTokenAmount?.amount.toFixed() ?? '0',
+            value: activeQuote?.toTokenAmount?.amount
+              ? formatTokenAmount(locale, activeQuote.toTokenAmount.amount)
+              : '0',
             autoFocus: false,
             className: activeQuote?.toTokenAmount?.amount
               ? 'amount-input defined'
@@ -507,6 +510,7 @@ const PrepareBridgePage = () => {
                       ? t('willApproveAmountForBridgingHardware')
                       : t('willApproveAmountForBridging', [
                           formatTokenAmount(
+                            locale,
                             new BigNumber(fromAmount),
                             fromToken.symbol,
                           ),

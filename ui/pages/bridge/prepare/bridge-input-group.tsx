@@ -13,7 +13,7 @@ import {
 import { AssetPicker } from '../../../components/multichain/asset-picker-amount/asset-picker';
 import { TabName } from '../../../components/multichain/asset-picker-amount/asset-picker-modal/asset-picker-modal-tabs';
 import { useI18nContext } from '../../../hooks/useI18nContext';
-import { getCurrentCurrency } from '../../../selectors';
+import { getCurrentCurrency, getLocale } from '../../../selectors';
 import { formatCurrencyAmount, formatTokenAmount } from '../utils/quote';
 import { Column, Row, Tooltip } from '../layout';
 import {
@@ -86,6 +86,8 @@ export const BridgeInputGroup = ({
   const inputRef = useRef<HTMLInputElement | null>(null);
 
   const [isLowReturnTooltipOpen, setIsLowReturnTooltipOpen] = useState(true);
+
+  const locale = useSelector(getLocale);
 
   useEffect(() => {
     if (inputRef.current) {
@@ -244,7 +246,7 @@ export const BridgeInputGroup = ({
               })
             : undefined}
           {!isAmountReadOnly && balanceAmount
-            ? formatTokenAmount(balanceAmount, token?.symbol)
+            ? formatTokenAmount(locale, balanceAmount, token?.symbol)
             : undefined}
           {onMaxButtonClick &&
             token &&
@@ -252,7 +254,7 @@ export const BridgeInputGroup = ({
             balanceAmount && (
               <ButtonLink
                 variant={TextVariant.bodyMd}
-                onClick={() => onMaxButtonClick(balanceAmount?.toString())}
+                onClick={() => onMaxButtonClick(balanceAmount?.toFixed())}
               >
                 {t('max')}
               </ButtonLink>

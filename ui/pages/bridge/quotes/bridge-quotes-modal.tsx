@@ -24,7 +24,7 @@ import {
   formatTokenAmount,
 } from '../utils/quote';
 import { useI18nContext } from '../../../hooks/useI18nContext';
-import { getCurrentCurrency } from '../../../selectors';
+import { getCurrentCurrency, getLocale } from '../../../selectors';
 import { setSelectedQuote, setSortOrder } from '../../../ducks/bridge/actions';
 import { SortOrder } from '../types';
 import {
@@ -52,6 +52,7 @@ export const BridgeQuotesModal = ({
   const sortOrder = useSelector(getBridgeSortOrder);
   const currency = useSelector(getCurrentCurrency);
   const nativeCurrency = useSelector(getNativeCurrency);
+  const locale = useSelector(getLocale);
 
   const trackCrossChainSwapsEvent = useCrossChainSwapsEventTracker();
   const { quoteRequestProperties } = useRequestProperties();
@@ -211,6 +212,7 @@ export const BridgeQuotesModal = ({
                         ])
                       : t('quotedTotalCost', [
                           formatTokenAmount(
+                            locale,
                             totalNetworkFee.amount,
                             nativeCurrency,
                           ),
@@ -222,9 +224,9 @@ export const BridgeQuotesModal = ({
                         0,
                       ) ??
                         formatTokenAmount(
+                          locale,
                           toTokenAmount.amount,
                           destAsset.symbol,
-                          0,
                         ),
                     ]),
                   ].map((content) => (
