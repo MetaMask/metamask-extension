@@ -107,7 +107,10 @@ describe('Carousel', () => {
 
   it('should handle slide click with href', () => {
     const mockOpenTab = jest.fn();
-    global.platform = { openTab: mockOpenTab };
+    global.platform = {
+      openTab: mockOpenTab,
+      closeCurrentWindow: jest.fn(),
+    };
 
     const slidesWithHref = [
       {
