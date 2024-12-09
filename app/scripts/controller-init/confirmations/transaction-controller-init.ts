@@ -57,21 +57,27 @@ import {
   ControllerName,
 } from '../types';
 import {
+  getTransactionControllerInitMessenger,
   getTransactionControllerMessenger,
   TransactionControllerInitMessenger,
 } from '../messengers/transaction-controller-messenger';
 
 export class TransactionControllerInit extends ControllerInit<
   TransactionController,
+  TransactionControllerMessenger,
   TransactionControllerInitMessenger
 > {
   public init(
-    request: ControllerInitRequest<TransactionControllerInitMessenger>,
+    request: ControllerInitRequest<
+      TransactionControllerMessenger,
+      TransactionControllerInitMessenger
+    >,
   ): TransactionController {
     const {
+      getControllerMessenger,
       getGlobalChainId,
+      getInitMessenger,
       getPermittedAccounts,
-      getMessenger,
       getStateUI,
       getTransactionMetricsRequest,
       persistedState,
@@ -89,7 +95,8 @@ export class TransactionControllerInit extends ControllerInit<
       ///: END:ONLY_INCLUDE_IF
     } = this.#getControllers(request);
 
-    const controllerMessenger = getMessenger();
+    const controllerMessenger = getControllerMessenger();
+    const initMessenger = getInitMessenger();
 
     const controller = new TransactionController({
       getCurrentNetworkEIP1559Compatibility: () =>
@@ -182,15 +189,19 @@ export class TransactionControllerInit extends ControllerInit<
     });
 
     this.#addTransactionControllerListeners(
-      controllerMessenger,
+      initMessenger,
       getTransactionMetricsRequest,
     );
 
     return controller;
   }
 
-  getMessengerCallback() {
+  getControllerMessengerCallback() {
     return getTransactionControllerMessenger;
+  }
+
+  getInitMessengerCallback() {
+    return getTransactionControllerInitMessenger;
   }
 
   override getApi(
@@ -224,7 +235,10 @@ export class TransactionControllerInit extends ControllerInit<
   }
 
   #getControllers(
-    request: ControllerInitRequest<TransactionControllerInitMessenger>,
+    request: ControllerInitRequest<
+      TransactionControllerMessenger,
+      TransactionControllerInitMessenger
+    >,
   ) {
     return {
       gasFeeController: () =>

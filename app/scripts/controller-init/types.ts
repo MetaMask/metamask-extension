@@ -1,5 +1,24 @@
 import { Provider } from '@metamask/network-controller';
+import {
+  ActionConstraint,
+  ControllerMessenger,
+  EventConstraint,
+  RestrictedControllerMessenger,
+} from '@metamask/base-controller';
 import { TransactionMetricsRequest } from '../lib/transaction/metrics';
+
+export type BaseControllerMessenger = ControllerMessenger<
+  ActionConstraint,
+  EventConstraint
+>;
+
+export type BaseRestrictedControllerMessenger = RestrictedControllerMessenger<
+  string,
+  ActionConstraint,
+  EventConstraint,
+  string,
+  string
+>;
 
 export enum ControllerName {
   GasFeeController = 'GasFeeController',
@@ -14,15 +33,20 @@ export enum ControllerName {
   TransactionUpdateController = 'TransactionUpdateController',
 }
 
-export type ControllerInitRequest<MessengerType> = {
+export type ControllerInitRequest<
+  ControllerMessengerType extends BaseRestrictedControllerMessenger,
+  InitMessengerType extends BaseRestrictedControllerMessenger,
+> = {
   getController<T>(name: ControllerName): T;
+
+  getControllerMessenger(): ControllerMessengerType;
 
   getFlatState(): unknown;
 
   /** @deprecated */
   getGlobalChainId(): string;
 
-  getMessenger(): MessengerType;
+  getInitMessenger(): InitMessengerType;
 
   getPermittedAccounts(
     origin: string,
@@ -51,12 +75,20 @@ export type ControllerGetApiResponse = Record<string, ControllerApi>;
 
 export abstract class ControllerInit<
   ControllerType extends { name: string },
-  MessengerType,
+  ControllerMessengerType extends BaseRestrictedControllerMessenger,
+  InitMessengerType extends BaseRestrictedControllerMessenger,
 > {
-  abstract init(request: ControllerInitRequest<MessengerType>): ControllerType;
+  abstract init(
+    request: ControllerInitRequest<ControllerMessengerType, InitMessengerType>,
+  ): ControllerType;
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  abstract getMessengerCallback(): (controllerMessenger: any) => MessengerType;
+  abstract getControllerMessengerCallback(): (
+    controllerMessenger: BaseControllerMessenger,
+  ) => ControllerMessengerType;
+
+  abstract getInitMessengerCallback(): (
+    controllerMessenger: BaseControllerMessenger,
+  ) => InitMessengerType;
 
   getApi(
     _request: ControllerGetApiRequest<ControllerType>,

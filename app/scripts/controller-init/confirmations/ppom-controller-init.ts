@@ -1,4 +1,7 @@
-import { PPOMController } from '@metamask/ppom-validator';
+import {
+  PPOMController,
+  PPOMControllerMessenger,
+} from '@metamask/ppom-validator';
 import { PreferencesController } from '@metamask/preferences-controller';
 import { IndexedDBPPOMStorage } from '../../lib/ppom/indexed-db-backend';
 import * as PPOMModule from '../../lib/ppom/ppom';
@@ -8,19 +11,27 @@ import {
   ControllerName,
 } from '../types';
 import {
+  getPPOMControllerInitMessenger,
   getPPOMControllerMessenger,
   PPOMControllerInitMessenger,
 } from '../messengers/ppom-controller-messenger';
 
 export class PPOMControllerInit extends ControllerInit<
   PPOMController,
+  PPOMControllerMessenger,
   PPOMControllerInitMessenger
 > {
-  init(request: ControllerInitRequest<PPOMControllerInitMessenger>) {
+  init(
+    request: ControllerInitRequest<
+      PPOMControllerMessenger,
+      PPOMControllerInitMessenger
+    >,
+  ) {
     const {
       getController,
+      getControllerMessenger,
       getGlobalChainId,
-      getMessenger,
+      getInitMessenger,
       getProvider,
       persistedState,
     } = request;
@@ -30,7 +41,8 @@ export class PPOMControllerInit extends ControllerInit<
         ControllerName.PreferencesController,
       );
 
-    const controllerMessenger = getMessenger();
+    const controllerMessenger = getControllerMessenger();
+    const initMessenger = getInitMessenger();
 
     return new PPOMController({
       messenger: controllerMessenger,
@@ -46,8 +58,8 @@ export class PPOMControllerInit extends ControllerInit<
       securityAlertsEnabled:
         preferencesController().state.securityAlertsEnabled,
       // @ts-expect-error Mismatched types
-      onPreferencesChange: controllerMessenger.subscribe.bind(
-        controllerMessenger,
+      onPreferencesChange: initMessenger.subscribe.bind(
+        initMessenger,
         'PreferencesController:stateChange',
       ),
       cdnBaseUrl: process.env.BLOCKAID_FILE_CDN as string,
@@ -55,7 +67,11 @@ export class PPOMControllerInit extends ControllerInit<
     });
   }
 
-  getMessengerCallback() {
+  getControllerMessengerCallback() {
     return getPPOMControllerMessenger;
+  }
+
+  getInitMessengerCallback() {
+    return getPPOMControllerInitMessenger;
   }
 }

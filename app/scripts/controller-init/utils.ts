@@ -4,14 +4,30 @@ import {
   ControllerMessenger,
   EventConstraint,
 } from '@metamask/base-controller';
-import { ControllerInit, ControllerInitRequest, ControllerName } from './types';
+import {
+  BaseRestrictedControllerMessenger,
+  ControllerInit,
+  ControllerInitRequest,
+  ControllerName,
+} from './types';
 
 const log = createProjectLogger('controller-init');
 
 type Controller = { name: string };
-type BaseInitRequest = ControllerInitRequest<unknown>;
+
+type BaseInitRequest = ControllerInitRequest<
+  BaseRestrictedControllerMessenger,
+  BaseRestrictedControllerMessenger
+>;
+
 type InitFunction = (request: BaseInitRequest) => { name: string };
-type InitInstance = ControllerInit<Controller, unknown>;
+
+type InitInstance = ControllerInit<
+  Controller,
+  BaseRestrictedControllerMessenger,
+  BaseRestrictedControllerMessenger
+>;
+
 type InitObject = InitFunction | InitInstance;
 
 export function initControllers({
@@ -22,8 +38,8 @@ export function initControllers({
   controllerMessenger: ControllerMessenger<ActionConstraint, EventConstraint>;
   initObjects: InitObject[];
   initRequest: Omit<
-    ControllerInitRequest<unknown>,
-    'getController' | 'getMessenger'
+    BaseInitRequest,
+    'getController' | 'getControllerMessenger' | 'getInitMessenger'
   >;
 }) {
   log('Initializing controllers', initObjects.length);
@@ -31,7 +47,7 @@ export function initControllers({
   const controllersByName: Record<string, Controller> = {};
   const controllerPersistedState: Record<string, unknown> = {};
   const controllerMemState: Record<string, unknown> = {};
-  let controllerApi = {};
+  const controllerApi = {};
 
   for (const initObject of initObjects) {
     const initInstance = initObject as InitInstance;
@@ -41,8 +57,10 @@ export function initControllers({
       ...initRequest,
       getController: (name: ControllerName) =>
         getController(controllersByName, name),
-      getMessenger: () =>
-        initInstance.getMessengerCallback?.()?.(controllerMessenger),
+      getControllerMessenger: () =>
+        initInstance.getControllerMessengerCallback?.()?.(controllerMessenger),
+      getInitMessenger: () =>
+        initInstance.getInitMessengerCallback?.()?.(controllerMessenger),
     };
 
     const controller = initInstance.init
@@ -60,10 +78,7 @@ export function initControllers({
 
     const api = initInstance.getApi?.(getApiRequest) ?? {};
 
-    controllerApi = {
-      ...controllerApi,
-      ...api,
-    };
+    Object.defineProperties(controllerApi, api);
 
     const persistedStateKey = initInstance.getPersistedStateKey?.(controller);
     const memStateKey = initInstance.getMemStateKey?.(controller);

@@ -7,6 +7,7 @@ import {
   NetworkControllerStateChangeEvent,
 } from '@metamask/network-controller';
 import {
+  TransactionControllerMessenger,
   TransactionControllerPostTransactionBalanceUpdatedEvent,
   TransactionControllerTransactionApprovedEvent,
   TransactionControllerTransactionConfirmedEvent,
@@ -47,16 +48,30 @@ type MessengerEvents =
   | NetworkControllerStateChangeEvent;
 
 export type TransactionControllerInitMessenger = ReturnType<
-  typeof getTransactionControllerMessenger
+  typeof getTransactionControllerInitMessenger
 >;
 
 export function getTransactionControllerMessenger(
   controllerMessenger: ControllerMessenger<MessengerActions, MessengerEvents>,
-) {
+): TransactionControllerMessenger {
   return controllerMessenger.getRestricted({
     name: 'TransactionController',
+    allowedActions: [
+      'AccountsController:getSelectedAccount',
+      `ApprovalController:addRequest`,
+      'NetworkController:findNetworkClientIdByChainId',
+      'NetworkController:getNetworkClientById',
+    ],
+    allowedEvents: [`NetworkController:stateChange`],
+  });
+}
+
+export function getTransactionControllerInitMessenger(
+  controllerMessenger: ControllerMessenger<MessengerActions, MessengerEvents>,
+) {
+  return controllerMessenger.getRestricted({
+    name: 'TransactionControllerInit',
     allowedEvents: [
-      'NetworkController:stateChange',
       'TransactionController:transactionApproved',
       'TransactionController:transactionConfirmed',
       'TransactionController:transactionDropped',
@@ -68,14 +83,8 @@ export function getTransactionControllerMessenger(
       'TransactionController:transactionSubmitted',
       'TransactionController:postTransactionBalanceUpdated',
       'TransactionController:unapprovedTransactionAdded',
-      // Temporary to support client subscriptions
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    ] as any,
+    ],
     allowedActions: [
-      'ApprovalController:addRequest',
-      'AccountsController:getSelectedAccount',
-      'NetworkController:findNetworkClientIdByChainId',
-      'NetworkController:getNetworkClientById',
       'SwapsController:setApproveTxId',
       'SwapsController:setTradeTxId',
     ],
