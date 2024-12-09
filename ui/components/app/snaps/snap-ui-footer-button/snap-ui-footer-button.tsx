@@ -13,7 +13,6 @@ import {
   Icon,
   IconName,
   IconSize,
-  ButtonVariant as ExtensionButtonVariant,
 } from '../../../component-library';
 import {
   AlignItems,
@@ -38,6 +37,7 @@ export const SnapUIFooterButton: FunctionComponent<
   name,
   children,
   disabled = false,
+  loading = false,
   isSnapAction = false,
   type,
   variant = ButtonVariant.Primary,
@@ -67,8 +67,6 @@ export const SnapUIFooterButton: FunctionComponent<
     : ButtonVariant.Secondary;
 
   const buttonVariant = hideSnapBranding ? variant : brandedButtonVariant;
-  const finalButtonVariant =
-    buttonVariant === 'loading' ? ButtonVariant.Primary : buttonVariant;
 
   return (
     <Button
@@ -82,7 +80,7 @@ export const SnapUIFooterButton: FunctionComponent<
       size={ButtonSize.Lg}
       block
       disabled={disabled}
-      variant={finalButtonVariant as unknown as ExtensionButtonVariant}
+      variant={buttonVariant}
       onClick={handleClick}
       textProps={{
         display: Display.Flex,
@@ -90,10 +88,10 @@ export const SnapUIFooterButton: FunctionComponent<
         flexDirection: FlexDirection.Row,
       }}
     >
-      {isSnapAction && !hideSnapBranding && variant !== 'loading' && (
+      {isSnapAction && !hideSnapBranding && !loading && (
         <SnapIcon snapId={snapId} avatarSize={IconSize.Sm} marginRight={2} />
       )}
-      {variant === 'loading' ? (
+      {loading ? (
         <Icon
           name={IconName.Loading}
           style={{ animation: 'spin 2s linear infinite' }}

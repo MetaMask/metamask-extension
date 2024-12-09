@@ -71,19 +71,15 @@ export const footer: UIComponentFactory<FooterElement> = ({
       ...params,
       element: children,
     } as UIComponentParams<ButtonElement>);
-
-    const variant =
-      buttonMapped.props?.variant ??
-      (providedChildren.length === 2 && index === 0
-        ? ButtonVariant.Secondary
-        : ButtonVariant.Primary);
-
     return {
       element: 'SnapUIFooterButton',
       key: `snap-footer-button-${buttonMapped.props?.name ?? index}`,
       props: {
         ...buttonMapped.props,
-        variant,
+        variant:
+          providedChildren.length === 2 && index === 0
+            ? ButtonVariant.Secondary
+            : ButtonVariant.Primary,
         isSnapAction: true,
       },
       children: buttonMapped.children,
