@@ -245,50 +245,52 @@ describe('addEthereumChainHandler', () => {
       });
     });
 
-    it('should switch to the existing networkConfiguration if one already exists for the given chain id', async () => {
-      const { mocks, end, handler } = createMockedHandler();
-      mocks.getCurrentChainIdForDomain.mockReturnValue(CHAIN_IDS.MAINNET);
-      mocks.getNetworkConfigurationByChainId.mockReturnValue(
-        createMockOptimismConfiguration(),
-      );
-      await handler({
-        origin: 'example.com',
-        params: [
-          {
-            chainId: createMockOptimismConfiguration().chainId,
-            chainName: createMockOptimismConfiguration().name,
-            rpcUrls: createMockOptimismConfiguration().rpcEndpoints.map(
-              (rpc) => rpc.url,
-            ),
-            nativeCurrency: {
-              symbol: createMockOptimismConfiguration().nativeCurrency,
-              decimals: 18,
+    describe('if the proposed networkConfiguration does not have a different rpcUrl from the one already in state', () => {
+      it('should switch to the existing networkConfiguration if one already exists for the given chain id', async () => {
+        const { mocks, end, handler } = createMockedHandler();
+        mocks.getCurrentChainIdForDomain.mockReturnValue(CHAIN_IDS.MAINNET);
+        mocks.getNetworkConfigurationByChainId.mockReturnValue(
+          createMockOptimismConfiguration(),
+        );
+        await handler({
+          origin: 'example.com',
+          params: [
+            {
+              chainId: createMockOptimismConfiguration().chainId,
+              chainName: createMockOptimismConfiguration().name,
+              rpcUrls: createMockOptimismConfiguration().rpcEndpoints.map(
+                (rpc) => rpc.url,
+              ),
+              nativeCurrency: {
+                symbol: createMockOptimismConfiguration().nativeCurrency,
+                decimals: 18,
+              },
+              blockExplorerUrls:
+                createMockOptimismConfiguration().blockExplorerUrls,
             },
-            blockExplorerUrls:
-              createMockOptimismConfiguration().blockExplorerUrls,
-          },
-        ],
-      });
+          ],
+        });
 
-      expect(EthChainUtils.switchChain).toHaveBeenCalledTimes(1);
-      expect(EthChainUtils.switchChain).toHaveBeenCalledWith(
-        {},
-        end,
-        'example.com',
-        '0xa',
-        createMockOptimismConfiguration().rpcEndpoints[0].networkClientId,
-        undefined,
-        {
-          isAddFlow: true,
-          endApprovalFlow: mocks.endApprovalFlow,
-          getCaveat: mocks.getCaveat,
-          requestPermissionApprovalForOrigin:
-            mocks.requestPermissionApprovalForOrigin,
-          setActiveNetwork: mocks.setActiveNetwork,
-          updateCaveat: mocks.updateCaveat,
-          grantPermissions: mocks.grantPermissions,
-        },
-      );
+        expect(EthChainUtils.switchChain).toHaveBeenCalledTimes(1);
+        expect(EthChainUtils.switchChain).toHaveBeenCalledWith(
+          {},
+          end,
+          'example.com',
+          '0xa',
+          createMockOptimismConfiguration().rpcEndpoints[0].networkClientId,
+          undefined,
+          {
+            isAddFlow: true,
+            endApprovalFlow: mocks.endApprovalFlow,
+            getCaveat: mocks.getCaveat,
+            requestPermissionApprovalForOrigin:
+              mocks.requestPermissionApprovalForOrigin,
+            setActiveNetwork: mocks.setActiveNetwork,
+            updateCaveat: mocks.updateCaveat,
+            grantPermissions: mocks.grantPermissions,
+          },
+        );
+      });
     });
   });
 
