@@ -401,9 +401,13 @@ const PrepareBridgePage = () => {
             color={IconColor.iconAlternativeSoft}
             disabled={
               isSwitchingTemporarilyDisabled ||
-              !isValidQuoteRequest(quoteRequest, false)
+              !isValidQuoteRequest(quoteRequest, false) ||
+              !isNetworkAdded(toChain)
             }
             onClick={() => {
+              if (!isNetworkAdded(toChain)) {
+                return;
+              }
               setRotateSwitchTokens(!rotateSwitchTokens);
               flippedRequestProperties &&
                 trackCrossChainSwapsEvent({
