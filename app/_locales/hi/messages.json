@@ -1012,9 +1012,6 @@
   "confirmRecoveryPhrase": {
     "message": "सीक्रेट रिकवरी फ्रेज कन्फर्म करें"
   },
-  "confirmTitleApproveTransaction": {
-    "message": "भत्ता का अनुरोध"
-  },
   "confirmTitleDeployContract": {
     "message": "एक कॉन्ट्रैक्ट करें"
   },

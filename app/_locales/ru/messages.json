@@ -1012,9 +1012,6 @@
   "confirmRecoveryPhrase": {
     "message": "Подтвердите секретную фразу для восстановления"
   },
-  "confirmTitleApproveTransaction": {
-    "message": "Запрос квоты"
-  },
   "confirmTitleDeployContract": {
     "message": "Развернуть контракт"
   },
