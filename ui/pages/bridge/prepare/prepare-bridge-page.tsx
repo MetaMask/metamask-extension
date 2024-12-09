@@ -85,6 +85,7 @@ import { useCountdownTimer } from '../../../hooks/bridge/useCountdownTimer';
 import { useBridgeTokens } from '../../../hooks/bridge/useBridgeTokens';
 import { getCurrentKeyring, getLocale } from '../../../selectors';
 import { isHardwareKeyring } from '../../../helpers/utils/hardware';
+import { SECOND } from '../../../../shared/constants/time';
 import { BridgeInputGroup } from './bridge-input-group';
 import { BridgeCTAButton } from './bridge-cta-button';
 
@@ -161,6 +162,22 @@ const PrepareBridgePage = () => {
   const millisecondsUntilNextRefresh = useCountdownTimer();
 
   const [rotateSwitchTokens, setRotateSwitchTokens] = useState(false);
+
+  // Background updates are debounced when the switch button is clicked
+  // To prevent putting the frontend in an unexpected state, prevent the user
+  // from switching tokens within the debounce period
+  const [isSwitchingTemporarilyDisabled, setIsSwitchingTemporarilyDisabled] =
+    useState(false);
+  useEffect(() => {
+    setIsSwitchingTemporarilyDisabled(true);
+    const switchButtonTimer = setTimeout(() => {
+      setIsSwitchingTemporarilyDisabled(false);
+    }, SECOND);
+
+    return () => {
+      clearTimeout(switchButtonTimer);
+    };
+  }, [rotateSwitchTokens]);
 
   useEffect(() => {
     // Reset controller and inputs on load
@@ -382,7 +399,10 @@ const PrepareBridgePage = () => {
             ariaLabel="switch-tokens"
             iconName={IconName.Arrow2Down}
             color={IconColor.iconAlternativeSoft}
-            disabled={!isValidQuoteRequest(quoteRequest, false)}
+            disabled={
+              isSwitchingTemporarilyDisabled ||
+              !isValidQuoteRequest(quoteRequest, false)
+            }
             onClick={() => {
               setRotateSwitchTokens(!rotateSwitchTokens);
               flippedRequestProperties &&
