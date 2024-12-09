@@ -148,10 +148,7 @@ export class ExtensionStore extends BaseStore {
 
   async isFirstTimeInstall(): Promise<boolean> {
     const result = await this.#get();
-    if (isEmpty(result)) {
-      return true;
-    }
-    return false;
+    return !!isEmpty(result);
   }
 
   cleanUpMostRecentRetrievedState() {
