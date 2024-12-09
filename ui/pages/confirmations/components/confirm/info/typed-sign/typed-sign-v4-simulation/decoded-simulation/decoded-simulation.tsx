@@ -60,10 +60,12 @@ const StateChangeRow = ({
   stateChangeList,
   stateChange,
   chainId,
+  displayLabel,
 }: {
   stateChangeList: DecodingDataStateChanges | null;
   stateChange: DecodingDataStateChange;
   chainId: Hex;
+  displayLabel: boolean;
 }) => {
   const t = useI18nContext();
   const { assetType, changeType, amount, contractAddress, tokenID } =
@@ -71,7 +73,7 @@ const StateChangeRow = ({
   const tooltip = getStateChangeToolip(stateChangeList, stateChange, t);
   return (
     <ConfirmInfoRow
-      label={getStateChangeLabelMap(t, changeType)}
+      label={displayLabel ? getStateChangeLabelMap(t, changeType) : ''}
       tooltip={tooltip}
     >
       {(assetType === TokenStandard.ERC20 ||
@@ -104,19 +106,39 @@ const DecodedSimulation: React.FC<object> = () => {
   const chainId = currentConfirmation.chainId as Hex;
   const { decodingLoading, decodingData } = currentConfirmation;
 
-  const stateChangeFragment = useMemo(
-    () =>
-      (decodingData?.stateChanges ?? []).map(
-        (change: DecodingDataStateChange) => (
+  const stateChangeFragment = useMemo(() => {
+    const stateChangesGrouped: Record<string, DecodingDataStateChange[]> = (
+      decodingData?.stateChanges ?? []
+    ).reduce(
+      (
+        result: Record<string, DecodingDataStateChange[]>,
+        stateChange: DecodingDataStateChange,
+      ) => {
+        result[stateChange.changeType] = [
+          ...(result[stateChange.changeType] ?? []),
+          stateChange,
+        ];
+        return result;
+      },
+      {},
+    );
+
+    return Object.entries(stateChangesGrouped)
+      .map(([_, changeList]) =>
+        changeList.map((change: DecodingDataStateChange, index: number) => (
           <StateChangeRow
             stateChangeList={decodingData?.stateChanges ?? []}
             stateChange={change}
             chainId={chainId}
+            displayLabel={index === 0}
           />
-        ),
-      ),
-    [decodingData?.stateChanges],
-  );
+        )),
+      )
+      .reduce(
+        (result, stateChangeGroup) => [...result, ...stateChangeGroup],
+        [],
+      );
+  }, [decodingData?.stateChanges]);
 
   return (
     <StaticSimulation
