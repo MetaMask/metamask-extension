@@ -21,6 +21,40 @@ export type AccountOverviewLayoutProps = AccountOverviewTabsProps & {
   children: React.ReactElement;
 };
 
+// Add these constants at the top of the file, after imports
+const FUND_SLIDE = {
+  id: 'fund',
+  title: 'slideFundWalletTitle',
+  description: 'slideFundWalletDescription',
+  image: './images/slide-fund-icon.svg',
+  href: 'https://portfolio.metamask.io/buy/build-quote',
+};
+
+///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
+const BRIDGE_SLIDE = {
+  id: 'bridge',
+  title: 'slideBridgeTitle',
+  description: 'slideBridgeDescription',
+  image: './images/slide-bridge-icon.svg',
+};
+///: END:ONLY_INCLUDE_IF
+
+const CARD_SLIDE = {
+  id: 'card',
+  title: 'slideDebitCardTitle',
+  description: 'slideDebitCardDescription',
+  image: './images/slide-card-icon.svg',
+  href: 'https://portfolio.metamask.io/card',
+};
+
+const CASH_SLIDE = {
+  id: 'cash',
+  title: 'slideCashOutTitle',
+  description: 'slideCashOutDescription',
+  image: './images/slide-sell-icon.svg',
+  href: 'https://portfolio.metamask.io/buy/build-quote',
+};
+
 export const AccountOverviewLayout = ({
   children,
   ...tabsProps
@@ -50,38 +84,19 @@ export const AccountOverviewLayout = ({
     };
 
     const fundSlide = {
-      id: 'fund',
-      title: 'slideFundWalletTitle',
-      description: 'slideFundWalletDescription',
-      image: './images/slide-fund-icon.svg',
-      href: 'https://portfolio.metamask.io/buy/build-quote',
+      ...FUND_SLIDE,
       undismissable: hasZeroBalance,
     };
 
     const defaultSlides = [
       ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
       {
-        id: 'bridge',
-        title: 'slideBridgeTitle',
-        description: 'slideBridgeDescription',
-        image: './images/slide-bridge-icon.svg',
+        ...BRIDGE_SLIDE,
         onClick: handleBridgeClick,
       },
       ///: END:ONLY_INCLUDE_IF
-      {
-        id: 'card',
-        title: 'slideDebitCardTitle',
-        description: 'slideDebitCardDescription',
-        image: './images/slide-card-icon.svg',
-        href: 'https://portfolio.metamask.io/card',
-      },
-      {
-        id: 'cash',
-        title: 'slideCashOutTitle',
-        description: 'slideCashOutDescription',
-        image: './images/slide-sell-icon.svg',
-        href: 'https://portfolio.metamask.io/buy/build-quote',
-      },
+      CARD_SLIDE,
+      CASH_SLIDE,
     ];
 
     if (hasZeroBalance) {

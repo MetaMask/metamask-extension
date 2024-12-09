@@ -9,6 +9,7 @@
 
 .mm-carousel-slide {
   position: relative;
+  /* !important needed to override react-responsive-carousel default padding */
   padding: 0 !important;
 }
 
@@ -16,6 +17,7 @@
   background-size: cover;
   background-position: center;
   height: 100%;
+  /* !important needed to override react-responsive-carousel default width */
   width: 60px !important;
 }
 
@@ -32,10 +34,12 @@
   height: 40px;
   align-items: center;
   gap: 8px;
+  /* !important needed to override react-responsive-carousel default margin */
   margin: 0 !important;
 }
 
 .dot {
+  /* !important rules needed to override react-responsive-carousel default styles */
   margin: 0 !important;
   background: var(--color-icon-muted) !important;
   box-shadow: none !important;

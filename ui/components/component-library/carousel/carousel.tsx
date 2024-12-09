@@ -116,7 +116,7 @@ export const Carousel = React.forwardRef(
     }
 
     return (
-      <Box className={'mm-carousel'} ref={ref} {...(props as BoxProps<'div'>)}>
+      <Box className="mm-carousel" ref={ref} {...(props as BoxProps<'div'>)}>
         <ResponsiveCarousel
           selectedItem={selectedIndex}
           showArrows={false}
