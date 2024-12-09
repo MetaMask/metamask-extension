@@ -119,7 +119,7 @@ export class ExtensionStore extends BaseStore {
       return this.generateFirstTimeState();
     }
     try {
-       const result = await this.#get();
+      const result = await this.#get();
       // extension.storage.local always returns an obj
       // if the object is empty, treat it as undefined
       if (!result?.data) {
