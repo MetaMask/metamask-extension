@@ -54,7 +54,10 @@ export const Carousel = React.forwardRef(
     const [selectedIndex, setSelectedIndex] = useState(selectedItem);
     const t = useI18nContext();
 
-    const handleClose = (slideId: string) => {
+    const handleClose = (e: React.MouseEvent<HTMLElement>, slideId: string) => {
+      e.preventDefault();
+      e.stopPropagation();
+
       const currentSlideIndex = slides.findIndex(
         (slide) => slide.id === slideId,
       );
@@ -108,7 +111,7 @@ export const Carousel = React.forwardRef(
           {slides.map((slide, index) => (
             <BannerBase
               onClick={() => {
-                if (slide.href) {
+                if (slide.href && index === selectedIndex) {
                   global.platform.openTab({ url: slide.href });
                 }
               }}
@@ -138,7 +141,12 @@ export const Carousel = React.forwardRef(
                 fontWeight: FontWeight.Normal,
                 marginLeft: 2,
               }}
-              onClose={handleClose ? () => handleClose(slide.id) : undefined}
+              onClose={
+                handleClose
+                  ? (e: React.MouseEvent<HTMLElement>) =>
+                      handleClose(e, slide.id)
+                  : undefined
+              }
               closeButtonProps={{
                 className: 'mm-carousel-slide__close-button',
               }}
