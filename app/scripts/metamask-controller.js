@@ -165,6 +165,8 @@ import {
   Caip25CaveatMutators,
   Caip25CaveatType,
   Caip25EndowmentPermissionName,
+  getEthAccounts,
+  getSessionScopes,
   ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
   multichainMethodCallValidatorMiddleware,
   MultichainSubscriptionManager,
@@ -172,11 +174,7 @@ import {
   walletGetSession,
   walletRevokeSession,
   walletInvokeMethod,
-  ///: END:ONLY_INCLUDE_IF
-  getEthAccounts,
-  ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
   caipPermissionAdapterMiddleware,
-  getSessionScopes,
   ///: END:ONLY_INCLUDE_IF
 } from '@metamask/multichain';
 import {
@@ -221,7 +219,9 @@ import { MILLISECOND, MINUTE, SECOND } from '../../shared/constants/time';
 import {
   ORIGIN_METAMASK,
   POLLING_TOKEN_ENVIRONMENT_TYPES,
+  ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
   MESSAGE_TYPE,
+  ///: END:ONLY_INCLUDE_IF
 } from '../../shared/constants/app';
 import {
   MetaMetricsEventCategory,
@@ -316,11 +316,11 @@ import createLoggerMiddleware from './lib/createLoggerMiddleware';
 import {
   createEthAccountsMethodMiddleware,
   createEip1193MethodMiddleware,
+  createUnsupportedMethodMiddleware,
   ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
   createMultichainMethodMiddleware,
-  ///: END:ONLY_INCLUDE_IF
-  createUnsupportedMethodMiddleware,
   makeMethodMiddlewareMaker,
+  ///: END:ONLY_INCLUDE_IF
 } from './lib/rpc-method-middleware';
 import createOriginMiddleware from './lib/createOriginMiddleware';
 import createTabIdMiddleware from './lib/createTabIdMiddleware';
@@ -349,18 +349,20 @@ import EncryptionPublicKeyController from './controllers/encryption-public-key';
 import AppMetadataController from './controllers/app-metadata';
 
 import {
-  getAuthorizedScopesByOrigin,
   getCaveatSpecifications,
-  getChangedAuthorizations,
   diffMap,
   getPermissionBackgroundApiMethods,
   getPermissionSpecifications,
   getPermittedAccountsByOrigin,
-  getRemovedAuthorizations,
   getPermittedChainsByOrigin,
   NOTIFICATION_NAMES,
   unrestrictedMethods,
   PermissionNames,
+  ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
+  getRemovedAuthorizations,
+  getChangedAuthorizations,
+  getAuthorizedScopesByOrigin,
+  ///: END:ONLY_INCLUDE_IF
 } from './controllers/permissions';
 import { MetaMetricsDataDeletionController } from './controllers/metametrics-data-deletion/metametrics-data-deletion';
 import { DataDeletionService } from './services/data-deletion-service';
@@ -402,7 +404,9 @@ import {
 import createTracingMiddleware from './lib/createTracingMiddleware';
 import { PatchStore } from './lib/PatchStore';
 import { sanitizeUIState } from './lib/state-utils';
+///: BEGIN:ONLY_INCLUDE_IF(build-flask)
 import { walletCreateSession } from './lib/rpc-method-middleware/handlers/wallet-createSession';
+///: END:ONLY_INCLUDE_IF
 import BridgeStatusController from './controllers/bridge-status/bridge-status-controller';
 import { BRIDGE_STATUS_CONTROLLER_NAME } from './controllers/bridge-status/constants';
 
