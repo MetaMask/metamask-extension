@@ -40,7 +40,7 @@ describe('STXBannerAlert', () => {
     expect(
       screen.getByText('smartTransactionsEnabledMessage'),
     ).toBeInTheDocument();
-    expect(screen.getByText('smartTransactionsLearnMore')).toBeInTheDocument();
+    expect(screen.getByText('learnMoreUpperCase')).toBeInTheDocument();
   });
 
   it('does not render when alert is closed', () => {
@@ -79,7 +79,7 @@ describe('STXBannerAlert', () => {
     const store = configureStore(mockState);
     renderWithProvider(<STXBannerAlert />, store);
 
-    screen.getByText('smartTransactionsLearnMore').click();
+    screen.getByText('learnMoreUpperCase').click();
 
     // Wait for the async action to complete
     await new Promise((resolve) => setTimeout(resolve, 0));

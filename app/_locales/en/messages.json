@@ -6821,8 +6821,5 @@
   },
   "smartTransactionsEnabledMessage": {
     "message": "You're now protected with MetaMask Smart Transactions"
-  },
-  "smartTransactionsLearnMore": {
-    "message": "Learn more"
   }
 }
