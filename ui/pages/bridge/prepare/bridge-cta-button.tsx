@@ -138,6 +138,7 @@ export const BridgeCTAButton = () => {
     isQuoteExpired,
     isInsufficientGasBalance,
     isInsufficientGasForQuote,
+    isQuoteExpired,
   ]);
 
   return activeQuote ? (
