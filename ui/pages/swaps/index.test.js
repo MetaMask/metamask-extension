@@ -33,9 +33,7 @@ setBackgroundConnection({
   setSwapsLiveness: jest.fn(() => true),
   setSwapsTokens: jest.fn(),
   setSwapsTxGasPrice: jest.fn(),
-  gasFeeStartPollingByNetworkClientId: jest
-    .fn()
-    .mockResolvedValue('pollingToken'),
+  gasFeeStartPolling: jest.fn().mockResolvedValue('pollingToken'),
   gasFeeStopPollingByPollingToken: jest.fn(),
   getNetworkConfigurationByNetworkClientId: jest
     .fn()

@@ -28,6 +28,7 @@ describe('Token Details', function () {
 
   const importToken = async (driver: Driver) => {
     await driver.clickElement(`[data-testid="import-token-button"]`);
+    await driver.clickElement(`[data-testid="importTokens"]`);
     await clickNestedButton(driver, 'Custom token');
     await driver.fill(
       '[data-testid="import-tokens-modal-custom-address"]',
@@ -46,7 +47,7 @@ describe('Token Details', function () {
 
   const openTokenDetails = async (driver: Driver) => {
     await driver.clickElement('[data-testid="account-overview__asset-tab"]');
-    const [, tkn] = await driver.findElements(
+    const [, , tkn] = await driver.findElements(
       '[data-testid="multichain-token-list-button"]',
     );
     await tkn.click();

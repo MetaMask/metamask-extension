@@ -17,6 +17,7 @@ import Tooltip from '../../../../../../../components/ui/tooltip';
 import { getIntlLocale } from '../../../../../../../ducks/locale/locale';
 import {
   AlignItems,
+  BackgroundColor,
   Display,
   FlexDirection,
   JustifyContent,
@@ -81,6 +82,7 @@ const NativeSendHeading = () => {
       }
       name={multichainNetwork?.nickname}
       size={AvatarTokenSize.Xl}
+      backgroundColor={BackgroundColor.backgroundDefault}
     />
   );
 

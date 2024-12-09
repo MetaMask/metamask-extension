@@ -5,7 +5,7 @@ import level from 'level';
 import { Driver } from './webdriver/driver';
 import { withFixtures, WALLET_PASSWORD } from './helpers';
 import HeaderNavbar from './page-objects/pages/header-navbar';
-import HomePage from './page-objects/pages/homepage';
+import HomePage from './page-objects/pages/home/homepage';
 import PrivacySettings from './page-objects/pages/settings/privacy-settings';
 import SettingsPage from './page-objects/pages/settings/settings-page';
 import VaultDecryptorPage from './page-objects/pages/vault-decryptor-page';
@@ -165,7 +165,7 @@ describe('Vault Decryptor Page', function () {
         // we don't need to use navigate since MM will automatically open a new window in prod build
         await driver.waitUntilXWindowHandles(2);
 
-        // we cannot use the customized driver functionsas there is no socket for window communications in prod builds
+        // we cannot use the customized driver functions as there is no socket for window communications in prod builds
         const windowHandles = await driver.driver.getAllWindowHandles();
 
         // switch to MetaMask window and create a new vault through onboarding flow

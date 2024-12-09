@@ -3,6 +3,7 @@ import React, { useCallback, useMemo } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 
+import { ApprovalType } from '@metamask/controller-utils';
 import { QueueType } from '../../../../../../shared/constants/metametrics';
 import {
   Box,
@@ -34,7 +35,7 @@ import { pendingConfirmationsSortedSelector } from '../../../../../selectors';
 import { rejectPendingApproval } from '../../../../../store/actions';
 import { useConfirmContext } from '../../../context/confirm';
 import { useQueuedConfirmationsEvent } from '../../../hooks/useQueuedConfirmationEvents';
-import { isSignatureApprovalRequest } from '../../../utils';
+import { isCorrectSignatureApprovalType } from '../../../../../../shared/lib/confirmation.utils';
 
 const Nav = () => {
   const history = useHistory();
@@ -64,7 +65,7 @@ const Nav = () => {
       // "/confirm-transaction/<confirmation_id>"
       history.replace(
         `${CONFIRM_TRANSACTION_ROUTE}/${nextConfirmation.id}${
-          isSignatureApprovalRequest(nextConfirmation)
+          isCorrectSignatureApprovalType(nextConfirmation.type as ApprovalType)
             ? SIGNATURE_REQUEST_PATH
             : ''
         }`,
@@ -119,6 +120,7 @@ const Nav = () => {
           color={TextColor.textAlternative}
           marginInline={2}
           variant={TextVariant.bodySm}
+          data-testid="confirm-page-nav-position"
         >
           {currentConfirmationPosition + 1} of {pendingConfirmations.length}
         </Text>

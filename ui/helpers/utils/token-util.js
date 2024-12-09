@@ -217,7 +217,8 @@ export function getTokenFiatAmount(
   if (
     conversionRate <= 0 ||
     !contractExchangeRate ||
-    tokenAmount === undefined
+    tokenAmount === undefined ||
+    tokenAmount === false
   ) {
     return undefined;
   }

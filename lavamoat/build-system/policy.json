@@ -6565,6 +6565,72 @@
         "postcss>source-map-js": true
       }
     },
+    "postcss-discard-font-face": {
+      "packages": {
+        "postcss-discard-font-face>balanced-match": true,
+        "postcss-discard-font-face>postcss": true
+      }
+    },
+    "postcss-discard-font-face>postcss": {
+      "builtin": {
+        "fs": true,
+        "path": true
+      },
+      "globals": {
+        "console": true
+      },
+      "packages": {
+        "postcss-discard-font-face>postcss>chalk": true,
+        "postcss-discard-font-face>postcss>js-base64": true,
+        "postcss-discard-font-face>postcss>source-map": true,
+        "postcss-discard-font-face>postcss>supports-color": true
+      }
+    },
+    "postcss-discard-font-face>postcss>chalk": {
+      "globals": {
+        "process.env.TERM": true,
+        "process.platform": true
+      },
+      "packages": {
+        "postcss-discard-font-face>postcss>chalk>ansi-styles": true,
+        "postcss-discard-font-face>postcss>chalk>escape-string-regexp": true,
+        "postcss-discard-font-face>postcss>chalk>strip-ansi": true,
+        "postcss-discard-font-face>postcss>chalk>supports-color": true,
+        "prettier-eslint>loglevel-colored-level-prefix>chalk>has-ansi": true
+      }
+    },
+    "postcss-discard-font-face>postcss>chalk>strip-ansi": {
+      "packages": {
+        "postcss-discard-font-face>postcss>chalk>strip-ansi>ansi-regex": true
+      }
+    },
+    "postcss-discard-font-face>postcss>chalk>supports-color": {
+      "globals": {
+        "process.argv": true,
+        "process.env": true,
+        "process.platform": true,
+        "process.stdout": true
+      }
+    },
+    "postcss-discard-font-face>postcss>js-base64": {
+      "globals": {
+        "Base64": "write",
+        "define": true
+      }
+    },
+    "postcss-discard-font-face>postcss>supports-color": {
+      "globals": {
+        "process": true
+      },
+      "packages": {
+        "postcss-discard-font-face>postcss>supports-color>has-flag": true
+      }
+    },
+    "postcss-discard-font-face>postcss>supports-color>has-flag": {
+      "globals": {
+        "process.argv": true
+      }
+    },
     "postcss-rtlcss": {
       "globals": {
         "SuppressedError": true
@@ -7381,6 +7447,11 @@
         "walkUpLexicalEnvironments": true,
         "whitespaceOrMapCommentRegExp": true,
         "zipToModeAwareCache": true
+      }
+    },
+    "prettier-eslint>loglevel-colored-level-prefix>chalk>has-ansi": {
+      "packages": {
+        "prettier-eslint>loglevel-colored-level-prefix>chalk>has-ansi>ansi-regex": true
       }
     },
     "prop-types": {

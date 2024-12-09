@@ -26,7 +26,6 @@ import {
   getTotalUnapprovedCount,
   getUnapprovedTemplatedConfirmations,
   getWeb3ShimUsageStateForOrigin,
-  getInfuraBlocked,
   getShowWhatsNewPopup,
   getSortedAnnouncementsToShow,
   getShowRecoveryPhraseReminder,
@@ -51,7 +50,7 @@ import {
   getAccountType,
   ///: END:ONLY_INCLUDE_IF
 } from '../../selectors';
-
+import { getInfuraBlocked } from '../../../shared/modules/selectors/networks';
 import {
   closeNotificationPopup,
   setConnectedStatusPopoverHasBeenShown,

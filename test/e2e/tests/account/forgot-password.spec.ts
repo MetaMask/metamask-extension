@@ -3,7 +3,7 @@ import FixtureBuilder from '../../fixture-builder';
 import { Driver } from '../../webdriver/driver';
 import { E2E_SRP } from '../../default-fixture';
 import { Ganache } from '../../seeder/ganache';
-import HomePage from '../../page-objects/pages/homepage';
+import HomePage from '../../page-objects/pages/home/homepage';
 import LoginPage from '../../page-objects/pages/login-page';
 import ResetPasswordPage from '../../page-objects/pages/reset-password-page';
 import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';

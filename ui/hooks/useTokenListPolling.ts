@@ -1,6 +1,6 @@
 import { useSelector } from 'react-redux';
 import {
-  getNetworkConfigurationsByChainId,
+  getChainIdsToPoll,
   getPetnamesEnabled,
   getUseExternalServices,
   getUseTokenDetection,
@@ -17,13 +17,13 @@ import {
 import useMultiPolling from './useMultiPolling';
 
 const useTokenListPolling = () => {
-  const networkConfigurations = useSelector(getNetworkConfigurationsByChainId);
   const useTokenDetection = useSelector(getUseTokenDetection);
   const useTransactionSimulations = useSelector(getUseTransactionSimulations);
   const petnamesEnabled = useSelector(getPetnamesEnabled);
   const completedOnboarding = useSelector(getCompletedOnboarding);
   const isUnlocked = useSelector(getIsUnlocked);
   const useExternalServices = useSelector(getUseExternalServices);
+  const chainIds = useSelector(getChainIdsToPoll);
 
   const enabled =
     completedOnboarding &&
@@ -34,7 +34,7 @@ const useTokenListPolling = () => {
   useMultiPolling({
     startPolling: tokenListStartPolling,
     stopPollingByPollingToken: tokenListStopPollingByPollingToken,
-    input: enabled ? Object.keys(networkConfigurations) : [],
+    input: enabled ? chainIds : [],
   });
 
   return {};

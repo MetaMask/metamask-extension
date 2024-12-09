@@ -42,12 +42,6 @@
       "trezorModel": null,
       "newPrivacyPolicyToastClickedOrClosed": "boolean",
       "newPrivacyPolicyToastShownDate": "number",
-      "usedNetworks": {
-        "0x1": true,
-        "0xe708": true,
-        "0x5": true,
-        "0x539": true
-      },
       "snapsInstallPrivacyWarningShown": true
     },
     "CurrencyController": {
@@ -118,6 +112,7 @@
         "isRedesignedConfirmationsDeveloperEnabled": "boolean",
         "showConfirmationAdvancedDetails": false,
         "tokenSortConfig": "object",
+        "tokenNetworkFilter": {},
         "showMultiRpcModal": "boolean",
         "shouldShowAggregatedBalancePopover": "boolean"
       },

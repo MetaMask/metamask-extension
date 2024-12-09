@@ -1,6 +1,7 @@
 import React, { ReactNode } from 'react';
 import useCurrencyRatePolling from '../hooks/useCurrencyRatePolling';
 import useTokenRatesPolling from '../hooks/useTokenRatesPolling';
+import useAccountTrackerPolling from '../hooks/useAccountTrackerPolling';
 import useTokenDetectionPolling from '../hooks/useTokenDetectionPolling';
 import useTokenListPolling from '../hooks/useTokenListPolling';
 
@@ -10,6 +11,7 @@ import useTokenListPolling from '../hooks/useTokenListPolling';
 export const AssetPollingProvider = ({ children }: { children: ReactNode }) => {
   useCurrencyRatePolling();
   useTokenRatesPolling();
+  useAccountTrackerPolling();
   useTokenDetectionPolling();
   useTokenListPolling();
 
