@@ -39,9 +39,9 @@ exports[`ConfirmSendEther should render correct information for for confirm send
           class="confirm-page-container-navigation__navtext"
         >
           0
-
+           
           of
-
+           
           2
         </div>
         <div
@@ -258,7 +258,7 @@ exports[`ConfirmSendEther should render correct information for for confirm send
     <div
       class="confirm-page-container-content"
     >
-
+      
       <div
         class="confirm-page-container-summary"
       >
@@ -496,7 +496,7 @@ exports[`ConfirmSendEther should render correct information for for confirm send
                       >
                         Unknown processing time
                       </p>
-
+                      
                     </div>
                   </div>
                   <h6

@@ -3,13 +3,13 @@
 exports[`Bridge renders the component with initial props 1`] = `
 <div>
   <div
-    class="bridge"
+    class="mm-box multichain-page mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--width-full mm-box--height-full mm-box--background-color-background-alternative"
   >
     <div
-      class="bridge__container"
+      class="mm-box multichain-page__inner-container bridge__container mm-box--display-flex mm-box--flex-direction-column mm-box--width-full mm-box--height-full mm-box--background-color-background-default"
     >
       <div
-        class="mm-box mm-header-base multichain-page-header bridge__header mm-box--padding-4 mm-box--display-flex mm-box--justify-content-center mm-box--width-full"
+        class="mm-box mm-header-base multichain-page-header mm-box--padding-4 mm-box--display-flex mm-box--justify-content-center mm-box--width-full"
       >
         <div
           class="mm-box"
@@ -28,11 +28,11 @@ exports[`Bridge renders the component with initial props 1`] = `
         <div
           class="mm-box"
         >
-          <p
-            class="mm-box mm-text mm-text--body-md-bold mm-text--ellipsis mm-text--text-align-center mm-box--padding-inline-start-8 mm-box--padding-inline-end-8 mm-box--display-block mm-box--color-text-default"
+          <h4
+            class="mm-box mm-text mm-text--heading-sm mm-text--ellipsis mm-text--text-align-center mm-box--padding-inline-start-8 mm-box--padding-inline-end-8 mm-box--display-block mm-box--color-text-default"
           >
             Bridge
-          </p>
+          </h4>
         </div>
         <div
           class="mm-box mm-box--display-flex mm-box--justify-content-flex-end"
@@ -50,20 +50,8 @@ exports[`Bridge renders the component with initial props 1`] = `
         </div>
       </div>
       <div
-        class="mm-box multichain-page-content bridge__content mm-box--padding-4 mm-box--display-flex mm-box--flex-direction-column mm-box--width-full mm-box--height-full"
+        class="mm-box multichain-page-content mm-box--padding-0 mm-box--display-flex mm-box--flex-direction-column mm-box--width-full mm-box--height-full"
       />
-      <div
-        class="mm-box multichain-page-footer mm-box--padding-4 mm-box--display-flex mm-box--gap-4 mm-box--width-full"
-      >
-        <button
-          class="mm-box mm-text mm-button-base mm-button-base--size-md mm-button-base--disabled mm-button-primary mm-button-primary--disabled mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-inverse mm-box--background-color-primary-default mm-box--rounded-pill"
-          data-testid="bridge-cta-button"
-          data-theme="light"
-          disabled=""
-        >
-          Select token and amount
-        </button>
-      </div>
     </div>
   </div>
 </div>

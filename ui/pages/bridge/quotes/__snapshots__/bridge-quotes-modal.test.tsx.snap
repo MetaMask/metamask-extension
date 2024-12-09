@@ -66,7 +66,7 @@ exports[`BridgeQuotesModal should render the modal 1`] = `
                 class="mm-box mm-text mm-text--inherit mm-box--color-primary-default"
               >
                 <p
-                  class="mm-box mm-text mm-text--body-sm mm-box--color-primary-default"
+                  class="mm-box mm-text mm-text--body-sm-medium mm-box--color-primary-default"
                 >
                   Net cost
                 </p>
@@ -77,13 +77,13 @@ exports[`BridgeQuotesModal should render the modal 1`] = `
               />
             </button>
             <button
-              class="mm-box mm-text mm-button-base mm-button-link mm-button-link--size-auto mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-0 mm-box--padding-left-0 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-alternative mm-box--background-color-transparent"
+              class="mm-box mm-text mm-button-base mm-button-link mm-button-link--size-auto mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-0 mm-box--padding-left-0 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-alternative-soft mm-box--background-color-transparent"
             >
               <span
-                class="mm-box mm-text mm-text--inherit mm-box--color-text-alternative"
+                class="mm-box mm-text mm-text--inherit mm-box--color-text-alternative-soft"
               >
                 <p
-                  class="mm-box mm-text mm-text--body-sm mm-box--color-text-alternative"
+                  class="mm-box mm-text mm-text--body-sm mm-box--color-text-alternative-soft"
                 >
                   Time
                 </p>
@@ -111,12 +111,12 @@ exports[`BridgeQuotesModal should render the modal 1`] = `
                 <p
                   class="mm-box mm-text mm-text--body-xs-medium mm-box--color-text-alternative"
                 >
-                  $3 network fee
+                  $3 total cost
                 </p>
                 <p
                   class="mm-box mm-text mm-text--body-xs-medium mm-box--color-text-alternative"
                 >
-                  14 USDC receive amount
+                  13.98 USDC receive amount
                 </p>
               </div>
               <div
@@ -147,12 +147,12 @@ exports[`BridgeQuotesModal should render the modal 1`] = `
                 <p
                   class="mm-box mm-text mm-text--body-xs-medium mm-box--color-text-alternative"
                 >
-                  $3 network fee
+                  $3 total cost
                 </p>
                 <p
                   class="mm-box mm-text mm-text--body-xs-medium mm-box--color-text-alternative"
                 >
-                  14 USDC receive amount
+                  13.8 USDC receive amount
                 </p>
               </div>
               <div
