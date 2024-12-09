@@ -207,8 +207,14 @@ export const calcCost = (
       : null,
 });
 
-export const formatEtaInMinutes = (estimatedProcessingTimeInSeconds: number) =>
-  (estimatedProcessingTimeInSeconds / 60).toFixed();
+export const formatEtaInMinutes = (
+  estimatedProcessingTimeInSeconds: number,
+) => {
+  if (estimatedProcessingTimeInSeconds < 60) {
+    return `< 1`;
+  }
+  return (estimatedProcessingTimeInSeconds / 60).toFixed();
+};
 
 export const formatTokenAmount = (
   locale: string,
