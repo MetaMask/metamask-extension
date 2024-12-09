@@ -51,6 +51,9 @@ describe('Deprecated networks', function () {
       {
         dapp: true,
         fixtures: new FixtureBuilder()
+          .withKeyringControllerAdditionalAccountVault()
+          .withPreferencesControllerAdditionalAccountIdentities()
+          .withAccountsControllerAdditionalAccountIdentities()
           .withPermissionControllerConnectedToTestDapp()
           .withPreferencesController({ useSafeChainsListValidation: false })
           .build(),
@@ -130,6 +133,9 @@ describe('Deprecated networks', function () {
       {
         dapp: true,
         fixtures: new FixtureBuilder()
+          .withKeyringControllerAdditionalAccountVault()
+          .withPreferencesControllerAdditionalAccountIdentities()
+          .withAccountsControllerAdditionalAccountIdentities()
           .withPermissionControllerConnectedToTestDapp()
           .withPreferencesController({ useSafeChainsListValidation: false })
           .build(),
@@ -209,6 +215,9 @@ describe('Deprecated networks', function () {
       {
         dapp: true,
         fixtures: new FixtureBuilder()
+          .withKeyringControllerAdditionalAccountVault()
+          .withPreferencesControllerAdditionalAccountIdentities()
+          .withAccountsControllerAdditionalAccountIdentities()
           .withPermissionControllerConnectedToTestDapp()
           .withPreferencesController({ useSafeChainsListValidation: false })
           .build(),

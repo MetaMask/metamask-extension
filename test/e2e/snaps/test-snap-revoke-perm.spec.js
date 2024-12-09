@@ -150,7 +150,7 @@ describe('Test Snap revoke permission', function () {
         });
 
         // try to click on options menu
-        await driver.clickElement('[data-testid="eth_accounts"]');
+        await driver.clickElement('[data-testid="endowment:caip25"]');
 
         // try to click on revoke permission
         await driver.clickElement({
