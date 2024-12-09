@@ -195,9 +195,9 @@ export default class Routes extends Component {
     currentExtensionPopupId: PropTypes.number,
     useRequestQueue: PropTypes.bool,
     clearEditedNetwork: PropTypes.func.isRequired,
-    oldestPendingApproval: PropTypes.object.isRequired,
+    oldestPendingApproval: PropTypes.object,
     pendingApprovals: PropTypes.arrayOf(PropTypes.object).isRequired,
-    transactionsMetadata: PropTypes.arrayOf(PropTypes.object).isRequired,
+    transactionsMetadata: PropTypes.object.isRequired,
     ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
     isShowKeyringSnapRemovalResultModal: PropTypes.bool.isRequired,
     hideShowKeyringSnapRemovalResultModal: PropTypes.func.isRequired,
