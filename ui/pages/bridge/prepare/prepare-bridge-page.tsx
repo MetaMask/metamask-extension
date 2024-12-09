@@ -50,6 +50,7 @@ import { isValidQuoteRequest } from '../utils/quote';
 import { getProviderConfig } from '../../../../shared/modules/selectors/networks';
 import { getCurrentCurrency } from '../../../selectors';
 import { SECOND } from '../../../../shared/constants/time';
+import { isNetworkAdded } from '../../../ducks/bridge/utils';
 import { BridgeInputGroup } from './bridge-input-group';
 
 const PrepareBridgePage = () => {
@@ -212,13 +213,15 @@ const PrepareBridgePage = () => {
             network: fromChain,
             networks: fromChains,
             onNetworkChange: (networkConfig) => {
-              dispatch(
-                setActiveNetwork(
-                  networkConfig.rpcEndpoints[
-                    networkConfig.defaultRpcEndpointIndex
-                  ].networkClientId,
-                ),
-              );
+              if (isNetworkAdded(networkConfig)) {
+                dispatch(
+                  setActiveNetwork(
+                    networkConfig.rpcEndpoints[
+                      networkConfig.defaultRpcEndpointIndex
+                    ].networkClientId,
+                  ),
+                );
+              }
               dispatch(setFromChain(networkConfig.chainId));
               dispatch(setFromToken(null));
               dispatch(setFromTokenInputValue(null));
