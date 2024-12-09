@@ -21,7 +21,7 @@ import {
   formatTokenAmount,
   formatEtaInMinutes,
 } from '../utils/quote';
-import { getCurrentCurrency } from '../../../selectors';
+import { getCurrentCurrency, getLocale } from '../../../selectors';
 import { getNativeCurrency } from '../../../ducks/metamask/metamask';
 import { useCrossChainSwapsEventTracker } from '../../../hooks/bridge/useCrossChainSwapsEventTracker';
 import { useRequestProperties } from '../../../hooks/bridge/events/useRequestProperties';
@@ -59,6 +59,7 @@ export const BridgeQuoteCard = () => {
 
   const fromChain = useSelector(getFromChain);
   const toChain = useSelector(getToChain);
+  const locale = useSelector(getLocale);
 
   const [showAllQuotes, setShowAllQuotes] = useState(false);
 
@@ -180,9 +181,9 @@ export const BridgeQuoteCard = () => {
                     2,
                   ) ??
                     formatTokenAmount(
+                      locale,
                       activeQuote.totalNetworkFee?.amount,
                       ticker,
-                      6,
                     )}
                 </Text>
                 <Text color={TextColor.textAlternativeSoft}>
@@ -191,9 +192,9 @@ export const BridgeQuoteCard = () => {
                 <Text>
                   {activeQuote.totalNetworkFee?.valueInCurrency
                     ? formatTokenAmount(
+                        locale,
                         activeQuote.totalNetworkFee?.amount,
                         ticker,
-                        6,
                       )
                     : undefined}
                 </Text>
