@@ -1,0 +1,47 @@
+name: 'Benchmarks'
+
+on:
+  push:
+    branches: self-hosted-temp
+  repository_dispatch:
+    types: [start-example-workflow]
+  workflow_dispatch:
+    inputs:
+      name:
+        description: 'name'
+      home:
+        description: 'home'
+jobs:
+  test:
+    name: Benchmark
+    runs-on: ubuntu-latest
+    container: cimg/node:20.18-browsers
+    # runs-on: [self-hosted, Linux, X64]
+    steps:
+      # - name: Docker
+      #   uses: docker://cimg/node:20.18-browsers
+
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - run: sudo corepack enable
+        shell: bash
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: yarn
+
+      - name: Install dependencies
+        run: yarn
+        shell: bash
+
+      # - run: yarn build:test
+      - run: yarn webpack --test
+
+      - name: Debugging with tmate
+        uses: ./.github/actions/actions-tmate
+
+      - name: Run the benchmark
+        run: yarn benchmark:chrome --out test-artifacts/chrome/benchmark/pageload.json --retries 2
