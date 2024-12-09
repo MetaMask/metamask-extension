@@ -115,6 +115,51 @@ export function getPermissionBackgroundApiMethods({
     );
   };
 
+  const requestAccountsAndChainPermissions = async (origin, id) => {
+    const legacyApproval = await approvalController.addAndShowApprovalRequest({
+      id,
+      origin,
+      requestData: {
+        metadata: {
+          id,
+          origin,
+        },
+        permissions: {
+          [RestrictedMethods.eth_accounts]: {},
+          [PermissionNames.permittedChains]: {},
+        },
+      },
+      type: MethodNames.RequestPermissions,
+    });
+
+    let caveatValue = {
+      requiredScopes: {},
+      optionalScopes: {},
+      isMultichainOrigin: false,
+    };
+
+    caveatValue = setPermittedEthChainIds(
+      caveatValue,
+      legacyApproval.approvedChainIds,
+    );
+
+    caveatValue = setEthAccounts(caveatValue, legacyApproval.approvedAccounts);
+
+    permissionController.grantPermissions({
+      subject: { origin },
+      approvedPermissions: {
+        [Caip25EndowmentPermissionName]: {
+          caveats: [
+            {
+              type: Caip25CaveatType,
+              value: caveatValue,
+            },
+          ],
+        },
+      },
+    });
+  };
+
   return {
     addPermittedAccount: (origin, account) =>
       addMoreAccounts(origin, [account]),
@@ -232,53 +277,7 @@ export function getPermissionBackgroundApiMethods({
 
     requestAccountsAndChainPermissionsWithId: (origin) => {
       const id = nanoid();
-      approvalController
-        .addAndShowApprovalRequest({
-          id,
-          origin,
-          requestData: {
-            metadata: {
-              id,
-              origin,
-            },
-            permissions: {
-              [RestrictedMethods.eth_accounts]: {},
-              [PermissionNames.permittedChains]: {},
-            },
-          },
-          type: MethodNames.RequestPermissions,
-        })
-        .then((legacyApproval) => {
-          let caveatValue = {
-            requiredScopes: {},
-            optionalScopes: {},
-            isMultichainOrigin: false,
-          };
-          caveatValue = setPermittedEthChainIds(
-            caveatValue,
-            legacyApproval.approvedChainIds,
-          );
-
-          caveatValue = setEthAccounts(
-            caveatValue,
-            legacyApproval.approvedAccounts,
-          );
-
-          permissionController.grantPermissions({
-            subject: { origin },
-            approvedPermissions: {
-              [Caip25EndowmentPermissionName]: {
-                caveats: [
-                  {
-                    type: Caip25CaveatType,
-                    value: caveatValue,
-                  },
-                ],
-              },
-            },
-          });
-        });
-
+      requestAccountsAndChainPermissions(origin, id);
       return id;
     },
   };
