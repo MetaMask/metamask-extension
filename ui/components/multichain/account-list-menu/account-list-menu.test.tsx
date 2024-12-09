@@ -263,7 +263,7 @@ describe('AccountListMenu', () => {
     // Click the button to ensure the options and close button display
     button[0].click();
     expect(getByText('Add a new Ethereum account')).toBeInTheDocument();
-    expect(getByText('Import account')).toBeInTheDocument();
+    expect(getByText('Import Private Key')).toBeInTheDocument();
     expect(getByText('Add hardware wallet')).toBeInTheDocument();
     const header = document.querySelector('header') as Element;
     expect(header.innerHTML).toContain('Add account');
@@ -295,13 +295,13 @@ describe('AccountListMenu', () => {
     expect(getByPlaceholderText('Search accounts')).toBeInTheDocument();
   });
 
-  it('shows the account import UI when Import Account is clicked', () => {
+  it('shows the account import UI when Import Private Key is clicked', () => {
     const { getByText, getByPlaceholderText, getByTestId } = render();
 
     const button = getByTestId('multichain-account-menu-popover-action-button');
     button.click();
 
-    fireEvent.click(getByText('Import account'));
+    fireEvent.click(getByText('Import Private Key'));
     expect(getByText('Import')).toBeInTheDocument();
     expect(getByText('Cancel')).toBeInTheDocument();
 

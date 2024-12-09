@@ -3804,6 +3804,10 @@ export default class MetamaskController extends EventEmitter {
       setLocked: this.setLocked.bind(this),
       createNewVaultAndKeychain: this.createNewVaultAndKeychain.bind(this),
       createNewVaultAndRestore: this.createNewVaultAndRestore.bind(this),
+      ///: BEGIN:ONLY_INCLUDE_IF(multi-srp)
+      createNewVaultAndRestoreFromMnemonic:
+        this.createNewVaultAndRestoreFromMnemonic.bind(this),
+      ///: END:ONLY_INCLUDE_IF
       exportAccount: this.exportAccount.bind(this),
 
       // txController
@@ -4542,6 +4546,27 @@ export default class MetamaskController extends EventEmitter {
   }
 
   /**
+   * Creates a new vault and restores from a mnemonic.
+   *
+   * @param {string} mnemonic
+   * @returns {object} newAccount
+   */
+  ///: BEGIN:ONLY_INCLUDE_IF(multi-srp)
+  async createNewVaultAndRestoreFromMnemonic(mnemonic) {
+    const releaseLock = await this.createVaultMutex.acquire();
+    try {
+      const newAccount = await this.keyringController.createKeyringFromMnemonic(
+        mnemonic,
+      );
+      this.preferencesController.setSelectedAddress(newAccount);
+      return newAccount;
+    } finally {
+      releaseLock();
+    }
+  }
+  ///: END:ONLY_INCLUDE_IF
+
+  /**
    * Create a new Vault and restore an existent keyring.
    *
    * @param {string} password
@@ -5078,14 +5103,18 @@ export default class MetamaskController extends EventEmitter {
   /**
    * Adds a new account to the default (first) HD seed phrase Keyring.
    *
-   * @param accountCount
+   * @param {number} accountCount
+   * @param {string} keyringId
    * @returns {Promise<string>} The address of the newly-created account.
    */
-  async addNewAccount(accountCount) {
+  async addNewAccount(accountCount, keyringId) {
     const oldAccounts = await this.keyringController.getAccounts();
 
     const addedAccountAddress = await this.keyringController.addNewAccount(
       accountCount,
+      ///: BEGIN:ONLY_INCLUDE_IF(multi-srp)
+      keyringId,
+      ///: END:ONLY_INCLUDE_IF
     );
 
     if (!oldAccounts.includes(addedAccountAddress)) {
