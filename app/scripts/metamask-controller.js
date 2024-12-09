@@ -430,25 +430,6 @@ export default class MetamaskController extends EventEmitter {
 
     this.controllerMessenger = new ControllerMessenger();
 
-    // instance of a class that wraps the extension's storage local API.
-    this.localStoreApiWrapper = opts.localStore;
-
-    this.currentMigrationVersion = opts.currentMigrationVersion;
-
-    // observable state store
-    this.store = new ComposableObservableStore({
-      state: initState,
-      controllerMessenger: this.controllerMessenger,
-      persist: true,
-    });
-
-    // external connections by origin
-    // Do not modify directly. Use the associated methods.
-    this.connections = {};
-
-    // lock to ensure only one vault created at once
-    this.createVaultMutex = new Mutex();
-
     this.loggingController = new LoggingController({
       messenger: this.controllerMessenger.getRestricted({
         name: 'LoggingController',
@@ -2274,21 +2255,6 @@ export default class MetamaskController extends EventEmitter {
       }),
     });
 
-    // RemoteFeatureFlagController has subscription for preferences changes
-    this.controllerMessenger.subscribe(
-      'PreferencesController:stateChange',
-      previousValueComparator((prevState, currState) => {
-        const { useExternalServices: prevUseExternalServices } = prevState;
-        const { useExternalServices: currUseExternalServices } = currState;
-        if (currUseExternalServices && !prevUseExternalServices) {
-          this.remoteFeatureFlagController.enable();
-          this.remoteFeatureFlagController.updateRemoteFeatureFlags();
-        } else if (!currUseExternalServices && prevUseExternalServices) {
-          this.remoteFeatureFlagController.disable();
-        }
-      }, this.preferencesController.state),
-    );
-
     const controllerInitObjects = [
       () => this.networkController,
       () => this.preferencesController,
@@ -2328,16 +2294,6 @@ export default class MetamaskController extends EventEmitter {
         this._onFinishedTransaction(transactionMeta);
       },
     );
-
-    this.backup = new Backup({
-      preferencesController: this.preferencesController,
-      addressBookController: this.addressBookController,
-      accountsController: this.accountsController,
-      networkController: this.networkController,
-      trackMetaMetricsEvent: this.metaMetricsController.trackEvent.bind(
-        this.metaMetricsController,
-      ),
-    });
 
     this.metamaskMiddleware = createMetamaskMiddleware({
       static: {
