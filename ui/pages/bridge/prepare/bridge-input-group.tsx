@@ -101,7 +101,26 @@ export const BridgeInputGroup = ({
     <Column paddingInline={6} gap={1}>
       <Row gap={4}>
         <TextField
-          inputProps={{ disableStateStyles: true }}
+          inputProps={{
+            disableStateStyles: true,
+            textAlign: TextAlign.Start,
+            style: {
+              fontWeight: 400,
+              fontSize: Math.max(
+                14, // Minimum font size
+                36 * // Maximum font size
+                  // Up to 9 characters, use 36px
+                  (9 /
+                    // Otherwise, shrink the font size down to 14
+                    Math.max(
+                      9,
+                      (amountFieldProps?.value ?? '').toString().length,
+                    )),
+              ),
+              transition: 'font-size 0.1s',
+              padding: 0,
+            },
+          }}
           style={{
             minWidth: 96,
             maxWidth: 190,
