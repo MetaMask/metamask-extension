@@ -90,7 +90,6 @@ const createMockedHandler = () => {
 
 describe('requestEthereumAccountsHandler', () => {
   beforeEach(() => {
-    MockUtil.shouldEmitDappViewedEvent.mockReturnValue(true);
     MockMultichain.setEthAccounts.mockImplementation(
       (caveatValue) => caveatValue,
     );
@@ -160,7 +159,7 @@ describe('requestEthereumAccountsHandler', () => {
       const { handler, requestPermissionApprovalForOrigin } =
         createMockedHandler();
 
-      await handler(baseRequest);
+      await handler({ ...baseRequest, origin: 'http://test.com' });
       expect(requestPermissionApprovalForOrigin).toHaveBeenCalledWith({
         [RestrictedMethods.eth_accounts]: {},
         [PermissionNames.permittedChains]: {},
@@ -293,11 +292,12 @@ describe('requestEthereumAccountsHandler', () => {
       expect(getAccounts).toHaveBeenCalledTimes(2);
     });
 
-    it('emits the dapp viewed metrics event', async () => {
+    it('emits the dapp viewed metrics event when shouldEmitDappViewedEvent returns true', async () => {
       const { handler, getAccounts, sendMetrics } = createMockedHandler();
       getAccounts
         .mockReturnValueOnce([])
         .mockReturnValueOnce(['0xdead', '0xbeef']);
+      MockUtil.shouldEmitDappViewedEvent.mockReturnValue(true);
 
       await handler(baseRequest);
       expect(sendMetrics).toHaveBeenCalledWith({
@@ -312,6 +312,17 @@ describe('requestEthereumAccountsHandler', () => {
           url: 'http://test.com',
         },
       });
+    });
+
+    it('does not emit the dapp viewed metrics event when shouldEmitDappViewedEvent returns false', async () => {
+      const { handler, getAccounts, sendMetrics } = createMockedHandler();
+      getAccounts
+        .mockReturnValueOnce([])
+        .mockReturnValueOnce(['0xdead', '0xbeef']);
+      MockUtil.shouldEmitDappViewedEvent.mockReturnValue(false);
+
+      await handler(baseRequest);
+      expect(sendMetrics).not.toHaveBeenCalled();
     });
   });
 });

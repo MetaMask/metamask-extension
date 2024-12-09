@@ -5346,7 +5346,12 @@ export default class MetamaskController extends EventEmitter {
         Caip25CaveatType,
       );
     } catch (err) {
-      // noop
+      if (err instanceof PermissionDoesNotExistError) {
+        // suppress expected error in case that the origin
+        // does not have the target permission yet
+      } else {
+        throw err;
+      }
     }
 
     if (!caveat) {

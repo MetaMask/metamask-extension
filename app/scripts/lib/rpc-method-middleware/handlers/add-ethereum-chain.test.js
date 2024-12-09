@@ -5,6 +5,7 @@ import EthChainUtils from './ethereum-chain-utils';
 
 jest.mock('./ethereum-chain-utils', () => ({
   ...jest.requireActual('./ethereum-chain-utils'),
+  validateAddEthereumChainParams: jest.fn(),
   switchChain: jest.fn(),
 }));
 
@@ -96,8 +97,64 @@ const createMockedHandler = () => {
 };
 
 describe('addEthereumChainHandler', () => {
+  beforeEach(() => {
+    EthChainUtils.validateAddEthereumChainParams.mockImplementation(
+      (params) => {
+        const {
+          chainId,
+          chainName,
+          blockExplorerUrls,
+          rpcUrls,
+          nativeCurrency,
+        } = params;
+        return {
+          chainId,
+          chainName,
+          firstValidBlockExplorerUrl: blockExplorerUrls[0] ?? null,
+          firstValidRPCUrl: rpcUrls[0],
+          ticker: nativeCurrency.symbol,
+        };
+      },
+    );
+  });
+
   afterEach(() => {
     jest.clearAllMocks();
+  });
+
+  it('should validate the request params', async () => {
+    const { handler } = createMockedHandler();
+
+    const request = {
+      origin: 'example.com',
+      params: [
+        {
+          foo: true,
+        },
+      ],
+    };
+
+    await handler(request);
+
+    expect(EthChainUtils.validateAddEthereumChainParams).toHaveBeenCalledWith(
+      request.params[0],
+    );
+  });
+
+  it('should return an error if request params validation fails', async () => {
+    const { end, handler } = createMockedHandler();
+    EthChainUtils.validateAddEthereumChainParams.mockImplementation(() => {
+      throw new Error('failed to validate params');
+    });
+
+    await handler({
+      origin: 'example.com',
+      params: [{}],
+    });
+
+    expect(end).toHaveBeenCalledWith(
+      rpcErrors.invalidParams(new Error('failed to validate params')),
+    );
   });
 
   it('creates a new network configuration for the given chainid and switches to it if no networkConfigurations with the same chainId exist', async () => {
@@ -146,9 +203,12 @@ describe('addEthereumChainHandler', () => {
 
   describe('if a networkConfiguration for the given chainId already exists', () => {
     describe('if the proposed networkConfiguration has a different rpcUrl from the one already in state', () => {
-      it('create a new networkConfiguration and switches to it', async () => {
+      it('updates the network with a new networkConfiguration and switches to it', async () => {
         const { mocks, end, handler } = createMockedHandler();
         mocks.getCurrentChainIdForDomain.mockReturnValue(CHAIN_IDS.SEPOLIA);
+        mocks.getNetworkConfigurationByChainId.mockReturnValue(
+          createMockMainnetConfiguration(),
+        );
 
         await handler({
           origin: 'example.com',
@@ -166,6 +226,30 @@ describe('addEthereumChainHandler', () => {
           ],
         });
 
+        expect(mocks.updateNetwork).toHaveBeenCalledWith(
+          '0x1',
+          {
+            blockExplorerUrls: ['https://etherscan.io'],
+            chainId: '0x1',
+            defaultBlockExplorerUrlIndex: 0,
+            defaultRpcEndpointIndex: 1,
+            name: 'Ethereum Mainnet',
+            nativeCurrency: 'ETH',
+            rpcEndpoints: [
+              {
+                networkClientId: 'mainnet',
+                type: 'infura',
+                url: 'https://mainnet.infura.io/v3/',
+              },
+              {
+                name: 'Ethereum Mainnet',
+                type: 'custom',
+                url: 'https://eth.llamarpc.com',
+              },
+            ],
+          },
+          undefined,
+        );
         expect(EthChainUtils.switchChain).toHaveBeenCalledTimes(1);
         expect(EthChainUtils.switchChain).toHaveBeenCalledWith(
           {},
@@ -188,82 +272,55 @@ describe('addEthereumChainHandler', () => {
       });
     });
 
-    it('should switch to the existing networkConfiguration if one already exists for the given chain id', async () => {
-      const { mocks, end, handler } = createMockedHandler();
-      mocks.getCurrentChainIdForDomain.mockReturnValue(CHAIN_IDS.MAINNET);
-      mocks.getNetworkConfigurationByChainId.mockReturnValue(
-        createMockOptimismConfiguration(),
-      );
-      await handler({
-        origin: 'example.com',
-        params: [
-          {
-            chainId: createMockOptimismConfiguration().chainId,
-            chainName: createMockOptimismConfiguration().name,
-            rpcUrls: createMockOptimismConfiguration().rpcEndpoints.map(
-              (rpc) => rpc.url,
-            ),
-            nativeCurrency: {
-              symbol: createMockOptimismConfiguration().nativeCurrency,
-              decimals: 18,
+    describe('if the proposed networkConfiguration does not have a different rpcUrl from the one already in state', () => {
+      it('should only switch to the existing networkConfiguration if one already exists for the given chain id', async () => {
+        const { mocks, end, handler } = createMockedHandler();
+        mocks.getCurrentChainIdForDomain.mockReturnValue(CHAIN_IDS.MAINNET);
+        mocks.getNetworkConfigurationByChainId.mockReturnValue(
+          createMockOptimismConfiguration(),
+        );
+        await handler({
+          origin: 'example.com',
+          params: [
+            {
+              chainId: createMockOptimismConfiguration().chainId,
+              chainName: createMockOptimismConfiguration().name,
+              rpcUrls: createMockOptimismConfiguration().rpcEndpoints.map(
+                (rpc) => rpc.url,
+              ),
+              nativeCurrency: {
+                symbol: createMockOptimismConfiguration().nativeCurrency,
+                decimals: 18,
+              },
+              blockExplorerUrls:
+                createMockOptimismConfiguration().blockExplorerUrls,
             },
-            blockExplorerUrls:
-              createMockOptimismConfiguration().blockExplorerUrls,
-          },
-        ],
-      });
-
-      expect(EthChainUtils.switchChain).toHaveBeenCalledTimes(1);
-      expect(EthChainUtils.switchChain).toHaveBeenCalledWith(
-        {},
-        end,
-        'example.com',
-        '0xa',
-        createMockOptimismConfiguration().rpcEndpoints[0].networkClientId,
-        undefined,
-        {
-          isAddFlow: true,
-          endApprovalFlow: mocks.endApprovalFlow,
-          getCaveat: mocks.getCaveat,
-          requestPermissionApprovalForOrigin:
-            mocks.requestPermissionApprovalForOrigin,
-          setActiveNetwork: mocks.setActiveNetwork,
-          updateCaveat: mocks.updateCaveat,
-          grantPermissions: mocks.grantPermissions,
-        },
-      );
-    });
-  });
-
-  it('should return an error if an unexpected parameter is provided', async () => {
-    const { end, handler } = createMockedHandler();
-
-    const unexpectedParam = 'unexpected';
-
-    await handler({
-      origin: 'example.com',
-      params: [
-        {
-          chainId: createMockNonInfuraConfiguration().chainId,
-          chainName: createMockNonInfuraConfiguration().nickname,
-          rpcUrls: [createMockNonInfuraConfiguration().rpcUrl],
-          nativeCurrency: {
-            symbol: createMockNonInfuraConfiguration().ticker,
-            decimals: 18,
-          },
-          blockExplorerUrls: [
-            createMockNonInfuraConfiguration().blockExplorerUrls[0],
           ],
-          [unexpectedParam]: 'parameter',
-        },
-      ],
-    });
+        });
 
-    expect(end).toHaveBeenCalledWith(
-      rpcErrors.invalidParams({
-        message: `Received unexpected keys on object parameter. Unsupported keys:\n${unexpectedParam}`,
-      }),
-    );
+        expect(mocks.addNetwork).not.toHaveBeenCalled();
+        expect(mocks.updateNetwork).not.toHaveBeenCalled();
+        expect(EthChainUtils.switchChain).toHaveBeenCalledTimes(1);
+        expect(EthChainUtils.switchChain).toHaveBeenCalledWith(
+          {},
+          end,
+          'example.com',
+          '0xa',
+          createMockOptimismConfiguration().rpcEndpoints[0].networkClientId,
+          undefined,
+          {
+            isAddFlow: true,
+            endApprovalFlow: mocks.endApprovalFlow,
+            getCaveat: mocks.getCaveat,
+            requestPermissionApprovalForOrigin:
+              mocks.requestPermissionApprovalForOrigin,
+            setActiveNetwork: mocks.setActiveNetwork,
+            updateCaveat: mocks.updateCaveat,
+            grantPermissions: mocks.grantPermissions,
+          },
+        );
+      });
+    });
   });
 
   it('should return an error if nativeCurrency.symbol does not match an existing network with the same chainId', async () => {
