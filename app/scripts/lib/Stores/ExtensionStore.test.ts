@@ -3,6 +3,11 @@ import Migrator from '../migrator';
 import { ExtensionStore } from './ExtensionStore';
 import { IntermediaryStateType } from './BaseStore';
 
+const DEFAULT_INITIAL_STATE = {
+  data: { config: {} },
+  meta: { version: 0 },
+};
+
 jest.mock('webextension-polyfill', () => ({
   runtime: { lastError: null },
   storage: { local: true },
@@ -106,10 +111,7 @@ describe('ExtensionStore', () => {
     it('should return default state tree if called in a browser that does not support local storage', async () => {
       const localStore = setup({ localMock: false });
       const result = await localStore.get();
-      expect(result).toStrictEqual({
-        data: { config: {} },
-        meta: { version: 0 },
-      });
+      expect(result).toStrictEqual(DEFAULT_INITIAL_STATE);
     });
 
     it('should update mostRecentRetrievedState', async () => {
@@ -139,10 +141,7 @@ describe('ExtensionStore', () => {
 
       const result = await localStore.get();
 
-      expect(result).toStrictEqual({
-        data: { config: {} },
-        meta: { version: 0 },
-      });
+      expect(result).toStrictEqual(DEFAULT_INITIAL_STATE);
 
       expect(localStore.mostRecentRetrievedState).toStrictEqual(null);
       expect(localStore.stateCorruptionDetected).toStrictEqual(true);
@@ -157,10 +156,7 @@ describe('ExtensionStore', () => {
 
       const result = await localStore.get();
 
-      expect(result).toStrictEqual({
-        data: { config: {} },
-        meta: { version: 0 },
-      });
+      expect(result).toStrictEqual(DEFAULT_INITIAL_STATE);
 
       expect(localStore.mostRecentRetrievedState).toStrictEqual(null);
       expect(localStore.stateCorruptionDetected).toStrictEqual(true);
@@ -177,10 +173,7 @@ describe('ExtensionStore', () => {
 
       const result = await localStore.get();
 
-      expect(result).toStrictEqual({
-        data: { config: {} },
-        meta: { version: 0 },
-      });
+      expect(result).toStrictEqual(DEFAULT_INITIAL_STATE);
 
       expect(localStore.mostRecentRetrievedState).toStrictEqual(null);
       expect(localStore.stateCorruptionDetected).toStrictEqual(true);
@@ -197,10 +190,7 @@ describe('ExtensionStore', () => {
 
       const result = await localStore.get();
 
-      expect(result).toStrictEqual({
-        data: { config: {} },
-        meta: { version: 0 },
-      });
+      expect(result).toStrictEqual(DEFAULT_INITIAL_STATE);
 
       expect(localStore.mostRecentRetrievedState).toStrictEqual(null);
       expect(localStore.stateCorruptionDetected).toStrictEqual(true);
