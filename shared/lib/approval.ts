@@ -2,7 +2,9 @@ import { ApprovalController } from '@metamask/approval-controller';
 import { ApprovalType } from '@metamask/controller-utils';
 import { DIALOG_APPROVAL_TYPES } from '@metamask/snaps-rpc-methods';
 import { providerErrors } from '@metamask/rpc-errors';
+///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
 import { SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES } from '../constants/app';
+///: END:ONLY_INCLUDE_IF
 
 export function rejectAllApprovals(approvalController: ApprovalController) {
   const approvalRequestsById = approvalController.state.pendingApprovals;
