@@ -1646,19 +1646,95 @@
         "webpack>events": true
       }
     },
-    "@metamask/message-manager>jsonschema": {
-      "packages": {
-        "browserify>url": true
-      }
-    },
     "@metamask/multichain": {
+      "globals": {
+        "console.error": true
+      },
       "packages": {
+        "@metamask/api-specs": true,
         "@metamask/controller-utils": true,
-        "@metamask/multichain>@metamask/api-specs": true,
+        "@metamask/multichain>@metamask/eth-json-rpc-filters": true,
+        "@metamask/multichain>jsonschema": true,
         "@metamask/permission-controller": true,
         "@metamask/rpc-errors": true,
+        "@metamask/safe-event-emitter": true,
         "@metamask/utils": true,
+        "@open-rpc/schema-utils-js": true,
         "lodash": true
+      }
+    },
+    "@metamask/multichain>@metamask/eth-json-rpc-filters": {
+      "globals": {
+        "console.error": true
+      },
+      "packages": {
+        "@metamask/multichain>@metamask/eth-json-rpc-filters>@metamask/eth-query": true,
+        "@metamask/multichain>@metamask/eth-json-rpc-filters>@metamask/json-rpc-engine": true,
+        "@metamask/multichain>@metamask/eth-json-rpc-filters>async-mutex": true,
+        "@metamask/safe-event-emitter": true,
+        "pify": true
+      }
+    },
+    "@metamask/multichain>@metamask/eth-json-rpc-filters>@metamask/eth-query": {
+      "packages": {
+        "@metamask/eth-query>json-rpc-random-id": true,
+        "watchify>xtend": true
+      }
+    },
+    "@metamask/multichain>@metamask/eth-json-rpc-filters>@metamask/json-rpc-engine": {
+      "packages": {
+        "@metamask/multichain>@metamask/eth-json-rpc-filters>@metamask/json-rpc-engine>@metamask/rpc-errors": true,
+        "@metamask/multichain>@metamask/eth-json-rpc-filters>@metamask/json-rpc-engine>@metamask/utils": true,
+        "@metamask/safe-event-emitter": true
+      }
+    },
+    "@metamask/multichain>@metamask/eth-json-rpc-filters>@metamask/json-rpc-engine>@metamask/rpc-errors": {
+      "packages": {
+        "@metamask/multichain>@metamask/eth-json-rpc-filters>@metamask/json-rpc-engine>@metamask/rpc-errors>@metamask/utils": true,
+        "@metamask/rpc-errors>fast-safe-stringify": true
+      }
+    },
+    "@metamask/multichain>@metamask/eth-json-rpc-filters>@metamask/json-rpc-engine>@metamask/rpc-errors>@metamask/utils": {
+      "globals": {
+        "TextDecoder": true,
+        "TextEncoder": true
+      },
+      "packages": {
+        "@metamask/utils>@metamask/superstruct": true,
+        "@metamask/utils>@scure/base": true,
+        "@metamask/utils>pony-cause": true,
+        "@noble/hashes": true,
+        "browserify>buffer": true,
+        "nock>debug": true,
+        "semver": true
+      }
+    },
+    "@metamask/multichain>@metamask/eth-json-rpc-filters>@metamask/json-rpc-engine>@metamask/utils": {
+      "globals": {
+        "TextDecoder": true,
+        "TextEncoder": true
+      },
+      "packages": {
+        "@metamask/utils>@metamask/superstruct": true,
+        "@metamask/utils>@scure/base": true,
+        "@metamask/utils>pony-cause": true,
+        "@noble/hashes": true,
+        "browserify>buffer": true,
+        "nock>debug": true,
+        "semver": true
+      }
+    },
+    "@metamask/multichain>@metamask/eth-json-rpc-filters>async-mutex": {
+      "globals": {
+        "setTimeout": true
+      },
+      "packages": {
+        "@swc/helpers>tslib": true
+      }
+    },
+    "@metamask/multichain>jsonschema": {
+      "packages": {
+        "browserify>url": true
       }
     },
     "@metamask/name-controller": {
@@ -2313,7 +2389,7 @@
         "@metamask/controller-utils": true,
         "@metamask/keyring-controller": true,
         "@metamask/logging-controller": true,
-        "@metamask/message-manager>jsonschema": true,
+        "@metamask/multichain>jsonschema": true,
         "@metamask/signature-controller>@metamask/eth-sig-util": true,
         "@metamask/utils": true,
         "browserify>buffer": true,
@@ -2759,6 +2835,51 @@
       "globals": {
         "TextEncoder": true,
         "crypto": true
+      }
+    },
+    "@open-rpc/schema-utils-js": {
+      "packages": {
+        "@metamask/rpc-errors>fast-safe-stringify": true,
+        "@open-rpc/meta-schema": true,
+        "@open-rpc/schema-utils-js>@json-schema-tools/dereferencer": true,
+        "@open-rpc/schema-utils-js>@json-schema-tools/meta-schema": true,
+        "@open-rpc/schema-utils-js>@json-schema-tools/reference-resolver": true,
+        "@open-rpc/schema-utils-js>is-url": true,
+        "eslint>ajv": true
+      }
+    },
+    "@open-rpc/schema-utils-js>@json-schema-tools/dereferencer": {
+      "packages": {
+        "@metamask/rpc-errors>fast-safe-stringify": true,
+        "@open-rpc/schema-utils-js>@json-schema-tools/dereferencer>@json-schema-tools/traverse": true,
+        "@open-rpc/schema-utils-js>@json-schema-tools/reference-resolver": true
+      }
+    },
+    "@open-rpc/schema-utils-js>@json-schema-tools/reference-resolver": {
+      "packages": {
+        "@open-rpc/schema-utils-js>@json-schema-tools/reference-resolver>@json-schema-spec/json-pointer": true,
+        "@open-rpc/test-coverage>isomorphic-fetch": true
+      }
+    },
+    "@open-rpc/test-coverage>isomorphic-fetch": {
+      "globals": {
+        "fetch.bind": true
+      },
+      "packages": {
+        "@open-rpc/test-coverage>isomorphic-fetch>whatwg-fetch": true
+      }
+    },
+    "@open-rpc/test-coverage>isomorphic-fetch>whatwg-fetch": {
+      "globals": {
+        "AbortController": true,
+        "Blob": true,
+        "FileReader": true,
+        "FormData": true,
+        "URLSearchParams.prototype.isPrototypeOf": true,
+        "XMLHttpRequest": true,
+        "console.warn": true,
+        "define": true,
+        "setTimeout": true
       }
     },
     "@popperjs/core": {
@@ -3723,6 +3844,17 @@
     "eslint-plugin-react>array-includes>is-string": {
       "packages": {
         "koa>is-generator-function>has-tostringtag": true
+      }
+    },
+    "eslint>ajv": {
+      "globals": {
+        "console": true
+      },
+      "packages": {
+        "@metamask/snaps-utils>fast-json-stable-stringify": true,
+        "eslint>ajv>json-schema-traverse": true,
+        "eslint>fast-deep-equal": true,
+        "uri-js": true
       }
     },
     "eth-ens-namehash": {
