@@ -33,10 +33,13 @@ describe('Carousel', () => {
       <Carousel slides={mockSlides} onClose={mockOnClose} />,
     );
 
-    const closeButtons = document.querySelectorAll(
-      '.mm-banner-base__close-button',
+    const closeButton = document.querySelector(
+      '.mm-carousel-slide__close-button',
     );
-    fireEvent.click(closeButtons[0]);
+    if (!closeButton) {
+      throw new Error('Close button not found');
+    }
+    fireEvent.click(closeButton);
 
     expect(queryByText('Slide 1')).toBeNull();
     expect(getByText('Slide 2')).toBeDefined();
@@ -45,15 +48,17 @@ describe('Carousel', () => {
 
   it('should handle onChange callback', () => {
     const mockOnChange = jest.fn();
-    render(<Carousel slides={mockSlides} onChange={mockOnChange} />);
+    const { container } = render(
+      <Carousel slides={mockSlides} onChange={mockOnChange} />,
+    );
 
-    const carousel = document.querySelector('.carousel');
-    if (!carousel) {
-      throw new Error('Carousel element not found');
+    const dots = container.querySelectorAll('.dot');
+    if (!dots || dots.length === 0) {
+      throw new Error('Carousel dots not found');
     }
-    fireEvent.keyDown(carousel, { key: 'ArrowRight' });
+    fireEvent.click(dots[1]);
 
-    expect(mockOnChange).toHaveBeenCalled();
+    expect(mockOnChange).toHaveBeenCalledWith(1);
   });
 
   it('should return null when no slides are present', () => {
