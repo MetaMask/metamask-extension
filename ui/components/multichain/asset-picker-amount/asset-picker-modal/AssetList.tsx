@@ -1,7 +1,10 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
 import classnames from 'classnames';
-import { NetworkConfiguration } from '@metamask/network-controller';
+import {
+  AddNetworkFields,
+  NetworkConfiguration,
+} from '@metamask/network-controller';
 import { getCurrentChainId } from '../../../../../shared/modules/selectors/networks';
 import {
   getCurrentCurrency,
@@ -38,7 +41,7 @@ type AssetListProps = {
   isTokenDisabled?: (
     token: AssetWithDisplayData<ERC20Asset> | AssetWithDisplayData<NativeAsset>,
   ) => boolean;
-  network?: NetworkConfiguration;
+  network?: NetworkConfiguration | AddNetworkFields;
   isTokenListLoading?: boolean;
   assetItemProps: Pick<
     React.ComponentProps<typeof TokenListItem>,
