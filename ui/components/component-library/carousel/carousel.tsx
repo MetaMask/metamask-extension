@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import classnames from 'classnames';
 import { Carousel as ResponsiveCarousel } from 'react-responsive-carousel';
 import { Box, BannerBase } from '..';
 import type { BoxProps } from '..';
@@ -27,10 +26,6 @@ const WIDTH_VALUES = {
 
 const BANNER_STYLES = {
   HEIGHT: '59px',
-};
-
-const ACCESSORY_STYLES = {
-  WIDTH: '60px',
 };
 
 export const Carousel = React.forwardRef(
@@ -95,15 +90,12 @@ export const Carousel = React.forwardRef(
     }
 
     return (
-      <Box
-        className={classnames('mm-carousel', className || '')}
-        ref={ref}
-        {...(props as BoxProps<'div'>)}
-      >
+      <Box className={'mm-carousel'} ref={ref} {...(props as BoxProps<'div'>)}>
         <ResponsiveCarousel
           selectedItem={selectedIndex}
           showArrows={showArrows}
           onChange={handleChange}
+          className="mm-carousel__carousel"
           showStatus={showStatus}
           autoPlay={autoPlay}
           swipeScrollTolerance={swipeScrollTolerance}
@@ -124,12 +116,9 @@ export const Carousel = React.forwardRef(
               className="mm-carousel-slide"
               startAccessory={
                 <Box
+                  className="mm-carousel-slide__accessory"
                   style={{
                     backgroundImage: `url(${slide.image})`,
-                    backgroundSize: 'cover',
-                    backgroundPosition: 'center',
-                    height: '100%',
-                    width: ACCESSORY_STYLES.WIDTH,
                   }}
                 />
               }
@@ -144,7 +133,7 @@ export const Carousel = React.forwardRef(
                 marginLeft: 2,
               }}
               backgroundColor={BackgroundColor.backgroundAlternative}
-              borderColor={BorderColor.borderMuted}
+              borderColor={BorderColor.infoMuted}
               borderWidth={1}
               descriptionProps={{
                 variant: TextVariant.bodyXs,
@@ -152,6 +141,9 @@ export const Carousel = React.forwardRef(
                 marginLeft: 2,
               }}
               onClose={handleClose ? () => handleClose(slide.id) : undefined}
+              closeButtonProps={{
+                className: 'mm-carousel-slide__close-button',
+              }}
               style={{
                 height: BANNER_STYLES.HEIGHT,
                 margin: getSlideMargin(index, slides.length),

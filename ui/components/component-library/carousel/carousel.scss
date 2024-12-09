@@ -1,0 +1,40 @@
+.mm-carousel {
+  height: 100px;
+}
+
+.mm-carousel-slide {
+  position: relative;
+}
+
+.mm-carousel-slide__accessory {
+  background-size: cover;
+  background-position: center;
+  height: 100%;
+  width: 60px;
+}
+
+.mm-carousel-slide__close-button {
+  position: absolute;
+  top: 8px;
+  right: 6px;
+}
+
+.control-dots {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  height: 40px;
+  align-items: center;
+  gap: 8px;
+  margin: 0 !important;
+}
+
+.dot {
+  margin: 0 !important;
+  background: var(--color-icon-muted) !important;
+  box-shadow: none !important;
+
+  &.selected {
+    background: var(--color-icon-default) !important;
+  }
+}
