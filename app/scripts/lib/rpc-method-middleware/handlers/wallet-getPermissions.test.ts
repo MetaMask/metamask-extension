@@ -65,9 +65,7 @@ const createMockedHandler = () => {
       },
     }),
   );
-  const getAccounts = jest
-    .fn()
-    .mockReturnValue(['0x1', '0x2', '0x3', '0xdeadbeef']);
+  const getAccounts = jest.fn().mockReturnValue([]);
   const response: PendingJsonRpcResponse<Json> = {
     jsonrpc: '2.0' as const,
     id: 0,
@@ -142,8 +140,7 @@ describe('getPermissionsHandler', () => {
 
   describe('CAIP-25 endowment permissions has been granted', () => {
     it('returns the permissions with the CAIP-25 permission removed', async () => {
-      const { handler, getAccounts, response } = createMockedHandler();
-      getAccounts.mockReturnValue([]);
+      const { handler, response } = createMockedHandler();
       await handler(baseRequest);
       expect(response.result).toStrictEqual([
         {
@@ -167,7 +164,8 @@ describe('getPermissionsHandler', () => {
     });
 
     it('returns the permissions with an eth_accounts permission if some eth accounts are permissioned', async () => {
-      const { handler, response } = createMockedHandler();
+      const { handler, getAccounts, response } = createMockedHandler();
+      getAccounts.mockReturnValue(['0x1', '0x2', '0x3', '0xdeadbeef']);
 
       await handler(baseRequest);
       expect(response.result).toStrictEqual([
@@ -216,8 +214,7 @@ describe('getPermissionsHandler', () => {
     });
 
     it('returns the permissions with a permittedChains permission if some eip155 chainIds are permissioned', async () => {
-      const { handler, getAccounts, response } = createMockedHandler();
-      getAccounts.mockReturnValue([]);
+      const { handler, response } = createMockedHandler();
       MockMultichain.getPermittedEthChainIds.mockReturnValue(['0x1', '0x64']);
 
       await handler(baseRequest);
