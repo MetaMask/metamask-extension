@@ -25,7 +25,7 @@ describe('Ethereum Chain Utils', () => {
       origin: string,
       chainId: Hex,
       networkClientId: string,
-      approvalFlowId: string | null,
+      approvalFlowId?: string,
     ) =>
       EthChainUtils.switchChain(
         response,

@@ -171,7 +171,7 @@ export function validateAddEthereumChainParams(params) {
  * @param {string} origin - The origin for the request.
  * @param {string} chainId - The chainId being switched to.
  * @param {string} networkClientId - The network client being switched to.
- * @param {string} approvalFlowId - The optional approval flow ID to handle.
+ * @param {string} [approvalFlowId] - The optional approval flow ID to handle.
  * @param {object} hooks - The hooks object.
  * @param {boolean} hooks.isAddFlow - The boolean determining if this call originates from wallet_addEthereumChain.
  * @param {Function} hooks.setActiveNetwork - The callback to change the current network for the origin.
