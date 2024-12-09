@@ -10,7 +10,7 @@ import SelectTrezorAccountPage from '../../page-objects/pages/hardware-wallet/se
 import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
 
 describe('Trezor Hardware', function () {
-  it('derives the correct accounts', async function () {
+  it('derives the correct accounts and unlocks the first account', async function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilder().build(),
@@ -35,6 +35,7 @@ describe('Trezor Hardware', function () {
         await selectTrezorAccountPage.check_pageIsLoaded();
 
         // Check that the first page of accounts is correct
+        await selectTrezorAccountPage.check_trezorAccountNumber();
         for (const { address } of KNOWN_PUBLIC_KEY_ADDRESSES.slice(0, 4)) {
           const shortenedAddress = `${address.slice(0, 4)}...${address.slice(
             -4,
@@ -43,32 +44,6 @@ describe('Trezor Hardware', function () {
             shortenedAddress,
           );
         }
-      },
-    );
-  });
-
-  it('unlocks the first account', async function () {
-    await withFixtures(
-      {
-        fixtures: new FixtureBuilder().build(),
-        title: this.test?.fullTitle(),
-      },
-      async ({ driver }) => {
-        await loginWithBalanceValidation(driver);
-        const headerNavbar = new HeaderNavbar(driver);
-        await headerNavbar.openAccountMenu();
-
-        const accountListPage = new AccountListPage(driver);
-        await accountListPage.check_pageIsLoaded();
-        await accountListPage.openConnectHardwareWalletModal();
-
-        const connectHardwareWalletPage = new ConnectHardwareWalletPage(driver);
-        await connectHardwareWalletPage.check_pageIsLoaded();
-        await connectHardwareWalletPage.openConnectTrezorPage();
-
-        const selectTrezorAccountPage = new SelectTrezorAccountPage(driver);
-        await selectTrezorAccountPage.check_pageIsLoaded();
-        await selectTrezorAccountPage.check_trezorAccountNumber();
 
         // Unlock first account of first page and check that the correct account has been added
         await selectTrezorAccountPage.unlockAccount(1);
