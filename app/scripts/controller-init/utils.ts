@@ -70,7 +70,7 @@ export function initControllers({
   const controllersByName: Record<string, Controller> = {};
   const controllerPersistedState: Record<string, unknown> = {};
   const controllerMemState: Record<string, unknown> = {};
-  const controllerApi = {};
+  let controllerApi = {};
 
   const getController = <T>(name: ControllerName) =>
     getControllerOrThrow<T>(controllersByName, name);
@@ -100,7 +100,10 @@ export function initControllers({
 
     const api = initInstance.getApi(getApiRequest);
 
-    Object.defineProperties(controllerApi, api);
+    controllerApi = {
+      ...controllerApi,
+      ...api,
+    };
 
     const persistedStateKey = initInstance.getPersistedStateKey?.(controller);
     const memStateKey = initInstance.getMemStateKey?.(controller);
