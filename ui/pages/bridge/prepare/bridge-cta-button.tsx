@@ -105,11 +105,12 @@ export const BridgeCTAButton = () => {
     if (wasTxDeclined) {
       return t('youDeclinedTheTransaction');
     }
-    if (isQuoteExpired) {
+
+    if (isQuoteExpired && !isNoQuotesAvailable) {
       return t('bridgeQuoteExpired');
     }
 
-    if (isLoading && !isTxSubmittable) {
+    if (isLoading && !isTxSubmittable && !activeQuote) {
       return '';
     }
 
