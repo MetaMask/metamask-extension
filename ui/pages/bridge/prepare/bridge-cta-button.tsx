@@ -99,11 +99,11 @@ export const BridgeCTAButton = () => {
   }, [isQuoteGoingToRefresh, quotesRefreshCount]);
 
   const label = useMemo(() => {
-    if (isQuoteExpired) {
+    if (isQuoteExpired && !isNoQuotesAvailable) {
       return t('bridgeQuoteExpired');
     }
 
-    if (isLoading && !isTxSubmittable) {
+    if (isLoading && !isTxSubmittable && !activeQuote) {
       return '';
     }
 
