@@ -60,6 +60,7 @@ import {
 import { useMultichainBalances } from '../../../../hooks/useMultichainBalances';
 import { AvatarGroup } from '../../avatar-group';
 import { AvatarType } from '../../avatar-group/avatar-group.types';
+import { NETWORK_TO_SHORT_NETWORK_NAME_MAP } from '../../../../../shared/constants/bridge';
 import {
   ERC20Asset,
   NativeAsset,
@@ -147,6 +148,8 @@ export function AssetPickerModal({
   const selectedNetwork =
     network ?? (currentChainId && allNetworks[currentChainId]);
   const allNetworksToUse = networks ?? Object.values(allNetworks);
+  // This indicates whether tokens in the wallet's active network are displayed
+  const isSelectedNetworkActive = selectedNetwork.chainId === currentChainId;
 
   const nativeCurrencyImage = useSelector(getNativeCurrencyImage);
   const nativeCurrency = useSelector(getNativeCurrency);
@@ -456,8 +459,8 @@ export function AssetPickerModal({
                     members={selectedChainIds.map((c) => ({
                       avatarValue: getNetworkImageUrl(c),
                       symbol:
-                        NETWORK_TO_NAME_MAP[
-                          c as keyof typeof NETWORK_TO_NAME_MAP
+                        NETWORK_TO_SHORT_NETWORK_NAME_MAP[
+                          c as keyof typeof NETWORK_TO_SHORT_NETWORK_NAME_MAP
                         ],
                     }))}
                     avatarType={AvatarType.NETWORK}
@@ -484,6 +487,14 @@ export function AssetPickerModal({
                 tokenList={filteredTokenList}
                 isTokenDisabled={getIsDisabled}
                 isTokenListLoading={isTokenListLoading}
+                assetItemProps={{
+                  isTitleNetworkName:
+                    // For src cross-chain swaps assets
+                    isMultiselectEnabled,
+                  isTitleHidden:
+                    // For dest cross-chain swaps assets
+                    !isSelectedNetworkActive,
+                }}
               />
             </React.Fragment>
             <AssetPickerModalNftTab
