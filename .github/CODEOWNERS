@@ -102,7 +102,7 @@ app/scripts/controllers/swaps                         @MetaMask/swaps-engineers
 
 # Swaps-Bridge team to own code for the bridge folder
 **/bridge/**                                          @MetaMask/swaps-engineers
-**/bridge-status/**                                    @MetaMask/swaps-engineers
+**/bridge-status/**                                   @MetaMask/swaps-engineers
 
 # Ramps team to own code for the ramps folder
 **/ramps/**                                           @MetaMask/ramp
