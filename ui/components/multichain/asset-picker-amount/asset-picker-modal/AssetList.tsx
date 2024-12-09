@@ -43,7 +43,7 @@ type AssetListProps = {
   ) => boolean;
   network?: NetworkConfiguration | AddNetworkFields;
   isTokenListLoading?: boolean;
-  assetItemProps: Pick<
+  assetItemProps?: Pick<
     React.ComponentProps<typeof TokenListItem>,
     'isTitleNetworkName' | 'isTitleHidden'
   >;
@@ -56,7 +56,7 @@ export default function AssetList({
   isTokenDisabled,
   network,
   isTokenListLoading = false,
-  assetItemProps,
+  assetItemProps = {},
 }: AssetListProps) {
   const t = useI18nContext();
   const selectedTokenAddress = asset?.address;
