@@ -7,7 +7,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ## [12.9.0]
-
 ### Added
 - Added error handling to ensure users are not redirected to an incorrect network when sending or swapping tokens ([#28740](https://github.com/MetaMask/metamask-extension/pull/28740))
 - Added optional chaining to currency rates check for improved stability ([#28753](https://github.com/MetaMask/metamask-extension/pull/28753))
