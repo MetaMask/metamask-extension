@@ -66,6 +66,32 @@ const initialState = {
       conversionRate: null,
     },
   },
+  slides: [
+    {
+      id: '1',
+      title: 'Lorem ipsum',
+      description: 'Dolor sit amet, consectetur',
+      image: 'https://via.placeholder.com/150',
+    },
+    {
+      id: '2',
+      title: 'Lorem ipsum',
+      description: 'Dolor sit amet, consectetur',
+      image: 'https://via.placeholder.com/150',
+    },
+    {
+      id: '3',
+      title: 'Lorem ipsum',
+      description: 'Dolor sit amet, consectetur',
+      image: 'https://via.placeholder.com/150',
+    },
+    {
+      id: '4',
+      title: 'Lorem ipsum',
+      description: 'Dolor sit amet, consectetur',
+      image: 'https://via.placeholder.com/150',
+    },
+  ],
 };
 
 /**
@@ -225,6 +251,12 @@ export default function reduceMetamask(state = initialState, action) {
       return {
         ...metamaskState,
         confirmationExchangeRates: action.value,
+      };
+
+    case actionConstants.SET_SLIDES:
+      return {
+        ...metamaskState,
+        slides: action.slides,
       };
 
     default:
@@ -459,6 +491,10 @@ export const getGasFeeEstimatesByChainId = createSelector(
     return gasFeeControllerEstimates;
   },
 );
+
+export function getSlides(state) {
+  return state.metamask.slides;
+}
 
 export const getGasFeeEstimates = createSelector(
   getGasFeeControllerEstimates,

@@ -1,5 +1,7 @@
 import React from 'react';
-import { Slide, Carousel } from '../../component-library';
+import { useSelector } from 'react-redux';
+import { Carousel } from '../../component-library';
+import { getSlides } from '../../../ducks/metamask/metamask';
 import {
   AccountOverviewTabsProps,
   AccountOverviewTabs,
@@ -9,23 +11,16 @@ export type AccountOverviewLayoutProps = AccountOverviewTabsProps & {
   children: React.ReactElement;
 };
 
-const generateSlide = (): Slide => ({
-  id: Math.floor(Math.random() * 1000000).toString(),
-  title: 'Lorem ipsum',
-  description: 'Dolor sit amet, consectetur',
-  image: 'https://via.placeholder.com/150',
-});
-
-const initialSlides = [generateSlide(), generateSlide(), generateSlide()];
-
 export const AccountOverviewLayout = ({
   children,
   ...tabsProps
 }: AccountOverviewLayoutProps) => {
+  const slides = useSelector(getSlides);
+
   return (
     <>
       <div className="account-overview__balance-wrapper">{children}</div>
-      <Carousel slides={initialSlides} />
+      <Carousel slides={slides} />
       <AccountOverviewTabs {...tabsProps}></AccountOverviewTabs>
     </>
   );
