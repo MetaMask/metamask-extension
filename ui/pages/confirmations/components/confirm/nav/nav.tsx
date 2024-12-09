@@ -1,5 +1,6 @@
 import React, { useCallback } from 'react';
 
+import { useDispatch } from 'react-redux';
 import { QueueType } from '../../../../../../shared/constants/metametrics';
 import {
   Box,
@@ -35,9 +36,9 @@ export type NavProps = {
 
 export const Nav = ({ confirmationId }: NavProps) => {
   const t = useI18nContext();
+  const dispatch = useDispatch();
 
-  const { confirmations, count, getIndex, navigateToIndex } =
-    useConfirmationNavigation();
+  const { count, getIndex, navigateToIndex } = useConfirmationNavigation();
 
   const position = getIndex(confirmationId);
 
@@ -49,8 +50,8 @@ export const Nav = ({ confirmationId }: NavProps) => {
   );
 
   const onRejectAll = useCallback(async () => {
-    await rejectAllApprovals();
-  }, [confirmations]);
+    await dispatch(rejectAllApprovals());
+  }, [dispatch]);
 
   useQueuedConfirmationsEvent(QueueType.NavigationHeader);
 
