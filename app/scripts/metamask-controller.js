@@ -165,15 +165,19 @@ import {
   Caip25CaveatMutators,
   Caip25CaveatType,
   Caip25EndowmentPermissionName,
+  ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
   multichainMethodCallValidatorMiddleware,
   MultichainSubscriptionManager,
   MultichainMiddlewareManager,
   walletGetSession,
   walletRevokeSession,
   walletInvokeMethod,
+  ///: END:ONLY_INCLUDE_IF
   getEthAccounts,
+  ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
   caipPermissionAdapterMiddleware,
   getSessionScopes,
+  ///: END:ONLY_INCLUDE_IF
 } from '@metamask/multichain';
 import {
   methodsRequiringNetworkSwitch,
@@ -249,7 +253,9 @@ import {
   getHardwareWalletType,
   getSmartTransactionsPreferenceEnabled,
 } from '../../shared/modules/selectors';
+///: BEGIN:ONLY_INCLUDE_IF(build-flask)
 import { createCaipStream } from '../../shared/modules/caip-stream';
+///: END:ONLY_INCLUDE_IF
 import { BaseUrl } from '../../shared/constants/urls';
 import {
   TOKEN_TRANSFER_LOG_TOPIC_HASH,
@@ -310,7 +316,9 @@ import createLoggerMiddleware from './lib/createLoggerMiddleware';
 import {
   createEthAccountsMethodMiddleware,
   createEip1193MethodMiddleware,
+  ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
   createMultichainMethodMiddleware,
+  ///: END:ONLY_INCLUDE_IF
   createUnsupportedMethodMiddleware,
   makeMethodMiddlewareMaker,
 } from './lib/rpc-method-middleware';
@@ -641,6 +649,8 @@ export default class MetamaskController extends EventEmitter {
     });
 
     this.networkController.initializeProvider();
+
+    ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
     this.multichainSubscriptionManager = new MultichainSubscriptionManager({
       getNetworkClientById: this.networkController.getNetworkClientById.bind(
         this.networkController,
@@ -650,8 +660,8 @@ export default class MetamaskController extends EventEmitter {
           this.networkController,
         ),
     });
-
     this.multichainMiddlewareManager = new MultichainMiddlewareManager();
+    ///: END:ONLY_INCLUDE_IF
     this.provider =
       this.networkController.getProviderAndBlockTracker().provider;
     this.blockTracker =
@@ -3046,6 +3056,7 @@ export default class MetamaskController extends EventEmitter {
 
     // This handles CAIP-25 authorization changes every time relevant permission state
     // changes, for any reason.
+    ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
     this.controllerMessenger.subscribe(
       `${this.permissionController.name}:stateChange`,
       async (currentValue, previousValue) => {
@@ -3154,6 +3165,7 @@ export default class MetamaskController extends EventEmitter {
       },
       getAuthorizedScopesByOrigin,
     );
+    ///: END:ONLY_INCLUDE_IF
 
     this.controllerMessenger.subscribe(
       `${this.permissionController.name}:stateChange`,
@@ -5710,7 +5722,7 @@ export default class MetamaskController extends EventEmitter {
    * @param {MessageSender | SnapSender} options.sender - The sender of the messages on this stream.
    * @param {string} [options.subjectType] - The type of the sender, i.e. subject.
    */
-
+  ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
   setupUntrustedCommunicationCaip({ connectionStream, sender, subjectType }) {
     let inputSubjectType;
     if (subjectType) {
@@ -5726,6 +5738,7 @@ export default class MetamaskController extends EventEmitter {
     // messages between subject and background
     this.setupProviderConnectionCaip(caipStream, sender, inputSubjectType);
   }
+  ///: END:ONLY_INCLUDE_IF
 
   /**
    * Used to create a multiplexed stream for connecting to a trusted context,
@@ -6001,6 +6014,7 @@ export default class MetamaskController extends EventEmitter {
    * @param {MessageSender | SnapSender} sender - The sender of the messages on this stream
    * @param {SubjectType} subjectType - The type of the sender, i.e. subject.
    */
+  ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
   setupProviderConnectionCaip(outStream, sender, subjectType) {
     let origin;
     if (subjectType === SubjectType.Internal) {
@@ -6056,6 +6070,7 @@ export default class MetamaskController extends EventEmitter {
       },
     );
   }
+  ///: END:ONLY_INCLUDE_IF
 
   /**
    * For snaps running in workers.
@@ -6167,6 +6182,7 @@ export default class MetamaskController extends EventEmitter {
 
     engine.push(createUnsupportedMethodMiddleware(UNSUPPORTED_RPC_METHODS));
 
+    ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
     engine.push((req, res, next, end) =>
       caipPermissionAdapterMiddleware(req, res, next, end, {
         getCaveat: this.permissionController.getCaveat.bind(
@@ -6178,6 +6194,7 @@ export default class MetamaskController extends EventEmitter {
           ),
       }),
     );
+    ///: END:ONLY_INCLUDE_IF
 
     // Legacy RPC method that needs to be implemented _ahead of_ the permission
     // middleware.
@@ -6491,6 +6508,7 @@ export default class MetamaskController extends EventEmitter {
    * @param {string} options.origin - The origin of the sender
    * @param {tabId} [options.tabId] - The tab ID of the sender - if the sender is within a tab
    */
+  ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
   setupProviderEngineCaip({ origin, tabId }) {
     const engine = new JsonRpcEngine();
 
@@ -6754,6 +6772,7 @@ export default class MetamaskController extends EventEmitter {
 
     return engine;
   }
+  ///: END:ONLY_INCLUDE_IF
 
   /**
    * TODO:LegacyProvider: Delete
