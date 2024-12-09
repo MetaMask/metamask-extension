@@ -28,7 +28,7 @@ import NFTsDetectionNoticeNFTsTab from '../../../app/assets/nfts/nfts-detection-
 import { useNftsCollections } from '../../../../hooks/useNftsCollections';
 import { Collection, NFT } from './types';
 
-type PreviouslyOwnedCollections = {
+export type PreviouslyOwnedCollections = {
   collectionName: string;
   nfts: NFT[];
 };
@@ -100,6 +100,7 @@ export function AssetPickerModalNftTab({
       <Box className="modal-tab__main-view">
         {renderSearch()}
         <NftsItems
+          // @ts-expect-error: Do we want a mapping or an array?
           collections={collectionDataFiltered}
           previouslyOwnedCollection={previouslyOwnedCollection}
           isModal={true}

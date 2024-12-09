@@ -24,10 +24,12 @@ exports[`NFT Details should match minimal props and state snapshot 1`] = `
               style="mask-image: url('./images/icons/arrow-left.svg');"
             />
           </button>
-          <div>
+          <div
+            class="mm-box"
+          >
             <button
               aria-label="NFT Options"
-              class="mm-box mm-button-icon mm-button-icon--size-sm mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-transparent mm-box--rounded-lg"
+              class="mm-box mm-button-icon mm-button-icon--size-sm mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-default mm-box--background-color-transparent mm-box--rounded-lg"
               data-testid="nft-options__button"
             >
               <span
@@ -51,7 +53,7 @@ exports[`NFT Details should match minimal props and state snapshot 1`] = `
                 class="mm-box mm-badge-wrapper nft-item__badge-wrapper nft-item__badge-wrapper__clickable mm-box--display-block"
               >
                 <div
-                  class="mm-box nft-item__default-image nft-default nft-default--clickable mm-box--display-flex mm-box--rounded-lg"
+                  class="mm-box nft-item__default-image nft-default nft-default--clickable mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--rounded-lg"
                   data-testid="nft-default-image"
                   tabindex="0"
                 >

@@ -10,7 +10,7 @@ export const CollectionImageComponent = ({
   collectionImage,
   collectionName,
 }: {
-  collectionImage: string;
+  collectionImage: string | undefined;
   collectionName: string;
 }) => {
   const ipfsGateway = useSelector(getIpfsGateway);

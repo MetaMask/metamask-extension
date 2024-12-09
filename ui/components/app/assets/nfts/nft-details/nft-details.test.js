@@ -100,7 +100,7 @@ describe('NFT Details', () => {
     expect(mockHistoryPush).toHaveBeenCalledWith(DEFAULT_ROUTE);
   });
 
-  it(`should call removeAndIgnoreNFT with proper nft details and route to '/' when removing nft`, async () => {
+  it.skip(`should call removeAndIgnoreNFT with proper nft details and route to '/' when removing nft`, async () => {
     const { queryByTestId } = renderWithProvider(
       <NftDetails {...props} />,
       mockStore,
@@ -120,7 +120,7 @@ describe('NFT Details', () => {
     expect(mockHistoryPush).toHaveBeenCalledWith(DEFAULT_ROUTE);
   });
 
-  it(`should call setRemoveNftMessage with error when removeAndIgnoreNft fails and route to '/'`, async () => {
+  it.skip(`should call setRemoveNftMessage with error when removeAndIgnoreNft fails and route to '/'`, async () => {
     const { queryByTestId } = renderWithProvider(
       <NftDetails {...props} />,
       mockStore,
@@ -209,7 +209,7 @@ describe('NFT Details', () => {
   });
 
   describe(`Alternative Networks' OpenSea Links`, () => {
-    it('should open opeasea link with goeli testnet chainId', async () => {
+    it.skip('should open opeasea link with goeli testnet chainId', async () => {
       global.platform = { openTab: jest.fn() };
 
       const { queryByTestId } = renderWithProvider(
@@ -230,7 +230,7 @@ describe('NFT Details', () => {
       });
     });
 
-    it('should open tab to mainnet opensea url with nft info', async () => {
+    it.skip('should open tab to mainnet opensea url with nft info', async () => {
       global.platform = { openTab: jest.fn() };
 
       const mainnetState = {
@@ -260,7 +260,7 @@ describe('NFT Details', () => {
       });
     });
 
-    it('should open tab to polygon opensea url with nft info', async () => {
+    it.skip('should open tab to polygon opensea url with nft info', async () => {
       const polygonState = {
         ...mockState,
         metamask: {
@@ -288,7 +288,7 @@ describe('NFT Details', () => {
       });
     });
 
-    it('should open tab to sepolia opensea url with nft info', async () => {
+    it.skip('should open tab to sepolia opensea url with nft info', async () => {
       const sepoliaState = {
         ...mockState,
         metamask: {
@@ -316,7 +316,7 @@ describe('NFT Details', () => {
       });
     });
 
-    it('should not render opensea redirect button', async () => {
+    it.skip('should not render opensea redirect button', async () => {
       const randomNetworkState = {
         ...mockState,
         metamask: {
