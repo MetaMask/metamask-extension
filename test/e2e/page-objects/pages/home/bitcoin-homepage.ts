@@ -34,7 +34,7 @@ class BitcoinHomepage extends HomePage {
     console.log('Bitcoin homepage is loaded');
   }
 
-  async check_ifBridgeButtonIsDisabled(): Promise<boolean> {
+  async check_ifBridgeButtonIsClickable(): Promise<boolean> {
     try {
       await this.driver.findClickableElement(this.bridgeButton, 1000);
     } catch (e) {

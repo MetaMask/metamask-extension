@@ -3,6 +3,7 @@ import { Driver } from '../../webdriver/driver';
 import { withFixtures } from '../../helpers';
 import FixtureBuilder from '../../fixture-builder';
 import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
+import AccountDetailsModal from '../../page-objects/pages/dialog/account-details-modal';
 import AccountListPage from '../../page-objects/pages/account-list-page';
 import HeaderNavbar from '../../page-objects/pages/header-navbar';
 
@@ -25,8 +26,11 @@ describe('Account Custom Name Persistence', function (this: Suite) {
         // Change account label for existing account and verify edited account label
         const accountListPage = new AccountListPage(driver);
         await accountListPage.check_pageIsLoaded();
-        await accountListPage.openAccountOptionsMenu();
-        await accountListPage.changeAccountLabel(newAccountLabel);
+        await accountListPage.openAccountDetailsModal('Account 1');
+
+        const accountDetailsModal = new AccountDetailsModal(driver);
+        await accountDetailsModal.check_pageIsLoaded();
+        await accountDetailsModal.changeAccountLabel(newAccountLabel);
         await headerNavbar.check_accountLabel(newAccountLabel);
 
         // Add new account with custom label and verify new added account label

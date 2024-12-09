@@ -1,6 +1,7 @@
 import { strict as assert } from 'assert';
 import { Suite } from 'mocha';
 import { WALLET_PASSWORD } from '../../helpers';
+import AccountDetailsModal from '../../page-objects/pages/dialog/account-details-modal';
 import AccountListPage from '../../page-objects/pages/account-list-page';
 import HeaderNavbar from '../../page-objects/pages/header-navbar';
 import LoginPage from '../../page-objects/pages/login-page';
@@ -83,9 +84,11 @@ describe('Create BTC Account', function (this: Suite) {
         await headerNavbar.openAccountMenu();
         const accountListPage = new AccountListPage(driver);
         await accountListPage.check_pageIsLoaded();
-        const accountAddress = await accountListPage.getAccountAddress(
-          'Bitcoin Account',
-        );
+        await accountListPage.openAccountDetailsModal('Bitcoin Account');
+
+        const accountDetailsModal = new AccountDetailsModal(driver);
+        await accountDetailsModal.check_pageIsLoaded();
+        const accountAddress = await accountDetailsModal.getAccountAddress();
         await headerNavbar.openAccountMenu();
         await accountListPage.removeAccount('Bitcoin Account');
 
@@ -97,16 +100,16 @@ describe('Create BTC Account', function (this: Suite) {
 
         await headerNavbar.openAccountMenu();
         await accountListPage.check_pageIsLoaded();
-        const recreatedAccountAddress = await accountListPage.getAccountAddress(
-          'Bitcoin Account',
-        );
+        await accountListPage.openAccountDetailsModal('Bitcoin Account');
+        await accountDetailsModal.check_pageIsLoaded();
+        const recreatedAccountAddress = await accountDetailsModal.getAccountAddress();
 
         assert(accountAddress === recreatedAccountAddress);
       },
     );
   });
 
-  it('can recreate BTC account after restoring wallet with SRP', async function () {
+  it.only('can recreate BTC account after restoring wallet with SRP', async function () {
     await withBtcAccountSnap(
       { title: this.test?.fullTitle() },
       async (driver) => {
@@ -118,9 +121,10 @@ describe('Create BTC Account', function (this: Suite) {
         await headerNavbar.openAccountMenu();
         const accountListPage = new AccountListPage(driver);
         await accountListPage.check_pageIsLoaded();
-        const accountAddress = await accountListPage.getAccountAddress(
-          'Bitcoin Account',
-        );
+        await accountListPage.openAccountDetailsModal('Bitcoin Account');
+        const accountDetailsModal = new AccountDetailsModal(driver);
+        await accountDetailsModal.check_pageIsLoaded();
+        const accountAddress = await accountDetailsModal.getAccountAddress();
 
         // go to privacy settings page and get the SRP
         await headerNavbar.openSettingsPage();
@@ -151,9 +155,10 @@ describe('Create BTC Account', function (this: Suite) {
 
         await headerNavbar.openAccountMenu();
         await accountListPage.check_pageIsLoaded();
-        const recreatedAccountAddress = await accountListPage.getAccountAddress(
-          'Bitcoin Account',
-        );
+        await accountListPage.openAccountDetailsModal('Bitcoin Account');
+        await accountDetailsModal.check_pageIsLoaded();
+        const recreatedAccountAddress = await accountDetailsModal.getAccountAddress();
+
         assert(accountAddress === recreatedAccountAddress);
       },
     );

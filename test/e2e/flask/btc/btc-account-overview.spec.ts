@@ -13,7 +13,7 @@ describe('BTC Account - Overview', function (this: Suite) {
         await homePage.check_pageIsLoaded();
         await homePage.headerNavbar.check_accountLabel('Bitcoin Account');
 
-        assert.equal(await homePage.check_ifBridgeButtonIsDisabled(), false);
+        assert.equal(await homePage.check_ifBridgeButtonIsClickable(), false);
         assert.equal(await homePage.check_ifSwapButtonIsClickable(), false);
         assert.equal(await homePage.check_ifBuySellButtonIsClickable(), true);
         assert.equal(await homePage.check_ifReceiveButtonIsClickable(), true);

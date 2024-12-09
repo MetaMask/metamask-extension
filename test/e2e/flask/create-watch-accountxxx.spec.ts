@@ -5,6 +5,11 @@ import FixtureBuilder from '../fixture-builder';
 import { defaultGanacheOptions, unlockWallet, withFixtures } from '../helpers';
 import { Driver } from '../webdriver/driver';
 
+import AccountDetailsModal from '../page-objects/pages/dialog/account-details-modal';
+import AccountListPage from '../page-objects/pages/account-list-page';
+import HomePage from '../page-objects/pages/home/homepage';
+import { loginWithBalanceValidation } from '../page-objects/flows/login.flow';
+
 const ACCOUNT_1 = '0x5CfE73b6021E818B776b421B1c4Db2474086a7e1';
 const EOA_ADDRESS = '0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045';
 const SHORTENED_EOA_ADDRESS = '0xd8dA6...96045';
@@ -21,14 +26,17 @@ async function startCreateWatchAccountFlow(
   unlockWalletFirst: boolean = true,
 ): Promise<void> {
   if (unlockWalletFirst) {
-    await unlockWallet(driver);
+    await loginWithBalanceValidation(driver);
   }
 
+  const homePage = new HomePage(driver);
+  await homePage.check_pageIsLoaded();
 
-  await driver.clickElement('[data-testid="account-menu-icon"]');
-  await driver.clickElement(
-    '[data-testid="multichain-account-menu-popover-action-button"]',
-  );
+  await homePage.headerNavbar.openAccountMenu();
+  const accountListPage = new AccountListPage(driver);
+  await accountListPage.check_pageIsLoaded();
+
+
   await driver.clickElement(
     '[data-testid="multichain-account-menu-popover-add-watch-only-account"]',
   );
@@ -77,22 +85,24 @@ describe('Account-watcher snap', function (this: Suite) {
             })
             .withNetworkControllerOnMainnet()
             .build(),
-          ganacheOptions: defaultGanacheOptions,
           title: this.test?.fullTitle(),
         },
         async ({ driver }: { driver: Driver }) => {
+          await loginWithBalanceValidation(driver);
+          const homePage = new HomePage(driver);
+          await homePage.check_pageIsLoaded();
+          await homePage.check_expectedBalanceIsDisplayed();
+
           // watch an EOA address
-          await watchEoaAddress(driver);
+          await homePage.headerNavbar.openAccountMenu();
+          const accountListPage = new AccountListPage(driver);
+          await accountListPage.check_pageIsLoaded();
+          await accountListPage.addEoaAccount(EOA_ADDRESS);
 
           // new account should be displayed in the account list
-          await driver.findElement({
-            css: '[data-testid="account-menu-icon"]',
-            text: DEFAULT_WATCHED_ACCOUNT_NAME,
-          });
-          await driver.findElement({
-            css: '.mm-text--ellipsis',
-            text: SHORTENED_EOA_ADDRESS,
-          });
+          await homePage.check_pageIsLoaded();
+          await homePage.headerNavbar.check_accountLabel(DEFAULT_WATCHED_ACCOUNT_NAME);
+          await homePage.headerNavbar.check_accountAddress(SHORTENED_EOA_ADDRESS);
         },
       );
     });
@@ -106,41 +116,33 @@ describe('Account-watcher snap', function (this: Suite) {
             })
             .withNetworkControllerOnMainnet()
             .build(),
-          ganacheOptions: defaultGanacheOptions,
           title: this.test?.fullTitle(),
         },
         async ({ driver }: { driver: Driver }) => {
+          await loginWithBalanceValidation(driver);
+          const homePage = new HomePage(driver);
+          await homePage.check_pageIsLoaded();
+          await homePage.check_expectedBalanceIsDisplayed();
+
           // watch an EOA address
-          await watchEoaAddress(driver);
+          await homePage.headerNavbar.openAccountMenu();
+          const accountListPage = new AccountListPage(driver);
+          await accountListPage.check_pageIsLoaded();
+          await accountListPage.addEoaAccount(EOA_ADDRESS);
+          await homePage.check_pageIsLoaded();
+          await homePage.headerNavbar.check_accountLabel(DEFAULT_WATCHED_ACCOUNT_NAME);
 
           // 'Send' button should be disabled
-          await driver.findElement(
-            '[data-testid="eth-overview-send"][disabled]',
-          );
-          await driver.findElement(
-            '[data-testid="eth-overview-send"].icon-button--disabled',
-          );
+          assert.equal(await homePage.check_ifSendButtonIsClickable(), false);
 
           // 'Swap' button should be disabled
-          await driver.findElement(
-            '[data-testid="token-overview-button-swap"][disabled]',
-          );
-          await driver.findElement(
-            '[data-testid="token-overview-button-swap"].icon-button--disabled',
-          );
+          assert.equal(await homePage.check_ifSwapButtonIsClickable(), false);
 
           // 'Bridge' button should be disabled
-          await driver.findElement(
-            '[data-testid="eth-overview-bridge"][disabled]',
-          );
-          await driver.findElement(
-            '[data-testid="eth-overview-bridge"].icon-button--disabled',
-          );
+          assert.equal(await homePage.check_ifBridgeButtonIsClickable(), false);
 
           // check tooltips for disabled buttons
-          await driver.findElement(
-            '.icon-button--disabled [data-tooltipped][data-original-title="Not supported with this account."]',
-          );
+          await homePage.check_disabledButtonTooltip("Not supported with this account.");
         },
       );
     });
@@ -183,20 +185,19 @@ describe('Account-watcher snap', function (this: Suite) {
               })
               .withNetworkControllerOnMainnet()
               .build(),
-            ganacheOptions: defaultGanacheOptions,
             title: this.test?.fullTitle(),
           },
           async ({ driver }: { driver: Driver }) => {
-            await startCreateWatchAccountFlow(driver);
+            await loginWithBalanceValidation(driver);
+            const homePage = new HomePage(driver);
+            await homePage.check_pageIsLoaded();
+            await homePage.check_expectedBalanceIsDisplayed();
 
-            await driver.fill('input#address-input[type="text"]', input);
-            await driver.clickElement({ text: 'Watch account', tag: 'button' });
-
-            // error message should be displayed by the snap
-            await driver.findElement({
-              css: '.snap-ui-renderer__text',
-              text: message,
-            });
+            // error message should be displayed by snap when try to watch an EOA with invalid input
+            await homePage.headerNavbar.openAccountMenu();
+            const accountListPage = new AccountListPage(driver);
+            await accountListPage.check_pageIsLoaded();
+            await accountListPage.addEoaAccount(input, message);
           },
         );
       });
@@ -217,30 +218,29 @@ describe('Account-watcher snap', function (this: Suite) {
             })
             .withNetworkControllerOnMainnet()
             .build(),
-          ganacheOptions: defaultGanacheOptions,
           title: this.test?.fullTitle(),
         },
         async ({ driver }: { driver: Driver }) => {
+          await loginWithBalanceValidation(driver);
+          const homePage = new HomePage(driver);
+          await homePage.check_pageIsLoaded();
+          await homePage.check_expectedBalanceIsDisplayed();
+
           // watch an EOA address for ACCOUNT_2
-          await watchEoaAddress(driver, true, ACCOUNT_2);
+          await homePage.headerNavbar.openAccountMenu();
+          const accountListPage = new AccountListPage(driver);
+          await accountListPage.check_pageIsLoaded();
+          await accountListPage.addEoaAccount(ACCOUNT_2);
+          await homePage.check_pageIsLoaded();
+          await homePage.headerNavbar.check_accountLabel(DEFAULT_WATCHED_ACCOUNT_NAME);
 
-          // try to import private key of watched ACCOUNT_2 address
-          await driver.clickElement('[data-testid="account-menu-icon"]');
-          await driver.clickElement(
-            '[data-testid="multichain-account-menu-popover-action-button"]',
+          // try to import private key of watched ACCOUNT_2 address and check error message
+          await homePage.headerNavbar.openAccountMenu();
+          await accountListPage.check_pageIsLoaded();
+          await accountListPage.addNewImportedAccount(
+            PRIVATE_KEY_TWO,
+            'KeyringController - The account you are trying to import is a duplicate',
           );
-          await driver.clickElement({ text: 'Import account', tag: 'button' });
-          await driver.findClickableElement('#private-key-box');
-          await driver.fill('#private-key-box', PRIVATE_KEY_TWO);
-          await driver.clickElement(
-            '[data-testid="import-account-confirm-button"]',
-          );
-
-          // error message should be displayed
-          await driver.findElement({
-            css: '.mm-box--color-error-default',
-            text: 'KeyringController - The account you are trying to import is a duplicate',
-          });
         },
       );
     });
@@ -254,30 +254,34 @@ describe('Account-watcher snap', function (this: Suite) {
             })
             .withNetworkControllerOnMainnet()
             .build(),
-          ganacheOptions: defaultGanacheOptions,
           title: this.test?.fullTitle(),
         },
         async ({ driver }: { driver: Driver }) => {
-          // watch an EOA address
-          await watchEoaAddress(driver);
+          await loginWithBalanceValidation(driver);
+          const homePage = new HomePage(driver);
+          await homePage.check_pageIsLoaded();
+          await homePage.check_expectedBalanceIsDisplayed();
 
-          // click to view account details
-          await driver.clickElement(
-            '[data-testid="account-options-menu-button"]',
-          );
-          await driver.clickElement(
-            '[data-testid="account-list-menu-details"]',
-          );
-          // 'Show private key' button should not be displayed
-          await driver.assertElementNotPresent({
-            css: 'button',
-            text: 'Show private key',
-          });
+          // watch an EOA address for ACCOUNT_2
+          await homePage.headerNavbar.openAccountMenu();
+          const accountListPage = new AccountListPage(driver);
+          await accountListPage.check_pageIsLoaded();
+          await accountListPage.addEoaAccount(EOA_ADDRESS);
+          await homePage.check_pageIsLoaded();
+
+          // open account details modal in header navbar
+          await homePage.headerNavbar.check_accountLabel(DEFAULT_WATCHED_ACCOUNT_NAME);
+          await homePage.headerNavbar.openAccountDetailsModal();
+
+          // check 'Show private key' button should not be displayed
+          const accountDetailsModal = new AccountDetailsModal(driver);
+          await accountDetailsModal.check_pageIsLoaded();
+          await accountDetailsModal.check_showPrivateKeyButtonIsNotDisplayed();
         },
       );
     });
 
-    it('removes a watched account', async function () {
+    it.only('removes a watched account', async function () {
       await withFixtures(
         {
           fixtures: new FixtureBuilder()
@@ -292,7 +296,7 @@ describe('Account-watcher snap', function (this: Suite) {
         async ({ driver }: { driver: Driver }) => {
           // watch an EOA address
           await watchEoaAddress(driver);
-
+          throw new Error('Not implemented');
           // remove the selected watched account
           await removeSelectedAccount(driver);
 

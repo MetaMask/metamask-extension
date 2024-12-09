@@ -5,6 +5,8 @@ class HeaderNavbar {
 
   private readonly accountMenuButton = '[data-testid="account-menu-icon"]';
 
+  private readonly copyAddressButton = '[data-testid="app-header-copy-button"]';
+
   private readonly threeDotMenuButton =
     '[data-testid="account-options-menu-button"]';
 
@@ -14,6 +16,8 @@ class HeaderNavbar {
 
   private readonly mmiPortfolioButton =
     '[data-testid="global-menu-mmi-portfolio"]';
+
+  private readonly openAccountDetailsButton = '[data-testid="account-list-menu-details"]';
 
   private readonly settingsButton = '[data-testid="global-menu-settings"]';
 
@@ -45,6 +49,12 @@ class HeaderNavbar {
     await this.driver.clickElement(this.accountMenuButton);
   }
 
+  async openAccountDetailsModal(): Promise<void> {
+    console.log('Open account details modal');
+    await this.openThreeDotMenu();
+    await this.driver.clickElement(this.openAccountDetailsButton);
+  }
+
   async openThreeDotMenu(): Promise<void> {
     console.log('Open account options menu');
     await this.driver.clickElement(this.threeDotMenuButton);
@@ -71,11 +81,19 @@ class HeaderNavbar {
     await this.driver.clickElement(this.switchNetworkDropDown);
   }
 
-  async check_currentSelectedNetwork(networkName: string): Promise<void> {
-    console.log(`Validate the Switch network to ${networkName}`);
-    await this.driver.waitForSelector(
-      `button[data-testid="network-display"][aria-label="Network Menu ${networkName}"]`,
+  /**
+   * Verifies that the displayed account address in header matches the expected address.
+   *
+   * @param expectedAddress - The expected address of the account.
+   */
+  async check_accountAddress(expectedAddress: string): Promise<void> {
+    console.log(
+      `Verify the displayed account address in header is: ${expectedAddress}`,
     );
+    await this.driver.waitForSelector({
+      css: this.copyAddressButton,
+      text: expectedAddress,
+    });
   }
 
   /**
@@ -92,6 +110,14 @@ class HeaderNavbar {
       text: expectedLabel,
     });
   }
+
+  async check_currentSelectedNetwork(networkName: string): Promise<void> {
+    console.log(`Validate the Switch network to ${networkName}`);
+    await this.driver.waitForSelector(
+      `button[data-testid="network-display"][aria-label="Network Menu ${networkName}"]`,
+    );
+  }
+
 }
 
 export default HeaderNavbar;
