@@ -29,6 +29,8 @@ const BANNER_STYLES = {
   HEIGHT: '59px',
 };
 
+const MAX_SLIDES = 5;
+
 export const Carousel = React.forwardRef(
   (
     {
@@ -54,16 +56,21 @@ export const Carousel = React.forwardRef(
     const [selectedIndex, setSelectedIndex] = useState(selectedItem);
     const t = useI18nContext();
 
+    const visibleSlides = slides.slice(0, MAX_SLIDES);
+
     const handleClose = (e: React.MouseEvent<HTMLElement>, slideId: string) => {
       e.preventDefault();
       e.stopPropagation();
 
-      const currentSlideIndex = slides.findIndex(
+      const currentSlideIndex = visibleSlides.findIndex(
         (slide) => slide.id === slideId,
       );
 
       let newSelectedIndex = selectedIndex;
-      if (currentSlideIndex === slides.length - 1 && slides.length > 1) {
+      if (
+        currentSlideIndex === visibleSlides.length - 1 &&
+        visibleSlides.length > 1
+      ) {
         newSelectedIndex = currentSlideIndex - 1;
       } else if (currentSlideIndex < selectedIndex) {
         newSelectedIndex = selectedIndex - 1;
@@ -98,7 +105,8 @@ export const Carousel = React.forwardRef(
           autoPlay={autoPlay}
           swipeScrollTolerance={swipeScrollTolerance}
           centerSlidePercentage={
-            centerSlidePercentage || getCenterSlidePercentage(slides.length)
+            centerSlidePercentage ||
+            getCenterSlidePercentage(visibleSlides.length)
           }
           axis={axis}
           preventMovementUntilSwipeScrollTolerance={
@@ -108,7 +116,7 @@ export const Carousel = React.forwardRef(
           centerMode={centerMode}
           swipeable={swipeable}
         >
-          {slides.map((slide, index) => (
+          {visibleSlides.map((slide, index) => (
             <BannerBase
               onClick={() => {
                 if (index !== selectedIndex) {
@@ -158,8 +166,8 @@ export const Carousel = React.forwardRef(
               }}
               style={{
                 height: BANNER_STYLES.HEIGHT,
-                margin: getSlideMargin(index, slides.length),
-                width: getSlideWidth(slides.length),
+                margin: getSlideMargin(index, visibleSlides.length),
+                width: getSlideWidth(visibleSlides.length),
               }}
             />
           ))}
