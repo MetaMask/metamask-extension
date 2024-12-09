@@ -63,10 +63,12 @@ const createMockedHandler = () => {
 
 describe('switchEthereumChainHandler', () => {
   beforeEach(() => {
-    EthChainUtils.validateSwitchEthereumChainParams.mockImplementation((request) => {
-      return request.params[0].chainId
-    })
-  })
+    EthChainUtils.validateSwitchEthereumChainParams.mockImplementation(
+      (request) => {
+        return request.params[0].chainId;
+      },
+    );
+  });
 
   afterEach(() => {
     jest.clearAllMocks();
@@ -77,30 +79,32 @@ describe('switchEthereumChainHandler', () => {
 
     const request = {
       origin: 'example.com',
-      params: [{
-        foo: true
-      }],
-    }
+      params: [
+        {
+          foo: true,
+        },
+      ],
+    };
 
     await handler(request);
 
-    expect(EthChainUtils.validateSwitchEthereumChainParams).toHaveBeenCalledWith(request)
+    expect(
+      EthChainUtils.validateSwitchEthereumChainParams,
+    ).toHaveBeenCalledWith(request);
   });
 
   it('should return an error if request params validation fails', async () => {
     const { end, handler } = createMockedHandler();
     EthChainUtils.validateSwitchEthereumChainParams.mockImplementation(() => {
-      throw new Error('failed to validate params')
-    })
+      throw new Error('failed to validate params');
+    });
 
     await handler({
       origin: 'example.com',
       params: [{}],
     });
 
-    expect(end).toHaveBeenCalledWith(
-      new Error('failed to validate params')
-    );
+    expect(end).toHaveBeenCalledWith(new Error('failed to validate params'));
   });
 
   it('returns null and does not try to switch the network if the current chain id for the domain matches the chainId in the params', async () => {

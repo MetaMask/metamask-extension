@@ -159,7 +159,7 @@ describe('requestEthereumAccountsHandler', () => {
       const { handler, requestPermissionApprovalForOrigin } =
         createMockedHandler();
 
-      await handler({...baseRequest, origin: 'http://test.com'});
+      await handler({ ...baseRequest, origin: 'http://test.com' });
       expect(requestPermissionApprovalForOrigin).toHaveBeenCalledWith({
         [RestrictedMethods.eth_accounts]: {},
         [PermissionNames.permittedChains]: {},
@@ -297,7 +297,7 @@ describe('requestEthereumAccountsHandler', () => {
       getAccounts
         .mockReturnValueOnce([])
         .mockReturnValueOnce(['0xdead', '0xbeef']);
-      MockUtil.shouldEmitDappViewedEvent.mockReturnValue(true)
+      MockUtil.shouldEmitDappViewedEvent.mockReturnValue(true);
 
       await handler(baseRequest);
       expect(sendMetrics).toHaveBeenCalledWith({
@@ -319,7 +319,7 @@ describe('requestEthereumAccountsHandler', () => {
       getAccounts
         .mockReturnValueOnce([])
         .mockReturnValueOnce(['0xdead', '0xbeef']);
-      MockUtil.shouldEmitDappViewedEvent.mockReturnValue(false)
+      MockUtil.shouldEmitDappViewedEvent.mockReturnValue(false);
 
       await handler(baseRequest);
       expect(sendMetrics).not.toHaveBeenCalled();

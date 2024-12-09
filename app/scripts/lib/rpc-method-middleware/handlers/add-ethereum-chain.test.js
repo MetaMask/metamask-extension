@@ -98,17 +98,25 @@ const createMockedHandler = () => {
 
 describe('addEthereumChainHandler', () => {
   beforeEach(() => {
-    EthChainUtils.validateAddEthereumChainParams.mockImplementation((params) => {
-      const { chainId, chainName, blockExplorerUrls, rpcUrls, nativeCurrency} = params;
-      return {
-        chainId,
-        chainName,
-        firstValidBlockExplorerUrl: blockExplorerUrls[0] ?? null,
-        firstValidRPCUrl: rpcUrls[0],
-        ticker: nativeCurrency.symbol,
-      }
-    })
-  })
+    EthChainUtils.validateAddEthereumChainParams.mockImplementation(
+      (params) => {
+        const {
+          chainId,
+          chainName,
+          blockExplorerUrls,
+          rpcUrls,
+          nativeCurrency,
+        } = params;
+        return {
+          chainId,
+          chainName,
+          firstValidBlockExplorerUrl: blockExplorerUrls[0] ?? null,
+          firstValidRPCUrl: rpcUrls[0],
+          ticker: nativeCurrency.symbol,
+        };
+      },
+    );
+  });
 
   afterEach(() => {
     jest.clearAllMocks();
@@ -119,22 +127,25 @@ describe('addEthereumChainHandler', () => {
 
     const request = {
       origin: 'example.com',
-      params: [{
-        foo: true
-      }],
-    }
+      params: [
+        {
+          foo: true,
+        },
+      ],
+    };
 
     await handler(request);
 
-    expect(EthChainUtils.validateAddEthereumChainParams).toHaveBeenCalledWith(request.params[0])
+    expect(EthChainUtils.validateAddEthereumChainParams).toHaveBeenCalledWith(
+      request.params[0],
+    );
   });
-
 
   it('should return an error if request params validation fails', async () => {
     const { end, handler } = createMockedHandler();
     EthChainUtils.validateAddEthereumChainParams.mockImplementation(() => {
-      throw new Error('failed to validate params')
-    })
+      throw new Error('failed to validate params');
+    });
 
     await handler({
       origin: 'example.com',
@@ -142,12 +153,9 @@ describe('addEthereumChainHandler', () => {
     });
 
     expect(end).toHaveBeenCalledWith(
-      rpcErrors.invalidParams(
-        new Error('failed to validate params')
-      ),
+      rpcErrors.invalidParams(new Error('failed to validate params')),
     );
   });
-
 
   it('creates a new network configuration for the given chainid and switches to it if no networkConfigurations with the same chainId exist', async () => {
     const nonInfuraConfiguration = createMockNonInfuraConfiguration();
