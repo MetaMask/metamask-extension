@@ -73,7 +73,7 @@ class NftListPage {
       `Check that NFT item ${nftName} is displayed in NFT tab on homepage`,
     );
     await this.driver.waitForSelector({
-      tag: 'h5',
+      tag: 'h4',
       text: nftName,
     });
   }
