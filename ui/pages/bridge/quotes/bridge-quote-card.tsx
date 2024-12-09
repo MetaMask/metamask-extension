@@ -132,7 +132,7 @@ export const BridgeQuoteCard = () => {
                   size={AvatarNetworkSize.Xs}
                   backgroundColor={BackgroundColor.transparent}
                 />
-                <Text>
+                <Text style={{ whiteSpace: 'nowrap' }}>
                   {
                     NETWORK_TO_SHORT_NETWORK_NAME_MAP[
                       decimalToPrefixedHex(
@@ -154,7 +154,7 @@ export const BridgeQuoteCard = () => {
                   size={AvatarNetworkSize.Xs}
                   backgroundColor={BackgroundColor.transparent}
                 />
-                <Text>
+                <Text style={{ whiteSpace: 'nowrap' }}>
                   {
                     NETWORK_TO_SHORT_NETWORK_NAME_MAP[
                       decimalToPrefixedHex(
