@@ -44,7 +44,7 @@ export type ProviderConfigState = NetworkConfigurationsByChainIdState &
   SelectedNetworkClientIdState;
 
 export const getNetworkConfigurationsByChainId = createDeepEqualSelector(
-  (state: NetworkConfigurationsByChainIdState) =>
+  (state: ProviderConfigState) =>
     state.metamask.NetworkController.networkConfigurationsByChainId,
   (networkConfigurationsByChainId) => networkConfigurationsByChainId,
 );

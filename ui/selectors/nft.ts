@@ -1,25 +1,16 @@
 import { Nft, NftContract } from '@metamask/assets-controllers';
+import { getKnownPropertyNames } from '@metamask/utils';
 import { createSelector } from 'reselect';
 import { NetworkState } from '../../shared/modules/selectors/networks';
+import { BackgroundStateProxy } from '../../shared/types/metamask';
 import { getMemoizedCurrentChainId } from './selectors';
 
 export type NftState = {
-  metamask: {
-    allNftContracts: {
-      [account: string]: {
-        [chainId: string]: NftContract[];
-      };
-    };
-    allNfts: {
-      [account: string]: {
-        [chainId: string]: Nft[];
-      };
-    };
-  };
+  metamask: Pick<BackgroundStateProxy, 'NftController'>;
 };
 
 function getNftContractsByChainByAccount(state: NftState) {
-  return state.metamask.allNftContracts ?? {};
+  return state.metamask.NftController.allNftContracts ?? {};
 }
 
 /**
@@ -29,7 +20,7 @@ function getNftContractsByChainByAccount(state: NftState) {
  * @returns All NFTs owned by the user, keyed by chain ID then account address.
  */
 function getNftsByChainByAccount(state: NftState) {
-  return state.metamask.allNfts ?? {};
+  return state.metamask.NftController.allNfts ?? {};
 }
 
 export const getNftContractsByAddressByChain = createSelector(
@@ -39,11 +30,12 @@ export const getNftContractsByAddressByChain = createSelector(
 
     const allNftContracts = userAccounts
       .map((account) =>
-        Object.keys(nftContractsByChainByAccount[account]).map((chainId) =>
-          nftContractsByChainByAccount[account][chainId].map((contract) => ({
-            ...contract,
-            chainId,
-          })),
+        getKnownPropertyNames(nftContractsByChainByAccount[account]).map(
+          (chainId) =>
+            nftContractsByChainByAccount[account][chainId].map((contract) => ({
+              ...contract,
+              chainId,
+            })),
         ),
       )
       .flat()

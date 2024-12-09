@@ -1,13 +1,14 @@
 import { createSelector } from 'reselect';
 import { NotificationServicesController } from '@metamask/notification-services-controller';
 import { createDeepEqualSelector } from '../../../shared/modules/selectors/util';
+import { BackgroundStateProxy } from '../../../shared/types/metamask';
 
 const { TRIGGER_TYPES } = NotificationServicesController.Constants;
 
 type Notification = NotificationServicesController.Types.INotification;
 
 type AppState = {
-  metamask: NotificationServicesController.NotificationServicesControllerState;
+  metamask: Pick<BackgroundStateProxy, 'NotificationServicesController'>;
 };
 
 const getMetamask = (state: AppState) => state.metamask;
@@ -20,7 +21,8 @@ const getMetamask = (state: AppState) => state.metamask;
  */
 export const getMetamaskNotifications = createSelector(
   [getMetamask],
-  (metamask) => metamask.metamaskNotificationsList,
+  (metamask) =>
+    metamask.NotificationServicesController.metamaskNotificationsList,
 );
 
 /**
@@ -48,7 +50,8 @@ export const getMetamaskNotificationById = (id: string) => {
  */
 export const getMetamaskNotificationsReadList = createSelector(
   [getMetamask],
-  (metamask) => metamask.metamaskNotificationsReadList,
+  (metamask) =>
+    metamask.NotificationServicesController.metamaskNotificationsReadList,
 );
 
 /**
@@ -188,7 +191,8 @@ export const getOnChainMetamaskNotificationsReadCount = createSelector(
  */
 export const selectIsMetamaskNotificationsFeatureSeen = createSelector(
   [getMetamask],
-  (metamask) => metamask.isMetamaskNotificationsFeatureSeen,
+  (metamask) =>
+    metamask.NotificationServicesController.isMetamaskNotificationsFeatureSeen,
 );
 
 /**
@@ -199,7 +203,8 @@ export const selectIsMetamaskNotificationsFeatureSeen = createSelector(
  */
 export const selectIsMetamaskNotificationsEnabled = createSelector(
   [getMetamask],
-  (metamask) => metamask.isNotificationServicesEnabled,
+  (metamask) =>
+    metamask.NotificationServicesController.isNotificationServicesEnabled,
 );
 
 /**
@@ -210,7 +215,8 @@ export const selectIsMetamaskNotificationsEnabled = createSelector(
  */
 export const selectIsFeatureAnnouncementsEnabled = createSelector(
   [getMetamask],
-  (metamask) => metamask.isFeatureAnnouncementsEnabled,
+  (metamask) =>
+    metamask.NotificationServicesController.isFeatureAnnouncementsEnabled,
 );
 
 /**
@@ -224,7 +230,8 @@ export const selectIsFeatureAnnouncementsEnabled = createSelector(
  */
 export const getIsUpdatingMetamaskNotifications = createSelector(
   [getMetamask],
-  (metamask) => metamask.isUpdatingMetamaskNotifications,
+  (metamask) =>
+    metamask.NotificationServicesController.isUpdatingMetamaskNotifications,
 );
 
 /**
@@ -238,7 +245,8 @@ export const getIsUpdatingMetamaskNotifications = createSelector(
  */
 export const isFetchingMetamaskNotifications = createSelector(
   [getMetamask],
-  (metamask) => metamask.isFetchingMetamaskNotifications,
+  (metamask) =>
+    metamask.NotificationServicesController.isFetchingMetamaskNotifications,
 );
 
 /**
@@ -253,7 +261,8 @@ export const isFetchingMetamaskNotifications = createSelector(
 export const getIsUpdatingMetamaskNotificationsAccount = createSelector(
   [getMetamask],
   (metamask) => {
-    return metamask.isUpdatingMetamaskNotificationsAccount;
+    return metamask.NotificationServicesController
+      .isUpdatingMetamaskNotificationsAccount;
   },
 );
 
@@ -268,5 +277,6 @@ export const getIsUpdatingMetamaskNotificationsAccount = createSelector(
  */
 export const getIsCheckingAccountsPresence = createSelector(
   [getMetamask],
-  (metamask) => metamask.isCheckingAccountsPresence,
+  (metamask) =>
+    metamask.NotificationServicesController.isCheckingAccountsPresence,
 );

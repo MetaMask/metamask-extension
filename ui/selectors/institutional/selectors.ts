@@ -10,86 +10,18 @@ import { hexToDecimal } from '../../../shared/modules/conversion.utils';
 // eslint-disable-next-line import/no-restricted-paths
 import { normalizeSafeAddress } from '../../../app/scripts/lib/multichain/address';
 import { AccountType } from '../../../shared/constants/custody';
+import { BackgroundStateProxy } from '../../../shared/types/metamask';
 
-export type Custodian = {
-  type: string;
-  name: string;
-  onboardingUrl: string;
-  website: string;
-  envName: string;
-  apiUrl: string;
-  apiVersion: string;
-  iconUrl: string;
-  displayName: string;
-  isNoteToTraderSupported: boolean;
-  custodianPublishesTransaction: boolean;
-  refreshTokenUrl: string;
-  websocketApiUrl: string;
-  isQRCodeSupported: boolean;
-  production: boolean;
-  version: number;
-};
-
-export type MmiConfiguration = {
-  portfolio?: {
-    enabled?: boolean;
-    url?: string;
-  };
-  custodians?: Custodian[];
-};
-
-type CustodyAccountDetails = {
-  [address: string]: {
-    custodianName: string;
-  };
-};
-
-type CustodianSupportedChains = {
-  [address: string]: {
-    supportedChains: string[];
-  };
-};
-
-type MetaMaskState = {
-  waitForConfirmDeepLinkDialog?: string;
-  custodyStatusMaps?: string; // Change from { [key: string]: unknown } to string
-  custodyAccountDetails?: CustodyAccountDetails;
-  custodianSupportedChains?: CustodianSupportedChains;
-  mmiConfiguration?: MmiConfiguration;
-  noteToTraderMessage?: string;
-  interactiveReplacementToken?: {
-    oldRefreshToken?: string;
-    url?: string;
-  };
-  custodianDeepLink?: {
-    fromAddress: string;
-    custodyId: string;
-  };
-  internalAccounts?: {
-    selectedAccount: string;
-    accounts: {
-      [key: string]: {
-        id: string;
-        metadata: {
-          name: string;
-          keyring: {
-            type: string;
-          };
-        };
-        options: object;
-        methods: string[];
-        type: string;
-        code: string;
-        balance: string;
-        nonce: string;
-        address: string;
-      };
-    };
-  };
-  keyrings?: {
-    type: string;
-    accounts: string[];
-  }[];
+type MmiState = {
+  metamask: Pick<
+    BackgroundStateProxy,
+    | 'CustodyController'
+    | 'InstitutionalFeaturesController'
+    | 'MmiConfigurationController'
+    | 'AccountsController'
+    | 'AppStateController'
+    | 'KeyringController'
+  >;
 };
 
 type AppState = {
@@ -102,29 +34,30 @@ type AppState = {
   };
 };
 
-export type State = {
-  metamask: MetaMaskState;
+export type State = MmiState & {
   appState?: AppState;
 };
 
 export function getWaitForConfirmDeepLinkDialog(state: State) {
-  return state.metamask.waitForConfirmDeepLinkDialog;
+  return state.metamask.CustodyController.waitForConfirmDeepLinkDialog;
 }
 
 export function getTransactionStatusMap(state: State) {
-  return state.metamask.custodyStatusMaps;
+  return state.metamask.CustodyController.custodyStatusMaps;
 }
 
 export function getCustodyAccountDetails(state: State) {
-  return state.metamask.custodyAccountDetails;
+  return state.metamask.CustodyController.custodyAccountDetails;
 }
 
 export function getCustodyAccountSupportedChains(
   state: State,
   address: string,
 ): { supportedChains: string[] } | undefined {
-  const chains = state.metamask.custodianSupportedChains
-    ? state.metamask.custodianSupportedChains[toChecksumAddress(address)]
+  const chains = state.metamask.CustodyController.custodianSupportedChains
+    ? state.metamask.CustodyController.custodianSupportedChains[
+        toChecksumAddress(address)
+      ]
     : undefined;
 
   if (chains && 'supportedChains' in chains) {
@@ -139,15 +72,21 @@ export function getMmiPortfolioEnabled(state: State) {
     return true;
   }
 
-  return state.metamask.mmiConfiguration?.portfolio?.enabled;
+  return state.metamask.MmiConfigurationController.mmiConfiguration?.portfolio
+    ?.enabled;
 }
 
 export function getMmiPortfolioUrl(state: State) {
-  return state.metamask.mmiConfiguration?.portfolio?.url || '';
+  return (
+    state.metamask.MmiConfigurationController.mmiConfiguration?.portfolio
+      ?.url || ''
+  );
 }
 
 export function getConfiguredCustodians(state: State) {
-  return state.metamask.mmiConfiguration?.custodians || [];
+  return (
+    state.metamask.MmiConfigurationController.mmiConfiguration?.custodians || []
+  );
 }
 
 export function getCustodianIconForAddress(state: State, address: string) {
@@ -156,13 +95,16 @@ export function getCustodianIconForAddress(state: State, address: string) {
   const checksummedAddress = address && normalizeSafeAddress(address);
   if (
     checksummedAddress &&
-    state.metamask.custodyAccountDetails?.[checksummedAddress]
+    state.metamask.CustodyController.custodyAccountDetails?.[checksummedAddress]
   ) {
     const { custodianName } =
-      state.metamask.custodyAccountDetails[checksummedAddress];
-    custodianIcon = state.metamask.mmiConfiguration?.custodians?.find(
-      (custodian) => custodian.envName === custodianName,
-    )?.iconUrl;
+      state.metamask.CustodyController.custodyAccountDetails[
+        checksummedAddress
+      ];
+    custodianIcon =
+      state.metamask.MmiConfigurationController.mmiConfiguration?.custodians?.find(
+        (custodian) => custodian.envName === custodianName,
+      )?.iconUrl;
   }
 
   return custodianIcon;
@@ -172,7 +114,6 @@ export function getIsCustodianSupportedChain(
   state: State & ProviderConfigState,
 ) {
   try {
-    // @ts-expect-error state types don't match
     const selectedAccount = getSelectedInternalAccount(state);
     const accountType = getAccountType(state);
 
@@ -215,29 +156,31 @@ export function getIsCustodianSupportedChain(
 
 export function getMMIAddressFromModalOrAddress(state: State) {
   const modalAddress = state?.appState?.modal?.modalState?.props?.address;
-  // @ts-expect-error state types don't match
   const selectedAddress = getSelectedInternalAccount(state)?.address;
 
   return modalAddress || selectedAddress;
 }
 
-export function getMMIConfiguration(state: State): MmiConfiguration {
-  return state.metamask.mmiConfiguration || {};
+export function getMMIConfiguration(state: State) {
+  return state.metamask.MmiConfigurationController.mmiConfiguration || {};
 }
 
 export function getInteractiveReplacementToken(state: State) {
-  return state.metamask.interactiveReplacementToken || {};
+  return state.metamask.AppStateController.interactiveReplacementToken || {};
 }
 
 export function getCustodianDeepLink(state: State) {
-  return state.metamask.custodianDeepLink || {};
+  return state.metamask.AppStateController.custodianDeepLink || {};
 }
 
 export function getIsNoteToTraderSupported(
   state: State,
   fromChecksumHexAddress: string,
 ) {
-  const { custodyAccountDetails, mmiConfiguration } = state.metamask;
+  const {
+    CustodyController: { custodyAccountDetails },
+    MmiConfigurationController: { mmiConfiguration },
+  } = state.metamask;
   const accountDetails = custodyAccountDetails?.[fromChecksumHexAddress];
 
   if (!accountDetails) {
@@ -255,7 +198,10 @@ export function getIsCustodianPublishesTransactionSupported(
   state: State,
   fromChecksumHexAddress: string,
 ) {
-  const { custodyAccountDetails, mmiConfiguration } = state.metamask;
+  const {
+    CustodyController: { custodyAccountDetails },
+    MmiConfigurationController: { mmiConfiguration },
+  } = state.metamask;
   const accountDetails = custodyAccountDetails?.[fromChecksumHexAddress];
 
   if (!accountDetails) {
@@ -270,5 +216,5 @@ export function getIsCustodianPublishesTransactionSupported(
 }
 
 export function getNoteToTraderMessage(state: State) {
-  return state.metamask.noteToTraderMessage || '';
+  return state.metamask.AppStateController.noteToTraderMessage || '';
 }

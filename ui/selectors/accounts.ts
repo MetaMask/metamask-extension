@@ -8,9 +8,22 @@ import {
   isBtcTestnetAddress,
 } from '../../shared/lib/multichain';
 import type { BackgroundStateProxy } from '../../shared/types/metamask';
+import { MultichainState } from './multichain';
 
-type AccountsState = {
+export type AccountsState = {
   metamask: Pick<BackgroundStateProxy, 'AccountsController'>;
+};
+
+export type MultichainAccountsState = MultichainState & {
+  metamask: Pick<
+    BackgroundStateProxy,
+    | 'AccountTracker'
+    | 'OnboardingController'
+    | 'PermissionController'
+    | 'SubjectMetadataController'
+    | 'SnapController'
+    | 'PreferencesController'
+  >;
 };
 
 function isBtcAccount(account: InternalAccount) {
@@ -19,7 +32,7 @@ function isBtcAccount(account: InternalAccount) {
   return Boolean(account && account.type === P2wpkh);
 }
 
-export function getInternalAccounts(state: AccountsState) {
+export function getInternalAccounts(state: MultichainAccountsState) {
   return Object.values(
     state.metamask.AccountsController.internalAccounts.accounts,
   );
@@ -43,7 +56,7 @@ export function isSelectedInternalAccountBtc(state: AccountsState) {
 }
 
 function hasCreatedBtcAccount(
-  state: AccountsState,
+  state: MultichainAccountsState,
   isAddressCallback: (address: string) => boolean,
 ) {
   const accounts = getInternalAccounts(state);
@@ -52,10 +65,10 @@ function hasCreatedBtcAccount(
   });
 }
 
-export function hasCreatedBtcMainnetAccount(state: AccountsState) {
+export function hasCreatedBtcMainnetAccount(state: MultichainAccountsState) {
   return hasCreatedBtcAccount(state, isBtcMainnetAddress);
 }
 
-export function hasCreatedBtcTestnetAccount(state: AccountsState) {
+export function hasCreatedBtcTestnetAccount(state: MultichainAccountsState) {
   return hasCreatedBtcAccount(state, isBtcTestnetAddress);
 }

@@ -42,7 +42,7 @@ const allowedSwapsSmartTransactionStatusesForActivityList = [
 
 export const getTransactions = createDeepEqualSelector(
   (state) => {
-    const { transactions } = state.metamask ?? {};
+    const { transactions } = state.metamask.TxController ?? {};
 
     if (!transactions?.length) {
       return [];
@@ -82,7 +82,7 @@ export const getUnapprovedTransactions = createDeepEqualSelector(
 // returns the total number of unapproved transactions on all networks
 export const getAllUnapprovedTransactions = createDeepEqualSelector(
   (state) => {
-    const { transactions } = state.metamask || [];
+    const { transactions } = state.metamask. || [];
     if (!transactions?.length) {
       return [];
     }

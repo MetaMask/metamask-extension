@@ -25,8 +25,10 @@ import {
 import {
   getProviderConfig,
   getSelectedNetworkClientId,
+  ProviderConfigState,
 } from '../../../shared/modules/selectors/networks';
 import { getSelectedInternalAccount } from '../../selectors/accounts';
+import { MultichainState } from '../../selectors/multichain';
 import * as actionConstants from '../../store/actionConstants';
 import { updateTransactionGasFees } from '../../store/actions';
 import { setCustomGasLimit, setCustomGasPrice } from '../gas/gas.duck';
@@ -292,25 +294,46 @@ export function getBlockGasLimit(state: MetamaskSliceState) {
   return state.metamask.AccountTracker.currentBlockGasLimit;
 }
 
-export function getNativeCurrency(state: MetamaskSliceState) {
+export function getNativeCurrency(state: ProviderConfigState) {
   return getProviderConfig(state).ticker;
 }
 
-export function getConversionRate(state: MetamaskSliceState) {
+export function getConversionRate(
+  state: ProviderConfigState & {
+    metamask: Pick<BackgroundStateProxy, 'CurrencyController'>;
+  },
+) {
   return state.metamask.CurrencyController.currencyRates[
     getProviderConfig(state).ticker
   ]?.conversionRate;
 }
 
-export function getCurrencyRates(state: MetamaskSliceState) {
+export function getCurrencyRates(state: {
+  metamask: Pick<BackgroundStateProxy, 'CurrencyController'>;
+}) {
   return state.metamask.CurrencyController.currencyRates;
 }
 
-export function getSendHexDataFeatureFlagState(state: MetamaskSliceState) {
+export function getSendHexDataFeatureFlagState(state: {
+  metamask: Pick<BackgroundStateProxy, 'PreferencesController'>;
+}) {
   return state.metamask.PreferencesController.featureFlags.sendHexData;
 }
 
-export function getSendToAccounts(state: MetamaskSliceState) {
+export function getSendToAccounts(
+  state: MultichainState & {
+    metamask: Pick<
+      BackgroundStateProxy,
+      | 'AccountTracker'
+      | 'AddressBookController'
+      | 'PermissionController'
+      | 'SubjectMetadataController'
+      | 'OnboardingController'
+      | 'SnapController'
+      | 'PreferencesController'
+    >;
+  } & ProviderConfigState,
+) {
   const fromAccounts = accountsWithSendEtherInfoSelector(state);
   const addressBookAccounts = getAddressBook(state);
   return [...fromAccounts, ...addressBookAccounts];
@@ -337,7 +360,7 @@ export function isNotEIP1559Network(state: MetamaskSliceState) {
  */
 export function isEIP1559Network(
   state: MetamaskSliceState,
-  networkClientId: string,
+  networkClientId?: string,
 ) {
   const selectedNetworkClientId = getSelectedNetworkClientId(state);
 
@@ -537,18 +560,24 @@ export function getIsNetworkBusyByChainId(
     : false;
 }
 
-export function getCompletedOnboarding(state: MetamaskSliceState) {
+export function getCompletedOnboarding(state: {
+  metamask: Pick<BackgroundStateProxy, 'OnboardingController'>;
+}) {
   return state.metamask.OnboardingController.completedOnboarding;
 }
 export function getIsInitialized(state: MetamaskSliceState) {
   return state.metamask.isInitialized;
 }
 
-export function getIsUnlocked(state: MetamaskSliceState) {
+export function getIsUnlocked(state: {
+  metamask: Pick<BackgroundStateProxy, 'KeyringController'>;
+}) {
   return state.metamask.KeyringController.isUnlocked;
 }
 
-export function getSeedPhraseBackedUp(state: MetamaskSliceState) {
+export function getSeedPhraseBackedUp(state: {
+  metamask: Pick<BackgroundStateProxy, 'OnboardingController'>;
+}) {
   return state.metamask.OnboardingController.seedPhraseBackedUp;
 }
 

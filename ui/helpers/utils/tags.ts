@@ -1,7 +1,10 @@
 // TODO: Remove restricted import
 // eslint-disable-next-line import/no-restricted-paths
 import { getEnvironmentType } from '../../../app/scripts/lib/util';
-import { getIsUnlocked } from '../../ducks/metamask/metamask';
+import {
+  getIsUnlocked,
+  MetamaskSliceState,
+} from '../../ducks/metamask/metamask';
 import {
   getInternalAccounts,
   getPendingApprovals,
@@ -10,7 +13,6 @@ import {
 } from '../../selectors';
 import { getMetamaskNotifications } from '../../selectors/metamask-notifications/metamask-notifications';
 import { selectAllNftsFlat } from '../../selectors/nft';
-import { MetaMaskReduxState } from '../../store/store';
 
 /**
  * Generate the required tags for the UI startup trace.
@@ -18,7 +20,7 @@ import { MetaMaskReduxState } from '../../store/store';
  * @param state - The current flattened UI state.
  * @returns The tags for the startup trace.
  */
-export function getStartupTraceTags(state: MetaMaskReduxState) {
+export function getStartupTraceTags(state: MetamaskSliceState) {
   const uiType = getEnvironmentType();
   const unlocked = getIsUnlocked(state) as boolean;
   const accountCount = getInternalAccounts(state).length;
