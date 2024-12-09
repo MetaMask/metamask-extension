@@ -11,7 +11,7 @@ const lastUpdated = 1;
 const defaultHotlist = { data: [] };
 const defaultC2DomainBlocklist = {
   recentlyAdded: [
-    '33c8e026e76cea2df82322428554c932961cd80080fa379454350d7f13371f36',
+    '33c8e026e76cea2df82322428554c932961cd80080fa379454350d7f13371f36', // hash for malicious.localhost
   ],
   recentlyRemoved: [],
   lastFetchedAt: '2024-08-27T15:30:45Z',
