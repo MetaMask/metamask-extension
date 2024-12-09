@@ -66,7 +66,7 @@ jobs:
 
   log-merge-group-failure:
     name: Log merge group failure
-    # Only run this job if the merge group event fails, skip logging on forks
+    # Only run this job if the merge group event fails, skip on forks
     if: ${{ github.event_name == 'merge_group' && failure() && !github.event.repository.fork }}
     needs:
       - all-jobs-pass
