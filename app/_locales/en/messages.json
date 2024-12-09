@@ -881,6 +881,9 @@
   "bridgeNetCost": {
     "message": "Net cost"
   },
+  "bridgeQuoteExpired": {
+    "message": "Quotes expired - please request again"
+  },
   "bridgeSelectNetwork": {
     "message": "Select network"
   },
