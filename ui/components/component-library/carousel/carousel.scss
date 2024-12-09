@@ -1,16 +1,18 @@
 .mm-carousel {
   height: 100px;
+  cursor: pointer;
 }
 
 .mm-carousel-slide {
   position: relative;
+  padding: 0 !important;
 }
 
 .mm-carousel-slide__accessory {
   background-size: cover;
   background-position: center;
   height: 100%;
-  width: 60px;
+  width: 60px !important;
 }
 
 .mm-carousel-slide__close-button {

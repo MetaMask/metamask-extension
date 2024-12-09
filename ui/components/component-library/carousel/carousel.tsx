@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Carousel as ResponsiveCarousel } from 'react-responsive-carousel';
+import { useI18nContext } from '../../../hooks/useI18nContext';
 import { Box, BannerBase } from '..';
 import type { BoxProps } from '..';
 import {
@@ -51,6 +52,7 @@ export const Carousel = React.forwardRef(
     ref: React.Ref<HTMLDivElement>,
   ) => {
     const [selectedIndex, setSelectedIndex] = useState(selectedItem);
+    const t = useI18nContext();
 
     const handleClose = (slideId: string) => {
       const currentSlideIndex = slides.findIndex(
@@ -105,20 +107,23 @@ export const Carousel = React.forwardRef(
         >
           {slides.map((slide, index) => (
             <BannerBase
+              onClick={() => {
+                if (slide.href) {
+                  global.platform.openTab({ url: slide.href });
+                }
+              }}
               key={slide.id}
               className="mm-carousel-slide"
               startAccessory={
-                <Box
+                <img
                   className="mm-carousel-slide__accessory"
-                  style={{
-                    backgroundImage: `url(${slide.image})`,
-                  }}
+                  src={slide.image}
                 />
               }
               textAlign={TextAlign.Left}
               alignItems={AlignItems.center}
-              title={slide.title}
-              description={slide.description}
+              title={t(slide.title)}
+              description={t(slide.description)}
               fullHeightAccessory
               titleProps={{
                 variant: TextVariant.bodySmMedium,

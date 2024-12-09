@@ -5,6 +5,7 @@ export type Slide = {
   title: string;
   description: string;
   image: string;
+  href?: string;
 };
 
 type CarouselBaseProps = {

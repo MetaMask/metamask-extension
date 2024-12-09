@@ -22,28 +22,32 @@ export const AccountOverviewLayout = ({
   useEffect(() => {
     const defaultSlides = [
       {
-        id: '1',
-        title: 'Ready to bridge?',
-        description: 'Dolor sit amet, consectetur',
-        image: 'https://via.placeholder.com/150',
+        id: 'bridge',
+        title: 'slideBridgeTitle',
+        description: 'slideBridgeDescription',
+        image: './images/slide-bridge-icon.svg',
+        href: '',
       },
       {
-        id: '2',
-        title: 'Lorem ipsum',
-        description: 'Dolor sit amet, consectetur',
-        image: 'https://via.placeholder.com/150',
+        id: 'card',
+        title: 'slideDebitCardTitle',
+        description: 'slideDebitCardDescription',
+        image: './images/slide-card-icon.svg',
+        href: 'https://portfolio.metamask.io/card',
       },
       {
-        id: '3',
-        title: 'Lorem ipsum',
-        description: 'Dolor sit amet, consectetur',
-        image: 'https://via.placeholder.com/150',
+        id: 'fund',
+        title: 'slideFundWalletTitle',
+        description: 'slideFundWalletDescription',
+        image: './images/slide-fund-icon.svg',
+        href: 'https://portfolio.metamask.io/buy/build-quote',
       },
       {
-        id: '4',
-        title: 'Lorem ipsum',
-        description: 'Dolor sit amet, consectetur',
-        image: 'https://via.placeholder.com/150',
+        id: 'cash',
+        title: 'slideCashOutTitle',
+        description: 'slideCashOutDescription',
+        image: './images/slide-sell-icon.svg',
+        href: 'https://portfolio.metamask.io/buy/build-quote',
       },
     ];
     dispatch(updateSlides(defaultSlides));
