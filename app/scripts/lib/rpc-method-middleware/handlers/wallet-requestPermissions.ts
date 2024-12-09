@@ -260,6 +260,8 @@ async function requestPermissionsImplementation(
     }
   }
 
-  res.result = Object.values(grantedPermissions) as Json;
+  res.result = Object.values(grantedPermissions).filter(
+    (value) => value !== undefined,
+  ) as Json;
   return end();
 }
