@@ -2589,6 +2589,9 @@
   "importSRPDescription": {
     "message": "Enter your wallet's secret recovery phrase. You can import any Ethereum, Solana, or Bitcoin secret recovery phrase."
   },
+  "importSRPPlaceholder": {
+    "message": "Recovery phrase"
+  },
   "importTokenQuestion": {
     "message": "Import token?"
   },
