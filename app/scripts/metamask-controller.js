@@ -4605,7 +4605,6 @@ export default class MetamaskController extends EventEmitter {
   async createNewVaultAndKeychain(password) {
     const releaseLock = await this.createVaultMutex.acquire();
     try {
-      console.log('createNewVaultAndKeychain');
       return await this.keyringController.createNewVaultAndKeychain(password);
     } finally {
       releaseLock();
@@ -4625,23 +4624,7 @@ export default class MetamaskController extends EventEmitter {
       const newAccount = await this.keyringController.createKeyringFromMnemonic(
         mnemonic,
       );
-      const account = this.accountsController.getAccountByAddress(newAccount);
-      this.accountsController.setSelectedAccount(account.id);
-      const hdKeyrings = this.keyringController.getKeyringsByType(
-        KeyringType.hdKeyTree,
-      );
-      const keyringIndex = await (async () => {
-        for (let i = 0; i < hdKeyrings.length; i++) {
-          const accounts = await hdKeyrings[i].getAccounts();
-          if (accounts.includes(newAccount)) {
-            return i;
-          }
-        }
-        return -1;
-      })();
-
-      await this._addAccountsWithBalance(keyringIndex);
-
+      this.preferencesController.setSelectedAddress(newAccount);
       return newAccount;
     } finally {
       releaseLock();
@@ -5223,18 +5206,15 @@ export default class MetamaskController extends EventEmitter {
    * Adds a new account to the default (first) HD seed phrase Keyring.
    *
    * @param {number} accountCount
-   * @param {string} keyringIndex
+   * @param {string} keyringId
    * @returns {Promise<string>} The address of the newly-created account.
    */
-  async addNewAccount(accountCount, keyringIndex) {
+  async addNewAccount(accountCount, keyringId) {
     const oldAccounts = await this.keyringController.getAccounts();
-    const selectedAccount = this.accountsController.getSelectedAccount();
 
     const addedAccountAddress = await this.keyringController.addNewAccount(
       accountCount,
-      ///: BEGIN:ONLY_INCLUDE_IF(multi-srp)
-      keyringIndex,
-      ///: END:ONLY_INCLUDE_IF
+      keyringId,
     );
 
     if (!oldAccounts.includes(addedAccountAddress)) {

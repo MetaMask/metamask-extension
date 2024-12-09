@@ -306,11 +306,8 @@ export function createNewVaultAndGetSeedPhrase(
     dispatch(showLoadingIndication());
 
     try {
-      console.log('createNewVaultAndGetSeedPhrase HERE');
       await createNewVault(password);
-      console.log('getSeedPhrase');
       const seedPhrase = await getSeedPhrase(password);
-      console.log('seedPhrase: ', seedPhrase);
       return seedPhrase;
     } catch (error) {
       dispatch(displayWarning(error));
@@ -528,12 +525,23 @@ export function addNewAccount(
     );
     ///: BEGIN:ONLY_INCLUDE_IF(multi-srp)
     const keyrings = getMetaMaskKeyrings(getState());
-    const hdKeyrings = keyrings.filter(
-      (keyring) => keyring.type === KeyringTypes.hd,
-    );
-    const selectedKeyring = hdKeyrings[keyringIndex];
-    oldAccounts = selectedKeyring?.accounts || hdKeyrings[0]?.accounts;
-    ///: END:ONLY_INCLUDE_IF
+    // find keyring containing selected account
+    let oldAccounts: string[];
+    let keyringId: string;
+    for (const keyring of keyrings) {
+      // Already found old accounts
+      if (oldAccounts?.length) {
+        break;
+      }
+      if (keyring.type === KeyringTypes.hd) {
+        const keyringAccounts = keyring.accounts;
+        if (keyringAccounts.includes(selectedAccount.address)) {
+          oldAccounts = keyringAccounts;
+          keyringId = keyring.id;
+          break;
+        }
+      }
+    }
 
     dispatch(showLoadingIndication());
 
@@ -541,9 +549,7 @@ export function addNewAccount(
     try {
       addedAccountAddress = await submitRequestToBackground('addNewAccount', [
         Object.keys(oldAccounts).length,
-        ///: BEGIN:ONLY_INCLUDE_IF(multi-srp)
-        keyringIndex || 0,
-        ///: END:ONLY_INCLUDE_IF
+        keyringId,
       ]);
     } catch (error) {
       dispatch(displayWarning(error));
