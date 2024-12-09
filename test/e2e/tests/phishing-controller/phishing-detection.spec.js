@@ -2,13 +2,13 @@ const { strict: assert } = require('assert');
 const { createServer } = require('node:http');
 const { createDeferredPromise } = require('@metamask/utils');
 const { until } = require('selenium-webdriver');
-
 const {
   defaultGanacheOptions,
   withFixtures,
   openDapp,
   unlockWallet,
   WINDOW_TITLES,
+  createWebSocketConnection,
 } = require('../../helpers');
 const FixtureBuilder = require('../../fixture-builder');
 const {
@@ -326,20 +326,17 @@ describe('Phishing Detection', function () {
         testSpecificMock: async (mockServer) => {
           await setupPhishingDetectionMocks(mockServer, {
             blockProvider: BlockProvider.MetaMask,
-            c2DomainBlocklist: [
-              'ffd6df34371d7cfc68aef89e124bc84ea874d573d5979290fc22d59a73ae8539', // malicious c2 domain
-            ],
           });
         },
         dapp: true,
-        dappPaths: [
-          './tests/phishing-controller/mock-malicious-websocket-connection',
-        ],
+        enableWebSocketServer: true,
       },
       async ({ driver }) => {
         await unlockWallet(driver);
 
         await driver.openNewPage(testPageURL);
+
+        await createWebSocketConnection(driver, 'malicious.localhost');
 
         await driver.switchToWindowWithTitle(
           'MetaMask Phishing Detection',
@@ -379,14 +376,14 @@ describe('Phishing Detection', function () {
           });
         },
         dapp: true,
-        dappPaths: [
-          './tests/phishing-controller/mock-safe-websocket-connection',
-        ],
+        enableWebSocketServer: true,
       },
       async ({ driver }) => {
         await unlockWallet(driver);
 
         await driver.openNewPage(testPageURL);
+
+        await createWebSocketConnection(driver, 'safe.localhost');
 
         await driver.wait(until.titleIs(WINDOW_TITLES.TestDApp), 10000);
 
