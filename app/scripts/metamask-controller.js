@@ -278,6 +278,7 @@ import { submitSmartTransactionHook } from './lib/transaction/smart-transactions
 import { keyringSnapPermissionsBuilder } from './lib/snap-keyring/keyring-snaps-permissions';
 ///: END:ONLY_INCLUDE_IF
 
+import { MultichainTransactionsController } from './lib/transaction/MultichainTransactionsController';
 import { SnapsNameProvider } from './lib/SnapsNameProvider';
 import { AddressBookPetnamesBridge } from './lib/AddressBookPetnamesBridge';
 import { AccountIdentitiesPetnamesBridge } from './lib/AccountIdentitiesPetnamesBridge';
@@ -984,6 +985,24 @@ export default class MetamaskController extends EventEmitter {
       messenger: announcementMessenger,
       allAnnouncements: UI_NOTIFICATIONS,
       state: initState.AnnouncementController,
+    });
+
+    const multichainTransactionsControllerMessenger =
+    this.controllerMessenger.getRestricted({
+      name: 'MultichainTransactionsController',
+      allowedEvents: [
+        'AccountsController:accountAdded',
+        'AccountsController:accountRemoved',
+      ],
+      allowedActions: [
+        'AccountsController:listMultichainAccounts',
+        'SnapController:handleRequest',
+      ],
+    });
+
+    this.multichainTransactionsController = new MultichainTransactionsController({
+      messenger: multichainTransactionsControllerMessenger,
+      state: initState.MultichainTransactionsController,
     });
 
     const networkOrderMessenger = this.controllerMessenger.getRestricted({
@@ -2515,6 +2534,7 @@ export default class MetamaskController extends EventEmitter {
       AppStateController: this.appStateController.store,
       AppMetadataController: this.appMetadataController,
       MultichainBalancesController: this.multichainBalancesController,
+      MultichainTransactionsController: this.multichainTransactionsController,
       TransactionController: this.txController,
       KeyringController: this.keyringController,
       PreferencesController: this.preferencesController,
@@ -2571,6 +2591,7 @@ export default class MetamaskController extends EventEmitter {
         AppStateController: this.appStateController.store,
         AppMetadataController: this.appMetadataController,
         MultichainBalancesController: this.multichainBalancesController,
+        MultichainTransactionsController: this.multichainTransactionsController,
         NetworkController: this.networkController,
         KeyringController: this.keyringController,
         PreferencesController: this.preferencesController,
@@ -3240,6 +3261,8 @@ export default class MetamaskController extends EventEmitter {
     );
     this.multichainBalancesController.start();
     this.multichainBalancesController.updateBalances();
+    this.multichainTransactionsController.start();
+    this.multichainTransactionsController.updateTransactions();
   }
 
   /**
@@ -4357,6 +4380,10 @@ export default class MetamaskController extends EventEmitter {
 
       multichainUpdateBalances: () =>
         this.multichainBalancesController.updateBalances(),
+
+      // MultichainTransactionsController
+      multichainUpdateTransactions: () =>
+        this.multichainTransactionsController.updateTransactions(),
 
       // Transaction Decode
       decodeTransactionData: (request) =>

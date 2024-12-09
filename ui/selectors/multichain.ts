@@ -19,6 +19,7 @@ import {
 // TODO: Remove restricted import
 // eslint-disable-next-line import/no-restricted-paths
 import { BalancesControllerState } from '../../app/scripts/lib/accounts/BalancesController';
+import { MultichainTransactionsControllerState } from '../../app/scripts/lib/transaction/MultichainTransactionsController';
 import { MULTICHAIN_NETWORK_TO_ASSET_TYPES } from '../../shared/constants/multichain/assets';
 import {
   CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP,
@@ -50,9 +51,14 @@ export type BalancesState = {
   metamask: BalancesControllerState;
 };
 
+export type TransactionsState = {
+  metamask: MultichainTransactionsControllerState;
+};
+
 export type MultichainState = AccountsState &
   RatesState &
   BalancesState &
+  TransactionsState &
   NetworkState;
 
 // TODO: Remove after updating to @metamask/network-controller 20.0.0
@@ -369,6 +375,12 @@ export function getMultichainBalances(
   state: MultichainState,
 ): BalancesState['metamask']['balances'] {
   return state.metamask.balances;
+}
+
+export function getMultichainTransactions(
+  state: MultichainState,
+): TransactionsState['metamask']['transactions'] {
+  return state.metamask.transactions;
 }
 
 export const getMultichainCoinRates = (state: MultichainState) => {
