@@ -10,6 +10,7 @@ import { formatCurrency } from '../../../helpers/utils/confirm-tx.util';
 import { Numeric } from '../../../../shared/modules/Numeric';
 import { EtherDenomination } from '../../../../shared/constants/common';
 import { DEFAULT_PRECISION } from '../../../hooks/useCurrencyDisplay';
+import { formatAmount } from '../../confirmations/components/simulation-details/formatAmount';
 
 export const isNativeAddress = (address?: string | null) =>
   address === zeroAddress() || address === '' || !address;
@@ -210,10 +211,14 @@ export const formatEtaInMinutes = (estimatedProcessingTimeInSeconds: number) =>
   (estimatedProcessingTimeInSeconds / 60).toFixed();
 
 export const formatTokenAmount = (
+  locale: string,
   amount: BigNumber,
   symbol: string = '',
-  precision: number = DEFAULT_PRECISION,
-) => [amount.toFixed(precision), symbol].join(' ').trim();
+) => {
+  const stringifiedAmount = formatAmount(locale, amount);
+
+  return [stringifiedAmount, symbol].join(' ').trim();
+};
 
 export const formatCurrencyAmount = (
   amount: BigNumber | null,
