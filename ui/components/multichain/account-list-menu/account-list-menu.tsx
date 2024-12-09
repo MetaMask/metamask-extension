@@ -619,6 +619,7 @@ export const AccountListMenu = ({
                 {t('importSecretRecoveryPhrase')}
               </ButtonLink>
             </Box>
+            ///: END:ONLY_INCLUDE_IF
             <Box marginTop={4}>
               <ButtonLink
                 size={ButtonLinkSize.Sm}

@@ -4646,20 +4646,6 @@ export default class MetamaskController extends EventEmitter {
       releaseLock();
     }
   }
-
-  async generateNewMnemonicAndAddToVault() {
-    const releaseLock = await this.createVaultMutex.acquire();
-    try {
-      const newHdkeyring = await this.keyringController.addNewKeyring(
-        KeyringTypes.hd,
-      );
-      const newAccount = (await newHdkeyring.getAccounts())[0];
-
-      return newAccount;
-    } finally {
-      releaseLock();
-    }
-  }
   ///: END:ONLY_INCLUDE_IF
 
   /**
@@ -5214,7 +5200,9 @@ export default class MetamaskController extends EventEmitter {
 
     const addedAccountAddress = await this.keyringController.addNewAccount(
       accountCount,
+      ///: BEGIN:ONLY_INCLUDE_IF(multi-srp)
       keyringId,
+      ///: END:ONLY_INCLUDE_IF
     );
 
     if (!oldAccounts.includes(addedAccountAddress)) {

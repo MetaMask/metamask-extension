@@ -524,9 +524,10 @@ export function addNewAccount(
         internalAccount.metadata.keyring.type === KeyringTypes.hd,
     );
     ///: BEGIN:ONLY_INCLUDE_IF(multi-srp)
+    const selectedAccount = getSelectedInternalAccount(getState());
     const keyrings = getMetaMaskKeyrings(getState());
     // find keyring containing selected account
-    let oldAccounts: string[];
+    oldAccounts = [];
     let keyringId: string;
     for (const keyring of keyrings) {
       // Already found old accounts
@@ -542,6 +543,7 @@ export function addNewAccount(
         }
       }
     }
+    ///: END:ONLY_INCLUDE_IF
 
     dispatch(showLoadingIndication());
 
@@ -549,7 +551,9 @@ export function addNewAccount(
     try {
       addedAccountAddress = await submitRequestToBackground('addNewAccount', [
         Object.keys(oldAccounts).length,
+        ///: BEGIN:ONLY_INCLUDE_IF(multi-srp)
         keyringId,
+        ///: END:ONLY_INCLUDE_IF
       ]);
     } catch (error) {
       dispatch(displayWarning(error));
