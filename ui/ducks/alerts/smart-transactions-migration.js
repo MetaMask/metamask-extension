@@ -5,7 +5,7 @@ import { setAlertEnabledness } from '../../store/actions';
 import * as actionConstants from '../../store/actionConstants';
 import { ALERT_STATE } from './enums';
 
-const name = AlertTypes.stxMigration;
+const name = AlertTypes.smartTransactionsMigration;
 
 const initialState = {
   state: ALERT_STATE.CLOSED,
@@ -29,7 +29,7 @@ const slice = createSlice({
     builder.addCase(actionConstants.UPDATE_METAMASK_STATE, (state, action) => {
       if (
         action.value?.preferences?.smartTransactionsOptInStatus === true &&
-        action.value?.alertEnabledness?.[AlertTypes.stxMigration] !== false
+        action.value?.alertEnabledness?.[AlertTypes.smartTransactionsMigration] !== false
       ) {
         state.state = ALERT_STATE.OPEN;
       }
@@ -39,12 +39,10 @@ const slice = createSlice({
 
 const { actions, reducer } = slice;
 
-export const stxAlertIsOpen = (state) =>
+export const shouldShowSmartTransactionsMigrationAlert = (state) =>
   state[name]?.state === ALERT_STATE.OPEN;
 
 export const {
-  showSTXMigrationAlert,
-  dismissSTXMigrationAlert,
   disableAlertRequested,
   disableAlertSucceeded,
   disableAlertFailed,
@@ -56,11 +54,14 @@ export const dismissAndDisableAlert = () => {
       // Show loading state
       await dispatch(disableAlertRequested());
       // Set alert enabledness to false (persistent setting)
-      await setAlertEnabledness(AlertTypes.stxMigration, false);
+      await setAlertEnabledness(AlertTypes.smartTransactionsMigration, false);
       // Mark alert as successfully disabled
       await dispatch(disableAlertSucceeded());
     } catch (error) {
-      console.error('Failed to disable STX Migration alert:', error);
+      console.error(
+        'Failed to disable Smart Transactions Migration alert:',
+        error,
+      );
       captureException(error);
       // Show an error state
       await dispatch(disableAlertFailed());

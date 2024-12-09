@@ -10,7 +10,7 @@ import gasReducer from './gas/gas.duck';
 import {
   invalidCustomNetwork,
   unconnectedAccount,
-  stxMigration,
+  smartTransactionsMigration,
 } from './alerts';
 import swapsReducer from './swaps/swaps';
 import bridgeReducer from './bridge/bridge';
@@ -21,7 +21,7 @@ import confirmAlertsReducer from './confirm-alerts/confirm-alerts';
 export default combineReducers({
   [AlertTypes.invalidCustomNetwork]: invalidCustomNetwork,
   [AlertTypes.unconnectedAccount]: unconnectedAccount,
-  [AlertTypes.stxMigration]: stxMigration,
+  [AlertTypes.smartTransactionsMigration]: smartTransactionsMigration,
   activeTab: (s) => (s === undefined ? null : s),
   metamask: metamaskReducer,
   appState: appStateReducer,

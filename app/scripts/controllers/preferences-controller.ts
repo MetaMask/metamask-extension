@@ -463,10 +463,6 @@ const controllerMetadata = {
   },
   isMultiAccountBalancesEnabled: { persist: true, anonymous: true },
   showIncomingTransactions: { persist: true, anonymous: true },
-  // smartTransactionsOptInStatus: {
-  //   persist: true,
-  //   anonymous: true,
-  // },
 };
 
 export class PreferencesController extends BaseController<

@@ -4,7 +4,7 @@ import { renderWithProvider } from '../../../../../test/jest/rendering';
 import configureStore from '../../../../store/store';
 import { AlertTypes } from '../../../../../shared/constants/alerts';
 import { ALERT_STATE } from '../../../../ducks/alerts/enums';
-import STXBannerAlert from './stx-banner-alert';
+import SmartTransactionsBannerAlert from './smart-transactions-banner-alert';
 
 // Mock the entire module
 jest.mock('../../../../hooks/useI18nContext', () => ({
@@ -18,23 +18,23 @@ jest.mock('../../../../store/actions', () => ({
   setAlertEnabledness: jest.fn().mockResolvedValue(undefined),
 }));
 
-describe('STXBannerAlert', () => {
+describe('SmartTransactionsBannerAlert', () => {
   const mockState = {
     metamask: {
       alerts: {
-        [AlertTypes.stxMigration]: {
+        [AlertTypes.smartTransactionsMigration]: {
           state: ALERT_STATE.OPEN,
         },
       },
     },
-    [AlertTypes.stxMigration]: {
+    [AlertTypes.smartTransactionsMigration]: {
       state: ALERT_STATE.OPEN,
     },
   };
 
   it('renders banner when alert is open', () => {
     const store = configureStore(mockState);
-    renderWithProvider(<STXBannerAlert />, store);
+    renderWithProvider(<SmartTransactionsBannerAlert />, store);
 
     expect(screen.getByTestId('stx-banner-alert')).toBeInTheDocument();
     expect(screen.getByText('smartTransactionsEnabled')).toBeInTheDocument();
@@ -45,24 +45,24 @@ describe('STXBannerAlert', () => {
     const closedState = {
       metamask: {
         alerts: {
-          [AlertTypes.stxMigration]: {
+          [AlertTypes.smartTransactionsMigration]: {
             state: ALERT_STATE.CLOSED,
           },
         },
       },
-      [AlertTypes.stxMigration]: {
+      [AlertTypes.smartTransactionsMigration]: {
         state: ALERT_STATE.CLOSED,
       },
     };
     const store = configureStore(closedState);
-    renderWithProvider(<STXBannerAlert />, store);
+    renderWithProvider(<SmartTransactionsBannerAlert />, store);
 
     expect(screen.queryByTestId('stx-banner-alert')).not.toBeInTheDocument();
   });
 
   it('dispatches dismissal action when close button clicked', async () => {
     const store = configureStore(mockState);
-    renderWithProvider(<STXBannerAlert />, store);
+    renderWithProvider(<SmartTransactionsBannerAlert />, store);
 
     screen.getByRole('button', { name: /close/iu }).click();
 
@@ -70,12 +70,14 @@ describe('STXBannerAlert', () => {
     await new Promise((resolve) => setTimeout(resolve, 0));
 
     const state = store.getState();
-    expect(state[AlertTypes.stxMigration].state).toBe(ALERT_STATE.CLOSED);
+    expect(state[AlertTypes.smartTransactionsMigration].state).toBe(
+      ALERT_STATE.CLOSED,
+    );
   });
 
   it('dispatches dismissal action when learn more link clicked', async () => {
     const store = configureStore(mockState);
-    renderWithProvider(<STXBannerAlert />, store);
+    renderWithProvider(<SmartTransactionsBannerAlert />, store);
 
     screen.getByText('learnMoreUpperCase').click();
 
@@ -83,6 +85,8 @@ describe('STXBannerAlert', () => {
     await new Promise((resolve) => setTimeout(resolve, 0));
 
     const state = store.getState();
-    expect(state[AlertTypes.stxMigration].state).toBe(ALERT_STATE.CLOSED);
+    expect(state[AlertTypes.smartTransactionsMigration].state).toBe(
+      ALERT_STATE.CLOSED,
+    );
   });
 });

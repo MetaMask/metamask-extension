@@ -8,14 +8,14 @@ import {
   BannerAlertSeverity,
 } from '../../../../components/component-library';
 import {
-  stxAlertIsOpen,
+  shouldShowSmartTransactionsMigrationAlert,
   dismissAndDisableAlert,
-} from '../../../../ducks/alerts/stx-migration';
+} from '../../../../ducks/alerts/smart-transactions-migration';
 import ZENDESK_URLS from '../../../../helpers/constants/zendesk-url';
 
-const STXBannerAlert = () => {
+const SmartTransactionsBannerAlert = () => {
   const dispatch = useDispatch();
-  const shouldShow = useSelector(stxAlertIsOpen);
+  const shouldShow = useSelector(shouldShowSmartTransactionsMigrationAlert);
   // const fullState = useSelector((state) => state);
   // console.log(fullState)
 
@@ -32,7 +32,7 @@ const STXBannerAlert = () => {
         console.log('Dismiss clicked');
         dispatch(dismissAndDisableAlert());
       }}
-      data-testid="stx-banner-alert"
+      data-testid="smart-transactions-banner-alert"
     >
       <Text as="p">
         {t('smartTransactionsEnabled')}
@@ -48,4 +48,4 @@ const STXBannerAlert = () => {
   );
 };
 
-export default STXBannerAlert;
+export default SmartTransactionsBannerAlert;

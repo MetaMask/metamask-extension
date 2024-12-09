@@ -3,17 +3,17 @@ import * as actionConstants from '../../store/actionConstants';
 import { setAlertEnabledness } from '../../store/actions';
 import reducer, {
   dismissAndDisableAlert,
-  stxAlertIsOpen,
-} from './stx-migration';
+  shouldShowSmartTransactionsMigrationAlert,
+} from './smart-transactions-migration';
 import { ALERT_STATE } from './enums';
 
 jest.mock('../../store/actions', () => ({
   setAlertEnabledness: jest.fn().mockResolvedValue(),
 }));
 
-describe('STX Migration Alert', () => {
+describe('Smart Transactions Migration Alert', () => {
   const mockState = {
-    [AlertTypes.stxMigration]: {
+    [AlertTypes.smartTransactionsMigration]: {
       state: ALERT_STATE.OPEN,
     },
   };
@@ -37,7 +37,7 @@ describe('STX Migration Alert', () => {
             smartTransactionsOptInStatus: true,
           },
           alertEnabledness: {
-            [AlertTypes.stxMigration]: true,
+            [AlertTypes.smartTransactionsMigration]: true,
           },
         },
       },
@@ -55,7 +55,7 @@ describe('STX Migration Alert', () => {
             smartTransactionsOptInStatus: true,
           },
           alertEnabledness: {
-            [AlertTypes.stxMigration]: false,
+            [AlertTypes.smartTransactionsMigration]: false,
           },
         },
       },
@@ -63,18 +63,18 @@ describe('STX Migration Alert', () => {
     expect(result.state).toStrictEqual(ALERT_STATE.CLOSED);
   });
 
-  describe('stxAlertIsOpen selector', () => {
+  describe('shouldShowSmartTransactionsMigrationAlert selector', () => {
     it('should return true when alert is open', () => {
-      expect(stxAlertIsOpen(mockState)).toBe(true);
+      expect(shouldShowSmartTransactionsMigrationAlert(mockState)).toBe(true);
     });
 
     it('should return false when alert is closed', () => {
       const closedState = {
-        [AlertTypes.stxMigration]: {
+        [AlertTypes.smartTransactionsMigration]: {
           state: ALERT_STATE.CLOSED,
         },
       };
-      expect(stxAlertIsOpen(closedState)).toBe(false);
+      expect(shouldShowSmartTransactionsMigrationAlert(closedState)).toBe(false);
     });
   });
 
@@ -84,14 +84,14 @@ describe('STX Migration Alert', () => {
       await dismissAndDisableAlert()(mockDispatch);
 
       expect(setAlertEnabledness).toHaveBeenCalledWith(
-        AlertTypes.stxMigration,
+        AlertTypes.smartTransactionsMigration,
         false,
       );
       expect(mockDispatch).toHaveBeenNthCalledWith(1, {
-        type: `${AlertTypes.stxMigration}/disableAlertRequested`,
+        type: `${AlertTypes.smartTransactionsMigration}/disableAlertRequested`,
       });
       expect(mockDispatch).toHaveBeenNthCalledWith(2, {
-        type: `${AlertTypes.stxMigration}/disableAlertSucceeded`,
+        type: `${AlertTypes.smartTransactionsMigration}/disableAlertSucceeded`,
       });
     });
 
@@ -102,10 +102,10 @@ describe('STX Migration Alert', () => {
       await dismissAndDisableAlert()(mockDispatch);
 
       expect(mockDispatch).toHaveBeenNthCalledWith(1, {
-        type: `${AlertTypes.stxMigration}/disableAlertRequested`,
+        type: `${AlertTypes.smartTransactionsMigration}/disableAlertRequested`,
       });
       expect(mockDispatch).toHaveBeenNthCalledWith(2, {
-        type: `${AlertTypes.stxMigration}/disableAlertFailed`,
+        type: `${AlertTypes.smartTransactionsMigration}/disableAlertFailed`,
       });
     });
   });

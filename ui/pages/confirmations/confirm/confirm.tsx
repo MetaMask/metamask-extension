@@ -17,7 +17,7 @@ import { Info } from '../components/confirm/info';
 import { LedgerInfo } from '../components/confirm/ledger-info';
 import { Nav } from '../components/confirm/nav';
 import { NetworkChangeToast } from '../components/confirm/network-change-toast';
-import { STXBannerAlert } from '../components/stx-banner-alert';
+import { SmartTransactionsBannerAlert } from '../components/smart-transactions-banner-alert';
 import { PluggableSection } from '../components/confirm/pluggable-section';
 import ScrollToBottom from '../components/confirm/scroll-to-bottom';
 import { Title } from '../components/confirm/title';
@@ -55,7 +55,7 @@ const Confirm = () => (
             <Nav />
             <Header />
             <div className="transaction-alerts">
-              <STXBannerAlert />
+              <SmartTransactionsBannerAlert />
             </div>
             <ScrollToBottom>
               {
