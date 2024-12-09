@@ -793,6 +793,7 @@ async function buildEventFragmentProperties({
     securityProviderResponse,
     simulationFails,
     id,
+    userFeeLevel,
   } = transactionMeta;
   const query = new EthQuery(transactionMetricsRequest.provider);
   const source = referrer === ORIGIN_METAMASK ? 'user' : 'dapp';
@@ -1045,6 +1046,7 @@ async function buildEventFragmentProperties({
     transaction_type: transactionType,
     transaction_speed_up: type === TransactionType.retry,
     transaction_internal_id: id,
+    gas_fee_selected: userFeeLevel,
     ...blockaidProperties,
     // ui_customizations must come after ...blockaidProperties
     ui_customizations: uiCustomizations.length > 0 ? uiCustomizations : null,
