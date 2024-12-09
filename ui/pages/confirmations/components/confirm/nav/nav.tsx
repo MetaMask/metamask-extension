@@ -1,6 +1,4 @@
-import { providerErrors, serializeError } from '@metamask/rpc-errors';
 import React, { useCallback } from 'react';
-import { useDispatch } from 'react-redux';
 
 import { QueueType } from '../../../../../../shared/constants/metametrics';
 import {
@@ -26,7 +24,7 @@ import {
   TextVariant,
 } from '../../../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
-import { rejectPendingApproval } from '../../../../../store/actions';
+import { rejectAllApprovals } from '../../../../../store/actions';
 import { useQueuedConfirmationsEvent } from '../../../hooks/useQueuedConfirmationEvents';
 import { useConfirmationNavigation } from '../../../hooks/useConfirmationNavigation';
 import { useConfirmContext } from '../../../context/confirm';
@@ -37,7 +35,6 @@ export type NavProps = {
 
 export const Nav = ({ confirmationId }: NavProps) => {
   const t = useI18nContext();
-  const dispatch = useDispatch();
 
   const { confirmations, count, getIndex, navigateToIndex } =
     useConfirmationNavigation();
@@ -51,15 +48,8 @@ export const Nav = ({ confirmationId }: NavProps) => {
     [position, navigateToIndex],
   );
 
-  const onRejectAll = useCallback(() => {
-    confirmations.forEach((conf) => {
-      dispatch(
-        rejectPendingApproval(
-          conf.id,
-          serializeError(providerErrors.userRejectedRequest()),
-        ),
-      );
-    });
+  const onRejectAll = useCallback(async () => {
+    await rejectAllApprovals();
   }, [confirmations]);
 
   useQueuedConfirmationsEvent(QueueType.NavigationHeader);

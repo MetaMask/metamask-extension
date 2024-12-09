@@ -5304,6 +5304,10 @@ export function requestUserApproval({
   };
 }
 
+export async function rejectAllApprovals() {
+  await submitRequestToBackground('rejectAllApprovals');
+}
+
 export async function getCurrentNetworkEIP1559Compatibility(): Promise<
   boolean | undefined
 > {

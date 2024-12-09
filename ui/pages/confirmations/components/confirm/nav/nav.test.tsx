@@ -112,15 +112,15 @@ describe('ConfirmNav', () => {
     expect(mockHistoryReplace).toHaveBeenCalledTimes(1);
   });
 
-  it('invoke action rejectPendingApproval for all pending approvals when "Reject all" button is clicked', () => {
+  it('invoke action rejectAllApprovals when "Reject all" button is clicked', () => {
     const { getByRole } = render();
     const rejectAllButton = getByRole('button', { name: /Reject all/iu });
     const rejectSpy = jest
-      .spyOn(Actions, 'rejectPendingApproval')
+      .spyOn(Actions, 'rejectAllApprovals')
       // TODO: Replace `any` with type
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       .mockImplementation(() => ({} as any));
     fireEvent.click(rejectAllButton);
-    expect(rejectSpy).toHaveBeenCalledTimes(3);
+    expect(rejectSpy).toHaveBeenCalledTimes(1);
   });
 });
