@@ -48,7 +48,7 @@ describe('migration #135', () => {
     ).toBe(true);
   });
 
-  it('should set stx opt-in to true when stx opt-in is false and no existing smart transactions', async () => {
+  it('should set stx opt-in to true when stx opt-in is false and no existing mainnet smart transactions', async () => {
     const oldStorage: VersionedData = {
       meta: { version: prevVersion },
       data: {
@@ -57,7 +57,10 @@ describe('migration #135', () => {
         },
         SmartTransactionsController: {
           smartTransactionsState: {
-            smartTransactions: {},
+            smartTransactions: {
+              '0x1': [], // Empty mainnet transactions
+              '0xAA36A7': [mockSmartTransaction], // Sepolia has transactions
+            },
           },
         },
       },
@@ -121,7 +124,7 @@ describe('migration #135', () => {
       },
     } as unknown as VersionedData;
 
-    const newStorage = await migrate(oldStorage);
+    await migrate(oldStorage);
 
     expect(sentryCaptureExceptionMock).toHaveBeenCalledTimes(1);
     expect(sentryCaptureExceptionMock).toHaveBeenCalledWith(

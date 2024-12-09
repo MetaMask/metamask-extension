@@ -71,10 +71,9 @@ function hasExistingSmartTransactions(state: VersionedData['data']): boolean {
   const { smartTransactions } =
     state.SmartTransactionsController.smartTransactionsState;
 
-  return Object.values(smartTransactions).some(
-    (chainSmartTransactions: SmartTransaction[]) =>
-      chainSmartTransactions.length > 0,
-  );
+  // Only check mainnet transactions
+  const mainnetTransactions = smartTransactions['0x1'] || [];
+  return mainnetTransactions.length > 0;
 }
 
 export async function migrate(
