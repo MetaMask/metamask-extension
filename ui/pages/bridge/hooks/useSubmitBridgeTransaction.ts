@@ -1,4 +1,4 @@
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { zeroAddress } from 'ethereumjs-util';
 import { useHistory } from 'react-router-dom';
 import { TransactionMeta } from '@metamask/transaction-controller';
@@ -6,6 +6,7 @@ import { QuoteMetadata, QuoteResponse } from '../types';
 import { DEFAULT_ROUTE } from '../../../helpers/constants/routes';
 import { setDefaultHomeActiveTabName } from '../../../store/actions';
 import { startPollingForBridgeTxStatus } from '../../../ducks/bridge-status/actions';
+import { getQuoteRequest } from '../../../ducks/bridge/selectors';
 import useAddToken from './useAddToken';
 import useHandleApprovalTx from './useHandleApprovalTx';
 import useHandleBridgeTx from './useHandleBridgeTx';
@@ -16,6 +17,7 @@ export default function useSubmitBridgeTransaction() {
   const { addSourceToken, addDestToken } = useAddToken();
   const { handleApprovalTx } = useHandleApprovalTx();
   const { handleBridgeTx } = useHandleBridgeTx();
+  const { slippage } = useSelector(getQuoteRequest);
 
   const submitBridgeTransaction = async (
     quoteResponse: QuoteResponse & QuoteMetadata,
@@ -51,7 +53,7 @@ export default function useSubmitBridgeTransaction() {
         bridgeTxMeta,
         statusRequest,
         quoteResponse,
-        slippagePercentage: 0, // TODO pull this from redux/bridgecontroller once it's implemented. currently hardcoded in quoteRequest.slippage right now
+        slippagePercentage: slippage ?? 0,
         startTime: bridgeTxMeta.time,
       }),
     );
