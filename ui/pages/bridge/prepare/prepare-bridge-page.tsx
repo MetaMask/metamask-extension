@@ -85,6 +85,7 @@ import { useBridgeTokens } from '../../../hooks/bridge/useBridgeTokens';
 import { getCurrentKeyring, getLocale } from '../../../selectors';
 import { isHardwareKeyring } from '../../../helpers/utils/hardware';
 import { SECOND } from '../../../../shared/constants/time';
+import { isNetworkAdded } from '../../../ducks/bridge/utils';
 import { BridgeInputGroup } from './bridge-input-group';
 import { BridgeCTAButton } from './bridge-cta-button';
 
@@ -328,13 +329,15 @@ const PrepareBridgePage = () => {
               dispatch(setToChainId(null));
               dispatch(setToToken(null));
             }
-            dispatch(
-              setActiveNetwork(
-                networkConfig.rpcEndpoints[
-                  networkConfig.defaultRpcEndpointIndex
-                ].networkClientId,
-              ),
-            );
+            if (isNetworkAdded(networkConfig)) {
+              dispatch(
+                setActiveNetwork(
+                  networkConfig.rpcEndpoints[
+                    networkConfig.defaultRpcEndpointIndex
+                  ].networkClientId,
+                ),
+              );
+            }
             dispatch(setFromChain(networkConfig.chainId));
             dispatch(setFromToken(null));
             dispatch(setFromTokenInputValue(null));
@@ -399,9 +402,13 @@ const PrepareBridgePage = () => {
             color={IconColor.iconAlternativeSoft}
             disabled={
               isSwitchingTemporarilyDisabled ||
-              !isValidQuoteRequest(quoteRequest, false)
+              !isValidQuoteRequest(quoteRequest, false) ||
+              !isNetworkAdded(toChain)
             }
             onClick={() => {
+              if (!isNetworkAdded(toChain)) {
+                return;
+              }
               setRotateSwitchTokens(!rotateSwitchTokens);
               flippedRequestProperties &&
                 trackCrossChainSwapsEvent({
