@@ -5832,6 +5832,21 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@metamask/message-manager@npm:^11.0.2":
+  version: 11.0.2
+  resolution: "@metamask/message-manager@npm:11.0.2"
+  dependencies:
+    "@metamask/base-controller": "npm:^7.0.2"
+    "@metamask/controller-utils": "npm:^11.4.4"
+    "@metamask/eth-sig-util": "npm:^8.0.0"
+    "@metamask/utils": "npm:^10.0.0"
+    "@types/uuid": "npm:^8.3.0"
+    jsonschema: "npm:^1.2.4"
+    uuid: "npm:^8.3.2"
+  checksum: 10/a1e324645944c61a3a677603f0478e316a6c76924c672fb6bf526d67a3c52ec95654403e8693e2e5873e4762a57d73adcb4106557afeecd6d8e7593ce8db217c
+  languageName: node
+  linkType: hard
+
 "@metamask/message-signing-snap@npm:^0.6.0":
   version: 0.6.0
   resolution: "@metamask/message-signing-snap@npm:0.6.0"
