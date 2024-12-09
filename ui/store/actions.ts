@@ -277,11 +277,8 @@ export function createNewVaultAndGetSeedPhrase(
     dispatch(showLoadingIndication());
 
     try {
-      console.log('createNewVaultAndGetSeedPhrase HERE');
       await createNewVault(password);
-      console.log('getSeedPhrase');
       const seedPhrase = await getSeedPhrase(password);
-      console.log('seedPhrase: ', seedPhrase);
       return seedPhrase;
     } catch (error) {
       dispatch(displayWarning(error));
@@ -497,6 +494,7 @@ export function addNewAccount(): ThunkAction<
     const keyrings = getMetaMaskKeyrings(getState());
     // find keyring containing selected account
     let oldAccounts: string[];
+    let keyringId: string;
     for (const keyring of keyrings) {
       // Already found old accounts
       if (oldAccounts?.length) {
@@ -506,6 +504,7 @@ export function addNewAccount(): ThunkAction<
         const keyringAccounts = keyring.accounts;
         if (keyringAccounts.includes(selectedAccount.address)) {
           oldAccounts = keyringAccounts;
+          keyringId = keyring.id;
           break;
         }
       }
@@ -517,6 +516,7 @@ export function addNewAccount(): ThunkAction<
     try {
       addedAccountAddress = await submitRequestToBackground('addNewAccount', [
         Object.keys(oldAccounts).length,
+        keyringId,
       ]);
     } catch (error) {
       dispatch(displayWarning(error));
