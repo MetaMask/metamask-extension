@@ -2,7 +2,6 @@ import React from 'react';
 import { render, fireEvent, waitFor } from '@testing-library/react';
 import { Carousel } from './carousel';
 
-// Mock the useI18nContext hook
 jest.mock('../../../hooks/useI18nContext', () => ({
   useI18nContext: () => (key: string) => key,
 }));
@@ -48,7 +47,6 @@ describe('Carousel', () => {
     fireEvent.click(closeButtons[0]);
     expect(mockOnClose).toHaveBeenCalledWith('1');
 
-    // Simulate parent component updating slides after onClose
     const remainingSlides = mockSlides.filter((slide) => slide.id !== '1');
     rerender(<Carousel slides={remainingSlides} onClose={mockOnClose} />);
 
@@ -65,7 +63,6 @@ describe('Carousel', () => {
     }
     fireEvent.click(dots[1]);
 
-    // Check if the second slide is now active
     const slides = container.querySelectorAll('.mm-carousel-slide');
     expect(slides[1].parentElement).toHaveClass('selected');
   });
@@ -102,7 +99,7 @@ describe('Carousel', () => {
     expect(loadingCarousel).toBeDefined();
 
     const skeletonSlides = container.querySelectorAll('.mm-carousel-slide');
-    expect(skeletonSlides).toHaveLength(3); // Default shows 3 skeleton slides
+    expect(skeletonSlides).toHaveLength(3);
   });
 
   it('should handle slide click with href', () => {
@@ -162,7 +159,7 @@ describe('Carousel', () => {
     const closeButtons = container.querySelectorAll(
       '.mm-carousel-slide__close-button',
     );
-    expect(closeButtons).toHaveLength(1); // Only one dismissable slide
+    expect(closeButtons).toHaveLength(1);
   });
 
   it('should limit the number of slides to MAX_SLIDES', () => {
@@ -197,6 +194,6 @@ describe('Carousel', () => {
     const { container } = render(<Carousel slides={manySlides} />);
 
     const visibleSlides = container.querySelectorAll('.mm-carousel-slide');
-    expect(visibleSlides).toHaveLength(5); // MAX_SLIDES is 5
+    expect(visibleSlides).toHaveLength(5);
   });
 });
