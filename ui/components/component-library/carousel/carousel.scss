@@ -3,6 +3,10 @@
   cursor: pointer;
 }
 
+.mm-carousel__loading {
+  cursor: default;
+}
+
 .mm-carousel-slide {
   position: relative;
   padding: 0 !important;

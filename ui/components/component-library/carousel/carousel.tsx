@@ -33,27 +33,10 @@ const MAX_SLIDES = 5;
 
 export const Carousel = React.forwardRef(
   (
-    {
-      selectedItem = 0,
-      showArrows = false,
-      onChange,
-      showStatus = false,
-      autoPlay = false,
-      swipeScrollTolerance = 5,
-      centerSlidePercentage,
-      axis = 'horizontal',
-      preventMovementUntilSwipeScrollTolerance = true,
-      emulateTouch = true,
-      centerMode = true,
-      swipeable = true,
-      slides = [],
-      className,
-      onClose,
-      ...props
-    }: CarouselProps,
+    { slides = [], onClose, isLoading = false, ...props }: CarouselProps,
     ref: React.Ref<HTMLDivElement>,
   ) => {
-    const [selectedIndex, setSelectedIndex] = useState(selectedItem);
+    const [selectedIndex, setSelectedIndex] = useState(0);
     const t = useI18nContext();
 
     const visibleSlides = slides.slice(0, MAX_SLIDES);
@@ -85,10 +68,48 @@ export const Carousel = React.forwardRef(
 
     const handleChange = (index: number) => {
       setSelectedIndex(index);
-      if (onChange) {
-        onChange(index);
-      }
     };
+
+    if (isLoading) {
+      return (
+        <Box
+          className={'mm-carousel'}
+          ref={ref}
+          {...(props as BoxProps<'div'>)}
+        >
+          <ResponsiveCarousel
+            showArrows={false}
+            className="mm-carousel__carousel mm-carousel__loading"
+            showStatus={false}
+            autoPlay={false}
+            swipeScrollTolerance={5}
+            centerSlidePercentage={getCenterSlidePercentage(3)}
+            axis={'horizontal'}
+            preventMovementUntilSwipeScrollTolerance
+            emulateTouch
+            centerMode
+            swipeable={false}
+          >
+            {[...Array(3)].map((_, index) => (
+              <BannerBase
+                key={`skeleton-${index}`}
+                className="mm-carousel-slide"
+                textAlign={TextAlign.Left}
+                alignItems={AlignItems.center}
+                backgroundColor={BackgroundColor.backgroundAlternative}
+                borderColor={BorderColor.infoMuted}
+                borderWidth={1}
+                style={{
+                  height: BANNER_STYLES.HEIGHT,
+                  margin: getSlideMargin(index, 3),
+                  width: getSlideWidth(3),
+                }}
+              />
+            ))}
+          </ResponsiveCarousel>
+        </Box>
+      );
+    }
 
     if (slides.length === 0) {
       return null;
@@ -98,23 +119,18 @@ export const Carousel = React.forwardRef(
       <Box className={'mm-carousel'} ref={ref} {...(props as BoxProps<'div'>)}>
         <ResponsiveCarousel
           selectedItem={selectedIndex}
-          showArrows={showArrows}
+          showArrows={false}
           onChange={handleChange}
           className="mm-carousel__carousel"
-          showStatus={showStatus}
-          autoPlay={autoPlay}
-          swipeScrollTolerance={swipeScrollTolerance}
-          centerSlidePercentage={
-            centerSlidePercentage ||
-            getCenterSlidePercentage(visibleSlides.length)
-          }
-          axis={axis}
-          preventMovementUntilSwipeScrollTolerance={
-            preventMovementUntilSwipeScrollTolerance
-          }
-          emulateTouch={emulateTouch}
-          centerMode={centerMode}
-          swipeable={swipeable}
+          showStatus={false}
+          autoPlay={false}
+          swipeScrollTolerance={5}
+          centerSlidePercentage={getCenterSlidePercentage(visibleSlides.length)}
+          axis={'horizontal'}
+          preventMovementUntilSwipeScrollTolerance
+          emulateTouch
+          centerMode
+          swipeable
         >
           {visibleSlides.map((slide, index) => (
             <BannerBase
@@ -156,7 +172,7 @@ export const Carousel = React.forwardRef(
                 marginLeft: 2,
               }}
               onClose={
-                handleClose
+                Boolean(handleClose) && !slide.undismissable
                   ? (e: React.MouseEvent<HTMLElement>) =>
                       handleClose(e, slide.id)
                   : undefined
