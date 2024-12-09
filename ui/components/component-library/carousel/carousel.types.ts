@@ -6,6 +6,7 @@ export type Slide = {
   description: string;
   image: string;
   href?: string;
+  onClick?: () => void;
 };
 
 type CarouselBaseProps = {

@@ -111,8 +111,14 @@ export const Carousel = React.forwardRef(
           {slides.map((slide, index) => (
             <BannerBase
               onClick={() => {
-                if (slide.href && index === selectedIndex) {
+                if (index !== selectedIndex) {
+                  return;
+                }
+                if (slide.href) {
                   global.platform.openTab({ url: slide.href });
+                }
+                if (slide.onClick) {
+                  slide.onClick();
                 }
               }}
               key={slide.id}
