@@ -7,6 +7,7 @@ import {
   connectToDapp,
 } from '../../helpers';
 import FixtureBuilder from '../../fixture-builder';
+import { loginWithoutBalanceValidation } from '../../page-objects/flows/login.flow';
 
 /**
  * Mocks the segment API for the App Opened event that we expect to see when
@@ -44,7 +45,7 @@ describe('App Opened metric @no-mmi', function () {
         testSpecificMock: mockSegment,
       },
       async ({ driver, mockedEndpoint: mockedEndpoints }) => {
-        await unlockWallet(driver);
+        await loginWithoutBalanceValidation(driver);
 
         const events = await getEventPayloads(driver, mockedEndpoints);
         assert.equal(events.length, 1);
