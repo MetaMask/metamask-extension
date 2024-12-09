@@ -40,6 +40,10 @@ type AssetListProps = {
   ) => boolean;
   network?: NetworkConfiguration;
   isTokenListLoading?: boolean;
+  assetItemProps: Pick<
+    React.ComponentProps<typeof TokenListItem>,
+    'isTitleNetworkName' | 'isTitleHidden'
+  >;
 };
 
 export default function AssetList({
@@ -49,6 +53,7 @@ export default function AssetList({
   isTokenDisabled,
   network,
   isTokenListLoading = false,
+  assetItemProps,
 }: AssetListProps) {
   const t = useI18nContext();
   const selectedTokenAddress = asset?.address;
@@ -152,6 +157,7 @@ export default function AssetList({
                         token.chainId as keyof typeof CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP
                       ]
                     }
+                    {...assetItemProps}
                   />
                 ) : (
                   <AssetComponent
@@ -159,6 +165,7 @@ export default function AssetList({
                     tooltipText={
                       isDisabled ? 'swapTokenNotAvailable' : undefined
                     }
+                    assetItemProps={assetItemProps}
                   />
                 )}
               </Box>
