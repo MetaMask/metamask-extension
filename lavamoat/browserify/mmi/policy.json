@@ -187,9 +187,23 @@
         "crypto": true
       },
       "packages": {
+        "@ethereumjs/tx>ethereum-cryptography>@noble/curves": true,
         "@ethereumjs/tx>ethereum-cryptography>@noble/hashes": true,
-        "@ethereumjs/tx>ethereum-cryptography>@scure/bip32": true,
-        "@metamask/message-signing-snap>@noble/curves": true
+        "@ethereumjs/tx>ethereum-cryptography>@scure/bip32": true
+      }
+    },
+    "@ethereumjs/tx>ethereum-cryptography>@noble/curves": {
+      "globals": {
+        "TextEncoder": true
+      },
+      "packages": {
+        "@ethereumjs/tx>ethereum-cryptography>@noble/curves>@noble/hashes": true
+      }
+    },
+    "@ethereumjs/tx>ethereum-cryptography>@noble/curves>@noble/hashes": {
+      "globals": {
+        "TextEncoder": true,
+        "crypto": true
       }
     },
     "@ethereumjs/tx>ethereum-cryptography>@noble/hashes": {
@@ -200,8 +214,8 @@
     },
     "@ethereumjs/tx>ethereum-cryptography>@scure/bip32": {
       "packages": {
+        "@ethereumjs/tx>ethereum-cryptography>@noble/curves": true,
         "@ethereumjs/tx>ethereum-cryptography>@scure/bip32>@noble/hashes": true,
-        "@metamask/message-signing-snap>@noble/curves": true,
         "@metamask/utils>@scure/base": true
       }
     },
@@ -1729,37 +1743,6 @@
         "browserify>url": true
       }
     },
-    "@metamask/message-signing-snap>@noble/ciphers": {
-      "globals": {
-        "TextDecoder": true,
-        "TextEncoder": true,
-        "crypto": true
-      }
-    },
-    "@metamask/message-signing-snap>@noble/curves": {
-      "globals": {
-        "TextEncoder": true
-      },
-      "packages": {
-        "@metamask/message-signing-snap>@noble/curves>@noble/hashes": true
-      }
-    },
-    "@metamask/message-signing-snap>@noble/curves>@noble/hashes": {
-      "globals": {
-        "TextEncoder": true,
-        "crypto": true
-      }
-    },
-    "@metamask/multichain": {
-      "packages": {
-        "@metamask/controller-utils": true,
-        "@metamask/multichain>@metamask/api-specs": true,
-        "@metamask/permission-controller": true,
-        "@metamask/rpc-errors": true,
-        "@metamask/utils": true,
-        "lodash": true
-      }
-    },
     "@metamask/name-controller": {
       "globals": {
         "fetch": true
@@ -2237,11 +2220,18 @@
         "@metamask/base-controller": true,
         "@metamask/keyring-api": true,
         "@metamask/keyring-controller": true,
-        "@metamask/message-signing-snap>@noble/ciphers": true,
+        "@metamask/profile-sync-controller>@noble/ciphers": true,
         "@metamask/profile-sync-controller>siwe": true,
         "@noble/hashes": true,
         "browserify>buffer": true,
         "loglevel": true
+      }
+    },
+    "@metamask/profile-sync-controller>@noble/ciphers": {
+      "globals": {
+        "TextDecoder": true,
+        "TextEncoder": true,
+        "crypto": true
       }
     },
     "@metamask/profile-sync-controller>siwe": {
@@ -2614,7 +2604,7 @@
         "crypto.subtle": true
       },
       "packages": {
-        "@metamask/message-signing-snap>@noble/curves": true,
+        "@ethereumjs/tx>ethereum-cryptography>@noble/curves": true,
         "@metamask/scure-bip39": true,
         "@metamask/utils": true,
         "@metamask/utils>@scure/base": true,
@@ -2658,7 +2648,7 @@
     },
     "@metamask/snaps-utils>@metamask/snaps-registry": {
       "packages": {
-        "@metamask/message-signing-snap>@noble/curves": true,
+        "@ethereumjs/tx>ethereum-cryptography>@noble/curves": true,
         "@metamask/utils": true,
         "@metamask/utils>@metamask/superstruct": true,
         "@noble/hashes": true
