@@ -55,7 +55,7 @@ import type {
   NotificationServicesPushController,
 } from '@metamask/notification-services-controller';
 
-import type { BalancesController as MultichainBalancesControllerState } from '../../app/scripts/lib/accounts/BalancesController';
+import type { BalancesControllerState as MultichainBalancesControllerState } from '../../app/scripts/lib/accounts/BalancesController';
 import type { NetworkOrderControllerState } from '../../app/scripts/controllers/network-order';
 import type { AccountOrderControllerState } from '../../app/scripts/controllers/account-order';
 import type { PreferencesControllerState } from '../../app/scripts/controllers/preferences-controller';
