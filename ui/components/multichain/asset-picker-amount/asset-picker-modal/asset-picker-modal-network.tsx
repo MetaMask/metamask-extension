@@ -23,10 +23,7 @@ import {
   Text,
   AvatarNetworkSize,
 } from '../../../component-library';
-import {
-  CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP,
-  NETWORK_TO_NAME_MAP,
-} from '../../../../../shared/constants/network';
+import { CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP } from '../../../../../shared/constants/network';
 ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 ///: END:ONLY_INCLUDE_IF
@@ -35,6 +32,7 @@ import { getNetworkConfigurationsByChainId } from '../../../../../shared/modules
 import { getCurrentCurrency } from '../../../../selectors';
 import { formatCurrency } from '../../../../helpers/utils/confirm-tx.util';
 import { useMultichainBalances } from '../../../../hooks/useMultichainBalances';
+import { NETWORK_TO_SHORT_NETWORK_NAME_MAP } from '../../../../../shared/constants/bridge';
 
 /**
  * AssetPickerModalNetwork component displays a modal for selecting a network in the asset picker.
@@ -225,8 +223,8 @@ export const AssetPickerModalNetwork = ({
                 <NetworkListItem
                   key={chainId}
                   name={
-                    NETWORK_TO_NAME_MAP[
-                      chainId as keyof typeof NETWORK_TO_NAME_MAP
+                    NETWORK_TO_SHORT_NETWORK_NAME_MAP[
+                      chainId as keyof typeof NETWORK_TO_SHORT_NETWORK_NAME_MAP
                     ] ?? name
                   }
                   selected={
