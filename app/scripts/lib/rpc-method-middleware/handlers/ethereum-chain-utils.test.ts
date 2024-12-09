@@ -62,7 +62,7 @@ describe('Ethereum Chain Utils', () => {
         new Error('unexpected error'),
       );
 
-      await switchChain('example.com', '0x1', 'mainnet', null);
+      await switchChain('example.com', '0x1', 'mainnet', undefined);
 
       expect(end).toHaveBeenCalledWith(new Error('unexpected error'));
     });
