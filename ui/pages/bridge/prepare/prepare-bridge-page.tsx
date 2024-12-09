@@ -83,6 +83,8 @@ import { getNativeCurrency } from '../../../ducks/metamask/metamask';
 import useLatestBalance from '../../../hooks/bridge/useLatestBalance';
 import { useCountdownTimer } from '../../../hooks/bridge/useCountdownTimer';
 import { useBridgeTokens } from '../../../hooks/bridge/useBridgeTokens';
+import { getCurrentKeyring } from '../../../selectors';
+import { isHardwareKeyring } from '../../../helpers/utils/hardware';
 import { BridgeInputGroup } from './bridge-input-group';
 import { BridgeCTAButton } from './bridge-cta-button';
 
@@ -121,6 +123,10 @@ const PrepareBridgePage = () => {
     useSelector(getBridgeQuotes);
 
   const { refreshRate } = useSelector(getBridgeQuotesConfig);
+
+  const keyring = useSelector(getCurrentKeyring);
+  // @ts-expect-error keyring type is wrong maybe?
+  const isUsingHardwareWallet = isHardwareKeyring(keyring.type);
 
   const ticker = useSelector(getNativeCurrency);
   const { isNoQuotesAvailable, isInsufficientGasForQuote } =
@@ -497,12 +503,14 @@ const PrepareBridgePage = () => {
                     variant={TextVariant.bodyXs}
                     textAlign={TextAlign.Center}
                   >
-                    {t('willApproveAmountForBridging', [
-                      formatTokenAmount(
-                        new BigNumber(fromAmount),
-                        fromToken.symbol,
-                      ),
-                    ])}
+                    {isUsingHardwareWallet
+                      ? t('willApproveAmountForBridgingHardware')
+                      : t('willApproveAmountForBridging', [
+                          formatTokenAmount(
+                            new BigNumber(fromAmount),
+                            fromToken.symbol,
+                          ),
+                        ])}
                   </Text>
                   {fromAmount && (
                     <Tooltip
@@ -511,10 +519,15 @@ const PrepareBridgePage = () => {
                       offset={[-48, 8]}
                       title={t('grantExactAccess')}
                     >
-                      {t('bridgeApprovalWarning', [
-                        fromAmount,
-                        fromToken.symbol,
-                      ])}
+                      {isUsingHardwareWallet
+                        ? t('bridgeApprovalWarningForHardware', [
+                            fromAmount,
+                            fromToken.symbol,
+                          ])
+                        : t('bridgeApprovalWarning', [
+                            fromAmount,
+                            fromToken.symbol,
+                          ])}
                     </Tooltip>
                   )}
                 </Row>

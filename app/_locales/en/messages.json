@@ -868,6 +868,9 @@
   "bridgeApprovalWarning": {
     "message": "You are allowing access to the specified amount, $1 $2. The contract will not access any additional funds."
   },
+  "bridgeApprovalWarningForHardware": {
+    "message": "You will need to allow access to $1 $2 for bridging, and then approve bridging to USDC. This will require two separate confirmations."
+  },
   "bridgeCalculatingAmount": {
     "message": "Calculating..."
   },
@@ -6860,6 +6863,9 @@
   },
   "willApproveAmountForBridging": {
     "message": "This will approve $1 for bridging."
+  },
+  "willApproveAmountForBridgingHardware": {
+    "message": "You’ll need to confirm two transactions on your hardware wallet."
   },
   "withdrawing": {
     "message": "Withdrawing"
