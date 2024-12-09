@@ -68,7 +68,9 @@ import {
   getInternalAccountByAddress,
   getSelectedInternalAccount,
   getInternalAccounts,
+  ///: BEGIN:ONLY_INCLUDE_IF(multi-srp)
   getMetaMaskKeyrings,
+  ///: END:ONLY_INCLUDE_IF
 } from '../selectors';
 import {
   getSelectedNetworkClientId,
@@ -239,6 +241,7 @@ export function createNewVaultAndRestore(
   };
 }
 
+///: BEGIN:ONLY_INCLUDE_IF(multi-srp)
 export function createNewVaultAndRestoreFromMnemonic(
   mnemonic: string,
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
@@ -269,7 +272,7 @@ export function createNewVaultAndRestoreFromMnemonic(
       });
   };
 }
-
+///: END:ONLY_INCLUDE_IF
 export function createNewVaultAndGetSeedPhrase(
   password: string,
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
@@ -490,10 +493,15 @@ export function addNewAccount(): ThunkAction<
 > {
   log.debug(`background.addNewAccount`);
   return async (dispatch, getState) => {
+    let oldAccounts = getInternalAccounts(getState()).filter(
+      (internalAccount) =>
+        internalAccount.metadata.keyring.type === KeyringTypes.hd,
+    );
+    ///: BEGIN:ONLY_INCLUDE_IF(multi-srp)
     const selectedAccount = getSelectedInternalAccount(getState());
     const keyrings = getMetaMaskKeyrings(getState());
     // find keyring containing selected account
-    let oldAccounts: string[];
+    oldAccounts = [];
     let keyringId: string;
     for (const keyring of keyrings) {
       // Already found old accounts
@@ -509,6 +517,7 @@ export function addNewAccount(): ThunkAction<
         }
       }
     }
+    ///: END:ONLY_INCLUDE_IF
 
     dispatch(showLoadingIndication());
 
@@ -516,7 +525,9 @@ export function addNewAccount(): ThunkAction<
     try {
       addedAccountAddress = await submitRequestToBackground('addNewAccount', [
         Object.keys(oldAccounts).length,
+        ///: BEGIN:ONLY_INCLUDE_IF(multi-srp)
         keyringId,
+        ///: END:ONLY_INCLUDE_IF
       ]);
     } catch (error) {
       dispatch(displayWarning(error));

@@ -3804,8 +3804,10 @@ export default class MetamaskController extends EventEmitter {
       setLocked: this.setLocked.bind(this),
       createNewVaultAndKeychain: this.createNewVaultAndKeychain.bind(this),
       createNewVaultAndRestore: this.createNewVaultAndRestore.bind(this),
+      ///: BEGIN:ONLY_INCLUDE_IF(multi-srp)
       createNewVaultAndRestoreFromMnemonic:
         this.createNewVaultAndRestoreFromMnemonic.bind(this),
+      ///: END:ONLY_INCLUDE_IF
       exportAccount: this.exportAccount.bind(this),
 
       // txController
@@ -4549,6 +4551,7 @@ export default class MetamaskController extends EventEmitter {
    * @param {string} mnemonic
    * @returns {object} newAccount
    */
+  ///: BEGIN:ONLY_INCLUDE_IF(multi-srp)
   async createNewVaultAndRestoreFromMnemonic(mnemonic) {
     const releaseLock = await this.createVaultMutex.acquire();
     try {
@@ -4561,6 +4564,7 @@ export default class MetamaskController extends EventEmitter {
       releaseLock();
     }
   }
+  ///: END:ONLY_INCLUDE_IF
 
   /**
    * Create a new Vault and restore an existent keyring.
@@ -5108,7 +5112,9 @@ export default class MetamaskController extends EventEmitter {
 
     const addedAccountAddress = await this.keyringController.addNewAccount(
       accountCount,
+      ///: BEGIN:ONLY_INCLUDE_IF(multi-srp)
       keyringId,
+      ///: END:ONLY_INCLUDE_IF
     );
 
     if (!oldAccounts.includes(addedAccountAddress)) {
