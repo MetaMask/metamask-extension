@@ -70,7 +70,7 @@ describe('ExtensionStore', () => {
       );
     });
 
-    it('should throw an error if not passed a truthy value as an argument', async () => {
+    it('should throw an error if not passed a state parameter', async () => {
       const localStore = setup();
       await expect(() =>
         localStore.set(undefined as unknown as IntermediaryStateType),
