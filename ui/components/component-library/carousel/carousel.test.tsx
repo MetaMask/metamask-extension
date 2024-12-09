@@ -119,6 +119,7 @@ describe('Carousel', () => {
     const { container } = render(<Carousel slides={slidesWithHref} />);
 
     const slide = container.querySelector('.mm-carousel-slide');
+    if (!slide) throw new Error('Slide not found');
     fireEvent.click(slide);
 
     expect(mockOpenTab).toHaveBeenCalledWith({ url: 'https://example.com' });
@@ -136,6 +137,7 @@ describe('Carousel', () => {
     const { container } = render(<Carousel slides={slidesWithClick} />);
 
     const slide = container.querySelector('.mm-carousel-slide');
+    if (!slide) throw new Error('Slide not found');
     fireEvent.click(slide);
 
     expect(mockOnClick).toHaveBeenCalled();
