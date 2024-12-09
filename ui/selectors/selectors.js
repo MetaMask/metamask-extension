@@ -125,7 +125,10 @@ import {
   getSubjectMetadata,
 } from './permissions';
 import { getSelectedInternalAccount, getInternalAccounts } from './accounts';
-import { getMultichainBalances, getMultichainNetwork } from './multichain';
+import {
+  getMultichainBalances,
+  getMultichainNetworkProviders,
+} from './multichain';
 
 export function getNetworkIdentifier(state) {
   const { type, nickname, rpcUrl } = getProviderConfig(state);
@@ -264,13 +267,13 @@ export const getMetaMaskAccounts = createSelector(
   getMetaMaskAccountBalances,
   getMetaMaskCachedBalances,
   getMultichainBalances,
-  getMultichainNetwork,
+  getMultichainNetworkProviders,
   (
     internalAccounts,
     balances,
     cachedBalances,
     multichainBalances,
-    multichainNetwork,
+    multichainNetworkProviders,
   ) =>
     Object.values(internalAccounts).reduce((accounts, internalAccount) => {
       // TODO: mix in the identity state here as well, consolidating this
@@ -287,6 +290,9 @@ export const getMetaMaskAccounts = createSelector(
           };
         }
       } else {
+        const multichainNetwork = multichainNetworkProviders.find((network) =>
+          network.isAddressCompatible(internalAccount.address),
+        );
         account = {
           ...account,
           balance:
