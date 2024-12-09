@@ -13,6 +13,10 @@ import { AssetWithDisplayData, ERC20Asset, NativeAsset } from './types';
 
 type AssetProps = AssetWithDisplayData<NativeAsset | ERC20Asset> & {
   tooltipText?: string;
+  assetItemProps?: Pick<
+    React.ComponentProps<typeof TokenListItem>,
+    'isTitleNetworkName' | 'isTitleHidden'
+  >;
 };
 
 export default function Asset({
@@ -23,6 +27,7 @@ export default function Asset({
   tooltipText,
   tokenFiatAmount,
   chainId,
+  assetItemProps = {},
 }: AssetProps) {
   const locale = useSelector(getIntlLocale);
 
@@ -72,6 +77,7 @@ export default function Asset({
         ]
       }
       isPrimaryTokenSymbolHidden
+      {...assetItemProps}
     />
   );
 }

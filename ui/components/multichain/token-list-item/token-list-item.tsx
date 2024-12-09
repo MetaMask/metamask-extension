@@ -69,6 +69,7 @@ import {
   SafeChain,
   useSafeChains,
 } from '../../../pages/settings/networks-tab/networks-form/use-safe-chains';
+import { NETWORK_TO_SHORT_NETWORK_NAME_MAP } from '../../../../shared/constants/bridge';
 import { PercentageChange } from './price/percentage-change/percentage-change';
 
 type TokenListItemProps = {
@@ -82,6 +83,8 @@ type TokenListItemProps = {
   tooltipText?: string;
   isNativeCurrency?: boolean;
   isStakeable?: boolean;
+  isTitleNetworkName?: boolean;
+  isTitleHidden?: boolean;
   tokenChainImage?: string;
   chainId: string;
   address?: string | null;
@@ -104,6 +107,8 @@ export const TokenListItem = ({
   isPrimaryTokenSymbolHidden = false,
   isNativeCurrency = false,
   isStakeable = false,
+  isTitleNetworkName = false,
+  isTitleHidden = false,
   address = null,
   showPercentage = false,
   privacyMode = false,
@@ -141,6 +146,14 @@ export const TokenListItem = ({
   const history = useHistory();
 
   const getTokenTitle = () => {
+    if (isTitleNetworkName) {
+      return NETWORK_TO_SHORT_NETWORK_NAME_MAP[
+        chainId as keyof typeof NETWORK_TO_SHORT_NETWORK_NAME_MAP
+      ];
+    }
+    if (isTitleHidden) {
+      return ' ';
+    }
     switch (title) {
       case CURRENCY_SYMBOLS.ETH:
         return t('networkNameEthereum');
@@ -160,9 +173,8 @@ export const TokenListItem = ({
     : null;
 
   const tokenTitle = getTokenTitle();
-  const tokenMainTitleToDisplay = shouldShowPercentage
-    ? tokenTitle
-    : tokenSymbol;
+  const tokenMainTitleToDisplay =
+    shouldShowPercentage && !isTitleNetworkName ? tokenTitle : tokenSymbol;
 
   const stakeableTitle = (
     <Box
