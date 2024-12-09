@@ -370,9 +370,6 @@ describe('Phishing Detection', function () {
         testSpecificMock: async (mockServer) => {
           await setupPhishingDetectionMocks(mockServer, {
             blockProvider: BlockProvider.MetaMask,
-            c2DomainBlocklist: [
-              'ffd6df34371d7cfc68aef89e124bc84ea874d573d5979290fc22d59a73ae8539', // malicious c2 domain
-            ],
           });
         },
         dapp: true,
