@@ -1,2 +1,2 @@
 export { Carousel } from './carousel';
-export type { CarouselProps, Slide } from './carousel.types';
+export type { CarouselProps, CarouselSlide } from './carousel.types';
