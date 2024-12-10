@@ -3,6 +3,7 @@ import { useSelector } from 'react-redux';
 import { useHistory, useParams } from 'react-router-dom';
 import { NetworkConfiguration } from '@metamask/network-controller';
 import { TransactionMeta } from '@metamask/transaction-controller';
+import { BigNumber } from 'bignumber.js';
 import {
   AvatarNetwork,
   AvatarNetworkSize,
@@ -53,6 +54,8 @@ import {
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
+import { formatAmount } from '../../confirmations/components/simulation-details/formatAmount';
+import { getIntlLocale } from '../../../ducks/locale/locale';
 import TransactionDetailRow from './transaction-detail-row';
 import BridgeExplorerLinks from './bridge-explorer-links';
 import BridgeStepList from './bridge-step-list';
@@ -79,18 +82,47 @@ const getBlockExplorerUrl = (
 /**
  * @param options0
  * @param options0.bridgeHistoryItem
+ * @param options0.locale
  * @returns A string representing the bridge amount in decimal form
  */
-const getBridgeAmount = ({
+const getBridgeAmountSentFormatted = ({
+  locale,
   bridgeHistoryItem,
 }: {
+  locale: string;
   bridgeHistoryItem?: BridgeHistoryItem;
 }) => {
-  if (bridgeHistoryItem) {
-    return bridgeHistoryItem.pricingData?.amountSent;
+  if (!bridgeHistoryItem?.pricingData?.amountSent) {
+    return undefined;
   }
 
-  return undefined;
+  return formatAmount(
+    locale,
+    new BigNumber(bridgeHistoryItem.pricingData.amountSent),
+  );
+};
+
+const getBridgeAmountReceivedFormatted = ({
+  locale,
+  bridgeHistoryItem,
+}: {
+  locale: string;
+  bridgeHistoryItem?: BridgeHistoryItem;
+}) => {
+  if (!bridgeHistoryItem) {
+    return undefined;
+  }
+
+  const destAmount = bridgeHistoryItem.status.destChain?.amount;
+  if (!destAmount) {
+    return undefined;
+  }
+
+  const destAssetDecimals = bridgeHistoryItem.quote.destAsset.decimals;
+  return formatAmount(
+    locale,
+    new BigNumber(destAmount).dividedBy(10 ** destAssetDecimals),
+  );
 };
 
 /**
@@ -120,6 +152,7 @@ const StatusToColorMap: Record<StatusTypes, TextColor> = {
 
 const CrossChainSwapTxDetails = () => {
   const t = useI18nContext();
+  const locale = useSelector(getIntlLocale);
   const trackEvent = useContext(MetaMetricsContext);
   const rootState = useSelector((state) => state);
   const history = useHistory();
@@ -179,8 +212,40 @@ const CrossChainSwapTxDetails = () => {
       })
     : undefined;
 
-  const bridgeAmount = getBridgeAmount({ bridgeHistoryItem });
+  const bridgeAmountSent = getBridgeAmountSentFormatted({
+    locale,
+    bridgeHistoryItem,
+  });
+  const bridgeAmountReceived = getBridgeAmountReceivedFormatted({
+    locale,
+    bridgeHistoryItem,
+  });
   const isDelayed = getIsDelayed(status, bridgeHistoryItem);
+
+  const srcNetworkIconName = (
+    <Box display={Display.Flex} gap={1} alignItems={AlignItems.center}>
+      {srcNetwork && (
+        <AvatarNetwork
+          size={AvatarNetworkSize.Xs}
+          src={srcChainIconUrl}
+          name={srcNetwork?.name}
+        />
+      )}
+      {srcNetworkName}
+    </Box>
+  );
+  const destNetworkIconName = (
+    <Box display={Display.Flex} gap={1} alignItems={AlignItems.center}>
+      {destNetwork && (
+        <AvatarNetwork
+          size={AvatarNetworkSize.Xs}
+          src={destChainIconUrl}
+          name={destNetwork?.name}
+        />
+      )}
+      {destNetworkName}
+    </Box>
+  );
 
   return (
     <div className="bridge">
@@ -279,7 +344,6 @@ const CrossChainSwapTxDetails = () => {
                   </Text>
                 }
               />
-
               <TransactionDetailRow
                 title={t('bridgeTxDetailsBridging')}
                 value={
@@ -288,39 +352,12 @@ const CrossChainSwapTxDetails = () => {
                     gap={1}
                     alignItems={AlignItems.center}
                   >
-                    <Box
-                      display={Display.Flex}
-                      gap={1}
-                      alignItems={AlignItems.center}
-                    >
-                      {srcNetwork && (
-                        <AvatarNetwork
-                          size={AvatarNetworkSize.Xs}
-                          src={srcChainIconUrl}
-                          name={srcNetwork?.name}
-                        />
-                      )}
-                      {srcNetworkName}
-                    </Box>
+                    {srcNetworkIconName}
                     <Icon name={IconName.Arrow2Right} size={IconSize.Sm} />
-                    <Box
-                      display={Display.Flex}
-                      gap={1}
-                      alignItems={AlignItems.center}
-                    >
-                      {destNetwork && (
-                        <AvatarNetwork
-                          size={AvatarNetworkSize.Xs}
-                          src={destChainIconUrl}
-                          name={destNetwork?.name}
-                        />
-                      )}
-                      {destNetworkName}
-                    </Box>
+                    {destNetworkIconName}
                   </Box>
                 }
               />
-
               <TransactionDetailRow
                 title={t('bridgeTxDetailsTimestamp')}
                 value={t('bridgeTxDetailsTimestampValue', [
@@ -328,6 +365,70 @@ const CrossChainSwapTxDetails = () => {
                   formatDate(srcChainTxMeta?.time, 'hh:mm a'),
                 ])}
               />
+            </Box>
+
+            <Divider />
+
+            {/* Bridge tx details 2 */}
+            <Box
+              display={Display.Flex}
+              flexDirection={FlexDirection.Column}
+              gap={2}
+            >
+              <TransactionDetailRow
+                title={t('bridgeTxDetailsYouSent')}
+                value={
+                  <Box
+                    display={Display.Flex}
+                    gap={1}
+                    alignItems={AlignItems.center}
+                  >
+                    {t('bridgeTxDetailsTokenAmountOnChain', [
+                      bridgeAmountSent,
+                      bridgeHistoryItem?.quote.srcAsset.symbol,
+                    ])}
+                    {srcNetworkIconName}
+                  </Box>
+                }
+              />
+              <TransactionDetailRow
+                title={t('bridgeTxDetailsYouReceived')}
+                value={
+                  <Box
+                    display={Display.Flex}
+                    gap={1}
+                    alignItems={AlignItems.center}
+                  >
+                    {t('bridgeTxDetailsTokenAmountOnChain', [
+                      bridgeAmountReceived,
+                      bridgeHistoryItem?.quote.destAsset.symbol,
+                    ])}
+                    {destNetworkIconName}
+                  </Box>
+                }
+              />
+              <TransactionDetailRow
+                title={t('bridgeTxDetailsTotalGasFee')}
+                value={
+                  <UserPreferencedCurrencyDisplay
+                    currency={data?.nativeCurrency}
+                    denomination={EtherDenomination.ETH}
+                    numberOfDecimals={6}
+                    value={data?.hexGasTotal}
+                    type={PRIMARY}
+                  />
+                }
+              />
+            </Box>
+
+            <Divider />
+
+            {/* Generic tx details */}
+            <Box
+              display={Display.Flex}
+              flexDirection={FlexDirection.Column}
+              gap={2}
+            >
               <TransactionDetailRow
                 title={t('bridgeTxDetailsNonce')}
                 value={
@@ -336,19 +437,7 @@ const CrossChainSwapTxDetails = () => {
                     : undefined
                 }
               />
-            </Box>
 
-            <Divider />
-
-            <Box
-              display={Display.Flex}
-              flexDirection={FlexDirection.Column}
-              gap={2}
-            >
-              <TransactionDetailRow
-                title={t('bridgeTxDetailsBridgeAmount')}
-                value={bridgeAmount}
-              />
               <TransactionDetailRow
                 title={t('bridgeTxDetailsGasLimit')}
                 value={data?.gas ? hexToDecimal(data?.gas) : undefined}
@@ -387,19 +476,17 @@ const CrossChainSwapTxDetails = () => {
                     }
                   />
                 )}
-
               <TransactionDetailRow
-                title={t('bridgeTxDetailsTotalGasFee')}
+                title={t('bridgeTxDetailsTotal')}
                 value={
                   <UserPreferencedCurrencyDisplay
-                    currency={data?.nativeCurrency}
-                    denomination={EtherDenomination.ETH}
-                    numberOfDecimals={6}
-                    value={data?.hexGasTotal}
                     type={PRIMARY}
+                    value={data?.totalInHex}
+                    numberOfDecimals={data?.l1HexGasTotal ? 18 : undefined}
                   />
                 }
               />
+
               <TransactionDetailRow
                 title={t('bridgeTxDetailsMaxFeePerGas')}
                 value={
@@ -413,19 +500,6 @@ const CrossChainSwapTxDetails = () => {
                 }
               />
             </Box>
-
-            <Divider />
-
-            <TransactionDetailRow
-              title={t('bridgeTxDetailsTotal')}
-              value={
-                <UserPreferencedCurrencyDisplay
-                  type={PRIMARY}
-                  value={data?.totalInHex}
-                  numberOfDecimals={data?.l1HexGasTotal ? 18 : undefined}
-                />
-              }
-            />
 
             <Divider />
           </Box>
