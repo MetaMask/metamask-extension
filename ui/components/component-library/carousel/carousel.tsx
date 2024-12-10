@@ -134,6 +134,7 @@ export const Carousel = React.forwardRef(
         >
           {visibleSlides.map((slide, index) => (
             <BannerBase
+              data-testid={`slide-${slide.id}`}
               onClick={() => {
                 if (index !== selectedIndex) {
                   return;
