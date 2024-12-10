@@ -1076,8 +1076,7 @@ export function getPetnamesEnabled(state) {
 
 export function getIsTokenNetworkFilterEqualCurrentNetwork(state) {
   const chainId = getCurrentChainId(state);
-  const { tokenNetworkFilter: tokenNetworkFilterValue } = getPreferences(state);
-  const tokenNetworkFilter = tokenNetworkFilterValue || {};
+  const tokenNetworkFilter = getTokenNetworkFilter(state);
   if (
     Object.keys(tokenNetworkFilter).length === 1 &&
     Object.keys(tokenNetworkFilter)[0] === chainId
@@ -1085,6 +1084,11 @@ export function getIsTokenNetworkFilterEqualCurrentNetwork(state) {
     return true;
   }
   return false;
+}
+
+export function getTokenNetworkFilter(state) {
+  const { tokenNetworkFilter } = getPreferences(state);
+  return tokenNetworkFilter || {};
 }
 
 export function getUseTransactionSimulations(state) {
