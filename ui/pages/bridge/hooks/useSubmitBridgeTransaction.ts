@@ -30,11 +30,6 @@ export default function useSubmitBridgeTransaction() {
       });
     }
 
-    // Route user to activity tab on Home page
-    // Do it ahead of time because otherwise STX waits for a txHash on TransactionType.bridge and that can take a while
-    await dispatch(setDefaultHomeActiveTabName('activity'));
-    history.push(DEFAULT_ROUTE);
-
     const bridgeTxMeta = await handleBridgeTx({
       quoteResponse,
       approvalTxId: approvalTxMeta?.id,
@@ -67,6 +62,10 @@ export default function useSubmitBridgeTransaction() {
     if (quoteResponse.quote.destAsset.address !== zeroAddress()) {
       await addDestToken(quoteResponse);
     }
+
+    // Route user to activity tab on Home page
+    await dispatch(setDefaultHomeActiveTabName('activity'));
+    history.push(DEFAULT_ROUTE);
   };
 
   return {
