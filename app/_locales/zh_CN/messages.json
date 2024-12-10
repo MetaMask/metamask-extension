@@ -1033,9 +1033,6 @@
   "confirmRecoveryPhrase": {
     "message": "确认私钥助记词"
   },
-  "confirmTitleApproveTransaction": {
-    "message": "许可请求"
-  },
   "confirmTitleDeployContract": {
     "message": "部署合约"
   },
