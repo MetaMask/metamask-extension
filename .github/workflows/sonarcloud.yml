@@ -62,9 +62,11 @@ jobs:
           PR_NUMBER: ${{ github.event.workflow_run.pull_requests[0].number || '' }}
         run: |
           if [ "$EVENT" == "pull_request" ]; then
-            echo "sonar.pullrequest.branch=$HEAD_BRANCH" >> sonar-project.properties
-            echo "sonar.pullrequest.base=$BASE_BRANCH" >> sonar-project.properties
-            echo "sonar.pullrequest.key=$PR_NUMBER" >> sonar-project.properties
+            {
+              echo "sonar.pullrequest.branch=$HEAD_BRANCH"
+              echo "sonar.pullrequest.base=$BASE_BRANCH"
+              echo "sonar.pullrequest.key=$PR_NUMBER"
+            } >> sonar-project.properties
           else
             echo "sonar.branch.name=$HEAD_BRANCH" >> sonar-project.properties
           fi
