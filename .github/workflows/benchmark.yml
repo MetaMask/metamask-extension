@@ -14,9 +14,9 @@ on:
 jobs:
   test:
     name: Benchmark
-    runs-on: ubuntu-latest
+    # runs-on: ubuntu-latest
     # container: cimg/node:20.18-browsers
-    # runs-on: [self-hosted, Linux, X64]
+    runs-on: [self-hosted, Linux, X64]
     container:
       image: cimg/node:20.18-browsers
       # image: selenium/standalone-chrome:126.0
