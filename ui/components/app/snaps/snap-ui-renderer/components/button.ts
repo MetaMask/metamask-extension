@@ -15,6 +15,7 @@ export const button: UIComponentFactory<ButtonElement> = ({
     variant: element.props.variant,
     name: element.props.name,
     disabled: element.props.disabled,
+    loading: element.props.loading,
   },
   children: mapTextToTemplate(
     getJsxChildren(element) as NonEmptyArray<string | JSXElement>,
