@@ -5306,7 +5306,7 @@ export function requestUserApproval({
 
 export function rejectAllApprovals() {
   return async (dispatch: MetaMaskReduxDispatch) => {
-    await submitRequestToBackground('rejectAllApprovals');
+    await submitRequestToBackground('rejectAllPendingApprovals');
 
     const { pendingApprovals } = await forceUpdateMetamaskState(dispatch);
 

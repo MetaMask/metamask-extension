@@ -70,6 +70,7 @@ export const Nav = ({ confirmationId }: NavProps) => {
       width={BlockSize.Full}
       style={{
         zIndex: 2,
+        position: 'relative',
       }}
     >
       <Box alignItems={AlignItems.center} display={Display.Flex}>

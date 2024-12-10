@@ -250,7 +250,6 @@ import { isSnapId } from '../../ui/helpers/utils/snaps';
 import { BridgeStatusAction } from '../../shared/types/bridge-status';
 import { ENVIRONMENT } from '../../development/build/constants';
 import fetchWithCache from '../../shared/lib/fetch-with-cache';
-import { rejectAllApprovals } from '../../shared/lib/approval';
 import { BalancesController as MultichainBalancesController } from './lib/accounts/BalancesController';
 import {
   ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
@@ -381,6 +380,7 @@ import { PatchStore } from './lib/PatchStore';
 import { sanitizeUIState } from './lib/state-utils';
 import BridgeStatusController from './controllers/bridge-status/bridge-status-controller';
 import { BRIDGE_STATUS_CONTROLLER_NAME } from './controllers/bridge-status/constants';
+import { rejectAllApprovals } from './lib/approval/utils';
 
 const { TRIGGER_TYPES } = NotificationServicesController.Constants;
 export const METAMASK_CONTROLLER_EVENTS = {
@@ -4163,8 +4163,8 @@ export default class MetamaskController extends EventEmitter {
       trackInsightSnapView: this.trackInsightSnapView.bind(this),
 
       // ApprovalController
+      rejectAllPendingApprovals: this.rejectAllPendingApprovals.bind(this),
       rejectPendingApproval: this.rejectPendingApproval,
-      rejectAllApprovals: rejectAllApprovals.bind(null, approvalController),
       requestUserApproval:
         approvalController.addAndShowApprovalRequest.bind(approvalController),
       resolvePendingApproval: this.resolvePendingApproval,
@@ -7059,6 +7059,19 @@ export default class MetamaskController extends EventEmitter {
       }
     }
   };
+
+  rejectAllPendingApprovals() {
+    const deleteInterface = (id) =>
+      this.controllerMessenger.call(
+        'SnapInterfaceController:deleteInterface',
+        id,
+      );
+
+    rejectAllApprovals({
+      approvalController: this.approvalController,
+      deleteInterface,
+    });
+  }
 
   async _onAccountChange(newAddress) {
     const permittedAccountsMap = getPermittedAccountsByOrigin(

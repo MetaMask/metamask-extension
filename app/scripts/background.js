@@ -49,7 +49,6 @@ import {
 import { getCurrentChainId } from '../../shared/modules/selectors/networks';
 import { addNonceToCsp } from '../../shared/modules/add-nonce-to-csp';
 import { checkURLForProviderInjection } from '../../shared/modules/provider-injection';
-import { rejectAllApprovals } from '../../shared/lib/approval';
 import migrations from './migrations';
 import Migrator from './lib/migrator';
 import ExtensionPlatform from './platforms/extension';
@@ -1195,7 +1194,7 @@ export function setupController(
       REJECT_NOTIFICATION_CLOSE,
     );
 
-    rejectAllApprovals(controller.approvalController);
+    controller.rejectAllPendingApprovals();
   }
 
   // Updates the snaps registry and check for newly blocked snaps to block if the user has at least one snap installed that isn't preinstalled.
