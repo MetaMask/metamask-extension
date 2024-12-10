@@ -155,10 +155,15 @@ export default function TokenList({
             currencyRates,
           });
 
-          // respect hide zero balance setting
-          // native tokens should still show zero balance regardless
-          // erc20s with zero balances should be hidden
-          // additionally, when all networks filter is shown, do not display zero native tokens
+          // Respect the "hide zero balance" setting (when true):
+          // - Native tokens should always display with zero balance when on the current network filter.
+          // - Native tokens should not display with zero balance when on all networks filter
+          // - ERC20 tokens with zero balances should respect the setting on both the current and all networks.
+
+          // Respect the "hide zero balance" setting (when false):
+          // - Native tokens should always display with zero balance when on the current network filter.
+          // - Native tokens should always display with zero balance when on all networks filter
+          // - ERC20 tokens always display with zero balance on both the current and all networks filter.
           if (
             !hideZeroBalanceTokens ||
             balance !== '0' ||
