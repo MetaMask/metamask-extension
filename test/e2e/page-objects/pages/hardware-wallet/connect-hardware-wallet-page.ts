@@ -1,5 +1,9 @@
 import { Driver } from '../../../webdriver/driver';
 
+/**
+ * Represents the page for connecting hardware wallets.
+ * This page allows users to initiate connections with various hardware wallet types.
+ */
 class ConnectHardwareWalletPage {
   private driver: Driver;
 
