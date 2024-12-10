@@ -470,7 +470,6 @@ export function removeAccount(
           resolve(account);
         });
       });
-      await forceUpdateMetamaskState(dispatch);
     } catch (error) {
       dispatch(displayWarning(error));
       throw error;
