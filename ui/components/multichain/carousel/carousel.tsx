@@ -11,24 +11,12 @@ import {
   BorderColor,
 } from '../../../helpers/constants/design-system';
 import type { CarouselProps } from './carousel.types';
-
-const MARGIN_VALUES = {
-  BOTTOM: '40px',
-  OUTER_EDGE: '4%',
-  INNER_EDGE: '2%',
-  NONE: '0',
-};
-
-const WIDTH_VALUES = {
-  SINGLE_SLIDE: '100%',
-  MULTIPLE_SLIDES: '96%',
-};
-
-const BANNER_STYLES = {
-  HEIGHT: '59px',
-};
-
-const MAX_SLIDES = 5;
+import {
+  BANNER_STYLES,
+  MARGIN_VALUES,
+  MAX_SLIDES,
+  WIDTH_VALUES,
+} from './constants';
 
 export const Carousel = React.forwardRef(
   (
