@@ -1,5 +1,9 @@
 import { Driver } from '../../../webdriver/driver';
 
+/**
+ * Represents the select trezor hardware wallet account page.
+ * This page allows users to select Trezor accounts to connect.
+ */
 class SelectTrezorAccountPage {
   private driver: Driver;
 
@@ -35,10 +39,12 @@ class SelectTrezorAccountPage {
   }
 
   async clickUnlockButton(): Promise<void> {
+    console.log(`Click unlock button on select trezor account page`);
     await this.driver.clickElement(this.unlockButton);
   }
 
   async selectTrezorAccount(accountIndex: number): Promise<void> {
+    console.log(`Select trezor account ${accountIndex}`);
     const accountCheckboxes = await this.driver.findElements(
       this.trezorAccountCheckbox,
     );
