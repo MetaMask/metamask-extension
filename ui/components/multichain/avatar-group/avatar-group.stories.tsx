@@ -1,6 +1,7 @@
 import React from 'react';
 import { StoryFn, Meta } from '@storybook/react';
 import { AvatarGroup } from '.';
+import { AvatarType } from './avatar-group.types';
 
 export default {
   title: 'Components/Multichain/AvatarGroup',
@@ -55,3 +56,15 @@ TokenWithOutSrc.args = {
   ],
   limit: 2,
 };
+
+export const NetworksWithTag: StoryFn<typeof AvatarGroup> = (args) => (
+  <AvatarGroup
+    avatarType={AvatarType.NETWORK}
+    limit={2}
+    members={[
+      { avatarValue: './images/eth_logo.svg', symbol: 'Ethereum' },
+      { avatarValue: './images/arbitrum.svg', symbol: 'Arbitrum' },
+      { avatarValue: './images/bnb.svg', symbol: 'Binance' },
+    ]}
+  />
+);
