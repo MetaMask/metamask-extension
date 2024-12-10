@@ -1,13 +1,4 @@
-[data-theme='dark'],
-.dark {
-  .mm-avatar-network {
-    border-color: var(--color-background-default);
-  }
-}
-
 .mm-avatar-network {
-  border-color: var(--color-overlay-inverse);
-
   &--with-halo {
     position: relative;
   }
