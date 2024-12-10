@@ -97,6 +97,8 @@ export const Carousel = React.forwardRef(
                 backgroundColor={BackgroundColor.backgroundAlternative}
                 borderColor={BorderColor.infoMuted}
                 borderWidth={1}
+                paddingLeft={0}
+                paddingRight={0}
                 style={{
                   height: BANNER_STYLES.HEIGHT,
                   margin: getSlideMargin(index, 3),
