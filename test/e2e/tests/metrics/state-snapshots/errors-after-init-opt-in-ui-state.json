@@ -24,6 +24,7 @@
     "useBlockie": false,
     "featureFlags": {},
     "welcomeScreenSeen": false,
+    "slides": false,
     "currentLocale": "en",
     "preferences": {
       "hideZeroBalanceTokens": false,

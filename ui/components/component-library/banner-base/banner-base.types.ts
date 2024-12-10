@@ -61,10 +61,14 @@ export interface BannerBaseStyleUtilityProps extends StyleUtilityProps {
    */
   startAccessory?: React.ReactNode;
   /**
+   * When true, renders the startAccessory at full height of the banner
+   */
+  fullHeightAccessory?: boolean;
+  /**
    * The onClick handler for the close button
    * When passed this will allow for the close button to show
    */
-  onClose?: () => void;
+  onClose?: (e: React.MouseEvent<HTMLElement>) => void;
   /**
    * The props to pass to the close button
    */

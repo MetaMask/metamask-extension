@@ -66,6 +66,7 @@ const initialState = {
       conversionRate: null,
     },
   },
+  slides: [],
 };
 
 /**
@@ -225,6 +226,12 @@ export default function reduceMetamask(state = initialState, action) {
       return {
         ...metamaskState,
         confirmationExchangeRates: action.value,
+      };
+
+    case actionConstants.SET_SLIDES:
+      return {
+        ...metamaskState,
+        slides: action.slides,
       };
 
     default:
@@ -459,6 +466,10 @@ export const getGasFeeEstimatesByChainId = createSelector(
     return gasFeeControllerEstimates;
   },
 );
+
+export function getSlides(state) {
+  return state.metamask.slides;
+}
 
 export const getGasFeeEstimates = createSelector(
   getGasFeeControllerEstimates,

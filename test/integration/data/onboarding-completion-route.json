@@ -285,6 +285,7 @@
   "showPermissionsTour": true,
   "showTestnetMessageInDropdown": true,
   "signatureSecurityAlertResponses": {},
+  "slides": [],
   "smartTransactionsState": {
     "smartTransactions": { "0x1": [] },
     "fees": {},
