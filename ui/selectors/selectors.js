@@ -1089,7 +1089,12 @@ export function getIsTokenNetworkFilterEqualCurrentNetwork(state) {
 }
 
 export function getTokenNetworkFilter(state) {
+  const chainId = getCurrentChainId(state);
   const { tokenNetworkFilter } = getPreferences(state);
+
+  if (!FEATURED_NETWORK_CHAIN_IDS.includes(chainId)) {
+    return { [chainId]: true };
+  }
   return tokenNetworkFilter || {};
 }
 
