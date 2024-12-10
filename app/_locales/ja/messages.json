@@ -1033,9 +1033,6 @@
   "confirmRecoveryPhrase": {
     "message": "シークレットリカバリーフレーズの確認"
   },
-  "confirmTitleApproveTransaction": {
-    "message": "許容額のリクエスト"
-  },
   "confirmTitleDeployContract": {
     "message": "コントラクトを展開"
   },

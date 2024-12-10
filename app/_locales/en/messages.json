@@ -931,6 +931,15 @@
   "bridgeTxDetailsBridgeType": {
     "message": "Bridge type"
   },
+  "bridgeTxDetailsDelayedDescription": {
+    "message": "Reach out to"
+  },
+  "bridgeTxDetailsDelayedDescriptionSupport": {
+    "message": "MetaMask Support"
+  },
+  "bridgeTxDetailsDelayedTitle": {
+    "message": "Has it been longer than 3 hours?"
+  },
   "bridgeTxDetailsGasLimit": {
     "message": "Gas limit (units)"
   },
@@ -1128,8 +1137,8 @@
   "confirmRecoveryPhrase": {
     "message": "Confirm Secret Recovery Phrase"
   },
-  "confirmTitleApproveTransaction": {
-    "message": "Allowance request"
+  "confirmTitleApproveTransactionNFT": {
+    "message": "Withdrawal request"
   },
   "confirmTitleDeployContract": {
     "message": "Deploy a contract"
