@@ -6598,10 +6598,6 @@
   "wrongNetworkName": {
     "message": "Menurut catatan kami, nama jaringan mungkin tidak cocok dengan ID chain ini."
   },
-  "xOfYPending": {
-    "message": "$1 dari $2 berstatus menunggu",
-    "description": "$1 and $2 are intended to be two numbers, where $2 is a total number of pending confirmations, and $1 is a count towards that total"
-  },
   "yes": {
     "message": "Ya"
   },
