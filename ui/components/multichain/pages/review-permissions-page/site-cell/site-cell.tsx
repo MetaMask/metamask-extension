@@ -72,13 +72,13 @@ export const SiteCell: React.FC<SiteCellProps> = ({
   const accountMessageConnectedState =
     selectedAccounts.length === 1
       ? t('connectedWithAccountName', [
-          selectedAccounts[0].label || selectedAccounts[0].metadata.name,
+          selectedAccounts[0].metadata.name || selectedAccounts[0].label,
         ])
-      : t('connectedWithAccount', [accounts.length]);
+      : t('connectedWithAccount', [selectedAccounts.length]);
   const accountMessageNotConnectedState =
     selectedAccounts.length === 1
       ? t('requestingForAccount', [
-          selectedAccounts[0].label || selectedAccounts[0].metadata.name,
+          selectedAccounts[0].metadata.name || selectedAccounts[0].label,
         ])
       : t('requestingFor');
 

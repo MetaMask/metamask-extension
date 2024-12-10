@@ -2,7 +2,7 @@
 import { MockedEndpoint } from 'mockttp';
 import { veryLargeDelayMs } from '../../../helpers';
 import { Ganache } from '../../../seeder/ganache';
-import GanacheContractAddressRegistry from '../../../seeder/ganache-contract-address-registry';
+import ContractAddressRegistry from '../../../seeder/contract-address-registry';
 import { Driver } from '../../../webdriver/driver';
 
 const {
@@ -15,17 +15,17 @@ const { scrollAndConfirmAndAssertConfirm } = require('../helpers');
 export type TestSuiteArguments = {
   driver: Driver;
   ganacheServer?: Ganache;
-  contractRegistry?: GanacheContractAddressRegistry;
+  contractRegistry?: ContractAddressRegistry;
   mockedEndpoint?: MockedEndpoint | MockedEndpoint[];
 };
 
 export async function openDAppWithContract(
   driver: Driver,
-  contractRegistry: GanacheContractAddressRegistry | undefined,
+  contractRegistry: ContractAddressRegistry | undefined,
   smartContract: string,
 ) {
   const contractAddress = await (
-    contractRegistry as GanacheContractAddressRegistry
+    contractRegistry as ContractAddressRegistry
   ).getContractAddress(smartContract);
 
   await logInWithBalanceValidation(driver);

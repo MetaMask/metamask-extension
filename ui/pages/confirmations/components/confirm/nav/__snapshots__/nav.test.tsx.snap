@@ -22,6 +22,7 @@ exports[`ConfirmNav should match snapshot 1`] = `
       </button>
       <p
         class="mm-box mm-text mm-text--body-sm mm-box--margin-inline-2 mm-box--color-text-alternative"
+        data-testid="confirm-page-nav-position"
       >
         1
          of 

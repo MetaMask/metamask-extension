@@ -4,6 +4,7 @@ const {
   logInWithBalanceValidation,
   unlockWallet,
   withFixtures,
+  tempToggleSettingRedesignedTransactionConfirmations,
 } = require('../../../helpers');
 const { SMART_CONTRACTS } = require('../../../seeder/smart-contracts');
 const FixtureBuilder = require('../../../fixture-builder');
@@ -23,6 +24,8 @@ describe('Send NFT', function () {
       },
       async ({ driver }) => {
         await unlockWallet(driver);
+
+        await tempToggleSettingRedesignedTransactionConfirmations(driver);
 
         // Fill the send NFT form and confirm the transaction
         await driver.clickElement('[data-testid="account-overview__nfts-tab"]');

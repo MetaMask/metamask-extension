@@ -43,11 +43,14 @@ const blacklistedHosts = [
   'goerli.infura.io',
   'mainnet.infura.io',
   'sepolia.infura.io',
+  'linea-mainnet.infura.io',
+  'linea-sepolia.infura.io',
 ];
 const {
   mockEmptyStalelistAndHotlist,
 } = require('./tests/phishing-controller/mocks');
 const { mockNotificationServices } = require('./tests/notifications/mocks');
+const { mockIdentityServices } = require('./tests/identity/mocks');
 
 const emptyHtmlPage = () => `<!DOCTYPE html>
 <html lang="en">
@@ -123,7 +126,6 @@ async function setupMocking(
   });
 
   const mockedEndpoint = await testSpecificMock(server);
-
   // Mocks below this line can be overridden by test-specific mocks
 
   // Account link
@@ -730,11 +732,30 @@ async function setupMocking(
   // Notification APIs
   await mockNotificationServices(server);
 
+  // Identity APIs
+  await mockIdentityServices(server);
+
   await server.forGet(/^https:\/\/sourcify.dev\/(.*)/u).thenCallback(() => {
     return {
       statusCode: 404,
     };
   });
+
+  // remote feature flags
+  await server
+    .forGet('https://client-config.api.cx.metamask.io/v1/flags')
+    .withQuery({
+      client: 'extension',
+      distribution: 'main',
+      environment: 'dev',
+    })
+    .thenCallback(() => {
+      return {
+        ok: true,
+        statusCode: 200,
+        json: [{ feature1: true }, { feature2: false }],
+      };
+    });
 
   /**
    * Returns an array of alphanumerically sorted hostnames that were requested

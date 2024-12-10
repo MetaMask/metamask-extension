@@ -1,13 +1,16 @@
 const { strict: assert } = require('assert');
 const FixtureBuilder = require('../../fixture-builder');
-
 const {
   defaultGanacheOptions,
   withFixtures,
   sendScreenToConfirmScreen,
   logInWithBalanceValidation,
   WINDOW_TITLES,
+  tempToggleSettingRedesignedTransactionConfirmations,
 } = require('../../helpers');
+const {
+  mockMultiNetworkBalancePolling,
+} = require('../../mock-balance-polling/mock-balance-polling');
 const { SECURITY_ALERTS_PROD_API_BASE_URL } = require('./constants');
 const { mockServerJsonRpc } = require('./mocks/mock-server-json-rpc');
 
@@ -32,13 +35,13 @@ const SEND_REQUEST_BASE_MOCK = {
 };
 
 async function mockInfura(mockServer) {
+  await mockMultiNetworkBalancePolling(mockServer);
   await mockServerJsonRpc(mockServer, [
     ['eth_blockNumber'],
     ['eth_call'],
     ['eth_estimateGas'],
     ['eth_feeHistory'],
     ['eth_gasPrice'],
-    ['eth_getBalance'],
     ['eth_getBlockByNumber'],
     ['eth_getCode'],
     ['eth_getTransactionCount'],
@@ -116,113 +119,157 @@ async function mockInfuraWithFailedResponses(mockServer) {
  * @see {@link https://wobbly-nutmeg-8a5.notion.site/MM-E2E-Testing-1e51b617f79240a49cd3271565c6e12d}
  */
 describe('Simple Send Security Alert - Blockaid @no-mmi', function () {
-  it('should not show security alerts for benign requests', async function () {
-    await withFixtures(
-      {
-        dapp: true,
-        fixtures: new FixtureBuilder()
-          .withNetworkControllerOnMainnet()
-          .withPreferencesController({
-            securityAlertsEnabled: true,
-          })
-          .build(),
-        defaultGanacheOptions,
-        testSpecificMock: mockInfuraWithBenignResponses,
-        title: this.test.fullTitle(),
-      },
+  describe('Old confirmation screens', function () {
+    it('should show "Be careful" if the PPOM request fails to check transaction', async function () {
+      await withFixtures(
+        {
+          dapp: true,
+          fixtures: new FixtureBuilder()
+            .withNetworkControllerOnMainnet()
+            .withPreferencesController({
+              securityAlertsEnabled: true,
+            })
+            .build(),
+          defaultGanacheOptions,
+          testSpecificMock: mockInfuraWithFailedResponses,
+          title: this.test.fullTitle(),
+        },
 
-      async ({ driver }) => {
-        await logInWithBalanceValidation(driver);
+        async ({ driver }) => {
+          await logInWithBalanceValidation(driver);
 
-        await sendScreenToConfirmScreen(driver, mockBenignAddress, '1');
+          await tempToggleSettingRedesignedTransactionConfirmations(driver);
 
-        const isPresent = await driver.isElementPresent(bannerAlertSelector);
-        assert.equal(isPresent, false, `Banner alert unexpectedly found.`);
-      },
-    );
+          await sendScreenToConfirmScreen(
+            driver,
+            '0xB8c77482e45F1F44dE1745F52C74426C631bDD52',
+            '1.1',
+          );
+          const expectedTitle = 'Be careful';
+
+          const bannerAlert = await driver.findElement({
+            css: bannerAlertSelector,
+            text: expectedTitle,
+          });
+
+          assert(
+            bannerAlert,
+            `Banner alert not found. Expected Title: ${expectedTitle}`,
+          );
+        },
+      );
+    });
   });
 
-  /**
-   * Disclaimer: This test does not test all reason types. e.g. 'blur_farming',
-   * 'malicious_domain'. Some other tests are found in other files:
-   * e.g. test/e2e/flask/ppom-blockaid-alert-<name>.spec.js
-   */
-  it('should show security alerts for malicious requests', async function () {
-    await withFixtures(
-      // we need to use localhost instead of the ip
-      // see issue: https://github.com/MetaMask/MetaMask-planning/issues/3560
-      {
-        dapp: true,
-        fixtures: new FixtureBuilder()
-          .withNetworkControllerOnMainnet()
-          .withPermissionControllerConnectedToTestDapp({
-            useLocalhostHostname: true,
-          })
-          .withPreferencesController({
-            securityAlertsEnabled: true,
-          })
-          .build(),
-        defaultGanacheOptions,
-        testSpecificMock: mockInfuraWithMaliciousResponses,
-        title: this.test.fullTitle(),
-      },
+  describe('Redesigned confirmation screens', function () {
+    it('should not show security alerts for benign requests', async function () {
+      await withFixtures(
+        {
+          dapp: true,
+          fixtures: new FixtureBuilder()
+            .withNetworkControllerOnMainnet()
+            .withPreferencesController({
+              securityAlertsEnabled: true,
+            })
+            .build(),
+          defaultGanacheOptions,
+          testSpecificMock: mockInfuraWithBenignResponses,
+          title: this.test.fullTitle(),
+        },
 
-      async ({ driver }) => {
-        await logInWithBalanceValidation(driver);
+        async ({ driver }) => {
+          await logInWithBalanceValidation(driver);
 
-        await driver.openNewPage('http://localhost:8080');
+          await sendScreenToConfirmScreen(driver, mockBenignAddress, '1');
 
-        await driver.clickElement('#maliciousRawEthButton');
-        await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
+          const isPresent = await driver.isElementPresent(bannerAlertSelector);
+          assert.equal(isPresent, false, `Banner alert unexpectedly found.`);
+        },
+      );
+    });
 
-        await driver.waitForSelector({
-          css: '.mm-text--body-lg-medium',
-          text: expectedMaliciousTitle,
-        });
+    /**
+     * Disclaimer: This test does not test all reason types. e.g. 'blur_farming',
+     * 'malicious_domain'. Some other tests are found in other files:
+     * e.g. test/e2e/flask/ppom-blockaid-alert-<name>.spec.js
+     */
+    it('should show security alerts for malicious requests', async function () {
+      await withFixtures(
+        // we need to use localhost instead of the ip
+        // see issue: https://github.com/MetaMask/MetaMask-planning/issues/3560
+        {
+          dapp: true,
+          fixtures: new FixtureBuilder()
+            .withNetworkControllerOnMainnet()
+            .withPermissionControllerConnectedToTestDapp({
+              useLocalhostHostname: true,
+            })
+            .withPreferencesController({
+              securityAlertsEnabled: true,
+            })
+            .build(),
+          defaultGanacheOptions,
+          testSpecificMock: mockInfuraWithMaliciousResponses,
+          title: this.test.fullTitle(),
+        },
 
-        await driver.waitForSelector({
-          css: '.mm-text--body-md',
-          text: expectedMaliciousDescription,
-        });
-      },
-    );
-  });
+        async ({ driver }) => {
+          await logInWithBalanceValidation(driver);
 
-  it('should show "Be careful" if the PPOM request fails to check transaction', async function () {
-    await withFixtures(
-      {
-        dapp: true,
-        fixtures: new FixtureBuilder()
-          .withNetworkControllerOnMainnet()
-          .withPreferencesController({
-            securityAlertsEnabled: true,
-          })
-          .build(),
-        defaultGanacheOptions,
-        testSpecificMock: mockInfuraWithFailedResponses,
-        title: this.test.fullTitle(),
-      },
+          await driver.openNewPage('http://localhost:8080');
 
-      async ({ driver }) => {
-        await logInWithBalanceValidation(driver);
+          await driver.clickElement('#maliciousRawEthButton');
+          await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
-        await sendScreenToConfirmScreen(
-          driver,
-          '0xB8c77482e45F1F44dE1745F52C74426C631bDD52',
-          '1.1',
-        );
-        const expectedTitle = 'Be careful';
+          await driver.waitForSelector({
+            css: '.mm-text--body-lg-medium',
+            text: expectedMaliciousTitle,
+          });
 
-        const bannerAlert = await driver.findElement({
-          css: bannerAlertSelector,
-          text: expectedTitle,
-        });
+          await driver.waitForSelector({
+            css: '.mm-text--body-md',
+            text: expectedMaliciousDescription,
+          });
+        },
+      );
+    });
 
-        assert(
-          bannerAlert,
-          `Banner alert not found. Expected Title: ${expectedTitle}`,
-        );
-      },
-    );
+    it('should show "Be careful" if the PPOM request fails to check transaction', async function () {
+      await withFixtures(
+        {
+          dapp: true,
+          fixtures: new FixtureBuilder()
+            .withNetworkControllerOnMainnet()
+            .withPreferencesController({
+              securityAlertsEnabled: true,
+            })
+            .build(),
+          defaultGanacheOptions,
+          testSpecificMock: mockInfuraWithFailedResponses,
+          title: this.test.fullTitle(),
+        },
+
+        async ({ driver }) => {
+          await logInWithBalanceValidation(driver);
+
+          await sendScreenToConfirmScreen(
+            driver,
+            '0xB8c77482e45F1F44dE1745F52C74426C631bDD52',
+            '1.1',
+          );
+          const expectedTitle = 'Be careful';
+
+          const bannerAlert = await driver.findElement({
+            css: '[data-testid="confirm-banner-alert"]',
+            text: expectedTitle,
+          });
+
+          assert(
+            bannerAlert,
+            `Banner alert not found. Expected Title: ${expectedTitle}`,
+          );
+        },
+      );
+    });
   });
 });

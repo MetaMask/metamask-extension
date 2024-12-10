@@ -20,7 +20,7 @@ import {
   selectIsMetamaskNotificationsEnabled,
   getIsUpdatingMetamaskNotifications,
 } from '../../selectors/metamask-notifications/metamask-notifications';
-import { selectIsProfileSyncingEnabled } from '../../selectors/metamask-notifications/profile-syncing';
+import { selectIsProfileSyncingEnabled } from '../../selectors/identity/profile-syncing';
 import { useMetamaskNotificationsContext } from '../../contexts/metamask-notifications/metamask-notifications';
 import { Box, Text } from '../../components/component-library';
 import {

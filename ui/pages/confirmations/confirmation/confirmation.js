@@ -32,9 +32,9 @@ import {
   getTotalUnapprovedCount,
   useSafeChainsListValidationSelector,
   getSnapsMetadata,
-  getNetworkConfigurationsByChainId,
   getHideSnapBranding,
 } from '../../../selectors';
+import { getNetworkConfigurationsByChainId } from '../../../../shared/modules/selectors/networks';
 import Callout from '../../../components/ui/callout';
 import { Box, Icon, IconName } from '../../../components/component-library';
 import Loading from '../../../components/ui/loading-screen';

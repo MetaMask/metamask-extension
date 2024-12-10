@@ -47,7 +47,7 @@ describe('Selectors', () => {
               smartTransactions: {
                 expectedDeadline: 45,
                 maxDeadline: 150,
-                returnTxHashAsap: false,
+                extensionReturnTxHashAsap: false,
               },
             },
             smartTransactions: {
@@ -298,7 +298,7 @@ describe('Selectors', () => {
                 smartTransactions: {
                   expectedDeadline: 45,
                   maxDeadline: 150,
-                  returnTxHashAsap: false,
+                  extensionReturnTxHashAsap: false,
                 },
               },
               smartTransactions: {

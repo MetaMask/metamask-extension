@@ -13,6 +13,9 @@ import { Tab, Tabs } from '../../ui/tabs';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
   getCurrentChainId,
+  getSelectedNetworkClientId,
+} from '../../../../shared/modules/selectors/networks';
+import {
   getInternalAccounts,
   getIsDynamicTokenListAvailable,
   getIsMainnet,
@@ -21,7 +24,6 @@ import {
   getIstokenDetectionInactiveOnNonMainnetSupportedNetwork,
   getRpcPrefsForCurrentProvider,
   getSelectedInternalAccount,
-  getSelectedNetworkClientId,
   getTokenDetectionSupportNetworkByChainId,
   getTokenList,
   getCurrentNetwork,
@@ -493,7 +495,6 @@ export const ImportTokensModal = ({ onClose }) => {
   return (
     <Modal
       isOpen
-      isClosedOnOutsideClick={false}
       onClose={() => {
         dispatch(clearPendingTokens());
         onClose();

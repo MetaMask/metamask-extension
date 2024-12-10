@@ -7,6 +7,7 @@ import {
   ConfirmInfoRowVariant,
 } from '../../../../../../../components/app/confirm/info/row';
 import { Box, Text } from '../../../../../../../components/component-library';
+import Tooltip from '../../../../../../../components/ui/tooltip';
 import {
   AlignItems,
   Display,
@@ -22,12 +23,14 @@ export const GasFeesRow = ({
   label,
   tooltipText,
   fiatFee,
+  fiatFeeWith18SignificantDigits,
   nativeFee,
   'data-testid': dataTestId,
 }: {
   label: string;
   tooltipText: string;
   fiatFee: string;
+  fiatFeeWith18SignificantDigits: string | null;
   nativeFee: string;
   'data-testid'?: string;
 }) => {
@@ -58,7 +61,12 @@ export const GasFeesRow = ({
         <Text marginRight={1} color={TextColor.textDefault}>
           {nativeFee}
         </Text>
-        {(!isTestnet || showFiatInTestnets) && (
+        {(!isTestnet || showFiatInTestnets) &&
+        fiatFeeWith18SignificantDigits ? (
+          <Tooltip title={fiatFeeWith18SignificantDigits}>
+            <Text color={TextColor.textAlternative}>{fiatFee}</Text>
+          </Tooltip>
+        ) : (
           <Text color={TextColor.textAlternative}>{fiatFee}</Text>
         )}
       </Box>

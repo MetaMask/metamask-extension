@@ -115,12 +115,6 @@ function defaultFixture(inputChainId = CHAIN_IDS.LOCALHOST) {
         trezorModel: null,
         newPrivacyPolicyToastClickedOrClosed: true,
         newPrivacyPolicyToastShownDate: Date.now(),
-        usedNetworks: {
-          [CHAIN_IDS.MAINNET]: true,
-          [CHAIN_IDS.LINEA_MAINNET]: true,
-          [CHAIN_IDS.GOERLI]: true,
-          [CHAIN_IDS.LOCALHOST]: true,
-        },
         snapsInstallPrivacyWarningShown: true,
       },
       BridgeController: {
@@ -225,6 +219,7 @@ function defaultFixture(inputChainId = CHAIN_IDS.LOCALHOST) {
             sortCallback: 'stringNumeric',
           },
           shouldShowAggregatedBalancePopover: true,
+          tokenNetworkFilter: {},
         },
         selectedAddress: '0x5cfe73b6021e818b776b421b1c4db2474086a7e1',
         theme: 'light',
