@@ -167,6 +167,12 @@ describe('Bridge utils', () => {
         },
         {
           address: '0x1f9840a85d5af5bf1d1762f925bdaddc4201f986',
+          decimals: 16,
+          symbol: 'DEF',
+          aggregators: ['lifi'],
+        },
+        {
+          address: '0x1f9840a85d5af5bf1d1762f925bdaddc4201f987',
           symbol: 'DEF',
         },
         {
@@ -198,10 +204,11 @@ describe('Bridge utils', () => {
           name: 'Ether',
           symbol: 'ETH',
         },
-        '0x1f9840a85d5af5bf1d1762f925bdaddc4201f984': {
-          address: '0x1f9840a85d5af5bf1d1762f925bdaddc4201f984',
+        '0x1f9840a85d5af5bf1d1762f925bdaddc4201f986': {
+          address: '0x1f9840a85d5af5bf1d1762f925bdaddc4201f986',
           decimals: 16,
-          symbol: 'ABC',
+          symbol: 'DEF',
+          aggregators: ['lifi'],
         },
       });
     });
