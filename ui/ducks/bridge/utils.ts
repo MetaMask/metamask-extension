@@ -2,6 +2,10 @@ import { Hex } from '@metamask/utils';
 import { BigNumber } from 'bignumber.js';
 import { getAddress } from 'ethers/lib/utils';
 import { ContractMarketData } from '@metamask/assets-controllers';
+import {
+  AddNetworkFields,
+  NetworkConfiguration,
+} from '@metamask/network-controller';
 import { decGWEIToHexWEI } from '../../../shared/modules/conversion.utils';
 import { Numeric } from '../../../shared/modules/Numeric';
 import { TxData } from '../../pages/bridge/types';
@@ -133,3 +137,8 @@ export const exchangeRatesFromNativeAndCurrencyRates = (
         : null,
   };
 };
+
+export const isNetworkAdded = (
+  v: NetworkConfiguration | AddNetworkFields | undefined,
+): v is NetworkConfiguration =>
+  !v || 'networkClientId' in v.rpcEndpoints[v.defaultRpcEndpointIndex];

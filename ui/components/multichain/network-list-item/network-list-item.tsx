@@ -47,7 +47,10 @@ export const NetworkListItem = ({
   onEditClick,
   onRpcEndpointClick,
   startAccessory,
+  endAccessory,
   showEndAccessory = true,
+  disabled = false,
+  variant,
 }: {
   name: string;
   iconSrc?: string;
@@ -61,7 +64,10 @@ export const NetworkListItem = ({
   onEditClick?: () => void;
   focus?: boolean;
   startAccessory?: ReactNode;
+  endAccessory?: ReactNode;
   showEndAccessory?: boolean;
+  disabled?: boolean;
+  variant?: TextVariant;
 }) => {
   const t = useI18nContext();
   const networkRef = useRef<HTMLInputElement>(null);
@@ -116,12 +122,13 @@ export const NetworkListItem = ({
       }
       className={classnames('multichain-network-list-item', {
         'multichain-network-list-item--selected': selected,
+        'multichain-network-list-item--disabled': disabled,
       })}
       display={Display.Flex}
       alignItems={AlignItems.center}
       justifyContent={JustifyContent.spaceBetween}
       width={BlockSize.Full}
-      onClick={onClick}
+      onClick={disabled ? undefined : onClick}
     >
       {startAccessory ? <Box marginTop={1}>{startAccessory}</Box> : null}
       {selected && (
@@ -152,26 +159,24 @@ export const NetworkListItem = ({
           alignItems={AlignItems.center}
           data-testid={name}
         >
-          <Text
-            ref={networkRef}
-            color={TextColor.textDefault}
-            backgroundColor={BackgroundColor.transparent}
-            ellipsis
-            onKeyDown={handleKeyPress}
-            tabIndex={0} // Enable keyboard focus
+          <Tooltip
+            title={name}
+            position="bottom"
+            wrapperClassName="multichain-network-list-item__tooltip"
+            disabled={name?.length <= MAXIMUM_CHARACTERS_WITHOUT_TOOLTIP}
           >
-            {name?.length > MAXIMUM_CHARACTERS_WITHOUT_TOOLTIP ? (
-              <Tooltip
-                title={name}
-                position="bottom"
-                wrapperClassName="multichain-network-list-item__tooltip"
-              >
-                {name}
-              </Tooltip>
-            ) : (
-              name
-            )}
-          </Text>
+            <Text
+              ref={networkRef}
+              color={TextColor.textDefault}
+              backgroundColor={BackgroundColor.transparent}
+              variant={variant ?? TextVariant.bodyMd}
+              ellipsis
+              onKeyDown={handleKeyPress}
+              tabIndex={0} // Enable keyboard focus
+            >
+              {name}
+            </Text>
+          </Tooltip>
         </Box>
         {rpcEndpoint && (
           <Box
@@ -205,15 +210,17 @@ export const NetworkListItem = ({
       </Box>
 
       {renderButton()}
-      {showEndAccessory ? (
-        <NetworkListItemMenu
-          anchorElement={networkListItemMenuElement}
-          isOpen={networkOptionsMenuOpen}
-          onDeleteClick={onDeleteClick}
-          onEditClick={onEditClick}
-          onClose={() => setNetworkOptionsMenuOpen(false)}
-        />
-      ) : null}
+      {showEndAccessory
+        ? endAccessory ?? (
+            <NetworkListItemMenu
+              anchorElement={networkListItemMenuElement}
+              isOpen={networkOptionsMenuOpen}
+              onDeleteClick={onDeleteClick}
+              onEditClick={onEditClick}
+              onClose={() => setNetworkOptionsMenuOpen(false)}
+            />
+          )
+        : null}
     </Box>
   );
 };
@@ -256,7 +263,11 @@ NetworkListItem.propTypes = {
    */
   startAccessory: PropTypes.node,
   /**
-   * Represents if we need to show menu option
+   * Represents end accessory
+   */
+  endAccessory: PropTypes.node,
+  /**
+   * Represents if we need to show menu option or endAccessory
    */
   showEndAccessory: PropTypes.bool,
 };

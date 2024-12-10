@@ -1,3 +1,4 @@
+import { ReactElement } from 'react';
 import type {
   PolymorphicComponentPropWithRef,
   StyleUtilityProps,
@@ -13,6 +14,10 @@ export interface PickerNetworkStyleUtilityProps extends StyleUtilityProps {
    * The src accepts the string of the image to be rendered
    */
   src?: string;
+  /**
+   * The avatarComponent prop accepts an alternative avatar to be rendered
+   */
+  avatarComponent?: ReactElement;
   /**
    * An additional className to apply to the PickerNetwork.
    */

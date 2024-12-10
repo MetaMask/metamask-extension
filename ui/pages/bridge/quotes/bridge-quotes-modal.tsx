@@ -24,7 +24,7 @@ import {
   formatTokenAmount,
 } from '../utils/quote';
 import { useI18nContext } from '../../../hooks/useI18nContext';
-import { getCurrentCurrency } from '../../../selectors';
+import { getCurrentCurrency, getLocale } from '../../../selectors';
 import { setSelectedQuote, setSortOrder } from '../../../ducks/bridge/actions';
 import { SortOrder } from '../types';
 import {
@@ -52,6 +52,7 @@ export const BridgeQuotesModal = ({
   const sortOrder = useSelector(getBridgeSortOrder);
   const currency = useSelector(getCurrentCurrency);
   const nativeCurrency = useSelector(getNativeCurrency);
+  const locale = useSelector(getLocale);
 
   const trackCrossChainSwapsEvent = useCrossChainSwapsEventTracker();
   const { quoteRequestProperties } = useRequestProperties();
@@ -117,15 +118,19 @@ export const BridgeQuotesModal = ({
               color={
                 sortOrder === sortOrderOption
                   ? TextColor.primaryDefault
-                  : TextColor.textAlternative
+                  : TextColor.textAlternativeSoft
               }
             >
               <Text
-                variant={TextVariant.bodySm}
+                variant={
+                  sortOrder === sortOrderOption
+                    ? TextVariant.bodySmMedium
+                    : TextVariant.bodySm
+                }
                 color={
                   sortOrder === sortOrderOption
                     ? TextColor.primaryDefault
-                    : TextColor.textAlternative
+                    : TextColor.textAlternativeSoft
                 }
               >
                 {label}
@@ -198,47 +203,41 @@ export const BridgeQuotesModal = ({
                   </Text>
                   {[
                     totalNetworkFee?.valueInCurrency
-                      ? t('quotedNetworkFee', [
+                      ? t('quotedTotalCost', [
                           formatCurrencyAmount(
                             totalNetworkFee.valueInCurrency,
                             currency,
                             0,
                           ),
                         ])
-                      : t('quotedNetworkFee', [
+                      : t('quotedTotalCost', [
                           formatTokenAmount(
+                            locale,
                             totalNetworkFee.amount,
                             nativeCurrency,
                           ),
                         ]),
-                    t(
-                      sortOrder === SortOrder.ETA_ASC
-                        ? 'quotedReceivingAmount'
-                        : 'quotedReceiveAmount',
-                      [
-                        formatCurrencyAmount(
-                          toTokenAmount.valueInCurrency,
-                          currency,
-                          0,
-                        ) ??
-                          formatTokenAmount(
-                            toTokenAmount.amount,
-                            destAsset.symbol,
-                            0,
-                          ),
-                      ],
-                    ),
-                  ]
-                    [sortOrder === SortOrder.ETA_ASC ? 'reverse' : 'slice']()
-                    .map((content) => (
-                      <Text
-                        key={content}
-                        variant={TextVariant.bodyXsMedium}
-                        color={TextColor.textAlternative}
-                      >
-                        {content}
-                      </Text>
-                    ))}
+                    t('quotedReceiveAmount', [
+                      formatCurrencyAmount(
+                        toTokenAmount.valueInCurrency,
+                        currency,
+                        0,
+                      ) ??
+                        formatTokenAmount(
+                          locale,
+                          toTokenAmount.amount,
+                          destAsset.symbol,
+                        ),
+                    ]),
+                  ].map((content) => (
+                    <Text
+                      key={content}
+                      variant={TextVariant.bodyXsMedium}
+                      color={TextColor.textAlternative}
+                    >
+                      {content}
+                    </Text>
+                  ))}
                 </Column>
                 <Column alignItems={AlignItems.flexEnd}>
                   <Text variant={TextVariant.bodyMd}>

@@ -27,6 +27,7 @@ export const PickerNetwork: PickerNetworkComponent = React.forwardRef(
   <C extends React.ElementType = 'button'>(
     {
       className = '',
+      avatarComponent,
       avatarNetworkProps,
       iconProps,
       label,
@@ -44,20 +45,23 @@ export const PickerNetwork: PickerNetworkComponent = React.forwardRef(
         backgroundColor={BackgroundColor.backgroundAlternative}
         alignItems={AlignItems.center}
         paddingLeft={2}
-        paddingRight={4}
+        paddingRight={2}
         gap={2}
         borderRadius={BorderRadius.pill}
         display={Display.Flex}
         {...(props as BoxProps<C>)}
       >
-        <AvatarNetwork
-          className="mm-picker-network__avatar-network"
-          src={src}
-          name={label}
-          size={AvatarNetworkSize.Xs}
-          {...avatarNetworkProps}
-        />
-        <Text as="span" ellipsis variant={TextVariant.bodySm} {...labelProps}>
+        {avatarComponent ?? (
+          <AvatarNetwork
+            className="mm-picker-network__avatar-network"
+            src={src}
+            name={label}
+            size={AvatarNetworkSize.Xs}
+            {...avatarNetworkProps}
+          />
+        )}
+
+        <Text ellipsis variant={TextVariant.bodySm} {...labelProps}>
           {label}
         </Text>
         <Icon

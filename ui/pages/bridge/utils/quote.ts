@@ -10,8 +10,10 @@ import { formatCurrency } from '../../../helpers/utils/confirm-tx.util';
 import { Numeric } from '../../../../shared/modules/Numeric';
 import { EtherDenomination } from '../../../../shared/constants/common';
 import { DEFAULT_PRECISION } from '../../../hooks/useCurrencyDisplay';
+import { formatAmount } from '../../confirmations/components/simulation-details/formatAmount';
 
-export const isNativeAddress = (address?: string) => address === zeroAddress();
+export const isNativeAddress = (address?: string | null) =>
+  address === zeroAddress() || address === '' || !address;
 
 export const isValidQuoteRequest = (
   partialRequest: Partial<QuoteRequest>,
@@ -168,14 +170,24 @@ export const calcCost = (
       : null,
 });
 
-export const formatEtaInMinutes = (estimatedProcessingTimeInSeconds: number) =>
-  (estimatedProcessingTimeInSeconds / 60).toFixed();
+export const formatEtaInMinutes = (
+  estimatedProcessingTimeInSeconds: number,
+) => {
+  if (estimatedProcessingTimeInSeconds < 60) {
+    return `< 1`;
+  }
+  return (estimatedProcessingTimeInSeconds / 60).toFixed();
+};
 
 export const formatTokenAmount = (
+  locale: string,
   amount: BigNumber,
-  symbol: string,
-  precision: number = 2,
-) => `${amount.toFixed(precision)} ${symbol}`;
+  symbol: string = '',
+) => {
+  const stringifiedAmount = formatAmount(locale, amount);
+
+  return [stringifiedAmount, symbol].join(' ').trim();
+};
 
 export const formatCurrencyAmount = (
   amount: BigNumber | null,
