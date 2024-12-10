@@ -75,14 +75,20 @@ export const useTokensWithFiltering = (
   );
 
   const filteredTokenListGenerator = useCallback(
-    (shouldAddToken: (symbol: string, address?: string) => boolean) => {
+    (
+      shouldAddToken: (
+        symbol: string,
+        address?: string,
+        tokenChainId?: string,
+      ) => boolean,
+    ) => {
       const buildTokenData = (
         token: SwapsTokenObject,
       ):
         | AssetWithDisplayData<NativeAsset>
         | AssetWithDisplayData<ERC20Asset>
         | undefined => {
-        if (chainId && shouldAddToken(token.symbol, token.address)) {
+        if (chainId && shouldAddToken(token.symbol, token.address, chainId)) {
           return getRenderableTokenData(
             {
               ...token,
@@ -90,6 +96,7 @@ export const useTokensWithFiltering = (
                 ? AssetType.native
                 : AssetType.token,
               image: token.iconUrl,
+              chainId,
             },
             tokenConversionRates,
             conversionRate,
@@ -114,6 +121,7 @@ export const useTokensWithFiltering = (
                   numberOfDecimals: 4,
                   toDenomination: EtherDenomination.ETH,
                 }),
+                chainId,
               }
             : {};
         const nativeToken = buildTokenData({
