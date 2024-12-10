@@ -262,7 +262,7 @@ export function createNewVaultAndRestoreFromMnemonic(
         },
       );
     })
-      .then(() => {
+      .then(async () => {
         dispatch(hideLoadingIndication());
       })
       .catch((err) => {
@@ -443,7 +443,6 @@ export function removeAccount(
           resolve(account);
         });
       });
-      await forceUpdateMetamaskState(dispatch);
     } catch (error) {
       dispatch(displayWarning(error));
       throw error;

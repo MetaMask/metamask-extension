@@ -13,7 +13,7 @@ const VALID_SECRET_RECOVERY_PHRASE =
 jest.mock('../../../../store/actions', () => ({
   createNewVaultAndRestoreFromMnemonic: jest
     .fn()
-    .mockReturnValue(jest.fn().mockResolvedValue()),
+    .mockReturnValue(jest.fn().mockResolvedValue(null)),
   showAlert: jest.fn().mockReturnValue({ type: 'ALERT_OPEN' }),
   hideAlert: jest.fn().mockReturnValue({ type: 'ALERT_CLOSE' }),
 }));
@@ -80,7 +80,7 @@ describe('ImportSRP', () => {
   });
 
   it('should log an error and not call onActionComplete on import failure', async () => {
-    actions.createNewVaultAndRestoreFromMnemonic.mockImplementation(() =>
+    (actions.createNewVaultAndRestoreFromMnemonic as jest.Mock).mockImplementation(() =>
       jest.fn().mockRejectedValue(new Error('error')),
     );
 
