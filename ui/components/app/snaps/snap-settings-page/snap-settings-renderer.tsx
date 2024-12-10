@@ -1,7 +1,6 @@
 import React, { FunctionComponent, useEffect, useMemo } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useLocation } from 'react-router-dom';
-import { HandlerType } from '@metamask/snaps-utils';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 
 import { deleteInterface } from '../../../../store/actions';
@@ -32,7 +31,6 @@ export const SnapSettingsRenderer: FunctionComponent<
 
   const snapId = useMemo(() => decodeSnapIdFromPathname(pathname), [pathname]);
 
-  console.log(snapId);
   const { name: snapName } = useSelector((state) =>
     // @ts-expect-error - snapId is a string
     getSnapMetadata(state, snapId),
@@ -44,7 +42,7 @@ export const SnapSettingsRenderer: FunctionComponent<
 
   const { data, error, loading } = useSnapSettings({
     snapId,
-  }) as { data?: { id: string }; error?: Error; loading: boolean };
+  });
 
   const interfaceId = !loading && !error ? data?.id : undefined;
 

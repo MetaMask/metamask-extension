@@ -5,11 +5,11 @@ import {
   handleSnapRequest,
 } from '../../store/actions';
 
-export function useSnapSettings({ snapId }) {
+export function useSnapSettings({ snapId }: { snapId: string }) {
   const dispatch = useDispatch();
-  const [loading, setLoading] = useState(true);
-  const [data, setData] = useState(undefined);
-  const [error, setError] = useState(undefined);
+  const [loading, setLoading] = useState<boolean>(true);
+  const [data, setData] = useState<{ id: string } | undefined>(undefined);
+  const [error, setError] = useState<Error | undefined>(undefined);
 
   useEffect(() => {
     let cancelled = false;
@@ -18,7 +18,7 @@ export function useSnapSettings({ snapId }) {
         setError(undefined);
         setLoading(true);
 
-        const newData = await handleSnapRequest({
+        const newData = (await handleSnapRequest({
           snapId,
           origin: '',
           handler: 'onSettingsPage',
@@ -26,14 +26,14 @@ export function useSnapSettings({ snapId }) {
             jsonrpc: '2.0',
             method: ' ',
           },
-        });
+        })) as { id: string };
         if (!cancelled) {
           setData(newData);
           forceUpdateMetamaskState(dispatch);
         }
       } catch (err) {
         if (!cancelled) {
-          setError(err);
+          setError(err as Error);
         }
       } finally {
         if (!cancelled) {
@@ -42,7 +42,9 @@ export function useSnapSettings({ snapId }) {
       }
     }
     fetchPage();
-    return () => (cancelled = true);
+    return () => {
+      cancelled = true;
+    };
   }, [snapId]);
 
   return { data, error, loading };

@@ -128,7 +128,6 @@ class SettingsPage extends PureComponent {
     const { searchResults, isSearchList, searchText } = this.state;
     const { t } = this.context;
     const isPopup = getEnvironmentType() === ENVIRONMENT_TYPE_POPUP;
-    console.log('plop');
 
     return (
       <div
@@ -233,7 +232,9 @@ class SettingsPage extends PureComponent {
 
     return (
       <div className="settings-page__header__title-container__title">
-        <Text variant={TextVariant.headingMd}>{titleText}</Text>
+        <Text variant={TextVariant.headingMd} ellipsis>
+          {titleText}
+        </Text>
       </div>
     );
   }
@@ -317,7 +318,13 @@ class SettingsPage extends PureComponent {
       const snapName = snapNameGetter(snapId);
       return {
         content: snapName,
-        icon: <SnapIcon snapId={snapId} avatarSize={IconSize.Md} />,
+        icon: (
+          <SnapIcon
+            snapId={snapId}
+            avatarSize={IconSize.Md}
+            style={{ '--size': '20px' }}
+          />
+        ),
         key: `${SNAP_SETTINGS_ROUTE}/${encodeURIComponent(snapId)}`,
       };
     });
