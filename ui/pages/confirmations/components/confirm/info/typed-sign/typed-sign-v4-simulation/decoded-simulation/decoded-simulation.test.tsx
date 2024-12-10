@@ -8,7 +8,10 @@ import {
 import { getMockTypedSignConfirmStateForRequest } from '../../../../../../../../../test/data/confirmations/helper';
 import { renderWithConfirmContextProvider } from '../../../../../../../../../test/lib/confirmations/render-helpers';
 import { permitSignatureMsg } from '../../../../../../../../../test/data/confirmations/typed_sign';
-import PermitSimulation, { getStateChangeToolip } from './decoded-simulation';
+import PermitSimulation, {
+  getStateChangeToolip,
+  NFTTransactionType,
+} from './decoded-simulation';
 
 const decodingData = {
   stateChanges: [
@@ -57,21 +60,22 @@ const decodingDataListingERC1155: DecodingDataStateChanges = [
     tokenID: '2233',
   },
 ];
-const decodingDataBidding: DecodingDataStateChanges = [
+
+const nftListing: DecodingDataStateChanges = [
   {
     assetType: 'ERC721',
-    changeType: DecodingDataChangeType.Receive,
-    address: '',
-    amount: '900000000000000000',
-    contractAddress: '',
-  },
-  {
-    assetType: 'Native',
-    changeType: DecodingDataChangeType.Bidding,
+    changeType: DecodingDataChangeType.Listing,
     address: '',
     amount: '',
-    contractAddress: '0xafd4896984CA60d2feF66136e57f958dCe9482d5',
-    tokenID: '2101',
+    contractAddress: '0x922dC160f2ab743312A6bB19DD5152C1D3Ecca33',
+    tokenID: '189',
+  },
+  {
+    assetType: 'ERC20',
+    changeType: DecodingDataChangeType.Receive,
+    address: '',
+    amount: '950000000000000000',
+    contractAddress: '0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2',
   },
 ];
 
@@ -108,7 +112,7 @@ describe('DecodedSimulation', () => {
     );
 
     expect(await findByText('Estimated changes')).toBeInTheDocument();
-    expect(await findByText('You receive')).toBeInTheDocument();
+    expect(await findByText('Listing price')).toBeInTheDocument();
     expect(await findByText('You list')).toBeInTheDocument();
     expect(await findByText('#2101')).toBeInTheDocument();
   });
@@ -148,8 +152,7 @@ describe('DecodedSimulation', () => {
   describe('getStateChangeToolip', () => {
     it('return correct tooltip when permit is for listing NFT', async () => {
       const tooltip = getStateChangeToolip(
-        decodingDataListing,
-        decodingDataListing?.[0],
+        NFTTransactionType.Listing,
         (str: string) => str,
       );
       expect(tooltip).toBe('signature_decoding_list_nft_tooltip');
@@ -158,8 +161,7 @@ describe('DecodedSimulation', () => {
 
   it('return correct tooltip when permit is for bidding NFT', async () => {
     const tooltip = getStateChangeToolip(
-      decodingDataBidding,
-      decodingDataBidding?.[0],
+      NFTTransactionType.Bidding,
       (str: string) => str,
     );
     expect(tooltip).toBe('signature_decoding_bid_nft_tooltip');
@@ -185,5 +187,23 @@ describe('DecodedSimulation', () => {
     );
 
     expect(await findAllByText('Spending cap')).toHaveLength(1);
+  });
+
+  it('for NFT permit label for receive should be "Listing price"', async () => {
+    const state = getMockTypedSignConfirmStateForRequest({
+      ...permitSignatureMsg,
+      decodingLoading: false,
+      decodingData: {
+        stateChanges: nftListing,
+      },
+    });
+    const mockStore = configureMockStore([])(state);
+
+    const { findAllByText } = renderWithConfirmContextProvider(
+      <PermitSimulation />,
+      mockStore,
+    );
+
+    expect(await findAllByText('Listing price')).toHaveLength(1);
   });
 });
