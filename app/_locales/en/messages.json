@@ -513,6 +513,9 @@
     "message": "All networks",
     "description": "Speicifies to token network filter to filter by all Networks"
   },
+  "popularNetworks": {
+    "message": "Popular networks"
+  },
   "allOfYour": {
     "message": "All of your $1",
     "description": "$1 is the symbol or name of the token that the user is approving spending"

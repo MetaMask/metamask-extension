@@ -49,6 +49,7 @@ import {
   MOONBEAM_DISPLAY_NAME,
   MOONRIVER_DISPLAY_NAME,
   TEST_NETWORK_IDS,
+  FEATURED_RPCS,
 } from '../../shared/constants/network';
 import {
   WebHIDConnectedStatuses,
@@ -2349,8 +2350,10 @@ export const getAllChainsToPoll = createDeepEqualSelector(
       return [currentChainId];
     }
 
+    const featuredChainIds = FEATURED_RPCS.map((rpc) => rpc.chainId);
+
     return Object.keys(networkConfigurations).filter(
-      (chainId) => chainId === currentChainId || !TEST_CHAINS.includes(chainId),
+      (chainId) => chainId === currentChainId || featuredChainIds.includes(chainId),
     );
   },
 );
@@ -2371,9 +2374,10 @@ export const getChainIdsToPoll = createDeepEqualSelector(
       return [currentChainId];
     }
 
+    const featuredChainIds = FEATURED_RPCS.map((rpc) => rpc.chainId);
+
     return Object.keys(networkConfigurations).filter(
-      (chainId) => chainId === currentChainId || !TEST_CHAINS.includes(chainId),
-    );
+      (chainId) => chainId === currentChainId || featuredChainIds.includes(chainId));
   },
 );
 
@@ -2398,9 +2402,11 @@ export const getNetworkClientIdsToPoll = createDeepEqualSelector(
       ];
     }
 
+    const featuredChainIds = FEATURED_RPCS.map((rpc) => rpc.chainId);
+
     return Object.entries(networkConfigurations).reduce(
       (acc, [chainId, network]) => {
-        if (chainId === currentChainId || !TEST_CHAINS.includes(chainId)) {
+        if (chainId === currentChainId || featuredChainIds.includes(chainId)) {
           acc.push(
             network.rpcEndpoints[network.defaultRpcEndpointIndex]
               .networkClientId,

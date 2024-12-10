@@ -27,7 +27,7 @@ import {
 import ImportControl from '../import-control';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import { MetaMetricsContext } from '../../../../../contexts/metametrics';
-import { TEST_CHAINS } from '../../../../../../shared/constants/network';
+import { FEATURED_RPCS, TEST_CHAINS } from '../../../../../../shared/constants/network';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
@@ -176,7 +176,7 @@ const AssetListControlBar = ({ showTokensLinks }: AssetListControlBarProps) => {
             className="asset-list-control-bar__button asset-list-control-bar__network_control"
             onClick={toggleNetworkFilterPopover}
             size={ButtonBaseSize.Sm}
-            disabled={isTestNetwork}
+            disabled={isTestNetwork || !FEATURED_RPCS.some((rpc) => rpc.chainId === currentNetwork.chainId)}
             endIconName={IconName.ArrowDown}
             backgroundColor={
               isNetworkFilterPopoverOpen
@@ -189,7 +189,8 @@ const AssetListControlBar = ({ showTokensLinks }: AssetListControlBarProps) => {
           >
             {allNetworksFilterShown
               ? currentNetwork?.nickname ?? t('currentNetwork')
-              : t('allNetworks')}
+              : t('popularNetworks')}
+              {/* t('allNetworks')} */}
           </ButtonBase>
         )}
 
