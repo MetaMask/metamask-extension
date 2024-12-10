@@ -86,8 +86,13 @@ export default function TokenList({
   const dispatch = useDispatch();
   const currentNetwork = useSelector(getCurrentNetwork);
   const allNetworks = useSelector(getNetworkConfigurationIdByChainId);
-  const { tokenSortConfig, tokenNetworkFilter, privacyMode } =
-    useSelector(getPreferences);
+  const {
+    tokenSortConfig,
+    tokenNetworkFilter,
+    privacyMode,
+    hideZeroBalanceTokens,
+  } = useSelector(getPreferences);
+  const preferences = useSelector(getPreferences);
   const selectedAccount = useSelector(getSelectedAccount);
   const conversionRate = useSelector(getConversionRate);
   const contractExchangeRates = useSelector(
@@ -122,6 +127,8 @@ export default function TokenList({
     }
   }, [Object.keys(allNetworks).length]);
 
+  console.log(preferences);
+
   const consolidatedBalances = () => {
     const tokensWithBalance: TokenWithFiatAmount[] = [];
     Object.entries(selectedAccountTokensChains).forEach(
@@ -147,14 +154,28 @@ export default function TokenList({
             currencyRates,
           });
 
-          // Append processed token with balance and fiat amount
-          tokensWithBalance.push({
-            ...token,
-            balance,
-            tokenFiatAmount,
-            chainId,
-            string: String(balance),
-          });
+          if (hideZeroBalanceTokens) {
+            // only hide zero balance tokens if not native gas token
+            if (!token.isNative && balance === '0') {
+              return;
+            } else {
+              tokensWithBalance.push({
+                ...token,
+                balance,
+                tokenFiatAmount,
+                chainId,
+                string: String(balance),
+              });
+            }
+          } else {
+            tokensWithBalance.push({
+              ...token,
+              balance,
+              tokenFiatAmount,
+              chainId,
+              string: String(balance),
+            });
+          }
         });
       },
     );
@@ -227,6 +248,8 @@ export default function TokenList({
   const showFiatInTestnets = useSelector(getShowFiatInTestnets);
   const showFiat =
     shouldShowFiat && (isMainnet || (isTestnet && showFiatInTestnets));
+
+  console.log(sortedFilteredTokens);
 
   return (
     <div>
