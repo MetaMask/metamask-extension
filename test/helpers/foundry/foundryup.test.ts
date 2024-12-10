@@ -6,7 +6,7 @@ import { Dir } from 'fs';
 import {
   mockDownloadAndInstallFoundryBinaries,
   mockInstallBinaries,
-} from './foundryup-mocks.test';
+} from './foundryup-mocks';
 import {
   getCacheDirectory,
   getBinaryArchiveUrl,
