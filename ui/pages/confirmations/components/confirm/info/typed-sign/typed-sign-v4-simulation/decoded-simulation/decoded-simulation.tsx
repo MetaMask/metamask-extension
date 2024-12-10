@@ -16,15 +16,15 @@ import StaticSimulation from '../../../shared/static-simulation/static-simulatio
 import TokenValueDisplay from '../value-display/value-display';
 import NativeValueDisplay from '../native-value-display/native-value-display';
 
-export enum NFTTransactionType {
-  Listing = 'Listing',
-  Bidding = 'Bidding',
+export enum StateChangeType {
+  NFTListingReceive = 'NFTListingReceive',
+  NFTBiddingReceive = 'NFTBiddingReceive',
 }
 
-export const getNFTTransactionType = (
+export const getStateChangeType = (
   stateChangeList: DecodingDataStateChanges | null,
   stateChange: DecodingDataStateChange,
-): NFTTransactionType | undefined => {
+): StateChangeType | undefined => {
   if (stateChange.changeType === DecodingDataChangeType.Receive) {
     if (
       stateChangeList?.some(
@@ -33,7 +33,7 @@ export const getNFTTransactionType = (
           change.assetType === TokenStandard.ERC721,
       )
     ) {
-      return NFTTransactionType.Listing;
+      return StateChangeType.NFTListingReceive;
     }
     if (
       stateChange.assetType === TokenStandard.ERC721 &&
@@ -41,19 +41,19 @@ export const getNFTTransactionType = (
         (change) => change.changeType === DecodingDataChangeType.Bidding,
       )
     ) {
-      return NFTTransactionType.Bidding;
+      return StateChangeType.NFTBiddingReceive;
     }
   }
   return undefined;
 };
 
 export const getStateChangeToolip = (
-  nftTransactionType: NFTTransactionType | undefined,
+  nftTransactionType: StateChangeType | undefined,
   t: ReturnType<typeof useI18nContext>,
 ): string | undefined => {
-  if (nftTransactionType === NFTTransactionType.Listing) {
+  if (nftTransactionType === StateChangeType.NFTListingReceive) {
     return t('signature_decoding_list_nft_tooltip');
-  } else if (nftTransactionType === NFTTransactionType.Bidding) {
+  } else if (nftTransactionType === StateChangeType.NFTBiddingReceive) {
     return t('signature_decoding_bid_nft_tooltip');
   }
   return undefined;
@@ -71,12 +71,12 @@ const stateChangeOrder = {
 const getStateChangeLabelMap = (
   t: ReturnType<typeof useI18nContext>,
   changeType: string,
-  nftTransactionType?: NFTTransactionType,
+  stateChangeType?: StateChangeType,
 ) => {
   return {
     [DecodingDataChangeType.Transfer]: t('permitSimulationChange_transfer'),
     [DecodingDataChangeType.Receive]:
-      nftTransactionType === NFTTransactionType.Listing
+      stateChangeType === StateChangeType.NFTListingReceive
         ? t('permitSimulationChange_nft_listing')
         : t('permitSimulationChange_receive'),
     [DecodingDataChangeType.Approve]: t('permitSimulationChange_approve'),
@@ -100,10 +100,7 @@ const StateChangeRow = ({
   const t = useI18nContext();
   const { assetType, changeType, amount, contractAddress, tokenID } =
     stateChange;
-  const nftTransactionType = getNFTTransactionType(
-    stateChangeList,
-    stateChange,
-  );
+  const nftTransactionType = getStateChangeType(stateChangeList, stateChange);
   const tooltip = getStateChangeToolip(nftTransactionType, t);
   return (
     <ConfirmInfoRow
@@ -123,7 +120,7 @@ const StateChangeRow = ({
           chainId={chainId}
           tokenId={tokenID}
           credit={
-            nftTransactionType !== NFTTransactionType.Listing &&
+            nftTransactionType !== StateChangeType.NFTListingReceive &&
             changeType === DecodingDataChangeType.Receive
           }
           debit={changeType === DecodingDataChangeType.Transfer}
@@ -147,7 +144,6 @@ const DecodedSimulation: React.FC<object> = () => {
   const chainId = currentConfirmation.chainId as Hex;
   const { decodingLoading, decodingData } = currentConfirmation;
 
-  console.log('====', JSON.stringify(decodingData?.stateChanges));
   const stateChangeFragment = useMemo(() => {
     const orderedStateChanges = decodingData?.stateChanges?.sort((c1, c2) =>
       stateChangeOrder[c1.changeType] > stateChangeOrder[c2.changeType]

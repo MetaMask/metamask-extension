@@ -9,8 +9,9 @@ import { getMockTypedSignConfirmStateForRequest } from '../../../../../../../../
 import { renderWithConfirmContextProvider } from '../../../../../../../../../test/lib/confirmations/render-helpers';
 import { permitSignatureMsg } from '../../../../../../../../../test/data/confirmations/typed_sign';
 import PermitSimulation, {
+  getStateChangeType,
   getStateChangeToolip,
-  NFTTransactionType,
+  StateChangeType,
 } from './decoded-simulation';
 
 const decodingData = {
@@ -72,6 +73,24 @@ const nftListing: DecodingDataStateChanges = [
   },
   {
     assetType: 'ERC20',
+    changeType: DecodingDataChangeType.Receive,
+    address: '',
+    amount: '950000000000000000',
+    contractAddress: '0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2',
+  },
+];
+
+const nftBidding: DecodingDataStateChanges = [
+  {
+    assetType: 'ERC20',
+    changeType: DecodingDataChangeType.Bidding,
+    address: '',
+    amount: '',
+    contractAddress: '0x922dC160f2ab743312A6bB19DD5152C1D3Ecca33',
+    tokenID: '189',
+  },
+  {
+    assetType: 'ERC721',
     changeType: DecodingDataChangeType.Receive,
     address: '',
     amount: '950000000000000000',
@@ -149,24 +168,6 @@ describe('DecodedSimulation', () => {
     expect(await findByText('Unavailable')).toBeInTheDocument();
   });
 
-  describe('getStateChangeToolip', () => {
-    it('return correct tooltip when permit is for listing NFT', async () => {
-      const tooltip = getStateChangeToolip(
-        NFTTransactionType.Listing,
-        (str: string) => str,
-      );
-      expect(tooltip).toBe('signature_decoding_list_nft_tooltip');
-    });
-  });
-
-  it('return correct tooltip when permit is for bidding NFT', async () => {
-    const tooltip = getStateChangeToolip(
-      NFTTransactionType.Bidding,
-      (str: string) => str,
-    );
-    expect(tooltip).toBe('signature_decoding_bid_nft_tooltip');
-  });
-
   it('renders label only once if there are multiple state changes of same changeType', async () => {
     const state = getMockTypedSignConfirmStateForRequest({
       ...permitSignatureMsg,
@@ -205,5 +206,35 @@ describe('DecodedSimulation', () => {
     );
 
     expect(await findAllByText('Listing price')).toHaveLength(1);
+  });
+
+  describe('getStateChangeToolip', () => {
+    it('return correct tooltip when permit is for listing NFT', async () => {
+      const tooltip = getStateChangeToolip(
+        StateChangeType.NFTListingReceive,
+        (str: string) => str,
+      );
+      expect(tooltip).toBe('signature_decoding_list_nft_tooltip');
+    });
+
+    it('return correct tooltip when permit is for bidding NFT', async () => {
+      const tooltip = getStateChangeToolip(
+        StateChangeType.NFTBiddingReceive,
+        (str: string) => str,
+      );
+      expect(tooltip).toBe('signature_decoding_bid_nft_tooltip');
+    });
+  });
+
+  describe('getStateChangeType', () => {
+    it('return correct state change type for NFT listing receive', async () => {
+      const stateChange = getStateChangeType(nftListing, nftListing[1]);
+      expect(stateChange).toBe(StateChangeType.NFTListingReceive);
+    });
+
+    it('return correct state change type for NFT bidding receive', async () => {
+      const stateChange = getStateChangeType(nftBidding, nftBidding[1]);
+      expect(stateChange).toBe(StateChangeType.NFTBiddingReceive);
+    });
   });
 });
