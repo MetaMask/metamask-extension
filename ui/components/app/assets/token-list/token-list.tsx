@@ -153,9 +153,7 @@ export default function TokenList({
 
           if (hideZeroBalanceTokens) {
             // only hide zero balance tokens if not native gas token
-            if (!token.isNative && balance === '0') {
-              return;
-            } else {
+            if (token.isNative || balance !== '0') {
               tokensWithBalance.push({
                 ...token,
                 balance,
