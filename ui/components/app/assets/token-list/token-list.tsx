@@ -151,18 +151,10 @@ export default function TokenList({
             currencyRates,
           });
 
-          if (hideZeroBalanceTokens) {
-            // only hide zero balance tokens if not native gas token
-            if (token.isNative || balance !== '0') {
-              tokensWithBalance.push({
-                ...token,
-                balance,
-                tokenFiatAmount,
-                chainId,
-                string: String(balance),
-              });
-            }
-          } else {
+          // respect hide zero balance setting
+          // native tokens should still show zero balance regardless
+          // erc20s with zero balances should be hidden
+          if (!hideZeroBalanceTokens || token.isNative || balance !== '0') {
             tokensWithBalance.push({
               ...token,
               balance,
