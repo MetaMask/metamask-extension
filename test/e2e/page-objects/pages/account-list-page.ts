@@ -502,6 +502,18 @@ class AccountListPage {
     });
   }
 
+  async check_accountNotDisplayedInAccountList(
+    expectedLabel: string = 'Account',
+  ): Promise<void> {
+    console.log(
+      `Check that account label ${expectedLabel} is not displayed in account list`,
+    );
+    await this.driver.assertElementNotPresent({
+      css: this.accountListItem,
+      text: expectedLabel,
+    });
+  }
+
   /**
    * Checks that the account with the specified label is not displayed in the account list.
    *

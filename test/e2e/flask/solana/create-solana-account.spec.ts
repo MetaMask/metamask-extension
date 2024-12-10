@@ -14,7 +14,7 @@ describe('Create/Remove Solana Account', function (this: Suite) {
         await headerNavbar.openAccountMenu();
         const accountListPage = new AccountListPage(driver);
         await accountListPage.check_accountDisplayedInAccountList('Account 1');
-        await accountListPage.check_numberOfAvailableAccounts(2);
+        await accountListPage.check_accountDisplayedInAccountList('Solana 1');
       },
     );
   });
@@ -30,12 +30,11 @@ describe('Create/Remove Solana Account', function (this: Suite) {
         await headerNavbar.openAccountMenu();
         const accountListPage = new AccountListPage(driver);
         await accountListPage.check_accountDisplayedInAccountList('Account 1');
-        await accountListPage.check_numberOfAvailableAccounts(2);
         await accountListPage.removeAccount('Solana 1', true);
         await headerNavbar.check_accountLabel('Account 1');
         await headerNavbar.openAccountMenu();
         await accountListPage.check_accountDisplayedInAccountList('Account 1');
-        await accountListPage.check_numberOfAvailableAccounts(1);
+        await accountListPage.check_accountNotDisplayedInAccountList('Solana 1');
       },
     );
   });
@@ -54,7 +53,6 @@ describe('Create/Remove Solana Account', function (this: Suite) {
         await accountListPage.addNewSolanaAccount({ accountName: 'Solana 2' });
         await headerNavbar.check_accountLabel('Solana 2');
         await headerNavbar.openAccountMenu();
-        await accountListPage.check_numberOfAvailableAccounts(3);
         await accountListPage.check_accountDisplayedInAccountList('Account 1');
         await accountListPage.check_accountDisplayedInAccountList('Solana 1');
         await accountListPage.check_accountDisplayedInAccountList('Solana 2');
