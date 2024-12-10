@@ -82,7 +82,7 @@ describe('Block Explorer', function () {
 
         await driver.clickElement({
           text: 'TST',
-          tag: 'span',
+          tag: 'p',
         });
 
         await driver.clickElement('[data-testid="asset-options__button"]');
