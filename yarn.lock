@@ -5662,18 +5662,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/message-signing-snap@npm:^0.4.0":
-  version: 0.4.0
-  resolution: "@metamask/message-signing-snap@npm:0.4.0"
-  dependencies:
-    "@metamask/rpc-errors": "npm:^6.3.0"
-    "@metamask/snaps-sdk": "npm:^6.0.0"
-    "@metamask/utils": "npm:^9.0.0"
-    "@noble/ciphers": "npm:^0.5.3"
-    "@noble/curves": "npm:^1.4.2"
-    "@noble/hashes": "npm:^1.4.0"
-    zod: "npm:^3.23.8"
-  checksum: 10/fb61da8f2999305f99ad5a1d6be2def224c88c1059fcdc8e70d06641d695eef82d9b8463c6b57d797a519aa70dc741b7cb59596f503faf2eff68a1647248b4de
+"@metamask/message-signing-snap@npm:^0.6.0":
+  version: 0.6.0
+  resolution: "@metamask/message-signing-snap@npm:0.6.0"
+  checksum: 10/c74b3d897ffdadb2c2772e715578d037430955e962ff25fc3e56edfc60f0b08e55dd1e04dcda104d02a4424af09fedf8e2bd0dab24a34d91c1b8c685849b510a
   languageName: node
   linkType: hard
 
@@ -6018,7 +6010,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/rpc-errors@npm:^6.2.1, @metamask/rpc-errors@npm:^6.3.0, @metamask/rpc-errors@npm:^6.3.1":
+"@metamask/rpc-errors@npm:^6.2.1, @metamask/rpc-errors@npm:^6.3.1":
   version: 6.4.0
   resolution: "@metamask/rpc-errors@npm:6.4.0"
   dependencies:
@@ -6307,9 +6299,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/transaction-controller@npm:^41.0.0":
-  version: 41.1.0
-  resolution: "@metamask/transaction-controller@npm:41.1.0"
+"@metamask/transaction-controller@npm:^42.0.0":
+  version: 42.0.0
+  resolution: "@metamask/transaction-controller@npm:42.0.0"
   dependencies:
     "@ethereumjs/common": "npm:^3.2.0"
     "@ethereumjs/tx": "npm:^4.2.0"
@@ -6337,13 +6329,9 @@ __metadata:
     "@metamask/eth-block-tracker": ">=9"
     "@metamask/gas-fee-controller": ^22.0.0
     "@metamask/network-controller": ^22.0.0
-  checksum: 10/254a46b29559dc8e8faacdd164f1cbf3387296321ae2a1d8cb953717c28e8ec0532f7507e79c19ebb498bd5ff1fd979c9526cc9e3dadaca857a6707fa60b29e2
+  checksum: 10/73c510803a720b4c1da0b82f1279a404a9b11c4ab76f8e5e4378c65d5d08bbb32c52062abfe319476cc3f5e2623a8987775c4524e55aa94002af73d73721b869
   languageName: node
-  linkType: hard
-
-"@metamask/user-operation-controller@npm:^19.0.0":
   version: 19.0.0
-  resolution: "@metamask/user-operation-controller@npm:19.0.0"
   dependencies:
     "@metamask/base-controller": "npm:^7.0.2"
     "@metamask/controller-utils": "npm:^11.4.3"
@@ -6466,7 +6454,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@noble/ciphers@npm:^0.5.2, @noble/ciphers@npm:^0.5.3":
+"@noble/ciphers@npm:^0.5.2":
   version: 0.5.3
   resolution: "@noble/ciphers@npm:0.5.3"
   checksum: 10/af0ad96b5807feace93e63549e05de6f5e305b36e2e95f02d90532893fbc3af3f19b9621b6de4caa98303659e5df2e7aa082064e5d4a82e6f38c728d48dfae5d
@@ -15810,7 +15798,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"cross-spawn@npm:^7.0.0, cross-spawn@npm:^7.0.2, cross-spawn@npm:^7.0.3, cross-spawn@npm:^7.0.5":
+"cross-spawn@npm:^7.0.0, cross-spawn@npm:^7.0.2, cross-spawn@npm:^7.0.3, cross-spawn@npm:^7.0.6":
   version: 7.0.6
   resolution: "cross-spawn@npm:7.0.6"
   dependencies:
@@ -26409,7 +26397,7 @@ __metadata:
     "@metamask/logging-controller": "npm:^6.0.0"
     "@metamask/logo": "npm:^3.1.2"
     "@metamask/message-manager": "npm:^11.0.0"
-    "@metamask/message-signing-snap": "npm:^0.4.0"
+    "@metamask/message-signing-snap": "npm:^0.6.0"
     "@metamask/metamask-eth-abis": "npm:^3.1.1"
     "@metamask/name-controller": "npm:^8.0.0"
     "@metamask/network-controller": "patch:@metamask/network-controller@npm%3A22.1.0#~/.yarn/patches/@metamask-network-controller-npm-22.1.0-621c281f70.patch"
@@ -26444,7 +26432,7 @@ __metadata:
     "@metamask/solana-wallet-snap": "npm:^1.0.3"
     "@metamask/test-bundler": "npm:^1.0.0"
     "@metamask/test-dapp": "npm:8.13.0"
-    "@metamask/transaction-controller": "npm:^41.0.0"
+    "@metamask/transaction-controller": "npm:^42.0.0"
     "@metamask/user-operation-controller": "npm:^19.0.0"
     "@metamask/utils": "npm:^10.0.1"
     "@ngraveio/bc-ur": "npm:^1.1.12"
@@ -26557,7 +26545,6 @@ __metadata:
     copy-to-clipboard: "npm:^3.3.3"
     copy-webpack-plugin: "npm:^12.0.2"
     core-js-pure: "npm:^3.38.0"
-    cross-spawn: "npm:^7.0.5"
     crypto-browserify: "npm:^3.12.0"
     css-loader: "npm:^6.10.0"
     css-to-xpath: "npm:^0.1.0"
@@ -38070,6 +38057,7 @@ __metadata:
   languageName: node
   linkType: hard
 
+<<<<<<< HEAD
 "zod@npm:^3.23.8":
   version: 3.24.0
   resolution: "zod@npm:3.24.0"
@@ -38077,6 +38065,8 @@ __metadata:
   languageName: node
   linkType: hard
 
+=======
+>>>>>>> 223cf44aa86cc36f241f841e94ff0fa799f2ee32
 "zstd-codec@npm:^0.1.4":
   version: 0.1.4
   resolution: "zstd-codec@npm:0.1.4"

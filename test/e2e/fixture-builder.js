@@ -1481,6 +1481,24 @@ class FixtureBuilder {
       });
   }
 
+  withIncomingTransactionsPreferences(incomingTransactionsPreferences) {
+    return this.withPreferencesController({
+      featureFlags: {
+        showIncomingTransactions: incomingTransactionsPreferences,
+      },
+    });
+  }
+
+  withIncomingTransactionsCache(cache) {
+    return this.withTransactionController({ lastFetchedBlockNumbers: cache });
+  }
+
+  withTransactions(transactions) {
+    return this.withTransactionController({
+      transactions,
+    });
+  }
+
   build() {
     this.fixture.meta = {
       version: FIXTURE_STATE_METADATA_VERSION,
