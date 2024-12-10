@@ -1,6 +1,8 @@
 import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
 import { useLocation } from 'react-router-dom';
+///: END:ONLY_INCLUDE_IF
 import { getSlides } from '../../../ducks/metamask/metamask';
 import { removeSlide, updateSlides } from '../../../store/actions';
 ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
