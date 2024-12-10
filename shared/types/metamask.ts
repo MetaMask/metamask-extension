@@ -35,11 +35,6 @@ import type {
   SnapsRegistryState,
 } from '@metamask/snaps-controllers';
 import type { AccountsControllerState } from '@metamask/accounts-controller';
-///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-import type { MmiConfigurationController } from '@metamask-institutional/custody-keyring';
-import type { InstitutionalFeaturesController } from '@metamask-institutional/institutional-features';
-import type { CustodyController } from '@metamask-institutional/custody-controller';
-///: END:ONLY_INCLUDE_IF
 import type { SignatureControllerState } from '@metamask/signature-controller';
 import type { PPOMState } from '@metamask/ppom-validator';
 import type { NameControllerState } from '@metamask/name-controller';
@@ -71,6 +66,11 @@ import type { MetaMetricsDataDeletionState } from '../../app/scripts/controllers
 import type { MetaMetricsControllerState } from '../../app/scripts/controllers/metametrics-controller';
 import type { AccountTrackerControllerState } from '../../app/scripts/controllers/account-tracker-controller';
 import type { BridgeStatusControllerState } from './bridge-status';
+import {
+  CustodyControllerState,
+  InstitutionalFeaturesControllerState,
+  MmiConfigurationControllerState,
+} from './institutional';
 
 export type ResetOnRestartStoresComposedState = {
   AccountTracker: AccountTrackerControllerState;
@@ -124,9 +124,9 @@ export type StoreControllersComposedState =
     SnapInterfaceController: SnapInterfaceControllerState;
     SnapInsightsController: SnapInsightsControllerState;
     ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-    CustodyController: CustodyController['store'];
-    InstitutionalFeaturesController: InstitutionalFeaturesController['store'];
-    MmiConfigurationController: MmiConfigurationController['store'];
+    CustodyController: CustodyControllerState;
+    InstitutionalFeaturesController: InstitutionalFeaturesControllerState;
+    MmiConfigurationController: MmiConfigurationControllerState;
     ///: END:ONLY_INCLUDE_IF
     NameController: NameControllerState;
     UserOperationController: UserOperationControllerState;
