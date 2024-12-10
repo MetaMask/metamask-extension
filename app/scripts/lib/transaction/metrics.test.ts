@@ -165,6 +165,7 @@ describe('Transaction metrics', () => {
     };
 
     expectedSensitiveProperties = {
+      default_estimate: 'default_estimate',
       default_gas: '0.000031501',
       default_gas_price: '2',
       first_seen: 1624408066355,
