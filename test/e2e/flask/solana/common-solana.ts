@@ -55,7 +55,7 @@ export async function withSolanaAccountSnap(
       testSpecificMock: async (mockServer: Mockttp) => {
         console.log('Setting up test-specific mocks');
         return [await mockSolanaBalanceQuote(mockServer)];
-    }
+      },
     },
     async ({ driver, mockServer }: { driver: Driver; mockServer: Mockttp }) => {
       console.log('Unlocking wallet');
