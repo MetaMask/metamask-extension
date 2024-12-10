@@ -78,7 +78,6 @@ async function withFixtures(options, testSuite) {
     usePaymaster,
     ethConversionInUsd,
     manifestFlags,
-    enableWebSocketServer = false,
   } = options;
 
   const fixtureServer = new FixtureServer();
@@ -93,8 +92,6 @@ async function withFixtures(options, testSuite) {
   let numberOfDapps = dapp ? 1 : 0;
   const dappServer = [];
   const phishingPageServer = new PhishingWarningPageServer();
-
-  let webSocketServer;
 
   if (!disableServerMochaToBackground) {
     getServerMochaToBackground();
@@ -119,16 +116,6 @@ async function withFixtures(options, testSuite) {
         ),
       );
       contractRegistry = ganacheSeeder.getContractRegistry();
-    }
-
-    if (enableWebSocketServer) {
-      webSocketServer = new WebSocket.Server({ port: 8081, host: '0.0.0.0' });
-
-      webSocketServer.on('connection', function connection(ws) {
-        ws.on('message', function incoming(message) {
-          ws.send('Hello, client! I am the server.', message);
-        });
-      });
     }
 
     await fixtureServer.start();
@@ -319,12 +306,6 @@ async function withFixtures(options, testSuite) {
       await fixtureServer.stop();
       if (ganacheServer) {
         await ganacheServer.quit();
-      }
-
-      if (webSocketServer) {
-        webSocketServer.close(() => {
-          console.log('WebSocket server closed');
-        });
       }
 
       if (ganacheOptions?.concurrent) {
@@ -669,7 +650,7 @@ async function unlockWallet(
 async function createWebSocketConnection(driver, hostname) {
   try {
     await driver.executeScript(async (wsHostname) => {
-      const url = `ws://${wsHostname}:8081`;
+      const url = `ws://${wsHostname}:8000`;
 
       const socket = new WebSocket(url);
 
