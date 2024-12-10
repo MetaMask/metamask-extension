@@ -1,13 +1,14 @@
 import { createSelector } from 'reselect';
-import type { AuthenticationController } from '@metamask/profile-sync-controller';
+import { BackgroundStateProxy } from '../../../shared/types/metamask';
 
-type AppState = {
-  metamask: AuthenticationController.AuthenticationControllerState & {
-    participateInMetaMetrics: boolean;
-  };
+type AuthenticationState = {
+  metamask: Pick<
+    BackgroundStateProxy,
+    'AuthenticationController' | 'MetaMetricsController'
+  >;
 };
 
-const getMetamask = (state: AppState) => state.metamask;
+const getMetamask = (state: AuthenticationState) => state.metamask;
 
 /**
  * Selector to determine if the user is signed in.
@@ -15,12 +16,12 @@ const getMetamask = (state: AppState) => state.metamask;
  * This selector retrieves the `isSignedIn` property from the `metamask` state using the `createSelector` function from 'reselect'.
  * It provides a memoized selector that returns the sign-in status of the user.
  *
- * @param {AppState} state - The current state of the Redux store.
+ * @param {AuthenticationState} state - The current state of the Redux store.
  * @returns {boolean} Returns true if the user is signed in, false otherwise.
  */
 export const selectIsSignedIn = createSelector(
   [getMetamask],
-  (metamask) => metamask.isSignedIn,
+  (metamask) => metamask.AuthenticationController.isSignedIn,
 );
 
 /**
@@ -29,12 +30,12 @@ export const selectIsSignedIn = createSelector(
  * This selector accesses the `participateInMetaMetrics` property from the `metamask` state using the `createSelector` function.
  * It provides a memoized selector that returns whether the user has opted into MetaMetrics.
  *
- * @param {AppState} state - The current state of the Redux store.
+ * @param {AuthenticationState} state - The current state of the Redux store.
  * @returns {boolean} Returns true if the user participates in MetaMetrics, false otherwise.
  */
 export const selectParticipateInMetaMetrics = createSelector(
   [getMetamask],
-  (metamask) => metamask.participateInMetaMetrics,
+  (metamask) => metamask.MetaMetricsController.participateInMetaMetrics,
 );
 
 /**
@@ -43,10 +44,10 @@ export const selectParticipateInMetaMetrics = createSelector(
  * This selector fetches the `sessionData` from the `metamask` state using the `createSelector` function.
  * It provides a memoized selector that returns the session data stored in the MetaMask state.
  *
- * @param {AppState} state - The current state of the Redux store.
+ * @param {AuthenticationState} state - The current state of the Redux store.
  * @returns {any} Returns the session data associated with the current user session.
  */
 export const selectSessionData = createSelector(
   [getMetamask],
-  (metamask) => metamask.sessionData,
+  (metamask) => metamask.AuthenticationController.sessionData,
 );

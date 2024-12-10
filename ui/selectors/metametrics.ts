@@ -1,19 +1,33 @@
 import { createSelector } from 'reselect';
+import { BackgroundStateProxy } from '../../shared/types/metamask';
 
-export const selectFragments = (state) => state.metamask.fragments;
+type MetaMetricsMetaMaskState = {
+  metamask: Pick<BackgroundStateProxy, 'MetaMetricsController'>;
+};
 
-export const getDataCollectionForMarketing = (state) =>
-  state.metamask.dataCollectionForMarketing;
+type Fragments =
+  MetaMetricsMetaMaskState['metamask']['MetaMetricsController']['fragments'];
 
-export const getParticipateInMetaMetrics = (state) =>
-  Boolean(state.metamask.participateInMetaMetrics);
+type FragmentOptions = Fragments[keyof Fragments];
 
-export const getLatestMetricsEventTimestamp = (state) =>
-  state.metamask.latestNonAnonymousEventTimestamp;
+export const selectFragments = (state: MetaMetricsMetaMaskState) =>
+  state.metamask.MetaMetricsController.fragments;
+
+export const getDataCollectionForMarketing = (
+  state: MetaMetricsMetaMaskState,
+) => state.metamask.MetaMetricsController.dataCollectionForMarketing;
+
+export const getParticipateInMetaMetrics = (state: MetaMetricsMetaMaskState) =>
+  Boolean(state.metamask.MetaMetricsController.participateInMetaMetrics);
+
+export const getLatestMetricsEventTimestamp = (
+  state: MetaMetricsMetaMaskState,
+) => state.metamask.MetaMetricsController.latestNonAnonymousEventTimestamp;
 
 export const selectFragmentBySuccessEvent = createSelector(
   selectFragments,
-  (_, fragmentOptions) => fragmentOptions,
+  (_: MetaMetricsMetaMaskState, fragmentOptions: FragmentOptions) =>
+    fragmentOptions,
   (fragments, fragmentOptions) => {
     if (fragmentOptions.persist) {
       return Object.values(fragments).find(
@@ -26,7 +40,7 @@ export const selectFragmentBySuccessEvent = createSelector(
 
 export const selectFragmentById = createSelector(
   selectFragments,
-  (_, fragmentId) => fragmentId,
+  (_: MetaMetricsMetaMaskState, fragmentId: string) => fragmentId,
   (fragments, fragmentId) => {
     // A valid existing fragment must exist in state.
     // If these conditions are not meant we will create a new fragment.
@@ -38,8 +52,14 @@ export const selectFragmentById = createSelector(
 );
 
 export const selectMatchingFragment = createSelector(
-  (state, params) =>
-    selectFragmentBySuccessEvent(state, params.fragmentOptions),
-  (state, params) => selectFragmentById(state, params.existingId),
+  (
+    state: MetaMetricsMetaMaskState,
+    params: {
+      fragmentOptions: FragmentOptions;
+      existingId: string;
+    },
+  ) => selectFragmentBySuccessEvent(state, params.fragmentOptions),
+  (state: MetaMetricsMetaMaskState, params) =>
+    selectFragmentById(state, params.existingId),
   (matchedBySuccessEvent, matchedById) => matchedById ?? matchedBySuccessEvent,
 );
