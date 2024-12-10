@@ -1,10 +1,10 @@
 import React, { useMemo } from 'react';
 import { useSelector } from 'react-redux';
 
-import { toChecksumAddress } from 'ethereumjs-util';
 import { getNativeTokenAddress } from '@metamask/assets-controllers';
+import { toChecksumAddress } from 'ethereumjs-util';
+import { getCurrentCurrency } from '../../../ducks/metamask/metamask';
 import {
-  getCurrentCurrency,
   getSelectedAccount,
   getShouldHideZeroBalanceTokens,
   getTokensMarketData,

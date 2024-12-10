@@ -2,11 +2,11 @@ import React from 'react';
 import { useSelector } from 'react-redux';
 import classnames from 'classnames';
 import { getCurrentChainId } from '../../../../../shared/modules/selectors/networks';
+import { getSelectedAccountCachedBalance } from '../../../../selectors';
 import {
   getCurrentCurrency,
-  getSelectedAccountCachedBalance,
-} from '../../../../selectors';
-import { getNativeCurrency } from '../../../../ducks/metamask/metamask';
+  getNativeCurrency,
+} from '../../../../ducks/metamask/metamask';
 import { useCurrencyDisplay } from '../../../../hooks/useCurrencyDisplay';
 import { AssetType } from '../../../../../shared/constants/transaction';
 import { Box } from '../../../component-library';

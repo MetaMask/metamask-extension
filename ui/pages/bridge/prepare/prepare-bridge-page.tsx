@@ -48,7 +48,7 @@ import { calcTokenValue } from '../../../../shared/lib/swaps-utils';
 import { BridgeQuoteCard } from '../quotes/bridge-quote-card';
 import { isValidQuoteRequest } from '../utils/quote';
 import { getProviderConfig } from '../../../../shared/modules/selectors/networks';
-import { getCurrentCurrency } from '../../../selectors';
+import { getCurrentCurrency } from '../../../ducks/metamask/metamask';
 import { SECOND } from '../../../../shared/constants/time';
 import { BridgeInputGroup } from './bridge-input-group';
 
