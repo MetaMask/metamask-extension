@@ -34,6 +34,10 @@ export type BridgeFeatureFlags = {
 };
 
 export type BridgeControllerState = {
+  bridgeState: BridgeState;
+};
+
+export type BridgeState = {
   bridgeFeatureFlags: BridgeFeatureFlags;
   srcTokens: Record<string, SwapsTokenObject>;
   srcTopAssets: { address: string }[];
