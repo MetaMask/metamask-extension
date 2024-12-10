@@ -14,15 +14,15 @@ describe('DetectedTokenIgnoredPopover', () => {
     render(<DetectedTokenIgnoredPopover {...defaultProps} {...props} />);
 
   it('should match snapshot for ignore mode', () => {
-    const { asFragment } = renderComponent();
-    expect(asFragment()).toMatchSnapshot();
+    const { baseElement } = renderComponent();
+    expect(baseElement).toMatchSnapshot();
   });
 
   it('should match snapshot for import mode', () => {
-    const { asFragment } = renderComponent({
+    const { baseElement } = renderComponent({
       partiallyIgnoreDetectedTokens: true,
     });
-    expect(asFragment()).toMatchSnapshot();
+    expect(baseElement).toMatchSnapshot();
   });
 
   it('should call handleClearTokensSelection when the confirm button is clicked', () => {
