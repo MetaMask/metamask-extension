@@ -249,8 +249,6 @@ export default function TokenList({
   const showFiat =
     shouldShowFiat && (isMainnet || (isTestnet && showFiatInTestnets));
 
-  console.log(sortedFilteredTokens);
-
   return (
     <div>
       {sortedFilteredTokens.map((tokenData) => (
