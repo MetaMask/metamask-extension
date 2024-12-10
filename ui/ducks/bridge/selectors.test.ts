@@ -204,7 +204,7 @@ describe('Bridge selectors', () => {
   });
 
   describe('getToChains', () => {
-    it('excludes selected providerConfig and disabled chains from options', () => {
+    it('includes selected providerConfig and disabled chains from options', () => {
       const state = createBridgeMockStore({
         featureFlagOverrides: {
           extensionConfig: {
@@ -216,6 +216,7 @@ describe('Bridge selectors', () => {
               },
               [CHAIN_IDS.OPTIMISM]: { isActiveSrc: false, isActiveDest: true },
               [CHAIN_IDS.POLYGON]: { isActiveSrc: false, isActiveDest: true },
+              [CHAIN_IDS.BSC]: { isActiveSrc: false, isActiveDest: true },
             },
           },
         },
@@ -225,14 +226,20 @@ describe('Bridge selectors', () => {
       });
       const result = getToChains(state as never);
 
-      expect(result).toHaveLength(3);
+      expect(result).toHaveLength(5);
       expect(result[0]).toStrictEqual(
-        expect.objectContaining({ chainId: CHAIN_IDS.ARBITRUM }),
+        expect.objectContaining({ chainId: CHAIN_IDS.LINEA_MAINNET }),
       );
       expect(result[1]).toStrictEqual(
-        expect.objectContaining({ chainId: CHAIN_IDS.OPTIMISM }),
+        expect.objectContaining({ chainId: CHAIN_IDS.ARBITRUM }),
       );
       expect(result[2]).toStrictEqual(
+        expect.objectContaining({ chainId: CHAIN_IDS.BSC }),
+      );
+      expect(result[3]).toStrictEqual(
+        expect.objectContaining({ chainId: CHAIN_IDS.OPTIMISM }),
+      );
+      expect(result[4]).toStrictEqual(
         expect.objectContaining({ chainId: CHAIN_IDS.POLYGON }),
       );
     });
@@ -383,12 +390,13 @@ describe('Bridge selectors', () => {
 
       expect(result).toStrictEqual({
         address: '0x0000000000000000000000000000000000000000',
-        balance: '0',
+        chainId: '0x1',
         decimals: 18,
         iconUrl: './images/eth_logo.svg',
+        image: './images/eth_logo.svg',
         name: 'Ether',
-        string: '0',
         symbol: 'ETH',
+        type: 'NATIVE',
       });
     });
 
@@ -400,12 +408,13 @@ describe('Bridge selectors', () => {
 
       expect(result).toStrictEqual({
         address: '0x0000000000000000000000000000000000000000',
-        balance: '0',
+        chainId: '0x1',
         decimals: 18,
         iconUrl: './images/eth_logo.svg',
+        image: './images/eth_logo.svg',
         name: 'Ether',
-        string: '0',
         symbol: 'ETH',
+        type: 'NATIVE',
       });
     });
   });
@@ -463,7 +472,11 @@ describe('Bridge selectors', () => {
       const result = getToTokens(state as never);
 
       expect(result).toStrictEqual({
-        '0x00': { address: '0x00', symbol: 'TEST' },
+        isLoading: false,
+        toTokens: {
+          '0x00': { address: '0x00', symbol: 'TEST' },
+        },
+        toTopAssets: [],
       });
     });
 
