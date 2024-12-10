@@ -2,6 +2,7 @@ import { createSelector } from 'reselect';
 import {
   Caip25CaveatType,
   Caip25EndowmentPermissionName,
+  diffInternalScopesObject,
   getEthAccounts,
   getPermittedEthChainIds,
 } from '@metamask/multichain';
@@ -151,45 +152,92 @@ export const diffMap = (currentMap, previousMap) => {
  * @param {Map<string, Caip25Authorization>} [previousAuthorizationsMap] - The previous origin:authorization map.
  * @returns {Map<string, Caip25Authorization>} The origin:authorization map of changed authorizations.
  */
-export const getChangedAuthorizations = (
+export const getAuthorizationsDiff = (
   newAuthorizationsMap,
   previousAuthorizationsMap,
 ) => {
+  const changesMap = new Map();
   if (previousAuthorizationsMap === undefined) {
-    return newAuthorizationsMap;
+    newAuthorizationsMap.forEach((origin, authorization) => {
+      changesMap.set(origin, {
+        added: authorization,
+        removed: {
+          requiredScopes: {},
+          optionalScopes: {},
+        },
+        unchanged: {
+          requiredScopes: {},
+          optionalScopes: {},
+        },
+      });
+    });
+    return changesMap;
   }
 
-  const changedAuthorizations = new Map();
   if (newAuthorizationsMap === previousAuthorizationsMap) {
-    return changedAuthorizations;
+    newAuthorizationsMap.forEach((origin, authorization) => {
+      changesMap.set(origin, {
+        added: {
+          requiredScopes: {},
+          optionalScopes: {},
+        },
+        removed: {
+          requiredScopes: {},
+          optionalScopes: {},
+        },
+        unchanged: authorization,
+      });
+    });
+    return changesMap;
   }
 
-  const newOrigins = new Set([...newAuthorizationsMap.keys()]);
-
-  for (const origin of previousAuthorizationsMap.keys()) {
-    const newAuthorizations = newAuthorizationsMap.get(origin) ?? {
+  previousAuthorizationsMap.forEach((origin, oldAuthorization) => {
+    const newAuthorization = newAuthorizationsMap.get(origin) ?? {
       requiredScopes: {},
       optionalScopes: {},
     };
 
-    // The values of these maps are references to immutable values, which is why
-    // a strict equality check is enough for diffing. The values are either from
-    // PermissionController state, or an empty object initialized in the previous
-    // call to this function. `newAuthorizationsMap` will never contain any empty
-    // objects.
-    if (previousAuthorizationsMap.get(origin) !== newAuthorizations) {
-      changedAuthorizations.set(origin, newAuthorizations);
+    const requiredScopesDiff = diffInternalScopesObject(
+      oldAuthorization.requiredScopes,
+      newAuthorization.requiredScopes,
+    );
+    const optionalScopesDiff = diffInternalScopesObject(
+      oldAuthorization.optionalScopes,
+      newAuthorization.optionalScopes,
+    );
+    changesMap.set(origin, {
+      added: {
+        requiredScopes: requiredScopesDiff.added,
+        optionalScopes: optionalScopesDiff.added,
+      },
+      removed: {
+        requiredScopes: requiredScopesDiff.removed,
+        optionalScopes: optionalScopesDiff.removed,
+      },
+      unchanged: {
+        requiredScopes: requiredScopesDiff.unchanged,
+        optionalScopes: optionalScopesDiff.unchanged,
+      },
+    });
+  });
+
+  newAuthorizationsMap.forEach((origin, newAuthorization) => {
+    if (!previousAuthorizationsMap.get(origin)) {
+      changesMap.set(origin, {
+        added: newAuthorization,
+        removed: {
+          requiredScopes: {},
+          optionalScopes: {},
+        },
+        unchanged: {
+          requiredScopes: {},
+          optionalScopes: {},
+        },
+      });
     }
+  });
 
-    newOrigins.delete(origin);
-  }
-
-  // By now, newOrigins is either empty or contains some number of previously
-  // unencountered origins, and all of their authorizations have "changed".
-  for (const origin of newOrigins.keys()) {
-    changedAuthorizations.set(origin, newAuthorizationsMap.get(origin));
-  }
-  return changedAuthorizations;
+  return changesMap;
 };
 
 /**
