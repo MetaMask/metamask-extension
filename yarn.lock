@@ -5220,19 +5220,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/eth-json-rpc-filters@npm:^7.0.0":
-  version: 7.0.1
-  resolution: "@metamask/eth-json-rpc-filters@npm:7.0.1"
-  dependencies:
-    "@metamask/eth-query": "npm:^4.0.0"
-    "@metamask/json-rpc-engine": "npm:^8.0.2"
-    "@metamask/safe-event-emitter": "npm:^3.0.0"
-    async-mutex: "npm:^0.5.0"
-    pify: "npm:^5.0.0"
-  checksum: 10/5200f75cee48dfd79deba5e4f1b16ff6827e606da617891f5cb7b59c43ae4ac8420cb9a6a9ca31705c47d2c3d32a3754e052b30f61fd293cc37f009c4fe20c12
-  languageName: node
-  linkType: hard
-
 "@metamask/eth-json-rpc-filters@npm:^9.0.0":
   version: 9.0.0
   resolution: "@metamask/eth-json-rpc-filters@npm:9.0.0"
@@ -5579,17 +5566,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/json-rpc-engine@npm:^8.0.2":
-  version: 8.0.2
-  resolution: "@metamask/json-rpc-engine@npm:8.0.2"
-  dependencies:
-    "@metamask/rpc-errors": "npm:^6.2.1"
-    "@metamask/safe-event-emitter": "npm:^3.0.0"
-    "@metamask/utils": "npm:^8.3.0"
-  checksum: 10/f088f4b648b9b55875b56e8237853e7282f13302a9db6a1f9bba06314dfd6cd0a23b3d27f8fde05a157b97ebb03b67bc2699ba455c99553dfb2ecccd73ab3474
-  languageName: node
-  linkType: hard
-
 "@metamask/json-rpc-engine@npm:^9.0.3":
   version: 9.0.3
   resolution: "@metamask/json-rpc-engine@npm:9.0.3"
@@ -5731,20 +5707,20 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/multichain@npm:^1.1.0":
-  version: 1.1.0
-  resolution: "@metamask/multichain@npm:1.1.0"
+"@metamask/multichain@npm:^1.1.2":
+  version: 1.1.2
+  resolution: "@metamask/multichain@npm:1.1.2"
   dependencies:
     "@metamask/api-specs": "npm:^0.10.12"
-    "@metamask/controller-utils": "npm:^11.4.3"
-    "@metamask/eth-json-rpc-filters": "npm:^7.0.0"
+    "@metamask/controller-utils": "npm:^11.4.4"
+    "@metamask/eth-json-rpc-filters": "npm:^9.0.0"
     "@metamask/rpc-errors": "npm:^7.0.1"
     "@metamask/utils": "npm:^10.0.0"
     lodash: "npm:^4.17.21"
   peerDependencies:
     "@metamask/network-controller": ^22.0.0
     "@metamask/permission-controller": ^11.0.0
-  checksum: 10/dab9a223c6cf1b11705f53cab3c1d6f2ecfb5f0c2b7b44d32847ea42b5cd2c3a9936b10239d3dbf0215b2656b3584a08a2ee979004cedd2edfb27813ec25665d
+  checksum: 10/ae2f9be92dc3d5e68a8a93f65f7dba30844c0ba98877005ad228f587a43fa06f45b441f3cb10260db95febdc405f06f3fb3b65d3545efb4c634cdecea846e5fb
   languageName: node
   linkType: hard
 
@@ -26479,7 +26455,7 @@ __metadata:
     "@metamask/message-manager": "npm:^11.0.0"
     "@metamask/message-signing-snap": "npm:^0.6.0"
     "@metamask/metamask-eth-abis": "npm:^3.1.1"
-    "@metamask/multichain": "npm:^1.1.0"
+    "@metamask/multichain": "npm:^1.1.2"
     "@metamask/name-controller": "npm:^8.0.0"
     "@metamask/network-controller": "patch:@metamask/network-controller@npm%3A22.1.0#~/.yarn/patches/@metamask-network-controller-npm-22.1.0-621c281f70.patch"
     "@metamask/notification-services-controller": "npm:^0.14.0"
