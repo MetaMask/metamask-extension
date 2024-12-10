@@ -20,6 +20,8 @@ export type AvatarGroupProps = StyleUtilityProps & {
   size?: AvatarTokenSize;
   /** * Border Color of Avatar Tokens */
   borderColor?: BorderColor;
+  /** * Whether the tag should be displayed as separate text or within an overlay avatar */
+  isTagOverlay?: boolean;
 };
 
 export enum AvatarType {

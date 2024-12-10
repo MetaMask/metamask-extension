@@ -33,6 +33,7 @@ export const AvatarGroup: React.FC<AvatarGroupProps> = ({
   size = AvatarTokenSize.Xs,
   avatarType = AvatarType.TOKEN,
   borderColor,
+  isTagOverlay = false,
 }): JSX.Element => {
   const membersCount = members.length;
   const visibleMembers = members.slice(0, limit).reverse();
@@ -60,17 +61,7 @@ export const AvatarGroup: React.FC<AvatarGroupProps> = ({
         {visibleMembers.map((member, i) => {
           return (
             <Box
-              borderRadius={
-                avatarType === AvatarType.NETWORK
-                  ? BorderRadius.MD
-                  : BorderRadius.full
-              }
-              borderColor={
-                avatarType === AvatarType.NETWORK
-                  ? BorderColor.backgroundDefault
-                  : undefined
-              }
-              borderWidth={avatarType === AvatarType.NETWORK ? 1 : undefined}
+              borderRadius={BorderRadius.full}
               key={i}
               style={{ marginLeft: i === 0 ? '0' : marginLeftValue }}
             >
@@ -99,27 +90,26 @@ export const AvatarGroup: React.FC<AvatarGroupProps> = ({
                   src={member.avatarValue}
                   name={member.symbol ?? ''}
                   size={AvatarNetworkSize.Xs}
+                  borderColor={BorderColor.backgroundDefault}
                 />
               )}
             </Box>
           );
         })}
-        {avatarType === AvatarType.NETWORK && showTag && (
+        {showTag && isTagOverlay && (
           <AvatarBase
             backgroundColor={BackgroundColor.overlayAlternative}
-            borderRadius={BorderRadius.MD}
-            style={{ marginLeft: marginLeftValue }}
-            borderWidth={1}
-            borderColor={BorderColor.backgroundDefault}
+            style={{ marginLeft: marginLeftValue, fontSize: 8 }}
             size={AvatarBaseSize.Xs}
+            borderColor={BorderColor.backgroundDefault}
+            borderRadius={BorderRadius.full}
+            color={TextColor.overlayInverse}
           >
-            <Text color={TextColor.overlayInverse} style={{ fontSize: 8 }}>
-              {tagValue}
-            </Text>
+            {tagValue}
           </AvatarBase>
         )}
       </Box>
-      {showTag && avatarType !== AvatarType.NETWORK ? (
+      {showTag && !isTagOverlay ? (
         <Box>
           <Text variant={TextVariant.bodySm} color={TextColor.textAlternative}>
             {tagValue}
