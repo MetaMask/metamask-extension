@@ -18,31 +18,33 @@ jobs:
     # container: cimg/node:20.18-browsers
     # runs-on: [self-hosted, Linux, X64]
     container:
-      image: selenium/standalone-chrome:126.0
+      image: cimg/node:20.18-browsers
+      # image: selenium/standalone-chrome:126.0
       options: --user root
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Debugging with tmate
-        uses: ./.github/actions/actions-tmate
+      # - name: Debugging with tmate
+      #   uses: ./.github/actions/actions-tmate
 
-      - run: |
-          curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.1/install.sh | bash
-          # download and install Node.js (you may need to restart the terminal)
-          nvm install 20
-          # verifies the right Node.js version is in the environment
-          node -v # should print `v20.18.1`
-
-      # - name: Set up Node.js
-      #   uses: actions/setup-node@v4
-      #   with:
-      #     node-version-file: .nvmrc
-      #     cache: yarn
-      #     cache-dependency-path: yarn.lock
+      # - run: |
+      #     curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.1/install.sh | bash
+      #     source ~/.nvm/nvm.sh
+      #     nvm install 20
+      #     node -v # should print `v20.18.1`.
+      #     apt-get update
+      #     apt-get install gh
 
       - run: corepack enable
         shell: bash
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: yarn
+          cache-dependency-path: yarn.lock
 
       - name: Install dependencies
         run: yarn
@@ -55,8 +57,8 @@ jobs:
         run: |
           apt-get update
           apt-get install -y xvfb
-          apt-get -y install xorg xvfb gtk2-engines-pixbuf
-          apt-get -y install dbus-x11 xfonts-base xfonts-100dpi xfonts-75dpi xfonts-cyrillic xfonts-scalable
+          # apt-get -y install xorg xvfb gtk2-engines-pixbuf
+          # apt-get -y install dbus-x11 xfonts-base xfonts-100dpi xfonts-75dpi xfonts-cyrillic xfonts-scalable
           Xvfb -ac :99 -screen 0 1280x1024x16 &
           export DISPLAY=:99
 
