@@ -1,8 +1,6 @@
 import { Mockttp } from 'mockttp';
 import { withFixtures, unlockWallet } from '../../helpers';
-import {
-  DEFAULT_SOLANA_ACCOUNT,
-} from '../../constants';
+import { DEFAULT_SOLANA_ACCOUNT } from '../../constants';
 import { Driver } from '../../webdriver/driver';
 import HeaderNavbar from '../../page-objects/pages/header-navbar';
 import AccountListPage, { AccountType } from '../../page-objects/pages/account-list-page';

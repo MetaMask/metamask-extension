@@ -2,7 +2,6 @@ import { strict as assert } from 'assert';
 import { Driver } from '../../webdriver/driver';
 import { largeDelayMs } from '../../helpers';
 import messages from '../../../../app/_locales/en/messages.json';
-import { th } from '../../../../.storybook/locales';
 
 class AccountListPage {
   private readonly driver: Driver;
@@ -232,7 +231,7 @@ class AccountListPage {
   }
 
   async addNewSolanaAccount({
-    solanaAccountCreationEnabled: solanaAccountCreationEnabled = true,
+    solanaAccountCreationEnabled = true,
     accountName = '',
   }: {
     solanaAccountCreationEnabled?: boolean;
@@ -589,7 +588,12 @@ class AccountListPage {
       const internalAccounts = await this.driver.findElements(
         this.accountListItem
       );
-      console.log(`Number of accounts: ${internalAccounts.length} is equal to ${expectedNumberOfAccounts}? ${internalAccounts.length === expectedNumberOfAccounts}`);
+      console.log(
+        `Number of accounts: ${
+          internalAccounts.length
+        } is equal to ${expectedNumberOfAccounts}? ${
+          internalAccounts.length === expectedNumberOfAccounts
+        }`);
       return internalAccounts.length === expectedNumberOfAccounts;
     }, 20000, true);
   }

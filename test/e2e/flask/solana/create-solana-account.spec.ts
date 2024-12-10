@@ -1,7 +1,7 @@
-import { Suite } from "mocha";
-import { withSolanaAccountSnap } from "./common-solana";
-import HeaderNavbar from "../../page-objects/pages/header-navbar";
-import AccountListPage from "../../page-objects/pages/account-list-page";
+import { Suite } from 'mocha';
+import { withSolanaAccountSnap } from './common-solana';
+import HeaderNavbar from '../../page-objects/pages/header-navbar';
+import AccountListPage from '../../page-objects/pages/account-list-page';
 
 describe('Create/Remove Solana Account', function (this: Suite) {
   it('create Solana account from the menu', async function () {
@@ -14,7 +14,7 @@ describe('Create/Remove Solana Account', function (this: Suite) {
         await headerNavbar.openAccountMenu();
         const accountListPage = new AccountListPage(driver);
         await accountListPage.check_accountDisplayedInAccountList('Account 1');
-        await accountListPage.check_numberOfAvailableAccounts(2)
+        await accountListPage.check_numberOfAvailableAccounts(2);
       },
     );
   });
@@ -30,12 +30,12 @@ describe('Create/Remove Solana Account', function (this: Suite) {
         await headerNavbar.openAccountMenu();
         const accountListPage = new AccountListPage(driver);
         await accountListPage.check_accountDisplayedInAccountList('Account 1');
-        await accountListPage.check_numberOfAvailableAccounts(2)
+        await accountListPage.check_numberOfAvailableAccounts(2);
         await accountListPage.removeAccount('Solana Account 1', true);
         await headerNavbar.check_accountLabel('Account 1');
         await headerNavbar.openAccountMenu();
         await accountListPage.check_accountDisplayedInAccountList('Account 1');
-        await accountListPage.check_numberOfAvailableAccounts(1)
+        await accountListPage.check_numberOfAvailableAccounts(1);
       },
     );
   });
@@ -54,7 +54,7 @@ describe('Create/Remove Solana Account', function (this: Suite) {
         await accountListPage.addNewSolanaAccount();
         await headerNavbar.check_accountLabel('Solana Account 2');
         await headerNavbar.openAccountMenu();
-        await accountListPage.check_numberOfAvailableAccounts(3)
+        await accountListPage.check_numberOfAvailableAccounts(3);
         await accountListPage.check_accountDisplayedInAccountList('Account 1');
         await accountListPage.check_accountDisplayedInAccountList('Solana Account 1');
         await accountListPage.check_accountDisplayedInAccountList('Solana Account 2');
