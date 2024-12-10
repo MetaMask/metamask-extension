@@ -10,6 +10,7 @@ import {
   getIsBridgeEnabled,
   getMetaMetricsId,
   getParticipateInMetaMetrics,
+  getUseExternalServices,
   SwapsEthToken,
   ///: END:ONLY_INCLUDE_IF
 } from '../../selectors';
@@ -43,6 +44,7 @@ const useBridging = () => {
   const isMarketingEnabled = useSelector(getDataCollectionForMarketing);
   const providerConfig = useSelector(getProviderConfig);
   const keyring = useSelector(getCurrentKeyring);
+  const isExternalServicesEnabled = useSelector(getUseExternalServices);
   // @ts-expect-error keyring type is wrong maybe?
   const usingHardwareWallet = isHardwareKeyring(keyring.type);
 
@@ -50,7 +52,9 @@ const useBridging = () => {
   const isBridgeChain = useSelector(getIsBridgeChain);
 
   useEffect(() => {
-    dispatch(setBridgeFeatureFlags());
+    if (isExternalServicesEnabled) {
+      dispatch(setBridgeFeatureFlags());
+    }
   }, [dispatch, setBridgeFeatureFlags]);
 
   const openBridgeExperience = useCallback(
