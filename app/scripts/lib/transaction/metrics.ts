@@ -9,7 +9,10 @@ import {
   TransactionType,
 } from '@metamask/transaction-controller';
 import { ORIGIN_METAMASK } from '../../../../shared/constants/app';
-import { GasRecommendations } from '../../../../shared/constants/gas';
+import {
+  GasRecommendations,
+  PriorityLevels,
+} from '../../../../shared/constants/gas';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventFragment,
@@ -820,12 +823,19 @@ async function buildEventFragmentProperties({
     gasParams.max_priority_fee_per_gas = maxPriorityFeePerGas;
   } else {
     gasParams.gas_price = gasPrice;
+    gasParams.default_estimate = 'default_estimate';
   }
 
   if (defaultGasEstimates) {
     const { estimateType } = defaultGasEstimates;
     if (estimateType) {
       gasParams.default_estimate = estimateType;
+
+      if (estimateType === PriorityLevels.dAppSuggested) {
+        // Goal is to comply with our snake_case standard for naming property values.
+        gasParams.default_estimate = 'dapp_proposed';
+      }
+
       let defaultMaxFeePerGas =
         transactionMeta.defaultGasEstimates?.maxFeePerGas;
       let defaultMaxPriorityFeePerGas =
