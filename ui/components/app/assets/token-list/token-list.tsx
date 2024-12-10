@@ -92,7 +92,6 @@ export default function TokenList({
     privacyMode,
     hideZeroBalanceTokens,
   } = useSelector(getPreferences);
-  const preferences = useSelector(getPreferences);
   const selectedAccount = useSelector(getSelectedAccount);
   const conversionRate = useSelector(getConversionRate);
   const contractExchangeRates = useSelector(
