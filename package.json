@@ -9,7 +9,8 @@
   "scripts": {
     "webpack": "tsx ./development/webpack/launch.ts",
     "webpack:clearcache": "./development/clear-webpack-cache.js",
-    "postinstall": "yarn webpack:clearcache",
+    "foundryup": "tsx --tsconfig ./test/helpers/foundry/tsconfig.json ./test/helpers/foundry/foundryup.mts",
+    "postinstall": "yarn webpack:clearcache && yarn foundryup",
     "env:e2e": "SEGMENT_HOST='https://api.segment.io' SEGMENT_WRITE_KEY='FAKE' yarn",
     "start": "yarn build:dev dev --apply-lavamoat=false --snow=false",
     "start:with-state": "node ./app/scripts/start-with-wallet-state.mjs",
@@ -44,6 +45,7 @@
     "forwarder": "node ./development/static-server.js ./node_modules/@metamask/forwarder/dist/ --port 9010",
     "dapp-forwarder": "concurrently -k -n forwarder,dapp -p '[{time}][{name}]' 'yarn forwarder' 'yarn dapp'",
     "test:unit": "jest",
+    "anvil": "npx anvil",
     "test:unit:watch": "jest --watch",
     "test:unit:coverage": "jest --coverage",
     "test:unit:webpack": "tsx --test development/webpack/test/*.test.ts",
@@ -533,6 +535,7 @@
     "@types/serve-handler": "^6.1.4",
     "@types/sinon": "^10.0.13",
     "@types/sprintf-js": "^1",
+    "@types/unzipper": "^0.10.10",
     "@types/w3c-web-hid": "^1.0.3",
     "@types/watchify": "^3.11.1",
     "@types/webextension-polyfill": "^0.10.4",
@@ -617,6 +620,7 @@
     "lockfile-lint": "^4.10.6",
     "loose-envify": "^1.4.0",
     "mini-css-extract-plugin": "^2.9.1",
+    "minipass": "^7.1.2",
     "mocha": "^10.2.0",
     "mocha-junit-reporter": "^2.2.1",
     "mockttp": "^3.10.1",
@@ -659,13 +663,15 @@
     "style-loader": "^0.21.0",
     "stylelint": "^13.6.1",
     "superstruct": "^1.0.3",
+    "tar": "^7.4.3",
     "terser": "^5.7.0",
     "terser-webpack-plugin": "^5.3.10",
     "through2": "^4.0.2",
     "ts-node": "^10.9.2",
-    "tsx": "^4.7.1",
+    "tsx": "^4.19.2",
     "ttest": "^2.1.1",
     "typescript": "~5.4.5",
+    "unzipper": "^0.12.3",
     "vinyl": "^2.2.1",
     "vinyl-buffer": "^1.0.1",
     "vinyl-source-stream": "^2.0.0",
@@ -682,7 +688,7 @@
     "yargs-parser": "^21.1.1"
   },
   "engines": {
-    "node": ">= 20",
+    "node": ">=20.12.0 <20.15.0 || >=20.17.0",
     "yarn": "^4.4.1"
   },
   "lavamoat": {
@@ -753,5 +759,23 @@
       "@metamask/solana-wallet-snap>@solana/web3.js>bigint-buffer": false
     }
   },
-  "packageManager": "yarn@4.5.1"
+  "packageManager": "yarn@4.5.1",
+  "foundryup": {
+    "binaries": [
+      "anvil"
+    ],
+    "checksums": {
+      "algorithm": "sha256",
+      "binaries": {
+        "anvil": {
+          "darwin-amd64": "6ad1c31bb8bc8c78551792ad538028385eb5a44d105f9af40ddeb1b75c1327b1",
+          "darwin-arm64": "cbb36860b2e08a7d5a35bec430904a1dc0319602ac0923017b81d9a8ffdcc5b0",
+          "linux-amd64": "56054e7d59547beb6adacbb9060a58595a8c5cca185f946317334ece509e0433",
+          "linux-arm64": "16494ae631d8ef73944abaaaa756661c1d43bbfc7642e7fff0a0d807d6d143c4",
+          "win32-amd64": "2034bdf35023e59c5dc06d6717a8eb2cede1204dbc60fd2507564422f03dceb3"
+        }
+      }
+    },
+    "version": "nightly-31dd1f77fd9156d09836486d97963cec7f555343"
+  }
 }
