@@ -64,7 +64,7 @@ export const AccountOverviewLayout = ({
   const totalBalance = useSelector(getSelectedAccountCachedBalance);
   const isLoading = useSelector(getAppIsLoading);
 
-  const hasZeroBalance = totalBalance === '0';
+  const hasZeroBalance = totalBalance === '0x00';
 
   ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
   const location = useLocation();
