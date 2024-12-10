@@ -8,6 +8,7 @@ import {
   getCurrencyRates,
   getCurrentNetwork,
   getIsTestnet,
+  getIsTokenNetworkFilterEqualCurrentNetwork,
   getMarketData,
   getNetworkConfigurationIdByChainId,
   getNewTokensImported,
@@ -96,6 +97,9 @@ export default function TokenList({
   );
   const newTokensImported = useSelector(getNewTokensImported);
   const selectedAccountTokensChains = useFilteredAccountTokens(currentNetwork);
+  const isOnCurrentNetwork = useSelector(
+    getIsTokenNetworkFilterEqualCurrentNetwork,
+  );
 
   const { tokenBalances } = useTokenBalances();
   const selectedAccountTokenBalancesAcrossChains =
@@ -148,13 +152,23 @@ export default function TokenList({
           });
 
           // Append processed token with balance and fiat amount
-          tokensWithBalance.push({
-            ...token,
-            balance,
-            tokenFiatAmount,
-            chainId,
-            string: String(balance),
-          });
+          // We push the token if its not native.
+          // If it is native, we check balance and if user has currentNetwork selected.
+          // If user is on current network; we push token.
+          // else we check the balance and push only if not zero
+          const shouldShowToken =
+            !isNative ||
+            (isNative && isOnCurrentNetwork) ||
+            (isNative && !isOnCurrentNetwork && balance !== '0');
+          if (shouldShowToken) {
+            tokensWithBalance.push({
+              ...token,
+              balance,
+              tokenFiatAmount,
+              chainId,
+              string: String(balance),
+            });
+          }
         });
       },
     );
