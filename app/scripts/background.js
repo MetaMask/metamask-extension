@@ -15,11 +15,7 @@ import log from 'loglevel';
 import browser from 'webextension-polyfill';
 import { storeAsStream } from '@metamask/obs-store';
 import { isObject } from '@metamask/utils';
-import { ApprovalType } from '@metamask/controller-utils';
 import PortStream from 'extension-port-stream';
-
-import { providerErrors } from '@metamask/rpc-errors';
-import { DIALOG_APPROVAL_TYPES } from '@metamask/snaps-rpc-methods';
 import { NotificationServicesController } from '@metamask/notification-services-controller';
 
 import {
@@ -29,9 +25,6 @@ import {
   EXTENSION_MESSAGES,
   PLATFORM_FIREFOX,
   MESSAGE_TYPE,
-  ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
-  SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES,
-  ///: END:ONLY_INCLUDE_IF
 } from '../../shared/constants/app';
 import {
   REJECT_NOTIFICATION_CLOSE,
@@ -56,6 +49,7 @@ import {
 import { getCurrentChainId } from '../../shared/modules/selectors/networks';
 import { addNonceToCsp } from '../../shared/modules/add-nonce-to-csp';
 import { checkURLForProviderInjection } from '../../shared/modules/provider-injection';
+import { rejectAllApprovals } from '../../shared/lib/approval';
 import migrations from './migrations';
 import Migrator from './lib/migrator';
 import ExtensionPlatform from './platforms/extension';
@@ -1201,34 +1195,7 @@ export function setupController(
       REJECT_NOTIFICATION_CLOSE,
     );
 
-    // Finally, resolve snap dialog approvals on Flask and reject all the others managed by the ApprovalController.
-    Object.values(controller.approvalController.state.pendingApprovals).forEach(
-      ({ id, type }) => {
-        switch (type) {
-          case ApprovalType.SnapDialogAlert:
-          case ApprovalType.SnapDialogPrompt:
-          case DIALOG_APPROVAL_TYPES.default:
-            controller.approvalController.accept(id, null);
-            break;
-          case ApprovalType.SnapDialogConfirmation:
-            controller.approvalController.accept(id, false);
-            break;
-          ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
-          case SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES.confirmAccountCreation:
-          case SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES.confirmAccountRemoval:
-          case SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES.showSnapAccountRedirect:
-            controller.approvalController.accept(id, false);
-            break;
-          ///: END:ONLY_INCLUDE_IF
-          default:
-            controller.approvalController.reject(
-              id,
-              providerErrors.userRejectedRequest(),
-            );
-            break;
-        }
-      },
-    );
+    rejectAllApprovals(controller.approvalController);
   }
 
   // Updates the snaps registry and check for newly blocked snaps to block if the user has at least one snap installed that isn't preinstalled.
