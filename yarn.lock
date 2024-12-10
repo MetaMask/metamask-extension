@@ -5624,7 +5624,7 @@ __metadata:
 
 "@metamask/keyring-controller@file:../metamask/core/packages/keyring-controller::locator=metamask-crx%40workspace%3A.":
   version: 19.0.1
-  resolution: "@metamask/keyring-controller@file:../metamask/core/packages/keyring-controller#../metamask/core/packages/keyring-controller::hash=c560e1&locator=metamask-crx%40workspace%3A."
+  resolution: "@metamask/keyring-controller@file:../metamask/core/packages/keyring-controller#../metamask/core/packages/keyring-controller::hash=f70dbe&locator=metamask-crx%40workspace%3A."
   dependencies:
     "@ethereumjs/util": "npm:^8.1.0"
     "@keystonehq/metamask-airgapped-keyring": "npm:^0.14.1"
@@ -5634,7 +5634,7 @@ __metadata:
     "@metamask/eth-sig-util": "npm:^8.0.0"
     "@metamask/eth-simple-keyring": "npm:^6.0.5"
     "@metamask/keyring-api": "npm:^10.1.0"
-    "@metamask/message-manager": "npm:^11.0.2"
+    "@metamask/message-manager": "npm:^11.0.3"
     "@metamask/utils": "npm:^10.0.0"
     async-mutex: "npm:^0.5.0"
     ethereumjs-wallet: "npm:^1.0.1"
@@ -5643,7 +5643,7 @@ __metadata:
   peerDependencies:
     "@metamask/providers": ^18.1.0
     webextension-polyfill: ^0.10.0 || ^0.11.0 || ^0.12.0
-  checksum: 10/08d82d3e5ec678681537e071a70ba98f4e373c6c0707eb6018a76407d5420174960fbec87b5ed8b838fa9c89385bf0c79e211223450df338b8b2caf6988cc1b0
+  checksum: 10/f88b672218d5d290180e54ac4a0a76ec9eeca3e002ab68d146d93a4353ddbfb657ed017dbf23709c10980d7c6c7ecd3420b342999bff18f6218a7cb3b6d2d282
   languageName: node
   linkType: hard
 
@@ -5704,18 +5704,18 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/message-manager@npm:^11.0.2":
-  version: 11.0.2
-  resolution: "@metamask/message-manager@npm:11.0.2"
+"@metamask/message-manager@npm:^11.0.3":
+  version: 11.0.3
+  resolution: "@metamask/message-manager@npm:11.0.3"
   dependencies:
     "@metamask/base-controller": "npm:^7.0.2"
     "@metamask/controller-utils": "npm:^11.4.4"
     "@metamask/eth-sig-util": "npm:^8.0.0"
     "@metamask/utils": "npm:^10.0.0"
     "@types/uuid": "npm:^8.3.0"
-    jsonschema: "npm:^1.2.4"
+    jsonschema: "npm:^1.4.1"
     uuid: "npm:^8.3.2"
-  checksum: 10/a1e324645944c61a3a677603f0478e316a6c76924c672fb6bf526d67a3c52ec95654403e8693e2e5873e4762a57d73adcb4106557afeecd6d8e7593ce8db217c
+  checksum: 10/18f5b0091474fc45e854db9c91ad8f5f898017ba9a08b01c770904ad3929b004c65298fe246b989f3c92fd2f03b5932dfa31adadb95ca81ce6940cb28a2ec793
   languageName: node
   linkType: hard
 

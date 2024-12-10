@@ -4565,6 +4565,10 @@ export default class MetamaskController extends EventEmitter {
       );
       const account = this.accountsController.getAccountByAddress(newAccount);
       this.accountsController.setSelectedAccount(account.id);
+      const keyring = await this.keyringController.getKeyringForAccount(
+        newAccount,
+      );
+      this._addAccountsWithBalance(keyring.opts.id);
 
       return newAccount;
     } finally {
@@ -4622,13 +4626,15 @@ export default class MetamaskController extends EventEmitter {
     }
   }
 
-  async _addAccountsWithBalance() {
+  async _addAccountsWithBalance(keyringId) {
     try {
       // Scan accounts until we find an empty one
       const chainId = this.#getGlobalChainId();
       const ethQuery = new EthQuery(this.provider);
-      const accounts = await this.keyringController.getAccounts();
+      const accounts = await this.keyringController.getAccounts(keyringId);
       let address = accounts[accounts.length - 1];
+      console.log('accounts: ', accounts);
+      console.log('address: ', address);
 
       for (let count = accounts.length; ; count++) {
         const balance = await this.getBalance(address, ethQuery);
@@ -4649,16 +4655,19 @@ export default class MetamaskController extends EventEmitter {
             (tokens?.length ?? 0) === 0 &&
             (detectedTokens?.length ?? 0) === 0
           ) {
+            console.log('no balance or tokens');
             // This account has no balance or tokens
             if (count !== 1) {
+              console.log('removing account...');
               await this.removeAccount(address);
             }
             break;
           }
         }
 
+        console.log('adding new account...');
         // This account has assets, so check the next one
-        address = await this.keyringController.addNewAccount(count);
+        address = await this.keyringController.addNewAccount(count, keyringId);
       }
     } catch (e) {
       log.warn(`Failed to add accounts with balance. Error: ${e}`);
