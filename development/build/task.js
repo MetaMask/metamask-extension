@@ -1,5 +1,5 @@
 const EventEmitter = require('events');
-const spawn = require('cross-spawn');
+const { spawn } = require('node:child_process');
 
 const tasks = {};
 const taskEvents = new EventEmitter();
@@ -84,6 +84,7 @@ function runInChildProcess(
       ],
       {
         env: process.env,
+        shell: true,
       },
     );
 

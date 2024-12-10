@@ -39,7 +39,7 @@ import {
 } from '../../../store/actions';
 import { TextVariant } from '../../../helpers/constants/design-system';
 import { formatAccountType } from '../../../helpers/utils/metrics';
-import { AccountDetailsMenuItem, ViewExplorerMenuItem } from '..';
+import { AccountDetailsMenuItem, ViewExplorerMenuItem } from '../menu-items';
 
 const METRICS_LOCATION = 'Account Options';
 

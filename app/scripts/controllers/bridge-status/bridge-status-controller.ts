@@ -312,7 +312,7 @@ export default class BridgeStatusController extends StaticIntervalPollingControl
   };
 
   // Wipes the bridge status for the given address and chainId
-  // Will match either source or destination chainId to the selectedChainId
+  // Will match only source chainId to the selectedChainId
   #wipeBridgeStatusByChainId = (address: string, selectedChainId: Hex) => {
     const sourceTxMetaIdsToDelete = Object.keys(
       this.state.bridgeStatusState.txHistory,
@@ -323,14 +323,10 @@ export default class BridgeStatusController extends StaticIntervalPollingControl
       const hexSourceChainId = decimalToPrefixedHex(
         bridgeHistoryItem.quote.srcChainId,
       );
-      const hexDestChainId = decimalToPrefixedHex(
-        bridgeHistoryItem.quote.destChainId,
-      );
 
       return (
         bridgeHistoryItem.account === address &&
-        (hexSourceChainId === selectedChainId ||
-          hexDestChainId === selectedChainId)
+        hexSourceChainId === selectedChainId
       );
     });
 
