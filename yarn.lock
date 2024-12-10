@@ -5231,7 +5231,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/eth-json-rpc-middleware@npm:^15.0.0, @metamask/eth-json-rpc-middleware@npm:^15.0.1":
+"@metamask/eth-json-rpc-middleware@npm:^15.0.1":
   version: 15.0.1
   resolution: "@metamask/eth-json-rpc-middleware@npm:15.0.1"
   dependencies:
@@ -26399,7 +26399,7 @@ __metadata:
     "@metamask/eslint-config-typescript": "npm:^9.0.1"
     "@metamask/eslint-plugin-design-tokens": "npm:^1.1.0"
     "@metamask/eth-json-rpc-filters": "npm:^9.0.0"
-    "@metamask/eth-json-rpc-middleware": "npm:^15.0.0"
+    "@metamask/eth-json-rpc-middleware": "npm:^15.0.1"
     "@metamask/eth-json-rpc-provider": "npm:^4.1.6"
     "@metamask/eth-ledger-bridge-keyring": "npm:^5.0.1"
     "@metamask/eth-query": "npm:^4.0.0"
