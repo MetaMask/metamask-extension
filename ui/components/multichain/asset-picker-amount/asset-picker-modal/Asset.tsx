@@ -1,7 +1,11 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
 import { BigNumber } from 'bignumber.js';
-import { getCurrentCurrency, getTokenList } from '../../../../selectors';
+import {
+  getCurrentCurrency,
+  getNetworkConfigurationIdByChainId,
+  getTokenList,
+} from '../../../../selectors';
 import { useTokenFiatAmount } from '../../../../hooks/useTokenFiatAmount';
 import { TokenListItem } from '../../token-list-item';
 import { isEqualCaseInsensitive } from '../../../../../shared/modules/string-utils';
@@ -33,6 +37,10 @@ export default function Asset({
 
   const currency = useSelector(getCurrentCurrency);
   const tokenList = useSelector(getTokenList);
+  const allNetworks = useSelector(getNetworkConfigurationIdByChainId);
+  const isTokenChainIdInWallet = Boolean(
+    allNetworks[chainId as keyof typeof allNetworks],
+  );
   const tokenData = address
     ? Object.values(tokenList).find(
         (token) =>
@@ -56,6 +64,9 @@ export default function Asset({
         new BigNumber(decimalTokenAmount.toString(), 10),
       )} ${symbol}`
     : undefined;
+  const primaryAmountToUse = tokenFiatAmount
+    ? formatCurrency(tokenFiatAmount.toString(), currency, 2)
+    : formattedFiat;
 
   return (
     <TokenListItem
@@ -63,12 +74,8 @@ export default function Asset({
       chainId={chainId}
       tokenSymbol={symbol}
       tokenImage={tokenImage}
-      secondary={formattedAmount}
-      primary={
-        tokenFiatAmount
-          ? formatCurrency(tokenFiatAmount.toString(), currency, 2)
-          : formattedFiat
-      }
+      secondary={isTokenChainIdInWallet ? formattedAmount : undefined}
+      primary={isTokenChainIdInWallet ? primaryAmountToUse : undefined}
       title={title}
       tooltipText={tooltipText}
       tokenChainImage={
