@@ -31,8 +31,7 @@ const CONNECT_APPROVAL_TYPES = [
 
 export function useConfirmationNavigation() {
   const confirmations = useSelector(pendingApprovalsSortedSelector, isEqual);
-
-  const approvalFlows = useSelector(getApprovalFlows);
+  const approvalFlows = useSelector(getApprovalFlows, isEqual);
   const history = useHistory();
 
   const getIndex = useCallback(
