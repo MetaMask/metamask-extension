@@ -127,8 +127,6 @@ export default function TokenList({
     }
   }, [Object.keys(allNetworks).length]);
 
-  console.log(preferences);
-
   const consolidatedBalances = () => {
     const tokensWithBalance: TokenWithFiatAmount[] = [];
     Object.entries(selectedAccountTokensChains).forEach(
