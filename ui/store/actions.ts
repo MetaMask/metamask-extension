@@ -924,15 +924,9 @@ export async function restoreUserData(jsonString: Json): Promise<true> {
 export function updateSlides(
   slides,
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
-  return async (dispatch, getState) => {
+  return async () => {
     try {
-      const currentSlides = getState().metamask.slides;
-      const filteredSlides = slides.filter((newSlide) => {
-        return !currentSlides.some(
-          (currentSlide) => currentSlide.id === newSlide.id,
-        );
-      });
-      dispatch(setSlides([...currentSlides, ...filteredSlides]));
+      await submitRequestToBackground('updateSlides', [slides]);
     } catch (error) {
       logErrorWithMessage(error);
       throw error;
@@ -943,16 +937,9 @@ export function updateSlides(
 export function removeSlide(
   id: string,
 ): ThunkAction<Promise<void>, MetaMaskReduxState, unknown, AnyAction> {
-  return async (dispatch, getState) => {
+  return async () => {
     try {
-      const currentSlides = getState().metamask.slides;
-      const updatedSlides = currentSlides.map((slide) => {
-        if (slide.id === id) {
-          return { ...slide, dismissed: true };
-        }
-        return slide;
-      });
-      dispatch(setSlides(updatedSlides));
+      await submitRequestToBackground('removeSlide', [id]);
     } catch (error) {
       logErrorWithMessage(error);
       throw error;
