@@ -541,8 +541,13 @@ describe('Bridge selectors', () => {
     it('returns quote list and fetch data, insufficientBal=false,quotesRefreshCount=5', () => {
       const state = createBridgeMockStore({
         featureFlagOverrides: {
-          extensionConfig: { maxRefreshCount: 5 },
-          destNetworkAllowlist: ['0x89'],
+          extensionConfig: {
+            maxRefreshCount: 5,
+            chains: {
+              '0xa': { isActiveSrc: true, isActiveDest: false },
+              '0x89': { isActiveSrc: false, isActiveDest: true },
+            },
+          },
         },
         bridgeSliceOverrides: {
           toChainId: '0x89',
@@ -631,8 +636,13 @@ describe('Bridge selectors', () => {
     it('returns quote list and fetch data, insufficientBal=false,quotesRefreshCount=2', () => {
       const state = createBridgeMockStore({
         featureFlagOverrides: {
-          extensionConfig: { maxRefreshCount: 5 },
-          destNetworkAllowlist: ['0x89'],
+          extensionConfig: {
+            maxRefreshCount: 5,
+            chains: {
+              '0xa': { isActiveSrc: true, isActiveDest: false },
+              '0x89': { isActiveSrc: false, isActiveDest: true },
+            },
+          },
         },
         bridgeSliceOverrides: {
           toChainId: '0x89',
@@ -725,8 +735,13 @@ describe('Bridge selectors', () => {
     it('returns quote list and fetch data, insufficientBal=true', () => {
       const state = createBridgeMockStore({
         featureFlagOverrides: {
-          extensionConfig: { maxRefreshCount: 5 },
-          destNetworkAllowlist: ['0x89'],
+          extensionConfig: {
+            maxRefreshCount: 5,
+            chains: {
+              '0xa': { isActiveSrc: true, isActiveDest: false },
+              '0x89': { isActiveSrc: false, isActiveDest: true },
+            },
+          },
         },
         bridgeSliceOverrides: {
           toChainId: '0x89',
@@ -949,7 +964,14 @@ describe('Bridge selectors', () => {
 
     it('should recommend 2nd fastest quote if adjustedReturn is less than 80% of cheapest quote', () => {
       const state = createBridgeMockStore({
-        featureFlagOverrides: { destNetworkAllowlist: ['0x89'] },
+        featureFlagOverrides: {
+          extensionConfig: {
+            chains: {
+              '0xa': { isActiveSrc: true, isActiveDest: false },
+              '0x89': { isActiveSrc: false, isActiveDest: true },
+            },
+          },
+        },
         bridgeSliceOverrides: {
           toChainId: '0x89',
           fromToken: { address: zeroAddress(), symbol: 'ETH' },
@@ -1291,7 +1313,14 @@ describe('Bridge selectors', () => {
 
     it('should return isEstimatedReturnLow=true return value is 20% less than sent funds', () => {
       const state = createBridgeMockStore({
-        featureFlagOverrides: { destNetworkAllowlist: ['0x89'] },
+        featureFlagOverrides: {
+          extensionConfig: {
+            chains: {
+              '0xa': { isActiveSrc: true, isActiveDest: false },
+              '0x89': { isActiveSrc: false, isActiveDest: true },
+            },
+          },
+        },
         bridgeSliceOverrides: {
           toChainId: '0x89',
           fromToken: { address: zeroAddress(), symbol: 'ETH' },
@@ -1339,7 +1368,14 @@ describe('Bridge selectors', () => {
 
     it('should return isEstimatedReturnLow=false when return value is more than 80% of sent funds', () => {
       const state = createBridgeMockStore({
-        featureFlagOverrides: { destNetworkAllowlist: ['0x89'] },
+        featureFlagOverrides: {
+          extensionConfig: {
+            chains: {
+              '0xa': { isActiveSrc: true, isActiveDest: false },
+              '0x89': { isActiveSrc: false, isActiveDest: true },
+            },
+          },
+        },
         bridgeSliceOverrides: {
           toChainId: '0x89',
           fromToken: { address: zeroAddress(), symbol: 'ETH' },
