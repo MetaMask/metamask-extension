@@ -1033,9 +1033,6 @@
   "confirmRecoveryPhrase": {
     "message": "Xác nhận Cụm từ khôi phục bí mật"
   },
-  "confirmTitleApproveTransaction": {
-    "message": "Yêu cầu cho phép"
-  },
   "confirmTitleDeployContract": {
     "message": "Triển khai hợp đồng"
   },
@@ -6600,10 +6597,6 @@
   },
   "wrongNetworkName": {
     "message": "Theo hồ sơ của chúng tôi, tên mạng có thể không khớp chính xác với ID chuỗi này."
-  },
-  "xOfYPending": {
-    "message": "$1/$2 đang chờ xử lý",
-    "description": "$1 and $2 are intended to be two numbers, where $2 is a total number of pending confirmations, and $1 is a count towards that total"
   },
   "yes": {
     "message": "Có"
