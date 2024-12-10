@@ -99,13 +99,15 @@ describe('Carousel component e2e tests', () => {
           'Number of dots should match number of remaining slides',
         );
 
-        for (let i = 0; i < remainingSlides.length; i++) {
-          const closeButton = await driver.findElement(
-            '.mm-carousel-slide:first-child .mm-carousel-slide__close-button',
-          );
-          await closeButton.click();
-          await driver.delay(500);
-        }
+        await Promise.all(
+          remainingSlides.map(async () => {
+            const closeButton = await driver.findElement(
+              '.mm-carousel-slide:first-child .mm-carousel-slide__close-button',
+            );
+            await closeButton.click();
+            await driver.delay(500);
+          }),
+        );
 
         const carouselExists = await driver.isElementPresent('.mm-carousel');
         assert.ok(
