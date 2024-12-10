@@ -1087,6 +1087,13 @@ export function getIsTokenNetworkFilterEqualCurrentNetwork(state) {
   return false;
 }
 
+/**
+ * Returns an object indicating which networks
+ * tokens should be shown on in the portfolio view.
+ *
+ * @param {*} state
+ * @returns {Record<Hex, boolean>}
+ */
 export function getTokenNetworkFilter(state) {
   const currentChainId = getCurrentChainId(state);
   const { tokenNetworkFilter } = getPreferences(state);
