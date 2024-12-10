@@ -27,12 +27,19 @@ jobs:
       - name: Debugging with tmate
         uses: ./.github/actions/actions-tmate
 
-      - name: Set up Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version-file: .nvmrc
-          cache: yarn
-          cache-dependency-path: yarn.lock
+      - run: |
+          curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.1/install.sh | bash
+          # download and install Node.js (you may need to restart the terminal)
+          nvm install 20
+          # verifies the right Node.js version is in the environment
+          node -v # should print `v20.18.1`
+
+      # - name: Set up Node.js
+      #   uses: actions/setup-node@v4
+      #   with:
+      #     node-version-file: .nvmrc
+      #     cache: yarn
+      #     cache-dependency-path: yarn.lock
 
       - run: corepack enable
         shell: bash
