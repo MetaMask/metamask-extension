@@ -113,7 +113,7 @@ export default function TokenList({
   const nativeBalances: Record<Hex, Hex> = useSelector(
     getSelectedAccountNativeTokenCachedBalanceByChainId,
   ) as Record<Hex, Hex>;
-
+  const isTestnet = useSelector(getIsTestnet);
   // Ensure newly added networks are included in the tokenNetworkFilter
   useEffect(() => {
     if (process.env.PORTFOLIO_VIEW) {
@@ -157,6 +157,7 @@ export default function TokenList({
           // If user is on current network; we push token.
           // else we check the balance and push only if not zero
           const shouldShowToken =
+            isTestnet ||
             !isNative ||
             (isNative && isOnCurrentNetwork) ||
             (isNative && !isOnCurrentNetwork && balance !== '0');
@@ -230,8 +231,6 @@ export default function TokenList({
     console.log(t('loadingTokens'));
   }
 
-  // Check if testnet
-  const isTestnet = useSelector(getIsTestnet);
   const shouldShowFiat = useMultichainSelector(
     getMultichainShouldShowFiat,
     selectedAccount,
