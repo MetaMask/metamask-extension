@@ -1,8 +1,7 @@
 import React, { useState } from 'react';
 import { Carousel as ResponsiveCarousel } from 'react-responsive-carousel';
 import { useI18nContext } from '../../../hooks/useI18nContext';
-import { Box, BannerBase } from '..';
-import type { BoxProps } from '..';
+import { Box, BoxProps, BannerBase } from '../../component-library';
 import {
   TextAlign,
   AlignItems,

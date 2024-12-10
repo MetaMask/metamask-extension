@@ -1,10 +1,10 @@
 import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useLocation } from 'react-router-dom';
-import { Carousel } from '../../component-library';
 import { getSlides } from '../../../ducks/metamask/metamask';
 import { removeSlide, updateSlides } from '../../../store/actions';
 import useBridging from '../../../hooks/bridge/useBridging';
+import { Carousel } from '..';
 import {
   ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
   getSwapsDefaultToken,

@@ -89,8 +89,6 @@ export { ModalBody } from './modal-body';
 export type { ModalBodyProps } from './modal-body';
 export { ModalFooter } from './modal-footer';
 export type { ModalFooterProps } from './modal-footer';
-export { Carousel } from './carousel';
-export type { CarouselProps, CarouselSlide } from './carousel';
 
 // Molecules
 export { BannerBase } from './banner-base';
