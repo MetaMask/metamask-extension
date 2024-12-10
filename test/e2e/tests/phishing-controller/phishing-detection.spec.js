@@ -317,7 +317,6 @@ describe('Phishing Detection', function () {
 
   it('should block a website that makes a websocket connection to a malicious command and control server', async function () {
     const testPageURL = 'http://localhost:8080';
-
     await withFixtures(
       {
         fixtures: new FixtureBuilder().build(),
@@ -361,7 +360,6 @@ describe('Phishing Detection', function () {
 
   it('should not block a website that makes a safe WebSocket connection', async function () {
     const testPageURL = 'http://localhost:8080/';
-
     await withFixtures(
       {
         fixtures: new FixtureBuilder().build(),
