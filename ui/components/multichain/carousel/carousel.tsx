@@ -74,11 +74,7 @@ export const Carousel = React.forwardRef(
 
     if (isLoading) {
       return (
-        <Box
-          className={'mm-carousel'}
-          ref={ref}
-          {...(props as BoxProps<'div'>)}
-        >
+        <Box className="mm-carousel" ref={ref} {...(props as BoxProps<'div'>)}>
           <ResponsiveCarousel
             showArrows={false}
             className="mm-carousel__carousel mm-carousel__loading"
@@ -113,7 +109,7 @@ export const Carousel = React.forwardRef(
       );
     }
 
-    if (slides.length === 0) {
+    if (visibleSlides.length === 0) {
       return null;
     }
 
