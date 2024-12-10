@@ -55,6 +55,7 @@ import {
   getPermittedChainsForSelectedTab,
   getPermittedAccountsForSelectedTab,
   getPreferences,
+  getTokenNetworkFilter,
 } from '../../../selectors';
 import ToggleButton from '../../ui/toggle-button';
 import {
@@ -116,7 +117,7 @@ export const NetworkListMenu = ({ onClose }: { onClose: () => void }) => {
   const dispatch = useDispatch();
   const trackEvent = useContext(MetaMetricsContext);
 
-  const { tokenNetworkFilter } = useSelector(getPreferences);
+  const tokenNetworkFilter = useSelector(getTokenNetworkFilter);
   const showTestNetworks = useSelector(getShowTestNetworks);
   const currentChainId = useSelector(getCurrentChainId);
   const selectedTabOrigin = useSelector(getOriginOfCurrentTab);

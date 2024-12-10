@@ -17,6 +17,7 @@ import {
   getAllDetectedTokensForSelectedAddress,
   getDetectedTokensInCurrentNetwork,
   getPreferences,
+  getTokenNetworkFilter,
 } from '../../../selectors';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 
@@ -63,14 +64,14 @@ const DetectedToken = ({ setShowDetectedTokens }) => {
   );
   const currentChainId = useSelector(getCurrentChainId);
   const allNetworks = useSelector(getNetworkConfigurationsByChainId);
-  const { tokenNetworkFilter } = useSelector(getPreferences);
+  const tokenNetworkFilter = useSelector(getTokenNetworkFilter);
   const allOpts = {};
   Object.keys(allNetworks || {}).forEach((chainId) => {
     allOpts[chainId] = true;
   });
 
   const allNetworksFilterShown =
-    Object.keys(tokenNetworkFilter || {}).length !==
+    Object.keys(tokenNetworkFilter).length !==
     Object.keys(allOpts || {}).length;
 
   const totalDetectedTokens = useMemo(() => {

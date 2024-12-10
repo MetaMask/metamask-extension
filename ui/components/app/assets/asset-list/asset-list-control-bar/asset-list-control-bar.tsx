@@ -1,6 +1,10 @@
 import React, { useEffect, useRef, useState, useContext, useMemo } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { getCurrentNetwork, getPreferences } from '../../../../../selectors';
+import {
+  getCurrentNetwork,
+  getPreferences,
+  getTokenNetworkFilter,
+} from '../../../../../selectors';
 import { getNetworkConfigurationsByChainId } from '../../../../../../shared/modules/selectors/networks';
 import {
   Box,
@@ -55,7 +59,7 @@ const AssetListControlBar = ({ showTokensLinks }: AssetListControlBarProps) => {
   const currentNetwork = useSelector(getCurrentNetwork);
   const allNetworks = useSelector(getNetworkConfigurationsByChainId);
 
-  const { tokenNetworkFilter } = useSelector(getPreferences);
+  const tokenNetworkFilter = useSelector(getTokenNetworkFilter);
   const [isTokenSortPopoverOpen, setIsTokenSortPopoverOpen] = useState(false);
   const [isImportTokensPopoverOpen, setIsImportTokensPopoverOpen] =
     useState(false);
@@ -72,7 +76,7 @@ const AssetListControlBar = ({ showTokensLinks }: AssetListControlBarProps) => {
   });
 
   const allNetworksFilterShown =
-    Object.keys(tokenNetworkFilter || {}).length !==
+    Object.keys(tokenNetworkFilter).length !==
     Object.keys(allOpts || {}).length;
 
   useEffect(() => {
@@ -88,7 +92,7 @@ const AssetListControlBar = ({ showTokensLinks }: AssetListControlBarProps) => {
   useEffect(() => {
     if (
       process.env.PORTFOLIO_VIEW &&
-      Object.keys(tokenNetworkFilter || {}).length === 0
+      Object.keys(tokenNetworkFilter).length === 0
     ) {
       dispatch(setTokenNetworkFilter(allOpts));
     } else {
@@ -99,7 +103,7 @@ const AssetListControlBar = ({ showTokensLinks }: AssetListControlBarProps) => {
   // When a network gets added/removed we want to make sure that we switch to the filtered list of the current network
   // We only want to do this if the "Current Network" filter is selected
   useEffect(() => {
-    if (Object.keys(tokenNetworkFilter || {}).length === 1) {
+    if (Object.keys(tokenNetworkFilter).length === 1) {
       dispatch(setTokenNetworkFilter({ [currentNetwork.chainId]: true }));
     }
   }, [Object.keys(allNetworks).length]);

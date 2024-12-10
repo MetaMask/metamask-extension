@@ -1087,6 +1087,11 @@ export function getIsTokenNetworkFilterEqualCurrentNetwork(state) {
   return false;
 }
 
+export function getTokenNetworkFilter(state) {
+  const { tokenNetworkFilter } = getPreferences(state);
+  return tokenNetworkFilter || {};
+}
+
 export function getUseTransactionSimulations(state) {
   return Boolean(state.metamask.useTransactionSimulations);
 }

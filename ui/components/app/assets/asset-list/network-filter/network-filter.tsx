@@ -7,6 +7,7 @@ import {
   getShouldHideZeroBalanceTokens,
   getSelectedAccount,
   getAllChainsToPoll,
+  getTokenNetworkFilter,
 } from '../../../../../selectors';
 import {
   getCurrentChainId,
@@ -48,7 +49,7 @@ const NetworkFilter = ({ handleClose }: SortControlProps) => {
   const selectedAccount = useSelector(getSelectedAccount);
   const allNetworks = useSelector(getNetworkConfigurationsByChainId);
   const [chainsToShow, setChainsToShow] = useState<string[]>([]);
-  const { tokenNetworkFilter } = useSelector(getPreferences);
+  const tokenNetworkFilter = useSelector(getTokenNetworkFilter);
   const shouldHideZeroBalanceTokens = useSelector(
     getShouldHideZeroBalanceTokens,
   );
@@ -102,7 +103,7 @@ const NetworkFilter = ({ handleClose }: SortControlProps) => {
     <>
       <SelectableListItem
         isSelected={
-          Object.keys(tokenNetworkFilter || {}).length ===
+          Object.keys(tokenNetworkFilter).length ===
           Object.keys(allNetworks || {}).length
         }
         onClick={() => handleFilter(allOpts)}
@@ -163,8 +164,8 @@ const NetworkFilter = ({ handleClose }: SortControlProps) => {
       </SelectableListItem>
       <SelectableListItem
         isSelected={
-          tokenNetworkFilter[chainId] &&
-          Object.keys(tokenNetworkFilter || {}).length === 1
+          Object.keys(tokenNetworkFilter).length === 1 &&
+          tokenNetworkFilter[chainId]
         }
         onClick={() => handleFilter({ [chainId]: true })}
         testId="network-filter-current"
