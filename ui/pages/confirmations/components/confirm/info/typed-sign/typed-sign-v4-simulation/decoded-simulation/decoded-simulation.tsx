@@ -130,7 +130,10 @@ const StateChangeRow = ({
         <NativeValueDisplay
           value={amount}
           chainId={chainId}
-          credit={changeType === DecodingDataChangeType.Receive}
+          credit={
+            nftTransactionType !== StateChangeType.NFTListingReceive &&
+            changeType === DecodingDataChangeType.Receive
+          }
           debit={changeType === DecodingDataChangeType.Transfer}
         />
       )}
