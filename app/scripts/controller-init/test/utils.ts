@@ -1,7 +1,9 @@
 import {
   BaseControllerMessenger,
   BaseRestrictedControllerMessenger,
+  ControllerGetApiRequest,
   ControllerInitRequest,
+  GenericController,
 } from '../types';
 
 export const CHAIN_ID_MOCK = '0x123';
@@ -33,6 +35,15 @@ export function buildControllerInitRequestMock<
   } as unknown as jest.Mocked<
     ControllerInitRequest<ControllerMessengerType, InitControllerMessengerType>
   >;
+}
+
+export function buildControllerGetApiRequestMock<
+  ControllerType extends GenericController,
+>() {
+  return {
+    controller: jest.fn() as unknown as ControllerType,
+    getFlatState: jest.fn(),
+  } as unknown as jest.Mocked<ControllerGetApiRequest<ControllerType>>;
 }
 
 export function expectValidMessengerCallback(

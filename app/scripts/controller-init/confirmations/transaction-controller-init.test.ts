@@ -5,25 +5,36 @@ import {
 } from '@metamask/transaction-controller';
 import { TransactionControllerInitMessenger } from '../messengers/transaction-controller-messenger';
 import {
+  buildControllerGetApiRequestMock,
   buildControllerInitRequestMock,
   CHAIN_ID_MOCK,
   expectValidMessengerCallback,
 } from '../test/utils';
 import { TransactionControllerInit } from './transaction-controller-init';
 
+const TRANSACTION_ID_MOCK = '123-456';
+
 jest.mock('@metamask/transaction-controller');
 
 function buildInitRequestMock() {
-  const requestMock = buildControllerInitRequestMock<
+  return buildControllerInitRequestMock<
     TransactionControllerMessenger,
     TransactionControllerInitMessenger
   >();
+}
 
-  requestMock.getController.mockReturnValue({
-    getNetworkClientRegistry: jest.fn().mockReturnValue({}),
-  });
+function buildGetApiRequestMock() {
+  const request = buildControllerGetApiRequestMock<TransactionController>();
 
-  return requestMock;
+  request.controller.abortTransactionSigning = jest.fn();
+  request.controller.getLayer1GasFee = jest.fn();
+  request.controller.getTransactions = jest.fn();
+  request.controller.updateEditableParams = jest.fn();
+  request.controller.updatePreviousGasParams = jest.fn();
+  request.controller.updateTransactionGasFees = jest.fn();
+  request.controller.updateTransactionSendFlowHistory = jest.fn();
+
+  return request;
 }
 
 describe('Transaction Controller Init', () => {
@@ -167,6 +178,55 @@ describe('Transaction Controller Init', () => {
       expectValidMessengerCallback(
         new TransactionControllerInit().getInitMessengerCallback(),
       );
+    });
+  });
+
+  describe('getApi', () => {
+    it('returns multiple API methods', () => {
+      const request = buildGetApiRequestMock();
+
+      expect(Object.keys(new TransactionControllerInit().getApi(request)))
+        .toMatchInlineSnapshot(`
+        [
+          "abortTransactionSigning",
+          "createCancelTransaction",
+          "getLayer1GasFee",
+          "getTransactions",
+          "updateEditableParams",
+          "updatePreviousGasParams",
+          "updateTransactionGasFees",
+          "updateTransactionSendFlowHistory",
+        ]
+      `);
+    });
+
+    describe('returns createCancelTransaction method that', () => {
+      it('calls stopTransaction on the controller', () => {
+        const request = buildGetApiRequestMock();
+        request.controller.stopTransaction = jest.fn();
+
+        const api = new TransactionControllerInit().getApi(request);
+
+        api.createCancelTransaction(TRANSACTION_ID_MOCK);
+
+        expect(request.controller.stopTransaction).toHaveBeenCalledTimes(1);
+        expect(request.controller.stopTransaction).toHaveBeenCalledWith(
+          TRANSACTION_ID_MOCK,
+        );
+      });
+
+      it('returns flat state', async () => {
+        const flatStateMock = { test: 123 };
+
+        const request = buildGetApiRequestMock();
+        request.controller.stopTransaction = jest.fn();
+        request.getFlatState.mockReturnValue(flatStateMock);
+
+        const api = new TransactionControllerInit().getApi(request);
+        const state = await api.createCancelTransaction(TRANSACTION_ID_MOCK);
+
+        expect(state).toStrictEqual(flatStateMock);
+      });
     });
   });
 });

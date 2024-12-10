@@ -7,6 +7,11 @@ import {
 } from '@metamask/base-controller';
 import { TransactionMetricsRequest } from '../lib/transaction/metrics';
 
+/**
+ * Base controller type required for controller initialization.
+ */
+export type GenericController = { name: string };
+
 /** Generic controller messenger using base template types. */
 export type BaseControllerMessenger = ControllerMessenger<
   ActionConstraint,
@@ -160,7 +165,7 @@ export type ControllerGetApiResponse = Record<string, ControllerApi>;
  * `InitMessengerType` is the messenger required by the client to initialize the controller and register related listeners.
  */
 export abstract class ControllerInit<
-  ControllerType extends { name: string },
+  ControllerType extends GenericController,
   ControllerMessengerType extends void | BaseRestrictedControllerMessenger = void,
   InitMessengerType extends void | BaseRestrictedControllerMessenger = void,
 > {

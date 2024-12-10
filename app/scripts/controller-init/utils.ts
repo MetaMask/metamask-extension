@@ -9,21 +9,20 @@ import {
   ControllerInit,
   ControllerInitRequest,
   ControllerName,
+  GenericController,
 } from './types';
 
 const log = createProjectLogger('controller-init');
-
-type Controller = { name: string };
 
 type BaseInitRequest = ControllerInitRequest<
   BaseRestrictedControllerMessenger,
   BaseRestrictedControllerMessenger
 >;
 
-type InitFunction = (request: BaseInitRequest) => Controller;
+type InitFunction = (request: BaseInitRequest) => GenericController;
 
 type InitInstance = ControllerInit<
-  Controller,
+  GenericController,
   BaseRestrictedControllerMessenger,
   BaseRestrictedControllerMessenger
 >;
@@ -34,7 +33,7 @@ type InitObject = InitFunction | InitInstance;
  * Adapter class to handle legacy controllers that are returned from a function.
  */
 class LegacyControllerInit extends ControllerInit<
-  Controller,
+  GenericController,
   BaseRestrictedControllerMessenger,
   BaseRestrictedControllerMessenger
 > {
@@ -45,7 +44,7 @@ class LegacyControllerInit extends ControllerInit<
     this.#fn = fn;
   }
 
-  init(_request: BaseInitRequest): Controller {
+  init(_request: BaseInitRequest): GenericController {
     return this.#fn(_request);
   }
 }
@@ -53,16 +52,16 @@ class LegacyControllerInit extends ControllerInit<
 /** Result of initializing controllers. */
 export type InitControllersResult = {
   /** All API methods exposed by the controllers. */
-  controllerApi: Record<string, Controller>;
+  controllerApi: Record<string, GenericController>;
 
   /** All controllers that provided a memory state key. */
-  controllerMemState: Record<string, Controller>;
+  controllerMemState: Record<string, GenericController>;
 
   /** All controllers that provided a persisted state key. */
-  controllerPersistedState: Record<string, Controller>;
+  controllerPersistedState: Record<string, GenericController>;
 
   /** All initialized controllers keyed by name. */
-  controllersByName: Record<string, Controller>;
+  controllersByName: Record<string, GenericController>;
 };
 
 /**
@@ -99,9 +98,9 @@ export function initControllers({
       : new LegacyControllerInit(initObject as InitFunction),
   );
 
-  const controllersByName: Record<string, Controller> = {};
-  const controllerPersistedState: Record<string, Controller> = {};
-  const controllerMemState: Record<string, Controller> = {};
+  const controllersByName: Record<string, GenericController> = {};
+  const controllerPersistedState: Record<string, GenericController> = {};
+  const controllerMemState: Record<string, GenericController> = {};
   let controllerApi = {};
 
   const getController = <T>(name: ControllerName) =>
@@ -164,7 +163,7 @@ export function initControllers({
 }
 
 function getControllerOrThrow<T>(
-  controllersByName: Record<ControllerName, Controller>,
+  controllersByName: Record<ControllerName, GenericController>,
   name: ControllerName,
 ): T {
   const controller = controllersByName[name];
