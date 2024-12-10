@@ -1,4 +1,3 @@
-import classnames from 'classnames';
 import React, { useEffect, useRef, useState } from 'react';
 import { useHistory } from 'react-router-dom';
 import { useSelector } from 'react-redux';
@@ -26,13 +25,7 @@ import {
   DEFAULT_ROUTE,
   REVIEW_PERMISSIONS,
 } from '../../../../helpers/constants/routes';
-import {
-  getOnboardedInThisUISession,
-  getShowPermissionsTour,
-  getConnectedSitesListWithNetworkInfo,
-} from '../../../../selectors';
-import { ProductTour } from '../../product-tour-popover';
-import { hidePermissionsTour } from '../../../../store/actions';
+import { getConnectedSitesListWithNetworkInfo } from '../../../../selectors';
 import { isSnapId } from '../../../../helpers/utils/snaps';
 import { ConnectionListItem } from './connection-list-item';
 
@@ -44,8 +37,6 @@ export const PermissionsPage = () => {
   const sitesConnectionsList = useSelector(
     getConnectedSitesListWithNetworkInfo,
   );
-  const showPermissionsTour = useSelector(getShowPermissionsTour);
-  const onboardedInThisUISession = useSelector(getOnboardedInThisUISession);
 
   useEffect(() => {
     setTotalConnections(Object.keys(sitesConnectionsList).length);
@@ -94,20 +85,6 @@ export const PermissionsPage = () => {
           {t('permissions')}
         </Text>
       </Header>
-      {showPermissionsTour && !onboardedInThisUISession ? (
-        <ProductTour
-          closeMenu={hidePermissionsTour}
-          className={classnames(
-            'multichain-product-tour-menu__permissions-page-tour',
-          )}
-          data-testid="permissions-page-product-tour"
-          anchorElement={headerRef.current}
-          title={t('permissionsPageTourTitle')}
-          description={t('permissionsPageTourDescription')}
-          onClick={hidePermissionsTour}
-          positionObj="44%"
-        />
-      ) : null}
       <Content padding={0}>
         <Box ref={headerRef}></Box>
         {totalConnections > 0 ? (
