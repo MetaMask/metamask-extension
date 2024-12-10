@@ -104,7 +104,7 @@ export const useTokensWithFiltering = (
       return (function* (): Generator<
         AssetWithDisplayData<NativeAsset> | AssetWithDisplayData<ERC20Asset>
       > {
-        const balance = hexToBN(balanceOnActiveChain);
+        const balance = hexToBN(balanceOnActiveChain ?? '0');
         const srcBalanceFields =
           sortOrder === TokenBucketPriority.owned
             ? {

@@ -88,9 +88,9 @@ const useBridging = () => {
         const portfolioUrl = getPortfolioUrl(
           'bridge',
           'ext_bridge_button',
-          metaMetricsId,
+          metaMetricsId ?? undefined,
           isMetaMetricsEnabled,
-          isMarketingEnabled,
+          isMarketingEnabled ?? undefined,
         );
         global.platform.openTab({
           url: `${portfolioUrl}${
