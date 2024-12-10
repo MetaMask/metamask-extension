@@ -79,10 +79,11 @@ export const getFromChains = createDeepEqualSelector(
   getAllBridgeableNetworks,
   (state: BridgeAppState) => state.metamask.bridgeState?.bridgeFeatureFlags,
   (allBridgeableNetworks, bridgeFeatureFlags) =>
-    allBridgeableNetworks.filter(({ chainId }) =>
-      bridgeFeatureFlags[BridgeFeatureFlagsKey.NETWORK_SRC_ALLOWLIST].includes(
-        chainId,
-      ),
+    allBridgeableNetworks.filter(
+      ({ chainId }) =>
+        bridgeFeatureFlags[BridgeFeatureFlagsKey.EXTENSION_CONFIG].chains[
+          chainId
+        ]?.isActiveSrc,
     ),
 );
 
@@ -111,9 +112,9 @@ export const getToChains = createDeepEqualSelector(
       ({ chainId }) =>
         fromChain?.chainId &&
         chainId !== fromChain.chainId &&
-        bridgeFeatureFlags[
-          BridgeFeatureFlagsKey.NETWORK_DEST_ALLOWLIST
-        ].includes(chainId),
+        bridgeFeatureFlags[BridgeFeatureFlagsKey.EXTENSION_CONFIG].chains[
+          chainId
+        ]?.isActiveDest,
     ),
 );
 
