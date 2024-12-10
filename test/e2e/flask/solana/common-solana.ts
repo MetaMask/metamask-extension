@@ -1,12 +1,11 @@
 import { Mockttp } from 'mockttp';
 import { withFixtures, unlockWallet } from '../../helpers';
-import { DEFAULT_SOLANA_ACCOUNT } from '../../constants';
 import { Driver } from '../../webdriver/driver';
 import HeaderNavbar from '../../page-objects/pages/header-navbar';
-import AccountListPage, { AccountType } from '../../page-objects/pages/account-list-page';
+import AccountListPage from '../../page-objects/pages/account-list-page';
 import FixtureBuilder = require('../../fixture-builder');
 
-const SOLANA_URL_REGEX = /^https:\/\/.*\.solana.*/;
+const SOLANA_URL_REGEX = /^https:\/\/.*\.solana.*/u;
 
 export enum SendFlowPlaceHolders {
   AMOUNT = 'Enter amount to send',
@@ -14,11 +13,7 @@ export enum SendFlowPlaceHolders {
   LOADING = 'Preparing transaction',
 }
 
-
-export async function mockSolanaBalanceQuote(
-  mockServer: Mockttp,
-  address: string = DEFAULT_SOLANA_ACCOUNT,
-) {
+export async function mockSolanaBalanceQuote(mockServer: Mockttp) {
   return await mockServer
     .forPost(SOLANA_URL_REGEX)
     .withJsonBodyIncluding({
@@ -31,7 +26,7 @@ export async function mockSolanaBalanceQuote(
           result: {
             context: {
               apiVersion: '2.0.15',
-              slot: 305352614
+              slot: 305352614,
             },
             value: 0,
           },
@@ -39,8 +34,6 @@ export async function mockSolanaBalanceQuote(
       };
     });
 }
-
-
 
 export async function withSolanaAccountSnap(
   {
@@ -68,7 +61,7 @@ export async function withSolanaAccountSnap(
       await headerComponen.openAccountMenu();
       const accountListPage = new AccountListPage(driver);
       await accountListPage.openAddAccountModal();
-      await accountListPage.addNewSolanaAccount();
+      await accountListPage.addNewSolanaAccount({ accountName: 'Solana 1' });
       await test(driver, mockServer);
     },
   );
