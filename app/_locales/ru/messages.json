@@ -1033,9 +1033,6 @@
   "confirmRecoveryPhrase": {
     "message": "Подтвердите секретную фразу для восстановления"
   },
-  "confirmTitleApproveTransaction": {
-    "message": "Запрос квоты"
-  },
   "confirmTitleDeployContract": {
     "message": "Развернуть контракт"
   },
@@ -6600,10 +6597,6 @@
   },
   "wrongNetworkName": {
     "message": "Согласно нашим записям, имя сети может не соответствовать этому ID блокчейна."
-  },
-  "xOfYPending": {
-    "message": "$1 из $2 ожидающих",
-    "description": "$1 and $2 are intended to be two numbers, where $2 is a total number of pending confirmations, and $1 is a count towards that total"
   },
   "yes": {
     "message": "Да"

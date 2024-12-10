@@ -1,67 +1,30 @@
-import React, { useContext } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import { useHistory, useParams } from 'react-router-dom';
-import {
-  unapprovedDecryptMsgsSelector,
-  unapprovedEncryptionPublicKeyMsgsSelector,
-  unconfirmedTransactionsListSelector,
-} from '../../../../../selectors';
+import React, { useCallback, useContext } from 'react';
+import { useDispatch } from 'react-redux';
+import { useParams } from 'react-router-dom';
 import { I18nContext } from '../../../../../contexts/i18n';
-import {
-  CONFIRM_TRANSACTION_ROUTE,
-  SIGNATURE_REQUEST_PATH,
-} from '../../../../../helpers/constants/routes';
 import { clearConfirmTransaction } from '../../../../../ducks/confirm-transaction/confirm-transaction.duck';
 import { QueueType } from '../../../../../../shared/constants/metametrics';
 import { useQueuedConfirmationsEvent } from '../../../hooks/useQueuedConfirmationEvents';
+import { useConfirmationNavigation } from '../../../hooks/useConfirmationNavigation';
 
 const ConfirmPageContainerNavigation = () => {
   const t = useContext(I18nContext);
   const dispatch = useDispatch();
-  const history = useHistory();
   const { id } = useParams();
+  const { count, getIndex, navigateToIndex } = useConfirmationNavigation();
+  const currentPosition = getIndex(id);
 
-  const unapprovedDecryptMsgs = useSelector(unapprovedDecryptMsgsSelector);
-  const unapprovedEncryptionPublicKeyMsgs = useSelector(
-    unapprovedEncryptionPublicKeyMsgsSelector,
-  );
-  const unconfirmedTransactions =
-    useSelector(unconfirmedTransactionsListSelector) ?? [];
-
-  const enumUnapprovedDecryptMsgsKey = Object.keys(unapprovedDecryptMsgs || {});
-  const enumUnapprovedEncryptMsgsKey = Object.keys(
-    unapprovedEncryptionPublicKeyMsgs || {},
-  );
-  const enumDecryptAndEncryptMsgs = [
-    ...enumUnapprovedDecryptMsgsKey,
-    ...enumUnapprovedEncryptMsgsKey,
-  ];
-
-  const enumUnapprovedTxs = unconfirmedTransactions
-    .map((tx) => tx.id)
-    .filter((key) => enumDecryptAndEncryptMsgs.includes(key) === false);
-
-  const currentPosition = enumUnapprovedTxs.indexOf(id);
-
-  const totalTx = enumUnapprovedTxs.length;
+  const totalTx = count;
   const positionOfCurrentTx = currentPosition + 1;
-  const nextTxId = enumUnapprovedTxs[currentPosition + 1];
-  const prevTxId = enumUnapprovedTxs[currentPosition - 1];
-  const showNavigation = enumUnapprovedTxs.length > 1;
-  const firstTx = enumUnapprovedTxs[0];
-  const lastTx = enumUnapprovedTxs[enumUnapprovedTxs.length - 1];
+  const showNavigation = count > 1;
 
-  const onNextTx = (txId) => {
-    if (txId) {
+  const onNextTx = useCallback(
+    (index) => {
       dispatch(clearConfirmTransaction());
-      const position = enumUnapprovedTxs.indexOf(txId);
-      history.push(
-        unconfirmedTransactions[position]?.msgParams
-          ? `${CONFIRM_TRANSACTION_ROUTE}/${txId}${SIGNATURE_REQUEST_PATH}`
-          : `${CONFIRM_TRANSACTION_ROUTE}/${txId}`,
-      );
-    }
-  };
+      navigateToIndex(index);
+    },
+    [dispatch, navigateToIndex],
+  );
 
   useQueuedConfirmationsEvent(QueueType.NavigationHeader);
 
@@ -76,20 +39,20 @@ const ConfirmPageContainerNavigation = () => {
         className="confirm-page-container-navigation__container"
         data-testid="navigation-container"
         style={{
-          visibility: prevTxId ? 'initial' : 'hidden',
+          visibility: currentPosition > 0 ? 'initial' : 'hidden',
         }}
       >
         <button
           className="confirm-page-container-navigation__arrow"
           data-testid="first-page"
-          onClick={() => onNextTx(firstTx)}
+          onClick={() => onNextTx(0)}
         >
           <i className="fa fa-angle-double-left fa-2x" />
         </button>
         <button
           className="confirm-page-container-navigation__arrow"
           data-testid="previous-page"
-          onClick={() => onNextTx(prevTxId)}
+          onClick={() => onNextTx(currentPosition - 1)}
         >
           <i className="fa fa-angle-left fa-2x" />
         </button>
@@ -105,20 +68,20 @@ const ConfirmPageContainerNavigation = () => {
       <div
         className="confirm-page-container-navigation__container"
         style={{
-          visibility: nextTxId ? 'initial' : 'hidden',
+          visibility: currentPosition < count - 1 ? 'initial' : 'hidden',
         }}
       >
         <button
           className="confirm-page-container-navigation__arrow"
           data-testid="next-page"
-          onClick={() => onNextTx(nextTxId)}
+          onClick={() => onNextTx(currentPosition + 1)}
         >
           <i className="fa fa-angle-right fa-2x" />
         </button>
         <button
           className="confirm-page-container-navigation__arrow"
           data-testid="last-page"
-          onClick={() => onNextTx(lastTx)}
+          onClick={() => onNextTx(count - 1)}
         >
           <i className="fa fa-angle-double-right fa-2x" />
         </button>
