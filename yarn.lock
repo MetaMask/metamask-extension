@@ -38057,7 +38057,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-<<<<<<< HEAD
 "zod@npm:^3.23.8":
   version: 3.24.0
   resolution: "zod@npm:3.24.0"
@@ -38065,8 +38064,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-=======
->>>>>>> 223cf44aa86cc36f241f841e94ff0fa799f2ee32
 "zstd-codec@npm:^0.1.4":
   version: 0.1.4
   resolution: "zstd-codec@npm:0.1.4"
