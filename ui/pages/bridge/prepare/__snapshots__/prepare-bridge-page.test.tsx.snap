@@ -346,13 +346,13 @@ exports[`PrepareBridgePage should render the component, with inputs set 1`] = `
           </p>
           <div
             class="mm-box currency-display-component mm-box--display-flex mm-box--flex-wrap-wrap mm-box--align-items-center"
-            title="$0.00"
+            title="$5,805.77"
           >
             <span
               class="mm-box mm-text currency-display-component__text mm-text--inherit mm-text--ellipsis mm-box--color-text-default"
               data-testid="account-value-and-suffix"
             >
-              $0.00
+              $5,805.77
             </span>
           </div>
         </div>
