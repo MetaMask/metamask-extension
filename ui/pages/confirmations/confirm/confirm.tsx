@@ -54,7 +54,7 @@ const Confirm = () => (
           <Page className="confirm_wrapper">
             <Nav />
             <Header />
-            <div className="transaction-alerts">
+            <div className="transaction-alerts" style={{ marginTop: 0 }}>
               <SmartTransactionsBannerAlert />
             </div>
             <ScrollToBottom>

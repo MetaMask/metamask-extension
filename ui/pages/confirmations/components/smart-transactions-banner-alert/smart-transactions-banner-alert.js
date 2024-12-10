@@ -11,13 +11,11 @@ import {
   shouldShowSmartTransactionsMigrationAlert,
   dismissAndDisableAlert,
 } from '../../../../ducks/alerts/smart-transactions-migration';
-import ZENDESK_URLS from '../../../../helpers/constants/zendesk-url';
+import { SMART_TRANSACTIONS_LEARN_MORE_URL } from '../../../../../shared/constants/smartTransactions';
 
 const SmartTransactionsBannerAlert = () => {
   const dispatch = useDispatch();
   const shouldShow = useSelector(shouldShowSmartTransactionsMigrationAlert);
-  // const fullState = useSelector((state) => state);
-  // console.log(fullState)
 
   const t = useI18nContext();
 
@@ -37,7 +35,7 @@ const SmartTransactionsBannerAlert = () => {
       <Text as="p">
         {t('smartTransactionsEnabled')}
         <ButtonLink
-          href={ZENDESK_URLS.SMART_TRANSACTIONS_LEARN_MORE}
+          href={SMART_TRANSACTIONS_LEARN_MORE_URL}
           onClick={() => dispatch(dismissAndDisableAlert())}
           externalLink
         >
