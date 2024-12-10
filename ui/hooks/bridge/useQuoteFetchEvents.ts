@@ -111,7 +111,7 @@ export const useQuoteFetchEvents = () => {
       quoteFetchError
     ) {
       trackCrossChainSwapsEvent({
-        event: MetaMetricsEventName.QuoteError,
+        event: MetaMetricsEventName.CrossChainSwapsQuoteError,
         properties: {
           ...quoteRequestProperties,
           ...requestMetadataProperties,
@@ -136,7 +136,7 @@ export const useQuoteFetchEvents = () => {
       tradeProperties
     ) {
       trackCrossChainSwapsEvent({
-        event: MetaMetricsEventName.QuotesReceived,
+        event: MetaMetricsEventName.CrossChainSwapsQuotesReceived,
         properties: {
           ...quoteRequestProperties,
           ...requestMetadataProperties,
