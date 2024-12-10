@@ -4,7 +4,7 @@ import classnames from 'classnames';
 
 import { useSelector } from 'react-redux';
 import { useI18nContext } from '../../../hooks/useI18nContext';
-import { shortenAddress } from '../../../helpers/utils/util';
+import { getSnapName, shortenAddress } from '../../../helpers/utils/util';
 
 import { AccountListItemMenu } from '../account-list-item-menu';
 import { AvatarGroup } from '../avatar-group';
@@ -53,6 +53,7 @@ import {
   getIsTokenNetworkFilterEqualCurrentNetwork,
   getShowFiatInTestnets,
   getChainIdsToPoll,
+  getSnapsMetadata,
 } from '../../../selectors';
 import {
   getMultichainIsTestnet,
@@ -73,6 +74,7 @@ import { normalizeSafeAddress } from '../../../../app/scripts/lib/multichain/add
 import { useMultichainSelector } from '../../../hooks/useMultichainSelector';
 import { useGetFormattedTokensPerChain } from '../../../hooks/useGetFormattedTokensPerChain';
 import { useAccountTotalCrossChainFiatBalance } from '../../../hooks/useAccountTotalCrossChainFiatBalance';
+import { getAccountLabel } from '../../../helpers/utils/accounts';
 import { AccountListItemMenuTypes } from './account-list-item.types';
 
 const MAXIMUM_CURRENCY_DECIMALS = 3;
@@ -99,6 +101,14 @@ const AccountListItem = ({
   const [accountOptionsMenuOpen, setAccountOptionsMenuOpen] = useState(false);
   const [accountListItemMenuElement, setAccountListItemMenuElement] =
     useState();
+  const snapMetadata = useSelector(getSnapsMetadata);
+  const accountLabel = getAccountLabel(
+    account.metadata.keyring.type,
+    account,
+    account.metadata.keyring.type === KeyringType.snap
+      ? getSnapName(snapMetadata)(account.metadata?.snap.id)
+      : null,
+  );
 
   const useBlockie = useSelector(getUseBlockie);
   const { isEvmNetwork } = useMultichainSelector(getMultichainNetwork, account);
@@ -403,9 +413,9 @@ const AccountListItem = ({
             </Box>
           )}
         </Box>
-        {account.label ? (
+        {accountLabel ? (
           <Tag
-            label={account.label}
+            label={accountLabel}
             labelProps={{
               variant: TextVariant.bodyXs,
               color: Color.textAlternative,
@@ -447,7 +457,7 @@ const AccountListItem = ({
           account={account}
           onClose={() => setAccountOptionsMenuOpen(false)}
           isOpen={accountOptionsMenuOpen}
-          isRemovable={account.keyring.type !== KeyringType.hdKeyTree}
+          isRemovable={account.metadata.keyring.type !== KeyringType.hdKeyTree}
           closeMenu={closeMenu}
           isPinned={isPinned}
           isHidden={isHidden}
@@ -488,10 +498,6 @@ AccountListItem.propTypes = {
         type: PropTypes.string.isRequired,
       }).isRequired,
     }).isRequired,
-    keyring: PropTypes.shape({
-      type: PropTypes.string.isRequired,
-    }).isRequired,
-    label: PropTypes.string,
   }).isRequired,
   /**
    * Represents if this account is currently selected

@@ -96,7 +96,6 @@ import {
 // eslint-disable-next-line import/no-restricted-paths
 import { getEnvironmentType } from '../../../../app/scripts/lib/util';
 import { ENVIRONMENT_TYPE_POPUP } from '../../../../shared/constants/app';
-import { getAccountLabel } from '../../../helpers/utils/accounts';
 ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
 import {
   ACCOUNT_WATCHER_NAME,
@@ -183,36 +182,6 @@ export const getActionTitle = (
     default:
       return t('selectAnAccount');
   }
-};
-
-/**
- * Merges ordered accounts with balances with each corresponding account data from internal accounts
- *
- * @param accountsWithBalances - ordered accounts with balances
- * @param internalAccounts - internal accounts
- * @returns merged accounts list with balances and internal account data
- */
-export const mergeAccounts = (
-  accountsWithBalances: MergedInternalAccount[],
-  internalAccounts: InternalAccount[],
-) => {
-  return accountsWithBalances.map((account) => {
-    const internalAccount = internalAccounts.find(
-      (intAccount) => intAccount.address === account.address,
-    );
-    if (internalAccount) {
-      return {
-        ...account,
-        ...internalAccount,
-        keyring: internalAccount.metadata.keyring,
-        label: getAccountLabel(
-          internalAccount.metadata.keyring.type,
-          internalAccount,
-        ),
-      };
-    }
-    return account;
-  });
 };
 
 type AccountListMenuProps = {
@@ -345,7 +314,6 @@ export const AccountListMenu = ({
     fuse.setCollection(filteredAccounts);
     searchResults = fuse.search(searchQuery);
   }
-  searchResults = mergeAccounts(searchResults, filteredAccounts);
 
   const title = useMemo(
     () => getActionTitle(t as (text: string) => string, actionMode),

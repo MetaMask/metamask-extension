@@ -128,7 +128,7 @@
         }
       }
     },
-    "snaps": [{}],
+    "snaps": {},
     "preferences": {
       "hideZeroBalanceTokens": false,
       "showFiatInTestnets": false,
