@@ -19,7 +19,6 @@ import {
   EthAccountType,
   SolAccountType,
   ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
-  InternalAccount,
   KeyringAccountType,
   ///: END:ONLY_INCLUDE_IF
 } from '@metamask/keyring-api';
