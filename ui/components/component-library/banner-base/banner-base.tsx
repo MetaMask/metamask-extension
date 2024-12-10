@@ -52,8 +52,6 @@ export const BannerBase: BannerBaseComponent = React.forwardRef(
         backgroundColor={BackgroundColor.backgroundDefault}
         borderRadius={BorderRadius.SM}
         padding={3}
-        paddingLeft={0}
-        paddingRight={0}
         {...(props as BoxProps<C>)}
       >
         {startAccessory && <>{startAccessory}</>}
