@@ -5605,23 +5605,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/keyring-api@npm:^9.0.0":
-  version: 9.0.0
-  resolution: "@metamask/keyring-api@npm:9.0.0"
-  dependencies:
-    "@metamask/snaps-sdk": "npm:^6.7.0"
-    "@metamask/superstruct": "npm:^3.1.0"
-    "@metamask/utils": "npm:^9.2.1"
-    "@types/uuid": "npm:^9.0.8"
-    bech32: "npm:^2.0.0"
-    uuid: "npm:^9.0.1"
-    webextension-polyfill: "npm:^0.12.0"
-  peerDependencies:
-    "@metamask/providers": ^17.2.0
-  checksum: 10/ff552c04a4d06c7b1a43d52809a9c141d38772586388f0ab96123bce445f148aa7f7e8165d03fa92ac391351de252c4b299fc2c16e690193f669b5329941fe75
-  languageName: node
-  linkType: hard
-
 "@metamask/keyring-controller@npm:^19.0.0, @metamask/keyring-controller@npm:^19.0.1":
   version: 19.0.1
   resolution: "@metamask/keyring-controller@npm:19.0.1"
@@ -6296,14 +6279,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/solana-wallet-snap@npm:^0.1.9":
-  version: 0.1.9
-  resolution: "@metamask/solana-wallet-snap@npm:0.1.9"
-  dependencies:
-    "@metamask/keyring-api": "npm:^9.0.0"
-    "@metamask/snaps-sdk": "npm:^6.9.0"
-    buffer: "npm:^6.0.3"
-  checksum: 10/ec540948e1b5c693b0a31a32521d84c5d3796a5d62d1dfa0986cae47483040a0381c30419af4a86b2402efa5e95283b45a5d17bb705c11a181d0c6fa70b5be60
+"@metamask/solana-wallet-snap@npm:^1.0.3":
+  version: 1.0.3
+  resolution: "@metamask/solana-wallet-snap@npm:1.0.3"
+  checksum: 10/4c7c0f05676e7bb84140226c1a3bd716493a6f3582142de83575df682e8351c7583fc5db6209fbde1b43f376fd4eda4d2063f0e651d8209e92001514fc8caf81
   languageName: node
   linkType: hard
 
@@ -26485,7 +26464,7 @@ __metadata:
     "@metamask/snaps-rpc-methods": "npm:^11.7.0"
     "@metamask/snaps-sdk": "npm:^6.13.0"
     "@metamask/snaps-utils": "npm:^8.6.1"
-    "@metamask/solana-wallet-snap": "npm:^0.1.9"
+    "@metamask/solana-wallet-snap": "npm:^1.0.3"
     "@metamask/test-bundler": "npm:^1.0.0"
     "@metamask/test-dapp": "npm:8.13.0"
     "@metamask/transaction-controller": "npm:^42.0.0"
