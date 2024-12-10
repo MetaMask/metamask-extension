@@ -32,6 +32,7 @@ import {
   DownloadOptions,
 } from './types';
 
+// eslint-disable-next-line no-empty-function
 export function noop() {}
 
 const Binaries = Object.values(Binary) as BinariesTuple;
@@ -145,7 +146,8 @@ function getOptions(
 
 /**
  * Returns the system architecture, normalized to one of the supported
- * {@link Architecture} values.
+ *
+ * {@link Architecture}
  * @param architecture
  * @returns
  */
@@ -194,7 +196,7 @@ Contribute : https://github.com/orgs/foundry-rs/projects/2/
 /**
  * Log a message to the console.
  *
- * @param message The message to log
+ * @param message - The message to log
  */
 export function say(message: string) {
   console.log(`[foundryup] ${message}`);
@@ -203,9 +205,10 @@ export function say(message: string) {
 /**
  * Extracts the binaries from the given URL and writes them to the destination.
  *
- * @param url The URL of the archive to extract the binaries from
- * @param binaries The list of binaries to extract
- * @param dir The destination directory
+ * @param url - The URL of the archive to extract the binaries from
+ * @param binaries - The list of binaries to extract
+ * @param dir - The destination directory
+ * @param checksums - The checksums to verify the binaries against
  * @returns The list of binaries extracted
  */
 export async function extractFrom(
@@ -221,7 +224,7 @@ export async function extractFrom(
   // destination to avoid accidental partial extraction. We don't use
   // `os.tmpdir` for this because `rename` will fail if the directories are on
   // different file systems.
-  const tempDir = dir + '.downloading';
+  const tempDir = `${dir}.downloading`;
   const rmOpts = { recursive: true, maxRetries: 3, force: true };
   try {
     // clean up any previous in-progress downloads
@@ -270,10 +273,10 @@ export async function extractFrom(
 /**
  * Extracts the binaries from a tar archive.
  *
- * @param url The URL of the archive to extract the binaries from
- * @param binaries The list of binaries to extract
- * @param dir The destination directory
- * @param checksumAlgorithm The checksum algorithm to use
+ * @param url - The URL of the archive to extract the binaries from
+ * @param binaries - The list of binaries to extract
+ * @param dir - The destination directory
+ * @param checksumAlgorithm - The checksum algorithm to use
  * @returns The list of binaries extracted
  */
 async function extractFromTar(
@@ -305,12 +308,11 @@ async function extractFromTar(
               });
             });
             return passThrough;
-          } else {
-            downloads.push({
-              path: entry.absolute!,
-              binary: entry.path,
-            });
           }
+          downloads.push({
+            path: entry.absolute!,
+            binary: entry.path,
+          });
         },
       },
       binaries,
@@ -322,10 +324,10 @@ async function extractFromTar(
 /**
  * Extracts the binaries from a zip archive.
  *
- * @param url The URL of the archive to extract the binaries from
- * @param binaries The list of binaries to extract
- * @param dir  The destination directory
- * @param checksumAlgorithm The checksum algorithm to use
+ * @param url - The URL of the archive to extract the binaries from
+ * @param binaries - The list of binaries to extract
+ * @param dir - The destination directory
+ * @param checksumAlgorithm - The checksum algorithm to use
  * @returns The list of binaries extracted
  */
 async function extractFromZip(
@@ -354,47 +356,60 @@ async function extractFromZip(
       return startDownload(url, options);
     },
   };
-
-  const { files } = await Unzip.custom(source);
-  const filtered = files.filter(({ path }) =>
+  const directory = await Unzip.url(source, {});
+  const filtered = directory.files.filter(({ path }: { path: string }) =>
     binaries.includes(basename(path, extname(path))),
   );
   return await Promise.all(
-    filtered.map(async ({ path, stream }) => {
-      const dest = join(dir, path);
-      const entry = stream();
-      const destStream = createWriteStream(dest);
-      if (checksumAlgorithm) {
-        const hash = createHash(checksumAlgorithm);
-        const hashStream = async function* (source: Entry) {
-          for await (const chunk of source) {
-            hash.update(chunk);
-            yield chunk;
+    filtered.map(
+      async ({ path, stream }: { path: string; stream: () => Entry }) => {
+        const dest = join(dir, path);
+        const entry = stream();
+        const destStream = createWriteStream(dest);
+        if (checksumAlgorithm) {
+          const hash = createHash(checksumAlgorithm);
+          const hashStream = async function* (entryStream: Entry) {
+            for await (const chunk of entryStream) {
+              hash.update(chunk);
+              yield chunk;
+            }
+          };
+          await pipeline(entry, hashStream, destStream);
+          const absolutePath = entry.absolute;
+          if (!absolutePath) {
+            throw new Error('Missing absolute path for entry');
           }
-        };
-        await pipeline(entry, hashStream, destStream);
-        return {
-          path: dest,
-          binary: basename(path, extname(path)),
-          checksum: hash.digest('hex'),
-        };
-      } else {
+          return {
+            path: absolutePath,
+            binary: entry.path,
+            checksum: hash.digest('hex'),
+          };
+        }
         await pipeline(entry, destStream);
         return {
           path: dest,
           binary: basename(path, extname(path)),
         };
-      }
-    }),
+      },
+    ),
   );
+}
+
+export class DownloadStream extends Stream.PassThrough {
+  async response(): Promise<IncomingMessage> {
+    return new Promise((resolve, reject) => {
+      this.once('response', resolve);
+      this.once('error', reject);
+    });
+  }
 }
 
 /**
  * Starts a download from the given URL.
  *
- * @param url The URL to download from
- * @param options The download options
- * @param redirects The number of redirects that have occurred
+ * @param url - The URL to download from
+ * @param options - The download options
+ * @param redirects - The number of redirects that have occurred
  * @returns A stream of the download
  */
 function startDownload(
@@ -455,15 +470,6 @@ function startDownload(
   return stream;
 }
 
-export class DownloadStream extends Stream.PassThrough {
-  async response(): Promise<IncomingMessage> {
-    return new Promise((resolve, reject) => {
-      this.once('response', resolve);
-      this.once('error', reject);
-    });
-  }
-}
-
 /**
  * Get the version of the binary at the given path.
  *
@@ -499,9 +505,9 @@ export function isCodedError(
  * Transforms the CLI checksum object into a platform+arch-specific checksum
  * object.
  *
- * @param checksums The CLI checksum object
- * @param platform The build platform
- * @param arch The build architecture
+ * @param checksums - The CLI checksum object
+ * @param platform - The build platform
+ * @param arch - The build architecture
  * @returns
  */
 export function transformChecksums(
@@ -509,7 +515,9 @@ export function transformChecksums(
   platform: Platform,
   arch: Architecture,
 ): PlatformArchChecksums | null {
-  if (!checksums) return null;
+  if (!checksums) {
+    return null;
+  }
 
   const key = `${platform}-${arch}` as const;
   return {

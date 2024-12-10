@@ -16,13 +16,8 @@ import {
   printBanner,
   say,
   transformChecksums,
-} from './helpers.ts';
-import {
-  Architecture,
-  Checksums,
-  Extension,
-  Platform,
-} from './types';
+} from './helpers';
+import { Architecture, Checksums, Extension, Platform } from './types';
 
 export function getCacheDirectory(): string {
   let enableGlobalCache = false;
@@ -53,33 +48,45 @@ export async function checkAndDownloadBinaries(
   url: URL,
   binaries: string[],
   cachePath: string,
+  platform: Platform,
+  arch: Architecture,
   checksums: Checksums = {
     algorithm: 'sha256',
     binaries: {
       anvil: {
-        'win32-amd64': '', 'win32-arm64': '',
-        'linux-amd64': '', 'linux-arm64': '',
-        'darwin-amd64': '', 'darwin-arm64': ''
+        'win32-amd64': '',
+        'win32-arm64': '',
+        'linux-amd64': '',
+        'linux-arm64': '',
+        'darwin-amd64': '',
+        'darwin-arm64': '',
       },
       forge: {
-        'win32-amd64': '', 'win32-arm64': '',
-        'linux-amd64': '', 'linux-arm64': '',
-        'darwin-amd64': '', 'darwin-arm64': ''
+        'win32-amd64': '',
+        'win32-arm64': '',
+        'linux-amd64': '',
+        'linux-arm64': '',
+        'darwin-amd64': '',
+        'darwin-arm64': '',
       },
       cast: {
-        'win32-amd64': '', 'win32-arm64': '',
-        'linux-amd64': '', 'linux-arm64': '',
-        'darwin-amd64': '', 'darwin-arm64': ''
+        'win32-amd64': '',
+        'win32-arm64': '',
+        'linux-amd64': '',
+        'linux-arm64': '',
+        'darwin-amd64': '',
+        'darwin-arm64': '',
       },
       chisel: {
-        'win32-amd64': '', 'win32-arm64': '',
-        'linux-amd64': '', 'linux-arm64': '',
-        'darwin-amd64': '', 'darwin-arm64': ''
-      }
-    }
-  },
-  platform: Platform,
-  arch: Architecture,
+        'win32-amd64': '',
+        'win32-arm64': '',
+        'linux-amd64': '',
+        'linux-arm64': '',
+        'darwin-amd64': '',
+        'darwin-arm64': '',
+      },
+    },
+  }
 ): Promise<Dir> {
   let downloadedBinaries: Dir;
   try {
@@ -90,7 +97,7 @@ export async function checkAndDownloadBinaries(
     say(`binaries not in cache`);
     if ((e as NodeJS.ErrnoException).code === 'ENOENT') {
       say(`installing from ${url.toString()}`);
-    // directory doesn't exist, download and extract
+      // directory doesn't exist, download and extract
       const platformChecksums = transformChecksums(checksums, platform, arch);
       await extractFrom(url, binaries, cachePath, platformChecksums);
       downloadedBinaries = await opendir(cachePath);
@@ -101,9 +108,15 @@ export async function checkAndDownloadBinaries(
   return downloadedBinaries;
 }
 
-export async function installBinaries(downloadedBinaries: Dir, BIN_DIR: string, cachePath: string): Promise<void> {
+export async function installBinaries(
+  downloadedBinaries: Dir,
+  BIN_DIR: string,
+  cachePath: string,
+): Promise<void> {
   for await (const file of downloadedBinaries) {
-    if (!file.isFile()) continue;
+    if (!file.isFile()) {
+      continue;
+    }
     const target = join(file.parentPath, file.name);
     const path = join(BIN_DIR, relative(cachePath, target));
     // clean up any existing files or symlinks
@@ -148,7 +161,13 @@ export async function downloadAndInstallFoundryBinaries(): Promise<void> {
   const bins = binaries.join(', ');
   say(`fetching ${bins} ${version} for ${platform} ${arch}`);
 
-  const BIN_ARCHIVE_URL = getBinaryArchiveUrl(repo, tag, version, platform, arch);
+  const BIN_ARCHIVE_URL = getBinaryArchiveUrl(
+    repo,
+    tag,
+    version,
+    platform,
+    arch,
+  );
   const BIN_DIR = join(cwd(), 'node_modules', '.bin');
 
   const url = new URL(BIN_ARCHIVE_URL);
@@ -161,9 +180,9 @@ export async function downloadAndInstallFoundryBinaries(): Promise<void> {
     url,
     binaries,
     cachePath,
-    checksums,
     platform,
-    arch
+    arch,
+    checksums,
   );
 
   await installBinaries(downloadedBinaries, BIN_DIR, cachePath);
