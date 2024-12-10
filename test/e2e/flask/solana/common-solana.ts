@@ -58,7 +58,6 @@ export async function withSolanaAccountSnap(
       },
     },
     async ({ driver, mockServer }: { driver: Driver; mockServer: Mockttp }) => {
-      console.log('Unlocking wallet');
       await unlockWallet(driver);
       const headerComponen = new HeaderNavbar(driver);
       console.log('Opening account menu');
