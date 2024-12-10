@@ -928,8 +928,8 @@
   "bridgeTxDetailsBridgeAmount": {
     "message": "Bridge amount"
   },
-  "bridgeTxDetailsBridgeType": {
-    "message": "Bridge type"
+  "bridgeTxDetailsBridging": {
+    "message": "Bridging"
   },
   "bridgeTxDetailsDelayedDescription": {
     "message": "Reach out to"

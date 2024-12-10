@@ -12,7 +12,9 @@ import {
   ButtonIcon,
   ButtonIconSize,
   ButtonLink,
+  Icon,
   IconName,
+  IconSize,
   Text,
 } from '../../../components/component-library';
 import { Content, Header } from '../../../components/multichain/pages/page';
@@ -154,12 +156,18 @@ const CrossChainSwapTxDetails = () => {
     ? bridgeHistoryItem?.status.status
     : StatusTypes.PENDING;
 
+  const srcChainIconUrl = srcNetwork
+    ? CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP[
+        srcNetwork.chainId as keyof typeof CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP
+      ]
+    : undefined;
+
   const destChainIconUrl = destNetwork
     ? CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP[
         destNetwork.chainId as keyof typeof CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP
       ]
     : undefined;
-  const bridgeTypeDirection = t('bridgeTypeDirectionTo');
+
   const srcNetworkName = srcNetwork?.name;
   const destNetworkName = destNetwork?.name;
 
@@ -269,16 +277,34 @@ const CrossChainSwapTxDetails = () => {
                 }
               />
 
-              {status !== StatusTypes.COMPLETE && (
-                <TransactionDetailRow
-                  title={t('bridgeTxDetailsBridgeType')}
-                  value={
+              <TransactionDetailRow
+                title={t('bridgeTxDetailsBridging')}
+                value={
+                  <Box
+                    display={Display.Flex}
+                    gap={1}
+                    alignItems={AlignItems.center}
+                  >
                     <Box
                       display={Display.Flex}
                       gap={1}
-                      alignItems={AlignItems.baseline}
+                      alignItems={AlignItems.center}
                     >
-                      {bridgeTypeDirection}{' '}
+                      {srcNetwork && (
+                        <AvatarNetwork
+                          size={AvatarNetworkSize.Xs}
+                          src={srcChainIconUrl}
+                          name={srcNetwork?.name}
+                        />
+                      )}
+                      {srcNetworkName}
+                    </Box>
+                    <Icon name={IconName.Arrow2Right} size={IconSize.Sm} />
+                    <Box
+                      display={Display.Flex}
+                      gap={1}
+                      alignItems={AlignItems.center}
+                    >
                       {destNetwork && (
                         <AvatarNetwork
                           size={AvatarNetworkSize.Xs}
@@ -288,21 +314,10 @@ const CrossChainSwapTxDetails = () => {
                       )}
                       {destNetworkName}
                     </Box>
-                  }
-                />
-              )}
-              {status === StatusTypes.COMPLETE && (
-                <>
-                  <TransactionDetailRow
-                    title={t('bridgeSource')}
-                    value={srcNetworkName}
-                  />
-                  <TransactionDetailRow
-                    title={t('bridgeDestination')}
-                    value={destNetworkName}
-                  />
-                </>
-              )}
+                  </Box>
+                }
+              />
+
               <TransactionDetailRow
                 title={t('bridgeTxDetailsTimestamp')}
                 value={t('bridgeTxDetailsTimestampValue', [
