@@ -55,8 +55,8 @@ jobs:
 
       - name: Install prereqs
         run: |
-          apt-get update
-          apt-get install -y xvfb
+          # apt-get update
+          # apt-get install -y xvfb
           # apt-get -y install xorg xvfb gtk2-engines-pixbuf
           # apt-get -y install dbus-x11 xfonts-base xfonts-100dpi xfonts-75dpi xfonts-cyrillic xfonts-scalable
           Xvfb -ac :99 -screen 0 1280x1024x16 &
