@@ -158,7 +158,6 @@ export const Carousel = React.forwardRef(
               alignItems={AlignItems.center}
               title={t(slide.title)}
               description={t(slide.description)}
-              fullHeightAccessory
               titleProps={{
                 variant: TextVariant.bodySmMedium,
                 fontWeight: FontWeight.Medium,
@@ -185,7 +184,11 @@ export const Carousel = React.forwardRef(
                 height: BANNER_STYLES.HEIGHT,
                 margin: getSlideMargin(index, visibleSlides.length),
                 width: getSlideWidth(visibleSlides.length),
+                position: 'relative',
               }}
+              padding={0}
+              paddingLeft={3}
+              paddingRight={3}
             />
           ))}
         </ResponsiveCarousel>
