@@ -5,9 +5,12 @@ import { useHistory } from 'react-router-dom';
 import log from 'loglevel';
 import { isValidSIWEOrigin } from '@metamask/controller-utils';
 import { providerErrors, serializeError } from '@metamask/rpc-errors';
-import { BannerAlert, Text } from '../../../../components/component-library';
+import {
+  BannerAlert,
+  Text,
+  Checkbox,
+} from '../../../../components/component-library';
 import Popover from '../../../../components/ui/popover';
-import Checkbox from '../../../../components/ui/check-box';
 import Button from '../../../../components/ui/button';
 import { I18nContext } from '../../../../contexts/i18n';
 import { PageContainerFooter } from '../../../../components/ui/page-container';

@@ -3,7 +3,7 @@ import React, { Component } from 'react';
 import { getAccountLink } from '@metamask/etherscan-link';
 
 import Button from '../../../components/ui/button';
-import Checkbox from '../../../components/ui/check-box';
+import { Checkbox } from '../../../components/component-library';
 import Dropdown from '../../../components/ui/dropdown';
 
 import { getURLHostName } from '../../../helpers/utils/util';
