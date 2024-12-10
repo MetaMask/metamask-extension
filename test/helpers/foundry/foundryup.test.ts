@@ -1,219 +1,357 @@
-import { join } from 'path';
-import { homedir } from 'os';
 import fs from 'fs/promises';
 import { readFileSync } from 'fs';
 import { parse as parseYaml } from 'yaml';
-// Import test helpers
+import nock from 'nock';
+import { Dir } from 'fs';
+import {
+  mockDownloadAndInstallFoundryBinaries,
+  mockInstallBinaries,
+} from './foundryup-mocks.test';
+import {
+  getCacheDirectory,
+  getBinaryArchiveUrl,
+  checkAndDownloadBinaries,
+} from './foundryup';
 import {
   Platform,
-  BinFormat,
-  extractFrom,
-  getVersion,
-  parseArgs,
-} from './helpers.test';
+  Architecture,
+} from './types';
 
-// Mock fs operations
-jest.mock('fs/promises');
+jest.mock('fs/promises', () => {
+  console.log('Mocking fs/promises');
+  const actualFs = jest.requireActual('fs/promises');
+  return {
+    ...actualFs,
+    opendir: jest.fn().mockImplementation((path) => {
+      console.log('Mock opendir called with path:', path);
+      // Simulate ENOENT error for the first call
+      const error = new Error('ENOENT: no such file or directory, opendir ' + path);
+      (error as NodeJS.ErrnoException).code = 'ENOENT';
+      throw error;
+    }),
+    mkdir: jest.fn().mockResolvedValue(undefined),
+    access: jest.fn().mockResolvedValue(undefined),
+    symlink: jest.fn(),
+    unlink: jest.fn(),
+    copyFile: jest.fn(),
+    rm: jest.fn(),
+  };
+});
 jest.mock('fs');
 jest.mock('yaml');
 jest.mock('os', () => ({
   homedir: jest.fn().mockReturnValue('/home/user'),
 }));
 
-describe('foundryup', () => {
-  beforeEach(() => {
-    jest.clearAllMocks();
-  });
+jest.mock('./helpers.ts', () => ({
+  ...jest.requireActual('./helpers.ts'),
+  getVersion: jest.fn().mockReturnValue('0.1.0'),
+  isCodedError: jest.requireActual('./helpers.ts').isCodedError,
+  noop: jest.requireActual('./helpers.ts').noop,
+  extractFrom: jest.fn().mockResolvedValue(['mock/path/to/binary']),
+  parseArgs: jest.fn(),
+}));
 
-  describe('cache directory resolution', () => {
+describe('foundryup', () => {
+  describe('getCacheDirectory', () => {
     it('uses global cache when enabled in .yarnrc.yml', () => {
       (parseYaml as jest.Mock).mockReturnValue({ enableGlobalCache: true });
       (readFileSync as jest.Mock).mockReturnValue('dummy yaml content');
 
-      const expectedCacheDir = join(homedir(), '.cache', 'metamask');
-      expect(expectedCacheDir).toBe('/home/user/.cache/metamask');
+      const result = getCacheDirectory();
+      expect(result).toMatch(/^\/home\/.*\/.cache\/metamask$/);
     });
 
     it('uses local cache when global cache is disabled', () => {
       (parseYaml as jest.Mock).mockReturnValue({ enableGlobalCache: false });
       (readFileSync as jest.Mock).mockReturnValue('dummy yaml content');
 
-      const expectedCacheDir = join(process.cwd(), '.metamask', 'cache');
-      expect(expectedCacheDir).toContain('.metamask/cache');
+      const result = getCacheDirectory();
+      expect(result).toContain('.metamask/cache');
     });
   });
 
-  describe('binary installation', () => {
-    it('creates symlinks for downloaded binaries', async () => {
-      const mockOpendir = {
-        async *[Symbol.asyncIterator]() {
-          yield {
-            isFile: () => true,
-            name: 'forge',
-            parentPath: '/cache/path',
-          };
-        },
-      };
-
-      (fs.opendir as jest.Mock).mockResolvedValue(mockOpendir);
-      (fs.symlink as jest.Mock).mockResolvedValue(undefined);
-
-      // Test symlink creation
-      await fs.symlink('/source/path', '/target/path');
-
-      expect(fs.symlink).toHaveBeenCalled();
-    });
-
-    it('falls back to file copy when symlink fails', async () => {
-      const mockOpendir = {
-        async *[Symbol.asyncIterator]() {
-          yield {
-            isFile: () => true,
-            name: 'forge',
-            parentPath: '/cache/path',
-          };
-        },
-      };
-
-      (fs.opendir as jest.Mock).mockResolvedValue(mockOpendir);
-      (fs.symlink as jest.Mock).mockRejectedValue({ code: 'EPERM' });
-      (fs.copyFile as jest.Mock).mockResolvedValue(undefined);
-
-      // Test copy fallback
-      await fs.copyFile('/source/path', '/target/path');
-
-      expect(fs.copyFile).toHaveBeenCalled();
-    });
-  });
-
-  describe('URL generation', () => {
+  describe('getBinaryArchiveUrl', () => {
     it('generates correct download URL for Linux', () => {
-      const repo = 'foundry-rs/foundry';
-      const version = '1.0.0';
-      const tag = 'v1.0.0';
-      const platform = Platform.Linux;
-      const arch = 'x86_64';
+      const result = getBinaryArchiveUrl(
+        'foundry-rs/foundry',
+        'v1.0.0',
+        '1.0.0',
+        Platform.Linux,
+        Architecture.Amd64
+      );
 
-      const expectedUrl = `https://github.com/${repo}/releases/download/${tag}/foundry_${version}_${platform}_${arch}.${BinFormat.Tar}`;
-
-      expect(expectedUrl).toMatch(/^https:\/\/github.com\/.*\.tar$/u);
+      expect(result).toMatch(/^https:\/\/github.com\/.*\.tar\.gz$/u);
     });
 
     it('generates correct download URL for Windows', () => {
-      const repo = 'foundry-rs/foundry';
-      const version = '1.0.0';
-      const tag = 'v1.0.0';
-      const platform = Platform.Windows;
-      const arch = 'x86_64';
-
-      const expectedUrl = `https://github.com/${repo}/releases/download/${tag}/foundry_${version}_${platform}_${arch}.${BinFormat.Zip}`;
-
-      expect(expectedUrl).toMatch(/^https:\/\/github.com\/.*\.zip$/u);
-    });
-  });
-
-  describe('cache management', () => {
-    it('cleans cache directory when "cache clean" command is used', async () => {
-      parseArgs.mockReturnValue({ command: 'cache clean' });
-      (fs.rm as jest.Mock).mockResolvedValue(undefined);
-
-      await fs.rm('/some/cache/dir', { recursive: true, force: true });
-
-      expect(fs.rm).toHaveBeenCalledWith(expect.any(String), {
-        recursive: true,
-        force: true,
-      });
-    });
-  });
-
-  describe('binary validation', () => {
-    it('verifies binary version after installation', async () => {
-      const mockOpendir = {
-        async *[Symbol.asyncIterator]() {
-          yield {
-            isFile: () => true,
-            name: 'forge',
-            parentPath: '/cache/path',
-          };
-        },
-      };
-
-      (fs.opendir as jest.Mock).mockResolvedValue(mockOpendir);
-      getVersion.mockReturnValue('forge 1.0.0');
-
-      const binary = 'forge';
-      await getVersion(binary);
-
-      expect(getVersion).toHaveBeenCalled();
-    });
-
-    it('handles multiple binaries installation', async () => {
-      parseArgs.mockReturnValue({
-        options: {
-          binaries: ['forge', 'cast', 'anvil'],
-          // ... other options
-        },
-      });
-
-      const mockOpendir = {
-        async *[Symbol.asyncIterator]() {
-          yield {
-            isFile: () => true,
-            name: 'forge',
-            parentPath: '/cache/path',
-          };
-          yield {
-            isFile: () => true,
-            name: 'cast',
-            parentPath: '/cache/path',
-          };
-          yield {
-            isFile: () => true,
-            name: 'anvil',
-            parentPath: '/cache/path',
-          };
-        },
-      };
-
-      (fs.opendir as jest.Mock).mockResolvedValue(mockOpendir);
-    });
-  });
-
-  describe('error handling', () => {
-    it('handles download failures gracefully', async () => {
-      extractFrom.mockRejectedValue(new Error('Download failed'));
-    });
-
-    it('handles invalid binary format', async () => {
-      const mockOpendir = {
-        async *[Symbol.asyncIterator]() {
-          yield {
-            isFile: () => false, // Invalid file
-            name: 'forge',
-            parentPath: '/cache/path',
-          };
-        },
-      };
-
-      (fs.opendir as jest.Mock).mockResolvedValue(mockOpendir);
-    });
-
-    it('handles permission errors during installation', async () => {
-      const mockOpendir = {
-        async *[Symbol.asyncIterator]() {
-          yield {
-            isFile: () => true,
-            name: 'forge',
-            parentPath: '/cache/path',
-          };
-        },
-      };
-
-      (fs.opendir as jest.Mock).mockResolvedValue(mockOpendir);
-      (fs.symlink as jest.Mock).mockRejectedValue({ code: 'EACCES' });
-      (fs.copyFile as jest.Mock).mockRejectedValue(
-        new Error('Permission denied'),
+      const result = getBinaryArchiveUrl(
+        'foundry-rs/foundry',
+        'v1.0.0',
+        '1.0.0',
+        Platform.Windows,
+        Architecture.Amd64
       );
+
+      expect(result).toMatch(/^https:\/\/github.com\/.*\.zip$/u);
+    });
+  });
+
+  describe('checkAndDownloadBinaries', () => {
+    const mockUrl = new URL('https://example.com/binaries');
+    const mockBinaries = ['forge'];
+    const mockCachePath = './test-cache-path';
+    const defaultChecksums = {
+      algorithm: 'sha256',
+      binaries: {
+        forge: {
+          'win32-amd64': 'mock-checksum',
+          'win32-arm64': 'mock-checksum',
+          'linux-amd64': 'mock-checksum',
+          'linux-arm64': 'mock-checksum',
+          'darwin-amd64': 'mock-checksum',
+          'darwin-arm64': 'mock-checksum'
+        },
+        anvil: {
+          'win32-amd64': 'mock-checksum',
+          'win32-arm64': 'mock-checksum',
+          'linux-amd64': 'mock-checksum',
+          'linux-arm64': 'mock-checksum',
+          'darwin-amd64': 'mock-checksum',
+          'darwin-arm64': 'mock-checksum'
+        },
+        cast: {
+          'win32-amd64': 'mock-checksum',
+          'win32-arm64': 'mock-checksum',
+          'linux-amd64': 'mock-checksum',
+          'linux-arm64': 'mock-checksum',
+          'darwin-amd64': 'mock-checksum',
+          'darwin-arm64': 'mock-checksum'
+        },
+        chisel: {
+          'win32-amd64': 'mock-checksum',
+          'win32-arm64': 'mock-checksum',
+          'linux-amd64': 'mock-checksum',
+          'linux-arm64': 'mock-checksum',
+          'darwin-amd64': 'mock-checksum',
+          'darwin-arm64': 'mock-checksum'
+        }
+      }
+    };
+
+    beforeEach(() => {
+      console.log('Mock setup starting');
+      jest.clearAllMocks();
+      nock.cleanAll();
+
+      // Verify that our mock is properly set up
+      const fs = require('fs/promises');
+      console.log('Is opendir mocked?', jest.isMockFunction(fs.opendir));
+
+      console.log('Mock setup complete');
+    });
+
+    it('handles download errors gracefully', async () => {
+      (fs.opendir as jest.Mock).mockRejectedValue({ code: 'ENOENT' });
+
+      nock.cleanAll();
+      nock('https://example.com')
+        .get('/binaries')
+        .reply(500, 'Internal Server Error');
+
+      await expect(
+        checkAndDownloadBinaries(
+          mockUrl,
+          mockBinaries,
+          mockCachePath,
+          defaultChecksums,
+          Platform.Linux,
+          Architecture.Amd64
+        )
+      ).rejects.toThrow();
+    });
+
+  });
+
+  describe('installBinaries', () => {
+    const mockBinDir = '/mock/bin/dir';
+    const mockCachePath = '/mock/cache/path';
+    const mockDir = {
+      [Symbol.asyncIterator]: async function* () {
+        yield {
+          name: 'forge',
+          isFile: () => true,
+          parentPath: mockCachePath
+        };
+      }
+    } as unknown as Dir;
+
+    it('should correctly install binaries and create symlinks', async () => {
+      const operations = await mockInstallBinaries(mockDir, mockBinDir, mockCachePath);
+
+      expect(operations).toEqual([
+        { operation: 'unlink', target: `${mockBinDir}/forge` },
+        {
+          operation: 'symlink',
+          source: `${mockCachePath}/forge`,
+          target: `${mockBinDir}/forge`
+        },
+        { operation: 'getVersion', target: `${mockBinDir}/forge` }
+      ]);
+    });
+
+    it('should fall back to copying files when symlink fails with EPERM', async () => {
+      const epermError = new Error('EPERM') as NodeJS.ErrnoException;
+      epermError.code = 'EPERM';
+
+      // Mock symlink to fail
+      (fs.symlink as jest.Mock).mockRejectedValueOnce(epermError);
+
+      const operations = await mockInstallBinaries(mockDir, mockBinDir, mockCachePath);
+
+      expect(operations).toEqual([
+        { operation: 'unlink', target: `${mockBinDir}/forge` },
+        {
+          operation: 'copyFile',
+          source: `${mockCachePath}/forge`,
+          target: `${mockBinDir}/forge`
+        },
+        { operation: 'getVersion', target: `${mockBinDir}/forge` }
+      ]);
+    });
+
+    it('should throw error for non-permission-related symlink failures', async () => {
+      const otherError = new Error('Other error');
+
+      // Mock symlink to fail with other error
+      jest.spyOn(fs, 'symlink').mockRejectedValue(otherError);
+
+      await expect(mockInstallBinaries(mockDir, mockBinDir, mockCachePath))
+        .rejects
+        .toThrow('Other error');
+    });
+  });
+
+  describe('downloadAndInstallFoundryBinaries', () => {
+    const mockArgs = {
+      command: '',
+      options: {
+        repo: 'foundry-rs/foundry',
+        version: {
+          version: '1.0.0',
+          tag: 'v1.0.0'
+        },
+        arch: Architecture.Amd64,
+        platform: Platform.Linux,
+        binaries: ['forge', 'anvil'],
+        checksums: {
+          algorithm: 'sha256',
+          binaries: {
+            forge: {
+              'linux-amd64': 'mock-checksum',
+              'linux-arm64': 'mock-checksum',
+              'darwin-amd64': 'mock-checksum',
+              'darwin-arm64': 'mock-checksum',
+              'win32-amd64': 'mock-checksum',
+              'win32-arm64': 'mock-checksum'
+            },
+            anvil: {
+              'linux-amd64': 'mock-checksum',
+              'linux-arm64': 'mock-checksum',
+              'darwin-amd64': 'mock-checksum',
+              'darwin-arm64': 'mock-checksum',
+              'win32-amd64': 'mock-checksum',
+              'win32-arm64': 'mock-checksum'
+            }
+          }
+        }
+      }
+    };
+
+    beforeEach(() => {
+      jest.clearAllMocks();
+      jest.spyOn(require('./helpers'), 'parseArgs').mockReturnValue(mockArgs);
+      jest.spyOn(require('./helpers'), 'printBanner').mockImplementation(() => {});
+      jest.spyOn(require('./helpers'), 'say').mockImplementation(() => {});
+    });
+
+    it('should execute all operations in correct order', async () => {
+      const operations = await mockDownloadAndInstallFoundryBinaries();
+
+      expect(operations).toEqual([
+        { operation: 'getCacheDirectory' },
+        {
+          operation: 'getBinaryArchiveUrl',
+          details: {
+            repo: 'foundry-rs/foundry',
+            tag: 'v1.0.0',
+            version: '1.0.0',
+            platform: Platform.Linux,
+            arch: Architecture.Amd64
+          }
+        },
+        {
+          operation: 'checkAndDownloadBinaries',
+          details: expect.objectContaining({
+            binaries: ['forge', 'anvil'],
+            platform: Platform.Linux,
+            arch: Architecture.Amd64
+          })
+        },
+        {
+          operation: 'installBinaries',
+          details: {
+            binaries: ['forge', 'anvil'],
+            binDir: 'node_modules/.bin',
+            cachePath: expect.stringContaining('metamask')
+          }
+        }
+      ]);
+    });
+
+    it('should handle cache clean command', async () => {
+      const mockCleanArgs = {
+        ...mockArgs,
+        command: 'cache clean'
+      };
+
+      jest.spyOn(require('./helpers'), 'parseArgs').mockReturnValue(mockCleanArgs);
+      const rmSpy = jest.spyOn(fs, 'rm').mockResolvedValue();
+
+      const operations = await mockDownloadAndInstallFoundryBinaries();
+
+      expect(operations).toEqual([
+        { operation: 'getCacheDirectory' },
+        {
+          operation: 'cleanCache',
+          details: {
+            path: expect.stringContaining('metamask')
+          }
+        }
+      ]);
+      expect(rmSpy).toHaveBeenCalled();
+    });
+
+    it('should handle errors gracefully', async () => {
+      jest.spyOn(fs, 'rm').mockRejectedValue(new Error('Mock error'));
+      const consoleSpy = jest.spyOn(console, 'error').mockImplementation();
+
+      const mockCleanArgs = {
+        ...mockArgs,
+        command: 'cache clean'
+      };
+
+      jest.spyOn(require('./helpers'), 'parseArgs').mockReturnValue(mockCleanArgs);
+
+      try {
+        await mockDownloadAndInstallFoundryBinaries();
+      } catch (error: unknown) {
+        expect(error).toBeInstanceOf(Error);
+        expect((error as Error).message).toBe('Mock error');
+      }
+
+      consoleSpy.mockRestore();
     });
   });
 });
+

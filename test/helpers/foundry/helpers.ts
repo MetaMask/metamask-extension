@@ -30,7 +30,7 @@ import {
   ArchitecturesTuple,
   PlatformsTuple,
   DownloadOptions,
-} from './types.mts';
+} from './types';
 
 export function noop() {}
 
