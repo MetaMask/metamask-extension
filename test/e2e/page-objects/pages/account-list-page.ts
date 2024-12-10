@@ -107,7 +107,8 @@ class AccountListPage {
     tag: 'h4',
   };
 
-  private readonly watchAccountAddressInput = 'input#address-input[type="text"]';
+  private readonly watchAccountAddressInput =
+    'input#address-input[type="text"]';
 
   private readonly watchAccountConfirmButton = {
     text: 'Watch account',
@@ -137,24 +138,31 @@ class AccountListPage {
    * @param address - The address to watch.
    * @param expectedErrorMessage - Optional error message to display if the address is invalid.
    */
-    async addEoaAccount(address: string, expectedErrorMessage: string = ''): Promise<void> {
-      console.log(`Watch EOA account with address ${address}`);
-      await this.driver.clickElement(this.createAccountButton);
-      await this.driver.clickElement(this.addEoaAccountButton);
-      await this.driver.waitForSelector(this.watchAccountModalTitle);
-      await this.driver.fill(this.watchAccountAddressInput, address);
-      await this.driver.clickElement(this.watchAccountConfirmButton);
-      if (expectedErrorMessage) {
-        console.log(
-          `Check if error message is displayed: ${expectedErrorMessage}`,
-        );
-        await this.driver.waitForSelector({
-          css: '.snap-ui-renderer__text',
-          text: expectedErrorMessage,
-        });
-      } else {
-        await this.driver.clickElement(this.addAccountConfirmButton);
-      }
+  async addEoaAccount(
+    address: string,
+    expectedErrorMessage: string = '',
+  ): Promise<void> {
+    console.log(`Watch EOA account with address ${address}`);
+    await this.driver.clickElement(this.createAccountButton);
+    await this.driver.clickElement(this.addEoaAccountButton);
+    await this.driver.waitForSelector(this.watchAccountModalTitle);
+    await this.driver.fill(this.watchAccountAddressInput, address);
+    await this.driver.clickElementAndWaitToDisappear(
+      this.watchAccountConfirmButton,
+    );
+    if (expectedErrorMessage) {
+      console.log(
+        `Check if error message is displayed: ${expectedErrorMessage}`,
+      );
+      await this.driver.waitForSelector({
+        css: '.snap-ui-renderer__text',
+        text: expectedErrorMessage,
+      });
+    } else {
+      await this.driver.clickElementAndWaitToDisappear(
+        this.addAccountConfirmButton,
+      );
+    }
   }
 
   /**
@@ -484,6 +492,26 @@ class AccountListPage {
     await this.driver.assertElementNotPresent(this.addSnapAccountButton);
   }
 
+  /**
+   * Checks that the add watch account button is displayed in the create account modal.
+   *
+   * @param expectedAvailability - Whether the add watch account button is expected to be displayed.
+   */
+  async check_addWatchAccountAvailable(
+    expectedAvailability: boolean,
+  ): Promise<void> {
+    console.log(
+      `Check add watch account button is ${
+        expectedAvailability ? 'displayed ' : 'not displayed'
+      }`,
+    );
+    await this.openAddAccountModal();
+    if (expectedAvailability) {
+      await this.driver.waitForSelector(this.addEoaAccountButton);
+    } else {
+      await this.driver.assertElementNotPresent(this.addEoaAccountButton);
+    }
+  }
 
   async check_currentAccountIsImported(): Promise<void> {
     console.log(`Check that current account is an imported account`);

@@ -19,7 +19,8 @@ class HomePage {
     css: '.mm-banner-alert',
   };
 
-  protected readonly bridgeButton = '[data-testid="eth-overview-bridge"]';
+  protected readonly bridgeButton: string =
+    '[data-testid="eth-overview-bridge"]';
 
   private readonly closeUseNetworkNotificationModalButton = {
     text: 'Got it',

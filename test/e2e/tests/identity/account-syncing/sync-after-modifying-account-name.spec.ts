@@ -66,10 +66,14 @@ describe('Account syncing - Rename Accounts @no-mmi', function () {
           await accountListPage.check_accountDisplayedInAccountList(
             'My Second Synced Account',
           );
-          await accountListPage.openAccountDetailsModal('My First Synced Account');
+          await accountListPage.openAccountDetailsModal(
+            'My First Synced Account',
+          );
           const accountDetailsModal = new AccountDetailsModal(driver);
           await accountDetailsModal.check_pageIsLoaded();
-          await accountDetailsModal.changeAccountLabel('My Renamed First Account');
+          await accountDetailsModal.changeAccountLabel(
+            'My Renamed First Account',
+          );
         },
       );
 

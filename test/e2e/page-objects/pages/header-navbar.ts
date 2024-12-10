@@ -17,7 +17,8 @@ class HeaderNavbar {
   private readonly mmiPortfolioButton =
     '[data-testid="global-menu-mmi-portfolio"]';
 
-  private readonly openAccountDetailsButton = '[data-testid="account-list-menu-details"]';
+  private readonly openAccountDetailsButton =
+    '[data-testid="account-list-menu-details"]';
 
   private readonly settingsButton = '[data-testid="global-menu-settings"]';
 
@@ -117,7 +118,6 @@ class HeaderNavbar {
       `button[data-testid="network-display"][aria-label="Network Menu ${networkName}"]`,
     );
   }
-
 }
 
 export default HeaderNavbar;

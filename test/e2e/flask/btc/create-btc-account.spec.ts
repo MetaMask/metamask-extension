@@ -102,7 +102,8 @@ describe('Create BTC Account', function (this: Suite) {
         await accountListPage.check_pageIsLoaded();
         await accountListPage.openAccountDetailsModal('Bitcoin Account');
         await accountDetailsModal.check_pageIsLoaded();
-        const recreatedAccountAddress = await accountDetailsModal.getAccountAddress();
+        const recreatedAccountAddress =
+          await accountDetailsModal.getAccountAddress();
 
         assert(accountAddress === recreatedAccountAddress);
       },
@@ -157,7 +158,8 @@ describe('Create BTC Account', function (this: Suite) {
         await accountListPage.check_pageIsLoaded();
         await accountListPage.openAccountDetailsModal('Bitcoin Account');
         await accountDetailsModal.check_pageIsLoaded();
-        const recreatedAccountAddress = await accountDetailsModal.getAccountAddress();
+        const recreatedAccountAddress =
+          await accountDetailsModal.getAccountAddress();
 
         assert(accountAddress === recreatedAccountAddress);
       },
