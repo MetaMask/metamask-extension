@@ -105,14 +105,13 @@ export class TransactionControllerInit extends ControllerInit<
           smartTransactionsController(),
           address,
         ),
-      getGasFeeEstimates: gasFeeController().fetchGasFeeEstimates.bind(
-        gasFeeController(),
-      ),
-      getNetworkClientRegistry:
-        networkController().getNetworkClientRegistry.bind(networkController()),
+      getGasFeeEstimates: (...args) =>
+        gasFeeController().fetchGasFeeEstimates(...args),
+      getNetworkClientRegistry: (...args) =>
+        networkController().getNetworkClientRegistry(...args),
       getNetworkState: () => networkController().state,
       // @ts-expect-error Mismatched types
-      getPermittedAccounts: getPermittedAccounts.bind(this),
+      getPermittedAccounts,
       getSavedGasFees: () => {
         const globalChainId = getGlobalChainId();
         return preferencesController().state.advancedGasFee[
