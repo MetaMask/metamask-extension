@@ -6,6 +6,7 @@ import fetchWithCache from '../../../../shared/lib/fetch-with-cache';
 import {
   StatusResponse,
   StatusRequestWithSrcTxHash,
+  StatusRequestDto,
 } from '../../../../shared/types/bridge-status';
 // TODO fix this
 // eslint-disable-next-line import/no-restricted-paths
@@ -16,18 +17,32 @@ const CLIENT_ID_HEADER = { 'X-Client-Id': BRIDGE_CLIENT_ID };
 
 export const BRIDGE_STATUS_BASE_URL = `${BRIDGE_API_BASE_URL}/getTxStatus`;
 
-export const fetchBridgeTxStatus = async (
+export const getStatusRequestDto = (
   statusRequest: StatusRequestWithSrcTxHash,
-) => {
-  // Assemble params
+): StatusRequestDto => {
   const { quote, ...statusRequestNoQuote } = statusRequest;
+
   const statusRequestNoQuoteFormatted = Object.fromEntries(
     Object.entries(statusRequestNoQuote).map(([key, value]) => [
       key,
       value.toString(),
     ]),
-  );
-  const params = new URLSearchParams(statusRequestNoQuoteFormatted);
+  ) as unknown as Omit<StatusRequestDto, 'requestId'>;
+
+  const requestId: { requestId: string } | Record<string, never> =
+    quote?.requestId ? { requestId: quote.requestId } : {};
+
+  return {
+    ...statusRequestNoQuoteFormatted,
+    ...requestId,
+  };
+};
+
+export const fetchBridgeTxStatus = async (
+  statusRequest: StatusRequestWithSrcTxHash,
+) => {
+  const statusRequestDto = getStatusRequestDto(statusRequest);
+  const params = new URLSearchParams(statusRequestDto);
 
   // Fetch
   const url = `${BRIDGE_STATUS_BASE_URL}?${params.toString()}`;
