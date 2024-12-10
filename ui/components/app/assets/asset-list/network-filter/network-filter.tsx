@@ -119,7 +119,8 @@ const NetworkFilter = ({ handleClose }: SortControlProps) => {
               variant={TextVariant.bodyMdMedium}
               color={TextColor.textDefault}
             >
-              {t('allNetworks')}
+              {/* {t('allNetworks')} */}
+              {t('popularNetworks')}
             </Text>
             <Text
               variant={TextVariant.bodySmMedium}
