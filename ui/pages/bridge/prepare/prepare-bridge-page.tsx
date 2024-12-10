@@ -50,6 +50,7 @@ import { isValidQuoteRequest } from '../utils/quote';
 import { getProviderConfig } from '../../../../shared/modules/selectors/networks';
 import { getCurrentCurrency } from '../../../selectors';
 import { SECOND } from '../../../../shared/constants/time';
+import { isNetworkAdded } from '../../../ducks/bridge/utils';
 import { BridgeInputGroup } from './bridge-input-group';
 
 const PrepareBridgePage = () => {
@@ -196,7 +197,7 @@ const PrepareBridgePage = () => {
       <Box className="prepare-bridge-page__content">
         <BridgeInputGroup
           className="bridge-box"
-          header={t('bridgeFrom')}
+          header={t('swapSelectToken')}
           token={fromToken}
           onAmountChange={(e) => {
             dispatch(setFromTokenInputValue(e));
@@ -212,17 +213,20 @@ const PrepareBridgePage = () => {
             network: fromChain,
             networks: fromChains,
             onNetworkChange: (networkConfig) => {
-              dispatch(
-                setActiveNetwork(
-                  networkConfig.rpcEndpoints[
-                    networkConfig.defaultRpcEndpointIndex
-                  ].networkClientId,
-                ),
-              );
+              if (isNetworkAdded(networkConfig)) {
+                dispatch(
+                  setActiveNetwork(
+                    networkConfig.rpcEndpoints[
+                      networkConfig.defaultRpcEndpointIndex
+                    ].networkClientId,
+                  ),
+                );
+              }
               dispatch(setFromChain(networkConfig.chainId));
               dispatch(setFromToken(null));
               dispatch(setFromTokenInputValue(null));
             },
+            header: t('bridgeFrom'),
           }}
           customTokenListGenerator={
             fromTokens && fromTopAssets ? fromTokenListGenerator : undefined
@@ -232,6 +236,7 @@ const PrepareBridgePage = () => {
             autoFocus: true,
             value: fromAmount || undefined,
           }}
+          isMultiselectEnabled={true}
         />
 
         <Box className="prepare-bridge-page__switch-tokens">
@@ -280,7 +285,7 @@ const PrepareBridgePage = () => {
 
         <BridgeInputGroup
           className="bridge-box"
-          header={t('bridgeTo')}
+          header={t('swapSelectToken')}
           token={toToken}
           onAssetChange={(token) => {
             dispatch(setToToken(token));
@@ -295,6 +300,7 @@ const PrepareBridgePage = () => {
               dispatch(setToChainId(networkConfig.chainId));
               dispatch(setToChain(networkConfig.chainId));
             },
+            header: t('bridgeTo'),
           }}
           customTokenListGenerator={
             toChain && toTokens && toTopAssets

@@ -22,12 +22,23 @@ exports[`NetworkListItem renders properly 1`] = `
         class="mm-box mm-box--display-flex mm-box--align-items-center mm-box--width-full"
         data-testid="Polygon"
       >
-        <p
-          class="mm-box mm-text mm-text--body-md mm-text--ellipsis mm-box--color-text-default mm-box--background-color-transparent"
-          tabindex="0"
+        <div
+          class="multichain-network-list-item__tooltip"
         >
-          Polygon
-        </p>
+          <div
+            class=""
+            style="display: inline;"
+            tabindex="0"
+            title=""
+          >
+            <p
+              class="mm-box mm-text mm-text--body-md mm-text--ellipsis mm-box--color-text-default mm-box--background-color-transparent"
+              tabindex="0"
+            >
+              Polygon
+            </p>
+          </div>
+        </div>
       </div>
     </div>
     <button

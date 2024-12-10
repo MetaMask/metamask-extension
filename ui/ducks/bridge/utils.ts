@@ -1,6 +1,10 @@
 import { Hex } from '@metamask/utils';
 import { BigNumber } from 'bignumber.js';
 import { getAddress } from 'ethers/lib/utils';
+import {
+  AddNetworkFields,
+  NetworkConfiguration,
+} from '@metamask/network-controller';
 import { decGWEIToHexWEI } from '../../../shared/modules/conversion.utils';
 import { Numeric } from '../../../shared/modules/Numeric';
 import { TxData } from '../../pages/bridge/types';
@@ -64,3 +68,8 @@ export const getTokenExchangeRate = async (request: {
     exchangeRates?.[getAddress(tokenAddress)]
   );
 };
+
+export const isNetworkAdded = (
+  v: NetworkConfiguration | AddNetworkFields | undefined,
+): v is NetworkConfiguration =>
+  !v || 'networkClientId' in v.rpcEndpoints[v.defaultRpcEndpointIndex];
