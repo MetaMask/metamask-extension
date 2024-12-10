@@ -1,57 +1,18 @@
-import {
-  RpcEndpointType,
-  type NetworkConfiguration,
-  type NetworkState as InternalNetworkState,
-} from '@metamask/network-controller';
+import { RpcEndpointType } from '@metamask/network-controller';
 import { createSelector } from 'reselect';
 import { NetworkStatus } from '../../constants/network';
+import { BackgroundStateProxy } from '../../types/metamask';
 import { createDeepEqualSelector } from './util';
 
-export type NetworkState = {
-  metamask: { NetworkController: InternalNetworkState };
-};
-
-export type NetworkConfigurationsState = {
-  metamask: {
-    NetworkController: {
-      networkConfigurations: Record<string, NetworkConfiguration>;
-    };
-  };
-};
-
-export type SelectedNetworkClientIdState = {
-  metamask: {
-    NetworkController: Pick<InternalNetworkState, 'selectedNetworkClientId'>;
-  };
-};
-
-export type NetworkConfigurationsByChainIdState = {
-  metamask: {
-    NetworkController: Pick<
-      InternalNetworkState,
-      'networkConfigurationsByChainId'
-    >;
-  };
-};
-
-export type NetworksMetadataState = {
-  metamask: {
-    NetworkController: Pick<InternalNetworkState, 'networksMetadata'>;
-  };
-};
-
-export type ProviderConfigState = NetworkConfigurationsByChainIdState &
-  SelectedNetworkClientIdState;
-
 export const getNetworkConfigurationsByChainId = createDeepEqualSelector(
-  (state: NetworkConfigurationsByChainIdState) =>
+  (state: { metamask: BackgroundStateProxy }) =>
     state.metamask.NetworkController.networkConfigurationsByChainId,
   (networkConfigurationsByChainId) => networkConfigurationsByChainId,
 );
 
-export function getSelectedNetworkClientId(
-  state: SelectedNetworkClientIdState,
-) {
+export function getSelectedNetworkClientId(state: {
+  metamask: BackgroundStateProxy;
+}) {
   return state.metamask.NetworkController.selectedNetworkClientId;
 }
 
@@ -62,7 +23,8 @@ export function getSelectedNetworkClientId(
  * @throws `new Error('Provider configuration not found')` If the provider configuration is not found.
  */
 export const getProviderConfig = createSelector(
-  (state: ProviderConfigState) => getNetworkConfigurationsByChainId(state),
+  (state: { metamask: BackgroundStateProxy }) =>
+    getNetworkConfigurationsByChainId(state),
   getSelectedNetworkClientId,
   (networkConfigurationsByChainId, selectedNetworkClientId) => {
     for (const network of Object.values(networkConfigurationsByChainId)) {
@@ -101,8 +63,9 @@ export const getProviderConfig = createSelector(
  * provider has been set yet for the currently selected network.
  *
  * @param state - Redux state object.
+ * @param state.metamask - `metamask` slice
  */
-export function isNetworkLoading(state: NetworkState) {
+export function isNetworkLoading(state: { metamask: BackgroundStateProxy }) {
   const selectedNetworkClientId = getSelectedNetworkClientId(state);
   return (
     selectedNetworkClientId &&
@@ -111,9 +74,7 @@ export function isNetworkLoading(state: NetworkState) {
   );
 }
 
-export function getInfuraBlocked(
-  state: SelectedNetworkClientIdState & NetworksMetadataState,
-) {
+export function getInfuraBlocked(state: { metamask: BackgroundStateProxy }) {
   return (
     state.metamask.NetworkController.networksMetadata[
       getSelectedNetworkClientId(state)
@@ -121,7 +82,7 @@ export function getInfuraBlocked(
   );
 }
 
-export function getCurrentChainId(state: ProviderConfigState) {
+export function getCurrentChainId(state: { metamask: BackgroundStateProxy }) {
   const { chainId } = getProviderConfig(state);
   return chainId;
 }

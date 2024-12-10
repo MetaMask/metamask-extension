@@ -21,13 +21,14 @@ export function useTheme() {
   const [theme, setTheme] = useState(settingTheme);
 
   useEffect(() => {
-    const result =
+    const result: ThemeType | null =
       !settingTheme || settingTheme === ThemeType.os
-        ? document.documentElement.getAttribute('data-theme')
+        ? (document.documentElement.getAttribute(
+            'data-theme',
+          ) as ThemeType | null)
         : settingTheme;
-    const isValidTheme = validThemes.includes(
-      result as ThemeType.light | ThemeType.dark,
-    );
+    const isValidTheme =
+      validThemes.find((validTheme) => validTheme === result) !== undefined;
 
     if (!isValidTheme) {
       console.warn(
@@ -36,7 +37,9 @@ export function useTheme() {
       setTheme(ThemeType.light);
     }
 
-    setTheme(result);
+    if (result) {
+      setTheme(result);
+    }
   }, [settingTheme]);
 
   return theme;

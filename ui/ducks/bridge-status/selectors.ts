@@ -1,24 +1,13 @@
 import { createSelector } from 'reselect';
 import { Hex } from '@metamask/utils';
-import {
-  BridgeStatusState,
-  BridgeHistoryItem,
-} from '../../../shared/types/bridge-status';
+import { BridgeHistoryItem } from '../../../shared/types/bridge-status';
 import { getSelectedAddress } from '../../selectors';
 import { Numeric } from '../../../shared/modules/Numeric';
-import {
-  getCurrentChainId,
-  ProviderConfigState,
-} from '../../../shared/modules/selectors/networks';
+import { getCurrentChainId } from '../../../shared/modules/selectors/networks';
+import { MetaMaskReduxState } from '../../store/store';
 
-export type BridgeStatusAppState = ProviderConfigState & {
-  metamask: {
-    bridgeStatusState: BridgeStatusState;
-  };
-};
-
-export const selectBridgeStatusState = (state: BridgeStatusAppState) =>
-  state.metamask.bridgeStatusState;
+export const selectBridgeStatusState = (state: MetaMaskReduxState) =>
+  state.metamask.BridgeStatusController.bridgeStatusState;
 
 /**
  * Returns a mapping of srcTxMetaId to txHistoryItem for the selected address
