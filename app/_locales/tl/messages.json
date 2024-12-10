@@ -1033,9 +1033,6 @@
   "confirmRecoveryPhrase": {
     "message": "Kumpirmahin ang Lihim na Parirala sa Pagbawi"
   },
-  "confirmTitleApproveTransaction": {
-    "message": "Hiling sa allowance"
-  },
   "confirmTitleDeployContract": {
     "message": "Mag-deploy ng kontrata"
   },
