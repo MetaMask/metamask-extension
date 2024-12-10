@@ -240,7 +240,7 @@ export function createMockInternalAccount({
       keyring: {
         type: keyringType,
       },
-      snap: keyringType === KeyringTypes.snap ? snapOptions : {},
+      snap: keyringType === KeyringTypes.snap ? snapOptions : undefined,
       lastSelected,
     },
     options: options ?? {},
