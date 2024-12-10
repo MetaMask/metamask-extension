@@ -1,16 +1,8 @@
 import { Mockttp } from 'mockttp';
 import { withFixtures, unlockWallet } from '../../helpers';
 import {
-  DEFAULT_BTC_ACCOUNT,
-  DEFAULT_BTC_BALANCE,
-  DEFAULT_BTC_FEES_RATE,
-  DEFAULT_BTC_TRANSACTION_ID,
-  DEFAULT_BTC_CONVERSION_RATE,
-  SATS_IN_1_BTC,
-  DEFAULT_SOL_CONVERSION_RATE,
   DEFAULT_SOLANA_ACCOUNT,
 } from '../../constants';
-import { MultichainNetworks } from '../../../../shared/constants/multichain/networks';
 import { Driver } from '../../webdriver/driver';
 import HeaderNavbar from '../../page-objects/pages/header-navbar';
 import AccountListPage, { AccountType } from '../../page-objects/pages/account-list-page';
@@ -24,10 +16,6 @@ export enum SendFlowPlaceHolders {
   LOADING = 'Preparing transaction',
 }
 
-export function solanaToSats(btc: number): number {
-  // Watchout, we're not using BigNumber(s) here (but that's ok for test purposes)
-  return btc * SATS_IN_1_BTC;
-}
 
 export async function mockSolanaBalanceQuote(
   mockServer: Mockttp,
