@@ -1,4 +1,3 @@
-import PropTypes from 'prop-types';
 import React from 'react';
 import { useDispatch } from 'react-redux';
 import { isValidMnemonic } from '@ethersproject/hdnode';
@@ -9,6 +8,7 @@ import {
   Box,
   ButtonPrimary,
   BannerAlert,
+  BannerAlertSeverity,
 } from '../../../component-library';
 import { Textarea, TextareaResize } from '../../../component-library/textarea';
 import {
@@ -16,14 +16,16 @@ import {
   BlockSize,
   Display,
   FlexDirection,
-  Severity,
 } from '../../../../helpers/constants/design-system';
 
-const hasUpperCase = (draftSrp) => {
+const hasUpperCase = (draftSrp: string) => {
   return draftSrp !== draftSrp.toLowerCase();
 };
 
-export function ImportSRP({ onActionComplete }) {
+export const ImportSRP = ({
+  onActionComplete
+  }: {
+    onActionComplete: (completed: boolean) => void}) => {
   const t = useI18nContext();
   const dispatch = useDispatch();
   const [srpError, setSrpError] = React.useState('');
@@ -62,17 +64,16 @@ export function ImportSRP({ onActionComplete }) {
             const currentSRP = event.target.value;
             setSecretRecoveryPhrase(currentSRP);
             let newSrpError = '';
-            const draftSrp = currentSRP.join(' ').trim();
+            const draftSrp = currentSRP.trim();
 
-            if (draftSrp.some((word) => word !== '')) {
-              if (draftSrp.some((word) => word === '')) {
-                newSrpError = t('seedPhraseReq');
-              } else if (hasUpperCase(draftSrp)) {
-                newSrpError = t('invalidSeedPhraseCaseSensitive');
-              } else if (!isValidMnemonic(draftSrp)) {
-                newSrpError = t('invalidSeedPhrase');
-              }
+            if (!draftSrp) {
+              newSrpError = t('seedPhraseReq');
+            } else if (hasUpperCase(draftSrp)) {
+              newSrpError = t('invalidSeedPhraseCaseSensitive');
+            } else if (!isValidMnemonic(draftSrp)) {
+              newSrpError = t('invalidSeedPhrase');
             }
+
 
             setSrpError(newSrpError);
           }}
@@ -88,7 +89,7 @@ export function ImportSRP({ onActionComplete }) {
               await importWallet();
               onActionComplete(true);
               dispatch(actions.showAlert(t('importWalletSuccess')));
-              setTimeout((_) => {
+              setTimeout(() => {
                 dispatch(actions.hideAlert());
               }, 5000);
             } catch (e) {
@@ -100,15 +101,8 @@ export function ImportSRP({ onActionComplete }) {
         </ButtonPrimary>
       </Box>
       {srpError ? (
-        <BannerAlert severity={Severity.Danger} description={srpError} />
+        <BannerAlert severity={BannerAlertSeverity.Danger} description={srpError} />
       ) : null}
     </Box>
   );
 }
-
-ImportSRP.propTypes = {
-  /**
-   * Executes when the srp is imported
-   */
-  onActionComplete: PropTypes.func.isRequired,
-};
