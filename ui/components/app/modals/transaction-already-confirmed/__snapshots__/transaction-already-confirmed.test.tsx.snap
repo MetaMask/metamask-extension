@@ -73,11 +73,13 @@ exports[`Transaction Already Confirmed modal should match snapshot 1`] = `
             >
               <button
                 class="mm-box mm-text mm-button-base mm-button-base--size-lg mm-modal-footer__button mm-button-secondary mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-default mm-box--background-color-transparent mm-box--rounded-pill mm-box--border-color-primary-default box--border-style-solid box--border-width-1"
+                data-testid="mm-modal-cancel"
               >
                 View on block explorer
               </button>
               <button
                 class="mm-box mm-text mm-button-base mm-button-base--size-lg mm-modal-footer__button mm-button-primary mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-inverse mm-box--background-color-primary-default mm-box--rounded-pill"
+                data-testid="mm-modal-confirm"
                 data-theme="light"
               >
                 Got it
