@@ -40,8 +40,8 @@ import {
   getFirstTimeFlowType,
   getExternalServicesOnboardingToggleState,
 } from '../../../selectors';
-import { selectIsProfileSyncingEnabled } from '../../../selectors/metamask-notifications/profile-syncing';
-import { selectParticipateInMetaMetrics } from '../../../selectors/metamask-notifications/authentication';
+import { selectIsProfileSyncingEnabled } from '../../../selectors/identity/profile-syncing';
+import { selectParticipateInMetaMetrics } from '../../../selectors/identity/authentication';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
@@ -69,7 +69,9 @@ export default function OnboardingPinExtension() {
     if (selectedIndex === 0) {
       setSelectedIndex(1);
     } else {
-      dispatch(toggleExternalServices(externalServicesOnboardingToggleState));
+      await dispatch(
+        toggleExternalServices(externalServicesOnboardingToggleState),
+      );
       await dispatch(setCompletedOnboarding());
 
       if (externalServicesOnboardingToggleState) {

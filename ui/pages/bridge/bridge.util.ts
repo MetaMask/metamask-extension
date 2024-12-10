@@ -1,4 +1,6 @@
+import { Contract } from '@ethersproject/contracts';
 import { Hex, add0x } from '@metamask/utils';
+import { abiERC20 } from '@metamask/metamask-eth-abis';
 import {
   BridgeFeatureFlagsKey,
   BridgeFeatureFlags,
@@ -8,6 +10,8 @@ import {
 import {
   BRIDGE_API_BASE_URL,
   BRIDGE_CLIENT_ID,
+  ETH_USDT_ADDRESS,
+  METABRIDGE_ETHEREUM_ADDRESS,
 } from '../../../shared/constants/bridge';
 import { MINUTE } from '../../../shared/constants/time';
 import fetchWithCache from '../../../shared/lib/fetch-with-cache';
@@ -26,6 +30,7 @@ import {
 // TODO: Remove restricted import
 // eslint-disable-next-line import/no-restricted-paths
 import { REFRESH_INTERVAL_MS } from '../../../app/scripts/controllers/bridge/constants';
+import { CHAIN_IDS } from '../../../shared/constants/network';
 import {
   BridgeAsset,
   BridgeFlag,
@@ -67,16 +72,18 @@ export async function fetchBridgeFeatureFlags(): Promise<BridgeFeatureFlags> {
     )
   ) {
     return {
-      [BridgeFeatureFlagsKey.EXTENSION_CONFIG]:
-        rawFeatureFlags[BridgeFlag.EXTENSION_CONFIG],
-      [BridgeFeatureFlagsKey.EXTENSION_SUPPORT]:
-        rawFeatureFlags[BridgeFlag.EXTENSION_SUPPORT],
-      [BridgeFeatureFlagsKey.NETWORK_SRC_ALLOWLIST]: rawFeatureFlags[
-        BridgeFlag.NETWORK_SRC_ALLOWLIST
-      ].map((chainIdDec) => add0x(decimalToHex(chainIdDec))),
-      [BridgeFeatureFlagsKey.NETWORK_DEST_ALLOWLIST]: rawFeatureFlags[
-        BridgeFlag.NETWORK_DEST_ALLOWLIST
-      ].map((chainIdDec) => add0x(decimalToHex(chainIdDec))),
+      [BridgeFeatureFlagsKey.EXTENSION_CONFIG]: {
+        ...rawFeatureFlags[BridgeFlag.EXTENSION_CONFIG],
+        chains: Object.entries(
+          rawFeatureFlags[BridgeFlag.EXTENSION_CONFIG].chains,
+        ).reduce(
+          (acc, [chainId, value]) => ({
+            ...acc,
+            [add0x(decimalToHex(chainId))]: value,
+          }),
+          {},
+        ),
+      },
     };
   }
 
@@ -84,13 +91,9 @@ export async function fetchBridgeFeatureFlags(): Promise<BridgeFeatureFlags> {
     [BridgeFeatureFlagsKey.EXTENSION_CONFIG]: {
       refreshRate: REFRESH_INTERVAL_MS,
       maxRefreshCount: 5,
+      support: false,
+      chains: {},
     },
-    // TODO set default to true once bridging is live
-    [BridgeFeatureFlagsKey.EXTENSION_SUPPORT]: false,
-    // TODO set default to ALLOWED_BRIDGE_CHAIN_IDS once bridging is live
-    [BridgeFeatureFlagsKey.NETWORK_SRC_ALLOWLIST]: [],
-    // TODO set default to ALLOWED_BRIDGE_CHAIN_IDS once bridging is live
-    [BridgeFeatureFlagsKey.NETWORK_DEST_ALLOWLIST]: [],
   };
 }
 
@@ -136,6 +139,7 @@ export async function fetchBridgeTokens(
 // Returns a list of bridge tx quotes
 export async function fetchBridgeQuotes(
   request: QuoteRequest,
+  signal: AbortSignal,
 ): Promise<QuoteResponse[]> {
   const queryParams = new URLSearchParams({
     walletAddress: request.walletAddress,
@@ -151,7 +155,11 @@ export async function fetchBridgeQuotes(
   const url = `${BRIDGE_API_BASE_URL}/getQuote?${queryParams}`;
   const quotes = await fetchWithCache({
     url,
-    fetchOptions: { method: 'GET', headers: CLIENT_ID_HEADER },
+    fetchOptions: {
+      method: 'GET',
+      headers: CLIENT_ID_HEADER,
+      signal,
+    },
     cacheOptions: { cacheRefreshTime: 0 },
     functionName: 'fetchBridgeQuotes',
   });
@@ -180,3 +188,22 @@ export async function fetchBridgeQuotes(
   });
   return filteredQuotes;
 }
+/**
+ * A function to return the txParam data for setting allowance to 0 for USDT on Ethereum
+ *
+ * @returns The txParam data that will reset allowance to 0, combine it with the approval tx params received from Bridge API
+ */
+export const getEthUsdtResetData = () => {
+  const UsdtContractInterface = new Contract(ETH_USDT_ADDRESS, abiERC20)
+    .interface;
+  const data = UsdtContractInterface.encodeFunctionData('approve', [
+    METABRIDGE_ETHEREUM_ADDRESS,
+    '0',
+  ]);
+
+  return data;
+};
+
+export const isEthUsdt = (chainId: Hex, address: string) =>
+  chainId === CHAIN_IDS.MAINNET &&
+  address.toLowerCase() === ETH_USDT_ADDRESS.toLowerCase();

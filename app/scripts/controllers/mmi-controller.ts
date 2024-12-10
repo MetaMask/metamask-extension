@@ -24,9 +24,9 @@ import { NetworkState } from '@metamask/network-controller';
 import {
   MessageParamsPersonal,
   MessageParamsTyped,
+  OriginalRequest,
   SignatureController,
 } from '@metamask/signature-controller';
-import { OriginalRequest } from '@metamask/message-manager';
 import { InternalAccount } from '@metamask/keyring-api';
 import { toHex } from '@metamask/controller-utils';
 import { toChecksumHexAddress } from '../../../shared/modules/hexstring-utils';
@@ -311,7 +311,7 @@ export class MMIController {
           }
         }
 
-        const txList = this.txStateManager.getTransactions({}, [], false); // Includes all transactions, but we are looping through keyrings. Currently filtering is done in updateCustodianTransactions :-/
+        const txList = this.txStateManager.getTransactions(); // Includes all transactions, but we are looping through keyrings. Currently filtering is done in updateCustodianTransactions :-/
 
         try {
           updateCustodianTransactions({

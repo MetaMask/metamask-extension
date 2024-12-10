@@ -59,7 +59,9 @@
   "approvalFlows": [],
   "bridgeState": {
     "bridgeFeatureFlags": {
-      "extensionSupport": false
+      "extensionConfig": {
+        "support": false
+      }
     }
   },
   "browserEnvironment": { "os": "mac", "browser": "firefox" },
@@ -463,7 +465,6 @@
   "useSafeChainsListValidation": true,
   "useTokenDetection": true,
   "useTransactionSimulations": true,
-  "usedNetworks": { "0x1": true, "0x5": true, "0x539": true },
   "userOperations": {},
   "versionFileETag": "",
   "versionInfo": [],

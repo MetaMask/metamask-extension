@@ -8,7 +8,7 @@ name: SonarCloud
 on:
   workflow_run:
     workflows:
-      - Run tests
+      - Main
     types:
       - completed
 

@@ -22,10 +22,34 @@ describe('Bridge utils', () => {
         'extension-config': {
           refreshRate: 3,
           maxRefreshCount: 1,
+          support: true,
+          chains: {
+            '1': {
+              isActiveSrc: true,
+              isActiveDest: true,
+            },
+            '10': {
+              isActiveSrc: true,
+              isActiveDest: false,
+            },
+            '59144': {
+              isActiveSrc: true,
+              isActiveDest: true,
+            },
+            '120': {
+              isActiveSrc: true,
+              isActiveDest: false,
+            },
+            '137': {
+              isActiveSrc: false,
+              isActiveDest: true,
+            },
+            '11111': {
+              isActiveSrc: false,
+              isActiveDest: true,
+            },
+          },
         },
-        'extension-support': true,
-        'src-network-allowlist': [1, 10, 59144, 120],
-        'dest-network-allowlist': [1, 137, 59144, 11111],
       };
 
       (fetchWithCache as jest.Mock).mockResolvedValue(mockResponse);
@@ -46,29 +70,54 @@ describe('Bridge utils', () => {
         extensionConfig: {
           maxRefreshCount: 1,
           refreshRate: 3,
+          support: true,
+          chains: {
+            [CHAIN_IDS.MAINNET]: {
+              isActiveSrc: true,
+              isActiveDest: true,
+            },
+            [CHAIN_IDS.OPTIMISM]: {
+              isActiveSrc: true,
+              isActiveDest: false,
+            },
+            [CHAIN_IDS.LINEA_MAINNET]: {
+              isActiveSrc: true,
+              isActiveDest: true,
+            },
+            '0x78': {
+              isActiveSrc: true,
+              isActiveDest: false,
+            },
+            [CHAIN_IDS.POLYGON]: {
+              isActiveSrc: false,
+              isActiveDest: true,
+            },
+            '0x2b67': {
+              isActiveSrc: false,
+              isActiveDest: true,
+            },
+          },
         },
-        extensionSupport: true,
-        srcNetworkAllowlist: [
-          CHAIN_IDS.MAINNET,
-          CHAIN_IDS.OPTIMISM,
-          CHAIN_IDS.LINEA_MAINNET,
-          '0x78',
-        ],
-        destNetworkAllowlist: [
-          CHAIN_IDS.MAINNET,
-          CHAIN_IDS.POLYGON,
-          CHAIN_IDS.LINEA_MAINNET,
-          '0x2b67',
-        ],
       });
     });
 
     it('should use fallback bridge feature flags if response is unexpected', async () => {
       const mockResponse = {
-        'extension-support': 25,
-        'src-network-allowlist': ['a', 'b', 1],
-        a: 'b',
-        'dest-network-allowlist': [1, 137, 59144, 11111],
+        'extension-config': {
+          refreshRate: 3,
+          maxRefreshCount: 1,
+          support: 25,
+          chains: {
+            a: {
+              isActiveSrc: 1,
+              isActiveDest: 'test',
+            },
+            '2': {
+              isActiveSrc: 'test',
+              isActiveDest: 2,
+            },
+          },
+        },
       };
 
       (fetchWithCache as jest.Mock).mockResolvedValue(mockResponse);
@@ -89,10 +138,9 @@ describe('Bridge utils', () => {
         extensionConfig: {
           maxRefreshCount: 5,
           refreshRate: 30000,
+          support: false,
+          chains: {},
         },
-        extensionSupport: false,
-        srcNetworkAllowlist: [],
-        destNetworkAllowlist: [],
       });
     });
 
@@ -172,22 +220,27 @@ describe('Bridge utils', () => {
       (fetchWithCache as jest.Mock).mockResolvedValue(
         mockBridgeQuotesNativeErc20,
       );
+      const { signal } = new AbortController();
 
-      const result = await fetchBridgeQuotes({
-        walletAddress: '0x123',
-        srcChainId: 1,
-        destChainId: 10,
-        srcTokenAddress: zeroAddress(),
-        destTokenAddress: zeroAddress(),
-        srcTokenAmount: '20000',
-        slippage: 0.5,
-      });
+      const result = await fetchBridgeQuotes(
+        {
+          walletAddress: '0x123',
+          srcChainId: 1,
+          destChainId: 10,
+          srcTokenAddress: zeroAddress(),
+          destTokenAddress: zeroAddress(),
+          srcTokenAmount: '20000',
+          slippage: 0.5,
+        },
+        signal,
+      );
 
       expect(fetchWithCache).toHaveBeenCalledWith({
         url: 'https://bridge.api.cx.metamask.io/getQuote?walletAddress=0x123&srcChainId=1&destChainId=10&srcTokenAddress=0x0000000000000000000000000000000000000000&destTokenAddress=0x0000000000000000000000000000000000000000&srcTokenAmount=20000&slippage=0.5&insufficientBal=false&resetApproval=false',
         fetchOptions: {
           method: 'GET',
           headers: { 'X-Client-Id': 'extension' },
+          signal,
         },
         cacheOptions: { cacheRefreshTime: 0 },
         functionName: 'fetchBridgeQuotes',
@@ -202,22 +255,27 @@ describe('Bridge utils', () => {
         { ...mockBridgeQuotesErc20Erc20[0], approval: null },
         { ...mockBridgeQuotesErc20Erc20[0], trade: null },
       ]);
+      const { signal } = new AbortController();
 
-      const result = await fetchBridgeQuotes({
-        walletAddress: '0x123',
-        srcChainId: 1,
-        destChainId: 10,
-        srcTokenAddress: zeroAddress(),
-        destTokenAddress: zeroAddress(),
-        srcTokenAmount: '20000',
-        slippage: 0.5,
-      });
+      const result = await fetchBridgeQuotes(
+        {
+          walletAddress: '0x123',
+          srcChainId: 1,
+          destChainId: 10,
+          srcTokenAddress: zeroAddress(),
+          destTokenAddress: zeroAddress(),
+          srcTokenAmount: '20000',
+          slippage: 0.5,
+        },
+        signal,
+      );
 
       expect(fetchWithCache).toHaveBeenCalledWith({
         url: 'https://bridge.api.cx.metamask.io/getQuote?walletAddress=0x123&srcChainId=1&destChainId=10&srcTokenAddress=0x0000000000000000000000000000000000000000&destTokenAddress=0x0000000000000000000000000000000000000000&srcTokenAmount=20000&slippage=0.5&insufficientBal=false&resetApproval=false',
         fetchOptions: {
           method: 'GET',
           headers: { 'X-Client-Id': 'extension' },
+          signal,
         },
         cacheOptions: { cacheRefreshTime: 0 },
         functionName: 'fetchBridgeQuotes',
@@ -251,22 +309,27 @@ describe('Bridge utils', () => {
           },
         },
       ]);
+      const { signal } = new AbortController();
 
-      const result = await fetchBridgeQuotes({
-        walletAddress: '0x123',
-        srcChainId: 1,
-        destChainId: 10,
-        srcTokenAddress: zeroAddress(),
-        destTokenAddress: zeroAddress(),
-        srcTokenAmount: '20000',
-        slippage: 0.5,
-      });
+      const result = await fetchBridgeQuotes(
+        {
+          walletAddress: '0x123',
+          srcChainId: 1,
+          destChainId: 10,
+          srcTokenAddress: zeroAddress(),
+          destTokenAddress: zeroAddress(),
+          srcTokenAmount: '20000',
+          slippage: 0.5,
+        },
+        signal,
+      );
 
       expect(fetchWithCache).toHaveBeenCalledWith({
         url: 'https://bridge.api.cx.metamask.io/getQuote?walletAddress=0x123&srcChainId=1&destChainId=10&srcTokenAddress=0x0000000000000000000000000000000000000000&destTokenAddress=0x0000000000000000000000000000000000000000&srcTokenAmount=20000&slippage=0.5&insufficientBal=false&resetApproval=false',
         fetchOptions: {
           method: 'GET',
           headers: { 'X-Client-Id': 'extension' },
+          signal,
         },
         cacheOptions: { cacheRefreshTime: 0 },
         functionName: 'fetchBridgeQuotes',

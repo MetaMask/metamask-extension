@@ -1,6 +1,7 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
 import { BigNumber } from 'bignumber.js';
+import { getCurrentChainId } from '../../../../../shared/modules/selectors/networks';
 import { getTokenList } from '../../../../selectors';
 import { useTokenFiatAmount } from '../../../../hooks/useTokenFiatAmount';
 import { TokenListItem } from '../../token-list-item';
@@ -22,6 +23,7 @@ export default function Asset({
 }: AssetProps) {
   const locale = useSelector(getIntlLocale);
 
+  const chainId = useSelector(getCurrentChainId);
   const tokenList = useSelector(getTokenList);
   const tokenData = address
     ? Object.values(tokenList).find(
@@ -49,6 +51,7 @@ export default function Asset({
 
   return (
     <TokenListItem
+      chainId={chainId}
       tokenSymbol={symbol}
       tokenImage={tokenImage}
       secondary={formattedAmount}

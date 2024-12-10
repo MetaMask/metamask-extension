@@ -5,7 +5,7 @@ import mockState from '../../../../../../../test/data/mock-state.json';
 import { renderHookWithConfirmContextProvider } from '../../../../../../../test/lib/confirmations/render-helpers';
 import useTokenExchangeRate from '../../../../../../components/app/currency-input/hooks/useTokenExchangeRate';
 import { useAssetDetails } from '../../../../hooks/useAssetDetails';
-import { toNonScientificString, useTokenValues } from './use-token-values';
+import { useTokenValues } from './use-token-values';
 import { useDecodedTransactionData } from './useDecodedTransactionData';
 
 jest.mock('../../../../hooks/useAssetDetails', () => ({
@@ -125,22 +125,4 @@ describe('useTokenValues', () => {
       pending: false,
     });
   });
-});
-
-describe('toNonScientificString', () => {
-  const TEST_CASES = [
-    { scientific: 1.23e-5, expanded: '0.0000123' },
-    { scientific: 1e-10, expanded: '0.0000000001' },
-    { scientific: 1.23e-21, expanded: '1.23e-21' },
-  ];
-
-  // @ts-expect-error This is missing from the Mocha type definitions
-  it.each(TEST_CASES)(
-    'Expand $scientific to "$expanded"',
-    ({ scientific, expanded }: { scientific: number; expanded: string }) => {
-      const actual = toNonScientificString(scientific);
-
-      expect(actual).toEqual(expanded);
-    },
-  );
 });

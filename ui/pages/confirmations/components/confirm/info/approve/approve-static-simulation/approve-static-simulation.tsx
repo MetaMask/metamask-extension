@@ -14,7 +14,6 @@ import {
   TextAlign,
 } from '../../../../../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../../../../../hooks/useI18nContext';
-import { SPENDING_CAP_UNLIMITED_MSG } from '../../../../../constants';
 import { useConfirmContext } from '../../../../../context/confirm';
 import { useAssetDetails } from '../../../../../hooks/useAssetDetails';
 import StaticSimulation from '../../shared/static-simulation/static-simulation';
@@ -37,8 +36,13 @@ export const ApproveStaticSimulation = () => {
 
   const decimals = initialDecimals || '0';
 
-  const { spendingCap, formattedSpendingCap, value, pending } =
-    useApproveTokenSimulation(transactionMeta, decimals);
+  const {
+    spendingCap,
+    isUnlimitedSpendingCap,
+    formattedSpendingCap,
+    value,
+    pending,
+  } = useApproveTokenSimulation(transactionMeta, decimals);
 
   const { isNFT } = useIsNFT(transactionMeta);
 
@@ -61,9 +65,7 @@ export const ApproveStaticSimulation = () => {
       textAlign={TextAlign.Center}
       alignItems={AlignItems.center}
     >
-      {spendingCap === SPENDING_CAP_UNLIMITED_MSG
-        ? t('unlimited')
-        : spendingCap}
+      {isUnlimitedSpendingCap ? t('unlimited') : formattedSpendingCap}
     </Text>
   );
 
@@ -78,10 +80,9 @@ export const ApproveStaticSimulation = () => {
             marginInlineEnd={1}
             minWidth={BlockSize.Zero}
           >
-            {spendingCap === SPENDING_CAP_UNLIMITED_MSG ? (
-              <Tooltip title={formattedSpendingCap}>
-                {formattedTokenText}
-              </Tooltip>
+            {Boolean(isUnlimitedSpendingCap) ||
+            spendingCap !== formattedSpendingCap ? (
+              <Tooltip title={spendingCap}>{formattedTokenText}</Tooltip>
             ) : (
               formattedTokenText
             )}
