@@ -15,6 +15,9 @@ jobs:
   test:
     name: Benchmark
     runs-on: ubuntu-latest
+    container:
+      image: selenium/standalone-chrome:126.0
+      options: --user root
     # container: cimg/node:20.18-browsers
     # runs-on: [self-hosted, Linux, X64]
     steps:
@@ -24,14 +27,14 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - run: sudo corepack enable
-        shell: bash
-
       - name: Set up Node.js
         uses: actions/setup-node@v4
         with:
           node-version-file: .nvmrc
           cache: yarn
+
+      - run: corepack enable
+        shell: bash
 
       - name: Install dependencies
         run: yarn
@@ -42,10 +45,10 @@ jobs:
 
       - name: Install prereqs
         run: |
-          sudo apt-get update
-          sudo apt-get install -y xvfb
-          sudo apt-get -y install xorg xvfb gtk2-engines-pixbuf
-          sudo apt-get -y install dbus-x11 xfonts-base xfonts-100dpi xfonts-75dpi xfonts-cyrillic xfonts-scalable
+          apt-get update
+          apt-get install -y xvfb
+          apt-get -y install xorg xvfb gtk2-engines-pixbuf
+          apt-get -y install dbus-x11 xfonts-base xfonts-100dpi xfonts-75dpi xfonts-cyrillic xfonts-scalable
           Xvfb -ac :99 -screen 0 1280x1024x16 &
           export DISPLAY=:99
 
