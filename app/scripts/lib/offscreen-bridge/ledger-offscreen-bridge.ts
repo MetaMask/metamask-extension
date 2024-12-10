@@ -1,8 +1,8 @@
-import { LedgerBridge } from '@metamask/eth-ledger-bridge-keyring';
 import {
+  LedgerBridge,
   LedgerSignTypedDataParams,
   LedgerSignTypedDataResponse,
-} from '@metamask/eth-ledger-bridge-keyring/dist/ledger-bridge';
+} from '@metamask/eth-ledger-bridge-keyring';
 import {
   LedgerAction,
   OffscreenCommunicationEvents,
