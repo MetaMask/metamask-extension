@@ -43,6 +43,7 @@ class HeaderNavbar {
 
   async openAccountMenu(): Promise<void> {
     await this.driver.clickElement(this.accountMenuButton);
+    await this.driver.waitForSelector('.multichain-account-menu-popover__list');
   }
 
   async openThreeDotMenu(): Promise<void> {
