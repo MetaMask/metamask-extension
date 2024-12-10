@@ -69,6 +69,7 @@ exports[`BridgeQuoteCard should render the recommended quote 1`] = `
           </div>
           <p
             class="mm-box mm-text mm-text--body-md mm-box--color-text-default"
+            style="white-space: nowrap;"
           >
             OP Mainnet
           </p>
@@ -87,6 +88,7 @@ exports[`BridgeQuoteCard should render the recommended quote 1`] = `
           </div>
           <p
             class="mm-box mm-text mm-text--body-md mm-box--color-text-default"
+            style="white-space: nowrap;"
           >
             Polygon
           </p>
@@ -227,6 +229,7 @@ exports[`BridgeQuoteCard should render the recommended quote while loading new q
           </div>
           <p
             class="mm-box mm-text mm-text--body-md mm-box--color-text-default"
+            style="white-space: nowrap;"
           >
             OP Mainnet
           </p>
@@ -245,6 +248,7 @@ exports[`BridgeQuoteCard should render the recommended quote while loading new q
           </div>
           <p
             class="mm-box mm-text mm-text--body-md mm-box--color-text-default"
+            style="white-space: nowrap;"
           >
             Polygon
           </p>
