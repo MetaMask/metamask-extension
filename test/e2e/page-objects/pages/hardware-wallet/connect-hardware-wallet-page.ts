@@ -44,10 +44,7 @@ class ConnectHardwareWalletPage {
     await this.driver.clickElement(this.continueButton);
   }
 
-/**
-   * Opens the connect Trezor page and proceeds with the connection flow.
-   */
-   async openConnectTrezorPage(): Promise<void> {
+  async openConnectTrezorPage(): Promise<void> {
     console.log(`Open connect trezor page`);
     await this.driver.clickElement(this.connectTrezorButton);
     await this.driver.clickElement(this.continueButton);
