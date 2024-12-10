@@ -53,12 +53,13 @@ describe('useMultichainBalances', () => {
       expect.objectContaining([
         {
           address: '0x1f9840a85d5af5bf1d1762f925bdaddc4201f984',
-          balance: '1848',
+          balance: '0.00184',
           chainId: '0x1',
+          decimals: 6,
           image: undefined,
           isNative: false,
-          string: '1848',
-          tokenFiatAmount: 4250.4,
+          string: '0.00184',
+          tokenFiatAmount: 0.004232,
           type: 'TOKEN',
         },
         {
@@ -113,7 +114,7 @@ describe('useMultichainBalances', () => {
     );
 
     expect(result.current.balanceByChainId).toStrictEqual({
-      '0x1': 4250.4,
+      '0x1': 0.0042320000000252425,
       '0xe708': 3.53395e-14,
     });
   });

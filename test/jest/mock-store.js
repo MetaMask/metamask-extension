@@ -755,17 +755,18 @@ export const createBridgeMockStore = (
           '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc': [
             {
               address: '0x1f9840a85d5af5bf1d1762f925bdaddc4201f984',
-              balance: '0xa',
+              balance: 'a',
+              decimals: 6,
             },
             {
               address: '0x514910771af9ca656af840dff83e8264ecf986ca',
-              balance: '0xe',
+              balance: 'e',
             },
           ],
           '0xec1adf982415d2ef5ec55899b9bfb8bc0f29251b': [
             {
               address: '0x6b3595068778dd592e39a122f4f5a5cf09c90fe2',
-              balance: '0xe',
+              balance: 'e',
             },
           ],
         },
@@ -773,13 +774,13 @@ export const createBridgeMockStore = (
           '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc': [
             {
               address: '0x1f9840a85d5af5bf1d1762f925bdaddc4201f984',
-              balance: '0xe',
+              balance: 'e',
             },
           ],
           '0xec1adf982415d2ef5ec55899b9bfb8bc0f29251b': [
             {
               address: '0x6b3595068778dd592e39a122f4f5a5cf09c90fe2',
-              balance: '0xe',
+              balance: 'e',
             },
           ],
         },
