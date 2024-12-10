@@ -4622,7 +4622,9 @@ export default class MetamaskController extends EventEmitter {
       const newAccount = await this.keyringController.createKeyringFromMnemonic(
         mnemonic,
       );
-      this.preferencesController.setSelectedAddress(newAccount);
+      const account = this.accountsController.getAccountByAddress(newAccount);
+      this.accountsController.setSelectedAccount(account.id);
+
       return newAccount;
     } finally {
       releaseLock();
