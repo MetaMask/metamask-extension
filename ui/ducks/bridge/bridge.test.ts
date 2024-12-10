@@ -150,7 +150,7 @@ describe('Ducks - Bridge', () => {
         fromToken: null,
         toToken: null,
         fromTokenInputValue: null,
-        sortOrder: 0,
+        sortOrder: 'cost_ascending',
         toTokenExchangeRate: null,
         fromTokenExchangeRate: null,
       });
@@ -213,7 +213,7 @@ describe('Ducks - Bridge', () => {
         fromTokenExchangeRate: null,
         fromTokenInputValue: null,
         selectedQuote: null,
-        sortOrder: 0,
+        sortOrder: 'cost_ascending',
         toChainId: null,
         toToken: null,
         toTokenExchangeRate: null,
@@ -260,7 +260,7 @@ describe('Ducks - Bridge', () => {
       expect(newState).toStrictEqual({
         toChainId: null,
         toTokenExchangeRate: 0.356628,
-        sortOrder: 0,
+        sortOrder: 'cost_ascending',
       });
     });
 
@@ -305,7 +305,7 @@ describe('Ducks - Bridge', () => {
       expect(newState).toStrictEqual({
         toChainId: null,
         toTokenExchangeRate: 0.999881,
-        sortOrder: 0,
+        sortOrder: 'cost_ascending',
       });
     });
   });
