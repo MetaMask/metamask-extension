@@ -23,6 +23,7 @@ import ScrollToBottom from '../components/confirm/scroll-to-bottom';
 import { Title } from '../components/confirm/title';
 import EditGasFeePopover from '../components/edit-gas-fee-popover';
 import { ConfirmContextProvider, useConfirmContext } from '../context/confirm';
+import { Box } from '../../../components/component-library';
 
 const EIP1559TransactionGasModal = () => {
   return (
@@ -54,9 +55,9 @@ const Confirm = () => (
           <Page className="confirm_wrapper">
             <Nav />
             <Header />
-            <div className="transaction-alerts" style={{ marginTop: 0 }}>
-              <SmartTransactionsBannerAlert />
-            </div>
+            <Box className="transaction-alerts">
+              <SmartTransactionsBannerAlert marginType="noTop" />
+            </Box>
             <ScrollToBottom>
               {
                 ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
