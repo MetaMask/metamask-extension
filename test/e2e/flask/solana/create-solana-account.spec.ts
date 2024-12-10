@@ -4,6 +4,15 @@ import AccountListPage from '../../page-objects/pages/account-list-page';
 import { withSolanaAccountSnap } from './common-solana';
 
 describe('Create/Remove Solana Account', function (this: Suite) {
+  beforeEach(async function () {
+    // Setup code to run before each test
+    // For example, you can reset the application state or create a fresh environment
+  });
+
+  afterEach(async function () {
+    // Teardown code to run after each test
+    // For example, you can clean up any data created during the test
+  });
   it('create Solana account from the menu', async function () {
     await withSolanaAccountSnap(
       { title: this.test?.fullTitle() },
