@@ -7,7 +7,8 @@ type TransactionInfo = {
   pagination: PaginationOptions;
 };
 
-const TRANSACTIONS_TRACKING_INTERVAL = 7 * 1000; // Every 7s in milliseconds.
+// Every 7s in milliseconds.
+const TRANSACTIONS_TRACKING_INTERVAL = 7 * 1000;
 
 export class TransactionsTracker {
   #poller: Poller;
@@ -44,7 +45,7 @@ export class TransactionsTracker {
    * Checks if an account ID is being tracked.
    *
    * @param accountId - The account ID.
-   * @returns True if the account is being tracker, false otherwise.
+   * @returns True if the account is being tracked, false otherwise.
    */
   isTracked(accountId: string) {
     return accountId in this.#transactions;
@@ -110,8 +111,7 @@ export class TransactionsTracker {
   }
 
   /**
-   * Update the transactions of all tracked accounts (only if the transactions
-   * is considered outdated).
+   * Update the transactions of all tracked accounts
    */
   async updateTransactions() {
     await Promise.allSettled(

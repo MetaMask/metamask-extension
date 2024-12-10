@@ -278,7 +278,9 @@ import { submitSmartTransactionHook } from './lib/transaction/smart-transactions
 import { keyringSnapPermissionsBuilder } from './lib/snap-keyring/keyring-snaps-permissions';
 ///: END:ONLY_INCLUDE_IF
 
+///: BEGIN:ONLY_INCLUDE_IF(build-flask)
 import { MultichainTransactionsController } from './lib/transaction/MultichainTransactionsController';
+///: END:ONLY_INCLUDE_IF
 import { SnapsNameProvider } from './lib/SnapsNameProvider';
 import { AddressBookPetnamesBridge } from './lib/AddressBookPetnamesBridge';
 import { AccountIdentitiesPetnamesBridge } from './lib/AccountIdentitiesPetnamesBridge';
@@ -987,23 +989,26 @@ export default class MetamaskController extends EventEmitter {
       state: initState.AnnouncementController,
     });
 
+    ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
     const multichainTransactionsControllerMessenger =
-    this.controllerMessenger.getRestricted({
-      name: 'MultichainTransactionsController',
-      allowedEvents: [
-        'AccountsController:accountAdded',
-        'AccountsController:accountRemoved',
-      ],
-      allowedActions: [
-        'AccountsController:listMultichainAccounts',
-        'SnapController:handleRequest',
-      ],
-    });
+      this.controllerMessenger.getRestricted({
+        name: 'MultichainTransactionsController',
+        allowedEvents: [
+          'AccountsController:accountAdded',
+          'AccountsController:accountRemoved',
+        ],
+        allowedActions: [
+          'AccountsController:listMultichainAccounts',
+          'SnapController:handleRequest',
+        ],
+      });
 
-    this.multichainTransactionsController = new MultichainTransactionsController({
-      messenger: multichainTransactionsControllerMessenger,
-      state: initState.MultichainTransactionsController,
-    });
+    this.multichainTransactionsController =
+      new MultichainTransactionsController({
+        messenger: multichainTransactionsControllerMessenger,
+        state: initState.MultichainTransactionsController,
+      });
+    ///: END:ONLY_INCLUDE_IF
 
     const networkOrderMessenger = this.controllerMessenger.getRestricted({
       name: 'NetworkOrderController',
@@ -2534,7 +2539,9 @@ export default class MetamaskController extends EventEmitter {
       AppStateController: this.appStateController.store,
       AppMetadataController: this.appMetadataController,
       MultichainBalancesController: this.multichainBalancesController,
+      ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
       MultichainTransactionsController: this.multichainTransactionsController,
+      ///: END:ONLY_INCLUDE_IF
       TransactionController: this.txController,
       KeyringController: this.keyringController,
       PreferencesController: this.preferencesController,
@@ -2591,7 +2598,9 @@ export default class MetamaskController extends EventEmitter {
         AppStateController: this.appStateController.store,
         AppMetadataController: this.appMetadataController,
         MultichainBalancesController: this.multichainBalancesController,
+        ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
         MultichainTransactionsController: this.multichainTransactionsController,
+        ///: END:ONLY_INCLUDE_IF
         NetworkController: this.networkController,
         KeyringController: this.keyringController,
         PreferencesController: this.preferencesController,
@@ -3261,8 +3270,10 @@ export default class MetamaskController extends EventEmitter {
     );
     this.multichainBalancesController.start();
     this.multichainBalancesController.updateBalances();
+    ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
     this.multichainTransactionsController.start();
     this.multichainTransactionsController.updateTransactions();
+    ///: END:ONLY_INCLUDE_IF
   }
 
   /**
@@ -4381,10 +4392,11 @@ export default class MetamaskController extends EventEmitter {
       multichainUpdateBalances: () =>
         this.multichainBalancesController.updateBalances(),
 
+      ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
       // MultichainTransactionsController
       multichainUpdateTransactions: () =>
         this.multichainTransactionsController.updateTransactions(),
-
+      ///: END:ONLY_INCLUDE_IF
       // Transaction Decode
       decodeTransactionData: (request) =>
         decodeTransactionData({

@@ -26,31 +26,29 @@ import { TransactionsTracker } from './MultichainTransactionsTracker';
 
 const controllerName = 'MultichainTransactionsController';
 
-type TransactionEvent = {
-  type: string;
-  data: Record<string, Json>;
-};
-
 type Transaction = {
   id: string;
   account: string;
   chain: string;
   type: 'send' | 'receive';
-  status: 'submitted' | 'confirmed' | 'failed';
+  status: 'submitted' | 'unconfirmed' | 'confirmed' | 'failed';
   timestamp: number | null;
   from: Array<Record<string, Json>>;
   to: Array<Record<string, Json>>;
   fees: Array<Record<string, Json>>;
-  events: TransactionEvent[];
+  events: {
+    status: 'submitted' | 'unconfirmed' | 'confirmed' | 'failed';
+    timestamp: number | null;
+  }[];
 };
 
 export type PaginationOptions = {
-  limit?: number;
+  limit: number;
   next?: string | null;
 };
 
 /**
- * State used by the {@link MultichainTransactionsController} to cache account balances.
+ * State used by the {@link MultichainTransactionsController} to cache account transactions.
  */
 export type MultichainTransactionsControllerState = {
   nonEvmTransactions: {
@@ -79,7 +77,7 @@ export type MultichainTransactionsControllerGetStateAction =
   >;
 
 /**
- * Updates the balances of all supported accounts.
+ * Updates the transactions of all supported accounts.
  */
 export type MultichainTransactionsControllerListTransactionsAction = {
   type: `${typeof controllerName}:updateTransactions`;
@@ -149,24 +147,26 @@ const MultichainTransactionsControllerMetadata = {
 };
 
 const BTC_AVG_BLOCK_TIME = 10 * 60 * 1000; // 10 minutes in milliseconds
-const SOLANA_AVG_BLOCK_TIME = 400; // 400 milliseconds
+const SOLANA_TRANSACTIONS_UPDATE_TIME = 400; // 400 milliseconds
+const BTC_TRANSACTIONS_UPDATE_TIME = BTC_AVG_BLOCK_TIME / 2;
 
-// NOTE: We set an interval of half the average block time to mitigate when our interval
-// is de-synchronized with the actual block time.
-export const BTC_BALANCES_UPDATE_TIME = BTC_AVG_BLOCK_TIME / 2;
-
-const BALANCE_CHECK_INTERVALS = {
-  [BtcAccountType.P2wpkh]: BTC_BALANCES_UPDATE_TIME,
-  [SolAccountType.DataAccount]: SOLANA_AVG_BLOCK_TIME,
+const TRANSACTIONS_CHECK_INTERVALS = {
+  [BtcAccountType.P2wpkh]: BTC_TRANSACTIONS_UPDATE_TIME,
+  [SolAccountType.DataAccount]: SOLANA_TRANSACTIONS_UPDATE_TIME,
 };
+
+/**
+ * The state of transactions for a specific account.
+ */
 type TransactionStateEntry = {
   data: Transaction[];
   next: string | null;
   lastUpdated: number;
 };
+
 /**
  * The MultichainTransactionsController is responsible for fetching and caching account
- * balances.
+ * transactions for non-EVM accounts.
  */
 export class MultichainTransactionsController extends BaseController<
   typeof controllerName,
@@ -226,9 +226,9 @@ export class MultichainTransactionsController extends BaseController<
   }
 
   /**
-   * Lists the accounts that we should get balances for.
+   * Lists the accounts that we should get transactions for.
    *
-   * @returns A list of accounts that we should get balances for.
+   * @returns A list of accounts that we should get transactions for.
    */
   #listAccounts(): InternalAccount[] {
     const accounts = this.#listMultichainAccounts();
@@ -277,126 +277,10 @@ export class MultichainTransactionsController extends BaseController<
     data: Transaction[];
     next: string | null;
   }> {
-    // return await this.#getClient(snapId).listAccountTransactions(
-    //   accountId,
-    //   pagination,
-    // );
-
-    // Return dummy data for development
-    return {
-      data: [
-        {
-          id: "3iUgGUsTWLccvLV5naiZRTbDwDb8t6FTtQA2nybUDDiBUWbAZdZth4A1HBYvCsHVRf1NkcjsApqo63XbaPV1icd8",
-          timestamp: 1733736433,
-          chain: "solana:EtWTRABZaYq6iMfeYKouRu166VU2xqa1",
-          status: "confirmed",
-          type: "send",
-          account: "b9d0a1ff-8880-4507-ac80-63eff8e4e9e6",
-          from: [
-            {
-              address: "BLw3RweJmfbTapJRgnPRvd962YDjFYAnVGd1p5hmZ5tP",
-              asset: {
-                fungible: true,
-                type: "slip44:501",
-                unit: "SOL",
-                amount: "0.02"
-              }
-            }
-          ],
-          to: [
-            {
-              address: "FvS1p2dQnhWNrHyuVpJRU5mkYRkSTrubXHs4XrAn3PGo",
-              asset: {
-                fungible: true,
-                type: "slip44:501",
-                unit: "SOL",
-                amount: "0.02"
-              }
-            }
-          ],
-          fees: [
-            {
-              type: "base",
-              asset: {
-                fungible: true,
-                type: "solana:EtWTRABZaYq6iMfeYKouRu166VU2xqa1/slip44:501",
-                unit: "SOL",
-                amount: "0.0001"
-              }
-            },
-            {
-              type: "priority",
-              asset: {
-                fungible: true,
-                type: "solana:EtWTRABZaYq6iMfeYKouRu166VU2xqa1/slip44:501",
-                unit: "SOL",
-                amount: "0.0001"
-              }
-            }
-          ],
-          events: []
-        },
-        {
-          id: "3vEa4BBZKGS5L54xBuxvyKjrMEsZSr8vqGG8VrfDDirQbr6BbMTJJUwSE5fxiGkRNyNqBi1QZD1T4GbEwqaAnETJ",
-          timestamp: 1733735551,
-          chain: "solana:EtWTRABZaYq6iMfeYKouRu166VU2xqa1",
-          status: "confirmed",
-          type: "receive",
-          account: "b9d0a1ff-8880-4507-ac80-63eff8e4e9e6",
-          from: [
-            {
-              address: "BLw3RweJmfbTapJRgnPRvd962YDjFYAnVGd1p5hmZ5tP",
-              asset: {
-                fungible: true,
-                type: "slip44:501",
-                unit: "SOL",
-                amount: "2"
-              }
-            }
-          ],
-          to: [
-            {
-              address: "FvS1p2dQnhWNrHyuVpJRU5mkYRkSTrubXHs4XrAn3PGo",
-              asset: {
-                fungible: true,
-                type: "slip44:501",
-                unit: "SOL",
-                amount: "2"
-              }
-            }
-          ],
-          fees: [
-            {
-              type: "base",
-              asset: {
-                fungible: true,
-                type: "solana:EtWTRABZaYq6iMfeYKouRu166VU2xqa1/slip44:501",
-                unit: "SOL",
-                amount: "0.0001"
-              }
-            },
-            {
-              type: "priority",
-              asset: {
-                fungible: true,
-                type: "solana:EtWTRABZaYq6iMfeYKouRu166VU2xqa1/slip44:501",
-                unit: "SOL",
-                amount: "0.0001"
-              }
-            }
-          ],
-          events: []
-        }
-      ],
-      next: null,
-    };
-  }
-
-  /**
-   * Gets transactions for a specific account
-   */
-  getTransactions(accountId: string): Transaction[] {
-    return this.state.nonEvmTransactions[accountId]?.data ?? [];
+    return await this.#getClient(snapId).listAccountTransactions(
+      accountId,
+      pagination,
+    );
   }
 
   /**
@@ -406,8 +290,8 @@ export class MultichainTransactionsController extends BaseController<
     await this.#tracker.updateTransactionsForAccount(accountId);
   }
 
-    /**
-   * Updates the balances of all supported accounts. This method doesn't return
+  /**
+   * Updates the transactions of all supported accounts. This method doesn't return
    * anything, but it updates the state of the controller.
    */
   async updateTransactions() {
@@ -435,13 +319,13 @@ export class MultichainTransactionsController extends BaseController<
    * @returns The block time for the account.
    */
   #getBlockTimeFor(account: InternalAccount): number {
-    if (account.type in BALANCE_CHECK_INTERVALS) {
-      return BALANCE_CHECK_INTERVALS[
-        account.type as keyof typeof BALANCE_CHECK_INTERVALS
+    if (account.type in TRANSACTIONS_CHECK_INTERVALS) {
+      return TRANSACTIONS_CHECK_INTERVALS[
+        account.type as keyof typeof TRANSACTIONS_CHECK_INTERVALS
       ];
     }
     throw new Error(
-      `Unsupported account type for balance tracking: ${account.type}`,
+      `Unsupported account type for transactions tracking: ${account.type}`,
     );
   }
 
@@ -466,18 +350,10 @@ export class MultichainTransactionsController extends BaseController<
    */
   async #handleOnAccountAdded(account: InternalAccount) {
     if (!this.#isNonEvmAccount(account)) {
-      // Nothing to do here for EVM accounts
       return;
     }
 
     this.#tracker.track(account.id, this.#getBlockTimeFor(account));
-    // NOTE: Unfortunately, we cannot update the balance right away here, because
-    // messenger's events are running synchronously and fetching the balance is
-    // asynchronous.
-    // Updating the balance here would resume at some point but the event emitter
-    // will not `await` this (so we have no real control "when" the balance will
-    // really be updated), see:
-    // - https://github.com/MetaMask/core/blob/v213.0.0/packages/accounts-controller/src/AccountsController.ts#L1036-L1039
   }
 
   /**
