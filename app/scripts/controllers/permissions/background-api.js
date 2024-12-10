@@ -88,11 +88,6 @@ export function getPermissionBackgroundApiMethods({
       );
     }
 
-    // In the case that the new set of permitted eth chainIds does not overlap at all with
-    // the old set, we will lose context of the permitted eth accounts if we drop
-    // the old set of eth scopes without first noting which eth accounts are permitted first.
-    const ethAccounts = getEthAccounts(caip25Caveat.value);
-
     const ethChainIds = getPermittedEthChainIds(caip25Caveat.value);
 
     const updatedEthChainIds = Array.from(
@@ -104,7 +99,8 @@ export function getPermissionBackgroundApiMethods({
       updatedEthChainIds,
     );
 
-    // ensure that the list of permitted eth accounts is intact after permitted chain updates
+    // ensure that the list of permitted eth accounts is set for the newly added eth scopes
+    const ethAccounts = getEthAccounts(updatedCaveatValue);
     updatedCaveatValue = setEthAccounts(updatedCaveatValue, ethAccounts);
 
     permissionController.updateCaveat(
