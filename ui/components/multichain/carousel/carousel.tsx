@@ -38,7 +38,10 @@ export const Carousel = React.forwardRef(
     const [selectedIndex, setSelectedIndex] = useState(0);
     const t = useI18nContext();
 
-    const visibleSlides = slides.slice(0, MAX_SLIDES);
+    const visibleSlides = slides
+      .filter((slide) => !slide.dismissed || slide.undismissable)
+      .sort((a, b) => Number(b.undismissable) - Number(a.undismissable))
+      .slice(0, MAX_SLIDES);
 
     const handleClose = (e: React.MouseEvent<HTMLElement>, slideId: string) => {
       e.preventDefault();

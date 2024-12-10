@@ -4,6 +4,7 @@ export type CarouselSlide = {
   description: string;
   image: string;
   onClick?: () => void;
+  dismissed?: boolean;
   href?: string;
   undismissable?: boolean;
 };

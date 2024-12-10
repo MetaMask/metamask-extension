@@ -924,12 +924,15 @@ export async function restoreUserData(jsonString: Json): Promise<true> {
 export function updateSlides(
   slides,
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
-  return async (dispatch) => {
+  return async (dispatch, getState) => {
     try {
-      dispatch({
-        type: actionConstants.SET_SLIDES,
-        slides,
+      const currentSlides = getState().metamask.slides;
+      const filteredSlides = slides.filter((newSlide) => {
+        return !currentSlides.some(
+          (currentSlide) => currentSlide.id === newSlide.id,
+        );
       });
+      dispatch(setSlides([...currentSlides, ...filteredSlides]));
     } catch (error) {
       logErrorWithMessage(error);
       throw error;
@@ -943,7 +946,12 @@ export function removeSlide(
   return async (dispatch, getState) => {
     try {
       const currentSlides = getState().metamask.slides;
-      const updatedSlides = currentSlides.filter((slide) => slide.id !== id);
+      const updatedSlides = currentSlides.map((slide) => {
+        if (slide.id === id) {
+          return { ...slide, dismissed: true };
+        }
+        return slide;
+      });
       dispatch(setSlides(updatedSlides));
     } catch (error) {
       logErrorWithMessage(error);
