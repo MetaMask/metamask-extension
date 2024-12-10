@@ -58,4 +58,61 @@ describe('Carousel component e2e tests', () => {
       },
     );
   });
+
+  it('should handle slide dismissal correctly', async function () {
+    await withFixtures(
+      {
+        fixtures: new FixtureBuilder().build(),
+        title: this.test?.fullTitle(),
+      },
+      async ({ driver }) => {
+        await loginWithBalanceValidation(driver);
+        await driver.waitForSelector('.mm-carousel');
+        await driver.delay(1000);
+
+        const initialSlides = await driver.findElements('.mm-carousel-slide');
+        const initialCount = initialSlides.length;
+        assert.ok(initialCount > 0, 'Carousel should have slides initially');
+
+        const firstSlideCloseButton = await driver.findElement(
+          '.mm-carousel-slide:first-child .mm-carousel-slide__close-button',
+        );
+        await firstSlideCloseButton.click();
+        await driver.delay(500);
+
+        const remainingSlides = await driver.findElements('.mm-carousel-slide');
+        assert.equal(
+          remainingSlides.length,
+          initialCount - 1,
+          'One slide should be removed after clicking close',
+        );
+
+        const dots = await driver.findElements('.dot');
+        const hasSelectedDot = await driver.isElementPresent('.dot.selected');
+        assert.ok(
+          hasSelectedDot,
+          'Should have a selected dot after closing a slide',
+        );
+        assert.equal(
+          dots.length,
+          remainingSlides.length,
+          'Number of dots should match number of remaining slides',
+        );
+
+        for (let i = 0; i < remainingSlides.length; i++) {
+          const closeButton = await driver.findElement(
+            '.mm-carousel-slide:first-child .mm-carousel-slide__close-button',
+          );
+          await closeButton.click();
+          await driver.delay(500);
+        }
+
+        const carouselExists = await driver.isElementPresent('.mm-carousel');
+        assert.ok(
+          !carouselExists,
+          'Carousel should not be present after all slides are closed',
+        );
+      },
+    );
+  });
 });
