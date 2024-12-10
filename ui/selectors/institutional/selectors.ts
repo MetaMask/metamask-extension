@@ -10,86 +10,18 @@ import { hexToDecimal } from '../../../shared/modules/conversion.utils';
 // eslint-disable-next-line import/no-restricted-paths
 import { normalizeSafeAddress } from '../../../app/scripts/lib/multichain/address';
 import { AccountType } from '../../../shared/constants/custody';
+import { BackgroundStateProxy } from '../../../shared/types/metamask';
 
-export type Custodian = {
-  type: string;
-  name: string;
-  onboardingUrl: string;
-  website: string;
-  envName: string;
-  apiUrl: string;
-  apiVersion: string;
-  iconUrl: string;
-  displayName: string;
-  isNoteToTraderSupported: boolean;
-  custodianPublishesTransaction: boolean;
-  refreshTokenUrl: string;
-  websocketApiUrl: string;
-  isQRCodeSupported: boolean;
-  production: boolean;
-  version: number;
-};
-
-export type MmiConfiguration = {
-  portfolio?: {
-    enabled?: boolean;
-    url?: string;
-  };
-  custodians?: Custodian[];
-};
-
-type CustodyAccountDetails = {
-  [address: string]: {
-    custodianName: string;
-  };
-};
-
-type CustodianSupportedChains = {
-  [address: string]: {
-    supportedChains: string[];
-  };
-};
-
-type MetaMaskState = {
-  waitForConfirmDeepLinkDialog?: string;
-  custodyStatusMaps?: string; // Change from { [key: string]: unknown } to string
-  custodyAccountDetails?: CustodyAccountDetails;
-  custodianSupportedChains?: CustodianSupportedChains;
-  mmiConfiguration?: MmiConfiguration;
-  noteToTraderMessage?: string;
-  interactiveReplacementToken?: {
-    oldRefreshToken?: string;
-    url?: string;
-  };
-  custodianDeepLink?: {
-    fromAddress: string;
-    custodyId: string;
-  };
-  internalAccounts?: {
-    selectedAccount: string;
-    accounts: {
-      [key: string]: {
-        id: string;
-        metadata: {
-          name: string;
-          keyring: {
-            type: string;
-          };
-        };
-        options: object;
-        methods: string[];
-        type: string;
-        code: string;
-        balance: string;
-        nonce: string;
-        address: string;
-      };
-    };
-  };
-  keyrings?: {
-    type: string;
-    accounts: string[];
-  }[];
+type MmiState = {
+  metamask: Pick<
+    BackgroundStateProxy,
+    | 'CustodyController'
+    | 'InstitutionalFeaturesController'
+    | 'MmiConfigurationController'
+    | 'AccountsController'
+    | 'AppStateController'
+    | 'KeyringController'
+  >;
 };
 
 type AppState = {
@@ -102,8 +34,7 @@ type AppState = {
   };
 };
 
-export type State = {
-  metamask: MetaMaskState;
+export type State = MmiState & {
   appState?: AppState;
 };
 
