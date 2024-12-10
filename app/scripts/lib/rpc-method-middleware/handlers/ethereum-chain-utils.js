@@ -1,4 +1,4 @@
-import { errorCodes, rpcErrors } from '@metamask/rpc-errors';
+import { rpcErrors } from '@metamask/rpc-errors';
 import {
   isPrefixedFormattedHexString,
   isSafeChainId,
@@ -157,11 +157,9 @@ export async function switchChain(
   end,
   chainId,
   networkClientId,
-  approvalFlowId,
   {
     isAddFlow,
     setActiveNetwork,
-    endApprovalFlow,
     getCaveat,
     requestPermittedChainsPermission,
     grantPermittedChainsPermissionIncremental,
@@ -187,24 +185,8 @@ export async function switchChain(
 
     await setActiveNetwork(networkClientId);
     res.result = null;
+    return end();
   } catch (error) {
-    // We don't want to return an error if user rejects the request
-    // and this is a chained switch request after wallet_addEthereumChain.
-    // approvalFlowId is only defined when this call is of a
-    // wallet_addEthereumChain request so we can use it to determine
-    // if we should return an error
-    if (
-      error.code === errorCodes.provider.userRejectedRequest &&
-      approvalFlowId
-    ) {
-      res.result = null;
-      return end();
-    }
     return end(error);
-  } finally {
-    if (approvalFlowId) {
-      endApprovalFlow({ id: approvalFlowId });
-    }
   }
-  return end();
 }
