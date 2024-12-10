@@ -54,7 +54,6 @@ import {
   getAllDomains,
   getPermittedChainsForSelectedTab,
   getPermittedAccountsForSelectedTab,
-  getPreferences,
   getTokenNetworkFilter,
 } from '../../../selectors';
 import ToggleButton from '../../ui/toggle-button';

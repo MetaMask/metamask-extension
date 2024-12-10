@@ -3,7 +3,6 @@ import { useDispatch, useSelector } from 'react-redux';
 import { setTokenNetworkFilter } from '../../../../../store/actions';
 import {
   getCurrentNetwork,
-  getPreferences,
   getShouldHideZeroBalanceTokens,
   getSelectedAccount,
   getAllChainsToPoll,
