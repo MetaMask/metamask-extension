@@ -378,10 +378,10 @@
       },
       "packages": {
         "@ngraveio/bc-ur": true,
-        "@swc/helpers>tslib": true,
         "browserify>buffer": true,
         "buffer": true,
-        "ethereumjs-util>ethereum-cryptography>bs58check": true
+        "ethereumjs-util>ethereum-cryptography>bs58check": true,
+        "tslib": true
       }
     },
     "@keystonehq/metamask-airgapped-keyring": {
@@ -1249,7 +1249,7 @@
       "packages": {
         "@ethereumjs/tx": true,
         "@ethereumjs/tx>@ethereumjs/util": true,
-        "@metamask/eth-sig-util": true,
+        "@metamask/eth-trezor-keyring>@metamask/eth-sig-util": true,
         "@metamask/eth-trezor-keyring>@trezor/connect-plugin-ethereum": true,
         "@metamask/eth-trezor-keyring>hdkey": true,
         "@trezor/connect-web": true,
@@ -1257,10 +1257,36 @@
         "webpack>events": true
       }
     },
+    "@metamask/eth-trezor-keyring>@metamask/eth-sig-util": {
+      "packages": {
+        "@ethereumjs/tx>@ethereumjs/util": true,
+        "@ethereumjs/tx>ethereum-cryptography": true,
+        "@metamask/abi-utils": true,
+        "@metamask/eth-sig-util>tweetnacl": true,
+        "@metamask/eth-trezor-keyring>@metamask/eth-sig-util>@metamask/utils": true,
+        "@metamask/utils>@scure/base": true,
+        "browserify>buffer": true
+      }
+    },
+    "@metamask/eth-trezor-keyring>@metamask/eth-sig-util>@metamask/utils": {
+      "globals": {
+        "TextDecoder": true,
+        "TextEncoder": true
+      },
+      "packages": {
+        "@metamask/utils>@metamask/superstruct": true,
+        "@metamask/utils>@scure/base": true,
+        "@metamask/utils>pony-cause": true,
+        "@noble/hashes": true,
+        "browserify>buffer": true,
+        "nock>debug": true,
+        "semver": true
+      }
+    },
     "@metamask/eth-trezor-keyring>@trezor/connect-plugin-ethereum": {
       "packages": {
-        "@metamask/eth-sig-util": true,
-        "@swc/helpers>tslib": true
+        "@metamask/eth-trezor-keyring>@metamask/eth-sig-util": true,
+        "tslib": true
       }
     },
     "@metamask/eth-trezor-keyring>hdkey": {
@@ -1692,7 +1718,7 @@
         "setTimeout": true
       },
       "packages": {
-        "@swc/helpers>tslib": true
+        "tslib": true
       }
     },
     "@metamask/network-controller": {
@@ -1844,7 +1870,7 @@
         "console": true
       },
       "packages": {
-        "@swc/helpers>tslib": true
+        "tslib": true
       }
     },
     "@metamask/notification-services-controller>firebase>@firebase/app>idb": {
@@ -1910,7 +1936,7 @@
         "@metamask/notification-services-controller>firebase>@firebase/app>idb": true,
         "@metamask/notification-services-controller>firebase>@firebase/installations": true,
         "@metamask/notification-services-controller>firebase>@firebase/util": true,
-        "@swc/helpers>tslib": true
+        "tslib": true
       }
     },
     "@metamask/notification-services-controller>firebase>@firebase/util": {
@@ -2660,7 +2686,7 @@
         "setTimeout": true
       },
       "packages": {
-        "@swc/helpers>tslib": true
+        "tslib": true
       }
     },
     "@metamask/user-operation-controller": {
@@ -3017,14 +3043,6 @@
         "string.prototype.matchall>side-channel": true
       }
     },
-    "@swc/helpers>tslib": {
-      "globals": {
-        "AsyncIterator": true,
-        "Iterator": true,
-        "SuppressedError": true,
-        "define": true
-      }
-    },
     "@trezor/connect-web": {
       "globals": {
         "URLSearchParams": true,
@@ -3049,20 +3067,20 @@
         "setTimeout": true
       },
       "packages": {
-        "@swc/helpers>tslib": true,
         "@trezor/connect-web>@trezor/connect": true,
         "@trezor/connect-web>@trezor/connect-common": true,
         "@trezor/connect-web>@trezor/utils": true,
+        "tslib": true,
         "webpack>events": true
       }
     },
     "@trezor/connect-web>@trezor/connect": {
       "packages": {
-        "@swc/helpers>tslib": true,
         "@trezor/connect-web>@trezor/connect>@trezor/protobuf": true,
         "@trezor/connect-web>@trezor/connect>@trezor/schema-utils": true,
         "@trezor/connect-web>@trezor/connect>@trezor/transport": true,
-        "@trezor/connect-web>@trezor/utils": true
+        "@trezor/connect-web>@trezor/utils": true,
+        "tslib": true
       }
     },
     "@trezor/connect-web>@trezor/connect-common": {
@@ -3075,9 +3093,9 @@
         "window": true
       },
       "packages": {
-        "@swc/helpers>tslib": true,
         "@trezor/connect-web>@trezor/connect-common>@trezor/env-utils": true,
-        "@trezor/connect-web>@trezor/utils": true
+        "@trezor/connect-web>@trezor/utils": true,
+        "tslib": true
       }
     },
     "@trezor/connect-web>@trezor/connect-common>@trezor/env-utils": {
@@ -3093,9 +3111,9 @@
         "screen.width": true
       },
       "packages": {
-        "@swc/helpers>tslib": true,
         "@trezor/connect-web>@trezor/connect-common>@trezor/env-utils>ua-parser-js": true,
-        "process": true
+        "process": true,
+        "tslib": true
       }
     },
     "@trezor/connect-web>@trezor/connect-common>@trezor/env-utils>ua-parser-js": {
@@ -3122,10 +3140,10 @@
     },
     "@trezor/connect-web>@trezor/connect>@trezor/protobuf": {
       "packages": {
-        "@swc/helpers>tslib": true,
         "@trezor/connect-web>@trezor/connect>@trezor/protobuf>protobufjs": true,
         "@trezor/connect-web>@trezor/connect>@trezor/schema-utils": true,
-        "browserify>buffer": true
+        "browserify>buffer": true,
+        "tslib": true
       }
     },
     "@trezor/connect-web>@trezor/connect>@trezor/protobuf>protobufjs": {
@@ -3184,9 +3202,9 @@
         "setTimeout": true
       },
       "packages": {
-        "@swc/helpers>tslib": true,
         "@trezor/connect-web>@trezor/utils>bignumber.js": true,
         "browserify>buffer": true,
+        "tslib": true,
         "webpack>events": true
       }
     },
@@ -4670,7 +4688,7 @@
         "setTimeout": true
       },
       "packages": {
-        "@swc/helpers>tslib": true
+        "tslib": true
       }
     },
     "react-focus-lock>react-clientside-effect": {
@@ -4689,9 +4707,9 @@
         "console.error": true
       },
       "packages": {
-        "@swc/helpers>tslib": true,
         "react": true,
-        "react-focus-lock>use-sidecar>detect-node-es": true
+        "react-focus-lock>use-sidecar>detect-node-es": true,
+        "tslib": true
       }
     },
     "react-idle-timer": {
@@ -5279,6 +5297,12 @@
     "terser>source-map-support>buffer-from": {
       "packages": {
         "browserify>buffer": true
+      }
+    },
+    "tslib": {
+      "globals": {
+        "SuppressedError": true,
+        "define": true
       }
     },
     "uri-js": {
