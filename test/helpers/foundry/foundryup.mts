@@ -8,8 +8,6 @@ import { createHash } from 'node:crypto';
 import { exit, cwd } from 'node:process';
 import { parse as parseYaml } from 'yaml';
 import {
-  BinFormat,
-  Platform,
   extractFrom,
   getVersion,
   printBanner,
@@ -17,7 +15,9 @@ import {
   parseArgs,
   isCodedError,
   noop,
+  transformChecksums,
 } from './helpers.mts';
+import { Extension, Platform } from './types.mts';
 
 const parsedArgs = parseArgs();
 
@@ -38,13 +38,14 @@ const {
   arch,
   platform,
   binaries,
+  checksums,
 } = parsedArgs.options;
 
 printBanner();
 const bins = binaries.join(', ');
 say(`fetching ${bins} ${version} for ${platform} ${arch}`);
 
-const ext = platform === Platform.Windows ? BinFormat.Zip : BinFormat.Tar;
+const ext = platform === Platform.Windows ? Extension.Zip : Extension.Tar;
 const BIN_ARCHIVE_URL = `https://github.com/${repo}/releases/download/${tag}/foundry_${version}_${platform}_${arch}.${ext}`;
 const BIN_DIR = join(cwd(), 'node_modules', '.bin');
 
@@ -65,12 +66,14 @@ try {
   if ((e as NodeJS.ErrnoException).code === 'ENOENT') {
     say(`installing from ${url.toString()}`);
     // directory doesn't exist, download and extract
-    await extractFrom(url, binaries, cachePath);
+    const platformChecksums = transformChecksums(checksums, platform, arch);
+    await extractFrom(url, binaries, cachePath, platformChecksums);
     downloadedBinaries = await opendir(cachePath);
   } else {
     throw e;
   }
 }
+
 for await (const file of downloadedBinaries) {
   if (!file.isFile()) continue;
   const target = join(file.parentPath, file.name);

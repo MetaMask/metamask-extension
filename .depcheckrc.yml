@@ -84,6 +84,7 @@ ignores:
   - 'webpack-cli'
   # foundryup
   - 'tar'
+  - 'minipass'
 
 # files depcheck should not parse
 ignorePatterns:

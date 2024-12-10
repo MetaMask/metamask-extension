@@ -1,4 +1,4 @@
-import { ok } from 'node:assert';
+import { ok } from 'node:assert/strict';
 import { execSync } from 'node:child_process';
 import { createWriteStream } from 'node:fs';
 import { rename, mkdir, rm } from 'node:fs/promises';
@@ -13,36 +13,28 @@ import { argv, stdout } from 'node:process';
 import { arch, platform } from 'node:os';
 import { Stream } from 'node:stream';
 import { pipeline } from 'node:stream/promises';
+import { createHash } from 'node:crypto';
 import { extract as extractTar } from 'tar';
-import { Source, Open as Unzip } from 'unzipper';
-import { InferredOptionTypes } from 'yargs';
+import { Open as Unzip, type Source, type Entry } from 'unzipper';
 import yargs from 'yargs/yargs';
+import { Minipass } from 'minipass';
+import {
+  type BinariesTuple,
+  type Checksums,
+  type PlatformArchChecksums,
+  Architecture,
+  Extension,
+  Binary,
+  Platform,
+  ParsedOptions,
+  ArchitecturesTuple,
+  PlatformsTuple,
+  DownloadOptions,
+} from './types.mts';
 
 export function noop() {}
 
-export enum BinFormat {
-  Zip = 'zip',
-  Tar = 'tar.gz',
-}
-
-export enum Platform {
-  Windows = 'win32',
-  Linux = 'linux',
-  Mac = 'darwin',
-}
-
-export enum Binary {
-  Anvil = 'anvil',
-  Forge = 'forge',
-  Cast = 'cast',
-  Chisel = 'chisel',
-}
-
-type Options = ReturnType<typeof getOptions>;
-type OptionsKeys = keyof Options;
-type ParsedOptions = {
-  [key in OptionsKeys]: InferredOptionTypes<Options>[key];
-};
+const Binaries = Object.values(Binary) as BinariesTuple;
 
 export function parseArgs(args: string[] = argv.slice(2)) {
   const { $0, _, ...parsed } = yargs()
@@ -61,7 +53,9 @@ export function parseArgs(args: string[] = argv.slice(2)) {
     // enable ENV parsing, which allows the user to specify foundryup options
     // via environment variables prefixed with `FOUNDRYUP_`
     .env('FOUNDRYUP')
-    .command(['$0', 'install'], 'Install foundry binaries', getOptions())
+    .command(['$0', 'install'], 'Install foundry binaries', (yargs) => {
+      yargs.options(getOptions()).pkgConf('foundryup');
+    })
     .command('cache', '', (yargs) => {
       yargs.command('clean', 'Remove the shared cache files').demandCommand();
     })
@@ -77,22 +71,38 @@ export function parseArgs(args: string[] = argv.slice(2)) {
     case 'install':
       return {
         command: 'install',
-        options: parsed as ParsedOptions,
+        options: parsed as ParsedOptions<ReturnType<typeof getOptions>>,
       } as const;
   }
   throw new Error(`Unknown command: '${command}'`);
 }
 
-function getOptions() {
+function getOptions(
+  defaultPlatform = platform(),
+  defaultArch = normalizeSystemArchitecture(),
+) {
   return {
     binaries: {
       alias: 'b',
       type: 'array' as const,
       multiple: true,
       description: 'Specify the binaries to install',
-      default: [Binary.Anvil],
-      choices: Object.values(Binary) as Binary[],
+      default: Binaries,
+      choices: Binaries,
       coerce: (values: Binary[]): Binary[] => [...new Set(values)], // Remove duplicates
+    },
+    checksums: {
+      alias: 'c',
+      description: 'JSON object containing checksums for the binaries.',
+      coerce: (rawChecksums: string | Checksums): Checksums => {
+        try {
+          return typeof rawChecksums === 'string'
+            ? JSON.parse(rawChecksums)
+            : rawChecksums;
+        } catch {
+          throw new Error('Invalid checksums');
+        }
+      },
     },
     repo: {
       alias: 'r',
@@ -119,24 +129,32 @@ function getOptions() {
     arch: {
       alias: 'a',
       description: 'Specify the architecture',
-      default: getSystemArch(),
-      choices: ['amd64', 'arm64'] as const,
+      // if `defaultArch` is not a supported Architecture yargs will throw an error
+      default: defaultArch as Architecture,
+      choices: Object.values(Architecture) as ArchitecturesTuple,
     },
     platform: {
       alias: 'p',
       description: 'Specify the platform',
-      // if `platform()` is not a supported Platform yargs will throw an error
-      default: platform() as Platform,
-      choices: Object.values(Platform) as Platform[],
+      // if `defaultPlatform` is not a supported Platform yargs will throw an error
+      default: defaultPlatform as Platform,
+      choices: Object.values(Platform) as PlatformsTuple,
     },
   };
 }
 
-function getSystemArch(): 'amd64' | 'arm64' {
-  const architecture = arch();
+/**
+ * Returns the system architecture, normalized to one of the supported
+ * {@link Architecture} values.
+ * @param architecture
+ * @returns
+ */
+function normalizeSystemArchitecture(
+  architecture: string = arch(),
+): Architecture {
   if (architecture.startsWith('arm')) {
     // if `arm*`, use `arm64`
-    return 'arm64';
+    return Architecture.Arm64;
   } else if (architecture === 'x64') {
     // if `x64`, it _might_ be amd64 running via Rosetta on Apple Silicon
     // (arm64). we can check this by running `sysctl.proc_translated` and
@@ -145,12 +163,12 @@ function getSystemArch(): 'amd64' | 'arm64' {
     // binaries native to the system for better performance.
     try {
       if (execSync('sysctl -n sysctl.proc_translated 2>/dev/null')[0] === 1) {
-        return 'arm64';
+        return Architecture.Arm64;
       }
     } catch {} // if `sysctl` check fails, assume native `amd64`
   }
 
-  return 'amd64'; // Default for all other architectures
+  return Architecture.Amd64; // Default for all other architectures
 }
 
 export function printBanner() {
@@ -190,8 +208,13 @@ export function say(message: string) {
  * @param dir The destination directory
  * @returns The list of binaries extracted
  */
-export async function extractFrom(url: URL, binaries: string[], dir: string) {
-  const extract = url.pathname.toLowerCase().endsWith(BinFormat.Tar)
+export async function extractFrom(
+  url: URL,
+  binaries: string[],
+  dir: string,
+  checksums: { algorithm: string; binaries: Record<Binary, string> } | null,
+) {
+  const extract = url.pathname.toLowerCase().endsWith(Extension.Tar)
     ? extractFromTar
     : extractFromZip;
   // write all files to a temporary directory first, then rename to the final
@@ -205,13 +228,36 @@ export async function extractFrom(url: URL, binaries: string[], dir: string) {
     await rm(tempDir, rmOpts);
     // make the temporary directory to extract the binaries to
     await mkdir(tempDir, { recursive: true });
-    const downloads = await extract(url, binaries, tempDir);
+    const downloads = await extract(
+      url,
+      binaries,
+      tempDir,
+      checksums?.algorithm,
+    );
     ok(downloads.length === binaries.length, 'Failed to extract all binaries');
+
+    const paths: string[] = [];
+    for (const { path, binary, checksum } of downloads) {
+      if (checksums) {
+        // check the target's checksum matches the expected checksum
+        say(`verifying checksum for ${binary}`);
+        const expected = checksums.binaries[binary as Binary];
+        if (checksum !== expected) {
+          throw new Error(
+            `checksum mismatch for ${binary}, expected ${expected}, got ${checksum}`,
+          );
+        } else {
+          say(`checksum verified for ${binary}`);
+        }
+      }
+      // add the *final* path to the list of binaries
+      paths.push(join(dir, relative(tempDir, path)));
+    }
 
     // everything has been extracted; move the files to their final destination
     await rename(tempDir, dir);
     // return the list of extracted binaries
-    return downloads.map((file) => join(dir, relative(tempDir, file)));
+    return paths;
   } catch (e) {
     // if things fail for any reason try to clean up a bit. it is very important
     // to not leave `dir` behind, as its existence is a signal that the binaries
@@ -227,14 +273,47 @@ export async function extractFrom(url: URL, binaries: string[], dir: string) {
  * @param url The URL of the archive to extract the binaries from
  * @param binaries The list of binaries to extract
  * @param dir The destination directory
+ * @param checksumAlgorithm The checksum algorithm to use
  * @returns The list of binaries extracted
  */
-async function extractFromTar(url: URL, binaries: string[], dir: string) {
-  const downloads: string[] = [];
+async function extractFromTar(
+  url: URL,
+  binaries: string[],
+  dir: string,
+  checksumAlgorithm?: string,
+) {
+  const downloads: {
+    path: string;
+    binary: string;
+    checksum?: string;
+  }[] = [];
   await pipeline(
     startDownload(url),
-    extractTar({ cwd: dir }, binaries).on('entry', ({ absolute }) =>
-      downloads.push(absolute),
+    extractTar(
+      {
+        cwd: dir,
+        transform: (entry) => {
+          if (checksumAlgorithm) {
+            const hash = createHash(checksumAlgorithm);
+            const passThrough = new Minipass({ async: true });
+            passThrough.pipe(hash);
+            passThrough.on('end', () => {
+              downloads.push({
+                path: entry.absolute!,
+                binary: entry.path,
+                checksum: hash.digest('hex'),
+              });
+            });
+            return passThrough;
+          } else {
+            downloads.push({
+              path: entry.absolute!,
+              binary: entry.path,
+            });
+          }
+        },
+      },
+      binaries,
     ),
   );
   return downloads;
@@ -246,9 +325,15 @@ async function extractFromTar(url: URL, binaries: string[], dir: string) {
  * @param url The URL of the archive to extract the binaries from
  * @param binaries The list of binaries to extract
  * @param dir  The destination directory
+ * @param checksumAlgorithm The checksum algorithm to use
  * @returns The list of binaries extracted
  */
-async function extractFromZip(url: URL, binaries: string[], dir: string) {
+async function extractFromZip(
+  url: URL,
+  binaries: string[],
+  dir: string,
+  checksumAlgorithm?: string,
+) {
   const agent = new (url.protocol === 'http:' ? HttpAgent : HttpsAgent)({
     keepAlive: true,
   });
@@ -275,20 +360,34 @@ async function extractFromZip(url: URL, binaries: string[], dir: string) {
     binaries.includes(basename(path, extname(path))),
   );
   return await Promise.all(
-    filtered.map(async ({ stream, path }) => {
+    filtered.map(async ({ path, stream }) => {
       const dest = join(dir, path);
-      await pipeline(stream(), createWriteStream(dest));
-      return dest;
+      const entry = stream();
+      const destStream = createWriteStream(dest);
+      if (checksumAlgorithm) {
+        const hash = createHash(checksumAlgorithm);
+        const hashStream = async function* (source: Entry) {
+          for await (const chunk of source) {
+            hash.update(chunk);
+            yield chunk;
+          }
+        };
+        await pipeline(entry, hashStream, destStream);
+        return {
+          path: dest,
+          binary: basename(path, extname(path)),
+          checksum: hash.digest('hex'),
+        };
+      } else {
+        await pipeline(entry, destStream);
+        return {
+          path: dest,
+          binary: basename(path, extname(path)),
+        };
+      }
     }),
   );
 }
-
-type DownloadOptions = {
-  method?: 'GET' | 'HEAD';
-  headers?: Record<string, string>;
-  agent?: HttpsAgent | HttpAgent;
-  maxRedirects?: number;
-};
 
 /**
  * Starts a download from the given URL.
@@ -302,7 +401,7 @@ function startDownload(
   url: URL,
   options: DownloadOptions = {},
   redirects: number = 0,
-): DownloadStream {
+) {
   const MAX_REDIRECTS = options.maxRedirects ?? 5;
   const request = url.protocol === 'http:' ? httpRequest : httpsRequest;
   const stream = new DownloadStream();
@@ -376,11 +475,15 @@ export function getVersion(binPath: string): Buffer {
   try {
     return execSync(`${binPath} --version`).subarray(0, -1); // ignore newline
   } catch (error: unknown) {
-    const msg = `Failed to get version for ${binPath}`;
+    const msg = `Failed to get version for ${binPath}
+
+Your selected platform or architecture may be incorrect, or the binary may not
+support your system. If you believe this is an error, please report it.`;
     if (error instanceof Error) {
-      throw new Error(`${msg}: ${error.message}`);
+      error.message = `${msg}\n\n${error.message}`;
+      throw error;
     }
-    throw new Error(msg);
+    throw new AggregateError([new Error(msg), error]);
   }
 }
 
@@ -390,4 +493,30 @@ export function isCodedError(
   return (
     error instanceof Error && 'code' in error && typeof error.code === 'string'
   );
+}
+
+/**
+ * Transforms the CLI checksum object into a platform+arch-specific checksum
+ * object.
+ *
+ * @param checksums The CLI checksum object
+ * @param platform The build platform
+ * @param arch The build architecture
+ * @returns
+ */
+export function transformChecksums(
+  checksums: Checksums | undefined,
+  platform: Platform,
+  arch: Architecture,
+): PlatformArchChecksums | null {
+  if (!checksums) return null;
+
+  const key = `${platform}-${arch}` as const;
+  return {
+    algorithm: checksums.algorithm,
+    binaries: Object.entries(checksums.binaries).reduce(
+      (acc, [name, record]) => ((acc[name as Binary] = record[key]), acc),
+      {} as Record<Binary, string>,
+    ),
+  };
 }
