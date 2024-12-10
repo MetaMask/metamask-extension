@@ -39,7 +39,7 @@ export default function Asset({
   const tokenList = useSelector(getTokenList);
   const allNetworks = useSelector(getNetworkConfigurationIdByChainId);
   const isTokenChainIdInWallet = Boolean(
-    allNetworks[chainId as keyof typeof allNetworks],
+    chainId ? allNetworks[chainId as keyof typeof allNetworks] : true,
   );
   const tokenData = address
     ? Object.values(tokenList).find(
