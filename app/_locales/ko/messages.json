@@ -1033,9 +1033,6 @@
   "confirmRecoveryPhrase": {
     "message": "비밀복구구문 컨펌"
   },
-  "confirmTitleApproveTransaction": {
-    "message": "수당 청구"
-  },
   "confirmTitleDeployContract": {
     "message": "계약 배포"
   },

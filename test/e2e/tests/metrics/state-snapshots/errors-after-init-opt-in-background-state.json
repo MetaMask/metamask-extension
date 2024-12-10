@@ -344,6 +344,7 @@
     "allDetectedTokens": {}
   },
   "TxController": {
+    "lastFetchedBlockNumbers": "object",
     "methodData": "object",
     "transactions": "object",
     "lastFetchedBlockNumbers": "object",

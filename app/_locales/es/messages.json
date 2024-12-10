@@ -1033,9 +1033,6 @@
   "confirmRecoveryPhrase": {
     "message": "Confirmar frase secreta de recuperación"
   },
-  "confirmTitleApproveTransaction": {
-    "message": "Solicitud de asignación"
-  },
   "confirmTitleDeployContract": {
     "message": "Implementar un contrato"
   },
