@@ -40,11 +40,6 @@
         "@babel/preset-env>@babel/plugin-syntax-logical-assignment-operators": true
       }
     },
-    "depcheck>@babel/traverse": {
-      "packages": {
-        "babel/preset-env>b@babel/types": true
-      }
-    },
     "eslint>@eslint/eslintrc": {
       "builtin": {
         "assert": true,

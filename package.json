@@ -450,9 +450,9 @@
     "@babel/preset-typescript": "^7.25.9",
     "@babel/register": "^7.25.9",
     "@jest/globals": "^29.7.0",
-    "@lavamoat/allow-scripts": "^3.0.4",
+    "@lavamoat/allow-scripts": "^3.3.1",
     "@lavamoat/lavadome-core": "0.0.10",
-    "@lavamoat/lavapack": "^6.1.0",
+    "@lavamoat/lavapack": "^7.0.5",
     "@lgbot/madge": "^6.2.0",
     "@lydell/node-pty": "^1.0.1",
     "@metamask/api-specs": "^0.9.3",
@@ -610,8 +610,8 @@
     "jsdom": "^16.7.0",
     "json-schema-to-ts": "^3.0.1",
     "koa": "^2.7.0",
-    "lavamoat": "^8.0.2",
-    "lavamoat-browserify": "^17.0.4",
+    "lavamoat": "^9.0.5",
+    "lavamoat-browserify": "^18.1.2",
     "lavamoat-viz": "^7.0.5",
     "level": "^8.0.1",
     "lockfile-lint": "^4.10.6",
@@ -750,7 +750,8 @@
       "resolve-url-loader>es6-iterator>d>es5-ext>esniff>es5-ext": false,
       "level>classic-level": false,
       "jest-preview": false,
-      "@metamask/solana-wallet-snap>@solana/web3.js>bigint-buffer": false
+      "@metamask/solana-wallet-snap>@solana/web3.js>bigint-buffer": false,
+      "@lavamoat/allow-scripts>@lavamoat/preinstall-always-fail": false
     }
   },
   "packageManager": "yarn@4.5.1"
