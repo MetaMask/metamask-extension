@@ -310,6 +310,7 @@
     "@metamask/ethjs-contract": "^0.4.1",
     "@metamask/ethjs-query": "^0.7.1",
     "@metamask/gas-fee-controller": "^22.0.1",
+    "@metamask/institutional-wallet-snap": "^0.2.8",
     "@metamask/jazzicon": "^2.0.0",
     "@metamask/json-rpc-engine": "^10.0.0",
     "@metamask/json-rpc-middleware-stream": "^8.0.4",
