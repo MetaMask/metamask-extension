@@ -2,9 +2,9 @@ import { ApprovalController } from '@metamask/approval-controller';
 import { ApprovalType } from '@metamask/controller-utils';
 import { DIALOG_APPROVAL_TYPES } from '@metamask/snaps-rpc-methods';
 import { providerErrors } from '@metamask/rpc-errors';
+import { createProjectLogger } from '@metamask/utils';
 ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
 import { SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES } from '../../../../shared/constants/app';
-import { createProjectLogger } from '@metamask/utils';
 ///: END:ONLY_INCLUDE_IF
 
 const log = createProjectLogger('approval-utils');
