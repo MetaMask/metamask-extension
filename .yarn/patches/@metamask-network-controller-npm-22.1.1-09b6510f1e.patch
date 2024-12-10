@@ -1,3 +1,13 @@
+diff --git a/PATCH.txt b/PATCH.txt
+new file mode 100644
+index 0000000000000000000000000000000000000000..376255036ca54b83a3f3c3e0277c2666473df30e
+--- /dev/null
++++ b/PATCH.txt
+@@ -0,0 +1,4 @@
++We remove lookupNetwork from initializeProvider in the network controller to prevent network requests before user onboarding is completed.
++The network lookup is done after onboarding is completed, and when the extension reloads if onboarding has been completed.
++This patch is part of a temporary fix that will be reverted soon to make way for a more permanent solution. https://github.com/MetaMask/metamask-extension/pull/23005
++You can see the changes before compilation on this branch: https://github.com/MetaMask/core/compare/pnf/ext-23622-review?expand=1
 diff --git a/dist/NetworkController.cjs b/dist/NetworkController.cjs
 index cc9793f576eb39a51ab141b7d03de57cf99e5570..184153067f2bbd58ea76d7db33c2af56245cd8c0 100644
 --- a/dist/NetworkController.cjs
