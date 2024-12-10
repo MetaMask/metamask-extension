@@ -1,5 +1,0 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
-
-exports[`DetectedTokenIgnoredPopover should match snapshot for ignore mode 1`] = `<DocumentFragment />`;
-
-exports[`DetectedTokenIgnoredPopover should match snapshot for import mode 1`] = `<DocumentFragment />`;
