@@ -60,7 +60,7 @@ jobs:
           # apt-get -y install xorg xvfb gtk2-engines-pixbuf
           # apt-get -y install dbus-x11 xfonts-base xfonts-100dpi xfonts-75dpi xfonts-cyrillic xfonts-scalable
           Xvfb -ac :99 -screen 0 1280x1024x16 &
-          export DISPLAY=:99
+          # export DISPLAY=:99
 
       - name: Run the benchmark
         run: yarn benchmark:chrome --out test-artifacts/chrome/benchmark/pageload.json --retries 2
