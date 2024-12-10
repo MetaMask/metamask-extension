@@ -878,10 +878,10 @@ export enum MetaMetricsEventName {
   AllQuotesSorted = 'All Quotes Sorted',
   InputChanged = 'Input Changed',
   InputSourceDestinationFlipped = 'Source and Destination Flipped',
-  CrossChainSwapsQuoteError = 'Quote Error',
+  CrossChainSwapsQuoteError = 'Cross-chain Quote Error',
   QuoteSelected = 'Quote Selected',
-  CrossChainSwapsQuotesReceived = 'Quotes Received',
-  CrossChainSwapsQuotesRequested = 'Quotes Requested',
+  CrossChainSwapsQuotesReceived = 'Cross-chain Quotes Received',
+  CrossChainSwapsQuotesRequested = 'Cross-chain Quotes Requested',
 }
 
 export enum MetaMetricsEventAccountType {
