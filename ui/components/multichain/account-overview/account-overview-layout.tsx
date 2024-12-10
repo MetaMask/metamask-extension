@@ -20,7 +20,14 @@ import {
   AccountOverviewTabsProps,
   AccountOverviewTabs,
 } from './account-overview-tabs';
-import { FUND_SLIDE, BRIDGE_SLIDE, CARD_SLIDE, CASH_SLIDE } from './constants';
+import {
+  FUND_SLIDE,
+  ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
+  BRIDGE_SLIDE,
+  ///: END:ONLY_INCLUDE_IF
+  CARD_SLIDE,
+  CASH_SLIDE,
+} from './constants';
 
 export type AccountOverviewLayoutProps = AccountOverviewTabsProps & {
   children: React.ReactElement;
