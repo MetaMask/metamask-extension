@@ -7261,7 +7261,7 @@ export default class MetamaskController extends EventEmitter {
     };
 
     return initControllers({
-      controllerMessenger: this.controllerMessenger,
+      baseControllerMessenger: this.controllerMessenger,
       initObjects,
       initRequest,
     });
