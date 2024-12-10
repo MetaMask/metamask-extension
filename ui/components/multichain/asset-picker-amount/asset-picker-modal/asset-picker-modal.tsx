@@ -58,7 +58,6 @@ import {
   NETWORK_TO_NAME_MAP,
 } from '../../../../../shared/constants/network';
 import { useMultichainBalances } from '../../../../hooks/useMultichainBalances';
-import { AvatarGroup } from '../../avatar-group';
 import { AvatarType } from '../../avatar-group/avatar-group.types';
 import { NETWORK_TO_SHORT_NETWORK_NAME_MAP } from '../../../../../shared/constants/bridge';
 import {
@@ -452,20 +451,20 @@ export function AssetPickerModal({
                   ? getNetworkImageUrl(selectedNetwork.chainId)
                   : undefined
               }
-              avatarComponent={
-                isMultiselectEnabled && selectedChainIds ? (
-                  <AvatarGroup
-                    limit={2}
-                    members={selectedChainIds.map((c) => ({
-                      avatarValue: getNetworkImageUrl(c),
-                      symbol:
-                        NETWORK_TO_SHORT_NETWORK_NAME_MAP[
-                          c as keyof typeof NETWORK_TO_SHORT_NETWORK_NAME_MAP
-                        ],
-                    }))}
-                    avatarType={AvatarType.NETWORK}
-                  />
-                ) : undefined
+              avatarGroupProps={
+                isMultiselectEnabled && selectedChainIds
+                  ? {
+                      limit: 2,
+                      members: selectedChainIds.map((c) => ({
+                        avatarValue: getNetworkImageUrl(c),
+                        symbol:
+                          NETWORK_TO_SHORT_NETWORK_NAME_MAP[
+                            c as keyof typeof NETWORK_TO_SHORT_NETWORK_NAME_MAP
+                          ],
+                      })),
+                      avatarType: AvatarType.NETWORK,
+                    }
+                  : undefined
               }
               onClick={onNetworkPickerClick}
               data-testid="multichain-asset-picker__network"
