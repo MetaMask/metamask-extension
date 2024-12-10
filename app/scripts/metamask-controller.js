@@ -2755,8 +2755,10 @@ export default class MetamaskController extends EventEmitter {
   }
 
   triggerNetworkrequests() {
+    this.txController.stopIncomingTransactionPolling();
+
     this.txController.startIncomingTransactionPolling([
-      this.#getGlobalNetworkClientId(),
+      this.#getGlobalChainId(),
     ]);
 
     this.tokenDetectionController.enable();
@@ -3009,9 +3011,12 @@ export default class MetamaskController extends EventEmitter {
         const chainId = this.#getGlobalChainId();
 
         await updateCurrentLocale(currentLocale);
+
         if (currState.incomingTransactionsPreferences?.[chainId]) {
+          this.txController.stopIncomingTransactionPolling();
+
           this.txController.startIncomingTransactionPolling([
-            this.#getGlobalNetworkClientId(),
+            this.#getGlobalChainId(),
           ]);
         } else {
           this.txController.stopIncomingTransactionPolling();
@@ -3082,14 +3087,14 @@ export default class MetamaskController extends EventEmitter {
     this.controllerMessenger.subscribe(
       'NetworkController:networkDidChange',
       async () => {
-        await this.txController.updateIncomingTransactions([
-          this.#getGlobalNetworkClientId(),
-        ]);
-
         await this.txController.stopIncomingTransactionPolling();
 
+        await this.txController.updateIncomingTransactions([
+          this.#getGlobalChainId(),
+        ]);
+
         await this.txController.startIncomingTransactionPolling([
-          this.#getGlobalNetworkClientId(),
+          this.#getGlobalChainId(),
         ]);
       },
     );
@@ -7082,7 +7087,9 @@ export default class MetamaskController extends EventEmitter {
       }
     }
 
-    await this.txController.updateIncomingTransactions();
+    await this.txController.updateIncomingTransactions([
+      this.#getGlobalChainId(),
+    ]);
   }
 
   async _notifyAccountsChange(origin, newAccounts) {

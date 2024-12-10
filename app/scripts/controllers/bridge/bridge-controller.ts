@@ -37,7 +37,7 @@ import { hasSufficientBalance } from '../../../../shared/modules/bridge-utils/ba
 import { CHAIN_IDS } from '../../../../shared/constants/network';
 import {
   BRIDGE_CONTROLLER_NAME,
-  DEFAULT_BRIDGE_CONTROLLER_STATE,
+  DEFAULT_BRIDGE_STATE,
   REFRESH_INTERVAL_MS,
   RequestStatus,
   METABRIDGE_CHAIN_TO_ADDRESS_MAP,
@@ -48,7 +48,7 @@ import {
   BridgeFeatureFlagsKey,
 } from './types';
 
-const metadata: StateMetadata<{ bridgeState: BridgeControllerState }> = {
+const metadata: StateMetadata<BridgeControllerState> = {
   bridgeState: {
     persist: false,
     anonymous: false,
@@ -65,7 +65,7 @@ type BridgePollingInput = {
 
 export default class BridgeController extends StaticIntervalPollingController<BridgePollingInput>()<
   typeof BRIDGE_CONTROLLER_NAME,
-  { bridgeState: BridgeControllerState },
+  BridgeControllerState,
   BridgeControllerMessenger
 > {
   #abortController: AbortController | undefined;
@@ -90,7 +90,7 @@ export default class BridgeController extends StaticIntervalPollingController<Br
       metadata,
       messenger,
       state: {
-        bridgeState: DEFAULT_BRIDGE_CONTROLLER_STATE,
+        bridgeState: DEFAULT_BRIDGE_STATE,
       },
     });
 
@@ -138,7 +138,7 @@ export default class BridgeController extends StaticIntervalPollingController<Br
 
     const { bridgeState } = this.state;
     const updatedQuoteRequest = {
-      ...DEFAULT_BRIDGE_CONTROLLER_STATE.quoteRequest,
+      ...DEFAULT_BRIDGE_STATE.quoteRequest,
       ...paramsToUpdate,
     };
 
@@ -146,11 +146,10 @@ export default class BridgeController extends StaticIntervalPollingController<Br
       _state.bridgeState = {
         ...bridgeState,
         quoteRequest: updatedQuoteRequest,
-        quotes: DEFAULT_BRIDGE_CONTROLLER_STATE.quotes,
-        quotesLastFetched: DEFAULT_BRIDGE_CONTROLLER_STATE.quotesLastFetched,
-        quotesLoadingStatus:
-          DEFAULT_BRIDGE_CONTROLLER_STATE.quotesLoadingStatus,
-        quotesRefreshCount: DEFAULT_BRIDGE_CONTROLLER_STATE.quotesRefreshCount,
+        quotes: DEFAULT_BRIDGE_STATE.quotes,
+        quotesLastFetched: DEFAULT_BRIDGE_STATE.quotesLastFetched,
+        quotesLoadingStatus: DEFAULT_BRIDGE_STATE.quotesLoadingStatus,
+        quotesRefreshCount: DEFAULT_BRIDGE_STATE.quotesRefreshCount,
       };
     });
 
@@ -199,7 +198,7 @@ export default class BridgeController extends StaticIntervalPollingController<Br
 
     this.update((_state) => {
       _state.bridgeState = {
-        ...DEFAULT_BRIDGE_CONTROLLER_STATE,
+        ...DEFAULT_BRIDGE_STATE,
         quotes: [],
         bridgeFeatureFlags: _state.bridgeState.bridgeFeatureFlags,
       };

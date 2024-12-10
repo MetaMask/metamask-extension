@@ -1,5 +1,5 @@
 import { useState, useCallback } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import log from 'loglevel';
 import { useMetamaskNotificationsContext } from '../../../contexts/metamask-notifications/metamask-notifications';
 import {
@@ -8,17 +8,6 @@ import {
   setIsProfileSyncingEnabled as setIsProfileSyncingEnabledAction,
   hideLoadingIndication,
 } from '../../../store/actions';
-
-import { selectIsSignedIn } from '../../../selectors/identity/authentication';
-import {
-  selectIsAccountSyncingReadyToBeDispatched,
-  selectIsProfileSyncingEnabled,
-} from '../../../selectors/identity/profile-syncing';
-import { getUseExternalServices } from '../../../selectors';
-import {
-  getIsUnlocked,
-  getCompletedOnboarding,
-} from '../../../ducks/metamask/metamask';
 
 /**
  * Custom hook to enable profile syncing. This hook handles the process of signing in
@@ -115,35 +104,3 @@ export function useSetIsProfileSyncingEnabled(): {
 
   return { setIsProfileSyncingEnabled, error };
 }
-
-/**
- * A utility used internally to decide if syncing features should be dispatched
- * Considers factors like basic functionality; unlocked; finished onboarding, and is logged in
- *
- * @returns a boolean if internally we can perform syncing features or not.
- */
-export const useShouldDispatchProfileSyncing = () => {
-  const isAccountSyncingReadyToBeDispatched = useSelector(
-    selectIsAccountSyncingReadyToBeDispatched,
-  );
-  const isProfileSyncingEnabled = useSelector(selectIsProfileSyncingEnabled);
-  const basicFunctionality: boolean | undefined = useSelector(
-    getUseExternalServices,
-  );
-  const isUnlocked: boolean | undefined = useSelector(getIsUnlocked);
-  const isSignedIn = useSelector(selectIsSignedIn);
-  const completedOnboarding: boolean | undefined = useSelector(
-    getCompletedOnboarding,
-  );
-
-  const shouldDispatchProfileSyncing: boolean = Boolean(
-    basicFunctionality &&
-      isProfileSyncingEnabled &&
-      isUnlocked &&
-      isSignedIn &&
-      completedOnboarding &&
-      isAccountSyncingReadyToBeDispatched,
-  );
-
-  return shouldDispatchProfileSyncing;
-};

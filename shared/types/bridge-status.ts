@@ -119,7 +119,7 @@ export type BridgeHistoryItem = {
   txMetaId: string; // Need this to handle STX that might not have a txHash immediately
   quote: Quote;
   status: StatusResponse;
-  startTime?: number;
+  startTime?: number; // timestamp in ms
   estimatedProcessingTimeInSeconds: number;
   slippagePercentage: number;
   completionTime?: number;
@@ -167,6 +167,10 @@ export type StartPollingForBridgeTxStatusArgsSerialized = Omit<
 
 export type SourceChainTxMetaId = string;
 
-export type BridgeStatusControllerState = {
+export type BridgeStatusState = {
   txHistory: Record<SourceChainTxMetaId, BridgeHistoryItem>;
+};
+
+export type BridgeStatusControllerState = {
+  bridgeStatusState: BridgeStatusState;
 };
