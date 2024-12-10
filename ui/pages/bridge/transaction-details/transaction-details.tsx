@@ -204,6 +204,7 @@ const CrossChainSwapTxDetails = () => {
             flexDirection={FlexDirection.Column}
             gap={4}
           >
+            {/* Delayed banner */}
             {isDelayed && (
               <BannerAlert
                 title={t('bridgeTxDetailsDelayedTitle')}
@@ -239,6 +240,7 @@ const CrossChainSwapTxDetails = () => {
               </BannerAlert>
             )}
 
+            {/* Bridge step list */}
             {status !== StatusTypes.COMPLETE &&
               (bridgeHistoryItem || srcChainTxMeta) && (
                 <BridgeStepList
@@ -257,9 +259,10 @@ const CrossChainSwapTxDetails = () => {
               srcBlockExplorerUrl={srcBlockExplorerUrl}
               destBlockExplorerUrl={destBlockExplorerUrl}
             />
+
             <Divider />
 
-            {/* General tx details */}
+            {/* Bridge tx details */}
             <Box
               display={Display.Flex}
               flexDirection={FlexDirection.Column}
