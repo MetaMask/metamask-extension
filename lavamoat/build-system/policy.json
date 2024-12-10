@@ -2110,56 +2110,6 @@
         "chokidar>anymatch>picomatch": true
       }
     },
-    "cross-spawn": {
-      "builtin": {
-        "child_process.spawn": true,
-        "child_process.spawnSync": true,
-        "fs.closeSync": true,
-        "fs.openSync": true,
-        "fs.readSync": true,
-        "path.delimiter": true,
-        "path.normalize": true,
-        "path.resolve": true
-      },
-      "globals": {
-        "Buffer.alloc": true,
-        "process.chdir": true,
-        "process.cwd": true,
-        "process.env": true,
-        "process.platform": true
-      },
-      "packages": {
-        "cross-spawn>path-key": true,
-        "cross-spawn>shebang-command": true,
-        "cross-spawn>which": true
-      }
-    },
-    "cross-spawn>path-key": {
-      "globals": {
-        "process.env": true,
-        "process.platform": true
-      }
-    },
-    "cross-spawn>shebang-command": {
-      "packages": {
-        "cross-spawn>shebang-command>shebang-regex": true
-      }
-    },
-    "cross-spawn>which": {
-      "builtin": {
-        "path.join": true
-      },
-      "globals": {
-        "process.cwd": true,
-        "process.env.OSTYPE": true,
-        "process.env.PATH": true,
-        "process.env.PATHEXT": true,
-        "process.platform": true
-      },
-      "packages": {
-        "@sentry/cli>which>isexe": true
-      }
-    },
     "debounce-stream>duplexer": {
       "builtin": {
         "stream": true

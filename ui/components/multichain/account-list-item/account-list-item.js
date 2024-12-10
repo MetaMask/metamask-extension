@@ -6,7 +6,8 @@ import { useSelector } from 'react-redux';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { shortenAddress } from '../../../helpers/utils/util';
 
-import { AccountListItemMenu, AvatarGroup } from '..';
+import { AccountListItemMenu } from '../account-list-item-menu';
+import { AvatarGroup } from '../avatar-group';
 import { ConnectedAccountsMenu } from '../connected-accounts-menu';
 import {
   AvatarAccount,
