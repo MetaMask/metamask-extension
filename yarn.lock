@@ -6331,7 +6331,11 @@ __metadata:
     "@metamask/network-controller": ^22.0.0
   checksum: 10/73c510803a720b4c1da0b82f1279a404a9b11c4ab76f8e5e4378c65d5d08bbb32c52062abfe319476cc3f5e2623a8987775c4524e55aa94002af73d73721b869
   languageName: node
+  linkType: hard
+
+"@metamask/user-operation-controller@npm:^19.0.0":
   version: 19.0.0
+  resolution: "@metamask/user-operation-controller@npm:19.0.0"
   dependencies:
     "@metamask/base-controller": "npm:^7.0.2"
     "@metamask/controller-utils": "npm:^11.4.3"
@@ -38054,13 +38058,6 @@ __metadata:
   version: 0.1.0
   resolution: "yocto-queue@npm:0.1.0"
   checksum: 10/f77b3d8d00310def622123df93d4ee654fc6a0096182af8bd60679ddcdfb3474c56c6c7190817c84a2785648cdee9d721c0154eb45698c62176c322fb46fc700
-  languageName: node
-  linkType: hard
-
-"zod@npm:^3.23.8":
-  version: 3.24.0
-  resolution: "zod@npm:3.24.0"
-  checksum: 10/a5a5897d34090831eaa76b8f7399317b40a5e0e2cabed2cdf08667a91eec4ac06f82f9be415b8029d02409dd9f533441357e4707c49309867148002aa94d2ee3
   languageName: node
   linkType: hard
 
