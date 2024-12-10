@@ -14,6 +14,15 @@ import { useScrollRequired } from '../../hooks/useScrollRequired';
 import { MetaMetricsContext } from '../../contexts/metametrics';
 import ConfirmDecryptMessage from './confirm-decrypt-message.component';
 
+const messageIdMock = '12345';
+
+jest.mock('react-router-dom', () => ({
+  ...jest.requireActual('react-router-dom'),
+  useParams: () => ({
+    id: messageIdMock,
+  }),
+}));
+
 const messageData = {
   domain: {
     chainId: 97,
@@ -22,7 +31,6 @@ const messageData = {
     version: '1',
   },
 };
-const messageIdMock = '12345';
 const messageMock = {
   id: messageIdMock,
   time: 123,

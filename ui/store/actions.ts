@@ -5304,6 +5304,18 @@ export function requestUserApproval({
   };
 }
 
+export function rejectAllApprovals() {
+  return async (dispatch: MetaMaskReduxDispatch) => {
+    await submitRequestToBackground('rejectAllPendingApprovals');
+
+    const { pendingApprovals } = await forceUpdateMetamaskState(dispatch);
+
+    if (Object.values(pendingApprovals).length === 0) {
+      dispatch(closeCurrentNotificationWindow());
+    }
+  };
+}
+
 export async function getCurrentNetworkEIP1559Compatibility(): Promise<
   boolean | undefined
 > {
