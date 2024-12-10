@@ -1,9 +1,11 @@
 import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { useLocation } from 'react-router-dom';
 import { getSlides } from '../../../ducks/metamask/metamask';
 import { removeSlide, updateSlides } from '../../../store/actions';
+///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
+import { useLocation } from 'react-router-dom';
 import useBridging from '../../../hooks/bridge/useBridging';
+///: END:ONLY_INCLUDE_IF
 import { Carousel } from '..';
 import {
   ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
@@ -73,6 +75,7 @@ export const AccountOverviewLayout = ({
   ///: END:ONLY_INCLUDE_IF
 
   useEffect(() => {
+    ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
     const handleBridgeClick = () => {
       if (defaultSwapsToken) {
         openBridgeExperience(
@@ -82,6 +85,7 @@ export const AccountOverviewLayout = ({
         );
       }
     };
+    ///: END:ONLY_INCLUDE_IF
 
     const fundSlide = {
       ...FUND_SLIDE,
