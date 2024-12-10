@@ -57,6 +57,7 @@ Changing this code must be done cautiously to avoid breaking the app!
               "createElement",
               "createElementNS",
               "parentWindow",
+              "compatMode",
               "createTextNode"
             ].includes(b) &&
             !b.startsWith('__reactInternalInstance') &&
