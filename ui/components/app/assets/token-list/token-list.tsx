@@ -8,6 +8,7 @@ import {
   getCurrencyRates,
   getCurrentNetwork,
   getIsTestnet,
+  getIsTokenNetworkFilterEqualCurrentNetwork,
   getMarketData,
   getNetworkConfigurationIdByChainId,
   getNewTokensImported,
@@ -100,6 +101,9 @@ export default function TokenList({
   );
   const newTokensImported = useSelector(getNewTokensImported);
   const selectedAccountTokensChains = useFilteredAccountTokens(currentNetwork);
+  const isOnCurrentNetwork = useSelector(
+    getIsTokenNetworkFilterEqualCurrentNetwork,
+  );
 
   const { tokenBalances } = useTokenBalances();
   const selectedAccountTokenBalancesAcrossChains =
@@ -113,7 +117,7 @@ export default function TokenList({
   const nativeBalances: Record<Hex, Hex> = useSelector(
     getSelectedAccountNativeTokenCachedBalanceByChainId,
   ) as Record<Hex, Hex>;
-
+  const isTestnet = useSelector(getIsTestnet);
   // Ensure newly added networks are included in the tokenNetworkFilter
   useEffect(() => {
     if (process.env.PORTFOLIO_VIEW) {
@@ -154,7 +158,12 @@ export default function TokenList({
           // respect hide zero balance setting
           // native tokens should still show zero balance regardless
           // erc20s with zero balances should be hidden
-          if (!hideZeroBalanceTokens || token.isNative || balance !== '0') {
+          // additionally, when all networks filter is shown, do not display zero native tokens
+          if (
+            !hideZeroBalanceTokens ||
+            balance !== '0' ||
+            (token.isNative && isOnCurrentNetwork)
+          ) {
             tokensWithBalance.push({
               ...token,
               balance,
@@ -224,8 +233,6 @@ export default function TokenList({
     console.log(t('loadingTokens'));
   }
 
-  // Check if testnet
-  const isTestnet = useSelector(getIsTestnet);
   const shouldShowFiat = useMultichainSelector(
     getMultichainShouldShowFiat,
     selectedAccount,
