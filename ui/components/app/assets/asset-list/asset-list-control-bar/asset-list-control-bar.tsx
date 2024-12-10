@@ -2,6 +2,7 @@ import React, { useEffect, useRef, useState, useContext, useMemo } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import {
   getCurrentNetwork,
+  getIsTokenNetworkFilterEqualCurrentNetwork,
   getTokenNetworkFilter,
 } from '../../../../../selectors';
 import { getNetworkConfigurationsByChainId } from '../../../../../../shared/modules/selectors/networks';
@@ -60,6 +61,9 @@ const AssetListControlBar = ({ showTokensLinks }: AssetListControlBarProps) => {
   const popoverRef = useRef<HTMLDivElement>(null);
   const currentNetwork = useSelector(getCurrentNetwork);
   const allNetworks = useSelector(getNetworkConfigurationsByChainId);
+  const isTokenNetworkFilterEqualCurrentNetwork = useSelector(
+    getIsTokenNetworkFilterEqualCurrentNetwork,
+  );
 
   const tokenNetworkFilter = useSelector(getTokenNetworkFilter);
   const [isTokenSortPopoverOpen, setIsTokenSortPopoverOpen] = useState(false);
@@ -76,10 +80,6 @@ const AssetListControlBar = ({ showTokensLinks }: AssetListControlBarProps) => {
   Object.keys(allNetworks || {}).forEach((chainId) => {
     allOpts[chainId] = true;
   });
-
-  const allNetworksFilterShown =
-    Object.keys(tokenNetworkFilter).length !==
-    Object.keys(allOpts || {}).length;
 
   useEffect(() => {
     if (isTestNetwork) {
@@ -192,7 +192,7 @@ const AssetListControlBar = ({ showTokensLinks }: AssetListControlBarProps) => {
             marginRight={isFullScreen ? 2 : null}
             ellipsis
           >
-            {allNetworksFilterShown
+            {isTokenNetworkFilterEqualCurrentNetwork
               ? currentNetwork?.nickname ?? t('currentNetwork')
               : t('popularNetworks')}
           </ButtonBase>

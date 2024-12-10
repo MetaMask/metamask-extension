@@ -1088,13 +1088,24 @@ export function getIsTokenNetworkFilterEqualCurrentNetwork(state) {
 }
 
 export function getTokenNetworkFilter(state) {
-  const chainId = getCurrentChainId(state);
+  const currentChainId = getCurrentChainId(state);
   const { tokenNetworkFilter } = getPreferences(state);
 
-  if (!FEATURED_NETWORK_CHAIN_IDS.includes(chainId)) {
-    return { [chainId]: true };
+  // Portfolio view not enabled outside popular networks
+  if (!FEATURED_NETWORK_CHAIN_IDS.includes(currentChainId)) {
+    return { [currentChainId]: true };
   }
-  return tokenNetworkFilter || {};
+
+  // Portfolio view only enabled on featured networks
+  return Object.entries(tokenNetworkFilter || {}).reduce(
+    (acc, [chainId, value]) => {
+      if (FEATURED_NETWORK_CHAIN_IDS.includes(chainId)) {
+        acc[chainId] = value;
+      }
+      return acc;
+    },
+    {},
+  );
 }
 
 export function getUseTransactionSimulations(state) {

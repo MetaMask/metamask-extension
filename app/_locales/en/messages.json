@@ -509,10 +509,6 @@
   "allCustodianAccountsConnectedTitle": {
     "message": "No accounts available to connect"
   },
-  "allNetworks": {
-    "message": "All networks",
-    "description": "Speicifies to token network filter to filter by all Networks"
-  },
   "allOfYour": {
     "message": "All of your $1",
     "description": "$1 is the symbol or name of the token that the user is approving spending"
@@ -4475,7 +4471,9 @@
   "quoteRate": {
     "message": "Quote rate"
   },
-  "quotedNetworkFee": { "message": "$1 network fee" },
+  "quotedNetworkFee": {
+    "message": "$1 network fee"
+  },
   "quotedReceiveAmount": {
     "message": "$1 receive amount"
   },
