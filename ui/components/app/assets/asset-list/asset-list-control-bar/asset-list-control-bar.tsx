@@ -2,7 +2,6 @@ import React, { useEffect, useRef, useState, useContext, useMemo } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import {
   getCurrentNetwork,
-  getPreferences,
   getTokenNetworkFilter,
 } from '../../../../../selectors';
 import { getNetworkConfigurationsByChainId } from '../../../../../../shared/modules/selectors/networks';

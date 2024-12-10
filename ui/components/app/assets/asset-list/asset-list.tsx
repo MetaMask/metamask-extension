@@ -7,7 +7,6 @@ import {
   getAllDetectedTokensForSelectedAddress,
   getDetectedTokensInCurrentNetwork,
   getIstokenDetectionInactiveOnNonMainnetSupportedNetwork,
-  getPreferences,
   getSelectedAccount,
   getTokenNetworkFilter,
 } from '../../../../selectors';

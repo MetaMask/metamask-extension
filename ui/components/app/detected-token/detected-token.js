@@ -16,7 +16,6 @@ import {
 import {
   getAllDetectedTokensForSelectedAddress,
   getDetectedTokensInCurrentNetwork,
-  getPreferences,
   getTokenNetworkFilter,
 } from '../../../selectors';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
