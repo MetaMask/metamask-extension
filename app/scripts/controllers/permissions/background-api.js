@@ -112,6 +112,13 @@ export function getPermissionBackgroundApiMethods({
   };
 
   const requestAccountsAndChainPermissions = async (origin, id) => {
+    // Note that we are purposely requesting an approval from the ApprovalController
+    // and then manually forming the permission that is then granted via the
+    // PermissionController rather than calling the PermissionController.requestPermissions()
+    // directly because the Approval UI is still dependent on the notion of there
+    // being separate "eth_accounts" and "endowment:permitted-chains" permissions.
+    // After that depedency is refactored, we can move to requesting "endowment:caip25"
+    // directly from the PermissionController instead.
     const legacyApproval = await approvalController.addAndShowApprovalRequest({
       id,
       origin,
