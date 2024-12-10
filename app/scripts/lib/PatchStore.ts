@@ -1,6 +1,7 @@
-import { createProjectLogger } from '@metamask/utils';
+import { createProjectLogger, getKnownPropertyNames } from '@metamask/utils';
 import { Patch } from 'immer';
 import { v4 as uuid } from 'uuid';
+import type { BackgroundStateProxy } from '../../../shared/types/metamask';
 import ComposableObservableStore from './ComposableObservableStore';
 import { sanitizeUIState } from './state-utils';
 
@@ -14,9 +15,9 @@ export class PatchStore {
   private pendingPatches: Map<string, Patch> = new Map();
 
   private listener: (request: {
-    controllerKey: string;
-    oldState: Record<string, unknown>;
-    newState: Record<string, unknown>;
+    controllerKey?: keyof BackgroundStateProxy;
+    oldState: BackgroundStateProxy;
+    newState: BackgroundStateProxy;
   }) => void;
 
   constructor(observableStore: ComposableObservableStore) {
@@ -47,16 +48,21 @@ export class PatchStore {
   }
 
   private _onStateChange({
+    controllerKey,
     oldState,
     newState,
   }: {
-    controllerKey: string;
-    oldState: Record<string, unknown>;
-    newState: Record<string, unknown>;
+    controllerKey?: keyof BackgroundStateProxy;
+    oldState: BackgroundStateProxy;
+    newState: BackgroundStateProxy;
   }) {
     const sanitizedNewState = sanitizeUIState(newState);
-    const patches = this._generatePatches(oldState, sanitizedNewState);
-    const isInitialized = Boolean(newState.vault);
+    const patches = this._generatePatches({
+      controllerKey,
+      oldState,
+      newState: sanitizedNewState,
+    });
+    const isInitialized = Boolean(newState.KeyringController.vault);
 
     if (isInitialized) {
       patches.push({
@@ -79,25 +85,46 @@ export class PatchStore {
     }
   }
 
-  private _generatePatches(
-    oldState: Record<string, unknown>,
-    newState: Record<string, unknown>,
-  ): Patch[] {
-    return Object.keys(newState)
-      .map((key) => {
-        const oldData = oldState[key];
-        const newData = newState[key];
+  private _generatePatches({
+    controllerKey,
+    oldState,
+    newState,
+  }: {
+    controllerKey?: keyof BackgroundStateProxy;
+    oldState: BackgroundStateProxy;
+    newState: BackgroundStateProxy;
+  }): Patch[] {
+    return controllerKey
+      ? getKnownPropertyNames(newState[controllerKey]).reduce<Patch[]>(
+          (patches, key) => {
+            // @ts-expect-error There's no way to narrow `key` to a type that corresponds to the current iteration's `controllerKey` value.
+            const oldData = oldState[controllerKey][key];
+            // @ts-expect-error There's no way to narrow `key` to a type that corresponds to the current iteration's `controllerKey` value.
+            const newData = newState[controllerKey][key];
 
-        if (oldData === newData) {
-          return null;
-        }
+            if (oldData !== newData) {
+              patches.push({
+                op: 'replace' as const,
+                path: [controllerKey, String(key)],
+                value: newData,
+              });
+            }
+            return patches;
+          },
+          [],
+        )
+      : getKnownPropertyNames(newState).reduce<Patch[]>((patches, key) => {
+          const oldData = oldState[key];
+          const newData = newState[key];
 
-        return {
-          op: 'replace',
-          path: [key],
-          value: newData,
-        };
-      })
-      .filter(Boolean) as Patch[];
+          if (oldData !== newData) {
+            patches.push({
+              op: 'replace' as const,
+              path: [key],
+              value: newData,
+            });
+          }
+          return patches;
+        }, []);
   }
 }

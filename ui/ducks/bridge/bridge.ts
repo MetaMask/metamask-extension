@@ -10,7 +10,7 @@ import {
 } from '../../pages/bridge/types';
 import { getTokenExchangeRate } from './utils';
 
-export type BridgeState = {
+export type BridgeSlice = {
   toChainId: Hex | null;
   fromToken: SwapsTokenObject | SwapsEthToken | null;
   toToken: SwapsTokenObject | SwapsEthToken | null;
@@ -21,7 +21,7 @@ export type BridgeState = {
   selectedQuote: (QuoteResponse & QuoteMetadata) | null; // Alternate quote selected by user. When quotes refresh, the best match will be activated.
 };
 
-const initialState: BridgeState = {
+const initialState: BridgeSlice = {
   toChainId: null,
   fromToken: null,
   toToken: null,

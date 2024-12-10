@@ -5,12 +5,17 @@ describe('State Utils', () => {
     it('removes unsafe properties', () => {
       const state = {
         test1: 'value1',
-        snapStates: true,
-        unencryptedSnapStates: true,
-        vault: true,
+        SnapController: {
+          snapStates: true,
+          unencryptedSnapStates: true,
+        },
+        KeyringController: {
+          vault: true,
+        },
         test2: false,
       };
 
+      // @ts-expect-error Intentionally passing in mock value for testing purposes.
       const sanitizedState = sanitizeUIState(state);
 
       expect(sanitizedState).toStrictEqual({
@@ -23,35 +28,40 @@ describe('State Utils', () => {
       const state = {
         test1: 'value1',
         test2: true,
-        snaps: {
-          snap1: {
-            id: 'snap1',
-            test3: 123,
-            sourceCode: 'sourceCode1',
-            auxiliaryFiles: 'auxiliaryFiles1',
-          },
-          snap2: {
-            id: 'snap2',
-            test4: 456,
-            sourceCode: 'sourceCode2',
-            auxiliaryFiles: 'auxiliaryFiles2',
+        SnapController: {
+          snaps: {
+            snap1: {
+              id: 'snap1',
+              test3: 123,
+              sourceCode: 'sourceCode1',
+              auxiliaryFiles: 'auxiliaryFiles1',
+            },
+            snap2: {
+              id: 'snap2',
+              test4: 456,
+              sourceCode: 'sourceCode2',
+              auxiliaryFiles: 'auxiliaryFiles2',
+            },
           },
         },
       };
 
+      // @ts-expect-error Intentionally passing in mock value for testing purposes.
       const sanitizedState = sanitizeUIState(state);
 
       expect(sanitizedState).toStrictEqual({
         test1: 'value1',
         test2: true,
-        snaps: {
-          snap1: {
-            id: 'snap1',
-            test3: 123,
-          },
-          snap2: {
-            id: 'snap2',
-            test4: 456,
+        SnapController: {
+          snaps: {
+            snap1: {
+              id: 'snap1',
+              test3: 123,
+            },
+            snap2: {
+              id: 'snap2',
+              test4: 456,
+            },
           },
         },
       });

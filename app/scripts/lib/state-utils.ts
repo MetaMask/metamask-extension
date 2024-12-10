@@ -1,16 +1,22 @@
 import { SnapControllerState } from '@metamask/snaps-controllers';
-import { Snap } from '@metamask/snaps-utils';
+import { isSnapId, Snap } from '@metamask/snaps-utils';
+import { BackgroundStateProxy } from '../../../shared/types/metamask';
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-type FlattenedUIState = Record<string, any>;
+const REMOVE_KEYS = ['snapStates', 'unencryptedSnapStates', 'vault'] as const;
 
-const REMOVE_KEYS = ['snapStates', 'unencryptedSnapStates', 'vault'];
-
-export function sanitizeUIState(state: FlattenedUIState): FlattenedUIState {
+export function sanitizeUIState(
+  state: BackgroundStateProxy,
+): BackgroundStateProxy {
   const newState = { ...state };
 
   for (const key of REMOVE_KEYS) {
-    delete newState[key];
+    if (key === 'vault') {
+      if (newState.KeyringController && key in newState.KeyringController) {
+        delete newState.KeyringController[key];
+      }
+    } else if (newState.SnapController && key in newState.SnapController) {
+      delete newState.SnapController[key];
+    }
   }
 
   sanitizeSnapData(newState);
@@ -18,17 +24,22 @@ export function sanitizeUIState(state: FlattenedUIState): FlattenedUIState {
   return newState;
 }
 
-function sanitizeSnapData(state: FlattenedUIState) {
-  const snapsData = state.snaps as SnapControllerState['snaps'] | undefined;
+function sanitizeSnapData(state: BackgroundStateProxy) {
+  const snapsData: SnapControllerState['snaps'] | undefined =
+    state.SnapController.snaps;
 
   if (!snapsData) {
     return;
   }
 
-  state.snaps = Object.values(snapsData).reduce((acc, snap) => {
-    acc[snap.id] = stripLargeSnapData(snap) as Snap;
+  state.SnapController.snaps = Object.values(snapsData).reduce<
+    SnapControllerState['snaps']
+  >((acc, snap) => {
+    if (isSnapId(snap.id)) {
+      acc[snap.id] = stripLargeSnapData(snap) as Snap;
+    }
     return acc;
-  }, {} as SnapControllerState['snaps']);
+  }, {});
 }
 
 function stripLargeSnapData(snapData: Snap): Partial<Snap> {
