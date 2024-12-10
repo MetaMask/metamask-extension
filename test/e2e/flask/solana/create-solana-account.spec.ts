@@ -56,12 +56,8 @@ describe('Create/Remove Solana Account', function (this: Suite) {
         await headerNavbar.openAccountMenu();
         await accountListPage.check_numberOfAvailableAccounts(3);
         await accountListPage.check_accountDisplayedInAccountList('Account 1');
-        await accountListPage.check_accountDisplayedInAccountList(
-          'Solana 1',
-        );
-        await accountListPage.check_accountDisplayedInAccountList(
-          'Solana 2',
-        );
+        await accountListPage.check_accountDisplayedInAccountList('Solana 1');
+        await accountListPage.check_accountDisplayedInAccountList('Solana 2');
       },
     );
   });

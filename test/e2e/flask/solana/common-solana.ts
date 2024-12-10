@@ -3,7 +3,7 @@ import { withFixtures, unlockWallet } from '../../helpers';
 import { Driver } from '../../webdriver/driver';
 import HeaderNavbar from '../../page-objects/pages/header-navbar';
 import AccountListPage from '../../page-objects/pages/account-list-page';
-import FixtureBuilder = require('../../fixture-builder');
+import FixtureBuilder from '../../fixture-builder';
 
 const SOLANA_URL_REGEX = /^https:\/\/.*\.solana.*/u;
 
