@@ -12,6 +12,8 @@ jest.mock('../../store/actions', () => ({
 }));
 
 describe('Smart Transactions Migration Alert', () => {
+  let consoleErrorSpy;
+
   const mockState = {
     [AlertTypes.smartTransactionsMigration]: {
       state: ALERT_STATE.OPEN,
@@ -20,6 +22,11 @@ describe('Smart Transactions Migration Alert', () => {
 
   beforeEach(() => {
     jest.clearAllMocks();
+    consoleErrorSpy = jest.spyOn(console, 'error').mockImplementation();
+  });
+
+  afterEach(() => {
+    consoleErrorSpy.mockRestore();
   });
 
   it('should initialize with CLOSED state', () => {
@@ -74,7 +81,9 @@ describe('Smart Transactions Migration Alert', () => {
           state: ALERT_STATE.CLOSED,
         },
       };
-      expect(shouldShowSmartTransactionsMigrationAlert(closedState)).toBe(false);
+      expect(shouldShowSmartTransactionsMigrationAlert(closedState)).toBe(
+        false,
+      );
     });
   });
 
@@ -107,6 +116,10 @@ describe('Smart Transactions Migration Alert', () => {
       expect(mockDispatch).toHaveBeenNthCalledWith(2, {
         type: `${AlertTypes.smartTransactionsMigration}/disableAlertFailed`,
       });
+      expect(consoleErrorSpy).toHaveBeenCalledWith(
+        'Failed to disable Smart Transactions Migration alert:',
+        error,
+      );
     });
   });
 });
