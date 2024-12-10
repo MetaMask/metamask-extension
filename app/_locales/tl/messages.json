@@ -1033,9 +1033,6 @@
   "confirmRecoveryPhrase": {
     "message": "Kumpirmahin ang Lihim na Parirala sa Pagbawi"
   },
-  "confirmTitleApproveTransaction": {
-    "message": "Hiling sa allowance"
-  },
   "confirmTitleDeployContract": {
     "message": "Mag-deploy ng kontrata"
   },
@@ -6600,10 +6597,6 @@
   },
   "wrongNetworkName": {
     "message": "Ayon sa aming mga talaan, ang pangalan ng network ay maaaring hindi tumugma nang tama sa ID ng chain na ito."
-  },
-  "xOfYPending": {
-    "message": "$1 ng $2 ang nakabinbin",
-    "description": "$1 and $2 are intended to be two numbers, where $2 is a total number of pending confirmations, and $1 is a count towards that total"
   },
   "yes": {
     "message": "Oo"

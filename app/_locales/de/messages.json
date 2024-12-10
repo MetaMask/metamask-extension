@@ -1033,9 +1033,6 @@
   "confirmRecoveryPhrase": {
     "message": "Geheime Wiederherstellungsphrase bestätigen"
   },
-  "confirmTitleApproveTransaction": {
-    "message": "Bewilligungsanfrage"
-  },
   "confirmTitleDeployContract": {
     "message": "Einen Kontrakt nutzen"
   },
@@ -6600,10 +6597,6 @@
   },
   "wrongNetworkName": {
     "message": "Laut unseren Aufzeichnungen stimmt dieser Netzwerkname nicht mit dieser Chain-ID überein."
-  },
-  "xOfYPending": {
-    "message": "$1 von $2 ausstehend",
-    "description": "$1 and $2 are intended to be two numbers, where $2 is a total number of pending confirmations, and $1 is a count towards that total"
   },
   "yes": {
     "message": "Ja"

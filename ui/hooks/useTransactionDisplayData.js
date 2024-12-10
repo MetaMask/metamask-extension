@@ -36,6 +36,7 @@ import { captureSingleException } from '../store/actions';
 import { isEqualCaseInsensitive } from '../../shared/modules/string-utils';
 import { getTokenValueParam } from '../../shared/lib/metamask-controller-utils';
 import { selectBridgeHistoryForAccount } from '../ducks/bridge-status/selectors';
+import { useBridgeTokenDisplayData } from '../pages/bridge/hooks/useBridgeTokenDisplayData';
 import { useI18nContext } from './useI18nContext';
 import { useTokenFiatAmount } from './useTokenFiatAmount';
 import { useUserPreferencedCurrency } from './useUserPreferencedCurrency';
@@ -257,6 +258,8 @@ export function useTransactionDisplayData(transactionGroup) {
     isViewingReceivedTokenFromSwap,
   } = useSwappedTokenValue(transactionGroup, currentAsset);
 
+  const bridgeTokenDisplayData = useBridgeTokenDisplayData(transactionGroup);
+
   if (signatureTypes.includes(type)) {
     category = TransactionGroupCategory.signatureRequest;
     title = t('signatureRequest');
@@ -382,9 +385,10 @@ export function useTransactionDisplayData(transactionGroup) {
     primarySuffix = primaryTransaction.sourceTokenSymbol;
   } else if (type === TransactionType.bridge) {
     title = t('bridgeToChain', [destChainName || '']);
-    category = TransactionGroupCategory.bridge;
-    // TODO add primaryDisplayValue,primarySuffix
-    // also secondaryDisplayValue, secondarySuffix
+    category = bridgeTokenDisplayData.category;
+    primarySuffix = bridgeTokenDisplayData.sourceTokenSymbol;
+    primaryDisplayValue = bridgeTokenDisplayData.sourceTokenAmountSent;
+    secondaryDisplayValue = bridgeTokenDisplayData.displayCurrencyAmount;
   } else {
     dispatch(
       captureSingleException(

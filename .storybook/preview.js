@@ -21,6 +21,7 @@ import { metamaskStorybookTheme } from './metamask-storybook-theme';
 import { DocsContainer } from '@storybook/addon-docs';
 import { themes } from '@storybook/theming';
 import { AlertMetricsProvider } from '../ui/components/app/alert-system/contexts/alertMetricsContext';
+import './index.css';
 
 // eslint-disable-next-line
 /* @ts-expect-error: Avoids error from window property not existing */
