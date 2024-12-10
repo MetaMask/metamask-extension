@@ -2,6 +2,7 @@ import { strict as assert } from 'assert';
 import { Driver } from '../../webdriver/driver';
 import { largeDelayMs } from '../../helpers';
 import messages from '../../../../app/_locales/en/messages.json';
+import { th } from '../../../../.storybook/locales';
 
 class AccountListPage {
   private readonly driver: Driver;
@@ -34,6 +35,11 @@ class AccountListPage {
 
   private readonly addBtcAccountButton = {
     text: messages.addNewBitcoinAccount.message,
+    tag: 'button',
+  };
+
+  private readonly addSolanaAccountButton = {
+    text: messages.addNewSolanaAccount.message,
     tag: 'button',
   };
 
@@ -225,6 +231,41 @@ class AccountListPage {
     }
   }
 
+  async addNewSolanaAccount({
+    solanaAccountCreationEnabled: solanaAccountCreationEnabled = true,
+    accountName = '',
+  }: {
+    solanaAccountCreationEnabled?: boolean;
+    accountName?: string;
+  } = {}): Promise<void> {
+    console.log(
+      `Adding new Solana account${
+        accountName ? ` with custom name: ${accountName}` : ' with default name'
+      }`,
+    );
+    if (solanaAccountCreationEnabled) {
+      await this.driver.clickElement(this.addSolanaAccountButton);
+      // needed to mitigate a race condition with the state update
+      // there is no condition we can wait for in the UI
+      if (accountName) {
+        await this.driver.fill(this.accountNameInput, accountName);
+      }
+      await this.driver.clickElementAndWaitToDisappear(
+        this.addAccountConfirmButton,
+        // Longer timeout than usual, this reduces the flakiness
+        // around Bitcoin account creation (mainly required for
+        // Firefox)
+        5000,
+      );
+    } else {
+      const createButton = await this.driver.findElement(
+        this.addSolanaAccountButton,
+      );
+      assert.equal(await createButton.isEnabled(), false);
+      await this.driver.clickElement(this.closeAccountModalButton);
+    }
+  }
+
   /**
    * Changes the label of the current account.
    *
@@ -409,6 +450,7 @@ class AccountListPage {
     if (confirmRemoval) {
       console.log('Confirm removal of account');
       await this.driver.clickElement(this.removeAccountConfirmButton);
+
     } else {
       console.log('Click nevermind button to cancel account removal');
       await this.driver.clickElement(this.removeAccountNevermindButton);
@@ -541,12 +583,15 @@ class AccountListPage {
     console.log(
       `Verify the number of accounts in the account menu is: ${expectedNumberOfAccounts}`,
     );
+    await this.driver.waitForSelector(this.accountListItem);
     await this.driver.wait(async () => {
+      await this.driver.delay(500);
       const internalAccounts = await this.driver.findElements(
-        this.accountListItem,
+        this.accountListItem
       );
+      console.log(`Number of accounts: ${internalAccounts.length} is equal to ${expectedNumberOfAccounts}? ${internalAccounts.length === expectedNumberOfAccounts}`);
       return internalAccounts.length === expectedNumberOfAccounts;
-    }, 20000);
+    }, 20000, true);
   }
 
   /**

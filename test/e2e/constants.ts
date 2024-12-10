@@ -57,6 +57,9 @@ export const DEFAULT_BTC_FEES_RATE = 0.00001; // BTC
 /* Default BTC conversion rate to USD */
 export const DEFAULT_BTC_CONVERSION_RATE = 62000; // USD
 
+/* Default SOL conversion rate to USD */
+export const DEFAULT_SOL_CONVERSION_RATE = 226; // USD
+
 /* Default BTC transaction ID */
 export const DEFAULT_BTC_TRANSACTION_ID =
   'e4111a707317da67d49a71af4cbcf6c0546f900ca32c3842d2254e315d1fca18';
