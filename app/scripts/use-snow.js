@@ -56,6 +56,7 @@ Changing this code must be done cautiously to avoid breaking the app!
               "addEventListener",
               "createElement",
               "createElementNS",
+              "parentWindow",
               "createTextNode"
             ].includes(b) &&
             !b.startsWith('__reactInternalInstance') &&
