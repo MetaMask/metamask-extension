@@ -31,9 +31,9 @@ export const useMultichainAccountTotalFiatBalance = (
   tokensWithBalances: {
     address: string;
     symbol: string;
-    decimals: string;
-    isERC721: boolean;
-    image: string;
+    decimals: number;
+    isERC721?: boolean;
+    image?: string;
   }[];
   totalWeiBalance?: string;
   totalBalance?: string;

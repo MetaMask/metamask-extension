@@ -357,6 +357,15 @@ export function useTransactionDisplayData(transactionGroup) {
     category = TransactionGroupCategory.send;
     title = t('send');
     subtitle = t('toAddress', [shortenAddress(recipientAddress)]);
+  } else if (type === TransactionType.bridgeApproval) {
+    title = t('bridgeApproval');
+    category = TransactionGroupCategory.approval;
+    title = t('bridgeApproval', [primaryTransaction.sourceTokenSymbol]);
+    subtitle = origin;
+    subtitleContainsOrigin = true;
+    primarySuffix = primaryTransaction.sourceTokenSymbol; // TODO this will be undefined right now
+  } else if (type === TransactionType.bridge) {
+    title = t('bridge');
   } else {
     dispatch(
       captureSingleException(

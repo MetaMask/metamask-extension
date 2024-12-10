@@ -1,4 +1,5 @@
 import { Mockttp } from 'mockttp';
+import { USER_STORAGE_FEATURE_NAMES } from '@metamask/profile-sync-controller/sdk';
 import { withFixtures } from '../../../helpers';
 import FixtureBuilder from '../../../fixture-builder';
 import { mockNotificationServices } from '../mocks';
@@ -17,7 +18,9 @@ import {
   importSRPOnboardingFlow,
   completeImportSRPOnboardingFlow,
 } from '../../../page-objects/flows/onboarding.flow';
-import { getSRP, IS_ACCOUNT_SYNCING_ENABLED } from './helpers';
+import PrivacySettings from '../../../page-objects/pages/settings/privacy-settings';
+import SettingsPage from '../../../page-objects/pages/settings/settings-page';
+import { IS_ACCOUNT_SYNCING_ENABLED } from './helpers';
 import { accountsSyncMockResponse } from './mockData';
 
 describe('Account syncing - Opt-out Profile Sync @no-mmi', function () {
@@ -35,9 +38,13 @@ describe('Account syncing - Opt-out Profile Sync @no-mmi', function () {
           title: this.test?.fullTitle(),
           testSpecificMock: (server: Mockttp) => {
             // Mocks are still set up to ensure that requests are not matched
-            userStorageMockttpController.setupPath('accounts', server, {
-              getResponse: accountsSyncMockResponse,
-            });
+            userStorageMockttpController.setupPath(
+              USER_STORAGE_FEATURE_NAMES.accounts,
+              server,
+              {
+                getResponse: accountsSyncMockResponse,
+              },
+            );
             return mockNotificationServices(
               server,
               userStorageMockttpController,
@@ -94,7 +101,10 @@ describe('Account syncing - Opt-out Profile Sync @no-mmi', function () {
           title: this.test?.fullTitle(),
           testSpecificMock: (server: Mockttp) => {
             // Mocks are still set up to ensure that requests are not matched
-            userStorageMockttpController.setupPath('accounts', server);
+            userStorageMockttpController.setupPath(
+              USER_STORAGE_FEATURE_NAMES.accounts,
+              server,
+            );
             return mockNotificationServices(
               server,
               userStorageMockttpController,
@@ -131,9 +141,23 @@ describe('Account syncing - Opt-out Profile Sync @no-mmi', function () {
           await accountListPage.check_accountDisplayedInAccountList(
             'Account 1',
           );
-          await accountListPage.addNewAccountWithCustomLabel('New Account');
+          await accountListPage.addNewAccount('New Account');
           // Set SRP to use for retreival
-          walletSrp = await getSRP(driver, NOTIFICATIONS_TEAM_PASSWORD);
+          const headerNavbar = new HeaderNavbar(driver);
+          await headerNavbar.check_pageIsLoaded();
+          await headerNavbar.openSettingsPage();
+          const settingsPage = new SettingsPage(driver);
+          await settingsPage.check_pageIsLoaded();
+          await settingsPage.goToPrivacySettings();
+
+          const privacySettings = new PrivacySettings(driver);
+          await privacySettings.check_pageIsLoaded();
+          await privacySettings.openRevealSrpQuiz();
+          await privacySettings.completeRevealSrpQuiz();
+          await privacySettings.fillPasswordToRevealSrp(
+            NOTIFICATIONS_TEAM_PASSWORD,
+          );
+          walletSrp = await privacySettings.getSrpInRevealSrpDialog();
           if (!walletSrp) {
             throw new Error('Wallet SRP was not set');
           }
@@ -146,7 +170,10 @@ describe('Account syncing - Opt-out Profile Sync @no-mmi', function () {
           title: this.test?.fullTitle(),
           testSpecificMock: (server: Mockttp) => {
             // Mocks are still set up to ensure that requests are not matched
-            userStorageMockttpController.setupPath('accounts', server);
+            userStorageMockttpController.setupPath(
+              USER_STORAGE_FEATURE_NAMES.accounts,
+              server,
+            );
             return mockNotificationServices(
               server,
               userStorageMockttpController,

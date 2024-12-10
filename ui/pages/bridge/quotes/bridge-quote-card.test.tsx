@@ -20,6 +20,7 @@ describe('BridgeQuoteCard', () => {
       {
         srcNetworkAllowlist: [CHAIN_IDS.MAINNET, CHAIN_IDS.OPTIMISM],
         destNetworkAllowlist: [CHAIN_IDS.OPTIMISM],
+        extensionConfig: { maxRefreshCount: 5, refreshRate: 30000 },
       },
       { fromTokenInputValue: 1 },
       {
@@ -28,9 +29,6 @@ describe('BridgeQuoteCard', () => {
         quotes: mockBridgeQuotesErc20Erc20,
         getQuotesLastFetched: Date.now(),
         quotesLoadingStatus: RequestStatus.FETCHED,
-        bridgeFeatureFlags: {
-          extensionConfig: { maxRefreshCount: 5, refreshRate: 30000 },
-        },
       },
     );
     const { container } = renderWithProvider(

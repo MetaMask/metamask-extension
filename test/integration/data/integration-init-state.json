@@ -784,7 +784,8 @@
     "smartTransactionsOptInStatus": true,
     "petnamesEnabled": false,
     "showConfirmationAdvancedDetails": false,
-    "showMultiRpcModal": false
+    "showMultiRpcModal": false,
+    "tokenNetworkFilter": {}
   },
   "preventPollingOnNetworkRestart": true,
   "previousAppVersion": "11.14.4",
@@ -1164,7 +1165,7 @@
         "smartTransactions": {
           "expectedDeadline": 45,
           "maxDeadline": 150,
-          "returnTxHashAsap": false
+          "extensionReturnTxHashAsap": false
         }
       },
       "linea": {

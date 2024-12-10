@@ -35,17 +35,22 @@
       "petnamesEnabled": true,
       "showMultiRpcModal": "boolean",
       "isRedesignedConfirmationsDeveloperEnabled": "boolean",
-      "redesignedConfirmationsEnabled": true,
-      "redesignedTransactionsEnabled": "boolean",
       "tokenSortConfig": "object",
-      "showMultiRpcModal": "boolean",
-      "shouldShowAggregatedBalancePopover": "boolean"
+      "tokenNetworkFilter": {
+        "0x1": "boolean",
+        "0x539": "boolean",
+        "0xaa36a7": "boolean",
+        "0xe705": "boolean",
+        "0xe708": "boolean"
+      },
+      "shouldShowAggregatedBalancePopover": "boolean",
+      "redesignedConfirmationsEnabled": true,
+      "redesignedTransactionsEnabled": "boolean"
     },
     "firstTimeFlowType": "import",
     "completedOnboarding": true,
     "knownMethodData": "object",
     "use4ByteResolution": true,
-    "showIncomingTransactions": "object",
     "participateInMetaMetrics": true,
     "dataCollectionForMarketing": "boolean",
     "nextNonce": null,
@@ -55,12 +60,12 @@
         "conversionRate": 1700,
         "usdConversionRate": 1700
       },
-      "LineaETH": {
+      "SepoliaETH": {
         "conversionDate": "number",
         "conversionRate": 1700,
         "usdConversionRate": 1700
       },
-      "SepoliaETH": {
+      "LineaETH": {
         "conversionDate": "number",
         "conversionRate": 1700,
         "usdConversionRate": 1700
@@ -135,7 +140,6 @@
     "forgottenPassword": false,
     "ipfsGateway": "string",
     "isIpfsGatewayEnabled": "boolean",
-    "isMultiAccountBalancesEnabled": "boolean",
     "useAddressBarEnsResolution": true,
     "ledgerTransportType": "webhid",
     "snapRegistryList": "object",
@@ -145,6 +149,8 @@
     "useTransactionSimulations": true,
     "enableMV3TimestampSave": true,
     "useExternalServices": "boolean",
+    "isMultiAccountBalancesEnabled": "boolean",
+    "showIncomingTransactions": "object",
     "metaMetricsId": "fake-metrics-id",
     "marketingCampaignCookieId": null,
     "eventsBeforeMetricsOptIn": "object",
@@ -175,8 +181,11 @@
     "nonRPCGasFeeApisDisabled": "boolean",
     "tokenList": "object",
     "tokensChainsCache": {
-      "0x539": "object"
+      "0x1": "object",
+      "0x539": "object",
+      "0xe708": "object"
     },
+    "tokenBalances": "object",
     "preventPollingOnNetworkRestart": false,
     "tokens": "object",
     "ignoredTokens": "object",
@@ -210,7 +219,6 @@
     "database": null,
     "lastUpdated": null,
     "databaseUnavailable": "boolean",
-    "notifications": "object",
     "interfaces": "object",
     "insights": "object",
     "names": "object",
@@ -219,6 +227,8 @@
     "isSignedIn": "boolean",
     "isProfileSyncingEnabled": null,
     "isProfileSyncingUpdateLoading": "boolean",
+    "hasAccountSyncingSyncedAtLeastOnce": "boolean",
+    "isAccountSyncingReadyToBeDispatched": "boolean",
     "subscriptionAccountsSeen": "object",
     "isMetamaskNotificationsFeatureSeen": "boolean",
     "isNotificationServicesEnabled": "boolean",
@@ -234,11 +244,11 @@
     "accounts": "object",
     "accountsByChainId": "object",
     "marketData": "object",
-    "signatureRequests": "object",
     "unapprovedDecryptMsgs": "object",
     "unapprovedDecryptMsgCount": 0,
     "unapprovedEncryptionPublicKeyMsgs": "object",
     "unapprovedEncryptionPublicKeyMsgCount": 0,
+    "signatureRequests": "object",
     "unapprovedPersonalMsgs": "object",
     "unapprovedTypedMessages": "object",
     "unapprovedPersonalMsgCount": 0,
@@ -278,17 +288,18 @@
         "srcNetworkAllowlist": { "0": "string", "1": "string", "2": "string" },
         "destNetworkAllowlist": { "0": "string", "1": "string", "2": "string" }
       },
+      "srcTokens": {},
+      "srcTopAssets": {},
       "destTokens": {},
       "destTopAssets": {},
       "quoteRequest": {
-        "slippage": 0.5,
-        "srcTokenAddress": "0x0000000000000000000000000000000000000000"
+        "srcTokenAddress": "0x0000000000000000000000000000000000000000",
+        "slippage": 0.5
       },
       "quotes": {},
-      "quotesRefreshCount": 0,
-      "srcTokens": {},
-      "srcTopAssets": {}
+      "quotesRefreshCount": 0
     },
+    "bridgeStatusState": { "txHistory": "object" },
     "ensEntries": "object",
     "ensResolutionsByAddress": "object",
     "pendingApprovals": "object",

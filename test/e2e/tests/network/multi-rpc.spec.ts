@@ -83,7 +83,7 @@ describe('MultiRpc:', function (this: Suite) {
         await completeImportSRPOnboardingFlow({ driver });
         const homePage = new HomePage(driver);
         await homePage.check_pageIsLoaded();
-        await homePage.check_ganacheBalanceIsDisplayed(ganacheServer);
+        await homePage.check_localBlockchainBalanceIsDisplayed(ganacheServer);
 
         await new HeaderNavbar(driver).clickSwitchNetworkDropDown();
         const selectNetworkDialog = new SelectNetwork(driver);

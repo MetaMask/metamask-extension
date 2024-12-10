@@ -89,6 +89,7 @@ function onboardingFixture() {
             order: 'dsc',
             sortCallback: 'stringNumeric',
           },
+          tokenNetworkFilter: {},
           shouldShowAggregatedBalancePopover: true,
         },
         useExternalServices: true,
@@ -126,6 +127,7 @@ function onboardingFixture() {
         },
         showTestNetworks: false,
         smartTransactionsOptInStatus: true,
+        tokenNetworkFilter: {},
       },
       QueuedRequestController: {
         queuedRequestCount: 0,
@@ -293,6 +295,22 @@ class FixtureBuilder {
         networkConfigurationId: {
           chainId: CHAIN_IDS.OPTIMISM,
           nickname: 'Localhost 8545',
+          rpcPrefs: {},
+          rpcUrl: 'https://mainnet.infura.io',
+          ticker: 'ETH',
+          networkConfigurationId: 'networkConfigurationId',
+          id: 'networkConfigurationId',
+        },
+      },
+    });
+  }
+
+  withNetworkControllerOnPolygon() {
+    return this.withNetworkController({
+      networkConfigurations: {
+        networkConfigurationId: {
+          chainId: CHAIN_IDS.POLYGON,
+          nickname: 'Polygon Mainnet',
           rpcPrefs: {},
           rpcUrl: 'https://mainnet.infura.io',
           ticker: 'ETH',
@@ -664,6 +682,7 @@ class FixtureBuilder {
     return this.withPreferencesController({
       preferences: {
         smartTransactionsOptInStatus: true,
+        tokenNetworkFilter: {},
       },
     });
   }

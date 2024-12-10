@@ -67,27 +67,24 @@
         "srcNetworkAllowlist": { "0": "string", "1": "string", "2": "string" },
         "destNetworkAllowlist": { "0": "string", "1": "string", "2": "string" }
       },
+      "srcTokens": {},
+      "srcTopAssets": {},
       "destTokens": {},
       "destTopAssets": {},
       "quoteRequest": {
-        "slippage": 0.5,
-        "srcTokenAddress": "0x0000000000000000000000000000000000000000"
+        "srcTokenAddress": "0x0000000000000000000000000000000000000000",
+        "slippage": 0.5
       },
       "quotes": {},
-      "quotesRefreshCount": 0,
-      "srcTokens": {},
-      "srcTopAssets": {}
+      "quotesRefreshCount": 0
     }
   },
+  "BridgeStatusController": { "bridgeStatusState": { "txHistory": "object" } },
   "CronjobController": { "jobs": "object" },
   "CurrencyController": {
+    "currentCurrency": "usd",
     "currencyRates": {
       "ETH": {
-        "conversionDate": "number",
-        "conversionRate": 1700,
-        "usdConversionRate": 1700
-      },
-      "LineaETH": {
         "conversionDate": "number",
         "conversionRate": 1700,
         "usdConversionRate": 1700
@@ -96,9 +93,13 @@
         "conversionDate": "number",
         "conversionRate": 1700,
         "usdConversionRate": 1700
+      },
+      "LineaETH": {
+        "conversionDate": "number",
+        "conversionRate": 1700,
+        "usdConversionRate": 1700
       }
-    },
-    "currentCurrency": "usd"
+    }
   },
   "DecryptMessageController": {
     "unapprovedDecryptMsgs": "object",
@@ -170,7 +171,6 @@
     "allNfts": "object",
     "ignoredNfts": "object"
   },
-  "NotificationController": { "notifications": "object" },
   "NotificationServicesController": {
     "subscriptionAccountsSeen": "object",
     "isMetamaskNotificationsFeatureSeen": "boolean",
@@ -237,6 +237,13 @@
       "redesignedConfirmationsEnabled": true,
       "redesignedTransactionsEnabled": "boolean",
       "tokenSortConfig": "object",
+      "tokenNetworkFilter": {
+        "0x1": "boolean",
+        "0x539": "boolean",
+        "0xaa36a7": "boolean",
+        "0xe705": "boolean",
+        "0xe708": "boolean"
+      },
       "shouldShowAggregatedBalancePopover": "boolean"
     },
     "ipfsGateway": "string",
@@ -314,10 +321,15 @@
       "swapsFeatureFlags": {}
     }
   },
+  "TokenBalancesController": {
+    "tokenBalances": "object"
+  },
   "TokenListController": {
     "tokenList": "object",
     "tokensChainsCache": {
-      "0x539": "object"
+      "0x1": "object",
+      "0x539": "object",
+      "0xe708": "object"
     },
     "preventPollingOnNetworkRestart": false
   },
@@ -332,7 +344,6 @@
   },
   "TxController": {
     "methodData": "object",
-    "submitHistory": "object",
     "transactions": "object",
     "lastFetchedBlockNumbers": "object",
     "submitHistory": "object"
@@ -340,6 +351,8 @@
   "UserOperationController": { "userOperations": "object" },
   "UserStorageController": {
     "isProfileSyncingEnabled": null,
-    "isProfileSyncingUpdateLoading": "boolean"
+    "isProfileSyncingUpdateLoading": "boolean",
+    "hasAccountSyncingSyncedAtLeastOnce": "boolean",
+    "isAccountSyncingReadyToBeDispatched": "boolean"
   }
 }

@@ -6,6 +6,54 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [12.9.0]
+### Added
+- Added error handling to ensure users are not redirected to an incorrect network when sending or swapping tokens ([#28740](https://github.com/MetaMask/metamask-extension/pull/28740))
+- Added optional chaining to currency rates check for improved stability ([#28753](https://github.com/MetaMask/metamask-extension/pull/28753))
+- Enabled Portfolio View ([#28661](https://github.com/MetaMask/metamask-extension/pull/28661))
+- Added a selector to enable cross-chain polling for aggregated balances ([#28662](https://github.com/MetaMask/metamask-extension/pull/28662))
+- Ensured the network filter respects the PortfolioView feature flag, displaying tokens accordingly ([#28626](https://github.com/MetaMask/metamask-extension/pull/28626))
+- Implemented multichain token detection, enabling periodic polling and storing detected tokens across all supported networks ([#28380](https://github.com/MetaMask/metamask-extension/pull/28380))
+- Added PortfolioView to display tokens across all networks in one list ([#28593](https://github.com/MetaMask/metamask-extension/pull/28593))
+- Added cross-chain aggregated balance calculation ([#28456](https://github.com/MetaMask/metamask-extension/pull/28456))
+- Enabled redesigned transaction confirmations for all users, with automatic toggling ([#28321](https://github.com/MetaMask/metamask-extension/pull/28321))
+- Added a first-time interaction warning to alert users when interacting with an address for the first time ([#28435](https://github.com/MetaMask/metamask-extension/pull/28435))
+- Added a default value to the custom nonce modal ([#28659](https://github.com/MetaMask/metamask-extension/pull/28659))
+- Added an alert when the selected account differs from the signing account in the confirmation screen ([#28562](https://github.com/MetaMask/metamask-extension/pull/28562))
+- Display "< 0.01" instead of "0.00" for the fiat value of network fees ([#28543](https://github.com/MetaMask/metamask-extension/pull/28543))
+- Improved handling of very long names by truncating names longer than 15 characters with an ellipsis ([#28560](https://github.com/MetaMask/metamask-extension/pull/28560))
+- Enabled account syncing in production ([#28596](https://github.com/MetaMask/metamask-extension/pull/28596))
+- Added various updates to account syncing in preparation for re-enablement ([#28541](https://github.com/MetaMask/metamask-extension/pull/28541))
+- Added entry points to the Portfolio for viewing and managing spending caps from the extension ([#27607](https://github.com/MetaMask/metamask-extension/pull/27607))
+
+### Changed
+- Updated the new network popup to only display for compatible accounts ([#28535](https://github.com/MetaMask/metamask-extension/pull/28535))
+- Removed the "You're now using..." network modal after adding a network ([#28765](https://github.com/MetaMask/metamask-extension/pull/28765))
+- Updated the transaction list message on the token detail page to reflect the current network ([#28764](https://github.com/MetaMask/metamask-extension/pull/28764))
+- Updated the description of the setting to enable simulation to include signatures ([#28536](https://github.com/MetaMask/metamask-extension/pull/28536))
+- Reduced maximum pet name length to 12 characters ([#28660](https://github.com/MetaMask/metamask-extension/pull/28660))
+- Updated NFT token send design ([#28433](https://github.com/MetaMask/metamask-extension/pull/28433))
+- Improved design aspects of PortfolioView, including networks, sorting, and menu ([#28663](https://github.com/MetaMask/metamask-extension/pull/28663))
+- Provided maximal space for asset list filter to display "All networks" text fully and ellipsize long account names properly ([#28590](https://github.com/MetaMask/metamask-extension/pull/28590))
+
+### Fixed
+- [FLASK] Fixed issue where non-EVM accounts were incorrectly included in the account connection flow ([#28436](https://github.com/MetaMask/metamask-extension/pull/28436))
+- Fixed issue with detecting NFTs when switching networks on the NFT tab ([#28769](https://github.com/MetaMask/metamask-extension/pull/28769))
+- Passed decimal balance from asset page to swaps UI to ensure proper prepopulation ([#28707](https://github.com/MetaMask/metamask-extension/pull/28707))
+- Fixed issue where the incorrect native token was prepopulated in the swap UI when swapping from a different chain in PortfolioView ([#28639](https://github.com/MetaMask/metamask-extension/pull/28639))
+- Fixed issue where tokens from non-current networks were being hidden incorrectly ([#28674](https://github.com/MetaMask/metamask-extension/pull/28674))
+- Fixed market data retrieval for native tokens with non-zero addresses, such as Polygon's native token ([#28584](https://github.com/MetaMask/metamask-extension/pull/28584))
+- Fixed display issues for test networks in Portfolio View when the price checker setting is off ([#28601](https://github.com/MetaMask/metamask-extension/pull/28601))
+- Fixed account list item display for PortfolioView with and without the feature flag ([#28598](https://github.com/MetaMask/metamask-extension/pull/28598))
+- Fixed display bug on coin overview and account list item when the "Show balance and token price checker" setting is off ([#28569](https://github.com/MetaMask/metamask-extension/pull/28569))
+- Fixed styling issue affecting all dialogs by limiting it to the quotes modal ([#28739](https://github.com/MetaMask/metamask-extension/pull/28739))
+- Fixed swaps approval checking for amounts greater than 0 but less than the swap amount ([#28680](https://github.com/MetaMask/metamask-extension/pull/28680))
+- Fixed transaction flow section layout on redesigned confirmation pages ([#28720](https://github.com/MetaMask/metamask-extension/pull/28720))
+- Prevented duplicate contact names and added warnings for duplicates in the contact list ([#28249](https://github.com/MetaMask/metamask-extension/pull/28249))
+- Made QR scanner more strict about the contents it allows, fixing unexpected behavior with certain QR codes ([#28521](https://github.com/MetaMask/metamask-extension/pull/28521))
+- Fixed avatar size for the current network ([#28731](https://github.com/MetaMask/metamask-extension/pull/28731))
+- Fixed account names and length display for dApp connections ([#28725](https://github.com/MetaMask/metamask-extension/pull/28725))
+
 ## [12.8.1]
 ### Fixed
 - Update default Base rpc to https://base-mainnet.infura.io/ ([#28974](https://github.com/MetaMask/metamask-extension/pull/28974))
@@ -5421,7 +5469,8 @@ Update styles and spacing on the critical error page  ([#20350](https://github.c
 - Added the ability to restore accounts from seed words.
 
 
-[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v12.8.1...HEAD
+[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v12.9.0...HEAD
+[12.9.0]: https://github.com/MetaMask/metamask-extension/compare/v12.8.1...v12.9.0
 [12.8.1]: https://github.com/MetaMask/metamask-extension/compare/v12.8.0...v12.8.1
 [12.8.0]: https://github.com/MetaMask/metamask-extension/compare/v12.7.2...v12.8.0
 [12.7.2]: https://github.com/MetaMask/metamask-extension/compare/v12.7.1...v12.7.2

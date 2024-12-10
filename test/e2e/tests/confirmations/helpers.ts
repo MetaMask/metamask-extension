@@ -8,13 +8,18 @@ import {
 import { MockedEndpoint, Mockttp } from '../../mock-e2e';
 import { SMART_CONTRACTS } from '../../seeder/smart-contracts';
 import { Driver } from '../../webdriver/driver';
+import Confirmation from '../../page-objects/pages/confirmations/redesign/confirmation';
+
+export const DECODING_E2E_API_URL =
+  'https://signature-insights.api.cx.metamask.io/v1';
 
 export async function scrollAndConfirmAndAssertConfirm(driver: Driver) {
-  await driver.clickElementSafe('.confirm-scroll-to-bottom__button');
-  await driver.clickElement('[data-testid="confirm-footer-button"]');
+  const confirmation = new Confirmation(driver);
+  await confirmation.clickScrollToBottomButton();
+  await confirmation.clickFooterConfirmButton();
 }
 
-export function withRedesignConfirmationFixtures(
+export function withTransactionEnvelopeTypeFixtures(
   // Default params first is discouraged because it makes it hard to call the function without the
   // optional parameters. But it doesn't apply here because we're always passing in a variable for
   // title. It's optional because it's sometimes unset.
@@ -34,12 +39,6 @@ export function withRedesignConfirmationFixtures(
         .withMetaMetricsController({
           metaMetricsId: 'fake-metrics-id',
           participateInMetaMetrics: true,
-        })
-        .withPreferencesController({
-          preferences: {
-            redesignedConfirmationsEnabled: true,
-            isRedesignedConfirmationsDeveloperEnabled: true,
-          },
         })
         .build(),
       ganacheOptions:
@@ -65,6 +64,33 @@ async function createMockSegmentEvent(mockServer: Mockttp, eventName: string) {
     }));
 }
 
+async function createMockSignatureDecodingEvent(mockServer: Mockttp) {
+  return await mockServer
+    .forPost(`${DECODING_E2E_API_URL}/signature`)
+    .thenCallback(() => ({
+      statusCode: 200,
+      json: {
+        stateChanges: [
+          {
+            assetType: 'NATIVE',
+            changeType: 'RECEIVE',
+            address: '',
+            amount: '900000000000000000',
+            contractAddress: '',
+          },
+          {
+            assetType: 'ERC721',
+            changeType: 'LISTING',
+            address: '',
+            amount: '',
+            contractAddress: '0xafd4896984CA60d2feF66136e57f958dCe9482d5',
+            tokenID: '2101',
+          },
+        ],
+      },
+    }));
+}
+
 export async function mockSignatureApproved(
   mockServer: Mockttp,
   withAnonEvents = false,
@@ -81,6 +107,7 @@ export async function mockSignatureApproved(
     await createMockSegmentEvent(mockServer, 'Account Details Opened'),
     ...anonEvents,
     await createMockSegmentEvent(mockServer, 'Signature Approved'),
+    await createMockSignatureDecodingEvent(mockServer),
   ];
 }
 
@@ -98,6 +125,11 @@ export async function mockSignatureRejected(
   return [
     await createMockSegmentEvent(mockServer, 'Signature Requested'),
     await createMockSegmentEvent(mockServer, 'Signature Rejected'),
+    await createMockSignatureDecodingEvent(mockServer),
     ...anonEvents,
   ];
+}
+
+export async function mockPermitDecoding(mockServer: Mockttp) {
+  return [await createMockSignatureDecodingEvent(mockServer)];
 }

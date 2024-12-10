@@ -26,6 +26,7 @@ describe('Token List', function () {
 
   const importToken = async (driver: Driver) => {
     await driver.clickElement(`[data-testid="import-token-button"]`);
+    await driver.clickElement(`[data-testid="importTokens"]`);
     await clickNestedButton(driver, 'Custom token');
     await driver.fill(
       '[data-testid="import-tokens-modal-custom-address"]',
@@ -65,10 +66,8 @@ describe('Token List', function () {
 
         assert.ok(tokenSymbolsBeforeSorting[0].includes('Ethereum'));
 
-        await await driver.clickElement(
-          '[data-testid="sort-by-popover-toggle"]',
-        );
-        await await driver.clickElement('[data-testid="sortByAlphabetically"]');
+        await driver.clickElement('[data-testid="sort-by-popover-toggle"]');
+        await driver.clickElement('[data-testid="sortByAlphabetically"]');
 
         await driver.delay(regularDelayMs);
         const tokenListAfterSortingAlphabetically = await driver.findElements(
@@ -84,12 +83,8 @@ describe('Token List', function () {
           tokenListSymbolsAfterSortingAlphabetically[0].includes('ABC'),
         );
 
-        await await driver.clickElement(
-          '[data-testid="sort-by-popover-toggle"]',
-        );
-        await await driver.clickElement(
-          '[data-testid="sortByDecliningBalance"]',
-        );
+        await driver.clickElement('[data-testid="sort-by-popover-toggle"]');
+        await driver.clickElement('[data-testid="sortByDecliningBalance"]');
 
         await driver.delay(regularDelayMs);
         const tokenListBeforeSortingByDecliningBalance =

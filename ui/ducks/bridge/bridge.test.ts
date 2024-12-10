@@ -10,6 +10,7 @@ import {
   // TODO: Remove restricted import
   // eslint-disable-next-line import/no-restricted-paths
 } from '../../../app/scripts/controllers/bridge/types';
+import * as util from '../../helpers/utils/util';
 import bridgeReducer from './bridge';
 import {
   setBridgeFeatureFlags,
@@ -22,6 +23,7 @@ import {
   setToChainId,
   updateQuoteRequestParams,
   resetBridgeState,
+  setDestTokenExchangeRates,
 } from './actions';
 
 const middleware = [thunk];
@@ -143,10 +145,14 @@ describe('Ducks - Bridge', () => {
       expect(actions[0].type).toStrictEqual('bridge/resetInputFields');
       const newState = bridgeReducer(state, actions[0]);
       expect(newState).toStrictEqual({
+        selectedQuote: null,
         toChainId: null,
         fromToken: null,
         toToken: null,
         fromTokenInputValue: null,
+        sortOrder: 0,
+        toTokenExchangeRate: null,
+        fromTokenExchangeRate: null,
       });
     });
   });
@@ -201,10 +207,103 @@ describe('Ducks - Bridge', () => {
       expect(actions[0].type).toStrictEqual('bridge/resetInputFields');
       const newState = bridgeReducer(state, actions[0]);
       expect(newState).toStrictEqual({
-        toChainId: null,
         fromToken: null,
-        toToken: null,
+        fromTokenExchangeRate: null,
         fromTokenInputValue: null,
+        selectedQuote: null,
+        sortOrder: 0,
+        toChainId: null,
+        toToken: null,
+        toTokenExchangeRate: null,
+      });
+    });
+  });
+  describe('setDestTokenExchangeRates', () => {
+    it('fetches token prices and updates dest exchange rates in state, native dest token', async () => {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const mockStore = configureMockStore<any>(middleware)(
+        createBridgeMockStore(),
+      );
+      const state = mockStore.getState().bridge;
+      const fetchTokenExchangeRatesSpy = jest
+        .spyOn(util, 'fetchTokenExchangeRates')
+        .mockResolvedValue({
+          '0x0000000000000000000000000000000000000000': 0.356628,
+        });
+
+      await mockStore.dispatch(
+        setDestTokenExchangeRates({
+          chainId: CHAIN_IDS.LINEA_MAINNET,
+          tokenAddress: zeroAddress(),
+          currency: 'usd',
+        }) as never,
+      );
+
+      expect(fetchTokenExchangeRatesSpy).toHaveBeenCalledTimes(1);
+      expect(fetchTokenExchangeRatesSpy).toHaveBeenCalledWith(
+        'usd',
+        ['0x0000000000000000000000000000000000000000'],
+        CHAIN_IDS.LINEA_MAINNET,
+      );
+
+      const actions = mockStore.getActions();
+      expect(actions).toHaveLength(2);
+      expect(actions[0].type).toStrictEqual(
+        'bridge/setDestTokenExchangeRates/pending',
+      );
+      expect(actions[1].type).toStrictEqual(
+        'bridge/setDestTokenExchangeRates/fulfilled',
+      );
+      const newState = bridgeReducer(state, actions[1]);
+      expect(newState).toStrictEqual({
+        toChainId: null,
+        toTokenExchangeRate: 0.356628,
+        sortOrder: 0,
+      });
+    });
+
+    it('fetches token prices and updates dest exchange rates in state, erc20 dest token', async () => {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const mockStore = configureMockStore<any>(middleware)(
+        createBridgeMockStore(),
+      );
+      const state = mockStore.getState().bridge;
+      const fetchTokenExchangeRatesSpy = jest
+        .spyOn(util, 'fetchTokenExchangeRates')
+        .mockResolvedValue({
+          '0x0000000000000000000000000000000000000000': 0.356628,
+          '0x3c499c542cEF5E3811e1192ce70d8cC03d5c3359': 0.999881,
+        });
+
+      await mockStore.dispatch(
+        setDestTokenExchangeRates({
+          chainId: CHAIN_IDS.LINEA_MAINNET,
+          tokenAddress:
+            '0x3c499c542cEF5E3811e1192ce70d8cC03d5c3359'.toLowerCase(),
+          currency: 'usd',
+        }) as never,
+      );
+
+      expect(fetchTokenExchangeRatesSpy).toHaveBeenCalledTimes(1);
+      expect(fetchTokenExchangeRatesSpy).toHaveBeenCalledWith(
+        'usd',
+        ['0x3c499c542cef5e3811e1192ce70d8cc03d5c3359'],
+        CHAIN_IDS.LINEA_MAINNET,
+      );
+
+      const actions = mockStore.getActions();
+      expect(actions).toHaveLength(2);
+      expect(actions[0].type).toStrictEqual(
+        'bridge/setDestTokenExchangeRates/pending',
+      );
+      expect(actions[1].type).toStrictEqual(
+        'bridge/setDestTokenExchangeRates/fulfilled',
+      );
+      const newState = bridgeReducer(state, actions[1]);
+      expect(newState).toStrictEqual({
+        toChainId: null,
+        toTokenExchangeRate: 0.999881,
+        sortOrder: 0,
       });
     });
   });

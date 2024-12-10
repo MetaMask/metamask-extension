@@ -63,6 +63,7 @@
     "currentLocale": "en"
   },
   "metamask": {
+    "accountsByChainId": {},
     "ipfsGateway": "",
     "dismissSeedBackUpReminder": false,
     "usePhishDetect": true,
@@ -131,7 +132,8 @@
     "preferences": {
       "hideZeroBalanceTokens": false,
       "showFiatInTestnets": false,
-      "showTestNetworks": true
+      "showTestNetworks": true,
+      "tokenNetworkFilter": {}
     },
     "seedPhraseBackedUp": null,
     "ensResolutionsByAddress": {},

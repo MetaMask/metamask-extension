@@ -24,12 +24,12 @@ export const loginWithoutBalanceValidation = async (
  * This method unlocks the wallet and verifies that the user lands on the homepage with the expected balance. It is designed to be the initial step in setting up a test environment.
  *
  * @param driver - The webdriver instance.
- * @param ganacheServer - The ganache server instance
+ * @param localBlockchainServer - The local blockchain server instance
  * @param password - The password used to unlock the wallet.
  */
 export const loginWithBalanceValidation = async (
   driver: Driver,
-  ganacheServer?: Ganache,
+  localBlockchainServer?: Ganache,
   password?: string,
 ) => {
   await loginWithoutBalanceValidation(driver, password);
@@ -38,8 +38,10 @@ export const loginWithBalanceValidation = async (
   await homePage.check_pageIsLoaded();
 
   // Verify the expected balance on the homepage
-  if (ganacheServer) {
-    await homePage.check_ganacheBalanceIsDisplayed(ganacheServer);
+  if (localBlockchainServer) {
+    await homePage.check_localBlockchainBalanceIsDisplayed(
+      localBlockchainServer,
+    );
   } else {
     await homePage.check_expectedBalanceIsDisplayed();
   }
