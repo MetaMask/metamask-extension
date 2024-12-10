@@ -97,7 +97,9 @@ export class PatchStore {
     return controllerKey
       ? getKnownPropertyNames(newState[controllerKey]).reduce<Patch[]>(
           (patches, key) => {
+            // @ts-expect-error There's no way to narrow `key` to a type that corresponds to the current iteration's `controllerKey` value.
             const oldData = oldState[controllerKey][key];
+            // @ts-expect-error There's no way to narrow `key` to a type that corresponds to the current iteration's `controllerKey` value.
             const newData = newState[controllerKey][key];
 
             if (oldData !== newData) {

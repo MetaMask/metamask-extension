@@ -5,40 +5,35 @@ import {
   EventConstraint,
   getPersistentState,
 } from '@metamask/base-controller';
-import { MemStoreControllersComposedState } from '../../../shared/types/metamask';
 import { getKnownPropertyNames } from '@metamask/utils';
+import {
+  BackgroundStateProxy,
+  MemStoreControllers,
+  MemStoreControllersComposedState,
+} from '../../../shared/types/metamask';
 
 /**
- * @typedef {import('@metamask/base-controller').ControllerMessenger} ControllerMessenger
+ * An ObservableStore that can compose the state objects of its child stores and controllers
  */
-
-/**
- * An ObservableStore that can composes a flat
- * structure of child stores based on configuration
- */
-export default class ComposableObservableStore extends ObservableStore<MemStoreControllersComposedState> {
+export default class ComposableObservableStore extends ObservableStore<BackgroundStateProxy> {
   /**
    * Describes which stores are being composed. The key is the name of the
-   * store, and the value is either an ObserableStore, or a controller that
+   * store, and the value is either an ObservableStore, or a controller that
    * extends one of the two base controllers in the `@metamask/base-controller`
    * package.
-   *
-   * @type {Record<string, object>}
    */
-  config: Partial<MemStoreControllersComposedState> = {};
+  config: Partial<MemStoreControllers> = {};
   controllerMessenger: ControllerMessenger<ActionConstraint, EventConstraint>;
   persist: boolean;
 
   /**
    * Create a new store
    *
-   * @param {object} options
-   * @param {object} [options.config] - Map of internal state keys to child stores
-   * @param {ControllerMessenger} options.controllerMessenger - The controller
-   *   messenger, used for subscribing to events from BaseControllerV2-based
-   *   controllers.
-   * @param {object} [options.state] - The initial store state
-   * @param {boolean} [options.persist] - Whether or not to apply the persistence for v2 controllers
+   * @param options
+   * @param [options.config] - Map of internal state keys to child stores and controllers
+   * @param options.controllerMessenger - The controller messenger, used for subscribing to events from BaseControllerV2-based controllers.
+   * @param [options.state] - The composed state of the child stores and controllers
+   * @param [options.persist] - Whether or not to apply the persistence for v2 controllers
    */
   constructor({
     config,
@@ -46,9 +41,9 @@ export default class ComposableObservableStore extends ObservableStore<MemStoreC
     state,
     persist,
   }: {
-    config: MemStoreControllersComposedState;
+    config: MemStoreControllers;
     controllerMessenger: ControllerMessenger<ActionConstraint, EventConstraint>;
-    state: MemStoreControllersComposedState;
+    state: BackgroundStateProxy;
     persist: boolean;
   }) {
     super(state);
@@ -67,20 +62,20 @@ export default class ComposableObservableStore extends ObservableStore<MemStoreC
    *   ObserableStore, or a controller that extends one of the two base
    *   controllers in the `@metamask/base-controller` package.
    */
-  updateStructure(config: MemStoreControllersComposedState) {
+  updateStructure(config: MemStoreControllers) {
     this.config = config;
     this.removeAllListeners();
     const initialState = {};
     for (const controllerKey of getKnownPropertyNames(config)) {
-      if (!config[controllerKey]) {
+      const controller = config[controllerKey];
+      if (!controller) {
         throw new Error(`Undefined '${controllerKey}'`);
       }
-      const store = config[controllerKey];
-      if (store.subscribe) {
-        config[controllerKey].subscribe(
-          (
-            state: MemStoreControllersComposedState[keyof MemStoreControllersComposedState],
-          ) => {
+
+      if ('store' in controller && 'subscribe' in controller.store) {
+        const { store } = controller;
+        store.subscribe(
+          (state: MemStoreControllersComposedState[typeof controllerKey]) => {
             this.#onStateChange(controllerKey, state);
           },
         );
@@ -88,34 +83,43 @@ export default class ComposableObservableStore extends ObservableStore<MemStoreC
         this.controllerMessenger.subscribe<`${typeof controllerKey}:stateChange`>(
           `${controllerKey}:stateChange`,
           // @ts-expect-error TODO: Fix `handler` being typed as `never` by defining `Global{Actions,Events}` types and supplying them to `MetamaskController['controllerMessenger']`
-          (
-            state: MemStoreControllersComposedState[keyof MemStoreControllersComposedState],
-          ) => {
-            let updatedState = state;
-            if (this.persist) {
+          (state: MemStoreControllersComposedState[typeof controllerKey]) => {
+            let updatedState: Partial<
+              MemStoreControllersComposedState[typeof controllerKey]
+            > = state;
+            if (this.persist && 'metadata' in controller) {
               updatedState = getPersistentState(
+                // @ts-expect-error No state object can be passed into this parameter because its type is wider than all V2 state objects.
+                // TODO: Fix this parameter's type to be the widest subtype of V2 controller state types instead of their supertype/constraint.
                 state,
-                config[controllerKey].metadata,
-              );
+                controller.metadata,
+              ) as Partial<
+                MemStoreControllersComposedState[typeof controllerKey]
+              >;
             }
             this.#onStateChange(controllerKey, updatedState);
           },
         );
       }
 
-      const initialState = 'subscribe' in store ? store.getState?.() : store;
+      const initialState =
+        'store' in controller && 'subscribe' in controller.store
+          ? controller.store.getState?.()
+          : 'state' in controller
+          ? controller.state
+          : undefined;
 
       initialState[controllerKey] =
-        this.persist && config[controllerKey].metadata
-          ? getPersistentState(initialState, config[controllerKey].metadata)
+        this.persist && 'metadata' in controller && controller.metadata
+          ? getPersistentState(initialState, controller.metadata)
           : initialState;
     }
     this.updateState(initialState);
   }
 
   #onStateChange(
-    controllerKey: keyof MemStoreControllersComposedState,
-    newState: MemStoreControllersComposedState[keyof MemStoreControllersComposedState],
+    controllerKey: keyof MemStoreControllers,
+    newState: Partial<MemStoreControllersComposedState[typeof controllerKey]>,
   ) {
     const oldState = this.getState()[controllerKey];
 
