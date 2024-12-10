@@ -20,43 +20,10 @@ import {
   AccountOverviewTabsProps,
   AccountOverviewTabs,
 } from './account-overview-tabs';
+import { FUND_SLIDE, BRIDGE_SLIDE, CARD_SLIDE, CASH_SLIDE } from './constants';
 
 export type AccountOverviewLayoutProps = AccountOverviewTabsProps & {
   children: React.ReactElement;
-};
-
-// Add these constants at the top of the file, after imports
-const FUND_SLIDE = {
-  id: 'fund',
-  title: 'slideFundWalletTitle',
-  description: 'slideFundWalletDescription',
-  image: './images/slide-fund-icon.svg',
-  href: 'https://portfolio.metamask.io/buy/build-quote',
-};
-
-///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
-const BRIDGE_SLIDE = {
-  id: 'bridge',
-  title: 'slideBridgeTitle',
-  description: 'slideBridgeDescription',
-  image: './images/slide-bridge-icon.svg',
-};
-///: END:ONLY_INCLUDE_IF
-
-const CARD_SLIDE = {
-  id: 'card',
-  title: 'slideDebitCardTitle',
-  description: 'slideDebitCardDescription',
-  image: './images/slide-card-icon.svg',
-  href: 'https://portfolio.metamask.io/card',
-};
-
-const CASH_SLIDE = {
-  id: 'cash',
-  title: 'slideCashOutTitle',
-  description: 'slideCashOutDescription',
-  image: './images/slide-sell-icon.svg',
-  href: 'https://portfolio.metamask.io/buy/build-quote',
 };
 
 export const AccountOverviewLayout = ({
