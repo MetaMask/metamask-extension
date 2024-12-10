@@ -47,6 +47,7 @@ Changing this code must be done cautiously to avoid breaking the app!
           if (![
               "body",
               "host",
+              "shadowRoot",
               "scrollingElement",
               "nodeType",
               "documentElement",
