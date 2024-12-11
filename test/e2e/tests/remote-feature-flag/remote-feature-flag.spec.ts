@@ -7,10 +7,15 @@ import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow'
 import { MOCK_REMOTE_FEATURE_FLAGS_RESPONSE } from './mock-data';
 
 describe('Remote feature flag', function (this: Suite) {
-  it('should be fetched when basic functionality toggle is on', async function () {
+  it.only('should be fetched with threshold value when basic functionality toggle is on', async function () {
     await withFixtures(
       {
-        fixtures: new FixtureBuilder().build(),
+        fixtures: new FixtureBuilder()
+          .withMetaMetricsController({
+            metaMetricsId: 'fake-metrics-id',
+            participateInMetaMetrics: true,
+          })
+          .build(),
         title: this.test?.fullTitle(),
       },
       async ({ driver }: TestSuiteArguments) => {
