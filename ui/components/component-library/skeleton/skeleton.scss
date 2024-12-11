@@ -1,11 +1,16 @@
 .mm-skeleton {
-  @keyframes pulse {
+  @keyframes skeleton-pulse {
+    0%,
+    100% {
+      opacity: 0.2;
+    }
+
     50% {
       opacity: 0.5;
     }
   }
 
-  animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+  animation: skeleton-pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
   background-clip: padding-box;
   cursor: default;
   pointer-events: none;
