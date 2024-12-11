@@ -210,61 +210,61 @@ describe('validators', () => {
   describe('bridgeStatusValidator', () => {
     // @ts-expect-error - it.each is a function
     it.each([
-      // {
-      //   input: BridgeTxStatusResponses.STATUS_PENDING_VALID,
-      //   expected: true,
-      //   description: 'valid pending bridge status',
-      // },
-      // {
-      //   input: BridgeTxStatusResponses.STATUS_PENDING_VALID_MISSING_FIELDS,
-      //   expected: true,
-      //   description: 'valid pending bridge status missing fields',
-      // },
-      // {
-      //   input: BridgeTxStatusResponses.STATUS_PENDING_VALID_MISSING_FIELDS_2,
-      //   expected: true,
-      //   description: 'valid pending bridge status missing fields 2',
-      // },
-      // {
-      //   input: BridgeTxStatusResponses.STATUS_PENDING_INVALID_MISSING_FIELDS,
-      //   expected: false,
-      //   description: 'pending bridge status with missing fields',
-      // },
-      // {
-      //   input: BridgeTxStatusResponses.STATUS_COMPLETE_VALID,
-      //   expected: true,
-      //   description: 'valid complete bridge status',
-      // },
-      // {
-      //   input: BridgeTxStatusResponses.STATUS_COMPLETE_INVALID_MISSING_FIELDS,
-      //   expected: false,
-      //   description: 'complete bridge status with missing fields',
-      // },
+      {
+        input: BridgeTxStatusResponses.STATUS_PENDING_VALID,
+        expected: true,
+        description: 'valid pending bridge status',
+      },
+      {
+        input: BridgeTxStatusResponses.STATUS_PENDING_VALID_MISSING_FIELDS,
+        expected: true,
+        description: 'valid pending bridge status missing fields',
+      },
+      {
+        input: BridgeTxStatusResponses.STATUS_PENDING_VALID_MISSING_FIELDS_2,
+        expected: true,
+        description: 'valid pending bridge status missing fields 2',
+      },
+      {
+        input: BridgeTxStatusResponses.STATUS_PENDING_INVALID_MISSING_FIELDS,
+        expected: false,
+        description: 'pending bridge status with missing fields',
+      },
+      {
+        input: BridgeTxStatusResponses.STATUS_COMPLETE_VALID,
+        expected: true,
+        description: 'valid complete bridge status',
+      },
+      {
+        input: BridgeTxStatusResponses.STATUS_COMPLETE_INVALID_MISSING_FIELDS,
+        expected: false,
+        description: 'complete bridge status with missing fields',
+      },
       {
         input: BridgeTxStatusResponses.STATUS_COMPLETE_VALID_MISSING_FIELDS_2,
         expected: true,
         description: 'complete bridge status with missing fields 2',
       },
-      // {
-      //   input: BridgeTxStatusResponses.STATUS_COMPLETE_VALID_MISSING_FIELDS,
-      //   expected: true,
-      //   description: 'complete bridge status with missing fields',
-      // },
-      // {
-      //   input: undefined,
-      //   expected: false,
-      //   description: 'undefined',
-      // },
-      // {
-      //   input: null,
-      //   expected: false,
-      //   description: 'null',
-      // },
-      // {
-      //   input: {},
-      //   expected: false,
-      //   description: 'empty object',
-      // },
+      {
+        input: BridgeTxStatusResponses.STATUS_COMPLETE_VALID_MISSING_FIELDS,
+        expected: true,
+        description: 'complete bridge status with missing fields',
+      },
+      {
+        input: undefined,
+        expected: false,
+        description: 'undefined',
+      },
+      {
+        input: null,
+        expected: false,
+        description: 'null',
+      },
+      {
+        input: {},
+        expected: false,
+        description: 'empty object',
+      },
     ])(
       'should return $expected for $description',
       ({ input, expected }: { input: unknown; expected: boolean }) => {
