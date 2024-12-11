@@ -51,18 +51,6 @@ export const AccountOverviewLayout = ({
   ///: END:ONLY_INCLUDE_IF
 
   useEffect(() => {
-    ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
-    const handleBridgeClick = () => {
-      if (defaultSwapsToken) {
-        openBridgeExperience(
-          'Home',
-          defaultSwapsToken,
-          location.pathname.includes('asset') ? '&token=native' : '',
-        );
-      }
-    };
-    ///: END:ONLY_INCLUDE_IF
-
     const fundSlide = {
       ...FUND_SLIDE,
       undismissable: hasZeroBalance,
@@ -70,10 +58,7 @@ export const AccountOverviewLayout = ({
 
     const defaultSlides = [
       ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
-      {
-        ...BRIDGE_SLIDE,
-        onClick: handleBridgeClick,
-      },
+      BRIDGE_SLIDE,
       ///: END:ONLY_INCLUDE_IF
       CARD_SLIDE,
       CASH_SLIDE,
@@ -88,8 +73,21 @@ export const AccountOverviewLayout = ({
     dispatch(updateSlides(defaultSlides));
   }, [hasZeroBalance]);
 
+  const handleCarouselClick = (id: string) => {
+    if (id === 'bridge') {
+      ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
+      if (defaultSwapsToken) {
+        openBridgeExperience(
+          'Home',
+          defaultSwapsToken,
+          location.pathname.includes('asset') ? '&token=native' : '',
+        );
+      }
+      ///: END:ONLY_INCLUDE_IF
+    }
+  };
+
   const handleRemoveSlide = (id: string) => {
-    // Prevent removing the fund slide if user has no balance
     if (id === 'fund' && hasZeroBalance) {
       return;
     }
@@ -102,6 +100,7 @@ export const AccountOverviewLayout = ({
       <Carousel
         slides={slides}
         isLoading={isLoading}
+        onClick={handleCarouselClick}
         onClose={handleRemoveSlide}
       />
       <AccountOverviewTabs {...tabsProps}></AccountOverviewTabs>

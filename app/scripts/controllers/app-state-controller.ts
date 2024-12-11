@@ -548,12 +548,27 @@ export class AppStateController extends BaseController<
   updateSlides(slides: CarouselSlide[]): void {
     this.update((state) => {
       const currentSlides = state.slides || [];
-      const filteredSlides = slides.filter((newSlide) => {
+
+      // Updates the undismissable property for slides that already exist in state
+      const updatedCurrentSlides = currentSlides.map((currentSlide) => {
+        const matchingNewSlide = slides.find((s) => s.id === currentSlide.id);
+        if (matchingNewSlide) {
+          return {
+            ...currentSlide,
+            undismissable: matchingNewSlide.undismissable,
+          };
+        }
+        return currentSlide;
+      });
+
+      // Adds new slides that don't already exist in state
+      const newSlides = slides.filter((newSlide) => {
         return !currentSlides.some(
           (currentSlide) => currentSlide.id === newSlide.id,
         );
       });
-      state.slides = [...currentSlides, ...filteredSlides];
+
+      state.slides = [...updatedCurrentSlides, ...newSlides];
     });
   }
 

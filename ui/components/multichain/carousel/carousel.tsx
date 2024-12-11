@@ -20,7 +20,13 @@ import {
 
 export const Carousel = React.forwardRef(
   (
-    { slides = [], isLoading = false, onClose, ...props }: CarouselProps,
+    {
+      slides = [],
+      isLoading = false,
+      onClose,
+      onClick,
+      ...props
+    }: CarouselProps,
     ref: React.Ref<HTMLDivElement>,
   ) => {
     const [selectedIndex, setSelectedIndex] = useState(0);
@@ -28,7 +34,15 @@ export const Carousel = React.forwardRef(
 
     const visibleSlides = slides
       .filter((slide) => !slide.dismissed || slide.undismissable)
-      .sort((a, b) => Number(b.undismissable) - Number(a.undismissable))
+      .sort((a, b) => {
+        if (a.undismissable && !b.undismissable) {
+          return -1;
+        }
+        if (!a.undismissable && b.undismissable) {
+          return 1;
+        }
+        return 0;
+      })
       .slice(0, MAX_SLIDES);
 
     const handleClose = (e: React.MouseEvent<HTMLElement>, slideId: string) => {
@@ -130,9 +144,7 @@ export const Carousel = React.forwardRef(
                 if (slide.href) {
                   global.platform.openTab({ url: slide.href });
                 }
-                if (slide.onClick) {
-                  slide.onClick();
-                }
+                onClick?.(slide.id);
               }}
               key={slide.id}
               className="mm-carousel-slide"

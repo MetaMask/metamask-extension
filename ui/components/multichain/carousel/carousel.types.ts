@@ -13,4 +13,5 @@ export type CarouselProps = {
   slides: CarouselSlide[];
   isLoading?: boolean;
   onClose?: (id: string) => void;
+  onClick?: (id: string) => void;
 };
