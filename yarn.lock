@@ -4842,9 +4842,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/accounts-controller@npm:@metamask-previews/accounts-controller@20.0.1-preview-470d2e31":
-  version: 20.0.1-preview-470d2e31
-  resolution: "@metamask-previews/accounts-controller@npm:20.0.1-preview-470d2e31"
+"@metamask/accounts-controller@npm:^20.0.2":
+  version: 20.0.2
+  resolution: "@metamask/accounts-controller@npm:20.0.2"
   dependencies:
     "@ethereumjs/util": "npm:^8.1.0"
     "@metamask/base-controller": "npm:^7.0.2"
@@ -4863,7 +4863,7 @@ __metadata:
     "@metamask/providers": ^18.1.0
     "@metamask/snaps-controllers": ^9.7.0
     webextension-polyfill: ^0.10.0 || ^0.11.0 || ^0.12.0
-  checksum: 10/57b2bbd60b8d68de9fdbafd18812e3d3921c430a7b5fb17090100666af250dbebb5d0330c3521b0a8e699c5679a9c10e6532d5f738621c23d9da2aef691e2c34
+  checksum: 10/4376418913fcdebda251c00a2f373ada5c5b26e45617ece3a5624bb0d7440bbfb1fb8332cae0f5f4fa04751fe2ffd8cea40fab342d54591fe21d8cd34c14744c
   languageName: node
   linkType: hard
 
@@ -5642,9 +5642,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/keyring-controller@npm:@metamask-previews/keyring-controller@19.0.1-preview-470d2e31":
-  version: 19.0.1-preview-470d2e31
-  resolution: "@metamask-previews/keyring-controller@npm:19.0.1-preview-470d2e31"
+"@metamask/keyring-controller@npm:^19.0.0, @metamask/keyring-controller@npm:^19.0.2":
+  version: 19.0.2
+  resolution: "@metamask/keyring-controller@npm:19.0.2"
   dependencies:
     "@ethereumjs/util": "npm:^8.1.0"
     "@keystonehq/metamask-airgapped-keyring": "npm:^0.14.1"
@@ -5660,7 +5660,7 @@ __metadata:
     async-mutex: "npm:^0.5.0"
     ethereumjs-wallet: "npm:^1.0.1"
     immer: "npm:^9.0.6"
-  checksum: 10/dc52a0477642844018aeed094a60f529836c7e16b94ae3d6b9357f57f0a7dc79348da571417657795cb639cb4025c0e2c7444cc3a2dde3d316711f6c9ba032c5
+  checksum: 10/bbc140db91902dc8a9b8e1220d3c07e91858d68b9888d26df74fe300b1baf1331c5df62dde4ea71be77b485a0bca314bfc899358375490c7dbce594810bc74b6
   languageName: node
   linkType: hard
 
@@ -26453,7 +26453,7 @@ __metadata:
     "@metamask-institutional/types": "npm:^1.2.0"
     "@metamask/abi-utils": "npm:^2.0.2"
     "@metamask/account-watcher": "npm:^4.1.2"
-    "@metamask/accounts-controller": "npm:^20.0.0"
+    "@metamask/accounts-controller": "npm:^20.0.2"
     "@metamask/address-book-controller": "npm:^6.0.0"
     "@metamask/announcement-controller": "npm:^7.0.0"
     "@metamask/api-specs": "npm:^0.9.3"
@@ -26494,7 +26494,7 @@ __metadata:
     "@metamask/json-rpc-engine": "npm:^10.0.0"
     "@metamask/json-rpc-middleware-stream": "npm:^8.0.4"
     "@metamask/keyring-api": "npm:^12.0.0"
-    "@metamask/keyring-controller": "npm:^19.0.0"
+    "@metamask/keyring-controller": "npm:^19.0.2"
     "@metamask/keyring-internal-api": "npm:^1.0.0"
     "@metamask/keyring-snap-client": "npm:^1.0.0"
     "@metamask/logging-controller": "npm:^6.0.0"
