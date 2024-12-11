@@ -1630,12 +1630,17 @@ export default class MetamaskController extends EventEmitter {
           'NotificationServicesController:selectIsNotificationServicesEnabled',
           'AccountsController:listAccounts',
           'AccountsController:updateAccountMetadata',
+          'NetworkController:getState',
+          'NetworkController:addNetwork',
+          'NetworkController:removeNetwork',
+          'NetworkController:updateNetwork',
         ],
         allowedEvents: [
           'KeyringController:lock',
           'KeyringController:unlock',
           'AccountsController:accountAdded',
           'AccountsController:accountRenamed',
+          'NetworkController:networkRemoved',
         ],
       }),
     });
