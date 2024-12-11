@@ -93,13 +93,12 @@ const NetworkFilter = ({ handleClose }: SortControlProps) => {
     allOpts[chain] = true;
   });
 
+  console.log(allNetworks);
+
   const allAddedPopularNetworks = FEATURED_NETWORK_CHAIN_IDS.filter(
     (chain) => allOpts[chain],
   ).map((chain) => {
-    if (chain === CHAIN_IDS.MAINNET) {
-      return MAINNET_DISPLAY_NAME;
-    }
-    return FEATURED_RPCS.find((rpc) => rpc.chainId === chain)?.name || '';
+    return allNetworks[chain].name;
   });
 
   return (
