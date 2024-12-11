@@ -42,15 +42,15 @@
     "newPrivacyPolicyToastClickedOrClosed": "boolean",
     "newPrivacyPolicyToastShownDate": "number",
     "hadAdvancedGasFeesSetPriorToMigration92_3": false,
-    "nftsDropdownState": {},
-    "termsOfUseLastAgreed": "number",
-    "qrHardware": {},
-    "snapsInstallPrivacyWarningShown": true,
     "surveyLinkLastClickedOrClosed": "object",
+    "switchedNetworkNeverShowMessage": "boolean",
+    "qrHardware": {},
+    "nftsDropdownState": {},
     "signatureSecurityAlertResponses": "object",
     "switchedNetworkDetails": null,
-    "switchedNetworkNeverShowMessage": "boolean",
-    "currentExtensionPopupId": "number"
+    "currentExtensionPopupId": "number",
+    "termsOfUseLastAgreed": "number",
+    "snapsInstallPrivacyWarningShown": true
   },
   "ApprovalController": {
     "pendingApprovals": "object",
@@ -146,8 +146,16 @@
   "MultichainRatesController": {
     "fiatCurrency": "usd",
     "rates": {
-      "btc": { "conversionDate": 0, "conversionRate": 0 },
-      "sol": { "conversionDate": 0, "conversionRate": 0 }
+      "btc": {
+        "conversionDate": 1733923122883,
+        "conversionRate": 98232.35,
+        "usdConversionRate": 98232.35
+      },
+      "sol": {
+        "conversionDate": 1733923122883,
+        "conversionRate": 224.57,
+        "usdConversionRate": 224.57
+      }
     },
     "cryptocurrencies": ["btc", "sol"]
   },
@@ -261,7 +269,16 @@
   },
   "QueuedRequestController": { "queuedRequestCount": 0 },
   "RemoteFeatureFlagController": {
-    "remoteFeatureFlags": { "feature1": true, "feature2": false },
+    "remoteFeatureFlags": {
+      "OUTDATED_BROWSER_VERSIONS": {
+        "opera": "<95",
+        "chrome": "<109",
+        "edge": "<109",
+        "firefox": "<102"
+      },
+      "testFlagForThreshold": {},
+      "testBooleanFlag": true
+    },
     "cacheTimestamp": "number"
   },
   "SelectedNetworkController": { "domains": "object" },
