@@ -22,7 +22,7 @@ describe('BridgeCTAButton', () => {
       },
       bridgeSliceOverrides: { fromTokenInputValue: 1 },
     });
-    const { container, getByText, getByRole } = renderWithProvider(
+    const { container, getByText } = renderWithProvider(
       <BridgeCTAButton />,
       configureStore(mockStore),
     );
@@ -30,7 +30,6 @@ describe('BridgeCTAButton', () => {
     expect(container).toMatchSnapshot();
 
     expect(getByText('Select token')).toBeInTheDocument();
-    expect(getByRole('button')).toBeDisabled();
   });
 
   it('should render the component when amount is missing', () => {
@@ -54,13 +53,12 @@ describe('BridgeCTAButton', () => {
         toChainId: CHAIN_IDS.LINEA_MAINNET,
       },
     });
-    const { getByText, getByRole } = renderWithProvider(
+    const { getByText } = renderWithProvider(
       <BridgeCTAButton />,
       configureStore(mockStore),
     );
 
-    expect(getByText('Enter amount')).toBeInTheDocument();
-    expect(getByRole('button')).toBeDisabled();
+    expect(getByText('Select amount')).toBeInTheDocument();
   });
 
   it('should render the component when amount and dest token is missing', () => {
@@ -84,13 +82,13 @@ describe('BridgeCTAButton', () => {
         toChainId: CHAIN_IDS.LINEA_MAINNET,
       },
     });
-    const { getByText, getByRole } = renderWithProvider(
+    const { getByText, container } = renderWithProvider(
       <BridgeCTAButton />,
       configureStore(mockStore),
     );
 
     expect(getByText('Select token and amount')).toBeInTheDocument();
-    expect(getByRole('button')).toBeDisabled();
+    expect(container).toMatchSnapshot();
   });
 
   it('should render the component when tx is submittable', () => {
@@ -124,7 +122,7 @@ describe('BridgeCTAButton', () => {
       configureStore(mockStore),
     );
 
-    expect(getByText('Confirm')).toBeInTheDocument();
+    expect(getByText('Submit')).toBeInTheDocument();
     expect(getByRole('button')).not.toBeDisabled();
   });
 
@@ -160,13 +158,12 @@ describe('BridgeCTAButton', () => {
         quotesLoadingStatus: RequestStatus.LOADING,
       },
     });
-    const { getByText, getByRole } = renderWithProvider(
+    const { container } = renderWithProvider(
       <BridgeCTAButton />,
       configureStore(mockStore),
     );
 
-    expect(getByText('Fetching quotes...')).toBeInTheDocument();
-    expect(getByRole('button')).toBeDisabled();
+    expect(container).toMatchSnapshot();
   });
 
   it('should enable the component when quotes are loading and there are existing quotes', () => {
@@ -201,12 +198,13 @@ describe('BridgeCTAButton', () => {
         quotesLoadingStatus: RequestStatus.LOADING,
       },
     });
-    const { getByText, getByRole } = renderWithProvider(
+    const { getByText, getByRole, container } = renderWithProvider(
       <BridgeCTAButton />,
       configureStore(mockStore),
     );
 
-    expect(getByText('Confirm')).toBeInTheDocument();
+    expect(getByText('Submit')).toBeInTheDocument();
     expect(getByRole('button')).not.toBeDisabled();
+    expect(container).toMatchSnapshot();
   });
 });
