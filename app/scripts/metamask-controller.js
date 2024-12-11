@@ -4627,7 +4627,7 @@ export default class MetamaskController extends EventEmitter {
       const keyring = await this.keyringController.getKeyringForAccount(
         newAccount,
       );
-      this._addAccountsWithBalance(keyring.opts.id);
+      await this._addAccountsWithBalance(keyring.opts.id);
 
       return newAccount;
     } finally {
