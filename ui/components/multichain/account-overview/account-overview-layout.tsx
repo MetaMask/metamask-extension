@@ -73,9 +73,9 @@ export const AccountOverviewLayout = ({
     dispatch(updateSlides(defaultSlides));
   }, [hasZeroBalance]);
 
+  ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
   const handleCarouselClick = (id: string) => {
     if (id === 'bridge') {
-      ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
       if (defaultSwapsToken) {
         openBridgeExperience(
           'Home',
@@ -83,9 +83,9 @@ export const AccountOverviewLayout = ({
           location.pathname.includes('asset') ? '&token=native' : '',
         );
       }
-      ///: END:ONLY_INCLUDE_IF
     }
   };
+  ///: END:ONLY_INCLUDE_IF
 
   const handleRemoveSlide = (id: string) => {
     if (id === 'fund' && hasZeroBalance) {
@@ -100,7 +100,9 @@ export const AccountOverviewLayout = ({
       <Carousel
         slides={slides}
         isLoading={isLoading}
+        ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
         onClick={handleCarouselClick}
+        ///: END:ONLY_INCLUDE_IF
         onClose={handleRemoveSlide}
       />
       <AccountOverviewTabs {...tabsProps}></AccountOverviewTabs>
