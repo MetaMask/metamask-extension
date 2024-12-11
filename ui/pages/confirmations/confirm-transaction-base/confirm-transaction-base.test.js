@@ -2,7 +2,6 @@ import React from 'react';
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import { fireEvent } from '@testing-library/react';
-
 import { EthAccountType } from '@metamask/keyring-api';
 import {
   TransactionStatus,
@@ -242,7 +241,7 @@ const mockedStoreWithConfirmTxParams = (
 const sendToRecipientSelector =
   '.sender-to-recipient__party--recipient .sender-to-recipient__name';
 
-const render = async ({ props, state } = {}) => {
+const render = async ({ props, state, renderer } = {}) => {
   const store = configureMockStore(middleware)({
     ...baseStore,
     ...state,
@@ -260,6 +259,8 @@ const render = async ({ props, state } = {}) => {
       (result = renderWithProvider(
         <ConfirmTransactionBase {...componentProps} />,
         store,
+        undefined,
+        renderer,
       )),
   );
 
@@ -965,6 +966,69 @@ describe('Confirm Transaction Base', () => {
 
       const confirmButton = getByTestId('page-container-footer-next');
       expect(confirmButton).toBeDisabled();
+    });
+  });
+
+  describe('if useMaxValue is settled', () => {
+    const baseStoreState = {
+      ...baseStore,
+      metamask: {
+        ...baseStore.metamask,
+        ...mockNetworkState({ chainId: CHAIN_IDS.GOERLI, ticker: undefined }),
+      },
+    };
+
+    const updateTransactionValue = jest.fn();
+
+    const maxValueSettledProps = {
+      useMaxValue: true,
+      hexMaximumTransactionFee: '0x111',
+      updateTransactionValue,
+    };
+
+    beforeEach(() => {
+      updateTransactionValue.mockClear();
+    });
+
+    it('should update transaction value when new hexMaximumTransactionFee is provided', async () => {
+      const { rerender } = await render({
+        state: baseStoreState,
+        props: maxValueSettledProps,
+      });
+
+      const newHexMaximumTransactionFee = '0x222';
+
+      render({
+        renderer: rerender,
+        state: baseStoreState,
+        props: {
+          ...maxValueSettledProps,
+          hexMaximumTransactionFee: newHexMaximumTransactionFee,
+        },
+      });
+
+      expect(updateTransactionValue).toHaveBeenCalledTimes(1);
+    });
+
+    it('should not update transaction value if transactionStatus is not unapproved', async () => {
+      const { rerender } = await render({
+        state: baseStoreState,
+        props: maxValueSettledProps,
+      });
+
+      const newHexMaximumTransactionFee = '0x222';
+
+      render({
+        renderer: rerender,
+        state: { ...baseStoreState },
+        props: {
+          ...maxValueSettledProps,
+          hexMaximumTransactionFee: newHexMaximumTransactionFee,
+          transactionStatus: TransactionStatus.submitted,
+        },
+      });
+
+      expect(updateTransactionValue).toHaveBeenCalledTimes(0);
     });
   });
 });

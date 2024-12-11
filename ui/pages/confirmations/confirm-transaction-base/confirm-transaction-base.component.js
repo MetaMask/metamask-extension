@@ -282,7 +282,8 @@ export default class ConfirmTransactionBase extends Component {
 
     if (
       hexMaximumTransactionFee !== prevHexMaximumTransactionFee &&
-      useMaxValue
+      useMaxValue &&
+      transactionStatus === TransactionStatus.unapproved
     ) {
       this.updateValueToMax();
     }
