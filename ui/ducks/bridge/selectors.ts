@@ -22,7 +22,7 @@ import {
   BRIDGE_QUOTE_MAX_RETURN_DIFFERENCE_PERCENTAGE,
 } from '../../../shared/constants/bridge';
 import {
-  BridgeControllerState,
+  BridgeState,
   BridgeFeatureFlagsKey,
   // TODO: Remove restricted import
   // eslint-disable-next-line import/no-restricted-paths
@@ -60,10 +60,10 @@ import {
   exchangeRateFromMarketData,
   tokenPriceInNativeAsset,
 } from './utils';
-import { BridgeState } from './bridge';
+import { BridgeSlice } from './bridge';
 
 type BridgeAppState = {
-  metamask: { bridgeState: BridgeControllerState } & NetworkState & {
+  metamask: { bridgeState: BridgeState } & NetworkState & {
       useExternalServices: boolean;
       currencyRates: {
         [currency: string]: {
@@ -72,7 +72,7 @@ type BridgeAppState = {
         };
       };
     };
-  bridge: BridgeState;
+  bridge: BridgeSlice;
 };
 
 // only includes networks user has added
