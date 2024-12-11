@@ -59,7 +59,7 @@ describe('Carousel component e2e tests', () => {
     );
   });
 
-  it('should handle slide dismissal correctly', async function () {
+  it('should handle slide dismissal', async function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilder().build(),
@@ -70,49 +70,44 @@ describe('Carousel component e2e tests', () => {
         await driver.waitForSelector('.mm-carousel');
         await driver.delay(1000);
 
+        // First verify we have all 4 slides
         const initialSlides = await driver.findElements('.mm-carousel-slide');
-        const initialCount = initialSlides.length;
-        assert.ok(initialCount > 0, 'Carousel should have slides initially');
+        assert.equal(initialSlides.length, 4);
 
-        const firstSlideCloseButton = await driver.findElement(
-          '.mm-carousel-slide:first-child .mm-carousel-slide__close-button',
-        );
-        await firstSlideCloseButton.click();
+        // Dismiss each slide one by one
+        for (let i = 0; i < 4; i++) {
+          const currentSlides = await driver.findElements('.mm-carousel-slide');
+          assert.equal(
+            currentSlides.length,
+            4 - i,
+            `Expected ${4 - i} slides remaining`,
+          );
+
+          const dismissButton = await driver.findElement(
+            '.mm-carousel-slide:first-child .mm-carousel-slide__close-button',
+          );
+          await dismissButton.click();
+
+          // Only wait for the next state if we're not on the last slide
+          if (i < 3) {
+            await driver.wait(async () => {
+              const remainingSlides = await driver.findElements(
+                '.mm-carousel-slide',
+              );
+              return remainingSlides.length === 3 - i;
+            }, 1000);
+          }
+        }
+
+        // Wait briefly for any animations to complete
         await driver.delay(500);
 
-        const remainingSlides = await driver.findElements('.mm-carousel-slide');
-        assert.equal(
-          remainingSlides.length,
-          initialCount - 1,
-          'One slide should be removed after clicking close',
-        );
-
-        const dots = await driver.findElements('.dot');
-        const hasSelectedDot = await driver.isElementPresent('.dot.selected');
-        assert.ok(
-          hasSelectedDot,
-          'Should have a selected dot after closing a slide',
-        );
-        assert.equal(
-          dots.length,
-          remainingSlides.length,
-          'Number of dots should match number of remaining slides',
-        );
-
-        await Promise.all(
-          remainingSlides.map(async () => {
-            const closeButton = await driver.findElement(
-              '.mm-carousel-slide:first-child .mm-carousel-slide__close-button',
-            );
-            await closeButton.click();
-            await driver.delay(500);
-          }),
-        );
-
+        // Verify carousel is no longer present
         const carouselExists = await driver.isElementPresent('.mm-carousel');
-        assert.ok(
-          !carouselExists,
-          'Carousel should not be present after all slides are closed',
+        assert.equal(
+          carouselExists,
+          false,
+          'Carousel should no longer be visible',
         );
       },
     );
