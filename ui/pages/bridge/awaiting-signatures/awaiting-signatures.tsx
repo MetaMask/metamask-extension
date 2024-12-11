@@ -13,6 +13,7 @@ import {
   TextColor,
   BlockSize,
   Display,
+  FlexDirection,
 } from '../../../helpers/constants/design-system';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import { MetaMetricsEventCategory } from '../../../../shared/constants/metametrics';
@@ -65,6 +66,7 @@ export default function AwaitingSignatures() {
         height={BlockSize.Full}
         justifyContent={JustifyContent.center}
         display={Display.Flex}
+        flexDirection={FlexDirection.Column}
       >
         <Box marginTop={3} marginBottom={4}>
           <PulseLoader />
