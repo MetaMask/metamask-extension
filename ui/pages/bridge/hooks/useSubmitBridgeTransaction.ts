@@ -20,6 +20,7 @@ export default function useSubmitBridgeTransaction() {
   const submitBridgeTransaction = async (
     quoteResponse: QuoteResponse & QuoteMetadata,
   ) => {
+    // TODO catch errors and emit ActionFailed here
     // Execute transaction(s)
     let approvalTxMeta: TransactionMeta | undefined;
     if (quoteResponse?.approval) {
@@ -29,11 +30,6 @@ export default function useSubmitBridgeTransaction() {
         quoteResponse,
       });
     }
-
-    // Route user to activity tab on Home page
-    // Do it ahead of time because otherwise STX waits for a txHash on TransactionType.bridge and that can take a while
-    await dispatch(setDefaultHomeActiveTabName('activity'));
-    history.push(DEFAULT_ROUTE);
 
     const bridgeTxMeta = await handleBridgeTx({
       quoteResponse,
@@ -67,6 +63,10 @@ export default function useSubmitBridgeTransaction() {
     if (quoteResponse.quote.destAsset.address !== zeroAddress()) {
       await addDestToken(quoteResponse);
     }
+
+    // Route user to activity tab on Home page
+    await dispatch(setDefaultHomeActiveTabName('activity'));
+    history.push(DEFAULT_ROUTE);
   };
 
   return {

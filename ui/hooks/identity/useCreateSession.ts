@@ -31,6 +31,14 @@ export function useCreateSession(): {
   );
 
   const createSession = useCallback(async () => {
+    const safeDispatchDisableProfileSync = async () => {
+      try {
+        await dispatch(disableProfileSyncing());
+      } catch {
+        // Do Nothing
+      }
+    };
+
     // If the user is already signed in, no need to create a new session
     if (isSignedIn) {
       return;
@@ -47,7 +55,7 @@ export function useCreateSession(): {
         await dispatch(performSignIn());
       } catch (e) {
         // If an error occurs during the sign-in process, disable profile syncing
-        await dispatch(disableProfileSyncing());
+        await safeDispatchDisableProfileSync();
         const errorMessage =
           e instanceof Error ? e.message : JSON.stringify(e ?? '');
         log.error(errorMessage);
