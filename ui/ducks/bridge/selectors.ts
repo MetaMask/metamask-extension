@@ -55,7 +55,10 @@ import {
 } from '../../pages/bridge/utils/quote';
 import { AssetType } from '../../../shared/constants/transaction';
 import { decGWEIToHexWEI } from '../../../shared/modules/conversion.utils';
-import { FEATURED_RPCS } from '../../../shared/constants/network';
+import {
+  CHAIN_ID_TOKEN_IMAGE_MAP,
+  FEATURED_RPCS,
+} from '../../../shared/constants/network';
 import {
   exchangeRatesFromNativeAndCurrencyRates,
   exchangeRateFromMarketData,
@@ -173,19 +176,22 @@ export const getFromToken = createSelector(
     if (!fromChain?.chainId) {
       return null;
     }
-    return fromToken?.address
-      ? fromToken
-      : {
-          ...SWAPS_CHAINID_DEFAULT_TOKEN_MAP[
-            fromChain.chainId as keyof typeof SWAPS_CHAINID_DEFAULT_TOKEN_MAP
-          ],
-          chainId: fromChain.chainId,
-          image:
-            SWAPS_CHAINID_DEFAULT_TOKEN_MAP[
-              fromChain.chainId as keyof typeof SWAPS_CHAINID_DEFAULT_TOKEN_MAP
-            ].iconUrl,
-          type: AssetType.native,
-        };
+    if (fromToken?.address) {
+      return fromToken;
+    }
+    return {
+      ...SWAPS_CHAINID_DEFAULT_TOKEN_MAP[
+        fromChain.chainId as keyof typeof SWAPS_CHAINID_DEFAULT_TOKEN_MAP
+      ],
+      chainId: fromChain.chainId,
+      image:
+        CHAIN_ID_TOKEN_IMAGE_MAP[
+          fromChain.chainId as keyof typeof CHAIN_ID_TOKEN_IMAGE_MAP
+        ],
+      balance: '0',
+      string: '0',
+      type: AssetType.native,
+    };
   },
 );
 
