@@ -509,6 +509,9 @@
   "allCustodianAccountsConnectedTitle": {
     "message": "No accounts available to connect"
   },
+  "allNetworks": {
+    "message": "All networks"
+  },
   "allOfYour": {
     "message": "All of your $1",
     "description": "$1 is the symbol or name of the token that the user is approving spending"
