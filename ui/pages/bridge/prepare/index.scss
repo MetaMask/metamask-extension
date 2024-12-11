@@ -1,11 +1,5 @@
 @use "design-system";
 
-.tokens-main-view-modal {
-  .multichain-asset-picker-list-item .mm-badge-wrapper__badge-container {
-    display: none;
-  }
-}
-
 .prepare-bridge-page {
   display: flex;
   flex-flow: column;

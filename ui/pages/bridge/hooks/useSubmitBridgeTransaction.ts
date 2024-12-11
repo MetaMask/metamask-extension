@@ -13,6 +13,7 @@ import {
 import { setDefaultHomeActiveTabName } from '../../../store/actions';
 import { startPollingForBridgeTxStatus } from '../../../ducks/bridge-status/actions';
 import { isHardwareWallet } from '../../../selectors';
+import { getQuoteRequest } from '../../../ducks/bridge/selectors';
 import useAddToken from './useAddToken';
 import useHandleApprovalTx from './useHandleApprovalTx';
 import useHandleBridgeTx from './useHandleBridgeTx';
@@ -26,6 +27,7 @@ export default function useSubmitBridgeTransaction() {
   const { handleApprovalTx } = useHandleApprovalTx();
   const { handleBridgeTx } = useHandleBridgeTx();
   const hardwareWalletUsed = useSelector(isHardwareWallet);
+  const { slippage } = useSelector(getQuoteRequest);
 
   const submitBridgeTransaction = async (
     quoteResponse: QuoteResponse & QuoteMetadata,
@@ -77,7 +79,7 @@ export default function useSubmitBridgeTransaction() {
         bridgeTxMeta,
         statusRequest,
         quoteResponse,
-        slippagePercentage: 0, // TODO pull this from redux/bridgecontroller once it's implemented. currently hardcoded in quoteRequest.slippage right now
+        slippagePercentage: slippage ?? 0,
         startTime: bridgeTxMeta.time,
       }),
     );
