@@ -2,13 +2,11 @@ import { Suite } from 'mocha';
 import { Driver } from '../../webdriver/driver';
 import { Ganache } from '../../seeder/ganache';
 import FixtureBuilder from '../../fixture-builder';
-import {
-  defaultGanacheOptions,
-  logInWithBalanceValidation,
-  sendTransaction,
-  withFixtures,
-} from '../../helpers';
+import { logInWithBalanceValidation, withFixtures } from '../../helpers';
 import { KNOWN_PUBLIC_KEY_ADDRESSES } from '../../../stub/keyring-bridge';
+import ActivityListPage from '../../page-objects/pages/home/activity-list';
+import HomePage from '../../page-objects/pages/home/homepage';
+import { sendRedesignedTransactionToAddress } from '../../page-objects/flows/send-transaction.flow';
 
 const RECIPIENT = '0x0Cc5261AB8cE458dc977078A3623E2BaDD27afD3';
 
@@ -17,7 +15,6 @@ describe('Trezor Hardware', function (this: Suite) {
     await withFixtures(
       {
         fixtures: new FixtureBuilder().withTrezorAccount().build(),
-        ganacheOptions: defaultGanacheOptions,
         title: this.test?.fullTitle(),
       },
       async ({
@@ -33,14 +30,16 @@ describe('Trezor Hardware', function (this: Suite) {
           '0x100000000000000000000',
         );
         await logInWithBalanceValidation(driver);
-
-        await sendTransaction(driver, RECIPIENT, '1');
-
-        // Wait for transaction to be confirmed
-        await driver.waitForSelector({
-          css: '.transaction-status-label',
-          text: 'Confirmed',
+        await sendRedesignedTransactionToAddress({
+          driver,
+          recipientAddress: RECIPIENT,
+          amount: '1',
         });
+        const homePage = new HomePage(driver);
+        await homePage.check_pageIsLoaded();
+        const activityList = new ActivityListPage(driver);
+        await activityList.check_confirmedTxNumberDisplayedInActivity();
+        await activityList.check_txAmountInActivity();
       },
     );
   });
